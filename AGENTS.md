@@ -46,7 +46,7 @@
 npm install                  # تثبيت (workspaces: backend + frontend)
 npm run lint                 # ESLint على frontend/src + backend/src (0 أخطاء إلزامية؛ 18 تحذير exhaustive-deps مسموح موثق)
 npm run typecheck            # tsc للشيفرة والاختبارات في الجهتين — لا يحتاج قاعدة بيانات
-npm test                     # vitest للجهتين — لا يحتاج قاعدة بيانات (1024 واجهة + 1032 خلفية)
+npm test                     # vitest للجهتين — لا يحتاج قاعدة بيانات (1225 واجهة + 1166 خلفية)
 npm run dev                  # خلفية على :4000 (tsx watch)
 npm run dev:web              # واجهة على :5173 مع proxy ‏/api → :4000
 npm run build -w frontend    # بناء الواجهة فقط (لا يحتاج DB)
@@ -82,8 +82,14 @@ npm run validate:colleges               # هوية 25 كلية (تباين AA، 
    `frontend/index.html` الداخلي — حدّث بصمة CSP في `backend/src/app.ts`.
 5. **الحاكمية**: تعديلات الأدوار/الحالة تمر عبر حرّاس `lib/governance.ts`
    (قفل آخر مالك نشط بـ`SELECT … FOR UPDATE` + صف `AuditLog` بنفس المعاملة).
-6. **لا رفع ملفات**: لا multipart endpoint اليوم؛ قرص Render زائل — أي
-   ميزة رفع تتطلب قرصًا دائمًا أو تخزين كائنات أولًا (انظر `render.yaml`).
+6. **رفع PDF عبر تجريد التخزين**: الرفع منفَّذ الآن — جسم خام
+   `application/pdf` فقط (بلا multipart عبر `express.raw`) خلف
+   `backend/src/lib/storage.ts`، ببصمات `%PDF-` وسقف 20MB ومفاتيح cuid.
+   السائق المحلي (الافتراضي) للتطوير؛ دوام الملفات في الإنتاج يتطلب
+   `STORAGE_DRIVER=s3` مع متغيرات `S3_*` (قرص Render زائل — يُسجَّل تحذير
+   إقلاع واحد صريح عند اختيار local في الإنتاج). كل ملف يُقدَّم عبر
+   مسارات مصرَّدة فقط (`files.routes.ts` ببوابات ملكية/تسجيل/إشراف)، ولا
+   يُفتح للعامة أبدًا.
 7. **لا إعادة هيكلة تجميلية**: لا تغيير أسماء واجهات/دوال/مسارات/نماذج
    دون مبرر وظيفي — أسماء المسارات والحقول جزء من عقد الواجهات.
 

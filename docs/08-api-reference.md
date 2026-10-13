@@ -1,8 +1,8 @@
 # 08 — واجهات API
 
 > الجدول endpoint-ب-endpoint الموثق من الشيفرة:
-> [`API-REFERENCE.md`](API-REFERENCE.md) (193 مسارًا). هذه الوثيقة تشرح
-> **اتفاقية الاستخدام** وخريطة القطاعات حتى لا تضيع في 193 صفًا.
+> [`API-REFERENCE.md`](API-REFERENCE.md) (196 مسارًا). هذه الوثيقة تشرح
+> **اتفاقية الاستخدام** وخريطة القطاعات حتى لا تضيع في 196 صفًا.
 
 ## الأساسيات
 
@@ -11,7 +11,8 @@
 - المصادقة: `Authorization: Bearer <access JWT>` بعد `/auth/login`؛
   الـrefresh كوكي `mdrk_refresh` (httpOnly) يعمل مسار `/auth/refresh` فقط.
 - عدّاد المعدل: عام 1000 طلب/15 دقيقة/IP؛ مصادقة 10/15 دقيقة (النجاح
-  لا يحتسب)؛ حزم خاصة (مسح بحث 10/دقيقة، إرسال رسالة 30/دقيقة…).
+  لا يحتسب)؛ حزم خاصة (مسح بحث 10/دقيقة، إرسال رسالة 30/دقيقة، رفع ورقة
+  بحث 10/دقيقة، رفع مادة 20/دقيقة…).
 
 ## اتفاقية الظرف (طلب/استجابة)
 
@@ -51,7 +52,7 @@
 | الكتالوج العام | `/faculties`، `/colleges*`، مكتبة/مووك/وظائف/منشورات… | `catalog.routes.ts`، `colleges.routes.ts` | `/faculties` و`/colleges` **عامة قبل بوابة المصادقة** (قمع التسجيل) — اختبارات تثبّت الترتيب |
 | الجودة | `/quality/*` | داخل `learning.routes.ts` | `overview`، `courses`، `professors`، `engagement`، `curriculum`، `alerts` |
 | المالك | `/owner/*` | `owner.routes.ts` (17 مسارًا) | `stats`، `users/:id/role`، `activity` (تدقيق)، `settings`، `feature-flags`، `governance` |
-| الملفات | `/files/papers/:filename` | `files.routes.ts` | خدمة PDF محمية (5 دفاعات — انظر [10-security](10-security.md)) |
+| الملفات | `/files/papers` (رفع طالب)، `/files/papers/:filename`، `/files/materials/:filename` | `files.routes.ts` | رفع أوراق البحث PDF خام (بصمات `%PDF-` + 20MB + مفاتيح cuid) وخدمتها عبر تجريد التخزين ببوابات ملكية/تسجيل/إشراف — انظر [10-security](10-security.md) |
 | داخلي | `/me/milestones/:id/fire` | `modules/milestones/router.ts` | ترويسة `x-internal-service-token` — يفشل مغلقًا بلا سر |
 | الصحة | `/health` | `app.ts` | `{ ok, dbLatencyMs, env, buildId }` — فحص Render |
 

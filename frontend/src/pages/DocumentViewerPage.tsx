@@ -38,12 +38,25 @@ function safeBackPath(raw: string | null): string {
     : '/student/library?tab=research';
 }
 
+/* P3: the file namespace the viewer fetches from. 'papers' is the
+ * legacy default (research PDFs, /files/papers/:filename); 'materials'
+ * rides the ?ns= param materialHref sets for uploaded course PDFs
+ * (/files/materials/:filename — auth-gated for enrolled/teacher/
+ * oversight). An unknown/absent value falls back to 'papers' so a
+ * crafted ?ns= can never retarget the fetch at an arbitrary path
+ * segment. */
+type FileNamespace = 'papers' | 'materials';
+function fileNamespace(raw: string | null): FileNamespace {
+  return raw === 'materials' ? 'materials' : 'papers';
+}
+
 export default function DocumentViewerPage() {
   const params = useParams<{ filename: string }>();
   const [search] = useSearchParams();
   const title = search.get('title') ?? undefined;
   const back = safeBackPath(search.get('back'));
   const paperId = search.get('paper') ?? undefined;
+  const ns = fileNamespace(search.get('ns'));
 
   const controlRef = useRef<{ jumpToPage: (n: number) => void } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,8 +74,8 @@ export default function DocumentViewerPage() {
 
   /* r155b: العنوان يُبنى من apiBaseURL (lib/api) — الثابت الصريح
    * '/api/v1' كان يتجاهل VITE_API_BASE_URL (نمط LecturePlayerPage
-   * في نداء keepalive نفسه). */
-  const src = `${apiBaseURL}/files/papers/${encodeURIComponent(params.filename)}`;
+   * في نداء keepalive نفسه). P3: المقطع الثاني هو النطاق (ns). */
+  const src = `${apiBaseURL}/files/${ns}/${encodeURIComponent(params.filename)}`;
 
   return (
     // r152i (A3): the height moved to pdf.css (.document-viewer-page)

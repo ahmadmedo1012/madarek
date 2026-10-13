@@ -29,6 +29,7 @@ import { act, render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom';
 import { AttendancePage, AssignmentsPage, MaterialsPage, MessagesPage, GradesPage, StudentsListPage, TeacherSchedulePage } from '../../src/pages/teacher/TeacherPages';
 import { useAuthStore } from '../../src/stores/auth.store';
+import { useToastStore } from '../../src/lib/toast';
 import type { AuthUser } from '../../src/stores/auth.store';
 
 const mocks = vi.hoisted(() => ({
@@ -78,6 +79,13 @@ const mocks = vi.hoisted(() => ({
     error: null as unknown,
   },
   createMaterial: {
+    mutateAsync: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null as unknown,
+  },
+  /* P3 — the direct-PDF material upload (MaterialFormModal file mode). */
+  uploadMaterial: {
     mutateAsync: vi.fn(),
     isPending: false,
     isError: false,
@@ -144,6 +152,7 @@ vi.mock('../../src/hooks/useResources', () => ({
   useGradeSubmission: () => mocks.grade,
   useCreateAssignment: () => mocks.createAssignment,
   useCreateMaterial: () => mocks.createMaterial,
+  useUploadMaterialFile: () => mocks.uploadMaterial,
   useMyMessages: (page: number, limit: number) => {
     mocks.messages.calls.push([page, limit]);
     return {
@@ -367,6 +376,7 @@ beforeEach(() => {
   mocks.markAll = { mutate: vi.fn(), isPending: false, isError: false, error: null };
   mocks.createAssignment = { mutateAsync: vi.fn(), isPending: false, isError: false, error: null };
   mocks.createMaterial = { mutateAsync: vi.fn(), isPending: false, isError: false, error: null };
+  mocks.uploadMaterial = { mutateAsync: vi.fn(), isPending: false, isError: false, error: null };
   mocks.messages = { pages: {}, total: 0, totalPages: 1, unread: 0, calls: [] };
 });
 
@@ -1163,7 +1173,10 @@ describe('r144 — AssignmentFormModal + MaterialFormModal (authoring half)', ()
       </MemoryRouter>,
     );
     fireEvent.click(screen.getByRole('button', { name: /إضافة مادة/ }));
-    await screen.findByRole('dialog', { name: 'إضافة مادة تعليمية بالرابط' });
+        // P3: link mode is the SECOND channel now — switch to it before
+    // filling the by-link form (file mode is the default).
+    fireEvent.click(screen.getByRole('button', { name: 'رابط خارجي' }));
+    await screen.findByRole('dialog', { name: 'إضافة مادة تعليمية' });
 
     fireEvent.change(screen.getByLabelText(/اسم المادة/), { target: { value: 'شرائح الأسبوع الثالث' } });
     fireEvent.change(screen.getByLabelText(/الرابط \(https\)/), { target: { value: 'javascript:alert(1)' } });
@@ -1187,7 +1200,10 @@ describe('r144 — AssignmentFormModal + MaterialFormModal (authoring half)', ()
       </MemoryRouter>,
     );
     fireEvent.click(screen.getByRole('button', { name: /إضافة مادة/ }));
-    await screen.findByRole('dialog', { name: 'إضافة مادة تعليمية بالرابط' });
+        // P3: link mode is the SECOND channel now — switch to it before
+    // filling the by-link form (file mode is the default).
+    fireEvent.click(screen.getByRole('button', { name: 'رابط خارجي' }));
+    await screen.findByRole('dialog', { name: 'إضافة مادة تعليمية' });
 
     fireEvent.change(screen.getByLabelText(/اسم المادة/), { target: { value: 'شرائح الأسبوع الثالث' } });
     fireEvent.change(screen.getByLabelText(/الرابط \(https\)/), { target: { value: 'https://cdn.example.com/lec3.pdf' } });
@@ -1202,8 +1218,106 @@ describe('r144 — AssignmentFormModal + MaterialFormModal (authoring half)', ()
     expect(call.url).toBe('https://cdn.example.com/lec3.pdf');
 
     await waitFor(() => {
-      expect(screen.queryByRole('dialog', { name: 'إضافة مادة تعليمية بالرابط' })).toBeNull();
+      expect(screen.queryByRole('dialog', { name: 'إضافة مادة تعليمية' })).toBeNull();
     });
     unmount();
+  });
+});
+
+/* ───────────────────────────────────────────────
+ * P3 — MaterialFormModal's file mode: the direct PDF upload channel
+ * (POST /offerings/:id/materials/file, raw body). The mode switch (Pill
+ * pair, aria-pressed) picks the channel; file mode shows a real picker
+ * whose name auto-fills the «اسم المادة» field, locks the type to a
+ * static PDF chip, validates caps client-side, and lands through the
+ * upload hook (toast + close).
+ * ─────────────────────────────────────────────── */
+describe('P3 — MaterialFormModal file mode (direct PDF upload)', () => {
+  beforeEach(() => {
+    mocks.offerings = [OFFERING];
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+    useToastStore.setState({ items: [] });
+  });
+
+  function openModal() {
+    render(
+      <MemoryRouter>
+        <MaterialsPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /إضافة مادة/ }));
+    return screen.findByRole('dialog', { name: 'إضافة مادة تعليمية' });
+  }
+
+  it('renders the two-channel switch with aria-pressed — file mode is the default', async () => {
+    await openModal();
+    const filePill = screen.getByRole('button', { name: 'ملف PDF' });
+    const linkPill = screen.getByRole('button', { name: 'رابط خارجي' });
+    expect(filePill.getAttribute('aria-pressed')).toBe('true');
+    expect(linkPill.getAttribute('aria-pressed')).toBe('false');
+    // File mode (default) shows a real PDF picker; the link field is absent.
+    expect(screen.getByLabelText('ملف PDF')).toBeInstanceOf(HTMLInputElement);
+    expect(screen.queryByLabelText(/الرابط/)).toBeNull();
+  });
+
+  it('picking a file auto-fills اسم المادة from the file name (still editable)', async () => {
+    await openModal();
+    const picker = screen.getByLabelText('ملف PDF') as HTMLInputElement;
+    fireEvent.change(picker, { target: { files: [new File(['%PDF-1.4'], 'محاضرة_الأسبوع_الثالث.pdf', { type: 'application/pdf' })] } });
+    const name = screen.getByLabelText(/اسم المادة/) as HTMLInputElement;
+    // Derived from the file name, .pdf extension dropped.
+    expect(name.value).toBe('محاضرة_الأسبوع_الثالث');
+    // Still editable — a manual keystroke wins over the auto-fill.
+    fireEvent.change(name, { target: { value: 'محاضرة معدلة' } });
+    expect((screen.getByLabelText(/اسم المادة/) as HTMLInputElement).value).toBe('محاضرة معدلة');
+  });
+
+  it('rejects a non-PDF file client-side — the Arabic error lands BEFORE any request', async () => {
+    await openModal();
+    const picker = screen.getByLabelText('ملف PDF') as HTMLInputElement;
+    fireEvent.change(picker, { target: { files: [new File(['x'], 'slides.txt', { type: 'text/plain' })] } });
+    fireEvent.click(screen.getByRole('button', { name: 'إضافة المادة' }));
+
+    await waitFor(() => {
+      expect(screen.getByText('الملف يجب أن يكون بصيغة PDF فقط.')).toBeInTheDocument();
+    });
+    expect(mocks.uploadMaterial.mutateAsync).not.toHaveBeenCalled();
+    expect(mocks.createMaterial.mutateAsync).not.toHaveBeenCalled();
+  });
+
+  it('submits through the upload hook and closes + toasts on success', async () => {
+    mocks.uploadMaterial.mutateAsync.mockResolvedValueOnce({});
+    await openModal();
+    const picker = screen.getByLabelText('ملف PDF') as HTMLInputElement;
+    fireEvent.change(picker, { target: { files: [new File(['%PDF-1.4'], 'lecture-03.pdf', { type: 'application/pdf' })] } });
+    fireEvent.click(screen.getByRole('button', { name: 'إضافة المادة' }));
+
+    await waitFor(() => {
+      expect(mocks.uploadMaterial.mutateAsync).toHaveBeenCalledTimes(1);
+    });
+    const call = mocks.uploadMaterial.mutateAsync.mock.calls[0]![0] as Record<string, unknown>;
+    expect(call.offeringId).toBe('off1');
+    expect(call.name).toBe('lecture-03');
+    expect(call.file).toBeInstanceOf(File);
+    // The by-link mutation never fires in file mode.
+    expect(mocks.createMaterial.mutateAsync).not.toHaveBeenCalled();
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'إضافة مادة تعليمية' })).toBeNull();
+    });
+    const items = useToastStore.getState().items;
+    expect(items).toHaveLength(1);
+    expect(items[0]).toMatchObject({ variant: 'success', message: 'أُضيف الملف إلى المقرّر وسيظهر لطلابه فوراً.' });
+  });
+
+  it('link mode keeps the by-link form exactly (type select + https field)', async () => {
+    await openModal();
+    fireEvent.click(screen.getByRole('button', { name: 'رابط خارجي' }));
+    await waitFor(() => {
+      expect(screen.queryByLabelText('ملف PDF')).toBeNull();
+    });
+    const typeSelect = screen.getByLabelText('النوع') as HTMLSelectElement;
+    expect(typeSelect.value).toBe('PDF');
+    expect(screen.getByLabelText(/الرابط \(https\)/)).toBeInstanceOf(HTMLInputElement);
   });
 });

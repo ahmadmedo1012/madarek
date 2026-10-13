@@ -1,14 +1,26 @@
-import { Router } from 'express';
+import express, { Router } from 'express';
 import { AssignmentType, GradeKind, MaterialType, Role } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
+import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
 import { assertOfferingAccess } from '../../lib/permissions.js';
 import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
 import { AppError } from '../../lib/errors.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
+import { logger } from '../../logger.js';
+import {
+  buildStorageKey,
+  generateStorageId,
+  getStorage,
+  materialFilenameToServingPath,
+} from '../../lib/storage.js';
+// Upload guards (magic bytes / size cap) — the files.routes pure layer.
+// Route-module helper import, same precedent as offeringVisibilityFilter
+// above (no cycle: files.routes imports nothing from this file).
+import { isPdfMagicBytes, isUploadSizeOk } from './files.routes.js';
 // The list-side role/visibility twin of assertOfferingAccess — shared
 // with GET /courses/:id and the global search (its docblock names this
 // file's consumers). Importing a route module for a helper follows the
@@ -260,6 +272,91 @@ router.post(
           uploaderId: req.user!.id,
         },
       });
+      res.status(201).json({ data: serializeMaterial(created) });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+// ─── Materials: raw PDF upload (P3-BE real uploads) ────────────────
+
+/**
+ * Metadata rides the QUERY string because the request body IS the file
+ * (a raw application/pdf buffer, not multipart). PDF is the only
+ * type this route mints — the generic /:id/materials route stays for
+ * other material types (VIDEO links etc.).
+ */
+export const materialFileQuerySchema = z
+  .object({
+    name: z.string().trim().min(1).max(200),
+    description: z.string().trim().max(2000).optional(),
+    type: z.literal('PDF'),
+  })
+  .strict();
+
+/** 20 uploads / min / user (factory default) — uploads are the exact
+ *  abuse-prone surface createRouteLimiter exists for. */
+const materialUploadLimiter = createRouteLimiter({ max: 20 });
+
+/**
+ * POST /offerings/:id/materials/file?name=…&description=…&type=PDF
+ * — TEACHER/ADMIN/OWNER upload a real material PDF.
+ *
+ * Guards: role → zod query → assertOfferingAccess → Buffer.isBuffer →
+ * size (413) → %PDF- magic bytes. The Material row is created FIRST
+ * (its generated id is the storage key: `materials/<id>.pdf`, url
+ * `/api/v1/files/materials/<id>.pdf`), then the bytes are put; if the
+ * put fails the row is deleted and the error rethrown — atomic-ish, so
+ * no row survives without its bytes (and a row that somehow did would
+ * 404 on serve: stat finds nothing).
+ */
+router.post(
+  '/:id/materials/file',
+  requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
+  materialUploadLimiter,
+  validate(materialFileQuerySchema, 'query'),
+  express.raw({ type: 'application/pdf', limit: '20mb' }),
+  async (req, res, next) => {
+    try {
+      const offeringId = req.params.id!;
+      await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
+      const body = req.body;
+      if (!Buffer.isBuffer(body)) {
+        throw AppError.badRequest('أرسل ملف PDF واحدًا بترميز application/pdf');
+      }
+      if (!isUploadSizeOk(body.length)) {
+        throw new AppError('PAYLOAD_TOO_LARGE', 'حجم الملف يتجاوز الحد المسموح (20 ميجابايت)', 413);
+      }
+      if (!isPdfMagicBytes(body)) {
+        throw AppError.badRequest('الملف المرفق ليس ملف PDF صالحاً');
+      }
+      const q = req.query as unknown as z.infer<typeof materialFileQuerySchema>;
+      const id = generateStorageId();
+      const filename = `${id}.pdf`;
+      const created = await prisma.material.create({
+        data: {
+          id,
+          name: q.name,
+          description: q.description,
+          type: 'PDF',
+          sizeBytes: BigInt(body.length),
+          url: materialFilenameToServingPath(filename),
+          offeringId,
+          uploaderId: req.user!.id,
+        },
+      });
+      try {
+        await getStorage().put(buildStorageKey('materials', filename), body);
+      } catch (err) {
+        logger.error({ err, offeringId, id }, 'material PDF upload: storage put failed — removing the row');
+        await prisma.material.delete({ where: { id } }).catch((cleanupErr) => {
+          // Best-effort cleanup: an orphan row with no bytes is inert
+          // (serving stats the missing object and 404s) — log and move on.
+          logger.error({ cleanupErr, id }, 'material row cleanup after failed put failed too (inert orphan)');
+        });
+        throw AppError.internal('تعذّر حفظ الملف — حاول مرة أخرى');
+      }
       res.status(201).json({ data: serializeMaterial(created) });
     } catch (e) {
       next(e);

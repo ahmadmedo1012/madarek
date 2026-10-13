@@ -1,20 +1,21 @@
-import { useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   BookMarked, Upload, ShieldCheck, Bot as BotIcon,
   CheckCircle2, XCircle, AlertCircle, ScanSearch, X, Workflow,
-  Sparkles, BarChart3, Clock, MessageSquare, type LucideIcon,
+  Sparkles, BarChart3, Clock, MessageSquare, FileText, type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, FormField } from '../../components/primitives';
 import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { PAPER_STATUS_TONE } from '../../lib/paperStatus';
+import { validatePdfFile } from '../../lib/pdfUpload';
 import { Icon } from '../../components/Icon';
 import { toast } from '../../lib/toast';
 import { formatDateWithYearAr } from '../../lib/format';
 import {
-  useMyResearch, useUploadPaper, useScanPaper,
+  useMyResearch, useUploadPaper, useUploadPaperFile, useScanPaper,
   useMyEnrollments, apiErrorMessage,
   type ResearchPaper, type PaperStatus,
 } from '../../hooks/useResources';
@@ -73,7 +74,17 @@ export default function StudentResearchPage() {
   const my = useMyResearch();
   const enrollments = useMyEnrollments();
   const upload = useUploadPaper();
+  /* P3: the real file stage — POST /files/papers mints the fileUrl the
+   * create mutation below attaches to the paper row. */
+  const uploadFile = useUploadPaperFile();
   const scan = useScanPaper();
+  /* P3: the staged upload memory. A successful file upload whose create
+   * then fails leaves an orphaned (inert) file server-side; the modal
+   * stays open and the resubmit must REUSE the staged fileUrl instead of
+   * re-uploading the same File. Identity is the File instance itself: a
+   * re-opened modal starts from null state, and re-picking the same file
+   * on disk yields a NEW instance (honest re-upload). Cleared on close. */
+  const stagedUpload = useRef<{ file: File; fileUrl: string } | null>(null);
   const [uploadOpen, setUploadOpen] = useState(false);
   /* r157 (F8): تعبئة مسبقة لإعادة الرفع — «رفع نسخة جديدة» على ورقة
    * فاشلة يفتح النموذج معبّأً ببياناتها (العنوان/الملخّص/المقرّر).
@@ -200,15 +211,40 @@ export default function StudentResearchPage() {
         <UploadModal
           enrollments={enrollments.data ?? []}
           enrollmentsPending={enrollments.isPending}
-          isPending={upload.isPending}
+          isPending={upload.isPending || uploadFile.isPending}
+          filePending={uploadFile.isPending}
           error={uploadError}
           initial={resubmitPrefill}
-          onClose={() => { setUploadOpen(false); setUploadError(null); setResubmitPrefill(null); }}
+          onClose={() => {
+            setUploadOpen(false);
+            setUploadError(null);
+            setResubmitPrefill(null);
+            stagedUpload.current = null;
+          }}
           onSubmit={async (input) => {
             setUploadError(null);
             try {
-              await upload.mutateAsync(input);
+              /* P3: a picked PDF stages FIRST (raw-body POST /files/papers),
+               * then the create mutation carries the returned fileUrl —
+               * the paper row finally links a real file. A staged upload
+               * from a previous failed create is reused (stagedUpload
+               * pins the File instance it belongs to). */
+              let fileUrl: string | undefined;
+              if (input.file) {
+                if (stagedUpload.current?.file !== input.file) {
+                  const staged = await uploadFile.mutateAsync(input.file);
+                  stagedUpload.current = { file: input.file, fileUrl: staged.fileUrl };
+                }
+                fileUrl = stagedUpload.current?.fileUrl;
+              }
+              await upload.mutateAsync({
+                title: input.title,
+                abstract: input.abstract,
+                offeringId: input.offeringId,
+                fileUrl,
+              });
               setUploadOpen(false);
+              stagedUpload.current = null;
               toast.success('سيخضع البحث لفحص الانتحال ثم يصل إلى أستاذك للتقييم.', {
                 title: 'تمّ رفع البحث',
               });
@@ -402,22 +438,31 @@ function ProcessExplainer() {
 
 /* ─── Upload modal (shared Modal primitive: focus trap, Esc, portal) ── */
 function UploadModal({
-  enrollments, enrollmentsPending, isPending, error, initial, onClose, onSubmit,
+  enrollments, enrollmentsPending, isPending, filePending, error, initial, onClose, onSubmit,
 }: {
   enrollments: Array<{ offering: { id: string; course: { name: string; code: string } } }>;
   enrollmentsPending: boolean;
   isPending: boolean;
+  /** P3: the file-stage mutation is in flight (refines the submit
+   * button's label; isPending already disables for both stages). */
+  filePending: boolean;
   error: string | null;
   /** r157 (F8): prefilled values for a resubmit (CHECKS_FAILED paper) —
    * null on a fresh open; the modal only mounts while open, so the
    * state re-initializes on every open/close cycle (no leakage). */
   initial: { title: string; abstract?: string; offeringId?: string } | null;
   onClose: () => void;
-  onSubmit: (input: { title: string; abstract?: string; offeringId?: string; fileUrl?: string }) => Promise<void>;
+  onSubmit: (input: { title: string; abstract?: string; offeringId?: string; file?: File }) => Promise<void>;
 }) {
   const [title, setTitle] = useState(initial?.title ?? '');
   const [abstractText, setAbstractText] = useState(initial?.abstract ?? '');
   const [offeringId, setOfferingId] = useState<string>(initial?.offeringId ?? '');
+  /* P3: the picked PDF. Optional by design — title + abstract + offering
+   * still register the paper (the field says so honestly); when present it
+   * is validated client-side BEFORE any request leaves the browser. */
+  const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const canSubmit = title.trim().length >= 3 && !isPending;
   // Label↔control wiring (same useId pattern as the register form):
   // bare <label> text is invisible to assistive tech.
@@ -434,10 +479,38 @@ function UploadModal({
     dirty:
       title.trim() !== '' ||
       abstractText.trim() !== '' ||
-      offeringId !== '',
+      offeringId !== '' ||
+      file !== null,
     pending: isPending,
     onClose,
   });
+
+  const pickFile = (f: File | null) => {
+    setFile(f);
+    setFileError(null);
+  };
+  /* Clearing the value lets the SAME file be re-picked afterwards — a
+   * file input only fires change when its value actually differs. */
+  const removeFile = () => {
+    setFile(null);
+    setFileError(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const submit = () => {
+    /* P3: honest client-side caps (PDF only, 20MB) BEFORE any request —
+     * the mirror of the server's guards, so a wrong file never costs the
+     * student a full upload round trip to learn about it. */
+    const err = file ? validatePdfFile(file) : null;
+    setFileError(err);
+    if (err) return;
+    void onSubmit({
+      title: title.trim(),
+      abstract: abstractText.trim() || undefined,
+      offeringId: offeringId || undefined,
+      file: file ?? undefined,
+    });
+  };
 
   return (
     <Modal
@@ -500,24 +573,39 @@ function UploadModal({
           </select>
         </FormField>
 
-        <FormField label="الملف" id={fileId}>
-          {/* r154d: direct file upload is not available — Render's disk is
-              ephemeral (docs/16 §ج). The old control faked a file picker and
-              sent `https://example.invalid/<name>` as the fileUrl, which made
-              the teacher's review link open a 404. Now the UI is honest: the
-              student registers the title + abstract + offering, the scan runs
-              (hash-based, fileUrl-independent), and the teacher review link
-              renders only when a real fileUrl exists (it never does today). */}
-          <div className="upload-disclosure">
-            <span className="upload-disclosure-icon" aria-hidden>
-              <Icon icon={Upload} size={16} />
-            </span>
-            <span className="text-sm text-muted">
-              رفع الملفات غير متاح بعد — قرص الخدمة زائل. سجّل عنوان البحث
-              والملخّص الآن، ويُرفق الملف لاحقاً عند توفّر التخزين الدائم.
-            </span>
-          </div>
+        <FormField
+          label="ملف البحث (PDF، اختياري)"
+          id={fileId}
+          hint="ملفات PDF فقط، بحد أقصى 20 ميغابايت — بدون ملف يسجّل البحث بعنوانه وملخصه فقط."
+          error={fileError ?? undefined}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="input upload-file-input"
+            accept="application/pdf,.pdf"
+            onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
+            disabled={isPending}
+          />
         </FormField>
+
+        {/* P3: the picked-file row — name + a 44px remove target; the
+            row (not the input) is the affordance once a file is chosen. */}
+        {file && (
+          <div className="upload-file-field">
+            <Icon icon={FileText} size={14} className="text-muted" />
+            <span className="upload-file-name" title={file.name}><bdi>{file.name}</bdi></span>
+            <button
+              type="button"
+              className="btn ghost sm upload-file-remove"
+              onClick={removeFile}
+              disabled={isPending}
+            >
+              <Icon icon={X} size={14} />
+              إزالة الملف
+            </button>
+          </div>
+        )}
 
         {error && (
           <p role="alert" className="upload-error">
@@ -533,14 +621,10 @@ function UploadModal({
           type="button"
           className="btn primary"
           disabled={!canSubmit}
-          onClick={() => void onSubmit({
-            title: title.trim(),
-            abstract: abstractText.trim() || undefined,
-            offeringId: offeringId || undefined,
-          })}
+          onClick={submit}
         >
           <Icon icon={Upload} size={14} />
-          {isPending ? 'جارٍ الرفع…' : 'رفع البحث'}
+          {filePending ? 'جارٍ رفع الملف…' : isPending ? 'جارٍ الرفع…' : 'رفع البحث'}
         </button>
       </div>
       {guard}

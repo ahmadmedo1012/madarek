@@ -2,7 +2,7 @@
 
 **Base URL:** `/api/v1`
 **Envelope:** `{ data: T }` on success, `{ error: { code, message, details? } }` on error
-**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 193 endpoints (188 route registrations in the 25 route files + 4 module-router endpoints + `/health`; the pre-C5 count of 190 included a `router.post(` match inside a rateLimit.ts doc comment), one row each
+**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 196 endpoints (191 route registrations in the 25 route files + 4 module-router endpoints + `/health`; the pre-C5 count of 190 included a `router.post(` match inside a rateLimit.ts doc comment), one row each
 
 ## Conventions
 
@@ -12,7 +12,7 @@
 - **Validation:** zod schemas on body + query; failures → 400 `VALIDATION_ERROR` (or `BAD_REQUEST`) with the `code` in **UPPER_SNAKE** and `details.fieldErrors` carrying the per-field issues. Schemas are `.strict()` where spoofed extra keys matter (e.g. manual grading).
 - **Message language:** `message` is **Arabic** for everything user-facing (envelope defaults in `lib/errors.ts`, route guards, rate limiter, zod envelopes — wave 17). `code` stays English; dev-facing internals (Prisma mapping detail, zod field names inside `details`) stay English — the frontend's `apiErrorDetail` Arabic-guard keeps them out of the UI.
 - **Input trimming:** user-content strings `.trim()` **before** `.min()`/`.max()` (wave 17, 68 fields — whitespace-only content is rejected, padded names/titles stored trimmed). Carve-outs: passwords (never trimmed) and answer-value prose (exam `answerText`, submission `textAnswer` — a space can be a legitimate answer fragment).
-- **Per-domain limit caps:** every list/feed bounds its window — shared pagination schema `limit` ≤100 (default 20); admin user list ≤200; admin students ≤50; read windows per domain (`take` 20–500: materials/assignments 200, grades 500, social feeds/`SOCIAL_LIST_TAKE` 50, labs/AR 200); body fields capped per domain (messages/announcements body ≤4000 chars, grade `feedback` ≤2000, titles ≤200); grades batch ≤200 items; `q` search ≤120 chars; request body capped at 1 MB globally.
+- **Per-domain limit caps:** every list/feed bounds its window — shared pagination schema `limit` ≤100 (default 20); admin user list ≤200; admin students ≤50; read windows per domain (`take` 20–500: materials/assignments 200, grades 500, social feeds/`SOCIAL_LIST_TAKE` 50, labs/AR 200); body fields capped per domain (messages/announcements body ≤4000 chars, grade `feedback` ≤2000, titles ≤200); grades batch ≤200 items; `q` search ≤120 chars; request body capped at 1 MB globally — **except the two PDF upload routes** (`POST /files/papers`, `POST /offerings/:id/materials/file`), which accept raw `application/pdf` bodies up to 20 MB via route-level `express.raw` (magic-byte + size gates in `files.routes.ts` / `offerings.routes.ts`).
 
 **Auth column legend:**
 - **Bearer** — any authenticated user (`authMiddleware`)
@@ -26,7 +26,7 @@
 |---------|-------|--------|
 | Global (`globalRateLimiter`) | all `/api/v1/*` per IP | 1000 req / 15 min |
 | Auth (`authRateLimiter`, failed attempts only) | `/auth/login`, `/auth/register`, `/auth/refresh`, `/auth/change-password` | 10 req / 15 min / IP |
-| Route factory (`createRouteLimiter`, per-user when authenticated) | `POST /messages` (30/min), `POST /research/:id/scan` (10/min), `POST /ai/chat` (20/min) | 1 min window |
+| Route factory (`createRouteLimiter`, per-user when authenticated) | `POST /messages` (30/min), `POST /research/:id/scan` (10/min), `POST /ai/chat` (20/min), `POST /files/papers` (10/min), `POST /offerings/:id/materials/file` (20/min) | 1 min window |
 
 ---
 
@@ -96,7 +96,8 @@
 | GET | `/offerings` | TEACHER/ADMIN/OWNER/QUALITY | Paginated offerings list (scope-picker for announcement authors): role-scoped via `offeringVisibilityFilter`, `q` filter over course name/code, `{ data, meta }` envelope |
 | GET | `/offerings/:id` | access-checked | Offering detail (course, teacher, schedule); clean 404 on unknown id |
 | GET | `/offerings/:id/materials` | access-checked | Materials (take 200, newest first) |
-| POST | `/offerings/:id/materials` | TEACHER/ADMIN/OWNER | Upload material record (`{ name, type, sizeBytes, url, description? }`) |
+| POST | `/offerings/:id/materials` | TEACHER/ADMIN/OWNER | Create material record by link (`{ name, type, sizeBytes, url, description? }`) — no bytes on the wire |
+| POST | `/offerings/:id/materials/file?name=…&description=…&type=PDF` | TEACHER/ADMIN/OWNER (20/min per user) | Upload a real material PDF: RAW `application/pdf` body (≤20 MB, `%PDF-` magic bytes), metadata in the QUERY string. Creates the `Material` row (id = storage key, `url` = `/api/v1/files/materials/<id>.pdf`, `sizeBytes` = real byte count, `uploaderId`), stores the bytes via the storage driver, and deletes the row if the store fails → 201 `{ data: serializeMaterial(row) }` |
 | GET | `/offerings/:id/assignments` | access-checked | Assignments (take 200) |
 | POST | `/offerings/:id/assignments` | TEACHER/ADMIN/OWNER | Create assignment |
 | GET | `/offerings/:id/grades` | access-checked | Grades (take 500; students see only their own rows) |
@@ -167,7 +168,7 @@ Workflow: UPLOADED → SCANNING → CHECKS_PASSED/FAILED → GRADED → PUBLISHE
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/me/research` | Bearer | My papers |
-| POST | `/me/research` | Bearer | Submit paper (registers `{ title, abstract?, fileUrl, offeringId? }` — no multipart upload; files are served from `backend/storage/papers/`) |
+| POST | `/me/research` | Bearer | Submit paper (registers `{ title, abstract?, fileUrl, offeringId? }` — `fileUrl` is either an external https link or the serving path returned by `POST /files/papers`; no multipart upload) |
 | POST | `/research/:id/scan` | Bearer (10/min) | Simulated plagiarism + AI scan (parses the PDF); TEACHER gated by paper ownership |
 | POST | `/research/:id/grade` | RESEARCH_GRADE_OWN/ANY | Grade paper (only gradeable statuses; PUBLISHED → 409) |
 | GET | `/research/queue` | TEACHER/ADMIN/OWNER | Review queue (CHECKS_PASSED/CHECKS_FAILED/GRADED — r157: GRADED included so the publish loop is reachable) — student emails stripped from the payload; TEACHER view scoped to their offerings |
@@ -332,7 +333,9 @@ There is **no** `POST /posts/:id/comment` route — comments are read via the po
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| GET | `/files/papers/:filename` | Bearer | Serve PDF from `backend/storage/papers/` — path-traversal protected (basename + dir-pin), `.pdf` only. Access gate: paper is PUBLISHED, requester is the owner or reviewer, or requester is ADMIN/OWNER/QUALITY (oversight). Orphan files are not served |
+| POST | `/files/papers` | STUDENT (10/min per user) | Upload a research-paper PDF: RAW `application/pdf` body (≤20 MB, `%PDF-` magic bytes; guard order: role → Buffer → 413 size → magic bytes). Stores the bytes under `papers/<cuid>.pdf` via the storage driver and returns 201 `{ data: { fileUrl: "/api/v1/files/papers/<cuid>.pdf" } }`. No `ResearchPaper` row is created here — pass that fileUrl to `POST /me/research`; an orphan upload is inert (the serving gate below 404s any filename without an authorizing paper row). Storage-put failure → 500 `INTERNAL` (Arabic message) |
+| GET | `/files/papers/:filename` | Bearer | Serve research PDF from the storage abstraction (local disk = `backend/storage/papers/`, or S3-compatible object store). Path-traversal protected (filename gates + key gate + LocalDriver dir-pin), `.pdf` only; single-range requests → 206 + `Content-Range` (416 when unsatisfiable), full → 200; `Cache-Control: private, max-age=3600`. Access gate: paper is PUBLISHED, requester is the owner or reviewer, or requester is ADMIN/OWNER/QUALITY (oversight). Orphan files are not served |
+| GET | `/files/materials/:filename` | Bearer | Serve a material PDF uploaded via `POST /offerings/:id/materials/file` (same filename/range/serving contract as papers). Access gate: requester teaches the material's offering, OR is actively enrolled in it (status `active`), OR is ADMIN/OWNER/QUALITY (oversight). A material row with no stored bytes 404s |
 
 ## Colleges (Public)
 

@@ -129,6 +129,23 @@ export function useUploadPaper() {
   });
 }
 
+/* P3: the real paper-file upload — POST /files/papers, raw body = the
+ * File itself (Content-Type: application/pdf, Bearer via the shared
+ * axios request interceptor — a raw File body passes through it fine).
+ * Response 201: { data: { fileUrl } } — the server path that then flows
+ * into useUploadPaper's fileUrl, so the paper row finally carries a
+ * REAL file its teacher-review link can open. No invalidation here:
+ * only the create mutation mints the ResearchPaper row; this hook
+ * stages the file and returns its path. */
+export function useUploadPaperFile() {
+  return useMutation({
+    mutationFn: (file: File) =>
+      unwrap<{ fileUrl: string }>(
+        api.post('/files/papers', file, { headers: { 'Content-Type': 'application/pdf' } }),
+      ),
+  });
+}
+
 export function useScanPaper() {
   const qc = useQueryClient();
   return useMutation({

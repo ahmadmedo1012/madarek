@@ -101,3 +101,10 @@ tools/pgsock/
 tools/pg.log
 tools/node_modules/
 tools/package-lock.json
+
+# Runtime uploads (P3 storage abstraction) — never commit user content.
+# sample.pdf stays tracked (seed fixture); every other runtime upload
+# under backend/storage/ is local-driver output and stays untracked.
+backend/storage/papers/*
+!backend/storage/papers/sample.pdf
+backend/storage/materials/

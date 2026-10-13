@@ -22,7 +22,8 @@
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import DocumentViewerPage from '../../src/pages/DocumentViewerPage';
 import { DownloadsPage } from '../../src/pages/student/MorePages';
 import type { StudentMaterial } from '../../src/hooks/useResources';
 
@@ -133,5 +134,78 @@ describe('DownloadsPage — honest link targets (r157 6A7)', () => {
 
     expect(screen.getByText('غير متوفر بعد')).toBeInTheDocument();
     expect(container.querySelectorAll('a')).toHaveLength(0);
+  });
+
+  it('materials-namespace URLs (P3) route to the /document viewer with ns=materials — and carry NO ?paper= param', () => {
+    mocks.materials.data = [
+      materialFixture({ id: 'm6', name: 'ملزمة_الخوارزميات.pdf', url: '/api/v1/files/materials/algo-notes.pdf' }),
+    ];
+    renderPage();
+
+    const link = screen.getByRole('link', { name: 'فتح' });
+    // The viewer route carries the namespace the page must fetch from…
+    expect(link.getAttribute('href')).toContain('/document/algo-notes.pdf');
+    expect(link.getAttribute('href')).toContain('ns=materials');
+    // …the material's name as the viewer title…
+    expect(link.getAttribute('href')).toContain('title=');
+    // …and NO ?paper= (same wrong-id hazard as the papers branch —
+    // annotations need a ResearchPaper id, materials rows never carry one).
+    expect(link.getAttribute('href')).not.toContain('paper=');
+    // In-app route → plain anchor, no new-tab attributes.
+    expect(link.getAttribute('target')).toBeNull();
+  });
+});
+
+/* ───────────────────────────────────────────────
+ * P3 — DocumentViewerPage honors the ?ns= param the materials branch
+ * above generates: the fetch src points at /files/materials/:filename,
+ * an unknown or absent value falls back to the papers namespace (a
+ * crafted ?ns= can never retarget the fetch at an arbitrary segment).
+ * PdfViewer is stubbed (it is the lazy chunk under test isolation) —
+ * the pin is the src the page hands it.
+ * ─────────────────────────────────────────────── */
+const viewerSrcs = vi.hoisted(() => ({ calls: [] as string[] }));
+vi.mock('../../src/components/pdf/PdfViewer', () => ({
+  default: (props: { src: string }) => {
+    viewerSrcs.calls.push(props.src);
+    return <div data-testid="pdf-viewer-stub" />;
+  },
+}));
+
+describe('DocumentViewerPage — the ns param (P3)', () => {
+  it('ns=materials points the viewer src at the materials namespace', async () => {
+    render(
+      <MemoryRouter initialEntries={['/document/algo-notes.pdf?ns=materials&title=%D9%85%D9%84%D8%B2%D9%85%D8%A9']}>
+        <Routes>
+          <Route path="/document/:filename" element={<DocumentViewerPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    await screen.findByTestId('pdf-viewer-stub');
+    const last = viewerSrcs.calls[viewerSrcs.calls.length - 1]!;
+    expect(last).toBe('/api/v1/files/materials/algo-notes.pdf');
+  });
+
+  it('defaults to papers, and an unknown ns value falls back to papers', async () => {
+    const { unmount } = render(
+      <MemoryRouter initialEntries={['/document/paper-01.pdf']}>
+        <Routes>
+          <Route path="/document/:filename" element={<DocumentViewerPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    await screen.findByTestId('pdf-viewer-stub');
+    expect(viewerSrcs.calls[viewerSrcs.calls.length - 1]).toBe('/api/v1/files/papers/paper-01.pdf');
+    unmount();
+
+    render(
+      <MemoryRouter initialEntries={['/document/other.pdf?ns=not-a-namespace']}>
+        <Routes>
+          <Route path="/document/:filename" element={<DocumentViewerPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    await screen.findByTestId('pdf-viewer-stub');
+    expect(viewerSrcs.calls[viewerSrcs.calls.length - 1]).toBe('/api/v1/files/papers/other.pdf');
   });
 });

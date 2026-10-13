@@ -51,7 +51,7 @@
 
 | المرجع | المحتوى |
 |---|---|
-| [API-REFERENCE.md](API-REFERENCE.md) | جدول 193 endpoint موثّق من الشيفرة (188 + 4 وحدات + /health) |
+| [API-REFERENCE.md](API-REFERENCE.md) | جدول 196 endpoint موثّق من الشيفرة (191 + 4 وحدات + /health) |
 | [DATABASE-REFERENCE.md](DATABASE-REFERENCE.md) | 75 نموذج Prisma و30 enum نموذجًا بنموذج |
 | [FRONTEND-REFERENCE.md](FRONTEND-REFERENCE.md) | بنية الواجهة: المسارات، المخازن، CSS، المكونات |
 | [PROJECT-REFERENCE.md](PROJECT-REFERENCE.md) | لقطة حالة المشروع والتقنيات والأوامر |

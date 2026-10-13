@@ -1566,36 +1566,51 @@
   }
 
   /* ── Upload modal body (the shared Modal owns chrome + focus trap) ── */
-  /* (r155d dead-selector sweep: the .upload-dropzone family — base +
-     :hover/:active/.has-file, 27 lines — deleted. rg-verified zero TSX
-     consumers repo-wide since r154d replaced the fake file picker with
-     the honest .upload-disclosure note (ResearchPage.tsx, ephemeral-disk
-     ruling). The .upload-error alert below stays live —
-     ResearchPage.tsx.) */
-  /* r157 (F8): the disclosure note gets its designed recipe — surface-2
-     ground + hairline rule + a 32px icon well (the .degree-card-icon
-     pattern) so the honest «رفع الملفات غير متاح بعد» reads as one
-     quiet unit instead of a bare icon floating beside text. */
-  .upload-disclosure {
+  /* (P3 sweep: the .upload-disclosure family — base + icon well, the
+     r154d honest-but-inert note — deleted. rg-verified zero TSX
+     consumers since P3 replaced the disclosure with the REAL file
+     picker (ResearchPage.tsx UploadModal + TeacherPages.tsx
+     MaterialFormModal file mode); the .upload-file-* family below
+     styles what replaced it. The .upload-error alert below stays live
+     — ResearchPage.tsx.) */
+  .upload-file-input {
+    /* the .input recipe (components.css) already frames the control; the
+       file input only needs the affordance cursor on top of it. */
+    cursor: pointer;
+  }
+
+  /* P3: the picked-file row — the file's name sits in a surface-2 chip
+     beside a 44px remove target (the touch floor; .btn.sm alone renders
+     below it). Shared by the student upload modal and the teacher
+     material modal's file mode. */
+  .upload-file-field {
     display: flex;
     align-items: center;
     gap: var(--sp-2);
-    padding: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
     background: var(--surface-2);
     border: 1px solid var(--rule);
     border-radius: var(--r-md);
   }
-  .upload-disclosure-icon {
-    inline-size: 32px;
-    block-size: 32px;
+  .upload-file-name {
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .upload-file-remove {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--r-sm);
-    background: var(--surface-3);
-    color: var(--text-muted);
+    gap: var(--sp-1);
+    min-inline-size: 44px;
+    min-block-size: 44px;
   }
+
   .upload-error {
     font-size: var(--fs-xs);
     color: var(--danger-ink);

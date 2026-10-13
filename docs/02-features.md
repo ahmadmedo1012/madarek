@@ -31,11 +31,19 @@
 النماذج: `KnowledgeConcept`، `StudentMastery`.
 
 ### دورة البحث العلمي — [منفَّذة + محاكاة معلنة للفحص]
-إرسال بحث (رابط ملف PDF) → فحص → مراجعة الأستاذ بشروح داخلية على الصفحة →
-نشر في المكتبة. استخراج نص PDF حقيقي عبر `pdf-parse`، أما **نسب الانتحال
+إرسال بحث **برفع ملف PDF حقيقي** (P3: `POST /api/v1/files/papers`
+للرفع بصمامات `%PDF-`/20MB ثم يُمرَّر الملف المُرجَع إلى
+`POST /me/research` — أو رابط خارجي كما سابقًا). في نافذة الرفع
+يختار الطالب الملف من جهازه، والصمامات تُستنسخ على العميل
+(`lib/pdfUpload.ts`: PDF فقط/20MB) قبل أي طلب يغادر المتصفح؛
+والملف المُخزَّن يُعاد استخدامه عند إعادة المحاولة بعد فشل
+الإنشاء (لا رفعًا أعمى لنفس الملف) → فحص → مراجعة الأستاذ
+بشروح داخلية على الصفحة → نشر في المكتبة. استخراج نص PDF حقيقي عبر
+`pdf-parse` (يقرأ الآن عبر تجريد التخزين)، أما **نسب الانتحال
 والمحتوى الآلي فهي محاكاة حتمية** من معرف البحث (انتحال 3–20%، آلي 4–25%)
 — موثقة في `learning.routes.ts` (دالة `scanResultsFor`).
 الملفات: `frontend/src/pages/student/ResearchPage.tsx`،
+`frontend/src/lib/pdfUpload.ts`،
 `frontend/src/pages/teacher/ResearchReviewPage.tsx`،
 `frontend/src/components/pdf/PdfViewer.tsx` (pdfjs كسولة)؛ النماذج:
 `ResearchPaper` (آلة حالات UPLOADED→…→PUBLISHED)، `PaperAnnotation`.
@@ -90,6 +98,25 @@
 مؤشرات واتجاه 6 أسابيع، حضور، درجات، مواد، واجبات، رسائل، ومراجعة البحوث
 (انظر أعلاه). الملفات: `backend/src/http/routes/teacher-dashboard.routes.ts`،
 `frontend/src/pages/teacher/TeacherDashboardPage.tsx`.
+
+### رفع مواد المقرر (PDF) — [منفَّذة]
+الأستاذ/الإدارة يرفع ملف PDF خام حقيقي للمقرر عبر
+`POST /api/v1/offerings/:id/materials/file` (ميتاداتا عبر معاملات
+الاستعلام؛ بصمات `%PDF-`، سقف 20MB، صف `Material` يُنشأ قبل حفظ
+البايتات ويُحذف إن فشل الحفظ) — إلى جوار مسار الوصلات العام القائم.
+نافذة الإضافة قناتان: «ملف PDF» (الرفع المباشر — الافتراضية؛ اسم
+المادة يُشتق من اسم الملف ويبقى قابلًا للتحرير، النوع مقفل على
+PDF بصدق، والصمامات تُستنسخ على العميل قبل أي طلب) و«رابط
+خارجي» (نموذج الوصلات كما في r144 لكل الأنواع الأخرى).
+التقديم عبر `GET /api/v1/files/materials/:filename` ببوابة: أستاذ المقرر
+أو مسجل نشط فيه أو أدوار الإشراف؛ الطالب يفتحه من العارض الداخلي
+(`/document/:filename?ns=materials`). التخزين خلف `backend/src/lib/storage.ts`
+(local افتراضيًا؛ `s3` للدوام — [16](16-decisions-and-limitations.md)).
+الملفات: `backend/src/http/routes/offerings.routes.ts`،
+`backend/src/http/routes/files.routes.ts`،
+`frontend/src/pages/teacher/TeacherPages.tsx` (نافذة الإضافة)،
+`frontend/src/lib/materialHref.ts` و`frontend/src/pages/DocumentViewerPage.tsx`
+(توجيه نطاق المواد إلى العارض).
 
 > **تنبيه:** رابط جانب «بنك الأسئلة والاختبارات» (`/teacher/exams`) موجود
 > في قائمة التنقل، لكن **المسار نفسه غير مسجَّل في `App.tsx`** — الصفحة

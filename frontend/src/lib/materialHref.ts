@@ -14,6 +14,12 @@
  *      fetch (PdfViewer.tsx, A9 P0-1), so gated files open in-app instead
  *      of 401-ing in a naked browser tab.
  *
+ *      P3 adds the twin `/api/v1/files/materials/…` namespace (uploaded
+ *      course material PDFs) → the SAME viewer route, but with the
+ *      `?ns=materials` param so DocumentViewerPage points its fetch at
+ *      the materials route (auth-gated: enrolled/teacher/oversight).
+ *      Both namespaces carry NO `?paper=` param — see below.
+ *
  *      CRITICAL: the link carries NO `?paper=` param. That param feeds the
  *      annotations panel and expects a ResearchPaper row id — /me/materials
  *      rows carry the MATERIAL's cuid, never a paper id, so attaching it
@@ -58,6 +64,11 @@ const RESERVED_TLDS = new Set(['invalid', 'example', 'test', 'localhost']);
  */
 const PAPER_NS_SEGMENT = '/files/papers/';
 
+/** The twin materials namespace — P3's POST /offerings/:id/materials/file
+ * stores under `GET /api/v1/files/materials/:filename`. Same in-path
+ * matching so relative and absolute spellings both route to the viewer. */
+const MATERIAL_NS_SEGMENT = '/files/materials/';
+
 /** The route the viewer hangs off (App.tsx: /document/:filename). */
 const DOCUMENT_ROUTE = '/document';
 
@@ -79,7 +90,23 @@ export function materialHref(m: MaterialHrefInput): MaterialHref {
     return { kind: 'unavailable' };
   }
 
-  // 1. Paper-namespace → in-app /document viewer (no ?paper= — see header).
+  // 1a. Materials-namespace → in-app /document viewer with ?ns=materials
+  //     (the viewer then fetches /files/materials/:filename). NO ?paper=
+  //     — the same wrong-id hazard as the papers branch below.
+  if (url.pathname.includes(MATERIAL_NS_SEGMENT)) {
+    const filename = lastPathSegment(url.pathname);
+    if (filename) {
+      const params = new URLSearchParams();
+      if (m.name) params.set('title', m.name);
+      params.set('back', '/student/downloads');
+      params.set('ns', 'materials');
+      const qs = params.toString();
+      return { kind: 'viewer', to: `${DOCUMENT_ROUTE}/${encodeURIComponent(filename)}${qs ? `?${qs}` : ''}` };
+    }
+    return { kind: 'unavailable' };
+  }
+
+  // 1b. Paper-namespace → in-app /document viewer (no ?paper= — see header).
   if (url.pathname.includes(PAPER_NS_SEGMENT)) {
     const filename = lastPathSegment(url.pathname);
     if (filename) {

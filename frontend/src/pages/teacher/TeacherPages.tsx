@@ -8,7 +8,7 @@ import {
   ChevronRight, ChevronLeft, ExternalLink, MailOpen,
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
-import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle, FormField } from '../../components/primitives';
+import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle, FormField, Pill } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
@@ -24,6 +24,7 @@ import {
   useGradeSubmission,
   useCreateAssignment,
   useCreateMaterial,
+  useUploadMaterialFile,
   apiErrorMessage,
   type PendingSubmissionRow,
   useMyMessages,
@@ -38,6 +39,7 @@ import {
   WEEKDAY_NAMES_AR,
 } from '../../lib/format';
 import { ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, gradeBand, GRADE_BANDS } from '../../lib/courseMeta';
+import { validatePdfFile } from '../../lib/pdfUpload';
 import ResearchReviewPage from './ResearchReviewPage';
 
 /* The teacher dashboard now lives in TeacherDashboardPage.tsx
@@ -576,29 +578,88 @@ function formatSize(bytes: number): string {
 
 /* ─── r144: add-material-by-URL — the backend's POST /offerings/:id/
  * materials contract (by-link, no multipart — AGENTS §5.6). Replaces
- * the old «قيد التطوير» dead-end card with the actual channel. */
+ * the old «قيد التطوير» dead-end card with the actual channel.
+ * P3 adds the FILE mode: POST /offerings/:id/materials/file uploads a
+ * real PDF (raw body, name/description/type on the query string) — now
+ * the default channel; the by-link form below stays verbatim for every
+ * non-PDF type. */
 function MaterialFormModal({ onClose }: { onClose: () => void }) {
   const offerings = useTeacherOfferings();
   const create = useCreateMaterial();
+  /* P3: the direct-PDF channel (file mode). */
+  const uploadMaterial = useUploadMaterialFile();
 
+  /* P3: two honest channels, one modal — «ملف PDF» (direct upload)
+   * | «رابط خارجي» (the r144 by-link form). The Pill pair carries
+   * aria-pressed (the house two-way switch idiom); switching clears the
+   * other mode's stale inline validation. */
+  const [mode, setMode] = useState<'file' | 'link'>('file');
   const [offeringId, setOfferingId] = useState('');
   const [name, setName] = useState('');
+  /* True while the name field holds the auto-fill derived from the
+   * picked file's name — replacing the file refreshes the derived name,
+   * but a manual edit always wins (nameAuto flips off on first edit). */
+  const [nameAuto, setNameAuto] = useState(false);
   const [type, setType] = useState<'PDF' | 'PPT' | 'VIDEO' | 'DOC' | 'ZIP' | 'IMAGE' | 'OTHER'>('PDF');
   const [url, setUrl] = useState('');
   const [description, setDescription] = useState('');
+  const [file, setFile] = useState<File | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  const dirty = name.trim() !== '' || url.trim() !== '' || description.trim() !== '';
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const pending = mode === 'file' ? uploadMaterial.isPending : create.isPending;
+  const dirty = mode === 'file'
+    ? name.trim() !== '' || description.trim() !== '' || file !== null
+    : name.trim() !== '' || url.trim() !== '' || description.trim() !== '';
   const { requestClose, escapeLocked, guard } = useDiscardGuard({
     dirty,
-    pending: create.isPending,
+    pending,
     onClose,
   });
 
   const list = offerings.data ?? [];
   const effectiveOfferingId = offeringId || list[0]?.id || '';
 
+  const pickFile = (f: File | null) => {
+    setFile(f);
+    if (f && (name.trim() === '' || nameAuto)) {
+      setName(f.name.replace(/\.pdf$/i, ''));
+      setNameAuto(true);
+    }
+  };
+  /* Clearing the value lets the SAME file be re-picked afterwards — a
+   * file input only fires change when its value actually differs. */
+  const removeFile = () => {
+    setFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
   const onSubmit = async () => {
+    if (mode === 'file') {
+      /* P3: honest client-side caps (PDF only, 20MB) BEFORE any request
+       * leaves the browser — the mirror of the server's guards. Early
+       * returns (not one chained ternary) so the picked file narrows to
+       * File for the mutation payload below. */
+      if (!effectiveOfferingId) { setValidationError('اختر المقرّر أولاً.'); return; }
+      if (name.trim().length < 1) { setValidationError('اسم الملف مطلوب.'); return; }
+      if (!file) { setValidationError('اختر ملف PDF للرفع.'); return; }
+      const fileErr = validatePdfFile(file);
+      if (fileErr) { setValidationError(fileErr); return; }
+      setValidationError(null);
+      try {
+        await uploadMaterial.mutateAsync({
+          offeringId: effectiveOfferingId,
+          name: name.trim(),
+          description: description.trim() || undefined,
+          file,
+        });
+        toast.success('أُضيف الملف إلى المقرّر وسيظهر لطلابه فوراً.', { title: 'تمّت الإضافة' });
+        onClose();
+      } catch {
+        // surfaced inline from uploadMaterial.isError below
+      }
+      return;
+    }
     const err =
       !effectiveOfferingId ? 'اختر المقرّر أولاً.' :
       name.trim().length < 1 ? 'اسم الملف مطلوب.' :
@@ -625,24 +686,41 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
     <Modal
       open
       onClose={requestClose}
-      ariaLabel="إضافة مادة تعليمية بالرابط"
-      closeOnOverlayClick={!create.isPending}
+      ariaLabel="إضافة مادة تعليمية"
+      closeOnOverlayClick={!pending}
       closeOnEscape={!escapeLocked}
     >
       <div className="modal-header">
-        <div className="modal-title">إضافة مادة بالرابط</div>
-        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={create.isPending}>
+        <div className="modal-title">إضافة مادة</div>
+        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={pending}>
           <Icon icon={X} size={16} />
         </button>
       </div>
       <form onSubmit={(e) => { e.preventDefault(); void onSubmit(); }} noValidate>
         <div className="modal-body">
+          <div className="flex items-center gap-2" role="group" aria-label="طريقة إضافة المادة">
+            <Pill
+              on={mode === 'file'}
+              icon={FileText}
+              onClick={() => { setMode('file'); setValidationError(null); }}
+            >
+              ملف PDF
+            </Pill>
+            <Pill
+              on={mode === 'link'}
+              icon={ExternalLink}
+              onClick={() => { setMode('link'); setValidationError(null); }}
+            >
+              رابط خارجي
+            </Pill>
+          </div>
+
           <FormField label="المقرّر" error={list.length === 0 ? 'لا توجد مقرّرات مرتبطة بحسابك — تواصل مع الإدارة.' : undefined}>
             <select
               className="input"
               value={effectiveOfferingId}
               onChange={(e) => setOfferingId(e.target.value)}
-              disabled={create.isPending || list.length === 0}
+              disabled={pending || list.length === 0}
             >
               {list.map((o) => (
                 <option key={o.id} value={o.id}>
@@ -656,67 +734,112 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
             <input
               className="input"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="مثال: محاضرة الأسبوع الثالث — الشرائح"
+              onChange={(e) => { setName(e.target.value); setNameAuto(false); }}
+              placeholder='مثال: محاضرة الأسبوع الثالث — الشرائح'
               maxLength={200}
-              disabled={create.isPending}
+              disabled={pending}
             />
           </FormField>
 
-          <FormField label="النوع">
-            <select
-              className="input"
-              value={type}
-              onChange={(e) => setType(e.target.value as typeof type)}
-              disabled={create.isPending}
-            >
-              <option value="PDF">PDF</option>
-              <option value="PPT">PPT</option>
-              <option value="VIDEO">فيديو</option>
-              <option value="DOC">DOC</option>
-              <option value="ZIP">ZIP</option>
-              <option value="IMAGE">صورة</option>
-              <option value="OTHER">أخرى</option>
-            </select>
-          </FormField>
+          {mode === 'file' ? (
+            <>
+              <FormField
+                label="ملف PDF"
+                hint="ملفات PDF فقط، بحد أقصى 20 ميغابايت."
+                error={validationError && name.trim().length >= 1 && effectiveOfferingId ? validationError : undefined}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="input upload-file-input"
+                  accept="application/pdf,.pdf"
+                  onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
+                  disabled={pending}
+                />
+              </FormField>
+              {file && (
+                <div className="upload-file-field">
+                  <Icon icon={FileText} size={14} className="text-muted" />
+                  <span className="upload-file-name" title={file.name}><bdi>{file.name}</bdi></span>
+                  <button
+                    type="button"
+                    className="btn ghost sm upload-file-remove"
+                    onClick={removeFile}
+                    disabled={pending}
+                  >
+                    <Icon icon={X} size={14} />
+                    إزالة الملف
+                  </button>
+                </div>
+              )}
+              {/* Locked type — the upload route is PDF-only, so the type
+                  select collapses to an honest static chip (no fake
+                  choice of types this channel cannot take). */}
+              <div className="form-field">
+                <div className="form-field-label">النوع</div>
+                <Pill icon={FileText}>PDF</Pill>
+              </div>
+            </>
+          ) : (
+            <>
+              <FormField label="النوع">
+                <select
+                  className="input"
+                  value={type}
+                  onChange={(e) => setType(e.target.value as typeof type)}
+                  disabled={pending}
+                >
+                  <option value="PDF">PDF</option>
+                  <option value="PPT">PPT</option>
+                  <option value="VIDEO">فيديو</option>
+                  <option value="DOC">DOC</option>
+                  <option value="ZIP">ZIP</option>
+                  <option value="IMAGE">صورة</option>
+                  <option value="OTHER">أخرى</option>
+                </select>
+              </FormField>
 
-          <FormField
-            label="الرابط (https)"
-            hint="رابط مباشر للملف على خدمة خارجية، أو مسار ملف ورقة من المنصة."
-            error={validationError && !/^https:\/\//.test(url.trim()) ? validationError : undefined}
-          >
-            <input
-              className="input" dir="ltr" style={{ textAlign: 'start' }}
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://…"
-              maxLength={500}
-              disabled={create.isPending}
-              spellCheck={false}
-            />
-          </FormField>
+              <FormField
+                label="الرابط (https)"
+                hint='رابط مباشر للملف على خدمة خارجية، أو مسار ملف ورقة من المنصة.'
+                error={validationError && !/^https:\/\//.test(url.trim()) ? validationError : undefined}
+              >
+                <input
+                  className="input" dir="ltr" style={{ textAlign: 'start' }}
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="https://…"
+                  maxLength={500}
+                  disabled={pending}
+                  spellCheck={false}
+                />
+              </FormField>
+            </>
+          )}
 
           <FormField label="الوصف (اختياري)">
             <textarea
               className="input" rows={3} maxLength={2000}
-              placeholder="وصف مختصر يساعد الطالب على معرفة محتوى المادة…"
+              placeholder='وصف مختصر يساعد الطالب على معرفة محتوى المادة…'
               value={description} onChange={(e) => setDescription(e.target.value)}
-              disabled={create.isPending} style={{ resize: 'vertical', fontFamily: 'inherit' }}
+              disabled={pending} style={{ resize: 'vertical', fontFamily: 'inherit' }}
             />
           </FormField>
 
-          {create.isError && (
+          {(mode === 'file' ? uploadMaterial.isError : create.isError) && (
             <p role="alert" className="text-xs text-red" style={{ marginBlockStart: 'var(--sp-2)' }}>
-              {apiErrorMessage(create.error, 'تعذّرت إضافة المادة — حاول مرة أخرى.')}
+              {apiErrorMessage(mode === 'file' ? uploadMaterial.error : create.error, 'تعذّرت إضافة المادة — حاول مرة أخرى.')}
             </p>
           )}
         </div>
         <div className="modal-footer">
-          <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>
+          <button type="button" className="btn ghost" onClick={requestClose} disabled={pending}>
             إلغاء
           </button>
-          <button type="submit" className="btn primary" disabled={create.isPending}>
-            {create.isPending ? 'جارٍ الإضافة…' : 'إضافة المادة'}
+          <button type="submit" className="btn primary" disabled={pending}>
+            {mode === 'file'
+              ? (uploadMaterial.isPending ? 'جارٍ رفع الملف…' : 'إضافة المادة')
+              : (create.isPending ? 'جارٍ الإضافة…' : 'إضافة المادة')}
           </button>
         </div>
       </form>
@@ -743,12 +866,14 @@ export function MaterialsPage() {
         )}
       />
 
-      <Card title="إضافة مادة بالرابط" icon={Upload}>
+      {/* P3: the channel copy is honest now — direct PDF upload is
+          live (the modal's default mode); by-link stays for other types. */}
+      <Card title="إضافة مادة" icon={Upload}>
         <div className="flex items-center gap-3">
           <Icon icon={Upload} size={18} style={{ color: 'var(--accent)', flexShrink: 0 }} />
           <div className="text-xs text-muted">
-            <strong>أضف مواد مقرّراتك برابط مباشر (https).</strong>{' '}
-            الرفع المباشر للملفات يتطلب مساحة تخزين دائمة (قيد التخطيط) — حتى ذلك الحين، ارفع الملف على أي خدمة خارجية وأضف رابطه هنا، أو أرفقه كملف ورقة بحثية من صفحة البحوث.
+            <strong>ارفع ملف PDF مباشرة من جهازك، أو أضف رابطاً خارجياً لأي نوع آخر.</strong>{' '}
+            الملفات المرفوعة تُخزّن على المنصة ويفتحها طلاب المقرّر من العارض الداخلي مباشرة، ومع الروابط يبقى مجال الفيديو والعروض وغيرها.
           </div>
         </div>
       </Card>

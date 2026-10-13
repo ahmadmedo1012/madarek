@@ -1,17 +1,8 @@
-import path from 'node:path';
-import { readFile } from 'node:fs/promises';
-import { existsSync, statSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 // pdf-parse@1.1.1 has a debug-branch in index.js that crashes when imported
 // without a fixture file present. Importing the lib subpath sidesteps it.
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import { logger } from '../logger.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-// Resolve `backend/storage/papers/` relative to this module — works for both
-// `backend/dist/lib/...` (prod) and `backend/src/lib/...` (dev).
-const PAPERS_ROOT = path.resolve(__dirname, '../../storage/papers');
+import { buildStorageKey, getStorage } from './storage.js';
 
 // Cap text extraction at 10 MB so a maliciously large PDF can't
 // exhaust memory / block the event loop indefinitely. 10 MB of PDF
@@ -20,7 +11,7 @@ const PAPERS_ROOT = path.resolve(__dirname, '../../storage/papers');
 const MAX_PDF_BYTES = 10 * 1024 * 1024;
 
 /**
- * Extract plain text from a paper PDF stored on disk.
+ * Extract plain text from a paper PDF in storage.
  *
  * Accepts either:
  *  - a relative API URL like `/api/v1/files/papers/sample.pdf` (DB-stored fileUrl)
@@ -30,9 +21,12 @@ const MAX_PDF_BYTES = 10 * 1024 * 1024;
  * / fileUrl is external. Logs but doesn't throw — callers treat extraction
  * as best-effort enrichment.
  *
- * Uses async fs APIs (readFile) so the event loop isn't blocked while
- * reading large PDFs. The pdf-parse lib itself is sync after the buffer
- * is loaded, but at least the disk read won't block.
+ * Bytes are read through the storage abstraction (local driver resolves
+ * the exact `backend/storage/papers/` directory this module used to hit
+ * directly, so local behavior is byte-identical; the s3 driver reads
+ * from object storage). Traversal stays dead in three layers: the
+ * filename guards below, storageKeyIsValid, and the LocalDriver
+ * directory pin.
  */
 export async function extractPaperText(fileUrl: string | null | undefined): Promise<string | null> {
   if (!fileUrl) return null;
@@ -59,24 +53,34 @@ export async function extractPaperText(fileUrl: string | null | undefined): Prom
   if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) return null;
   if (!filename.toLowerCase().endsWith('.pdf')) return null;
 
-  const filePath = path.resolve(PAPERS_ROOT, path.basename(filename));
-  if (!filePath.startsWith(PAPERS_ROOT + path.sep)) return null;
-  if (!existsSync(filePath)) return null;
+  const key = buildStorageKey('papers', filename);
+  const storage = getStorage();
 
   // Size guard — refuse to parse pathological files.
+  let info: { size: number } | null;
   try {
-    const stat = statSync(filePath);
-    if (!stat.isFile()) return null;
-    if (stat.size > MAX_PDF_BYTES) {
-      logger.warn({ filename, size: stat.size }, 'pdf extraction refused — file too large');
-      return null;
-    }
-  } catch {
+    info = await storage.stat(key);
+  } catch (err) {
+    // Storage transport fault — best-effort contract, never throw.
+    logger.warn({ err, filename }, 'pdf extraction stat failed');
+    return null;
+  }
+  if (info === null) return null;
+  if (info.size > MAX_PDF_BYTES) {
+    logger.warn({ filename, size: info.size }, 'pdf extraction refused — file too large');
     return null;
   }
 
+  let buf: Buffer | null;
   try {
-    const buf = await readFile(filePath);
+    buf = await storage.get(key);
+  } catch (err) {
+    logger.warn({ err, filename }, 'pdf extraction read failed');
+    return null;
+  }
+  if (buf === null) return null;
+
+  try {
     const parsed = await pdfParse(buf);
     return parsed.text.trim() || null;
   } catch (err) {

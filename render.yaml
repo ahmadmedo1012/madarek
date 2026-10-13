@@ -7,13 +7,15 @@ services:
     # so API queries avoid a cross-country round trip on every request.
     region: virginia
     rootDir: .
-    # NOTE on storage: Render's filesystem is ephemeral. Anything written to
-    # backend/storage/papers/ at RUNTIME (e.g. uploaded research PDFs) is lost
-    # on every redeploy/restart. Currently no upload endpoint is implemented
-    # (papers are read from the repo checkout via
-    # /api/v1/files/papers/:filename), so nothing is affected today. If/when
-    # uploads land, move to a persistent disk (add a `disk:` block) or object
-    # storage (S3/R2) first.
+    # NOTE on storage: Render's filesystem is ephemeral. PDF uploads ARE
+    # implemented now (POST /api/v1/files/papers, POST /api/v1/offerings/:id/
+    # materials/file) and land behind the storage abstraction
+    # (backend/src/lib/storage.ts). With the default local driver those files
+    # are LOST on every redeploy/restart — the backend logs one clear warning
+    # at boot in that case. For persistence EITHER attach a Render persistent
+    # disk (a `disk:` block) OR set STORAGE_DRIVER=s3 + the S3_* vars (any
+    # S3-compatible store: AWS S3, Cloudflare R2, MinIO) — see
+    # docs/12-deployment.md for exact owner steps.
     # `--include=dev` is required because Render sets NODE_ENV=production
     # before `npm install` runs, which would otherwise skip devDependencies
     # (typescript, vite, @types/*, prisma CLI, …) that we need for the build.
@@ -47,4 +49,22 @@ services:
       - key: INTERNAL_SERVICE_TOKEN
         sync: false
       - key: DIRECT_DATABASE_URL
+        sync: false
+      # File-storage vars (PDF uploads). All optional: unset → local driver
+      # under backend/storage (ephemeral on Render — see the storage NOTE
+      # above). Set STORAGE_DRIVER=s3 + the S3_* group for persistence;
+      # sync:false so Render never requires any of them.
+      - key: STORAGE_DRIVER
+        sync: false
+      - key: STORAGE_DIR
+        sync: false
+      - key: S3_ENDPOINT
+        sync: false
+      - key: S3_REGION
+        sync: false
+      - key: S3_BUCKET
+        sync: false
+      - key: S3_ACCESS_KEY_ID
+        sync: false
+      - key: S3_SECRET_ACCESS_KEY
         sync: false

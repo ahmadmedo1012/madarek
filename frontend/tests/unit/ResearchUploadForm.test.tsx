@@ -15,7 +15,7 @@
  * Data hooks are mocked at the useResources boundary (house pattern).
  */
 import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest';
-import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import StudentResearchPage from '../../src/pages/student/ResearchPage';
 
@@ -23,6 +23,8 @@ const mocks = vi.hoisted(() => ({
   my: { data: [] as unknown[], isPending: false, isError: false, error: null as unknown, refetch: () => undefined },
   enrollments: { data: [] as unknown[], isPending: false, isError: false, error: null as unknown, refetch: () => undefined },
   upload: { isPending: false, isError: false, error: null, mutateAsync: vi.fn() },
+  /* P3: the file-stage mutation (POST /files/papers → { fileUrl }). */
+  uploadFile: { isPending: false, isError: false, error: null, mutateAsync: vi.fn() },
   scan: { isPending: false, isError: false, error: null, mutateAsync: vi.fn() },
 }));
 
@@ -33,6 +35,7 @@ vi.mock('../../src/hooks/useResources', async (importOriginal) => {
     useMyResearch: () => mocks.my,
     useMyEnrollments: () => mocks.enrollments,
     useUploadPaper: () => mocks.upload,
+    useUploadPaperFile: () => mocks.uploadFile,
     useScanPaper: () => mocks.scan,
   };
 });
@@ -64,10 +67,12 @@ describe('ResearchPage upload modal — FormField wiring (r152c)', () => {
     expect(screen.getByLabelText('عنوان البحث')).toBeInstanceOf(HTMLInputElement);
     expect(screen.getByLabelText('الملخّص (اختياري)')).toBeInstanceOf(HTMLTextAreaElement);
     expect(screen.getByLabelText('المقرّر الأكاديمي المرتبط (اختياري)')).toBeInstanceOf(HTMLSelectElement);
-    // r154d: the file field is no longer a fake upload button — it's an
-    // honest disclosure that direct upload is unavailable (ephemeral disk).
-    // The disclosure text must be present and visible to assistive tech.
-    expect(screen.getByText(/رفع الملفات غير متاح بعد/)).toBeTruthy();
+    // P3: the file field is a REAL picker now (the r154d disclosure about
+    // ephemeral storage is gone — direct upload ships). It must be
+    // labelled through the canon and filter to PDFs.
+    const picker = screen.getByLabelText('ملف البحث (PDF، اختياري)') as HTMLInputElement;
+    expect(picker.type).toBe('file');
+    expect(picker.accept).toBe('application/pdf,.pdf');
   });
 
   it('wires the short-title error as a live, non-dangling association', async () => {
@@ -183,3 +188,150 @@ describe('ResearchPage resubmit — CHECKS_FAILED prefill (r157)', () => {
   });
 });
 
+/* ───────────────────────────────────────────────
+ * P3 — the REAL upload chain. The modal's file field is a live picker
+ * now: the caps (PDF-only, 20MB) reject client-side BEFORE any request;
+ * a picked PDF stages first (POST /files/papers → fileUrl), then the
+ * create mutation carries that fileUrl; no file ⇒ create without
+ * fileUrl (the old flow, unchanged); a create failure keeps the modal
+ * open and the resubmit REUSES the staged fileUrl (no blind re-upload
+ * of the same File instance).
+ * ─────────────────────────────────────────────── */
+describe('ResearchPage upload modal — the real file chain (P3)', () => {
+  beforeEach(() => {
+    // Isolate from the r157 describe above (its FAILED_PAPER row renders
+    // its own role=alert and a resubmit button that would collide).
+    mocks.my.data = [];
+    mocks.enrollments.data = [];
+  });
+
+  /** Drive the picker the way a user does: a change event with files. */
+  async function pickFile(file: File) {
+    const picker = screen.getByLabelText('ملف البحث (PDF، اختياري)') as HTMLInputElement;
+    fireEvent.change(picker, { target: { files: [file] } });
+  }
+
+  async function fillTitle() {
+    fireEvent.change(screen.getByLabelText('عنوان البحث') as HTMLInputElement, {
+      target: { value: 'بحث تجريبي للتصدير' },
+    });
+  }
+
+  it('shows the picked file in a removable row — and the same file can be re-picked after removal', async () => {
+    await openUploadModal();
+    const pdf = new File(['%PDF-1.4 fake'], 'draft-v1.pdf', { type: 'application/pdf' });
+    await pickFile(pdf);
+
+    // The picked-file row names the file and carries the 44px remove button.
+    expect(screen.getByText('draft-v1.pdf')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'إزالة الملف' }));
+    expect(screen.queryByText('draft-v1.pdf')).toBeNull();
+
+    // Re-picking the SAME file must fire the change event again — the
+    // input's value is reset on removal, not left holding the old name.
+    await pickFile(new File(['%PDF-1.4 fake'], 'draft-v1.pdf', { type: 'application/pdf' }));
+    expect(screen.getByText('draft-v1.pdf')).toBeInTheDocument();
+  });
+
+  it('rejects a non-PDF file client-side — the Arabic error lands BEFORE any request', async () => {
+    await openUploadModal();
+    await fillTitle();
+    await pickFile(new File(['x'], 'notes.txt', { type: 'text/plain' }));
+    fireEvent.click(screen.getByRole('button', { name: 'رفع البحث' }));
+
+    const dialog = screen.getByRole('dialog');
+    const alert = await within(dialog).findByRole('alert');
+    expect(alert).toHaveTextContent('الملف يجب أن يكون بصيغة PDF فقط.');
+    // The client mirrors the server's caps — neither mutation fires.
+    expect(mocks.uploadFile.mutateAsync).not.toHaveBeenCalled();
+    expect(mocks.upload.mutateAsync).not.toHaveBeenCalled();
+  });
+
+  it('rejects a >20MB PDF client-side — before any request', async () => {
+    await openUploadModal();
+    await fillTitle();
+    const big = new File(['x'], 'big.pdf', { type: 'application/pdf' });
+    Object.defineProperty(big, 'size', { value: 21 * 1024 * 1024 });
+    await pickFile(big);
+    fireEvent.click(screen.getByRole('button', { name: 'رفع البحث' }));
+
+    const dialog = screen.getByRole('dialog');
+    const alert = await within(dialog).findByRole('alert');
+    expect(alert).toHaveTextContent('حجم الملف يتجاوز الحد الأقصى المسموح (20 ميغابايت).');
+    expect(mocks.uploadFile.mutateAsync).not.toHaveBeenCalled();
+    expect(mocks.upload.mutateAsync).not.toHaveBeenCalled();
+  });
+
+  it('happy path: stages the File first, then creates the paper carrying the returned fileUrl', async () => {
+    mocks.uploadFile.mutateAsync.mockResolvedValueOnce({ fileUrl: '/api/v1/files/papers/cxxx.pdf' });
+    mocks.upload.mutateAsync.mockResolvedValueOnce({});
+    await openUploadModal();
+    await fillTitle();
+    const pdf = new File(['%PDF-1.4 fake'], 'final-report.pdf', { type: 'application/pdf' });
+    await pickFile(pdf);
+    fireEvent.click(screen.getByRole('button', { name: 'رفع البحث' }));
+
+    // Stage first — with the File instance itself.
+    await waitFor(() => {
+      expect(mocks.uploadFile.mutateAsync).toHaveBeenCalledWith(pdf);
+    });
+    // Then the create carries the staged fileUrl alongside the metadata.
+    await waitFor(() => {
+      expect(mocks.upload.mutateAsync).toHaveBeenCalledWith({
+        title: 'بحث تجريبي للتصدير',
+        abstract: undefined,
+        offeringId: undefined,
+        fileUrl: '/api/v1/files/papers/cxxx.pdf',
+      });
+    });
+    // A landed create closes the modal.
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull();
+    });
+  });
+
+  it('no-file path unchanged: create fires WITHOUT a fileUrl and never stages', async () => {
+    mocks.upload.mutateAsync.mockResolvedValueOnce({});
+    await openUploadModal();
+    await fillTitle();
+    fireEvent.click(screen.getByRole('button', { name: 'رفع البحث' }));
+
+    await waitFor(() => {
+      expect(mocks.upload.mutateAsync).toHaveBeenCalledTimes(1);
+    });
+    const call = mocks.upload.mutateAsync.mock.calls[0]![0] as { fileUrl?: string };
+    expect(call.fileUrl).toBeUndefined();
+    expect(mocks.uploadFile.mutateAsync).not.toHaveBeenCalled();
+  });
+
+  it('a create failure after a staged upload reuses the fileUrl on resubmit — no blind re-upload', async () => {
+    mocks.uploadFile.mutateAsync.mockResolvedValueOnce({ fileUrl: '/api/v1/files/papers/keep.pdf' });
+    mocks.upload.mutateAsync.mockRejectedValueOnce(new Error('create failed'));
+    await openUploadModal();
+    await fillTitle();
+    const pdf = new File(['%PDF-1.4 fake'], 'keep.pdf', { type: 'application/pdf' });
+    await pickFile(pdf);
+    fireEvent.click(screen.getByRole('button', { name: 'رفع البحث' }));
+
+    // The stage succeeded, the create failed → the modal STAYS open.
+    await waitFor(() => {
+      expect(mocks.upload.mutateAsync).toHaveBeenCalledTimes(1);
+    });
+    expect(await within(screen.getByRole('dialog')).findByRole('alert')).toBeTruthy();
+    expect(screen.queryByRole('dialog')).toBeTruthy();
+
+    // Resubmit (same File instance still picked): the create retries with
+    // the SAME staged fileUrl, and the upload mutation is NOT re-fired.
+    mocks.upload.mutateAsync.mockResolvedValueOnce({});
+    fireEvent.click(screen.getByRole('button', { name: 'رفع البحث' }));
+    await waitFor(() => {
+      expect(mocks.upload.mutateAsync).toHaveBeenCalledTimes(2);
+    });
+    const second = mocks.upload.mutateAsync.mock.calls[1]![0] as { fileUrl?: string };
+    expect(second.fileUrl).toBe('/api/v1/files/papers/keep.pdf');
+    expect(mocks.uploadFile.mutateAsync).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull();
+    });
+  });
+});

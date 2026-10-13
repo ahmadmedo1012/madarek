@@ -284,6 +284,41 @@ export function useCreateMaterial() {
   });
 }
 
+/* P3: direct PDF material upload — POST /offerings/:id/materials/file
+ * with the File as the RAW body; name/description/type ride the query
+ * string (encodeURIComponent via URLSearchParams). Response 201:
+ * { data: materialRow } — same row shape the JSON route returns, so the
+ * same invalidation set as useCreateMaterial keeps the teacher's table,
+ * the offerings count and the student-facing offering-full projection
+ * honest after a landed upload. */
+export interface UploadMaterialFileInput {
+  offeringId: string;
+  name: string;
+  description?: string;
+  /** The PDF the teacher picked — sent as the request body. */
+  file: File;
+}
+
+export function useUploadMaterialFile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ offeringId, name, description, file }: UploadMaterialFileInput) => {
+      const params = new URLSearchParams({ name, type: 'PDF' });
+      if (description) params.set('description', description);
+      return unwrap<unknown>(
+        api.post(`/offerings/${offeringId}/materials/file?${params.toString()}`, file, {
+          headers: { 'Content-Type': 'application/pdf' },
+        }),
+      );
+    },
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: ['teacher', 'me', 'materials'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'offerings'] });
+      qc.invalidateQueries({ queryKey: ['offerings', vars.offeringId, 'full'] });
+    },
+  });
+}
+
 export interface TeacherRiskRow extends Omit<TeacherStudentRow, 'attendancePct' | 'absences' | 'lateCount' | 'avgGrade' | 'watchPct' | 'universityId'> {
   offeringId: string;
   courseName: string;

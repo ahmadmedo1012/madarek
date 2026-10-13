@@ -3,7 +3,7 @@
 Express 4.22.3 (TypeScript, ESM) + Prisma 5.22 over Neon PostgreSQL.
 All endpoints are mounted under the base path **`/api/v1`** and return a
 `{ data: T }` envelope (errors return `{ error: { code, message } }`).
-The complete, code-accurate endpoint table (193 endpoints — 188 route
+The complete, code-accurate endpoint table (196 endpoints — 191 route
 registrations in the 25 route files + 4 module-router endpoints + `GET
 /health`) lives in
 [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md) — the tables below are a
@@ -24,7 +24,7 @@ condensed overview.
 | `http/validate.ts` | Generic Zod validation middleware factory |
 | `http/middleware/*` | `auth`, `requireRole`, `requireCapability`, `rateLimit`, `errorHandler` |
 | `http/routes/*` | 25 route modules (incl. `submissions.routes.ts` + `curriculum.routes.ts`) |
-| `lib/*` | `jwt`, `password`, `errors`, `pagination`, `pdf`, `permissions`, `governance`, `grading`, `risk`, `dates`, `compression`, `operational-alerts`, `zu-sync/` |
+| `lib/*` | `jwt`, `password`, `errors`, `pagination`, `pdf`, `permissions`, `governance`, `grading`, `risk`, `dates`, `compression`, `storage` (upload drivers: local fs / S3-compatible SigV4), `operational-alerts`, `zu-sync/` |
 | `modules/auth/*` | `auth.service.ts`, `auth.dto.ts`, `password-policy`, `lockout`, `rotation` |
 | `modules/search/*` | Arabic-aware search normalization (`normalize.ts`) backing `/search/global` |
 | `modules/theme/*` | `router.ts` — `GET/PUT /me/theme` (handler inline; the separate service module was folded in wave 16) |
@@ -40,7 +40,7 @@ condensed overview.
 3. **Helmet** — CSP **enabled** (D7 allow-list: `default-src 'self'`, plus a sha256 pin for the inline theme-bootstrap script), `crossOriginResourcePolicy: cross-origin`
 4. **CORS** — allow-list from `CORS_ORIGINS` env (default: `https://madarek.onrender.com`, `http://localhost:5173`), `credentials: true`
 5. **gzip compression** middleware (≥1 KB, text/JSON/JS/SVG; `Vary: Accept-Encoding` on all responses)
-6. `express.json({ limit: '1mb' })` + `express.urlencoded({ limit: '1mb' })`
+6. `express.json({ limit: '1mb' })` + `express.urlencoded({ limit: '1mb' })` — the two PDF upload routes add route-level `express.raw({ type: 'application/pdf', limit: '20mb' })` (JSON/URLENCODED parsers skip non-matching content types, so the 20 MB raw bodies pass through untouched)
 7. `cookieParser()`
 8. **Global rate limit** on `/api/v1` — **1000 req / 15 min / IP** (raised from 300 — campus users behind shared NAT)
 9. **Auth rate limit** on `/auth/login` + `/auth/register` + `/auth/refresh` + `/auth/change-password` — 10 req / 15 min / IP (skips successes)
@@ -139,7 +139,8 @@ condensed overview.
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/offerings/:id` | access‑checked | Offering detail |
-| GET/POST | `/offerings/:id/materials` | access / TEACHER+ADMIN+OWNER | List / upload materials |
+| GET/POST | `/offerings/:id/materials` | access / TEACHER+ADMIN+OWNER | List / create material record (by link — no bytes) |
+| POST | `/offerings/:id/materials/file?name=…&type=PDF` | TEACHER+ADMIN+OWNER (20/min) | Upload a real material PDF (raw `application/pdf` ≤20 MB, magic bytes; row first, bytes via storage driver, row deleted on put failure) — served from `/files/materials/<id>.pdf` |
 | GET/POST | `/offerings/:id/assignments` | access / TEACHER+ADMIN+OWNER | List / create assignments |
 | GET/POST | `/offerings/:id/grades` | access / TEACHER+ADMIN+OWNER | List / upsert grades (score ≤ maxScore enforced) |
 | GET/POST | `/offerings/:id/attendance` | access / TEACHER+ADMIN+OWNER | Sessions / record |
@@ -244,7 +245,9 @@ condensed overview.
 | GET/POST | `/admin/sync` `/admin/sync/trigger` | USERS_MANAGE/QUALITY_VIEW | Sync status / trigger |
 | GET | `/university/facts` | Bearer | Institutional facts |
 | POST/GET | `/ai/chat` `/ai/conversations` `/ai/conversations/:id/messages` | Bearer (chat rate‑limited 20/min) | AI chat + history (messages capped at newest 200) |
-| GET | `/files/papers/:filename` | Bearer | Serve PDF (access-gated, path‑traversal protected, `.pdf` only) |
+| POST | `/files/papers` | STUDENT (10/min per user) | Upload research‑paper PDF (raw `application/pdf` ≤20 MB, `%PDF-` magic bytes) → `{ data: { fileUrl } }`; no paper row here — `POST /me/research` consumes the fileUrl (an orphan 404s on serve) |
+| GET | `/files/papers/:filename` | Bearer | Serve PDF via the storage abstraction (access‑gated: PUBLISHED / owner / reviewer / oversight; path‑traversal protected, `.pdf` only, single‑range 206/416) |
+| GET | `/files/materials/:filename` | Bearer | Serve material PDF (access‑gated: offering’s teacher / active enrollment / oversight) |
 
 ### Theme / onboarding / milestones (`/api/v1/me/*`)
 | Method | Path | Auth | Description |
@@ -277,6 +280,9 @@ condensed overview.
 | `CORS_ORIGINS` | ❌ | madarek.onrender.com + localhost:5173 | Comma-separated CORS allow-list (no wildcards — credentials are on) |
 | `INTERNAL_SERVICE_TOKEN` | ❌ | — | Service-to-service auth for `POST /api/v1/me/milestones/:id/fire` (≥16 chars; fail-closed when unset; constant-time compare) |
 | `DIRECT_DATABASE_URL` | ❌ | derived | Neon **direct** (non-pooled) URL for `prisma migrate deploy`; when unset, the deploy script derives it from `DATABASE_URL` (strips `-pooler` + pooling params) |
+| `STORAGE_DRIVER` | ❌ | `local` | Upload storage driver (`lib/storage.ts`): `local` filesystem or `s3` (any S3-compatible store). `s3` without the four `S3_*` vars → boot fails closed naming them; `local` in production logs a one-time ephemeral-disk warning |
+| `STORAGE_DIR` | ❌ | `backend/storage` | Local driver root (absolute path); ignored for `s3` |
+| `S3_ENDPOINT` / `S3_REGION` / `S3_BUCKET` / `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` | with `STORAGE_DRIVER=s3` | `S3_REGION=auto` | Object-store config (path-style addressing; AWS S3 / Cloudflare R2 / MinIO). Secrets only via the environment — never in code/docs |
 
 ---
 
@@ -308,4 +314,13 @@ condensed overview.
 - **University sync** (`lib/zu-sync/`): pulls institutional facts from a static
   source into `UniversityFact`.
 - **PDF** (`lib/pdf.ts`): `extractPaperText()` via `pdf-parse` for library
-  full‑text search; best‑effort, never throws.
+  full-text search; best-effort, never throws; reads bytes through the
+  storage abstraction (same `backend/storage/papers/` layout locally).
+- **File storage** (`lib/storage.ts`, P3-BE): the upload/serve backend —
+  `LocalDriver` (fs/promises under `STORAGE_DIR`, default `backend/storage`)
+  and `S3Driver` (fetch + hand-rolled AWS SigV4, node:crypto only,
+  path-style, works with R2/MinIO); memoized `getStorage()`; keys are
+  `papers/<cuid>.pdf` / `materials/<cuid>.pdf` (validated + dir-pinned).
+  Serving always flows through the gated `/files/*` routes — objects are
+  never public.
+

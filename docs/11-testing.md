@@ -9,9 +9,9 @@
 |---|---|---|
 | Lint | `npm run lint` | **0 أخطاء**، 18 تحذيرًا (exhaustive-deps — مسموحة موثقة في `eslint.config.mjs`) |
 | Typecheck | `npm run typecheck` | **نجاح** — src + tests للجهتين (tsconfig.test.json) |
-| اختبارات الواجهة | `npm --prefix frontend run test` | **88 ملفًا، 1015 اختبارًا، كلها ناجحة** (~80 ثانية) |
-| اختبارات الخلفية | `npm --prefix backend run test` | **38 ملفًا، 1021 اختبارًا، كلها ناجحة** (~11 ثانية) |
-| بوابة التكافؤ | `node scripts/verify-parity-export.mjs` | **PASS — 168 فحص token** + تدقيق متغيرات غير معرفة + قيم مستبعدة + توازن أقواس |
+| اختبارات الواجهة | `npm --prefix frontend run test` | **113 ملفًا، 1225 اختبارًا، كلها ناجحة** (~110 ثانية) |
+| اختبارات الخلفية | `npm --prefix backend run test` | **47 ملفًا، 1166 اختبارًا، كلها ناجحة** (~15 ثانية) |
+| بوابة التكافؤ | `node scripts/verify-parity-export.mjs` | **PASS — 163 فحص token** + تدقيق متغيرات غير معرفة + قيم مستبعدة + توازن أقواس |
 | الأيقونات | `bash scripts/check-icons.sh` | OK — Lucide فقط |
 | رموز الحركة | `bash scripts/check-motion-tokens.sh` | OK — لا قيم خام |
 | بصمات CSP | `bash scripts/check-csp-hash.sh` | OK — بعد تحديث بصمة bootstrap (انظر [14](14-troubleshooting.md)) |
