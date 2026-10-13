@@ -41,8 +41,10 @@ vi.mock('react-chartjs-2', () => ({
 vi.mock('../../src/lib/api', () => {
   const get = vi.fn(async () => ({ data: {} }));
   const post = vi.fn(async () => ({ data: {} }));
+  const patch = vi.fn(async () => ({ data: {} }));
+  const del = vi.fn(async () => ({ data: {} }));
   return {
-    api: { get, post },
+    api: { get, post, patch, delete: del },
     unwrap: <T,>(promise: Promise<{ data: { data: T } }>): Promise<T> =>
       promise.then((r) => r.data.data),
   };
@@ -60,6 +62,9 @@ import { AdminSyncPage } from '../../src/pages/admin/AdminSyncPage';
 import { api } from '../../src/lib/api';
 
 const getMock = api.get as unknown as Mock;
+const postMock = api.post as unknown as Mock;
+const patchMock = api.patch as unknown as Mock;
+const deleteMock = api.delete as unknown as Mock;
 
 /* ── Factories ─────────────────────────────────────────────────── */
 
@@ -551,6 +556,74 @@ describe('AdminCoursesPage — server-side filters + meta pagination (P2-1)', ()
     fireEvent.click(screen.getByRole('button', { name: 'الصفحة التالية' }));
     await screen.findByText('قواعد البيانات');
     expect(coursesCalls().some((p) => p.page === 2)).toBe(true);
+  });
+});
+
+/* ── 5b. AdminCoursesPage CRUD (r153i) ─────────────────────────── */
+
+describe('AdminCoursesPage — CRUD wiring (r153i)', () => {
+  it('creates via POST /courses — the write router, never /admin/courses', async () => {
+    installApi();
+    renderPage(<AdminCoursesPage />);
+
+    fireEvent.click(await screen.findByRole('button', { name: 'إضافة مقرّر جديد' }));
+    fireEvent.change(screen.getByLabelText('كود المقرّر'), { target: { value: 'CS777' } });
+    fireEvent.change(screen.getByLabelText('اسم المقرّر'), { target: { value: 'مقرّر الاختبار' } });
+    fireEvent.change(screen.getByLabelText('القسم'), { target: { value: 'd1' } });
+    fireEvent.click(screen.getByRole('button', { name: 'إضافة المقرّر' }));
+
+    await waitFor(() => {
+      expect(postMock).toHaveBeenCalledWith('/courses', expect.objectContaining({ code: 'CS777' }));
+    });
+    // The merge-era ghost route — the exact 404 the shipped feature had.
+    expect(postMock.mock.calls.some((c) => c[0] === '/admin/courses')).toBe(false);
+  });
+
+  it('edits via PATCH /courses/:id after the department is re-picked by id', async () => {
+    installApi();
+    renderPage(<AdminCoursesPage />);
+
+    fireEvent.click(await screen.findByRole('button', { name: 'تعديل مقدمة في الحاسوب' }));
+    expect(await screen.findByText('تعديل المقرّر')).toBeInTheDocument();
+    // The row ships no departmentId in this fixture → the honest empty
+    // select blocks submit until a department is (re)chosen.
+    fireEvent.change(screen.getByLabelText('القسم'), { target: { value: 'd1' } });
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ التعديلات' }));
+
+    await waitFor(() => {
+      expect(patchMock).toHaveBeenCalledWith('/courses/c1', expect.objectContaining({ code: 'CS101' }));
+    });
+    expect(patchMock.mock.calls.some((c) => String(c[0]).startsWith('/admin/courses'))).toBe(false);
+  });
+
+  it('deletes through the accessible ConfirmDialog → DELETE /courses/:id', async () => {
+    installApi();
+    renderPage(<AdminCoursesPage />);
+
+    fireEvent.click(await screen.findByRole('button', { name: 'حذف مقدمة في الحاسوب' }));
+    expect(await screen.findByText(/سيُحذف «مقدمة في الحاسوب»/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'حذف نهائي' }));
+
+    await waitFor(() => {
+      expect(deleteMock).toHaveBeenCalledWith('/courses/c1');
+    });
+  });
+
+  it('keeps the modal open and surfaces the error when the create fails', async () => {
+    installApi();
+    postMock.mockRejectedValueOnce(new Error('boom'));
+    renderPage(<AdminCoursesPage />);
+
+    fireEvent.click(await screen.findByRole('button', { name: 'إضافة مقرّر جديد' }));
+    fireEvent.change(screen.getByLabelText('كود المقرّر'), { target: { value: 'CS777' } });
+    fireEvent.change(screen.getByLabelText('اسم المقرّر'), { target: { value: 'مقرّر الاختبار' } });
+    fireEvent.change(screen.getByLabelText('القسم'), { target: { value: 'd1' } });
+    fireEvent.click(screen.getByRole('button', { name: 'إضافة المقرّر' }));
+
+    // The in-modal error the old code could never show (it closed on click).
+    expect(await screen.findByText('تعذّر حفظ المقرّر')).toBeInTheDocument();
+    // And the modal is still open — the draft is not lost.
+    expect(screen.getByText('إضافة مقرّر جديد')).toBeInTheDocument();
   });
 });
 

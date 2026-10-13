@@ -9,7 +9,7 @@ import {
   ChevronLeft, ChevronRight, ChevronDown, ArrowLeft,
   Plus, Trash2, type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, Tabs, UserAvatar, AlertRow } from '../../components/primitives';
+import { Card, MetricCard, Badge, Tabs, UserAvatar, AlertRow, FormField } from '../../components/primitives';
 import {
   EmptyState, ErrorState, PageSkeleton,
   KpiSkeleton, CardSkeleton, TableSkeleton,
@@ -20,6 +20,8 @@ import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useReducedMotion } from '../../components/motion';
 import { Modal } from '../../components/overlays';
+import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
+import { toast } from '../../lib/toast';
 import {
   useAdminStats, useAdminFaculties, useAdminReports, useAdminCourses, useAdminPapers,
   useFaculties,
@@ -1135,44 +1137,63 @@ export function AdminCoursesPage() {
   const facQ = useFaculties();
 
   // ── Course CRUD (16-decisions #5: the page was display-only) ──────
+  /* r153i: formMode replaces the old `{} as AdminCourse` fake-object
+   * cast — three honest states instead of a sentinel object. */
+  const [formMode, setFormMode] = useState<'create' | 'edit' | null>(null);
   const [editing, setEditing] = useState<AdminCourse | null>(null);
   const [form, setForm] = useState<CourseFormInput>({
     code: '', name: '', credits: 3, departmentId: '',
   });
+  const [confirmingDelete, setConfirmingDelete] = useState<AdminCourse | null>(null);
   const createCourse = useCreateCourse();
   const updateCourse = useUpdateCourse(editing?.id ?? '');
   const deleteCourse = useDeleteCourse();
-  const closeForm = () => { setEditing(null); };
+  const closeForm = () => { setFormMode(null); setEditing(null); };
 
   const openCreate = () => {
     setForm({ code: '', name: '', credits: 3, departmentId: '' });
-    setEditing({} as AdminCourse);
+    setEditing(null);
+    setFormMode('create');
   };
   const openEdit = (c: AdminCourse) => {
-    const deptId =
-      c.department &&
-      (facQ.data?.flatMap((f) => f.departments).find((d) => d.name === c.department)?.id ?? '');
+    // r153i: resolve by id — department names are only unique per
+    // faculty, and the seed really has two same-named science
+    // departments (the projection ships departmentId for this).
     setForm({
       code: c.code,
       name: c.name,
       credits: c.credits,
-      departmentId: deptId ?? '',
+      departmentId: c.departmentId ?? '',
     });
     setEditing(c);
+    setFormMode('edit');
   };
+  /* r153i: the modal stays open until the mutation SETTLES — the old
+   * code closed it immediately, so the in-modal error AlertRow below
+   * could never render and a failed save looked like a silent
+   * success. Per-call onSuccess composes with the hook-level cache
+   * invalidations (React Query v5 runs both). */
   const submit = () => {
-    if (editing?.id) {
-      updateCourse.mutate(form as Partial<CourseFormInput>);
+    if (formMode === 'edit' && editing) {
+      updateCourse.mutate(form as Partial<CourseFormInput>, {
+        onSuccess: () => {
+          toast.success(`حُفظت تعديلات «${form.name}».`, { title: 'تمّ الحفظ' });
+          closeForm();
+        },
+      });
     } else {
-      createCourse.mutate(form);
+      createCourse.mutate(form, {
+        onSuccess: () => {
+          toast.success(`أُضيف مقرّر «${form.name}» إلى السجلّ.`, { title: 'تمّت الإضافة' });
+          closeForm();
+        },
+      });
     }
-    closeForm();
   };
-  const remove = (c: AdminCourse) => {
-    if (confirm(`حذف "${c.name}"؟`)) {
-      deleteCourse.mutate(c.id);
-    }
-  };
+  /* r153i: destructive action through the platform's accessible
+   * ConfirmDialog (focus trap +Escape + aria) — the old native
+   * confirm() had none of that — with toast feedback on both ends. */
+  const remove = (c: AdminCourse) => setConfirmingDelete(c);
 
   // ── End of CRUD ────────────────────────────────────────────────
   const appliedQ = useRef(debouncedQ);
@@ -1358,49 +1379,44 @@ export function AdminCoursesPage() {
         )}
       </Card>
 
-      {/* Course create/edit form — 16-decisions #5. The modal is keyed
-          off editing, so switching between create and edit remounts it and
-          resets the local draft (the same per-item pattern the governance
-          cards use). DepartmentId is required by the backend; the submit
-          button stays disabled until it is chosen. */}
+      {/* Course create/edit form — 16-decisions #5. Keyed off formMode:
+          switching between create and edit remounts the modal and resets
+          the local draft (the same per-item pattern the governance cards
+          use). r153i: the four fields joined the FormField canon
+          (r152c) — the retired .comp-form-field class was a regression
+          the unaudited merge reintroduced. */}
       <Modal
-        open={editing !== null}
+        open={formMode !== null}
         onClose={closeForm}
-        ariaLabel={editing?.id ? 'تعديل المقرّر' : 'إضافة مقرّر جديد'}
+        ariaLabel={formMode === 'edit' ? 'تعديل المقرّر' : 'إضافة مقرّر جديد'}
       >
         <div className="modal-header">
           <h3 className="modal-title">
-            {editing?.id ? 'تعديل المقرّر' : 'إضافة مقرّر جديد'}
+            {formMode === 'edit' ? 'تعديل المقرّر' : 'إضافة مقرّر جديد'}
           </h3>
           <button type="button" className="modal-close" onClick={closeForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
         <div className="modal-body" style={{ maxWidth: 480 }}>
-          <div className="comp-form-field">
-            <label htmlFor="course-code">كود المقرّر *</label>
+          <FormField label="كود المقرّر" id="course-code" hint="مثال: CS101 — يظهر بخط أحادي في السجلّ">
             <input
-              id="course-code"
               className="input"
               value={form.code}
               onChange={(e) => setForm({ ...form, code: e.target.value })}
-              placeholder="مثال: CS101"
+              placeholder="CS101"
             />
-          </div>
-          <div className="comp-form-field">
-            <label htmlFor="course-name">اسم المقرّر *</label>
+          </FormField>
+          <FormField label="اسم المقرّر" id="course-name">
             <input
-              id="course-name"
               className="input"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="مقدمة في علوم الحاسب"
             />
-          </div>
-          <div className="comp-form-field">
-            <label htmlFor="course-dept">القسم *</label>
+          </FormField>
+          <FormField label="القسم" id="course-dept" hint="الكلّيّة تحدّدها القسم الذي تختاره">
             <select
-              id="course-dept"
               className="input"
               value={form.departmentId}
               onChange={(e) => setForm({ ...form, departmentId: e.target.value })}
@@ -1413,11 +1429,9 @@ export function AdminCoursesPage() {
                 )),
               )}
             </select>
-          </div>
-          <div className="comp-form-field">
-            <label htmlFor="course-credits">الساعات المعتمدة</label>
+          </FormField>
+          <FormField label="الساعات المعتمدة" id="course-credits">
             <input
-              id="course-credits"
               className="input"
               type="number"
               min={1}
@@ -1425,7 +1439,7 @@ export function AdminCoursesPage() {
               value={form.credits}
               onChange={(e) => setForm({ ...form, credits: Number(e.target.value) })}
             />
-          </div>
+          </FormField>
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={closeForm}>
@@ -1440,7 +1454,7 @@ export function AdminCoursesPage() {
           >
             {createCourse.isPending || updateCourse.isPending
               ? 'جارٍ الحفظ…'
-              : editing?.id ? 'حفظ التعديلات' : 'إضافة المقرّر'}
+              : formMode === 'edit' ? 'حفظ التعديلات' : 'إضافة المقرّر'}
           </button>
         </div>
         {(createCourse.isError || updateCourse.isError) && (
@@ -1455,6 +1469,33 @@ export function AdminCoursesPage() {
           />
         )}
       </Modal>
+
+      {/* r153i: destructive confirm — the accessible ConfirmDialog
+          (focus trap + Escape + aria) replaces the old native
+          confirm(); toast feedback closes the loop on both ends. */}
+      <ConfirmDialog
+        open={confirmingDelete !== null}
+        title="حذف المقرّر"
+        message={confirmingDelete
+          ? `سيُحذف «${confirmingDelete.name}» نهائيًا من السجلّ الجامعي. لا يمكن التراجع عن هذا الإجراء.`
+          : ''}
+        confirmLabel="حذف نهائي"
+        danger
+        onCancel={() => setConfirmingDelete(null)}
+        onConfirm={async () => {
+          if (!confirmingDelete) return;
+          const target = confirmingDelete;
+          setConfirmingDelete(null);
+          try {
+            await deleteCourse.mutateAsync(target.id);
+            toast.success(`حُذف «${target.name}» من السجلّ.`, { title: 'تمّ الحذف' });
+          } catch (err) {
+            toast.error(apiErrorMessage(err, 'تعذّر حذف المقرّر — قد تكون له شُعب أو مفاهيم مرتبطة.'), {
+              title: 'فشل الحذف',
+            });
+          }
+        }}
+      />
     </div>
   );
 }

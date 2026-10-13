@@ -60,6 +60,9 @@ export interface AdminCourse {
   faculty: string | null;
   facultyEmoji: string | null;
   department: string | null;
+  /** r153i: the edit form resolves by id — names are only unique per
+   * faculty (see the projection note in catalog.routes.ts). */
+  departmentId?: string | null;
   offeringCount: number;
   conceptCount: number;
   totalEnrollments: number;
@@ -121,29 +124,35 @@ export interface CourseFormInput {
 }
 function invalidateCourses(qc: ReturnType<typeof useQueryClient>) {
   qc.invalidateQueries({ queryKey: ['admin', 'courses'] });
+  /* r153i: catalogue writes change the dashboard's KPIs and reports —
+   * the same cross-surface freshness class r153g closed for jobs /
+   * offerings-full / admin papers. */
+  qc.invalidateQueries({ queryKey: ['admin', 'stats'] });
+  qc.invalidateQueries({ queryKey: ['admin', 'reports'] });
 }
-/** POST /admin/courses — create (16-decisions #5). */
+/** POST /courses — create (16-decisions #5; the write router lives at
+ * /courses — courses.routes.ts — only the GET list is /admin/courses). */
 export function useCreateCourse() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: CourseFormInput) => unwrap(api.post('/admin/courses', body)),
+    mutationFn: (body: CourseFormInput) => unwrap(api.post('/courses', body)),
     onSuccess: () => invalidateCourses(qc),
   });
 }
-/** PATCH /admin/courses/:id — edit (the list had no edit path). */
+/** PATCH /courses/:id — edit (the list had no edit path). */
 export function useUpdateCourse(id: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationKey: ['course', id],
-    mutationFn: (body: Partial<CourseFormInput>) => unwrap(api.patch(`/admin/courses/${id}`, body)),
+    mutationFn: (body: Partial<CourseFormInput>) => unwrap(api.patch(`/courses/${id}`, body)),
     onSuccess: () => invalidateCourses(qc),
   });
 }
-/** DELETE /admin/courses/:id — delete with the FK-conflict guard. */
+/** DELETE /courses/:id — delete with the FK-conflict guard. */
 export function useDeleteCourse() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => unwrap(api.delete(`/admin/courses/${id}`)),
+    mutationFn: (id: string) => unwrap(api.delete(`/courses/${id}`)),
     onSuccess: () => invalidateCourses(qc),
   });
 }

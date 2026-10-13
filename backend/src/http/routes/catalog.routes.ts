@@ -794,7 +794,7 @@ router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (_req, r
 // a second bounded query over ALL of the page's courses' offerings,
 // so courses with 4+ offerings are no longer undercounted (P2-7).
 const adminCourseInclude = Prisma.validator<Prisma.CourseInclude>()({
-  department: { select: { name: true, faculty: { select: { name: true, iconEmoji: true } } } },
+  department: { select: { id: true, name: true, faculty: { select: { name: true, iconEmoji: true } } } },
   _count: { select: { offerings: true, concepts: true } },
   offerings: {
     select: {
@@ -907,6 +907,12 @@ router.get(
           faculty: c.department?.faculty?.name ?? null,
           facultyEmoji: c.department?.faculty?.iconEmoji ?? null,
           department: c.department?.name ?? null,
+          // r153i: the edit form resolves the department by ID, not by
+          // name — department names are only unique PER FACULTY
+          // (@@unique([facultyId, name])) and the seed really has two
+          // same-named science departments, so name-matching could
+          // silently re-assign a course to the wrong faculty.
+          departmentId: c.department?.id ?? null,
           offeringCount: c._count.offerings,
           conceptCount: c._count.concepts,
           totalEnrollments: totals.enrollments,
