@@ -28,6 +28,15 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      # Pin the runtime Node major to 22 — the LTS line in support (Node
+      # 20 reached EOL in April 2026) and EXACTLY what CI pins
+      # (.github/workflows/ci.yml env.NODE_VERSION), inside the engines
+      # range >=20 <25. Without this pin Render uses its own default
+      # Node version, which can drift from the version the committed
+      # package-lock.json was CI-tested against (docs/16 row closed in
+      # r164-l).
+      - key: NODE_VERSION
+        value: '22'
       # Pin the runtime clock to UTC — the backend's timezone model
       # (backend/src/lib/dates.ts) computes date-only day-keys on the UTC
       # calendar and renders display labels in Africa/Tripoli; a drifting

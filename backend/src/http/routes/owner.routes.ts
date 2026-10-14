@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Role, SyncRunStatus } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../db.js';
+import { env } from '../../env.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
@@ -659,6 +660,28 @@ export function toSyncFeedEntry(run: SyncRunFeedRow): SyncFeedEntry {
   };
 }
 
+// ── GET /owner/system — storage status (r164-l, additive field) ──
+
+/** Storage status the System page renders: the configured upload
+ * driver and whether uploads survive redeploys. Derived from env only —
+ * pure by construction (no DB, no clock), DB-free unit-pinned. */
+export interface StorageStatus {
+  driver: 'local' | 's3';
+  persistent: boolean;
+}
+
+/**
+ * Pure fold: STORAGE_DRIVER → System-page storage status. `driver` is
+ * echoed verbatim (never transformed) so the page can trust it against
+ * the env.ts enum. `persistent` follows the platform's storage honesty
+ * (lib/storage.ts): s3 = object store = uploads survive redeploys;
+ * local = Render's ephemeral disk = they do NOT (one boot warning is
+ * logged in that case — this field is that warning's queryable twin).
+ */
+export function toStorageStatus(driver: 'local' | 's3'): StorageStatus {
+  return { driver, persistent: driver === 's3' };
+}
+
 router.get('/system', async (_req, res, next) => {
   try {
     const now = new Date();
@@ -696,6 +719,10 @@ router.get('/system', async (_req, res, next) => {
 
     res.json({
       data: {
+        // r164-l — additive: the owner System page renders the storage
+        // truth (driver + persistence) instead of leaving it implicit in
+        // boot logs. A parallel frontend change consumes it defensively.
+        storage: toStorageStatus(env.STORAGE_DRIVER),
         sync: {
           lastRunAt: lastSyncRun?.startedAt ?? null,
           recent: recentSyncRuns.map(toSyncFeedEntry),

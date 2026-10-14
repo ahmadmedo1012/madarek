@@ -15,8 +15,12 @@
  *    extracted so the SQL-backed routes stay thin;
  *  - the pure System-page sync-feed mapping (SyncRun row → feed
  *    entry — the feed reads the REAL SyncRun table since audit 15-a
- *    P1-5, so the mapping is pinned like every other fold).
+ *    P1-5, so the mapping is pinned like every other fold);
+ *  - the pure System-page storage fold (r164-l): env STORAGE_DRIVER →
+ *    { driver, persistent } — additive payload field + source-scan
+ *    wiring pin.
  */
+import { readFileSync } from 'node:fs';
 import { SyncRunStatus } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
 import {
@@ -26,11 +30,17 @@ import {
   changeRoleSchema,
   settingKeySchema,
   syncRunAction,
+  toStorageStatus,
   toSyncFeedEntry,
   toggleFlagSchema,
   toggleStatusSchema,
   upsertSettingSchema,
 } from '../../src/http/routes/owner.routes';
+
+const ownerRouteSource = readFileSync(
+  new URL('../../src/http/routes/owner.routes.ts', import.meta.url),
+  'utf8',
+);
 
 describe('changeRoleSchema (.strict)', () => {
   it('accepts a bare role payload', () => {
@@ -331,6 +341,44 @@ describe('syncRunAction (SyncRun status → feed action vocabulary)', () => {
 
   it('RUNNING → sync.partial — an in-flight run renders as not-complete, never as success', () => {
     expect(syncRunAction(SyncRunStatus.RUNNING)).toBe('sync.partial');
+  });
+});
+
+// ── System-page storage status (r164-l — additive payload field) ──
+
+describe('toStorageStatus (System page storage fold, r164-l)', () => {
+  it('local driver → persistent=false (Render disk is ephemeral — uploads vanish on redeploy)', () => {
+    expect(toStorageStatus('local')).toEqual({ driver: 'local', persistent: false });
+  });
+
+  it('s3 driver → persistent=true (object store survives redeploys)', () => {
+    expect(toStorageStatus('s3')).toEqual({ driver: 's3', persistent: true });
+  });
+
+  it('echoes the driver verbatim — no transformation may ever appear', () => {
+    // The env.ts enum is exactly 'local' | 's3'; both inputs must round-trip
+    // untouched so the page can trust the string against that enum.
+    expect((['local', 's3'] as const).map(toStorageStatus).map((s) => s.driver)).toEqual([
+      'local',
+      's3',
+    ]);
+  });
+
+  it('carries exactly the two contract keys (additive — no shape drift)', () => {
+    expect(Object.keys(toStorageStatus('local')).sort()).toEqual(['driver', 'persistent']);
+    expect(Object.keys(toStorageStatus('s3')).sort()).toEqual(['driver', 'persistent']);
+  });
+
+  it('wiring: the /system route derives storage from env (source-scan pin)', () => {
+    // The route must consume the pure fold fed by env.STORAGE_DRIVER —
+    // not an inline literal that could drift from the env.ts enum.
+    expect(ownerRouteSource).toContain('storage: toStorageStatus(env.STORAGE_DRIVER)');
+  });
+
+  it('wiring: the field is additive — the payload keeps its existing keys (source-scan pin)', () => {
+    // sync / alerts / activity must stay exactly where the System page
+    // reads them; `storage` rides alongside, never replaces.
+    expect(ownerRouteSource).toMatch(/data:\s*\{\s*\/\/ r164-l[\s\S]*?storage: toStorageStatus\(env\.STORAGE_DRIVER\),\s*sync:\s*\{[\s\S]*?alerts:\s*\{[\s\S]*?activity:\s*\{/);
   });
 });
 

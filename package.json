@@ -22,6 +22,7 @@
     "db:migrate": "npm run prisma:migrate -w backend",
     "db:deploy": "npm run prisma:deploy -w backend",
     "db:seed": "npm run prisma:seed -w backend",
+    "smoke": "node scripts/smoke-deploy.mjs",
     "validate:colleges": "tsx scripts/validate-college-identity.ts",
     "check:motion-tokens": "bash scripts/check-motion-tokens.sh",
     "check:icons": "bash scripts/check-icons.sh",
