@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
-import { Bot, Zap, CheckCircle2, Clock, Settings } from 'lucide-react';
+import { Bot, Zap, CheckCircle2, Clock, Settings, Sparkles } from 'lucide-react';
 import { Bar, Line } from 'react-chartjs-2';
 import { useMemo } from 'react';
 import {
@@ -15,7 +15,7 @@ import {
   Legend,
   Filler,
 } from 'chart.js';
-import { Card, MetricCard } from '../../components/primitives';
+import { Card, MetricCard, Badge } from '../../components/primitives';
 import {
   ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, TableSkeleton,
 } from '../../components/primitives/States';
@@ -23,6 +23,7 @@ import { ChartFrame } from '../../components/charts/ChartFrame';
 import { Icon } from '../../components/Icon';
 import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerAiMetrics } from '../../hooks/useOwner';
+import { useAiConfig } from '../../hooks/useResources';
 import { useReducedMotion } from '../../components/motion';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, Filler);
@@ -42,6 +43,15 @@ function featureLabel(feature: string) {
 export function OwnerAiPage() {
   const aiMetrics = useOwnerAiMetrics();
   const data = aiMetrics.data;
+  /* r164-i: which engine answers — the r160 honest-surface badge
+   * (GET /ai/config) landed on the student assistant page only; the
+   * OWNER console that MONITORS the AI service never said whether a
+   * real model or the local composer produced these numbers. The
+   * endpoint is auth-only (any role), cached 5 min, and fail-soft
+   * here: no answer (pending/error) renders NO badge rather than a
+   * guessed one. */
+  const aiConfig = useAiConfig();
+  const isRealLlm = aiConfig.data?.provider === 'openai';
   // Remounts each chart canvas when the light/dark theme flips.
   const themeKey = useChartThemeKey();
   // Baking the reduced-motion animation profile into memoized options
@@ -89,6 +99,14 @@ export function OwnerAiPage() {
           <h1 className="page-title">مركز الذكاء الاصطناعيّ</h1>
           <p className="page-subtitle">مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ</p>
         </div>
+        {/* The r160 honesty contract on the monitoring side too: the
+            badge names the real model when one answers, and says
+            «محليّ» — not an LLM name — when the local composer does. */}
+        {aiConfig.data && (
+          <Badge color="gold" icon={Sparkles}>
+            {isRealLlm && aiConfig.data?.model ? <bdi>{aiConfig.data.model}</bdi> : 'محليّ'}
+          </Badge>
+        )}
       </header>
 
       {aiMetrics.isPending ? (

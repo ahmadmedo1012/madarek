@@ -347,9 +347,13 @@ export function AdminSyncPage() {
         )}
       </Card>
 
-      {/* Synced data preview by category */}
+      {/* Synced data preview by category — a FIXED zu-sync snapshot,
+          not a live view: every row is a UniversityFact as the last sync
+          wrote it (r164-i: the card now says so — «مصدر: المزامنة» —
+          and each fact carries its own syncedAt freshness, a field the
+          payload already ships). */}
       <div ref={categoriesRef} style={{ scrollMarginBlockStart: 'var(--sp-4)' }}>
-      <Card title="البيانات المُزامنة" icon={Database} subtitle="مجمّعة حسب الفئة — انقر للتوسيع">
+      <Card title="البيانات المُزامنة" icon={Database} subtitle="مصدر: المزامنة (zu-sync) · مجمّعة حسب الفئة — انقر للتوسيع">
         {data.categories.length === 0 ? (
           <EmptyState illustration="empty-search"
             icon={Database}
@@ -378,7 +382,17 @@ export function AdminSyncPage() {
                         <div key={f.key} className="fact-row">
                           <code className="fact-key"><bdi>{f.key}</bdi></code>
                           <span className="fact-value">{f.value}</span>
-                          <span className="fact-source"><bdi>{f.source}</bdi></span>
+                          {/* r164-i: honest freshness per fact — syncedAt
+                              IS in the payload (sync.routes.ts ships it);
+                              a title carries the full date for hover. */}
+                          <span
+                            className="fact-source"
+                            title={new Date(f.syncedAt).toLocaleString('ar-LY', { dateStyle: 'medium', timeStyle: 'short' })}
+                          >
+                            <bdi>{f.source}</bdi>
+                            {' · آخر تحديث '}
+                            {formatRelativeArShort(f.syncedAt)}
+                          </span>
                           {f.isStale && <Badge color="amber">قديم</Badge>}
                         </div>
                       ))}

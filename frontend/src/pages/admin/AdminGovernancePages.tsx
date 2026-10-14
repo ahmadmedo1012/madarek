@@ -36,6 +36,7 @@ import {
 import { api, unwrap } from '../../lib/api';
 import { countAr } from '../../lib/format';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthStore } from '../../stores/auth.store';
 import '../../styles/training.css'; // .back-link family (D11 css split, 12-15)
 // r152c (A2): the colleges.css import is GONE — it existed only for
 // .comp-form-field, and the six governance selects now ride the
@@ -871,6 +872,16 @@ export function AdminPermissionsPage() {
   const { id } = useParams<{ id: string }>();
   const { data, isPending, isError, error, refetch } = useUserPermissions(id);
   const setCap = useSetCapability();
+  /* r164-i (permissions UX — blocked-action explanation): the backend
+   * rejects every self-edit with 403 «لا يمكنك تعديل صلاحياتك بنفسك»
+   * (permissions.routes.ts self-modification guard — an ADMIN holding
+   * ROLES_ASSIGN must not be able to self-grant USERS_MANAGE). The
+   * editor knows my id synchronously (persisted session), so the page
+   * explains the block UP FRONT and disables the row actions instead
+   * of letting each click bounce off a 403. The guard itself stays
+   * untouched — this is surface-only honesty. */
+  const myId = useAuthStore((s) => s.user?.id);
+  const isSelf = !!id && id === myId;
   /** One-shot confirmation pulse on the row whose capability just changed. */
   const [pulse, setPulse] = useState<{ cap: AppCapability; ok: boolean } | null>(null);
   /** Last attempted change — powers the inline retry after a failure. */
@@ -956,6 +967,15 @@ export function AdminPermissionsPage() {
           الصلاحيات الافتراضية مرتبطة بالدور ({roleLabel}). يمكنك منح صلاحية إضافية أو سحب صلاحية افتراضية لهذا المستخدم تحديداً.
         </div>
 
+        {isSelf && (
+          <AlertRow
+            color="amber"
+            icon={ShieldCheck}
+            title="هذه صلاحياتك أنت — لا يمكن تعديلها من هنا"
+            description="حرس الحاكمية يمنع تعديل صلاحياتك بنفسك (خطأ 403 من الخادم)؛ اطلب من مالك أو إداري آخر تطبيق التغيير من صفحتك هذه."
+          />
+        )}
+
         {setCap.isError && (
           <AlertRow
             color="red"
@@ -1008,7 +1028,7 @@ export function AdminPermissionsPage() {
                     <button
                       type="button"
                       className="btn primary sm"
-                      disabled={setCap.isPending}
+                      disabled={setCap.isPending || isSelf}
                       onClick={() => applyCap(cap, true)}
                     >
                       منح
@@ -1018,7 +1038,7 @@ export function AdminPermissionsPage() {
                     <button
                       type="button"
                       className="btn ghost sm"
-                      disabled={setCap.isPending}
+                      disabled={setCap.isPending || isSelf}
                       onClick={() => applyCap(cap, false)}
                     >
                       سحب
@@ -1028,7 +1048,7 @@ export function AdminPermissionsPage() {
                     <button
                       type="button"
                       className="btn ghost sm"
-                      disabled={setCap.isPending}
+                      disabled={setCap.isPending || isSelf}
                       onClick={() => applyCap(cap, null)}
                     >
                       إعادة للافتراضي

@@ -450,8 +450,13 @@ export function OwnerUsersPage() {
             </table>
 
             {/* Server-side pagination — driven by API meta; bounded page
-                window + RTL-correct chevrons (prev points right in RTL). */}
-            {meta && totalPages > 1 && (
+                window + RTL-correct chevrons (prev points right in RTL).
+                r164-i (table-coherence): the footer renders whenever rows
+                exist, single page included — the roster's total is always
+                visible, matching the AdminStudentsPage family footer
+                (the old totalPages>1 gate left a single-page roster with
+                no count anywhere). */}
+            {meta && users.length > 0 && (
               <div className="table-pagination">
                 <span>
                   الصفحة {page} من {totalPages} · {usersCountLabel(meta.total)}

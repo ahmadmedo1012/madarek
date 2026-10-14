@@ -254,6 +254,18 @@ export interface OwnerSystem {
   activity: {
     recentEventsLast7Days: number;
   };
+  /**
+   * r164-i: upload-storage truthfulness — OPTIONAL on purpose. The
+   * backend's GET /owner/system payload gains an additive
+   * `storage: { driver, persistent }` block (r164-l, backend side);
+   * payloads before that change carry no such field, so the System
+   * page must read it defensively (`data?.storage?.driver`) and render
+   * «غير متوفر» when absent rather than crash or guess.
+   */
+  storage?: {
+    driver: string;
+    persistent: boolean;
+  };
 }
 export function useOwnerSystem() {
   return useQuery({

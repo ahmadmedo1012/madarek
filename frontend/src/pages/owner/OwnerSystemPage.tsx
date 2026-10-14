@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Server, Clock, AlertTriangle, Activity, RefreshCw, Settings, CheckCircle2, ChevronDown } from 'lucide-react';
-import { Card, MetricCard, Badge } from '../../components/primitives';
+import { Server, Clock, AlertTriangle, Activity, RefreshCw, Settings, CheckCircle2, ChevronDown, HardDrive } from 'lucide-react';
+import { Card, MetricCard, Badge, AlertRow } from '../../components/primitives';
 import { EmptyState, ErrorState, TableSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { ToggleSwitch } from '../../components/owner/ToggleSwitch';
@@ -50,6 +50,21 @@ function failedSavesLabel(n: number): string {
   if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} إعدادات`;
   return `${n.toLocaleString('ar-LY')} إعداداً`;
 }
+
+/* ── r164-i: upload-storage truthfulness ──────────────────────────
+ *
+ * GET /owner/system gains an additive `storage: { driver, persistent }`
+ * block (r164-l, backend side). The field is OPTIONAL here: payloads
+ * from before that change carry no such block, so every read is
+ * defensive and a missing block renders «غير متوفر» — never a guess,
+ * never a crash. `persistent: false` is the honest local-driver
+ * production state (a Render disk survives nothing): the warning
+ * names the damage and the documented owner fix (docs/12-deployment.md
+ * «تخزين رفعات PDF في الإنتاج — خطوات المالك»). */
+const STORAGE_DRIVER_LABEL: Record<string, string> = {
+  local: 'محليّ — قرص الخادم',
+  s3: 'تخزين كائنات (S3-متوافق)',
+};
 
 export function OwnerSystemPage() {
   const flagsQuery = useOwnerFeatureFlags();
@@ -153,6 +168,74 @@ export function OwnerSystemPage() {
           color="purple"
         />
       </div>
+
+      {/* r164-i: upload-storage truthfulness — the state of the PDF
+          upload substrate, straight from the /owner/system payload's
+          (optional) storage block. A missing block (older backend) is
+          an honest «غير متوفر», never a guessed green. */}
+      <Card title="تخزين الرفعات (PDF)" icon={HardDrive}>
+        {sys.isPending ? (
+          <div className="owner-health-list">
+            <div className="owner-health-row">
+              <div className="owner-health-dot neutral" />
+              <span className="owner-health-label">حالة التخزين</span>
+              <span className="owner-health-value">…</span>
+            </div>
+          </div>
+        ) : !sysData?.storage ? (
+          <div className="owner-health-list">
+            <div className="owner-health-row">
+              <div className="owner-health-dot neutral" />
+              <span className="owner-health-label">حالة التخزين</span>
+              {/* sys.isError degrades to '—' (the service KPI above
+                  already carries the error + retry); a resolved payload
+                  with no storage block is «غير متوفر» — an older
+                  backend, not an unknown state. */}
+              <span className="owner-health-value">
+                {sys.isError ? '—' : 'غير متوفر'}
+              </span>
+            </div>
+            <p className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-2)' }}>
+              {sys.isError
+                ? 'تعذّر جلب حالة النظام — أعد المحاولة من بطاقة سجلّ المزامنة أدناه.'
+                : 'نسخة الخادم الحاليّة لا تُصرّح عن حالة تخزين الرفعات بعد.'}
+            </p>
+          </div>
+        ) : (
+          <div className="owner-health-list">
+            <div className="owner-health-row">
+              <div className="owner-health-dot neutral" />
+              <span className="owner-health-label">السائق</span>
+              <span className="owner-health-value">
+                {STORAGE_DRIVER_LABEL[sysData.storage.driver]
+                  ?? <bdi>{sysData.storage.driver}</bdi>}
+              </span>
+            </div>
+            <div className="owner-health-row">
+              <div className={`owner-health-dot ${sysData.storage.persistent ? 'green' : 'amber'}`} />
+              <span className="owner-health-label">دوام الملفات المرفوعة</span>
+              <span className="owner-health-value">
+                {sysData.storage.persistent ? 'دائمة' : 'لا تنجو من إعادة النشر'}
+              </span>
+            </div>
+            {!sysData.storage.persistent && (
+              <AlertRow
+                color="amber"
+                icon={AlertTriangle}
+                title="الرفعات لا تنجو من إعادة النشر — يتطلب إعداد تخزين دائم (S3)"
+                description={(
+                  <>
+                    أوراق البحث وملفات المقرّرات المرفوعة ستُفقد عند كل نشر جديد. دوامها يتطلب
+                    ضبط <code>STORAGE_DRIVER=s3</code> مع متغيّرات <bdi>S3_*</bdi> من لوحة
+                    البيئة — الخطوات الكاملة في <bdi>docs/12-deployment.md</bdi>
+                    («تخزين رفعات PDF في الإنتاج — خطوات المالك»).
+                  </>
+                )}
+              />
+            )}
+          </div>
+        )}
+      </Card>
 
       {/* Sync history — real audit log. No "مزامنة الآن" button: the
           owner API surface exposes no sync-trigger mutation, so the
