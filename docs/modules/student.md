@@ -13,7 +13,7 @@
 | `/student/matrix` | `MatrixPage` | `pages/student/MatrixPage.tsx` | خريطة حرارية + مرشحات مستويات |
 | `/student/research` | `ResearchPage` | `pages/student/ResearchPage.tsx` | آلة حالات البحث بالتسميات العربية |
 | `/student/library` | `LibraryPage` | `pages/student/LibraryPage.tsx` | تبويبا كتب/بحوث + بحث مطبّع 250ms + استعارة/إرجاع فعليّان (r155b) |
-| `/student/online-exams` (+`/:id`) | `OnlineExamsPage`/`ExamTakerPage` | `pages/exams/OnlineExamsPages.tsx` | استعادة إجابات + دفع متأخر كل 10 ثوانٍ |
+| `/student/online-exams` (+`/:id`) | `OnlineExamsPage`/`ExamTakerPage` | `pages/exams/OnlineExamsPages.tsx` | استعادة إجابات + دفع متأخر كل 10 ثوانٍ + رقائق حالة دورة المحاولة (r164-e) |
 | `/training`, `/:slug`, `/:slug/lesson/:lessonId` | `TrainingPages` | `pages/student/TrainingPages.tsx` | 11 مسارًا عربيًا + دروس/اختبارات |
 | `/achievements`, `/student/gamification`, `/student/skills` | `TrainingPages`/`MorePages` | كما أعلاه | نقاط/شارات/مهارات |
 | باقي `/student/*` (social, alerts, downloads, university, live, payment, map, profile, webinars, mooc, jobs, labs, ar, ai, results, schedule) | `MorePages`/مستقلة | `pages/student/MorePages.tsx` ومستقلات | `MorePages` حزمة مركبة (الشبكة الاجتماعية داخلها) |
@@ -22,7 +22,7 @@
 
 | المجموعة | الملف | أبرز المسارات |
 |---|---|---|
-| لوحة/نتائج/مواد | `student-dashboard.routes.ts` | `GET /me/dashboard`، `/me/results`، `/me/materials`، `/me/lab-sessions` |
+| لوحة/نتائج/مواد | `student-dashboard.routes.ts` | `GET /me/dashboard`، `/me/results` (يشمل `pendingSubmissions` + ملاحظة الأستاذ في `recentAssignments` — r164-e)، `/me/materials`، `/me/lab-sessions` |
 | التعلم | `learning.routes.ts` | `GET /offerings/:id/full` (يُسقط لكل محاضرة `answeredCheckpoints` لطلاب فقط — r164d)، `POST /lectures/:id/watch`، إدماجيات (حدّ 20/د + سقف احتساب 4 محاولات/مفهوم r155a)، `GET/POST /me/research`، `POST /research/:id/scan` (10/د)، annotations، `/me/matrix`، `/me/gaps` |
 | التدريب | `training.routes.ts` | `catalog`، `tracks/:slug/enroll`، `lessons/:lessonId/complete`، `me/badges`، `certificates`، `leaderboard` |
 | اختبارات | نماذج `Question/ExamTemplate/ExamAttempt` | الطالب يتخذ فقط (البناء للإدارة/الأستاذ) |

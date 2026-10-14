@@ -227,6 +227,132 @@ export function resultsHeadline(courses: readonly CourseRollup[]): ResultsHeadli
   };
 }
 
+// ─── /me/results submission timeline (r164-e) — pure, DB-free ─────
+// The assessment loop's student-side half: a submission's journey is
+// submitted → awaiting grading → graded (score + feedback). The graded
+// half already fed /me/results (recentAssignments); the awaiting half
+// and the teacher's feedback had no read surface at all. Both mappers
+// below are extracted + exported so tests/modules/dashboard-logic.test.ts
+// pins them without a DB harness.
+
+/**
+ * Statuses of a submission still waiting on the teacher's grade — the
+ * student-side mirror of the teacher queue's
+ * PENDING_SUBMISSION_STATUSES (teacher-dashboard.routes.ts, r157/6A8):
+ * the two ends of the loop count the SAME rows, so «بانتظار التقييم»
+ * never means different things on each side of the loop. RETURNED /
+ * DRAFT / GRADED are terminal or absent from the live state machine
+ * (no route ever writes RETURNED — enum value only) and are
+ * deliberately excluded.
+ */
+export const AWAITING_GRADE_STATUSES: readonly SubmissionStatus[] = [
+  SubmissionStatus.SUBMITTED,
+  SubmissionStatus.LATE,
+];
+
+/** Structural subset of the graded-submission rows the recent feed reads. */
+export interface RecentAssignmentFeedRow {
+  id: string;
+  grade: DecimalLike | null;
+  feedback: string | null;
+  submittedAt: Date;
+  gradedAt: Date | null;
+  assignment: {
+    title: string;
+    type: string;
+    maxScore: number;
+    offeringId: string;
+  };
+}
+
+/** One graded row of the /me/results recentAssignments feed. */
+export interface RecentAssignmentFeedItem {
+  id: string;
+  title: string;
+  type: string;
+  offeringId: string;
+  /** Raw awarded score (Decimal → number) — the pct alone hid both the
+   *  ceiling and the teacher's rubric. */
+  grade: number | null;
+  maxScore: number;
+  gradePct: number;
+  /** The teacher's grading feedback — never surfaced before r164-e. */
+  feedback: string | null;
+  /** When the student handed the work in (the timeline's step 1). */
+  submittedAt: Date;
+  gradedAt: Date | null;
+}
+
+/** Graded submissions → the recentAssignments feed (take bounded by the
+ *  handler). Same gradePct arithmetic the rollup fold uses. */
+export function recentAssignmentFeed(
+  gradedSubs: readonly RecentAssignmentFeedRow[],
+): RecentAssignmentFeedItem[] {
+  return gradedSubs.map((s) => ({
+    id: s.id,
+    title: s.assignment.title,
+    type: s.assignment.type,
+    offeringId: s.assignment.offeringId,
+    grade: s.grade === null ? null : Number(s.grade.toString()),
+    maxScore: s.assignment.maxScore,
+    gradePct: s.assignment.maxScore > 0 && s.grade !== null
+      ? Math.round((Number(s.grade.toString()) / s.assignment.maxScore) * 100)
+      : 0,
+    feedback: s.feedback,
+    submittedAt: s.submittedAt,
+    gradedAt: s.gradedAt,
+  }));
+}
+
+/** Structural subset of the awaiting-grading rows the pending feed reads.
+ *  Named AWAITING_* (not PENDING_*) — teacher-dashboard.routes.ts already
+ *  exports a PendingSubmissionFeedRow of its own (different shape), and a
+ *  shared name would collide at every star-import site. */
+export interface AwaitingSubmissionFeedRow {
+  id: string;
+  status: SubmissionStatus;
+  submittedAt: Date;
+  assignment: {
+    title: string;
+    type: string;
+    offeringId: string;
+    offering: { course: { code: string; name: string } };
+  };
+}
+
+/** One awaiting-grading row of the /me/results pendingSubmissions feed. */
+export interface AwaitingSubmissionFeedItem {
+  id: string;
+  title: string;
+  type: string;
+  offeringId: string;
+  courseCode: string;
+  courseName: string;
+  status: SubmissionStatus;
+  /** LATE rides as its own flag (the 16-B1 queue contract) so the FE
+   *  chips the lateness without string-matching the title. */
+  late: boolean;
+  submittedAt: Date;
+}
+
+/** Awaiting-grading submissions → the pendingSubmissions feed (the
+ *  timeline's middle step: submitted, awaiting the teacher's grade). */
+export function pendingSubmissionFeed(
+  rows: readonly AwaitingSubmissionFeedRow[],
+): AwaitingSubmissionFeedItem[] {
+  return rows.map((s) => ({
+    id: s.id,
+    title: s.assignment.title,
+    type: s.assignment.type,
+    offeringId: s.assignment.offeringId,
+    courseCode: s.assignment.offering.course.code,
+    courseName: s.assignment.offering.course.name,
+    status: s.status,
+    late: s.status === SubmissionStatus.LATE,
+    submittedAt: s.submittedAt,
+  }));
+}
+
 /**
  * GET /me/results — every grade the student has, rolled up per course
  * with a weighted percentage. Replaces the hardcoded 5-row RESULTS array
@@ -237,6 +363,14 @@ export function resultsHeadline(courses: readonly CourseRollup[]): ResultsHeadli
  * Submission row, so teacher-graded assignment work was silently missing
  * from these numbers. `breakdown` stays Grade-table-only (officially
  * recorded kinds); recent graded submissions surface in recentAssignments.
+ *
+ * r164-e (assessment loop): recentAssignments now carries the full graded
+ * row — score + maxScore + the teacher's feedback + the submission
+ * timestamp — and a new pendingSubmissions feed surfaces the
+ * awaiting-grading middle state (submitted → awaiting grading → graded)
+ * so the loop is traceable from the student's side end to end. Both
+ * additions are additive: pre-r164-e consumers keep compiling against
+ * the old shape.
  */
 router.get('/me/results', async (req, res, next) => {
   try {
@@ -257,14 +391,19 @@ router.get('/me/results', async (req, res, next) => {
 
     // Graded assignment submissions (audit 11-d P1-6): one query feeds
     // both the rollup fold below and the recent feed — bounded by the
-    // student's own submission count.
+    // student's own submission count. r164-e: the select grows
+    // feedback/submittedAt/status so the recent feed can render the
+    // teacher's verdict and the timeline's first step.
     const gradedSubs = await prisma.submission.findMany({
       where: { studentId: userId, status: SubmissionStatus.GRADED, grade: { not: null } },
       orderBy: { gradedAt: 'desc' },
       select: {
         id: true,
         gradedAt: true,
+        submittedAt: true,
         grade: true,
+        feedback: true,
+        status: true,
         assignment: {
           select: {
             title: true, type: true, weight: true, maxScore: true, offeringId: true,
@@ -274,26 +413,36 @@ router.get('/me/results', async (req, res, next) => {
       },
     });
 
+    // r164-e: the awaiting-grading half of the timeline — the same
+    // statuses the teacher's pending queue counts
+    // (PENDING_SUBMISSION_STATUSES), bounded like every /me feed.
+    const awaitingSubs = await prisma.submission.findMany({
+      where: { studentId: userId, status: { in: [...AWAITING_GRADE_STATUSES] } },
+      orderBy: { submittedAt: 'desc' },
+      take: 20,
+      select: {
+        id: true, status: true, submittedAt: true,
+        assignment: {
+          select: {
+            title: true, type: true, offeringId: true,
+            offering: { select: { course: { select: { code: true, name: true } } } },
+          },
+        },
+      },
+    });
+
     const courses = rollupCourseGrades(grades, gradedSubs);
 
     // Secondary "what was just returned to me" feed — the 20 most recent
     // of the same graded submissions folded into the rollup above.
-    const recentAssignments = gradedSubs.slice(0, 20).map((s) => ({
-      id: s.id,
-      title: s.assignment.title,
-      type: s.assignment.type,
-      offeringId: s.assignment.offeringId,
-      gradePct: s.assignment.maxScore > 0
-        ? Math.round((Number(s.grade!.toString()) / s.assignment.maxScore) * 100)
-        : 0,
-      gradedAt: s.gradedAt,
-    }));
+    const recentAssignments = recentAssignmentFeed(gradedSubs.slice(0, 20));
 
     res.json({
       data: {
         headline: resultsHeadline(courses),
         courses,
         recentAssignments,
+        pendingSubmissions: pendingSubmissionFeed(awaitingSubs),
       },
     });
   } catch (e) { next(e); }

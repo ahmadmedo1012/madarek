@@ -190,6 +190,10 @@ describe('useGradeSubmission invalidation map (15-d P1-3)', () => {
     expect(keys).toContainEqual(['teacher', 'dashboard']);
     expect(keys).toContainEqual(['me', 'dashboard']);
     expect(keys).toContainEqual(['me', 'results']);
+    // r164-e: the Assignments page's «جميع الواجبات» list renders the
+    // per-assignment submission counts from this key (60s staleTime) —
+    // a landed grade must refresh them on the very page it landed on.
+    expect(keys).toContainEqual(['teacher', 'me', 'assignments']);
     expect(keys.some((k) => k[0] === 'teacher' && k[1] === 'offering')).toBe(false);
   });
 

@@ -51,8 +51,13 @@ import {
   currentTerm,
   rollupCourseGrades,
   resultsHeadline,
+  AWAITING_GRADE_STATUSES,
+  recentAssignmentFeed,
+  pendingSubmissionFeed,
   type GradeRollupRow,
   type GradedSubmissionRollupRow,
+  type RecentAssignmentFeedRow,
+  type AwaitingSubmissionFeedRow,
 } from '../../src/http/routes/student-dashboard.routes';
 
 const count = (status: AttendanceStatus, n: number) => ({ status, count: n });
@@ -566,5 +571,140 @@ describe('attendanceAlertFeedItem (absence-alert bucket)', () => {
     const item = attendanceAlertFeedItem({ studentId: 'gone', _count: { studentId: 3 } }, undefined, new Date());
     expect(item.author).toBeNull();
     expect(item.title).toBe('3 غيابات في آخر 30 يوماً — طالب يحتاج متابعة');
+  });
+});
+
+// ─── r164-e — the student-side assessment-loop timeline (/me/results) ─────────
+
+/* The student side of the loop must mirror the teacher side: submitted →
+ * awaiting grading → graded (score + feedback). The teacher queue counts
+ * PENDING_SUBMISSION_STATUSES; the student's awaiting feed counts
+ * AWAITING_GRADE_STATUSES — the parity pin below keeps the two ends of
+ * the loop from ever counting different rows. */
+const studentDashboardRouteSource = readFileSync(
+  new URL('../../src/http/routes/student-dashboard.routes.ts', import.meta.url),
+  'utf8',
+);
+
+const recentGradedSub = (
+  overrides?: Partial<RecentAssignmentFeedRow>,
+): RecentAssignmentFeedRow => ({
+  id: 'sub-graded-1',
+  grade: new Prisma.Decimal('8'),
+  feedback: 'تحليل جيد — راجع الحالة الحدّية الثالثة.',
+  submittedAt: new Date('2026-02-01T21:10:00Z'),
+  gradedAt: new Date('2026-02-03T09:00:00Z'),
+  assignment: {
+    title: 'واجب تحليل الخوارزميات',
+    type: AssignmentType.HOMEWORK,
+    maxScore: 10,
+    offeringId: 'off-loop',
+  },
+  ...overrides,
+});
+
+describe('recentAssignmentFeed (r164-e — graded rows carry the full verdict)', () => {
+  it('maps the graded row: score + ceiling + pct + feedback + both timestamps', () => {
+    expect(recentAssignmentFeed([recentGradedSub()])).toEqual([{
+      id: 'sub-graded-1',
+      title: 'واجب تحليل الخوارزميات',
+      type: AssignmentType.HOMEWORK,
+      offeringId: 'off-loop',
+      grade: 8,
+      maxScore: 10,
+      gradePct: 80,
+      feedback: 'تحليل جيد — راجع الحالة الحدّية الثالثة.',
+      submittedAt: new Date('2026-02-01T21:10:00Z'),
+      gradedAt: new Date('2026-02-03T09:00:00Z'),
+    }]);
+  });
+
+  it('a Prisma Decimal score serializes through toString() — no string leaks onto the wire', () => {
+    const [item] = recentAssignmentFeed([recentGradedSub({ grade: new Prisma.Decimal('7.25') })]);
+    expect(item?.grade).toBe(7.25);
+    expect(typeof item?.grade).toBe('number');
+    expect(item?.gradePct).toBe(73); // 7.25/10 = 72.5 → Math.round
+  });
+
+  it('a maxScore-0 artifact folds to gradePct 0, never Infinity', () => {
+    const [item] = recentAssignmentFeed([recentGradedSub({
+      grade: new Prisma.Decimal('3'),
+      assignment: { title: 'صفر', type: AssignmentType.QUIZ, maxScore: 0, offeringId: 'off-0' },
+    })]);
+    expect(item?.gradePct).toBe(0);
+  });
+
+  it('null grade and absent feedback degrade honestly (defensive — the where filters)', () => {
+    const [item] = recentAssignmentFeed([recentGradedSub({ grade: null, feedback: null, gradedAt: null })]);
+    expect(item?.grade).toBeNull();
+    expect(item?.feedback).toBeNull();
+    expect(item?.gradedAt).toBeNull();
+    expect(item?.gradePct).toBe(0);
+  });
+});
+
+const awaitingSub = (
+  overrides?: Partial<AwaitingSubmissionFeedRow>,
+): AwaitingSubmissionFeedRow => ({
+  id: 'sub-await-1',
+  status: SubmissionStatus.SUBMITTED,
+  submittedAt: new Date('2026-02-04T18:30:00Z'),
+  assignment: {
+    title: 'مشروع قاعدة البيانات',
+    type: AssignmentType.PROJECT,
+    offeringId: 'off-loop',
+    offering: { course: { code: 'CS201', name: 'قواعد البيانات' } },
+  },
+  ...overrides,
+});
+
+describe('pendingSubmissionFeed (r164-e — the awaiting-grading middle step)', () => {
+  it('maps the awaiting row: course context, own LATE flag, submission timestamp', () => {
+    expect(pendingSubmissionFeed([awaitingSub()])).toEqual([{
+      id: 'sub-await-1',
+      title: 'مشروع قاعدة البيانات',
+      type: AssignmentType.PROJECT,
+      offeringId: 'off-loop',
+      courseCode: 'CS201',
+      courseName: 'قواعد البيانات',
+      status: SubmissionStatus.SUBMITTED,
+      late: false,
+      submittedAt: new Date('2026-02-04T18:30:00Z'),
+    }]);
+  });
+
+  it('LATE rides as its own flag — never a title suffix (the 16-B1 queue contract)', () => {
+    const item = pendingSubmissionFeed([awaitingSub({ status: SubmissionStatus.LATE })])[0]!;
+    expect(item.late).toBe(true);
+    expect(item.title).toBe('مشروع قاعدة البيانات'); // untampered
+  });
+
+  it('AWAITING_GRADE_STATUSES mirrors the teacher queue set exactly — loop parity', () => {
+    expect([...AWAITING_GRADE_STATUSES]).toEqual([...PENDING_SUBMISSION_STATUSES]);
+  });
+});
+
+describe('/me/results wiring (source-scan pins — r164-e, no drift)', () => {
+  it('GET /me/results assembles both feeds from the exported mappers', () => {
+    // The handler consumes the pure mappers — a re-inlined twin would
+    // pass the pure suite while drifting from the pinned shapes.
+    expect(studentDashboardRouteSource).toMatch(
+      /router\.get\('\/me\/results',[\s\S]*?recentAssignmentFeed\(gradedSubs\.slice\(0, 20\)\);/,
+    );
+    expect(studentDashboardRouteSource).toMatch(
+      /router\.get\('\/me\/results',[\s\S]*?pendingSubmissionFeed\(awaitingSubs\),/,
+    );
+  });
+
+  it('the awaiting query reads the shared status set, bounded and newest-first', () => {
+    expect(studentDashboardRouteSource).toMatch(
+      /const awaitingSubs = await prisma\.submission\.findMany\(\{\s*where: \{ studentId: userId, status: \{ in: \[\.\.\.AWAITING_GRADE_STATUSES\] \} \},\s*orderBy: \{ submittedAt: 'desc' \},\s*take: 20,/,
+    );
+  });
+
+  it('the graded feed select carries feedback + submittedAt (loop traceability fields)', () => {
+    expect(studentDashboardRouteSource).toMatch(
+      /const gradedSubs = await prisma\.submission\.findMany\(\{[\s\S]*?feedback: true,[\s\S]*?submittedAt: true,[\s\S]*?recentAssignmentFeed/,
+    );
   });
 });

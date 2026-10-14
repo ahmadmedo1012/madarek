@@ -9,6 +9,7 @@
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { act, render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import {
   validateSubmissionDraft,
   type StudentDashboard,
@@ -99,7 +100,11 @@ describe('SubmitAssignmentModal validation wiring', () => {
   });
 
   it('submits a valid text-only draft and shows the submitted state', async () => {
-    render(<SubmitAssignmentModal assignment={assignment} offeringId="off1" onClose={() => {}} />);
+    render(
+      <MemoryRouter>
+        <SubmitAssignmentModal assignment={assignment} offeringId="off1" onClose={() => {}} />
+      </MemoryRouter>,
+    );
     fireEvent.change(screen.getByLabelText('إجابتك النصيّة'), {
       target: { value: '  إجابتي على الواجب  ' },
     });
@@ -109,10 +114,18 @@ describe('SubmitAssignmentModal validation wiring', () => {
     expect(h.mutateAsync).toHaveBeenCalledTimes(1);
     expect(h.mutateAsync).toHaveBeenCalledWith({ textAnswer: 'إجابتي على الواجب', fileUrl: undefined });
     expect(screen.getByText('تمّ التسليم بنجاح')).toBeInTheDocument();
+    // r164-e: the done state points at the place the timeline continues —
+    // the submission lives on the results page until the grade lands.
+    const link = screen.getByRole('link', { name: 'تابع حالة التقييم ودرجتك من صفحة النتائج' });
+    expect(link.getAttribute('href')).toBe('/student/results');
   });
 
   it('accepts an internal papers path as the only field', async () => {
-    render(<SubmitAssignmentModal assignment={assignment} offeringId="off1" onClose={() => {}} />);
+    render(
+      <MemoryRouter>
+        <SubmitAssignmentModal assignment={assignment} offeringId="off1" onClose={() => {}} />
+      </MemoryRouter>,
+    );
     fireEvent.change(screen.getByLabelText('رابط ملف (اختياري)'), {
       target: { value: '/api/v1/files/papers/p1.pdf' },
     });
@@ -124,7 +137,11 @@ describe('SubmitAssignmentModal validation wiring', () => {
 
   it('flags a LATE submission with the warning state', async () => {
     h.mutateAsync.mockResolvedValue({ id: 's2', status: 'LATE' });
-    render(<SubmitAssignmentModal assignment={assignment} offeringId="off1" onClose={() => {}} />);
+    render(
+      <MemoryRouter>
+        <SubmitAssignmentModal assignment={assignment} offeringId="off1" onClose={() => {}} />
+      </MemoryRouter>,
+    );
     fireEvent.change(screen.getByLabelText('إجابتك النصيّة'), {
       target: { value: 'إجابة متأخرة' },
     });

@@ -7,6 +7,7 @@ import {
   Bell, AlertTriangle, BookOpen, Download,
   CheckCircle2, Check, MessageCircle, Heart, GraduationCap,
   TrendingUp, Building2, Users2, Microscope,
+  Hourglass, ArrowLeft,
 } from 'lucide-react';
 import { Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
@@ -15,13 +16,13 @@ import { ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSke
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotificationsFeed, useMarkNotifRead, useMarkAllNotifsRead, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, type Post, type StudentMaterial } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotificationsFeed, useMarkNotifRead, useMarkAllNotifsRead, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, submissionStatusAr, type Post, type StudentMaterial } from '../../hooks/useResources';
 import { materialHref } from '../../lib/materialHref';
 import { UNIVERSITY_FACTS } from '../../data/university.facts';
 import { formatNum } from '../../utils/numbers';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartAnimation, chartColors, useChartThemeKey } from '../../lib/chartTheme';
-import { arUnit, countAr, timeAgoAr, WEEKDAY_NAMES_AR } from '../../lib/format';
+import { arUnit, countAr, timeAgoAr, WEEKDAY_NAMES_AR, formatDateTimeAr } from '../../lib/format';
 import { api, unwrap } from '../../lib/api';
 import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
 import { gradeBand, type GradeBandKey } from '../../lib/courseMeta';
@@ -667,6 +668,10 @@ export function ResultsPage() {
     PASS: cc.gold,
     WEAK: cc.danger,
   };
+  // r164-e: the awaiting-grading half of the timeline. Optional on the
+  // wire (additive backend field) — an older payload degrades to the
+  // honest "nothing pending" copy instead of crashing.
+  const pendingSubs = d.pendingSubmissions ?? [];
   // Build the shared chart options ONCE per render (each cartesianOptions()
   // call resolves CSS custom properties — it is not free).
   const baseOpts = cartesianOptions({ horizontal: true });
@@ -760,6 +765,63 @@ export function ResultsPage() {
         )}
       </Card>
 
+      {/* r164-e (assessment loop) — the timeline's middle step. Submitted
+          work that has not been graded yet had NO student surface at all:
+          it silently dropped out of the agenda (which only lists the
+          un-submitted) and never appeared in the graded feed below. This
+          card keeps the state visible — with its own timestamp and the
+          honest what-happens-next — until the teacher's grade lands. */}
+      <Card
+        title="تسليمات بانتظار التقييم"
+        icon={Hourglass}
+        subtitle={
+          pendingSubs.length === 0
+            ? 'لا شيء بانتظار تقييم الأستاذ حالياً'
+            : countAr(pendingSubs.length, ['تسليم واحد بانتظار التقييم', 'تسليمان بانتظار التقييم', 'تسليمات بانتظار التقييم', 'تسليماً بانتظار التقييم'])
+        }
+      >
+        {pendingSubs.length === 0 ? (
+          <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>
+            كل ما سلّمته وتمّ تقييمه يظهر في «آخر الواجبات المقيَّمة» أدناه — وسيصلك إشعار لحظة رصد أي درجة جديدة.
+          </p>
+        ) : (
+          <div className="flex-col gap-2">
+            {pendingSubs.slice(0, 6).map((p) => {
+              const st = submissionStatusAr(p.status);
+              return (
+                <AlertRow
+                  key={p.id}
+                  color={p.late ? 'red' : 'amber'}
+                  icon={Hourglass}
+                  title={
+                    <span style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
+                      {p.title}
+                      <Badge color={st.color}>{st.label}</Badge>
+                    </span>
+                  }
+                  description={st.hint}
+                  time={
+                    <span title={formatDateTimeAr(p.submittedAt)}>
+                      {p.courseName} · <bdi>{p.courseCode}</bdi> · سلّمته {timeAgoAr(p.submittedAt)}
+                    </span>
+                  }
+                  actions={(
+                    <Link
+                      to={`/student/courses/${p.offeringId}`}
+                      className="btn ghost sm"
+                      title="الرجوع إلى سياق المقرّر حيث يظهر هذا التكليف"
+                    >
+                      <Icon icon={ArrowLeft} size={13} />
+                      المقرّر
+                    </Link>
+                  )}
+                />
+              );
+            })}
+          </div>
+        )}
+      </Card>
+
       <div className="grid-2">
         <Card title="تفصيل النتائج" icon={Activity}>
           {!hasGrades ? (
@@ -801,13 +863,42 @@ export function ResultsPage() {
                     key={a.id}
                     color={band.color}
                     icon={band.key === 'WEAK' ? AlertTriangle : CheckCircle2}
+                    /* r164-e: the graded step carries the full verdict —
+                       score AND ceiling (the pct alone hid the rubric),
+                       falling back to the legacy pct-only title for a
+                       pre-r164-e payload. */
                     title={
                       <span className="flex items-center gap-2 flex-wrap">
-                        {a.title} — <bdi>{a.gradePct}%</bdi>
+                        {a.grade != null && a.maxScore != null
+                          ? <>{a.title} — <bdi className="font-mono">{a.grade} / {a.maxScore}</bdi> <span className="text-xs text-subtle">(<bdi>{a.gradePct}%</bdi>)</span></>
+                          : <>{a.title} — <bdi>{a.gradePct}%</bdi></>}
                         <Badge color={band.color}>{band.label}</Badge>
                       </span>
                     }
-                    description={a.gradedAt ? new Date(a.gradedAt).toLocaleDateString('ar-LY', { dateStyle: 'medium' }) : ''}
+                    /* r164-e: ملاحظة الأستاذ داخل الصف — الخطوة الأخيرة
+                       من الحلقة كانت تنتهي عند الرقم. */
+                    description={
+                      a.feedback
+                        ? <span className="flex-col gap-1" style={{ display: 'flex' }}>
+                            <span>ملاحظة الأستاذ: {a.feedback}</span>
+                            {a.submittedAt && (
+                              <span className="text-xs text-subtle" title={formatDateTimeAr(a.submittedAt)}>
+                                سلّمته {timeAgoAr(a.submittedAt)} · قُيِّم {a.gradedAt ? timeAgoAr(a.gradedAt) : '—'}
+                              </span>
+                            )}
+                          </span>
+                        : a.gradedAt ? `قُيِّم ${timeAgoAr(a.gradedAt)}` : ''
+                    }
+                    actions={(
+                      <Link
+                        to={`/student/courses/${a.offeringId}`}
+                        className="btn ghost sm"
+                        title="الرجوع إلى سياق المقرّر حيث يظهر هذا التكليف"
+                      >
+                        <Icon icon={ArrowLeft} size={13} />
+                        المقرّر
+                      </Link>
+                    )}
                   />
                 );
               })}

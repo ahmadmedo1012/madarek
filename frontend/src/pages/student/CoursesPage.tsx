@@ -436,6 +436,12 @@ export function SubmitAssignmentModal({
                 ? 'استُلمت إجابتك وسيُعلَّم تسليمك كمتأخر؛ الحسم النهائي يعود إلى أستاذ المقرّر.'
                 : 'استُلمت إجابتك وستظهر للأستاذ بانتظار التقييم.'}
             </p>
+            {/* r164-e (assessment loop): the timeline's next step is a
+                PLACE, not a dead end — the submission now lives on the
+                results page until the teacher's grade lands. */}
+            <Link to="/student/results" className="text-xs" style={{ color: late ? 'var(--warning-ink)' : 'var(--success-ink)', textDecoration: 'underline' }}>
+              تابع حالة التقييم ودرجتك من صفحة النتائج
+            </Link>
           </div>
         ) : (
           <>

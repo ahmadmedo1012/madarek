@@ -22,6 +22,52 @@ export interface Submission {
   gradedAt?: string | null;
 }
 
+/* r164-e (assessment loop) — the timeline's label contract. Every
+ * student-facing surface that renders a submission status speaks the
+ * SAME chip (short label + tone + what-happens-next hint), so the loop
+ * reads identically on the results page, the agenda and any future
+ * surface. Pure + exported for unit pinning. RETURNED has no writer in
+ * the live state machine (enum value only) but keeps an honest label
+ * so a future return transition renders correctly on day one. */
+export function submissionStatusAr(status: SubmissionStatusFE): {
+  label: string;
+  color: 'green' | 'amber' | 'red' | 'brand';
+  hint: string;
+} {
+  switch (status) {
+    case 'SUBMITTED':
+      return {
+        label: 'بانتظار التقييم',
+        color: 'amber',
+        hint: 'وصلت إجابتك إلى قائمة تصحيح أستاذ المقرّر — سيصلك إشعار لحظة رصد الدرجة.',
+      };
+    case 'LATE':
+      return {
+        label: 'متأخر — بانتظار التقييم',
+        color: 'amber',
+        hint: 'سُجِّل تسليمك متأخراً؛ الحسم النهائي يعود إلى أستاذ المقرّر وسيصلك إشعار بالنتيجة.',
+      };
+    case 'GRADED':
+      return {
+        label: 'مُقيَّم',
+        color: 'green',
+        hint: 'رصد الأستاذ درجتك — راجع الدرجة وملاحظاته.',
+      };
+    case 'RETURNED':
+      return {
+        label: 'أعاده الأستاذ',
+        color: 'red',
+        hint: 'أعاد الأستاذ هذا التسليم إليك — راجع ملاحظاته.',
+      };
+    case 'DRAFT':
+      return {
+        label: 'مسوّدة',
+        color: 'brand',
+        hint: 'لم يُسلَّم هذا العمل بعد — أكمله قبل الموعد النهائي.',
+      };
+  }
+}
+
 export interface SubmitAssignmentInput {
   textAnswer?: string;
   fileUrl?: string;
@@ -89,6 +135,12 @@ export function useGradeSubmission(submissionId: string, offeringId?: string) {
       qc.invalidateQueries({ queryKey: ['teacher', 'dashboard'] });
       qc.invalidateQueries({ queryKey: ['me', 'dashboard'] });
       qc.invalidateQueries({ queryKey: ['me', 'results'] });
+      /* r164-e: the Assignments page's «جميع الواجبات» list renders the
+       * per-assignment submission counts from ['teacher','me',
+       * 'assignments'] (60s staleTime) — without this invalidation a
+       * landed grade left those counts stale on the very page the
+       * teacher graded from. */
+      qc.invalidateQueries({ queryKey: ['teacher', 'me', 'assignments'] });
       if (offeringId) {
         qc.invalidateQueries({ queryKey: ['teacher', 'offering', offeringId, 'students'] });
         qc.invalidateQueries({ queryKey: ['teacher', 'offering', offeringId, 'analytics'] });

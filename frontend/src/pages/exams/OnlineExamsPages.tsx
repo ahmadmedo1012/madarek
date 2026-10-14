@@ -113,6 +113,47 @@ function startErrorAr(error: unknown, exam: MyExam | undefined): string {
   return apiErrorMessage(error, 'تعذَّر بدء الاختبار — تحقّق من اتصالك وحاول مرة أخرى.');
 }
 
+/* r164-e (assessment loop) — the attempt lifecycle verdict chip.
+ * The badge must follow the wire truth, the same three-way contract
+ * the post-submit result screen honors (15-c P1-1):
+ *  · GRADED — the final verdict (ناجح / لم يجتز) over the real score.
+ *  · SUBMITTED — the machine score is PROVISIONAL (the teacher's
+ *    manual grading of essays/keyless shorts can still flip it), so
+ *    the chip renders the neutral «بانتظار التصحيح اليدوي» — never a
+ *    ناجح/لم يجتز verdict the server has withheld. The score itself
+ *    stays visible (it is real: the objective half is already graded).
+ *  · EXPIRED — terminal, never graded: no score, no verdict, the
+ *    honest «انتهى وقت المحاولة» truth.
+ *  · IN_PROGRESS — no verdict chip (the resumable chip owns that state).
+ * Pure + exported so the list card and the deep-link done-state
+ * (and the unit suite) share one mapping. */
+export function attemptVerdictChip(
+  exam: Pick<MyExam, 'myAttempt' | 'passingScore'>,
+): {
+  label: string;
+  color: 'green' | 'amber' | 'red';
+  /** Provisional (SUBMITTED) or final (GRADED) score lockup — the card
+   *  renders it bdi-isolated before the label; null for EXPIRED. */
+  score: { value: number; max: number } | null;
+} | null {
+  const a = exam.myAttempt;
+  if (!a) return null;
+  const scoreOf = a.score === null ? null : { value: Number(a.score), max: Number(a.maxScore) };
+  switch (a.status) {
+    case 'SUBMITTED':
+      return { label: 'بانتظار التصحيح اليدوي', color: 'amber', score: scoreOf };
+    case 'EXPIRED':
+      return { label: 'انتهى وقت المحاولة دون تسليم', color: 'red', score: null };
+    case 'GRADED': {
+      if (a.score === null) return null;
+      const passed = Number(a.maxScore) > 0 && (Number(a.score) / Number(a.maxScore)) * 100 >= exam.passingScore;
+      return { label: passed ? 'ناجح' : 'لم يجتز', color: passed ? 'green' : 'red', score: scoreOf };
+    }
+    default:
+      return null; // IN_PROGRESS owns its own resumable chip
+  }
+}
+
 /* 15-e P0-1 — submit must never race the autosave: submitAttempt
    flushes every in-flight answer save before finishing. The wait is
    bounded so a hung request cannot block the submit; 10s sits well
@@ -275,8 +316,12 @@ export default function OnlineExamsPage() {
 
 function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
   const accent = KIND_COLOR[exam.kind] ?? 'var(--accent)';
-  const passed = exam.myAttempt && exam.myAttempt.score !== null && (Number(exam.myAttempt.score) / Number(exam.myAttempt.maxScore)) * 100 >= exam.passingScore;
   const ws = examWindowState(exam);
+  /* r164-e: the verdict chip follows the attempt's wire status —
+   * SUBMITTED renders the neutral awaiting badge over the provisional
+   * machine score (never a verdict the server withheld), EXPIRED the
+   * honest terminal truth, GRADED the final ناجح/لم يجتز. */
+  const verdict = attemptVerdictChip(exam);
 
   const body = (
     <>
@@ -307,21 +352,32 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
             <Badge color="amber">{ws === 'closed' ? 'محاولة قيد التقدم' : 'محاولة قيد التقدم — متابعة'}</Badge>
           </div>
         )}
-        {exam.myAttempt && exam.myAttempt.score !== null && (
+        {verdict && (
           <div style={{ marginTop: 8 }}>
-            <Badge color={passed ? 'green' : 'amber'}>
-              <bdi>{Number(exam.myAttempt.score)} / {Number(exam.myAttempt.maxScore)}</bdi> · {passed ? 'ناجح' : 'لم يجتز'}
+            {/* r164-e: score + honest state in one chip. A SUBMITTED
+                attempt carries its provisional machine score with the
+                neutral awaiting label; EXPIRED carries no score (never
+                graded); GRADED carries the final verdict at full danger
+                weight on fail — the result screen's language. */}
+            <Badge color={verdict.color}>
+              {verdict.score && <><bdi>{verdict.score.value} / {verdict.score.max}</bdi> · </>}
+              {verdict.label}
             </Badge>
           </div>
         )}
-        {exam.myAttempt && exam.myAttempt.status !== 'IN_PROGRESS' && exam.kind !== 'PRACTICE' && (
+        {exam.myAttempt
+          && (exam.myAttempt.status === 'GRADED' || exam.myAttempt.status === 'SUBMITTED')
+          && exam.kind !== 'PRACTICE' && (
           <div style={{ marginTop: 8 }}>
             {/* 5-A6 P1-1 companion — a finished attempt is not a dead end:
               the taker renders the honest done-state (score or awaiting
               grading) for this deep link, so history stays reachable.
               6A6-finding-2: practice is excluded — its deep link lands on
               the BEGIN screen (the server grants a retake), so a «عرض
-              النتيجة» link there would promise what it never shows. */}
+              النتيجة» link there would promise what it never shows.
+              r164-e: EXPIRED is excluded too — an expired attempt has no
+              result story to show; its truth is fully told by the chip
+              above, and the link would promise what never lands. */}
             <Link to={`/student/online-exams/${exam.id}`} className="btn ghost sm">
               <Icon icon={ArrowLeft} size={13} />
               عرض النتيجة
@@ -849,10 +905,13 @@ export function ExamTakerPage() {
     const exam = (examsQ.data ?? []).find((e) => e.id === id);
     const myAttempt = exam?.myAttempt ?? null;
     const score = myAttempt?.score;
-    const passed =
-      exam && score !== null && score !== undefined && myAttempt
-        ? (Number(score) / Number(myAttempt.maxScore)) * 100 >= exam.passingScore
-        : null;
+    /* r164-e: EXPIRED is its own terminal truth — the clock ran out and
+     * the attempt was never graded, so the screen must never claim a
+     * result is pending or coming. SUBMITTED keeps the provisional
+     * score but renders the neutral awaiting badge (the machine score
+     * is real; the verdict is not — the teacher can still flip it). */
+    const expired = myAttempt?.status === 'EXPIRED';
+    const verdict = exam ? attemptVerdictChip(exam) : null;
     return (
       <div className="page">
         <Link to="/student/online-exams" className="back-link">
@@ -864,19 +923,39 @@ export function ExamTakerPage() {
               read as one tight group (the grade and its verdict badge
               are a single decision), generous break before the action. */}
           <div className="empty-state exam-result">
-            <Icon icon={CheckCircle2} size={32} style={{ color: 'var(--accent)' }} />
-            <h1 className="exam-result-title" style={H1_AS_H2_STYLE}>لقد أكملت هذا الاختبار مسبقاً</h1>
-            {exam && myAttempt && score !== null && score !== undefined ? (
+            {expired ? (
+              <Icon icon={Hourglass} size={32} style={{ color: 'var(--warning)' }} />
+            ) : (
+              <Icon icon={CheckCircle2} size={32} style={{ color: 'var(--accent)' }} />
+            )}
+            <h1 className="exam-result-title" style={H1_AS_H2_STYLE}>
+              {expired ? 'انتهت مدة هذه المحاولة' : 'لقد أكملت هذا الاختبار مسبقاً'}
+            </h1>
+            {expired ? (
+              <>
+                <p className="exam-result-note">انتهى وقت المحاولة دون تسليم — لا تُحتسب لها نتيجة ولا يمكن إعادتها.</p>
+                <p className="exam-result-note">راجع مواعيد الاختبارات المتاحة من قائمة الاختبارات.</p>
+              </>
+            ) : exam && myAttempt && score !== null && score !== undefined ? (
               <>
                 <div className="exam-result-lockup">
                   <div className="exam-grade">
                     <span className="exam-grade-value"><bdi>{Number(score)} / {Number(myAttempt.maxScore)}</bdi></span>
                   </div>
                   {/* The verdict badge carries the fail case at full danger
-                      weight — a withheld pass is not a soft warning. */}
-                  <Badge color={passed ? 'green' : 'red'}>{passed ? 'ناجح' : 'لم يجتز'}</Badge>
+                      weight — a withheld pass is not a soft warning. A
+                      SUBMITTED attempt renders the same neutral awaiting
+                      chip the list card and the post-submit result screen
+                      carry (one mapping: attemptVerdictChip). */}
+                  {verdict && (
+                    <Badge color={verdict.color}>{verdict.label}</Badge>
+                  )}
                 </div>
-                <p className="exam-result-note">لا يمكن إعادة المحاولة بعد التسليم.</p>
+                <p className="exam-result-note">
+                  {myAttempt.status === 'SUBMITTED'
+                    ? 'درجتك الأولية من الأسئلة الآلية — الدرجات المقالية بانتظار تقييم الأستاذ.'
+                    : 'لا يمكن إعادة المحاولة بعد التسليم.'}
+                </p>
                 {/* 5-D3 (5-B3 hand-off #1 / A6 P2-4): the deep-link
                     done-state offers the same review on a GRADED
                     attempt; anything short of GRADED keeps the honest

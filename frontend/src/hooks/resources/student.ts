@@ -135,6 +135,31 @@ export interface StudentResults {
     offeringId: string;
     gradePct: number;
     gradedAt: string | null;
+    /* r164-e (assessment loop) — additive fields the results page now
+     * renders. Optional so a pre-r164-e cached payload (or an older
+     * server) still satisfies the type: the page guards each one. */
+    /** Raw awarded score (the pct alone hid the rubric ceiling). */
+    grade?: number | null;
+    /** The assignment's maxScore — the score's denominator. */
+    maxScore?: number;
+    /** The teacher's grading feedback, inline. */
+    feedback?: string | null;
+    /** When the student handed the work in (timeline step 1). */
+    submittedAt?: string | null;
+  }>;
+  /* r164-e — the awaiting-grading half of the submission timeline.
+   * Optional for the same backward-compat reason. */
+  pendingSubmissions?: Array<{
+    id: string;
+    title: string;
+    type: 'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM';
+    offeringId: string;
+    courseCode: string;
+    courseName: string;
+    status: 'SUBMITTED' | 'LATE';
+    /** LATE as its own flag (the 16-B1 queue contract). */
+    late: boolean;
+    submittedAt: string;
   }>;
 }
 export function useStudentResults() {

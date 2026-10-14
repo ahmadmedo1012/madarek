@@ -59,7 +59,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import OnlineExamsPage, {
-  ExamTakerPage, restoreSavedAnswers, examWindowState, SUBMIT_FLUSH_MS,
+  ExamTakerPage, restoreSavedAnswers, examWindowState, SUBMIT_FLUSH_MS, attemptVerdictChip,
 } from '../../src/pages/exams/OnlineExamsPages';
 
 interface AttemptFixture {
@@ -643,6 +643,121 @@ describe('OnlineExamsPage list (D5 reachability)', () => {
   });
 });
 
+/* ── r164-e — the attempt lifecycle verdict chip (assessment loop) ── */
+describe('attemptVerdictChip (r164-e — one mapping, wire truth)', () => {
+  it('maps every attempt status: SUBMITTED neutral, EXPIRED terminal, GRADED verdict, IN_PROGRESS/none null', () => {
+    // SUBMITTED: the machine score is provisional — the awaiting chip
+    // carries it, but no verdict.
+    expect(attemptVerdictChip({
+      passingScore: 60,
+      myAttempt: { id: 'a', status: 'SUBMITTED', score: 3, maxScore: 10, submittedAt: '2026-01-02T00:00:00.000Z' },
+    })).toEqual({ label: 'بانتظار التصحيح اليدوي', color: 'amber', score: { value: 3, max: 10 } });
+    // SUBMITTED before any score lands (null): chip without a score.
+    expect(attemptVerdictChip({
+      passingScore: 60,
+      myAttempt: { id: 'a', status: 'SUBMITTED', score: null, maxScore: 10, submittedAt: null },
+    })).toEqual({ label: 'بانتظار التصحيح اليدوي', color: 'amber', score: null });
+    // EXPIRED: terminal, never graded — no score, no verdict.
+    expect(attemptVerdictChip({
+      passingScore: 60,
+      myAttempt: { id: 'a', status: 'EXPIRED', score: null, maxScore: 10, submittedAt: null },
+    })).toEqual({ label: 'انتهى وقت المحاولة دون تسليم', color: 'red', score: null });
+    // GRADED: the final verdict at passingScore.
+    expect(attemptVerdictChip({
+      passingScore: 60,
+      myAttempt: { id: 'a', status: 'GRADED', score: 8, maxScore: 10, submittedAt: '2026-01-02T00:00:00.000Z' },
+    })).toEqual({ label: 'ناجح', color: 'green', score: { value: 8, max: 10 } });
+    expect(attemptVerdictChip({
+      passingScore: 60,
+      myAttempt: { id: 'a', status: 'GRADED', score: 5, maxScore: 10, submittedAt: '2026-01-02T00:00:00.000Z' },
+    })).toEqual({ label: 'لم يجتز', color: 'red', score: { value: 5, max: 10 } });
+    // IN_PROGRESS owns its own resumable chip; no attempt, no chip.
+    expect(attemptVerdictChip({
+      passingScore: 60,
+      myAttempt: { id: 'a', status: 'IN_PROGRESS', score: null, maxScore: 10, submittedAt: null },
+    })).toBeNull();
+    expect(attemptVerdictChip({ passingScore: 60, myAttempt: null })).toBeNull();
+  });
+
+  it('a zero maxScore GRADED attempt can never pass (the backend own guard)', () => {
+    expect(attemptVerdictChip({
+      passingScore: 50,
+      myAttempt: { id: 'a', status: 'GRADED', score: 0, maxScore: 0, submittedAt: '2026-01-02T00:00:00.000Z' },
+    })).toEqual({ label: 'لم يجتز', color: 'red', score: { value: 0, max: 0 } });
+  });
+});
+
+describe('ExamCard attempt chips (r164-e — list coherence)', () => {
+  beforeEach(() => {
+    mocks.exams = [];
+  });
+
+  it('a SUBMITTED attempt card shows the provisional score + awaiting chip — never a premature verdict', () => {
+    // 3/10 with passingScore 60: the machine score alone reads as a
+    // fail, but the teacher's essay grading can still lift it — the
+    // card must not render «لم يجتز» (the 15-c P1-1 contract, list
+    // mirror; the old badge computed the verdict from the score).
+    mocks.exams = [
+      examFixture({
+        passingScore: 60,
+        myAttempt: { id: 'a-sub', status: 'SUBMITTED', score: 3, maxScore: 10, submittedAt: '2026-06-01T09:00:00.000Z' },
+      }),
+    ];
+
+    render(
+      <MemoryRouter>
+        <OnlineExamsPage />
+      </MemoryRouter>,
+    );
+
+    // The badge is one chip — score rides its bdi, the label the
+    // badge span (both pin the same honest state).
+    expect(screen.getByText('3 / 10')).toBeTruthy();
+    expect(screen.getByText(/بانتظار التصحيح اليدوي/)).toBeTruthy();
+    expect(screen.queryByText(/لم يجتز/)).toBeNull();
+    // History stays reachable — SUBMITTED has a result story.
+    expect(screen.getByRole('link', { name: 'عرض النتيجة' })).toBeTruthy();
+  });
+
+  it('an EXPIRED attempt card tells the terminal truth and promises no result deep link', () => {
+    mocks.exams = [
+      examFixture({
+        myAttempt: { id: 'a-exp', status: 'EXPIRED', score: null, maxScore: 10, submittedAt: null },
+      }),
+    ];
+
+    render(
+      <MemoryRouter>
+        <OnlineExamsPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('انتهى وقت المحاولة دون تسليم')).toBeTruthy();
+    // The card sits in history (static, not startable)…
+    expect(screen.getByText('اختبارات أجريتها')).toBeTruthy();
+    // …but no «عرض النتيجة» link — an expired attempt has no result.
+    expect(screen.queryByRole('link', { name: 'عرض النتيجة' })).toBeNull();
+  });
+
+  it('a GRADED attempt card keeps the final verdict chip over the score', () => {
+    mocks.exams = [
+      examFixture({
+        myAttempt: { id: 'a-done', status: 'GRADED', score: 8, maxScore: 10, submittedAt: '2026-01-02T00:00:00.000Z' },
+      }),
+    ];
+
+    render(
+      <MemoryRouter>
+        <OnlineExamsPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('8 / 10')).toBeTruthy();
+    expect(screen.getByText(/ناجح/)).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'عرض النتيجة' })).toBeTruthy();
+  });
+});
+
 describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
   beforeEach(() => {
     mocks.exams = [];
@@ -910,14 +1025,40 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     expect(toggle).toHaveAttribute('aria-controls', 'exam-review-att-done');
   });
 
-  it('deep-link done-state on an EXPIRED attempt keeps the honest promise, never a dead toggle (5-D3)', async () => {
+  it('deep-link done-state on an EXPIRED attempt tells the terminal truth — never a pending-result lie (r164-e / 5-D3)', async () => {
     mocks.exams = [examFixture({
       myAttempt: { id: 'att-exp', status: 'EXPIRED', score: null, maxScore: 10, submittedAt: null },
     })];
 
     renderTaker();
 
+    // r164-e: EXPIRED is never graded — the old copy claimed «النتيجة
+    // قيد الاحتساب» (a result that can never come). The honest terminal
+    // state names what actually happened.
+    expect(await screen.findByText('انتهت مدة هذه المحاولة')).toBeTruthy();
+    expect(screen.getByText(/انتهى وقت المحاولة دون تسليم — لا تُحتسب لها نتيجة/)).toBeTruthy();
+    expect(screen.queryByText(/النتيجة قيد الاحتساب/)).toBeNull();
+    expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
+  });
+
+  it('deep-link done-state on a SUBMITTED attempt with a provisional score renders the neutral awaiting badge, never a verdict (r164-e)', async () => {
+    // The submit route parks attempts in SUBMITTED with the machine
+    // score already written (exams.routes.ts) while essays wait on the
+    // teacher. The machine score shows; the ناجح/لم يجتز verdict the
+    // teacher can still flip does NOT (15-c P1-1, deep-link mirror).
+    mocks.exams = [examFixture({
+      passingScore: 60,
+      myAttempt: { id: 'att-sub', status: 'SUBMITTED', score: 3, maxScore: 10, submittedAt: '2026-06-01T09:00:00.000Z' },
+    })];
+
+    renderTaker();
+
     expect(await screen.findByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
+    expect(screen.getByText('3 / 10')).toBeTruthy();
+    expect(screen.getByText('بانتظار التصحيح اليدوي')).toBeTruthy();
+    expect(screen.queryByText('لم يجتز')).toBeNull();
+    expect(screen.queryByText('ناجح')).toBeNull();
+    expect(screen.getByText(/درجتك الأولية من الأسئلة الآلية/)).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
   });
 
