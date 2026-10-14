@@ -1,5 +1,5 @@
 import {
-  LayoutDashboard, Calendar, BookOpen, BarChart3,
+  LayoutDashboard, Calendar, CalendarDays, BookOpen, BarChart3,
   Bot, Library, Trophy, FlaskConical,
   GraduationCap, Briefcase, Building2,
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
@@ -27,6 +27,10 @@ export const STUDENT_NAV: NavGroup[] = [
     items: [
       { to: '/student/dashboard', icon: LayoutDashboard, label: 'لوحة التحكم' },
       { to: '/student/schedule', icon: Calendar, label: 'الجدول الدراسي' },
+      // r164-c: the one-calendar view — every deadline surface united
+      // (schedule + assignments + exam windows + live). CalendarDays so
+      // the icon stays unique vs the weekly schedule's Calendar (A4 P3-4).
+      { to: '/student/calendar', icon: CalendarDays, label: 'التقويم الأكاديمي' },
       { to: '/student/courses', icon: BookOpen, label: 'مقرّراتي الدراسية' },
       { to: '/student/results', icon: BarChart3, label: 'النتائج والتقييمات' },
     ],

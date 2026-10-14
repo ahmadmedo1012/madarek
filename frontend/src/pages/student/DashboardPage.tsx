@@ -6,7 +6,7 @@ import {
 import {
   GraduationCap, Presentation, FileText, FlaskConical,
   BookOpen, CalendarCheck, ClipboardList, Trophy, Radio,
-  Play, ChevronLeft, Eye,
+  Play, ChevronLeft, Eye, ClipboardCheck,
   type LucideIcon,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -16,9 +16,9 @@ import { ChartFrame } from '../../components/charts';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
-import { useStudentDashboard, useResume } from '../../hooks/useResources';
+import { useStudentDashboard, useResume, useTrainingCatalog } from '../../hooks/useResources';
 import { useChartThemeKey, chartColors, radialOptions } from '../../lib/chartTheme';
-import { ASSIGNMENT_KIND_LABEL } from '../../lib/courseMeta';
+import { ASSIGNMENT_KIND_LABEL, EXAM_KIND_LABEL } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
 
@@ -107,6 +107,41 @@ export function safeMs(iso: string): number {
   return Number.isFinite(t) ? t : Number.MAX_SAFE_INTEGER;
 }
 
+/* r164-c — the exam row of the agenda: the pure half of the mapping
+ * (chronology key, deep link, labels). Exported for
+ * tests/unit/DashboardPage-exams-resume.test.ts; the JSX assembly in
+ * the page consumes it directly. */
+export interface AgendaExamSource {
+  id: string;
+  title: string;
+  kind: string;
+  whenAt: string;
+  phase: 'opens' | 'closes';
+  courseCode: string | null;
+}
+
+export interface ExamAgendaRow {
+  id: string;
+  whenMs: number;
+  to: string;
+  /** The Arabic ExamKind label ('نهائي', 'نصفي', …); unknown kinds
+   *  fall back to the generic «اختبار» (D17-1: اختبار, never امتحان). */
+  kindLabel: string;
+  /** «يفتح باب الاختبار» for a future window, «آخر موعد للتسليم» for
+   *  the open window's deadline. */
+  metaLabel: string;
+}
+
+export function examAgendaRow(e: AgendaExamSource): ExamAgendaRow {
+  return {
+    id: `e-${e.id}`,
+    whenMs: safeMs(e.whenAt),
+    to: `/student/online-exams/${e.id}`,
+    kindLabel: (EXAM_KIND_LABEL as Record<string, string>)[e.kind] ?? 'اختبار',
+    metaLabel: e.phase === 'opens' ? 'يفتح باب الاختبار' : 'آخر موعد للتسليم',
+  };
+}
+
 function gpaTone(gpa: number): { label: string; color: 'green' | 'amber' | 'red' } {
   if (gpa >= 3.5) return { label: 'ممتاز', color: 'green' };
   if (gpa >= 3.0) return { label: 'جيد جدّاً', color: 'green' };
@@ -177,7 +212,7 @@ function CountIn({ value, suffix = '' }: { value: number; suffix?: string }) {
 
 type AgendaTone = 'accent' | 'gold' | 'red';
 type AgendaItem = {
-  kind: 'class' | 'assign' | 'live';
+  kind: 'class' | 'assign' | 'live' | 'exam';
   id: string;
   /** r158 (6A14 P2): the chronology key — classes anchor to their
    *  start time (classWhenMs), assignments/live to their ISO date
@@ -194,12 +229,72 @@ type AgendaItem = {
   tone: AgendaTone;
 };
 
+/* r164-c — the training arm of the resume decision. /me/resume answers
+ * the LECTURE half (continue the most-recently-watched lecture, or
+ * start the first unwatched one). When it returns null — every lecture
+ * of every active enrollment is watched, or the student has no course
+ * enrollments at all — the next honest action is the training track the
+ * student is partway through (edX's "resume" promise, extended to the
+ * self-development surface). Pure (exported for
+ * tests/unit/DashboardPage-exams-resume.test.ts):
+ *  · candidates = enrolled && !isCompleted tracks, in catalog order;
+ *  · a track with completedLessons > 0 is a true CONTINUE — the most
+ *    advanced one wins (the nearest finish line is the strongest
+ *    next-action signal);
+ *  · otherwise the FIRST unstarted enrolled track is a START nudge;
+ *  · no candidates → null → the hero renders nothing, exactly like the
+ *    lecture half. */
+export interface TrainingResumeTrack {
+  slug: string;
+  title: string;
+  enrolled: boolean;
+  isCompleted: boolean;
+  completedLessons: number;
+  progressPct: number;
+}
+
+export interface TrainingResumePick {
+  slug: string;
+  title: string;
+  progressPct: number;
+  /** true = a track already in progress (continue), false = unstarted (start). */
+  started: boolean;
+}
+
+export function pickTrainingResume(
+  tracks: readonly TrainingResumeTrack[],
+): TrainingResumePick | null {
+  const active = tracks.filter((t) => t.enrolled && !t.isCompleted);
+  if (active.length === 0) return null;
+  const inProgress = active
+    .filter((t) => t.completedLessons > 0)
+    .sort((a, b) => b.completedLessons - a.completedLessons);
+  const pick = inProgress[0] ?? active[0];
+  // active is non-empty, so pick is too — the guard is the
+  // noUncheckedIndexedAccess type-narrow, not a real branch.
+  if (!pick) return null;
+  return {
+    slug: pick.slug,
+    title: pick.title,
+    progressPct: pick.progressPct,
+    started: pick.completedLessons > 0,
+  };
+}
+
 /* PP-X2 (audit P0-3) — the continue-learning hero. The PRIMARY action
  * of the dashboard: one click from cold-open to the exact second the
  * student left off (GET /me/resume). null → renders nothing; a pending
  * query renders its own ~88px skeleton so the rest of the dashboard
- * never waits on it. */
-function ResumeHero({ resume }: { resume: ReturnType<typeof useResume> }) {
+ * never waits on it. r164-c: when the lecture payload is null, the
+ * hero falls through to the TRAINING arm above — the card never
+ * silently disappears while a self-development track is mid-flight. */
+function ResumeHero({
+  resume,
+  training,
+}: {
+  resume: ReturnType<typeof useResume>;
+  training: ReturnType<typeof useTrainingCatalog>;
+}) {
   if (resume.isPending) {
     // The card's own skeleton — same footprint as the loaded card, so
     // the KPI row below doesn't shift when the resume payload lands.
@@ -232,7 +327,44 @@ function ResumeHero({ resume }: { resume: ReturnType<typeof useResume> }) {
     );
   }
   const r = resume.data;
-  if (!r) return null;
+  if (!r) {
+    // r164-c — lecture half empty: the training arm. A pending catalog
+    // renders nothing yet (the card pops in when the payload lands —
+    // the hero is above the fold and the KPI row never depended on it);
+    // an error or no candidates renders nothing, same as before.
+    const t = training.data ? pickTrainingResume(training.data) : null;
+    if (!t) return null;
+    return (
+      <section className="dash-resume" aria-label="أكمل من حيث توقفت">
+        <Card className="dash-resume-card">
+          <div className="dash-resume-main">
+            <div className="dash-eyebrow">أكمل من حيث توقفت</div>
+            <div className="dash-resume-course">
+              <span className="dash-resume-course-name">{t.title}</span>
+              <Badge>تطوير ذاتي</Badge>
+            </div>
+            <div className="dash-resume-lecture">
+              {t.started
+                ? `مسار بدأته وأنجزت ${t.progressPct}% من دروسه — أكمل الدرس التالي.`
+                : 'مسار سجّلت فيه ولم تبدأه بعد — ابدأه من الدرس الأول.'}
+            </div>
+            {t.started && (
+              <div className="dash-resume-progress">
+                <ProgressBar value={t.progressPct} label="تقدّم المسار" ariaLabel="نسبة إنجاز المسار التدريبي المتوقّف" />
+              </div>
+            )}
+          </div>
+          <Link
+            to={`/training/${t.slug}`}
+            className="btn primary dash-resume-cta"
+          >
+            <Icon icon={Play} size={15} />
+            {t.started ? 'متابعة المسار' : 'ابدأ المسار'}
+          </Link>
+        </Card>
+      </section>
+    );
+  }
   const continuing = r.mode === 'continue';
   return (
     <section className="dash-resume" aria-label="أكمل من حيث توقفت">
@@ -271,6 +403,9 @@ export default function StudentDashboardPage() {
   // Independent of the dashboard aggregate — the hero renders (or not)
   // the moment ITS payload lands, and never blocks the KPIs above.
   const resume = useResume();
+  // r164-c: the training catalog feeds the hero's second arm (only
+  // consulted when the lecture payload is null — see pickTrainingResume).
+  const trainingCatalog = useTrainingCatalog();
   // Remounts every Chart.js canvas when the light/dark theme flips, so
   // canvas colours are re-resolved instead of staying stale.
   const themeKey = useChartThemeKey();
@@ -370,6 +505,28 @@ export default function StudentDashboardPage() {
       meta: <><bdi>{l.offering.course.code}</bdi> · {formatDue(l.scheduledAt)}</>,
       icon: Radio, tone: 'red',
     })),
+    // r164-c — the fourth bucket: still-actable exams. Distinct treatment
+    // (ClipboardCheck well + red tone + the «يفتح/آخر موعد» phrasing) and
+    // a deep link straight into the exam taker; whenMs anchors on the row's
+    // own milestone (whenAt) so the exam interleaves with the rest of the
+    // week chronologically. `?? []` keeps a stale pre-r164-c cached payload
+    // rendering as an empty bucket instead of crashing.
+    ...(d.agenda.exams ?? []).slice(0, 4).map<AgendaItem>((e) => {
+      const row = examAgendaRow(e);
+      return {
+        kind: 'exam' as const, id: row.id,
+        whenMs: row.whenMs,
+        to: row.to,
+        title: (
+          <>
+            {row.kindLabel}: {e.title}
+            {e.courseCode ? <> (<bdi>{e.courseCode}</bdi>)</> : null}
+          </>
+        ),
+        meta: <>{row.metaLabel} {formatDue(e.whenAt)}</>,
+        icon: ClipboardCheck, tone: 'red' as const,
+      };
+    }),
   ].sort((a, b) => a.whenMs - b.whenMs);
 
   return (
@@ -388,7 +545,7 @@ export default function StudentDashboardPage() {
       {/* Continue-learning hero (PP-X2 / audit P0-3) — the page's
           primary action, above the KPI row: course + code chip + lecture
           + watched share + ONE dominant CTA to the exact lecture. */}
-      <ResumeHero resume={resume} />
+      <ResumeHero resume={resume} training={trainingCatalog} />
 
       {/* At-a-glance KPI row — real values; the count-up reveal rides the
           grid's entrance stagger (polish grid children) as the page moment */}
@@ -530,7 +687,7 @@ export default function StudentDashboardPage() {
             <EmptyState
               illustration="empty-constellation"
               title="أجندتك فارغة"
-              description="لا حصص أو مهام قادمة في أجندك بعد — سجّل في مقرّر أو طَلِب مهمة لظهورها هنا."
+              description="لا حصص أو مهام أو اختبارات قادمة في أجندك بعد — سجّل في مقرّر أو طَلِب مهمة لظهورها هنا."
             />
           </Card>
         ) : (

@@ -27,6 +27,9 @@ const AuthPage = lazy(() => import('./pages/AuthPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 
 const StudentDashboardPage = lazy(() => import('./pages/student/DashboardPage'));
+// r164-c: the student one-calendar view (schedule + assignments + exam
+// windows + live sessions in a month grid).
+const StudentCalendarPage = lazy(() => import('./pages/student/CalendarPage'));
 const StudentCoursesPage = lazy(() => import('./pages/student/CoursesPage'));
 const LibraryPage = lazy(() => import('./pages/student/LibraryPage'));
 const MoocPage = lazy(() => import('./pages/student/MoocPage'));
@@ -307,6 +310,7 @@ export function AppRoutes() {
         <Route element={<ProtectedRoute allow={['STUDENT']} />}>
           <Route element={<AppShell />}>
             <Route path="/student/dashboard" element={<StudentDashboardPage />} />
+            <Route path="/student/calendar" element={<StudentCalendarPage />} />
             <Route path="/student/courses" element={<StudentCoursesPage />} />
             <Route path="/student/schedule" element={<SchedulePage />} />
             <Route path="/student/results" element={<ResultsPage />} />

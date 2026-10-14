@@ -68,6 +68,24 @@ export interface StudentDashboard {
       status: 'SCHEDULED' | 'LIVE' | 'ENDED' | 'CANCELLED';
       offering: { course: { name: string; code: string } };
     }>;
+    /** r164-c: the fourth agenda bucket — still-actable exams with a
+     *  milestone (a future openAt, or the open window's closeAt) inside
+     *  the week horizon. Optional on the type because the field is a
+     *  wire-side addition: a stale cached payload from before the
+     *  backend change renders as an empty bucket, never a crash. */
+    exams?: Array<{
+      id: string;
+      title: string;
+      kind: string;
+      openAt: string | null;
+      closeAt: string | null;
+      /** The milestone instant this row keys on (phase's own date). */
+      whenAt: string;
+      phase: 'opens' | 'closes';
+      courseName: string | null;
+      courseCode: string | null;
+      facultyName: string | null;
+    }>;
   };
 }
 export function useStudentDashboard() {

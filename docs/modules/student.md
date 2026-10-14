@@ -7,7 +7,8 @@
 
 | المسار | المكوّن | الملف | ملاحظة |
 |---|---|---|---|
-| `/student/dashboard` | `DashboardPage` | `pages/student/DashboardPage.tsx` | استعلام مجمّع جولة واحدة `/me/dashboard` |
+| `/student/dashboard` | `DashboardPage` | `pages/student/DashboardPage.tsx` | استعلام مجمّع جولة واحدة `/me/dashboard`؛ الأجندة تدمج الحصص+الواجبات+البث+**الاختبارات** (r164c) وبطاقة «أكمل من حيث توقفت» تمتد للمحاضرة المتوقفة أو مسار تدريبي بدأته (r164c) |
+| `/student/calendar` | `CalendarPage` | `pages/student/CalendarPage.tsx` | تقويم شهريّ واحد لكل المواعيد (r164c): شبكة RTL بتسميات عربية وأيام مدارك المدنية (أفريقيا/طرابلس)، يوحّد الحصص الأسبوعية + مواعيد الواجبات + نوافذ الاختبارات + البث؛ تركيب في الواجهة من `/enrollments/me` و`/me/dashboard` و`/exams/me` — بلا مسار خلفيّ جديد |
 | `/student/courses` + `/:offeringId` | `CoursesPage`/`CourseDetailPage` | `pages/student/CoursesPage.tsx` + `CourseDetailPage.tsx` | تسليم واجبات عبر `SubmitAssignmentModal` |
 | `/student/lectures/:lectureId` | `LecturePlayerPage` | `pages/student/LecturePlayerPage.tsx` | قلب الفصول المقلوبة (تتبع 10 ثوانٍ، إدماجيات) |
 | `/student/matrix` | `MatrixPage` | `pages/student/MatrixPage.tsx` | خريطة حرارية + مرشحات مستويات |
@@ -22,7 +23,7 @@
 
 | المجموعة | الملف | أبرز المسارات |
 |---|---|---|
-| لوحة/نتائج/مواد | `student-dashboard.routes.ts` | `GET /me/dashboard`، `/me/results` (يشمل `pendingSubmissions` + ملاحظة الأستاذ في `recentAssignments` — r164-e)، `/me/materials`، `/me/lab-sessions` |
+| لوحة/نتائج/مواد | `student-dashboard.routes.ts` | `GET /me/dashboard` (الأجندة: classes/assignments/live/**exams** — قرارات r164c النقية `selectAgendaExams`/`examAttemptFinished`)، `/me/results` (يشمل `pendingSubmissions` + ملاحظة الأستاذ في `recentAssignments` — r164-e)، `/me/materials`، `/me/lab-sessions` |
 | التعلم | `learning.routes.ts` | `GET /offerings/:id/full` (يُسقط لكل محاضرة `answeredCheckpoints` لطلاب فقط — r164d)، `POST /lectures/:id/watch`، إدماجيات (حدّ 20/د + سقف احتساب 4 محاولات/مفهوم r155a)، `GET/POST /me/research`، `POST /research/:id/scan` (10/د)، annotations، `/me/matrix`، `/me/gaps` |
 | التدريب | `training.routes.ts` | `catalog`، `tracks/:slug/enroll`، `lessons/:lessonId/complete`، `me/badges`، `certificates`، `leaderboard` |
 | اختبارات | نماذج `Question/ExamTemplate/ExamAttempt` | الطالب يتخذ فقط (البناء للإدارة/الأستاذ) |

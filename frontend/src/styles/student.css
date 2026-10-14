@@ -663,6 +663,199 @@
     .dash-resume-cta { inline-size: 100%; justify-content: center; }
   }
 
+  /* ═══ r164-c — التقويم الأكاديمي (CalendarPage) ═══
+     The one-calendar view: month grid + legend + selected-day event
+     list. Token-only colors; the four event kinds ride data-kind:
+     class → accent · assignment → gold · exam → danger · live →
+     chart-5 (lavender). Dots use the deep inks (WCAG-safe on both
+     themes); icon wells use the soft backgrounds + deep inks — the
+     same pastel/ink recipe as the agenda tone wells. */
+
+  .cal-card { overflow: hidden; }
+
+  .cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-5);
+    border-block-end: 1px solid var(--border-faint);
+  }
+  .cal-month {
+    font-family: var(--font-display);
+    font-size: var(--type-headline-size-sm);
+    font-weight: var(--type-headline-weight);
+    line-height: var(--type-headline-line-height);
+    color: var(--text);
+  }
+
+  .cal-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-4);
+    padding: var(--sp-3) var(--sp-5);
+    font-size: var(--fs-xs);
+    color: var(--text-secondary);
+  }
+  .cal-legend-item { display: inline-flex; align-items: center; gap: var(--sp-1-5); }
+  .cal-dot {
+    display: inline-block;
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: var(--r-full, 999px);
+    flex-shrink: 0;
+  }
+  .cal-dot[data-kind='class']     { background: var(--accent); }
+  .cal-dot[data-kind='assignment'] { background: var(--gold-ink); }
+  .cal-dot[data-kind='exam']      { background: var(--danger-ink); }
+  .cal-dot[data-kind='live']      { background: var(--chart-5); }
+
+  .cal-dow-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--sp-1);
+    padding: 0 var(--sp-3);
+  }
+  .cal-dow {
+    text-align: center;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    padding-block: var(--sp-2);
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--sp-1);
+    padding: 0 var(--sp-3) var(--sp-3);
+  }
+  .cal-cell {
+    /* Buttons reset — the cell is a selector, not an action */
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: var(--r-lg);
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    min-block-size: 64px;
+    padding: var(--sp-1) var(--sp-1) 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-1);
+    cursor: pointer;
+    transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+  }
+  .cal-cell:hover { background: var(--surface-2); }
+  .cal-cell[data-in-month='false'] { opacity: 0.35; }
+  .cal-cell[data-selected='true'] {
+    background: var(--surface-2);
+    border-color: var(--accent);
+  }
+  .cal-day-num {
+    font-size: var(--fs-sm);
+    color: var(--text);
+    min-inline-size: 28px;
+    min-block-size: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--r-full, 999px);
+  }
+  /* Today: the classic filled numeral — accent fill + accent-fg ink. */
+  .cal-cell[data-today='true'] .cal-day-num {
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 700;
+  }
+  .cal-dots {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* The selected-day event list — same row anatomy/affordances as the
+     dashboard agenda rows (icon well + text + forward chevron). */
+  .cal-detail { border-block-start: 1px solid var(--border-faint); }
+  .cal-detail-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-5);
+  }
+  .cal-detail-date {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text);
+  }
+  .cal-detail-list { display: flex; flex-direction: column; padding: 0 var(--sp-3) var(--sp-3); }
+  .cal-event-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-2);
+    border-radius: var(--r-lg);
+    text-decoration: none;
+    color: var(--text);
+    transition: background var(--t-fast) var(--ease);
+  }
+  .cal-event-row:hover { background: var(--surface-2); }
+  .cal-event-row:hover .cal-event-chevron { color: var(--accent-ink, var(--accent)); }
+  .cal-event-icon {
+    display: grid;
+    place-items: center;
+    inline-size: 38px;
+    block-size: 38px;
+    border-radius: var(--r-lg);
+    flex-shrink: 0;
+  }
+  .cal-event-icon[data-kind='class'] {
+    background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+    color: var(--accent-ink, var(--accent));
+  }
+  .cal-event-icon[data-kind='assignment'] { background: var(--gold-soft); color: var(--gold-ink); }
+  .cal-event-icon[data-kind='exam'] { background: var(--danger-soft); color: var(--danger-ink); }
+  .cal-event-icon[data-kind='live'] {
+    background: color-mix(in srgb, var(--chart-5) 12%, var(--surface));
+    color: var(--chart-5);
+  }
+  .cal-event-time {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    min-inline-size: 44px;
+    text-align: center;
+  }
+  .cal-event-title {
+    flex: 1;
+    min-inline-size: 0;
+    font-size: var(--fs-sm);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    flex-wrap: wrap;
+  }
+  .cal-event-phase {
+    font-size: var(--fs-xs);
+    color: var(--danger-ink);
+    background: var(--danger-soft);
+    border-radius: var(--r-full, 999px);
+    padding: 1px var(--sp-2);
+  }
+  .cal-event-chevron { flex-shrink: 0; color: var(--text-muted); }
+
+  @media (max-width: 640px) {
+    /* Phone: tighter cells (dots stay legible), full-width padding. */
+    .cal-cell { min-block-size: 48px; }
+    .cal-day-num { min-inline-size: 24px; min-block-size: 24px; }
+    .cal-head, .cal-legend, .cal-detail-head { padding-inline: var(--sp-3); }
+    .cal-grid, .cal-dow-row { padding-inline: var(--sp-1); }
+    .cal-event-time { display: none; }
+  }
+
   /* ═══ Matrix — the heatmap filter signature ═══ */
 
   /* Count chip inside the shared .filter-pill (training.css owns the

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { Role, SubmissionStatus, Prisma } from '@prisma/client';
+import { AttemptStatus, Role, SubmissionStatus, Prisma } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { validate } from '../validate.js';
@@ -354,6 +354,117 @@ export function pendingSubmissionFeed(
 }
 
 /**
+ * r164-c — agenda exams: the fourth bucket of the /me/dashboard agenda.
+ *
+ * The agenda shipped classes + assignments + live, but exams — the only
+ * other real deadline surface a student has — were invisible: a FINAL
+ * closing tomorrow never appeared on the dashboard (the gap-matrix
+ * "agenda misses exams" finding). The candidate set mirrors the
+ * /exams/me scoping (PUBLISHED templates for the student's enrolled
+ * offerings or their faculty, exams.routes.ts); THIS pure selector makes
+ * the precise week-window + attemptability decision, DB-free and
+ * exported for tests/modules/student-agenda-exams.test.ts.
+ */
+export type AgendaExamPhase = 'opens' | 'closes';
+
+/** Does this attempt mean the exam is FINISHED for this student? SUBMITTED
+ *  / GRADED always (the work is delivered); EXPIRED only for non-PRACTICE
+ *  kinds — a finished practice attempt is retakeable and an IN_PROGRESS
+ *  one is resumable (the D5 start contract), so neither is finished. */
+export function examAttemptFinished(status: AttemptStatus, kind: string): boolean {
+  return (
+    status === AttemptStatus.SUBMITTED ||
+    status === AttemptStatus.GRADED ||
+    (status === AttemptStatus.EXPIRED && kind !== 'PRACTICE')
+  );
+}
+
+/** Structural subset of the prisma.examTemplate rows the selector reads
+ *  (the handler maps its findMany onto this shape). `finished` is folded
+ *  by the CALLER from the student's attempts via examAttemptFinished
+ *  (per attempt, OR-folded across attempts). */
+export interface AgendaExamCandidate {
+  id: string;
+  title: string;
+  kind: string;
+  openAt: Date | null;
+  closeAt: Date | null;
+  courseName: string | null;
+  courseCode: string | null;
+  facultyName: string | null;
+  finished: boolean;
+}
+
+/** One agenda.exams row on the wire (additive — existing consumers that
+ *  only read classes/assignments/live are unaffected). `phase` tells the
+ *  FE which label renders («يفتح» for a future openAt, «آخر موعد» for an
+ *  open window's closeAt); `whenAt` is that milestone instant — never
+ *  null, always inside [now, horizon], the FE agenda's whenMs key. */
+export interface AgendaExamRow {
+  id: string;
+  title: string;
+  kind: string;
+  openAt: Date | null;
+  closeAt: Date | null;
+  whenAt: Date;
+  phase: AgendaExamPhase;
+  courseName: string | null;
+  courseCode: string | null;
+  facultyName: string | null;
+}
+
+/** Which PUBLISHED, still-actable exams have a milestone inside the week
+ *  horizon. Rules (each pinned by a unit test):
+ *   · finished exams never surface — there is nothing left to act on;
+ *   · a window whose closeAt already passed is closed (mirrors the start
+ *     route's «أغلق باب التسليم» guard) — skipped;
+ *   · not-yet-open window → milestone = openAt (phase 'opens');
+ *   · open window → milestone = closeAt (phase 'closes'); a window with
+ *     NO closeAt is perpetually attemptable — no deadline event, so it
+ *     never enters the agenda;
+ *   · milestone beyond the horizon → skipped: the agenda stays a 7-day
+ *     window exactly like the assignments bucket (dueAt ≤ horizon).
+ * Sort: milestone ascending, id as the deterministic tiebreaker. */
+export function selectAgendaExams(
+  candidates: readonly AgendaExamCandidate[],
+  now: Date,
+  horizon: Date,
+  take = 4,
+): AgendaExamRow[] {
+  const rows: AgendaExamRow[] = [];
+  for (const c of candidates) {
+    if (c.finished) continue;
+    if (c.closeAt !== null && c.closeAt.getTime() < now.getTime()) continue;
+    let phase: AgendaExamPhase;
+    let when: Date;
+    if (c.openAt !== null && c.openAt.getTime() > now.getTime()) {
+      phase = 'opens';
+      when = c.openAt;
+    } else {
+      if (c.closeAt === null) continue;
+      phase = 'closes';
+      when = c.closeAt;
+    }
+    if (when.getTime() > horizon.getTime()) continue;
+    rows.push({
+      id: c.id,
+      title: c.title,
+      kind: c.kind,
+      openAt: c.openAt,
+      closeAt: c.closeAt,
+      whenAt: when,
+      phase,
+      courseName: c.courseName,
+      courseCode: c.courseCode,
+      facultyName: c.facultyName,
+    });
+  }
+  return rows
+    .sort((a, b) => a.whenAt.getTime() - b.whenAt.getTime() || a.id.localeCompare(b.id))
+    .slice(0, take);
+}
+
+/**
  * GET /me/results — every grade the student has, rolled up per course
  * with a weighted percentage. Replaces the hardcoded 5-row RESULTS array
  * that lived in the frontend.
@@ -629,7 +740,7 @@ router.get('/me/dashboard', async (req, res, next) => {
             kpi: { courseCount: 0, attendancePct: null, pendingAssignmentsCount: 0, totalXp: 0, level: 0, rank: 0, cohortSize: 0 },
             term: { code: term.code, startsAt: term.startsAt, endsAt: term.endsAt, progressPct: 0 },
             progress: { avgEnrollmentProgressPct: 0 },
-            agenda: { classes: [], assignments: [], live: [] },
+            agenda: { classes: [], assignments: [], live: [], exams: [] },
           },
         });
         return;
@@ -716,6 +827,66 @@ router.get('/me/dashboard', async (req, res, next) => {
       },
     });
 
+    // ── r164-c: upcoming exams (agenda bucket #4) ────────────
+    // Candidate set = the /exams/me scoping (PUBLISHED templates for the
+    // student's enrolled offerings OR their faculty), coarse-prefiltered
+    // to "not yet closed". The precise week-window + attemptability
+    // decision is selectAgendaExams above (pure, unit-tested).
+    const upcomingExamTemplates = await prisma.examTemplate.findMany({
+      where: {
+        status: 'PUBLISHED',
+        AND: [
+          {
+            OR: [
+              { offeringId: { in: offeringIds } },
+              ...(profile.facultyId ? [{ facultyId: profile.facultyId }] : []),
+            ],
+          },
+          // Window still actable at all — a closeAt in the past is the
+          // start route's «أغلق باب التسليم» refusal; closeAt null = no
+          // deadline (the selector below drops those: no event).
+          { OR: [{ closeAt: null }, { closeAt: { gte: now } }] },
+        ],
+      },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true, title: true, kind: true, openAt: true, closeAt: true,
+        offering: { select: { course: { select: { name: true, code: true } } } },
+        faculty: { select: { name: true } },
+      },
+    });
+    // The student's attempts on those templates — folded to the
+    // "finished" flag (SUBMITTED / GRADED always; EXPIRED for
+    // non-PRACTICE kinds — see AgendaExamCandidate.finished).
+    const templateKindById = new Map(upcomingExamTemplates.map((t) => [t.id, t.kind]));
+    const myExamAttempts = upcomingExamTemplates.length
+      ? await prisma.examAttempt.findMany({
+          where: { studentId: userId, templateId: { in: [...templateKindById.keys()] } },
+          select: { templateId: true, status: true },
+        })
+      : [];
+    const finishedExamTemplateIds = new Set<string>();
+    for (const a of myExamAttempts) {
+      if (examAttemptFinished(a.status, templateKindById.get(a.templateId) ?? '')) {
+        finishedExamTemplateIds.add(a.templateId);
+      }
+    }
+    const agendaExamRows = selectAgendaExams(
+      upcomingExamTemplates.map((t) => ({
+        id: t.id,
+        title: t.title,
+        kind: t.kind,
+        openAt: t.openAt,
+        closeAt: t.closeAt,
+        courseName: t.offering?.course.name ?? null,
+        courseCode: t.offering?.course.code ?? null,
+        facultyName: t.faculty?.name ?? null,
+        finished: finishedExamTemplateIds.has(t.id),
+      })),
+      now,
+      horizon,
+    );
+
     // ── Today / tomorrow class slots from schedule ────────────
     // Audience calendar (audit 15-h P1-2): the «اليوم/غداً» labels must
     // follow the Libyan civil day (Africa/Tripoli, UTC+2), not the
@@ -801,6 +972,9 @@ router.get('/me/dashboard', async (req, res, next) => {
             courseCode: a.offering.course.code,
           })),
           live: upcomingLive,
+          // r164-c: the fourth agenda bucket — still-actable exams with a
+          // milestone inside the week (additive; see selectAgendaExams).
+          exams: agendaExamRows,
         },
       },
     });

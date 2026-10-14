@@ -56,6 +56,22 @@ export const ASSIGNMENT_KIND_LABEL: Record<AssignmentKind, string> = {
 };
 
 /**
+ * r164-c: the ExamKind enum of the online-exams pipeline
+ * (ExamTemplate.kind). Values are byte-identical to the KIND_LABEL map
+ * OnlineExamsPages has shipped since the exams wave — this is the
+ * shared home the dashboard agenda + the calendar needed; the exams
+ * page keeps its local copy until its own fold (no cosmetic refactor).
+ */
+export type ExamKindKey = 'QUIZ' | 'MIDTERM' | 'FINAL' | 'PRACTICE';
+
+export const EXAM_KIND_LABEL: Record<ExamKindKey, string> = {
+  QUIZ: 'اختبار قصير',
+  MIDTERM: 'نصفي',
+  FINAL: 'نهائي',
+  PRACTICE: 'تدريبي',
+};
+
+/**
  * The material-format enum shared by the teacher materials table and the
  * student course-detail materials list (14-2 fold per 13-15 hand-off #2 —
  * the identical label map lived as MATERIAL_TYPE_LABEL in TeacherPages
