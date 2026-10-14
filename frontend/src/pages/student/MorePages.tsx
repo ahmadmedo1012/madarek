@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
-import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
+import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle, PageHeader } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSkeleton, KpiSkeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
@@ -24,6 +24,7 @@ import { cartesianOptions, chartAnimation, chartColors, useChartThemeKey } from 
 import { arUnit, countAr, timeAgoAr, WEEKDAY_NAMES_AR } from '../../lib/format';
 import { api, unwrap } from '../../lib/api';
 import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
+import { gradeBand, type GradeBandKey } from '../../lib/courseMeta';
 import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
@@ -58,15 +59,15 @@ export function GamificationPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">الإنجازات والنقاط</h1>
-          <p className="page-subtitle">تقدّمك ومستواك مقارنة بزملائك في المنصة.</p>
-        </div>
-        {/* 22-c (A5 P3-2): one unit voice — the page mixed «XP»,
-            «نقطة/نقاط» and bare «+N». pointsAr everywhere. */}
-        {xp !== null && <Badge color="gold" icon={Star}>{pointsAr(xp)}</Badge>}
-      </header>
+      <PageHeader
+        title="الإنجازات والنقاط"
+        subtitle="تقدّمك ومستواك مقارنة بزملائك في المنصة."
+        actions={
+          /* 22-c (A5 P3-2): one unit voice — the page mixed «XP»,
+             «نقطة/نقاط» and bare «+N». pointsAr everywhere. */
+          xp !== null && <Badge color="gold" icon={Star}>{pointsAr(xp)}</Badge>
+        }
+      />
 
       <div className="grid-2">
         <Card title="مستوى التقدم" icon={Trophy}>
@@ -261,12 +262,7 @@ export function SkillsPage() {
     : undefined;
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">المهارات والشهادات</h1>
-          <p className="page-subtitle">رصد مهاراتك التقنية وتطوّرها مع الوقت.</p>
-        </div>
-      </header>
+      <PageHeader title="المهارات والشهادات" subtitle="رصد مهاراتك التقنية وتطوّرها مع الوقت." />
 
       <Card title="خريطة المهارات التقنية" icon={Target}>
         {skills.isPending ? (
@@ -403,12 +399,7 @@ export function AlertsPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">الإشعارات</h1>
-          <p className="page-subtitle">آخر التحديثات والتذكيرات الأكاديمية.</p>
-        </div>
-      </header>
+      <PageHeader title="الإشعارات" subtitle="آخر التحديثات والتذكيرات الأكاديمية." />
 
       <Card title="إشعاراتي" icon={Bell} actions={
         <div className="flex items-center gap-2 flex-wrap">
@@ -527,12 +518,7 @@ export function SchedulePage() {
   if (q.isPending) {
     return (
       <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">الجدول الدراسي</h1>
-            <p className="page-subtitle">جارٍ جمع جدولك…</p>
-          </div>
-        </header>
+        <PageHeader title="الجدول الدراسي" subtitle="جارٍ جمع جدولك…" />
         {/* 5-C3 (A9 P2-2): bare spinner → day-card skeletons. The
             settled page is a stack of day sections (title + card of
             list rows); two card skeletons hold the visible band so the
@@ -545,11 +531,7 @@ export function SchedulePage() {
   if (q.isError) {
     return (
       <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">الجدول الدراسي</h1>
-          </div>
-        </header>
+        <PageHeader title="الجدول الدراسي" />
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       </div>
     );
@@ -590,12 +572,7 @@ export function SchedulePage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">الجدول الدراسي</h1>
-          <p className="page-subtitle">جدولك الأسبوعيّ مع أماكن المحاضرات.</p>
-        </div>
-      </header>
+      <PageHeader title="الجدول الدراسي" subtitle="جدولك الأسبوعيّ مع أماكن المحاضرات." />
 
       {daysWithItems.length === 0 ? (
         <EmptyState
@@ -651,12 +628,7 @@ export function ResultsPage() {
   if (q.isPending) {
     return (
       <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">النتائج والتقييمات</h1>
-            <p className="page-subtitle">جارٍ جمع درجاتك…</p>
-          </div>
-        </header>
+        <PageHeader title="النتائج والتقييمات" subtitle="جارٍ جمع درجاتك…" />
         {/* 5-C3 (A9 P2-2): bare spinner → the shapes that land — the
             KPI row + the chart card (A9 V1 measured +204px on the
             spinner→content swap). */}
@@ -668,11 +640,7 @@ export function ResultsPage() {
   if (q.isError || !q.data) {
     return (
       <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">النتائج والتقييمات</h1>
-          </div>
-        </header>
+        <PageHeader title="النتائج والتقييمات" />
         <ErrorState
           message="تعذَّر تحميل هذا القسم"
           error={q.error}
@@ -685,18 +653,27 @@ export function ResultsPage() {
   const d = q.data;
   const hasGrades = d.courses.some((c) => c.gradePct !== null);
   const cc = chartColors();
+  /* r164-a (status semantics): النتائج الطالبية كانت تحمل سلّمًا
+     خاصًا 85/70/60 يخالف سلّم النطاقات الكنونيّ الواحد
+     (GRADE_BANDS 85/75/65/50 — lib/courseMeta): درجة ٥٥٪ كانت تُرى
+     حمراء «راسب» للطالب بينما جدول الأستاذ يعرضها «مقبولًا» ذهبية،
+     و٧٠–٧٤ كانت «brand» بدل «جيّد». الآن كل سطح من أسطح هذه الصفحة
+     يستهلك gradeBand نفسه الذي يستهلكه الأستاذ — طالب واحد، شارة
+     واحدة، في كل مكان (عقد 22-a A6 P2). */
+  const BAND_CHART_COLOR: Record<GradeBandKey, string> = {
+    EXCELLENT: cc.success,
+    VERY_GOOD: cc.accent,
+    GOOD: cc.warning,
+    PASS: cc.gold,
+    WEAK: cc.danger,
+  };
   // Build the shared chart options ONCE per render (each cartesianOptions()
   // call resolves CSS custom properties — it is not free).
   const baseOpts = cartesianOptions({ horizontal: true });
 
   return (
     <div className="page student-results">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">النتائج والتقييمات</h1>
-          <p className="page-subtitle">تفاصيل درجاتك وتحليل أدائك بناءً على بياناتك الفعليّة.</p>
-        </div>
-      </header>
+      <PageHeader title="النتائج والتقييمات" subtitle="تفاصيل درجاتك وتحليل أدائك بناءً على بياناتك الفعليّة." />
 
       <div className="grid-3">
         <MetricCard
@@ -704,21 +681,21 @@ export function ResultsPage() {
           label="أعلى درجة"
           value={d.headline.highest ? <bdi>{d.headline.highest.gradePct}%</bdi> : '—'}
           change={d.headline.highest?.courseName ?? 'لا توجد درجات بعد'}
-          color="green"
+          color={d.headline.highest ? gradeBand(d.headline.highest.gradePct).color : 'green'}
         />
         <MetricCard
           icon={Activity}
           label="المتوسّط"
           value={d.headline.avgGradePct !== null ? <bdi>{d.headline.avgGradePct}%</bdi> : '—'}
           change={d.headline.courseCount > 0 ? `عبر ${countAr(d.headline.courseCount, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}` : 'لا تقييمات بعد'}
-          color={d.headline.avgGradePct !== null && d.headline.avgGradePct >= 70 ? 'brand' : 'amber'}
+          color={d.headline.avgGradePct !== null ? gradeBand(d.headline.avgGradePct).color : 'amber'}
         />
         <MetricCard
           icon={AlertTriangle}
           label="أدنى درجة"
           value={d.headline.lowest ? <bdi>{d.headline.lowest.gradePct}%</bdi> : '—'}
           change={d.headline.lowest?.courseName ?? '—'}
-          color={d.headline.lowest && d.headline.lowest.gradePct < 60 ? 'red' : 'amber'}
+          color={d.headline.lowest ? gradeBand(d.headline.lowest.gradePct).color : 'amber'}
         />
       </div>
 
@@ -762,10 +739,10 @@ export function ResultsPage() {
                 datasets: [{
                   label: 'الدرجة',
                   data: d.courses.map((r) => r.gradePct ?? 0),
-                  backgroundColor: d.courses.map((r) => {
-                    const g = r.gradePct ?? 0;
-                    return g >= 85 ? cc.success : g >= 70 ? cc.accent : g >= 60 ? cc.warning : cc.danger;
-                  }),
+                  /* r164-a: كل عمود يحمل لون نطاقه من السلّم الكنونيّ
+                     (PASS = cc.gold) بدل السلّم الخاصّ القديم الذي كان
+                     يصبغ ٥٠–٦٤٪ بالأحمر. */
+                  backgroundColor: d.courses.map((r) => BAND_CHART_COLOR[gradeBand(r.gradePct ?? 0).key]),
                   borderRadius: 6,
                   maxBarThickness: 26,
                 }],
@@ -795,12 +772,9 @@ export function ResultsPage() {
                   value={r.gradePct ?? 0}
                   label={`${r.courseName} (${r.courseCode})`}
                   ariaLabel={`درجة مقرّر ${r.courseName}`}
-                  color={
-                    (r.gradePct ?? 0) >= 85 ? 'var(--success)' :
-                    (r.gradePct ?? 0) >= 70 ? 'var(--accent)' :
-                    (r.gradePct ?? 0) >= 60 ? 'var(--warning)' :
-                    'var(--danger)'
-                  }
+                  /* r164-a: band.barColor هو لون التعبئة الكنونيّ — نفس
+                     السلّم الذي يعرضه توزيع الأداء عند الأستاذ. */
+                  color={gradeBand(r.gradePct ?? 0).barColor}
                 />
               ))}
             </div>
@@ -812,15 +786,31 @@ export function ResultsPage() {
             <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>لا توجد تقييمات حديثة.</p>
           ) : (
             <div className="flex-col gap-2">
-              {d.recentAssignments.slice(0, 6).map((a) => (
-                <AlertRow
-                  key={a.id}
-                  color={a.gradePct >= 85 ? 'green' : a.gradePct >= 70 ? 'brand' : a.gradePct >= 60 ? 'amber' : 'red'}
-                  icon={a.gradePct >= 70 ? CheckCircle2 : AlertTriangle}
-                  title={`${a.title} — ${a.gradePct}%`}
-                  description={a.gradedAt ? new Date(a.gradedAt).toLocaleDateString('ar-LY', { dateStyle: 'medium' }) : ''}
-                />
-              ))}
+              {d.recentAssignments.slice(0, 6).map((a) => {
+                /* r164-a (status semantics): الصفّ يحمل نطاق درجته من
+                   السلّم الكنونيّ — الشارة نفسها («ممتاز»…«ضعيف») التي
+                   يعرضها جدول درجات الأستاذ لنفس الرقم، ومحاذاة اللون
+                   مع الشارة تحلّ الانفصال البصريّ القديمّ (55٪ حمراء
+                   هنا بينما هي «مقبول» عند الأستاذ). الأيقونة تقول
+                   الحالة الصادقة فقط: علامة تحقّق لكل اجتياز (≥50)
+                   ومثلث تحذير للضعيف (<50) — قبل r164-a كان الوجب
+                   «الجيّد» 60–69 يظهر بمثلث التحذير. */
+                const band = gradeBand(a.gradePct);
+                return (
+                  <AlertRow
+                    key={a.id}
+                    color={band.color}
+                    icon={band.key === 'WEAK' ? AlertTriangle : CheckCircle2}
+                    title={
+                      <span className="flex items-center gap-2 flex-wrap">
+                        {a.title} — <bdi>{a.gradePct}%</bdi>
+                        <Badge color={band.color}>{band.label}</Badge>
+                      </span>
+                    }
+                    description={a.gradedAt ? new Date(a.gradedAt).toLocaleDateString('ar-LY', { dateStyle: 'medium' }) : ''}
+                  />
+                );
+              })}
             </div>
           )}
         </Card>
@@ -838,12 +828,7 @@ export function ArVrPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">تجارب AR / VR</h1>
-          <p className="page-subtitle">محتوى تفاعليّ ثلاثيّ الأبعاد للمقرّرات العمليّة.</p>
-        </div>
-      </header>
+      <PageHeader title="تجارب AR / VR" subtitle="محتوى تفاعليّ ثلاثيّ الأبعاد للمقرّرات العمليّة." />
 
       {q.isPending ? (
         /* r148 (AUDIT-2 L8): شبكة بطاقات AR/VR — هيكل بطاقات مطابق
@@ -1058,12 +1043,7 @@ export function SocialPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">الشبكة الاجتماعية</h1>
-          <p className="page-subtitle">تواصل مع زملائك وأساتذتك حول المقرّرات والمشاريع.</p>
-        </div>
-      </header>
+      <PageHeader title="الشبكة الاجتماعية" subtitle="تواصل مع زملائك وأساتذتك حول المقرّرات والمشاريع." />
 
       <div className="grid-2-1">
         <div className="flex-col gap-3">
@@ -1304,12 +1284,7 @@ export function DownloadsPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">مركز التحميلات</h1>
-          <p className="page-subtitle">جميع الملفات التعليمية في مقرّراتك متاحة للتحميل.</p>
-        </div>
-      </header>
+      <PageHeader title="مركز التحميلات" subtitle="جميع الملفات التعليمية في مقرّراتك متاحة للتحميل." />
 
       <Card title="ملفّات حديثة" icon={Download}>
         {q.isPending ? (
@@ -1368,14 +1343,10 @@ export function UniversityInfoPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">جامعة الزاوية</h1>
-          <p className="page-subtitle">
-            مؤسّسة تعليميّة حكوميّة، تأسّست عام 1988 وتمتدّ عبر عدّة مدن في الإقليم الغربيّ.
-          </p>
-        </div>
-      </header>
+      <PageHeader
+        title="جامعة الزاوية"
+        subtitle="مؤسّسة تعليميّة حكوميّة، تأسّست عام 1988 وتمتدّ عبر عدّة مدن في الإقليم الغربيّ."
+      />
 
       <div className="grid-4">
         <MetricCard

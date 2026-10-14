@@ -18,7 +18,7 @@ import {
   ChevronLeft, ChevronRight, BookOpen, Target, Crown, Star, Medal,
   AlertTriangle,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, ProgressBar, UserAvatar, AlertRow } from '../../components/primitives';
+import { Card, Badge, MetricCard, ProgressBar, UserAvatar, AlertRow, PageHeader } from '../../components/primitives';
 import { PageSkeleton, DetailSkeleton, ErrorState, EmptyState, Skeleton, ListSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -96,15 +96,10 @@ export default function TrainingCatalogPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">التطوير الذاتي</h1>
-          <p className="page-subtitle">
-            مسارات تدريبية مصمَّمة من فريق جامعة الزاوية لتطوير مهاراتك الأكاديمية والمهنية.
-            أكمل مساراً لتحصل على شهادة معتمدة من المنصة.
-          </p>
-        </div>
-      </header>
+      <PageHeader
+        title="التطوير الذاتي"
+        subtitle="مسارات تدريبية مصمَّمة من فريق جامعة الزاوية لتطوير مهاراتك الأكاديمية والمهنية. أكمل مساراً لتحصل على شهادة معتمدة من المنصة."
+      />
 
       {/* My summary — KPI band + level progress. Pending → shape-matched
           skeletons; error → honest message + retry (never a fake summary). */}
@@ -746,14 +741,10 @@ export function AchievementsPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">الإنجازات</h1>
-          <p className="page-subtitle">
-            رحلتك في التطوير الذاتي — نقاطك، أوسمتك، شهاداتك، وترتيبك بين الزملاء.
-          </p>
-        </div>
-      </header>
+      <PageHeader
+        title="الإنجازات"
+        subtitle="رحلتك في التطوير الذاتي — نقاطك، أوسمتك، شهاداتك، وترتيبك بين الزملاء."
+      />
 
       {meQ.isPending ? (
         <KpiStripSkeleton />

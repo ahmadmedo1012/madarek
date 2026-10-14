@@ -32,6 +32,7 @@ export type ThemeColor = 'green' | 'amber' | 'red' | 'purple' | 'gold' | 'brand'
 
 export { Button, Input, FormField } from './Form';
 export type { ButtonVariant, ButtonSize } from './Form';
+export { PageHeader } from './PageHeader';
 
 /* ─── Card ──────────────────────────────────────────────── */
 export function Card({
@@ -289,7 +290,7 @@ export function ProgressBar({
 }
 
 /* ─── Alert row (color = colored dot, body neutral) ──── */
-export type AlertColor = 'red' | 'amber' | 'green' | 'purple' | 'brand';
+export type AlertColor = 'red' | 'amber' | 'green' | 'purple' | 'gold' | 'brand';
 
 export function AlertRow({
   color = 'brand',
@@ -319,12 +320,31 @@ export function AlertRow({
     amber: 'var(--chart-6)',
     green: 'var(--success)',
     purple: 'var(--brand-purple)',
+    /* r164-a (status semantics): the PASS grade band (50–64) carries
+       color 'gold' (courseMeta's GradeBand.color) — the union now
+       accepts it so band-driven status rows can pass the band's tone
+       straight through instead of hand-folding it into amber/red.
+       Ink choice: --gold-ink is the AA gold text tier — 6.98:1 light /
+       12.37:1 dark per tokens.css's own WCAG math — clears the 3:1
+       graphics floor in both themes and stays distinct from the
+       amber marker's --chart-6. The dot branch paints the same ink
+       inline (components.css has no .alert.gold rule and is
+       styles-wave-owned — this keeps both branches of the tone
+       complete with canonical tokens only). */
+    gold: 'var(--gold-ink)',
   };
   return (
     <div className={`alert ${color}`}>
       {/* The coloured dot is the fallback marker; when an icon is present it
           replaces the dot entirely (no hidden placeholder spans). */}
-      {!icon && <span className="alert-dot" aria-hidden />}
+      {!icon && (
+        <span
+          className="alert-dot"
+          aria-hidden
+          /* gold rides the ink inline — see the ICON_INK note above. */
+          style={color === 'gold' ? { background: 'var(--gold-ink)' } : undefined}
+        />
+      )}
       {icon && (
         <span style={{ color: ICON_INK[color], marginTop: 2 }}>
           <Icon icon={icon} size={16} />

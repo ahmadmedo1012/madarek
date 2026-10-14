@@ -7,7 +7,7 @@ import {
   Trophy, Calendar, Award, Plus, Filter, ChevronRight, Lock, Send, FileText, X, Check, Gavel,
   AlertTriangle,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, UserAvatar, FormField } from '../../components/primitives';
+import { Card, MetricCard, Badge, UserAvatar, FormField, PageHeader } from '../../components/primitives';
 import { ErrorState, EmptyState, CardSkeleton, DetailSkeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
@@ -146,18 +146,18 @@ export function CompetitionsIndexPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">المسابقات الأكاديمية</h1>
-          <p className="page-subtitle">شارك في تحديات المعرفة والابتكار، أو نظِّم مسابقتك الخاصّة.</p>
-        </div>
-        {canRun && (
-          <button type="button" className="btn primary" onClick={() => setCreating(true)}>
-            <Icon icon={Plus} size={14} />
-            مسابقة جديدة
-          </button>
-        )}
-      </header>
+      <PageHeader
+        title="المسابقات الأكاديمية"
+        subtitle="شارك في تحديات المعرفة والابتكار، أو نظِّم مسابقتك الخاصّة."
+        actions={
+          canRun && (
+            <button type="button" className="btn primary" onClick={() => setCreating(true)}>
+              <Icon icon={Plus} size={14} />
+              مسابقة جديدة
+            </button>
+          )
+        }
+      />
 
       {/* KPI strip — .kpis-compact keeps the strip a strip on phones
           (A12 P2-4, same rule as /community). */}

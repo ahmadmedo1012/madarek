@@ -14,7 +14,7 @@ import {
   CheckCircle2, Users, Sparkles, Plus, X, Send, AlertTriangle,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, FormField } from '../../components/primitives';
+import { Card, Badge, MetricCard, FormField, PageHeader } from '../../components/primitives';
 import { ErrorState, EmptyState, ListSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
@@ -105,32 +105,35 @@ export default function CommunityPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">المجتمع الجامعي</h1>
-          <p className="page-subtitle">
-            إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية. المساحة الرسمية للحياة الأكاديمية اليومية.
-          </p>
-        </div>
-        {tab === 'announcements' && canAnnounce && (
-          <button type="button" className="btn primary" onClick={() => setCreatingAnnouncement(true)}>
-            <Icon icon={Plus} size={14} />
-            إعلان جديد
-          </button>
-        )}
-        {tab === 'competitions' && (
-          <Link to="/competitions" className="btn ghost">
-            <Icon icon={Trophy} size={14} />
-            صفحة المسابقات الكاملة
-          </Link>
-        )}
-        {tab === 'events' && canRunEvents && (
-          <button type="button" className="btn primary" onClick={() => setCreatingEvent(true)}>
-            <Icon icon={Plus} size={14} />
-            فعاليّة جديدة
-          </button>
-        )}
-      </header>
+      <PageHeader
+        title="المجتمع الجامعي"
+        subtitle="إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية. المساحة الرسمية للحياة الأكاديمية اليومية."
+        actions={
+          /* A fragment keeps the three conditional actions as DIRECT
+             flex children of .page-header — the DOM is byte-identical
+             to the hand-rolled markup this replaces (r164-a fold). */
+          <>
+            {tab === 'announcements' && canAnnounce && (
+              <button type="button" className="btn primary" onClick={() => setCreatingAnnouncement(true)}>
+                <Icon icon={Plus} size={14} />
+                إعلان جديد
+              </button>
+            )}
+            {tab === 'competitions' && (
+              <Link to="/competitions" className="btn ghost">
+                <Icon icon={Trophy} size={14} />
+                صفحة المسابقات الكاملة
+              </Link>
+            )}
+            {tab === 'events' && canRunEvents && (
+              <button type="button" className="btn primary" onClick={() => setCreatingEvent(true)}>
+                <Icon icon={Plus} size={14} />
+                فعاليّة جديدة
+              </button>
+            )}
+          </>
+        }
+      />
 
       {/* KPI trio — .kpis-compact keeps the strip a strip on phones
           (A12 P2-4): the plain .grid-3 stack burned 396px on three
@@ -306,7 +309,10 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
           ) : c.status === 'CLOSED' ? (
             <Badge color="amber">مغلقة</Badge>
           ) : c.status === 'JUDGED' ? (
-            <Badge color="gold">تم التحكيم</Badge>
+            /* r164-a: same wording as CompetitionsPages' STATUS_LABEL
+               («تمّ التحكيم») — the two surfaces show one status in one
+               voice. */
+            <Badge color="gold">تمّ التحكيم</Badge>
           ) : (
             <Badge color="amber">انتهى التقديم</Badge>
           )}

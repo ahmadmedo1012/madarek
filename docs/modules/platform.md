@@ -92,6 +92,11 @@
 
 - `components/primitives/States.tsx`: Empty/Error/Loading/Skeleton
   عائلة كاملة + `PermissionDeniedState`.
+- `components/primitives/PageHeader.tsx` (r164-a): ترويسة الصفحة
+  الكنونية (h1 دلاليّ + وصف + خانة أفعال) — الصيغة المشتركة
+  للترويسات التي كانت تُكتَب يدويًا ~86 مرّة؛ عُمِّمت أولًا في
+  صفحات الطالب الإضافية/المجتمع/المسابقات (17 موضعًا)، والبقية
+  تُهجَّر موجةً موجة.
 - `components/ErrorBoundary.tsx` و`HydrationSplash.tsx`.
 - `lib/format.ts`: `countAr` (جمع عربي) وتنسيق `ar-LY`.
 - `components/DocumentViewerPage` + `PdfViewer` (pdfjs كسول) — يخدم

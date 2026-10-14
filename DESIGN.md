@@ -202,6 +202,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 | **Spinner** | 22px · 2px · accent top arc · **700ms linear** (sm 14px) |
 | **Skeleton** | `--motion-duration-skeleton 1200ms` · `--ease-linear` · RTL-aware shimmer · r-sm |
 | **Badge/status** | solid pastel · 11 / 600 · `tnum` (`-bg` ground + `-deep`/`-ink` text) |
+| **Page header** | `PageHeader` primitive (r164-a) — `header.page-header > .page-title-block > h1.page-title (+ p.page-subtitle)`; actions are DIRECT flex children (no wrapper) · title = the route's one `--type-display-*` h1 · subtitle 13 `--text-secondary`, measure ≤72ch · hairline rule + `--sp-4` breathing (polish §page-header) · status tone ladders come from the shared maps (grade bands: `lib/courseMeta` GRADE_BANDS — never a page-private threshold) |
 
 ---
 
