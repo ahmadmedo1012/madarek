@@ -687,7 +687,7 @@ router.get('/system', async (_req, res, next) => {
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-    const [recentSyncRuns, openAlerts, criticalAlertCount, auditCountLast7Days] = await Promise.all([
+    const [recentSyncRuns, openAlerts, openAlertCount, criticalAlertCount, auditCountLast7Days] = await Promise.all([
       // Last 10 REAL sync runs from the SyncRun table the scheduler
       // and the guarded manual trigger write (audit 15-a P1-5). The
       // previous feed was derived from AuditLog rows with an action
@@ -700,6 +700,7 @@ router.get('/system', async (_req, res, next) => {
         orderBy: { startedAt: 'desc' },
         take: 10,
       }),
+      // Preview feed: capped at 10 rows for the System page card.
       prisma.operationalAlert.findMany({
         where: { resolvedAt: null },
         orderBy: { createdAt: 'desc' },
@@ -709,6 +710,10 @@ router.get('/system', async (_req, res, next) => {
           createdAt: true, metadata: true,
         },
       }),
+      // r165g: openCount is the REAL open total, not the capped feed
+      // length — with 30 open alerts the payload used to report 10
+      // (openAlerts.length) because the feed above takes 10.
+      prisma.operationalAlert.count({ where: { resolvedAt: null } }),
       prisma.operationalAlert.count({
         where: { resolvedAt: null, severity: { in: ['critical', 'error'] } },
       }),
@@ -729,7 +734,7 @@ router.get('/system', async (_req, res, next) => {
         },
         alerts: {
           open: openAlerts,
-          openCount: openAlerts.length,
+          openCount: openAlertCount,
           criticalCount: criticalAlertCount,
         },
         activity: {
@@ -822,13 +827,29 @@ router.get('/ai-metrics', async (_req, res, next) => {
 // ── GET /owner/alerts — unresolved operational alerts ────────────
 router.get('/alerts', async (_req, res, next) => {
   try {
-    const data = await prisma.operationalAlert.findMany({
-      where: { resolvedAt: null },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
-    });
+    /* r165g: the list stays capped at take:50 (pagination unchanged),
+     * but the KPI counts must be REAL totals — the alerts board's
+     * «تنبيهات مفتوحة» used to read the truncated array length (60
+     * open alerts rendered as «50»). meta carries the honest numbers;
+     * the frontend degrades to the visible rows when meta is absent
+     * (older payload). The critical pair (critical+error) mirrors
+     * lib/ownerLabels.isCriticalAlert and the /system criticalCount. */
+    const [data, total, critical, warning] = await Promise.all([
+      prisma.operationalAlert.findMany({
+        where: { resolvedAt: null },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+      }),
+      prisma.operationalAlert.count({ where: { resolvedAt: null } }),
+      prisma.operationalAlert.count({
+        where: { resolvedAt: null, severity: { in: ['critical', 'error'] } },
+      }),
+      prisma.operationalAlert.count({
+        where: { resolvedAt: null, severity: 'warning' },
+      }),
+    ]);
 
-    res.json({ data });
+    res.json({ data, meta: { total, critical, warning } });
   } catch (e) {
     next(e);
   }

@@ -301,7 +301,7 @@ export function OwnerSystemPage() {
         )}
       </Card>
 
-      {/* Feature Flags — already real data */}
+      {/* Feature Flags — real data */}
       <Card title="أعلام الميزات (Feature Flags)" icon={Settings}>
         <div className="owner-list-pad">
           {/* 6A10-1: the error branch sits BEFORE the length check — a
@@ -341,6 +341,14 @@ export function OwnerSystemPage() {
             </>
           )}
         </div>
+        {/* r165g (truthfulness): the toggles flip the registry row (and
+            the audit trail) — nothing else. Repo-wide, no route,
+            middleware, or scheduler reads FeatureFlag at runtime, so
+            the card must not imply an immediate behavioral effect. */}
+        <p className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-2)' }}>
+          تُحفَظ حالة كل علم في قاعدة البيانات وتُوثَّق في سجلّ النشاط — لا تستهلكها
+          أيّ بوابة تشغيل بعد، فلا يتغيّر سلوك المنصّة بتغييرها.
+        </p>
       </Card>
 
       {/* Operational alerts — real data, replacing the fake error log.
@@ -404,7 +412,10 @@ export function OwnerSystemPage() {
         </div>
       </Card>
 
-      {/* Platform settings — already real data */}
+      {/* Platform settings — real data. r165g (truthfulness): the
+          editor's copy no longer carries an implicit "applies now"
+          promise — like the flags above, PlatformSetting rows are
+          recorded + audited but no runtime consumer exists yet. */}
       <Card title="إعدادات المنصّة" icon={Settings}>
         <div className="owner-list-pad">
           {/* 6A10-1: same ordering contract as the flags card above —
@@ -449,6 +460,13 @@ export function OwnerSystemPage() {
             </>
           )}
         </div>
+        {/* r165g: same honest caveat as the flags card — saving here
+            writes the registry row, it does not change platform
+            behavior. */}
+        <p className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-2)' }}>
+          تُحفَظ القيمة في قاعدة البيانات وتُوثَّق في سجلّ النشاط — لا يستهلكها
+          مسار تشغيل بعد؛ سلوك المنصّة يبقى بقيمه المضمّنة في الشيفرة.
+        </p>
       </Card>
     </div>
   );

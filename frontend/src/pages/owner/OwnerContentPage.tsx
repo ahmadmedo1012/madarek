@@ -20,6 +20,12 @@ import { Icon } from '../../components/Icon';
  * at /owner/feature-flags (used in /owner/system). The hero/brand
  * editor has no backend yet.
  *
+ * r165g (truthfulness): the flags card no longer promises «التغييرات
+ * تُطبَّق فوراً» — repo-wide, NOTHING consumes the FeatureFlag table
+ * at runtime (the owner console's own GET/PUT are the only readers),
+ * so the honest copy says the state is recorded + audited but not
+ * applied. If a runtime gate ever lands, restore the effect claim.
+ *
  * Wave 6-b: structural inline styles → owner.css §6-b classes, the
  * brand hexes are bidi-isolated as Latin runs, and the identity card's
  * swatches settle in staggered (the page's authored moment).
@@ -62,7 +68,8 @@ export function OwnerContentPage() {
         <Card title="ميزات المنصّة" icon={ToggleRight}>
           <p className="owner-card-lead">
             تشغيل وإطفاء الميزات (المعامل الافتراضيّة، البثّ المباشر، الاختبارات...) عبر نظام أعلام
-            الميزات. التغييرات تُطبَّق فوراً على جميع المستخدمين.
+            الميزات — تُسجَّل الحالة وتُوثَّق في سجلّ النشاط، ولا تستهلكها أيّ بوابة تشغيل بعد:
+            الميزات تعمل بحالاتها المضمّنة في الشيفرة.
           </p>
           <Link to="/owner/system" className="btn primary sm">
             <Icon icon={ArrowLeft} size={13} />

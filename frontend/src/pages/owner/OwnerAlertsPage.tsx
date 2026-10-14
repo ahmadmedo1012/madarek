@@ -1,11 +1,13 @@
 import { AlertTriangle, ShieldAlert, Bell, CheckCircle2, Activity, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { CSSProperties } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, MetricCard, Badge } from '../../components/primitives';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { api } from '../../lib/api';
 import { apiErrorMessage } from '../../hooks/useResources';
-import { useOwnerAlerts, useResolveAlert } from '../../hooks/useOwner';
+import { useResolveAlert, type OperationalAlert } from '../../hooks/useOwner';
 import { SEVERITY_LABELS, SEVERITY_COLORS, CATEGORY_LABELS, isCriticalAlert } from '../../lib/ownerLabels';
 import { toast } from '../../lib/toast';
 
@@ -48,10 +50,43 @@ function AlertListSkeleton() {
   );
 }
 
+/* r165g: the full response body of GET /owner/alerts. The route ships
+ * the capped list (take:50, pagination unchanged) PLUS a meta block
+ * with the REAL open totals — the KPI strip must never read the
+ * truncated array length (60 open alerts used to render as «50»).
+ * `meta` stays optional on purpose: payloads from before r165g carry
+ * no such block, and the page degrades to the visible rows (the
+ * previous behavior) instead of guessing. */
+interface OwnerAlertsFeed {
+  data: OperationalAlert[];
+  meta?: {
+    total: number;
+    /** The critical pair (critical + error) — same rule the backend
+     * counts and lib/ownerLabels.isCriticalAlert applies. */
+    critical: number;
+    warning: number;
+  };
+}
+
 export function OwnerAlertsPage() {
-  const alertsQuery = useOwnerAlerts();
+  /* Same endpoint as the sibling useOwnerAlerts hook, but keyed one
+   * level deeper so the cached ARRAY shape (dashboard / realtime
+   * boards) can never leak into this envelope consumer. The nested
+   * key keeps the resolve mutation's invalidateQueries({ queryKey:
+   * ['owner','alerts'] }) working for this page too — partial prefix
+   * matching refreshes the counts after a resolve. */
+  const alertsQuery = useQuery({
+    queryKey: ['owner', 'alerts', 'feed'],
+    queryFn: async () => {
+      const res = await api.get<OwnerAlertsFeed>('/owner/alerts');
+      return res.data;
+    },
+    staleTime: 30_000,
+  });
   const resolveAlert = useResolveAlert();
-  const alerts = alertsQuery.data ?? [];
+  const feed = alertsQuery.data;
+  const alerts = feed?.data ?? [];
+  const meta = feed?.meta;
 
   // Toast confirms the resolve actually landed (the card disappears
   // silently otherwise — no inline success surface on this page).
@@ -64,9 +99,15 @@ export function OwnerAlertsPage() {
    * error) via the shared lib/ownerLabels filter — the same pair
    * owner.routes.ts counts for the system page's criticalCount, so
    * the alerts board and the server can never disagree about what is
-   * urgent (an 'error'-severity alert turns this KPI red too). */
-  const criticalCount = alerts.filter(isCriticalAlert).length;
-  const warningCount = alerts.filter((a) => a.severity === 'warning').length;
+   * urgent (an 'error'-severity alert turns this KPI red too).
+   *
+   * r165g: with meta present (r165g backend) all three KPIs read the
+   * REAL open totals from the server; without it (older payload)
+   * they fall back to the visible rows — a lower bound, never a
+   * fabricated number. */
+  const criticalCount = meta?.critical ?? alerts.filter(isCriticalAlert).length;
+  const warningCount = meta?.warning ?? alerts.filter((a) => a.severity === 'warning').length;
+  const openTotal = meta?.total ?? alerts.length;
 
   // Honest KPIs (audit 0-e P2-46): '…' while loading, '—' when the
   // query failed — an API-down feed never renders a confident "0".
@@ -87,8 +128,8 @@ export function OwnerAlertsPage() {
         <MetricCard
           icon={Bell}
           label="تنبيهات مفتوحة"
-          value={kpiValue(alerts.length)}
-          color={kpiKnown ? (alerts.length === 0 ? 'green' : 'brand') : 'brand'}
+          value={kpiValue(openTotal)}
+          color={kpiKnown ? (openTotal === 0 ? 'green' : 'brand') : 'brand'}
         />
         <MetricCard
           icon={ShieldAlert}

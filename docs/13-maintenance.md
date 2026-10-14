@@ -7,7 +7,7 @@
 | مراقبة الصحة | فحص `/api/v1/health` وسجلات Render | `{ ok: true }` + `dbLatencyMs` معقولة |
 | التنبيهات التشغيلية | `/owner/alerts` — صفوف `OperationalAlert` (5xx/DB، خنق 5 دقائق) وتحديدها «حُلَّت» | `owner.routes.ts` |
 | سجل النشاط | `/owner/activity` (AuditLog) بعد أي إداري غامض | عنوان عربي لكل إجراء |
-| أعلام الميزات/الإعدادات | `/owner/settings` + `/owner/feature-flags` (`PlatformSetting`, `FeatureFlag`) | تعمل حيًا دون نشر |
+| أعلام الميزات/الإعدادات | `/owner/settings` + `/owner/feature-flags` (`PlatformSetting`, `FeatureFlag`) | سجلّ يُحفَظ ويُوثَّق في سجلّ النشاط — لا تستهلكه أيّ بوابة تشغيل بعد (لا يتغيّر السلوك دون نشر) |
 
 ## ما يديره النظام تلقائيًا (لا تتدخل)
 

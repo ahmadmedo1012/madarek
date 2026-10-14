@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react';
-import { Link } from 'react-router-dom';
-import { Bot, Zap, CheckCircle2, Clock, Settings, Sparkles } from 'lucide-react';
+import { Bot, Zap, CheckCircle2, Clock, Sparkles } from 'lucide-react';
 import { Bar, Line } from 'react-chartjs-2';
 import { useMemo } from 'react';
 import {
@@ -20,7 +19,6 @@ import {
   ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, TableSkeleton,
 } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts/ChartFrame';
-import { Icon } from '../../components/Icon';
 import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerAiMetrics } from '../../hooks/useOwner';
 import { useAiConfig } from '../../hooks/useResources';
@@ -153,13 +151,15 @@ export function OwnerAiPage() {
                 <EmptyState illustration="empty-search"
                   icon={Bot}
                   title="لا توجد طلبات لعرضها"
-                  description="تُفعَّل خدمات الذكاء الاصطناعيّ عبر أعلام الميزات وإعدادات المنصّة، وتظهر مؤشّرات الاستخدام هنا فور تسجيل أوّل طلب."
-                  action={(
-                    <Link to="/owner/system" className="btn ghost sm">
-                      <Icon icon={Settings} size={12} />
-                      فتح إعدادات النظام
-                    </Link>
-                  )}
+                  /* r165g (truthfulness): the old copy claimed AI
+                   * services are ENABLED «عبر أعلام الميزات وإعدادات
+                   * المنصّة» and linked to /owner/system to do so — a
+                   * claim nothing in the backend backs (no route reads
+                   * FeatureFlag/PlatformSetting). The honest empty
+                   * state: metrics arrive with the first recorded
+                   * request; the service's availability is decided by
+                   * the server's provider configuration. */
+                  description="تظهر مؤشّرات الاستخدام هنا فور تسجيل أوّل طلب. جهوزيّة خدمة الذكاء الاصطناعيّ تحدّدها إعدادات المزوّد على الخادم — أعلام الميزات وإعدادات المنصّة تُسجَّل ولا يستهلكها أيّ مسار تشغيل بعد."
                 />
               ) : (
                 <ChartFrame
