@@ -342,3 +342,37 @@ describe('ResearchReviewPage — queue state coherence (r164f)', () => {
     expect(screen.getByText('محاكاة')).toBeInTheDocument();
   });
 });
+
+/* ───────────────────────────────────────────────
+ * r165b — the feedback textarea mirrors the backend's 4000-char cap.
+ * gradePaperSchema (learning.routes.ts) pins feedback at
+ * z.string().trim().max(4000); the textarea had NO maxLength, so a
+ * full write-up POSTed past the client and failed with a misleading
+ * connectivity error. The sibling GradeSubmissionModal caps the same
+ * way (maxLength={2000} against its own backend limit) — this pins
+ * the identical idiom at the research surface.
+ * ─────────────────────────────────────────────── */
+describe('ReviewModal — feedback length cap (r165b)', () => {
+  it('caps the notes textarea at the backend limit (maxlength=4000)', async () => {
+    mocks.queue.data = [PAPER];
+    renderPage();
+    await openModal();
+
+    // The rendered attribute is the contract: the browser stops user
+    // input at exactly the server's max, so no 4000+ draft can ever be
+    // typed, POSTed, and rejected as a bogus «check your connection».
+    const notes = screen.getByLabelText('ملاحظات للطالب') as HTMLTextAreaElement;
+    expect(notes).toHaveAttribute('maxlength', '4000');
+  });
+
+  it('a saved feedback at exactly the cap loads verbatim (the cap governs input, not display)', async () => {
+    mocks.queue.data = [{ ...GRADED_PAPER, feedback: 'ب'.repeat(4_000) }];
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'نشر في المكتبة' }));
+    await screen.findByRole('dialog', { name: 'مراجعة بحث' });
+
+    const notes = screen.getByLabelText('ملاحظات للطالب') as HTMLTextAreaElement;
+    expect(notes).toHaveValue('ب'.repeat(4_000));
+    expect(notes).toHaveAttribute('maxlength', '4000');
+  });
+});

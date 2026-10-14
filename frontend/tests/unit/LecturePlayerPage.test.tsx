@@ -9,12 +9,17 @@
  * 3. The 10-second reporter and the onEnded report both route through
  *    the guarded computation (rendered <video>, stubbed jsdom media).
  * 4. Resume-seek fires once, on the first loadedmetadata only.
+ *
+ * r165b — the real media duration wins over the authored durationSec:
+ * resolveReportTotalSec (finite media duration first, authored
+ * fallback) feeds the 10s ticker, the onEnded report, the pagehide
+ * flush and every progress surface (bar / clock / checkpoint marks).
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import LecturePlayerPage, { isWatchComplete, resumeSeekSec } from '../../src/pages/student/LecturePlayerPage';
+import LecturePlayerPage, { isWatchComplete, resumeSeekSec, resolveReportTotalSec } from '../../src/pages/student/LecturePlayerPage';
 
 const mocks = vi.hoisted(() => ({
   lecture: null as Record<string, unknown> | null,
@@ -85,6 +90,11 @@ function renderPlayer() {
       <MemoryRouter initialEntries={['/lectures/lec1']}>
         <Routes>
           <Route path="/lectures/:lectureId" element={<LecturePlayerPage />} />
+          {/* r165b: the prev/next links target /student/lectures/… — a
+              second entry lets the navigation tests click them for real
+              (the page instance survives the route swap exactly as it
+              does under the app router — PP-X2). */}
+          <Route path="/student/lectures/:lectureId" element={<LecturePlayerPage />} />
         </Routes>
       </MemoryRouter>
     </QueryClientProvider>,
@@ -115,6 +125,13 @@ function trackSeeks(video: HTMLVideoElement): number[] {
     configurable: true,
   });
   return seeks;
+}
+
+/* r165b: jsdom's media duration is NaN by default — define the REAL
+   media length on the element exactly as the browser would report it
+   (metadata- or durationchange-read). */
+function realDuration(video: HTMLVideoElement, sec: number) {
+  Object.defineProperty(video, 'duration', { value: sec, configurable: true });
 }
 
 describe('isWatchComplete (P0-1 guard)', () => {
@@ -244,6 +261,177 @@ describe('LecturePlayerPage watch reporting', () => {
       totalSec: 600,
       completed: true,
     });
+  });
+});
+
+/* ── r165b: the real media duration wins over the authored value ────
+ * The authored durationSec is the teacher's hand-entered guess; the
+ * <video> element's metadata duration is the media truth. The server's
+ * completion rule (watchedSec×10 ≥ min(totalSec, durationSec)×9)
+ * measures against the REPORTED totalSec — an authored 45:00 over a
+ * 12:00 video made the lecture permanently uncompletable (the bar
+ * read ~27% forever, with no hint). All three report paths and every
+ * progress render now resolve through resolveReportTotalSec: a finite
+ * positive media duration wins; NaN / 0 / Infinity falls back to the
+ * authored value. */
+describe('r165b — resolveReportTotalSec (the totalSec decision)', () => {
+  it('a finite positive media duration wins over the authored value', () => {
+    expect(resolveReportTotalSec(720, 2700)).toBe(720);
+    // The real duration is honored even when the authored one is unset.
+    expect(resolveReportTotalSec(720, 0)).toBe(720);
+  });
+
+  it('NaN / 0 / ±Infinity fall back to the authored durationSec', () => {
+    expect(resolveReportTotalSec(Number.NaN, 600)).toBe(600);
+    expect(resolveReportTotalSec(0, 600)).toBe(600);
+    expect(resolveReportTotalSec(Number.POSITIVE_INFINITY, 600)).toBe(600);
+    expect(resolveReportTotalSec(Number.NEGATIVE_INFINITY, 600)).toBe(600);
+  });
+});
+
+describe('r165b — the real media duration reaches every report path', () => {
+  beforeEach(() => {
+    // The headline defect: 45:00 authored for a real 12:00 video.
+    mocks.lecture = { ...baseLecture, durationSec: 2700, watchEvents: [] };
+    mocks.reportWatch.mockClear();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+
+  it('the 10s ticker reports totalSec 720 (not the authored 2700) and completes at 95% of the REAL video', () => {
+    vi.useFakeTimers();
+    renderPlayer();
+    const video = getVideo();
+    realDuration(video, 720);
+    pretendPlaying(video, 400); // 55% of the real 720 — not complete
+
+    act(() => {
+      vi.advanceTimersByTime(10_000);
+    });
+    expect(mocks.reportWatch.mock.calls[0]?.[0]).toMatchObject({
+      lectureId: 'lec1',
+      watchedSec: 400,
+      totalSec: 720, // NOT 2700 — the authored guess is the fallback only
+      completed: false,
+    });
+
+    mocks.reportWatch.mockClear();
+    pretendPlaying(video, 700); // 97% of the real 720
+    act(() => {
+      vi.advanceTimersByTime(10_000);
+    });
+    // Pre-r165b this was completed:false (700 of the authored 2700 =
+    // 26% — forever). The server now accepts it: 7000 ≥ min(720,
+    // 2700)×9 = 6480.
+    expect(mocks.reportWatch.mock.calls[0]?.[0]).toMatchObject({ totalSec: 720, completed: true });
+  });
+
+  it('onEnded reports the real media length — the 45:00-authored 12:00 video finally completes', () => {
+    renderPlayer();
+    const video = getVideo();
+    realDuration(video, 720);
+    Object.defineProperty(video, 'currentTime', { value: 720, configurable: true, writable: true });
+
+    fireEvent(video, new Event('ended'));
+
+    // totalSec 2700 here was the defect: 7200 < min(2700, 2700)×9 —
+    // the server rejected the completion on every watch-through.
+    expect(mocks.reportWatch.mock.calls[0]?.[0]).toMatchObject({
+      lectureId: 'lec1',
+      watchedSec: 720,
+      totalSec: 720,
+      completed: true,
+    });
+  });
+
+  it('the pagehide flush carries the resolved total too', () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal('fetch', fetchMock);
+    renderPlayer();
+    const video = getVideo();
+    realDuration(video, 720);
+    pretendPlaying(video, 700);
+
+    fireEvent(window, new Event('pagehide'));
+
+    const call = fetchMock.mock.calls[0];
+    if (!call) throw new Error('pagehide flush: expected one fetch call');
+    expect(JSON.parse(call[1].body)).toEqual({
+      watchedSec: 700,
+      totalSec: 720,
+      completed: true, // 97% of the real video — honest at unload
+    });
+  });
+
+  it('an unavailable media duration (Infinity) keeps the authored fallback in the payload', () => {
+    renderPlayer();
+    const video = getVideo();
+    realDuration(video, Number.POSITIVE_INFINITY); // e.g. a live stream
+    Object.defineProperty(video, 'currentTime', { value: 600, configurable: true, writable: true });
+
+    fireEvent(video, new Event('ended'));
+
+    expect(mocks.reportWatch.mock.calls[0]?.[0]).toMatchObject({
+      watchedSec: 600,
+      totalSec: 2700,
+      completed: true,
+    });
+  });
+});
+
+describe('r165b — the progress surfaces divide by the real media duration', () => {
+  beforeEach(() => {
+    mocks.reportWatch.mockClear();
+    mocks.lectures = null;
+  });
+
+  it('the live bar, the clock label and the checkpoint marks all switch to the real total on loadedmetadata', () => {
+    mocks.lecture = {
+      ...baseLecture,
+      durationSec: 2700, // authored 45:00 over a real 12:00 video
+      checkpoints: [
+        { id: 'cpHalf', triggerSec: 360, question: 'سؤال', options: ['أ', 'ب'], conceptId: null, answers: [] },
+      ],
+      watchEvents: [],
+    };
+    renderPlayer();
+    const video = getVideo();
+    realDuration(video, 720);
+
+    // Before metadata: the authored fallback — half the real video
+    // reads 13% (360/2700) and the clock says 45:00.
+    Object.defineProperty(video, 'currentTime', { value: 360, configurable: true, writable: true });
+    fireEvent(video, new Event('timeupdate'));
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '13');
+    expect(screen.getByText('06:00 / 45:00')).toBeInTheDocument();
+
+    // Metadata lands → every surface re-denominates against 720.
+    fireEvent(video, new Event('loadedmetadata'));
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50');
+    expect(screen.getByText('06:00 / 12:00')).toBeInTheDocument();
+    // The checkpoint mark rides the SAME denominator (half of the real
+    // video, not 13% of the authored one).
+    const mark = document.querySelector('.lecture-progress-mark') as HTMLElement;
+    expect(mark.style.insetInlineStart).toBe('calc(50% - 4px)');
+  });
+
+  it('navigation to the next lecture resets the mirrored duration (no leak into the sibling video)', () => {
+    mocks.lecture = { ...baseLecture, durationSec: 2700, watchEvents: [] };
+    renderPlayer();
+    const video = getVideo();
+    realDuration(video, 720);
+    fireEvent(video, new Event('loadedmetadata'));
+
+    // Next lecture — the component instance survives (PP-X2), so the
+    // mirrored duration must reset to unknown (authored fallback)
+    // until the new video's own metadata arrives.
+    fireEvent.click(screen.getByRole('link', { name: /المحاضرة التالية/ }));
+    Object.defineProperty(video, 'currentTime', { value: 360, configurable: true, writable: true });
+    fireEvent(video, new Event('timeupdate'));
+
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '13');
   });
 });
 

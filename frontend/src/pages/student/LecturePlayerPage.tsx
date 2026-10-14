@@ -24,11 +24,32 @@ import { countAr, formatMmSs } from '../../lib/format';
    currentTime / durationSec division yields Infinity when the duration
    is unset, so the periodic reporter used to send completed:true for
    lectures that can never honestly complete. Completion requires a
-   real authored duration AND a finite share of it actually watched. */
+   positive effective duration AND a finite share of it actually
+   watched — since r165b the effective duration is resolved by
+   resolveReportTotalSec (real media duration first, authored value
+   fallback). */
 export function isWatchComplete(currentTime: number, durationSec: number): boolean {
   if (!(durationSec > 0)) return false;
   const share = currentTime / durationSec;
   return Number.isFinite(share) && share >= 0.95;
+}
+
+/* r165b — the totalSec decision, ONE source of truth for the whole
+   page. `durationSec` is a hand-authored field (the teacher's guess
+   while building the lecture); the <video> element's metadata duration
+   is the REAL media length. When the two disagree (45:00 authored over
+   a 12:00 video), the server's completion rule (learning.routes.ts:
+   watchedSec×10 ≥ min(totalSec, durationSec)×9) measures against the
+   REPORTED totalSec — so the authored guess made the lecture
+   permanently uncompletable: watching to the very end reported 720 of
+   2700 and the bar read ~27% forever, silently. Every report path
+   (10s ticker / onEnded / pagehide flush) and every progress render
+   below resolves the effective total through this helper: a finite
+   positive media duration WINS; NaN / Infinity / 0 falls back to the
+   authored value. The backend is deliberately untouched — the server
+   stays the authority on what counts as done. */
+export function resolveReportTotalSec(mediaDuration: number, authoredDurationSec: number): number {
+  return Number.isFinite(mediaDuration) && mediaDuration > 0 ? mediaDuration : authoredDurationSec;
 }
 
 /* Audit 11-f P1-6 — resume-seek target for a returning student: the
@@ -103,6 +124,13 @@ export default function LecturePlayerPage() {
   // never affected (audit 11-f P1-6).
   const resumeSeekedRef = useRef(false);
   const [currentSec, setCurrentSec] = useState(0);
+  /* r165b: the <video> element's real metadata duration, mirrored into
+   * state so the progress surfaces can render against the media truth
+   * (NaN until the first loadedmetadata — the resolveReportTotalSec
+   * fallback then rides the authored durationSec, byte-identical to
+   * the pre-r165b behavior). The report paths read the element's LIVE
+   * duration instead (they fire outside the render cycle). */
+  const [mediaDurationSec, setMediaDurationSec] = useState<number>(Number.NaN);
   const [activeCheckpoint, setActiveCheckpoint] = useState<LectureCheckpoint | null>(null);
   const [answeredCheckpointIds, setAnsweredCheckpointIds] = useState<Set<string>>(new Set());
   /* r157 (W2-F7 / audit 6A5): session-local skips — a skipped
@@ -136,6 +164,10 @@ export default function LecturePlayerPage() {
    * end-of-video pulse…). */
   useEffect(() => {
     setCurrentSec(0);
+    // r165b: the new lecture's media duration is unknown until ITS
+    // loadedmetadata fires — the previous video's duration must not
+    // leak into this lecture's progress math.
+    setMediaDurationSec(Number.NaN);
     setActiveCheckpoint(null);
     setAnsweredCheckpointIds(new Set());
     setSkippedCheckpointIds(new Set());
@@ -184,14 +216,19 @@ export default function LecturePlayerPage() {
       const v = videoRef.current;
       if (!v || v.paused || v.ended) return;
       if (reportWatchRef.current.isPending) return;
+      // r165b: resolve against the element's LIVE duration — read at
+      // tick time, because this interval's closure froze the render it
+      // was created in (metadata may have landed long after). The
+      // P0-1 guard below still applies to the resolved total: an
+      // unset duration (0) can never complete — the old raw division
+      // turned ÷0 into Infinity and marked every duration-less
+      // lecture complete after 10 seconds.
+      const total = resolveReportTotalSec(v.duration, data.durationSec);
       reportWatch.mutate({
         lectureId: data.id,
         watchedSec: Math.round(v.currentTime),
-        totalSec: data.durationSec,
-        // P0-1 guard: an unset duration (0) can never complete — the
-        // old raw division turned ÷0 into Infinity and marked every
-        // duration-less lecture complete after 10 seconds.
-        completed: isWatchComplete(v.currentTime, data.durationSec),
+        totalSec: total,
+        completed: isWatchComplete(v.currentTime, total),
       });
     }, 10_000);
     return () => clearInterval(id);
@@ -212,6 +249,9 @@ export default function LecturePlayerPage() {
   flushWatchOnHide.current = () => {
     const v = videoRef.current;
     if (!data || !v || v.paused || v.ended) return;
+    // r165b: same totalSec resolution as every other report path —
+    // the element's live duration wins over the authored guess.
+    const total = resolveReportTotalSec(v.duration, data.durationSec);
     const token = useAuthStore.getState().accessToken;
     void fetch(`${apiBaseURL}/lectures/${data.id}/watch`, {
       method: 'POST',
@@ -222,8 +262,8 @@ export default function LecturePlayerPage() {
       },
       body: JSON.stringify({
         watchedSec: Math.round(v.currentTime),
-        totalSec: data.durationSec,
-        completed: isWatchComplete(v.currentTime, data.durationSec),
+        totalSec: total,
+        completed: isWatchComplete(v.currentTime, total),
       }),
     }).catch(() => {
       /* page is going away — the next session's resume-seek and the
@@ -370,14 +410,20 @@ export default function LecturePlayerPage() {
     setAnswerError(false);
   };
 
-  // Watch progress — live position (throttled to 1 render/sec below)
-  // floored by the server-saved maximum; a resumed lecture also seeks
-  // the <video> itself to the saved position on first metadata load
-  // (see onLoadedMetadata), so the bar and the playback agree.
-  const totalSec = data.durationSec;
-  const livePct = totalSec > 0 ? Math.min(100, Math.round((currentSec / totalSec) * 100)) : 0;
+  /* Watch progress — live position (throttled to 1 render/sec below)
+   * floored by the server-saved maximum; a resumed lecture also seeks
+   * the <video> itself to the saved position on first metadata load
+   * (see onLoadedMetadata), so the bar and the playback agree.
+   * r165b: ONE resolved total for every progress surface below — the
+   * bar's live/saved shares, the m:ss clock denominator and the
+   * checkpoint mark offsets all divide by the SAME effective total
+   * (the real media duration once the element provides one; the
+   * authored value before that). The report paths above resolve
+   * through the same helper against the element's live duration. */
+  const reportTotalSec = resolveReportTotalSec(mediaDurationSec, data.durationSec);
+  const livePct = reportTotalSec > 0 ? Math.min(100, Math.round((currentSec / reportTotalSec) * 100)) : 0;
   const savedSec = (data.watchEvents ?? []).reduce((max, e) => Math.max(max, e.watchedSec), 0);
-  const savedPct = totalSec > 0 ? Math.min(100, Math.round((savedSec / totalSec) * 100)) : 0;
+  const savedPct = reportTotalSec > 0 ? Math.min(100, Math.round((savedSec / reportTotalSec) * 100)) : 0;
   const completed = (data.watchEvents ?? []).some((e) => e.completed);
   const watchPct = completed ? 100 : Math.max(livePct, savedPct);
   const checkpointsTotal = data.checkpoints.length;
@@ -439,6 +485,9 @@ export default function LecturePlayerPage() {
               preload="metadata"
               aria-label={`محاضرة: ${data.title}`}
               onLoadedMetadata={(e) => {
+                // r165b: mirror the REAL media length — every metadata
+                // load (a src swap reloads it), not just the first.
+                setMediaDurationSec(e.currentTarget.duration);
                 // Resume-seek (audit 11-f P1-6): on the first metadata
                 // load, continue from the server-saved position instead
                 // of restarting at 0:00 — completed lectures and
@@ -447,6 +496,14 @@ export default function LecturePlayerPage() {
                 resumeSeekedRef.current = true;
                 const target = resumeSeekSec(savedSec, completed, e.currentTarget.duration);
                 if (target !== null && target > 0) e.currentTarget.currentTime = target;
+              }}
+              onDurationChange={(e) => {
+                /* r165b: streaming media can refine a placeholder
+                 * non-finite duration AFTER metadata — keep the mirror
+                 * fresh (the same loadedmetadata + durationchange pair
+                 * VideoPlayerChrome syncs its own duration on; the
+                 * non-finite guard lives in resolveReportTotalSec). */
+                setMediaDurationSec(e.currentTarget.duration);
               }}
               onTimeUpdate={(e) => {
                 // `timeupdate` fires ~4×/sec; the elapsed-time label,
@@ -462,16 +519,21 @@ export default function LecturePlayerPage() {
               onEnded={(e) => {
                 if (data) {
                   // Honest end-of-video report: the actually-watched
-                  // amount, not the authored duration. Completion still
-                  // requires an authored duration (0 = unset is never
-                  // completable, mirroring the server-side D9 rule — the
-                  // server stays the authority on what counts as done).
+                  // amount measured against the REAL media length
+                  // (r165b — the authored duration is the fallback only
+                  // when the element has no finite duration). The
+                  // completion flag rides the resolved total (the same
+                  // condition as before, corrected input); the server
+                  // stays the authority on what counts as done (D9 —
+                  // an unset authored duration is still never
+                  // completable server-side).
                   const watched = Math.round(e.currentTarget.currentTime);
+                  const total = resolveReportTotalSec(e.currentTarget.duration, data.durationSec);
                   const payload = {
                     lectureId: data.id,
                     watchedSec: watched,
-                    totalSec: data.durationSec,
-                    completed: data.durationSec > 0,
+                    totalSec: total,
+                    completed: total > 0,
                   };
                   reportWatch.mutate(payload, {
                     onError: () => setFailedReport(payload),
@@ -518,7 +580,7 @@ export default function LecturePlayerPage() {
             <div className="lecture-meta-title">{data.title}</div>
             <div className="lecture-meta-sub">
               د. {data.offering.teacher.firstName} {data.offering.teacher.lastName} ·{' '}
-              <bdi className="font-mono">{formatMmSs(currentSec)} / {formatMmSs(totalSec)}</bdi>
+              <bdi className="font-mono">{formatMmSs(currentSec)} / {formatMmSs(reportTotalSec)}</bdi>
               {checkpointsTotal > 0 && <> · {countAr(checkpointsTotal, ['نقطة تفاعل واحدة', 'نقطتا تفاعل', 'نقاط تفاعل', 'نقطة تفاعل'])}</>}
             </div>
           </div>
@@ -548,7 +610,7 @@ export default function LecturePlayerPage() {
                   key={c.id}
                   className={`lecture-progress-mark${answeredCheckpointIds.has(c.id) ? ' done' : ''}`}
                   style={{
-                    insetInlineStart: `calc(${totalSec > 0 ? (c.triggerSec / totalSec) * 100 : 0}% - 4px)`,
+                    insetInlineStart: `calc(${reportTotalSec > 0 ? (c.triggerSec / reportTotalSec) * 100 : 0}% - 4px)`,
                   }}
                   aria-hidden
                 />

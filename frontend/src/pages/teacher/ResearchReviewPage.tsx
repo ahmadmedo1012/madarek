@@ -434,6 +434,13 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
             disabled={isGraded || grade.isPending}
+            // r165b: mirror the backend cap — gradePaperSchema pins
+            // feedback at z.string().trim().max(4000) (learning.routes.ts);
+            // an uncapped textarea let a full write-up POST past the
+            // client and fail with a misleading connectivity error.
+            // The sibling GradeSubmissionModal caps the same way
+            // (maxLength={2000} against its own backend limit).
+            maxLength={4000}
             style={{ resize: 'vertical', fontFamily: 'inherit' }}
           />
         </FormField>
