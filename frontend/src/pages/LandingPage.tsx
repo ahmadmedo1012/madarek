@@ -125,6 +125,34 @@ export default function LandingPage() {
     }
   }, [redirectHome, introSeen]);
 
+  /* r162 (R2): warm the login chunk while the visitor reads the hero.
+   *
+   * The landing's #1 and #2 CTAs («ابدأ الآن» / «تسجيل الدخول») route
+   * to `/auth` — a lazy boundary. On a production cold cache the first
+   * click suspends the ROOT boundary and swaps the whole ink world for
+   * the product-ground HydrationSplash while the AuthPage chunk
+   * fetches: a full-screen world-crossing blank-out on the primary
+   * public funnel. Idle-prefetching the exact same dynamic import the
+   * route boundary resolves (module init runs once; the later lazy()
+   * mount reuses the warm module) means the click navigates with the
+   * chunk already in cache — no splash window at all. Same pattern as
+   * the shell's chartTheme warm-up (AppShell r152j/A7): production
+   * only — dev has no chunk splitting to warm. */
+  useEffect(() => {
+    if (redirectHome) return;
+    if (!import.meta.env.PROD) return;
+    const ric =
+      typeof window.requestIdleCallback === 'function'
+        ? window.requestIdleCallback.bind(window)
+        : undefined;
+    const warm = () => { void import('./AuthPage').catch(() => undefined); };
+    const idleId = ric ? ric(warm, { timeout: 4000 }) : window.setTimeout(warm, 2500);
+    return () => {
+      if (ric) window.cancelIdleCallback(idleId as number);
+      else window.clearTimeout(idleId as number);
+    };
+  }, [redirectHome]);
+
   // Scroll-driven chrome with ZERO setState: coalesced to one rAF per frame
   // (pending-flag pattern, mirrors useSectionProgress) and written straight
   // to the DOM — the .scrolled class on the header and the --p var on the

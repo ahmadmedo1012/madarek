@@ -80,7 +80,10 @@ const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
  * both hashes from frontend/index.html and fails when either pin below
  * stops matching — after editing an inline script, refresh these pins.
  */
-const THEME_BOOTSTRAP_SHA256 = 'zLzhCAzuiEvULk3yJRCscUpVi1G9xvw8P4O0sh/iWt4=';
+/* r162 (R1): pin refreshed after the theme bootstrap gained the
+ * route-aware landing-boot ground decision (data-landing-boot) and
+ * the landing-aware theme-color sync. */
+const THEME_BOOTSTRAP_SHA256 = 'Cy7AdXk4WK2WClpSTA5rN+76zfSJUTrkr2aLzLnUZDc=';
 const JSON_LD_SHA256 = 'GAYSjtUnNib298VwQUIkYNYTt+UtlJ1hOQU4tThmKz0=';
 
 export function createApp() {

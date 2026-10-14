@@ -1443,15 +1443,18 @@
 
   /* Page transitions — softer + faster (was 220ms). Notion-class is closer
      to 160ms with a slightly heavier easing. */
-  .content-inner {
-    animation: page-enter var(--motion-duration-short) var(--ease-out) both;
-  }
+  /* r162 (R3): the animation TARGET moved one level down — see the
+     r162 section at the end of this file (`.content-inner > *`).
+     Animating the container made the keyed route remount fade while
+     the Suspense resolve (fallback → real page, first visit per
+     route) swapped content with NO transition. The child-level rule
+     keeps the exact same keyframes/duration/easing and fires on
+     every content mount: route changes AND suspense resolves. The
+     keyframes stay here (they are the page-enter contract's single
+     definition). */
   @keyframes page-enter {
     from { opacity: 0; transform: translateY(4px); }
     to   { opacity: 1; transform: translateY(0); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .content-inner { animation: none; }
   }
 
 }
@@ -4437,4 +4440,54 @@
      exists; the RTL comment's "covers the landing variant too" sentence
      retired with it.) */
 
+}
+
+@layer overrides {
+  /* ═════════════════════════════════════════════════════════════════
+     POLISH r162 — landing boot ground (R1) + content-mount fade (R3)
+     ═════════════════════════════════════════════════════════════════ */
+
+  /* r162 (R1): the landing world's ground, painted from the FIRST
+     styled frame of a guest `/` cold-load. `html[data-landing-boot]`
+     is decided pre-React by the theme bootstrap in index.html
+     (pathname `/` + no persisted mdrk-auth session) and owned by
+     React afterwards (useLandingBootGround in App.tsx: guest on `/`
+     keeps it, everyone else — and any other route — drops it). While
+     it is set, BOTH boot surfaces speak Orbit Ink:
+       · body — the ground behind everything (kills the cream→ink
+         flip light-mode visitors watched at the product's front door;
+         also the overscroll reveal color behind .landing);
+       · .hydration-splash — the guard/suspense placeholder, so the
+         chunk-fetch window is ink too (the splash is opaque fixed,
+         z-modal).
+     The landing itself (.landing, landing.css) paints the same
+     --ln-ink when it mounts — the boot ground hands over seamlessly.
+     Layered here (overrides) so both beat their @layer base/
+     components origins regardless of specificity. No motion values;
+     --ln-ink is the tokens.css source of truth. */
+  html[data-landing-boot] body,
+  html[data-landing-boot] .hydration-splash {
+    background: var(--ln-ink);
+  }
+
+  /* r162 (R3): ONE entrance language for every content mount. The
+     page-enter fade used to animate `.content-inner` — the keyed
+     remount — so the PageSkeleton fallback entered faded but the
+     resolved page that replaced it (first-visit Suspense resolve)
+     mounted with NO transition: first visits to a route lost the
+     entrance language repeat visits had. The fade now targets the
+     content child (`.content-inner > *` — exactly one element: the
+     fallback's `.page` or the resolved page root), so it plays on
+     route changes (child remounts with the keyed wrapper) AND on
+     suspense resolution (a fresh child mounts). `both` keeps the
+     from-state pinned before the first frame; the skeleton shimmer
+     lives on descendants, untouched. Guest CollegesLayout's
+     `.content-inner` (the back link + Outlet) fades as one on first
+     mount, per-route children fade per route — same contract. */
+  .content-inner > * {
+    animation: page-enter var(--motion-duration-short) var(--ease-out) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .content-inner > * { animation: none; }
+  }
 }

@@ -312,9 +312,10 @@
     padding-block-end: calc(var(--page-gutter) + var(--sp-9));
     /* r161 (A3): the route entrance animation was deleted here — it
        was DEAD at the cascade level. polish.css's @layer overrides
-       block owns the ONE route entrance (`.content-inner { animation:
-       page-enter var(--motion-duration-short) var(--ease-out) both }`
-       + its prefers-reduced-motion kill); @layer base can never win
+       block owns the ONE route entrance (since r162/R3 it targets
+       `.content-inner > *` — every content mount: route changes AND
+       first-visit Suspense resolves — with page-enter +
+       its prefers-reduced-motion kill); @layer base can never win
        against overrides, so this duplicate `madarek-page-enter`
        declaration (240ms + its own keyframes) never painted while
        doubling the transition surface area for future edits. The

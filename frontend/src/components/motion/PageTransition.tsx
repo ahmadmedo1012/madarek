@@ -22,13 +22,15 @@ type PageTransitionProps = {
  *
  * The ONE mechanism that survives is the keyed remount: this component
  * keys its inner wrapper on the pathname, so `.content-inner` (and the
- * page tree under it) remounts on every route change and plays the
- * single `page-enter` fade defined in polish.css v9 (160ms
- * `--motion-duration-short` + `--ease-out`, disabled under
- * `prefers-reduced-motion` by v9's own media block). Purely
- * declarative: no JS timing, no effect races, interruptible by nature,
- * and scroll restoration (which scrolls the persistent `.content`
- * container, not this subtree) is unaffected.
+ * page tree under it) remounts on every route change. Since r162 (R3)
+ * the `page-enter` fade targets `.content-inner > *` (polish.css r162
+ * section) — the content child — so it fires on every content MOUNT:
+ * the keyed route remount AND the first-visit Suspense resolve (the
+ * PageSkeleton fallback and the resolved page that replaces it enter
+ * with the same 160ms fade). Purely declarative: no JS timing, no
+ * effect races, interruptible by nature, and scroll restoration
+ * (which scrolls the persistent `.content` container, not this
+ * subtree) is unaffected.
  *
  * The wrapper div stays mounted across routes (stable data-route-key
  * contract) — only the inner node remounts.
