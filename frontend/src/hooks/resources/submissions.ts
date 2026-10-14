@@ -111,6 +111,14 @@ export function useSubmitAssignment(offeringId: string, assignmentId: string) {
       // upcoming list) and the teacher dashboard (needs-review count).
       qc.invalidateQueries({ queryKey: ['me', 'dashboard'] });
       qc.invalidateQueries({ queryKey: ['teacher', 'dashboard'] });
+      /* r165a: the submit-success modal in CoursesPage links straight to
+       * /student/results («تابع حالة التقييم ودرجتك من صفحة النتائج») —
+       * but useStudentResults caches ['me','results'] with staleTime 60s
+       * and the app turns refetchOnWindowFocus off, so the fresh
+       * submission never appeared in «تسليمات بانتظار التقييم» for up to
+       * a minute. Same one-line pattern the grade-side mutation above
+       * already ships. */
+      qc.invalidateQueries({ queryKey: ['me', 'results'] });
     },
   });
 }

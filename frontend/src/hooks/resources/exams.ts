@@ -452,7 +452,15 @@ export function useFinishExam() {
       unwrap<{ score: number; maxScore: number; status: string; needsManual: number; passed: boolean | null }>(
         api.post(`/exams/attempts/${attemptId}/submit`, {}),
       ),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['exams', 'me'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['exams', 'me'] });
+      /* r165a: a finished attempt also leaves the dashboard agenda —
+       * the server's ['me','dashboard'] agenda excludes finished exam
+       * attempts, but that query caches for 60s, so a just-finished
+       * exam kept advertising itself on the student's home. Same
+       * one-line pattern useSubmitAssignment ships. */
+      qc.invalidateQueries({ queryKey: ['me', 'dashboard'] });
+    },
   });
 }
 

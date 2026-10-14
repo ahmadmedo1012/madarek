@@ -113,6 +113,21 @@ function startErrorAr(error: unknown, exam: MyExam | undefined): string {
   return apiErrorMessage(error, 'تعذَّر بدء الاختبار — تحقّق من اتصالك وحاول مرة أخرى.');
 }
 
+/* r165a — a submit answer the backend rejected as TERMINAL. The submit
+ * route (exams.routes.ts) answers exactly two terminal truths: 409
+ * «تم تسليم هذه المحاولة مسبقاً» (the attempt left IN_PROGRESS — already
+ * submitted/graded, or a concurrent submit won the claim), and 403
+ * «انتهى وقت هذه المحاولة» (the 60s grace passed, the server flipped the
+ * attempt to EXPIRED and it will never accept an answer again). Both
+ * exact Arabic wire strings are matched the same apiErrorDetailRaw way
+ * startErrorAr matches the start guards. A 5xx / offline / timeout
+ * failure is NOT terminal — the honest retry path stays for those.
+ * Pure + exported for unit pinning. */
+export function isTerminalSubmitError(e: unknown): boolean {
+  const detail = apiErrorDetailRaw(e);
+  return detail === 'تم تسليم هذه المحاولة مسبقاً' || detail === 'انتهى وقت هذه المحاولة';
+}
+
 /* r164-e (assessment loop) — the attempt lifecycle verdict chip.
  * The badge must follow the wire truth, the same three-way contract
  * the post-submit result screen honors (15-c P1-1):
@@ -690,6 +705,27 @@ export function ExamTakerPage() {
         status: r.status,
       });
     } catch (e) {
+      /* r165a: a terminal submit answer must never strand the student
+       * on a live-looking dead screen. The zombie scenario: the tab was
+       * hidden past the deadline, the backend flipped the attempt to
+       * EXPIRED, the (auto-)submit answer 403s — the old catch painted
+       * the error but kept the attempt mounted: timer frozen at 00:00,
+       * questions still editable, beforeunload still armed, and the
+       * active-attempt screen had no exit. Retrying only earned the
+       * factually-wrong 409 «تم تسليم هذه المحاولة مسبقاً». Terminal
+       * answers settle the attempt exactly like a successful submit:
+       * alreadyDone renders the honest done/expired state (with its
+       * «العودة للقائمة» exit) and the exams list is re-read so the
+       * done screen speaks the refetched status truth, not the stale
+       * IN_PROGRESS row. Network errors keep the retry path as-is. */
+      if (isTerminalSubmitError(e)) {
+        autoSubmittedRef.current = true;
+        setAttempt(null);
+        setConfirming(false);
+        setAlreadyDone(true);
+        void examsQ.refetch();
+        return;
+      }
       setSubmitError(apiErrorMessage(e, 'تعذَّر تسليم الاختبار — حاول مرة أخرى.'));
       // A failed manual submit must not block the countdown's later
       // auto-submit — only success settles the attempt (15-e P0-2).
@@ -1116,6 +1152,20 @@ export function ExamTakerPage() {
 
   return (
     <div className="page">
+      {/* r165a: the one live screen that had NO way out. While a submit
+          error keeps the retry path (a network fault — never a terminal
+          answer, those settle the attempt above), the student gets the
+          same «كل الاختبارات» back-link every other screen of this flow
+          carries. Leaving is safe and honest: answers autosave per
+          question, the attempt stays IN_PROGRESS server-side and the
+          list offers «متابعة» back into it (beforeunload still guards
+          an accidental full-page reload). */}
+      {submitError && (
+        <Link to="/student/online-exams" className="back-link">
+          <Icon icon={ChevronRight} size={14} />
+          كل الاختبارات
+        </Link>
+      )}
       <div className="exam-bar">
         <div>
           <h1 className="exam-bar-title">{attempt.title}</h1>
@@ -1612,9 +1662,17 @@ export function ExamModerationPage() {
                           يقرأ ما يعتمده بدل الاعتماد على العنوان والمدة
                           فقط. مسار الاعتماد/الرفض نفسه لم يتغيّر. */}
                       <TemplateQuestionsPreview templateId={item.id} />
+                      {/* r165a: the note is capped at the backend's
+                          moderateSchema (exams.routes.ts note max 500) —
+                          the teacher-side twin (TemplateModerationPanel in
+                          ExamAuthorPages) already caps this way; an
+                          uncapped textarea past 500 chars failed with a
+                          misleading connectivity error. Twin pattern
+                          matched exactly (maxLength, no counter). */}
                       <textarea
                         className="input"
                         rows={2}
+                        maxLength={500}
                         placeholder="ملاحظات للمؤلف (اختياري)…"
                         aria-label="ملاحظات المراجعة للمؤلف"
                         value={note}
