@@ -17,6 +17,8 @@
     "test:audit": "playwright test tests/audit",
     "test:audit:drift": "tsx tests/audit/run-drift.ts",
     "audit:baseline": "tsx tests/audit/promote-baseline.ts",
+    "test:e2e": "playwright test tests/e2e",
+    "audit:capture:mock": "AUDIT_BASELINE=1 AUDIT_API_MOCK=1 playwright test tests/audit/surface-inventory.spec.ts",
     "build:report": "BUNDLE_REPORT=1 vite build --mode production"
   },
   "dependencies": {

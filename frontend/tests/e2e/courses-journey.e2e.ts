@@ -1,0 +1,48 @@
+/**
+ * courses-journey.e2e.ts — رحلة المقرّرات (r164-k).
+ *
+ * مسار ثلاثي حقيقي: قائمة «مقرّراتي الدراسية» → بطاقة المقرّر →
+ * تفاصيل العرض (offering full) → مشغّل المحاضرة. كل خطوة عبر روابط
+ * DOM حقيقية وبيانات من النقل الوهمي (enrollments/me + offerings/full
+ * + lectures/:id)، مع عناوين التبويب من resolveTitle (AppShell).
+ */
+import { test, expect } from './fixtures/e2e';
+import { LECTURE_ID, OFFERING_ID } from './fixtures/api-fixtures';
+
+test.use({ e2eRole: 'STUDENT' });
+
+test.describe('رحلة المقرّرات', () => {
+  test('القائمة → تفاصيل المقرّر → مشغّل المحاضرة', async ({ page }) => {
+    /* 1 — قائمة المقرّرات */
+    await page.goto('/student/courses');
+    // usePageTitle: «<السياق> · مدارك».
+    await expect(page).toHaveTitle('مقرّراتي الدراسية · مدارك');
+    await expect(page.getByText('مقرّرات مسجَّلة', { exact: true })).toBeVisible();
+
+    const card = page.locator(`a[href="/student/courses/${OFFERING_ID}"]`);
+    await expect(card).toContainText('مقدمة في الخوارزميات');
+    await expect(card).toContainText('CS-201');
+    await expect(card).toContainText('د. ليلى الفيتوري');
+
+    /* 2 — تفاصيل المقرّر */
+    await card.click();
+    await expect(page).toHaveURL(new RegExp(`/student/courses/${OFFERING_ID}$`));
+    await expect(page).toHaveTitle('تفاصيل المقرّر · مدارك');
+    // هيكل البطل: اسم المقرّر + الأستاذ (من offerings/full).
+    await expect(page.getByText('مقدمة في الخوارزميات').first()).toBeVisible();
+    await expect(page.getByText('ليلى الفيتوري').first()).toBeVisible();
+
+    /* 3 — صف المحاضرة «التالية» ثم المشغّل */
+    const lecRow = page.locator(`a[href="/student/lectures/${LECTURE_ID}"]`);
+    await expect(lecRow).toContainText('الخوارزميات الجشعة');
+    await expect(lecRow).toContainText('المحاضرة');
+    await lecRow.click();
+
+    await expect(page).toHaveURL(new RegExp(`/student/lectures/${LECTURE_ID}$`));
+    await expect(page).toHaveTitle('مشغّل المحاضرة · مدارك');
+    // المشغّل يعرض عنوان المحاضرة + عنصر الفيديو + فصول المشاهدة.
+    await expect(page.getByText('الخوارزميات الجشعة').first()).toBeVisible();
+    await expect(page.locator('video').first()).toBeAttached();
+    await expect(page.getByText('أمثلة وتطبيقات').first()).toBeVisible();
+  });
+});

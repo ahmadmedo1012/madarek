@@ -119,6 +119,38 @@ jobs:
       # makes env.ts fall back to placeholder secrets.
       - run: npm --prefix backend run test
 
+  e2e:
+    name: E2E (hermetic browser journeys)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      # r164-k: the hermetic journey suite (frontend/tests/e2e/*.e2e.ts).
+      # No backend, no database, no network: Playwright's webServer boots
+      # the Vite dev server (:5173) and every /api/ call is fulfilled by
+      # the fixture transport (tests/e2e/fixtures/mock-transport.ts) at
+      # the page.route layer. Install the browser from the workspace's
+      # own @playwright/test (^1.60) — run npx inside frontend/ so it
+      # resolves that copy, not a registry download.
+      - name: Install Playwright chromium
+        working-directory: frontend
+        run: npx playwright install chromium --with-deps
+      - run: npm --prefix frontend run test:e2e
+      # Traces / screenshots / videos are retained-on-failure by
+      # playwright.config.ts — publish them for post-mortem only then.
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-e2e-failures
+          path: frontend/test-results/
+          retention-days: 7
+
   design-gates:
     name: Design gates (icons + motion tokens + parity export)
     runs-on: ubuntu-latest

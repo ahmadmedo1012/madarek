@@ -50,11 +50,32 @@
  *   # 5. accept an intentional design change (through PR review):
  *   npm run audit:baseline
  *
+ * DB-less capture (AUDIT_API_MOCK=1 — r164-k)
+ * ───────────────────────────────────────
+ * export AUDIT_BASELINE=1 AUDIT_API_MOCK=1
+ * npm run audit:capture:mock
+ *
+ * The e2e mock transport (tests/e2e/fixtures/mock-transport.ts) is
+ * installed on every sweep context, so the sweep runs against the
+ * Vite dev server with NO backend and NO database: sessions come from
+ * the fixture users (one per guarded role), the student surfaces get
+ * the real fixture payloads, and every unfixed endpoint answers 501
+ * MOCK_NOT_IMPLEMENTED so non-student pages render their honest
+ * error/empty states. This mode exists to verify the CAPTURE PATH
+ * (routing × seeding × collectors × JSON shape × drift detector) — a
+ * baseline promoted from it would baseline error states. The real
+ * baseline is still captured the seeded-DB way above, by the lead at
+ * integration time. Optional knobs for this mode:
+ *   AUDIT_INVENTORY_OUT=<path>  write the JSON somewhere else (temp)
+ *   AUDIT_ROUTE_LIMIT=<n>       sweep only the first n routes (smoke)
+ *   AUDIT_ROUTES_FROM=<n>       skip the first n routes (slice sweeps)
+ *
  * Notes / limitations (deliberate, documented in the audit contract):
  *   - One shared browser context per (role × theme); viewport is
  *     switched per capture via page.setViewportSize. Login happens
- *     exactly once per role through the real /auth/login API and the
- *     session is seeded into localStorage (mdrk-auth / madarek-theme).
+ *     exactly once per role through the real /auth/login API (or is
+ *     fixture-seeded in AUDIT_API_MOCK mode) and the session is
+ *     seeded into localStorage (mdrk-auth / madarek-theme).
  *   - Overlays are captured only when they are mounted in the DOM —
  *     most routes render none closed; the sweep does not interact to
  *     open them.
@@ -68,6 +89,9 @@ import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { installMockApi } from '../e2e/fixtures/mock-transport';
+import { ROLE_USERS, type FixtureUser } from '../e2e/fixtures/api-fixtures';
 
 import { AUDIT_ROUTES, DIRS, THEMES, VIEWPORTS } from './routes';
 import type {
@@ -96,6 +120,29 @@ test.skip(
 
 const APP_BASE_URL = process.env.MADAREK_E2E_BASE_URL ?? 'http://localhost:5173';
 const API_BASE_URL = process.env.MADAREK_API_BASE_URL ?? 'http://localhost:4000/api/v1';
+
+/** DB-less mode (see header): the e2e mock transport serves the app. */
+const MOCK_API = !!process.env.AUDIT_API_MOCK;
+/** Where the inventory lands; tests/audit/surface-inventory.json is
+ * gitignored, and an explicit path lets a verification run write to a
+ * temp location instead (r164-k deliverable). */
+const INVENTORY_OUT = process.env.AUDIT_INVENTORY_OUT
+  ? resolve(process.env.AUDIT_INVENTORY_OUT)
+  : resolve(here, 'surface-inventory.json');
+/** Cap the sweep to the first N routes (AUDIT_API_MOCK smoke runs). */
+const ROUTE_LIMIT = process.env.AUDIT_ROUTE_LIMIT
+  ? Math.max(1, Number.parseInt(process.env.AUDIT_ROUTE_LIMIT, 10) || 1)
+  : null;
+/** Skip the first N routes (pair with AUDIT_ROUTE_LIMIT to sweep a
+ * middle slice — the sandboxed verification runs, which cannot host a
+ * single ~30 min sweep, cover the matrix in consecutive slices). */
+const ROUTES_FROM = process.env.AUDIT_ROUTES_FROM
+  ? Math.max(0, Number.parseInt(process.env.AUDIT_ROUTES_FROM, 10) || 0)
+  : 0;
+const SWEEP_ROUTES = AUDIT_ROUTES.slice(
+  ROUTES_FROM,
+  ROUTES_FROM + (ROUTE_LIMIT ?? AUDIT_ROUTES.length - ROUTES_FROM),
+);
 
 /** Extra settle time after networkidle (charts, skeletons → content). */
 const SETTLE_MS = 400;
@@ -150,13 +197,10 @@ function roleForRoute(route: string): SweepRole {
 }
 
 interface Session {
-  user: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    role: Exclude<SweepRole, 'guest'>;
-  };
+  // The wire user shape — identical to the e2e fixture user (the real
+  // login response carries the same fields; the cast below is the
+  // trust boundary, as before).
+  user: FixtureUser;
   accessToken: string;
 }
 
@@ -443,10 +487,18 @@ test('sweep AUDIT_ROUTES × viewports × themes × dirs → surface-inventory.js
   const screenshotsDir = resolve(here, 'screenshots');
   mkdirSync(screenshotsDir, { recursive: true });
 
-  // Login once per guarded role.
+  // Login once per guarded role — against the real API, or from the
+  // fixture users when the mock transport owns the wire (DB-less).
   const sessions = new Map<string, Session>();
   for (const role of ['STUDENT', 'TEACHER', 'ADMIN', 'QUALITY', 'OWNER'] as const) {
-    sessions.set(role, await login(request, role));
+    if (MOCK_API) {
+      sessions.set(role, {
+        user: ROLE_USERS[role],
+        accessToken: 'audit-mock-token',
+      });
+    } else {
+      sessions.set(role, await login(request, role));
+    }
   }
 
   // One browser context per (role × theme); viewport switches per capture.
@@ -463,6 +515,14 @@ test('sweep AUDIT_ROUTES × viewports × themes × dirs → surface-inventory.js
       colorScheme: theme,
       locale: 'ar',
     });
+    if (MOCK_API) {
+      // The transport must own the wire BEFORE the first app request.
+      // Mock mode seeds the session user answering /auth/me for every
+      // role, so guarded routes stay inside the app (no /auth bounce).
+      await installMockApi(context, {
+        sessionUser: role === 'guest' ? null : sessions.get(role)!.user,
+      });
+    }
     const session = role === 'guest' ? null : sessions.get(role);
     // Seed the persisted stores BEFORE any app script runs. Theme gets a
     // fresh modeUpdatedAt so the profile-sync tiebreak keeps the local choice.
@@ -493,7 +553,7 @@ test('sweep AUDIT_ROUTES × viewports × themes × dirs → surface-inventory.js
 
   const captures: SurfaceCapture[] = [];
 
-  for (const route of AUDIT_ROUTES) {
+  for (const route of SWEEP_ROUTES) {
     const role = roleForRoute(route);
     const url = resolveRoute(route);
     for (const viewport of VIEWPORTS) {
@@ -566,11 +626,12 @@ test('sweep AUDIT_ROUTES × viewports × themes × dirs → surface-inventory.js
     generatedAt: new Date().toISOString(),
     captures,
   };
-  const outPath = resolve(here, 'surface-inventory.json');
+  const outPath = INVENTORY_OUT;
+  mkdirSync(dirname(outPath), { recursive: true });
   writeFileSync(outPath, `${JSON.stringify(inventory, null, 2)}\n`, 'utf8');
 
   const expected =
-    AUDIT_ROUTES.length * VIEWPORTS.length * THEMES.length * DIRS.length;
+    SWEEP_ROUTES.length * VIEWPORTS.length * THEMES.length * DIRS.length;
   expect(captures).toHaveLength(expected);
   // Every capture must be structurally complete for the drift detector.
   for (const cap of captures) {
