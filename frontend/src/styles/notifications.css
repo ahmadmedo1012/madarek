@@ -138,11 +138,14 @@
    The -ink pair mirrors the toast VARIANT wells in this file (the
    in-repo correct grammar): light gets the -deep shades, dark's -ink
    tokens resolve to the same values the base tokens already had (no
-   dark change). tone-neutral already passed (4.86:1). */
+   dark change). tone-neutral never had a producer after r164-j moved
+   SYSTEM to the amber well (MorePages semantics) and was deleted;
+   tone-warn consumes the same WCAG-pinned --warning-soft/--warning-ink
+   pair the toast warning well ships (line .toast-icon-warning). */
 .notif-item.tone-accent  .notif-item-icon { background: var(--accent-soft);  color: var(--accent-ink);  }
 .notif-item.tone-danger  .notif-item-icon { background: var(--danger-soft);  color: var(--danger-ink);  }
 .notif-item.tone-success .notif-item-icon { background: var(--success-soft); color: var(--success-ink); }
-.notif-item.tone-neutral .notif-item-icon { background: var(--surface-2);    color: var(--text-muted); }
+.notif-item.tone-warn    .notif-item-icon { background: var(--warning-soft); color: var(--warning-ink); }
 
 .notif-item-body {
   flex: 1;
@@ -194,6 +197,23 @@
 /* Mobile sizing — keep within viewport */
 @media (max-width: 480px) {
   .notif-panel-list { max-height: 60vh; }
+}
+
+/* r164-j (WCAG 2.2 §2.5.8 / NN/g touch floor — audit residual): the
+   panel opens on every viewport anchored to the bell, but its chrome
+   controls were sized for pointer-fine: the header close (28×28),
+   «تعليم الكل كمقروء» (~28px) and the footer view-all link (~37px)
+   all sit under the 44px hit floor on touch. The comma list covers
+   BOTH touch proxies the platform uses: the ≤920px phone band (where
+   layout.css already floors the bell itself) and (hover: none) —
+   tablets in the ≥921px desktop band (the .cmd-row idiom). min-*
+   grows only the hit area (glyphs/labels stay compact) and beats the
+   physical sizes above at used-value time — same idiom as the
+   4-A2 P2-6 / 5-D1 floors. */
+@media (max-width: 920px), (hover: none) {
+  .notif-panel-close { min-inline-size: 44px; min-block-size: 44px; }
+  .notif-panel-action { min-block-size: 44px; }
+  .notif-panel-viewall { min-block-size: 44px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════

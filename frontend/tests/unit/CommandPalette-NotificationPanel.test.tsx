@@ -6,7 +6,7 @@
  * (NotificationPanel, P2-11) and the panel never locks body scroll.
  */
 import { describe, expect, it, vi } from 'vitest';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { act, render, screen, fireEvent } from '@testing-library/react';
 import { CommandPalette } from '../../src/components/overlays/CommandPalette';
 import { NotificationPanel } from '../../src/components/overlays/NotificationPanel';
@@ -42,6 +42,31 @@ describe('CommandPalette', () => {
     );
     await flush();
     expect(document.activeElement).toBe(screen.getByPlaceholderText('search'));
+  });
+
+  it('returns focus to the previously-active element on close (keyboard round-trip, r164-j)', async () => {
+    function Host() {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <button type="button" onClick={() => setOpen(true)}>trigger</button>
+          <CommandPalette open={open} onClose={() => setOpen(false)} ariaLabel="palette">
+            <input placeholder="q" />
+          </CommandPalette>
+        </>
+      );
+    }
+    render(<Host />);
+    const trigger = screen.getByRole('button', { name: 'trigger' });
+    trigger.focus();
+    fireEvent.click(trigger);
+    await flush();
+    // The trap auto-focused the search input on open…
+    expect(document.activeElement).toBe(screen.getByPlaceholderText('q'));
+    // …and Esc hands focus back to the opener.
+    fireEvent.keyDown(document, { key: 'Escape' });
+    await flush();
+    expect(document.activeElement).toBe(trigger);
   });
 
   it('Esc dismisses by default', () => {

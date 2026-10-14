@@ -40,7 +40,16 @@ const TYPE_ICON: Record<Notification['type'], LucideIcon> = {
 const TYPE_TONE: Record<Notification['type'], string> = {
   URGENT:   'tone-danger',
   ACADEMIC: 'tone-accent',
-  SYSTEM:   'tone-neutral',
+  /* r164-j (cross-agent finding): SYSTEM used to render the NEUTRAL
+   * well here while the /alerts page (MorePages toneFor) codes the
+   * same type amber — a maintenance/system notice read as "neutral
+   * grey" in the inbox and "warning amber" on the full page. MorePages'
+   * semantics win (SYSTEM is a warning-ish system notice), so both
+   * surfaces now speak amber: tone-warn rides the --warning-soft /
+   * --warning-ink pair (notifications.css — the same WCAG-pinned
+   * grammar the toast warning well ships). Pinned by
+   * NotificationDropdown-tone-a11y.test.tsx. */
+  SYSTEM:   'tone-warn',
   SOCIAL:   'tone-success',
 };
 
@@ -93,6 +102,24 @@ export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
   const unreadQ = useUnreadNotifications();
   const unread = unreadQ.data ?? 0;
 
+  /* r164-j (WCAG 2.2 §4.1.3 status messages): the bell's aria-label
+   * carries the count, but attribute mutations are never announced —
+   * a notification arriving behind the 60s poll was silent for SR
+   * users. This sr-only role="status" region announces only GROWTH
+   * (the initial mount value is skipped so a stale count on load
+   * never talks over the page; decreases stay silent to avoid
+   * chatter while the user works the inbox down). */
+  const [unreadAnnouncement, setUnreadAnnouncement] = useState('');
+  const prevUnreadRef = useRef<number | null>(null);
+  useEffect(() => {
+    const prev = prevUnreadRef.current;
+    prevUnreadRef.current = unread;
+    if (prev === null || unread <= prev) return;
+    setUnreadAnnouncement(
+      `لديك الآن ${arUnit(unread, 'إشعار غير مقروء', 'إشعاران غير مقروءان', 'إشعارات غير مقروءة')}`,
+    );
+  }, [unread]);
+
   // Outside-click, Esc and anchored repositioning are provided by the
   // NotificationPanel primitive.
 
@@ -133,6 +160,13 @@ export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
           />
         </div>
       </NotificationPanel>
+
+      {/* Polite SR-only status region — announces new unread arrivals
+          (r164-j). Sits inside the trigger container so it lives as
+          long as the bell does; role="status" implies aria-live=polite. */}
+      <span className="sr-only" role="status">
+        {unreadAnnouncement}
+      </span>
     </div>
   );
 }

@@ -20,7 +20,7 @@
  *     audit 11-e P1-2) — Modal over Modal and Dropdown over Modal
  */
 import { describe, expect, it, vi } from 'vitest';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { act, render, screen, fireEvent } from '@testing-library/react';
 import { Modal } from '../../src/components/overlays/Modal';
 import { Dropdown, DropdownItem } from '../../src/components/overlays/Dropdown';
@@ -100,6 +100,31 @@ describe('Modal', () => {
     expect(document.activeElement).toBe(screen.getByRole('dialog', { name: 'X' }));
     // The close affordance stays reachable as the first Tab stop.
     expect(screen.getByRole('button', { name: 'إغلاق' })).toBeInTheDocument();
+  });
+
+  it('returns focus to the previously-active element on close (keyboard round-trip, r164-j)', async () => {
+    function Host() {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <button type="button" onClick={() => setOpen(true)}>trigger</button>
+          <Modal open={open} onClose={() => setOpen(false)} ariaLabel="dialog">
+            <p>content</p>
+          </Modal>
+        </>
+      );
+    }
+    render(<Host />);
+    const trigger = screen.getByRole('button', { name: 'trigger' });
+    trigger.focus();
+    fireEvent.click(trigger);
+    await flush();
+    // The trap took focus into the dialog on open…
+    expect(document.activeElement).toBe(screen.getByRole('dialog', { name: 'dialog' }));
+    // …and Esc (the keyboard exit) hands it back to the trigger.
+    fireEvent.keyDown(document, { key: 'Escape' });
+    await flush();
+    expect(document.activeElement).toBe(trigger);
   });
 
   it('Esc dismisses by default', () => {

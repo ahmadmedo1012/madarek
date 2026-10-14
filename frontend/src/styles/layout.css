@@ -961,6 +961,29 @@
     .sidebar-tour-trigger { min-block-size: 44px; }
   }
 
+  /* r164-j (WCAG 2.2 §2.5.8 / NN/g 44px — input-capability floors):
+     the band blocks above proxy "touch" by VIEWPORT WIDTH, which misses
+     two real touch contexts: tablets in the ≥921px desktop band
+     (landscape iPad renders the persistent sidebar + full topbar with
+     touch input) and 641–920 (where .icon-btn's only floor is ≤640).
+     (hover: none) targets the actual input capability — the same idiom
+     .cmd-row already uses (see the COMMAND PALETTE BODY section below):
+     pointer-fine desktops keep the documented compact rhythm (the
+     5-D1 ruling above stands for them); every touch device gets the
+     44px hit floor on the layout/overlay chrome this file owns.
+     min-* grows the hit box only — glyphs, labels and the visible
+     chip language stay compact (min constraints apply at used-value
+     time, regardless of the physical sizes later layers declare). */
+  @media (hover: none) {
+    .icon-btn { min-inline-size: 44px; min-block-size: 44px; } /* Sheet/Modal close affordances */
+    .sidebar .nav-item { min-block-size: 44px; }
+    .theme-toggle-option { min-inline-size: 44px; min-block-size: 44px; }
+    .sidebar-collapse-btn { min-inline-size: 44px; min-block-size: 44px; }
+    .sidebar-tour-trigger { min-block-size: 44px; }
+    .topbar-notif { min-inline-size: 44px; min-block-size: 44px; }
+    .topbar-user-trigger { min-block-size: 44px; }
+  }
+
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  COMMAND PALETTE BODY (wave 21-a — 4-A2 P2-8 wiring)           ║
      ║  The overlay/card chrome lives in components.css (T066). This  ║

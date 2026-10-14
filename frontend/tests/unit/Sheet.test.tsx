@@ -12,6 +12,7 @@
  *     wave 12-14)
  */
 import { describe, expect, it, vi } from 'vitest';
+import { useState } from 'react';
 import { act, render, screen, fireEvent } from '@testing-library/react';
 import { Sheet } from '../../src/components/overlays/Sheet';
 import { SCROLL_LOCK_BODY_CLASS } from '../../src/lib/scrollLock';
@@ -121,6 +122,32 @@ describe('Sheet', () => {
     );
     await flush();
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'first' }));
+  });
+
+  it('returns focus to the previously-active element on close (keyboard round-trip, r164-j)', async () => {
+    function Host() {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <button type="button" onClick={() => setOpen(true)}>trigger</button>
+          <Sheet open={open} onClose={() => setOpen(false)} ariaLabel="filters">
+            <p>content</p>
+          </Sheet>
+        </>
+      );
+    }
+    render(<Host />);
+    const trigger = screen.getByRole('button', { name: 'trigger' });
+    trigger.focus();
+    fireEvent.click(trigger);
+    await flush();
+    // The trap took focus into the panel surface on open (no body
+    // focusables — A10 P2-1 fallback)…
+    expect(document.activeElement).toBe(screen.getByRole('dialog', { name: 'filters' }));
+    // …and Esc hands it back to the trigger.
+    fireEvent.keyDown(document, { key: 'Escape' });
+    await flush();
+    expect(document.activeElement).toBe(trigger);
   });
 
   it('locks body scroll while open and releases on close (ref-counted class)', () => {
