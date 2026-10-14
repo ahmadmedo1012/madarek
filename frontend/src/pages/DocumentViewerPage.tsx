@@ -1,8 +1,10 @@
 import { lazy, Suspense, useRef, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, FileQuestion } from 'lucide-react';
 import { Icon } from '../components/Icon';
+import { EmptyState } from '../components/primitives/States';
 import { apiBaseURL } from '../lib/api';
+import { isViewerFilenameParam } from '../components/pdf/loadError';
 import '../styles/pdf.css'; // pdf viewer + annotations surfaces (D11 css split, 12-15)
 
 // Code-split: PdfViewer + pdfjs-dist + worker land in their own chunk.
@@ -62,12 +64,37 @@ export default function DocumentViewerPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [numPages, setNumPages] = useState(1);
 
-  if (!params.filename) {
+  if (!params.filename || !isViewerFilenameParam(params.filename)) {
+    /* r164f: the honest param gate — the client mirror of the serving
+     * route's isSafePaperFilename (files.routes.ts). An absent or
+     * non-.pdf / traversal-shaped segment can NEVER be served (the API
+     * answers 400), so the page shows «الملف غير موجود» up front with
+     * the way back, instead of mounting pdf.js to surface an English
+     * envelope error inside the reader. The header back-link is the way
+     * back to the caller's context (بحوثي / المقرر / المراجعة). */
+    const missing = !params.filename;
     return (
-      <div className="page">
-        <header className="page-header">
-          <h1 className="page-title">المستند غير محدّد</h1>
+      <div className="page document-viewer-page">
+        <header className="page-header" style={{ marginBottom: 'var(--sp-3)' }}>
+          <div className="page-title-block">
+            <Link to={back} className="back-link document-viewer-back">
+              <Icon icon={ChevronRight} size={14} />
+              رجوع
+            </Link>
+            <h1 className="page-title" style={{ marginTop: 4 }}>{title ?? 'مستند'}</h1>
+          </div>
         </header>
+        <div className="document-viewer-layout">
+          <div className="document-viewer-main">
+            <EmptyState
+              icon={FileQuestion}
+              title={missing ? 'المستند غير محدّد' : 'الملف غير موجود'}
+              description={missing
+                ? 'الرابط لا يحمل اسم ملف — افتح المستند من صفحة بحوثك أو من المقرر.'
+                : 'اسم الملف في الرابط لا يصلح لعرض PDF — افتح المستند من صفحة بحوثك أو من المقرر.'}
+            />
+          </div>
+        </div>
       </div>
     );
   }

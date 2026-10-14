@@ -7,6 +7,7 @@ import { Icon } from '../Icon';
 import { ErrorState } from '../primitives/States';
 import { useAuthStore } from '../../stores/auth.store';
 import { toast } from '../../lib/toast';
+import { classifyPdfLoadError } from './loadError';
 // pdfjs-dist v4 ships ESM; only three exports are used here
 // (GlobalWorkerOptions + getDocument + TextLayer). r134 (audit R134-W1-M
 // P2): the module is now imported DYNAMICALLY-ONLY — it was previously
@@ -66,6 +67,22 @@ interface DocState {
 }
 
 /**
+ * One classified failure for the canvas area. `detail` feeds
+ * ErrorState's `error` prop: load failures pass a crafted
+ * `{ message: hint }` object (extractErrorDetail picks the Arabic hint
+ * as the detail line — pdf.js's own English prose must not leak into
+ * the RTL page), render failures pass the raw cause (ErrorState's own
+ * Arabic fallback advice renders). `retryable` decides the retry
+ * affordance — false for failures a retry can never fix (password,
+ * 404, 403: see lib/classifyPdfLoadError → components/pdf/loadError.ts).
+ */
+interface ViewerError {
+  message: string;
+  detail: unknown;
+  retryable: boolean;
+}
+
+/**
  * Standard editable-surface guard for global keyboard shortcuts (audit 0-f
  * P1-5). Returns true when the event originated inside an input, textarea,
  * select, contenteditable host or [role=textbox] — the keystroke belongs to
@@ -93,7 +110,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const [doc, setDoc] = useState<DocState | null>(null);
   const [page, setPage] = useState(1);
   const [scale, setScale] = useState<number | 'fit-width'>('fit-width');
-  const [error, setError] = useState<{ message: string; cause: unknown; kind?: 'password' } | null>(null);
+  const [error, setError] = useState<ViewerError | null>(null);
   const [loading, setLoading] = useState(true);
   const [isRendering, setIsRendering] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -191,16 +208,14 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         },
         (err) => {
           if (cancelled) return;
-          // Password-protected PDF: pdfjs rejects with PasswordException and
-          // re-running the same no-credential load can never succeed — show
-          // the honest message without a retry affordance (audit 11-f P2-8).
-          if ((err as { name?: string } | null)?.name === 'PasswordException') {
-            setError({ message: 'هذا المستند محمي بكلمة مرور', cause: err, kind: 'password' });
-          } else {
-            // Missing / corrupt PDF: surface an honest error state with retry
-            // (orchestrator ruling #14) — the detail line comes from ErrorState.
-            setError({ message: 'تعذّر تحميل المستند', cause: err });
-          }
+          // r164f: pdf.js folds HTTP semantics into exception shapes —
+          // classifyPdfLoadError maps password / 404 / 401 / 403 to their
+          // honest Arabic states (retry only where a retry can succeed);
+          // everything else keeps the generic retryable error. Password
+          // stays non-retryable: re-running the same no-credential load
+          // can never succeed (audit 11-f P2-8).
+          const failure = classifyPdfLoadError(err);
+          setError({ message: failure.message, detail: { message: failure.hint }, retryable: failure.retryable });
           setLoading(false);
         },
       );
@@ -211,7 +226,11 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     // the retry button genuinely re-fetches).
     void loadPdfjs().then(start, (err) => {
       if (cancelled) return;
-      setError({ message: 'تعذّر تحميل المستند', cause: err });
+      // Same classification as a document-load rejection — a TypeError
+      // from the failed chunk import lands on the generic retryable
+      // branch (the memo self-heals so the retry genuinely re-fetches).
+      const failure = classifyPdfLoadError(err);
+      setError({ message: failure.message, detail: { message: failure.hint }, retryable: failure.retryable });
       setLoading(false);
     });
 
@@ -298,9 +317,10 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         const e = err as { name?: string };
         if (e?.name !== 'RenderingCancelledException') {
           // Only honest for the document still on screen — see the catch
-          // below (audit 11-f P2-9).
+          // below (audit 11-f P2-9). Page renders keep the raw cause:
+          // ErrorState's own Arabic fallback is the detail line.
           if (docSnapshot === docRef.current) {
-            setError({ message: 'تعذّر عرض هذه الصفحة', cause: err });
+            setError({ message: 'تعذّر عرض هذه الصفحة', detail: err, retryable: true });
           }
         }
         return;
@@ -339,7 +359,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
       // the old doc, and its rejected renders must not plant an error over
       // the newly loading document (audit 11-f P2-9).
       if (docSnapshot === docRef.current) {
-        setError({ message: 'تعذّر عرض هذه الصفحة', cause: err });
+        setError({ message: 'تعذّر عرض هذه الصفحة', detail: err, retryable: true });
       }
     } finally {
       setIsRendering(false);
@@ -766,13 +786,14 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         {/* !loading gate: a superseded render of the previous document can
             plant a page error right as the next load starts — the skeleton
             and the error must never render together (audit 11-f P2-9).
-            Password-protected PDFs hide the retry affordance: re-running
-            the same no-credential load can never succeed (P2-8). */}
+            Non-retryable failures (password / 404 / 403) hide the retry
+            affordance: re-running the same load can never succeed
+            (classifyPdfLoadError, components/pdf/loadError.ts). */}
         {!loading && error && (
           <ErrorState
             message={error.message}
-            error={error.cause}
-            onRetry={error.kind === 'password' ? undefined : retry}
+            error={error.detail}
+            onRetry={error.retryable ? retry : undefined}
           />
         )}
         {!loading && !error && (

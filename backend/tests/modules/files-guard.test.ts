@@ -145,3 +145,37 @@ describe('isWithinPapersDir (directory pin)', () => {
     expect(isWithinPapersDir(unresolved, root)).toBe(false);
   });
 });
+
+/* ─── r164f — the orphan-404 honesty pin ──────────────────────────
+ * Both gate layers (row lookup + storage stat/read) refuse a missing
+ * file with ONE wording: «الملف غير موجود». It is deliberately
+ * identical for "no authorizing row" and "bytes absent" (existence
+ * must not leak) while staying distinct from auth refusals (401
+ * UNAUTHENTICATED) and shape refusals (400 «اسم الملف غير صالح»).
+ * The frontend viewer classifies pdf.js's 404 mapping onto the same
+ * wording (components/pdf/loadError.ts) — this pin keeps both sides
+ * of that contract from drifting apart. */
+describe('FILE_NOT_FOUND_MESSAGE (r164f honesty pin)', () => {
+  it('is the exact Arabic missing-file refusal both gate layers throw', async () => {
+    const { FILE_NOT_FOUND_MESSAGE } = await import('../../src/http/routes/files.routes');
+    expect(FILE_NOT_FOUND_MESSAGE).toBe('الملف غير موجود');
+    // Arabic user copy (D17-3), non-empty, single line.
+    expect(FILE_NOT_FOUND_MESSAGE).toMatch(/[\u0600-\u06FF]/);
+    expect(FILE_NOT_FOUND_MESSAGE).not.toContain('\n');
+  });
+
+  it('is NOT an auth or shape refusal — the three wordings stay disjoint', async () => {
+    const { FILE_NOT_FOUND_MESSAGE } = await import('../../src/http/routes/files.routes');
+    // Auth (authMiddleware 401s: TOKEN_EXPIRED / unauthenticated) and
+    // traversal (this route's own 400) wordings, mirrored from their
+    // owning modules for the disjointness pin only.
+    const authWordingExpired = 'انتهت صلاحية الجلسة — سجّل الدخول من جديد';
+    const authWordingInvalid = 'جلسة غير صالحة — سجّل الدخول من جديد';
+    const shapeWording = 'اسم الملف غير صالح';
+    expect(FILE_NOT_FOUND_MESSAGE).not.toBe(authWordingExpired);
+    expect(FILE_NOT_FOUND_MESSAGE).not.toBe(authWordingInvalid);
+    expect(FILE_NOT_FOUND_MESSAGE).not.toBe(shapeWording);
+    expect(FILE_NOT_FOUND_MESSAGE).not.toContain('صلاحية');
+    expect(FILE_NOT_FOUND_MESSAGE).not.toContain('جلسة');
+  });
+});

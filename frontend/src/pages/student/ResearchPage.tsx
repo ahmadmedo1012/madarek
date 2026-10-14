@@ -5,12 +5,12 @@ import {
   CheckCircle2, XCircle, AlertCircle, ScanSearch, X, Workflow,
   Sparkles, BarChart3, Clock, MessageSquare, FileText, type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, FormField } from '../../components/primitives';
+import { Card, MetricCard, Badge, FormField, ProgressBar } from '../../components/primitives';
 import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { PAPER_STATUS_TONE } from '../../lib/paperStatus';
-import { validatePdfFile } from '../../lib/pdfUpload';
+import { validatePdfFileDeep } from '../../lib/pdfUpload';
 import { Icon } from '../../components/Icon';
 import { toast } from '../../lib/toast';
 import { formatDateWithYearAr } from '../../lib/format';
@@ -98,6 +98,10 @@ export default function StudentResearchPage() {
   const [scanningId, setScanningId] = useState<string | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  /* r164f: the file-stage upload fraction (0..1) while the raw body is
+   * on the wire — null means «no upload in flight»; feeds the modal's
+   * real progress bar (a disabled button was the only signal before). */
+  const [fileProgress, setFileProgress] = useState<number | null>(null);
 
   const papers = my.data ?? [];
   const counts = {
@@ -213,11 +217,19 @@ export default function StudentResearchPage() {
           enrollmentsPending={enrollments.isPending}
           isPending={upload.isPending || uploadFile.isPending}
           filePending={uploadFile.isPending}
+          fileProgress={fileProgress}
           error={uploadError}
           initial={resubmitPrefill}
+          /* r164f: the staged File instance — after a create failure the
+           * modal shows the reuse hint on the picked row so the student
+           * KNOWS the retry will not re-upload the bytes. Instance
+           * identity is the same mechanism the staged upload itself
+           * uses (a re-picked file is a new instance → honest re-upload). */
+          stagedFile={stagedUpload.current?.file ?? null}
           onClose={() => {
             setUploadOpen(false);
             setUploadError(null);
+            setFileProgress(null);
             setResubmitPrefill(null);
             stagedUpload.current = null;
           }}
@@ -228,12 +240,21 @@ export default function StudentResearchPage() {
                * then the create mutation carries the returned fileUrl —
                * the paper row finally links a real file. A staged upload
                * from a previous failed create is reused (stagedUpload
-               * pins the File instance it belongs to). */
+               * pins the File instance it belongs to). r164f: the stage
+               * reports its progress so the modal can paint it. */
               let fileUrl: string | undefined;
               if (input.file) {
                 if (stagedUpload.current?.file !== input.file) {
-                  const staged = await uploadFile.mutateAsync(input.file);
-                  stagedUpload.current = { file: input.file, fileUrl: staged.fileUrl };
+                  setFileProgress(0);
+                  try {
+                    const staged = await uploadFile.mutateAsync({
+                      file: input.file,
+                      onUploadProgress: setFileProgress,
+                    });
+                    stagedUpload.current = { file: input.file, fileUrl: staged.fileUrl };
+                  } finally {
+                    setFileProgress(null);
+                  }
                 }
                 fileUrl = stagedUpload.current?.fileUrl;
               }
@@ -438,7 +459,7 @@ function ProcessExplainer() {
 
 /* ─── Upload modal (shared Modal primitive: focus trap, Esc, portal) ── */
 function UploadModal({
-  enrollments, enrollmentsPending, isPending, filePending, error, initial, onClose, onSubmit,
+  enrollments, enrollmentsPending, isPending, filePending, fileProgress, error, initial, stagedFile, onClose, onSubmit,
 }: {
   enrollments: Array<{ offering: { id: string; course: { name: string; code: string } } }>;
   enrollmentsPending: boolean;
@@ -446,11 +467,17 @@ function UploadModal({
   /** P3: the file-stage mutation is in flight (refines the submit
    * button's label; isPending already disables for both stages). */
   filePending: boolean;
+  /** r164f: the file-stage upload fraction (0..1) — null when idle;
+   * paints the real progress bar while the raw body is on the wire. */
+  fileProgress: number | null;
   error: string | null;
   /** r157 (F8): prefilled values for a resubmit (CHECKS_FAILED paper) —
    * null on a fresh open; the modal only mounts while open, so the
    * state re-initializes on every open/close cycle (no leakage). */
   initial: { title: string; abstract?: string; offeringId?: string } | null;
+  /** r164f: the already-staged File instance (a create failure kept
+   * the modal open) — drives the reuse hint on the picked row. */
+  stagedFile: File | null;
   onClose: () => void;
   onSubmit: (input: { title: string; abstract?: string; offeringId?: string; file?: File }) => Promise<void>;
 }) {
@@ -463,6 +490,10 @@ function UploadModal({
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  /* r164f: pick-validation token — the %PDF- sniff resolves
+   * asynchronously; a later pick/removal bumps the token so a stale
+   * resolution can never plant its error over a newer pick. */
+  const pickTokenRef = useRef(0);
   const canSubmit = title.trim().length >= 3 && !isPending;
   // Label↔control wiring (same useId pattern as the register form):
   // bare <label> text is invisible to assistive tech.
@@ -486,30 +517,45 @@ function UploadModal({
   });
 
   const pickFile = (f: File | null) => {
+    const token = ++pickTokenRef.current;
     setFile(f);
     setFileError(null);
+    if (!f) return;
+    /* r164f: the deep mirror (format + size + %PDF- magic bytes) runs
+     * at PICK time — a renamed non-PDF is caught with its inline Arabic
+     * error BEFORE the student ever reaches the submit button, not
+     * after a 20MB round trip (the server's own 400 stays the judge of
+     * last resort). Guarded by the token: superseded picks are silent. */
+    void validatePdfFileDeep(f).then((err) => {
+      if (token !== pickTokenRef.current) return;
+      if (err) setFileError(err);
+    });
   };
   /* Clearing the value lets the SAME file be re-picked afterwards — a
-   * file input only fires change when its value actually differs. */
+   * file input only fires change when its value actually differs.
+   * Routes through pickFile(null) so a pending pick-validation dies
+   * with the pick it belonged to. */
   const removeFile = () => {
-    setFile(null);
-    setFileError(null);
+    pickFile(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const submit = () => {
-    /* P3: honest client-side caps (PDF only, 20MB) BEFORE any request —
-     * the mirror of the server's guards, so a wrong file never costs the
-     * student a full upload round trip to learn about it. */
-    const err = file ? validatePdfFile(file) : null;
-    setFileError(err);
-    if (err) return;
-    void onSubmit({
-      title: title.trim(),
-      abstract: abstractText.trim() || undefined,
-      offeringId: offeringId || undefined,
-      file: file ?? undefined,
-    });
+    /* r164f: the async deep guard as the submit backstop — covers a
+     * submit that raced the pick-time check (5 bytes re-read, cheap).
+     * The honest client mirrors of the server's caps run BEFORE any
+     * request leaves the browser. */
+    void (async () => {
+      const err = file ? await validatePdfFileDeep(file) : null;
+      setFileError(err);
+      if (err) return;
+      await onSubmit({
+        title: title.trim(),
+        abstract: abstractText.trim() || undefined,
+        offeringId: offeringId || undefined,
+        file: file ?? undefined,
+      });
+    })();
   };
 
   return (
@@ -592,19 +638,41 @@ function UploadModal({
         {/* P3: the picked-file row — name + a 44px remove target; the
             row (not the input) is the affordance once a file is chosen. */}
         {file && (
-          <div className="upload-file-field">
-            <Icon icon={FileText} size={14} className="text-muted" />
-            <span className="upload-file-name" title={file.name}><bdi>{file.name}</bdi></span>
-            <button
-              type="button"
-              className="btn ghost sm upload-file-remove"
-              onClick={removeFile}
-              disabled={isPending}
-            >
-              <Icon icon={X} size={14} />
-              إزالة الملف
-            </button>
-          </div>
+          <>
+            <div className="upload-file-field">
+              <Icon icon={FileText} size={14} className="text-muted" />
+              <span className="upload-file-name" title={file.name}><bdi>{file.name}</bdi></span>
+              <button
+                type="button"
+                className="btn ghost sm upload-file-remove"
+                onClick={removeFile}
+                disabled={isPending}
+              >
+                <Icon icon={X} size={14} />
+                إزالة الملف
+              </button>
+            </div>
+            {/* r164f: the staged-reuse hint — the bytes are already on
+                the server (a create failure kept the modal open), so a
+                retry re-registers the paper WITHOUT re-uploading. The
+                row itself says nothing about it; this note does. */}
+            {file === stagedFile && (
+              <p className="text-xxs text-subtle" role="note" style={{ marginBlockStart: 'calc(-1 * var(--sp-1))' }}>
+                <Icon icon={CheckCircle2} size={11} />{' '}
+                الملف مرفوع بالفعل — إعادة المحاولة ستعيد استخدامه دون رفعه من جديد.
+              </p>
+            )}
+            {/* r164f: the real upload progress — a 20MB body on a slow
+                uplink is minutes of dead disabled-button otherwise. */}
+            {filePending && fileProgress !== null && (
+              <ProgressBar
+                value={Math.round(fileProgress * 100)}
+                label="جارٍ رفع الملف…"
+                ariaLabel="تقدّم رفع الملف"
+                showValue
+              />
+            )}
+          </>
         )}
 
         {error && (

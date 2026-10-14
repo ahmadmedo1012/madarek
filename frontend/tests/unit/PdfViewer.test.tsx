@@ -118,6 +118,71 @@ describe('PdfViewer — document load errors', () => {
   });
 });
 
+/* ── r164f — HTTP gate classification (components/pdf/loadError.ts) ──
+ * pdf.js folds non-2xx answers into MissingPDFException (404) /
+ * UnexpectedResponseException (status). The viewer must NOT render one
+ * generic «تعذّر تحميل المستند» + retry for them: a 404 (orphan bytes)
+ * or 403 (gate refusal) can never succeed on retry — the honest state
+ * names the real cause and drops the dead action; a 401 (raw fetch
+ * bypasses the axios refresh interceptor) keeps retry because the
+ * retry re-reads the store's post-login token. */
+describe('PdfViewer — HTTP gate classification (r164f)', () => {
+  it('404 → «الملف غير موجود» with the Arabic hint and NO retry button', async () => {
+    getDocumentMock.mockReturnValueOnce({
+      promise: Promise.reject({ name: 'MissingPDFException', message: 'Missing PDF "/papers/gone.pdf".' }),
+      destroy: vi.fn(),
+    });
+
+    render(<PdfViewer src="/papers/gone.pdf" />);
+
+    expect(await screen.findByText('الملف غير موجود')).toBeInTheDocument();
+    // The classified Arabic hint rides the detail line (pdf.js's English
+    // prose must not leak into the RTL page).
+    expect(screen.getByText(/ربما حُذف البحث أو لم يعد ملفه متاحاً/)).toBeInTheDocument();
+    // Re-running the same load cannot conjure the bytes back.
+    expect(screen.queryByRole('button', { name: 'إعادة المحاولة' })).toBeNull();
+  });
+
+  it('403 → «ليس لديك صلاحية الوصول إلى هذا المستند» with NO retry button', async () => {
+    getDocumentMock.mockReturnValueOnce({
+      promise: Promise.reject({
+        name: 'UnexpectedResponseException',
+        message: 'Unexpected server response (403) while retrieving PDF "/papers/x.pdf".',
+        status: 403,
+      }),
+      destroy: vi.fn(),
+    });
+
+    render(<PdfViewer src="/papers/x.pdf" />);
+
+    expect(await screen.findByText('ليس لديك صلاحية الوصول إلى هذا المستند')).toBeInTheDocument();
+    // Authorization is not transient — retrying cannot fix it.
+    expect(screen.queryByRole('button', { name: 'إعادة المحاولة' })).toBeNull();
+  });
+
+  it('401 → «انتهت صلاحية جلسة الدخول» WITH the retry affordance (post-login retry works)', async () => {
+    getDocumentMock
+      .mockReturnValueOnce({
+        promise: Promise.reject({
+          name: 'UnexpectedResponseException',
+          message: 'Unexpected server response (401) while retrieving PDF "/papers/x.pdf".',
+          status: 401,
+        }),
+        destroy: vi.fn(),
+      })
+      .mockReturnValueOnce(taskFor(makeDoc(['صفحة'])));
+
+    render(<PdfViewer src="/papers/x.pdf" />);
+
+    expect(await screen.findByText('انتهت صلاحية جلسة الدخول')).toBeInTheDocument();
+    expect(screen.getByText('سجّل الدخول من جديد ثم أعد المحاولة.')).toBeInTheDocument();
+    // The retry is honest: a fresh login re-reads the store's token.
+    fireEvent.click(screen.getByRole('button', { name: 'إعادة المحاولة' }));
+    expect(await screen.findByText('من 1')).toBeInTheDocument();
+    expect(getDocumentMock).toHaveBeenCalledTimes(2);
+  });
+});
+
 describe('PdfViewer — search', () => {
   it('collects hits across pages and jumps to the first hit', async () => {
     getDocumentMock.mockReturnValueOnce(

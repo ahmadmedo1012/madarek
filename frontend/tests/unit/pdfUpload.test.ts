@@ -25,7 +25,14 @@
  * materials) and the callers own that case.
  */
 import { describe, expect, it } from 'vitest';
-import { PDF_MAX_BYTES, isPdfFile, validatePdfFile } from '../../src/lib/pdfUpload';
+import {
+  PDF_MAX_BYTES,
+  PDF_MAGIC_PREFIX,
+  isPdfFile,
+  sniffPdfMagicBytes,
+  validatePdfFile,
+  validatePdfFileDeep,
+} from '../../src/lib/pdfUpload';
 
 const MI = 1024 * 1024;
 
@@ -106,5 +113,73 @@ describe('lib/pdfUpload — validatePdfFile (the submit guard)', () => {
     const notPdf = new File(['x'], 'movie.mp4', { type: 'video/mp4' });
     Object.defineProperty(notPdf, 'size', { value: 2 * PDF_MAX_BYTES });
     expect(validatePdfFile(notPdf)).toBe('الملف يجب أن يكون بصيغة PDF فقط.');
+  });
+});
+
+/* ───────────────────────────────────────────────
+ * r164f — the %PDF- magic-byte mirror (deep validation).
+ *
+ * The server sniffs the first five bytes (files.routes.ts
+ * isPdfMagicBytes, latin1 '%PDF-'); the name/extension checks above
+ * cannot catch a renamed non-PDF, which otherwise costs the student a
+ * full 20MB round trip to read the server's 400. These pins hold the
+ * mirror at exactly first-5 strict — NOT widened to the 1024-byte
+ * spec tolerance the server also refuses.
+ *
+ * jsdom implements FileReader but not Blob#arrayBuffer, so the suite
+ * exercises the FileReader code path (the browser takes the
+ * arrayBuffer path — both are real code, pinned by the lib's own
+ * feature detection, not by this host's shape).
+ * ─────────────────────────────────────────────── */
+describe('lib/pdfUpload — sniffPdfMagicBytes (the byte-level mirror)', () => {
+  it('PDF_MAGIC_PREFIX is exactly the five latin1 bytes the server sniffs', () => {
+    expect(PDF_MAGIC_PREFIX).toBe('%PDF-');
+    expect(PDF_MAGIC_PREFIX).toHaveLength(5);
+  });
+
+  it('true for a real PDF head (any version digits after the prefix)', async () => {
+    expect(await sniffPdfMagicBytes(new File(['%PDF-1.7 rest'], 'a.pdf'))).toBe(true);
+    expect(await sniffPdfMagicBytes(new File(['%PDF-2.0 …'], 'a.pdf'))).toBe(true);
+  });
+
+  it('false for a renamed non-PDF — the exact case the mirror exists for', async () => {
+    // Plain text wearing a .pdf name and a lying MIME type.
+    const renamed = new File(['مرحبا هذا ملف نصي وليس PDF'], 'notes.pdf', { type: 'application/pdf' });
+    expect(await sniffPdfMagicBytes(renamed)).toBe(false);
+    // Byte-level near-misses must NOT pass by luck.
+    expect(await sniffPdfMagicBytes(new File(['%pdf-1.4'], 'a.pdf'))).toBe(false); // lowercase
+    expect(await sniffPdfMagicBytes(new File(['PDF-1.4'], 'a.pdf'))).toBe(false);  // no percent
+    expect(await sniffPdfMagicBytes(new File(['%PDFX'], 'a.pdf'))).toBe(false);   // no dash
+  });
+
+  it('false for a head shorter than the prefix — first-5 strict, no tolerance widening', async () => {
+    expect(await sniffPdfMagicBytes(new File(['%PD'], 'tiny.pdf'))).toBe(false);
+  });
+});
+
+describe('lib/pdfUpload — validatePdfFileDeep (the submit guard, byte-level)', () => {
+  it('null for a real PDF — the deep guard passes what the sync guard passes', async () => {
+    expect(await validatePdfFileDeep(new File(['%PDF-1.4 body'], 'thesis.pdf', { type: 'application/pdf' }))).toBeNull();
+    expect(await validatePdfFileDeep(new File(['%PDF-1.4'], 'thesis.pdf'))).toBeNull();
+  });
+
+  it('the sync caps run FIRST — a .txt rejection never reads bytes', async () => {
+    const err = await validatePdfFileDeep(new File(['%PDF-1.4'], 'notes.txt', { type: 'text/plain' }));
+    expect(err).toBe('الملف يجب أن يكون بصيغة PDF فقط.');
+  });
+
+  it('pins the exact Arabic renamed-file message the modal renders inline', async () => {
+    const renamed = new File(['not a pdf at all'], 'report.pdf', { type: 'application/pdf' });
+    expect(await validatePdfFileDeep(renamed)).toBe(
+      'محتوى الملف ليس PDF صالحاً — قد يكون ملفاً آخر أُعيدت تسميته؛ صدّره بصيغة PDF من جديد.',
+    );
+  });
+
+  it('oversize wins over the byte sniff (checked before any read)', async () => {
+    const big = new File(['%PDF-1.4'], 'big.pdf', { type: 'application/pdf' });
+    Object.defineProperty(big, 'size', { value: PDF_MAX_BYTES + 1 });
+    expect(await validatePdfFileDeep(big)).toBe(
+      'حجم الملف يتجاوز الحد الأقصى المسموح (20 ميغابايت).',
+    );
   });
 });

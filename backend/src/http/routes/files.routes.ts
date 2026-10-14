@@ -129,6 +129,20 @@ export function parseRangeHeader(
   return { start, end };
 }
 
+/**
+ * The honest missing-file refusal (r164f export, pinned by
+ * tests/modules/files-guard.test.ts). Used by BOTH gate layers and
+ * BOTH namespaces, deliberately indistinguishable between «no
+ * authorizing row» and «bytes absent» so file EXISTENCE never leaks
+ * to a requester who cannot read it — while staying clearly distinct
+ * from auth refusals (401 UNAUTHENTICATED via authMiddleware) and
+ * from shape refusals (400 «اسم الملف غير صالح»): a 404 with THIS
+ * message always reads as «الملف غير موجود», never as a permission
+ * or connection problem. The viewer classifies pdf.js's 404 mapping
+ * on the same wording (frontend components/pdf/loadError.ts).
+ */
+export const FILE_NOT_FOUND_MESSAGE = 'الملف غير موجود';
+
 // ─── Serving through the storage abstraction ──────────────────────
 
 /**
@@ -144,7 +158,7 @@ async function servePdfFromStorage(
 ): Promise<void> {
   const storage = getStorage();
   const info = await storage.stat(key);
-  if (info === null) throw AppError.notFound('الملف غير موجود');
+  if (info === null) throw AppError.notFound(FILE_NOT_FOUND_MESSAGE);
 
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Accept-Ranges', 'bytes');
@@ -157,7 +171,7 @@ async function servePdfFromStorage(
     return;
   }
   const slice = range === null ? await storage.get(key) : await storage.getRange(key, range.start, range.end);
-  if (slice === null) throw AppError.notFound('الملف غير موجود');
+  if (slice === null) throw AppError.notFound(FILE_NOT_FOUND_MESSAGE);
   if (range !== null) {
     res.status(206);
     res.setHeader('Content-Range', `bytes ${range.start}-${range.end}/${info.size}`);
@@ -272,7 +286,7 @@ router.get('/papers/:filename', async (req, res, next) => {
         },
         select: { id: true },
       });
-      if (!accessible) throw AppError.notFound('الملف غير موجود');
+      if (!accessible) throw AppError.notFound(FILE_NOT_FOUND_MESSAGE);
     }
 
     await servePdfFromStorage(req, res, buildStorageKey('papers', filename));
@@ -317,7 +331,7 @@ router.get('/materials/:filename', async (req, res, next) => {
         },
         select: { id: true },
       });
-      if (!accessible) throw AppError.notFound('الملف غير موجود');
+      if (!accessible) throw AppError.notFound(FILE_NOT_FOUND_MESSAGE);
     }
 
     await servePdfFromStorage(req, res, buildStorageKey('materials', filename));

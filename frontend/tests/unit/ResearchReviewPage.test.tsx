@@ -290,3 +290,55 @@ describe('ReviewModal — error language (15-j P0-1)', () => {
     expect(screen.getByRole('dialog', { name: 'مراجعة بحث' })).toBeInTheDocument();
   });
 });
+
+/* ───────────────────────────────────────────────
+ * r164f — review-loop state coherence pins. The queue (backend
+ * RESEARCH_QUEUE_STATUSES) carries exactly three states and the page
+ * renders each in its own card with a live action — nothing rides the
+ * queue invisibly, no state renders without its affordance:
+ *   · CHECKS_PASSED → «قائمة المراجعة» + amber «بانتظار التقييم» + the
+ *     review CTA that opens the grading modal;
+ *   · CHECKS_FAILED → the honest «رفضها الفحص التجريبي (محاكاة)» card
+ *     (simulation label intact) + a reviewable row (annotations stay
+ *     reachable even for a failed paper);
+ *   · GRADED → the r157 publish card (pinned above).
+ * The KPI strip must reflect all three counts, never a masked 0.
+ * ─────────────────────────────────────────────── */
+describe('ResearchReviewPage — queue state coherence (r164f)', () => {
+  it('every queue state renders in its own card with a live action — nothing hidden', async () => {
+    mocks.queue.data = [
+      PAPER,                                  // CHECKS_PASSED
+      { ...PAPER, id: 'p3', status: 'CHECKS_FAILED', plagiarismPct: 31.2, aiContentPct: 40 },
+      GRADED_PAPER,                           // GRADED
+    ];
+    renderPage();
+
+    // The three cards, one per state…
+    expect(screen.getByText('قائمة المراجعة')).toBeInTheDocument();
+    expect(screen.getByText('رفضها الفحص التجريبي (محاكاة)')).toBeInTheDocument();
+    expect(screen.getByText('مُقيَّمة — جاهزة للنشر')).toBeInTheDocument();
+
+    // …the pending row's amber badge with the shared label…
+    const pendingBadge = screen.getByText('بانتظار التقييم').closest('.badge');
+    expect(pendingBadge?.className).toContain('amber');
+
+    // …and the failed row still carries its review CTA (the teacher can
+    // open the modal and read/write margin notes on a failed paper).
+    const failedCtas = await screen.findAllByRole('button', { name: 'مراجعة وتقييم' });
+    expect(failedCtas).toHaveLength(2); // the pending row + the failed row
+
+    // The KPI strip counts all three states honestly (selector: the
+    // label also appears on the failed row's badge — pick the metric).
+    expect(screen.getByText('بانتظار تقييمك', { selector: '.metric-label' }).closest('.metric')).toHaveTextContent('1');
+    expect(screen.getByText('تعذّر اجتياز الفحص', { selector: '.metric-label' }).closest('.metric')).toHaveTextContent('1');
+    expect(screen.getByText('جاهزة للنشر', { selector: '.metric-label' }).closest('.metric')).toHaveTextContent('1');
+  });
+
+  it('the pending row scan meta keeps the simulation label (honesty badge, never real detection)', () => {
+    mocks.queue.data = [PAPER];
+    renderPage();
+
+    // «محاكاة» rides the row meta next to the percentages.
+    expect(screen.getByText('محاكاة')).toBeInTheDocument();
+  });
+});

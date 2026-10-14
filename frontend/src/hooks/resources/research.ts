@@ -136,12 +136,36 @@ export function useUploadPaper() {
  * into useUploadPaper's fileUrl, so the paper row finally carries a
  * REAL file its teacher-review link can open. No invalidation here:
  * only the create mutation mints the ResearchPaper row; this hook
- * stages the file and returns its path. */
+ * stages the file and returns its path.
+ *
+ * r164f — upload-journey honesty:
+ *   · `onUploadProgress` (0..1) lets the modal paint a real progress
+ *     bar instead of a disabled button for a 20MB body; it fires on
+ *     the axios XHR adapter's progress events (e.total is present for
+ *     File bodies).
+ *   · the request outlives the shared instance's 20s default timeout —
+ *     20MB on a slow campus uplink is minutes, not seconds; aborting
+ *     mid-body was a false «تعذّر الرفع» for a healthy upload. Uploads
+ *     get their own honest 5-minute budget. */
+export interface UploadPaperFileVars {
+  file: File;
+  /** Optional progress sink — receives the uploaded fraction (0..1). */
+  onUploadProgress?: (fraction: number) => void;
+}
+
 export function useUploadPaperFile() {
   return useMutation({
-    mutationFn: (file: File) =>
+    mutationFn: ({ file, onUploadProgress }: UploadPaperFileVars) =>
       unwrap<{ fileUrl: string }>(
-        api.post('/files/papers', file, { headers: { 'Content-Type': 'application/pdf' } }),
+        api.post('/files/papers', file, {
+          headers: { 'Content-Type': 'application/pdf' },
+          timeout: 300_000,
+          onUploadProgress: (e) => {
+            if (onUploadProgress && e.total) {
+              onUploadProgress(Math.min(1, e.loaded / e.total));
+            }
+          },
+        }),
       ),
   });
 }

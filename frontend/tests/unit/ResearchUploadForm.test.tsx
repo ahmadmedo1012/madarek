@@ -15,7 +15,7 @@
  * Data hooks are mocked at the useResources boundary (house pattern).
  */
 import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest';
-import { render, screen, fireEvent, cleanup, waitFor, within } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, waitFor, within, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import StudentResearchPage from '../../src/pages/student/ResearchPage';
 
@@ -59,6 +59,18 @@ async function openUploadModal() {
   const openers = await screen.findAllByRole('button', { name: /رفع بحث جديد/ });
   fireEvent.click(openers[0]!);
   await screen.findByRole('dialog');
+}
+
+/** Drive the picker the way a user does: a change event with files. */
+async function pickFile(file: File) {
+  const picker = screen.getByLabelText('ملف البحث (PDF، اختياري)') as HTMLInputElement;
+  fireEvent.change(picker, { target: { files: [file] } });
+}
+
+async function fillTitle() {
+  fireEvent.change(screen.getByLabelText('عنوان البحث') as HTMLInputElement, {
+    target: { value: 'بحث تجريبي للتصدير' },
+  });
 }
 
 describe('ResearchPage upload modal — FormField wiring (r152c)', () => {
@@ -205,18 +217,6 @@ describe('ResearchPage upload modal — the real file chain (P3)', () => {
     mocks.enrollments.data = [];
   });
 
-  /** Drive the picker the way a user does: a change event with files. */
-  async function pickFile(file: File) {
-    const picker = screen.getByLabelText('ملف البحث (PDF، اختياري)') as HTMLInputElement;
-    fireEvent.change(picker, { target: { files: [file] } });
-  }
-
-  async function fillTitle() {
-    fireEvent.change(screen.getByLabelText('عنوان البحث') as HTMLInputElement, {
-      target: { value: 'بحث تجريبي للتصدير' },
-    });
-  }
-
   it('shows the picked file in a removable row — and the same file can be re-picked after removal', async () => {
     await openUploadModal();
     const pdf = new File(['%PDF-1.4 fake'], 'draft-v1.pdf', { type: 'application/pdf' });
@@ -271,9 +271,13 @@ describe('ResearchPage upload modal — the real file chain (P3)', () => {
     await pickFile(pdf);
     fireEvent.click(screen.getByRole('button', { name: 'رفع البحث' }));
 
-    // Stage first — with the File instance itself.
+    // Stage first — the vars carry the File instance + the progress sink
+    // (r164f: the mutation takes { file, onUploadProgress }).
     await waitFor(() => {
-      expect(mocks.uploadFile.mutateAsync).toHaveBeenCalledWith(pdf);
+      expect(mocks.uploadFile.mutateAsync).toHaveBeenCalledWith({
+        file: pdf,
+        onUploadProgress: expect.any(Function),
+      });
     });
     // Then the create carries the staged fileUrl alongside the metadata.
     await waitFor(() => {
@@ -319,6 +323,9 @@ describe('ResearchPage upload modal — the real file chain (P3)', () => {
     });
     expect(await within(screen.getByRole('dialog')).findByRole('alert')).toBeTruthy();
     expect(screen.queryByRole('dialog')).toBeTruthy();
+    // r164f: the staged-reuse hint sits on the picked row — the student
+    // is TOLD the retry re-registers without re-uploading the bytes.
+    expect(screen.getByText(/الملف مرفوع بالفعل/)).toBeInTheDocument();
 
     // Resubmit (same File instance still picked): the create retries with
     // the SAME staged fileUrl, and the upload mutation is NOT re-fired.
@@ -333,5 +340,83 @@ describe('ResearchPage upload modal — the real file chain (P3)', () => {
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).toBeNull();
     });
+  });
+});
+
+/* ───────────────────────────────────────────────
+ * r164f — upload-journey honesty additions:
+ *   · the %PDF- magic-byte mirror fires at PICK time — a renamed
+ *     non-PDF shows its inline Arabic error before the student ever
+ *     reaches the submit button (the server 400 stays the last
+ *     resort, not the first lesson);
+ *   · the file stage paints a REAL progress bar (a 20MB body on a
+ *     slow uplink is minutes of dead disabled-button otherwise) —
+ *     the mutation's onUploadProgress events drive it.
+ * ─────────────────────────────────────────────── */
+describe('ResearchPage upload modal — r164f honesty additions', () => {
+  beforeEach(() => {
+    mocks.my.data = [];
+    mocks.enrollments.data = [];
+    mocks.uploadFile.isPending = false;
+  });
+  // The progress test flips the mocked isPending — never leak it into
+  // the suites above (the shared afterEach only clears mock calls).
+  afterEach(() => {
+    mocks.uploadFile.isPending = false;
+  });
+
+  it('a renamed non-PDF (plain text wearing .pdf) is flagged at PICK time — inline error, no submit needed', async () => {
+    await openUploadModal();
+    await fillTitle();
+    // Real byte content that does NOT start with %PDF-.
+    await pickFile(new File(['مرحبا، هذا ملف نصي وليس PDF'], 'fake-report.pdf', { type: 'application/pdf' }));
+
+    const dialog = screen.getByRole('dialog');
+    const alert = await within(dialog).findByRole('alert');
+    expect(alert).toHaveTextContent('محتوى الملف ليس PDF صالحاً');
+    // The error arrives WITHOUT touching the submit button…
+    expect(mocks.uploadFile.mutateAsync).not.toHaveBeenCalled();
+    // …and submitting anyway keeps every request home.
+    fireEvent.click(screen.getByRole('button', { name: 'رفع البحث' }));
+    await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
+    expect(mocks.uploadFile.mutateAsync).not.toHaveBeenCalled();
+    expect(mocks.upload.mutateAsync).not.toHaveBeenCalled();
+  });
+
+  it('a superseded pick never plants its error — remove/re-pick clears and re-validates', async () => {
+    await openUploadModal();
+    // Pick the renamed non-PDF, then REMOVE it before the async sniff
+    // resolves: the pending error must die with the pick it belonged to.
+    await pickFile(new File(['plain text'], 'fake.pdf', { type: 'application/pdf' }));
+    fireEvent.click(screen.getByRole('button', { name: 'إزالة الملف' }));
+    await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
+
+    expect(screen.queryByRole('alert')).toBeNull();
+    // The picked-file row is gone with it.
+    expect(screen.queryByText('fake.pdf')).toBeNull();
+  });
+
+  it('the file stage paints a real progress bar driven by onUploadProgress events', async () => {
+    // A stage that stays in flight: flips the mocked isPending, reports
+    // 42% through the progress sink, and parks (a real axios upload does
+    // exactly this while the body is on the wire).
+    mocks.uploadFile.mutateAsync.mockImplementationOnce(
+      (vars: { onUploadProgress?: (f: number) => void }) => {
+        mocks.uploadFile.isPending = true;
+        vars.onUploadProgress?.(0.42);
+        return new Promise(() => undefined); // parked — the bar is the assertion
+      },
+    );
+    await openUploadModal();
+    await fillTitle();
+    await pickFile(new File(['%PDF-1.4 fake'], 'big-thesis.pdf', { type: 'application/pdf' }));
+    fireEvent.click(screen.getByRole('button', { name: 'رفع البحث' }));
+
+    // The progressbar appears with the reported fraction (42%).
+    const bar = await screen.findByRole('progressbar');
+    expect(bar).toHaveAttribute('aria-valuenow', '42');
+    // The label rides both the progress bar and the (disabled) submit
+    // button's file-stage wording — one honest state, two surfaces.
+    expect(screen.getAllByText('جارٍ رفع الملف…')).toHaveLength(2);
   });
 });
