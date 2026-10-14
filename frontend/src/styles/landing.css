@@ -1531,6 +1531,31 @@
   font-size: 13px;
 }
 .landing .ln-cta-meta svg { color: var(--ln-cream-dim); }
+/* r164b: returning-visitor login line — the mirror of AuthPage's
+   register prompt («ليس لديك حساب؟ أنشئ حسابك الآن»). A cream
+   in-sentence text link: the lime roster stays closed (lime belongs
+   to the ONE primary CTA per viewport), and the underline is always
+   on so it reads as a link, not as more chrome. */
+.landing .ln-cta-login {
+  margin: 0;
+  color: var(--ln-cream-dim);
+  font-size: 14px;
+}
+.landing .ln-cta-login a {
+  color: var(--ln-cream);
+  font-weight: var(--fw-semibold);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, var(--ln-cream) 40%, transparent);
+  transition:
+    color var(--ln-t-base) var(--ln-ease),
+    text-decoration-color var(--ln-t-base) var(--ln-ease);
+}
+.landing .ln-cta-login a:hover {
+  color: var(--ln-cream);
+  text-decoration-color: var(--ln-cream);
+}
 
 /* ── 14 · footer — the ground plate (VLM R3-W5 diet: ~30% lighter) ──── */
 .landing .landing-footer {
@@ -1890,6 +1915,7 @@ button.landing-footer-link {
   .landing .ln-btn-gold,
   .landing .ln-btn-ghost,
   .landing .ln-btn-text,
+  .landing .ln-cta-login a,
   .landing .btn.ghost,
   .landing .btn.ghost.sm,
   .landing .btn.primary,

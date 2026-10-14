@@ -3,14 +3,17 @@
  *
  * Renders the bespoke `error-404` illustration scene (the telescope
  * motif points to "look elsewhere") with one witty-but-dignified line,
- * a prominent way home, and a public browse suggestion (the colleges
- * directory — ruling #9) since guests land here without the app shell
- * (and therefore without GlobalSearch). Reachable via:
+ * a prominent way home, and two secondary ways back for the two kinds
+ * of lost visitor: the public browser (the colleges directory — ruling
+ * #9, guests land here without the app shell and therefore without
+ * GlobalSearch) and the returning student whose stale deep-link 404'd
+ * (r164b: login — previously a returning user had to reach the landing
+ * to find any /auth door). Reachable via:
  *   - the explicit /404 route (used by the audit harness)
  *   - the catch-all *  route at the end of App.tsx
  */
 import { Link } from 'react-router-dom';
-import { Building2, Home } from 'lucide-react';
+import { Building2, Home, LogIn } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { Illustration } from '../components/Illustration';
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -39,6 +42,12 @@ export default function NotFoundPage() {
           <Link to="/colleges" className="btn lg">
             <Icon icon={Building2} size={16} />
             تصفّح كلّيّات الجامعة
+          </Link>
+          {/* r164b: the returning-visitor way back — ONE primary stays
+              (home); login joins colleges as a secondary exit. */}
+          <Link to="/auth" className="btn lg">
+            <Icon icon={LogIn} size={16} />
+            تسجيل الدخول
           </Link>
         </div>
       </div>

@@ -125,19 +125,22 @@ export default function LandingPage() {
     }
   }, [redirectHome, introSeen]);
 
-  /* r162 (R2): warm the login chunk while the visitor reads the hero.
+  /* r162 (R2) → r164b: warm the AUTH BOUNDARIES while the visitor reads
+   * the hero.
    *
-   * The landing's #1 and #2 CTAs («ابدأ الآن» / «تسجيل الدخول») route
-   * to `/auth` — a lazy boundary. On a production cold cache the first
-   * click suspends the ROOT boundary and swaps the whole ink world for
-   * the product-ground HydrationSplash while the AuthPage chunk
-   * fetches: a full-screen world-crossing blank-out on the primary
-   * public funnel. Idle-prefetching the exact same dynamic import the
-   * route boundary resolves (module init runs once; the later lazy()
-   * mount reuses the warm module) means the click navigates with the
-   * chunk already in cache — no splash window at all. Same pattern as
-   * the shell's chartTheme warm-up (AppShell r152j/A7): production
-   * only — dev has no chunk splitting to warm. */
+   * The funnel's surfaces split in r164b: the primary CTAs
+   * («ابدأ الآن» / «ابدأ رحلتك» / «أنشئ حسابك الجامعي») now route to
+   * `/auth/register`, while «تسجيل الدخول» keeps `/auth` — both are
+   * lazy boundaries. On a production cold cache the first click suspends
+   * the ROOT boundary and swaps the whole ink world for the
+   * product-ground HydrationSplash while the chunk fetches: a full-screen
+   * world-crossing blank-out on the primary public funnel. Idle-prefetching
+   * the exact same dynamic imports the route boundaries resolve (module
+   * init runs once; the later lazy() mounts reuse the warm modules) means
+   * the click navigates with the chunk already in cache — no splash
+   * window at all. Same pattern as the shell's chartTheme warm-up
+   * (AppShell r152j/A7): production only — dev has no chunk splitting to
+   * warm. */
   useEffect(() => {
     if (redirectHome) return;
     if (!import.meta.env.PROD) return;
@@ -145,7 +148,10 @@ export default function LandingPage() {
       typeof window.requestIdleCallback === 'function'
         ? window.requestIdleCallback.bind(window)
         : undefined;
-    const warm = () => { void import('./AuthPage').catch(() => undefined); };
+    const warm = () => {
+      void import('./AuthPage').catch(() => undefined);
+      void import('./RegisterPage').catch(() => undefined);
+    };
     const idleId = ric ? ric(warm, { timeout: 4000 }) : window.setTimeout(warm, 2500);
     return () => {
       if (ric) window.cancelIdleCallback(idleId as number);
@@ -328,8 +334,11 @@ export default function LandingPage() {
           </nav>
 
           <div className="landing-header-cta">
+            {/* r164b: the funnel splits — login keeps /auth, the primary
+                START verb carries the visitor to /auth/register (the
+                register form is the destination the label promises). */}
             <Link to="/auth" className="btn ghost sm">تسجيل الدخول</Link>
-            <Link to="/auth" className="btn primary sm">
+            <Link to="/auth/register" className="btn primary sm">
               ابدأ الآن
               <Icon icon={ArrowLeft} size={14} />
             </Link>
@@ -368,7 +377,12 @@ export default function LandingPage() {
             <a href="#journey" className="btn ghost">رحلة التعلّم</a>
             <a href="#roles" className="btn ghost">الأدوار</a>
             <a href="#progress" className="btn ghost">النتائج</a>
-            <Link to="/auth" className="btn primary full">
+            {/* r164b: returning visitors had NO login affordance on mobile —
+                ≤1080px hides the header ghost pair, so the menu was
+                register-only. The ghost row above explores; this one
+                completes the both-way funnel (تسجيل الدخول = /auth). */}
+            <Link to="/auth" className="btn ghost">تسجيل الدخول</Link>
+            <Link to="/auth/register" className="btn primary full">
               ابدأ الآن
               <Icon icon={ArrowLeft} size={14} />
             </Link>
@@ -410,7 +424,10 @@ export default function LandingPage() {
           </RevealCssClass>
 
           <RevealCssClass as="div" className="ln-hero-actions" delay={3}>
-            <Link to="/auth" className="ln-btn-gold" ref={magneticCta}>
+            {/* r164b: the ONE lime primary of this viewport — and it carries
+                the funnel's promise literally: starting the journey = the
+                register form, not the login form. */}
+            <Link to="/auth/register" className="ln-btn-gold" ref={magneticCta}>
               ابدأ رحلتك
               <Icon icon={ArrowLeft} size={16} />
             </Link>
@@ -550,7 +567,9 @@ export default function LandingPage() {
             والمكتبة والمعامل بين يديك.
           </RevealCssClass>
           <RevealCssClass as="div" className="ln-cta-bridge-actions" delay={3}>
-            <Link to="/auth" className="ln-btn-gold">ابدأ رحلتك</Link>
+            {/* r164b: mid-journey primary → register (same funnel verb as
+                the hero; «ابدأ» is a start-account promise, not a login). */}
+            <Link to="/auth/register" className="ln-btn-gold">ابدأ رحلتك</Link>
             <a href="#progress" className="ln-btn-ghost">شاهد كيف تتّسع المدارك</a>
           </RevealCssClass>
         </div>
@@ -797,15 +816,25 @@ export default function LandingPage() {
             نقطتك من الضوء <em>تبدأ من هنا</em>
           </RevealCssClass>
           <RevealCssClass as="p" className="ln-cta-lede" delay={2}>
-            سجِّل دخولك ببريدك الجامعي أو رقم قيدك للوصول إلى مقرَّراتك
-            ومتابعة تقدّمك الأكاديمي — الرحلة تبدأ بنقطة.
+            {/* r164b: the lede used to speak LOGIN copy («سجِّل دخولك…»)
+                under a create-account button — label, copy and
+                destination now tell ONE story: create the account. */}
+            أنشئ حسابك الجامعي في دقائق — بالبريد الجامعي أو رقم قيدك —
+            لتصل إلى مقرَّراتك ومتابعة تقدّمك الأكاديمي. الرحلة تبدأ بنقطة.
           </RevealCssClass>
           <RevealCssClass as="div" className="ln-cta-actions" delay={3}>
-            <Link to="/auth" className="ln-btn-gold xl">
+            <Link to="/auth/register" className="ln-btn-gold xl">
               أنشئ حسابك الجامعي
               <Icon icon={ArrowLeft} size={16} />
             </Link>
             <a href="#colleges" className="ln-btn-ghost xl">استكشف الكلّيّات</a>
+          </RevealCssClass>
+          {/* r164b: the returning-visitor mirror of AuthPage's register
+              prompt («ليس لديك حساب؟ أنشئ حسابك الآن») — the finale was
+              register-only, so a student who already has an account had
+              to hunt for the login through the header. */}
+          <RevealCssClass as="p" className="ln-cta-login" delay={4}>
+            لديك حساب بالفعل؟ <Link to="/auth">سجِّل دخولك</Link>
           </RevealCssClass>
           <RevealCssClass as="p" className="ln-cta-meta" delay={4}>
             <Icon icon={Sparkles} size={13} />
