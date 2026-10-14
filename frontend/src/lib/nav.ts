@@ -8,7 +8,7 @@ import {
   Radio, Wallet, MapPin, UserCircle, Brain, Megaphone, RefreshCw,
   Palette, Settings, AlertTriangle, MessageCircle, Video, Globe,
   Download, Medal, BadgeCheck, Box, Telescope,
-  Bell, Award, Landmark,
+  Bell, Award, Landmark, Inbox,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole, AcademicPosition } from '../stores/auth.store';
@@ -223,6 +223,14 @@ export const QUALITY_NAV: NavGroup[] = [
       { to: '/quality/exam-moderation', icon: ClipboardCheck, label: 'مراجعة الاختبارات' },
       { to: '/quality/curriculum', icon: ListChecks, label: 'مراجعة المناهج' },
       { to: '/quality/reports', icon: FileText, label: 'تقارير الجودة' },
+      /* r165d (D2): صندوق الإشعارات الشخصي لأخصائي الجودة — وجهة الجرس
+         الكاملة (Topbar alertsPath). صفحة AlertsPage المشتركة نفسها التي
+         يحملها كل دور، وقرار العنوان هنا هو ما يجعل بوابة تغطية العناوين
+         تمرّ (العناوين تستمدّ من تسميات التنقّل). أيقونة Inbox لأنّ Bell
+         محجوز لـ«تنبيهات الجودة» في المجموعة نفسها (قاعدة A4 P3-4
+         لتفريد الأيقونات). لوحة التنبيهات التشغيلية أدناه باقية كما هي
+         برابطها الخاص. */
+      { to: '/quality/notifications', icon: Inbox, label: 'الإشعارات' },
       /* 5-B5 (A4 P1-3/P2-8): the quality alerts page keeps its own
          canonical name (it is a distinct QualityAlertsPage surface,
          like the owner's «التنبيهات التشغيلية»). */
@@ -263,6 +271,13 @@ export const OWNER_NAV: NavGroup[] = [
     label: 'المراقبة والتحليل',
     items: [
       { to: '/owner/ai', icon: Bot, label: 'مركز الذكاء الاصطناعي', badge: { text: 'AI', tone: 'gold' } },
+      /* r165d (D2): صندوق الإشعارات الشخصي للمالك — وجهة الجرس الكاملة
+         (Topbar alertsPath). صفحة AlertsPage المشتركة نفسها بتسمية
+         «الإشعارات» التي يحملها كل دور؛ بند التنقّل هذا هو مدخل العنوان
+         أيضًا (بوابة تغطية العناوين). أيقونة Bell المتاحة في هذه القائمة
+         (لوحة «التنبيهات التشغيلية» أدناه تحمل AlertTriangle)، واللوحة
+         نفسها باقية كما هي. */
+      { to: '/owner/notifications', icon: Bell, label: 'الإشعارات' },
       { to: '/owner/alerts', icon: AlertTriangle, label: 'التنبيهات التشغيلية' },
       { to: '/owner/governance', icon: ShieldCheck, label: 'الحوكمة المتقدمة' },
       // 4-A14 P1-1: the shared roadmap entry (any-auth route).

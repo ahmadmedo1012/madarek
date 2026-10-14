@@ -7,7 +7,7 @@ import {
   Bell, AlertTriangle, BookOpen, Download,
   CheckCircle2, Check, MessageCircle, Heart, GraduationCap,
   TrendingUp, Building2, Users2, Microscope,
-  Hourglass, ArrowLeft,
+  Hourglass, ArrowLeft, X,
 } from 'lucide-react';
 import { Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
@@ -16,7 +16,7 @@ import { ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSke
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotificationsFeed, useMarkNotifRead, useMarkAllNotifsRead, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, submissionStatusAr, type Post, type StudentMaterial } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotificationsFeed, useMarkNotifRead, useMarkAllNotifsRead, notifDeepLink, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, submissionStatusAr, type Post, type StudentMaterial } from '../../hooks/useResources';
 import { materialHref } from '../../lib/materialHref';
 import { UNIVERSITY_FACTS } from '../../data/university.facts';
 import { formatNum } from '../../utils/numbers';
@@ -422,6 +422,25 @@ export function AlertsPage() {
           )}
         </div>
       }>
+        {/* r165d (D3): فشل «تعليم الكل كمقروء» كان صامتًا — الزرّ يعطّل نفسه
+            أثناء الانتظار ثم يعود دون أي أثر (الخطّاف لا يُبطل الذاكرة
+            إلا عند النجاح). نفس عرف صفحة رسائل الأستاذ (TeacherPages —
+            form-feedback fail + «إعادة المحاولة» يعيد إطلاق العملية
+            نفسها): اللافتة تسمّي الفشل، والمحاولة تعيد الطلب الجماعي. */}
+        {markAllRead.isError && (
+          <div className="form-feedback fail" role="alert" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+            <Icon icon={X} size={14} />
+            <span className="flex-1">تعذَّر تعليم الإشعارات كمقروءة — تحقّق من اتصالك ثم أعد المحاولة.</span>
+            <button
+              type="button"
+              className="btn ghost sm"
+              onClick={() => markAllRead.mutate()}
+              disabled={markAllRead.isPending}
+            >
+              <Icon icon={Check} size={12} /> إعادة المحاولة
+            </button>
+          </div>
+        )}
         {feed.isPending ? (
           /* shape-matched skeleton: alert rows (dot + two lines) */
           <div className="flex-col gap-2" aria-busy="true">
@@ -443,6 +462,25 @@ export function AlertsPage() {
           <div className="flex-col gap-2">
             {items.map((n) => {
               const unread = !n.readAt;
+              /* r165d (D1): رابط التعمّق للإشعار — نفس قرار التوجيه الذي
+                 يحمله صف اللوحة المنسدلة (notifDeepLink). العنوان هو باب
+                 الصف (عرف r164-h في قائمة طلاب الأستاذ: «الاسم هو باب
+                 الصفّ») — لا يمكن لفّ الصفّ كاملًا في رابط لأنّ صفوف غير
+                 المقروء تحمل زرّ «تعليم كمقروء» داخل حدّ الـactions،
+                 والتحكّم التفاعلي المتشعّب داخل مرساة مخالفٌ للقانون
+                 الأدقّ (A12 P1-3: أزال CoursesPage تحكّمًا متشعّبًا داخل
+                 مرساة البطاقة لهذا السبب نفسه). الروابط الخارجية
+                 والنسبية للبروتوكول تُهمَل (الرابط الداخلي فقط). */
+              const deepLink = notifDeepLink(n);
+              const titleNode = deepLink ? (
+                <Link
+                  to={deepLink}
+                  className="text-link"
+                  title="الانتقال إلى مصدر الإشعار"
+                >
+                  {n.title}
+                </Link>
+              ) : n.title;
               /* variables-gating (the likeInFlight idiom): only the row
                  whose id is in flight goes pending — a shared isPending
                  would freeze every row's button + flip its label. */
@@ -460,10 +498,10 @@ export function AlertsPage() {
                          المنسدلة التفاعليّة، فالتزامن هنا يمرّ عبر مكوّن
                          Badge الكنوني دون أي CSS جديد. */
                       <span className="flex items-center gap-2 flex-wrap">
-                        {n.title}
+                        {titleNode}
                         <Badge color="brand">غير مقروء</Badge>
                       </span>
-                    ) : n.title
+                    ) : titleNode
                   }
                   description={n.body ?? undefined}
                   time={timeAgoAr(n.createdAt)}

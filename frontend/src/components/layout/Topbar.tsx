@@ -74,11 +74,20 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
     role === 'TEACHER' ? '/teacher/ai' :
     role === 'OWNER'   ? '/owner/ai'   :
     '/student/ai';
+  /* r165d (D2): QUALITY/OWNER now point at their PERSONAL notifications
+   * inbox (/quality/notifications · /owner/notifications — the shared
+   * AlertsPage mounted inside their role shells) instead of the
+   * operational boards. The bell shows the user's own Notification rows
+   * (GET /notifications); clicking one — or «عرض جميع الإشعارات» — used
+   * to land on /quality/alerts (the derived-signal board) or
+   * /owner/alerts (the operational board): a DIFFERENT dataset where the
+   * clicked notification never appears. The boards themselves are
+   * untouched — the sidebar keeps linking them. */
   const alertsPath =
     role === 'TEACHER' ? '/teacher/alerts' :
     role === 'ADMIN'   ? '/admin/alerts'   :
-    role === 'QUALITY' ? '/quality/alerts' :
-    role === 'OWNER'   ? '/owner/alerts'   :
+    role === 'QUALITY' ? '/quality/notifications' :
+    role === 'OWNER'   ? '/owner/notifications'   :
     '/student/alerts';
   const onAiPage = location.pathname.endsWith('/ai');
   const showAiButton = role !== 'ADMIN' && role !== 'QUALITY' && !onAiPage;

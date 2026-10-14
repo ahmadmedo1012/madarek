@@ -13,9 +13,44 @@ export interface Notification {
   icon?: string | null;
   title: string;
   body?: string | null;
+  /* r165d (D1): the backend schema (prisma Notification.link) has
+   * carried a nullable deep link since r155a — GET /notifications
+   * returns it in every row (findMany with no select) and
+   * me.routes.ts writes '/teacher/messages' for teacher DM
+   * recipients — but the FE contract never declared it, so no
+   * consumer could act on it and a DM notification could never
+   * reach the inbox. Optional + nullable: old cached payloads and
+   * the e2e fixture corpus (field-for-field, no invented fields)
+   * keep resolving without it. */
+  link?: string | null;
   readAt?: string | null;
   createdAt: string;
 }
+
+/** r165d (D1) — resolve a notification's SPA deep link.
+ *
+ *  The backend's `link` is honored ONLY when it is an in-app path:
+ *  a string that starts with `/` and NOT with `//` (a leading `//`
+ *  is a PROTOCOL-RELATIVE URL — the browser resolves it against the
+ *  current scheme, so it is an external origin in disguise). Anything
+ *  else (null, '', 'https://…', 'mailto:…', 'javascript:…') is
+ *  ignored and the caller falls back to its own default destination
+ *  (the role's alerts page). This mirrors the app's CSP posture —
+ *  anchor hrefs are only ever SPA paths, never external URLs — and
+ *  the backend's own r155a stance that a dead deep link is worse
+ *  than none.
+ *
+ *  Pure on purpose (the NotificationsFeedPage rows flow through the
+ *  same Notification contract) so both consumers — the bell's
+ *  dropdown rows and the AlertsPage rows — share ONE routing
+ *  decision, pinned by tests on both surfaces. */
+export function notifDeepLink(n: Pick<Notification, 'link'>): string | null {
+  const link = n.link;
+  if (typeof link !== 'string' || link.length === 0) return null;
+  if (!link.startsWith('/') || link.startsWith('//')) return null;
+  return link;
+}
+
 export function useNotifications() {
   return useQuery({
     queryKey: ['notifications'],

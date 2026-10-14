@@ -408,6 +408,13 @@ export function AppRoutes() {
             <Route path="/quality/engagement" element={<QualityEngagementPage />} />
             <Route path="/quality/reports" element={<QualityReportsPage />} />
             <Route path="/quality/curriculum" element={<QualityCurriculumPage />} />
+            {/* r165d (D2): the QUALITY personal notifications inbox — the
+                shared AlertsPage (MorePages) the bell needs. Mirrors the
+                /student/alerts · /teacher/alerts · /admin/alerts mounts
+                exactly (same page component, same lazy const, inside the
+                role shell). The operational /quality/alerts board below
+                stays untouched — the sidebar keeps its own link to it. */}
+            <Route path="/quality/notifications" element={<AlertsPage />} />
             <Route path="/quality/alerts" element={<QualityAlertsPage />} />
             <Route path="/quality/exam-moderation" element={<ExamModerationPage />} />
             <Route path="/quality/community" element={<CommunityPage />} />
@@ -425,6 +432,12 @@ export function AppRoutes() {
             <Route path="/owner/education" element={<OwnerEducationPage />} />
             <Route path="/owner/realtime" element={<OwnerRealtimePage />} />
             <Route path="/owner/ai" element={<OwnerAiPage />} />
+            {/* r165d (D2): the OWNER personal notifications inbox — the
+                shared AlertsPage (MorePages) the bell needs. Mirrors the
+                /student/alerts · /teacher/alerts · /admin/alerts mounts
+                exactly. The operational /owner/alerts board below stays
+                untouched — the sidebar keeps its own link to it. */}
+            <Route path="/owner/notifications" element={<AlertsPage />} />
             <Route path="/owner/alerts" element={<OwnerAlertsPage />} />
             <Route path="/owner/governance" element={<OwnerGovernancePage />} />
           </Route>

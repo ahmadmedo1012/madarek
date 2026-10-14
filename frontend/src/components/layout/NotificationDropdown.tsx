@@ -26,7 +26,7 @@ import { Illustration } from '../Illustration';
 import { Skeleton } from '../primitives/States';
 import { NotificationPanel } from '../overlays';
 import { useFocusTrap } from '../overlays/useFocusTrap';
-import { useNotifications, useUnreadNotifications, useMarkNotifRead, useMarkAllNotifsRead, type Notification } from '../../hooks/useResources';
+import { useNotifications, useUnreadNotifications, useMarkNotifRead, useMarkAllNotifsRead, notifDeepLink, type Notification } from '../../hooks/useResources';
 import { arUnit, timeAgoAr } from '../../lib/format';
 import type { LucideIcon } from 'lucide-react';
 
@@ -196,7 +196,14 @@ function NotificationPanelContent({
   const onItemClick = (n: Notification) => {
     if (!n.readAt) markRead.mutate(n.id);
     onClose();
-    navigate(alertsPath);
+    /* r165d (D1): the backend's Notification.link deep link finally
+     * has a consumer — a DM notification carries '/teacher/messages'
+     * and used to land the user on the generic alerts list instead
+     * (the row click ALWAYS went to alertsPath). The deep link wins
+     * when it is a validated in-app path (notifDeepLink — external /
+     * protocol-relative / script URLs are ignored per the CSP
+     * posture); everything else keeps the role's alerts page. */
+    navigate(notifDeepLink(n) ?? alertsPath);
   };
 
   const onMarkAll = () => {
@@ -294,6 +301,28 @@ function NotificationPanelContent({
     </div>
 
     <footer className="notif-panel-foot">
+      {/* r165d (D3): mark-all failures used to fail SILENTLY — the
+          button disabled itself while pending, then quietly re-enabled
+          with the unread count unchanged (the hook only invalidates on
+          SUCCESS). Same idiom the teacher-messages page ships
+          (TeacherPages form-feedback fail + «إعادة المحاولة» re-running
+          the SAME mutation): the banner names the failure, the retry
+          re-fires the bulk POST without losing panel state. */}
+      {markAllRead.isError && (
+        <div className="form-feedback fail" role="alert" style={{ margin: 'var(--sp-3) var(--sp-4)' }}>
+          <Icon icon={X} size={14} />
+          <span className="flex-1">تعذَّر تعليم الإشعارات كمقروءة — تحقّق من اتصالك ثم أعد المحاولة.</span>
+          <button
+            type="button"
+            className="btn ghost sm"
+            onClick={() => markAllRead.mutate()}
+            disabled={markAllRead.isPending}
+          >
+            <Icon icon={Check} size={12} />
+            <span>إعادة المحاولة</span>
+          </button>
+        </div>
+      )}
       <Link
         to={alertsPath}
         onClick={onClose}

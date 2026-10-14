@@ -69,8 +69,28 @@ vi.mock('../../src/pages/admin/AdminPages', () => ({
 // route table lets a QUALITY user THROUGH to /quality/dashboard, not the
 // dashboard's internals (same convention as the AuthPage stub above).
 // The named export matches App.tsx's lazy wrapper (m.QualityDashboardPage).
+// r165d: QualityAlertsPage joined the stub set — the operational-board
+// pin below renders /quality/alerts and must NOT receive the shared
+// personal AlertsPage (that is the whole point of D2's split).
 vi.mock('../../src/pages/quality/QualityPages', () => ({
   QualityDashboardPage: () => <div data-testid="quality-dashboard" />,
+  QualityAlertsPage: () => <div data-testid="quality-alerts" />,
+}));
+
+// Owner pages stub — r165d (D2): the untouched-operational-board pin
+// renders /owner/alerts for an OWNER user.
+vi.mock('../../src/pages/owner/OwnerPages', () => ({
+  OwnerAlertsPage: () => <div data-testid="owner-alerts" />,
+}));
+
+// r165d (D2): the shared personal notifications page stub — the mount
+// pins care that the route table serves the AlertsPage component to
+// QUALITY/OWNER inside their role shells (mirroring /student/alerts ·
+// /teacher/alerts · /admin/alerts), not the page's internals. The
+// lazy wrappers for the OTHER MorePages exports never resolve in this
+// suite — the mock only needs what these tests actually mount.
+vi.mock('../../src/pages/student/MorePages', () => ({
+  AlertsPage: () => <div data-testid="alerts-page" />,
 }));
 
 function LocationProbe() {
@@ -286,5 +306,81 @@ describe('AppRoutes — /quality guard is QUALITY-only (r157, 6A9 #1)', () => {
     renderAt('/quality/dashboard');
     await screen.findByTestId('quality-dashboard');
     expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/quality/dashboard');
+  });
+});
+
+/* r165d (D2) REGRESSION PIN — personal notifications mounts for
+ * QUALITY/OWNER.
+ *
+ * The bell renders the user's OWN Notification rows (GET
+ * /notifications), but QUALITY/OWNER had no personal-notifications
+ * page at all: the bell's row-click and «عرض جميع الإشعارات» routed
+ * to /quality/alerts / /owner/alerts — the OPERATIONAL boards, a
+ * different dataset where the clicked notification never appears.
+ * These pins hold both sides of the contract: the new
+ * /quality/notifications · /owner/notifications rows mount the SHARED
+ * AlertsPage inside each role's shell (guard allow-list exact), and
+ * the operational boards keep their own routes untouched. */
+describe('AppRoutes — personal notifications mounts (r165d, D2)', () => {
+  const userWithRole = (role: AppRole): AuthUser => ({
+    id: `notif-pin-${role.toLowerCase()}`,
+    email: 'notif-pin@uoz.edu',
+    firstName: 'جرس',
+    lastName: 'الإشعارات',
+    role,
+  });
+
+  beforeEach(() => {
+    useAuthStore.setState({ user: null, isHydrated: true });
+  });
+
+  afterEach(() => {
+    useAuthStore.setState({ user: null });
+  });
+
+  it('lands a QUALITY user on /quality/notifications — the shared personal AlertsPage', async () => {
+    useAuthStore.setState({ user: userWithRole('QUALITY') });
+    renderAt('/quality/notifications');
+    await screen.findByTestId('alerts-page');
+    expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/quality/notifications');
+  });
+
+  it('lands an OWNER user on /owner/notifications — the shared personal AlertsPage', async () => {
+    useAuthStore.setState({ user: userWithRole('OWNER') });
+    renderAt('/owner/notifications');
+    await screen.findByTestId('alerts-page');
+    expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/owner/notifications');
+  });
+
+  it('still bounces a STUDENT off /owner/notifications to /student/dashboard — the mount is OWNER-only', async () => {
+    useAuthStore.setState({ user: userWithRole('STUDENT') });
+    renderAt('/owner/notifications');
+    await screen.findByTestId('student-dashboard');
+    expect(screen.queryByTestId('alerts-page')).toBeNull();
+    expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/student/dashboard');
+  });
+
+  it('still bounces a TEACHER off /quality/notifications to /teacher/dashboard — the mount is QUALITY-only', async () => {
+    useAuthStore.setState({ user: userWithRole('TEACHER') });
+    renderAt('/quality/notifications');
+    await screen.findByTestId('teacher-dashboard');
+    expect(screen.queryByTestId('alerts-page')).toBeNull();
+    expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/teacher/dashboard');
+  });
+
+  it('the operational /quality/alerts board keeps its OWN route (untouched by D2)', async () => {
+    useAuthStore.setState({ user: userWithRole('QUALITY') });
+    renderAt('/quality/alerts');
+    await screen.findByTestId('quality-alerts');
+    expect(screen.queryByTestId('alerts-page')).toBeNull();
+    expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/quality/alerts');
+  });
+
+  it('the operational /owner/alerts board keeps its OWN route (untouched by D2)', async () => {
+    useAuthStore.setState({ user: userWithRole('OWNER') });
+    renderAt('/owner/alerts');
+    await screen.findByTestId('owner-alerts');
+    expect(screen.queryByTestId('alerts-page')).toBeNull();
+    expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/owner/alerts');
   });
 });
