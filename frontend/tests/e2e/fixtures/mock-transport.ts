@@ -49,6 +49,7 @@ import {
   STUDENT_DASHBOARD,
   STUDENT_USER,
   TEACHER_USER,
+  TRAINING_CATALOG,
   UNREAD_COUNT,
   VALID_LOGIN,
   meProfile,
@@ -134,6 +135,15 @@ export function standardRoutes(): MockRouteDef[] {
     { method: 'POST', path: '/notifications/read-all', json: ok({ updated: UNREAD_COUNT }) },
 
     { method: 'GET', path: '/search/global', json: ok(SEARCH_RESULTS) },
+
+    /* r165h: r164c's resume-hero fallback arm reads the training
+     * catalog on every student dashboard visit — the integrated tree
+     * left it 501-ing (a silent loud-501 regression the r164k claim
+     * predated). The honest corpus ships NO training tracks: the
+     * dashboard's primary resume card always wins (RESUME rides a
+     * lecture), so the training arm never renders — an empty list is
+     * the truthful payload, not a stub. */
+    { method: 'GET', path: '/training/catalog', json: ok(TRAINING_CATALOG) },
   ];
 }
 
@@ -296,6 +306,72 @@ export async function installMockApi(
       fail('MOCK_NOT_IMPLEMENTED', `mock transport has no fixture for ${method} ${url.pathname}`),
     );
   });
+}
+
+/* ── stateful routes (r165h) ───────────────────────────────────── */
+
+/**
+ * A page-level mock route whose handler owns MUTABLE state — the write
+ * loops the journey suite grew to pin (grade a submission → it leaves
+ * the queue; borrow a book → a loan row appears; approve a template →
+ * it leaves the moderation queue) need reads that REFLECT earlier
+ * writes, which the static tables cannot express. A handler may also
+ * serve a purely static payload — specs with 2+ extra routes ride THIS
+ * installer instead of `apiOverrides` (see the tuple warning on the
+ * e2e fixture's apiOverrides option).
+ *
+ * Registered on the PAGE after the context transport, so a matching
+ * request hits this handler first (Playwright consults routes in
+ * reverse registration order); a method mismatch falls back to the
+ * context transport so every other /api/ call keeps its fixture. The
+ * handler also sees the request body — specs pin not just the rendered
+ * result but the exact wire payload the journey produced.
+ */
+export interface StatefulMockRoute {
+  /** HTTP method this route owns; anything else falls through. */
+  method: string;
+  /** page.route glob for the FULL request URL (query strings count). */
+  pattern: string;
+  /** Answers the request; free to read/mutate captured state. */
+  fulfill: (ctx: { route: Route; url: URL }) => Promise<void> | void;
+}
+
+/** Install stateful routes on a page — call BEFORE page.goto. */
+export async function installStatefulApi(
+  page: Page,
+  routes: StatefulMockRoute[],
+): Promise<void> {
+  for (const def of routes) {
+    await page.route(def.pattern, async (route) => {
+      if (route.request().method().toUpperCase() !== def.method.toUpperCase()) {
+        // Not ours — the context-level mock transport answers next.
+        await route.fallback();
+        return;
+      }
+      await def.fulfill({ route, url: new URL(route.request().url()) });
+    });
+  }
+}
+
+/** Fulfill a stateful route with a RAW pre-enveloped body (e.g. a
+ *  paginated payload whose meta rides as a SIBLING of data). */
+export async function statefulJson(route: Route, status: number, body: unknown): Promise<void> {
+  await fulfillJson(route, status, body);
+}
+
+/** Fulfill a stateful route with the success envelope ({ data }). */
+export async function statefulOk(route: Route, data: unknown): Promise<void> {
+  await statefulJson(route, 200, ok(data));
+}
+
+/** Fulfill a stateful route with an error envelope (any status). */
+export async function statefulFail(
+  route: Route,
+  status: number,
+  code: string,
+  message: string,
+): Promise<void> {
+  await statefulJson(route, status, fail(code, message));
 }
 
 /* ── auth-state bootstrapping (the real store substrate) ────────── */

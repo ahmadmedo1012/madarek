@@ -35,15 +35,18 @@
 import { test as base, expect } from '@playwright/test';
 import type { ViewportSize } from '@playwright/test';
 
-import { FIXED_NOW_ISO, STUDENT_USER, type FixtureUser } from './api-fixtures';
+import { FIXED_NOW_ISO, STUDENT_USER, ADMIN_USER, QUALITY_USER, TEACHER_USER, type FixtureUser } from './api-fixtures';
 import { installMockApi, seedSession, type MockRouteDef } from './mock-transport';
 
-export type E2eRole = 'guest' | 'STUDENT';
+export type E2eRole = 'guest' | 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY';
 
 export interface E2eOptions {
-  /** 'STUDENT' boots the app signed-in (localStorage mdrk-auth). */
+  /** Seeded role boots the app signed-in (localStorage mdrk-auth). */
   e2eRole: E2eRole;
-  /** Per-test mock routes — matched BEFORE the standard table. */
+  /** Per-test mock routes — matched BEFORE the standard table.
+   *  ⚠ 1 row maximum: Playwright's option plumbing eats a 2+ row array
+   *  as a fixture tuple (the landmine guard below fires loudly). Specs
+   *  with 2+ extra routes use installStatefulApi instead. */
   apiOverrides: MockRouteDef[];
   /** Optional persisted theme to seed (madarek-theme localStorage). */
   themeSeed: 'light' | 'dark' | null;
@@ -51,8 +54,19 @@ export interface E2eOptions {
 
 const BASE_URL = process.env.MADAREK_E2E_BASE_URL ?? 'http://localhost:5173';
 
+/**
+ * The seeded role's user. r164-k shipped STUDENT only; r165h opens
+ * the staff roles (TEACHER / ADMIN / QUALITY) so the grading,
+ * course-delete and moderation journeys can boot signed-in the exact
+ * same reload-style way (same persist substrate, same dynamic
+ * /auth/me). OWNER stays audit-sweep-only — no journey spec rides it.
+ */
 function userForRole(role: E2eRole): FixtureUser | null {
-  return role === 'STUDENT' ? STUDENT_USER : null;
+  if (role === 'STUDENT') return STUDENT_USER;
+  if (role === 'TEACHER') return TEACHER_USER;
+  if (role === 'ADMIN') return ADMIN_USER;
+  if (role === 'QUALITY') return QUALITY_USER;
+  return null;
 }
 
 export const test = base.extend<E2eOptions>({
@@ -64,6 +78,17 @@ export const test = base.extend<E2eOptions>({
     { browser, e2eRole, apiOverrides, themeSeed, viewport, locale, colorScheme },
     use,
   ) => {
+    // Landmine guard (r165h): Playwright's option plumbing treats a
+    // use() value of [a, b] (ANY array whose second element is an
+    // object — common/fixtures.js isFixtureTuple) as a [value, options]
+    // TUPLE, so a 2+ row apiOverrides array silently loses every row
+    // after the first. Specs needing 2+ extra routes must ride
+    // installStatefulApi (page-level) instead. Loud, never silent.
+    if (!Array.isArray(apiOverrides)) {
+      console.error(
+        `[e2e] apiOverrides arrived as ${typeof apiOverrides} — Playwright ate a 2+ row array as a fixture tuple; route extra fixtures through installStatefulApi`,
+      );
+    }
     const context = await browser.newContext({
       baseURL: BASE_URL,
       viewport: viewport as ViewportSize | null,

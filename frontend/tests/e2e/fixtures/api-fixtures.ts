@@ -586,3 +586,419 @@ export const SEARCH_RESULTS = {
   papers: [],
   tracks: [],
 };
+
+/* ══════════════════════════════════════════════════════════════════
+   r165h — additive rows for the staff/library/checkpoint journeys.
+   Everything above this banner is the r164-k corpus, untouched.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── training catalog: GET /training/catalog ──────────────────── */
+
+/**
+ * The dashboard's resume-hero fallback arm (r164c) reads this on every
+ * student dashboard visit. The corpus ships NO tracks — honest: RESUME
+ * always rides a lecture here, so the training arm never renders and an
+ * empty list is the truthful payload (also what closes the loud-501
+ * gap the integrated tree had for this route).
+ */
+export const TRAINING_CATALOG: unknown[] = [];
+
+/* ── teacher grading loop (r165h) ───────────────────────────────── */
+
+/** GET /teacher/me/assignments — TeacherAssignmentRow[]. */
+export const TEACHER_ASSIGNMENTS = [
+  {
+    id: 'asg_e2e_teacher_1',
+    title: 'واجب الأسبوع الثالث',
+    type: 'HOMEWORK' as const,
+    dueAt: iso(24 * 2),
+    weight: 10,
+    maxScore: 20,
+    course: { code: 'CS-201', name: 'مقدمة في الخوارزميات' },
+    submissions: 2,
+    enrolled: 24,
+  },
+];
+
+/** The graded-row response of POST /submissions/:id/grade. */
+export function gradedSubmission(id: string, grade: number, feedback?: string): Record<string, unknown> {
+  return {
+    id,
+    assignmentId: 'asg_e2e_teacher_1',
+    studentId: STUDENT_USER.id,
+    status: 'GRADED' as const,
+    grade,
+    feedback: feedback ?? null,
+    textAnswer: null,
+    fileUrl: null,
+    submittedAt: iso(-2),
+    gradedAt: iso(0),
+  };
+}
+
+/**
+ * GET /teacher/me/pending-submissions — PendingSubmissionRow[] (2 rows:
+ * one on-time, one LATE so the queue renders the «متأخر» chip and the
+ * grading modal's «تقييم التالي» has a live next target). The teacher
+ * spec serves it through a STATEFUL route so a landed grade drops its
+ * row — the static corpus cannot express that.
+ */
+export const PENDING_SUBMISSIONS = [
+  {
+    id: 'sub_e2e_1',
+    submittedAt: iso(-2),
+    status: 'SUBMITTED' as const,
+    textAnswer: 'برهان البنية الفرعية المثلى مع مثال على جدول الأنشطة.',
+    fileUrl: null,
+    student: { firstName: 'مروة', lastName: 'البراني', avatarInitials: 'مر', avatarColor: '#0ea5e9' },
+    assignment: {
+      title: 'واجب الأسبوع الثالث',
+      type: 'HOMEWORK' as const,
+      maxScore: 20,
+      dueAt: iso(24 * 2),
+      offering: { course: { code: 'CS-201', name: 'مقدمة في الخوارزميات' } },
+    },
+  },
+  {
+    id: 'sub_e2e_2',
+    submittedAt: iso(-26),
+    status: 'LATE' as const,
+    textAnswer: 'حلٌّ جزئي: العملية صحيحة لكن دون إثبات الاكتفاء بالاختيار المحلّي.',
+    fileUrl: null,
+    student: { firstName: 'سالم', lastName: 'قدّور', avatarInitials: 'سق', avatarColor: '#059669' },
+    assignment: {
+      title: 'واجب الأسبوع الثالث',
+      type: 'HOMEWORK' as const,
+      maxScore: 20,
+      dueAt: iso(24 * 2),
+      offering: { course: { code: 'CS-201', name: 'مقدمة في الخوارزميات' } },
+    },
+  },
+];
+
+/* ── admin courses + delete-dependency 409 (r165h) ─────────────── */
+
+/** GET /admin/courses?page=1&limit=20 — the enveloped, paginated roster. */
+export const ADMIN_COURSES = {
+  data: [
+    {
+      id: 'crs_e2e_algorithms',
+      code: 'CS-201',
+      name: 'مقدمة في الخوارزميات',
+      credits: 3,
+      themeColor: '#7c3aed',
+      faculty: 'كلية الهندسة',
+      facultyEmoji: '⚙️',
+      department: 'قسم علوم الحاسوب',
+      departmentId: 'dep_e2e_cs',
+      offeringCount: 2,
+      conceptCount: 14,
+      totalEnrollments: 64,
+      totalLectures: 12,
+      totalMaterials: 5,
+      recentOfferings: [
+        { id: OFFERING_ID, term: '2026S', enrollments: 24, lectures: 6, teacher: 'د. ليلى الفيتوري' },
+      ],
+    },
+    {
+      id: 'crs_e2e_ethics',
+      code: 'PHIL-101',
+      name: 'مدخل إلى الأخلاق',
+      credits: 2,
+      themeColor: null,
+      faculty: 'كلية الآداب',
+      facultyEmoji: null,
+      department: 'قسم الفلسفة',
+      departmentId: 'dep_e2e_phil',
+      offeringCount: 0,
+      conceptCount: 0,
+      totalEnrollments: 0,
+      totalLectures: 0,
+      totalMaterials: 0,
+      recentOfferings: [],
+    },
+  ],
+  meta: { page: 1, limit: 20, total: 2, totalPages: 1 },
+};
+
+/**
+ * DELETE /courses/:id on a course with live teaching offerings — the
+ * backend's verbatim Arabic 409 (courses.routes.ts AppError.conflict).
+ */
+export const COURSE_DELETE_CONFLICT = {
+  error: {
+    code: 'CONFLICT',
+    message: 'لا يمكن حذف المقرر: ما زالت له شُعب تدريسية مسجّلة',
+  },
+};
+
+/* ── quality exam moderation (r165h) ───────────────────────────── */
+
+/** GET /exams/moderation-queue — ModerationQueueItem[]. */
+export const MODERATION_QUEUE = [
+  {
+    id: 'tpl_e2e_quiz4',
+    title: 'اختبار قصير — الوحدة الرابعة',
+    kind: 'QUIZ' as const,
+    durationMin: 20,
+    createdAt: iso(-30),
+    offering: { course: { name: 'مقدمة في الخوارزميات' } },
+    author: { firstName: 'ليلى', lastName: 'الفيتوري' },
+    _count: { questions: 2 },
+  },
+  {
+    id: 'tpl_e2e_final_net',
+    title: 'اختبار نهائي — الشبكات',
+    kind: 'FINAL' as const,
+    durationMin: 90,
+    createdAt: iso(-70),
+    offering: null,
+    author: { firstName: 'منير', lastName: 'الزروق' },
+    _count: { questions: 1 },
+  },
+];
+
+/** GET /exams/templates/tpl_e2e_quiz4 — ExamTemplateDetail (2 questions). */
+export const MODERATION_TEMPLATE_QUIZ = {
+  id: 'tpl_e2e_quiz4',
+  title: 'اختبار قصير — الوحدة الرابعة',
+  description: null,
+  kind: 'QUIZ' as const,
+  status: 'PENDING_REVIEW' as const,
+  durationMin: 20,
+  passingScore: 60,
+  randomized: true,
+  moderationNote: null,
+  openAt: null,
+  closeAt: null,
+  offeringId: OFFERING_ID,
+  facultyId: null,
+  authorId: TEACHER_USER.id,
+  createdAt: iso(-30),
+  offering: { id: OFFERING_ID, teacherId: TEACHER_USER.id, course: { name: 'مقدمة في الخوارزميات', code: 'CS-201' } },
+  faculty: null,
+  author: { firstName: 'ليلى', lastName: 'الفيتوري' },
+  moderatedBy: null,
+  questions: [
+    {
+      id: 'tq_e2e_1',
+      order: 1,
+      pointsOverride: null,
+      question: {
+        id: 'qst_e2e_1',
+        type: 'MCQ' as const,
+        prompt: 'ما التعقيد الزمني للبحث الثنائي في أسوأ الحالات؟',
+        choices: ['O(log n)', 'O(n)', 'O(n log n)', 'O(1)'],
+        correctAnswer: 0,
+        difficulty: 'EASY' as const,
+        points: 2,
+        isApproved: true,
+        moderationNote: null,
+        tags: ['تحليل'],
+        category: { title: 'تحليل التعقيد' },
+      },
+    },
+    {
+      id: 'tq_e2e_2',
+      order: 2,
+      pointsOverride: 3,
+      question: {
+        id: 'qst_e2e_2',
+        type: 'SHORT' as const,
+        prompt: 'عرّف خاصية البنية الفرعية المثلى مع مثال.',
+        choices: null,
+        correctAnswer: 'كل حلٍّ أمثل يحتوي حلولاً مثلى لمسائله الفرعية — مثل أقصر مسار في Graph.',
+        difficulty: 'MEDIUM' as const,
+        points: 2,
+        isApproved: false,
+        moderationNote: 'الصياغة تحتاج مثالاً أدقّ.',
+        tags: [],
+        category: null,
+      },
+    },
+  ],
+  _count: { attempts: 0 },
+};
+
+/** GET /exams/templates/tpl_e2e_final_net — ExamTemplateDetail (1 question). */
+export const MODERATION_TEMPLATE_FINAL = {
+  id: 'tpl_e2e_final_net',
+  title: 'اختبار نهائي — الشبكات',
+  description: 'نطاق الوحدات الخمس الأولى.',
+  kind: 'FINAL' as const,
+  status: 'PENDING_REVIEW' as const,
+  durationMin: 90,
+  passingScore: 50,
+  randomized: false,
+  moderationNote: null,
+  openAt: null,
+  closeAt: null,
+  offeringId: null,
+  facultyId: null,
+  authorId: 'usr_e2e_munir',
+  createdAt: iso(-70),
+  offering: null,
+  faculty: { name: 'كلية الهندسة' },
+  author: { firstName: 'منير', lastName: 'الزروق' },
+  moderatedBy: null,
+  questions: [
+    {
+      id: 'tq_e2e_3',
+      order: 1,
+      pointsOverride: null,
+      question: {
+        id: 'qst_e2e_3',
+        type: 'TRUE_FALSE' as const,
+        prompt: 'بروتوكول TCP يضمن تسليم الحزم بترتيب إرسالها.',
+        choices: ['صح', 'خطأ'],
+        correctAnswer: 0,
+        difficulty: 'EASY' as const,
+        points: 1,
+        isApproved: true,
+        moderationNote: null,
+        tags: [],
+        category: { title: 'أساسيات الشبكات' },
+      },
+    },
+  ],
+  _count: { attempts: 0 },
+};
+
+/** The templates the moderation preview serves, keyed by id. */
+export const MODERATION_TEMPLATES: Record<string, unknown> = {
+  tpl_e2e_quiz4: MODERATION_TEMPLATE_QUIZ,
+  tpl_e2e_final_net: MODERATION_TEMPLATE_FINAL,
+};
+
+/* ── library borrow/return loop (r165h) ────────────────────────── */
+
+/** GET /library/books — Book[] (one single-copy book so availability
+ *  flips visibly on borrow/return; one multi-copy book). */
+export const LIBRARY_BOOKS = [
+  {
+    id: 'bok_e2e_c',
+    title: 'البرمجة بلغة C',
+    author: 'د. عبد الرحمن الشريف',
+    category: 'prog',
+    iconEmoji: null,
+    themeColor: '#7c3aed',
+    rating: '4.6',
+    totalCopies: 1,
+    availableCopies: 1,
+  },
+  {
+    id: 'bok_e2e_networks',
+    title: 'شبكات الحاسوب: النظرية والتطبيق',
+    author: 'د. هدى بن عامر',
+    category: 'net',
+    iconEmoji: null,
+    themeColor: '#0ea5e9',
+    rating: '4.2',
+    totalCopies: 3,
+    availableCopies: 3,
+  },
+];
+
+/** GET /research/published — one published student paper. */
+export const LIBRARY_RESEARCH = [
+  {
+    id: 'ppr_e2e_1',
+    title: 'تحليل أداء الخوارزميات الجشعة في الجدولة',
+    abstract: 'دراسة مقارنة لزمن التنفيذ على بيانات مرتّبة وعشوائية.',
+    fileUrl: null,
+    status: 'PUBLISHED' as const,
+    plagiarismPct: 3,
+    aiContentPct: 2,
+    grade: 18,
+    feedback: 'بحث متقن.',
+    uploadedAt: iso(-24 * 40),
+    scannedAt: iso(-24 * 39),
+    gradedAt: iso(-24 * 30),
+    publishedAt: iso(-24 * 28),
+    student: { id: 'usr_e2e_student', firstName: 'أحمد', lastName: 'الزاوي', avatarInitials: 'أز', avatarColor: '#3b82f6' },
+    reviewer: { id: TEACHER_USER.id, firstName: 'ليلى', lastName: 'الفيتوري' },
+    offering: { id: OFFERING_ID, course: { name: 'مقدمة في الخوارزميات', code: 'CS-201' } },
+  },
+];
+
+/** A fresh loan row as POST /library/loans answers it (no `book` on
+ *  the wire — the page refetches GET /me/loans after invalidation). */
+export function loanRow(bookId: string, status: 'ACTIVE' | 'RETURNED', borrowedHoursAgo: number): Record<string, unknown> {
+  return {
+    id: `loan_e2e_${bookId}`,
+    bookId,
+    status,
+    borrowedAt: iso(-borrowedHoursAgo),
+    dueAt: iso(24 * 14 - borrowedHoursAgo),
+    returnedAt: status === 'RETURNED' ? iso(0) : null,
+  };
+}
+
+/* ── checkpoint lecture (r165h) ────────────────────────────────── */
+
+export const CHECKPOINT_LECTURE_ID = 'lec_e2e_interact';
+
+/**
+ * GET /lectures/lec_e2e_interact — a lecture whose single checkpoint
+ * triggers at second 0: the player's checkpoint effect (currentSec ≥
+ * triggerSec, evaluated the moment the payload lands) opens the quiz
+ * deterministically without playback — the 1-second test clip can never
+ * reach a later trigger. watchEvents are EMPTY (nothing completed, no
+ * resume-seek) so the modal is the page's first meaningful event.
+ */
+export const CHECKPOINT_LECTURE = {
+  id: CHECKPOINT_LECTURE_ID,
+  offeringId: OFFERING_ID,
+  title: 'تمارين تفاعلية على الجشع',
+  description: 'أسئلة توقّف أثناء المشاهدة ترسّخ خاصية الاختيار الجشع.',
+  ordinal: 3,
+  durationSec: 720,
+  videoUrl: '/api/v1/media/lecture-interact.mp4',
+  posterUrl: null,
+  createdAt: iso(-24 * 7),
+  _count: { chapters: 2, checkpoints: 1 },
+  watchEvents: [],
+  chapters: [
+    { id: 'chp_e2e_i1', title: 'مراجعة الخاصية', startSec: 0, endSec: 240, ordinal: 1, conceptId: null, concept: null },
+    { id: 'chp_e2e_i2', title: 'تمارين محلولة', startSec: 240, endSec: 720, ordinal: 2, conceptId: null, concept: null },
+  ],
+  checkpoints: [
+    {
+      id: 'ckp_e2e_i1',
+      triggerSec: 0,
+      question: 'أيّ شرط يضمن أن الاختيار المحلّي الأمثل يقود إلى حلٍّ عامٍّ أمثل؟',
+      options: [
+        'خاصية الاختيار الجشع والبنية الفرعية المثلى معًا',
+        'ترتيب المدخلات تصاعديًا',
+        'صغر حجم المسألة',
+        'لا يوجد شرط — يعمل دائمًا',
+      ],
+      conceptId: null,
+      answers: [],
+    },
+  ],
+  offering: {
+    id: OFFERING_ID,
+    course: { id: 'crs_e2e_algorithms', name: 'مقدمة في الخوارزميات', code: 'CS-201', themeColor: '#7c3aed' },
+    teacher: { id: TEACHER_USER.id, firstName: 'ليلى', lastName: 'الفيتوري' },
+  },
+};
+
+/** The lectures list including the checkpoint lecture (siblings/nav). */
+export const OFFERING_LECTURES_WITH_CHECKPOINT = [
+  ...OFFERING_LECTURES,
+  {
+    id: CHECKPOINT_LECTURE_ID,
+    offeringId: OFFERING_ID,
+    title: 'تمارين تفاعلية على الجشع',
+    description: 'أسئلة توقّف أثناء المشاهدة ترسّخ خاصية الاختيار الجشع.',
+    ordinal: 3,
+    durationSec: 720,
+    videoUrl: '/api/v1/media/lecture-interact.mp4',
+    posterUrl: null,
+    createdAt: iso(-24 * 7),
+    _count: { chapters: 2, checkpoints: 1 },
+    watchEvents: [],
+  },
+];
+
