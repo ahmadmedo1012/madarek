@@ -33,10 +33,11 @@ import {
   lectureHitHref,
   sanitizeSearchQuery,
   searchHit,
+  trackHitHref,
 } from '../../src/http/routes/search.routes';
 import { normalizeArabicSearch } from '../../src/modules/search/normalize';
 
-describe('search hit hrefs (r155c course matrix + r156 lecture suppression)', () => {
+describe('search hit hrefs (r155c course matrix + r156 lecture suppression + r165e track suppression)', () => {
   it('courseHitHref — every role lands on a surface it can open (no /admin/courses dead clicks)', () => {
     expect(courseHitHref(Role.TEACHER, 'off_1')).toBe('/teacher/intelligence/off_1');
     expect(courseHitHref(Role.STUDENT, 'off_1')).toBe('/student/courses/off_1');
@@ -56,6 +57,19 @@ describe('search hit hrefs (r155c course matrix + r156 lecture suppression)', ()
     expect(lectureHitHref(Role.ADMIN, 'lec_1', 'off_1')).toBeNull();
     expect(lectureHitHref(Role.QUALITY, 'lec_1', 'off_1')).toBeNull();
     expect(lectureHitHref(Role.OWNER, 'lec_1', 'off_1')).toBeNull();
+  });
+
+  it('trackHitHref — STUDENT opens the track page', () => {
+    expect(trackHitHref(Role.STUDENT, 'network-fundamentals')).toBe('/training/network-fundamentals');
+  });
+
+  it('trackHitHref — TEACHER/ADMIN/QUALITY/OWNER get null (the hit is suppressed, not bounced)', () => {
+    // /training/:slug is STUDENT-only in App.tsx — emitting the old
+    // unconditional href for every role was a guaranteed silent bounce.
+    expect(trackHitHref(Role.TEACHER, 'network-fundamentals')).toBeNull();
+    expect(trackHitHref(Role.ADMIN, 'network-fundamentals')).toBeNull();
+    expect(trackHitHref(Role.QUALITY, 'network-fundamentals')).toBeNull();
+    expect(trackHitHref(Role.OWNER, 'network-fundamentals')).toBeNull();
   });
 });
 

@@ -75,6 +75,28 @@ export function lectureHitHref(
 }
 
 /**
+ * r165e — training-track hit destination for the searching role, or null
+ * when the role has no track surface to open (the hit is then suppressed —
+ * the lectureHitHref convention from r156, itself the file-less-paper
+ * convention from r155c: a dropdown row IS a link, so roles with no
+ * destination see no row). The training area /training/:slug sits in the
+ * STUDENT-only allow block of App.tsx and no teacher/oversight track
+ * surface exists, so the old unconditional href sent
+ * TEACHER/ADMIN/QUALITY/OWNER clicks into the guard's silent bounce
+ * (AppShell's ProtectedRoute Navigate-replaces them to their dashboard
+ * with no feedback).
+ */
+export function trackHitHref(role: Role, slug: string): string | null {
+  switch (role) {
+    case 'STUDENT': return `/training/${slug}`;
+    case 'TEACHER':
+    case 'ADMIN':
+    case 'QUALITY':
+    case 'OWNER': return null;
+  }
+}
+
+/**
  * GET /search/global?q=...
  *
  * Cross-cutting search across courses, lectures, research papers, and training tracks.
@@ -260,15 +282,21 @@ router.get('/search/global', async (req, res, next) => {
           // panel. fileUrl is non-null by the where filter above.
           href: `/document/${encodeURIComponent(p.fileUrl!.split('/').pop() ?? '')}?paper=${encodeURIComponent(p.id)}`,
         })),
-        tracks: tracks.map((t) => ({
-          id: t.id,
-          slug: t.slug,
-          title: t.title,
-          subtitle: t.summary.slice(0, 80),
-          iconEmoji: t.iconEmoji,
-          themeColor: t.themeColor,
-          href: `/training/${t.slug}`,
-        })),
+        tracks: tracks
+          // r165e: suppress track hits for roles with no openable
+          // training surface (trackHitHref above) — never emit a row
+          // whose click the route guard will silently bounce.
+          .map((t) => ({ t, href: trackHitHref(role, t.slug) }))
+          .filter((x): x is { t: (typeof tracks)[number]; href: string } => x.href !== null)
+          .map(({ t, href }) => ({
+            id: t.id,
+            slug: t.slug,
+            title: t.title,
+            subtitle: t.summary.slice(0, 80),
+            iconEmoji: t.iconEmoji,
+            themeColor: t.themeColor,
+            href,
+          })),
       },
     });
   } catch (e) { next(e); }
