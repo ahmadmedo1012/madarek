@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { DifficultyLevel, ExamKind, QuestionType, AttemptStatus, Prisma, Role } from '@prisma/client';
+import { DifficultyLevel, ExamKind, QuestionType, AttemptStatus, NotificationType, Prisma, Role } from '@prisma/client';
 import type { ExamAttempt, ExamAnswer } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -1034,7 +1034,16 @@ router.post('/exams/attempts/:id/submit', requireRole(Role.STUDENT), async (req,
     });
     if (!attempt) throw AppError.notFound('المحاولة غير موجودة');
     if (attempt.studentId !== req.user!.id) throw AppError.forbidden();
-    if (attempt.status !== 'IN_PROGRESS') throw AppError.conflict('تم تسليم هذه المحاولة مسبقاً');
+    if (attempt.status !== 'IN_PROGRESS') {
+      // r165c: an EXPIRED row (flipped by the expiry sweep or a lost
+      // late-submit race) was never submitted — the blanket
+      // «already submitted» copy lied to the student about a verdict
+      // that will never exist. Terminal copy = the expiry path's.
+      if (attempt.status === AttemptStatus.EXPIRED) {
+        throw AppError.forbidden('انتهى وقت هذه المحاولة');
+      }
+      throw AppError.conflict('تم تسليم هذه المحاولة مسبقاً');
+    }
 
     // Expiry: submissions are accepted up to 60s past expiresAt (network
     // latency grace). Beyond that the attempt is hard-closed as EXPIRED
@@ -1602,6 +1611,26 @@ router.post(
             },
           });
         }
+        // r165c: the finalized verdict must actually REACH the student.
+        // The student's attempt card says «بانتظار التصحيح اليدوي … ستتمكّن
+        // من مراجعة أسئلتك بعد اكتمال التصحيح» and nothing signaled
+        // completion — the GRADED flip is invisible unless the student
+        // happens to revisit after the cache window. Assignment grading
+        // already notifies inside the grade transaction
+        // (submissions.routes.ts «تم تصحيح تكليفك»); exam manual grading
+        // now does the same, atomically with the GRADED write.
+        await tx.notification.create({
+          data: {
+            userId: attempt.studentId,
+            type: NotificationType.ACADEMIC,
+            icon: '📝',
+            title: 'تم تصحيح اختبارك',
+            body: `حصلت على ${totalAwarded} من ${Number(attempt.maxScore)} في «${attempt.template.title}»`,
+            // The student's real exam-verdict surface (registered in
+            // frontend/src/App.tsx next to its :id detail route).
+            link: '/student/online-exams',
+          },
+        });
         return tx.examAttempt.findUnique({ where: { id: attempt.id } });
       });
 
