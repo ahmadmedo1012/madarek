@@ -311,7 +311,7 @@ There is **no** `POST /posts/:id/comment` route — comments are read via the po
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| GET | `/search/global?q=` | Bearer | Cross-entity autocomplete (courses, lectures, papers, tracks — Arabic-normalized, parallel queries, deterministic ordering). Every hit carries a role-openable `href`: course → `/teacher/intelligence/:offeringId` (TEACHER) / `/student/courses/:offeringId` (STUDENT) / `/admin/courses` (ADMIN) / `/quality/courses` (QUALITY) / `/owner/education` (OWNER); paper → `/document/<fileUrl basename>?paper=<paperId>` (papers without a `fileUrl` are not returned); lecture → `/student/lectures/:id` (STUDENT) or `/teacher/intelligence/:offeringId` (TEACHER) — ADMIN/QUALITY/OWNER get no lecture hits (r156: no openable lecture surface, suppressed like file-less papers); track → `/training/:slug` |
+| GET | `/search/global?q=` | Bearer | Cross-entity autocomplete (courses, lectures, papers, tracks — Arabic-normalized, parallel queries, deterministic ordering). Every hit carries a role-openable `href`: course → `/teacher/intelligence/:offeringId` (TEACHER) / `/student/courses/:offeringId` (STUDENT) / `/admin/courses` (ADMIN) / `/quality/courses` (QUALITY) / `/owner/education` (OWNER); paper → `/document/<fileUrl basename>?paper=<paperId>` (papers without a `fileUrl` are not returned); lecture → `/student/lectures/:id` (STUDENT) or `/teacher/intelligence/:offeringId` (TEACHER) — ADMIN/QUALITY/OWNER get no lecture hits (r156: no openable lecture surface, suppressed like file-less papers); track → `/training/:slug` (STUDENT only — r165e: ADMIN/QUALITY/OWNER/TEACHER get no track hits, same no-dead-rows contract as lectures) |
 
 ## Sync / University Facts
 
