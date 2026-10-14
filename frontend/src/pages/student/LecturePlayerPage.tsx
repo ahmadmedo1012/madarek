@@ -2,13 +2,14 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
-  CheckCircle2, ChevronLeft, ChevronRight, ListOrdered, ListVideo, Play, Sparkles, XCircle,
+  CheckCircle2, ChevronLeft, ChevronRight, ListOrdered, ListVideo, Play, Sparkles, XCircle, AlertCircle,
 } from 'lucide-react';
 import { Badge, Card } from '../../components/primitives';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import { VideoPlayerChrome } from '../../components/player/VideoPlayerChrome';
+import { OfferingMaterialsCard } from '../../components/player/OfferingMaterialsCard';
 import { useLecture, useOfferingLectures, useReportWatch, useAnswerCheckpoint, type LectureCheckpoint } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 import { apiBaseURL } from '../../lib/api';
@@ -348,6 +349,27 @@ export default function LecturePlayerPage() {
     void videoRef.current?.play();
   };
 
+  /* r164d (course flow): explicit checkpoint return — from the pending
+   * banner below. The session skip guard exists to stop AUTO re-fire
+   * while the playhead sits past a declined trigger; an explicit
+   * request un-skips that one checkpoint, seeks to its trigger and
+   * opens it (the same state transition the time-based effect makes,
+   * minus the auto-pause race: we pause BEFORE seeking). */
+  const openCheckpoint = (cp: LectureCheckpoint) => {
+    setSkippedCheckpointIds((prev) => {
+      if (!prev.has(cp.id)) return prev;
+      const next = new Set(prev);
+      next.delete(cp.id);
+      return next;
+    });
+    videoRef.current?.pause();
+    if (videoRef.current) videoRef.current.currentTime = Math.max(0, cp.triggerSec);
+    setActiveCheckpoint(cp);
+    setPickedIndex(null);
+    setRevealResult(null);
+    setAnswerError(false);
+  };
+
   // Watch progress — live position (throttled to 1 render/sec below)
   // floored by the server-saved maximum; a resumed lecture also seeks
   // the <video> itself to the saved position on first metadata load
@@ -361,6 +383,14 @@ export default function LecturePlayerPage() {
   const checkpointsTotal = data.checkpoints.length;
   const checkpointsAnswered = answeredCheckpointIds.size;
   const allCheckpointsAnswered = checkpointsTotal > 0 && checkpointsAnswered === checkpointsTotal;
+  /* r164d (course flow): the completion dead-end fix — a lecture whose
+   * watch is complete but whose checkpoints are still open used to end
+   * at a wall («مكتملة» + a pulsing next button) with the quiz
+   * unreachable without blind scrubbing. The banner re-opens the FIRST
+   * unanswered checkpoint on demand (checkpoints arrive sorted by
+   * triggerSec server-side). */
+  const firstUnansweredCheckpoint = data.checkpoints.find((c) => !answeredCheckpointIds.has(c.id));
+  const showPendingCheckpointsBanner = completed && checkpointsTotal > checkpointsAnswered;
 
   /* ── Prev / next lecture bar (PP-X2, audit P1-7) ─────────────────
    * The watch loop's missing link: ending a lecture used to be a dead
@@ -531,6 +561,45 @@ export default function LecturePlayerPage() {
             )}
           </div>
 
+          {/* r164d (course flow): checkpoint continuity — after the watch
+              completes, the open checkpoints become the dominant unfinished
+              loop of THIS lecture (r155a attempt caps keep them an open
+              loop, never an infinite one). The banner re-opens the FIRST
+              unanswered checkpoint on demand (checkpoints arrive sorted by
+              triggerSec server-side). Token-styled inline banner — the
+              SubmitAssignmentModal done-banner grammar, no new CSS
+              classes this wave. */}
+          {showPendingCheckpointsBanner && firstUnansweredCheckpoint && (
+            <div
+              role="status"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: 'var(--sp-2)',
+                padding: 'var(--sp-3) var(--sp-4)',
+                borderRadius: 'var(--r-md)',
+                background: 'var(--warning-soft)',
+                color: 'var(--warning-ink)',
+                fontSize: 'var(--type-label-size)',
+              }}
+            >
+              <span>
+                أنهيت المشاهدة — تبقى {countAr(checkpointsTotal - checkpointsAnswered,
+                  ['نقطة تفاعل واحدة لم تُجب', 'نقطتا تفاعل لم تُجبا', 'نقاط تفاعل لم تُجب', 'نقطة تفاعل لم تُجب'])}.
+              </span>
+              <button
+                type="button"
+                className="btn primary sm"
+                onClick={() => openCheckpoint(firstUnansweredCheckpoint)}
+              >
+                <Icon icon={AlertCircle} size={13} />
+                إلى نقطة التفاعل التالية
+              </button>
+            </div>
+          )}
+
           {/* Prev / next (PP-X2 / audit P1-7) — the watch loop's exit ramp.
               prev rides the RTL back-chevron (ChevronRight), next the
               forward one (ChevronLeft); on end, next pulses once. */}
@@ -615,6 +684,11 @@ export default function LecturePlayerPage() {
             </div>
           )}
         </Card>
+
+        {/* r164d (course flow): the offering's materials, one scroll
+            away from the video (reads the course page's cached /full
+            payload — see the component header). */}
+        <OfferingMaterialsCard offeringId={data.offering.id} />
       </div>
 
       {/* Checkpoint overlay — uses the shared Modal primitive so it

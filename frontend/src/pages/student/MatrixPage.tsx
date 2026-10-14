@@ -94,6 +94,22 @@ export default function MatrixPage() {
   const gaps = useGaps();
   const [filter, setFilter] = useState<LevelFilter>('all');
 
+  /* r164d (course flow): concept → recommended lecture, built from the
+   * SAME gaps payload the gap rows read — the heatmap's weak/poor
+   * cells (the actual mastery gaps) become direct links to the lecture
+   * that teaches the concept, instead of dead tiles the student could
+   * see but never act on. Concepts without a recommendation (untested,
+   * or unmapped to a chapter) stay honest non-links. */
+  const gapLectureByConcept = new Map<string, { lectureId: string; lectureTitle: string | null }>();
+  for (const g of gaps.data ?? []) {
+    if (g.recommendedLectureId) {
+      gapLectureByConcept.set(g.conceptId, {
+        lectureId: g.recommendedLectureId,
+        lectureTitle: g.recommendedLectureTitle,
+      });
+    }
+  }
+
   // Real per-level counts across every course (drives the filter pills).
   const levelCounts: Record<MasteryClass, number> = {
     'lvl-strong': 0, 'lvl-good': 0, 'lvl-weak': 0, 'lvl-poor': 0, 'lvl-untouched': 0,
@@ -280,12 +296,9 @@ export default function MatrixPage() {
                   {c.concepts.map((k) => {
                     const cls = levelClass(k.level, k.attempts);
                     const dimmed = filter !== 'all' && cls !== filter;
-                    return (
-                      <div
-                        className={`matrix-cell ${cls}${dimmed ? ' is-dim' : ''}`}
-                        key={k.id}
-                        title={`${k.name} — ${levelLabel(k.level, k.attempts)}${k.attempts > 0 ? ` (${Math.round(k.level * 100)}%)` : ''}`}
-                      >
+                    const titleBase = `${k.name} — ${levelLabel(k.level, k.attempts)}${k.attempts > 0 ? ` (${Math.round(k.level * 100)}%)` : ''}`;
+                    const body = (
+                      <>
                         <div className="matrix-name">{k.name}</div>
                         <div className="matrix-meta">
                           <span>{levelLabel(k.level, k.attempts)}</span>
@@ -293,6 +306,34 @@ export default function MatrixPage() {
                             {k.attempts > 0 ? `${Math.round(k.level * 100)}%` : '—'}
                           </span>
                         </div>
+                      </>
+                    );
+                    /* r164d: only the GAP levels link (weak/poor — the
+                     * same «سدّ الفجوة» contract the rows above carry);
+                     * strong/good/untouched tiles stay informational. */
+                    const remediation = cls === 'lvl-weak' || cls === 'lvl-poor'
+                      ? gapLectureByConcept.get(k.id)
+                      : undefined;
+                    if (remediation) {
+                      return (
+                        <Link
+                          to={`/student/lectures/${remediation.lectureId}`}
+                          className={`matrix-cell ${cls}${dimmed ? ' is-dim' : ''}`}
+                          style={{ cursor: 'pointer' }}
+                          title={`${titleBase} — راجع في: ${remediation.lectureTitle ?? 'المحاضرة الموصى بها'}`}
+                          key={k.id}
+                        >
+                          {body}
+                        </Link>
+                      );
+                    }
+                    return (
+                      <div
+                        className={`matrix-cell ${cls}${dimmed ? ' is-dim' : ''}`}
+                        key={k.id}
+                        title={titleBase}
+                      >
+                        {body}
                       </div>
                     );
                   })}

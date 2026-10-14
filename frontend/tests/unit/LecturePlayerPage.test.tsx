@@ -19,6 +19,7 @@ import LecturePlayerPage, { isWatchComplete, resumeSeekSec } from '../../src/pag
 const mocks = vi.hoisted(() => ({
   lecture: null as Record<string, unknown> | null,
   lectures: null as Array<Record<string, unknown>> | null,
+  offeringFull: null as Record<string, unknown> | null,
   reportWatch: vi.fn(),
   answerCheckpoint: vi.fn(),
 }));
@@ -47,6 +48,16 @@ vi.mock('../../src/hooks/useResources', () => ({
   }),
   useReportWatch: () => ({ mutate: mocks.reportWatch }),
   useAnswerCheckpoint: () => ({ mutateAsync: mocks.answerCheckpoint }),
+  /* r164d: the player sidebar's materials card reads the offering's
+     /full payload (the same key CourseDetailPage seeds). Default null
+     → isPending → the card renders nothing (its fail-soft contract). */
+  useOfferingFull: () => ({
+    data: mocks.offeringFull,
+    isPending: !mocks.offeringFull,
+    isError: false,
+    error: null,
+    refetch: vi.fn(),
+  }),
 }));
 
 const baseLecture = {
@@ -585,5 +596,183 @@ describe('r157 — checkpoint answer memory (seed) + honest skip', () => {
     // playhead; the next session seeds from the server row).
     seekTo(video, 160);
     expect(screen.queryByRole('dialog')).toBeNull();
+  });
+});
+
+/* ── r164d (course flow): materials within reach + checkpoint loop ──
+ * Two continuity fixes, pinned:
+ *  1. The player sidebar carries the offering's materials (the same
+ *     /full payload the course page reads) with honest materialHref
+ *     targets — the handouts used to be two navigations away.
+ *  2. A lecture whose watch is COMPLETE but whose checkpoints are open
+ *     ends at a banner (not a wall): «إلى نقطة التفاعل التالية» seeks
+ *     to the first unanswered checkpoint and re-opens it — including
+ *     un-skipping one suppressed this session. */
+describe('r164d — materials card in the player sidebar', () => {
+  beforeEach(() => {
+    mocks.reportWatch.mockClear();
+    mocks.lectures = null;
+    mocks.offeringFull = null;
+  });
+  afterEach(() => {
+    mocks.offeringFull = null;
+  });
+
+  it('renders nothing while the offering payload is pending (fail-soft)', () => {
+    mocks.lecture = { ...baseLecture };
+    renderPlayer();
+    expect(screen.queryByText('مواد المقرّر')).toBeNull();
+  });
+
+  it('lists the materials with honest targets: viewer / external / unavailable', () => {
+    mocks.lecture = { ...baseLecture };
+    mocks.offeringFull = {
+      id: 'off1',
+      materials: [
+        {
+          id: 'm1', name: 'ملخص المحاضرة', type: 'PDF',
+          url: '/api/v1/files/materials/summary.pdf',
+          sizeBytes: '1024', createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        {
+          id: 'm2', name: 'مرجع خارجي', type: 'DOC',
+          url: 'https://docs.example.com/ref.pdf',
+          sizeBytes: '2048', createdAt: '2026-01-01T00:00:00.000Z',
+        },
+        {
+          id: 'm3', name: 'بذرة قديمة', type: 'PPT',
+          url: 'https://seed.example.invalid/deck.pptx',
+          sizeBytes: '4096', createdAt: '2026-01-01T00:00:00.000Z',
+        },
+      ],
+    };
+    renderPlayer();
+
+    expect(screen.getByText('مواد المقرّر')).toBeInTheDocument();
+    const viewer = screen.getByRole('link', { name: /ملخص المحاضرة/ });
+    expect(viewer.getAttribute('href')).toContain('/document/summary.pdf');
+    expect(viewer.getAttribute('href')).toContain('ns=materials');
+    const external = screen.getByRole('link', { name: /مرجع خارجي/ });
+    expect(external).toHaveAttribute('target', '_blank');
+    expect(screen.queryByRole('link', { name: /بذرة قديمة/ })).toBeNull();
+    expect(screen.getByText('غير متوفر بعد')).toBeInTheDocument();
+  });
+
+  it('an offering with zero materials renders no card', () => {
+    mocks.lecture = { ...baseLecture };
+    mocks.offeringFull = { id: 'off1', materials: [] };
+    renderPlayer();
+    expect(screen.queryByText('مواد المقرّر')).toBeNull();
+  });
+});
+
+describe('r164d — completed watch, open checkpoints: the banner (not a wall)', () => {
+  beforeEach(() => {
+    mocks.reportWatch.mockClear();
+    mocks.answerCheckpoint.mockReset();
+    mocks.answerCheckpoint.mockResolvedValue({ correct: true, correctIndex: 0, explanation: 'شرح' });
+    mocks.lectures = null;
+    mocks.offeringFull = null;
+  });
+  afterEach(() => {
+    mocks.offeringFull = null;
+  });
+
+  const completedTwoCheckpointLecture = (answeredIds: string[]) => ({
+    ...baseLecture,
+    watchEvents: [{ watchedSec: 600, totalSec: 600, completed: true }],
+    checkpoints: [
+      {
+        id: 'cp1', triggerSec: 100, question: 'السؤال الأول',
+        options: ['أ', 'ب'], conceptId: null,
+        answers: answeredIds.includes('cp1') ? [{ checkpointId: 'cp1' }] : [],
+      },
+      {
+        id: 'cp2', triggerSec: 200, question: 'السؤال الثاني',
+        options: ['أ', 'ب'], conceptId: null,
+        answers: answeredIds.includes('cp2') ? [{ checkpointId: 'cp2' }] : [],
+      },
+    ],
+  });
+
+  it('no banner while the watch is incomplete (checkpoints re-fire naturally during playback)', () => {
+    mocks.lecture = {
+      ...baseLecture,
+      watchEvents: [],
+      checkpoints: [
+        { id: 'cp1', triggerSec: 100, question: 'السؤال الأول', options: ['أ', 'ب'], conceptId: null, answers: [] },
+      ],
+    };
+    renderPlayer();
+    expect(screen.queryByText(/أنهيت المشاهدة/)).toBeNull();
+  });
+
+  it('no banner when the watch is complete AND all checkpoints answered', () => {
+    mocks.lecture = completedTwoCheckpointLecture(['cp1', 'cp2']);
+    renderPlayer();
+    expect(screen.queryByText(/أنهيت المشاهدة/)).toBeNull();
+    expect(screen.getByText(/أُجيب عن 2 من/)).toBeInTheDocument();
+  });
+
+  it('banner appears on completed-watch with open checkpoints; the button re-opens the FIRST unanswered one', () => {
+    mocks.lecture = completedTwoCheckpointLecture(['cp1']);
+    renderPlayer();
+
+    const banner = screen.getByText(/أنهيت المشاهدة/);
+    expect(banner).toHaveTextContent(/تبقى/);
+    expect(screen.getByText(/أُجيب عن 1 من/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /إلى نقطة التفاعل التالية/ }));
+
+    // cp1 is answered — cp2 (the FIRST unanswered, trigger-sorted) opens.
+    expect(screen.getByRole('dialog', { name: 'نقطة تفاعل: السؤال الثاني' })).toBeInTheDocument();
+  });
+
+  it('the banner un-skips a checkpoint suppressed this session and re-opens it', () => {
+    mocks.lecture = completedTwoCheckpointLecture([]);
+    renderPlayer();
+    const video = getVideo();
+
+    // cp1 fires during playback; the student skips it (session-local).
+    const seekTo = (v: HTMLVideoElement, sec: number) => {
+      Object.defineProperty(v, 'currentTime', { value: sec, configurable: true, writable: true });
+      fireEvent(v, new Event('timeupdate'));
+    };
+    seekTo(video, 150);
+    fireEvent.click(screen.getByRole('button', { name: 'تخطّي' }));
+    const finishModalExit = () => {
+      const overlay = document.querySelector('.modal-overlay');
+      if (!overlay) return;
+      const e = new Event('animationend', { bubbles: true });
+      Object.defineProperty(e, 'animationName', { value: 'madarek-overlay-out' });
+      act(() => {
+        overlay.dispatchEvent(e);
+      });
+    };
+    finishModalExit();
+    expect(screen.queryByRole('dialog')).toBeNull();
+
+    // Watch completes → the banner is the way back to the skipped loop.
+    const banner = screen.getByText(/أنهيت المشاهدة/);
+    expect(banner).toHaveTextContent(/نقطتا تفاعل لم تُجبا/);
+    fireEvent.click(screen.getByRole('button', { name: /إلى نقطة التفاعل التالية/ }));
+    expect(screen.getByRole('dialog', { name: 'نقطة تفاعل: السؤال الأول' })).toBeInTheDocument();
+  });
+
+  it('the seek targets the checkpoint trigger (the modal and the playhead agree)', () => {
+    mocks.lecture = completedTwoCheckpointLecture(['cp1']);
+    renderPlayer();
+    const video = getVideo();
+    const seeks: number[] = [];
+    Object.defineProperty(video, 'currentTime', {
+      get: () => 0,
+      set: (v: number) => seeks.push(v),
+      configurable: true,
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /إلى نقطة التفاعل التالية/ }));
+
+    expect(seeks).toEqual([200]);
+    expect(screen.getByRole('dialog', { name: 'نقطة تفاعل: السؤال الثاني' })).toBeInTheDocument();
   });
 });

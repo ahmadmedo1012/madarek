@@ -2,14 +2,15 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   Play, FileText, ClipboardList, Calendar, Users,
-  Clock, CheckCircle2, ChevronRight, Presentation, Video, FileArchive, Image,
+  Clock, CheckCircle2, ChevronLeft, ChevronRight, Presentation, Video, FileArchive, Image,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, ProgressBar, MetricCard } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton, KpiSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Reveal, RevealGroup, useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
-import { useOfferingFull } from '../../hooks/useResources';
+import { useOfferingFull, selectNextLecture, pendingCheckpoints } from '../../hooks/useResources';
+import { materialHref } from '../../lib/materialHref';
 import { countAr, formatDateAr, WEEKDAY_NAMES_AR } from '../../lib/format';
 import { courseIcon, courseTint, ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, type AssignmentKind, type MaterialType } from '../../lib/courseMeta';
 
@@ -128,12 +129,14 @@ export default function CourseDetailPage() {
   // exclusively as color-mix washes over var(--surface) with --text ink.
   const tint = courseTint(data.course.themeColor);
 
-  /* PP-X2 (audit P1-7b): the first uncompleted lecture is the "continue
-   * here" row — the same affordance grammar the training track list
-   * uses (.lesson-row.next): accent wash + inline-start edge + a named
-   * badge, so a returning student sees WHERE to resume without reading
-   * every row. -1 when the whole curriculum is complete. */
-  const nextLecIdx = data.lectures.findIndex((l) => !l.watchEvents?.[0]?.completed);
+  /* r164d (course flow): the FIRST unfinished lecture — watch open OR
+   * checkpoints pending (r155a caps attempts, an unanswered checkpoint
+   * stays an open loop). Pure selection lives in hooks/resources/
+   * learning.ts; the same object reference rides both the hero «التالي»
+   * CTA and the highlighted row below (indexOf by identity). */
+  const nextLec = selectNextLecture(data.lectures);
+  const nextLecIdx = nextLec ? data.lectures.indexOf(nextLec) : -1;
+  const nextPending = nextLec ? pendingCheckpoints(nextLec) : 0;
 
   return (
     <div className="page course-page" style={{ '--course-tint': tint } as CSSProperties}>
@@ -173,6 +176,36 @@ export default function CourseDetailPage() {
             <div className="course-hero-progress-note">
               {countAr(watchedCount, ['محاضرة مكتملة', 'محاضرتان مكتملتان', 'محاضرات مكتملة', 'محاضرة مكتملة'])} من {data.lectures.length}
             </div>
+            {/* r164d (course flow): THE primary «التالي» CTA — the
+                Coursera/edX course-home rule: one unmistakable continue
+                entry at the top, not a scan of the rows below. Jumps
+                straight to the first unfinished lecture; when nothing
+                is left, the honest done state replaces the button (no
+                dead CTA). */}
+            {nextLec ? (
+              <>
+                <Link to={`/student/lectures/${nextLec.id}`} className="btn primary" title={nextLec.title}>
+                  <Icon icon={Play} size={13} />
+                  التالي: المحاضرة <bdi>{nextLec.ordinal}</bdi>
+                  {/* ChevronLeft = the RTL forward direction (matches
+                      the player's next-lecture button). */}
+                  <Icon icon={ChevronLeft} size={13} />
+                </Link>
+                <div
+                  className="course-hero-progress-note"
+                  style={nextPending > 0
+                    ? { color: 'var(--warning-ink)' }
+                    : { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                  title={nextLec.title}
+                >
+                  {nextPending > 0
+                    ? `تبقى نقاط تفاعل لم تُجب (${nextPending})`
+                    : nextLec.title}
+                </div>
+              </>
+            ) : data.lectures.length > 0 ? (
+              <Badge color="green" icon={CheckCircle2}>أنهيت محاضرات المقرّر</Badge>
+            ) : null}
           </div>
         </div>
       </div>
@@ -225,7 +258,10 @@ export default function CourseDetailPage() {
               const we = lec.watchEvents?.[0];
               const watchedPct = we && we.totalSec > 0 ? Math.round((we.watchedSec / we.totalSec) * 100) : 0;
               const completed = we?.completed ?? false;
-              // The "continue here" row (see nextLecIdx above).
+              // r164d: checkpoints still open on this row (watch may be
+              // complete while answers are not — surfaced as a badge).
+              const rowPending = pendingCheckpoints(lec);
+              // The "continue here" row (see nextLec above).
               const isNext = lecIdx === nextLecIdx;
               return (
                 <Reveal key={lec.id}>
@@ -263,7 +299,14 @@ export default function CourseDetailPage() {
                         </div>
                       )}
                     </div>
-                    {completed && <Badge color="green">مكتملة</Badge>}
+                    {completed && <Badge color="green">مكتملة</Badge>
+                    /* r164d: checkpoint-pending state — the row's open
+                     * loop, visible where the decision is made (watch
+                     * done ≠ lecture done). */}
+
+                    {rowPending > 0 && (
+                      <Badge color="amber">نقاط تفاعل متبقية</Badge>
+                    )}
                     {/* The next row's affordance replaces the raw % — the
                         verb names the action, the inline progress bar above
                         already carries the number. */}
@@ -291,21 +334,19 @@ export default function CourseDetailPage() {
             <div className="flex-col gap-2">
               {data.materials.map((m) => {
                 const label = MATERIAL_TYPE_LABEL[m.type as keyof typeof MATERIAL_TYPE_LABEL] ?? m.type;
-                /* r144 (T1-h F8): the row is a real link now — the
-                 * student could see the material in context but never
-                 * open it (dead-end row). Same contract as
-                 * DownloadsPage: external https opens a new tab;
-                 * /api/v1/files/papers/ routes through the document
-                 * viewer like every other internal paper link. */
-                const isExternal = /^https:\/\//.test(m.url);
-                const paperName = m.url.startsWith('/api/v1/files/papers/') ? m.url.split('/').pop() : null;
-                return (
-                  <a
-                    key={m.id}
-                    className="list-row"
-                    href={isExternal ? m.url : paperName ? `/document/${encodeURIComponent(paperName)}` : m.url}
-                    {...(isExternal ? { target: '_blank', rel: 'noreferrer' } : {})}
-                  >
+                /* r144 (T1-h F8) made the row a real link; r164d
+                 * (course flow) routes the target through the canonical
+                 * materialHref helper (the DownloadsPage contract)
+                 * instead of an inline regex: the /files/materials/
+                 * namespace (uploaded course PDFs) previously fell
+                 * through to a raw relative href that the SPA can't
+                 * serve with the Bearer token — a dead click — and
+                 * reserved demo hosts now read as the honest
+                 * «غير متوفر بعد» non-link. The helper's ?back= rides
+                 * /student/downloads (a valid, coherent destination). */
+                const target = materialHref({ url: m.url, name: m.name });
+                const body = (
+                  <>
                     <Icon icon={MATERIAL_TYPE_ICON[m.type as MaterialType] ?? FileText} size={16} className="text-muted" />
                     <div className="list-row-body">
                       <div className="list-row-title" title={m.name}>{m.name}</div>
@@ -314,7 +355,23 @@ export default function CourseDetailPage() {
                     {/* r157 (W2-F7): the trailing type Badge is deleted — the
                         sub line already carries the same label (and now the
                         icon encodes it too); the row read “PDF · PDF”. */}
-                  </a>
+                  </>
+                );
+                if (target.kind === 'viewer') {
+                  return <Link key={m.id} className="list-row" to={target.to}>{body}</Link>;
+                }
+                if (target.kind === 'external') {
+                  return (
+                    <a key={m.id} className="list-row" href={target.href} target="_blank" rel="noreferrer">
+                      {body}
+                    </a>
+                  );
+                }
+                return (
+                  <div key={m.id} className="list-row">
+                    {body}
+                    <span className="text-xs text-subtle" role="note">غير متوفر بعد</span>
+                  </div>
                 );
               })}
             </div>

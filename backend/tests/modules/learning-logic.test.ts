@@ -25,6 +25,7 @@ import { AttendanceStatus, Role } from '@prisma/client';
 import {
   ATTENDANCE_ALERT_MIN_RECORDS,
   attendanceRateByOffering,
+  answeredCheckpointsByLecture,
   completionRateByOffering,
   GRADEABLE_PAPER_STATUSES,
   PUBLISHABLE_PAPER_STATUSES,
@@ -610,5 +611,48 @@ describe('watchSchema ceilings (r152b)', () => {
     expect(
       watchSchema.safeParse({ watchedSec: 900_000, totalSec: 900_000 }).success,
     ).toBe(true);
+  });
+});
+
+/* ── r164d (course flow): STUDENT checkpoint-pending projection ──────
+ * GET /offerings/:id/full needs per-lecture "answered checkpoints"
+ * counts so the course home can aim its «التالي» CTA and badge rows at
+ * lectures whose watch is complete but whose checkpoints are still
+ * open (r155a caps attempts — an unanswered checkpoint stays an open
+ * loop, never an inflatable one). */
+describe('answeredCheckpointsByLecture (r164d — checkpoint-pending projection)', () => {
+  it('groups answer rows into per-lecture counts', () => {
+    const counts = answeredCheckpointsByLecture([
+      { checkpoint: { lectureId: 'lec1' } },
+      { checkpoint: { lectureId: 'lec1' } },
+      { checkpoint: { lectureId: 'lec2' } },
+    ]);
+    expect(counts.get('lec1')).toBe(2);
+    expect(counts.get('lec2')).toBe(1);
+    expect(counts.get('lec3')).toBeUndefined();
+  });
+
+  it('no rows → empty map (a lecture with no answers then merges as 0 answered)', () => {
+    expect(answeredCheckpointsByLecture([]).size).toBe(0);
+  });
+
+  it('wiring pin: /offerings/:id/full projects answeredCheckpoints THROUGH the helper, STUDENT-gated', () => {
+    // The drift class the researchQueueWhere pin guards against: a
+    // helper can pass its pure tests while the live route re-inlines
+    // (or drops) the merge. The pin fails the moment the route stops
+    // routing its projection through the exported helper.
+    expect(learningRouteSource).toMatch(
+      /router\.get\('\/offerings\/:id\/full',[\s\S]*?answeredCheckpointsByLecture\(await prisma\.checkpointAnswer\.findMany\(/,
+    );
+    // STUDENT-only: staff tokens keep the lean payload (no answers
+    // exist for them — the answer route is STUDENT-gated).
+    expect(learningRouteSource).toMatch(
+      /req\.user!\.role === Role\.STUDENT && offering\.lectures\.length > 0\s*\?\s*answeredCheckpointsByLecture/,
+    );
+    // The field is additive: every lecture row carries a NUMBER
+    // (missing key would read as "unknown" on the wire, not 0).
+    expect(learningRouteSource).toMatch(
+      /answeredCheckpoints: answeredByLecture\.get\(l\.id\) \?\? 0/,
+    );
   });
 });

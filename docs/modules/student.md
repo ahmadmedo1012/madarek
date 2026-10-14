@@ -23,7 +23,7 @@
 | المجموعة | الملف | أبرز المسارات |
 |---|---|---|
 | لوحة/نتائج/مواد | `student-dashboard.routes.ts` | `GET /me/dashboard`، `/me/results`، `/me/materials`، `/me/lab-sessions` |
-| التعلم | `learning.routes.ts` | `GET /offerings/:id/full`، `POST /lectures/:id/watch`، إدماجيات (حدّ 20/د + سقف احتساب 4 محاولات/مفهوم r155a)، `GET/POST /me/research`، `POST /research/:id/scan` (10/د)، annotations، `/me/matrix`، `/me/gaps` |
+| التعلم | `learning.routes.ts` | `GET /offerings/:id/full` (يُسقط لكل محاضرة `answeredCheckpoints` لطلاب فقط — r164d)، `POST /lectures/:id/watch`، إدماجيات (حدّ 20/د + سقف احتساب 4 محاولات/مفهوم r155a)، `GET/POST /me/research`، `POST /research/:id/scan` (10/د)، annotations، `/me/matrix`، `/me/gaps` |
 | التدريب | `training.routes.ts` | `catalog`، `tracks/:slug/enroll`، `lessons/:lessonId/complete`، `me/badges`، `certificates`، `leaderboard` |
 | اختبارات | نماذج `Question/ExamTemplate/ExamAttempt` | الطالب يتخذ فقط (البناء للإدارة/الأستاذ) |
 | إشعارات/رسائل | `me.routes.ts` | قراءة/قراءة الكل (رسائل بحد 30/د) |
@@ -39,9 +39,15 @@
 
 ## النقاط الحرجة للتعديل
 
-- **إتمام المشاهدة**: معادلة `isWatchComplete` (≥0.95 من مدة معرفة، بلا
-  قسمة صفر) و`resumeSeekSec` (أعلى نقطة −3s) — غيّرها مع اختبارها
+- **إتمام المشاهدة**: معادلة `isWatchComplete` (≥ 0.95 من مدة معرفة، بلا
+  قسمة صفر) و`resumeSeekSec` (أعلى نقطة − 3 ثوانٍ) — غيّرها مع اختبارها
   (`LecturePlayerPage.test.tsx`).
+- **اختيار «التالي»** (r164d): دوال `selectNextLecture` /
+  `pendingCheckpoints` النقية في `hooks/resources/learning.ts` —
+  المحاضرة تكتمل بالمشاهدة **و**الإجابة عن كل نقاط التفاعل؛ عدّاد
+  `answeredCheckpoints` يصل فقط من `GET /offerings/:id/full` (طالب)،
+  وغيابه يُخفّض بصدق إلى اكتمال المشاهدة وحدها. غيّرها مع اختبارها
+  (`courseNextLecture.test.ts`).
 - **الحضور التلقائي**: إتمام كامل ⇒ PRESENT؛ مفتاح اليوم UTC — لا تلعب
   بالتواريخ خارج `backend/src/lib/dates.ts`.
 - **التطبيع العربي**: أي تحسين بحث يُطبق على `backend/src/modules/search/normalize.ts`

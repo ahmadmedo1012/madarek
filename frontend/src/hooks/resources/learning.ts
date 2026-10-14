@@ -19,6 +19,13 @@ export interface Lecture {
   createdAt: string;
   _count?: { chapters: number; checkpoints: number };
   watchEvents?: Array<{ watchedSec: number; totalSec: number; completed: boolean }>;
+  /** r164d (course flow): how many of this lecture's checkpoints the
+   * STUDENT has answered — projected ONLY by GET /offerings/:id/full
+   * (learning.routes.ts answeredCheckpointsByLecture) for STUDENT
+   * tokens; the sibling list (useOfferingLectures) and every staff
+   * read omit it. Absent ⇒ treat as "unknown", NOT 0 — see
+   * pendingCheckpoints(). */
+  answeredCheckpoints?: number;
 }
 export function useOfferingLectures(offeringId: string | undefined) {
   return useQuery({
@@ -356,4 +363,50 @@ export function useOfferingFull(offeringId: string | undefined) {
     queryFn: () => unwrap<OfferingFull>(api.get(`/offerings/${offeringId}/full`)),
     enabled: Boolean(offeringId),
   });
+}
+
+/* ── r164d (course flow): next-step selection (pure) ────────────────
+ * The Coursera/edX "course home must point at one unmistakable next
+ * action" rule. A lecture is FINISHED only when BOTH loops are closed:
+ * the watch event is completed AND every checkpoint is answered —
+ * r155a capped attempts per concept precisely because an unanswered
+ * checkpoint is an open loop the student should be able to see and
+ * close. Pure functions (no React) so tests pin the selection logic
+ * directly; the pages feed them the server-ordered lecture list. */
+
+/** Minimal lecture shape the selection needs — satisfied by both the
+ * /full lecture rows and the useOfferingLectures rows. */
+export interface NextLectureInput {
+  id: string;
+  title: string;
+  watchEvents?: Array<{ watchedSec: number; totalSec: number; completed: boolean }>;
+  _count?: { checkpoints: number };
+  answeredCheckpoints?: number;
+}
+
+/** Checkpoints still open on a lecture. 0 when the answered count is
+ * unknown (staff reads / older payloads) — the caller then degrades
+ * honestly to watch-only completion instead of flagging every
+ * checkpointed lecture as pending. */
+export function pendingCheckpoints(l: NextLectureInput): number {
+  const total = l._count?.checkpoints ?? 0;
+  if (total === 0 || l.answeredCheckpoints === undefined) return 0;
+  return Math.max(0, total - l.answeredCheckpoints);
+}
+
+/** Finished = watch completed AND no checkpoint left open. */
+export function isLectureFinished(l: NextLectureInput): boolean {
+  const completed = Array.isArray(l.watchEvents) && l.watchEvents.some((e) => e.completed);
+  return completed && pendingCheckpoints(l) === 0;
+}
+
+/** The "التالي" target: the FIRST unfinished lecture in the given
+ * (server-ordered) list — watch-OR-checkpoint open. null when the
+ * whole curriculum is finished (the pages then render the honest
+ * done state instead of a dead CTA). */
+export function selectNextLecture<T extends NextLectureInput>(lectures: T[]): T | null {
+  for (const l of lectures) {
+    if (!isLectureFinished(l)) return l;
+  }
+  return null;
 }

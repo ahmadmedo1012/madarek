@@ -73,14 +73,51 @@ router.get('/offerings/:id/full', async (req, res, next) => {
       },
     });
     if (!offering) throw AppError.notFound();
+    /* r164d (course flow): the STUDENT course home needs "which
+     * lectures still have unanswered checkpoints" to aim its «التالي»
+     * CTA and badge rows — the watchEvents relation above only knows
+     * playback, and the per-checkpoint answers live in CheckpointAnswer
+     * (upsert semantics: one row per (checkpoint, student)). ONE
+     * bounded query covers the whole offering; staff keep the lean
+     * payload (they have no answer rows to merge — the answer route
+     * is STUDENT-gated, see checkpointAttemptsProjection). */
+    const answeredByLecture = req.user!.role === Role.STUDENT && offering.lectures.length > 0
+      ? answeredCheckpointsByLecture(await prisma.checkpointAnswer.findMany({
+          where: {
+            studentId: req.user!.id,
+            checkpoint: { lectureId: { in: offering.lectures.map((l) => l.id) } },
+          },
+          select: { checkpoint: { select: { lectureId: true } } },
+        }))
+      : null;
     // Replace BigInt material sizes with strings for JSON compatibility.
     const safe = {
       ...offering,
       materials: offering.materials.map((m) => ({ ...m, sizeBytes: m.sizeBytes.toString() })),
+      lectures: answeredByLecture
+        ? offering.lectures.map((l) => ({ ...l, answeredCheckpoints: answeredByLecture.get(l.id) ?? 0 }))
+        : offering.lectures,
     };
     res.json({ data: decToNum(safe) });
   } catch (e) { next(e); }
 });
+
+/**
+ * r164d (course flow): group CheckpointAnswer rows (selected as
+ * `{ checkpoint: { lectureId } }`) into per-lecture answered counts.
+ * Pure — exported for unit tests, no DB. Used by GET /offerings/:id/full
+ * to project the STUDENT's `answeredCheckpoints` field per lecture.
+ */
+export function answeredCheckpointsByLecture(
+  rows: Array<{ checkpoint: { lectureId: string } }>,
+): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const row of rows) {
+    const lectureId = row.checkpoint.lectureId;
+    counts.set(lectureId, (counts.get(lectureId) ?? 0) + 1);
+  }
+  return counts;
+}
 
 router.get('/offerings/:id/lectures', async (req, res, next) => {
   try {
