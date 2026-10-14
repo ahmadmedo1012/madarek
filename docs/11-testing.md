@@ -9,7 +9,7 @@
 |---|---|---|
 | Lint | `npm run lint` | **0 أخطاء**، 18 تحذيرًا (exhaustive-deps — مسموحة موثقة في `eslint.config.mjs`) |
 | Typecheck | `npm run typecheck` | **نجاح** — src + tests للجهتين (tsconfig.test.json) |
-| اختبارات الواجهة | `npm --prefix frontend run test` | **114 ملفًا، 1232 اختبارًا، كلها ناجحة** (~110 ثانية) |
+| اختبارات الواجهة | `npm --prefix frontend run test` | **115 ملفًا، 1235 اختبارًا، كلها ناجحة** (~110 ثانية) |
 | اختبارات الخلفية | `npm --prefix backend run test` | **48 ملفًا، 1203 اختبارًا، كلها ناجحة** (~15 ثانية) |
 | بوابة التكافؤ | `node scripts/verify-parity-export.mjs` | **PASS — 163 فحص token** + تدقيق متغيرات غير معرفة + قيم مستبعدة + توازن أقواس |
 | الأيقونات | `bash scripts/check-icons.sh` | OK — Lucide فقط |

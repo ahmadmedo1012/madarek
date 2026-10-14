@@ -7,7 +7,6 @@ import { AppShell, ProtectedRoute } from './components/layout/AppShell';
 import { useAuthStore } from './stores/auth.store';
 import { ROLE_HOME } from './lib/nav';
 import { HydrationSplash } from './components/HydrationSplash';
-import { PageSkeleton } from './components/primitives/States';
 import { RouteErrorBoundary } from './components/ErrorBoundary';
 import { ToastStack } from './components/overlays/Toast';
 import { Icon } from './components/Icon';
@@ -197,13 +196,32 @@ function CollegesLayout() {
   );
 }
 
-/**
- * The route table, extracted so it can be rendered under a `MemoryRouter`
- * in unit tests (see tests/unit/App-routes.test.tsx).
- */
+/** r161 (A1): the ROOT boundary's fallback is the branded splash, NOT
+ *  the product's PageSkeleton.
+ *
+ *  Who actually suspends to this boundary? Only the routes with no
+ *  in-shell Suspense above them: the public/guest surfaces — `/`
+ *  (LandingPage), /auth + /auth/register, the guest /colleges*
+ *  pages (CollegesLayout renders a bare <Outlet/>), /404 — plus
+ *  nothing else: every authenticated route mounts inside AppShell,
+ *  whose own inner boundary swaps the page-shaped PageSkeleton into
+ *  the content track (the correct anatomy for operational pages).
+ *
+ *  The old root fallback was that same dashboard skeleton
+ *  (page-header + KPI grid + cards). On a cold load it flashed the
+ *  INTERNAL product's anatomy onto every PUBLIC surface — a
+ *  prospective student on `/` watched KPI cards skeletonize, then
+ *  the Orbit Ink landing appeared from a completely different visual
+ *  world (reproduced: 24 skeleton bars + .grid-4 on `/`, `/auth`,
+ *  guest `/colleges`). The HydrationSplash is what these exact
+ *  routes already show during auth-store hydration (guards render
+ *  it), so boot + chunk loading now share ONE calm, branded,
+ *  theme-aware placeholder family — and the two visual worlds keep
+ *  their own loading languages: splash for shell-level waits,
+ *  page-shaped skeletons only inside the operational shell. */
 export function AppRoutes() {
   return (
-    <Suspense fallback={<PageSkeleton />}>
+    <Suspense fallback={<HydrationSplash />}>
       <Routes>
         {/* r157 (6A4-11): guest surfaces — authed users bounce to
             their role home after hydration (GuestRoute). */}

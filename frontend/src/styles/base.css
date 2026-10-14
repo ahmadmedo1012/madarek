@@ -310,15 +310,17 @@
     margin-inline: auto;
     padding: var(--page-gutter);
     padding-block-end: calc(var(--page-gutter) + var(--sp-9));
-    animation: madarek-page-enter var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+    /* r161 (A3): the route entrance animation was deleted here — it
+       was DEAD at the cascade level. polish.css's @layer overrides
+       block owns the ONE route entrance (`.content-inner { animation:
+       page-enter var(--motion-duration-short) var(--ease-out) both }`
+       + its prefers-reduced-motion kill); @layer base can never win
+       against overrides, so this duplicate `madarek-page-enter`
+       declaration (240ms + its own keyframes) never painted while
+       doubling the transition surface area for future edits. The
+       layout properties stay; the motion contract lives in exactly
+       one file. */
   }
-
-  @keyframes madarek-page-enter {
-    from { opacity: 0; transform: translateY(4px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  /* 16-E8 (15-f FE-8): @keyframes madarek-fade-up deleted — zero
-     `animation` consumers (page enter uses madarek-page-enter above). */
 
   /* mobile shell */
   @media (max-width: 920px) {

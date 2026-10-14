@@ -89,10 +89,28 @@ export const NOTIFICATIONS_FEED_LIMIT = 30;
 export function useNotificationsFeed() {
   return useInfiniteQuery({
     queryKey: ['notifications', 'feed'],
-    queryFn: ({ pageParam }) =>
-      unwrap<NotificationsFeedPage>(
-        api.get(`/notifications?page=${pageParam}&limit=${NOTIFICATIONS_FEED_LIMIT}`),
-      ),
+    /* r161 (C1): the page shape is `{ data, meta }` AT THE ENVELOPE
+       LEVEL — the backend's paginated routes answer `{ data: [...],
+       meta: buildMeta(...) }` where meta is a SIBLING of data, not
+       nested inside it. The old queryFn ran this response through
+       unwrap() (which returns res.data.data — the bare array, meta
+       dropped), so every resolved page had lastPage.meta === undefined
+       and getNextPageParam's destructure threw at render time —
+       AlertsPage crashed the whole app to the error boundary the
+       moment notifications arrived (all three roles' /alerts routes).
+       The hook now returns the FULL envelope per page, exactly the
+       NotificationsFeedPage contract the page and tests always
+       assumed. useUnreadNotifications above already read
+       res.data.meta directly (the correct pattern); this brings the
+       feed in line. Pinned end-to-end (transport-level axios mock)
+       by tests/unit/notifications-feed-envelope.test.tsx — the old
+       hook-mock tests could not see the unwrap shape drift. */
+    queryFn: async ({ pageParam }) =>
+      (
+        await api.get<NotificationsFeedPage>(
+          `/notifications?page=${pageParam}&limit=${NOTIFICATIONS_FEED_LIMIT}`,
+        )
+      ).data,
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       const { page, totalPages } = lastPage.meta;
