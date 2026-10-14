@@ -37,12 +37,16 @@ import {
   attendancePctFromStatusCounts as teacherAttendancePct,
   attendanceAlertFeedItem,
   avgGradePctFromGroups,
+  PENDING_GRADING_TAKE,
   PENDING_QUEUE_TAKE,
   PENDING_SUBMISSION_STATUSES,
+  pendingGradingFromGroups,
   pendingSubmissionWhere,
   researchFeedItem,
   submissionFeedItem,
   TEACHER_FEED_ACTIONS,
+  type PendingGradingAssignmentRow,
+  type PendingGradingGroup,
   type PendingSubmissionFeedRow,
   type ResearchPaperFeedRow,
 } from '../../src/http/routes/teacher-dashboard.routes';
@@ -494,13 +498,118 @@ describe('pending-submissions wiring (source-scan pins — 6A8, no drift)', () =
     );
   });
 
-  it('THREE call-sites of pendingSubmissionWhere — the KPI count, the dashboard feed, and the queue can never drift', () => {
+  it('FOUR call-sites of pendingSubmissionWhere — the KPI count, the dashboard feed, the queue, and the r164-h pending-grading rollup can never drift', () => {
     const callSites = dashboardRouteSource.match(/pendingSubmissionWhere\(offeringIds\)/g) ?? [];
-    expect(callSites.length).toBe(3);
+    expect(callSites.length).toBe(4);
     // …and the old inline twin is gone from the file entirely.
     expect(dashboardRouteSource).not.toContain(
       'status: { in: [SubmissionStatus.SUBMITTED, SubmissionStatus.LATE] }',
     );
+  });
+});
+
+/* ── r164-h: the teacher-home pending-grading queue rollup ──────────
+ * pendingGradingFromGroups is the pure decision behind the dashboard's
+ * `pendingGrading` array — groupBy rows + a bounded assignment lookup
+ * → the per-assignment counts the home queue card renders. */
+const assignment = (id: string, title: string): PendingGradingAssignmentRow => ({
+  id,
+  title,
+  type: AssignmentType.HOMEWORK,
+  offering: { course: { code: 'SE101', name: 'هندسة البرمجيات' } },
+});
+
+const gradingGroup = (
+  assignmentId: string,
+  n: number,
+  oldest: Date | null,
+): PendingGradingGroup => ({
+  assignmentId,
+  _count: { assignmentId: n },
+  _min: { submittedAt: oldest },
+});
+
+describe('pendingGradingFromGroups (r164-h — the teacher-home queue)', () => {
+  it('maps every group to its entry, carrying course + actionTo', () => {
+    const entries = pendingGradingFromGroups(
+      [gradingGroup('a1', 3, new Date('2026-03-01T08:00:00Z'))],
+      [assignment('a1', 'واجب UML')],
+    );
+    expect(entries).toEqual([
+      {
+        assignmentId: 'a1',
+        title: 'واجب UML',
+        type: AssignmentType.HOMEWORK,
+        course: { code: 'SE101', name: 'هندسة البرمجيات' },
+        count: 3,
+        oldestSubmittedAt: new Date('2026-03-01T08:00:00Z'),
+        // The home queue CTA lands on the ONE surface that walks the
+        // full grading queue — pinned alongside TEACHER_FEED_ACTIONS.
+        actionTo: TEACHER_FEED_ACTIONS.submissions,
+      },
+    ]);
+  });
+
+  it('sorts biggest pile first, tie-broken by the longest wait (oldest first)', () => {
+    const entries = pendingGradingFromGroups(
+      [
+        gradingGroup('a-old-small', 2, new Date('2026-02-01T08:00:00Z')),
+        gradingGroup('a-big', 7, new Date('2026-03-05T08:00:00Z')),
+        gradingGroup('a-older-tie', 2, new Date('2026-01-15T08:00:00Z')),
+      ],
+      [
+        assignment('a-old-small', 'صغير قديم'),
+        assignment('a-big', 'الكومة الكبرى'),
+        assignment('a-older-tie', 'تعادل أقدم'),
+      ],
+    );
+    // Count desc dominates; the two 2-pile entries order by oldest wait.
+    expect(entries.map((e) => e.assignmentId)).toEqual(['a-big', 'a-older-tie', 'a-old-small']);
+  });
+
+  it('null _min sorts after dated ones (nulls last, never crashes)', () => {
+    const entries = pendingGradingFromGroups(
+      [
+        gradingGroup('a-null', 2, null),
+        gradingGroup('a-dated', 2, new Date('2026-03-02T08:00:00Z')),
+      ],
+      [assignment('a-null', 'بلا تاريخ'), assignment('a-dated', 'مؤرّخ')],
+    );
+    expect(entries.map((e) => e.assignmentId)).toEqual(['a-dated', 'a-null']);
+    expect(entries[1]?.oldestSubmittedAt).toBeNull();
+  });
+
+  it('caps the card at PENDING_GRADING_TAKE — the home is a summary, the full queue lives on /teacher/assignments', () => {
+    const groups = Array.from({ length: PENDING_GRADING_TAKE + 3 }, (_, i) =>
+      gradingGroup(`a${i}`, 1, new Date(2026, 0, 1 + i)));
+    const rows = groups.map((g, i) => assignment(g.assignmentId, `واجب ${i}`));
+    expect(pendingGradingFromGroups(groups, rows)).toHaveLength(PENDING_GRADING_TAKE);
+    // An explicit take of 0 yields the empty card (the honest empty state).
+    expect(pendingGradingFromGroups(groups, rows, 0)).toEqual([]);
+  });
+
+  it('drops groups whose assignment is missing from the lookup rows (belt-only: submissions cascade with their assignment)', () => {
+    const entries = pendingGradingFromGroups(
+      [gradingGroup('ghost', 4, new Date('2026-03-01T08:00:00Z')), gradingGroup('a1', 1, null)],
+      [assignment('a1', 'موجود')],
+    );
+    expect(entries.map((e) => e.assignmentId)).toEqual(['a1']);
+  });
+
+  it('empty groups → empty queue (never null, never a throw)', () => {
+    expect(pendingGradingFromGroups([], [])).toEqual([]);
+  });
+
+  it('wiring: the /dashboard aggregate projects the rollup via the shared filter (source-scan pin)', () => {
+    // The route must feed the groupBy the SAME pendingSubmissionWhere
+    // filter and project `pendingGrading` in the response — a re-inlined
+    // twin would pass pure tests while drifting from the queue/KPI/feed.
+    expect(dashboardRouteSource).toMatch(
+      /prisma\.submission\.groupBy\(\{\s*by: \['assignmentId'\],\s*where: pendingSubmissionWhere\(offeringIds\),/,
+    );
+    expect(dashboardRouteSource).toMatch(/data:\s*\{[\s\S]*?pendingGrading,\s*\}\,/);
+    // The zero-offering early return also carries the empty queue.
+    expect(dashboardRouteSource).toMatch(/feed: \[\],\s*\/\/ r164-h[\s\S]*?pendingGrading: \[\],/);
   });
 });
 

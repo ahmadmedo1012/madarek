@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   Users, BarChart3, ClipboardCheck, ClipboardList,
-  AlertTriangle, Calendar, Upload,
+  AlertTriangle, Calendar, Upload, RefreshCw,
   TrendingUp, MessageSquare, Send, FileText, X, CheckCircle2,
   ChevronRight, ChevronLeft, ExternalLink, MailOpen,
 } from 'lucide-react';
@@ -27,6 +27,7 @@ import {
   useUploadMaterialFile,
   apiErrorMessage,
   type PendingSubmissionRow,
+  type TeacherStudentRow,
   useMyMessages,
 } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
@@ -605,6 +606,9 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
   const [description, setDescription] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
+  /* r164-h: determinate upload progress (0–100) — fed by the mutation's
+   * onUploadProgress (axios), reset on every submit attempt. */
+  const [progress, setProgress] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const pending = mode === 'file' ? uploadMaterial.isPending : create.isPending;
@@ -626,6 +630,11 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
       setName(f.name.replace(/\.pdf$/i, ''));
       setNameAuto(true);
     }
+    /* r164-h: the pick guard — reject a wrong file the MOMENT it is
+     * picked, not at submit: the same validatePdfFile mirror of the
+     * server caps, with immediate inline feedback; a valid pick (or a
+     * removal) clears a stale file error. */
+    setValidationError(f ? validatePdfFile(f) : null);
   };
   /* Clearing the value lets the SAME file be re-picked afterwards — a
    * file input only fires change when its value actually differs. */
@@ -646,12 +655,16 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
       const fileErr = validatePdfFile(file);
       if (fileErr) { setValidationError(fileErr); return; }
       setValidationError(null);
+      setProgress(0);
       try {
         await uploadMaterial.mutateAsync({
           offeringId: effectiveOfferingId,
           name: name.trim(),
           description: description.trim() || undefined,
           file,
+          /* r164-h: the byte-accurate bar — axios reports loaded/total,
+           * the hook rounds to 0–100. */
+          onUploadProgress: setProgress,
         });
         toast.success('أُضيف الملف إلى المقرّر وسيظهر لطلابه فوراً.', { title: 'تمّت الإضافة' });
         onClose();
@@ -772,6 +785,19 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
                   </button>
                 </div>
               )}
+              {/* r164-h: the determinate upload bar — real bytes (axios
+                  onUploadProgress → 0–100), live-announced so screen
+                  readers hear the upload is moving. */}
+              {mode === 'file' && uploadMaterial.isPending && (
+                <div aria-live="polite">
+                  <ProgressBar
+                    value={progress}
+                    showValue={false}
+                    label={`جارٍ رفع الملف… ${progress}%`}
+                    color="var(--accent)"
+                  />
+                </div>
+              )}
               {/* Locked type — the upload route is PDF-only, so the type
                   select collapses to an honest static chip (no fake
                   choice of types this channel cannot take). */}
@@ -827,9 +853,24 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
           </FormField>
 
           {(mode === 'file' ? uploadMaterial.isError : create.isError) && (
-            <p role="alert" className="text-xs text-red" style={{ marginBlockStart: 'var(--sp-2)' }}>
-              {apiErrorMessage(mode === 'file' ? uploadMaterial.error : create.error, 'تعذّرت إضافة المادة — حاول مرة أخرى.')}
-            </p>
+            /* r164-h: the failure retry — the draft (file + name +
+               description) stays in the modal, so «إعادة المحاولة»
+               re-runs the SAME submit path instead of forcing the
+               teacher to re-pick everything. */
+            <div className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-2)' }}>
+              <Icon icon={X} size={14} />
+              <span className="flex-1">
+                {apiErrorMessage(mode === 'file' ? uploadMaterial.error : create.error, 'تعذّرت إضافة المادة — حاول مرة أخرى.')}
+              </span>
+              <button
+                type="button"
+                className="btn ghost sm"
+                onClick={() => void onSubmit()}
+                disabled={pending}
+              >
+                <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
+              </button>
+            </div>
           )}
         </div>
         <div className="modal-footer">
@@ -930,6 +971,23 @@ export function ResearchPage() {
   return <ResearchReviewPage />;
 }
 
+/* ─── r164-h: the risk vocabulary shared by the students table's
+ * «المخاطرة» column — the same labels TeacherIntelligencePage's risk
+ * rows wear (kept local to this bundle; the intelligence page keeps
+ * its own edge/ink maps local too). */
+const STUDENT_RISK_LABEL: Record<TeacherStudentRow['riskLevel'], string> = {
+  OK: 'مستقر',
+  WATCH: 'تحت المراقبة',
+  AT_RISK: 'في خطر',
+  CRITICAL: 'حرج',
+};
+const STUDENT_RISK_TONE: Record<TeacherStudentRow['riskLevel'], 'green' | 'gold' | 'amber' | 'red'> = {
+  OK: 'green',
+  WATCH: 'gold',
+  AT_RISK: 'amber',
+  CRITICAL: 'red',
+};
+
 export function StudentsListPage() {
   const { offsQ, offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
   const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
@@ -941,7 +999,7 @@ export function StudentsListPage() {
     return (
       <div className="page">
         <PageHeader title="قائمة الطلاب" subtitle="جميع الطلاب المسجّلين في مقرّراتك." />
-        <TableSkeleton rows={5} cols={5} />
+        <TableSkeleton rows={5} cols={6} />
       </div>
     );
   }
@@ -986,7 +1044,7 @@ export function StudentsListPage() {
         {!effectiveOfferingId ? (
           <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض قائمة طلابه." illustration="empty-search" />
         ) : stuQ.isPending ? (
-          <TableSkeleton rows={5} cols={5} />
+          <TableSkeleton rows={5} cols={6} />
         ) : stuQ.isError ? (
           <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : students.length === 0 ? (
@@ -1005,6 +1063,10 @@ export function StudentsListPage() {
                       old «الحالة» column carried a private vocabulary
                       (متفوّق/متوسّط) that disagreed with its sisters. */}
                   <th scope="col">التقدير</th>
+                  {/* r164-h: «المخاطرة» — the same risk vocabulary the
+                      intelligence page's risk rows wear, so the row's
+                      link (below) has visible context to act on. */}
+                  <th scope="col">المخاطرة</th>
                 </tr>
               </thead>
               <tbody>
@@ -1012,11 +1074,25 @@ export function StudentsListPage() {
                   const band = gradeBand(s.avgGrade);
                   return (
                     <tr key={s.studentId}>
-                      <td className="tbl-strong" data-label="الاسم">{s.name}</td>
+                      {/* r164-h: the name is the row's door — ONE tap to
+                          the offering's intelligence deep dive (the risk
+                          context the chip beside it names). */}
+                      <td className="tbl-strong" data-label="الاسم">
+                        <Link
+                          to={`/teacher/intelligence/${effectiveOfferingId}`}
+                          className="text-link"
+                          title="سياق المخاطرة والأداء في الذكاء الأكاديميّ"
+                        >
+                          {s.name}
+                        </Link>
+                      </td>
                       <td data-label="الرقم الجامعيّ"><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
                       <td className="tbl-num" data-label="الحضور">{s.attendancePct}%</td>
                       <td className="tbl-num" data-label="المتوسّط"><bdi>{s.avgGrade}%</bdi></td>
                       <td data-label="التقدير"><Badge color={band.color}>{band.label}</Badge></td>
+                      <td data-label="المخاطرة">
+                        <Badge color={STUDENT_RISK_TONE[s.riskLevel]}>{STUDENT_RISK_LABEL[s.riskLevel]}</Badge>
+                      </td>
                     </tr>
                   );
                 })}
@@ -1897,6 +1973,24 @@ function GradeSubmissionModal({
  * 31–50 never showed and message #51+ was unreachable. */
 const MESSAGES_PAGE_SIZE = 30;
 
+/* r164-h: read-state visibility — the /messages backend projects the
+ * FULL Message row (include, not select), so readAt rides every row
+ * already; the shared MessageRow interface just never declared it.
+ * Widened HERE (the teacher inbox's own view of the wire) instead of
+ * touching the student-domain resource file: no wire change, no
+ * cross-agent surface. */
+type MessageRowWithRead = { readAt?: string | null };
+
+/** The row-level unread marker: incoming AND not yet read. Sent rows
+ * carry no read state of their own (readAt is the recipient's). Pure +
+ * exported for the unit suite. */
+export function isUnreadIncoming(
+  m: { toUser?: { id?: string } | null } & MessageRowWithRead,
+  meId: string | null,
+): boolean {
+  return Boolean(meId && m.toUser?.id === meId && !m.readAt);
+}
+
 export function MessagesPage() {
   const [page, setPage] = useState(1);
   const q = useMyMessages(page, MESSAGES_PAGE_SIZE);
@@ -1974,6 +2068,10 @@ export function MessagesPage() {
               {messages.map((m) => {
                 const incoming = m.toUser?.id === meId;
                 const other = incoming ? m.fromUser : m.toUser;
+                /* r164-h: the row's own read state — the same brand Badge
+                 * grammar the alerts log uses for its unread rows (no
+                 * new CSS; a bold title alone is invisible in dark mode). */
+                const unreadRow = isUnreadIncoming(m, meId);
                 return (
                   <div key={m.id} className="list-row">
                     <UserAvatar
@@ -1982,7 +2080,10 @@ export function MessagesPage() {
                       size={32}
                     />
                     <div className="list-row-body">
-                      <div className="list-row-title">{other.firstName} {other.lastName}</div>
+                      <div className="list-row-title" style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <span style={{ fontWeight: unreadRow ? 600 : undefined }}>{other.firstName} {other.lastName}</span>
+                        {unreadRow && <Badge color="brand">غير مقروءة</Badge>}
+                      </div>
                       {/* 5-B6 messages craft: the body clamps to one line —
                           30 rows of arbitrary prose otherwise rag the log's
                           rhythm — and the full text rides the title attribute

@@ -97,6 +97,84 @@ export const PENDING_SUBMISSION_STATUSES = [
  * Matches the /me/materials + /me/assignments sibling ceiling (100). */
 export const PENDING_QUEUE_TAKE = 100;
 
+// ─── Pending-grading rollup for the teacher home queue (r164-h) ──
+
+/** Row of the per-assignment pending groupBy below: submissions in the
+ * shared PENDING_SUBMISSION_STATUSES set, counted per assignment, with
+ * the oldest waiting submission (the queue card's «بانتظار درجتك منذ…»
+ * stamp). DB-free test factories build this shape directly. */
+export interface PendingGradingGroup {
+  assignmentId: string;
+  _count: { assignmentId: number };
+  _min: { submittedAt: Date | null };
+}
+
+/** Assignment facts the queue card renders — fetched with a bounded
+ * findMany keyed by the groupBy's assignment ids (the same lookup
+ * pattern the maxScore map above uses). */
+export interface PendingGradingAssignmentRow {
+  id: string;
+  title: string;
+  type: AssignmentType;
+  offering: { course: { code: string; name: string } };
+}
+
+/** One queue entry: the actionable per-assignment count the teacher
+ * home renders. `actionTo` is a TEACHER-area path (the Assignments
+ * page — the one surface that walks the full grading queue, r157/6A8). */
+export interface PendingGradingEntry {
+  assignmentId: string;
+  title: string;
+  type: AssignmentType;
+  course: { code: string; name: string };
+  /** Submissions awaiting a grade on THIS assignment. */
+  count: number;
+  /** The oldest pending submission's submittedAt (null only if the
+   * groupBy's _min came back null — no rows, unreachable in practice). */
+  oldestSubmittedAt: Date | null;
+  actionTo: string;
+}
+
+/** How many per-assignment rows the dashboard queue card carries — the
+ * full queue stays on /teacher/assignments (PENDING_QUEUE_TAKE); the
+ * home is a summary, not a second full surface. */
+export const PENDING_GRADING_TAKE = 5;
+
+/**
+ * Pure decision function — groupBy rows + assignment facts → the
+ * teacher-home pending-grading queue. Biggest pile first, then the
+ * assignment that has waited longest (oldestSubmittedAt asc, nulls
+ * last); assignments missing from the lookup rows are dropped (a
+ * submission cascades with its assignment, so the guard is belt-only).
+ * Exported for DB-free unit tests.
+ */
+export function pendingGradingFromGroups(
+  groups: ReadonlyArray<PendingGradingGroup>,
+  assignmentRows: ReadonlyArray<PendingGradingAssignmentRow>,
+  take: number = PENDING_GRADING_TAKE,
+): PendingGradingEntry[] {
+  const byId = new Map(assignmentRows.map((a) => [a.id, a]));
+  const entries: PendingGradingEntry[] = [];
+  for (const group of groups) {
+    const assignment = byId.get(group.assignmentId);
+    if (!assignment) continue;
+    entries.push({
+      assignmentId: group.assignmentId,
+      title: assignment.title,
+      type: assignment.type,
+      course: assignment.offering.course,
+      count: group._count.assignmentId,
+      oldestSubmittedAt: group._min.submittedAt,
+      actionTo: TEACHER_FEED_ACTIONS.submissions,
+    });
+  }
+  entries.sort((a, b) =>
+    b.count - a.count
+    || (a.oldestSubmittedAt?.getTime() ?? Infinity)
+      - (b.oldestSubmittedAt?.getTime() ?? Infinity));
+  return entries.slice(0, Math.max(0, take));
+}
+
 /**
  * The shared pending-submissions scope (r157 / 6A8): rows in
  * PENDING_SUBMISSION_STATUSES on assignments of the given offerings.
@@ -427,6 +505,9 @@ router.get('/dashboard', async (req, res, next) => {
           kpi: { studentCount: 0, avgGradePct: null, attendancePct: null, needsReview: 0 },
           trend: [],
           feed: [],
+          // r164-h: the teacher-home queue card's per-assignment rollup —
+          // no offerings → no assignments → an empty queue.
+          pendingGrading: [],
         },
       });
       return;
@@ -455,6 +536,7 @@ router.get('/dashboard', async (req, res, next) => {
       kpiAttendanceGroups,
       pendingSubmissions,
       pendingPapers,
+      pendingGradingGroups,
     ] = await Promise.all([
       // Distinct enrolled students across offerings
       prisma.enrollment.findMany({
@@ -515,6 +597,16 @@ router.get('/dashboard', async (req, res, next) => {
       prisma.researchPaper.count({
         where: { offeringId: { in: offeringIds }, status: { in: PAPERS_AWAITING_TEACHER } },
       }),
+      // r164-h — the teacher-home queue card: per-assignment counts of
+      // the SAME awaiting-grade rows (shared filter, call-site 4 of
+      // pendingSubmissionWhere — the KPI, the feed, the /me queue and
+      // this rollup can never count different state sets).
+      prisma.submission.groupBy({
+        by: ['assignmentId'],
+        where: pendingSubmissionWhere(offeringIds),
+        _count: { assignmentId: true },
+        _min: { submittedAt: true },
+      }),
     ]);
 
     // ── maxScore lookup shared by both grade rollups (bounded by the
@@ -531,6 +623,21 @@ router.get('/dashboard', async (req, res, next) => {
         })
       : [];
     const maxScoreByAssignment = new Map(assignmentRows.map((a) => [a.id, a.maxScore]));
+
+    // ── r164-h: assignment facts for the teacher-home queue card —
+    //    bounded by the pending groups' assignment ids, never the
+    //    teacher's full assignment list ──
+    const pendingAssignmentIds = new Set(pendingGradingGroups.map((g) => g.assignmentId));
+    const pendingAssignmentRows = pendingAssignmentIds.size > 0
+      ? await prisma.assignment.findMany({
+          where: { id: { in: [...pendingAssignmentIds] } },
+          select: {
+            id: true, title: true, type: true,
+            offering: { select: { course: { select: { code: true, name: true } } } },
+          },
+        })
+      : [];
+    const pendingGrading = pendingGradingFromGroups(pendingGradingGroups, pendingAssignmentRows);
 
     // ── KPI strip ────────────────────────────
     const studentCount = new Set(enrollments.map((e) => e.studentId)).size;
@@ -646,6 +753,9 @@ router.get('/dashboard', async (req, res, next) => {
         kpi: { studentCount, avgGradePct, attendancePct, needsReview },
         trend,
         feed,
+        // r164-h: the actionable per-assignment pending-grading queue —
+        // biggest pile first, the card the teacher home opens with.
+        pendingGrading,
       },
     });
   } catch (e) { next(e); }

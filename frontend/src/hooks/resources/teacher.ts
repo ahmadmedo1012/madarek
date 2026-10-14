@@ -13,6 +13,21 @@ export interface TeacherDashboard {
     attendancePct: number | null;
     needsReview: number;
   };
+  /* ── r164-h: the pending-grading queue rollup — per-assignment
+   * counts of submissions in the SAME awaiting-grade set the
+   * /me/pending-submissions queue walks (SUBMITTED + LATE via the
+   * backend's shared pendingSubmissionWhere). The teacher home opens
+   * with the actionable summary; the full queue stays on
+   * /teacher/assignments (actionTo links there). ───────────────── */
+  pendingGrading: Array<{
+    assignmentId: string;
+    title: string;
+    type: 'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM';
+    course: { code: string; name: string };
+    count: number;
+    oldestSubmittedAt: string | null;
+    actionTo: string;
+  }>;
   trend: Array<{
     week: string;
     avgGradePct: number | null;
@@ -291,23 +306,39 @@ export function useCreateMaterial() {
  * same invalidation set as useCreateMaterial keeps the teacher's table,
  * the offerings count and the student-facing offering-full projection
  * honest after a landed upload. */
+/* ── r164-h: the materials upload channel's progress contract —
+ * axios exposes determinate upload progress (onUploadProgress); the
+ * modal feeds it into its ProgressBar for a real byte-accurate bar.
+ * The timeout widens from the instance's 20s to 120s: a 20MiB PDF at
+ * a typical uplink outruns 20s easily — the upload would abort
+ * mid-transfer no matter how honest the progress bar is. */
 export interface UploadMaterialFileInput {
   offeringId: string;
   name: string;
   description?: string;
   /** The PDF the teacher picked — sent as the request body. */
   file: File;
+  /** Determinate progress callback (0–100, rounded). */
+  onUploadProgress?: (pct: number) => void;
 }
+
+export const MATERIAL_UPLOAD_TIMEOUT_MS = 120_000;
 
 export function useUploadMaterialFile() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ offeringId, name, description, file }: UploadMaterialFileInput) => {
+    mutationFn: ({ offeringId, name, description, file, onUploadProgress }: UploadMaterialFileInput) => {
       const params = new URLSearchParams({ name, type: 'PDF' });
       if (description) params.set('description', description);
       return unwrap<unknown>(
         api.post(`/offerings/${offeringId}/materials/file?${params.toString()}`, file, {
           headers: { 'Content-Type': 'application/pdf' },
+          timeout: MATERIAL_UPLOAD_TIMEOUT_MS,
+          onUploadProgress: (e) => {
+            if (onUploadProgress && e.total) {
+              onUploadProgress(Math.round((e.loaded / e.total) * 100));
+            }
+          },
         }),
       );
     },

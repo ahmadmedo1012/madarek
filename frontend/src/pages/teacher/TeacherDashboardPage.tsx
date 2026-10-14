@@ -5,6 +5,7 @@ import {
   AlertTriangle, FileText, Bell,
   CheckCircle2, Filter, Sparkles, Microscope,
   ArrowUpRight, ArrowDownRight,
+  ClipboardCheck, Calendar,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
@@ -17,8 +18,15 @@ import {
   PointElement, LineElement, Filler, Tooltip, Legend,
 } from 'chart.js';
 import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
-import { useTeacherDashboard, type TeacherDashboard } from '../../hooks/useResources';
-import { countAr, formatRelativeAr } from '../../lib/format';
+import {
+  useTeacherDashboard,
+  useTeacherOfferings,
+  useTeacherRisks,
+  type TeacherDashboard,
+  type TeacherOffering,
+  type TeacherRiskRow,
+} from '../../hooks/useResources';
+import { countAr, formatRelativeAr, WEEKDAY_NAMES_AR } from '../../lib/format';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -72,6 +80,95 @@ export function trendCoverage(trend: TeacherDashboard['trend']): {
     weeksRecorded: trend.filter((t) => t.avgGradePct !== null || t.attendancePct !== null).length,
   };
 }
+
+/* ─── r164-h: the teacher home's daily-work trio (pure decisions) ── */
+
+/** One slot of the today strip — composed client-side from the SAME
+ * /teacher/me/offerings schedule the weekly Schedule page renders (the
+ * backend needs no new endpoint: the data already rides the offering
+ * rows; composing here is the smaller surface). */
+export interface TodaySlot {
+  key: string;
+  offeringId: string;
+  courseName: string;
+  courseCode: string;
+  room: string | null;
+  startTime: string;
+  endTime: string;
+}
+
+/** "HH:MM" → minutes-since-midnight (the wire format ScheduleSlot
+ * stores; a malformed value degrades to 0 — never a NaN sort). */
+function slotMinutes(hhmm: string): number {
+  const parts = hhmm.split(':');
+  const h = Number(parts[0]) || 0;
+  const m = Number(parts[1]) || 0;
+  return h * 60 + m;
+}
+
+/**
+ * Today's schedule slots across ALL of the teacher's offerings, sorted
+ * by start time — the dashboard's today strip. `now` decides which
+ * weekday is "today" (dayOfWeek uses the Date#getDay() convention,
+ * 0=Sunday — pinned in schema.prisma and TeacherSchedulePage).
+ * Pure + exported for the unit suite.
+ */
+export function todaySlots(
+  offerings: ReadonlyArray<TeacherOffering>,
+  now: Date = new Date(),
+): TodaySlot[] {
+  const dow = now.getDay();
+  const slots: TodaySlot[] = [];
+  for (const o of offerings) {
+    for (const slot of o.schedule) {
+      if (slot.dayOfWeek !== dow) continue;
+      slots.push({
+        key: `${o.id}:${slot.id}`,
+        offeringId: o.id,
+        courseName: o.course.name,
+        courseCode: o.course.code,
+        room: slot.room ?? o.room ?? null,
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+      });
+    }
+  }
+  slots.sort((a, b) => slotMinutes(a.startTime) - slotMinutes(b.startTime));
+  return slots;
+}
+
+/** Where a slot stands relative to `now` — the strip's «جارٍ الآن» /
+ * «انتهت» markers. Pure + exported for the unit suite. */
+export function slotPhase(slot: TodaySlot, now: Date = new Date()): 'done' | 'ongoing' | 'upcoming' {
+  const minutes = now.getHours() * 60 + now.getMinutes();
+  if (minutes >= slotMinutes(slot.endTime)) return 'done';
+  if (minutes >= slotMinutes(slot.startTime)) return 'ongoing';
+  return 'upcoming';
+}
+
+/** The top at-risk students for the home shortcuts — the /teacher/risks
+ * endpoint already returns worst-first (riskScore ascending: 100=OK,
+ * 0=CRITICAL), so this is the honest take cap. Pure + exported for tests. */
+export const AT_RISK_SHORTCUT_TAKE = 3;
+export function topRisks(rows: ReadonlyArray<TeacherRiskRow>): TeacherRiskRow[] {
+  return rows.slice(0, AT_RISK_SHORTCUT_TAKE);
+}
+
+/* Same labels as TeacherIntelligencePage's risk rows (the intelligence
+ * page keeps its own edge/ink maps local — the label vocabulary is the
+ * shared contract, mirrored here rather than coupled). */
+const RISK_LABEL: Record<TeacherRiskRow['riskLevel'], string> = {
+  OK: 'مستقر',
+  WATCH: 'تحت المراقبة',
+  AT_RISK: 'في خطر',
+  CRITICAL: 'حرج',
+};
+const RISK_TONE: Record<TeacherRiskRow['riskLevel'], 'green' | 'gold' | 'amber' | 'red'> = {
+  OK: 'green',
+  WATCH: 'gold',
+  AT_RISK: 'amber',
+  CRITICAL: 'red',
+};
 
 export function TeacherDashboardPage() {
   const [filter, setFilter] = useState<FeedFilter>('all');
@@ -207,6 +304,19 @@ export function TeacherDashboardPage() {
           delta={d.kpi.needsReview === 0 ? 'up' : d.kpi.needsReview > 10 ? 'dn' : undefined}
         />
       </div>
+
+      {/* ── r164-h: the daily-work trio — actionable first (the Canvas
+          home pattern): the pending-grading queue (the work that waits
+          on the teacher's pen) + today's schedule strip, then the
+          at-risk shortcuts below. All three consume data already in
+          flight — the queue rides the dashboard aggregate, the strip
+          composes /me/offerings, the shortcuts ride /teacher/risks. */}
+      <div className="grid-2-1">
+        <PendingGradingCard entries={d.pendingGrading} />
+        <TodayStripCard />
+      </div>
+
+      <AtRiskShortcutsCard />
 
       {/* Performance + attendance trend — real 6-week data, wrapped for
           screen readers (aria-label + sr-only data table, audit 0-f). */}
@@ -412,5 +522,192 @@ function FeedRow({ item }: { item: TeacherDashboard['feed'][number] }) {
         </div>
       </div>
     </div>
+  );
+}
+
+/* ═══════════ r164-h: the daily-work trio components ═══════════ */
+
+/**
+ * The pending-grading queue card — the teacher home's first actionable
+ * surface. Per-assignment counts of submissions awaiting a grade, each
+ * row linking straight into the ONE surface that walks the full queue
+ * (/teacher/assignments — actionTo travels from the backend rollup).
+ * Empty state names the win, not the void: «لا انتظار — كل التسليمات
+ * مُقيَّمة».
+ */
+function PendingGradingCard({ entries }: { entries: TeacherDashboard['pendingGrading'] }) {
+  const total = entries.reduce((sum, e) => sum + e.count, 0);
+  return (
+    <Card
+      title="طابور التصحيح"
+      icon={ClipboardCheck}
+      subtitle={
+        total === 0
+          ? undefined
+          : countAr(total, ['تسليم بانتظار درجتك', 'تسليمان بانتظار درجتك', 'تسليمات بانتظار درجتك', 'تسليماً بانتظار درجتك'])
+      }
+      actions={total > 0 ? (
+        <Link to="/teacher/assignments" className="btn primary sm">
+          <Icon icon={ClipboardCheck} size={13} /> ابدأ التصحيح
+        </Link>
+      ) : undefined}
+    >
+      {entries.length === 0 ? (
+        <div className="state" role="status">
+          <div className="state-icon state-icon-success">
+            <Icon icon={CheckCircle2} size={20} />
+          </div>
+          <div className="state-title">لا انتظار — كل التسليمات مُقيَّمة</div>
+          <div className="state-desc">ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك.</div>
+        </div>
+      ) : (
+        <div className="flex-col gap-2">
+          {entries.map((e) => (
+            <Link key={e.assignmentId} to={e.actionTo} className="list-row">
+              <div className="list-row-body">
+                <div className="list-row-title">{e.title}</div>
+                <div className="list-row-sub">
+                  {e.course.name} · <bdi>{e.course.code}</bdi>
+                  {e.oldestSubmittedAt && (
+                    <>
+                      {' '}· أقدم تسليم {formatRelativeAr(e.oldestSubmittedAt)}
+                    </>
+                  )}
+                </div>
+              </div>
+              <Badge color="amber">
+                {countAr(e.count, ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'])}
+              </Badge>
+            </Link>
+          ))}
+        </div>
+      )}
+    </Card>
+  );
+}
+
+/**
+ * The today strip — today's ScheduleSlot entries composed client-side
+ * from /teacher/me/offerings (the weekly Schedule page's own source;
+ * no new backend surface). Each slot marks its phase relative to now:
+ * «جارٍ الآن» while inside its window, dimmed time when done.
+ */
+function TodayStripCard() {
+  const offsQ = useTeacherOfferings();
+  // Compose once per render — `new Date()` decides the weekday + phases.
+  const now = new Date();
+  const slots = offsQ.data ? todaySlots(offsQ.data, now) : [];
+  const todayDow = now.getDay();
+
+  return (
+    <Card
+      title="محاضرات اليوم"
+      icon={Calendar}
+      subtitle={WEEKDAY_NAMES_AR[todayDow]}
+      actions={(
+        <Link to="/teacher/schedule" className="btn ghost sm">
+          <Icon icon={Calendar} size={13} /> الجدول الأسبوعيّ
+        </Link>
+      )}
+    >
+      {offsQ.isPending ? (
+        <ListSkeleton rows={2} />
+      ) : offsQ.isError ? (
+        <ErrorState message="تعذَّر تحميل جدول اليوم" error={offsQ.error} onRetry={() => offsQ.refetch()} />
+      ) : slots.length === 0 ? (
+        <div className="state" role="status">
+          <div className="state-icon">
+            <Icon icon={Calendar} size={20} />
+          </div>
+          <div className="state-title">لا محاضرات اليوم</div>
+          <div className="state-desc">جدول اليوم فارغ — استرح أو راجع الجدول الأسبوعيّ.</div>
+        </div>
+      ) : (
+        <div className="flex-col gap-2">
+          {slots.map((slot) => {
+            const phase = slotPhase(slot, now);
+            return (
+              <Link key={slot.key} to="/teacher/schedule" className="list-row">
+                <bdi className="list-row-meta" title={phase === 'done' ? 'انتهت' : undefined}>
+                  {slot.startTime} — {slot.endTime}
+                </bdi>
+                <div className="list-row-body">
+                  <div className="list-row-title">{slot.courseName}</div>
+                  <div className="list-row-sub">
+                    {slot.room ? `${slot.room} · ` : ''}{phase === 'done' ? 'انتهت' : phase === 'ongoing' ? 'جارٍ الآن' : 'قادمة'}
+                  </div>
+                </div>
+                <Badge><bdi>{slot.courseCode}</bdi></Badge>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </Card>
+  );
+}
+
+/**
+ * The at-risk shortcuts — the top rows of /teacher/risks (worst-first,
+ * green students never ride the endpoint), each row ONE tap from the
+ * offering's intelligence deep dive. The full list lives on
+ * /teacher/intelligence; this card is the ≤1-tap door to it.
+ */
+function AtRiskShortcutsCard() {
+  const risks = useTeacherRisks();
+  const top = risks.data ? topRisks(risks.data) : [];
+
+  return (
+    <Card
+      title="طلاب يحتاجون متابعة"
+      icon={AlertTriangle}
+      subtitle={risks.data && risks.data.length > 0
+        ? countAr(risks.data.length, ['طالب تحت المتابعة', 'طالبان تحت المتابعة', 'طلاب تحت المتابعة', 'طالباً تحت المتابعة'])
+        : undefined}
+      actions={risks.data && risks.data.length > 0 ? (
+        <Link to="/teacher/intelligence" className="btn outline sm">
+          <Icon icon={Users} size={13} /> القائمة الكاملة
+        </Link>
+      ) : undefined}
+    >
+      {risks.isPending ? (
+        <ListSkeleton rows={3} />
+      ) : risks.isError ? (
+        <ErrorState message="تعذَّر تحميل قائمة المتابعة" error={risks.error} onRetry={() => risks.refetch()} />
+      ) : top.length === 0 ? (
+        <div className="state" role="status">
+          <div className="state-icon state-icon-success">
+            <Icon icon={CheckCircle2} size={20} />
+          </div>
+          <div className="state-title">جميع طلابك في وضع جيد</div>
+          <div className="state-desc">لا مؤشّرات خطر حاليّاً — ستظهر هنا أقصر طرق المتابعة فور رصدها.</div>
+        </div>
+      ) : (
+        <div className="flex-col gap-2">
+          {top.map((r) => (
+            <Link
+              key={`${r.studentId}:${r.offeringId}`}
+              to={`/teacher/intelligence/${r.offeringId}`}
+              className="list-row"
+              title={`سياق المخاطرة في ${r.courseName}`}
+            >
+              <UserAvatar
+                initials={r.avatarInitials ?? r.name.slice(0, 2)}
+                color={r.avatarColor ?? undefined}
+                size={32}
+              />
+              <div className="list-row-body">
+                <div className="list-row-title">{r.name}</div>
+                <div className="list-row-sub">{r.courseIcon} {r.courseName}</div>
+              </div>
+              <div className="flex gap-1 items-center">
+                <Badge color={RISK_TONE[r.riskLevel]}>{RISK_LABEL[r.riskLevel]}</Badge>
+                <span className="text-xs font-mono text-muted"><bdi>{r.riskScore}%</bdi></span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </Card>
   );
 }
