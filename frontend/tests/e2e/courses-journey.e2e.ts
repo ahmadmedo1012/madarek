@@ -33,7 +33,11 @@ test.describe('رحلة المقرّرات', () => {
     await expect(page.getByText('ليلى الفيتوري').first()).toBeVisible();
 
     /* 3 — صف المحاضرة «التالية» ثم المشغّل */
-    const lecRow = page.locator(`a[href="/student/lectures/${LECTURE_ID}"]`);
+    // r164-d: زرّ «التالي: المحاضرة» الرئيسيّ يقود للدرس غير المكتمل
+    // نفسه — وجوده دليل دمج r164d؛ نثبّته ثم ندخل من صف القائمة.
+    const nextCta = page.getByRole('link', { name: 'التالي: المحاضرة' });
+    await expect(nextCta).toHaveAttribute('href', `/student/lectures/${LECTURE_ID}`);
+    const lecRow = page.locator(`a.course-lec-row[href="/student/lectures/${LECTURE_ID}"]`);
     await expect(lecRow).toContainText('الخوارزميات الجشعة');
     await expect(lecRow).toContainText('المحاضرة');
     await lecRow.click();

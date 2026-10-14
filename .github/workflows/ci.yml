@@ -180,7 +180,7 @@ jobs:
   surface-drift:
     name: Surface drift
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     needs: [test-frontend, test-backend]
     steps:
       - uses: actions/checkout@v4
@@ -188,12 +188,14 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-      # Honest gate: the committed baseline
-      # (frontend/tests/audit/surface-baseline.json) currently contains ZERO
-      # captures — the Playwright inventory harness that populates it has not
-      # shipped (specs/012 T142). We will NOT fake a pass by copying the
-      # baseline onto the inventory slot. Instead:
-      #   - baseline has captures → run the real drift detector (hard gate)
+      # r164: the baseline is now REAL (72 captures of the production
+      # build via the hermetic fixture transport — see routes.ts
+      # BASELINE_ROUTES for the honest selection rule). This job became
+      # a hard gate: it re-captures the SAME slice fresh on every push
+      # (vite preview over the production build + page.route mock
+      # transport, no backend/DB needed) and runs the drift detector
+      # against the committed baseline.
+      #   - baseline has captures → build + sweep + drift (hard gate)
       #   - baseline is empty     → skip with an explicit message
       - name: Count baseline captures
         id: baseline
@@ -203,9 +205,34 @@ jobs:
       - name: Install dependencies
         if: steps.baseline.outputs.captures != '0'
         run: npm ci
-      - name: Run drift detector
+      - name: Build the production surfaces
         if: steps.baseline.outputs.captures != '0'
-        run: npm --prefix frontend run test:audit:drift
+        run: npm --prefix frontend run build
+      - name: Install chromium (audit sweep browser)
+        if: steps.baseline.outputs.captures != '0'
+        working-directory: frontend
+        run: npx playwright install chromium --with-deps
+      - name: Fresh capture + drift detection (hard gate)
+        if: steps.baseline.outputs.captures != '0'
+        working-directory: frontend
+        env:
+          MADAREK_E2E_BASE_URL: http://localhost:4173
+          AUDIT_API_MOCK: '1'
+          AUDIT_BASELINE_SLICE: '1'
+          # FCP is the one hardware-dependent axis — the deterministic
+          # findings (off-token colors, ad-hoc motion/shadows, contrast,
+          # CLS, illustration size, bundle bytes) gate at strict
+          # defaults; cross-runner FCP gets explicit documented
+          # headroom (observed same-machine run-to-run noise reaches
+          # ~2.8x under load).
+          AUDIT_FCP_RATIO: '4'
+        run: |
+          npx vite preview --port 4173 --strictPort &
+          PREVIEW_PID=$!
+          sleep 5
+          AUDIT_BASELINE=1 npx playwright test tests/audit/surface-inventory.spec.ts
+          kill $PREVIEW_PID || true
+          npx tsx tests/audit/run-drift.ts
       - name: Baseline not yet captured — skipping
         if: steps.baseline.outputs.captures == '0'
         run: |

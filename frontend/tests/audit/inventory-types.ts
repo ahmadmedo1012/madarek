@@ -139,4 +139,13 @@ export const KNOWN_DURATIONS_MS: ReadonlyArray<number> = [
   80, 160, 240, 320, 360, 380, 700, 1200,
   // 012 additions (animation-only)
   120, 180, 0,
+  // r164 integration: the token ladder's slower rungs (tokens.css
+  // --t-slower: 520ms, --t-cinema: 720ms) — used by the landing
+  // reveal-up family and the auth card entrance; without them the
+  // audit flagged canonical token motion as "ad-hoc".
+  520, 720,
+  // r164 integration: --ln-dur-marquee (42s) — the landing college
+  // ring's single documented slow pass (tokens.css §landing motion;
+  // consumers reference var(--ln-dur-marquee), never a re-spelled 42s).
+  42_000,
 ];

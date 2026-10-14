@@ -102,6 +102,14 @@ export function standardRoutes(): MockRouteDef[] {
     { method: 'POST', path: '/auth/logout', json: ok({ ok: true }) },
     { method: 'POST', path: '/auth/register', json: ok({ user: STUDENT_USER, accessToken: 'e2e-token' }) },
     { method: 'GET', path: '/faculties', json: ok(FACULTIES) },
+    /* r164 integration: the public college gallery (/colleges) — records
+     * match the identity bridge (name|city exact) so the real
+     * reconciliation + identity accents render. */
+    { method: 'GET', path: '/colleges', json: ok([
+      { id: 'clg_e2e_eng', name: 'كلية الهندسة', nameEn: 'Engineering', iconEmoji: null, city: 'الزاوية', departmentCount: 3, studentCount: 420, teacherCount: 28, courseCount: 12 },
+      { id: 'clg_e2e_sci', name: 'كلية العلوم', nameEn: 'Sciences', iconEmoji: null, city: 'الزاوية', departmentCount: 2, studentCount: 310, teacherCount: 19, courseCount: 9 },
+      { id: 'clg_e2e_arts', name: 'كلية الآداب', nameEn: 'Arts', iconEmoji: null, city: 'الزاوية', departmentCount: 2, studentCount: 260, teacherCount: 15, courseCount: 7 },
+    ]) },
 
     { method: 'GET', path: '/me/dashboard', json: ok(STUDENT_DASHBOARD) },
     { method: 'GET', path: '/me/resume', json: ok(RESUME) },

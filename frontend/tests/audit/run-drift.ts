@@ -17,6 +17,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { detectDrift, groupByKind, type DriftFinding } from './drift';
+import { DEFAULT_BUDGET } from './inventory-types';
 import type { SurfaceInventory } from './inventory-types';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
@@ -67,7 +68,19 @@ function main(): number {
   const baseline = readInventory(baselinePath);
   const fcpBaseline = buildFcpBaseline(baseline);
 
-  const findings = detectDrift(inventory, { fcpBaseline });
+  /* r164 integration: FCP is the one budget axis that is inherently
+   * hardware-dependent — a baseline captured on one machine cannot
+   * gate a 5% ratio on a different CI runner. AUDIT_FCP_RATIO lets CI
+   * run with explicit, documented headroom (deterministic findings —
+   * colors, motion, contrast, CLS, bytes, illustrations — stay at the
+   * strict defaults everywhere). */
+  const budget = { ...DEFAULT_BUDGET };
+  if (process.env.AUDIT_FCP_RATIO) {
+    const ratio = Number.parseFloat(process.env.AUDIT_FCP_RATIO);
+    if (Number.isFinite(ratio) && ratio >= 1) budget.fcpRegressionRatio = ratio;
+  }
+
+  const findings = detectDrift(inventory, { fcpBaseline, budget });
   if (findings.length === 0) {
     console.log(
       `✓ surface drift: clean across ${inventory.captures.length} captures`,

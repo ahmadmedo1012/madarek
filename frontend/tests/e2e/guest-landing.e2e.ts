@@ -19,18 +19,19 @@ test.describe('الصفحة العامة للزوار', () => {
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   });
 
-  test('الدعوة الأساسية: «ابدأ الآن» تقود إلى البوابة ثم إلى إنشاء الحساب', async ({ page }) => {
+  test('الدعوة الأساسية: «ابدأ الآن» تقود مباشرةً إلى إنشاء الحساب (r164-b)', async ({ page }) => {
     await page.goto('/');
 
-    // CTA الرأسي في الهيدر يقود إلى بوابة الدخول (App.tsx GuestRoute).
+    // r164-b: كل أزرار البدء الرئيسيّة تقود الزائر الجديد مباشرةً إلى
+    // نموذج إنشاء الحساب — لا إلى بوابة الدخول (كان الوصل مكسورًا).
     await page.getByRole('link', { name: 'ابدأ الآن' }).first().click();
-    await expect(page).toHaveURL(/\/auth$/);
-    await expect(page.getByRole('heading', { name: 'مرحباً بعودتك' })).toBeVisible();
-
-    // من بوابة الدخول إلى إنشاء الحساب — الرابط الصريح في أسفل الاستمارة.
-    await page.getByRole('link', { name: 'أنشئ حسابك الآن' }).click();
     await expect(page).toHaveURL(/\/auth\/register$/);
     // الخطوة الأولى في صفحة التسجيل: اختيار الدور «من أنت؟»
     await expect(page.getByRole('heading', { name: 'من أنت؟' })).toBeVisible();
+
+    // والعائد بصحبة حسابٍ يجد باب الدخول من صفحة التسجيل (القمع بالاتجاهين).
+    await page.getByRole('link', { name: /تسجيل الدخول/ }).first().click();
+    await expect(page).toHaveURL(/\/auth$/);
+    await expect(page.getByRole('heading', { name: 'مرحباً بعودتك' })).toBeVisible();
   });
 });

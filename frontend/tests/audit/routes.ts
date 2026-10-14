@@ -38,6 +38,9 @@ export const AUDIT_ROUTES = [
   '/student/gamification',
   '/student/skills',
   '/student/alerts',
+  // r164c: the student academic calendar (month grid uniting schedule
+  // slots + assignment deadlines + exam windows + live sessions).
+  '/student/calendar',
   '/student/labs',
   '/student/ar',
   '/student/social',
@@ -129,6 +132,43 @@ export const AUDIT_ROUTES = [
 ] as const;
 
 export type AuditRoute = typeof AUDIT_ROUTES[number];
+
+/**
+ * r164 integration — the committed CI baseline slice.
+ *
+ * The surface-drift CI job re-captures these routes on every push and
+ * hard-gates them against `surface-baseline.json`. Selection rule
+ * (honest, not decorative): every route here renders its PRIMARY
+ * content from the hermetic fixture transport (tests/e2e/fixtures/
+ * mock-transport.ts) against the production build — routes whose
+ * data queries have no fixture yet render error/loading states and
+ * are deliberately NOT baseline material until their fixtures land.
+ * Param routes resolve through the harness's PARAM_DEFAULTS.
+ *
+ * Re-capture locally with:
+ *   AUDIT_BASELINE=1 AUDIT_API_MOCK=1 AUDIT_BASELINE_SLICE=1 \
+ *   MADAREK_E2E_BASE_URL=http://localhost:4173 \
+ *   npx playwright test tests/audit/surface-inventory.spec.ts
+ * (vite preview serving `npm run build` output on :4173), then
+ * `npm run audit:baseline` to promote, then re-capture + drift.
+ */
+export const BASELINE_ROUTES: readonly AuditRoute[] = [
+  // public funnel
+  '/',
+  '/auth',
+  '/auth/register',
+  '/404',
+  '/colleges',
+  // student core journeys (fixtures: dashboard/resume/notifications/
+  // enrollments/offerings full+lectures/lecture detail/exams/me)
+  '/student/dashboard',
+  '/student/courses',
+  '/student/courses/:offeringId',
+  '/student/lectures/:lectureId',
+  '/student/online-exams',
+  '/student/alerts',
+  '/student/calendar',
+] as const;
 
 export const VIEWPORTS = [360, 768, 1280] as const;
 export type Viewport = typeof VIEWPORTS[number];

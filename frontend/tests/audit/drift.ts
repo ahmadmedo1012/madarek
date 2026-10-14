@@ -141,7 +141,11 @@ export function detectDrift(
 
     // 8. FCP regression vs baseline
     const baselineFcp = baseline[cap.route];
-    if (baselineFcp !== undefined) {
+    /* r164 integration: FCP 0 = "paint entry never fired" (minimal
+     * pages like /404 sometimes miss the first-contentful-paint entry
+     * entirely), NOT "instant" — a 0 baseline would flag any real
+     * value as an infinite regression. Skip unmeasured sides. */
+    if (baselineFcp !== undefined && baselineFcp > 0 && cap.fcpMs > 0) {
       const ratio = cap.fcpMs / baselineFcp;
       if (ratio > budget.fcpRegressionRatio) {
         findings.push({

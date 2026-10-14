@@ -93,7 +93,7 @@ import { fileURLToPath } from 'node:url';
 import { installMockApi } from '../e2e/fixtures/mock-transport';
 import { ROLE_USERS, type FixtureUser } from '../e2e/fixtures/api-fixtures';
 
-import { AUDIT_ROUTES, DIRS, THEMES, VIEWPORTS } from './routes';
+import { AUDIT_ROUTES, BASELINE_ROUTES, DIRS, THEMES, VIEWPORTS } from './routes';
 import type {
   ColorCapture,
   DirKey,
@@ -139,10 +139,24 @@ const ROUTE_LIMIT = process.env.AUDIT_ROUTE_LIMIT
 const ROUTES_FROM = process.env.AUDIT_ROUTES_FROM
   ? Math.max(0, Number.parseInt(process.env.AUDIT_ROUTES_FROM, 10) || 0)
   : 0;
+/** Curated allow-list (r164 integration): comma-separated route
+ * paths — when set, ONLY these routes sweep (in table order). Used
+ * for the committed CI drift slice: routes whose surfaces the hermetic
+ * fixtures render with real data. AUDIT_BASELINE_SLICE=1 selects the
+ * committed BASELINE_ROUTES set (single source of truth in routes.ts).
+ * Positional FROM/LIMIT slices keep working for full-sweep
+ * verification runs. */
+const ROUTES_ONLY = process.env.AUDIT_ROUTES_ONLY
+  ? new Set(
+      process.env.AUDIT_ROUTES_ONLY.split(',').map((r) => r.trim()).filter(Boolean),
+    )
+  : process.env.AUDIT_BASELINE_SLICE === '1'
+    ? new Set<string>(BASELINE_ROUTES)
+    : null;
 const SWEEP_ROUTES = AUDIT_ROUTES.slice(
   ROUTES_FROM,
   ROUTES_FROM + (ROUTE_LIMIT ?? AUDIT_ROUTES.length - ROUTES_FROM),
-);
+).filter((r) => !ROUTES_ONLY || ROUTES_ONLY.has(r));
 
 /** Extra settle time after networkidle (charts, skeletons → content). */
 const SETTLE_MS = 400;
@@ -338,12 +352,36 @@ async function collectRaw(page: Page): Promise<RawCapture> {
       }
 
       /* computed colours on the key surfaces */
+      /* r164 integration: two sampling-truth fixes —
+       *   1. only elements with DIRECT non-empty text nodes are real
+       *      fg/bg pairs (body/containers inherit colours their own
+       *      children override — sampling them produced phantom 1.24
+       *      ratios);
+       *   2. an element's own transparent background means the pair
+       *      sits on an ancestor's surface — walk up to the first
+       *      opaque background instead of computing against
+       *      rgba(0,0,0,0) (which produced phantom 1.15 ratios). */
+      const isTransparent = (bg: string) =>
+        !bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent';
+      const hasDirectText = (el: Element): boolean =>
+        Array.from(el.childNodes).some(
+          (n) => n.nodeType === 3 && (n.textContent ?? '').trim().length > 0,
+        );
+      const effectiveBg = (el: HTMLElement): string => {
+        let node: HTMLElement | null = el;
+        while (node) {
+          const bg = getComputedStyle(node).backgroundColor;
+          if (!isTransparent(bg)) return bg;
+          node = node.parentElement;
+        }
+        return 'rgba(0, 0, 0, 0)';
+      };
       const colors = [] as Array<{ selector: string; background: string; color: string }>;
       for (const [name, selector] of cfg.colorSamples as Array<[string, string]>) {
         const el = document.querySelector<HTMLElement>(selector);
-        if (!el) continue;
+        if (!el || !hasDirectText(el)) continue;
         const cs = getComputedStyle(el);
-        colors.push({ selector: name, background: cs.backgroundColor, color: cs.color });
+        colors.push({ selector: name, background: effectiveBg(el), color: cs.color });
       }
 
       /* CLS (Chromium keeps buffered layout-shift entries) */
@@ -396,6 +434,22 @@ function gzipBytes(svg: string): number {
 }
 
 function parseRgb(raw: string): [number, number, number] | null {
+  /* r164 integration: modern Chromium serialises some computed colours
+   * as `color(srgb r g b[ / a])` — parse that form too (previously it
+   * fell to null → bogus 0.00 contrast ratios on card surfaces). */
+  const cs = raw.match(/^color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\s*\)$/);
+  if (cs) {
+    let r = Number(cs[1]) * 255;
+    let g = Number(cs[2]) * 255;
+    let b = Number(cs[3]) * 255;
+    const a = cs[4] !== undefined ? Number(cs[4]) : 1;
+    if (a < 1) {
+      r = r * a + 255 * (1 - a);
+      g = g * a + 255 * (1 - a);
+      b = b * a + 255 * (1 - a);
+    }
+    return [Math.round(r), Math.round(g), Math.round(b)];
+  }
   const m = raw.match(/rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:[,\s/]+([\d.]+))?\s*\)/);
   if (!m) return null;
   let r = Number(m[1]);
