@@ -22,7 +22,12 @@ export const passwordSchema = z
   .min(8)
   .max(72)
   .refine((pw) => !isCommonPassword(pw), {
-    message: 'This password is too common — choose something less predictable.',
+    // r165f (D17-3): user-facing copy, not a dev-internal. validate()
+    // surfaces this exact message as the 400 envelope when it is the
+    // single failure, so the visitor knows WHICH field to fix — the FE
+    // (RegisterPage registerPasswordSchema) mirrors the same check and
+    // the same message, catching it before the submit.
+    message: 'كلمة المرور شائعة جدًا — اختر واحدة أقل توقّعًا',
   });
 
 export const registerSchema = z

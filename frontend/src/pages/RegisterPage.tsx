@@ -17,6 +17,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { ROLE_HOME } from '../lib/nav';
 import { countAr } from '../lib/format';
 import { authErrorView } from '../lib/authErrors';
+import { isCommonPassword } from '../lib/commonPasswords';
 import type { AppRole } from '../stores/auth.store';
 
 /**
@@ -25,6 +26,21 @@ import type { AppRole } from '../stores/auth.store';
  * appointed by the university — they don't sign up through this form.
  */
 type AcademicRole = Extract<AppRole, 'STUDENT' | 'TEACHER'>;
+
+/** r165f: FE mirror of the backend password policy (auth.dto.ts +
+ *  password-policy.ts). Same rules, same Arabic message the backend's
+ *  field-specific 400 now carries — a blocklist password (password123,
+ *  12345678…) used to pass the client check, submit, then come back as
+ *  the field-less «تحقّق من البيانات المُدخلة» so the visitor retried
+ *  the SAME secret in a loop. The refine rides after the length checks,
+ *  so a short password still reports «8 أحرف على الأقل» first. */
+export const registerPasswordSchema = z
+  .string()
+  .min(8, '8 أحرف على الأقل')
+  .max(72)
+  .refine((pw) => !isCommonPassword(pw), {
+    message: 'كلمة المرور شائعة جدًا — اختر واحدة أقل توقّعًا',
+  });
 
 const studentSchema = z.object({
   // D17-4 parity with the backend register schema (auth.dto.ts):
@@ -37,7 +53,7 @@ const studentSchema = z.object({
   firstName: z.string().trim().min(1, 'مطلوب').max(60),
   lastName: z.string().trim().min(1, 'مطلوب').max(60),
   email: z.string().trim().toLowerCase().email('بريد إلكتروني غير صالح').max(120),
-  password: z.string().min(8, '8 أحرف على الأقل').max(72),
+  password: registerPasswordSchema,
   universityId: z.string().trim().min(3, 'مطلوب').max(40),
   facultyId: z.string().min(1, 'اختر الكلّيّة'),
   departmentId: z.string().min(1, 'اختر القسم'),
@@ -52,7 +68,7 @@ const teacherSchema = z.object({
   firstName: z.string().trim().min(1, 'مطلوب').max(60),
   lastName: z.string().trim().min(1, 'مطلوب').max(60),
   email: z.string().trim().toLowerCase().email('بريد إلكتروني غير صالح').max(120),
-  password: z.string().min(8, '8 أحرف على الأقل').max(72),
+  password: registerPasswordSchema,
   facultyId: z.string().min(1, 'اختر الكلّيّة'),
   departmentId: z.string().min(1, 'اختر القسم'),
   specialty: z.string().trim().min(2, 'مطلوب').max(120),
