@@ -19,6 +19,7 @@
  */
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ResultsPage } from '../../src/pages/student/MorePages';
 import { GRADE_BANDS, gradeBand } from '../../src/lib/courseMeta';
@@ -90,7 +91,11 @@ const queryClient = new QueryClient({
 function renderPage() {
   return render(
     <QueryClientProvider client={queryClient}>
-      <ResultsPage />
+      {/* r164 integration: r164-e added course-context <Link>s to the
+          graded rows — the page now requires a Router context. */}
+      <MemoryRouter>
+        <ResultsPage />
+      </MemoryRouter>
     </QueryClientProvider>,
   );
 }

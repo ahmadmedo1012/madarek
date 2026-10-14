@@ -272,8 +272,12 @@ describe('ResultsPage — legacy payload degradation', () => {
 
     // The awaiting card degrades to the honest empty copy…
     expect(screen.getByText('لا شيء بانتظار تقييم الأستاذ حالياً')).toBeTruthy();
-    // …and the graded row falls back to the pct-only title.
-    expect(screen.getByText('واجب قديم — 70%')).toBeTruthy();
+    // …and the graded row falls back to the pct-only title (r164
+    // integration: the title span also carries the r164-a band chip,
+    // so match the row span then pin its full text).
+    const legacyRow = screen.getByText(/واجب قديم/).closest('span');
+    expect(legacyRow?.textContent).toContain('70%');
+    expect(legacyRow?.textContent).toContain('جيّد');
     expect(screen.queryByText(/ملاحظة الأستاذ/)).toBeNull();
   });
 });
