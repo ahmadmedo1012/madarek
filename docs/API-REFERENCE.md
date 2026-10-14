@@ -329,6 +329,7 @@ There is **no** `POST /posts/:id/comment` route — comments are read via the po
 | GET | `/ai/config` | Bearer | Which engine answers: `{ provider: 'local' \| 'openai', model: string \| null }` — the honest-surface endpoint the FE badge/subtitle consumes |
 | GET | `/ai/conversations` | Bearer | List conversations (take 50) |
 | GET | `/ai/conversations/:id/messages` | Bearer | Conversation messages — capped at the newest 200 messages (delivered in chronological order) |
+| DELETE | `/ai/conversations/:id` | Bearer | Delete one of the caller's conversations (ownership-scoped lookup → 404 `المحادثة غير موجودة` on a miss; messages cascade via the schema's `onDelete: Cascade`). Answers `{ data: { ok: true } }` |
 
 ## Files
 

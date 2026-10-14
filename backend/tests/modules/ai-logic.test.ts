@@ -19,6 +19,7 @@
  * writes, telemetry) need a DB harness the project does not have.
  */
 import { Prisma, Role } from '@prisma/client';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   chatSchema,
@@ -29,6 +30,11 @@ import {
   matchConceptInMessage,
   worstGapMastery,
 } from '../../src/http/routes/ai.routes';
+
+/* Source-scan wiring pins (the ai-provider.test.ts technique — the file
+ * is the contract). The prisma-backed handlers themselves need a DB
+ * harness the project does not have; the pins keep the shape honest. */
+const routeSource = readFileSync(new URL('../../src/http/routes/ai.routes.ts', import.meta.url), 'utf8');
 
 describe('chatSchema (.strict + message bounds — audit 15-i §5 item 10)', () => {
   it('accepts a bare message and a valid cuid conversationId', () => {
@@ -167,5 +173,41 @@ describe('worstGapMastery', () => {
     const rows = [row(0.42), row(0.31)];
     worstGapMastery(rows);
     expect(rows.map((r) => r.level)).toEqual([0.42, 0.31]);
+  });
+});
+
+/* r164g — DELETE /ai/conversations/:id (conversation clear). The whole
+ * route is wiring (ownership lookup → cascade delete → ok envelope);
+ * these pins keep the three honest properties: the caller can ONLY
+ * delete their own conversation, a miss is the same honest 404 the
+ * read paths answer, and the delete cascades the messages rather than
+ * stranding orphan rows. */
+describe('DELETE /ai/conversations/:id — ownership + cascade (r164g)', () => {
+  it('the route exists and is auth-scoped like every route in this router', () => {
+    expect(routeSource).toContain("router.delete('/conversations/:id'");
+    // router.use(authMiddleware) at the top of the file guards it.
+    expect(routeSource).toContain('router.use(authMiddleware)');
+  });
+
+  it('resolves the target with an OWNERSHIP-SCOPED findFirst — never a bare delete by id', () => {
+    const del = routeSource.indexOf("router.delete('/conversations/:id'");
+    const block = routeSource.slice(del, routeSource.indexOf('export default router', del));
+    // Same where-shape as the two GET conversation routes: id AND the
+    // caller's userId. A bare prisma.aiConversation.delete({ where: {
+    // id: req.params.id } }) would let any user delete any conversation.
+    expect(block).toContain('prisma.aiConversation.findFirst');
+    expect(block).toContain('where: { id: req.params.id!, userId: req.user!.id }');
+    expect(block).not.toMatch(/aiConversation\.delete\(\{\s*where:\s*\{\s*id:\s*req\.params\.id/);
+  });
+
+  it('a miss answers the SAME honest 404 copy the read paths answer (3 call sites)', () => {
+    expect(routeSource.split("AppError.notFound('المحادثة غير موجودة')").length - 1).toBe(3);
+  });
+
+  it('deletes the conversation (messages cascade via schema onDelete) and answers { data: { ok: true } }', () => {
+    const del = routeSource.indexOf("router.delete('/conversations/:id'");
+    const block = routeSource.slice(del, routeSource.indexOf('export default router', del));
+    expect(block).toContain('await prisma.aiConversation.delete({ where: { id: conv.id } })');
+    expect(block).toContain("res.json({ data: { ok: true } })");
   });
 });

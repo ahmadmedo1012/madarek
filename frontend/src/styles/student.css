@@ -857,6 +857,10 @@
     }
     .chat-input { min-block-size: 44px; }
     .chat-send { min-inline-size: 44px; min-block-size: 44px; }
+    /* r164g: the conversations rows' compact actions hit the same 44px
+       touch floor on phones (min-* coexists with .btn.sm's 32px box —
+       min wins, desktop unchanged). */
+    .ai-conv-row .btn { min-block-size: 44px; }
   }
 
   /* Guardrail #6 — keyframe off-switches (the base.css token belt
@@ -3069,6 +3073,47 @@
     box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--accent) 50%, transparent);
   }
   .chat-send:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
+
+  /* ═══════════════════════════════════════════════════════════════
+     AI ASSISTANT — conversations sidebar (r164g)
+     The row rides the shared .list-row grammar; the OPEN target is a
+     nested <button> (a delete button lives in the same row, so the
+     row itself cannot be the button). Tokens only — no new motion, no
+     raw colors.
+     ═══════════════════════════════════════════════════════════════ */
+  .ai-conv-row[aria-current='true'] {
+    /* current-conversation indicator: the soft accent wash, paired
+       with the «الحالية» badge + aria-current for non-visual axes. */
+    background: var(--accent-soft);
+  }
+  .ai-conv-open {
+    /* button reset on top of .list-row-body (flex column, flex:1,
+       min-inline-size:0 — the grammar the ellipsis needs). */
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: start;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    border-radius: var(--r-sm);
+  }
+  .ai-conv-open:disabled { cursor: default; }
+  .ai-conv-title {
+    /* one line — the server already caps titles at 60 chars, but a
+       narrow sidebar must ellipsis rather than wrap the row tall. */
+    max-inline-size: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ai-conv-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    flex-shrink: 0;
+  }
+
   /* ═══════════════════════════════════════════════════════════════
      MATRIX (knowledge map) — courses + cells + legend
      ═══════════════════════════════════════════════════════════════ */

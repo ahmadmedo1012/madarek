@@ -27,7 +27,7 @@
 | التدريب | `training.routes.ts` | `catalog`، `tracks/:slug/enroll`، `lessons/:lessonId/complete`، `me/badges`، `certificates`، `leaderboard` |
 | اختبارات | نماذج `Question/ExamTemplate/ExamAttempt` | الطالب يتخذ فقط (البناء للإدارة/الأستاذ) |
 | إشعارات/رسائل | `me.routes.ts` | قراءة/قراءة الكل (رسائل بحد 30/د) |
-| ذكاء | `ai.routes.ts` | `POST /ai/chat` (مؤلف `gap-aware-composer`) |
+| ذكاء | `ai.routes.ts` | `POST /ai/chat` (مؤلف `gap-aware-composer` افتراضيًا؛ مزوّد LLM حقيقي اختياريًا بلا fallback صامت — r160)، `GET /ai/config` (سطح الصدق للمحرك)، `GET /ai/conversations`، `GET /ai/conversations/:id/messages`، `DELETE /ai/conversations/:id` (ملكية المتصل؛ حذف تتالي رسائله — r164g) |
 
 ## النماذج المرتبطة
 

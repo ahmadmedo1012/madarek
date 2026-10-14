@@ -452,4 +452,25 @@ router.get('/conversations/:id/messages', async (req, res, next) => {
   }
 });
 
+/* r164g — conversation clear (the student's «حذف المحادثة»). The
+ * ownership check runs FIRST via the same findFirst shape the two GET
+ * routes use — a bare prisma.aiConversation.delete({ where: { id } })
+ * would let any authenticated user delete any conversation by guessing
+ * a cuid. The delete itself cascades the messages (schema
+ * onDelete: Cascade), so one call clears the whole exchange. Response
+ * mirrors the annotations delete family: { data: { ok: true } }. No
+ * rate limiter: a bounded row removal, not an expensive AI call. */
+router.delete('/conversations/:id', async (req, res, next) => {
+  try {
+    const conv = await prisma.aiConversation.findFirst({
+      where: { id: req.params.id!, userId: req.user!.id },
+    });
+    if (!conv) throw AppError.notFound('المحادثة غير موجودة');
+    await prisma.aiConversation.delete({ where: { id: conv.id } });
+    res.json({ data: { ok: true } });
+  } catch (e) {
+    next(e);
+  }
+});
+
 export default router;

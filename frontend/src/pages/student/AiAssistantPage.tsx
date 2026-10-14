@@ -1,11 +1,20 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Sparkles, AlertCircle, ArrowLeft, Brain, RefreshCw } from 'lucide-react';
+import { Bot, Send, Sparkles, AlertCircle, ArrowLeft, Brain, RefreshCw, Plus, Trash2, MessageSquare } from 'lucide-react';
 import { Card, Badge, UserAvatar, AlertRow } from '../../components/primitives';
 import { Skeleton } from '../../components/primitives/States';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
-import { useAiChat, useAiConfig, useGaps } from '../../hooks/useResources';
+import {
+  useAiChat,
+  useAiConfig,
+  useGaps,
+  useAiConversations,
+  useDeleteAiConversation,
+  fetchAiConversationMessages,
+  type AiMessageRow,
+} from '../../hooks/useResources';
+import { apiErrorMessage, formatRelativeAr } from '../../lib/format';
 
 interface ChatMsg {
   role: 'bot' | 'user';
@@ -16,12 +25,24 @@ interface ChatMsg {
   retryText?: string;
 }
 
-const SUGGESTIONS = [
+/* Role-aware first questions. The student set rides the mastery-aware
+ * contract (both engines see the student's mastery rows); the other
+ * set matches what the generic assistant actually covers — teaching,
+ * assessment and course organization — instead of asking a teacher
+ * «ما المفاهيم التي أحتاج إلى مراجعتها؟» (a mastery question their role
+ * has no data for). */
+const STUDENT_SUGGESTIONS = [
   'ما المفاهيم التي أحتاج إلى مراجعتها؟',
   'اقترح لي خطّة مذاكرة لفجواتي المعرفيّة',
   'كيف أحسّن درجتي في أضعف مفاهيمي؟',
   'ما خطوتي الدراسيّة التالية؟',
   'راجع معي المفاهيم التي أتعثّر فيها',
+];
+const OTHER_SUGGESTIONS = [
+  'اقترح طريقة لتقييم فهم الطلاب بعد كل محاضرة',
+  'كيف أنظّم مقرّري عبر الأسابيع بدفعة زمنية واضحة؟',
+  'اقترح أنشطة تفاعلية تزيد مشاركة الطلاب في المحاضرة',
+  'كيف أصوغ أسئلة اختبار تقيس الفهم لا الحفظ؟',
 ];
 
 /* P4: the two engines' copy. The page NEVER claims an LLM while the
@@ -37,6 +58,21 @@ const REAL_GREETING_STUDENT =
 const REAL_GREETING_OTHER =
   'مرحبًا! أنا مساعدك المدعوم بنموذج لغويّ حقيقيّ. لا أملك بيانات إتقان للمقرّرات التي تدرّسها، لكن أستطيع مساعدتك في أسئلة التدريس والتقييم وتنظيم المقرّرات. كيف أساعدك؟';
 
+/**
+ * r164g — map stored conversation rows to the transcript shape.
+ * USER→user, ASSISTANT→bot; SYSTEM rows are dropped defensively (none
+ * are written today, and a stored system row is not a chat turn).
+ * An empty result degrades to the welcome bubble so a loaded
+ * conversation can never render a blank chat area. Pure (DB-free pin
+ * target; the greeting is injected so tests stay config-independent).
+ */
+export function transcriptFromRows(rows: readonly AiMessageRow[], greeting: string): ChatMsg[] {
+  const mapped = rows
+    .filter((r) => r.role !== 'SYSTEM')
+    .map((r): ChatMsg => ({ role: r.role === 'USER' ? 'user' : 'bot', text: r.content }));
+  return mapped.length > 0 ? mapped : [{ role: 'bot', text: greeting }];
+}
+
 /** Render text with newlines preserved (chat replies use \n). */
 function Multiline({ children }: { children: string }) {
   return (
@@ -50,10 +86,19 @@ function Multiline({ children }: { children: string }) {
   );
 }
 
+/** A conversation switch in flight / failed (r164g). The failed id is
+ * kept so the retry affordance can re-attempt the SAME conversation. */
+type ConvLoad =
+  | { phase: 'idle' }
+  | { phase: 'loading' }
+  | { phase: 'error'; id: string; message: string };
+
 export default function AiAssistantPage() {
   const user = useAuthStore((s) => s.user);
   const chat = useAiChat();
   const gaps = useGaps();
+  const conversations = useAiConversations();
+  const delConversation = useDeleteAiConversation();
   /* P4: which engine answers — drives the badge, the subtitle, and the
    * greeting (the initial bot message renders derived, so the copy
    * flips the moment the config resolves — no flash, no state surgery). */
@@ -69,6 +114,7 @@ export default function AiAssistantPage() {
     : isStudent
       ? LOCAL_GREETING_STUDENT
       : LOCAL_GREETING_OTHER;
+  const suggestions = isStudent ? STUDENT_SUGGESTIONS : OTHER_SUGGESTIONS;
   const [messages, setMessages] = useState<ChatMsg[]>([{ role: 'bot', text: greeting }]);
   /* The transcript's initial greeting renders DERIVED from the config
    * (the state row is a placeholder instance): once the user sends
@@ -78,7 +124,17 @@ export default function AiAssistantPage() {
       ? [{ role: 'bot', text: greeting }]
       : messages;
   const [input, setInput] = useState('');
+  const [convLoad, setConvLoad] = useState<ConvLoad>({ phase: 'idle' });
+  /* Two-step delete confirm — clearing a conversation is destructive
+   * (its whole exchange is gone); the first click only asks. */
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
+
+  /* Pending honesty (r164g): everything that could strand or duplicate
+   * an in-flight exchange is disabled while a reply or a conversation
+   * switch is pending — the input, the chips, the suggestions, and
+   * every conversation row. */
+  const busy = chat.isPending || convLoad.phase === 'loading';
 
   useEffect(() => {
     scroller.current?.scrollTo({
@@ -88,22 +144,85 @@ export default function AiAssistantPage() {
     });
   }, [messages, chat.isPending, reducedMotion]);
 
-  const send = async (text?: string) => {
-    const t = (text ?? input).trim();
-    if (!t || chat.isPending) return;
-    setMessages((m) => [...m, { role: 'user', text: t }]);
-    setInput('');
+  const deliver = async (t: string) => {
     try {
       const res = await chat.mutateAsync({ conversationId, message: t });
       setConversationId(res.conversationId);
       setMessages((m) => [...m, { role: 'bot', text: res.reply }]);
-    } catch {
+    } catch (err) {
       // Recoverable failure: the exchange stays in the log with a retry
-      // affordance instead of pretending nothing happened.
+      // affordance instead of pretending nothing happened. The server's
+      // own Arabic message wins when it has one (rate limit, honest
+      // provider outage) — a fixed generic bubble would hide the real
+      // cause (r164g; apiErrorMessage's Arabic guard keeps Latin
+      // transport prose out of the RTL log).
       setMessages((m) => [
         ...m,
-        { role: 'bot', text: 'تعذَّر الاتصال بالمساعد الآن.', error: true, retryText: t },
+        { role: 'bot', text: apiErrorMessage(err, 'تعذَّر الاتصال بالمساعد الآن.'), error: true, retryText: t },
       ]);
+    }
+  };
+
+  const send = async (text?: string) => {
+    const t = (text ?? input).trim();
+    if (!t || busy) return;
+    // Optimistic user bubble: the turn is visible the moment it is sent.
+    setMessages((m) => [...m, { role: 'user', text: t }]);
+    setInput('');
+    await deliver(t);
+  };
+
+  /* Retry a failed exchange IN PLACE (r164g): the user's question is
+   * already in the log, so the failed row is removed and the same
+   * prompt re-delivered — no duplicate question bubble, no stale
+   * error row, and the server never wrote the failed turn (its writes
+   * are one transaction that only runs after a reply exists). */
+  const retryExchange = (index: number) => {
+    const failed = messages[index];
+    if (!failed?.error || !failed.retryText || chat.isPending) return;
+    setMessages((m) => m.filter((_, i) => i !== index));
+    void deliver(failed.retryText);
+  };
+
+  const openConversation = async (id: string) => {
+    if (busy || id === conversationId) return;
+    setConfirmDeleteId(null);
+    setConvLoad({ phase: 'loading' });
+    try {
+      const rows = await fetchAiConversationMessages(id);
+      setConversationId(id);
+      setMessages(transcriptFromRows(rows, greeting));
+      setConvLoad({ phase: 'idle' });
+    } catch (err) {
+      // The transcript stays as-is; the affordance to re-open rides
+      // the same id so retry retries the same conversation.
+      setConvLoad({ phase: 'error', id, message: apiErrorMessage(err, 'تعذَّر فتح المحادثة.') });
+    }
+  };
+
+  const startNewConversation = () => {
+    if (busy) return;
+    setConversationId(undefined);
+    setMessages([{ role: 'bot', text: greeting }]);
+    setConvLoad({ phase: 'idle' });
+    setConfirmDeleteId(null);
+  };
+
+  const deleteConversation = async (id: string) => {
+    try {
+      await delConversation.mutateAsync(id);
+      setConfirmDeleteId(null);
+      if (id === conversationId) {
+        // The open transcript no longer exists server-side — reset to
+        // a fresh conversation instead of a dead log.
+        setConversationId(undefined);
+        setMessages([{ role: 'bot', text: greeting }]);
+        setConvLoad({ phase: 'idle' });
+      }
+    } catch {
+      // delConversation.isError renders the honest row; close the
+      // confirm step either way so the row is operable again.
+      setConfirmDeleteId(null);
     }
   };
 
@@ -112,6 +231,7 @@ export default function AiAssistantPage() {
   };
 
   const initials = user?.avatarInitials ?? 'أنا';
+  const convList = conversations.data ?? [];
 
   return (
     <div className="page">
@@ -170,7 +290,7 @@ export default function AiAssistantPage() {
                 type="button"
                 className="ai-gap-card"
                 onClick={() => askAboutGap(g.conceptName)}
-                disabled={chat.isPending}
+                disabled={busy}
               >
                 <div className="ai-gap-head">
                   <Icon icon={AlertCircle} size={14} className="ai-gap-warn" />
@@ -195,67 +315,109 @@ export default function AiAssistantPage() {
       ) : null}
 
       <div className="grid-2-1">
-        <Card title="محادثتك مع المساعد" icon={Bot}>
+        <Card
+          title="محادثتك مع المساعد"
+          icon={Bot}
+          actions={
+            /* r164g context honesty: mastery context IS sent for
+             * students (r160 prompt composition) in BOTH engine modes —
+             * the local composer reads the same mastery rows. The chip
+             * states exactly that awareness and nothing more; roles with
+             * no mastery rows see no chip (nothing is invented). */
+            isStudent ? <Badge color="brand" icon={Brain}>واعٍ بمستوى إتقانك</Badge> : undefined
+          }
+        >
           {/* role=log + aria-live: screen readers hear every reply and
               error as the conversation grows (audit 0-d P1).
               tabIndex (r152a A6 P2-2): the scroller has no focusable
               children and the input lives outside it — without a tab
               stop, keyboard-only users could never arrow-scroll the
               transcript. The universal :focus-visible ring applies. */}
-          <div className="chat-area" ref={scroller} role="log" tabIndex={0} aria-live="polite" aria-label="سجلّ المحادثة مع المساعد">
-            {transcript.map((m, i) => (
-              <div key={i} className={`chat-msg ${m.role}`}>
-                {m.role === 'bot' ? (
-                  <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
-                ) : (
-                  <UserAvatar initials={initials} size={28} color="var(--surface-3)" />
-                )}
-                {m.error ? (
-                  <div className="chat-error">
-                    <span>{m.text}</span>
-                    {m.retryText && !chat.isPending && (
+          <div className="chat-area" ref={scroller} role="log" tabIndex={0} aria-live="polite" aria-label="سجلّ المحادثة مع المساعد" aria-busy={busy}>
+            {convLoad.phase === 'loading' ? (
+              <div aria-busy="true" aria-live="polite" className="flex-col gap-2">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="chat-msg bot" aria-hidden>
+                    <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
+                    <div className="chat-bubble" style={{ background: 'var(--surface-2)' }}>
+                      <Skeleton width={i === 1 ? '90%' : '60%'} height={12} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                {transcript.map((m, i) => (
+                  <div key={i} className={`chat-msg ${m.role}`}>
+                    {m.role === 'bot' ? (
+                      <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
+                    ) : (
+                      <UserAvatar initials={initials} size={28} color="var(--surface-3)" />
+                    )}
+                    {m.error ? (
+                      <div className="chat-error" role="alert">
+                        <span>{m.text}</span>
+                        {m.retryText && !chat.isPending && (
+                          <button
+                            type="button"
+                            className="chat-retry"
+                            onClick={() => retryExchange(i)}
+                          >
+                            <Icon icon={RefreshCw} size={12} />
+                            أعد إرسال سؤالك
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="chat-bubble">
+                        <Multiline>{m.text}</Multiline>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {convLoad.phase === 'error' && (
+                  <div className="chat-msg bot">
+                    <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
+                    <div className="chat-error" role="alert">
+                      <span>{convLoad.message}</span>
                       <button
                         type="button"
                         className="chat-retry"
-                        onClick={() => void send(m.retryText)}
+                        onClick={() => void openConversation(convLoad.id)}
                       >
                         <Icon icon={RefreshCw} size={12} />
-                        أعد إرسال سؤالك
+                        أعد فتح المحادثة
                       </button>
-                    )}
-                  </div>
-                ) : (
-                  <div className="chat-bubble">
-                    <Multiline>{m.text}</Multiline>
+                    </div>
                   </div>
                 )}
-              </div>
-            ))}
-            {chat.isPending && (
-              <div className="chat-msg bot">
-                <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
-                <div className="chat-typing">
-                  <span className="chat-typing-dot" />
-                  <span className="chat-typing-dot" />
-                  <span className="chat-typing-dot" />
-                  <span className="visually-hidden">المساعد يجهّز الردّ…</span>
-                </div>
-              </div>
+                {chat.isPending && (
+                  <div className="chat-msg bot">
+                    <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
+                    <div className="chat-typing">
+                      <span className="chat-typing-dot" />
+                      <span className="chat-typing-dot" />
+                      <span className="chat-typing-dot" />
+                      <span className="visually-hidden">المساعد يجهّز الردّ…</span>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
           {/* Quick-action chips above the input — Stitch signature */}
           <div className="ai-quick-actions">
-            <button type="button" className="ai-quick-chip" onClick={() => void send('لخّص لي الفصل الأخير من المقرّر')} disabled={chat.isPending}>
+            <button type="button" className="ai-quick-chip" onClick={() => void send('لخّص لي الفصل الأخير من المقرّر')} disabled={busy}>
               لخّص الفصل الأخير
             </button>
-            <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')} disabled={chat.isPending}>
+            <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')} disabled={busy}>
               اشرح مفهوماً
             </button>
-            <button type="button" className="ai-quick-chip" onClick={() => void send('أنشئ لي اختباراً قصيراً (5 أسئلة)')} disabled={chat.isPending}>
+            <button type="button" className="ai-quick-chip" onClick={() => void send('أنشئ لي اختباراً قصيراً (5 أسئلة)')} disabled={busy}>
               اختبار قصير
             </button>
-            <button type="button" className="ai-quick-chip" onClick={() => void send('اقترح موارد دراسيّة إضافيّة')} disabled={chat.isPending}>
+            <button type="button" className="ai-quick-chip" onClick={() => void send('اقترح موارد دراسيّة إضافيّة')} disabled={busy}>
               موارد إضافيّة
             </button>
           </div>
@@ -268,13 +430,13 @@ export default function AiAssistantPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') void send(); }}
-              disabled={chat.isPending}
+              disabled={busy}
             />
             <button
               type="button"
               className="chat-send"
               onClick={() => void send()}
-              disabled={!input.trim() || chat.isPending}
+              disabled={!input.trim() || busy}
               aria-label="إرسال"
             >
               <Icon icon={Send} size={15} />
@@ -282,22 +444,137 @@ export default function AiAssistantPage() {
           </div>
         </Card>
 
-        <Card title="أسئلة مقترحة" icon={Sparkles}>
-          <div className="flex-col gap-2">
-            {SUGGESTIONS.map((q) => (
-              <button
-                key={q}
-                type="button"
-                onClick={() => void send(q)}
-                className="list-row"
-                disabled={chat.isPending}
-              >
-                <Icon icon={Sparkles} size={14} />
-                <span className="list-row-body text-sm" style={{ color: 'var(--text-muted)' }}>{q}</span>
+        {/* r164g — conversation management: list/switch/clear with the
+            current-conversation indicator and a two-step delete confirm
+            (clearing an exchange is irreversible — no accidental loss). */}
+        <div className="flex-col" style={{ gap: 'var(--sp-6)', minWidth: 0 }}>
+          <Card
+            title="محادثاتك"
+            icon={MessageSquare}
+            actions={
+              <button type="button" className="btn ghost sm" onClick={startNewConversation} disabled={busy}>
+                <Icon icon={Plus} size={13} />
+                محادثة جديدة
               </button>
-            ))}
-          </div>
-        </Card>
+            }
+          >
+            {conversations.isPending ? (
+              <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="list-row" aria-hidden>
+                    <div className="list-row-body">
+                      <Skeleton width="70%" height={12} />
+                      <Skeleton width="35%" height={10} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : conversations.isError ? (
+              <AlertRow
+                color="red"
+                icon={AlertCircle}
+                title="تعذَّر تحميل محادثاتك"
+                description="يمكنك مواصلة محادثتك الحالية بشكل طبيعي، وستظهر القائمة عند إعادة المحاولة."
+                actions={
+                  <button type="button" className="btn ghost sm" onClick={() => conversations.refetch()}>
+                    <Icon icon={RefreshCw} size={13} />
+                    إعادة المحاولة
+                  </button>
+                }
+              />
+            ) : convList.length === 0 ? (
+              <p className="list-row-sub" style={{ padding: 'var(--sp-2) var(--sp-1)' }}>
+                لا توجد محادثات سابقة بعد — ابدأ بأول سؤال وستظهر محادثاتك هنا.
+              </p>
+            ) : (
+              <div className="flex-col">
+                {delConversation.isError && (
+                  <div style={{ padding: 'var(--sp-2)' }}>
+                    <AlertRow
+                      color="red"
+                      icon={AlertCircle}
+                      title="تعذَّر حذف المحادثة"
+                      description={apiErrorMessage(delConversation.error, 'لم تُحذف المحادثة — حاول مرة أخرى.')}
+                    />
+                  </div>
+                )}
+                {convList.map((c) => {
+                  const current = c.id === conversationId;
+                  const title = c.title ?? 'محادثة';
+                  const confirming = confirmDeleteId === c.id;
+                  return (
+                    <div key={c.id} className="list-row ai-conv-row" aria-current={current ? 'true' : undefined}>
+                      <button
+                        type="button"
+                        className="list-row-body ai-conv-open"
+                        onClick={() => void openConversation(c.id)}
+                        disabled={busy}
+                        aria-label={`فتح محادثة: ${title}`}
+                      >
+                        <span className="list-row-title ai-conv-title">{title}</span>
+                        <span className="list-row-sub">{formatRelativeAr(c.createdAt)}</span>
+                      </button>
+                      {confirming ? (
+                        <div className="ai-conv-actions">
+                          <button
+                            type="button"
+                            className="btn danger sm"
+                            onClick={() => void deleteConversation(c.id)}
+                            disabled={delConversation.isPending}
+                            title="سيُحذف سجلّ هذه المحادثة نهائيًا"
+                          >
+                            <Icon icon={Trash2} size={13} />
+                            تأكيد الحذف
+                          </button>
+                          <button
+                            type="button"
+                            className="btn ghost sm"
+                            onClick={() => setConfirmDeleteId(null)}
+                            disabled={delConversation.isPending}
+                          >
+                            إلغاء
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="ai-conv-actions">
+                          {current && <Badge color="brand">الحالية</Badge>}
+                          <button
+                            type="button"
+                            className="btn ghost sm"
+                            onClick={() => setConfirmDeleteId(c.id)}
+                            disabled={busy || delConversation.isPending}
+                            aria-label={`حذف محادثة: ${title}`}
+                            title="حذف هذه المحادثة نهائيًا"
+                          >
+                            <Icon icon={Trash2} size={13} />
+                            حذف
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </Card>
+
+          <Card title="أسئلة مقترحة" icon={Sparkles}>
+            <div className="flex-col gap-2">
+              {suggestions.map((q) => (
+                <button
+                  key={q}
+                  type="button"
+                  onClick={() => void send(q)}
+                  className="list-row"
+                  disabled={busy}
+                >
+                  <Icon icon={Sparkles} size={14} />
+                  <span className="list-row-body text-sm" style={{ color: 'var(--text-muted)' }}>{q}</span>
+                </button>
+              ))}
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   );

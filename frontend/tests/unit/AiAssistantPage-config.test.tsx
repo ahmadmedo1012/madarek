@@ -23,9 +23,19 @@ import AiAssistantPage from '../../src/pages/student/AiAssistantPage';
 import { useAuthStore, type AuthUser } from '../../src/stores/auth.store';
 
 const mocks = vi.hoisted(() => ({
-  chat: { isPending: false, isError: false, error: null, mutateAsync: vi.fn() },
+  chat: { isPending: false, isError: false, error: null as unknown, mutateAsync: vi.fn() },
   config: { data: undefined as undefined | { provider: 'local' | 'openai'; model: string | null }, isPending: true, isError: false },
   gaps: { data: [], isPending: false, isError: false, refetch: () => undefined },
+  // r164g: the conversations surface the page now consumes (all mocked
+  // at the useResources boundary so jsdom never needs a QueryClient).
+  conversations: {
+    data: [] as Array<{ id: string; title: string | null; createdAt: string }>,
+    isPending: false,
+    isError: false,
+    refetch: () => undefined,
+  },
+  delConversation: { isPending: false, isError: false, error: null as unknown, mutateAsync: vi.fn() },
+  fetchMessages: vi.fn(async (_id: string) => [] as Array<{ id: string; role: 'USER' | 'ASSISTANT' | 'SYSTEM'; content: string; createdAt: string }>),
 }));
 
 vi.mock('../../src/hooks/useResources', async (importOriginal) => {
@@ -35,6 +45,9 @@ vi.mock('../../src/hooks/useResources', async (importOriginal) => {
     useAiChat: () => mocks.chat,
     useAiConfig: () => mocks.config,
     useGaps: () => mocks.gaps,
+    useAiConversations: () => mocks.conversations,
+    useDeleteAiConversation: () => mocks.delConversation,
+    fetchAiConversationMessages: (id: string) => mocks.fetchMessages(id),
   };
 });
 
@@ -49,8 +62,11 @@ beforeEach(() => {
   // is real browser behavior; stub it (the ScrollProgress-test idiom of
   // shaping only what jsdom lacks).
   window.HTMLElement.prototype.scrollTo = () => undefined;
-  mocks.chat = { isPending: false, isError: false, error: null, mutateAsync: vi.fn() };
+  mocks.chat = { isPending: false, isError: false, error: null as unknown, mutateAsync: vi.fn() };
   mocks.gaps = { data: [], isPending: false, isError: false, refetch: () => undefined };
+  mocks.conversations = { data: [], isPending: false, isError: false, refetch: () => undefined };
+  mocks.delConversation = { isPending: false, isError: false, error: null as unknown, mutateAsync: vi.fn() };
+  mocks.fetchMessages = vi.fn(async () => []);
 });
 
 afterEach(() => {
@@ -141,5 +157,20 @@ describe('AiAssistantPage — the honest-surface config (P4)', () => {
     renderPage();
     expect(screen.getByText(/مساعدك المدعوم بنموذج لغويّ حقيقيّ/)).toBeInTheDocument();
     expect(screen.queryByText(/أرى بيانات إتقانك/)).toBeNull();
+  });
+
+  it('r164g context honesty: the «واعٍ بمستوى إتقانك» chip rides the STUDENT contract only', () => {
+    // Students: mastery context IS composed into the prompt (r160) —
+    // the awareness is real, so the chip states it.
+    mocks.config = { data: { provider: 'local', model: null }, isPending: false, isError: false };
+    renderPage();
+    expect(screen.getByText('واعٍ بمستوى إتقانك')).toBeInTheDocument();
+
+    cleanup();
+    // Teachers/other roles: no mastery rows exist, the generic prompt
+    // carries none — no chip (inventing awareness would be a lie).
+    useAuthStore.setState({ user: { ...STUDENT, role: 'TEACHER' as const } });
+    renderPage();
+    expect(screen.queryByText('واعٍ بمستوى إتقانك')).toBeNull();
   });
 });

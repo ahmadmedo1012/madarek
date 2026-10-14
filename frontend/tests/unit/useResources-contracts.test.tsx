@@ -20,14 +20,14 @@
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import type { Mock } from 'vitest';
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 
 vi.mock('../../src/lib/api', () => {
   const post = vi.fn(async () => ({ data: {} }));
   return {
-    api: { post, get: vi.fn(async () => ({ data: [] })), patch: vi.fn(async () => ({ data: {} })) },
+    api: { post, get: vi.fn(async () => ({ data: [] })), patch: vi.fn(async () => ({ data: {} })), delete: vi.fn(async () => ({ data: {} })) },
     unwrap: <T,>(p: Promise<{ data: T }>): Promise<T> => p.then((r) => r.data),
   };
 });
@@ -42,6 +42,10 @@ import {
   useCreateMaterial,
   useGradePaper,
   usePublishPaper,
+  useAiChat,
+  useAiConversations,
+  useDeleteAiConversation,
+  fetchAiConversationMessages,
   type StartExamResponse,
 } from '../../src/hooks/useResources';
 import { api } from '../../src/lib/api';
@@ -334,5 +338,75 @@ describe('r153g — cross-surface invalidations', () => {
 
     const adminPapers = invalidatedKeys().filter((k) => k[0] === 'admin' && k[1] === 'papers');
     expect(adminPapers).toHaveLength(2);
+  });
+});
+
+/* ── r164g — AI conversation hooks (list / switch / clear) ──────────
+ * The sidebar's freshness contract: a successful chat turn may have
+ * CREATED a conversation, and a delete removes one — both refresh the
+ * ONE ['ai','conversations'] key. A FAILED turn wrote nothing
+ * server-side (the route's writes are one post-reply transaction), so
+ * it must NOT touch the cache while the page keeps the exchange in the
+ * log with its retry affordance.
+ */
+describe('r164g — AI conversation hooks', () => {
+  const get = api.get as unknown as Mock;
+  const del = api.delete as unknown as Mock;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    post.mockResolvedValue({ data: { conversationId: 'c1', reply: 'جواب' } });
+    del.mockResolvedValue({ data: { ok: true } });
+  });
+
+  it('useAiConversations reads GET /ai/conversations through the envelope', async () => {
+    const { wrapper } = makeClient();
+    const rows = [{ id: 'c1', title: 'عنوان', createdAt: '2026-01-01T00:00:00.000Z' }];
+    get.mockResolvedValueOnce({ data: rows });
+    const { result } = renderHook(() => useAiConversations(), { wrapper });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(get).toHaveBeenCalledWith('/ai/conversations');
+    expect(result.current.data).toEqual(rows);
+  });
+
+  it('useAiChat posts /ai/chat and refreshes the conversations family on success', async () => {
+    const { wrapper, invalidatedKeys } = makeClient();
+    const { result } = renderHook(() => useAiChat(), { wrapper });
+    await act(async () => {
+      await result.current.mutateAsync({ message: 'سؤال' });
+    });
+    expect(post).toHaveBeenCalledWith('/ai/chat', { message: 'سؤال' });
+    expect(invalidatedKeys().filter((k) => k[0] === 'ai')).toEqual([['ai', 'conversations']]);
+  });
+
+  it('useAiChat failure leaves the conversations cache untouched (the failed turn wrote nothing)', async () => {
+    const { wrapper, invalidatedKeys } = makeClient();
+    post.mockRejectedValueOnce(new Error('provider down'));
+    const { result } = renderHook(() => useAiChat(), { wrapper });
+    await act(async () => {
+      await result.current.mutateAsync({ message: 'سؤال' }).catch(() => undefined);
+    });
+    expect(invalidatedKeys().filter((k) => k[0] === 'ai')).toEqual([]);
+  });
+
+  it('useDeleteAiConversation calls DELETE /ai/conversations/:id and refreshes the list', async () => {
+    const { wrapper, invalidatedKeys } = makeClient();
+    const { result } = renderHook(() => useDeleteAiConversation(), { wrapper });
+    await act(async () => {
+      await result.current.mutateAsync('c1');
+    });
+    expect(del).toHaveBeenCalledWith('/ai/conversations/c1');
+    expect(invalidatedKeys().filter((k) => k[0] === 'ai')).toEqual([['ai', 'conversations']]);
+  });
+
+  it('fetchAiConversationMessages reads the stored transcript through the envelope', async () => {
+    const rows = [
+      { id: 'm1', role: 'USER' as const, content: 'سؤال', createdAt: '2026-01-01T00:00:00.000Z' },
+      { id: 'm2', role: 'ASSISTANT' as const, content: 'جواب', createdAt: '2026-01-01T00:00:01.000Z' },
+    ];
+    get.mockResolvedValueOnce({ data: rows });
+    const out = await fetchAiConversationMessages('c1');
+    expect(get).toHaveBeenCalledWith('/ai/conversations/c1/messages');
+    expect(out).toEqual(rows);
   });
 });
