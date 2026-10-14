@@ -162,10 +162,11 @@ function HomeRedirect() {
  *      color behind the landing;
  *    · authed user, or ANY other route: OFF — authed reloads of `/`
  *      keep the product ground through the redirect (the bootstrap's
- *  sessionStorage heuristic already chose cream for them, so the
- *  pre-hydration window never flips them to ink), and in-app
- *  navigations (landing → /auth, /auth back-home) swap worlds
- *  consciously under the destination page's own opaque ground.
+ *  localStorage session heuristic already chose the product ground
+ *  for them — r163 D1: it reads the same substrate the store writes
+ *  — so the pre-hydration window never flips them to ink), and
+ *  in-app navigations (landing → /auth, /auth back-home) swap
+ *  worlds consciously under the destination page's own opaque ground.
  *
  *  Pre-hydration the effect is inert ON PURPOSE: the bootstrap's
  *  heuristic owns that window (a null user is not yet knowledge).

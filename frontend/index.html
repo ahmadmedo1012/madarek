@@ -137,16 +137,29 @@
            we cannot know the router's verdict, but we can know enough:
            pathname `/` + no persisted session means the router will
            serve the landing to a GUEST (HomeRedirect: no user →
-           LandingPage). The session store (`mdrk-auth`) lives in
-           sessionStorage, partialized to {user, accessToken} — an
-           authed reload keeps the product ground and redirects to the
-           role home with zero new flash. React owns the attribute once
+           LandingPage). The session store (`mdrk-auth`) persists in
+           localStorage (auth.store.ts resolveStringStorage —
+           globalThis.localStorage, with a non-persistent in-memory
+           fallback only for hardened privacy modes where the write
+           probe throws; the memory fallback never survives a reload,
+           so a fresh load there is genuinely a guest and this
+           verdict stays correct), partialized to {user, accessToken}
+           — an authed reload keeps the product ground and redirects
+           to the role home with zero new flash. r163 (D1): this
+           script originally read sessionStorage while the store
+           writes localStorage — the session was never visible here,
+           so every authed reload of `/` painted the ink ground for
+           the whole pre-hydration window and flashed to the product
+           world on hydration (the exact two-worlds flash r162 killed
+           for guests, inverted onto authed users; reproduced by
+           freezing the pre-hydration window). Read the SAME
+           substrate the store writes. React owns the attribute once
            the store is hydrated (useLandingBootGround in App.tsx)
            and corrects the heuristic either way; the pre-hydration
            window is the only window where this attribute exists
            without its React owner. */
         try {
-          var persistedSession = sessionStorage.getItem('mdrk-auth');
+          var persistedSession = localStorage.getItem('mdrk-auth');
           var hasSessionUser = false;
           if (persistedSession) {
             var parsedSession = JSON.parse(persistedSession);

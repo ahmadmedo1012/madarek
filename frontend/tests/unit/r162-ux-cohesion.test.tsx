@@ -256,9 +256,28 @@ describe('r162 R1/R4 — index.html bootstrap contract', () => {
 
   it('the pre-React heuristic decides the landing boot ground', () => {
     // pathname `/` + no persisted mdrk-auth session → data-landing-boot.
-    expect(index).toContain("sessionStorage.getItem('mdrk-auth')");
+    // r163 (D1): the store persists to localStorage — the heuristic must
+    // read the SAME substrate or every authed reload of `/` flashes.
+    expect(index).toContain("localStorage.getItem('mdrk-auth')");
+    expect(index).not.toContain("sessionStorage.getItem('mdrk-auth')");
     expect(index).toContain("location.pathname === '/'");
     expect(index).toContain("setAttribute('data-landing-boot', '')");
+  });
+
+  it('r163 D1 — the bootstrap reads the SAME storage the store writes', () => {
+    // auth.store.ts resolveStringStorage() probes globalThis.localStorage
+    // (in-memory fallback only when the probe throws — that fallback never
+    // survives a reload, so a fresh load there is genuinely a guest). The
+    // index.html bootstrap must read from that same substrate: a drift
+    // between the two (r162 shipped sessionStorage vs localStorage —
+    // reproduced as an ink→product two-worlds flash on every authed
+    // reload of `/`) silently inverts the front-door ground. This pin
+    // reads BOTH files so neither side can drift alone.
+    const authStore = read('src/stores/auth.store.ts');
+    expect(authStore).toContain('globalThis.localStorage');
+    expect(authStore).toContain("name: 'mdrk-auth'");
+    // The bootstrap's session probe line, byte-exact:
+    expect(index).toMatch(/localStorage\.getItem\('mdrk-auth'\)/);
   });
 
   it('the persisted-session shape the heuristic reads matches the store', () => {
