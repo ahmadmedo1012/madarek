@@ -695,6 +695,14 @@
     margin-block-end: var(--sp-5);
     overflow-x: auto;
     scrollbar-width: none;
+    /* r169a: shrink-to-fit could exceed the parent column on narrow
+       viewports — the box itself (not its content) overflowed, so
+       overflow-x had nothing to scroll and the last tabs were clipped
+       out of reach (measured live on /owner/activity at 390px: the
+       «نظام» tab rect left:-32). Capping at the parent width turns the
+       existing overflow-x into a real scroll range; desktop rows
+       (content narrower than the column) render identically. */
+    max-inline-size: 100%;
   }
   .tabs::-webkit-scrollbar { display: none; }
   .tab {

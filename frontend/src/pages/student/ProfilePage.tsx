@@ -209,6 +209,7 @@ export default function ProfilePage() {
               value={completeness}
               showValue={false}
               color={completeness >= 80 ? 'var(--success)' : completeness >= 60 ? 'var(--accent)' : 'var(--warning)'}
+              ariaLabel="اكتمال الملف الشخصي"
             />
           </div>
         </div>

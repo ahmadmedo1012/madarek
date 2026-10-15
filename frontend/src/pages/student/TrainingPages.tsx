@@ -903,7 +903,10 @@ export function AchievementsPage() {
                     className="leaderboard-row"
                     style={{ ['--lb-i' as never]: Math.min(i, 6) }}
                   >
-                    <span className={`leaderboard-rank rank-${r.rank}`} aria-label={`المركز ${r.rank}`}>
+                    {/* r169a: role="img" — aria-label on a bare span has no
+                        valid meaning (axe aria-label-named); twin of the
+                        gamification leaderboard badge. */}
+                    <span className={`leaderboard-rank rank-${r.rank}`} role="img" aria-label={`المركز ${r.rank}`}>
                       {r.rank <= 3
                         ? <Icon icon={r.rank === 1 ? Crown : r.rank === 2 ? Star : Medal} size={16} />
                         : <bdi>#{r.rank}</bdi>}

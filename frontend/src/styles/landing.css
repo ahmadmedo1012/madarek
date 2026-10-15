@@ -1548,6 +1548,12 @@
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
   text-decoration-color: color-mix(in srgb, var(--ln-cream) 40%, transparent);
+  /* r169a: the inline link measured 73×21px on mobile — below even the
+     WCAG 2.2 AA 24px floor. Inline-block + symmetric padding grows the
+     tap target to 32px+ without leaving the paragraph's visual rhythm. */
+  display: inline-block;
+  padding-block: 6px;
+  margin-block: -6px;
   transition:
     color var(--ln-t-base) var(--ln-ease),
     text-decoration-color var(--ln-t-base) var(--ln-ease);

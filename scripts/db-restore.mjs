@@ -137,6 +137,20 @@ async function main() {
     console.warn('');
   }
 
+  // r169a (ops D2): with DATABASE_URL unset in this shell, the live-guard
+  // has no reference to compare against and passes silently — an operator
+  // who relies on backend/.env (which this script family does NOT load)
+  // could restore over production with the wall armed but inert. Dry-run
+  // stays quiet (it writes nothing); a REAL restore now says so loudly.
+  const liveUrl = typeof process.env.DATABASE_URL === 'string' ? process.env.DATABASE_URL.trim() : '';
+  if (liveUrl === '' && !flags.has('dryRun')) {
+    console.warn('⚠️  DATABASE_URL غير مضبوط في هذه الجلسة — حارس «لا تستعِد فوق قاعدة حيّة» بلا مرجع يقارنه، فهو خامل الآن.');
+    console.warn('   DATABASE_URL is unset in this shell — the live-restore guard has nothing to compare');
+    console.warn('   against and is currently INERT. If the target might be your live production DB,');
+    console.warn(`   export DATABASE_URL first so the guard can protect it:  export DATABASE_URL='<live-url>'`);
+    console.warn('');
+  }
+
   // 3) The dump file must exist (dry-run reveals this early too).
   if (!existsSync(values.file)) {
     console.error(`خطأ / error: ملف النسخة غير موجود / dump file not found: ${values.file}`);

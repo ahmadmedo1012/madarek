@@ -1255,9 +1255,14 @@ router.get('/research/search', async (req, res, next) => {
 });
 
 // ─── Paper annotations ────────────────────────────────────────
-// Permission model:
-//   - GET: paper student, paper reviewer, ADMIN, QUALITY can read
-//   - POST: only TEACHER (must be paper reviewer) or ADMIN can write
+// Permission model (r169a: the offering teacher rides the review scope):
+//   - GET: paper student, paper reviewer, the paper's offering TEACHER
+//     (the same queue scope that hands them the paper to grade — a
+//     teacher must be able to read the annotation thread BEFORE grading
+//     sets reviewerId; the old gate 403'd the review modal on every
+//     unassigned paper), ADMIN, QUALITY can read
+//   - POST: TEACHER (paper reviewer OR the paper's offering teacher) or
+//     ADMIN can write
 //   - DELETE: only the annotation author or ADMIN
 
 const annotationCreateSchema = z.object({
@@ -1266,22 +1271,74 @@ const annotationCreateSchema = z.object({
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
 }).strict();
 
+/**
+ * r169a: annotation read access — pure so the unit suite can pin every
+ * branch. The old inline gate admitted the paper student, the assigned
+ * reviewer, and oversight roles only, which 403'd the offering teacher
+ * on every fresh queue paper (the review modal and the document-viewer
+ * annotations panel both fetch this thread BEFORE grading assigns
+ * reviewerId). The offering-teacher branch mirrors researchQueueWhere —
+ * the same scope that hands the teacher the paper to grade.
+ */
+export function canReadPaperAnnotations(args: {
+  role: Role;
+  userId: string;
+  studentId: string;
+  reviewerId: string | null;
+  offeringTeacherId: string | null;
+}): boolean {
+  return (
+    args.role === Role.ADMIN ||
+    args.role === Role.OWNER ||
+    args.role === Role.QUALITY ||
+    args.studentId === args.userId ||
+    args.reviewerId === args.userId ||
+    (args.role === Role.TEACHER && args.offeringTeacherId === args.userId)
+  );
+}
+
+/**
+ * r169a: annotation write access — pure. The route middleware admits
+ * TEACHER/ADMIN/OWNER; inside, a TEACHER must be the assigned reviewer
+ * OR the paper's offering teacher (the queue-review scope) — writing
+ * was previously impossible before the first grade landed reviewerId.
+ */
+export function canWritePaperAnnotations(args: {
+  role: Role;
+  userId: string;
+  reviewerId: string | null;
+  offeringTeacherId: string | null;
+}): boolean {
+  // Mirror of the route middleware (requireRole TEACHER/ADMIN/OWNER):
+  // the pure form must not admit roles the live route rejects earlier.
+  if (args.role !== Role.TEACHER && args.role !== Role.ADMIN && args.role !== Role.OWNER) return false;
+  if (args.role === Role.ADMIN || args.role === Role.OWNER) return true;
+  return (
+    args.reviewerId === args.userId ||
+    (args.role === Role.TEACHER && args.offeringTeacherId === args.userId)
+  );
+}
+
 router.get('/research/:id/annotations', async (req, res, next) => {
   try {
     const paper = await prisma.researchPaper.findUnique({
       where: { id: req.params.id! },
-      select: { studentId: true, reviewerId: true },
+      select: { studentId: true, reviewerId: true, offering: { select: { teacherId: true } } },
     });
     if (!paper) throw AppError.notFound();
     const role = req.user!.role;
     const uid = req.user!.id;
-    const allowed =
-      role === Role.ADMIN ||
-      role === Role.OWNER ||
-      role === Role.QUALITY ||
-      paper.studentId === uid ||
-      paper.reviewerId === uid;
-    if (!allowed) throw AppError.forbidden('لا تملك صلاحية عرض الملاحظات على هذه الورقة');
+    if (
+      !canReadPaperAnnotations({
+        role,
+        userId: uid,
+        studentId: paper.studentId,
+        reviewerId: paper.reviewerId,
+        offeringTeacherId: paper.offering?.teacherId ?? null,
+      })
+    ) {
+      throw AppError.forbidden('لا تملك صلاحية عرض الملاحظات على هذه الورقة');
+    }
 
     const data = await prisma.paperAnnotation.findMany({
       where: { paperId: req.params.id! },
@@ -1298,11 +1355,22 @@ router.post('/research/:id/annotations', requireRole(Role.TEACHER, Role.ADMIN, R
   try {
     const paper = await prisma.researchPaper.findUnique({
       where: { id: req.params.id! },
-      select: { id: true, reviewerId: true },
+      select: { id: true, reviewerId: true, offering: { select: { teacherId: true } } },
     });
     if (!paper) throw AppError.notFound();
-    if (req.user!.role === Role.TEACHER && paper.reviewerId !== req.user!.id) {
-      throw AppError.forbidden('الملاحظات متاحة للمراجع المكلَّف بهذه الورقة فقط');
+    // r169a: the offering teacher may annotate while reviewing — before
+    // grading assigns reviewerId (the old gate only allowed the already
+    // assigned reviewer, so the review modal's annotation thread was
+    // write-dead on every fresh queue paper).
+    if (
+      !canWritePaperAnnotations({
+        role: req.user!.role,
+        userId: req.user!.id,
+        reviewerId: paper.reviewerId,
+        offeringTeacherId: paper.offering?.teacherId ?? null,
+      })
+    ) {
+      throw AppError.forbidden('الملاحظات متاحة لمراجع الورقة أو أستاذ المقرر المرتبطة بها فقط');
     }
 
     const created = await prisma.paperAnnotation.create({

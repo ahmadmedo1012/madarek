@@ -22,7 +22,7 @@
     "db:migrate": "npm run prisma:migrate -w backend",
     "db:deploy": "npm run prisma:deploy -w backend",
     "db:seed": "npm run prisma:seed -w backend",
-    "db:rotate-password": "npm run rotate:password -w backend",
+    "db:rotate-password": "npm run rotate:password -w backend --",
     "db:backup": "node scripts/db-backup.mjs",
     "db:restore": "node scripts/db-restore.mjs",
     "smoke": "node scripts/smoke-deploy.mjs",

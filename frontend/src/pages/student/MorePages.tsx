@@ -219,7 +219,10 @@ export function GamificationPage() {
             <ol className="leaderboard-list" aria-label="ترتيب الطلاب بالنقاط">
               {lb.data.map((l, i) => (
                 <li className="leaderboard-row" key={l.id} style={{ ['--lb-i' as never]: Math.min(i, 6) }}>
-                  <span className={`leaderboard-rank rank-${i + 1}`} aria-label={`المركز ${i + 1}`}>
+                  {/* r169a: role="img" — aria-label on a bare span has no
+                      valid meaning (axe aria-label-named); the rank badge
+                      is a self-contained visual token. */}
+                  <span className={`leaderboard-rank rank-${i + 1}`} role="img" aria-label={`المركز ${i + 1}`}>
                     {i < 3
                       ? <Icon icon={i === 0 ? Crown : i === 1 ? Star : Medal} size={16} />
                       : <bdi>#{i + 1}</bdi>}

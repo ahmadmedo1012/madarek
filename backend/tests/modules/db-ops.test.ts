@@ -313,7 +313,11 @@ describe('operator script wiring (r166c)', () => {
   it('root package.json wires db:backup / db:restore / db:rotate-password', () => {
     expect(rootPackage.scripts?.['db:backup']).toBe('node scripts/db-backup.mjs');
     expect(rootPackage.scripts?.['db:restore']).toBe('node scripts/db-restore.mjs');
-    expect(rootPackage.scripts?.['db:rotate-password']).toBe('npm run rotate:password -w backend');
+    // r169a (ops D1): the trailing `--` is load-bearing — without it the
+    // inner npm eats --email/--new-password-env/--yes as its own options
+    // and the documented owner-recovery invocation fails with "unknown
+    // argument". Verified live: flags now reach the script verbatim.
+    expect(rootPackage.scripts?.['db:rotate-password']).toBe('npm run rotate:password -w backend --');
   });
   it('backend package.json wires rotate:password (the migrate-deploy invocation pattern)', () => {
     expect(backendPackage.scripts?.['rotate:password']).toBe('node scripts/rotate-demo-passwords.mjs');

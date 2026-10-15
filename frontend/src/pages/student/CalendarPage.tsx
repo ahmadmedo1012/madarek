@@ -248,8 +248,14 @@ export default function StudentCalendarPage() {
 
         {/* The 42-cell month grid. Cells are buttons (select a day);
             the day's events render in the detail list below and are
-            the actual navigation affordances. */}
-        <div className="cal-grid" role="grid" aria-label={`تقويم ${monthTitleAr(view.year, view.month)}`}>
+            the actual navigation affordances.
+            r169a: role="group", not "grid" — a data grid requires
+            row/gridcell structure and keyboard two-axis navigation;
+            this is a plain interactive group of day buttons (axe
+            aria-required-children fired on the direct button
+            children). Group keeps the label without the structural
+            promise. */}
+        <div className="cal-grid" role="group" aria-label={`تقويم ${monthTitleAr(view.year, view.month)}`}>
           {cells.map((cell) => {
             const kinds = kindsByDay.get(cell.key);
             const kindCount = kinds?.size ?? 0;

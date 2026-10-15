@@ -1320,6 +1320,23 @@
   /* durations / counts in the curriculum rows stay digit-stable */
   .course-lectures .list-row-sub { font-variant-numeric: tabular-nums; }
 
+  /* r169a: mobile lecture-row wrap — the row's flex children were
+     [well 36px] + [body flex:1 min-0] + up to 3 fixed badges
+     (~232px). At 390px the only shrinkable child (the body) collapsed
+     to width 0 — the lecture title was invisible on the «تابع من هنا»
+     row (measured: .list-row-title rect w=0, recovers ≥640px). The
+     body now takes its own full line next to the well and the badges
+     wrap onto a line beneath, indented to the title column. */
+  @media (max-width: 639px) {
+    .course-lec-row { flex-wrap: wrap; }
+    .course-lec-row .list-row-body {
+      /* well (36px) + row gap (var(--sp-3)) — keeps the title block
+         on the well's line, deterministic regardless of title length. */
+      flex-basis: calc(100% - 36px - var(--sp-3));
+    }
+    .course-lec-row > .badge { margin-inline-start: calc(36px + var(--sp-3)); }
+  }
+
   /* ═══ Exam grade emphasis (PP-X2 note: the /student/exams hub that
      hosted this block's first consumer was deleted — audit P3-25 —
      but the classes stay: OnlineExamsPages' result screens render the
