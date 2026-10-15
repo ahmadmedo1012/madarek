@@ -130,11 +130,13 @@ router.post(
         });
         // Mirror the seed notification copy style (Arabic, icon, short body).
         // r155a (audit finding 2): the link used to point at '/messages' —
-        // no such SPA route exists (the only inbox tree is
-        // /teacher/messages, TEACHER-only). Teachers get the real route;
-        // every other role gets no link (Notification.link is nullable —
-        // same null-handling as the seed rows) until an inbox exists for
-        // them. A dead deep link is worse than none: it strands the click.
+        // no such SPA route exists. The inbox trees are per-role:
+        // /teacher/messages (TEACHER) and /student/messages (STUDENT —
+        // r171a shipped the student inbox, closing the "link: null until
+        // an inbox exists for them" gap; the bell's notifDeepLink resolves
+        // the click). Every other role still gets no link (Notification.link
+        // is nullable — same null-handling as the seed rows); a dead deep
+        // link is worse than none: it strands the click.
         await tx.notification.create({
           data: {
             userId: recipient.id,
@@ -142,7 +144,10 @@ router.post(
             icon: '💬',
             title: `رسالة جديدة من ${sender?.firstName ?? 'مستخدم'}`,
             body: body.slice(0, 80),
-            link: recipient.role === Role.TEACHER ? '/teacher/messages' : null,
+            link:
+              recipient.role === Role.TEACHER ? '/teacher/messages'
+              : recipient.role === Role.STUDENT ? '/student/messages'
+              : null,
           },
         });
         return message;

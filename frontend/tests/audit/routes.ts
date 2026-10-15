@@ -38,6 +38,9 @@ export const AUDIT_ROUTES = [
   '/student/gamification',
   '/student/skills',
   '/student/alerts',
+  // r171a: the student messages inbox (the DM lifecycle's student half —
+  // shared components/messages pair, enrolled teachers as recipients).
+  '/student/messages',
   // r164c: the student academic calendar (month grid uniting schedule
   // slots + assignment deadlines + exam windows + live sessions).
   '/student/calendar',

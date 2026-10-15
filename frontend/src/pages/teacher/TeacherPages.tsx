@@ -4,8 +4,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
   Users, BarChart3, ClipboardCheck, ClipboardList,
   AlertTriangle, Calendar, Upload, RefreshCw,
-  TrendingUp, MessageSquare, Send, FileText, X, CheckCircle2,
-  ChevronRight, ChevronLeft, ExternalLink, MailOpen, Reply,
+  TrendingUp, Send, FileText, X, CheckCircle2,
+  ExternalLink,
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle, FormField, Pill } from '../../components/primitives';
@@ -20,7 +20,6 @@ import {
   useTeacherMaterials,
   useTeacherAssignments,
   usePendingSubmissions,
-  useMarkAllMessagesRead,
   useGradeSubmission,
   useCreateAssignment,
   useCreateMaterial,
@@ -28,11 +27,9 @@ import {
   apiErrorMessage,
   type PendingSubmissionRow,
   type TeacherStudentRow,
-  useMyMessages,
-  useSendMessage,
-  type MessageRow,
 } from '../../hooks/useResources';
-import { useAuthStore } from '../../stores/auth.store';
+import { MessagesInbox } from '../../components/messages/MessagesInbox';
+import { MessageComposeModal } from '../../components/messages/MessageComposeModal';
 import { toast } from '../../lib/toast';
 import {
   countAr,
@@ -1978,460 +1975,98 @@ function GradeSubmissionModal({
   );
 }
 
-/* One server page of the messages list (15-d P2-7). The old call
- * fetched 50 rows and rendered a client-side `.slice(0, 30)` — rows
- * 31–50 never showed and message #51+ was unreachable. */
-const MESSAGES_PAGE_SIZE = 30;
 
-/* r164-h: read-state visibility — the /messages backend projects the
- * FULL Message row (include, not select), so readAt rides every row
- * already; the shared MessageRow interface just never declared it.
- * Widened HERE (the teacher inbox's own view of the wire) instead of
- * touching the student-domain resource file: no wire change, no
- * cross-agent surface. */
-type MessageRowWithRead = { readAt?: string | null };
-
-/** The row-level unread marker: incoming AND not yet read. Sent rows
- * carry no read state of their own (readAt is the recipient's). Pure +
- * exported for the unit suite. */
-export function isUnreadIncoming(
-  m: { toUser?: { id?: string } | null } & MessageRowWithRead,
-  meId: string | null,
-): boolean {
-  return Boolean(meId && m.toUser?.id === meId && !m.readAt);
-}
-
-/* ── r170a: compose + reply (closing the read-only gap) ─────────
+/* ── Messages (r170a inbox) — r171a shared extraction ──────────
  *
- * RECIPIENT SCOPE — deliberately bounded, no fabricated lists: the
- * platform has NO teacher-callable user directory. /admin/users and
- * /owner/users are role-gated to ADMIN/OWNER, /catalog/leaderboard
- * projects the global student top-10 for gamification, and
- * /quality/professors is QUALITY-gated. The only REAL recipient pools
- * a TEACHER can call are (a) the rosters of their own offerings
- * (GET /teacher/me/offerings + GET /teacher/offerings/:id/students —
- * the same hooks the grades/students tables use) and (b) the other
- * parties already present in the loaded inbox rows (reply-to-sender
- * rides this pool). Anyone else (an admin, say) becomes reachable
- * only after they message the teacher first — exactly how the reply
- * E2E below seeds the admin. Until a staff directory endpoint exists
- * for teachers, this is the honest ceiling; the picker says so. */
+ * The inbox (rows, unread sweep, pagination) and the compose/reply
+ * lifecycle (validation, send, toast, error mapping) moved verbatim to
+ * the role-agnostic components/messages/ pair so the STUDENT side
+ * could ship the same full loop — students previously received DMs
+ * with no inbox at all (notification link:null). This file keeps every
+ * exported name the route table and the unit suites use: MessagesPage
+ * (a thin wrapper now) + the pure helpers re-exported below. The
+ * teacher-specific half — the offering selector and its roster
+ * optgroup — rides renderCompose/extraFields into the shared modal. */
 
-/** The backend contract's own cap (me.routes.ts sendMessageSchema:
- * z.string().trim().min(1).max(4000)). */
-export const MESSAGE_MAX_CHARS = 4000;
+/* Re-exports keep every existing import site (the route table's lazy
+ * wrapper, the unit suites) working unchanged. */
+export {
+  isUnreadIncoming,
+  MESSAGE_MAX_CHARS,
+  validateMessageDraft,
+  sendErrorMessage,
+  collectCorrespondents,
+} from '../../components/messages/MessagesInbox';
 
-/** Client-side gate mirroring the zod schema. Pure + exported for the
- * unit suite. Returns at most one error per field. */
-export function validateMessageDraft(
-  recipientId: string,
-  body: string,
-): { recipient?: string; body?: string } {
-  const errors: { recipient?: string; body?: string } = {};
-  if (!recipientId) errors.recipient = 'اختر مستلِماً أولاً.';
-  const trimmed = body.trim();
-  if (trimmed.length < 1) errors.body = 'نص الرسالة مطلوب.';
-  else if (trimmed.length > MESSAGE_MAX_CHARS) {
-    errors.body = `الرسالة طويلة — الحد الأقصى ${MESSAGE_MAX_CHARS} حرف.`;
-  }
-  return errors;
-}
-
-/** Server error mapping: the route's own Arabic 400/404 messages ride
- * apiErrorMessage verbatim; the one status whose body is Latin-only is
- * the per-user 30/min limiter (createRouteLimiter does not override
- * `message`, so express-rate-limit ships its English default) — 429
- * gets this dedicated Arabic line instead of leaking. Pure + exported
- * for the unit suite. */
-export function sendErrorMessage(error: unknown): string {
-  const status = (error as { response?: { status?: number } })?.response?.status;
-  if (status === 429) return 'طلبات إرسال كثيرة — انتظر قليلاً ثم أعد المحاولة.';
-  return apiErrorMessage(error, 'تعذَّر إرسال الرسالة — تحقّق من اتصالك ثم أعد المحاولة.');
-}
-
-/** The inbox-side recipient pool: every OTHER party on the loaded rows
- * (incoming → sender, sent → recipient), deduped, self excluded. No
- * session (meId null, a logout race with stale cache) → empty pool —
- * the picker's honest hint takes over instead of offering the
- * teacher's own name. Pure + exported for the unit suite. */
-export function collectCorrespondents(
-  rows: MessageRow[],
-  meId: string | null,
-): Array<{ id: string; name: string }> {
-  if (!meId) return [];
-  const map = new Map<string, { id: string; name: string }>();
-  for (const m of rows) {
-    /* Explicit annotation — tsc -b infers this ternary circularly
-     * (TS7022) without it. The !other guard stays defensive: rows from
-     * older payloads could miss a side. */
-    const other: MessageRow['fromUser'] | undefined =
-      m.toUser?.id === meId ? m.fromUser : m.toUser;
-    if (!other || other.id === meId) continue;
-    if (!map.has(other.id)) {
-      map.set(other.id, { id: other.id, name: `${other.firstName} ${other.lastName}` });
-    }
-  }
-  return [...map.values()];
-}
-
-/** Compose/reply modal — the existing Modal + FormField grammar (same
- * shape as the grade/material modals above). `presetRecipient` is the
- * reply target; the parent derives it from the clicked row so the
- * option is guaranteed present in the correspondents optgroup. */
-function MessageComposeModal({
-  presetRecipient,
+/** The teacher compose shell: the offering selector + its roster
+ * optgroup (the only real student pool a teacher can call — see the
+ * RECIPIENT SCOPE note in MessagesInbox). The offering selector feeds
+ * the student optgroup only; it starts empty so useTeacherStudents
+ * stays disabled (enabled: !!offeringId) until the teacher actually
+ * picks a course — no roster fetch on a plain reply. */
+function TeacherMessageCompose({
+  preset,
   correspondents,
   onClose,
 }: {
-  presetRecipient: { id: string; name: string } | null;
+  preset: { id: string; name: string } | null;
   correspondents: Array<{ id: string; name: string }>;
   onClose: () => void;
 }) {
-  const send = useSendMessage();
-  /* The offering selector feeds the student optgroup only; it starts
-   * empty so useTeacherStudents stays disabled (enabled: !!offeringId)
-   * until the teacher actually picks a course — no roster fetch on a
-   * plain reply. */
   const [offeringId, setOfferingId] = useState('');
-  const [recipientId, setRecipientId] = useState(presetRecipient?.id ?? '');
-  const [body, setBody] = useState('');
-  const [clientErrors, setClientErrors] = useState<{ recipient?: string; body?: string }>({});
-
   const offsQ = useTeacherOfferings();
   const offerings = offsQ.data ?? [];
   const rosterQ = useTeacherStudents(offeringId || undefined);
   const roster = rosterQ.data ?? [];
   const offeringLabel = offerings.find((o) => o.id === offeringId)?.course.name;
 
-  const dirty =
-    body.trim().length > 0 ||
-    (presetRecipient ? recipientId !== presetRecipient.id : Boolean(recipientId) || offeringId !== '');
-  const { requestClose, escapeLocked, guard } = useDiscardGuard({
-    dirty,
-    pending: send.isPending,
-    onClose,
-  });
-
-  const onSubmit = async () => {
-    const errs = validateMessageDraft(recipientId, body);
-    setClientErrors(errs);
-    if (errs.recipient || errs.body) return;
-    try {
-      await send.mutateAsync({ toUserId: recipientId, body: body.trim() });
-      toast.success('أُرسلت الرسالة وستظهر في سجلّ الرسائل أدناه.', { title: 'تمّ الإرسال' });
-      onClose();
-    } catch {
-      // surfaced inline from send.isError below
-    }
-  };
-
-  const noRecipients = correspondents.length === 0 && roster.length === 0;
+  /* The roster's loading/error states ride the recipient select as
+   * disabled options — exactly the r170a modal's rows. */
+  const statusOptions = [
+    ...(rosterQ.isPending ? ['جارٍ تحميل طلاب المقرّر…'] : []),
+    ...(rosterQ.isError ? ['تعذَّر تحميل طلاب المقرّر'] : []),
+  ];
 
   return (
-    <Modal
-      open
-      onClose={requestClose}
-      ariaLabel={presetRecipient ? 'ردّ على رسالة' : 'رسالة جديدة'}
-      closeOnOverlayClick={!send.isPending}
-      closeOnEscape={!escapeLocked}
-    >
-      <div className="modal-header">
-        <div className="modal-title">{presetRecipient ? 'ردّ على رسالة' : 'رسالة جديدة'}</div>
-        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={send.isPending}>
-          <Icon icon={X} size={16} />
-        </button>
-      </div>
-      <form onSubmit={(e) => { e.preventDefault(); void onSubmit(); }} noValidate>
-        <div className="modal-body">
-          {/* The student pool selector — one real endpoint behind it
-              (see the scope note above). Hidden entirely for a plain
-              reply preset (nothing to discover). */}
-          {offerings.length > 0 && !presetRecipient && (
-            <FormField
-              label="المقرّر (لاختيار أحد طلابك)"
-              hint="اختر مقرّراً لدرج أسماء طلابه ضمن قائمة المستلمين — أو راسِل من سبق أن راسلك."
-            >
-              <select
-                className="input"
-                value={offeringId}
-                onChange={(e) => setOfferingId(e.target.value)}
-                disabled={send.isPending}
-              >
-                <option value="">— بدون مقرّر —</option>
-                {offerings.map((o) => (
-                  <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
-                ))}
-              </select>
-            </FormField>
-          )}
-
-          <FormField
-            label="المستلِم"
-            error={clientErrors.recipient}
-            hint={noRecipients ? 'لا يوجد مستلمون متاحون بعد — اختر مقرّراً لطلابه، أو انتظر رسالة واردة تردّ عليها.' : undefined}
+    <MessageComposeModal
+      presetRecipient={preset}
+      correspondents={correspondents}
+      recipientGroups={roster.length > 0 ? [{
+        label: offeringLabel ? `طلاب ${offeringLabel}` : 'طلاب المقرّر',
+        options: roster.map((s) => ({ id: s.studentId, name: s.name, detail: s.universityId })),
+      }] : undefined}
+      statusOptions={statusOptions}
+      noRecipientsHint="لا يوجد مستلمون متاحون بعد — اختر مقرّراً لطلابه، أو انتظر رسالة واردة تردّ عليها."
+      extraDirty={preset ? false : offeringId !== ''}
+      extraFields={offerings.length > 0 && !preset ? ({ sendPending }) => (
+        <FormField
+          label="المقرّر (لاختيار أحد طلابك)"
+          hint="اختر مقرّراً لدرج أسماء طلابه ضمن قائمة المستلمين — أو راسِل من سبق أن راسلك."
+        >
+          <select
+            className="input"
+            value={offeringId}
+            onChange={(e) => setOfferingId(e.target.value)}
+            disabled={sendPending}
           >
-            <select
-              className="input"
-              value={recipientId}
-              onChange={(e) => {
-                setRecipientId(e.target.value);
-                setClientErrors((ce) => ({ ...ce, recipient: undefined }));
-              }}
-              disabled={send.isPending}
-            >
-              <option value="">— اختر مستلِماً —</option>
-              {correspondents.length > 0 && (
-                <optgroup label="مراسلون سابقون">
-                  {correspondents.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </optgroup>
-              )}
-              {roster.length > 0 && (
-                <optgroup label={offeringLabel ? `طلاب ${offeringLabel}` : 'طلاب المقرّر'}>
-                  {roster.map((s) => (
-                    <option key={s.studentId} value={s.studentId}>{s.name} · {s.universityId}</option>
-                  ))}
-                </optgroup>
-              )}
-              {rosterQ.isPending && <option disabled>جارٍ تحميل طلاب المقرّر…</option>}
-              {rosterQ.isError && <option disabled>تعذَّر تحميل طلاب المقرّر</option>}
-            </select>
-          </FormField>
-
-          <FormField
-            label="نص الرسالة"
-            error={clientErrors.body}
-            hint={<span><bdi>{body.length}</bdi> / <bdi>{MESSAGE_MAX_CHARS}</bdi> حرف</span>}
-          >
-            <textarea
-              className="input"
-              rows={5}
-              placeholder="اكتب رسالتك…"
-              value={body}
-              onChange={(e) => {
-                setBody(e.target.value);
-                setClientErrors((ce) => ({ ...ce, body: undefined }));
-              }}
-              /* Mirror the backend cap (same pattern as the review
-               * feedback textarea): the zod max is 4000 — an uncapped
-               * textarea would let a paste POST past the client and
-               * surface as a connectivity error. */
-              maxLength={MESSAGE_MAX_CHARS}
-              disabled={send.isPending}
-              style={{ resize: 'vertical', fontFamily: 'inherit' }}
-            />
-          </FormField>
-
-          {send.isError && (
-            <div className="form-feedback fail" role="alert">
-              <Icon icon={X} size={14} />
-              <span className="flex-1">{sendErrorMessage(send.error)}</span>
-            </div>
-          )}
-        </div>
-        <div className="modal-footer">
-          <button type="button" className="btn ghost" onClick={requestClose} disabled={send.isPending}>
-            إلغاء
-          </button>
-          <button type="submit" className="btn primary" disabled={send.isPending}>
-            {send.isPending ? 'جارٍ الإرسال…' : <><Icon icon={Send} size={13} /> إرسال الرسالة</>}
-          </button>
-        </div>
-      </form>
-      {guard}
-    </Modal>
+            <option value="">— بدون مقرّر —</option>
+            {offerings.map((o) => (
+              <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
+            ))}
+          </select>
+        </FormField>
+      ) : undefined}
+      onClose={onClose}
+    />
   );
 }
 
 export function MessagesPage() {
-  const [page, setPage] = useState(1);
-  const q = useMyMessages(page, MESSAGES_PAGE_SIZE);
-  /* r157 (6A9 messages): the unread sweep — POST /messages/read-all,
-  * invalidating every ['me','messages',…] page key so the subtitle
-  * count + rows refetch together. Hidden while unread = 0 (a
-  * mark-all button with nothing to mark is noise). */
-  const markAll = useMarkAllMessagesRead();
-  // Read the current user's ID directly from the auth store. Previously
-  // this code tried to *infer* `meId` by picking the first message's
-  // `toUser.id` — which breaks for sent messages (where the current
-  // user is the *sender*, not the recipient). Result: incoming/outgoing
-  // bubbles were swapped, and the avatar shown was wrong.
-  const meId = useAuthStore((s) => s.user?.id) ?? null;
-
-  /* r170a: the compose/reply state — null = closed; a truthy value
-   * carries the reply preset (the clicked row's sender). Mounting (not
-   * open-proping) the modal resets the draft between opens. */
-  const [compose, setCompose] = useState<{ preset: { id: string; name: string } | null } | null>(null);
-  const messages = q.data?.data ?? [];
-  /* Cheap map over ≤30 loaded rows — no memo (an unmemoized dep would
-   * add a 19th exhaustive-deps warning over the documented baseline). */
-  const correspondents = collectCorrespondents(messages, meId);
-
-  const meta = q.data?.meta;
-  const unread = meta?.unread ?? 0;
-  const totalPages = Math.max(1, meta?.totalPages ?? 1);
-
   return (
-    <div className="page">
-      {/* A6 P2 (22-a) retitle lineage: the read-only era's subtitle
-          promised nothing and the page delivered exactly that. r170a
-          closes the gap — compose + reply now ship, so the subtitle
-          says what the page does, including the picker's honest
-          recipient ceiling (see the scope note above the modal). */}
-      <PageHeader
-        title="صندوق الرسائل"
-        subtitle="كل رسالة وصلتك أو أرسلتها عبر المنصّة — أنشئ رسالة جديدة أو ردّ على الواردة منها، والمستلمون المتاحون هم طلاب مقرّراتك ومن راسلتك سابقاً."
-        actions={(
-          <button type="button" className="btn primary" onClick={() => setCompose({ preset: null })}>
-            <Icon icon={Send} size={14} /> رسالة جديدة
-          </button>
-        )}
-      />
-      <Card
-        title="سجلّ الرسائل"
-        icon={MessageSquare}
-        actions={unread > 0 ? (
-          <button
-            type="button"
-            className="btn outline sm"
-            onClick={() => markAll.mutate()}
-            disabled={markAll.isPending}
-          >
-            <Icon icon={MailOpen} size={13} /> {markAll.isPending ? 'جارٍ التعليم…' : 'تعليم الكل كمقروء'}
-          </button>
-        ) : undefined}
-        /* P2-1: countAr(0) renders the broken «0 رسالة» — the zero case
-            gets its own honest copy. The unread tail rides the same
-            subtitle (r157 / 6A9): «… · 3 رسائل غير مقروءة». */
-        subtitle={meta ? (meta.total === 0
-          ? 'لا رسائل'
-          : `${countAr(meta.total, ['رسالة واحدة', 'رسالتان', 'رسائل', 'رسالة'])}${unread > 0 ? ` · ${countAr(unread, ['رسالة غير مقروءة واحدة', 'رسالتان غير مقروءتان', 'رسائل غير مقروءة', 'رسالة غير مقروءة'])}` : ''}`) : undefined}
-      >
-        {markAll.isError && (
-          <div className="form-feedback fail" role="alert" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            <Icon icon={X} size={14} />
-            <span className="flex-1">تعذَّر تعليم الرسائل كمقروءة — تحقّق من اتصالك ثم أعد المحاولة.</span>
-            <button type="button" className="btn ghost sm" onClick={() => markAll.mutate()} disabled={markAll.isPending}>
-              <Icon icon={MailOpen} size={12} /> إعادة المحاولة
-            </button>
-          </div>
-        )}
-        {q.isPending ? (
-          <ListSkeleton rows={6} />
-        ) : q.isError ? (
-          <ErrorState error={q.error} onRetry={() => q.refetch()} />
-        ) : !q.data || messages.length === 0 ? (
-          <EmptyState
-            title="لا توجد رسائل بعد"
-            illustration="empty-search"
-            description="ستظهر هنا الرسائل المُرسَلة إليك أو منك عبر المنصّة."
-          />
-        ) : (
-          <>
-            <div className="flex-col gap-2">
-              {messages.map((m) => {
-                const incoming = m.toUser?.id === meId;
-                const other = incoming ? m.fromUser : m.toUser;
-                /* r164-h: the row's own read state — the same brand Badge
-                 * grammar the alerts log uses for its unread rows (no
-                 * new CSS; a bold title alone is invisible in dark mode). */
-                const unreadRow = isUnreadIncoming(m, meId);
-                /* r170a: the row's reply door — incoming rows only (a
-                 * sent row's "other" is the recipient, and the backend
-                 * 400s self-DMs). The preset travels with the name so
-                 * the modal needs no row lookup. */
-                const replyPreset = incoming
-                  ? { id: m.fromUser.id, name: `${m.fromUser.firstName} ${m.fromUser.lastName}` }
-                  : null;
-                return (
-                  <div key={m.id} className="list-row">
-                    <UserAvatar
-                      initials={`${other.firstName[0] ?? ''}${other.lastName[0] ?? ''}`}
-                      color={other.avatarColor ?? undefined}
-                      size={32}
-                    />
-                    <div className="list-row-body">
-                      <div className="list-row-title" style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
-                        <span style={{ fontWeight: unreadRow ? 600 : undefined }}>{other.firstName} {other.lastName}</span>
-                        {unreadRow && <Badge color="brand">غير مقروءة</Badge>}
-                      </div>
-                      {/* 5-B6 messages craft: the body clamps to one line —
-                          30 rows of arbitrary prose otherwise rag the log's
-                          rhythm — and the full text rides the title attribute
-                          (no truncation without a tooltip). */}
-                      <div className="list-row-sub msg-body" title={m.body}>
-                        {incoming ? '' : 'أنت: '}{m.body}
-                      </div>
-                    </div>
-                    {/* P3-2 parity: the relative stamp carries the full
-                        date on hover like the exam-attempt rows. r170a:
-                        the trailing cluster (stamp + reply) keeps the
-                        action inside the row's end edge — the thumb's
-                        natural landing spot in RTL. */}
-                    <div className="flex items-center gap-2">
-                      <div className="text-xxs text-subtle" title={formatDateTimeAr(m.createdAt)}>{formatRelativeArShort(m.createdAt)}</div>
-                      {incoming && (
-                        <button
-                          type="button"
-                          className="btn ghost sm"
-                          onClick={() => setCompose({ preset: replyPreset })}
-                          aria-label={`ردّ على رسالة ${replyPreset?.name}`}
-                        >
-                          <Icon icon={Reply} size={13} /> ردّ
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            {meta && totalPages > 1 && (
-              <div
-                className="flex items-center justify-between flex-wrap gap-3"
-                style={{ marginBlockStart: 'var(--sp-4)' }}
-              >
-                <span className="text-xs text-muted">
-                  الصفحة <bdi>{page}</bdi> من <bdi>{totalPages}</bdi> ·{' '}
-                  {countAr(meta.total, ['رسالة واحدة', 'رسالتان', 'رسائل', 'رسالة'])}
-                </span>
-                <div className="flex gap-2">
-                  {/* RTL: "previous" points inline-start-ward = the right
-                      chevron (wave 5-a convention, same as the owner
-                      timeline pager). */}
-                  <button
-                    type="button"
-                    className="btn ghost sm"
-                    disabled={page <= 1}
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    aria-label="الصفحة السابقة"
-                  >
-                    <Icon icon={ChevronRight} size={14} /> السابق
-                  </button>
-                  <button
-                    type="button"
-                    className="btn ghost sm"
-                    disabled={page >= totalPages}
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    aria-label="الصفحة التالية"
-                  >
-                    التالي <Icon icon={ChevronLeft} size={14} />
-                  </button>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-      </Card>
-      {/* r170a: mounted only while composing — unmount resets the draft
-       * between opens (the discard guard owns mid-session closes). */}
-      {compose && (
-        <MessageComposeModal
-          presetRecipient={compose.preset}
-          correspondents={correspondents}
-          onClose={() => setCompose(null)}
-        />
-      )}
-    </div>
+    <MessagesInbox
+      title="صندوق الرسائل"
+      subtitle="كل رسالة وصلتك أو أرسلتها عبر المنصّة — أنشئ رسالة جديدة أو ردّ على الواردة منها، والمستلمون المتاحون هم طلاب مقرّراتك ومن راسلتك سابقاً."
+      renderCompose={(args) => <TeacherMessageCompose {...args} />}
+    />
   );
 }

@@ -90,6 +90,11 @@ export const STUDENT_NAV: NavGroup[] = [
     label: 'حسابي والخدمات',
     items: [
       { to: '/student/profile', icon: UserCircle, label: 'ملفي الشخصي' },
+      /* r171a: the student messages inbox — the DM lifecycle's student
+         half (shared inbox; enrolled teachers + prior correspondents as
+         the honest recipient pool). Inbox icon: MessageCircle is taken
+         by «الشبكة الاجتماعية» (A4 P3-4 unique-icon rule). */
+      { to: '/student/messages', icon: Inbox, label: 'الرسائل' },
       /* 5-B5 (A4 P1-3/P2-8): the alerts page was bottom-nav + bell
          only — desktop had zero nav marker for it. Every role now
          carries its alerts page as a first-class sidebar item. */

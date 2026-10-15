@@ -40,6 +40,10 @@ const LecturePlayerPage = lazy(() => import('./pages/student/LecturePlayerPage')
 const MatrixPage = lazy(() => import('./pages/student/MatrixPage'));
 const StudentResearchPage = lazy(() => import('./pages/student/ResearchPage'));
 const ProfilePage = lazy(() => import('./pages/student/ProfilePage'));
+// r171a: the student messages inbox — the DM lifecycle's student half
+// (shared components/messages pair; enrolled teachers + prior
+// correspondents as the honest recipient pool).
+const StudentMessagesPage = lazy(() => import('./pages/student/MessagesPage').then((m) => ({ default: m.StudentMessagesPage })));
 const WebinarsPage = lazy(() => import('./pages/student/WebinarsPage'));
 const DocumentViewerPage = lazy(() => import('./pages/DocumentViewerPage'));
 const LabsPage = lazy(() => import('./pages/student/LabsPage'));
@@ -321,6 +325,10 @@ export function AppRoutes() {
             <Route path="/student/gamification" element={<GamificationPage />} />
             <Route path="/student/skills" element={<SkillsPage />} />
             <Route path="/student/alerts" element={<AlertsPage />} />
+            {/* r171a: the student messages inbox — mirrors /teacher/messages
+                (same shared inbox, role-specific compose recipients). The
+                DM notification deep link (me.routes.ts) now points here. */}
+            <Route path="/student/messages" element={<StudentMessagesPage />} />
             <Route path="/student/ar" element={<ArVrPage />} />
             <Route path="/student/social" element={<SocialPage />} />
             <Route path="/student/downloads" element={<DownloadsPage />} />
