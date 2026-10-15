@@ -143,7 +143,11 @@ describe('runSync — fact transitions', () => {
       where: { key: { in: ['ghost'] } },
       data: { isStale: true },
     });
-    expect(result.notes).toBe('1 stale');
+    // r166b (E2 #1 — D17-3): the run notes are Arabic user-facing text
+    // (rendered verbatim on /admin/sync) — the key list rides along.
+    expect(result.notes).toBe('تم وسم 1 من الحقول كقديمة');
+    const finalizeData = syncRunUpdate.mock.calls[0]![0].data as Record<string, unknown>;
+    expect(finalizeData.notes).toBe('تم وسم 1 من الحقول كقديمة: ghost');
   });
 
   it('clears the stale flag on a fact whose value matches again', async () => {
@@ -183,6 +187,11 @@ describe('runSync — SyncRun finalization', () => {
     expect(data.status).toBe('SUCCESS');
     expect(data.completedAt).toBeInstanceOf(Date);
     expect(data.factsAdded).toBe(3);
+    // r166b (E2 #1 — D17-3): the clean-run note is Arabic with proper
+    // count forms (3 → «حقول») and the source label translated, the
+    // Latin slug riding along in parentheses for support.
+    expect(data.notes).toBe('تمت مزامنة 3 حقول من المصدر الثابت (static-markdown).');
+    expect(result.notes).toBeNull();
     expect(result.runId).toBe('run-1');
   });
 

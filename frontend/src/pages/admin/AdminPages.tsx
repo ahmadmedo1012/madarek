@@ -1340,8 +1340,11 @@ export function AdminCoursesPage() {
                       (الإجراءات — تعديل/حذف) with no matching header, and the
                       empty-state row spanned 7 of 8 columns. Follows the
                       established actions-header pattern (AdminExtraPages
-                      students table / OwnerUsersPage). */}
-                  <th scope="col">إجراءات</th>
+                      students table / OwnerUsersPage).
+                      r166b (E2 #5): admin-table-actions — the header now
+                      sits over the buttons (END-aligned) instead of the
+                      column's opposite edge. */}
+                  <th scope="col" className="admin-table-actions">إجراءات</th>
                 </tr>
               </thead>
               <tbody>
@@ -1389,8 +1392,12 @@ export function AdminCoursesPage() {
                     <td className="admin-table-num font-mono" data-label="الفصول">{c.offeringCount}</td>
                     {/* r157 (6A9 #9): font-mono dropped — the actions cell
                         carries Arabic button labels, not figures; the mono
-                        face was a copy-paste from the numeric neighbors. */}
-                    <td className="admin-table-num" data-label="الإجراءات">
+                        face was a copy-paste from the numeric neighbors.
+                        r166b (E2 #5): admin-table-num → admin-table-actions —
+                        matches the header; the inner cluster stays
+                        justify-end so header and buttons share the column's
+                        END edge. */}
+                    <td className="admin-table-actions" data-label="الإجراءات">
                       <div className="flex items-center gap-2 justify-end">
                         <button
                           type="button"

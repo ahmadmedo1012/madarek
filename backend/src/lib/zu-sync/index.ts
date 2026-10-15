@@ -52,6 +52,26 @@ async function loadFacts(source: string): Promise<{ facts: FactPatch[]; sourceLa
   throw new Error(`Unknown sync source: ${source}`);
 }
 
+/** r166b (E2 #1 — D17-3): صيغ العدّ العربي لـ«حقل» في ملاحظات التشغيل —
+ *  نفس سلّم countAr الذي تستعمله واجهة المزامنة
+ *  (frontend/src/lib/format.ts): 1 / 2 / 3–10 / 11+. */
+function fieldCountAr(n: number): string {
+  if (n === 1) return 'حقل واحد';
+  if (n === 2) return 'حقلان';
+  if (n >= 3 && n <= 10) return `${n} حقول`;
+  return `${n} حقلاً`;
+}
+
+/** r166b (E2 #1 — D17-3): تسمية عربية للمصدر داخل الملاحظة (المعرّف
+ *  اللاتيني يرافقها للدعم الفنّي — المصطلحات التقنية تبقى بأسمائها
+ *  الأصلية وفق AGENTS.md §9). مصدر مستقبلي غير معروف يُعرض كما هو. */
+const SOURCE_LABEL_AR: Record<string, string> = {
+  'static-markdown': 'المصدر الثابت (static-markdown)',
+};
+function sourceLabelAr(label: string): string {
+  return SOURCE_LABEL_AR[label] ?? label;
+}
+
 export async function runSync(opts: { source?: string } = {}): Promise<SyncResult> {
   const source = opts.source ?? 'static-markdown';
   const startedAt = Date.now();
@@ -174,9 +194,14 @@ export async function runSync(opts: { source?: string } = {}): Promise<SyncResul
                 factsAdded: added,
                 factsUpdated: updated,
                 durationMs,
+                /* r166b (E2 #1 — D17-3): كانت الملاحظات إنجليزية خام
+                   تُعرض في واجهة /admin/sync («ملاحظات آخر تشغيل:
+                   Synced 38 fact(s) from static-markdown.»). الآن عربية
+                   مع إبقاء الأعداد والمفاتيح مُدرَجة كما هي — القاعدة
+                   الجزئية «N من الحقول» سليمة نحوياً لأي عدد. */
                 notes: unseen.length
-                  ? `${unseen.length} fact(s) marked stale: ${unseen.slice(0, 5).join(', ')}${unseen.length > 5 ? '…' : ''}`
-                  : `Synced ${syncedCount} fact(s) from ${sourceLabel}.`,
+                  ? `تم وسم ${unseen.length} من الحقول كقديمة: ${unseen.slice(0, 5).join(', ')}${unseen.length > 5 ? '…' : ''}`
+                  : `تمت مزامنة ${fieldCountAr(syncedCount)} من ${sourceLabelAr(sourceLabel)}.`,
               }
             : {
                 status,
@@ -197,6 +222,9 @@ export async function runSync(opts: { source?: string } = {}): Promise<SyncResul
     factsUpdated: status === 'SUCCESS' ? updated : 0,
     durationMs: Date.now() - startedAt,
     errorMsg,
-    notes: status === 'SUCCESS' && unseen.length ? `${unseen.length} stale` : null,
+    /* r166b: نفس لغة الملاحظة المحفوظة — ملخّص حالة التشغيل في جسم
+       استجابة POST /admin/sync/trigger (تُستعمل للتحقّق وليس للعرض
+       المباشر؛ الترجمة تمنع تسرّب الإنجليزية لو استُعملت لاحقاً). */
+    notes: status === 'SUCCESS' && unseen.length ? `تم وسم ${unseen.length} من الحقول كقديمة` : null,
   };
 }

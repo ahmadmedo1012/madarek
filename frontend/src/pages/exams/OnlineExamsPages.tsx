@@ -1633,9 +1633,15 @@ export function ExamModerationPage() {
                     </div>
                   </div>
                   <div className="moderation-actions">
+                    {/* r166b (E2 #7 — weak CTA affordance): the row's ONLY
+                        action rendered as a transparent 59×32 ghost button —
+                        indistinguishable from a text label. The outline
+                        variant keeps ghost's calm (no lift grammar, no fill)
+                        while drawing a visible border, so the queue's
+                        primary verb always reads as a control. */}
                     <button
                       type="button"
-                      className="btn ghost sm"
+                      className="btn outline sm"
                       aria-expanded={open === item.id}
                       aria-controls={`moderation-panel-${item.id}`}
                       onClick={(e) => {

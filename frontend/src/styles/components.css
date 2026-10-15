@@ -160,7 +160,15 @@
      ║  METRIC / KPI                                                  ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .metric {
-    --_metric-color: var(--accent);
+    /* r166b (E2 #3): the icon glyph rides the BOTH-THEME-SAFE accent
+       ink instead of the raw --accent fill. Light: --accent-ink →
+       --c-copper-deep #5C3416 on --accent-soft #F4E4D2 = 8.62:1 (was
+       #B57438 = 1.76:1 — under the 3:1 non-text floor, the r131
+       light-well hardening this family somehow missed). Dark:
+       --accent-ink ≡ --accent #E9B44C on #2C2312 = 8.18:1, unchanged.
+       The VALUE text and LABEL keep their own roles — only the icon
+       well + the polish.css ::before leading edge consume this. */
+    --_metric-color: var(--accent-ink);
     --_metric-bg:    var(--accent-soft);
     background: var(--surface);
     border: 1px solid var(--rule);
@@ -236,6 +244,41 @@
        well (chrome only, never body text). */
     box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--role-accent, var(--accent)) 30%, transparent);
   }
+
+  /* r166b (E2 #2 — dead `color` prop): MetricCard has emitted
+     .metric.amber/.green/.red/.purple/.gold classes since the
+     primitives wave, but no rule ever consumed them — every KPI row in
+     the app painted identical copper wells and the semantic coding was
+     silently lost (DOM-verified on /quality/exam-moderation: three
+     tiles with color amber/green/red all measured bg #F4E4D2 /
+     color #B57438).
+
+     Grammar (follows .badge.<color>, components.css BADGES section —
+     one pastel family pair per tone, theme-aware so ONE rule set flips
+     automatically). The glyph is a non-text graphic → 3:1 floor; the
+     *-ink tokens are the both-theme-safe tiers (light resolves the
+     deep shade, dark the luminous ink — the same ladder the badge /
+     state-icon families use):
+       green  light #1F4F30 on #DCF1E2 = 7.99:1 · dark #7FD39A on #0F241C = 9.07:1
+       amber  light #6B4C0B on #FCF1CD = 6.98:1 · dark #ECC97D on #2C2410 = 9.66:1
+       red    light #6B2128 on #FCE0E2 = 9.02:1 · dark #F0938F on #2C1620 = 7.47:1
+       purple light #3F2D7A on #ECE6FA = 9.23:1 · dark #B7A0F4 on #221B3A = 7.26:1
+       gold   light #6B4C0B on #FCF1CD = 6.98:1 · dark #ECC97D on #2C2410 = 9.66:1
+     (ratios: WCAG 2.1 relative luminance, computed r166b). Gold rides
+     the documented gold pair --gold-ink/--gold-soft (tokens.css, the
+     same chips LabsPage paints); it lands on the yellow family like
+     .badge's gold lands on copper — a sanctioned family collapse, and
+     no KPI row in the app co-locates amber with gold. Purple has no
+     status-* twin, so its dark tier gets the one explicit override
+     (the .pill.on / .btn.danger dark-override precedent). Only the
+     icon well + leading edge change — .metric-value/.metric-label keep
+     their text roles untouched. */
+  .metric.green  { --_metric-color: var(--success-ink); --_metric-bg: var(--success-soft); }
+  .metric.amber  { --_metric-color: var(--warning-ink); --_metric-bg: var(--warning-soft); }
+  .metric.red    { --_metric-color: var(--danger-ink);  --_metric-bg: var(--danger-soft); }
+  .metric.purple { --_metric-color: var(--c-lavender-deep); --_metric-bg: var(--c-lavender-bg); }
+  [data-theme="dark"] .metric.purple { --_metric-color: var(--c-lavender-ink); }
+  .metric.gold   { --_metric-color: var(--gold-ink);     --_metric-bg: var(--gold-soft); }
 
   /* compact KPI strip */
   /* 13-17 dead-selector sweep (11-g P2-7): .kpi-strip, .kpi-cell and
@@ -933,7 +976,12 @@
   .table thead th {
     text-align: start;
     padding: var(--sp-3) var(--sp-4);
-    font-size: var(--fs-xxs);
+    /* r166b (E2 #4): 11px → --fs-xs (12px). The old rung made headers
+       SMALLER than the 13px body cells — an inverted hierarchy
+       (DOM-verified on /admin/students: th 11 vs td 13). 12 keeps the
+       muted/600 de-emphasis while never reading smaller than the data
+       it labels; DESIGN.md's table canon line matches. */
+    font-size: var(--fs-xs);
     font-weight: var(--fw-semibold);
     color: var(--text-muted);
     text-transform: uppercase;
@@ -1620,6 +1668,20 @@
   }
   .state-title { font-family: var(--font-display); font-size: var(--type-headline-size-sm); color: var(--text); font-weight: var(--type-headline-weight); }
   .state-desc  { font-size: var(--type-label-size); color: var(--text-muted); max-inline-size: 42ch; }
+  /* r166b (E2 #6 — oversized empty states on phones): the desktop
+     breathing (sp-9/sp-6 + sp-7 block + 56px well) measured 303px on
+     /teacher/assignments at 390×844 (~36% of the viewport) and 375px
+     for a one-line student dash-agenda card. The ≤640 rung of the
+     mobile ladder (same breakpoint as .tbl-stack above) trims the
+     family: sp-6/sp-4 padding, a 44px well (the .metric-icon size —
+     same icon-to-well ratio, 20px glyph in 44px), and the opt-in
+     160px illustration steps down to 120px. Desktop is untouched. */
+  @media (max-width: 640px) {
+    .state { padding: var(--sp-6) var(--sp-4); }
+    .state-icon { inline-size: 44px; block-size: 44px; }
+    .state-illustration { inline-size: 120px; block-size: 120px; }
+    .state-illustration .illustration > svg { max-inline-size: 120px; max-block-size: 120px; }
+  }
   /* (wave 2-b — `.empty-state { composes: state; }` deleted:
      `composes` is a CSS-Modules feature and never worked in plain
      CSS — a silent no-op since day one (0-a P2-9). polish v6/v11 own
@@ -3524,6 +3586,16 @@
      tables keep their start alignment). ──────────────────────────── */
   .table th.admin-table-num,
   .table td.admin-table-num { text-align: center; }
+
+  /* r166b (E2 #5): END-aligned actions column. /admin/courses rendered
+     the th «إجراءات» start-aligned while the td's inner cluster
+     (justify-end) pinned the buttons to the column's other end —
+     header and its controls on opposite ends. Scoped class, same
+     grammar as admin-table-num; the td's flex cluster carries the
+     buttons, so the pair needs text-align only on the header side
+     (the class goes on both for one vocabulary). ─────────────── */
+  .table th.admin-table-actions,
+  .table td.admin-table-actions { text-align: end; }
 
   /* ── Dashboard quick indicators (the "مؤشرات سريعة" card). ────── */
   .admin-stat-row {
