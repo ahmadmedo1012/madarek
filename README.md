@@ -23,7 +23,7 @@
 
 | البند | الحالة |
 |---|---|
-| ميزات الأدوار الخمسة | **منفَّذة ومشحَنة** — 1612 اختبار واجهة + 1434 خلفية خضراء (2026-10-15، جولات r141–r169) |
+| ميزات الأدوار الخمسة | **منفَّذة ومشحَنة** — 1676 اختبار واجهة + 1494 خلفية خضراء (2026-10-15، جولات r141–r170) |
 | نظام التصميم | موثّق في [`DESIGN.md`](DESIGN.md) — بوابة تكافؤ 168/168 خضراء |
 | مساعد «Oasis» الذكي | **محرّك محلي حتمي معلن (gap-aware-composer) افتراضيًا + مزوّد LLM حقيقي اختياري** عبر `AI_PROVIDER` — التفصيل: [docs/02](docs/02-features.md) |
 | فحص الانتحال | **محاكاة حتمية معلنة** (بلا خدمات خارجية) — التفصيل: [docs/02](docs/02-features.md) |
@@ -112,8 +112,8 @@ npm run dev:web                    # الواجهة :5173 (proxy ‏/api → :40
 ```bash
 npm run lint                         # ESLint — 0 أخطاء إلزامية
 npm run typecheck                    # tsc — src + tests، الجهتان (بلا DB)
-npm test                             # 1612 واجهة + 1434 خلفية (بلا DB؛ يشمل 7 اختبارات S3 حيّة ضد s3rver)
-node scripts/verify-parity-export.mjs  # بوابة التكافؤ 168/168
+npm test                             # 1676 واجهة + 1494 خلفية (بلا DB؛ يشمل 7 اختبارات S3 حيّة ضد s3rver)
+node scripts/verify-parity-export.mjs  # بوابة التكافؤ 163/163
 bash scripts/check-icons.sh            # انضباط Lucide
 bash scripts/check-motion-tokens.sh    # رموز الحركة
 bash scripts/check-csp-hash.sh         # بصمات CSP

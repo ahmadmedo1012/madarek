@@ -121,7 +121,7 @@ vi.mock('../../src/hooks/useResources', () => ({
 import RegisterPage, { passwordStrengthTier, registerPasswordSchema } from '../../src/pages/RegisterPage';
 import { isCommonPassword } from '../../src/lib/commonPasswords';
 
-const PW_LABEL = 'كلمة المرور (8 أحرف على الأقل)';
+const PW_LABEL = 'كلمة المرور (12 حرفًا على الأقل)';
 
 function renderPage() {
   return render(
@@ -201,28 +201,33 @@ describe('r170-e — RegisterPage live strength hint (polite, advisory only)', (
     expect(screen.getByText('قوة كلمة المرور: ضعيفة')).toBeInTheDocument();
   });
 
-  it('the hint NEVER blocks submit — a medium-tier password still submits', async () => {
+  /* r170g interaction: the zod floor moved to 12, so the متوسطة tier
+   * (8–11 chars) is now entirely below the schema floor — "a
+   * medium-tier password submits" is impossible BY DESIGN (the meter
+   * guides the user to keep typing; zod owns the gate). The
+   * advisory-only property is therefore pinned at the قوية tier: a
+   * 12-char password with the hint visible still submits, and the hint
+   * copy never becomes a field error / alert. */
+  it('the hint NEVER blocks submit — a strong-tier password with the hint showing submits', async () => {
     renderPage();
     chooseStudent();
-    // 9 chars = متوسطة (would be "needs improvement" under stricter
-    // policies): the hint must advise, not gate — zod owns the rules.
     fireEvent.change(screen.getByLabelText('الاسم الأول'), { target: { value: 'سالم' } });
     fireEvent.change(screen.getByLabelText('اللقب'), { target: { value: 'الفيتوري' } });
     fireEvent.change(screen.getByLabelText('البريد الإلكتروني'), { target: { value: 'salem@zu.edu.ly' } });
-    fireEvent.change(screen.getByLabelText(PW_LABEL), { target: { value: 'Madarek26' } });
+    fireEvent.change(screen.getByLabelText(PW_LABEL), { target: { value: 'Madarek2026!' } });
     fireEvent.change(screen.getByLabelText('رقم القيد الجامعي'), { target: { value: '2024-CS-1234' } });
     fireEvent.change(screen.getByLabelText('الكلّيّة'), { target: { value: 'fac-1' } });
     fireEvent.change(screen.getByLabelText('القسم'), { target: { value: 'dep-1' } });
 
-    expect(screen.getByText('قوة كلمة المرور: متوسطة')).toBeInTheDocument();
+    expect(screen.getByText('قوة كلمة المرور: قوية')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'إنشاء الحساب' }));
 
     await waitFor(() => {
       expect(registerState.current.mutateAsync).toHaveBeenCalledTimes(1);
     });
     // The hint stays advisory copy — never a field error / alert.
-    expect(screen.getByText('قوة كلمة المرور: متوسطة')).not.toHaveClass('auth-field-error');
-    expect(screen.getByText('قوة كلمة المرور: متوسطة')).not.toHaveAttribute('role', 'alert');
+    expect(screen.getByText('قوة كلمة المرور: قوية')).not.toHaveClass('auth-field-error');
+    expect(screen.getByText('قوة كلمة المرور: قوية')).not.toHaveAttribute('role', 'alert');
   });
 
   it('the teacher form carries the same hint contract (both role paths)', () => {

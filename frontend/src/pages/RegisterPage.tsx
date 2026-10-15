@@ -33,10 +33,13 @@ type AcademicRole = Extract<AppRole, 'STUDENT' | 'TEACHER'>;
  *  12345678…) used to pass the client check, submit, then come back as
  *  the field-less «تحقّق من البيانات المُدخلة» so the visitor retried
  *  the SAME secret in a loop. The refine rides after the length checks,
- *  so a short password still reports «8 أحرف على الأقل» first. */
+ *  so a short password still reports the length message first.
+ * r170g mirror: the backend floor moved 8→12 (ASVS 2.1.1) — the FE
+ * schema keeps exact parity so an 8–11-char secret can't pass the
+ * client and bounce as the generic 400 (the r165f failure mode). */
 export const registerPasswordSchema = z
   .string()
-  .min(8, '8 أحرف على الأقل')
+  .min(12, '12 حرفًا على الأقل')
   .max(72)
   .refine((pw) => !isCommonPassword(pw), {
     message: 'كلمة المرور شائعة جدًا — اختر واحدة أقل توقّعًا',
@@ -438,7 +441,7 @@ function StudentForm({ form, error, isPending, faculties, onSubmit }: StudentFor
         <input className="input auth-input" type="email" dir="ltr" autoComplete="email" {...form.register('email')} />
       </Field>
 
-      <Field label="كلمة المرور (8 أحرف على الأقل)" error={form.formState.errors.password?.message}>
+      <Field label="كلمة المرور (12 حرفًا على الأقل)" error={form.formState.errors.password?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
         {/* dir="ltr": passwords are overwhelmingly Latin runs; the caret
             and masked glyphs must not bidi-flip in RTL. */}
@@ -578,7 +581,7 @@ function TeacherForm({ form, error, isPending, faculties, onSubmit }: TeacherFor
         <input className="input auth-input" type="email" dir="ltr" autoComplete="email" placeholder="example@zu.edu.ly" {...form.register('email')} />
       </Field>
 
-      <Field label="كلمة المرور (8 أحرف على الأقل)" error={form.formState.errors.password?.message}>
+      <Field label="كلمة المرور (12 حرفًا على الأقل)" error={form.formState.errors.password?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
         {/* dir="ltr": passwords are overwhelmingly Latin runs; the caret
             and masked glyphs must not bidi-flip in RTL. */}

@@ -75,7 +75,7 @@ function fillStudent(password: string) {
   fireEvent.change(screen.getByLabelText('الاسم الأول'), { target: { value: 'سالم' } });
   fireEvent.change(screen.getByLabelText('اللقب'), { target: { value: 'الفيتوري' } });
   fireEvent.change(screen.getByLabelText('البريد الإلكتروني'), { target: { value: 'salem@zu.edu.ly' } });
-  fireEvent.change(screen.getByLabelText('كلمة المرور (8 أحرف على الأقل)'), { target: { value: password } });
+  fireEvent.change(screen.getByLabelText('كلمة المرور (12 حرفًا على الأقل)'), { target: { value: password } });
   fireEvent.change(screen.getByLabelText('رقم القيد الجامعي'), { target: { value: '2024-CS-1234' } });
   fireEvent.change(screen.getByLabelText('الكلّيّة'), { target: { value: 'fac-1' } });
   fireEvent.change(screen.getByLabelText('القسم'), { target: { value: 'dep-1' } });
@@ -83,7 +83,13 @@ function fillStudent(password: string) {
 
 // ── 1+2. Schema contract (registerPasswordSchema, shared by both forms) ──
 describe('RegisterPage — registerPasswordSchema blocklist mirror (r165f)', () => {
-  it.each(['password123', 'letmein123', '12345678', 'qwerty123'])(
+  // r170g: the floor moved to 12 — fixtures stay ≥12 chars so the
+  // blocklist refine (not the length rule) still produces the message
+  // under test (shorter blocklist strings now fail length first).
+  // password1234/administrator are the blocklist's only ≥12-char
+  // entries — the others (password123, letmein123…) are now pinned on
+  // the length branch by the boundary test below.
+  it.each(['password1234', 'administrator'])(
     'rejects the blocklist password «%s» with the exact Arabic message',
     (password) => {
       const result = registerPasswordSchema.safeParse(password);
@@ -94,11 +100,11 @@ describe('RegisterPage — registerPasswordSchema blocklist mirror (r165f)', () 
     },
   );
 
-  it('matches the backend list case-insensitively (PaSsWoRd123 === password123)', () => {
+  it('matches the backend list case-insensitively (PaSsWoRd1234 === password1234)', () => {
     // Same predicate semantics as backend password-policy.ts.
-    expect(isCommonPassword('PaSsWoRd123')).toBe(true);
+    expect(isCommonPassword('PaSsWoRd1234')).toBe(true);
     expect(isCommonPassword('Password12345')).toBe(false); // not in the list
-    expect(registerPasswordSchema.safeParse('PaSsWoRd123').success).toBe(false);
+    expect(registerPasswordSchema.safeParse('PaSsWoRd1234').success).toBe(false);
   });
 
   it('accepts strong passwords (the D1 demo password and a passphrase)', () => {
@@ -106,12 +112,20 @@ describe('RegisterPage — registerPasswordSchema blocklist mirror (r165f)', () 
     expect(registerPasswordSchema.safeParse('Salam-Zawiya-2026').success).toBe(true);
   });
 
-  it('keeps the pre-existing length rules and their messages (refine never masks them)', () => {
+  it('keeps the length rules and their messages (refine never masks them; r170g floor=12)', () => {
     const short = registerPasswordSchema.safeParse('Ab1!xyz');
     expect(short.success).toBe(false);
     if (!short.success) {
-      expect(short.error.issues[0]?.message).toBe('8 أحرف على الأقل');
+      expect(short.error.issues[0]?.message).toBe('12 حرفًا على الأقل');
       expect(short.error.issues.some((i) => i.message === COMMON_PASSWORD_MESSAGE)).toBe(false);
+    }
+    // The new boundary: 11 chars (the old accepted floor) is rejected
+    // on length alone — FE/BE parity (auth.dto.ts .min(12)).
+    const eleven = registerPasswordSchema.safeParse('Aa1!Aa1!Aa1');
+    expect(eleven.success).toBe(false);
+    if (!eleven.success) {
+      expect(eleven.error.issues[0]?.message).toBe('12 حرفًا على الأقل');
+      expect(eleven.error.issues.some((i) => i.message === COMMON_PASSWORD_MESSAGE)).toBe(false);
     }
     expect(registerPasswordSchema.safeParse('a'.repeat(73)).success).toBe(false);
   });
@@ -131,7 +145,7 @@ describe('RegisterPage — blocklist password surfaces as a field error (r165f)'
   it('renders the Arabic message as a field-level error and blocks submission (no server call)', async () => {
     renderPage();
     chooseStudent();
-    fillStudent('password123');
+    fillStudent('password1234');
 
     fireEvent.click(screen.getByRole('button', { name: 'إنشاء الحساب' }));
 
@@ -140,7 +154,7 @@ describe('RegisterPage — blocklist password surfaces as a field error (r165f)'
     const fieldError = await waitFor(() => screen.getByText(COMMON_PASSWORD_MESSAGE));
     expect(fieldError).toHaveClass('auth-field-error');
     // …the failed password input is flagged invalid…
-    const pwInput = screen.getByLabelText('كلمة المرور (8 أحرف على الأقل)');
+    const pwInput = screen.getByLabelText('كلمة المرور (12 حرفًا على الأقل)');
     expect(pwInput).toHaveAttribute('aria-invalid', 'true');
     // …the submission never left the page (the old defect: FE-valid →
     // server 400 with the field-less generic banner)…
