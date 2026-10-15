@@ -367,12 +367,14 @@ describe('rotate-demo-passwords contract (r166c)', () => {
     });
   });
 
-  it('password bounds mirror passwordSchema (min 8 / max 72, argon2 input cap)', () => {
+  it('password bounds mirror passwordSchema (min 12 / max 72, argon2 input cap)', () => {
     const schemaMin = authDtoSource.match(/\.min\((\d+)\)/)?.[1];
     const schemaMax = authDtoSource.match(/\.max\((\d+)\)/)?.[1];
     const scriptMin = rotateScriptSource.match(/PASSWORD_MIN\s*=\s*(\d+)/)?.[1];
     const scriptMax = rotateScriptSource.match(/PASSWORD_MAX\s*=\s*(\d+)/)?.[1];
-    expect(schemaMin).toBe('8');
+    // r170g (ASVS 2.1.1): floor raised 8 → 12 — re-pinned together with the
+    // script so the pair-invariant below keeps holding.
+    expect(schemaMin).toBe('12');
     expect(schemaMax).toBe('72');
     expect(scriptMin).toBe(schemaMin);
     expect(scriptMax).toBe(schemaMax);

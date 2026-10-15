@@ -12,14 +12,20 @@ const SELF_SERVE_ROLES = [Role.STUDENT, Role.TEACHER] as const;
 /**
  * Shared password policy — registration AND password change enforce the
  * SAME rules (one definition, no drift between the two flows):
- * length 8–72 (argon2 input cap) + not one of the most-abused passwords.
+ * length 12–72 (argon2 input cap) + not one of the most-abused passwords.
  * No forced complexity classes: Arabic-context users, and complexity
  * rules mostly generate predictable substitutions. Never TRIM passwords —
  * trimming silently changes the stored secret.
+ *
+ * r170g (ASVS 2.1.1): minimum raised 8 → 12. Deliberate policy change —
+ * argon2 + lockout + failed-only limiter stay the brute-force defense;
+ * the floor is the length floor ASVS recommends. The FE register form
+ * (RegisterPage.tsx) mirrors this schema and must be aligned by the
+ * frontend stream.
  */
 export const passwordSchema = z
   .string()
-  .min(8)
+  .min(12)
   .max(72)
   .refine((pw) => !isCommonPassword(pw), {
     // r165f (D17-3): user-facing copy, not a dev-internal. validate()

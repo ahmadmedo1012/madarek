@@ -8,7 +8,7 @@
  * the most-abused credential strings. No forced complexity classes —
  * this is a university LMS in an Arabic context, where symbol-forcing
  * produces `Passw0rd!`-style compliance rather than entropy. Length
- * (min 8 / max 72, enforced by the zod schema) plus argon2 + rate
+ * (min 12 / max 72, enforced by the zod schema) plus argon2 + rate
  * limiting + lockout carry the real brute-force defense.
  */
 

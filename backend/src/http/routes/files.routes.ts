@@ -121,6 +121,51 @@ export function isUploadSizeOk(length: number): boolean {
 }
 
 /**
+ * Active-content PDF operator names (case-sensitive). Each announces
+ * scripting or auto-execution inside the document.
+ */
+const PDF_ACTIVE_CONTENT_MARKERS: readonly string[] = ['/JavaScript', '/OpenAction', '/Launch'];
+
+/**
+ * Poor-man's ASVS 12.4.2 active-content heuristic (r170g): reject PDFs
+ * that carry executable/active payloads BEFORE they are stored or served
+ * to another user's viewer. Scans the raw bytes for the case-sensitive
+ * PDF operator names above. A sandboxed AV pass is out of scope for this
+ * codebase — this is an honest byte-scan heuristic, not a guarantee
+ * (e.g. markers hidden inside a compressed stream slip through; the
+ * serving-side gates still apply). latin1 maps 1 byte ↔ 1 code point,
+ * so string `includes` is exact byte-sequence matching.
+ */
+export function containsPdfActiveContent(body: Uint8Array): boolean {
+  // View (no copy) over the exact bytes: body may be a Buffer sharing a
+  // pooled ArrayBuffer, so byteOffset/byteLength must be honored.
+  const latin1 = Buffer.from(body.buffer, body.byteOffset, body.byteLength).toString('latin1');
+  return PDF_ACTIVE_CONTENT_MARKERS.some((marker) => latin1.includes(marker));
+}
+
+/**
+ * Per-user storage quota (ASVS 12.1.3, r170g): 200 MB of uploaded paper
+ * PDFs per student. Rationale for the number: the ResearchPaper row does
+ * NOT store a file size, so the worst-case stored footprint of a user's
+ * existing papers is count × MAX_UPLOAD_PDF_BYTES (each upload is already
+ * capped at 20 MB by isUploadSizeOk) — 200 MB therefore means "at most 10
+ * papers". The demo seed student carries 5 papers (worst-case 100 MB) and
+ * stays comfortably inside; no single account can pin unbounded storage.
+ */
+export const USER_PAPER_QUOTA_BYTES = 200 * 1024 * 1024;
+
+/**
+ * Pure quota decision: would storing `incomingBytes` ON TOP of the user's
+ * `existingPaperCount` papers exceed the per-user quota? Papers without
+ * stored sizes are charged at the 20 MB per-file cap (conservative — the
+ * real footprint can only be smaller).
+ */
+export function isUploadWithinQuota(existingPaperCount: number, incomingBytes: number): boolean {
+  const projectedBytes = existingPaperCount * MAX_UPLOAD_PDF_BYTES + incomingBytes;
+  return projectedBytes <= USER_PAPER_QUOTA_BYTES;
+}
+
+/**
  * Single-range parser for the serving routes.
  *  - `null` → no Range header / malformed / multi-range: serve the full
  *    body as 200 (single-range support only, honestly).
@@ -216,8 +261,15 @@ const paperUploadLimiter = createRouteLimiter({ max: 10 });
  *
  * Guards, in order: role (STUDENT only — 403 before a byte is read),
  * Buffer.isBuffer (a mismatched Content-Type leaves req.body as the
- * express.json leftover {}), size (413), then the %PDF- magic bytes.
- * Responds 201 with the fileUrl the paper row should store.
+ * express.json leftover {}), size (413), the %PDF- magic bytes, the
+ * active-content heuristic (400, r170g), and the per-user storage quota
+ * (413 count query, r170g). Responds 201 with the fileUrl the paper row
+ * should store.
+ *
+ * The quota count runs OUTSIDE any transaction, deliberately: one extra
+ * query, and the limit is a bound (eventual consistency is fine), not an
+ * invariant — two racing uploads can at worst both land under a stale
+ * count.
  *
  * NO ResearchPaper row is created here, on purpose: the row is minted
  * by the existing POST /api/v1/me/research with this fileUrl. Until
@@ -242,6 +294,17 @@ router.post(
       }
       if (!isPdfMagicBytes(body)) {
         throw AppError.badRequest('الملف المرفق ليس ملف PDF صالحاً');
+      }
+      if (containsPdfActiveContent(body)) {
+        throw AppError.badRequest('ملف PDF يحتوي تضمينات برمجية نشطة — غير مسموح');
+      }
+      // One extra query, no transaction — the quota is a bound, not an
+      // invariant (see the route doc above).
+      const existingPaperCount = await prisma.researchPaper.count({
+        where: { studentId: req.user!.id },
+      });
+      if (!isUploadWithinQuota(existingPaperCount, body.length)) {
+        throw new AppError('PAYLOAD_TOO_LARGE', 'تجاوزت حصة التخزين الخاصة بك', 413);
       }
       const filename = `${generateStorageId()}.pdf`;
       const key = buildStorageKey('papers', filename);

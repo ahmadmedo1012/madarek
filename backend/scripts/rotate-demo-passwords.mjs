@@ -33,7 +33,7 @@
  *   as the render.yaml↔ci.yml NODE_VERSION pin). If you change one,
  *   change both; the test will not let the pair silently diverge.
  *
- * Password policy: length 8–72 (the zod passwordSchema bounds — also
+ * Password policy: length 12–72 (the zod passwordSchema bounds — also
  * pinned by the same test). The common-password blocklist refine lives
  * at the DTO layer (auth.dto.ts); this script documents that boundary
  * instead of half-reimplementing it — the operator rotating is the
@@ -79,7 +79,7 @@ const ARGON_OPTIONS = {
 };
 
 /** Password policy bounds — MUST stay identical to passwordSchema (zod, auth.dto.ts). */
-const PASSWORD_MIN = 8;
+const PASSWORD_MIN = 12;
 const PASSWORD_MAX = 72;
 
 const HELP = [

@@ -18,10 +18,13 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
+  containsPdfActiveContent,
   isPdfMagicBytes,
   isUploadSizeOk,
+  isUploadWithinQuota,
   MAX_UPLOAD_PDF_BYTES,
   parseRangeHeader,
+  USER_PAPER_QUOTA_BYTES,
 } from '../../src/http/routes/files.routes.js';
 import { materialFileQuerySchema } from '../../src/http/routes/offerings.routes.js';
 
@@ -66,6 +69,69 @@ describe('isUploadSizeOk (20 MB cap)', () => {
     expect(isUploadSizeOk(MAX_UPLOAD_PDF_BYTES + 1)).toBe(false);
     expect(isUploadSizeOk(-5)).toBe(false);
     expect(isUploadSizeOk(3.5)).toBe(false);
+  });
+});
+
+// ─── r170g: PDF active-content heuristic (poor-man's ASVS 12.4.2) ──
+
+describe('containsPdfActiveContent (byte-scan for active PDF operators)', () => {
+  // Minimal honest PDF skeleton — magic header + catalog + trailer, no
+  // active markers anywhere. Synthetic buffers; no real files needed.
+  const cleanPdf = Buffer.from(
+    '%PDF-1.7\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\ntrailer\n<< /Size 4 /Root 1 0 R >>\n%%EOF\n',
+  );
+
+  it('passes a clean PDF (valid header, catalog, trailer — no markers)', () => {
+    expect(containsPdfActiveContent(cleanPdf)).toBe(false);
+  });
+
+  it('rejects a buffer embedding /JavaScript (embedded script)', () => {
+    const hostile = Buffer.concat([cleanPdf, Buffer.from('/JavaScript (app.alert(1))')]);
+    expect(containsPdfActiveContent(hostile)).toBe(true);
+  });
+
+  it('rejects /OpenAction (auto-run on open)', () => {
+    const hostile = Buffer.concat([cleanPdf, Buffer.from('/OpenAction << /S /JavaScript >>')]);
+    expect(containsPdfActiveContent(hostile)).toBe(true);
+  });
+
+  it('rejects /Launch (spawn an external application)', () => {
+    const hostile = Buffer.concat([cleanPdf, Buffer.from('/Launch (calc.exe)')]);
+    expect(containsPdfActiveContent(hostile)).toBe(true);
+  });
+
+  it('is case-sensitive: lowercase variants are not PDF operators — no false positive', () => {
+    expect(containsPdfActiveContent(Buffer.concat([cleanPdf, Buffer.from('/javascript')]))).toBe(false);
+    expect(containsPdfActiveContent(Buffer.concat([cleanPdf, Buffer.from('/openaction')]))).toBe(false);
+    expect(containsPdfActiveContent(Buffer.concat([cleanPdf, Buffer.from('/launch')]))).toBe(false);
+  });
+
+  it('scans only the passed bytes, not surrounding pooled-buffer memory', () => {
+    // The marker sits OUTSIDE the subarray view — must not be seen.
+    const pooled = Buffer.from('/JavaScript..........clean-bytes');
+    const view = new Uint8Array(pooled.buffer, pooled.byteOffset + 11, 5);
+    expect(containsPdfActiveContent(view)).toBe(false);
+    expect(containsPdfActiveContent(new Uint8Array(0))).toBe(false);
+  });
+});
+
+// ─── r170g: per-user upload quota (ASVS 12.1.3) ───────────────────
+
+describe('isUploadWithinQuota (per-user 200 MB paper quota)', () => {
+  it('pins the quota constant to 200 MB (= 10 papers × the 20 MB per-file cap)', () => {
+    expect(USER_PAPER_QUOTA_BYTES).toBe(200 * 1024 * 1024);
+  });
+
+  it('accepts a first upload, and the 10th max-size paper at the exact boundary', () => {
+    expect(isUploadWithinQuota(0, MAX_UPLOAD_PDF_BYTES)).toBe(true);
+    expect(isUploadWithinQuota(9, MAX_UPLOAD_PDF_BYTES)).toBe(true); // 9×20 + 20 = 200MB
+    expect(isUploadWithinQuota(5, 512 * 1024)).toBe(true); // seed-shaped: 5 papers + small file
+  });
+
+  it('rejects when the projected footprint crosses the quota', () => {
+    expect(isUploadWithinQuota(10, 1)).toBe(false); // 10 papers already = the whole quota
+    expect(isUploadWithinQuota(9, MAX_UPLOAD_PDF_BYTES + 1)).toBe(false); // one byte over
+    expect(isUploadWithinQuota(10, 512 * 1024)).toBe(false);
   });
 });
 
@@ -148,6 +214,33 @@ describe('POST /files/papers wiring (STUDENT upload)', () => {
     expect(uploadRoute).toContain('res.status(201).json({ data: { fileUrl: paperFilenameToFileUrl(filename) } })');
     // And the no-row-here honesty comment (orphan upload is inert):
     expect(filesRouteSource).toContain('NO ResearchPaper row is created here');
+  });
+
+  it('r170g: active-content + quota guards sit between magic bytes and the put', () => {
+    const handlerStart = filesRouteSource.indexOf("router.post(\n  '/papers',");
+    const handlerEnd = filesRouteSource.indexOf("router.get('/papers/:filename'");
+    const uploadRoute = filesRouteSource.slice(handlerStart, handlerEnd);
+    const magicCheck = uploadRoute.indexOf('!isPdfMagicBytes(body)');
+    const activeCheck = uploadRoute.indexOf('containsPdfActiveContent(body)');
+    const quotaCount = uploadRoute.indexOf('prisma.researchPaper.count({');
+    const quotaWhere = uploadRoute.indexOf('where: { studentId: req.user!.id }');
+    const quotaCheck = uploadRoute.indexOf('!isUploadWithinQuota(existingPaperCount, body.length)');
+    const putCheck = uploadRoute.indexOf('getStorage().put(key, body)');
+    expect([magicCheck, activeCheck, quotaCount, quotaWhere, quotaCheck, putCheck].every((i) => i >= 0))
+      .toBe(true);
+    expect(magicCheck).toBeLessThan(activeCheck); // byte gates before the DB query
+    expect(activeCheck).toBeLessThan(quotaCount);
+    expect(quotaCount).toBeLessThan(quotaCheck);
+    expect(quotaCheck).toBeLessThan(putCheck); // quota BEFORE any byte is stored
+    // Arabic rejection copy: active content → 400, quota → 413 envelope.
+    expect(uploadRoute).toContain(
+      "AppError.badRequest('ملف PDF يحتوي تضمينات برمجية نشطة — غير مسموح')",
+    );
+    expect(uploadRoute).toContain(
+      "new AppError('PAYLOAD_TOO_LARGE', 'تجاوزت حصة التخزين الخاصة بك', 413)",
+    );
+    // One query, no transaction wrapper (the bound-not-invariant contract):
+    expect(uploadRoute).not.toContain('$transaction');
   });
 });
 

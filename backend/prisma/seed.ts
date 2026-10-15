@@ -150,8 +150,8 @@ async function main() {
 
   // ─── Demo users ──────────────────────────────────────────────
   // Demo password for all seeded accounts. It must satisfy the register
-  // policy (auth.dto.ts enforces an 8-char minimum) so the documented demo
-  // credentials are accepted by the real auth flows. Keep README.md's
+  // policy (auth.dto.ts enforces a 12-char minimum, r170g) so the documented
+  // demo credentials are accepted by the real auth flows. Keep README.md's
   // "After seeding…" block in sync when changing this value.
   const password = await hashPassword('Madarek2026!');
 

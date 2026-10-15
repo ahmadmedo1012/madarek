@@ -76,7 +76,10 @@ const VALID_REGISTER_BODY = {
 
 describe('POST /auth/register — password blocklist 400 is field-specific (r165f)', () => {
   it('a blocklist password (single failure) names the password in the envelope message', async () => {
-    const res = await postRegister({ ...VALID_REGISTER_BODY, password: 'password123' });
+    // r170g: 12 chars so the blocklist refine is the ONLY failing check
+    // (an 11-char fixture would fail .min(12) first and never reach the
+    // blocklist branch under the raised floor).
+    const res = await postRegister({ ...VALID_REGISTER_BODY, password: 'password1234' });
 
     expect(res.status).toBe(400);
     const payload = (await res.json()) as {
@@ -91,7 +94,8 @@ describe('POST /auth/register — password blocklist 400 is field-specific (r165
   });
 
   it('a short password (zod English default) keeps the generic envelope — cross-route safety', async () => {
-    const res = await postRegister({ ...VALID_REGISTER_BODY, password: 'Ab1!xyz' });
+    // 11 chars — one below the r170g 12-char floor: short is now this.
+    const res = await postRegister({ ...VALID_REGISTER_BODY, password: 'Aa1!Aa1!Aa1' });
 
     expect(res.status).toBe(400);
     const payload = (await res.json()) as { error: { message: string } };
@@ -104,7 +108,7 @@ describe('POST /auth/register — password blocklist 400 is field-specific (r165
     const res = await postRegister({
       ...VALID_REGISTER_BODY,
       email: 'not-an-email',
-      password: 'password123',
+      password: 'password1234',
     });
 
     expect(res.status).toBe(400);

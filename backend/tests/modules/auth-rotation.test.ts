@@ -295,22 +295,28 @@ describe('password policy', () => {
   });
 
   it('passwordSchema accepts the D1 demo password and strong passphrases', () => {
+    // 'Madarek2026!' is exactly 12 chars — the new (r170g, ASVS 2.1.1)
+    // floor boundary, so the seed/rotation demo secret stays valid.
     expect(passwordSchema.safeParse('Madarek2026!').success).toBe(true);
     expect(passwordSchema.safeParse('Mahabbah-Wataniya-2026').success).toBe(true);
   });
 
   it('passwordSchema rejects short, over-long, and common passwords', () => {
+    // r170g: floor raised 8 → 12 — 11 chars is the new rejection boundary.
     expect(passwordSchema.safeParse('Ab1!xyz').success).toBe(false); // 7 chars
+    expect(passwordSchema.safeParse('Aa1!Aa1!Aa1').success).toBe(false); // 11 chars — one below the floor
     expect(passwordSchema.safeParse('a'.repeat(73)).success).toBe(false);
-    expect(passwordSchema.safeParse('password123').success).toBe(false);
-    expect(passwordSchema.safeParse('letmein123').success).toBe(false);
+    // 12+ chars so ONLY the blocklist refine rejects these (a shorter
+    // fixture would fail on length first and stop testing the blocklist).
+    expect(passwordSchema.safeParse('password1234').success).toBe(false);
+    expect(passwordSchema.safeParse('administrator').success).toBe(false);
   });
 
   it('register and change-password share the exact same policy field', () => {
     const registerPassword = registerSchema.shape.password;
     const changePasswordNew = changePasswordSchema.shape.newPassword;
     // Both must accept/reject identically — one policy, no drift.
-    for (const candidate of ['Madarek2026!', 'password', 'Ab1!xyz', 'x'.repeat(72)]) {
+    for (const candidate of ['Madarek2026!', 'password', 'Ab1!xyz', 'password1234', 'x'.repeat(72)]) {
       expect(registerPassword.safeParse(candidate).success).toBe(
         changePasswordNew.safeParse(candidate).success,
       );
