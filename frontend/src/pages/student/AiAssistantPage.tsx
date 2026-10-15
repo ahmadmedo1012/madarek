@@ -426,20 +426,41 @@ export default function AiAssistantPage() {
             )}
           </div>
 
-          {/* Quick-action chips above the input — Stitch signature */}
+          {/* Quick-action chips above the input — Stitch signature.
+              r168b honesty gate: the local composer's REAL paths are
+              concept-explain and worst-gap surfacing (backend
+              composeReply — ai.routes.ts). «لخّص الفصل الأخير» and
+              «اختبار قصير» promise summarize/quiz generation the local
+              engine cannot deliver; they render ONLY when a real
+              provider is configured. Local/unknown mode keeps the two
+              chips the composer genuinely honors (concept-explain →
+              worst-gap answer; «أسوأ فجواتي» → the mastery-gap reply). */}
           <div className="ai-quick-actions">
-            <button type="button" className="ai-quick-chip" onClick={() => void send('لخّص لي الفصل الأخير من المقرّر')} disabled={busy}>
-              لخّص الفصل الأخير
-            </button>
-            <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')} disabled={busy}>
-              اشرح مفهوماً
-            </button>
-            <button type="button" className="ai-quick-chip" onClick={() => void send('أنشئ لي اختباراً قصيراً (5 أسئلة)')} disabled={busy}>
-              اختبار قصير
-            </button>
-            <button type="button" className="ai-quick-chip" onClick={() => void send('اقترح موارد دراسيّة إضافيّة')} disabled={busy}>
-              موارد إضافيّة
-            </button>
+            {isRealLlm ? (
+              <>
+                <button type="button" className="ai-quick-chip" onClick={() => void send('لخّص لي الفصل الأخير من المقرّر')} disabled={busy}>
+                  لخّص الفصل الأخير
+                </button>
+                <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')} disabled={busy}>
+                  اشرح مفهوماً
+                </button>
+                <button type="button" className="ai-quick-chip" onClick={() => void send('أنشئ لي اختباراً قصيراً (5 أسئلة)')} disabled={busy}>
+                  اختبار قصير
+                </button>
+                <button type="button" className="ai-quick-chip" onClick={() => void send('اقترح موارد دراسيّة إضافيّة')} disabled={busy}>
+                  موارد إضافيّة
+                </button>
+              </>
+            ) : (
+              <>
+                <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')} disabled={busy}>
+                  اشرح مفهوماً
+                </button>
+                <button type="button" className="ai-quick-chip" onClick={() => void send('ما المفاهيم التي أحتاج إلى مراجعتها؟')} disabled={busy}>
+                  أسوأ فجواتي
+                </button>
+              </>
+            )}
           </div>
 
           <div className="chat-input-row">

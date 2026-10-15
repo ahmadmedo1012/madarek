@@ -68,7 +68,7 @@ async function pickFile(file: File) {
 }
 
 async function fillTitle() {
-  fireEvent.change(screen.getByLabelText('عنوان البحث') as HTMLInputElement, {
+  fireEvent.change(screen.getByLabelText('عنوان البحث (مطلوب)') as HTMLInputElement, {
     target: { value: 'بحث تجريبي للتصدير' },
   });
 }
@@ -76,7 +76,7 @@ async function fillTitle() {
 describe('ResearchPage upload modal — FormField wiring (r152c)', () => {
   it('labels every control through the canon (htmlFor association)', async () => {
     await openUploadModal();
-    expect(screen.getByLabelText('عنوان البحث')).toBeInstanceOf(HTMLInputElement);
+    expect(screen.getByLabelText('عنوان البحث (مطلوب)')).toBeInstanceOf(HTMLInputElement);
     expect(screen.getByLabelText('الملخّص (اختياري)')).toBeInstanceOf(HTMLTextAreaElement);
     expect(screen.getByLabelText('المقرّر الأكاديمي المرتبط (اختياري)')).toBeInstanceOf(HTMLSelectElement);
     // P3: the file field is a REAL picker now (the r154d disclosure about
@@ -89,7 +89,7 @@ describe('ResearchPage upload modal — FormField wiring (r152c)', () => {
 
   it('wires the short-title error as a live, non-dangling association', async () => {
     await openUploadModal();
-    const title = screen.getByLabelText('عنوان البحث') as HTMLInputElement;
+    const title = screen.getByLabelText('عنوان البحث (مطلوب)') as HTMLInputElement;
 
     // Clean state: no error attributes at all.
     expect(title.getAttribute('aria-invalid')).toBeNull();
@@ -109,7 +109,7 @@ describe('ResearchPage upload modal — FormField wiring (r152c)', () => {
 
   it('clears the error association when the title becomes valid', async () => {
     await openUploadModal();
-    const title = screen.getByLabelText('عنوان البحث') as HTMLInputElement;
+    const title = screen.getByLabelText('عنوان البحث (مطلوب)') as HTMLInputElement;
 
     fireEvent.change(title, { target: { value: 'أ' } });
     await screen.findByRole('alert');
@@ -167,7 +167,7 @@ describe('ResearchPage resubmit — CHECKS_FAILED prefill (r157)', () => {
     await screen.findByRole('dialog');
 
     // …and the modal opens carrying the paper's own metadata.
-    const title = screen.getByLabelText('عنوان البحث') as HTMLInputElement;
+    const title = screen.getByLabelText('عنوان البحث (مطلوب)') as HTMLInputElement;
     const abstract = screen.getByLabelText('الملخّص (اختياري)') as HTMLTextAreaElement;
     const offering = screen.getByLabelText('المقرّر الأكاديمي المرتبط (اختياري)') as HTMLSelectElement;
     expect(title.value).toBe('تحليل أداء قواعد البيانات الموزعة');
@@ -191,7 +191,7 @@ describe('ResearchPage resubmit — CHECKS_FAILED prefill (r157)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'رفع بحث جديد' }));
     await screen.findByRole('dialog');
 
-    const title = screen.getByLabelText('عنوان البحث') as HTMLInputElement;
+    const title = screen.getByLabelText('عنوان البحث (مطلوب)') as HTMLInputElement;
     const abstract = screen.getByLabelText('الملخّص (اختياري)') as HTMLTextAreaElement;
     const offering = screen.getByLabelText('المقرّر الأكاديمي المرتبط (اختياري)') as HTMLSelectElement;
     expect(title.value).toBe('');

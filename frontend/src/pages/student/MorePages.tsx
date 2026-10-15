@@ -964,7 +964,11 @@ export function ArVrPage() {
 
   return (
     <div className="page">
-      <PageHeader title="تجارب AR / VR" subtitle="محتوى تفاعليّ ثلاثيّ الأبعاد للمقرّرات العمليّة." />
+      {/* r168b: honesty — the page is a CATALOG of seeded AR/VR titles;
+          no launch action exists yet (the dead launch button was removed
+          earlier). The subtitle no longer promises interactive 3D
+          content delivery. */}
+      <PageHeader title="تجارب AR / VR" subtitle="فهرس تجارب AR/VR للمقرّرات العمليّة — التشغيل غير متاح بعد." />
 
       {q.isPending ? (
         /* r148 (AUDIT-2 L8): شبكة بطاقات AR/VR — هيكل بطاقات مطابق

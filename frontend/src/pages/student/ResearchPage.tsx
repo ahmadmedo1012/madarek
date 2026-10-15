@@ -147,7 +147,12 @@ export default function StudentResearchPage() {
         <div className="page-title-block">
           <h1 className="page-title">بحوثي العلمية</h1>
           <p className="page-subtitle">
-            ارفع بحوثك، اعرضها على فحص الانتحال وكشف الذكاء الاصطناعي،
+            {/* r168b: the scan is a deterministic simulation until a real
+                detection provider is activated — the results area has
+                carried the note since r154b; the page's own header now
+                matches it (same phrasing as the landing research card). */}
+            ارفع بحوثك، اعرضها على فحص الانتحال وكشف الذكاء الاصطناعي
+            (محاكاة حتى تفعيل كشف حقيقي)،
             ثم أرسلها لأستاذك للتقييم والنشر في مكتبة الجامعة.
           </p>
         </div>
@@ -435,12 +440,12 @@ function PaperRow({
 function ProcessExplainer() {
   const STEPS: Array<{ n: number; title: string; desc: string; icon: LucideIcon }> = [
     { n: 1, title: 'ارفع بحثك', desc: 'العنوان، الملخّص، والمقرّر المرتبط.', icon: Upload },
-    { n: 2, title: 'فحص أوتوماتيكي', desc: 'كشف الانتحال + كشف توليد الذكاء الاصطناعي خلال ثوانٍ.', icon: ScanSearch },
+    { n: 2, title: 'فحص أوتوماتيكي', desc: 'كشف الانتحال + كشف توليد الذكاء الاصطناعي خلال ثوانٍ (محاكاة حتى تفعيل كشف حقيقي).', icon: ScanSearch },
     { n: 3, title: 'تقييم الأستاذ', desc: 'بعد اجتياز الفحص، يُقيِّم الأستاذ البحث من 20.', icon: BarChart3 },
     { n: 4, title: 'النشر في المكتبة', desc: 'البحوث المتميزة تُضاف إلى مكتبة الجامعة.', icon: BookMarked },
   ];
   return (
-    <Card title="كيف يعمل النظام" icon={Workflow} subtitle="أربع مراحل أوتوماتيكية بالكامل">
+    <Card title="كيف يعمل النظام" icon={Workflow} subtitle="أربع مراحل — الفحص محاكاةٌ تجريبية">
       <div className="grid-4">
         {STEPS.map((s) => (
           <div key={s.n} className="process-step">
@@ -579,7 +584,7 @@ function UploadModal({
             message rendered conditionally; FormField wires the
             association only while the error exists. */}
         <FormField
-          label="عنوان البحث"
+          label="عنوان البحث (مطلوب)"
           id={titleId}
           error={title.trim().length > 0 && title.trim().length < 3
             ? 'يجب أن يكون 3 أحرف على الأقل.'
@@ -682,6 +687,15 @@ function UploadModal({
         )}
       </div>
       <div className="modal-footer">
+        {/* r168b: the auth family announces missing fields («مطلوب»);
+          the upload modal's silent disabled button gave no reason —
+          the hint names the exact unmet condition and is announced
+          (role=status + aria-live) so keyboard/SR users hear it too. */}
+        {!canSubmit && !isPending && (
+          <p role="status" aria-live="polite" className="form-field-hint">
+            أكمل عنوان البحث (٣ أحرف على الأقل) لتتمكّن من الرفع.
+          </p>
+        )}
         <button type="button" className="btn ghost" onClick={requestClose} disabled={isPending}>
           إلغاء
         </button>

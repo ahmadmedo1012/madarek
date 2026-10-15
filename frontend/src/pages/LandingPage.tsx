@@ -62,7 +62,11 @@ const JOURNEY: Array<{
   },
   {
     n: '03', icon: Brain, title: 'مساعد أكاديمي',
-    desc: '«Oasis» يعرف مقرَّراتك ومحاضراتك ودرجاتك — شروحات مخصَّصة، تلخيصات للفصول الطويلة، واختبارات مراجعة حسب أدائك الفعلي.',
+    // r168b: honesty — the local composer explains concepts, surfaces
+    // mastery gaps and builds review plans; chapter summaries and quiz
+    // generation arrive with a real provider (chip-gated in /ai). The
+    // landing card claims only what ships today.
+    desc: '«Oasis» يعرف مقرَّراتك ومحاضراتك ودرجاتك — شروحات مخصَّصة، تحديدٌ لفجواتك المعرفيّة، وخطط مراجعة حسب أدائك الفعلي.',
     tag: 'Oasis',
   },
   {
@@ -323,7 +327,10 @@ export default function LandingPage() {
                   <span className="ln-menu-ico mist"><Icon icon={Microscope} size={20} /></span>
                   <span className="landing-megamenu-item-body">
                     <span className="landing-megamenu-item-title">قصة التقدّم</span>
-                    <span className="landing-megamenu-item-desc">نتائج تجربة فعلية</span>
+                    {/* r168b: the section's own figures are labeled
+                        illustrative in-page (#progress note) — the menu
+                        must not call them measured experiment results. */}
+                    <span className="landing-megamenu-item-desc">أرقام توضيحيّة لرحلة التقدّم</span>
                   </span>
                 </a>
               </div>
@@ -556,7 +563,7 @@ export default function LandingPage() {
       {/* 65% من تمرير الجوال كان بلا أي فعل /auth بين الـhero والخاتمة
           (ي≈600 → ي≈7,572 على 390px) — كل صفحة مرجعية تعيد العرض بعد
           كل كتلة إثبات. شريط نحيف على أرض ink-2، لا يزاحم الفصول. */}
-      <section className="ln-chapter ln-cta-bridge" aria-label="ابدأ رحلتك">
+      <section className="ln-chapter ln-cta-bridge" aria-label="ابدأ رحلتك — جاهز للبدء">
         <div className="ln-cta-bridge-inner">
           <span className="ln-label">المدار مفتوح</span>
           <RevealCssClass as="h2" className="ln-chapter-title" delay={1}>
@@ -790,7 +797,10 @@ export default function LandingPage() {
             },
             {
               icon: FlaskConical, tone: 'mist', title: 'معامل افتراضية',
-              desc: 'محاكاة شبكات وإلكترونيات وتجارب AR/VR للتطبيق العملي الآمن.',
+              // r168b: honesty — labs are a coming-soon surface and AR/VR
+              // is a catalog (launch unavailable); the card no longer
+              // promises running AR/VR experiments.
+              desc: 'محاكاة شبكات وإلكترونيات للتطبيق العملي الآمن، مع فهرس لتجارب AR/VR.',
             },
           ].map((c, i) => (
             <RevealCssClass as="article" key={c.title} className="ln-system-card" delay={(i + 1) as 1 | 2 | 3}>
@@ -803,7 +813,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══ الفصل ٧ — نقطة البداية ═══ */}
-      <section className="ln-cta" aria-label="ابدأ رحلتك">
+      <section className="ln-cta" aria-label="ابدأ رحلتك — أنشئ حسابك">
         {/* converging orbits */}
         <div className="ln-cta-orbits" aria-hidden>
           <span className="ln-cta-orbit o0" />

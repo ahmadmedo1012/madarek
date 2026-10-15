@@ -188,7 +188,7 @@ describe('AiAssistantPage — pending-state honesty (r164g)', () => {
     expect(screen.getByRole('button', { name: 'محادثة جديدة' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'فتح محادثة: عنوان أول محادثة' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'حذف محادثة: عنوان أول محادثة' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'لخّص الفصل الأخير' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'أسوأ فجواتي' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'ما المفاهيم التي أحتاج إلى مراجعتها؟' })).toBeDisabled();
     // The typing indicator owns the pending moment — retry hides.
     expect(screen.queryByRole('button', { name: 'أعد إرسال سؤالك' })).toBeNull();
@@ -384,5 +384,36 @@ describe('transcriptFromRows (pure)', () => {
 
   it('an empty result degrades to the welcome bubble — never a blank chat area', () => {
     expect(transcriptFromRows([], 'ترحيب')).toEqual([{ role: 'bot', text: 'ترحيب' }]);
+  });
+});
+
+describe('AiAssistantPage — r168b quick-chip honesty gate', () => {
+  it('local mode: only composer-honored chips (explain + worst-gap); summarize/quiz/resources hidden', () => {
+    mocks.config = { data: { provider: 'local', model: null }, isPending: false, isError: false };
+    renderPage();
+    expect(screen.getByRole('button', { name: 'اشرح مفهوماً' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'أسوأ فجواتي' })).toBeInTheDocument();
+    // The local composer has no summarize/quiz/resources paths — the
+    // chips that promise them must not render (r168b).
+    expect(screen.queryByRole('button', { name: 'لخّص الفصل الأخير' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'اختبار قصير' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'موارد إضافيّة' })).toBeNull();
+  });
+
+  it('unverifiable mode (pending config) keeps the honest local set', () => {
+    mocks.config = { data: undefined, isPending: true, isError: false };
+    renderPage();
+    expect(screen.getByRole('button', { name: 'اشرح مفهوماً' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'لخّص الفصل الأخير' })).toBeNull();
+  });
+
+  it('real provider mode: the full four-chip set returns', () => {
+    mocks.config = { data: { provider: 'openai', model: 'gpt-4o-mini' }, isPending: false, isError: false };
+    renderPage();
+    expect(screen.getByRole('button', { name: 'لخّص الفصل الأخير' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'اشرح مفهوماً' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'اختبار قصير' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'موارد إضافيّة' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'أسوأ فجواتي' })).toBeNull();
   });
 });

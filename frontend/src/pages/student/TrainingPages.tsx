@@ -98,7 +98,7 @@ export default function TrainingCatalogPage() {
     <div className="page">
       <PageHeader
         title="التطوير الذاتي"
-        subtitle="مسارات تدريبية مصمَّمة من فريق جامعة الزاوية لتطوير مهاراتك الأكاديمية والمهنية. أكمل مساراً لتحصل على شهادة معتمدة من المنصة."
+        subtitle="مسارات تدريبية مصمَّمة من فريق جامعة الزاوية لتطوير مهاراتك الأكاديمية والمهنية. أكمل مساراً لتحصل على سجلّ إتمام موثَّق من المنصة."
       />
 
       {/* My summary — KPI band + level progress. Pending → shape-matched
@@ -143,7 +143,7 @@ export default function TrainingCatalogPage() {
               icon={Medal} color="green"
               label="الشهادات"
               value={formatNum(me.certificateCount)}
-              change="معتمدة من المنصة"
+              change="إتمام موثَّق من المنصة"
             />
           </div>
 
@@ -760,7 +760,7 @@ export function AchievementsPage() {
         <div className="grid-3">
           <MetricCard icon={Trophy} color="gold" label="مجموع النقاط" value={formatNum(me.points)} change={`المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}`} />
           <MetricCard icon={Award} color="purple" label="الأوسمة المحقّقة" value={formatNum(me.badgeCount)} change={badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])}` : undefined} />
-          <MetricCard icon={Medal} color="green" label="الشهادات" value={formatNum(me.certificateCount)} change="معتمدة من المنصة" />
+          <MetricCard icon={Medal} color="green" label="الشهادات" value={formatNum(me.certificateCount)} change="إتمام موثَّق من المنصة" />
         </div>
       ) : null}
 
@@ -870,7 +870,7 @@ export function AchievementsPage() {
                         {c.issuedAt && (
                           <Badge>{formatDate(c.issuedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</Badge>
                         )}
-                        <Badge>{countAr(c.hours, ['ساعة معتمدة واحدة', 'ساعتان معتمدتان', 'ساعات معتمدة', 'ساعة معتمدة'])}</Badge>
+                        <Badge>{countAr(c.hours, ['ساعة تقديرية واحدة', 'ساعتان تقديريّتان', 'ساعات تقديرية', 'ساعة تقديرية'])}</Badge>
                       </div>
                     </div>
                   </div>
