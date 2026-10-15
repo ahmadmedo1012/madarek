@@ -29,6 +29,9 @@ const mocks = vi.hoisted(() => ({
     unread: 0,
   },
   markAll: { mutate: vi.fn(), isPending: false, isError: false, error: null as unknown },
+  /* r170a: the compose mutation — MessagesPage renders the compose
+   * modal on demand, so the shared useResources mock needs the key. */
+  send: { mutateAsync: vi.fn(), isPending: false, isError: false, error: null as unknown },
 }));
 
 vi.mock('../../src/hooks/useResources', () => ({
@@ -63,6 +66,7 @@ vi.mock('../../src/hooks/useResources', () => ({
     refetch: vi.fn(),
   }),
   useMarkAllMessagesRead: () => mocks.markAll,
+  useSendMessage: () => mocks.send,
 }));
 
 const TEACHER: AuthUser = {
@@ -114,6 +118,7 @@ beforeEach(() => {
   mocks.students = [];
   mocks.messages = { pages: {}, total: 0, totalPages: 1, unread: 0 };
   mocks.markAll = { mutate: vi.fn(), isPending: false, isError: false, error: null };
+  mocks.send = { mutateAsync: vi.fn(), isPending: false, isError: false, error: null };
 });
 
 afterEach(() => {

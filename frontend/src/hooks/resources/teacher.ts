@@ -242,6 +242,35 @@ export function useMarkAllMessagesRead() {
   });
 }
 
+/* ── r170a: the compose half the read-only inbox never shipped —
+ * POST /messages (me.routes.ts:98-155): { toUserId: cuid, body: 1–4000
+ * trimmed }, 201 with the created row. The backend maps the failure
+ * modes to Arabic copy the UI surfaces via apiErrorMessage: 400
+ * self-send («لا يمكنك إرسال رسالة إلى نفسك») / 400 inactive
+ * recipient / 404 unknown recipient; the per-user 30/min limiter
+ * answers 429 with the limiter's LATIN default, so the caller maps
+ * that status to its own Arabic line (sendErrorMessage in
+ * TeacherPages). Invalidates every ['me','messages',page,limit]
+ * page key (prefix match — the same grammar as
+ * useMarkAllMessagesRead above) so the sent row + the unread meta
+ * refetch together. ──────────────────────────────────────────── */
+export interface SendMessageInput {
+  toUserId: string;
+  body: string;
+}
+export function useSendMessage() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (vars: SendMessageInput) =>
+      unwrap<{ id: string; createdAt: string }>(
+        api.post('/messages', { toUserId: vars.toUserId, body: vars.body }),
+      ),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['me', 'messages'] });
+    },
+  });
+}
+
 /* ── r144: the teaching loop's authoring half — POST /offerings/:id/
  * assignments and /materials shipped in the backend with ZERO frontend
  * consumers (audit T1-h F1/F2), so a teacher on a clean environment
