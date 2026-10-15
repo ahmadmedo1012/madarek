@@ -119,6 +119,64 @@ jobs:
       # makes env.ts fall back to placeholder secrets.
       - run: npm --prefix backend run test
 
+  # r171b: the DB integration suite (transactions / locks / unique
+  # constraints) on a DISPOSABLE service Postgres. Deliberately a
+  # SEPARATE job from test-backend: `npm test` stays DB-free
+  # (AGENTS.md §5.2) — this suite runs only here and locally via
+  # `npm run test:integration` with an explicit DATABASE_URL.
+  db-integration:
+    name: DB integration (transactions + locks, disposable Postgres)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: typecheck
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # Service containers ship pg tooling, unlike the embedded dev PG.
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # The service database is disposable by construction: the suite's
+      # guard (backend/tests/integration/guard.setup.ts) verifies the
+      # host is local, and truncateAll wipes every table (except
+      # _prisma_migrations) between tests.
+      INT_DB_URL: postgresql://postgres:postgres@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npm --prefix backend run prisma:generate
+      # Migrations via the repo's OWN deploy script — the same path
+      # production uses. Verified against a plain localhost URL (local
+      # embedded Postgres): DNS resolve + TCP probe + SELECT 1 all
+      # succeed, and the "pooler fallback" candidate it appends
+      # (pgbouncer=true, connection_limit=1) is harmless on a plain
+      # Postgres, so `prisma migrate deploy` applies all 18 migrations.
+      # (npx prisma migrate deploy --schema prisma/schema.prisma would
+      # also work; keeping the production script exercised is worth more.)
+      - name: Apply migrations to the disposable service DB
+        working-directory: backend
+        env:
+          DATABASE_URL: ${{ env.INT_DB_URL }}
+        run: node scripts/migrate-deploy.mjs
+      # The fail-closed guard rejects a missing/non-local/production-
+      # looking DATABASE_URL before any test connects; the suite fails
+      # the job if any transaction/lock/constraint pin breaks.
+      - name: Run the DB integration suite
+        env:
+          DATABASE_URL: ${{ env.INT_DB_URL }}
+        run: npm run test:integration
+
   e2e:
     name: E2E (hermetic browser journeys)
     runs-on: ubuntu-latest

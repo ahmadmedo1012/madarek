@@ -1,8 +1,10 @@
 # 11 — الاختبارات وفحوص الجودة
 
-> كل الأرقام في هذه الوثيقة من تشغيل فعلي (الجولة الأخيرة للوحدات
-> 2026-10-10 على شجرة الدمج؛ صفوف E2E أدناه من تشغيل 2026-10-14 على
-> شجرة r165h (أساس a5d0718)، Node 24). لا رقم موروث من وثيقة أخرى.
+> كل الأرقام في هذه الوثيقة من تشغيل فعلي (صفوف الخلفية والتكامل
+> أعيد تشغيلها 2026-10-30 على شجرة r171b Node 24؛ صفوف الواجهة من
+> الجولة الأخيرة للوحدات 2026-10-10 على شجرة الدمج؛ صفوف E2E أدناه من
+> تشغيل 2026-10-14 على شجرة r165h (أساس a5d0718)). لا رقم موروث من
+> وثيقة أخرى.
 
 ## النتائج الفعلية الموثقة
 
@@ -11,7 +13,8 @@
 | Lint | `npm run lint` | **0 أخطاء**، 18 تحذيرًا (exhaustive-deps — مسموحة موثقة في `eslint.config.mjs`) |
 | Typecheck | `npm run typecheck` | **نجاح** — src + tests للجهتين (tsconfig.test.json) |
 | اختبارات الواجهة | `npm --prefix frontend run test` | **135 ملفًا، 1474 اختبارًا، كلها ناجحة** (~130 ثانية) |
-| اختبارات الخلفية | `npm --prefix backend run test` | **50 ملفًا، 1259 اختبارًا، كلها ناجحة** (~17 ثانية) |
+| اختبارات الخلفية | `npm --prefix backend run test` | **66 ملفًا، 1494 اختبارًا، كلها ناجحة** (~41 ثانية) |
+| اختبارات تكامل DB (اختيارية) | `DATABASE_URL=… npm run test:integration` | **4 ملفات، 20 اختبارًا ناجحة** (~6–10 ثوانٍ) — قاعدة تجريبية معزولة فقط، خارج `npm test` (القسم الخاص بها أدناه) |
 | بوابة التكافؤ | `node scripts/verify-parity-export.mjs` | **PASS — 163 فحص token** + تدقيق متغيرات غير معرفة + قيم مستبعدة + توازن أقواس |
 | الأيقونات | `bash scripts/check-icons.sh` | OK — Lucide فقط |
 | رموز الحركة | `bash scripts/check-motion-tokens.sh` | OK — لا قيم خام |
@@ -45,8 +48,13 @@
 المصادقة (اختبارات انحدار بجبل الراوترات فعليًا).
 
 ما **لا** تغطيه (حدود معلنة):
-- لا اختبارات تكامل بقاعدة حية: منطق المعاملات والأقفال (`FOR UPDATE`)
-  وبوابة DB للملفات غير مثبتة باند-تو-اند.
+- ~~لا اختبارات تكامل بقاعدة حية: منطق المعاملات والأقفال (`FOR UPDATE`)~~
+  **أُغلق في r171b** (القسم «اختبارات تكامل قاعدة البيانات» أدناه): حزام
+  اختياري على قاعدة Postgres تجريبية معزولة يثبّت ذرّية الرسالة+الإشعار،
+  التراجع الكامل عند كسر قيد فريد، تسلسل `FOR UPDATE` لقفل آخر مالك
+  نشط، وحذف صف المادة عند فشل التخزين — خارج `npm test` بقرار AGENTS.md
+  §5.2. بقيت حدودًا: لا اختبار ضغط/تزامن واسع، ولا تغطية كل مسارات
+  المعاملات (المدروس فقط).
 - رحلات E2E المتصفّفية محكمّة بالنقل الوهمي (r164k — القسم التالي):
   تُثبت سلوك الواجهة على عقد الخلفية، لا سلوك الخلفية نفسها؛ رحلات
   r165h غطّت الأستاذ/الإدارة/الجودة لكن دور المالك ما زال بلا رحلة.
@@ -179,11 +187,64 @@ AUDIT_FCP_RATIO=4 npx tsx tests/audit/run-drift.ts
 مباشر فقط (تجاهل حاويات بلا نص)، خلفية فعّالة (الصعود إلى أول سلف
 معتم)، وتحليل صيغة `color(srgb…)` الحديثة.
 
+## اختبارات تكامل قاعدة البيانات — اختيارية وخارج `npm test` (r171b)
+
+الفجوة الموثقة («منطق المعاملات والأقفال») أُغلقت بحزام **اختياري**
+يشتغل ضد Postgres تجريبي معزول: `backend/tests/integration/` بإعداد
+vitest خاص به (`vitest.integration.config.ts`) وسكربت خاص
+(`npm run test:integration`). `npm test` يبقى **بلا قاعدة بيانات**
+كقرار AGENTS.md §5.2 — الحزام لا يُجمع ضمنه أصلًا (استبعاد صريح في
+`backend/vitest.config.ts`).
+
+**البوابة الفاشلة حتميًا** (`guard.setup.ts`): قبل اتصال أي اختبار
+يُفحص `DATABASE_URL` — غيابه، أو بروتوكول غير postgresql، أو مستضيف
+غير localhost/127.0.0.1، أو مستضيف يحمل `onrender`/`neon` = رفض
+برسالة عربية+إنجليزية تسمّي السبب وتُنهي العملية برمز غير صفري. لا
+سبيل لتوجيه الحزام نحو إنتاج حتى بالخطأ.
+
+**التشغيل محليًا** (قاعدة تجريبية معزولة على خادم محلي — لا تُشغّله
+على قاعدة الديمو المشتركة أبدًا؛ الحزام يمحو كل جداولها):
+
+```bash
+# 1) أنشئ قاعدة معزولة على خادمك المحلي (مثال عبر عميل pg):
+node -e "const {Client}=require('pg');(async()=>{const c=new Client({connectionString:'postgresql://postgres:postgres@localhost:5433/postgres'});await c.connect();await c.query('CREATE DATABASE madarek_inttest');await c.end();})()"
+# 2) طبّق الترحيلات عليها بسكربت المستودع نفسه:
+cd backend && DATABASE_URL=postgresql://postgres:postgres@localhost:5433/madarek_inttest \
+  node scripts/migrate-deploy.mjs
+# 3) شغّل الحزام:
+cd .. && DATABASE_URL=postgresql://postgres:postgres@localhost:5433/madarek_inttest \
+  npm run test:integration
+```
+
+**4 ملفات / 20 اختبارًا — 20/20 ناجحة** (تشغيل 2026-10-30 على
+Postgres 18 مضمّن محليًا، Node 24؛ ~6–10 ثوانٍ). التنظيف بين الاختبارات
+ذاتي: كل ملف يمحو جداول `public` كاملة (`TRUNCATE … RESTART IDENTITY
+CASCADE`) عدا `_prisma_migrations` عبر استبطان `information_schema`
+— مقبول فقط لأن القاعدة مخصّصة للحزام، والملفات تتعاقب لا تتوازى
+(`fileParallelism: false`).
+
+ما يثبّته (عكس اختبارات الوحدة التي تحاكي prisma):
+
+| الملف | الإثبات |
+|---|---|
+| `messages-transaction.test.ts` | `POST /messages` عبر التطبيق الحقيقي (راوترات/توكن/حدود معدل حية): الرسالة+الإشعار يُنشآن **معًا** في معاملة واحدة (رابط `/teacher/messages` للأستاذ، `null` لغيره — r155a)؛ الرسالة للنفس 400 بلا صفوف؛ مستلم غير نشط 400 بلا صفوف؛ مستلم مجهول 404 بلا صفوف |
+| `uniqueness-constraints.test.ts` | 3 قيود فريدة ذات معنى منتج (`User.email`، `StudentProfile.universityId`، `TrainingEnrollment @@unique([userId,trackId])`): التكرار يفجّر P2002، ومعاملة [صف صالح + مكرّر] تتراجع بالكامل — الصف الصالح لا يُحفظ |
+| `governance-lock.test.ts` | خفض آخر مالك نشط 409 بلا أثر ولا AuditLog؛ الحالة الناجحة تكتب AuditLog وترفع `tokenVersion`؛ ترقية طالب→أستاذ تُنشئ TeacherProfile بنفس المعاملة وتبقيها بعد الخفض؛ واختبار التزامن الحقيقي: معاملتان متنافستان على خفض المالكين الأخيرين — الثانية **تتوقف** على `SELECT … FOR UPDATE` ثم ترى حالة ما-بعد-الالتزام وترفض 409، فينجو مالك واحد بالضبط |
+| `files-quota-transaction.test.ts` | فشل حفظ المادة (تخزين معطّل عمدًا عبر `STORAGE_DIR` غير قابل للكتابة) يحذف صف Material المُنشأ سلفًا (صفر صفوف)؛ وحصة التخزين للطالب تُقرأ من عدد صفوف ResearchPaper الحقيقية (10 أوراق → 413، تسع → يجتاز الحصة ويصل إلى التخزين) |
+
+**في CI**: وظيفة مستقلة `db-integration` تعمل على كل push/PR — خدمة
+`postgres:16` مع فحص صحة `pg_isready`، ثم الترحيلات بسكربت
+`migrate-deploy.mjs` نفسه (المسار الذي يستخدمه الإنتاج — تحقّق
+محليًا: DNS/TCP/SELECT 1 تنجح على localhost والمعاملات الإضافية
+(`pgbouncer=true`) غير مؤثرة على Postgres عادي)، ثم الحزام بالمتغير
+نفسه. فشل أي اختبار = فشل الوظيفة.
+
 ## بنية الاختبارات
 
 | المكان | المحتوى |
 |---|---|
 | `backend/tests/modules/` | 37 حزمة + حزمة colocated واحدة في `src/modules/search/__tests__/` (glob ثانٍ عمدًا — تعليق الملف يشرح) |
+| `backend/tests/integration/` | حزام تكامل DB الاختياري (r171b): حارس البيئة + مساعدات + 4 ملفات (معاملات/أقفال/قيود فريدة) — إعداد vitest منفصل، خارج `npm test` |
 | `frontend/tests/unit/` | 82 ملفًا: مسارات App، تغطية nav والعناوين، جلسة/تهيئة، صفحات، a11y، لقطات tokens |
 | `frontend/tests/motion|gallery/` | 6 ملفات حركة/معرض |
 | `frontend/tests/e2e/` | رحلات Playwright المحكمّة (r164k، حلقات الكتابة والحالة الوهمية r165h) — مواصفات `*.e2e.ts` + وسيلة النقل الوهمي وحِمل الحمولات المشترك مع جرد الأسطح |
@@ -194,12 +255,16 @@ AUDIT_FCP_RATIO=4 npx tsx tests/audit/run-drift.ts
 
 1. **خلفية**: صدّر قرارًا نقيًا من الوحدة؛ الاختبار في `tests/modules/`
    باسم `<topic>-<behavior>.test.ts`؛ حاكِ `db.ts` فقط عند الضرورة.
-2. **واجهة**: `tests/unit/` بـjsdom؛ استخدم `MemoryRouter` و`QueryClient`
+2. **تكامل DB (r171b)**: فقط عند إثبات سلوك لا تُثبته المحاكاة
+   (معاملات/أقفال/قيود فريدة/استعلامات حية) — الملف في
+   `tests/integration/`، يبذر بياناته بنفسه، يستعمل `truncateAll`
+   في `beforeEach`، ولا يُضاف أبدًا إلى مجموعة `npm test`.
+3. **واجهة**: `tests/unit/` بـjsdom؛ استخدم `MemoryRouter` و`QueryClient`
    نظيفًا؛ لا اعتماد على شبكة (mock `lib/api.ts`).
-3. شغّل `npm test` ثم أضف الفحص إلى قائمة البوابات إن كان بوابة جديدة
+4. شغّل `npm test` ثم أضف الفحص إلى قائمة البوابات إن كان بوابة جديدة
    (بوابات CI: icons/motion/csp-hash/parity/colleges — كلها سكربتات
-   `scripts/`).
-4. لا تخترع أرقامًا في الوثائق — أعد التشغيل والصق الناتج الحقيقي.
+   `scripts/`؛ حزام التكامل بوابة CI مستقلة `db-integration`).
+5. لا تخترع أرقامًا في الوثائق — أعد التشغيل والصق الناتج الحقيقي.
 
 ## إعادة إنتاج الأرقام أعلاه
 
@@ -212,4 +277,6 @@ bash scripts/check-icons.sh && bash scripts/check-motion-tokens.sh
 bash scripts/check-csp-hash.sh
 npm run validate:colleges
 npm --prefix frontend run test:e2e   # رحلات E2E المحكمّة (تشغّل Vite بنفسها)
+# حزام التكامل (اختياري — قاعدة تجريبية معزولة محليًا فقط):
+DATABASE_URL=postgresql://…@localhost:PORT/madarek_inttest npm run test:integration
 ```

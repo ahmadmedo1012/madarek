@@ -17,6 +17,7 @@
     "dev": "npm run dev -w backend",
     "dev:web": "npm run dev -w frontend",
     "test": "npm run test -w frontend && npm run test -w backend",
+    "test:integration": "npm run test:integration -w backend",
     "lint": "eslint frontend/src backend/src",
     "typecheck": "npm run typecheck -w backend && npm run typecheck -w frontend && npm run typecheck:tests -w backend && npm run typecheck:tests -w frontend",
     "db:migrate": "npm run prisma:migrate -w backend",
