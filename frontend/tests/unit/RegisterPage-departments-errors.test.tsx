@@ -138,9 +138,11 @@ describe('RegisterPage — department honesty (r157 F5)', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'إنشاء الحساب' }));
 
-    // The ONE polite summary counts the blocked field…
+    // The ONE polite summary counts the blocked field… (r170-e: the
+    // password strength hint is a second role="status" region — target
+    // the summary by its text, not by the role alone.)
     await waitFor(() => {
-      expect(screen.getByRole('status')).toHaveTextContent('مشكلة');
+      expect(screen.getByText(/مشكلة/)).toHaveAttribute('role', 'status');
     });
     // …the submission never left the page…
     expect(registerState.current.mutateAsync).not.toHaveBeenCalled();

@@ -95,6 +95,43 @@ const GENERIC_REGISTER_ERROR =
 const NO_DEPARTMENTS_TEXT =
   'لا توجد أقسام مسجّلة في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع إدارة الجامعة.';
 
+/* ═─ r170-e: password strength hint (ASVS 2.1.8 advisory) ────────────
+ *
+ * A live, dependency-free heuristic under the password input, shared
+ * by BOTH role forms. Tier rules (documented contract):
+ *   - blocklist hit (lib/commonPasswords.ts mirror) → ALWAYS ضعيفة;
+ *   - length < 8 → ضعيفة; 8–11 → متوسطة; ≥ 12 → قوية.
+ * ADVISORY ONLY — never blocks submit: the zod schema
+ * (registerPasswordSchema) still enforces the real rules; this hint
+ * exists so the visitor gets feedback while typing, before the first
+ * failed submit. role="status" = polite live region (announced on
+ * change, never interrupts — same pattern as auth-form-summary). */
+export type PasswordTier = 'weak' | 'medium' | 'strong';
+
+export function passwordStrengthTier(password: string): PasswordTier | null {
+  if (password.length === 0) return null; // empty → no announcement
+  if (isCommonPassword(password)) return 'weak';
+  if (password.length < 8) return 'weak';
+  if (password.length < 12) return 'medium';
+  return 'strong';
+}
+
+const TIER_TEXT: Record<PasswordTier, string> = {
+  weak: 'قوة كلمة المرور: ضعيفة',
+  medium: 'قوة كلمة المرور: متوسطة',
+  strong: 'قوة كلمة المرور: قوية',
+};
+
+function PasswordStrengthHint({ password }: { password: string }) {
+  const tier = passwordStrengthTier(password);
+  if (tier === null) return null;
+  return (
+    <p className="auth-form-summary" role="status" aria-live="polite">
+      {TIER_TEXT[tier]}
+    </p>
+  );
+}
+
 /** Submit-level banner (r157 F5 finding 5 keeps role="alert" here — the
  *  server's answer IS worth an announcement). D17-3 via authErrorView:
  *  the backend's Arabic message verbatim; a 409 conflict (email already
@@ -355,6 +392,9 @@ interface StudentFormProps extends RegisterFormProps {
 function StudentForm({ form, error, isPending, faculties, onSubmit }: StudentFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const facultyId = form.watch('facultyId');
+  // r170-e: live strength hint rides the same watch subscription —
+  // re-renders per keystroke, advisory only.
+  const passwordValue = form.watch('password');
   const departments = useMemo(
     () => faculties.items.find((f) => f.id === facultyId)?.departments ?? [],
     [faculties, facultyId],
@@ -413,6 +453,10 @@ function StudentForm({ form, error, isPending, faculties, onSubmit }: StudentFor
           <Icon icon={showPassword ? EyeOff : Eye} size={16} />
         </button>
       </Field>
+
+      {/* r170-e (ASVS 2.1.8): advisory live-region strength hint under the
+          password input — polite, dependency-free, never blocks submit. */}
+      <PasswordStrengthHint password={passwordValue} />
 
       <Field label="رقم القيد الجامعي" error={form.formState.errors.universityId?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Hash} size={16} /></span>
@@ -494,6 +538,8 @@ interface TeacherFormProps extends RegisterFormProps {
 function TeacherForm({ form, error, isPending, faculties, onSubmit }: TeacherFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const facultyId = form.watch('facultyId');
+  // r170-e: same live strength contract as the student form.
+  const passwordValue = form.watch('password');
   const departments = useMemo(
     () => faculties.items.find((f) => f.id === facultyId)?.departments ?? [],
     [faculties, facultyId],
@@ -547,6 +593,10 @@ function TeacherForm({ form, error, isPending, faculties, onSubmit }: TeacherFor
           <Icon icon={showPassword ? EyeOff : Eye} size={16} />
         </button>
       </Field>
+
+      {/* r170-e (ASVS 2.1.8): advisory live-region strength hint under the
+          password input — same contract as the student form. */}
+      <PasswordStrengthHint password={passwordValue} />
 
       <div className="auth-row-2">
         <Field label="الكلّيّة" error={form.formState.errors.facultyId?.message}>

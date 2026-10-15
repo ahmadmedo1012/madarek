@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Modal } from '../overlays/Modal';
 
 interface ConfirmDialogProps {
@@ -36,6 +36,14 @@ interface ConfirmDialogProps {
  * authoring modal beneath it from the same press. All three paths re-arm
  * automatically when the mutation settles (loading flips back to false),
  * so the 11 usage sites inherit the fix from this single component.
+ *
+ * r170-e (WCAG 2.4.6 / dialog practice): the title h3 and the body <p>
+ * now carry useId() ids wired through Modal's labelledById /
+ * describedById, so the dialog is named by its rendered heading
+ * (aria-labelledby) and its warning text is announced to screen
+ * readers (aria-describedby) — previously the message rendered but no
+ * assistive tech ever heard it. Inherited by the exam «تسليم نهائي»
+ * confirm and every other usage site from this one component.
  */
 export function ConfirmDialog({
   open,
@@ -48,6 +56,8 @@ export function ConfirmDialog({
   onCancel,
 }: ConfirmDialogProps) {
   const [loading, setLoading] = useState(false);
+  const titleId = useId();
+  const messageId = useId();
 
   const handleConfirm = async () => {
     setLoading(true);
@@ -63,11 +73,13 @@ export function ConfirmDialog({
       open={open}
       onClose={onCancel}
       ariaLabel={title}
+      labelledById={titleId}
+      describedById={messageId}
       closeOnOverlayClick={!loading}
       closeOnEscape={!loading}
     >
-      <h3 className="owner-confirm-title">{title}</h3>
-      <p className="owner-confirm-message">{message}</p>
+      <h3 id={titleId} className="owner-confirm-title">{title}</h3>
+      <p id={messageId} className="owner-confirm-message">{message}</p>
       <div className="owner-confirm-actions">
         {/* Both buttons stay disabled while an async confirm runs, and the
             modal's overlay-click + Esc paths are gated too

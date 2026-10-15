@@ -27,8 +27,19 @@ export interface ModalProps {
   closeOnOverlayClick?: boolean;
   /** Set false to disable Esc dismissal. Defaults to true. */
   closeOnEscape?: boolean;
-  /** Accessible name; required by ARIA. */
+  /** Accessible name; required by ARIA. Ignored when `labelledById`
+   *  points at a DOM title node (aria-labelledby then wins). */
   ariaLabel: string;
+  /** r170-e (WCAG 2.4.6 / dialog practice): optional id of the element
+   *  that carries the dialog's visible title — switches the card from
+   *  aria-label to aria-labelledby so the name tracks the rendered
+   *  heading (screen readers read what sighted users read). Optional on
+   *  purpose: every existing ariaLabel-only caller keeps its contract. */
+  labelledById?: string;
+  /** r170-e: optional id of the element that describes the dialog body —
+   *  rendered as aria-describedby so confirm bodies («تسليم نهائي»…)
+   *  are announced instead of silently appearing. */
+  describedById?: string;
   /** Optional children replacing the default body. */
   children: ReactNode;
 }
@@ -39,6 +50,8 @@ export function Modal({
   closeOnOverlayClick = true,
   closeOnEscape = true,
   ariaLabel,
+  labelledById,
+  describedById,
   children,
 }: ModalProps) {
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -64,7 +77,13 @@ export function Modal({
         className="modal-card"
         role="dialog"
         aria-modal="true"
-        aria-label={ariaLabel}
+        /* r170-e: when the caller renders a real title node, the name
+           comes from it (aria-labelledby beats aria-label in the acc-name
+           computation anyway — dropping the attribute keeps one source).
+           ariaLabel-only callers are untouched. */
+        aria-label={labelledById ? undefined : ariaLabel}
+        aria-labelledby={labelledById}
+        aria-describedby={describedById}
         /* Programmatic focus target for the trap's initial-focus fallback
            (A10 P2-1): a dialog with no content focusables opens on its
            own context instead of the close (X) button. -1 keeps the card

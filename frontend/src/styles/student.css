@@ -874,6 +874,25 @@
   }
   .cal-event-chevron { flex-shrink: 0; color: var(--text-muted); }
 
+  /* ── r170-e: coarse-pointer 44px floor for the calendar nav ────── */
+  /* Measured at 390 (touch emulation): the month-nav buttons render
+     42×44 — 2px under the 44 floor on the inline axis — and above
+     640px a coarse tablet renders the same .btn.sm at its 32px box
+     (the polish ≤640 floors only key on viewport width). This block
+     floors the nav buttons at the INPUT CAPABILITY instead (the
+     r164-j idiom), verified live: 44×44 at 390 AND at 900 coarse.
+     The day cells stay out of it on purpose: their block floors are
+     already ≥44 everywhere (64 base / 48 ≤640 — a later 44 rule was
+     measured LOWERING both at coarse pointers), and their inline
+     axis is bound by the 7-column 1fr month grid (a 44px min-inline
+     would overflow the 306px grid box and clip behind
+     .cal-card's overflow:hidden) — they pass WCAG 2.5.8's 24px
+     minimum (40.6px @390) either way. min-* only grows the hit
+     box — no visual change beyond the size floor. */
+  @media (pointer: coarse) {
+    .cal-nav-btn { min-inline-size: 44px; min-block-size: 44px; }
+  }
+
   @media (max-width: 640px) {
     /* Phone: tighter cells (dots stay legible), full-width padding. */
     .cal-cell { min-block-size: 48px; }

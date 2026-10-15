@@ -623,6 +623,21 @@
      (danger dot on a notification bell) deleted — zero TSX consumers
      render the has-badge modifier. */
 
+  /* ── r170-e: coarse-pointer 44px floors at the recipes' home ────── */
+  /* WCAG 2.5.8 best practice (44px) keyed on the INPUT CAPABILITY, the
+     same idiom as layout.css's r164-j (hover:none) block — NOT viewport
+     width. The existing floors already cover phones two ways (polish.css
+     ≤640px band + layout.css hover:none); this block closes the measured
+     coarse contexts those proxies miss: touch tablets above 640px (where
+     .btn rides its 40px base box and .icon-btn its 38px recipe) and
+     coarse-primary-pointer devices that still report hover. min-* only
+     grows the hit box at used-value time — glyphs, labels, and the
+     pointer-fine desktop rhythm stay exactly as designed. */
+  @media (pointer: coarse) {
+    .icon-btn { min-inline-size: 44px; min-block-size: 44px; }
+    .btn { min-block-size: 44px; }
+  }
+
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  BADGES & PILLS                                                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
