@@ -1341,10 +1341,15 @@ export function AdminCoursesPage() {
                       empty-state row spanned 7 of 8 columns. Follows the
                       established actions-header pattern (AdminExtraPages
                       students table / OwnerUsersPage).
-                      r166b (E2 #5): admin-table-actions — the header now
-                      sits over the buttons (END-aligned) instead of the
-                      column's opposite edge. */}
-                  <th scope="col" className="admin-table-actions">إجراءات</th>
+                      r166e: dropped r166b's end-alignment class —
+                      its text-align: end moved the header to the
+                      column's opposite edge while the cluster's
+                      justify-end had no CSS rule anywhere (dead
+                      utility, computed justify-content: normal).
+                      Plain th = the family pattern: header and
+                      buttons share the START edge (right in RTL),
+                      like the students table. */}
+                  <th scope="col">إجراءات</th>
                 </tr>
               </thead>
               <tbody>
@@ -1393,12 +1398,15 @@ export function AdminCoursesPage() {
                     {/* r157 (6A9 #9): font-mono dropped — the actions cell
                         carries Arabic button labels, not figures; the mono
                         face was a copy-paste from the numeric neighbors.
-                        r166b (E2 #5): admin-table-num → admin-table-actions —
-                        matches the header; the inner cluster stays
-                        justify-end so header and buttons share the column's
-                        END edge. */}
-                    <td className="admin-table-actions" data-label="الإجراءات">
-                      <div className="flex items-center gap-2 justify-end">
+                        r166e: the r166b alignment class is gone and
+                        the dead justify-end utility dropped with it
+                        (no rule exists — it computed
+                        justify-content: normal, so the end-aligned
+                        header sat opposite the start-packed buttons).
+                        Plain td/cluster packs from the START edge
+                        like the students table. */}
+                    <td data-label="الإجراءات">
+                      <div className="flex items-center gap-2">
                         <button
                           type="button"
                           className="btn ghost sm"

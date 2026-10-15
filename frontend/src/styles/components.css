@@ -3587,16 +3587,6 @@
   .table th.admin-table-num,
   .table td.admin-table-num { text-align: center; }
 
-  /* r166b (E2 #5): END-aligned actions column. /admin/courses rendered
-     the th «إجراءات» start-aligned while the td's inner cluster
-     (justify-end) pinned the buttons to the column's other end —
-     header and its controls on opposite ends. Scoped class, same
-     grammar as admin-table-num; the td's flex cluster carries the
-     buttons, so the pair needs text-align only on the header side
-     (the class goes on both for one vocabulary). ─────────────── */
-  .table th.admin-table-actions,
-  .table td.admin-table-actions { text-align: end; }
-
   /* ── Dashboard quick indicators (the "مؤشرات سريعة" card). ────── */
   .admin-stat-row {
     display: flex;
