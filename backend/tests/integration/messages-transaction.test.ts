@@ -13,10 +13,12 @@
  *
  * Pinned contract (me.routes.ts POST /messages):
  *   1. success → 201; Message row AND Notification row exist; the
- *      notification deep link is '/teacher/messages' for a TEACHER
- *      recipient and null for everyone else (r155a: no /student/messages
- *      SPA route exists — a dead deep link is worse than none; pinned
- *      exactly as the code behaves today, see the route comment).
+ *      notification deep link follows the role's real inbox route:
+ *      '/teacher/messages' for a TEACHER recipient, '/student/messages'
+ *      for a STUDENT (r171a — the r155a null ceiling closed), null for
+ *      roles without an inbox SPA route (a dead deep link is worse
+ *      than none; pinned exactly as the code behaves, see the route
+ *      comment).
  *   2. self-DM      → 400, zero rows (no message, no notification).
  *   3. inactive rcpt→ 400, zero rows.
  *   4. unknown cuid → 404, zero rows.
@@ -92,7 +94,7 @@ describe('POST /api/v1/messages — atomic message + notification (real DB)', ()
     expect(await prisma.notification.count({ where: { userId: sender.id } })).toBe(0);
   });
 
-  it('student recipient: the notification row exists but its link is null — pinned as the code behaves today (r155a: no student inbox route)', async () => {
+  it('student recipient: the notification deep link points at the student inbox (r171a: /student/messages exists — the r155a null ceiling is closed)', async () => {
     const sender = await seedUser();
     const recipient = await seedUser({ role: Role.STUDENT });
 
@@ -101,7 +103,7 @@ describe('POST /api/v1/messages — atomic message + notification (real DB)', ()
 
     const notification = await db().notification.findFirst({ where: { userId: recipient.id } });
     expect(notification).not.toBeNull();
-    expect(notification?.link).toBeNull();
+    expect(notification?.link).toBe('/student/messages');
     expect(await db().message.count()).toBe(1);
   });
 
