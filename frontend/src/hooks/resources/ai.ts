@@ -14,10 +14,17 @@ export function useAiChat() {
   // message) or appended to one — the conversations sidebar must see
   // it. One targeted invalidation, only on success (a failed turn
   // wrote nothing server-side; the FE keeps the exchange in the log).
+  //
+  // r166d (WS-F5): the turn's envelope also carries per-turn engine
+  // attribution (engine + model) — optional here so an older backend
+  // payload (or a race with a mid-deploy flip) degrades to an untagged
+  // bubble instead of breaking the chat.
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: { conversationId?: string; message: string }) =>
-      unwrap<{ conversationId: string; reply: string }>(api.post('/ai/chat', input)),
+      unwrap<{ conversationId: string; reply: string; engine?: 'local' | 'openai'; model?: string }>(
+        api.post('/ai/chat', input),
+      ),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['ai', 'conversations'] });
     },

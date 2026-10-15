@@ -23,6 +23,13 @@ interface ChatMsg {
   error?: boolean;
   /** The user text to re-send when retrying a failed exchange. */
   retryText?: string;
+  /* r166d (WS-F5) — per-turn engine attribution from the chat envelope.
+   * Present only on turns received AFTER this change (a conversation
+   * loaded from the server carries no per-message engine data — those
+   * bubbles stay honestly untagged). Undefined on failures (nothing
+   * was produced) and on old-backend payloads. */
+  engine?: 'local' | 'openai';
+  model?: string;
 }
 
 /* Role-aware first questions. The student set rides the mastery-aware
@@ -148,7 +155,10 @@ export default function AiAssistantPage() {
     try {
       const res = await chat.mutateAsync({ conversationId, message: t });
       setConversationId(res.conversationId);
-      setMessages((m) => [...m, { role: 'bot', text: res.reply }]);
+      // r166d: the turn's engine attribution rides the message row so
+      // the bubble can name WHICH engine produced it — the boot-level
+      // badge can flip across a redeploy; the per-turn tag cannot lie.
+      setMessages((m) => [...m, { role: 'bot', text: res.reply, engine: res.engine, model: res.model }]);
     } catch (err) {
       // Recoverable failure: the exchange stays in the log with a retry
       // affordance instead of pretending nothing happened. The server's
@@ -371,6 +381,16 @@ export default function AiAssistantPage() {
                     ) : (
                       <div className="chat-bubble">
                         <Multiline>{m.text}</Multiline>
+                        {/* r166d per-turn engine tag — muted mono under the
+                            reply text, existing utility classes only (no new
+                            CSS). Honest in both directions: a real provider
+                            turn names its model, a composer turn names the
+                            composer; untagged = no data for that turn. */}
+                        {m.engine && (
+                          <div className="font-mono text-xxs text-subtle" style={{ marginBlockStart: 'var(--sp-1)' }}>
+                            {m.model ?? m.engine}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

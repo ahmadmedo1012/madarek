@@ -375,7 +375,20 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
       },
     );
 
-    res.json({ data: { conversationId: finalId, reply: assistantContent } });
+    res.json({
+      data: {
+        conversationId: finalId,
+        reply: assistantContent,
+        /* r166d (WS-F5) — per-turn engine attribution, additive: the
+         * client can tag THIS reply with the engine that produced it
+         * (the boot-level /ai/config badge can flip across a redeploy
+         * mid-conversation; per-turn data stays honest about each turn).
+         * model is engine.model — 'gap-aware-composer' locally, the REAL
+         * provider model string in openai mode, never a fabricated name. */
+        engine: aiProvider ? 'openai' : 'local',
+        model: engine.model,
+      },
+    });
   } catch (e) {
     // Failure telemetry (best-effort) so /owner/ai-metrics successRate is
     // grounded in real outcomes, not just happy paths.

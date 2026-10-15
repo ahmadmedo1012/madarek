@@ -11,6 +11,14 @@
  * header are all deterministic hex/text literals computed once and
  * hardcoded below. Any change to the signing pipeline fails here.
  *
+ * r166d: PUTs with a body now sign a `content-type: application/pdf`
+ * header (the only put() producers are the two PDF upload routes), so
+ * the vector carries that header and every derived literal was
+ * RECOMPUTED with an independent SigV4 implementation (node:crypto
+ * driven from the AWS spec steps, not by importing storage.ts — that
+ * script first reproduced the pre-r166d literals byte-for-byte as a
+ * sanity gate, then applied the new header set).
+ *
  * Credentials in the vector are synthetic scanner-safe fakes, not real
  * secrets (no service will ever accept them).
  */
@@ -38,6 +46,7 @@ const VECTOR = {
   path: '/madarek-files/papers/cku5c2x9p0000upload.pdf',
   query: '',
   headers: {
+    'content-type': 'application/pdf',
     host: 'storage.example.com',
     'x-amz-content-sha256': EMPTY_SHA256,
     'x-amz-date': '20260101T000000Z',
@@ -55,24 +64,25 @@ const EXPECTED_CANONICAL_REQUEST =
   'PUT\n' +
   '/madarek-files/papers/cku5c2x9p0000upload.pdf\n' +
   '\n' +
+  'content-type:application/pdf\n' +
   'host:storage.example.com\n' +
   'x-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n' +
   'x-amz-date:20260101T000000Z\n' +
   '\n' +
-  'host;x-amz-content-sha256;x-amz-date\n' +
+  'content-type;host;x-amz-content-sha256;x-amz-date\n' +
   'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
-const EXPECTED_CANONICAL_HASH = '687f25af7963de21415f60d5f1d8c5398d7a56e75a3b6372c0c64d64f4cfe756';
+const EXPECTED_CANONICAL_HASH = 'c6f027a4aebebbd6e7466dab6b51f63b3c0674d55fdd400da60b6a960e807f59';
 const EXPECTED_STRING_TO_SIGN =
   'AWS4-HMAC-SHA256\n' +
   '20260101T000000Z\n' +
   '20260101/auto/s3/aws4_request\n' +
-  '687f25af7963de21415f60d5f1d8c5398d7a56e75a3b6372c0c64d64f4cfe756';
+  'c6f027a4aebebbd6e7466dab6b51f63b3c0674d55fdd400da60b6a960e807f59';
 const EXPECTED_SIGNING_KEY_HEX = 'e56dd93e0cf74e01c0b53dab9b93839d97e6453493f76ed5df5d14d79c94b49d';
-const EXPECTED_SIGNATURE = '46b72bbaec22b9576db51062d61021a2bffd95be7e6ce532e7f27ab44ef33223';
+const EXPECTED_SIGNATURE = '1ca81eadea521bbf1491ce356c092bf3dce9eee52a7ad12b04dd67ad2ecc7c55';
 const EXPECTED_AUTH_HEADER =
   'AWS4-HMAC-SHA256 Credential=test-example-access-key/20260101/auto/s3/aws4_request, ' +
-  'SignedHeaders=host;x-amz-content-sha256;x-amz-date, ' +
-  'Signature=46b72bbaec22b9576db51062d61021a2bffd95be7e6ce532e7f27ab44ef33223';
+  'SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, ' +
+  'Signature=1ca81eadea521bbf1491ce356c092bf3dce9eee52a7ad12b04dd67ad2ecc7c55';
 
 describe('sha256Hex', () => {
   it('matches the well-known empty-string digest', () => {
@@ -95,6 +105,7 @@ describe('canonicalRequest', () => {
     const shuffled = {
       'x-amz-date': '20260101T000000Z',
       host: 'storage.example.com',
+      'content-type': 'application/pdf',
       'x-amz-content-sha256': EMPTY_SHA256,
     };
     expect(canonicalRequest('GET', '/b/k', '', shuffled, EMPTY_SHA256)).toBe(
@@ -144,7 +155,7 @@ describe('authorizationHeader', () => {
       authorizationHeader(
         VECTOR.accessKeyId,
         '20260101/auto/s3/aws4_request',
-        ['host', 'x-amz-content-sha256', 'x-amz-date'],
+        ['content-type', 'host', 'x-amz-content-sha256', 'x-amz-date'],
         EXPECTED_SIGNATURE,
       ),
     ).toBe(EXPECTED_AUTH_HEADER);

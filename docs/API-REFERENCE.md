@@ -325,7 +325,7 @@ There is **no** `POST /posts/:id/comment` route — comments are read via the po
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| POST | `/ai/chat` | Bearer (20/min per user) | Chat with AI (telemetry recorded) — local mastery-aware composer by default, or a real OpenAI-compatible LLM when `AI_PROVIDER=openai` (mastery-aware Arabic system prompt + last 12 turns; provider failure is an honest Arabic 500, never a silent template fallback) |
+| POST | `/ai/chat` | Bearer (20/min per user) | Chat with AI (telemetry recorded) — local mastery-aware composer by default, or a real OpenAI-compatible LLM when `AI_PROVIDER=openai` (mastery-aware Arabic system prompt + last 12 turns; provider failure is an honest Arabic 500, never a silent template fallback). Response `{ data: { conversationId, reply } }` + r166d per-turn attribution: `engine: 'local' \| 'openai'` and `model` (the real provider string, or `gap-aware-composer` locally) |
 | GET | `/ai/config` | Bearer | Which engine answers: `{ provider: 'local' \| 'openai', model: string \| null }` — the honest-surface endpoint the FE badge/subtitle consumes |
 | GET | `/ai/conversations` | Bearer | List conversations (take 50) |
 | GET | `/ai/conversations/:id/messages` | Bearer | Conversation messages — capped at the newest 200 messages (delivered in chronological order) |

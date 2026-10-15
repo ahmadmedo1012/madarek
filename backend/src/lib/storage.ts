@@ -288,6 +288,16 @@ export class S3Driver implements StorageDriver {
       'x-amz-content-sha256': payloadHash,
       'x-amz-date': amzDate,
     };
+    if (opts.body) {
+      // r166d: declare the body's type. The ONLY put() producers are the
+      // two PDF upload routes (files.routes papers + offerings.routes
+      // materials — both express.raw('application/pdf')), so a body always
+      // IS a PDF; without this header objects land as the store's default
+      // application/octet-stream. Signed like every other header (the
+      // canonical request picks it up through the sorted header set — the
+      // fixed vector in storage-sigv4.test.ts was recomputed for it).
+      headers['content-type'] = 'application/pdf';
+    }
     if (opts.range) headers.range = `bytes=${opts.range.start}-${opts.range.end}`;
 
     const credentialScope = `${dateStamp}/${this.cfg.region}/s3/aws4_request`;
@@ -445,6 +455,49 @@ export function getStorage(): StorageDriver {
     }
   }
   return cachedDriver;
+}
+
+// ─── Reachability probe (informational — never boot-blocking) ─────
+
+/** probeStorage's outcome: reachable (the store ANSWERED) or not. */
+export interface StorageProbe {
+  ok: boolean;
+  /** Error name + message excerpt when unreachable — log-shaped. */
+  detail?: string;
+}
+
+/**
+ * r166d: did the driver ANSWER a stat for a well-known key? An absent
+ * object (stat → null — a 404 from the store) is still an ANSWER, so it
+ * counts as reachable: the probe proves the transport + signing path
+ * work, not that any object exists. A THROWN stat (transport fault,
+ * non-2xx) marks the store unreachable with the error excerpt for logs.
+ *
+ * The default probe key rides the `papers` namespace because
+ * storageKeyIsValid only admits <papers|materials>/<name>.pdf —
+ * `health/probe.pdf` would be rejected by the drivers' own key gate
+ * before any request left the process. stat-only: the probe never
+ * writes a byte.
+ *
+ * ADVISORY ONLY — the result must never fail a request or a boot
+ * (informational display for the owner console / boot log). Wiring
+ * note: /owner/system derives its storage block from env only
+ * (toStorageStatus); folding this probe in would put a network call
+ * (worst case the 30s S3 read timeout) inside that route's Promise.all
+ * — deferred until it can ride a memoized TTL + short race timeout
+ * without changing the page's latency contract.
+ */
+export async function probeStorage(
+  driver: StorageDriver,
+  key: string = 'papers/probe.pdf',
+): Promise<StorageProbe> {
+  try {
+    await driver.stat(key);
+    return { ok: true };
+  } catch (err) {
+    const e = err as Error;
+    return { ok: false, detail: `${e.name}: ${e.message}` };
+  }
 }
 
 // Boot-time eager init: constructing the driver is pure (no I/O — the
