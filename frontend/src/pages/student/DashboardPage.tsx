@@ -29,7 +29,10 @@ ChartJS.register(ArcElement, Tooltip, Legend);
  */
 function useGreeting(): string {
   const h = new Date().getHours();
-  if (h < 6)  return 'سهرة سعيدة';
+  /* r166a (E1): the 00:00–06:00 branch said «سهرة سعيدة» — «سهرة» is
+   * an evening party/soirée, wrong register for 2am. «ليلة سعيدة» is
+   * the proper late-night greeting. */
+  if (h < 6)  return 'ليلة سعيدة';
   if (h < 12) return 'صباح الخير';
   if (h < 18) return 'مساء النور';
   return 'مساء الخير';
@@ -684,8 +687,14 @@ export default function StudentDashboardPage() {
         </header>
         {agenda.length === 0 ? (
           <Card>
+            {/* r166a (E1 oversized-empty): dropped the 160px
+                illustration — this slot is a status strip at the tail
+                of the column (desktop) / slot 2 (mobile), not a
+                destination page; the icon well + compact padding
+                (student.css .dash-agenda .state) keep one honest line
+                from dominating the dashboard. */}
             <EmptyState
-              illustration="empty-constellation"
+              icon={CalendarCheck}
               title="أجندتك فارغة"
               description="لا حصص أو مهام أو اختبارات قادمة في أجندك بعد — سجّل في مقرّر أو طَلِب مهمة لظهورها هنا."
             />

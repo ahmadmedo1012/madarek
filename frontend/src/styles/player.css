@@ -60,8 +60,18 @@
   }
 
   /* The video slot — generic so the chrome works with any <video>,
-     not just the .lecture-video-skinned one. */
+     not just the .lecture-video-skinned one.
+     r166a (E1 square-stage defect): the video is ABSOLUTELY pinned to
+     the host frame (inset: 0). A paused <video> with a poster gets its
+     intrinsic layout ratio FROM THE POSTER (Chrome: a square brand mark
+     made the element 818×818); as in-flow content that height fed the
+     host flex item's auto min-content block-size and stretched the
+     aspect-ratio'd frame into a square. Out of flow, the HOST owns the
+     geometry in every context and any poster ratio simply letterboxes
+     via object-fit: contain. */
   .vpc > video {
+    position: absolute;
+    inset: 0;
     display: block;
     inline-size: 100%;
     block-size: 100%;

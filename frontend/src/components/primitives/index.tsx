@@ -299,6 +299,7 @@ export function AlertRow({
   description,
   time,
   actions,
+  unread,
 }: {
   color?: AlertColor;
   icon?: LucideIcon;
@@ -306,6 +307,13 @@ export function AlertRow({
   description?: ReactNode;
   time?: ReactNode;
   actions?: ReactNode;
+  /* r166a (E1 unread-visibility defect): opt-in modifier — the row
+     itself must read as unread WITHOUT any badge (the alerts page
+     rows carried the state only in a small «غير مقروء» Badge).
+     Paints the .alert.unread CSS state (surface-2 wash + 2px accent
+     bar at inline-start — the sidebar-active bar idiom, calmer
+     weight); default unchanged for every other consumer. */
+  unread?: boolean;
 }) {
   /* 5-D1 (A11 P2-3/P2-4): the amber marker rides the graphics tier —
      the base --warning ink measured 2.30:1 on the white .alert card
@@ -334,7 +342,7 @@ export function AlertRow({
     gold: 'var(--gold-ink)',
   };
   return (
-    <div className={`alert ${color}`}>
+    <div className={unread ? `alert ${color} unread` : `alert ${color}`}>
       {/* The coloured dot is the fallback marker; when an icon is present it
           replaces the dot entirely (no hidden placeholder spans). */}
       {!icon && (

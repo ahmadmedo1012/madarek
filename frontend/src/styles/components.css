@@ -741,6 +741,19 @@
   .alert-title { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--type-label-size); }
   .alert-desc  { font-size: var(--type-label-size); color: var(--text-secondary); line-height: var(--lh-base); }
   .alert-time  { font-size: var(--fs-xxs); color: var(--text-muted); margin-block-start: 2px; }
+  /* r166a (E1 unread-visibility defect): the alerts page's read/unread
+     rows carried the SAME surface, border and title weight — the state
+     lived only in a small «غير مقروء» Badge, so the list could not be
+     scanned at a glance. The unread modifier now owns a row-level
+     state: a surface-2 wash (one step up the neutral ramp — visible
+     on both themes) + a 2px role-accent bar at inline-start (the
+     sidebar-active bar idiom, calmer 2px weight; the badge stays as
+     redundant confirmation, not the signal). Tokens only; both
+     resolve per theme. Opt-in: only callers passing unread paint it. */
+  .alert.unread {
+    background: var(--surface-2);
+    border-inline-start: 2px solid var(--accent);
+  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  AVATAR                                                        ║

@@ -50,6 +50,17 @@
     overflow: clip;
   }
   .lecture-video {
+    /* r166a (E1 square-stage defect): the WRAP owns the geometry — the
+       video is pinned to it absolutely. In-flow, a paused <video> with
+       a square poster (the seeded /brand/madarek-mark.svg, viewBox
+       64×64) sizes itself by the POSTER's ratio (818×818 measured
+       live) and, as a .lecture-main flex item's content, stretches the
+       aspect-ratio'd wrap to a square via the auto min-content
+       block-size. Out of flow, the 16:9 frame is definite and any
+       poster ratio letterboxes on the matte (mirrors .vpc > video in
+       player.css — the chrome's own generic slot rule). */
+    position: absolute;
+    inset: 0;
     display: block;
     inline-size: 100%;
     block-size: 100%;
@@ -561,6 +572,18 @@
   .dash-agenda-icon[data-tone='red'] {
     background: var(--c-rose-bg);
     color: var(--c-rose-deep);
+  }
+  /* r166a (E1 oversized-empty defect): the agenda's EMPTY slot held a
+     ~375px card (the opt-in 160px illustration + the state's
+     breathing padding) for one line of meaning — dominating the
+     column's tail on desktop and slot 2 on mobile. This slot is a
+     status strip, not a destination page: the illustration is gone
+     (TSX) and the state compacts to the agenda rows' own rhythm —
+     icon well + one-line copy + sp-5 padding. Scoped to the
+     dashboard's agenda only; every other empty state keeps the
+     shared .state canon. */
+  .student-dashboard .dash-agenda .state.state-empty {
+    padding: var(--sp-5);
   }
   /* PP-X2 (audit P1-8): agenda rows ARE links now (class → course,
      assignment → course, live → broadcast). The 22-c "affordance lie"

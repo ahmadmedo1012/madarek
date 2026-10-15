@@ -53,6 +53,21 @@
   /* r149 (R3-A2 R4): فجوة جدران البطاقات الموحدة 20px عبر الصفحات */
   gap: var(--sp-5);
 }
+/* r166a (E1 jagged-heights defect): equal-height rows in the
+   multi-column gallery. Cards inside one row already stretch (grid
+   default), but the ROWS themselves took the height of their own
+   tallest card — a stats-chips row beside a chip-less row read as a
+   jagged rhythm (measured live: 151/183/223/168 within one section
+   grid). 1fr rows all share the grid's tallest row height → a uniform
+   gallery wall. Scoped ≥769px: on the 1-column mobile layout every
+   row holds exactly one card, and equalizing there would stretch
+   every card to the tallest one's height (measured: all 13 → 223px
+   of mostly padding) — the mobile rule at the 768px breakpoint below
+   keeps single-column rows natural. Link/press semantics untouched:
+   pure row-track sizing, the <a> cards keep stretching with it. */
+@media (min-width: 769px) {
+  .college-grid { grid-auto-rows: 1fr; }
+}
 
 .college-card {
   display: flex;

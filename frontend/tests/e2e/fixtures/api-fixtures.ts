@@ -37,8 +37,10 @@ export function iso(hoursFromNow: number): string {
   return new Date(FIXED_NOW + hoursFromNow * 3_600_000).toISOString();
 }
 
-/** Match-any-greeting regex — the four shipped Arabic greetings. */
-export const GREETING_RE = /(صباح الخير|مساء النور|مساء الخير|سهرة سعيدة)/;
+/** Match-any-greeting regex — the four shipped Arabic greetings.
+ * r166a: the 00:00–06:00 branch is «ليلة سعيدة» (was «سهرة سعيدة» —
+ * a soirée, the wrong register for 2am). */
+export const GREETING_RE = /(صباح الخير|مساء النور|مساء الخير|ليلة سعيدة)/;
 
 /* ── users & sessions ──────────────────────────────────────────── */
 
