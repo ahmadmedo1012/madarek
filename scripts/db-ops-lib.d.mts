@@ -72,3 +72,27 @@ export declare function defaultBackupPath(now?: Date, label?: string): string;
 
 export declare function sha256File(file: string): Promise<string>;
 export declare function humanSize(bytes: number): string;
+
+// ─── r167: post-restore verification (db:verify) ───────────────────
+
+export interface VerifyQuery {
+  key: 'tables' | 'migrations' | 'last_migration' | 'roles' | 'counts';
+  sql: string;
+  label: string;
+}
+
+/** The exact read-only query set db-verify runs (docs/12 §3 items 1–4). */
+export declare const VERIFY_QUERIES: readonly VerifyQuery[];
+
+export interface VerifySummary {
+  level: 'PASS' | 'WARN' | 'FAIL';
+  findings: string[];
+}
+
+/** Pure verdict from measured restore facts. */
+export declare function summarizeVerify(measurements: {
+  tables: number;
+  migrations: number;
+  users: number;
+  ownerCount: number;
+}): VerifySummary;
