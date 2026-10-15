@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import {
   CheckCircle2, Clock, AlertTriangle, ClipboardList, Send, X,
@@ -356,6 +356,13 @@ export function SubmitAssignmentModal({
   const [fileUrl, setFileUrl] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
   const [done, setDone] = useState<Submission | null>(null);
+  /* r170d (WCAG 2.2 — 3.3.1 error identification / focus management): the
+   * first invalid control. The shared validation error is announced on the
+   * primary answer field (role=alert + aria-describedby + aria-invalid are
+   * already wired by FormField); what was missing is the FOCUS move — a
+   * keyboard user's focus stayed on the submit button after a failed
+   * attempt, forcing a blind Tab hunt for the flagged field. */
+  const textAnswerRef = useRef<HTMLTextAreaElement>(null);
 
   /* Close-parity (A10 P1-1): the student's answer is the same class of
      long-form prose the 11 teacher-side authoring modals guard — an
@@ -376,6 +383,9 @@ export function SubmitAssignmentModal({
     const err = validateSubmissionDraft(draft);
     if (err) {
       setValidationError(err);
+      // r170d: focus moves to the first invalid field so the error context
+      // (and its aria-describedby message) is where the user is looking.
+      textAnswerRef.current?.focus();
       return;
     }
     setValidationError(null);
@@ -457,6 +467,7 @@ export function SubmitAssignmentModal({
               error={validationError ?? undefined}
             >
               <textarea
+                ref={textAnswerRef}
                 className="input"
                 rows={5}
                 placeholder="اكتب إجابتك هنا…"
