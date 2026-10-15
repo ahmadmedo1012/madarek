@@ -737,7 +737,11 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
             >
               {list.map((o) => (
                 <option key={o.id} value={o.id}>
-                  {o.course.name} · <bdi>{o.course.code}</bdi>
+                  {/* r168c: <bdi> is invalid inside <option> (text-only
+                      content — React validateDOMNesting warned live during
+                      the assignment flow). Plain text; option rendering
+                      ignores bidi isolation anyway. */}
+                  {o.course.name} · {o.course.code}
                 </option>
               ))}
             </select>
@@ -1348,7 +1352,11 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
             >
               {list.map((o) => (
                 <option key={o.id} value={o.id}>
-                  {o.course.name} · <bdi>{o.course.code}</bdi>
+                  {/* r168c: <bdi> is invalid inside <option> (text-only
+                      content — React validateDOMNesting warned live during
+                      the assignment flow). Plain text; option rendering
+                      ignores bidi isolation anyway. */}
+                  {o.course.name} · {o.course.code}
                 </option>
               ))}
             </select>
