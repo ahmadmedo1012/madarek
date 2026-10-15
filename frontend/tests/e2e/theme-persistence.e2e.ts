@@ -29,6 +29,7 @@ test.describe('ثبات السمة', () => {
     expect(stored).toContain('"mode":"dark"');
 
     /* الصفحة ما تزال حيّة بعد إعادة التحميل (وليست شاشة إقلاع عالقة) */
-    await expect(page.locator('h1.page-title')).toContainText('أحمد');
+    // r168a: التحية الآن h2 (h1 = هوية «لوحة الطالب» sr-only).
+    await expect(page.locator('h2.page-title')).toContainText('أحمد');
   });
 });

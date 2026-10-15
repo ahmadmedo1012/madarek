@@ -17,7 +17,11 @@ test.describe('لوحة تحكم الطالب', () => {
 
     // التحية من الساعة المجمدة (10:00 UTC → «صباح الخير») + الاسم من
     // جلسة mdrk-auth المبذورة.
-    const title = page.locator('h1.page-title');
+    // r168a: اللوحة تفتح مخططها بهويتها — h1 للقراء فقط (sr-only)
+    // «لوحة الطالب» والتحية البطولية h2 (بنفس صنف page-title).
+    const srTitle = page.locator('h1.sr-only');
+    await expect(srTitle).toHaveText('لوحة الطالب');
+    const title = page.locator('h2.page-title');
     await expect(title).toContainText(GREETING_RE);
     await expect(title).toContainText('أحمد');
 

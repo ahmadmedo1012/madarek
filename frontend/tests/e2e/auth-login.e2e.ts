@@ -29,7 +29,8 @@ test.describe('تسجيل الدخول', () => {
 
     // الجلسة حقيقية داخل الواجهة: التحية بالاسم الأول من جلسة الستور
     // + بيانات لوحة الطالب من النقل الوهمي (ليست صفحة هيكلية).
-    await expect(page.locator('h1.page-title')).toContainText('أحمد');
+    // r168a: التحية الآن h2 (h1 = هوية «لوحة الطالب» sr-only).
+    await expect(page.locator('h2.page-title')).toContainText('أحمد');
     await expect(page.getByText('مقررات نشطة')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'المهام والفصول القادمة' })).toBeVisible();
   });
