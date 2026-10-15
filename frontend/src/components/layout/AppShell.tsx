@@ -359,7 +359,22 @@ export function AppShell({ children }: { children?: ReactNode }) {
       <main className="main" id="main" tabIndex={-1}>
         <ScrollProgress />
         <Topbar title={title} scrolled={scrolled} onOpenCommandPalette={openPalette} />
-        <div className="content" ref={contentRef}>
+        {/* WCAG 2.1.1 / axe scrollable-region-focusable: `.content` is
+            the app's ONLY scroll container (body never scrolls — see
+            layout.css's note on the .content listeners), so keyboard
+            users had no way to arrow-scroll it. tabindex=0 puts the
+            region in the natural tab order (after the topbar, before
+            the page's own controls); the universal :focus-visible ring
+            in motion.css covers [tabindex]:not([tabindex="-1"]) — no
+            bespoke focus CSS needed. Mouse clicks focus the region
+            without a ring (:focus:not(:focus-visible) rule, base.css). */}
+        <div
+          className="content"
+          ref={contentRef}
+          tabIndex={0}
+          role="region"
+          aria-label="المحتوى الرئيسي"
+        >
           <PageTransition>
             <div className="content-inner">
               {/* Inner Suspense boundary (11-e P1-1): the only boundary

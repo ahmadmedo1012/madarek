@@ -577,7 +577,7 @@ export default function LecturePlayerPage() {
               <span className="text-xs text-subtle">المحاضرة {data.ordinal}</span>
               {completed && <Badge color="green" icon={CheckCircle2}>مكتملة</Badge>}
             </div>
-            <div className="lecture-meta-title">{data.title}</div>
+            <h1 className="lecture-meta-title">{data.title}</h1>
             <div className="lecture-meta-sub">
               د. {data.offering.teacher.firstName} {data.offering.teacher.lastName} ·{' '}
               <bdi className="font-mono">{formatMmSs(currentSec)} / {formatMmSs(reportTotalSec)}</bdi>
@@ -707,7 +707,7 @@ export default function LecturePlayerPage() {
         </div>
 
         {/* Sidebar: Chapters */}
-        <Card title="فصول المحاضرة" icon={ListOrdered}>
+        <Card title="فصول المحاضرة" icon={ListOrdered} heading="h2">
           {!data.chapters.length ? (
             <EmptyState illustration="empty-search"
               icon={ListVideo}

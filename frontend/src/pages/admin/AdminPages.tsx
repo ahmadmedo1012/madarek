@@ -1418,7 +1418,7 @@ export function AdminCoursesPage() {
                         </button>
                         <button
                           type="button"
-                          className="btn ghost sm text-subtle"
+                          className="btn ghost sm danger"
                           onClick={() => remove(c)}
                           aria-label={`حذف ${c.name}`}
                         >

@@ -416,8 +416,16 @@ export default function StudentDashboardPage() {
   if (dash.isPending) {
     return (
       <div className="page student-dashboard" aria-busy="true" aria-live="polite">
+        {/* r168a: family alignment — every dashboard's outline leads
+            with its identity (لوحة الأستاذ / لوحة الإدارة…) while the
+            student h1 was the personal greeting alone. sr-only h1 keeps
+            the v8 welcome-card hero pixels untouched (the gradient
+            greeting is .page-title class-driven, tag-agnostic) and the
+            visible greeting drops to h2, matching the family's
+            title + greeting hierarchy. */}
         <header className="page-header welcome-card">
-          <h1 className="page-title">{greeting}، {user?.firstName ?? '…'}</h1>
+          <h1 className="sr-only">لوحة الطالب</h1>
+          <h2 className="page-title">{greeting}، {user?.firstName ?? '…'}</h2>
           <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
         </header>
         <KpiSkeleton />
@@ -430,7 +438,8 @@ export default function StudentDashboardPage() {
     return (
       <div className="page student-dashboard">
         <header className="page-header welcome-card">
-          <h1 className="page-title">{greeting}، {user?.firstName ?? '…'}</h1>
+          <h1 className="sr-only">لوحة الطالب</h1>
+          <h2 className="page-title">{greeting}، {user?.firstName ?? '…'}</h2>
         </header>
         <ErrorState
           message="تعذَّر تحميل لوحة التحكّم"
@@ -449,7 +458,8 @@ export default function StudentDashboardPage() {
     return (
       <div className="page student-dashboard">
         <header className="page-header welcome-card">
-          <h1 className="page-title">{greeting}، {user?.firstName ?? ''}</h1>
+          <h1 className="sr-only">لوحة الطالب</h1>
+          <h2 className="page-title">{greeting}، {user?.firstName ?? ''}</h2>
           <p className="page-subtitle">
             معاينة لوحة الطالب — يحتاج هذا العرض إلى ملف طالب فعليّ.
           </p>
@@ -535,9 +545,10 @@ export default function StudentDashboardPage() {
   return (
     <div className="page student-dashboard">
       <header className="page-header welcome-card">
-        <h1 className="page-title">
+        <h1 className="sr-only">لوحة الطالب</h1>
+        <h2 className="page-title">
           {greeting}، {user?.firstName ?? ''}
-        </h1>
+        </h2>
         <p className="page-subtitle">
           {d.profile.facultyName
             ? `${d.profile.facultyName}${d.profile.departmentName ? ` · ${d.profile.departmentName}` : ''} · السنة ${d.profile.year}`

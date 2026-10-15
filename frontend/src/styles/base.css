@@ -310,6 +310,18 @@
     margin-inline: auto;
     padding: var(--page-gutter);
     padding-block-end: calc(var(--page-gutter) + var(--sp-9));
+    /* r168a: the r152i grid4 container query was DEAD for every
+       top-level .grid-4 strip — .grid-4 declared `container: grid4`
+       on ITSELF, but a container is only ever queried by its
+       descendants, so the band could never match the strips it was
+       written for (mobile KPI grids stayed 4×70px with clipped
+       labels). This rule makes the CONTENT COLUMN the real query
+       container: every strip inside it (app shell + public main)
+       now flips on the column's actual width — sidebar in/out,
+       phones, narrow windows. All fixed-position overlays portal
+       outside this subtree, so the implied layout containment has
+       no in-content victims. */
+    container: grid4 / inline-size;
     /* r161 (A3): the route entrance animation was deleted here — it
        was DEAD at the cascade level. polish.css's @layer overrides
        block owns the ONE route entrance (since r162/R3 it targets

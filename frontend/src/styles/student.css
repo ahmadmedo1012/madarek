@@ -86,6 +86,10 @@
     line-height: var(--type-headline-line-height);
     letter-spacing: var(--type-headline-letter-spacing);
     color: var(--text);
+    /* r168a: promoted to <h1> (the player had zero headings — axe
+       page-has-heading-one); margin reset so the tag swap is
+       pixel-identical to the old <div>. */
+    margin: 0;
   }
   .lecture-meta-sub {
     font-size: var(--type-label-size);

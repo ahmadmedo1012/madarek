@@ -282,7 +282,11 @@ export default function RegisterPage() {
                   </p>
                 </div>
 
-                <div className="role-card-grid">
+                {/* r168a: the chooser is a named group — each card is a
+                    commit-action button (tap = choose + advance), so
+                    radio state semantics don't apply; the group label
+                    gives SR users the question context in one place. */}
+                <div className="role-card-grid" role="group" aria-label="نوع الحساب">
                   <button type="button" className="role-card" onClick={() => chooseRole('STUDENT')}>
                     <span className="role-card-icon"><Icon icon={GraduationCap} size={22} /></span>
                     <span className="role-card-body">

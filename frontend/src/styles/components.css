@@ -20,7 +20,14 @@
      tiles vs 2×445px) and the sidebar-state-dependent tile width both
      die with the container query. One band replaces the 1100 media
      line, the 640 stack line AND the 23-b ≤480 patch (2×2 at any
-     narrow container — phone, modal, side column). */
+     narrow container — phone, modal, side column).
+     r168a truth note: a container is queried by its DESCENDANTS only,
+     so the self-container below could never flip .grid-4 itself —
+     the band was dead on arrival for every top-level strip (4×70px
+     clipped tiles on phones). The flip now has REAL ancestors: the
+     content column (base.css .content-inner) for page strips and
+     .modal-card for dialog strips; the self-container stays for
+     nested grid-in-grid cases. */
   .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: var(--sp-5); container: grid4 / inline-size; }
   @container grid4 (max-width: 860px) {
     .grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -576,6 +583,17 @@
   [data-theme='dark'] .btn.danger {
     --_btn-bg-hover: color-mix(in oklab, var(--danger) 86%, var(--white));
     --_btn-bd-hover: color-mix(in oklab, var(--danger) 86%, var(--white));
+  }
+  /* r168a: destructive GHOST — table-row actions. The delete row-action
+     was the LEAST visible control on the page (text-subtle muted ink)
+     while being the only irreversible one. Reuses the semantic rose
+     tokens (both themes measured: light #6B2128 10.75:1, dark
+     #F0938F on the dark surface) with the --danger-soft hover wash —
+     quieter than .btn.danger's fill, louder than text-subtle. */
+  .btn.ghost.danger {
+    --_btn-fg: var(--danger-ink);
+    --_btn-bg-hover: var(--danger-soft);
+    --_btn-bd-hover: transparent;
   }
 
   .btn.sm  { block-size: 32px; padding-inline: var(--sp-3); font-size: var(--type-label-size-sm); border-radius: var(--r-sm); }
@@ -1848,6 +1866,10 @@
     display: flex; flex-direction: column;
     animation: madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both;
     position: relative;
+    /* r168a: real query container for grid4 strips mounted inside
+       dialogs — a 560px modal gets the 2×2 floor, not 4 cramped
+       columns (see the grid-4 band above). */
+    container: grid4 / inline-size;
   }
   .modal-card::before {
     content: '';
