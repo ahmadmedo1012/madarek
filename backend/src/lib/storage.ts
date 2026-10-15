@@ -64,6 +64,14 @@ export function buildStorageKey(namespace: StorageNamespace, filename: string): 
  */
 export function storageKeyIsValid(key: string): boolean {
   if (key.includes('..') || key.includes('\\') || key.startsWith('/')) return false;
+  // Control characters (r170c): a NUL byte reaches Node fs as an
+  // ERR_INVALID_ARG_VALUE throw and Postgres (via callers' queries) as
+  // invalid UTF-8 — both 500s, both client-mintable. No key this
+  // platform writes ever carries a C0 control or DEL byte.
+  for (let i = 0; i < key.length; i += 1) {
+    const code = key.charCodeAt(i);
+    if (code <= 0x1f || code === 0x7f) return false;
+  }
   const slash = key.indexOf('/');
   if (slash === -1) return false;
   const namespace = key.slice(0, slash);

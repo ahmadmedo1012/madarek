@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { env } from '../../env.js';
 import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth.js';
-import { authRateLimiter } from '../middleware/rateLimit.js';
+import { authRateLimiter, changePasswordRateLimiter } from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
 import { changePasswordSchema, loginSchema, registerSchema } from '../../modules/auth/auth.dto.js';
 import {
@@ -71,11 +71,19 @@ router.post('/login', authRateLimiter, validate(loginSchema), async (req, res, n
  *   write (D3 revocation event): every OTHER device's refresh cookie
  *   dies, while this device seamlessly continues on the fresh tokens
  *   issued below (cookie rotated + new access token returned).
+ *
+ * Brute-force guard (r170c): changePasswordRateLimiter — 10 FAILED
+ * attempts / 15 min keyed per USER (authMiddleware runs first, so the
+ * key is the token identity). It replaces the IP-keyed authRateLimiter
+ * here: this route's brute-force scenario is a stolen access token
+ * guessing the current password, and a per-IP cap is the weaker bound
+ * (fan-out / shared edge IPs) — see middleware/rateLimit.ts. The login
+ * lockout counters intentionally stay untouched (auth.service.ts).
  */
 router.post(
   '/change-password',
   authMiddleware,
-  authRateLimiter,
+  changePasswordRateLimiter,
   validate(changePasswordSchema),
   async (req, res, next) => {
     try {

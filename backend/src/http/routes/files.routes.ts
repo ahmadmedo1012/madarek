@@ -35,14 +35,37 @@ export function containsTraversalPatterns(filename: string): boolean {
   return filename.includes('..') || filename.includes('/') || filename.includes('\\');
 }
 
+/**
+ * Control-character gate (r170c): ASCII C0 controls (0x00–0x1F) and DEL
+ * (0x7F) never appear in a filename this platform serves — ids are
+ * cuid-shaped server-side. The NUL byte is the security-relevant one:
+ * `"\x00.pdf"` sails through every existing shape gate (it ends with
+ * `.pdf`, has no traversal pattern), then detonates BOTH downstream
+ * layers — Postgres rejects the byte inside the access-check query
+ * (error 22021, invalid UTF-8) for non-oversight roles, and Node's fs
+ * APIs reject null-byte paths (ERR_INVALID_ARG_VALUE) once the
+ * oversight fast path reaches storage. Either way ANY authenticated
+ * user could mint a 500 response (plus a fake HTTP_500 alert row) per
+ * request — the exact class the error handler's client-reject mapping
+ * exists to prevent. Rejected as a 400 shape error, like traversal.
+ * Verified live on both namespaces and both gate paths (r170c probes).
+ */
+export function containsControlChars(filename: string): boolean {
+  for (let i = 0; i < filename.length; i += 1) {
+    const code = filename.charCodeAt(i);
+    if (code <= 0x1f || code === 0x7f) return true;
+  }
+  return false;
+}
+
 /** The endpoint serves papers only — extension gate, case-insensitive. */
 export function isPdfFilename(filename: string): boolean {
   return filename.toLowerCase().endsWith('.pdf');
 }
 
-/** Aggregate filename gate: no traversal shape AND a .pdf extension. */
+/** Aggregate filename gate: no traversal shape, no control characters, .pdf extension. */
 export function isSafePaperFilename(filename: string): boolean {
-  return !containsTraversalPatterns(filename) && isPdfFilename(filename);
+  return !containsTraversalPatterns(filename) && !containsControlChars(filename) && isPdfFilename(filename);
 }
 
 /**
@@ -262,7 +285,7 @@ router.get('/papers/:filename', async (req, res, next) => {
     // Reject anything that smells like traversal. The aggregate gate is
     // isSafePaperFilename; the two checks stay split so each rejection
     // carries its own message.
-    if (containsTraversalPatterns(filename)) {
+    if (containsTraversalPatterns(filename) || containsControlChars(filename)) {
       throw AppError.badRequest('اسم الملف غير صالح');
     }
     if (!isPdfFilename(filename)) {
@@ -311,7 +334,7 @@ router.get('/papers/:filename', async (req, res, next) => {
 router.get('/materials/:filename', async (req, res, next) => {
   try {
     const filename = req.params.filename!;
-    if (containsTraversalPatterns(filename)) {
+    if (containsTraversalPatterns(filename) || containsControlChars(filename)) {
       throw AppError.badRequest('اسم الملف غير صالح');
     }
     if (!isPdfFilename(filename)) {
