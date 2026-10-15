@@ -17,17 +17,31 @@
  *                               the SUBMITTED→GRADED half of the exam
  *                               lifecycle (18-F1 hand-off #3)
  *
+ * r170b closes the author dead-end r169-C1 flagged on this detail page
+ * (a PENDING_REVIEW/REJECTED template was a read-only wall for its
+ * author): the author can now EDIT the safe fields in place (PATCH
+ * /exams/templates/:id — an edit after a moderation verdict honestly
+ * resets the row to PENDING_REVIEW), CLONE the template (POST
+ * /exams/templates/:id/clone — including PUBLISHED sources, the
+ * iterate-on-a-live-exam path), and the publish button is VISIBLE with
+ * a per-status reason for why it is gated instead of silently
+ * vanishing. The two new mutations ride this module over the shared
+ * `api` transport (the resources barrel is a frozen boundary this
+ * round): same envelope, same ['exams'] invalidation family the
+ * sibling hooks use.
+ *
  * Capability honesty: authoring affordances render only for
  * EXAMS_AUTHOR holders, moderation only for EXAMS_MODERATE holders
  * (useMyPermissions) — a holder of neither sees the honest
  * PermissionDeniedState, and a pure moderator lands on the queue tab.
  */
 import { useEffect, useMemo, useState, type ReactElement } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   AlertTriangle, Archive, BadgeCheck, Ban, BookOpen, CheckCircle2,
-  ChevronRight, ClipboardCheck, Clock, FileQuestion, FileText, Hourglass, Info,
-  ListChecks, Plus, Search, Send, ShieldCheck, Target, Trash2, X,
+  ChevronRight, ClipboardCheck, Clock, Copy, FileQuestion, FileText, Hourglass, Info,
+  ListChecks, Pencil, Plus, Search, Send, ShieldCheck, Target, Trash2, X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Badge, Button, Card, FormField, Input, MetricCard, Tabs } from '../../components/primitives';
@@ -46,6 +60,7 @@ import { useAuthStore } from '../../stores/auth.store';
 import type { AppRole } from '../../stores/auth.store';
 import { toast } from '../../lib/toast';
 import { countAr, formatDateTimeAr, formatRelativeArShort } from '../../lib/format';
+import { api, unwrap } from '../../lib/api';
 import {
   useMyPermissions, useQuestionBank, useQuestionCategories, useExamTemplates,
   useExamTemplate, useExamModerationQueue, useModerateExam, useCreateQuestion,
@@ -154,6 +169,174 @@ export function canViewTemplateAttempts(
     return viewer.role === 'ADMIN' || viewer.role === 'OWNER' || template.offering.teacherId === viewer.id;
   }
   return viewer.role === 'OWNER' || template.authorId === viewer.id;
+}
+
+/* ═══════════════ r170b — author edit/clone: client mirrors + mutations ═══════════════ */
+
+/** PATCH /exams/templates/:id body — mirrors the backend's
+ *  updateTemplateSchema. `null` clears the nullable fields
+ *  (description / the open-close window); the kind, the scope and the
+ *  question set are immutable on the wire (the route's comment owns
+ *  the why). */
+export interface UpdateExamTemplateInput {
+  title?: string;
+  description?: string | null;
+  durationMin?: number;
+  passingScore?: number;
+  randomized?: boolean;
+  openAt?: string | null;
+  closeAt?: string | null;
+}
+
+/** Client mirror of the backend's edit gate (ownership +
+ *  decideTemplateEdit): the author — or ADMIN/OWNER oversight — may
+ *  edit unless the row is locked (PUBLISHED has attempts against it;
+ *  CLOSED is terminal). Pinned by the unit suite alongside its
+ *  backend twin. */
+export function canEditTemplate(
+  template: Pick<ExamTemplateDetail, 'authorId' | 'status'>,
+  viewer: { id: string; role: AppRole } | null | undefined,
+): boolean {
+  if (!viewer) return false;
+  const isAuthor = template.authorId === viewer.id;
+  const isOversight = viewer.role === 'ADMIN' || viewer.role === 'OWNER';
+  if (!isAuthor && !isOversight) return false;
+  return template.status !== 'PUBLISHED' && template.status !== 'CLOSED';
+}
+
+/** Client mirror of decideTemplateCloneAccess — the clone reach equals
+ *  the answer-key matrix (the copy hands its questions to the cloner
+ *  as the new author, so a clone can never widen key visibility). */
+export function canCloneTemplate(
+  template: Pick<ExamTemplateDetail, 'authorId'>,
+  viewer: { id: string; role: AppRole } | null | undefined,
+  hasExamsModerate: boolean,
+): boolean {
+  if (!viewer) return false;
+  if (viewer.role === 'ADMIN' || viewer.role === 'OWNER') return true;
+  if (viewer.role === 'TEACHER') return template.authorId === viewer.id;
+  if (viewer.role === 'QUALITY') return hasExamsModerate;
+  return false;
+}
+
+/** Why is publish gated for this status? null = publish is available
+ *  (APPROVED — the backend gate is the source of truth; the button
+ *  still renders the error verbatim if a rejection lands mid-flight).
+ *  The REJECTED branch points at the moderation note the detail header
+ *  already renders instead of duplicating up to 500 chars into the
+ *  actions row (the field is optional: list rows carry no note, and
+ *  they never render the reason — explainGate is detail-only). */
+export function publishGateReason(
+  template: { status: ExamStatusFE; moderationNote?: string | null },
+): string | null {
+  switch (template.status) {
+    case 'APPROVED':
+      return null;
+    case 'PENDING_REVIEW':
+      return 'بانتظار مراجعة الجودة — يُفتح النشر بعد اعتمادها.';
+    case 'REJECTED':
+      return template.moderationNote
+        ? 'رفضته الجودة — طالِع ملاحظتها أدناه، وعدّل القالب ليعود إلى المراجعة.'
+        : 'رفضته الجودة — عدّل القالب ليعود إلى المراجعة.';
+    case 'PUBLISHED':
+      return 'هذا الاختبار منشور بالفعل.';
+    case 'CLOSED':
+      return 'هذا الاختبار مُغلق.';
+    case 'DRAFT':
+      return 'مسودة لم تُرسل إلى مراجعة الجودة بعد.';
+  }
+}
+
+/** ISO wire value → the `datetime-local` input format (local time, no
+ *  offset). The edit modal seeds its window fields from the stored row
+ *  — the builder modal only ever builds fresh ones. '' for null. */
+export function isoToLocalInputValue(iso: string | null): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+export interface EditTemplateDraftState {
+  title: string;
+  description: string;
+  durationMin: string;
+  passingScore: string;
+  randomized: boolean;
+  openAt: string;
+  closeAt: string;
+}
+
+export type EditTemplateDraftErrors = Partial<Record<'title' | 'durationMin' | 'passingScore' | 'window', string>>;
+
+/** Client mirror of updateTemplateSchema's bounds — the same numbers
+ *  (and the same Arabic copy) validateTemplateDraft pins for the
+ *  builder, minus the fields an edit cannot touch. */
+export function validateEditTemplateDraft(d: EditTemplateDraftState): EditTemplateDraftErrors {
+  const errors: EditTemplateDraftErrors = {};
+  const title = d.title.trim();
+  if (title.length < 3) errors.title = 'العنوان قصير — 3 أحرف على الأقل.';
+  else if (title.length > 200) errors.title = 'العنوان طويل — الحد 200 حرف.';
+  const dur = Number(d.durationMin);
+  if (d.durationMin.trim() === '' || !Number.isInteger(dur) || dur < 5 || dur > 480) {
+    errors.durationMin = 'المدة عدد صحيح بين 5 و 480 دقيقة.';
+  }
+  const pass = Number(d.passingScore);
+  if (d.passingScore.trim() === '' || !Number.isInteger(pass) || pass < 0 || pass > 100) {
+    errors.passingScore = 'درجة النجاح نسبة صحيحة بين 0 و 100.';
+  }
+  if (d.openAt !== '' && d.closeAt !== '') {
+    const open = new Date(d.openAt).getTime();
+    const close = new Date(d.closeAt).getTime();
+    if (!Number.isNaN(open) && !Number.isNaN(close) && close <= open) {
+      errors.window = 'موعد الإغلاق يجب أن يكون بعد موعد الفتح.';
+    }
+  }
+  return errors;
+}
+
+/** Build the PATCH body from a validated edit draft — the window fields
+ *  always ship (a cleared input clears the stored value), so a saved
+ *  edit is exactly what the modal shows. */
+export function buildUpdateTemplateInput(d: EditTemplateDraftState): UpdateExamTemplateInput {
+  return {
+    title: d.title.trim(),
+    description: d.description.trim() || null,
+    durationMin: Number(d.durationMin),
+    passingScore: Number(d.passingScore),
+    randomized: d.randomized,
+    openAt: d.openAt ? new Date(d.openAt).toISOString() : null,
+    closeAt: d.closeAt ? new Date(d.closeAt).toISOString() : null,
+  };
+}
+
+/** Author edit — PATCH /exams/templates/:id. Local to this module (the
+ *  resources barrel is a frozen boundary this round): same { data }
+ *  envelope via the shared api client, same ['exams'] invalidation
+ *  family the sibling mutations use (list, detail, queue). */
+function useUpdateExamTemplate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: UpdateExamTemplateInput }) =>
+      unwrap<{ id: string; status: ExamStatusFE }>(api.patch(`/exams/templates/${id}`, input)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['exams'] });
+    },
+  });
+}
+
+/** Author clone — POST /exams/templates/:id/clone. The new draft's id
+ *  drives the navigation to the copy's detail page. */
+function useCloneExamTemplate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (templateId: string) =>
+      unwrap<{ id: string; title: string; status: ExamStatusFE }>(api.post(`/exams/templates/${templateId}/clone`, {})),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['exams'] });
+    },
+  });
 }
 
 function TemplateStatusBadge({ status }: { status: ExamStatusFE }) {
@@ -489,7 +672,10 @@ function TemplateRow({ template }: { template: ExamTemplateRow }) {
         </div>
         {template.status === 'REJECTED' && (
           <p className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
-            رفضته الجودة — افتح القالب للاطلاع على الملاحظات، ثم أنشئ قالباً بديلاً يعالجها.
+            {/* r170b: the fix path is now the template's own تعديل (the
+                edit resubmits it to the queue) — the old copy promised a
+                replacement-template detour that no longer exists. */}
+            رفضته الجودة — افتح القالب للاطلاع على الملاحظات وعدّله ليعود إلى المراجعة.
           </p>
         )}
       </div>
@@ -509,8 +695,9 @@ function PublishButton({
   template,
   authorId,
   viewHref,
+  explainGate,
 }: {
-  template: Pick<ExamTemplateRow, 'id' | 'status'>;
+  template: Pick<ExamTemplateRow, 'id' | 'status'> & { moderationNote?: string | null };
   /** Present on the detail surface — hides the button for a non-author
    *  viewing someone else's APPROVED template (the backend would 403). */
   authorId?: string;
@@ -519,6 +706,12 @@ function PublishButton({
    *  inline action. Absent on the detail surface — the button already
    *  sits on that page, the action would navigate nowhere. */
   viewHref?: string;
+  /** r170b: on the DETAIL surface a gated publish renders as a DISABLED
+   *  button + the per-status reason (publishGateReason) instead of
+   *  vanishing — the author sees the honest path forward from every
+   *  state. List rows keep the quiet null (a disabled control on every
+   *  row is noise, and the row's status chip already says the state). */
+  explainGate?: boolean;
 }) {
   const publish = usePublishExamTemplate();
   const [confirming, setConfirming] = useState(false);
@@ -529,9 +722,13 @@ function PublishButton({
 
   // The backend gate: publish requires APPROVED + authorship. The button
   // renders only where the gate can pass — anywhere else it would be a
-  // permanent dead control (a disabled button with no future).
-  if (!canAuthor || template.status !== 'APPROVED') return null;
+  // permanent dead control (a disabled button with no future) — EXCEPT
+  // on the explainGate surface, where a disabled control WITH its
+  // reason is exactly the honesty the author needs (r170b).
+  if (!canAuthor) return null;
   if (authorId !== undefined && authorId !== meId) return null;
+  const reason = explainGate ? publishGateReason(template) : null;
+  if (reason === null && template.status !== 'APPROVED') return null;
 
   const onPublish = async () => {
     try {
@@ -552,6 +749,32 @@ function PublishButton({
       // (a rejection landing mid-flight) renders verbatim.
     }
   };
+
+  // r170b — the gated detail-surface control: disabled + the honest
+  // per-status reason. aria-describedby ties the note to the control
+  // so screen readers announce WHY it is off, not just that it is.
+  if (reason !== null) {
+    return (
+      <span className="flex-col gap-1" style={{ alignItems: 'flex-end', flexShrink: 0 }}>
+        <Button
+          variant="primary"
+          size="sm"
+          disabled
+          aria-describedby="publish-gate-reason"
+        >
+          <Icon icon={Send} size={12} /> نشر
+        </Button>
+        <span
+          id="publish-gate-reason"
+          className="text-xs text-muted"
+          role="note"
+          style={{ margin: 0, textAlign: 'end', maxWidth: 'min(320px, 100%)' }}
+        >
+          {reason}
+        </span>
+      </span>
+    );
+  }
 
   return (
     <>
@@ -1756,7 +1979,7 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
             )}
           </p>
         </div>
-        <PublishButton template={template} authorId={template.authorId} />
+        <AuthorActions template={template} />
       </header>
 
       {(template.status === 'REJECTED' || template.status === 'PENDING_REVIEW') && template.moderationNote && (
@@ -1860,6 +2083,316 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
         )}
       </Card>
     </>
+  );
+}
+
+/* ═══════════════ r170b — author actions (edit · clone · gated publish) ═══════════════ */
+
+/** The detail header's author affordances: تعديل (the safe-fields
+ *  modal, only where the backend's edit gate can pass), استنساخ (deep
+ *  copy → navigate to the new draft), and the gated publish with its
+ *  per-status reason. Non-authors see none of these — the backend 403s
+ *  and a dead control is worse than no control (the PublishButton rule). */
+function AuthorActions({ template }: { template: ExamTemplateDetail }) {
+  const user = useAuthStore((s) => s.user);
+  const perms = useMyPermissions();
+  const navigate = useNavigate();
+  const clone = useCloneExamTemplate();
+  const [editing, setEditing] = useState(false);
+  const [cloneFailed, setCloneFailed] = useState(false);
+
+  const canAuthor = perms.data?.capabilities.includes('EXAMS_AUTHOR') ?? false;
+  const canModerate = perms.data?.capabilities.includes('EXAMS_MODERATE') ?? false;
+  // The capability AND the ownership/status gate must both hold — the
+  // backend's PATCH door is requireCapability('EXAMS_AUTHOR') first,
+  // then the author/oversight assert (canEditTemplate mirrors only the
+  // second half).
+  const editable = canAuthor && canEditTemplate(template, user);
+  const cloneable = canAuthor && canCloneTemplate(template, user, canModerate);
+
+  const onClone = async () => {
+    setCloneFailed(false);
+    try {
+      const copy = await clone.mutateAsync(template.id);
+      toast.success('أُنشئت نسخة كاملة بأسئلة القالب وأُرسلت إلى مراجعة الجودة.', {
+        title: 'تمّ الاستنساخ',
+      });
+      // Straight to the new draft — its detail page is where the author
+      // continues (edit the window, retitle, await moderation).
+      navigate(`/teacher/exams/${copy.id}`);
+    } catch {
+      // surfaced inline below — the backend's Arabic message verbatim
+      setCloneFailed(true);
+    }
+  };
+
+  if (!editable && !cloneable) return null;
+
+  return (
+    <>
+      <div className="flex gap-2 flex-wrap" style={{ justifyContent: 'flex-end', flexShrink: 0 }}>
+        {editable && (
+          <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
+            <Icon icon={Pencil} size={12} /> تعديل
+          </Button>
+        )}
+        {cloneable && (
+          <Button
+            variant="ghost"
+            size="sm"
+            loading={clone.isPending}
+            disabled={clone.isPending}
+            onClick={() => void onClone()}
+            title="نسخة كاملة من القالب بأسئلته — تُرسل إلى مراجعة الجودة"
+          >
+            <Icon icon={Copy} size={12} /> استنساخ
+          </Button>
+        )}
+        <PublishButton template={template} authorId={template.authorId} explainGate />
+      </div>
+      {cloneFailed && (
+        <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)', textAlign: 'end' }}>
+          {apiErrorMessage(clone.error, 'تعذَّر الاستنساخ — تحقّق من اتصالك وحاول مرة أخرى.')}
+        </p>
+      )}
+      {editing && <EditTemplateModal template={template} onClose={() => setEditing(false)} />}
+    </>
+  );
+}
+
+/** The edit modal — PATCH /exams/templates/:id over the safe fields.
+ *  Field set = exactly what the wire accepts (kind, scope and the
+ *  question set are immutable; the modal says so instead of offering
+ *  dead controls). Saving an APPROVED/REJECTED template warns first:
+ *  the edit honestly resets the moderation verdict. */
+function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail; onClose: () => void }) {
+  const update = useUpdateExamTemplate();
+
+  const initial = useMemo<EditTemplateDraftState>(() => ({
+    title: template.title,
+    description: template.description ?? '',
+    durationMin: String(template.durationMin),
+    passingScore: String(template.passingScore),
+    randomized: template.randomized,
+    openAt: isoToLocalInputValue(template.openAt),
+    closeAt: isoToLocalInputValue(template.closeAt),
+  }), [template]);
+
+  const [draft, setDraft] = useState<EditTemplateDraftState>(initial);
+  const [errors, setErrors] = useState<EditTemplateDraftErrors>({});
+  const [saved, setSaved] = useState(false);
+
+  const patch = (p: Partial<EditTemplateDraftState>) => setDraft((d) => ({ ...d, ...p }));
+
+  const dirty =
+    draft.title !== initial.title ||
+    draft.description !== initial.description ||
+    draft.durationMin !== initial.durationMin ||
+    draft.passingScore !== initial.passingScore ||
+    draft.randomized !== initial.randomized ||
+    draft.openAt !== initial.openAt ||
+    draft.closeAt !== initial.closeAt;
+
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty: !saved && dirty,
+    pending: update.isPending,
+    onClose,
+  });
+
+  const onSubmit = async () => {
+    const found = validateEditTemplateDraft(draft);
+    setErrors(found);
+    if (Object.keys(found).length > 0) return;
+    try {
+      await update.mutateAsync({ id: template.id, input: buildUpdateTemplateInput(draft) });
+      setSaved(true);
+      // The verdict-reset states (APPROVED/REJECTED) say what saving did
+      // to the lifecycle; every other state is a plain in-place edit.
+      if (template.status === 'APPROVED' || template.status === 'REJECTED') {
+        toast.success('حُفظ التعديل وعاد القالب إلى مراجعة الجودة بمحتواه المحدَّث.', {
+          title: 'تمّ حفظ التعديل',
+        });
+      } else {
+        toast.success('حُفظت تعديلات القالب.', { title: 'تمّ الحفظ' });
+      }
+    } catch {
+      /* surfaced inline from update.isError */
+    }
+  };
+
+  // What the save does to the moderation state — the honest pre-warning
+  // (mirrors decideTemplateEdit, which the backend enforces anyway).
+  const resetNotice =
+    template.status === 'APPROVED'
+      ? 'حفظ التعديل يُلغي الاعتماد الحالي ويعيد القالب إلى مراجعة الجودة قبل نشره.'
+      : template.status === 'REJECTED'
+        ? 'حفظ التعديل يعيد القالب إلى مراجعة الجودة بمحتواه المحدَّث.'
+        : null;
+
+  return (
+    <Modal
+      open
+      onClose={requestClose}
+      ariaLabel="تعديل القالب"
+      closeOnOverlayClick={!update.isPending}
+      closeOnEscape={!escapeLocked}
+    >
+      <div className="modal-header">
+        <div className="modal-title">تعديل القالب</div>
+        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={update.isPending}>
+          <Icon icon={X} size={16} />
+        </button>
+      </div>
+      <div className="modal-body">
+        {saved ? (
+          <div className="form-feedback ok" role="status">
+            <Icon icon={CheckCircle2} size={15} />
+            <span className="flex-1">
+              {resetNotice
+                ? 'حُفظ التعديل — القالب الآن بانتظار مراجعة الجودة.'
+                : 'حُفظت التعديلات على القالب.'}
+            </span>
+          </div>
+        ) : (
+          <form
+            onSubmit={(e) => { e.preventDefault(); void onSubmit(); }}
+            noValidate
+            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}
+          >
+            <p className="text-sm text-muted" style={{ margin: 0 }}>
+              الأسئلة ونوع الاختبار ونطاقه ثابتة بعد الإنشاء — عدّل بيانات العرض والتوقيت هنا،
+              أو استنسخ القالب لنسخة تُبنى عليها أسئلة مختلفة.
+            </p>
+
+            <Field label="عنوان القالب" htmlFor="edit-tpl-title" error={errors.title}>
+              <Input
+                id="edit-tpl-title"
+                value={draft.title}
+                error={!!errors.title}
+                maxLength={200}
+                onChange={(e) => patch({ title: e.target.value })}
+              />
+            </Field>
+
+            <div className="flex gap-3 flex-wrap">
+              <Field label="المدة (بالدقائق)" htmlFor="edit-tpl-duration" error={errors.durationMin} hint="بين 5 و 480 دقيقة">
+                <Input
+                  id="edit-tpl-duration"
+                  type="number"
+                  className="input-narrow"
+                  min={5}
+                  max={480}
+                  step={1}
+                  inputMode="numeric"
+                  dir="ltr"
+                  value={draft.durationMin}
+                  error={!!errors.durationMin}
+                  onChange={(e) => patch({ durationMin: e.target.value })}
+                />
+              </Field>
+              <Field label="درجة النجاح (%)" htmlFor="edit-tpl-pass" error={errors.passingScore} hint="نسبة من مجموع النقاط">
+                <Input
+                  id="edit-tpl-pass"
+                  type="number"
+                  className="input-narrow"
+                  min={0}
+                  max={100}
+                  step={1}
+                  inputMode="numeric"
+                  dir="ltr"
+                  value={draft.passingScore}
+                  error={!!errors.passingScore}
+                  onChange={(e) => patch({ passingScore: e.target.value })}
+                />
+              </Field>
+            </div>
+
+            <ToggleSwitch
+              label="ترتيب عشوائي للأسئلة"
+              description="يُخلط ترتيب الأسئلة لكل طالب عند بدء الاختبار"
+              checked={draft.randomized}
+              onChange={(randomized) => patch({ randomized })}
+            />
+
+            <div className="flex gap-3 flex-wrap">
+              <Field
+                label="يفتح في (اختياري)"
+                htmlFor="edit-tpl-open"
+                hint={draft.openAt
+                  ? `المحدَّد: ${formatDateTimeAr(draft.openAt)}`
+                  : 'غير محدَّد — يفتح فور النشر. مسح الحقل يزيل الموعد.'}
+              >
+                <input
+                  id="edit-tpl-open"
+                  type="datetime-local"
+                  className="input"
+                  dir="ltr"
+                  value={draft.openAt}
+                  onChange={(e) => patch({ openAt: e.target.value })}
+                />
+              </Field>
+              <Field
+                label="يغلق في (اختياري)"
+                htmlFor="edit-tpl-close"
+                hint={draft.closeAt
+                  ? `المحدَّد: ${formatDateTimeAr(draft.closeAt)}`
+                  : 'غير محدَّد — بلا إغلاق تلقائي. مسح الحقل يزيل الموعد.'}
+              >
+                <input
+                  id="edit-tpl-close"
+                  type="datetime-local"
+                  className="input"
+                  dir="ltr"
+                  value={draft.closeAt}
+                  onChange={(e) => patch({ closeAt: e.target.value })}
+                />
+              </Field>
+            </div>
+            {errors.window && (
+              <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+                {errors.window}
+              </p>
+            )}
+
+            <Field label="وصف (اختياري)" htmlFor="edit-tpl-desc" hint="يظهر للطالب قبل بدء الاختبار">
+              <textarea
+                id="edit-tpl-desc"
+                className="input"
+                rows={2}
+                maxLength={2000}
+                placeholder="تعليمات مختصرة لطلابك…"
+                style={{ resize: 'vertical', fontFamily: 'inherit' }}
+                value={draft.description}
+                onChange={(e) => patch({ description: e.target.value })}
+              />
+            </Field>
+
+            {resetNotice && (
+              <p className="text-sm text-muted" role="note" style={{ margin: 0, display: 'flex', gap: 6, alignItems: 'flex-start' }}>
+                <Icon icon={Info} size={14} />
+                <span>{resetNotice}</span>
+              </p>
+            )}
+
+            {update.isError && (
+              <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+                {apiErrorMessage(update.error, 'تعذَّر حفظ التعديل — تحقّق من البيانات وحاول مرة أخرى.')}
+              </p>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--sp-2)', paddingTop: 'var(--sp-2)', borderTop: '1px solid var(--rule)' }}>
+              <Button variant="ghost" onClick={requestClose} disabled={update.isPending}>
+                إلغاء
+              </Button>
+              <Button variant="primary" type="submit" loading={update.isPending}>
+                حفظ التعديل
+              </Button>
+            </div>
+          </form>
+        )}
+      </div>
+      {guard}
+    </Modal>
   );
 }
 

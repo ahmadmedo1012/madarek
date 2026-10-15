@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { DifficultyLevel, ExamKind, QuestionType, AttemptStatus, NotificationType, Prisma, Role } from '@prisma/client';
+import { DifficultyLevel, ExamKind, QuestionType, AttemptStatus, ExamStatus, NotificationType, Prisma, Role } from '@prisma/client';
 import type { ExamAttempt, ExamAnswer } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -122,6 +122,79 @@ export function mayAuthorUnscopedTemplate(
 ): boolean {
   if (hasOfferingId || hasFacultyId) return true;
   return capabilities.has('EXAMS_MODERATE');
+}
+
+/* ── r170b: author-edit state machine + clone reach (pure, pinned by
+ * the DB-free suite) ────────────────────────────────────────────── */
+
+/** Outcome of consulting the edit state machine for one template
+ *  status. `nextStatus: null` means the row keeps its status. */
+export type TemplateEditDecision =
+  | { ok: true; nextStatus: ExamStatus | null; resetsModeration: boolean }
+  | { ok: false; conflictMessage: string };
+
+/**
+ * r170b — may the author edit this template, and what does the edit do
+ * to the moderation state? The honest state machine:
+ *
+ *  - DRAFT / PENDING_REVIEW → editable, status unchanged (a
+ *    PENDING_REVIEW row sits in the quality queue; the edit lands there
+ *    and the moderators review the CURRENT content).
+ *  - APPROVED / REJECTED    → editable, but ANY edit resets the row to
+ *    PENDING_REVIEW: a moderation verdict covers specific content, so
+ *    once that content changes the verdict no longer applies. For
+ *    APPROVED this invalidates a green light the author would otherwise
+ *    publish stale content under; for REJECTED it is the fix-and-
+ *    resubmit loop (without the reset, a fixed template could never
+ *    re-enter the queue — the exact dead-end r169-C1 flagged). The
+ *    reset also clears moderatedById/moderationNote: the old note
+ *    described the pre-edit content and would read as a live verdict.
+ *  - PUBLISHED / CLOSED     → locked (409). A published exam has
+ *    attempts against it; editing it mid-flight would change the exam
+ *    under the students. Iterating on published content is what the
+ *    clone endpoint is for.
+ *
+ * Exported for unit tests (the exams-logic.test.ts convention).
+ */
+export function decideTemplateEdit(status: ExamStatus): TemplateEditDecision {
+  switch (status) {
+    case ExamStatus.DRAFT:
+    case ExamStatus.PENDING_REVIEW:
+      return { ok: true, nextStatus: null, resetsModeration: false };
+    case ExamStatus.APPROVED:
+    case ExamStatus.REJECTED:
+      return { ok: true, nextStatus: ExamStatus.PENDING_REVIEW, resetsModeration: true };
+    case ExamStatus.PUBLISHED:
+      return { ok: false, conflictMessage: 'قالبًا منشورًا لا يمكن تحريره' };
+    case ExamStatus.CLOSED:
+      return { ok: false, conflictMessage: 'هذا القالب مُغلق ولا يمكن تحريره' };
+  }
+}
+
+/**
+ * r170b — may this viewer clone the template? The gate mirrors the GET
+ * detail's answer-key matrix (canSeeAnswers) EXACTLY: the source
+ * author, ADMIN/OWNER oversight, QUALITY holding EXAMS_MODERATE.
+ *
+ * A clone hands its questions to the cloner as the copy's AUTHOR — and
+ * the author of a template is served its answer key. Allowing a wider
+ * reader set (e.g. any EXAMS_AUTHOR teacher, who can read another
+ * author's template metadata via GET detail) would let them launder
+ * the key through a clone — reopening the information-disclosure hole
+ * the canSeeAnswers gate closed. Non-readers (students, teachers who
+ * are not the author) get a 403 here.
+ *
+ * Exported for unit tests.
+ */
+export function decideTemplateCloneAccess(
+  viewer: { id: string; role: Role },
+  template: { authorId: string },
+  hasExamsModerate: boolean,
+): boolean {
+  if (viewer.role === Role.ADMIN || viewer.role === Role.OWNER) return true;
+  if (viewer.role === Role.TEACHER) return template.authorId === viewer.id;
+  if (viewer.role === Role.QUALITY) return hasExamsModerate;
+  return false;
 }
 
 /**
@@ -686,6 +759,184 @@ router.post('/exams/templates/:id/publish', requireCapability('EXAMS_AUTHOR'), a
     // impossible in the response envelope.
     if (!updated) throw AppError.notFound('قالب الاختبار غير موجود');
     res.json({ data: updated });
+  } catch (e) { next(e); }
+});
+
+/**
+ * r170b — author edit of a template's safe metadata fields
+ * (PATCH /exams/templates/:id). Partial body: only the provided fields
+ * change; a field sent as `null` (description/openAt/closeAt) clears it.
+ *
+ * The schema is .strict() — status/authorId/moderatedById/moderationNote
+ * in the body are rejected with a 400, and the state machine below is
+ * the ONLY way an edit touches status: see decideTemplateEdit for the
+ * matrix (PUBLISHED/CLOSED locked; an edit after a moderation verdict
+ * resets the row to PENDING_REVIEW and clears the verdict fields — the
+ * verdict covered pre-edit content).
+ *
+ * Ownership: the author, or ADMIN/OWNER oversight (the assertOwnsOffering
+ * bypass pattern — the publish route's OWNER-only bypass fits publish
+ * because a non-author can never usefully publish; an edit by an
+ * EXAMS_AUTHOR-granted admin is a deliberate operator grant).
+ * Scoping (offeringId/facultyId) and the question set are immutable
+ * here: re-scoping re-enters the faculty-targeting guard and the
+ * question set is fixed at build time — clone is the variant path.
+ */
+export const updateTemplateSchema = z
+  .object({
+    title: z.string().trim().min(3).max(200).optional(),
+    description: z.string().trim().max(2000).nullable().optional(),
+    durationMin: z.number().int().min(5).max(480).optional(),
+    passingScore: z.number().int().min(0).max(100).optional(),
+    randomized: z.boolean().optional(),
+    openAt: z.coerce.date().nullable().optional(),
+    closeAt: z.coerce.date().nullable().optional(),
+  })
+  .strict();
+
+router.patch(
+  '/exams/templates/:id',
+  requireCapability('EXAMS_AUTHOR'),
+  validate(updateTemplateSchema),
+  async (req, res, next) => {
+    try {
+      const body = req.body as z.infer<typeof updateTemplateSchema>;
+      const template = await prisma.examTemplate.findUnique({ where: { id: req.params.id } });
+      if (!template) throw AppError.notFound('قالب الاختبار غير موجود');
+
+      const isAuthor = template.authorId === req.user!.id;
+      const isOversight = req.user!.role === Role.ADMIN || req.user!.role === Role.OWNER;
+      if (!isAuthor && !isOversight) throw AppError.forbidden('هذا القالب ليس من إنشائك');
+
+      const decision = decideTemplateEdit(template.status);
+      if (!decision.ok) throw AppError.conflict(decision.conflictMessage);
+
+      // Window ordering is validated on the MERGED values — a partial
+      // patch's new closeAt must still sit after the row's stored openAt
+      // (the create schema's superRefine, applied to a partial update).
+      const openAt = body.openAt !== undefined ? body.openAt : template.openAt;
+      const closeAt = body.closeAt !== undefined ? body.closeAt : template.closeAt;
+      if (openAt && closeAt && openAt.getTime() >= closeAt.getTime()) {
+        throw AppError.badRequest('موعد الإغلاق يجب أن يكون بعد موعد الفتح');
+      }
+
+      const data: Prisma.ExamTemplateUncheckedUpdateInput = {};
+      if (body.title !== undefined) data.title = body.title;
+      if (body.description !== undefined) data.description = body.description;
+      if (body.durationMin !== undefined) data.durationMin = body.durationMin;
+      if (body.passingScore !== undefined) data.passingScore = body.passingScore;
+      if (body.randomized !== undefined) data.randomized = body.randomized;
+      if (body.openAt !== undefined) data.openAt = body.openAt;
+      if (body.closeAt !== undefined) data.closeAt = body.closeAt;
+      if (decision.resetsModeration) {
+        // The state-machine reset (see decideTemplateEdit): the verdict
+        // covered pre-edit content — flip back to the queue and drop the
+        // stale note/reviewer. The author never writes these fields by
+        // hand (the strict schema rejects them in the body).
+        data.status = ExamStatus.PENDING_REVIEW;
+        data.moderatedById = null;
+        data.moderationNote = null;
+      }
+
+      // Conditional claim (the publish route's pattern): a moderation
+      // decision landing between the read above and this write must not
+      // be leapfrogged — e.g. quality REJECTS the row while the author
+      // is saving an edit that would reset it to PENDING_REVIEW. The
+      // write only fires while the row is still in the status we read.
+      const claim = await prisma.examTemplate.updateMany({
+        where: { id: template.id, status: template.status },
+        data,
+      });
+      if (claim.count === 0) {
+        throw AppError.conflict('تغيّرت حالة القالب — حدّث الصفحة ثم أعد المحاولة');
+      }
+      const updated = await prisma.examTemplate.findUnique({ where: { id: template.id } });
+      // T1a-07 family: guard the re-read — `data: null` stays impossible.
+      if (!updated) throw AppError.notFound('قالب الاختبار غير موجود');
+      res.json({ data: updated });
+    } catch (e) { next(e); }
+  },
+);
+
+/**
+ * r170b — deep-copy a template (POST /exams/templates/:id/clone).
+ *
+ * Copy rules (documented decisions, not accidents):
+ *  - author = the CLONER (a clone is a new authoring act; the copy's
+ *    lifecycle starts fresh under its creator).
+ *  - status = PENDING_REVIEW, exactly like POST /exams/templates: a
+ *    clone is creation, and creation enters the moderation queue. (A
+ *    DRAFT copy would be a dead state — no DRAFT→PENDING_REVIEW writer
+ *    exists anywhere, so it could never reach moderation or publish.)
+ *  - title = «نسخة من …» capped at the create schema's 200 chars.
+ *  - kind/description/durationMin/passingScore/randomized/scope
+ *    (offeringId/facultyId) are copied verbatim — the clone is a
+ *    variant of the same exam for the same audience.
+ *  - openAt/closeAt are NOT copied: an inherited window would silently
+ *    ship an already-closed (or about-to-close) clone. The author sets
+ *    the new window via the edit endpoint when the copy is ready.
+ *  - moderatedById/moderationNote start clean (the copy was never
+ *    moderated — it enters the queue as unreviewed).
+ *  - PUBLISHED templates ARE cloneable — that is the primary use:
+ *    iterating on a live exam without touching the published row or
+ *    its attempts. Every other readable status clones too; the copy is
+ *    faithful, so an empty source yields an empty copy (the moderation
+ *    queue is the honest backstop for that).
+ *  - the question set is deep-copied: same bank questions (shared, not
+ *    duplicated — the bank rows stay one per question), same order,
+ *    same pointsOverride per link.
+ *
+ * Reach: decideTemplateCloneAccess (the GET detail answer-key matrix).
+ */
+router.post('/exams/templates/:id/clone', requireCapability('EXAMS_AUTHOR'), async (req, res, next) => {
+  try {
+    const template = await prisma.examTemplate.findUnique({
+      where: { id: req.params.id },
+      include: {
+        questions: {
+          orderBy: { order: 'asc' },
+          select: { questionId: true, order: true, pointsOverride: true },
+        },
+      },
+    });
+    if (!template) throw AppError.notFound('قالب الاختبار غير موجود');
+
+    const caps = await getEffectiveCapabilities(req.user!.id, req.user!.role);
+    if (
+      !decideTemplateCloneAccess(
+        { id: req.user!.id, role: req.user!.role },
+        { authorId: template.authorId },
+        caps.has('EXAMS_MODERATE'),
+      )
+    ) {
+      throw AppError.forbidden('لا يمكنك استنساخ قالب لا تملك صلاحية الاطلاع عليه');
+    }
+
+    const clone = await prisma.examTemplate.create({
+      data: {
+        offeringId: template.offeringId,
+        facultyId: template.facultyId,
+        // createTemplateSchema caps titles at 200 — keep the prefixed
+        // copy inside the same contract (long source titles truncate).
+        title: `نسخة من ${template.title}`.slice(0, 200),
+        kind: template.kind,
+        description: template.description,
+        durationMin: template.durationMin,
+        passingScore: template.passingScore,
+        randomized: template.randomized,
+        status: 'PENDING_REVIEW',
+        authorId: req.user!.id,
+        questions: {
+          create: template.questions.map((eq) => ({
+            questionId: eq.questionId,
+            order: eq.order,
+            pointsOverride: eq.pointsOverride,
+          })),
+        },
+      },
+      include: { questions: { include: { question: true } } },
+    });
+    res.status(201).json({ data: clone });
   } catch (e) { next(e); }
 });
 

@@ -533,11 +533,21 @@ describe('publish gate — APPROVED-only, per the backend', () => {
     expect(postsTo('/exams/templates/t2/publish')[0]![1]).toEqual({});
   });
 
-  it('hides publish on a PENDING_REVIEW detail page (the moderation gate)', async () => {
+  /* r170b re-pin: the detail surface renders the publish button as
+   * DISABLED + the per-status reason instead of vanishing (the honest
+   * path forward from every state — see PublishButton's explainGate).
+   * The control must not be clickable in PENDING_REVIEW. */
+  it('gates publish on a PENDING_REVIEW detail page — disabled, with the honest reason', async () => {
     state.perms = ['EXAMS_AUTHOR', 'EXAMS_MODERATE'];
     renderAt('/teacher/exams/t1');
     await screen.findByText('قرار المراجعة');
-    expect(screen.queryByRole('button', { name: 'نشر' })).toBeNull();
+    const btn = await screen.findByRole('button', { name: 'نشر' });
+    expect(btn).toBeDisabled();
+    expect(screen.getByText('بانتظار مراجعة الجودة — يُفتح النشر بعد اعتمادها.')).toBeTruthy();
+    fireEvent.click(btn);
+    await waitFor(() => {
+      expect(postsTo('/exams/templates/t1/publish')).toHaveLength(0);
+    });
   });
 
   it('offers publish on an APPROVED detail and posts through the confirm', async () => {
