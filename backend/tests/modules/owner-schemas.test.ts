@@ -18,7 +18,8 @@
  *    P1-5, so the mapping is pinned like every other fold);
  *  - the pure System-page storage fold (r164-l): env STORAGE_DRIVER →
  *    { driver, persistent } — additive payload field + source-scan
- *    wiring pin.
+ *    wiring pin. r167 extends the fold with an optional reachability
+ *    argument (s3-only additive fields) and re-pins the wiring.
  */
 import { readFileSync } from 'node:fs';
 import { SyncRunStatus } from '@prisma/client';
@@ -346,7 +347,7 @@ describe('syncRunAction (SyncRun status → feed action vocabulary)', () => {
 
 // ── System-page storage status (r164-l — additive payload field) ──
 
-describe('toStorageStatus (System page storage fold, r164-l)', () => {
+describe('toStorageStatus (System page storage fold, r164-l + r167 reachability)', () => {
   it('local driver → persistent=false (Render disk is ephemeral — uploads vanish on redeploy)', () => {
     expect(toStorageStatus('local')).toEqual({ driver: 'local', persistent: false });
   });
@@ -358,7 +359,9 @@ describe('toStorageStatus (System page storage fold, r164-l)', () => {
   it('echoes the driver verbatim — no transformation may ever appear', () => {
     // The env.ts enum is exactly 'local' | 's3'; both inputs must round-trip
     // untouched so the page can trust the string against that enum.
-    expect((['local', 's3'] as const).map(toStorageStatus).map((s) => s.driver)).toEqual([
+    // (Explicit one-arg lambda: a bare .map(toStorageStatus) would now
+    // feed the array index into the r167 reachability parameter.)
+    expect((['local', 's3'] as const).map((d) => toStorageStatus(d)).map((s) => s.driver)).toEqual([
       'local',
       's3',
     ]);
@@ -372,13 +375,64 @@ describe('toStorageStatus (System page storage fold, r164-l)', () => {
   it('wiring: the /system route derives storage from env (source-scan pin)', () => {
     // The route must consume the pure fold fed by env.STORAGE_DRIVER —
     // not an inline literal that could drift from the env.ts enum.
-    expect(ownerRouteSource).toContain('storage: toStorageStatus(env.STORAGE_DRIVER)');
+    expect(ownerRouteSource).toContain(
+      'storage: toStorageStatus(env.STORAGE_DRIVER, await storageReachability)',
+    );
   });
 
   it('wiring: the field is additive — the payload keeps its existing keys (source-scan pin)', () => {
     // sync / alerts / activity must stay exactly where the System page
     // reads them; `storage` rides alongside, never replaces.
-    expect(ownerRouteSource).toMatch(/data:\s*\{\s*\/\/ r164-l[\s\S]*?storage: toStorageStatus\(env\.STORAGE_DRIVER\),\s*sync:\s*\{[\s\S]*?alerts:\s*\{[\s\S]*?activity:\s*\{/);
+    expect(ownerRouteSource).toMatch(/data:\s*\{\s*\/\/ r164-l[\s\S]*?storage: toStorageStatus\(env\.STORAGE_DRIVER, await storageReachability\),\s*sync:\s*\{[\s\S]*?alerts:\s*\{[\s\S]*?activity:\s*\{/);
+  });
+
+  it('wiring: the route awaits the memoized reachability promise kicked off BEFORE the DB Promise.all (source-scan pin)', () => {
+    // The probe must not join the Promise.all itself (the r166d deferral
+    // note): it starts first, overlaps the DB queries, and is folded in
+    // after — with the .catch belt so even a rejecting helper can never
+    // fail the route.
+    expect(ownerRouteSource).toMatch(
+      /const storageReachability = getStorageReachability\(\)\.catch\(\(\) => null\);[\s\S]*?await Promise\.all\([\s\S]*?await storageReachability/,
+    );
+  });
+});
+
+// ── r167: the reachability fold (additive s3-only fields) ──────────
+
+describe('toStorageStatus — the r167 reachability fold', () => {
+  it('a verified-reachable s3 answer adds exactly reachable + checkedAt', () => {
+    const reach = { reachable: true, checkedAt: '2026-01-05T00:00:00.000Z' };
+    expect(toStorageStatus('s3', reach)).toEqual({
+      driver: 's3',
+      persistent: true,
+      reachable: true,
+      checkedAt: '2026-01-05T00:00:00.000Z',
+    });
+    expect(Object.keys(toStorageStatus('s3', reach)).sort()).toEqual([
+      'checkedAt',
+      'driver',
+      'persistent',
+      'reachable',
+    ]);
+  });
+
+  it('a verified-UNreachable answer carries reachable:false verbatim (the honest outage state)', () => {
+    const status = toStorageStatus('s3', { reachable: false, checkedAt: '2026-01-05T00:00:00.000Z' });
+    expect(status.reachable).toBe(false);
+    expect(status.checkedAt).toBe('2026-01-05T00:00:00.000Z');
+  });
+
+  it('a null answer (probe not landed yet) omits BOTH fields — the honest unknown, never a guessed green', () => {
+    expect(toStorageStatus('s3', null)).toEqual({ driver: 's3', persistent: true });
+    expect(toStorageStatus('s3', undefined)).toEqual({ driver: 's3', persistent: true });
+  });
+
+  it('the local driver can NEVER gain reachability fields (defensive: a stray answer is ignored)', () => {
+    // getStorageReachability short-circuits local upstream; this pins
+    // that the fold itself is also driver-gated.
+    expect(toStorageStatus('local', { reachable: true, checkedAt: '2026-01-05T00:00:00.000Z' })).toEqual(
+      { driver: 'local', persistent: false },
+    );
   });
 });
 

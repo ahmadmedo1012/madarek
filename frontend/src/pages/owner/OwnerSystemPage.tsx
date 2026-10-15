@@ -60,7 +60,15 @@ function failedSavesLabel(n: number): string {
  * never a crash. `persistent: false` is the honest local-driver
  * production state (a Render disk survives nothing): the warning
  * names the damage and the documented owner fix (docs/12-deployment.md
- * «تخزين رفعات PDF في الإنتاج — خطوات المالك»). */
+ * «تخزين رفعات PDF في الإنتاج — خطوات المالك»).
+ *
+ * r167 (reachability): the block gains s3-only additive `reachable` +
+ * `checkedAt` from a memoized backend probe. The durability claim is
+ * now GATED on the store actually answering — s3 + reachable=true →
+ * green «دائمة» with a connected note; s3 + reachable=false → red
+ * «مهيَّأ لكن يتعذّر الوصول الآن» (uploads will fail until it returns);
+ * fields absent → amber «لم يُتحقق بعد». The LOCAL warning treatment
+ * is unchanged. */
 const STORAGE_DRIVER_LABEL: Record<string, string> = {
   local: 'محليّ — قرص الخادم',
   s3: 'تخزين كائنات (S3-متوافق)',
@@ -121,6 +129,34 @@ export function OwnerSystemPage() {
   };
 
   const sysData = sys.data;
+  /* r167: the s3 durability claim is gated on the probe answer — a
+   * configured-but-unreachable store must never read as a green
+   * «دائمة». Non-s3 drivers keep the r164-i treatment verbatim. */
+  const storage = sysData?.storage;
+  const storageDot: 'green' | 'amber' | 'red' | 'neutral' =
+    storage?.driver === 's3'
+      ? storage.reachable === true
+        ? 'green'
+        : storage.reachable === false
+          ? 'red'
+          : 'amber'
+      : storage
+        ? storage.persistent
+          ? 'green'
+          : 'amber'
+        : 'neutral';
+  const storageValue: string =
+    storage?.driver === 's3'
+      ? storage.reachable === true
+        ? 'دائمة'
+        : storage.reachable === false
+          ? 'مهيَّأ لكن يتعذّر الوصول الآن'
+          : 'لم يُتحقق بعد'
+      : storage
+        ? storage.persistent
+          ? 'دائمة'
+          : 'لا تنجو من إعادة النشر'
+        : '…';
 
   // Health KPIs derive from the real query state (audit 0-e P0-9): a
   // green "متصل" is only shown when /owner/system actually answered.
@@ -212,12 +248,37 @@ export function OwnerSystemPage() {
               </span>
             </div>
             <div className="owner-health-row">
-              <div className={`owner-health-dot ${sysData.storage.persistent ? 'green' : 'amber'}`} />
+              <div className={`owner-health-dot ${storageDot}`} />
               <span className="owner-health-label">دوام الملفات المرفوعة</span>
-              <span className="owner-health-value">
-                {sysData.storage.persistent ? 'دائمة' : 'لا تنجو من إعادة النشر'}
-              </span>
+              <span className="owner-health-value">{storageValue}</span>
             </div>
+            {sysData.storage.driver === 's3' && sysData.storage.reachable === true && (
+              <p className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-2)' }}>
+                {/* The connected note carries WHEN it was verified — a
+                    probe answer, not a permanent promise. */}
+                المخزن متاح — آخر تحقّق: {formatRelative(sysData.storage.checkedAt ?? null)}
+              </p>
+            )}
+            {sysData.storage.driver === 's3' && sysData.storage.reachable === undefined && (
+              <p className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-2)' }}>
+                لم يتحقّق الخادم من اتصال المخزن بعد — تظهر الحالة هنا بعد أوّل فحص.
+              </p>
+            )}
+            {sysData.storage.driver === 's3' && sysData.storage.reachable === false && (
+              <AlertRow
+                color="red"
+                icon={AlertTriangle}
+                title="مخزن الكائنات لا يستجيب — الرفعات الجديدة ستفشل حتى يعود"
+                description={(
+                  <>
+                    السائق مهيّأ بـ<bdi>S3</bdi> لكن آخر فحص لم يتلقَّ ردًّا. تحقّق من متغيّرات{' '}
+                    <bdi>S3_*</bdi> في لوحة البيئة ومن حالة المزوّد نفسه — الخطوات الكاملة في{' '}
+                    <bdi>docs/12-deployment.md</bdi>
+                    («تخزين رفعات PDF في الإنتاج — خطوات المالك»).
+                  </>
+                )}
+              />
+            )}
             {!sysData.storage.persistent && (
               <AlertRow
                 color="amber"

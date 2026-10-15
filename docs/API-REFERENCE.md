@@ -370,7 +370,7 @@ All routes: `authMiddleware + requireRole(OWNER)`.
 | PATCH | `/owner/users/:id/status` | Toggle isActive (self-deactivation 403; self **re-activation allowed**; last-owner guard 409; `tokenVersion` bumped on deactivation only; `STATUS_CHANGE` audit in-transaction) |
 | GET | `/owner/activity` | Paginated audit log |
 | GET | `/owner/education` | Education aggregate (topCourses + attendance trend) — SQL-aggregated (`date_trunc` month buckets); response shape unchanged |
-| GET | `/owner/system` | Operational telemetry (sync, alerts, activity) |
+| GET | `/owner/system` | Operational telemetry (sync, alerts, activity) + storage block (driver/persistent, and r167 s3-only `reachable`/`checkedAt` from a memoized probe) |
 | GET | `/owner/realtime` | Live metrics snapshot (active sessions, AI/min, broadcasts, exams) |
 | GET | `/owner/ai-metrics` | AI telemetry aggregates (7d, SQL day buckets) |
 | GET | `/owner/alerts` | Unresolved alerts |

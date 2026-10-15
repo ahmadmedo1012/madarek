@@ -265,6 +265,16 @@ export interface OwnerSystem {
   storage?: {
     driver: string;
     persistent: boolean;
+    /**
+     * r167: s3-only additive probe fields from the memoized
+     * reachability probe. Absent while no probe answer exists (the
+     * honest unknown — «لم يُتحقق بعد»); `false` means the store was
+     * configured but did NOT answer (wrong credentials / dead
+     * endpoint) — the page must stop painting «دائمة» then.
+     */
+    reachable?: boolean;
+    /** ISO timestamp of the probe run behind `reachable`. */
+    checkedAt?: string;
   };
 }
 export function useOwnerSystem() {

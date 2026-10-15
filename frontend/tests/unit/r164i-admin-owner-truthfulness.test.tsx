@@ -161,10 +161,19 @@ describe('OwnerSystemPage — storage block (r164-l additive field, defensive re
     expect(screen.getByText(/docs\/12-deployment\.md/)).toBeInTheDocument();
   });
 
-  it('s3 driver + persistent=true → «دائمة», NO warning', async () => {
+  it('s3 driver + verified reachable (r167 fields) → «دائمة», NO warning', async () => {
+    // r167: the backend folds the memoized probe answer in — the
+    // verified-reachable case is what «دائمة» now requires (the
+    // unverified/outage s3 shapes are pinned in
+    // r167-owner-storage-reachability.test.tsx).
     FIXTURES['/owner/system'] = {
       ...SYSTEM_BASE,
-      storage: { driver: 's3', persistent: true },
+      storage: {
+        driver: 's3',
+        persistent: true,
+        reachable: true,
+        checkedAt: new Date(Date.now() - 60_000).toISOString(),
+      },
     };
     renderPage(<OwnerSystemPage />);
     expect(await screen.findByText('تخزين كائنات (S3-متوافق)')).toBeInTheDocument();

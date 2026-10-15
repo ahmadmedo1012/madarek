@@ -481,11 +481,12 @@ export interface StorageProbe {
  *
  * ADVISORY ONLY — the result must never fail a request or a boot
  * (informational display for the owner console / boot log). Wiring
- * note: /owner/system derives its storage block from env only
- * (toStorageStatus); folding this probe in would put a network call
- * (worst case the 30s S3 read timeout) inside that route's Promise.all
- * — deferred until it can ride a memoized TTL + short race timeout
- * without changing the page's latency contract.
+ * (r167): /owner/system now folds this probe into its storage block
+ * through StorageReachabilityCache below — a memoized TTL so repeated
+ * polls never hammer the store, plus a short race timeout so the S3
+ * read timeout (worst case 30s) can never enter the route's critical
+ * path. A stale or absent answer degrades to an omitted field, never
+ * a block and never a guess.
  */
 export async function probeStorage(
   driver: StorageDriver,
@@ -498,6 +499,134 @@ export async function probeStorage(
     const e = err as Error;
     return { ok: false, detail: `${e.name}: ${e.message}` };
   }
+}
+
+// ─── Reachability memo for /owner/system (r167 — truthful + bounded) ─
+
+/** The /owner/system-facing reachability value: the last probe ANSWER
+ *  and when it landed. `null` (an absent field in the payload) means
+ *  "not verified yet" — never a guessed green. */
+export interface StorageReachability {
+  reachable: boolean;
+  /** ISO timestamp of the probe run that produced `reachable`. */
+  checkedAt: string;
+}
+
+/** How long a completed probe answer stays authoritative — repeated
+ *  /owner/system polls (30s frontend staleTime) must not hammer the
+ *  store with probe requests. */
+export const STORAGE_PROBE_TTL_MS = 60_000;
+
+/** How long a reader may wait for the FIRST probe answer. Once any
+ *  answer exists the cache serves it instantly (stale-while-revalidate)
+ *  while a refresh runs in the background — so this bound is what
+ *  keeps the S3 driver's 30s read timeout out of /owner/system. */
+export const STORAGE_PROBE_RACE_MS = 2_500;
+
+/** Everything injectable, so the cache's decision logic is unit-test
+ *  DB-free, network-free and even timer-free (the repo canon: pure
+ *  decisions tested directly, IO mocked at the boundary). */
+export interface StorageReachabilityDeps {
+  /** One probe run (the IO). Production: probeStorage(getStorage()). */
+  probe: () => Promise<StorageProbe>;
+  /** Wall clock in epoch ms. */
+  now: () => number;
+  /** The race sleep — injectable so tests control when the timeout
+   *  fires (and prove the probe can win it). */
+  sleep?: (ms: number) => Promise<void>;
+  ttlMs?: number;
+  raceMs?: number;
+}
+
+/**
+ * The memo the /owner/system route reads (r167). Two guarantees, both
+ * pinned by tests/modules/storage-reachability.test.ts:
+ *   1. NEVER blocks long: a fresh memo answers with zero IO; a stale
+ *      memo answers instantly while one refresh flight runs; only the
+ *      FIRST-ever reader may wait, and only up to `raceMs`.
+ *   2. NEVER rejects: a crashing probe folds into reachable:false (or
+ *      null if it crashed before any answer existed) — the route can
+ *      await this with no defensive try/catch of its own.
+ */
+export class StorageReachabilityCache {
+  private readonly probe: () => Promise<StorageProbe>;
+  private readonly now: () => number;
+  private readonly sleep: (ms: number) => Promise<void>;
+  private readonly ttlMs: number;
+  private readonly raceMs: number;
+
+  private value: StorageReachability | null = null;
+  /** Epoch ms when `value` landed (drives the TTL). */
+  private landedAt = 0;
+  /** The single in-flight refresh — concurrent readers share it. */
+  private inflight: Promise<void> | null = null;
+
+  constructor(deps: StorageReachabilityDeps) {
+    this.probe = deps.probe;
+    this.now = deps.now;
+    this.sleep = deps.sleep ?? ((ms) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
+    this.ttlMs = deps.ttlMs ?? STORAGE_PROBE_TTL_MS;
+    this.raceMs = deps.raceMs ?? STORAGE_PROBE_RACE_MS;
+  }
+
+  /** The memoized, race-bounded answer — never rejects. */
+  async get(): Promise<StorageReachability | null> {
+    try {
+      if (this.value !== null && this.now() - this.landedAt < this.ttlMs) {
+        return this.value; // fresh memo: zero IO, zero waiting.
+      }
+      if (this.inflight === null) {
+        // Belt beyond probeStorage's own never-throw contract: even a
+        // probe that CRASHES folds into an answer, and the flight slot
+        // is always released so the next reader can retry.
+        this.inflight = this.probe()
+          .catch((): StorageProbe => ({ ok: false, detail: 'probe crashed' }))
+          .then((probe) => {
+            const at = this.now();
+            this.value = { reachable: probe.ok, checkedAt: new Date(at).toISOString() };
+            this.landedAt = at;
+            this.inflight = null;
+          })
+          .catch(() => {
+            this.inflight = null;
+          });
+      }
+      if (this.value !== null) {
+        // Stale-while-revalidate: the stale (still truthful — it says
+        // WHEN it was checked) answer goes out NOW; the inflight refresh
+        // above lands for the NEXT reader. No reader is ever blocked by
+        // the refresh, let alone the S3 30s read timeout.
+        return this.value;
+      }
+      // No answer has ever landed: this reader may wait for the first
+      // flight, but only up to raceMs — then it honestly reports
+      // "not verified yet" (null) while the flight keeps running.
+      await Promise.race([this.inflight, this.sleep(this.raceMs)]);
+      return this.value;
+    } catch {
+      return null; // never throws into the route.
+    }
+  }
+}
+
+let reachabilityCache: StorageReachabilityCache | null = null;
+
+/**
+ * The /owner/system wiring (r167): the probe's memoized, race-bounded
+ * answer. The LOCAL driver short-circuits to null — the route's storage
+ * block keeps its exact pre-r167 two-field shape for local (no probe
+ * traffic for a driver whose "reachability" is the disk under the
+ * process). Never rejects; safe to await inside the route.
+ */
+export function getStorageReachability(): Promise<StorageReachability | null> {
+  if (env.STORAGE_DRIVER !== 's3') return Promise.resolve(null);
+  if (reachabilityCache === null) {
+    reachabilityCache = new StorageReachabilityCache({
+      probe: () => probeStorage(getStorage()),
+      now: () => Date.now(),
+    });
+  }
+  return reachabilityCache.get();
 }
 
 // Boot-time eager init: constructing the driver is pure (no I/O — the

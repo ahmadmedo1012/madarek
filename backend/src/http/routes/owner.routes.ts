@@ -8,6 +8,7 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
+import { getStorageReachability, type StorageReachability } from '../../lib/storage.js';
 import {
   assertNotLastActiveOwner,
   buildTeacherProvision,
@@ -663,27 +664,61 @@ export function toSyncFeedEntry(run: SyncRunFeedRow): SyncFeedEntry {
 // ── GET /owner/system — storage status (r164-l, additive field) ──
 
 /** Storage status the System page renders: the configured upload
- * driver and whether uploads survive redeploys. Derived from env only —
- * pure by construction (no DB, no clock), DB-free unit-pinned. */
+ * driver, whether uploads survive redeploys, and (r167, s3-only,
+ * additive) whether the store actually ANSWERED a reachability probe
+ * and when. The base driver/persistent pair stays pure env (no DB, no
+ * clock, no network); the reachability pair is folded in by the route
+ * from the memoized probe. */
 export interface StorageStatus {
   driver: 'local' | 's3';
   persistent: boolean;
+  /** r167: present ONLY for driver=s3 once a probe has answered —
+   *  `true` = the store answered (a 404 on the probe key is still an
+   *  answer), `false` = it did not. Omitted = not verified yet. */
+  reachable?: boolean;
+  /** ISO timestamp of the probe run behind `reachable`. */
+  checkedAt?: string;
 }
 
 /**
- * Pure fold: STORAGE_DRIVER → System-page storage status. `driver` is
- * echoed verbatim (never transformed) so the page can trust it against
- * the env.ts enum. `persistent` follows the platform's storage honesty
- * (lib/storage.ts): s3 = object store = uploads survive redeploys;
- * local = Render's ephemeral disk = they do NOT (one boot warning is
- * logged in that case — this field is that warning's queryable twin).
+ * Pure fold: STORAGE_DRIVER (+ the probe's memoized answer) → System
+ * page storage status. `driver` is echoed verbatim (never transformed)
+ * so the page can trust it against the env.ts enum. `persistent`
+ * follows the platform's storage honesty (lib/storage.ts): s3 = object
+ * store = uploads survive redeploys; local = Render's ephemeral disk =
+ * they do NOT (one boot warning is logged in that case — this field is
+ * that warning's queryable twin).
+ *
+ * r167: a reachability answer folds in ONLY under driver=s3, and a
+ * null/undefined answer (probe hasn't landed) omits both fields — the
+ * honest unknown, never a guessed green. Calling with no second
+ * argument reproduces the exact pre-r167 shape (backward compatible
+ * by construction; pinned by the owner-schemas tests).
  */
-export function toStorageStatus(driver: 'local' | 's3'): StorageStatus {
-  return { driver, persistent: driver === 's3' };
+export function toStorageStatus(
+  driver: 'local' | 's3',
+  reachability?: StorageReachability | null,
+): StorageStatus {
+  const status: StorageStatus = { driver, persistent: driver === 's3' };
+  // Defensive: a non-s3 driver never gains reachability fields (local
+  // short-circuits upstream; a stray answer must not leak through).
+  if (driver !== 's3' || reachability === null || reachability === undefined) {
+    return status;
+  }
+  return { ...status, reachable: reachability.reachable, checkedAt: reachability.checkedAt };
 }
 
 router.get('/system', async (_req, res, next) => {
   try {
+    // r167 (storage truthfulness): kick the memoized, race-bounded
+    // reachability probe FIRST so it OVERLAPS the DB queries below.
+    // getStorageReachability never rejects and its short race timeout
+    // (2.5s, only ever paid before the first answer exists) keeps the
+    // S3 driver's 30s read timeout out of this handler — a slow or
+    // dead store degrades to an omitted field, never a delayed page.
+    // The local driver short-circuits to a resolved null inside it.
+    const storageReachability = getStorageReachability().catch(() => null);
+
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
@@ -727,7 +762,11 @@ router.get('/system', async (_req, res, next) => {
         // r164-l — additive: the owner System page renders the storage
         // truth (driver + persistence) instead of leaving it implicit in
         // boot logs. A parallel frontend change consumes it defensively.
-        storage: toStorageStatus(env.STORAGE_DRIVER),
+        // r167 — reachability: the second argument folds the probe's
+        // memoized answer in (s3 only; absent while no answer exists —
+        // never a guess, never a block). Additive fields only: the
+        // payload's existing keys stay exactly where they were.
+        storage: toStorageStatus(env.STORAGE_DRIVER, await storageReachability),
         sync: {
           lastRunAt: lastSyncRun?.startedAt ?? null,
           recent: recentSyncRuns.map(toSyncFeedEntry),
