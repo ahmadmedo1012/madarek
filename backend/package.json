@@ -19,6 +19,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "node scripts/migrate-deploy.mjs",
     "prisma:seed": "tsx prisma/seed.ts",
+    "rotate:password": "node scripts/rotate-demo-passwords.mjs",
     "postinstall": "prisma generate"
   },
   "prisma": {

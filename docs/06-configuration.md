@@ -65,7 +65,7 @@ node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 | الملف | يضبط |
 |---|---|
 | `render.yaml` | خدمة النشر: أمر البناء/الإقلاع، فحص الصحة، المتغيرات، `TZ=UTC` |
-| `.github/workflows/ci.yml` | 7 وظائف CI: lint، typecheck، build (بلا DB)، اختبارات الجهتين، بوابات تصميم (أيقونات+حركة+**csp-hash**+parity)، surface-drift |
+| `.github/workflows/ci.yml` | 8 وظائف CI: lint، typecheck، build (بلا DB)، اختبارات الجهتين، رحلات E2E (Chromium محكمّة)، بوابات تصميم (أيقونات+حركة+**csp-hash**+parity)، surface-drift |
 | `eslint.config.mjs` | ESLint مسطح على `frontend/src` + `backend/src` (الاختبارات مستثناة في التبني الأول — مذكور TODO داخل الملف) |
 | `frontend/vite.config.ts` | منفذ 5173، proxy `/api`→`4000`، تقسيم chunks ثابت (react/query/charts)، استهداف ES2022 |
 | `tsconfig*.json` | strict + `noUncheckedIndexedAccess` + `verbatimModuleSyntax`؛ `tsconfig.test.json` يضيف أشجار الاختبارات (noEmit) |

@@ -23,10 +23,11 @@
 
 | البند | الحالة |
 |---|---|
-| ميزات الأدوار الخمسة | **منفَّذة ومشحَنة** — 1024 اختبار واجهة + 1032 خلفية خضراء (2026-10-11، جولات r141–r147) |
+| ميزات الأدوار الخمسة | **منفَّذة ومشحَنة** — 1544 اختبار واجهة + 1286 خلفية خضراء (2026-10-14، جولات r141–r165) |
 | نظام التصميم | موثّق في [`DESIGN.md`](DESIGN.md) — بوابة تكافؤ 168/168 خضراء |
-| مساعد الذكاء وفحص الانتحال | **محاكاة حتمية معلنة** (بلا خدمات خارجية) — التفصيل: [docs/02](docs/02-features.md) |
-| i18n إنجليزي، E2E، رفع ملفات | غير منفَّذة — القائمة الكاملة: [docs/16](docs/16-decisions-and-limitations.md) |
+| مساعد «Oasis» الذكي | **محرّك محلي حتمي معلن (gap-aware-composer) افتراضيًا + مزوّد LLM حقيقي اختياري** عبر `AI_PROVIDER` — التفصيل: [docs/02](docs/02-features.md) |
+| فحص الانتحال | **محاكاة حتمية معلنة** (بلا خدمات خارجية) — التفصيل: [docs/02](docs/02-features.md) |
+| رفع PDF ورحلات E2E | **منفَّذة** — رفع PDF خام خلف تجريد التخزين (محلي/S3) + 26 رحلة متصفّح محكمّة؛ i18n الإنجليزي وحده غير منفَّذ — [docs/02](docs/02-features.md) و[docs/11](docs/11-testing.md) و[docs/16](docs/16-decisions-and-limitations.md) |
 
 ## أبرز الميزات
 
@@ -149,12 +150,12 @@ npm run validate:colleges              # هوية 25 كلية (AA)
 
 ```text
 madarek/
-├── backend/          Express + TS · Prisma (75 نموذجًا/30 enum) · 193 endpoint · storage/papers/
+├── backend/          Express + TS · Prisma (76 نموذجًا/30 enum) · 193 endpoint · storage/papers/
 ├── frontend/         React 18 + Vite · src/styles/ سلسلة الرموز · 18 CSS · tests/ (vitest)
 ├── docs/             الدليل العربي 01–16 + modules/ + المراجع المولّدة + archive/
 ├── specs/            مواصفات الميزات (نية زمنية — الحالة في SPECS-REFERENCE)
 ├── audits/           تقارير تدقيق بصري تاريخية (جولتا 4 و5)
-├── scripts/          بوابات الجودة + أدوات لقطات محلية
+├── scripts/          بوابات الجودة + أدوات المشغِّل (db:backup/db:restore/smoke) + لقطات محلية
 ├── tools/            boot-pg.sh — PostgreSQL مدمج للتطوير
 └── render.yaml       مخطط Render
 ```

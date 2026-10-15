@@ -17,6 +17,10 @@ out/
 .env.*
 !.env.example
 
+# Database dumps (scripts/db-backup.mjs default output, r166c) —
+# a dump contains user data; it never commits.
+backups/
+
 # Logs
 logs/
 *.log
