@@ -1721,6 +1721,19 @@
   /* 13-17 dead-selector sweep (11-g P2-7): .items-end, .gap-6 and
      .mt-3/.mt-4/.mt-5 deleted — zero TSX consumers (the neighboring
      utilities are all live). */
+  /* r167: two utilities REVIVED with live consumers (the r166e "never
+     define" pin guarded a markup shape that no longer exists —
+     AdminPages carries no justify-end since r166e, so the definition
+     cannot flip it back; it instead revives the documented intent in
+     the two live consumers):
+     - .justify-end: TeacherLivePage's session-form actions cluster —
+       the same flex-end edge every .modal-footer already uses (the
+       dead class was a trap only while undefined).
+     - .items-baseline: ExamAuthorPages' label/leader/value row — its
+       own comment says "Baseline-aligned" but the rule never existed,
+       so the dotted-leader scan line rendered stretch-aligned. */
+  .justify-end { justify-content: flex-end; }
+  .items-baseline { align-items: baseline; }
   .justify-between { justify-content: space-between; }
   .gap-1 { gap: var(--sp-1); }
   .gap-2 { gap: var(--sp-2); }

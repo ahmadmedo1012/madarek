@@ -18,10 +18,14 @@
  * 2. The /admin/courses actions th/td are plain and the cluster is
  *    `flex items-center gap-2` — no dead justify-end class left in
  *    the markup for the next source reading to trust.
- * 3. The utility set keeps defining .justify-between but NEVER
- *    .justify-end: defining it would silently flip this cluster (and
- *    the other dead usages, e.g. TeacherLivePage) to flex-end and
- *    re-open the opposite-ends split with the now start-aligned th.
+ * 3. (r167 amendment) The utility set now DEFINES .justify-end — the
+ *    r166e "never define" pin guarded a markup shape that no longer
+ *    exists: AdminPages has carried NO justify-end since r166e, so the
+ *    definition cannot flip its cluster. What stays pinned instead is
+ *    the actual regression contract: /admin/courses markup must never
+ *    re-adopt the class (the flip risk), while the live consumer
+ *    (TeacherLivePage) keeps it — aligned with every .modal-footer's
+ *    flex-end convention.
  *
  * The r166b class name is assembled at runtime (`deadClass`) so this
  * pin file keeps the repo-wide sweep grep for the class name
@@ -61,9 +65,14 @@ describe('r166e — /admin/courses actions column follows the family pattern', (
     expect(page).not.toContain('justify-end');
   });
 
-  it('the utility set defines .justify-between but never .justify-end', () => {
+  it('the utility set defines .justify-between and .justify-end, but /admin/courses never re-adopts the latter', () => {
     const joined = styles.join('\n');
     expect(joined).toContain('.justify-between {');
-    expect(joined).not.toContain('.justify-end');
+    // r167: the utility exists (TeacherLivePage's live consumer) — the
+    // r166e flip risk is pinned at the MARKUP level below, where it
+    // actually lives, not at the utility level.
+    expect(joined).toContain('.justify-end {');
+    const admin = stripComments(read('src/pages/admin/AdminPages.tsx'));
+    expect(admin).not.toContain('justify-end');
   });
 });
