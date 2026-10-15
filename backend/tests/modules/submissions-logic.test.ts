@@ -9,8 +9,9 @@
  * the project does not have yet.
  */
 import { describe, expect, it } from 'vitest';
-import { SubmissionStatus } from '@prisma/client';
+import { NotificationType, SubmissionStatus } from '@prisma/client';
 import {
+  buildGradedNotification,
   RESUBMITTABLE_STATUSES,
   SUBMISSION_FILE_URL_PATTERN,
   buildSubmissionWrite,
@@ -193,5 +194,40 @@ describe('buildSubmissionWrite (the optimistic-version-carrying write)', () => {
   it('uses the injected clock verbatim (deterministic writes)', () => {
     const at = new Date('2026-07-01T10:00:00.000Z');
     expect(buildSubmissionWrite({ textAnswer: 'x' }, SubmissionStatus.LATE, at).submittedAt).toBe(at);
+  });
+});
+
+// ─── r167: the grading notification deep link ───────────────────
+
+describe('buildGradedNotification (r167 — the graded-assignment notification carries its deep link)', () => {
+  it('targets the student results page — the surface the frontend success copy names', () => {
+    const n = buildGradedNotification('stu_1', { grade: 92, maxScore: 100, assignmentTitle: 'مشروع UML للتصميم' });
+    expect(n.link).toBe('/student/results');
+  });
+
+  it('keeps the exact r165d envelope (title/type/icon) so the alerts deep-link machinery stays intact', () => {
+    const n = buildGradedNotification('stu_1', { grade: 88, maxScore: 100, assignmentTitle: 'واجب 2' });
+    expect(n.userId).toBe('stu_1');
+    expect(n.type).toBe(NotificationType.ACADEMIC);
+    expect(n.title).toBe('تم تصحيح تكليفك');
+    expect(n.icon).toBe('📊');
+    expect(n.body).toBe('حصلت على 88 من 100 في «واجب 2»');
+  });
+
+  it('routes through notifDeepLink\'s contract: internal, absolute, leading slash', () => {
+    // Mirror of the frontend validator (hooks/resources/notifications.ts
+    // notifDeepLink — pinned by the frontend's own
+    // AlertsPage-deeplink-errors / NotificationDropdown-deeplink suites).
+    // A link that fails there is a dead end again; mirroring here keeps
+    // the backend test DB-free without importing the react-query chain.
+    const notifDeepLink = (link?: string | null): string | null => {
+      if (typeof link !== 'string' || link.length === 0) return null;
+      if (!link.startsWith('/') || link.startsWith('//')) return null;
+      return link;
+    };
+    const n = buildGradedNotification('stu_1', { grade: 1, maxScore: 2, assignmentTitle: 't' });
+    expect(notifDeepLink(n.link)).toBe('/student/results');
+    expect(notifDeepLink('https://evil.example')).toBeNull();
+    expect(notifDeepLink(undefined)).toBeNull();
   });
 });

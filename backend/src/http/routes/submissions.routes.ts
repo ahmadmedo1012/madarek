@@ -114,6 +114,33 @@ export function buildSubmissionWrite(
   };
 }
 
+/**
+ * The grading notification payload (r167 deep-link closure).
+ *
+ * r165d built the whole frontend deep-link machinery (notifDeepLink —
+ * the notification title becomes the link to the surface where the
+ * outcome lives) and the exam path (exams.routes.ts «تم تصحيح
+ * اختبارك») sets `link: '/student/online-exams'` — but THIS route's
+ * «تم تصحيح تكليفك» never set `link`, so assignment grades were the
+ * one outcome whose notification title was a dead end. The student
+ * results page is where the grade + feedback surface (the frontend
+ * success copy says «تابع حالة التقييم ودرجتك من صفحة النتائج») —
+ * same routing decision the r165d exam path made for its own surface.
+ */
+export function buildGradedNotification(
+  studentId: string,
+  input: { grade: number; maxScore: number; assignmentTitle: string },
+) {
+  return {
+    userId: studentId,
+    type: NotificationType.ACADEMIC,
+    icon: '📊',
+    title: 'تم تصحيح تكليفك',
+    body: `حصلت على ${input.grade} من ${input.maxScore} في «${input.assignmentTitle}»`,
+    link: '/student/results',
+  };
+}
+
 // ─── POST /offerings/:offeringId/assignments/:assignmentId/submit ──
 
 router.post(
@@ -266,13 +293,11 @@ router.post(
           throw AppError.conflict('تغيّر هذا التسليم أثناء التصحيح — حدّث الصفحة ثم أعد التصحيح');
         }
         await tx.notification.create({
-          data: {
-            userId: submission.studentId,
-            type: NotificationType.ACADEMIC,
-            icon: '📊',
-            title: 'تم تصحيح تكليفك',
-            body: `حصلت على ${grade} من ${submission.assignment.maxScore} في «${submission.assignment.title}»`,
-          },
+          data: buildGradedNotification(submission.studentId, {
+            grade,
+            maxScore: Number(submission.assignment.maxScore),
+            assignmentTitle: submission.assignment.title,
+          }),
         });
         // updateMany returns no row — read back what was written.
         const row = await tx.submission.findUnique({ where: { id: submissionId } });
