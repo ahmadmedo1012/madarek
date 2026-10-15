@@ -190,15 +190,18 @@ pg_restore --no-owner --no-privileges \
 
 - `--no-owner --no-privileges`: أسماء الأدوار في Neon مُدارة ولا تُنقل
   مع الملف؛ Prisma لا يحتاجها (الاتصال الوحيد من الخلفية — وثيقة 07).
-- الملف الناتج (`.dump`) يحمل معه جدول `prisma_migrations` — أي حالة
+- الملف الناتج (`.dump`) يحمل معه جدول `_prisma_migrations` — أي حالة
   المخطط مطبوعة في النسخة نفسها (التحقق رقم 4 أدناه).
 
 ### 3) تجربة الاستعادة على بيئة تجريبية (قائمة المالك)
 
 > الهدف: إثبات أن النسخة **قابلة للاستعادة فعلًا** قبل الحاجة إليها.
-> هذه التجربة لم تُنفّذ في بيئة التطوير (لا أدوات pg/قاعدة إنتاج) —
-> سجّل نتيجتك عند تنفيذها لتصبح توثيقًا مُثبتًا في القالب الجاهز:
+> **r167:** نُفِّذت تجربة محلية كاملة (نسخ → حارس → استعادة → تحقق →
+> ربط تطبيق حيّ → تدريب تدوير كلمة المرور) على PostgreSQL محليّ ببيانات
+> البذرة — مدخل 1 في
 > [docs/runbooks/restore-exercise-log.md](runbooks/restore-exercise-log.md)
+> يحمل القيم المقيسة. ما لم يُنفّذ بعد: تجربة على نسخة/فرع إنتاج فعل
+> — سجّل نتيجتك هناك بنفس القالب عند أول تشغيل رسمي
 > (التاريخ، بصمة sha256 وحجم الملف، سلسلة الفرع مقنّعة، ومخرجات
 > الخطوات السبع).
 
@@ -211,10 +214,13 @@ pg_restore --no-owner --no-privileges \
      متوقع: pg_restore ينتهي بلا أخطاء (التحذيرات المرتبطة بالأدوار
      طبيعية مع --no-owner).
 □ 4. تحقق من سلامة الاستعادة بالاستعلامات:
+     (r167) البديل المؤتمت: `STAGE_DIRECT="<url>" npm run db:verify
+     -- --url-env STAGE_DIRECT` يشغّل الفحوص التالية كاستعلامات حقيقية
+     ويطبع حكمًا مقيسًا PASS/WARN/FAIL — أو نفّذها يدويًا:
      psql "$STAGE_DIRECT" -c '\dt'
        متوقع: قائمة جداول المخطط كاملة (~76 جدولًا).
      psql "$STAGE_DIRECT" -c "SELECT migration_name, finished_at
-       FROM prisma_migrations ORDER BY finished_at DESC LIMIT 3;"
+       FROM _prisma_migrations ORDER BY finished_at DESC LIMIT 3;"
        متوقع: آخر ترحيل مطابق لما على الإنتاج
        (20261013150858_checkpoint_answer_memory وقت كتابة هذا الدليل).
      psql "$STAGE_DIRECT" -c 'SELECT role, count(*) FROM "User"

@@ -186,7 +186,7 @@ async function main() {
   console.log('   1. psql "<الهدف>" -c \'\\dt\' — قائمة جداول المخطط كاملة (~76 جدولًا).');
   console.log("      psql \"$STAGE_DIRECT\" -c '\\dt'");
   console.log('   2. آخر ثلاثة ترحيلات مطابقة للإنتاج:');
-  console.log("      psql \"$STAGE_DIRECT\" -c 'SELECT migration_name, finished_at FROM prisma_migrations ORDER BY finished_at DESC LIMIT 3;'");
+  console.log("      psql \"$STAGE_DIRECT\" -c 'SELECT migration_name, finished_at FROM _prisma_migrations ORDER BY finished_at DESC LIMIT 3;'");
   console.log('   3. توزيع الأدوار والعدّادات:');
   console.log('      psql "$STAGE_DIRECT" -c \'SELECT role, count(*) FROM "User" GROUP BY role ORDER BY count(*) DESC;\'');
   console.log('   4. اربط التطبيق بالفرع تحققًا حيًا ثم شغّل npm run smoke (docs/12 §3 خطوة 5-6).');

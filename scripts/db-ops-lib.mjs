@@ -339,3 +339,85 @@ export function humanSize(bytes) {
   }
   return `${value >= 10 || unit === 0 ? Math.round(value) : value.toFixed(1)} ${units[unit]}`;
 }
+
+// ─── Post-restore verification (r167 db:verify) ─────────────────────
+
+/**
+ * The EXACT query set db-verify runs against a restore target, in order.
+ * Mirrors docs/12-deployment §3 checklist items 1–4 so the printed
+ * checklist and the automated check can never drift apart again (the
+ * r167 exercise caught the checklist naming prisma_migrations while the
+ * real table is _prisma_migrations — these queries pin the real name).
+ */
+export const VERIFY_QUERIES = [
+  {
+    key: 'tables',
+    sql: "SELECT count(*)::int AS n FROM pg_tables WHERE schemaname = 'public';",
+    label: 'جداول المخطط / schema tables',
+  },
+  {
+    key: 'migrations',
+    // _prisma_migrations — Prisma's actual table (leading underscore).
+    sql: 'SELECT count(*)::int AS n FROM _prisma_migrations;',
+    label: 'عدد الترحيلات / migration count',
+  },
+  {
+    key: 'last_migration',
+    sql: 'SELECT migration_name, finished_at::text FROM _prisma_migrations ORDER BY finished_at DESC LIMIT 3;',
+    label: 'آخر الترحيلات / latest migrations',
+  },
+  {
+    key: 'roles',
+    sql: 'SELECT role::text AS role, count(*)::int AS n FROM "User" GROUP BY role ORDER BY n DESC;',
+    label: 'توزيع الأدوار / role distribution',
+  },
+  {
+    key: 'counts',
+    sql: 'SELECT (SELECT count(*)::int FROM "User") AS users, (SELECT count(*)::int FROM "Enrollment") AS enrollments, (SELECT count(*)::int FROM "Notification") AS notifications;',
+    label: 'عدّادات الصفوف / row counts',
+  },
+];
+
+/**
+ * Pure verdict from the measured values. HARD failures mean "this is not
+ * a sane Madarek restore" (broken pg_restore, wrong DB, empty target);
+ * WARNs mean "restore ran but deserves the operator's eyes".
+ */
+export function summarizeVerify({ tables, migrations, users, ownerCount }) {
+  const findings = [];
+  let level = 'PASS';
+
+  if (tables < 50) {
+    level = 'FAIL';
+    findings.push(`جداول المخطط ${tables} فقط (< 50) — الاستعادة غير مكتملة / schema tables ${tables} (< 50) — incomplete restore`);
+  } else if (tables < 70) {
+    if (level === 'PASS') level = 'WARN';
+    findings.push(`جداول المخطط ${tables} — أقل من المتوقع ~77، راجع مخرج pg_restore / schema tables ${tables} — below the expected ~77, review pg_restore output`);
+  } else {
+    findings.push(`جداول المخطط: ${tables} ✅ / schema tables: ${tables} ✅`);
+  }
+
+  if (migrations <= 0) {
+    level = 'FAIL';
+    findings.push('جدول _prisma_migrations فارغ أو غائب — المخطط ليس مخطط مدارك / _prisma_migrations empty or missing — not a Madarek schema');
+  } else {
+    findings.push(`الترحيلات المسجَّلة: ${migrations} ✅ / recorded migrations: ${migrations} ✅`);
+  }
+
+  if (users <= 0) {
+    level = 'FAIL';
+    findings.push('لا مستخدمين إطلاقًا — لم تُستعد أي بيانات / zero users — no data restored');
+  } else {
+    findings.push(`المستخدمون: ${users} ✅ / users: ${users} ✅`);
+  }
+
+  if (ownerCount < 1) {
+    if (level === 'PASS') level = 'WARN';
+    findings.push('لا حساب OWNER — لن يمكنك التحقق من رحلة المالك على هذه النسخة / no OWNER account — owner-journey verification impossible on this copy');
+  } else {
+    findings.push(`حسابات OWNER: ${ownerCount} ✅ / OWNER accounts: ${ownerCount} ✅`);
+  }
+
+  if (findings.length === 0) findings.push('كل الفحوص ضمن المتوقع / all checks within expectations');
+  return { level, findings };
+}

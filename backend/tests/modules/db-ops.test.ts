@@ -34,8 +34,10 @@ import {
   resolveEnvUrl,
   sameDatabase,
   sha256File,
+  summarizeVerify,
   timestampSlug,
   validatePgUrl,
+  VERIFY_QUERIES,
 } from '../../../scripts/db-ops-lib.mjs';
 
 const gitignoreSource = readSource('../../../.gitignore');
@@ -47,6 +49,8 @@ const backendPackage = JSON.parse(readSource('../../package.json')) as {
 };
 const backupScriptSource = readSource('../../../scripts/db-backup.mjs');
 const restoreScriptSource = readSource('../../../scripts/db-restore.mjs');
+const verifyScriptSource = readSource('../../../scripts/db-verify.mjs');
+const exerciseLogSource = readSource('../../../docs/runbooks/restore-exercise-log.md');
 const opsLibSource = readSource('../../../scripts/db-ops-lib.mjs');
 const rotateScriptSource = readSource('../../scripts/rotate-demo-passwords.mjs');
 const passwordLibSource = readSource('../../src/lib/password.ts');
@@ -420,8 +424,105 @@ describe('db-restore safety contract (r166c)', () => {
     }
   });
   it('suggests the docs/12 §3 verification checklist after a real restore', () => {
-    expect(restoreScriptSource).toContain('prisma_migrations');
+    // r167: Prisma's real migrations table is _prisma_migrations (leading
+    // underscore) — the r166c checklist named it without the underscore and
+    // the r167 live exercise caught the false failure an operator would hit.
+    expect(restoreScriptSource).toContain('_prisma_migrations');
     expect(restoreScriptSource).toContain('restore-exercise-log');
+  });
+});
+
+// ─── r167: db-verify — automated post-restore verification ─────────
+
+describe('db:verify (r167) — pure verdict logic', () => {
+  it('PASS on a sane restored Madarek copy (77 tables / 18 migrations / users / owner)', () => {
+    const v = summarizeVerify({ tables: 77, migrations: 18, users: 6, ownerCount: 1 });
+    expect(v.level).toBe('PASS');
+    expect(v.findings.length).toBeGreaterThanOrEqual(4);
+    for (const f of v.findings) expect(f).toContain('✅');
+  });
+  it('FAIL when the schema is clearly incomplete (tables < 50)', () => {
+    const v = summarizeVerify({ tables: 12, migrations: 3, users: 5, ownerCount: 1 });
+    expect(v.level).toBe('FAIL');
+    expect(v.findings.some((f) => f.includes('incomplete restore'))).toBe(true);
+  });
+  it('FAIL when _prisma_migrations is empty/missing — not a Madarek schema', () => {
+    const v = summarizeVerify({ tables: 77, migrations: 0, users: 6, ownerCount: 1 });
+    expect(v.level).toBe('FAIL');
+    expect(v.findings.some((f) => f.includes('_prisma_migrations'))).toBe(true);
+  });
+  it('FAIL when zero users were restored', () => {
+    const v = summarizeVerify({ tables: 77, migrations: 18, users: 0, ownerCount: 0 });
+    expect(v.level).toBe('FAIL');
+    expect(v.findings.some((f) => f.includes('zero users'))).toBe(true);
+  });
+  it('WARN (not FAIL) on a degraded-but-working copy (few tables / no owner)', () => {
+    const v = summarizeVerify({ tables: 65, migrations: 18, users: 6, ownerCount: 0 });
+    expect(v.level).toBe('WARN');
+    expect(v.findings.some((f) => f.includes('below the expected'))).toBe(true);
+    expect(v.findings.some((f) => f.includes('OWNER'))).toBe(true);
+  });
+  it('a FAIL from any axis dominates WARNs (escalation is monotonic)', () => {
+    const v = summarizeVerify({ tables: 12, migrations: 0, users: 0, ownerCount: 0 });
+    expect(v.level).toBe('FAIL');
+  });
+});
+
+describe('db:verify (r167) — the query contract', () => {
+  it('runs exactly five read-only checks mirroring docs/12 §3 items 1–4', () => {
+    expect(VERIFY_QUERIES.length).toBe(5);
+    expect(VERIFY_QUERIES.map((q) => q.key)).toEqual(['tables', 'migrations', 'last_migration', 'roles', 'counts']);
+    for (const q of VERIFY_QUERIES) {
+      expect(q.sql.trim().toUpperCase().startsWith('SELECT')).toBe(true);
+    }
+  });
+  it('pins the REAL table names (leading underscore, quoted User)', () => {
+    const sql = VERIFY_QUERIES.map((q) => q.sql).join('\n');
+    expect(sql).toContain('_prisma_migrations');
+    expect(sql).not.toMatch(/(?<!_)prisma_migrations/); // bare spelling must never reappear
+    expect(sql).toContain('FROM "User"');
+    expect(sql).toContain('FROM "Enrollment"');
+    expect(sql).toContain('FROM "Notification"');
+  });
+});
+
+describe('db:verify (r167) — script wiring', () => {
+  it('is wired as db:verify → node scripts/db-verify.mjs at the root', () => {
+    expect(rootPackage?.scripts?.['db:verify']).toBe('node scripts/db-verify.mjs');
+  });
+  it('requires --url-env by name (no implicit DATABASE_URL target)', () => {
+    expect(verifyScriptSource).toMatch(/values\.urlEnv/);
+    expect(verifyScriptSource).toContain('--url-env إلزامي');
+  });
+  it('is dependency-free (node: builtins + the local lib only)', () => {
+    const specifiers = [...verifyScriptSource.matchAll(/from\s+'([^']+)'/g)].map((m) => m[1] ?? '');
+    expect(specifiers.length).toBeGreaterThanOrEqual(2);
+    for (const spec of specifiers) {
+      expect(spec.startsWith('node:') || spec === './db-ops-lib.mjs').toBe(true);
+    }
+  });
+  it('exits 1 on a FAIL verdict and prints measured values, never secrets', () => {
+    expect(verifyScriptSource).toContain("process.exit(1)");
+    expect(verifyScriptSource).toContain('summarizeVerify(');
+    expect(verifyScriptSource).toContain('redactUrl');
+    // the URL reaches psql as a connection string argument but is never
+    // printed raw — only through redactUrl.
+    expect(verifyScriptSource).not.toMatch(/console\.(log|error)\([^)]*targetUrl\.url/);
+  });
+});
+
+// ─── r167: the exercise log is honest about what ran ───────────────
+
+describe('restore-exercise log (r167)', () => {
+  it('entry 1 records the executed local exercise with measured values', () => {
+    expect(exerciseLogSource).toContain('مدخل 1 — 2026-10-15');
+    expect(exerciseLogSource).toContain('4b5ede93ab5d487006333979ee956f317861ab313f27376a100cf935fd03904c');
+    expect(exerciseLogSource).toContain('_prisma_migrations');
+    // honesty: local seed data, NOT production
+    expect(exerciseLogSource).toContain('ليست بيانات إنتاج');
+  });
+  it('keeps a blank template for future entries', () => {
+    expect(exerciseLogSource).toContain('قالب فارغ لمدخل جديد');
   });
 });
 

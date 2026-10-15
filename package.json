@@ -30,7 +30,8 @@
     "check:motion-tokens": "bash scripts/check-motion-tokens.sh",
     "check:icons": "bash scripts/check-icons.sh",
     "check:colors": "bash scripts/check-colors.sh",
-    "check:csp-hash": "bash scripts/check-csp-hash.sh"
+    "check:csp-hash": "bash scripts/check-csp-hash.sh",
+    "db:verify": "node scripts/db-verify.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
