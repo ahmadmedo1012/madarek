@@ -250,14 +250,22 @@ const writeAiTelemetry = async (
  * for the system prompt, so it gets its own loader here. Same include
  * shape, mapped to MasteryFact (no prisma types cross into lib/ai). */
 async function loadMasteryFacts(userId: string): Promise<MasteryFact[]> {
+  /* r175d (the production 500 fix): the original shape mixed `select`
+   * and `include` at the SAME level (`include: { concept: { select: …,
+   * include: … } }`) — Prisma 5.22 rejects that at validation time
+   * ("Please either use `include` or `select`, but not both"), which
+   * 500'd EVERY real-provider chat turn in production (the unit suite
+   * mocks prisma, so the validation never ran there; local mode never
+   * executes this loader). Rewritten select-only — same projection. */
   const masteries = await prisma.studentMastery.findMany({
     where: { studentId: userId },
-    include: {
+    select: {
+      level: true,
       concept: {
-        select: { name: true },
-        include: {
+        select: {
+          name: true,
           course: { select: { name: true } },
-          chapters: { take: 1, include: { lecture: { select: { title: true } } } },
+          chapters: { take: 1, select: { lecture: { select: { title: true } } } },
         },
       },
     },
