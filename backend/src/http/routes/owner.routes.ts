@@ -670,7 +670,7 @@ export function toSyncFeedEntry(run: SyncRunFeedRow): SyncFeedEntry {
  * clock, no network); the reachability pair is folded in by the route
  * from the memoized probe. */
 export interface StorageStatus {
-  driver: 'local' | 's3';
+  driver: 'local' | 's3' | 'postgres';
   persistent: boolean;
   /** r167: present ONLY for driver=s3 once a probe has answered —
    *  `true` = the store answered (a 404 on the probe key is still an
@@ -685,9 +685,10 @@ export interface StorageStatus {
  * page storage status. `driver` is echoed verbatim (never transformed)
  * so the page can trust it against the env.ts enum. `persistent`
  * follows the platform's storage honesty (lib/storage.ts): s3 = object
- * store = uploads survive redeploys; local = Render's ephemeral disk =
- * they do NOT (one boot warning is logged in that case — this field is
- * that warning's queryable twin).
+ * store = uploads survive redeploys; postgres (r175) = BYTEA rows in
+ * the application database = uploads survive redeploys (pilot mode);
+ * local = Render's ephemeral disk = they do NOT (one boot warning is
+ * logged in that case — this field is that warning's queryable twin).
  *
  * r167: a reachability answer folds in ONLY under driver=s3, and a
  * null/undefined answer (probe hasn't landed) omits both fields — the
@@ -696,12 +697,14 @@ export interface StorageStatus {
  * by construction; pinned by the owner-schemas tests).
  */
 export function toStorageStatus(
-  driver: 'local' | 's3',
+  driver: 'local' | 's3' | 'postgres',
   reachability?: StorageReachability | null,
 ): StorageStatus {
-  const status: StorageStatus = { driver, persistent: driver === 's3' };
+  const status: StorageStatus = { driver, persistent: driver === 's3' || driver === 'postgres' };
   // Defensive: a non-s3 driver never gains reachability fields (local
-  // short-circuits upstream; a stray answer must not leak through).
+  // and postgres short-circuit upstream; a stray answer must not leak
+  // through — the postgres driver's "reachability" IS the app's own DB
+  // health, which /api/v1/health already reports honestly).
   if (driver !== 's3' || reachability === null || reachability === undefined) {
     return status;
   }

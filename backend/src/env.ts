@@ -35,8 +35,12 @@ const schema = z
     CORS_ORIGINS: z.string().optional(),
     // ── File storage (uploads: backend/src/lib/storage.ts) ── All
     // optional individually; selecting s3 without its credentials
-    // fails boot in the superRefine below (fail-closed).
-    STORAGE_DRIVER: z.enum(['local', 's3']).default('local'),
+    // fails boot in the superRefine below (fail-closed). 'postgres'
+    // (r175) stores uploaded PDFs as BYTEA rows in the application's
+    // own PostgreSQL — the durable pilot choice for Render Free (no
+    // persistent disks on that plan, no new infrastructure); it needs
+    // NO extra vars (DATABASE_URL is already required).
+    STORAGE_DRIVER: z.enum(['local', 's3', 'postgres']).default('local'),
     // Optional absolute override for the local driver root (defaults to
     // <backend>/storage — see storage.ts). Ignored when driver=s3.
     STORAGE_DIR: z.string().optional(),

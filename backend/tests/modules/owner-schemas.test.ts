@@ -347,7 +347,7 @@ describe('syncRunAction (SyncRun status → feed action vocabulary)', () => {
 
 // ── System-page storage status (r164-l — additive payload field) ──
 
-describe('toStorageStatus (System page storage fold, r164-l + r167 reachability)', () => {
+describe('toStorageStatus (System page storage fold, r164-l + r167 reachability + r175 postgres)', () => {
   it('local driver → persistent=false (Render disk is ephemeral — uploads vanish on redeploy)', () => {
     expect(toStorageStatus('local')).toEqual({ driver: 'local', persistent: false });
   });
@@ -356,20 +356,33 @@ describe('toStorageStatus (System page storage fold, r164-l + r167 reachability)
     expect(toStorageStatus('s3')).toEqual({ driver: 's3', persistent: true });
   });
 
+  it('r175: postgres driver → persistent=true (BYTEA rows in the app DB survive redeploys — pilot mode)', () => {
+    expect(toStorageStatus('postgres')).toEqual({ driver: 'postgres', persistent: true });
+  });
+
   it('echoes the driver verbatim — no transformation may ever appear', () => {
-    // The env.ts enum is exactly 'local' | 's3'; both inputs must round-trip
-    // untouched so the page can trust the string against that enum.
+    // The env.ts enum is exactly 'local' | 's3' | 'postgres'; every input
+    // must round-trip untouched so the page can trust the string against
+    // that enum.
     // (Explicit one-arg lambda: a bare .map(toStorageStatus) would now
     // feed the array index into the r167 reachability parameter.)
-    expect((['local', 's3'] as const).map((d) => toStorageStatus(d)).map((s) => s.driver)).toEqual([
+    expect((['local', 's3', 'postgres'] as const).map((d) => toStorageStatus(d)).map((s) => s.driver)).toEqual([
       'local',
       's3',
+      'postgres',
     ]);
   });
 
   it('carries exactly the two contract keys (additive — no shape drift)', () => {
     expect(Object.keys(toStorageStatus('local')).sort()).toEqual(['driver', 'persistent']);
     expect(Object.keys(toStorageStatus('s3')).sort()).toEqual(['driver', 'persistent']);
+    // r175: the postgres driver gains NO reachability fields either — its
+    // "reachability" is the app's own DB health (already in /api/v1/health).
+    expect(Object.keys(toStorageStatus('postgres')).sort()).toEqual(['driver', 'persistent']);
+    expect(toStorageStatus('postgres', { reachable: true, checkedAt: '2026-01-01T00:00:00Z' })).toEqual({
+      driver: 'postgres',
+      persistent: true,
+    });
   });
 
   it('wiring: the /system route derives storage from env (source-scan pin)', () => {

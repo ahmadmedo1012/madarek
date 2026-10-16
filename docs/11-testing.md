@@ -14,7 +14,7 @@
 | Typecheck | `npm run typecheck` | **نجاح** — src + tests للجهتين (tsconfig.test.json) |
 | اختبارات الواجهة | `npm --prefix frontend run test` | **135 ملفًا، 1474 اختبارًا، كلها ناجحة** (~130 ثانية) |
 | اختبارات الخلفية | `npm --prefix backend run test` | **66 ملفًا، 1494 اختبارًا، كلها ناجحة** (~41 ثانية) |
-| اختبارات تكامل DB (اختيارية) | `DATABASE_URL=… npm run test:integration` | **4 ملفات، 20 اختبارًا ناجحة** (~6–10 ثوانٍ) — قاعدة تجريبية معزولة فقط، خارج `npm test` (القسم الخاص بها أدناه) |
+| اختبارات تكامل DB (اختيارية) | `DATABASE_URL=… npm run test:integration` | **5 ملفات، 30 اختبارًا ناجحة** (~6–10 ثوانٍ) — قاعدة تجريبية معزولة فقط، خارج `npm test` (القسم الخاص بها أدناه) |
 | بوابة التكافؤ | `node scripts/verify-parity-export.mjs` | **PASS — 163 فحص token** + تدقيق متغيرات غير معرفة + قيم مستبعدة + توازن أقواس |
 | الأيقونات | `bash scripts/check-icons.sh` | OK — Lucide فقط |
 | رموز الحركة | `bash scripts/check-motion-tokens.sh` | OK — لا قيم خام |
@@ -216,8 +216,8 @@ cd .. && DATABASE_URL=postgresql://postgres:postgres@localhost:5433/madarek_intt
   npm run test:integration
 ```
 
-**4 ملفات / 20 اختبارًا — 20/20 ناجحة** (تشغيل 2026-10-30 على
-Postgres 18 مضمّن محليًا، Node 24؛ ~6–10 ثوانٍ). التنظيف بين الاختبارات
+**5 ملفات / 30 اختبارًا — 30/30 ناجحة** (تشغيل 2026-10-16 على
+Postgres 16 محلي، Node 24؛ ~6 ثوانٍ). التنظيف بين الاختبارات
 ذاتي: كل ملف يمحو جداول `public` كاملة (`TRUNCATE … RESTART IDENTITY
 CASCADE`) عدا `_prisma_migrations` عبر استبطان `information_schema`
 — مقبول فقط لأن القاعدة مخصّصة للحزام، والملفات تتعاقب لا تتوازى
@@ -231,6 +231,7 @@ CASCADE`) عدا `_prisma_migrations` عبر استبطان `information_schema`
 | `uniqueness-constraints.test.ts` | 3 قيود فريدة ذات معنى منتج (`User.email`، `StudentProfile.universityId`، `TrainingEnrollment @@unique([userId,trackId])`): التكرار يفجّر P2002، ومعاملة [صف صالح + مكرّر] تتراجع بالكامل — الصف الصالح لا يُحفظ |
 | `governance-lock.test.ts` | خفض آخر مالك نشط 409 بلا أثر ولا AuditLog؛ الحالة الناجحة تكتب AuditLog وترفع `tokenVersion`؛ ترقية طالب→أستاذ تُنشئ TeacherProfile بنفس المعاملة وتبقيها بعد الخفض؛ واختبار التزامن الحقيقي: معاملتان متنافستان على خفض المالكين الأخيرين — الثانية **تتوقف** على `SELECT … FOR UPDATE` ثم ترى حالة ما-بعد-الالتزام وترفض 409، فينجو مالك واحد بالضبط |
 | `files-quota-transaction.test.ts` | فشل حفظ المادة (تخزين معطّل عمدًا عبر `STORAGE_DIR` غير قابل للكتابة) يحذف صف Material المُنشأ سلفًا (صفر صفوف)؛ وحصة التخزين للطالب تُقرأ من عدد صفوف ResearchPaper الحقيقية (10 أوراق → 413، تسع → يجتاز الحصة ويصل إلى التخزين) |
+| `postgres-storage-driver.test.ts` | **r175** — سائق BYTEA على Postgres حقيقية: رحلة put/stat/get متطابقة البايتات للمجالَين + جسم 64KB بحجم حقيقي، نطاقات `Range` شاملة (شريحة دقيقة/تذييل مقصوص/خارج الحدود → null)، مفاتيح مفقودة → null، إعادة الرفع تستبدل، **والدوام عبر PrismaClient جديد تمامًا** (محاكاة إعادة التشغيل — البايتات في القاعدة لا في الذاكرة)؛ والتقديم المصرَّد عبر المسارات الحقيقية: رفع أوراق (مالك 200 + 206 بشرائح دقيقة، غريب 404) ورفع مواد ومسجل 200 / غير مسجل 404 وصف بلا بايتات 404 عبر مسبار stat |
 
 **في CI**: وظيفة مستقلة `db-integration` تعمل على كل push/PR — خدمة
 `postgres:16` مع فحص صحة `pg_isready`، ثم الترحيلات بسكربت
@@ -244,7 +245,7 @@ CASCADE`) عدا `_prisma_migrations` عبر استبطان `information_schema`
 | المكان | المحتوى |
 |---|---|
 | `backend/tests/modules/` | 37 حزمة + حزمة colocated واحدة في `src/modules/search/__tests__/` (glob ثانٍ عمدًا — تعليق الملف يشرح) |
-| `backend/tests/integration/` | حزام تكامل DB الاختياري (r171b): حارس البيئة + مساعدات + 4 ملفات (معاملات/أقفال/قيود فريدة) — إعداد vitest منفصل، خارج `npm test` |
+| `backend/tests/integration/` | حزام تكامل DB الاختياري (r171b): حارس البيئة + مساعدات + 5 ملفات (معاملات/أقفال/قيود فريدة/سائق postgres r175) — إعداد vitest منفصل، خارج `npm test` |
 | `frontend/tests/unit/` | 82 ملفًا: مسارات App، تغطية nav والعناوين، جلسة/تهيئة، صفحات، a11y، لقطات tokens |
 | `frontend/tests/motion|gallery/` | 6 ملفات حركة/معرض |
 | `frontend/tests/e2e/` | رحلات Playwright المحكمّة (r164k، حلقات الكتابة والحالة الوهمية r165h) — مواصفات `*.e2e.ts` + وسيلة النقل الوهمي وحِمل الحمولات المشترك مع جرد الأسطح |

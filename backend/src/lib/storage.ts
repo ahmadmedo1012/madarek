@@ -10,11 +10,18 @@
  *     honesty: Render's filesystem is EPHEMERAL — files written at runtime
  *     vanish on every redeploy. Production persistence requires
  *     STORAGE_DRIVER=s3 + the S3_* vars (env.ts fails closed on a
- *     half-configured s3 driver at boot).
+ *     half-configured s3 driver at boot) or STORAGE_DRIVER=postgres.
  *   - S3Driver: any S3-compatible object store (AWS S3, Cloudflare R2,
  *     MinIO) via global fetch + a hand-rolled AWS Signature V4 — node:crypto
  *     only, NO new npm deps (house style). Path-style addressing
  *     (`${endpoint}/${bucket}/${key}`) which R2/MinIO require.
+ *   - PostgresDriver (r175): BYTEA rows in the application's own
+ *     PostgreSQL — the durable pilot choice for Render Free (no
+ *     persistent disks on that plan, no new infrastructure, no new
+ *     charge). Honors the exact same StorageDriver contract and the
+ *     same canonical keys; honest scope: bytes ride the app's primary
+ *     database, so this is a bounded 5–10-student-pilot trade-off,
+ *     not an object-store architecture.
  *
  * Pure key/signing helpers are exported for DB-free unit tests
  * (tests/modules/storage-sigv4.test.ts, storage-driver.test.ts).
@@ -25,6 +32,7 @@ import { mkdir, readFile, stat as fsStat, writeFile } from 'node:fs/promises';
 import { createHash, createHmac, randomUUID } from 'node:crypto';
 import { env } from '../env.js';
 import { logger } from '../logger.js';
+import { prisma } from '../db.js';
 
 // ─── Driver interface ─────────────────────────────────────────────
 
@@ -409,12 +417,86 @@ export class S3Driver implements StorageDriver {
   }
 }
 
+// ─── PostgreSQL driver (r175 — durable pilot storage on Render Free) ─
+
+/** The prisma `binaryObject` model surface the driver consumes —
+ * duck-typed so DB-free unit tests inject an in-memory fake without
+ * constructing PrismaClient (the same seam shape the route tests use
+ * for the whole prisma object). Note the asymmetry mirrors Prisma's
+ * `Bytes` scalar: create/update inputs take `Buffer`, findUnique's
+ * select returns `Uint8Array`. */
+export interface BinaryObjectModel {
+  upsert(args: {
+    where: { key: string };
+    create: { key: string; bytes: Buffer; size: number };
+    update: { bytes: Buffer; size: number };
+  }): Promise<unknown>;
+  findUnique(args: {
+    where: { key: string };
+    select: { bytes: boolean; size: boolean };
+  }): Promise<{ bytes?: Uint8Array; size?: number } | null>;
+}
+
+/**
+ * BYTEA-backed driver over the application's own PostgreSQL. The key
+ * gate, the missing-object semantics (null, never a fake empty file)
+ * and the inclusive-range slice semantics are byte-identical to
+ * LocalDriver's — routes and tests see one contract regardless of the
+ * sink. Full-read + slice for getRange is the SAME deliberate choice
+ * LocalDriver makes: uploads are capped at 20 MB, so honesty and
+ * simplicity beat streaming plumbing at pilot scale.
+ */
+export class PostgresDriver implements StorageDriver {
+  constructor(private readonly model: BinaryObjectModel) {}
+
+  async put(key: string, bytes: Buffer): Promise<void> {
+    if (!storageKeyIsValid(key)) throw new Error(`invalid storage key: ${JSON.stringify(key)}`);
+    await this.model.upsert({
+      where: { key },
+      // Upsert, not create: re-uploading the same key (id collisions,
+      // reruns) REPLACES the bytes rather than erroring the request —
+      // the Local/S3 drivers' natural overwrite semantics.
+      create: { key, bytes, size: bytes.length },
+      update: { bytes, size: bytes.length },
+    });
+  }
+
+  async get(key: string): Promise<Buffer | null> {
+    if (!storageKeyIsValid(key)) throw new Error(`invalid storage key: ${JSON.stringify(key)}`);
+    const row = await this.model.findUnique({ where: { key }, select: { bytes: true, size: true } });
+    if (row === null) return null;
+    // Prisma returns `Bytes` as a Uint8Array — copy into a Buffer so
+    // .equals()/subarray() behave exactly like the other drivers.
+    return Buffer.from(row.bytes ?? new Uint8Array());
+  }
+
+  async getRange(key: string, start: number, end: number): Promise<Buffer | null> {
+    const buf = await this.get(key);
+    if (buf === null) return null;
+    if (start < 0 || end < start || start >= buf.length) return null;
+    return buf.subarray(start, Math.min(end + 1, buf.length));
+  }
+
+  async stat(key: string): Promise<{ size: number } | null> {
+    if (!storageKeyIsValid(key)) throw new Error(`invalid storage key: ${JSON.stringify(key)}`);
+    const row = await this.model.findUnique({ where: { key }, select: { bytes: false, size: true } });
+    // The stored `size` column is the truth (written on put from the
+    // actual byte length); a row without a usable size is a contract
+    // break, surfaced as a throw — never a guessed number.
+    if (row === null) return null;
+    if (typeof row.size !== 'number' || !Number.isInteger(row.size) || row.size < 0) {
+      throw new Error(`postgres stat: unusable size for key ${key}`);
+    }
+    return { size: row.size };
+  }
+}
+
 // ─── Driver selection ─────────────────────────────────────────────
 
 /** The env slice the driver selection depends on (env.ts's parsed output
  *  satisfies it; tests inject their own object into buildDriver). */
 export interface StorageEnv {
-  STORAGE_DRIVER: 'local' | 's3';
+  STORAGE_DRIVER: 'local' | 's3' | 'postgres';
   STORAGE_DIR?: string | undefined;
   S3_ENDPOINT?: string | undefined;
   S3_REGION: string;
@@ -423,11 +505,20 @@ export interface StorageEnv {
   S3_SECRET_ACCESS_KEY?: string | undefined;
 }
 
+/** Injectable collaborators for buildDriver (r175): the postgres driver
+ * needs the prisma binaryObject model. Production wiring passes the real
+ * one (see getStorage); DB-free tests inject an in-memory fake. */
+export interface BuildDriverDeps {
+  binaryObject?: BinaryObjectModel;
+}
+
 /**
  * Pure factory: env slice → driver. env.ts already fails closed at boot on
  * a half-configured s3 driver; this guard is defense for direct callers.
+ * The postgres branch fails loudly when the prisma model is not wired —
+ * never silently degrades to local (same fail-closed ruling as s3).
  */
-export function buildDriver(e: StorageEnv): StorageDriver {
+export function buildDriver(e: StorageEnv, deps: BuildDriverDeps = {}): StorageDriver {
   if (e.STORAGE_DRIVER === 's3') {
     const missing: string[] = [];
     if (!e.S3_ENDPOINT) missing.push('S3_ENDPOINT');
@@ -445,6 +536,15 @@ export function buildDriver(e: StorageEnv): StorageDriver {
       secretAccessKey: e.S3_SECRET_ACCESS_KEY!,
     });
   }
+  if (e.STORAGE_DRIVER === 'postgres') {
+    if (!deps.binaryObject) {
+      throw new Error(
+        'STORAGE_DRIVER=postgres requires the prisma binaryObject model (getStorage wires it; ' +
+          'direct callers pass deps.binaryObject)',
+      );
+    }
+    return new PostgresDriver(deps.binaryObject);
+  }
   return new LocalDriver(e.STORAGE_DIR ? path.resolve(e.STORAGE_DIR) : DEFAULT_STORAGE_ROOT);
 }
 
@@ -453,12 +553,23 @@ let cachedDriver: StorageDriver | null = null;
 /** Memoized driver from the process env. */
 export function getStorage(): StorageDriver {
   if (cachedDriver === null) {
-    cachedDriver = buildDriver(env);
+    // r175: the postgres driver rides the app's own prisma client —
+    // same DATABASE_URL, same connection pool, no extra wiring.
+    cachedDriver = buildDriver(env, { binaryObject: prisma.binaryObject });
     if (env.isProd && env.STORAGE_DRIVER === 'local') {
       logger.warn(
         'STORAGE_DRIVER=local in production: the disk is ephemeral — uploaded PDFs will NOT survive ' +
           'redeploys. Set STORAGE_DRIVER=s3 with S3_ENDPOINT/S3_REGION/S3_BUCKET/S3_ACCESS_KEY_ID/' +
-          'S3_SECRET_ACCESS_KEY for persistence (see docs/12-deployment.md).',
+          'S3_SECRET_ACCESS_KEY (or STORAGE_DRIVER=postgres for the bounded pilot mode) for ' +
+          'persistence (see docs/12-deployment.md).',
+      );
+    }
+    if (env.isProd && env.STORAGE_DRIVER === 'postgres') {
+      logger.warn(
+        'STORAGE_DRIVER=postgres: uploads persist as BYTEA rows in the application database — ' +
+          'durable across redeploys, bounded by the 20 MB per-file cap and the per-user quota. ' +
+          'This is the pilot-mode storage choice (5–10 students); plan object storage (s3) before ' +
+          'scale (see docs/16-decisions-and-limitations.md).',
       );
     }
   }

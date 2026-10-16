@@ -2,7 +2,7 @@
 
 - المحرك: **PostgreSQL** مُدار على **Neon** (إقليم قريب من Render virginia).
 - ORM: **Prisma 5.22.0** — المخطط في `backend/prisma/schema.prisma`
-  (مصدر الحقيقة): **76 نموذجًا، 30 enum، 17 ترحيلًا** مطبقًا.
+  (مصدر الحقيقة): **77 نموذجًا، 30 enum، 19 ترحيلًا** مطبقًا.
 - المرجع النموذج-بنموذج المولّد: [`DATABASE-REFERENCE.md`](DATABASE-REFERENCE.md).
 
 ## مجموعات النماذج (خريطة مجردة)
@@ -47,8 +47,9 @@ P1017/P1001/P1002 العابرة (`backend/src/db.ts`).
 
 ## الترحيلات
 
-- 17 ترحيلًا من `20260523171735_init` حتى `20261013150858_checkpoint_answer_memory`
-  (r157: `CheckpointAnswer` — ذاكرة إجابات نقاط التحقّق).
+- 19 ترحيلًا من `20260523171735_init` حتى
+  `20261016190858_postgres_binary_objects` (r175: `BinaryObject` —
+  تخزين BYTEA دائم لرفعات PDF على خطة Render المجانية).
 - محليًا: `npm run db:migrate` (`prisma migrate dev`). الإنتاج: تطبيق
   `prisma migrate deploy` **أثناء خطوة بناء Render** (لا عند الإقلاع).
 - **لا تعدّل ترحيلًا مطبقًا** — أنشئ ترحيلًا جديدًا دائمًا (التفصيل في

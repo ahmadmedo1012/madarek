@@ -13,9 +13,11 @@ services:
     # (backend/src/lib/storage.ts). With the default local driver those files
     # are LOST on every redeploy/restart — the backend logs one clear warning
     # at boot in that case. For persistence EITHER attach a Render persistent
-    # disk (a `disk:` block) OR set STORAGE_DRIVER=s3 + the S3_* vars (any
-    # S3-compatible store: AWS S3, Cloudflare R2, MinIO) — see
-    # docs/12-deployment.md for exact owner steps.
+    # disk (a `disk:` block, paid plans only) OR set STORAGE_DRIVER=s3 + the
+    # S3_* vars (any S3-compatible store: AWS S3, Cloudflare R2, MinIO) OR set
+    # STORAGE_DRIVER=postgres (r175 pilot mode: BYTEA rows in the app's own
+    # Postgres — zero extra infrastructure, the choice for the free plan) —
+    # see docs/12-deployment.md for exact owner steps.
     # `--include=dev` is required because Render sets NODE_ENV=production
     # before `npm install` runs, which would otherwise skip devDependencies
     # (typescript, vite, @types/*, prisma CLI, …) that we need for the build.

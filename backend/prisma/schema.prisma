@@ -1755,3 +1755,23 @@ model LoginEvent {
   @@index([createdAt])
   @@index([email])
 }
+
+// ────────────────────────────────────────────────────────────────
+//  Durable binary storage (r175 — pilot persistence on Render Free)
+// ────────────────────────────────────────────────────────────────
+
+// Uploaded PDFs stored as BYTEA rows when STORAGE_DRIVER=postgres
+// (backend/src/lib/storage.ts PostgresDriver). The `key` is the SAME
+// canonical storage key the local/S3 drivers use
+// (`<papers|materials>/<cuid>.pdf`) — namespace semantics, access
+// gates and serving routes are unchanged; only the byte sink differs.
+// Rows are bounded by the 20 MB upload cap and the per-user quota.
+// Honest scope: a bounded pilot trade-off (bytes live in the app's
+// own Neon database) — see docs/16-decisions-and-limitations.md.
+model BinaryObject {
+  key       String   @id
+  bytes     Bytes
+  size      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
