@@ -1,22 +1,37 @@
 /* ═════════════════════════════════════════════════════════════════════
    MADAREK · «Orbit Ink» — round-3 landing (reference-craft rebuild)
    ─────────────────────────────────────────────────────────────────────
-   A flat, confident, editorial dark-ink page: massive cream type, one
-   lime accent word, pill buttons, technical mono labels, a slow college
-   marquee and a film-grain veil. Discipline over decoration — the page
-   earns its premium feel from typography, rhythm and restraint, not
-   from glass, glows or gradients.
+   A flat, confident, editorial page: massive type, one accent word,
+   pill buttons, technical mono labels, a slow college marquee and a
+   film-grain veil. Discipline over decoration — the page earns its
+   premium feel from typography, rhythm and restraint, not from glass,
+   glows or gradients.
 
-   World (tokens.css · "Orbit Ink" block — WCAG-documented there):
-     ground  --ln-ink #252A3E / --ln-ink-2 #1C2032 (scene steps)
+   r172a — the landing is now a FIRST-CLASS TWO-THEME SURFACE: the
+   Orbit Ink world re-grounds itself on the canonical theme grounds
+   (var(--bg) cream/night via --ln-ink), its type flips ink/cream with
+   the theme, its primary CTA rides the canonical accent pair, and the
+   shared ThemeToggle (فاتح · داكن · تلقائي) mounts in the header —
+   the landing consumes the SAME theme state as the product (no second
+   theme state anywhere).
+
+   World (tokens.css · "Orbit Ink" blocks — WCAG-documented there):
+     ground  --ln-ink = var(--bg) / --ln-ink-2 (scene steps: sand light
+             / neutral-100 dark) — the canonical grounds, both themes
      type    --ln-cream / --ln-cream-dim (ledes + micro-copy live on dim)
-     accent  --ln-lime (+ -deep) · --ln-violet (large/accent only)
+     accent  --ln-lime (+ -deep; the LIGHT pair collapses to the lime
+             ink #55701D) · --ln-violet (icon/large tier only)
              LIME ROSTER (VLM R3-W5 one-pop discipline — audit before
-             adding any): 1× hero accent word (.ln-hero-gold) · .ln-label
-             chapter labels · primary CTA fill + hover (.ln-btn-gold,
-             .btn.primary) · marquee separators. Everything else is
-             --ln-cream-dim or --ln-violet.
-     lines   --ln-line / --ln-line-soft (1px hairlines)
+             adding any; r172a shrinks it to EDITORIAL accents only):
+             1× hero accent word (.ln-hero-gold) · .ln-label chapter
+             labels · marquee separators. The primary CTA left the
+             roster in r172a — it rides the canonical accent pair.
+     CTA     var(--accent) / var(--accent-fg) / var(--accent-hover) —
+             the app's .btn.accent recipe (copper 4.95:1 light / gold
+             10.63:1 dark). No landing-private CTA colors.
+     lines   --ln-line / --ln-line-soft = the canonical --rule family
+             (structural hairlines) · --ln-scene-line / --ln-scene-soft
+             (decorative strokes — light doubles the ink alpha)
      motion  --ln-t-* / --ln-ease-* / --ln-dur-marquee
 
    Hard rules enforced by this sheet (round-3 spec §4):
@@ -24,11 +39,14 @@
      · Flat ground. Exactly ONE faint radial (α ≤ 0.12), hero sky only.
      · No gradient text, no glows on type, no button gradients.
      · Pills everywhere (var(--ln-radius-pill)); ONLY the primary CTA
-       fills lime — ghosts hover quiet (tint + hairline), never lime.
+       fills accent — ghosts hover quiet (tint + hairline), never accent.
      · Cards: hairline borders, border-shift-only hovers (no lift).
      · Cards = color-mix(in srgb, var(--ln-cream) 3%, transparent) + 1px --ln-line-soft + 20px.
      · Transform/opacity motion only; every duration/easing tokenized.
-     · Own dark world — consumes --ln-* directly, never data-theme.
+     · Theme-aware via the --ln-* tokens (which remap per data-theme
+       in tokens.css); focus rings are the PRODUCT's universal AA ring
+       (r172a deleted the landing's private cream-outline sub-language
+       — it was invisible in light).
 
    Flat selectors, no native nesting (repo convention — iOS 15 /
    old WebView safe through the whole sheet). Rules stay unlayered
@@ -88,8 +106,13 @@
 
 /* Film grain — the one permanent texture. Fixed veil above the whole
    landing (below native dialog overlays, which live in the top layer),
-   white feTurbulence noise on a 200px stitchable tile at the tokenized
-   veil opacity (var(--ln-grain-op) = 0.075, tokens.css base). */
+   feTurbulence noise on a 200px stitchable tile at the tokenized veil
+   opacity (var(--ln-grain-op) = 0.075, tokens.css base).
+   r172a — grain POLARITY follows the theme: white noise on the night
+   ground (authored round-3 look), black noise on paper (a white veil
+   over cream washes the type out — the same reason the old
+   prefers-contrast belt had to crush it). The feColorMatrix alpha row
+   is identical (0.55); only the RGB offsets flip 1 → 0. */
 .landing .ln-grain {
   position: fixed;
   inset: 0;
@@ -99,6 +122,10 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23m)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 200px 200px;
+}
+/* light: black noise — the matrix RGB rows collapse to 0 (ink dots) */
+[data-theme="light"] .landing .ln-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23m)'/%3E%3C/svg%3E");
 }
 
 /* mono machine-voice — Latin runs, numerals, coordinates (Arabic runs
@@ -293,7 +320,9 @@
     background var(--ln-t-fast) var(--ln-ease-soft);
 }
 .landing .landing-nav-link:hover { color: var(--ln-cream); background: color-mix(in srgb, var(--ln-cream) 4%, transparent); }
-.landing .landing-nav-link:focus-visible { outline: 2px solid var(--ln-cream); outline-offset: 3px; border-radius: var(--ln-radius-pill); }
+/* (r172a: the private :focus-visible outline deleted — the product's
+   universal AA ring owns landing controls now; the old cream outline
+   was invisible on the light ground.) */
 /* Scroll-spy active state — nav link highlighted when its section is visible.
    The observer in LandingPage.tsx writes data-active-section on the header
    element; these rules read it there (r128 canonical fix — they were
@@ -424,7 +453,7 @@
     border-color var(--ln-t-base) var(--ln-ease);
 }
 .landing .landing-burger:hover { background: color-mix(in srgb, var(--ln-cream) 4%, transparent); color: var(--ln-cream); }
-.landing .landing-burger:focus-visible { outline: 2px solid var(--ln-cream); outline-offset: 3px; }
+/* (r172a: burger :focus-visible outline deleted — product AA ring owns it) */
 
 .landing .landing-mobile-menu {
   flex-direction: column;
@@ -441,6 +470,33 @@
 .landing .landing-mobile-menu .btn.primary {
   justify-content: center;
   min-block-size: 48px;
+}
+
+/* ── 3b · theme control (r172a) ───────────────────────────────────── */
+/* The shared ThemeToggle (فاتح · داكن · تلقائي) is the SAME component
+   the product shell mounts — it rides layout.css's .theme-toggle recipe
+   (surface-2 pill + --rule border + text roles), which is theme-aware
+   by construction: the landing adds ZERO private chrome for it, and
+   there is no second theme state anywhere (the toggle writes the same
+   madarek-theme store the app reads). Desktop: the pill sits in the
+   header CTA cluster. ≤640px the pill YIELDS (the cluster is too
+   crowded next to the primary CTA on a 360px phone) and a LABELED
+   row takes over inside the mobile menu. */
+.landing .landing-mobile-theme {
+  display: none; /* >640px: the header pill owns the control */
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-1) var(--sp-1);
+}
+.landing .landing-mobile-theme-label {
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--ln-cream);
+}
+@media (max-width: 640px) {
+  .landing .landing-header-cta .theme-toggle { display: none; }
+  .landing .landing-mobile-theme { display: flex; }
 }
 
 /* ── 4 · buttons — one pill system ─────────────────────────────────── */
@@ -464,14 +520,21 @@
     transform var(--ln-t-fast) var(--ln-ease-out);
 }
 
-/* the conversion pill — flat lime, ink text, slim agency height
-   (~46px desktop). The ONE lime-filled surface on the page. */
+/* the conversion pill — the CANONICAL accent pair (r172a: was the
+   landing-private lime fill; "no landing-private CTA colors" — the
+   same --accent/--accent-fg/--accent-hover recipe the app's
+   .btn.accent rides: copper #B57438 + ink #1A0F06 = 4.95:1 light /
+   gold #E9B44C + void #05070F = 10.63:1 dark). Flat fill — this
+   sheet's no-gradient canon keeps it flat where components.css gives
+   the app's dark CTA the metal treatment; the pair is identical.
+   Slim agency height (~46px desktop). The ONE accent-filled surface
+   on the page. */
 .landing .ln-btn-gold {
   padding: 10px 26px;
   font-size: 15px;
   min-block-size: 46px;
-  background: var(--ln-lime);
-  color: var(--ln-ink);
+  background: var(--accent);
+  color: var(--accent-fg);
   border-radius: var(--ln-radius-pill);
   transform: translate(var(--mag-x, 0), var(--mag-y, 0));
   position: relative;
@@ -479,7 +542,7 @@
      كانت توءمًا حرفيًا هنا وبلا فعل (P4-04 يُحمَّل أخيرًا فيغلب). */
 }
 .landing .ln-btn-gold:hover {
-  background: var(--ln-lime-deep);
+  background: var(--accent-hover);
   /* (r157 F2-7): ركمة ظل الرفع أيضًا في P4-04 — الموطن الوحيد. */
   transform: translate(var(--mag-x, 0), calc(var(--mag-y, 0) - 1px));
 }
@@ -565,8 +628,10 @@
 .landing .btn.primary,
 .landing .btn.primary.sm {
   border-radius: var(--ln-radius-pill);
-  background: var(--ln-lime);
-  color: var(--ln-ink);
+  /* r172a: canonical accent pair (same recipe as .ln-btn-gold above
+     and the app's .btn.accent) — was the landing-private lime fill. */
+  background: var(--accent);
+  color: var(--accent-fg);
   border: 1px solid transparent;
   font-weight: var(--fw-semibold);
   min-block-size: 44px;
@@ -576,7 +641,7 @@
     border-color var(--ln-t-base) var(--ln-ease);
 }
 .landing .btn.primary:hover,
-.landing .btn.primary.sm:hover { background: var(--ln-lime-deep); }
+.landing .btn.primary.sm:hover { background: var(--accent-hover); }
 
 /* ── 5 · HERO — «المدار»: flat sky, cream monolith ─────────────────── */
 .landing .ln-hero {
@@ -725,7 +790,8 @@
   inline-size: 3px;
   block-size: 3px;
   border-radius: var(--ln-radius-pill);
-  background: var(--ln-line);
+  /* r172a: decorative dot — scene pair (ink 28% on paper) */
+  background: var(--ln-scene-line);
 }
 
 /* scroll invitation — physical centering is direction-neutral.
@@ -755,7 +821,8 @@
 .landing .ln-hero-scroll-line {
   inline-size: 1px;
   block-size: 42px;
-  background: var(--ln-line);
+  /* r172a: decorative drip rail — scene pair (visible on paper) */
+  background: var(--ln-scene-line);
   position: relative;
   overflow: hidden;
 }
@@ -820,7 +887,12 @@
   font-size: 13px;
   color: var(--ln-cream);
 }
-.landing .ln-trust-sep { inline-size: 26px; block-size: 1px; background: var(--ln-line); }
+.landing .ln-trust-sep {
+  inline-size: 26px;
+  block-size: 1px;
+  /* r172a: decorative data separator — scene pair */
+  background: var(--ln-scene-line);
+}
 
 /* ── 7 · chapter scaffolding — let every scene breathe ─────────────── */
 .landing .ln-chapter {
@@ -891,7 +963,10 @@
   background:
     radial-gradient(52% 88% at 50% 50%, color-mix(in srgb, var(--ln-violet) 7%, transparent) 0%, transparent 72%),
     color-mix(in srgb, var(--ln-cream) 2%, transparent);
-  border: 1px solid color-mix(in srgb, var(--ln-cream) 5%, transparent); /* a hair under --ln-line-soft */
+  /* r172a: decorative scene panel edge — the scene pair (ink 14% on
+     paper; the authored cream 5% mix was VLM-measured "nearly
+     invisible" there). */
+  border: 1px solid var(--ln-scene-soft);
   overflow: hidden;
 }
 .landing .ln-constellation-svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
@@ -903,7 +978,9 @@
    a per-ring phase settle — driven by the group reveal's .in-view. */
 .landing .ln-constellation-ring {
   fill: none;
-  stroke: color-mix(in srgb, var(--ln-cream) 16%, transparent);
+  /* r172a: decorative chart tracks — scene pair (ink 28% on paper,
+     authored cream 0.14 on night). */
+  stroke: var(--ln-scene-line);
   stroke-width: 1.5; /* 1px @ 0.16 vanished on low-contrast OLED (cf. spine note) */
   stroke-dasharray: 2 6;
   animation: none;
@@ -937,7 +1014,8 @@
 }
 .landing .ln-constellation-dot:hover,
 .landing .ln-constellation-dot:focus-visible { transform: scale(1.3); }
-.landing .ln-constellation-dot:focus-visible { outline: 2px solid var(--ln-cream); outline-offset: 3px; }
+/* (r172a: the dot's private :focus-visible outline deleted — the
+   product's universal AA ring owns it; the scale pop stays.) */
 /* resting-highlight cycle (P2-13: the sky shows life without hover) —
    one college gently lit at a time, flat ring in the station-node
    language; the component rotates the class every 4s, gated by
@@ -1045,7 +1123,9 @@
 }
 .landing .ln-journey-path-base {
   fill: none;
-  stroke: var(--ln-line-soft);
+  /* r172a: decorative spine track — scene pair (the TSX inline stroke
+     var(--ln-scene-line) carries the same value; kept in lockstep). */
+  stroke: var(--ln-scene-soft);
   stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
 }
@@ -1185,10 +1265,11 @@
   position: absolute;
   inset: 0;
   border-radius: var(--ln-radius-pill);
-  border: 1px solid var(--ln-line-soft);
+  /* r172a: decorative orbit rings — scene pair */
+  border: 1px solid var(--ln-scene-soft);
   opacity: clamp(0.3, calc(0.25 + var(--sp, 0.65) * 0.75), 1);
 }
-.landing .ln-progress-ring.r1 { inset: 14%; border-color: var(--ln-line); }
+.landing .ln-progress-ring.r1 { inset: 14%; border-color: var(--ln-scene-line); }
 .landing .ln-progress-ring.r2 { inset: 28%; border-color: color-mix(in srgb, var(--ln-cream) 10%, transparent); }
 .landing .ln-progress-ring.r3 { inset: 42%; border-color: color-mix(in srgb, var(--ln-cream) 12%, transparent); border-style: dashed; }
 .landing .ln-progress-core {
@@ -1204,7 +1285,8 @@
   block-size: 10px;
   border-radius: var(--ln-radius-pill);
   background: var(--ln-ink-2);
-  border: 1px solid var(--ln-line);
+  /* r172a: decorative milestone pin rim — scene pair */
+  border: 1px solid var(--ln-scene-line);
   --m: 0.3; /* ignition threshold along --sp (staggered below) */
 }
 /* ignition: each milestone lights a cream core once the scrub passes
@@ -1467,7 +1549,8 @@
 .landing .ln-cta-orbit {
   position: absolute;
   border-radius: var(--ln-radius-pill);
-  border: 1px solid var(--ln-line-soft);
+  /* r172a: decorative convergence circles — scene pair */
+  border: 1px solid var(--ln-scene-soft);
   aspect-ratio: 1;
 }
 .landing .ln-cta-orbit.o0 {
@@ -1488,7 +1571,7 @@
   border-radius: var(--ln-radius-pill);
   background: var(--ln-violet);
 }
-.landing .ln-cta-orbit.o1 { inline-size: min(460px, 70vw); border-color: var(--ln-line); }
+.landing .ln-cta-orbit.o1 { inline-size: min(460px, 70vw); border-color: var(--ln-scene-line); }
 .landing .ln-cta-orbit.o2 {
   inline-size: min(300px, 46vw);
   animation: ln-cta-converge var(--motion-duration-ambient-scene) var(--ln-ease-soft) infinite;
@@ -1865,8 +1948,10 @@ button.landing-footer-link {
 /* ── 18 · a11y + motion safety ─────────────────────────────────────── */
 /* skip-to-content — same contract as the product's polish.css skip-link
    (first Tab stop, visually hidden until focused), re-skinned into the
-   landing's pill + lime CTA language (P3-24: the landing was the only
-   page without one). Sits above the grain veil. */
+   landing's pill language — r172a: it joins the CANONICAL ACCENT family
+   (same pair as the primary CTA: --accent fill + --accent-fg text —
+   4.95:1 light / 10.63:1 dark; was the landing-private lime fill).
+   Sits above the grain veil. */
 .landing .ln-skip-link {
   position: fixed;
   inset-block-start: 8px;
@@ -1878,8 +1963,8 @@ button.landing-footer-link {
   z-index: var(--ln-z-skip);
   padding: 10px 18px;
   border-radius: var(--ln-radius-pill);
-  background: var(--ln-lime);
-  color: var(--ln-ink);
+  background: var(--accent);
+  color: var(--accent-fg);
   font-size: 14px;
   font-weight: var(--fw-semibold);
   text-decoration: none;
@@ -1890,18 +1975,15 @@ button.landing-footer-link {
   translate: -50% 0;
 }
 
-.landing :focus-visible {
-  outline: 2px solid var(--ln-cream);
-  outline-offset: 3px;
-}
-
-.landing .ln-btn-ghost:focus-visible,
-.landing .btn.ghost:focus-visible {
-  outline-color: var(--ln-cream);
-}
-.landing .btn.primary:focus-visible {
-  outline-color: var(--ln-ink);
-}
+/* (r172a: the landing's whole private :focus-visible sub-language is
+   DELETED — `.landing :focus-visible { outline: 2px solid
+   var(--ln-cream) }` + the ghost/primary outline-color overrides +
+   P4-09's duplicate. The cream outline was invisible on the light
+   ground; the product's universal AA ring (motion.css `:where()` —
+   --state-focus-ring, --accent-strong light / gold dark) now owns
+   every landing control. Landing.css is unlayered, so any NEW
+   outline rule here would silently beat the product ring — the
+   deletion IS the unification.) */
 
 @media (prefers-reduced-motion: reduce) {
   .landing .ln-hero-canvas { animation: none; opacity: var(--ln-canvas-op, 1); }
@@ -2068,7 +2150,7 @@ button.landing-footer-link {
   .landing .btn.primary:active,
   .landing .btn.ghost:active {
     transform: none;
-    background: var(--ln-lime-deep);
+    background: var(--accent-hover);
   }
 }
 
@@ -2076,17 +2158,11 @@ button.landing-footer-link {
    §1a) يقول hover = إزاحة حد فقط، لا رفع؛ الكتل كانت تقفز (snap)
    لأن قوائم transition لا تشمل transform/box-shadow أصلًا. */
 
-/* ── P4-09: Focus-visible — ring survives on landing buttons ────────
-   Keyboard navigation needs a visible indicator. The universal
-   :focus:not(:focus-visible) { outline: none } in base.css suppresses
-   mouse/touch focus; this restores the ring for keyboard focus only. */
-.landing .ln-btn-gold:focus-visible,
-.landing .ln-btn-ghost:focus-visible,
-.landing .btn.primary:focus-visible,
-.landing .btn.ghost:focus-visible {
-  outline: 2px solid var(--ln-cream);
-  outline-offset: 3px;
-}
+/* ── P4-09 → r172a: DELETED — the landing's private focus-visible ring
+   (a duplicate of §18's cream outline) went with the §18 unification:
+   the product's universal AA :focus-visible ring owns landing buttons.
+   (The block used to re-assert `outline: 2px solid var(--ln-cream)` on
+   the CTA/ghost pills — invisible on the light ground.) */
 
 /* ── P4-10: Type scale — ensure heading hierarchy is readable ──────
    Landing headings use --ln-h1 / clamp ranges but mobile can stretch

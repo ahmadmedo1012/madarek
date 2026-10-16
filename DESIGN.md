@@ -53,28 +53,31 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 
 ## 1. Two worlds — عالمان
 
-Madarek paints **two deliberate worlds**: the Orbit Ink marketing surface and the Notion-flavored product surface. They never mix vocabulary.
+Madarek paints **two deliberate worlds**: the Orbit Ink marketing surface and the Notion-flavored product surface. They never mix vocabulary — but since r172a they share the SAME theme grounds and the SAME theme state: the landing is a first-class two-theme surface, grounded on the canonical `var(--bg)` (cream light / night dark) and driven by the shared ThemeToggle/theme store (no second theme state anywhere).
 
 ### 1a. Orbit Ink — the landing world (الواجهة التعريفية)
 
-Painted identically in **both** `data-theme`s; landing-scoped `--ln-*` tokens. Ink ground, cream type, one lime accent.
+Theme-aware `--ln-*` tokens (remapped per `data-theme` in `tokens.css` — light re-grounds on cream, dark keeps the authored night):
 
-| Token | Value | Notes |
-|---|---|---|
-| `--ln-ink` | `#252A3E` | primary flat ground |
-| `--ln-ink-2` | `#1C2032` | darker scene step |
-| `--ln-cream` | `#F5F3E7` | primary text — **12.75:1 AAA** |
-| `--ln-cream-dim` | `#C9C6B4` | secondary text — **8.26:1 AAA** |
-| `--ln-lime` / `--ln-lime-deep` | `#DFEDB2` / `#B9D778` | **the ONE accent** (11.42:1 / 8.82:1) — roster-limited: hero accent word, chapter labels, primary CTA, marquee separators |
-| `--ln-violet` / `--ln-violet-deep` | `#7A6BF2` / `#4E2FB8` | accent-2 large-text only / decorative depth only |
-| `--ln-line` / `--ln-line-soft` | `rgba(245,243,231,0.14)` / `0.07` | 1px hairlines |
-| Landing cards | `rgba(245,243,231,0.03)` fill + 1px line-soft + 20px radius | border-shift hovers, **no lift** |
-| Hero headline | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh **1.2** (mobile 1.18) | the only display-size surface in the family — r148 (AUDIT-4 C3): 1.04 clipped Arabic diacritic stacks; 1.2 matches the platform's display-leading floor |
-| Primary CTA | `min-block-size 46px` **pill** (xl variant 48px) — lime fill, the one lime-filled surface | ghost + text variants stay cream |
-| Marquee | `--ln-dur-marquee: 42s` linear, one slow pass (college ring) | spelled only via the token |
-| Grain veil | `--ln-grain-op: 0.075` | see §4 |
+| Token | Light | Dark | Notes |
+|---|---|---|---|
+| `--ln-ink` | `var(--bg)` **#FBFAF9** | `var(--bg)` **#070B16** | canonical grounds — was a fixed `#252A3E` ink stage painted identically in both themes (r172a) |
+| `--ln-ink-2` | `var(--c-sand-bg)` #F1ECDF | `var(--neutral-100)` #121A36 | scene-separation step (sand light / night ramp dark) |
+| `--ln-cream` | `#191918` (ink) | `#F5F3E7` | primary text — **16.9:1 / 17.7:1 AAA** |
+| `--ln-cream-dim` | `#5F5D57` | `#C9C6B4` | secondary — **6.31:1 / 5.58:1 on sand** (light) · 11.4:1 (dark). Light dim is one step darker than the app's `--text-muted` (which measured 4.45:1 on the sand step and was axe-caught live) |
+| `--ln-lime` / `-deep` | `#55701D` (pair collapses to the lime ink) | `#DFEDB2` / `#B9D778` | **the ONE editorial accent** (5.41:1 light on ground / 15.8:1 dark) — roster-limited: hero accent word, chapter labels, marquee separators. The light pair collapses: the bright pistachio is illegible on paper, and `.ln-label` is 12px text on the sand chapter |
+| `--ln-violet` / `-deep` | `#7A6BF2` / `#D7D3FB` | `#7A6BF2` / `#4E2FB8` | accent-2, icon/large tier (3.86:1 light / 4.88:1 dark); `-deep` is the `::selection` ground — night = cream-on-violet 7.78:1, light = ink-on-lilac ≈12.2:1 |
+| `--ln-line` / `-soft` | `var(--rule)` / `var(--border-faint)` | same aliases | **canonical hairlines** — the landing's structural edges ARE the product edges |
+| `--ln-scene-line` / `-soft` | `rgba(25,25,24,0.28)` / `0.14` | `rgba(245,243,231,0.14)` / `0.07` | NEW r172a decorative-stroke pair — light roughly DOUBLEs the ink alpha (authored cream alphas were VLM-measured "nearly invisible" on paper) |
+| Landing cards | `color-mix(--ln-cream 3%, transparent)` fill + 1px `--ln-line-soft` + 20px radius (both themes) | same | border-shift hovers, **no lift** |
+| Hero headline | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh **1.2** (mobile 1.18) | same | the only display-size surface in the family — r148 (AUDIT-4 C3): 1.04 clipped Arabic diacritic stacks |
+| Primary CTA | `--accent` fill + `--accent-fg` text + `--accent-hover` | same recipe | **the canonical accent pair, same recipe as `.btn.accent`** — copper #B57438 + #1A0F06 = 4.95:1 light / gold #E9B44C + #05070F = 10.63:1 dark. No landing-private CTA colors (was the lime fill; r172a). The skip-link joins the same family |
+| Marquee | `--ln-dur-marquee: 42s` linear, one slow pass (college ring) | same | spelled only via the token |
+| Grain veil | `--ln-grain-op: 0.075`, **polarity follows the theme** (black noise light / white noise dark) | see §4 |
+| Canvas scene | OrbitScene reads live computed `--ln-cream/-lime/-violet` at boot + a MutationObserver on `data-theme` rebuilds sprites + nebula and repaints | same | light alpha multipliers: star ×1.6 · ring ×1.8 · link/nebula ×1.6–1.7 · glow ×1.3 · horizon ×0.55 |
+| Theme control | the shared `ThemeToggle` (فاتح · داكن · تلقائي) in the landing header; ≤640px the pill yields to a labeled mobile-menu row | same | one theme state for the whole product |
 
-**Hard rules:** no glass/blur · flat ground + ONE radial (α ≤ 0.12) hero-sky only · pills everywhere · no gradient text, no glows on type.
+**Hard rules:** no glass/blur · flat ground + ONE radial (α ≤ 0.12) hero-sky only · pills everywhere · no gradient text, no glows on type, no button gradients · focus rings = the product's universal AA ring (the landing's private cream-outline sub-language was deleted in r172a — it was invisible in light) · **no boot hack** — body/splash/landing paint `var(--bg)` from the first styled frame in both themes (the `html[data-landing-boot]` machinery is retired end-to-end).
 
 ### 1b. Product theme — copper-on-cream light · gold-on-night dark (هوية المنتج)
 
@@ -161,7 +164,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 
 ## 4. Grain & elevation — الحبيبات والارتفاع
 
-**Grain (Orbit Ink only):** `.ln-grain` — a fixed veil over the whole landing: SVG `feTurbulence fractalNoise` (baseFrequency 0.9, 2 octaves, stitchTiles), white noise α .55, 200×200px repeatable tile, `opacity: var(--ln-grain-op) = 0.075` (single source in `tokens.css` — the old landing-local override was lifted in r132). Sits below native dialog top-layer; `pointer-events: none`. The product surface is **clean** — no grain past `landing.css`.
+**Grain (Orbit Ink only):** `.ln-grain` — a fixed veil over the whole landing: SVG `feTurbulence fractalNoise` (baseFrequency 0.9, 2 octaves, stitchTiles), feColorMatrix noise (alpha row 0.55), 200×200px repeatable tile, `opacity: var(--ln-grain-op) = 0.075` (single source in `tokens.css` — the old landing-local override was lifted in r132). Sits below native dialog top-layer; `pointer-events: none`. **r172a: the noise POLARITY follows the theme** — white noise on the night ground (the authored look), **black noise on paper** (a white veil over cream washes the ink type out). The product surface is **clean** — no grain past `landing.css`.
 
 **Elevation (`--elev-1..5`):**
 
@@ -220,11 +223,11 @@ Arabic is the first-class direction; LTR is the port.
 
 ## 7. Theming & accessibility — الوصولية
 
-- **Themes:** light default + `[data-theme="dark"]` — both fully specified (§1b); no "auto-only" surface.
+- **Themes:** light default + `[data-theme="dark"]` — both fully specified (§1b); no "auto-only" surface. **r172a: the landing is a first-class two-theme surface** — §1a's `--ln-*` family remaps per theme in `tokens.css`, the shared `ThemeToggle` (فاتح · داكن · تلقائي) mounts in the landing header (labeled mobile-menu row ≤640px), and the boot-hack (`html[data-landing-boot]`, the `#252A3E` theme-color override, `useLandingBootGround`) is retired: body/splash/landing all paint `var(--bg)` from the first styled frame in both themes.
 - **Role accents:** `body[data-role]` — 7 roles × 2 themes, hexes **pinned by token-snapshot tests**; college accent slot carries a runtime contrast gate.
-- **Contrast tiers:** status/badge text always uses the `-ink`/`-deep` tier of its pastel family (AA); fills keep base tokens. Light-mode icon wells use the **`-ink` tier** (r131 hardening: 6.98–9.02:1; dark untouched).
+- **Contrast tiers:** status/badge text always uses the `-ink`/`-deep` tier of its pastel family (AA); fills keep base tokens. Light-mode icon wells use the **`-ink` tier** (r131 hardening: 6.98–9.02:1; dark untouched). Landing light dim (`--ln-cream-dim #5F5D57`) clears **≥5.58:1** on every landing surface (r172a, axe-verified live).
 - **`prefers-contrast: more`:** elevations become rings, borders strengthened, glass de-blurred, illustration strokes 1.5 → 2.
-- **Focus rings — two worlds:** product = universal `:where()` 2px/2px ring in `--accent-strong` (light) / gold (dark); **Orbit Ink landing = 2px `--ln-cream` outline, offset 3px** on every `.landing :focus-visible`, with the primary CTA swapping its ring to `--ln-ink` (deliberate sub-language, never mixes with the product ring).
+- **Focus rings — ONE language (r172a):** the product's universal `:where()` 2px/2px ring in `--accent-strong` (light) / gold (dark) owns EVERY control, landing included — the Orbit Ink private cream-outline sub-language (invisible on the light ground) was deleted with the two-theme re-grounding. Landing controls keep their non-outline focus behaviors (scale pops, menu reveal).
 - **Reduced motion:** full kill-belt in `base.css` + token zeroing (§3) — motion never survives RM; direction mirroring does.
 
 ---

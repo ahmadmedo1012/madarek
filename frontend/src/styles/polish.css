@@ -4444,31 +4444,20 @@
 
 @layer overrides {
   /* ═════════════════════════════════════════════════════════════════
-     POLISH r162 — landing boot ground (R1) + content-mount fade (R3)
+     POLISH r162 — content-mount fade (R3)
      ═════════════════════════════════════════════════════════════════ */
 
-  /* r162 (R1): the landing world's ground, painted from the FIRST
-     styled frame of a guest `/` cold-load. `html[data-landing-boot]`
-     is decided pre-React by the theme bootstrap in index.html
-     (pathname `/` + no persisted mdrk-auth session) and owned by
-     React afterwards (useLandingBootGround in App.tsx: guest on `/`
-     keeps it, everyone else — and any other route — drops it). While
-     it is set, BOTH boot surfaces speak Orbit Ink:
-       · body — the ground behind everything (kills the cream→ink
-         flip light-mode visitors watched at the product's front door;
-         also the overscroll reveal color behind .landing);
-       · .hydration-splash — the guard/suspense placeholder, so the
-         chunk-fetch window is ink too (the splash is opaque fixed,
-         z-modal).
-     The landing itself (.landing, landing.css) paints the same
-     --ln-ink when it mounts — the boot ground hands over seamlessly.
-     Layered here (overrides) so both beat their @layer base/
-     components origins regardless of specificity. No motion values;
-     --ln-ink is the tokens.css source of truth. */
-  html[data-landing-boot] body,
-  html[data-landing-boot] .hydration-splash {
-    background: var(--ln-ink);
-  }
+  /* (r172a: the R1 boot-ground half of this section —
+     `html[data-landing-boot] body, html[data-landing-boot]
+     .hydration-splash { background: var(--ln-ink) }` — was RETIRED
+     with the whole data-landing-boot machinery. The landing no longer
+     paints a private ink ground: --ln-ink now aliases the canonical
+     var(--bg) in BOTH data-themes (tokens.css r172a remap), so body
+     (base.css), the hydration splash (components.css) and .landing
+     (landing.css) paint ONE ground from the first styled frame — no
+     override needed, no two-worlds flash left to paper over. The
+     index.html bootstrap heuristic + the App.tsx React owner
+     (useLandingBootGround) were deleted end-to-end with it.) */
 
   /* r162 (R3): ONE entrance language for every content mount. The
      page-enter fade used to animate `.content-inner` — the keyed

@@ -4,13 +4,27 @@ import { useReducedMotion } from '../motion/useReducedMotion';
 /**
  * OrbitScene — «مدارات المعرفة» canvas engine (Orbit Ink edition).
  *
- * A calm, flat orbital system over the hero's solid ink ground:
- * knowledge nodes ride thin cream hairline rings, and a lime
- * "traveller" (the learner) moves between orbits leaving a fading
- * thread. Light comes from contrast, not glow — the round-3 craft.
+ * A calm, flat orbital system over the hero's ground: knowledge nodes
+ * ride thin hairline rings, and a lime "traveller" (the learner)
+ * moves between orbits leaving a fading thread. Light comes from
+ * contrast, not glow — the round-3 craft.
+ *
+ * ── Theme contract (r172a) ────────────────────────────────────────
+ * · The palette FOLLOWS THE THEME. At boot the engine reads the live
+ *   computed --ln-cream / --ln-lime / --ln-violet tokens from
+ *   documentElement (tokens.css remaps them per data-theme — the
+ *   landing grounds itself on the canonical cream/night --bg), and a
+ *   MutationObserver on the data-theme attribute rebuilds the glow
+ *   sprites + nebula and repaints: flipping the shared ThemeToggle
+ *   re-lights the sky without a reload.
+ * · Light-mode alpha multipliers (ORBIT_LIGHT_ALPHA — VLM-reviewed so
+ *   the paper scene reads "clearly visible… deliberate ink-on-paper",
+ *   not ghostly): star ×1.6 · ring ×1.8 · link/nebula ×1.6–1.7 ·
+ *   glow ×1.3 · horizon ×0.55 (a cream bottom wash would wash OUT
+ *   paper — the ink horizon glow is heavily damped instead).
  *
  * ── Craft contract (docs/immersive-redesign-plan.md §5 +
- *    round-3 REFERENCE-DESIGN-SPEC §4.4) ─────────────────────────
+ *    round-3 REFERENCE-DESIGN-SPEC §4.4) ─────────────────────
  * · Final visual diet (round-3 VLM verdict vs the reference + premium-
  *   polish audit P1-5): the reference hero is pure color + pure type —
  *   zero background graphics. The orbit identity stays as a WHISPER
@@ -25,6 +39,9 @@ import { useReducedMotion } from '../motion/useReducedMotion';
  * · Allocation-free draw loop: every per-frame color string, point
  *   and buffer is built once (module scope or on resize) and only
  *   rewritten numerically per frame — no GC churn, no 100ms frames.
+ *   (r172a exception: the 6 color strings are rewritten on a THEME
+ *   FLIP only — a user-driven, ≤once-per-interaction event, not a
+ *   per-frame allocation.)
  * · No canvas shadow-blur filters anywhere — glows are pre-rendered
  *   radial sprites at low alpha (audit §C: per-frame shadow filters
  *   are far too slow).
@@ -58,35 +75,88 @@ export type OrbitSceneProps = {
   speed?: number;
 };
 
-/** Orbit Ink palette (round 3) — canvas-side of the --ln-* landing tokens. */
-const CREAM = [245, 243, 231] as const; // #F5F3E7 — stars / hairlines
-const LIME = [223, 237, 178] as const; // #DFEDB2 — the knowledge light
-const VIOLET = [122, 107, 242] as const; // #7A6BF2 — depth accent
+/** RGB triplet — the canvas-side shape of a --ln-* color token. */
+export type Rgb = readonly [number, number, number];
+
+/** Fallback palette (the authored Orbit Ink night) — used only when
+ * the computed tokens are unreadable (a DOM that never loaded
+ * tokens.css, or a hardened jsdom): the scene still paints, and it
+ * paints the flagship night. */
+const NIGHT_FALLBACK: { cream: Rgb; lime: Rgb; violet: Rgb } = {
+  cream: [245, 243, 231], // #F5F3E7
+  lime: [223, 237, 178],  // #DFEDB2
+  violet: [122, 107, 242], // #7A6BF2
+};
+
+/** Light-mode alpha multipliers (r172a record; see the header). */
+export const ORBIT_LIGHT_ALPHA = {
+  star: 1.6,
+  ring: 1.8,
+  link: 1.65,
+  nebula: 1.6,
+  glow: 1.3,
+  horizon: 0.55,
+} as const;
+
+/** Identity multipliers for the authored night scene. */
+const NIGHT_ALPHA = { star: 1, ring: 1, link: 1, nebula: 1, glow: 1, horizon: 1 } as const;
+
+/** Parse a CSS color string into an RGB triplet: #rgb / #rrggbb /
+ * rgb() / rgba() (comma or space form). Pure — pinned by the r172a
+ * unit tests. Returns null when the value is not a color we can
+ * rasterize. */
+export function parseColorTriplet(value: string): Rgb | null {
+  const v = value.trim();
+  const hex = v.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (hex) {
+    const h = hex[1]!;
+    if (h.length === 3) {
+      return [
+        parseInt(h[0]! + h[0]!, 16),
+        parseInt(h[1]! + h[1]!, 16),
+        parseInt(h[2]! + h[2]!, 16),
+      ];
+    }
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  }
+  const rgb = v.match(/^rgba?\(\s*(\d{1,3})\s*[,\s]\s*(\d{1,3})\s*[,\s]\s*(\d{1,3})/i);
+  if (rgb) {
+    return [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])];
+  }
+  return null;
+}
+
+type OrbitPalette = {
+  cream: Rgb;
+  lime: Rgb;
+  violet: Rgb;
+  /** true when data-theme resolved to light — multipliers apply. */
+  light: boolean;
+};
+
+/** Read the live --ln-* landing tokens from an element's computed
+ * style. Returns null when any of the three fails to parse. */
+function readOrbitPalette(root: Element): OrbitPalette | null {
+  const cs = getComputedStyle(root);
+  const cream = parseColorTriplet(cs.getPropertyValue('--ln-cream'));
+  const lime = parseColorTriplet(cs.getPropertyValue('--ln-lime'));
+  const violet = parseColorTriplet(cs.getPropertyValue('--ln-violet'));
+  if (!cream || !lime || !violet) return null;
+  return { cream, lime, violet, light: root.getAttribute('data-theme') === 'light' };
+}
 
 type NodeColor = 'lime' | 'violet' | 'cream';
+type StarColor = NodeColor;
 
-/** Per-frame color strings — built once, referenced every frame. */
-const STAR_COLORS = {
-  cream: 'rgb(245,243,231)',
-  lime: 'rgb(223,237,178)',
-  violet: 'rgb(122,107,242)',
-} as const;
-const NODE_FILL = {
-  lime: 'rgba(223,237,178,0.95)',
-  violet: 'rgba(122,107,242,0.95)',
-  cream: 'rgba(245,243,231,0.9)',
-} as const;
-const RING_STROKE = 'rgb(245,243,231)';
-const LINK_STROKE = 'rgb(223,237,178)';
-const TRAIL_STROKE = 'rgb(223,237,178)';
-const HEAD_FILL = 'rgb(245,243,231)';
+/** clamp to the legal canvas alpha range */
+const cap1 = (a: number) => Math.max(0, Math.min(1, a));
 
 type Star = {
   x: number;
   y: number;
   r: number;
   base: number;
-  color: string;
+  color: StarColor;
   /** 0 = far layer (slower parallax, smaller) · 1 = near layer */
   depth: number;
 };
@@ -187,6 +257,86 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
     let scrollP = 0; // 0 … 1 as the hero scrolls away (drives the fade only)
     let introT = 0; // 0 … 1 scene bloom on mount
 
+    // ── r172a theme-following palette ─────────────────────────────────
+    // Read at boot; a MutationObserver on documentElement's data-theme
+    // (installed below) re-reads it on every theme flip.
+    let palette: OrbitPalette = readOrbitPalette(document.documentElement) ?? {
+      ...NIGHT_FALLBACK,
+      light: false,
+    };
+    let alpha: { star: number; ring: number; link: number; nebula: number; glow: number; horizon: number };
+    /** Per-frame color strings — rebuilt on theme flips only. */
+    let starColors: Record<StarColor, string>;
+    let nodeFill: Record<NodeColor, string>;
+    let ringStroke = '';
+    let linkStroke = '';
+    let trailStroke = '';
+    let headFill = '';
+
+    /** Depth bloom — TWO tones painted once into the offscreen canvas
+     * (still one drawImage per frame): a violet radial around the
+     * orbital system (P1-5: 0.11 → 0.16 — a visible light source) + a
+     * wide horizon glow at the very bottom, as if the ground lifted a
+     * little where the page continues below the fold. r172a: the violet
+     * core follows --ln-violet (×1.6 alpha on paper — the wash has to
+     * register against cream) and the horizon glow follows --ln-cream
+     * at ×0.55 alpha in light (a full-cream wash would wash OUT the
+     * paper; on night it stays the authored cream lift). */
+    function paintNebula() {
+      nebula = document.createElement('canvas');
+      nebula.width = Math.max(1, w);
+      nebula.height = Math.max(1, h);
+      const ng = nebula.getContext('2d');
+      if (ng) {
+        const [vr, vg, vb] = palette.violet;
+        const [cr, cg, cb] = palette.cream;
+        const rr = orbitR * 1.6;
+        const grad = ng.createRadialGradient(systemCx, systemCy, 0, systemCx, systemCy, rr);
+        grad.addColorStop(0, `rgba(${vr},${vg},${vb},${cap1(0.25 * alpha.nebula)})`);
+        grad.addColorStop(1, 'transparent');
+        ng.fillStyle = grad;
+        ng.fillRect(0, 0, w, h);
+        const hz = ng.createRadialGradient(w * 0.5, h * 1.18, 0, w * 0.5, h * 1.18, h * 0.75);
+        hz.addColorStop(0, `rgba(${cr},${cg},${cb},${cap1(0.14 * alpha.horizon)})`);
+        hz.addColorStop(1, 'transparent');
+        ng.fillStyle = hz;
+        ng.fillRect(0, 0, w, h);
+      }
+    }
+
+    /** Resolve the palette into the per-frame strings + glow sprites +
+     * nebula, then repaint (both the live loop and the RM static frame
+     * pick the new colors up on their next paint — a flip mid-flight
+     * costs one frame, the sprites/nebula rebuild is ~4 small canvases). */
+    function applyPalette() {
+      const next = readOrbitPalette(document.documentElement);
+      if (next) palette = next;
+      alpha = palette.light ? ORBIT_LIGHT_ALPHA : NIGHT_ALPHA;
+      const [cr, cg, cb] = palette.cream;
+      const [lr, lg, lb] = palette.lime;
+      const [vr, vg, vb] = palette.violet;
+      starColors = {
+        cream: `rgb(${cr},${cg},${cb})`,
+        lime: `rgb(${lr},${lg},${lb})`,
+        violet: `rgb(${vr},${vg},${vb})`,
+      };
+      nodeFill = {
+        lime: `rgba(${lr},${lg},${lb},0.95)`,
+        violet: `rgba(${vr},${vg},${vb},0.95)`,
+        cream: `rgba(${cr},${cg},${cb},0.9)`,
+      };
+      ringStroke = `rgb(${cr},${cg},${cb})`;
+      linkStroke = `rgb(${lr},${lg},${lb})`;
+      trailStroke = `rgb(${lr},${lg},${lb})`;
+      headFill = `rgb(${cr},${cg},${cb})`;
+      glowLime = makeGlowSprite(64, palette.lime, cap1(0.38 * alpha.glow));
+      glowViolet = makeGlowSprite(64, palette.violet, cap1(0.32 * alpha.glow));
+      glowCream = makeGlowSprite(64, palette.cream, cap1(0.27 * alpha.glow));
+      paintNebula();
+      if (reducedMotion) drawStatic();
+      else if (!running) draw(16); // paused/offscreen: paint once so the flip is visible on return
+    }
+
     function buildScene() {
       const area = w * h;
       // Depth pass: two parallax star layers (≈110 full / ≈52 low, was
@@ -207,8 +357,9 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
           r: (0.52 + Math.random() * 1.04) * (depth === 1 ? 1.15 : 0.85),
           base: (0.42 + Math.random() * 0.42) * (depth === 1 ? 1 : 0.82),
           depth,
-          color:
-            tint < 0.8 ? STAR_COLORS.cream : tint < 0.94 ? STAR_COLORS.lime : STAR_COLORS.violet,
+          // color KEY — resolved against the live theme at draw time
+          // (r172a: a flip re-lights existing stars, no re-scatter)
+          color: tint < 0.8 ? 'cream' : tint < 0.94 ? 'lime' : 'violet',
         };
       });
 
@@ -227,29 +378,7 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         };
       });
 
-      // Depth bloom — TWO tones painted once per resize into the same
-      // offscreen canvas (still one drawImage per frame): a violet radial
-      // around the orbital system (P1-5: 0.11 → 0.16 — a visible light
-      // source) + a wide cream horizon glow at the very bottom, as if the
-      // ink lifted a little where the page continues below the fold
-      // (0.07 → 0.09, lifted with the rest of the pass).
-      nebula = document.createElement('canvas');
-      nebula.width = Math.max(1, w);
-      nebula.height = Math.max(1, h);
-      const ng = nebula.getContext('2d');
-      if (ng) {
-        const rr = orbitR * 1.6;
-        const grad = ng.createRadialGradient(systemCx, systemCy, 0, systemCx, systemCy, rr);
-        grad.addColorStop(0, `rgba(${VIOLET[0]},${VIOLET[1]},${VIOLET[2]},0.25)`);
-        grad.addColorStop(1, 'transparent');
-        ng.fillStyle = grad;
-        ng.fillRect(0, 0, w, h);
-        const hz = ng.createRadialGradient(w * 0.5, h * 1.18, 0, w * 0.5, h * 1.18, h * 0.75);
-        hz.addColorStop(0, `rgba(${CREAM[0]},${CREAM[1]},${CREAM[2]},0.14)`);
-        hz.addColorStop(1, 'transparent');
-        ng.fillStyle = hz;
-        ng.fillRect(0, 0, w, h);
-      }
+      paintNebula();
     }
 
     function resize() {
@@ -376,30 +505,32 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
 
       // stars — two parallax layers; STATIC alpha (nothing flashes).
       // Near layer carries the full drift, far layer 40% of it → depth.
+      // r172a: light multiplies the base alpha (×1.6) — ink points on
+      // paper need more mass than cream points on ink to register.
       const starParX = (mouse.sx - 0.5) * 7;
       const starParY = (mouse.sy - 0.5) * 6;
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i]!;
         const k = s.depth === 1 ? 1 : 0.4;
-        ctx.globalAlpha = s.base * fade;
-        ctx.fillStyle = s.color;
+        ctx.globalAlpha = cap1(s.base * alpha.star) * fade;
+        ctx.fillStyle = starColors[s.color];
         ctx.beginPath();
         ctx.arc(s.x * w + starParX * k, s.y * h + starParY * k, s.r, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // orbit rings — thin flat cream hairlines (1px); parallax amplitude
-      // trimmed ~40% (calm, not playful)
+      // orbit rings — thin flat hairlines (1px); parallax amplitude
+      // trimmed ~40% (calm, not playful). r172a: light ×1.8 mist.
       const orbitParX = (mouse.sx - 0.5) * 13;
       const orbitParY = (mouse.sy - 0.5) * 10;
       const scale = systemScale();
       const cx = systemCx + orbitParX;
       const cy = systemCy + orbitParY;
       ctx.lineWidth = 1;
-      ctx.strokeStyle = RING_STROKE;
+      ctx.strokeStyle = ringStroke;
       for (let i = 0; i < ORBITS.length; i++) {
         const o = ORBITS[i]!;
-        ctx.globalAlpha = o.mist * fade;
+        ctx.globalAlpha = cap1(o.mist * alpha.ring) * fade;
         ctx.beginPath();
         ctx.ellipse(cx, cy, orbitR * o.f * scale, orbitR * o.f * scale * squash, o.rot, 0, Math.PI * 2);
         ctx.stroke();
@@ -428,16 +559,17 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         n.y = scratch.y + oy;
       }
 
-      // constellation links between near nodes (P1-5: 0.17 → 0.22)
+      // constellation links between near nodes (P1-5: 0.17 → 0.22;
+      // r172a: light ×1.65 — the thread family must read on paper)
       ctx.lineWidth = 1;
-      ctx.strokeStyle = LINK_STROKE;
+      ctx.strokeStyle = linkStroke;
       for (let i = 0; i < nodes.length; i++) {
         const a = nodes[i]!;
         for (let k = i + 1; k < nodes.length; k++) {
           const b = nodes[k]!;
           const d = Math.hypot(a.x - b.x, a.y - b.y);
           if (d < linkDist) {
-            ctx.globalAlpha = (1 - d / linkDist) * 0.26 * fade;
+            ctx.globalAlpha = cap1((1 - d / linkDist) * 0.26 * alpha.link) * fade;
             ctx.beginPath();
             ctx.moveTo(a.x + orbitParX, a.y + orbitParY);
             ctx.lineTo(b.x + orbitParX, b.y + orbitParY);
@@ -454,21 +586,22 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         const gs = n.r * 12.5;
         ctx.globalAlpha = fade;
         ctx.drawImage(sprite, n.x + orbitParX - gs / 2, n.y + orbitParY - gs / 2, gs, gs);
-        ctx.fillStyle = NODE_FILL[n.color];
+        ctx.fillStyle = nodeFill[n.color];
         ctx.beginPath();
         ctx.arc(n.x + orbitParX, n.y + orbitParY, n.r, 0, Math.PI * 2);
         ctx.fill();
       }
 
       // traveller + trail — front layer, same system parallax (P1-5:
-      // trail α 0.32 → 0.42, head glow 52 → 60px — the learner reads)
+      // trail α 0.32 → 0.42, head glow 52 → 60px — the learner reads;
+      // r172a: light rides the ×1.65 link multiplier on the trail)
       if (!reducedMotion) updateTraveller(dt);
-      ctx.strokeStyle = TRAIL_STROKE;
+      ctx.strokeStyle = trailStroke;
       for (let i = 1; i < trailLen; i++) {
         const i0 = trailIndex(i - 1);
         const i1 = trailIndex(i);
         const t = (i + 1) / trailLen;
-        ctx.globalAlpha = t * 0.5 * fade;
+        ctx.globalAlpha = cap1(t * 0.5 * alpha.link) * fade;
         ctx.lineWidth = 1 + t * 1.6;
         ctx.beginPath();
         ctx.moveTo(trailX[i0]! + orbitParX, trailY[i0]! + orbitParY);
@@ -481,7 +614,7 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         const hy = trailY[head]! + orbitParY;
         ctx.globalAlpha = fade;
         ctx.drawImage(glowLime, hx - 33, hy - 33, 66, 66);
-        ctx.fillStyle = HEAD_FILL;
+        ctx.fillStyle = headFill;
         ctx.beginPath();
         ctx.arc(hx, hy, 2.4, 0, Math.PI * 2);
         ctx.fill();
@@ -590,11 +723,25 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
       });
     };
 
+    // r172a — theme observer: data-theme flips (the shared ThemeToggle,
+    // useThemeSync, the profile-sync hook) rebuild the palette, glow
+    // sprites + nebula and repaint. Installed for BOTH the live loop
+    // and the reduced-motion static frame (a still scene re-lights
+    // too); disconnected in teardown with everything else.
+    const themeObserver = new MutationObserver(() => {
+      applyPalette();
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+
     // ── boot / teardown ───────────────────────────────────────────────
     const teardown = () => {
       running = false;
       io.disconnect();
       ro.disconnect();
+      themeObserver.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('mousemove', onMouse);
@@ -605,12 +752,12 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
     };
 
     try {
-      // P1-5 visibility lift: glow cores ×1.3 (0.31/0.26/0.22, was
-      // 0.24/0.20/0.17) — lit bodies, still flat craft. The horizon
-      // nebula does the heavy lifting.
-      glowLime = makeGlowSprite(64, LIME, 0.38);
-      glowViolet = makeGlowSprite(64, VIOLET, 0.32);
-      glowCream = makeGlowSprite(64, CREAM, 0.27);
+      // r172a: the palette (live computed --ln-* tokens + light
+      // multipliers) resolves the glow sprites + color strings first;
+      // glow cores ride the ×1.3 light multiplier (P1-5's authored
+      // 0.38/0.32/0.27 values are the night baseline). resize() then
+      // sizes the canvas and builds the scene against that palette.
+      applyPalette();
       resize();
     } catch {
       setFailed(true);

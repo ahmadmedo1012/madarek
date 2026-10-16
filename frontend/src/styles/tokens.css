@@ -405,39 +405,24 @@
     /* (r148-d: --section-gap retired — zero consumers; --sp-12 stays
        as a raw rung of the 4px ladder the export scale pins) */
 
-    /* ─── Orbit Ink — round-3 landing palette (R3-W2-6) ─────────────
+    /* ─── Orbit Ink — landing family (R3-W2-6 · r172a re-grounded) ──
        Madarek "Orbit Ink" — round-3 pivot: inspired by the reference's
-       discipline, 100% original. The landing page's own scene family —
-       flat deep-ink grounds, warm cream type, lime + violet accents.
-       Declared on plain :root like --gold-soft: the landing paints these
-       exact values in BOTH data-themes (its dark stage is intentional),
-       so a single definition is correct and the theme blocks never
-       remap it. Landing-scoped by consumption (the --ln-* namespace is
-       only referenced from landing.css), not by selector.
+       discipline, 100% original. The landing page's own scene family.
+       r172a: the COLOR half of the family moved into BOTH theme blocks
+       (light after --journey-glow, dark at its block's tail) — the
+       landing is now a first-class two-theme surface grounded on the
+       canonical var(--bg) (cream/night; was a fixed #252A3E ink stage
+       painted identically in both data-themes). Landing-scoped by
+       consumption (the --ln-* namespace is only referenced from
+       landing.css + the landing TSX), not by selector. What STAYS on
+       plain :root is the theme-independent half of the family — the
+       geometry/type/motion tokens below (the theme blocks never
+       remap them):
 
-       WCAG duty (relative luminance, WCAG 2.1 — node-verified, see
-       worklog R3-W2-6):
-       · --ln-cream #F5F3E7 (L=0.8928) on --ln-ink #252A3E (L=0.0240) →
-         12.75:1 ✓ AAA body text (14.48:1 on --ln-ink-2).
-       · --ln-cream-dim #C9C6B4 (L=0.5610) on --ln-ink → 8.26:1 ✓ AAA
-         (9.39:1 on --ln-ink-2) — no adjustment needed.
-       · --ln-lime #DFEDB2 (L=0.7947) on --ln-ink → 11.42:1 ✓ AAA;
-         --ln-lime-deep #B9D778 → 8.82:1 ✓ AAA. Hover buttons invert the
-         pair (ink text on lime fill) at the same 11.42:1.
-       · --ln-violet #7A6BF2 on --ln-ink → 3.52:1 — accent / large-text
-         use only, never body copy; --ln-violet-deep #4E2FB8 → 1.64:1 —
-         decorative depth fills only, never text or icon strokes. */
+       WCAG duty now lives per-theme in the two blocks (values +
+       measured ratios inline there — light was axe-verified live in
+       r172a, see the light block's notes). */
 
-    --ln-ink:        #252A3E;   /* primary flat ground (ink family) */
-    --ln-ink-2:      #1C2032;   /* darker step — scene separation */
-    --ln-cream:      #F5F3E7;   /* primary text on ink — 12.75:1 AAA */
-    --ln-cream-dim:  #C9C6B4;   /* secondary text — 8.26:1 AAA on ink */
-    --ln-lime:       #DFEDB2;   /* accent 1 (pistachio) */
-    --ln-lime-deep:  #B9D778;   /* hover/active lime — 8.82:1 on ink */
-    --ln-violet:     #7A6BF2;   /* accent 2 — large-text/accent only */
-    --ln-violet-deep:#4E2FB8;   /* depth — decorative fill only */
-    --ln-line:       rgba(245,243,231,0.14);  /* 1px hairline on ink */
-    --ln-line-soft:  rgba(245,243,231,0.07);  /* resting card border */
     --ln-grain-op:   0.075;    /* grain veil opacity. P3-22 lifted the base
                                  0.05 → 0.075 — “the one permanent texture
                                  must be perceivable, not theoretical” — and
@@ -780,6 +765,49 @@
        floats the auth card on the same ambient wash (pinned by
        AuthPage-alignment.test.tsx). */
     --journey-glow:        rgba(181, 116, 56, 0.10);   /* ambient wash */
+
+    /* ─── Orbit Ink — LIGHT remap (r172a: the landing joins the
+       two-theme system; was a fixed #252A3E dark stage in both
+       themes). Grounds alias the canonical var(--bg); text flips to
+       the ink family; lime collapses to its dark ink (the bright
+       pistachio is illegible on paper); structural hairlines alias
+       the canonical --rule family; the NEW --ln-scene-* pair carries
+       decorative strokes with roughly DOUBLE the authored cream-alpha
+       (the 0.14/0.07 cream strokes were VLM-measured "nearly
+       invisible" on paper).
+
+       WCAG duty (relative luminance, WCAG 2.1 — node-verified, then
+       axe-measured live on the shipped page, r172a):
+       · --ln-cream #191918 on --ln-ink #FBFAF9 → 16.88:1 AAA body.
+       · --ln-cream-dim #5F5D57 → 6.31:1 on the ground / 5.58:1 on the
+         sand step --ln-ink-2 #F1ECDF. (The app's own --text-muted
+         #6E6C65 measured 4.45:1 on that sand step and was axe-caught
+         live — dim deliberately rides one step darker so every
+         landing surface clears 4.5:1.)
+       · --ln-lime #55701D → 5.41:1 ground / 4.79:1 sand — the light
+         pair COLLAPSES to the lime ink (base ≡ deep): .ln-label is
+         12px lime text that lives on the sand journey chapter, so the
+         base slot must carry the 4.5-safe ink itself.
+       · --ln-violet #7A6BF2 → 3.86:1 — icons/large-accent tier only
+         (same tier it holds in dark); --ln-violet-deep inverts into
+         the light ::selection highlight (ink on lilac ≈ 12.2:1 — its
+         only consumer is landing.css ::selection).
+       · The primary CTA / skip-link no longer live here at all —
+         landing.css points them at the canonical accent pair
+         (copper #B57438 + --accent-fg #1A0F06 = 4.95:1), the same
+         recipe as .btn.accent. */
+    --ln-ink:        var(--bg);            /* cream ground #FBFAF9 */
+    --ln-ink-2:      var(--c-sand-bg);     /* warm scene step #F1ECDF */
+    --ln-cream:      var(--neutral-900);   /* ink #191918 — 16.88:1 AAA */
+    --ln-cream-dim:  #5F5D57;              /* ≥5.58:1 on every landing surface */
+    --ln-lime:       #55701D;              /* lime ink — editorial accents */
+    --ln-lime-deep:  #55701D;              /* pair collapses in light (see note) */
+    --ln-violet:     #7A6BF2;              /* accent 2 — icon/large tier */
+    --ln-violet-deep:#D7D3FB;              /* light ::selection highlight */
+    --ln-line:       var(--rule);          /* canonical hairline #E9E7E2 */
+    --ln-line-soft:  var(--border-faint);  /* canonical resting edge */
+    --ln-scene-line: rgba(25,25,24,0.28);  /* decorative strokes — ink, ~2× dark alpha */
+    --ln-scene-soft: rgba(25,25,24,0.14);  /* decorative resting strokes */
   }
 
   /* ════════════════════════════════════════════════════════════════════
@@ -966,6 +994,36 @@
        ticker variants retired with the light block's set (see the
        light theme's note); the gold-thread glow survives for auth.css. */
     --journey-glow:        rgba(233,180,76,0.14);
+
+    /* ─── Orbit Ink — DARK remap (r172a). The authored round-3 night
+       palette, now expressed as the explicit dark half of the
+       re-grounded landing family (was the single plain-:root
+       definition both themes consumed). The GROUND follows the
+       platform: --ln-ink aliases the canonical night --bg #070B16
+       (was the fixed #252A3E), and --ln-ink-2 rides the night ramp's
+       neutral-100 scene step (#121A36 — one step off the ground, the
+       same separation grammar the light block's sand step uses).
+       Cream/lime/violet keep their authored values (the Orbit Ink
+       night is the flagship the product's gold accent family already
+       mirrors); hairlines alias the canonical --rule family; the
+       --ln-scene-* pair carries the authored cream-alpha decorative
+       strokes verbatim. WCAG duty (node-verified on the NEW ground):
+       cream #F5F3E7 on #070B16 → 17.65:1 AAA · dim #C9C6B4 → 11.44:1
+       (9.96:1 on the scene step) · lime #DFEDB2 → 15.81:1 · lime-deep
+       #B9D778 → 12.22:1 · violet #7A6BF2 → 4.88:1 (icon/large tier
+       only) · night ::selection cream on #4E2FB8 → 7.78:1. */
+    --ln-ink:        var(--bg);            /* night ground #070B16 */
+    --ln-ink-2:      var(--neutral-100);   /* scene step #121A36 */
+    --ln-cream:      #F5F3E7;              /* primary text — 17.65:1 AAA */
+    --ln-cream-dim:  #C9C6B4;              /* secondary — 11.44:1 AAA */
+    --ln-lime:       #DFEDB2;              /* accent 1 (pistachio) — 15.81:1 */
+    --ln-lime-deep:  #B9D778;              /* hover/active lime — 12.22:1 */
+    --ln-violet:     #7A6BF2;              /* accent 2 — icon/large tier */
+    --ln-violet-deep:#4E2FB8;              /* night ::selection ground (cream on it 7.78:1) */
+    --ln-line:       var(--rule);          /* canonical night hairline #1B2444 */
+    --ln-line-soft:  var(--border-faint);  /* canonical resting edge */
+    --ln-scene-line: rgba(245,243,231,0.14); /* decorative strokes — authored cream alpha */
+    --ln-scene-soft: rgba(245,243,231,0.07); /* decorative resting strokes */
   }
 
 }

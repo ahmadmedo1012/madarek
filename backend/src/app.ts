@@ -82,8 +82,12 @@ const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
  */
 /* r163 (D1): pin refreshed after the theme bootstrap's persisted-session
  * probe moved from sessionStorage to localStorage — the substrate the
- * auth store actually writes (r162 pinned the sessionId-read variant). */
-const THEME_BOOTSTRAP_SHA256 = 'DVvYfRpA8XKx/zQlCz8S2wNvm++oP/bOHZ1LO+ADHJQ=';
+ * auth store actually writes (r162 pinned the sessionId-read variant).
+ * r172a: pin refreshed again — the r162 (R1) landing-boot heuristic
+ * (data-landing-boot + the #252A3E theme-color override) was retired
+ * end-to-end with the landing's two-theme re-grounding; the bootstrap
+ * now resolves the theme and syncs theme-color only. */
+const THEME_BOOTSTRAP_SHA256 = 'U4sTnQg8QBxUnke9CmispMPonECA5Z12VkqqdUs/uO4=';
 const JSON_LD_SHA256 = 'GAYSjtUnNib298VwQUIkYNYTt+UtlJ1hOQU4tThmKz0=';
 
 export function createApp() {

@@ -1,6 +1,6 @@
-import { BrowserRouter, Link, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { queryClient } from './lib/queryClient';
 import { AppShell, ProtectedRoute } from './components/layout/AppShell';
@@ -153,50 +153,6 @@ function HomeRedirect() {
   return <Navigate to={ROLE_HOME[user.role]} replace />;
 }
 
-/** r162 (R1): React owner of the landing boot ground.
- *
- *  `html[data-landing-boot]` paints the Orbit Ink ground (body +
- *  hydration splash — polish.css r162 section) for a GUEST on `/`.
- *  The theme bootstrap in index.html sets it pre-React (pathname `/`
- *  + no persisted mdrk-auth session) so the first styled frame of a
- *  public cold-load is already ink — no cream→ink world flash at the
- *  product's front door. This hook takes ownership once the auth
- *  store is hydrated and keeps the attribute in lockstep with the
- *  router's actual verdict:
- *    · guest on `/` (HomeRedirect → LandingPage): ON — the ink
- *      ground stays while the landing chunk fetches, hands over to
- *      `.landing` seamlessly, and stays as the overscroll reveal
- *      color behind the landing;
- *    · authed user, or ANY other route: OFF — authed reloads of `/`
- *      keep the product ground through the redirect (the bootstrap's
- *  localStorage session heuristic already chose the product ground
- *  for them — r163 D1: it reads the same substrate the store writes
- *  — so the pre-hydration window never flips them to ink), and
- *  in-app navigations (landing → /auth, /auth back-home) swap
- *  worlds consciously under the destination page's own opaque ground.
- *
- *  Pre-hydration the effect is inert ON PURPOSE: the bootstrap's
- *  heuristic owns that window (a null user is not yet knowledge).
- *  The MutationObserver in index.html syncs the theme-color meta
- *  when this attribute toggles, exactly like a theme flip.
- *
- *  Unmount cleanup: if AppRoutes itself is replaced by the error
- *  boundary's fallback (product-world), the boot ground goes with
- *  it. */
-function useLandingBootGround() {
-  const location = useLocation();
-  const user = useAuthStore((s) => s.user);
-  const isHydrated = useAuthStore((s) => s.isHydrated);
-  useEffect(() => {
-    if (!isHydrated) return;
-    const guestOnLanding = location.pathname === '/' && user == null;
-    document.documentElement.toggleAttribute('data-landing-boot', guestOnLanding);
-    return () => {
-      document.documentElement.removeAttribute('data-landing-boot');
-    };
-  }, [isHydrated, location.pathname, user]);
-}
-
 /** Guest-only guard (r157, 6A4-11): /auth + /auth/register.
  *
  *  An authed user landing on a guest surface (stale bookmark, browser
@@ -271,7 +227,11 @@ function CollegesLayout() {
  *  their own loading languages: splash for shell-level waits,
  *  page-shaped skeletons only inside the operational shell. */
 export function AppRoutes() {
-  useLandingBootGround();
+  /* (r172a: useLandingBootGround — the r162 (R1) React owner of the
+   *  landing boot ground — was RETIRED with the whole data-landing-boot
+   *  machinery: the landing grounds itself on var(--bg) in both themes
+   *  now, so body/splash/landing paint one ground from the first styled
+   *  frame and there is no world-crossing window left to own.) */
   return (
     <Suspense fallback={<HydrationSplash />}>
       <Routes>

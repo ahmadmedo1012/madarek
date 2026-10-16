@@ -49,10 +49,13 @@ import { useReducedMotion } from '../motion/useReducedMotion';
 
 /** Hover pop — var()-chained to the Orbit Ink lime token with hex fallback. */
 const DOT_LIME = 'var(--ln-lime, #DFEDB2)';
-/** Idle paint — flat cream (P2-13: 0.5 → 0.65 alpha — findable at rest). */
-const DOT_IDLE = 'rgba(245,243,231,0.65)';
+/** Idle paint — r172a: was the frozen cream rgba literal (invisible on
+ * the light ground); now a theme-aware --ln-cream derivation (ink 65%
+ * on paper / cream 65% on night — the dots flip polarity with the
+ * tokens, same authored alpha). */
+const DOT_IDLE = 'color-mix(in srgb, var(--ln-cream) 65%, transparent)';
 /** Resting-cycle paint — the one gently lit college (near-full cream). */
-const DOT_REST = 'rgba(245,243,231,0.95)';
+const DOT_REST = 'color-mix(in srgb, var(--ln-cream) 95%, transparent)';
 /** Legend-only colors — used by the mobile domain strip, never in the sky. */
 const DOT_VIOLET = 'var(--ln-violet, #7A6BF2)';
 const DOT_CREAM = 'var(--ln-cream, #F5F3E7)';

@@ -27,10 +27,13 @@ type Pt = { x: number; y: number };
 
 /** Lit thread — r149 (R3-A6 #4c): cream كالكلاس في landing.css —
  * كان هذا السطر الـinline الوحيد خارج انضباط اللون الواحد
- * (lime غير مسجل في قائمة المشهد). الكريمة على الحبر = تباين كامل. */
+ * (lime غير مسجل في قائمة المشهد). الكريمة على الحبر = تباين كامل.
+ * r172a: مع أرض الثيمين، الكريمة تتبع --ln-cream (حبر على الورق). */
 const LIGHT_STROKE = 'var(--ln-cream)';
-/** Un-lit track — cream hairline. */
-const BASE_STROKE = 'rgba(245,243,231,0.14)';
+/** Un-lit track — r172a: was the frozen cream rgba literal (invisible
+ * on the light ground); now the theme-aware scene-stroke token (ink
+ * 0.28 on paper / authored cream 0.14 on night — tokens.css). */
+const BASE_STROKE = 'var(--ln-scene-line)';
 /** Reduced motion: static ~35% progress (dashoffset = 1 − 0.35). */
 const STATIC_DASHOFFSET = 0.65;
 

@@ -127,48 +127,16 @@
         } catch (_) {
           document.documentElement.setAttribute('data-theme', 'dark'); /* r148 (AUDIT-5 M1): كان 'light' — نفس محاذاة الافتراضي */
         }
-        /* r162 (R1) — route-aware boot ground for the landing world.
-           The public cold-load of `/` used to paint the PRODUCT ground
-           (var(--bg) — cream/night) from the first styled frame through
-           the hydration splash while the landing chunk fetched, then
-           flipped to the Orbit Ink world — a two-worlds flash at the
-           product's front door (harshest in light mode; reproduced live,
-           and r161's own honest note carried it as remaining). Pre-React
-           we cannot know the router's verdict, but we can know enough:
-           pathname `/` + no persisted session means the router will
-           serve the landing to a GUEST (HomeRedirect: no user →
-           LandingPage). The session store (`mdrk-auth`) persists in
-           localStorage (auth.store.ts resolveStringStorage —
-           globalThis.localStorage, with a non-persistent in-memory
-           fallback only for hardened privacy modes where the write
-           probe throws; the memory fallback never survives a reload,
-           so a fresh load there is genuinely a guest and this
-           verdict stays correct), partialized to {user, accessToken}
-           — an authed reload keeps the product ground and redirects
-           to the role home with zero new flash. r163 (D1): this
-           script originally read sessionStorage while the store
-           writes localStorage — the session was never visible here,
-           so every authed reload of `/` painted the ink ground for
-           the whole pre-hydration window and flashed to the product
-           world on hydration (the exact two-worlds flash r162 killed
-           for guests, inverted onto authed users; reproduced by
-           freezing the pre-hydration window). Read the SAME
-           substrate the store writes. React owns the attribute once
-           the store is hydrated (useLandingBootGround in App.tsx)
-           and corrects the heuristic either way; the pre-hydration
-           window is the only window where this attribute exists
-           without its React owner. */
-        try {
-          var persistedSession = localStorage.getItem('mdrk-auth');
-          var hasSessionUser = false;
-          if (persistedSession) {
-            var parsedSession = JSON.parse(persistedSession);
-            hasSessionUser = !!(parsedSession && parsedSession.state && parsedSession.state.user);
-          }
-          if (location.pathname === '/' && !hasSessionUser) {
-            document.documentElement.setAttribute('data-landing-boot', '');
-          }
-        } catch (_) {}
+        /* r172a — the r162 (R1) landing-boot heuristic (pathname `/` +
+           no persisted session → html[data-landing-boot]) is RETIRED:
+           the landing no longer paints a private ink ground — it is a
+           first-class two-theme surface grounded on the canonical
+           var(--bg) in BOTH data-themes (tokens.css --ln-* remap), so
+           body/splash/landing all paint the same ground from the FIRST
+           styled frame and there is no world-crossing flash to paper
+           over. The #252A3E theme-color override went with it: the
+           browser chrome follows the resolved theme, exactly like the
+           rest of the product. */
         /* wave 2-a — theme-color follows the RESOLVED theme (stored
              preference + runtime toggles via useThemeSync), not just the
              OS scheme. The two media-query metas above remain as the
@@ -180,14 +148,6 @@
             document.documentElement.getAttribute('data-theme') === 'dark'
               ? '#070B16'
               : '#FBFAF9';
-          /* r162 (R4): while the landing boot ground owns the page, the
-             browser chrome (address-bar tint) follows the Orbit Ink
-             world instead of the product theme — the ink landing is the
-             landing's ground in BOTH data-themes. Mirrors --ln-ink
-             (tokens.css); this script cannot read CSS vars pre-style. */
-          if (document.documentElement.hasAttribute('data-landing-boot')) {
-            color = '#252A3E';
-          }
           var metas = document.querySelectorAll('meta[name="theme-color"]');
           for (var i = 0; i < metas.length; i++) {
             metas[i].removeAttribute('media');
@@ -197,9 +157,9 @@
         syncThemeColor();
         new MutationObserver(syncThemeColor).observe(
           document.documentElement,
-          /* r162 (R1/R4): data-landing-boot toggles (React owner) sync
-             the chrome tint the same way theme flips do. */
-          { attributes: true, attributeFilter: ['data-theme', 'data-landing-boot'] },
+          /* r172a: data-landing-boot retired with the boot-hack — the
+             observer watches the theme attribute alone again. */
+          { attributes: true, attributeFilter: ['data-theme'] },
         );
       })();
     </script>

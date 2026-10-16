@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { CollegesPopover } from '../components/CollegesPopover';
-import { useThemeSync } from '../components/layout/ThemeToggle';
+import { ThemeToggle, useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { LibyaFlag } from '../components/LibyaFlag';
 import { RevealCssClass } from '../hooks/useReveal';
@@ -24,8 +24,10 @@ import { CollegeConstellation } from '../components/landing/CollegeConstellation
 import { JourneyLightPath } from '../components/landing/JourneyLightPath';
 import { HeroDepthLayer } from '../components/landing/HeroDepthLayer';
 import { Parallax } from '../components/motion/Parallax';
-// landing.css is this page's own sheet (dark immersive world, scoped to
-// .landing); since r151h the colleges popover surfaces ride their own
+// landing.css is this page's own sheet (the Orbit Ink world, scoped to
+// .landing — a first-class TWO-THEME surface since r172a: it grounds
+// itself on the canonical var(--bg) and follows the shared theme
+// store); since r151h the colleges popover surfaces ride their own
 // dedicated sheet (colleges-popover.css, imported by <CollegesPopover />)
 // so this chunk no longer carries the college-gallery CSS.
 import '../styles/landing.css';
@@ -341,6 +343,13 @@ export default function LandingPage() {
           </nav>
 
           <div className="landing-header-cta">
+            {/* r172a: the REAL theme control — the same shared
+                ThemeToggle/theme.store the product shell mounts
+                (فاتح · داكن · تلقائي). No second theme state anywhere:
+                the toggle writes madarek-theme, useThemeSync applies
+                data-theme, and every --ln-* token follows. ≤640px the
+                pill yields to the labeled mobile-menu row below. */}
+            <ThemeToggle />
             {/* r164b: the funnel splits — login keeps /auth, the primary
                 START verb carries the visitor to /auth/register (the
                 register form is the destination the label promises). */}
@@ -386,8 +395,19 @@ export default function LandingPage() {
             <a href="#progress" className="btn ghost">النتائج</a>
             {/* r164b: returning visitors had NO login affordance on mobile —
                 ≤1080px hides the header ghost pair, so the menu was
-                register-only. The ghost row above explores; this one
+                register-only. The ghost rows above explore; the one below
                 completes the both-way funnel (تسجيل الدخول = /auth). */}
+            {/* r172a: labeled theme row — the ≤640px home of the theme
+                control (the header pill yields there; landing.css §3b).
+                stopPropagation: flipping the theme must not close the
+                menu — the visitor may want to try both looks. */}
+            <div
+              className="landing-mobile-theme"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <span className="landing-mobile-theme-label">المظهر</span>
+              <ThemeToggle />
+            </div>
             <Link to="/auth" className="btn ghost">تسجيل الدخول</Link>
             <Link to="/auth/register" className="btn primary full">
               ابدأ الآن
