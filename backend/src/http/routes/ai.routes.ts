@@ -387,6 +387,19 @@ const aiProvider = getAiProvider();
  * name merely because it speaks the same protocol. */
 const aiProviderLabel = aiProvider ? providerLabelFromBaseUrl(aiProvider.baseUrl) : 'local';
 
+/** r176i: the attempted-route string. With an ordered AI_MODELS list
+ * the route IS the list (joined, comma-separated — still one string
+ * for the envelope/telemetry `model` fields); otherwise the
+ * configured router id. Used as the attribution FALLBACK (a response
+ * without a provider-reported model can never claim one fixed model
+ * the list no longer promises) and as failure telemetry's honest
+ * "what was attempted". Null in local mode. */
+const aiRouteId = aiProvider
+  ? aiProvider.models.length > 0
+    ? aiProvider.models.join(',')
+    : aiProvider.model
+  : null;
+
 /** The real-provider reply. NO silent fallback on failure — the owner
  * configured a real model, so an honest Arabic error + retry (the FE
  * already renders one) beats a template reply wearing an LLM badge.
@@ -418,9 +431,11 @@ async function composeReplyWithProvider(
      * land on a different underlying model each response, so the
      * provider's own `model` field is the only honest per-response
      * truth. When the provider omitted it, attributedModel() falls
-     * back to the configured router id clearly flagged
-     * `(unattributed)` — never presented as the exact model. */
-    model: attributedModel(completion.model, aiProvider!.model),
+     * back to the configured route clearly flagged
+     * `(unattributed)` — never presented as the exact model. r176i:
+     * the fallback is the AI_MODELS list (joined) when one is set —
+     * `openrouter/free` is no longer the attempted route. */
+    model: attributedModel(completion.model, aiRouteId!),
   };
 }
 
@@ -554,9 +569,11 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
       latencyMs: Date.now() - startedAt,
       success: false,
       errorMessage: `${failureKind}${failureDetail}`.slice(0, 200),
-      // P4: a provider failure is attributed to the model that was
-      // attempted (local-mode failures keep the composer tag).
-      model: aiProvider?.model,
+      // P4: a provider failure is attributed to the route that was
+      // attempted (local-mode failures keep the composer tag). r176i:
+      // with an AI_MODELS list the attempted route is the LIST
+      // (joined), not the stale `openrouter/free` router id.
+      model: aiRouteId ?? undefined,
     });
     // r176a: classified client-safe Arabic messages — a free-tier 429
     // ("wait a minute"), a timeout ("try again — the router will likely
@@ -585,7 +602,14 @@ router.get('/config', (_req, res) => {
   res.json({
     data: {
       provider: aiProviderLabel,
-      model: aiProvider?.model ?? null,
+      /* r176i: the honest routing surface — an ordered models list is
+       * itself the route (the per-response attribution in the chat
+       * envelope still names whichever listed model actually answered). */
+      model: aiProvider
+        ? aiProvider.models.length > 0
+          ? `${aiProvider.models[0]}${aiProvider.models.length > 1 ? ` +${aiProvider.models.length - 1}` : ''}`
+          : aiProvider.model
+        : null,
     },
   });
 });

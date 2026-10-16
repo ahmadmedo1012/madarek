@@ -70,6 +70,28 @@ const schema = z
     // a code deploy. Bounds keep a typo from disabling the ceiling
     // entirely or pinning the route for minutes.
     AI_TIMEOUT_MS: z.coerce.number().int().min(5_000).max(90_000).optional(),
+    // r176i (evidence-based routing): an optional ORDERED list of
+    // OpenRouter free-model ids. The bare `openrouter/free` router
+    // randomly lands on non-chat models (measured twice live: the
+    // nemotron-3.5-content-safety CLASSIFIER answered «User Safety:
+    // safe» as a chat reply). When set, the provider sends OpenRouter's
+    // `models` array instead of the router id — routing stays strictly
+    // within the listed FREE models in priority order. Live-measured
+    // contract (2026-10-16, direct 400 probe): the array must hold
+    // ≤3 ids — the bounds pin exactly that. Unset = the current
+    // openrouter/free behavior (zero change). Each id ≤120 chars (a
+    // fat-fingered paste must not become a request-body bomb).
+    AI_MODELS: z
+      .string()
+      .trim()
+      .max(400)
+      .refine((v) => v.split(',').every((m) => m.trim().length > 0 && m.trim().length <= 120), {
+        message: 'AI_MODELS must be a comma-separated list of model ids (≤3 entries, ≤120 chars each)',
+      })
+      .refine((v) => v.split(',').length <= 3, {
+        message: 'AI_MODELS must list at most 3 models (OpenRouter live contract: the models array must have 3 items or fewer)',
+      })
+      .optional(),
   })
   .superRefine((cfg, ctx) => {
     // Fail-closed: a half-configured s3 driver must stop boot with a

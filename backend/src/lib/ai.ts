@@ -69,6 +69,13 @@ export interface AiProviderConfig {
   model: string;
   /** Hard ceiling for the whole round trip. */
   timeoutMs: number;
+  /** r176i: the ordered OpenRouter free-models fallback list (from
+   * AI_MODELS, live-measured ceiling of 3). Empty = the configured
+   * router id does the routing (the historical behavior). When set,
+   * the request carries OpenRouter's `models` array and NOT `model` —
+   * measured live: the array is ignored whenever `model` is also
+   * present, and the API 400s above 3 ids. */
+  models: string[];
 }
 
 /** Request ceiling — replies stay concise and the cost stays bounded.
@@ -314,6 +321,27 @@ export function buildGenericSystemPrompt(teachingLines: readonly string[] = []):
   ].join('\n');
 }
 
+/** Parse AI_MODELS (r176i): comma-separated ids → a trimmed, deduped,
+ * bounded ordered list. Empty/blank entries are dropped (a trailing
+ * comma must not route anywhere). The 3-id ceiling is OpenRouter's
+ * LIVE contract — a direct probe returned 400 "'models' array must
+ * have 3 items or fewer" (2026-10-16); the slice is the last line of
+ * defense under the env-level bound. Pure — pinned in ai-provider
+ * tests. */
+export function parseAiModelsList(raw: string | undefined): string[] {
+  if (!raw) return [];
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const entry of raw.split(',')) {
+    const id = entry.trim();
+    if (id.length > 0 && !seen.has(id)) {
+      seen.add(id);
+      out.push(id);
+    }
+  }
+  return out.slice(0, 3);
+}
+
 /* ────────────────────────────────────────────────────────────────
  *  Provider attribution (r175 — OpenRouter free router)
  * ──────────────────────────────────────────────────────────────── */
@@ -510,8 +538,17 @@ export async function callOpenAiCompatible(
     res = await fetch(`${cfg.baseUrl.replace(/\/+$/, '')}/chat/completions`, {
       method: 'POST',
       headers,
+      /* r176i: OpenRouter's fallback routing — when an ordered models
+       * list is configured, send ONLY the `models` array (measured
+       * live: the array is ignored when `model` rides along, and the
+       * API 400s above 3 ids — both probed directly 2026-10-16). Any
+       * other provider keeps the plain `model` field. Free-only by
+       * contract: the env var documents that every id must be a
+       * `:free` model. */
       body: JSON.stringify({
-        model: cfg.model,
+        ...(cfg.models.length > 0 && isOpenRouterBaseUrl(cfg.baseUrl)
+          ? { models: cfg.models }
+          : { model: cfg.model }),
         messages,
         temperature: AI_TEMPERATURE,
         max_tokens: AI_MAX_OUTPUT_TOKENS,
@@ -574,6 +611,8 @@ export function getAiProvider(): AiProviderConfig | null {
           baseUrl: env.AI_BASE_URL ?? 'https://api.openai.com/v1',
           apiKey: env.AI_API_KEY,
           model: env.AI_MODEL,
+          // r176i: the ordered free-models fallback list.
+          models: parseAiModelsList(env.AI_MODELS),
           // r176a: the env-tunable round-trip ceiling (validated bounds
           // in env.ts; AI_TIMEOUT_MS exports the default for pins).
           timeoutMs: env.AI_TIMEOUT_MS ?? AI_TIMEOUT_MS,

@@ -46,6 +46,7 @@ import {
   isOpenRouterBaseUrl,
   masteryContextLines,
   masteryFactTier,
+  parseAiModelsList,
   parseChatCompletion,
   parseModelId,
   providerFailureMessage,
@@ -406,6 +407,10 @@ describe('getAiProvider (boot-frozen resolution)', () => {
     expect(envSource).toContain('AI_TIMEOUT_MS: z.coerce.number().int().min(5_000).max(90_000).optional()');
     expect(aiLibSource).toContain('timeoutMs: env.AI_TIMEOUT_MS ?? AI_TIMEOUT_MS');
   });
+
+  it('r176i: the provider resolves the ordered AI_MODELS list through parseAiModelsList (source pin)', () => {
+    expect(aiLibSource).toContain('models: parseAiModelsList(env.AI_MODELS)');
+  });
 });
 
 // ─── callOpenAiCompatible (fetch stubbed — the wire contract) ─────
@@ -414,6 +419,9 @@ const CFG = {
   baseUrl: 'https://provider.example/v1/',
   apiKey: 'sk-test-placeholder',
   model: 'test-model',
+  // r176i: the ordered fallback list — empty here = the historical
+  // single-model wire shape every pre-r176i test pins.
+  models: [],
   timeoutMs: 1000,
 };
 
@@ -481,6 +489,115 @@ describe('callOpenAiCompatible — request shape', () => {
     expect(init.headers['X-Title']).toBe(OPENROUTER_TITLE);
     expect(OPENROUTER_REFERER).toBe('https://madarek.onrender.com');
     expect(OPENROUTER_TITLE).toBe('Madarek');
+  });
+
+  it('r176i: a configured models list rides the wire as the `models` array — and `model` is ABSENT (OpenRouter ignores the array when model rides along)', async () => {
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      calls.push({ url, init });
+      return new Response(
+        JSON.stringify({
+          model: 'google/gemma-4-31b-it:free',
+          choices: [{ message: { content: 'جواب موجّه' } }],
+          usage: { prompt_tokens: 10, completion_tokens: 5 },
+        }),
+        { status: 200 },
+      );
+    });
+    const out = await callOpenAiCompatible(
+      {
+        ...CFG,
+        baseUrl: 'https://openrouter.ai/api/v1',
+        model: 'openrouter/free',
+        models: ['google/gemma-4-31b-it:free', 'nvidia/nemotron-3-super-120b-a12b:free', 'dots-studio/dots-3-note-preview:free'],
+      },
+      buildChatMessages('sys', [], 'سؤال'),
+    );
+    // The RESPONSE attribution is the provider-reported id, not the list.
+    expect(out.model).toBe('google/gemma-4-31b-it:free');
+    const body = JSON.parse((calls[0]!.init as { body: string }).body) as Record<string, unknown>;
+    expect(body.models).toEqual([
+      'google/gemma-4-31b-it:free',
+      'nvidia/nemotron-3-super-120b-a12b:free',
+      'dots-studio/dots-3-note-preview:free',
+    ]);
+    // The whole point of r176i: the array must be the ONLY routing field.
+    expect(body.model).toBeUndefined();
+    expect(body.messages).toEqual([
+      { role: 'system', content: 'sys' },
+      { role: 'user', content: 'سؤال' },
+    ]);
+    expect(body.max_tokens).toBe(AI_MAX_OUTPUT_TOKENS);
+  });
+
+  it('r176i: a models list on a NON-OpenRouter base URL keeps the plain `model` field (other providers see zero change)', async () => {
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      calls.push({ url, init });
+      return new Response(
+        JSON.stringify({ model: 'm', choices: [{ message: { content: 'جواب' } }], usage: {} }),
+        { status: 200 },
+      );
+    });
+    await callOpenAiCompatible(
+      { ...CFG, models: ['some/other-model:free', 'another/model:free'] },
+      buildChatMessages('sys', [], 'سؤال'),
+    );
+    const body = JSON.parse((calls[0]!.init as { body: string }).body) as Record<string, unknown>;
+    expect(body.model).toBe('test-model');
+    expect(body.models).toBeUndefined();
+  });
+
+  it('r176i: an EMPTY models list on OpenRouter keeps the historical single-model wire (unset AI_MODELS = zero change)', async () => {
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      calls.push({ url, init });
+      return new Response(
+        JSON.stringify({ model: 'm', choices: [{ message: { content: 'جواب' } }], usage: {} }),
+        { status: 200 },
+      );
+    });
+    await callOpenAiCompatible(
+      { ...CFG, baseUrl: 'https://openrouter.ai/api/v1', model: 'openrouter/free' },
+      buildChatMessages('sys', [], 'سؤال'),
+    );
+    const body = JSON.parse((calls[0]!.init as { body: string }).body) as Record<string, unknown>;
+    expect(body.model).toBe('openrouter/free');
+    expect(body.models).toBeUndefined();
+  });
+});
+
+describe('parseAiModelsList (r176i — the AI_MODELS contract)', () => {
+  it('parses a clean 3-id list in ORDER (the list is the priority)', () => {
+    expect(parseAiModelsList('a/model:free,b/model:free,c/model:free')).toEqual([
+      'a/model:free',
+      'b/model:free',
+      'c/model:free',
+    ]);
+  });
+
+  it('trims each id (Render env UI adds whitespace, not semantics)', () => {
+    expect(parseAiModelsList(' a/model:free ,  b/model:free ')).toEqual(['a/model:free', 'b/model:free']);
+  });
+
+  it('drops duplicates (a repeated id must not double its routing priority)', () => {
+    expect(parseAiModelsList('a/model:free,a/model:free,b/model:free')).toEqual(['a/model:free', 'b/model:free']);
+  });
+
+  it('drops blank entries (a trailing comma must not route anywhere)', () => {
+    expect(parseAiModelsList('a/model:free, ,b/model:free,')).toEqual(['a/model:free', 'b/model:free']);
+  });
+
+  it('undefined / empty / whitespace-only → [] (the mode is off)', () => {
+    expect(parseAiModelsList(undefined)).toEqual([]);
+    expect(parseAiModelsList('')).toEqual([]);
+    expect(parseAiModelsList('   ')).toEqual([]);
+  });
+
+  it('caps the list at 3 — OpenRouter\'s LIVE contract (400 "\'models\' array must have 3 items or fewer" — probed 2026-10-16)', () => {
+    // The env layer rejects >3 already; this is the last line of defense
+    // for any future caller that builds the list another way.
+    expect(parseAiModelsList('m1,m2,m3,m4,m5')).toEqual(['m1', 'm2', 'm3']);
   });
 });
 
@@ -723,7 +840,7 @@ describe('ai.routes.ts — the P4 mode switch', () => {
     expect(aiRouteSource).toContain(
       "const aiProviderLabel = aiProvider ? providerLabelFromBaseUrl(aiProvider.baseUrl) : 'local';",
     );
-    expect(aiRouteSource).toContain('model: attributedModel(completion.model, aiProvider!.model)');
+    expect(aiRouteSource).toContain('model: attributedModel(completion.model, aiRouteId!)');
     expect(aiRouteSource).toContain('engine: aiProviderLabel');
     expect(aiRouteSource).toContain('provider: aiProviderLabel');
   });
@@ -736,8 +853,9 @@ describe('ai.routes.ts — the P4 mode switch', () => {
     const catchEnd = aiRouteSource.indexOf('next(e);', catchStart);
     const catchBlock = aiRouteSource.slice(catchStart, catchEnd);
     expect(catchBlock).not.toContain('composeReply(');
-    // Failure telemetry is attributed to the attempted model.
-    expect(catchBlock).toContain('model: aiProvider?.model');
+    // Failure telemetry is attributed to the attempted route — the
+    // AI_MODELS list (joined) when set, else the configured model.
+    expect(catchBlock).toContain('model: aiRouteId');
     // r176a: the persisted errorMessage is the CLASSIFIED kind — the
     // provider response-body excerpt (which rides err.message) must
     // stay log-only, never in the DB.
@@ -745,9 +863,15 @@ describe('ai.routes.ts — the P4 mode switch', () => {
     expect(catchBlock).toContain("`${failureKind}${failureDetail}`.slice(0, 200)");
   });
 
-  it('GET /config exposes the honest surface (label + configured model, null in local mode)', () => {
+  it('GET /config exposes the honest surface (label + the actual ROUTE — list head or router id, null in local mode)', () => {
     expect(aiRouteSource).toContain("router.get('/config'");
-    expect(aiRouteSource).toContain('model: aiProvider?.model ?? null');
+    // r176i: an ordered models list is itself the route — the surface
+    // names the list head (+N), never a single fixed model that the
+    // list no longer promises.
+    expect(aiRouteSource).toContain('aiProvider.models.length > 0');
+    expect(aiRouteSource).toContain('aiProvider.models[0]');
+    // And the router id still surfaces when no list is configured.
+    expect(aiRouteSource).toContain(': aiProvider.model');
   });
 
   it('the local composer path and its transaction shape are untouched', () => {
@@ -766,11 +890,17 @@ describe('env.ts — the openai fail-closed superRefine', () => {
     expect(envSource).toContain("aiMissing.push('AI_MODEL')");
     expect(envSource).toContain('AI_PROVIDER=openai requires: ');
   });
+
+  it('r176i: AI_MODELS is bounded to the live OpenRouter contract (≤3 ids, ≤120 chars each — the 400 probe)', () => {
+    expect(envSource).toContain('AI_MODELS');
+    expect(envSource).toContain("v.split(',').length <= 3");
+    expect(envSource).toContain('m.trim().length <= 120');
+  });
 });
 
 describe('render.yaml — the AI vars are opt-in on Render', () => {
-  it('all four AI vars are sync:false (never required by the dashboard)', () => {
-    for (const key of ['AI_PROVIDER', 'AI_BASE_URL', 'AI_API_KEY', 'AI_MODEL']) {
+  it('all five AI vars are sync:false (never required by the dashboard)', () => {
+    for (const key of ['AI_PROVIDER', 'AI_BASE_URL', 'AI_API_KEY', 'AI_MODEL', 'AI_MODELS']) {
       const i = renderSource.indexOf(`- key: ${key}`);
       expect(i).toBeGreaterThan(-1);
       expect(renderSource.slice(i, i + key.length + 45)).toContain('sync: false');

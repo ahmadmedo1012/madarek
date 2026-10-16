@@ -83,7 +83,11 @@ services:
       # mode (in-process mastery-aware templates, zero external calls).
       # Set AI_PROVIDER=openai + AI_API_KEY + AI_MODEL for a real
       # OpenAI-compatible LLM; AI_BASE_URL defaults to OpenAI's v1.
-      # sync:false so Render never requires any of them.
+      # sync:false so Render never requires any of them. AI_MODELS
+      # (r176i) is the optional ordered OpenRouter free-models list
+      # (≤3 ids, comma-separated) — when set it replaces the bare
+      # router id on the wire so routing stays inside vetted chat
+      # models; per-response attribution is unaffected.
       - key: AI_PROVIDER
         sync: false
       - key: AI_BASE_URL
@@ -91,4 +95,6 @@ services:
       - key: AI_API_KEY
         sync: false
       - key: AI_MODEL
+        sync: false
+      - key: AI_MODELS
         sync: false

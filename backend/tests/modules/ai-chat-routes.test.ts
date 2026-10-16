@@ -765,3 +765,188 @@ describe('POST /api/v1/ai/chat — OPENROUTER mode (free router)', () => {
     expect(msgCreate).not.toHaveBeenCalled();
   });
 });
+
+// ── OPENROUTER mode + AI_MODELS (r176i — evidence-based routing) ──
+
+describe('POST /api/v1/ai/chat — OPENROUTER mode with the AI_MODELS list (r176i)', () => {
+  let baseUrl: string;
+  let server: ReturnType<ReturnType<typeof createApp>['listen']>;
+  let convCreate: Mock;
+  let msgCreate: Mock;
+  let telemetryCreate: Mock;
+  let masteryFindMany: Mock;
+  let historyFindMany: Mock;
+  let transaction: Mock;
+
+  /* The r176i production configuration: the free ROUTER id stays
+   * configured (the envelope fallback + the unset-list mode), but the
+   * AI_MODELS list takes over the WIRE — OpenRouter receives the
+   * ordered `models` array and NOT `model` (measured live: the array
+   * is ignored when `model` rides along). The rules under test:
+   *  · the wire body carries ONLY the `models` array;
+   *  · the per-turn attribution stays the provider-REPORTED id;
+   *  · a response WITHOUT model metadata degrades to the JOINED list,
+   *    flagged (unattributed) — never the stale `openrouter/free`;
+   *  · /ai/config names the list head (+N);
+   *  · failure telemetry attributes the ATTEMPTED route = the list. */
+  const AI_ENV = {
+    AI_PROVIDER: 'openai',
+    AI_API_KEY: 'sk-or-test-placeholder',
+    AI_MODEL: 'openrouter/free',
+    AI_BASE_URL: 'https://openrouter.ai/api/v1',
+    AI_MODELS: 'google/gemma-4-31b-it:free,nvidia/nemotron-3-super-120b-a12b:free,dots-studio/dots-3-note-preview:free',
+  } as const;
+
+  beforeAll(async () => {
+    for (const [k, v] of Object.entries(AI_ENV)) process.env[k] = v;
+    vi.resetModules();
+    const appMod = await import('../../src/app.js');
+    const dbMod = await import('../../src/db.js');
+
+    convCreate = vi.mocked(dbMod.prisma.aiConversation.create);
+    msgCreate = vi.mocked(dbMod.prisma.aiMessage.create);
+    telemetryCreate = vi.mocked(dbMod.prisma.aiTelemetry.create);
+    masteryFindMany = vi.mocked(dbMod.prisma.studentMastery.findMany);
+    historyFindMany = vi.mocked(dbMod.prisma.aiMessage.findMany);
+    transaction = vi.mocked(dbMod.prisma.$transaction);
+
+    ({ server, baseUrl } = startServer(appMod.createApp()));
+  });
+
+  afterAll(async () => {
+    await closeServer(server);
+    for (const k of Object.keys(AI_ENV)) delete process.env[k];
+  });
+
+  beforeEach(() => {
+    vi.unstubAllGlobals();
+    vi.clearAllMocks();
+    masteryFindMany.mockResolvedValue([] as never);
+    historyFindMany.mockResolvedValue([] as never);
+    vi.mocked(prisma.enrollment.findMany).mockResolvedValue([] as never);
+    vi.mocked(prisma.courseOffering.findMany).mockResolvedValue([] as never);
+    convCreate.mockResolvedValue({ id: 'conv-or-models', userId: STUDENT_ID, title: 'س', createdAt: new Date(0) } as never);
+    msgCreate.mockImplementation(
+      async (args: { data: { content: string } }) =>
+        ({ id: 'msg-or-models', content: args.data.content, tokens: 0 }) as never,
+    );
+    telemetryCreate.mockResolvedValue({} as never);
+  });
+
+  let realFetch: typeof fetch;
+  beforeEach(() => {
+    realFetch = globalThis.fetch;
+  });
+
+  function stubProviderTransport(
+    responder: (url: string, init: RequestInit) => Response | Promise<Response>,
+    calls?: Array<{ url: string; init: RequestInit }>,
+  ) {
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      const target = String(url);
+      if (target.startsWith(baseUrl)) return realFetch(url, init);
+      calls?.push({ url: target, init });
+      return responder(target, init);
+    });
+  }
+
+  it('sends ONLY the models array on the wire and attributes the provider-reported model per response', async () => {
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    stubProviderTransport(
+      () =>
+        new Response(
+          JSON.stringify({
+            model: 'nvidia/nemotron-3-super-120b-a12b:free',
+            choices: [{ message: { content: 'جواب من قائمة النماذج الموجّهة' } }],
+            usage: { prompt_tokens: 30, completion_tokens: 12 },
+          }),
+          { status: 200 },
+        ),
+      calls,
+    );
+
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال عبر القائمة'),
+    });
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { data: { reply: string; engine: string; model: string } };
+    expect(body.data.reply).toBe('جواب من قائمة النماذج الموجّهة');
+    expect(body.data.engine).toBe('openrouter');
+    // Per-response attribution: the model that ACTUALLY answered — the
+    // list is the route, not the reply.
+    expect(body.data.model).toBe('nvidia/nemotron-3-super-120b-a12b:free');
+
+    // THE r176i wire contract: the ordered array, and NO model field.
+    expect(calls).toHaveLength(1);
+    const wireBody = JSON.parse((calls[0]!.init as { body: string }).body) as Record<string, unknown>;
+    expect(wireBody.models).toEqual([
+      'google/gemma-4-31b-it:free',
+      'nvidia/nemotron-3-super-120b-a12b:free',
+      'dots-studio/dots-3-note-preview:free',
+    ]);
+    expect(wireBody.model).toBeUndefined();
+
+    // Success telemetry carries the per-RESPONSE model.
+    expect(telemetryCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ model: 'nvidia/nemotron-3-super-120b-a12b:free', success: true }),
+    });
+  });
+
+  it('a response WITHOUT model metadata degrades to the JOINED list flagged (unattributed) — not the stale router id', async () => {
+    stubProviderTransport(
+      () =>
+        new Response(
+          JSON.stringify({
+            choices: [{ message: { content: 'جواب بلا وسم نموذج' } }],
+            usage: { prompt_tokens: 10, completion_tokens: 5 },
+          }),
+          { status: 200 },
+        ),
+    );
+
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال'),
+    });
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { data: { model: string } };
+    expect(body.data.model).toBe(
+      'google/gemma-4-31b-it:free,nvidia/nemotron-3-super-120b-a12b:free,dots-studio/dots-3-note-preview:free (unattributed)',
+    );
+  });
+
+  it('GET /ai/config names the list head +N (the honest route surface)', async () => {
+    const res = await fetch(`${baseUrl}/api/v1/ai/config`, { headers: bearer() });
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { data: { provider: string; model: string | null } };
+    expect(body.data).toEqual({
+      provider: 'openrouter',
+      model: 'google/gemma-4-31b-it:free +2',
+    });
+  });
+
+  it('failure telemetry attributes the ATTEMPTED route = the joined list (not openrouter/free)', async () => {
+    stubProviderTransport(
+      () => new Response(JSON.stringify({ error: { message: 'Rate limit exceeded: free tier' } }), { status: 429 }),
+    );
+
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال سيفشل'),
+    });
+    expect(res.status).toBe(500);
+    expect(telemetryCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        model: 'google/gemma-4-31b-it:free,nvidia/nemotron-3-super-120b-a12b:free,dots-studio/dots-3-note-preview:free',
+        success: false,
+      }),
+    });
+    // NO silent fallback — nothing persisted.
+    expect(transaction).not.toHaveBeenCalled();
+    expect(msgCreate).not.toHaveBeenCalled();
+  });
+});
