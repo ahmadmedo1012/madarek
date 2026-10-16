@@ -81,6 +81,25 @@ describe('DownloadsPage — honest link targets (r157 6A7)', () => {
     mocks.materials.isError = false;
   });
 
+  it('the actions column header is real visible text — no bare aria-label on an empty th (r171c)', () => {
+    // axe-core 4.10.3 `empty-table-header` flagged the actions column
+    // live on /student/downloads: <th scope="col" aria-label="إجراءات" />
+    // — an empty cell whose accessible name never reaches the visual
+    // layer. The header now carries the same Arabic copy as
+    // OwnerUsersPage's actions header as real text content.
+    mocks.materials.data = SEEDED;
+    const { container } = renderPage();
+    const headers = Array.from(container.querySelectorAll('thead th'));
+    expect(headers).toHaveLength(6);
+    for (const th of headers) {
+      // every column header exposes real text (the accessible name is
+      // content, not a bare aria-label attribute on an empty cell)
+      expect(th.textContent?.trim(), th.outerHTML).not.toBe('');
+      expect(th.getAttribute('aria-label')).toBeNull();
+    }
+    expect(headers[5]!.textContent?.trim()).toBe('إجراءات');
+  });
+
   it('RFC 2606 reserved-host rows render «غير متوفر بعد» with ZERO anchors in the table', () => {
     mocks.materials.data = SEEDED;
     const { container } = renderPage();

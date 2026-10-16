@@ -379,14 +379,47 @@ export function AlertRow({
    helpers for tests only. Post-gate worst case on the seed palette:
    4.83:1 (#6B7280 keeps white); #3DD68C flips 1.88 → 9.38.
 
+   r171c (WCAG 1.4.3, browser-measured): the token pair alone cannot
+   clear 4.5:1 for the whole hue wheel — mid-violet grounds sit in the
+   band where BOTH token inks measure below AA at the 11–13px/600 the
+   initials render at (#9269DB → 3.99/4.41 · #8E66D6 → 4.18/4.21,
+   white/dark — the band the live audit reported on the admin user
+   tables + message inbox rows; verified against the live module via
+   axe on injected avatar DOM). Escalation rule (pure function,
+   deterministic order):
+     1. pick the better TOKEN ink by max ratio;
+     2. if that ratio ≥ 4.5 (AA, 1.4.3 — the initials are never
+        large-text) → ship it: the 21-c behavior is unchanged and the
+        seed palette never escalates (#4F8EF7 keeps dark 5.48,
+        #6B7280 keeps white 4.83, #9B6FE8 keeps dark 4.89);
+     3. otherwise escalate the candidate set with the pure extremes
+        #000000 / #FFFFFF and ship the max-ratio extreme — the same
+        documented-literal convention as the player's sealed island /
+        statutory flags (pure black/white are the only single values
+        that can rescue a mid-tone ground). For ANY ground the pure
+        pair is mathematically guaranteed to clear AA:
+        max((L+0.05)/0.05, 1.05/(L+0.05)) ≥ √21 ≈ 4.58, so step 3 can
+        never fail — the max-pick IS the keep-max fallback.
+
    Contract by `color` shape:
-   · hex            → gated ink (best of #fff / #191918)
+   · hex            → gated ink (best of #fff / #191918, escalated to
+                      #000000/#FFFFFF when the token max is < 4.5)
    · var()/other    → ink var(--text) — the only non-hex callers pass
                       neutral surface tokens (var(--surface-3), AI chat
                       user well), where the text role is the safe pair
    · undefined      → no inline ink — the CSS default pair applies
                       (accent ground + --accent-fg ink, polish.css) */
 const AVATAR_INKS = { light: '#FFFFFF', dark: '#191918' } as const;
+
+/* Pure WCAG escalation extremes (r171c step 3) — content-level color
+ * DATA consumed by reference, not a style declaration: the color gate
+ * scans style-object color keys, and these object keys (black/white)
+ * name the extreme, not a style property (verify: check-colors.sh). */
+const AVATAR_PURE_INKS = { black: '#000000', white: '#FFFFFF' } as const;
+
+/* AA text threshold (WCAG 1.4.3). The initials render at 11–16px/600 —
+ * below the 18.66px/700 large-text bar — so 4.5:1 is the gate. */
+const AVATAR_AA_TEXT = 4.5;
 
 function parseHexColor(s: string): { r: number; g: number; b: number } | null {
   const m = s.trim().replace(/^#/, '');
@@ -425,10 +458,36 @@ function avatarInk(color: string | undefined): string | undefined {
   if (!rgb) return 'var(--text)';
   const lightInk = parseHexColor(AVATAR_INKS.light)!;
   const darkInk = parseHexColor(AVATAR_INKS.dark)!;
-  return contrastRatio(lightInk, rgb) >= contrastRatio(darkInk, rgb)
-    ? AVATAR_INKS.light
-    : AVATAR_INKS.dark;
+  const rLight = contrastRatio(lightInk, rgb);
+  const rDark = contrastRatio(darkInk, rgb);
+  // Step 1–2: the better token ink (ties → light, the 21-c tie-break),
+  // shipped as-is when it clears AA.
+  if (rDark >= AVATAR_AA_TEXT || rLight >= AVATAR_AA_TEXT) {
+    return rLight >= rDark ? AVATAR_INKS.light : AVATAR_INKS.dark;
+  }
+  // Step 3: token max < 4.5 → escalate to the pure extremes and ship
+  // the max-ratio one (deterministic: black wins ties, which can only
+  // happen on a near-black ground where both are far above AA). The
+  // pure pair always clears 4.5 on a single ground (√21 ≈ 4.58 floor).
+  const blackInk = parseHexColor(AVATAR_PURE_INKS.black)!;
+  const whiteInk = parseHexColor(AVATAR_PURE_INKS.white)!;
+  return contrastRatio(blackInk, rgb) >= contrastRatio(whiteInk, rgb)
+    ? AVATAR_PURE_INKS.black
+    : AVATAR_PURE_INKS.white;
 }
+
+/** Public test helpers — exported for unit tests only (the lib/theme.ts
+ *  `__test__` convention, so avatarInk and the ratio math stay pinnable
+ *  from tests/unit without widening the component API). */
+export const __test__ = {
+  avatarInk,
+  contrastRatio,
+  parseHexColor,
+  relativeLuminance,
+  AVATAR_INKS,
+  AVATAR_PURE_INKS,
+  AVATAR_AA_TEXT,
+};
 
 export function UserAvatar({
   initials,

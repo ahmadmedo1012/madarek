@@ -594,7 +594,14 @@
   }
   /* locked — desaturated tile, ghost icon well */
   .badge-tile.locked .badge-tile-title { color: var(--text-muted); }
-  .badge-tile.locked .badge-tile-desc { color: var(--text-faint); }
+  /* r171c (WCAG 1.4.3): was var(--text-faint) — the 12px fs-xs
+     description on the tile surface sat marginal for the AA floor.
+     --text-muted keeps it comfortably (measured 5.26:1 light on the
+     white tile, 6.33:1 dark on #0D1428 — browser-computed) and
+     matches the locked title's tier, so the title/desc hierarchy
+     rests on size+weight, not a sub-AA color. --text-faint itself
+     keeps its other consumers. */
+  .badge-tile.locked .badge-tile-desc { color: var(--text-muted); }
 
   .badge-tile-icon {
     inline-size: 56px;
@@ -639,8 +646,18 @@
   }
   .badge-tile.earned .badge-tile-rarity {
     background: color-mix(in srgb, var(--rarity) 12%, var(--surface));
-    color: color-mix(in srgb, var(--rarity) 60%, var(--text));
+    /* r171c (WCAG 1.4.3, browser-measured): the text mix was 60%
+       rarity — LEGENDARY gold measured 4.47:1 in light (11px/600,
+       under the 4.5 floor; COMMON grey sat marginal at 4.79).
+       45% rarity + 55% --text darkens the ink in light AND lightens
+       it in dark (the text token flips with the theme), landing every
+       rarity ≥6.2:1 light / ≥7.1:1 dark — margin, not a pass-by-
+       rounding. The chip BACKGROUND mix stays 12% (the badge grammar:
+       fills keep the base tokens). */
+    color: color-mix(in srgb, var(--rarity) 45%, var(--text));
   }
+  /* locked chips: surface-3 + --text-muted — measured 4.58:1 light /
+     5.44:1 dark (≥4.5 both, kept as the locked grammar). */
   .badge-tile.locked .badge-tile-rarity {
     background: var(--surface-3);
     color: var(--text-muted);

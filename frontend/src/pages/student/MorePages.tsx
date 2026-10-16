@@ -1450,7 +1450,14 @@ export function DownloadsPage() {
                   <th scope="col">النوع</th>
                   <th scope="col">الحجم</th>
                   <th scope="col">التاريخ</th>
-                  <th scope="col" aria-label="إجراءات" />
+                  {/* r171c (axe empty-table-header): the actions column
+                      used to be a bare <th aria-label="إجراءات" /> — an
+                      empty cell whose accessible name never reaches the
+                      visual layer. Real visible text, same Arabic copy
+                      as OwnerUsersPage's actions header; the mobile
+                      tbl-stack layout hides thead anyway (the td's own
+                      data-label="التحميل" labels the stacked row). */}
+                  <th scope="col">إجراءات</th>
                 </tr>
               </thead>
               <tbody>
