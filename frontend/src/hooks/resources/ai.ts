@@ -18,11 +18,14 @@ export function useAiChat() {
   // r166d (WS-F5): the turn's envelope also carries per-turn engine
   // attribution (engine + model) — optional here so an older backend
   // payload (or a race with a mid-deploy flip) degrades to an untagged
-  // bubble instead of breaking the chat.
+  // bubble instead of breaking the chat. r175: `engine` is the honest
+  // provider label (openrouter/openai/local/hostname) — string, not a
+  // two-member union, because the transport mode is OpenAI-compatible
+  // for many vendors.
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: { conversationId?: string; message: string }) =>
-      unwrap<{ conversationId: string; reply: string; engine?: 'local' | 'openai'; model?: string }>(
+      unwrap<{ conversationId: string; reply: string; engine?: string; model?: string }>(
         api.post('/ai/chat', input),
       ),
     onSuccess: () => {
@@ -35,9 +38,12 @@ export function useAiChat() {
  * answering so the page badge/subtitle never claims an LLM while a
  * template composer replies (or vice versa). Cached for 5 minutes:
  * the provider is boot-frozen server-side, so re-asking per render is
- * pure noise; a stale window only delays a redeploy's mode flip. */
+ * pure noise; a stale window only delays a redeploy's mode flip.
+ * r175: `provider` is the honest LABEL — 'local', 'openai',
+ * 'openrouter', or a compatible host's name (string, not a union):
+ * routing via openrouter.ai is OpenRouter, not OpenAI. */
 export interface AiConfig {
-  provider: 'local' | 'openai';
+  provider: string;
   model: string | null;
 }
 

@@ -27,8 +27,12 @@ interface ChatMsg {
    * Present only on turns received AFTER this change (a conversation
    * loaded from the server carries no per-message engine data — those
    * bubbles stay honestly untagged). Undefined on failures (nothing
-   * was produced) and on old-backend payloads. */
-  engine?: 'local' | 'openai';
+   * was produced) and on old-backend payloads. r175: `engine` is the
+   * honest provider label (string — openrouter is a real value now,
+   * not `openai` merely because the transport is OpenAI-compatible);
+   * `model` is the per-RESPONSE attribution the backend derived from
+   * the provider's own `model` field. */
+  engine?: string;
   model?: string;
 }
 
@@ -108,9 +112,12 @@ export default function AiAssistantPage() {
   const delConversation = useDeleteAiConversation();
   /* P4: which engine answers — drives the badge, the subtitle, and the
    * greeting (the initial bot message renders derived, so the copy
-   * flips the moment the config resolves — no flash, no state surgery). */
+   * flips the moment the config resolves — no flash, no state surgery).
+   * r175: any non-local, non-null label is a REAL external LLM
+   * (openai/openrouter/groq/hostname) — the label itself stays honest,
+   * so the check is «ليس محليًا» rather than a two-member union. */
   const aiConfig = useAiConfig();
-  const isRealLlm = aiConfig.data?.provider === 'openai';
+  const isRealLlm = aiConfig.data?.provider != null && aiConfig.data.provider !== 'local';
   const reducedMotion = useReducedMotion();
   const [conversationId, setConversationId] = useState<string | undefined>();
   const isStudent = user?.role === 'STUDENT';

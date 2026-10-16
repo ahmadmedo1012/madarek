@@ -27,7 +27,9 @@ import { useAuthStore, type AuthUser } from '../../src/stores/auth.store';
 
 const mocks = vi.hoisted(() => ({
   chat: { isPending: false, isError: false, error: null as unknown, mutateAsync: vi.fn() },
-  config: { data: undefined as undefined | { provider: 'local' | 'openai'; model: string | null }, isPending: true, isError: false },
+  // r175: `provider` is the honest LABEL — string (openrouter is a real
+  // value now), mocked exactly like the wire contract.
+  config: { data: undefined as undefined | { provider: string; model: string | null }, isPending: true, isError: false },
   gaps: { data: [], isPending: false, isError: false, refetch: () => undefined },
   conversations: {
     data: [] as Array<{ id: string; title: string | null; createdAt: string }>,
@@ -125,6 +127,34 @@ describe('AiAssistantPage — per-turn engine tag (r166d)', () => {
     await screen.findByText('جواب الملحّن المحليّ');
 
     expect(screen.getByText('gap-aware-composer', { selector: '.font-mono' })).toBeInTheDocument();
+  });
+
+  it('r175: an OpenRouter turn tags the provider-REPORTED model (per-response), engine label stays openrouter', async () => {
+    // The production r175 shape: /ai/config says provider=openrouter with
+    // the configured ROUTE id; each turn's envelope says engine=openrouter
+    // + the model OpenRouter actually routed to for THAT response.
+    mocks.config = { data: { provider: 'openrouter', model: 'openrouter/free' }, isPending: false, isError: false };
+    mocks.chat.mutateAsync.mockResolvedValue({
+      conversationId: 'c3',
+      reply: 'جواب عبر موجّه OpenRouter المجاني',
+      engine: 'openrouter',
+      model: 'deepseek/deepseek-chat-v3-0324:free',
+    });
+    renderPage();
+
+    await send('سؤالي');
+    await screen.findByText('جواب عبر موجّه OpenRouter المجاني');
+
+    // The per-turn tag names the ACTUAL model — not the router id, and
+    // never a vendor it is not (openai is absent from the tag).
+    const tag = screen.getByText('deepseek/deepseek-chat-v3-0324:free', { selector: '.font-mono' });
+    expect(tag.closest('.chat-bubble')).not.toBeNull();
+    // The boot-level badge names the configured ROUTE id (honest: a
+    // router, not one fixed model).
+    expect(screen.getByText('openrouter/free')).toBeInTheDocument();
+    // The real-LLM copy renders (openrouter counts as a real engine) —
+    // BOTH the subtitle and the greeting bot bubble carry it.
+    expect(screen.getAllByText(/نموذج لغويّ حقيقيّ/).length).toBeGreaterThanOrEqual(1);
   });
 
   it('a failed exchange renders NO engine tag (nothing was produced to attribute)', async () => {

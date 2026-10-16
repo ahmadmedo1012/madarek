@@ -49,7 +49,9 @@ export function OwnerAiPage() {
    * here: no answer (pending/error) renders NO badge rather than a
    * guessed one. */
   const aiConfig = useAiConfig();
-  const isRealLlm = aiConfig.data?.provider === 'openai';
+  /* r175: any non-local label is a real external LLM (openrouter is a
+   * real value now — the label stays honest, the check is «ليس محليًا»). */
+  const isRealLlm = aiConfig.data?.provider != null && aiConfig.data.provider !== 'local';
   // Remounts each chart canvas when the light/dark theme flips.
   const themeKey = useChartThemeKey();
   // Baking the reduced-motion animation profile into memoized options

@@ -31,14 +31,20 @@ import {
   AI_TEMPERATURE,
   AI_TIMEOUT_MS,
   AiProviderError,
+  OPENROUTER_REFERER,
+  OPENROUTER_TITLE,
+  attributedModel,
   buildChatMessages,
   buildGenericSystemPrompt,
   buildStudentSystemPrompt,
   callOpenAiCompatible,
   getAiProvider,
+  isOpenRouterBaseUrl,
   masteryContextLines,
   masteryFactTier,
   parseChatCompletion,
+  parseModelId,
+  providerLabelFromBaseUrl,
   windowHistory,
   type AiChatMessage,
   type MasteryFact,
@@ -116,18 +122,32 @@ describe('buildChatMessages (system first, user last)', () => {
 // ─── Pure: completion parsing (the honesty boundary) ──────────────
 
 describe('parseChatCompletion', () => {
-  it('parses content + usage verbatim', () => {
+  it('parses content + usage + the provider-reported model verbatim (r175)', () => {
     const out = parseChatCompletion({
+      model: 'deepseek/deepseek-chat-v3-0324:free',
       choices: [{ message: { content: 'جواب النموذج' } }],
       usage: { prompt_tokens: 210, completion_tokens: 95 },
     });
-    expect(out).toEqual({ content: 'جواب النموذج', inputTokens: 210, outputTokens: 95 });
+    expect(out).toEqual({
+      content: 'جواب النموذج',
+      inputTokens: 210,
+      outputTokens: 95,
+      model: 'deepseek/deepseek-chat-v3-0324:free',
+    });
   });
 
-  it('a missing usage block records 0 tokens — never estimated, never fabricated', () => {
+  it('a missing usage block records 0 tokens and a missing model records null — never estimated, never fabricated', () => {
     const out = parseChatCompletion({ choices: [{ message: { content: 'جواب' } }] });
     expect(out.inputTokens).toBe(0);
     expect(out.outputTokens).toBe(0);
+    expect(out.model).toBeNull();
+  });
+
+  it('an empty/whitespace/non-string model degrades to null (absent metadata, not a bad id)', () => {
+    for (const model of ['', '   ', 7, null]) {
+      const out = parseChatCompletion({ model, choices: [{ message: { content: 'جواب' } }] });
+      expect(out.model).toBeNull();
+    }
   });
 
   it('non-numeric or negative token values degrade to 0 (floor on valid numbers)', () => {
@@ -138,9 +158,10 @@ describe('parseChatCompletion', () => {
     expect(out.inputTokens).toBe(0);
     expect(out.outputTokens).toBe(0);
     expect(parseChatCompletion({
+      model: 'm',
       choices: [{ message: { content: 'جواب' } }],
       usage: { prompt_tokens: 3.7, completion_tokens: 2 },
-    })).toEqual({ content: 'جواب', inputTokens: 3, outputTokens: 2 });
+    })).toEqual({ content: 'جواب', inputTokens: 3, outputTokens: 2, model: 'm' });
   });
 
   it('empty / whitespace / missing content is a provider failure, not a reply', () => {
@@ -148,6 +169,70 @@ describe('parseChatCompletion', () => {
     expect(() => parseChatCompletion({ choices: [{ message: { content: '' } }] })).toThrow();
     expect(() => parseChatCompletion({ choices: [] })).toThrow();
     expect(() => parseChatCompletion({})).toThrow();
+  });
+});
+
+// ─── Pure: r175 model attribution + provider labels ───────────────
+
+describe('parseModelId (provider-reported model validation)', () => {
+  it('a valid slug survives verbatim (trimmed)', () => {
+    expect(parseModelId('deepseek/deepseek-chat-v3-0324:free')).toBe('deepseek/deepseek-chat-v3-0324:free');
+    expect(parseModelId('  gpt-4o-mini  ')).toBe('gpt-4o-mini');
+  });
+
+  it('absent/empty/gigantic/control-laden values are null (absent metadata)', () => {
+    expect(parseModelId(undefined)).toBeNull();
+    expect(parseModelId(42)).toBeNull();
+    expect(parseModelId('')).toBeNull();
+    expect(parseModelId('   ')).toBeNull();
+    expect(parseModelId('x'.repeat(201))).toBeNull();
+    expect(parseModelId('bad\nmodel')).toBeNull();
+    expect(parseModelId('bad\u0000model')).toBeNull();
+  });
+});
+
+describe('attributedModel (the per-response attribution rule)', () => {
+  it('the provider-reported id wins verbatim', () => {
+    expect(attributedModel('qwen/qwen-2.5-7b-instruct:free', 'openrouter/free')).toBe(
+      'qwen/qwen-2.5-7b-instruct:free',
+    );
+  });
+
+  it('absent metadata degrades to the configured ROUTER id, clearly flagged — never a silent exact-model claim', () => {
+    expect(attributedModel(null, 'openrouter/free')).toBe('openrouter/free (unattributed)');
+    expect(attributedModel(undefined, 'test-model')).toBe('test-model (unattributed)');
+    expect(attributedModel('   ', 'test-model')).toBe('test-model (unattributed)');
+  });
+});
+
+describe('providerLabelFromBaseUrl (the honest vendor label)', () => {
+  it('openai is openai; openrouter is openrouter — the OpenAI-compatible transport never relabels the vendor', () => {
+    expect(providerLabelFromBaseUrl('https://api.openai.com/v1')).toBe('openai');
+    expect(providerLabelFromBaseUrl('https://openrouter.ai/api/v1')).toBe('openrouter');
+  });
+
+  it('known compatible hosts map to their stable labels', () => {
+    expect(providerLabelFromBaseUrl('https://api.groq.com/openai/v1')).toBe('groq');
+    expect(providerLabelFromBaseUrl('https://api.deepseek.com/v1')).toBe('deepseek');
+    expect(providerLabelFromBaseUrl('https://api.groq.com')).toBe('groq');
+  });
+
+  it('an unknown compatible host is labeled by its hostname (honest, never a wrong vendor name)', () => {
+    expect(providerLabelFromBaseUrl('https://llm.internal.example/v1')).toBe('llm.internal.example');
+  });
+
+  it('an unparseable URL degrades to the generic compatible label', () => {
+    expect(providerLabelFromBaseUrl('not a url')).toBe('compatible');
+  });
+});
+
+describe('isOpenRouterBaseUrl (the OpenRouter-only header gate)', () => {
+  it('matches openrouter.ai ONLY (never a lookalike host)', () => {
+    expect(isOpenRouterBaseUrl('https://openrouter.ai/api/v1')).toBe(true);
+    expect(isOpenRouterBaseUrl('https://openrouter.ai')).toBe(true);
+    expect(isOpenRouterBaseUrl('https://api.openai.com/v1')).toBe(false);
+    expect(isOpenRouterBaseUrl('https://evil-openrouter.ai.example.com/v1')).toBe(false);
+    expect(isOpenRouterBaseUrl('garbage')).toBe(false);
   });
 });
 
@@ -249,12 +334,16 @@ describe('callOpenAiCompatible — request shape', () => {
     vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
       calls.push({ url, init });
       return new Response(
-        JSON.stringify({ choices: [{ message: { content: 'جواب' } }], usage: { prompt_tokens: 10, completion_tokens: 5 } }),
+        JSON.stringify({
+          model: 'echoed-model-id',
+          choices: [{ message: { content: 'جواب' } }],
+          usage: { prompt_tokens: 10, completion_tokens: 5 },
+        }),
         { status: 200 },
       );
     });
     const out = await callOpenAiCompatible(CFG, buildChatMessages('sys', [], 'سؤال'));
-    expect(out).toEqual({ content: 'جواب', inputTokens: 10, outputTokens: 5 });
+    expect(out).toEqual({ content: 'جواب', inputTokens: 10, outputTokens: 5, model: 'echoed-model-id' });
     expect(calls).toHaveLength(1);
     expect(calls[0]!.url).toBe('https://provider.example/v1/chat/completions');
     const init = calls[0]!.init as { headers: Record<string, string>; body: string; signal: AbortSignal };
@@ -270,6 +359,35 @@ describe('callOpenAiCompatible — request shape', () => {
     ]);
     // The timeout rides as an abort signal (AbortSignal.timeout).
     expect(init.signal).toBeInstanceOf(AbortSignal);
+    // r175: a NON-OpenRouter base URL carries NO OpenRouter headers —
+    // unrelated request behavior must not change.
+    expect(init.headers['HTTP-Referer']).toBeUndefined();
+    expect(init.headers['X-Title']).toBeUndefined();
+  });
+
+  it('r175: an OpenRouter base URL carries the HTTP-Referer/X-Title attribution headers — and only there', async () => {
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      calls.push({ url, init });
+      return new Response(
+        JSON.stringify({
+          model: 'qwen/qwen-2.5-7b-instruct:free',
+          choices: [{ message: { content: 'جواب' } }],
+          usage: { prompt_tokens: 10, completion_tokens: 5 },
+        }),
+        { status: 200 },
+      );
+    });
+    const out = await callOpenAiCompatible(
+      { ...CFG, baseUrl: 'https://openrouter.ai/api/v1' },
+      buildChatMessages('sys', [], 'سؤال'),
+    );
+    expect(out.model).toBe('qwen/qwen-2.5-7b-instruct:free');
+    const init = calls[0]!.init as { headers: Record<string, string> };
+    expect(init.headers['HTTP-Referer']).toBe(OPENROUTER_REFERER);
+    expect(init.headers['X-Title']).toBe(OPENROUTER_TITLE);
+    expect(OPENROUTER_REFERER).toBe('https://madarek.onrender.com');
+    expect(OPENROUTER_TITLE).toBe('Madarek');
   });
 });
 
@@ -348,6 +466,15 @@ describe('ai.routes.ts — the P4 mode switch', () => {
     expect(aiRouteSource).toContain('tokens: engine.outputTokens');
   });
 
+  it('r175: the per-RESPONSE attribution flows through attributedModel; the provider label is boot-frozen from the base URL', () => {
+    expect(aiRouteSource).toContain(
+      "const aiProviderLabel = aiProvider ? providerLabelFromBaseUrl(aiProvider.baseUrl) : 'local';",
+    );
+    expect(aiRouteSource).toContain('model: attributedModel(completion.model, aiProvider!.model)');
+    expect(aiRouteSource).toContain('engine: aiProviderLabel');
+    expect(aiRouteSource).toContain('provider: aiProviderLabel');
+  });
+
   it('NO silent fallback: a provider failure maps to ONE Arabic AppError — composeReply never runs in the catch', () => {
     expect(aiRouteSource).toContain("e.name === 'AiProviderError'");
     expect(aiRouteSource).toContain("'تعذّر الوصول إلى نموذج المساعد الآن — حاول مرة أخرى'");
@@ -359,9 +486,8 @@ describe('ai.routes.ts — the P4 mode switch', () => {
     expect(catchBlock).toContain('model: aiProvider?.model');
   });
 
-  it('GET /config exposes the honest surface (mode + real model, null in local mode)', () => {
+  it('GET /config exposes the honest surface (label + configured model, null in local mode)', () => {
     expect(aiRouteSource).toContain("router.get('/config'");
-    expect(aiRouteSource).toContain("provider: aiProvider ? 'openai' : 'local'");
     expect(aiRouteSource).toContain('model: aiProvider?.model ?? null');
   });
 

@@ -15,6 +15,8 @@ import {
   masteryContextLines,
   windowHistory,
   callOpenAiCompatible,
+  attributedModel,
+  providerLabelFromBaseUrl,
   AI_HISTORY_TURNS,
   type AiChatMessage,
   type MasteryFact,
@@ -271,6 +273,15 @@ async function loadMasteryFacts(userId: string): Promise<MasteryFact[]> {
 /** Boot-frozen provider resolution: null = local composer mode. */
 const aiProvider = getAiProvider();
 
+/** r175: the honest provider LABEL. `AI_PROVIDER=openai` is the
+ * OpenAI-compatible TRANSPORT mode; the label says WHO actually
+ * answers — `openrouter` for openrouter.ai, `openai` for OpenAI
+ * itself, the hostname for any other compatible endpoint. This is
+ * what the chat envelope's `engine` field and /ai/config's
+ * `provider` field report — OpenRouter must never wear OpenAI's
+ * name merely because it speaks the same protocol. */
+const aiProviderLabel = aiProvider ? providerLabelFromBaseUrl(aiProvider.baseUrl) : 'local';
+
 /** The real-provider reply. NO silent fallback on failure — the owner
  * configured a real model, so an honest Arabic error + retry (the FE
  * already renders one) beats a template reply wearing an LLM badge.
@@ -292,7 +303,13 @@ async function composeReplyWithProvider(
     reply: completion.content,
     inputTokens: completion.inputTokens,
     outputTokens: completion.outputTokens,
-    model: aiProvider!.model,
+    /* r175 — per-RESPONSE attribution: OpenRouter's free router may
+     * land on a different underlying model each response, so the
+     * provider's own `model` field is the only honest per-response
+     * truth. When the provider omitted it, attributedModel() falls
+     * back to the configured router id clearly flagged
+     * `(unattributed)` — never presented as the exact model. */
+    model: attributedModel(completion.model, aiProvider!.model),
   };
 }
 
@@ -383,9 +400,14 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
          * client can tag THIS reply with the engine that produced it
          * (the boot-level /ai/config badge can flip across a redeploy
          * mid-conversation; per-turn data stays honest about each turn).
-         * model is engine.model — 'gap-aware-composer' locally, the REAL
-         * provider model string in openai mode, never a fabricated name. */
-        engine: aiProvider ? 'openai' : 'local',
+         * r175: `engine` is the honest provider LABEL (openrouter for
+         * OpenRouter — not `openai` merely because the transport is
+         * OpenAI-compatible), and `model` is the per-RESPONSE
+         * attribution: the provider-reported model when OpenRouter's
+         * free router named one, else the configured router id clearly
+         * flagged (unattributed). Locally: 'local' + the composer tag —
+         * never a fabricated name. */
+        engine: aiProviderLabel,
         model: engine.model,
       },
     });
@@ -420,11 +442,15 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
  * which engine is answering (a template composer is NOT an LLM, and
  * an LLM badge on template replies would be a lie). Returns the mode
  * + the real model string when configured; model stays null in local
- * mode so no surface can render a fake model name. */
+ * mode so no surface can render a fake model name. r175: `provider`
+ * is the honest LABEL (openrouter/openai/hostname — the configured
+ * ROUTER, distinct from the per-response model the chat envelope
+ * carries); `model` here is the configured route id, which for
+ * `openrouter/free` honestly reads as a router, not one fixed model. */
 router.get('/config', (_req, res) => {
   res.json({
     data: {
-      provider: aiProvider ? 'openai' : 'local',
+      provider: aiProviderLabel,
       model: aiProvider?.model ?? null,
     },
   });

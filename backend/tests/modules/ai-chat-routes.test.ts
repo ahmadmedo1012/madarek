@@ -172,7 +172,7 @@ describe('POST /api/v1/ai/chat — OPENAI mode (provider wire stubbed)', () => {
     AI_PROVIDER: 'openai',
     AI_API_KEY: 'sk-test-placeholder',
     AI_MODEL: 'test-model-name',
-    AI_BASE_URL: 'https://provider.example/v1/',
+    AI_BASE_URL: 'https://api.openai.com/v1',
   } as const;
 
   beforeAll(async () => {
@@ -241,19 +241,22 @@ describe('POST /api/v1/ai/chat — OPENAI mode (provider wire stubbed)', () => {
     });
   }
 
-  function providerOk(content = 'جواب النموذج الحقيقيّ') {
+  function providerOk(content = 'جواب النموذج الحقيقيّ', model?: string) {
+    // r175: the provider's own `model` echo rides the payload — the
+    // per-RESPONSE attribution source. Absent when `model` is undefined.
     return new Response(
       JSON.stringify({
         choices: [{ message: { content } }],
         usage: { prompt_tokens: 42, completion_tokens: 17 },
+        ...(model !== undefined ? { model } : {}),
       }),
       { status: 200 },
     );
   }
 
-  it('answers 200 with the provider reply AND per-turn attribution: engine=openai, model=the REAL model string', async () => {
+  it('answers 200 with the provider reply AND per-turn attribution: engine=openai (real OpenAI host), model=the provider-REPORTED id', async () => {
     const calls: Array<{ url: string; init: RequestInit }> = [];
-    stubProviderTransport(() => providerOk(), calls);
+    stubProviderTransport(() => providerOk('جواب النموذج الحقيقيّ', 'gpt-test-echo'), calls);
 
     const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
       method: 'POST',
@@ -267,17 +270,36 @@ describe('POST /api/v1/ai/chat — OPENAI mode (provider wire stubbed)', () => {
     };
     expect(body.data.reply).toBe('جواب النموذج الحقيقيّ');
     expect(body.data.engine).toBe('openai');
-    expect(body.data.model).toBe('test-model-name');
+    // r175: per-RESPONSE attribution is the provider's OWN echo, not
+    // the configured alias.
+    expect(body.data.model).toBe('gpt-test-echo');
 
     // The provider wire: the configured base URL + Bearer key.
     expect(calls).toHaveLength(1);
-    expect(calls[0]!.url).toBe('https://provider.example/v1/chat/completions');
+    expect(calls[0]!.url).toBe('https://api.openai.com/v1/chat/completions');
     const headers = calls[0]!.init.headers as Record<string, string>;
     expect(headers.Authorization).toBe('Bearer sk-test-placeholder');
+    // OpenRouter's attribution headers are OpenRouter-only — a REAL
+    // OpenAI base URL must NOT carry them (no unrelated behavior change).
+    expect(headers['HTTP-Referer']).toBeUndefined();
+    expect(headers['X-Title']).toBeUndefined();
   });
 
-  it('telemetry records the REAL model + token counts; the assistant message carries the output tokens', async () => {
-    stubProviderTransport(() => providerOk());
+  it('a provider response WITHOUT model metadata degrades to the configured id, clearly flagged (unattributed)', async () => {
+    stubProviderTransport(() => providerOk('جواب بلا وسم نموذج'));
+
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال'),
+    });
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { data: { model: string } };
+    expect(body.data.model).toBe('test-model-name (unattributed)');
+  });
+
+  it('telemetry records the provider-REPORTED model + token counts; the assistant message carries the output tokens', async () => {
+    stubProviderTransport(() => providerOk('جواب النموذج الحقيقيّ', 'gpt-test-echo'));
 
     await fetch(`${baseUrl}/api/v1/ai/chat`, {
       method: 'POST',
@@ -293,7 +315,7 @@ describe('POST /api/v1/ai/chat — OPENAI mode (provider wire stubbed)', () => {
       data: {
         userId: STUDENT_ID,
         feature: 'chat',
-        model: 'test-model-name',
+        model: 'gpt-test-echo',
         inputTokens: 42,
         outputTokens: 17,
         latencyMs: expect.any(Number),
@@ -372,10 +394,224 @@ describe('POST /api/v1/ai/chat — OPENAI mode (provider wire stubbed)', () => {
     expect(convCreate).not.toHaveBeenCalled();
   });
 
-  it('GET /ai/config reports the openai mode + the real model string', async () => {
+  it('GET /ai/config reports the openai mode + the configured model string (the ROUTE, not a per-response fact)', async () => {
     const res = await fetch(`${baseUrl}/api/v1/ai/config`, { headers: bearer() });
     expect(res.status).toBe(200);
     const body = (await res.json()) as { data: { provider: string; model: string | null } };
     expect(body.data).toEqual({ provider: 'openai', model: 'test-model-name' });
+  });
+});
+
+// ── OPENROUTER mode (r175 — the free router through openrouter.ai) ──
+
+describe('POST /api/v1/ai/chat — OPENROUTER mode (free router)', () => {
+  let baseUrl: string;
+  let server: ReturnType<ReturnType<typeof createApp>['listen']>;
+  let convCreate: Mock;
+  let msgCreate: Mock;
+  let telemetryCreate: Mock;
+  let masteryFindMany: Mock;
+  let historyFindMany: Mock;
+  let transaction: Mock;
+
+  /* The production r175 configuration verbatim: openai TRANSPORT mode,
+   * OpenRouter's OpenAI-compatible base URL, and the free ROUTER id as
+   * the configured model. The label + attribution rules under test:
+   *  · the engine/config label is `openrouter` — NEVER `openai` merely
+   *    because the transport speaks the OpenAI-compatible protocol;
+   *  · the per-turn model is the provider-REPORTED id (the free router
+   *    may switch underlying models between responses);
+   *  · OpenRouter's optional HTTP-Referer/X-Title attribution headers
+   *    ride the wire (and only the wire). */
+  const AI_ENV = {
+    AI_PROVIDER: 'openai',
+    AI_API_KEY: 'sk-or-test-placeholder',
+    AI_MODEL: 'openrouter/free',
+    AI_BASE_URL: 'https://openrouter.ai/api/v1',
+  } as const;
+
+  beforeAll(async () => {
+    for (const [k, v] of Object.entries(AI_ENV)) process.env[k] = v;
+    vi.resetModules();
+    const appMod = await import('../../src/app.js');
+    const dbMod = await import('../../src/db.js');
+
+    convCreate = vi.mocked(dbMod.prisma.aiConversation.create);
+    msgCreate = vi.mocked(dbMod.prisma.aiMessage.create);
+    telemetryCreate = vi.mocked(dbMod.prisma.aiTelemetry.create);
+    masteryFindMany = vi.mocked(dbMod.prisma.studentMastery.findMany);
+    historyFindMany = vi.mocked(dbMod.prisma.aiMessage.findMany);
+    transaction = vi.mocked(dbMod.prisma.$transaction);
+
+    ({ server, baseUrl } = startServer(appMod.createApp()));
+  });
+
+  afterAll(async () => {
+    await closeServer(server);
+    for (const k of Object.keys(AI_ENV)) delete process.env[k];
+  });
+
+  beforeEach(() => {
+    vi.unstubAllGlobals();
+    vi.clearAllMocks();
+    masteryFindMany.mockResolvedValue([] as never);
+    historyFindMany.mockResolvedValue([] as never);
+    convCreate.mockResolvedValue({ id: 'conv-or', userId: STUDENT_ID, title: 'س', createdAt: new Date(0) } as never);
+    msgCreate.mockImplementation(
+      async (args: { data: { content: string } }) =>
+        ({ id: 'msg-or', content: args.data.content, tokens: 0 }) as never,
+    );
+    telemetryCreate.mockResolvedValue({} as never);
+  });
+
+  let realFetch: typeof fetch;
+  beforeEach(() => {
+    realFetch = globalThis.fetch;
+  });
+
+  function stubProviderTransport(
+    responder: (url: string, init: RequestInit) => Response | Promise<Response>,
+    calls?: Array<{ url: string; init: RequestInit }>,
+  ) {
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      const target = String(url);
+      if (target.startsWith(baseUrl)) return realFetch(url, init);
+      calls?.push({ url: target, init });
+      return responder(target, init);
+    });
+  }
+
+  it('labels the engine openrouter (never openai) and attributes the provider-reported model', async () => {
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    stubProviderTransport(
+      () =>
+        new Response(
+          JSON.stringify({
+            model: 'deepseek/deepseek-chat-v3-0324:free',
+            choices: [{ message: { content: 'جواب عبر موجّه OpenRouter المجاني' } }],
+            usage: { prompt_tokens: 30, completion_tokens: 12 },
+          }),
+          { status: 200 },
+        ),
+      calls,
+    );
+
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال عبر الموجّه المجاني'),
+    });
+    expect(res.status).toBe(200);
+
+    const body = (await res.json()) as { data: { reply: string; engine: string; model: string } };
+    expect(body.data.reply).toBe('جواب عبر موجّه OpenRouter المجاني');
+    // The honesty pin: OpenRouter is OpenRouter — the transport being
+    // OpenAI-compatible never relabels the vendor.
+    expect(body.data.engine).toBe('openrouter');
+    expect(body.data.model).toBe('deepseek/deepseek-chat-v3-0324:free');
+
+    // The wire: OpenRouter URL + Bearer + the optional attribution
+    // headers (HTTP-Referer / X-Title) OpenRouter's docs suggest.
+    expect(calls).toHaveLength(1);
+    expect(calls[0]!.url).toBe('https://openrouter.ai/api/v1/chat/completions');
+    const headers = calls[0]!.init.headers as Record<string, string>;
+    expect(headers.Authorization).toBe('Bearer sk-or-test-placeholder');
+    expect(headers['HTTP-Referer']).toBe('https://madarek.onrender.com');
+    expect(headers['X-Title']).toBe('Madarek');
+
+    // Success telemetry carries the per-RESPONSE model.
+    expect(telemetryCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ model: 'deepseek/deepseek-chat-v3-0324:free', success: true }),
+    });
+  });
+
+  it('two responses may carry DIFFERENT reported models — each turn keeps its own attribution', async () => {
+    const models = ['meta-llama/llama-3.1-8b-instruct:free', 'qwen/qwen-2.5-7b-instruct:free'];
+    let i = 0;
+    stubProviderTransport(() => {
+      const model = models[i++ % models.length]!;
+      return new Response(
+        JSON.stringify({
+          model,
+          choices: [{ message: { content: `جواب من ${model}` } }],
+          usage: { prompt_tokens: 10, completion_tokens: 5 },
+        }),
+        { status: 200 },
+      );
+    });
+
+    const first = (await (
+      await fetch(`${baseUrl}/api/v1/ai/chat`, {
+        method: 'POST',
+        headers: { ...bearer(), 'content-type': 'application/json' },
+        body: chatBody('سؤال أول'),
+      })
+    ).json()) as { data: { model: string } };
+    const second = (await (
+      await fetch(`${baseUrl}/api/v1/ai/chat`, {
+        method: 'POST',
+        headers: { ...bearer(), 'content-type': 'application/json' },
+        body: chatBody('سؤال ثانٍ'),
+      })
+    ).json()) as { data: { model: string } };
+
+    expect(first.data.model).toBe('meta-llama/llama-3.1-8b-instruct:free');
+    expect(second.data.model).toBe('qwen/qwen-2.5-7b-instruct:free');
+  });
+
+  it('a router response WITHOUT model metadata falls back to openrouter/free, clearly flagged (unattributed)', async () => {
+    stubProviderTransport(
+      () =>
+        new Response(
+          JSON.stringify({
+            choices: [{ message: { content: 'جواب بلا وسم نموذج' } }],
+            usage: { prompt_tokens: 10, completion_tokens: 5 },
+          }),
+          { status: 200 },
+        ),
+    );
+
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال'),
+    });
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { data: { engine: string; model: string } };
+    expect(body.data.engine).toBe('openrouter');
+    expect(body.data.model).toBe('openrouter/free (unattributed)');
+  });
+
+  it('GET /ai/config labels the provider openrouter and names the configured ROUTE id', async () => {
+    const res = await fetch(`${baseUrl}/api/v1/ai/config`, { headers: bearer() });
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { data: { provider: string; model: string | null } };
+    expect(body.data).toEqual({ provider: 'openrouter', model: 'openrouter/free' });
+  });
+
+  it('a free-router failure surfaces the honest Arabic 500 with failure telemetry — no local-composer fallback', async () => {
+    stubProviderTransport(
+      () =>
+        new Response(JSON.stringify({ error: { message: 'Rate limit exceeded: free tier' } }), {
+          status: 429,
+        }),
+    );
+
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال سيفشل'),
+    });
+    expect(res.status).toBe(500);
+    const body = (await res.json()) as { error: { message: string } };
+    expect(body.error.message).toBe('تعذّر الوصول إلى نموذج المساعد الآن — حاول مرة أخرى');
+
+    // Failure telemetry: attributed to the ATTEMPTED (configured) route.
+    expect(telemetryCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ model: 'openrouter/free', success: false }),
+    });
+    // NO silent fallback: nothing persisted.
+    expect(transaction).not.toHaveBeenCalled();
+    expect(msgCreate).not.toHaveBeenCalled();
   });
 });

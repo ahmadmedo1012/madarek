@@ -23,6 +23,13 @@
  *    missing usage block records 0 (never estimated, never fabricated)
  *    — same ruling as the r154c «عدّاد توكنات يبقى 0 بصدق».
  *  · The local composer keeps model='gap-aware-composer' and 0 tokens.
+ *  · r175 (OpenRouter free router): per-RESPONSE model attribution —
+ *    the provider's own `model` field is preserved through the
+ *    completion, the chat envelope and telemetry; the configured
+ *    router id (`openrouter/free`) is only ever a clearly-flagged
+ *    `(unattributed)` fallback, never a claim about the underlying
+ *    model. Provider labels stay honest too: routing through
+ *    openrouter.ai is labeled `openrouter`, not `openai`.
  *
  * Pure helpers are exported for DB-free test pins
  * (tests/modules/ai-provider.test.ts); the one impure piece is
@@ -40,11 +47,19 @@ export interface AiChatMessage {
   content: string;
 }
 
-/** Completion outcome — content + the honest token counts. */
+/** Completion outcome — content + the honest token counts + the
+ * provider-REPORTED model id for this response (r175).
+ *
+ * `model` is what the provider's payload actually said — OpenRouter's
+ * `openrouter/free` router selects among free models DYNAMICALLY, so
+ * the underlying model can differ between responses. null when the
+ * provider omitted usable model metadata (never guessed, never the
+ * configured alias dressed up as a response fact). */
 export interface AiCompletion {
   content: string;
   inputTokens: number;
   outputTokens: number;
+  model: string | null;
 }
 
 /** Everything the impure client needs; resolved once per boot. */
@@ -96,16 +111,37 @@ export function buildChatMessages(
   return [{ role: 'system', content: system }, ...history, { role: 'user', content: user }];
 }
 
+/** Model-id sanity bounds: providers echo short slugs
+ * (`deepseek/deepseek-chat-v3:free`); anything empty, gigantic, or
+ * control-char-laden is treated as ABSENT metadata, not a model id. */
+const MODEL_ID_MAX_LEN = 200;
+
+/** Validate a provider-reported `model` string (r175): a non-empty,
+ * control-free, bounded string survives verbatim; anything else is
+ * null (absent metadata). Never normalized into a different claim. */
+export function parseModelId(v: unknown): string | null {
+  if (typeof v !== 'string') return null;
+  const trimmed = v.trim();
+  if (trimmed.length === 0 || trimmed.length > MODEL_ID_MAX_LEN) return null;
+  for (let i = 0; i < trimmed.length; i += 1) {
+    const code = trimmed.charCodeAt(i);
+    if (code <= 0x1f || code === 0x7f) return null;
+  }
+  return trimmed;
+}
+
 /**
  * Parse a chat-completions response payload. Tolerates a missing
- * `usage` (0 tokens — the honest default) but NOT a missing/empty
- * choice content (an empty reply is a provider failure, not a chat
- * reply). Throws Error with a stable prefix the route can log.
+ * `usage` (0 tokens — the honest default) and a missing/unusable
+ * `model` (null — the attribution fallback handles it) but NOT a
+ * missing/empty choice content (an empty reply is a provider failure,
+ * not a chat reply). Throws Error with a stable prefix the route can log.
  */
 export function parseChatCompletion(payload: unknown): AiCompletion {
   const body = payload as {
     choices?: Array<{ message?: { content?: unknown } }>;
     usage?: { prompt_tokens?: unknown; completion_tokens?: unknown };
+    model?: unknown;
   };
   const content = body?.choices?.[0]?.message?.content;
   if (typeof content !== 'string' || content.trim().length === 0) {
@@ -116,6 +152,7 @@ export function parseChatCompletion(payload: unknown): AiCompletion {
     content,
     inputTokens: toInt(body?.usage?.prompt_tokens),
     outputTokens: toInt(body?.usage?.completion_tokens),
+    model: parseModelId(body?.model),
   };
 }
 
@@ -184,6 +221,62 @@ export function buildGenericSystemPrompt(): string {
 }
 
 /* ────────────────────────────────────────────────────────────────
+ *  Provider attribution (r175 — OpenRouter free router)
+ * ──────────────────────────────────────────────────────────────── */
+
+/** Attribution headers OpenRouter's docs suggest for app analytics —
+ * sent ONLY when the base URL actually points at openrouter.ai. */
+export const OPENROUTER_REFERER = 'https://madarek.onrender.com';
+export const OPENROUTER_TITLE = 'Madarek';
+
+/** Is this base URL OpenRouter's? (host-scoped, never path-based). */
+export function isOpenRouterBaseUrl(baseUrl: string): boolean {
+  try {
+    const host = new URL(baseUrl).hostname.toLowerCase();
+    return host === 'openrouter.ai' || host.endsWith('.openrouter.ai');
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * The HONEST provider label for an OpenAI-compatible base URL (r175):
+ * `AI_PROVIDER=openai` is a TRANSPORT mode, not a vendor claim — a
+ * service routed through openrouter.ai must be labeled `openrouter`,
+ * not `openai`. Known hosts get stable labels; an unknown host is
+ * labeled by its hostname (honest, never a wrong vendor name).
+ */
+export function providerLabelFromBaseUrl(baseUrl: string): string {
+  let host: string;
+  try {
+    host = new URL(baseUrl).hostname.toLowerCase();
+  } catch {
+    return 'compatible';
+  }
+  if (host === 'api.openai.com') return 'openai';
+  if (host === 'openrouter.ai' || host.endsWith('.openrouter.ai')) return 'openrouter';
+  if (host === 'groq.com' || host.endsWith('.groq.com')) return 'groq';
+  if (host === 'api.deepseek.com' || host.endsWith('.deepseek.com')) return 'deepseek';
+  return host.length > 0 ? host : 'compatible';
+}
+
+/**
+ * Per-response model attribution (r175): the provider-REPORTED id when
+ * one came back; otherwise the CONFIGURED router id, clearly flagged
+ * `(unattributed)` so no surface can present it as the exact underlying
+ * model. `openrouter/free` may land on different models per response —
+ * only the provider's own `model` field speaks for a specific response.
+ */
+export function attributedModel(
+  completionModel: string | null | undefined,
+  configuredModel: string,
+): string {
+  const reported = typeof completionModel === 'string' ? completionModel.trim() : '';
+  if (reported.length > 0) return reported;
+  return `${configuredModel} (unattributed)`;
+}
+
+/* ────────────────────────────────────────────────────────────────
  *  Impure: the OpenAI-compatible client + boot-time resolution
  * ──────────────────────────────────────────────────────────────── */
 
@@ -209,14 +302,22 @@ export async function callOpenAiCompatible(
   cfg: AiProviderConfig,
   messages: readonly AiChatMessage[],
 ): Promise<AiCompletion> {
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${cfg.apiKey}`,
+    'Content-Type': 'application/json',
+  };
+  // r175: OpenRouter's optional app-attribution headers — sent only
+  // when the base URL is OpenRouter's, so every other provider sees the
+  // exact same request shape as before (no unrelated behavior change).
+  if (isOpenRouterBaseUrl(cfg.baseUrl)) {
+    headers['HTTP-Referer'] = OPENROUTER_REFERER;
+    headers['X-Title'] = OPENROUTER_TITLE;
+  }
   let res: Response;
   try {
     res = await fetch(`${cfg.baseUrl.replace(/\/+$/, '')}/chat/completions`, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${cfg.apiKey}`,
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({
         model: cfg.model,
         messages,
