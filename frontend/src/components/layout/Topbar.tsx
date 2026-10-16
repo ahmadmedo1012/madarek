@@ -229,7 +229,11 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
                   immediately, racing the async POST /auth/logout: the
                   dashboard re-rendered mid-flight and the landing
                   flash replaced whatever the user was looking at. */}
-              <DropdownItem onSelect={() => { setMenuOpen(false); logoutM.mutate(undefined, { onSettled: () => navigate('/auth', { replace: true }) }); }}>
+              <DropdownItem
+                /* r176e (D-07): pending guard — a double-click used to
+                   fire a second POST /auth/logout. */
+                disabled={logoutM.isPending}
+                onSelect={() => { setMenuOpen(false); logoutM.mutate(undefined, { onSettled: () => navigate('/auth', { replace: true }) }); }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-2)', color: 'var(--c-rose-deep)' }}>
                   <Icon icon={LogOut} size={14} />
                   تسجيل الخروج

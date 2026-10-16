@@ -3,7 +3,7 @@
 // placeholderData and invalidation is byte-identical to the
 // original sections; the public surface is frozen by the barrel.
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery , keepPreviousData } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
 import type { AppRole } from '../../stores/auth.store';
 import type { Course } from './catalog';
@@ -278,6 +278,11 @@ export function useMyMessages(page: number = 1, limit: number = 30) {
       return res.data;
     },
     staleTime: 30_000,
+    /* r176e (D-08): the documented house pattern (research/catalog/
+     * admin rosters) — a page flip used to collapse the whole inbox
+     * into its skeleton for a round-trip; keepPreviousData keeps the
+     * previous rows mounted while the next page loads. */
+    placeholderData: keepPreviousData,
   });
 }
 

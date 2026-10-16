@@ -127,6 +127,16 @@ export function OwnerSystemPage() {
   const handleFlagToggle = (flag: FeatureFlag) => {
     toggleFlag.mutate({ slug: flag.slug, enabled: !flag.enabled });
   };
+  /* r176e (D-03): a failed flag flip used to leave the switch at its
+   * old server position with NO error and NO retry — the owner either
+   * believed the flip landed or never noticed. The house rule every
+   * sibling owner mutation follows (settings save above, sync page,
+   * notifications) now applies: name the failed flag, offer the retry,
+   * and re-fire the SAME payload. */
+  const retryFlagToggle = () => {
+    const vars = toggleFlag.variables;
+    if (vars) toggleFlag.mutate(vars);
+  };
 
   const sysData = sys.data;
   /* r167: the s3 durability claim is gated on the probe answer — a
@@ -396,9 +406,22 @@ export function OwnerSystemPage() {
                   description={flag.description ?? undefined}
                   checked={flag.enabled}
                   onChange={() => handleFlagToggle(flag)}
-                  disabled={toggleFlag.isPending}
+                  /* r176e (D-03): only THE in-flight row is disabled —
+                   * the coarse isPending gate used to freeze every row
+                   * while any one toggle was in flight. */
+                  disabled={toggleFlag.isPending && toggleFlag.variables?.slug === flag.slug}
                 />
               ))}
+              {toggleFlag.isError && (
+                <div className="form-error" role="alert">
+                  <span className="form-error-msg">
+                    {`تعذّر تحديث العلم «${toggleFlag.variables?.slug ?? ''}» — القيمة المعروضة هي آخر حالة محفوظة.`}
+                  </span>
+                  <button type="button" className="btn ghost sm" onClick={retryFlagToggle}>
+                    إعادة المحاولة
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>

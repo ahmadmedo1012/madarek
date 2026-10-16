@@ -354,6 +354,12 @@ export function Sidebar() {
                   onSettled: () => navigate('/auth', { replace: true }),
                 });
               }}
+              /* r176e (D-07): pending guard — a double-click used to
+                 fire a second POST /auth/logout (idempotent, but a
+                 flash of a still-active button and a wasted round
+                 trip). */
+              disabled={logout.isPending}
+              aria-busy={logout.isPending}
               title="تسجيل الخروج"
               aria-label="تسجيل الخروج"
             >

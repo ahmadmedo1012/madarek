@@ -573,6 +573,10 @@ export function ExamTakerPage() {
   // ANOTHER question must never clear an earlier question's failure.
   const pendingSavesRef = useRef(new Map<string, Promise<void>>());
   const [savingQids, setSavingQids] = useState<ReadonlySet<string>>(new Set());
+  /* r176e (D-01): questions whose current text answer exceeds the
+   * server's 4000-char bound — the save is skipped with the honest
+   * bound message instead of a doomed request. */
+  const [overCapQids, setOverCapQids] = useState<ReadonlySet<string>>(new Set());
   const [failedQids, setFailedQids] = useState<ReadonlySet<string>>(new Set());
   // 5-A6 P2-3 — the positive half of the autosave honesty pair: the
   // questions whose latest save the server has confirmed. A new save
@@ -867,6 +871,19 @@ export function ExamTakerPage() {
   // what submitAttempt flushes (15-e P0-1).
   const runAnswerSave = (qid: string, payload: { answerText?: string; choiceIndex?: number }) => {
     if (!attempt) return;
+    /* r176e (D-01): a text answer past the server's 4000-char bound
+     * cannot ever save — firing it anyway produces a 400 the chip renders
+     * as «تعذَّر الحفظ» (a connectivity lie) while submit's allSettled
+     * flush lets the exam finish with the essay silently unanswered.
+     * Mark the question failed LOCALLY with the honest bound copy and
+     * skip the doomed wire call (the maxLength already clamps typing;
+     * this belt covers programmatic/edge pastes). */
+    if (payload.answerText !== undefined && payload.answerText.length > 4000) {
+      setFailedQids((prev) => withQid(prev, qid, true));
+      setOverCapQids((prev) => withQid(prev, qid, true));
+      return;
+    }
+    setOverCapQids((prev) => withQid(prev, qid, false));
     const attemptId = attempt.attemptId;
     const earlier = pendingSavesRef.current.get(qid);
     const tracked = (earlier ? earlier.catch(() => undefined) : Promise.resolve())
@@ -1287,16 +1304,31 @@ export function ExamTakerPage() {
                   </div>
                 )}
                 {(q.type === 'SHORT' || q.type === 'ESSAY') && (
-                  <textarea
-                    className="input"
-                    rows={q.type === 'ESSAY' ? 6 : 2}
-                    placeholder="اكتب إجابتك هنا…"
-                    aria-labelledby={`exam-q-${q.id}-num exam-q-${q.id}-prompt`}
-                    value={answers[q.id]?.answerText ?? ''}
-                    onChange={(e) => onTextChange(q.id, e.target.value)}
-                    onBlur={() => onTextBlur(q.id)}
-                    style={{ marginTop: 'var(--sp-3)' }}
-                  />
+                  <>
+                    <textarea
+                      className="input"
+                      rows={q.type === 'ESSAY' ? 6 : 2}
+                      placeholder="اكتب إجابتك هنا…"
+                      aria-labelledby={`exam-q-${q.id}-num exam-q-${q.id}-prompt`}
+                      value={answers[q.id]?.answerText ?? ''}
+                      onChange={(e) => onTextChange(q.id, e.target.value)}
+                      onBlur={() => onTextBlur(q.id)}
+                      style={{ marginTop: 'var(--sp-3)' }}
+                      /* r176e (D-01): the backend's answerText bound
+                         (z.string().max(4000), exams.routes.ts) mirrored
+                         on the control — an uncapped paste used to fail
+                         saves with the misleading «تعذَّر الحفظ» chip and
+                         could ride Promise.allSettled into a submit that
+                         silently dropped the essay. The same mirror every
+                         twin textarea in the codebase carries. */
+                      maxLength={4000}
+                    />
+                    {(answers[q.id]?.answerText ?? '').length > 3600 && (
+                      <p className="text-xxs text-subtle" style={{ margin: 0 }}>
+                        {(answers[q.id]?.answerText ?? '').length}/4000
+                      </p>
+                    )}
+                  </>
                 )}
                 {saveState && (
                   <div className="exam-q-foot">
@@ -1305,7 +1337,13 @@ export function ExamTakerPage() {
                         icon={saveState === 'failed' ? AlertTriangle : saveState === 'saving' ? Clock : CheckCircle2}
                         size={12}
                       />
-                      {saveState === 'failed' ? 'تعذَّر الحفظ' : saveState === 'saving' ? 'جارٍ الحفظ…' : 'محفوظة'}
+                      {saveState === 'failed'
+                        ? overCapQids.has(q.id)
+                          ? 'الإجابة أطول من الحد (4000 حرفًا) — اختصرها ليُحفظ'
+                          : 'تعذَّر الحفظ'
+                        : saveState === 'saving'
+                          ? 'جارٍ الحفظ…'
+                          : 'محفوظة'}
                     </span>
                   </div>
                 )}

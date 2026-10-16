@@ -4,6 +4,8 @@ import { ChevronRight, FileQuestion } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { EmptyState } from '../components/primitives/States';
 import { apiBaseURL } from '../lib/api';
+import { ROLE_HOME } from '../lib/nav';
+import { useAuthStore, type AppRole } from '../stores/auth.store';
 import { isViewerFilenameParam } from '../components/pdf/loadError';
 import '../styles/pdf.css'; // pdf viewer + annotations surfaces (D11 css split, 12-15)
 
@@ -32,12 +34,17 @@ function ViewerFallback() {
  *  off-app href in the DOM — middle-click / open-in-new-tab left the
  *  app and the link was shareable. Same guard as AuthPage's
  *  `readFromPath`: only in-app pathnames are honored (a leading `//`
- *  is protocol-relative → off-app); anything else falls back to the
- *  library research tab. */
-function safeBackPath(raw: string | null): string {
-  return raw !== null && raw.startsWith('/') && !raw.startsWith('//')
-    ? raw
-    : '/student/library?tab=research';
+ *  is protocol-relative → off-app). r176e (D-02): the FALLBACK is now
+ *  role-aware — the old student-only default silently guard-bounced
+ *  TEACHER/ADMIN/QUALITY/OWNER (global-search paper hits carry no
+ *  ?back=) to their dashboards instead of a meaningful exit. Teachers
+ *  land on their own library research tab; oversight roles land on
+ *  their ROLE_HOME (single-sourced from lib/nav.ts). */
+function safeBackPath(raw: string | null, role: AppRole): string {
+  if (raw !== null && raw.startsWith('/') && !raw.startsWith('//')) return raw;
+  if (role === 'STUDENT') return '/student/library?tab=research';
+  if (role === 'TEACHER') return '/teacher/library?tab=research';
+  return ROLE_HOME[role];
 }
 
 /* P3: the file namespace the viewer fetches from. 'papers' is the
@@ -56,7 +63,8 @@ export default function DocumentViewerPage() {
   const params = useParams<{ filename: string }>();
   const [search] = useSearchParams();
   const title = search.get('title') ?? undefined;
-  const back = safeBackPath(search.get('back'));
+  const role = useAuthStore((s) => s.user?.role) ?? 'STUDENT';
+  const back = safeBackPath(search.get('back'), role as AppRole);
   const paperId = search.get('paper') ?? undefined;
   const ns = fileNamespace(search.get('ns'));
 
