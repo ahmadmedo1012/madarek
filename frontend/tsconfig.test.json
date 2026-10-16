@@ -6,6 +6,11 @@
   // promote-baseline.ts) run via tsx and use node: imports for which the
   // frontend has no @types/node; the pure detector (drift.ts) is still
   // covered transitively via tests/unit/drift.test.ts.
+  // tests/capture is excluded for the same reason (r174): the visual
+  // verification harness (r174-capture.ts + probes) runs via tsx
+  // against the mock transport and imports node:fs/process — never
+  // collected by vitest (no *.test|spec suffix) nor Playwright (own
+  // testDir + testMatch), same contract as tests/audit.
   "include": ["src", "tests"],
-  "exclude": ["node_modules", "dist", "tests/audit"]
+  "exclude": ["node_modules", "dist", "tests/audit", "tests/capture"]
 }

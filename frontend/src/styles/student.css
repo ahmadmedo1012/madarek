@@ -3135,6 +3135,33 @@
      column (base.css) — order moves whole sections without touching
      the TSX. Desktop order stays authored. ── */
 
+  /* r174 — the resume-hero PENDING footprint, per breakpoint. The
+     loaded .dash-resume-card measures 176px on desktop (flex row, CTA
+     beside the text) and 224px ≤640px (the CTA stacks full-width under
+     the text — student.css §resume). r172b's flat 176px skeleton was
+     calibrated on desktop only, so every PHONE resolve pushed the KPI
+     row 48px down. The pending section carries the block-size; the
+     Skeleton bar fills it (height 100% from the TSX). */
+  .dash-resume-pending { block-size: 176px; }
+  @media (max-width: 640px) {
+    .dash-resume-pending { block-size: 224px; }
+  }
+
+  /* r174 — the dash-hero-row PENDING pair, per breakpoint (live
+     measurements): the resolved pair is [218, 218] >1024, [156, 218]
+     in the 641–1024 single-column band (compact GPA card, doughnut
+     beside text), [156, 302] ≤640 (doughnut stacked under text).
+     r172b's flat 168-inner boxes (210/226 painted) matched only the
+     desktop pair and overshot the compact GPA card by 54px on every
+     tablet/phone resolve. */
+  .dash-hero-slot { block-size: 218px; }
+  @media (max-width: 1024px) {
+    .dash-hero-slot-gpa { block-size: 156px; }
+  }
+  @media (max-width: 640px) {
+    .dash-hero-slot-progress { block-size: 302px; }
+  }
+
   /* P2-10 — the dashboard's morning-first agenda: today's classes and
      the nearest deadlines move to slot 2 (right after the welcome) on
      phone; the term-progress bar is the least urgent fact on the page

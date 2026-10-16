@@ -307,9 +307,14 @@ function ResumeHero({
     // the page-level mirror skeleton render 176 so the whole chain —
     // page pending → page resolved (hero pending) → hero loaded — is
     // height-stable end to end.
+    // r174: the 176px pin was DESKTOP-only — the phone card stacks the
+    // full-width CTA under the text (224px live), so every mobile
+    // resolve still pushed the KPI row 48px. The footprint now rides
+    // the section class per breakpoint (student.css .dash-resume-pending)
+    // and the bar fills it (height 100%).
     return (
-      <section className="dash-resume" aria-busy="true">
-        <Skeleton width="100%" height={176} rounded="var(--r-xl)" />
+      <section className="dash-resume dash-resume-pending" aria-busy="true">
+        <Skeleton width="100%" height="100%" rounded="var(--r-xl)" />
       </section>
     );
   }
@@ -444,19 +449,23 @@ export default function StudentDashboardPage() {
           <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
         </header>
         {/* ResumeHero slot — the resolved card's full footprint (the
-            hero's own pending skeleton renders the same 176px, see
-            ResumeHero below). */}
-        <section className="dash-resume" aria-busy="true">
-          <Skeleton width="100%" height={176} rounded="var(--r-xl)" />
+            hero's own pending skeleton renders the same per-breakpoint
+            block-size, see ResumeHero above). */}
+        <section className="dash-resume dash-resume-pending" aria-busy="true">
+          <Skeleton width="100%" height="100%" rounded="var(--r-xl)" />
         </section>
         <KpiSkeleton />
-        {/* dash-hero-row slot — the two premium cards' 218px boxes. */}
+        {/* dash-hero-row slot — the two premium cards' footprints, per
+            breakpoint (r174: r172b's flat 168px-inner boxes were the
+            DESKTOP pair; the phone/tabl resolved pair is asymmetric —
+            the compact GPA card and the stacked-doughnut progress card —
+            so each slot carries its own block-size in student.css). */}
         <section className="dash-hero-row" aria-busy="true">
-          <div className="card card-glass-premium">
-            <Skeleton width="100%" height={168} rounded="var(--r-xl)" />
+          <div className="card card-glass-premium dash-hero-slot dash-hero-slot-gpa">
+            <Skeleton width="100%" height="100%" rounded="var(--r-xl)" />
           </div>
-          <div className="card card-glass-premium">
-            <Skeleton width="100%" height={168} rounded="var(--r-xl)" />
+          <div className="card card-glass-premium dash-hero-slot dash-hero-slot-progress">
+            <Skeleton width="100%" height="100%" rounded="var(--r-xl)" />
           </div>
         </section>
         {/* Below-fold slots (term card + agenda) — no CLS stake, kept

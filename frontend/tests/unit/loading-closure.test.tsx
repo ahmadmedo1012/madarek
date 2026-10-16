@@ -114,28 +114,41 @@ describe('r172b §1 — student dashboard pending mirror', () => {
     expect(screen.getByText(/جارٍ تحضير لوحتك/)).toBeTruthy();
 
     // ResumeHero slot — the section class (CSS margins identical to the
-    // resolved page) holding a 176px placeholder (the loaded card's
-    // measured footprint; the hero's own pending skeleton renders the
-    // same height so page→hero→loaded never moves the KPI row).
+    // resolved page) carrying the per-breakpoint footprint. r174: the
+    // r172b flat 176px inline height was DESKTOP-only — the phone card
+    // measures 224px (CTA stacks full-width), so the pin moved to the
+    // .dash-resume-pending block-size ladder in student.css (176 >640 /
+    // 224 ≤640) and the bar fills it (height 100%). jsdom can't see CSS
+    // media queries — the class contract is what's pinnable here; the
+    // per-breakpoint geometry is verified by the live CLS probe
+    // (tests/capture/r174-cls.ts — pending == resolved at 390/768/1280).
     const resume = container.querySelector('section.dash-resume');
     expect(resume).not.toBeNull();
     const resumeEl = resume as HTMLElement;
     expect(resumeEl.getAttribute('aria-busy')).toBe('true');
+    expect(resumeEl.classList.contains('dash-resume-pending')).toBe(true);
     const resumeBar = resumeEl.querySelector('.skeleton') as HTMLElement;
-    expect(resumeBar.style.height).toBe('176px');
+    expect(resumeBar.style.height).toBe('100%');
 
     // KPI strip.
     expect(container.querySelectorAll('.grid-4 .metric')).toHaveLength(4);
 
-    // The premium hero pair — two cards at the resolved boxes.
+    // The premium hero pair — two cards at the resolved boxes. r174:
+    // the pair is ASYMMETRIC below 1024 (compact GPA 156 + doughnut
+    // card 218/302), so each slot carries its own block-size class
+    // (student.css .dash-hero-slot ladder) instead of r172b's flat
+    // 168px inline boxes (which overshot the GPA card by 54px on
+    // tablet/phone resolves). The bars fill their slots (100%).
     const heroRow = container.querySelector('section.dash-hero-row');
     expect(heroRow).not.toBeNull();
     const heroRowEl = heroRow as HTMLElement;
     expect(heroRowEl.getAttribute('aria-busy')).toBe('true');
     expect(heroRowEl.querySelectorAll('.card.card-glass-premium')).toHaveLength(2);
+    expect(heroRowEl.querySelectorAll('.dash-hero-slot-gpa')).toHaveLength(1);
+    expect(heroRowEl.querySelectorAll('.dash-hero-slot-progress')).toHaveLength(1);
     const inner = heroRowEl.querySelectorAll('.skeleton') as NodeListOf<HTMLElement>;
     expect(inner.length).toBeGreaterThanOrEqual(2);
-    expect(Array.from(inner).every((el) => el.style.height === '168px')).toBe(true);
+    expect(Array.from(inner).every((el) => el.style.height === '100%')).toBe(true);
   });
 
   it('pins ONE loading owner: zero spinners and zero hydration splash in the pending window', () => {
