@@ -14,10 +14,15 @@ import {
   buildGenericSystemPrompt,
   masteryContextLines,
   windowHistory,
-  callOpenAiCompatible,
+  clipHistoryContent,
+  callProviderWithRetry,
   attributedModel,
   providerLabelFromBaseUrl,
+  classifyProviderFailure,
+  providerFailureMessage,
+  AiProviderError,
   AI_HISTORY_TURNS,
+  AI_HISTORY_CHAR_CAP,
   type AiChatMessage,
   type MasteryFact,
 } from '../../lib/ai.js';
@@ -293,7 +298,10 @@ const aiProviderLabel = aiProvider ? providerLabelFromBaseUrl(aiProvider.baseUrl
 /** The real-provider reply. NO silent fallback on failure — the owner
  * configured a real model, so an honest Arabic error + retry (the FE
  * already renders one) beats a template reply wearing an LLM badge.
- * Failure telemetry is written by the route's catch (one place). */
+ * Failure telemetry is written by the route's catch (one place).
+ * r176a: the provider call rides callProviderWithRetry (ONE bounded
+ * jittered retry for fast-fail transients: 429/transport/5xx — before
+ * any DB write, so side-effect-free; timeouts surface immediately). */
 async function composeReplyWithProvider(
   userId: string,
   message: string,
@@ -303,9 +311,10 @@ async function composeReplyWithProvider(
   const system = isMasteryAwareRole(role)
     ? buildStudentSystemPrompt(masteryContextLines(await loadMasteryFacts(userId)))
     : buildGenericSystemPrompt();
-  const completion = await callOpenAiCompatible(
+  const completion = await callProviderWithRetry(
     aiProvider!,
     buildChatMessages(system, history, message),
+    (obj, msg) => logger.warn(obj, msg),
   );
   return {
     reply: completion.content,
@@ -339,7 +348,10 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
     /* P4 mode switch: openai mode loads the conversation's recent
      * turns (newest-first bounded read, re-oriented chronologically —
      * the /conversations/:id/messages pattern) so the model gets real
-     * context. Local mode ignores history exactly as before. */
+     * context. Local mode ignores history exactly as before. r176a:
+     * each HISTORY turn is also content-clipped (AI_HISTORY_CHAR_CAP)
+     * — the turn window alone can still overflow small free-model
+     * context windows; the NEW user message below is never clipped. */
     let history: AiChatMessage[] = [];
     if (aiProvider && conv) {
       const rows = await prisma.aiMessage.findMany({
@@ -347,17 +359,20 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
         orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
         take: AI_HISTORY_TURNS,
       });
-      history = windowHistory(rows, AI_HISTORY_TURNS)
-        .map((row): AiChatMessage =>
-          row.role === AiMessageRole.USER
-            ? { role: 'user', content: row.content }
-            : row.role === AiMessageRole.ASSISTANT
-              ? { role: 'assistant', content: row.content }
-              : { role: 'system', content: row.content },
-        )
-        // A stored SYSTEM row (none are written today) would collide
-        // with the fresh system prompt above — drop them.
-        .filter((m) => m.role !== 'system');
+      history = clipHistoryContent(
+        windowHistory(rows, AI_HISTORY_TURNS)
+          .map((row): AiChatMessage =>
+            row.role === AiMessageRole.USER
+              ? { role: 'user', content: row.content }
+              : row.role === AiMessageRole.ASSISTANT
+                ? { role: 'assistant', content: row.content }
+                : { role: 'system', content: row.content },
+          )
+          // A stored SYSTEM row (none are written today) would collide
+          // with the fresh system prompt above — drop them.
+          .filter((m) => m.role !== 'system'),
+        AI_HISTORY_CHAR_CAP,
+      );
     }
 
     /* The reply engine: real provider when configured, local composer
@@ -421,7 +436,13 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
     });
   } catch (e) {
     // Failure telemetry (best-effort) so /owner/ai-metrics successRate is
-    // grounded in real outcomes, not just happy paths.
+    // grounded in real outcomes, not just happy paths. r176a: the
+    // persisted errorMessage is the CLASSIFIED kind (+HTTP status when
+    // there was one) — the provider's response-body excerpt stays in the
+    // server log only (logger.warn below), never in the DB where a
+    // future row-surfacing route could leak provider diagnostics.
+    const failureKind = classifyProviderFailure(e);
+    const failureDetail = e instanceof AiProviderError && e.status ? ` (HTTP ${e.status})` : '';
     await writeAiTelemetry(prisma, {
       // authMiddleware guarantees req.user on every route in this router
       // (the handler itself already relies on req.user!.id above); the old
@@ -429,17 +450,19 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
       userId: req.user!.id,
       latencyMs: Date.now() - startedAt,
       success: false,
-      errorMessage: e instanceof Error ? e.message.slice(0, 200) : 'unknown error',
+      errorMessage: `${failureKind}${failureDetail}`.slice(0, 200),
       // P4: a provider failure is attributed to the model that was
       // attempted (local-mode failures keep the composer tag).
       model: aiProvider?.model,
     });
-    // P4: provider transport/HTTP failures get one calm client-safe
-    // Arabic message (the provider detail stays in the server log via
-    // the error handler); everything else flows through unchanged.
+    // r176a: classified client-safe Arabic messages — a free-tier 429
+    // ("wait a minute"), a timeout ("try again — the router will likely
+    // pick another model"), and a rejected payload are no longer the
+    // same sentence. Non-AiProviderError failures flow through
+    // unchanged (the error handler's default Arabic 500).
     if (e instanceof Error && e.name === 'AiProviderError') {
-      logger.warn({ err: e }, 'AI provider call failed');
-      next(AppError.internal('تعذّر الوصول إلى نموذج المساعد الآن — حاول مرة أخرى'));
+      logger.warn({ err: e, kind: failureKind }, 'AI provider call failed');
+      next(AppError.internal(providerFailureMessage(failureKind)));
       return;
     }
     next(e);

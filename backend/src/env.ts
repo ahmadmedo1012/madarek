@@ -63,6 +63,13 @@ const schema = z
     AI_BASE_URL: z.string().url().optional(),
     AI_API_KEY: z.string().min(1).optional(),
     AI_MODEL: z.string().min(1).optional(),
+    // r176a: round-trip ceiling for one provider chat request (ms).
+    // Optional — the default (45s, lib/ai.ts AI_TIMEOUT_MS) matches the
+    // measured free-router behavior; the knob exists because free-model
+    // latency varies by the routed model, and tuning it should not need
+    // a code deploy. Bounds keep a typo from disabling the ceiling
+    // entirely or pinning the route for minutes.
+    AI_TIMEOUT_MS: z.coerce.number().int().min(5_000).max(90_000).optional(),
   })
   .superRefine((cfg, ctx) => {
     // Fail-closed: a half-configured s3 driver must stop boot with a

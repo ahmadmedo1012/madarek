@@ -71,16 +71,30 @@ export interface AiProviderConfig {
   timeoutMs: number;
 }
 
-/** Request ceiling — replies stay concise and the cost stays bounded. */
-export const AI_MAX_OUTPUT_TOKENS = 800;
+/** Request ceiling — replies stay concise and the cost stays bounded.
+ * r176a: 800→1200 — free-router reasoning-style models can spend part of
+ * the completion budget on hidden reasoning before the visible text;
+ * 800 produced empty-content failures on exactly those models. The
+ * prompt still mandates brevity; the ceiling is a guard, not a target. */
+export const AI_MAX_OUTPUT_TOKENS = 1200;
 /** Deterministic-ish temperature: grounded study advice, not poetry. */
 export const AI_TEMPERATURE = 0.4;
-/** Provider round-trip ceiling (ms) — a slow model must not pin the
- * route (and its rate-limit window) for a minute. */
+/** Provider round-trip ceiling default (ms) — a slow model must not pin
+ * the route (and its rate-limit window) for a minute. r176a: tunable at
+ * boot via AI_TIMEOUT_MS (env.ts validates bounds; free-router latency
+ * varies by the model the router happens to pick — the owner can raise
+ * the ceiling without a code deploy). */
 export const AI_TIMEOUT_MS = 45_000;
 
 /** How many past turns ride the request (a user+assistant pair = 2). */
 export const AI_HISTORY_TURNS = 12;
+
+/** Per-message cap for HISTORY turns riding the wire (r176a). The DB
+ * read is turn-counted, but each stored turn can hold up to 4000 user
+ * chars or an ~1200-token assistant reply — 12 unbounded turns can
+ * exceed small free-model context windows and 400 as an opaque
+ * "context length" failure. The NEW user message is never clipped. */
+export const AI_HISTORY_CHAR_CAP = 1600;
 
 /* ────────────────────────────────────────────────────────────────
  *  Pure helpers (test-pinned)
@@ -94,6 +108,29 @@ export const AI_HISTORY_TURNS = 12;
 export function windowHistory<T>(messages: readonly T[], maxMessages: number): T[] {
   if (maxMessages <= 0) return [];
   return messages.slice(0, maxMessages).reverse();
+}
+
+/**
+ * Clip each HISTORY message's content to `maxChars` (r176a) — the
+ * turn-counted window alone can still ship ~50k tokens when every
+ * stored turn is a full-size message, overflowing small free-model
+ * context windows as an opaque provider 400. History is context, not
+ * the ask: the NEW user message is never clipped (the route passes it
+ * separately). Non-mutating; also normalizes any non-string content
+ * defensively (the DB column is text, but the projection crosses a
+ * trust boundary before the wire).
+ */
+export function clipHistoryContent(
+  history: readonly AiChatMessage[],
+  maxChars: number,
+): AiChatMessage[] {
+  if (maxChars <= 0) return [];
+  return history.map((m) => ({
+    role: m.role,
+    content: typeof m.content === 'string' && m.content.length > maxChars
+      ? `${m.content.slice(0, maxChars)}…`
+      : m.content,
+  }));
 }
 
 /**
@@ -280,23 +317,121 @@ export function attributedModel(
  *  Impure: the OpenAI-compatible client + boot-time resolution
  * ──────────────────────────────────────────────────────────────── */
 
+/* ────────────────────────────────────────────────────────────────
+ *  Failure taxonomy + bounded retry (r176a)
+ * ──────────────────────────────────────────────────────────────── */
+
+/** The honest, small set of provider failure classes the route, the
+ * client message, and telemetry all share (r176a — one generic 500
+ * could not tell a free-tier 429 "wait a minute" from a timeout "the
+ * model is slow" from a rejected payload "check the config"). */
+export type AiFailureKind =
+  | 'timeout'
+  | 'rate_limited'
+  | 'provider_rejected' // 4xx other than 429 (bad params, auth, model id)
+  | 'provider_error' // 5xx
+  | 'transport' // network-layer failure before a status existed
+  | 'invalid_response'; // 2xx but unparseable/empty content
+
 /** Provider transport failure — carries the HTTP status when there was
- * one (4xx/5xx) so the log line answers "was it auth, quota, or net?". */
+ * one (4xx/5xx) and the classified failure KIND (r176a) so the log
+ * line, the client message, and telemetry agree without string
+ * matching. Body excerpts stay LOG-ONLY (never persisted — see the
+ * route's telemetry writer). */
 export class AiProviderError extends Error {
   readonly status?: number;
-  constructor(message: string, status?: number) {
+  readonly kind: AiFailureKind;
+  constructor(message: string, kind: AiFailureKind, status?: number) {
     super(message);
     this.name = 'AiProviderError';
+    this.kind = kind;
     this.status = status;
+  }
+}
+
+/** Map ANY error thrown by the provider path to a failure kind — the
+ * single classifier the route's catch and the retry decision share. */
+export function classifyProviderFailure(err: unknown): AiFailureKind {
+  if (err instanceof AiProviderError) return err.kind;
+  // parseChatCompletion failures wrapped by callOpenAiCompatible carry
+  // kind=invalid_response; anything else re-classified defensively.
+  const name = (err as { name?: string })?.name;
+  if (name === 'TimeoutError') return 'timeout';
+  return 'transport';
+}
+
+/** Client-safe Arabic message per failure kind (r176a). All stay calm,
+ * short and actionable; each names what the student should DO, which
+ * is the whole point of splitting the one generic message. */
+export function providerFailureMessage(kind: AiFailureKind): string {
+  switch (kind) {
+    case 'timeout':
+      return 'استغرق النموذج وقتًا أطول من المتاح — أعد المحاولة الآن وسيُختار نموذج آخر غالبًا';
+    case 'rate_limited':
+      return 'تجاوزنا حدّ الاستخدام المجاني مؤقتًا — انتظر دقيقة ثم أعد المحاولة';
+    case 'provider_rejected':
+      return 'رفض مزوّد خدمة الذكاء الاصطناعي الطلب — جرّب تغيير صيغة السؤال';
+    case 'invalid_response':
+      return 'وصل ردّ غير صالح من النموذج — أعد المحاولة';
+    case 'provider_error':
+    case 'transport':
+    default:
+      return 'تعذّر الوصول إلى نموذج المساعد الآن — حاول مرة أخرى';
+  }
+}
+
+/* Retry policy (r176a): retry ONCE, only for the transient classes that
+ * fail FAST — rate_limited (per-key 429s return immediately), transport
+ * (network faults fail in ms), provider_error (5xx usually immediate).
+ * Timeouts are deliberately NOT retried: the first attempt already
+ * consumed the whole round-trip ceiling, and retrying would double the
+ * student's wall-clock wait past the request budget; an honest Arabic
+ * "try again" (which re-routes to a different free model) is the better
+ * pilot behavior. Non-transient classes (4xx param/auth, invalid
+ * content) must surface, never loop. The retry is side-effect-free: it
+ * runs before any DB write, and the per-user rate limiter already
+ * counted the request at entry. */
+const RETRYABLE_KINDS: ReadonlySet<AiFailureKind> = new Set<AiFailureKind>([
+  'rate_limited',
+  'transport',
+  'provider_error',
+]);
+
+/** Jittered backoff between the two attempts (ms) — jitter avoids the
+ * synchronized-burst pattern when several pilot students trip the same
+ * per-key 429 in the same second. */
+const RETRY_DELAY_MS_MIN = 400;
+const RETRY_DELAY_MS_MAX = 800;
+
+/** The route-facing call: one attempt + at most one bounded retry (see
+ * the policy block above). Logs the retried failure (the log keeps the
+ * provider's body excerpt; the student and telemetry get the classified
+ * kind). Exported for the ai-provider test pins. */
+export async function callProviderWithRetry(
+  cfg: AiProviderConfig,
+  messages: readonly AiChatMessage[],
+  log: (obj: Record<string, unknown>, msg: string) => void,
+): Promise<AiCompletion> {
+  try {
+    return await callOpenAiCompatible(cfg, messages);
+  } catch (err) {
+    const kind = classifyProviderFailure(err);
+    if (!RETRYABLE_KINDS.has(kind)) throw err;
+    const delay =
+      RETRY_DELAY_MS_MIN + Math.floor(Math.random() * (RETRY_DELAY_MS_MAX - RETRY_DELAY_MS_MIN));
+    log({ err, kind, retryInMs: delay }, 'AI provider transient failure — retrying once');
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    return callOpenAiCompatible(cfg, messages);
   }
 }
 
 /**
  * POST {baseUrl}/chat/completions with the OpenAI-compatible contract.
- * Errors are ALWAYS AiProviderError (timeout, non-2xx, transport, or
- * unparseable payload) — the route maps them to one honest Arabic
- * AppError and failure telemetry. No retries: a slow/failing provider
- * must surface, not silently retry against a paid quota.
+ * Errors are ALWAYS AiProviderError with a classified kind (r176a:
+ * timeout, non-2xx, transport, or unparseable payload). The route calls
+ * this through callProviderWithRetry (ONE bounded retry for the
+ * fast-fail transient kinds); a genuinely failing provider must still
+ * surface, never silently loop against a paid quota.
  */
 export async function callOpenAiCompatible(
   cfg: AiProviderConfig,
@@ -329,32 +464,39 @@ export async function callOpenAiCompatible(
   } catch (err) {
     // AbortSignal.timeout throws TimeoutError (a DOMException — NOT an
     // Error instanceof on every runtime); plain fetch throws TypeError
-    // on network faults. Name-check only, so both map to transport.
+    // on network faults. Name-check only, so both map to a classified
+    // transport/timeout kind.
     const name = (err as { name?: string })?.name;
     throw new AiProviderError(
       name === 'TimeoutError'
         ? `provider timeout after ${cfg.timeoutMs}ms`
         : `provider transport failure: ${(err as Error).message}`,
+      name === 'TimeoutError' ? 'timeout' : 'transport',
     );
   }
 
   if (!res.ok) {
     const bodyText = await res.text().catch(() => '');
-    // Body excerpt goes to the LOG only (client-safe rule, AppError.internal).
-    throw new AiProviderError(`provider HTTP ${res.status}: ${bodyText.slice(0, 300)}`, res.status);
+    // Body excerpt goes to the LOG only (client-safe rule,
+    // AppError.internal). r176a: also carries the classified kind —
+    // 429 is rate_limited, other 4xx provider_rejected, 5xx
+    // provider_error.
+    const kind: AiFailureKind =
+      res.status === 429 ? 'rate_limited' : res.status >= 500 ? 'provider_error' : 'provider_rejected';
+    throw new AiProviderError(`provider HTTP ${res.status}: ${bodyText.slice(0, 300)}`, kind, res.status);
   }
 
   let payload: unknown;
   try {
     payload = await res.json();
   } catch {
-    throw new AiProviderError('provider returned non-JSON body');
+    throw new AiProviderError('provider returned non-JSON body', 'invalid_response');
   }
 
   try {
     return parseChatCompletion(payload);
   } catch (err) {
-    throw new AiProviderError((err as Error).message);
+    throw new AiProviderError((err as Error).message, 'invalid_response');
   }
 }
 
@@ -375,7 +517,9 @@ export function getAiProvider(): AiProviderConfig | null {
           baseUrl: env.AI_BASE_URL ?? 'https://api.openai.com/v1',
           apiKey: env.AI_API_KEY,
           model: env.AI_MODEL,
-          timeoutMs: AI_TIMEOUT_MS,
+          // r176a: the env-tunable round-trip ceiling (validated bounds
+          // in env.ts; AI_TIMEOUT_MS exports the default for pins).
+          timeoutMs: env.AI_TIMEOUT_MS ?? AI_TIMEOUT_MS,
         }
       : null;
   return cachedProvider;

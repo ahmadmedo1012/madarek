@@ -357,7 +357,7 @@ describe('POST /api/v1/ai/chat — OPENAI mode (provider wire stubbed)', () => {
     expect(convCreate).not.toHaveBeenCalled();
   });
 
-  it('provider failure (transport TypeError): ONE Arabic 500, failure telemetry row written, NOTHING persisted to the conversation', async () => {
+  it('provider failure (transport TypeError): ONE classified Arabic 500, failure telemetry row written, NOTHING persisted to the conversation', async () => {
     stubProviderTransport(() => {
       throw new TypeError('fetch failed');
     });
@@ -372,7 +372,9 @@ describe('POST /api/v1/ai/chat — OPENAI mode (provider wire stubbed)', () => {
     expect(body.error.code).toBe('INTERNAL');
     expect(body.error.message).toBe('تعذّر الوصول إلى نموذج المساعد الآن — حاول مرة أخرى');
 
-    // Failure telemetry: attributed to the ATTEMPTED model, success false.
+    // Failure telemetry: attributed to the ATTEMPTED model, success
+    // false, and — r176a — the classified KIND as the persisted
+    // errorMessage (the provider detail stays in the server log).
     expect(telemetryCreate).toHaveBeenCalledTimes(1);
     expect(telemetryCreate).toHaveBeenCalledWith({
       data: {
@@ -383,7 +385,7 @@ describe('POST /api/v1/ai/chat — OPENAI mode (provider wire stubbed)', () => {
         outputTokens: 0,
         latencyMs: expect.any(Number),
         success: false,
-        errorMessage: expect.stringContaining('transport failure'),
+        errorMessage: 'transport',
       },
     });
 
@@ -392,6 +394,145 @@ describe('POST /api/v1/ai/chat — OPENAI mode (provider wire stubbed)', () => {
     expect(transaction).not.toHaveBeenCalled();
     expect(msgCreate).not.toHaveBeenCalled();
     expect(convCreate).not.toHaveBeenCalled();
+  });
+
+  /* r176a — the classified-failure matrix at the ROUTE level: each
+   * provider failure class reaches the student as its own actionable
+   * Arabic sentence (previously ALL classes collapsed into one generic
+   * 500) and telemetry as its own greppable kind. */
+  it('r176a: a 429 surfaces the WAIT-A-MINUTE Arabic message + rate_limited telemetry kind', async () => {
+    stubProviderTransport(
+      () => new Response(JSON.stringify({ error: { message: 'Rate limit exceeded' } }), { status: 429 }),
+    );
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال'),
+    });
+    expect(res.status).toBe(500);
+    const body = (await res.json()) as { error: { message: string } };
+    expect(body.error.message).toBe('تجاوزنا حدّ الاستخدام المجاني مؤقتًا — انتظر دقيقة ثم أعد المحاولة');
+    expect(telemetryCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ success: false, errorMessage: 'rate_limited (HTTP 429)' }),
+    });
+  });
+
+  it('r176a: a provider TIMEOUT surfaces the retry-inviting Arabic message; the telemetry kind is timeout', async () => {
+    stubProviderTransport(() => {
+      const e = new Error('The operation was aborted due to timeout');
+      e.name = 'TimeoutError';
+      throw e;
+    });
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال'),
+    });
+    expect(res.status).toBe(500);
+    const body = (await res.json()) as { error: { message: string } };
+    expect(body.error.message).toBe(
+      'استغرق النموذج وقتًا أطول من المتاح — أعد المحاولة الآن وسيُختار نموذج آخر غالبًا',
+    );
+    expect(telemetryCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ success: false, errorMessage: 'timeout' }),
+    });
+  });
+
+  it('r176a: a 400 param rejection surfaces the provider_rejected message and is NOT retried', async () => {
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    stubProviderTransport(
+      (_url, _init) => new Response(JSON.stringify({ error: { message: 'temperature not supported' } }), { status: 400 }),
+      calls,
+    );
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال'),
+    });
+    expect(res.status).toBe(500);
+    const body = (await res.json()) as { error: { message: string } };
+    expect(body.error.message).toBe('رفض مزوّد خدمة الذكاء الاصطناعي الطلب — جرّب تغيير صيغة السؤال');
+    // Exactly one wire call — a non-transient 400 must never be retried.
+    expect(calls).toHaveLength(1);
+    expect(telemetryCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ success: false, errorMessage: 'provider_rejected (HTTP 400)' }),
+    });
+  });
+
+  it('r176a: an empty-content 200 surfaces the invalid_response message (distinct from a timeout)', async () => {
+    stubProviderTransport(
+      () => new Response(JSON.stringify({ choices: [{ message: { content: '' } }] }), { status: 200 }),
+    );
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال'),
+    });
+    expect(res.status).toBe(500);
+    const body = (await res.json()) as { error: { message: string } };
+    expect(body.error.message).toBe('وصل ردّ غير صالح من النموذج — أعد المحاولة');
+    expect(telemetryCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ success: false, errorMessage: 'invalid_response' }),
+    });
+  });
+
+  it('r176a: a 429-then-200 sequence recovers on ONE bounded retry: 200 reply, TWO wire calls, ONE telemetry row (success)', async () => {
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    let attempt = 0;
+    stubProviderTransport(
+      (_url, _init) => {
+        attempt += 1;
+        return attempt === 1
+          ? new Response(JSON.stringify({ error: { message: 'Rate limit exceeded' } }), { status: 429 })
+          : new Response(
+              JSON.stringify({
+                choices: [{ message: { content: 'جواب بعد إعادة المحاولة' } }],
+                usage: { prompt_tokens: 9, completion_tokens: 4 },
+                model: 'free-model-after-retry',
+              }),
+              { status: 200 },
+            );
+      },
+      calls,
+    );
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال بعد ضغط الاستخدام'),
+    });
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { data: { reply: string; model: string } };
+    expect(body.data.reply).toBe('جواب بعد إعادة المحاولة');
+    expect(body.data.model).toBe('free-model-after-retry');
+    // TWO provider wire calls (1 + the single retry) …
+    expect(calls).toHaveLength(2);
+    // … but exactly ONE telemetry row — the recovered turn, success true.
+    expect(telemetryCreate).toHaveBeenCalledTimes(1);
+    expect(telemetryCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ success: true, model: 'free-model-after-retry' }),
+    });
+    // And the conversation persisted exactly the recovered turn.
+    expect(transaction).toHaveBeenCalledTimes(1);
+    expect(msgCreate).toHaveBeenCalledTimes(2);
+  });
+
+  it('r176a: a 429-twice sequence surfaces the honest rate_limited 500 after exactly ONE retry — no loop, nothing persisted', async () => {
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    stubProviderTransport(
+      () => new Response(JSON.stringify({ error: { message: 'Rate limit exceeded' } }), { status: 429 }),
+      calls,
+    );
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال'),
+    });
+    expect(res.status).toBe(500);
+    const body = (await res.json()) as { error: { message: string } };
+    expect(body.error.message).toBe('تجاوزنا حدّ الاستخدام المجاني مؤقتًا — انتظر دقيقة ثم أعد المحاولة');
+    expect(calls).toHaveLength(2); // one attempt + one retry — never more
+    expect(telemetryCreate).toHaveBeenCalledTimes(1);
+    expect(transaction).not.toHaveBeenCalled();
   });
 
   it('GET /ai/config reports the openai mode + the configured model string (the ROUTE, not a per-response fact)', async () => {
@@ -589,7 +730,7 @@ describe('POST /api/v1/ai/chat — OPENROUTER mode (free router)', () => {
     expect(body.data).toEqual({ provider: 'openrouter', model: 'openrouter/free' });
   });
 
-  it('a free-router failure surfaces the honest Arabic 500 with failure telemetry — no local-composer fallback', async () => {
+  it('a free-router failure surfaces the honest classified Arabic 500 with failure telemetry — no local-composer fallback', async () => {
     stubProviderTransport(
       () =>
         new Response(JSON.stringify({ error: { message: 'Rate limit exceeded: free tier' } }), {
@@ -604,11 +745,13 @@ describe('POST /api/v1/ai/chat — OPENROUTER mode (free router)', () => {
     });
     expect(res.status).toBe(500);
     const body = (await res.json()) as { error: { message: string } };
-    expect(body.error.message).toBe('تعذّر الوصول إلى نموذج المساعد الآن — حاول مرة أخرى');
+    // r176a: a free-tier 429 now says WAIT, not the generic line.
+    expect(body.error.message).toBe('تجاوزنا حدّ الاستخدام المجاني مؤقتًا — انتظر دقيقة ثم أعد المحاولة');
 
-    // Failure telemetry: attributed to the ATTEMPTED (configured) route.
+    // Failure telemetry: attributed to the ATTEMPTED (configured) route
+    // with the classified kind (r176a — greppable, no body excerpts).
     expect(telemetryCreate).toHaveBeenCalledWith({
-      data: expect.objectContaining({ model: 'openrouter/free', success: false }),
+      data: expect.objectContaining({ model: 'openrouter/free', success: false, errorMessage: 'rate_limited (HTTP 429)' }),
     });
     // NO silent fallback: nothing persisted.
     expect(transaction).not.toHaveBeenCalled();

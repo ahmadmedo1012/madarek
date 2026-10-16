@@ -30,6 +30,7 @@ import {
   AI_MAX_OUTPUT_TOKENS,
   AI_TEMPERATURE,
   AI_TIMEOUT_MS,
+  AI_HISTORY_CHAR_CAP,
   AiProviderError,
   OPENROUTER_REFERER,
   OPENROUTER_TITLE,
@@ -38,15 +39,20 @@ import {
   buildGenericSystemPrompt,
   buildStudentSystemPrompt,
   callOpenAiCompatible,
+  callProviderWithRetry,
+  classifyProviderFailure,
+  clipHistoryContent,
   getAiProvider,
   isOpenRouterBaseUrl,
   masteryContextLines,
   masteryFactTier,
   parseChatCompletion,
   parseModelId,
+  providerFailureMessage,
   providerLabelFromBaseUrl,
   windowHistory,
   type AiChatMessage,
+  type AiFailureKind,
   type MasteryFact,
 } from '../../src/lib/ai.js';
 
@@ -58,14 +64,22 @@ const renderSource = readFileSync(new URL('../../../render.yaml', import.meta.ur
 // ─── Constants (the contract's ceilings) ──────────────────────────
 
 describe('provider constants', () => {
-  it('pins the request ceilings — concise replies, bounded cost, 45s max wait', () => {
-    expect(AI_MAX_OUTPUT_TOKENS).toBe(800);
+  it('pins the request ceilings — concise replies, bounded cost, 45s default wait', () => {
+    // r176a: 800→1200 — free-router reasoning models can spend part of
+    // the completion budget on hidden reasoning; 800 produced empty-
+    // content failures on exactly those models. The prompt still
+    // mandates brevity — the ceiling is a guard, not a target.
+    expect(AI_MAX_OUTPUT_TOKENS).toBe(1200);
     expect(AI_TEMPERATURE).toBe(0.4);
     expect(AI_TIMEOUT_MS).toBe(45_000);
   });
 
   it('pins the history window at 12 messages (6 user+assistant pairs)', () => {
     expect(AI_HISTORY_TURNS).toBe(12);
+  });
+
+  it('r176a: pins the per-message HISTORY clip so the window cannot overflow small free-model contexts', () => {
+    expect(AI_HISTORY_CHAR_CAP).toBe(1600);
   });
 });
 
@@ -313,6 +327,13 @@ describe('getAiProvider (boot-frozen resolution)', () => {
     // crash requests — this is that branch.
     expect(aiLibSource).toContain("env.AI_PROVIDER === 'openai' && env.AI_API_KEY && env.AI_MODEL");
   });
+
+  it('r176a: the round-trip ceiling honors the AI_TIMEOUT_MS env knob with a sane default (source pins)', () => {
+    // env.ts validates the bounds; the provider resolution threads the
+    // value through with the lib default as fallback.
+    expect(envSource).toContain('AI_TIMEOUT_MS: z.coerce.number().int().min(5_000).max(90_000).optional()');
+    expect(aiLibSource).toContain('timeoutMs: env.AI_TIMEOUT_MS ?? AI_TIMEOUT_MS');
+  });
 });
 
 // ─── callOpenAiCompatible (fetch stubbed — the wire contract) ─────
@@ -391,26 +412,42 @@ describe('callOpenAiCompatible — request shape', () => {
   });
 });
 
-describe('callOpenAiCompatible — every failure is an AiProviderError', () => {
-  it('HTTP non-2xx carries the status and a body excerpt (for the LOG, not the client)', async () => {
+describe('callOpenAiCompatible — every failure is a CLASSIFIED AiProviderError (r176a)', () => {
+  it('HTTP 429 carries the status, a body excerpt (LOG-only), and kind=rate_limited', async () => {
     vi.stubGlobal('fetch', async () => new Response('{"error":{"message":"quota exceeded"}}', { status: 429 }));
     const err = await callOpenAiCompatible(CFG, []).catch((e: unknown) => e);
     expect(err).toBeInstanceOf(AiProviderError);
     expect((err as AiProviderError).status).toBe(429);
+    expect((err as AiProviderError).kind).toBe('rate_limited');
     expect((err as AiProviderError).message).toContain('HTTP 429');
     expect((err as AiProviderError).message).toContain('quota exceeded');
   });
 
-  it('transport failure (fetch TypeError) maps to the transport message', async () => {
+  it('HTTP 400 (param/model rejection) is kind=provider_rejected, distinct from 429 and 5xx', async () => {
+    vi.stubGlobal('fetch', async () => new Response('{"error":{"message":"temperature not supported"}}', { status: 400 }));
+    const err = await callOpenAiCompatible(CFG, []).catch((e: unknown) => e);
+    expect((err as AiProviderError).kind).toBe('provider_rejected');
+    expect((err as AiProviderError).status).toBe(400);
+  });
+
+  it('HTTP 500 is kind=provider_error', async () => {
+    vi.stubGlobal('fetch', async () => new Response('{"error":{"message":"upstream blew up"}}', { status: 502 }));
+    const err = await callOpenAiCompatible(CFG, []).catch((e: unknown) => e);
+    expect((err as AiProviderError).kind).toBe('provider_error');
+    expect((err as AiProviderError).status).toBe(502);
+  });
+
+  it('transport failure (fetch TypeError) maps to kind=transport', async () => {
     vi.stubGlobal('fetch', async () => {
       throw new TypeError('fetch failed');
     });
     const err = await callOpenAiCompatible(CFG, []).catch((e: unknown) => e);
     expect(err).toBeInstanceOf(AiProviderError);
+    expect((err as AiProviderError).kind).toBe('transport');
     expect((err as AiProviderError).message).toContain('transport failure');
   });
 
-  it('a TimeoutError name maps to the timeout message (DOMException is not Error on every runtime)', async () => {
+  it('a TimeoutError name maps to kind=timeout (DOMException is not Error on every runtime)', async () => {
     vi.stubGlobal('fetch', async () => {
       const e = new Error('The operation was aborted due to timeout');
       e.name = 'TimeoutError';
@@ -418,21 +455,146 @@ describe('callOpenAiCompatible — every failure is an AiProviderError', () => {
     });
     const err = await callOpenAiCompatible({ ...CFG, timeoutMs: 45_000 }, []).catch((e: unknown) => e);
     expect(err).toBeInstanceOf(AiProviderError);
+    expect((err as AiProviderError).kind).toBe('timeout');
     expect((err as AiProviderError).message).toBe('provider timeout after 45000ms');
   });
 
-  it('a 200 with a non-JSON body is a provider error', async () => {
+  it('a 200 with a non-JSON body is kind=invalid_response', async () => {
     vi.stubGlobal('fetch', async () => new Response('<html>gateway hijack</html>', { status: 200 }));
     const err = await callOpenAiCompatible(CFG, []).catch((e: unknown) => e);
     expect(err).toBeInstanceOf(AiProviderError);
+    expect((err as AiProviderError).kind).toBe('invalid_response');
     expect((err as AiProviderError).message).toContain('non-JSON');
   });
 
-  it('a 200 with an empty choice content is a provider error (not an empty reply)', async () => {
+  it('a 200 with an empty choice content is kind=invalid_response (not an empty reply)', async () => {
     vi.stubGlobal('fetch', async () => new Response(JSON.stringify({ choices: [{ message: { content: '' } }] }), { status: 200 }));
     const err = await callOpenAiCompatible(CFG, []).catch((e: unknown) => e);
     expect(err).toBeInstanceOf(AiProviderError);
+    expect((err as AiProviderError).kind).toBe('invalid_response');
     expect((err as AiProviderError).message).toContain('no message content');
+  });
+});
+
+// ─── r176a: the failure taxonomy, client messages, and bounded retry ──
+
+describe('classifyProviderFailure (the single classifier)', () => {
+  it('AiProviderError carries its own kind through the classifier', () => {
+    for (const kind of ['timeout', 'rate_limited', 'provider_rejected', 'provider_error', 'transport', 'invalid_response'] as const) {
+      expect(classifyProviderFailure(new AiProviderError('x', kind))).toBe(kind);
+    }
+  });
+
+  it('a raw TimeoutError-shaped error classifies as timeout; anything raw is transport', () => {
+    const timeoutish = new Error('aborted');
+    timeoutish.name = 'TimeoutError';
+    expect(classifyProviderFailure(timeoutish)).toBe('timeout');
+    expect(classifyProviderFailure(new TypeError('fetch failed'))).toBe('transport');
+  });
+});
+
+describe('providerFailureMessage (r176a — one message per failure class)', () => {
+  const ALL: AiFailureKind[] = ['timeout', 'rate_limited', 'provider_rejected', 'provider_error', 'transport', 'invalid_response'];
+  it('every kind maps to a DISTINCT, non-empty Arabic message', () => {
+    const messages = ALL.map(providerFailureMessage);
+    expect(messages.every((m) => m.length > 10)).toBe(true);
+    expect(new Set(messages).size).toBe(ALL.length - 1); // provider_error and transport intentionally share the generic line
+  });
+
+  it('rate_limited tells the student to WAIT (free-tier minute quota)', () => {
+    expect(providerFailureMessage('rate_limited')).toContain('انتظر دقيقة');
+  });
+
+  it('timeout invites a retry that re-routes (free router picks a different model)', () => {
+    expect(providerFailureMessage('timeout')).toContain('أعد المحاولة');
+  });
+});
+
+describe('callProviderWithRetry (ONE bounded retry, fast-fail transients only)', () => {
+  const MESSAGES = buildChatMessages('sys', [], 'سؤال');
+  const logs: Array<[Record<string, unknown>, string]> = [];
+  const log = (obj: Record<string, unknown>, msg: string) => logs.push([obj, msg]);
+
+  it('a 429-then-200 sequence SUCCEEDS on the retry: two wire calls, one completion, retry logged', async () => {
+    let calls = 0;
+    vi.stubGlobal('fetch', async () => {
+      calls += 1;
+      return calls === 1
+        ? new Response('{"error":{"message":"rate limit"}}', { status: 429 })
+        : new Response(JSON.stringify({ choices: [{ message: { content: 'ردّ بعد المحاولة' } }], usage: { prompt_tokens: 1, completion_tokens: 2 }, model: 'm1' }), { status: 200 });
+    });
+    const out = await callProviderWithRetry(CFG, MESSAGES, log);
+    expect(out.content).toBe('ردّ بعد المحاولة');
+    expect(calls).toBe(2);
+    expect(logs.at(-1)![1]).toContain('retrying once');
+  });
+
+  it('a 429-twice sequence surfaces the rate_limited failure (no second retry, no loop)', async () => {
+    let calls = 0;
+    vi.stubGlobal('fetch', async () => {
+      calls += 1;
+      return new Response('{"error":{"message":"rate limit"}}', { status: 429 });
+    });
+    const err = await callProviderWithRetry(CFG, MESSAGES, log).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(AiProviderError);
+    expect((err as AiProviderError).kind).toBe('rate_limited');
+    expect(calls).toBe(2); // 1 + exactly one retry — never more
+  });
+
+  it('a timeout is NOT retried (the first attempt already burned the whole ceiling)', async () => {
+    let calls = 0;
+    vi.stubGlobal('fetch', async () => {
+      calls += 1;
+      const e = new Error('aborted');
+      e.name = 'TimeoutError';
+      throw e;
+    });
+    const err = await callProviderWithRetry(CFG, MESSAGES, log).catch((e: unknown) => e);
+    expect((err as AiProviderError).kind).toBe('timeout');
+    expect(calls).toBe(1);
+  });
+
+  it('a 400 param rejection is NOT retried (non-transient — retrying the same payload cannot succeed)', async () => {
+    let calls = 0;
+    vi.stubGlobal('fetch', async () => {
+      calls += 1;
+      return new Response('{"error":{"message":"bad param"}}', { status: 400 });
+    });
+    const err = await callProviderWithRetry(CFG, MESSAGES, log).catch((e: unknown) => e);
+    expect((err as AiProviderError).kind).toBe('provider_rejected');
+    expect(calls).toBe(1);
+  });
+
+  it('an invalid_response (empty content) is NOT retried', async () => {
+    let calls = 0;
+    vi.stubGlobal('fetch', async () => {
+      calls += 1;
+      return new Response(JSON.stringify({ choices: [{ message: { content: '' } }] }), { status: 200 });
+    });
+    const err = await callProviderWithRetry(CFG, MESSAGES, log).catch((e: unknown) => e);
+    expect((err as AiProviderError).kind).toBe('invalid_response');
+    expect(calls).toBe(1);
+  });
+});
+
+describe('clipHistoryContent (r176a — bounded history payload)', () => {
+  it('clips each HISTORY message to the cap with an ellipsis marker; short messages pass verbatim', () => {
+    const long = 'أ'.repeat(4000);
+    const out = clipHistoryContent(
+      [
+        { role: 'user', content: long },
+        { role: 'assistant', content: 'ردّ قصير' },
+      ],
+      1600,
+    );
+    expect(out[0]!.content).toHaveLength(1601); // 1600 chars + the ellipsis
+    expect(out[0]!.content.endsWith('…')).toBe(true);
+    expect(out[1]!.content).toBe('ردّ قصير');
+    expect(out.map((m) => m.role)).toEqual(['user', 'assistant']);
+  });
+
+  it('maxChars ≤ 0 clips everything to nothing (defensive bound)', () => {
+    expect(clipHistoryContent([{ role: 'user', content: 'x' }], 0)).toEqual([]);
   });
 });
 
@@ -446,11 +608,18 @@ describe('ai.routes.ts — the P4 mode switch', () => {
   });
 
   it('the real path builds messages and calls the provider through the lib helpers', () => {
-    expect(aiRouteSource).toContain('await callOpenAiCompatible(');
+    // r176a: the route calls through the retry wrapper (which wraps
+    // callOpenAiCompatible) — one attempt + at most one bounded retry.
+    expect(aiRouteSource).toContain('await callProviderWithRetry(');
     expect(aiRouteSource).toContain('buildChatMessages(system, history, message)');
     expect(aiRouteSource).toContain('buildStudentSystemPrompt(masteryContextLines(');
     expect(aiRouteSource).toContain('buildGenericSystemPrompt()');
     expect(aiRouteSource).toContain('isMasteryAwareRole(role)');
+  });
+
+  it('r176a: the history window is also content-clipped (AI_HISTORY_CHAR_CAP) on the wire', () => {
+    expect(aiRouteSource).toContain('history = clipHistoryContent(');
+    expect(aiRouteSource).toContain('AI_HISTORY_CHAR_CAP');
   });
 
   it('loads the conversation history windowed + chronological, and drops stored system rows', () => {
@@ -475,15 +644,21 @@ describe('ai.routes.ts — the P4 mode switch', () => {
     expect(aiRouteSource).toContain('provider: aiProviderLabel');
   });
 
-  it('NO silent fallback: a provider failure maps to ONE Arabic AppError — composeReply never runs in the catch', () => {
+  it('NO silent fallback: a provider failure maps to ONE classified Arabic AppError — composeReply never runs in the catch', () => {
     expect(aiRouteSource).toContain("e.name === 'AiProviderError'");
-    expect(aiRouteSource).toContain("'تعذّر الوصول إلى نموذج المساعد الآن — حاول مرة أخرى'");
+    // r176a: the classified message matrix, not one fixed string.
+    expect(aiRouteSource).toContain('providerFailureMessage(failureKind)');
     const catchStart = aiRouteSource.indexOf('} catch (e) {');
     const catchEnd = aiRouteSource.indexOf('next(e);', catchStart);
     const catchBlock = aiRouteSource.slice(catchStart, catchEnd);
     expect(catchBlock).not.toContain('composeReply(');
     // Failure telemetry is attributed to the attempted model.
     expect(catchBlock).toContain('model: aiProvider?.model');
+    // r176a: the persisted errorMessage is the CLASSIFIED kind — the
+    // provider response-body excerpt (which rides err.message) must
+    // stay log-only, never in the DB.
+    expect(catchBlock).toContain('classifyProviderFailure(e)');
+    expect(catchBlock).toContain("`${failureKind}${failureDetail}`.slice(0, 200)");
   });
 
   it('GET /config exposes the honest surface (label + configured model, null in local mode)', () => {
