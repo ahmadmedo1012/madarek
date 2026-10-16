@@ -12,9 +12,9 @@
 |---|---|---|
 | Lint | `npm run lint` | **0 أخطاء**، 18 تحذيرًا (exhaustive-deps — مسموحة موثقة في `eslint.config.mjs`) |
 | Typecheck | `npm run typecheck` | **نجاح** — src + tests للجهتين (tsconfig.test.json) |
-| اختبارات الواجهة | `npm --prefix frontend run test` | **135 ملفًا، 1474 اختبارًا، كلها ناجحة** (~130 ثانية) |
-| اختبارات الخلفية | `npm --prefix backend run test` | **66 ملفًا، 1494 اختبارًا، كلها ناجحة** (~41 ثانية) |
-| اختبارات تكامل DB (اختيارية) | `DATABASE_URL=… npm run test:integration` | **6 ملفات، 36 اختبارًا ناجحة** (~6–10 ثوانٍ) — قاعدة تجريبية معزولة فقط، خارج `npm test` (القسم الخاص بها أدناه) |
+| اختبارات الواجهة | `npm --prefix frontend run test` | **165 ملفًا، 1782 اختبارًا، كلها ناجحة** (~155 ثانية) |
+| اختبارات الخلفية | `npm --prefix backend run test` | **67 ملفًا، 1554 اختبارًا، كلها ناجحة** (~30 ثانية) |
+| اختبارات تكامل DB (اختيارية) | `DATABASE_URL=… npm run test:integration` | **7 ملفات، 47 اختبارًا ناجحة** (~8 ثوانٍ) — قاعدة تجريبية معزولة فقط، خارج `npm test` (القسم الخاص بها أدناه) |
 | بوابة التكافؤ | `node scripts/verify-parity-export.mjs` | **PASS — 163 فحص token** + تدقيق متغيرات غير معرفة + قيم مستبعدة + توازن أقواس |
 | الأيقونات | `bash scripts/check-icons.sh` | OK — Lucide فقط |
 | رموز الحركة | `bash scripts/check-motion-tokens.sh` | OK — لا قيم خام |
@@ -22,7 +22,7 @@
 | هوية الكليات | `npm run validate:colleges` | OK — 25 بروفايل (تباين AA، أصول، أيقونات) |
 | بناء الخلفية | `npm --prefix backend run build` | نجاح (prisma generate + tsc) |
 | بناء الواجهة | `npm --prefix frontend run build` | نجاح — vite (~5 ثوانٍ، chunks ثابتة) |
-| رحلات E2E | `npm --prefix frontend run test:e2e` | **26/26 ناجحة (~80 ثانية)** — تفاصيل القسم الخاص بها أدناه |
+| رحلات E2E | `npm --prefix frontend run test:e2e` | **28/28 ناجحة (~80 ثانية)** — تفاصيل القسم الخاص بها أدناه |
 
 > ملاحظة صدق: أثناء اختبارات الخلفية ترى سجلات pino حمراء («Unhandled
 > error», «telemetry table missing»…) — هذه **أخطاء مُصنَّعة عمدًا داخل
@@ -216,7 +216,7 @@ cd .. && DATABASE_URL=postgresql://postgres:postgres@localhost:5433/madarek_intt
   npm run test:integration
 ```
 
-**6 ملفات / 36 اختبارًا — 36/36 ناجحة** (تشغيل 2026-10-16 على
+**7 ملفات / 47 اختبارًا — 47/47 ناجحة** (تشغيل 2026-10-16 على
 Postgres 16 محلي، Node 24؛ ~7 ثوانٍ). التنظيف بين الاختبارات
 ذاتي: كل ملف يمحو جداول `public` كاملة (`TRUNCATE … RESTART IDENTITY
 CASCADE`) عدا `_prisma_migrations` عبر استبطان `information_schema`

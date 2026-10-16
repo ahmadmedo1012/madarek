@@ -46,14 +46,14 @@
 npm install                  # تثبيت (workspaces: backend + frontend)
 npm run lint                 # ESLint على frontend/src + backend/src (0 أخطاء إلزامية؛ 18 تحذير exhaustive-deps مسموح موثق)
 npm run typecheck            # tsc للشيفرة والاختبارات في الجهتين — لا يحتاج قاعدة بيانات
-npm test                     # vitest للجهتين — لا يحتاج قاعدة بيانات (1474 واجهة + 1259 خلفية)
+npm test                     # vitest للجهتين — لا يحتاج قاعدة بيانات (1782 واجهة + 1554 خلفية) — والأرقام تُقاس من الشجرة الحاليّة لا تُنسخ من الجولات السابقة
 npm run dev                  # خلفية على :4000 (tsx watch)
 npm run dev:web              # واجهة على :5173 مع proxy ‏/api → :4000
 npm run build -w frontend    # بناء الواجهة فقط (لا يحتاج DB)
 npm run build -w backend     # بناء الخلفية فقط (prisma generate + tsc)
 npm run db:migrate           # prisma migrate dev محليًا — يحتاج DATABASE_URL حية
 npm run db:seed              # بذر البيانات التجريبية — يحتاج DATABASE_URL حية
-node scripts/verify-parity-export.mjs   # بوابة التكافؤ 168/168 (بلا اعتماديات)
+node scripts/verify-parity-export.mjs   # بوابة التكافؤ 163/163 (بلا اعتماديات؛ 168 قبل اجتياح r148-d)
 bash scripts/check-icons.sh             # انضباط الأيقونات (Lucide فقط)
 bash scripts/check-motion-tokens.sh     # منع قيم الحركة الخام
 bash scripts/check-csp-hash.sh          # مطابقة بصمات CSP بعد أي تعديل على frontend/index.html

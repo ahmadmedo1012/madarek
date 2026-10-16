@@ -37,7 +37,7 @@ Dependency-free (`node:fs` / `node:path` / `node:url` only) — runs anywhere No
 
 | # | Gate | Asserts | Failure mode |
 |---|---|---|---|
-| **1** | **Token parity** | Builds resolved light/dark token maps for `tokens.css` and the export (theme blocks + `var()` chains + fallbacks) and asserts **168/168 key tokens match exactly**. Headline tokens are additionally **pinned to their documented values** — night `#070B16`, gold `#E9B44C`, copper `#B57438`, cream `#FBFAF9`, sand `#F2EFE6` — so a future drift of the *reference itself* fails loudly instead of silently dragging the export along. A meta-check requires ≥100 token checks to be defined. | Any divergence, either direction, exits 1 with a readable diff. |
+| **1** | **Token parity** | Builds resolved light/dark token maps for `tokens.css` and the export (theme blocks + `var()` chains + fallbacks) and asserts **163/163 key tokens match exactly** (168 قبل اجتياح r148-d). Headline tokens are additionally **pinned to their documented values** — night `#070B16`, gold `#E9B44C`, copper `#B57438`, cream `#FBFAF9`, sand `#F2EFE6` — so a future drift of the *reference itself* fails loudly instead of silently dragging the export along. A meta-check requires ≥100 token checks to be defined. | Any divergence, either direction, exits 1 with a readable diff. |
 | **2** | **Undefined-var audit** | Every `var(--x)` in the export must resolve within the export itself — directly or through a complete fallback chain. The shared skeleton is audited against `shared ∪ parity ∪` the documented host-alias set. | A broken reference (token defined nowhere) fails the run. |
 | **3** | **Forbidden retired values** | The **43 retired divergent spellings** (§3) must be absent from **both** files — comments included, so a "retired but mentioned" value still fails. | Any hit names the file and the exact needle. |
 | **4** | **Brace balance** | Both files must parse: balanced braces, no negative depth, after comment stripping. | Unbalanced file fails the run. |
@@ -98,7 +98,7 @@ harness) مستقل يُقارن نسخًا يدوية من القيم المر�
 مستودع بنفسه. لذلك أي تغيير قيمة يمر بالترتيب نفسه دائمًا:
 
 1. **`tokens.css` أولًا** — المصدر المُؤلَّف هو وحده مكان التعديل (قاعدة §8 أدناه).
-2. **إعادة توليد زوج التصدير في نفس الجولة** — `node scripts/verify-parity-export.mjs` يجب أن يبقى 168/168 أخضر قبل الدفع.
+2. **إعادة توليد زوج التصدير في نفس الجولة** — `node scripts/verify-parity-export.mjs` يجب أن يبقى 163/163 أخضر قبل الدفع.
 3. **الأشقاء يُعيدون التدبيس في جولاتهم** — مِحكّاتهم تفشل جهرةً حتى تُحدّث النسخ اليدوية؛ هذا هو التعاقد، لا إشعار يدوي.
 
 > هذه الفقرة وحدها — دون الجدول — هي الحد الأدنى الذي يجب أن يبقى صادقًا
@@ -200,7 +200,7 @@ PORT-KIT سطره الجديد في الجدول نفسه.
 
 1. **Do not import the pair into the app.** The app consumes `tokens.css` / `motion.css` / `components.css` directly — the pair is the verification surface only.
 2. **A changed value belongs in `tokens.css` first** — open an issue/PR against the canonical source; never fork a token into the export by hand.
-3. **Run the gate after any reference token change** — `node scripts/verify-parity-export.mjs` must stay green (`168/168`) before a change to `tokens.css` ships.
+3. **Run the gate after any reference token change** — `node scripts/verify-parity-export.mjs` must stay green (`163/163`) before a change to `tokens.css` ships.
 4. The canon in human-readable form is [`DESIGN.md`](../DESIGN.md); the authored values live in `frontend/src/styles/tokens.css`.
 
 ---

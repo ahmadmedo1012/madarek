@@ -157,8 +157,20 @@ async function checkHealth(base) {
   if (problems.length > 0) {
     return fail(`استجابة ناقصة / incomplete payload: ${problems.join(' · ')}`);
   }
-  const buildId = typeof body?.buildId === 'string' ? ` · buildId=${body.buildId}` : '';
-  return pass(`200 · ok=true · dbLatencyMs=${body.dbLatencyMs} · env=${body.env}${buildId}`);
+  const buildId = typeof body?.buildId === 'string' ? body.buildId : null;
+  /* r176h: EXPECTED_BUILD_ID (optional env) — when set, the served
+   * buildId must MATCH it, or the check fails: a stale deployment
+   * previously read as perfectly healthy while serving yesterday's
+   * build. The deploy pipeline sets this from the release being
+   * verified; unset keeps the observational pass (back-compat). */
+  const expectedBuildId = process.env.EXPECTED_BUILD_ID;
+  if (expectedBuildId && buildId !== expectedBuildId) {
+    return fail(
+      `buildId mismatch: served=${JSON.stringify(buildId)} · expected=${JSON.stringify(expectedBuildId)} — نشر قديم يخدم بناء سابقًا / a stale deployment is serving the previous build`,
+    );
+  }
+  const buildIdLog = buildId ? ` · buildId=${buildId}` : '';
+  return pass(`200 · ok=true · dbLatencyMs=${body.dbLatencyMs} · env=${body.env}${buildIdLog}`);
 }
 
 async function checkLanding(base) {

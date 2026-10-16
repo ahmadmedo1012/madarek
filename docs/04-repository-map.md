@@ -99,6 +99,6 @@ madarek/
 | `backend/prisma/migrations/` | ترحيلات مطبقة تاريخيًا — أنشئ ترحيلًا جديدًا لا تعدّل القديم |
 | `docs/archive/`، `audits/`، `specs/*/` | مواد تاريخية بأدلة زمنية — لا تُحدَّث retrospectively |
 | `docs/archive/MASTER.md` | مسودة SpeckKit مُستبدلة (كانت `design-system/` — أُرشفت r137) — المرجع `DESIGN.md` |
-| `frontend/src/styles/unified-parity.css` + `shared-design-system.css` | زوج تصدير التكافؤ — مرجع داخلي **غير مستورد في التطبيق**؛ تتحقق منه بوابة parity 168/168 |
+| `frontend/src/styles/unified-parity.css` + `shared-design-system.css` | زوج تصدير التكافؤ — مرجع داخلي **غير مستورد في التطبيق**؛ تتحقق منه بوابة parity 163/163 |
 | `backend/storage/papers/` | ملفات مُقدَّمة تخدمها واجهة `/files/papers` — إضافة ملفات تتم عبر مسار مراجعة، لا يدويًا في الإنتاج |
 | `.zcode/` | شخصيات وكلاء عامة غير خاصة بمشروع مدارك (انظر `.zcode/README.md`) |

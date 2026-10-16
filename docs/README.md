@@ -57,7 +57,7 @@
 | [PROJECT-REFERENCE.md](PROJECT-REFERENCE.md) | لقطة حالة المشروع والتقنيات والأوامر |
 | [SECRETS-REFERENCE.md](SECRETS-REFERENCE.md) | إدارة الأسرار: ما الذي نحتاجه وأين يُحفظ (بلا قيم حقيقية) |
 | [SPECS-REFERENCE.md](SPECS-REFERENCE.md) | الحالة المرجعية لمواصفات specs/ |
-| [PARITY-EXPORT.md](PARITY-EXPORT.md) | عقد زوج تصدير نظام التصميم وبوابة التحقق 168/168 + عقود الأسطولة والدين الموثق |
+| [PARITY-EXPORT.md](PARITY-EXPORT.md) | عقد زوج تصدير نظام التصميم وبوابة التحقق 163/163 + عقود الأسطولة والدين الموثق |
 | [PORT-KIT.md](PORT-KIT.md) | مواصفة استنساخ عالم الـlanding (Orbit-Ink) — الكيت الذي نقلته الأسطولة (r128، تبنّي كنوني r140) |
 
 ## المواد التاريخية (لا تعكس الحالة الحالية)
