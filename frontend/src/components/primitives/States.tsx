@@ -264,7 +264,12 @@ export function KpiSkeleton() {
             most important bar, never painted. */}
           <div className="metric-head">
             <Skeleton width={80} height={11} />
-            <Skeleton width={70} height={26} />
+            {/* r172b: 26→28 — the real MetricCard column measures
+              metric-head 84px (label/value/change + gaps) while the
+              skeleton column was 82, a 2px row-height delta on every
+              dashboard handoff (the live CLS lab caught it: KpiSkeleton
+              .metric = 132 vs real 134). */}
+            <Skeleton width={70} height={28} />
             <Skeleton width={120} height={11} />
           </div>
         </div>
@@ -285,6 +290,47 @@ export function ListSkeleton({ rows = 5 }: { rows?: number }) {
           <Skeleton width="100%" height={4} rounded="var(--r-full)" />
         </div>
       ))}
+    </div>
+  );
+}
+
+/** Action-strip-shaped skeleton (r172b loading closure).
+ *  The dashboards' action strips (admin's ActionStrip, owner's
+ *  OwnerActionStrip) mount ABOVE the KPI row and render null until
+ *  their queries answer — a cold route's generic PageSkeleton has no
+ *  slot for them, so the strip's late mount pushed every section
+ *  below it down (measured: 217px insertion, CLS 0.066–0.183 in the
+ *  delayed-API lab). This skeleton rides the REAL card anatomy
+ *  (.card/.card-header/.card-title-block/.card-title/.card-subtitle)
+ *  with the strip's static identity as real text (the title is
+ *  hardcoded — showing it while the rows pend is honest) and N
+ *  row-shaped placeholders, so BOTH the page-level pending state (the
+ *  slot) and the strip's own isPending state render the exact box the
+ *  resolved strip will occupy — the handoffs become height-stable. */
+export function StripSkeleton({
+  title,
+  subtitle,
+  rows = 1,
+}: {
+  title: string;
+  subtitle: string;
+  rows?: number;
+}) {
+  return (
+    <div className="card" aria-busy="true" aria-live="polite">
+      <div className="card-header">
+        <div className="card-title-block">
+          <div className="card-title">
+            <span>{title}</span>
+          </div>
+          <div className="card-subtitle">{subtitle}</div>
+        </div>
+      </div>
+      <div className="flex-col gap-2">
+        {Array.from({ length: rows }).map((_, i) => (
+          <Skeleton key={i} width="100%" height={81} rounded="var(--r-lg)" />
+        ))}
+      </div>
     </div>
   );
 }

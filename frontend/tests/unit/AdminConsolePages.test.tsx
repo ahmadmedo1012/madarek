@@ -356,7 +356,10 @@ describe('AdminDashboardPage — action strip + navigable KPIs (§6 steps 1/3)',
   it('makes the four KPI tiles navigate (§5 rows 1-4) — no dead ends', async () => {
     installApi();
     renderPage(<AdminDashboardPage />);
-    await screen.findByText('لوحة الإدارة');
+    /* r172b re-pin: 'لوحة الإدارة' now renders in the pending mirror
+     * too (real identity, stable across the handoff) — await a
+     * resolved-only KPI label instead. */
+    await screen.findByText('هيئة التدريس');
 
     expect(kpiLinkByLabel('الكلّيّات').getAttribute('href')).toBe('/admin/faculties');
     expect(kpiLinkByLabel('الطلاب').getAttribute('href')).toBe('/admin/students');
@@ -367,7 +370,10 @@ describe('AdminDashboardPage — action strip + navigable KPIs (§6 steps 1/3)',
   it('degrades a single-faculty student distribution to the honest stat + drill link (§6 step 5)', async () => {
     installApi();
     renderPage(<AdminDashboardPage />);
-    await screen.findByText('لوحة الإدارة');
+    /* r172b re-pin: 'لوحة الإدارة' now renders in the pending mirror
+     * too (real identity, stable across the handoff) — await a
+     * resolved-only KPI label instead. */
+    await screen.findByText('هيئة التدريس');
 
     // Only كلية الهندسة has students → one bar would carry no signal.
     expect(await screen.findByText(/كلّيّة واحدة فقط لديها طلاب مسجَّلون/)).toBeInTheDocument();
@@ -378,7 +384,10 @@ describe('AdminDashboardPage — action strip + navigable KPIs (§6 steps 1/3)',
   it('links the quick-stat papers pair to the register pre-filtered (P3-2)', async () => {
     installApi();
     renderPage(<AdminDashboardPage />);
-    await screen.findByText('لوحة الإدارة');
+    /* r172b re-pin: 'لوحة الإدارة' now renders in the pending mirror
+     * too (real identity, stable across the handoff) — await a
+     * resolved-only KPI label instead. */
+    await screen.findByText('هيئة التدريس');
 
     const stat = Array.from(document.querySelectorAll('a.admin-stat-row'))
       .find((a) => a.textContent?.includes('بحوث منشورة'));

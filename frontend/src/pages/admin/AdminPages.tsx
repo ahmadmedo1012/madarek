@@ -11,8 +11,8 @@ import {
 } from 'lucide-react';
 import { Card, MetricCard, Badge, Tabs, UserAvatar, AlertRow, FormField } from '../../components/primitives';
 import {
-  EmptyState, ErrorState, PageSkeleton,
-  KpiSkeleton, CardSkeleton, TableSkeleton,
+  EmptyState, ErrorState,
+  KpiSkeleton, CardSkeleton, TableSkeleton, StripSkeleton, Skeleton,
 } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { PAPER_STATUS_TONE } from '../../lib/paperStatus';
@@ -135,6 +135,17 @@ function ActionStrip() {
   // limit:1 — the register only needs meta.total for the count.
   const gradedPapers = useAdminPapers({ status: 'GRADED', limit: 1 });
 
+  // r172b (loading closure): the strip's own pending state. It used to
+  // render null until all three background reads answered, so the strip
+  // mounted LATE above the KPI row and pushed every section below it
+  // down (measured 217px insertion → CLS 0.066 in the delayed-API lab).
+  // StripSkeleton rides the same Card anatomy with the static title +
+  // row placeholders, so the page-skeleton slot and this pending state
+  // hand off to the resolved strip at identical heights.
+  if (courses.isPending || sync.isPending || gradedPapers.isPending) {
+    return <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />;
+  }
+
   const rows: ActionRow[] = [];
   if (courses.data && courses.data.data.length > 0) {
     const zeroContent = courses.data.data
@@ -218,7 +229,35 @@ export function AdminDashboardPage() {
   // Remounts each chart canvas when the light/dark theme flips.
   const themeKey = useChartThemeKey();
 
-  if (stats.isPending || facs.isPending || reports.isPending) return <PageSkeleton />;
+  if (stats.isPending || facs.isPending || reports.isPending) {
+    /* r172b (loading closure): a MIRROR skeleton, not the generic
+       PageSkeleton — the resolved page leads with the real header
+       (h1+subtitle, 96px vs the generic 86px bars), then ActionStrip,
+       then the KPI row, then the charts row. The generic skeleton had
+       no strip slot (a 217px late insertion, CLS 0.066) and no charts
+       slot. Every section below renders its shape-matched placeholder
+       so the pending → resolved handoff moves nothing. */
+    return (
+      <div className="page" aria-busy="true" aria-live="polite">
+        <header className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">لوحة الإدارة</h1>
+            <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة جامعة الزاوية.</p>
+          </div>
+        </header>
+        <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />
+        <KpiSkeleton />
+        <div className="grid-2-1" style={{ marginBlockStart: 'var(--sp-9)' }}>
+          <Card title="توزّع الطلاب حسب الكلّيّة">
+            <Skeleton width="100%" height={174} rounded="var(--r-lg)" />
+          </Card>
+          <Card title="مؤشرات سريعة">
+            <Skeleton width="100%" height={174} rounded="var(--r-lg)" />
+          </Card>
+        </div>
+      </div>
+    );
+  }
   if (stats.isError || facs.isError || reports.isError) {
     // r157 (6A9 #5): the early-error return keeps the page chrome
     // (.page + header + h1) — the retry used to land on a chrome-less

@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card, Badge, MetricCard, ProgressBar } from '../../components/primitives';
-import { ErrorState, EmptyState, KpiSkeleton, CardSkeleton, Skeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, KpiSkeleton, CardSkeleton, ListSkeleton, Skeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
@@ -301,9 +301,15 @@ function ResumeHero({
   if (resume.isPending) {
     // The card's own skeleton — same footprint as the loaded card, so
     // the KPI row below doesn't shift when the resume payload lands.
+    // r172b: 88 → 176 — the loaded card measures 176px in the live
+    // geometry lab; the 88px claim was stale (the hero grew across
+    // rounds), and every resolve re-paid an 88px push. Both this and
+    // the page-level mirror skeleton render 176 so the whole chain —
+    // page pending → page resolved (hero pending) → hero loaded — is
+    // height-stable end to end.
     return (
       <section className="dash-resume" aria-busy="true">
-        <Skeleton width="100%" height={88} rounded="var(--r-xl)" />
+        <Skeleton width="100%" height={176} rounded="var(--r-xl)" />
       </section>
     );
   }
@@ -414,6 +420,15 @@ export default function StudentDashboardPage() {
   const themeKey = useChartThemeKey();
 
   if (dash.isPending) {
+    /* r172b (loading closure): a MIRROR skeleton — the resolved page
+       leads with the welcome header, the ResumeHero card, the KPI row,
+       the dash-hero-row premium pair, the term card, then the agenda.
+       The old skeleton had NO resume slot (the hero mounted late and
+       pushed the KPI row 233px down) and its CardSkeletons didn't
+       match the premium pair's 218px boxes. Every slot below renders
+       the resolved section's class + footprint, so the pending →
+       resolved handoff moves nothing (skeletons stay the single
+       loading owner — zero spinners, zero splash). */
     return (
       <div className="page student-dashboard" aria-busy="true" aria-live="polite">
         {/* r168a: family alignment — every dashboard's outline leads
@@ -428,9 +443,26 @@ export default function StudentDashboardPage() {
           <h2 className="page-title">{greeting}، {user?.firstName ?? '…'}</h2>
           <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
         </header>
+        {/* ResumeHero slot — the resolved card's full footprint (the
+            hero's own pending skeleton renders the same 176px, see
+            ResumeHero below). */}
+        <section className="dash-resume" aria-busy="true">
+          <Skeleton width="100%" height={176} rounded="var(--r-xl)" />
+        </section>
         <KpiSkeleton />
-        <CardSkeleton lines={4} />
-        <CardSkeleton lines={3} withTitle={false} />
+        {/* dash-hero-row slot — the two premium cards' 218px boxes. */}
+        <section className="dash-hero-row" aria-busy="true">
+          <div className="card card-glass-premium">
+            <Skeleton width="100%" height={168} rounded="var(--r-xl)" />
+          </div>
+          <div className="card card-glass-premium">
+            <Skeleton width="100%" height={168} rounded="var(--r-xl)" />
+          </div>
+        </section>
+        {/* Below-fold slots (term card + agenda) — no CLS stake, kept
+            for scroll-position honesty. */}
+        <CardSkeleton lines={3} />
+        <ListSkeleton rows={4} />
       </div>
     );
   }

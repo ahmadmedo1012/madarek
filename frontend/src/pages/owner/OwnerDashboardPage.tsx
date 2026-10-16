@@ -10,7 +10,7 @@ import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import { Card, MetricCard } from '../../components/primitives';
 import { useReducedMotion } from '../../components/motion';
-import { EmptyState, ErrorState, PageSkeleton, TableSkeleton } from '../../components/primitives/States';
+import { EmptyState, ErrorState, PageSkeleton, TableSkeleton, KpiSkeleton, CardSkeleton, StripSkeleton, Skeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { radialOptions, chartPalette, useChartThemeKey } from '../../lib/chartTheme';
@@ -124,6 +124,17 @@ const IDLE_TEACHER_FORMS: [string, string, string, string] = [
 function OwnerActionStrip({ alerts }: { alerts: OperationalAlert[] }) {
   const education = useOwnerEducation();
 
+  // r172b (loading closure): the strip's own pending state — it used to
+  // render null until education answered, mounting LATE above the KPI
+  // row and pushing everything below down (217px insertion, the owner
+  // console's worst CLS source at 0.183 in the delayed-API lab).
+  // StripSkeleton rides the same Card anatomy so the page-skeleton
+  // slot, this pending state, and the resolved strip all occupy the
+  // same box.
+  if (education.isPending) {
+    return <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />;
+  }
+
   const rows: OwnerActionRow[] = [];
   if (alerts.length > 0) {
     const critical = alerts.filter(isCriticalAlert).length;
@@ -234,7 +245,43 @@ export function OwnerDashboardPage() {
   // pending → TypeError → blank page (audit 0-e P0-2).
   const loading = stats.isPending || realtime.isPending;
   if (loading) {
-    return <PageSkeleton />;
+    /* r172b (loading closure): a MIRROR skeleton, not the generic
+       PageSkeleton. The resolved page leads with the real header
+       (h1+subtitle, 96px — the generic bars are 86px), the live-status
+       band, OwnerActionStrip, the KPI row, the charts row, then the
+       activity + quick-action cards. The generic skeleton had none of
+       the band/strip slots (the strip alone inserts 217px late; with
+       the band it pushed the KPI row 410px down = the lab's 0.183 CLS).
+       Every section renders its shape-matched placeholder — the band
+       below is the REAL pending band markup (identical to what the
+       resolved page shows while alerts pend), so the pending →
+       resolved handoff moves nothing. */
+    return (
+      <div className="page" aria-busy="true" aria-live="polite">
+        <header className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">لوحة التحكم الرئيسية</h1>
+            <p className="page-subtitle">نظرة شاملة وإحصائيات حيّة عن المنصة</p>
+          </div>
+        </header>
+        <div className="owner-live-status is-pending" aria-busy="true" aria-live="polite">
+          <div className="owner-live-pulse" />
+          <span className="status-text">جارٍ جلب حالة التنبيهات…</span>
+        </div>
+        <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />
+        <KpiSkeleton />
+        <div className="grid-2-1">
+          <Card title="توزيع المستخدمين">
+            <Skeleton width="100%" height={348} rounded="var(--r-lg)" />
+          </Card>
+          <Card title="الحالة التشغيليّة">
+            <Skeleton width="100%" height={348} rounded="var(--r-lg)" />
+          </Card>
+        </div>
+        <CardSkeleton lines={6} />
+        <CardSkeleton lines={3} />
+      </div>
+    );
   }
   if (stats.isError || realtime.isError) {
     return (

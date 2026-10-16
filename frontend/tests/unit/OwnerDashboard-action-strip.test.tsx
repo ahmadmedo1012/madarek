@@ -16,7 +16,7 @@
  * (jsdom has no canvas — react-chartjs-2 is stubbed out).
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OwnerDashboardPage } from '../../src/pages/owner/OwnerDashboardPage';
@@ -88,6 +88,15 @@ describe('OwnerDashboardPage — action strip (5-D3)', () => {
     renderDashboard();
     // The page settled (KPIs render)…
     expect(await screen.findByText('إجمالي المستخدمين')).toBeInTheDocument();
+    /* r172b re-pin: the strip itself now renders a pending skeleton
+     * (StripSkeleton) while its education query settles — a tick AFTER
+     * the page's own stats/realtime queries. Honest absence must be
+     * asserted once the strip has ANSWERED, not while it checks: wait
+     * for the busy strip card to disappear. */
+    await waitFor(() => {
+      const busyStrip = document.querySelector('.card[aria-busy="true"]');
+      expect(busyStrip).toBeNull();
+    });
     // …and no strip card appeared.
     expect(screen.queryByText('يحتاج انتباهك')).toBeNull();
   });
@@ -99,9 +108,12 @@ describe('OwnerDashboardPage — action strip (5-D3)', () => {
     ];
     renderDashboard();
 
-    expect(await screen.findByText('يحتاج انتباهك')).toBeInTheDocument();
+    /* r172b re-pin: the strip's title now renders IMMEDIATELY (its
+     * pending StripSkeleton carries the static identity), so awaiting
+     * the title no longer proves the rows landed — await the ROW
+     * itself (only the resolved strip renders it). */
     // Amber tone (any critical severity open) + the counted critical pair.
-    const row = screen.getByText('تنبيهات تشغيليّة مفتوحة').closest('a');
+    const row = (await screen.findByText('تنبيهات تشغيليّة مفتوحة')).closest('a');
     expect(row).not.toBeNull();
     expect(row).toHaveClass('alert', 'amber');
     expect(row).toHaveAttribute('href', '/owner/alerts');

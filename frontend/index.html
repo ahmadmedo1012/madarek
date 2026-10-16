@@ -3,6 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- r172b (loading closure): html{min-height:100%} in a parse-time
+         inline style. The CLS lab's first-paint entry (0.00775, source
+         attributed to <html>) previously recorded the document element
+         growing 1270x8 → 1270x800 as the stylesheet applied and the app
+         shell mounted. With this rule the document element is
+         full-height from the first layout pass (the lab now records
+         html 1270x800 → 1270x800 — stable). The 0.00775 first-paint
+         ENTRY itself still appears (Chrome attributes the initial
+         contentful layout to the html node even when its own rect is
+         unchanged) — the entry is below budget on every route and the
+         document element no longer participates. base.css can't do
+         this: it arrives after first layout (vite dev injects CSS via
+         JS; prod loads it as a link — both after this inline rule
+         applies with the parsed HTML). CSP allows inline styles
+         (style-src 'unsafe-inline'). -->
+    <style>html{min-height:100%}</style>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#070B16" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#FBFAF9" media="(prefers-color-scheme: light)" />
