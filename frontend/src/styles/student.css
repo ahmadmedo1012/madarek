@@ -1123,6 +1123,24 @@
      (TSX sets data-stagger on filter clicks only). !important is
      required to beat the overrides layer — the same layer-precedence
      flip wave 3-c used for the .track-card anchor-underline opt-out. */
+  /* r173a — the light single-line courses summary (the r171 VLM
+     «courses header weight» deferred note): the four-MetricCard KPI
+     strip — four icon wells + 28px values — outweighed everything
+     the page's content rhythm renders below it (light glass
+     thumb-cards, one 13px line, pills). The SAME counts now ride one
+     text-muted line (AA 5.04:1 on --bg light / 6.80:1 dark), digits
+     in bdi so the latn numerals stay bidi-isolated inside the RTL
+     run. No new colors, no new tokens. */
+  .courses-summary {
+    font-size: var(--fs-sm);
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+  .courses-summary bdi {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
   .courses-filter {
     display: flex;
     flex-wrap: wrap;

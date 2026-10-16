@@ -176,6 +176,42 @@ describe('ProgressBar', () => {
   });
 });
 
+describe('ProgressBar — the 0% affordance (r173a, the r171 VLM deferred note)', () => {
+  it('renders the starting-edge marker at 0% — aria-hidden, the honest value stays aria-valuenow=0', () => {
+    const { container } = render(<ProgressBar value={0} ariaLabel="نسبة المشاهدة" />);
+    const mark = container.querySelector('.progress-zero-mark');
+    expect(mark).not.toBeNull();
+    // Presentational only — it never joins the progressbar's
+    // semantics (the value rides aria-valuenow / the % readout).
+    expect(mark).toHaveAttribute('aria-hidden', 'true');
+    const bar = screen.getByRole('progressbar', { name: 'نسبة المشاهدة' });
+    expect(bar).toHaveAttribute('aria-valuenow', '0');
+    // The marker lives INSIDE the track it explains.
+    expect(mark!.closest('.progress-track')).toBe(bar);
+  });
+
+  it('>0 renders NO marker — the fill owns the track, exactly as before', () => {
+    const { container, rerender } = render(<ProgressBar value={42} ariaLabel="نسبة" />);
+    expect(container.querySelector('.progress-zero-mark')).toBeNull();
+    rerender(<ProgressBar value={100} ariaLabel="نسبة" />);
+    expect(container.querySelector('.progress-zero-mark')).toBeNull();
+    rerender(<ProgressBar value={1} ariaLabel="نسبة" />);
+    expect(container.querySelector('.progress-zero-mark')).toBeNull();
+  });
+
+  it('an unparsable value renders the honest zero WITH the affordance (the NaN → 0 contract)', () => {
+    const { container } = render(<ProgressBar value={Number.NaN} ariaLabel="نسبة" />);
+    expect(container.querySelector('.progress-zero-mark')).not.toBeNull();
+    expect(screen.getByRole('progressbar', { name: 'نسبة' })).toHaveAttribute('aria-valuenow', '0');
+  });
+
+  it('clamped negatives land at 0 and carry the affordance too', () => {
+    const { container } = render(<ProgressBar value={-7} ariaLabel="نسبة" />);
+    expect(container.querySelector('.progress-zero-mark')).not.toBeNull();
+    expect(screen.getByRole('progressbar', { name: 'نسبة' })).toHaveAttribute('aria-valuenow', '0');
+  });
+});
+
 describe('AlertRow dot handling', () => {
   it('renders no dot when an icon is present (old display:none hack removed)', () => {
     const { container } = render(<AlertRow color="red" icon={Bell} title="t" />);

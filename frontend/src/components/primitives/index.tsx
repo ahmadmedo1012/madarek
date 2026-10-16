@@ -275,6 +275,18 @@ export function ProgressBar({
         aria-valuemin={0}
         aria-valuemax={100}
       >
+        {/* r173a (the r171 VLM deferred note): the 0% affordance. A
+            zero bar painted as an empty faint track reads as DISABLED
+            — "nothing to measure here" — on every surface that hides
+            the % head (showValue={false}: the course-detail hero, the
+            lecture rows, the profile completeness). At v === 0 the
+            track now carries a starting-edge marker dot (the same
+            notch grammar the lecture player's checkpoint marks use)
+            so the track reads as "a measurable thing at zero". Purely
+            presentational: aria-hidden (the honest value stays
+            aria-valuenow=0 and, when shown, the «0%» readout), and
+            >0 renders exactly as before — the fill owns the track. */}
+        {v === 0 && <span className="progress-zero-mark" aria-hidden="true" />}
         {/* 23-b (A11 P2-10): the value rides transform: scaleX() — the
             fill paints at full track width and scales from its
             inline-start edge (RTL-aware transform-origin in

@@ -1,11 +1,11 @@
 import { useRef, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  CheckCircle2, Clock, AlertTriangle, ClipboardList, Send, X,
+  CheckCircle2, AlertTriangle, ClipboardList, Send, X,
   BookOpen, ArrowLeft,
 } from 'lucide-react';
-import { Card, MetricCard, ProgressBar, Badge, FormField } from '../../components/primitives';
-import { ErrorState, EmptyState, Skeleton, KpiSkeleton, TableSkeleton } from '../../components/primitives/States';
+import { Card, ProgressBar, Badge, FormField } from '../../components/primitives';
+import { ErrorState, EmptyState, Skeleton, TableSkeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Icon } from '../../components/Icon';
@@ -198,7 +198,14 @@ export default function StudentCoursesPage() {
 
       {isPending ? (
         <>
-          <KpiSkeleton />
+          {/* r173a: the summary-line mirror — the pending placeholder
+              keeps the settled line's own box (a 20px bar in the same
+              .courses-summary slot) so the data handoff never moves the
+              grid below; the four-tile KpiSkeleton died with the KPI
+              strip it mirrored. */}
+          <p className="courses-summary" aria-busy="true">
+            <Skeleton width={220} height={20} rounded="var(--r-sm)" />
+          </p>
           <CourseGridSkeleton />
         </>
       ) : isError ? (
@@ -207,34 +214,27 @@ export default function StudentCoursesPage() {
         <Card><EmptyState illustration="empty-search" icon={BookOpen} title="لم تسجّل في أي مقرّر بعد" description="تواصل مع إدارة الكلّيّة لإكمال تسجيل مقرّرات الفصل — ستظهر هنا فور اعتمادها." /></Card>
       ) : (
         <>
-          <div className="grid-4">
-            <MetricCard
-              icon={BookOpen}
-              label="مقرّرات مسجَّلة"
-              value={data.length}
-              change="هذا الفصل"
-              color="brand"
-            />
-            <MetricCard
-              icon={CheckCircle2}
-              label="مكتملة"
-              value={counts.done}
-              color="green"
-            />
-            <MetricCard
-              icon={Clock}
-              label="قيد التقدّم"
-              value={counts.active}
-              color="amber"
-            />
-            <MetricCard
-              icon={AlertTriangle}
-              label="بحاجة إلى اهتمام"
-              value={counts.attention}
-              change="أداء منخفض"
-              color="red"
-            />
-          </div>
+          {/* r173a (the r171 VLM «courses header weight» deferred note):
+              the stats that used to wear four MetricCards — four icon
+              wells + 28px values, heavier than everything the page's
+              content rhythm renders below — now ride ONE light
+              text-muted line (AA 5.04:1 light / 6.80:1 dark). The SAME
+              counts object, zero data-logic change; the filter pills
+              below keep their per-bucket counts, so a bucket shows
+              here only when it is non-zero (a «بحاجة إلى اهتمام 0» line
+              is noise the pills already own). */}
+          <p className="courses-summary">
+            <bdi>{countAr(data.length, ['مقرّر مسجَّل واحد', 'مقرّران مسجّلان', 'مقرّرات مسجَّلة', 'مقرّراً مسجّلاً'])}</bdi>
+            {counts.done > 0 && (
+              <> · مكتملة <bdi>{counts.done}</bdi></>
+            )}
+            {counts.active > 0 && (
+              <> · قيد التقدّم <bdi>{counts.active}</bdi></>
+            )}
+            {counts.attention > 0 && (
+              <> · بحاجة إلى اهتمام <bdi>{counts.attention}</bdi></>
+            )}
+          </p>
 
           {data.length > 1 && (
             <div className="courses-filter" role="group" aria-label="تصفية المقرّرات حسب الحالة">

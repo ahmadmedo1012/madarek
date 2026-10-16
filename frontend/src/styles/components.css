@@ -766,10 +766,31 @@
     font-size: var(--type-label-size-sm); color: var(--text-muted);
   }
   .progress-track {
+    position: relative; /* r173a: the 0% marker dot anchors to the start edge */
     block-size: 8px;
     background: var(--surface-3);
     border-radius: var(--r-full);
     overflow: clip;
+  }
+  /* r173a — the 0% affordance (the r171 VLM deferred note): a zero
+     value painted nothing but the faint surface-3 track, which reads
+     as disabled ("nothing here") on the showValue={false} surfaces.
+     The zero track now carries an 8px starting-edge marker dot — the
+     same notch grammar as .lecture-progress-mark (student.css): full
+     track height, round, one step fainter than the fill ink
+     (--text-muted: 4.8:1 on the track's surface-3 light / 6.8:1 dark
+     — marker, not fill, so it never reads as "1% of progress"), with
+     the 1px inset --surface cutout the checkpoint marks use. Existing
+     tokens only; v>0 renders untouched — the fill owns the track. */
+  .progress-zero-mark {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    block-size: 8px;
+    inline-size: 8px;
+    border-radius: var(--r-full);
+    background: var(--text-muted);
+    box-shadow: inset 0 0 0 1px var(--surface);
   }
   .progress-fill {
     block-size: 100%;
@@ -1530,6 +1551,35 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+  }
+
+  /* r173a — messages day-group headers (the r171 VLM deferred note):
+     the inbox's rows run under اليوم / أمس / هذا الأسبوع / short
+     ar-LY date headers. Presentational organization only — the
+     markup carries aria-hidden (the per-row stamp already rides the
+     full datetime via its title), so the header never joins any row
+     semantics. Label ink is --text-secondary (8.44:1 light / 9.28:1
+     dark — the same AA step the ProgressBar % readout consumes); the
+     trailing hairline is --rule, the canonical hairline family. No
+     new colors. */
+  .msg-day-group {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-1);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-secondary);
+    /* the label must never be sheared by the hairline at any width */
+    min-inline-size: 0;
+  }
+  .msg-day-group:first-child { margin-block-start: 0; }
+  .msg-day-group::after {
+    content: '';
+    flex: 1;
+    block-size: 1px;
+    background: var(--rule);
+    flex-shrink: 1;
   }
 
   /* Lecture reorder pair (5-A7 P2-3, curriculum authoring): a compact

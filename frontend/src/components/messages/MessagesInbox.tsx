@@ -14,7 +14,7 @@
 // page-header: the primitives PageHeader renders the exact same
 // page-header/page-title-block/page-title/page-subtitle markup the
 // teacher page's local copy rendered for a string subtitle.
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import type { ReactNode } from 'react';
 import { MessageSquare, Send, X, MailOpen, Reply, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Card, Badge, UserAvatar, PageHeader } from '../primitives';
@@ -115,6 +115,97 @@ export function collectCorrespondents(
     }
   }
   return [...map.values()];
+}
+
+/* ── r173a: temporal grouping (the r171 VLM deferred note) ──────
+ *
+ * The inbox rendered one flat 30-row run: a reader scanning "what
+ * arrived TODAY vs what I already handled" had to parse per-row
+ * stamps to find the seam. The rows now run under day-group
+ * headers — اليوم / أمس / هذا الأسبوع (the current Sunday-start
+ * week's remaining days, lumped: within-week days are close enough
+ * that per-day labels would be noise) / one ar-LY short date per
+ * older day (formatDateWithYearAr's exact option set — day + month
+ * + year, the app's own date grammar).
+ *
+ * Boundaries are LOCAL calendar days (midnight cuts, not rolling
+ * 24h windows — "أمس" stays the calendar yesterday across the
+ * week's Sunday seam) and the week starts Sunday (Date#getDay 0 =
+ * الأحد — the platform's own WEEKDAY_NAMES_AR contract). The group
+ * function is pure and deterministic on its Arabic labels given
+ * (rows, now); the unit suite pins the boundaries with the repo's
+ * fixed-clock convention (vi.setSystemTime at noon UTC, TZ=UTC —
+ * format.test.ts). */
+
+/** One rendered day group: a stable machine key (group identity for
+ * React reconciliation + the unit suite — never shown) + the
+ * deterministic Arabic label + the group's rows in server order. */
+export interface MessageDayGroup<T extends { createdAt: string }> {
+  key: string;
+  label: string;
+  rows: T[];
+}
+
+const MS_PER_DAY = 86_400_000;
+
+/** Midnight of the value's own local day. Pure — copies, never
+ * mutates the argument. */
+function startOfDay(d: Date): Date {
+  const copy = new Date(d);
+  copy.setHours(0, 0, 0, 0);
+  return copy;
+}
+
+/** Local calendar-day key (YYYY-MM-DD) — machine identity for older
+ * groups so two rows from the same day share one header regardless
+ * of their times. Never rendered. */
+function localDayKey(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** Group inbox rows under day headers. Rows keep server order within
+ * (and between) groups — the function never re-sorts; a server page
+ * arriving newest-first renders اليوم → أمس → هذا الأسبوع → dated
+ * groups descending. Future timestamps (clock skew between client
+ * and server) land honestly in اليوم. Pure + exported for the unit
+ * suite. */
+export function groupMessagesByDay<T extends { createdAt: string }>(
+  rows: readonly T[],
+  now: Date = new Date(),
+): MessageDayGroup<T>[] {
+  const today = startOfDay(now);
+  const yesterday = new Date(today.getTime() - MS_PER_DAY);
+  /* Sunday-start week (getDay 0 = الأحد): this-week = the Sunday at
+   * or before today. On a Sunday "this week" holds only today —
+   * yesterday (Saturday) already took أمس, so older rows fall to
+   * dated labels: honest, the week genuinely began today. */
+  const weekStart = new Date(today.getTime() - today.getDay() * MS_PER_DAY);
+  const byKey = new Map<string, MessageDayGroup<T>>();
+  for (const row of rows) {
+    const d = new Date(row.createdAt);
+    let key: string;
+    let label: string;
+    if (d >= today) {
+      key = 'today';
+      label = 'اليوم';
+    } else if (d >= yesterday) {
+      key = 'yesterday';
+      label = 'أمس';
+    } else if (d >= weekStart) {
+      key = 'this-week';
+      label = 'هذا الأسبوع';
+    } else {
+      key = `date:${localDayKey(d)}`;
+      label = d.toLocaleDateString('ar-LY', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+    let group = byKey.get(key);
+    if (!group) {
+      group = { key, label, rows: [] };
+      byKey.set(key, group);
+    }
+    group.rows.push(row);
+  }
+  return [...byKey.values()];
 }
 
 /** What renderCompose receives: the reply preset (null = a fresh
@@ -223,61 +314,74 @@ export function MessagesInbox({
         ) : (
           <>
             <div className="flex-col gap-2">
-              {messages.map((m) => {
-                const incoming = m.toUser?.id === meId;
-                const other = incoming ? m.fromUser : m.toUser;
-                /* r164-h: the row's own read state — the same brand Badge
-                 * grammar the alerts log uses for its unread rows (no
-                 * new CSS; a bold title alone is invisible in dark mode). */
-                const unreadRow = isUnreadIncoming(m, meId);
-                /* r170a: the row's reply door — incoming rows only (a
-                 * sent row's "other" is the recipient, and the backend
-                 * 400s self-DMs). The preset travels with the name so
-                 * the modal needs no row lookup. */
-                const replyPreset = incoming
-                  ? { id: m.fromUser.id, name: `${m.fromUser.firstName} ${m.fromUser.lastName}` }
-                  : null;
-                return (
-                  <div key={m.id} className="list-row">
-                    <UserAvatar
-                      initials={`${other.firstName[0] ?? ''}${other.lastName[0] ?? ''}`}
-                      color={other.avatarColor ?? undefined}
-                      size={32}
-                    />
-                    <div className="list-row-body">
-                      <div className="list-row-title" style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
-                        <span style={{ fontWeight: unreadRow ? 600 : undefined }}>{other.firstName} {other.lastName}</span>
-                        {unreadRow && <Badge color="brand">غير مقروءة</Badge>}
+              {/* r173a: the rows run under day-group headers. The header
+                  is aria-hidden — presentational organization only: the
+                  day IS already readable per row (the relative stamp +
+                  its full-datetime title), and a hidden header can never
+                  join the rows' text/role semantics or the count pins
+                  (getAllByText row queries see rows only by their own
+                  text). Rows themselves are untouched — same keys, same
+                  markup, same order. */}
+              {groupMessagesByDay(messages).map((g) => (
+                <Fragment key={g.key}>
+                  <div className="msg-day-group" aria-hidden="true">{g.label}</div>
+                  {g.rows.map((m) => {
+                    const incoming = m.toUser?.id === meId;
+                    const other = incoming ? m.fromUser : m.toUser;
+                    /* r164-h: the row's own read state — the same brand Badge
+                     * grammar the alerts log uses for its unread rows (no
+                     * new CSS; a bold title alone is invisible in dark mode). */
+                    const unreadRow = isUnreadIncoming(m, meId);
+                    /* r170a: the row's reply door — incoming rows only (a
+                     * sent row's "other" is the recipient, and the backend
+                     * 400s self-DMs). The preset travels with the name so
+                     * the modal needs no row lookup. */
+                    const replyPreset = incoming
+                      ? { id: m.fromUser.id, name: `${m.fromUser.firstName} ${m.fromUser.lastName}` }
+                      : null;
+                    return (
+                      <div key={m.id} className="list-row">
+                        <UserAvatar
+                          initials={`${other.firstName[0] ?? ''}${other.lastName[0] ?? ''}`}
+                          color={other.avatarColor ?? undefined}
+                          size={32}
+                        />
+                        <div className="list-row-body">
+                          <div className="list-row-title" style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
+                            <span style={{ fontWeight: unreadRow ? 600 : undefined }}>{other.firstName} {other.lastName}</span>
+                            {unreadRow && <Badge color="brand">غير مقروءة</Badge>}
+                          </div>
+                          {/* 5-B6 messages craft: the body clamps to one line —
+                              30 rows of arbitrary prose otherwise rag the log's
+                              rhythm — and the full text rides the title attribute
+                              (no truncation without a tooltip). */}
+                          <div className="list-row-sub msg-body" title={m.body}>
+                            {incoming ? '' : 'أنت: '}{m.body}
+                          </div>
+                        </div>
+                        {/* P3-2 parity: the relative stamp carries the full
+                            date on hover like the exam-attempt rows. r170a:
+                            the trailing cluster (stamp + reply) keeps the
+                            action inside the row's end edge — the thumb's
+                            natural landing spot in RTL. */}
+                        <div className="flex items-center gap-2">
+                          <div className="text-xxs text-subtle" title={formatDateTimeAr(m.createdAt)}>{formatRelativeArShort(m.createdAt)}</div>
+                          {incoming && (
+                            <button
+                              type="button"
+                              className="btn ghost sm"
+                              onClick={() => setCompose({ preset: replyPreset })}
+                              aria-label={`ردّ على رسالة ${replyPreset?.name}`}
+                            >
+                              <Icon icon={Reply} size={13} /> ردّ
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      {/* 5-B6 messages craft: the body clamps to one line —
-                          30 rows of arbitrary prose otherwise rag the log's
-                          rhythm — and the full text rides the title attribute
-                          (no truncation without a tooltip). */}
-                      <div className="list-row-sub msg-body" title={m.body}>
-                        {incoming ? '' : 'أنت: '}{m.body}
-                      </div>
-                    </div>
-                    {/* P3-2 parity: the relative stamp carries the full
-                        date on hover like the exam-attempt rows. r170a:
-                        the trailing cluster (stamp + reply) keeps the
-                        action inside the row's end edge — the thumb's
-                        natural landing spot in RTL. */}
-                    <div className="flex items-center gap-2">
-                      <div className="text-xxs text-subtle" title={formatDateTimeAr(m.createdAt)}>{formatRelativeArShort(m.createdAt)}</div>
-                      {incoming && (
-                        <button
-                          type="button"
-                          className="btn ghost sm"
-                          onClick={() => setCompose({ preset: replyPreset })}
-                          aria-label={`ردّ على رسالة ${replyPreset?.name}`}
-                        >
-                          <Icon icon={Reply} size={13} /> ردّ
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+                    );
+                  })}
+                </Fragment>
+              ))}
             </div>
             {meta && totalPages > 1 && (
               <div

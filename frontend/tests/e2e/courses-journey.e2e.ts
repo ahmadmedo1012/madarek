@@ -17,7 +17,10 @@ test.describe('رحلة المقرّرات', () => {
     await page.goto('/student/courses');
     // usePageTitle: «<السياق> · مدارك».
     await expect(page).toHaveTitle('مقرّراتي الدراسية · مدارك');
-    await expect(page.getByText('مقرّرات مسجَّلة', { exact: true })).toBeVisible();
+    // r173a: شريط المؤشرات الأربعة (MetricCard) صار سطر ملخّص واحدًا
+    // خفيفًا — نفس الأعداد (تسجيلتان في التثبيت الوهمي → «مقرّران
+    // مسجّلان»)، re-pin صادق لواجهة الصفحة الجديدة.
+    await expect(page.getByText('مقرّران مسجّلان', { exact: false })).toBeVisible();
 
     const card = page.locator(`a[href="/student/courses/${OFFERING_ID}"]`);
     await expect(card).toContainText('مقدمة في الخوارزميات');
