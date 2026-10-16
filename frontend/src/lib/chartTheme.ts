@@ -712,7 +712,15 @@ export function radialOptions(opts?: {
       arc: {
         borderWidth: 0,
         spacing: 2,
-        borderRadius: 4,
+        /* r174: 4 → 6 — the arc-end rounding was imperceptible at the
+         * rendered ring thickness (~18px on the 168px well), reading as
+         * butt caps. 6px reads as the deliberate soft cap the reference
+         * dashboards use (TailAdmin radialBar lineCap round), stays
+         * restrained, and applies uniformly to every radial chart that
+         * consumes this shared theme (student progress, owner
+         * distribution, quality attendance). Clamped by Chart.js to the
+         * arc's own thickness so small multi-segment rings stay safe. */
+        borderRadius: 6,
       } as ChartOptions<'doughnut'>['elements'] extends { arc?: infer A } ? A : never,
     },
     plugins: {

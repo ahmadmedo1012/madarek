@@ -1355,20 +1355,17 @@
     block-size: 168px;
     flex-shrink: 0;
     margin-inline: auto;
-    /* r155d: was 50% — a latent declaration: the overrides layer wins
-       this property with var(--r-md) + overflow hidden (polish.css
-       chart-canvas glow block), and the JS-driven canvas paints its own
-       circle inside, so the container's box shape never showed anyway.
-       Aligned to the winner so the recipe says what renders. */
-    border-radius: var(--r-md);
-    background: conic-gradient(
-      from 180deg,
-      var(--accent) 0deg,
-      color-mix(in srgb, var(--accent) 20%, var(--surface)) 60deg,
-      color-mix(in srgb, var(--accent) 5%, var(--surface)) 300deg,
-      transparent 360deg
-    );
-    opacity: 0; /* JS-driven canvas replaces this */
+    /* r174 (the ring-over-square defect): this well carried a decorative
+       conic-gradient + an `opacity: 0` meant to hide it — a dead guard.
+       The polish entrance animation (madarek-chart-in, fill-mode both)
+       overrode the opacity back to 1 for good, painting an accent wedge
+       on a 10px-radius SQUARE behind the transparent Chart.js canvas —
+       the "circular ring layered over an unrelated square gradient"
+       screenshot. The well is now purely geometric: transparent, not
+       clipped, no background — the canvas draws the whole composition
+       (track ring + progress arc), and no decorative gradient competes
+       with the data (DESIGN.md §1a hard rule, applied to the product
+       surface). r155d's 50% → r-md note retired with the gradient. */
   }
   .dash-doughnut canvas { inline-size: 100% !important; block-size: 100% !important; }
   .dash-doughnut-center {

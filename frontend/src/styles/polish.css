@@ -969,9 +969,11 @@
   /* ═══════════════════════════════════════════════════════════════
      Chart canvas — drop a soft outer glow so charts feel embedded
      rather than pasted in
+     (r174: .dash-doughnut dropped — a CIRCULAR chart's well must not
+     take a rectangular 10px clip; the owner containers keep it for
+     their rectangular cartesian charts.)
      ═══════════════════════════════════════════════════════════════ */
-  .owner-chart-container,
-  .dash-doughnut {
+  .owner-chart-container {
     border-radius: var(--r-md);
     overflow: hidden;
   }
