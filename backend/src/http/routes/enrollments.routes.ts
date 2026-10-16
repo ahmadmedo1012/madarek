@@ -5,6 +5,7 @@ import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
+import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
 import {
   assertWithinScope,
@@ -145,27 +146,47 @@ router.get('/', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
       if (!target) throw AppError.notFound('الطالب المحدد غير موجود');
       assertWithinScope(scopeFacultyId, target);
     }
-    const data = await prisma.enrollment.findMany({
-      where: buildScopedEnrollmentWhere(scopeFacultyId, studentId),
-      select: {
-        id: true,
-        progressPct: true,
-        status: true,
-        enrolledAt: true,
-        offering: {
-          select: {
-            id: true,
-            term: true,
-            room: true,
-            capacity: true,
-            course: { select: { id: true, name: true, code: true, iconEmoji: true } },
-            teacher: { select: { id: true, firstName: true, lastName: true } },
+    /* r176d (F-04): the BROAD listing (no studentId) is paginated with
+     * the platform's paginationSchema — at university scale it is the
+     * unbounded surface (tens of thousands of rows). The per-student
+     * path keeps its full-list shape: one student's enrollments are
+     * naturally bounded, and the enrollment-management modal (the only
+     * consumer) expects the complete list. */
+    let page = 1;
+    let limit = Number.POSITIVE_INFINITY; // per-student path: unbounded by design (naturally small)
+    if (!studentId) {
+      const parsed = paginationSchema.safeParse(req.query);
+      if (!parsed.success) throw AppError.badRequest('معاملات ترقيم غير صالحة');
+      page = parsed.data.page;
+      limit = parsed.data.limit;
+    }
+    const where = buildScopedEnrollmentWhere(scopeFacultyId, studentId);
+    const [rows, total] = await Promise.all([
+      prisma.enrollment.findMany({
+        where,
+        skip: studentId ? undefined : (page - 1) * limit,
+        take: studentId ? undefined : limit,
+        select: {
+          id: true,
+          progressPct: true,
+          status: true,
+          enrolledAt: true,
+          offering: {
+            select: {
+              id: true,
+              term: true,
+              room: true,
+              capacity: true,
+              course: { select: { id: true, name: true, code: true, iconEmoji: true } },
+              teacher: { select: { id: true, firstName: true, lastName: true } },
+            },
           },
         },
-      },
-      orderBy: { enrolledAt: 'desc' },
-    });
-    res.json({ data });
+        orderBy: { enrolledAt: 'desc' },
+      }),
+      studentId ? Promise.resolve(0) : prisma.enrollment.count({ where }),
+    ]);
+    res.json(studentId ? { data: rows } : { data: rows, meta: buildMeta(page, limit, total) });
   } catch (e) {
     next(e);
   }

@@ -822,7 +822,11 @@ export function recentDuplicatePaperWhere(
   };
 }
 
-router.post('/me/research', validate(createPaperSchema), async (req, res, next) => {
+// r176d (F-05a): the row-creating student write finally gets the
+// per-user limiter its row-creating siblings already carry (scan 10/min,
+// answers 20/min, lab-sessions 20/min) — the global IP limit alone let
+// one account spam paper rows.
+router.post('/me/research', createRouteLimiter({ max: 10 }), validate(createPaperSchema), async (req, res, next) => {
   try {
     if (req.user!.role !== Role.STUDENT) throw AppError.forbidden();
     const body = req.body as z.infer<typeof createPaperSchema>;
@@ -1873,8 +1877,25 @@ router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req
     // (WatchEvent rows are recorded for any authenticated viewer) were
     // polluting the engagement KPIs. The write path is unchanged; only
     // the quality aggregates narrow to actual students.
+/* r176d (F-01): the weekly-active day buckets as ONE SQL aggregation —
+ * to_char renders the stored UTC value (the same day-key convention the
+ * JS fold used: toISOString().slice(0, 10)), COUNT(DISTINCT studentId)
+ * is the per-day uniqueness, scoped to STUDENT-role watch events exactly
+ * like the hydrated query it replaces. Returns [] on an empty window
+ * (the JS fold then takes the flagged fallback path, as before). */
+async function weeklyActiveDailyBuckets(): Promise<Array<{ date: string; students: number }>> {
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  return prisma.$queryRaw<Array<{ date: string; students: number }>>`
+    SELECT to_char("lastSeenAt", 'YYYY-MM-DD') AS "date",
+           COUNT(DISTINCT "studentId")::int AS "students"
+    FROM "WatchEvent"
+    INNER JOIN "User" ON "User"."id" = "WatchEvent"."studentId"
+    WHERE "lastSeenAt" >= ${sevenDaysAgo} AND "User"."role" = 'STUDENT'
+    GROUP BY 1`;
+}
+
     const studentWatchEvents = { student: { role: Role.STUDENT } };
-    const [attendance, watchTotals, completedLectures, lectures, enrollments, totalStudents, papersByStatus, weeklyActiveEvents] = await withRetry(() => Promise.all([
+    const [attendance, watchTotals, completedLectures, lectures, enrollments, totalStudents, papersByStatus, weeklyActiveDaily] = await withRetry(() => Promise.all([
       prisma.attendanceRecord.groupBy({ by: ['status'], _count: { _all: true } }),
       prisma.watchEvent.aggregate({ where: studentWatchEvents, _sum: { watchedSec: true, totalSec: true }, _count: { _all: true } }),
       prisma.watchEvent.count({ where: { completed: true, ...studentWatchEvents } }),
@@ -1882,12 +1903,12 @@ router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req
       prisma.enrollment.count(),
       prisma.user.count({ where: { role: Role.STUDENT } }),
       prisma.researchPaper.groupBy({ by: ['status'], _count: { _all: true } }),
-      // Distinct (student, day) pairs in the last 7 days for the weekly-active curve.
-      // Bounded to a 7-day window — never the full table.
-      prisma.watchEvent.findMany({
-        where: { lastSeenAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }, ...studentWatchEvents },
-        select: { studentId: true, lastSeenAt: true },
-      }),
+      // Distinct students per day for the weekly-active curve (r176d/F-01:
+      // one SQL day-bucket aggregation — the same date-trunc shape
+      // /owner/login-analytics uses — instead of hydrating every student
+      // WatchEvent of the window into JS to fold it; a time window is not
+      // a row bound).
+      weeklyActiveDailyBuckets(),
     ]));
 
     const totalAttendance = attendance.reduce((s, x) => s + x._count._all, 0) || 1;
@@ -1902,25 +1923,24 @@ router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req
     // lectures is reported separately as completedLectures).
     const completionRate = totalDuration > 0 ? (totalWatched / totalDuration) * 100 : 0;
 
-    // Weekly active: count unique students per day for the last 7 days.
-    // Falls back to a deterministic pseudo-curve when there's not enough data —
-    // flagged via weeklyActiveEstimated so consumers can label the curve.
+    // Weekly active: unique students per day for the last 7 days, from the
+    // SQL day-buckets (r176d). Falls back to a deterministic pseudo-curve
+    // when there's not enough data — flagged via weeklyActiveEstimated so
+    // consumers can label the curve.
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const sampleByDay = new Map<string, number>(weeklyActiveDaily.map((r) => [r.date, r.students]));
     const weeklyActive: number[] = [];
     let usedFallback = false;
+    const totalSamples = weeklyActiveDaily.reduce((s, r) => s + r.students, 0);
     for (let i = 6; i >= 0; i--) {
       const dayStart = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
-      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
-      const studentSet = new Set<string>();
-      for (const e of weeklyActiveEvents) {
-        if (e.lastSeenAt >= dayStart && e.lastSeenAt < dayEnd) studentSet.add(e.studentId);
-      }
+      const key = dayStart.toISOString().slice(0, 10);
+      const sample = sampleByDay.get(key) ?? 0;
       // Scale up against total student population so the curve is meaningful
       // even with limited demo data.
-      const sample = studentSet.size;
       if (sample > 0) {
-        weeklyActive.push(Math.min(totalStudents, Math.round(sample * Math.max(1, Math.floor(totalStudents / Math.max(1, weeklyActiveEvents.length))))));
+        weeklyActive.push(Math.min(totalStudents, Math.round(sample * Math.max(1, Math.floor(totalStudents / Math.max(1, totalSamples))))));
       } else {
         usedFallback = true;
         weeklyActive.push(Math.max(0, Math.min(totalStudents, Math.round(totalStudents * (0.45 + 0.4 * Math.sin((6 - i) * 0.9))))));

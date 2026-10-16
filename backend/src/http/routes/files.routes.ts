@@ -156,9 +156,12 @@ export const USER_PAPER_QUOTA_BYTES = 200 * 1024 * 1024;
 
 /**
  * Pure quota decision: would storing `incomingBytes` ON TOP of the user's
- * `existingPaperCount` papers exceed the per-user quota? Papers without
+ * existing STORED papers exceed the per-user quota? Papers without
  * stored sizes are charged at the 20 MB per-file cap (conservative — the
- * real footprint can only be smaller).
+ * real footprint can only be smaller). r176d (F-05b): the caller counts
+ * only papers whose fileUrl points into OUR storage — external-URL
+ * papers store zero bytes on the platform and must not eat the cap
+ * (11 link-only papers used to permanently block every real upload).
  */
 export function isUploadWithinQuota(existingPaperCount: number, incomingBytes: number): boolean {
   const projectedBytes = existingPaperCount * MAX_UPLOAD_PDF_BYTES + incomingBytes;
@@ -299,11 +302,19 @@ router.post(
         throw AppError.badRequest('ملف PDF يحتوي تضمينات برمجية نشطة — غير مسموح');
       }
       // One extra query, no transaction — the quota is a bound, not an
-      // invariant (see the route doc above).
-      const existingPaperCount = await prisma.researchPaper.count({
-        where: { studentId: req.user!.id },
+      // invariant (see the route doc above). r176d (F-05b): only papers
+      // whose bytes actually live in OUR storage count against the quota
+      // — external https:// fileUrls store zero bytes on the platform,
+      // and charging them at the 20MB cap meant 11 link-only papers
+      // permanently blocked every real PDF upload (413 with nothing
+      // stored).
+      const storedPaperCount = await prisma.researchPaper.count({
+        where: {
+          studentId: req.user!.id,
+          fileUrl: { startsWith: '/api/v1/files/papers/' },
+        },
       });
-      if (!isUploadWithinQuota(existingPaperCount, body.length)) {
+      if (!isUploadWithinQuota(storedPaperCount, body.length)) {
         throw new AppError('PAYLOAD_TOO_LARGE', 'تجاوزت حصة التخزين الخاصة بك', 413);
       }
       const filename = `${generateStorageId()}.pdf`;

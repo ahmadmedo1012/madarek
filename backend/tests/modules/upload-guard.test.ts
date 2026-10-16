@@ -223,8 +223,11 @@ describe('POST /files/papers wiring (STUDENT upload)', () => {
     const magicCheck = uploadRoute.indexOf('!isPdfMagicBytes(body)');
     const activeCheck = uploadRoute.indexOf('containsPdfActiveContent(body)');
     const quotaCount = uploadRoute.indexOf('prisma.researchPaper.count({');
-    const quotaWhere = uploadRoute.indexOf('where: { studentId: req.user!.id }');
-    const quotaCheck = uploadRoute.indexOf('!isUploadWithinQuota(existingPaperCount, body.length)');
+    // r176d (F-05b): the quota counts only papers whose bytes live in
+    // OUR storage — external-URL papers store nothing and no longer
+    // eat the 20MB-per-row charge.
+    const quotaWhere = uploadRoute.indexOf("where: {\n          studentId: req.user!.id,\n          fileUrl: { startsWith: '/api/v1/files/papers/' },\n        }".replace('\\n', '\n'));
+    const quotaCheck = uploadRoute.indexOf('!isUploadWithinQuota(storedPaperCount, body.length)');
     const putCheck = uploadRoute.indexOf('getStorage().put(key, body)');
     expect([magicCheck, activeCheck, quotaCount, quotaWhere, quotaCheck, putCheck].every((i) => i >= 0))
       .toBe(true);

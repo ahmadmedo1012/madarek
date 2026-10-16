@@ -123,7 +123,15 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
             },
           },
         },
-        attendance: { include: { records: true } },
+        // r176d (F-03): the same caps the read-side sibling applies
+        // (offerings.routes.ts) — newest 200 sessions, 500 records — so
+        // this include tree cannot hydrate an unbounded attendance
+        // history at university scale.
+        attendance: {
+          orderBy: { date: 'desc' },
+          take: 200,
+          include: { records: { take: 500, orderBy: { studentId: 'asc' } } },
+        },
         grades: true,
         // GRADED submissions feed the same averages as Grade-table rows
         // (audit 11-d P1-6 read side) — assignment grading never writes
@@ -261,7 +269,15 @@ router.get('/teacher/offerings/:id/analytics', requireRole(Role.TEACHER, Role.AD
       where: { id: offeringId },
       include: {
         enrollments: { select: { studentId: true } },
-        attendance: { include: { records: true } },
+        // r176d (F-03): the same caps the read-side sibling applies
+        // (offerings.routes.ts) — newest 200 sessions, 500 records — so
+        // this include tree cannot hydrate an unbounded attendance
+        // history at university scale.
+        attendance: {
+          orderBy: { date: 'desc' },
+          take: 200,
+          include: { records: { take: 500, orderBy: { studentId: 'asc' } } },
+        },
         grades: true,
         // GRADED submissions feed the same average/pass-rate as Grade
         // table rows (audit 11-d P1-6 read side). The old `_count`
@@ -334,7 +350,15 @@ router.get('/teacher/risks', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), 
             },
           },
         },
-        attendance: { include: { records: true } },
+        // r176d (F-03): the same caps the read-side sibling applies
+        // (offerings.routes.ts) — newest 200 sessions, 500 records — so
+        // this include tree cannot hydrate an unbounded attendance
+        // history at university scale.
+        attendance: {
+          orderBy: { date: 'desc' },
+          take: 200,
+          include: { records: { take: 500, orderBy: { studentId: 'asc' } } },
+        },
         grades: true,
         // Same read-side widening as the roster (audit 11-d P1-6):
         // GRADED submissions count as graded artifacts.

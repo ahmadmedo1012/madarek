@@ -112,12 +112,16 @@ describe('POST /offerings/:id/materials/file — Material row never survives a f
 });
 
 describe('POST /files/papers — the per-user storage quota reads the REAL row count (r170g)', () => {
-  it('10 existing papers (worst-case 200 MB) → 413 quota refusal BEFORE any storage write', async () => {
+  it('10 STORED papers (worst-case 200 MB) → 413 quota refusal BEFORE any storage write', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
     await prisma.researchPaper.createMany({
       data: Array.from({ length: 10 }, (_, i) => ({
         studentId: student.id,
         title: `بحث ${i + 1}`,
+        // r176d (F-05b): only papers whose bytes live in OUR storage
+        // count against the quota — the fixture now models exactly the
+        // rows that DO charge the cap.
+        fileUrl: `/api/v1/files/papers/quota-${i + 1}.pdf`,
       })),
     });
 
@@ -130,6 +134,34 @@ describe('POST /files/papers — the per-user storage quota reads the REAL row c
     const body = (await res.json()) as ErrorEnvelope;
     expect(body.error.code).toBe('PAYLOAD_TOO_LARGE');
     expect(body.error.message).toBe('تجاوزت حصة التخزين الخاصة بك');
+  });
+
+  it('r176d (F-05b): 10 external-URL papers (zero stored bytes) do NOT eat the quota', async () => {
+    const student = await helpers.seedUser({ role: Role.STUDENT });
+    await prisma.researchPaper.createMany({
+      data: Array.from({ length: 10 }, (_, i) => ({
+        studentId: student.id,
+        title: `بحث خارجي ${i + 1}`,
+        // Link-only papers: the bytes never touched our storage, so the
+        // 20MB-per-row charge must NOT apply (the pre-r176d behavior
+        // permanently blocked real uploads after 11 such rows).
+        fileUrl: 'https://external.example.org/paper.pdf',
+      })),
+    });
+    const res = await fetch(`${baseUrl}/api/v1/files/papers`, {
+      method: 'POST',
+      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/pdf' },
+      body: new Uint8Array(MINIMAL_PDF),
+    });
+    // This file's environment sabotages the storage root on purpose —
+    // every upload fails at the PUT step with this exact 500. What the
+    // pin proves: the response is NOT the 413 quota refusal — the
+    // quota gate PASSED the upload past the count (external rows carry
+    // zero stored bytes and no longer eat the cap).
+    expect(res.status).toBe(500);
+    const body = (await res.json()) as ErrorEnvelope;
+    expect(body.error.code).toBe('INTERNAL');
+    expect(body.error.message).toBe('تعذّر حفظ الملف — حاول مرة أخرى');
   });
 
   it('9 papers (worst-case 180 MB) → quota PASSES, the request proceeds to the storage put (distinct 500)', async () => {

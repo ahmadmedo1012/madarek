@@ -538,10 +538,14 @@ router.get('/dashboard', async (req, res, next) => {
       pendingPapers,
       pendingGradingGroups,
     ] = await Promise.all([
-      // Distinct enrolled students across offerings
-      prisma.enrollment.findMany({
+      // Distinct enrolled students across offerings (r176d/F-02: one
+      // groupBy instead of hydrating EVERY enrollment row into JS just
+      // to deduplicate it — the file header's own bounded-read claim,
+      // finally true at university scale).
+      prisma.enrollment.groupBy({
+        by: ['studentId'],
         where: { offeringId: { in: offeringIds }, status: 'active' },
-        select: { studentId: true },
+        _count: { studentId: true },
       }),
       // All-time graded-submission rollup per assignment → KPI avg grade
       prisma.submission.groupBy({
@@ -640,7 +644,7 @@ router.get('/dashboard', async (req, res, next) => {
     const pendingGrading = pendingGradingFromGroups(pendingGradingGroups, pendingAssignmentRows);
 
     // ── KPI strip ────────────────────────────
-    const studentCount = new Set(enrollments.map((e) => e.studentId)).size;
+    const studentCount = enrollments.length; // groupBy rows: one per distinct student
     const attendancePct = attendancePctFromStatusCounts(
       kpiAttendanceGroups.map((g) => ({ status: g.status, count: g._count.status })),
     );

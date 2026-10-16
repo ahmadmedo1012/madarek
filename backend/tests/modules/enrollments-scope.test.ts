@@ -29,7 +29,7 @@ import { Role } from '@prisma/client';
 vi.mock('../../src/db.js', () => ({
   prisma: {
     user: { findUnique: vi.fn(), count: vi.fn() },
-    enrollment: { findMany: vi.fn(), findUnique: vi.fn(), create: vi.fn(), delete: vi.fn() },
+    enrollment: { findMany: vi.fn(), findUnique: vi.fn(), create: vi.fn(), delete: vi.fn(), count: vi.fn() },
     courseOffering: { findMany: vi.fn(), findUnique: vi.fn() },
     auditLog: { create: vi.fn() },
     $queryRaw: vi.fn(),
@@ -142,6 +142,7 @@ beforeEach(() => {
   passthroughTransaction.mockClear();
   queryRaw.mockResolvedValue([] as never);
   enrollmentFindMany.mockResolvedValue([] as never);
+  vi.mocked(prisma.enrollment.count).mockResolvedValue(0 as never); // r176d: the paginated broad listing
   offeringFindMany.mockResolvedValue([] as never);
   enrollmentFindUnique.mockResolvedValue(null as never);
   offeringFindUnique.mockResolvedValue(null as never);
