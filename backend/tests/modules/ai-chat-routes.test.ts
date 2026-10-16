@@ -30,6 +30,8 @@ vi.mock('../../src/db.js', () => {
     aiMessage: { findMany: vi.fn(), create: vi.fn() },
     aiTelemetry: { create: vi.fn() },
     studentMastery: { findMany: vi.fn() },
+    enrollment: { findMany: vi.fn() },
+    courseOffering: { findMany: vi.fn() },
     operationalAlert: { create: vi.fn() },
     $queryRaw: vi.fn(),
   };
@@ -86,6 +88,7 @@ describe('POST /api/v1/ai/chat — LOCAL mode (default test env)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     masteryFindMany.mockResolvedValue([] as never); // no mastery rows → generic reply
+    vi.mocked(prisma.enrollment.findMany).mockResolvedValue([] as never); // r176b: no enrollments → honest empty context
     convCreate.mockResolvedValue({ id: 'conv-1', userId: STUDENT_ID, title: 'س', createdAt: new Date(0) } as never);
     msgCreate.mockResolvedValue({ id: 'msg-1', content: 'ردّ', tokens: 0 } as never);
     telemetryCreate.mockResolvedValue({} as never);
@@ -207,6 +210,8 @@ describe('POST /api/v1/ai/chat — OPENAI mode (provider wire stubbed)', () => {
     vi.clearAllMocks();
     masteryFindMany.mockResolvedValue([] as never);
     historyFindMany.mockResolvedValue([] as never);
+    vi.mocked(prisma.enrollment.findMany).mockResolvedValue([] as never);
+    vi.mocked(prisma.courseOffering.findMany).mockResolvedValue([] as never);
     convCreate.mockResolvedValue({ id: 'conv-2', userId: STUDENT_ID, title: 'س', createdAt: new Date(0) } as never);
     // Faithful delegate: create echoes back the row it was asked to
     // persist — the route answers with the PERSISTED content, so the
@@ -597,6 +602,8 @@ describe('POST /api/v1/ai/chat — OPENROUTER mode (free router)', () => {
     vi.clearAllMocks();
     masteryFindMany.mockResolvedValue([] as never);
     historyFindMany.mockResolvedValue([] as never);
+    vi.mocked(prisma.enrollment.findMany).mockResolvedValue([] as never);
+    vi.mocked(prisma.courseOffering.findMany).mockResolvedValue([] as never);
     convCreate.mockResolvedValue({ id: 'conv-or', userId: STUDENT_ID, title: 'س', createdAt: new Date(0) } as never);
     msgCreate.mockImplementation(
       async (args: { data: { content: string } }) =>

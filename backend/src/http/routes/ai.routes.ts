@@ -46,7 +46,7 @@ export const chatSchema = z
 
 const GENERIC_RESPONSES = [
   'سؤال جيد! دعني أساعدك في فهم هذا الموضوع بطريقة عملية. ابدأ بمراجعة الأمثلة في محاضراتك ثم انتقل للتطبيق.',
-  'بناءً على أدائك في المقرّرات المسجَّلة، أنصحك بتقسيم الموضوع إلى أجزاء صغيرة ودراستها يومياً لمدة 30 دقيقة.',
+  'جرّب تقسيم الموضوع إلى أجزاء صغيرة ودراستها يومياً لمدة 30 دقيقة، ثم اختبر فهمك بعد كل جزء.',
   'الموضوع يتطلب فهماً نظرياً وتطبيقاً عملياً. اقرأ النظرية أولاً ثم جرّب التمارين العملية في المعامل الافتراضية.',
   'أستطيع مساعدتك في إعداد خطة دراسة أسبوعية مخصصة. أخبرني عن المقرّر الذي تواجه فيه تحدياً.',
 ];
@@ -264,6 +264,13 @@ async function loadMasteryFacts(userId: string): Promise<MasteryFact[]> {
    * executes this loader). Rewritten select-only — same projection. */
   const masteries = await prisma.studentMastery.findMany({
     where: { studentId: userId },
+    /* r176b (A6): bounded to the 25 WEAKEST facts, worst-first — the
+     * unbounded read shipped every mastery row (~60 lines for a heavily
+     * enrolled student) into every turn's prompt, diluting the
+     * gap-first signal and inflating context (mirrors /me/gaps'
+     * bounded weakest-first read). */
+    orderBy: { level: 'asc' },
+    take: 25,
     select: {
       level: true,
       concept: {
@@ -281,6 +288,91 @@ async function loadMasteryFacts(userId: string): Promise<MasteryFact[]> {
     level: Number(m.level),
     lectureTitle: m.concept.chapters[0]?.lecture?.title ?? undefined,
   }));
+}
+
+/* ── r176b: the enrollment/teaching grounding loaders (A7/B4) ──
+ *
+ * The real-provider system prompt previously saw ONLY mastery facts —
+ * the model was blind to what the student is actually enrolled in
+ * (while the FE's real-LLM chips promised chapter summaries and
+ * quizzes it could not ground). These bounded loaders close that gap
+ * with the SAME authorization shape every other route uses: they read
+ * from the authenticated userId only, they project titles/counts/
+ * dates (never content), and they are strictly bounded. */
+
+/** The student's ACTIVE enrollments as bounded context lines — course
+ * name/code, term, lecture count, and the nearest future assignment
+ * when one exists. Take 6: enough for a full pilot term; each line is
+ * one short sentence. */
+async function loadEnrollmentContext(userId: string): Promise<string[]> {
+  const enrollments = await prisma.enrollment.findMany({
+    where: { studentId: userId, status: 'active' },
+    orderBy: { enrolledAt: 'desc' },
+    take: 6,
+    select: {
+      offering: {
+        select: {
+          term: true,
+          course: { select: { name: true, code: true } },
+          _count: { select: { lectures: true } },
+          assignments: {
+            where: { dueAt: { gte: new Date() } },
+            orderBy: { dueAt: 'asc' },
+            take: 1,
+            select: { title: true, dueAt: true },
+          },
+        },
+      },
+    },
+  });
+  return enrollments.map((e) => {
+    const o = e.offering;
+    const base = `- «${o.course.name}» (${o.course.code}) — فصل ${o.term}، ${o._count.lectures} محاضرة`;
+    const next = o.assignments[0];
+    return next
+      ? `${base}، أقرب تسليم: «${next.title}» بتاريخ ${next.dueAt.toISOString().slice(0, 10)}`
+      : base;
+  });
+}
+
+/** The offerings a teacher actually teaches, as bounded context lines
+ * for the generic (non-student) prompt. Take 6. */
+async function loadTeachingContext(userId: string): Promise<string[]> {
+  const offerings = await prisma.courseOffering.findMany({
+    where: { teacherId: userId },
+    orderBy: { createdAt: 'desc' },
+    take: 6,
+    select: {
+      term: true,
+      course: { select: { name: true, code: true } },
+      _count: { select: { enrollments: { where: { status: 'active' } } } },
+    },
+  });
+  return offerings.map(
+    (o) => `- «${o.course.name}» (${o.course.code}) — فصل ${o.term}، ${o._count.enrollments} طالبًا مسجلًا`,
+  );
+}
+
+/** The pre-resolved prompt context for one chat turn (r176b): role-
+ * routed (students get mastery+enrollment lines, others their teaching
+ * lines) and loaded in PARALLEL with the history read (A8) — the old
+ * sequential awaits added extra Neon round trips of latency before
+ * the provider call even started. */
+interface ChatContextLines {
+  masteryLines: string[];
+  courseLines: string[];
+  teachingLines: string[];
+}
+
+async function loadChatContext(userId: string, role: Role): Promise<ChatContextLines> {
+  if (isMasteryAwareRole(role)) {
+    const [facts, courseLines] = await Promise.all([
+      loadMasteryFacts(userId),
+      loadEnrollmentContext(userId),
+    ]);
+    return { masteryLines: masteryContextLines(facts), courseLines, teachingLines: [] };
+  }
+  return { masteryLines: [], courseLines: [], teachingLines: await loadTeachingContext(userId) };
 }
 
 /** Boot-frozen provider resolution: null = local composer mode. */
@@ -301,16 +393,18 @@ const aiProviderLabel = aiProvider ? providerLabelFromBaseUrl(aiProvider.baseUrl
  * Failure telemetry is written by the route's catch (one place).
  * r176a: the provider call rides callProviderWithRetry (ONE bounded
  * jittered retry for fast-fail transients: 429/transport/5xx — before
- * any DB write, so side-effect-free; timeouts surface immediately). */
+ * any DB write, so side-effect-free; timeouts surface immediately).
+ * r176b: the prompt context arrives PRE-LOADED (loadChatContext ran
+ * in parallel with the history read) — no sequential awaits here. */
 async function composeReplyWithProvider(
-  userId: string,
   message: string,
   role: Role,
   history: readonly AiChatMessage[],
+  context: ChatContextLines,
 ): Promise<{ reply: string; inputTokens: number; outputTokens: number; model: string }> {
   const system = isMasteryAwareRole(role)
-    ? buildStudentSystemPrompt(masteryContextLines(await loadMasteryFacts(userId)))
-    : buildGenericSystemPrompt();
+    ? buildStudentSystemPrompt(context.masteryLines, context.courseLines)
+    : buildGenericSystemPrompt(context.teachingLines);
   const completion = await callProviderWithRetry(
     aiProvider!,
     buildChatMessages(system, history, message),
@@ -348,17 +442,26 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
     /* P4 mode switch: openai mode loads the conversation's recent
      * turns (newest-first bounded read, re-oriented chronologically —
      * the /conversations/:id/messages pattern) so the model gets real
-     * context. Local mode ignores history exactly as before. r176a:
-     * each HISTORY turn is also content-clipped (AI_HISTORY_CHAR_CAP)
-     * — the turn window alone can still overflow small free-model
-     * context windows; the NEW user message below is never clipped. */
+     * context, IN PARALLEL with the role-routed prompt context
+     * (r176b) — two independent reads must not serialize. Local mode
+     * ignores both exactly as before. r176a: each HISTORY turn is also
+     * content-clipped (AI_HISTORY_CHAR_CAP) — the turn window alone
+     * can still overflow small free-model context windows; the NEW
+     * user message below is never clipped. */
     let history: AiChatMessage[] = [];
-    if (aiProvider && conv) {
-      const rows = await prisma.aiMessage.findMany({
-        where: { conversationId: conv.id },
-        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-        take: AI_HISTORY_TURNS,
-      });
+    let context: ChatContextLines = { masteryLines: [], courseLines: [], teachingLines: [] };
+    if (aiProvider) {
+      const [rows, ctx] = await Promise.all([
+        conv
+          ? prisma.aiMessage.findMany({
+              where: { conversationId: conv.id },
+              orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+              take: AI_HISTORY_TURNS,
+            })
+          : Promise.resolve([]),
+        loadChatContext(userId, req.user!.role),
+      ]);
+      context = ctx;
       history = clipHistoryContent(
         windowHistory(rows, AI_HISTORY_TURNS)
           .map((row): AiChatMessage =>
@@ -380,7 +483,7 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
      * telemetry (with the attempted model) and surfaces one honest
      * Arabic error — no silent template fallback (see composeReplyWithProvider). */
     const engine = aiProvider
-      ? await composeReplyWithProvider(userId, message, req.user!.role, history)
+      ? await composeReplyWithProvider(message, req.user!.role, history, context)
       : { reply: await composeReply(userId, message, req.user!.role), model: AI_CHAT_MODEL, inputTokens: 0, outputTokens: 0 };
 
     // All chat writes (conversation create + both messages + telemetry)
