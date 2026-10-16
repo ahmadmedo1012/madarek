@@ -412,7 +412,7 @@ export default function LibraryPage() {
               <EmptyState
                 icon={BookOpen}
                 title="لا استعارات نشطة"
-                description="اضغط «استعارة» على أي كتاب متاح ليظهر هنا مع موعد إرجاعه خلال ١٤ يوماً."
+                description="اضغط «استعارة» على أي كتاب متاح ليظهر هنا مع موعد إرجاعه خلال 14 يوماً."
               />
             ) : (
               <div className="flex-col">

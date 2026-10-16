@@ -278,16 +278,24 @@ export function KpiSkeleton() {
   );
 }
 
-/** Skeleton for a vertical list of rows (e.g. courses progress) */
+/* r176f (E-01): the row anatomy is calibrated to the content the
+ * skeleton swaps for — `.list-row` renders a 32px avatar (or initial)
+ * plus a title line (~16px) and a sub line (~12px) at padding sp-3/sp-4
+ * ≈ 56-64px per row. The old single 12px bar at sp-2 padding (~28px)
+ * collapsed by ~half on resolve — the r174b loading-closure defect
+ * class, on every non-dashboard surface. Two stacked bars + a leading
+ * avatar-diameter circle match the real geometry. */
 export function ListSkeleton({ rows = 5 }: { rows?: number }) {
   return (
     <div className="flex-col gap-3" aria-busy="true" aria-live="polite">
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="flex items-center gap-3" style={{ padding: 'var(--sp-2) 0' }}>
-          <Skeleton width={140} height={12} />
-          <span style={{ flex: 1 }} />
+        <div key={i} className="flex items-center gap-3" style={{ padding: 'var(--sp-3) var(--sp-4)' }}>
+          <Skeleton width={32} height={32} rounded="var(--r-full)" />
+          <div className="flex-col" style={{ flex: 1, minWidth: 0, gap: 'var(--sp-1)' }}>
+            <Skeleton width="55%" height={12} />
+            <Skeleton width="35%" height={10} />
+          </div>
           <Skeleton width={40} height={12} />
-          <Skeleton width="100%" height={4} rounded="var(--r-full)" />
         </div>
       ))}
     </div>
@@ -356,14 +364,25 @@ export function ChartSkeleton({ height = 220 }: { height?: number }) {
   );
 }
 
-/** Skeleton for a table — N rows × M columns. */
+/* r176f (E-01+E-07): calibrated to `.table`'s real anatomy — a
+ * ~44px thead (the header bar) plus ~42px+ `td` rows (padding sp-3) —
+ * and %-based column widths so 8-column skeletons don't collapse to
+ * slivers at 360px (the fixed 140/60px bars flexed to near-zero).
+ * Fixed heights total the same block the resolved table occupies, so
+ * the resolve swap lands at ~0 CLS. */
 export function TableSkeleton({ rows = 4, cols = 5 }: { rows?: number; cols?: number }) {
   return (
     <div className="flex-col gap-2" style={{ padding: 'var(--sp-3) 0' }} aria-busy="true" aria-live="polite">
+      {/* thead-shaped bar */}
+      <div className="flex gap-3 items-center" style={{ padding: 'var(--sp-3) 0', minHeight: 44 }}>
+        {Array.from({ length: cols }).map((_, c) => (
+          <Skeleton key={`h${c}`} width={c === 0 ? '18%' : c === cols - 1 ? '12%' : '14%'} height={12} />
+        ))}
+      </div>
       {Array.from({ length: rows }).map((_, r) => (
-        <div key={r} className="flex gap-3 items-center" style={{ padding: 'var(--sp-2) 0' }}>
+        <div key={r} className="flex gap-3 items-center" style={{ padding: 'var(--sp-3) 0', minHeight: 44 }}>
           {Array.from({ length: cols }).map((_, c) => (
-            <Skeleton key={c} width={c === 0 ? 140 : c === cols - 1 ? 60 : 80} height={12} />
+            <Skeleton key={c} width={c === 0 ? '18%' : c === cols - 1 ? '12%' : '14%'} height={12} />
           ))}
         </div>
       ))}

@@ -693,7 +693,7 @@ function UploadModal({
           (role=status + aria-live) so keyboard/SR users hear it too. */}
         {!canSubmit && !isPending && (
           <p role="status" aria-live="polite" className="form-field-hint">
-            أكمل عنوان البحث (٣ أحرف على الأقل) لتتمكّن من الرفع.
+            أكمل عنوان البحث (3 أحرف على الأقل) لتتمكّن من الرفع.
           </p>
         )}
         <button type="button" className="btn ghost" onClick={requestClose} disabled={isPending}>

@@ -366,6 +366,14 @@
        No letter-spacing on .btn. */
     box-shadow: var(--_btn-shadow);
   }
+
+/* r176f (E-06): a long Arabic CTA label must be able to wrap on the
+   narrowest phones instead of overflowing (or clipping) the button —
+   the base recipe keeps nowrap for desktop bar layouts; only ≤420px
+   flips to normal wrapping. Icon-only buttons keep their shape. */
+@media (max-width: 420px) {
+  .btn:not(.icon-btn) { white-space: normal; }
+}
   .btn:hover { background: var(--_btn-bg-hover); border-color: var(--_btn-bd-hover); color: var(--_btn-fg); }
   /* 13-17 dead-selector sweep (11-g P2-7, fresh-rg verified): the
      dashed .btn-primary/-accent/-ghost/-outline ALIASES were removed

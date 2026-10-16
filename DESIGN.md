@@ -89,7 +89,7 @@ Theme-aware `--ln-*` tokens (remapped per `data-theme` in `tokens.css` — light
 | `--text-muted` / `--text-faint` | `#6E6C65` (**5.04:1**) / `#74706A` | `#8E97B8` (**6.80:1**) / `#7A83A0` |
 | accent `--accent` | copper `#B57438` | gold `#E9B44C` (**10.39:1**) |
 | accent hover / `--accent-strong` / accent fg | `#9A5F25` / `#5C3416` / `#1A0F06` | `#F5D48A` / `#C9962F` / `#05070F` |
-| focus-ring color | `--accent-strong #5C3416` (AA rule) | `--accent #E9B44C` |
+| focus-ring color | `--accent-strong #5C3416` (AA rule) | `--accent-strong #C9962F` (**7.38:1** — the ring resolves to the strong step in dark, not `--accent`; r176f doc correction to the real cascade) |
 | borders `--rule` / `--rule-strong` | `#E9E7E2` / `#D9D6D0` | `#1B2444` / `#263052` |
 
 **9 pastel section families** `--c-{peach,mint,lavender,sky,yellow,rose,sand,grey,copper}-{bg,ink,deep}` — light grounded on cream (e.g. copper `#F4E4D2`/`#B57438`/`#5C3416`, mint `#DCF1E2`/`#4FA66D`/`#1F4F30`), dark **re-grounded on night** (copper `#2C2312`/`#E9B44C`/`#F5D48A`, mint `#0F241C`/`#7FD39A`/`#C9EAD3` …). Status **text** uses the `-ink`/`-deep` tiers (AA); **fills** keep base tokens. Chart palette `--chart-1..8` (copper/mint/sky/rose/lavender + gold/teal/mauve, theme-lifted).
@@ -139,7 +139,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 
 **Raw ladder (`--t-*`):** `micro 80 · fast 160 · base 240 · slow 380 · slower 520 · cinema 720ms`.
 **Semantic:** `page 320 · reveal 360 · stat/spinner 700 · skeleton 1200ms`.
-**Ambient loop bands:** `1.6 / 2.4 / 3.6 / 6 / 9 / 22s` — rhythm only, **never** for hover/press.
+**Ambient loop bands:** `1.6 / 2.4 / 3.6 / 6 / 22s` — rhythm only, **never** for hover/press. (r176f: the long-documented 9s band never existed in `tokens.css` — five bands, tokens win per AGENTS.md §2.)
 
 | Semantic | Pattern it owns |
 |---|---|

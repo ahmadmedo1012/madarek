@@ -182,6 +182,17 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- r176f (E-09): JS-off visitors previously got a themed, forever-
+         empty canvas (base.css paints var(--bg) pre-paint). One honest
+         Arabic line explains the requirement instead. No CSP impact:
+         noscript content is not a script source, and style-src already
+         allows inline styles. -->
+    <noscript>
+      <div dir="rtl" lang="ar" style="max-width: 560px; margin: 20vh auto 0; padding: 24px; text-align: center; font-family: system-ui, sans-serif; line-height: 1.8;">
+        منصّة مدارك تحتاج تشغيل الجافاسكربت في المتصفح لتعمل.
+        فضلاً فعّل الجافاسكربت ثم أعد تحميل الصفحة.
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

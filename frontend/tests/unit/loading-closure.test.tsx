@@ -70,7 +70,7 @@ vi.mock('../../src/lib/api', () => ({
   unwrap: (p: Promise<{ data: { data: unknown } }>) => p.then((r) => r.data.data),
 }));
 
-import { StripSkeleton, KpiSkeleton } from '../../src/components/primitives/States';
+import { StripSkeleton, KpiSkeleton, ListSkeleton, TableSkeleton } from '../../src/components/primitives/States';
 import { AdminDashboardPage } from '../../src/pages/admin/AdminPages';
 import { OwnerDashboardPage } from '../../src/pages/owner/OwnerDashboardPage';
 import StudentDashboardPage from '../../src/pages/student/DashboardPage';
@@ -319,5 +319,42 @@ describe('r172b §8 — the parse-time html height rule', () => {
     expect(styleIdx).toBeGreaterThan(-1);
     expect(firstScriptIdx).toBeGreaterThan(-1);
     expect(styleIdx).toBeLessThan(firstScriptIdx);
+  });
+});
+
+/* ── r176f · E-01/E-07 — the GENERIC primitives finally calibrated ── */
+
+describe('r176f §E-01 — ListSkeleton/TableSkeleton anatomy pins (non-dashboard closure)', () => {
+  it('ListSkeleton rows match the .list-row anatomy: 32px avatar + title/sub bars at sp-3/4 padding', () => {
+    const { container } = render(<ListSkeleton rows={2} />);
+    expect(container.firstChild).toHaveAttribute('aria-busy', 'true');
+    const rows = (container.firstChild as HTMLElement).children;
+    expect(rows).toHaveLength(2);
+    for (const row of Array.from(rows)) {
+      const bars = row.querySelectorAll('.skeleton') as NodeListOf<HTMLElement>;
+      // avatar circle (32×32) + title + sub + trailing chip
+      expect(bars[0]?.style.width).toBe('32px');
+      expect(bars[0]?.style.height).toBe('32px');
+      expect(bars[1]?.style.height).toBe('12px'); // title line
+      expect(bars[2]?.style.height).toBe('10px'); // sub line
+      expect(bars[3]?.style.width).toBe('40px');
+      // The real .list-row padding (sp-3/sp-4), not the old sp-2.
+      expect(row).toHaveStyle({ padding: 'var(--sp-3) var(--sp-4)' });
+    }
+  });
+
+  it('TableSkeleton renders a thead-shaped header row + %-based widths (E-07: no slivers at 360px)', () => {
+    const { container } = render(<TableSkeleton rows={2} cols={4} />);
+    const rows = Array.from((container.firstChild as HTMLElement).children);
+    // 1 thead-shaped bar + 2 body rows.
+    expect(rows).toHaveLength(3);
+    for (const row of rows) {
+      expect(row).toHaveStyle({ minHeight: '44px' });
+      const bars = row.querySelectorAll('.skeleton') as NodeListOf<HTMLElement>;
+      expect(bars).toHaveLength(4);
+      // Percent widths flex with the viewport instead of collapsing.
+      expect(bars[0]?.style.width).toBe('18%');
+      expect(bars[3]?.style.width).toBe('12%');
+    }
   });
 });

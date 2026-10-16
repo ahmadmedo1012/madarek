@@ -1019,7 +1019,12 @@
     padding: var(--sp-2) 0;
   }
   .cmd-input::placeholder { color: var(--text-faint); } /* r149 (R3-A5 #4): وحّد مع كل placeholder في المنصة (كان --text-muted درجة أغمق) */
-  .cmd-input:focus { outline: none; }
+  /* r176f (E-02): suppress only the MOUSE focus outline — the layer
+     order (layout > base) used to defeat the universal :focus-visible
+     ring from motion.css, leaving the ⌘K palette's only search input
+     with no keyboard focus indication. Mirrors base.css:116's fix for
+     the same class of bug. */
+  .cmd-input:focus:not(:focus-visible) { outline: none; }
   .cmd-input-esc { color: var(--text-muted); flex-shrink: 0; display: inline-flex; }
   .cmd-list {
     min-block-size: 0;
