@@ -15,6 +15,7 @@ import {
   type AiMessageRow,
 } from '../../hooks/useResources';
 import { apiErrorMessage, formatRelativeAr } from '../../lib/format';
+import { formatReplyBlocks } from './aiReplyFormat';
 
 interface ChatMsg {
   role: 'bot' | 'user';
@@ -65,9 +66,19 @@ const LOCAL_GREETING_STUDENT =
 const LOCAL_GREETING_OTHER =
   'مرحبًا! أنا مساعد تحليليّ محليّ (بلا نموذج لغويّ خارجيّ). لا أملك بيانات إتقان للمقرّرات التي تدرّسها، فإجاباتي عامّة. كيف أساعدك؟';
 const REAL_GREETING_STUDENT =
-  'مرحبًا! أنا مساعدك الدراسيّ المدعوم بنموذج لغويّ حقيقيّ. أرى بيانات إتقانك في المنصّة لتركّز إجاباتي على فجواتك المعرفيّة. كيف أساعدك؟';
+  'مرحبًا! أنا مساعدك الدراسيّ المدعوم بنموذج لغويّ حقيقيّ عبر مزوّد خارجيّ. أرى بيانات إتقانك ومقرّراتك المسجَّلة في المنصّة لتركّز إجاباتي على فجواتك المعرفيّة. كيف أساعدك؟';
 const REAL_GREETING_OTHER =
-  'مرحبًا! أنا مساعدك المدعوم بنموذج لغويّ حقيقيّ. لا أملك بيانات إتقان للمقرّرات التي تدرّسها، لكن أستطيع مساعدتك في أسئلة التدريس والتقييم وتنظيم المقرّرات. كيف أساعدك؟';
+  'مرحبًا! أنا مساعدك المدعوم بنموذج لغويّ حقيقيّ عبر مزوّد خارجيّ. لا أملك بيانات إتقان، لكن أستطيع مساعدتك في أسئلة التدريس والتقييم وتنظيم المقرّرات. كيف أساعدك؟';
+
+/* r176c (privacy disclosure, P1-1 from the r176-B audit): a REAL
+ * provider processes the conversation OFF-platform — mastery facts
+ * and message content cross to a third-party AI service. The student
+ * deserves one honest line that says so, visible on every render of
+ * the real-engine mode (the greeting is replaced after the first
+ * turn; this line is persistent). Factual only: names the flow, makes
+ * no claims about the provider's downstream handling. */
+const PRIVACY_DISCLOSURE =
+  'إشعار الخصوصيّة: تُرسَل رسائلك وبيانات إتقانك إلى مزوّد ذكاء اصطناعيّ خارجيّ (المسمّى في الشارة أعلاه) لتوليد الردّ.';
 
 /**
  * r164g — map stored conversation rows to the transcript shape.
@@ -84,7 +95,11 @@ export function transcriptFromRows(rows: readonly AiMessageRow[], greeting: stri
   return mapped.length > 0 ? mapped : [{ role: 'bot', text: greeting }];
 }
 
-/** Render text with newlines preserved (chat replies use \n). */
+/** Render text with newlines preserved (chat replies use \n).
+ * r176c: assistant replies ride the markdown-lite formatter — plain
+ * lines verbatim (emphasis/heading markers stripped), consecutive
+ * `-`/`*` list lines as one RTL list. User text renders VERBATIM
+ * (typed by a human, no markup to strip). */
 function Multiline({ children }: { children: string }) {
   return (
     <>
@@ -93,6 +108,37 @@ function Multiline({ children }: { children: string }) {
           {line}
         </p>
       ))}
+    </>
+  );
+}
+
+/** The assistant bubble's formatter-rendered content (r176c). */
+function ReplyText({ text }: { text: string }) {
+  return (
+    <>
+      {formatReplyBlocks(text).map((block, i) =>
+        block.kind === 'list' ? (
+          <ul
+            key={i}
+            style={{
+              margin: 0,
+              paddingInlineStart: 'var(--sp-4)',
+              display: 'grid',
+              gap: 'var(--sp-1)',
+            }}
+          >
+            {block.items.map((item, j) => (
+              <li key={j} style={{ margin: 0 }}>{item}</li>
+            ))}
+          </ul>
+        ) : (
+          block.lines.map((line, j) => (
+            <p key={`${i}-${j}`} style={{ margin: 0, minHeight: line ? undefined : '0.5em' }}>
+              {line}
+            </p>
+          ))
+        ),
+      )}
     </>
   );
 }
@@ -150,7 +196,20 @@ export default function AiAssistantPage() {
    * every conversation row. */
   const busy = chat.isPending || convLoad.phase === 'loading';
 
+  /* r176c (C3): auto-scroll only when the user is AT (or near ≤80px)
+   * the bottom. A student who scrolled up to reread a definition must
+   * not be yanked down when the reply lands. The ref (not state — no
+   * re-render needed) tracks near-bottom from onScroll; the effect
+   * consults it BEFORE scrolling. */
+  const autoScroll = useRef(true);
+  const handleScroll = () => {
+    const el = scroller.current;
+    if (!el) return;
+    autoScroll.current = el.scrollHeight - el.scrollTop - el.clientHeight <= 80;
+  };
+
   useEffect(() => {
+    if (!autoScroll.current) return;
     scroller.current?.scrollTo({
       top: scroller.current.scrollHeight,
       // Smooth scrolling is motion too — respect the reduced-motion preference.
@@ -350,7 +409,8 @@ export default function AiAssistantPage() {
               children and the input lives outside it — without a tab
               stop, keyboard-only users could never arrow-scroll the
               transcript. The universal :focus-visible ring applies. */}
-          <div className="chat-area" ref={scroller} role="log" tabIndex={0} aria-live="polite" aria-label="سجلّ المحادثة مع المساعد" aria-busy={busy}>
+          <div className="chat-area" ref={scroller}
+              onScroll={handleScroll} role="log" tabIndex={0} aria-live="polite" aria-label="سجلّ المحادثة مع المساعد" aria-busy={busy}>
             {convLoad.phase === 'loading' ? (
               <div aria-busy="true" aria-live="polite" className="flex-col gap-2">
                 {[0, 1, 2].map((i) => (
@@ -387,7 +447,7 @@ export default function AiAssistantPage() {
                       </div>
                     ) : (
                       <div className="chat-bubble">
-                        <Multiline>{m.text}</Multiline>
+                        {m.role === 'bot' ? <ReplyText text={m.text} /> : <Multiline>{m.text}</Multiline>}
                         {/* r166d per-turn engine tag — muted mono under the
                             reply text, existing utility classes only (no new
                             CSS). Honest in both directions: a real provider
@@ -432,6 +492,16 @@ export default function AiAssistantPage() {
               </>
             )}
           </div>
+
+          {/* r176c: the persistent privacy disclosure — the real engine
+              processes messages off-platform; one honest line, always
+              visible in real-LLM mode (the greeting alone would vanish
+              after the first turn). */}
+          {isRealLlm && (
+            <p className="text-xxs text-subtle" style={{ margin: 0 }}>
+              {PRIVACY_DISCLOSURE}
+            </p>
+          )}
 
           {/* Quick-action chips above the input — Stitch signature.
               r168b honesty gate: the local composer's REAL paths are
@@ -479,6 +549,7 @@ export default function AiAssistantPage() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') void send(); }}
               disabled={busy}
+              maxLength={4000}
             />
             <button
               type="button"
@@ -490,6 +561,11 @@ export default function AiAssistantPage() {
               <Icon icon={Send} size={15} />
             </button>
           </div>
+          {input.length > 3600 && (
+            <p className="text-xxs text-subtle" style={{ margin: 0 }}>
+              {input.length}/4000
+            </p>
+          )}
         </Card>
 
         {/* r164g — conversation management: list/switch/clear with the
