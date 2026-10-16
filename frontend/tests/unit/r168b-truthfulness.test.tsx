@@ -115,6 +115,11 @@ describe('r168b — docs/02 documents the student-surface exceptions', () => {
     const doc = read('../docs/02-features.md');
     expect(doc).toContain('بقية سطوح الطالب — [منفَّذة مع استثناءات موثَّقة]');
     expect(doc).toContain('تجارب AR (فهرس بلا تشغيل)');
-    expect(doc).toContain('لا صندوق طالب بعد');
+    // r171a closed the r168b student-inbox gap: the doc now documents
+    // the SHIPPED inbox (and the honest remaining ceiling — staff roles
+    // still have no inbox route) instead of «لا صندوق طالب بعد».
+    expect(doc).toContain('صندوق رسائل كامل للطالب');
+    expect(doc).toContain('بلا صندوق رسائل خاص');
+    expect(doc).not.toContain('لا صندوق طالب بعد');
   });
 });
