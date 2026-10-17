@@ -5,6 +5,8 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 
 // ── Lectures ───────────────────────────────────────────────────
 export interface Lecture {
@@ -28,8 +30,9 @@ export interface Lecture {
   answeredCheckpoints?: number;
 }
 export function useOfferingLectures(offeringId: string | undefined) {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['offerings', offeringId, 'lectures'],
+    queryKey: withInstitutionScope(['offerings', offeringId, 'lectures'], inst),
     queryFn: () => unwrap<Lecture[]>(api.get(`/offerings/${offeringId}/lectures`)),
     enabled: Boolean(offeringId),
   });
@@ -67,8 +70,9 @@ export interface LectureDetail extends Lecture {
   };
 }
 export function useLecture(lectureId: string | undefined) {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['lectures', lectureId],
+    queryKey: withInstitutionScope(['lectures', lectureId], inst),
     queryFn: () => unwrap<LectureDetail>(api.get(`/lectures/${lectureId}`)),
     enabled: Boolean(lectureId),
   });
@@ -358,8 +362,9 @@ export interface OfferingFull {
   _count: { enrollments: number };
 }
 export function useOfferingFull(offeringId: string | undefined) {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['offerings', offeringId, 'full'],
+    queryKey: withInstitutionScope(['offerings', offeringId, 'full'], inst),
     queryFn: () => unwrap<OfferingFull>(api.get(`/offerings/${offeringId}/full`)),
     enabled: Boolean(offeringId),
   });

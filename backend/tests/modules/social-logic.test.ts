@@ -44,6 +44,7 @@ import {
   createEventSchema,
   entryViewForViewer,
   eventsWithMyRsvp,
+  institutionAnnouncementConditions,
   isCompetitionClosable,
   isCompetitionJudgeable,
   isScoreLocked,
@@ -494,5 +495,36 @@ describe('createEventSchema', () => {
     expect(createEventSchema.safeParse({ ...base, capacity: 10_001 }).success).toBe(false);
     expect(createEventSchema.safeParse({ ...base, capacity: 10_000 }).success).toBe(true);
     expect(createEventSchema.safeParse({ ...base, sneaky: true }).success).toBe(false);
+  });
+});
+
+// ── r179 (phase-5): institution-wide announcement conditions ──────
+
+describe('institutionAnnouncementConditions (r179 oversight feed filter)', () => {
+  it('always admits PLATFORM (global by design) plus the institution\'s scoped targets', () => {
+    expect(
+      institutionAnnouncementConditions({
+        facultyIds: ['f1', 'f2'],
+        departmentIds: ['d1'],
+        offeringIds: ['o1', 'o2', 'o3'],
+      }),
+    ).toEqual([
+      { scope: 'PLATFORM' },
+      { scope: 'FACULTY', scopeId: { in: ['f1', 'f2'] } },
+      { scope: 'DEPARTMENT', scopeId: { in: ['d1'] } },
+      { scope: 'OFFERING', scopeId: { in: ['o1', 'o2', 'o3'] } },
+    ]);
+  });
+
+  it('an empty id-set omits its scope branch — an institution with no offerings never matches OFFERING rows', () => {
+    expect(
+      institutionAnnouncementConditions({ facultyIds: ['f1'], departmentIds: [], offeringIds: [] }),
+    ).toEqual([{ scope: 'PLATFORM' }, { scope: 'FACULTY', scopeId: { in: ['f1'] } }]);
+  });
+
+  it('all-empty id-sets reduce to PLATFORM ONLY — a foreign institution\'s scoped rows never enter the OR', () => {
+    expect(
+      institutionAnnouncementConditions({ facultyIds: [], departmentIds: [], offeringIds: [] }),
+    ).toEqual([{ scope: 'PLATFORM' }]);
   });
 });

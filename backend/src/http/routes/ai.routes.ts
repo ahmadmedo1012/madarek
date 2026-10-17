@@ -131,15 +131,25 @@ export function worstGapMastery<T extends { level: MasteryLevel }>(
  * Gap-aware response composer.
  * Tries to find a concept the user mentions in the message and craft
  * a tailored response using their actual mastery data.
+ * r179 (phase-5): institutionId is an EXPLICIT input — mastery rows
+ * are scoped through the concept→course→institution chain so a
+ * multi-institution student's reply in institution A is grounded in
+ * A's concepts only (the route passes its VERIFIED context down;
+ * never re-derived from an unverified claim).
  */
-async function composeReply(userId: string, message: string, role: Role): Promise<string> {
+async function composeReply(
+  userId: string,
+  message: string,
+  role: Role,
+  institutionId: string,
+): Promise<string> {
   if (!isMasteryAwareRole(role)) {
     return GENERIC_RESPONSES[Math.floor(Math.random() * GENERIC_RESPONSES.length)]!;
   }
 
-  // Get the student's full mastery state once.
+  // Get the student's mastery state for THIS institution once.
   const masteries = await prisma.studentMastery.findMany({
-    where: { studentId: userId },
+    where: { studentId: userId, concept: { course: { institutionId } } },
     include: {
       concept: {
         include: {
@@ -254,8 +264,15 @@ const writeAiTelemetry = async (
  * template logic and tests predate P4 and must not churn. The real
  * provider path needs a PLAIN projection of the same mastery rows
  * for the system prompt, so it gets its own loader here. Same include
- * shape, mapped to MasteryFact (no prisma types cross into lib/ai). */
-async function loadMasteryFacts(userId: string): Promise<MasteryFact[]> {
+ * shape, mapped to MasteryFact (no prisma types cross into lib/ai).
+ *
+ * r179 (phase-5): EVERY loader takes the institutionId as an EXPLICIT
+ * input and scopes through the academic chain — mastery rows through
+ * concept→course→institution, enrollments/offerings through
+ * offering→course→institution, teaching through course→institution.
+ * No prompt context ever blends two institutions; the route threads
+ * its VERIFIED context down (see requireChatInstitution). */
+async function loadMasteryFacts(userId: string, institutionId: string): Promise<MasteryFact[]> {
   /* r175d (the production 500 fix): the original shape mixed `select`
    * and `include` at the SAME level (`include: { concept: { select: …,
    * include: … } }`) — Prisma 5.22 rejects that at validation time
@@ -264,7 +281,9 @@ async function loadMasteryFacts(userId: string): Promise<MasteryFact[]> {
    * mocks prisma, so the validation never ran there; local mode never
    * executes this loader). Rewritten select-only — same projection. */
   const masteries = await prisma.studentMastery.findMany({
-    where: { studentId: userId },
+    // r179 (phase-5): institution-scoped — only THIS institution's
+    // concepts ride the prompt.
+    where: { studentId: userId, concept: { course: { institutionId } } },
     /* r176b (A6): bounded to the 25 WEAKEST facts, worst-first — the
      * unbounded read shipped every mastery row (~60 lines for a heavily
      * enrolled student) into every turn's prompt, diluting the
@@ -301,13 +320,14 @@ async function loadMasteryFacts(userId: string): Promise<MasteryFact[]> {
  * from the authenticated userId only, they project titles/counts/
  * dates (never content), and they are strictly bounded. */
 
-/** The student's ACTIVE enrollments as bounded context lines — course
- * name/code, term, lecture count, and the nearest future assignment
- * when one exists. Take 6: enough for a full pilot term; each line is
- * one short sentence. */
-async function loadEnrollmentContext(userId: string): Promise<string[]> {
+/** The student's ACTIVE enrollments in the institution as bounded
+ * context lines — course name/code, term, lecture count, and the
+ * nearest future assignment when one exists. Take 6: enough for a
+ * full pilot term; each line is one short sentence. r179 (phase-5):
+ * institution-scoped through offering→course→institution. */
+async function loadEnrollmentContext(userId: string, institutionId: string): Promise<string[]> {
   const enrollments = await prisma.enrollment.findMany({
-    where: { studentId: userId, status: 'active' },
+    where: { studentId: userId, status: 'active', offering: { course: { institutionId } } },
     orderBy: { enrolledAt: 'desc' },
     take: 6,
     select: {
@@ -336,11 +356,14 @@ async function loadEnrollmentContext(userId: string): Promise<string[]> {
   });
 }
 
-/** The offerings a teacher actually teaches, as bounded context lines
- * for the generic (non-student) prompt. Take 6. */
-async function loadTeachingContext(userId: string): Promise<string[]> {
+/** The offerings a teacher actually teaches IN the institution, as
+ * bounded context lines for the generic (non-student) prompt. Take 6.
+ * r179 (phase-5): institution-scoped through course→institution — a
+ * multi-institution teacher's prompt carries only the offerings of
+ * the institution in their verified context. */
+async function loadTeachingContext(userId: string, institutionId: string): Promise<string[]> {
   const offerings = await prisma.courseOffering.findMany({
-    where: { teacherId: userId },
+    where: { teacherId: userId, course: { institutionId } },
     orderBy: { createdAt: 'desc' },
     take: 6,
     select: {
@@ -358,26 +381,51 @@ async function loadTeachingContext(userId: string): Promise<string[]> {
  * routed (students get mastery+enrollment lines, others their teaching
  * lines) and loaded in PARALLEL with the history read (A8) — the old
  * sequential awaits added extra Neon round trips of latency before
- * the provider call even started. */
+ * the provider call even started. r179 (phase-5): the institution
+ * scope is an EXPLICIT input threaded from the route's VERIFIED
+ * context. */
 interface ChatContextLines {
   masteryLines: string[];
   courseLines: string[];
   teachingLines: string[];
 }
 
-async function loadChatContext(userId: string, role: Role): Promise<ChatContextLines> {
+async function loadChatContext(
+  userId: string,
+  role: Role,
+  institutionId: string,
+): Promise<ChatContextLines> {
   if (isMasteryAwareRole(role)) {
     const [facts, courseLines] = await Promise.all([
-      loadMasteryFacts(userId),
-      loadEnrollmentContext(userId),
+      loadMasteryFacts(userId, institutionId),
+      loadEnrollmentContext(userId, institutionId),
     ]);
     return { masteryLines: masteryContextLines(facts), courseLines, teachingLines: [] };
   }
-  return { masteryLines: [], courseLines: [], teachingLines: await loadTeachingContext(userId) };
+  return { masteryLines: [], courseLines: [], teachingLines: await loadTeachingContext(userId, institutionId) };
 }
 
 /** Boot-frozen provider resolution: null = local composer mode. */
 const aiProvider = getAiProvider();
+
+/* r179 (phase-5): the verified institution-context gate for every AI
+ * surface in this router — a contextless institutional caller gets 403
+ * INSTITUTION_CONTEXT_REQUIRED (fail closed: the client must POST
+ * /auth/select-institution; there is NO default institution), and a
+ * stale/forged claim surfaces resolveCallerInstitutionScope's 403
+ * INSTITUTION_CONTEXT_INVALID. The returned id is the ONLY scope the
+ * route threads into loaders, lookups and writes. */
+async function requireChatInstitution(userId: string, claim: string | null): Promise<string> {
+  const institutionId = await resolveCallerInstitutionScope(userId, claim);
+  if (!institutionId) {
+    throw new AppError(
+      'INSTITUTION_CONTEXT_REQUIRED',
+      'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
+      403,
+    );
+  }
+  return institutionId;
+}
 
 /** r175: the honest provider LABEL. `AI_PROVIDER=openai` is the
  * OpenAI-compatible TRANSPORT mode; the label says WHO actually
@@ -452,14 +500,7 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
      * context → 403 (the client must select an institution first);
      * a conversation id from ANOTHER institution is a 404, not a
      * cross-context read. */
-    const chatInstitutionId = await resolveCallerInstitutionScope(userId, req.user!.institutionId);
-    if (!chatInstitutionId) {
-      throw new AppError(
-        'INSTITUTION_CONTEXT_REQUIRED',
-        'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
-        403,
-      );
-    }
+    const chatInstitutionId = await requireChatInstitution(userId, req.user!.institutionId);
 
     // Single conversation lookup (previously a conditional DOUBLE lookup —
     // findFirst then findUnique on the same row). A provided id that
@@ -494,7 +535,7 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
               take: AI_HISTORY_TURNS,
             })
           : Promise.resolve([]),
-        loadChatContext(userId, req.user!.role),
+        loadChatContext(userId, req.user!.role, chatInstitutionId),
       ]);
       context = ctx;
       history = clipHistoryContent(
@@ -519,7 +560,7 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
      * Arabic error — no silent template fallback (see composeReplyWithProvider). */
     const engine = aiProvider
       ? await composeReplyWithProvider(message, req.user!.role, history, context)
-      : { reply: await composeReply(userId, message, req.user!.role), model: AI_CHAT_MODEL, inputTokens: 0, outputTokens: 0 };
+      : { reply: await composeReply(userId, message, req.user!.role, chatInstitutionId), model: AI_CHAT_MODEL, inputTokens: 0, outputTokens: 0 };
 
     // All chat writes (conversation create + both messages + telemetry)
     // in ONE transaction — previously three separate non-transactional
@@ -637,10 +678,18 @@ router.get('/config', (_req, res) => {
   });
 });
 
+/* r179 (phase-5): the conversation family is institution-scoped —
+ * list/detail/messages/delete ALL filter by the caller's VERIFIED
+ * context (userId + institutionId). A conversation created in
+ * institution A is invisible (and undeletable) while the token's
+ * context is B: the findFirst simply does not resolve it → 404, the
+ * same envelope as a nonexistent id (no cross-institution existence
+ * leak). A contextless institutional caller is 403 fail-closed. */
 router.get('/conversations', async (req, res, next) => {
   try {
+    const institutionId = await requireChatInstitution(req.user!.id, req.user!.institutionId);
     const data = await prisma.aiConversation.findMany({
-      where: { userId: req.user!.id },
+      where: { userId: req.user!.id, institutionId },
       orderBy: { createdAt: 'desc' },
       take: 50,
     });
@@ -650,10 +699,26 @@ router.get('/conversations', async (req, res, next) => {
   }
 });
 
+/* r179 (phase-5): the single-conversation read (the detail twin of
+ * the delete route) — same ownership + institution filter. */
+router.get('/conversations/:id', async (req, res, next) => {
+  try {
+    const institutionId = await requireChatInstitution(req.user!.id, req.user!.institutionId);
+    const conv = await prisma.aiConversation.findFirst({
+      where: { id: req.params.id!, userId: req.user!.id, institutionId },
+    });
+    if (!conv) throw AppError.notFound('المحادثة غير موجودة');
+    res.json({ data: conv });
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.get('/conversations/:id/messages', async (req, res, next) => {
   try {
+    const institutionId = await requireChatInstitution(req.user!.id, req.user!.institutionId);
     const conv = await prisma.aiConversation.findFirst({
-      where: { id: req.params.id!, userId: req.user!.id },
+      where: { id: req.params.id!, userId: req.user!.id, institutionId },
     });
     if (!conv) throw AppError.notFound('المحادثة غير موجودة');
     // Bounded read: fetch the newest window then restore chronological
@@ -673,17 +738,20 @@ router.get('/conversations/:id/messages', async (req, res, next) => {
 });
 
 /* r164g — conversation clear (the student's «حذف المحادثة»). The
- * ownership check runs FIRST via the same findFirst shape the two GET
+ * ownership check runs FIRST via the same findFirst shape the GET
  * routes use — a bare prisma.aiConversation.delete({ where: { id } })
  * would let any authenticated user delete any conversation by guessing
- * a cuid. The delete itself cascades the messages (schema
- * onDelete: Cascade), so one call clears the whole exchange. Response
- * mirrors the annotations delete family: { data: { ok: true } }. No
- * rate limiter: a bounded row removal, not an expensive AI call. */
+ * a cuid. r179 (phase-5): the institution filter rides the same lookup —
+ * a conversation of ANOTHER institution context is a 404 (not a
+ * cross-context delete). The delete itself cascades the messages
+ * (schema onDelete: Cascade), so one call clears the whole exchange.
+ * Response mirrors the annotations delete family: { data: { ok: true } }.
+ * No rate limiter: a bounded row removal, not an expensive AI call. */
 router.delete('/conversations/:id', async (req, res, next) => {
   try {
+    const institutionId = await requireChatInstitution(req.user!.id, req.user!.institutionId);
     const conv = await prisma.aiConversation.findFirst({
-      where: { id: req.params.id!, userId: req.user!.id },
+      where: { id: req.params.id!, userId: req.user!.id, institutionId },
     });
     if (!conv) throw AppError.notFound('المحادثة غير موجودة');
     await prisma.aiConversation.delete({ where: { id: conv.id } });

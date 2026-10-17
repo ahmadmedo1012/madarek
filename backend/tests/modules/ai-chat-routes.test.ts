@@ -29,7 +29,7 @@ vi.mock('../../src/db.js', () => {
     // r179 (phase-5): chat is institution-scoped — resolveCallerInstitutionScope
     // re-verifies the token's inst claim through membership.findFirst.
     membership: { findFirst: vi.fn() },
-    aiConversation: { findFirst: vi.fn(), create: vi.fn() },
+    aiConversation: { findFirst: vi.fn(), findMany: vi.fn(), create: vi.fn(), delete: vi.fn() },
     aiMessage: { findMany: vi.fn(), create: vi.fn() },
     aiTelemetry: { create: vi.fn() },
     studentMastery: { findMany: vi.fn() },
@@ -963,5 +963,119 @@ describe('POST /api/v1/ai/chat — OPENROUTER mode with the AI_MODELS list (r176
     // NO silent fallback — nothing persisted.
     expect(transaction).not.toHaveBeenCalled();
     expect(msgCreate).not.toHaveBeenCalled();
+  });
+});
+
+// ── r179 (phase-5): the conversation family is institution-scoped ──
+//
+// GET /ai/conversations, GET /ai/conversations/:id, GET
+// /ai/conversations/:id/messages and DELETE /ai/conversations/:id all
+// require the caller's VERIFIED institution context (403 fail-closed
+// without one) and filter by (userId + institutionId) — a conversation
+// created in institution A is invisible while the token's context is
+// B (404, the same envelope as a nonexistent id).
+
+describe('GET/DELETE /api/v1/ai/conversations* — institution scoping (r179)', () => {
+  let baseUrl: string;
+  let server: ReturnType<ReturnType<typeof createApp>['listen']>;
+
+  const convFindFirst = vi.mocked(prisma.aiConversation.findFirst);
+  const convFindMany = vi.mocked(prisma.aiConversation.findMany);
+  const convDelete = vi.mocked(prisma.aiConversation.delete);
+  const membershipFindFirst = vi.mocked(prisma.membership.findFirst);
+
+  const CONV = {
+    id: 'conv-scoped-1',
+    userId: STUDENT_ID,
+    institutionId: INSTITUTION_ID,
+    title: 'محادثة داخل المؤسسة',
+    createdAt: new Date(0),
+  };
+
+  beforeAll(() => {
+    ({ server, baseUrl } = startServer(createApp()));
+  });
+
+  afterAll(async () => {
+    await closeServer(server);
+  });
+
+  beforeEach(() => {
+    // The OPENAI/OPENROUTER describes stub global fetch (provider wire)
+    // and vitest keeps the last stub installed after their final test —
+    // unstub FIRST or this describe's own requests would be answered by
+    // a stale provider stub (429 provider response ≠ our route's answer).
+    vi.unstubAllGlobals();
+    vi.clearAllMocks();
+    membershipFindFirst.mockResolvedValue({ institutionId: INSTITUTION_ID } as never);
+  });
+
+  it('lists ONLY the caller\'s conversations in their verified institution context', async () => {
+    convFindMany.mockResolvedValue([CONV] as never);
+    const res = await fetch(`${baseUrl}/api/v1/ai/conversations`, { headers: bearer() });
+    expect(res.status).toBe(200);
+    expect(convFindMany).toHaveBeenCalledWith({
+      where: { userId: STUDENT_ID, institutionId: INSTITUTION_ID },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+    const body = (await res.json()) as { data: unknown[] };
+    expect(body.data).toHaveLength(1);
+  });
+
+  it('a contextless institutional caller is 403 INSTITUTION_CONTEXT_REQUIRED (fail closed)', async () => {
+    const contextless = { authorization: `Bearer ${signAccessToken(STUDENT_ID, Role.STUDENT, null)}` };
+    const res = await fetch(`${baseUrl}/api/v1/ai/conversations`, { headers: contextless });
+    expect(res.status).toBe(403);
+    expect(((await res.json()) as { error: { code: string } }).error.code).toBe('INSTITUTION_CONTEXT_REQUIRED');
+    expect(convFindMany).not.toHaveBeenCalled();
+  });
+
+  it('a stale/forged inst claim is 403 INSTITUTION_CONTEXT_INVALID (never a silent widen)', async () => {
+    membershipFindFirst.mockResolvedValue(null as never);
+    const forged = { authorization: `Bearer ${signAccessToken(STUDENT_ID, Role.STUDENT, 'inst-other')}` };
+    const res = await fetch(`${baseUrl}/api/v1/ai/conversations`, { headers: forged });
+    expect(res.status).toBe(403);
+    expect(((await res.json()) as { error: { code: string } }).error.code).toBe('INSTITUTION_CONTEXT_INVALID');
+  });
+
+  it('GET /conversations/:id resolves with the institution in the lookup', async () => {
+    convFindFirst.mockResolvedValue(CONV as never);
+    const res = await fetch(`${baseUrl}/api/v1/ai/conversations/conv-scoped-1`, { headers: bearer() });
+    expect(res.status).toBe(200);
+    expect(convFindFirst).toHaveBeenCalledWith({
+      where: { id: 'conv-scoped-1', userId: STUDENT_ID, institutionId: INSTITUTION_ID },
+    });
+  });
+
+  it('a conversation id from ANOTHER institution is a 404 (detail, messages, and delete)', async () => {
+    convFindFirst.mockResolvedValue(null as never);
+    const detail = await fetch(`${baseUrl}/api/v1/ai/conversations/conv-foreign`, { headers: bearer() });
+    expect(detail.status).toBe(404);
+    const messages = await fetch(`${baseUrl}/api/v1/ai/conversations/conv-foreign/messages`, { headers: bearer() });
+    expect(messages.status).toBe(404);
+    const removed = await fetch(`${baseUrl}/api/v1/ai/conversations/conv-foreign`, {
+      method: 'DELETE',
+      headers: bearer(),
+    });
+    expect(removed.status).toBe(404);
+    // The 404 IS the isolation: the lookup carries the institution and
+    // a foreign row simply does not resolve — nothing is deleted.
+    expect(convDelete).not.toHaveBeenCalled();
+  });
+
+  it('DELETE clears the conversation only after the scoped ownership lookup resolves', async () => {
+    convFindFirst.mockResolvedValue(CONV as never);
+    convDelete.mockResolvedValue(CONV as never);
+    const res = await fetch(`${baseUrl}/api/v1/ai/conversations/conv-scoped-1`, {
+      method: 'DELETE',
+      headers: bearer(),
+    });
+    expect(res.status).toBe(200);
+    expect(((await res.json()) as { data: { ok: boolean } }).data.ok).toBe(true);
+    expect(convFindFirst).toHaveBeenCalledWith({
+      where: { id: 'conv-scoped-1', userId: STUDENT_ID, institutionId: INSTITUTION_ID },
+    });
+    expect(convDelete).toHaveBeenCalledWith({ where: { id: 'conv-scoped-1' } });
   });
 });

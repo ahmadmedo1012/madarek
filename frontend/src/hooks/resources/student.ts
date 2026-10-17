@@ -5,6 +5,8 @@
 
 import { useQuery , keepPreviousData } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 import type { AppRole } from '../../stores/auth.store';
 import type { Course } from './catalog';
 
@@ -89,8 +91,9 @@ export interface StudentDashboard {
   };
 }
 export function useStudentDashboard() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['me', 'dashboard'],
+    queryKey: withInstitutionScope(['me', 'dashboard'], inst),
     queryFn: () => unwrap<StudentDashboard>(api.get('/me/dashboard')),
     staleTime: 60_000,
   });
@@ -119,8 +122,9 @@ export interface ResumeState {
   };
 }
 export function useResume() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['me', 'resume'],
+    queryKey: withInstitutionScope(['me', 'resume'], inst),
     queryFn: () => unwrap<ResumeState | null>(api.get('/me/resume')),
     // 30s default staleTime would lag a just-finished lecture; the
     // ['me'] invalidation on watch-completion (useReportWatch) covers
@@ -181,8 +185,9 @@ export interface StudentResults {
   }>;
 }
 export function useStudentResults() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['me', 'results'],
+    queryKey: withInstitutionScope(['me', 'results'], inst),
     queryFn: () => unwrap<StudentResults>(api.get('/me/results')),
     staleTime: 60_000,
   });
@@ -199,8 +204,9 @@ export interface StudentMaterial {
   course: { code: string; name: string };
 }
 export function useStudentMaterials() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['me', 'materials'],
+    queryKey: withInstitutionScope(['me', 'materials'], inst),
     queryFn: () => unwrap<StudentMaterial[]>(api.get('/me/materials')),
     staleTime: 60_000,
   });
@@ -219,8 +225,9 @@ export interface MyEnrollment {
   };
 }
 export function useMyEnrollments() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['me', 'enrollments'],
+    queryKey: withInstitutionScope(['me', 'enrollments'], inst),
     queryFn: () => unwrap<MyEnrollment[]>(api.get('/enrollments/me')),
   });
 }
@@ -235,8 +242,9 @@ export interface MatrixCourse {
   concepts: Array<{ id: string; name: string; level: number; attempts: number }>;
 }
 export function useMatrix() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['me', 'matrix'],
+    queryKey: withInstitutionScope(['me', 'matrix'], inst),
     queryFn: () => unwrap<MatrixCourse[]>(api.get('/me/matrix')),
   });
 }
@@ -252,8 +260,9 @@ export interface Gap {
   recommendedLectureTitle: string | null;
 }
 export function useGaps() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['me', 'gaps'],
+    queryKey: withInstitutionScope(['me', 'gaps'], inst),
     queryFn: () => unwrap<Gap[]>(api.get('/me/gaps')),
   });
 }
@@ -267,8 +276,9 @@ export interface MessageRow {
   toUser: { id: string; firstName: string; lastName: string; avatarColor: string | null };
 }
 export function useMyMessages(page: number = 1, limit: number = 30) {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['me', 'messages', page, limit],
+    queryKey: withInstitutionScope(['me', 'messages', page, limit], inst),
     queryFn: async () => {
       // r157 / 6A9: the meta carries `unread` (incoming, readAt null) —
       // the same contract as /notifications; the teacher inbox consumes
@@ -316,8 +326,9 @@ export interface MyProfile {
   } | null;
 }
 export function useMyProfile() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['me', 'profile'],
+    queryKey: withInstitutionScope(['me', 'profile'], inst),
     queryFn: () => unwrap<MyProfile>(api.get('/me/profile')),
   });
 }

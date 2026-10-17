@@ -5,6 +5,8 @@
 
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 
 // ── Notifications ──────────────────────────────────────────────
 export interface Notification {
@@ -52,8 +54,9 @@ export function notifDeepLink(n: Pick<Notification, 'link'>): string | null {
 }
 
 export function useNotifications() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['notifications'],
+    queryKey: withInstitutionScope(['notifications'], inst),
     queryFn: () => unwrap<Notification[]>(api.get('/notifications?limit=50')),
   });
 }
@@ -80,8 +83,9 @@ export function useMarkAllNotifsRead() {
 
 // Unread count from response meta — backend returns it on the notifications endpoint.
 export function useUnreadNotifications() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['notifications', 'unread-count'],
+    queryKey: withInstitutionScope(['notifications', 'unread-count'], inst),
     queryFn: async () => {
       const res = await api.get<{ data: Notification[]; meta: { unread: number } }>('/notifications?limit=1');
       return res.data.meta?.unread ?? 0;
@@ -122,8 +126,9 @@ export const NOTIFICATIONS_FEED_LIMIT = 30;
  *   meta.unread (server truth) instead of filtering the loaded slice.
  */
 export function useNotificationsFeed() {
+  const inst = useInstitutionScope();
   return useInfiniteQuery({
-    queryKey: ['notifications', 'feed'],
+    queryKey: withInstitutionScope(['notifications', 'feed'], inst),
     /* r161 (C1): the page shape is `{ data, meta }` AT THE ENVELOPE
        LEVEL — the backend's paginated routes answer `{ data: [...],
        meta: buildMeta(...) }` where meta is a SIBLING of data, not

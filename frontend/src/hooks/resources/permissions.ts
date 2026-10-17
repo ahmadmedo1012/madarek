@@ -5,6 +5,8 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 import type { AppRole } from '../../stores/auth.store';
 
 // ════════════════════════════════════════════════════════════════
@@ -29,8 +31,9 @@ export interface MyPermissions {
   roleDefaults: AppCapability[];
 }
 export function useMyPermissions() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['me', 'permissions'],
+    queryKey: withInstitutionScope(['me', 'permissions'], inst),
     queryFn: () => unwrap<MyPermissions>(api.get('/me/permissions')),
   });
 }

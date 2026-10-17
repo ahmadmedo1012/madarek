@@ -5,6 +5,8 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 
 // ── Admin stats ───────────────────────────────────────────────
 export interface AdminStats {
@@ -14,8 +16,9 @@ export interface AdminStats {
   totalEnrollments: number;
 }
 export function useAdminStats() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['admin', 'stats'],
+    queryKey: withInstitutionScope(['admin', 'stats'], inst),
     queryFn: () => unwrap<AdminStats>(api.get('/admin/stats')),
   });
 }
@@ -33,8 +36,9 @@ export interface AdminFaculty {
   departments: Array<{ id: string; name: string; students: number; teachers: number; courses: number }>;
 }
 export function useAdminFaculties() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['admin', 'faculties'],
+    queryKey: withInstitutionScope(['admin', 'faculties'], inst),
     queryFn: () => unwrap<AdminFaculty[]>(api.get('/admin/faculties')),
   });
 }
@@ -45,8 +49,9 @@ export interface AdminReports {
   topCourses: Array<{ code: string; name: string; enrollments: number; lectures: number }>;
 }
 export function useAdminReports() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['admin', 'reports'],
+    queryKey: withInstitutionScope(['admin', 'reports'], inst),
     queryFn: () => unwrap<AdminReports>(api.get('/admin/reports')),
   });
 }
@@ -89,8 +94,9 @@ export function useAdminCourses(
   params: { page?: number; limit?: number; q?: string; facultyId?: string } = {},
 ) {
   const { page = 1, limit = 20, q, facultyId } = params;
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['admin', 'courses', { page, limit, q: q ?? null, facultyId: facultyId ?? null }],
+    queryKey: withInstitutionScope(['admin', 'courses', { page, limit, q: q ?? null, facultyId: facultyId ?? null }], inst),
     queryFn: async () => {
       const res = await api.get<{ data: AdminCourse[]; meta: AdminCoursesMeta }>('/admin/courses', {
         params: {
@@ -188,8 +194,9 @@ export function useAdminPapers(
   params: { page?: number; limit?: number; q?: string; status?: ResearchStatus } = {},
 ) {
   const { page = 1, limit = 20, q, status } = params;
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['admin', 'papers', { page, limit, q: q ?? null, status: status ?? null }],
+    queryKey: withInstitutionScope(['admin', 'papers', { page, limit, q: q ?? null, status: status ?? null }], inst),
     queryFn: async () => {
       const res = await api.get<{ data: AdminPaper[]; meta: AdminPapersMeta }>('/admin/papers', {
         params: {
@@ -236,8 +243,9 @@ export interface TeacherSuggestionResponse {
   }>;
 }
 export function useTeacherSuggestions(teacherId: string | undefined) {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['admin', 'teachers', teacherId, 'suggestions'],
+    queryKey: withInstitutionScope(['admin', 'teachers', teacherId, 'suggestions'], inst),
     enabled: !!teacherId,
     queryFn: () => unwrap<TeacherSuggestionResponse>(api.get(`/admin/teachers/${teacherId}/suggestions`)),
   });

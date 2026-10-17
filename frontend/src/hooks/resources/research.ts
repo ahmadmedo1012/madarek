@@ -5,6 +5,8 @@
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 import type { AppRole } from '../../stores/auth.store';
 
 // ── Research papers ────────────────────────────────────────────
@@ -31,22 +33,25 @@ export interface ResearchPaper {
 }
 
 export function useMyResearch() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['me', 'research'],
+    queryKey: withInstitutionScope(['me', 'research'], inst),
     queryFn: () => unwrap<ResearchPaper[]>(api.get('/me/research')),
   });
 }
 
 export function useResearchQueue() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['research', 'queue'],
+    queryKey: withInstitutionScope(['research', 'queue'], inst),
     queryFn: () => unwrap<ResearchPaper[]>(api.get('/research/queue')),
   });
 }
 
 export function usePublishedResearch() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['research', 'published'],
+    queryKey: withInstitutionScope(['research', 'published'], inst),
     queryFn: () => unwrap<ResearchPaper[]>(api.get('/research/published')),
   });
 }
@@ -97,8 +102,9 @@ export interface PaperAnnotation {
   };
 }
 export function useAnnotations(paperId: string | undefined) {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['annotations', paperId],
+    queryKey: withInstitutionScope(['annotations', paperId], inst),
     enabled: !!paperId,
     queryFn: () => unwrap<PaperAnnotation[]>(api.get(`/research/${paperId}/annotations`)),
   });

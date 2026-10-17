@@ -32,27 +32,107 @@ import { AppError } from '../../lib/errors.js';
  */
 const router = Router();
 
+// ── r179 (phase-5): institution-aware public colleges surfaces ────
+//
+// The public page shows a SPECIFIC institution's faculties — never the
+// cross-institution blur the pre-r179 listing shipped. Target
+// resolution (pure, unit-tested):
+//   1. an explicit ?institution=slug ALWAYS wins (validated — an
+//      unknown or suspended institution is a 404);
+//   2. an authed caller's token context (inst claim) picks THEIR
+//      institution — accepted for PUBLIC-data selection only: the
+//      same rows are reachable by anyone via ?institution=, so there
+//      is nothing to re-verify for honesty (the institution row must
+//      still be ACTIVE, which the lookup below enforces);
+//   3. anonymous/contextless land on the SHOWCASE default — the
+//      reference institution that owns the public 25-faculty registry
+//      (seed.ts: slug `zawia-showcase`). A fresh install without the
+//      showcase row degrades to an empty 200 listing, not a dead page.
+
+/** The showcase institution's slug (the public landing default). */
+export const SHOWCASE_INSTITUTION_SLUG = 'zawia-showcase';
+
+/** One resolved colleges target — `explicit` drives the fail-closed
+ * posture (explicit targets 404 when unresolvable; the implicit
+ * default degrades to the empty listing). */
+export type CollegesTarget =
+  | { kind: 'slug'; slug: string; explicit: true }
+  | { kind: 'id'; id: string; explicit: true }
+  | { kind: 'slug'; slug: typeof SHOWCASE_INSTITUTION_SLUG; explicit: false };
+
+/** Parse the optional ?institution= query value (trimmed; empty →
+ * undefined). Pure — unit-tested. */
+export function parseInstitutionSlug(query: { institution?: unknown }): string | undefined {
+  const raw = query.institution;
+  if (typeof raw !== 'string') return undefined;
+  const trimmed = raw.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+/** Pure target resolution — see the block comment above. */
+export function resolveCollegesTarget(
+  explicitSlug: string | undefined,
+  callerInstitutionId: string | null | undefined,
+): CollegesTarget {
+  if (explicitSlug) return { kind: 'slug', slug: explicitSlug, explicit: true };
+  if (callerInstitutionId) return { kind: 'id', id: callerInstitutionId, explicit: true };
+  return { kind: 'slug', slug: SHOWCASE_INSTITUTION_SLUG, explicit: false };
+}
+
+/** Resolve the target institution ROW (one findUnique). Returns the
+ * institutionId, or null for the unresolvable implicit default (the
+ * empty-listing degradation); an unresolvable EXPLICIT target is a
+ * 404. Non-ACTIVE institutions are treated as unresolvable. */
+async function resolveCollegesInstitution(target: CollegesTarget): Promise<string | null> {
+  const inst = await prisma.institution.findUnique({
+    where: target.kind === 'slug' ? { slug: target.slug } : { id: target.id },
+    select: { id: true, status: true },
+  });
+  if (!inst || inst.status !== 'ACTIVE') {
+    if (target.explicit) throw AppError.notFound('المؤسسة غير موجودة');
+    return null;
+  }
+  return inst.id;
+}
+
+/** Resolve the caller's target institution for an authed-or-anonymous
+ * request (the colleges router's two optional-auth surfaces). */
+async function collegesInstitutionFor(
+  req: { query: { institution?: unknown }; user?: { institutionId: string | null } | undefined },
+): Promise<string | null> {
+  return resolveCollegesInstitution(
+    resolveCollegesTarget(parseInstitutionSlug(req.query), req.user?.institutionId ?? null),
+  );
+}
+
 /**
- * GET /colleges  (PUBLIC)
+ * GET /colleges  (PUBLIC, institution-aware since r179)
  * Light list for the public index / homepage popover: name, emoji, city,
  * department / student / teacher / course counts. No PII; safe to expose.
+ * Shows ONE institution's faculties — `?institution=slug` explicit, the
+ * authed caller's institution, or the showcase default (see
+ * resolveCollegesTarget above).
  */
-router.get('/colleges', async (_req, res, next) => {
+router.get('/colleges', optionalAuthMiddleware, async (req, res, next) => {
   try {
-    const faculties = await prisma.faculty.findMany({
-      orderBy: { name: 'asc' },
-      include: {
-        // r178: public pages carry the institution label (context, not
-        // visual identity — no logos/themes per the product decision).
-        institution: { select: { id: true, name: true, nameEn: true, slug: true } },
-        departments: {
-          select: {
-            id: true,
-            _count: { select: { students: true, teachers: true, courses: true } },
+    const institutionId = await collegesInstitutionFor(req);
+    const faculties = institutionId
+      ? await prisma.faculty.findMany({
+          where: { institutionId },
+          orderBy: { name: 'asc' },
+          include: {
+            // r178: public pages carry the institution label (context, not
+            // visual identity — no logos/themes per the product decision).
+            institution: { select: { id: true, name: true, nameEn: true, slug: true } },
+            departments: {
+              select: {
+                id: true,
+                _count: { select: { students: true, teachers: true, courses: true } },
+              },
+            },
           },
-        },
-      },
-    });
+        })
+      : [];
     const data = faculties.map((f) => {
       const studentCount = f.departments.reduce((s, d) => s + d._count.students, 0);
       const teacherCount = f.departments.reduce((s, d) => s + d._count.teachers, 0);
@@ -186,16 +266,29 @@ export function anonymizeGuestUser<U extends PersonName>(user: U): U {
 }
 
 /**
- * GET /colleges/leaderboard  (PUBLIC — aggregate-only, no PII)
+ * GET /colleges/leaderboard  (PUBLIC — aggregate-only, no PII;
+ * institution-aware since r179)
  * Inter-college comparison — sub-project C.
  *
  * For each faculty, aggregates the metrics that meaningfully compare colleges:
  * student count, teacher count, total student XP, published research papers,
  * exam attempts, and lab sessions. Returns one row per faculty + rank-per-metric
  * so the frontend can render medals without recomputing.
+ *
+ * r179 (phase-5): the comparison set is ONE institution's faculties
+ * (the same target resolution as GET /colleges — ?institution=slug /
+ * authed context / showcase default). The metric rollups stay
+ * platform-wide reads, but the FOLD keys them onto the target
+ * institution's department/faculty ids only — a foreign faculty's
+ * rows never resolve onto a row (rollupCounts drops unattributable
+ * keys by design). The per-user attribution (labs/completions)
+ * resolves the student's profile IN the target institution, so a
+ * multi-institution student's activity counts exactly once for the
+ * institution being viewed.
  */
-router.get('/colleges/leaderboard', async (_req, res, next) => {
+router.get('/colleges/leaderboard', optionalAuthMiddleware, async (req, res, next) => {
   try {
+    const institutionId = await collegesInstitutionFor(req);
     // Constant query count per request (~10), independent of college count.
     // Relation-keyed metrics (papers by offering, attempts by template,
     // labs/completions by user) are resolved to department/faculty ids in a
@@ -211,6 +304,7 @@ router.get('/colleges/leaderboard', async (_req, res, next) => {
       completionGroups,
     ] = await Promise.all([
       prisma.faculty.findMany({
+        where: institutionId ? { institutionId } : undefined,
         orderBy: { name: 'asc' },
         select: {
           id: true,
@@ -283,12 +377,20 @@ router.get('/colleges/leaderboard', async (_req, res, next) => {
         select: { id: true, offering: { select: { course: { select: { departmentId: true } } } } },
       }),
       // One lookup resolves BOTH lab users and enrollment students to
-      // their home faculty. r178: profiles are per-membership — the
-      // oldest active one is the legacy attribution
-      // (TODO(r179/phase-5): institution-scoped leaderboard).
+      // their home faculty. r179 (phase-5): the profile is resolved IN
+      // the target institution (StudentProfile.institutionId) — a
+      // multi-institution user's OTHER profile can never attribute
+      // their activity to a foreign faculty of the viewed institution,
+      // and their activity in the viewed institution counts exactly
+      // once (replacing the r178 oldest-profile legacy attribution).
       prisma.user.findMany({
         where: { id: { in: activityUserIds } },
-        select: { id: true, studentProfiles: { take: 1, orderBy: { createdAt: 'asc' }, select: { facultyId: true } } },
+        select: {
+          id: true,
+          studentProfiles: institutionId
+            ? { where: { institutionId }, take: 1, orderBy: { createdAt: 'asc' }, select: { facultyId: true } }
+            : { take: 1, orderBy: { createdAt: 'asc' }, select: { facultyId: true } },
+        },
       }),
     ]);
 
@@ -474,10 +576,12 @@ router.get('/colleges/:id', optionalAuthMiddleware, async (req, res, next) => {
         },
       }),
 
-      // 4) Upcoming events — campus-wide for now (no faculty FK on CampusEvent).
-      // Filter by organizers from this faculty's leadership / teachers as an approximation.
+      // 4) Upcoming events. r179 (phase-5): CampusEvent carries
+      // institutionId — the bundle shows THIS faculty's institution's
+      // events (the pre-r179 "campus-wide" read would leak another
+      // institution's rows into the public bundle).
       prisma.campusEvent.findMany({
-        where: { startsAt: { gte: now } },
+        where: { institutionId: faculty.institution.id, startsAt: { gte: now } },
         orderBy: { startsAt: 'asc' },
         take: 4,
         select: {
@@ -505,10 +609,12 @@ router.get('/colleges/:id', optionalAuthMiddleware, async (req, res, next) => {
         },
       }),
 
-      // 6) Active competitions — the schema has no faculty FK; show all OPEN ones
-      // and let the frontend label them as "platform-wide".
+      // 6) Active competitions. r179 (phase-5): Competition carries
+      // institutionId — scoped to THIS faculty's institution (the
+      // pre-r179 read showed every institution's OPEN rows labeled
+      // "platform-wide").
       prisma.competition.findMany({
-        where: { status: CompetitionStatus.OPEN, deadline: { gte: now } },
+        where: { institutionId: faculty.institution.id, status: CompetitionStatus.OPEN, deadline: { gte: now } },
         orderBy: { deadline: 'asc' },
         take: 4,
         select: {

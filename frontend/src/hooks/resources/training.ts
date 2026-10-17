@@ -6,6 +6,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
 
+/* r179 (phase-5) scope classification (mirrors
+ * backend/src/http/routes/training.routes.ts): the training CATALOG
+ * (tracks/lessons/badges) and its points LEADERBOARD are
+ * PLATFORM-SHARED by design (SHARED_CATALOG — every institution trains
+ * on the same public tracks), and /training/me* reads are USER-scoped
+ * (PointsLedger/Certificate keyed by userId). NONE of this module's
+ * keys carry the institution scope segment — not an omission, the
+ * classification. */
+
 // ── Achievements / Skills / Leaderboard ────────────────────────
 export interface UserAchievement {
   unlockedAt: string;

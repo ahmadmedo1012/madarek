@@ -400,6 +400,26 @@ router.post('/jobs/:id/apply', async (req, res, next) => {
 // List convention (audit 15-i P1-4): browse-style feeds are paginated
 // (page/limit + meta); only search-as-you-type endpoints are capped.
 // `/posts` follows the paginated rule — the capped twin lives in social.
+//
+/* r179 (phase-5): the community feed is INSTITUTION-SCOPED — list,
+ * create and react all resolve the caller's VERIFIED institution
+ * context first (fail-closed 403 INSTITUTION_CONTEXT_REQUIRED without
+ * one; 403 INSTITUTION_CONTEXT_INVALID on a stale/forged claim) and
+ * filter by Post.institutionId. A foreign post id is a 404 (the same
+ * envelope as a nonexistent id). NOTE: the posts surface lives in
+ * THIS file (not social.routes.ts where the phase-5 map placed it)
+ * — the fix lands here, at the code, per the code-wins canon. */
+async function requireFeedInstitution(userId: string, claim: string | null): Promise<string> {
+  const institutionId = await resolveCallerInstitutionScope(userId, claim);
+  if (!institutionId) {
+    throw new AppError(
+      'INSTITUTION_CONTEXT_REQUIRED',
+      'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
+      403,
+    );
+  }
+  return institutionId;
+}
 
 /** Feed row of GET /posts — the Prisma include below. `reactions` holds
  * ONLY the viewer's own rows (filtered by userId in the query); it is a
@@ -431,10 +451,16 @@ export function postFeedItem(row: PostFeedRow): Omit<PostFeedRow, 'reactions'> &
 router.get('/posts', validate(paginationSchema, 'query'), async (req, res, next) => {
   try {
     const { page, limit, q } = req.query as unknown as { page: number; limit: number; q?: string };
+    // r179 (phase-5): the feed shows the caller's institution's posts
+    // only — the institution filter composes with the body-text filter.
+    const institutionId = await requireFeedInstitution(req.user!.id, req.user!.institutionId);
     // `q` used to be accepted by the query schema and then silently
     // ignored — a ?q= search returned the unfiltered page. Apply the
     // same body-text filter as the other catalog lists (audit P2-8).
-    const where = q ? { body: { contains: q, mode: 'insensitive' as const } } : {};
+    const where: Prisma.PostWhereInput = {
+      institutionId,
+      ...(q ? { body: { contains: q, mode: 'insensitive' } } : {}),
+    };
     const [data, total] = await Promise.all([
       prisma.post.findMany({
         where,
@@ -472,8 +498,13 @@ export const createPostSchema = z
 
 router.post('/posts', validate(createPostSchema), async (req, res, next) => {
   try {
+    // r179 (phase-5): a post is created INSIDE the caller's verified
+    // institution context — also the column the phase-5 base commit
+    // made required, without which this create would have thrown at
+    // runtime (Prisma rejects a missing required field).
+    const institutionId = await requireFeedInstitution(req.user!.id, req.user!.institutionId);
     const created = await prisma.post.create({
-      data: { ...req.body, authorId: req.user!.id },
+      data: { ...req.body, authorId: req.user!.id, institutionId },
     });
     res.status(201).json({ data: created });
   } catch (e) {
@@ -489,8 +520,12 @@ router.post('/posts/:id/react', validate(reactSchema), async (req, res, next) =>
     // r142 (T1a-04): the DELETE twin checks post existence and 404s;
     // the POST used to fall into P2003 → 400 «related record not
     // found» — an inconsistent error contract for the same resource.
-    const post = await prisma.post.findUnique({
-      where: { id: req.params.id! },
+    // r179 (phase-5): the lookup carries the caller's VERIFIED
+    // institution — a foreign institution's post id is a 404 (the
+    // same envelope as a nonexistent id).
+    const institutionId = await requireFeedInstitution(req.user!.id, req.user!.institutionId);
+    const post = await prisma.post.findFirst({
+      where: { id: req.params.id!, institutionId },
       select: { id: true },
     });
     if (!post) throw AppError.notFound('المنشور غير موجود');
@@ -520,8 +555,11 @@ router.post('/posts/:id/react', validate(reactSchema), async (req, res, next) =>
  */
 router.delete('/posts/:id/react', validate(reactSchema), async (req, res, next) => {
   try {
-    const post = await prisma.post.findUnique({
-      where: { id: req.params.id! },
+    // r179 (phase-5): same verified-institution lookup as the POST —
+    // a foreign institution's post id is a 404 before any write.
+    const institutionId = await requireFeedInstitution(req.user!.id, req.user!.institutionId);
+    const post = await prisma.post.findFirst({
+      where: { id: req.params.id!, institutionId },
       select: { id: true },
     });
     if (!post) throw AppError.notFound('المنشور غير موجود');
