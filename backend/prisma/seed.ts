@@ -35,13 +35,19 @@
  * r180 — DEPLOY-TIME SEEDING: the root `npm run build` now chains
  * `db:seed` after `db:deploy` (Render runs it in the service's build
  * environment), so every deploy migrates then deterministically
- * ensures the two-institution demo data exists. Re-run contract:
- * (a) demo passwords are reset to the documented value on every run
- * (keeps demo credentials usable), (b) learning progress a user or
- * teacher evolved — grades, mastery, watch events, skill levels — is
- * NEVER rewound (create-only upserts), (c) notifications/trainings
- * metadata refresh (deliberate demo freshness). CI never runs the
- * root build, so this only executes on Render deploys.
+ * ensures the two-institution demo data exists. The seed is fully
+ * NON-DESTRUCTIVE (the r145 production-refusal guard is retired —
+ * its premise, the wipe-and-reseed of exams/announcements/
+ * competitions/events/chapters/lessons, is gone): every section is
+ * create-once, so teacher-authored exams and questions, student
+ * attempts, admin announcements, live competitions with entries,
+ * RSVP'd events, curriculum chapters, training progress, grades,
+ * mastery, watch events and skill levels ALL survive re-runs. The
+ * only deliberately repeating writes: (a) demo passwords are reset
+ * to the documented value (keeps demo credentials usable), (b)
+ * notification timestamps + training-track catalogue metadata are
+ * refreshed (deliberate demo freshness). CI never runs the root
+ * build, so this only executes on Render deploys.
  */
 
 import {
@@ -959,9 +965,11 @@ async function main() {
   ];
 
   // Lectures have no unique constraint. Re-runs match on (offeringId,
-  // title), refresh the row, and rebuild its chapters/checkpoints — the
-  // lecture row itself is never deleted because WatchEvents (and mastery
-  // stats derived from them) reference it.
+  // title), refresh the row, and create its chapters/checkpoints ONCE —
+  // the lecture row itself is never deleted because WatchEvents (and
+  // mastery stats derived from them) reference it, and the chapters/
+  // checkpoints are never rebuilt because teachers can add their own
+  // through the curriculum editor (r180 create-once contract).
   for (const def of lectureDefs) {
     let lec = await prisma.lecture.findFirst({
       where: { offeringId: seOffering.id, title: def.title },
@@ -983,8 +991,7 @@ async function main() {
       // (4-A3 P2-5 + final-polish GAP-1): durationSec/videoUrl from an
       // older seed generation (external 10s clip, or the unreachable
       // test-videos.co.uk URL) gets rewritten to the current honest
-      // self-hosted values, and the chapters/checkpoints are rebuilt
-      // to match below.
+      // self-hosted values.
       await prisma.lecture.update({
         where: { id: lec.id },
         data: {
@@ -995,34 +1002,37 @@ async function main() {
           posterUrl: '/brand/madarek-mark.svg',
         },
       });
-      await prisma.lectureChapter.deleteMany({ where: { lectureId: lec.id } });
-      await prisma.lectureCheckpoint.deleteMany({ where: { lectureId: lec.id } });
     }
-    let chOrd = 0;
-    for (const ch of def.chapters) {
-      await prisma.lectureChapter.create({
-        data: {
-          lectureId: lec.id,
-          title: ch.title,
-          startSec: ch.startSec,
-          endSec: ch.endSec,
-          ordinal: chOrd++,
-          conceptId: concepts[ch.conceptIdx]?.id,
-        },
-      });
-    }
-    for (const cp of def.checkpoints) {
-      await prisma.lectureCheckpoint.create({
-        data: {
-          lectureId: lec.id,
-          triggerSec: cp.triggerSec,
-          conceptId: concepts[cp.conceptIdx]?.id,
-          question: cp.question,
-          options: cp.options,
-          correctIndex: cp.correctIndex,
-          explanation: cp.explanation,
-        },
-      });
+    // Create-once: skip when the lecture already has a chapter set
+    // (either a previous seed run or teacher-authored content).
+    const chapterCount = await prisma.lectureChapter.count({ where: { lectureId: lec.id } });
+    if (chapterCount === 0) {
+      let chOrd = 0;
+      for (const ch of def.chapters) {
+        await prisma.lectureChapter.create({
+          data: {
+            lectureId: lec.id,
+            title: ch.title,
+            startSec: ch.startSec,
+            endSec: ch.endSec,
+            ordinal: chOrd++,
+            conceptId: concepts[ch.conceptIdx]?.id,
+          },
+        });
+      }
+      for (const cp of def.checkpoints) {
+        await prisma.lectureCheckpoint.create({
+          data: {
+            lectureId: lec.id,
+            triggerSec: cp.triggerSec,
+            conceptId: concepts[cp.conceptIdx]?.id,
+            question: cp.question,
+            options: cp.options,
+            correctIndex: cp.correctIndex,
+            explanation: cp.explanation,
+          },
+        });
+      }
     }
   }
 
@@ -1035,9 +1045,12 @@ async function main() {
   // contradiction.
   {
     const lectureCount = await prisma.lecture.count({ where: { offeringId: seOffering.id } });
+    const seededPct = lectureCount === 0 ? 0 : Math.round((1 / lectureCount) * 100);
+    // Non-destructive: only raise the enrollment toward the seeded
+    // baseline — never lower progress the student actually earned.
     await prisma.enrollment.updateMany({
-      where: { studentId: student.id, offeringId: seOffering.id },
-      data: { progressPct: lectureCount === 0 ? 0 : Math.round((1 / lectureCount) * 100) },
+      where: { studentId: student.id, offeringId: seOffering.id, progressPct: { lt: seededPct } },
+      data: { progressPct: seededPct },
     });
   }
 
@@ -1418,23 +1431,28 @@ async function main() {
         pointsAward: t.pointsAward, order: t.order, isPublished: true,
       },
     });
-    // Replace lessons (idempotent re-seed)
-    await prisma.trainingLesson.deleteMany({ where: { trackId: track.id } });
-    for (let i = 0; i < t.lessons.length; i++) {
-      const l = t.lessons[i]!;
-      await prisma.trainingLesson.create({
-        data: {
-          trackId: track.id,
-          order: i + 1,
-          title: l.title,
-          summary: l.summary,
-          contentMarkdown: l.content,
-          estMinutes: l.estMinutes ?? Math.ceil(t.estMinutes / t.lessons.length),
-          pointsAward: 5,
-          quizQuestion: l.quiz?.q ?? null,
-          quizAnswer: l.quiz?.a ?? null,
-        },
-      });
+    // Create-once lessons (r180): a re-run never deletes the track's
+    // lessons — lesson ids are referenced by user training progress,
+    // and the deploy-time seed must not reset it. Fresh tracks get the
+    // full lesson set; existing tracks keep what they have.
+    const existingLessons = await prisma.trainingLesson.count({ where: { trackId: track.id } });
+    if (existingLessons === 0) {
+      for (let i = 0; i < t.lessons.length; i++) {
+        const l = t.lessons[i]!;
+        await prisma.trainingLesson.create({
+          data: {
+            trackId: track.id,
+            order: i + 1,
+            title: l.title,
+            summary: l.summary,
+            contentMarkdown: l.content,
+            estMinutes: l.estMinutes ?? Math.ceil(t.estMinutes / t.lessons.length),
+            pointsAward: 5,
+            quizQuestion: l.quiz?.q ?? null,
+            quizAnswer: l.quiz?.a ?? null,
+          },
+        });
+      }
     }
     // Track-completion badge
     await prisma.badge.upsert({
@@ -1608,13 +1626,19 @@ async function main() {
     },
   ];
 
-  // Wipe and reseed for idempotence
-  await prisma.examAnswer.deleteMany({});
-  await prisma.examAttempt.deleteMany({});
-  await prisma.examTemplateQuestion.deleteMany({});
-  await prisma.examTemplate.deleteMany({});
-  await prisma.question.deleteMany({});
-
+  // Create-once exams (r180): the OLD strategy wiped the whole exam
+  // domain on every run — destroying real exam attempts and authored
+  // content — which is what the (now removed) NODE_ENV=production
+  // refusal guard protected against. The deploy-time seed instead
+  // seeds the demo questions/templates exactly once: when the seed's
+  // own QUIZ template is already present the section is skipped
+  // entirely, so teacher/quality-authored exams and every student
+  // attempt survive re-runs untouched.
+  const seedExamSeeded = await prisma.examTemplate.findFirst({
+    where: { authorId: teacher.id, kind: 'QUIZ', title: { startsWith: 'اختبار قصير — ' } },
+    select: { id: true },
+  });
+  if (!seedExamSeeded) {
   const createdQuestions: { id: string; type: string }[] = [];
   for (const sq of seedQuestions) {
     const q = await prisma.question.create({
@@ -1677,16 +1701,21 @@ async function main() {
     });
     void exam;
   }
+  } // end create-once exam seeding
 
   // ════════════════════════════════════════════════════════════════
-  //  Announcements + competitions + events
+  //  Announcements + competitions + events — CREATE-ONCE (r180): the
+  //  tables are never reset. Admin-authored announcements, live
+  //  competitions with entries, and events with RSVPs survive every
+  //  re-run; each seed row is guarded on (author/organizer, title).
   // ════════════════════════════════════════════════════════════════
-  await prisma.announcement.deleteMany({});
-  await prisma.competition.deleteMany({});
-  await prisma.campusEvent.deleteMany({});
 
-  // r179: the Al-Andalus-scoped announcement (same guard style — the
-  // table is reset above, so a fresh createMany each run).
+  // r179: the Al-Andalus-scoped announcement (create-once, r180).
+  const aaAnnouncementSeeded = await prisma.announcement.findFirst({
+    where: { authorId: admin2.id, title: 'بدء التسجيل في دورات الأندلس الصيفية' },
+    select: { id: true },
+  });
+  if (!aaAnnouncementSeeded) {
   await prisma.announcement.create({
     data: {
       authorId: admin2.id, scope: 'FACULTY', scopeId: aaFaculty.id,
@@ -1695,9 +1724,9 @@ async function main() {
       iconEmoji: '🎓',
     },
   });
+  }
 
-  await prisma.announcement.createMany({
-    data: [
+  const announcementDefs = [
       {
         authorId: admin.id, scope: 'PLATFORM', scopeId: null,
         title: 'إطلاق منصة جامعة الزاوية للتعليم الذكي',
@@ -1722,11 +1751,13 @@ async function main() {
         body: 'مكتب ضمان الجودة سيبدأ جولته الفصلية لمراجعة المقررات والمحاضرات المنشورة. جميع البيانات متاحة في لوحة الجودة.',
         iconEmoji: '✅',
       },
-    ],
-  });
+  ];
+  for (const ann of announcementDefs) {
+    const existingannouncement = await prisma.announcement.findFirst({ where: { authorId: ann.authorId, title: ann.title }, select: { id: true } });
+    if (!existingannouncement) await prisma.announcement.create({ data: ann });
+  }
 
-  await prisma.competition.createMany({
-    data: [
+  const competitionDefs = [
       {
         title: 'مسابقة أفضل بحث طلابي في الذكاء الاصطناعي',
         description: 'تستقبل جامعة الزاوية البحوث الطلابية في مجال الذكاء الاصطناعي وتطبيقاته. الفائز يحصل على منحة لحضور مؤتمر دولي.',
@@ -1755,11 +1786,13 @@ async function main() {
         deadline: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
         organizerId: teacher2.id, institutionId: alandalus.id, iconEmoji: '🏁', themeColor: '#2EC4B6',
       },
-    ],
-  });
+  ];
+  for (const comp of competitionDefs) {
+    const existingcompetition = await prisma.competition.findFirst({ where: { organizerId: comp.organizerId, title: comp.title }, select: { id: true } });
+    if (!existingcompetition) await prisma.competition.create({ data: comp });
+  }
 
-  await prisma.campusEvent.createMany({
-    data: [
+  const campusEventDefs = [
       {
         title: 'يوم المهنة 2026', description: 'فعالية يوم كامل تجمع الطلاب بأكثر من 30 شركة ومؤسسة وطنية. فرص توظيف وتدريب للخريجين والطلاب في السنوات النهائية.',
         location: 'القاعة الكبرى — الحرم الجامعي الرئيسي', startsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -1786,23 +1819,26 @@ async function main() {
         endsAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000),
         capacity: 80, organizerId: admin2.id, institutionId: alandalus.id, iconEmoji: '🧑‍💻', themeColor: '#2EC4B6',
       },
-    ],
-  });
+  ];
+  for (const ev of campusEventDefs) {
+    const existingcampusEvent = await prisma.campusEvent.findFirst({ where: { organizerId: ev.organizerId, title: ev.title }, select: { id: true } });
+    if (!existingcampusEvent) await prisma.campusEvent.create({ data: ev });
+  }
 
   console.log('✅ Seed complete.');
 }
 
-// r145 (T1-c F2): a hard fail-closed guard — the seed WIPES exam
-// content (examAnswer → question), curriculum chapters/lessons, and
-// the announcement/competition/event tables, then resets the five
-// demo accounts' passwords. Running it against production destroys
-// real student exam attempts silently. NODE_ENV=production now
-// refuses before a single query fires.
+// r180 — the r145 fail-closed production guard is RETIRED: its
+// premise (the seed wiped exam attempts, curriculum, announcements,
+// competitions and events on every run) no longer holds — every
+// section is now create-once (see the r180 notes at the top of this
+// file). Deploy-time seeding on Render runs with NODE_ENV=production
+// BY DESIGN; the only deliberately repeating writes are the
+// documented demo-password resets and catalogue metadata refreshes.
 if (process.env.NODE_ENV === 'production') {
-  console.error(
-    '✖ رفض التشغيل: هذا السكربت يمسح بيانات الاختبارات والمنهج والإعلانات ويعيد ضبط كلمات مرور الحسابات التجريبية — لا يُشغَّل على الإنتاج. (seed refuses to run with NODE_ENV=production)',
+  console.log(
+    'ℹ بذرة الإنتاج (r180): التشغيل غير المدمّر — بيانات العرض تُنشأ مرة واحدة وكلمات مرور العرض تُضبط للقيمة الموثقة.',
   );
-  process.exit(1);
 }
 
 main()
