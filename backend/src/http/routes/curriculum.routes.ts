@@ -8,6 +8,7 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { assertOwnsOffering } from '../../lib/permissions.js';
+import { assertOfferingInCallerInstitution } from '../../lib/profile-scoping.js';
 
 /**
  * Curriculum authoring — lectures, chapters, checkpoints.
@@ -234,6 +235,9 @@ router.post(
       const body = req.body as z.infer<typeof createLectureBodySchema>;
 
       await assertOwnsOffering(offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned
+      // (write mode — 403 for a foreign institution's curriculum).
+      await assertOfferingInCallerInstitution(offeringId, req.user!, 'write');
 
       // Aggregate + create inside one transaction so concurrent creates
       // read the same ordinal max (ties are still possible but harmless —
@@ -278,6 +282,8 @@ router.patch(
       });
       if (!stub) throw AppError.notFound('المحاضرة غير موجودة');
       await assertOwnsOffering(stub.offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned.
+      await assertOfferingInCallerInstitution(stub.offeringId, req.user!, 'write');
 
       // The Lecture model carries no isPublished/publishedAt flag, so a
       // partial field update is all this endpoint does.
@@ -312,6 +318,9 @@ router.post(
       const { ids } = req.body as z.infer<typeof reorderBodySchema>;
 
       await assertOwnsOffering(offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned
+      // (write mode — 403 for a foreign institution's curriculum).
+      await assertOfferingInCallerInstitution(offeringId, req.user!, 'write');
 
       const written = await prisma.$transaction(async (tx) => {
         const rows = await tx.lecture.findMany({
@@ -356,6 +365,8 @@ router.delete(
       });
       if (!stub) throw AppError.notFound('المحاضرة غير موجودة');
       await assertOwnsOffering(stub.offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned.
+      await assertOfferingInCallerInstitution(stub.offeringId, req.user!, 'write');
 
       // FK audit (schema.prisma @relation onDelete):
       //  - LectureChapter.lecture    → Cascade (auto-deleted by the DB)
@@ -400,6 +411,8 @@ router.post(
       });
       if (!lecture) throw AppError.notFound('المحاضرة غير موجودة');
       await assertOwnsOffering(lecture.offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned.
+      await assertOfferingInCallerInstitution(lecture.offeringId, req.user!, 'write');
 
       if (
         !withinLectureDuration(body.startSec, lecture.durationSec) ||
@@ -453,6 +466,8 @@ router.patch(
       });
       if (!chapter) throw AppError.notFound('الفصل غير موجود');
       await assertOwnsOffering(chapter.lecture.offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned.
+      await assertOfferingInCallerInstitution(chapter.lecture.offeringId, req.user!, 'write');
 
       // Merged (existing ⊕ patch) window must stay coherent.
       if (!chapterWindowValid(chapter, body)) {
@@ -507,6 +522,8 @@ router.post(
       });
       if (!lecture) throw AppError.notFound('المحاضرة غير موجودة');
       await assertOwnsOffering(lecture.offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned.
+      await assertOfferingInCallerInstitution(lecture.offeringId, req.user!, 'write');
 
       const written = await prisma.$transaction(async (tx) => {
         const rows = await tx.lectureChapter.findMany({
@@ -553,6 +570,8 @@ router.delete(
       });
       if (!chapter) throw AppError.notFound('الفصل غير موجود');
       await assertOwnsOffering(chapter.lecture.offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned.
+      await assertOfferingInCallerInstitution(chapter.lecture.offeringId, req.user!, 'write');
 
       await prisma.lectureChapter.delete({ where: { id: chapterId } });
 
@@ -585,6 +604,8 @@ router.post(
       });
       if (!lecture) throw AppError.notFound('المحاضرة غير موجودة');
       await assertOwnsOffering(lecture.offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned.
+      await assertOfferingInCallerInstitution(lecture.offeringId, req.user!, 'write');
 
       if (!withinLectureDuration(body.triggerSec, lecture.durationSec)) {
         throw AppError.badRequest('موضع السؤال خارج مدة المحاضرة');
@@ -630,6 +651,8 @@ router.patch(
       });
       if (!cp) throw AppError.notFound('السؤال التفاعلي غير موجود');
       await assertOwnsOffering(cp.lecture.offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned.
+      await assertOfferingInCallerInstitution(cp.lecture.offeringId, req.user!, 'write');
 
       if (body.triggerSec !== undefined && !withinLectureDuration(body.triggerSec, cp.lecture.durationSec)) {
         throw AppError.badRequest('موضع السؤال خارج مدة المحاضرة');
@@ -687,6 +710,8 @@ router.delete(
       });
       if (!cp) throw AppError.notFound('السؤال التفاعلي غير موجود');
       await assertOwnsOffering(cp.lecture.offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned.
+      await assertOfferingInCallerInstitution(cp.lecture.offeringId, req.user!, 'write');
 
       await prisma.lectureCheckpoint.delete({ where: { id: checkpointId } });
 

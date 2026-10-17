@@ -7,7 +7,7 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { buildMeta, paginationSchema } from '../../lib/pagination.js';
 import { buildScopedUserWhere, getGovernanceScope } from '../../lib/governance.js';
-import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
+import { resolveCallerInstitutionScope, institutionContextRequiredError } from '../../lib/profile-scoping.js';
 // Decimal→Number serializer for ResearchPaper rows — exported by the
 // research-owning route module (learning.routes) and reused here so the
 // admin projection serializes Decimals exactly like /research/queue.
@@ -61,14 +61,19 @@ router.get('/students', validate(studentsQuerySchema, 'query'), async (req, res,
     // GET /users — what you cannot govern, you do not list. A faculty the
     // actor requests outside their scope simply matches no rows.
     // OWNER / unscoped ADMIN keep the platform-wide view.
-    // r178: profiles are per-membership — the filters read the plural
-    // relations (`some`) with identical semantics, and an ADMIN caller
-    // with an institution context lists only their institution's members.
+    // r179 (phase-5): an ADMIN caller MUST hold a DB-verified institution
+    // context (403 INSTITUTION_CONTEXT_REQUIRED without one — the
+    // contextless platform-wide listing is gone); the list is pinned to
+    // that institution and the profile projection resolves each
+    // student's profile IN it (no legacy oldest-profile fallback).
     const scopeFacultyId = await getGovernanceScope(req.user!.id);
     const institutionScope =
       req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY
         ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
         : null;
+    if ((req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY) && !institutionScope) {
+      throw institutionContextRequiredError();
+    }
     const where = buildScopedUserWhere(scopeFacultyId, {
       role: Role.STUDENT,
       ...(q ? {
@@ -92,15 +97,14 @@ router.get('/students', validate(studentsQuerySchema, 'query'), async (req, res,
           id: true, email: true, firstName: true, lastName: true,
           isActive: true, avatarColor: true, avatarInitials: true,
           createdAt: true,
-          // r178: per-membership profiles — resolved in the caller's
-          // institution context when one exists, else the student's
-          // oldest active profile; folded back to the singular
-          // `studentProfile` key the FE consumes
-          // (TODO(r179/phase-5): full isolation).
+          // r179: per-membership profiles — resolved in the caller's
+          // DB-verified institution context (fail-closed — a
+          // contextless ADMIN projection is impossible now); folded
+          // back to the singular `studentProfile` key the FE consumes.
           studentProfiles: {
             where: institutionScope
               ? { institutionId: institutionScope }
-              : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+              : { id: { in: [] } },
             take: 1,
             orderBy: { createdAt: 'asc' },
             select: {
@@ -152,7 +156,36 @@ router.get('/papers', validate(papersQuerySchema, 'query'), async (req, res, nex
       q?: string;
       status?: ResearchPaperStatus;
     };
+    /* r179 (phase-5): the institutional paper archive is
+     * institution-scoped. An ADMIN caller MUST hold a DB-verified
+     * context (403 without one) and sees only papers submitted under
+     * their institution (ResearchPaper.institutionId — written by the
+     * r179 submission flow). OWNER keeps the platform-wide archive
+     * and may narrow it with ?institutionSlug= (an unknown/suspended
+     * slug matches nothing, mirroring /admin/faculties). */
+    let paperInstitution: string | null | undefined;
+    if (req.user!.role === Role.OWNER) {
+      const slug =
+        typeof req.query.institutionSlug === 'string' && req.query.institutionSlug.trim().length > 0
+          ? req.query.institutionSlug.trim()
+          : undefined;
+      if (slug) {
+        const institutions = await prisma.institution.findMany({
+          where: { slug, status: 'ACTIVE' },
+          select: { id: true },
+        });
+        paperInstitution = institutions[0]?.id ?? 'no-such-institution';
+      }
+    } else {
+      const callerInstitution = await resolveCallerInstitutionScope(
+        req.user!.id,
+        req.user!.institutionId,
+      );
+      if (!callerInstitution) throw institutionContextRequiredError();
+      paperInstitution = callerInstitution;
+    }
     const where = {
+      ...(paperInstitution ? { institutionId: paperInstitution } : {}),
       ...(status ? { status } : {}),
       ...(q ? { title: { contains: q, mode: 'insensitive' as const } } : {}),
     };
@@ -188,8 +221,36 @@ router.get('/papers', validate(papersQuerySchema, 'query'), async (req, res, nex
  * GET /admin/digital
  * Counts that show how much of the university lives in the platform vs. on paper.
  */
-router.get('/digital', async (_req, res, next) => {
+router.get('/digital', async (req, res, next) => {
   try {
+    /* r179 (phase-5): digital-transformation metrics are
+     * institution-scoped for ADMIN callers — their DB-verified context
+     * pins every count to their institution (memberships, course
+     * chains, paper institution ids, user-scoped rows via membership).
+     * OWNER keeps the platform-wide numbers (the owner console's
+     * platform stats stay platform-wide by the shared contract). */
+    const digitalInstitution =
+      req.user!.role === Role.OWNER
+        ? null
+        : await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (req.user!.role !== Role.OWNER && !digitalInstitution) {
+      throw institutionContextRequiredError();
+    }
+    // Count shapes per metric (null = platform-wide for OWNER):
+    //  - users          → ACTIVE membership in the institution
+    //  - exams          → ExamTemplate via offering.course OR faculty chain
+    //  - attempts       → ExamAttempt → template chain
+    //  - labs / mooc    → the row's user holds an active membership
+    //    (VirtualLab and MoocCourse are platform-wide shared catalogues)
+    //  - papers         → ResearchPaper.institutionId
+    //  - sessions/mats  → offering → course chain
+    const membership = { some: { institutionId: digitalInstitution!, isActive: true } };
+    const templateChain = {
+      OR: [
+        { offering: { course: { institutionId: digitalInstitution! } } },
+        { faculty: { institutionId: digitalInstitution! } },
+      ],
+    };
     const [
       totalUsers,
       activeUsers,
@@ -201,15 +262,33 @@ router.get('/digital', async (_req, res, next) => {
       liveSessions,
       materialsUploaded,
     ] = await Promise.all([
-      prisma.user.count(),
-      prisma.user.count({ where: { isActive: true } }),
-      prisma.examTemplate.count({ where: { status: 'PUBLISHED' } }),
-      prisma.examAttempt.count(),
-      prisma.labSession.count(),
-      prisma.moocEnrollment.count(),
-      prisma.researchPaper.count(),
-      prisma.liveSession.count(),
-      prisma.material.count(),
+      digitalInstitution
+        ? prisma.user.count({ where: { memberships: membership } })
+        : prisma.user.count(),
+      digitalInstitution
+        ? prisma.user.count({ where: { isActive: true, memberships: membership } })
+        : prisma.user.count({ where: { isActive: true } }),
+      digitalInstitution
+        ? prisma.examTemplate.count({ where: { status: 'PUBLISHED', ...templateChain } })
+        : prisma.examTemplate.count({ where: { status: 'PUBLISHED' } }),
+      digitalInstitution
+        ? prisma.examAttempt.count({ where: { template: templateChain } })
+        : prisma.examAttempt.count(),
+      digitalInstitution
+        ? prisma.labSession.count({ where: { user: { memberships: membership } } })
+        : prisma.labSession.count(),
+      digitalInstitution
+        ? prisma.moocEnrollment.count({ where: { user: { memberships: membership } } })
+        : prisma.moocEnrollment.count(),
+      digitalInstitution
+        ? prisma.researchPaper.count({ where: { institutionId: digitalInstitution } })
+        : prisma.researchPaper.count(),
+      digitalInstitution
+        ? prisma.liveSession.count({ where: { offering: { course: { institutionId: digitalInstitution } } } })
+        : prisma.liveSession.count(),
+      digitalInstitution
+        ? prisma.material.count({ where: { offering: { course: { institutionId: digitalInstitution } } } })
+        : prisma.material.count(),
     ]);
     res.json({
       data: {

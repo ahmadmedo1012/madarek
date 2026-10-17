@@ -8,7 +8,7 @@ import { validate } from '../validate.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
 import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
-import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
+import { resolveCallerInstitutionScope, institutionContextRequiredError } from '../../lib/profile-scoping.js';
 
 const router = Router();
 
@@ -577,14 +577,26 @@ router.get('/me/certificates', async (req, res, next) => {
   }
 });
 
-router.get('/leaderboard', async (_req, res, next) => {
+router.get('/leaderboard', async (req, res, next) => {
   try {
-    // r178: StudentProfile is per-membership (user rows no longer carry
-    // the profile) — the top-10 XP board reads the profile table
-    // directly with the user projection folded in. TODO(r179/phase-5):
-    // institution-scoped boards (points stay platform-global this round
-    // per the r178 decision record).
+    /* r178: StudentProfile is per-membership (user rows no longer carry
+     * the profile) — the top-10 XP board reads the profile table
+     * directly with the user projection folded in.
+     * r179 (phase-5): the board is scoped to the caller's DB-VERIFIED
+     * institution (the profile projection AND the ranking rows — an
+     * institutional caller without a context gets 403, never the
+     * cross-institution mix; the OWNER keeps the platform-wide board).
+     * Points stay platform-global per the r178 decision record — only
+     * the VISIBLE rows are institution-scoped. */
+    const callerInstitution =
+      req.user!.role === Role.OWNER
+        ? null
+        : await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (req.user!.role !== Role.OWNER && !callerInstitution) {
+      throw institutionContextRequiredError();
+    }
     const rows = await prisma.studentProfile.findMany({
+      where: callerInstitution ? { institutionId: callerInstitution } : {},
       orderBy: [{ totalXp: 'desc' }, { userId: 'asc' }],
       take: 10,
       select: {
@@ -637,13 +649,39 @@ router.get('/ar-experiences', async (_req, res, next) => {
 // ════════════════════════════════════════════════════
 // ADMIN STATS
 // ════════════════════════════════════════════════════
-router.get('/admin/stats', requireRole(Role.ADMIN, Role.OWNER), async (_req, res, next) => {
+router.get('/admin/stats', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
+    /* r179 (phase-5): the admin stats are institution-scoped for ADMIN
+     * callers (their DB-verified context pins every count — the user
+     * counts via membership, the catalogue via Course.institutionId,
+     * enrollments via the offering chain); the OWNER keeps the
+     * platform-wide numbers. */
+    const statsInstitution =
+      req.user!.role === Role.OWNER
+        ? null
+        : await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (req.user!.role !== Role.OWNER && !statsInstitution) {
+      throw institutionContextRequiredError();
+    }
     const [totalStudents, totalTeachers, totalCourses, totalEnrollments] = await Promise.all([
-      prisma.user.count({ where: { role: Role.STUDENT } }),
-      prisma.user.count({ where: { role: Role.TEACHER } }),
-      prisma.course.count(),
-      prisma.enrollment.count(),
+      statsInstitution
+        ? prisma.user.count({
+            where: { role: Role.STUDENT, memberships: { some: { institutionId: statsInstitution, isActive: true } } },
+          })
+        : prisma.user.count({ where: { role: Role.STUDENT } }),
+      statsInstitution
+        ? prisma.user.count({
+            where: { role: Role.TEACHER, memberships: { some: { institutionId: statsInstitution, isActive: true } } },
+          })
+        : prisma.user.count({ where: { role: Role.TEACHER } }),
+      statsInstitution
+        ? prisma.course.count({ where: { institutionId: statsInstitution } })
+        : prisma.course.count(),
+      statsInstitution
+        ? prisma.enrollment.count({
+            where: { offering: { course: { institutionId: statsInstitution } } },
+          })
+        : prisma.enrollment.count(),
     ]);
     res.json({ data: { totalStudents, totalTeachers, totalCourses, totalEnrollments } });
   } catch (e) {
@@ -795,8 +833,37 @@ export function topCoursesByEnrollments(
 }
 
 // ── Admin: institutional reports
-router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (_req, res, next) => {
+router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
+    /* r179 (phase-5): the reports bundle is institution-scoped for
+     * ADMIN callers (their DB-verified context — 403 without one);
+     * OWNER keeps the platform-wide view and may narrow it with
+     * ?institutionSlug= (an unknown/suspended slug matches nothing,
+     * mirroring /admin/faculties). */
+    let reportsInstitution: string | null;
+    if (req.user!.role === Role.OWNER) {
+      const slug =
+        typeof req.query.institutionSlug === 'string' && req.query.institutionSlug.trim().length > 0
+          ? req.query.institutionSlug.trim()
+          : null;
+      if (slug) {
+        const institutions = await prisma.institution.findMany({
+          where: { slug, status: 'ACTIVE' },
+          select: { id: true },
+        });
+        // An unknown slug matches nothing (consistent with the public
+        // /faculties filter — never a 404 on an aggregate view).
+        reportsInstitution = institutions[0]?.id ?? 'no-such-institution';
+      } else {
+        reportsInstitution = null;
+      }
+    } else {
+      reportsInstitution = await resolveCallerInstitutionScope(
+        req.user!.id,
+        req.user!.institutionId,
+      );
+      if (!reportsInstitution) throw institutionContextRequiredError();
+    }
     const now = new Date();
     const monthStart = (n: number) => {
       const d = new Date(now.getFullYear(), now.getMonth() - n, 1);
@@ -804,9 +871,11 @@ router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (_req, r
     };
 
     // 1) Paper publishing trend — last 6 months
+    // (r179: institution-pinned via ResearchPaper.institutionId)
     const sixMonthsAgo = monthStart(5);
     const allRecentPapers = await prisma.researchPaper.findMany({
       where: {
+        ...(reportsInstitution ? { institutionId: reportsInstitution } : {}),
         OR: [
           { publishedAt: { gte: sixMonthsAgo } },
           { gradedAt: { gte: sixMonthsAgo } },
@@ -826,6 +895,9 @@ router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (_req, r
     //    completion rate (audit P2-22). Bounded to the 50 most recent
     //    offerings; code tie-break keeps the top-8 stable.
     const offerings = await prisma.courseOffering.findMany({
+      where: reportsInstitution
+        ? { course: { institutionId: reportsInstitution } }
+        : {},
       select: {
         courseId: true,
         course: { select: { name: true, code: true } },
@@ -836,12 +908,28 @@ router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (_req, r
     });
     const courseStats = topCoursesByEnrollments(offerings);
 
-    // 3) Headline counts
+    // 3) Headline counts (r179: institution-pinned — users via
+    // membership, papers via ResearchPaper.institutionId)
     const [totalPapers, publishedPapers, totalUsers, activeStudents] = await Promise.all([
-      prisma.researchPaper.count(),
-      prisma.researchPaper.count({ where: { status: 'PUBLISHED' } }),
-      prisma.user.count(),
-      prisma.user.count({ where: { role: Role.STUDENT } }),
+      reportsInstitution
+        ? prisma.researchPaper.count({ where: { institutionId: reportsInstitution } })
+        : prisma.researchPaper.count(),
+      reportsInstitution
+        ? prisma.researchPaper.count({ where: { status: 'PUBLISHED', institutionId: reportsInstitution } })
+        : prisma.researchPaper.count({ where: { status: 'PUBLISHED' } }),
+      reportsInstitution
+        ? prisma.user.count({
+            where: { memberships: { some: { institutionId: reportsInstitution, isActive: true } } },
+          })
+        : prisma.user.count(),
+      reportsInstitution
+        ? prisma.user.count({
+            where: {
+              role: Role.STUDENT,
+              memberships: { some: { institutionId: reportsInstitution, isActive: true } },
+            },
+          })
+        : prisma.user.count({ where: { role: Role.STUDENT } }),
     ]);
 
     res.json({
@@ -921,11 +1009,26 @@ router.get(
         q?: string;
         facultyId?: string;
       };
+      /* r179 (phase-5): the admin course catalogue is institution-scoped
+       * for ADMIN callers (their DB-verified context ANDs
+       * Course.institutionId onto the filters — a foreign facultyId
+       * simply matches nothing; 403 without a context). OWNER keeps
+       * the platform-wide catalogue. */
+      const coursesInstitution =
+        req.user!.role === Role.OWNER
+          ? null
+          : await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+      if (req.user!.role !== Role.OWNER && !coursesInstitution) {
+        throw institutionContextRequiredError();
+      }
       // Server-side filters (5-A8 P2-1) — and the SAME where feeds the
       // count, so meta.total is the filtered total the FE pagination
       // footer needs (it used to be the global course count even when a
       // filter was applied, breaking every page count after page 1).
-      const where = adminCoursesWhere(q, facultyId);
+      const where: Prisma.CourseWhereInput = {
+        ...adminCoursesWhere(q, facultyId),
+        ...(coursesInstitution ? { institutionId: coursesInstitution } : {}),
+      };
       const [courses, total] = await Promise.all([
         prisma.course.findMany({
           where,

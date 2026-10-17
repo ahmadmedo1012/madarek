@@ -9,6 +9,7 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { assertOfferingAccess, assertOwnsOffering } from '../../lib/permissions.js';
+import { assertOfferingInCallerInstitution } from '../../lib/profile-scoping.js';
 import { fireMilestone } from '../../modules/milestones/service.js';
 
 /**
@@ -261,6 +262,9 @@ router.post(
       // learn the assignment's maxScore from the ceiling error below
       // (audit 11-d P2-14).
       await assertOwnsOffering(submission.assignment.offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned
+      // (write mode — 403 for a foreign institution's data).
+      await assertOfferingInCallerInstitution(submission.assignment.offeringId, req.user!, 'write');
 
       // Grade ceiling is per-assignment (dynamic → checked here, not in zod).
       if (grade > submission.assignment.maxScore) {
