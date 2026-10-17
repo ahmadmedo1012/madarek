@@ -114,7 +114,7 @@ export default function MoocPage() {
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">دورات خارجية</h1>
-          <p className="page-subtitle">شراكات مع منصات عالمية وبرامج معتمدة من جامعة الزاوية.</p>
+          <p className="page-subtitle">دورات من منصّات تعليم عالمية وبرامج تدريبية معتمدة.</p>
         </div>
       </header>
 

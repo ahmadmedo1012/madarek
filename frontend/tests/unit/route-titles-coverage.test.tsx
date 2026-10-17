@@ -117,7 +117,7 @@ describe('route-title coverage — every App.tsx route resolves a title (WCAG 2.
     // mounts a title effect, so the static <title> IS the landing title
     // (and every titled page restores it on unmount). Pin the string.
     const m = read('index.html').match(/<title>([^<]+)<\/title>/);
-    expect(m?.[1]).toBe('مدارك · منصة التعليم الذكي · جامعة الزاوية');
+    expect(m?.[1]).toBe('مدارك · منصّة التعليم الذكي');
   });
 });
 

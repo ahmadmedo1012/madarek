@@ -161,7 +161,7 @@ export default function AuthPage() {
           الصفحة الرئيسية
         </Link>
         <span className="auth-context">
-          <LibyaFlag size={14} /> جامعة الزاوية
+          <LibyaFlag size={14} /> مدارك
         </span>
       </header>
 
@@ -179,10 +179,10 @@ export default function AuthPage() {
                 (.auth-meta, mono metric role). A real Arabic phrase —
                 journey-meta precedent — so it stays in the accessibility
                 tree, unlike the bento's purely decorative code badges. */}
-            <span className="auth-meta">(بوابة الجامعة)</span>
+            <span className="auth-meta">(بوابة المنصّة)</span>
             <h1 className="auth-form-title">مرحباً بعودتك</h1>
             <p className="auth-form-sub">
-              سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية في جامعة الزاوية.
+              سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية.
             </p>
           </div>
 
@@ -198,7 +198,7 @@ export default function AuthPage() {
                   type="text"
                   dir="ltr"
                   className="input auth-input"
-                  placeholder="example@zu.edu.ly"
+                  placeholder="example@email.com"
                   autoComplete="username"
                   aria-invalid={!!loginForm.formState.errors.email}
                   aria-describedby={loginForm.formState.errors.email ? 'auth-email-error' : undefined}
@@ -375,7 +375,8 @@ export default function AuthPage() {
       </main>
 
       <footer className="auth-bottom">
-        دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
+        {/* r177: was the ministry/university line — now the platform's own identity */}
+        صُنع في ليبيا · <strong>منصّة تعليم ذكي مستقلّة</strong>
       </footer>
     </div>
   );

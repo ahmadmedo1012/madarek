@@ -162,7 +162,7 @@ function formatRelative(iso: string): string {
  * payload can land in the SAME commit as the shell's pathname effect,
  * and child effects run BEFORE the parent's — the task schedules
  * after every effect in that commit, so the payload title survives. */
-const GUEST_TITLE_BASE = 'مدارك · منصة التعليم الذكي · جامعة الزاوية'; // AppShell's DOC_TITLE_BASE (keep in sync)
+const GUEST_TITLE_BASE = 'مدارك · منصّة التعليم الذكي'; // AppShell's DOC_TITLE_BASE (keep in sync)
 function useDocTitle(title: string | null) {
   useEffect(() => {
     if (title === null) return;
@@ -282,8 +282,8 @@ export function CollegesIndexPage() {
     <div className="page colleges-index">
       <SectionAccent kind="scene-paint" as="header" className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">كلّيّات جامعة الزاوية</h1>
-          <p className="page-subtitle">استكشف الكلّيّات والأقسام، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطتها.</p>
+          <h1 className="page-title">كلّيّات مؤسّسة العرض — جامعة الزاوية</h1>
+          <p className="page-subtitle">استكشف الكلّيّات والأقسام في سجلّ المؤسّسة المرجعية للعرض، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطها.</p>
         </div>
         {isGuest && <GuestJoinRow />}
       </SectionAccent>

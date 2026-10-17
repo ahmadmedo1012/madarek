@@ -121,7 +121,7 @@ describe('AppShell — document.title per route (15-g P2-3)', () => {
     // The fallback used to read «منصة الزاوية · مدارك» — the wrong
     // brand (the university platform, not the product) with a doubled
     // suffix. The product name alone resolves to the base title.
-    expect(document.title).toBe('مدارك · منصة التعليم الذكي · جامعة الزاوية');
+    expect(document.title).toBe('مدارك · منصّة التعليم الذكي');
   });
 
   it('resolves the previously-unmapped teacher/admin routes (4-A14 P2-1)', () => {
@@ -154,7 +154,7 @@ describe('AppShell — document.title per route (15-g P2-3)', () => {
     const { unmount } = renderShell('محتوى', '/student/dashboard');
     expect(document.title).toBe('لوحة التحكم · مدارك');
     unmount();
-    expect(document.title).toBe('مدارك · منصة التعليم الذكي · جامعة الزاوية');
+    expect(document.title).toBe('مدارك · منصّة التعليم الذكي');
   });
 });
 

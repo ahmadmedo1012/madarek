@@ -258,11 +258,14 @@ export default function LandingPage() {
         <div className="landing-progress-bar" ref={progressBarRef} style={{ ['--p' as string]: 0 }} />
       </div>
 
-      {/* Ministry strip */}
-      <div className="ministry-strip" role="region" aria-label="الجهة المشرفة">
+      {/* r177 (Phase 1 brand neutrality): was the ministry strip claiming
+          state-supervision (دولة ليبيا · وزارة التعليم العالي · جامعة الزاوية)
+          — no official adoption/endorsement exists. Now states the
+          platform's own identity: independent, made in Libya. */}
+      <div className="ministry-strip" role="region" aria-label="هويّة المنصّة">
         <div className="ministry-strip-inner">
           <span className="ministry-strip-emblem"><LibyaFlag size={14} /></span>
-          <span>دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية</span>
+          <span>صُنعت في ليبيا · <strong>منصّة تعليم ذكي مستقلّة</strong></span>
         </div>
       </div>
 
@@ -273,7 +276,7 @@ export default function LandingPage() {
             <span className="landing-brand-mark">م</span>
             <span className="landing-brand-text">
               <span className="landing-brand-name">مدارك</span>
-              <span className="landing-brand-sub">جامعة الزاوية</span>
+              <span className="landing-brand-sub">منصّة التعليم الذكي</span>
             </span>
           </Link>
 
@@ -428,7 +431,10 @@ export default function LandingPage() {
 
         <div className="ln-hero-content">
           <RevealCssClass as="p" className="ln-hero-eyebrow">
-            <span className="ln-mono">جامعة الزاوية · {String(COLLEGES_COUNT).padStart(2, '0')} كلية · منذ 1988</span>
+            {/* r177: honest provenance — the 25-college registry is the
+                showcase institution's public data (demo), not a claim of
+                operating as that university. */}
+            <span className="ln-mono">مؤسّسة العرض: جامعة الزاوية · {String(COLLEGES_COUNT).padStart(2, '0')} كلية · 1988</span>
           </RevealCssClass>
 
           <h1 className="ln-hero-title">
@@ -445,7 +451,7 @@ export default function LandingPage() {
           </h1>
 
           <RevealCssClass as="p" className="ln-hero-sub" delay={2}>
-            مدارك — منصّة التعليم الذكي لجامعة الزاوية. محاضرات تفاعلية،
+            مدارك — منصّة تعليم ذكي مستقلّة. محاضرات تفاعلية،
             مصفوفة معرفية تتكيّف مع تقدّمك، ومساعد أكاديمي يرافقك
             من أوّل درس حتى الإتقان.
           </RevealCssClass>
@@ -500,10 +506,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ الفصل ١ — الثقة (P3-22: a quiet mono DATA band — the ministry
-          accreditation lives in the top strip + footer only; it used to
-          repeat ×5 across the page) ═══ */}
-      <section id="trust" className="ln-trust" aria-label="أرقام الجامعة">
+      {/* ═══ الفصل ١ — الثقة (P3-22: a quiet mono DATA band; r177: the
+          facts are the SHOWCASE institution's public data — labeled by
+          the hero eyebrow + campus chapter, no platform affiliation) ═══ */}
+      <section id="trust" className="ln-trust" aria-label="أرقام مؤسّسة العرض">
         <div className="ln-trust-inner">
           <span className="ln-mono">تأسست 1988</span>
           <span className="ln-trust-sep" aria-hidden />
@@ -680,7 +686,7 @@ export default function LandingPage() {
       <TestimonialSection />
 
       {/* ═══ الفصل ٤ — الأرض: الحرم الحقيقي ═══ */}
-      <section id="campus" className="ln-chapter ln-campus" aria-label="جامعة الزاوية">
+      <section id="campus" className="ln-chapter ln-campus" aria-label="مؤسّسة العرض — جامعة الزاوية">
         {/* r149 (R3-A6 #8): الفصل الرابع كان الوحيد بلا سطر افتتاحي —
             يقرأ كفاصل يتيم بين فصلين على الأرض نفسها. معالجة ضمنية
             (تسمية فقط) كي لا تنافس الصورة الفوتوغرافية عنوانًا. */}
@@ -710,7 +716,7 @@ export default function LandingPage() {
           <figcaption className="ln-campus-caption">
             <span className="ln-mono">ZAWIYA · 1988</span>
             <span className="ln-campus-line">
-              <em>منذ 1988</em> — مساحة أكاديميّة تنبض بالحياة، أصبحت رقميّة بالكامل.
+              <em>منذ 1988</em> — مساحة أكاديميّة تنبض بالحياة، تُعرض هنا كنموذج مرجعي للمؤسّسات.
             </span>
           </figcaption>
         </RevealCssClass>
@@ -770,7 +776,7 @@ export default function LandingPage() {
             },
             {
               icon: Building2, tone: 'mist', name: 'الإدارة',
-              desc: 'إدارة الكليّات والأساتذة والمقرَّرات، تقارير، ومزامنة يومية مع البيانات الرسمية لجامعة الزاوية.',
+              desc: 'إدارة الكليّات والأساتذة والمقرَّرات، تقارير، ومزامنة بيانات المؤسّسة المرجعية من مصادرها العامة.',
               quote: 'لوحات حيّة على مستوى الجامعة، إدارة الصلاحيات والأدوار، مزامنة بيانات الكليّات في مكان واحد.',
             },
             {
@@ -868,9 +874,9 @@ export default function LandingPage() {
           </RevealCssClass>
           <RevealCssClass as="p" className="ln-cta-meta" delay={4}>
             <Icon icon={Sparkles} size={13} />
-            {/* P3-22: the ministry line repeated ×5 — it stays in the top
-                strip + footer; the finale signs with the university */}
-            جامعة الزاوية · {year}
+            {/* P3-22: the platform signs the finale itself — the
+                university co-signature was an affiliation claim (r177) */}
+            مدارك · {year}
           </RevealCssClass>
         </div>
       </section>
@@ -885,11 +891,15 @@ export default function LandingPage() {
                 <span className="landing-brand-mark">م</span>
                 <span className="landing-brand-text">
                   <span className="landing-brand-name">مدارك</span>
-                  <span className="landing-brand-sub">جامعة الزاوية</span>
+                  <span className="landing-brand-sub">منصّة التعليم الذكي</span>
                 </span>
               </Link>
               <p className="landing-footer-about">
-                المنصّة الرسمية لجامعة الزاوية تحت إشراف وزارة التعليم العالي والبحث العلمي.
+                {/* r177: was «المنصّة الرسمية لجامعة الزاوية تحت إشراف وزارة…» —
+                    an official-adoption claim with no established partnership.
+                    Now: independent platform + explicit showcase-data note. */}
+                منصّة تعليمية تقنية مستقلّة. بيانات جامعة الزاوية الظاهرة في المنصّة
+                بيانات عرض مرجعية من مصادرها العامة.
               </p>
             </div>
             <div className="landing-footer-col">
@@ -922,7 +932,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="landing-footer-bottom">
-            <span>© {year} مدارك · جامعة الزاوية</span>
+            <span>© {year} مدارك</span>
             <span className="ln-footer-cluster">
               <LibyaFlag size={14} /> صُنع في ليبيا
             </span>

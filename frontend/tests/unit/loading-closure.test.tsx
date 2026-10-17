@@ -244,7 +244,7 @@ describe('r172b §4 — admin dashboard pending mirror', () => {
     const { container } = renderPage(<AdminDashboardPage />);
     // The resolved dashboard (its real charts row proves it) with the
     // strip still pending → the skeleton card, not a null hole.
-    expect(screen.getByText('إحصائيات حيّة عن طلاب وأساتذة جامعة الزاوية.')).toBeTruthy();
+    expect(screen.getByText('إحصائيات حيّة عن طلاب وأساتذة المنصّة.')).toBeTruthy();
     expect(screen.getByText('توزّع الطلاب حسب الكلّيّة')).toBeTruthy();
     expect(screen.getByText('مؤشرات سريعة')).toBeTruthy();
     const strip = container.querySelector('.grid-4')?.previousElementSibling;

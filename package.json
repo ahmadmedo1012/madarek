@@ -1,8 +1,8 @@
 {
-  "name": "zu-platform",
+  "name": "madarek",
   "version": "1.0.0",
   "private": true,
-  "description": "منصة جامعة الزاوية للتعليم الذكي — Arabic-RTL learning platform for University of Zawia (Ministry of Higher Education, Libya).",
+  "description": "مدارك — منصّة تعليم ذكي مستقلّة عربية-أولًا · Madarek — an independent Arabic-first smart-learning platform (built in Libya).",
   "engines": {
     "node": ">=20 <25"
   },

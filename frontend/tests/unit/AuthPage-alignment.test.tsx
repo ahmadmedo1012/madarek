@@ -66,7 +66,7 @@ describe('AuthPage — journey alignment (imm-5)', () => {
   it('opens the card with the quiet mono gateway eyebrow over the title', () => {
     renderPage();
 
-    const meta = screen.getByText('(بوابة الجامعة)');
+    const meta = screen.getByText('(بوابة المنصّة)');
     expect(meta).toHaveClass('auth-meta');
     // A real Arabic phrase (journey-meta precedent) — NOT hidden from
     // assistive tech, unlike the bento's purely decorative code badges.
@@ -257,6 +257,6 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     expect(container.querySelector('main.auth-center')).not.toBeNull();
     const contentInfo = container.querySelector('footer.auth-bottom');
     expect(contentInfo).not.toBeNull();
-    expect(contentInfo).toHaveTextContent('وزارة التعليم العالي والبحث العلمي');
+    expect(contentInfo).toHaveTextContent('منصّة تعليم ذكي مستقلّة');
   });
 });

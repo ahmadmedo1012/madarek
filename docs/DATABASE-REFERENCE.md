@@ -1,7 +1,7 @@
 # Madarek — Database Reference
 
 **Platform:** PostgreSQL (Neon serverless) via Prisma 5.22
-**Models:** 75 across ~27 domain groups
+**Models:** 77 across ~27 domain groups
 **Enums:** 30
 
 ---

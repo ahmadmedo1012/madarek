@@ -48,7 +48,7 @@ madarek/
 │   │   ├── modules/            # auth service, search, theme, onboarding, milestones
 │   │   └── ...                 # index.ts, app.ts, env.ts, db.ts, logger.ts, scheduler.ts
 │   ├── prisma/
-│   │   ├── schema.prisma       # 75 models, 30 enums
+│   │   ├── schema.prisma       # 77 models, 30 enums
 │   │   └── seed.ts
 ├── specs/                # Feature specifications (001, 002, 003, 004, 011, 012)
 ├── scripts/              # Validation & maintenance scripts

@@ -23,7 +23,7 @@
 | 04 | [خريطة المستودع](04-repository-map.md) | وظيفة كل مجلد، نقاط الدخول، «أين أعدّل ماذا» |
 | 05 | [الإعداد والتشغيل](05-setup.md) | من الصفر إلى منصة تعمل محليًا خطوة بخطوة |
 | 06 | [الإعدادات](06-configuration.md) | كل متغيرات البيئة: مطلوب/اختياري، الافتراضات، التوليد الآمن |
-| 07 | [قاعدة البيانات](07-database.md) | 75 نموذجًا، الترحيلات، البذور، استراتيجية Neon، النسخ الاحتياطي |
+| 07 | [قاعدة البيانات](07-database.md) | 77 نموذجًا، الترحيلات، البذور، استراتيجية Neon، النسخ الاحتياطي |
 | 08 | [واجهات API](08-api-reference.md) | اتفاقية الطلبات والأخطاء، خريطة القطاعات، أمثلة فعلية |
 | 09 | [رحلات المستخدم](09-user-journeys.md) | تدفقات الاستخدام خطوة بخطوة لكل دور |
 | 10 | [الأمان](10-security.md) | المصادقة، التفويض، CSP، حدود المعدل، حماية الملفات، الإفصاح |
@@ -46,6 +46,19 @@
 | [modules/quality.md](modules/quality.md) | ضمان الجودة: القطاع الرابع للرقابة القرائية |
 | [modules/owner.md](modules/owner.md) | المالك: المؤشرات، الحاكمية، السجل التدقيقي، النظام |
 | [modules/platform.md](modules/platform.md) | المشترك: المصادقة، السمات، الإشعارات، المجتمع، الكليات، نظام التصميم |
+
+## معمارية التعدّد المؤسسي (`architecture/multi-institution/`)
+
+خطة تحوّل مدارك من منصّة مؤسّسة واحدة إلى منصّة تخدم مؤسسات متعددة
+(المرحلة 1 — القرار والتصميم بلا تنفيذ):
+
+| الوثيقة | المحتوى |
+|---|---|
+| [architecture-decisions.md](architecture/multi-institution/architecture-decisions.md) | المعمارية المستهدفة: العضوية والدور، حلّ سياق المؤسّسة، البدائل المدروسة والأسئلة المفتوحة |
+| [data-scope-inventory.md](architecture/multi-institution/data-scope-inventory.md) | جرد نطاق كل نموذج Prisma (77 نموذجًا/30 enumًا) والفريدية والمخاطر والتزامات الاختبار |
+| [github-research.md](architecture/multi-institution/github-research.md) | المصادر والمرشّحون المفحوصون فعليًا (تراخيص وصيانة وقابلية تطبيق) |
+| [migration-and-rollout.md](architecture/multi-institution/migration-and-rollout.md) | مراحل الترحيل additive والـbackfill والأعلام والتراجع |
+| [brand-audit-and-changes.md](architecture/multi-institution/brand-audit-and-changes.md) | تدقيق انتماء العلامة: ما صُحِّح، وما أُبقي عمدًا، والمخاطر المتبقية |
 
 ## المراجع التقنية المولّدة (إنجليزية)
 

@@ -589,7 +589,7 @@ export function AdminSettingsPage() {
           <div className="settings-row">
             <div>
               <div className="settings-label">الشعار</div>
-              <div className="settings-value">جامعة الزاوية · وزارة التعليم العالي</div>
+              <div className="settings-value">مدارك — علامة المنصّة المستقلّة</div>
             </div>
           </div>
         </Card>

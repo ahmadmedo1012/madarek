@@ -231,7 +231,7 @@ export function Sidebar() {
           </div>
           <div className="sidebar-brand-text">
             <div className="sidebar-brand-name">مدارك</div>
-            <div className="sidebar-brand-sub">جامعة الزاوية</div>
+            <div className="sidebar-brand-sub">منصّة التعليم الذكي</div>
           </div>
           {/* Desktop: collapse / expand */}
           <button

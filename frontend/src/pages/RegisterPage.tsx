@@ -318,7 +318,7 @@ export default function RegisterPage() {
                 <div className="auth-form-header">
                   <h1 className="auth-form-title" tabIndex={-1} ref={stepHeadingRef}>من أنت؟</h1>
                   <p className="auth-form-sub">
-                    اختر نوع الحساب لإنشاء وصولك إلى منصّة جامعة الزاوية.
+                    اختر نوع الحساب لإنشاء وصولك إلى منصّة مدارك.
                   </p>
                 </div>
 
@@ -360,7 +360,8 @@ export default function RegisterPage() {
       </main>
 
       <footer className="auth-bottom">
-        دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
+        {/* r177: was the ministry/university line — now the platform's own identity */}
+        صُنع في ليبيا · <strong>منصّة تعليم ذكي مستقلّة</strong>
       </footer>
     </div>
   );
@@ -578,7 +579,7 @@ function TeacherForm({ form, error, isPending, faculties, onSubmit }: TeacherFor
 
       <Field label="البريد الجامعي" error={form.formState.errors.email?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Mail} size={16} /></span>
-        <input className="input auth-input" type="email" dir="ltr" autoComplete="email" placeholder="example@zu.edu.ly" {...form.register('email')} />
+        <input className="input auth-input" type="email" dir="ltr" autoComplete="email" placeholder="example@email.com" {...form.register('email')} />
       </Field>
 
       <Field label="كلمة المرور (12 حرفًا على الأقل)" error={form.formState.errors.password?.message}>

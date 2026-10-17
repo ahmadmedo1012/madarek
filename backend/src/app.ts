@@ -88,7 +88,11 @@ const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
  * end-to-end with the landing's two-theme re-grounding; the bootstrap
  * now resolves the theme and syncs theme-color only. */
 const THEME_BOOTSTRAP_SHA256 = 'U4sTnQg8QBxUnke9CmispMPonECA5Z12VkqqdUs/uO4=';
-const JSON_LD_SHA256 = 'GAYSjtUnNib298VwQUIkYNYTt+UtlJ1hOQU4tThmKz0=';
+/* r177 (Phase 1 brand neutrality): pin refreshed — the JSON-LD block now
+ * describes the independent Madarek platform (WebSite node) with the
+ * University of Zawia retained as the showcase institution under `about`
+ * (no official-affiliation claim). Verified by check-csp-hash.sh. */
+const JSON_LD_SHA256 = 'WsQIpWFNRxTONVFv+c6AgUx3SLrwWXJfzqswuu9qrMA=';
 
 export function createApp() {
   const app = express();

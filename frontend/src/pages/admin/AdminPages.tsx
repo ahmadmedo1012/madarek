@@ -242,7 +242,7 @@ export function AdminDashboardPage() {
         <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">لوحة الإدارة</h1>
-            <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة جامعة الزاوية.</p>
+            <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة المنصّة.</p>
           </div>
         </header>
         <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />
@@ -268,7 +268,7 @@ export function AdminDashboardPage() {
         <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">لوحة الإدارة</h1>
-            <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة جامعة الزاوية.</p>
+            <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة المنصّة.</p>
           </div>
         </header>
         <Card>
@@ -306,7 +306,7 @@ export function AdminDashboardPage() {
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">لوحة الإدارة</h1>
-          <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة جامعة الزاوية.</p>
+          <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة المنصّة.</p>
         </div>
       </header>
 

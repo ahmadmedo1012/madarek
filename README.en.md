@@ -1,12 +1,15 @@
 <div dir="ltr">
 
-# Madarek — Zawia University Smart Learning Platform
+# Madarek — Smart Learning Platform
 
 **Arabic-primary README lives here: [`README.md`](README.md).** This file
 is the English mirror for international readers and tooling.
 
-**Madarek** is the official smart-learning platform of **University of
-Zawia** (Ministry of Higher Education & Scientific Research, Libya).
+**Madarek** is an **independent** smart-learning platform (Arabic-first,
+built in Libya). No official adoption or endorsement by any educational
+institution exists — the institutional data currently shown (faculties,
+facts) is showcase/reference data for the University of Zawia, sourced
+from its public website.
 
 ## What it is
 
@@ -26,7 +29,7 @@ Neon; deployed on Render with auto-deploy from `main`.
 
 | Item | State |
 |---|---|
-| Core features, all five roles | **Shipped** — 1782 frontend + 1554 backend unit tests green (2026-10-16, rounds r141–r176) |
+| Core features, all five roles | **Shipped** — 1793 frontend + 1569 backend unit tests green (2026-10-16, rounds r141–r176) |
 | Design system | Documented in `DESIGN.md` — parity gate 163/163 green |
 | AI assistant | **Real LLM via OpenRouter's free router in production (r175, per-response model attribution)** — the plagiarism scan stays a deterministic simulation, openly labeled; see `docs/02-features.md` |
 | English i18n | Not implemented. Real E2E (28 Playwright journeys) and PDF file uploads (durable postgres storage, r175) **are shipped** — full list in `docs/16-decisions-and-limitations.md` |
@@ -37,7 +40,7 @@ The Arabic documentation hub: [`docs/README.md`](docs/README.md)
 (numbered guides 01–16 + per-sector modules). Key references (English,
 generated from code): [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md)
 (193 endpoints), [`docs/DATABASE-REFERENCE.md`](docs/DATABASE-REFERENCE.md)
-(75 models / 30 enums), [`docs/FRONTEND-REFERENCE.md`](docs/FRONTEND-REFERENCE.md),
+(77 models / 30 enums), [`docs/FRONTEND-REFERENCE.md`](docs/FRONTEND-REFERENCE.md),
 [`docs/PROJECT-REFERENCE.md`](docs/PROJECT-REFERENCE.md),
 [`docs/SECRETS-REFERENCE.md`](docs/SECRETS-REFERENCE.md).
 AI agents must read [`AGENTS.md`](AGENTS.md) first.

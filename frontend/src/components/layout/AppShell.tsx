@@ -49,7 +49,8 @@ for (const groups of Object.values(NAV_BY_ROLE)) {
 
 // The static <title> from index.html — restored whenever the shell
 // unmounts (see the document.title effect in AppShell).
-const DOC_TITLE_BASE = 'مدارك · منصة التعليم الذكي · جامعة الزاوية';
+// r177 (Phase 1 brand neutrality): university co-branding dropped.
+const DOC_TITLE_BASE = 'مدارك · منصّة التعليم الذكي';
 
 const PAGE_TITLES: Record<string, string> = {
   // Folded out of the student sidebar (A4 P2-1) — still a real surface
