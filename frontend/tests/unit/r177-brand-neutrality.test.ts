@@ -126,3 +126,19 @@ describe('r177 — root manifests describe the independent platform', () => {
     }
   });
 });
+
+describe('r182 — the docs center intro stays affiliation-free', () => {
+  /* docs/README.md escaped the r177 sweep: its intro still said
+   * «منصة التعلم الذكية لجامعة الزاوية» while the brand audit
+   * (brand-audit-and-changes.md) documents it as already fixed.
+   * Pin the corrected wording so the docs index can never drift
+   * back into university co-branding. */
+  it('docs/README.md presents Madarek as the independent platform with Zawia as showcase', () => {
+    const docsIndex = readRepo('docs/README.md');
+    expect(docsIndex).toContain('منصّة تعليم');
+    expect(docsIndex).toContain('مستقلّة');
+    expect(docsIndex).toContain('مؤسّسة العرض المرجعية');
+    expect(docsIndex).not.toContain('منصة التعلم الذكية\nلجامعة الزاوية');
+    expect(docsIndex).not.toMatch(/مشروع \*\*مدارك\*\* — منصة[^\n]*جامعة الزاوية/);
+  });
+});
