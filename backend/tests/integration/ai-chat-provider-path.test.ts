@@ -131,17 +131,20 @@ async function seedMasteryRow(studentId: string, level: number) {
   await prisma.studentMastery.create({
     data: { studentId, conceptId: concept.id, level },
   });
-  return { conceptName: 'الأشجار المتوازنة', courseName: 'بنية المعطيات r175d' };
+  // r179: the chat route requires a verified institution context —
+  // the caller needs an ACTIVE membership in the chain's institution.
+  await helpers.seedMembership(studentId, inst.id, Role.STUDENT);
+  return { conceptName: 'الأشجار المتوازنة', courseName: 'بنية المعطيات r175d', instId: inst.id };
 }
 
 describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real database', () => {
   it('answers 200 (the r175d regression: the mastery query validates under real Prisma)', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
-    await seedMasteryRow(student.id, 0.31);
+    const { instId } = await seedMasteryRow(student.id, 0.31);
 
     const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
       method: 'POST',
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, instId), 'content-type': 'application/json' },
       body: JSON.stringify({ message: 'سؤال عن الأشجار المتوازنة' }),
     });
     expect(res.status).toBe(200);
@@ -155,11 +158,11 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
 
   it('the student\'s REAL mastery line rides the provider system prompt (worst gap first)', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
-    await seedMasteryRow(student.id, 0.31);
+    const { instId } = await seedMasteryRow(student.id, 0.31);
 
     await fetch(`${baseUrl}/api/v1/ai/chat`, {
       method: 'POST',
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, instId), 'content-type': 'application/json' },
       body: JSON.stringify({ message: 'سؤال' }),
     });
 
@@ -174,10 +177,14 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
 
   it('a student WITHOUT mastery rows still chats (the honest empty-context branch)', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
+    // r179: even the empty-context branch needs a verified institution
+    // context (a membership) — contextless chat is a 403 now.
+    const instEmpty = await helpers.seedInstitution();
+    await helpers.seedMembership(student.id, instEmpty.id, Role.STUDENT);
 
     const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
       method: 'POST',
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, instEmpty.id), 'content-type': 'application/json' },
       body: JSON.stringify({ message: 'سؤال بلا بيانات إتقان' }),
     });
     expect(res.status).toBe(200);
@@ -211,10 +218,11 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
       data: { offeringId: offering.id, title: 'واجب النمذجة r176b', type: 'HOMEWORK', dueAt: due, weight: 10, maxScore: 100 },
     });
     await prisma.enrollment.create({ data: { studentId: student.id, offeringId: offering.id, status: 'active' } });
+    await helpers.seedMembership(student.id, instA.id, Role.STUDENT);
 
     await fetch(`${baseUrl}/api/v1/ai/chat`, {
       method: 'POST',
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, instA.id), 'content-type': 'application/json' },
       body: JSON.stringify({ message: 'سؤال' }),
     });
 
@@ -261,10 +269,11 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
     });
     await prisma.studentMastery.create({ data: { studentId: student.id, conceptId: concept.id, level: 0.4 } });
     await prisma.enrollment.create({ data: { studentId: student.id, offeringId: offering.id, status: 'active' } });
+    await helpers.seedMembership(student.id, instInj.id, Role.STUDENT);
 
     await fetch(`${baseUrl}/api/v1/ai/chat`, {
       method: 'POST',
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, instInj.id), 'content-type': 'application/json' },
       body: JSON.stringify({ message: 'سؤال عن التشفير' }),
     });
 
@@ -310,9 +319,10 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
       });
     }
 
+    await helpers.seedMembership(student.id, instCap.id, Role.STUDENT);
     await fetch(`${baseUrl}/api/v1/ai/chat`, {
       method: 'POST',
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, instCap.id), 'content-type': 'application/json' },
       body: JSON.stringify({ message: 'سؤال' }),
     });
     const system = (wireCalls[0]!.body as { messages: Array<{ role: string; content: string }> }).messages[0]!.content;
@@ -340,10 +350,11 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
     });
     const student = await helpers.seedUser({ role: Role.STUDENT });
     await prisma.enrollment.create({ data: { studentId: student.id, offeringId: offering.id, status: 'active' } });
+    await helpers.seedMembership(teacher.id, instTeach.id, Role.TEACHER);
 
     await fetch(`${baseUrl}/api/v1/ai/chat`, {
       method: 'POST',
-      headers: { ...helpers.bearer(teacher.id, Role.TEACHER), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(teacher.id, Role.TEACHER, instTeach.id), 'content-type': 'application/json' },
       body: JSON.stringify({ message: 'كيف أصمّم تقييمًا نهاية الفصل؟' }),
     });
 
@@ -358,11 +369,11 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
 
   it('the whole turn persists in ONE transaction with real rows: conversation + 2 messages + telemetry', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
-    await seedMasteryRow(student.id, 0.6);
+    const { instId } = await seedMasteryRow(student.id, 0.6);
 
     const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
       method: 'POST',
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, instId), 'content-type': 'application/json' },
       body: JSON.stringify({ message: 'سؤال المعاملة' }),
     });
     const body = (await res.json()) as { data: { conversationId: string } };
@@ -388,17 +399,19 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
 
   it('conversation continuity: the second turn carries the first exchange as history', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
+    const instCont = await helpers.seedInstitution();
+    await helpers.seedMembership(student.id, instCont.id, Role.STUDENT);
     const first = (await (
       await fetch(`${baseUrl}/api/v1/ai/chat`, {
         method: 'POST',
-        headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/json' },
+        headers: { ...helpers.bearer(student.id, Role.STUDENT, instCont.id), 'content-type': 'application/json' },
         body: JSON.stringify({ message: 'السؤال الأول' }),
       })
     ).json()) as { data: { conversationId: string } };
 
     await fetch(`${baseUrl}/api/v1/ai/chat`, {
       method: 'POST',
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, instCont.id), 'content-type': 'application/json' },
       body: JSON.stringify({ conversationId: first.data.conversationId, message: 'السؤال الثاني' }),
     });
 
@@ -412,6 +425,9 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
 
   it('a provider failure writes failure telemetry + persists NOTHING (no silent local fallback)', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
+    // r179: the failure path needs the same verified institution context.
+    const instFail = await helpers.seedInstitution();
+    await helpers.seedMembership(student.id, instFail.id, Role.STUDENT);
     // Point the provider at a dead port: connection refused → AiProviderError.
     const bad = createServer();
     const deadPort = await new Promise<number>((resolve) => {
@@ -431,7 +447,7 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
     try {
       const res = await fetch(`${baseUrl2}/api/v1/ai/chat`, {
         method: 'POST',
-        headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/json' },
+        headers: { ...helpers.bearer(student.id, Role.STUDENT, instFail.id), 'content-type': 'application/json' },
         body: JSON.stringify({ message: 'سؤال سيفشل' }),
       });
       expect(res.status).toBe(500);

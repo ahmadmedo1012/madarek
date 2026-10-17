@@ -115,6 +115,11 @@ async function seedWorld() {
   await prisma.examTemplateQuestion.create({
     data: { templateId: template.id, questionId: question.id, order: 1 },
   });
+  // r179: every institutional actor carries an ACTIVE membership in the
+  // world's institution — the routes require a verified context now.
+  await helpers.seedMembership(admin.id, institution.id, Role.ADMIN);
+  await helpers.seedMembership(teacher.id, institution.id, Role.TEACHER);
+  await helpers.seedMembership(student.id, institution.id, Role.STUDENT);
   return { admin, teacher, student, institution, faculty, course, offering, lecture, concept, checkpoint, assignment, template, question };
 }
 
@@ -123,31 +128,33 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     const w = await seedWorld();
     const res = await fetch(`${baseUrl}/api/v1/enrollments`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.admin.id, Role.ADMIN), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.admin.id, Role.ADMIN, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ studentId: w.student.id, offeringId: w.offering.id }),
     });
     expect(res.status).toBe(201);
     // The student's own enrollment list reflects the row.
-    const mine = await fetch(`${baseUrl}/api/v1/enrollments/me`, { headers: helpers.bearer(w.student.id, Role.STUDENT) });
+    const mine = await fetch(`${baseUrl}/api/v1/enrollments/me`, { headers: helpers.bearer(w.student.id, Role.STUDENT, w.institution.id) });
     expect(mine.status).toBe(200);
     const mineBody = (await mine.json()) as { data: Array<{ offering: { id: string } }> };
     expect(mineBody.data.some((e) => e.offering.id === w.offering.id)).toBe(true);
     // Duplicate enrollment is a conflict, not a second row.
     const dup = await fetch(`${baseUrl}/api/v1/enrollments`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.admin.id, Role.ADMIN), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.admin.id, Role.ADMIN, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ studentId: w.student.id, offeringId: w.offering.id }),
     });
     expect(dup.status).toBe(409);
     // The boundary holds: a STUDER cannot enroll anyone (403).
     const forbidden = await fetch(`${baseUrl}/api/v1/enrollments`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.student.id, Role.STUDENT, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ studentId: w.student.id, offeringId: w.offering.id }),
     });
     expect(forbidden.status).toBe(403);
     // And an UNENROLLED student sees nothing of the offering lectures.
     const stranger = await helpers.seedUser({ role: Role.STUDENT });
+    // r179: a contextless institutional caller → 403 (the institution
+    // context gate fires before the enrollment guard).
     const strangerView = await fetch(`${baseUrl}/api/v1/offerings/${w.offering.id}/lectures`, { headers: helpers.bearer(stranger.id, Role.STUDENT) });
     expect(strangerView.status).toBe(403);
   });
@@ -156,13 +163,13 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     const w = await seedWorld();
     const enroll = await fetch(`${baseUrl}/api/v1/enrollments`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.admin.id, Role.ADMIN), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.admin.id, Role.ADMIN, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ studentId: w.student.id, offeringId: w.offering.id }),
     });
     expect(enroll.status).toBe(201);
 
     // 1. The lecture list carries the lecture + its checkpoint count.
-    const list = await fetch(`${baseUrl}/api/v1/offerings/${w.offering.id}/lectures`, { headers: helpers.bearer(w.student.id, Role.STUDENT) });
+    const list = await fetch(`${baseUrl}/api/v1/offerings/${w.offering.id}/lectures`, { headers: helpers.bearer(w.student.id, Role.STUDENT, w.institution.id) });
     expect(list.status).toBe(200);
     const listBody = (await list.json()) as { data: Array<{ id: string; title: string; _count: { checkpoints: number } }> };
     expect(listBody.data[0]!.id).toBe(w.lecture.id);
@@ -172,7 +179,7 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     //    watched/total ratio — the fixture reports a real ratio).
     const watch = await fetch(`${baseUrl}/api/v1/lectures/${w.lecture.id}/watch`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.student.id, Role.STUDENT, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ watchedSec: 600, totalSec: 600, completed: true }),
     });
     expect(watch.status).toBe(200); // upsert semantics — 200 with the row
@@ -183,7 +190,7 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     // 3. The checkpoint answer is correct → feedback + a mastery row.
     const answer = await fetch(`${baseUrl}/api/v1/lectures/${w.lecture.id}/checkpoints/${w.checkpoint.id}/answer`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.student.id, Role.STUDENT, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ answerIndex: 0 }),
     });
     expect(answer.status).toBe(200); // checkpoint answers are 200-ok with the verdict
@@ -196,7 +203,7 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     expect(mastery!.correct).toBe(1);
 
     // 4. The matrix reflects the real row.
-    const matrix = await fetch(`${baseUrl}/api/v1/me/matrix`, { headers: helpers.bearer(w.student.id, Role.STUDENT) });
+    const matrix = await fetch(`${baseUrl}/api/v1/me/matrix`, { headers: helpers.bearer(w.student.id, Role.STUDENT, w.institution.id) });
     expect(matrix.status).toBe(200);
     const matrixBody = (await matrix.json()) as { data: Array<{ courseName: string; concepts: Array<{ name: string; level: number; attempts: number }> }> };
     const courseRow = matrixBody.data.find((r) => r.courseName === w.course.name);
@@ -210,13 +217,13 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     const w = await seedWorld();
     await fetch(`${baseUrl}/api/v1/enrollments`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.admin.id, Role.ADMIN), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.admin.id, Role.ADMIN, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ studentId: w.student.id, offeringId: w.offering.id }),
     });
 
     const submit = await fetch(`${baseUrl}/api/v1/offerings/${w.offering.id}/assignments/${w.assignment.id}/submit`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.student.id, Role.STUDENT, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ textAnswer: 'الإجابة على الواجب — عقد مترابطة بمؤشرات.' }),
     });
     expect(submit.status).toBe(201);
@@ -226,7 +233,7 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     // teacher must NOT be able to).
     const grade = await fetch(`${baseUrl}/api/v1/submissions/${submission.id}/grade`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.teacher.id, Role.TEACHER), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.teacher.id, Role.TEACHER, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ grade: 85, feedback: 'إجابة جيدة' }),
     });
     expect(grade.status).toBe(200);
@@ -235,7 +242,7 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     expect(Number(graded.grade)).toBe(85);
 
     // The student's results surface carries the course + the grade.
-    const results = await fetch(`${baseUrl}/api/v1/me/results`, { headers: helpers.bearer(w.student.id, Role.STUDENT) });
+    const results = await fetch(`${baseUrl}/api/v1/me/results`, { headers: helpers.bearer(w.student.id, Role.STUDENT, w.institution.id) });
     expect(results.status).toBe(200);
     const resultsBody = (await results.json()) as { data: { courses: Array<{ courseName: string; gradePct: number | null }>; headline: { avgGradePct: number | null } } };
     const courseRow = resultsBody.data.courses.find((c) => c.courseName === w.course.name);
@@ -248,13 +255,13 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     const w = await seedWorld();
     await fetch(`${baseUrl}/api/v1/enrollments`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.admin.id, Role.ADMIN), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.admin.id, Role.ADMIN, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ studentId: w.student.id, offeringId: w.offering.id }),
     });
 
     const start = await fetch(`${baseUrl}/api/v1/exams/templates/${w.template.id}/start`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.student.id, Role.STUDENT) },
+      headers: { ...helpers.bearer(w.student.id, Role.STUDENT, w.institution.id) },
     });
     expect(start.status).toBe(201);
     const startBody = (await start.json()) as { data: { attemptId: string; questions: Array<{ id: string; type: string }> } };
@@ -262,14 +269,14 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
 
     const answer = await fetch(`${baseUrl}/api/v1/exams/attempts/${startBody.data.attemptId}/answer`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.student.id, Role.STUDENT), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.student.id, Role.STUDENT, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ questionId: startBody.data.questions[0]!.id, choiceIndex: 0 }),
     });
     expect(answer.status).toBe(200); // answer saves are upserts — 200 ok
 
     const submit = await fetch(`${baseUrl}/api/v1/exams/attempts/${startBody.data.attemptId}/submit`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.student.id, Role.STUDENT) },
+      headers: { ...helpers.bearer(w.student.id, Role.STUDENT, w.institution.id) },
     });
     expect(submit.status).toBe(200);
     const submitBody = (await submit.json()) as { data: { score: number } };
@@ -281,7 +288,7 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     expect(Number(attempt.score)).toBe(10);
 
     // And the student's exam list reports it.
-    const mine = await fetch(`${baseUrl}/api/v1/exams/me`, { headers: helpers.bearer(w.student.id, Role.STUDENT) });
+    const mine = await fetch(`${baseUrl}/api/v1/exams/me`, { headers: helpers.bearer(w.student.id, Role.STUDENT, w.institution.id) });
     expect(mine.status).toBe(200);
     const mineBody = (await mine.json()) as { data: Array<{ id: string; myAttempt: { status: string; score: number } | null }> };
     const entry = mineBody.data.find((e) => e.id === w.template.id);
@@ -292,13 +299,11 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
   it('J5 — materials: the teacher uploads a real PDF; the enrolled student reads the bytes; a stranger cannot', async () => {
     const w = await seedWorld();
     // r179b (phase-5): the material upload/serving routes verify the
-    // caller's institution context (memberships + inst claims) — seeded
-    // here, inside this journey only, for the file endpoints' actors.
-    await helpers.seedMembership(w.teacher.id, w.institution.id, Role.TEACHER);
-    await helpers.seedMembership(w.student.id, w.institution.id, Role.STUDENT);
+    // caller's institution context — the memberships + inst claims ride
+    // the shared seedWorld fixture since the lead integration.
     await fetch(`${baseUrl}/api/v1/enrollments`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.admin.id, Role.ADMIN), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.admin.id, Role.ADMIN, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ studentId: w.student.id, offeringId: w.offering.id }),
     });
 
@@ -347,7 +352,7 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     // The offering's teacher grades through the REAL capability route.
     const grade = await fetch(`${baseUrl}/api/v1/research/${paper.id}/grade`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.teacher.id, Role.TEACHER), 'content-type': 'application/json' },
+      headers: { ...helpers.bearer(w.teacher.id, Role.TEACHER, w.institution.id), 'content-type': 'application/json' },
       body: JSON.stringify({ grade: 17, feedback: 'بحث متقن — راجع المرجع الثالث.' }),
     });
     expect(grade.status).toBe(200);
@@ -359,7 +364,7 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     // serves from.
     const publish = await fetch(`${baseUrl}/api/v1/research/${paper.id}/publish`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.teacher.id, Role.TEACHER) },
+      headers: { ...helpers.bearer(w.teacher.id, Role.TEACHER, w.institution.id) },
     });
     expect(publish.status).toBe(200);
     const published = await prisma.researchPaper.findUniqueOrThrow({ where: { id: paper.id } });

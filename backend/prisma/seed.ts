@@ -409,6 +409,86 @@ async function main() {
   });
   await ensureMembership(admin2.id, alandalus.id, Role.ADMIN);
 
+  // ─── r179 (phase-5): Al-Andalus full academic + community demo ──
+  // The second institution gets a TEACHER, an offering of its SE301
+  // course, an enrollment for its student, community posts, and its
+  // own announcement/competition/event — the two-institution demo the
+  // product is proven with (feeds, materials, and dashboards separate
+  // by the verified institution context).
+  const teacher2 = await prisma.user.upsert({
+    where: { email: 'teacher2@demo.madarek.ly' },
+    update: { passwordHash: password },
+    create: {
+      email: 'teacher2@demo.madarek.ly',
+      passwordHash: password,
+      role: Role.TEACHER,
+      firstName: 'خالد',
+      lastName: 'الترابلسي',
+      avatarInitials: 'خت',
+      avatarColor: '#F5A623',
+      emailVerifiedAt: new Date(),
+    },
+  });
+  const teacher2Membership = await ensureMembership(teacher2.id, alandalus.id, Role.TEACHER);
+  let teacher2Profile = await prisma.teacherProfile.findFirst({
+    where: { userId: teacher2.id, membership: { institutionId: alandalus.id } },
+  });
+  if (!teacher2Profile) {
+    teacher2Profile = await prisma.teacherProfile.create({
+      data: {
+        userId: teacher2.id,
+        membershipId: teacher2Membership.id,
+        specialty: 'علوم الحاسوب',
+        rank: AcademicRank.ASSISTANT_PROFESSOR,
+        departmentId: aaCsDept.id,
+      },
+    });
+  }
+  const aaCourse = await prisma.course.findUnique({
+    where: { institutionId_code: { institutionId: alandalus.id, code: 'SE301' } },
+  });
+  const aaOffering = await prisma.courseOffering.upsert({
+    where: { courseId_term_teacherId: { courseId: aaCourse!.id, term: '2024-FALL', teacherId: teacher2.id } },
+    update: {},
+    create: {
+      courseId: aaCourse!.id,
+      teacherId: teacher2.id,
+      term: '2024-FALL',
+      room: 'قاعة الأندلس أ',
+      capacity: 30,
+    },
+  });
+  await prisma.enrollment.upsert({
+    where: { studentId_offeringId: { studentId: student2.id, offeringId: aaOffering.id } },
+    update: {},
+    create: { studentId: student2.id, offeringId: aaOffering.id, status: 'active' },
+  });
+  // Lecture has no unique key on (offeringId, ordinal) — natural-key
+  // guard (the same pattern the Zawia lectures use).
+  const aaLectureExisting = await prisma.lecture.findFirst({
+    where: { offeringId: aaOffering.id, ordinal: 1 },
+  });
+  if (!aaLectureExisting) {
+    await prisma.lecture.create({
+      data: {
+        offeringId: aaOffering.id,
+        title: 'مقدمة إلى الخوارزميات',
+        ordinal: 1,
+        durationSec: 900,
+        videoUrl: 'https://example.invalid/aa-intro.mp4',
+      },
+    });
+  }
+  // Al-Andalus community posts (guarded on (authorId, body)).
+  const aaPostDefs = [
+    { authorId: student2.id, body: 'من لديه تمارين إضافية لمقرر مقدمة إلى البرمجة؟', hashtags: ['برمجة'] },
+    { authorId: teacher2.id, body: 'فتحت ساعات الدعم لمقرر البرمجة يوم الخميس', hashtags: ['الأندلس'] },
+  ];
+  for (const p of aaPostDefs) {
+    const existing = await prisma.post.findFirst({ where: { authorId: p.authorId, body: p.body } });
+    if (!existing) await prisma.post.create({ data: { ...p, institutionId: alandalus.id } });
+  }
+
   // ─── Courses (mirrors the prototype's `courses` array) ───────
   const courseDefs = [
     { code: 'SE301', name: 'هندسة البرمجيات', icon: '⚙️', color: '#4F8EF7' },
@@ -1599,6 +1679,17 @@ async function main() {
   await prisma.competition.deleteMany({});
   await prisma.campusEvent.deleteMany({});
 
+  // r179: the Al-Andalus-scoped announcement (same guard style — the
+  // table is reset above, so a fresh createMany each run).
+  await prisma.announcement.create({
+    data: {
+      authorId: admin2.id, scope: 'FACULTY', scopeId: aaFaculty.id,
+      title: 'بدء التسجيل في دورات الأندلس الصيفية',
+      body: 'يفتح قسم علوم الحاسوب بكلية تقنية المعلومات التسجيل في الدورات الصيفية اعتبارًا من الأسبوع القادم. المقاعد محدودة.',
+      iconEmoji: '🎓',
+    },
+  });
+
   await prisma.announcement.createMany({
     data: [
       {
@@ -1651,6 +1742,13 @@ async function main() {
         deadline: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
         organizerId: teacher.id, institutionId: zawia.id, iconEmoji: '🎤', themeColor: '#D4A537',
       },
+      {
+        title: 'تحدي الأندلس للبرمجة الأول',
+        description: 'مسابقة برمجة لمتدربي مؤسسة الأندلس التعليمية — حل ثلاث مسائل خوارزمية خلال 48 ساعة. الفائز يحصل على شهادة تفوق ودورة متقدمة مجانية.',
+        category: 'برمجة', prize: 'دورة متقدمة مجانية',
+        deadline: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+        organizerId: teacher2.id, institutionId: alandalus.id, iconEmoji: '🏁', themeColor: '#2EC4B6',
+      },
     ],
   });
 
@@ -1673,6 +1771,14 @@ async function main() {
         location: 'مكتبة الجامعة المركزية', startsAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
         endsAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000),
         capacity: 60, organizerId: teacher.id, institutionId: zawia.id, iconEmoji: '📚', themeColor: '#7B3AED',
+      },
+      {
+        title: 'ملتقى الأندلس التقني',
+        description: 'ملتقى نصف يوم يعرض مشاريع متدربي الأندلس في البرمجة وتحليل البيانات، مع جلسة أسئلة وأجوبة مع مدرّبي القسم.',
+        location: 'قاعة الأندلس الرئيسية — طرابلس',
+        startsAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+        endsAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000),
+        capacity: 80, organizerId: admin2.id, institutionId: alandalus.id, iconEmoji: '🧑‍💻', themeColor: '#2EC4B6',
       },
     ],
   });

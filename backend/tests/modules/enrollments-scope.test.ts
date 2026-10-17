@@ -192,7 +192,7 @@ const post = (
 ) => {
   // Two call shapes kept: (path, id, role, body) and the explicit
   // contextless form (path, id, role, null, body).
-  const institutionId = maybeBody === undefined && bodyOrInstitution === null ? null : INSTITUTION;
+  const institutionId = bodyOrInstitution === null ? null : INSTITUTION;
   const body = maybeBody ?? bodyOrInstitution;
   return fetch(`${baseUrl}/api/v1${path}`, {
     headers: { ...bearer(userId, role, institutionId), 'content-type': 'application/json' },

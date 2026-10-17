@@ -128,9 +128,11 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
             student: {
               select: {
                 id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true,
-                // r178: profiles are per-membership — the roster prefers
-                // the student's profile in the OFFERING's institution
-                // (TODO(r179/phase-5): full data isolation).
+                // r179 (phase-5): profiles are per-membership — the roster
+                // reads the universityId of the profile in the OFFERING'S
+                // institution (the code-level find below on
+                // course.institutionId); a profile from another
+                // institution is never displayed for this roster.
                 studentProfiles: { select: { institutionId: true, universityId: true } },
               },
             },

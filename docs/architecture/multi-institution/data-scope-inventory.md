@@ -19,7 +19,7 @@
 | `PLATFORM_GLOBAL` | 8 | AuditLog, PlatformSetting, FeatureFlag, AiTelemetry, OperationalAlert, LoginEvent, BinaryObject, RolePermission |
 | `INSTITUTION_SCOPED` | 22 | Faculty, Department, Course, CourseOffering, ScheduleSlot, Material, Assignment, AttendanceSession, Lecture, LectureChapter, LectureCheckpoint, KnowledgeConcept, ResearchPaper, PaperAnnotation, QuestionCategory, Question, ExamTemplate, ExamTemplateQuestion, Announcement, UniversityFact, SyncRun, LiveSession |
 | `MEMBERSHIP_SCOPED` | 22 | StudentProfile, TeacherProfile, Enrollment, Submission, Grade, AttendanceRecord, CheckpointAnswer, WatchEvent, StudentMastery, TrainingEnrollment, LessonProgress, ExamAttempt, ExamAnswer, UserAchievement, UserSkill, UserBadge, MoocEnrollment, JobApplication, Loan, LabSession, CompetitionEntry, EventRSVP |
-| `USER_GLOBAL` | 7 | User, Notification, Message, AiConversation, AiMessage, Certificate, PointsLedger |
+| `USER_GLOBAL` | 6 | User, Notification, Message, AiMessage, Certificate, PointsLedger |
 | `SHARED_CATALOG` | 10 | Book, MoocCourse, Job, VirtualLab, ArExperience, TrainingTrack, TrainingLesson, Badge, Achievement, Skill |
 | `AMBIGUOUS_OR_REQUIRES_DECISION` | 8 | Post, PostComment, PostReaction, StudyRoom, StudyRoomMember, UserPermission, Competition, CampusEvent |
 
@@ -83,7 +83,7 @@
 | `User` | هوية عالمية واحدة (`email @unique` **يبقى عالميًا عمدًا** — قرار منتج: حساب واحد لكل شخص عبر المؤسسات) | `role` **عالمي واحد** — يجب أن ينتقل للعضوية (القرار المعماري الكبير)؛ `scopeFacultyId` حاكمية أحادية المؤسّسة → نطاق لكل عضوية؛ `firedMilestones`/`themePreference` تبقى عالمية |
 | `Notification` | مملوكة للمستخدم؛ أضف `institutionId` على المصدر للفلترة والتصدير | إشعار مؤسّسة يظهر لمستخدم ليس عضوًا فيها |
 | `Message` | مستخدم↔مستخدم؛ **قرار مفتوح**: هل الرسائل تسمح عابرًا للمؤسسات؟ | ذكر سياق المؤسّسة في الرسائل |
-| `AiConversation`/`AiMessage` | تاريخ ذكاء شخصي؛ سياق البيانات المغذّاة من مؤسّسة (loadMasteryFacts) | تسريب بيانات أكاديمية بين مؤسّسات عبر سياق الـprompt — يجب بناء السياق من عضوية نشطة |
+| `AiConversation`/`AiMessage` | **r179 (منفَّذ)**: المحادثة تحمل `institutionId` (عمود + فهرس) والقائمة/الإضافة/الحذف/الرسائل مقيّدة بسياق المتصل المتحقَّق؛ سياق التلقيم (الإتقان/التسجيل/التدريس) يُبنى بمدخل مؤسسة صريح مقيّد بالسلسلة | مغلق — اختبارات تكامل عابرة للمؤسستين (two-institution-regression + ai-chat-provider-path) |
 | `Certificate` | ملك المستخدم (حقل issuer حر) | شهادات تدريب المنصّة عالمية؛ شهادات مؤسّسات مستقبلًا مؤسسية |
 | `PointsLedger` | سجل نقوط append-only للمستخدم | قرار: النقاط عالمية أم لكل مؤسّسة (يربط totalXp في StudentProfile) |
 
@@ -133,4 +133,13 @@
 رفض عابر (طلب مباشر بمعرّف من مؤسّسة أخرى يرجع 404/403 لا 200)، واختبار
 فريدية مركّبة، واختبار حذف/تصدير مؤسّسة كاملة، واختبار مواظبة المهام
 الخلفية (sync/badges/points) على نطاق المؤسّسة الصحيح. لا يُدّعى الآن
+
+> **تحديث r179 (منفَّذ)**: الجولة الخامسة أضافت أعمدة `institutionId`
+> صريحة للمحتوى الذي لا سلسلة أب له: `Post` و`StudyRoom` و
+> `CampusEvent` و`Competition` و`ResearchPaper` و`AiConversation` و
+> `UniversityFact` (مفتاح مركّب institutionId+key) و`SyncRun` — بترحيل
+> واحد بتعبئة بيانات العرض القائمة لمؤسسة الزاوية. `Material` بقيت
+> على سلسلة العرض (offering→course→department→faculty→institution) بلا
+> عمود مكرر، و`Message` بلا عمود (الحدود عند الإرسال: عضوية مشتركة
+> مطلوبة)، وكتالوج التدريب مشترك عمدًا.
 تنفيذ أي منها — لم يُنفّذ العزل بعد.

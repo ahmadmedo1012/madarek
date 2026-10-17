@@ -2,7 +2,7 @@
 
 **Base URL:** `/api/v1`
 **Envelope:** `{ data: T }` on success, `{ error: { code, message, details? } }` on error
-**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 215 endpoints (210 route registrations in the 26 route files + 4 module-router endpoints + `/health`; r178 recount: the r177 header's "192 in 25 files" was stale — the r177 tree actually carried 202; r178 adds `institution.routes.ts` (7) + `POST /auth/select-institution`), one row each
+**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 216 endpoints (211 route registrations in the 26 route files + 4 module-router endpoints + `/health`; r178 added `institution.routes.ts` (7) + `POST /auth/select-institution` for 215; r179 adds `GET /ai/conversations/:id` for 216), one row each
 
 ## Conventions
 
@@ -340,7 +340,8 @@ There is **no** `POST /posts/:id/comment` route — comments are read via the po
 |--------|------|------|-------------|
 | POST | `/ai/chat` | Bearer (20/min per user) | Chat with AI (telemetry recorded) — local mastery-aware composer by default, or a real OpenAI-compatible LLM when `AI_PROVIDER=openai` (mastery-aware Arabic system prompt + last 12 turns; provider failure is an honest Arabic 500, never a silent template fallback). Response `{ data: { conversationId, reply } }` + r166d per-turn attribution: `engine: 'local' \| 'openai'` and `model` (the real provider string, or `gap-aware-composer` locally) |
 | GET | `/ai/config` | Bearer | Which engine answers: `{ provider: 'local' \| 'openai', model: string \| null }` — the honest-surface endpoint the FE badge/subtitle consumes |
-| GET | `/ai/conversations` | Bearer | List conversations (take 50) |
+| GET | `/ai/conversations` | Bearer | List conversations (take 50) — r179: institution-scoped (the caller's verified context filters the list) |
+| GET | `/ai/conversations/:id` | Bearer | One conversation of the caller — r179: ownership + institution context scoped (foreign institution → 404 `المحادثة غير موجودة`) |
 | GET | `/ai/conversations/:id/messages` | Bearer | Conversation messages — capped at the newest 200 messages (delivered in chronological order) |
 | DELETE | `/ai/conversations/:id` | Bearer | Delete one of the caller's conversations (ownership-scoped lookup → 404 `المحادثة غير موجودة` on a miss; messages cascade via the schema's `onDelete: Cascade`). Answers `{ data: { ok: true } }` |
 
