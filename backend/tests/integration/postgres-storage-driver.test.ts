@@ -90,7 +90,7 @@ async function seedOffering() {
   const offering = await prisma.courseOffering.create({
     data: { courseId: course.id, teacherId: teacher.id, term: '2026-FALL' },
   });
-  return { teacher, faculty, department, course, offering };
+  return { teacher, inst, faculty, department, course, offering };
 }
 
 // ─── Driver contract against the real database ─────────────────────
@@ -178,6 +178,7 @@ describe('PostgresDriver — BYTEA round-trips against real Postgres', () => {
 describe('files.routes.ts — papers through the postgres driver', () => {
   it('upload (STUDENT) → 201 fileUrl; the owner reads exact bytes back; range → 206 exact slice', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
+    const inst = await helpers.seedInstitution();
 
     const up = await fetch(`${baseUrl}/api/v1/files/papers`, {
       method: 'POST',
@@ -191,7 +192,7 @@ describe('files.routes.ts — papers through the postgres driver', () => {
 
     // Authorizing row (the serving gate resolves access through it):
     await prisma.researchPaper.create({
-      data: { studentId: student.id, title: 'بحث r175', fileUrl: upload.data.fileUrl },
+      data: { studentId: student.id, institutionId: inst.id, title: 'بحث r175', fileUrl: upload.data.fileUrl },
     });
 
     // Owner full read → 200 + exact bytes + honest length.
@@ -219,10 +220,16 @@ describe('files.routes.ts — papers through the postgres driver', () => {
   it('access stays gated: another student (no authorizing row) → 404, and the bytes are NOT served', async () => {
     const owner = await helpers.seedUser({ role: Role.STUDENT });
     const stranger = await helpers.seedUser({ role: Role.STUDENT });
+    const inst = await helpers.seedInstitution();
 
     await getStorage().put('papers/cku5r175pg0007gated.pdf', PDF_BYTES);
     await prisma.researchPaper.create({
-      data: { studentId: owner.id, title: 'بحث محجوب', fileUrl: '/api/v1/files/papers/cku5r175pg0007gated.pdf' },
+      data: {
+        studentId: owner.id,
+        institutionId: inst.id,
+        title: 'بحث محجوب',
+        fileUrl: '/api/v1/files/papers/cku5r175pg0007gated.pdf',
+      },
     });
 
     const res = await fetch(`${baseUrl}/api/v1/files/papers/cku5r175pg0007gated.pdf`, {

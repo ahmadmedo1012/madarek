@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { AiMessageRole, Prisma, Role } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
+import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
 import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
@@ -445,12 +446,31 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
     const userId = req.user!.id;
     const { conversationId, message } = req.body as z.infer<typeof chatSchema>;
 
+    /* r179 (phase-5) minimal lead fix: the chat is institution-scoped.
+     * Resolve the caller's VERIFIED institution context (re-checked
+     * against the DB — the token claim alone is never trusted). No
+     * context → 403 (the client must select an institution first);
+     * a conversation id from ANOTHER institution is a 404, not a
+     * cross-context read. */
+    const chatInstitutionId = await resolveCallerInstitutionScope(userId, req.user!.institutionId);
+    if (!chatInstitutionId) {
+      throw new AppError(
+        'INSTITUTION_CONTEXT_REQUIRED',
+        'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
+        403,
+      );
+    }
+
     // Single conversation lookup (previously a conditional DOUBLE lookup —
     // findFirst then findUnique on the same row). A provided id that
     // doesn't resolve to one of the caller's conversations is a 404,
     // not a silent new-conversation creation that strands the id.
+    // r179: the conversation must ALSO belong to the caller's current
+    // institution context.
     const conv = conversationId
-      ? await prisma.aiConversation.findFirst({ where: { id: conversationId, userId } })
+      ? await prisma.aiConversation.findFirst({
+          where: { id: conversationId, userId, institutionId: chatInstitutionId },
+        })
       : null;
     if (conversationId && !conv) throw AppError.notFound('المحادثة غير موجودة');
 
@@ -507,7 +527,10 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
     const { conversationId: finalId, assistantContent } = await prisma.$transaction(
       async (tx) => {
         const conversation =
-          conv ?? (await tx.aiConversation.create({ data: { userId, title: conversationTitle(message) } }));
+          conv ??
+          (await tx.aiConversation.create({
+            data: { userId, institutionId: chatInstitutionId, title: conversationTitle(message) },
+          }));
         await tx.aiMessage.create({
           data: { conversationId: conversation.id, role: AiMessageRole.USER, content: message },
         });

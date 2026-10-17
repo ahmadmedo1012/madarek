@@ -72,8 +72,23 @@ function sourceLabelAr(label: string): string {
   return SOURCE_LABEL_AR[label] ?? label;
 }
 
-export async function runSync(opts: { source?: string } = {}): Promise<SyncResult> {
+/**
+ * r179 (phase-5): the sync runs against a SPECIFIC institution. The
+ * University of Zawia static source (zu.edu.ly.md) is the ZAWIA
+ * SHOWCASE institution's configured source — not a global source for
+ * every university. A run for one institution never touches another
+ * institution's facts (upserts, stale-marking, and run history are all
+ * keyed by institutionId). The fixed default keeps existing callers
+ * (scheduler boot-sync, POST /admin/sync/trigger) on the showcase
+ * institution until they pass an explicit one.
+ */
+export const DEFAULT_SYNC_INSTITUTION_ID = 'inst-zawia-showcase';
+
+export async function runSync(
+  opts: { source?: string; institutionId?: string } = {},
+): Promise<SyncResult> {
   const source = opts.source ?? 'static-markdown';
+  const institutionId = opts.institutionId ?? DEFAULT_SYNC_INSTITUTION_ID;
   const startedAt = Date.now();
 
   // Reap runs orphaned in RUNNING state before creating this run's row
@@ -82,6 +97,7 @@ export async function runSync(opts: { source?: string } = {}): Promise<SyncResul
   // the admin sync view never shows a phantom "in progress" run forever.
   const reaped = await prisma.syncRun.updateMany({
     where: {
+      institutionId,
       status: 'RUNNING',
       startedAt: { lt: new Date(startedAt - STALE_RUNNING_RUN_MS) },
     },
@@ -103,7 +119,7 @@ export async function runSync(opts: { source?: string } = {}): Promise<SyncResul
   }
 
   const run = await prisma.syncRun.create({
-    data: { source, status: 'RUNNING' },
+    data: { source, institutionId, status: 'RUNNING' },
   });
 
   // Outcome bookkeeping — mutated by the try/catch below and applied to
@@ -126,10 +142,13 @@ export async function runSync(opts: { source?: string } = {}): Promise<SyncResul
 
     for (const f of facts) {
       seenKeys.add(f.key);
-      const existing = await prisma.universityFact.findUnique({ where: { key: f.key } });
+      const existing = await prisma.universityFact.findUnique({
+        where: { institutionId_key: { institutionId, key: f.key } },
+      });
       if (!existing) {
         await prisma.universityFact.create({
           data: {
+            institutionId,
             key: f.key,
             value: f.value,
             category: f.category,
@@ -141,7 +160,7 @@ export async function runSync(opts: { source?: string } = {}): Promise<SyncResul
         added++;
       } else if (existing.value !== f.value || existing.isStale) {
         await prisma.universityFact.update({
-          where: { key: f.key },
+          where: { institutionId_key: { institutionId, key: f.key } },
           data: {
             value: f.value,
             category: f.category,
@@ -154,20 +173,24 @@ export async function runSync(opts: { source?: string } = {}): Promise<SyncResul
       } else {
         // Same value — just bump syncedAt to reflect it's still current
         await prisma.universityFact.update({
-          where: { key: f.key },
+          where: { institutionId_key: { institutionId, key: f.key } },
           data: { syncedAt: new Date(), isStale: false },
         });
       }
     }
 
-    // Flag any fact we know about but did NOT see this run
-    const allKeys = await prisma.universityFact.findMany({ select: { key: true } });
-    unseen = allKeys
+    // Flag any fact of THIS institution we did NOT see this run —
+    // r179 (phase-5): never another institution's facts.
+    const instKeys = await prisma.universityFact.findMany({
+      where: { institutionId },
+      select: { key: true },
+    });
+    unseen = instKeys
       .map((r) => r.key)
       .filter((k) => !seenKeys.has(k));
     if (unseen.length) {
       await prisma.universityFact.updateMany({
-        where: { key: { in: unseen } },
+        where: { institutionId, key: { in: unseen } },
         data: { isStale: true },
       });
     }

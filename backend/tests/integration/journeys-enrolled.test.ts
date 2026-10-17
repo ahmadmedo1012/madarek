@@ -328,6 +328,7 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
       data: {
         studentId: w.student.id,
         offeringId: w.offering.id,
+        institutionId: w.institution.id,
         title: 'بحث القوائم المترابطة r176g',
         status: 'CHECKS_PASSED',
         fileUrl: 'https://external.example.org/paper.pdf',
@@ -362,6 +363,7 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
       data: {
         studentId: w.student.id,
         offeringId: w.offering.id,
+        institutionId: w.institution.id,
         title: 'بحث ثانٍ r176g',
         status: 'CHECKS_PASSED',
         fileUrl: 'https://external.example.org/paper2.pdf',

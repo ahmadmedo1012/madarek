@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { AttendanceStatus, Prisma, Role } from '@prisma/client';
 import { prisma, withRetry } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
+import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
@@ -855,6 +856,18 @@ router.post('/me/research', createRouteLimiter({ max: 10 }), validate(createPape
   try {
     if (req.user!.role !== Role.STUDENT) throw AppError.forbidden();
     const body = req.body as z.infer<typeof createPaperSchema>;
+    /* r179 (phase-5) minimal lead fix: the paper is submitted under the
+     * student's VERIFIED institution context (the membership the
+     * submission happens in — a user may hold profiles in several
+     * institutions). Fail closed without a context. */
+    const paperInstitutionId = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (!paperInstitutionId) {
+      throw new AppError(
+        'INSTITUTION_CONTEXT_REQUIRED',
+        'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
+        403,
+      );
+    }
     // If the paper is tied to an offering, the student must be actively
     // enrolled in it — otherwise any offering id could be attached to
     // fake course affiliation.
@@ -881,7 +894,12 @@ router.post('/me/research', createRouteLimiter({ max: 10 }), validate(createPape
         throw AppError.conflict('تم رفع هذه الورقة قبل قليل');
       }
       return tx.researchPaper.create({
-        data: { ...body, studentId: req.user!.id, status: 'UPLOADED' },
+        data: {
+          ...body,
+          studentId: req.user!.id,
+          institutionId: paperInstitutionId,
+          status: 'UPLOADED',
+        },
       });
     });
     res.status(201).json({ data: created });

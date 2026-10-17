@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { AnnouncementScope, CompetitionStatus, Prisma, RsvpStatus, Role } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
+import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
 import { requireCapability } from '../middleware/requireCapability.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
@@ -466,8 +467,19 @@ const createCompSchema = z.object({
 router.post('/competitions', requireCapability('COMPETITIONS_RUN'), validate(createCompSchema), async (req, res, next) => {
   try {
     const body = req.body as z.infer<typeof createCompSchema>;
+    /* r179 (phase-5) minimal lead fix: competitions are created INSIDE
+     * the caller's verified institution context — no context, no
+     * create (fail closed, never a default institution). */
+    const institutionId = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (!institutionId) {
+      throw new AppError(
+        'INSTITUTION_CONTEXT_REQUIRED',
+        'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
+        403,
+      );
+    }
     const created = await prisma.competition.create({
-      data: { ...body, organizerId: req.user!.id },
+      data: { ...body, organizerId: req.user!.id, institutionId },
     });
     res.status(201).json({ data: created });
   } catch (e) { next(e); }
@@ -717,8 +729,18 @@ export const createEventSchema = z
 router.post('/events', requireCapability('EVENTS_RUN'), validate(createEventSchema), async (req, res, next) => {
   try {
     const body = req.body as z.infer<typeof createEventSchema>;
+    /* r179 (phase-5) minimal lead fix: events are created INSIDE the
+     * caller's verified institution context — fail closed without one. */
+    const institutionId = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (!institutionId) {
+      throw new AppError(
+        'INSTITUTION_CONTEXT_REQUIRED',
+        'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
+        403,
+      );
+    }
     const created = await prisma.campusEvent.create({
-      data: { ...body, organizerId: req.user!.id },
+      data: { ...body, organizerId: req.user!.id, institutionId },
     });
     res.status(201).json({ data: created });
   } catch (e) { next(e); }

@@ -117,9 +117,10 @@ describe('POST /offerings/:id/materials/file — Material row never survives a f
 describe('POST /files/papers — the per-user storage quota reads the REAL row count (r170g)', () => {
   it('10 STORED papers (worst-case 200 MB) → 413 quota refusal BEFORE any storage write', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
+    const inst = await helpers.seedInstitution();
     await prisma.researchPaper.createMany({
       data: Array.from({ length: 10 }, (_, i) => ({
-        studentId: student.id,
+        studentId: student.id, institutionId: inst.id,
         title: `بحث ${i + 1}`,
         // r176d (F-05b): only papers whose bytes live in OUR storage
         // count against the quota — the fixture now models exactly the
@@ -141,9 +142,10 @@ describe('POST /files/papers — the per-user storage quota reads the REAL row c
 
   it('r176d (F-05b): 10 external-URL papers (zero stored bytes) do NOT eat the quota', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
+    const inst = await helpers.seedInstitution();
     await prisma.researchPaper.createMany({
       data: Array.from({ length: 10 }, (_, i) => ({
-        studentId: student.id,
+        studentId: student.id, institutionId: inst.id,
         title: `بحث خارجي ${i + 1}`,
         // Link-only papers: the bytes never touched our storage, so the
         // 20MB-per-row charge must NOT apply (the pre-r176d behavior
@@ -169,9 +171,10 @@ describe('POST /files/papers — the per-user storage quota reads the REAL row c
 
   it('9 papers (worst-case 180 MB) → quota PASSES, the request proceeds to the storage put (distinct 500)', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
+    const inst = await helpers.seedInstitution();
     await prisma.researchPaper.createMany({
       data: Array.from({ length: 9 }, (_, i) => ({
-        studentId: student.id,
+        studentId: student.id, institutionId: inst.id,
         title: `بحث ${i + 1}`,
       })),
     });

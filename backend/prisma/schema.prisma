@@ -282,6 +282,14 @@ model Institution {
   courses          Course[]
   permissionGrants UserPermission[]
   auditLogs        AuditLog[]
+  posts            Post[]
+  studyRooms       StudyRoom[]
+  campusEvents     CampusEvent[]
+  competitions     Competition[]
+  researchPapers   ResearchPaper[]
+  aiConversations  AiConversation[]
+  universityFacts  UniversityFact[]
+  syncRuns         SyncRun[]
 
   @@index([status])
 }
@@ -766,19 +774,24 @@ model Message {
 //  Social: posts, comments, study rooms
 // ────────────────────────────────────────────────────────────────
 model Post {
-  id        String   @id @default(cuid())
-  authorId  String
-  author    User     @relation(fields: [authorId], references: [id])
-  body      String
-  hashtags  String[]
-  imageUrl  String?
-  createdAt DateTime @default(now())
+  id            String     @id @default(cuid())
+  authorId      String
+  author        User       @relation(fields: [authorId], references: [id])
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  body          String
+  hashtags      String[]
+  imageUrl      String?
+  createdAt     DateTime   @default(now())
 
   comments  PostComment[]
   reactions PostReaction[]
 
   @@index([authorId])
   @@index([createdAt])
+  // r179 (phase-5): the community feed is institution-scoped — the
+  // feed query filters (institutionId, createdAt desc).
+  @@index([institutionId, createdAt])
 }
 
 model PostComment {
@@ -807,15 +820,18 @@ model PostReaction {
 }
 
 model StudyRoom {
-  id        String            @id @default(cuid())
-  name      String
-  topic     String?
-  ownerId   String
-  owner     User              @relation("StudyRoomOwner", fields: [ownerId], references: [id])
-  createdAt DateTime          @default(now())
-  members   StudyRoomMember[]
+  id            String            @id @default(cuid())
+  name          String
+  topic         String?
+  ownerId       String
+  owner         User              @relation("StudyRoomOwner", fields: [ownerId], references: [id])
+  institutionId String
+  institution   Institution       @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  createdAt     DateTime          @default(now())
+  members       StudyRoomMember[]
 
   @@index([ownerId])
+  @@index([institutionId])
 }
 
 model StudyRoomMember {
@@ -1048,14 +1064,19 @@ model ArExperience {
 //  AI conversations
 // ────────────────────────────────────────────────────────────────
 model AiConversation {
-  id        String      @id @default(cuid())
-  userId    String
-  user      User        @relation(fields: [userId], references: [id])
-  title     String?
-  createdAt DateTime    @default(now())
-  messages  AiMessage[]
+  id            String       @id @default(cuid())
+  userId        String
+  user          User         @relation(fields: [userId], references: [id])
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  title         String?
+  createdAt     DateTime     @default(now())
+  messages      AiMessage[]
 
   @@index([userId])
+  // r179 (phase-5): conversations are institution-scoped — history,
+  // append, and delete all filter by the caller's verified context.
+  @@index([userId, institutionId])
 }
 
 model AiMessage {
@@ -1257,6 +1278,11 @@ model ResearchPaper {
   reviewer      User?               @relation("ProfessorReviewedPapers", fields: [reviewerId], references: [id])
   offeringId    String?
   offering      CourseOffering?     @relation(fields: [offeringId], references: [id])
+  /// r179 (phase-5): the institution the paper was submitted under —
+  /// the membership context of the submission (a user may hold student
+  /// profiles in several institutions).
+  institutionId String
+  institution   Institution         @relation(fields: [institutionId], references: [id], onDelete: Cascade)
   title         String
   abstract      String?
   fileUrl       String?
@@ -1657,9 +1683,11 @@ model Competition {
   category    String // "بحث" | "برمجة" | "ابتكار" | "محاضرة" | "تصميم" ...
   prize       String?
   deadline    DateTime
-  organizerId String
-  organizer   User              @relation("CompetitionOrganizer", fields: [organizerId], references: [id])
-  status      CompetitionStatus @default(OPEN)
+  organizerId   String
+  organizer     User              @relation("CompetitionOrganizer", fields: [organizerId], references: [id])
+  institutionId String
+  institution   Institution       @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  status        CompetitionStatus @default(OPEN)
   iconEmoji   String?
   themeColor  String?
   createdAt   DateTime          @default(now())
@@ -1670,6 +1698,7 @@ model Competition {
   @@index([status])
   @@index([deadline])
   @@index([organizerId])
+  @@index([institutionId, deadline])
 }
 
 model CompetitionEntry {
@@ -1689,23 +1718,26 @@ model CompetitionEntry {
 }
 
 model CampusEvent {
-  id          String   @id @default(cuid())
-  title       String
-  description String   @db.Text
-  location    String
-  startsAt    DateTime
-  endsAt      DateTime
-  capacity    Int      @default(100)
-  organizerId String
-  organizer   User     @relation("EventOrganizer", fields: [organizerId], references: [id])
-  iconEmoji   String?
-  themeColor  String?
-  createdAt   DateTime @default(now())
+  id            String       @id @default(cuid())
+  title         String
+  description   String       @db.Text
+  location      String
+  startsAt      DateTime
+  endsAt        DateTime
+  capacity      Int          @default(100)
+  organizerId   String
+  organizer     User         @relation("EventOrganizer", fields: [organizerId], references: [id])
+  institutionId String
+  institution   Institution  @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  iconEmoji     String?
+  themeColor    String?
+  createdAt     DateTime     @default(now())
 
   rsvps EventRSVP[]
 
   @@index([startsAt])
   @@index([organizerId])
+  @@index([institutionId, startsAt])
 }
 
 model EventRSVP {
@@ -1738,35 +1770,43 @@ enum SyncRunStatus {
 model UniversityFact {
   /// Stable key — e.g. "name", "foundingYear", "phone.primary",
   /// "address", "vision", "mission", "grade.scale.excellent".
-  key      String   @id
+  key           String
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
   /// Localized display value (Arabic by default; English-tagged keys for English).
-  value    String   @db.Text
+  value         String   @db.Text
   /// Group: general | identity | contact | strategic | grading | colleges | calendar | other
-  category String   @default("general")
+  category      String   @default("general")
   /// Where the value came from: "zu.edu.ly:about" | "zu.edu.ly:faculty" | "manual"
-  source   String   @default("zu.edu.ly")
-  syncedAt DateTime @default(now())
+  source        String   @default("zu.edu.ly")
+  syncedAt      DateTime @default(now())
   /// Marked stale if a sync run could not refresh it.
-  isStale  Boolean  @default(false)
+  isStale       Boolean  @default(false)
 
-  @@index([category])
+  @@id([institutionId, key])
+  @@index([institutionId, category])
 }
 
 model SyncRun {
-  id           String        @id @default(cuid())
-  startedAt    DateTime      @default(now())
-  completedAt  DateTime?
-  status       SyncRunStatus @default(RUNNING)
-  source       String        @default("static-markdown")
-  factsAdded   Int           @default(0)
-  factsUpdated Int           @default(0)
-  errorMsg     String?       @db.Text
-  durationMs   Int?
+  id            String        @id @default(cuid())
+  startedAt     DateTime      @default(now())
+  completedAt   DateTime?
+  status        SyncRunStatus @default(RUNNING)
+  source        String        @default("static-markdown")
+  /// r179 (phase-5): the institution this run synced — a run for one
+  /// institution never marks another's facts stale or overwrites its data.
+  institutionId String
+  institution   Institution   @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  factsAdded    Int           @default(0)
+  factsUpdated  Int           @default(0)
+  errorMsg      String?       @db.Text
+  durationMs    Int?
   /// Free-form notes / fields the run could not resolve.
-  notes        String?       @db.Text
+  notes         String?       @db.Text
 
   @@index([startedAt])
   @@index([status])
+  @@index([institutionId, startedAt])
 }
 
 // ════════════════════════════════════════════════════════════════

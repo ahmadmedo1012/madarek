@@ -42,7 +42,7 @@ vi.mock('../../src/logger.js', () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
 
-import { runSync, STALE_RUNNING_RUN_MS } from '../../src/lib/zu-sync/index';
+import { runSync, STALE_RUNNING_RUN_MS, DEFAULT_SYNC_INSTITUTION_ID } from '../../src/lib/zu-sync/index';
 import { prisma } from '../../src/db.js';
 import { logger } from '../../src/logger.js';
 
@@ -102,9 +102,14 @@ describe('runSync — stale RUNNING reap', () => {
 
 describe('runSync — fact transitions', () => {
   it('creates missing facts, updates changed ones, refreshes unchanged ones', async () => {
-    factFindUnique.mockImplementation((async ({ where }: { where: { key: string } }) => {
-      if (where.key === 'name.ar') return null; // new fact → create
-      if (where.key === 'founded')
+    factFindUnique.mockImplementation((async ({
+      where,
+    }: {
+      where: { institutionId_key: { institutionId: string; key: string } };
+    }) => {
+      const key = where.institutionId_key.key; // r179: composite (institution, key) PK
+      if (key === 'name.ar') return null; // new fact → create
+      if (key === 'founded')
         return {
           key: 'founded',
           value: '1980',
@@ -134,13 +139,15 @@ describe('runSync — fact transitions', () => {
     expect(factCreate.mock.calls[0]![0].data.key).toBe('name.ar');
 
     expect(factUpdate).toHaveBeenCalledTimes(2); // 'founded' (changed) + 'motto' (bump)
-    const updatedKeys = factUpdate.mock.calls.map((c) => (c[0] as { where: { key: string } }).where.key);
+    const updatedKeys = factUpdate.mock.calls.map(
+      (c) => (c[0] as { where: { institutionId_key: { key: string } } }).where.institutionId_key.key,
+    );
     expect(updatedKeys).toContain('founded');
     expect(updatedKeys).toContain('motto');
 
     // A fact in the DB but not in the source is flagged stale.
     expect(factUpdateMany).toHaveBeenCalledWith({
-      where: { key: { in: ['ghost'] } },
+      where: { institutionId: DEFAULT_SYNC_INSTITUTION_ID, key: { in: ['ghost'] } },
       data: { isStale: true },
     });
     // r166b (E2 #1 — D17-3): the run notes are Arabic user-facing text
@@ -151,8 +158,13 @@ describe('runSync — fact transitions', () => {
   });
 
   it('clears the stale flag on a fact whose value matches again', async () => {
-    factFindUnique.mockImplementation((async ({ where }: { where: { key: string } }) => {
-      if (where.key === 'name.ar') {
+    factFindUnique.mockImplementation((async ({
+      where,
+    }: {
+      where: { institutionId_key: { institutionId: string; key: string } };
+    }) => {
+      const key = where.institutionId_key.key; // r179: composite (institution, key) PK
+      if (key === 'name.ar') {
         // Same value as the source, but previously flagged stale.
         return {
           key: 'name.ar',

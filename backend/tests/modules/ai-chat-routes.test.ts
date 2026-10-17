@@ -26,6 +26,9 @@ vi.mock('../../src/db.js', () => {
   // vi.resetModules one below) gets a FRESH mock instance, so $transaction
   // hands the callback THIS instance as the tx client.
   const p: Record<string, unknown> = {
+    // r179 (phase-5): chat is institution-scoped — resolveCallerInstitutionScope
+    // re-verifies the token's inst claim through membership.findFirst.
+    membership: { findFirst: vi.fn() },
     aiConversation: { findFirst: vi.fn(), create: vi.fn() },
     aiMessage: { findMany: vi.fn(), create: vi.fn() },
     aiTelemetry: { create: vi.fn() },
@@ -46,7 +49,11 @@ import { signAccessToken } from '../../src/lib/jwt.js';
 // ── Shared helpers ────────────────────────────────────────────────
 
 const STUDENT_ID = 'student-1';
-const bearer = () => ({ authorization: `Bearer ${signAccessToken(STUDENT_ID, Role.STUDENT, null)}` });
+// r179 (phase-5): the chat route requires a verified institution context.
+const INSTITUTION_ID = 'inst-test-chat';
+const bearer = () => ({
+  authorization: `Bearer ${signAccessToken(STUDENT_ID, Role.STUDENT, INSTITUTION_ID)}`,
+});
 
 function startServer(app: ReturnType<typeof createApp>) {
   const server = app.listen(0);
@@ -89,6 +96,8 @@ describe('POST /api/v1/ai/chat — LOCAL mode (default test env)', () => {
     vi.clearAllMocks();
     masteryFindMany.mockResolvedValue([] as never); // no mastery rows → generic reply
     vi.mocked(prisma.enrollment.findMany).mockResolvedValue([] as never); // r176b: no enrollments → honest empty context
+    // r179: the caller's institution context resolves (active membership).
+    vi.mocked(prisma.membership.findFirst).mockResolvedValue({ institutionId: INSTITUTION_ID } as never);
     convCreate.mockResolvedValue({ id: 'conv-1', userId: STUDENT_ID, title: 'س', createdAt: new Date(0) } as never);
     msgCreate.mockResolvedValue({ id: 'msg-1', content: 'ردّ', tokens: 0 } as never);
     telemetryCreate.mockResolvedValue({} as never);
@@ -124,7 +133,7 @@ describe('POST /api/v1/ai/chat — LOCAL mode (default test env)', () => {
     expect(transaction).toHaveBeenCalledTimes(1);
     // The conversation row carries the 60-char title of the message.
     expect(convCreate).toHaveBeenCalledWith({
-      data: { userId: STUDENT_ID, title: 'سؤال عن الخوارزميات' },
+      data: { userId: STUDENT_ID, institutionId: INSTITUTION_ID, title: 'سؤال عن الخوارزميات' },
     });
     // Both messages ride the same conversation.
     expect(msgCreate).toHaveBeenCalledWith({
@@ -212,6 +221,8 @@ describe('POST /api/v1/ai/chat — OPENAI mode (provider wire stubbed)', () => {
     historyFindMany.mockResolvedValue([] as never);
     vi.mocked(prisma.enrollment.findMany).mockResolvedValue([] as never);
     vi.mocked(prisma.courseOffering.findMany).mockResolvedValue([] as never);
+    // r179: the caller's institution context resolves (active membership).
+    vi.mocked(prisma.membership.findFirst).mockResolvedValue({ institutionId: INSTITUTION_ID } as never);
     convCreate.mockResolvedValue({ id: 'conv-2', userId: STUDENT_ID, title: 'س', createdAt: new Date(0) } as never);
     // Faithful delegate: create echoes back the row it was asked to
     // persist — the route answers with the PERSISTED content, so the
@@ -604,6 +615,8 @@ describe('POST /api/v1/ai/chat — OPENROUTER mode (free router)', () => {
     historyFindMany.mockResolvedValue([] as never);
     vi.mocked(prisma.enrollment.findMany).mockResolvedValue([] as never);
     vi.mocked(prisma.courseOffering.findMany).mockResolvedValue([] as never);
+    // r179: the caller's institution context resolves (active membership).
+    vi.mocked(prisma.membership.findFirst).mockResolvedValue({ institutionId: INSTITUTION_ID } as never);
     convCreate.mockResolvedValue({ id: 'conv-or', userId: STUDENT_ID, title: 'س', createdAt: new Date(0) } as never);
     msgCreate.mockImplementation(
       async (args: { data: { content: string } }) =>
@@ -825,6 +838,8 @@ describe('POST /api/v1/ai/chat — OPENROUTER mode with the AI_MODELS list (r176
     historyFindMany.mockResolvedValue([] as never);
     vi.mocked(prisma.enrollment.findMany).mockResolvedValue([] as never);
     vi.mocked(prisma.courseOffering.findMany).mockResolvedValue([] as never);
+    // r179: the caller's institution context resolves (active membership).
+    vi.mocked(prisma.membership.findFirst).mockResolvedValue({ institutionId: INSTITUTION_ID } as never);
     convCreate.mockResolvedValue({ id: 'conv-or-models', userId: STUDENT_ID, title: 'س', createdAt: new Date(0) } as never);
     msgCreate.mockImplementation(
       async (args: { data: { content: string } }) =>
