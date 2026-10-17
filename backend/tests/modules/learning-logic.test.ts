@@ -330,7 +330,7 @@ describe('researchQueueWhere (r157 / 6A8 — the review-queue scope)', () => {
     });
   });
 
-  it('ADMIN/OWNER → the institution-wide oversight view (no per-row ownership)', () => {
+  it('ADMIN/OWNER without an institution → the oversight view (no per-row ownership)', () => {
     expect(researchQueueWhere(Role.ADMIN, 'admin_1')).toEqual({
       status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED', 'GRADED'] },
     });
@@ -342,6 +342,18 @@ describe('researchQueueWhere (r157 / 6A8 — the review-queue scope)', () => {
     // no `offering` key leaks for oversight roles.
     expect(researchQueueWhere(Role.QUALITY, 'q_1')).not.toHaveProperty('offering');
   });
+
+  it('r179: an institutional ADMIN passes the DB-verified institution → the queue is pinned to it', () => {
+    expect(researchQueueWhere(Role.ADMIN, 'admin_1', 'inst-r179-queue')).toEqual({
+      status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED', 'GRADED'] },
+      institutionId: 'inst-r179-queue',
+    });
+    // TEACHER rows stay ownership-pinned regardless of the institution.
+    expect(researchQueueWhere(Role.TEACHER, 'teacher_1', 'inst-r179-queue')).toEqual({
+      status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED', 'GRADED'] },
+      offering: { teacherId: 'teacher_1' },
+    });
+  });
 });
 
 describe('research queue wiring (source-scan pin — the route must CONSUME the helper)', () => {
@@ -351,7 +363,7 @@ describe('research queue wiring (source-scan pin — the route must CONSUME the 
     // This pin fails the moment the route stops routing its where
     // through the exported helper.
     expect(learningRouteSource).toMatch(
-      /router\.get\('\/research\/queue',[\s\S]*?where: researchQueueWhere\(req\.user!\.role, req\.user!\.id\),/,
+      /router\.get\('\/research\/queue',[\s\S]*?where: researchQueueWhere\(req\.user!\.role, req\.user!\.id, queueInstitution\),/,
     );
     // And the GRADED-less inline twin is gone from the file entirely.
     expect(learningRouteSource).not.toContain(

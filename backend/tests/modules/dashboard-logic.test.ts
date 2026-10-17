@@ -805,9 +805,12 @@ describe('/me/results wiring (source-scan pins — r164-e, no drift)', () => {
     );
   });
 
-  it('the awaiting query reads the shared status set, bounded and newest-first', () => {
+  it('the awaiting query reads the shared status set, bounded and newest-first (r179: institution-pinned)', () => {
+    // r179 (phase-5): the awaiting feed gained the student's verified
+    // institution filter (assignment → offering → course chain) — the
+    // status set, bound and ordering are unchanged.
     expect(studentDashboardRouteSource).toMatch(
-      /const awaitingSubs = await prisma\.submission\.findMany\(\{\s*where: \{ studentId: userId, status: \{ in: \[\.\.\.AWAITING_GRADE_STATUSES\] \} \},\s*orderBy: \{ submittedAt: 'desc' \},\s*take: 20,/,
+      /const awaitingSubs = await prisma\.submission\.findMany\(\{\s*where: \{\s*studentId: userId,\s*status: \{ in: \[\.\.\.AWAITING_GRADE_STATUSES\] \},\s*\.\.\.\(studentInstitution[\s\S]*?orderBy: \{ submittedAt: 'desc' \},\s*take: 20,/,
     );
   });
 

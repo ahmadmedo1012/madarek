@@ -3,11 +3,19 @@ import { z } from 'zod';
 import { AttendanceStatus, Prisma, Role } from '@prisma/client';
 import { prisma, withRetry } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
+import {
+  resolveCallerInstitutionScope,
+  institutionContextRequiredError,
+  assertOfferingInCallerInstitution,
+} from '../../lib/profile-scoping.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { utcDayStart } from '../../lib/dates.js';
 import { extractPaperText } from '../../lib/pdf.js';
+// r179b: the file-adjacent paper scan shares the files institution gate
+// (no cycle: files.routes imports nothing from this file).
+import { requireFileInstitutionScope } from './files.routes.js';
 import { assertOwnsResearchPaper, assertOfferingAccess } from '../../lib/permissions.js';
 import { attendancePctFromStatusCounts } from '../../lib/risk.js';
 import { requireCapability } from '../middleware/requireCapability.js';
@@ -47,6 +55,13 @@ router.get('/offerings/:id/full', async (req, res, next) => {
   try {
     const id = req.params.id!;
     await assertOfferingAccess(id, req.user!.id, req.user!.role);
+    // r179 (phase-5): the oversight roles whose per-row guard bypasses
+    // ownership (ADMIN/QUALITY) are pinned to their DB-verified
+    // institution by the Course→institutionId chain (404 for a foreign
+    // offering — never leak existence). STUDENT/TEACHER access is
+    // already ownership-pinned (enrollment/teaching); OWNER is
+    // platform-wide.
+    await assertOfferingInCallerInstitution(id, req.user!, 'read');
     const offering = await prisma.courseOffering.findUnique({
       where: { id },
       include: {
@@ -123,6 +138,9 @@ router.get('/offerings/:id/lectures', async (req, res, next) => {
   try {
     const offeringId = req.params.id!;
     await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
+    // r179 (phase-5): see GET /offerings/:id/full — the oversight bypass
+    // is institution-pinned.
+    await assertOfferingInCallerInstitution(offeringId, req.user!, 'read');
     const data = await prisma.lecture.findMany({
       where: { offeringId },
       // r152b (A5 P2): deterministic tiebreakers (see above).
@@ -196,6 +214,9 @@ router.get('/lectures/:id', async (req, res, next) => {
     if (!lec) throw AppError.notFound();
     // Offering-level access gate before any lecture content is returned.
     await assertOfferingAccess(lec.offeringId, req.user!.id, req.user!.role);
+    // r179 (phase-5): see GET /offerings/:id/full — the oversight bypass
+    // is institution-pinned.
+    await assertOfferingInCallerInstitution(lec.offeringId, req.user!, 'read');
     res.json({ data: lec });
   } catch (e) { next(e); }
 });
@@ -519,10 +540,22 @@ router.post(
 // ════════════════════════════════════════════════════════════════
 router.get('/me/profile', async (req, res, next) => {
   try {
-    // r178: profiles are per-membership — resolved in the caller's
-    // token institution context when one is selected, else the oldest
-    // active profile (legacy fallback for a contextless session).
-    // TODO(r179/phase-5): full data isolation.
+    /* r179 (phase-5): profiles are per-membership — resolved in the
+     * caller's DB-VERIFIED institution context only (the legacy
+     * oldest-profile fallback is gone). STUDENT/TEACHER callers NEED
+     * the context (403 INSTITUTION_CONTEXT_REQUIRED without one —
+     * their academic identity is institution-scoped); ADMIN/QUALITY/
+     * OWNER get an honest profile-less response without one (never a
+     * guess). */
+    const callerInstitution = await resolveCallerInstitutionScope(
+      req.user!.id,
+      req.user!.institutionId,
+    );
+    const isInstitutionalProfileRole =
+      req.user!.role === Role.STUDENT || req.user!.role === Role.TEACHER;
+    if (isInstitutionalProfileRole && !callerInstitution) {
+      throw institutionContextRequiredError();
+    }
     const user = await withRetry(() => prisma.user.findUnique({
       where: { id: req.user!.id },
       select: {
@@ -536,9 +569,9 @@ router.get('/me/profile', async (req, res, next) => {
         emailVerifiedAt: true,
         createdAt: true,
         studentProfiles: {
-          where: req.user!.institutionId
-            ? { institutionId: req.user!.institutionId }
-            : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+          where: callerInstitution
+            ? { institutionId: callerInstitution }
+            : { id: { in: [] } },
           take: 1,
           orderBy: { createdAt: 'asc' },
           include: {
@@ -547,9 +580,9 @@ router.get('/me/profile', async (req, res, next) => {
           },
         },
         teacherProfiles: {
-          where: req.user!.institutionId
-            ? { membership: { institutionId: req.user!.institutionId } }
-            : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+          where: callerInstitution
+            ? { membership: { institutionId: callerInstitution } }
+            : { id: { in: [] } },
           take: 1,
           orderBy: { createdAt: 'asc' },
           include: {
@@ -606,10 +639,23 @@ router.get('/me/resume', async (req, res, next) => {
       res.json({ data: null });
       return;
     }
+    // r179 (phase-5): the student's resume feed is institution-scoped —
+    // a DB-verified context is REQUIRED (403 without one) and every
+    // query below is pinned to it via the lecture → offering → course
+    // and enrollment → offering → course chains.
+    const studentInstitution = await resolveCallerInstitutionScope(
+      req.user!.id,
+      req.user!.institutionId,
+    );
+    if (!studentInstitution) throw institutionContextRequiredError();
 
     // 1. Most-recently-watched, not yet completed lecture takes priority.
     const recent = await prisma.watchEvent.findFirst({
-      where: { studentId: req.user!.id, completed: false },
+      where: {
+        studentId: req.user!.id,
+        completed: false,
+        lecture: { offering: { course: { institutionId: studentInstitution } } },
+      },
       orderBy: { lastSeenAt: 'desc' },
       include: {
         lecture: {
@@ -647,7 +693,12 @@ router.get('/me/resume', async (req, res, next) => {
     const enrollments = await prisma.enrollment.findMany({
       // Active enrollments only — mirrors the platform-wide convention
       // (a non-active enrollment must not surface course content).
-      where: { studentId: req.user!.id, status: 'active' },
+      // r179: pinned to the student's verified institution.
+      where: {
+        studentId: req.user!.id,
+        status: 'active',
+        offering: { course: { institutionId: studentInstitution } },
+      },
       include: {
         offering: {
           include: {
@@ -695,13 +746,28 @@ router.get('/me/matrix', async (req, res, next) => {
       res.json({ data: [] });
       return;
     }
+    // r179 (phase-5): the mastery matrix is institution-scoped — a
+    // DB-verified context is REQUIRED (403 without one) and the
+    // enrollments/mastery reads are pinned to it.
+    const studentInstitution = await resolveCallerInstitutionScope(
+      req.user!.id,
+      req.user!.institutionId,
+    );
+    if (!studentInstitution) throw institutionContextRequiredError();
     // Get all concepts across the student's actively enrolled courses, with mastery if any.
     const enrollments = await prisma.enrollment.findMany({
-      where: { studentId: req.user!.id, status: 'active' },
+      where: {
+        studentId: req.user!.id,
+        status: 'active',
+        offering: { course: { institutionId: studentInstitution } },
+      },
       include: { offering: { include: { course: { include: { concepts: true } } } } },
     });
     const masteries = await prisma.studentMastery.findMany({
-      where: { studentId: req.user!.id },
+      where: {
+        studentId: req.user!.id,
+        concept: { course: { institutionId: studentInstitution } },
+      },
     });
     const masteryByConcept = new Map(masteries.map((m) => [m.conceptId, m]));
 
@@ -733,8 +799,20 @@ router.get('/me/gaps', async (req, res, next) => {
       res.json({ data: [] });
       return;
     }
+    // r179 (phase-5): the learning-gaps feed is institution-scoped — a
+    // DB-verified context is REQUIRED (403 without one); the mastery
+    // read is pinned to it through concept → course.
+    const studentInstitution = await resolveCallerInstitutionScope(
+      req.user!.id,
+      req.user!.institutionId,
+    );
+    if (!studentInstitution) throw institutionContextRequiredError();
     const masteries = await prisma.studentMastery.findMany({
-      where: { studentId: req.user!.id, level: { lt: 0.6 } },
+      where: {
+        studentId: req.user!.id,
+        level: { lt: 0.6 },
+        concept: { course: { institutionId: studentInstitution } },
+      },
       include: {
         concept: {
           include: {
@@ -776,14 +854,31 @@ router.get('/me/research', async (req, res, next) => {
      * /research/queue: TEACHER → only papers tied to offerings they
      * teach; QUALITY → the oversight view (they need it); ADMIN/OWNER
      * keep the institutional view. The FE consumers of this route are
-     * student-only, so this branch is API-hygiene, not a UI change. */
+     * student-only, so this branch is API-hygiene, not a UI change.
+     * r179 (phase-5): STUDENT and the institutional oversight roles
+     * (ADMIN/QUALITY) need a DB-verified context (403 without one) —
+     * STUDENT papers are written under their verified institution, and
+     * the oversight archive is pinned to the caller's institution.
+     * OWNER keeps the platform-wide oversight view. */
     const role = req.user!.role;
+    const callerInstitution = await resolveCallerInstitutionScope(
+      req.user!.id,
+      req.user!.institutionId,
+    );
+    if (
+      (role === Role.STUDENT || role === Role.ADMIN || role === Role.QUALITY) &&
+      !callerInstitution
+    ) {
+      throw institutionContextRequiredError();
+    }
     const where =
       role === Role.STUDENT
-        ? { studentId: req.user!.id }
+        ? { studentId: req.user!.id, institutionId: callerInstitution! }
         : role === Role.TEACHER
           ? { offering: { teacherId: req.user!.id } }
-          : {};
+          : role === Role.ADMIN || role === Role.QUALITY
+            ? { institutionId: callerInstitution! }
+            : {};
     const data = await prisma.researchPaper.findMany({
       where,
       // Explicit select: NEVER ship extractedText (full PDF text — huge).
@@ -855,6 +950,18 @@ router.post('/me/research', createRouteLimiter({ max: 10 }), validate(createPape
   try {
     if (req.user!.role !== Role.STUDENT) throw AppError.forbidden();
     const body = req.body as z.infer<typeof createPaperSchema>;
+    /* r179 (phase-5) minimal lead fix: the paper is submitted under the
+     * student's VERIFIED institution context (the membership the
+     * submission happens in — a user may hold profiles in several
+     * institutions). Fail closed without a context. */
+    const paperInstitutionId = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (!paperInstitutionId) {
+      throw new AppError(
+        'INSTITUTION_CONTEXT_REQUIRED',
+        'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
+        403,
+      );
+    }
     // If the paper is tied to an offering, the student must be actively
     // enrolled in it — otherwise any offering id could be attached to
     // fake course affiliation.
@@ -881,7 +988,12 @@ router.post('/me/research', createRouteLimiter({ max: 10 }), validate(createPape
         throw AppError.conflict('تم رفع هذه الورقة قبل قليل');
       }
       return tx.researchPaper.create({
-        data: { ...body, studentId: req.user!.id, status: 'UPLOADED' },
+        data: {
+          ...body,
+          studentId: req.user!.id,
+          institutionId: paperInstitutionId,
+          status: 'UPLOADED',
+        },
       });
     });
     res.status(201).json({ data: created });
@@ -929,9 +1041,25 @@ router.post('/research/:id/scan', createRouteLimiter({ max: 10 }), async (req, r
       // Narrow select — the scan needs the identity/ownership/status/file
       // fields only; never hydrate the potentially-megabyte extractedText
       // column for a precondition check.
-      select: { id: true, studentId: true, fileUrl: true, status: true },
+      select: { id: true, studentId: true, fileUrl: true, status: true, institutionId: true },
     });
     if (!paper) throw AppError.notFound();
+    // r179b (phase-5): the scan reads the paper's bytes through
+    // extractPaperText — an institution-scoped file operation. The
+    // paper row carries institutionId (the membership context it was
+    // submitted under); it must match the caller's VERIFIED context
+    // for every non-OWNER role. A foreign-institution paper is a 404
+    // (indistinguishable from missing — no existence oracle); a
+    // contextless institutional caller is a 403 CONTEXT_REQUIRED; a
+    // forged/stale inst claim is a 403 CONTEXT_INVALID.
+    const scanInstitutionId = await requireFileInstitutionScope(
+      req.user!.id,
+      req.user!.role,
+      req.user!.institutionId,
+    );
+    if (scanInstitutionId !== null && paper.institutionId !== scanInstitutionId) {
+      throw AppError.notFound();
+    }
     // Students may only scan their own papers.
     if (req.user!.role === Role.STUDENT) {
       if (paper.studentId !== req.user!.id) throw AppError.forbidden();
@@ -1061,28 +1189,48 @@ export const RESEARCH_QUEUE_STATUSES = ['CHECKS_PASSED', 'CHECKS_FAILED', 'GRADE
 /**
  * The review-queue scope for a role (r157 / 6A8): a TEACHER sees only
  * papers tied to offerings they teach (the same per-row ownership the
- * grade/publish steps enforce); ADMIN/OWNER keep the institution-wide
+ * grade/publish steps enforce). r179 (phase-5): institutional
+ * oversight callers (ADMIN/QUALITY) pass their DB-verified institution
+ * — the queue is pinned to it (ResearchPaper.institutionId); an
+ * OWNER/platform caller passes nothing and keeps the platform-wide
  * oversight view. Pure so the unit suite can pin BOTH branches — the
  * live route consumes this directly (never a re-inlined twin).
  */
 export function researchQueueWhere(
   role: Role,
   userId: string,
+  institutionId?: string | null,
 ): Prisma.ResearchPaperWhereInput {
-  return role === Role.TEACHER
-    ? { status: { in: [...RESEARCH_QUEUE_STATUSES] }, offering: { teacherId: userId } }
-    : { status: { in: [...RESEARCH_QUEUE_STATUSES] } };
+  if (role === Role.TEACHER) {
+    return { status: { in: [...RESEARCH_QUEUE_STATUSES] }, offering: { teacherId: userId } };
+  }
+  return {
+    status: { in: [...RESEARCH_QUEUE_STATUSES] },
+    ...(institutionId ? { institutionId } : {}),
+  };
 }
 
 // Teacher / admin queue: papers passing checks, awaiting grade.
 router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
+    /* r179 (phase-5): an ADMIN caller needs their DB-verified
+     * institution context (403 without one) — the queue is pinned to
+     * their institution. TEACHER rows stay ownership-pinned (offerings
+     * they teach); OWNER keeps the platform-wide oversight queue. */
+    const queueInstitution =
+      req.user!.role === Role.ADMIN
+        ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
+        : null;
+    if (req.user!.role === Role.ADMIN && !queueInstitution) {
+      throw institutionContextRequiredError();
+    }
     const data = await prisma.researchPaper.findMany({
       // Scoped like the teacher dashboard feed: a TEACHER sees only
       // papers tied to offerings they teach; ADMIN/OWNER keep the
-      // institution-wide oversight view. GRADED included (6A8) — the
-      // publish step is reachable from the queue rows themselves.
-      where: researchQueueWhere(req.user!.role, req.user!.id),
+      // oversight view (ADMIN pinned to their verified institution).
+      // GRADED included (6A8) — the publish step is reachable from the
+      // queue rows themselves.
+      where: researchQueueWhere(req.user!.role, req.user!.id, queueInstitution),
       // Explicit select: NEVER ship extractedText (full PDF text — huge).
       select: {
         id: true, studentId: true, reviewerId: true, offeringId: true,
@@ -1435,6 +1583,40 @@ router.delete('/research/annotations/:id', async (req, res, next) => {
 // ════════════════════════════════════════════════════════════════
 
 /**
+ * r179 (phase-5): the institution a /quality/* view is scoped to.
+ * QUALITY/ADMIN callers (the institutional oversight roles) MUST hold
+ * a DB-verified context (403 INSTITUTION_CONTEXT_REQUIRED without one
+ * — quality surfaces show THEIR OWN institution's data, never the
+ * platform-wide mix). The platform OWNER may narrow the view with an
+ * explicit ?institution=<slug> (validated to exist and be ACTIVE — 404
+ * otherwise); without it the owner keeps the platform-wide view (the
+ * owner console's platform stats stay platform-wide by contract).
+ * Returns null = platform-wide (OWNER only).
+ */
+async function resolveQualityInstitution(req: {
+  user?: { id: string; role: Role; institutionId: string | null };
+  query: unknown;
+}): Promise<string | null> {
+  const user = req.user!;
+  if (user.role === Role.OWNER) {
+    const raw = (req.query as Record<string, unknown>).institution;
+    const slug = typeof raw === 'string' && raw.trim().length > 0 ? raw.trim() : null;
+    if (!slug) return null;
+    const institution = await prisma.institution.findUnique({
+      where: { slug },
+      select: { id: true, status: true },
+    });
+    if (!institution || institution.status !== 'ACTIVE') {
+      throw AppError.notFound('المؤسسة غير موجودة');
+    }
+    return institution.id;
+  }
+  const scope = await resolveCallerInstitutionScope(user.id, user.institutionId);
+  if (!scope) throw institutionContextRequiredError();
+  return scope;
+}
+
+/**
  * Attendance alert thresholds: an offering is only judged once it has
  * at least MIN_RECORDS attendance records in the window; an absence
  * rate ≥25% is a warning, ≥40% is critical. Exported for unit tests.
@@ -1460,8 +1642,11 @@ export function attendanceAlertSeverity(
  *   · high-plagiarism papers awaiting review
  *   · stale offerings (≥21 days since last upload)
  */
-router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
+router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (req, res, next) => {
   try {
+    // r179 (phase-5): the alerts view is institution-scoped (see
+    // resolveQualityInstitution).
+    const qualityInstitution = await resolveQualityInstitution(req);
     const now = new Date();
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     const twentyOneDaysAgo = new Date(now.getTime() - 21 * 24 * 60 * 60 * 1000);
@@ -1478,10 +1663,17 @@ router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, re
 
     // Low-attendance offerings (last 30d). Aggregated in the database
     // (groupBy) — never hydrate every attendance record of the
-    // institution into memory.
+    // institution into memory. r179: the window is pinned to the
+    // quality institution through session → offering → course.
+    const offeringCourse = qualityInstitution
+      ? { course: { institutionId: qualityInstitution } }
+      : null;
     const [recentSessions, recordGroups, absentGroups] = await Promise.all([
       prisma.attendanceSession.findMany({
-        where: { date: { gte: thirtyDaysAgo } },
+        where: {
+          date: { gte: thirtyDaysAgo },
+          ...(offeringCourse ? { offering: offeringCourse } : {}),
+        },
         select: {
           id: true,
           offeringId: true,
@@ -1490,12 +1682,23 @@ router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, re
       }),
       prisma.attendanceRecord.groupBy({
         by: ['sessionId'],
-        where: { session: { date: { gte: thirtyDaysAgo } } },
+        where: {
+          session: {
+            date: { gte: thirtyDaysAgo },
+            ...(offeringCourse ? { offering: offeringCourse } : {}),
+          },
+        },
         _count: { _all: true },
       }),
       prisma.attendanceRecord.groupBy({
         by: ['sessionId'],
-        where: { session: { date: { gte: thirtyDaysAgo } }, status: 'ABSENT' },
+        where: {
+          session: {
+            date: { gte: thirtyDaysAgo },
+            ...(offeringCourse ? { offering: offeringCourse } : {}),
+          },
+          status: 'ABSENT',
+        },
         _count: { _all: true },
       }),
     ]);
@@ -1526,11 +1729,13 @@ router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, re
       });
     }
 
-    // High-plagiarism research papers
+    // High-plagiarism research papers — r179: pinned to the quality
+    // institution (papers carry institutionId since phase-5).
     const flaggedPapers = await prisma.researchPaper.findMany({
       where: {
         status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED'] },
         plagiarismPct: { gte: 25 },
+        ...(qualityInstitution ? { institutionId: qualityInstitution } : {}),
       },
       orderBy: { uploadedAt: 'desc' },
       take: 10,
@@ -1552,8 +1757,12 @@ router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, re
     }
 
     // Stale offerings — no material uploaded in 21+ days but has at least one
+    // (r179: pinned to the quality institution via course chain).
     const stale = await prisma.courseOffering.findMany({
-      where: { materials: { none: { createdAt: { gte: twentyOneDaysAgo } } } },
+      where: {
+        materials: { none: { createdAt: { gte: twentyOneDaysAgo } } },
+        ...(qualityInstitution ? { course: { institutionId: qualityInstitution } } : {}),
+      },
       select: {
         id: true,
         course: { select: { name: true, code: true } },
@@ -1596,15 +1805,49 @@ router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, re
   } catch (e) { next(e); }
 });
 
-router.get('/quality/overview', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
+router.get('/quality/overview', requireCapability('QUALITY_VIEW'), async (req, res, next) => {
   try {
+    // r179 (phase-5): the overview is institution-scoped (see
+    // resolveQualityInstitution) — every aggregate is pinned to it.
+    const qualityInstitution = await resolveQualityInstitution(req);
+    const institutionMembership = qualityInstitution
+      ? { some: { institutionId: qualityInstitution, isActive: true } }
+      : null;
     const [users, courses, offerings, attendance, papers, lectures] = await Promise.all([
-      prisma.user.groupBy({ by: ['role'], _count: { _all: true } }),
-      prisma.course.count(),
-      prisma.courseOffering.count(),
-      prisma.attendanceRecord.groupBy({ by: ['status'], _count: { _all: true } }),
-      prisma.researchPaper.groupBy({ by: ['status'], _count: { _all: true } }),
-      prisma.lecture.count(),
+      prisma.user.groupBy({
+        by: ['role'],
+        ...(institutionMembership ? { where: { memberships: institutionMembership } } : {}),
+        _count: { _all: true },
+      }),
+      prisma.course.count({
+        ...(qualityInstitution ? { where: { institutionId: qualityInstitution } } : {}),
+      }),
+      prisma.courseOffering.count({
+        ...(qualityInstitution
+          ? { where: { course: { institutionId: qualityInstitution } } }
+          : {}),
+      }),
+      prisma.attendanceRecord.groupBy({
+        by: ['status'],
+        ...(qualityInstitution
+          ? {
+              where: {
+                session: { offering: { course: { institutionId: qualityInstitution } } },
+              },
+            }
+          : {}),
+        _count: { _all: true },
+      }),
+      prisma.researchPaper.groupBy({
+        by: ['status'],
+        ...(qualityInstitution ? { where: { institutionId: qualityInstitution } } : {}),
+        _count: { _all: true },
+      }),
+      prisma.lecture.count({
+        ...(qualityInstitution
+          ? { where: { offering: { course: { institutionId: qualityInstitution } } } }
+          : {}),
+      }),
     ]);
     res.json({
       data: {
@@ -1724,7 +1967,13 @@ router.get(
   async (req, res, next) => {
     try {
       const { metric } = req.query as unknown as { metric?: 'attendance' | 'completion' };
+      // r179 (phase-5): the courses drill-down is institution-scoped
+      // (see resolveQualityInstitution).
+      const qualityInstitution = await resolveQualityInstitution(req);
       const offerings = await prisma.courseOffering.findMany({
+        where: {
+          ...(qualityInstitution ? { course: { institutionId: qualityInstitution } } : {}),
+        },
         include: {
           course: { select: { id: true, name: true, code: true, themeColor: true } },
           teacher: { select: { id: true, firstName: true, lastName: true } },
@@ -1823,12 +2072,18 @@ export function stableSeed(id: string): number {
 
 router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (req, res, next) => {
   try {
-    // r178: profiles are per-membership — each teacher's profile is
-    // resolved in the QUALITY caller's institution context when one is
-    // selected, else their oldest active profile
-    // (TODO(r179/phase-5): institution-scoped quality surfaces).
+    // r179 (phase-5): the professors view is institution-scoped — each
+    // teacher's profile and taught offerings resolve within the
+    // quality institution (see resolveQualityInstitution); the legacy
+    // oldest-profile fallback is gone.
+    const qualityInstitution = await resolveQualityInstitution(req);
     const teachers = await withRetry(() => prisma.user.findMany({
-      where: { role: Role.TEACHER },
+      where: {
+        role: Role.TEACHER,
+        ...(qualityInstitution
+          ? { memberships: { some: { institutionId: qualityInstitution, isActive: true } } }
+          : {}),
+      },
       select: {
         id: true,
         firstName: true,
@@ -1836,14 +2091,17 @@ router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (req,
         avatarInitials: true,
         avatarColor: true,
         teacherProfiles: {
-          where: req.user!.institutionId
-            ? { membership: { institutionId: req.user!.institutionId } }
+          where: qualityInstitution
+            ? { membership: { institutionId: qualityInstitution } }
             : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
           take: 1,
           orderBy: { createdAt: 'asc' },
           include: { department: { include: { faculty: { select: { name: true } } } } },
         },
         taughtOfferings: {
+          where: qualityInstitution
+            ? { course: { institutionId: qualityInstitution } }
+            : undefined,
           include: {
             _count: {
               select: {
@@ -1910,8 +2168,11 @@ router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (req,
   } catch (e) { next(e); }
 });
 
-router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
+router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (req, res, next) => {
   try {
+    // r179 (phase-5): the engagement view is institution-scoped (see
+    // resolveQualityInstitution) — every aggregate is pinned to it.
+    const qualityInstitution = await resolveQualityInstitution(req);
     // SQL aggregation: sums/counts computed in the database instead of
     // loading the whole WatchEvent table into memory.
     // r155a (audit finding 4): every WatchEvent aggregate below filters
@@ -1919,38 +2180,75 @@ router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req
     // (WatchEvent rows are recorded for any authenticated viewer) were
     // polluting the engagement KPIs. The write path is unchanged; only
     // the quality aggregates narrow to actual students.
+    // r179: the student filter gains the institution membership chain
+    // (r176d/F-01 style) so the KPIs count the quality institution's
+    // students only.
 /* r176d (F-01): the weekly-active day buckets as ONE SQL aggregation —
  * to_char renders the stored UTC value (the same day-key convention the
  * JS fold used: toISOString().slice(0, 10)), COUNT(DISTINCT studentId)
  * is the per-day uniqueness, scoped to STUDENT-role watch events exactly
  * like the hydrated query it replaces. Returns [] on an empty window
  * (the JS fold then takes the flagged fallback path, as before). */
-async function weeklyActiveDailyBuckets(): Promise<Array<{ date: string; students: number }>> {
+async function weeklyActiveDailyBuckets(institutionId: string | null): Promise<Array<{ date: string; students: number }>> {
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   return prisma.$queryRaw<Array<{ date: string; students: number }>>`
     SELECT to_char("lastSeenAt", 'YYYY-MM-DD') AS "date",
            COUNT(DISTINCT "studentId")::int AS "students"
     FROM "WatchEvent"
     INNER JOIN "User" ON "User"."id" = "WatchEvent"."studentId"
+    ${institutionId ? Prisma.sql`INNER JOIN "Membership" ON "Membership"."userId" = "WatchEvent"."studentId"
+        AND "Membership"."institutionId" = ${institutionId}
+        AND "Membership"."isActive" = true` : Prisma.empty}
     WHERE "lastSeenAt" >= ${sevenDaysAgo} AND "User"."role" = 'STUDENT'
     GROUP BY 1`;
 }
 
-    const studentWatchEvents = { student: { role: Role.STUDENT } };
+    const studentWatchEvents = qualityInstitution
+      ? { student: { role: Role.STUDENT, memberships: { some: { institutionId: qualityInstitution, isActive: true } } } }
+      : { student: { role: Role.STUDENT } };
     const [attendance, watchTotals, completedLectures, lectures, enrollments, totalStudents, papersByStatus, weeklyActiveDaily] = await withRetry(() => Promise.all([
-      prisma.attendanceRecord.groupBy({ by: ['status'], _count: { _all: true } }),
+      prisma.attendanceRecord.groupBy({
+        by: ['status'],
+        ...(qualityInstitution
+          ? {
+              where: {
+                session: { offering: { course: { institutionId: qualityInstitution } } },
+              },
+            }
+          : {}),
+        _count: { _all: true },
+      }),
       prisma.watchEvent.aggregate({ where: studentWatchEvents, _sum: { watchedSec: true, totalSec: true }, _count: { _all: true } }),
       prisma.watchEvent.count({ where: { completed: true, ...studentWatchEvents } }),
-      prisma.lecture.count(),
-      prisma.enrollment.count(),
-      prisma.user.count({ where: { role: Role.STUDENT } }),
-      prisma.researchPaper.groupBy({ by: ['status'], _count: { _all: true } }),
+      prisma.lecture.count({
+        ...(qualityInstitution
+          ? { where: { offering: { course: { institutionId: qualityInstitution } } } }
+          : {}),
+      }),
+      prisma.enrollment.count({
+        ...(qualityInstitution
+          ? { where: { offering: { course: { institutionId: qualityInstitution } } } }
+          : {}),
+      }),
+      prisma.user.count({
+        where: {
+          role: Role.STUDENT,
+          ...(qualityInstitution
+            ? { memberships: { some: { institutionId: qualityInstitution, isActive: true } } }
+            : {}),
+        },
+      }),
+      prisma.researchPaper.groupBy({
+        by: ['status'],
+        ...(qualityInstitution ? { where: { institutionId: qualityInstitution } } : {}),
+        _count: { _all: true },
+      }),
       // Distinct students per day for the weekly-active curve (r176d/F-01:
       // one SQL day-bucket aggregation — the same date-trunc shape
       // /owner/login-analytics uses — instead of hydrating every student
       // WatchEvent of the window into JS to fold it; a time window is not
-      // a row bound).
-      weeklyActiveDailyBuckets(),
+      // a row bound). r179: institution-pinned for institutional callers.
+      weeklyActiveDailyBuckets(qualityInstitution),
     ]));
 
     const totalAttendance = attendance.reduce((s, x) => s + x._count._all, 0) || 1;
@@ -2008,11 +2306,17 @@ async function weeklyActiveDailyBuckets(): Promise<Array<{ date: string; student
   } catch (e) { next(e); }
 });
 
-router.get('/quality/curriculum', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
+router.get('/quality/curriculum', requireCapability('QUALITY_VIEW'), async (req, res, next) => {
   try {
+    // r179 (phase-5): the curriculum tree is institution-scoped — a
+    // QUALITY/ADMIN caller sees THEIR institution's faculties only
+    // (Faculty.institutionId); the OWNER view stays platform-wide (see
+    // resolveQualityInstitution).
+    const qualityInstitution = await resolveQualityInstitution(req);
     // Deep include is bounded: take-limits on courses (25/dept) and
     // offerings (10/course) so the payload can't explode on large faculties.
     const faculties = await withRetry(() => prisma.faculty.findMany({
+      where: qualityInstitution ? { institutionId: qualityInstitution } : {},
       include: {
         departments: {
           include: {

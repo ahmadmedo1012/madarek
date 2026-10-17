@@ -809,13 +809,18 @@ describe('ai.routes.ts — the P4 mode switch', () => {
   });
 
   it('r176b: the grounding loaders are bounded and read from the authenticated userId only', () => {
-    expect(aiRouteSource).toContain('loadChatContext(userId, req.user!.role)');
+    // r179 (phase-5): the context loader takes the verified institution id
+    // as an explicit third argument — grounding never blends institutions.
+    expect(aiRouteSource).toContain('loadChatContext(userId, req.user!.role, chatInstitutionId)');
     // Mastery: the 25 weakest, worst-first (the bounded read).
     expect(aiRouteSource).toContain("take: 25");
     // Enrollment: active rows only, newest 6.
-    expect(aiRouteSource).toContain("where: { studentId: userId, status: 'active' }");
-    // Teaching: the teacher's own offerings, newest 6.
-    expect(aiRouteSource).toContain("where: { teacherId: userId }");
+    expect(aiRouteSource).toContain(
+      "where: { studentId: userId, status: 'active', offering: { course: { institutionId } } }",
+    );
+    // Teaching: the teacher's own offerings, newest 6 — r179: scoped to the
+    // verified institution (course.institutionId).
+    expect(aiRouteSource).toContain("where: { teacherId: userId, course: { institutionId } }");
   });
 
   it('r176a: the history window is also content-clipped (AI_HISTORY_CHAR_CAP) on the wire', () => {

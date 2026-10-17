@@ -271,3 +271,22 @@ export const useAuthStore = create<AuthState>()(
     },
   ),
 );
+
+/* r179 (phase-5): the react-query institution-scope selector — the
+ * stable key segment every institution-dependent resource query
+ * appends (hooks/resources/*). Reading currentInstitution.id from the
+ * store means an institution switch (useSelectInstitution) changes the
+ * segment, so those queries RE-KEY and fetch under the new context
+ * without rendering the previous institution's cached rows first.
+ * (The switch-time invalidateQueries sweep in useAuth stays as a
+ * complement — it refreshes what is mounted; the key change
+ * guarantees the refetched data lands in a NEW cache entry.)
+ *
+ * null = no institution context (platform OWNER, or a
+ * multi-membership session awaiting selection) — also a stable
+ * segment: a contextless institution-scoped query 403s fail-closed
+ * server-side (INSTITUTION_CONTEXT_REQUIRED) and the shell routes to
+ * selection, so nothing stale renders either way. */
+export function useInstitutionScope(): string | null {
+  return useAuthStore((s) => (s.currentInstitution ? s.currentInstitution.id : null));
+}

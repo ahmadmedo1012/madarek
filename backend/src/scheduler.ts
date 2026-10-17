@@ -1,4 +1,9 @@
-import { runSync, type SyncResult } from './lib/zu-sync/index.js';
+import {
+  runSync,
+  INSTITUTION_SYNC_CONFIGS,
+  type InstitutionSyncConfig,
+  type SyncResult,
+} from './lib/zu-sync/index.js';
 import { prisma } from './db.js';
 import { logger } from './logger.js';
 
@@ -15,15 +20,33 @@ import { logger } from './logger.js';
  * Neither job ever throws into the timer callback — errors are
  * captured in SyncRun rows / the logger.
  *
+ * r179d (phase-5) — background-job classification:
+ *  - zu-sync writes INSTITUTIONAL data. Since phase-5 every run
+ *    targets exactly ONE institution, and the scheduler only syncs
+ *    the institutions with a CONFIGURED source
+ *    (`INSTITUTION_SYNC_CONFIGS` in lib/zu-sync — today only the
+ *    zawia-showcase institution; e.g. alandalus-demo has no configured
+ *    source and is never synced). Institutions are resolved against
+ *    the live ACTIVE rows, so a configured-but-missing institution is
+ *    skipped (fresh/disposable databases never hit a dangling FK).
+ *  - LoginEvent retention is PLATFORM-LEVEL maintenance: LoginEvent
+ *    rows are login telemetry with no institution dimension (every
+ *    attempt of every institution writes platform telemetry read by
+ *    the OWNER login-analytics page), so the sweep stays global by
+ *    design. No other background job exists in this codebase (the
+ *    milestones/onboarding services are request-path, not cron).
+ *
  * In a multi-instance deployment, replace this with a proper cron
  * (e.g. Render Cron Job, BullMQ, or pg-boss with a leader lock).
  *
- * Overlap guard: a boolean flag per job prevents a slow run from
- * piling up if Neon is sluggish and the next 24h tick fires while the
- * previous is still in flight. Without this, two concurrent sync runs
- * could race on the same UniversityFact rows and waste Neon compute
- * on the free tier (the retention sweep is idempotent, but a stuck
- * sweep must not stack either).
+ * Overlap guard: a per-institution in-flight flag prevents a slow run
+ * from piling up if Neon is sluggish and the next 24h tick fires while
+ * the previous is still in flight. Without this, two concurrent sync
+ * runs could race on the same institution's UniversityFact rows and
+ * waste Neon compute on the free tier (the retention sweep is
+ * idempotent, but a stuck sweep must not stack either). Guards are
+ * keyed per institution: a run for institution A never blocks a
+ * trigger for institution B (they touch disjoint rows).
  */
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
@@ -60,8 +83,63 @@ export const LOGIN_EVENT_PRUNE_MAX_BATCHES = 200;
 
 let dailyTimer: NodeJS.Timeout | null = null;
 let bootTimer: NodeJS.Timeout | null = null;
-let syncInProgress = false;
 let retentionInProgress = false;
+
+// ── r179d (phase-5): the per-institution sync plan ─────────────────
+
+/**
+ * One institution the scheduler will sync this tick: the institution
+ * id to run against and the CONFIGURED source to load facts from.
+ */
+export interface ScheduledSyncPlanItem {
+  institutionId: string;
+  source: string;
+}
+
+/**
+ * Pure decision — WHICH institutions get a scheduled sync.
+ *
+ * Rules (honest by construction):
+ *  - ONLY configured sources run (INSTITUTION_SYNC_CONFIGS): a source
+ *    is per-institution, never a global default for every university.
+ *  - A config runs only when its institution exists among the given
+ *    (ACTIVE) rows, matched by id OR slug. An institution with NO
+ *    config — e.g. a second seeded demo institution — is never synced.
+ *  - The planned institutionId is the LIVE row's id (not the config's
+ *    literal), so the syncRun.create FK always points at a real row.
+ *
+ * Exported for the DB-free scheduler unit tests.
+ */
+export function planScheduledSyncs(
+  configs: readonly InstitutionSyncConfig[],
+  institutions: ReadonlyArray<{ id: string; slug: string }>,
+): ScheduledSyncPlanItem[] {
+  const plan: ScheduledSyncPlanItem[] = [];
+  for (const config of configs) {
+    const live = institutions.find(
+      (i) => i.id === config.institutionId || i.slug === config.institutionSlug,
+    );
+    if (live) plan.push({ institutionId: live.id, source: config.source });
+  }
+  return plan;
+}
+
+/**
+ * Minimal structural slice of the Prisma client — same pattern as the
+ * retention sweep and `lib/operational-alerts.ts`, keeps the scheduled
+ * runner unit-testable without a database.
+ */
+interface InstitutionDirectoryClient {
+  institution: {
+    findMany(args: {
+      where: { status: 'ACTIVE' };
+      select: { id: true; slug: true };
+    }): Promise<Array<{ id: string; slug: string }>>;
+  };
+}
+
+/** In-flight syncs, keyed per institution (see the overlap-guard note above). */
+const syncsInProgress = new Set<string>();
 
 /**
  * Result of a guarded sync attempt.
@@ -69,8 +147,8 @@ let retentionInProgress = false;
  * - `{ ran: true, result }` — this call executed the sync; `result`
  *   carries the outcome (runSync reports sync-level failures as
  *   `status: FAILED`, not as exceptions).
- * - `{ ran: false, reason: 'overlap' }` — another sync is still in
- *   flight, so this call was skipped.
+ * - `{ ran: false, reason: 'overlap' }` — a sync for the SAME
+ *   institution is still in flight, so this call was skipped.
  */
 export type GuardedSyncOutcome =
   | { ran: true; result: SyncResult }
@@ -80,23 +158,35 @@ export type GuardedSyncOutcome =
  * Single guarded entry point into runSync, shared by the scheduler
  * ticks AND the manual `POST /admin/sync/trigger` route. Exported so
  * the manual admin trigger cannot bypass the overlap guard and race
- * a scheduled run on the UniversityFact rows.
+ * a scheduled run on that institution's UniversityFact rows.
  *
- * The check-then-set of `syncInProgress` happens synchronously (no
- * await in between), so under concurrent callers exactly one wins
+ * r179d: the guard (and the run itself) is scoped to ONE institution —
+ * callers pass the institutionId (and its configured source) from the
+ * registry/plan; runSync's default showcase fallback only applies to
+ * legacy no-opts callers.
+ *
+ * The check-then-set of the per-institution flag happens synchronously
+ * (no await in between), so under concurrent callers exactly one wins
  * in the single-threaded event loop.
  */
-export async function runSyncGuarded(label: string): Promise<GuardedSyncOutcome> {
-  if (syncInProgress) {
-    logger.warn({ label }, '[scheduler] previous sync still running — skipping this tick');
+export async function runSyncGuarded(
+  label: string,
+  opts: { institutionId: string; source?: string },
+): Promise<GuardedSyncOutcome> {
+  if (syncsInProgress.has(opts.institutionId)) {
+    logger.warn(
+      { label, institutionId: opts.institutionId },
+      '[scheduler] a sync for this institution is still running — skipping this tick',
+    );
     return { ran: false, reason: 'overlap' };
   }
-  syncInProgress = true;
+  syncsInProgress.add(opts.institutionId);
   try {
-    const result = await runSync();
+    const result = await runSync({ institutionId: opts.institutionId, source: opts.source });
     logger.info(
       {
         label,
+        institutionId: opts.institutionId,
         status: result.status,
         factsAdded: result.factsAdded,
         factsUpdated: result.factsUpdated,
@@ -108,11 +198,55 @@ export async function runSyncGuarded(label: string): Promise<GuardedSyncOutcome>
   } catch (err) {
     // runSync captures sync-level failures itself; this is defense-in-depth
     // for bookkeeping failures (e.g. the SyncRun row cannot be created).
-    logger.error({ err, label }, '[scheduler] sync threw');
+    logger.error({ err, label, institutionId: opts.institutionId }, '[scheduler] sync threw');
     throw err;
   } finally {
-    syncInProgress = false;
+    syncsInProgress.delete(opts.institutionId);
   }
+}
+
+/**
+ * The scheduled tick: run a guarded sync for EVERY institution with a
+ * configured source, sequentially (institution A's failure must never
+ * abort institution B's run — the loop isolates them).
+ *
+ * Never rejects: directory-load and per-run failures are logged, and
+ * the plan actually attempted is returned for observability/tests.
+ * `client` and `configs` are injectable for the DB-free unit tests
+ * (defaults: the real Prisma singleton and the real registry).
+ */
+export async function runScheduledSyncs(
+  label: string,
+  client: InstitutionDirectoryClient = prisma,
+  configs: readonly InstitutionSyncConfig[] = INSTITUTION_SYNC_CONFIGS,
+): Promise<ScheduledSyncPlanItem[]> {
+  let institutions: Array<{ id: string; slug: string }>;
+  try {
+    institutions = await client.institution.findMany({
+      where: { status: 'ACTIVE' },
+      select: { id: true, slug: true },
+    });
+  } catch (err) {
+    logger.error({ err, label }, '[scheduler] failed to load the institution directory — no syncs this tick');
+    return [];
+  }
+  const plan = planScheduledSyncs(configs, institutions);
+  if (plan.length === 0) {
+    // Honest no-op: an institution without a configured source is
+    // NEVER synced, so a database holding only unconfigured
+    // institutions (fresh test DBs, pre-seed deploys) plans nothing.
+    logger.info({ label }, '[scheduler] no institution has a configured sync source — nothing to sync');
+  }
+  for (const item of plan) {
+    try {
+      await runSyncGuarded(label, item);
+      // overlap (ran:false) and thrown bookkeeping errors are already
+      // logged by the guard — either way, continue to the next institution.
+    } catch {
+      /* one institution's sync failure must not abort the rest */
+    }
+  }
+  return plan;
 }
 
 export function startScheduler() {
@@ -121,17 +255,17 @@ export function startScheduler() {
   // (or cold-started) far more often than a 24h interval elapses, so
   // the boot tick is the one that fires most reliably. Both jobs are
   // cheap and idempotent in the steady state.
-  // runSyncGuarded logs its own errors; the .catch keeps a failing boot
-  // callback from surfacing as an unhandled promise rejection. The
-  // retention sweep never rejects by contract.
+  // runScheduledSyncs and the retention sweep never reject by
+  // contract; the void calls keep failing boot callbacks from
+  // surfacing as unhandled promise rejections.
   bootTimer = setTimeout(() => {
-    runSyncGuarded('initial').catch(() => {});
+    void runScheduledSyncs('initial');
     void runLoginEventRetentionSweep('initial');
   }, BOOT_DELAY_MS);
 
-  // Recurring daily run (same no-unhandled-rejection contract).
+  // Recurring daily run (same never-reject contract).
   dailyTimer = setInterval(() => {
-    runSyncGuarded('daily').catch(() => {});
+    void runScheduledSyncs('daily');
     void runLoginEventRetentionSweep('daily');
   }, ONE_DAY_MS);
 

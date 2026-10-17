@@ -1,7 +1,7 @@
 /**
  * Backend unit test — the upload guard layer + wiring pins for the
  * P3-BE real-upload routes (STUDENT paper PDF upload, TEACHER material
- * PDF upload, gated material serving).
+ * PDF upload, gated material/paper serving).
  *
  * Two layers, both DB-free (house pattern):
  *  1. Pure guards imported from the route modules: the %PDF- magic-byte
@@ -10,10 +10,16 @@
  *     the file is the contract): each route must exist with its exact
  *     middleware chain (role gate BEFORE body buffering, express.raw,
  *     createRouteLimiter, zod), the material gate must carry the
- *     enrollment grant predicate, and env.ts must keep the s3
- *     fail-closed superRefine. A helper passing its pure tests while
- *     the live route re-inlines (or drops) the guard is exactly the
- *     drift class these pins kill.
+ *     enrollment + institution grant predicates, and env.ts must keep
+ *     the s3 fail-closed superRefine. A helper passing its pure tests
+ *     while the live route re-inlines (or drops) the guard is exactly
+ *     the drift class these pins kill.
+ *
+ * r179b: the pins now also cover the institution gate wiring — the
+ * paper upload fails closed on a verified context, both serving
+ * routes resolve the caller scope BEFORE the row lookup, and the
+ * grant predicates ride inside the institution-aware where builders
+ * (accessiblePaperWhere / accessibleMaterialWhere).
  */
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
@@ -216,12 +222,18 @@ describe('POST /files/papers wiring (STUDENT upload)', () => {
     expect(filesRouteSource).toContain('NO ResearchPaper row is created here');
   });
 
-  it('r170g: active-content + quota guards sit between magic bytes and the put', () => {
+  it('r170g: active-content + quota guards sit between magic bytes and the put; r179b: institution gate before the quota query', () => {
     const handlerStart = filesRouteSource.indexOf("router.post(\n  '/papers',");
     const handlerEnd = filesRouteSource.indexOf("router.get('/papers/:filename'");
     const uploadRoute = filesRouteSource.slice(handlerStart, handlerEnd);
     const magicCheck = uploadRoute.indexOf('!isPdfMagicBytes(body)');
     const activeCheck = uploadRoute.indexOf('containsPdfActiveContent(body)');
+    // r179b: the upload fails closed without a verified institution
+    // context (the row that authorizes these bytes is minted under the
+    // same context by POST /me/research).
+    const institutionGate = uploadRoute.indexOf(
+      'requireFileInstitutionScope(req.user!.id, req.user!.role, req.user!.institutionId)',
+    );
     const quotaCount = uploadRoute.indexOf('prisma.researchPaper.count({');
     // r176d (F-05b): the quota counts only papers whose bytes live in
     // OUR storage — external-URL papers store nothing and no longer
@@ -229,10 +241,11 @@ describe('POST /files/papers wiring (STUDENT upload)', () => {
     const quotaWhere = uploadRoute.indexOf("where: {\n          studentId: req.user!.id,\n          fileUrl: { startsWith: '/api/v1/files/papers/' },\n        }".replace('\\n', '\n'));
     const quotaCheck = uploadRoute.indexOf('!isUploadWithinQuota(storedPaperCount, body.length)');
     const putCheck = uploadRoute.indexOf('getStorage().put(key, body)');
-    expect([magicCheck, activeCheck, quotaCount, quotaWhere, quotaCheck, putCheck].every((i) => i >= 0))
+    expect([magicCheck, activeCheck, institutionGate, quotaCount, quotaWhere, quotaCheck, putCheck].every((i) => i >= 0))
       .toBe(true);
     expect(magicCheck).toBeLessThan(activeCheck); // byte gates before the DB query
-    expect(activeCheck).toBeLessThan(quotaCount);
+    expect(activeCheck).toBeLessThan(institutionGate); // context BEFORE any DB/storage work
+    expect(institutionGate).toBeLessThan(quotaCount);
     expect(quotaCount).toBeLessThan(quotaCheck);
     expect(quotaCheck).toBeLessThan(putCheck); // quota BEFORE any byte is stored
     // Arabic rejection copy: active content → 400, quota → 413 envelope.
@@ -254,13 +267,18 @@ describe('POST /offerings/:id/materials/file wiring (TEACHER/ADMIN/OWNER upload)
     );
   });
 
-  it('gates with assertOfferingAccess BEFORE creating the row, and stores via the abstraction', () => {
+  it('gates with the institution gate + assertOfferingAccess BEFORE creating the row, and stores via the abstraction', () => {
     const routeStart = offeringsRouteSource.indexOf("'/:id/materials/file',");
-    const routeSlice = offeringsRouteSource.slice(routeStart, routeStart + 2200);
+    const routeSlice = offeringsRouteSource.slice(routeStart, routeStart + 3200);
+    // r179b: the offering must sit inside the caller's VERIFIED
+    // institution for every non-OWNER uploader — BEFORE the row is
+    // created and before assertOfferingAccess's teacher check.
+    const institutionGate = routeSlice.indexOf('await assertOfferingInstitutionForUpload(');
     const accessCheck = routeSlice.indexOf('await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);');
     const create = routeSlice.indexOf('prisma.material.create({');
     const put = routeSlice.indexOf("getStorage().put(buildStorageKey('materials', filename), body)");
-    expect([accessCheck, create, put].every((i) => i >= 0)).toBe(true);
+    expect([institutionGate, accessCheck, create, put].every((i) => i >= 0)).toBe(true);
+    expect(institutionGate).toBeLessThan(accessCheck);
     expect(accessCheck).toBeLessThan(create);
     expect(create).toBeLessThan(put);
     // Row first with its generated id, url pointing at the serving route:
@@ -270,7 +288,7 @@ describe('POST /offerings/:id/materials/file wiring (TEACHER/ADMIN/OWNER upload)
 
   it('deletes the row when the put fails (atomic-ish: no row without bytes) and rethrows 500', () => {
     const routeStart = offeringsRouteSource.indexOf("'/:id/materials/file',");
-    const routeSlice = offeringsRouteSource.slice(routeStart, routeStart + 2600);
+    const routeSlice = offeringsRouteSource.slice(routeStart, routeStart + 3400);
     expect(routeSlice).toContain('await prisma.material.delete({ where: { id } })');
     expect(routeSlice).toContain("AppError.internal('تعذّر حفظ الملف — حاول مرة أخرى')");
   });
@@ -288,26 +306,72 @@ describe('GET /files/materials/:filename wiring (gated material serving)', () =>
     expect(routeSlice).toContain("buildStorageKey('materials', filename)");
   });
 
-  it('carries the enrollment grant predicate inside the material query (teacher OR active enrollment)', () => {
-    // Same findFirst-with-grant-predicate shape as the papers gate: a
-    // shared filename can never push the authorizing row out of a
-    // take-window, and dropped/completed enrollments never grant.
-    expect(filesRouteSource).toMatch(
-      /url: \{ endsWith: `\/\$\{filename\}` \},\s*OR: \[\s*\{ offering: \{ teacherId: uid \} \},\s*\{ offering: \{ enrollments: \{ some: \{ studentId: uid, status: 'active' \} \} \} \},\s*\],/,
+  it('r179b: resolves the caller institution BEFORE the row lookup, and gates the lookup behind it', () => {
+    const routeStart = filesRouteSource.indexOf("router.get('/materials/:filename'");
+    const routeSlice = filesRouteSource.slice(routeStart);
+    const scopeCheck = routeSlice.indexOf(
+      'requireFileInstitutionScope(uid, role, req.user!.institutionId)',
+    );
+    const rowCheck = routeSlice.indexOf('prisma.material.findFirst({');
+    expect(scopeCheck).toBeGreaterThanOrEqual(0);
+    expect(rowCheck).toBeGreaterThan(scopeCheck);
+    // Only the platform-wide path (OWNER — callerInstitutionId null)
+    // skips the row lookup; every institutional caller is row-gated.
+    expect(routeSlice).toContain('if (callerInstitutionId !== null) {');
+    expect(routeSlice).toContain(
+      'where: accessibleMaterialWhere(filename, role, uid, callerInstitutionId),',
     );
   });
 
-  it('keeps the oversight bypass on the same isPaperOversightRole gate as papers', () => {
+  it('carries the enrollment + institution grant predicates inside the material where builder', () => {
+    // Same findFirst-with-grant-predicate shape as the papers gate: a
+    // shared filename can never push the authorizing row out of a
+    // take-window, and dropped/completed enrollments never grant. The
+    // r179b chain comparison (offering → course → department → faculty
+    // → institution) rides INSIDE the same predicate.
+    expect(filesRouteSource).toMatch(
+      /url: \{ endsWith: `\/\$\{filename\}` \},\s*offering: \{\s*course: \{ department: \{ faculty: \{ institutionId: callerInstitutionId \} \} \},/,
+    );
+    expect(filesRouteSource).toMatch(
+      /OR: \[\s*\{ teacherId: userId \},\s*\{ enrollments: \{ some: \{ studentId: userId, status: 'active' \} \} \},\s*\],/,
+    );
+  });
+
+  it('keeps the oversight branch on the same isPaperOversightRole gate as papers', () => {
+    // ADMIN/QUALITY oversight is institution-bound (no per-row grant
+    // inside the predicate); OWNER bypasses the row lookup entirely
+    // via the platform-wide path.
     const routeStart = filesRouteSource.indexOf("router.get('/materials/:filename'");
     const routeSlice = filesRouteSource.slice(routeStart);
-    expect(routeSlice).toContain('if (!isPaperOversightRole(role)) {');
+    expect(routeSlice).not.toContain('isPaperOversightRole(role)'); // moved into the where builder
+    expect(filesRouteSource).toMatch(/\.\.\.\(isPaperOversightRole\(role\)/);
   });
 });
 
-describe('GET /files/papers/:filename wiring (unchanged gate, new source)', () => {
-  it('still resolves the paper row with the grant predicate inside the query', () => {
+describe('GET /files/papers/:filename wiring (institution-bound gate, new source)', () => {
+  it('resolves the paper row with the institution + grant predicates inside the query builder', () => {
+    // r179b: the institution comparison rides inside the same
+    // findFirst predicate as the grant (PUBLISHED / owner / reviewer).
     expect(filesRouteSource).toMatch(
-      /fileUrl: \{ endsWith: `\/\$\{filename\}` \},\s*OR: \[\{ status: 'PUBLISHED' \}, \{ studentId: uid \}, \{ reviewerId: uid \}\],/,
+      /fileUrl: \{ endsWith: `\/\$\{filename\}` \},\s*institutionId: callerInstitutionId,/,
+    );
+    expect(filesRouteSource).toMatch(
+      /OR: \[\s*\{ status: 'PUBLISHED' \},\s*\{ studentId: userId \},\s*\{ reviewerId: userId \},\s*\],/,
+    );
+  });
+
+  it('resolves the caller institution BEFORE the row lookup (OWNER alone skips it)', () => {
+    const routeStart = filesRouteSource.indexOf("router.get('/papers/:filename'");
+    const routeSlice = filesRouteSource.slice(routeStart, filesRouteSource.indexOf("router.get('/materials/:filename'"));
+    const scopeCheck = routeSlice.indexOf(
+      'requireFileInstitutionScope(uid, role, req.user!.institutionId)',
+    );
+    const rowCheck = routeSlice.indexOf('prisma.researchPaper.findFirst({');
+    expect(scopeCheck).toBeGreaterThanOrEqual(0);
+    expect(rowCheck).toBeGreaterThan(scopeCheck);
+    expect(routeSlice).toContain('if (callerInstitutionId !== null) {');
+    expect(routeSlice).toContain(
+      'where: accessiblePaperWhere(filename, role, uid, callerInstitutionId),',
     );
   });
 

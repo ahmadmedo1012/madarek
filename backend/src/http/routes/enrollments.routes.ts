@@ -13,7 +13,7 @@ import {
   getGovernanceScope,
   loadGovernanceTarget,
 } from '../../lib/governance.js';
-import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
+import { resolveCallerInstitutionScope, institutionContextRequiredError } from '../../lib/profile-scoping.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -30,32 +30,43 @@ router.use(authMiddleware);
 /**
  * Pure where-builder for the admin enrollment list (GET /): a
  * specific student pins the filter (their scope was asserted up
- * front — 403, never a silent empty list); listing all is pinned to
- * the actor's faculty via the shared user-scope filter (students of
- * the faculty; enrollments are student-shaped, so the TEACHER branch
- * simply never matches). University-wide actors get the unscoped
- * base. Exported for unit tests.
+ * front — 403, never a silent empty list); listing all composes the
+ * actor's faculty scope with the r179 institution membership filter
+ * ("has an ACTIVE membership in that institution") on the student.
+ * University-wide + platform callers get the unscoped base. Exported
+ * for unit tests.
  */
 export function buildScopedEnrollmentWhere(
   actorScopeFacultyId: string | null,
   studentId?: string,
+  institutionId?: string | null,
 ): Prisma.EnrollmentWhereInput {
   if (studentId) return { studentId };
-  if (actorScopeFacultyId === null) return {};
-  return { student: buildScopedUserWhere(actorScopeFacultyId) };
+  if (actorScopeFacultyId === null && !institutionId) return {};
+  return {
+    student: buildScopedUserWhere(actorScopeFacultyId, {}, institutionId),
+  };
 }
 
 /**
  * Pure where-builder for the admin offerings picker (GET /offerings):
  * a scoped ADMIN only sees offerings whose course is homed in their
- * own faculty (course → department → facultyId). Exported for unit
- * tests.
+ * own faculty (course → department → facultyId). r179 (phase-5):
+ * `institutionId` (the ADMIN caller's DB-verified context) ANDs the
+ * Course → institutionId chain — the picker never offers another
+ * institution's offerings. Exported for unit tests.
  */
 export function buildScopedOfferingWhere(
   actorScopeFacultyId: string | null,
+  institutionId?: string | null,
 ): Prisma.CourseOfferingWhereInput {
-  if (actorScopeFacultyId === null) return {};
-  return { course: { department: { facultyId: actorScopeFacultyId } } };
+  if (actorScopeFacultyId === null && !institutionId) return {};
+  return {
+    course: {
+      ...(actorScopeFacultyId !== null ? { department: { facultyId: actorScopeFacultyId } } : {}),
+      ...(institutionId ? { institutionId } : {}),
+    },
+  };
 }
 
 /**
@@ -78,6 +89,12 @@ export function isOfferingWithinScope(
 // personal-data shaped, not security boundaries, so a generic "no data"
 // response is the right shape for the React Query cache.
 //
+// r179 (phase-5): a STUDENT caller needs a DB-verified institution
+// context (403 INSTITUTION_CONTEXT_REQUIRED without one — the feed is
+// institution-scoped), and the listing is pinned to that institution
+// via the enrollment → offering → course chain so a multi-institution
+// student never sees another institution's courses in this feed.
+//
 // The select mirrors the frontend `MyEnrollment` contract exactly
 // (hooks/useResources.ts): id/progressPct + offering id/room + the
 // course display fields + teacher name + schedule slots. Unlisted model
@@ -90,8 +107,16 @@ router.get('/me', async (req, res, next) => {
       res.json({ data: [] });
       return;
     }
+    const studentInstitution = await resolveCallerInstitutionScope(
+      req.user!.id,
+      req.user!.institutionId,
+    );
+    if (!studentInstitution) throw institutionContextRequiredError();
     const data = await prisma.enrollment.findMany({
-      where: { studentId: req.user!.id },
+      where: {
+        studentId: req.user!.id,
+        offering: { course: { institutionId: studentInstitution } },
+      },
       select: {
         id: true,
         progressPct: true,
@@ -137,13 +162,36 @@ router.get('/', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
     const studentId =
       typeof req.query.studentId === 'string' && req.query.studentId ? req.query.studentId : undefined;
-    // Faculty governance scope (r155a): a scoped ADMIN reading a
-    // specific student gets the same 403 the write guards throw — a
-    // filter that silently returns [] would hide the boundary. Listing
-    // all is restricted to the scoped students (see the where-builder).
+    /* r179 (phase-5): an ADMIN caller MUST hold a DB-verified
+     * institution context (403 INSTITUTION_CONTEXT_REQUIRED without
+     * one) — the listing is pinned to their institution's enrollments
+     * (the enrolled student's active membership). OWNER keeps the
+     * platform-wide view. Faculty governance scope (r155a): a scoped
+     * ADMIN reading a specific student gets the same 403 the write
+     * guards throw — a filter that silently returns [] would hide the
+     * boundary; the target's faculty association resolves through
+     * their profile in the CALLER's institution (loadGovernanceTarget
+     * — no legacy oldest-profile fallback). */
+    const callerInstitution =
+      req.user!.role === Role.ADMIN
+        ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
+        : null;
+    if (req.user!.role === Role.ADMIN && !callerInstitution) {
+      throw institutionContextRequiredError();
+    }
     const scopeFacultyId = await getGovernanceScope(req.user!.id);
+    /* r179: a specific-student read by an institutional ADMIN is pinned
+     * to their institution too — a foreign student 404s (never leak
+     * another institution's enrollment rows). */
+    if (studentId && callerInstitution) {
+      const targetMembership = await prisma.membership.findFirst({
+        where: { userId: studentId, institutionId: callerInstitution, isActive: true },
+        select: { id: true },
+      });
+      if (!targetMembership) throw AppError.notFound('الطالب المحدد غير موجود');
+    }
     if (studentId && scopeFacultyId !== null) {
-      const target = await loadGovernanceTarget(studentId);
+      const target = await loadGovernanceTarget(studentId, callerInstitution);
       if (!target) throw AppError.notFound('الطالب المحدد غير موجود');
       assertWithinScope(scopeFacultyId, target);
     }
@@ -161,7 +209,7 @@ router.get('/', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
       page = parsed.data.page;
       limit = parsed.data.limit;
     }
-    const where = buildScopedEnrollmentWhere(scopeFacultyId, studentId);
+    const where = buildScopedEnrollmentWhere(scopeFacultyId, studentId, callerInstitution);
     const [rows, total] = await Promise.all([
       prisma.enrollment.findMany({
         where,
@@ -207,9 +255,21 @@ router.get('/', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
  */
 router.get('/offerings', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
+    /* r179 (phase-5): an ADMIN caller MUST hold a DB-verified
+     * institution context (403 without one) — the picker only lists
+     * offerings of THEIR institution (the enroll endpoint rejects
+     * foreign ones anyway; the picker must not offer them). OWNER
+     * keeps the platform-wide picker. */
+    const callerInstitution =
+      req.user!.role === Role.ADMIN
+        ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
+        : null;
+    if (req.user!.role === Role.ADMIN && !callerInstitution) {
+      throw institutionContextRequiredError();
+    }
     const scopeFacultyId = await getGovernanceScope(req.user!.id);
     const data = await prisma.courseOffering.findMany({
-      where: buildScopedOfferingWhere(scopeFacultyId),
+      where: buildScopedOfferingWhere(scopeFacultyId, callerInstitution),
       select: {
         id: true,
         term: true,
@@ -239,16 +299,19 @@ const enrollSchema = z
 router.post('/', requireRole(Role.ADMIN, Role.OWNER), validate(enrollSchema), async (req, res, next) => {
   try {
     const { studentId, offeringId } = req.body as z.infer<typeof enrollSchema>;
-    /* r178 (multi-institution): an ADMIN caller with an institution
-     * context may only enroll within THEIR institution — both halves
-     * of the seat are checked: the offering's course chain and the
-     * student (a membership in the same institution). Contextless
-     * callers (OWNER, legacy sessions) keep the university-wide
-     * semantics; TODO(r179/phase-5): the exhaustive isolation pass. */
-    const callerInstitution = await resolveCallerInstitutionScope(
-      req.user!.id,
-      req.user!.institutionId,
-    );
+    /* r179 (phase-5): an ADMIN caller MUST hold a DB-verified institution
+     * context — they may only enroll within THEIR institution, and BOTH
+     * halves of the seat are checked: the offering's course chain AND
+     * the student (an ACTIVE membership in the same institution). The
+     * contextless university-wide semantics are OWNER-only now (the
+     * legacy branch is gone). */
+    const callerInstitution =
+      req.user!.role === Role.ADMIN
+        ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
+        : null;
+    if (req.user!.role === Role.ADMIN && !callerInstitution) {
+      throw institutionContextRequiredError();
+    }
     if (callerInstitution) {
       const [offering, targetMembership] = await Promise.all([
         prisma.courseOffering.findUnique({
@@ -274,7 +337,7 @@ router.post('/', requireRole(Role.ADMIN, Role.OWNER), validate(enrollSchema), as
     // enroll their students into any faculty's offering.
     const scopeFacultyId = await getGovernanceScope(req.user!.id);
     if (scopeFacultyId !== null) {
-      const target = await loadGovernanceTarget(studentId);
+      const target = await loadGovernanceTarget(studentId, callerInstitution);
       if (!target) throw AppError.notFound('الطالب المحدد غير موجود');
       assertWithinScope(scopeFacultyId, target);
       // Offering faculty resolution — a missing offering is NOT a scope
@@ -364,30 +427,46 @@ router.post('/', requireRole(Role.ADMIN, Role.OWNER), validate(enrollSchema), as
 // family, leaving a governance blind spot (audit 11-c P2-12).
 router.delete('/:id', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
-    // Faculty governance scope (r155a): asserted BEFORE the delete
-    // transaction — a scoped ADMIN may only drop the enrollments of
-    // students in their own faculty (what you cannot govern, you do
-    // not delete). A missing id still 404s via the transaction's P2025
-    // path, so an absent row is not a scope decision.
-    // r178: the student's profile is per-membership — resolved in the
-    // caller's institution context when one exists, else their oldest
-    // active profile (TODO(r179/phase-5): full isolation).
+    /* Faculty governance scope (r155a): asserted BEFORE the delete
+     * transaction — a scoped ADMIN may only drop the enrollments of
+     * students in their own faculty (what you cannot govern, you do
+     * not delete). A missing id still 404s via the transaction's P2025
+     * path, so an absent row is not a scope decision.
+     * r179 (phase-5): an ADMIN caller MUST hold a DB-verified
+     * institution context (403 without one); the target student's
+     * profiles resolve in THAT institution (no legacy oldest-profile
+     * fallback), and the enrollment's own offering→course→institution
+     * chain is verified to belong to the caller's institution (403 —
+     * a foreign-institution seat is never dropped by an institutional
+     * admin). OWNER keeps the platform-wide drop. */
+    const callerInstitution =
+      req.user!.role === Role.ADMIN
+        ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
+        : null;
+    if (req.user!.role === Role.ADMIN && !callerInstitution) {
+      throw institutionContextRequiredError();
+    }
     const scopeFacultyId = await getGovernanceScope(req.user!.id);
-    if (scopeFacultyId !== null) {
+    if (scopeFacultyId !== null || callerInstitution) {
       const enrollment = await prisma.enrollment.findUnique({
         where: { id: req.params.id! },
         select: {
+          offering: { select: { course: { select: { institutionId: true } } } },
           student: {
             select: {
               role: true,
               studentProfiles: {
-                where: { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+                where: callerInstitution
+                  ? { institutionId: callerInstitution }
+                  : { id: { in: [] } },
                 take: 1,
                 orderBy: { createdAt: 'asc' },
                 select: { facultyId: true },
               },
               teacherProfiles: {
-                where: { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+                where: callerInstitution
+                  ? { membership: { institutionId: callerInstitution } }
+                  : { id: { in: [] } },
                 take: 1,
                 orderBy: { createdAt: 'asc' },
                 select: { department: { select: { facultyId: true } } },
@@ -397,11 +476,16 @@ router.delete('/:id', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next
         },
       });
       if (enrollment) {
-        assertWithinScope(scopeFacultyId, {
-          role: enrollment.student.role,
-          studentFacultyId: enrollment.student.studentProfiles[0]?.facultyId ?? null,
-          teacherFacultyId: enrollment.student.teacherProfiles[0]?.department.facultyId ?? null,
-        });
+        if (callerInstitution && enrollment.offering.course.institutionId !== callerInstitution) {
+          throw AppError.forbidden('هذا المقرر ينتمي إلى مؤسسة أخرى');
+        }
+        if (scopeFacultyId !== null) {
+          assertWithinScope(scopeFacultyId, {
+            role: enrollment.student.role,
+            studentFacultyId: enrollment.student.studentProfiles[0]?.facultyId ?? null,
+            teacherFacultyId: enrollment.student.teacherProfiles[0]?.department.facultyId ?? null,
+          });
+        }
       }
     }
     await prisma.$transaction(async (tx) => {

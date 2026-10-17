@@ -9,7 +9,12 @@ import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { assertOwnsOffering } from '../../lib/permissions.js';
 import { assertWithinScope, getGovernanceScope } from '../../lib/governance.js';
-import { resolveTeacherProfile } from '../../lib/profile-scoping.js';
+import {
+  resolveTeacherProfile,
+  resolveCallerInstitutionScope,
+  institutionContextRequiredError,
+} from '../../lib/profile-scoping.js';
+import { assertOfferingInCallerInstitution } from '../../lib/profile-scoping.js';
 import {
   assessStudentRisk,
   attendancePct,
@@ -110,6 +115,9 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
   try {
     const offeringId = req.params.id!;
     await assertOwnsOffering(offeringId, req.user!.id, req.user!.role);
+    // r179 (phase-5): the ADMIN ownership bypass is institution-pinned
+    // (read mode — 404 for a foreign institution's roster).
+    await assertOfferingInCallerInstitution(offeringId, req.user!, 'read');
 
     const offering = await prisma.courseOffering.findUnique({
       where: { id: offeringId },
@@ -120,9 +128,11 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
             student: {
               select: {
                 id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true,
-                // r178: profiles are per-membership — the roster prefers
-                // the student's profile in the OFFERING's institution
-                // (TODO(r179/phase-5): full data isolation).
+                // r179 (phase-5): profiles are per-membership — the roster
+                // reads the universityId of the profile in the OFFERING'S
+                // institution (the code-level find below on
+                // course.institutionId); a profile from another
+                // institution is never displayed for this roster.
                 studentProfiles: { select: { institutionId: true, universityId: true } },
               },
             },
@@ -220,8 +230,10 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
         studentId: stu.id,
         name: `${stu.firstName} ${stu.lastName}`,
         universityId:
+          // r179: no blind first-profile fallback — only the profile in
+          // the OFFERING's institution (the roster's institution by
+          // definition); a student with no profile there shows «—».
           stu.studentProfiles.find((p) => p.institutionId === offering.course.institutionId)?.universityId
-          ?? stu.studentProfiles[0]?.universityId
           ?? '—',
         avatarInitials: stu.avatarInitials,
         avatarColor: stu.avatarColor,
@@ -272,6 +284,9 @@ router.get('/teacher/offerings/:id/analytics', requireRole(Role.TEACHER, Role.AD
   try {
     const offeringId = req.params.id!;
     await assertOwnsOffering(offeringId, req.user!.id, req.user!.role);
+    // r179 (phase-5): the ADMIN ownership bypass is institution-pinned
+    // (read mode — 404 for a foreign institution's roster).
+    await assertOfferingInCallerInstitution(offeringId, req.user!, 'read');
 
     const offering = await prisma.courseOffering.findUnique({
       where: { id: offeringId },
@@ -488,6 +503,9 @@ router.post(
     try {
       const offeringId = req.params.id!;
       await assertOwnsOffering(offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned
+      // (write mode — 403 for a foreign institution's attendance).
+      await assertOfferingInCallerInstitution(offeringId, req.user!, 'write');
       const { date: rawDate, topic, records } = req.body as z.infer<typeof recordAttSchema>;
 
       // Attendance day-keys live on the UTC data calendar (audit 15-h
@@ -550,6 +568,9 @@ router.post('/teacher/offerings/:id/curriculum/suggest', requireCapability('CURR
   try {
     const offeringId = req.params.id!;
     await assertOwnsOffering(offeringId, req.user!.id, req.user!.role);
+    // r179 (phase-5): the ADMIN ownership bypass is institution-pinned
+    // (read mode — 404 for a foreign institution's roster).
+    await assertOfferingInCallerInstitution(offeringId, req.user!, 'read');
     const offering = await prisma.courseOffering.findUnique({
       where: { id: offeringId },
       include: {
@@ -641,14 +662,43 @@ router.post('/teacher/offerings/:id/curriculum/suggest', requireCapability('CURR
  * or appoint out-of-faculty teachers. University-wide actors pass
  * through untouched (scope === null).
  *
- * r178: the target's TeacherProfile is per-membership — resolved in
- * the caller's institution context when one is selected, else their
- * oldest active profile (TODO(r179/phase-5): hard institution
- * isolation for governance writes). */
-async function assertTeacherWithinGovernanceScope(teacherId: string, actorId: string, actorInstitutionId?: string | null): Promise<void> {
+ * r179 (phase-5): the target's TeacherProfile is per-membership — the
+ * profile is resolved in the caller's DB-VERIFIED institution context
+ * (never the raw token claim, never the legacy oldest-profile
+ * fallback). `resolveTeacherGovernanceInstitution` below is the one
+ * resolver all three routes share: institutional callers
+ * (ADMIN/QUALITY) MUST hold a verified context (403
+ * INSTITUTION_CONTEXT_REQUIRED without one); the platform OWNER must
+ * name the institution explicitly via ?institution=<slug> (403 without
+ * one — the platform never auto-selects; 404 when the slug does not
+ * resolve to an ACTIVE institution). */
+async function resolveTeacherGovernanceInstitution(req: {
+  user?: { id: string; role: Role; institutionId: string | null };
+  query: unknown;
+}): Promise<string> {
+  const user = req.user!;
+  if (user.role === Role.OWNER) {
+    const raw = (req.query as Record<string, unknown>).institution;
+    const slug = typeof raw === 'string' && raw.trim().length > 0 ? raw.trim() : null;
+    if (!slug) throw institutionContextRequiredError();
+    const institution = await prisma.institution.findUnique({
+      where: { slug },
+      select: { id: true, status: true },
+    });
+    if (!institution || institution.status !== 'ACTIVE') {
+      throw AppError.notFound('المؤسسة غير موجودة');
+    }
+    return institution.id;
+  }
+  const scope = await resolveCallerInstitutionScope(user.id, user.institutionId);
+  if (!scope) throw institutionContextRequiredError();
+  return scope;
+}
+
+async function assertTeacherWithinGovernanceScope(teacherId: string, actorId: string, actorInstitutionId: string): Promise<void> {
   const scopeFacultyId = await getGovernanceScope(actorId);
   if (scopeFacultyId === null) return;
-  const target = await resolveTeacherProfile(teacherId, actorInstitutionId ?? null);
+  const target = await resolveTeacherProfile(teacherId, actorInstitutionId);
   if (!target) throw AppError.notFound('الملف الأكاديمي للأستاذ غير موجود');
   const department = await prisma.department.findUnique({
     where: { id: target.departmentId },
@@ -668,8 +718,9 @@ router.get(
   async (req, res, next) => {
     try {
       const teacherId = req.params.id!;
-      await assertTeacherWithinGovernanceScope(teacherId, req.user!.id, req.user!.institutionId);
-      const profile = await resolveTeacherProfile(teacherId, req.user!.institutionId);
+      const institutionId = await resolveTeacherGovernanceInstitution(req);
+      await assertTeacherWithinGovernanceScope(teacherId, req.user!.id, institutionId);
+      const profile = await resolveTeacherProfile(teacherId, institutionId);
       if (!profile) throw AppError.notFound('الملف الأكاديمي للأستاذ غير موجود');
       const [profileUser, profileDepartment] = await Promise.all([
         prisma.user.findUnique({
@@ -779,11 +830,12 @@ router.post(
     try {
       const targetId = req.params.id!;
       // r152b (A5 P3): faculty-scope guard (see helper above).
-      await assertTeacherWithinGovernanceScope(targetId, req.user!.id, req.user!.institutionId);
-      // r178: the target's profile is per-membership — resolved in the
-      // caller's institution context (legacy fallback without one);
+      const institutionId = await resolveTeacherGovernanceInstitution(req);
+      await assertTeacherWithinGovernanceScope(targetId, req.user!.id, institutionId);
+      // r179: the target's profile is per-membership — resolved in the
+      // caller's DB-verified institution context (explicit for OWNER);
       // the update then addresses the profile by its cuid PK.
-      const profile = await resolveTeacherProfile(targetId, req.user!.institutionId);
+      const profile = await resolveTeacherProfile(targetId, institutionId);
       if (!profile) throw AppError.notFound('الملف الأكاديمي للأستاذ غير موجود');
       // Wrap update + audit in a transaction so governance never
       // loses the audit trail if the auditLog.create fails (or vice
@@ -864,11 +916,13 @@ router.post(
       const targetId = req.params.id!;
 
       // r152b (A5 P3): faculty-scope guard (see helper above).
-      await assertTeacherWithinGovernanceScope(targetId, req.user!.id, req.user!.institutionId);
+      const institutionId = await resolveTeacherGovernanceInstitution(req);
+      await assertTeacherWithinGovernanceScope(targetId, req.user!.id, institutionId);
 
-      // r178: per-membership profile — resolved in the caller's
-      // institution context, then addressed by its cuid PK below.
-      const existing = await resolveTeacherProfile(targetId, req.user!.institutionId);
+      // r179: per-membership profile — resolved in the caller's
+      // DB-verified institution context, then addressed by its cuid PK
+      // below.
+      const existing = await resolveTeacherProfile(targetId, institutionId);
       if (!existing) throw AppError.notFound('الملف الأكاديمي للأستاذ غير موجود');
 
       // A leadership seat is exclusive: refuse to appoint a second active

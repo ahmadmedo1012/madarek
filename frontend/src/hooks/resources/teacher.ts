@@ -5,6 +5,8 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 // ── Teacher dashboard aggregate ───────────────────────────────
 export interface TeacherDashboard {
   kpi: {
@@ -57,8 +59,9 @@ export interface TeacherDashboard {
   }>;
 }
 export function useTeacherDashboard() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['teacher', 'dashboard'],
+    queryKey: withInstitutionScope(['teacher', 'dashboard'], inst),
     queryFn: () => unwrap<TeacherDashboard>(api.get('/teacher/dashboard')),
     staleTime: 60_000,
   });
@@ -75,8 +78,9 @@ export interface TeacherOffering {
   schedule: Array<{ id: string; dayOfWeek: number; startTime: string; endTime: string; room: string | null }>;
 }
 export function useTeacherOfferings() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['teacher', 'offerings'],
+    queryKey: withInstitutionScope(['teacher', 'offerings'], inst),
     queryFn: () => unwrap<TeacherOffering[]>(api.get('/teacher/me/offerings')),
   });
 }
@@ -100,8 +104,9 @@ export interface TeacherStudentRow {
   suggestion: string;
 }
 export function useTeacherStudents(offeringId: string | undefined) {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['teacher', 'offering', offeringId, 'students'],
+    queryKey: withInstitutionScope(['teacher', 'offering', offeringId, 'students'], inst),
     enabled: !!offeringId,
     queryFn: () => unwrap<TeacherStudentRow[]>(api.get(`/teacher/offerings/${offeringId}/students`)),
   });
@@ -117,8 +122,9 @@ export interface OfferingAnalytics {
   examCount: number;
 }
 export function useOfferingAnalytics(offeringId: string | undefined) {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['teacher', 'offering', offeringId, 'analytics'],
+    queryKey: withInstitutionScope(['teacher', 'offering', offeringId, 'analytics'], inst),
     enabled: !!offeringId,
     queryFn: () => unwrap<OfferingAnalytics>(api.get(`/teacher/offerings/${offeringId}/analytics`)),
   });
@@ -167,8 +173,9 @@ export interface TeacherMaterial {
   course: { code: string; name: string };
 }
 export function useTeacherMaterials() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['teacher', 'me', 'materials'],
+    queryKey: withInstitutionScope(['teacher', 'me', 'materials'], inst),
     queryFn: () => unwrap<TeacherMaterial[]>(api.get('/teacher/me/materials')),
     staleTime: 60_000,
   });
@@ -186,8 +193,9 @@ export interface TeacherAssignmentRow {
   enrolled: number;
 }
 export function useTeacherAssignments() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['teacher', 'me', 'assignments'],
+    queryKey: withInstitutionScope(['teacher', 'me', 'assignments'], inst),
     queryFn: () => unwrap<TeacherAssignmentRow[]>(api.get('/teacher/me/assignments')),
     staleTime: 60_000,
   });
@@ -220,8 +228,9 @@ export interface PendingSubmissionRow {
   };
 }
 export function usePendingSubmissions() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['teacher', 'me', 'pending-submissions'],
+    queryKey: withInstitutionScope(['teacher', 'me', 'pending-submissions'], inst),
     queryFn: () => unwrap<PendingSubmissionRow[]>(api.get('/teacher/me/pending-submissions')),
     staleTime: 30_000,
   });
@@ -386,8 +395,9 @@ export interface TeacherRiskRow extends Omit<TeacherStudentRow, 'attendancePct' 
   courseColor: string | null;
 }
 export function useTeacherRisks() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['teacher', 'risks'],
+    queryKey: withInstitutionScope(['teacher', 'risks'], inst),
     queryFn: () => unwrap<TeacherRiskRow[]>(api.get('/teacher/risks')),
   });
 }
@@ -450,8 +460,9 @@ export interface TeacherFullProfile {
   };
 }
 export function useMyTeacherProfile() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['me', 'teacher-profile'],
+    queryKey: withInstitutionScope(['me', 'teacher-profile'], inst),
     queryFn: () => unwrap<TeacherFullProfile>(api.get('/me/teacher-profile')),
   });
 }

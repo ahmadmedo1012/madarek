@@ -6,6 +6,7 @@ import { authMiddleware } from '../middleware/auth.js';
 import { validate } from '../validate.js';
 import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { AppError } from '../../lib/errors.js';
+import { resolveCallerInstitutionScope, institutionContextRequiredError } from '../../lib/profile-scoping.js';
 import { attendancePctFromStatusCounts } from '../../lib/risk.js';
 import { tripoliDayDow } from '../../lib/dates.js';
 
@@ -486,9 +487,24 @@ export function selectAgendaExams(
 router.get('/me/results', async (req, res, next) => {
   try {
     const userId = req.user!.id;
+    // r179 (phase-5): a STUDENT caller needs a DB-verified institution
+    // context (403 INSTITUTION_CONTEXT_REQUIRED without one) and every
+    // feed below is pinned to that institution through the
+    // offering → course chain (a multi-institution student never sees
+    // another institution's grades here).
+    const studentInstitution =
+      req.user!.role === Role.STUDENT
+        ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
+        : null;
+    if (req.user!.role === Role.STUDENT && !studentInstitution) {
+      throw institutionContextRequiredError();
+    }
+    const institutionFilter = studentInstitution
+      ? { offering: { course: { institutionId: studentInstitution } } }
+      : null;
 
     const grades = await prisma.grade.findMany({
-      where: { studentId: userId },
+      where: { studentId: userId, ...(institutionFilter ?? {}) },
       include: {
         offering: {
           select: {
@@ -506,7 +522,14 @@ router.get('/me/results', async (req, res, next) => {
     // feedback/submittedAt/status so the recent feed can render the
     // teacher's verdict and the timeline's first step.
     const gradedSubs = await prisma.submission.findMany({
-      where: { studentId: userId, status: SubmissionStatus.GRADED, grade: { not: null } },
+      where: {
+        studentId: userId,
+        status: SubmissionStatus.GRADED,
+        grade: { not: null },
+        ...(studentInstitution
+          ? { assignment: { offering: { course: { institutionId: studentInstitution } } } }
+          : {}),
+      },
       orderBy: { gradedAt: 'desc' },
       select: {
         id: true,
@@ -528,7 +551,13 @@ router.get('/me/results', async (req, res, next) => {
     // statuses the teacher's pending queue counts
     // (PENDING_SUBMISSION_STATUSES), bounded like every /me feed.
     const awaitingSubs = await prisma.submission.findMany({
-      where: { studentId: userId, status: { in: [...AWAITING_GRADE_STATUSES] } },
+      where: {
+        studentId: userId,
+        status: { in: [...AWAITING_GRADE_STATUSES] },
+        ...(studentInstitution
+          ? { assignment: { offering: { course: { institutionId: studentInstitution } } } }
+          : {}),
+      },
       orderBy: { submittedAt: 'desc' },
       take: 20,
       select: {
@@ -566,8 +595,24 @@ router.get('/me/results', async (req, res, next) => {
 router.get('/me/materials', async (req, res, next) => {
   try {
     const userId = req.user!.id;
+    // r179 (phase-5): a STUDENT caller needs a DB-verified institution
+    // context (403 without one); the materials feed is pinned to it via
+    // enrollment → offering → course.
+    const studentInstitution =
+      req.user!.role === Role.STUDENT
+        ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
+        : null;
+    if (req.user!.role === Role.STUDENT && !studentInstitution) {
+      throw institutionContextRequiredError();
+    }
     const enrolments = await prisma.enrollment.findMany({
-      where: { studentId: userId, status: 'active' },
+      where: {
+        studentId: userId,
+        status: 'active',
+        ...(studentInstitution
+          ? { offering: { course: { institutionId: studentInstitution } } }
+          : {}),
+      },
       select: { offeringId: true },
     });
     const offeringIds = enrolments.map((e) => e.offeringId);
@@ -698,15 +743,25 @@ router.get('/me/dashboard', async (req, res, next) => {
     const now = new Date();
     const horizon = new Date(now.getTime() + WEEK_MS);
 
-    // ── Profile + active enrollments ──────────────────────────
-    // r178: the profile is per-membership — resolved in the caller's
-    // token institution context when one is selected, else the oldest
-    // active profile (TODO(r179/phase-5): full data isolation).
+    // ── Profile + active enrollments ─────────────────────────
+    // r179 (phase-5): the profile is per-membership — resolved in the
+    // caller's DB-VERIFIED institution context; a STUDENT without a
+    // context gets 403 INSTITUTION_CONTEXT_REQUIRED (their academic
+    // record is institution-scoped). Non-students keep the graceful
+    // preview shell below (with a valid context their rare profile
+    // still resolves; without one no profile is guessed).
+    const callerInstitution = await resolveCallerInstitutionScope(
+      req.user!.id,
+      req.user!.institutionId,
+    );
+    if (req.user!.role === Role.STUDENT && !callerInstitution) {
+      throw institutionContextRequiredError();
+    }
     const [profile, enrollments] = await Promise.all([
       prisma.studentProfile.findFirst({
-        where: req.user!.institutionId
-          ? { userId, institutionId: req.user!.institutionId, membership: { isActive: true } }
-          : { userId, membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+        where: callerInstitution
+          ? { userId, institutionId: callerInstitution, membership: { isActive: true } }
+          : { id: { in: [] } },
         orderBy: { createdAt: 'asc' },
         select: {
           gpa: true, totalXp: true, level: true, year: true, facultyId: true,
@@ -715,7 +770,13 @@ router.get('/me/dashboard', async (req, res, next) => {
         },
       }),
       prisma.enrollment.findMany({
-        where: { studentId: userId, status: 'active' },
+        where: {
+          studentId: userId,
+          status: 'active',
+          ...(callerInstitution
+            ? { offering: { course: { institutionId: callerInstitution } } }
+            : {}),
+        },
         select: {
           id: true,
           progressPct: true,

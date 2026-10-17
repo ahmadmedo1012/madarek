@@ -8,6 +8,7 @@ import { requireInstitution } from '../middleware/institution.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { assertOwnsOffering } from '../../lib/permissions.js';
+import { assertOfferingInCallerInstitution } from '../../lib/profile-scoping.js';
 import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
 
 const router = Router();
@@ -22,27 +23,37 @@ router.use(authMiddleware);
 // has no teacher profile (404 every time) and the write side 403s them —
 // an incoherent split.
 //
-// r178: the profile is per-MEMBERSHIP — resolved in the caller's token
-// institution context when one is selected, else the oldest active
-// profile (legacy fallback for a contextless OWNER).
-// TODO(r179/phase-5): full data isolation.
-router.get('/me/teacher-profile', requireRole(Role.TEACHER, Role.OWNER), async (req, res, next) => {
-  try {
-    const userId = req.user!.id;
-    const profile = await prisma.teacherProfile.findFirst({
-      where: req.user!.institutionId
-        ? { userId, membership: { institutionId: req.user!.institutionId, isActive: true } }
-        : { userId, membership: { isActive: true, institution: { status: 'ACTIVE' } } },
-      orderBy: { createdAt: 'asc' },
-      include: {
-        user: { select: { firstName: true, lastName: true, email: true, avatarColor: true, avatarInitials: true } },
-        department: { include: { faculty: { select: { name: true } } } },
-      },
-    });
-    if (!profile) {
-      // Return 404 without crashing — admins logging in won't have one
-      throw AppError.notFound('لا يوجد ملف أكاديمي للأستاذ لهذا المستخدم');
-    }
+// r179 (phase-5): the profile is per-MEMBERSHIP — requireInstitution
+// both DB-verifies the caller's membership context AND pre-resolves
+// the profile for it (the same contract PATCH below has held since
+// r178). The legacy oldest-profile fallback for a contextless session
+// is GONE: the caller must have selected an institution first (403
+// INSTITUTION_CONTEXT_REQUIRED).
+router.get(
+  '/me/teacher-profile',
+  requireRole(Role.TEACHER, Role.OWNER),
+  requireInstitution,
+  async (req, res, next) => {
+    try {
+      const userId = req.user!.id;
+      const profile = req.teacherProfile;
+      if (!profile) {
+        // Return 404 without crashing — admins logging in won't have one
+        throw AppError.notFound('لا يوجد ملف أكاديمي للأستاذ لهذا المستخدم');
+      }
+      const [profileUser, profileDepartment] = await Promise.all([
+        prisma.user.findUnique({
+          where: { id: userId },
+          select: { firstName: true, lastName: true, email: true, avatarColor: true, avatarInitials: true },
+        }),
+        prisma.department.findUnique({
+          where: { id: profile.departmentId },
+          include: { faculty: { select: { name: true } } },
+        }),
+      ]);
+      if (!profileUser || !profileDepartment) {
+        throw AppError.notFound('لا يوجد ملف أكاديمي للأستاذ لهذا المستخدم');
+      }
 
     // Courses currently taught + simple workload metric
     const offerings = await prisma.courseOffering.findMany({
@@ -60,12 +71,12 @@ router.get('/me/teacher-profile', requireRole(Role.TEACHER, Role.OWNER), async (
     res.json({
       data: {
         userId: profile.userId,
-        name: `${profile.user.firstName} ${profile.user.lastName}`,
-        firstName: profile.user.firstName,
-        lastName: profile.user.lastName,
-        email: profile.user.email,
-        avatarColor: profile.user.avatarColor,
-        avatarInitials: profile.user.avatarInitials,
+        name: `${profileUser.firstName} ${profileUser.lastName}`,
+        firstName: profileUser.firstName,
+        lastName: profileUser.lastName,
+        email: profileUser.email,
+        avatarColor: profileUser.avatarColor,
+        avatarInitials: profileUser.avatarInitials,
         specialty: profile.specialty,
         rank: profile.rank,
         bio: profile.bio,
@@ -80,8 +91,8 @@ router.get('/me/teacher-profile', requireRole(Role.TEACHER, Role.OWNER), async (
         websiteUrl: profile.websiteUrl,
         subjectKeywords: profile.subjectKeywords,
         verifiedAt: profile.verifiedAt,
-        department: profile.department.name,
-        faculty: profile.department.faculty.name,
+        department: profileDepartment.name,
+        faculty: profileDepartment.faculty.name,
         courses: offerings.map((o) => ({
           offeringId: o.id,
           code: o.course.code,
@@ -247,6 +258,9 @@ router.post('/live/sessions', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
     // offering's curriculum — an inconsistent admin model (audit 11-d
     // P2-11b).
     await assertOwnsOffering(body.offeringId, req.user!.id, req.user!.role);
+    // r179 (phase-5): the ADMIN ownership bypass is institution-pinned
+    // (403 for a foreign institution's live session create).
+    await assertOfferingInCallerInstitution(body.offeringId, req.user!, 'write');
 
     if (body.scheduledAt.getTime() < Date.now() - SCHEDULED_AT_PAST_GRACE_MS) {
       throw AppError.badRequest('موعد الجلسة لا يمكن أن يكون في الماضي');
@@ -328,6 +342,9 @@ router.post('/live/sessions/:id/lifecycle', requireRole(Role.TEACHER, Role.ADMIN
 
     // Offering-scoped ownership, same as create (see above).
     await assertOwnsOffering(session.offeringId, req.user!.id, req.user!.role);
+    // r179 (phase-5): the ADMIN ownership bypass is institution-pinned
+    // (403 for a foreign institution's live session).
+    await assertOfferingInCallerInstitution(session.offeringId, req.user!, 'write');
 
     const action = (req.body as z.infer<typeof lifecycleSchema>).action;
     const nextStatus = nextLiveSessionStatus(session.status, action);

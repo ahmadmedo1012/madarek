@@ -16,7 +16,7 @@ import {
   lockActiveOwnerRows,
   requiresLastOwnerGuard,
 } from '../../lib/governance.js';
-import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
+import { resolveCallerInstitutionScope, institutionContextRequiredError } from '../../lib/profile-scoping.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -38,16 +38,22 @@ router.get(
       // users of their own faculty (OWNER / unscoped ADMIN =
       // university-wide). The filter mirrors the write guards below —
       // what you cannot govern, you do not list.
-      // r178 (multi-institution): an ADMIN/QUALITY caller with an
-      // institution context lists ONLY that institution's members —
-      // the claim is DB-verified (an ACTIVE membership in an ACTIVE
-      // institution), never trusted from the token alone. OWNER and
-      // contextless sessions keep the platform-wide view.
+      // r179 (phase-5): an ADMIN/QUALITY caller MUST hold a DB-verified
+      // institution context (403 INSTITUTION_CONTEXT_REQUIRED without
+      // one — the legacy null-scope platform-wide listing for a
+      // contextless institutional admin is gone); the list is pinned
+      // to that institution. OWNER keeps the platform-wide view.
       const scopeFacultyId = await getGovernanceScope(req.user!.id);
       const institutionScope =
         req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY
           ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
           : null;
+      if (
+        (req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY) &&
+        !institutionScope
+      ) {
+        throw institutionContextRequiredError();
+      }
       const where = buildScopedUserWhere(scopeFacultyId, {
         ...(role ? { role } : {}),
         ...(q
@@ -100,18 +106,63 @@ router.get('/:id', async (req, res, next) => {
     // leaked account-security metadata (failedLoginCount, lockedUntil,
     // emailVerifiedAt) through this shape. Profile rows carry no
     // secrets and are part of the self/admin view contract.
-    // r178: profiles are per-membership — a privileged caller with an
-    // institution context sees the target's profile in THAT
-    // institution; self-reads and contextless callers resolve the
-    // target's oldest active profile (TODO(r179/phase-5): full
-    // isolation). The response keeps the singular profile keys the FE
-    // consumes.
-    const profileInstitution =
-      isPrivileged && actor.id !== id && (actor.role === Role.ADMIN || actor.role === Role.QUALITY)
-        ? await resolveCallerInstitutionScope(actor.id, actor.institutionId)
-        : actor.id === id
-          ? await resolveCallerInstitutionScope(actor.id, actor.institutionId)
+    // r179 (phase-5): profiles are per-membership and the projection
+    // is FAIL-CLOSED — an ADMIN/QUALITY caller reading a TARGET needs
+    // their DB-verified institution context, and the target must hold
+    // an ACTIVE membership in it (404 otherwise — never leak a foreign
+    // institution's user existence). An institutional self-read needs
+    // the same context (which profile? — 403 without one). OWNER may
+    // pass ?institution=<slug> (validated to exist, 404 otherwise) for
+    // an explicit platform view; a contextless OWNER view simply
+    // carries no profile (never a oldest-profile guess).
+    const actorIsInstitutional =
+      actor.role === Role.STUDENT ||
+      actor.role === Role.TEACHER ||
+      actor.role === Role.ADMIN ||
+      actor.role === Role.QUALITY;
+    let profileInstitution: string | null;
+    if (actorIsInstitutional) {
+      profileInstitution = await resolveCallerInstitutionScope(actor.id, actor.institutionId);
+      if (!profileInstitution) throw institutionContextRequiredError();
+    } else {
+      // OWNER (the only remaining role): explicit ?institution= slug or
+      // an honest no-profile platform view.
+      const slug =
+        typeof req.query.institution === 'string' && req.query.institution.trim().length > 0
+          ? req.query.institution.trim()
           : null;
+      if (slug) {
+        const institution = await prisma.institution.findUnique({
+          where: { slug },
+          select: { id: true, status: true },
+        });
+        if (!institution || institution.status !== 'ACTIVE') {
+          throw AppError.notFound('المؤسسة غير موجودة');
+        }
+        profileInstitution = institution.id;
+      } else {
+        profileInstitution = null;
+      }
+    }
+    // A privileged ADMIN/QUALITY reading a TARGET: the target must be a
+    // member of the caller's institution (404 — don't leak existence).
+    // Self-reads skip this: the caller's own membership just resolved.
+    if (
+      actor.id !== id &&
+      (actor.role === Role.ADMIN || actor.role === Role.QUALITY) &&
+      profileInstitution
+    ) {
+      const targetMembership = await prisma.membership.findFirst({
+        where: {
+          userId: id,
+          institutionId: profileInstitution,
+          isActive: true,
+          institution: { status: 'ACTIVE' },
+        },
+        select: { id: true },
+      });
+      if (!targetMembership) throw AppError.notFound();
+    }
     const user = await prisma.user.findUnique({
       where: { id },
       select: {
@@ -127,7 +178,7 @@ router.get('/:id', async (req, res, next) => {
         studentProfiles: {
           where: profileInstitution
             ? { institutionId: profileInstitution }
-            : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+            : { id: { in: [] } },
           take: 1,
           orderBy: { createdAt: 'asc' },
           select: {
@@ -143,7 +194,7 @@ router.get('/:id', async (req, res, next) => {
         teacherProfiles: {
           where: profileInstitution
             ? { membership: { institutionId: profileInstitution } }
-            : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+            : { id: { in: [] } },
           take: 1,
           orderBy: { createdAt: 'asc' },
           select: {
@@ -219,12 +270,34 @@ router.patch('/:id', validate(patchSchema), async (req, res, next) => {
 
     // Pre-load the target: a clean 404 (an update on a missing id
     // surfaces as P2025) plus the context the governance guards need.
-    // r178: an ADMIN/QUALITY caller's institution context scopes the
-    // target's faculty association (their profile in THAT institution).
+    // r179 (phase-5): an ADMIN/QUALITY caller's DB-verified institution
+    // context is REQUIRED (403 without one) and scopes the target's
+    // faculty association (their profile in THAT institution); the
+    // target must also hold an ACTIVE membership in the caller's
+    // institution (403 otherwise — a cross-institution write).
+    // OWNER passes null: their governance decisions never depend on
+    // the faculty-scope predicate (university-wide by definition).
     const callerInstitution =
       actor.role === Role.ADMIN || actor.role === Role.QUALITY
         ? await resolveCallerInstitutionScope(actor.id, actor.institutionId)
         : null;
+    if ((actor.role === Role.ADMIN || actor.role === Role.QUALITY) && !callerInstitution) {
+      throw institutionContextRequiredError();
+    }
+    if (isPrivileged && actor.id !== id && callerInstitution) {
+      const targetMembership = await prisma.membership.findFirst({
+        where: {
+          userId: id,
+          institutionId: callerInstitution,
+          isActive: true,
+          institution: { status: 'ACTIVE' },
+        },
+        select: { id: true },
+      });
+      if (!targetMembership) {
+        throw AppError.forbidden('هذا المستخدم ليس عضواً في مؤسستك');
+      }
+    }
     const target = await loadGovernanceTarget(id, callerInstitution);
     if (!target) throw AppError.notFound('المستخدم غير موجود');
 

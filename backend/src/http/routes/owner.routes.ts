@@ -228,9 +228,14 @@ router.post(
         select: {
           id: true,
           role: true,
-          // r178: per-membership profiles — the target's oldest active
-          // profile (the OWNER console is platform-level, no institution
-          // context; TODO(r179/phase-5): institution-filtered console).
+          // r179 (phase-5): the OWNER console is platform-level — the
+          // promotion's institution is resolved STRICTLY through
+          // resolveProvisionInstitution (below: exactly one active
+          // membership, else a 400 naming the ambiguity), and any
+          // department the fallback picks is validated against that
+          // institution's chain inside buildTeacherProvision (mismatch
+          // → 400, never a cross-institution write). The profile read
+          // here only decides whether a profile EXISTS.
           studentProfiles: {
             where: { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
             take: 1,

@@ -29,7 +29,7 @@ Neon; deployed on Render with auto-deploy from `main`.
 
 | Item | State |
 |---|---|
-| Core features, all five roles | **Shipped** — 1819 frontend + 1595 backend unit tests green + 61 DB integration tests (2026-10-17, rounds r141–r178) |
+| Core features, all five roles | **Shipped** — 1819 frontend + 1714 backend unit tests green + 113 DB integration tests (2026-10-17, rounds r141–r179) |
 | Design system | Documented in `DESIGN.md` — parity gate 163/163 green |
 | AI assistant | **Real LLM via OpenRouter's free router in production (r175, per-response model attribution)** — the plagiarism scan stays a deterministic simulation, openly labeled; see `docs/02-features.md` |
 | English i18n | Not implemented. Real E2E (28 Playwright journeys) and PDF file uploads (durable postgres storage, r175) **are shipped** — full list in `docs/16-decisions-and-limitations.md` |
@@ -71,7 +71,7 @@ credential, re-seeding resets it): `student@`, `teacher@`, `admin@`,
 ```bash
 npm run lint                          # ESLint — 0 errors
 npm run typecheck                     # tsc — src + tests, both sides (no DB)
-npm test                              # 1819 FE + 1595 BE (no DB; incl. 7 live S3 tests against s3rver) — npm run test:integration adds 61 DB tests on a local disposable database
+npm test                              # 1819 FE + 1714 BE (no DB; incl. 7 live S3 tests against s3rver) — npm run test:integration adds 113 DB tests on a local disposable database (14 cross-institution r179 isolation tests among them)
 node scripts/verify-parity-export.mjs # design-parity gate 163/163
 bash scripts/check-csp-hash.sh        # CSP pin drift guard (now in CI)
 npm run validate:colleges             # 25 college identities (WCAG AA)

@@ -27,7 +27,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { AddressInfo } from 'node:net';
 import { Role } from '@prisma/client';
 import { createApp } from '../../src/app.js';
-import { bearer, db, seedUser, truncateAll, unknownCuid } from './helpers.js';
+import { bearer, db, seedInstitution, seedMembership, seedUser, truncateAll, unknownCuid } from './helpers.js';
 
 let baseUrl: string;
 let server: ReturnType<ReturnType<typeof createApp>['listen']>;
@@ -48,10 +48,13 @@ beforeEach(async () => {
   expect(tables).toBeGreaterThan(70); // the full migrated schema is present
 });
 
-const postMessage = (senderId: string, body: unknown) =>
+/** r179: the send-time guard requires the sender's verified institution
+ * context — every sender fixture below carries an ACTIVE membership and
+ * signs with the inst claim. */
+const postMessage = (senderId: string, institutionId: string, body: unknown) =>
   fetch(`${baseUrl}/api/v1/messages`, {
     method: 'POST',
-    headers: { ...bearer(senderId, Role.STUDENT), 'content-type': 'application/json' },
+    headers: { ...bearer(senderId, Role.STUDENT, institutionId), 'content-type': 'application/json' },
     body: JSON.stringify(body),
   });
 
@@ -63,8 +66,11 @@ describe('POST /api/v1/messages — atomic message + notification (real DB)', ()
   it('teacher recipient: ONE transaction lands BOTH the Message row and the Notification row, link /teacher/messages', async () => {
     const sender = await seedUser({ firstName: 'سالم' });
     const recipient = await seedUser({ role: Role.TEACHER, firstName: 'أمينة' });
+    const inst = await seedInstitution();
+    await seedMembership(sender.id, inst.id, Role.STUDENT);
+    await seedMembership(recipient.id, inst.id, Role.TEACHER);
 
-    const res = await postMessage(sender.id, {
+    const res = await postMessage(sender.id, inst.id, {
       toUserId: recipient.id,
       body: 'مرحبًا أستاذة، سؤال عن الواجب الثالث',
     });
@@ -97,8 +103,11 @@ describe('POST /api/v1/messages — atomic message + notification (real DB)', ()
   it('student recipient: the notification deep link points at the student inbox (r171a: /student/messages exists — the r155a null ceiling is closed)', async () => {
     const sender = await seedUser();
     const recipient = await seedUser({ role: Role.STUDENT });
+    const inst = await seedInstitution();
+    await seedMembership(sender.id, inst.id, Role.STUDENT);
+    await seedMembership(recipient.id, inst.id, Role.STUDENT);
 
-    const res = await postMessage(sender.id, { toUserId: recipient.id, body: 'سلام' });
+    const res = await postMessage(sender.id, inst.id, { toUserId: recipient.id, body: 'سلام' });
     expect(res.status).toBe(201);
 
     const notification = await db().notification.findFirst({ where: { userId: recipient.id } });
@@ -109,8 +118,8 @@ describe('POST /api/v1/messages — atomic message + notification (real DB)', ()
 
   it('self-DM → 400 + NOT ONE row is created (no message, no notification)', async () => {
     const sender = await seedUser();
-
-    const res = await postMessage(sender.id, { toUserId: sender.id, body: 'رسالة لنفسي' });
+    // Self-DM is rejected BEFORE the institution gate (order pin).
+    const res = await postMessage(sender.id, 'inst-unused', { toUserId: sender.id, body: 'رسالة لنفسي' });
     expect(res.status).toBe(400);
     const body = (await res.json()) as ErrorEnvelope;
     expect(body.error.code).toBe('BAD_REQUEST');
@@ -124,8 +133,10 @@ describe('POST /api/v1/messages — atomic message + notification (real DB)', ()
   it('inactive recipient → 400 + zero rows', async () => {
     const sender = await seedUser();
     const recipient = await seedUser({ isActive: false });
+    const inst = await seedInstitution();
+    await seedMembership(sender.id, inst.id, Role.STUDENT);
 
-    const res = await postMessage(sender.id, { toUserId: recipient.id, body: 'هل أنت هناك؟' });
+    const res = await postMessage(sender.id, inst.id, { toUserId: recipient.id, body: 'هل أنت هناك؟' });
     expect(res.status).toBe(400);
     const body = (await res.json()) as ErrorEnvelope;
     expect(body.error.code).toBe('BAD_REQUEST');
@@ -138,8 +149,10 @@ describe('POST /api/v1/messages — atomic message + notification (real DB)', ()
 
   it('unknown recipient cuid → 404 + zero rows (no P2003 500 — the pre-validation pin)', async () => {
     const sender = await seedUser();
+    const inst = await seedInstitution();
+    await seedMembership(sender.id, inst.id, Role.STUDENT);
 
-    const res = await postMessage(sender.id, { toUserId: unknownCuid(), body: 'إلى مجهول' });
+    const res = await postMessage(sender.id, inst.id, { toUserId: unknownCuid(), body: 'إلى مجهول' });
     expect(res.status).toBe(404);
     const body = (await res.json()) as ErrorEnvelope;
     expect(body.error.code).toBe('NOT_FOUND');

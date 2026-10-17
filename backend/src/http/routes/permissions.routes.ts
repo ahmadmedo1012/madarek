@@ -19,7 +19,7 @@ import {
   requiresLastOwnerGuard,
   resolveProvisionInstitution,
 } from '../../lib/governance.js';
-import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
+import { resolveCallerInstitutionScope, institutionContextRequiredError } from '../../lib/profile-scoping.js';
 import {
   getEffectiveCapabilities,
   DEFAULT_ROLE_CAPABILITIES,
@@ -91,14 +91,21 @@ router.get(
       };
       // Faculty governance scope: a scoped ADMIN only lists the users
       // of their own faculty — mirrors the write guards below.
-      // r178: an ADMIN/QUALITY caller with an institution context lists
-      // only that institution's members (DB-verified claim); OWNER and
-      // contextless sessions keep the platform-wide view.
+      // r179 (phase-5): an ADMIN/QUALITY caller MUST hold a DB-verified
+      // institution context (403 INSTITUTION_CONTEXT_REQUIRED without
+      // one); the list is pinned to that institution. OWNER keeps the
+      // platform-wide view.
       const scopeFacultyId = await getGovernanceScope(req.user!.id);
       const institutionScope =
         req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY
           ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
           : null;
+      if (
+        (req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY) &&
+        !institutionScope
+      ) {
+        throw institutionContextRequiredError();
+      }
       const where = buildScopedUserWhere(scopeFacultyId, {
         ...(role ? { role } : {}),
         ...(q
@@ -133,13 +140,30 @@ router.get(
 router.get('/admin/users/:id/permissions', requireCapability('ROLES_ASSIGN'), async (req, res, next) => {
   try {
     // Faculty governance scope — a scoped ADMIN cannot inspect the
-    // permission profile of an out-of-faculty user. r178: the target's
-    // faculty association resolves through their profile in the
-    // caller's institution context when one exists.
+    // permission profile of an out-of-faculty user. r179 (phase-5):
+    // an ADMIN/QUALITY caller MUST hold a DB-verified institution
+    // context (403 without one) and the target must be a member of
+    // that institution (404 otherwise — never leak a foreign user's
+    // existence); OWNER reads any target (platform governance).
     const callerInstitution =
       req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY
         ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
         : null;
+    if ((req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY) && !callerInstitution) {
+      throw institutionContextRequiredError();
+    }
+    if (callerInstitution) {
+      const targetMembership = await prisma.membership.findFirst({
+        where: {
+          userId: req.params.id!,
+          institutionId: callerInstitution,
+          isActive: true,
+          institution: { status: 'ACTIVE' },
+        },
+        select: { id: true },
+      });
+      if (!targetMembership) throw AppError.notFound('المستخدم غير موجود');
+    }
     const targetScope = await loadGovernanceTarget(req.params.id!, callerInstitution);
     if (!targetScope) throw AppError.notFound('المستخدم غير موجود');
     const actorScopeFacultyId = await getGovernanceScope(req.user!.id);
@@ -201,10 +225,31 @@ router.post(
       // Pre-validate the target: without this, a grant against a
       // non-existent user surfaced as a P2003 foreign-key 500 instead
       // of a clean 404.
+      // r179 (phase-5): an ADMIN/QUALITY caller MUST hold a DB-verified
+      // institution context (403 without one); the target must be a
+      // member of that institution (403 — a cross-institution
+      // governance write). OWNER governs platform-wide (null context).
       const callerInstitution =
         req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY
           ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
           : null;
+      if ((req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY) && !callerInstitution) {
+        throw institutionContextRequiredError();
+      }
+      if (callerInstitution) {
+        const targetMembership = await prisma.membership.findFirst({
+          where: {
+            userId,
+            institutionId: callerInstitution,
+            isActive: true,
+            institution: { status: 'ACTIVE' },
+          },
+          select: { id: true },
+        });
+        if (!targetMembership) {
+          throw AppError.forbidden('هذا المستخدم ليس عضواً في مؤسستك');
+        }
+      }
       const target = await loadGovernanceTarget(userId, callerInstitution);
       if (!target) throw AppError.notFound('المستخدم غير موجود');
 
@@ -303,25 +348,31 @@ router.post(
         throw AppError.forbidden('لا يمكن منح دور المالك عبر النظام — تواصل مع الدعم الفني');
       }
 
-      // r178: DB-verified caller institution context (null for OWNER /
-      // contextless sessions) — scopes the target's profile reads below
-      // and the TEACHER-provisioning institution further down.
+      // r179 (phase-5): DB-verified caller institution context —
+      // REQUIRED for ADMIN/QUALITY (403 without one); null for the
+      // platform OWNER only. It scopes the target's profile reads
+      // below (no legacy oldest-profile fallback — an OWNER promotion
+      // without a context needs an explicit departmentId) and the
+      // TEACHER-provisioning institution further down.
       const callerInstitution =
         req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY
           ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
           : null;
+      if ((req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY) && !callerInstitution) {
+        throw institutionContextRequiredError();
+      }
       const target = await prisma.user.findUnique({
         where: { id },
         select: {
           id: true,
           role: true,
-          // r178: per-membership profiles — resolved within the caller's
-          // institution context when one exists, else the target's
-          // oldest active profile (TODO(r179/phase-5): full isolation).
+          // r179: per-membership profiles — resolved within the caller's
+          // institution context only; without one (OWNER) NO profile is
+          // read (the promotion then needs an explicit departmentId).
           studentProfiles: {
             where: callerInstitution
               ? { institutionId: callerInstitution }
-              : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+              : { id: { in: [] } },
             take: 1,
             orderBy: { createdAt: 'asc' },
             select: { departmentId: true, facultyId: true },
@@ -329,7 +380,7 @@ router.post(
           teacherProfiles: {
             where: callerInstitution
               ? { membership: { institutionId: callerInstitution } }
-              : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+              : { id: { in: [] } },
             take: 1,
             orderBy: { createdAt: 'asc' },
             select: { id: true, department: { select: { facultyId: true } } },
@@ -370,19 +421,16 @@ router.post(
           'ترقية المستخدم إلى أستاذ تتطلب قسماً أكاديمياً — حدّد القسم أو رقّه من ملف طالب لديه قسم',
         );
       }
-      // r178: the TeacherProfile is per-membership — resolve the
-      // institution to provision in (the target's membership in the
-      // caller's institution context, else their own first active
-      // membership; none → the promotion cannot provision).
+      // r179 (phase-5): the TeacherProfile is per-membership —
+      // resolveProvisionInstitution is fail-closed now: with the
+      // caller's context the target MUST hold an active membership in
+      // THAT institution (400 otherwise); the platform OWNER path
+      // requires exactly one active membership (400 when zero or
+      // ambiguous, counting them honestly).
       const provisionInstitutionId =
         provisionPlan.kind === 'create'
           ? await resolveProvisionInstitution(callerInstitution, id)
           : null;
-      if (provisionPlan.kind === 'create' && !provisionInstitutionId) {
-        throw AppError.badRequest(
-          'ترقية المستخدم إلى أستاذ تتطلب عضوية نشطة في مؤسسة تعليمية',
-        );
-      }
       const teacherProvision =
         provisionPlan.kind === 'create' && provisionInstitutionId
           ? buildTeacherProvision(id, { ...provisionPlan, institutionId: provisionInstitutionId }, specialty)

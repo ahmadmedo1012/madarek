@@ -9,6 +9,11 @@ import { validate } from '../validate.js';
 import { assertOfferingAccess } from '../../lib/permissions.js';
 import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
 import { AppError } from '../../lib/errors.js';
+import {
+  resolveCallerInstitutionScope,
+  institutionContextRequiredError,
+  assertOfferingInCallerInstitution,
+} from '../../lib/profile-scoping.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { logger } from '../../logger.js';
 import {
@@ -20,7 +25,7 @@ import {
 // Upload guards (magic bytes / size cap) — the files.routes pure layer.
 // Route-module helper import, same precedent as offeringVisibilityFilter
 // above (no cycle: files.routes imports nothing from this file).
-import { isPdfMagicBytes, isUploadSizeOk } from './files.routes.js';
+import { isPdfMagicBytes, isUploadSizeOk, assertOfferingInstitutionForUpload } from './files.routes.js';
 // The list-side role/visibility twin of assertOfferingAccess — shared
 // with GET /courses/:id and the global search (its docblock names this
 // file's consumers). Importing a route module for a helper follows the
@@ -71,10 +76,27 @@ router.get(
         limit: number;
         q?: string;
       };
+      /* r179 (phase-5): an ADMIN/QUALITY caller MUST hold a DB-verified
+       * institution context (403 without one) — the picker lists THEIR
+       * institution's offerings only (the Course→institutionId chain;
+       * a contextless oversight caller never gets the platform-wide
+       * mix). TEACHER rows stay ownership-scoped; OWNER stays
+       * platform-wide. */
+      const callerInstitution =
+        req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY
+          ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
+          : null;
+      if (
+        (req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY) &&
+        !callerInstitution
+      ) {
+        throw institutionContextRequiredError();
+      }
       // Role-scoped rows (TEACHER sees only what they teach) + the
       // standard q filter over the course name/code a picker searches by.
       const where = {
         ...offeringVisibilityFilter(req.user!.role, req.user!.id),
+        ...(callerInstitution ? { course: { institutionId: callerInstitution } } : {}),
         ...(q
           ? {
               OR: [
@@ -107,6 +129,9 @@ router.get('/:id', async (req, res, next) => {
   try {
     const id = req.params.id!;
     await assertOfferingAccess(id, req.user!.id, req.user!.role);
+    // r179 (phase-5): the ADMIN/QUALITY ownership bypass is
+    // institution-pinned (404 for a foreign offering).
+    await assertOfferingInCallerInstitution(id, req.user!, 'read');
     const offering = await prisma.courseOffering.findUnique({
       where: { id },
       include: {
@@ -153,6 +178,40 @@ router.post(
   async (req, res, next) => {
     try {
       const data = req.body;
+      /* r179 (phase-5): the create is institution-scoped — an ADMIN
+       * caller MUST hold a DB-verified institution context (403 without
+       * one) and the COURSE must belong to it (the Course→institutionId
+       * chain; 403 for a foreign course). OWNER creates in any
+       * institution (global console). Either way the TEACHER must hold
+       * an ACTIVE membership in the course's institution — offerings
+       * never cross institutions through the teacher assignment. */
+      const course = await prisma.course.findUnique({
+        where: { id: data.courseId },
+        select: { institutionId: true },
+      });
+      if (!course) throw AppError.notFound('المقرر المحدد غير موجود');
+      if (req.user!.role !== Role.OWNER) {
+        const callerInstitution = await resolveCallerInstitutionScope(
+          req.user!.id,
+          req.user!.institutionId,
+        );
+        if (!callerInstitution) throw institutionContextRequiredError();
+        if (course.institutionId !== callerInstitution) {
+          throw AppError.forbidden('هذا المقرر ينتمي إلى مؤسسة أخرى');
+        }
+      }
+      const teacherMembership = await prisma.membership.findFirst({
+        where: {
+          userId: data.teacherId,
+          institutionId: course.institutionId,
+          isActive: true,
+          institution: { status: 'ACTIVE' },
+        },
+        select: { id: true },
+      });
+      if (!teacherMembership) {
+        throw AppError.badRequest('الأستاذ المحدد ليس عضواً نشطاً في مؤسسة هذا المقرر');
+      }
       const { offer } = await prisma.$transaction(async (tx) => {
         // r153j: a cuid-shaped id alone lets ANY user through the FK —
         // offerings are taught by TEACHERs. Same role-guard pattern as
@@ -224,6 +283,8 @@ export function serializeMaterial<T extends { sizeBytes: bigint }>(
 router.get('/:id/materials', async (req, res, next) => {
   try {
     await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+    // r179 (phase-5): the oversight bypass is institution-pinned.
+    await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'read');
     // Bounded read (audit P2-18): newest materials first, capped well
     // above a realistic per-offering material count.
     const rows = await prisma.material.findMany({
@@ -262,6 +323,9 @@ router.post(
   async (req, res, next) => {
     try {
       await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+      // r179 (phase-5): the oversight bypass is institution-pinned
+      // (write mode — 403 for a foreign offering).
+      await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'write');
       const created = await prisma.material.create({
         data: {
           ...req.body,
@@ -303,13 +367,15 @@ const materialUploadLimiter = createRouteLimiter({ max: 20 });
  * POST /offerings/:id/materials/file?name=…&description=…&type=PDF
  * — TEACHER/ADMIN/OWNER upload a real material PDF.
  *
- * Guards: role → zod query → assertOfferingAccess → Buffer.isBuffer →
- * size (413) → %PDF- magic bytes. The Material row is created FIRST
- * (its generated id is the storage key: `materials/<id>.pdf`, url
- * `/api/v1/files/materials/<id>.pdf`), then the bytes are put; if the
- * put fails the row is deleted and the error rethrown — atomic-ish, so
- * no row survives without its bytes (and a row that somehow did would
- * 404 on serve: stat finds nothing).
+ * Guards: role → zod query → institution gate (r179b: the offering
+ * must sit inside the caller's VERIFIED institution for every
+ * non-OWNER uploader) → assertOfferingAccess (the TEACHER-taught
+ * check) → Buffer.isBuffer → size (413) → %PDF- magic bytes. The
+ * Material row is created FIRST (its generated id is the storage key:
+ * `materials/<id>.pdf`, url `/api/v1/files/materials/<id>.pdf`), then
+ * the bytes are put; if the put fails the row is deleted and the
+ * error rethrown — atomic-ish, so no row survives without its bytes
+ * (and a row that somehow did would 404 on serve: stat finds nothing).
  */
 router.post(
   '/:id/materials/file',
@@ -320,6 +386,17 @@ router.post(
   async (req, res, next) => {
     try {
       const offeringId = req.params.id!;
+      // r179b (phase-5): institution gate FIRST — ADMIN oversight is
+      // institution-bound (no cross-institution byte drops), a TEACHER
+      // additionally passes the teaches-this-offering check below, and
+      // OWNER keeps the platform-wide bypass. Fails closed (403) for a
+      // contextless institutional caller.
+      await assertOfferingInstitutionForUpload(
+        offeringId,
+        req.user!.id,
+        req.user!.role,
+        req.user!.institutionId,
+      );
       await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
       const body = req.body;
       if (!Buffer.isBuffer(body)) {
@@ -368,6 +445,8 @@ router.post(
 router.get('/:id/assignments', async (req, res, next) => {
   try {
     await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+    // r179 (phase-5): the oversight bypass is institution-pinned.
+    await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'read');
     // Bounded read (audit P2-18): soonest-due first, capped well above
     // a realistic per-offering assignment count.
     const data = await prisma.assignment.findMany({
@@ -399,6 +478,9 @@ router.post(
   async (req, res, next) => {
     try {
       await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+      // r179 (phase-5): the oversight bypass is institution-pinned
+      // (write mode).
+      await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'write');
       const created = await prisma.assignment.create({
         data: { ...req.body, offeringId: req.params.id! },
       });
@@ -413,6 +495,8 @@ router.post(
 router.get('/:id/grades', async (req, res, next) => {
   try {
     await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+    // r179 (phase-5): the oversight bypass is institution-pinned.
+    await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'read');
     const where = {
       offeringId: req.params.id!,
       // Students may only see their own grades.
@@ -482,6 +566,9 @@ router.post(
     try {
       const offeringId = req.params.id!;
       await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the oversight bypass is institution-pinned
+      // (write mode).
+      await assertOfferingInCallerInstitution(offeringId, req.user!, 'write');
       const grades = req.body.grades as z.infer<typeof gradesUpsertSchema>['grades'];
 
       // Every studentId must be an enrolled student of this offering —
@@ -530,6 +617,8 @@ router.post(
 router.get('/:id/attendance', async (req, res, next) => {
   try {
     await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+    // r179 (phase-5): the oversight bypass is institution-pinned.
+    await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'read');
     // Bounded reads (audit P2-18): sessions newest-first (a term holds
     // far fewer than the cap); per-session records are bounded by the
     // roster size, and the explicit orderBy keeps the take deterministic

@@ -7,6 +7,7 @@ import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
+import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -104,6 +105,27 @@ router.post(
       const { toUserId, body } = req.body as z.infer<typeof sendMessageSchema>;
       if (toUserId === req.user!.id) throw AppError.badRequest('لا يمكنك إرسال رسالة إلى نفسك');
 
+      // r179 (phase-5) send-time guard: a DM travels INSIDE the
+      // sender's current institution. The sender's DB-verified context
+      // is required (403 without one — a contextless session cannot
+      // prove which institution the conversation belongs to), and the
+      // RECIPIENT must hold an ACTIVE membership in that same
+      // institution — cross-institution DM is disabled (the shared
+      // r179 contract: Message carries no institution column; the
+      // boundary is enforced at send time, the inbox stays
+      // user-scoped so historical threads remain readable).
+      const senderInstitution = await resolveCallerInstitutionScope(
+        req.user!.id,
+        req.user!.institutionId,
+      );
+      if (!senderInstitution) {
+        throw new AppError(
+          'INSTITUTION_CONTEXT_REQUIRED',
+          'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
+          403,
+        );
+      }
+
       // Pre-validate recipient + sender in one round-trip. Without the
       // recipient check a DM to a deleted/unknown id exploded as a P2003
       // foreign-key 500; and we need the sender's name for the
@@ -120,6 +142,23 @@ router.post(
       ]);
       if (!recipient) throw AppError.notFound('المستلم غير موجود');
       if (!recipient.isActive) throw AppError.badRequest('حساب المستلم غير نشط حالياً');
+
+      // Same-institution membership check (403 — the operation is
+      // understood, but cross-institution DM is disabled).
+      const recipientMembership = await prisma.membership.findFirst({
+        where: {
+          userId: recipient.id,
+          institutionId: senderInstitution,
+          isActive: true,
+          institution: { status: 'ACTIVE' },
+        },
+        select: { id: true },
+      });
+      if (!recipientMembership) {
+        throw AppError.forbidden(
+          'المراسلة الخاصة متاحة داخل مؤسستك فقط — هذا المستخدم ليس عضواً في مؤسستك الحالية',
+        );
+      }
 
       // Message + recipient notification atomically — a DM the recipient
       // never hears about is a broken loop, and a notification without
