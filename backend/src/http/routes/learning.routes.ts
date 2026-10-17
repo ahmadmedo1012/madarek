@@ -13,6 +13,9 @@ import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { utcDayStart } from '../../lib/dates.js';
 import { extractPaperText } from '../../lib/pdf.js';
+// r179b: the file-adjacent paper scan shares the files institution gate
+// (no cycle: files.routes imports nothing from this file).
+import { requireFileInstitutionScope } from './files.routes.js';
 import { assertOwnsResearchPaper, assertOfferingAccess } from '../../lib/permissions.js';
 import { attendancePctFromStatusCounts } from '../../lib/risk.js';
 import { requireCapability } from '../middleware/requireCapability.js';
@@ -1038,9 +1041,25 @@ router.post('/research/:id/scan', createRouteLimiter({ max: 10 }), async (req, r
       // Narrow select — the scan needs the identity/ownership/status/file
       // fields only; never hydrate the potentially-megabyte extractedText
       // column for a precondition check.
-      select: { id: true, studentId: true, fileUrl: true, status: true },
+      select: { id: true, studentId: true, fileUrl: true, status: true, institutionId: true },
     });
     if (!paper) throw AppError.notFound();
+    // r179b (phase-5): the scan reads the paper's bytes through
+    // extractPaperText — an institution-scoped file operation. The
+    // paper row carries institutionId (the membership context it was
+    // submitted under); it must match the caller's VERIFIED context
+    // for every non-OWNER role. A foreign-institution paper is a 404
+    // (indistinguishable from missing — no existence oracle); a
+    // contextless institutional caller is a 403 CONTEXT_REQUIRED; a
+    // forged/stale inst claim is a 403 CONTEXT_INVALID.
+    const scanInstitutionId = await requireFileInstitutionScope(
+      req.user!.id,
+      req.user!.role,
+      req.user!.institutionId,
+    );
+    if (scanInstitutionId !== null && paper.institutionId !== scanInstitutionId) {
+      throw AppError.notFound();
+    }
     // Students may only scan their own papers.
     if (req.user!.role === Role.STUDENT) {
       if (paper.studentId !== req.user!.id) throw AppError.forbidden();
