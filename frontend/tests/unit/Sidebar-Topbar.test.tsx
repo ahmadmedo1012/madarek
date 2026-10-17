@@ -43,6 +43,15 @@ vi.mock('../../src/components/layout/NotificationDropdown', () => ({
 vi.mock('../../src/hooks/useAuth', () => ({
   useMe: () => ({ data: undefined }),
   useLogout: () => ({ mutate: vi.fn() }),
+  // r178: the InstitutionChip mounts the selection mutation — idle
+  // stub (these pins never switch institutions).
+  useSelectInstitution: () => ({
+    mutateAsync: vi.fn(),
+    mutate: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+  }),
 }));
 vi.mock('../../src/hooks/useResources', () => ({
   useMyProfile: () => ({ data: undefined }),
@@ -145,7 +154,12 @@ afterEach(() => {
   // Reset shell state and drain any layer a failing test leaked.
   act(() => {
     useUiStore.setState({ sidebarOpen: false, sidebarCollapsed: true });
-    useAuthStore.setState({ user: null });
+    useAuthStore.setState({
+      user: null,
+      memberships: [],
+      currentInstitution: null,
+      membershipRole: null,
+    });
   });
   bandListeners.clear();
   mobileBand = true;
@@ -416,5 +430,127 @@ describe('Topbar — user menu (15-g P2-9 header placement)', () => {
     // …but not owned by the menu element.
     expect(menu.querySelector('.topbar-user-menu-header')).toBeNull();
     expect(screen.getAllByRole('menuitem').length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('Topbar — institution context chip (r178)', () => {
+  it('renders the passive pill with the current institution name for a single membership', () => {
+    act(() => {
+      useAuthStore.setState({
+        user: STUDENT,
+        memberships: [
+          {
+            institutionId: 'inst-zawia-showcase',
+            name: 'جامعة الزاوية',
+            nameEn: 'University of Zawia',
+            slug: 'zawia-showcase',
+            role: 'STUDENT',
+            isActive: true,
+          },
+        ],
+        currentInstitution: {
+          id: 'inst-zawia-showcase',
+          name: 'جامعة الزاوية',
+          nameEn: 'University of Zawia',
+          slug: 'zawia-showcase',
+        },
+        membershipRole: 'STUDENT',
+      });
+    });
+    renderTopbar();
+
+    // Passive pill (the .topbar-scope vocabulary) — no switcher.
+    const chip = screen.getByText('جامعة الزاوية');
+    expect(chip).toHaveClass('topbar-scope');
+    expect(screen.queryByRole('button', { name: 'المؤسسة الحالية' })).toBeNull();
+  });
+
+  it('renders the switcher (menu semantics) for a multi-membership session', () => {
+    act(() => {
+      useAuthStore.setState({
+        user: STUDENT,
+        memberships: [
+          {
+            institutionId: 'inst-zawia-showcase',
+            name: 'جامعة الزاوية',
+            nameEn: 'University of Zawia',
+            slug: 'zawia-showcase',
+            role: 'STUDENT',
+            isActive: true,
+          },
+          {
+            institutionId: 'inst-alandalus-demo',
+            name: 'مؤسسة الأندلس التعليمية',
+            nameEn: 'Al-Andalus Education Institute',
+            slug: 'alandalus-demo',
+            role: 'ADMIN',
+            isActive: true,
+          },
+        ],
+        currentInstitution: {
+          id: 'inst-zawia-showcase',
+          name: 'جامعة الزاوية',
+          nameEn: 'University of Zawia',
+          slug: 'zawia-showcase',
+        },
+        membershipRole: 'STUDENT',
+      });
+    });
+    renderTopbar();
+
+    const trigger = screen.getByRole('button', { name: 'المؤسسة الحالية' });
+    expect(trigger).toHaveAttribute('aria-haspopup', 'menu');
+    fireEvent.click(trigger);
+    const menu = screen.getByRole('menu', { name: 'تبديل المؤسسة' });
+    expect(menu.textContent).toContain('مؤسسة الأندلس التعليمية');
+  });
+
+  it('offers selection when a multi-membership session lost its context (refresh re-resolution)', () => {
+    act(() => {
+      useAuthStore.setState({
+        user: STUDENT,
+        memberships: [
+          {
+            institutionId: 'inst-zawia-showcase',
+            name: 'جامعة الزاوية',
+            nameEn: 'University of Zawia',
+            slug: 'zawia-showcase',
+            role: 'STUDENT',
+            isActive: true,
+          },
+          {
+            institutionId: 'inst-alandalus-demo',
+            name: 'مؤسسة الأندلس التعليمية',
+            nameEn: 'Al-Andalus Education Institute',
+            slug: 'alandalus-demo',
+            role: 'ADMIN',
+            isActive: true,
+          },
+        ],
+        currentInstitution: null,
+        membershipRole: null,
+      });
+    });
+    renderTopbar();
+
+    // The context was dropped (multi-membership refresh re-resolves to
+    // null) — the switcher becomes the re-selection path instead of
+    // disappearing and leaving every institution route 403ing.
+    const trigger = screen.getByRole('button', { name: 'اختيار المؤسسة' });
+    fireEvent.click(trigger);
+    const menu = screen.getByRole('menu', { name: 'اختيار المؤسسة' });
+    expect(menu).toBeDefined();
+    expect(screen.getAllByRole('menuitem')).toHaveLength(2);
+  });
+
+  it('renders no chip for a zero-membership session (platform OWNER)', () => {
+    act(() => {
+      useAuthStore.setState({ user: { ...STUDENT, role: 'OWNER' } });
+    });
+    renderTopbar();
+
+    expect(screen.queryByRole('button', { name: 'المؤسسة الحالية' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'اختيار المؤسسة' })).toBeNull();
+    expect(document.querySelector('.topbar-scope')).toBeNull();
   });
 });

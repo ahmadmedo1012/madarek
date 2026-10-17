@@ -26,7 +26,8 @@ import { createRouteLimiter } from '../../src/http/middleware/rateLimit.js';
 /** Tiny stand-in for authMiddleware: reads the identity from a header. */
 const fakeAuth = (req: Request, _res: Response, next: NextFunction) => {
   const id = req.header('x-test-user');
-  if (id) req.user = { id, role: 'STUDENT' as Role };
+  // r178: req.user now carries the (nullable) institution context.
+  if (id) req.user = { id, role: 'STUDENT' as Role, institutionId: null };
   next();
 };
 

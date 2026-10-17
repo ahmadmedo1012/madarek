@@ -16,7 +16,7 @@ export const authMiddleware: RequestHandler = (req, _res, next) => {
 
   try {
     const payload = verifyAccessToken(token);
-    req.user = { id: payload.sub, role: payload.role };
+    req.user = { id: payload.sub, role: payload.role, institutionId: payload.inst };
     next();
   } catch (err: unknown) {
     if (err instanceof Error && err.name === 'TokenExpiredError') {
@@ -35,7 +35,7 @@ export const optionalAuthMiddleware: RequestHandler = (req, _res, next) => {
   if (!token) return next();
   try {
     const payload = verifyAccessToken(token);
-    req.user = { id: payload.sub, role: payload.role };
+    req.user = { id: payload.sub, role: payload.role, institutionId: payload.inst };
   } catch {
     /* ignore */
   }

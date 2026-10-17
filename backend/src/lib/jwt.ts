@@ -5,6 +5,16 @@ import { Role } from '@prisma/client';
 export interface AccessTokenPayload {
   sub: string;
   role: Role;
+  /**
+   * r178 (multi-institution): the institution context the token was
+   * minted in — the id of the SELECTED Membership's institution, or
+   * null when the user has no/ambiguous institution context (client
+   * must call /auth/select-institution). It is a HINT for routing
+   * only: every institution-scoped middleware re-resolves the
+   * membership from the DB (requireInstitution) — the claim alone
+   * grants nothing.
+   */
+  inst: string | null;
   type: 'access';
 }
 export interface RefreshTokenPayload {
@@ -24,8 +34,12 @@ const SIGN_ALGORITHM: SignOptions['algorithm'] = 'HS256';
 const accessOpts: SignOptions = { algorithm: SIGN_ALGORITHM, expiresIn: env.jwtAccessTtl };
 const refreshOpts: SignOptions = { algorithm: SIGN_ALGORITHM, expiresIn: env.jwtRefreshTtl };
 
-export const signAccessToken = (userId: string, role: Role) =>
-  jwt.sign({ sub: userId, role, type: 'access' } satisfies AccessTokenPayload, env.JWT_ACCESS_SECRET, accessOpts);
+export const signAccessToken = (userId: string, role: Role, institutionId: string | null) =>
+  jwt.sign(
+    { sub: userId, role, inst: institutionId, type: 'access' } satisfies AccessTokenPayload,
+    env.JWT_ACCESS_SECRET,
+    accessOpts,
+  );
 
 export const signRefreshToken = (userId: string, tokenVersion: number) =>
   jwt.sign(
@@ -48,6 +62,15 @@ const ROLE_VALUES: readonly string[] = Object.values(Role);
 const isRole = (v: unknown): v is Role => typeof v === 'string' && ROLE_VALUES.includes(v);
 
 /**
+ * r178: `inst` must be a null or a non-empty institution id. Undefined
+ * (pre-r178 token) and empty strings both fail — fail closed: an access
+ * token without a well-formed context claim is rejected and the client
+ * re-authenticates (login/refresh mints tokens with the claim).
+ */
+const isInstitutionIdClaim = (v: unknown): v is string | null =>
+  v === null || (typeof v === 'string' && v.length > 0);
+
+/**
  * Verify a token's signature/expiry and return its payload as a plain
  * record, re-checking the type discriminator. A valid HS256 signature
  * only proves WE signed the token — not that the payload has the shape
@@ -68,10 +91,14 @@ const decodeVerified = (
 
 export const verifyAccessToken = (token: string): AccessTokenPayload => {
   const payload = decodeVerified(token, env.JWT_ACCESS_SECRET, 'access');
-  if (typeof payload.sub !== 'string' || !isRole(payload.role)) {
+  if (
+    typeof payload.sub !== 'string' ||
+    !isRole(payload.role) ||
+    !isInstitutionIdClaim(payload.inst)
+  ) {
     throw new Error('Malformed access token payload');
   }
-  return { sub: payload.sub, role: payload.role, type: 'access' };
+  return { sub: payload.sub, role: payload.role, inst: payload.inst, type: 'access' };
 };
 
 export const verifyRefreshToken = (token: string): RefreshTokenPayload => {

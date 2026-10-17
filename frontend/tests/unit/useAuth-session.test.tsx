@@ -12,9 +12,21 @@ import type { AxiosResponse } from 'axios';
 vi.mock('../../src/lib/api', () => ({
   api: { post: vi.fn(), get: vi.fn(), put: vi.fn() },
   unwrap: vi.fn(),
+  // r178: useLogin/useRegister split the payload's institution context
+  // through this helper before setSession — mirror the real defaulting
+  // logic so the store assertions below see the honest defaults.
+  extractSessionExtras: (user: {
+    memberships?: unknown[];
+    currentInstitution?: unknown;
+    membershipRole?: unknown;
+  }) => ({
+    memberships: user.memberships ?? [],
+    currentInstitution: user.currentInstitution ?? null,
+    membershipRole: user.membershipRole ?? null,
+  }),
 }));
 
-import { useLogin, useRegister, useLogout } from '../../src/hooks/useAuth';
+import { useLogin, useRegister, useLogout, useMe } from '../../src/hooks/useAuth';
 import { useAuthStore, type AuthUser } from '../../src/stores/auth.store';
 import { api, unwrap } from '../../src/lib/api';
 
@@ -54,7 +66,13 @@ function seededClient(): QueryClient {
 beforeEach(() => {
   vi.clearAllMocks();
   postMock.mockResolvedValue({ data: {} } as unknown as AxiosResponse);
-  useAuthStore.setState({ user: null, accessToken: null });
+  useAuthStore.setState({
+    user: null,
+    accessToken: null,
+    memberships: [],
+    currentInstitution: null,
+    membershipRole: null,
+  });
   localStorage.removeItem('mdrk-auth');
 });
 
@@ -89,6 +107,7 @@ describe('useRegister — session boundary', () => {
         firstName: USER_B.firstName,
         lastName: USER_B.lastName,
         role: 'TEACHER',
+        institutionId: 'inst-zawia-showcase', // r178: required for both public roles
       });
     });
 
@@ -113,5 +132,80 @@ describe('useLogout — session boundary (pinned)', () => {
     expect(useAuthStore.getState().user).toBeNull();
     expect(qc.getQueryData(['auth', 'me'])).toBeUndefined();
     expect(qc.getQueryData(['me', 'dashboard'])).toBeUndefined();
+  });
+});
+
+describe('useMe — institution context sync (r178)', () => {
+  it('applies the me payload’s context fields WITHOUT touching the user/token pair', async () => {
+    useAuthStore.getState().setSession(USER_A, 'tok-me');
+    unwrapMock.mockResolvedValue({
+      ...USER_A,
+      memberships: [
+        {
+          institutionId: 'inst-alandalus-demo',
+          name: 'مؤسسة الأندلس التعليمية',
+          nameEn: 'Al-Andalus Education Institute',
+          slug: 'alandalus-demo',
+          role: 'ADMIN',
+          isActive: true,
+        },
+      ],
+      currentInstitution: {
+        id: 'inst-alandalus-demo',
+        name: 'مؤسسة الأندلس التعليمية',
+        nameEn: 'Al-Andalus Education Institute',
+        slug: 'alandalus-demo',
+      },
+      membershipRole: 'ADMIN',
+    });
+    const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+    const { result } = renderHook(() => useMe(), { wrapper: makeWrapper(qc) });
+    await vi.waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    // The context lands in the store (the shell’s chip source)…
+    const state = useAuthStore.getState();
+    expect(state.memberships).toHaveLength(1);
+    expect(state.currentInstitution?.slug).toBe('alandalus-demo');
+    expect(state.membershipRole).toBe('ADMIN');
+    // …while the me read carries no token — the session pair stays as-is.
+    expect(state.user?.id).toBe('user-a');
+    expect(state.accessToken).toBe('tok-me');
+  });
+
+  it('resets the context when the me payload carries none (honest defaults)', async () => {
+    // A contextual session first…
+    useAuthStore.getState().setSession(USER_A, 'tok-me', {
+      memberships: [
+        {
+          institutionId: 'inst-zawia-showcase',
+          name: 'جامعة الزاوية',
+          nameEn: 'University of Zawia',
+          slug: 'zawia-showcase',
+          role: 'STUDENT',
+          isActive: true,
+        },
+      ],
+      currentInstitution: {
+        id: 'inst-zawia-showcase',
+        name: 'جامعة الزاوية',
+        nameEn: 'University of Zawia',
+        slug: 'zawia-showcase',
+      },
+      membershipRole: 'STUDENT',
+    });
+    // …then a me read whose membership was revoked server-side: the
+    // payload lists zero active memberships and no context — the chip
+    // must not outlive its evidence.
+    unwrapMock.mockResolvedValue({ ...USER_A });
+    const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+    const { result } = renderHook(() => useMe(), { wrapper: makeWrapper(qc) });
+    await vi.waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    const state = useAuthStore.getState();
+    expect(state.memberships).toEqual([]);
+    expect(state.currentInstitution).toBeNull();
+    expect(state.membershipRole).toBeNull();
   });
 });

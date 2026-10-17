@@ -13,6 +13,7 @@ import {
   getGovernanceScope,
   loadGovernanceTarget,
 } from '../../lib/governance.js';
+import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -238,6 +239,34 @@ const enrollSchema = z
 router.post('/', requireRole(Role.ADMIN, Role.OWNER), validate(enrollSchema), async (req, res, next) => {
   try {
     const { studentId, offeringId } = req.body as z.infer<typeof enrollSchema>;
+    /* r178 (multi-institution): an ADMIN caller with an institution
+     * context may only enroll within THEIR institution — both halves
+     * of the seat are checked: the offering's course chain and the
+     * student (a membership in the same institution). Contextless
+     * callers (OWNER, legacy sessions) keep the university-wide
+     * semantics; TODO(r179/phase-5): the exhaustive isolation pass. */
+    const callerInstitution = await resolveCallerInstitutionScope(
+      req.user!.id,
+      req.user!.institutionId,
+    );
+    if (callerInstitution) {
+      const [offering, targetMembership] = await Promise.all([
+        prisma.courseOffering.findUnique({
+          where: { id: offeringId },
+          select: { course: { select: { institutionId: true } } },
+        }),
+        prisma.membership.findFirst({
+          where: { userId: studentId, institutionId: callerInstitution, isActive: true },
+          select: { id: true },
+        }),
+      ]);
+      if (offering && offering.course.institutionId !== callerInstitution) {
+        throw AppError.forbidden('هذا المقرر ينتمي إلى مؤسسة أخرى');
+      }
+      if (!targetMembership) {
+        throw AppError.forbidden('الطالب المحدد ليس عضواً في مؤسستك');
+      }
+    }
     // Faculty governance scope (r155a): BOTH halves of the enrollment
     // are asserted before the transaction — the student (same guard
     // the user surfaces throw) and the offering's
@@ -340,6 +369,9 @@ router.delete('/:id', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next
     // students in their own faculty (what you cannot govern, you do
     // not delete). A missing id still 404s via the transaction's P2025
     // path, so an absent row is not a scope decision.
+    // r178: the student's profile is per-membership — resolved in the
+    // caller's institution context when one exists, else their oldest
+    // active profile (TODO(r179/phase-5): full isolation).
     const scopeFacultyId = await getGovernanceScope(req.user!.id);
     if (scopeFacultyId !== null) {
       const enrollment = await prisma.enrollment.findUnique({
@@ -348,8 +380,18 @@ router.delete('/:id', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next
           student: {
             select: {
               role: true,
-              studentProfile: { select: { facultyId: true } },
-              teacherProfile: { select: { department: { select: { facultyId: true } } } },
+              studentProfiles: {
+                where: { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+                take: 1,
+                orderBy: { createdAt: 'asc' },
+                select: { facultyId: true },
+              },
+              teacherProfiles: {
+                where: { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+                take: 1,
+                orderBy: { createdAt: 'asc' },
+                select: { department: { select: { facultyId: true } } },
+              },
             },
           },
         },
@@ -357,8 +399,8 @@ router.delete('/:id', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next
       if (enrollment) {
         assertWithinScope(scopeFacultyId, {
           role: enrollment.student.role,
-          studentFacultyId: enrollment.student.studentProfile?.facultyId ?? null,
-          teacherFacultyId: enrollment.student.teacherProfile?.department.facultyId ?? null,
+          studentFacultyId: enrollment.student.studentProfiles[0]?.facultyId ?? null,
+          teacherFacultyId: enrollment.student.teacherProfiles[0]?.department.facultyId ?? null,
         });
       }
     }

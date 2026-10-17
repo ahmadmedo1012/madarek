@@ -7,6 +7,7 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { buildMeta, paginationSchema } from '../../lib/pagination.js';
 import { buildScopedUserWhere, getGovernanceScope } from '../../lib/governance.js';
+import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
 // Decimal→Number serializer for ResearchPaper rows — exported by the
 // research-owning route module (learning.routes) and reused here so the
 // admin projection serializes Decimals exactly like /research/queue.
@@ -60,7 +61,14 @@ router.get('/students', validate(studentsQuerySchema, 'query'), async (req, res,
     // GET /users — what you cannot govern, you do not list. A faculty the
     // actor requests outside their scope simply matches no rows.
     // OWNER / unscoped ADMIN keep the platform-wide view.
+    // r178: profiles are per-membership — the filters read the plural
+    // relations (`some`) with identical semantics, and an ADMIN caller
+    // with an institution context lists only their institution's members.
     const scopeFacultyId = await getGovernanceScope(req.user!.id);
+    const institutionScope =
+      req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY
+        ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
+        : null;
     const where = buildScopedUserWhere(scopeFacultyId, {
       role: Role.STUDENT,
       ...(q ? {
@@ -68,13 +76,13 @@ router.get('/students', validate(studentsQuerySchema, 'query'), async (req, res,
           { firstName: { contains: q, mode: 'insensitive' as const } },
           { lastName: { contains: q, mode: 'insensitive' as const } },
           { email: { contains: q, mode: 'insensitive' as const } },
-          { studentProfile: { universityId: { contains: q, mode: 'insensitive' as const } } },
+          { studentProfiles: { some: { universityId: { contains: q, mode: 'insensitive' as const } } } },
         ],
       } : {}),
-      ...(facultyId ? { studentProfile: { facultyId } } : {}),
-    });
+      ...(facultyId ? { studentProfiles: { some: { facultyId } } } : {}),
+    }, institutionScope);
 
-    const [data, total] = await Promise.all([
+    const [rows, total] = await Promise.all([
       prisma.user.findMany({
         where,
         skip: (page - 1) * limit,
@@ -84,7 +92,17 @@ router.get('/students', validate(studentsQuerySchema, 'query'), async (req, res,
           id: true, email: true, firstName: true, lastName: true,
           isActive: true, avatarColor: true, avatarInitials: true,
           createdAt: true,
-          studentProfile: {
+          // r178: per-membership profiles — resolved in the caller's
+          // institution context when one exists, else the student's
+          // oldest active profile; folded back to the singular
+          // `studentProfile` key the FE consumes
+          // (TODO(r179/phase-5): full isolation).
+          studentProfiles: {
+            where: institutionScope
+              ? { institutionId: institutionScope }
+              : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+            take: 1,
+            orderBy: { createdAt: 'asc' },
             select: {
               universityId: true, year: true, gpa: true, totalXp: true, level: true,
               faculty: { select: { id: true, name: true } },
@@ -95,6 +113,11 @@ router.get('/students', validate(studentsQuerySchema, 'query'), async (req, res,
       }),
       prisma.user.count({ where }),
     ]);
+    const data = rows.map((u) => ({
+      ...u,
+      studentProfiles: undefined,
+      studentProfile: u.studentProfiles[0] ?? null,
+    }));
 
     res.json({ data, meta: buildMeta(page, limit, total) });
   } catch (e) { next(e); }

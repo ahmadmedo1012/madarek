@@ -519,16 +519,39 @@ router.post(
 // ════════════════════════════════════════════════════════════════
 router.get('/me/profile', async (req, res, next) => {
   try {
+    // r178: profiles are per-membership — resolved in the caller's
+    // token institution context when one is selected, else the oldest
+    // active profile (legacy fallback for a contextless session).
+    // TODO(r179/phase-5): full data isolation.
     const user = await withRetry(() => prisma.user.findUnique({
       where: { id: req.user!.id },
-      include: {
-        studentProfile: {
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        avatarColor: true,
+        avatarInitials: true,
+        emailVerifiedAt: true,
+        createdAt: true,
+        studentProfiles: {
+          where: req.user!.institutionId
+            ? { institutionId: req.user!.institutionId }
+            : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+          take: 1,
+          orderBy: { createdAt: 'asc' },
           include: {
             faculty: { select: { id: true, name: true, nameEn: true } },
             department: { select: { id: true, name: true, nameEn: true } },
           },
         },
-        teacherProfile: {
+        teacherProfiles: {
+          where: req.user!.institutionId
+            ? { membership: { institutionId: req.user!.institutionId } }
+            : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+          take: 1,
+          orderBy: { createdAt: 'asc' },
           include: {
             department: { include: { faculty: { select: { name: true } } } },
           },
@@ -536,6 +559,8 @@ router.get('/me/profile', async (req, res, next) => {
       },
     }));
     if (!user) throw AppError.notFound();
+    const studentProfile = user.studentProfiles[0] ?? null;
+    const teacherProfile = user.teacherProfiles[0] ?? null;
     res.json({
       data: {
         id: user.id,
@@ -547,25 +572,25 @@ router.get('/me/profile', async (req, res, next) => {
         avatarInitials: user.avatarInitials,
         emailVerifiedAt: user.emailVerifiedAt,
         createdAt: user.createdAt,
-        student: user.studentProfile
+        student: studentProfile
           ? {
-              universityId: user.studentProfile.universityId,
-              year: user.studentProfile.year,
-              gpa: Number(user.studentProfile.gpa ?? 0),
-              totalXp: user.studentProfile.totalXp,
-              level: user.studentProfile.level,
-              faculty: user.studentProfile.faculty,
-              department: user.studentProfile.department,
+              universityId: studentProfile.universityId,
+              year: studentProfile.year,
+              gpa: Number(studentProfile.gpa ?? 0),
+              totalXp: studentProfile.totalXp,
+              level: studentProfile.level,
+              faculty: studentProfile.faculty,
+              department: studentProfile.department,
             }
           : null,
-        teacher: user.teacherProfile
+        teacher: teacherProfile
           ? {
-              specialty: user.teacherProfile.specialty,
-              rank: user.teacherProfile.rank,
-              department: user.teacherProfile.department
+              specialty: teacherProfile.specialty,
+              rank: teacherProfile.rank,
+              department: teacherProfile.department
                 ? {
-                    name: user.teacherProfile.department.name,
-                    facultyName: user.teacherProfile.department.faculty?.name,
+                    name: teacherProfile.department.name,
+                    facultyName: teacherProfile.department.faculty?.name,
                   }
                 : null,
             }
@@ -1796,12 +1821,28 @@ export function stableSeed(id: string): number {
   return h;
 }
 
-router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
+router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (req, res, next) => {
   try {
+    // r178: profiles are per-membership — each teacher's profile is
+    // resolved in the QUALITY caller's institution context when one is
+    // selected, else their oldest active profile
+    // (TODO(r179/phase-5): institution-scoped quality surfaces).
     const teachers = await withRetry(() => prisma.user.findMany({
       where: { role: Role.TEACHER },
-      include: {
-        teacherProfile: { include: { department: { include: { faculty: { select: { name: true } } } } } },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        avatarInitials: true,
+        avatarColor: true,
+        teacherProfiles: {
+          where: req.user!.institutionId
+            ? { membership: { institutionId: req.user!.institutionId } }
+            : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+          take: 1,
+          orderBy: { createdAt: 'asc' },
+          include: { department: { include: { faculty: { select: { name: true } } } } },
+        },
         taughtOfferings: {
           include: {
             _count: {
@@ -1823,6 +1864,7 @@ router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (_req
     // we fall back to deterministic seed-based values so the UI is meaningful —
     // flagged with `estimated: true` so consumers can label them as such.
     const data = teachers.map((t) => {
+      const teacherProfile = t.teacherProfiles[0] ?? null;
       const off = t.taughtOfferings;
       const totals = off.reduce(
         (acc, o) => ({
@@ -1851,10 +1893,10 @@ router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (_req
         lastName: t.lastName,
         avatarInitials: t.avatarInitials,
         avatarColor: t.avatarColor,
-        rank: t.teacherProfile?.rank ?? 'LECTURER',
-        specialty: t.teacherProfile?.specialty ?? '—',
-        faculty: t.teacherProfile?.department?.faculty?.name ?? '—',
-        department: t.teacherProfile?.department?.name ?? '—',
+        rank: teacherProfile?.rank ?? 'LECTURER',
+        specialty: teacherProfile?.specialty ?? '—',
+        faculty: teacherProfile?.department?.faculty?.name ?? '—',
+        department: teacherProfile?.department?.name ?? '—',
         offerings: off.length,
         totals,
         satisfaction: Number(satisfaction.toFixed(1)),

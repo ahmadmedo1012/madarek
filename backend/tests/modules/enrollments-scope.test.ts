@@ -96,7 +96,9 @@ type UserFindUniqueImpl = NonNullable<Parameters<typeof userFindUnique.mockImple
 type TransactionImpl = NonNullable<Parameters<typeof transaction.mockImplementation>[0]>;
 
 /** user.findUnique dispatch: actor rows for getGovernanceScope, full
- *  profile rows for loadGovernanceTarget / the POST student check. */
+ *  profile rows for loadGovernanceTarget / the POST student check.
+ *  r178: profiles are per-membership — the route select returns
+ *  ARRAYS (take: 1), so the mocked rows ship the plural shapes. */
 const dispatchUser = userFindUnique.mockImplementation(
   (async ({ where }: { where: { id: string } }) => {
     switch (where.id) {
@@ -111,16 +113,16 @@ const dispatchUser = userFindUnique.mockImplementation(
           id: STUDENT_IN_F1,
           role: Role.STUDENT,
           isActive: true,
-          studentProfile: { facultyId: F1 },
-          teacherProfile: null,
+          studentProfiles: [{ facultyId: F1 }],
+          teacherProfiles: [],
         };
       case STUDENT_IN_F2:
         return {
           id: STUDENT_IN_F2,
           role: Role.STUDENT,
           isActive: true,
-          studentProfile: { facultyId: F2 },
-          teacherProfile: null,
+          studentProfiles: [{ facultyId: F2 }],
+          teacherProfiles: [],
         };
       default:
         return null;
@@ -148,7 +150,7 @@ beforeEach(() => {
   offeringFindUnique.mockResolvedValue(null as never);
 });
 
-const bearer = (userId: string, role: Role) => ({ authorization: `Bearer ${signAccessToken(userId, role)}` });
+const bearer = (userId: string, role: Role) => ({ authorization: `Bearer ${signAccessToken(userId, role, null)}` });
 
 const get = (path: string, userId: string, role: Role) =>
   fetch(`${baseUrl}/api/v1${path}`, { headers: bearer(userId, role) });
@@ -366,8 +368,9 @@ describe('DELETE /api/v1/enrollments/:id (scope asserted before the transaction)
       ...enrollmentRow(STUDENT_IN_F2),
       student: {
         role: Role.STUDENT,
-        studentProfile: { facultyId: F2 },
-        teacherProfile: null,
+        // r178: per-membership plural shapes.
+        studentProfiles: [{ facultyId: F2 }],
+        teacherProfiles: [],
       },
     } as never);
 
@@ -382,8 +385,9 @@ describe('DELETE /api/v1/enrollments/:id (scope asserted before the transaction)
       ...enrollmentRow(STUDENT_IN_F1),
       student: {
         role: Role.STUDENT,
-        studentProfile: { facultyId: F1 },
-        teacherProfile: null,
+        // r178: per-membership plural shapes.
+        studentProfiles: [{ facultyId: F1 }],
+        teacherProfiles: [],
       },
     } as never);
     enrollmentDelete.mockResolvedValue(enrollmentRow(STUDENT_IN_F1) as never);

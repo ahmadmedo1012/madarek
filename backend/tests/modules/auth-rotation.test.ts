@@ -24,7 +24,9 @@ vi.mock('../../src/lib/password.js', () => ({
 vi.mock('../../src/db.js', () => ({
   prisma: {
     user: { findUnique: vi.fn(), update: vi.fn(), updateMany: vi.fn() },
-    studentProfile: { findUnique: vi.fn() },
+    // r178: the reg-number login path + session-context resolution.
+    studentProfile: { findMany: vi.fn(async () => []) },
+    membership: { findMany: vi.fn(async () => []) },
     loginEvent: { create: vi.fn(async () => ({})) },
   },
 }));
@@ -357,6 +359,7 @@ describe('auth DTO sanitizer trims', () => {
       firstName: '  أحمد ',
       lastName: 'المستخدم  ',
       role: 'STUDENT',
+      institutionId: 'inst-zawia-showcase',
     });
     expect(parsed.email).toBe('new.student@zu.edu.ly');
     expect(parsed.firstName).toBe('أحمد');
@@ -368,14 +371,47 @@ describe('auth DTO sanitizer trims', () => {
 // JWT hardening
 // ─────────────────────────────────────────────────────────────────────
 describe('JWT — sign/verify round trips', () => {
-  it('round-trips an access token with its role claim intact', () => {
-    const token = signAccessToken('user-1', 'STUDENT');
-    expect(verifyAccessToken(token)).toEqual({ sub: 'user-1', role: 'STUDENT', type: 'access' });
+  it('round-trips an access token with its role + institution claims intact', () => {
+    const token = signAccessToken('user-1', 'STUDENT', null);
+    expect(verifyAccessToken(token)).toEqual({
+      sub: 'user-1',
+      role: 'STUDENT',
+      inst: null,
+      type: 'access',
+    });
+  });
+
+  it('round-trips an institution-scoped access token (r178 inst claim)', () => {
+    const token = signAccessToken('user-1', 'ADMIN', 'inst-zawia-showcase');
+    expect(verifyAccessToken(token)).toEqual({
+      sub: 'user-1',
+      role: 'ADMIN',
+      inst: 'inst-zawia-showcase',
+      type: 'access',
+    });
   });
 
   it('round-trips a refresh token with its version claim intact', () => {
     const token = signRefreshToken('user-1', 9);
     expect(verifyRefreshToken(token)).toEqual({ sub: 'user-1', ver: 9, type: 'refresh' });
+  });
+
+  it('rejects a pre-r178 access token (no inst claim) — fail closed', () => {
+    const legacy = jwt.sign(
+      { sub: 'user-1', role: 'STUDENT', type: 'access' },
+      env.JWT_ACCESS_SECRET,
+      { algorithm: 'HS256' },
+    );
+    expect(() => verifyAccessToken(legacy)).toThrow('Malformed access token payload');
+  });
+
+  it('rejects an empty-string inst claim — null or non-empty only', () => {
+    const forged = jwt.sign(
+      { sub: 'user-1', role: 'STUDENT', inst: '', type: 'access' },
+      env.JWT_ACCESS_SECRET,
+      { algorithm: 'HS256' },
+    );
+    expect(() => verifyAccessToken(forged)).toThrow('Malformed access token payload');
   });
 });
 

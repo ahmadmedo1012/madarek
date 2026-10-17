@@ -164,23 +164,36 @@ export function assertWithinScope(
  * unchanged; scoped actors get it AND-ed with
  * "STUDENT of faculty X or TEACHER homed in faculty X" — mirroring
  * `isUserWithinScope` (platform-governance roles never match).
+ *
+ * r178 (multi-institution): an optional `institutionId` ANDs a
+ * membership-scope filter ("has an ACTIVE membership in that
+ * institution") on top. ADMIN/QUALITY callers with an institution
+ * context pass it (users.routes / permissions.routes /
+ * admin-extras.routes); OWNER (platform role, no membership) passes
+ * nothing and sees the platform-wide list. The faculty filter now
+ * reads the PLURAL profile relations (profiles are per-membership
+ * since r178) with `some` semantics identical to the old singular
+ * filter.
  */
 export function buildScopedUserWhere(
   actorScopeFacultyId: string | null,
   base: Prisma.UserWhereInput = {},
+  institutionId?: string | null,
 ): Prisma.UserWhereInput {
-  if (actorScopeFacultyId === null) return base;
-  return {
-    AND: [
-      base,
-      {
-        OR: [
-          { role: Role.STUDENT, studentProfile: { facultyId: actorScopeFacultyId } },
-          { role: Role.TEACHER, teacherProfile: { department: { facultyId: actorScopeFacultyId } } },
-        ],
-      },
-    ],
-  };
+  const scopes: Prisma.UserWhereInput[] = [base];
+  if (institutionId) {
+    scopes.push({ memberships: { some: { institutionId, isActive: true } } });
+  }
+  if (actorScopeFacultyId !== null) {
+    scopes.push({
+      OR: [
+        { role: Role.STUDENT, studentProfiles: { some: { facultyId: actorScopeFacultyId } } },
+        { role: Role.TEACHER, teacherProfiles: { some: { department: { facultyId: actorScopeFacultyId } } } },
+      ],
+    });
+  }
+  if (scopes.length === 1) return base;
+  return { AND: scopes };
 }
 
 /**
@@ -209,16 +222,39 @@ export interface GovernanceTarget extends GovernanceScopeTarget {
  * Load a user with exactly the fields the governance guards need
  * (role, active flag, faculty association). Returns null when the
  * user does not exist — callers turn that into a clean 404.
+ *
+ * r178: profiles are per-membership. With an `institutionId` supplied
+ * the faculty association resolves through the target's profile in
+ * THAT institution; without one it falls back to the target's oldest
+ * active profile (legacy single-context semantics — TODO(r179/phase-5):
+ * hard institution isolation for governance writes).
  */
-export async function loadGovernanceTarget(userId: string): Promise<GovernanceTarget | null> {
+export async function loadGovernanceTarget(
+  userId: string,
+  institutionId?: string | null,
+): Promise<GovernanceTarget | null> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
       id: true,
       role: true,
       isActive: true,
-      studentProfile: { select: { facultyId: true } },
-      teacherProfile: { select: { department: { select: { facultyId: true } } } },
+      studentProfiles: {
+        where: institutionId
+          ? { institutionId }
+          : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+        take: 1,
+        orderBy: { createdAt: 'asc' },
+        select: { facultyId: true },
+      },
+      teacherProfiles: {
+        where: institutionId
+          ? { membership: { institutionId } }
+          : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+        take: 1,
+        orderBy: { createdAt: 'asc' },
+        select: { department: { select: { facultyId: true } } },
+      },
     },
   });
   if (!user) return null;
@@ -226,8 +262,8 @@ export async function loadGovernanceTarget(userId: string): Promise<GovernanceTa
     id: user.id,
     role: user.role,
     isActive: user.isActive,
-    studentFacultyId: user.studentProfile?.facultyId ?? null,
-    teacherFacultyId: user.teacherProfile?.department.facultyId ?? null,
+    studentFacultyId: user.studentProfiles[0]?.facultyId ?? null,
+    teacherFacultyId: user.teacherProfiles[0]?.department.facultyId ?? null,
   };
 }
 
@@ -270,22 +306,78 @@ export function planTeacherProvisioning(input: {
 }
 
 /**
+ * r178: resolve the institution a TEACHER promotion should provision
+ * in. Preference order:
+ *  1. the target's ACTIVE membership in the caller's institution
+ *     context (an admin promotes "their" user where they both belong);
+ *  2. the target's own oldest ACTIVE membership (the caller is
+ *     platform-level / contextless);
+ *  3. null — the target belongs to no active institution, so no
+ *     membership-scoped TeacherProfile can be provisioned (the route
+ *     turns this into a 400).
+ */
+export async function resolveProvisionInstitution(
+  preferredInstitutionId: string | null | undefined,
+  targetUserId: string,
+): Promise<string | null> {
+  if (typeof preferredInstitutionId === 'string' && preferredInstitutionId.length > 0) {
+    const inCallerInstitution = await prisma.membership.findFirst({
+      where: {
+        userId: targetUserId,
+        institutionId: preferredInstitutionId,
+        isActive: true,
+        institution: { status: 'ACTIVE' },
+      },
+      select: { institutionId: true },
+    });
+    if (inCallerInstitution) return inCallerInstitution.institutionId;
+  }
+  const first = await prisma.membership.findFirst({
+    where: { userId: targetUserId, isActive: true, institution: { status: 'ACTIVE' } },
+    orderBy: { createdAt: 'asc' },
+    select: { institutionId: true },
+  });
+  return first?.institutionId ?? null;
+}
+
+/**
  * Build the transaction step that creates the TeacherProfile. Returned
  * as a closure over a transaction client so the route can run it
  * inside the same `$transaction` as the role update (never a role
  * change without its profile, or vice versa).
+ *
+ * r178: the profile is per-MEMBERSHIP — the step first ensures a
+ * TEACHER membership in the target institution (upsert on
+ * userId+institutionId: creates it, or heals the role of an existing
+ * membership to mirror the promotion), validates that the home
+ * department belongs to the same institution (the chain invariant
+ * registration enforces), then links the profile to the membership.
  */
 export function buildTeacherProvision(
   userId: string,
-  plan: { kind: 'create'; departmentId: string },
+  plan: { kind: 'create'; departmentId: string; institutionId: string },
   specialty?: string,
 ): (tx: Prisma.TransactionClient) => Promise<unknown> {
-  return (tx) =>
-    tx.teacherProfile.create({
+  return async (tx) => {
+    const membership = await tx.membership.upsert({
+      where: { userId_institutionId: { userId, institutionId: plan.institutionId } },
+      create: { userId, institutionId: plan.institutionId, role: Role.TEACHER },
+      update: { role: Role.TEACHER },
+    });
+    const department = await tx.department.findUnique({
+      where: { id: plan.departmentId },
+      select: { id: true, faculty: { select: { institutionId: true } } },
+    });
+    if (!department || department.faculty.institutionId !== plan.institutionId) {
+      throw AppError.badRequest('القسم الأكاديمي المحدد لا ينتمي إلى مؤسسة المستخدم');
+    }
+    return tx.teacherProfile.create({
       data: {
         userId,
+        membershipId: membership.id,
         specialty: specialty ?? TEACHER_DEFAULT_SPECIALTY,
         departmentId: plan.departmentId,
       },
     });
+  };
 }

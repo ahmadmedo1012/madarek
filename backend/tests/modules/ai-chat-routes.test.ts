@@ -46,7 +46,7 @@ import { signAccessToken } from '../../src/lib/jwt.js';
 // ── Shared helpers ────────────────────────────────────────────────
 
 const STUDENT_ID = 'student-1';
-const bearer = () => ({ authorization: `Bearer ${signAccessToken(STUDENT_ID, Role.STUDENT)}` });
+const bearer = () => ({ authorization: `Bearer ${signAccessToken(STUDENT_ID, Role.STUDENT, null)}` });
 
 function startServer(app: ReturnType<typeof createApp>) {
   const server = app.listen(0);

@@ -56,6 +56,25 @@ vi.mock('../../src/hooks/useResources', () => ({
   }),
 }));
 
+vi.mock('../../src/hooks/useInstitutions', () => ({
+  // r178: one seeded institution — the page auto-selects it (single
+  // institution), so the faculty/department flows below proceed
+  // exactly as pre-r178.
+  useInstitutions: () => ({
+    data: [
+      {
+        id: 'inst-zawia',
+        name: 'جامعة الزاوية',
+        nameEn: 'University of Zawia',
+        slug: 'zawia-showcase',
+      },
+    ],
+    isLoading: false,
+    isError: false,
+    refetch: vi.fn(),
+  }),
+}));
+
 import RegisterPage, { registerPasswordSchema } from '../../src/pages/RegisterPage';
 import { isCommonPassword } from '../../src/lib/commonPasswords';
 

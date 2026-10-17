@@ -25,7 +25,7 @@
 
 | البند | الحالة |
 |---|---|
-| ميزات الأدوار الخمسة | **منفَّذة ومشحَنة** — 1793 اختبار واجهة + 1569 خلفية خضراء + 47 اختبار تكامل قاعدة بيانات (2026-10-16، جولات r141–r176) |
+| ميزات الأدوار الخمسة | **منفَّذة ومشحَنة** — 1819 اختبار واجهة + 1595 خلفية خضراء + 61 اختبار تكامل قاعدة بيانات (2026-10-17، جولات r141–r178) |
 | نظام التصميم | موثّق في [`DESIGN.md`](DESIGN.md) — بوابة تكافؤ 163/163 خضراء |
 | مساعد «Oasis» الذكي | **محرّك محلي حتمي معلن (gap-aware-composer) افتراضيًا + مزوّد LLM حقيقي اختياري** عبر `AI_PROVIDER` — التفصيل: [docs/02](docs/02-features.md) |
 | فحص الانتحال | **محاكاة حتمية معلنة** (بلا خدمات خارجية) — التفصيل: [docs/02](docs/02-features.md) |
@@ -114,7 +114,7 @@ npm run dev:web                    # الواجهة :5173 (proxy ‏/api → :40
 ```bash
 npm run lint                         # ESLint — 0 أخطاء إلزامية
 npm run typecheck                    # tsc — src + tests، الجهتان (بلا DB)
-npm test                             # 1793 واجهة + 1569 خلفية (بلا DB؛ يشمل 7 اختبارات S3 حيّة ضد s3rver) — و npm run test:integration يضيف 47 اختبار تكامل على قاعدة محلية معزولة
+npm test                             # 1819 واجهة + 1595 خلفية (بلا DB؛ يشمل 7 اختبارات S3 حيّة ضد s3rver) — و npm run test:integration يضيف 61 اختبار تكامل على قاعدة محلية معزولة
 node scripts/verify-parity-export.mjs  # بوابة التكافؤ 163/163
 bash scripts/check-icons.sh            # انضباط Lucide
 bash scripts/check-motion-tokens.sh    # رموز الحركة
@@ -152,7 +152,7 @@ npm run validate:colleges              # هوية 25 كلية (AA)
 
 ```text
 madarek/
-├── backend/          Express + TS · Prisma (77 نموذجًا/30 enum) · 193 endpoint · storage/papers/
+├── backend/          Express + TS · Prisma (79 نموذجًا/31 enum) · 215 endpoint · storage/papers/
 ├── frontend/         React 18 + Vite · src/styles/ سلسلة الرموز · 18 CSS · tests/ (vitest)
 ├── docs/             الدليل العربي 01–16 + modules/ + المراجع المولّدة + archive/
 ├── specs/            مواصفات الميزات (نية زمنية — الحالة في SPECS-REFERENCE)

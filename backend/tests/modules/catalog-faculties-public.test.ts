@@ -65,6 +65,8 @@ describe('GET /api/v1/faculties — public catalog (audit 4-A13 P0-1)', () => {
         name: 'كلية الآداب',
         iconEmoji: '📚',
         city: 'الزاوية',
+        // r178: every public faculty row carries its institution basics.
+        institution: { id: 'inst-1', name: 'جامعة الزاوية', nameEn: 'University of Zawia', slug: 'zawia-showcase' },
         departments: [
           { id: 'dep-1', name: 'قسم اللغة العربية' },
           { id: 'dep-2', name: 'قسم التاريخ' },
@@ -81,7 +83,7 @@ describe('GET /api/v1/faculties — public catalog (audit 4-A13 P0-1)', () => {
     expect(body.data).toHaveLength(1);
   });
 
-  it('ships the register-page shape: faculty {id,name,iconEmoji,city,departments[{id,name}]}', async () => {
+  it('ships the register-page shape: faculty {id,name,iconEmoji,city,institution,departments[{id,name}]}', async () => {
     const res = await get('/api/v1/faculties');
     const body = (await res.json()) as { data: Array<Record<string, unknown>> };
     const faculty = body.data[0]!;
@@ -90,6 +92,9 @@ describe('GET /api/v1/faculties — public catalog (audit 4-A13 P0-1)', () => {
       name: 'كلية الآداب',
       iconEmoji: '📚',
       city: 'الزاوية',
+      // r178: institution basics on every row (the register funnel
+      // groups/labels faculties by institution).
+      institution: { id: 'inst-1', name: 'جامعة الزاوية', nameEn: 'University of Zawia', slug: 'zawia-showcase' },
       departments: [
         { id: 'dep-1', name: 'قسم اللغة العربية' },
         { id: 'dep-2', name: 'قسم التاريخ' },
@@ -97,7 +102,7 @@ describe('GET /api/v1/faculties — public catalog (audit 4-A13 P0-1)', () => {
     });
     // PII/narrowness guard — toEqual above already fails on extra keys,
     // but the exact-key list is the contract, spelled out:
-    expect(Object.keys(faculty).sort()).toEqual(['city', 'departments', 'iconEmoji', 'id', 'name']);
+    expect(Object.keys(faculty).sort()).toEqual(['city', 'departments', 'iconEmoji', 'id', 'institution', 'name']);
     const departments = faculty.departments as Array<object>;
     expect(Object.keys(departments[0]!).sort()).toEqual(['id', 'name']);
   });
@@ -107,11 +112,16 @@ describe('GET /api/v1/faculties — public catalog (audit 4-A13 P0-1)', () => {
     expect(prisma.faculty.findMany).toHaveBeenCalledTimes(1);
     expect(prisma.faculty.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
+        // r178: the where scopes the listing to ACTIVE institutions
+        // (optionally by slug) and the select gains the institution
+        // basics — everything else stays the narrow PII-safe set.
+        where: expect.objectContaining({ institution: expect.objectContaining({ status: 'ACTIVE' }) }),
         select: {
           id: true,
           name: true,
           iconEmoji: true,
           city: true,
+          institution: { select: { id: true, name: true, nameEn: true, slug: true } },
           departments: { select: { id: true, name: true } },
         },
       }),

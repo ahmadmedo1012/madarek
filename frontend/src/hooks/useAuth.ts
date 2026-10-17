@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, unwrap } from '../lib/api';
-import { useAuthStore, type AuthUser, type AcademicPosition } from '../stores/auth.store';
+import { api, unwrap, extractSessionExtras, selectInstitution, type AuthSessionResponse } from '../lib/api';
+import { useAuthStore, type AuthUser, type AcademicPosition, type SessionInstitutionExtras } from '../stores/auth.store';
 
-interface MeProfileResponse extends AuthUser {
+interface MeProfileResponse extends AuthUser, Partial<SessionInstitutionExtras> {
   scopeFaculty?: { id: string; name: string } | null;
   // 012-design-graphics-uplift — presentation preferences (no PII).
   themePreference?: 'LIGHT' | 'DARK' | 'SYSTEM';
@@ -38,6 +38,10 @@ interface RegisterPayload {
   lastName: string;
   /** Self-serve registration is restricted to academic roles. */
   role: 'STUDENT' | 'TEACHER';
+  /** r178: the institution the account registers into — required for
+   *  both public roles (the backend validates the faculty/department
+   *  chain belongs to it). */
+  institutionId: string;
   facultyId?: string;
   departmentId?: string;
   universityId?: string;
@@ -51,13 +55,13 @@ export function useLogin() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: LoginPayload) =>
-      unwrap<{ user: AuthUser; accessToken: string }>(api.post('/auth/login', input)),
+      unwrap<AuthSessionResponse>(api.post('/auth/login', input)),
     onSuccess: ({ user, accessToken }) => {
       // Session boundary (P0-1): drop the previous account's cached
       // queries BEFORE the new session renders — shared lab machines
       // must never see the predecessor's `me`/milestones/profile.
       qc.clear();
-      setSession(user, accessToken);
+      setSession(user, accessToken, extractSessionExtras(user));
     },
   });
 }
@@ -67,20 +71,53 @@ export function useRegister() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: RegisterPayload) =>
-      unwrap<{ user: AuthUser; accessToken: string }>(api.post('/auth/register', input)),
+      unwrap<AuthSessionResponse>(api.post('/auth/register', input)),
     onSuccess: ({ user, accessToken }) => {
       // Same session boundary as useLogin (P0-1).
       qc.clear();
-      setSession(user, accessToken);
+      setSession(user, accessToken, extractSessionExtras(user));
+    },
+  });
+}
+
+/** r178: switch the session's institution context. The server verifies
+ *  the active membership and mints a fresh access token (new `inst`
+ *  claim). On success the store's context updates FIRST (the api
+ *  interceptor already reads the new token), then every cached query
+ *  is invalidated — institution-scoped data (faculties, courses,
+ *  dashboards…) refetches in place under the new context instead of
+ *  flashing the previous institution's rows. */
+export function useSelectInstitution() {
+  const setSession = useAuthStore((s) => s.setSession);
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { institutionId: string }) => selectInstitution(input.institutionId),
+    onSuccess: ({ user, accessToken }) => {
+      setSession(user, accessToken, extractSessionExtras(user));
+      qc.invalidateQueries();
     },
   });
 }
 
 export function useMe() {
   const token = useAuthStore((s) => s.accessToken);
+  const applySessionExtras = useAuthStore((s) => s.applySessionExtras);
   return useQuery({
     queryKey: ['auth', 'me'],
-    queryFn: () => unwrap<MeProfileResponse>(api.get('/auth/me')),
+    queryFn: async () => {
+      const me = await unwrap<MeProfileResponse>(api.get('/auth/me'));
+      /* r178: /auth/me is the authoritative institution context (the
+       * r178 auth module returns memberships + currentInstitution +
+       * membershipRole with the membership-scoped profiles). Sync it
+       * into the store WITHOUT touching the user/token pair: revocations,
+       * suspensions and newly granted memberships land here first, and
+       * a refresh that re-resolved a multi-membership session to
+       * context=null is re-announced so the shell can offer selection
+       * again (Agent B's refresh contract + the D4 honest-defaults
+       * rule — no context in the payload resets the context). */
+      applySessionExtras(extractSessionExtras(me));
+      return me;
+    },
     enabled: Boolean(token),
     staleTime: 60_000,
   });

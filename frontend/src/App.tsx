@@ -121,6 +121,10 @@ const QualityAlertsPage = lazy(() => import('./pages/quality/QualityPages').then
 
 const OwnerDashboardPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerDashboardPage })));
 const OwnerUsersPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerUsersPage })));
+// r178 (multi-institution foundation): the OWNER's institution console —
+// create institutions, provision their ADMINs, suspend/reactivate,
+// revoke/restore memberships. Named lazy wrapper follows the siblings.
+const OwnerInstitutionsPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerInstitutionsPage })));
 const OwnerActivityPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerActivityPage })));
 const OwnerContentPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerContentPage })));
 const OwnerSystemPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerSystemPage })));
@@ -394,6 +398,8 @@ export function AppRoutes() {
           <Route element={<AppShell />}>
             <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
             <Route path="/owner/users" element={<OwnerUsersPage />} />
+            {/* r178: institution console (see the lazy import above). */}
+            <Route path="/owner/institutions" element={<OwnerInstitutionsPage />} />
             <Route path="/owner/activity" element={<OwnerActivityPage />} />
             <Route path="/owner/content" element={<OwnerContentPage />} />
             <Route path="/owner/system" element={<OwnerSystemPage />} />

@@ -29,7 +29,7 @@ Neon; deployed on Render with auto-deploy from `main`.
 
 | Item | State |
 |---|---|
-| Core features, all five roles | **Shipped** — 1793 frontend + 1569 backend unit tests green (2026-10-16, rounds r141–r176) |
+| Core features, all five roles | **Shipped** — 1819 frontend + 1595 backend unit tests green + 61 DB integration tests (2026-10-17, rounds r141–r178) |
 | Design system | Documented in `DESIGN.md` — parity gate 163/163 green |
 | AI assistant | **Real LLM via OpenRouter's free router in production (r175, per-response model attribution)** — the plagiarism scan stays a deterministic simulation, openly labeled; see `docs/02-features.md` |
 | English i18n | Not implemented. Real E2E (28 Playwright journeys) and PDF file uploads (durable postgres storage, r175) **are shipped** — full list in `docs/16-decisions-and-limitations.md` |
@@ -39,8 +39,8 @@ Neon; deployed on Render with auto-deploy from `main`.
 The Arabic documentation hub: [`docs/README.md`](docs/README.md)
 (numbered guides 01–16 + per-sector modules). Key references (English,
 generated from code): [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md)
-(193 endpoints), [`docs/DATABASE-REFERENCE.md`](docs/DATABASE-REFERENCE.md)
-(77 models / 30 enums), [`docs/FRONTEND-REFERENCE.md`](docs/FRONTEND-REFERENCE.md),
+(215 endpoints), [`docs/DATABASE-REFERENCE.md`](docs/DATABASE-REFERENCE.md)
+(79 models / 31 enums), [`docs/FRONTEND-REFERENCE.md`](docs/FRONTEND-REFERENCE.md),
 [`docs/PROJECT-REFERENCE.md`](docs/PROJECT-REFERENCE.md),
 [`docs/SECRETS-REFERENCE.md`](docs/SECRETS-REFERENCE.md).
 AI agents must read [`AGENTS.md`](AGENTS.md) first.
@@ -71,7 +71,7 @@ credential, re-seeding resets it): `student@`, `teacher@`, `admin@`,
 ```bash
 npm run lint                          # ESLint — 0 errors
 npm run typecheck                     # tsc — src + tests, both sides (no DB)
-npm test                              # 1015 FE + 1021 BE (no DB)
+npm test                              # 1819 FE + 1595 BE (no DB; incl. 7 live S3 tests against s3rver) — npm run test:integration adds 61 DB tests on a local disposable database
 node scripts/verify-parity-export.mjs # design-parity gate 163/163
 bash scripts/check-csp-hash.sh        # CSP pin drift guard (now in CI)
 npm run validate:colleges             # 25 college identities (WCAG AA)

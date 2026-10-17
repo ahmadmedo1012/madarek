@@ -35,6 +35,15 @@ vi.mock('../../src/components/layout/NotificationDropdown', () => ({
 vi.mock('../../src/hooks/useAuth', () => ({
   useMe: () => ({ data: undefined }),
   useLogout: () => ({ mutate: vi.fn() }),
+  // r178: the InstitutionChip mounts the selection mutation — idle
+  // stub (these pins never switch institutions).
+  useSelectInstitution: () => ({
+    mutateAsync: vi.fn(),
+    mutate: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+  }),
 }));
 vi.mock('../../src/hooks/useResources', () => ({
   useMyProfile: () => ({ data: undefined }),

@@ -193,7 +193,10 @@ describe('self-modification guard on POST /admin/users/:id/permissions (r157 / 6
 
   it('runs BEFORE the governance-target read (a self-edit never resolves its own row)', () => {
     const guard = routesSource.indexOf('if (userId === req.user!.id)');
-    const read = routesSource.indexOf('const target = await loadGovernanceTarget(userId)');
+    // r178: the target read gained the caller-institution scoping arg.
+    const read = routesSource.indexOf(
+      'const target = await loadGovernanceTarget(userId, callerInstitution)',
+    );
     expect(guard).toBeGreaterThan(-1);
     expect(read).toBeGreaterThan(-1);
     expect(guard).toBeLessThan(read);

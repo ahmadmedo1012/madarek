@@ -138,7 +138,7 @@ const PDF_BYTES = Buffer.from('%PDF-1.7\nr170c control-char gate regression payl
 const GOOD_FILENAME = 'cku5c2x9p0000ctrl.pdf';
 
 const bearer = (userId: string, role: Role) => ({
-  authorization: `Bearer ${signAccessToken(userId, role)}`,
+  authorization: `Bearer ${signAccessToken(userId, role, null)}`,
 });
 
 const getPdf = (role: Role, rawPath: string) =>

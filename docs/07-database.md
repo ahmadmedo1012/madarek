@@ -2,14 +2,58 @@
 
 - المحرك: **PostgreSQL** مُدار على **Neon** (إقليم قريب من Render virginia).
 - ORM: **Prisma 5.22.0** — المخطط في `backend/prisma/schema.prisma`
-  (مصدر الحقيقة): **77 نموذجًا، 30 enum، 19 ترحيلًا** مطبقًا.
+  (مصدر الحقيقة): **79 نموذجًا، 31 enum، 20 ترحيلًا** مطبقًا.
 - المرجع النموذج-بنموذج المولّد: [`DATABASE-REFERENCE.md`](DATABASE-REFERENCE.md).
+
+## r178 — أساس التعدّد المؤسسي (النماذج والترحيل والبذور)
+
+- **النماذج الجديدة**: `Institution` (جذر العزل؛ سياق تنظيمي معروض لا هوية
+  بصرية — بلا شعار/ألوان/نطاق لكل مؤسسة) و`Membership`
+  (`@@unique(userId, institutionId)`؛ الدور الفعلي داخل المؤسسة مصدره
+  العضوية دائمًا؛ `isActive=false` مقبض سحب الصلاحية دون حذف التاريخ؛
+  قيمة OWNER محظورة على مستوى التطبيق لأن Prisma 5.22 بلا قيود CHECK —
+  الحراسة في Zod DTOs + الخدمات).
+- **إعادة هيكلة الملفات**: `StudentProfile`/`TeacherProfile` صارا
+  **ملحقين بالعضوية** (PK من نوع cuid جديد؛ `membershipId @unique` →
+  Cascade؛ علاقة User أصبحت جمعًا `studentProfiles`/`teacherProfiles` —
+  المستخدم قد يدرس في مؤسسة ويدرّس في أخرى). رقم القيد الجامعي
+  `universityId` فقد تفرده العالمي لصالح `@@unique(institutionId,
+  universityId)`؛ `StudentProfile` يحمل `institutionId` منزوعة الوثائق
+  (denormalization مبرّرة للاستعلامات النطاقية) بينما أستاذ الملف
+  يُحل عبر العضوية.
+- **النطاق على المفاتيح**: `Faculty` يفقد افتراض مدينة «الزاوية» ويكسب
+  `institutionId` إلزاميًا مع `@@unique(institutionId, name, city)`؛
+  `Course.code` فريد داخل المؤسسة `@@unique(institutionId, code)` —
+  العمود المنزوَس يُشتق من department→faculty ويُتحقق منه في كود
+  التطبيق عند كل إنشاء/تحديث (ثابت على مستوى التطبيق)؛
+  `UserPermission.institutionId?` (NULL = منحة عالمية؛ غير الفارغ =
+  منحة مؤسسية؛ التفريد الثلاثي `userId+capability+institutionId`)
+  و`AuditLog.institutionId?` (NULL = نطاق منصة).
+- **الترحيل** (`20261017020724_multi_institution_foundation`): أنشأ
+  المؤسسة والمجموعات ثم **استرجاع البيانات** قبل ضبط NOT NULL: مؤسسة
+  العرض «جامعة الزاوية» بمعرّف ثابت `inst-zawia-showcase`؛ ربط كل
+  الكليات القائمة بها؛ عضوية لكل مستخدم له ملف طالب/أستاذ (أو دور
+  STUDENT/TEACHER/ADMIN/QUALITY) في مؤسسة العرض؛ إعادة بناء مفاتيح
+  ملفات الطالب/الأستاذ بمفاتيح cuid جديدة مع `membershipId`؛ اشتقاق
+  `Course.institutionId` عبر `UPDATE … FROM (Department JOIN Faculty)`
+  مع تعويض أمان نحو مؤسسة العرض؛ إسقاط التفريدات العالمية القديمة
+  (Course.code / Faculty(name,city) / StudentProfile.universityId /
+  UserPermission(userId,capability)) قبل إنشاء المركّبة النطاقية. حرس
+  `WHERE NOT EXISTS` يجعله آمنًا على قاعدة فارغة ومليئة معًا.
+- **البذور**: مؤسسة العرض (25 كلية) + مؤسسة تجريبية ثانية «مؤسسة
+  الأندلس التعليمية» (slug `alandalus-demo`؛ كلية واحدة وقسم ومقرر
+  `SE301` **بنفس الرمز** مقرر الزاوية — إثبات التفريد داخل المؤسسة)
+  + حسابات `student2@demo.madarek.ly` و`admin2@demo.madarek.ly`؛ رقم
+  القيد نفسه يُزرع للطالبين (إثبات التفريد النطاقي للرقم)؛ المالك
+  بلا عضوية (ملكية المنصة على User.role فقط). الكلمة كالعادة
+  `Madarek2026!`.
+- القرارات التفصيلية والبدائل: [`architecture/multi-institution/`](architecture/multi-institution/).
 
 ## مجموعات النماذج (خريطة مجردة)
 
 | المجموعة | أمثلة النماذج | الغرض |
 |---|---|---|
-| الهوية والحاكمية | `User`، `StudentProfile`، `TeacherProfile`، `RolePermission`، `UserPermission`، `Faculty`، `Department` | حسابات، قدرات، نطاق كليات، `tokenVersion` للإبطال |
+| الهوية والحاكمية | `User`، `Institution`، `Membership`، `StudentProfile`، `TeacherProfile`، `RolePermission`، `UserPermission`، `Faculty`، `Department` | حسابات، مؤسسات وعضويات (r178)، قدرات، نطاق كليات، `tokenVersion` للإبطال |
 | الكتالوج والتدريس | `Course`، `CourseOffering`، `Enrollment`، `ScheduleSlot`، `Material`، `Assignment`، `Submission`، `Grade` | المقررات وشعبها والتسجيل (سعة بحرس `FOR UPDATE`) والواجبات والدرجات |
 | الحضور | `AttendanceSession`، `AttendanceRecord` | حضور ذكي من إتمام المشاهدة؛ تفرد `(offeringId, date)` بمفتاح يوم UTC |
 | التعلم | `Lecture`، `LectureChapter`، `LectureCheckpoint`، `CheckpointAnswer`، `WatchEvent`، `KnowledgeConcept`، `StudentMastery` | الفصول المقلوبة ومصفوفة الإتقان (`progressPct` حقيقة مشتقة — ترحيل backfill)؛ `CheckpointAnswer` ذاكرة إجابات نقاط التحقّق (ترحيل r157 الأخير) |
@@ -29,7 +73,14 @@
 - `AttendanceSession @@unique(offeringId, date)` — مفتاح اليوم على تقويم
   UTC (`lib/dates.ts`)؛ سجلات الطلاب `AttendanceRecord @@unique(sessionId, studentId)`؛
   التسميات المعروضة بتقويم Africa/Tripoli.
-- `Faculty @@unique(name, city)` — يسند هوية 25 كلية في البذور.
+- `Faculty @@unique(institutionId, name, city)` (r178؛ كانت `name, city`
+  عالمية) — يسند هوية 25 كلية في البذور داخل مؤسسة العرض، ويسمح
+  بنفس الاسم في مؤسسات مختلفة.
+- `Course @@unique(institutionId, code)` و`StudentProfile
+  @@unique(institutionId, universityId)` و`Membership
+  @@unique(userId, institutionId)` (r178) — التفريد على مستوى المؤسسة
+  لا المنصة (مقنّن بأن كود المقرر ورقم القيد يُصدرهما كل مؤسسة
+  بنفسها).
 - كل تعديل حاكمية يكتب `AuditLog` **بنفس المعاملة** (لا تدقيق يتيم).
 
 ## استراتيجية الاتصال: pooler مقابل direct
@@ -47,9 +98,12 @@ P1017/P1001/P1002 العابرة (`backend/src/db.ts`).
 
 ## الترحيلات
 
-- 19 ترحيلًا من `20260523171735_init` حتى
-  `20261016190858_postgres_binary_objects` (r175: `BinaryObject` —
-  تخزين BYTEA دائم لرفعات PDF على خطة Render المجانية).
+- 20 ترحيلًا من `20260523171735_init` حتى
+  `20261017020724_multi_institution_foundation` (r178: أساس التعدّد
+  المؤسسي — نماذج Institution/Membership + إعادة هيكلة الملفات +
+  التفريد النطاقي؛ قبلها `20261016190858_postgres_binary_objects`
+  r175: `BinaryObject` — تخزين BYTEA دائم لرفعات PDF على خطة Render
+  المجانية).
 - محليًا: `npm run db:migrate` (`prisma migrate dev`). الإنتاج: تطبيق
   `prisma migrate deploy` **أثناء خطوة بناء Render** (لا عند الإقلاع).
 - **لا تعدّل ترحيلًا مطبقًا** — أنشئ ترحيلًا جديدًا دائمًا (التفصيل في

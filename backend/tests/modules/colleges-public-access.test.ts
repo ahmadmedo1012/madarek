@@ -181,7 +181,7 @@ describe('GET /api/v1/colleges/:id — guest funnel open with PII narrowing', ()
   });
 
   it('keeps FULL student names for authenticated users (any role)', async () => {
-    const token = signAccessToken('stu-1', 'STUDENT');
+    const token = signAccessToken('stu-1', 'STUDENT', null);
     const res = await get(`/api/v1/colleges/${FACULTY_ID}`, token);
     expect(res.status).toBe(200);
     const body = (await res.json()) as {
@@ -240,7 +240,7 @@ describe('GET /api/v1/colleges/leaderboard — public aggregate (was 401)', () =
   });
 
   it('returns the identical aggregate for an authenticated user (no per-role variance)', async () => {
-    const token = signAccessToken('stu-1', 'STUDENT');
+    const token = signAccessToken('stu-1', 'STUDENT', null);
     const [anon, authed] = await Promise.all([
       get('/api/v1/colleges/leaderboard'),
       get('/api/v1/colleges/leaderboard', token),

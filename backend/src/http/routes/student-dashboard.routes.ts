@@ -699,9 +699,15 @@ router.get('/me/dashboard', async (req, res, next) => {
     const horizon = new Date(now.getTime() + WEEK_MS);
 
     // ── Profile + active enrollments ──────────────────────────
+    // r178: the profile is per-membership — resolved in the caller's
+    // token institution context when one is selected, else the oldest
+    // active profile (TODO(r179/phase-5): full data isolation).
     const [profile, enrollments] = await Promise.all([
-      prisma.studentProfile.findUnique({
-        where: { userId },
+      prisma.studentProfile.findFirst({
+        where: req.user!.institutionId
+          ? { userId, institutionId: req.user!.institutionId, membership: { isActive: true } }
+          : { userId, membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+        orderBy: { createdAt: 'asc' },
         select: {
           gpa: true, totalXp: true, level: true, year: true, facultyId: true,
           faculty: { select: { name: true } },

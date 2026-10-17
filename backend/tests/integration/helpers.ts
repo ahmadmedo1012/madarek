@@ -26,7 +26,7 @@
  * guard guarantees the database is disposable and local.
  */
 import { randomUUID } from 'node:crypto';
-import type { PrismaClient, Role, User } from '@prisma/client';
+import type { Institution, Membership, PrismaClient, Role, User } from '@prisma/client';
 import { prisma } from '../../src/db.js';
 import { signAccessToken } from '../../src/lib/jwt.js';
 
@@ -41,8 +41,8 @@ export function db(): PrismaClient {
  * Introspect + TRUNCATE every public table except _prisma_migrations
  * (see the file header for why full-schema truncation is acceptable
  * ONLY in the dedicated integration database). Returns the number of
- * tables truncated — a cheap sanity pin (the migrated schema has 76
- * user tables) that also fails loudly if the DB is somehow empty.
+ * tables truncated — a cheap sanity pin (the r178 migrated schema has
+ * 79 user tables) that also fails loudly if the DB is somehow empty.
  */
 export async function truncateAll(client: PrismaClient): Promise<number> {
   return client.$transaction(async (tx) => {
@@ -91,15 +91,47 @@ export async function seedUser(options: SeedUserOptions = {}): Promise<User> {
 }
 
 /** Bearer header for the real authMiddleware (real HS256 signing via
- * env.JWT_ACCESS_SECRET — placeholder secrets in NODE_ENV=test). */
-export function bearer(userId: string, role: Role): { authorization: string } {
-  return { authorization: `Bearer ${signAccessToken(userId, role)}` };
+ * env.JWT_ACCESS_SECRET — placeholder secrets in NODE_ENV=test).
+ * r178: optional institutionId lands in the token's `inst` claim
+ * (null default = contextless session). */
+export function bearer(userId: string, role: Role, institutionId: string | null = null): {
+  authorization: string;
+} {
+  return { authorization: `Bearer ${signAccessToken(userId, role, institutionId)}` };
 }
 
 /** A fresh cuid-shaped id that zod's `z.string().cuid()` accepts but no
  * row ever matches — for "unknown recipient" pins. */
 export function unknownCuid(): string {
   return `c${randomUUID().replace(/-/g, '')}`;
+}
+
+/**
+ * r178: an ACTIVE Institution row. Name/slug are unique per call via
+ * randomUUID, so every test seeds its own institution and never
+ * collides with leftovers (Faculty/Course/StudentProfile fixtures all
+ * need one since the schema became membership-scoped).
+ */
+export async function seedInstitution(): Promise<Institution> {
+  const suffix = randomUUID().slice(0, 8);
+  return prisma.institution.create({
+    data: { name: `مؤسسة ${suffix}`, slug: `inst-${suffix}` },
+  });
+}
+
+/**
+ * r178: an active Membership chaining a user into an institution with
+ * the given role. StudentProfile/TeacherProfile fixtures hang off this
+ * row (membershipId is @unique on both profile models since r178).
+ */
+export async function seedMembership(
+  userId: string,
+  institutionId: string,
+  role: Role,
+): Promise<Membership> {
+  return prisma.membership.create({
+    data: { userId, institutionId, role, isActive: true },
+  });
 }
 
 /** Minimal unique seed value (emails, slugs, universityIds…). */

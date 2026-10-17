@@ -31,6 +31,15 @@ const loginState = vi.hoisted(() => ({ current: {} as LoginState }));
 
 vi.mock('../../src/hooks/useAuth', () => ({
   useLogin: () => loginState.current,
+  // r178: AuthPage also mounts the institution-selection mutation —
+  // idle stub, never fired in the journey-alignment pins.
+  useSelectInstitution: () => ({
+    mutateAsync: vi.fn(),
+    mutate: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+  }),
 }));
 
 import AuthPage from '../../src/pages/AuthPage';

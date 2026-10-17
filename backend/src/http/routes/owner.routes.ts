@@ -9,6 +9,7 @@ import { validate } from '../validate.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
 import { getStorageReachability, type StorageReachability } from '../../lib/storage.js';
+import { resolveProvisionInstitution } from '../../lib/governance.js';
 import {
   assertNotLastActiveOwner,
   buildTeacherProvision,
@@ -224,11 +225,31 @@ router.post(
 
       const user = await prisma.user.findUnique({
         where: { id },
-        include: { studentProfile: { select: { departmentId: true } }, teacherProfile: { select: { userId: true } } },
+        select: {
+          id: true,
+          role: true,
+          // r178: per-membership profiles — the target's oldest active
+          // profile (the OWNER console is platform-level, no institution
+          // context; TODO(r179/phase-5): institution-filtered console).
+          studentProfiles: {
+            where: { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+            take: 1,
+            orderBy: { createdAt: 'asc' },
+            select: { departmentId: true },
+          },
+          teacherProfiles: {
+            where: { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+            take: 1,
+            orderBy: { createdAt: 'asc' },
+            select: { id: true },
+          },
+        },
       });
       if (!user) throw AppError.notFound('المستخدم غير موجود');
 
       const oldRole = user.role;
+      const studentProfile = user.studentProfiles[0] ?? null;
+      const teacherProfile = user.teacherProfiles[0] ?? null;
 
       // ── Profile provisioning for TEACHER promotions ────────────
       // Shared semantics with the admin path (lib/governance.ts): a
@@ -240,17 +261,29 @@ router.post(
       const provisionPlan = planTeacherProvisioning({
         newRole: role,
         oldRole,
-        hasTeacherProfile: Boolean(user.teacherProfile),
+        hasTeacherProfile: Boolean(teacherProfile),
         explicitDepartmentId: departmentId ?? null,
-        studentDepartmentId: user.studentProfile?.departmentId ?? null,
+        studentDepartmentId: studentProfile?.departmentId ?? null,
       });
       if (provisionPlan.kind === 'missing-department') {
         throw AppError.badRequest(
           'ترقية المستخدم إلى أستاذ تتطلب قسماً أكاديمياً — حدّد القسم أو رقّه من ملف طالب لديه قسم',
         );
       }
+      // r178: the TeacherProfile is per-membership — the OWNER console
+      // has no institution context, so the provisioning institution is
+      // the target's own first active membership (none → 400).
+      const provisionInstitutionId =
+        provisionPlan.kind === 'create' ? await resolveProvisionInstitution(null, id) : null;
+      if (provisionPlan.kind === 'create' && !provisionInstitutionId) {
+        throw AppError.badRequest(
+          'ترقية المستخدم إلى أستاذ تتطلب عضوية نشطة في مؤسسة تعليمية',
+        );
+      }
       const teacherProvision =
-        provisionPlan.kind === 'create' ? buildTeacherProvision(id, provisionPlan, specialty) : null;
+        provisionPlan.kind === 'create' && provisionInstitutionId
+          ? buildTeacherProvision(id, { ...provisionPlan, institutionId: provisionInstitutionId }, specialty)
+          : null;
 
       // Role + guard + provisioning + audit atomically; tokenVersion
       // bump kills the target's outstanding refresh tokens so stale
@@ -504,7 +537,12 @@ router.get('/education', async (_req, res, next) => {
       prisma.enrollment.count(),
       prisma.faculty.findMany({
         orderBy: { name: 'asc' },
-        include: { departments: { select: { _count: { select: { courses: true } } } } },
+        include: {
+          // r178: the platform-wide education census carries the
+          // institution label per faculty row (additive response field).
+          institution: { select: { id: true, name: true, nameEn: true, slug: true } },
+          departments: { select: { _count: { select: { courses: true } } } },
+        },
       }),
       // Top 8 courses by total enrolments across their offerings,
       // aggregated in SQL (LEFT JOINs keep zero-enrolment courses
@@ -546,6 +584,16 @@ router.get('/education', async (_req, res, next) => {
     // never the raw per-campus census with duplicate names.
     const byFaculty = buildByFaculty(faculties);
 
+    // r178: per-ROW faculty census with the institution label — additive
+    // field for the multi-institution owner console (the name-aggregated
+    // chart above stays shape-compatible).
+    const facultyCensus = faculties.map((f) => ({
+      name: f.name,
+      city: f.city,
+      institution: f.institution,
+      courseCount: f.departments.reduce((s, d) => s + d._count.courses, 0),
+    }));
+
     const workloadBuckets = bucketTeacherWorkload(
       teacherOfferings.map((t) => t._count.teacherId),
       teachers,
@@ -557,6 +605,7 @@ router.get('/education', async (_req, res, next) => {
       data: {
         totals: { totalCourses, totalOfferings, teachers, avgEnrolment },
         byFaculty,
+        facultyCensus,
         topCourses,
         workloadBuckets,
         attendanceTrend,

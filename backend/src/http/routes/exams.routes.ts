@@ -9,6 +9,7 @@ import { requireCapability } from '../middleware/requireCapability.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { assertOwnsOffering, assertOfferingAccess, getEffectiveCapabilities } from '../../lib/permissions.js';
+import { resolveStudentProfile, resolveTeacherProfile } from '../../lib/profile-scoping.js';
 // D12: the short-answer matcher is consolidated in lib/grading.ts (shared
 // with the training quiz gate); re-exported because the DB-free tests
 // import it from this module.
@@ -522,16 +523,22 @@ router.post('/exams/templates', requireCapability('EXAMS_AUTHOR'), validate(crea
      * facultyId); moderators keep the cross-faculty reach their job
      * needs. */
     if (body.facultyId) {
-      const [homeFaculty, caps] = await Promise.all([
-        prisma.teacherProfile.findUnique({
-          where: { userId: req.user!.id },
-          select: { department: { select: { facultyId: true } } },
-        }),
-        getEffectiveCapabilities(req.user!.id, req.user!.role),
+      // r178: the author's teacher profile is per-membership — resolved
+      // in their token institution context, home department folded in
+      // (TODO(r179/phase-5): full isolation).
+      const [teacherProfile, caps] = await Promise.all([
+        resolveTeacherProfile(req.user!.id, req.user!.institutionId),
+        getEffectiveCapabilities(req.user!.id, req.user!.role, req.user!.institutionId),
       ]);
+      const homeDepartment = teacherProfile
+        ? await prisma.department.findUnique({
+            where: { id: teacherProfile.departmentId },
+            select: { facultyId: true },
+          })
+        : null;
       if (
-        homeFaculty &&
-        homeFaculty.department.facultyId !== body.facultyId &&
+        homeDepartment &&
+        homeDepartment.facultyId !== body.facultyId &&
         !caps.has('EXAMS_MODERATE')
       ) {
         throw AppError.forbidden('لا يمكن استهداف كلّيّة غير الكلّيّة التي تنتمي إليها');
@@ -610,10 +617,7 @@ router.get('/exams/templates', async (req, res, next) => {
         where: { studentId: req.user!.id, status: 'active' },
         select: { offeringId: true },
       });
-      const myFaculty = await prisma.studentProfile.findUnique({
-        where: { userId: req.user!.id },
-        select: { facultyId: true },
-      });
+      const myFaculty = await resolveStudentProfile(req.user!.id, req.user!.institutionId);
       where.status = 'PUBLISHED';
       where.OR = [
         { offeringId: { in: enrollments.map((e) => e.offeringId) } },
@@ -672,10 +676,7 @@ router.get('/exams/templates/:id', async (req, res, next) => {
       if (template.offeringId) {
         await assertOfferingAccess(template.offeringId, req.user!.id, Role.STUDENT);
       } else if (template.facultyId) {
-        const profile = await prisma.studentProfile.findUnique({
-          where: { userId: req.user!.id },
-          select: { facultyId: true },
-        });
+        const profile = await resolveStudentProfile(req.user!.id, req.user!.institutionId);
         if (!profile || profile.facultyId !== template.facultyId) {
           throw AppError.forbidden('هذا الاختبار مخصص لكلّيّة أخرى');
         }
@@ -964,10 +965,7 @@ router.get('/exams/me', async (req, res, next) => {
     });
     const offeringIds = enrollments.map((e) => e.offeringId);
 
-    const myFaculty = await prisma.studentProfile.findUnique({
-      where: { userId },
-      select: { facultyId: true },
-    });
+    const myFaculty = await resolveStudentProfile(userId, req.user!.institutionId);
 
     const available = await prisma.examTemplate.findMany({
       where: {
@@ -1055,10 +1053,7 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
     if (template.offeringId) {
       await assertOfferingAccess(template.offeringId, userId, Role.STUDENT);
     } else if (template.facultyId) {
-      const profile = await prisma.studentProfile.findUnique({
-        where: { userId },
-        select: { facultyId: true },
-      });
+      const profile = await resolveStudentProfile(userId, req.user!.institutionId);
       if (!profile || profile.facultyId !== template.facultyId) {
         throw AppError.forbidden('هذا الاختبار مخصص لكلّيّة أخرى');
       }

@@ -489,6 +489,23 @@
 
   .topbar-actions { display: flex; align-items: center; gap: var(--sp-2); }
 
+  /* r178 (multi-institution): the institution switcher's menu rows.
+     The trigger is the chrome's existing .btn ghost; each row is a
+     .dropdown-item (components.css) — the name grows, the role label
+     rides the trailing edge in the quiet chrome voice. */
+  .topbar-inst-name {
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .topbar-inst-role {
+    flex-shrink: 0;
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+  }
+
   .topbar-user { position: relative; }
   .topbar-user-trigger {
     display: inline-flex;

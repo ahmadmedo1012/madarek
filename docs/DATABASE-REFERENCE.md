@@ -1,12 +1,50 @@
 # Madarek — Database Reference
 
 **Platform:** PostgreSQL (Neon serverless) via Prisma 5.22
-**Models:** 77 across ~27 domain groups
-**Enums:** 30
+**Models:** 79 across ~27 domain groups (r178: +Institution, +Membership)
+**Enums:** 31 (r178: +InstitutionStatus)
 
 ---
 
 ## Core Identity & Access
+
+### Institution
+The multi-institution root (r178) — the radical isolation scope. Context label,
+NOT a visual identity (one product/brand; no per-institution logos/themes/domains).
+
+| Field | Type | Notes |
+|-------|------|-------|
+| id | String (cuid) | PK (showcase row uses fixed literal `inst-zawia-showcase`) |
+| name / nameEn | String/String? | Arabic + English display name |
+| slug | String | Unique, `^[a-z0-9-]{2,64}$`, public filter key |
+| status | InstitutionStatus | ACTIVE/SUSPENDED — SUSPENDED blocks all institution-context access at the middleware level |
+| createdAt / updatedAt | DateTime | |
+
+Relations: memberships (Membership[]), faculties (Faculty[]), students (StudentProfile[]
+via denormalized institutionId), courses (Course[]), permissionGrants (UserPermission[]),
+auditLogs (AuditLog[]). Index: `[status]`.
+
+### Membership
+A user's membership in ONE institution (r178) — the source of the effective
+institutional role. `User.role` stays the platform-level role; effective role
+always comes from here.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| id | String (cuid) | PK |
+| userId | String | FK→User (Cascade) |
+| institutionId | String | FK→Institution (Cascade) |
+| role | Role | Reused enum — OWNER forbidden at app level (Zod DTOs + service guards; Prisma 5.22 has no CHECK constraints) |
+| isActive | Boolean | Default true — the revocation handle (revoke/restore, history preserved) |
+| createdAt / updatedAt | DateTime | |
+
+| Constraint | Notes |
+|-----------|-------|
+| **Unique** | `[userId, institutionId]` — one row per pair |
+| Index | `[institutionId, role]`, `[institutionId, isActive]`, `[userId, isActive]` |
+
+Relations: studentProfiles (StudentProfile[]), teacherProfiles (TeacherProfile[]) —
+profiles hang OFF the membership (`membershipId @unique` on both).
 
 ### User
 The central identity model. Every person is a User with one role.
@@ -30,23 +68,43 @@ The central identity model. Every person is a User with one role.
 | onboardingCompletedAt | DateTime? | (012 feature) |
 | firedMilestones | String[] | (012 feature) |
 
-Relations: StudentProfile (1:1), TeacherProfile (1:1), ~30 other relations
+Relations: memberships (Membership[]), studentProfiles (StudentProfile[] — plural since
+r178: a user may hold student/teacher profiles in different institutions),
+teacherProfiles (TeacherProfile[]), ~30 other relations
 
 ### StudentProfile
+Restructured in r178: per-MEMBERSHIP profile with its own cuid PK (the legacy
+userId PK is gone — userId keeps FK + index for legacy single-context reads). A
+user may hold student profiles in different institutions.
+
 | Field | Type | Notes |
 |-------|------|-------|
-| userId | String | PK, FK→User |
-| universityId | String | Unique, registration number |
+| id | String (cuid) | PK (new in r178) |
+| userId | String | FK→User (Cascade); indexed |
+| membershipId | String | **Unique**, FK→Membership (Cascade) — the profile hangs off the membership |
+| institutionId | String | FK→Institution — justified denormalization (scoped uniqueness + scoped queries) |
+| universityId | String | Registration number — unique PER INSTITUTION (r178) |
 | facultyId | String | FK→Faculty |
 | departmentId | String | FK→Department |
 | year | Int | Default 1 |
 | gpa | Decimal(3,2) | |
 | totalXp / level | Int | Gamification |
 
+| Constraint | Notes |
+|-----------|-------|
+| **Unique** | `[institutionId, universityId]` — same reg-number may exist in another institution |
+| Index | `[userId]`, `[institutionId]`, `[facultyId]`, `[departmentId]` |
+
 ### TeacherProfile
+Restructured in r178: per-MEMBERSHIP profile with its own cuid PK. The
+institution is reached through the membership (no denormalized column — teacher
+queries resolve `membership.institutionId`).
+
 | Field | Type | Notes |
 |-------|------|-------|
-| userId | String | PK, FK→User |
+| id | String (cuid) | PK (new in r178) |
+| userId | String | FK→User (Cascade); indexed |
+| membershipId | String | **Unique**, FK→Membership (Cascade) |
 | specialty | String | |
 | rank | AcademicRank | LECTURER/ASSISTANT_PROFESSOR/ASSOCIATE_PROFESSOR/PROFESSOR |
 | departmentId | String | FK→Department |
@@ -64,12 +122,14 @@ Relations: StudentProfile (1:1), TeacherProfile (1:1), ~30 other relations
 | Field | Type | Notes |
 |-------|------|-------|
 | id | String (cuid) | PK |
-| name | String | Unique with city |
+| name | String | Unique within (institution, city) |
 | nameEn | String? | |
 | iconEmoji | String? | |
-| city | String | Default "الزاوية" |
+| city | String | No default since r178 (the institution carries the scoping; explicit city on create) |
+| institutionId | String | FK→Institution (r178, required) |
 | departments | Department[] | 1:N |
-| **Unique** | [name, city] | Same name can exist in different cities |
+| **Unique** | [institutionId, name, city] | Same name can exist in different cities AND institutions |
+| Index | `[city]`, `[institutionId]` | |
 
 ### Department (قسم)
 | Field | Type | Notes |
@@ -84,12 +144,14 @@ Relations: StudentProfile (1:1), TeacherProfile (1:1), ~30 other relations
 | Field | Type | Notes |
 |-------|------|-------|
 | id | String (cuid) | PK |
-| code | String | Unique (e.g. "CS101") |
+| code | String | Unique per institution (e.g. "CS101") |
 | name / nameEn | String/String? | Arabic/English name |
 | description | String? | |
 | credits | Int | Default 3 |
 | iconEmoji / themeColor | String? | Card presentation |
+| institutionId | String | FK→Institution — denormalized from department.faculty.institutionId, derived + validated by app code on every create/update (app-level invariant) |
 | departmentId | String | FK→Department |
+| **Unique** | [institutionId, code] | Index `[institutionId]`, `[departmentId]` |
 
 ### CourseOffering
 A specific instance of a course in a term taught by a teacher.
@@ -528,12 +590,16 @@ Per-user capability overrides.
 
 | Field | Type | Notes |
 |-------|------|-------|
-| userId + capability | | **Unique** together |
+| userId + capability + institutionId | | **Unique** triple (r178) — PG treats NULLs as distinct, app code upserts on the triple |
+| institutionId | String? | NULL = platform-global grant (applies everywhere); non-null = institution-scoped grant |
 | grant | Boolean | true = explicit grant, false = explicit revoke |
 | grantedById / grantedAt | String?/DateTime | Audit trail |
 | reason | String? | |
 
-Effective capabilities = (role defaults) ∪ (grants) ∖ (revokes).
+Effective capabilities = (role defaults) ∪ (grants) ∖ (revokes). With an
+institution context: role defaults ∪ global grants ∪ institution grants ∖
+revokes; a contextless session sees global grants only (scoped grants never
+leak into it).
 
 ---
 
@@ -560,6 +626,9 @@ Effective capabilities = (role defaults) ∪ (grants) ∖ (revokes).
 
 ### AuditLog
 - action, resourceType, resourceId, userId, metadata (Json), ip, userAgent
+- institutionId (String?, r178): NULL = platform-scope entry; non-null =
+  institution-scope (owner mutations on institutions carry it). Index
+  `[institutionId]`.
 
 ### SyncRun
 - source, status (RUNNING/SUCCESS/PARTIAL/FAILED), factsAdded/Updated, errorMsg
@@ -575,6 +644,7 @@ Effective capabilities = (role defaults) ∪ (grants) ∖ (revokes).
 | Enum | Values |
 |------|--------|
 | Role | STUDENT, TEACHER, ADMIN, QUALITY, OWNER |
+| InstitutionStatus | ACTIVE, SUSPENDED (r178) |
 | AcademicRank | LECTURER, ASSISTANT_PROFESSOR, ASSOCIATE_PROFESSOR, PROFESSOR |
 | AcademicPosition | DEAN, ASSOCIATE_DEAN, DEPARTMENT_HEAD |
 | AttendanceStatus | PRESENT, LATE, ABSENT, EXCUSED |
@@ -608,8 +678,11 @@ Effective capabilities = (role defaults) ∪ (grants) ∖ (revokes).
 ## Key Relations
 
 ```
-User ──1:1── StudentProfile ──N:1── Faculty
-User ──1:1── TeacherProfile ──N:1── Department
+Institution ──1:N── Membership ──N:1── User          (r178 — effective institutional role)
+Institution ──1:N── Faculty / Course (denormalized)
+Membership ──1:1── StudentProfile / TeacherProfile   (r178 — profiles hang off the membership)
+User ──1:N── StudentProfile ──N:1── Faculty          (plural since r178)
+User ──1:N── TeacherProfile ──N:1── Department       (plural since r178)
 User ──1:N── Notification / Message (sender + receiver)
 Faculty ──1:N── Department ──1:N── Course
 Course ──1:N── CourseOffering ──1:N── Enrollment / Material / LiveSession

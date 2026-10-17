@@ -154,12 +154,26 @@ export function mergeCapabilities(
 /**
  * Compute the effective capability set for a user.
  * One query per call for user overrides + a 30s-cached role table read.
+ *
+ * r178 (multi-institution): when an institution context is supplied,
+ * BOTH the institution-scoped UserPermission rows AND the global ones
+ * (institutionId = null — "applies everywhere") apply; without a
+ * context, ONLY global grants apply (an institution-scoped grant must
+ * never leak into a contextless session).
  */
-export async function getEffectiveCapabilities(userId: string, role: Role): Promise<Set<Capability>> {
+export async function getEffectiveCapabilities(
+  userId: string,
+  role: Role,
+  institutionId?: string | null,
+): Promise<Set<Capability>> {
+  const overridesWhere =
+    typeof institutionId === 'string' && institutionId.length > 0
+      ? { userId, OR: [{ institutionId: null }, { institutionId }] }
+      : { userId, institutionId: null };
   const [dbRoleRows, overrides] = await Promise.all([
     getRolePermissions(),
     prisma.userPermission.findMany({
-      where: { userId },
+      where: overridesWhere,
       select: { capability: true, grant: true },
     }),
   ]);
@@ -173,6 +187,8 @@ export async function getEffectiveCapabilities(userId: string, role: Role): Prom
  * The thrown message names the missing capabilities: they are part of the
  * operator-facing permissions surface (RolePermission/UserPermission rows,
  * /permissions routes), not internal identifiers.
+ *
+ * Global-only check (no institution context) — see assertCapabilityIn.
  */
 export async function assertCapability(
   userId: string,
@@ -180,6 +196,24 @@ export async function assertCapability(
   ...required: Capability[]
 ): Promise<void> {
   const caps = await getEffectiveCapabilities(userId, role);
+  for (const r of required) if (caps.has(r)) return;
+  throw AppError.forbidden(`صلاحية مفقودة: ${required.join(' أو ')}`);
+}
+
+/**
+ * r178: assertCapability WITH an institution context. Institution-scoped
+ * UserPermission grants (institutionId = the context) AND platform-global
+ * grants (institutionId = null) both apply; scoped grants for OTHER
+ * institutions are invisible. Variadic caps keep the assertCapability
+ * ergonomics — the institution id leads because it scopes the lookup.
+ */
+export async function assertCapabilityIn(
+  userId: string,
+  role: Role,
+  institutionId: string | null,
+  ...required: Capability[]
+): Promise<void> {
+  const caps = await getEffectiveCapabilities(userId, role, institutionId);
   for (const r of required) if (caps.has(r)) return;
   throw AppError.forbidden(`صلاحية مفقودة: ${required.join(' أو ')}`);
 }

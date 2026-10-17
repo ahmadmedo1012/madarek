@@ -71,7 +71,7 @@ const PDF_BYTES = Buffer.from('%PDF-1.7\nroute serving test payload \u00ff\u00fe
 const PDF_FILENAME = 'cku5c2x9p0000route.pdf';
 
 const bearer = (userId: string, role: Role) => ({
-  authorization: `Bearer ${signAccessToken(userId, role)}`,
+  authorization: `Bearer ${signAccessToken(userId, role, null)}`,
 });
 
 const getPdf = (role: Role, filename = PDF_FILENAME, range?: string) =>
