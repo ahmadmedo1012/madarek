@@ -11,6 +11,10 @@
  *     is created
  *   - failures surface through the structured logger (logger.error),
  *     never `console.error` (12-8 hand-off #3)
+ *   - r179d (phase-5): a run for ONE institution never touches another
+ *     institution's rows — every prisma call carries the run institution
+ *     (reap, run-row create, fact upserts, stale-marking, key listing),
+ *     and the default no-opts run stays on the showcase institution
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import type { FactPatch } from '../../src/lib/zu-sync/static-source.js';
@@ -253,5 +257,113 @@ describe('runSync — SyncRun finalization', () => {
     expect(data.status).toBe('FAILED');
     // Source failure happens before any fact write.
     expect(factFindUnique).not.toHaveBeenCalled();
+  });
+});
+
+// ── r179d (phase-5): per-institution scoping ────────────────────────
+//
+// The Zawia static source is the ZAWIA SHOWCASE institution's source,
+// not a global default for every university. These pins enforce that
+// a run for institution B can never read, write, or stale-mark
+// institution A's rows: EVERY prisma call (reap, run-row create, fact
+// upsert, stale-marking, key listing) must carry the run institution.
+describe('runSync — institution scoping (r179d)', () => {
+  const INST_A = 'inst-zawia-showcase';
+  const INST_B = 'inst-other-university';
+
+  it('threads an explicit institutionId through EVERY prisma call', async () => {
+    // All facts missing → the create path; no stale keys → findMany [].
+    factFindUnique.mockResolvedValue(null);
+    factFindMany.mockResolvedValue([]);
+
+    await runSync({ institutionId: INST_B });
+
+    // Reap (stale RUNNING rows) is scoped to the run institution.
+    expect(syncRunUpdateMany).toHaveBeenCalledTimes(1);
+    expect(syncRunUpdateMany.mock.calls[0]![0].where?.institutionId).toBe(INST_B);
+
+    // The run row itself is created FOR the institution.
+    expect(syncRunCreate).toHaveBeenCalledWith({
+      data: { source: 'static-markdown', institutionId: INST_B, status: 'RUNNING' },
+    });
+
+    // Every fact create carries the institution (composite PK half).
+    expect(factCreate).toHaveBeenCalledTimes(3);
+    for (const call of factCreate.mock.calls) {
+      expect(call[0]!.data.institutionId).toBe(INST_B);
+    }
+
+    // The unseen-key listing (stale-marking source) is scoped.
+    expect(factFindMany).toHaveBeenCalledWith({
+      where: { institutionId: INST_B },
+      select: { key: true },
+    });
+  });
+
+  it('stale-marks ONLY the run institution\'s unseen keys — the where-clause never names another institution', async () => {
+    factFindUnique.mockResolvedValue(null);
+    // B's own DB keys, none present in the mocked STATIC_FACTS source.
+    factFindMany.mockResolvedValue([{ key: 'ghost-b' } as never]);
+
+    await runSync({ institutionId: INST_B });
+
+    expect(factUpdateMany).toHaveBeenCalledTimes(1);
+    const call = factUpdateMany.mock.calls[0]![0];
+    expect(call.where).toEqual({ institutionId: INST_B, key: { in: ['ghost-b'] } });
+    expect(JSON.stringify(call.where)).not.toContain(INST_A);
+  });
+
+  it('the same key may exist in BOTH institutions (composite PK): A\'s run updates only A\'s row', async () => {
+    // Both institutions already hold 'name.ar' — with DIFFERENT values.
+    const rowFor = (value: string) => ({
+      key: 'name.ar',
+      value,
+      category: 'identity',
+      source: 'zu.edu.ly:about',
+      syncedAt: new Date(),
+      isStale: false,
+    });
+    factFindUnique.mockImplementation((async ({ where }: {
+      where: { institutionId_key: { institutionId: string; key: string } };
+    }) =>
+      where.institutionId_key.key === 'name.ar'
+        ? rowFor(`قيمة ${where.institutionId_key.institutionId}`)
+        : null
+    ) as unknown as FactFindUniqueImpl);
+    factFindMany.mockResolvedValue([]);
+
+    await runSync({ institutionId: INST_A });
+
+    // Every upsert targets A's composite key — B's row is never read
+    // for update, created, or written by any call in this run.
+    const touchedInstitutions = factUpdate.mock.calls.map(
+      (c) => (c[0] as { where: { institutionId_key: { institutionId: string } } }).where.institutionId_key.institutionId,
+    );
+    expect(touchedInstitutions.length).toBeGreaterThan(0);
+    expect(touchedInstitutions.every((id) => id === INST_A)).toBe(true);
+    expect(touchedInstitutions).not.toContain(INST_B);
+  });
+
+  it('the stale-RUNNING reap fails only the RUN institution\'s orphaned runs', async () => {
+    factFindUnique.mockResolvedValue(null);
+    factFindMany.mockResolvedValue([]);
+
+    await runSync({ institutionId: INST_B });
+
+    expect(syncRunUpdateMany).toHaveBeenCalledTimes(1);
+    const where = syncRunUpdateMany.mock.calls[0]![0].where as Record<string, unknown>;
+    expect(where.institutionId).toBe(INST_B);
+    expect(where.status).toBe('RUNNING');
+  });
+
+  it('runSync with no opts keeps the DEFAULT showcase institution (base r179 contract)', async () => {
+    factFindUnique.mockResolvedValue(null);
+    factFindMany.mockResolvedValue([]);
+
+    await runSync();
+
+    expect(syncRunCreate.mock.calls[0]![0].data.institutionId).toBe(DEFAULT_SYNC_INSTITUTION_ID);
+    expect(factCreate.mock.calls[0]![0].data.institutionId).toBe(DEFAULT_SYNC_INSTITUTION_ID);
+    expect(factFindMany.mock.calls[0]![0]).toMatchObject({ where: { institutionId: DEFAULT_SYNC_INSTITUTION_ID } });
   });
 });

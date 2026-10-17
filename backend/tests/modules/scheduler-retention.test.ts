@@ -16,10 +16,17 @@ import type { SyncResult } from '../../src/lib/zu-sync/index.js';
 
 vi.mock('../../src/lib/zu-sync/index.js', () => ({
   runSync: vi.fn(),
+  // r179d: the real per-institution registry — the showcase institution
+  // is the only configured source (matches the production registry).
+  INSTITUTION_SYNC_CONFIGS: [
+    { institutionId: 'inst-zawia-showcase', institutionSlug: 'zawia-showcase', source: 'static-markdown' },
+  ],
 }));
 vi.mock('../../src/db.js', () => ({
   prisma: {
     loginEvent: { findMany: vi.fn(), deleteMany: vi.fn() },
+    // r179d: runScheduledSyncs reads the live ACTIVE institution directory.
+    institution: { findMany: vi.fn() },
   },
 }));
 vi.mock('../../src/logger.js', () => ({
@@ -302,6 +309,10 @@ describe('scheduler timer lifecycle', () => {
   it('boot tick runs the sync AND the retention sweep after the 5s delay', async () => {
     runSyncMock.mockResolvedValue(successResult());
     findManyMock.mockResolvedValue([]);
+    const institutionDirectoryMock = vi.mocked(prisma.institution.findMany);
+    institutionDirectoryMock.mockResolvedValue([
+      { id: 'inst-zawia-showcase', slug: 'zawia-showcase' },
+    ] as never);
 
     startScheduler();
     expect(runSyncMock).not.toHaveBeenCalled();
@@ -310,13 +321,20 @@ describe('scheduler timer lifecycle', () => {
     await vi.advanceTimersByTimeAsync(5_000);
 
     expect(runSyncMock).toHaveBeenCalledTimes(1);
-    expect(runSyncMock).toHaveBeenCalledWith();
+    // r179d: the scheduled sync targets the CONFIGURED institution.
+    expect(runSyncMock).toHaveBeenCalledWith({
+      institutionId: 'inst-zawia-showcase',
+      source: 'static-markdown',
+    });
     expect(findManyMock).toHaveBeenCalledTimes(1);
   });
 
   it('daily interval re-fires both jobs every 24h', async () => {
     runSyncMock.mockResolvedValue(successResult());
     findManyMock.mockResolvedValue([]);
+    vi.mocked(prisma.institution.findMany).mockResolvedValue([
+      { id: 'inst-zawia-showcase', slug: 'zawia-showcase' },
+    ] as never);
 
     startScheduler();
     await vi.advanceTimersByTimeAsync(5_000);
@@ -329,6 +347,9 @@ describe('scheduler timer lifecycle', () => {
   it('retention runs even when the sync rejects — the jobs are independent', async () => {
     runSyncMock.mockRejectedValue(new Error('sync down'));
     findManyMock.mockResolvedValue([]);
+    vi.mocked(prisma.institution.findMany).mockResolvedValue([
+      { id: 'inst-zawia-showcase', slug: 'zawia-showcase' },
+    ] as never);
 
     startScheduler();
     await vi.advanceTimersByTimeAsync(5_000);
