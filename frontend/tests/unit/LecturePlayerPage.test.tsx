@@ -287,6 +287,25 @@ describe('r165b — resolveReportTotalSec (the totalSec decision)', () => {
     expect(resolveReportTotalSec(Number.POSITIVE_INFINITY, 600)).toBe(600);
     expect(resolveReportTotalSec(Number.NEGATIVE_INFINITY, 600)).toBe(600);
   });
+
+  /* r181a (phase-9 live-journey find): real encodings carry FRACTIONAL
+   * durations (the seeded lecture measures 718.4s) and the wire
+   * contract is integer seconds (watchSchema z.number().int()).
+   * watchedSec was always Math.round'd — totalSec rode the float
+   * as-is, so every watch POST for such a lecture answered 400
+   * «Expected integer, received float» and NOTHING persisted: the
+   * student watched, the bar moved, the database never heard. The
+   * helper now rounds the winning value — pinned here so the float
+   * regression can never return. */
+  it('r181a: a fractional media duration reports as a WHOLE second (the watch wire contract)', () => {
+    expect(resolveReportTotalSec(718.4, 720)).toBe(718);
+    expect(resolveReportTotalSec(719.6, 720)).toBe(720);
+    // The authored fallback rounds too — one rule, one source.
+    expect(resolveReportTotalSec(Number.NaN, 599.7)).toBe(600);
+    // Integer inputs keep their byte-identical behavior.
+    expect(resolveReportTotalSec(720, 2700)).toBe(720);
+    expect(resolveReportTotalSec(Number.NaN, 600)).toBe(600);
+  });
 });
 
 describe('r165b — the real media duration reaches every report path', () => {

@@ -47,9 +47,21 @@ export function isWatchComplete(currentTime: number, durationSec: number): boole
    below resolves the effective total through this helper: a finite
    positive media duration WINS; NaN / Infinity / 0 falls back to the
    authored value. The backend is deliberately untouched — the server
-   stays the authority on what counts as done. */
+   stays the authority on what counts as done.
+   r181a (phase-9 live-journey find): the winning value is ROUNDED to
+   a whole second. The wire contract is integer seconds
+   (watchSchema: z.number().int()) and watchedSec was already
+   Math.round'd at every report site — but the media duration rides
+   as-is, and real encodings carry fractional seconds (the seeded
+   lecture measures 718.4), so EVERY watch POST for such a lecture
+   answered 400 «Expected integer, received float» — the student
+   watched, the bar moved, and nothing ever persisted. Rounding here
+   fixes all four report paths at the single source of truth; the
+   sub-second loss (≤0.5s) can never flip the 95% completion share. */
 export function resolveReportTotalSec(mediaDuration: number, authoredDurationSec: number): number {
-  return Number.isFinite(mediaDuration) && mediaDuration > 0 ? mediaDuration : authoredDurationSec;
+  const winner =
+    Number.isFinite(mediaDuration) && mediaDuration > 0 ? mediaDuration : authoredDurationSec;
+  return Math.round(winner);
 }
 
 /* Audit 11-f P1-6 — resume-seek target for a returning student: the
