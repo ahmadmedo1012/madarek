@@ -444,14 +444,30 @@ async function main() {
       },
     });
   }
-  const aaCourse = await prisma.course.findUnique({
+  // Al-Andalus course — code 'SE301': the SAME literal as Zawia's
+  // هندسة البرمجيات course (the collision itself is the point:
+  // identical code, different institution, both rows coexist under
+  // @@unique(institutionId, code)). Created HERE — before the offering
+  // below needs it — so a fresh database (no prior seed) resolves it
+  // on the first run; the upsert keeps re-runs idempotent.
+  const aaCourse = await prisma.course.upsert({
     where: { institutionId_code: { institutionId: alandalus.id, code: 'SE301' } },
-  });
-  const aaOffering = await prisma.courseOffering.upsert({
-    where: { courseId_term_teacherId: { courseId: aaCourse!.id, term: '2024-FALL', teacherId: teacher2.id } },
     update: {},
     create: {
-      courseId: aaCourse!.id,
+      code: 'SE301',
+      name: 'مقدمة إلى البرمجة',
+      credits: 3,
+      iconEmoji: '💻',
+      themeColor: '#4F8EF7',
+      departmentId: aaCsDept.id,
+      institutionId: alandalus.id,
+    },
+  });
+  const aaOffering = await prisma.courseOffering.upsert({
+    where: { courseId_term_teacherId: { courseId: aaCourse.id, term: '2024-FALL', teacherId: teacher2.id } },
+    update: {},
+    create: {
+      courseId: aaCourse.id,
       teacherId: teacher2.id,
       term: '2024-FALL',
       room: 'قاعة الأندلس أ',
@@ -517,24 +533,6 @@ async function main() {
     });
     courses.push(created);
   }
-
-  // Al-Andalus course — code 'SE301': the SAME literal as Zawia's
-  // هندسة البرمجيات course above (the legacy seed never had a 'CS101';
-  // the point is the collision itself: identical code, different
-  // institution, both rows coexist under @@unique(institutionId, code)).
-  await prisma.course.upsert({
-    where: { institutionId_code: { institutionId: alandalus.id, code: 'SE301' } },
-    update: {},
-    create: {
-      code: 'SE301',
-      name: 'مقدمة إلى البرمجة',
-      credits: 3,
-      iconEmoji: '💻',
-      themeColor: '#4F8EF7',
-      departmentId: aaCsDept.id,
-      institutionId: alandalus.id,
-    },
-  });
 
   // ─── Offerings + enrollment for the demo student ─────────────
   const term = '2024-FALL';
