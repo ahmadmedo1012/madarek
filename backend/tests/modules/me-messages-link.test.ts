@@ -12,6 +12,12 @@
  * answers: TEACHER → '/teacher/messages', STUDENT → '/student/messages',
  * every other role → null (a dead deep link is worse than none).
  *
+ * r179 (phase-5): the DM send-time institution guard — the sender's
+ * verified context is REQUIRED (403 INSTITUTION_CONTEXT_REQUIRED
+ * without one) and the recipient must hold an ACTIVE membership in the
+ * sender's institution (403 otherwise — cross-institution DM is
+ * disabled). Both membership.findFirst calls are mocked.
+ *
  * DB-free (the exams-grade-submit.test.ts pattern): the REAL app
  * (createApp, ephemeral port) with prisma mocked and a JWT signed via
  * signAccessToken; `$transaction` hands the callback a tx client whose
@@ -26,6 +32,7 @@ import { NotificationType, Role } from '@prisma/client';
 vi.mock('../../src/db.js', () => ({
   prisma: {
     user: { findUnique: vi.fn() },
+    membership: { findFirst: vi.fn() },
     $transaction: vi.fn(),
   },
   // Defensive: other modules in the app graph import withRetry from db.js.
@@ -53,6 +60,7 @@ afterAll(async () => {
 // ── Mock wiring ──────────────────────────────────────────────────────
 
 const userFindUnique = vi.mocked(prisma.user.findUnique);
+const membershipFindFirst = vi.mocked(prisma.membership.findFirst);
 const transaction = vi.mocked(prisma.$transaction);
 
 /**
@@ -63,6 +71,10 @@ const transaction = vi.mocked(prisma.$transaction);
  */
 type UserFindUniqueImpl = NonNullable<Parameters<typeof userFindUnique.mockImplementation>[0]>;
 type TransactionImpl = NonNullable<Parameters<typeof transaction.mockImplementation>[0]>;
+
+/** The r179 sender institution — the token's inst claim, DB-verified
+ * by the mocked membership.findFirst below. */
+const INSTITUTION = 'inst-r179-messages';
 
 /** One recipient row per test — { id, firstName, isActive, role } is the
  * route's own select shape for the recipient probe. */
@@ -76,6 +88,24 @@ const dispatchUser = userFindUnique.mockImplementation(
     if (id && recipientRow && id === recipientRow.id) return recipientRow;
     return senderRow;
   }) as unknown as UserFindUniqueImpl,
+);
+
+/** r179: does the RECIPIENT hold an active membership in the sender's
+ * institution? Default true (same-institution DM). */
+let recipientIsMember = true;
+
+/* r179: both the sender's context verification (select institutionId)
+ * and the recipient's same-institution check (select id) ride
+ * membership.findFirst — the dispatch answers per `recipientIsMember`. */
+const dispatchMembership = membershipFindFirst.mockImplementation(
+  (async (args: { where?: { userId?: string; institutionId?: string } }) => {
+    const userId = args.where?.userId;
+    if (userId && recipientRow && userId === recipientRow.id) {
+      return recipientIsMember ? { id: 'membership-recipient', institutionId: INSTITUTION } : null;
+    }
+    // The sender's own context verification.
+    return { id: 'membership-sender', institutionId: INSTITUTION };
+  }) as unknown as Parameters<typeof membershipFindFirst.mockImplementation>[0],
 );
 
 /** DISTINCT spies for the transaction client — proves both writes ride
@@ -96,9 +126,11 @@ beforeEach(() => {
   // clearAllMocks keeps implementations, but re-asserting the shared
   // defaults keeps the suite order-proof (tests may override).
   dispatchUser.mockClear();
+  dispatchMembership.mockClear();
   passthroughTransaction.mockClear();
   senderRow = { firstName: 'آمنة' };
   recipientRow = null;
+  recipientIsMember = true;
 });
 
 // ── Fixtures ─────────────────────────────────────────────────────────
@@ -118,11 +150,11 @@ const recipient = (id: string, role: Role) => ({
 
 /** POST /api/v1/messages as the given sender. Distinct sender ids per
  * call keep the per-user 30/min limiter's buckets isolated. */
-const postMessage = (senderId: string, role: Role, toUserId: string) =>
+const postMessage = (senderId: string, role: Role, toUserId: string, institutionId: string | null = INSTITUTION) =>
   fetch(`${baseUrl}/api/v1/messages`, {
     method: 'POST',
     headers: {
-      authorization: `Bearer ${signAccessToken(senderId, role, null)}`,
+      authorization: `Bearer ${signAccessToken(senderId, role, institutionId)}`,
       'content-type': 'application/json',
     },
     body: JSON.stringify({ toUserId, body: BODY }),
@@ -183,5 +215,33 @@ describe('POST /api/v1/messages — DM notification deep-link mapping (r171a)', 
     expect(txNotificationCreate).toHaveBeenCalledWith(
       expect.objectContaining({ data: expect.objectContaining({ link: null }) }),
     );
+  });
+});
+
+// ── The r179 send-time institution guard ────────────────────────────
+
+describe('POST /api/v1/messages — r179 send-time institution guard', () => {
+  it('a contextless sender → 403 INSTITUTION_CONTEXT_REQUIRED, no write', async () => {
+    recipientRow = recipient(RECIPIENT_TEACHER, Role.TEACHER);
+
+    const res = await postMessage('sender-r179a-ctx', Role.STUDENT, RECIPIENT_TEACHER, null);
+    expect(res.status).toBe(403);
+    const json = (await res.json()) as { error: { code: string } };
+    expect(json.error.code).toBe('INSTITUTION_CONTEXT_REQUIRED');
+    expect(txMessageCreate).not.toHaveBeenCalled();
+  });
+
+  it('a recipient outside the sender’s institution → 403, no message written', async () => {
+    recipientRow = recipient(RECIPIENT_TEACHER, Role.TEACHER);
+    recipientIsMember = false;
+
+    const res = await postMessage('sender-r179a-foreign', Role.STUDENT, RECIPIENT_TEACHER);
+    expect(res.status).toBe(403);
+    const json = (await res.json()) as { error: { code: string; message: string } };
+    // 403 FORBIDDEN with the clear Arabic cross-institution DM message.
+    expect(json.error.code).toBe('FORBIDDEN');
+    expect(json.error.message).toContain('داخل مؤسستك فقط');
+    expect(transaction).not.toHaveBeenCalled();
+    expect(txMessageCreate).not.toHaveBeenCalled();
   });
 });

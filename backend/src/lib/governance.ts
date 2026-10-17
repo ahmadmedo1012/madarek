@@ -167,13 +167,20 @@ export function assertWithinScope(
  *
  * r178 (multi-institution): an optional `institutionId` ANDs a
  * membership-scope filter ("has an ACTIVE membership in that
- * institution") on top. ADMIN/QUALITY callers with an institution
- * context pass it (users.routes / permissions.routes /
- * admin-extras.routes); OWNER (platform role, no membership) passes
- * nothing and sees the platform-wide list. The faculty filter now
- * reads the PLURAL profile relations (profiles are per-membership
- * since r178) with `some` semantics identical to the old singular
- * filter.
+ * institution") on top. The faculty filter reads the PLURAL profile
+ * relations (profiles are per-membership since r178) with `some`
+ * semantics identical to the old singular filter.
+ *
+ * r179 (phase-5) — semantics change at the ROUTE layer: the
+ * `institutionId` argument is no longer optional-in-practice for
+ * institutional callers. ADMIN/QUALITY user-listing routes must
+ * resolve their DB-verified context (`resolveCallerInstitutionScope`)
+ * and 403 INSTITUTION_CONTEXT_REQUIRED without one — they pass it
+ * here, and the membership filter pins the list to their
+ * institution. OWNER (platform role, no membership) passes nothing
+ * and keeps the platform-wide list. This builder never falls back to
+ * anything on its own — an absent `institutionId` means the CALLER
+ * chose the platform-wide view.
  */
 export function buildScopedUserWhere(
   actorScopeFacultyId: string | null,
@@ -223,15 +230,21 @@ export interface GovernanceTarget extends GovernanceScopeTarget {
  * (role, active flag, faculty association). Returns null when the
  * user does not exist — callers turn that into a clean 404.
  *
- * r178: profiles are per-membership. With an `institutionId` supplied
- * the faculty association resolves through the target's profile in
- * THAT institution; without one it falls back to the target's oldest
- * active profile (legacy single-context semantics — TODO(r179/phase-5):
- * hard institution isolation for governance writes).
+ * r178: profiles are per-membership, so the faculty association
+ * resolves through the target's profile in a given institution.
+ * r179 (phase-5) — the legacy fallback is GONE: without an
+ * `institutionId` the target's profiles are NOT read at all
+ * (studentFacultyId/teacherFacultyId come back null). ADMIN/QUALITY
+ * governance-write callers MUST pass their DB-verified institution
+ * context (the routes enforce 403 INSTITUTION_CONTEXT_REQUIRED
+ * without one — an unscoped governance write is a cross-institution
+ * escalation); OWNER passes null legitimately (their governance
+ * decisions never depend on the faculty-scope predicate —
+ * `getGovernanceScope` resolves them university-wide).
  */
 export async function loadGovernanceTarget(
   userId: string,
-  institutionId?: string | null,
+  institutionId: string | null,
 ): Promise<GovernanceTarget | null> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -239,18 +252,17 @@ export async function loadGovernanceTarget(
       id: true,
       role: true,
       isActive: true,
+      // r179: no legacy fallback — without an institutionId NO
+      // profile is read (take: 0), so the scope tuple carries honest
+      // nulls instead of an oldest-profile guess.
       studentProfiles: {
-        where: institutionId
-          ? { institutionId }
-          : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+        where: institutionId ? { institutionId } : { id: { in: [] } },
         take: 1,
         orderBy: { createdAt: 'asc' },
         select: { facultyId: true },
       },
       teacherProfiles: {
-        where: institutionId
-          ? { membership: { institutionId } }
-          : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+        where: institutionId ? { membership: { institutionId } } : { id: { in: [] } },
         take: 1,
         orderBy: { createdAt: 'asc' },
         select: { department: { select: { facultyId: true } } },
@@ -306,20 +318,29 @@ export function planTeacherProvisioning(input: {
 }
 
 /**
- * r178: resolve the institution a TEACHER promotion should provision
- * in. Preference order:
- *  1. the target's ACTIVE membership in the caller's institution
- *     context (an admin promotes "their" user where they both belong);
- *  2. the target's own oldest ACTIVE membership (the caller is
- *     platform-level / contextless);
- *  3. null — the target belongs to no active institution, so no
- *     membership-scoped TeacherProfile can be provisioned (the route
- *     turns this into a 400).
+ * r179 (phase-5): resolve the institution a TEACHER promotion should
+ * provision in — fail-closed, no oldest-membership guess.
+ *
+ *  1. Caller WITH an institution context (ADMIN/QUALITY — the route
+ *     has already DB-verified it): the target MUST hold an ACTIVE
+ *     membership in THAT institution, otherwise 400 with a clear
+ *     Arabic message (an admin promotes "their" user where they both
+ *     belong — never a cross-institution escalation).
+ *  2. Caller WITHOUT a context (platform OWNER): the target must have
+ *     EXACTLY ONE active membership in an ACTIVE institution — zero
+ *     memberships is a clean 400, and more than one is an ambiguous
+ *     400 that names the membership count honestly (the OWNER must
+ *     pick the institution explicitly instead of the platform
+ *     silently choosing the oldest row).
+ *
+ * Always returns a validated institution id or throws 400 — the
+ * legacy `null` return ("no institution, route decides") is gone;
+ * the provisioning routes no longer need their null branch.
  */
 export async function resolveProvisionInstitution(
   preferredInstitutionId: string | null | undefined,
   targetUserId: string,
-): Promise<string | null> {
+): Promise<string> {
   if (typeof preferredInstitutionId === 'string' && preferredInstitutionId.length > 0) {
     const inCallerInstitution = await prisma.membership.findFirst({
       where: {
@@ -330,14 +351,30 @@ export async function resolveProvisionInstitution(
       },
       select: { institutionId: true },
     });
-    if (inCallerInstitution) return inCallerInstitution.institutionId;
+    if (!inCallerInstitution) {
+      throw AppError.badRequest(
+        'المستخدم المحدد ليس عضواً نشطاً في مؤسستك — لا يمكن ترقيته إلى أستاذ خارج مؤسستك',
+      );
+    }
+    return inCallerInstitution.institutionId;
   }
-  const first = await prisma.membership.findFirst({
+  // Platform (OWNER) path — exactly one active membership or a 400.
+  const memberships = await prisma.membership.findMany({
     where: { userId: targetUserId, isActive: true, institution: { status: 'ACTIVE' } },
-    orderBy: { createdAt: 'asc' },
     select: { institutionId: true },
+    orderBy: { createdAt: 'asc' },
   });
-  return first?.institutionId ?? null;
+  if (memberships.length === 0) {
+    throw AppError.badRequest(
+      'المستخدم المحدد لا ينتمي إلى أي مؤسسة نشطة — لا يمكن ترقيته إلى أستاذ',
+    );
+  }
+  if (memberships.length > 1) {
+    throw AppError.badRequest(
+      `المستخدم المحدد لديه ${memberships.length} عضويات نشطة — حدّد المؤسسة التي تريد الترقية فيها`,
+    );
+  }
+  return memberships[0]!.institutionId;
 }
 
 /**

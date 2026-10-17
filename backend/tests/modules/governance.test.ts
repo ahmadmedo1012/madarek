@@ -323,7 +323,7 @@ describe('getGovernanceScope (mocked prisma)', () => {
 describe('loadGovernanceTarget (mocked prisma)', () => {
   it('returns null for a missing user', async () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
-    await expect(loadGovernanceTarget('ghost')).resolves.toBeNull();
+    await expect(loadGovernanceTarget('ghost', 'inst-1')).resolves.toBeNull();
   });
 
   it('maps profile rows into the faculty scope tuple', async () => {
@@ -336,7 +336,7 @@ describe('loadGovernanceTarget (mocked prisma)', () => {
       teacherProfiles: [],
     } as never);
 
-    await expect(loadGovernanceTarget('student-1')).resolves.toEqual({
+    await expect(loadGovernanceTarget('student-1', 'inst-1')).resolves.toEqual({
       id: 'student-1',
       role: Role.STUDENT,
       isActive: true,
@@ -354,7 +354,7 @@ describe('loadGovernanceTarget (mocked prisma)', () => {
       teacherProfiles: [{ department: { facultyId: 'f-2' } }],
     } as never);
 
-    await expect(loadGovernanceTarget('teacher-1')).resolves.toEqual({
+    await expect(loadGovernanceTarget('teacher-1', 'inst-1')).resolves.toEqual({
       id: 'teacher-1',
       role: Role.TEACHER,
       isActive: false,

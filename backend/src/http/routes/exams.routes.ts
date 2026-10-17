@@ -9,13 +9,41 @@ import { requireCapability } from '../middleware/requireCapability.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { assertOwnsOffering, assertOfferingAccess, getEffectiveCapabilities } from '../../lib/permissions.js';
-import { resolveStudentProfile, resolveTeacherProfile } from '../../lib/profile-scoping.js';
+import {
+  resolveStudentProfile,
+  resolveTeacherProfile,
+  resolveCallerInstitutionScope,
+  institutionContextRequiredError,
+} from '../../lib/profile-scoping.js';
+import { assertOfferingInCallerInstitution } from '../../lib/profile-scoping.js';
 // D12: the short-answer matcher is consolidated in lib/grading.ts (shared
 // with the training quiz gate); re-exported because the DB-free tests
 // import it from this module.
 import { shortAnswerMatches } from '../../lib/grading.js';
 
 export { shortAnswerMatches };
+
+/**
+ * r179 (phase-5): the OWNER's explicit institution for exam-authoring
+ * surfaces — ?institution=<slug>, validated to exist and be ACTIVE
+ * (404 otherwise). Returns null when the OWNER did not name one (the
+ * caller decides whether that is legal for the surface).
+ */
+async function resolveExplicitInstitutionSlug(req: {
+  query: unknown;
+}): Promise<string | null> {
+  const raw = (req.query as Record<string, unknown>).institution;
+  const slug = typeof raw === 'string' && raw.trim().length > 0 ? raw.trim() : null;
+  if (!slug) return null;
+  const institution = await prisma.institution.findUnique({
+    where: { slug },
+    select: { id: true, status: true },
+  });
+  if (!institution || institution.status !== 'ACTIVE') {
+    throw AppError.notFound('المؤسسة غير موجودة');
+  }
+  return institution.id;
+}
 
 const router = Router();
 router.use(authMiddleware);
@@ -515,6 +543,9 @@ router.post('/exams/templates', requireCapability('EXAMS_AUTHOR'), validate(crea
     const body = req.body as z.infer<typeof createTemplateSchema>;
     if (body.offeringId) {
       await assertOwnsOffering(body.offeringId, req.user!.id, req.user!.role);
+      // r179 (phase-5): the ADMIN ownership bypass is institution-pinned
+      // (write mode — 403 for a foreign institution's data).
+      await assertOfferingInCallerInstitution(body.offeringId, req.user!, 'write');
     }
     /* r152b (A5 P3): facultyId was written as-is — a TEACHER author
      * could target ANY faculty and, once moderated+published, surface
@@ -523,11 +554,19 @@ router.post('/exams/templates', requireCapability('EXAMS_AUTHOR'), validate(crea
      * facultyId); moderators keep the cross-faculty reach their job
      * needs. */
     if (body.facultyId) {
-      // r178: the author's teacher profile is per-membership — resolved
-      // in their token institution context, home department folded in
-      // (TODO(r179/phase-5): full isolation).
+      /* r179 (phase-5): the author's teacher profile is per-membership —
+       * resolved in their DB-VERIFIED institution context (a TEACHER/
+       * ADMIN author MUST have one; the platform OWNER names the
+       * institution explicitly via ?institution=<slug>, 404 when it does
+       * not resolve). The home department folds in from there; the
+       * legacy oldest-profile fallback is gone. */
+      const authorInstitution =
+        req.user!.role === Role.OWNER
+          ? await resolveExplicitInstitutionSlug(req)
+          : await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+      if (!authorInstitution) throw institutionContextRequiredError();
       const [teacherProfile, caps] = await Promise.all([
-        resolveTeacherProfile(req.user!.id, req.user!.institutionId),
+        resolveTeacherProfile(req.user!.id, authorInstitution),
         getEffectiveCapabilities(req.user!.id, req.user!.role, req.user!.institutionId),
       ]);
       const homeDepartment = teacherProfile
@@ -613,18 +652,40 @@ router.get('/exams/templates', async (req, res, next) => {
       // r155a (audit finding 5): only ACTIVE enrollments scope a student
       // (the platform-wide convention — decideOfferingAccess grants
       // content access on 'active' rows only).
+      // r179 (phase-5): the faculty leg needs the student's DB-VERIFIED
+      // institution context (403 without one — which profile decides
+      // their faculty?).
+      const studentInstitution = await resolveCallerInstitutionScope(
+        req.user!.id,
+        req.user!.institutionId,
+      );
+      if (!studentInstitution) throw institutionContextRequiredError();
       const enrollments = await prisma.enrollment.findMany({
         where: { studentId: req.user!.id, status: 'active' },
         select: { offeringId: true },
       });
-      const myFaculty = await resolveStudentProfile(req.user!.id, req.user!.institutionId);
+      const myFaculty = await resolveStudentProfile(req.user!.id, studentInstitution);
       where.status = 'PUBLISHED';
       where.OR = [
         { offeringId: { in: enrollments.map((e) => e.offeringId) } },
         ...(myFaculty?.facultyId ? [{ facultyId: myFaculty.facultyId }] : []),
       ];
+    } else if (role === 'ADMIN' || role === 'QUALITY') {
+      /* r179 (phase-5): the oversight listing is pinned to the caller's
+       * DB-verified institution (the template's offering→course or
+       * faculty→institution chain) — a contextless institutional
+       * caller gets 403, never the platform-wide mix. */
+      const oversightInstitution = await resolveCallerInstitutionScope(
+        req.user!.id,
+        req.user!.institutionId,
+      );
+      if (!oversightInstitution) throw institutionContextRequiredError();
+      where.OR = [
+        { offering: { course: { institutionId: oversightInstitution } } },
+        { faculty: { institutionId: oversightInstitution } },
+      ];
     }
-    // QUALITY/ADMIN: see all by default
+    // OWNER: see all by default (platform-wide)
 
     const templates = await prisma.examTemplate.findMany({
       where,
@@ -672,11 +733,18 @@ router.get('/exams/templates/:id', async (req, res, next) => {
     // an offering nor a faculty is unscoped → treat as visible to every
     // student and deny (the authoring guard above stops new ones; this
     // closes any already-published legacy rows).
+    // r179 (phase-5): the faculty leg needs the DB-VERIFIED institution
+    // context (403 without one).
     if (req.user!.role === 'STUDENT') {
       if (template.offeringId) {
         await assertOfferingAccess(template.offeringId, req.user!.id, Role.STUDENT);
       } else if (template.facultyId) {
-        const profile = await resolveStudentProfile(req.user!.id, req.user!.institutionId);
+        const studentInstitution = await resolveCallerInstitutionScope(
+          req.user!.id,
+          req.user!.institutionId,
+        );
+        if (!studentInstitution) throw institutionContextRequiredError();
+        const profile = await resolveStudentProfile(req.user!.id, studentInstitution);
         if (!profile || profile.facultyId !== template.facultyId) {
           throw AppError.forbidden('هذا الاختبار مخصص لكلّيّة أخرى');
         }
@@ -956,6 +1024,15 @@ router.get('/exams/me', async (req, res, next) => {
       return;
     }
     const userId = req.user!.id;
+    // r179 (phase-5): the student's exam feed is institution-scoped —
+    // a DB-verified context is REQUIRED (403 without one; the faculty
+    // leg of the scoping below reads the student's profile in THAT
+    // institution, never a oldest-profile guess).
+    const studentInstitution = await resolveCallerInstitutionScope(
+      userId,
+      req.user!.institutionId,
+    );
+    if (!studentInstitution) throw institutionContextRequiredError();
     // Find published exams for offerings I'm enrolled in OR faculty-wide
     // r155a (audit finding 5): only ACTIVE enrollments scope a student
     // (the platform-wide 'active' convention — see assertOfferingAccess).
@@ -965,7 +1042,7 @@ router.get('/exams/me', async (req, res, next) => {
     });
     const offeringIds = enrollments.map((e) => e.offeringId);
 
-    const myFaculty = await resolveStudentProfile(userId, req.user!.institutionId);
+    const myFaculty = await resolveStudentProfile(userId, studentInstitution);
 
     const available = await prisma.examTemplate.findMany({
       where: {
@@ -1050,10 +1127,17 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
     // r155a (audit finding 6, defensive): BOTH null = a legacy unscoped
     // template → deny (the route is STUDENT-only via requireRole, so
     // every caller here is a student; non-students never reach this).
+    // r179 (phase-5): the faculty leg needs the DB-VERIFIED institution
+    // context (403 without one).
     if (template.offeringId) {
       await assertOfferingAccess(template.offeringId, userId, Role.STUDENT);
     } else if (template.facultyId) {
-      const profile = await resolveStudentProfile(userId, req.user!.institutionId);
+      const studentInstitution = await resolveCallerInstitutionScope(
+        userId,
+        req.user!.institutionId,
+      );
+      if (!studentInstitution) throw institutionContextRequiredError();
+      const profile = await resolveStudentProfile(userId, studentInstitution);
       if (!profile || profile.facultyId !== template.facultyId) {
         throw AppError.forbidden('هذا الاختبار مخصص لكلّيّة أخرى');
       }
