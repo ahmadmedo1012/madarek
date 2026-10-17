@@ -71,19 +71,54 @@ router.get('/stats', async (_req, res, next) => {
 });
 
 // ── GET /owner/users — paginated user list ───────────────────────
+/* r181 (phase-8 owner setup): optional ?institutionSlug= narrows the
+ * roster to users holding an ACTIVE membership in that institution
+ * (an unknown/suspended slug matches nothing — the same convention
+ * /admin/faculties and /admin/courses?institutionSlug= follow). This
+ * powers the owner console's per-institution pickers (e.g. the
+ * offering-create teacher roster) without inventing an
+ * ADMIN-membership context for the OWNER: it stays a read-only,
+ * membership-derived filter. */
 router.get(
   '/users',
-  validate(paginationSchema.extend({ role: z.nativeEnum(Role).optional() }), 'query'),
+  validate(
+    /* limit mirrors the /admin/users picker window cap (max 200 — the
+     * governance roster + every console picker share the same hard
+     * cap; the default stays paginationSchema's 20). */
+    paginationSchema.extend({
+      role: z.nativeEnum(Role).optional(),
+      institutionSlug: z.string().trim().min(1).max(64).optional(),
+      limit: z.coerce.number().int().positive().max(200).default(20),
+    }),
+    'query',
+  ),
   async (req, res, next) => {
     try {
-      const { page, limit, q, role } = req.query as unknown as {
+      const { page, limit, q, role, institutionSlug } = req.query as unknown as {
         page: number;
         limit: number;
         q?: string;
         role?: Role;
+        institutionSlug?: string;
       };
+      /* An unknown/suspended slug resolves to an empty id set — matches
+       * nothing, same as an unknown slug on every other institution-
+       * narrowed listing (never a 404 on a list). */
+      const slugInstitutions = institutionSlug
+        ? await prisma.institution.findMany({
+            where: { slug: institutionSlug, status: 'ACTIVE' },
+            select: { id: true },
+          })
+        : [];
       const where = {
         ...(role ? { role } : {}),
+        ...(institutionSlug
+          ? {
+              memberships: {
+                some: { institutionId: { in: slugInstitutions.map((i) => i.id) }, isActive: true },
+              },
+            }
+          : {}),
         ...(q
           ? {
               OR: [

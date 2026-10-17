@@ -128,6 +128,7 @@ const OwnerUsersPage = lazy(() => import('./pages/owner/OwnerPages').then((m) =>
 // create institutions, provision their ADMINs, suspend/reactivate,
 // revoke/restore memberships. Named lazy wrapper follows the siblings.
 const OwnerInstitutionsPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerInstitutionsPage })));
+const OwnerInstitutionDetailPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerInstitutionDetailPage })));
 const OwnerActivityPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerActivityPage })));
 const OwnerContentPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerContentPage })));
 const OwnerSystemPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerSystemPage })));
@@ -406,6 +407,11 @@ export function AppRoutes() {
             <Route path="/owner/users" element={<OwnerUsersPage />} />
             {/* r178: institution console (see the lazy import above). */}
             <Route path="/owner/institutions" element={<OwnerInstitutionsPage />} />
+            {/* r181 (phase-8 owner setup): ONE institution's academic
+                setup context — faculties → departments → courses →
+                offerings, every write explicitly bound to the selected
+                institution (see OwnerInstitutionDetailPage). */}
+            <Route path="/owner/institutions/:slug" element={<OwnerInstitutionDetailPage />} />
             <Route path="/owner/activity" element={<OwnerActivityPage />} />
             <Route path="/owner/content" element={<OwnerContentPage />} />
             <Route path="/owner/system" element={<OwnerSystemPage />} />

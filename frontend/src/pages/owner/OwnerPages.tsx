@@ -13,3 +13,4 @@ export { OwnerAiPage } from './OwnerAiPage';
 export { OwnerAlertsPage } from './OwnerAlertsPage';
 export { OwnerGovernancePage } from './OwnerGovernancePage';
 export { OwnerInstitutionsPage } from './OwnerInstitutionsPage';
+export { OwnerInstitutionDetailPage } from './OwnerInstitutionDetailPage';

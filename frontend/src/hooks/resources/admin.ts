@@ -35,11 +35,27 @@ export interface AdminFaculty {
   courseCount: number;
   departments: Array<{ id: string; name: string; students: number; teachers: number; courses: number }>;
 }
-export function useAdminFaculties() {
+export function useAdminFaculties(
+  /** r181 (phase-8 owner setup): the OWNER console passes the selected
+   * institution's slug — GET /admin/faculties?institutionSlug= narrows
+   * the listing server-side (unknown/suspended slug matches nothing).
+   * ADMIN callers keep the no-arg shape: their scope resolves from
+   * the verified membership context. The slug rides the query KEY so
+   * the owner's per-institution listings cache separately. */
+  institutionSlug?: string,
+) {
   const inst = useInstitutionScope();
   return useQuery({
-    queryKey: withInstitutionScope(['admin', 'faculties'], inst),
-    queryFn: () => unwrap<AdminFaculty[]>(api.get('/admin/faculties')),
+    queryKey: withInstitutionScope(
+      ['admin', 'faculties', { institutionSlug: institutionSlug ?? null }],
+      inst,
+    ),
+    queryFn: () =>
+      unwrap<AdminFaculty[]>(
+        api.get('/admin/faculties', {
+          params: institutionSlug ? { institutionSlug } : undefined,
+        }),
+      ),
   });
 }
 
@@ -91,12 +107,31 @@ export interface AdminCoursesMeta {
  * the ['admin','courses'] prefix still matches prefix invalidations.
  */
 export function useAdminCourses(
-  params: { page?: number; limit?: number; q?: string; facultyId?: string } = {},
+  params: {
+    page?: number;
+    limit?: number;
+    q?: string;
+    facultyId?: string;
+    /** r181 (phase-8 owner setup): the OWNER console's institution-
+     * scoped view — GET /admin/courses?institutionSlug=… (an unknown/
+     * suspended slug matches nothing server-side). Rides the query
+     * KEY so per-institution listings cache separately; ADMIN callers
+     * never send it (their scope resolves from the verified
+     * membership context). */
+    institutionSlug?: string;
+  } = {},
 ) {
-  const { page = 1, limit = 20, q, facultyId } = params;
+  const { page = 1, limit = 20, q, facultyId, institutionSlug } = params;
   const inst = useInstitutionScope();
   return useQuery({
-    queryKey: withInstitutionScope(['admin', 'courses', { page, limit, q: q ?? null, facultyId: facultyId ?? null }], inst),
+    queryKey: withInstitutionScope(
+      [
+        'admin',
+        'courses',
+        { page, limit, q: q ?? null, facultyId: facultyId ?? null, institutionSlug: institutionSlug ?? null },
+      ],
+      inst,
+    ),
     queryFn: async () => {
       const res = await api.get<{ data: AdminCourse[]; meta: AdminCoursesMeta }>('/admin/courses', {
         params: {
@@ -104,6 +139,7 @@ export function useAdminCourses(
           limit,
           ...(q ? { q } : {}),
           ...(facultyId ? { facultyId } : {}),
+          ...(institutionSlug ? { institutionSlug } : {}),
         },
       });
       return { data: res.data.data, meta: res.data.meta };
@@ -137,11 +173,23 @@ function invalidateCourses(qc: ReturnType<typeof useQueryClient>) {
   qc.invalidateQueries({ queryKey: ['admin', 'reports'] });
 }
 /** POST /courses — create (16-decisions #5; the write router lives at
- * /courses — courses.routes.ts — only the GET list is /admin/courses). */
-export function useCreateCourse() {
+ * /courses — courses.routes.ts — only the GET list is /admin/courses).
+ *
+ * r181 (phase-8 owner setup): the optional `institutionId` argument is
+ * the OWNER console's explicit scope — the backend's createCourseSchema
+ * carries the OWNER-only institutionId wire field (verified to exist
+ * and be ACTIVE server-side; ADMIN callers sending it are 403'd).
+ * ADMIN construction sites keep the no-arg shape. */
+export function useCreateCourse(institutionId?: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: CourseFormInput) => unwrap(api.post('/courses', body)),
+    mutationFn: (body: CourseFormInput) =>
+      unwrap(
+        api.post('/courses', {
+          ...body,
+          ...(institutionId ? { institutionId } : {}),
+        }),
+      ),
     onSuccess: () => invalidateCourses(qc),
   });
 }
@@ -171,15 +219,18 @@ export function useDeleteCourse() {
  * query param), 403 for a foreign faculty, 409 for the
  * (institutionId, name, city) / (facultyId, name) unique keys.
  *
- * The /admin/* routes this UI lives under are ADMIN-only in the SPA
- * routing (App.tsx: allow={['ADMIN']}), so the ADMIN membership
- * context resolves server-side from the token and the hooks send NO
- * institutionSlug. The OWNER+slug half of the backend contract stays
- * API-surface-only for now — no OWNER console screen reaches these
- * pages, and inventing an FE institution picker with no route to
- * render it would be dishonest chrome. */
+ * The /admin/* PAGES stay ADMIN-only in the SPA routing (App.tsx:
+ * allow={['ADMIN']}) — the ADMIN construction sites resolve their
+ * membership context server-side and send NO institutionSlug. r181
+ * (phase-8 owner setup) finally gives the OWNER+slug half of the
+ * contract its honest consumer: the owner console's institution
+ * detail page (/owner/institutions/:slug) constructs these hooks
+ * WITH the selected institution's slug, so every write names its
+ * target institution explicitly — the frontend is never an
+ * authorization boundary, the backend re-verifies each one. */
 function invalidateFaculties(qc: ReturnType<typeof useQueryClient>) {
-  /* The admin faculties page list… */
+  /* The admin faculties page list… (the ['admin','faculties'] prefix
+   * still matches the r181 slug-parameterized owner keys) */
   qc.invalidateQueries({ queryKey: ['admin', 'faculties'] });
   /* …and the public catalogue rows (the ['faculties'] prefix also
    * reaches the register page's ['faculties','institution',slug]
@@ -196,11 +247,23 @@ export interface FacultyFormInput {
   iconEmoji?: string;
   city: string;
 }
-export function useCreateFaculty() {
+/**
+ * r181 (phase-8 owner setup): the optional `institutionSlug` binds the
+ * write to ONE institution for OWNER callers — POST
+ * /admin/faculties?institutionSlug=… (the backend 400s when an owner
+ * console sends no slug: it never auto-selects). ADMIN construction
+ * sites keep the no-arg shape; their scope resolves server-side from
+ * the verified membership context.
+ */
+export function useCreateFaculty(institutionSlug?: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: FacultyFormInput) =>
-      unwrap<{ id: string }>(api.post('/admin/faculties', body)),
+      unwrap<{ id: string }>(
+        api.post('/admin/faculties', body, {
+          params: institutionSlug ? { institutionSlug } : undefined,
+        }),
+      ),
     onSuccess: () => invalidateFaculties(qc),
   });
 }
@@ -212,11 +275,22 @@ export interface DepartmentFormInput {
   nameEn?: string;
   facultyId: string;
 }
-export function useCreateDepartment() {
+/**
+ * r181 (phase-8 owner setup): the OWNER-console twin of the slug
+ * binding above — the department's faculty already carries the
+ * institution, but the backend still requires the explicit
+ * ?institutionSlug= for OWNER callers and re-verifies the faculty
+ * chain against it (403 for a foreign faculty).
+ */
+export function useCreateDepartment(institutionSlug?: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: DepartmentFormInput) =>
-      unwrap<{ id: string }>(api.post('/admin/departments', body)),
+      unwrap<{ id: string }>(
+        api.post('/admin/departments', body, {
+          params: institutionSlug ? { institutionSlug } : undefined,
+        }),
+      ),
     onSuccess: () => invalidateFaculties(qc),
   });
 }
@@ -285,6 +359,37 @@ export function useAdminTeachers(enabled: boolean) {
       }));
     },
     enabled,
+    staleTime: 60_000,
+  });
+}
+/**
+ * r181 (phase-8 owner setup) — the OWNER console's offering-modal teacher
+ * picker: GET /owner/users?role=TEACHER&institutionSlug=… (the r181
+ * membership-scoped roster — ACTIVE TEACHER memberships in the selected
+ * institution, exactly the population POST /offerings accepts as
+ * teacherId). The ADMIN twin above reads /admin/users (their verified
+ * context scopes it); the OWNER holds no membership context, so the
+ * slug rides both the URL and the query KEY — per-institution pickers
+ * cache separately and an institution switch never renders the previous
+ * institution's teachers.
+ */
+export function useOwnerInstitutionTeachers(institutionSlug: string | null, enabled: boolean) {
+  return useQuery({
+    queryKey: ['owner', 'users', { page: 1, limit: 200, q: null, role: 'TEACHER', institutionSlug }],
+    queryFn: async () => {
+      const res = await api.get<{
+        data: Array<{ id: string; email: string; firstName: string; lastName: string }>;
+      }>('/owner/users', {
+        params: { page: 1, limit: 200, role: 'TEACHER', institutionSlug: institutionSlug! },
+      });
+      return res.data.data.map<AdminTeacherOption>((t) => ({
+        id: t.id,
+        name: `${t.firstName} ${t.lastName}`.trim(),
+        email: t.email,
+      }));
+    },
+    // null slug = no institution selected — never fetch a wrong roster.
+    enabled: enabled && institutionSlug !== null,
     staleTime: 60_000,
   });
 }

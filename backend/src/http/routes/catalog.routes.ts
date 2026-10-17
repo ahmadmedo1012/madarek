@@ -1198,6 +1198,11 @@ const adminCourseInclude = Prisma.validator<Prisma.CourseInclude>()({
  */
 export const adminCoursesQuerySchema = paginationSchema.extend({
   facultyId: z.string().cuid().optional(),
+  // r181 (phase-8 owner setup): the OWNER console's institution-
+  // scoped catalogue view (the /admin/faculties convention — unknown/
+  // suspended slug matches nothing; ADMIN callers keep their DB-
+  // verified scope and the param is ignored for them).
+  institutionSlug: z.string().trim().min(1).max(64).optional(),
 });
 
 /**
@@ -1229,22 +1234,38 @@ router.get(
   validate(adminCoursesQuerySchema, 'query'),
   async (req, res, next) => {
     try {
-      const { page, limit, q, facultyId } = req.query as unknown as {
+      const { page, limit, q, facultyId, institutionSlug } = req.query as unknown as {
         page: number;
         limit: number;
         q?: string;
         facultyId?: string;
+        institutionSlug?: string;
       };
       /* r179 (phase-5): the admin course catalogue is institution-scoped
        * for ADMIN callers (their DB-verified context ANDs
        * Course.institutionId onto the filters — a foreign facultyId
        * simply matches nothing; 403 without a context). OWNER keeps
-       * the platform-wide catalogue. */
-      const coursesInstitution =
-        req.user!.role === Role.OWNER
-          ? null
-          : await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
-      if (req.user!.role !== Role.OWNER && !coursesInstitution) {
+       * the platform-wide catalogue — and may narrow it with
+       * ?institutionSlug= since r181: the public GET /courses `in`-list
+       * convention (an unknown/suspended slug matches NOTHING — never
+       * a silent fall-back to the platform-wide view). */
+      let ownerSlugIds: string[] | null = null;
+      let adminInstitution: string | null = null;
+      if (req.user!.role === Role.OWNER) {
+        if (institutionSlug) {
+          const slugInstitutions = await prisma.institution.findMany({
+            where: { slug: institutionSlug, status: 'ACTIVE' },
+            select: { id: true },
+          });
+          ownerSlugIds = slugInstitutions.map((i) => i.id);
+        }
+      } else {
+        adminInstitution = await resolveCallerInstitutionScope(
+          req.user!.id,
+          req.user!.institutionId,
+        );
+      }
+      if (req.user!.role !== Role.OWNER && !adminInstitution) {
         throw institutionContextRequiredError();
       }
       // Server-side filters (5-A8 P2-1) — and the SAME where feeds the
@@ -1253,7 +1274,8 @@ router.get(
       // filter was applied, breaking every page count after page 1).
       const where: Prisma.CourseWhereInput = {
         ...adminCoursesWhere(q, facultyId),
-        ...(coursesInstitution ? { institutionId: coursesInstitution } : {}),
+        ...(adminInstitution ? { institutionId: adminInstitution } : {}),
+        ...(ownerSlugIds ? { institutionId: { in: ownerSlugIds } } : {}),
       };
       const [courses, total] = await Promise.all([
         prisma.course.findMany({

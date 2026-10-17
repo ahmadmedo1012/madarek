@@ -323,7 +323,7 @@ There is **no** `POST /posts/:id/comment` route — comments are read via the po
 | POST | `/admin/faculties` | ADMIN/OWNER | r180 — create a faculty inside one institution (closes the new-institution bootstrap dead-end). ADMIN: their DB-verified context; OWNER: **explicit `?institutionSlug=`** (400 without). Body `{name, nameEn?, iconEmoji?, city}`; `@@unique(institutionId, name, city)` → 409; audited (`FACULTY_CREATED`) |
 | POST | `/admin/departments` | ADMIN/OWNER | r180 — create a department under a faculty of the caller's institution (403 for a foreign faculty chain). Body `{name, nameEn?, facultyId}`; `@@unique(facultyId, name)` → 409; audited (`DEPARTMENT_CREATED`) |
 | GET | `/admin/reports` | ADMIN/OWNER | KPI reports (topCourses aggregated per course — enrollment counts, deterministic order) |
-| GET | `/admin/courses` | ADMIN/OWNER | Course management data (totals aggregated across ALL of each page course's offerings, not the take:3 preview; paginated `{data, meta}` with server-side `q` code/name search + `facultyId` scope — C5) |
+| GET | `/admin/courses` | ADMIN/OWNER | Course management data (totals aggregated across ALL of each page course's offerings, not the take:3 preview; paginated `{data, meta}` with server-side `q` code/name search + `facultyId` scope — C5). r181: OWNER may narrow with `?institutionSlug=` (the public-listing `in`-list convention — unknown/suspended slug matches nothing, never a silent platform-wide fall-back); ADMIN callers keep their DB-verified scope (the param is ignored for them) |
 | GET | `/admin/papers` | ADMIN/OWNER | Institution-wide research list, `{data, meta}` paginated, `?status=` filter (PENDING\|SCANNED\|PUBLISHED\|REJECTED), `q` title search — no file bytes, no PII beyond author name (C5) |
 
 ## Search
@@ -385,7 +385,7 @@ All routes: `authMiddleware + requireRole(OWNER)`.
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/owner/stats` | Platform-wide statistics |
-| GET | `/owner/users` | Paginated user list (role filter, `q` search) |
+| GET | `/owner/users` | Paginated user list (role filter, `q` search; limit cap 200 matching the /admin/users picker window — r181). r181 (phase-8): optional `?institutionSlug=` narrows the roster to users holding an ACTIVE membership in that institution (unknown/suspended slug matches nothing) — powers the owner console's per-institution pickers (the offering-create teacher roster) |
 | POST | `/owner/users/:id/role` | Change user role (self 403; OWNER promotion 403 via this path; last-active-owner guard with `FOR UPDATE` row locks → 409; TEACHER provisioning parity; `ROLE_CHANGE` audit row with `source:'owner'`) |
 | PATCH | `/owner/users/:id/status` | Toggle isActive (self-deactivation 403; self **re-activation allowed**; last-owner guard 409; `tokenVersion` bumped on deactivation only; `STATUS_CHANGE` audit in-transaction) |
 | GET | `/owner/activity` | Paginated audit log |

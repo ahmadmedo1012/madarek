@@ -84,12 +84,14 @@ describe('useCreateFaculty — POST /admin/faculties (r180)', () => {
     });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    // The wire: endpoint + EXACTLY the zod .strict() fields.
+    // The wire: endpoint + EXACTLY the zod .strict() fields (the r181
+    // third argument carries the admin construction's no-slug config
+    // — params: undefined sends no query string).
     expect(postMock).toHaveBeenCalledTimes(1);
     expect(postMock).toHaveBeenCalledWith('/admin/faculties', {
       name: 'كلية العلوم',
       city: 'الزاوية',
-    });
+    }, { params: undefined });
     // The invalidation map: the admin page list + the public catalogue.
     expect(invalidatedKeys()).toContainEqual(['admin', 'faculties']);
     expect(invalidatedKeys()).toContainEqual(['faculties']);
@@ -109,7 +111,25 @@ describe('useCreateFaculty — POST /admin/faculties (r180)', () => {
       nameEn: 'FoB',
       iconEmoji: '🧪',
       city: 'Tripoli',
+    }, { params: undefined });
+  });
+
+  /* r181 (phase-8 owner setup): the OWNER construction carries the
+   * selected institution's slug as the query param — the load-bearing
+   * binding that keeps an owner write inside ONE institution. */
+  it('r181: binds the OWNER construction to ?institutionSlug=', async () => {
+    const { wrapper } = makeClient();
+    const { result } = renderHook(() => useCreateFaculty('zawia-showcase'), { wrapper });
+
+    await act(async () => {
+      result.current.mutate({ name: 'كلية الهندسة', city: 'الزاوية' });
     });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(postMock).toHaveBeenCalledWith('/admin/faculties', {
+      name: 'كلية الهندسة',
+      city: 'الزاوية',
+    }, { params: { institutionSlug: 'zawia-showcase' } });
   });
 });
 
@@ -127,9 +147,26 @@ describe('useCreateDepartment — POST /admin/departments (r180)', () => {
     expect(postMock).toHaveBeenCalledWith('/admin/departments', {
       name: 'قسم الحاسوب',
       facultyId: 'clsfaculty1',
-    });
+    }, { params: undefined });
     expect(invalidatedKeys()).toContainEqual(['admin', 'faculties']);
     expect(invalidatedKeys()).toContainEqual(['faculties']);
+  });
+
+  /* r181: the OWNER construction twin — the slug rides the department
+   * write too (the backend re-verifies the faculty chain against it). */
+  it('r181: binds the OWNER construction to ?institutionSlug=', async () => {
+    const { wrapper } = makeClient();
+    const { result } = renderHook(() => useCreateDepartment('zawia-showcase'), { wrapper });
+
+    await act(async () => {
+      result.current.mutate({ name: 'قسم الفيزياء', facultyId: 'clsfaculty1' });
+    });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(postMock).toHaveBeenCalledWith('/admin/departments', {
+      name: 'قسم الفيزياء',
+      facultyId: 'clsfaculty1',
+    }, { params: { institutionSlug: 'zawia-showcase' } });
   });
 });
 

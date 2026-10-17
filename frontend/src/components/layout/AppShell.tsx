@@ -76,6 +76,10 @@ const DYNAMIC_TITLES: Array<[RegExp, string]> = [
      section title never lies in any state. */
   [/^\/student\/online-exams\/[^/]+$/,       'اختبار إلكتروني'],
   [/^\/admin\/permissions\/[^/]+$/,          'إدارة الصلاحيات'],
+  /* r181 (phase-8 owner setup): the institution's academic-setup
+     context — the title names the SECTION, not the institution (the
+     h1 on the page itself carries the institution's name). */
+  [/^\/owner\/institutions\/[^/]+$/,         'إعداد مؤسسة'],
   [/^\/colleges\/[^/]+$/,                    'كلّيّة'],
   [/^\/competitions\/[^/]+$/,                'مسابقة'],
 ];

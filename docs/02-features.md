@@ -208,7 +208,7 @@ PDF بصدق، والصمامات تُستنسخ على العميل قبل أي
 `backend/src/http/routes/owner.routes.ts` (17 مسارًا)،
 `frontend/src/pages/owner/`.
 
-## تعدد المؤسسات (r178–r180) — [منفَّذة]
+## تعدد المؤسسات (r178–r181) — [منفَّذة]
 
 المنصة مؤسسات متعددة بعزل بيانات كامل: كل مالك بيانات مؤسسي (أكاديمي،
 ملفات، محادثات AI، اجتماعي، مزامنة، ذاكرة الواجهة) مقيّد بالمؤسسة
@@ -224,7 +224,17 @@ PDF بصدق، والصمامات تُستنسخ على العميل قبل أي
 (`POST /offerings/:id/grades`)، ودليل مقررات الطالب
 (`/student/catalog`)، وغرف الدراسة الحقيقية (`/study-rooms`)، وتبويب
 المنشورات لمجتمع الأستاذ/الإدارة، وتغيير كلمة المرور الذاتي
-(`POST /auth/change-password`). الملفات:
+(`POST /auth/change-password`). **ر181 (إكمال المنتج) أغلقت آخر فجوة
+في تجربة المالك**: صفحة سياق المؤسسة `/owner/institutions/:slug` — من
+قائمة المؤسسات يفتح المالك مؤسسته ويبني بنيتها الأكاديمية كاملة داخل
+سياقها (كلية ← قسم ← مقرّر ← شعبة) بكل كتابة صراحة مربوطة بالمؤسسة
+المختارة (الـslug يرافق كل طلب والخلفية تعيد التحقق)، مع صفوف
+المؤسسة (كلياتها عبر `GET /admin/faculties?institutionSlug=` ومقرّراتها
+عبر `GET /admin/courses?institutionSlug=` وقائمة أساتذتها عبر
+`GET /owner/users?institutionSlug=` لاختيار أستاذ الشعبة)، وحالة صادقة
+للمؤسسات المعلّقة (لافتة واضحة وتعطيل كل كتابة أكاديمية)، وحالة
+«غير موجودة» لمعرّف مجهول مع طريق عودة. الملفات:
+`frontend/src/pages/owner/OwnerInstitutionDetailPage.tsx`،
 `docs/architecture/multi-institution/*`،
 `backend/src/lib/profile-scoping.ts`، `institution.ts`،
 `frontend/src/hooks/resources/*` (مفاتيح استعلام بنطاق المؤسسة).

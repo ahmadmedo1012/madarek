@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Plus, Landmark, ShieldCheck, Ban, RotateCcw, UserPlus,
-  Users, GraduationCap, Calendar,
+  Users, GraduationCap, Calendar, ArrowLeft,
 } from 'lucide-react';
 import { Card, Badge, FormField } from '../../components/primitives';
 import { ErrorState, EmptyState, TableSkeleton } from '../../components/primitives/States';
@@ -566,6 +567,18 @@ export function OwnerInstitutionsPage() {
                     </td>
                     <td data-label="إجراءات">
                       <span className="table-row-actions">
+                        {/* r181 (phase-8 owner setup): the institution's own
+                            academic-setup context — faculties → departments
+                            → courses → offerings, all bound to THIS
+                            institution's slug. */}
+                        <Link
+                          to={`/owner/institutions/${institution.slug}`}
+                          className="btn ghost sm"
+                          title={`فتح سياق «${institution.name}» وإعداد بنيتها الأكاديمية`}
+                        >
+                          <Icon icon={ArrowLeft} size={13} />
+                          فتح المؤسسة
+                        </Link>
                         <button
                           type="button"
                           className="btn ghost sm"
