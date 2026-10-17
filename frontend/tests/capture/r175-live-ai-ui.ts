@@ -1,7 +1,9 @@
 /**
  * r175-live-ai-ui.ts — browser verification of the honest AI surfaces
  * on the LIVE deployment: the header badge names the configured ROUTE
- * (openrouter/free), the assistant bubble's mono tag names the ACTUAL
+ * ("openrouter/free" pre-r176i, or the r176i AI_MODELS head+N surface
+ * like "nvidia/nemotron-3-super-120b-a12b:free +2"), the assistant
+ * bubble's mono tag names the ACTUAL
  * model OpenRouter routed that response to, the r176c privacy
  * disclosure renders in real-LLM mode, and no console errors fire.
  *
@@ -57,7 +59,9 @@ if (meRes.status() !== 200) {
 }
 
 await page.goto(`${BASE}/student/ai`, { waitUntil: 'domcontentloaded' });
-// The header badge: names the configured ROUTE id (openrouter/free)
+// The header badge: names the configured route — the r176i AI_MODELS
+// surface renders the list head +N ("vendor/model:free +2"), the
+// pre-r176i surface rendered the bare route id ("openrouter/free").
 await page.waitForSelector('.page-header', { timeout: 20_000 });
 await page.waitForTimeout(1500); // let /ai/config resolve (5-min cache, first fetch)
 const badge = await page.evaluate(() => {
@@ -65,7 +69,7 @@ const badge = await page.evaluate(() => {
   return header?.querySelector('[class*="badge"], .badge')?.textContent ?? null;
 });
 console.log('badge text:', badge);
-if (!badge || !/openrouter|\/free|AI/.test(badge)) {
+if (!badge || !/openrouter|\/free|:free|\+\d|AI/.test(badge)) {
   fail(`badge: ${badge ?? 'MISSING'} — the engine badge must name the configured route`);
 }
 
