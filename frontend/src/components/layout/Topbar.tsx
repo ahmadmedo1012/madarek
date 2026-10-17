@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useState, useRef } from 'react';
-import { Menu, Sparkles, LogOut, User as UserIcon, Sun, Moon, Search } from 'lucide-react';
+import { Menu, Sparkles, LogOut, User as UserIcon, Sun, Moon, Search, Building2 } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../Icon';
 import { UserAvatar } from '../primitives';
@@ -8,10 +8,12 @@ import { GlobalSearch } from './GlobalSearch';
 import { NotificationDropdown } from './NotificationDropdown';
 import { Dropdown, DropdownItem, DropdownSeparator } from '../overlays';
 import { useUiStore } from '../../stores/ui.store';
-import { useAuthStore } from '../../stores/auth.store';
+import { useAuthStore, type MembershipInfo } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
-import { useLogout, useMe } from '../../hooks/useAuth';
-import { useMyProfile } from '../../hooks/useResources';
+import { useLogout, useMe, useSelectInstitution } from '../../hooks/useAuth';
+import { useMyProfile, apiErrorMessage } from '../../hooks/useResources';
+import { ROLE_LABELS } from '../../lib/nav';
+import { toast } from '../../lib/toast';
 
 interface TopbarProps {
   title: ReactNode;
@@ -39,6 +41,123 @@ function StudentScopeChip() {
     <span className="topbar-scope" title={`الكلّيّة: ${name}`}>
       {name}
     </span>
+  );
+}
+
+/** r178 (multi-institution): the institution context chip — the
+ *  current institution («جامعة الزاوية») rendered in the topbar so the
+ *  visitor always knows which institution's context the token carries.
+ *  Single-membership users get the passive `.topbar-scope` pill (the
+ *  same class the student faculty chip and admin scope chip already
+ *  use — tokens only, zero new CSS). Multi-membership users get a
+ *  dropdown switcher instead: choosing an entry POSTs
+ *  /auth/select-institution, the store's context + token update, and
+ *  the mutation invalidates every cached query — the mounted ones
+ *  (including /auth/me) refetch in place under the new context, which
+ *  is the in-place refresh the r178 contract prefers over a reload. */
+function InstitutionChip() {
+  const user = useAuthStore((s) => s.user);
+  const currentInstitution = useAuthStore((s) => s.currentInstitution);
+  const memberships = useAuthStore((s) => s.memberships);
+  const selectInstitution = useSelectInstitution();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  /* Only authenticated sessions render the chip. Three shapes:
+   *  - zero memberships (platform OWNER) → no chip;
+   *  - one membership → the passive pill when the context is set (the
+   *    server auto-selects the single membership at every mint, so a
+   *    context-less single membership is a transient refresh race —
+   *    nothing to render yet);
+   *  - MULTIPLE memberships → the switcher, ALSO when the context is
+   *    null: a refresh re-resolves multi-membership sessions to no
+   *    context (Agent B's contract), and the switcher is then the ONLY
+   *    in-shell path to re-select — without it the session would sit
+   *    context-less with every institution route 403ing. */
+  if (!user || memberships.length === 0) return null;
+  if (memberships.length <= 1 && !currentInstitution) return null;
+
+  const contextLost = memberships.length > 1 && !currentInstitution;
+
+  const switchMembership = (membership: MembershipInfo) => {
+    setMenuOpen(false);
+    selectInstitution.mutate(
+      { institutionId: membership.institutionId },
+      {
+        onSuccess: () => {
+          toast.success(`أنت الآن ضمن «${membership.name}».`, { title: 'تمّ تبديل المؤسسة' });
+        },
+        onError: (error) => {
+          // D17-3: the backend's Arabic message (403 INSTITUTION_
+          // CONTEXT_INVALID «عضوية المؤسسة غير نشطة أو غير صالحة»…).
+          toast.error(
+            apiErrorMessage(error, 'تعذّر تبديل المؤسسة — حاول مجدداً.'),
+            { title: 'تعذّر التبديل' },
+          );
+        },
+      },
+    );
+  };
+
+  if (memberships.length <= 1) {
+    return (
+      <span className="topbar-scope" title={`المؤسسة الحالية: ${currentInstitution!.name}`}>
+        <Icon icon={Building2} size={13} />
+        {currentInstitution!.name}
+      </span>
+    );
+  }
+
+  return (
+    <>
+      {/* The trigger is a quiet ghost button (the shell's existing
+          chrome vocabulary — border-shift hover, no lift, no new
+          colors); ≤920px the name folds away and the icon + aria-label
+          keep the control named. Keyboard reach: natural Tab stop, the
+          Dropdown owns arrows/Esc/focus-return once open. */}
+      <button
+        type="button"
+        ref={triggerRef}
+        className="btn ghost sm"
+        onClick={() => setMenuOpen((v) => !v)}
+        aria-haspopup="menu"
+        aria-expanded={menuOpen}
+        aria-label={contextLost ? 'اختيار المؤسسة' : 'المؤسسة الحالية'}
+        title={
+          contextLost
+            ? 'اختر المؤسسة التي ستعمل ضمنها في هذه الجلسة'
+            : `المؤسسة الحالية: ${currentInstitution!.name}`
+        }
+      >
+        <Icon icon={Building2} size={14} />
+        <span className="hide-on-mobile">
+          {contextLost ? 'اختر مؤسستك' : currentInstitution!.name}
+        </span>
+      </button>
+      <Dropdown
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        anchorRef={triggerRef}
+        placement="end"
+        ariaLabel={contextLost ? 'اختيار المؤسسة' : 'تبديل المؤسسة'}
+      >
+        {memberships.map((membership) => {
+          const isCurrent =
+            !contextLost && membership.institutionId === currentInstitution!.id;
+          return (
+            <DropdownItem
+              key={membership.institutionId}
+              disabled={isCurrent || selectInstitution.isPending}
+              onSelect={() => switchMembership(membership)}
+            >
+              <Icon icon={Building2} size={14} />
+              <span className="topbar-inst-name">{membership.name}</span>
+              <span className="topbar-inst-role">{ROLE_LABELS[membership.role] ?? membership.role}</span>
+            </DropdownItem>
+          );
+        })}
+      </Dropdown>
+    </>
   );
 }
 
@@ -164,6 +283,7 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
             <span className="hide-on-mobile">اسأل AI</span>
           </NavLink>
         ))}
+        <InstitutionChip />
         <NotificationDropdown alertsPath={alertsPath} />
 
         {user && (

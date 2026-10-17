@@ -10,11 +10,26 @@ import { persist, type PersistStorage, type StorageValue } from 'zustand/middlew
  * cost of a documented XSS surface: any injected script can read the
  * bearer for the remainder of its TTL (minutes). The httpOnly refresh
  * cookie — the actual session secret — remains unreadable to scripts.
- * Acceptance is deliberate; do not widen the persisted shape (below)
- * and never move the refresh token into storage reachable from JS.
- * `clear()` runs at every session boundary (api.ts refresh failure,
- * login/register/logout hooks) together with a TanStack cache clear,
- * so a stale token never pairs with another user's cached data.
+ * Acceptance is deliberate; never move the refresh token into storage
+ * reachable from JS. `clear()` runs at every session boundary (api.ts
+ * refresh failure, login/register/logout hooks) together with a
+ * TanStack cache clear, so a stale token never pairs with another
+ * user's cached data.
+ *
+ * r178 (multi-institution foundation): the persisted shape was widened
+ * ON PURPOSE — memberships (the user's active institution memberships),
+ * currentInstitution (the institution context baked into the access
+ * token's `inst` claim) and membershipRole (the effective role inside
+ * that institution) now ride alongside {user, accessToken}. These are
+ * CONTEXT labels, not secrets: they are derivable from any API
+ * response and contain no credential material, so the D4 surface is
+ * unchanged (an injected script still learns nothing it could not
+ * read from /auth/me). A v0 persisted payload ({user, accessToken}
+ * only) migrates to the new defaults via the persist `migrate`
+ * function — memberships: [], currentInstitution: null, membershipRole:
+ * null — which matches the server's own context resolution on the next
+ * refresh (login auto-selects only when exactly one active membership
+ * exists, so a re-minted token re-establishes context honestly).
  */
 
 export type AppRole = 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER';
@@ -37,8 +52,45 @@ export interface AuthUser {
   scopeFacultyId?: string | null;
 }
 
-/** The partialized slice persisted under the `mdrk-auth` key. */
-type PersistedSession = { user: AuthUser | null; accessToken: string | null };
+/** r178: one of the user's institution memberships (login/register/me
+ *  payloads list the ACTIVE memberships of ACTIVE institutions — the
+ *  server is the source of truth; the client never synthesizes rows). */
+export interface MembershipInfo {
+  institutionId: string;
+  name: string;
+  nameEn?: string | null;
+  slug: string;
+  /** Effective role INSIDE this institution (from Membership, not the
+   *  platform-level User.role). OWNER never appears here — the platform
+   * owner holds no membership. */
+  role: AppRole;
+  isActive: boolean;
+}
+
+/** r178: the institution context of the current access token
+ *  (JWT `inst` claim), as reported by the auth payloads. Null = no
+ *  context (zero memberships, or multiple awaiting selection). */
+export interface InstitutionSummary {
+  id: string;
+  name: string;
+  nameEn?: string | null;
+  slug: string;
+}
+
+/** The institution session context carried by every auth response
+ *  (login / register / refresh / /auth/me / select-institution). */
+export interface SessionInstitutionExtras {
+  memberships: MembershipInfo[];
+  currentInstitution: InstitutionSummary | null;
+  membershipRole: AppRole | null;
+}
+
+/** The partialized slice persisted under the `mdrk-auth` key.
+ *  r178: widened deliberately — see the D4 block above. */
+type PersistedSession = SessionInstitutionExtras & {
+  user: AuthUser | null;
+  accessToken: string | null;
+};
 
 /** Synchronous string storage — what localStorage and the memory shim expose. */
 type SyncStringStorage = {
@@ -49,7 +101,24 @@ type SyncStringStorage = {
 
 interface AuthState extends PersistedSession {
   isHydrated: boolean;
-  setSession: (user: AuthUser, accessToken: string) => void;
+  /** r178: extras are optional for call sites holding only a bare
+   *  {user, token} pair — omitting them RESETS the institution context
+   *  to the defaults (a session payload without context fields carries
+   *  no context; stale chips must never outlive their evidence). */
+  setSession: (
+    user: AuthUser,
+    accessToken: string,
+    extras?: SessionInstitutionExtras,
+  ) => void;
+  /** r178: sync the institution context from an authoritative payload
+   *  (GET /auth/me) WITHOUT touching the user/token pair — the me read
+   *  carries no access token, but it is the freshest truth about
+   *  memberships and the current context (revocations, suspensions and
+   *  new memberships land there before any refresh). The same
+   *  honest-defaults rule as setSession: a payload without context
+   *  fields resets the context (the chip must never outlive its
+   *  evidence). */
+  applySessionExtras: (extras: SessionInstitutionExtras) => void;
   setAccessToken: (token: string | null) => void;
   clear: () => void;
   setHydrated: () => void;
@@ -132,17 +201,63 @@ export const useAuthStore = create<AuthState>()(
       return {
         user: null,
         accessToken: null,
+        memberships: [],
+        currentInstitution: null,
+        membershipRole: null,
         isHydrated: false,
-        setSession: (user, accessToken) => set({ user, accessToken }),
+        setSession: (user, accessToken, extras) =>
+          set({
+            user,
+            accessToken,
+            memberships: extras?.memberships ?? [],
+            currentInstitution: extras?.currentInstitution ?? null,
+            membershipRole: extras?.membershipRole ?? null,
+          }),
+        applySessionExtras: (extras) =>
+          set({
+            memberships: extras.memberships,
+            currentInstitution: extras.currentInstitution,
+            membershipRole: extras.membershipRole,
+          }),
         setAccessToken: (accessToken) => set({ accessToken }),
-        clear: () => set({ user: null, accessToken: null }),
+        clear: () =>
+          set({
+            user: null,
+            accessToken: null,
+            memberships: [],
+            currentInstitution: null,
+            membershipRole: null,
+          }),
         setHydrated: () => set({ isHydrated: true }),
       };
     },
     {
       name: 'mdrk-auth',
       storage: safeSessionStorage(),
-      partialize: (s) => ({ user: s.user, accessToken: s.accessToken }),
+      // r178: version 0 payloads ({user, accessToken}) pre-date the
+      // institution context fields. The migrate folds them into the new
+      // defaults — memberships: [], currentInstitution: null,
+      // membershipRole: null — which is exactly what the server would
+      // resolve for a re-minted token, so the next refresh re-establishes
+      // context instead of the chip rendering a fabricated selection.
+      version: 1,
+      migrate: (persisted) => {
+        const old = (persisted ?? {}) as Partial<PersistedSession>;
+        return {
+          user: old.user ?? null,
+          accessToken: old.accessToken ?? null,
+          memberships: old.memberships ?? [],
+          currentInstitution: old.currentInstitution ?? null,
+          membershipRole: old.membershipRole ?? null,
+        } satisfies PersistedSession;
+      },
+      partialize: (s) => ({
+        user: s.user,
+        accessToken: s.accessToken,
+        memberships: s.memberships,
+        currentInstitution: s.currentInstitution,
+        membershipRole: s.membershipRole,
+      }),
       onRehydrateStorage: () => (state) => {
         // `state` is undefined when rehydration failed before the merge
         // (unexpected error in a custom storage / migrate). The safe

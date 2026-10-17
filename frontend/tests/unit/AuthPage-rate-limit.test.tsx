@@ -37,6 +37,16 @@ const loginState = vi.hoisted(() => ({ current: {} as LoginState }));
 
 vi.mock('../../src/hooks/useAuth', () => ({
   useLogin: () => loginState.current,
+  // r178: AuthPage also mounts the institution-selection mutation —
+  // these tests exercise the login error paths, so the selector stays
+  // a quiet idle stub (never fired without a multi-membership login).
+  useSelectInstitution: () => ({
+    mutateAsync: vi.fn(),
+    mutate: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+  }),
 }));
 
 import AuthPage from '../../src/pages/AuthPage';

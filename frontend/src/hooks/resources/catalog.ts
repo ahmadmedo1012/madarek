@@ -264,11 +264,34 @@ export interface Faculty {
   iconEmoji?: string | null;
   city: string;
   departments: { id: string; name: string }[];
+  /** r178: the institution this faculty belongs to. Present on the
+   *  public catalog rows (Agent D's contract — each faculty row
+   *  includes `institution: {id, name, slug}`); optional so legacy
+   *  admin consumers that project fewer fields keep typechecking. */
+  institution?: { id: string; name: string; slug: string } | null;
 }
-export function useFaculties() {
+/**
+ * r178: `institutionSlug` scopes the listing to one institution
+ * (GET /faculties?institutionSlug=… — the register page always passes
+ * the selected institution). Omitted → the server returns faculties
+ * across ALL active institutions (legacy behavior every other
+ * consumer relies on). `opts.enabled` lets the register page hold the
+ * query until an institution is actually selected instead of listing
+ * cross-institution faculties in the select.
+ */
+export function useFaculties(
+  institutionSlug?: string,
+  opts?: { enabled?: boolean },
+) {
   return useQuery({
-    queryKey: ['faculties'],
-    queryFn: () => unwrap<Faculty[]>(api.get('/faculties')),
+    queryKey: institutionSlug ? ['faculties', 'institution', institutionSlug] : ['faculties'],
+    queryFn: () =>
+      unwrap<Faculty[]>(
+        api.get('/faculties', {
+          params: institutionSlug ? { institutionSlug } : undefined,
+        }),
+      ),
+    enabled: opts?.enabled ?? true,
     staleTime: 5 * 60_000,
   });
 }

@@ -14,6 +14,9 @@ export type ErrorCode =
   | 'PAYLOAD_TOO_LARGE'
   | 'UNSUPPORTED_MEDIA_TYPE'
   | 'TOO_MANY_REQUESTS'
+  | 'INSTITUTION_CONTEXT_REQUIRED'
+  | 'INSTITUTION_CONTEXT_INVALID'
+  | 'REG_NUMBER_AMBIGUOUS'
   | 'INTERNAL';
 
 export class AppError extends Error {

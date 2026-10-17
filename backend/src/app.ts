@@ -35,6 +35,7 @@ import teacherProfileRoutes from './http/routes/teacher-profile.routes.js';
 import filesRoutes from './http/routes/files.routes.js';
 import ownerRoutes from './http/routes/owner.routes.js';
 import collegesRoutes from './http/routes/colleges.routes.js';
+import institutionRoutes from './http/routes/institution.routes.js';
 import adminExtrasRoutes from './http/routes/admin-extras.routes.js';
 import studentDashboardRoutes from './http/routes/student-dashboard.routes.js';
 import teacherDashboardRoutes from './http/routes/teacher-dashboard.routes.js';
@@ -213,6 +214,17 @@ export function createApp() {
   //    for /api/v1/colleges and 401s the request before reaching
   //    the (now-public) GET /colleges handler. ────────────────
   app.use('/api/v1', collegesRoutes);
+  // r178 (multi-institution): public GET /institutions + the OWNER
+  // institution console (/owner/institutions*). MUST sit BEFORE
+  // catalogRoutes: catalog's router-level authMiddleware gate would
+  // otherwise 401 anonymous /institutions requests that fall through
+  // it (router.use fires for unmatched paths too — the same ordering
+  // lesson as the public /faculties route above). Also registered
+  // BEFORE ownerRoutes so the /owner/institutions* subpaths match
+  // here first — ownerRoutes (at /api/v1/owner) declares no
+  // /institutions children, so nothing collides (boot-verified). The
+  // /owner/* paths carry their own requireRole(OWNER) gate.
+  app.use('/api/v1', institutionRoutes);
   // catalogRoutes mounts here (before meRoutes) for the same reason:
   // its GET /faculties is a PUBLIC route declared above the router's
   // own auth gate (audit 4-A13 P0-1 — the register funnel). Any

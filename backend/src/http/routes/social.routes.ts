@@ -8,6 +8,7 @@ import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
 import { assertCapability } from '../../lib/permissions.js';
+import { resolveStudentProfile, resolveTeacherProfile } from '../../lib/profile-scoping.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -219,10 +220,10 @@ router.get('/announcements/feed', async (req, res, next) => {
     }
 
     // Build scope filter for student/teacher.
-    const profile = role === Role.STUDENT ? await prisma.studentProfile.findUnique({
-      where: { userId },
-      select: { facultyId: true, departmentId: true },
-    }) : null;
+    // r178: the caller's profile is per-membership — resolved in their
+    // token institution context when one is selected
+    // (TODO(r179/phase-5): institution-scoped feed).
+    const profile = role === Role.STUDENT ? await resolveStudentProfile(userId, req.user!.institutionId) : null;
     // r155a (audit finding 5): only ACTIVE enrollments contribute
     // OFFERING-scoped announcements (the platform-wide 'active'
     // convention — see lib/permissions.ts decideOfferingAccess).
@@ -230,10 +231,15 @@ router.get('/announcements/feed', async (req, res, next) => {
       where: { studentId: userId, status: 'active' }, select: { offeringId: true },
     }) : [];
 
-    const teacherProfile = role === Role.TEACHER ? await prisma.teacherProfile.findUnique({
-      where: { userId },
-      select: { departmentId: true, department: { select: { facultyId: true } } },
-    }) : null;
+    const teacherProfile = role === Role.TEACHER
+      ? await resolveTeacherProfile(userId, req.user!.institutionId)
+      : null;
+    const teacherDepartment = teacherProfile
+      ? await prisma.department.findUnique({
+          where: { id: teacherProfile.departmentId },
+          select: { facultyId: true },
+        })
+      : null;
     const teacherOfferings = role === Role.TEACHER ? await prisma.courseOffering.findMany({
       where: { teacherId: userId }, select: { id: true },
     }) : [];
@@ -246,7 +252,7 @@ router.get('/announcements/feed', async (req, res, next) => {
               studentFacultyId: profile?.facultyId ?? null,
               studentDepartmentId: profile?.departmentId ?? null,
               enrolledOfferingIds: enrollments.map((e) => e.offeringId),
-              teacherFacultyId: teacherProfile?.department.facultyId ?? null,
+              teacherFacultyId: teacherDepartment?.facultyId ?? null,
               teacherDepartmentId: teacherProfile?.departmentId ?? null,
               taughtOfferingIds: teacherOfferings.map((o) => o.id),
             }),
@@ -321,25 +327,27 @@ router.post(
         if (role === Role.ADMIN || role === Role.QUALITY || role === Role.OWNER) {
           permitted = { faculty: 'any', department: 'any', offering: 'any' };
         } else if (role === Role.TEACHER) {
-          const tp = await prisma.teacherProfile.findUnique({
-            where: { userId: uid },
-            select: { departmentId: true, department: { select: { facultyId: true } } },
-          });
+          // r178: per-membership profile resolved in the caller's
+          // institution context (TODO(r179/phase-5): full isolation).
+          const tp = await resolveTeacherProfile(uid, req.user!.institutionId);
+          const tpDepartment = tp
+            ? await prisma.department.findUnique({
+                where: { id: tp.departmentId },
+                select: { facultyId: true },
+              })
+            : null;
           const own = await prisma.courseOffering.findMany({
             where: { teacherId: uid },
             select: { id: true },
           });
           permitted = {
-            faculty: tp?.department.facultyId ? [tp.department.facultyId] : [],
+            faculty: tpDepartment?.facultyId ? [tpDepartment.facultyId] : [],
             department: tp ? [tp.departmentId] : [],
             offering: own.map((o) => o.id),
           };
         } else {
           // STUDENT (or unusual grant) — own faculty/department/enrolled offerings.
-          const sp = await prisma.studentProfile.findUnique({
-            where: { userId: uid },
-            select: { facultyId: true, departmentId: true },
-          });
+          const sp = await resolveStudentProfile(uid, req.user!.institutionId);
           const enr = await prisma.enrollment.findMany({
             where: { studentId: uid },
             select: { offeringId: true },

@@ -63,10 +63,16 @@ async function seedWorld() {
   const admin = await helpers.seedUser({ role: Role.ADMIN });
   const teacher = await helpers.seedUser({ role: Role.TEACHER });
   const student = await helpers.seedUser({ role: Role.STUDENT });
-  const faculty = await prisma.faculty.create({ data: { name: 'كلية رحلات r176g' } });
+  // r178: the whole academic chain hangs off one institution (the admin
+  // stays contextless — resolveCallerInstitutionScope(null) keeps the
+  // university-wide enrollment semantics these journeys pin).
+  const institution = await helpers.seedInstitution();
+  const faculty = await prisma.faculty.create({
+    data: { name: 'كلية رحلات r176g', city: 'طرابلس', institutionId: institution.id },
+  });
   const department = await prisma.department.create({ data: { name: 'قسم رحلات r176g', facultyId: faculty.id } });
   const course = await prisma.course.create({
-    data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'بنى المعطيات r176g', departmentId: department.id },
+    data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'بنى المعطيات r176g', departmentId: department.id, institutionId: institution.id },
   });
   const offering = await prisma.courseOffering.create({
     data: { courseId: course.id, teacherId: teacher.id, term: '2026-SPRING' },
@@ -109,7 +115,7 @@ async function seedWorld() {
   await prisma.examTemplateQuestion.create({
     data: { templateId: template.id, questionId: question.id, order: 1 },
   });
-  return { admin, teacher, student, faculty, course, offering, lecture, concept, checkpoint, assignment, template, question };
+  return { admin, teacher, student, institution, faculty, course, offering, lecture, concept, checkpoint, assignment, template, question };
 }
 
 describe('the enrollment-gated journeys (real DB, real routes, real guards)', () => {

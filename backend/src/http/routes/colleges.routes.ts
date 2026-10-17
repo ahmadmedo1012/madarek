@@ -42,6 +42,9 @@ router.get('/colleges', async (_req, res, next) => {
     const faculties = await prisma.faculty.findMany({
       orderBy: { name: 'asc' },
       include: {
+        // r178: public pages carry the institution label (context, not
+        // visual identity — no logos/themes per the product decision).
+        institution: { select: { id: true, name: true, nameEn: true, slug: true } },
         departments: {
           select: {
             id: true,
@@ -60,6 +63,7 @@ router.get('/colleges', async (_req, res, next) => {
         nameEn: f.nameEn,
         iconEmoji: f.iconEmoji,
         city: f.city,
+        institution: f.institution,
         departmentCount: f.departments.length,
         studentCount,
         teacherCount,
@@ -279,10 +283,12 @@ router.get('/colleges/leaderboard', async (_req, res, next) => {
         select: { id: true, offering: { select: { course: { select: { departmentId: true } } } } },
       }),
       // One lookup resolves BOTH lab users and enrollment students to
-      // their home faculty.
+      // their home faculty. r178: profiles are per-membership — the
+      // oldest active one is the legacy attribution
+      // (TODO(r179/phase-5): institution-scoped leaderboard).
       prisma.user.findMany({
         where: { id: { in: activityUserIds } },
-        select: { id: true, studentProfile: { select: { facultyId: true } } },
+        select: { id: true, studentProfiles: { take: 1, orderBy: { createdAt: 'asc' }, select: { facultyId: true } } },
       }),
     ]);
 
@@ -291,7 +297,7 @@ router.get('/colleges/leaderboard', async (_req, res, next) => {
     );
     const offeringToDept = new Map(paperOfferings.map((o) => [o.id, o.course.departmentId] as const));
     const templateToDept = new Map(attemptTemplates.map((t) => [t.id, t.offering?.course.departmentId] as const));
-    const userToFaculty = new Map(activityUsers.map((u) => [u.id, u.studentProfile?.facultyId] as const));
+    const userToFaculty = new Map(activityUsers.map((u) => [u.id, u.studentProfiles[0]?.facultyId] as const));
 
     const studentsByFaculty = new Map(
       studentGroups.map((g) => [g.facultyId, normalizeStudentAggregate(g)] as const),
@@ -390,6 +396,7 @@ router.get('/colleges/:id', optionalAuthMiddleware, async (req, res, next) => {
     const faculty = await prisma.faculty.findUnique({
       where: { id },
       include: {
+        institution: { select: { id: true, name: true, nameEn: true, slug: true } },
         departments: {
           orderBy: { name: 'asc' },
           select: {
@@ -514,13 +521,15 @@ router.get('/colleges/:id', optionalAuthMiddleware, async (req, res, next) => {
       prisma.user.count({
         where: {
           role: Role.TEACHER,
-          teacherProfile: { departmentId: { in: departmentIds } },
+          // r178: plural per-membership profiles — `some` keeps the
+          // counting semantics of the old singular filter.
+          teacherProfiles: { some: { departmentId: { in: departmentIds } } },
         },
       }),
       prisma.user.count({
         where: {
           role: Role.STUDENT,
-          studentProfile: { facultyId: id },
+          studentProfiles: { some: { facultyId: id } },
         },
       }),
     ]);
@@ -541,6 +550,7 @@ router.get('/colleges/:id', optionalAuthMiddleware, async (req, res, next) => {
         nameEn: faculty.nameEn,
         iconEmoji: faculty.iconEmoji,
         city: faculty.city,
+        institution: faculty.institution,
         stats: {
           studentCount,
           teacherCount,

@@ -11,6 +11,7 @@ import {
 import { Icon } from '../components/Icon';
 import { useRegister } from '../hooks/useAuth';
 import { useFaculties } from '../hooks/useResources';
+import { useInstitutions } from '../hooks/useInstitutions';
 import { Skeleton } from '../components/motion';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -51,13 +52,18 @@ const studentSchema = z.object({
   // values fail min() instead of minting an account; emails additionally
   // lowercase BEFORE validation (case-insensitive identity, same as the
   // backend's .trim().toLowerCase()). Passwords never trim (a space can
-  // be a legitimate part of the secret); the faculty/department ids are
-  // fixed-list cuids, not free input.
+  // be a legitimate part of the secret); the institution/faculty/
+  // department ids are fixed-list ids, not free input.
   firstName: z.string().trim().min(1, 'مطلوب').max(60),
   lastName: z.string().trim().min(1, 'مطلوب').max(60),
   email: z.string().trim().toLowerCase().email('بريد إلكتروني غير صالح').max(120),
   password: registerPasswordSchema,
   universityId: z.string().trim().min(3, 'مطلوب').max(40),
+  // r178: the institution the account registers into — required for
+  // both public roles (the backend validates the faculty→institution
+  // chain server-side). The value itself is owned by the page-level
+  // institution step and mirrored into the form via setValue.
+  institutionId: z.string().min(1, 'اختر المؤسسة'),
   facultyId: z.string().min(1, 'اختر الكلّيّة'),
   departmentId: z.string().min(1, 'اختر القسم'),
   // r157 F5: year max mirrors the backend contract (auth.dto.ts:42 —
@@ -72,6 +78,8 @@ const teacherSchema = z.object({
   lastName: z.string().trim().min(1, 'مطلوب').max(60),
   email: z.string().trim().toLowerCase().email('بريد إلكتروني غير صالح').max(120),
   password: registerPasswordSchema,
+  // r178: same institution requirement as the student schema.
+  institutionId: z.string().min(1, 'اختر المؤسسة'),
   facultyId: z.string().min(1, 'اختر الكلّيّة'),
   departmentId: z.string().min(1, 'اختر القسم'),
   specialty: z.string().trim().min(2, 'مطلوب').max(120),
@@ -163,7 +171,27 @@ export default function RegisterPage() {
   usePageTitle('إنشاء حساب جامعي');
   const navigate = useNavigate();
   const register = useRegister();
-  const facultiesQ = useFaculties();
+  /* r178 (multi-institution): the institution step — the public
+   * listing (GET /institutions) drives a select that must be answered
+   * BEFORE the faculty select; the faculties query is scoped to the
+   * selected institution's slug and held (enabled: false) until one is
+   * chosen, so the form never offers cross-institution faculties. */
+  const institutionsQ = useInstitutions();
+  const [institutionId, setInstitutionId] = useState('');
+  // useMemo so the derived array is referentially stable across renders
+  // (the auto-select effect below depends on it; a fresh `?? []` per
+  // render would re-fire it needlessly — and exhaust the repo's
+  // documented warning budget).
+  const institutions = useMemo(() => institutionsQ.data ?? [], [institutionsQ.data]);
+  const selectedInstitution = institutions.find((i) => i.id === institutionId) ?? null;
+  const institutionsState: InstitutionsState = {
+    status: institutionsQ.isLoading ? 'loading' : institutionsQ.isError ? 'error' : 'ready',
+    items: institutions,
+    retry: () => void institutionsQ.refetch(),
+  };
+  const facultiesQ = useFaculties(selectedInstitution?.slug, {
+    enabled: Boolean(selectedInstitution),
+  });
   const [role, setRole] = useState<AcademicRole | null>(null);
   const [stepDir, setStepDir] = useState<StepDir>('forward');
   const facultiesState: FacultiesState = {
@@ -171,6 +199,15 @@ export default function RegisterPage() {
     items: facultiesQ.data ?? [],
     retry: () => void facultiesQ.refetch(),
   };
+
+  // Single-institution deployment: the field still renders (preselected)
+  // so the context stays visible — but the visitor skips one decision.
+  // A guard (not a dependency-free effect) so re-renders can't fight it.
+  useEffect(() => {
+    if (institutions.length === 1 && institutionId === '') {
+      setInstitutionId(institutions[0]!.id);
+    }
+  }, [institutions, institutionId]);
 
   // Form state lives at PAGE level, above the keyed step panel
   // (audit 4-A13 P2-3): the panel's keyed remount drives the slide
@@ -180,12 +217,42 @@ export default function RegisterPage() {
   // remount only resets transient view state (the password toggle).
   const studentForm = useForm<StudentInputs>({
     resolver: zodResolver(studentSchema),
-    defaultValues: { firstName: '', lastName: '', email: '', password: '', universityId: '', facultyId: '', departmentId: '', year: 1 },
+    defaultValues: { firstName: '', lastName: '', email: '', password: '', universityId: '', institutionId: '', facultyId: '', departmentId: '', year: 1 },
   });
   const teacherForm = useForm<TeacherInputs>({
     resolver: zodResolver(teacherSchema),
-    defaultValues: { firstName: '', lastName: '', email: '', password: '', facultyId: '', departmentId: '', specialty: '' },
+    defaultValues: { firstName: '', lastName: '', email: '', password: '', institutionId: '', facultyId: '', departmentId: '', specialty: '' },
   });
+
+  /* r178: the institution step owns the selection (page state, shared
+   * by both role forms). It mirrors into each form's schema field (the
+   * submit payload carries it) AND resets the faculty/department picks
+   * — the old faculty belongs to the old institution, and keeping it
+   * silently would submit a cross-institution id the backend rejects
+   * with a generic 400 (the exact r157 F5 faculty→department pattern,
+   * one level up). */
+  const prevInstitutionRef = useRef(institutionId);
+  useEffect(() => {
+    if (prevInstitutionRef.current === institutionId) return;
+    prevInstitutionRef.current = institutionId;
+    // The two forms are separate RHF instances with different input
+    // shapes — a shared loop unions their setValue signatures into an
+    // uncallable type, so each gets its explicit mirror block.
+    studentForm.setValue('institutionId', institutionId, { shouldValidate: false });
+    if (studentForm.getValues('facultyId')) {
+      studentForm.setValue('facultyId', '', { shouldValidate: false });
+    }
+    if (studentForm.getValues('departmentId')) {
+      studentForm.setValue('departmentId', '', { shouldValidate: false });
+    }
+    teacherForm.setValue('institutionId', institutionId, { shouldValidate: false });
+    if (teacherForm.getValues('facultyId')) {
+      teacherForm.setValue('facultyId', '', { shouldValidate: false });
+    }
+    if (teacherForm.getValues('departmentId')) {
+      teacherForm.setValue('departmentId', '', { shouldValidate: false });
+    }
+  }, [institutionId, studentForm, teacherForm]);
 
   // Focus continuity (audit 4-A13 P2-2): the step panel's keyed
   // remount unmounts the clicked role card, which used to drop
@@ -291,6 +358,9 @@ export default function RegisterPage() {
                     error={register.error}
                     isPending={register.isPending}
                     faculties={facultiesState}
+                    institutions={institutionsState}
+                    institutionId={institutionId}
+                    onInstitutionChange={setInstitutionId}
                     onSubmit={async (values) => {
                       try {
                         const res = await register.mutateAsync({ role: 'STUDENT', ...values });
@@ -304,6 +374,9 @@ export default function RegisterPage() {
                     error={register.error}
                     isPending={register.isPending}
                     faculties={facultiesState}
+                    institutions={institutionsState}
+                    institutionId={institutionId}
+                    onInstitutionChange={setInstitutionId}
                     onSubmit={async (values) => {
                       try {
                         const res = await register.mutateAsync({ role: 'TEACHER', ...values });
@@ -369,6 +442,19 @@ export default function RegisterPage() {
 
 interface FormFaculty { id: string; name: string; departments: { id: string; name: string }[] }
 
+/** r178: the public institutions listing for the register form's
+ *  institution step (GET /institutions — {id, name, nameEn?, slug}). */
+interface FormInstitution { id: string; name: string; nameEn?: string | null; slug: string }
+
+/** Load state of the institutions lookup — same first-class
+ *  loading/error/ready contract as FacultiesState (audit 0-b P0-4:
+ *  never a silently empty select). */
+interface InstitutionsState {
+  status: 'loading' | 'error' | 'ready';
+  items: FormInstitution[];
+  retry: () => void;
+}
+
 /** Load state of the faculties lookup. The register form is unusable
  *  without it, so loading and error are first-class states (skeleton /
  *  retry), never a silently empty select (audit 0-b P0-4). */
@@ -386,6 +472,10 @@ interface RegisterFormProps {
   error: unknown;
   isPending: boolean;
   faculties: FacultiesState;
+  /** r178: the institution step's data + controlled selection. */
+  institutions: InstitutionsState;
+  institutionId: string;
+  onInstitutionChange: (id: string) => void;
 }
 
 interface StudentFormProps extends RegisterFormProps {
@@ -393,7 +483,7 @@ interface StudentFormProps extends RegisterFormProps {
   onSubmit: (values: StudentInputs) => Promise<void>;
 }
 
-function StudentForm({ form, error, isPending, faculties, onSubmit }: StudentFormProps) {
+function StudentForm({ form, error, isPending, faculties, institutions, institutionId, onInstitutionChange, onSubmit }: StudentFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const facultyId = form.watch('facultyId');
   // r170-e: live strength hint rides the same watch subscription —
@@ -469,6 +559,15 @@ function StudentForm({ form, error, isPending, faculties, onSubmit }: StudentFor
         <input className="input auth-input" type="text" placeholder="مثلاً 2024-CS-1234" dir="ltr" {...form.register('universityId')} />
       </Field>
 
+      {/* r178: institution step — BEFORE the faculty select (the
+          faculties listing is scoped to this selection server-side). */}
+      <InstitutionField
+        institutions={institutions}
+        institutionId={institutionId}
+        onInstitutionChange={onInstitutionChange}
+        error={form.formState.errors.institutionId?.message}
+      />
+
       <div className="auth-row-2">
         <Field label="الكلّيّة" error={form.formState.errors.facultyId?.message}>
           {/* r157 F5 (6A11 #5 opt-in): the faculties skeleton announces
@@ -487,7 +586,7 @@ function StudentForm({ form, error, isPending, faculties, onSubmit }: StudentFor
             </div>
           )}
           {faculties.status === 'ready' && (
-          <select className="auth-input" {...form.register('facultyId')}>
+          <select className="auth-input" disabled={!institutionId} {...form.register('facultyId')}>
             <option value="">اختر…</option>
             {faculties.items.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
           </select>
@@ -539,7 +638,7 @@ interface TeacherFormProps extends RegisterFormProps {
   onSubmit: (values: TeacherInputs) => Promise<void>;
 }
 
-function TeacherForm({ form, error, isPending, faculties, onSubmit }: TeacherFormProps) {
+function TeacherForm({ form, error, isPending, faculties, institutions, institutionId, onInstitutionChange, onSubmit }: TeacherFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const facultyId = form.watch('facultyId');
   // r170-e: same live strength contract as the student form.
@@ -602,6 +701,15 @@ function TeacherForm({ form, error, isPending, faculties, onSubmit }: TeacherFor
           password input — same contract as the student form. */}
       <PasswordStrengthHint password={passwordValue} />
 
+      {/* r178: institution step — BEFORE the faculty select (same
+          contract as the student form). */}
+      <InstitutionField
+        institutions={institutions}
+        institutionId={institutionId}
+        onInstitutionChange={onInstitutionChange}
+        error={form.formState.errors.institutionId?.message}
+      />
+
       <div className="auth-row-2">
         <Field label="الكلّيّة" error={form.formState.errors.facultyId?.message}>
           {/* r157 F5 (6A11 #5 opt-in): the faculties skeleton announces
@@ -620,7 +728,7 @@ function TeacherForm({ form, error, isPending, faculties, onSubmit }: TeacherFor
             </div>
           )}
           {faculties.status === 'ready' && (
-          <select className="auth-input" {...form.register('facultyId')}>
+          <select className="auth-input" disabled={!institutionId} {...form.register('facultyId')}>
             <option value="">اختر…</option>
             {faculties.items.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
           </select>
@@ -708,5 +816,54 @@ function Field({ label, error, children }: FieldProps) {
       <div className="auth-input-wrap">{wired}</div>
       {error && <span id={errorId} className="auth-field-error">{error}</span>}
     </div>
+  );
+}
+
+/** r178: the institution select — the FIRST link of the academic chain
+ *  (institution → faculty → department). Controlled by the page-level
+ *  selection (both role forms share it); the load states follow the
+ *  faculties lookup's exact contract (skeleton / retry alert / select —
+ *  never a silently empty select, audit 0-b P0-4). Single-institution
+ *  deployments still render the field, preselected by the page. */
+interface InstitutionFieldProps {
+  institutions: InstitutionsState;
+  institutionId: string;
+  onInstitutionChange: (id: string) => void;
+  error?: string;
+}
+
+function InstitutionField({
+  institutions,
+  institutionId,
+  onInstitutionChange,
+  error,
+}: InstitutionFieldProps) {
+  return (
+    <Field label="المؤسسة التعليمية" error={error}>
+      {institutions.status === 'loading' && (
+        <Skeleton className="auth-select-skeleton" aria-label="جارٍ تحميل المؤسسات" />
+      )}
+      {institutions.status === 'error' && (
+        <div className="auth-error" role="alert">
+          <Icon icon={AlertCircle} size={14} />
+          <span>تعذّر تحميل المؤسسات — تحقّق من اتصالك بالشبكة.</span>
+          <button type="button" className="auth-retry-link" onClick={institutions.retry}>
+            إعادة المحاولة
+          </button>
+        </div>
+      )}
+      {institutions.status === 'ready' && (
+        <select
+          className="auth-input"
+          value={institutionId}
+          onChange={(e) => onInstitutionChange(e.target.value)}
+        >
+          <option value="">اختر…</option>
+          {institutions.items.map((inst) => (
+            <option key={inst.id} value={inst.id}>{inst.name}</option>
+          ))}
+        </select>
+      )}
+    </Field>
   );
 }

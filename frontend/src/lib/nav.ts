@@ -258,6 +258,11 @@ export const OWNER_NAV: NavGroup[] = [
       { to: '/owner/dashboard', icon: LayoutDashboard, label: 'لوحة التحكم الرئيسية' },
       { to: '/owner/realtime', icon: Radio, label: 'المراقبة الحية', badge: { text: 'LIVE', tone: 'brand' } },
       { to: '/owner/users', icon: Users, label: 'إدارة المستخدمين' },
+      /* r178 (multi-institution): the institution console — create
+       * institutions, provision their ADMINs, suspend/reactivate.
+       * Landmark because Building2 is taken by «كلّيّات الجامعة» in
+       * this role's «المنصة» group (A4 P3-4 unique-icon rule). */
+      { to: '/owner/institutions', icon: Landmark, label: 'المؤسسات' },
       { to: '/owner/activity', icon: Activity, label: 'سجل النشاط' },
     ],
   },

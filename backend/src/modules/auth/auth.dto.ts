@@ -46,6 +46,11 @@ export const registerSchema = z
     firstName: z.string().trim().min(1).max(60),
     lastName: z.string().trim().min(1).max(60),
     role: z.enum(SELF_SERVE_ROLES),
+    // r178: the institution the account registers into. Plain min(1)
+    // string — NOT cuid: showcase institutions carry fixed literal ids
+    // (e.g. 'inst-zawia-showcase'). The service validates the academic
+    // chain (department → faculty → institution) belongs to it.
+    institutionId: z.string().min(1),
     // Optional profile fields (validated in service):
     facultyId: z.string().cuid().optional(),
     departmentId: z.string().cuid().optional(),
@@ -68,6 +73,24 @@ export const loginSchema = z
      */
     email: z.string().trim().min(1).max(120),
     password: z.string().min(1).max(72),
+    /**
+     * r178: reg-numbers are unique PER INSTITUTION — the same number can
+     * exist in several institutions. When the identifier resolves to
+     * more than one student profile, this slug disambiguates (login by
+     * email works without it). Ignored for email identifiers.
+     */
+    institutionSlug: z.string().trim().min(1).max(80).optional(),
+  })
+  .strict();
+
+/**
+ * r178: POST /auth/select-institution — pick the institution context for
+ * a multi-membership session (or re-affirm the current one). The service
+ * verifies an ACTIVE membership in an ACTIVE institution server-side.
+ */
+export const selectInstitutionSchema = z
+  .object({
+    institutionId: z.string().min(1),
   })
   .strict();
 

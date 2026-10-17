@@ -232,15 +232,42 @@ describe('buildScopedUserWhere (pure list filter)', () => {
   it('scoped actor → base AND-ed with the faculty filter', () => {
     const where = buildScopedUserWhere('f-1', { role: Role.STUDENT });
 
+    // r178: profiles are per-membership — the filter reads the PLURAL
+    // relations with `some` (identical semantics to the old singular).
     expect(where).toEqual({
       AND: [
         { role: Role.STUDENT },
         {
           OR: [
-            { role: Role.STUDENT, studentProfile: { facultyId: 'f-1' } },
-            { role: Role.TEACHER, teacherProfile: { department: { facultyId: 'f-1' } } },
+            { role: Role.STUDENT, studentProfiles: { some: { facultyId: 'f-1' } } },
+            { role: Role.TEACHER, teacherProfiles: { some: { department: { facultyId: 'f-1' } } } },
           ],
         },
+      ],
+    });
+  });
+
+  it('r178: an institution scope ANDs a membership filter on top of the faculty filter', () => {
+    const where = buildScopedUserWhere('f-1', { role: Role.STUDENT }, 'inst-1');
+
+    expect((where as { AND: Prisma.UserWhereInput[] }).AND).toEqual([
+      { role: Role.STUDENT },
+      { memberships: { some: { institutionId: 'inst-1', isActive: true } } },
+      {
+        OR: [
+          { role: Role.STUDENT, studentProfiles: { some: { facultyId: 'f-1' } } },
+          { role: Role.TEACHER, teacherProfiles: { some: { department: { facultyId: 'f-1' } } } },
+        ],
+      },
+    ]);
+  });
+
+  it('r178: institution scope without a faculty scope → membership filter alone', () => {
+    const where = buildScopedUserWhere(null, { role: Role.STUDENT }, 'inst-1');
+    expect(where).toEqual({
+      AND: [
+        { role: Role.STUDENT },
+        { memberships: { some: { institutionId: 'inst-1', isActive: true } } },
       ],
     });
   });
@@ -304,8 +331,9 @@ describe('loadGovernanceTarget (mocked prisma)', () => {
       id: 'student-1',
       role: Role.STUDENT,
       isActive: true,
-      studentProfile: { facultyId: 'f-1' },
-      teacherProfile: null,
+      // r178: per-membership profiles arrive as arrays (take: 1).
+      studentProfiles: [{ facultyId: 'f-1' }],
+      teacherProfiles: [],
     } as never);
 
     await expect(loadGovernanceTarget('student-1')).resolves.toEqual({
@@ -322,8 +350,8 @@ describe('loadGovernanceTarget (mocked prisma)', () => {
       id: 'teacher-1',
       role: Role.TEACHER,
       isActive: false,
-      studentProfile: null,
-      teacherProfile: { department: { facultyId: 'f-2' } },
+      studentProfiles: [],
+      teacherProfiles: [{ department: { facultyId: 'f-2' } }],
     } as never);
 
     await expect(loadGovernanceTarget('teacher-1')).resolves.toEqual({
@@ -411,26 +439,81 @@ describe('planTeacherProvisioning (pure plan)', () => {
 });
 
 describe('buildTeacherProvision (transaction step)', () => {
-  it('creates the TeacherProfile with the planned department and given specialty', async () => {
-    const tx = { teacherProfile: { create: vi.fn() } } as unknown as Prisma.TransactionClient;
-    const step = buildTeacherProvision('user-1', { kind: 'create', departmentId: 'd-1' }, 'هندسة البرمجيات');
+  // r178: the plan carries the provisioning institution and the step
+  // first upserts the TEACHER membership, then validates the department
+  // chain before linking the profile to the membership.
+  const tx = {
+    membership: {
+      upsert: vi.fn().mockResolvedValue({ id: 'membership-1' }),
+    },
+    department: {
+      findUnique: vi.fn().mockResolvedValue({
+        id: 'd-1',
+        faculty: { institutionId: 'inst-1' },
+      }),
+    },
+    teacherProfile: { create: vi.fn() },
+  } as unknown as Prisma.TransactionClient;
+
+  it('creates the TeacherProfile linked to the membership with the planned department and given specialty', async () => {
+    const step = buildTeacherProvision(
+      'user-1',
+      { kind: 'create', departmentId: 'd-1', institutionId: 'inst-1' },
+      'هندسة البرمجيات',
+    );
 
     await step(tx);
 
+    expect(tx.membership.upsert).toHaveBeenCalledWith({
+      where: { userId_institutionId: { userId: 'user-1', institutionId: 'inst-1' } },
+      create: { userId: 'user-1', institutionId: 'inst-1', role: Role.TEACHER },
+      update: { role: Role.TEACHER },
+    });
     expect(tx.teacherProfile.create).toHaveBeenCalledWith({
-      data: { userId: 'user-1', specialty: 'هندسة البرمجيات', departmentId: 'd-1' },
+      data: {
+        userId: 'user-1',
+        membershipId: 'membership-1',
+        specialty: 'هندسة البرمجيات',
+        departmentId: 'd-1',
+      },
     });
   });
 
   it('falls back to the placeholder specialty when none is given', async () => {
-    const tx = { teacherProfile: { create: vi.fn() } } as unknown as Prisma.TransactionClient;
-    const step = buildTeacherProvision('user-1', { kind: 'create', departmentId: 'd-1' });
+    const step = buildTeacherProvision('user-1', {
+      kind: 'create',
+      departmentId: 'd-1',
+      institutionId: 'inst-1',
+    });
 
     await step(tx);
 
     expect(tx.teacherProfile.create).toHaveBeenCalledWith({
-      data: { userId: 'user-1', specialty: TEACHER_DEFAULT_SPECIALTY, departmentId: 'd-1' },
+      data: {
+        userId: 'user-1',
+        membershipId: 'membership-1',
+        specialty: TEACHER_DEFAULT_SPECIALTY,
+        departmentId: 'd-1',
+      },
     });
     expect(TEACHER_DEFAULT_SPECIALTY).toBe('غير محدد');
+  });
+
+  it('rejects a department that does not belong to the provisioning institution', async () => {
+    const badTx = {
+      membership: { upsert: vi.fn().mockResolvedValue({ id: 'membership-1' }) },
+      department: {
+        findUnique: vi.fn().mockResolvedValue({ id: 'd-other', faculty: { institutionId: 'inst-2' } }),
+      },
+      teacherProfile: { create: vi.fn() },
+    } as unknown as Prisma.TransactionClient;
+    const step = buildTeacherProvision('user-1', {
+      kind: 'create',
+      departmentId: 'd-other',
+      institutionId: 'inst-1',
+    });
+
+    await expect(step(badTx)).rejects.toMatchObject({ status: 400 });
+    expect(badTx.teacherProfile.create).not.toHaveBeenCalled();
   });
 });

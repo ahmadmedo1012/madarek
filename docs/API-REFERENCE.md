@@ -2,7 +2,7 @@
 
 **Base URL:** `/api/v1`
 **Envelope:** `{ data: T }` on success, `{ error: { code, message, details? } }` on error
-**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 197 endpoints (192 route registrations in the 25 route files + 4 module-router endpoints + `/health`; the pre-C5 count of 190 included a `router.post(` match inside a rateLimit.ts doc comment), one row each
+**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 215 endpoints (210 route registrations in the 26 route files + 4 module-router endpoints + `/health`; r178 recount: the r177 header's "192 in 25 files" was stale — the r177 tree actually carried 202; r178 adds `institution.routes.ts` (7) + `POST /auth/select-institution`), one row each
 
 ## Conventions
 
@@ -40,30 +40,43 @@
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| POST | `/auth/register` | rate-limited | Create account (email/universityId/name/rank; shared password policy: 8–72 chars + common-password blocklist) |
-| POST | `/auth/login` | rate-limited | Login (email or university registration number); 5 failures → 15-min lock (429 `TOO_MANY_REQUESTS`, LoginEvent reason `ACCOUNT_LOCKED`) |
+| POST | `/auth/register` | rate-limited | Create account (email/universityId/name/rank; shared password policy: 8–72 chars + common-password blocklist). r178: body requires `institutionId` — the full academic chain (faculty→institution, department→faculty) is validated server-side BEFORE any write; USER + Membership + membership-linked profile are created in one transaction; token carries the new institution context |
+| POST | `/auth/login` | rate-limited | Login (email or university registration number; 5 failures → 15-min lock (429 `TOO_MANY_REQUESTS`, LoginEvent reason `ACCOUNT_LOCKED`)). r178: reg-number matches resolve per-institution — >1 active profile with the number → 400 `REG_NUMBER_AMBIGUOUS` (optional body `institutionSlug` disambiguates); response payload gains `memberships[]`, `currentInstitution`, `membershipRole`; a single active membership auto-selects its context |
+| POST | `/auth/select-institution` | Bearer + rate-limited | r178: switch the session's institution context (`{ institutionId }`) — server re-verifies an ACTIVE membership in an ACTIVE institution (403 `INSTITUTION_CONTEXT_INVALID` otherwise), then re-issues tokens (no version bump — not a revocation event). Response shape mirrors login (`{ data: { user, accessToken } }` + rotated refresh cookie) |
 | POST | `/auth/change-password` | Bearer + rate-limited | Change own password (`{ currentPassword, newPassword }`). Verifies current password (argon2), updates hash + bumps `tokenVersion` in one atomic write (other devices' refresh cookies die), re-issues this device's tokens. Returns `{ user, accessToken }` + rotated refresh cookie |
-| POST | `/auth/refresh` | http-only cookie | Sliding refresh — re-issues tokens at the SAME `tokenVersion` (normal refresh never revokes other devices; successful refreshes skip the limiter) |
+| POST | `/auth/refresh` | http-only cookie | Sliding refresh — re-issues tokens at the SAME `tokenVersion` (normal refresh never revokes other devices; successful refreshes skip the limiter). r178: institution context is re-resolved by login rules at every mint (revocation/suspension takes effect on refresh) |
 | POST | `/auth/logout` | Bearer *or* cookie | Revokes all refresh tokens (atomic `tokenVersion` bump) + clears the cookie; works with either credential |
-| GET | `/auth/me` | Bearer | Current user profile |
+| GET | `/auth/me` | Bearer | Current user profile. r178: includes `memberships[]`, `currentInstitution`, `membershipRole`; `studentProfile`/`teacherProfile` are scoped to the CURRENT membership (null without context) |
+
+## Institutions (r178 — multi-institution foundation)
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/institutions` | none | Public listing of ACTIVE institutions — minimal `{id, name, nameEn, slug}`, ordered by name (register funnel's institution step) |
+| GET | `/owner/institutions` | OWNER | All institutions + active membership count + faculty count + admins list (all ADMIN memberships incl. revoked, flagged `isActive` — the revoke/restore console) |
+| POST | `/owner/institutions` | OWNER | Create (`{ name (2–200), nameEn?, slug? }` — slug validated `^[a-z0-9][a-z0-9-]{1,62}$`, derived from nameEn when omitted, cuid fallback; 409 on slug conflict). Audited (`institution.create`) |
+| PATCH | `/owner/institutions/:id` | OWNER | Update `{ name?, nameEn?, status?: ACTIVE\|SUSPENDED }` — SUSPENDED blocks all institution-context access at the middleware level. Audited (`institution.update`) |
+| POST | `/owner/institutions/:id/administrators` | OWNER | Provision an institutional ADMIN: `mode:'new'` (email/firstName?/lastName?/password — shared 12+ policy; creates User role ADMIN + ADMIN Membership) or `mode:'existing'` (404 unknown email, 400 if target is platform OWNER; membership upserted on (userId, institutionId) — reactivates revoked + upgrades role). Audited (`institution.admin.provision`) |
+| POST | `/owner/institutions/:id/memberships/:membershipId/revoke` | OWNER | Set `isActive=false` (access revocation — takes effect at the next token mint / requireInstitution re-check). Audited (`institution.membership.revoke`) |
+| POST | `/owner/institutions/:id/memberships/:membershipId/restore` | OWNER | Reactivate a revoked membership. Audited (`institution.membership.restore`) |
 
 ## Users
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| GET | `/users` | ADMIN/OWNER | List users — paginated `{ data, meta }`, `role` filter, `q` search (email/first/last). A faculty-scoped ADMIN only lists users of their own faculty |
-| GET | `/users/:id` | self/ADMIN | User detail — explicit allow-list select (id/email/role/names/avatars/isActive/createdAt + studentProfile, teacherProfile incl. nested department). Security metadata (`failedLoginCount`, `lockedUntil`, `emailVerifiedAt`) is never returned. Scoped admins get 403 on out-of-faculty targets |
+| GET | `/users` | ADMIN/OWNER | List users — paginated `{ data, meta }`, `role` filter, `q` search (email/first/last). A faculty-scoped ADMIN only lists users of their own faculty. r178: an ADMIN/QUALITY caller with an institution context (DB-verified membership) lists only that institution's members; OWNER and contextless sessions keep the platform-wide view |
+| GET | `/users/:id` | self/ADMIN | User detail — explicit allow-list select (id/email/role/names/avatars/isActive/createdAt + studentProfile, teacherProfile incl. nested department). Security metadata (`failedLoginCount`, `lockedUntil`, `emailVerifiedAt`) is never returned. Scoped admins get 403 on out-of-faculty targets. r178: profiles resolve in the caller's (or target's own, for self-reads) institution context; the response keeps the singular `studentProfile`/`teacherProfile` wire keys |
 | PATCH | `/users/:id` | self/ADMIN | Update `{ firstName?, lastName?, avatarColor?, isActive? }` (strict). Non-privileged callers cannot set `isActive`; self-deactivation → 403; deactivating the last active OWNER → 409; deactivation bumps `tokenVersion` (kills the target's refresh tokens) and writes a `STATUS_CHANGE` audit row in one transaction |
 
 ## Governance (admin/owner user management)
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| GET | `/me/permissions` | Bearer | My effective capability set (role defaults ∪ grants ∖ revokes) |
+| GET | `/me/permissions` | Bearer | My effective capability set (role defaults ∪ grants ∖ revokes). r178: resolves IN the token's institution context (institution-scoped grants apply on top of global ones; contextless sessions see global grants only) and reports `membershipRole` (null without context) |
 | GET | `/admin/users` | USERS_MANAGE | Paginated `{ data, meta }` user list — `page`/`limit` (default 200, max 200)/`q` (≤120 chars)/`role`. Scoped admins see only their faculty |
 | GET | `/admin/users/:id/permissions` | ROLES_ASSIGN | Effective + override list for a user (out-of-scope target → 403) |
 | POST | `/admin/users/:id/permissions` | ROLES_ASSIGN | Grant/revoke/reset a capability override (`{ capability, grant: boolean\|null, reason? }`; `grant:null` removes the override). Writes a `CAPABILITY_OVERRIDE` audit row in the same transaction |
-| POST | `/admin/users/:id/role` | ROLES_ASSIGN | Change role (`{ role, departmentId?, specialty? }`). Guards: self-change → 403; promoting to OWNER → 403 (OWNER is invitation-only); last-active-OWNER demotion → 409 (counted inside the transaction); scoped-admin out-of-faculty target → 403. STUDENT→TEACHER provisions the TeacherProfile in the same transaction (400 when no home department). Bumps `tokenVersion`, writes a `ROLE_CHANGE` audit row |
+| POST | `/admin/users/:id/role` | ROLES_ASSIGN | Change role (`{ role, departmentId?, specialty? }`). Guards: self-change → 403; promoting to OWNER → 403 (OWNER is invitation-only); last-active-OWNER demotion → 409 (counted inside the transaction); scoped-admin out-of-faculty target → 403. STUDENT→TEACHER provisions the TeacherProfile in the same transaction (400 when no home department; r178: 400 when the target has no active membership to provision in — the profile is created linked to a TEACHER membership, upserted on (userId, institutionId)). Bumps `tokenVersion`, writes a `ROLE_CHANGE` audit row |
 | POST | `/admin/users/:id/scope` | ROLES_ASSIGN | Set faculty governance scope (`{ scopeFacultyId: string\|null }`, ADMIN/QUALITY targets only). Self-scope-change → 403; a faculty-scoped actor cannot rewrite any ADMIN/QUALITY scope → 403. Audited (`USER_SCOPE_CHANGE`) |
 | GET | `/admin/teachers/:id/suggestions` | TEACHERS_VERIFY/USERS_MANAGE | List review suggestions for a teacher |
 | POST | `/admin/teachers/:id/verify` | TEACHERS_VERIFY | Verify a teacher profile |
@@ -73,11 +86,11 @@
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| GET | `/courses` | Bearer | List (paginated, `q` + department filter) |
-| GET | `/courses/:id` | Bearer | Course detail with offerings — offering roster is role-gated: ADMIN/QUALITY/OWNER see all, TEACHER only their own, STUDENT only actively-enrolled ones |
-| POST | `/courses` | ADMIN/OWNER | Create |
-| PATCH | `/courses/:id` | ADMIN/OWNER | Update (partial) |
-| DELETE | `/courses/:id` | ADMIN/OWNER | Delete → 200 `{ data: { ok: true } }`. 409 with a clear Arabic message when the course still has offerings or knowledge concepts (FK RESTRICT pre-check, no confusing P2003 envelope) |
+| GET | `/courses` | Bearer | List (paginated, `q` + department filter). r178: optional `?institutionSlug=` filter (ACTIVE institutions only — an unknown/suspended slug matches nothing); every row carries `institution {id,name,nameEn,slug}` |
+| GET | `/courses/:id` | Bearer | Course detail with offerings — offering roster is role-gated: ADMIN/QUALITY/OWNER see all, TEACHER only their own, STUDENT only actively-enrolled ones. r178: row carries institution basics |
+| POST | `/courses` | ADMIN/OWNER | Create. r178: institution-scoped — ADMIN derives the institution from their DB-verified membership context (a payload `institutionId` is rejected 403 — client-supplied ids never scope an institutional admin); the department chain must belong to that institution (cross-institution departmentId → 403, Arabic message); OWNER without a context must pass an explicit `institutionId` (validated ACTIVE). Audit row carries the institution id. Code is unique per institution (409 on duplicate within one) |
+| PATCH | `/courses/:id` | ADMIN/OWNER | Update (partial). r178: institution-scoped for non-OWNER callers (their verified context must match the course's institution — cross-institution → 403); `institutionId` in the body is always rejected (courses never move between institutions); a departmentId change must stay inside the course's institution |
+| DELETE | `/courses/:id` | ADMIN/OWNER | Delete → 200 `{ data: { ok: true } }`. 409 with a clear Arabic message when the course still has offerings or knowledge concepts (FK RESTRICT pre-check, no confusing P2003 envelope). r178: institution-scoped for non-OWNER callers (403 cross-institution) |
 
 ## Enrollments
 
@@ -86,7 +99,7 @@
 | GET | `/enrollments/me` | STUDENT | My enrollments (narrow select: progress + offering/course/teacher/schedule cards) |
 | GET | `/enrollments?studentId=X` | ADMIN/OWNER | Admin-side list of a student's enrollments with offering/course/teacher detail (r154e.2 — the enrollment-management modal's list) |
 | GET | `/enrollments/offerings` | ADMIN/OWNER | Picker list of offerings with course + teacher names + live seat counts (r154e.2 — the enrollment modal's offering select) |
-| POST | `/enrollments` | ADMIN/OWNER | Enroll a STUDENT — pre-validates the target inside the capacity transaction (unknown student 404, non-STUDENT target 400, capacity full 409, duplicate 409); seat count filters `status:'active'`; writes an `ENROLLMENT_CREATED` audit row |
+| POST | `/enrollments` | ADMIN/OWNER | Enroll a STUDENT — pre-validates the target inside the capacity transaction (unknown student 404, non-STUDENT target 400, capacity full 409, duplicate 409); seat count filters `status:'active'`; writes an `ENROLLMENT_CREATED` audit row. r178: an ADMIN caller with an institution context may only enroll within THEIR institution — both halves checked (the offering's course chain AND the target's membership; cross-institution → 403) |
 | DELETE | `/enrollments/:id` | ADMIN/OWNER | Remove enrollment (hard delete; 404 unknown) + `ENROLLMENT_REMOVED` audit row in one transaction. Returns `200 {data:{ok:true}}` |
 
 ## Offerings
@@ -220,8 +233,8 @@ All `requireCapability('QUALITY_VIEW')`.
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| GET | `/me/teacher-profile` | TEACHER/OWNER | Full academic profile |
-| PATCH | `/me/teacher-profile` | TEACHER/OWNER | Update profile (publication/award years validated at runtime) |
+| GET | `/me/teacher-profile` | TEACHER/OWNER | Full academic profile. r178: resolved in the caller's token institution context (oldest active profile as legacy fallback for a contextless OWNER) |
+| PATCH | `/me/teacher-profile` | TEACHER/OWNER | Update profile (publication/award years validated at runtime). r178: requires an institution context (`requireInstitution` — 403 `INSTITUTION_CONTEXT_REQUIRED` without one; the membership-scoped profile is resolved server-side and addressed by its cuid) |
 | GET | `/live/sessions` | Bearer | List sessions — STUDENT via active enrollments; TEACHER for offerings they teach; per-status buckets so LIVE rows are never pushed out |
 | POST | `/live/sessions` | TEACHER/ADMIN/OWNER | Create live session (past timestamps >5min rejected; offering ownership via the shared guard) |
 | POST | `/live/sessions/:id/lifecycle` | TEACHER/ADMIN/OWNER | Start/end/cancel — state-machine transitions (SCHEDULED→LIVE\|CANCELLED, LIVE→ENDED\|CANCELLED); invalid transitions → 409; concurrent flips claim-guarded |
@@ -296,13 +309,13 @@ There is **no** `POST /posts/:id/comment` route — comments are read via the po
 | POST | `/jobs/:id/apply` | Bearer | Apply to job (unknown job → clean 404) |
 | GET | `/labs` | Bearer | Virtual labs (take 200) |
 | GET | `/ar-experiences` | Bearer | AR/VR experiences (take 200) |
-| GET | `/faculties` | Bearer | Faculty list |
-| GET | `/leaderboard` | Bearer | Gamification leaderboard |
+| GET | `/faculties` | none | Faculty list — public (register funnel + campus map + directory). r178: optional `?institutionSlug=` filter; omitted → faculties of ALL ACTIVE institutions; every row carries institution basics `{id,name,nameEn,slug}` (the FE groups/labels by them) |
+| GET | `/leaderboard` | Bearer | Gamification leaderboard. r178: reads StudentProfile rows directly (profiles are per-membership) — top-10 XP, deterministic order |
 | GET | `/me/achievements` | Bearer | My achievements |
 | GET | `/me/skills` | Bearer | My skills |
 | GET | `/me/certificates` | Bearer | My certificates |
 | GET | `/admin/stats` | ADMIN/OWNER | Platform stats |
-| GET | `/admin/faculties` | ADMIN/OWNER | Faculty management data |
+| GET | `/admin/faculties` | ADMIN/OWNER | Faculty management data (per-faculty student/teacher/dept/course counts). r178: institution-scoped for ADMIN callers (their DB-verified membership context — cross-institution faculties never leak into an institutional admin's console); OWNER keeps the platform-wide view, optionally narrowed by `?institutionSlug=`; rows carry institution basics |
 | GET | `/admin/reports` | ADMIN/OWNER | KPI reports (topCourses aggregated per course — enrollment counts, deterministic order) |
 | GET | `/admin/courses` | ADMIN/OWNER | Course management data (totals aggregated across ALL of each page course's offerings, not the take:3 preview; paginated `{data, meta}` with server-side `q` code/name search + `facultyId` scope — C5) |
 | GET | `/admin/papers` | ADMIN/OWNER | Institution-wide research list, `{data, meta}` paginated, `?status=` filter (PENDING\|SCANNED\|PUBLISHED\|REJECTED), `q` title search — no file bytes, no PII beyond author name (C5) |
@@ -369,7 +382,7 @@ All routes: `authMiddleware + requireRole(OWNER)`.
 | POST | `/owner/users/:id/role` | Change user role (self 403; OWNER promotion 403 via this path; last-active-owner guard with `FOR UPDATE` row locks → 409; TEACHER provisioning parity; `ROLE_CHANGE` audit row with `source:'owner'`) |
 | PATCH | `/owner/users/:id/status` | Toggle isActive (self-deactivation 403; self **re-activation allowed**; last-owner guard 409; `tokenVersion` bumped on deactivation only; `STATUS_CHANGE` audit in-transaction) |
 | GET | `/owner/activity` | Paginated audit log |
-| GET | `/owner/education` | Education aggregate (topCourses + attendance trend) — SQL-aggregated (`date_trunc` month buckets); response shape unchanged |
+| GET | `/owner/education` | Education aggregate (topCourses + attendance trend) — SQL-aggregated (`date_trunc` month buckets); response shape unchanged. r178: additive `facultyCensus[]` rows carry each faculty's institution label (name/city/institution/courseCount) for the multi-institution console |
 | GET | `/owner/system` | Operational telemetry (sync, alerts, activity) + storage block (driver/persistent, and r167 s3-only `reachable`/`checkedAt` from a memoized probe) |
 | GET | `/owner/realtime` | Live metrics snapshot (active sessions, AI/min, broadcasts, exams) |
 | GET | `/owner/ai-metrics` | AI telemetry aggregates (7d, SQL day buckets) |
@@ -401,6 +414,9 @@ All routes: `authMiddleware + requireRole(OWNER)`.
 | TOKEN_EXPIRED | 401 | Access token expired (triggers the frontend refresh flow) |
 | INVALID_CREDENTIALS | 401 | Wrong email/password |
 | FORBIDDEN | 403 | Insufficient role/capability/scope |
+| INSTITUTION_CONTEXT_REQUIRED | 403 | r178: the session has no institution context selected — the client must call `POST /auth/select-institution` first (multi-membership sessions) |
+| INSTITUTION_CONTEXT_INVALID | 403 | r178: the token's institution claim does not resolve to an ACTIVE membership in an ACTIVE institution (revoked / suspended / forged) — re-resolution is DB-backed on every guarded request |
+| REG_NUMBER_AMBIGUOUS | 400 | r178: reg-number login matched student profiles in more than one institution — login by email or pass `institutionSlug` |
 | NOT_FOUND | 404 | Resource not found (also used to hide existence) |
 | CONFLICT | 409 | Duplicate/state conflict (Prisma P2002, last-owner guard, FK-RESTRICT pre-checks, lifecycle violations) |
 | PAYLOAD_TOO_LARGE | 413 | Request body over the 1 MB cap (body-parser `entity.too.large` / `parameters.too.many`) |

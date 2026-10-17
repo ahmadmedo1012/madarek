@@ -122,7 +122,7 @@ const postMessage = (senderId: string, role: Role, toUserId: string) =>
   fetch(`${baseUrl}/api/v1/messages`, {
     method: 'POST',
     headers: {
-      authorization: `Bearer ${signAccessToken(senderId, role)}`,
+      authorization: `Bearer ${signAccessToken(senderId, role, null)}`,
       'content-type': 'application/json',
     },
     body: JSON.stringify({ toUserId, body: BODY }),

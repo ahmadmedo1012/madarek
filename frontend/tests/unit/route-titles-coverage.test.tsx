@@ -125,6 +125,15 @@ describe('route-title coverage — every App.tsx route resolves a title (WCAG 2.
 
 vi.mock('../../src/hooks/useAuth', () => ({
   useLogin: () => ({ mutateAsync: vi.fn(), isPending: false, isError: false, error: null }),
+  // r178: AuthPage also mounts the institution-selection mutation —
+  // idle stub (the title pins never trigger a multi-membership login).
+  useSelectInstitution: () => ({
+    mutateAsync: vi.fn(),
+    mutate: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+  }),
   useRegister: () => ({
     mutateAsync: vi.fn(async () => ({ user: { role: 'STUDENT' } })),
     isPending: false,
@@ -141,6 +150,25 @@ vi.mock('../../src/hooks/useResources', () => ({
         iconEmoji: '💻',
         city: 'الزاوية',
         departments: [{ id: 'dep-1', name: 'علوم الحاسوب' }],
+      },
+    ],
+    isLoading: false,
+    isError: false,
+    refetch: vi.fn(),
+  }),
+}));
+
+vi.mock('../../src/hooks/useInstitutions', () => ({
+  // r178: one seeded institution — the page auto-selects it (single
+  // institution), so the faculty/department flows below proceed
+  // exactly as pre-r178.
+  useInstitutions: () => ({
+    data: [
+      {
+        id: 'inst-zawia',
+        name: 'جامعة الزاوية',
+        nameEn: 'University of Zawia',
+        slug: 'zawia-showcase',
       },
     ],
     isLoading: false,

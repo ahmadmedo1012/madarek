@@ -3,7 +3,7 @@ import { env } from '../../env.js';
 import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth.js';
 import { authRateLimiter, changePasswordRateLimiter } from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
-import { changePasswordSchema, loginSchema, registerSchema } from '../../modules/auth/auth.dto.js';
+import { changePasswordSchema, loginSchema, registerSchema, selectInstitutionSchema } from '../../modules/auth/auth.dto.js';
 import {
   changePassword,
   getCurrentUser,
@@ -11,6 +11,7 @@ import {
   logoutUser,
   refreshTokens,
   registerUser,
+  selectInstitution,
 } from '../../modules/auth/auth.service.js';
 import { parseDurationMs, verifyRefreshToken } from '../../lib/jwt.js';
 import { AppError } from '../../lib/errors.js';
@@ -48,10 +49,13 @@ router.post('/login', authRateLimiter, validate(loginSchema), async (req, res, n
   try {
 
     // IP + UA feed the LoginEvent telemetry rows (/owner/login-analytics).
+    // institutionSlug (optional) disambiguates reg-numbers registered in
+    // several institutions (r178).
     const { user, accessToken, refreshToken } = await loginUser(
       req.body.email,
       req.body.password,
       { ip: req.ip, userAgent: req.header('user-agent') },
+      req.body.institutionSlug,
     );
 
     setRefreshCookie(res, refreshToken);
@@ -60,6 +64,32 @@ router.post('/login', authRateLimiter, validate(loginSchema), async (req, res, n
     next(e);
   }
 });
+
+/**
+ * r178: pick the institution context for the session (multi-membership
+ * users). Verifies an ACTIVE membership in an ACTIVE institution
+ * server-side, then mints fresh tokens carrying the `inst` claim + the
+ * full user payload (same shape as login). Same refresh version —
+ * selecting an institution is not a revocation event (D3 untouched).
+ */
+router.post(
+  '/select-institution',
+  authMiddleware,
+  authRateLimiter,
+  validate(selectInstitutionSchema),
+  async (req, res, next) => {
+    try {
+      const { user, accessToken, refreshToken } = await selectInstitution(
+        req.user!.id,
+        req.body.institutionId,
+      );
+      setRefreshCookie(res, refreshToken);
+      res.json({ data: { user, accessToken } });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
 
 /**
  * Password change for the authenticated user.
@@ -153,7 +183,9 @@ router.post('/logout', optionalAuthMiddleware, async (req, res, _next) => {
 
 router.get('/me', authMiddleware, async (req, res, next) => {
   try {
-    const user = await getCurrentUser(req.user!.id);
+    // r178: /me resolves the membership context for the token's `inst`
+    // claim (null = no context yet — client must select-institution).
+    const user = await getCurrentUser(req.user!.id, req.user!.institutionId);
     res.json({ data: user });
   } catch (e) {
     next(e);

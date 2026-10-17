@@ -31,6 +31,8 @@ vi.mock('../../src/db.js', () => ({
   prisma: {
     user: { findUnique: vi.fn(), update: vi.fn(), updateMany: vi.fn() },
     studentProfile: { findUnique: vi.fn() },
+    // r178: changePassword re-resolves the session institution context.
+    membership: { findMany: vi.fn(async () => []) },
     loginEvent: { create: vi.fn(async () => ({})) },
     researchPaper: { findFirst: vi.fn() },
     material: { findFirst: vi.fn() },
@@ -97,7 +99,7 @@ const changePassword = (userId: string, body: unknown, extraHeaders: Record<stri
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      authorization: `Bearer ${signAccessToken(userId, 'STUDENT')}`,
+      authorization: `Bearer ${signAccessToken(userId, 'STUDENT', null)}`,
       ...extraHeaders,
     },
     body: JSON.stringify(body),

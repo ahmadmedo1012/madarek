@@ -111,7 +111,7 @@ beforeEach(() => {
 
 const get = (userId: string, role: Role) =>
   fetch(`${baseUrl}/api/v1${PATH}`, {
-    headers: { authorization: `Bearer ${signAccessToken(userId, role)}` },
+    headers: { authorization: `Bearer ${signAccessToken(userId, role, null)}` },
   });
 
 type SearchBody = {

@@ -160,7 +160,7 @@ beforeEach(() => {
   rolePermissionFindMany.mockResolvedValue([] as never);
 });
 
-const bearer = (userId: string, role: Role) => ({ authorization: `Bearer ${signAccessToken(userId, role)}` });
+const bearer = (userId: string, role: Role) => ({ authorization: `Bearer ${signAccessToken(userId, role, null)}` });
 
 const patch = (path: string, userId: string, role: Role, body: unknown) =>
   fetch(`${baseUrl}/api/v1${path}`, {

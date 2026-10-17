@@ -10,13 +10,13 @@ import {
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { LibyaFlag } from '../components/LibyaFlag';
-import { useLogin } from '../hooks/useAuth';
+import { useLogin, useSelectInstitution } from '../hooks/useAuth';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import { usePageTitle } from '../hooks/usePageTitle';
-import { ROLE_HOME } from '../lib/nav';
+import { ROLE_HOME, ROLE_LABELS } from '../lib/nav';
 import { countAr } from '../lib/format';
 import { authErrorView } from '../lib/authErrors';
-import type { AppRole } from '../stores/auth.store';
+import type { AppRole, MembershipInfo } from '../stores/auth.store';
 import type { AxiosError } from 'axios';
 
 /** Login-error envelope the backend rejects with (lib/errors.ts):
@@ -103,8 +103,18 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const login = useLogin();
+  const selectInstitution = useSelectInstitution();
   const [forgotNotice, setForgotNotice] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  // r178 (multi-institution): after a successful login whose session
+  // carries MULTIPLE active memberships and NO auto-selected context,
+  // the visitor must pick the institution for this session. The
+  // response's membership list is captured here; the card swaps the
+  // login form for an institution chooser. Exactly-one membership is
+  // auto-selected server-side (context set) and zero memberships
+  // (platform owner) proceeds straight to the role home — the
+  // pre-r178 behavior.
+  const [pendingSelection, setPendingSelection] = useState<MembershipInfo[] | null>(null);
   // r157 F5: the demo panel starts COLLAPSED — it is a dev convenience,
   // never the first thing a real visitor should read. A quiet reopen
   // chip (.auth-demo-hint-reopen) keeps it one honest click away.
@@ -124,9 +134,33 @@ export default function AuthPage() {
   const onLogin = loginForm.handleSubmit(async (values) => {
     try {
       const result = await login.mutateAsync(values);
+      // r178: multi-membership without an auto-selected context → the
+      // institution selection step owns the navigation from here.
+      if (
+        (result.user.memberships?.length ?? 0) > 1 &&
+        !result.user.currentInstitution
+      ) {
+        setPendingSelection(result.user.memberships ?? []);
+        return;
+      }
       navigateAfterLogin(result.user.role);
     } catch { /* error displayed below */ }
   });
+
+  /** r178: commit the visitor's institution choice — POST
+   *  /auth/select-institution mints a context-bearing token; only then
+   *  does the post-login navigation fire (same deep-link resume as a
+   *  direct login). Failures keep the chooser mounted with the
+   *  server's Arabic message (403 INSTITUTION_CONTEXT_INVALID et al). */
+  const onChooseInstitution = async (membership: MembershipInfo) => {
+    try {
+      const res = await selectInstitution.mutateAsync({
+        institutionId: membership.institutionId,
+      });
+      setPendingSelection(null);
+      navigateAfterLogin(res.user.role);
+    } catch { /* error displayed in the chooser */ }
+  };
 
   /** One-click FILL of the demo credentials — the visitor reviews the
    *  filled fields and submits the form themselves (no hidden
@@ -173,6 +207,67 @@ export default function AuthPage() {
             <span className="auth-brand-mini-text">مدارك</span>
           </div>
 
+          {pendingSelection ? (
+            <>
+              {/* r178 (multi-institution): institution selection step —
+                  the login succeeded but the account holds MORE THAN ONE
+                  active membership and no auto-selected context. The
+                  visitor commits to one institution for this session
+                  (same card, same chrome; the role-card grammar the
+                  register page's chooser already owns — no new styles). */}
+              <div className="auth-form-header">
+                <span className="auth-meta">(اختيار المؤسسة)</span>
+                <h1 className="auth-form-title">اختر مؤسستك</h1>
+                <p className="auth-form-sub">
+                  حسابك عضو في أكثر من مؤسسة تعليمية — اختر المؤسسة التي ستعمل ضمنها في هذه الجلسة.
+                </p>
+              </div>
+
+              <div className="role-card-grid" role="group" aria-label="اختيار المؤسسة">
+                {pendingSelection.map((membership) => (
+                  <button
+                    key={membership.institutionId}
+                    type="button"
+                    className="role-card"
+                    onClick={() => void onChooseInstitution(membership)}
+                    disabled={selectInstitution.isPending}
+                  >
+                    <span className="role-card-icon"><Icon icon={Building2} size={22} /></span>
+                    <span className="role-card-body">
+                      <span className="role-card-title">{membership.name}</span>
+                      <span className="role-card-sub">
+                        {ROLE_LABELS[membership.role] ?? <bdi>{membership.role}</bdi>}
+                      </span>
+                    </span>
+                    <span className="role-card-arrow"><Icon icon={ArrowLeft} size={16} /></span>
+                  </button>
+                ))}
+              </div>
+
+              {selectInstitution.isError && (
+                <div className="auth-error" role="alert">
+                  <Icon icon={AlertCircle} size={14} />
+                  <span>
+                    {/* D17-3: the backend's own Arabic message verbatim
+                        (403 INSTITUTION_CONTEXT_INVALID «عضوية المؤسسة
+                        غير نشطة أو غير صالحة»…); the generic line only
+                        when the server never answered. */}
+                    {authErrorView(selectInstitution.error).serverMessage ?? GENERIC_LOGIN_ERROR}
+                  </span>
+                </div>
+              )}
+
+              {/* sr-only pending mirror (r157 F5 contract): the disabled
+                  buttons are silent — this polite region announces the
+                  verification while the selection request is in flight. */}
+              {selectInstitution.isPending && (
+                <span className="sr-only" role="status" aria-live="polite">
+                  جارٍ التحقق من العضوية…
+                </span>
+              )}
+            </>
+          ) : (
+            <>
           <div className="auth-form-header">
             {/* imm-5 journey alignment: the landing scenes' coded
                 metadata voice as a quiet eyebrow over the title
@@ -371,6 +466,8 @@ export default function AuthPage() {
               ليس لديك حساب؟ <Link to="/auth/register" className="auth-register-link">أنشئ حسابك الآن</Link>
             </p>
           </form>
+            </>
+          )}
         </div>
       </main>
 

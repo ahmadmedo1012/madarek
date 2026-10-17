@@ -101,12 +101,18 @@ beforeEach(async () => {
 });
 
 /** The seed chain the mastery loader walks:
- *  student → StudentMastery → KnowledgeConcept → course + chapter → lecture. */
+ *  student → StudentMastery → KnowledgeConcept → course + chapter → lecture.
+ * r178: the academic chain hangs off a fresh institution (Faculty and
+ * Course are institution-scoped rows since the multi-institution
+ * foundation). */
 async function seedMasteryRow(studentId: string, level: number) {
-  const faculty = await prisma.faculty.create({ data: { name: 'كلية r175d' } });
+  const inst = await helpers.seedInstitution();
+  const faculty = await prisma.faculty.create({
+    data: { name: 'كلية r175d', city: 'طرابلس', institutionId: inst.id },
+  });
   const department = await prisma.department.create({ data: { name: 'قسم r175d', facultyId: faculty.id } });
   const course = await prisma.course.create({
-    data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'بنية المعطيات r175d', departmentId: department.id },
+    data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'بنية المعطيات r175d', departmentId: department.id, institutionId: inst.id },
   });
   const offering = await prisma.courseOffering.create({
     data: { courseId: course.id, teacherId: (await helpers.seedUser({ role: Role.TEACHER })).id, term: '2026-FALL' },
@@ -185,10 +191,13 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
   it('r176b: the student\'s REAL enrollment rides the system prompt (course, term, lecture count, nearest assignment)', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
     // Reuse the chain but hand-craft the offering pieces we assert on.
-    const faculty = await prisma.faculty.create({ data: { name: 'كلية r176b' } });
+    const instA = await helpers.seedInstitution();
+    const faculty = await prisma.faculty.create({
+      data: { name: 'كلية r176b', city: 'طرابلس', institutionId: instA.id },
+    });
     const department = await prisma.department.create({ data: { name: 'قسم r176b', facultyId: faculty.id } });
     const course = await prisma.course.create({
-      data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'قواعد البيانات r176b', departmentId: department.id },
+      data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'قواعد البيانات r176b', departmentId: department.id, institutionId: instA.id },
     });
     const teacher = await helpers.seedUser({ role: Role.TEACHER });
     const offering = await prisma.courseOffering.create({
@@ -226,10 +235,13 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
 
   it('r176b: an INJECTED lecture title is framed as DATA inside the delimiters (instruction-hierarchy pin)', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
-    const faculty = await prisma.faculty.create({ data: { name: 'كلية حقن r176b' } });
+    const instInj = await helpers.seedInstitution();
+    const faculty = await prisma.faculty.create({
+      data: { name: 'كلية حقن r176b', city: 'طرابلس', institutionId: instInj.id },
+    });
     const department = await prisma.department.create({ data: { name: 'قسم حقن r176b', facultyId: faculty.id } });
     const course = await prisma.course.create({
-      data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'أمن المعلومات r176b', departmentId: department.id },
+      data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'أمن المعلومات r176b', departmentId: department.id, institutionId: instInj.id },
     });
     const offering = await prisma.courseOffering.create({
       data: { courseId: course.id, teacherId: (await helpers.seedUser({ role: Role.TEACHER })).id, term: '2026-SPRING' },
@@ -269,10 +281,13 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
 
   it('r176b: the mastery block is bounded to the 25 weakest rows (seed 30, expect the 25 lowest)', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
-    const faculty = await prisma.faculty.create({ data: { name: 'كلية حد r176b' } });
+    const instCap = await helpers.seedInstitution();
+    const faculty = await prisma.faculty.create({
+      data: { name: 'كلية حد r176b', city: 'طرابلس', institutionId: instCap.id },
+    });
     const department = await prisma.department.create({ data: { name: 'قسم حد r176b', facultyId: faculty.id } });
     const course = await prisma.course.create({
-      data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'الخوارزميات r176b', departmentId: department.id },
+      data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'الخوارزميات r176b', departmentId: department.id, institutionId: instCap.id },
     });
     const teacher = await helpers.seedUser({ role: Role.TEACHER });
     const offering = await prisma.courseOffering.create({
@@ -312,10 +327,13 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
 
   it('r176b: a TEACHER gets the generic prompt with their REAL teaching lines (no mastery data)', async () => {
     const teacher = await helpers.seedUser({ role: Role.TEACHER });
-    const faculty = await prisma.faculty.create({ data: { name: 'كلية تدريس r176b' } });
+    const instTeach = await helpers.seedInstitution();
+    const faculty = await prisma.faculty.create({
+      data: { name: 'كلية تدريس r176b', city: 'طرابلس', institutionId: instTeach.id },
+    });
     const department = await prisma.department.create({ data: { name: 'قسم تدريس r176b', facultyId: faculty.id } });
     const course = await prisma.course.create({
-      data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'هياكل البيانات للتدريس r176b', departmentId: department.id },
+      data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'هياكل البيانات للتدريس r176b', departmentId: department.id, institutionId: instTeach.id },
     });
     const offering = await prisma.courseOffering.create({
       data: { courseId: course.id, teacherId: teacher.id, term: '2026-SPRING' },

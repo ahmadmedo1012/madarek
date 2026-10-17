@@ -31,7 +31,7 @@ import { Role } from '@prisma/client';
 import { createApp } from '../../src/app.js';
 import { AppError } from '../../src/lib/errors.js';
 import { assertNotLastActiveOwner, lockActiveOwnerRows } from '../../src/lib/governance.js';
-import { bearer, db, seedUser, truncateAll, uniqueSuffix } from './helpers.js';
+import { bearer, db, seedInstitution, seedMembership, seedUser, truncateAll, uniqueSuffix } from './helpers.js';
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -163,19 +163,36 @@ describe('owner console governance route (real app + real DB)', () => {
     const prisma = db();
     const actor = await seedUser({ role: Role.OWNER });
     const student = await seedUser({ role: Role.STUDENT });
-    const faculty = await prisma.faculty.create({ data: { name: `كلية ${uniqueSuffix()}` } });
+    // r178: the promotion provisions a per-membership TeacherProfile —
+    // the fixture chains institution → membership → studentProfile so
+    // resolveProvisionInstitution finds the target's active membership
+    // and buildTeacherProvision's department-chain check passes.
+    const inst = await seedInstitution();
+    const faculty = await prisma.faculty.create({
+      data: { name: `كلية ${uniqueSuffix()}`, city: 'طرابلس', institutionId: inst.id },
+    });
     const department = await prisma.department.create({
       data: { name: `قسم ${uniqueSuffix()}`, facultyId: faculty.id },
     });
+    const membership = await seedMembership(student.id, inst.id, Role.STUDENT);
     await prisma.studentProfile.create({
-      data: { userId: student.id, universityId: `U-${uniqueSuffix()}`, facultyId: faculty.id, departmentId: department.id },
+      data: {
+        userId: student.id,
+        membershipId: membership.id,
+        institutionId: inst.id,
+        universityId: `U-${uniqueSuffix()}`,
+        facultyId: faculty.id,
+        departmentId: department.id,
+      },
     });
 
     // Promote: the TeacherProfile is created in the SAME transaction,
     // defaulting to the student's own department (planTeacherProvisioning).
     const promote = await changeRole(actor.id, student.id, Role.TEACHER);
     expect(promote.status).toBe(200);
-    const profile = await prisma.teacherProfile.findUnique({ where: { userId: student.id } });
+    // userId is no longer a unique selector (PK is id since r178) —
+    // resolve by membership-linked user instead.
+    const profile = await prisma.teacherProfile.findFirst({ where: { userId: student.id } });
     expect(profile).not.toBeNull();
     expect(profile?.departmentId).toBe(department.id);
     expect(profile?.specialty).toBe('غير محدد'); // TEACHER_DEFAULT_SPECIALTY
@@ -195,7 +212,9 @@ describe('owner console governance route (real app + real DB)', () => {
       role: Role.STUDENT,
       tokenVersion: 2,
     });
-    expect(await prisma.teacherProfile.findUnique({ where: { userId: student.id } })).not.toBeNull();
+    expect(
+      await prisma.teacherProfile.findFirst({ where: { userId: student.id } }),
+    ).not.toBeNull();
     expect(await prisma.auditLog.count({ where: { action: 'ROLE_CHANGE', resourceId: student.id } })).toBe(2);
   });
 });

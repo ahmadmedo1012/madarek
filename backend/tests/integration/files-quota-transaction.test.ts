@@ -81,10 +81,13 @@ describe('POST /offerings/:id/materials/file — Material row never survives a f
   it('storage put fails → 500 INTERNAL + the pre-created Material row is deleted (zero rows)', async () => {
     // Seed the teaching chain the access guard walks: teacher → offering.
     const teacher = await helpers.seedUser({ role: Role.TEACHER });
-    const faculty = await prisma.faculty.create({ data: { name: 'كلية اختبار' } });
+    const inst = await helpers.seedInstitution();
+    const faculty = await prisma.faculty.create({
+      data: { name: 'كلية اختبار', city: 'طرابلس', institutionId: inst.id },
+    });
     const department = await prisma.department.create({ data: { name: 'قسم اختبار', facultyId: faculty.id } });
     const course = await prisma.course.create({
-      data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'مقرر اختبار', departmentId: department.id },
+      data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'مقرر اختبار', departmentId: department.id, institutionId: inst.id },
     });
     const offering = await prisma.courseOffering.create({
       data: { courseId: course.id, teacherId: teacher.id, term: '2026-SPRING' },

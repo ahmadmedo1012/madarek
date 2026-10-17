@@ -113,7 +113,7 @@ beforeEach(() => {
 
 const OWNER_ID = 'owner-1';
 const bearer = (userId: string, role: Role) => ({
-  authorization: `Bearer ${signAccessToken(userId, role)}`,
+  authorization: `Bearer ${signAccessToken(userId, role, null)}`,
 });
 
 const getOwner = (path: string) =>

@@ -212,7 +212,7 @@ beforeEach(() => {
   courseOfferingFindUnique.mockResolvedValue({ teacherId: TEACHER_ID } as never);
 });
 
-const bearer = (userId: string, role: Role) => ({ authorization: `Bearer ${signAccessToken(userId, role)}` });
+const bearer = (userId: string, role: Role) => ({ authorization: `Bearer ${signAccessToken(userId, role, null)}` });
 
 const post = (path: string, userId: string, role: Role, body?: unknown) =>
   fetch(`${baseUrl}/api/v1${path}`, {

@@ -4,6 +4,7 @@ import { LiveSessionStatus, Prisma, Role } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
+import { requireInstitution } from '../middleware/institution.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { assertOwnsOffering } from '../../lib/permissions.js';
@@ -20,11 +21,19 @@ router.use(authMiddleware);
 // Roles aligned with PATCH: TEACHER/OWNER. ADMIN was allowed to READ but
 // has no teacher profile (404 every time) and the write side 403s them —
 // an incoherent split.
+//
+// r178: the profile is per-MEMBERSHIP — resolved in the caller's token
+// institution context when one is selected, else the oldest active
+// profile (legacy fallback for a contextless OWNER).
+// TODO(r179/phase-5): full data isolation.
 router.get('/me/teacher-profile', requireRole(Role.TEACHER, Role.OWNER), async (req, res, next) => {
   try {
     const userId = req.user!.id;
-    const profile = await prisma.teacherProfile.findUnique({
-      where: { userId },
+    const profile = await prisma.teacherProfile.findFirst({
+      where: req.user!.institutionId
+        ? { userId, membership: { institutionId: req.user!.institutionId, isActive: true } }
+        : { userId, membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+      orderBy: { createdAt: 'asc' },
       include: {
         user: { select: { firstName: true, lastName: true, email: true, avatarColor: true, avatarInitials: true } },
         department: { include: { faculty: { select: { name: true } } } },
@@ -130,24 +139,39 @@ export const updateProfileSchema = z.object({
 }).strict();
 
 /** PATCH /me/teacher-profile — self-service update (bio + contact + lists) */
-router.patch('/me/teacher-profile', requireRole(Role.TEACHER, Role.OWNER), validate(updateProfileSchema), async (req, res, next) => {
-  try {
-    const body = req.body as z.infer<typeof updateProfileSchema>;
-    const updated = await prisma.teacherProfile.update({
-      where: { userId: req.user!.id },
-      data: {
-        ...(body.bio !== undefined ? { bio: body.bio } : {}),
-        ...(body.officeLocation !== undefined ? { officeLocation: body.officeLocation } : {}),
-        ...(body.officeHours !== undefined ? { officeHours: body.officeHours } : {}),
-        ...(body.websiteUrl !== undefined ? { websiteUrl: body.websiteUrl } : {}),
-        ...(body.publications !== undefined ? { publications: body.publications } : {}),
-        ...(body.awards !== undefined ? { awards: body.awards } : {}),
-      },
-      select: { userId: true, updatedAt: true },
-    });
-    res.json({ data: updated });
-  } catch (e) { next(e); }
-});
+// r178: the update needs the institution context — the profile being
+// patched is per-membership, and requireInstitution both DB-verifies the
+// caller's membership AND pre-resolves the profile for it (the mission's
+// teacher-profile-update flow). A contextless session must select an
+// institution first (403 INSTITUTION_CONTEXT_REQUIRED).
+router.patch(
+  '/me/teacher-profile',
+  requireRole(Role.TEACHER, Role.OWNER),
+  requireInstitution,
+  validate(updateProfileSchema),
+  async (req, res, next) => {
+    try {
+      const body = req.body as z.infer<typeof updateProfileSchema>;
+      // The membership-scoped profile (requireInstitution attached it).
+      if (!req.teacherProfile) {
+        throw AppError.notFound('لا يوجد ملف أكاديمي للأستاذ لهذا المستخدم');
+      }
+      const updated = await prisma.teacherProfile.update({
+        where: { id: req.teacherProfile.id },
+        data: {
+          ...(body.bio !== undefined ? { bio: body.bio } : {}),
+          ...(body.officeLocation !== undefined ? { officeLocation: body.officeLocation } : {}),
+          ...(body.officeHours !== undefined ? { officeHours: body.officeHours } : {}),
+          ...(body.websiteUrl !== undefined ? { websiteUrl: body.websiteUrl } : {}),
+          ...(body.publications !== undefined ? { publications: body.publications } : {}),
+          ...(body.awards !== undefined ? { awards: body.awards } : {}),
+        },
+        select: { userId: true, updatedAt: true },
+      });
+      res.json({ data: updated });
+    } catch (e) { next(e); }
+  },
+);
 
 // ════════════════════════════════════════════════════════════════
 //  Live streaming — teacher controls + student watch list

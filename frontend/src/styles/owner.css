@@ -1247,6 +1247,85 @@
   margin-block-end: var(--sp-4);
 }
 
+/* ── Institutions console (r178 multi-institution) ──────────── */
+/* The r178 owner institutions page (OwnerInstitutionsPage) reuses the
+   console's canonical .table/.tbl-stack/.table-row-actions grammar;
+   this section only owns the institution cell's stacked name block,
+   the metric cells, and the admins list — every value a token, every
+   edge logical (RTL-first). */
+.owner-inst-create-form {
+  display: grid;
+  gap: var(--sp-4);
+  max-inline-size: 30rem; /* the canonical 480px form measure */
+}
+
+/* institution identity cell: Arabic name over the Latin nameEn/slug
+   run (the sub rows keep dir="ltr" in the TSX; bdi-style embedding
+   handled at markup level). */
+.owner-inst-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  min-inline-size: 0;
+}
+
+.owner-inst-name {
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+
+.owner-inst-sub {
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+  overflow-wrap: anywhere; /* slugs/emails never stretch the column */
+}
+
+/* count + date cells: icon + tabular figure on one quiet line */
+.owner-inst-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.owner-inst-metric svg {
+  color: var(--text-subtle);
+  flex-shrink: 0;
+}
+
+/* admins cell: a compact stack of name + LTR email + the row action.
+   The action button rides the same .table-row-actions reveal family
+   the users table uses (components.css). */
+.owner-inst-admins {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.owner-inst-admins li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+}
+
+.owner-inst-admin-name {
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+
+.owner-inst-admin-email {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
 /* ── Meters (Education workload + AI token share) ──────────── */
 .owner-workload {
   display: flex;

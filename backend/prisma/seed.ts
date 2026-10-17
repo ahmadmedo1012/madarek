@@ -4,13 +4,26 @@
  *
  * Run:  npm run db:seed
  *
+ * r178 (multi-institution foundation): the demo data now spans TWO
+ * institutions — جامعة الزاوية (slug zawia-showcase, the reference
+ * showcase institution that owns the 25 faculties + all academic demo
+ * content) and مؤسسة الأندلس التعليمية (slug alandalus-demo, a generic
+ * demo institution, NOT a real-university claim). The Al-Andalus demo
+ * course reuses the SAME code as Zawia's CS-department course and its
+ * student reuses the SAME reg-number — both now institution-scoped
+ * (unique per institution), which is exactly what the second institution
+ * proves. Demo users carry Membership rows per institution; the platform
+ * OWNER deliberately has NO membership (platform scope, never a member).
+ *
  * Demo accounts (password = "Madarek2026!" for all — chosen to satisfy
  * the 8-char minimum in the register policy, see auth.dto.ts):
- *   student@zu.edu.ly  → STUDENT (أحمد الزروق)
- *   teacher@zu.edu.ly  → TEACHER (د. سالم البوسيفي)
- *   admin@zu.edu.ly    → ADMIN   (إدارة الجامعة)
- *   quality@zu.edu.ly  → QUALITY (ضمان الجودة)
- *   owner@zu.edu.ly    → OWNER   (مالك المنصة)
+ *   student@zu.edu.ly        → STUDENT (أحمد الزروق) — membership in zawia-showcase
+ *   teacher@zu.edu.ly        → TEACHER (د. سالم البوسيفي) — membership in zawia-showcase
+ *   admin@zu.edu.ly          → ADMIN   (إدارة الجامعة) — membership in zawia-showcase
+ *   quality@zu.edu.ly        → QUALITY (ضمان الجودة) — membership in zawia-showcase
+ *   owner@zu.edu.ly          → OWNER   (مالك المنصة) — NO membership (platform owner)
+ *   student2@demo.madarek.ly → STUDENT (ليلى المهدي) — membership in alandalus-demo
+ *   admin2@demo.madarek.ly   → ADMIN   (إدارة الأندلس) — membership in alandalus-demo
  *
  * NOTE (final-polish audit, 2026-09-28): the PRODUCTION database was
  * seeded by an older generation of this file whose password was
@@ -41,19 +54,48 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Seeding database...');
 
-  // ─── Faculties & Departments ─────────────────────────────────
+  // ─── Institutions (r178) ─────────────────────────────
+  // Upsert by slug. The Zawia showcase row is created with the FIXED
+  // literal id 'inst-zawia-showcase' — the same id the migration
+  // backfill uses — so the migrated dev DB and a fresh seeded DB agree
+  // on the reference id (and tests can rely on it).
+  const zawia = await prisma.institution.upsert({
+    where: { slug: 'zawia-showcase' },
+    update: { name: 'جامعة الزاوية', nameEn: 'University of Zawia', status: 'ACTIVE' },
+    create: {
+      id: 'inst-zawia-showcase',
+      name: 'جامعة الزاوية',
+      nameEn: 'University of Zawia',
+      slug: 'zawia-showcase',
+      status: 'ACTIVE',
+    },
+  });
+  // Generic demo institution — a context label, not a real-university
+  // claim (its demo users live on demo.madarek.ly, not zu.edu.ly).
+  const alandalus = await prisma.institution.upsert({
+    where: { slug: 'alandalus-demo' },
+    update: { name: 'مؤسسة الأندلس التعليمية', nameEn: 'Al-Andalus Education Institute', status: 'ACTIVE' },
+    create: {
+      name: 'مؤسسة الأندلس التعليمية',
+      nameEn: 'Al-Andalus Education Institute',
+      slug: 'alandalus-demo',
+      status: 'ACTIVE',
+    },
+  });
+
+  // ─── Faculties & Departments (جامعة الزاوية) ───────────
   // Source-of-truth: the official Zawia University site (zu.edu.ly), as
   // captured in `zu.edu.ly.md` at the repo root. The institution lists 25
   // distinct faculty/city pairs — same name can repeat across cities
-  // (Economics in الزاوية AND العجيلات are two separate institutions),
-  // which is why uniqueness is on (name, city), not name alone.
+  // (Economics in الزاوية AND العجيلات are two separate campuses), and
+  // since r178 the composite unique key is (institutionId, name, city).
   //
   // Order of the first 4 entries (IT, Engineering, Sciences, Medicine) is
   // load-bearing — index references later in this file assume it.
 
   // One-time rename: legacy "كلية الطب" row → source-correct name.
   await prisma.faculty.updateMany({
-    where: { name: 'كلية الطب' },
+    where: { name: 'كلية الطب', institutionId: zawia.id },
     data: { name: 'كلية الطب البشري', nameEn: 'Human Medicine', iconEmoji: '⚕️' },
   });
 
@@ -89,8 +131,8 @@ async function main() {
       { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'ناصر' },
       { name: 'كلية الموارد الطبيعية', nameEn: 'Natural Resources', iconEmoji: '⛰️', city: 'مناطق أخرى' },
     ].map((f) => prisma.faculty.upsert({
-      where: { name_city: { name: f.name, city: f.city } },
-      create: f,
+      where: { institutionId_name_city: { institutionId: zawia.id, name: f.name, city: f.city } },
+      create: { ...f, institutionId: zawia.id },
       update: { nameEn: f.nameEn, iconEmoji: f.iconEmoji },
     })),
   );
@@ -155,6 +197,23 @@ async function main() {
   // "After seeding…" block in sync when changing this value.
   const password = await hashPassword('Madarek2026!');
 
+  // r178: the demo reg-number literal — deliberately shared by BOTH demo
+  // students (Zawia + Al-Andalus) to prove reg-number uniqueness is
+  // institution-scoped, not global.
+  const DEMO_REG_NUMBER = 'UZ-2024-00001';
+
+  // r178 membership upsert — (userId, institutionId) is unique; the
+  // update branch heals role drift and reactivates revoked demo
+  // memberships. Owner NEVER gets a membership (platform scope).
+  const ensureMembership = (userId: string, institutionId: string, role: Role) =>
+    prisma.membership.upsert({
+      where: { userId_institutionId: { userId, institutionId } },
+      update: { role, isActive: true },
+      create: { userId, institutionId, role, isActive: true },
+    });
+
+  // User upserts no longer nest profile creation (a profile needs its
+  // membershipId first). Per-account order: user → membership → profile.
   const student = await prisma.user.upsert({
     where: { email: 'student@zu.edu.ly' },
     // Re-seeding resets the demo password so it always matches the docs.
@@ -168,17 +227,26 @@ async function main() {
       avatarInitials: 'أح',
       avatarColor: '#4F8EF7',
       emailVerifiedAt: new Date(),
-      studentProfile: {
-        create: {
-          universityId: 'UZ-2024-00001',
-          facultyId: itFaculty.id,
-          departmentId: csDept.id,
-          year: 3,
-          gpa: 3.4,
-          totalXp: 2340,
-          level: 7,
-        },
-      },
+    },
+  });
+  const studentMembership = await ensureMembership(student.id, zawia.id, Role.STUDENT);
+  // Keyed by the scoped unique (institutionId, universityId). On the
+  // migrated dev DB this finds the migration-backfilled row (whose
+  // membershipId points at the same membership upserted above).
+  await prisma.studentProfile.upsert({
+    where: { institutionId_universityId: { institutionId: zawia.id, universityId: DEMO_REG_NUMBER } },
+    update: { membershipId: studentMembership.id, facultyId: itFaculty.id, departmentId: csDept.id },
+    create: {
+      userId: student.id,
+      membershipId: studentMembership.id,
+      institutionId: zawia.id,
+      universityId: DEMO_REG_NUMBER,
+      facultyId: itFaculty.id,
+      departmentId: csDept.id,
+      year: 3,
+      gpa: 3.4,
+      totalXp: 2340,
+      level: 7,
     },
   });
 
@@ -194,15 +262,26 @@ async function main() {
       avatarInitials: 'سب',
       avatarColor: '#3DD68C',
       emailVerifiedAt: new Date(),
-      teacherProfile: {
-        create: {
-          specialty: 'علوم الحاسوب والذكاء الاصطناعي',
-          rank: AcademicRank.ASSOCIATE_PROFESSOR,
-          departmentId: csDept.id,
-        },
-      },
     },
   });
+  const teacherMembership = await ensureMembership(teacher.id, zawia.id, Role.TEACHER);
+  // TeacherProfile has no natural unique key (per-membership rows with
+  // cuid ids) — resolve by (user, membership institution), create when
+  // absent; re-runs and migrated DBs both find the existing row.
+  let teacherProfile = await prisma.teacherProfile.findFirst({
+    where: { userId: teacher.id, membership: { institutionId: zawia.id } },
+  });
+  if (!teacherProfile) {
+    teacherProfile = await prisma.teacherProfile.create({
+      data: {
+        userId: teacher.id,
+        membershipId: teacherMembership.id,
+        specialty: 'علوم الحاسوب والذكاء الاصطناعي',
+        rank: AcademicRank.ASSOCIATE_PROFESSOR,
+        departmentId: csDept.id,
+      },
+    });
+  }
 
   const admin = await prisma.user.upsert({
     where: { email: 'admin@zu.edu.ly' },
@@ -218,6 +297,7 @@ async function main() {
       emailVerifiedAt: new Date(),
     },
   });
+  await ensureMembership(admin.id, zawia.id, Role.ADMIN);
 
   const quality = await prisma.user.upsert({
     where: { email: 'quality@zu.edu.ly' },
@@ -233,11 +313,14 @@ async function main() {
       emailVerifiedAt: new Date(),
     },
   });
+  await ensureMembership(quality.id, zawia.id, Role.QUALITY);
 
   // Platform owner — Master Control Panel demo account. Like ADMIN and
   // QUALITY it carries no profile and keeps scopeFacultyId NULL (the
-  // schema's governance convention: NULL = university-wide). The AuthPage
-  // OWNER demo button and the snap.mjs owner cohort log in as this user.
+  // schema's governance convention: NULL = university-wide). r178: the
+  // owner NEVER receives an institution membership — platform ownership
+  // is User.role == OWNER only. The AuthPage OWNER demo button and the
+  // snap.mjs owner cohort log in as this user.
   await prisma.user.upsert({
     where: { email: 'owner@zu.edu.ly' },
     update: { passwordHash: password },
@@ -253,6 +336,79 @@ async function main() {
     },
   });
 
+  // ─── Second institution demo (مؤسسة الأندلس التعليمية) ───
+  // One faculty + one department + (later below) one course whose code
+  // deliberately collides with a Zawia course code, plus a student whose
+  // reg-number deliberately collides with the Zawia student's — the
+  // two institution-scoped-uniqueness proofs of the r178 seed.
+  const aaFaculty = await prisma.faculty.upsert({
+    where: {
+      institutionId_name_city: { institutionId: alandalus.id, name: 'كلية تقنية المعلومات', city: 'طرابلس' },
+    },
+    create: {
+      name: 'كلية تقنية المعلومات',
+      nameEn: 'Information Technology',
+      iconEmoji: '💻',
+      city: 'طرابلس',
+      institutionId: alandalus.id,
+    },
+    update: {},
+  });
+  const aaCsDept = await prisma.department.upsert({
+    where: { facultyId_name: { facultyId: aaFaculty.id, name: 'علوم الحاسوب' } },
+    create: { name: 'علوم الحاسوب', nameEn: 'Computer Science', facultyId: aaFaculty.id },
+    update: {},
+  });
+
+  const student2 = await prisma.user.upsert({
+    where: { email: 'student2@demo.madarek.ly' },
+    update: { passwordHash: password },
+    create: {
+      email: 'student2@demo.madarek.ly',
+      passwordHash: password,
+      // User.role mirrors the membership role so legacy single-context
+      // surfaces keep working (r178 contract).
+      role: Role.STUDENT,
+      firstName: 'ليلى',
+      lastName: 'المهدي',
+      avatarInitials: 'لم',
+      avatarColor: '#F06292',
+      emailVerifiedAt: new Date(),
+    },
+  });
+  const student2Membership = await ensureMembership(student2.id, alandalus.id, Role.STUDENT);
+  // SAME reg-number as the Zawia demo student — allowed because the
+  // unique key is (institutionId, universityId), not universityId alone.
+  await prisma.studentProfile.upsert({
+    where: { institutionId_universityId: { institutionId: alandalus.id, universityId: DEMO_REG_NUMBER } },
+    update: { membershipId: student2Membership.id, facultyId: aaFaculty.id, departmentId: aaCsDept.id },
+    create: {
+      userId: student2.id,
+      membershipId: student2Membership.id,
+      institutionId: alandalus.id,
+      universityId: DEMO_REG_NUMBER,
+      facultyId: aaFaculty.id,
+      departmentId: aaCsDept.id,
+      year: 1,
+    },
+  });
+
+  const admin2 = await prisma.user.upsert({
+    where: { email: 'admin2@demo.madarek.ly' },
+    update: { passwordHash: password },
+    create: {
+      email: 'admin2@demo.madarek.ly',
+      passwordHash: password,
+      role: Role.ADMIN,
+      firstName: 'إدارة',
+      lastName: 'الأندلس',
+      avatarInitials: 'إأ',
+      avatarColor: '#2EC4B6',
+      emailVerifiedAt: new Date(),
+    },
+  });
+  await ensureMembership(admin2.id, alandalus.id, Role.ADMIN);
+
   // ─── Courses (mirrors the prototype's `courses` array) ───────
   const courseDefs = [
     { code: 'SE301', name: 'هندسة البرمجيات', icon: '⚙️', color: '#4F8EF7' },
@@ -266,7 +422,8 @@ async function main() {
   const courses = [];
   for (const c of courseDefs) {
     const created = await prisma.course.upsert({
-      where: { code: c.code },
+      // r178: course code is unique PER INSTITUTION (Zawia CS dept here).
+      where: { institutionId_code: { institutionId: zawia.id, code: c.code } },
       update: {},
       create: {
         code: c.code,
@@ -275,10 +432,29 @@ async function main() {
         iconEmoji: c.icon,
         themeColor: c.color,
         departmentId: csDept.id,
+        institutionId: zawia.id,
       },
     });
     courses.push(created);
   }
+
+  // Al-Andalus course — code 'SE301': the SAME literal as Zawia's
+  // هندسة البرمجيات course above (the legacy seed never had a 'CS101';
+  // the point is the collision itself: identical code, different
+  // institution, both rows coexist under @@unique(institutionId, code)).
+  await prisma.course.upsert({
+    where: { institutionId_code: { institutionId: alandalus.id, code: 'SE301' } },
+    update: {},
+    create: {
+      code: 'SE301',
+      name: 'مقدمة إلى البرمجة',
+      credits: 3,
+      iconEmoji: '💻',
+      themeColor: '#4F8EF7',
+      departmentId: aaCsDept.id,
+      institutionId: alandalus.id,
+    },
+  });
 
   // ─── Offerings + enrollment for the demo student ─────────────
   const term = '2024-FALL';
@@ -1264,8 +1440,9 @@ async function main() {
   }
 
   // Mark the seed teacher's profile as verified + with realistic onboarding data
+  // (r178: resolved per-membership above — the profile PK is its cuid id now).
   await prisma.teacherProfile.update({
-    where: { userId: teacher.id },
+    where: { id: teacherProfile.id },
     data: {
       degreeLevel: 'PHD',
       yearsExperience: 12,

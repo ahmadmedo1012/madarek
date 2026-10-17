@@ -8,6 +8,26 @@
 //  library/loans, MOOCs, jobs, achievements, skills,
 //  virtual labs, AR experiences, AI conversations, audit log.
 // ────────────────────────────────────────────────────────────────
+//  r178 — MULTI-INSTITUTION FOUNDATION:
+//  · NEW Institution + Membership models: one product/brand (مدارك)
+//    serving multiple institutions as CONTEXT labels (no per-university
+//    logos/themes/domains). Membership is the per-user, per-institution
+//    standing — the effective institutional role ALWAYS comes from
+//    Membership.role; User.role stays the platform-level role
+//    (OWNER = platform owner; STUDENT/TEACHER/ADMIN/QUALITY = legacy
+//    demo default).
+//  · Scoped uniqueness: Faculty (institutionId, name, city); student
+//    reg-number universityId (institutionId, universityId); course code
+//    (institutionId, code). Email stays globally unique.
+//  · StudentProfile/TeacherProfile become per-MEMBERSHIP rows with their
+//    own cuid PKs (userId keeps FK + index for legacy reads).
+//  · UserPermission/AuditLog gain nullable institutionId (NULL =
+//    platform scope).
+//  · Deliberately untouched (Phase 5): UniversityFact/SyncRun (Zawia
+//    showcase source), Announcement/PlatformSetting/FeatureFlag
+//    (platform-global), offerings/enrollments/grades (ownership via
+//    the verified parent chain).
+// ────────────────────────────────────────────────────────────────
 
 generator client {
   provider = "prisma-client-js"
@@ -32,6 +52,13 @@ enum Role {
   ADMIN
   QUALITY
   OWNER
+}
+
+// r178 — مؤسسات متعددة: حالة المؤسسة (تعليق المؤسسة يمنع كل وصول
+// متعلق بها عبر حرّاس السياق في الخلفية).
+enum InstitutionStatus {
+  ACTIVE
+  SUSPENDED
 }
 
 enum AcademicRank {
@@ -232,37 +259,97 @@ enum ThemePreference {
 }
 
 // ────────────────────────────────────────────────────────────────
+//  r178 — Institutions & memberships (أساس المؤسسات المتعددة)
+// ────────────────────────────────────────────────────────────────
+
+// المؤسسة سياق تعليمي داخل مدارك (ليست هوية بصرية — لا شعارات ولا
+// نطاقات). مؤسسة العرض المرجعية: جامعة الزاوية (slug: zawia-showcase)
+// تحمل البيانات التجريبية؛ ومؤسسة الأندلس التعليمية (slug:
+// alandalus-demo) مؤسسة تجريبية عامة تثبت تفرد رموز المقررات وأرقام
+// التسجيل على مستوى المؤسسة لا المنصة.
+model Institution {
+  id        String            @id @default(cuid())
+  name      String
+  nameEn    String?
+  slug      String            @unique
+  status    InstitutionStatus @default(ACTIVE)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  memberships      Membership[]
+  faculties        Faculty[]
+  students         StudentProfile[]
+  courses          Course[]
+  permissionGrants UserPermission[]
+  auditLogs        AuditLog[]
+
+  @@index([status])
+}
+
+// عضوية المستخدم داخل مؤسسة واحدة — مصدر الدور الفعلي داخل المؤسسة.
+// التفرد (userId, institutionId) يضمن صفًّا واحدًا لكل زوج، وisActive=false
+// هو مقبض سحب الصلاحية (يُلغى/يُستعاد دون حذف التاريخ).
+//
+// ⚠ role يعيد استخدام enum المسمى Role — قيمة OWNER محظورة هنا على
+// مستوى التطبيق (Zod DTOs + حرّاس الخدمة): Prisma 5.22 لا يدعم قيود
+// CHECK. ملكية المنصة تُعبَّر عنها فقط بـ User.role == OWNER ولا يكون
+// للمالك عضوية مؤسسة إطلاقًا.
+model Membership {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  role          Role
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  studentProfiles StudentProfile[]
+  teacherProfiles TeacherProfile[]
+
+  @@unique([userId, institutionId])
+  @@index([institutionId, role])
+  @@index([institutionId, isActive])
+  @@index([userId, isActive])
+}
+
+// ────────────────────────────────────────────────────────────────
 //  Identity & access
 // ────────────────────────────────────────────────────────────────
 model User {
-  id               String    @id @default(cuid())
-  email            String    @unique
-  passwordHash     String
-  role             Role
-  firstName        String
-  lastName         String
-  avatarColor      String? // hex like "#4F8EF7"
-  avatarInitials   String? // computed Arabic 2-letter initials
-  emailVerifiedAt  DateTime?
-  isActive         Boolean   @default(true)
-  tokenVersion     Int       @default(0) // incremented to revoke all refresh tokens
-  failedLoginCount Int       @default(0)
-  lockedUntil      DateTime?
+  id                       String          @id @default(cuid())
+  email                    String          @unique
+  passwordHash             String
+  role                     Role
+  firstName                String
+  lastName                 String
+  avatarColor              String? // hex like "#4F8EF7"
+  avatarInitials           String? // computed Arabic 2-letter initials
+  emailVerifiedAt          DateTime?
+  isActive                 Boolean         @default(true)
+  tokenVersion             Int             @default(0) // incremented to revoke all refresh tokens
+  failedLoginCount         Int             @default(0)
+  lockedUntil              DateTime?
   // Governance scope — for ADMIN/QUALITY users.
   // NULL = university-wide; set = scoped to that faculty only.
-  scopeFacultyId   String?
-  scopeFaculty     Faculty?  @relation("FacultyScopedAdmins", fields: [scopeFacultyId], references: [id])
+  scopeFacultyId           String?
+  scopeFaculty             Faculty?        @relation("FacultyScopedAdmins", fields: [scopeFacultyId], references: [id])
   // 012-design-graphics-uplift — presentation preferences (no PII).
   // See specs/012-design-graphics-uplift/data-model.md.
   themePreference          ThemePreference @default(SYSTEM)
   themePreferenceUpdatedAt DateTime        @default(now())
   onboardingCompletedAt    DateTime?
   firedMilestones          String[]        @default([])
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  createdAt                DateTime        @default(now())
+  updatedAt                DateTime        @updatedAt
 
-  studentProfile StudentProfile?
-  teacherProfile TeacherProfile?
+  // r178: profiles are per-MEMBERSHIP now (a user can study in one
+  // institution and teach in another) — hence plural reverse relations.
+  // Legacy single-profile surfaces resolve via the membership context.
+  memberships     Membership[]
+  studentProfiles StudentProfile[]
+  teacherProfiles TeacherProfile[]
 
   enrollments         Enrollment[]         @relation("StudentEnrollments")
   taughtOfferings     CourseOffering[]     @relation("TeacherOfferings")
@@ -320,27 +407,49 @@ model User {
 }
 
 model StudentProfile {
-  userId       String     @id
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  universityId String     @unique
-  facultyId    String
-  faculty      Faculty    @relation(fields: [facultyId], references: [id])
-  departmentId String
-  department   Department @relation(fields: [departmentId], references: [id])
-  year         Int        @default(1)
-  gpa          Decimal    @default(0) @db.Decimal(3, 2)
-  totalXp      Int        @default(0)
-  level        Int        @default(1)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  // r178 restructure: the profile is per-MEMBERSHIP, not per-user — the
+  // same user may hold student profiles in different institutions. New
+  // cuid PK; the legacy userId PK is gone (userId keeps FK + index for
+  // legacy single-context reads).
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  membershipId  String      @unique
+  membership    Membership  @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  // Denormalized on purpose: institution-scoped uniqueness of the
+  // reg-number + institution-scoped queries avoid the membership hop.
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id])
+  universityId  String
+  facultyId     String
+  faculty       Faculty     @relation(fields: [facultyId], references: [id])
+  departmentId  String
+  department    Department  @relation(fields: [departmentId], references: [id])
+  year          Int         @default(1)
+  gpa           Decimal     @default(0) @db.Decimal(3, 2)
+  totalXp       Int         @default(0)
+  level         Int         @default(1)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
+  // رقم التسجيل الجامعي مُتفرّد لكل مؤسسة — نفس الرقم قد يوجد في
+  // مؤسسة أخرى (r178).
+  @@unique([institutionId, universityId])
+  @@index([userId])
+  @@index([institutionId])
   @@index([facultyId])
   @@index([departmentId])
 }
 
 model TeacherProfile {
-  userId               String            @id
+  // r178 restructure: per-membership profile with its own cuid PK (the
+  // institution is reached through membership — no denormalized column
+  // here; teacher queries resolve membership.institutionId).
+  id                   String            @id @default(cuid())
+  userId               String
   user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  membershipId         String            @unique
+  membership           Membership        @relation(fields: [membershipId], references: [id], onDelete: Cascade)
   specialty            String
   rank                 AcademicRank      @default(LECTURER)
   departmentId         String
@@ -372,6 +481,7 @@ model TeacherProfile {
   createdAt            DateTime          @default(now())
   updatedAt            DateTime          @updatedAt
 
+  @@index([userId])
   @@index([departmentId])
   @@index([verifiedById])
   @@index([positionFacultyId])
@@ -384,12 +494,17 @@ model TeacherProfile {
 model Faculty {
   id                 String             @id @default(cuid())
   // The same faculty name can exist in multiple cities (e.g. "كلية الاقتصاد"
-  // in Zawia AND Ajilat are distinct institutions). Uniqueness is on (name, city).
+  // in Zawia AND Ajilat are distinct campuses). Since r178 the institution
+  // carries the scoping — uniqueness is on (institutionId, name, city).
   name               String
   nameEn             String?
   iconEmoji          String?
-  // City the faculty is located in. Defaults to الزاوية for legacy rows.
-  city               String             @default("الزاوية")
+  // City the faculty is located in. r178: no column default — the
+  // institution now carries the scoping and new faculties are created
+  // with an explicit city.
+  city               String
+  institutionId      String
+  institution        Institution        @relation(fields: [institutionId], references: [id])
   createdAt          DateTime           @default(now())
   departments        Department[]
   students           StudentProfile[]
@@ -399,8 +514,9 @@ model Faculty {
   scopedAdmins       User[]             @relation("FacultyScopedAdmins")
   leadership         TeacherProfile[]   @relation("FacultyLeadership")
 
-  @@unique([name, city])
+  @@unique([institutionId, name, city])
   @@index([city])
+  @@index([institutionId])
 }
 
 model Department {
@@ -422,21 +538,28 @@ model Department {
 }
 
 model Course {
-  id           String             @id @default(cuid())
-  code         String             @unique
-  name         String
-  nameEn       String?
-  description  String?
-  credits      Int                @default(3)
-  iconEmoji    String?
-  themeColor   String?
-  departmentId String
-  department   Department         @relation(fields: [departmentId], references: [id])
-  offerings    CourseOffering[]
-  concepts     KnowledgeConcept[]
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
+  id            String             @id @default(cuid())
+  code          String
+  name          String
+  nameEn        String?
+  description   String?
+  credits       Int                @default(3)
+  iconEmoji     String?
+  themeColor    String?
+  // r178: denormalized from department.faculty.institutionId — derived
+  // and validated by app code on every create/update (app-level
+  // invariant) so course codes stay unique per institution.
+  institutionId String
+  institution   Institution        @relation(fields: [institutionId], references: [id])
+  departmentId  String
+  department    Department         @relation(fields: [departmentId], references: [id])
+  offerings     CourseOffering[]
+  concepts      KnowledgeConcept[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
 
+  @@unique([institutionId, code])
+  @@index([institutionId])
   @@index([departmentId])
 }
 
@@ -951,21 +1074,26 @@ model AiMessage {
 //  Audit log
 // ────────────────────────────────────────────────────────────────
 model AuditLog {
-  id           String   @id @default(cuid())
-  userId       String?
-  user         User?    @relation(fields: [userId], references: [id])
-  action       String
-  resourceType String?
-  resourceId   String?
-  ip           String?
-  userAgent    String?
-  metadata     Json?
-  createdAt    DateTime @default(now())
+  id            String       @id @default(cuid())
+  userId        String?
+  user          User?        @relation(fields: [userId], references: [id])
+  // r178: NULL = platform-scope entry; non-null = institution-scope
+  // (owner mutations on institutions carry it).
+  institutionId String?
+  institution   Institution? @relation(fields: [institutionId], references: [id])
+  action        String
+  resourceType  String?
+  resourceId    String?
+  ip            String?
+  userAgent     String?
+  metadata      Json?
+  createdAt     DateTime     @default(now())
 
   @@index([userId])
   @@index([action])
   @@index([createdAt])
   @@index([resourceType, resourceId])
+  @@index([institutionId])
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1010,23 +1138,23 @@ model LectureChapter {
 }
 
 model LectureCheckpoint {
-  id           String            @id @default(cuid())
+  id           String             @id @default(cuid())
   lectureId    String
-  lecture      Lecture           @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+  lecture      Lecture            @relation(fields: [lectureId], references: [id], onDelete: Cascade)
   conceptId    String?
-  concept      KnowledgeConcept? @relation(fields: [conceptId], references: [id])
+  concept      KnowledgeConcept?  @relation(fields: [conceptId], references: [id])
   triggerSec   Int
   question     String
   options      Json
   correctIndex Int
   explanation  String?
-
-  @@index([lectureId])
-  @@index([conceptId])
   // r157 (W2-F7 / audit 6A5): the student's per-checkpoint answer memory
   // (one row per student+checkpoint). Cascade — deleting a checkpoint
   // (or its lecture) takes its answers with it.
-  answers CheckpointAnswer[]
+  answers      CheckpointAnswer[]
+
+  @@index([lectureId])
+  @@index([conceptId])
 }
 
 // r157 (W2-F7 / audit 6A5): server memory for checkpoint answers.
@@ -1331,22 +1459,28 @@ model RolePermission {
 }
 
 model UserPermission {
-  id          String     @id @default(cuid())
-  userId      String
-  user        User       @relation("UserPermissionUser", fields: [userId], references: [id], onDelete: Cascade)
-  capability  Capability
+  id            String       @id @default(cuid())
+  userId        String
+  user          User         @relation("UserPermissionUser", fields: [userId], references: [id], onDelete: Cascade)
+  capability    Capability
+  // r178: NULL = platform-global grant (applies in every institution);
+  // non-null = institution-scoped grant. Postgres treats NULLs as
+  // distinct in the composite unique below — app code upserts on the
+  // triple.
+  institutionId String?
+  institution   Institution? @relation(fields: [institutionId], references: [id])
   // grant=true means this cap is explicitly given even if role doesn't have it.
   // grant=false means this cap is explicitly revoked even if role has it.
-  grant       Boolean    @default(true)
-  grantedAt   DateTime   @default(now())
-  grantedById String?
-  grantedBy   User?      @relation("UserPermissionGranter", fields: [grantedById], references: [id])
-  reason      String?
+  grant         Boolean      @default(true)
+  grantedAt     DateTime     @default(now())
+  grantedById   String?
+  grantedBy     User?        @relation("UserPermissionGranter", fields: [grantedById], references: [id])
+  reason        String?
 
-  @@unique([userId, capability])
+  @@unique([userId, capability, institutionId])
   // r146 (T1-c F3): FK grantedById is ON DELETE SET NULL with no index
   // — deleting a granter User scan-joins this table; the unique
-  // (userId, capability) does not cover grantedById.
+  // (userId, capability, institutionId) does not cover grantedById.
   @@index([grantedById])
 }
 

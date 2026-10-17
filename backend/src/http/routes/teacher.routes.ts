@@ -9,6 +9,7 @@ import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { assertOwnsOffering } from '../../lib/permissions.js';
 import { assertWithinScope, getGovernanceScope } from '../../lib/governance.js';
+import { resolveTeacherProfile } from '../../lib/profile-scoping.js';
 import {
   assessStudentRisk,
   attendancePct,
@@ -113,12 +114,16 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
     const offering = await prisma.courseOffering.findUnique({
       where: { id: offeringId },
       include: {
+        course: { select: { institutionId: true } },
         enrollments: {
           include: {
             student: {
               select: {
                 id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true,
-                studentProfile: { select: { universityId: true } },
+                // r178: profiles are per-membership — the roster prefers
+                // the student's profile in the OFFERING's institution
+                // (TODO(r179/phase-5): full data isolation).
+                studentProfiles: { select: { institutionId: true, universityId: true } },
               },
             },
           },
@@ -214,7 +219,10 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
       return {
         studentId: stu.id,
         name: `${stu.firstName} ${stu.lastName}`,
-        universityId: stu.studentProfile?.universityId ?? '—',
+        universityId:
+          stu.studentProfiles.find((p) => p.institutionId === offering.course.institutionId)?.universityId
+          ?? stu.studentProfiles[0]?.universityId
+          ?? '—',
         avatarInitials: stu.avatarInitials,
         avatarColor: stu.avatarColor,
         attendancePct: attPct,
@@ -631,19 +639,25 @@ router.post('/teacher/offerings/:id/curriculum/suggest', requireCapability('CURR
  * cannot govern, you do not list" — users.routes.ts:38). A faculty-
  * scoped ADMIN could read a teacher's email/certifications and verify
  * or appoint out-of-faculty teachers. University-wide actors pass
- * through untouched (scope === null). */
-async function assertTeacherWithinGovernanceScope(teacherId: string, actorId: string): Promise<void> {
+ * through untouched (scope === null).
+ *
+ * r178: the target's TeacherProfile is per-membership — resolved in
+ * the caller's institution context when one is selected, else their
+ * oldest active profile (TODO(r179/phase-5): hard institution
+ * isolation for governance writes). */
+async function assertTeacherWithinGovernanceScope(teacherId: string, actorId: string, actorInstitutionId?: string | null): Promise<void> {
   const scopeFacultyId = await getGovernanceScope(actorId);
   if (scopeFacultyId === null) return;
-  const target = await prisma.teacherProfile.findUnique({
-    where: { userId: teacherId },
-    select: { department: { select: { facultyId: true } } },
-  });
+  const target = await resolveTeacherProfile(teacherId, actorInstitutionId ?? null);
   if (!target) throw AppError.notFound('الملف الأكاديمي للأستاذ غير موجود');
+  const department = await prisma.department.findUnique({
+    where: { id: target.departmentId },
+    select: { facultyId: true },
+  });
   assertWithinScope(scopeFacultyId, {
     role: Role.TEACHER,
     studentFacultyId: null,
-    teacherFacultyId: target.department.facultyId,
+    teacherFacultyId: department?.facultyId ?? null,
   });
 }
 
@@ -654,15 +668,22 @@ router.get(
   async (req, res, next) => {
     try {
       const teacherId = req.params.id!;
-      await assertTeacherWithinGovernanceScope(teacherId, req.user!.id);
-      const profile = await prisma.teacherProfile.findUnique({
-        where: { userId: teacherId },
-        include: {
-          user: { select: { firstName: true, lastName: true, email: true } },
-          department: { include: { faculty: true } },
-        },
-      });
+      await assertTeacherWithinGovernanceScope(teacherId, req.user!.id, req.user!.institutionId);
+      const profile = await resolveTeacherProfile(teacherId, req.user!.institutionId);
       if (!profile) throw AppError.notFound('الملف الأكاديمي للأستاذ غير موجود');
+      const [profileUser, profileDepartment] = await Promise.all([
+        prisma.user.findUnique({
+          where: { id: teacherId },
+          select: { firstName: true, lastName: true, email: true },
+        }),
+        prisma.department.findUnique({
+          where: { id: profile.departmentId },
+          include: { faculty: true },
+        }),
+      ]);
+      if (!profileUser || !profileDepartment) {
+        throw AppError.notFound('الملف الأكاديمي للأستاذ غير موجود');
+      }
 
       // Get all courses, prefer same department first then same faculty
       const sameDeptCourses = await prisma.course.findMany({
@@ -671,7 +692,7 @@ router.get(
       });
       const sameFacultyCourses = await prisma.course.findMany({
         where: {
-          department: { facultyId: profile.department.facultyId },
+          department: { facultyId: profileDepartment.facultyId },
           NOT: { departmentId: profile.departmentId },
         },
         include: { department: { include: { faculty: true } } },
@@ -715,18 +736,18 @@ router.get(
         data: {
           teacher: {
             id: teacherId,
-            name: `${profile.user.firstName} ${profile.user.lastName}`,
-            email: profile.user.email,
+            name: `${profileUser.firstName} ${profileUser.lastName}`,
+            email: profileUser.email,
             specialty: profile.specialty,
             rank: profile.rank,
             degreeLevel: profile.degreeLevel,
             yearsExperience: profile.yearsExperience,
             certifications: profile.certifications ?? [],
             subjectKeywords: profile.subjectKeywords,
-            department: profile.department.name,
+            department: profileDepartment.name,
             departmentId: profile.departmentId,
-            faculty: profile.department.faculty.name,
-            facultyId: profile.department.facultyId,
+            faculty: profileDepartment.faculty.name,
+            facultyId: profileDepartment.facultyId,
             verified: !!profile.verifiedAt,
             position: profile.position,
             positionFacultyId: profile.positionFacultyId,
@@ -758,13 +779,18 @@ router.post(
     try {
       const targetId = req.params.id!;
       // r152b (A5 P3): faculty-scope guard (see helper above).
-      await assertTeacherWithinGovernanceScope(targetId, req.user!.id);
+      await assertTeacherWithinGovernanceScope(targetId, req.user!.id, req.user!.institutionId);
+      // r178: the target's profile is per-membership — resolved in the
+      // caller's institution context (legacy fallback without one);
+      // the update then addresses the profile by its cuid PK.
+      const profile = await resolveTeacherProfile(targetId, req.user!.institutionId);
+      if (!profile) throw AppError.notFound('الملف الأكاديمي للأستاذ غير موجود');
       // Wrap update + audit in a transaction so governance never
       // loses the audit trail if the auditLog.create fails (or vice
       // versa — if audit fails, the verify is rolled back).
       const updated = await prisma.$transaction(async (tx) => {
         const r = await tx.teacherProfile.update({
-          where: { userId: targetId },
+          where: { id: profile.id },
           data: {
             verifiedAt: req.body.verified ? new Date() : null,
             verifiedById: req.body.verified ? req.user!.id : null,
@@ -838,12 +864,11 @@ router.post(
       const targetId = req.params.id!;
 
       // r152b (A5 P3): faculty-scope guard (see helper above).
-      await assertTeacherWithinGovernanceScope(targetId, req.user!.id);
+      await assertTeacherWithinGovernanceScope(targetId, req.user!.id, req.user!.institutionId);
 
-      const existing = await prisma.teacherProfile.findUnique({
-        where: { userId: targetId },
-        select: { position: true, appointedAt: true },
-      });
+      // r178: per-membership profile — resolved in the caller's
+      // institution context, then addressed by its cuid PK below.
+      const existing = await resolveTeacherProfile(targetId, req.user!.institutionId);
       if (!existing) throw AppError.notFound('الملف الأكاديمي للأستاذ غير موجود');
 
       // A leadership seat is exclusive: refuse to appoint a second active
@@ -910,7 +935,7 @@ router.post(
           }
         }
         const r = await tx.teacherProfile.update({
-          where: { userId: targetId },
+          where: { id: existing.id },
           data,
           select: {
             userId: true,

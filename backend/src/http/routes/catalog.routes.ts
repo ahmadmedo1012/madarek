@@ -8,8 +8,18 @@ import { validate } from '../validate.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
 import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
+import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
 
 const router = Router();
+
+// r178: institution basics on every public faculty row — the register
+// funnel and directory group/label faculties by institution.
+const facultyInstitutionSelect = {
+  id: true,
+  name: true,
+  nameEn: true,
+  slug: true,
+} as const;
 
 // ════════════════════════════════════════════════════
 // FACULTIES & DEPARTMENTS (public catalog)
@@ -28,14 +38,30 @@ const router = Router();
 // bundle (which additionally ships the per-faculty counts).
 // Still behind the app-level global rate limiter (app.ts
 // mounts it for the whole /api/v1 prefix).
-router.get('/faculties', async (_req, res, next) => {
+//
+// r178 (multi-institution): optional ?institutionSlug= filter —
+// the register page passes the institution it selected. Without
+// it the listing spans ALL ACTIVE institutions' faculties, each
+// row carrying its institution basics (the FE groups by them).
+router.get('/faculties', async (req, res, next) => {
   try {
+    const institutionSlug =
+      typeof req.query.institutionSlug === 'string' && req.query.institutionSlug.trim().length > 0
+        ? req.query.institutionSlug.trim()
+        : undefined;
     const data = await prisma.faculty.findMany({
+      where: {
+        institution: {
+          status: 'ACTIVE',
+          ...(institutionSlug ? { slug: institutionSlug } : {}),
+        },
+      },
       select: {
         id: true,
         name: true,
         iconEmoji: true,
         city: true,
+        institution: { select: facultyInstitutionSelect },
         departments: { select: { id: true, name: true } },
       },
       orderBy: { name: 'asc' },
@@ -553,21 +579,31 @@ router.get('/me/certificates', async (req, res, next) => {
 
 router.get('/leaderboard', async (_req, res, next) => {
   try {
-    const data = await prisma.user.findMany({
-      where: { role: Role.STUDENT },
-      include: { studentProfile: true },
-      orderBy: { studentProfile: { totalXp: 'desc' } },
+    // r178: StudentProfile is per-membership (user rows no longer carry
+    // the profile) — the top-10 XP board reads the profile table
+    // directly with the user projection folded in. TODO(r179/phase-5):
+    // institution-scoped boards (points stay platform-global this round
+    // per the r178 decision record).
+    const rows = await prisma.studentProfile.findMany({
+      orderBy: [{ totalXp: 'desc' }, { userId: 'asc' }],
       take: 10,
+      select: {
+        totalXp: true,
+        level: true,
+        user: {
+          select: { id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true },
+        },
+      },
     });
     res.json({
-      data: data.map((u) => ({
-        id: u.id,
-        firstName: u.firstName,
-        lastName: u.lastName,
-        avatarInitials: u.avatarInitials,
-        avatarColor: u.avatarColor,
-        totalXp: u.studentProfile?.totalXp ?? 0,
-        level: u.studentProfile?.level ?? 1,
+      data: rows.map((p) => ({
+        id: p.user.id,
+        firstName: p.user.firstName,
+        lastName: p.user.lastName,
+        avatarInitials: p.user.avatarInitials,
+        avatarColor: p.user.avatarColor,
+        totalXp: p.totalXp,
+        level: p.level,
       })),
     });
   } catch (e) {
@@ -616,11 +652,40 @@ router.get('/admin/stats', requireRole(Role.ADMIN, Role.OWNER), async (_req, res
 });
 
 // ── Admin: faculties with student / teacher / dept / course counts ──
-router.get('/admin/faculties', requireRole(Role.ADMIN, Role.OWNER), async (_req, res, next) => {
+// r178 (multi-institution): the listing is institution-scoped for
+// ADMIN callers — their DB-verified membership context pins the query
+// (cross-institution faculties/counts never leak into an institutional
+// admin's console). OWNER keeps the platform-wide view and may narrow
+// it with ?institutionSlug= (an unknown/suspended slug matches
+// nothing); every row carries the institution basics either way.
+router.get('/admin/faculties', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
+    let where: Prisma.FacultyWhereInput;
+    if (req.user!.role === Role.OWNER) {
+      const slug =
+        typeof req.query.institutionSlug === 'string' && req.query.institutionSlug.trim().length > 0
+          ? req.query.institutionSlug.trim()
+          : undefined;
+      where = slug ? { institution: { slug, status: 'ACTIVE' } } : {};
+    } else {
+      const callerInstitution = await resolveCallerInstitutionScope(
+        req.user!.id,
+        req.user!.institutionId,
+      );
+      if (!callerInstitution) {
+        throw new AppError(
+          'INSTITUTION_CONTEXT_REQUIRED',
+          'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
+          403,
+        );
+      }
+      where = { institutionId: callerInstitution };
+    }
     const faculties = await prisma.faculty.findMany({
+      where,
       orderBy: { name: 'asc' },
       include: {
+        institution: { select: facultyInstitutionSelect },
         departments: {
           select: {
             id: true,
@@ -641,6 +706,7 @@ router.get('/admin/faculties', requireRole(Role.ADMIN, Role.OWNER), async (_req,
         nameEn: f.nameEn,
         iconEmoji: f.iconEmoji,
         city: f.city,
+        institution: f.institution,
         departmentCount: f.departments.length,
         studentCount,
         teacherCount,

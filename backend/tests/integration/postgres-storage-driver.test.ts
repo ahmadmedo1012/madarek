@@ -79,10 +79,13 @@ const BIG_PDF = Buffer.concat([PDF_BYTES, randomBytes(64 * 1024)]);
 /** The teaching chain the materials access guard walks. */
 async function seedOffering() {
   const teacher = await helpers.seedUser({ role: Role.TEACHER });
-  const faculty = await prisma.faculty.create({ data: { name: 'كلية اختبار r175' } });
+  const inst = await helpers.seedInstitution();
+  const faculty = await prisma.faculty.create({
+    data: { name: 'كلية اختبار r175', city: 'طرابلس', institutionId: inst.id },
+  });
   const department = await prisma.department.create({ data: { name: 'قسم اختبار r175', facultyId: faculty.id } });
   const course = await prisma.course.create({
-    data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'مقرر اختبار r175', departmentId: department.id },
+    data: { code: `CS-${helpers.uniqueSuffix()}`, name: 'مقرر اختبار r175', departmentId: department.id, institutionId: inst.id },
   });
   const offering = await prisma.courseOffering.create({
     data: { courseId: course.id, teacherId: teacher.id, term: '2026-FALL' },
