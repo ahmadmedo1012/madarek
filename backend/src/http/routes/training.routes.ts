@@ -542,6 +542,17 @@ router.get('/training/me/certificates', async (req, res, next) => {
 });
 
 // ─── Leaderboard ─────────────────────────────────────────────────
+/* r179 (phase-5) classification — SHARED_CATALOG, deliberately
+ * platform-wide (docs/architecture/multi-institution/
+ * data-scope-inventory.md): PointsLedger sums points earned through
+ * the TRAINING catalogue (TrainingTrack/TrainingLesson/Badge), which
+ * stays a PLATFORM-SHARED catalogue by design — every institution's
+ * users train on the same public tracks, so their points compete on
+ * one platform-wide board. This is NOT an institution-isolation gap:
+ * no institution-private academic data feeds it. /training/me,
+ * /training/me/badges and /training/me/certificates are USER-scoped
+ * reads (PointsLedger/Certificate rows keyed by userId) — likewise
+ * unchanged by institution isolation. */
 router.get('/training/leaderboard', async (_req, res, next) => {
   try {
     const top = await prisma.pointsLedger.groupBy({

@@ -38,3 +38,20 @@ export const queryClient = new QueryClient({
     mutations: { retry: 0 },
   },
 });
+
+/* r179 (phase-5): the institution-scope key convention — every
+ * institution-dependent resource query (hooks/resources/*) appends its
+ * scope segment (from useInstitutionScope) at the END of the key.
+ * Appending — never prepending — keeps every existing prefix
+ * invalidation (['posts'], ['competitions', id], ['me', 'dashboard']…)
+ * matching the scoped keys unchanged, so mutation refresh semantics
+ * are byte-identical. A switch changes the segment → the query re-keys
+ * → fresh fetch under the new context, and the old institution's
+ * cached rows stay behind under their own (stale) key where nothing
+ * renders them. Pure so the convention is unit-testable. */
+export function withInstitutionScope<T extends readonly unknown[]>(
+  key: T,
+  institutionScope: string | null,
+): [...T, string | null] {
+  return [...key, institutionScope];
+}

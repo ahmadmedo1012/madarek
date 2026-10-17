@@ -5,6 +5,8 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 
 // ── Exams ──────────────────────────────────────────────────────
 export type QType = 'MCQ' | 'TRUE_FALSE' | 'SHORT' | 'ESSAY';
@@ -30,8 +32,9 @@ export function useQuestionBank(filter?: { categoryId?: string; difficulty?: Dif
   if (filter?.type) qs.set('type', filter.type);
   if (filter?.q) qs.set('q', filter.q);
   const query = qs.toString() ? `?${qs}` : '';
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['question-bank', filter],
+    queryKey: withInstitutionScope(['question-bank', filter], inst),
     queryFn: () => unwrap<QuestionRow[]>(api.get('/question-bank' + query)),
   });
 }
@@ -48,8 +51,9 @@ export interface QuestionCategoryRow {
   _count: { questions: number };
 }
 export function useQuestionCategories() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['question-bank', 'categories'],
+    queryKey: withInstitutionScope(['question-bank', 'categories'], inst),
     queryFn: () => unwrap<QuestionCategoryRow[]>(api.get('/question-bank/categories')),
   });
 }
@@ -69,8 +73,9 @@ export interface ExamTemplateRow {
   _count: { questions: number; attempts: number };
 }
 export function useExamTemplates() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['exams', 'templates'],
+    queryKey: withInstitutionScope(['exams', 'templates'], inst),
     queryFn: () => unwrap<ExamTemplateRow[]>(api.get('/exams/templates')),
   });
 }
@@ -123,8 +128,9 @@ export interface ExamTemplateDetail {
   _count: { attempts: number };
 }
 export function useExamTemplate(id: string | undefined) {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['exams', 'templates', id],
+    queryKey: withInstitutionScope(['exams', 'templates', id], inst),
     enabled: !!id,
     queryFn: () => unwrap<ExamTemplateDetail>(api.get(`/exams/templates/${id}`)),
   });
@@ -231,8 +237,9 @@ export interface ModerationQueueItem {
   _count: { questions: number };
 }
 export function useExamModerationQueue() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['exams', 'moderation-queue'],
+    queryKey: withInstitutionScope(['exams', 'moderation-queue'], inst),
     queryFn: () => unwrap<ModerationQueueItem[]>(api.get('/exams/moderation-queue')),
   });
 }
@@ -287,8 +294,9 @@ export interface ExamAttemptRow {
  *  the template detail key, so both refresh together (the ['exams']
  *  family reaches them all). */
 export function useExamAttempts(templateId: string | undefined) {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['exams', 'templates', templateId, 'attempts'],
+    queryKey: withInstitutionScope(['exams', 'templates', templateId, 'attempts'], inst),
     enabled: !!templateId,
     queryFn: () => unwrap<ExamAttemptRow[]>(api.get(`/exams/templates/${templateId}/attempts`)),
   });

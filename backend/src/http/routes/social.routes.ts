@@ -149,6 +149,33 @@ export interface AnnouncementTargetPermissions {
   offering: 'any' | readonly string[];
 }
 
+/**
+ * r179 (phase-5): OR-conditions matching announcements whose SCOPED
+ * target lives inside ONE institution, plus PLATFORM (global by
+ * design — visible to every authed user). The oversight
+ * (ADMIN/QUALITY) feed filter: a FACULTY/DEPARTMENT/OFFERING row of
+ * ANOTHER institution never enters the OR, so it never reaches the
+ * caller. Pure mirror of buildAnnouncementScopeConditions (the
+ * own-scope variant) — unit-tested in social-logic.test.ts.
+ */
+export function institutionAnnouncementConditions(scope: {
+  facultyIds: readonly string[];
+  departmentIds: readonly string[];
+  offeringIds: readonly string[];
+}): Prisma.AnnouncementWhereInput[] {
+  const conditions: Prisma.AnnouncementWhereInput[] = [{ scope: 'PLATFORM' }];
+  if (scope.facultyIds.length > 0) {
+    conditions.push({ scope: 'FACULTY', scopeId: { in: [...scope.facultyIds] } });
+  }
+  if (scope.departmentIds.length > 0) {
+    conditions.push({ scope: 'DEPARTMENT', scopeId: { in: [...scope.departmentIds] } });
+  }
+  if (scope.offeringIds.length > 0) {
+    conditions.push({ scope: 'OFFERING', scopeId: { in: [...scope.offeringIds] } });
+  }
+  return conditions;
+}
+
 /** Arabic labels for the announcement scopes (D17-3 message policy —
  * user-facing error text names the scope in Arabic, never the raw enum). */
 const ANNOUNCEMENT_SCOPE_LABEL_AR: Record<Exclude<AnnouncementScope, 'PLATFORM'>, string> = {
@@ -197,6 +224,27 @@ export function rsvpWouldExceedCapacity(
 //  Announcements
 // ════════════════════════════════════════════════════════════════
 
+/* r179 (phase-5): the verified institution-context gate for every
+ * institution-scoped social surface — a contextless institutional
+ * caller (STUDENT/TEACHER/ADMIN/QUALITY) gets 403
+ * INSTITUTION_CONTEXT_REQUIRED (fail closed: POST
+ * /auth/select-institution first; NO default institution, never the
+ * legacy oldest-profile fallback), and a stale/forged claim surfaces
+ * resolveCallerInstitutionScope's 403 INSTITUTION_CONTEXT_INVALID.
+ * OWNER is handled by the CALLERS (platform-wide oversight, no
+ * membership by design). */
+async function requireSocialInstitution(userId: string, claim: string | null): Promise<string> {
+  const institutionId = await resolveCallerInstitutionScope(userId, claim);
+  if (!institutionId) {
+    throw new AppError(
+      'INSTITUTION_CONTEXT_REQUIRED',
+      'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
+      403,
+    );
+  }
+  return institutionId;
+}
+
 /** GET /announcements/feed — visible to current user (scoped) */
 router.get('/announcements/feed', async (req, res, next) => {
   try {
@@ -204,12 +252,12 @@ router.get('/announcements/feed', async (req, res, next) => {
     const role = req.user!.role;
     const now = new Date();
 
-    // Oversight roles see every live announcement. OWNER belongs here too:
-    // the create path and lib/permissions.ts both treat OWNER as oversight,
-    // but the feed previously dropped them into the scoped branch with no
-    // student/teacher profile — leaving them only PLATFORM rows
-    // (audit 11-c P1-3).
-    if (role === Role.ADMIN || role === Role.QUALITY || role === Role.OWNER) {
+    // r179 (phase-5): the feed is institution-scoped. OWNER keeps the
+    // PLATFORM-WIDE view (the create path and lib/permissions.ts both
+    // treat OWNER as oversight; the platform owner holds no membership
+    // so there is no context to scope by — audit 11-c P1-3's fix kept
+    // them out of the scoped branch).
+    if (role === Role.OWNER) {
       const all = await prisma.announcement.findMany({
         where: unexpiredAnnouncementFilter(now),
         include: { author: { select: { firstName: true, lastName: true, avatarColor: true, avatarInitials: true, role: true } } },
@@ -220,20 +268,67 @@ router.get('/announcements/feed', async (req, res, next) => {
       return;
     }
 
+    // r179 (phase-5): ADMIN/QUALITY are INSTITUTIONAL roles — their
+    // oversight view covers THEIR institution's scoped announcements
+    // + PLATFORM rows only (previously every institution's scoped rows
+    // leaked into any admin's feed). Contextless → 403 fail-closed.
+    if (role === Role.ADMIN || role === Role.QUALITY) {
+      const institutionId = await requireSocialInstitution(userId, req.user!.institutionId);
+      const faculties = await prisma.faculty.findMany({
+        where: { institutionId },
+        select: { id: true, departments: { select: { id: true } } },
+      });
+      const offerings = await prisma.courseOffering.findMany({
+        where: { course: { institutionId } },
+        select: { id: true },
+      });
+      const mine = await prisma.announcement.findMany({
+        where: {
+          AND: [
+            {
+              OR: institutionAnnouncementConditions({
+                facultyIds: faculties.map((f) => f.id),
+                departmentIds: faculties.flatMap((f) => f.departments.map((d) => d.id)),
+                offeringIds: offerings.map((o) => o.id),
+              }),
+            },
+            unexpiredAnnouncementFilter(now),
+          ],
+        },
+        include: {
+          author: { select: { firstName: true, lastName: true, avatarColor: true, avatarInitials: true, role: true } },
+        },
+        orderBy: [{ pinned: 'desc' }, { publishedAt: 'desc' }],
+        take: SOCIAL_LIST_TAKE,
+      });
+      res.json({ data: mine });
+      return;
+    }
+
     // Build scope filter for student/teacher.
-    // r178: the caller's profile is per-membership — resolved in their
-    // token institution context when one is selected
-    // (TODO(r179/phase-5): institution-scoped feed).
-    const profile = role === Role.STUDENT ? await resolveStudentProfile(userId, req.user!.institutionId) : null;
+    // r179 (phase-5): the caller's VERIFIED institution context is
+    // required (fail-closed — the r178 legacy profile fallback would
+    // have built the scope from ANOTHER institution's profile), and
+    // every contributing read is scoped to it: the profile resolves
+    // IN the institution, enrollments/taught offerings are filtered
+    // through the offering→course→institution chain so another
+    // institution's rows can never widen the OFFERING scope.
+    const institutionId = await requireSocialInstitution(userId, req.user!.institutionId);
+    const profile = role === Role.STUDENT ? await resolveStudentProfile(userId, institutionId) : null;
     // r155a (audit finding 5): only ACTIVE enrollments contribute
     // OFFERING-scoped announcements (the platform-wide 'active'
     // convention — see lib/permissions.ts decideOfferingAccess).
     const enrollments = role === Role.STUDENT ? await prisma.enrollment.findMany({
-      where: { studentId: userId, status: 'active' }, select: { offeringId: true },
+      where: {
+        studentId: userId,
+        status: 'active',
+        offering: { course: { institutionId } },
+      },
+      select: { offeringId: true },
     }) : [];
 
     const teacherProfile = role === Role.TEACHER
-      ? await resolveTeacherProfile(userId, req.user!.institutionId)
+      ? await resolveTeacherProfile(userId, institutionId)
       : null;
     const teacherDepartment = teacherProfile
       ? await prisma.department.findUnique({
@@ -242,7 +337,8 @@ router.get('/announcements/feed', async (req, res, next) => {
         })
       : null;
     const teacherOfferings = role === Role.TEACHER ? await prisma.courseOffering.findMany({
-      where: { teacherId: userId }, select: { id: true },
+      where: { teacherId: userId, course: { institutionId } },
+      select: { id: true },
     }) : [];
 
     const announcements = await prisma.announcement.findMany({
@@ -317,20 +413,29 @@ router.post(
       // scopeId forgery guard: the target must EXIST and be inside the
       // author's permitted scopes. Previously any cuid passed through,
       // so a teacher could announce into any faculty/department/offering.
+      // r179 (phase-5): the target must ALSO live inside the author's
+      // VERIFIED institution context — a FACULTY/DEPARTMENT/OFFERING
+      // scope reaches only that institution's users, so authoring into
+      // a foreign institution's target is a 404 (same envelope as a
+      // nonexistent id — no existence leak). OWNER stays platform-wide.
       if (body.scope !== 'PLATFORM' && body.scopeId) {
         const role = req.user!.role;
         const uid = req.user!.id;
+        const authorInstitutionId =
+          role === Role.OWNER ? null : await requireSocialInstitution(uid, req.user!.institutionId);
 
         // Permitted target ids per role. ADMIN/QUALITY (ANNOUNCE_FACULTY
-        // holders) may target any EXISTING faculty/department/offering;
+        // holders) may target any EXISTING faculty/department/offering
+        // OF THEIR INSTITUTION (the existence half below enforces it);
         // TEACHER/STUDENT are limited to their own scopes.
         let permitted: AnnouncementTargetPermissions;
         if (role === Role.ADMIN || role === Role.QUALITY || role === Role.OWNER) {
           permitted = { faculty: 'any', department: 'any', offering: 'any' };
         } else if (role === Role.TEACHER) {
-          // r178: per-membership profile resolved in the caller's
-          // institution context (TODO(r179/phase-5): full isolation).
-          const tp = await resolveTeacherProfile(uid, req.user!.institutionId);
+          // r179: per-membership profile resolved in the caller's
+          // VERIFIED institution context; taught offerings are scoped
+          // through the course→institution chain.
+          const tp = await resolveTeacherProfile(uid, authorInstitutionId!);
           const tpDepartment = tp
             ? await prisma.department.findUnique({
                 where: { id: tp.departmentId },
@@ -338,7 +443,7 @@ router.post(
               })
             : null;
           const own = await prisma.courseOffering.findMany({
-            where: { teacherId: uid },
+            where: { teacherId: uid, course: { institutionId: authorInstitutionId! } },
             select: { id: true },
           });
           permitted = {
@@ -347,10 +452,14 @@ router.post(
             offering: own.map((o) => o.id),
           };
         } else {
-          // STUDENT (or unusual grant) — own faculty/department/enrolled offerings.
-          const sp = await resolveStudentProfile(uid, req.user!.institutionId);
+          // STUDENT (or unusual grant) — own faculty/department/enrolled
+          // offerings, all resolved inside the verified institution.
+          const sp = await resolveStudentProfile(uid, authorInstitutionId!);
           const enr = await prisma.enrollment.findMany({
-            where: { studentId: uid },
+            where: {
+              studentId: uid,
+              offering: { course: { institutionId: authorInstitutionId! } },
+            },
             select: { offeringId: true },
           });
           permitted = {
@@ -362,23 +471,40 @@ router.post(
 
         // Existence half of the guard (DB reads — 404 before 403, so a
         // nonexistent target is not leaked as "exists but forbidden").
+        // r179: the lookup carries the author's institution — a FOREIGN
+        // target id simply does not resolve → 404.
         if (body.scope === 'FACULTY') {
-          const faculty = await prisma.faculty.findUnique({
-            where: { id: body.scopeId },
-            select: { id: true },
-          });
+          const faculty = authorInstitutionId
+            ? await prisma.faculty.findFirst({
+                where: { id: body.scopeId, institutionId: authorInstitutionId },
+                select: { id: true },
+              })
+            : await prisma.faculty.findUnique({
+                where: { id: body.scopeId },
+                select: { id: true },
+              });
           if (!faculty) throw AppError.notFound('الكلّيّة غير موجودة');
         } else if (body.scope === 'DEPARTMENT') {
-          const dept = await prisma.department.findUnique({
-            where: { id: body.scopeId },
-            select: { id: true },
-          });
+          const dept = authorInstitutionId
+            ? await prisma.department.findFirst({
+                where: { id: body.scopeId, faculty: { institutionId: authorInstitutionId } },
+                select: { id: true },
+              })
+            : await prisma.department.findUnique({
+                where: { id: body.scopeId },
+                select: { id: true },
+              });
           if (!dept) throw AppError.notFound('القسم غير موجود');
         } else if (body.scope === 'OFFERING') {
-          const offering = await prisma.courseOffering.findUnique({
-            where: { id: body.scopeId },
-            select: { id: true },
-          });
+          const offering = authorInstitutionId
+            ? await prisma.courseOffering.findFirst({
+                where: { id: body.scopeId, course: { institutionId: authorInstitutionId } },
+                select: { id: true },
+              })
+            : await prisma.courseOffering.findUnique({
+                where: { id: body.scopeId },
+                select: { id: true },
+              });
           if (!offering) throw AppError.notFound('المقرر المطلوب غير موجود');
         }
 
@@ -407,9 +533,17 @@ router.post(
 //  Competitions
 // ════════════════════════════════════════════════════════════════
 
-router.get('/competitions', async (_req, res, next) => {
+/* r179 (phase-5): the competitions list is institution-scoped —
+ * institutional callers (verified context required, 403 fail-closed
+ * without one) see THEIR institution's competitions only. OWNER keeps
+ * the platform-wide oversight view (no membership by design). */
+router.get('/competitions', async (req, res, next) => {
   try {
+    const institutionId = req.user!.role === Role.OWNER
+      ? null
+      : await requireSocialInstitution(req.user!.id, req.user!.institutionId);
     const competitions = await prisma.competition.findMany({
+      where: institutionId ? { institutionId } : undefined,
       include: {
         organizer: { select: { firstName: true, lastName: true, role: true } },
         _count: { select: { entries: true } },
@@ -426,10 +560,16 @@ router.get('/competitions', async (_req, res, next) => {
   } catch (e) { next(e); }
 });
 
+/* r179 (phase-5): a competition id of ANOTHER institution is a 404
+ * (the same envelope as a nonexistent id) for institutional callers;
+ * OWNER's platform-wide oversight keeps reading any row. */
 router.get('/competitions/:id', async (req, res, next) => {
   try {
-    const c = await prisma.competition.findUnique({
-      where: { id: req.params.id },
+    const institutionId = req.user!.role === Role.OWNER
+      ? null
+      : await requireSocialInstitution(req.user!.id, req.user!.institutionId);
+    const c = await prisma.competition.findFirst({
+      where: { id: req.params.id, ...(institutionId ? { institutionId } : {}) },
       include: {
         organizer: { select: { firstName: true, lastName: true, role: true } },
         entries: {
@@ -470,14 +610,7 @@ router.post('/competitions', requireCapability('COMPETITIONS_RUN'), validate(cre
     /* r179 (phase-5) minimal lead fix: competitions are created INSIDE
      * the caller's verified institution context — no context, no
      * create (fail closed, never a default institution). */
-    const institutionId = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
-    if (!institutionId) {
-      throw new AppError(
-        'INSTITUTION_CONTEXT_REQUIRED',
-        'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
-        403,
-      );
-    }
+    const institutionId = await requireSocialInstitution(req.user!.id, req.user!.institutionId);
     const created = await prisma.competition.create({
       data: { ...body, organizerId: req.user!.id, institutionId },
     });
@@ -501,6 +634,10 @@ export const enterCompSchema = z.object({
 router.post('/competitions/:id/enter', validate(enterCompSchema), async (req, res, next) => {
   try {
     const userId = req.user!.id;
+    // r179 (phase-5): entering is an institution-scoped write — the
+    // caller's VERIFIED context is required (403 fail-closed) and a
+    // competition of ANOTHER institution is a 404, never an entry.
+    const institutionId = await requireSocialInstitution(userId, req.user!.institutionId);
     const entry = await prisma.$transaction(async (tx) => {
       // Serialize per competition (the RSVP pattern below): under plain
       // READ COMMITTED the old pre-read → upsert pair let an entry land in
@@ -508,11 +645,14 @@ router.post('/competitions/:id/enter', validate(enterCompSchema), async (req, re
       // lock makes the status/deadline re-check authoritative — a close or
       // judge claim either committed before us (we re-read its outcome) or
       // waits and re-evaluates its own status condition after we commit.
+      // r179: institutionId rides the locked read — a foreign id is
+      // checked under the SAME lock (no TOCTOU between a scoped pre-read
+      // and the locked row).
       const rows = await tx.$queryRaw<
-        Array<{ id: string; status: CompetitionStatus; deadline: Date }>
-      >`SELECT id, status, deadline FROM "Competition" WHERE id = ${req.params.id} FOR UPDATE`;
+        Array<{ id: string; institutionId: string; status: CompetitionStatus; deadline: Date }>
+      >`SELECT id, "institutionId", status, deadline FROM "Competition" WHERE id = ${req.params.id} FOR UPDATE`;
       const comp = rows[0];
-      if (!comp) throw AppError.notFound('المسابقة غير موجودة');
+      if (!comp || comp.institutionId !== institutionId) throw AppError.notFound('المسابقة غير موجودة');
       if (comp.status !== 'OPEN') throw new AppError('BAD_REQUEST', 'أُغلقت المسابقة أمام المشاركات', 400);
       if (comp.deadline < new Date()) throw new AppError('BAD_REQUEST', 'انتهى موعد التسليم في هذه المسابقة', 400);
 
@@ -683,11 +823,18 @@ export function eventsWithMyRsvp<
   return events.map((e) => ({ ...e, myRsvp: statusByEvent.get(e.id) ?? null }));
 }
 
+/* r179 (phase-5): the events list is institution-scoped — institutional
+ * callers (verified context required, 403 fail-closed without one) see
+ * THEIR institution's events only; OWNER keeps the platform-wide
+ * oversight view. */
 router.get('/events', async (req, res, next) => {
   try {
     const now = new Date();
+    const institutionId = req.user!.role === Role.OWNER
+      ? null
+      : await requireSocialInstitution(req.user!.id, req.user!.institutionId);
     const events = await prisma.campusEvent.findMany({
-      where: { endsAt: { gte: now } },
+      where: { endsAt: { gte: now }, ...(institutionId ? { institutionId } : {}) },
       include: {
         organizer: { select: { firstName: true, lastName: true, role: true } },
         // 5-A12 P2-1: only GOING RSVPs hold a seat, so only they count
@@ -731,14 +878,7 @@ router.post('/events', requireCapability('EVENTS_RUN'), validate(createEventSche
     const body = req.body as z.infer<typeof createEventSchema>;
     /* r179 (phase-5) minimal lead fix: events are created INSIDE the
      * caller's verified institution context — fail closed without one. */
-    const institutionId = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
-    if (!institutionId) {
-      throw new AppError(
-        'INSTITUTION_CONTEXT_REQUIRED',
-        'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
-        403,
-      );
-    }
+    const institutionId = await requireSocialInstitution(req.user!.id, req.user!.institutionId);
     const created = await prisma.campusEvent.create({
       data: { ...body, organizerId: req.user!.id, institutionId },
     });
@@ -754,7 +894,14 @@ router.post('/events/:id/rsvp', validate(rsvpSchema), async (req, res, next) => 
   try {
     const { status } = req.body as z.infer<typeof rsvpSchema>;
     const userId = req.user!.id;
-    const event = await prisma.campusEvent.findUnique({ where: { id: req.params.id } });
+    // r179 (phase-5): an RSVP is an institution-scoped write — the
+    // caller's VERIFIED context is required (403 fail-closed) and an
+    // event of ANOTHER institution is a 404 (same envelope as a
+    // nonexistent id — no cross-institution existence leak).
+    const institutionId = await requireSocialInstitution(userId, req.user!.institutionId);
+    const event = await prisma.campusEvent.findFirst({
+      where: { id: req.params.id, institutionId },
+    });
     if (!event) throw AppError.notFound('الفعالية غير موجودة');
     // r152b (A5 P3): the read side filters endsAt >= now — a past event
     // must not accept new RSVPs or status flips that would mutate

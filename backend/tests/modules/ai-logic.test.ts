@@ -195,13 +195,17 @@ describe('DELETE /ai/conversations/:id — ownership + cascade (r164g)', () => {
     // Same where-shape as the two GET conversation routes: id AND the
     // caller's userId. A bare prisma.aiConversation.delete({ where: {
     // id: req.params.id } }) would let any user delete any conversation.
+    // r179 (phase-5): the lookup is ALSO institution-scoped — the
+    // conversation must belong to the caller's current institution.
     expect(block).toContain('prisma.aiConversation.findFirst');
-    expect(block).toContain('where: { id: req.params.id!, userId: req.user!.id }');
+    expect(block).toContain('where: { id: req.params.id!, userId: req.user!.id, institutionId }');
     expect(block).not.toMatch(/aiConversation\.delete\(\{\s*where:\s*\{\s*id:\s*req\.params\.id/);
   });
 
-  it('a miss answers the SAME honest 404 copy the read paths answer (3 call sites)', () => {
-    expect(routeSource.split("AppError.notFound('المحادثة غير موجودة')").length - 1).toBe(3);
+  it('a miss answers the SAME honest 404 copy the read paths answer (4 call sites)', () => {
+    // r179: the chat route's conversation lookup joined the family —
+    // 4 call sites now answer the same honest 404 copy.
+    expect(routeSource.split("AppError.notFound('المحادثة غير موجودة')").length - 1).toBe(4);
   });
 
   it('deletes the conversation (messages cascade via schema onDelete) and answers { data: { ok: true } }', () => {

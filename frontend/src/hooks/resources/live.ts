@@ -5,6 +5,8 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 
 export interface LiveSessionRow {
   id: string;
@@ -26,8 +28,9 @@ export interface LiveSessionRow {
   teacher: { firstName: string; lastName: string; avatarInitials: string | null; avatarColor: string | null };
 }
 export function useLiveSessions() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['live', 'sessions'],
+    queryKey: withInstitutionScope(['live', 'sessions'], inst),
     queryFn: () => unwrap<LiveSessionRow[]>(api.get('/live/sessions')),
     refetchInterval: 30_000,
     refetchIntervalInBackground: false,

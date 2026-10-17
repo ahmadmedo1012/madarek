@@ -6,6 +6,12 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
 
+/* r179 (phase-5) scope classification: this module's reads are either
+ * PLATFORM-SHARED catalogue surfaces (books/mooc/jobs/labs/AR — no
+ * institution column by design) or USER-scoped rows (me/loans,
+ * me/lab-sessions — keyed by userId). No key here carries the
+ * institution scope segment — not an omission, the classification. */
+
 // ── Courses (admin) ────────────────────────────────────────────
 export interface Course {
   id: string;

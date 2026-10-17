@@ -7,6 +7,8 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 
 // ── AI ─────────────────────────────────────────────────────────
 export function useAiChat() {
@@ -73,10 +75,15 @@ export interface AiMessageRow {
   createdAt: string;
 }
 
-/** The caller's conversations (newest first, server-capped at 50). */
+/** The caller's conversations in the CURRENT institution context
+ * (newest first, server-capped at 50). r179 (phase-5): the key carries
+ * the institution scope — a switch re-keys the sidebar to the new
+ * institution's history instead of flashing the old one; the backend
+ * filters by the verified context regardless. */
 export function useAiConversations() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['ai', 'conversations'],
+    queryKey: withInstitutionScope(['ai', 'conversations'], inst),
     queryFn: () => unwrap<AiConversation[]>(api.get('/ai/conversations')),
   });
 }

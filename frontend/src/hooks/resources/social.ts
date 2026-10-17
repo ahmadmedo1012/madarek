@@ -5,6 +5,13 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
+
+// r179 (phase-5): every institution-dependent key in this module (the
+// whole social domain — posts/announcements/competitions/events) gains
+// the scope segment LAST; mutations keep their prefix invalidations
+// (['posts'], ['competitions']…), which still match the scoped keys.
 
 // ── Posts (community) ──────────────────────────────────────────
 export interface Post {
@@ -24,8 +31,9 @@ export interface Post {
 // share a cache entry) — consumers can page beyond the newest 20 posts;
 // the default keeps every existing call site byte-identical.
 export function usePosts(limit: number = 20) {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['posts', limit],
+    queryKey: withInstitutionScope(['posts', limit], inst),
     queryFn: () => unwrap<Post[]>(api.get(`/posts?limit=${limit}`)),
   });
 }
@@ -59,8 +67,9 @@ export interface AnnouncementRow {
   author: { firstName: string; lastName: string; avatarColor: string | null; avatarInitials: string | null; role: string };
 }
 export function useAnnouncements() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['announcements', 'feed'],
+    queryKey: withInstitutionScope(['announcements', 'feed'], inst),
     queryFn: () => unwrap<AnnouncementRow[]>(api.get('/announcements/feed')),
   });
 }
@@ -97,8 +106,9 @@ export interface CompetitionRow {
   _count: { entries: number };
 }
 export function useCompetitions() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['competitions'],
+    queryKey: withInstitutionScope(['competitions'], inst),
     queryFn: () => unwrap<CompetitionRow[]>(api.get('/competitions')),
   });
 }
@@ -120,8 +130,9 @@ export interface CompetitionDetail extends CompetitionRow {
   }>;
 }
 export function useCompetition(id: string | undefined) {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['competitions', id],
+    queryKey: withInstitutionScope(['competitions', id], inst),
     queryFn: () => unwrap<CompetitionDetail>(api.get(`/competitions/${id}`)),
     enabled: !!id,
   });
@@ -218,8 +229,9 @@ export interface CampusEventRow {
   myRsvp?: 'GOING' | 'MAYBE' | 'NO' | null;
 }
 export function useCampusEvents() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['campus-events'],
+    queryKey: withInstitutionScope(['campus-events'], inst),
     queryFn: () => unwrap<CampusEventRow[]>(api.get('/events')),
   });
 }
