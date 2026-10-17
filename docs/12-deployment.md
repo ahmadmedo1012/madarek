@@ -30,7 +30,13 @@ buildCommand: npm ci --include=dev && npm run build
 - `npm run build` (الجذر) = بناء الواجهة → بناء الخلفية → `db:deploy`
   الذي يشغّل **`prisma migrate deploy`** عبر `backend/scripts/migrate-deploy.mjs`
   (اختيار pooler/direct ذكي + إيقاظ Neon + 3 محاولات — التفصيل في
-  [07-database](07-database.md)).
+  [07-database](07-database.md)) → ثم **`db:seed`** (r180): بذرة مؤسستَي
+  العرض تعمل داخل بيئة البناء بعد كل نشر وتضمن وجود بيانات العرض —
+  عقد إعادة التشغيل: كلمات مرور حسابات العرض تُضبط للقيمة الموثقة
+  (`Madarek2026!`، تبقي بيانات اعتماد العرض صالحة)، بينما التقدم
+  التعليمي الذي تطوّر فعليًا (درجات/إتقان/مشاهدات/مستويات مهارات)
+  **لا يُرجَع أبدًا** (upserts إنشاء-فقط) — انظر رأس
+  `backend/prisma/seed.ts`.
 - ثم `startCommand: npm run start` → `node backend/dist/index.js`.
 
 > سبب «بلا DB» لبناء CI: الخطوة الأخيرة أعلاه تتطلب قاعدة حية، لذا يبني

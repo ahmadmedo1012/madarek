@@ -31,6 +31,17 @@
  * until the owner re-runs this seed (the upserts below rewrite the
  * password hash to "Madarek2026!" on every run). Fresh environments
  * always get "Madarek2026!".
+ *
+ * r180 — DEPLOY-TIME SEEDING: the root `npm run build` now chains
+ * `db:seed` after `db:deploy` (Render runs it in the service's build
+ * environment), so every deploy migrates then deterministically
+ * ensures the two-institution demo data exists. Re-run contract:
+ * (a) demo passwords are reset to the documented value on every run
+ * (keeps demo credentials usable), (b) learning progress a user or
+ * teacher evolved — grades, mastery, watch events, skill levels — is
+ * NEVER rewound (create-only upserts), (c) notifications/trainings
+ * metadata refresh (deliberate demo freshness). CI never runs the
+ * root build, so this only executes on Render deploys.
  */
 
 import {
@@ -599,7 +610,9 @@ async function main() {
   }
   await prisma.grade.upsert({
     where: { offeringId_studentId_kind: { offeringId: seFirst.id, studentId: student.id, kind: GradeKind.QUIZ_1 } },
-    update: { score: 88 },
+    // Non-destructive re-run: create the demo mark once; a re-run never
+    // overwrites a score the teacher later changed (deploy-time seeding).
+    update: {},
     create: { offeringId: seFirst.id, studentId: student.id, kind: GradeKind.QUIZ_1, score: 88 },
   });
 
@@ -734,7 +747,8 @@ async function main() {
     });
     await prisma.userSkill.upsert({
       where: { userId_skillId: { userId: student.id, skillId: sk.id } },
-      update: { level: s.level },
+      // Non-destructive re-run: preserve the level training evolved to.
+      update: {},
       create: { userId: student.id, skillId: sk.id, level: s.level, progressPct: s.level * 20 },
     });
   }
@@ -1035,7 +1049,9 @@ async function main() {
     const level = masteryDistribution[i] ?? 0.5;
     await prisma.studentMastery.upsert({
       where: { studentId_conceptId: { studentId: student.id, conceptId: concept.id } },
-      update: { level },
+      // Non-destructive re-run: the seeded level is only the starting
+      // distribution — re-runs preserve what exams/practice evolved it to.
+      update: {},
       create: {
         studentId: student.id,
         conceptId: concept.id,
@@ -1168,12 +1184,8 @@ async function main() {
         completed: true,
         lastSeenAt: daysAgo(2),
       },
-      update: {
-        watchedSec: seedLectureOne.durationSec,
-        totalSec: seedLectureOne.durationSec,
-        completed: true,
-        lastSeenAt: daysAgo(2),
-      },
+      // Non-destructive re-run: never rewind real watch progress.
+      update: {},
     });
   }
   if (seedLectureTwo) {
@@ -1187,12 +1199,8 @@ async function main() {
         completed: false,
         lastSeenAt: daysAgo(1),
       },
-      update: {
-        watchedSec: Math.round(seedLectureTwo.durationSec * 0.3),
-        totalSec: seedLectureTwo.durationSec,
-        completed: false,
-        lastSeenAt: daysAgo(1),
-      },
+      // Non-destructive re-run: never rewind real watch progress.
+      update: {},
     });
   }
 

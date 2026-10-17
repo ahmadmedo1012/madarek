@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "preinstall": "node scripts/warn-node-env.mjs",
-    "build": "npm run build -w frontend && npm run build -w backend && npm run db:deploy",
+    "build": "npm run build -w frontend && npm run build -w backend && npm run db:deploy && npm run db:seed",
     "start": "node backend/dist/index.js",
     "dev": "npm run dev -w backend",
     "dev:web": "npm run dev -w frontend",
