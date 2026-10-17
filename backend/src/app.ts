@@ -225,6 +225,15 @@ export function createApp() {
   // /institutions children, so nothing collides (boot-verified). The
   // /owner/* paths carry their own requireRole(OWNER) gate.
   app.use('/api/v1', institutionRoutes);
+  // r179d (phase-5): syncRoutes mounts here (before catalogRoutes) for
+  // the same ordering reason as institutionRoutes: its GET
+  // /university/facts is a PUBLIC route (the landing's facts feed),
+  // and sync's own auth gate is PATH-SCOPED to /admin — so anonymous
+  // requests for other routers' paths pass through untouched, while
+  // any earlier broad-mount router-level gate (catalog's) would 401
+  // anonymous /university/facts before syncRoutes ever runs. No
+  // syncRoutes path collides with a colleges/institution/catalog path.
+  app.use('/api/v1', syncRoutes);   // /admin/sync, /university/facts (public)
   // catalogRoutes mounts here (before meRoutes) for the same reason:
   // its GET /faculties is a PUBLIC route declared above the router's
   // own auth gate (audit 4-A13 P0-1 — the register funnel). Any
@@ -242,7 +251,6 @@ export function createApp() {
   app.use('/api/v1', socialRoutes);   // /announcements/*, /competitions/*, /events/*
   app.use('/api/v1', permissionsRoutes); // /me/permissions, /admin/users/*
   app.use('/api/v1', searchRoutes);   // /search/global
-  app.use('/api/v1', syncRoutes);     // /admin/sync, /university/facts
   app.use('/api/v1', teacherProfileRoutes); // /me/teacher-profile, /live/sessions/*
   app.use('/api/v1/ai', aiRoutes);
   app.use('/api/v1/files', filesRoutes);

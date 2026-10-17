@@ -79,10 +79,70 @@ function sourceLabelAr(label: string): string {
  * every university. A run for one institution never touches another
  * institution's facts (upserts, stale-marking, and run history are all
  * keyed by institutionId). The fixed default keeps existing callers
- * (scheduler boot-sync, POST /admin/sync/trigger) on the showcase
- * institution until they pass an explicit one.
+ * (runSync with no opts) on the showcase institution.
  */
 export const DEFAULT_SYNC_INSTITUTION_ID = 'inst-zawia-showcase';
+
+/**
+ * r179d (phase-5): the per-institution CONFIGURED sync sources — the
+ * registry that decides WHICH institutions the scheduler syncs and
+ * WHICH source POST /admin/sync/trigger runs.
+ *
+ * The University of Zawia static-markdown source (zu.edu.ly.md) is the
+ * ZAWIA SHOWCASE institution's source, NOT a global source for every
+ * university. An institution absent from this registry (today: every
+ * institution other than zawia-showcase, e.g. alandalus-demo) has NO
+ * configured source — the scheduler never syncs it, and a manual
+ * trigger for it answers an honest 400.
+ *
+ * Matching is by institution id OR slug (both unique in the DB): the
+ * showcase row is created with the FIXED id `inst-zawia-showcase` and
+ * slug `zawia-showcase` (prisma/seed.ts), so either identity resolves
+ * the same row. This is deliberately a simple in-code registry — there
+ * is no operator-editable source-config surface yet, so a DB config
+ * table would be speculative. Adding a future source = adding an entry
+ * here (a live-http fetcher plugs into loadFacts below).
+ */
+export interface InstitutionSyncConfig {
+  /** Institution id this config resolves to (fixed ids come from seed.ts). */
+  institutionId: string;
+  /** Institution slug (unique) — the human-facing identity. */
+  institutionSlug: string;
+  /** Source identifier `loadFacts()` understands ('static-markdown' today). */
+  source: string;
+}
+
+export const INSTITUTION_SYNC_CONFIGS: readonly InstitutionSyncConfig[] = [
+  {
+    institutionId: DEFAULT_SYNC_INSTITUTION_ID,
+    institutionSlug: 'zawia-showcase',
+    source: 'static-markdown',
+  },
+];
+
+/**
+ * The institution whose facts the PUBLIC `GET /university/facts`
+ * serves when no `?institution=slug` param arrives — the showcase
+ * institution (the public landing's labeled reference data). Distinct
+ * from the registry on purpose: the public default and the scheduled
+ * sources are separate decisions, even though both are the showcase
+ * today.
+ */
+export const PUBLIC_FACTS_DEFAULT_SLUG = 'zawia-showcase';
+
+/**
+ * The configured source for an institution, matched by id OR slug.
+ * `null` = the institution has NO configured source (never synced).
+ */
+export function findInstitutionSyncConfig(
+  institution: { id: string; slug: string },
+): InstitutionSyncConfig | null {
+  return (
+    INSTITUTION_SYNC_CONFIGS.find(
+      (c) => c.institutionId === institution.id || c.institutionSlug === institution.slug,
+    ) ?? null
+  );
+}
 
 export async function runSync(
   opts: { source?: string; institutionId?: string } = {},
@@ -109,12 +169,17 @@ export async function runSync(
   });
   if (reaped.count > 0) {
     // Best-effort (never rejects) — surfaces sync health on the OWNER
-    // alerts page instead of failing silently.
+    // alerts page instead of failing silently. r179d: the metadata
+    // carries institutionId — runs are per-institution since phase-5,
+    // and support needs to know WHICH institution's runs were reaped.
+    // (The throttle key stays the alert `code` — a reap storm across
+    // several institutions collapses into one alert per 5-minute
+    // window, which is the intended throttle semantics.)
     void raiseOperationalAlert(prisma, {
       severity: 'warning',
       code: 'SYNC_STALE_RUNS_REAPED',
       message: `${reaped.count} sync run(s) were still RUNNING after 15 minutes and have been auto-marked FAILED.`,
-      metadata: { reapedCount: reaped.count },
+      metadata: { reapedCount: reaped.count, institutionId },
     });
   }
 
