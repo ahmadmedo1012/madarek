@@ -14,7 +14,7 @@
 | Typecheck | `npm run typecheck` | **نجاح** — src + tests للجهتين (tsconfig.test.json) |
 | اختبارات الواجهة | `npm --prefix frontend run test` | **169 ملفًا، 1819 اختبارًا، كلها ناجحة** (~162 ثانية) |
 | اختبارات الخلفية | `npm --prefix backend run test` | **68 ملفًا، 1595 اختبارًا، كلها ناجحة** (~30 ثانية) |
-| اختبارات تكامل DB (اختيارية) | `DATABASE_URL=… npm run test:integration` | **8 ملفات، 61 اختبارًا ناجحة** (~12 ثانية) — قاعدة تجريبية معزولة فقط، خارج `npm test` (القسم الخاص بها أدناه) |
+| اختبارات تكامل DB (اختيارية) | `DATABASE_URL=… npm run test:integration` | **11 ملفًا، 113 اختبارًا ناجحًا** (r181: أُضيف ملكية الملفات العابرة للمؤسستين وعزل المزامنة وتفارب القيود الفريدة) (~12 ثانية) — قاعدة تجريبية معزولة فقط، خارج `npm test` (القسم الخاص بها أدناه) |
 | بوابة التكافؤ | `node scripts/verify-parity-export.mjs` | **PASS — 163 فحص token** + تدقيق متغيرات غير معرفة + قيم مستبعدة + توازن أقواس |
 | الأيقونات | `bash scripts/check-icons.sh` | OK — Lucide فقط |
 | رموز الحركة | `bash scripts/check-motion-tokens.sh` | OK — لا قيم خام |
@@ -216,7 +216,7 @@ cd .. && DATABASE_URL=postgresql://postgres:postgres@localhost:5433/madarek_intt
   npm run test:integration
 ```
 
-**8 ملفات / 61 اختبارًا — 61/61 ناجحة** (تشغيل 2026-10-17 على
+**11 ملفًا / 113 اختبارًا — 113/113 ناجحة** (تشغيل 2026-10-17 على
 Postgres 18 محلي، Node 24؛ ~12 ثانية). التنظيف بين الاختبارات
 ذاتي: كل ملف يمحو جداول `public` كاملة (`TRUNCATE … RESTART IDENTITY
 CASCADE`) عدا `_prisma_migrations` عبر استبطان `information_schema`
@@ -248,7 +248,7 @@ CASCADE`) عدا `_prisma_migrations` عبر استبطان `information_schema`
 | المكان | المحتوى |
 |---|---|
 | `backend/tests/modules/` | 67 حزمة + حزمة colocated واحدة في `src/modules/search/__tests__/` (glob ثانٍ عمدًا — تعليق الملف يشرح) |
-| `backend/tests/integration/` | حزام تكامل DB الاختياري (r171b): حارس البيئة + مساعدات + 8 ملفات (معاملات/أقفال/قيود فريدة/سائق postgres r175/مسار مزوّد AI r175d/رحلات مسجّلة r176g/تدفّق المؤسسات متعددة r178) — إعداد vitest منفصل، خارج `npm test` |
+| `backend/tests/integration/` | حزام تكامل DB الاختياري (r171b): حارس البيئة + مساعدات + 11 ملفًا (معاملات/أقفال/قيود فريدة/سائق postgres r175/مسار مزوّد AI r175d/رحلات مسجّلة r176g/تدفّق المؤسسات متعددة r178/عزل المزامنة وعزل ملفات المؤسستين r179) — إعداد vitest منفصل، خارج `npm test` |
 | `frontend/tests/unit/` | 163 ملفًا: مسارات App، تغطية nav والعناوين، جلسة/تهيئة، صفحات، a11y، لقطات tokens |
 | `frontend/tests/motion|gallery/` | 6 ملفات حركة/معرض |
 | `frontend/tests/e2e/` | رحلات Playwright المحكمّة (r164k، حلقات الكتابة والحالة الوهمية r165h) — مواصفات `*.e2e.ts` + وسيلة النقل الوهمي وحِمل الحمولات المشترك مع جرد الأسطح |
