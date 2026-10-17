@@ -29,7 +29,7 @@ Neon; deployed on Render with auto-deploy from `main`.
 
 | Item | State |
 |---|---|
-| Core features, all five roles | **Shipped** — 1858 frontend + 1747 backend unit tests green + 113 DB integration tests (2026-10-17, rounds r141–r180) |
+| Core features, all five roles | **Shipped** — 1872 frontend + 1756 backend unit tests green + 115 DB integration tests (2026-10-17, rounds r141–r182) |
 | Design system | Documented in `DESIGN.md` — parity gate 163/163 green |
 | AI assistant | **Mastery-aware chat with per-response engine attribution** — runs the in-process local engine by default (zero external calls); an OpenAI-compatible/OpenRouter provider activates only when `AI_PROVIDER`/`AI_API_KEY` are set in the deployment (the current production deployment has them unset → local engine; `/api/v1/ai/config` reports the live truth). The plagiarism scan stays a deterministic simulation, openly labeled; see `docs/02-features.md` |
 | English i18n | Not implemented. Real E2E (28 Playwright journeys) and PDF file uploads (durable postgres storage, r175) **are shipped** — full list in `docs/16-decisions-and-limitations.md` |
@@ -81,7 +81,7 @@ seeding on Render runs after every deploy, non-destructively (r180).
 ```bash
 npm run lint                          # ESLint — 0 errors
 npm run typecheck                     # tsc — src + tests, both sides (no DB)
-npm test                              # 1858 FE + 1747 BE (no DB; incl. 7 live S3 tests against s3rver) — npm run test:integration adds 113 DB tests on a local disposable database (14 cross-institution r179 isolation tests among them)
+npm test                              # 1872 FE + 1756 BE (no DB; incl. 7 live S3 tests against s3rver) — npm run test:integration adds 115 DB tests on a local disposable database (14 cross-institution r179 isolation tests + 2 seed repeat-safety r182 tests among them)
 node scripts/verify-parity-export.mjs # design-parity gate 163/163
 bash scripts/check-csp-hash.sh        # CSP pin drift guard (now in CI)
 npm run validate:colleges             # 25 college identities (WCAG AA)
