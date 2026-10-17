@@ -20,7 +20,7 @@ import {
 // Upload guards (magic bytes / size cap) — the files.routes pure layer.
 // Route-module helper import, same precedent as offeringVisibilityFilter
 // above (no cycle: files.routes imports nothing from this file).
-import { isPdfMagicBytes, isUploadSizeOk } from './files.routes.js';
+import { isPdfMagicBytes, isUploadSizeOk, assertOfferingInstitutionForUpload } from './files.routes.js';
 // The list-side role/visibility twin of assertOfferingAccess — shared
 // with GET /courses/:id and the global search (its docblock names this
 // file's consumers). Importing a route module for a helper follows the
@@ -303,13 +303,15 @@ const materialUploadLimiter = createRouteLimiter({ max: 20 });
  * POST /offerings/:id/materials/file?name=…&description=…&type=PDF
  * — TEACHER/ADMIN/OWNER upload a real material PDF.
  *
- * Guards: role → zod query → assertOfferingAccess → Buffer.isBuffer →
- * size (413) → %PDF- magic bytes. The Material row is created FIRST
- * (its generated id is the storage key: `materials/<id>.pdf`, url
- * `/api/v1/files/materials/<id>.pdf`), then the bytes are put; if the
- * put fails the row is deleted and the error rethrown — atomic-ish, so
- * no row survives without its bytes (and a row that somehow did would
- * 404 on serve: stat finds nothing).
+ * Guards: role → zod query → institution gate (r179b: the offering
+ * must sit inside the caller's VERIFIED institution for every
+ * non-OWNER uploader) → assertOfferingAccess (the TEACHER-taught
+ * check) → Buffer.isBuffer → size (413) → %PDF- magic bytes. The
+ * Material row is created FIRST (its generated id is the storage key:
+ * `materials/<id>.pdf`, url `/api/v1/files/materials/<id>.pdf`), then
+ * the bytes are put; if the put fails the row is deleted and the
+ * error rethrown — atomic-ish, so no row survives without its bytes
+ * (and a row that somehow did would 404 on serve: stat finds nothing).
  */
 router.post(
   '/:id/materials/file',
@@ -320,6 +322,17 @@ router.post(
   async (req, res, next) => {
     try {
       const offeringId = req.params.id!;
+      // r179b (phase-5): institution gate FIRST — ADMIN oversight is
+      // institution-bound (no cross-institution byte drops), a TEACHER
+      // additionally passes the teaches-this-offering check below, and
+      // OWNER keeps the platform-wide bypass. Fails closed (403) for a
+      // contextless institutional caller.
+      await assertOfferingInstitutionForUpload(
+        offeringId,
+        req.user!.id,
+        req.user!.role,
+        req.user!.institutionId,
+      );
       await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
       const body = req.body;
       if (!Buffer.isBuffer(body)) {

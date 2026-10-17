@@ -76,10 +76,13 @@ const PDF_BYTES = Buffer.from(
 );
 const BIG_PDF = Buffer.concat([PDF_BYTES, randomBytes(64 * 1024)]);
 
-/** The teaching chain the materials access guard walks. */
+/** The teaching chain the materials access guard walks (r179b: the
+ *  teacher holds an ACTIVE membership in the institution — the upload
+ *  route verifies the caller's institution context before storing). */
 async function seedOffering() {
   const teacher = await helpers.seedUser({ role: Role.TEACHER });
   const inst = await helpers.seedInstitution();
+  await helpers.seedMembership(teacher.id, inst.id, Role.TEACHER);
   const faculty = await prisma.faculty.create({
     data: { name: 'كلية اختبار r175', city: 'طرابلس', institutionId: inst.id },
   });
@@ -179,10 +182,13 @@ describe('files.routes.ts — papers through the postgres driver', () => {
   it('upload (STUDENT) → 201 fileUrl; the owner reads exact bytes back; range → 206 exact slice', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
     const inst = await helpers.seedInstitution();
+    // r179b: the upload fails closed without a verified institution
+    // context — seed the membership and carry the inst claim.
+    await helpers.seedMembership(student.id, inst.id, Role.STUDENT);
 
     const up = await fetch(`${baseUrl}/api/v1/files/papers`, {
       method: 'POST',
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/pdf' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, inst.id), 'content-type': 'application/pdf' },
       body: new Uint8Array(BIG_PDF),
     });
     expect(up.status).toBe(201);
@@ -197,7 +203,7 @@ describe('files.routes.ts — papers through the postgres driver', () => {
 
     // Owner full read → 200 + exact bytes + honest length.
     const full = await fetch(`${baseUrl}/api/v1/files/papers/${filename}`, {
-      headers: helpers.bearer(student.id, Role.STUDENT),
+      headers: helpers.bearer(student.id, Role.STUDENT, inst.id),
     });
     expect(full.status).toBe(200);
     expect(full.headers.get('content-type')).toBe('application/pdf');
@@ -208,7 +214,7 @@ describe('files.routes.ts — papers through the postgres driver', () => {
 
     // Single-range read → 206 + the exact inclusive slice.
     const ranged = await fetch(`${baseUrl}/api/v1/files/papers/${filename}`, {
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), range: 'bytes=100-199' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, inst.id), range: 'bytes=100-199' },
     });
     expect(ranged.status).toBe(206);
     expect(ranged.headers.get('content-range')).toBe(`bytes 100-199/${BIG_PDF.length}`);
@@ -221,6 +227,11 @@ describe('files.routes.ts — papers through the postgres driver', () => {
     const owner = await helpers.seedUser({ role: Role.STUDENT });
     const stranger = await helpers.seedUser({ role: Role.STUDENT });
     const inst = await helpers.seedInstitution();
+    await helpers.seedMembership(owner.id, inst.id, Role.STUDENT);
+    // r179b: the stranger's verified context is a DIFFERENT institution
+    // — the cross-institution denial must read as the uniform 404.
+    const strangerInst = await helpers.seedInstitution();
+    await helpers.seedMembership(stranger.id, strangerInst.id, Role.STUDENT);
 
     await getStorage().put('papers/cku5r175pg0007gated.pdf', PDF_BYTES);
     await prisma.researchPaper.create({
@@ -233,7 +244,7 @@ describe('files.routes.ts — papers through the postgres driver', () => {
     });
 
     const res = await fetch(`${baseUrl}/api/v1/files/papers/cku5r175pg0007gated.pdf`, {
-      headers: helpers.bearer(stranger.id, Role.STUDENT),
+      headers: helpers.bearer(stranger.id, Role.STUDENT, strangerInst.id),
     });
     expect(res.status).toBe(404);
     const body = (await res.json()) as { error: { message: string } };
@@ -243,9 +254,15 @@ describe('files.routes.ts — papers through the postgres driver', () => {
 
 describe('files.routes.ts — materials through the postgres driver', () => {
   it('teacher upload → 201 + row; enrolled student reads exact bytes; unenrolled → 404', async () => {
-    const { teacher, offering } = await seedOffering();
+    const { teacher, inst, offering } = await seedOffering();
     const enrolled = await helpers.seedUser({ role: Role.STUDENT });
     const stranger = await helpers.seedUser({ role: Role.STUDENT });
+    // r179b: the enrolled student's verified context is the offering's
+    // institution; the stranger's is a different one (cross-institution
+    // denial must read as the uniform 404).
+    await helpers.seedMembership(enrolled.id, inst.id, Role.STUDENT);
+    const strangerInst = await helpers.seedInstitution();
+    await helpers.seedMembership(stranger.id, strangerInst.id, Role.STUDENT);
     await prisma.enrollment.create({
       data: { studentId: enrolled.id, offeringId: offering.id, status: 'active' },
     });
@@ -254,7 +271,7 @@ describe('files.routes.ts — materials through the postgres driver', () => {
       `${baseUrl}/api/v1/offerings/${offering.id}/materials/file?name=${encodeURIComponent('مذكرة r175')}&type=PDF`,
       {
         method: 'POST',
-        headers: { ...helpers.bearer(teacher.id, Role.TEACHER), 'content-type': 'application/pdf' },
+        headers: { ...helpers.bearer(teacher.id, Role.TEACHER, inst.id), 'content-type': 'application/pdf' },
         body: new Uint8Array(BIG_PDF),
       },
     );
@@ -265,22 +282,24 @@ describe('files.routes.ts — materials through the postgres driver', () => {
 
     // Enrolled student: exact bytes through the gated route.
     const read = await fetch(`${baseUrl}/api/v1/files/materials/${filename}`, {
-      headers: helpers.bearer(enrolled.id, Role.STUDENT),
+      headers: helpers.bearer(enrolled.id, Role.STUDENT, inst.id),
     });
     expect(read.status).toBe(200);
     const body = Buffer.from(await read.arrayBuffer());
     expect(body.equals(BIG_PDF)).toBe(true);
 
-    // Unenrolled stranger: 404, indistinguishable from a missing file.
+    // Unenrolled stranger (another institution): 404, indistinguishable
+    // from a missing file.
     const denied = await fetch(`${baseUrl}/api/v1/files/materials/${filename}`, {
-      headers: helpers.bearer(stranger.id, Role.STUDENT),
+      headers: helpers.bearer(stranger.id, Role.STUDENT, strangerInst.id),
     });
     expect(denied.status).toBe(404);
   });
 
   it('a material row whose bytes were never written 404s honestly through the stat probe', async () => {
-    const { offering } = await seedOffering();
+    const { inst, offering } = await seedOffering();
     const student = await helpers.seedUser({ role: Role.STUDENT });
+    await helpers.seedMembership(student.id, inst.id, Role.STUDENT);
     await prisma.enrollment.create({
       data: { studentId: student.id, offeringId: offering.id, status: 'active' },
     });
@@ -298,7 +317,7 @@ describe('files.routes.ts — materials through the postgres driver', () => {
     });
 
     const res = await fetch(`${baseUrl}/api/v1/files/materials/cku5r175pg0008no-bytes.pdf`, {
-      headers: helpers.bearer(student.id, Role.STUDENT),
+      headers: helpers.bearer(student.id, Role.STUDENT, inst.id),
     });
     expect(res.status).toBe(404);
     const body = (await res.json()) as { error: { message: string } };

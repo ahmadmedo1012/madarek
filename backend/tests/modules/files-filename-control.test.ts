@@ -31,6 +31,7 @@ vi.mock('../../src/db.js', () => ({
   prisma: {
     researchPaper: { findFirst: vi.fn() },
     material: { findFirst: vi.fn() },
+    membership: { findFirst: vi.fn() },
     $queryRaw: vi.fn(),
     $transaction: vi.fn(),
   },
@@ -204,7 +205,11 @@ describe('GET /api/v1/files/materials/:filename — NUL-byte filename (r170c)', 
 
 describe('guard did not over-block (the happy path still serves)', () => {
   it('a normal filename still answers 200 through the full conversation', async () => {
-    const res = await getPdf(Role.ADMIN, `/api/v1/files/papers/${GOOD_FILENAME}`);
+    // r179b: the shape gates run BEFORE the institution gate, so the
+    // 400 shape refusals above fire for contextless callers too. The
+    // happy path needs a caller that passes the institution gate — the
+    // platform OWNER (row-less platform-wide fast path, no context).
+    const res = await getPdf(Role.OWNER, `/api/v1/files/papers/${GOOD_FILENAME}`);
     expect(res.status).toBe(200);
     expect(res.headers.get('content-type')).toBe('application/pdf');
     expect(storageMock.stat).toHaveBeenCalledWith(`papers/${GOOD_FILENAME}`);

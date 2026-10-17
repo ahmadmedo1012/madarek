@@ -291,6 +291,11 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
 
   it('J5 — materials: the teacher uploads a real PDF; the enrolled student reads the bytes; a stranger cannot', async () => {
     const w = await seedWorld();
+    // r179b (phase-5): the material upload/serving routes verify the
+    // caller's institution context (memberships + inst claims) — seeded
+    // here, inside this journey only, for the file endpoints' actors.
+    await helpers.seedMembership(w.teacher.id, w.institution.id, Role.TEACHER);
+    await helpers.seedMembership(w.student.id, w.institution.id, Role.STUDENT);
     await fetch(`${baseUrl}/api/v1/enrollments`, {
       method: 'POST',
       headers: { ...helpers.bearer(w.admin.id, Role.ADMIN), 'content-type': 'application/json' },
@@ -300,7 +305,7 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     const pdf = Buffer.from('%PDF-1.4\n%%EOF\n', 'latin1');
     const upload = await fetch(`${baseUrl}/api/v1/offerings/${w.offering.id}/materials/file?name=${encodeURIComponent('ملزمة القوائم')}&type=PDF`, {
       method: 'POST',
-      headers: { ...helpers.bearer(w.teacher.id, Role.TEACHER), 'content-type': 'application/pdf' },
+      headers: { ...helpers.bearer(w.teacher.id, Role.TEACHER, w.institution.id), 'content-type': 'application/pdf' },
       body: new Uint8Array(pdf),
     });
     expect(upload.status).toBe(201);
@@ -308,15 +313,19 @@ describe('the enrollment-gated journeys (real DB, real routes, real guards)', ()
     const filename = uploadBody.data.url.split('/').pop()!;
 
     // The enrolled student reads the material through the serving route.
-    const read = await fetch(`${baseUrl}/api/v1/files/materials/${filename}`, { headers: helpers.bearer(w.student.id, Role.STUDENT) });
+    const read = await fetch(`${baseUrl}/api/v1/files/materials/${filename}`, { headers: helpers.bearer(w.student.id, Role.STUDENT, w.institution.id) });
     expect(read.status).toBe(200);
     const bytes = Buffer.from(await read.arrayBuffer());
     expect(bytes.equals(pdf)).toBe(true);
 
-    // The authorization boundary: an unenrolled student gets 404 (the
-    // uniform not-found refusal, never an existence oracle).
+    // The authorization boundary: a student of ANOTHER institution
+    // gets 404 (the uniform not-found refusal, never an existence
+    // oracle) — r179b hardened the stranger from contextless to
+    // cross-institution, the exact leak the phase-5 gate closes.
     const stranger = await helpers.seedUser({ role: Role.STUDENT });
-    const strangerRead = await fetch(`${baseUrl}/api/v1/files/materials/${filename}`, { headers: helpers.bearer(stranger.id, Role.STUDENT) });
+    const strangerInst = await helpers.seedInstitution();
+    await helpers.seedMembership(stranger.id, strangerInst.id, Role.STUDENT);
+    const strangerRead = await fetch(`${baseUrl}/api/v1/files/materials/${filename}`, { headers: helpers.bearer(stranger.id, Role.STUDENT, strangerInst.id) });
     expect(strangerRead.status).toBe(404);
   });
 

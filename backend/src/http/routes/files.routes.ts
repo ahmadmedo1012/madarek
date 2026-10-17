@@ -1,13 +1,14 @@
 import path from 'node:path';
 import express, { Router } from 'express';
 import type { Request, Response } from 'express';
-import { Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { AppError } from '../../lib/errors.js';
 import { logger } from '../../logger.js';
+import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
 import {
   buildStorageKey,
   generateStorageId,
@@ -69,15 +70,198 @@ export function isSafePaperFilename(filename: string): boolean {
 }
 
 /**
- * Role gate for the DB access check: oversight roles may fetch any
- * paper without a matching paper row. QUALITY mirrors the
+ * Role gate for the DB access check: oversight roles may fetch a
+ * paper without a per-row grant (owner/reviewer). QUALITY mirrors the
  * paper-annotation route's oversight model (audit 11-b P2-5): a role
  * that can read annotations on any paper can also fetch the artifact
  * it audits. The same trio gates material serving — oversight is
  * role-shaped, not namespace-shaped.
+ *
+ * r179b (phase-5): "oversight" no longer means "skip the row lookup
+ * entirely". ADMIN/QUALITY oversight is INSTITUTION-BOUND — their
+ * serving gates require an authorizing row whose institution matches
+ * the caller's verified context (see accessiblePaperWhere /
+ * accessibleMaterialWhere). Only OWNER keeps the platform-wide fast
+ * path (deliberate cross-institution oversight, per the shared
+ * contract).
  */
 export function isPaperOversightRole(role: Role): boolean {
   return role === Role.ADMIN || role === Role.OWNER || role === Role.QUALITY;
+}
+
+// ─── Institution gate (r179b — files + persistent-storage isolation) ──
+
+/** Which institution rule a file byte-stream operation falls under. */
+export type FileInstitutionGateDecision =
+  | 'platform_wide'
+  | 'context_required'
+  | 'institution_scoped';
+
+/**
+ * Pure decision — which institution rule applies to a file operation?
+ *  - OWNER → 'platform_wide': the ONE role allowed to oversee files
+ *    across institutions (deliberate, per the shared contract — never
+ *    an auto-selected institution).
+ *  - any other role with NO verified context → 'context_required':
+ *    fail closed with 403 INSTITUTION_CONTEXT_REQUIRED. The contract
+ *    forbids falling back to an oldest/first membership, and a
+ *    storage namespace is not institution-partitioned — without a
+ *    context there is nothing to compare the authorizing row's
+ *    institution against, so the bytes stay unread.
+ *  - otherwise → 'institution_scoped': the authorizing row must live
+ *    in the caller's VERIFIED institution (STUDENT/TEACHER via the
+ *    per-row grant predicate, ADMIN/QUALITY via same-institution
+ *    oversight).
+ *
+ * Pinned DB-free by tests/modules/files-institution-gate.test.ts.
+ */
+export function decideFileInstitutionGate(
+  role: Role,
+  callerInstitutionId: string | null,
+): FileInstitutionGateDecision {
+  if (role === Role.OWNER) return 'platform_wide';
+  if (callerInstitutionId === null) return 'context_required';
+  return 'institution_scoped';
+}
+
+/**
+ * Resolve + verify the caller's institution context for a file
+ * operation (the serving routes, the paper upload, and the
+ * file-adjacent paper scan all share this gate).
+ *
+ * Returns the VERIFIED institution id for institutional roles, or
+ * `null` for OWNER (platform-wide — callers skip the authorizing-row
+ * check on that path). Throws:
+ *  - 403 INSTITUTION_CONTEXT_INVALID when the token's `inst` claim is
+ *    forged/stale/revoked (resolveCallerInstitutionScope re-verifies
+ *    against the DB — the claim is never trusted alone);
+ *  - 403 INSTITUTION_CONTEXT_REQUIRED when an institutional caller
+ *    carries no context at all (decideFileInstitutionGate).
+ */
+export async function requireFileInstitutionScope(
+  userId: string,
+  role: Role,
+  tokenInstitutionId: string | null | undefined,
+): Promise<string | null> {
+  const callerInstitutionId = await resolveCallerInstitutionScope(userId, tokenInstitutionId);
+  const decision = decideFileInstitutionGate(role, callerInstitutionId);
+  if (decision === 'context_required') {
+    throw new AppError(
+      'INSTITUTION_CONTEXT_REQUIRED',
+      'حدّد المؤسسة أولًا — اختر مؤسستك ثم أعد المحاولة',
+      403,
+    );
+  }
+  return decision === 'platform_wide' ? null : callerInstitutionId;
+}
+
+/**
+ * The institution-aware grant predicate for serving a paper file
+ * (r179b). The filename resolves through the ResearchPaper table with
+ * the grant predicate INSIDE the query (findFirst stops at the first
+ * row that both matches the filename AND grants access — a shared
+ * filename can never push the authorizing row past a take window).
+ *
+ * Institution binding (phase 5): the paper row carries `institutionId`
+ * directly (the membership context the paper was submitted under), and
+ * EVERY branch — owner-student, reviewer, PUBLISHED archive, and
+ * ADMIN/QUALITY oversight — is constrained to the caller's VERIFIED
+ * institution. A published paper is readable cross-USER but never
+ * cross-INSTITUTION.
+ *
+ * Exported for DB-free unit tests (tests/modules/files-institution-gate.test.ts).
+ */
+export function accessiblePaperWhere(
+  filename: string,
+  role: Role,
+  userId: string,
+  callerInstitutionId: string,
+): Prisma.ResearchPaperWhereInput {
+  return {
+    fileUrl: { endsWith: `/${filename}` },
+    institutionId: callerInstitutionId,
+    ...(isPaperOversightRole(role)
+      ? // ADMIN/QUALITY: same-institution oversight — the row check
+        // carries no per-row grant, but the institution still binds.
+        {}
+      : {
+          OR: [
+            { status: 'PUBLISHED' },
+            { studentId: userId },
+            { reviewerId: userId },
+          ],
+        }),
+  };
+}
+
+/**
+ * The institution-aware grant predicate for serving a material file
+ * (r179b). Material keeps the ownership chain (NO denormalized
+ * institutionId column — frozen schema): Material → offering →
+ * course → department → faculty → institution. The chain comparison
+ * rides INSIDE the same findFirst, so a filename whose authorizing
+ * row sits in another institution simply matches nothing → 404,
+ * indistinguishable from a missing file (no existence oracle).
+ *
+ * Role rules: the offering's teacher, or an actively enrolled student
+ * (status 'active' — dropped/completed never grant), or ADMIN/QUALITY
+ * oversight of the SAME institution.
+ *
+ * Exported for DB-free unit tests (tests/modules/files-institution-gate.test.ts).
+ */
+export function accessibleMaterialWhere(
+  filename: string,
+  role: Role,
+  userId: string,
+  callerInstitutionId: string,
+): Prisma.MaterialWhereInput {
+  return {
+    url: { endsWith: `/${filename}` },
+    offering: {
+      course: { department: { faculty: { institutionId: callerInstitutionId } } },
+      ...(isPaperOversightRole(role)
+        ? {} // ADMIN/QUALITY: same-institution oversight, no per-row grant.
+        : {
+            OR: [
+              { teacherId: userId },
+              { enrollments: { some: { studentId: userId, status: 'active' } } },
+            ],
+          }),
+    },
+  };
+}
+
+/**
+ * Material upload institution gate (r179b): the offering a material
+ * file is attached to must sit inside the caller's VERIFIED
+ * institution for every non-OWNER uploader — ADMIN oversight is
+ * institution-bound (an institution-B admin can no longer drop bytes
+ * into an institution-A offering), and a TEACHER additionally passes
+ * assertOfferingAccess's teaches-this-offering check at the call site.
+ * OWNER keeps the platform-wide bypass (deliberate oversight).
+ *
+ * Throws 403 INSTITUTION_CONTEXT_REQUIRED (contextless), 404 for an
+ * unknown offering (same wording as assertOfferingAccess), and 403
+ * FORBIDDEN on a cross-institution offering.
+ */
+export async function assertOfferingInstitutionForUpload(
+  offeringId: string,
+  userId: string,
+  role: Role,
+  tokenInstitutionId: string | null | undefined,
+): Promise<void> {
+  const callerInstitutionId = await requireFileInstitutionScope(userId, role, tokenInstitutionId);
+  if (callerInstitutionId === null) return; // OWNER — platform-wide.
+  const offering = await prisma.courseOffering.findUnique({
+    where: { id: offeringId },
+    select: {
+      course: { select: { department: { select: { faculty: { select: { institutionId: true } } } } } },
+    },
+  });
+  if (!offering) throw AppError.notFound('المقرر المطلوب غير موجود');
+  if (offering.course.department.faculty.institutionId !== callerInstitutionId) {
+    throw AppError.forbidden('لا تملك صلاحية الوصول إلى هذا المقرر');
+  }
 }
 
 /**
@@ -275,11 +459,19 @@ const paperUploadLimiter = createRouteLimiter({ max: 10 });
  * count.
  *
  * NO ResearchPaper row is created here, on purpose: the row is minted
- * by the existing POST /api/v1/me/research with this fileUrl. Until
- * then the uploaded bytes are an inert orphan — the serving gate below
- * 404s any filename without an authorizing paper row, so an orphan can
- * never be read. (A storage put failure is a 500; the bytes are the
- * only side effect and no row references them.)
+ * by the existing POST /api/v1/me/research with this fileUrl — and that
+ * row binds the paper to the student's VERIFIED institution
+ * (paperInstitutionId, r179 minimal lead fix). Until then the uploaded
+ * bytes are an inert orphan — the serving gate below 404s any filename
+ * without an authorizing paper row, so an orphan can never be read.
+ * (A storage put failure is a 500; the bytes are the only side effect
+ * and no row references them.)
+ *
+ * r179b: the upload itself is fail-closed on the institution context
+ * (requireFileInstitutionScope AFTER the byte gates) — an orphan can
+ * only ever become an institution-bound row minted under the SAME
+ * verified context, so a contextless student has no business storing
+ * bytes here in the first place.
  */
 router.post(
   '/papers',
@@ -301,6 +493,11 @@ router.post(
       if (containsPdfActiveContent(body)) {
         throw AppError.badRequest('ملف PDF يحتوي تضمينات برمجية نشطة — غير مسموح');
       }
+      // r179b: fail closed without a VERIFIED institution context —
+      // the bytes are only useful as the file side of an institution-
+      // bound ResearchPaper row (POST /me/research mints it under this
+      // same verified context), so a contextless student stores nothing.
+      await requireFileInstitutionScope(req.user!.id, req.user!.role, req.user!.institutionId);
       // One extra query, no transaction — the quota is a bound, not an
       // invariant (see the route doc above). r176d (F-05b): only papers
       // whose bytes actually live in OUR storage count against the quota
@@ -344,14 +541,17 @@ router.post(
  * pinned DB-free by tests/modules/files-guard.test.ts (audit 15-i
  * TOP-6, wave 16-B11).
  *
- * Access gate (unchanged — previously ANY authenticated user could read
- * ANY paper PDF): the filename is resolved through the ResearchPaper
- * table — access is granted when the paper is PUBLISHED, the requester
- * is the paper's owner (student) or its reviewer, or the requester is
- * ADMIN/OWNER/QUALITY (oversight). QUALITY matches the
- * paper-annotation route's model: a role that can read annotations on
- * any paper can also fetch the artifact it audits.
- * A stored file with no matching paper row is an orphan and is not served.
+ * Access gate (r179b — institution-bound): the filename is resolved
+ * through the ResearchPaper table, and the authorizing row's
+ * institution must match the caller's VERIFIED institution context.
+ * Access is granted when the paper is PUBLISHED, the requester is the
+ * paper's owner (student) or its reviewer, or the requester is
+ * ADMIN/QUALITY (oversight of the SAME institution — QUALITY mirrors
+ * the paper-annotation route's model: a role that can read annotations
+ * on any paper can also fetch the artifact it audits). A stored file
+ * with no matching paper row is an orphan and is not served. Only the
+ * platform OWNER keeps the row-less fast path (deliberate
+ * cross-institution oversight).
  */
 router.get('/papers/:filename', async (req, res, next) => {
   try {
@@ -366,21 +566,17 @@ router.get('/papers/:filename', async (req, res, next) => {
       throw AppError.badRequest('تُقدَّم الملفات من هذه الخدمة بصيغة PDF فقط');
     }
 
-    // ── Access gate: resolve the file to its paper row(s) ──────────
+    // ── Access gate: the authorizing row must live in the caller's ──
+    // verified institution (OWNER alone serves platform-wide).
     const uid = req.user!.id;
     const role = req.user!.role;
-    if (!isPaperOversightRole(role)) {
-      // The grant predicate lives inside the query (was: fetch up to 10
-      // matching rows and check in memory — a filename shared by >10 papers
-      // could push the authorizing row past the take window and 404 a file
-      // the user is entitled to). findFirst stops at the first row that
-      // both matches the filename AND grants access, no matter how many
-      // non-granting papers share it.
+    const callerInstitutionId = await requireFileInstitutionScope(uid, role, req.user!.institutionId);
+    if (callerInstitutionId !== null) {
+      // The grant predicate lives inside the query (findFirst stops at
+      // the first row that matches the filename AND institution AND
+      // grants access, no matter how many non-granting papers share it).
       const accessible = await prisma.researchPaper.findFirst({
-        where: {
-          fileUrl: { endsWith: `/${filename}` },
-          OR: [{ status: 'PUBLISHED' }, { studentId: uid }, { reviewerId: uid }],
-        },
+        where: accessiblePaperWhere(filename, role, uid, callerInstitutionId),
         select: { id: true },
       });
       if (!accessible) throw AppError.notFound(FILE_NOT_FOUND_MESSAGE);
@@ -396,14 +592,19 @@ router.get('/papers/:filename', async (req, res, next) => {
  * Serve a course-material PDF uploaded via
  * POST /api/v1/offerings/:id/materials/file.
  *
- * Same filename gates as papers (traversal + .pdf). Access gate: the
- * filename is resolved through the Material table (url endsWith) with
- * the grant predicate inside the query — allowed when the requester
- * teaches the material's offering, or is actively enrolled in it, or
- * is ADMIN/OWNER/QUALITY oversight (isPaperOversightRole — the same
- * trio, mirroring the papers gate). A material row with no stored
- * bytes (row created, put failed and cleanup raced) 404s honestly
- * through the same stat probe.
+ * Same filename gates as papers (traversal + .pdf). Access gate
+ * (r179b — institution-bound): the filename is resolved through the
+ * Material table (url endsWith) with the grant predicate inside the
+ * query — allowed when the requester teaches the material's offering,
+ * or is actively enrolled in it, or is ADMIN/QUALITY oversight of the
+ * SAME institution (isPaperOversightRole — the same trio, mirroring
+ * the papers gate). The offering→course→department→faculty→institution
+ * chain is compared against the caller's VERIFIED institution context,
+ * so an institution-B student enrolled in an institution-B offering
+ * can never read institution-A material bytes even with the exact
+ * filename. A material row with no stored bytes (row created, put
+ * failed and cleanup raced) 404s honestly through the same stat probe.
+ * Only the platform OWNER keeps the row-less fast path.
  */
 router.get('/materials/:filename', async (req, res, next) => {
   try {
@@ -417,15 +618,10 @@ router.get('/materials/:filename', async (req, res, next) => {
 
     const uid = req.user!.id;
     const role = req.user!.role;
-    if (!isPaperOversightRole(role)) {
+    const callerInstitutionId = await requireFileInstitutionScope(uid, role, req.user!.institutionId);
+    if (callerInstitutionId !== null) {
       const accessible = await prisma.material.findFirst({
-        where: {
-          url: { endsWith: `/${filename}` },
-          OR: [
-            { offering: { teacherId: uid } },
-            { offering: { enrollments: { some: { studentId: uid, status: 'active' } } } },
-          ],
-        },
+        where: accessibleMaterialWhere(filename, role, uid, callerInstitutionId),
         select: { id: true },
       });
       if (!accessible) throw AppError.notFound(FILE_NOT_FOUND_MESSAGE);

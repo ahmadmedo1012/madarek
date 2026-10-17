@@ -23,6 +23,10 @@
  * count of the user's ResearchPaper rows — a REAL DB query — decides
  * 413 vs pass; the pass case then fails at the (broken-on-purpose)
  * storage put with the distinct 500 message.
+ *
+ * r179b (phase-5): both upload routes now fail closed without a
+ * VERIFIED institution context, so every fixture seeds an ACTIVE
+ * membership and the bearer tokens carry the inst claim.
  */
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { AddressInfo } from 'node:net';
@@ -70,7 +74,7 @@ beforeEach(async () => {
 });
 
 /** Minimal well-formed PDF: %PDF- magic bytes, no active-content
- * markers (/JavaScript /OpenAction /Launch — the r170g gate). */
+ *  markers (/JavaScript /OpenAction /Launch — the r170g gate). */
 const MINIMAL_PDF = Buffer.from('%PDF-1.4\n%%EOF\n', 'latin1');
 
 interface ErrorEnvelope {
@@ -82,6 +86,9 @@ describe('POST /offerings/:id/materials/file — Material row never survives a f
     // Seed the teaching chain the access guard walks: teacher → offering.
     const teacher = await helpers.seedUser({ role: Role.TEACHER });
     const inst = await helpers.seedInstitution();
+    // r179b: the upload verifies the caller's institution context —
+    // the teacher teaches inside inst under an active membership.
+    await helpers.seedMembership(teacher.id, inst.id, Role.TEACHER);
     const faculty = await prisma.faculty.create({
       data: { name: 'كلية اختبار', city: 'طرابلس', institutionId: inst.id },
     });
@@ -95,7 +102,7 @@ describe('POST /offerings/:id/materials/file — Material row never survives a f
 
     const res = await fetch(`${baseUrl}/api/v1/offerings/${offering.id}/materials/file?name=${encodeURIComponent('مذكرة الفصل')}&type=PDF`, {
       method: 'POST',
-      headers: { ...helpers.bearer(teacher.id, Role.TEACHER), 'content-type': 'application/pdf' },
+      headers: { ...helpers.bearer(teacher.id, Role.TEACHER, inst.id), 'content-type': 'application/pdf' },
       body: new Uint8Array(MINIMAL_PDF),
     });
 
@@ -118,6 +125,8 @@ describe('POST /files/papers — the per-user storage quota reads the REAL row c
   it('10 STORED papers (worst-case 200 MB) → 413 quota refusal BEFORE any storage write', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
     const inst = await helpers.seedInstitution();
+    // r179b: the upload fails closed without a verified context.
+    await helpers.seedMembership(student.id, inst.id, Role.STUDENT);
     await prisma.researchPaper.createMany({
       data: Array.from({ length: 10 }, (_, i) => ({
         studentId: student.id, institutionId: inst.id,
@@ -131,7 +140,7 @@ describe('POST /files/papers — the per-user storage quota reads the REAL row c
 
     const res = await fetch(`${baseUrl}/api/v1/files/papers`, {
       method: 'POST',
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/pdf' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, inst.id), 'content-type': 'application/pdf' },
       body: new Uint8Array(MINIMAL_PDF),
     });
     expect(res.status).toBe(413);
@@ -143,6 +152,7 @@ describe('POST /files/papers — the per-user storage quota reads the REAL row c
   it('r176d (F-05b): 10 external-URL papers (zero stored bytes) do NOT eat the quota', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
     const inst = await helpers.seedInstitution();
+    await helpers.seedMembership(student.id, inst.id, Role.STUDENT);
     await prisma.researchPaper.createMany({
       data: Array.from({ length: 10 }, (_, i) => ({
         studentId: student.id, institutionId: inst.id,
@@ -155,7 +165,7 @@ describe('POST /files/papers — the per-user storage quota reads the REAL row c
     });
     const res = await fetch(`${baseUrl}/api/v1/files/papers`, {
       method: 'POST',
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/pdf' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, inst.id), 'content-type': 'application/pdf' },
       body: new Uint8Array(MINIMAL_PDF),
     });
     // This file's environment sabotages the storage root on purpose —
@@ -172,6 +182,7 @@ describe('POST /files/papers — the per-user storage quota reads the REAL row c
   it('9 papers (worst-case 180 MB) → quota PASSES, the request proceeds to the storage put (distinct 500)', async () => {
     const student = await helpers.seedUser({ role: Role.STUDENT });
     const inst = await helpers.seedInstitution();
+    await helpers.seedMembership(student.id, inst.id, Role.STUDENT);
     await prisma.researchPaper.createMany({
       data: Array.from({ length: 9 }, (_, i) => ({
         studentId: student.id, institutionId: inst.id,
@@ -181,7 +192,7 @@ describe('POST /files/papers — the per-user storage quota reads the REAL row c
 
     const res = await fetch(`${baseUrl}/api/v1/files/papers`, {
       method: 'POST',
-      headers: { ...helpers.bearer(student.id, Role.STUDENT), 'content-type': 'application/pdf' },
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, inst.id), 'content-type': 'application/pdf' },
       body: new Uint8Array(MINIMAL_PDF),
     });
     // One paper below the cap: the DB count let the request through and
@@ -191,5 +202,34 @@ describe('POST /files/papers — the per-user storage quota reads the REAL row c
     const body = (await res.json()) as ErrorEnvelope;
     expect(body.error.code).toBe('INTERNAL');
     expect(body.error.message).toBe('تعذّر حفظ الملف — حاول مرة أخرى');
+  });
+});
+
+describe('POST /files/papers — r179b institution context gate (fail closed)', () => {
+  it('a STUDENT with no institution claim → 403 INSTITUTION_CONTEXT_REQUIRED, nothing stored, no row', async () => {
+    const student = await helpers.seedUser({ role: Role.STUDENT });
+    // No membership, no inst claim — the bytes never land anywhere.
+    const res = await fetch(`${baseUrl}/api/v1/files/papers`, {
+      method: 'POST',
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, null), 'content-type': 'application/pdf' },
+      body: new Uint8Array(MINIMAL_PDF),
+    });
+    expect(res.status).toBe(403);
+    const body = (await res.json()) as ErrorEnvelope;
+    expect(body.error.code).toBe('INSTITUTION_CONTEXT_REQUIRED');
+    expect(await prisma.researchPaper.count()).toBe(0);
+  });
+
+  it('a forged inst claim (no matching active membership) → 403 INSTITUTION_CONTEXT_INVALID', async () => {
+    const student = await helpers.seedUser({ role: Role.STUDENT });
+    const inst = await helpers.seedInstitution(); // exists, but the student holds NO membership
+    const res = await fetch(`${baseUrl}/api/v1/files/papers`, {
+      method: 'POST',
+      headers: { ...helpers.bearer(student.id, Role.STUDENT, inst.id), 'content-type': 'application/pdf' },
+      body: new Uint8Array(MINIMAL_PDF),
+    });
+    expect(res.status).toBe(403);
+    const body = (await res.json()) as ErrorEnvelope;
+    expect(body.error.code).toBe('INSTITUTION_CONTEXT_INVALID');
   });
 });
