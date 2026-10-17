@@ -5,12 +5,21 @@
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
+import { useAuthStore } from '../../stores/auth.store';
 
 /* r179 (phase-5) scope classification: this module's reads are either
  * PLATFORM-SHARED catalogue surfaces (books/mooc/jobs/labs/AR — no
  * institution column by design) or USER-scoped rows (me/loans,
  * me/lab-sessions — keyed by userId). No key here carries the
  * institution scope segment — not an omission, the classification. */
+
+/** r180 — the CALLER's institution slug for in-app faculty pickers.
+ * The auth session's current context (null for OWNER / a member whose
+ * context is not selected yet, so those consumers keep the honest
+ * platform-wide listing instead of a silently wrong filter). */
+export function useCurrentInstitutionSlug(): string | undefined {
+  return useAuthStore((s) => s.currentInstitution?.slug ?? undefined);
+}
 
 // ── Courses (admin) ────────────────────────────────────────────
 export interface Course {

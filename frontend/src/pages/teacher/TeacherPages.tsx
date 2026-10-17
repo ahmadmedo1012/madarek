@@ -24,9 +24,13 @@ import {
   useCreateAssignment,
   useCreateMaterial,
   useUploadMaterialFile,
+  useOfferingGrades,
+  useUpsertOfferingGrades,
   apiErrorMessage,
   type PendingSubmissionRow,
   type TeacherStudentRow,
+  type GradeKindFE,
+  type OfferingGradeRow,
 } from '../../hooks/useResources';
 import { MessagesInbox } from '../../components/messages/MessagesInbox';
 import { MessageComposeModal } from '../../components/messages/MessageComposeModal';
@@ -106,7 +110,9 @@ function OfferingPickerSelect({
       >
         {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
         {offerings.map((o) => (
-          <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
+          // r180: the term disambiguates same-course sections (a teacher
+          // can hold the same course across terms — «CT301» ×2 otherwise).
+          <option key={o.id} value={o.id}>{o.course.name} ({o.course.code} · {o.term})</option>
         ))}
       </select>
     </FormField>
@@ -317,7 +323,7 @@ export function AttendancePage() {
             <select className="input" value={effectiveOfferingId} onChange={(e) => setOfferingId(e.target.value)}>
               {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
               {offerings.map((o) => (
-                <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
+                <option key={o.id} value={o.id}>{o.course.name} ({o.course.code} · {o.term})</option>
               ))}
             </select>
           </FormField>
@@ -514,6 +520,18 @@ export function GradesPage() {
       <Card
         title={offering ? `${offering.course.name} · ${offering.course.code}` : 'الدرجات'}
         icon={ClipboardList}
+        /* The old «قيد التطوير» note's still-true half lives here: the
+         * average folds every graded artifact (assignment submissions
+         * AND the semester grades recorded below), and the intelligence
+         * page stays the deeper drill-down. */
+        subtitle={
+          <span>
+            المتوسّط يجمع كل تقييم مُرصَد لكل طالب — درجات الواجبات المُقيَّمة والدرجات
+            الفصليّة المسجَّلة من بطاقة الإدخال أدناه.{' '}
+            <Link to="/teacher/intelligence" className="text-link">شاهد الذكاء الأكاديميّ</Link>
+            {' '}للحصول على تحليل أعمق.
+          </span>
+        }
       >
         {!effectiveOfferingId ? (
           <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض درجات طلابه." illustration="empty-search" />
@@ -557,15 +575,346 @@ export function GradesPage() {
         )}
       </Card>
 
-      <Card>
-        <p className="text-sm text-muted notice-paragraph">
-          إدخال الدرجات الفصليّة (الاختبار 1، الاختبار 2، المشروع، النهائيّ) قيد التطوير.
-          حالياً تُعرض الدرجات المرصودة من واجبات المقرّر.{' '}
-          <Link to="/teacher/intelligence" className="text-link">شاهد الذكاء الأكاديميّ</Link>
-          {' '}للحصول على تحليل أعمق.
-        </p>
-      </Card>
+      {/* r180-F2: the real write half — replaces the retired
+          «إدخال الدرجات الفصليّة قيد التطوير» card (the endpoint it
+          disclaimed now has its consumer). */}
+      <SemesterGradeEntry offeringId={effectiveOfferingId} studentsQ={stuQ} />
     </div>
+  );
+}
+
+/* ─── r180-F2: semester-grade entry ─────────────────────────────────
+ * POST /offerings/:id/grades (bulk upsert, 1..200 rows, keyed by
+ * student × GradeKind) + GET /offerings/:id/grades for the prefills.
+ * Contract mirrors the page's own grading forms: only the rows the
+ * teacher actually filled ride the payload (empty rows are skipped,
+ * never zeroed); a stored grade for the picked kind prefills its row
+ * (the upsert overwrites score/maxScore/weight/feedback together, so
+ * the column's scale is ADOPTED from the stored rows until the teacher
+ * edits it — a re-save never rewrites a stored row's denominator by
+ * accident); client-side validation speaks before the wire does. */
+const GRADE_KIND_LABEL: Record<GradeKindFE, string> = {
+  HOMEWORK: 'واجب',
+  QUIZ_1: 'اختبار قصير ١',
+  QUIZ_2: 'اختبار قصير ٢',
+  MIDTERM: 'نصفي',
+  PROJECT: 'مشروع',
+  FINAL: 'نهائي',
+};
+const GRADE_KINDS = Object.keys(GRADE_KIND_LABEL) as GradeKindFE[];
+
+/** One student's unsaved edit — keyed `${kind}:${studentId}` so each
+ *  kind's column keeps its own drafts when the teacher switches. */
+type GradeDraft = { score: string; feedback: string };
+
+function SemesterGradeEntry({
+  offeringId,
+  studentsQ,
+}: {
+  offeringId: string;
+  studentsQ: ReturnType<typeof useTeacherStudents>;
+}) {
+  const gradesQ = useOfferingGrades(offeringId || undefined);
+  const upsert = useUpsertOfferingGrades(offeringId);
+
+  const [kind, setKind] = useState<GradeKindFE>('HOMEWORK');
+  const [maxScore, setMaxScore] = useState('100');
+  const [weight, setWeight] = useState('10');
+  /* False until the teacher edits the scale by hand — until then the
+   * max/weight inputs adopt the stored rows' scale for the picked
+   * kind (see the component header comment). */
+  const [scaleTouched, setScaleTouched] = useState(false);
+  const [drafts, setDrafts] = useState<Record<string, GradeDraft>>({});
+  const [rowErrors, setRowErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const students = studentsQ.data ?? [];
+  const pending = upsert.isPending;
+
+  const existingByKind = useMemo(() => {
+    const m = new Map<GradeKindFE, OfferingGradeRow[]>();
+    for (const g of gradesQ.data ?? []) {
+      const bucket = m.get(g.kind);
+      if (bucket) bucket.push(g);
+      else m.set(g.kind, [g]);
+    }
+    return m;
+  }, [gradesQ.data]);
+
+  /* The current column's stored rows — the prefill source. */
+  const existingByStudent = useMemo(() => {
+    const m = new Map<string, OfferingGradeRow>();
+    for (const g of existingByKind.get(kind) ?? []) m.set(g.studentId, g);
+    return m;
+  }, [existingByKind, kind]);
+
+  /* Scale adoption: when untouched, follow the stored rows of the
+   * picked kind (or keep the current values when none exist — never
+   * silently reset a hand-set scale). */
+  useEffect(() => {
+    if (scaleTouched) return;
+    const rows = existingByKind.get(kind);
+    if (rows && rows.length > 0) {
+      setMaxScore(String(rows[0]!.maxScore));
+      setWeight(String(rows[0]!.weight));
+    }
+  }, [kind, existingByKind, scaleTouched]);
+
+  const draftKey = (k: GradeKindFE, studentId: string) => `${k}:${studentId}`;
+
+  /* The rows the payload would carry: an edit under the CURRENT kind
+   * whose score or feedback is non-empty. Both-empty drafts (a
+   * prefilled row the teacher cleared completely) drop out — the wire
+   * never sees a zeroed row the teacher did not mean. */
+  const dirtyRows = students.filter((s) => {
+    const d = drafts[draftKey(kind, s.studentId)];
+    return d !== undefined && (d.score.trim() !== '' || d.feedback.trim() !== '');
+  });
+
+  const maxVal = Number(maxScore);
+  const weightVal = Number(weight);
+  const maxInvalid = maxScore.trim() === '' || Number.isNaN(maxVal)
+    || !Number.isInteger(maxVal) || maxVal < 1 || maxVal > 100;
+  const weightInvalid = weight.trim() === '' || Number.isNaN(weightVal)
+    || !Number.isInteger(weightVal) || weightVal < 0 || weightVal > 100;
+
+  const onSave = async () => {
+    if (maxInvalid) {
+      setFormError('الدرجة العظمى عدد صحيح بين 1 و100.');
+      return;
+    }
+    if (weightInvalid) {
+      setFormError('الوزن عدد صحيح بين 0 و100.');
+      return;
+    }
+    if (dirtyRows.length === 0) {
+      setFormError('أدخل درجة واحدة على الأقل — الصفوف الفارغة لا تُرسَل ولا تمسّ الدرجات المسجَّلة.');
+      return;
+    }
+    if (dirtyRows.length > 200) {
+      // gradesUpsertSchema caps the array at 200 — the roster can exceed it.
+      setFormError('الحدّ الأقصى 200 درجة في الحفظة الواحدة — احفظ على دفعات.');
+      return;
+    }
+    /* Per-row validation mirrors GradeSubmissionModal's copy: a valid
+     * number, not negative, within the column's ceiling. */
+    const errors: Record<string, string> = {};
+    for (const s of dirtyRows) {
+      const d = drafts[draftKey(kind, s.studentId)]!;
+      const value = Number(d.score);
+      if (d.score.trim() === '' || Number.isNaN(value)) errors[s.studentId] = 'أدخل درجة صحيحة.';
+      else if (value < 0) errors[s.studentId] = 'لا يمكن أن تكون الدرجة سالبة.';
+      else if (value > maxVal) errors[s.studentId] = `الدرجة يجب ألّا تتجاوز ${maxVal}.`;
+    }
+    setRowErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      setFormError('صحّح الصفوف المعلَّمة قبل الحفظ.');
+      return;
+    }
+    setFormError(null);
+    try {
+      await upsert.mutateAsync({
+        grades: dirtyRows.map((s) => {
+          const d = drafts[draftKey(kind, s.studentId)]!;
+          return {
+            studentId: s.studentId,
+            kind,
+            score: Number(d.score),
+            maxScore: maxVal,
+            weight: weightVal,
+            feedback: d.feedback.trim() || undefined,
+          };
+        }),
+      });
+      /* Landed: the drafts clear (the prefills now come from the
+       * invalidated grades read) and the scale adoption re-arms — the
+       * stored rows are the truth again. */
+      setDrafts({});
+      setRowErrors({});
+      setFormError(null);
+      setScaleTouched(false);
+      toast.success('حُفظت الدرجات وستظهر لطلاب المقرّر فوراً.', { title: 'تمّ الحفظ' });
+    } catch {
+      // surfaced inline from upsert.isError below
+    }
+  };
+
+  return (
+    <Card
+      title="إدخال الدرجات الفصليّة"
+      icon={ClipboardCheck}
+      subtitle={
+        dirtyRows.length > 0
+          ? countAr(dirtyRows.length, ['صف واحد غير محفوظ', 'صفان غير محفوظان', 'صفوف غير محفوظة', 'صفاً غير محفوظاً'])
+          : 'سجّل درجة كل طالب في التقييم المحدَّد — الصفوف الفارغة لا تُرسَل، والدرجات المسجَّلة مسبقاً تظهر معبَّأة.'
+      }
+      actions={
+        <button
+          type="button"
+          className="btn primary"
+          onClick={() => void onSave()}
+          disabled={pending || !offeringId || students.length === 0}
+        >
+          {pending ? 'جارٍ الحفظ…' : 'حفظ الدرجات'}
+        </button>
+      }
+    >
+      {/* A real <form> — Enter in any score field saves (the
+          GradeSubmissionModal / AssignmentFormModal contract). */}
+      <form onSubmit={(e) => { e.preventDefault(); void onSave(); }} noValidate>
+        <div className="form-row-3">
+          <FormField label="نوع التقييم">
+            <select
+              className="input"
+              value={kind}
+              onChange={(e) => setKind(e.target.value as GradeKindFE)}
+              disabled={pending}
+            >
+              {GRADE_KINDS.map((k) => (
+                <option key={k} value={k}>{GRADE_KIND_LABEL[k]}</option>
+              ))}
+            </select>
+          </FormField>
+          <FormField
+            label="الدرجة العظمى"
+            hint="بين 1 و100 — تعتمد من الدرجات المسجَّلة لهذا النوع"
+            error={formError && maxInvalid ? formError : undefined}
+          >
+            <input
+              type="number"
+              className="input"
+              min={1}
+              max={100}
+              step={1}
+              value={maxScore}
+              onChange={(e) => { setMaxScore(e.target.value); setScaleTouched(true); }}
+              disabled={pending}
+            />
+          </FormField>
+          <FormField
+            label="الوزن (% من الدرجات)"
+            error={formError && !maxInvalid && weightInvalid ? formError : undefined}
+          >
+            <input
+              type="number"
+              className="input"
+              min={0}
+              max={100}
+              step={1}
+              value={weight}
+              onChange={(e) => { setWeight(e.target.value); setScaleTouched(true); }}
+              disabled={pending}
+            />
+          </FormField>
+        </div>
+
+        {!offeringId ? (
+          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لإدخال درجات طلابه." illustration="empty-search" />
+        ) : studentsQ.isPending ? (
+          <TableSkeleton rows={5} cols={3} />
+        ) : studentsQ.isError ? (
+          <ErrorState error={studentsQ.error} onRetry={() => studentsQ.refetch()} />
+        ) : students.length === 0 ? (
+          <EmptyState title="لا يوجد طلاب" description="لا توجد تسجيلات في هذا المقرّر بعد — لا درجات لإدخالها." illustration="empty-search" />
+        ) : gradesQ.isPending ? (
+          <TableSkeleton rows={4} cols={3} />
+        ) : gradesQ.isError ? (
+          <ErrorState error={gradesQ.error} onRetry={() => gradesQ.refetch()} />
+        ) : (
+          <div className="table-wrap">
+            <table className="table tbl-stack">
+              <thead>
+                <tr>
+                  <th scope="col">الطالب</th>
+                  <th scope="col">{`الدرجة (من 0 إلى ${maxInvalid ? 100 : maxVal})`}</th>
+                  <th scope="col">ملاحظات للطالب (اختياري)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((s) => {
+                  const d = drafts[draftKey(kind, s.studentId)];
+                  const existing = existingByStudent.get(s.studentId);
+                  /* Draft wins over the stored prefill; the first
+                   * keystroke captures the prefill into the draft so
+                   * editing feedback alone re-sends the stored score. */
+                  const scoreValue = d ? d.score : existing !== undefined ? String(existing.score) : '';
+                  const feedbackValue = d ? d.feedback : existing?.feedback ?? '';
+                  const err = rowErrors[s.studentId];
+                  const errId = `grade-row-err-${s.studentId}`;
+                  return (
+                    <tr key={s.studentId}>
+                      <td className="tbl-strong" data-label="الطالب">
+                        <div>{s.name}</div>
+                        <div className="text-xs text-muted font-mono"><bdi>{s.universityId}</bdi></div>
+                      </td>
+                      <td data-label="الدرجة">
+                        <input
+                          type="number"
+                          className="input input-narrow"
+                          placeholder={`0 – ${maxInvalid ? 100 : maxVal}`}
+                          min={0}
+                          max={maxInvalid ? 100 : maxVal}
+                          step="any"
+                          inputMode="decimal"
+                          value={scoreValue}
+                          aria-invalid={err ? true : undefined}
+                          aria-describedby={err ? errId : undefined}
+                          disabled={pending}
+                          onChange={(e) => setDrafts({
+                            ...drafts,
+                            [draftKey(kind, s.studentId)]: { score: e.target.value, feedback: feedbackValue },
+                          })}
+                        />
+                        {err && (
+                          <p id={errId} className="form-field-error" role="alert" style={{ marginBlockStart: 'var(--sp-1)' }}>
+                            {err}
+                          </p>
+                        )}
+                      </td>
+                      <td data-label="ملاحظات للطالب (اختياري)">
+                        <input
+                          type="text"
+                          className="input"
+                          placeholder="ملاحظة قصيرة تصل الطالب مع الدرجة…"
+                          maxLength={2000}
+                          value={feedbackValue}
+                          disabled={pending}
+                          onChange={(e) => setDrafts({
+                            ...drafts,
+                            [draftKey(kind, s.studentId)]: { score: scoreValue, feedback: e.target.value },
+                          })}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {formError && (
+          <div className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
+            <Icon icon={AlertTriangle} size={14} />
+            <span className="flex-1">{formError}</span>
+          </div>
+        )}
+        {upsert.isError && (
+          <div className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
+            <Icon icon={AlertTriangle} size={14} />
+            <span className="flex-1">
+              {apiErrorMessage(upsert.error, 'تعذَّر حفظ الدرجات — حاول مرة أخرى.')}
+            </span>
+          </div>
+        )}
+        {upsert.isSuccess && (
+          <div className="form-feedback ok" role="status" style={{ marginBlockStart: 'var(--sp-3)' }}>
+            <Icon icon={CheckCircle2} size={14} />
+            <span>تمّ حفظ الدرجات المسجَّلة في هذا النوع.</span>
+          </div>
+        )}
+      </form>
+    </Card>
   );
 }
 

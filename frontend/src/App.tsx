@@ -31,6 +31,9 @@ const StudentDashboardPage = lazy(() => import('./pages/student/DashboardPage'))
 // windows + live sessions in a month grid).
 const StudentCalendarPage = lazy(() => import('./pages/student/CalendarPage'));
 const StudentCoursesPage = lazy(() => import('./pages/student/CoursesPage'));
+// r180-F4: the student-facing institution course catalogue (admin-mediated
+// enrollment — the catalogue names the real door, no fake enroll button).
+const CatalogPage = lazy(() => import('./pages/student/CatalogPage'));
 const LibraryPage = lazy(() => import('./pages/student/LibraryPage'));
 const MoocPage = lazy(() => import('./pages/student/MoocPage'));
 const JobsPage = lazy(() => import('./pages/student/JobsPage'));
@@ -280,6 +283,9 @@ export function AppRoutes() {
             <Route path="/student/dashboard" element={<StudentDashboardPage />} />
             <Route path="/student/calendar" element={<StudentCalendarPage />} />
             <Route path="/student/courses" element={<StudentCoursesPage />} />
+            {/* r180-F4: the institution catalogue — the discovery surface the
+                enrolled-courses page deliberately is not. */}
+            <Route path="/student/catalog" element={<CatalogPage />} />
             <Route path="/student/schedule" element={<SchedulePage />} />
             <Route path="/student/results" element={<ResultsPage />} />
             <Route path="/student/library" element={<LibraryPage />} />

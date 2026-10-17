@@ -4,7 +4,7 @@ import {
   GraduationCap, Briefcase, Building2,
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, Microscope, School,
-  FileText, FileQuestion, ShieldCheck, Activity, Compass, BookMarked,
+  FileText, FileQuestion, ShieldCheck, Activity, Compass, BookMarked, BookCopy,
   Radio, Wallet, MapPin, UserCircle, Brain, Megaphone, RefreshCw,
   Palette, Settings, AlertTriangle, MessageCircle, Video, Globe,
   Download, Medal, BadgeCheck, Box, Telescope,
@@ -32,6 +32,9 @@ export const STUDENT_NAV: NavGroup[] = [
       // the icon stays unique vs the weekly schedule's Calendar (A4 P3-4).
       { to: '/student/calendar', icon: CalendarDays, label: 'التقويم الأكاديمي' },
       { to: '/student/courses', icon: BookOpen, label: 'مقرّراتي الدراسية' },
+      // r180-F4: the institution's course catalogue (the discovery half of
+      // the courses surface — enrollment itself stays admin-mediated).
+      { to: '/student/catalog', icon: BookCopy, label: 'دليل المقررات' },
       { to: '/student/results', icon: BarChart3, label: 'النتائج والتقييمات' },
     ],
   },

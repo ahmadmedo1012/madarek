@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -11,6 +12,8 @@ import {
 import { Icon } from '../components/Icon';
 import { LibyaFlag } from '../components/LibyaFlag';
 import { useLogin, useSelectInstitution } from '../hooks/useAuth';
+import { listPublicInstitutions } from '../lib/api';
+import { apiErrorCode } from '../lib/format';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { ROLE_HOME, ROLE_LABELS } from '../lib/nav';
@@ -131,9 +134,28 @@ export default function AuthPage() {
     navigate(readFromPath(location.state) ?? ROLE_HOME[role], { replace: true });
   };
 
+  // r180 (REG_NUMBER_AMBIGUOUS recovery): the same reg-number can be
+  // registered in several institutions (the seed deliberately proves
+  // it: UZ-2024-00001 lives in both demo institutions). The backend
+  // login accepts an institutionSlug hint — when it answers 400
+  // REG_NUMBER_AMBIGUOUS the form grows ONE institution select (the
+  // public /institutions list) and the next submit carries the choice;
+  // email login never hits this path.
+  const [ambiguitySlug, setAmbiguitySlug] = useState('');
+  const ambiguity = login.isError && apiErrorCode(login.error) === 'REG_NUMBER_AMBIGUOUS';
+  const institutions = useQuery({
+    queryKey: ['institutions'],
+    queryFn: listPublicInstitutions,
+    enabled: ambiguity,
+    staleTime: 5 * 60_000,
+  });
+
   const onLogin = loginForm.handleSubmit(async (values) => {
     try {
-      const result = await login.mutateAsync(values);
+      const result = await login.mutateAsync({
+        ...values,
+        ...(ambiguitySlug ? { institutionSlug: ambiguitySlug } : {}),
+      });
       // r178: multi-membership without an auto-selected context → the
       // institution selection step owns the navigation from here.
       if (
@@ -367,6 +389,27 @@ export default function AuthPage() {
                     ? rateLimitMessage(login.error)
                     : (authFailure.serverMessage ?? GENERIC_LOGIN_ERROR)}
                 </span>
+              </div>
+            )}
+
+            {/* r180: the ambiguity recovery select — mounted only while
+                the last submit answered REG_NUMBER_AMBIGUOUS; choosing an
+                institution and resubmitting sends the slug hint. */}
+            {ambiguity && (
+              <div className="auth-field">
+                <label htmlFor="auth-ambiguity-institution" className="form-label">مؤسستك</label>
+                <select
+                  id="auth-ambiguity-institution"
+                  className="auth-input"
+                  value={ambiguitySlug}
+                  onChange={(e) => setAmbiguitySlug(e.target.value)}
+                  disabled={institutions.isLoading}
+                >
+                  <option value="">{institutions.isLoading ? 'جارٍ تحميل المؤسسات…' : 'اختر المؤسسة…'}</option>
+                  {(institutions.data ?? []).map((i) => (
+                    <option key={i.id} value={i.slug}>{i.name}</option>
+                  ))}
+                </select>
               </div>
             )}
 

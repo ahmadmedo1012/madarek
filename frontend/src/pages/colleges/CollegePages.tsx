@@ -7,6 +7,8 @@ import {
   FlaskConical, Microscope, ClipboardCheck, Medal, BarChart3,
   Search, X, ChevronRight, ChevronDown, ChevronUp, ArrowUpDown,
 } from 'lucide-react';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { UserAvatar } from '../../components/primitives';
@@ -234,8 +236,9 @@ export function CollegesIndexPage() {
   // visitors keep the shell's own resolution (NAV_TITLES carries
   // /colleges — same label, one source in nav.ts).
   useDocTitle(isGuest ? 'كلّيّات الجامعة' : null);
+  const inst = useInstitutionScope(); // r180: scoped key
   const q = useQuery({
-    queryKey: ['colleges'],
+    queryKey: withInstitutionScope(['colleges'], inst),
     queryFn: () => unwrap<CollegeListItem[]>(api.get('/colleges')),
     staleTime: 5 * 60_000,
   });
@@ -523,8 +526,9 @@ export function CollegeDetailPage() {
   // P0-1). Every hook must run unconditionally above the gates.
   const themeMode = useThemeStore((s) => s.mode);
   const user = useAuthStore((s) => s.user);
+  const inst = useInstitutionScope(); // r180: scoped key
   const q = useQuery({
-    queryKey: ['colleges', id],
+    queryKey: withInstitutionScope(['colleges', id], inst),
     queryFn: () => unwrap<CollegeDetail>(api.get(`/colleges/${id}`)),
     enabled: !!id,
     staleTime: 60_000,
@@ -982,8 +986,9 @@ export function CollegesLeaderboardPage() {
   // Guest title (A12 P2-6) — matches AppShell's PAGE_TITLES entry for
   // this route (same label, one source there).
   useDocTitle(isGuest ? 'منافسة الكلّيّات' : null);
+  const inst = useInstitutionScope(); // r180: scoped key
   const q = useQuery({
-    queryKey: ['colleges', 'leaderboard'],
+    queryKey: withInstitutionScope(['colleges', 'leaderboard'], inst),
     queryFn: () => unwrap<LeaderboardData>(api.get('/colleges/leaderboard')),
     staleTime: 5 * 60_000,
   });

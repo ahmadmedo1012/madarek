@@ -232,18 +232,22 @@ export const watchSchema = z.object({
 }).strict();
 
 /**
- * Server-side completion rule for recorded-lecture watching (decision D9):
- * a client `completed:true` claim is only accepted when the reported
- * progress covers at least 90% of the effective video length —
- * min(client totalSec, lecture durationSec) — and both clock values are
- * positive. The 90% test uses integer cross-multiplication so the exact
- * boundary (e.g. 900 of 1000 seconds) is never lost to float rounding.
- * Exported for unit tests.
+ * Server-side completion rule for recorded-lecture watching (decision
+ * D9, r180 threshold alignment): a client `completed:true` claim is
+ * only accepted when the reported progress covers at least 95% of the
+ * effective video length — min(client totalSec, lecture durationSec) —
+ * and both clock values are positive. 95% (not the old 90%) so the
+ * server's authority never grants attendance EARLIER than the 0.95
+ * completion share the player UI shows the student and docs/02
+ * documents — the three surfaces now promise one threshold. The test
+ * uses integer cross-multiplication so the exact boundary (e.g. 950
+ * of 1000 seconds) is never lost to float rounding. Exported for unit
+ * tests.
  */
 export function watchProgressCompletes(watchedSec: number, totalSec: number, durationSec: number): boolean {
   if (totalSec <= 0 || durationSec <= 0) return false;
   const effectiveLength = Math.min(totalSec, durationSec);
-  return watchedSec * 10 >= effectiveLength * 9;
+  return watchedSec * 100 >= effectiveLength * 95;
 }
 
 /**

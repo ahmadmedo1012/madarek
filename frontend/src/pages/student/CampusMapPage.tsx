@@ -7,7 +7,7 @@ import { Card, Badge } from '../../components/primitives';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
-import { useFaculties } from '../../hooks/useResources';
+import { useFaculties, useCurrentInstitutionSlug } from '../../hooks/useResources';
 
 /**
  * Honest campus directory.
@@ -31,7 +31,7 @@ function arCount(n: number, one: string, two: string, few: string, many: string)
 }
 
 export default function CampusMapPage() {
-  const facs = useFaculties();
+  const facs = useFaculties(useCurrentInstitutionSlug()); // r180: caller-institution scoping
   const faculties = facs.data ?? [];
   const [city, setCity] = useState<string>('all');
 

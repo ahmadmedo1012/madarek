@@ -71,18 +71,18 @@ describe('watchSchema', () => {
 });
 
 describe('watchProgressCompletes (decision D9 — server decides completion)', () => {
-  it('accepts exactly 90% of the effective length', () => {
-    expect(watchProgressCompletes(900, 1000, 1000)).toBe(true);
+  it('accepts exactly 95% of the effective length (r180: aligned with the player UI + docs/02 promise)', () => {
+    expect(watchProgressCompletes(950, 1000, 1000)).toBe(true);
   });
 
-  it('rejects just under 90%', () => {
-    expect(watchProgressCompletes(899, 1000, 1000)).toBe(false);
+  it('rejects just under 95%', () => {
+    expect(watchProgressCompletes(949, 1000, 1000)).toBe(false);
   });
 
   it('handles non-round boundaries without float drift', () => {
-    // 90% of 599 is 539.1 — 539 must fail, 540 must pass.
-    expect(watchProgressCompletes(539, 599, 599)).toBe(false);
-    expect(watchProgressCompletes(540, 599, 599)).toBe(true);
+    // 95% of 599 is 569.05 — 569 must fail, 570 must pass.
+    expect(watchProgressCompletes(569, 599, 599)).toBe(false);
+    expect(watchProgressCompletes(570, 599, 599)).toBe(true);
   });
 
   it('rejects a zero-duration lecture (the client cannot claim completion)', () => {
@@ -94,12 +94,12 @@ describe('watchProgressCompletes (decision D9 — server decides completion)', (
   });
 
   it('uses min(totalSec, durationSec) as the effective length', () => {
-    // Client under-reports the length: 90% of 800, not of 1000.
-    expect(watchProgressCompletes(720, 800, 1000)).toBe(true);
-    expect(watchProgressCompletes(719, 800, 1000)).toBe(false);
+    // Client under-reports the length: 95% of 800, not of 1000.
+    expect(watchProgressCompletes(760, 800, 1000)).toBe(true);
+    expect(watchProgressCompletes(759, 800, 1000)).toBe(false);
     // Client over-reports: the lecture's real duration caps it.
-    expect(watchProgressCompletes(900, 1200, 1000)).toBe(true);
-    expect(watchProgressCompletes(899, 1200, 1000)).toBe(false);
+    expect(watchProgressCompletes(950, 1200, 1000)).toBe(true);
+    expect(watchProgressCompletes(949, 1200, 1000)).toBe(false);
   });
 
   it('never completes on zero watched seconds (tiny-video fraud)', () => {

@@ -774,15 +774,15 @@ model Message {
 //  Social: posts, comments, study rooms
 // ────────────────────────────────────────────────────────────────
 model Post {
-  id            String     @id @default(cuid())
+  id            String      @id @default(cuid())
   authorId      String
-  author        User       @relation(fields: [authorId], references: [id])
+  author        User        @relation(fields: [authorId], references: [id])
   institutionId String
   institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
   body          String
   hashtags      String[]
   imageUrl      String?
-  createdAt     DateTime   @default(now())
+  createdAt     DateTime    @default(now())
 
   comments  PostComment[]
   reactions PostReaction[]
@@ -1064,13 +1064,13 @@ model ArExperience {
 //  AI conversations
 // ────────────────────────────────────────────────────────────────
 model AiConversation {
-  id            String       @id @default(cuid())
+  id            String      @id @default(cuid())
   userId        String
-  user          User         @relation(fields: [userId], references: [id])
+  user          User        @relation(fields: [userId], references: [id])
   institutionId String
-  institution   Institution  @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
   title         String?
-  createdAt     DateTime     @default(now())
+  createdAt     DateTime    @default(now())
   messages      AiMessage[]
 
   @@index([userId])
@@ -1302,6 +1302,13 @@ model ResearchPaper {
   @@index([reviewerId])
   @@index([status])
   @@index([offeringId])
+  // r180: the phase-5 migration already created this index in SQL
+  // (20261018000000: ResearchPaper_institutionId_idx) — the model
+  // declaration was missing, so the next `prisma migrate dev` would
+  // have generated a DROP of the exact index the institution-scoped
+  // paper queues/lists rely on (schema↔DB drift closed, no migration
+  // needed — the database already has it).
+  @@index([institutionId])
 }
 
 // Inline feedback on a research paper. Teachers/reviewers leave page-anchored
@@ -1677,21 +1684,21 @@ model Announcement {
 }
 
 model Competition {
-  id          String            @id @default(cuid())
-  title       String
-  description String            @db.Text
-  category    String // "بحث" | "برمجة" | "ابتكار" | "محاضرة" | "تصميم" ...
-  prize       String?
-  deadline    DateTime
+  id            String            @id @default(cuid())
+  title         String
+  description   String            @db.Text
+  category      String // "بحث" | "برمجة" | "ابتكار" | "محاضرة" | "تصميم" ...
+  prize         String?
+  deadline      DateTime
   organizerId   String
   organizer     User              @relation("CompetitionOrganizer", fields: [organizerId], references: [id])
   institutionId String
   institution   Institution       @relation(fields: [institutionId], references: [id], onDelete: Cascade)
   status        CompetitionStatus @default(OPEN)
-  iconEmoji   String?
-  themeColor  String?
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  iconEmoji     String?
+  themeColor    String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
   entries CompetitionEntry[]
 
@@ -1718,20 +1725,20 @@ model CompetitionEntry {
 }
 
 model CampusEvent {
-  id            String       @id @default(cuid())
+  id            String      @id @default(cuid())
   title         String
-  description   String       @db.Text
+  description   String      @db.Text
   location      String
   startsAt      DateTime
   endsAt        DateTime
-  capacity      Int          @default(100)
+  capacity      Int         @default(100)
   organizerId   String
-  organizer     User         @relation("EventOrganizer", fields: [organizerId], references: [id])
+  organizer     User        @relation("EventOrganizer", fields: [organizerId], references: [id])
   institutionId String
-  institution   Institution  @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
   iconEmoji     String?
   themeColor    String?
-  createdAt     DateTime     @default(now())
+  createdAt     DateTime    @default(now())
 
   rsvps EventRSVP[]
 
@@ -1774,14 +1781,14 @@ model UniversityFact {
   institutionId String
   institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
   /// Localized display value (Arabic by default; English-tagged keys for English).
-  value         String   @db.Text
+  value         String      @db.Text
   /// Group: general | identity | contact | strategic | grading | colleges | calendar | other
-  category      String   @default("general")
+  category      String      @default("general")
   /// Where the value came from: "zu.edu.ly:about" | "zu.edu.ly:faculty" | "manual"
-  source        String   @default("zu.edu.ly")
-  syncedAt      DateTime @default(now())
+  source        String      @default("zu.edu.ly")
+  syncedAt      DateTime    @default(now())
   /// Marked stale if a sync run could not refresh it.
-  isStale       Boolean  @default(false)
+  isStale       Boolean     @default(false)
 
   @@id([institutionId, key])
   @@index([institutionId, category])

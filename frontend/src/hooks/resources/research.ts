@@ -65,8 +65,11 @@ export interface ResearchSearchHit extends ResearchPaper {
 }
 export function useResearchSearch(query: string) {
   const trimmed = query.trim();
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['research', 'search', trimmed],
+    /* r180: the search spans the caller's institution's published
+     * papers server-side — scoped key (switch re-keys). */
+    queryKey: withInstitutionScope(['research', 'search', trimmed], inst),
     enabled: trimmed.length >= 2,
     queryFn: async () => {
       const res = await api.get<{ data: ResearchSearchHit[]; meta: { query: string; total: number } }>(

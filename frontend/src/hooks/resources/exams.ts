@@ -341,8 +341,11 @@ export interface MyExam {
   myAttempt: { id: string; status: string; score: number | null; maxScore: number; submittedAt: string | null } | null;
 }
 export function useMyExams() {
+  const inst = useInstitutionScope();
   return useQuery({
-    queryKey: ['exams', 'me'],
+    /* r180: GET /exams/me is institution-scoped server-side — the key
+     * carries the scope segment (switch re-keys, no stale flash). */
+    queryKey: withInstitutionScope(['exams', 'me'], inst),
     queryFn: () => unwrap<MyExam[]>(api.get('/exams/me')),
   });
 }

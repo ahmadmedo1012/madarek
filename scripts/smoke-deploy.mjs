@@ -19,6 +19,13 @@
  *      POST /api/v1/auth/login → access token →
  *      GET  /api/v1/auth/me with Authorization: Bearer →
  *      the /me role must ECHO the login role.
+ *   5. OPTIONAL two-institution separation probe (r180) — runs ONLY
+ *      when SMOKE_EMAIL/SMOKE_PASSWORD (user A) AND
+ *      SMOKE_EMAIL2/SMOKE_PASSWORD2 (user B of ANOTHER institution)
+ *      are all set: both log in, each GET /enrollments/me's offering
+ *      ids, the two sets must be DISJOINT, and user A fetching one of
+ *      user B's offerings (/offerings/:id/full) must be refused
+ *      (403/404) — never 200.
  *
  * Secrecy: the password and the token are never printed; the email is
  * printed masked (first character + @domain only).
@@ -292,6 +299,95 @@ async function checkLoginRoundTrip(base, { email, password }) {
   return pass(`توكن صالح / token works · role=${role} (مطابق من /me · echoed by /me) · ${maskEmail(email)}`);
 }
 
+// ─── 5) Two-institution separation (r180) ────────────────────────
+
+/** Login one user and return { token, offerings } — offerings are the
+ *  user's /enrollments/me offering ids. Failures return { fail: detail }. */
+async function loginAndOfferings(base, { email, password }, who) {
+  let res;
+  try {
+    res = await request(`${base}/api/v1/auth/login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'user-agent': USER_AGENT },
+      body: JSON.stringify({ email, password }),
+    });
+  } catch (err) {
+    return { fail: `${who} login: ${netError(err)}` };
+  }
+  if (res.status !== 200) return { fail: `${who} login HTTP ${res.status}` };
+  let body;
+  try {
+    body = await res.json();
+  } catch {
+    return { fail: `${who} login: الجسم ليس JSON / body is not JSON` };
+  }
+  const token = body?.data?.accessToken;
+  if (typeof token !== 'string' || token.length === 0) {
+    return { fail: `${who} login: accessToken مفقود / missing` };
+  }
+  let enrollRes;
+  try {
+    enrollRes = await request(`${base}/api/v1/enrollments/me`, {
+      headers: { authorization: `Bearer ${token}`, 'user-agent': USER_AGENT },
+    });
+  } catch (err) {
+    return { fail: `${who} /enrollments/me: ${netError(err)}` };
+  }
+  if (enrollRes.status !== 200) return { fail: `${who} /enrollments/me HTTP ${enrollRes.status}` };
+  let enrollBody;
+  try {
+    enrollBody = await enrollRes.json();
+  } catch {
+    return { fail: `${who} /enrollments/me: الجسم ليس JSON / body is not JSON` };
+  }
+  const rows = Array.isArray(enrollBody?.data) ? enrollBody.data : [];
+  const offerings = rows
+    .map((r) => r?.offering?.id)
+    .filter((id) => typeof id === 'string' && id.length > 0);
+  if (offerings.length === 0) {
+    return { fail: `${who} /enrollments/me: لا تسجيلات / no enrollments returned` };
+  }
+  return { token, offerings };
+}
+
+async function checkInstitutionSeparation(base, credsA, credsB) {
+  const a = await loginAndOfferings(base, credsA, 'A');
+  if (a.fail) return fail(a.fail);
+  const b = await loginAndOfferings(base, credsB, 'B');
+  if (b.fail) return fail(b.fail);
+
+  // 1) The two enrollment sets must be disjoint (different institutions).
+  const bSet = new Set(b.offerings);
+  const overlap = a.offerings.filter((id) => bSet.has(id));
+  if (overlap.length > 0) {
+    return fail(
+      `تداخل تسجيلات بين المستخدمين / overlapping offerings across users: ${overlap.length} — عزل المؤسسات مكسور / institution isolation is broken`,
+    );
+  }
+
+  // 2) User A must NOT read user B's offering content (403/404, never 200).
+  const foreignId = b.offerings[0];
+  let foreignRes;
+  try {
+    foreignRes = await request(`${base}/api/v1/offerings/${foreignId}/full`, {
+      headers: { authorization: `Bearer ${a.token}`, 'user-agent': USER_AGENT },
+    });
+  } catch (err) {
+    return fail(`A→B offering probe: ${netError(err)}`);
+  }
+  if (foreignRes.status === 200) {
+    return fail(
+      "المستخدم A قرأ عرض مؤسسة B (200) / user A read user B's institution offering (200) — عزل المؤسسات مكسور / isolation is broken",
+    );
+  }
+  if (foreignRes.status !== 403 && foreignRes.status !== 404) {
+    return fail(`A→B offering probe: HTTP ${foreignRes.status} — متوقع 403/404 / expected 403 or 404`);
+  }
+  return pass(
+    `عزل المؤسسات سليم / isolation holds · ${maskEmail(credsA.email)} مقابل vs ${maskEmail(credsB.email)} · تسجيلات منفصلة (disjoint) + وصول عابر مرفوض (cross access ${foreignRes.status})`,
+  );
+}
+
 // ─── Table rendering ──────────────────────────────────────────────
 
 const STATUS_TAG = {
@@ -346,6 +442,10 @@ async function main() {
   const base = normalized.url;
 
   const creds = credentialsState(process.env);
+  const credsB = credentialsState({
+    SMOKE_EMAIL: process.env.SMOKE_EMAIL2,
+    SMOKE_PASSWORD: process.env.SMOKE_PASSWORD2,
+  });
 
   const checks = [
     { label: 'الصحة / Health', run: () => checkHealth(base) },
@@ -361,6 +461,19 @@ async function main() {
         return {
           status: 'skip',
           detail: 'متخطاة — زوّد SMOKE_EMAIL + SMOKE_PASSWORD لتشغيل حلقة الدخول / provide both to enable the login round-trip',
+        };
+      },
+    },
+    {
+      label: 'عزل المؤسستين / Institution separation',
+      run: async () => {
+        if (creds.kind === 'ready' && credsB.kind === 'ready') {
+          return checkInstitutionSeparation(base, creds, credsB);
+        }
+        return {
+          status: 'skip',
+          detail:
+            'متخطاة — زوّد SMOKE_EMAIL2 + SMOKE_PASSWORD2 لمستخدم المؤسسة الثانية (مع الزوج الأول) / provide a second-institution pair to enable the separation probe',
         };
       },
     },

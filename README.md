@@ -25,7 +25,7 @@
 
 | البند | الحالة |
 |---|---|
-| ميزات الأدوار الخمسة | **منفَّذة ومشحَنة** — 1819 اختبار واجهة + 1714 خلفية خضراء + 113 اختبار تكامل قاعدة بيانات (2026-10-17، جولات r141–r179) |
+| ميزات الأدوار الخمسة | **منفَّذة ومشحَنة** — 1858 اختبار واجهة + 1747 خلفية خضراء + 113 اختبار تكامل قاعدة بيانات (2026-10-17، جولات r141–r180) |
 | نظام التصميم | موثّق في [`DESIGN.md`](DESIGN.md) — بوابة تكافؤ 163/163 خضراء |
 | مساعد «Oasis» الذكي | **محرّك محلي حتمي معلن (gap-aware-composer) افتراضيًا + مزوّد LLM حقيقي اختياري** عبر `AI_PROVIDER` — التفصيل: [docs/02](docs/02-features.md) |
 | فحص الانتحال | **محاكاة حتمية معلنة** (بلا خدمات خارجية) — التفصيل: [docs/02](docs/02-features.md) |
@@ -104,17 +104,28 @@ npm run dev                        # الخلفية :4000
 npm run dev:web                    # الواجهة :5173 (proxy ‏/api → :4000)
 ```
 
-**حسابات تجريبية** بعد البذر (كلمة المرور `Madarek2026!` — تجريبية معلنة):
+**حسابات تجريبية** بعد البذر (كلمة المرور `Madarek2026!` — تجريبية معلنة)،
+موزّعة على **مؤسستَي العرض**:
 
-`student@zu.edu.ly` · `teacher@zu.edu.ly` · `admin@zu.edu.ly` ·
-`quality@zu.edu.ly` · `owner@zu.edu.ly`
+- جامعة الزاوية (مؤسسة العرض المرجعية — 25 كلية): `student@zu.edu.ly` ·
+  `teacher@zu.edu.ly` · `admin@zu.edu.ly` · `quality@zu.edu.ly`
+- مؤسسة الأندلس التعليمية (المؤسسة التجريبية الثانية — تُثبت عزل
+  المؤسسات): `student2@demo.madarek.ly` · `teacher2@demo.madarek.ly` ·
+  `admin2@demo.madarek.ly`
+- مالك المنصة (بلا عضوية — نطاق المنصة): `owner@zu.edu.ly`
+
+> **تجربة العزل بين المؤسستين:** سجّل دخولك بـ`student@zu.edu.ly` ثم
+> بـ`student2@demo.madarek.ly` — الرقمان الجامعيان متطابقان عمدًا
+> (`UZ-2024-00001`) ورمز المقرر `SE301` موجود في المؤسستين، وكلٌّ منهما
+> يرى مقررات مؤسسته فقط (واختبار الشعبة الأخرى يُرفض 403). البذر يعمل
+> بعد كل نشر على Render تلقائيًا وغير مدمّر (r180).
 
 ## الاختبارات والفحوص
 
 ```bash
 npm run lint                         # ESLint — 0 أخطاء إلزامية
 npm run typecheck                    # tsc — src + tests، الجهتان (بلا DB)
-npm test                             # 1819 واجهة + 1714 خلفية (بلا DB؛ يشمل 7 اختبارات S3 حيّة ضد s3rver) — و npm run test:integration يضيف 113 اختبار تكامل على قاعدة محلية معزولة (منها 14 عابرة للمؤسستين لعزل r179)
+npm test                             # 1858 واجهة + 1747 خلفية (بلا DB؛ يشمل 7 اختبارات S3 حيّة ضد s3rver) — و npm run test:integration يضيف 113 اختبار تكامل على قاعدة محلية معزولة (منها 14 عابرة للمؤسستين لعزل r179)
 node scripts/verify-parity-export.mjs  # بوابة التكافؤ 163/163
 bash scripts/check-icons.sh            # انضباط Lucide
 bash scripts/check-motion-tokens.sh    # رموز الحركة
@@ -152,7 +163,7 @@ npm run validate:colleges              # هوية 25 كلية (AA)
 
 ```text
 madarek/
-├── backend/          Express + TS · Prisma (79 نموذجًا/31 enum) · 215 endpoint · storage/papers/
+├── backend/          Express + TS · Prisma (79 نموذجًا/31 enum) · 222 endpoint · storage/papers/
 ├── frontend/         React 18 + Vite · src/styles/ سلسلة الرموز · 18 CSS · tests/ (vitest)
 ├── docs/             الدليل العربي 01–16 + modules/ + المراجع المولّدة + archive/
 ├── specs/            مواصفات الميزات (نية زمنية — الحالة في SPECS-REFERENCE)

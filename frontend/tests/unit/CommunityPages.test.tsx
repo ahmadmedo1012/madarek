@@ -98,6 +98,8 @@ vi.mock('../../src/hooks/useResources', () => ({
   useCreateAnnouncement: () => ({ mutateAsync: vi.fn(async () => ({})), isPending: false, isError: false }),
   useCreateCampusEvent: () => ({ mutateAsync: vi.fn(async () => ({})), isPending: false, isError: false }),
   useFaculties: () => ({ data: [], isPending: false, isError: false }),
+  // r180: the composer's faculty picker resolves the caller's institution.
+  useCurrentInstitutionSlug: () => undefined,
   useMyPermissions: () => ({ data: { capabilities: ['ANNOUNCE_FACULTY', 'EVENTS_RUN'] }, isPending: false, isError: false }),
   useTeacherOfferings: () => ({ data: h.offerings, isPending: false, isError: false }),
 }));

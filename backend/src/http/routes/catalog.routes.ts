@@ -43,6 +43,12 @@ const facultyInstitutionSelect = {
 // the register page passes the institution it selected. Without
 // it the listing spans ALL ACTIVE institutions' faculties, each
 // row carrying its institution basics (the FE groups by them).
+//
+// r180: bounded with a generous take (500) — an unbounded findMany
+// answers an unbounded response body (the multi-institution growth
+// path makes that worse over time); 500 covers every realistic
+// campus directory many times over while keeping the public payload
+// honest.
 router.get('/faculties', async (req, res, next) => {
   try {
     const institutionSlug =
@@ -50,6 +56,7 @@ router.get('/faculties', async (req, res, next) => {
         ? req.query.institutionSlug.trim()
         : undefined;
     const data = await prisma.faculty.findMany({
+      take: 500,
       where: {
         institution: {
           status: 'ACTIVE',
@@ -800,6 +807,187 @@ router.get('/admin/faculties', requireRole(Role.ADMIN, Role.OWNER), async (req, 
     res.json({ data });
   } catch (e) { next(e); }
 });
+
+// ════════════════════════════════════════════════════
+// r180 — ACADEMIC STRUCTURE CREATE (bootstrap dead-end fix)
+// ════════════════════════════════════════════════════
+// The r178 multi-institution model made Faculty/Department
+// institution-owned rows — but only GET routes ever existed on the
+// catalog surface: an institution created by the OWNER had NO API
+// path to build a faculty, so it could never grow a department,
+// course, offering or enrollment. The r180 academic-supply-chain
+// round closes that bootstrap dead-end with institution-scoped
+// POST /admin/faculties and POST /admin/departments.
+
+/**
+ * r180 — resolve the institution an academic-structure WRITE (faculty
+ * / department create) is scoped to, mirroring the GET above:
+ *  - ADMIN: their DB-verified membership context (403
+ *    INSTITUTION_CONTEXT_REQUIRED without one — the fail-closed r179
+ *    phase-5 contract; the token's inst claim is never trusted alone);
+ *  - OWNER: an EXPLICIT ?institutionSlug= query param, resolved to an
+ *    existing ACTIVE institution — the owner console never
+ *    auto-selects an institution (it holds no membership context to
+ *    guess from), so a missing/unknown/suspended slug is a 400 naming
+ *    the fix instead of a silent platform-wide write.
+ */
+async function resolveStructureWriteInstitution(req: {
+  user?: { id: string; role: Role; institutionId: string | null };
+  query: Record<string, unknown>;
+}): Promise<string> {
+  const user = req.user!;
+  if (user.role === Role.OWNER) {
+    const slug =
+      typeof req.query.institutionSlug === 'string' && req.query.institutionSlug.trim().length > 0
+        ? req.query.institutionSlug.trim()
+        : undefined;
+    if (!slug) {
+      throw AppError.badRequest('حدّد المؤسسة عبر institutionSlug قبل إنشاء كليات أو أقسام لها');
+    }
+    const institution = await prisma.institution.findUnique({
+      where: { slug },
+      select: { id: true, status: true },
+    });
+    if (!institution || institution.status !== 'ACTIVE') {
+      throw AppError.badRequest('المؤسسة المحددة غير موجودة أو غير نشطة');
+    }
+    return institution.id;
+  }
+  const callerInstitution = await resolveCallerInstitutionScope(user.id, user.institutionId);
+  if (!callerInstitution) throw institutionContextRequiredError();
+  return callerInstitution;
+}
+
+/** Body of POST /admin/faculties — a faculty is (name, city) inside
+ *  one institution (the @@unique([institutionId, name, city]) key);
+ *  nameEn/iconEmoji are the optional dressing the catalogue reads. */
+export const facultyCreateSchema = z
+  .object({
+    name: z.string().trim().min(1).max(200),
+    nameEn: z.string().trim().max(200).optional(),
+    iconEmoji: z.string().trim().max(10).optional(),
+    city: z.string().trim().min(1).max(100),
+  })
+  .strict();
+
+router.post(
+  '/admin/faculties',
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(facultyCreateSchema),
+  async (req, res, next) => {
+    try {
+      const data = req.body as z.infer<typeof facultyCreateSchema>;
+      const institutionId = await resolveStructureWriteInstitution(req);
+      /* Create + audit atomically (the offerings POST / pattern — the
+       * structure mutation and its audit trail land together). */
+      const faculty = await prisma.$transaction(async (tx) => {
+        const created = await tx.faculty.create({
+          data: {
+            name: data.name,
+            ...(data.nameEn ? { nameEn: data.nameEn } : {}),
+            ...(data.iconEmoji ? { iconEmoji: data.iconEmoji } : {}),
+            city: data.city,
+            institutionId,
+          },
+          // Institution basics on the wire (the same projection the
+          // GET routes ship) so the created row slots straight into
+          // the FE tables that group faculties by institution.
+          include: { institution: { select: facultyInstitutionSelect } },
+        });
+        await tx.auditLog.create({
+          data: {
+            userId: req.user!.id,
+            institutionId,
+            action: 'FACULTY_CREATED',
+            resourceType: 'Faculty',
+            resourceId: created.id,
+            metadata: { name: created.name, city: created.city },
+          },
+        });
+        return created;
+      });
+      res.status(201).json({ data: faculty });
+    } catch (e) {
+      /* @@unique([institutionId, name, city]): the same faculty name in
+       * the same city of the same institution is a 409 the operator
+       * can act on — the generic P2002 envelope («هذه القيمة
+       * مستخدمة مسبقاً») never says WHICH collision happened. */
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+        next(AppError.conflict('توجد كلية بهذا الاسم في هذه المدينة لدى مؤسستك بالفعل'));
+        return;
+      }
+      next(e);
+    }
+  },
+);
+
+/** Body of POST /admin/departments — a department is (name) inside one
+ *  faculty (the @@unique([facultyId, name]) key); the faculty's own
+ *  chain (→ institution) carries the scoping. */
+export const departmentCreateSchema = z
+  .object({
+    name: z.string().trim().min(1).max(200),
+    nameEn: z.string().trim().max(200).optional(),
+    facultyId: z.string().cuid(),
+  })
+  .strict();
+
+router.post(
+  '/admin/departments',
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(departmentCreateSchema),
+  async (req, res, next) => {
+    try {
+      const data = req.body as z.infer<typeof departmentCreateSchema>;
+      const institutionId = await resolveStructureWriteInstitution(req);
+      /* Faculty chain guard (the assertDepartmentInInstitution contract
+       * from courses.routes POST /): the faculty must exist AND belong
+       * to the institution this write is scoped to — a
+       * cross-institution facultyId is a 403, never a silent
+       * cross-institution write. */
+      const faculty = await prisma.faculty.findUnique({
+        where: { id: data.facultyId },
+        select: { id: true, name: true, institutionId: true },
+      });
+      if (!faculty) throw AppError.notFound('الكلية المحددة غير موجودة');
+      if (faculty.institutionId !== institutionId) {
+        throw AppError.forbidden('هذه الكلية تنتمي إلى مؤسسة أخرى');
+      }
+      const department = await prisma.$transaction(async (tx) => {
+        const created = await tx.department.create({
+          data: {
+            name: data.name,
+            ...(data.nameEn ? { nameEn: data.nameEn } : {}),
+            facultyId: faculty.id,
+          },
+          // Faculty basics on the wire — the created row slots straight
+          // into the FE department tables keyed by faculty.
+          include: { faculty: { select: { id: true, name: true, city: true } } },
+        });
+        await tx.auditLog.create({
+          data: {
+            userId: req.user!.id,
+            institutionId,
+            action: 'DEPARTMENT_CREATED',
+            resourceType: 'Department',
+            resourceId: created.id,
+            metadata: { name: created.name, facultyId: faculty.id },
+          },
+        });
+        return created;
+      });
+      res.status(201).json({ data: department });
+    } catch (e) {
+      /* @@unique([facultyId, name]): the same department name in the
+       * same faculty is a 409 the operator can act on. */
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+        next(AppError.conflict('يوجد قسم بهذا الاسم في هذه الكلية بالفعل'));
+        return;
+      }
+      next(e);
+    }
+  },
+);
 
 // ── Pure logic: /admin/reports folds (exported for DB-free tests) ──
 

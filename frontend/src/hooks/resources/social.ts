@@ -7,6 +7,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
 import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
+// r180-F3: study-room mutations carry their own Arabic feedback — the
+// useOwner.ts precedent (toast from inside the hook), so every consumer
+// of the membership surface gets the same success/error copy.
+import { toast } from '../../lib/toast';
+import { apiErrorMessage } from '../../lib/format';
 
 // r179 (phase-5): every institution-dependent key in this module (the
 // whole social domain — posts/announcements/competitions/events) gains
@@ -261,5 +266,98 @@ export function useRsvpEvent() {
     mutationFn: ({ eventId, status }: { eventId: string; status: 'GOING' | 'MAYBE' | 'NO' }) =>
       unwrap<{ status: string }>(api.post(`/events/${eventId}/rsvp`, { status })),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['campus-events'] }),
+  });
+}
+
+// ── Study rooms (r180) ─────────────────────────────────────────
+// غرف الدراسة حقيقية منذ r180 على الخلفية (social.routes.ts — قائمة
+// مؤسسة المستدعِي المتحقَّق منها، إنشاء يجعل المنشئ أول عضو، انضمام/
+// مغادرة داخل حدود المؤسسة، 409 للازدواج، 400 لمالك الغرفة الذي يغادرها).
+// المفاتيح تتبع اتفاقية r179 نفسها (نطاق المؤسسة آخر المفتاح)، والإبطالات
+// تعمل بالبادئة ['study-rooms'] فتطابق المفاتيح المقيَّدة بأي مؤسسة.
+
+/** GET /study-rooms row — studyRoomListItem's projection: the viewer's
+ *  own membership rows are stripped server-side into `isMember`, so the
+ *  join/leave pressed state survives reload (the viewerReacted/myRsvp
+ *  pattern of this domain). */
+export interface StudyRoomRow {
+  id: string;
+  name: string;
+  topic: string | null;
+  createdAt: string;
+  owner: { id: string; firstName: string; lastName: string; avatarInitials: string | null };
+  _count: { members: number };
+  isMember: boolean;
+}
+
+export function useStudyRooms() {
+  const inst = useInstitutionScope();
+  return useQuery({
+    queryKey: withInstitutionScope(['study-rooms'], inst),
+    queryFn: () => unwrap<StudyRoomRow[]>(api.get('/study-rooms')),
+  });
+}
+
+export interface CreateStudyRoomInput {
+  /** 1..120 حرفاً بعد التقليم (createStudyRoomSchema). */
+  name: string;
+  /** اختياري — ≤300 حرفاً. */
+  topic?: string;
+}
+
+export function useCreateStudyRoom() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: CreateStudyRoomInput) =>
+      unwrap<{ id: string; name: string; topic: string | null }>(api.post('/study-rooms', input)),
+    onSuccess: (room) => {
+      qc.invalidateQueries({ queryKey: ['study-rooms'] });
+      // المنشئ أول عضو تلقائيًا (معاملة الخلفية) — التغذية الراجعة تسمّي ذلك.
+      toast.success(`أُنشئت «${room.name}» وأنت أول أعضائها.`, { title: 'تمّ إنشاء الغرفة' });
+    },
+    onError: (e) => {
+      toast.error(apiErrorMessage(e, 'تعذَّر إنشاء الغرفة — تحقّق من البيانات وحاول مرة أخرى.'));
+    },
+  });
+}
+
+/** Join/leave input — the route needs `roomId`; `name` rides along only
+ *  so the feedback toast can name the room (the rsvp/enter pattern in
+ *  this domain passes the viewer context the same way). */
+export interface StudyRoomMembershipInput {
+  roomId: string;
+  name: string;
+}
+
+export function useJoinStudyRoom() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: StudyRoomMembershipInput) =>
+      unwrap<{ roomId: string; userId: string }>(api.post(`/study-rooms/${input.roomId}/join`, {})),
+    onSuccess: (_membership, input) => {
+      qc.invalidateQueries({ queryKey: ['study-rooms'] });
+      toast.success(`انضممت إلى «${input.name}».`, { title: 'تمّ الانضمام' });
+    },
+    onError: (e) => {
+      // 409 الخلفية عربية («أنت عضو في هذه الغرفة بالفعل») — تُعرض كما هي
+      // عبر apiErrorMessage، وغير العربية يسقط إلى البديل العربي.
+      toast.error(apiErrorMessage(e, 'تعذَّر الانضمام إلى الغرفة — تحقّق من اتصالك وحاول مرة أخرى.'));
+    },
+  });
+}
+
+export function useLeaveStudyRoom() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: StudyRoomMembershipInput) =>
+      unwrap<{ roomId: string; left: boolean }>(api.post(`/study-rooms/${input.roomId}/leave`, {})),
+    onSuccess: (_result, input) => {
+      qc.invalidateQueries({ queryKey: ['study-rooms'] });
+      toast.success(`غادرت «${input.name}».`, { title: 'تمّت المغادرة' });
+    },
+    onError: (e) => {
+      // 400 مالك الغرفة عربية («مالك الغرفة لا يغادرها») — تُعرض كما هي.
+      toast.error(apiErrorMessage(e, 'تعذَّرت مغادرة الغرفة — تحقّق من اتصالك وحاول مرة أخرى.'));
+    },
   });
 }

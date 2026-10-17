@@ -27,6 +27,7 @@ import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useTeacherSuggestions,
   useFaculties,
+  useCurrentInstitutionSlug,
   useAssignTeacherPosition,
   useAssignUserScope,
   apiErrorMessage,
@@ -34,6 +35,8 @@ import {
   type AcademicPositionInput,
 } from '../../hooks/useResources';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 import { countAr } from '../../lib/format';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../../stores/auth.store';
@@ -110,7 +113,8 @@ function useAdminUsers(
 ) {
   const { page = 1, limit = 20, q, role } = params;
   return useQuery({
-    queryKey: ['admin', 'users', { page, limit, q, role }],
+    /* r180: /admin/users is institution-scoped server-side — scoped key. */
+    queryKey: withInstitutionScope(['admin', 'users', { page, limit, q, role }], useInstitutionScope()),
     queryFn: async () => {
       const res = await api.get<AdminUsersResponse>('/admin/users', {
         params: { page, limit, q, role },
@@ -139,7 +143,8 @@ interface UserPermissionsResponse {
 }
 function useUserPermissions(userId: string | undefined) {
   return useQuery({
-    queryKey: ['admin', 'users', userId, 'permissions'],
+    /* r180: same institution scoping as the users list above. */
+    queryKey: withInstitutionScope(['admin', 'users', userId, 'permissions'], useInstitutionScope()),
     enabled: !!userId,
     queryFn: () => unwrap<UserPermissionsResponse>(api.get(`/admin/users/${userId}/permissions`)),
   });
@@ -613,7 +618,7 @@ function PositionAssignmentCard({
     appointedAt: string | null;
   };
 }) {
-  const facs = useFaculties();
+  const facs = useFaculties(useCurrentInstitutionSlug()); // r180: caller-institution scoping
   const assign = useAssignTeacherPosition(teacher.id);
   // Local draft state, initialized once per mount — the parent keys this
   // card by teacher id, so switching teachers remounts it. There is
@@ -768,7 +773,7 @@ function ScopeAssignmentCard({
   scopeFacultyId: string | null;
   scopeFacultyName: string | null;
 }) {
-  const facs = useFaculties();
+  const facs = useFaculties(useCurrentInstitutionSlug()); // r180: caller-institution scoping
   const assign = useAssignUserScope(userId);
   // Local draft state, initialized once per mount — the parent keys this
   // card by user id. No server-sync effect on purpose: the capability

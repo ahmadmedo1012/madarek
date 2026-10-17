@@ -30,7 +30,9 @@ interface MeProfileResponse extends AuthUser, Partial<SessionInstitutionExtras> 
   } | null;
 }
 
-interface LoginPayload { email: string; password: string }
+// r180: institutionSlug is the REG_NUMBER_AMBIGUOUS recovery hint — the
+// backend resolves a reg-number collision across institutions with it.
+interface LoginPayload { email: string; password: string; institutionSlug?: string }
 interface RegisterPayload {
   email: string;
   password: string;

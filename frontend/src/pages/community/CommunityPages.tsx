@@ -2,6 +2,7 @@
  * Real community / social layer.
  *
  *   /community            tabbed: Announcements · Competitions · Events
+ *                          · Study rooms (r180) · Posts (the feed)
  *   The existing /student/social (posts) stays as it is.
  */
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
@@ -11,7 +12,7 @@ import { z } from 'zod';
 import { Link } from 'react-router-dom';
 import {
   Megaphone, Trophy, CalendarDays, Pin, MapPin, Clock,
-  CheckCircle2, Users, Sparkles, Plus, X, Send, AlertTriangle,
+  CheckCircle2, Users, MessageCircle, Sparkles, Plus, X, Send, AlertTriangle,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, MetricCard, FormField, PageHeader } from '../../components/primitives';
@@ -21,7 +22,7 @@ import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useAnnouncements, useCompetitions, useCampusEvents, useRsvpEvent,
-  useCreateAnnouncement, useCreateCampusEvent, useFaculties, useMyPermissions,
+  useCreateAnnouncement, useCreateCampusEvent, useFaculties, useCurrentInstitutionSlug, useMyPermissions,
   useTeacherOfferings,
   type AnnouncementRow, type CompetitionRow, type CampusEventRow,
 } from '../../hooks/useResources';
@@ -29,6 +30,11 @@ import { useAuthStore } from '../../stores/auth.store';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { formatDate, formatTime } from '../../utils/numbers';
 import { arUnit } from '../../lib/format';
+// r180-F3: the two new tab bodies + the create-room modal live in their
+// own file (components/community) — they mount ONLY when their tab is
+// active, so their hooks (useStudyRooms/usePosts…) never fire for a
+// visitor sitting on the announcements/competitions/events tabs.
+import { StudyRoomsPanel, PostsFeedPanel, CreateStudyRoomModal } from '../../components/community/CommunitySocialPanels';
 import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
 import '../../styles/colleges.css'; // borrowed .comp-modal-*/.comp-form-*/.event-meta (D14 css split, 13-17)
 
@@ -45,18 +51,24 @@ const ROLE_LABEL: Record<string, string> = {
 /* arUnit (Arabic counted-noun helper) lives in lib/format.ts — the 13-15
    fold of the identical local copies this page shared with MorePages. */
 
-type CommunityTab = 'announcements' | 'competitions' | 'events';
+type CommunityTab = 'announcements' | 'competitions' | 'events' | 'rooms' | 'posts';
 
 const COMMUNITY_TABS: Array<{ key: CommunityTab; label: string; icon: LucideIcon }> = [
   { key: 'announcements', label: 'الإعلانات', icon: Megaphone },
   { key: 'competitions', label: 'المسابقات', icon: Trophy },
   { key: 'events', label: 'الفعاليات', icon: CalendarDays },
+  /* r180-F3: غرف الدراسة + المنشورات — نفس شريط التبويبات ونمطه
+     (أيقونة Lucide بحجم 13 + تسمية عربية)، ومسار لوحة المفاتيح
+     أعلاه (roving tabindex + أسهم RTL) يعمل تلقائيًا مع الإضافات. */
+  { key: 'rooms', label: 'غرف الدراسة', icon: Users },
+  { key: 'posts', label: 'المنشورات', icon: MessageCircle },
 ];
 
 export default function CommunityPage() {
   const [tab, setTab] = useState<CommunityTab>('announcements');
   const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
   const [creatingEvent, setCreatingEvent] = useState(false);
+  const [creatingRoom, setCreatingRoom] = useState(false);
   const ann = useAnnouncements();
   const comps = useCompetitions();
   const events = useCampusEvents();
@@ -72,6 +84,12 @@ export default function CommunityPage() {
      15-a P1-2). ADMIN/QUALITY may address any offering server-side but
      no all-offerings list endpoint exists yet (worklog hand-off). */
   const canAnnounceOffering = user?.role === 'TEACHER' || user?.role === 'OWNER';
+  /* r180: إنشاء غرف الدراسة متاح لكل الأدوار المؤسسية — الخلفية تقبل
+     STUDENT/TEACHER/ADMIN/QUALITY (سياق مؤسسة متحقّق منه) بلا قدرة
+     خاصة، خلافًا لبقية أزرار هذه الصفحة المقيّدة بـ capabilities. */
+  const canCreateRoom =
+    user?.role === 'STUDENT' || user?.role === 'TEACHER' ||
+    user?.role === 'ADMIN' || user?.role === 'QUALITY';
 
   const openComps = comps.data?.filter((c) => c.status === 'OPEN').length ?? 0;
   /* 22-c (A5 P3-7): the KPI reads «فعاليات قادمة» — count only
@@ -129,6 +147,12 @@ export default function CommunityPage() {
               <button type="button" className="btn primary" onClick={() => setCreatingEvent(true)}>
                 <Icon icon={Plus} size={14} />
                 فعاليّة جديدة
+              </button>
+            )}
+            {tab === 'rooms' && canCreateRoom && (
+              <button type="button" className="btn primary" onClick={() => setCreatingRoom(true)}>
+                <Icon icon={Plus} size={14} />
+                إنشاء غرفة
               </button>
             )}
           </>
@@ -205,6 +229,17 @@ export default function CommunityPage() {
         </div>
       )}
 
+      {tab === 'rooms' && (
+        <div className="grid-2" role="tabpanel" id="community-panel-rooms" aria-labelledby="community-tab-rooms">
+          <StudyRoomsPanel />
+        </div>
+      )}
+      {tab === 'posts' && (
+        <div role="tabpanel" id="community-panel-posts" aria-labelledby="community-tab-posts">
+          <PostsFeedPanel />
+        </div>
+      )}
+
       {creatingAnnouncement && (
         <CreateAnnouncementModal
           canPlatform={canAnnouncePlatform}
@@ -214,6 +249,9 @@ export default function CommunityPage() {
       )}
       {creatingEvent && (
         <CreateEventModal onClose={() => setCreatingEvent(false)} />
+      )}
+      {creatingRoom && (
+        <CreateStudyRoomModal onClose={() => setCreatingRoom(false)} />
       )}
     </div>
   );
@@ -465,7 +503,10 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
   onClose: () => void;
 }) {
   const create = useCreateAnnouncement();
-  const facs = useFaculties();
+  /* r180: the composer's faculty picker lists ONLY the caller's
+     * institution's faculties — the unscoped listing offered foreign
+     * choices the r179 guards would always reject. */
+  const facs = useFaculties(useCurrentInstitutionSlug());
   const offeringScopeId = useId();
   const iconLabelId = useId();
   const pinnedId = useId();

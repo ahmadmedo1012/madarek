@@ -27,6 +27,7 @@
  */
 import { describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -188,9 +189,13 @@ describe('non-shell pages — usePageTitle sets the live document.title (2.4.2)'
     ['/404', NotFoundPage, 'الصفحة غير موجودة · مدارك'],
   ] as const)('%s titles the tab and restores the previous title on unmount', (_path, Page, expected) => {
     document.title = 'العنوان السابق';
+    /* r180: AuthPage mounts a (disabled-by-default) institutions query
+       for the REG_NUMBER_AMBIGUOUS recovery — QueryClient needed. */
     const { unmount } = render(
       <MemoryRouter>
-        <Page />
+        <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+          <Page />
+        </QueryClientProvider>
       </MemoryRouter>,
     );
     expect(document.title).toBe(expected);

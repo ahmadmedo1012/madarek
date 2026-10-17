@@ -483,3 +483,95 @@ export function useUpdateTeacherProfile() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['me', 'teacher-profile'] }),
   });
 }
+
+/* ── r180-F2: semester-grade entry (Grade table read + bulk upsert) ──
+ * POST /offerings/:id/grades shipped backend-only (offerings.routes.ts
+ * gradesUpsertSchema — TEACHER role, enrolled-student guard, score ≤
+ * maxScore cross-validation, 1..200 rows) with ZERO frontend
+ * consumers: the teacher's GradesPage answered with the honest
+ * «إدخال الدرجات الفصليّة قيد التطوير» card. This is the write half
+ * (a bulk upsert keyed by (offeringId, studentId, kind) — one row per
+ * student per kind; the update rewrites score/maxScore/weight/
+ * feedback together) plus the read half that prefills the entry grid
+ * (GET /offerings/:id/grades, role-projected, take 500 server-side). */
+
+/** The prisma GradeKind enum — the six semester-grade slots. */
+export type GradeKindFE = 'HOMEWORK' | 'QUIZ_1' | 'QUIZ_2' | 'MIDTERM' | 'PROJECT' | 'FINAL';
+
+/** One row of the grades upsert body (zod gradeItemSchema). */
+export interface OfferingGradeItem {
+  studentId: string;
+  kind: GradeKindFE;
+  /** 0..100, and must fit within maxScore (the P2-15 cross-field guard). */
+  score: number;
+  /** int 1..100 — the column's denominator; defaults server-side to 100. */
+  maxScore?: number;
+  /** int 0..100 — the column's weight; defaults server-side to 10. */
+  weight?: number;
+  /** ≤ 2000 chars; an ABSENT value clears the stored feedback on update. */
+  feedback?: string;
+}
+
+/** The POST /offerings/:id/grades body. */
+export interface UpsertOfferingGradesInput {
+  grades: OfferingGradeItem[];
+}
+
+export function useUpsertOfferingGrades(offeringId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: UpsertOfferingGradesInput) =>
+      unwrap<unknown>(api.post(`/offerings/${offeringId}/grades`, input)),
+    onSuccess: () => {
+      /* The grades read this entry grid prefills from, plus the same
+       * invalidation families useRecordAttendance ships (a landed Grade
+       * row feeds the roster's avgGrade, the analytics rollup, the risk
+       * model and the dashboard — the 11-d P1-6 shared arithmetic). */
+      qc.invalidateQueries({ queryKey: ['teacher', 'offering', offeringId, 'grades'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'offering', offeringId, 'students'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'offering', offeringId, 'analytics'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'risks'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'dashboard'] });
+    },
+  });
+}
+
+/* The GET row as it crosses the wire: prisma's Decimal serializes to a
+ * JSON string, so `score` arrives as string (| number defensively) —
+ * normalized to a number by useOfferingGrades before any consumer
+ * reads it (the grid's inputs work in numbers). */
+export interface OfferingGradeRow {
+  id: string;
+  offeringId: string;
+  studentId: string;
+  kind: GradeKindFE;
+  score: number;
+  maxScore: number;
+  weight: number;
+  feedback: string | null;
+  recordedAt: string;
+  student: { id: string; firstName: string; lastName: string };
+}
+
+/** The wire shape before the Decimal normalization (see above). */
+export interface OfferingGradeWireRow extends Omit<OfferingGradeRow, 'score'> {
+  score: string | number;
+}
+
+/** Decimal-on-the-wire → number. Pure + exported for unit pinning. */
+export function normalizeOfferingGradeRow(row: OfferingGradeWireRow): OfferingGradeRow {
+  return { ...row, score: Number(row.score) };
+}
+
+export function useOfferingGrades(offeringId: string | undefined) {
+  const inst = useInstitutionScope();
+  return useQuery({
+    // Same scoped-key convention as useTeacherStudents/useOfferingAnalytics
+    // (the teacher-consumed per-offering family the upsert invalidates).
+    queryKey: withInstitutionScope(['teacher', 'offering', offeringId, 'grades'], inst),
+    enabled: !!offeringId,
+    queryFn: async () =>
+      (await unwrap<OfferingGradeWireRow[]>(api.get(`/offerings/${offeringId}/grades`)))
+        .map(normalizeOfferingGradeRow),
+  });
+}

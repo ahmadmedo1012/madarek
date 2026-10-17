@@ -25,13 +25,18 @@ import { toast } from '../../lib/toast';
 import {
   useAdminStats, useAdminFaculties, useAdminReports, useAdminCourses, useAdminPapers,
   useFaculties,
+  useCurrentInstitutionSlug,
   RESEARCH_STATUSES,
   type ResearchStatus, type AdminPaper, type AdminFaculty, type AdminCourse, type CourseFormInput,
   useCreateCourse, useUpdateCourse, useDeleteCourse,
+  useCreateFaculty, useCreateDepartment, useCreateOffering, useAdminTeachers,
+  type FacultyFormInput, type DepartmentFormInput, type OfferingFormInput,
   apiErrorMessage,
 } from '../../hooks/useResources';
 import { pageList } from './AdminGovernancePages';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 import { countAr, formatPct, formatRelativeArShort } from '../../lib/format';
 import { Bar, Line } from 'react-chartjs-2';
 import {
@@ -128,7 +133,8 @@ function ActionStrip() {
   const sync = useQuery({
     // Separate key from the sync page's polled ['admin','sync'] — this
     // summary must never inherit the 30s background poll.
-    queryKey: ['admin', 'sync', 'summary'],
+    /* r180: /admin/sync summary is institution-scoped server-side — scoped key. */
+    queryKey: withInstitutionScope(['admin', 'sync', 'summary'], useInstitutionScope()),
     queryFn: () => unwrap<{ staleCount: number }>(api.get('/admin/sync')),
     staleTime: 60_000,
   });
@@ -528,11 +534,16 @@ export function AdminDashboardPage() {
 /** A faculty row whose departments collapse behind the header (5-A8
  *  P2-3 — the 3388px monolithic wall becomes a directory). */
 function FacultyRow({
-  faculty, open, onToggle,
+  faculty, open, onToggle, onAddDepartment,
 }: {
   faculty: AdminFaculty;
   open: boolean;
   onToggle: () => void;
+  /** r180: opens the «إضافة قسم» modal bound to THIS faculty (the
+   * card-level create action — a fresh faculty starts with zero
+   * departments, so the action must not hide behind the collapsible
+   * departments list). */
+  onAddDepartment: () => void;
 }) {
   const hasDepts = faculty.departments.length > 0;
   const head = (
@@ -602,6 +613,25 @@ function FacultyRow({
           ))}
         </div>
       )}
+      {/* r180: the department create action lives on EVERY card — the
+          head is itself a <button> whenever it has departments, so a
+          trailing action can never ride inside it (nested interactive
+          controls); a plain footer row (the table actions-cell pattern:
+          ghost sm + Plus icon) works for both fresh and full faculties
+          alike. No new class — flex utilities + the sp token. The
+          visible «إضافة قسم» label IS the accessible name (like the
+          row head itself): the button rides inside the faculty's own
+          card, one per card, so the grouping already names the target. */}
+      <div className="flex items-center" style={{ marginBlockStart: 'var(--sp-3)' }}>
+        <button
+          type="button"
+          className="btn ghost sm"
+          onClick={onAddDepartment}
+        >
+          <Icon icon={Plus} size={13} />
+          إضافة قسم
+        </button>
+      </div>
     </div>
   );
 }
@@ -614,6 +644,56 @@ export function AdminFacultiesPage() {
   const [q, setQ] = useState('');
   const [city, setCity] = useState('');
   const [openDepts, setOpenDepts] = useState<ReadonlySet<string>>(new Set());
+
+  // ── Structure writes (r180 — the new-institution bootstrap) ──────
+  /* The AdminCoursesPage create-course pattern: the modal stays open
+   * until the mutation SETTLES (r153i — a failed save must render the
+   * in-modal error, never look like a silent success), the per-call
+   * onSuccess closes + toasts, and the hook-level invalidations
+   * refresh both faculty lists. */
+  const createFaculty = useCreateFaculty();
+  const createDepartment = useCreateDepartment();
+  const [facultyFormOpen, setFacultyFormOpen] = useState(false);
+  const [facultyForm, setFacultyForm] = useState<FacultyFormInput>({
+    name: '', nameEn: '', iconEmoji: '', city: '',
+  });
+  /* Which faculty the «إضافة قسم» modal targets (null = closed) —
+   * the r153i formMode twin: an honest tri-state instead of a sentinel
+   * object, so the modal remounts its draft per target. */
+  const [deptTarget, setDeptTarget] = useState<AdminFaculty | null>(null);
+  const [deptForm, setDeptForm] = useState<DepartmentFormInput>({
+    name: '', nameEn: '', facultyId: '',
+  });
+  const closeFacultyForm = () => setFacultyFormOpen(false);
+  const openFacultyForm = () => {
+    setFacultyForm({ name: '', nameEn: '', iconEmoji: '', city: '' });
+    setFacultyFormOpen(true);
+  };
+  const closeDeptForm = () => setDeptTarget(null);
+  const openDeptForm = (f: AdminFaculty) => {
+    setDeptForm({ name: '', nameEn: '', facultyId: f.id });
+    setDeptTarget(f);
+  };
+  const submitFaculty = () => {
+    createFaculty.mutate(facultyForm, {
+      onSuccess: () => {
+        toast.success(`أُضيفت كلّيّة «${facultyForm.name.trim()}».`, { title: 'تمّت الإضافة' });
+        closeFacultyForm();
+      },
+    });
+  };
+  const submitDepartment = () => {
+    if (!deptTarget) return;
+    createDepartment.mutate(deptForm, {
+      onSuccess: () => {
+        toast.success(
+          `أُضيف قسم «${deptForm.name.trim()}» إلى «${deptTarget.name}».`,
+          { title: 'تمّت الإضافة' },
+        );
+        closeDeptForm();
+      },
+    });
+  };
 
   if (isPending) {
     return (
@@ -701,6 +781,18 @@ export function AdminFacultiesPage() {
             <option value="">كلّ المدن</option>
             {cities.map((cty) => <option key={cty} value={cty}>{cty}</option>)}
           </select>
+          {/* r180: the create affordance rides the toolbar exactly where
+              AdminCoursesPage puts «إضافة مقرّر» — the same primary sm
+              button + Plus icon, same aria-label contract. */}
+          <button
+            type="button"
+            className="btn primary sm"
+            onClick={openFacultyForm}
+            aria-label="إضافة كلّيّة جديدة"
+          >
+            <Icon icon={Plus} size={14} />
+            إضافة كلّيّة
+          </button>
         </div>
 
         <div className="flex-col gap-3">
@@ -710,6 +802,7 @@ export function AdminFacultiesPage() {
               faculty={f}
               open={openDepts.has(f.id)}
               onToggle={() => toggleDepts(f.id)}
+              onAddDepartment={() => openDeptForm(f)}
             />
           ))}
           {visible.length === 0 && (
@@ -731,6 +824,152 @@ export function AdminFacultiesPage() {
           )}
         </div>
       </Card>
+
+      {/* r180: «إضافة كلّيّة» — the AdminCoursesPage create-course modal
+          pattern verbatim (Modal + FormField canon + footer buttons +
+          the settle-time AlertRow). city is REQUIRED here: the backend's
+          uniqueness key is (institution, name, city), so the hint names
+          it — the 409 copy the server answers with does too. */}
+      <Modal
+        open={facultyFormOpen}
+        onClose={closeFacultyForm}
+        ariaLabel="إضافة كلّيّة جديدة"
+      >
+        <div className="modal-header">
+          <h3 className="modal-title">إضافة كلّيّة جديدة</h3>
+          <button type="button" className="modal-close" onClick={closeFacultyForm} aria-label="إغلاق">
+            <Icon icon={X} size={18} />
+          </button>
+        </div>
+        <div className="modal-body" style={{ maxWidth: 480 }}>
+          <FormField label="اسم الكلّيّة" id="faculty-name">
+            <input
+              className="input"
+              value={facultyForm.name}
+              onChange={(e) => setFacultyForm({ ...facultyForm, name: e.target.value })}
+              placeholder="كلية العلوم"
+            />
+          </FormField>
+          <FormField label="الاسم بالإنجليزية (اختياري)" id="faculty-name-en" hint="يظهر بجانب الاسم العربي في السجلّ">
+            <input
+              className="input"
+              value={facultyForm.nameEn}
+              onChange={(e) => setFacultyForm({ ...facultyForm, nameEn: e.target.value })}
+              placeholder="Faculty of Science"
+            />
+          </FormField>
+          <FormField
+            label="المدينة"
+            id="faculty-city"
+            hint="الكلّيّات تتميّز بالاسم داخل كل مدينة — الاسم نفسه في مدينة أخرى لا يُعدّ تكرارًا"
+          >
+            <input
+              className="input"
+              value={facultyForm.city}
+              onChange={(e) => setFacultyForm({ ...facultyForm, city: e.target.value })}
+              placeholder="الزاوية"
+            />
+          </FormField>
+          <FormField label="رمز تعبيري (اختياري)" id="faculty-icon" hint="يظهر مكان الأيقونة الافتراضية بجانب اسم الكلّيّة">
+            <input
+              className="input"
+              value={facultyForm.iconEmoji}
+              onChange={(e) => setFacultyForm({ ...facultyForm, iconEmoji: e.target.value })}
+              placeholder="رمز تعبيري قصير (اختياري)"
+              maxLength={10}
+            />
+          </FormField>
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn ghost" onClick={closeFacultyForm}>
+            إلغاء
+          </button>
+          <button
+            type="button"
+            className="btn primary"
+            onClick={submitFaculty}
+            disabled={!facultyForm.name.trim() || !facultyForm.city.trim()
+              || createFaculty.isPending}
+          >
+            {createFaculty.isPending ? 'جارٍ الإضافة…' : 'إضافة الكلّيّة'}
+          </button>
+        </div>
+        {createFaculty.isError && (
+          <AlertRow
+            color="red"
+            icon={AlertTriangle}
+            title="تعذّر إضافة الكلّيّة"
+            description={apiErrorMessage(
+              createFaculty.error,
+              'لم يستجب الخادم للطلب. إعادة المحاولة.',
+            )}
+          />
+        )}
+      </Modal>
+
+      {/* r180: «إضافة قسم» — same modal grammar, bound to the card the
+          button rode on (the target faculty is named in the body line so
+          the operator never wonders which faculty the new department
+          lands in). */}
+      <Modal
+        open={deptTarget !== null}
+        onClose={closeDeptForm}
+        ariaLabel="إضافة قسم"
+      >
+        <div className="modal-header">
+          <h3 className="modal-title">إضافة قسم</h3>
+          <button type="button" className="modal-close" onClick={closeDeptForm} aria-label="إغلاق">
+            <Icon icon={X} size={18} />
+          </button>
+        </div>
+        <div className="modal-body" style={{ maxWidth: 480 }}>
+          {deptTarget && (
+            <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+              سيُضاف القسم إلى «{deptTarget.name}».
+            </p>
+          )}
+          <FormField label="اسم القسم" id="dept-name">
+            <input
+              className="input"
+              value={deptForm.name}
+              onChange={(e) => setDeptForm({ ...deptForm, name: e.target.value })}
+              placeholder="قسم الحاسوب"
+            />
+          </FormField>
+          <FormField label="الاسم بالإنجليزية (اختياري)" id="dept-name-en" hint="يظهر بجانب الاسم العربي في السجلّ">
+            <input
+              className="input"
+              value={deptForm.nameEn}
+              onChange={(e) => setDeptForm({ ...deptForm, nameEn: e.target.value })}
+              placeholder="Computer Science"
+            />
+          </FormField>
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn ghost" onClick={closeDeptForm}>
+            إلغاء
+          </button>
+          <button
+            type="button"
+            className="btn primary"
+            onClick={submitDepartment}
+            disabled={!deptForm.name.trim() || createDepartment.isPending}
+          >
+            {createDepartment.isPending ? 'جارٍ الإضافة…' : 'إضافة القسم'}
+          </button>
+        </div>
+        {createDepartment.isError && (
+          <AlertRow
+            color="red"
+            icon={AlertTriangle}
+            title="تعذّر إضافة القسم"
+            description={apiErrorMessage(
+              createDepartment.error,
+              'لم يستجب الخادم للطلب. إعادة المحاولة.',
+            )}
+          />
+        )}
+      </Modal>
     </div>
   );
 }
@@ -1211,7 +1450,7 @@ export function AdminCoursesPage() {
   const [q, setQ] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
   const [facultyId, setFacultyId] = useState('');
-  const facQ = useFaculties();
+  const facQ = useFaculties(useCurrentInstitutionSlug()); // r180: caller-institution scoping
 
   // ── Course CRUD (16-decisions #5: the page was display-only) ──────
   /* r153i: formMode replaces the old `{} as AdminCourse` fake-object
@@ -1271,6 +1510,48 @@ export function AdminCoursesPage() {
    * ConfirmDialog (focus trap +Escape + aria) — the old native
    * confirm() had none of that — with toast feedback on both ends. */
   const remove = (c: AdminCourse) => setConfirmingDelete(c);
+
+  // ── Offering create (r180 — «فتح شعبة», the r168 dead-end closed) ──
+  /* Which course the offering modal targets (null = closed) — the same
+   * honest target-object pattern as confirmingDelete above. The teacher
+   * picker query is `enabled` only while the modal is open, so the
+   * roster page fires no idle /admin/users round-trips. */
+  const [offeringCourse, setOfferingCourse] = useState<AdminCourse | null>(null);
+  const [offeringForm, setOfferingForm] = useState<OfferingFormInput>({
+    courseId: '', teacherId: '', term: '', room: '', capacity: 40,
+  });
+  const createOffering = useCreateOffering();
+  const teachersQ = useAdminTeachers(offeringCourse !== null);
+  const closeOfferingForm = () => setOfferingCourse(null);
+  const openOfferingForm = (c: AdminCourse) => {
+    // capacity 40 = the backend schema's own default (offeringCreateSchema).
+    setOfferingForm({ courseId: c.id, teacherId: '', term: '', room: '', capacity: 40 });
+    setOfferingCourse(c);
+  };
+  const submitOffering = () => {
+    if (!offeringCourse) return;
+    const room = offeringForm.room?.trim() ?? '';
+    createOffering.mutate(
+      {
+        courseId: offeringCourse.id,
+        teacherId: offeringForm.teacherId,
+        term: offeringForm.term.trim(),
+        // Room is optional on the wire (zod: nullable().optional()) —
+        // an empty input sends nothing, not ''.
+        ...(room ? { room } : {}),
+        capacity: offeringForm.capacity,
+      },
+      {
+        onSuccess: () => {
+          toast.success(
+            `فُتحت شعبة «${offeringCourse.name}» للفصل «${offeringForm.term.trim()}».`,
+            { title: 'تمّ فتح الشعبة' },
+          );
+          closeOfferingForm();
+        },
+      },
+    );
+  };
 
   // ── End of CRUD ────────────────────────────────────────────────
   const appliedQ = useRef(debouncedQ);
@@ -1446,6 +1727,20 @@ export function AdminCoursesPage() {
                         like the students table. */}
                     <td data-label="الإجراءات">
                       <div className="flex items-center gap-2">
+                        {/* r180: «فتح شعبة» leads the cluster — the section
+                            create is this round's headline action, and the
+                            ghost sm + Plus grammar matches the siblings
+                            (the toolbar's «إضافة مقرّر» is its primary
+                            twin). */}
+                        <button
+                          type="button"
+                          className="btn ghost sm"
+                          onClick={() => openOfferingForm(c)}
+                          aria-label={`فتح شعبة لمقرّر ${c.name}`}
+                        >
+                          <Icon icon={Plus} size={13} />
+                          فتح شعبة
+                        </button>
                         <button
                           type="button"
                           className="btn ghost sm"
@@ -1568,6 +1863,127 @@ export function AdminCoursesPage() {
             title="تعذّر حفظ المقرّر"
             description={apiErrorMessage(
               createCourse.isError ? createCourse.error : updateCourse.error,
+              'لم يستجب الخادم للطلب. إعادة المحاولة.',
+            )}
+          />
+        )}
+      </Modal>
+
+      {/* r180: «فتح شعبة» — the offering create modal (POST /offerings,
+          the r168 endpoint that had ZERO frontend consumers). Same modal
+          grammar as the course form; the teacher select reads the
+          institution's TEACHER roster (useAdminTeachers — enabled only
+          while this modal is open) because the backend rejects any
+          teacher who is not an ACTIVE TEACHER member of the course's
+          institution. The term is free text 1..50 (placeholder carries
+          the platform's convention) and capacity defaults to the
+          backend schema's own 40. */}
+      <Modal
+        open={offeringCourse !== null}
+        onClose={closeOfferingForm}
+        ariaLabel="فتح شعبة"
+      >
+        <div className="modal-header">
+          <h3 className="modal-title">فتح شعبة</h3>
+          <button type="button" className="modal-close" onClick={closeOfferingForm} aria-label="إغلاق">
+            <Icon icon={X} size={18} />
+          </button>
+        </div>
+        <div className="modal-body" style={{ maxWidth: 480 }}>
+          {offeringCourse && (
+            <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+              سيُدرَّس مقرّر «{offeringCourse.name}» (<bdi>{offeringCourse.code}</bdi>) في الشعبة الجديدة.
+            </p>
+          )}
+          <FormField label="الفصل الدراسي" id="offering-term" hint="نص حرّ من ١ إلى ٥٠ حرفًا — مثال: 2024-FALL">
+            <input
+              className="input"
+              value={offeringForm.term}
+              onChange={(e) => setOfferingForm({ ...offeringForm, term: e.target.value })}
+              placeholder="2024-FALL"
+              maxLength={50}
+            />
+          </FormField>
+          <FormField
+            label="الأستاذ"
+            id="offering-teacher"
+            hint="أساتذة مؤسستك فقط — لا تُسند الشُّعب إلا لعضو هيئة تدريس نشط فيها"
+          >
+            <select
+              className="input"
+              value={offeringForm.teacherId}
+              onChange={(e) => setOfferingForm({ ...offeringForm, teacherId: e.target.value })}
+              disabled={teachersQ.isPending}
+            >
+              <option value="">
+                {teachersQ.isPending ? 'جارٍ تحميل الأساتذة…' : 'اختر الأستاذ…'}
+              </option>
+              {teachersQ.data?.map((t) => (
+                <option key={t.id} value={t.id}>{t.name}</option>
+              ))}
+            </select>
+          </FormField>
+          <FormField label="القاعة (اختياري)" id="offering-room">
+            <input
+              className="input"
+              value={offeringForm.room}
+              onChange={(e) => setOfferingForm({ ...offeringForm, room: e.target.value })}
+              placeholder="قاعة A12"
+            />
+          </FormField>
+          <FormField label="السعة" id="offering-capacity" hint="أقصى عدد طلاب يمكن تسجيلهم في الشعبة">
+            <input
+              className="input"
+              type="number"
+              min={1}
+              max={10000}
+              value={offeringForm.capacity}
+              onChange={(e) => setOfferingForm({ ...offeringForm, capacity: Number(e.target.value) })}
+            />
+          </FormField>
+          {teachersQ.isError && (
+            <AlertRow
+              color="red"
+              icon={AlertTriangle}
+              title="تعذّر تحميل قائمة الأساتذة"
+              description={apiErrorMessage(
+                teachersQ.error,
+                'لم يستجب الخادم للطلب. إعادة المحاولة.',
+              )}
+              actions={
+                <button
+                  type="button"
+                  className="btn ghost sm"
+                  onClick={() => teachersQ.refetch()}
+                  disabled={teachersQ.isPending}
+                >
+                  إعادة المحاولة
+                </button>
+              }
+            />
+          )}
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn ghost" onClick={closeOfferingForm}>
+            إلغاء
+          </button>
+          <button
+            type="button"
+            className="btn primary"
+            onClick={submitOffering}
+            disabled={!offeringForm.term.trim() || !offeringForm.teacherId
+              || !(offeringForm.capacity >= 1) || createOffering.isPending}
+          >
+            {createOffering.isPending ? 'جارٍ الفتح…' : 'فتح الشعبة'}
+          </button>
+        </div>
+        {createOffering.isError && (
+          <AlertRow
+            color="red"
+            icon={AlertTriangle}
+            title="تعذّر فتح الشعبة"
+            description={apiErrorMessage(
+              createOffering.error,
               'لم يستجب الخادم للطلب. إعادة المحاولة.',
             )}
           />

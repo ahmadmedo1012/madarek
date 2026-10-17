@@ -296,6 +296,77 @@ export function useMyMessages(page: number = 1, limit: number = 30) {
   });
 }
 
+// ── Course catalog (r180-F4 — the institution's course catalogue) ──
+/* GET /courses?institutionSlug=…&q=&page=&limit= (courses.routes.ts —
+ * an authenticated, public-safe listing): every course of the caller's
+ * institution with server-side q search (name/code contains) and
+ * page/limit pagination. Read-ONLY by design: enrollment in this
+ * product is admin-mediated, so the consumers render catalogue INFO
+ * and the page's hint banner names the real door (إدارة الكلية) —
+ * never a fake enroll button. */
+export interface CatalogCourseRow {
+  id: string;
+  code: string;
+  name: string;
+  iconEmoji?: string | null;
+  themeColor?: string | null;
+  credits: number;
+  /** Backend includes the full department row; the catalogue consumes
+   *  the identity fields only (structural typing keeps the wire
+   *  superset legal). */
+  department?: { id: string; name: string } | null;
+  institution?: { id: string; name: string; nameEn?: string | null; slug: string } | null;
+}
+export interface CoursesCatalogMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+export interface CoursesCatalogPage {
+  data: CatalogCourseRow[];
+  meta: CoursesCatalogMeta;
+}
+/**
+ * r180-F4: the student-facing catalogue query. institutionSlug comes
+ * from the auth store's currentInstitution (the token's `inst` claim
+ * context) — null disables the query (no institution context: the
+ * shell routes to selection). The key follows the r179 phase-5
+ * convention (withInstitutionScope at the END) so an institution
+ * switch re-keys instead of rendering the previous institution's
+ * rows; q/page ride the key so every parameterized page caches
+ * separately, and placeholderData keeps the previous grid mounted
+ * while the next page/search resolves (the useAdminCourses /
+ * useMyMessages house pattern — no skeleton flash mid-browse).
+ */
+export function useCoursesCatalog(
+  institutionSlug: string | null,
+  q: string,
+  page: number,
+  limit: number = 12,
+) {
+  const inst = useInstitutionScope();
+  return useQuery({
+    queryKey: withInstitutionScope(['courses', 'catalog', { q: q || null, page, limit }], inst),
+    queryFn: async (): Promise<CoursesCatalogPage> => {
+      const res = await api.get<{ data: CatalogCourseRow[]; meta: CoursesCatalogMeta }>('/courses', {
+        params: {
+          institutionSlug: institutionSlug ?? undefined,
+          page,
+          limit,
+          ...(q ? { q } : {}),
+        },
+      });
+      return { data: res.data.data, meta: res.data.meta };
+    },
+    enabled: Boolean(institutionSlug),
+    // The whole envelope (rows + meta) is the query result — meta owns
+    // the pagination footer and the total count, never data.length.
+    placeholderData: (prev) => prev,
+    staleTime: 30_000,
+  });
+}
+
 // ── My profile (real student/teacher data) ────────────────────
 export interface MyProfile {
   id: string;

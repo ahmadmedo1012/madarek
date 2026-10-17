@@ -65,7 +65,7 @@ import {
   useMyPermissions, useQuestionBank, useQuestionCategories, useExamTemplates,
   useExamTemplate, useExamModerationQueue, useModerateExam, useCreateQuestion,
   useCreateExamTemplate, usePublishExamTemplate, useModerateQuestion,
-  useTeacherOfferings, useFaculties, useExamAttempts, useGradeExamAttempt,
+  useTeacherOfferings, useFaculties, useCurrentInstitutionSlug, useExamAttempts, useGradeExamAttempt,
   apiErrorMessage,
   type QType, type Difficulty, type ExamKindFE, type ExamStatusFE,
   type QuestionRow, type ExamTemplateRow, type ExamAttemptRow,
@@ -1377,7 +1377,9 @@ function ChoicesEditor({
 function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; canModerate: boolean }) {
   const create = useCreateExamTemplate();
   const offerings = useTeacherOfferings();
-  const faculties = useFaculties();
+  /* r180: scoped to the caller's institution (foreign faculty choices
+   * always 403 at the backend). */
+  const faculties = useFaculties(useCurrentInstitutionSlug());
 
   const [draft, setDraft] = useState<TemplateDraftState>({
     title: '',

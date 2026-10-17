@@ -23,6 +23,7 @@
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import type { AxiosError } from 'axios';
 
@@ -62,9 +63,13 @@ function axError(status: number, code?: string, message?: string): AxiosError<{ 
 }
 
 function renderPage() {
+  /* r180: QueryClient for the ambiguity-recovery institutions query. */
+  const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <MemoryRouter>
-      <AuthPage />
+      <QueryClientProvider client={qc}>
+        <AuthPage />
+      </QueryClientProvider>
     </MemoryRouter>,
   );
 }

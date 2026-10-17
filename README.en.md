@@ -29,9 +29,9 @@ Neon; deployed on Render with auto-deploy from `main`.
 
 | Item | State |
 |---|---|
-| Core features, all five roles | **Shipped** — 1819 frontend + 1714 backend unit tests green + 113 DB integration tests (2026-10-17, rounds r141–r179) |
+| Core features, all five roles | **Shipped** — 1858 frontend + 1747 backend unit tests green + 113 DB integration tests (2026-10-17, rounds r141–r180) |
 | Design system | Documented in `DESIGN.md` — parity gate 163/163 green |
-| AI assistant | **Real LLM via OpenRouter's free router in production (r175, per-response model attribution)** — the plagiarism scan stays a deterministic simulation, openly labeled; see `docs/02-features.md` |
+| AI assistant | **Mastery-aware chat with per-response engine attribution** — runs the in-process local engine by default (zero external calls); an OpenAI-compatible/OpenRouter provider activates only when `AI_PROVIDER`/`AI_API_KEY` are set in the deployment (the current production deployment has them unset → local engine; `/api/v1/ai/config` reports the live truth). The plagiarism scan stays a deterministic simulation, openly labeled; see `docs/02-features.md` |
 | English i18n | Not implemented. Real E2E (28 Playwright journeys) and PDF file uploads (durable postgres storage, r175) **are shipped** — full list in `docs/16-decisions-and-limitations.md` |
 
 ## Documentation hub
@@ -39,7 +39,7 @@ Neon; deployed on Render with auto-deploy from `main`.
 The Arabic documentation hub: [`docs/README.md`](docs/README.md)
 (numbered guides 01–16 + per-sector modules). Key references (English,
 generated from code): [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md)
-(215 endpoints), [`docs/DATABASE-REFERENCE.md`](docs/DATABASE-REFERENCE.md)
+(222 endpoints), [`docs/DATABASE-REFERENCE.md`](docs/DATABASE-REFERENCE.md)
 (79 models / 31 enums), [`docs/FRONTEND-REFERENCE.md`](docs/FRONTEND-REFERENCE.md),
 [`docs/PROJECT-REFERENCE.md`](docs/PROJECT-REFERENCE.md),
 [`docs/SECRETS-REFERENCE.md`](docs/SECRETS-REFERENCE.md).
@@ -63,15 +63,25 @@ npm run dev:web                    # frontend :5173 (proxies /api → :4000)
 ```
 
 **Demo accounts** after seeding (password `Madarek2026!` — public demo
-credential, re-seeding resets it): `student@`, `teacher@`, `admin@`,
-`quality@`, `owner@zu.edu.ly`.
+credential, re-seeding resets it), spanning the **two demo institutions**:
+
+- University of Zawia (the reference showcase, 25 faculties):
+  `student@`, `teacher@`, `admin@`, `quality@zu.edu.ly`
+- Al-Andalus Education Institute (the second demo institution proving
+  isolation): `student2@`, `teacher2@`, `admin2@demo.madarek.ly`
+- Platform owner (no membership — platform scope): `owner@zu.edu.ly`
+
+Log in as `student@zu.edu.ly` then `student2@demo.madarek.ly` — the two
+students share reg-number `UZ-2024-00001` on purpose and each sees only
+their institution's courses (a foreign offering answers 403). Deploy-time
+seeding on Render runs after every deploy, non-destructively (r180).
 
 ## Verify it yourself
 
 ```bash
 npm run lint                          # ESLint — 0 errors
 npm run typecheck                     # tsc — src + tests, both sides (no DB)
-npm test                              # 1819 FE + 1714 BE (no DB; incl. 7 live S3 tests against s3rver) — npm run test:integration adds 113 DB tests on a local disposable database (14 cross-institution r179 isolation tests among them)
+npm test                              # 1858 FE + 1747 BE (no DB; incl. 7 live S3 tests against s3rver) — npm run test:integration adds 113 DB tests on a local disposable database (14 cross-institution r179 isolation tests among them)
 node scripts/verify-parity-export.mjs # design-parity gate 163/163
 bash scripts/check-csp-hash.sh        # CSP pin drift guard (now in CI)
 npm run validate:colleges             # 25 college identities (WCAG AA)

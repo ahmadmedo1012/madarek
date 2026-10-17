@@ -2,7 +2,7 @@
 
 **Base URL:** `/api/v1`
 **Envelope:** `{ data: T }` on success, `{ error: { code, message, details? } }` on error
-**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 216 endpoints (211 route registrations in the 26 route files + 4 module-router endpoints + `/health`; r178 added `institution.routes.ts` (7) + `POST /auth/select-institution` for 215; r179 adds `GET /ai/conversations/:id` for 216), one row each
+**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 222 endpoints (217 route registrations in the 26 route files + 4 module-router endpoints + `/health`; r178 added `institution.routes.ts` (7) + `POST /auth/select-institution`; r179 added `GET /ai/conversations/:id`; r180 adds the academic-structure creates `POST /admin/faculties` + `POST /admin/departments` and the study-room surface `GET/POST /study-rooms` + `POST /study-rooms/:id/join` + `POST /study-rooms/:id/leave`), one row each
 
 ## Conventions
 
@@ -288,6 +288,10 @@ Mounted at `/api/v1/teacher` (router: `authMiddleware + requireRole(TEACHER, ADM
 | GET | `/events` | Bearer | List events (take 50, expiry-aware; per-viewer `myRsvp`, capacity count = GOING only — C5) |
 | POST | `/events` | EVENTS_RUN | Create event (capacity bounds, endsAt > startsAt) |
 | POST | `/events/:id/rsvp` | Bearer | RSVP (GOING/MAYBE/NO) — capacity serialized via a row lock on the event; only GOING consumes a seat |
+| GET | `/study-rooms` | Bearer | r180 — study rooms of the caller's verified institution (OWNER: platform-wide oversight list), newest first, take 50; rows carry owner basics, member count and the viewer's `isMember` |
+| POST | `/study-rooms` | Bearer | r180 — create a room in the caller's institution (name 1..120, topic ≤300); the creator auto-joins as the first member (one transaction) |
+| POST | `/study-rooms/:id/join` | Bearer | r180 — join a room of YOUR institution (foreign id → 404 without existence leak; already member → 409) |
+| POST | `/study-rooms/:id/leave` | Bearer | r180 — leave a room (the room's owner cannot leave — 400; non-member → 404) |
 | GET | `/posts` | Bearer | Social feed (paginated; `q` filters by body) |
 | POST | `/posts` | Bearer | Create post (hashtags) |
 | POST | `/posts/:id/react` | Bearer | React (like \| save) |
@@ -316,6 +320,8 @@ There is **no** `POST /posts/:id/comment` route — comments are read via the po
 | GET | `/me/certificates` | Bearer | My certificates |
 | GET | `/admin/stats` | ADMIN/OWNER | Platform stats |
 | GET | `/admin/faculties` | ADMIN/OWNER | Faculty management data (per-faculty student/teacher/dept/course counts). r178: institution-scoped for ADMIN callers (their DB-verified membership context — cross-institution faculties never leak into an institutional admin's console); OWNER keeps the platform-wide view, optionally narrowed by `?institutionSlug=`; rows carry institution basics |
+| POST | `/admin/faculties` | ADMIN/OWNER | r180 — create a faculty inside one institution (closes the new-institution bootstrap dead-end). ADMIN: their DB-verified context; OWNER: **explicit `?institutionSlug=`** (400 without). Body `{name, nameEn?, iconEmoji?, city}`; `@@unique(institutionId, name, city)` → 409; audited (`FACULTY_CREATED`) |
+| POST | `/admin/departments` | ADMIN/OWNER | r180 — create a department under a faculty of the caller's institution (403 for a foreign faculty chain). Body `{name, nameEn?, facultyId}`; `@@unique(facultyId, name)` → 409; audited (`DEPARTMENT_CREATED`) |
 | GET | `/admin/reports` | ADMIN/OWNER | KPI reports (topCourses aggregated per course — enrollment counts, deterministic order) |
 | GET | `/admin/courses` | ADMIN/OWNER | Course management data (totals aggregated across ALL of each page course's offerings, not the take:3 preview; paginated `{data, meta}` with server-side `q` code/name search + `facultyId` scope — C5) |
 | GET | `/admin/papers` | ADMIN/OWNER | Institution-wide research list, `{data, meta}` paginated, `?status=` filter (PENDING\|SCANNED\|PUBLISHED\|REJECTED), `q` title search — no file bytes, no PII beyond author name (C5) |

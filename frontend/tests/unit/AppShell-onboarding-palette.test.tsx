@@ -242,25 +242,26 @@ describe('AppShell — palette recents (5-D3 / A10 P3-5)', () => {
   it('records a run and surfaces it as the first row of «الأخيرة» on reopen', async () => {
     renderShell('/student/dashboard');
     fireEvent.keyDown(document, { key: 'k', metaKey: true });
-    // Run a quick action (the student's online-exams destination —
-    // within the 7-item cap). Regex name-match: the row's trailing
-    // arrow icon is part of its accessible name, exact never matches.
-    fireEvent.click(screen.getByRole('option', { name: /الاختبارات الإلكترونية/ }));
+    // Run a quick action (the student's matrix destination — within
+    // the 7-item cap; r180 added «دليل المقررات» to the academic group,
+    // which pushed online-exams past the curated cap). Regex name-match:
+    // the row's trailing arrow icon is part of its accessible name.
+    fireEvent.click(screen.getByRole('option', { name: /المصفوفة التعليمية/ }));
     await waitFor(
       () => expect(screen.queryByRole('dialog', { name: 'لوحة الأوامر والبحث' })).toBeNull(),
       { timeout: 2000 },
     );
-    expect(useUiStore.getState().recentPaletteIds).toEqual(['nav:/student/online-exams']);
+    expect(useUiStore.getState().recentPaletteIds).toEqual(['nav:/student/matrix']);
 
     // Reopen — the recents section renders above the quick actions.
     fireEvent.keyDown(document, { key: 'k', metaKey: true });
     const recents = screen.getByRole('group', { name: 'الأخيرة' });
     const rows = recents.querySelectorAll('[role="option"]');
     expect(rows).toHaveLength(1);
-    expect(rows[0]!.textContent).toContain('الاختبارات الإلكترونية');
+    expect(rows[0]!.textContent).toContain('المصفوفة التعليمية');
     // The quick list no longer repeats it.
     const quick = screen.getByRole('group', { name: 'إجراءات سريعة' });
-    expect(quick.textContent).not.toContain('الاختبارات الإلكترونية');
+    expect(quick.textContent).not.toContain('المصفوفة التعليمية');
     // The recents are keyboard-first: aria-activedescendant points at
     // the first option = the recent row's id.
     expect(screen.getByRole('combobox')).toHaveAttribute(

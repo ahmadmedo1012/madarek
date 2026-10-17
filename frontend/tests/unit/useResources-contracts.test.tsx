@@ -46,6 +46,9 @@ import {
   useAiConversations,
   useDeleteAiConversation,
   fetchAiConversationMessages,
+  useUpsertOfferingGrades,
+  useOfferingGrades,
+  normalizeOfferingGradeRow,
   type StartExamResponse,
 } from '../../src/hooks/useResources';
 import { api } from '../../src/lib/api';
@@ -412,5 +415,74 @@ describe('r164g — AI conversation hooks', () => {
     const out = await fetchAiConversationMessages('c1');
     expect(get).toHaveBeenCalledWith('/ai/conversations/c1/messages');
     expect(out).toEqual(rows);
+  });
+});
+
+/* ── r180-F2 — the semester-grade entry pair (POST /offerings/:id/grades
+ * shipped backend-only until GradesPage grew its consumer). The write
+ * half must refresh the entry grid's own read (the prefills) plus the
+ * same teacher families useRecordAttendance ships — a landed Grade row
+ * feeds the roster avgGrade, analytics, risks and the dashboard. The
+ * read half normalizes prisma's stringified Decimal score to a number
+ * before any consumer reads it (the grid's inputs work in numbers). */
+describe('r180-F2 — offering grades entry pair', () => {
+  const get = api.get as unknown as Mock;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    post.mockResolvedValue({ data: [{ id: 'g1' }] });
+  });
+
+  it('useUpsertOfferingGrades posts the grades body to the offering and refreshes the grades read + teacher families', async () => {
+    const { wrapper, invalidatedKeys } = makeClient();
+    const { result } = renderHook(() => useUpsertOfferingGrades('off-1'), { wrapper });
+
+    await act(async () => {
+      await result.current.mutateAsync({
+        grades: [
+          { studentId: 'st-1', kind: 'MIDTERM', score: 78.5, maxScore: 100, weight: 30, feedback: 'أحسنت' },
+          { studentId: 'st-2', kind: 'MIDTERM', score: 64 },
+        ],
+      });
+    });
+
+    expect(post).toHaveBeenCalledWith('/offerings/off-1/grades', {
+      grades: [
+        { studentId: 'st-1', kind: 'MIDTERM', score: 78.5, maxScore: 100, weight: 30, feedback: 'أحسنت' },
+        { studentId: 'st-2', kind: 'MIDTERM', score: 64 },
+      ],
+    });
+    // The entry grid's own read (prefills)…
+    expect(invalidatedKeys()).toContainEqual(['teacher', 'offering', 'off-1', 'grades']);
+    // …and the same families useRecordAttendance invalidates.
+    expect(invalidatedKeys()).toContainEqual(['teacher', 'offering', 'off-1', 'students']);
+    expect(invalidatedKeys()).toContainEqual(['teacher', 'offering', 'off-1', 'analytics']);
+    expect(invalidatedKeys()).toContainEqual(['teacher', 'risks']);
+    expect(invalidatedKeys()).toContainEqual(['teacher', 'dashboard']);
+    // Targeted keys only — no blanket ['teacher'] or ['teacher','offering'] prefix nuke.
+    expect(invalidatedKeys()).not.toContainEqual(['teacher']);
+    expect(invalidatedKeys()).not.toContainEqual(['teacher', 'offering']);
+  });
+
+  it('useOfferingGrades reads the offering grades and normalizes the stringified Decimal score', async () => {
+    const { wrapper } = makeClient();
+    // Prisma's Decimal serializes to a JSON string on the wire.
+    get.mockResolvedValueOnce({
+      data: [
+        { id: 'g1', offeringId: 'off-1', studentId: 'st-1', kind: 'MIDTERM', score: '78.50', maxScore: 100, weight: 30, feedback: null, recordedAt: '2026-01-01T00:00:00.000Z', student: { id: 'st-1', firstName: 'آمنة', lastName: 'العبيدي' } },
+        { id: 'g2', offeringId: 'off-1', studentId: 'st-2', kind: 'HOMEWORK', score: '12', maxScore: 20, weight: 10, feedback: 'راجع الفصل الأول', recordedAt: '2026-01-02T00:00:00.000Z', student: { id: 'st-2', firstName: 'ليلى', lastName: 'بن عامر' } },
+      ],
+    });
+    const { result } = renderHook(() => useOfferingGrades('off-1'), { wrapper });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(get).toHaveBeenCalledWith('/offerings/off-1/grades');
+    expect(result.current.data?.map((g) => typeof g.score)).toEqual(['number', 'number']);
+    expect(result.current.data?.[0]).toMatchObject({ score: 78.5, kind: 'MIDTERM' });
+    expect(result.current.data?.[1]).toMatchObject({ score: 12, feedback: 'راجع الفصل الأول' });
+  });
+
+  it('normalizeOfferingGradeRow keeps a numeric score untouched (defensive wire shapes)', () => {
+    expect(normalizeOfferingGradeRow({ id: 'g3', offeringId: 'o', studentId: 's', kind: 'FINAL', score: 99, maxScore: 100, weight: 40, feedback: null, recordedAt: '2026-01-01T00:00:00.000Z', student: { id: 's', firstName: 'أ', lastName: 'ب' } }))
+      .toMatchObject({ score: 99, kind: 'FINAL' });
   });
 });

@@ -14,6 +14,8 @@ import { PageSkeleton, ErrorState, EmptyState } from '../../components/primitive
 import { Icon } from '../../components/Icon';
 import { useReducedMotion } from '../../components/motion';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 import { apiErrorMessage } from '../../hooks/useResources';
 import { formatRelativeArShort, countAr } from '../../lib/format';
 import { formatDate } from '../../utils/numbers';
@@ -104,7 +106,9 @@ function formatDurationAr(ms: number): string {
 
 function useSyncStatus() {
   return useQuery({
-    queryKey: ['admin', 'sync'],
+    /* r180: institution-scoped server-side — scoped key (the run
+     * invalidation below keeps prefix-matching the scoped family). */
+    queryKey: withInstitutionScope(['admin', 'sync'], useInstitutionScope()),
     queryFn: () => unwrap<SyncResponse>(api.get('/admin/sync')),
     refetchInterval: 30_000,
     // Explicit like the three sibling polls (useResources ×2, useOwner):

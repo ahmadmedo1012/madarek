@@ -12,8 +12,10 @@ import { ErrorState, EmptyState, KpiSkeleton, TableSkeleton, Skeleton } from '..
 import { Modal } from '../../components/overlays/Modal';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 import { toast } from '../../lib/toast';
-import { useFaculties, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
+import { useFaculties, useCurrentInstitutionSlug, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { TablePaginationFooter } from './AdminPages';
 // D14 css split (13-17): colleges.css has owned the admin-extras surfaces
@@ -75,7 +77,7 @@ export function AdminStudentsPage() {
   const [q, setQ] = useState(() => searchParams.get('q') ?? '');
   const [debouncedQ, setDebouncedQ] = useState(() => searchParams.get('q') ?? '');
   const [facultyId, setFacultyId] = useState(() => searchParams.get('facultyId') ?? '');
-  const facQ = useFaculties();
+  const facQ = useFaculties(useCurrentInstitutionSlug()); // r180: caller-institution scoping
   // r154e.2: the student whose enrollment modal is open (null = closed).
   const [enrollmentStudent, setEnrollmentStudent] = useState<AdminStudentRow | null>(null);
   // A8 P3-4: the empty-search state gets the same reset affordance its
@@ -104,8 +106,10 @@ export function AdminStudentsPage() {
     return () => clearTimeout(t);
   }, [q]);
 
+  const inst = useInstitutionScope();
   const studentsQ = useQuery({
-    queryKey: ['admin', 'students', page, debouncedQ, facultyId],
+    /* r180: /admin/students is institution-scoped server-side — scoped key. */
+    queryKey: withInstitutionScope(['admin', 'students', page, debouncedQ, facultyId], inst),
     queryFn: async () => {
       const res = await api.get<{ data: AdminStudentRow[]; meta: PaginatedStudents['meta'] }>(
         '/admin/students',
@@ -435,8 +439,10 @@ interface DigitalMetrics {
 }
 
 export function AdminDigitalPage() {
+  const inst = useInstitutionScope();
   const q = useQuery({
-    queryKey: ['admin', 'digital'],
+    /* r180: /admin/digital is institution-scoped server-side — scoped key. */
+    queryKey: withInstitutionScope(['admin', 'digital'], inst),
     queryFn: () => unwrap<DigitalMetrics>(api.get('/admin/digital')),
     staleTime: 60_000,
   });

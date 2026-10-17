@@ -98,6 +98,22 @@ const mocks = vi.hoisted(() => ({
     unread: 0,
     calls: [] as Array<[number, number]>,
   },
+  /* r180-F2 — GradesPage's semester-grade entry pair: the offering
+   * grades read (prefills) + the bulk upsert mutation. */
+  offeringGrades: {
+    data: [] as unknown[],
+    isPending: false,
+    isError: false,
+    error: null as unknown,
+    refetch: vi.fn(),
+  },
+  upsertGrades: {
+    mutateAsync: vi.fn(),
+    isPending: false,
+    isError: false,
+    isSuccess: false,
+    error: null as unknown,
+  },
 }));
 
 // GradeSubmissionModal uses useQueryClient for the post-save queue
@@ -153,6 +169,9 @@ vi.mock('../../src/hooks/useResources', () => ({
   useCreateAssignment: () => mocks.createAssignment,
   useCreateMaterial: () => mocks.createMaterial,
   useUploadMaterialFile: () => mocks.uploadMaterial,
+  /* r180-F2 — the semester-grade entry pair GradesPage now consumes. */
+  useOfferingGrades: () => mocks.offeringGrades,
+  useUpsertOfferingGrades: () => mocks.upsertGrades,
   useMyMessages: (page: number, limit: number) => {
     mocks.messages.calls.push([page, limit]);
     return {
@@ -378,6 +397,10 @@ beforeEach(() => {
   mocks.createMaterial = { mutateAsync: vi.fn(), isPending: false, isError: false, error: null };
   mocks.uploadMaterial = { mutateAsync: vi.fn(), isPending: false, isError: false, error: null };
   mocks.messages = { pages: {}, total: 0, totalPages: 1, unread: 0, calls: [] };
+  /* r180-F2 — GradesPage's semester-grade entry pair (same reset
+   * convention as every other mock above). */
+  mocks.offeringGrades = { data: [], isPending: false, isError: false, error: null, refetch: vi.fn() };
+  mocks.upsertGrades = { mutateAsync: vi.fn(), isPending: false, isError: false, isSuccess: false, error: null };
 });
 
 afterEach(() => {
@@ -1079,6 +1102,135 @@ describe('GradesPage + StudentsListPage — one student, one band chip (22-a / A
     ).toBeInTheDocument();
     // …and the old full-Card wrapper is gone.
     expect(screen.queryByText('اختر المقرّر لعرض درجاته')).toBeNull();
+    unmount();
+  });
+});
+
+/* ─── r180-F2 — the semester-grade entry half ──────────────────────
+ * POST /offerings/:id/grades shipped backend-only until now; the page
+ * answered with the honest «قيد التطوير» card. These pins hold the
+ * contract the entry card promises: the placeholder is RETIRED (the
+ * real card + its six-kind selector render), the payload carries ONLY
+ * the rows the teacher actually filled (empty rows never zero a stored
+ * grade), and a bad score is blocked inline with the grading modal's
+ * copy instead of reaching the wire. */
+describe('r180-F2 — GradesPage semester-grade entry', () => {
+  beforeEach(() => {
+    mocks.offerings = [OFFERING];
+    mocks.students = [STUDENT, { ...STUDENT, studentId: 'st2', name: 'ليلى بن عامر', universityId: '223344' }];
+    mocks.offeringGrades.data = [];
+    mocks.upsertGrades.mutateAsync.mockReset();
+    mocks.upsertGrades.mutateAsync.mockResolvedValue({});
+    useToastStore.setState({ items: [] });
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+  });
+
+  it('replaces the «قيد التطوير» dead-end with the real entry card', () => {
+    const { unmount } = render(
+      <MemoryRouter>
+        <GradesPage />
+      </MemoryRouter>,
+    );
+    // The honest placeholder line is retired…
+    expect(screen.queryByText(/قيد التطوير/)).toBeNull();
+    // …the entry card, its kind selector and its save button are real.
+    expect(screen.getByText('إدخال الدرجات الفصليّة')).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'نوع التقييم' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'حفظ الدرجات' })).toBeInTheDocument();
+    // The six GradeKind labels ride the selector.
+    const options = screen.getAllByRole('option') as HTMLOptionElement[];
+    expect(options.map((o) => o.textContent)).toEqual(
+      expect.arrayContaining(['واجب', 'اختبار قصير ١', 'اختبار قصير ٢', 'نصفي', 'مشروع', 'نهائي']),
+    );
+    unmount();
+  });
+
+  it('saves ONLY the filled rows — empty rows never ride the payload', async () => {
+    const { unmount } = render(
+      <MemoryRouter>
+        <GradesPage />
+      </MemoryRouter>,
+    );
+    // Two roster rows, ONE score filled (the FIRST student's).
+    const scores = screen.getAllByPlaceholderText('0 – 100');
+    expect(scores).toHaveLength(2);
+    fireEvent.change(scores[0]!, { target: { value: '85' } });
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ الدرجات' }));
+
+    await waitFor(() => {
+      expect(mocks.upsertGrades.mutateAsync).toHaveBeenCalledTimes(1);
+    });
+    expect(mocks.upsertGrades.mutateAsync).toHaveBeenCalledWith({
+      grades: [{
+        studentId: 'st1',
+        kind: 'HOMEWORK',
+        score: 85,
+        maxScore: 100,
+        weight: 10,
+        feedback: undefined,
+      }],
+    });
+    // The save landed — the drafts clear (the row reads empty again,
+    // its truth now the invalidated grades read) and the Arabic toast
+    // confirms it.
+    await waitFor(() => {
+      expect(scores[0]).toHaveValue(null);
+    });
+    const items = useToastStore.getState().items;
+    expect(items).toHaveLength(1);
+    expect(items[0]).toMatchObject({ variant: 'success', message: 'حُفظت الدرجات وستظهر لطلاب المقرّر فوراً.' });
+    unmount();
+  });
+
+  it('blocks a score above the column ceiling inline — the wire never sees it', async () => {
+    const { unmount } = render(
+      <MemoryRouter>
+        <GradesPage />
+      </MemoryRouter>,
+    );
+    const scores = screen.getAllByPlaceholderText('0 – 100');
+    fireEvent.change(scores[0]!, { target: { value: '120' } });
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ الدرجات' }));
+
+    await waitFor(() => {
+      expect(screen.getByText('الدرجة يجب ألّا تتجاوز 100.')).toBeInTheDocument();
+    });
+    expect(screen.getByText('صحّح الصفوف المعلَّمة قبل الحفظ.')).toBeInTheDocument();
+    expect(mocks.upsertGrades.mutateAsync).not.toHaveBeenCalled();
+    unmount();
+  });
+
+  it('prefills a stored grade for the picked kind (an upsert overwrites it)', () => {
+    mocks.offeringGrades.data = [{
+      id: 'g1',
+      offeringId: 'off1',
+      studentId: 'st1',
+      kind: 'MIDTERM',
+      score: 47,
+      maxScore: 50,
+      weight: 30,
+      feedback: 'راجع الفصل الثاني',
+      recordedAt: '2026-01-01T00:00:00.000Z',
+      student: { id: 'st1', firstName: 'آمنة', lastName: 'العبيدي' },
+    }];
+    const { unmount } = render(
+      <MemoryRouter>
+        <GradesPage />
+      </MemoryRouter>,
+    );
+    // HOMEWORK (the default) has no stored rows — every score input
+    // starts empty…
+    for (const input of screen.getAllByPlaceholderText('0 – 100')) {
+      expect(input).toHaveValue(null);
+    }
+    // …switch to MIDTERM: the stored score AND feedback prefill their row.
+    fireEvent.change(screen.getByRole('combobox', { name: 'نوع التقييم' }), { target: { value: 'MIDTERM' } });
+    expect(screen.getByDisplayValue('47')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('راجع الفصل الثاني')).toBeInTheDocument();
+    // The column's scale adopts the stored rows' (50/30), not the 100/10
+    // defaults — a re-save never rewrites the stored denominator.
+    expect(screen.getByLabelText('الدرجة العظمى')).toHaveValue(50);
+    expect(screen.getByLabelText('الوزن (% من الدرجات)')).toHaveValue(30);
     unmount();
   });
 });

@@ -937,4 +937,162 @@ router.post('/events/:id/rsvp', validate(rsvpSchema), async (req, res, next) => 
   } catch (e) { next(e); }
 });
 
+// ════════════════════════════════════════════════════════════════
+//  Study rooms (r180)
+// ════════════════════════════════════════════════════════════════
+
+/* r180: غرف الدراسة تصبح حقيقية — كانت موجودة في schema.prisma منذ
+ * r179 (مع institutionId) بلا أي مسارات تخدمها. هي سطح «جدولة
+ * وعضوية» داخل المؤسسة الواحدة (لا محادثة هنا عمدًا): القائمة
+ * تنحصر في مؤسسة المستدعِي المتحقَّق منها، والإنشاء يربط الغرفة
+ * بمؤسسة المنشئ ويجعله أول عضو، والانضمام/المغادرة يقعان داخل
+ * حدود المؤسسة فقط — معرّف غرفة مؤسسة أخرى = 404 (بلا تسريب
+ * وجود، كنمط rsvp/enter في هذا الملف). الحذف والتعديل والمحادثة
+ * خارج نطاق r180 عن قصد. */
+
+/** Row the study-room list reads — the viewer's OWN membership rows ride
+ * `members` (the posts feed's filtered `reactions` → `viewerReacted`
+ * pattern, and the events list's `myRsvp` twin). */
+export interface StudyRoomListItem {
+  id: string;
+  name: string;
+  topic: string | null;
+  createdAt: Date;
+  owner: { id: string; firstName: string; lastName: string; avatarInitials: string | null };
+  _count: { members: number };
+  members: ReadonlyArray<{ userId: string }>;
+}
+
+/**
+ * Project one list row: drop the viewer-membership helper rows and
+ * surface the additive `isMember` flag — the «أنا عضو» state must
+ * survive reload from the server, not live only in client memory
+ * (the `viewerReacted`/`myRsvp` precedent of this file). Pure +
+ * exported for unit tests.
+ */
+export function studyRoomListItem(
+  row: StudyRoomListItem,
+): Omit<StudyRoomListItem, 'members'> & { isMember: boolean } {
+  const { members: _viewerRows, ...room } = row;
+  return { ...room, isMember: _viewerRows.length > 0 };
+}
+
+/* GET /study-rooms — غرف مؤسسة المستدعِي (المسار نفسه لكل الأدوار
+ * المؤسسية STUDENT/TEACHER/ADMIN/QUALITY عبر requireSocialInstitution
+ * — 403 fail-closed بلا سياق). OWNER يبقى بنظارة شاملة كعادات
+ * قوائم هذا الملف (المسابقات/الفعاليات). */
+router.get('/study-rooms', async (req, res, next) => {
+  try {
+    const userId = req.user!.id;
+    const institutionId = req.user!.role === Role.OWNER
+      ? null
+      : await requireSocialInstitution(userId, req.user!.institutionId);
+    const rooms = await prisma.studyRoom.findMany({
+      where: institutionId ? { institutionId } : undefined,
+      include: {
+        owner: { select: { id: true, firstName: true, lastName: true, avatarInitials: true } },
+        _count: { select: { members: true } },
+        // عضوية المستدعِي نفسه فقط — تُغذّي isMember في الإسقاط أعلاه.
+        members: { where: { userId }, select: { userId: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: SOCIAL_LIST_TAKE,
+    });
+    res.json({ data: rooms.map(studyRoomListItem) });
+  } catch (e) { next(e); }
+});
+
+export const createStudyRoomSchema = z.object({
+  name: z.string().trim().min(1).max(120),
+  topic: z.string().trim().max(300).optional(),
+}).strict();
+
+router.post('/study-rooms', validate(createStudyRoomSchema), async (req, res, next) => {
+  try {
+    const body = req.body as z.infer<typeof createStudyRoomSchema>;
+    // مثل بقية إنشاءات هذا الملف (r179): سياق مؤسسة متحقَّق منه وإلا
+    // 403 INSTITUTION_CONTEXT_REQUIRED — لا مؤسسة افتراضية أبدًا.
+    const institutionId = await requireSocialInstitution(req.user!.id, req.user!.institutionId);
+    // الغرفة + عضوية المنشئ (أول عضو) في معاملة واحدة — نفس أسلوب
+    // $transaction في هذا الملف: لا غرفة تبقى بلا منشئ عضو فيها إذا
+    // فشل النصف الثاني.
+    const room = await prisma.$transaction(async (tx) => {
+      const created = await tx.studyRoom.create({
+        data: {
+          name: body.name,
+          topic: body.topic ?? null,
+          ownerId: req.user!.id,
+          institutionId,
+        },
+      });
+      await tx.studyRoomMember.create({
+        data: { roomId: created.id, userId: req.user!.id },
+      });
+      return created;
+    });
+    res.status(201).json({ data: room });
+  } catch (e) { next(e); }
+});
+
+/* POST /study-rooms/:id/join — الانضمام لغرفة مؤسستك فقط. */
+router.post('/study-rooms/:id/join', async (req, res, next) => {
+  try {
+    const userId = req.user!.id;
+    // كتابة مؤسسية: سياق متحقَّق منه (403 fail-closed) — مثل rsvp/enter.
+    const institutionId = await requireSocialInstitution(userId, req.user!.institutionId);
+    // البحث يحمل مؤسسة المستدعِي: غرفة مؤسسة أخرى لا تُحلّ أصلًا →
+    // 404 بنفس مغلّف المعرّف غير الموجود (بلا تسريب وجود).
+    const room = await prisma.studyRoom.findFirst({
+      where: { id: req.params.id, institutionId },
+      select: { id: true },
+    });
+    if (!room) throw AppError.notFound('غرفة الدراسة غير موجودة');
+    const existing = await prisma.studyRoomMember.findUnique({
+      where: { roomId_userId: { roomId: room.id, userId } },
+      select: { roomId: true },
+    });
+    if (existing) throw AppError.conflict('أنت عضو في هذه الغرفة بالفعل');
+    try {
+      const membership = await prisma.studyRoomMember.create({
+        data: { roomId: room.id, userId },
+      });
+      res.status(201).json({ data: membership });
+    } catch (e) {
+      // P2002 = انضمام متزامن أنشأ الصف قبل الفحص أعلاه — 409، النمط
+      // نفسه المستخدم في enroll المساقات المفتوحة (catalog.routes).
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+        throw AppError.conflict('أنت عضو في هذه الغرفة بالفعل');
+      }
+      throw e;
+    }
+  } catch (e) { next(e); }
+});
+
+/* POST /study-rooms/:id/leave — المغادرة. مالك الغرفة لا يغادرها
+ * (400 — الحذف خارج نطاق r180، فلا مخرج آخر هنا وهذا متعمَّد
+ * وموثَّق بصدق). ليس عضوًا → 404. */
+router.post('/study-rooms/:id/leave', async (req, res, next) => {
+  try {
+    const userId = req.user!.id;
+    const institutionId = await requireSocialInstitution(userId, req.user!.institutionId);
+    const room = await prisma.studyRoom.findFirst({
+      where: { id: req.params.id, institutionId },
+      select: { id: true, ownerId: true },
+    });
+    if (!room) throw AppError.notFound('غرفة الدراسة غير موجودة');
+    if (room.ownerId === userId) {
+      throw AppError.badRequest('مالك الغرفة لا يغادرها');
+    }
+    const membership = await prisma.studyRoomMember.findUnique({
+      where: { roomId_userId: { roomId: room.id, userId } },
+      select: { roomId: true },
+    });
+    if (!membership) throw AppError.notFound('أنت لست عضوًا في هذه الغرفة');
+    await prisma.studyRoomMember.delete({
+      where: { roomId_userId: { roomId: room.id, userId } },
+    });
+    res.json({ data: { roomId: room.id, left: true } });
+  } catch (e) { next(e); }
+});
+
 export default router;

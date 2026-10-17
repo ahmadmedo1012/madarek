@@ -13,6 +13,8 @@ import {
   CheckCircle2,
   type LucideIcon,
 } from 'lucide-react';
+import { useInstitutionScope } from '../../stores/auth.store';
+import { withInstitutionScope } from '../../lib/queryClient';
 import { Card, MetricCard, Badge, AlertRow, ProgressBar } from '../../components/primitives';
 import { ChartFrame } from '../../components/charts';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
@@ -37,10 +39,14 @@ interface QualityOverview {
   papers: Partial<Record<'UPLOADED' | 'SCANNING' | 'CHECKS_PASSED' | 'CHECKS_FAILED' | 'GRADED' | 'PUBLISHED', number>>;
 }
 
-const useOverview = () => useQuery({
-  queryKey: ['quality', 'overview'],
-  queryFn: () => unwrap<QualityOverview>(api.get('/quality/overview')),
-});
+const useOverview = () => {
+  const inst = useInstitutionScope(); // r180: scoped key
+  return useQuery({
+    /* r180: /quality/* is institution-scoped server-side — scoped key. */
+    queryKey: withInstitutionScope(['quality', 'overview'], inst),
+    queryFn: () => unwrap<QualityOverview>(api.get('/quality/overview')),
+  });
+};
 
 interface QualityCourse {
   id: string;
@@ -52,10 +58,14 @@ interface QualityCourse {
    *  data for this offering — render «لا بيانات», never a fake 0/100. */
   metrics?: { attendanceRate?: number | null; completionRate?: number | null };
 }
-const useQualityCourses = (metric?: 'attendance' | 'completion') => useQuery({
-  queryKey: ['quality', 'courses', metric ?? 'all'],
-  queryFn: () => unwrap<QualityCourse[]>(api.get('/quality/courses', { params: metric ? { metric } : undefined })),
-});
+const useQualityCourses = (metric?: 'attendance' | 'completion') => {
+  const inst = useInstitutionScope(); // r180: scoped key
+  return useQuery({
+    /* r180: /quality/* is institution-scoped server-side — scoped key. */
+    queryKey: withInstitutionScope(['quality', 'courses', metric ?? 'all'], inst),
+    queryFn: () => unwrap<QualityCourse[]>(api.get('/quality/courses', { params: metric ? { metric } : undefined })),
+  });
+};
 
 interface ProfessorRow {
   id: string;
@@ -80,10 +90,14 @@ interface ProfessorRow {
   responseHoursEstimated?: boolean;
   compliance: number;
 }
-const useProfessors = () => useQuery({
-  queryKey: ['quality', 'professors'],
-  queryFn: () => unwrap<ProfessorRow[]>(api.get('/quality/professors')),
-});
+const useProfessors = () => {
+  const inst = useInstitutionScope(); // r180: scoped key
+  return useQuery({
+    /* r180: /quality/* is institution-scoped server-side — scoped key. */
+    queryKey: withInstitutionScope(['quality', 'professors'], inst),
+    queryFn: () => unwrap<ProfessorRow[]>(api.get('/quality/professors')),
+  });
+};
 
 interface Engagement {
   attendance: { presentRate: number; lateRate: number; absentRate: number; total: number };
@@ -95,10 +109,14 @@ interface Engagement {
   /** true when the backend filled the curve with its deterministic fallback. */
   weeklyActiveEstimated: boolean;
 }
-const useEngagement = () => useQuery({
-  queryKey: ['quality', 'engagement'],
-  queryFn: () => unwrap<Engagement>(api.get('/quality/engagement')),
-});
+const useEngagement = () => {
+  const inst = useInstitutionScope(); // r180: scoped key
+  return useQuery({
+    /* r180: /quality/* is institution-scoped server-side — scoped key. */
+    queryKey: withInstitutionScope(['quality', 'engagement'], inst),
+    queryFn: () => unwrap<Engagement>(api.get('/quality/engagement')),
+  });
+};
 
 interface FacultyTree {
   id: string;
@@ -121,10 +139,14 @@ interface FacultyTree {
     }>;
   }>;
 }
-const useCurriculum = () => useQuery({
-  queryKey: ['quality', 'curriculum'],
-  queryFn: () => unwrap<FacultyTree[]>(api.get('/quality/curriculum')),
-});
+const useCurriculum = () => {
+  const inst = useInstitutionScope(); // r180: scoped key
+  return useQuery({
+    /* r180: /quality/* is institution-scoped server-side — scoped key. */
+    queryKey: withInstitutionScope(['quality', 'curriculum'], inst),
+    queryFn: () => unwrap<FacultyTree[]>(api.get('/quality/curriculum')),
+  });
+};
 
 const RANK_LABEL: Record<string, string> = {
   LECTURER: 'محاضر',
@@ -165,11 +187,15 @@ const CATEGORY_ICON: Record<QualityAlert['category'], LucideIcon> = {
 /* formatRelativeArShort (compact relative time) lives in lib/format.ts
  * (wave 9-a) — identical strings to the former local copy. */
 
-const useQualityAlerts = () => useQuery({
-  queryKey: ['quality', 'alerts'],
-  queryFn: () => unwrap<QualityAlertsResponse>(api.get('/quality/alerts')),
+const useQualityAlerts = () => {
+  const inst = useInstitutionScope(); // r180: scoped key
+  return useQuery({
+    /* r180: /quality/* is institution-scoped server-side — scoped key. */
+    queryKey: withInstitutionScope(['quality', 'alerts'], inst),
+    queryFn: () => unwrap<QualityAlertsResponse>(api.get('/quality/alerts')),
   staleTime: 60_000,
-});
+  });
+};
 
 /* ─── Shared chart/table helpers ────────────────────────────── */
 // NOTE: chart options must be built during render (see components below) —

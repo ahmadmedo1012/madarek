@@ -16,7 +16,7 @@ import { ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSke
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotificationsFeed, useMarkNotifRead, useMarkAllNotifsRead, notifDeepLink, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, submissionStatusAr, type Post, type StudentMaterial } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotificationsFeed, useMarkNotifRead, useMarkAllNotifsRead, notifDeepLink, useArExperiences, useStudentMaterials, useFaculties, useCurrentInstitutionSlug, useStudentDashboard, useTrainingMe, submissionStatusAr, type Post, type StudentMaterial } from '../../hooks/useResources';
 import { materialHref } from '../../lib/materialHref';
 import { UNIVERSITY_FACTS } from '../../data/university.facts';
 import { formatNum } from '../../utils/numbers';
@@ -1485,7 +1485,7 @@ export function DownloadsPage() {
 /* ─── University Info ──────────────────────────────────── */
 
 export function UniversityInfoPage() {
-  const facs = useFaculties();
+  const facs = useFaculties(useCurrentInstitutionSlug()); // r180: caller-institution scoping
   const faculties = facs.data ?? [];
   const insideCampus = faculties.filter((f) => f.city === 'الزاوية');
   const outsideCampus = faculties.filter((f) => f.city !== 'الزاوية');

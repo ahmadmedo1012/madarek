@@ -14,6 +14,7 @@
  *     complete.
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { readFileSync } from 'node:fs';
@@ -50,9 +51,15 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const read = (p: string) => readFileSync(path.join(root, p), 'utf8');
 
 function renderPage() {
+  /* r180: AuthPage now mounts a (disabled-by-default) institutions query
+   * for the REG_NUMBER_AMBIGUOUS recovery — the page needs a QueryClient
+   * like every other query-bearing page. */
+  const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <MemoryRouter>
-      <AuthPage />
+      <QueryClientProvider client={qc}>
+        <AuthPage />
+      </QueryClientProvider>
     </MemoryRouter>,
   );
 }
