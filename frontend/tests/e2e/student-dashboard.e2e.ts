@@ -18,9 +18,11 @@ test.describe('لوحة تحكم الطالب', () => {
     // التحية من الساعة المجمدة (10:00 UTC → «صباح الخير») + الاسم من
     // جلسة mdrk-auth المبذورة.
     // r168a: اللوحة تفتح مخططها بهويتها — h1 للقراء فقط (sr-only)
-    // «لوحة الطالب» والتحية البطولية h2 (بنفس صنف page-title).
+    // والتحية البطولية h2 (بنفس صنف page-title). r183-B6: الاسم
+    // محاذٍ لعنوان الشريط/التبويب — «لوحة التحكم» (كان «لوحة
+    // الطالب» فاختلف عن ما يسمعه/يراه المستخدم في الشريط).
     const srTitle = page.locator('h1.sr-only');
-    await expect(srTitle).toHaveText('لوحة الطالب');
+    await expect(srTitle).toHaveText('لوحة التحكم');
     const title = page.locator('h2.page-title');
     await expect(title).toContainText(GREETING_RE);
     await expect(title).toContainText('أحمد');
