@@ -1,37 +1,39 @@
 /**
- * DB integration — r182 (stage 09-C): the deploy-time seed is
- * SAFE TO REPEAT. The root `npm run build` chains `db:deploy` →
- * `db:seed` on EVERY Render deploy (r180), so the seed's repeat
- * contract is a production safety property, not a dev convenience:
- * mission stage 09-C requires testing that repeat deployment/build
- * behavior "does not reset user credentials or modify established
- * user-managed data" beyond the deliberately documented demo-reset.
+ * DB integration — r183: the deploy-time seed NEVER touches an
+ * established database, and the demo reset is an explicit
+ * operator-only act. The root `npm run build` chains `db:deploy` →
+ * `db:seed` on EVERY Render deploy (r180), so the seed's deploy-time
+ * contract is a production safety property, not a dev convenience.
+ *
+ * r183 contract (supersedes the r182 repeat-reset pin):
+ *   1. A FRESH install (no users) self-bootstraps: the seed runs the
+ *      full create-only body — institutions, demo accounts (documented
+ *      password), memberships, academic demo content.
+ *   2. A NORMAL redeploy of an ESTABLISHED database (users exist)
+ *      SKIPS the seed entirely — ZERO writes. A rotated demo password
+ *      SURVIVES a redeploy (the r180 automatic reset is retired);
+ *      user-managed data is not even read for update.
+ *   3. The deliberate demo reset — `MADAREK_SEED_FORCE=1` (npm run
+ *      db:seed:force) — re-runs the create-only body: demo passwords
+ *      are reset to the published value, demo freshness refreshes,
+ *      and ALL user-managed records (progress, grades, non-demo
+ *      users) still survive.
  *
  * The seed is executed here EXACTLY the way production executes it —
  * a real subprocess of `tsx prisma/seed.ts` with the suite's
  * DATABASE_URL — never an import (the deploy path is a child
  * process; importing would test a different code path).
  *
- * The pinned contract (seed.ts header + docs/12-deployment.md):
- *   1. Repeat runs never duplicate core entities (upserts by
- *      slug/email/code — institution/faculty/user counts stay
- *      stable across runs).
- *   2. User-managed academic progress SURVIVES repeat runs
- *      (WatchEvent rows, Grade rows — the r180 create-only
- *      rewrite; nothing is wiped).
- *   3. Only the documented demo accounts get their passwords reset
- *      to the published demo value; a NON-demo user's password is
- *      never touched by a redeploy.
- *
- *   what                 | run 1 (fresh) | run 2 (repeat)
- *   ---------------------+---------------+------------------------
- *   institutions         | created       | SAME rows (no dupes)
- *   demo users           | created       | SAME rows (no dupes)
- *   WatchEvent/Grade     | —             | PRESERVED (created by
- *   (user-managed)       |               |  the test between runs)
- *   demo password        | Madarek2026!  | RESET to Madarek2026!
- *   (student@zu.edu.ly)  |               |  (documented contract)
- *   real-user password   | —             | UNCHANGED (never reset)
+ *   what                 | fresh install  | normal redeploy | FORCE reset
+ *   ---------------------+----------------+-----------------+-------------
+ *   institutions         | created        | untouched       | SAME rows
+ *   demo users           | created        | untouched       | SAME rows
+ *   WatchEvent/Grade     | —              | PRESERVED       | PRESERVED
+ *   (user-managed)       |                |                 |
+ *   demo password        | Madarek2026!   | NOT reset (an   | RESET to
+ *   (student@zu.edu.ly)  |                | operator-       | Madarek2026!
+ *   real-user password   | —              |  rotated value  | (documented)
+ *                        |                |  survives)      | UNCHANGED
  */
 import { spawn } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
@@ -46,12 +48,18 @@ const seedPath = resolve(backendRoot, 'prisma/seed.ts');
 /** The published demo password (seed.ts header + docs/12). */
 const DEMO_PASSWORD = 'Madarek2026!';
 
-/** Run the seed as a real subprocess — the production deploy path. */
-function runSeed(): Promise<void> {
+/**
+ * Run the seed as a real subprocess — the production deploy path
+ * (r183: pass force=true to run the MADAREK_SEED_FORCE=1 demo-reset
+ * path exactly the way `npm run db:seed:force` runs it).
+ */
+function runSeed(force = false): Promise<void> {
   return new Promise((resolvePromise, rejectPromise) => {
+    const env = { ...process.env };
+    if (force) env.MADAREK_SEED_FORCE = '1';
     const child = spawn(process.execPath, ['--import', 'tsx', seedPath], {
       cwd: backendRoot,
-      env: process.env,
+      env,
       stdio: 'ignore',
     });
     child.on('error', rejectPromise);
@@ -103,7 +111,7 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
   );
 
   it(
-    'a REPEAT deploy preserves user-managed data, never touches non-demo credentials, and resets only the documented demo password',
+    'a REPEAT deploy (r183) SKIPS the seed entirely — even a rotated demo password survives; zero writes',
     { timeout: 180_000 },
     async () => {
       await runSeed(); // deploy #1
@@ -186,14 +194,14 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
       await expect(verifyPassword(realAfter.passwordHash, realPassword)).resolves.toBe(true);
       await expect(verifyPassword(realAfter.passwordHash, DEMO_PASSWORD)).resolves.toBe(false);
 
-      // (3) The DEMO account's password is reset to the documented
-      //     value (keeps the published demo credentials usable — the
-      //     deliberate r180 contract; everything else is preserved).
+      // (3) r183: the DEMO account's password is NOT reset by a normal
+      //     redeploy — the operator's rotated value survives (the r180
+      //     automatic reset is retired; the reset is FORCE-only below).
       const demoAfter = await prisma.user.findUniqueOrThrow({
         where: { email: 'student@zu.edu.ly' },
       });
-      await expect(verifyPassword(demoAfter.passwordHash, DEMO_PASSWORD)).resolves.toBe(true);
-      await expect(verifyPassword(demoAfter.passwordHash, operatorPassword)).resolves.toBe(false);
+      await expect(verifyPassword(demoAfter.passwordHash, operatorPassword)).resolves.toBe(true);
+      await expect(verifyPassword(demoAfter.passwordHash, DEMO_PASSWORD)).resolves.toBe(false);
 
       // (4) Repeat runs do not duplicate core entities (upserts).
       const facultyCountAfter = await prisma.faculty.count();
@@ -202,6 +210,94 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
       expect(userCountAfter).toBe(userCountBefore); // realUser not duplicated, no new demo users
       const institutions = await prisma.institution.count();
       expect(institutions).toBe(2);
+    },
+  );
+
+  it(
+    'the DELIBERATE force path (MADAREK_SEED_FORCE=1) resets only the demo credentials and still preserves everything else',
+    { timeout: 180_000 },
+    async () => {
+      await runSeed(); // deploy #1 — fresh bootstrap
+      const prisma = db();
+
+      // Same live-usage simulation as the redeploy test.
+      const demo = await prisma.user.findUniqueOrThrow({
+        where: { email: 'student@zu.edu.ly' },
+      });
+      const operatorPassword = `OpRotated-${Date.now()}-pw`;
+      await prisma.user.update({
+        where: { id: demo.id },
+        data: { passwordHash: await hashPassword(operatorPassword) },
+      });
+      const realPassword = `RealUser-${Date.now()}-pw`;
+      const realUser = await prisma.user.create({
+        data: {
+          email: 'real-user-force@institution.test',
+          firstName: 'مستخدم',
+          lastName: 'خارج البذرة',
+          role: 'STUDENT',
+          passwordHash: await hashPassword(realPassword),
+        },
+      });
+      const lecture = await prisma.lecture.findFirstOrThrow();
+      const watchEvent = await prisma.watchEvent.create({
+        data: {
+          studentId: demo.id,
+          lectureId: lecture.id,
+          watchedSec: 431,
+          totalSec: 718,
+        },
+      });
+      const offering = await prisma.courseOffering.findFirstOrThrow();
+      const grade = await prisma.grade.create({
+        data: {
+          studentId: demo.id,
+          offeringId: offering.id,
+          kind: 'FINAL',
+          score: 19,
+          maxScore: 20,
+        },
+      });
+      const userCountBefore = await prisma.user.count();
+      const facultyCountBefore = await prisma.faculty.count();
+
+      // The operator-invoked demo reset (npm run db:seed:force).
+      await runSeed(true);
+
+      // (1) Demo credential reset to the documented value — the ONE
+      //     deliberate repeating write of the force path.
+      const demoAfter = await prisma.user.findUniqueOrThrow({
+        where: { email: 'student@zu.edu.ly' },
+      });
+      await expect(verifyPassword(demoAfter.passwordHash, DEMO_PASSWORD)).resolves.toBe(true);
+      await expect(verifyPassword(demoAfter.passwordHash, operatorPassword)).resolves.toBe(false);
+
+      // (2) The NON-demo user's credential is untouched even by force.
+      const realAfter = await prisma.user.findUniqueOrThrow({
+        where: { email: realUser.email },
+      });
+      await expect(verifyPassword(realAfter.passwordHash, realPassword)).resolves.toBe(true);
+
+      // (3) User-managed progress SURVIVED the force reset.
+      const watchAfter = await prisma.watchEvent.findUnique({
+        where: { lectureId_studentId: { lectureId: watchEvent.lectureId, studentId: watchEvent.studentId } },
+      });
+      expect(watchAfter?.watchedSec).toBe(431);
+      const gradeAfter = await prisma.grade.findUnique({
+        where: {
+          offeringId_studentId_kind: {
+            offeringId: grade.offeringId,
+            studentId: grade.studentId,
+            kind: 'FINAL',
+          },
+        },
+      });
+      expect(gradeAfter?.score?.toNumber()).toBe(19);
+
+      // (4) No duplicate core entities.
+      expect(await prisma.user.count()).toBe(userCountBefore);
+      expect(await prisma.faculty.count()).toBe(facultyCountBefore);
+      expect(await prisma.institution.count()).toBe(2);
     },
   );
 });

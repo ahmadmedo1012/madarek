@@ -32,22 +32,33 @@
  * password hash to "Madarek2026!" on every run). Fresh environments
  * always get "Madarek2026!".
  *
- * r180 — DEPLOY-TIME SEEDING: the root `npm run build` now chains
- * `db:seed` after `db:deploy` (Render runs it in the service's build
- * environment), so every deploy migrates then deterministically
- * ensures the two-institution demo data exists. The seed is fully
- * NON-DESTRUCTIVE (the r145 production-refusal guard is retired —
- * its premise, the wipe-and-reseed of exams/announcements/
- * competitions/events/chapters/lessons, is gone): every section is
- * create-once, so teacher-authored exams and questions, student
- * attempts, admin announcements, live competitions with entries,
- * RSVP'd events, curriculum chapters, training progress, grades,
- * mastery, watch events and skill levels ALL survive re-runs. The
- * only deliberately repeating writes: (a) demo passwords are reset
- * to the documented value (keeps demo credentials usable), (b)
- * notification timestamps + training-track catalogue metadata are
- * refreshed (deliberate demo freshness). CI never runs the root
- * build, so this only executes on Render deploys.
+ * r180 — DEPLOY-TIME SEEDING + r183 — ESTABLISHED-DB GUARD: the root
+ * `npm run build` chains `db:seed` after `db:deploy` (Render runs it in
+ * the service's build environment), so a FRESH install migrates then
+ * self-initializes the two-institution demo data. Since r183 a NORMAL
+ * redeploy of an ESTABLISHED database (any users exist) SKIPS the seed
+ * entirely — zero writes: passwords, settings and academic records are
+ * not even read for update. The deliberate demo-reset path is explicit
+ * and operator-invoked ONLY: `MADAREK_SEED_FORCE=1` (`npm run
+ * db:seed:force`), which re-runs the full create-only body including the
+ * documented demo-password resets and demo-freshness refreshes. CI
+ * never runs the root build, so this only executes on Render deploys.
+ *
+ * The seed body itself is fully NON-DESTRUCTIVE (the r145
+ * production-refusal guard is retired — its premise, the wipe-and-reseed
+ * of exams/announcements/competitions/events/chapters/lessons, is
+ * gone): every section is create-once, so teacher-authored exams and
+ * questions, student attempts, admin announcements, live competitions
+ * with entries, RSVP'd events, curriculum chapters, training progress,
+ * grades, mastery, watch events and skill levels ALL survive re-runs.
+ * The only deliberately repeating writes (force path): (a) demo
+ * passwords are reset to the documented value (keeps demo credentials
+ * usable), (b) notification timestamps + training-track catalogue
+ * metadata are refreshed (deliberate demo freshness).
+ *
+ * NOTE (r183 brand voice): all seed copy speaks in the Madarek
+ * platform voice («منصّة مدارك») — the showcase university is DATA
+ * (organizer/institution context), never the platform's identity.
  */
 
 import {
@@ -69,6 +80,25 @@ import { utcDayStart } from '../src/lib/dates.js';
 const prisma = new PrismaClient();
 
 async function main() {
+  // ─── r183 — established-database guard ────────────────────────
+  // A NORMAL redeploy must never touch an established database: with
+  // any users present the seed skips ENTIRELY (zero writes). Fresh
+  // installs (no users) self-bootstrap. The deliberate demo reset is
+  // explicit and conscious: MADAREK_SEED_FORCE=1 (npm run
+  // db:seed:force) — guarded so no accidental production path sets it.
+  const force = process.env.MADAREK_SEED_FORCE === '1';
+  const existingUsers = await prisma.user.count();
+  if (existingUsers > 0 && !force) {
+    console.log(
+      `ℹ بذرة r183: القاعدة مؤسَّسة (${existingUsers} مستخدمًا) — التشغيل العادي للنشر لا يكتب شيئًا أصلًا / seed skipped: established database, zero writes. إعادة ضبط العرض الواعية: MADAREK_SEED_FORCE=1 (npm run db:seed:force).`,
+    );
+    return;
+  }
+  if (force) {
+    console.warn(
+      '⚠ MADAREK_SEED_FORCE=1 — إعادة ضبط عرض واعية: كلمات مرور حسابات العرض ستُضبط للقيمة الموثقة وبيانات نضارة العرض تُحدَّث. سجلات التعليم المُدارة من المستخدمين لا تُمحى أبدًا (بذرة إنشاء-فقط) / deliberate demo reset: demo passwords reset, user-managed records never wiped.',
+    );
+  }
   console.log('🌱 Seeding database...');
 
   // ─── Institutions (r178) ─────────────────────────────
@@ -1243,13 +1273,13 @@ async function main() {
   const TRACKS: TrackSeed[] = [
     {
       slug: 'platform-onboarding',
-      title: 'كيف تستخدم منصة الزاوية',
+      title: 'كيف تستخدم منصّة مدارك',
       titleEn: 'Platform Onboarding',
       summary: 'جولة سريعة على واجهات المنصة: المحاضرات، المصفوفة التعليمية، البحوث، المكتبة، والإحصاءات.',
       category: 'ONBOARDING', level: 'BEGINNER', iconEmoji: '🧭', themeColor: '#2952C8',
       estMinutes: 25, pointsAward: 150, order: 1,
       lessons: [
-        { title: 'الترحيب والتسجيل', summary: 'كيفية إنشاء الحساب وإكمال الملف الشخصي', content: 'أهلاً بك في منصة جامعة الزاوية للتعليم الذكي. تبدأ رحلتك بإنشاء حسابك الجامعي عبر صفحة "إنشاء حساب"، وإدخال بياناتك الأساسية. بعدها أكمل ملفك الشخصي بإضافة الكلية والقسم والمعرّف الجامعي.', quiz: { q: 'ما النطاق الرسمي لإيميل الجامعة؟', a: 'zu.edu.ly' } },
+        { title: 'الترحيب والتسجيل', summary: 'كيفية إنشاء الحساب وإكمال الملف الشخصي', content: 'أهلاً بك في منصّة مدارك للتعليم الذكي. تبدأ رحلتك بإنشاء حسابك الجامعي عبر صفحة "إنشاء حساب"، وإدخال بياناتك الأساسية. بعدها أكمل ملفك الشخصي بإضافة الكلية والقسم والمعرّف الجامعي.', quiz: { q: 'ما النطاق الرسمي لإيميل الجامعة؟', a: 'zu.edu.ly' } },
         { title: 'لوحة التحكم الرئيسية', summary: 'فهم العناصر في الصفحة الرئيسية', content: 'لوحة التحكم تعرض: المقررات الحالية، نسبة الإنجاز، الإشعارات، والمساعد الذكي. كل بطاقة قابلة للنقر وتأخذك إلى التفاصيل.' },
         { title: 'المصفوفة التعليمية', summary: 'كيف تعمل وكيف تستفيد منها', content: 'المصفوفة التعليمية تتبع فهمك لكل مفهوم على حدة وتقترح فيديوهات لسد أي فجوة معرفية تظهر في امتحاناتك أو نقاط التفاعل.' },
         { title: 'البحوث والمكتبة', summary: 'رفع البحث والبحث في المكتبة', content: 'يمكنك رفع بحثك من قسم البحوث، وستجري المنصة فحص انتحال وفحص ذكاء اصطناعي قبل الإرسال للأستاذ. المكتبة تتيح البحث عبر آلاف الأبحاث المنشورة.', quiz: { q: 'ما النسبة القصوى المقبولة للانتحال في البحث؟', a: '15' } },
@@ -1408,7 +1438,7 @@ async function main() {
         { title: 'تعلم الآلة مقابل التعلم العميق', summary: 'متى نستخدم كل منهما', content: 'تعلم الآلة الكلاسيكي مناسب للبيانات المهيكلة وكميات قليلة. التعلم العميق يحتاج بيانات ضخمة وقوة حسابية كبيرة، لكنه يتفوق في الصور واللغة.' },
         { title: 'علم البيانات والإحصاء', summary: 'الأساس الذي يقوم عليه كل شيء', content: 'علم البيانات يدمج الإحصاء والبرمجة والمعرفة المجالية. أدوات: Python (pandas, numpy)، R، SQL. مهارة قراءة البيانات أهم من إتقان الأدوات.' },
         { title: 'تتبع المعرفة (Knowledge Tracing)', summary: 'الخوارزمية وراء مصفوفتنا التعليمية', content: 'خوارزميات تتبع المعرفة تنتج نموذج معرفة الطالب بمرور الوقت. مسابقة Kaggle لشركة Riiid (2020) كانت محطة فاصلة. المنصة تستخدم نموذجاً مشابهاً لتحديد فجواتك المعرفية.', quiz: { q: 'ما اسم الشركة الكورية صاحبة مسابقة تتبع المعرفة على Kaggle؟', a: 'Riiid' } },
-        { title: 'الذكاء الاصطناعي في التعليم', summary: 'مستقبل التعلم المخصص', content: 'الذكاء الاصطناعي سيغير التعليم: مدرسون افتراضيون، محتوى مخصص لكل طالب، تقييم لحظي، اكتشاف الفجوات قبل أن تظهر في الامتحان. منصة الزاوية خطوة في هذا الاتجاه.' },
+        { title: 'الذكاء الاصطناعي في التعليم', summary: 'مستقبل التعلم المخصص', content: 'الذكاء الاصطناعي سيغير التعليم: مدرسون افتراضيون، محتوى مخصص لكل طالب، تقييم لحظي، اكتشاف الفجوات قبل أن تظهر في الامتحان. منصّة مدارك خطوة في هذا الاتجاه.' },
       ],
       badge: { slug: 'badge-ai-pioneer', title: 'رائد ذكاء اصطناعي', description: 'أنهيت المسار المتخصص في الذكاء الاصطناعي', iconEmoji: '🤖', rarity: 'LEGENDARY' },
     },
@@ -1617,7 +1647,7 @@ async function main() {
       difficulty: 'HARD' as const, points: 5,
     },
     {
-      category: generalCategory.id, type: 'MCQ' as const, prompt: 'ما النسبة القصوى المقبولة للتشابه (الانتحال) في البحث العلمي على منصة جامعة الزاوية؟',
+      category: generalCategory.id, type: 'MCQ' as const, prompt: 'ما النسبة القصوى المقبولة للتشابه (الانتحال) في البحث العلمي على منصّة مدارك؟',
       choices: ['5%', '10%', '15%', '25%'], correct: 2, difficulty: 'EASY' as const, points: 1,
     },
     {
@@ -1729,8 +1759,8 @@ async function main() {
   const announcementDefs = [
       {
         authorId: admin.id, scope: 'PLATFORM', scopeId: null,
-        title: 'إطلاق منصة جامعة الزاوية للتعليم الذكي',
-        body: 'يسرّ جامعة الزاوية بالتعاون مع وزارة التعليم العالي والبحث العلمي إعلان إطلاق المنصة التعليمية الذكية بشكل رسمي. يستطيع جميع الطلاب والأساتذة الاستفادة من الميزات الجديدة فوراً.',
+        title: 'مدارك: انطلاق منصّة التعليم الذكي',
+        body: 'تنطلق منصّة مدارك — منصّة التعليم الذكي المستقلّة — لخدمة مؤسساتها التعليمية بكامل ميزاتها الذكية. يستطيع جميع الطلاب والأساتذة الاستفادة من الميزات الجديدة فوراً.',
         pinned: true, iconEmoji: '🎉',
       },
       {
@@ -1742,7 +1772,7 @@ async function main() {
       {
         authorId: teacher.id, scope: 'FACULTY', scopeId: faculties[0]!.id,
         title: 'محاضرة افتراضية مع خبير عالمي في الذكاء الاصطناعي',
-        body: 'تستضيف كلية تقنية المعلومات محاضرة عن بُعد مع البروفيسور أندرو نج يوم الخميس عبر منصة الزاوية. الحضور مفتوح لجميع طلاب الكلية.',
+        body: 'تستضيف كلية تقنية المعلومات محاضرة عن بُعد مع البروفيسور أندرو نج يوم الخميس عبر منصّة مدارك. الحضور مفتوح لجميع طلاب الكلية.',
         iconEmoji: '🎤',
       },
       {
@@ -1766,8 +1796,8 @@ async function main() {
         organizerId: teacher.id, institutionId: zawia.id, iconEmoji: '🔬', themeColor: '#7B3AED',
       },
       {
-        title: 'هاكاثون منصة الزاوية الأول',
-        description: 'هاكاثون 48 ساعة لتطوير حلول رقمية لتحديات الجامعة. مفتوح لجميع الطلاب من جميع الكليات.',
+        title: 'هاكاثون مدارك الأول',
+        description: 'هاكاثون 48 ساعة لتطوير حلول رقمية لتحديات المؤسسات التعليمية. مفتوح لجميع الطلاب من جميع الكليات.',
         category: 'برمجة', prize: '5,000 د.ل + فرصة تدريب',
         deadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
         organizerId: admin.id, institutionId: zawia.id, iconEmoji: '💻', themeColor: '#2952C8',
@@ -1837,7 +1867,7 @@ async function main() {
 // documented demo-password resets and catalogue metadata refreshes.
 if (process.env.NODE_ENV === 'production') {
   console.log(
-    'ℹ بذرة الإنتاج (r180): التشغيل غير المدمّر — بيانات العرض تُنشأ مرة واحدة وكلمات مرور العرض تُضبط للقيمة الموثقة.',
+    'ℹ بذرة r183: إنشاء-فقط عند التشغيل الأولي أو الواعي (FORCE) — كلمات مرور العرض تُضبط للقيمة الموثقة في مسار FORCE فقط، والقاعدة المؤسَّسة تُتخطى بالكامل في النشر العادي.',
   );
 }
 

@@ -1,7 +1,7 @@
 # Madarek Platform — Project Reference
 
-> منصة جامعة الزاوية للتعليم الذكي (ZU Smart Learning Platform)
-> Ministry of Higher Education and Scientific Research, Libya
+> مدارك — منصّة تعليم ذكي مستقلّة عربية-أولًا (Madarek — an independent Arabic-first smart-learning platform)
+> Arabic-first, built in Libya — University of Zawia records shown in the platform are showcase/reference data, not affiliation or endorsement
 
 ## Quick Facts
 
@@ -14,7 +14,7 @@
 | **Auth** | JWT (15min access + 7d refresh, http-only cookie) + Argon2id |
 | **Roles** | STUDENT, TEACHER, ADMIN, QUALITY, OWNER |
 | **Deploy** | Render Blueprint (render.yaml), free tier, single-service |
-| **License** | Internal — University of Zawia |
+| **License** | Proprietary — source published for reference only; no right to deploy, modify, or redistribute (see `LICENSE`) |
 
 ## Architecture
 

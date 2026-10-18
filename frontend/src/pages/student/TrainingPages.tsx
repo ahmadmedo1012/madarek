@@ -98,7 +98,7 @@ export default function TrainingCatalogPage() {
     <div className="page">
       <PageHeader
         title="التطوير الذاتي"
-        subtitle="مسارات تدريبية مصمَّمة من فريق جامعة الزاوية لتطوير مهاراتك الأكاديمية والمهنية. أكمل مساراً لتحصل على سجلّ إتمام موثَّق من المنصة."
+        subtitle="مسارات تدريبية مصمَّمة بعناية لتناسب احتياجاتك الأكاديمية والمهنية. أكمل مساراً لتحصل على سجلّ إتمام موثَّق من المنصة."
       />
 
       {/* My summary — KPI band + level progress. Pending → shape-matched

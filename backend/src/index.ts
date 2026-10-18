@@ -30,7 +30,7 @@ async function main() {
 
   const app = createApp();
   const server = app.listen(env.PORT, () => {
-    logger.info(`🚀 ZU Platform API listening on http://0.0.0.0:${env.PORT} (${env.NODE_ENV})`);
+    logger.info(`🚀 Madarek Platform API listening on http://0.0.0.0:${env.PORT} (${env.NODE_ENV})`);
   });
 
   // Start the daily university-data sync ticker

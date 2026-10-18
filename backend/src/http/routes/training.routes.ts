@@ -393,7 +393,10 @@ router.post(
               data: {
                 userId,
                 title: lesson.track.title,
-                issuer: 'منصة جامعة الزاوية للتعليم الذكي',
+                // r183-B2: issuer is the platform's own name — the
+                // University of Zawia is showcase data, never the
+                // certificate-issuing authority.
+                issuer: 'منصّة مدارك التعليميّة',
                 issuedAt: new Date(),
                 hours: Math.max(1, Math.round(lesson.track.estMinutes / 60)),
                 status: 'COMPLETED',

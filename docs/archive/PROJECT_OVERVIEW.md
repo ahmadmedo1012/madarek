@@ -1,3 +1,5 @@
+> **[توثيق تاريخي — Historical record (superseded)]** An old planning-era snapshot kept for archaeology only — not current product truth. Its identity claims ("ZU Platform" ownership) never described the product as it ships: Madarek is an independent Arabic-first smart-learning platform, and University of Zawia records are showcase/reference data. Current truth: `README.md`, `DESIGN.md`, `docs/PROJECT-REFERENCE.md`. This file is not updated.
+
 # Madarek Platform - Project Overview
 
 ## Quick Reference

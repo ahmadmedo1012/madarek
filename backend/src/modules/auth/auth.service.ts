@@ -171,7 +171,7 @@ export const registerUser = async (input: RegisterInput) => {
   // Defensive guard: even if the DTO drifted, never let public registration mint
   // ADMIN / QUALITY / OWNER accounts. Those are invitation-only.
   if (input.role !== Role.STUDENT && input.role !== Role.TEACHER) {
-    throw AppError.forbidden('هذا النوع من الحسابات يتطلب دعوة من إدارة الجامعة');
+    throw AppError.forbidden('هذا النوع من الحسابات يتطلب دعوة من إدارة المنصّة');
   }
 
   const existing = await prisma.user.findUnique({
@@ -448,7 +448,7 @@ export const loginUser = async (
       userId: user.id,
       ...ctx,
     });
-    throw AppError.forbidden('هذا الحساب معطّل — تواصل مع إدارة الجامعة');
+    throw AppError.forbidden('هذا الحساب معطّل — تواصل مع إدارة المنصّة');
   }
 
   // Reset failure counters

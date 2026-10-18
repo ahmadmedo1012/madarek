@@ -1,6 +1,6 @@
 # Madarek Design System
 
-> **مدارك** — منصة التعليم الذكي لجامعة الزاوية · the design canon as it ships in code.
+> **مدارك** — منصّة تعليم ذكي مستقلّة عربية-أولًا · the design canon as it ships in code.
 
 This document states the canon as it **ships in code**. Every value below was extracted from `frontend/src/styles/` at the audited tree (r131/r132) — not from specs (those carry plan-time values, kept as archaeology) and not from memory. When this file and `tokens.css` disagree, `tokens.css` wins; file an issue.
 
@@ -17,7 +17,7 @@ A design reference is gates, not a gallery. Madarek's canon is machine-enforced 
 | **Icon discipline** | `npm run check:icons` | Lucide-only — no other icon source. |
 | **Color tokens** | `npm run check:colors` (`--strict` in CI) | No raw hex/rgb()/hsl() outside the sanctioned zones (tokens.css · fonts.css · the export pair · documented `color-gate: allow` lines). r150a sorted the last 269 literals into tokens / `color-mix()` derivations / documented allows — the census is zero and the gate is strict. |
 | **Token snapshots** | `frontend` vitest suite | Role-accent hexes pinned per theme (7 roles × 2), drift + route-title + a11y nets. |
-| **CI** | `.github/workflows/ci.yml` | 7 jobs: lint · typecheck · build · frontend tests · backend tests · design gates (icons + motion tokens + CSP pins + parity export + **color gate, strict**) · surface drift. |
+| **CI** | `.github/workflows/ci.yml` | 9 jobs: lint · typecheck · build · frontend tests · backend tests · db-integration · e2e · design gates (icons + motion tokens + CSP pins + parity export + **color gate, strict**) · surface drift. |
 
 **What the export pair distills vs what stays outside it:**
 
@@ -40,7 +40,7 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 | `components.css` | the component recipes (§5) — buttons, inputs, cards, tables, sheets, dialogs, toasts' kin |
 | `layout.css` | sidebar / nav recipes |
 | `auth.css` · `notifications.css` · `student.css` | eager remainder — auth-page recipes, toasts/bottom-nav, student-surface patches |
-| `polish.css` | overrides layer — the last word on layered surfaces (legacy sections v6–v8 remain `@layer pages` by design — census pinned in the file's Layer-hygiene banner; v9+ are overrides) |
+| `polish.css` | overrides layer — the last word on layered surfaces (legacy sections v6–v8 remain `@layer pages` by design — census pinned in the file's «Polish Bundle (consolidated v6 → v21)» header banner, polish.css:1-9; v9+ are overrides) |
 | `landing.css` | Orbit Ink world (§1a) — the only place `--ln-*` is consumed at scale |
 | `colleges.css` · `colleges-popover.css` · `admin.css` · `owner.css` · `training.css` · `pdf.css` · `player.css` | page-scoped sheets, imported by their lazy pages (admin.css born r150e — the colleges.css split; colleges-popover.css born r151h — the popover split, rides the LandingPage chunk; 10 eager via `main.tsx` + 8 page-scoped = the 18 in-app sheets) |
 | r152 ownership wave | the search family (v21) → `layout.css`; the megamino stagger (v18) → `landing.css`; the auth-card entrance + pdf-toolbar fade (v19) → `auth.css` / `pdf.css`; the whole `.state` family (v8+v11+v21) → `components.css` §STATE; the a11y utilities core (sr-only / skip-link / :target / tap-highlight / img-lazy) → `base.css` — polish.css keeps ONLY true overrides, belts and pins (5446 → ~4680 lines over r151–r152); r152j retired the dead Plex Serif italic pair (12 → 10 faces, zero live consumers) |
@@ -202,7 +202,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 | **Sidebar** | 256px (64 collapsed) · item min-30px · r-sm 8 · active = wash bg + **3×16px role-accent bar at inline-start −3px** + 240ms pop · night: gold wash + constellation gradients |
 | **KPI card** | min-block **132px** · value **30px / 700 `tnum lnum`** lh 1.10 · label 12/600 muted · icon well **44px** r-lg + 1.5px role-accent rim (30%) · hover −2px · **semantic `color` prop** (r166b): `green/amber/red/purple/gold` override the icon well + leading edge via the pastel families (badge grammar — `--c-*-bg` well + both-theme-safe `*-ink` glyph, 3:1+ both themes); value/label text never change color |
 | **Table** | wrap r-xl + rule border · thead **12px** / 600 / muted (no tracking, no transform — Arabic) on **surface-2** · body 13px · **zebra-on-hover** (`tr:hover → surface-2`) — hover shift, *not* static stripes · last row borderless · pagination 44px targets · **≤640px ladder** (r151b): `tbl-stack` + per-td `data-label` → row-cards (label at inline-start, first-read RTL); a plain `.table` keeps its layout and self-scrolls — never squishes, never drags the page; pagination cluster wraps |
-| **Spinner** | 22px · 2px · accent top arc · **700ms linear** (sm 14px) |
+| **Spinner** | 22px · 2px · top arc neutral-900 (light) / accent (dark) · **700ms linear** (sm 14px) |
 | **Skeleton** | `--motion-duration-skeleton 1200ms` · `--ease-linear` · RTL-aware shimmer · r-sm |
 | **Badge/status** | solid pastel · 11 / 600 · `tnum` (`-bg` ground + `-deep`/`-ink` text) |
 | **Page header** | `PageHeader` primitive (r164-a) — `header.page-header > .page-title-block > h1.page-title (+ p.page-subtitle)`; actions are DIRECT flex children (no wrapper) · title = the route's one `--type-display-*` h1 · subtitle 13 `--text-secondary`, measure ≤72ch · hairline rule + `--sp-4` breathing (polish §page-header) · status tone ladders come from the shared maps (grade bands: `lib/courseMeta` GRADE_BANDS — never a page-private threshold) |
