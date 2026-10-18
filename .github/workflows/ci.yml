@@ -220,7 +220,7 @@ jobs:
           retention-days: 7
 
   design-gates:
-    name: Design gates (icons + motion tokens + parity export)
+    name: Design gates (icons + motion + colors + raw-css type/radius + parity + CSP)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
