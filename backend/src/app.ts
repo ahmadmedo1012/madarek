@@ -11,6 +11,7 @@ import { env } from './env.js';
 import { logger } from './logger.js';
 import { prisma } from './db.js';
 import { compression } from './lib/compression.js';
+import { buildIdFromEnv } from './lib/build-id.js';
 
 import { errorHandler } from './http/middleware/errorHandler.js';
 import { globalRateLimiter } from './http/middleware/rateLimit.js';
@@ -154,11 +155,15 @@ export function createApp() {
   app.use(express.urlencoded({ extended: true, limit: '1mb' }));
   app.use(cookieParser());
 
-  // ── Health (no rate limit, no auth) ──────────────────────
-  // BUILD_ID is bumped on every deploy that needs a force-rebuild.
-  // Curl /api/v1/health to check whether Render is serving the
-  // latest commit. If the buildId matches, the fix is live.
-  const BUILD_ID = '2026-10-18T00:00Z-r180-product-completion';
+  // ── Health (no rate limit, no auth) ──────────────────────────
+  // buildId is DERIVED from the platform's deployed-commit env var
+  // (Render injects RENDER_GIT_COMMIT on every git-connected build) —
+  // never a hand-bumped constant. Curl /api/v1/health and compare the
+  // sha with `git rev-parse origin/main` to know exactly which commit
+  // is serving. (r184: the old constant said 'r180-product-completion'
+  // while production was actually serving r183 — a rot the derived id
+  // makes structurally impossible. See lib/build-id.ts.)
+  const BUILD_ID = buildIdFromEnv(env.RENDER_GIT_COMMIT ?? env.GIT_SHA);
   app.get('/api/v1/health', async (_req, res) => {
     const start = Date.now();
     // Race the DB ping against a 5s timeout so a sleepy Neon

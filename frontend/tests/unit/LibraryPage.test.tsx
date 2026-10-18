@@ -15,11 +15,19 @@ import { sanitizeSnippetHtml, default as LibraryPage } from '../../src/pages/stu
 
 // Stub the data hooks the page consumes; useBooks is a spy so the test
 // can assert exactly which `q` value each render passed to the query.
+// r184: the books query is a PAGINATED ENVELOPE ({data, meta}) — the
+// stub answers the envelope shape (single page, empty rows).
 const booksCalls = vi.hoisted(() => vi.fn());
 vi.mock('../../src/hooks/useResources', () => ({
-  useBooks: (opts: { category?: string; q?: string }) => {
+  useBooks: (opts: { category?: string; q?: string; page?: number; limit?: number }) => {
     booksCalls(opts);
-    return { data: [], isPending: false, isError: false, error: null, refetch: vi.fn() };
+    return {
+      data: { data: [], meta: { page: opts.page ?? 1, limit: opts.limit ?? 24, total: 0, totalPages: 1 } },
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    };
   },
   usePublishedResearch: () => ({ data: [], isPending: false, isError: false, error: null, refetch: vi.fn() }),
   useResearchSearch: () => ({ data: undefined, isPending: false, isError: false, error: null, refetch: vi.fn() }),

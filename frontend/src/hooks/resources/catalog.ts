@@ -48,15 +48,47 @@ export interface Book {
   totalCopies: number;
   availableCopies: number;
 }
-export function useBooks(opts: { category?: string; q?: string } = {}) {
+export interface BooksMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+export interface BooksPage {
+  data: Book[];
+  meta: BooksMeta;
+}
+/**
+ * r184 (silent-truncation closure): the library listing used to fetch
+ * `limit: 100` and unwrap ONLY the data array — the server's envelope
+ * (meta.total/totalPages) was dropped on the floor, so a library with
+ * more than 100 books in a filter silently showed "the first 100" with
+ * a KPI reading exactly 100 and no pager. The backend route has been
+ * fully paginated since r15x (page/limit/category/q + buildMeta); the
+ * hook now consumes the whole envelope and paginates (the
+ * useCoursesCatalog / CatalogPage convention — meta owns the totals,
+ * NEVER data.length). Key carries category/q/page so each parameterized
+ * page caches separately; the ['books'] prefix invalidation family
+ * (borrow/return mutations) is unchanged.
+ */
+export function useBooks(
+  opts: { category?: string; q?: string; page?: number; limit?: number } = {},
+) {
+  const page = opts.page ?? 1;
+  const limit = opts.limit ?? 24;
   return useQuery({
-    queryKey: ['books', opts],
-    queryFn: () =>
-      unwrap<Book[]>(
-        api.get('/library/books', {
-          params: { limit: 100, category: opts.category, q: opts.q },
-        }),
-      ),
+    queryKey: ['books', { category: opts.category ?? null, q: opts.q ?? null, page, limit }],
+    queryFn: async (): Promise<BooksPage> => {
+      const res = await api.get<{ data: Book[]; meta: BooksMeta }>('/library/books', {
+        params: {
+          page,
+          limit,
+          category: opts.category,
+          ...(opts.q ? { q: opts.q } : {}),
+        },
+      });
+      return { data: res.data.data, meta: res.data.meta };
+    },
     /* 22-c (A3 P2-2): every NEW category/query key transitions
        isPending → true, unmounting the grid into its skeleton — the
        flash was intermittent (cached keys re-show instantly) so it

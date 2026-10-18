@@ -36,7 +36,24 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock('../../src/hooks/useResources', () => ({
-  useBooks: () => ({ data: mocks.books, isPending: false, isError: false, error: null, refetch: vi.fn() }),
+  // r184: the books query is a PAGINATED ENVELOPE ({data, meta}) —
+  // the stub derives meta from the mocked rows so card rendering,
+  // the KPI total, and the pager presence all stay consistent.
+  useBooks: () => ({
+    data: {
+      data: mocks.books,
+      meta: {
+        page: 1,
+        limit: 24,
+        total: mocks.books.length,
+        totalPages: Math.max(1, Math.ceil(mocks.books.length / 24)),
+      },
+    },
+    isPending: false,
+    isError: false,
+    error: null,
+    refetch: vi.fn(),
+  }),
   usePublishedResearch: () => ({ data: mocks.research, isPending: false, isError: false, error: null, refetch: vi.fn() }),
   useResearchSearch: () => ({ data: undefined, isPending: false, isError: false, error: null, refetch: vi.fn() }),
   useMyLoans: () => ({ data: mocks.loans, isPending: false, isError: false, error: null, refetch: vi.fn() }),

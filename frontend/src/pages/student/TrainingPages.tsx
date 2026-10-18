@@ -31,6 +31,7 @@ import {
 } from '../../hooks/useResources';
 import { TIER_LABEL, TIER_COLOR, RARITY_COLOR, RARITY_LABEL } from '../../lib/gamification';
 import { apiErrorMessage, countAr } from '../../lib/format';
+import { useIsNarrowLayout } from '../../hooks/useIsNarrowLayout';
 import { useEntityPageTitle } from '../../components/layout/AppShell';
 import '../../styles/training.css'; // training surfaces + shared families this module owns (D11 css split, 12-15)
 
@@ -726,6 +727,15 @@ export function AchievementsPage() {
   const certsQ = useMyTrainingCerts();
   const lbQ = useTrainingLeaderboard();
   const [tab, setTab] = useState<AchTab>('badges');
+  /* r184 (P3 residual — leaderboard length on phone): 20 rows ≈ 900px
+   * of list on a 640px-band phone pushed the real actions below two
+   * screens of scrolling. Progressive disclosure: the phone band shows
+   * the top 10 and offers an honest full/collapse toggle (aria-expanded
+   * + the true remaining count). Desktop keeps all 20 rows — no change. */
+  const lbIsNarrow = useIsNarrowLayout(640);
+  const [lbExpanded, setLbExpanded] = useState(false);
+  const lbRows = lbQ.data ?? [];
+  const lbVisible = lbIsNarrow && !lbExpanded ? lbRows.slice(0, 10) : lbRows;
 
   const me = meQ.data;
 
@@ -903,8 +913,9 @@ export function AchievementsPage() {
                 action={<Link to="/training" className="btn primary sm">ابدأ من التطوير الذاتي</Link>}
               />
             ) : (
-              <ol className="leaderboard-list" aria-label="ترتيب الطلاب بالنقاط">
-                {lbQ.data.map((r, i) => (
+              <>
+              <ol className="leaderboard-list" id="ach-leaderboard-list" aria-label="ترتيب الطلاب بالنقاط">
+                {lbVisible.map((r, i) => (
                   <li
                     key={r.userId}
                     className="leaderboard-row"
@@ -927,6 +938,21 @@ export function AchievementsPage() {
                   </li>
                 ))}
               </ol>
+              {lbIsNarrow && lbRows.length > 10 && (
+                <button
+                  type="button"
+                  className="btn ghost sm"
+                  style={{ width: '100%', marginBlockStart: 'var(--sp-3)' }}
+                  aria-expanded={lbExpanded}
+                  aria-controls="ach-leaderboard-list"
+                  onClick={() => setLbExpanded((v) => !v)}
+                >
+                  {lbExpanded
+                    ? 'عرض أفضل 10 فقط'
+                    : `عرض الترتيب كاملًا — ${countAr(lbRows.length, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}`}
+                </button>
+              )}
+              </>
             )}
           </Card>
         </div>

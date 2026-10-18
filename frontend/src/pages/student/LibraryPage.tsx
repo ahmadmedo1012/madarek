@@ -5,7 +5,7 @@ import { useIsNarrowLayout } from '../../hooks/useIsNarrowLayout';
 import {
   Search, Library as LibraryIcon, BookOpen, Clock,
   Code, Network, Database, Bot, ShieldCheck, Star, FileText, Award, GraduationCap, X,
-  SlidersHorizontal, Undo2,
+  SlidersHorizontal, Undo2, ChevronLeft, ChevronRight,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Pill, Badge, UserAvatar } from '../../components/primitives';
@@ -29,6 +29,14 @@ const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'ai', label: 'ذكاء اصطناعي', icon: Bot },
   { id: 'sec', label: 'أمن', icon: ShieldCheck },
 ];
+
+/* r184: Arabic plural noun for the pager's honest total — the
+ * CatalogPage COURSE_UNIT convention (countAr four-form). */
+const BOOK_UNIT: [string, string, string, string] = ['كتاب واحد', 'كتابان', 'كتب', 'كتاباً'];
+/* r184: page size for the books grid — a thumb grid at ~200px min
+ * cards shows 24 rows comfortably (2–4 rows on common widths) and
+ * replaces the old silent `limit: 100` truncation. */
+const BOOKS_PAGE_SIZE = 24;
 
 const categoryIcon = (cat: string): LucideIcon =>
   CATEGORIES.find((c) => c.id === cat)?.icon ?? LibraryIcon;
@@ -255,6 +263,14 @@ export default function LibraryPage() {
   const [cat, setCat] = useState('all');
   const [q, setQ] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
+  /* r184: page pointer for the paginated books envelope. A changed
+   * category/search restarts the browse from page 1 (the CatalogPage
+   * filter-reset convention) — the fold-back effect below only
+   * catches the shrunken-tail race. */
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    setPage(1);
+  }, [cat, debouncedQ]);
   // Mobile category-filter Sheet (21-b hand-off): draft-then-apply —
   // the chips edit `draftCat`; «تطبيق» commits it to the live query,
   // «مسح» resets to 'all', Esc/overlay-close discards the draft.
@@ -284,7 +300,27 @@ export default function LibraryPage() {
 
   // Both tabs share the debounced query — the books query must fire on the
   // debounced value too, not per keystroke (mirrors the research tab).
-  const books = useBooks({ category: cat === 'all' ? undefined : cat, q: debouncedQ });
+  const books = useBooks({
+    category: cat === 'all' ? undefined : cat,
+    q: debouncedQ,
+    page,
+    limit: BOOKS_PAGE_SIZE,
+  });
+  /* r184: the envelope owns the truth — rows and meta are separate
+   * (meta.total is the SERVER's filtered total, never data.length). */
+  const bookRows = books.data?.data ?? [];
+  const booksMeta = books.data?.meta;
+  const booksTotalPages = Math.max(1, booksMeta?.totalPages ?? 1);
+  /* A shrunken result set (search narrowed while on page 3) can leave
+   * the pointer past the last real page — the server answers an empty
+   * data array. Fold the pointer back to the last page instead of
+   * showing a misleading "no results" wall; setState to the same value
+   * is a no-op, so this cannot loop. (CatalogPage's exact guard.) */
+  useEffect(() => {
+    if (booksMeta && page > Math.max(1, booksMeta.totalPages)) {
+      setPage(Math.max(1, booksMeta.totalPages));
+    }
+  }, [booksMeta, page]);
   const research = usePublishedResearch();
   const search = useResearchSearch(debouncedQ);
   const loans = useMyLoans();
@@ -300,7 +336,9 @@ export default function LibraryPage() {
     const days = (new Date(l.dueAt).getTime() - Date.now()) / 86400000;
     return days >= 0 && days <= 3;
   }).length;
-  const totalBooks = books.data?.length ?? null;
+  /* r184: the KPI reads the server's meta.total — the honest filtered
+   * total — instead of the (possibly truncated) array length. */
+  const totalBooks = booksMeta?.total ?? null;
   const booksFiltered = debouncedQ.length > 0 || cat !== 'all';
 
   // When the research tab is active and the user has typed >=2 chars, show
@@ -523,7 +561,7 @@ export default function LibraryPage() {
             <BookGridSkeleton />
           ) : books.isError ? (
             <Card><ErrorState error={books.error} onRetry={() => books.refetch()} /></Card>
-          ) : !books.data?.length ? (
+          ) : !bookRows.length ? (
             <Card>
               <EmptyState
                 icon={LibraryIcon}
@@ -536,9 +574,44 @@ export default function LibraryPage() {
             <div className="grid-auto-200">
               {/* r155b: البطاقة مكوّن BookCard (زرّ الاستعارة يحتاج طفرة
                   لكل صف). البنية البصرية كما كانت حرفياً. */}
-              {books.data.map((b) => (
+              {bookRows.map((b) => (
                 <BookCard key={b.id} book={b} />
               ))}
+            </div>
+          )}
+          {/* r184: the honest pager — replaces the silent `limit: 100`
+              truncation. RTL: "previous" points inline-start-ward = the
+              right chevron (the MessagesInbox / CatalogPage pager
+              convention). Hidden when a single page holds everything. */}
+          {booksMeta && booksTotalPages > 1 && (
+            <div
+              className="flex items-center justify-between flex-wrap gap-3"
+              style={{ marginBlockStart: 'var(--sp-4)' }}
+            >
+              <span className="text-xs text-muted">
+                الصفحة <bdi>{booksMeta.page}</bdi> من <bdi>{booksTotalPages}</bdi> ·{' '}
+                {countAr(booksMeta.total, BOOK_UNIT)}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  className="btn ghost sm"
+                  disabled={page <= 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  aria-label="الصفحة السابقة"
+                >
+                  <Icon icon={ChevronRight} size={14} /> السابق
+                </button>
+                <button
+                  type="button"
+                  className="btn ghost sm"
+                  disabled={page >= booksTotalPages}
+                  onClick={() => setPage((p) => Math.min(booksTotalPages, p + 1))}
+                  aria-label="الصفحة التالية"
+                >
+                  التالي <Icon icon={ChevronLeft} size={14} />
+                </button>
+              </div>
             </div>
           )}
         </div>
