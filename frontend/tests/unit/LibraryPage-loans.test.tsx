@@ -184,8 +184,10 @@ describe('LibraryPage — active loans list + return action', () => {
     renderPage();
 
     expect(screen.getByText('استعاراتي النشطة')).toBeInTheDocument();
-    // The title shows twice by design: the grid card + the loan row.
-    expect(screen.getAllByText('أساسيات الشبكات')).toHaveLength(2);
+    // The title shows three times by design (r186): the jacket
+    // (aria-hidden, visual identity) + the grid card body + the
+    // loan row. Before r186 it was twice — card + loan row.
+    expect(screen.getAllByText('أساسيات الشبكات')).toHaveLength(3);
     const due = new Date(nowMs() + 10 * 86_400_000).toISOString();
     expect(screen.getByText(formatDateAr(due))).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'إرجاع أساسيات الشبكات' })).toBeEnabled();

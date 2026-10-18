@@ -1952,6 +1952,90 @@
     color: var(--text-subtle);
     font-variant-numeric: tabular-nums;
   }
+
+  /* ── r186: typographic book jackets ─────────────────────────────
+     The library's own deterministic cover: composed from the book's
+     data (title, author, category tint) — no upload path, no binary
+     storage. The thumb-card keeps its shared shape and hover; the
+     jacket replaces the generic icon tile every book rendered
+     identically. The whole jacket is decorative (aria-hidden in the
+     source): the accessible title/author stay in the card body.
+     Ink recipes reuse the icon tile's contrast family — field 12%
+     over --surface, spine 45%, ink 70% over --text — so both themes
+     resolve the data tint the same way the old tile did. */
+  .lib-book-cover {
+    position: relative;
+    block-size: 140px;
+    display: flex;
+    flex-direction: column;
+    border-block-end: 1px solid var(--rule);
+    flex-shrink: 0;
+  }
+  /* the spine rides the inline-start edge — in RTL that is the
+     physical RIGHT, where an Arabic book's spine lives (logical
+     properties, no mirroring needed) */
+  .lib-book-cover::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: var(--sp-1-5);
+    background: color-mix(in srgb, var(--book-tint) 52%, var(--surface));
+    border-inline-end: 1px solid color-mix(in srgb, var(--book-tint) 26%, var(--rule));
+  }
+  .lib-cover-mark {
+    position: absolute;
+    inset-block-start: var(--sp-2);
+    inset-inline-end: var(--sp-2);
+    display: flex;
+    color: color-mix(in srgb, var(--book-tint) 38%, transparent);
+  }
+  .lib-cover-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--sp-1);
+    padding: var(--sp-3);
+    /* clear the spine strip + its border */
+    padding-inline-start: calc(var(--sp-1-5) + var(--sp-2));
+  }
+  .lib-cover-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    line-height: 1.3;
+    color: color-mix(in srgb, var(--book-tint) 70%, var(--text));
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .lib-cover-author {
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* the publisher strip: full-width category band at the foot.
+     r186 tuning: the mixes are strong enough to carry the band's
+     structure on the LIGHT surface too (the first cut washed out —
+     band 14% vs field 12% was a ~2% luminance delta, invisible); the
+     label ink is tint-dyed so the strip reads even where the wash
+     is subtle. */
+  .lib-cover-band {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    padding: var(--sp-1) var(--sp-3);
+    padding-inline-start: calc(var(--sp-1-5) + var(--sp-2));
+    background: color-mix(in srgb, var(--book-tint) 24%, var(--surface));
+    border-block-start: 1px solid color-mix(in srgb, var(--book-tint) 32%, var(--rule));
+    color: color-mix(in srgb, var(--book-tint) 60%, var(--text));
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-semibold);
+  }
   /* research cards — one-shot entrance stagger, THE authored moment of
      the library page (results cascade in as the search resolves) */
   .research-card {

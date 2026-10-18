@@ -98,7 +98,8 @@ function BookGridSkeleton({ tiles = 8 }: { tiles?: number }) {
     <div className="grid-auto-200" aria-busy="true" aria-live="polite">
       {Array.from({ length: tiles }).map((_, i) => (
         <div key={i} className="lib-skel-tile">
-          <Skeleton width="100%" height={100} />
+          {/* r186: 140px — the jacket's settled height (shape-matched) */}
+          <Skeleton width="100%" height={140} />
           <div style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
             <Skeleton width="75%" height={15} />
             <Skeleton width="50%" height={11} />
@@ -161,13 +162,33 @@ function BookCard({ book }: { book: Book }) {
 
   return (
     <div className="thumb-card glass">
+      {/* r186: typographic jacket — a deterministic cover composed from
+       * the book's own data (title, author, category tint) instead of
+       * the identical generic icon tile every book rendered. No upload
+       * path, no binary storage; the ink recipes reuse the icon tile's
+       * contrast family (field 12% / spine 45% / ink 70% over theme
+       * surfaces). Decorative by contract: aria-hidden keeps the
+       * accessible title/author in the card body below (no double
+       * read) — the visual duplication is the book-grid convention. */}
       <div
-        className="thumb-card-image"
-        style={{ background: `color-mix(in srgb, ${tint} 10%, transparent)`, height: 100 }}
+        className="lib-book-cover"
+        aria-hidden="true"
+        style={{
+          background: `color-mix(in srgb, ${tint} 12%, var(--surface))`,
+          ['--book-tint' as never]: tint,
+        }}
       >
-        <span style={{ color: `color-mix(in srgb, ${tint} 70%, var(--text))` }}>
-          <Icon icon={Cmp} size={32} strokeWidth={1.6} />
+        <span className="lib-cover-mark">
+          <Icon icon={Cmp} size={22} strokeWidth={1.6} />
         </span>
+        <div className="lib-cover-text">
+          <div className="lib-cover-title">{book.title}</div>
+          <div className="lib-cover-author">{book.author}</div>
+        </div>
+        <div className="lib-cover-band">
+          <Icon icon={Cmp} size={11} strokeWidth={2.2} />
+          <span>{categoryLabel(book.category)}</span>
+        </div>
       </div>
       <div className="thumb-card-body">
         <div className="thumb-card-title" style={{ minHeight: 36 }} title={book.title}>{book.title}</div>
