@@ -180,7 +180,7 @@ function useDocTitle(title: string | null) {
 
 /* ───────────────────────── Index page ───────────────────────── */
 
-/* ── Guest funnel chrome (5-A12 P1-2) ──────────────────────────────
+/* ── Guest funnel chrome (5-A12 P1-2, r183-B3 funnel split) ─────────
  * The public colleges pages are the university's front door, yet a
  * guest who found their faculty had NO path to registration — 0 auth
  * CTAs on gallery/detail/leaderboard (A12 link census) and the
@@ -189,10 +189,15 @@ function useDocTitle(title: string | null) {
  * surfaces, and one closing band on the college detail (the «I found
  * my faculty» conversion moment). Labels mirror the landing's exact
  * pair (ghost «تسجيل الدخول» + primary «أنشئ حسابك الجامعي» — one
- * label per intent), and both carry `state.from` so a login
- * round-trip lands the new member back on the page that earned the
- * click (AuthPage readFromPath contract). Authed visitors keep the
- * app shell and never see these. */
+ * label per intent) — and since r164b the landing routes its
+ * create-account verb to `/auth/register`, NOT the login wall. r183
+ * (A5 P1-1) aligns these surfaces with that pinned contract
+ * (landing-funnel.test.tsx): the CREATE-account primary goes to
+ * `/auth/register`, the login-labeled ghost keeps `/auth` — and both
+ * carry `state.from` so a round-trip lands the new member back on
+ * the page that earned the click (AuthPage readFromPath contract;
+ * its register prompt forwards the same state through the hop).
+ * Authed visitors keep the app shell and never see these. */
 function GuestJoinRow() {
   const { pathname } = useLocation();
   const from = { from: { pathname } };
@@ -200,14 +205,15 @@ function GuestJoinRow() {
     <div className="guest-join-row">
       <span className="guest-join-note">طالب جديد في الجامعة؟</span>
       <Link to="/auth" state={from} className="btn ghost sm">تسجيل الدخول</Link>
-      <Link to="/auth" state={from} className="btn primary sm">أنشئ حسابك الجامعي</Link>
+      <Link to="/auth/register" state={from} className="btn primary sm">أنشئ حسابك الجامعي</Link>
     </div>
   );
 }
 
 /* The closing band — college detail only, at the end of the story
  * the page tells. One persuasive line, one CTA pair, soft accent
- * ground; the college's own identity stays above it. */
+ * ground; the college's own identity stays above it. Same split as
+ * the join row: the create-account verb opens the REGISTER form. */
 function GuestClosingBand() {
   const { pathname } = useLocation();
   const from = { from: { pathname } };
@@ -218,7 +224,7 @@ function GuestClosingBand() {
         أنشئ حسابك الجامعي وابدأ رحلتك الأكاديميّة على منصّة مدارك.
       </p>
       <div className="guest-cta-actions">
-        <Link to="/auth" state={from} className="btn primary">أنشئ حسابك الجامعي</Link>
+        <Link to="/auth/register" state={from} className="btn primary">أنشئ حسابك الجامعي</Link>
         <Link to="/auth" state={from} className="btn ghost">تسجيل الدخول</Link>
       </div>
     </section>

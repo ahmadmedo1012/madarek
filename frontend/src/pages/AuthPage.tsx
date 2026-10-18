@@ -505,8 +505,13 @@ export default function AuthPage() {
               </div>
             )}
 
+            {/* r183-B3 (A5 P1-1): the register prompt forwards the LIVE
+                location.state — a visitor who landed here from a public
+                college CTA (state.from) keeps the deep link through the
+                login→register hop, instead of silently dropping it at
+                the door. */}
             <p className="auth-register-prompt">
-              ليس لديك حساب؟ <Link to="/auth/register" className="auth-register-link">أنشئ حسابك الآن</Link>
+              ليس لديك حساب؟ <Link to="/auth/register" state={location.state} className="auth-register-link">أنشئ حسابك الآن</Link>
             </p>
           </form>
             </>

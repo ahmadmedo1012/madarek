@@ -305,6 +305,14 @@
     font-weight: var(--fw-semibold);
   }
   .chapter-row.on .chapter-title { color: var(--accent-strong); }
+  /* r183-B3 (A6/A3 P1-2): the active row's concept line kept the base
+     --text-faint ink (measured 3.95:1 light / 4.12:1 dark on
+     --accent-soft — the ONLY AA text failure on the student surface).
+     --text-secondary clears 4.5:1 on the same wash in BOTH themes
+     (6.78:1 light / 9.31:1 dark, computed from tokens.css) while
+     staying one rank quieter than the --accent-strong title — the
+     row keeps its hierarchy and passes 1.4.3. */
+  .chapter-row.on .chapter-concept { color: var(--text-secondary); }
   .chapter-row.on .chapter-state { color: var(--accent-strong); }
   .chapter-row.watched .chapter-state { color: var(--success-ink); }
 
@@ -2645,7 +2653,11 @@
   .trend-tag {
     flex: 1;
     min-inline-size: 0;
-    font-family: var(--font-mono);
+    /* r183-B3 (A6 P3): Arabic hashtags must never ride the numeric-mono
+       costume (same class as the library fix) — the tag inherits the
+       page's Arabic body face; the bdi isolate keeps the «#» prefix
+       ordered. Trending tags are Arabic words, not code. */
+    font-family: inherit;
     font-size: var(--type-label-size);
     color: var(--accent-strong);
     overflow: hidden;

@@ -20,7 +20,7 @@ import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost
 import { materialHref } from '../../lib/materialHref';
 import { UNIVERSITY_FACTS } from '../../data/university.facts';
 import { formatNum } from '../../utils/numbers';
-import { useAuthStore } from '../../stores/auth.store';
+import { useAuthStore, type InstitutionSummary } from '../../stores/auth.store';
 import { cartesianOptions, chartAnimation, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { arUnit, countAr, timeAgoAr, WEEKDAY_NAMES_AR, formatDateTimeAr } from '../../lib/format';
 import { api, unwrap } from '../../lib/api';
@@ -1302,10 +1302,14 @@ export function SocialPage() {
                   {p.hashtags && p.hashtags.length > 0 && (
                     <div className="flex flex-wrap gap-1" style={{ marginTop: 6 }}>
                       {p.hashtags.map((t) => (
-                        // 5-C5 (A12 P2-5): --accent on white is 3.8:1 at
-                        // 11px — --accent-ink is the designed text-grade
-                        // pair (same family as A11 P2-2's profile fix).
-                        <span key={t} className="text-xxs font-mono" style={{ color: 'var(--accent-ink, var(--accent))' }}>#{t}</span>
+                        // r183-B3 (A6 P3): Arabic hashtags never ride the
+                        // numeric-mono costume (same ruling as the library
+                        // labels) — the chip keeps the accent-ink colour
+                        // only. 5-C5 (A12 P2-5): --accent on white is
+                        // 3.8:1 at 11px — --accent-ink is the designed
+                        // text-grade pair (same family as A11 P2-2's
+                        // profile fix).
+                        <span key={t} className="text-xxs" style={{ color: 'var(--accent-ink, var(--accent))' }}>#{t}</span>
                       ))}
                     </div>
                   )}
@@ -1484,26 +1488,142 @@ export function DownloadsPage() {
 
 /* ─── University Info ──────────────────────────────────── */
 
+/* r183-B3 (A6 P2): the slug of the reference showcase institution —
+ * the same contract as the backend's SHOWCASE_INSTITUTION_SLUG
+ * (http/routes/colleges.routes.ts) and the seed row (prisma/seed.ts,
+ * slug `zawia-showcase`). Only this institution renders the curated
+ * ZU showcase facts; every other institution gets its own identity
+ * and only the facts the platform actually holds for it. */
+const SHOWCASE_INSTITUTION_SLUG = 'zawia-showcase';
+
 export function UniversityInfoPage() {
+  const institution = useAuthStore((s) => s.currentInstitution);
   const facs = useFaculties(useCurrentInstitutionSlug()); // r180: caller-institution scoping
   const faculties = facs.data ?? [];
   const insideCampus = faculties.filter((f) => f.city === 'الزاوية');
   const outsideCampus = faculties.filter((f) => f.city !== 'الزاوية');
   const cityCount = new Set(faculties.map((f) => f.city)).size;
+  /* r183-B3: the outside-branch change line said «في 0 مدينة» whenever
+   * every faculty sat outside الزاوية — a self-contradictory KPI (the
+   * alandalus view). Phrase the line ONLY from the real distinct
+   * cities of the outside faculties, and only when there are any. */
+  const outsideCityCount = new Set(outsideCampus.map((f) => f.city)).size;
+
+  /* Null context (the multi-membership pre-selection edge) keeps the
+   * showcase default — the only institution whose facts the platform
+   * curates. A scoped session at any OTHER institution never reads
+   * the ZU identity again. */
+  const isShowcase = !institution || institution.slug === SHOWCASE_INSTITUTION_SLUG;
+
+  const facCount = facs.isPending
+    ? '…'
+    : facs.isError || faculties.length === 0 ? '—' : faculties.length.toLocaleString('ar-LY');
+  const citiesChange = cityCount > 0
+    ? `موزَّعة على ${countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`
+    : undefined;
+
+  if (!isShowcase) {
+    /* ── The institution's OWN page (r183-B3): name/slug facts + the
+     * faculties scoped to it. The ZU-specific facts (founding year,
+     * decree, الزاوية campus split, memberships, strategic plan,
+     * contact block) are showcase-curated content and are dropped —
+     * never re-attributed to another institution. */
+    const inst: InstitutionSummary = institution;
+    return (
+      <div className="page">
+        <PageHeader
+          title={inst.name}
+          subtitle="مؤسّسة تعليميّة على منصّة مدارك — تعرض هذه الصفحة الكليّات المسجَّلة في مؤسّستك."
+        />
+
+        <div className="grid-4">
+          <MetricCard
+            icon={Building2}
+            label="عدد الكليّات"
+            value={facCount}
+            change={citiesChange}
+            color="brand"
+          />
+        </div>
+
+        <Card title="بطاقة تعريف" icon={Building2}>
+          <div className="grid-2">
+            <FactRow label="الاسم الرسميّ" value={inst.name} />
+            {inst.nameEn ? (
+              <FactRow label="الاسم بالإنجليزيّة" value={inst.nameEn} mono />
+            ) : null}
+            <FactRow label="المعرّف على المنصّة" value={inst.slug} mono />
+          </div>
+        </Card>
+
+        {facs.isError ? (
+          /* One honest error surface for the shared query (the
+           * showcase branch's own convention). */
+          <Card title="الكليّات" icon={Building2}>
+            <ErrorState
+              message="تعذَّر تحميل قائمة الكليّات"
+              error={facs.error}
+              onRetry={() => facs.refetch()}
+            />
+          </Card>
+        ) : (
+          <Card
+            title="كلّيّات المؤسّسة"
+            icon={Building2}
+            subtitle={facs.isPending ? 'جارٍ التحميل…' : `${countAr(faculties.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} في مؤسّستك`}
+          >
+            {facs.isPending ? (
+              <div className="flex-col gap-2" aria-busy="true">
+                {[0, 1, 2, 3].map((i) => (
+                  <div className="campus-skel-row" key={i} aria-hidden>
+                    <Skeleton width={130} height={13} />
+                    <span style={{ flex: 1 }} />
+                    <Skeleton width={54} height={13} />
+                  </div>
+                ))}
+              </div>
+            ) : faculties.length === 0 ? (
+              <EmptyState illustration="empty-search" title="لا توجد كلّيّات بعد" description="لم تُسجَّل كلّيّات في هذه المؤسّسة بعد." />
+            ) : (
+              <div className="grid-auto-260" style={{ gap: 'var(--sp-2)' }}>
+                {faculties.map((f) => (
+                  <Link
+                    key={f.id}
+                    to={`/colleges/${f.id}`}
+                    className="faculty-chip-row"
+                  >
+                    <span className="faculty-chip-emoji" aria-hidden>
+                      <EmojiIcon emoji={f.iconEmoji ?? '🏛️'} size={16} />
+                    </span>
+                    <span className="text-sm" style={{ flex: 1, minWidth: 0 }}>{f.name}</span>
+                    <Badge color="purple">{f.city}</Badge>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </Card>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="page">
+      {/* The showcase branch keeps the curated ZU facts — labeled as
+          the platform's reference display institution (the landing's
+          «مؤسّسة العرض» vocabulary), so the copy never claims a
+          university the platform itself is not. */}
       <PageHeader
         title="جامعة الزاوية"
-        subtitle="مؤسّسة تعليميّة حكوميّة، تأسّست عام 1988 وتمتدّ عبر عدّة مدن في الإقليم الغربيّ."
+        subtitle="مؤسّسة العرض المرجعية على منصّة مدارك — مؤسّسة تعليميّة حكوميّة، تأسّست عام 1988 وتمتدّ عبر عدّة مدن في الإقليم الغربيّ."
       />
 
       <div className="grid-4">
         <MetricCard
           icon={Building2}
           label="عدد الكليّات"
-          value={facs.isPending ? '…' : faculties.length > 0 ? faculties.length.toLocaleString('ar-LY') : '—'}
-          change={cityCount > 0 ? `موزَّعة على ${countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}` : undefined}
+          value={facCount}
+          change={citiesChange}
           color="brand"
         />
         <MetricCard
@@ -1517,7 +1637,7 @@ export function UniversityInfoPage() {
           icon={Users2}
           label="فروع خارجيّة"
           value={facs.isPending ? '…' : facs.isError ? '—' : outsideCampus.length.toLocaleString('ar-LY')}
-          change={`في ${countAr(Math.max(0, cityCount - 1), ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`}
+          change={outsideCityCount > 0 ? `في ${countAr(outsideCityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}` : undefined}
           color="purple"
         />
         <MetricCard

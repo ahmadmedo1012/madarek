@@ -697,8 +697,13 @@ export default function StudentDashboardPage() {
                   : 'لم تسجّل في أي مقرّر بعد'}
               </div>
               <div className="dash-progress-note">
+                {/* r183-B3 (A6 P3): 0% + enrolled used to read «تحتاج إلى
+                    دفعة إضافيّة» — a verdict on progress that cannot exist
+                    yet. At 0% the honest note is the directive one: start
+                    the first lecture. */}
                 {courseProgressPct >= 75 ? 'متقدّم كثيراً عن المطلوب' :
                   courseProgressPct >= 50 ? 'على الطريق الصحيح' :
+                  courseProgressPct === 0 && d.kpi.courseCount > 0 ? 'ابدأ أول محاضرة لتتقدّم' :
                   d.kpi.courseCount > 0 ? 'تحتاج إلى دفعة إضافيّة' : '—'}
               </div>
             </div>
