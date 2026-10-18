@@ -3,63 +3,116 @@
  *
  * Asserts WCAG AA on body text and AAA on numeric KPI values across
  * the role-accent table that ships in this feature, in both Light
- * and Dark themes. Documented hex pairs in
- * `contracts/theme-tokens.md` §2 are the source of truth — drift in
- * the actual `tokens.css` will fail this test (the values are kept
- * in sync by the contract).
+ * and Dark themes.
+ *
+ * RA1 (r184, from the r183-A3 audit §F10): the tables are now READ
+ * FROM `tokens.css` — the live token source — instead of hand-copied
+ * hexes. The old copies had already rotted (dark surface #191918 and
+ * ink #F2EAD8 while the live dark theme serves --bg #070B16 and
+ * --text #F2EFE6): editing tokens.css directly could pass silently.
+ * Now a retuned theme table, a swapped role accent, or a renamed role
+ * fails HERE first, before any browser check.
  *
  * The contract states role-accents tint chrome only and never carry
  * body text. The check below is therefore the AA-large gate (3.0)
- * for the accent vs the chrome surface, plus the body-text gate
- * (4.5) for the surface's foreground vs background — the same pair
- * `gateCollegeAccent` enforces.
+ * for the accent vs the chrome surface (the theme's page ground
+ * --bg), plus the body-text gate (4.5) for --text vs --bg — the same
+ * pair `gateCollegeAccent` enforces.
  */
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { __test__ } from '../../src/lib/theme';
 
 const { parseHex, contrastRatio } = __test__;
 
-interface Theme {
-  surface: string; // chrome bg
-  primaryFg: string; // primary ink
-  numericFg: string; // numeric KPI ink (often the same)
+const STYLES_DIR = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  'src',
+  'styles',
+);
+const readStyle = (f: string) => readFileSync(path.join(STYLES_DIR, f), 'utf-8');
+
+// ── RA1: parse the LIVE token source ──────────────────────────
+const tokensCss = readStyle('tokens.css');
+
+/** Extract a top-level `[data-theme="X"] { … }` block by brace match. */
+function themeBlock(theme: 'light' | 'dark'): string {
+  const opener = `[data-theme="${theme}"] {`;
+  const start = tokensCss.indexOf(opener);
+  expect(start, `tokens.css: [data-theme="${theme}"] block not found`).toBeGreaterThanOrEqual(0);
+  let depth = 0;
+  for (let i = start + opener.length - 1; i < tokensCss.length; i++) {
+    if (tokensCss[i] === '{') depth++;
+    else if (tokensCss[i] === '}') {
+      depth--;
+      if (depth === 0) return tokensCss.slice(start, i + 1);
+    }
+  }
+  throw new Error(`tokens.css: unterminated [data-theme="${theme}"] block`);
 }
 
-// Sourced from contracts/theme-tokens.md §1 + tokens.css inspection.
+/** Read `--name: <value>` from a block (comments stripped). */
+function rawVar(block: string, name: string): string {
+  const cleaned = block.replace(/\/\*[\s\S]*?\*\//g, '');
+  const value = cleaned.match(new RegExp(`--${name.replace(/-/g, '\\-')}:\\s*([^;]+);`))?.[1];
+  expect(value, `tokens.css: --${name} missing from a theme block`).toBeTruthy();
+  return value!.trim();
+}
+
+/** Resolve one `var(--x)` hop inside the same block → a hex literal. */
+function resolveHex(block: string, name: string): string {
+  const value = rawVar(block, name);
+  const ref = value.match(/^var\(--([\w-]+)\)$/)?.[1];
+  const literal = ref ? rawVar(block, ref) : value;
+  expect(literal, `tokens.css: --${name} (→ ${value}) does not resolve to a hex literal`).toMatch(/^#[0-9a-fA-F]{6}$/);
+  return literal.toLowerCase();
+}
+
+interface Theme {
+  surface: string; // chrome bg (the theme's --bg page ground)
+  primaryFg: string; // primary ink (--text)
+  numericFg: string; // numeric KPI ink (same ink today; kept separate so a future split stays honest)
+}
+
+// Sourced LIVE from tokens.css (RA1) — no hand-copied hexes.
 const THEMES: Record<'light' | 'dark', Theme> = {
   light: {
-    surface: '#FBFAF9',
-    primaryFg: '#191918', // --neutral-900
-    numericFg: '#191918',
+    surface: resolveHex(themeBlock('light'), 'bg'),
+    primaryFg: resolveHex(themeBlock('light'), 'text'),
+    numericFg: resolveHex(themeBlock('light'), 'text'),
   },
   dark: {
-    surface: '#191918',
-    primaryFg: '#F2EAD8', // --neutral-900 in dark token block
-    numericFg: '#F2EAD8',
+    surface: resolveHex(themeBlock('dark'), 'bg'),
+    primaryFg: resolveHex(themeBlock('dark'), 'text'),
+    numericFg: resolveHex(themeBlock('dark'), 'text'),
   },
 };
 
-// contracts/theme-tokens.md §2 — role accents per theme.
-const ROLE_ACCENTS = {
-  light: {
-    student:           '#3B5BDB',
-    faculty:           '#1F8A7C',
-    'department-head': '#BF6A2A',
-    dean:              '#7B3FB1',
-    admin:             '#264653',
-    quality:           '#A33A4F',
-    owner:             '#6B7280',
-  },
-  dark: {
-    student:           '#7C9BFF',
-    faculty:           '#3CC2B0',
-    'department-head': '#E89456',
-    dean:              '#B58EE6',
-    admin:             '#5C8A9C',
-    quality:           '#E47186',
-    owner:             '#A0A6B0',
-  },
-} as const;
+// Role-accent 7×2 table, parsed from the :root[data-theme=…]
+// body[data-role=…] { --role-accent: #hex; } lines (tokens.css §1).
+function parseRoleAccents(): Record<'light' | 'dark', Record<string, string>> {
+  const out: Record<'light' | 'dark', Record<string, string>> = { light: {}, dark: {} };
+  const re = /:root\[data-theme="(light|dark)"\]\s*body\[data-role="([\w-]+)"\]\s*\{\s*--role-accent:\s*(#[0-9a-fA-F]{6});/g;
+  for (const m of tokensCss.matchAll(re)) {
+    const theme = m[1] as 'light' | 'dark';
+    const role = m[2]!;
+    const hex = m[3]!;
+    out[theme][role] = hex.toLowerCase();
+  }
+  for (const themeName of ['light', 'dark'] as const) {
+    const roles = Object.keys(out[themeName]);
+    expect(
+      roles.length,
+      `tokens.css: the ${themeName} role-accent table lost rows (found ${roles.length}: ${roles.join(', ')})`,
+    ).toBeGreaterThanOrEqual(7);
+  }
+  return out;
+}
+const ROLE_ACCENTS = parseRoleAccents();
 
 const ratio = (a: string, b: string) => {
   const ra = parseHex(a)!;
@@ -79,18 +132,8 @@ const ratio = (a: string, b: string) => {
  *   3. The owner toggle thumb routes through the theme-aware
  *      --text-on-dark slot instead of a hardcoded #fff.
  * ═══════════════════════════════════════════════════════════════════ */
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
-
-const STYLES_DIR = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  '..',
-  '..',
-  'src',
-  'styles',
-);
-const readStyle = (f: string) => readFileSync(path.join(STYLES_DIR, f), 'utf-8');
+/* (RA1/r184: readStyle + STYLES_DIR moved to the shared header above —
+ * one import site serves both the T045 contrast tables and WS-D2.) */
 // tokens.css is excluded: it is the one file allowed to define raw values
 // (it IS the token source, including --r-full: 9999px).
 const STYLESHEET_FILES = [

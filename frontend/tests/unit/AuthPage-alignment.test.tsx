@@ -209,6 +209,19 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     // quiet chip (see the collapsed-pin test below).
     fireEvent.click(screen.getByRole('button', { name: 'عرض الحسابات التجريبية' }));
 
+    // r184 (A3 §F7): the role chips ride the CANONICAL .btn/.btn.sm
+    // recipe (40/32/48 — DESIGN.md §5) — height, radius, press state,
+    // disabled opacity, and focus ring all flow from components.css.
+    // The old bespoke 36px was a third button height that would drift
+    // at the first .btn retune.
+    const roleButtons = ['طالب', 'أستاذ', 'الإدارة', 'ضمان الجودة', 'المالك']
+      .map((name) => screen.getAllByRole('button', { name }).find((b) => b.classList.contains('auth-demo-btn')))
+      .filter((b): b is HTMLElement => Boolean(b));
+    expect(roleButtons).toHaveLength(5);
+    for (const b of roleButtons) {
+      expect(b).toHaveClass('btn', 'sm', 'auth-demo-btn');
+    }
+
     const email = screen.getByLabelText('البريد الإلكتروني أو رقم القيد') as HTMLInputElement;
     const password = screen.getByLabelText('كلمة المرور') as HTMLInputElement;
 

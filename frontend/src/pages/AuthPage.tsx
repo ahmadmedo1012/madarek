@@ -490,23 +490,23 @@ export default function AuthPage() {
                   اضغط دوراً لتعبئة الحقول ببيانات حساب تجريبي، ثم اضغط زر تسجيل الدخول.
                 </p>
                 <div className="auth-demo-actions">
-                  <button type="button" className="auth-demo-btn" onClick={() => fillDemo('STUDENT')} disabled={login.isPending}>
+                  <button type="button" className="btn sm auth-demo-btn" onClick={() => fillDemo('STUDENT')} disabled={login.isPending}>
                     <Icon icon={GraduationCap} size={14} />
                     <span>طالب</span>
                   </button>
-                  <button type="button" className="auth-demo-btn" onClick={() => fillDemo('TEACHER')} disabled={login.isPending}>
+                  <button type="button" className="btn sm auth-demo-btn" onClick={() => fillDemo('TEACHER')} disabled={login.isPending}>
                     <Icon icon={School} size={14} />
                     <span>أستاذ</span>
                   </button>
-                  <button type="button" className="auth-demo-btn" onClick={() => fillDemo('ADMIN')} disabled={login.isPending}>
+                  <button type="button" className="btn sm auth-demo-btn" onClick={() => fillDemo('ADMIN')} disabled={login.isPending}>
                     <Icon icon={Building2} size={14} />
                     <span>الإدارة</span>
                   </button>
-                  <button type="button" className="auth-demo-btn" onClick={() => fillDemo('QUALITY')} disabled={login.isPending}>
+                  <button type="button" className="btn sm auth-demo-btn" onClick={() => fillDemo('QUALITY')} disabled={login.isPending}>
                     <Icon icon={ShieldCheck} size={14} />
                     <span>ضمان الجودة</span>
                   </button>
-                  <button type="button" className="auth-demo-btn" onClick={() => fillDemo('OWNER')} disabled={login.isPending}>
+                  <button type="button" className="btn sm auth-demo-btn" onClick={() => fillDemo('OWNER')} disabled={login.isPending}>
                     <Icon icon={Crown} size={14} />
                     <span>المالك</span>
                   </button>

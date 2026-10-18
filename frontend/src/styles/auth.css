@@ -186,7 +186,7 @@
     inset-inline: 30%;
     block-size: 2px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    border-radius: 0 0 2px 2px; /* matches the 2px bar — no radius token at this scale */
+    border-radius: 0 0 2px 2px; /* radius-gate: allow — 2px hairline bar (matches the 2px bar), block-axis corners, below the --r-xs rung */
     pointer-events: none;
   }
 
@@ -206,7 +206,7 @@
     background: var(--neutral-900); color: var(--neutral-50);
     font-family: var(--font-display);
     font-weight: var(--fw-black);
-    font-size: 16px; /* glyph scale — matches the 16/18/20 icon ladder */
+    font-size: 16px; /* type-gate: allow — glyph scale, matches the 16/18/20 icon ladder (font-display wordmark tile) */
   }
   [data-theme="dark"] .auth-brand-mini-mark { background: var(--accent); color: var(--accent-fg); }
   .auth-brand-mini-text {
@@ -399,7 +399,7 @@
   input.auth-input,
   select.auth-input,
   textarea.auth-input {
-    font-size: 16px;
+    font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
   }
   input.auth-input,
   select.auth-input { block-size: 48px; }
@@ -652,25 +652,23 @@
   .auth-demo-actions {
     display: flex; flex-wrap: wrap; gap: var(--sp-2);
   }
+  /* r184 (A3 §F7 — one height recipe): the demo role chips consume the
+     canonical .btn/.btn.sm recipe (40/32/48 — DESIGN.md §5) via the
+     `btn sm auth-demo-btn` class chain in AuthPage.tsx. Height, radius,
+     padding, label type size, press scale, focus ring, and disabled
+     opacity now flow from components.css; ONLY the intentional quiet-
+     surface deltas live here. The old bespoke 36px height was a third
+     button height between the canonical 32/40 — a different recipe for
+     the same semantic (small secondary action) that would drift at the
+     first .btn retune. */
   .auth-demo-btn {
-    display: inline-flex; align-items: center; gap: var(--sp-2);
-    min-block-size: 36px;
-    padding-inline: var(--sp-3);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-sm);
-    background: var(--surface);
     color: var(--text-secondary);
-    font-size: var(--type-label-size);
-    font-weight: var(--fw-semibold);
-    cursor: pointer;
-    transition: var(--t-clean);
   }
   .auth-demo-btn:hover {
     border-color: var(--border-strong);
     background: var(--surface-2);
     color: var(--text);
   }
-  .auth-demo-btn:disabled { opacity: 0.55; cursor: not-allowed; }
   @media (max-width: 640px) {
     .auth-demo-hint-close { inline-size: 44px; block-size: 44px; }
     .auth-demo-btn { min-block-size: 44px; } /* touch floor */

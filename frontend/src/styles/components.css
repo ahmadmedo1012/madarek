@@ -749,7 +749,7 @@
     block-size: 2px;
     background: var(--neutral-900);
     /* asymmetric tab-corner shape — not a scale radius */
-    border-radius: 2px 2px 0 0;
+    border-radius: 2px 2px 0 0; /* radius-gate: allow — tab underline bar, block-axis, micro */
     transform: scaleX(0);
     transform-origin: 50% 50%;
     transition: transform var(--t-base) var(--ease-out);
@@ -1242,7 +1242,7 @@
     block-size: 3px;
     background: linear-gradient(90deg, var(--accent), transparent);
     /* 3px gradient bar — micro-radius below the --r-xs floor */
-    border-radius: 2px;
+    border-radius: 2px; /* radius-gate: allow — 3px gradient bar micro-radius below the --r-xs floor */
   }
   [dir="rtl"] .section-title::after {
     inset-inline-start: auto;
@@ -1322,7 +1322,7 @@
     inline-size: 88px; block-size: 88px;
     /* no 24px step on the radius scale — 2xl (20) and 3xl (28) are
        equidistant, so the raw value stays to preserve the orb silhouette */
-    border-radius: 24px;
+    border-radius: 24px; /* radius-gate: allow — documented intentional 24px (A3-verified sheet exception) */
     background: var(--c-copper-bg);
     color: var(--c-copper-deep);
     display: inline-flex; align-items: center; justify-content: center;
@@ -1956,7 +1956,7 @@
     inset-inline: 30%;
     block-size: 3px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    border-radius: 0 0 3px 3px;
+    border-radius: 0 0 3px 3px; /* radius-gate: allow — modal hairline bar, block-axis, micro */
     z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
     pointer-events: none;
   }
@@ -2175,7 +2175,7 @@
     color: var(--text-muted);
     cursor: pointer;
     padding: 0 var(--sp-1);
-    font-size: 18px;
+    font-size: 18px; /* type-gate: allow — text-glyph close button (× rides the glyph ladder, not the text ladder) */
     line-height: 1;
     /* r149 (R3-A3 §4): transform ينضم — سجل الضغط 0.97 (v13). */
     transition:
@@ -2364,7 +2364,7 @@
     color: var(--text-on-dark); /* r148 (AUDIT-2 L6): توكن بدل حرفي */
     cursor: pointer;
     padding: var(--sp-1);
-    font-size: 22px;
+    font-size: 22px; /* type-gate: allow — text-glyph close button (×) */
     line-height: 1;
     /* r148 (AUDIT-3 M4): كان ~30×30 — عارض الصور على الهاتف. */
     min-block-size: 44px;

@@ -277,7 +277,7 @@
     min-inline-size: 40px;
     padding-inline: var(--sp-2);
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--fs-sm); /* r184: literal → token (13px = --fs-sm), zero visual change */
     font-variant-numeric: tabular-nums;
   }
   .vpc-menu {
@@ -313,7 +313,7 @@
     background: transparent;
     color: var(--vpc-ink);
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--fs-sm); /* r184: literal → token (13px = --fs-sm), zero visual change */
     font-variant-numeric: tabular-nums;
     cursor: pointer;
     /* r149 (R3-A3 §3): الـhover كان يقفز بلا انتقال — آخر صفوف القوائم

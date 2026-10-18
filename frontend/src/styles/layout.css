@@ -86,7 +86,7 @@
     flex-shrink: 0;
     font-family: var(--font-display);
     font-weight: var(--fw-black);
-    font-size: 14px;
+    font-size: 14px; /* type-gate: allow — sidebar wordmark glyph (font-display brand tile) */
   }
   [data-theme="dark"] .sidebar-brand-mark { background: var(--accent); color: var(--accent-fg); }
   .sidebar-brand-text { display: flex; flex-direction: column; gap: 2px; min-inline-size: 0; flex: 1; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة */
@@ -173,7 +173,13 @@
     /* 012 FR-004 — role-aware chrome tint (sidebar active state).
        Role accents are pre-vetted ≥3:1 for non-text chrome. */
     background: var(--role-accent, var(--accent));
-    border-radius: 0 2px 2px 0;
+    /* r184 (A3 §F8): physical `border-radius: 0 2px 2px 0` rounded the
+       LEFT corners in RTL — the sidebar edge side, facing away from
+       content (2px on a 3px bar: marginal, but wrong side). Logical
+       corners round the inline-END pair — the content-facing side in
+       BOTH directions; LTR rendering is pixel-identical to before. */
+    border-start-end-radius: 2px; /* radius-gate: allow — 3px sidebar indicator micro-radius (r184 F8 logical fix) */
+    border-end-end-radius: 2px; /* radius-gate: allow — 3px sidebar indicator micro-radius (r184 F8 logical fix) */
     animation: madarek-nav-pop var(--motion-duration-medium) var(--motion-ease-decelerate);
   }
   @keyframes madarek-nav-pop {
@@ -764,7 +770,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    font-size: 18px;
+    font-size: 18px; /* type-gate: allow — icon-tile glyph (36×36 tile, glyph ladder) */
     transition: transform var(--motion-duration-short) var(--ease);
   }
   .search-row-body {

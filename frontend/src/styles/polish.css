@@ -408,7 +408,11 @@
        different, live component and stays.) */
     .sidebar.collapsed .nav-item.on::before {
       inset-inline-start: 0;
-      border-radius: 0 2px 2px 0;
+      /* r184 (A3 §F8 twin): physical `0 2px 2px 0` rounded the wrong
+         side under RTL — logical corners round the inline-END pair
+         (content-facing in both directions); LTR is pixel-identical. */
+      border-start-end-radius: 2px; /* radius-gate: allow — sidebar collapsed indicator micro (r184 F8 twin, logical) */
+      border-end-end-radius: 2px; /* radius-gate: allow — sidebar collapsed indicator micro (r184 F8 twin, logical) */
     }
     .sidebar.collapsed .sidebar-user {
       padding: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
@@ -695,7 +699,11 @@
     inset-block-end: 4px;
     width: 3px;
     background: var(--accent);
-    border-radius: 0 2px 2px 0;
+    /* r184 (A3 §F8 twin): logical corners — the inline-END pair faces
+     * the content in both directions (physical `0 2px 2px 0` rounded
+     * the sidebar-edge side under RTL); LTR is pixel-identical. */
+    border-start-end-radius: 2px; /* radius-gate: allow — section-title 3px stripe micro (r184 F8 twin, logical) */
+    border-end-end-radius: 2px; /* radius-gate: allow — section-title 3px stripe micro (r184 F8 twin, logical) */
     opacity: 0.7;
   }
 

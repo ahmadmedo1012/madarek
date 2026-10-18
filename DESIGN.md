@@ -8,7 +8,7 @@ This document states the canon as it **ships in code**. Every value below was ex
 
 ## 0. Governance — how this system is enforced · الحوكمة
 
-A design reference is gates, not a gallery. Madarek's canon is machine-enforced at five points:
+A design reference is gates, not a gallery. Madarek's canon is machine-enforced at six points:
 
 | Gate | Command | What it asserts |
 |---|---|---|
@@ -16,8 +16,9 @@ A design reference is gates, not a gallery. Madarek's canon is machine-enforced 
 | **Motion tokens** | `npm run check:motion-tokens` | No raw motion values outside the canonical token files. |
 | **Icon discipline** | `npm run check:icons` | Lucide-only — no other icon source. |
 | **Color tokens** | `npm run check:colors` (`--strict` in CI) | No raw hex/rgb()/hsl() outside the sanctioned zones (tokens.css · fonts.css · the export pair · documented `color-gate: allow` lines). r150a sorted the last 269 literals into tokens / `color-mix()` derivations / documented allows — the census is zero and the gate is strict. |
-| **Token snapshots** | `frontend` vitest suite | Role-accent hexes pinned per theme (7 roles × 2), drift + route-title + a11y nets. |
-| **CI** | `.github/workflows/ci.yml` | 9 jobs: lint · typecheck · build · frontend tests · backend tests · db-integration · e2e · design gates (icons + motion tokens + CSP pins + parity export + **color gate, strict**) · surface drift. |
+| **Type & radius tokens** | `bash scripts/check-raw-css.sh` (`--strict` in CI, r184) | No raw `font-size`/`border-radius` px literals in the app sheets — typography flows through `--fs-*`, radii through `--r-*`. Sanctioned wholesale: tokens.css · fonts.css · the export pair · landing.css (Orbit Ink world, §1a) · colleges.css (gallery display world). Everything else is either a token or a documented `type-gate`/`radius-gate: allow` line (iOS-zoom 16px input floors, glyph ladders, sub-6px micro radii, the 24px sheet exception). The spacing axis ships as a visible CENSUS (48 off-scale / 22 on-scale literals at r184) — the same r149→r150a path the color gate took before triage. |
+| **Token snapshots** | `frontend` vitest suite | Role-accent hexes read LIVE from tokens.css (r184 RA1: a tampered role table or retuned theme fails here first — the old hand-copied hexes had silently rotted), drift + route-title + a11y nets. |
+| **CI** | `.github/workflows/ci.yml` | 9 jobs: lint · typecheck · build · frontend tests · backend tests · db-integration · e2e · design gates (icons + motion tokens + CSP pins + parity export + **color gate, strict** + **raw-css type/radius gate, strict**) · surface drift. |
 
 **What the export pair distills vs what stays outside it:**
 

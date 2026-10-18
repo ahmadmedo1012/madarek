@@ -244,6 +244,12 @@ jobs:
       # فرز الـ 269 مخالفة إلى tokens/color-mix + تعليقات سماح موثقة،
       # فصار الجرد صفرًا — البوابة الآن صارمة (--strict) كما خططت r149.
       - run: bash scripts/check-colors.sh --strict
+      # r184 (Phase I — عقد A3 T1/R1): بوابات الخط/نصف القطر الخام —
+      # كل font-size/border-radius خارج نظام التوكنات يفشل CI إلا في
+      # المناطق المعفاة (tokens/fonts/parity/landing/colleges) أو بسطر
+      # سماح موثق. الفراغات تبقى جردًا مرئيًا (نفس مسار r149→r150a
+      # للبوابات قبل التفرغ للتثبيت).
+      - run: bash scripts/check-raw-css.sh --strict
 
   surface-drift:
     name: Surface drift

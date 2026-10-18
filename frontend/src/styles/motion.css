@@ -174,7 +174,7 @@
   }
 
   /* Variant shapes — match the rough silhouette of final content. */
-  .skeleton[data-variant="text"]     { height: 0.875em; border-radius: 4px; }
+  .skeleton[data-variant="text"]     { height: 0.875em; border-radius: 4px; /* radius-gate: allow — text-skeleton micro-radius below the --r-xs rung */ }
   .skeleton[data-variant="kpi"]      { height: 96px;  border-radius: var(--r-lg, 12px); }
   .skeleton[data-variant="card"]     { height: 160px; border-radius: var(--r-lg, 12px); }
   .skeleton[data-variant="chart"]    { height: 240px; border-radius: var(--r-lg, 12px); }

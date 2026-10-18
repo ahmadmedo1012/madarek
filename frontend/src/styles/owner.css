@@ -25,7 +25,7 @@
      as structure in BOTH themes without shouting. */
   background: color-mix(in srgb, var(--accent) 28%, var(--border-strong));
   /* hairline spine — micro-radius below the --r-xs floor, kept raw */
-  border-radius: 1px;
+  border-radius: 1px; /* radius-gate: allow — 2px timeline spine, sub-pixel rounding on a hairline */
 }
 
 .owner-timeline-item {
@@ -747,7 +747,7 @@
      and ~1.9:1 on dark --danger #F09BA3. A fixed near-black ink passes
      BOTH: #191918 on #DD6E78 = 5.51:1, on #F09BA3 = 8.31:1. */
   color: var(--warm-ink);
-  font-size: 11px;
+  font-size: var(--fs-xxs); /* r184: literal → token (11px = --fs-xxs), zero visual change */
   font-weight: var(--fw-bold);
   line-height: 1;
   /* 22-b (4-A7 P2-8 + P3-7): the count rides next to the page title

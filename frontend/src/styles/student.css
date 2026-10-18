@@ -1031,7 +1031,7 @@
     padding: 10px 14px;
     border-radius: var(--r-xl);
     /* bot-bubble tail corner — the polish chat language */
-    border-start-start-radius: 4px;
+    border-start-start-radius: 4px; /* radius-gate: allow — chat-bubble tail corner, asymmetric shape detail */
     background: var(--surface-2);
     border: 1px solid var(--border-faint);
   }
@@ -1058,7 +1058,7 @@
     max-inline-size: min(640px, 78%);
     padding: 10px 14px;
     border-radius: var(--r-xl);
-    border-start-start-radius: 4px;
+    border-start-start-radius: 4px; /* radius-gate: allow — chat-bubble tail corner, asymmetric shape detail */
     background: var(--danger-soft);
     border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
     color: var(--danger-ink);
@@ -2233,7 +2233,7 @@
     inset-block-start: 38px;
     inset-block-end: -16px;
     inline-size: 2px;
-    border-radius: 1px;
+    border-radius: 1px; /* radius-gate: allow — hairline bar micro-radius */
     /* 22-c (A4 P3-6): plain --surface-3 measured ≈1.1:1 against the
        card ground — the spine was invisible. Border-strong mixed toward
        the old value keeps it quiet but visible in both themes. */
@@ -2581,7 +2581,7 @@
     background: var(--surface-2);
     /* 21-c (A5 P2-X / A10 P1): was var(--type-label-size) 13px — iOS
        Safari zooms on any <16px control focus. 16px floor. */
-    font-size: 16px;
+    font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
     line-height: var(--lh-base);
     font-family: inherit;
     color: var(--text);
@@ -3297,7 +3297,7 @@
 
   .chat-msg.bot .chat-bubble {
     /* bubble tail corner — asymmetric shape detail, off-scale */
-    border-start-start-radius: 4px;
+    border-start-start-radius: 4px; /* radius-gate: allow — bot bubble tail corner (asymmetric shape detail) */
   }
   .chat-msg.user .chat-bubble {
     background: linear-gradient(135deg,
@@ -3306,7 +3306,7 @@
     color: var(--accent-fg);
     border-color: transparent;
     /* bubble tail corner — asymmetric shape detail, off-scale */
-    border-end-end-radius: 4px;
+    border-end-end-radius: 4px; /* radius-gate: allow — user bubble tail corner (asymmetric shape detail) */
   }
 
   .chat-bubble p { margin: 0; }
@@ -3326,7 +3326,7 @@
     border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text-muted);
-    font-size: 12px;
+    font-size: var(--fs-xs); /* r184: literal → token (12px = --fs-xs), zero visual change */
     font-weight: var(--fw-medium);
     cursor: pointer;
     transition: var(--t-clean);
@@ -3356,7 +3356,7 @@
     /* 21-c (A5 P2-X / A10 P1): was var(--fs-sm) 13px — iOS Safari
        zooms the viewport on any <16px input focus. 16px floor
        (components.css's shared .input takes the same fix from 21-b). */
-    font-size: 16px;
+    font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
     transition: var(--t-clean);
   }
   .chat-input:focus {
@@ -3503,7 +3503,7 @@
     align-items: center;
     gap: var(--sp-1);
     margin-block-start: 2px;
-    font-size: 11px;
+    font-size: var(--fs-xxs); /* r184: literal → token (11px = --fs-xxs), zero visual change */
     color: var(--text-subtle);
     font-variant-numeric: tabular-nums;
   }
@@ -3521,7 +3521,7 @@
   .matrix-cell {
     padding: 8px 10px;
     border-radius: var(--r-xs);
-    font-size: 12px;
+    font-size: var(--fs-xs); /* r184: literal → token (12px = --fs-xs), zero visual change */
     color: var(--text);
     background: var(--surface-2);
     border: 1px solid var(--rule);
@@ -3565,7 +3565,7 @@
     color: var(--text);
   }
   .post-time {
-    font-size: 11px;
+    font-size: var(--fs-xxs); /* r184: literal → token (11px = --fs-xxs), zero visual change */
     color: var(--text-subtle);
   }
   .post-body {
@@ -3589,7 +3589,7 @@
     border: 0;
     padding: var(--sp-1) 8px;
     border-radius: var(--r-sm);
-    font-size: 12px;
+    font-size: var(--fs-xs); /* r184: literal → token (12px = --fs-xs), zero visual change */
     color: var(--text-muted);
     cursor: pointer;
     transition: var(--t-clean);
@@ -3697,7 +3697,7 @@
     word-break: normal;
   }
   .welcome-card .page-title {
-    font-size: clamp(20px, 3.4vw, 28px);
+    font-size: clamp(20px, 3.4vw, 28px); /* type-gate: allow — welcome-card responsive display clamp, no token equivalent */
     letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
     line-height: 1.22;
     /* hero gradient text (v8) — the greeting is the page's hero */
@@ -3745,7 +3745,7 @@
   @media (max-width: 640px) {
     .student-dashboard .page-header.welcome-card { padding: var(--sp-5) var(--sp-4); }
     .welcome-card::before { width: 110px; opacity: 0.22; }
-    .welcome-card .page-title { font-size: clamp(18px, 5.5vw, 22px); }
+    .welcome-card .page-title { font-size: clamp(18px, 5.5vw, 22px); /* type-gate: allow — welcome-card mobile display clamp, no token equivalent */ }
   }
 
 }

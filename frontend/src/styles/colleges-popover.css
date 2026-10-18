@@ -147,7 +147,7 @@
   outline: none;
   color: var(--text);
   /* 21-c (A10 P1 cross-ref): 15px → 16px iOS-zoom floor. */
-  font-size: 16px;
+  font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
   font-family: inherit;
   min-block-size: 28px;
 }
