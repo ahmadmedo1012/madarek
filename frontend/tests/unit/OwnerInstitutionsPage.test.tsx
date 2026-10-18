@@ -12,7 +12,7 @@
  * load-bearing (status toggle → PATCH payload).
  */
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup, within } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, within, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { OwnerInstitutionsPage } from '../../src/pages/owner/OwnerInstitutionsPage';
 
@@ -68,9 +68,25 @@ const mocks = vi.hoisted(() => ({
     error: null,
     refetch: vi.fn(),
   },
-  create: { mutate: vi.fn(), isPending: false },
+  /* r183-B5: create + provision moved to mutateAsync (the keep-edits
+   * contract — the draft survives a rejected create/provision), so the
+   * mocks carry the async shape + the isError/error/reset fields the
+   * page reads for the inline AlertRow. */
+  create: {
+    mutateAsync: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null as unknown,
+    reset: vi.fn(),
+  },
   update: { mutate: vi.fn(), isPending: false },
-  provision: { mutate: vi.fn(), isPending: false },
+  provision: {
+    mutateAsync: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null as unknown,
+    reset: vi.fn(),
+  },
   revoke: { mutate: vi.fn(), isPending: false },
   restore: { mutate: vi.fn(), isPending: false },
 }));
@@ -99,6 +115,12 @@ afterEach(() => {
   mocks.listing.isPending = false;
   mocks.listing.isError = false;
   mocks.listing.error = null;
+  mocks.create.isPending = false;
+  mocks.create.isError = false;
+  mocks.create.error = null;
+  mocks.provision.isPending = false;
+  mocks.provision.isError = false;
+  mocks.provision.error = null;
 });
 
 function renderPage() {
@@ -187,7 +209,7 @@ describe('OwnerInstitutionsPage — provision admin modal (r178)', () => {
     expect(modeSelect.value).toBe('new');
     expect(within(dialog).getByLabelText(/البريد الإلكتروني/)).toBeInTheDocument();
     // mode=new: password required.
-    expect(within(dialog).getByLabelText(/كلمة المرور/)).toBeInTheDocument();
+    expect(within(dialog).getByLabelText('كلمة المرور')).toBeInTheDocument();
   });
 });
 
@@ -254,5 +276,140 @@ describe('OwnerInstitutionsPage — membership revoke (r178)', () => {
       { institutionId: 'inst-alandalus-demo', membershipId: 'mem-admin-alandalus' },
       expect.objectContaining({ onSuccess: expect.any(Function), onError: expect.any(Function) }),
     );
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   r183-B5 (A9 wave-A P2) — keep edits on failure: create-institution
+   and provision-admin clear their drafts ONLY on success; a failed
+   mutation (409 slug conflict / 404 unknown email) keeps every typed
+   field, the modal stays open, and the failure is named inline (the
+   settings/detail-page modal contract). Plus the A9 P3 quick wins:
+   masked password + opt-in reveal, h3.modal-title.
+   ════════════════════════════════════════════════════════════════ */
+describe('OwnerInstitutionsPage — keep edits on create failure (r183-B5)', () => {
+  it('a rejected create keeps every typed field (the draft clears only on success)', async () => {
+    mocks.listing.data = [];
+    renderPage();
+
+    fireEvent.change(screen.getByLabelText(/اسم المؤسسة/), { target: { value: 'أكاديمية طرابلس' } });
+    fireEvent.change(screen.getByLabelText(/المعرّف/), { target: { value: 'zawia-showcase' } });
+
+    mocks.create.mutateAsync.mockRejectedValueOnce(new Error('409 CONFLICT'));
+    fireEvent.click(screen.getByRole('button', { name: /إنشاء المؤسسة/ }));
+
+    await waitFor(() => expect(mocks.create.mutateAsync).toHaveBeenCalledTimes(1));
+    // THE DRAFT SURVIVES — the 409 slug conflict keeps both fields the
+    // owner typed (the old code cleared them at submit).
+    expect((screen.getByLabelText(/اسم المؤسسة/) as HTMLInputElement).value).toBe('أكاديمية طرابلس');
+    expect((screen.getByLabelText(/المعرّف/) as HTMLInputElement).value).toBe('zawia-showcase');
+  });
+
+  it('a successful create clears the draft', async () => {
+    mocks.listing.data = [];
+    renderPage();
+
+    fireEvent.change(screen.getByLabelText(/اسم المؤسسة/), { target: { value: 'أكاديمية طرابلس' } });
+    mocks.create.mutateAsync.mockResolvedValueOnce({ institution: { name: 'أكاديمية طرابلس' } });
+    fireEvent.click(screen.getByRole('button', { name: /إنشاء المؤسسة/ }));
+
+    await waitFor(() =>
+      expect((screen.getByLabelText(/اسم المؤسسة/) as HTMLInputElement).value).toBe(''),
+    );
+  });
+
+  it('the create failure is named inline (AlertRow — not a vanishing toast)', () => {
+    mocks.listing.data = [];
+    mocks.create.isError = true;
+    mocks.create.error = new Error('409 CONFLICT');
+    renderPage();
+
+    expect(screen.getByText('تعذّر إنشاء المؤسسة')).toBeInTheDocument();
+    expect(screen.getByText('حاول مرة أخرى بعد لحظات.')).toBeInTheDocument();
+  });
+});
+
+describe('OwnerInstitutionsPage — keep edits on provision failure (r183-B5)', () => {
+  it('a rejected provision keeps the modal OPEN with the draft intact', async () => {
+    mocks.listing.data = [ZAWIA];
+    renderPage();
+
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+    const dialog = screen.getByRole('dialog');
+    fireEvent.change(within(dialog).getByLabelText(/البريد الإلكتروني/), { target: { value: 'new@demo.madarek.ly' } });
+    fireEvent.change(within(dialog).getByLabelText('كلمة المرور'), { target: { value: 'Madarek-2026-Demo' } });
+
+    mocks.provision.mutateAsync.mockRejectedValueOnce(new Error('404 UNKNOWN_EMAIL'));
+    fireEvent.click(within(dialog).getByRole('button', { name: 'تعيين المدير' }));
+
+    await waitFor(() => expect(mocks.provision.mutateAsync).toHaveBeenCalledTimes(1));
+    // The modal stays open — the old code closed it right after mutate().
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect((within(dialog).getByLabelText(/البريد الإلكتروني/) as HTMLInputElement).value).toBe('new@demo.madarek.ly');
+    expect((within(dialog).getByLabelText('كلمة المرور') as HTMLInputElement).value).toBe('Madarek-2026-Demo');
+  });
+
+  it('a successful provision closes the modal', async () => {
+    mocks.listing.data = [ZAWIA];
+    renderPage();
+
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+    const dialog = screen.getByRole('dialog');
+    fireEvent.change(within(dialog).getByLabelText(/البريد الإلكتروني/), { target: { value: 'new@demo.madarek.ly' } });
+    fireEvent.change(within(dialog).getByLabelText('كلمة المرور'), { target: { value: 'Madarek-2026-Demo' } });
+
+    mocks.provision.mutateAsync.mockResolvedValueOnce({
+      user: { firstName: 'مدير', lastName: 'جديد' },
+    });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'تعيين المدير' }));
+
+    await waitFor(() => expect(mocks.provision.mutateAsync).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+  });
+
+  it('the provision failure is named inline inside the modal', () => {
+    mocks.listing.data = [ZAWIA];
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+
+    // The mock flips the mutation's error state the page reads at render.
+    mocks.provision.isError = true;
+    mocks.provision.error = new Error('404 UNKNOWN_EMAIL');
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'إلغاء' }));
+    // Re-open — the error reads from the (still-flagged) mutation state.
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+
+    expect(screen.getByText('تعذّر تعيين المدير')).toBeInTheDocument();
+  });
+});
+
+describe('OwnerInstitutionsPage — provision modal quick wins (r183-B5, A9 P3)', () => {
+  it('the password is masked by default; the reveal toggle is opt-in', () => {
+    mocks.listing.data = [ZAWIA];
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+
+    const dialog = screen.getByRole('dialog');
+    const password = within(dialog).getByLabelText('كلمة المرور') as HTMLInputElement;
+    expect(password.type).toBe('password'); // was type="text"
+
+    const reveal = within(dialog).getByRole('button', { name: 'إظهار كلمة المرور' });
+    fireEvent.click(reveal);
+    expect(password.type).toBe('text');
+    expect(within(dialog).getByRole('button', { name: 'إخفاء كلمة المرور' })).toBeInTheDocument();
+    expect(reveal.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('the modal title is an h3 (the owner modals\' heading grammar)', () => {
+    mocks.listing.data = [ZAWIA];
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+
+    expect(
+      within(screen.getByRole('dialog')).getByRole('heading', {
+        level: 3,
+        name: 'تعيين مدير مؤسسة',
+      }),
+    ).toBeInTheDocument();
   });
 });

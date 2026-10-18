@@ -236,4 +236,34 @@ describe('GET /api/v1/owner/users?institutionSlug= (r181 — membership-scoped r
 
     expect(res.status).toBe(403);
   });
+
+  /* r183-B5 (A9 wave-A P2 — the directory's institution scope): the
+   * roster's select now carries the ACTIVE memberships + institution
+   * identity, so the OwnerUsersPage «المؤسسات» column reads real data
+   * (additive field — the r178 courseInstitutionSelect convention). */
+  it('ships the ACTIVE memberships + institution identity in every roster row', async () => {
+    vi.mocked(prisma.user.findMany).mockResolvedValue([] as never);
+    vi.mocked(prisma.user.count).mockResolvedValue(0 as never);
+
+    const res = await get('/api/v1/owner/users', bearerFor(OWNER_ID, Role.OWNER, null));
+
+    expect(res.status).toBe(200);
+    const args = vi.mocked(prisma.user.findMany).mock.calls[0]?.[0] as {
+      select?: {
+        memberships?: {
+          where?: { isActive?: boolean };
+          select?: unknown;
+          orderBy?: unknown;
+        };
+      };
+    };
+    // ACTIVE memberships only (revoked rows stay out — the institutions
+    // console owns that view), deterministic chip order, and the exact
+    // institution projection the frontend column consumes.
+    expect(args?.select?.memberships?.where).toEqual({ isActive: true });
+    expect(args?.select?.memberships?.orderBy).toEqual([{ institution: { name: 'asc' } }]);
+    expect(args?.select?.memberships?.select).toEqual({
+      institution: { select: { id: true, name: true, slug: true, status: true } },
+    });
+  });
 });

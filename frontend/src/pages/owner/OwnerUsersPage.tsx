@@ -36,6 +36,13 @@ interface UserRow {
   avatarInitials: string;
   avatarColor: string | null;
   createdAt: string;
+  /** r183-B5: the ACTIVE institution memberships (A9 wave-A P2 — the
+   *  directory's institution scope). Empty = the honest «بلا مؤسسة». */
+  memberships: OwnerUserMembership[];
+}
+
+interface OwnerUserMembership {
+  institution: { id: string; name: string; slug: string; status: 'ACTIVE' | 'SUSPENDED' };
 }
 
 const ROLE_LABELS: Record<string, string> = {
@@ -149,6 +156,7 @@ export function OwnerUsersPage() {
     // (token-clean; was a hardcoded #3b82f6, audit 0-e P2-35)
     avatarColor: u.avatarColor ?? null,
     createdAt: u.createdAt,
+    memberships: u.memberships ?? [],
   }));
 
   // Confirm dialog state
@@ -191,17 +199,24 @@ export function OwnerUsersPage() {
   /** r154e: role picker — replaces the binary STUDENT↔TEACHER toggle. The
    *  owner picks any eligible role from the select; promotions to
    *  ADMIN/QUALITY and any demotion from those roles are flagged dangerous
-   *  (red confirm) because they change the user's governance capabilities. */
+   *  (red confirm) because they change the user's governance capabilities.
+   *  r183-B5 (A9 P2 acceptance): the confirm names the user's institution(s)
+   *  — scope ambiguity was the finding's whole point. */
+  const institutionsLabel = (user: UserRow): string | null =>
+    user.memberships.length > 0
+      ? user.memberships.map((m) => m.institution.name).join('، ')
+      : null;
   const handleRoleSelect = (user: UserRow, role: string) => {
     if (role === user.role) return;
     setPendingRole({ user, role });
     const isSensitive =
       role === 'ADMIN' || role === 'QUALITY' ||
       user.role === 'ADMIN' || user.role === 'QUALITY';
+    const insts = institutionsLabel(user);
     setConfirmConfig({
       title: 'تغيير الدور',
       confirmLabel: 'تغيير الدور',
-      message: `هل تريد تغيير دور «${user.firstName} ${user.lastName}» من ${ROLE_LABELS[user.role] ?? user.role} إلى ${ROLE_LABELS[role]}؟`,
+      message: `هل تريد تغيير دور «${user.firstName} ${user.lastName}» من ${ROLE_LABELS[user.role] ?? user.role} إلى ${ROLE_LABELS[role]}؟${insts ? ` عضويته النشطة: ${insts}.` : ' لا عضوية مؤسسة نشطة لهذا الحساب.'}`,
       danger: isSensitive,
       onConfirm: async () => {
         await runAttempt({ kind: 'role', user, role });
@@ -332,7 +347,8 @@ export function OwnerUsersPage() {
         )}
 
         {ownerUsers.isPending ? (
-          <TableSkeleton rows={6} cols={6} />
+          /* 7 columns — r183-B5 added المؤسسات to the header row. */
+          <TableSkeleton rows={6} cols={7} />
         ) : ownerUsers.isError ? (
           <ErrorState error={ownerUsers.error} onRetry={() => ownerUsers.refetch()} />
         ) : users.length === 0 ? (
@@ -358,6 +374,9 @@ export function OwnerUsersPage() {
                   <th scope="col">المستخدم</th>
                   <th scope="col">البريد الإلكتروني</th>
                   <th scope="col">الدور</th>
+                  {/* r183-B5 (A9 wave-A P2): the institution scope — chips
+                      from the ACTIVE memberships the route now ships. */}
+                  <th scope="col">المؤسسات</th>
                   <th scope="col">الحالة</th>
                   <th scope="col">تاريخ الانضمام</th>
                   <th scope="col">إجراءات</th>
@@ -384,6 +403,26 @@ export function OwnerUsersPage() {
                         <Badge color={ROLE_COLORS[user.role]}>
                           {ROLE_LABELS[user.role] ?? <bdi>{user.role}</bdi>}
                         </Badge>
+                      </td>
+                      <td data-label="المؤسسات">
+                        {user.memberships.length === 0 ? (
+                          <span className="text-xs text-subtle">بلا مؤسسة</span>
+                        ) : (
+                          <span
+                            className="flex items-center gap-1"
+                            style={{ flexWrap: 'wrap' }}
+                          >
+                            {user.memberships.map((m) => (
+                              <Badge
+                                key={m.institution.id}
+                                color={m.institution.status === 'ACTIVE' ? 'brand' : undefined}
+                              >
+                                {m.institution.name}
+                                {m.institution.status === 'SUSPENDED' ? ' · معلّقة' : ''}
+                              </Badge>
+                            ))}
+                          </span>
+                        )}
                       </td>
                       <td data-label="الحالة">
                         <Badge color={user.isActive ? 'green' : 'red'}>{user.isActive ? 'نشط' : 'معطّل'}</Badge>

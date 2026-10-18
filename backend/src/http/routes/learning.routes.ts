@@ -1871,13 +1871,88 @@ router.get('/quality/overview', requireCapability('QUALITY_VIEW'), async (req, r
  * backend ask #2): `metric` selects the drill-down the quality dashboard
  * lands on — attendance («معدل الحضور») or lecture-completion («إكمال
  * المحاضرات»). Absent (or any other value rejected here) → the endpoint's
- * historical unfiltered shape. Exported for unit tests.
+ * historical unfiltered shape. r183-B5 (A8 wave-A P2-2 recurrence):
+ * `q` is the server-side search term on the course name/code — the
+ * admin-courses `q` contract (paginationSchema's trim/max(120) shape),
+ * so the silent take:50 cap becomes a searchable, honestly-counted
+ * roster. Exported for unit tests.
  */
 export const qualityCoursesQuerySchema = z
   .object({
     metric: z.enum(['attendance', 'completion']).optional(),
+    q: z.string().trim().max(120).optional(),
   })
   .strict();
+
+/**
+ * GET /quality/professors query envelope (r183-B5): `q` searches the
+ * teacher roster server-side on first/last name — the same contract
+ * /quality/courses grew above. Strict (no param reached this route
+ * before — the only consumer, useProfessors, calls it bare). Exported
+ * for unit tests.
+ */
+export const qualityProfessorsQuerySchema = z
+  .object({
+    q: z.string().trim().max(120).optional(),
+  })
+  .strict();
+
+/**
+ * The /quality/courses roster WHERE (r183-B5): institution scope AND
+ * the optional `q` search (course name/code, case-insensitive contains
+ * — the admin-courses search grammar). Pure + exported for unit tests
+ * so the search filter is pinned DB-free, mirroring how
+ * visibility-logic.test.ts pins offeringVisibilityFilter.
+ */
+export function qualityOfferingsWhere(
+  institutionId: string | null,
+  q?: string,
+): Prisma.CourseOfferingWhereInput {
+  const trimmed = q?.trim();
+  return {
+    ...(institutionId || trimmed
+      ? {
+          course: {
+            ...(institutionId ? { institutionId } : {}),
+            ...(trimmed
+              ? {
+                  OR: [
+                    { name: { contains: trimmed, mode: 'insensitive' as const } },
+                    { code: { contains: trimmed, mode: 'insensitive' as const } },
+                  ],
+                }
+              : {}),
+          },
+        }
+      : {}),
+  };
+}
+
+/**
+ * The /quality/professors roster WHERE (r183-B5): TEACHER role + the
+ * institution scope + the optional `q` search on first/last name
+ * (case-insensitive contains). Pure + exported for unit tests.
+ */
+export function qualityProfessorsWhere(
+  institutionId: string | null,
+  q?: string,
+): Prisma.UserWhereInput {
+  const trimmed = q?.trim();
+  return {
+    role: Role.TEACHER,
+    ...(institutionId
+      ? { memberships: { some: { institutionId, isActive: true } } }
+      : {}),
+    ...(trimmed
+      ? {
+          OR: [
+            { firstName: { contains: trimmed, mode: 'insensitive' as const } },
+            { lastName: { contains: trimmed, mode: 'insensitive' as const } },
+          ],
+        }
+      : {}),
+  };
+}
 
 /** Per-offering metric attached when a `metric` drill-down is requested.
  * null = no countable data for that offering (rendered «—», never a
@@ -1970,27 +2045,36 @@ router.get(
   validate(qualityCoursesQuerySchema, 'query'),
   async (req, res, next) => {
     try {
-      const { metric } = req.query as unknown as { metric?: 'attendance' | 'completion' };
+      const { metric, q } = req.query as unknown as {
+        metric?: 'attendance' | 'completion';
+        q?: string;
+      };
       // r179 (phase-5): the courses drill-down is institution-scoped
       // (see resolveQualityInstitution).
       const qualityInstitution = await resolveQualityInstitution(req);
-      const offerings = await prisma.courseOffering.findMany({
-        where: {
-          ...(qualityInstitution ? { course: { institutionId: qualityInstitution } } : {}),
-        },
-        include: {
-          course: { select: { id: true, name: true, code: true, themeColor: true } },
-          teacher: { select: { id: true, firstName: true, lastName: true } },
-          _count: { select: { enrollments: true, lectures: true, materials: true, assignments: true } },
-        },
-        // Deterministic order — `take` without `orderBy` returns an
-        // arbitrary subset (newest offerings are the relevant ones here).
-        orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
-        take: 50,
-      });
+      // r183-B5: the shared WHERE — institution scope + the optional
+      // `q` search (course name/code). `total` counts BEFORE take:50
+      // so the envelope's meta keeps the cap honest (the FE shows the
+      // real roster size, never data.length silently truncated).
+      const where = qualityOfferingsWhere(qualityInstitution, q);
+      const [offerings, total] = await Promise.all([
+        prisma.courseOffering.findMany({
+          where,
+          include: {
+            course: { select: { id: true, name: true, code: true, themeColor: true } },
+            teacher: { select: { id: true, firstName: true, lastName: true } },
+            _count: { select: { enrollments: true, lectures: true, materials: true, assignments: true } },
+          },
+          // Deterministic order — `take` without `orderBy` returns an
+          // arbitrary subset (newest offerings are the relevant ones here).
+          orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+          take: 50,
+        }),
+        prisma.courseOffering.count({ where }),
+      ]);
       if (metric === undefined) {
-        // No drill-down → the endpoint's historical shape, untouched.
-        res.json({ data: offerings });
+        // No drill-down → the endpoint's historical shape + meta.
+        res.json({ data: offerings, meta: { total } });
         return;
       }
       const offeringIds = offerings.map((o) => o.id);
@@ -2019,7 +2103,7 @@ router.get(
         const data = offerings
           .map((o) => ({ ...o, metrics: { attendanceRate: rates.get(o.id) ?? null } as QualityCourseMetric }))
           .sort((a, b) => worstFirstMetricSort(a.metrics.attendanceRate ?? null, b.metrics.attendanceRate ?? null));
-        res.json({ data });
+        res.json({ data, meta: { total } });
         return;
       }
       // metric === 'completion'
@@ -2057,7 +2141,7 @@ router.get(
       const data = offerings
         .map((o) => ({ ...o, metrics: { completionRate: rates.get(o.id) ?? null } as QualityCourseMetric }))
         .sort((a, b) => worstFirstMetricSort(a.metrics.completionRate ?? null, b.metrics.completionRate ?? null));
-      res.json({ data });
+      res.json({ data, meta: { total } });
     } catch (e) { next(e); }
   },
 );
@@ -2074,53 +2158,61 @@ export function stableSeed(id: string): number {
   return h;
 }
 
-router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (req, res, next) => {
-  try {
-    // r179 (phase-5): the professors view is institution-scoped — each
-    // teacher's profile and taught offerings resolve within the
-    // quality institution (see resolveQualityInstitution); the legacy
-    // oldest-profile fallback is gone.
-    const qualityInstitution = await resolveQualityInstitution(req);
-    const teachers = await withRetry(() => prisma.user.findMany({
-      where: {
-        role: Role.TEACHER,
-        ...(qualityInstitution
-          ? { memberships: { some: { institutionId: qualityInstitution, isActive: true } } }
-          : {}),
-      },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        avatarInitials: true,
-        avatarColor: true,
-        teacherProfiles: {
-          where: qualityInstitution
-            ? { membership: { institutionId: qualityInstitution } }
-            : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
-          take: 1,
-          orderBy: { createdAt: 'asc' },
-          include: { department: { include: { faculty: { select: { name: true } } } } },
-        },
-        taughtOfferings: {
-          where: qualityInstitution
-            ? { course: { institutionId: qualityInstitution } }
-            : undefined,
-          include: {
-            _count: {
-              select: {
-                materials: true, assignments: true, lectures: true, attendance: true, enrollments: true,
+router.get(
+  '/quality/professors',
+  requireCapability('QUALITY_VIEW'),
+  validate(qualityProfessorsQuerySchema, 'query'),
+  async (req, res, next) => {
+    try {
+      const { q } = req.query as unknown as { q?: string };
+      // r179 (phase-5): the professors view is institution-scoped — each
+      // teacher's profile and taught offerings resolve within the
+      // quality institution (see resolveQualityInstitution); the legacy
+      // oldest-profile fallback is gone.
+      const qualityInstitution = await resolveQualityInstitution(req);
+      // r183-B5: the shared WHERE (role + institution scope + the
+      // optional `q` name search); `total` counts BEFORE take:100 so
+      // the envelope's meta keeps the cap honest (the same contract
+      // /quality/courses grew this round).
+      const where = qualityProfessorsWhere(qualityInstitution, q);
+      const [teachers, total] = await withRetry(() => Promise.all([
+        prisma.user.findMany({
+          where,
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            avatarInitials: true,
+            avatarColor: true,
+            teacherProfiles: {
+              where: qualityInstitution
+                ? { membership: { institutionId: qualityInstitution } }
+                : { membership: { isActive: true, institution: { status: 'ACTIVE' } } },
+              take: 1,
+              orderBy: { createdAt: 'asc' },
+              include: { department: { include: { faculty: { select: { name: true } } } } },
+            },
+            taughtOfferings: {
+              where: qualityInstitution
+                ? { course: { institutionId: qualityInstitution } }
+                : undefined,
+              include: {
+                _count: {
+                  select: {
+                    materials: true, assignments: true, lectures: true, attendance: true, enrollments: true,
+                  },
+                },
               },
             },
           },
-        },
-      },
-      // Deterministic order — `take` without `orderBy` returns an
-      // arbitrary subset, and the estimated metrics below must not be
-      // reassigned when row order shifts.
-      orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }, { id: 'asc' }],
-      take: 100,
-    }));
+          // Deterministic order — `take` without `orderBy` returns an
+          // arbitrary subset, and the estimated metrics below must not be
+          // reassigned when row order shifts.
+          orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }, { id: 'asc' }],
+          take: 100,
+        }),
+        prisma.user.count({ where }),
+      ]));
 
     // Compute per-teacher aggregate metrics. Where real signals are sparse,
     // we fall back to deterministic seed-based values so the UI is meaningful —
@@ -2168,7 +2260,7 @@ router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (req,
         compliance,
       };
     });
-    res.json({ data });
+    res.json({ data, meta: { total } });
   } catch (e) { next(e); }
 });
 

@@ -13,6 +13,14 @@
  * 3. P3-5: the dashboard alerts card's error path offers an in-place
  *    retry + a link to /quality/alerts (it used to tell the user to
  *    reload the page).
+ *
+ * r183-B5 additions (A8 wave-A P2-2 recurrence — the silent-capped
+ * rosters): server-side search wiring (the debounced `q` rides the
+ * request; the param-aware mock proves the term left the client), the
+ * honest meta.total count line + «تُعرض أول N» cap note, and the
+ * no-matches empty state with its clear affordance. Timers stay real
+ * so the 300ms debounce fires inside waitFor's act (the
+ * AdminGovernancePages pattern).
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -37,6 +45,10 @@ vi.mock('../../src/lib/api', () => ({
   api: {
     // 5-B4: param-aware — the ?metric= drill (5-B1's endpoint) keys its
     // fixture as `${url}?${params}`; paramless calls keep the bare url.
+    // r183-B5: envelope fixtures ({ data, meta }) ride the response body
+    // directly (the page-level hooks read res.data — the r165g mock
+    // shape); legacy bare fixtures keep the unwrap-compatible double
+    // wrap, so both generations of hooks resolve from one mock.
     get: (url: string, opts?: { params?: Record<string, unknown> }) => {
       const params = opts?.params;
       const key = params && Object.keys(params).length > 0
@@ -44,7 +56,10 @@ vi.mock('../../src/lib/api', () => ({
         : url;
       const data = FIXTURES[key];
       if (data === undefined) return Promise.reject(new Error(`unexpected GET ${key}`));
-      return Promise.resolve({ data: { data } });
+      const isEnvelope =
+        typeof data === 'object' && data !== null && !Array.isArray(data)
+        && 'data' in data && 'meta' in data;
+      return Promise.resolve(isEnvelope ? { data } : { data: { data } });
     },
   },
   unwrap: (p: Promise<{ data: { data: unknown } }>) => p.then((r) => r.data.data),
@@ -117,6 +132,9 @@ beforeEach(() => {
   FIXTURES['/quality/professors'] = PROFESSORS;
   FIXTURES['/quality/courses'] = COURSES;
   delete FIXTURES['/quality/alerts'];
+  delete FIXTURES['/quality/courses?q=مقدمة'];
+  delete FIXTURES['/quality/professors?q=الطاهر'];
+  delete FIXTURES['/quality/professors?q=لا-أحد'];
 });
 
 describe('QualityCoursesPage — mobile collapse + honest completion (A8 P1-1, P2-4)', () => {
@@ -241,6 +259,100 @@ describe('QualityProfessorsPage — «بحاجة لمتابعة» filters the ro
     await waitFor(() => {
       expect(screen.getByText(/سالم/)).toBeInTheDocument();
     });
+  });
+});
+
+/* r183-B5 — the silent-capped rosters became searchable + honestly
+ * counted: the debounced `q` rides the request server-side (the
+ * param-aware mock resolves ONLY the keyed fixture, so a passing test
+ * proves the term left the client), and meta.total drives the count
+ * line with a «تُعرض أول N» cap note when take truncates the list. */
+describe('QualityCoursesPage — server-side search + honest total (r183-B5)', () => {
+  it('sends the debounced term server-side (q param), shows the matched total, and clears back', async () => {
+    FIXTURES['/quality/courses?q=مقدمة'] = { data: [COURSES[1]], meta: { total: 1 } };
+    renderPage(<QualityCoursesPage />);
+    await screen.findByText('مقرّر بلا محتوى'); // the full roster rendered
+
+    // Type → 300ms debounce → ONE server call carrying q (the keyed
+    // fixture is the proof — the bare fixture still holds the full list).
+    // Await the searched state POSITIVELY: the key-change refetch passes
+    // through the pending skeleton, so "old row gone" alone would pass
+    // mid-flight.
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'مقدمة' } });
+    expect(await screen.findByText('مقرّر واحد مطابقة للبحث', {}, { timeout: 2000 })).toBeInTheDocument();
+    expect(screen.getByText('مقرّر مكتمل')).toBeInTheDocument();
+    expect(screen.queryByText('مقرّر بلا محتوى')).toBeNull();
+
+    // The clear affordance returns the full roster (no q param) — the
+    // rows-state clear is the input itself (the AdminCoursesPage
+    // contract: the dedicated clear button lives in the empty state).
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: '' } });
+    await waitFor(
+      () => expect(screen.getByText('مقرّر بلا محتوى')).toBeInTheDocument(),
+      { timeout: 2000 },
+    );
+  });
+
+  it('zero matches → the honest empty state with the clear affordance (not a bare table)', async () => {
+    FIXTURES['/quality/courses?q=لا-شيء'] = { data: [], meta: { total: 0 } };
+    renderPage(<QualityCoursesPage />);
+    await screen.findByText('مقرّر بلا محتوى');
+
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'لا-شيء' } });
+    expect(await screen.findByText('لا نتائج مطابقة', {}, { timeout: 2000 })).toBeInTheDocument();
+    expect(screen.getByText('لم نجد مقرّراً يطابق البحث — جرّب كلمة أوسع أو امسح البحث.')).toBeInTheDocument();
+  });
+
+  it('shows the meta.total count line and the honest «تُعرض أول N» cap note when take truncates', async () => {
+    // 2 visible rows, 62 in the institution — the old page silently
+    // pretended 2 was the whole story.
+    FIXTURES['/quality/courses'] = { data: COURSES, meta: { total: 62 } };
+    renderPage(<QualityCoursesPage />);
+    await screen.findByText('مقرّر مكتمل');
+
+    expect(screen.getByText(/62 مقرّراً/)).toBeInTheDocument();
+    expect(screen.getByText(/تُعرض أول 2/)).toBeInTheDocument();
+  });
+});
+
+describe('QualityProfessorsPage — server-side search + honest total (r183-B5)', () => {
+  it('sends the debounced term server-side (q param) and clears back', async () => {
+    FIXTURES['/quality/professors?q=الطاهر'] = { data: PROFESSORS, meta: { total: 1 } };
+    renderPage(<QualityProfessorsPage />);
+    await screen.findByText(/سالم/);
+
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'الطاهر' } });
+    await waitFor(
+      () => expect(screen.getByText('أستاذ واحد مطابقة للبحث')).toBeInTheDocument(),
+      { timeout: 2000 },
+    );
+
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: '' } });
+    await waitFor(
+      () => expect(screen.queryByText('مطابقة للبحث')).toBeNull(),
+      { timeout: 2000 },
+    );
+  });
+
+  it('zero matches → the honest empty state (the KPI band stays above it)', async () => {
+    FIXTURES['/quality/professors?q=لا-أحد'] = { data: [], meta: { total: 0 } };
+    renderPage(<QualityProfessorsPage />);
+    await screen.findByText(/سالم/);
+
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'لا-أحد' } });
+    expect(await screen.findByText('لا نتائج مطابقة', {}, { timeout: 2000 })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /مسح البحث/ })).toBeInTheDocument();
+    // Chrome honesty: the KPI strip and h1 stay (r157 discipline).
+    expect(screen.getByRole('heading', { level: 1, name: 'تقييم الأساتذة' })).toBeInTheDocument();
+  });
+
+  it('shows the meta.total count line with the cap note when take truncates', async () => {
+    FIXTURES['/quality/professors'] = { data: PROFESSORS, meta: { total: 104 } };
+    renderPage(<QualityProfessorsPage />);
+    await screen.findByText(/سالم/);
+
+    expect(screen.getByText(/104 أستاذاً/)).toBeInTheDocument();
+    expect(screen.getByText(/تُعرض أول 1/)).toBeInTheDocument();
   });
 });
 

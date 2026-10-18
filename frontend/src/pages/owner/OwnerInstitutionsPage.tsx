@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, type InputHTMLAttributes } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Plus, Landmark, ShieldCheck, Ban, RotateCcw, UserPlus,
-  Users, GraduationCap, Calendar, ArrowLeft,
+  Users, GraduationCap, Calendar, ArrowLeft, AlertTriangle, Eye, EyeOff,
 } from 'lucide-react';
-import { Card, Badge, FormField } from '../../components/primitives';
+import { Card, Badge, FormField, AlertRow } from '../../components/primitives';
 import { ErrorState, EmptyState, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
@@ -66,10 +66,17 @@ const EMPTY_CREATE_DRAFT: CreateDraft = { name: '', nameEn: '', slug: '' };
 
 function CreateInstitutionCard({
   isPending,
+  error,
   onCreate,
 }: {
   isPending: boolean;
-  onCreate: (draft: { name: string; nameEn?: string; slug?: string }) => void;
+  /** The create mutation's last error (r183-B5 — the keep-edits rule:
+   *  the draft survives a failed create and the failure is named
+   *  inline, mirroring the AdminCoursesPage modal contract). */
+  error: unknown;
+  /** Resolves true ONLY on success — the child clears its draft then
+   *  (and only then). */
+  onCreate: (draft: { name: string; nameEn?: string; slug?: string }) => Promise<boolean>;
 }) {
   const [draft, setDraft] = useState<CreateDraft>(EMPTY_CREATE_DRAFT);
 
@@ -78,14 +85,17 @@ function CreateInstitutionCard({
     : undefined;
   const canSubmit = draft.name.trim().length >= 2 && !isPending;
 
-  const submit = () => {
+  const submit = async () => {
     if (!canSubmit) return;
-    onCreate({
+    const ok = await onCreate({
       name: draft.name.trim(),
       nameEn: draft.nameEn.trim() || undefined,
       slug: draft.slug.trim() || undefined,
     });
-    setDraft(EMPTY_CREATE_DRAFT);
+    // r183-B5 (A9 P2 — optimistic input loss): the draft is cleared
+    // ONLY on success. A 409 slug conflict keeps every field the owner
+    // typed with the failure named inline below.
+    if (ok) setDraft(EMPTY_CREATE_DRAFT);
   };
 
   return (
@@ -98,7 +108,7 @@ function CreateInstitutionCard({
         className="owner-inst-create-form"
         onSubmit={(e) => {
           e.preventDefault();
-          submit();
+          void submit();
         }}
       >
         <FormField label="اسم المؤسسة" error={nameProblem} hint="مطلوب — كما سيظهر لأعضاء المؤسسة">
@@ -140,6 +150,14 @@ function CreateInstitutionCard({
           <Icon icon={Plus} size={13} />
           {isPending ? 'جارٍ الإنشاء…' : 'إنشاء المؤسسة'}
         </button>
+        {error != null && (
+          <AlertRow
+            color="red"
+            icon={AlertTriangle}
+            title="تعذّر إنشاء المؤسسة"
+            description={apiErrorMessage(error, 'لم يستجب الخادم للطلب. إعادة المحاولة.')}
+          />
+        )}
       </form>
     </Card>
   );
@@ -165,26 +183,87 @@ const EMPTY_PROVISION_DRAFT: ProvisionDraft = {
   password: '',
 };
 
+/**
+ * FormField-compatible password control (r183-B5, A9 P3): masked by
+ * default with an opt-in reveal toggle (the AuthPage Eye/EyeOff grammar
+ * on the generic .icon-btn chrome — no auth-scoped CSS leaks into the
+ * owner sheet). FormField clones its single child with the control
+ * id/aria props, so this component FORWARDS everything it receives
+ * onto the inner input — the label htmlFor wiring and the tests'
+ * getByLabelText keep working.
+ */
+function PasswordControl({
+  value, onChange, show, onToggle, disabled, ...fieldProps
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  show: boolean;
+  onToggle: () => void;
+  disabled?: boolean;
+  /* The FormField-injected control props (id, aria-*) ride the inner
+   * input verbatim. `onChange` is Omitted so THIS component's string
+   * callback is the only signature — the raw intersection made TS
+   * contextually type the call site's parameter as the event union. */
+} & Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
+  return (
+    <span className="flex items-center gap-2">
+      {/* dir="ltr": passwords are overwhelmingly Latin runs; the caret
+          and masked glyphs must not bidi-flip in RTL (the AuthPage note). */}
+      <input
+        {...fieldProps}
+        className="input"
+        style={{ flex: '1 1 auto', minWidth: 0 }}
+        type={show ? 'text' : 'password'}
+        dir="ltr"
+        autoComplete="new-password"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+      <button
+        type="button"
+        className="icon-btn"
+        onClick={onToggle}
+        aria-pressed={show}
+        aria-label={show ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+        disabled={disabled}
+      >
+        <Icon icon={show ? EyeOff : Eye} size={16} />
+      </button>
+    </span>
+  );
+}
+
 function ProvisionAdminModal({
   open,
   institution,
   isPending,
+  error,
   onClose,
   onProvision,
 }: {
   open: boolean;
   institution: OwnerInstitution | null;
   isPending: boolean;
+  /** The provision mutation's last error (r183-B5 — the keep-edits
+   *  rule: the modal stays open, the draft survives, the failure is
+   *  named inline — the settings/detail-page modal contract). */
+  error: unknown;
   onClose: () => void;
+  /** Resolves true ONLY on success — the child clears its draft then
+   *  (and only then). */
   onProvision: (body: {
     mode: ProvisionMode;
     email: string;
     firstName?: string;
     lastName?: string;
     password?: string;
-  }) => void;
+  }) => Promise<boolean>;
 }) {
   const [draft, setDraft] = useState<ProvisionDraft>(EMPTY_PROVISION_DRAFT);
+  // r183-B5 (A9 P3): masked by default, reveal is opt-in (the AuthPage
+  // toggle grammar — aria-pressed + the Eye/EyeOff pair, generic
+  // .icon-btn chrome so no auth-scoped CSS leaks into the owner sheet).
+  const [showPassword, setShowPassword] = useState(false);
 
   const emailProblem =
     draft.email.length > 0 && !/.+@.+\..+/.test(draft.email.trim())
@@ -204,30 +283,41 @@ function ProvisionAdminModal({
 
   const close = () => {
     setDraft(EMPTY_PROVISION_DRAFT);
+    setShowPassword(false);
     onClose();
   };
 
-  const submit = () => {
+  const submit = async () => {
     if (!canSubmit) return;
-    onProvision({
+    const ok = await onProvision({
       mode: draft.mode,
       email: draft.email.trim().toLowerCase(),
       firstName: draft.firstName.trim() || undefined,
       lastName: draft.lastName.trim() || undefined,
       password: draft.mode === 'new' ? draft.password : undefined,
     });
-    setDraft(EMPTY_PROVISION_DRAFT);
+    // r183-B5 (A9 P2 — optimistic input loss): the draft is cleared
+    // ONLY on success (the parent closes the modal then — this reset
+    // keeps a stale draft from riding into the next open). A failed
+    // provision (404 unknown email, 409 …) keeps every field the owner
+    // typed with the failure named inline below.
+    if (ok) {
+      setDraft(EMPTY_PROVISION_DRAFT);
+      setShowPassword(false);
+    }
   };
 
   return (
     <Modal open={open} onClose={close} ariaLabel="تعيين مدير مؤسسة">
       <div className="modal-header">
-        <div className="modal-title">تعيين مدير مؤسسة</div>
+        {/* r183-B5 (A9 P3): h3 — the owner modals' heading grammar (the
+            four detail-page modals all use h3.modal-title). */}
+        <h3 className="modal-title">تعيين مدير مؤسسة</h3>
       </div>
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          submit();
+          void submit();
         }}
         noValidate
       >
@@ -284,13 +374,12 @@ function ProvisionAdminModal({
                 </FormField>
               </div>
               <FormField label="كلمة المرور" error={passwordProblem} hint="مطلوبة — 12 حرفًا على الأقل">
-                <input
-                  className="input"
-                  type="text"
-                  dir="ltr"
-                  autoComplete="new-password"
+                <PasswordControl
                   value={draft.password}
-                  onChange={(e) => setDraft((d) => ({ ...d, password: e.target.value }))}
+                  onChange={(v) => setDraft((d) => ({ ...d, password: v }))}
+                  show={showPassword}
+                  onToggle={() => setShowPassword((v) => !v)}
+                  disabled={isPending}
                 />
               </FormField>
             </>
@@ -305,6 +394,14 @@ function ProvisionAdminModal({
             {isPending ? 'جارٍ التعيين…' : 'تعيين المدير'}
           </button>
         </div>
+        {error != null && (
+          <AlertRow
+            color="red"
+            icon={AlertTriangle}
+            title="تعذّر تعيين المدير"
+            description={apiErrorMessage(error, 'لم يستجب الخادم للطلب. إعادة المحاولة.')}
+          />
+        )}
       </form>
     </Modal>
   );
@@ -336,19 +433,19 @@ export function OwnerInstitutionsPage() {
     revokeM.isPending || restoreM.isPending;
 
   /* ── Create ─────────────────────────────────────────────── */
-  const onCreate = (draft: { name: string; nameEn?: string; slug?: string }) => {
-    createM.mutate(draft, {
-      onSuccess: ({ institution }) => {
-        toast.success(`أُنشئت «${institution.name}» وهي نشطة الآن.`, { title: 'تمّ إنشاء المؤسسة' });
-      },
-      onError: (error) => {
-        // 409 slug conflict carries its own Arabic message.
-        toast.error(
-          apiErrorMessage(error, 'تعذّر إنشاء المؤسسة — حاول مجدداً.'),
-          { title: 'تعذّر الإنشاء' },
-        );
-      },
-    });
+  /* r183-B5 (A9 P2 — optimistic input loss): mutateAsync + a boolean
+   * result — the create card clears its draft only on success; the
+   * failure is named inline by the card's AlertRow (the 409 slug
+   * conflict carries its own Arabic message from the backend), the
+   * toast keeps the positive side. */
+  const onCreate = async (draft: { name: string; nameEn?: string; slug?: string }): Promise<boolean> => {
+    try {
+      const { institution } = await createM.mutateAsync(draft);
+      toast.success(`أُنشئت «${institution.name}» وهي نشطة الآن.`, { title: 'تمّ إنشاء المؤسسة' });
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   /* ── Suspend / reactivate ───────────────────────────────── */
@@ -386,33 +483,30 @@ export function OwnerInstitutionsPage() {
   };
 
   /* ── Provision admin ────────────────────────────────────── */
-  const onProvision = (body: {
+  /* r183-B5 (A9 P2): same keep-edits contract — the modal closes ONLY
+   * on success (the old code closed it right after mutate(), so a 404
+   * unknown-email or 409 swallowed the draft and the error landed on a
+   * page without context). The inline AlertRow names the failure. */
+  const onProvision = async (body: {
     mode: ProvisionMode;
     email: string;
     firstName?: string;
     lastName?: string;
     password?: string;
-  }) => {
+  }): Promise<boolean> => {
     const target = provisionTarget;
-    if (!target) return;
-    provisionM.mutate(
-      { institutionId: target.id, body },
-      {
-        onSuccess: ({ user }) => {
-          toast.success(
-            `تمّ تعيين ${user.firstName} ${user.lastName} مديرًا لـ«${target.name}».`,
-            { title: 'تمّ التعيين' },
-          );
-        },
-        onError: (error) => {
-          toast.error(
-            apiErrorMessage(error, 'تعذّر تعيين المدير — حاول مجدداً.'),
-            { title: 'تعذّر التعيين' },
-          );
-        },
-      },
-    );
-    setProvisionTarget(null);
+    if (!target) return false;
+    try {
+      const { user } = await provisionM.mutateAsync({ institutionId: target.id, body });
+      toast.success(
+        `تمّ تعيين ${user.firstName} ${user.lastName} مديرًا لـ«${target.name}».`,
+        { title: 'تمّ التعيين' },
+      );
+      setProvisionTarget(null);
+      return true;
+    } catch {
+      return false; // the modal stays open; the draft stays typed.
+    }
   };
 
   /* ── Membership revoke / restore ────────────────────────── */
@@ -473,7 +567,11 @@ export function OwnerInstitutionsPage() {
         </div>
       </header>
 
-      <CreateInstitutionCard isPending={createM.isPending} onCreate={onCreate} />
+      <CreateInstitutionCard
+        isPending={createM.isPending}
+        error={createM.isError ? createM.error : null}
+        onCreate={onCreate}
+      />
 
       <Card className="owner-users-card" title="المؤسسات المسجّلة">
         {listing.isPending ? (
@@ -616,7 +714,13 @@ export function OwnerInstitutionsPage() {
         open={provisionTarget !== null}
         institution={provisionTarget}
         isPending={provisionM.isPending}
-        onClose={() => setProvisionTarget(null)}
+        error={provisionM.isError ? provisionM.error : null}
+        onClose={() => {
+          setProvisionTarget(null);
+          /* A user-initiated close discards the attempt with its error —
+           * the next open (maybe another institution) starts clean. */
+          provisionM.reset();
+        }}
         onProvision={onProvision}
       />
 

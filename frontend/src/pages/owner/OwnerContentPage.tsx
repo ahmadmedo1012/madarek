@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Palette, Type, Bell, ToggleRight, ArrowLeft, Info,
@@ -32,18 +32,75 @@ import { Icon } from '../../components/Icon';
  */
 
 /**
- * Official University of Zawiya brand palette — DISPLAYED DATA, not style
- * tokens: these hexes document the brand the platform currently carries
- * (docs/FRONTEND-REFERENCE.md — «brand navy #003461, gold»). They render
- * as content here, so the raw values are the point, not a token gap.
+ * r183-B5 (A9 wave-A P2 — the identity surface's honesty): the old
+ * BRAND_SWATCHES hardcoded the reference university's palette
+ * (#003461/#fed65b/#a3c9ff) while the notice above claimed «ألوان علامة
+ * مدارك الرسميّة… في نظام التصميم» — chips and copy disagreed. The
+ * swatches now resolve AT RUNTIME from the live design tokens
+ * (getComputedStyle on <html>: the [data-theme="dark"] block wins when
+ * the night skin is applied), so the card displays the platform's
+ * ACTUAL brand — the label names the token, the chip shows its computed
+ * value. The hexes are still displayed data (content), never a style
+ * token gap: they sit in inline style on an aria-hidden chip, the same
+ * concession the admin course themeColor tint makes.
  */
-const BRAND_SWATCHES = [
-  { label: 'اللون الأساسيّ', hex: '#003461' },
-  { label: 'اللون الثانويّ', hex: '#fed65b' },
-  { label: 'لون التمييز', hex: '#a3c9ff' },
+const BRAND_TOKENS = [
+  { label: 'اللون الأساسيّ', token: '--accent' },
+  { label: 'اللون الثانويّ', token: '--gold' },
+  { label: 'لون التمييز', token: '--accent-soft' },
 ] as const;
 
+interface BrandSwatch {
+  label: string;
+  token: string;
+  /** The token's computed value in the APPLIED theme (e.g. «#B57438»);
+   * null when the environment can't resolve it (jsdom / very old
+   * engines) — rendered as the honest «غير متاحة», never a fabricated
+   * hex. */
+  value: string | null;
+}
+
+/** Read one token's computed value from the applied theme. */
+function resolveTokenValue(token: string): string | null {
+  if (typeof document === 'undefined') return null;
+  const value = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+  return value || null;
+}
+
+/**
+ * Bumps whenever `<html data-theme>` flips — the applied-skin re-resolve
+ * signal (the same single source chartTheme's singleton watches; kept
+ * local here so this leaf page never drags chart.js into its lazy
+ * chunk). jsdom never flips the attribute, so unit tests resolve once.
+ */
+function useAppliedThemeVersion(): number {
+  const [version, setVersion] = useState(0);
+  useEffect(() => {
+    if (typeof MutationObserver === 'undefined') return;
+    const observer = new MutationObserver((mutations) => {
+      if (mutations.some((m) => m.attributeName === 'data-theme')) {
+        setVersion((v) => v + 1);
+      }
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+    return () => observer.disconnect();
+  }, []);
+  return version;
+}
+
 export function OwnerContentPage() {
+  // Swatches resolve per applied theme and refresh when it flips.
+  const themeVersion = useAppliedThemeVersion();
+  const swatches = useMemo<BrandSwatch[]>(
+    () => BRAND_TOKENS.map((s) => ({ ...s, value: resolveTokenValue(s.token) })),
+    // themeVersion is the re-resolve signal by design (the applied skin
+    // changed) — the same intentional-dep shape the chart pages' themeKey
+    // memo deps document.
+    [themeVersion],
+  );
   return (
     <div className="page owner-content-page">
       <header className="page-header">
@@ -83,21 +140,32 @@ export function OwnerContentPage() {
           <Icon icon={Info} size={14} />
           <span>
             تعديل ألوان العلامة التجاريّة (الأساسيّ، الثانويّ، التمييز) ومحتوى الصفحة الرئيسيّة قيد
-            التطوير. حالياً تُعتمَد ألوان علامة مدارك الرسميّة المعتمدة في نظام التصميم.
+            التطوير. حالياً تُعتمَد ألوان علامة مدارك الرسميّة المعتمدة في نظام التصميم — تُقرَأ
+            مباشرةً من رموز نظام التصميم النشطة (فاتح/داكن) عند عرض الصفحة.
           </span>
         </div>
 
         <div className="owner-swatch-grid">
-          {BRAND_SWATCHES.map((s, i) => (
-            <div key={s.hex} className="owner-swatch" style={{ '--swatch-i': i } as CSSProperties}>
-              <div className="text-xxs text-subtle">{s.label}</div>
+          {swatches.map((s, i) => (
+            <div key={s.token} className="owner-swatch" style={{ '--swatch-i': i } as CSSProperties}>
+              <div className="text-xxs text-subtle">
+                {s.label}{' '}
+                {/* The token's own name — the label names WHAT it reads. */}
+                <bdi className="font-mono" dir="ltr">{s.token}</bdi>
+              </div>
               <div className="owner-swatch-row">
-                <span
-                  className="owner-swatch-chip"
-                  style={{ background: s.hex }}
-                  aria-hidden
-                />
-                <bdi className="owner-swatch-hex" dir="ltr">{s.hex}</bdi>
+                {s.value != null ? (
+                  <>
+                    <span
+                      className="owner-swatch-chip"
+                      style={{ background: s.value }}
+                      aria-hidden
+                    />
+                    <bdi className="owner-swatch-hex" dir="ltr">{s.value}</bdi>
+                  </>
+                ) : (
+                  <span className="text-xxs text-subtle">قيمة الرمز غير متاحة الآن</span>
+                )}
               </div>
             </div>
           ))}

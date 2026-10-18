@@ -26,6 +26,16 @@ interface OwnerUser {
   avatarInitials: string | null;
   isActive: boolean;
   createdAt: string;
+  /** r183-B5 (A9 wave-A P2): the ACTIVE memberships the users route
+   *  now ships — the directory's institution column reads them. */
+  memberships: Array<{
+    institution: {
+      id: string;
+      name: string;
+      slug: string;
+      status: 'ACTIVE' | 'SUSPENDED';
+    };
+  }>;
 }
 
 interface AuditLogEntry {

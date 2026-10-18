@@ -18,6 +18,12 @@
  * per-offering metric rollups (attendance via the canonical
  * attendancePctFromStatusCounts formula; completion via the
  * /quality/engagement watch-time ratio) and the worst-first sort.
+ *
+ * r183-B5 additions (A8 wave-A P2-2 recurrence — the silent-capped
+ * quality rosters): the /quality/courses + /quality/professors search
+ * envelopes (`q`, the admin-courses contract) and the two pure
+ * WHERE-builders the routes now share — the search filter + the
+ * institution scope compose, pinned DB-free.
  */
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -30,6 +36,9 @@ import {
   GRADEABLE_PAPER_STATUSES,
   PUBLISHABLE_PAPER_STATUSES,
   qualityCoursesQuerySchema,
+  qualityOfferingsWhere,
+  qualityProfessorsQuerySchema,
+  qualityProfessorsWhere,
   RESEARCH_DEDUPE_WINDOW_MS,
   RESEARCH_QUEUE_STATUSES,
   SCANNABLE_PAPER_STATUSES,
@@ -491,6 +500,110 @@ describe('qualityCoursesQuerySchema (5-A8 §5 row 11)', () => {
     expect(qualityCoursesQuerySchema.safeParse({ metric: 'grades' }).success).toBe(false);
     expect(qualityCoursesQuerySchema.safeParse({ metric: 'ATTENDANCE' }).success).toBe(false);
     expect(qualityCoursesQuerySchema.safeParse({ level: 300 }).success).toBe(false);
+  });
+
+  /* r183-B5: the server-side search envelope — `q` joins the metric. */
+  it('accepts and trims the search term q (r183-B5)', () => {
+    const r = qualityCoursesQuerySchema.safeParse({ q: '  مقدمة  ' });
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.q).toBe('مقدمة');
+  });
+
+  it('rejects an over-long q (the paginationSchema 120 cap)', () => {
+    expect(qualityCoursesQuerySchema.safeParse({ q: 'x'.repeat(121) }).success).toBe(false);
+  });
+
+  it('composes metric + q (the dashboard drill-down with a search)', () => {
+    const r = qualityCoursesQuerySchema.safeParse({ metric: 'attendance', q: 'CS101' });
+    expect(r.success).toBe(true);
+  });
+});
+
+// ── /quality/* roster search + honest totals (r183-B5) ───────────
+
+describe('qualityProfessorsQuerySchema (r183-B5)', () => {
+  it('accepts an empty query (the historical bare call)', () => {
+    const r = qualityProfessorsQuerySchema.safeParse({});
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.q).toBeUndefined();
+  });
+
+  it('accepts and trims the search term q', () => {
+    const r = qualityProfessorsQuerySchema.safeParse({ q: '  سالم  ' });
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.q).toBe('سالم');
+  });
+
+  it('rejects unknown keys (strict) and over-long q', () => {
+    expect(qualityProfessorsQuerySchema.safeParse({ metric: 'attendance' }).success).toBe(false);
+    expect(qualityProfessorsQuerySchema.safeParse({ q: 'x'.repeat(121) }).success).toBe(false);
+  });
+});
+
+describe('qualityOfferingsWhere (r183-B5 — the /quality/courses WHERE)', () => {
+  it('empty inputs → the historical unfiltered shape', () => {
+    expect(qualityOfferingsWhere(null, undefined)).toEqual({});
+    expect(qualityOfferingsWhere(null, '   ')).toEqual({});
+  });
+
+  it('institution scope only — the r179 shape, unchanged', () => {
+    expect(qualityOfferingsWhere('inst-1', undefined)).toEqual({
+      course: { institutionId: 'inst-1' },
+    });
+  });
+
+  it('search only — name/code OR, case-insensitive (the admin-courses grammar)', () => {
+    expect(qualityOfferingsWhere(null, 'مقدمة')).toEqual({
+      course: {
+        OR: [
+          { name: { contains: 'مقدمة', mode: 'insensitive' } },
+          { code: { contains: 'مقدمة', mode: 'insensitive' } },
+        ],
+      },
+    });
+  });
+
+  it('institution + search compose inside ONE course filter (AND)', () => {
+    expect(qualityOfferingsWhere('inst-1', 'CS101')).toEqual({
+      course: {
+        institutionId: 'inst-1',
+        OR: [
+          { name: { contains: 'CS101', mode: 'insensitive' } },
+          { code: { contains: 'CS101', mode: 'insensitive' } },
+        ],
+      },
+    });
+  });
+});
+
+describe('qualityProfessorsWhere (r183-B5 — the /quality/professors WHERE)', () => {
+  it('role TEACHER always; institution scope composes with the r179 membership clause', () => {
+    expect(qualityProfessorsWhere(null, undefined)).toEqual({ role: Role.TEACHER });
+    expect(qualityProfessorsWhere('inst-1', undefined)).toEqual({
+      role: Role.TEACHER,
+      memberships: { some: { institutionId: 'inst-1', isActive: true } },
+    });
+  });
+
+  it('search only — first/last name OR, case-insensitive', () => {
+    expect(qualityProfessorsWhere(null, 'سالم')).toEqual({
+      role: Role.TEACHER,
+      OR: [
+        { firstName: { contains: 'سالم', mode: 'insensitive' } },
+        { lastName: { contains: 'سالم', mode: 'insensitive' } },
+      ],
+    });
+  });
+
+  it('institution + search compose (AND — scope never widens with a term)', () => {
+    expect(qualityProfessorsWhere('inst-1', 'سالم')).toEqual({
+      role: Role.TEACHER,
+      memberships: { some: { institutionId: 'inst-1', isActive: true } },
+      OR: [
+        { firstName: { contains: 'سالم', mode: 'insensitive' } },
+        { lastName: { contains: 'سالم', mode: 'insensitive' } },
+      ],
+    });
   });
 });
 

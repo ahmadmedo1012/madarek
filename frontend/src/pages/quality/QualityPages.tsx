@@ -10,7 +10,7 @@ import {
   ShieldCheck, Users, BookOpen, GraduationCap, Activity,
   AlertTriangle, TrendingUp, FileText, ClipboardCheck, ListChecks,
   Building2, School, Star, Clock, ArrowLeft, X,
-  CheckCircle2,
+  CheckCircle2, Search,
   type LucideIcon,
 } from 'lucide-react';
 import { useInstitutionScope } from '../../stores/auth.store';
@@ -24,6 +24,10 @@ import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 import { formatRelativeArShort, WEEKDAY_NAMES_AR, countAr } from '../../lib/format';
 import '../../styles/training.css'; // .filter-pill family (D11 css split, 12-15)
+// r183-B5: the roster search chrome (admin-students-toolbar family) —
+// the same sheet AdminCoursesPage / AdminGovernancePages load when they
+// borrow the toolbar; owner's OwnerInstitutionDetailPage follows it too.
+import '../../styles/admin.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Filler, Tooltip, Legend);
 
@@ -58,12 +62,34 @@ interface QualityCourse {
    *  data for this offering — render «لا بيانات», never a fake 0/100. */
   metrics?: { attendanceRate?: number | null; completionRate?: number | null };
 }
-const useQualityCourses = (metric?: 'attendance' | 'completion') => {
+
+/**
+ * r183-B5 (A8 wave-A P2-2 recurrence — the silent-capped roster): the
+ * envelope now carries `meta.total` (counted BEFORE take:50 server-side),
+ * and `q` runs the search server-side (course name/code). Optional so
+ * an older payload without meta still renders — the count line falls
+ * back to the visible rows (the r165g alerts-page degrade contract).
+ */
+interface QualityRosterEnvelope<T> {
+  data: T[];
+  meta?: { total: number };
+}
+
+const useQualityCourses = (metric?: 'attendance' | 'completion', q?: string) => {
   const inst = useInstitutionScope(); // r180: scoped key
   return useQuery({
-    /* r180: /quality/* is institution-scoped server-side — scoped key. */
-    queryKey: withInstitutionScope(['quality', 'courses', metric ?? 'all'], inst),
-    queryFn: () => unwrap<QualityCourse[]>(api.get('/quality/courses', { params: metric ? { metric } : undefined })),
+    /* r180: /quality/* is institution-scoped server-side — scoped key.
+     * r183-B5: q rides the key (the debounced search term). */
+    queryKey: withInstitutionScope(['quality', 'courses', metric ?? 'all', q ?? ''], inst),
+    queryFn: async () => {
+      const res = await api.get<QualityRosterEnvelope<QualityCourse>>('/quality/courses', {
+        params: {
+          ...(metric ? { metric } : {}),
+          ...(q ? { q } : {}),
+        },
+      });
+      return res.data;
+    },
   });
 };
 
@@ -90,12 +116,19 @@ interface ProfessorRow {
   responseHoursEstimated?: boolean;
   compliance: number;
 }
-const useProfessors = () => {
+const useProfessors = (q?: string) => {
   const inst = useInstitutionScope(); // r180: scoped key
   return useQuery({
-    /* r180: /quality/* is institution-scoped server-side — scoped key. */
-    queryKey: withInstitutionScope(['quality', 'professors'], inst),
-    queryFn: () => unwrap<ProfessorRow[]>(api.get('/quality/professors')),
+    /* r180: /quality/* is institution-scoped server-side — scoped key.
+     * r183-B5: q rides the key (the debounced search term); the
+     * envelope carries meta.total (count before take:100). */
+    queryKey: withInstitutionScope(['quality', 'professors', q ?? ''], inst),
+    queryFn: async () => {
+      const res = await api.get<QualityRosterEnvelope<ProfessorRow>>('/quality/professors', {
+        params: q ? { q } : undefined,
+      });
+      return res.data;
+    },
   });
 };
 
@@ -551,7 +584,30 @@ export function QualityCoursesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const metricParam = searchParams.get('metric');
   const metric = metricParam === 'attendance' || metricParam === 'completion' ? metricParam : undefined;
-  const c = useQualityCourses(metric);
+  // r183-B5 (A8 wave-A P2-2 recurrence — the silent-capped roster): the
+  // standard roster search (the AdminCoursesPage `q` contract) debounced
+  // 300ms — the term runs SERVER-side (course name/code) and the count
+  // line reads meta.total, so take:50 is a visible cap, never a silent
+  // truncation. Real timers in tests (the AdminGovernancePages pattern).
+  const [q, setQ] = useState('');
+  const [debouncedQ, setDebouncedQ] = useState('');
+  const appliedQ = useRef(debouncedQ);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const next = q.trim();
+      if (next === appliedQ.current) return;
+      appliedQ.current = next;
+      setDebouncedQ(next);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [q]);
+  const clearSearch = () => {
+    setQ('');
+    setDebouncedQ('');
+  };
+  const c = useQualityCourses(metric, debouncedQ || undefined);
+  const courses = c.data?.data;
+  const total = c.data?.meta?.total;
   const metricLabel = metric === 'attendance' ? 'معدل الحضور' : 'إكمال المحاضرات';
   const metricValue = (o: QualityCourse): number | null | undefined =>
     metric === 'attendance' ? o.metrics?.attendanceRate : o.metrics?.completionRate;
@@ -571,9 +627,25 @@ export function QualityCoursesPage() {
         <Card title="المقرّرات النشطة" icon={BookOpen}><TableSkeleton rows={4} cols={8} /></Card>
       ) :
        c.isError ? <ErrorState error={c.error} onRetry={() => c.refetch()} /> :
-       !c.data?.length ? <Card><EmptyState illustration="empty-search" icon={BookOpen} title="لا توجد مقرّرات نشطة بعد" description="ستظهر المقرّرات وعروضها الدراسية هنا فور اعتمادها وربطها بالفصل الحاليّ." /></Card> : (
+       !courses?.length ? <Card><EmptyState
+         illustration="empty-search"
+         icon={BookOpen}
+         title={debouncedQ ? 'لا نتائج مطابقة' : 'لا توجد مقرّرات نشطة بعد'}
+         description={debouncedQ
+           ? 'لم نجد مقرّراً يطابق البحث — جرّب كلمة أوسع أو امسح البحث.'
+           : 'ستظهر المقرّرات وعروضها الدراسية هنا فور اعتمادها وربطها بالفصل الحاليّ.'}
+         action={debouncedQ ? (
+           <button type="button" className="btn ghost sm" onClick={clearSearch}>
+             <Icon icon={X} size={13} />
+             مسح البحث
+           </button>
+         ) : undefined}
+       /></Card> : (
         <Card
           title="المقرّرات النشطة"
+          subtitle={total != null
+            ? `${countAr(total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}${debouncedQ ? ' مطابقة للبحث' : ''}${courses && courses.length < total ? ` · تُعرض أول ${courses.length}` : ''}`
+            : undefined}
           icon={BookOpen}
           actions={metric ? (
             <button
@@ -586,6 +658,22 @@ export function QualityCoursesPage() {
             </button>
           ) : undefined}
         >
+          {/* r183-B5: the standard roster search chrome (admin-students-
+              toolbar family — the AdminCoursesPage twin) wired to the
+              debounced server-side `q`. */}
+          <div className="admin-students-toolbar">
+            <div className="admin-students-search">
+              <Icon icon={Search} size={14} />
+              <input
+                type="search"
+                placeholder="ابحث بالاسم أو الكود…"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                className="admin-students-input"
+                aria-label="البحث في المقرّرات"
+              />
+            </div>
+          </div>
           {/* tbl-stack (A8 P1-1): the roster collapses to labelled cards
               on phones — same .table-wrap > .table.tbl-stack pattern as
               every admin roster (OwnerUsersPage reference). */}
@@ -607,7 +695,7 @@ export function QualityCoursesPage() {
                 </tr>
               </thead>
               <tbody>
-                {c.data.map((o) => {
+                {courses!.map((o) => {
                   const score = Math.min(100, o._count.lectures * 20 + o._count.materials * 5 + o._count.assignments * 10);
                   // Score 0 = no content yet — a neutral state, never a
                   // danger register (A8 P2-4: red “0%” spent the danger
@@ -678,7 +766,27 @@ function useCompactRosterBand(): boolean {
 }
 
 export function QualityProfessorsPage() {
-  const p = useProfessors();
+  // r183-B5 (A8 wave-A P2-2 recurrence): the standard roster search (the
+  // AdminCoursesPage `q` contract, debounced 300ms) — the term runs
+  // SERVER-side (first/last name) and the roster count reads meta.total
+  // (count before take:100), so the cap is visible, never silent.
+  const [q, setQ] = useState('');
+  const [debouncedQ, setDebouncedQ] = useState('');
+  const appliedQ = useRef(debouncedQ);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const next = q.trim();
+      if (next === appliedQ.current) return;
+      appliedQ.current = next;
+      setDebouncedQ(next);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [q]);
+  const clearSearch = () => {
+    setQ('');
+    setDebouncedQ('');
+  };
+  const p = useProfessors(debouncedQ || undefined);
   // 5-B4 (5-A8 §5 row 12 — client filter): «بحاجة لمتابعة» filters the
   // roster to compliance < 50% instead of dead-ending on the count.
   const [lowOnly, setLowOnly] = useState(false);
@@ -716,10 +824,13 @@ export function QualityProfessorsPage() {
     );
   }
 
-  const avgSat = p.data.length ? p.data.reduce((s, t) => s + t.satisfaction, 0) / p.data.length : 0;
-  const avgResp = p.data.length ? p.data.reduce((s, t) => s + t.responseHours, 0) / p.data.length : 0;
-  const lowComp = p.data.filter((t) => t.compliance < 50).length;
-  const visible = lowOnly ? p.data.filter((t) => t.compliance < 50) : p.data;
+  const professors = p.data.data;
+  const total = p.data.meta?.total;
+  const avgSat = professors.length ? professors.reduce((s, t) => s + t.satisfaction, 0) / professors.length : 0;
+  const avgResp = professors.length ? professors.reduce((s, t) => s + t.responseHours, 0) / professors.length : 0;
+  const lowComp = professors.filter((t) => t.compliance < 50).length;
+  const visible = lowOnly ? professors.filter((t) => t.compliance < 50) : professors;
+  const searching = debouncedQ !== '';
 
   return (
     <div className="page">
@@ -728,7 +839,7 @@ export function QualityProfessorsPage() {
           <h1 className="page-title">تقييم الأساتذة</h1>
           <p className="page-subtitle">
             رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.
-            {p.data.some((t) => t.satisfactionEstimated || t.responseHoursEstimated)
+            {p.data.data.some((t) => t.satisfactionEstimated || t.responseHoursEstimated)
               ? ' رضا الطلاب وزمن الاستجابة قيم تقديرية حتى تفعيل قياسها الفعلي.'
               : ''}
           </p>
@@ -753,8 +864,41 @@ export function QualityProfessorsPage() {
       <Card
         style={{ marginBlockStart: 'var(--sp-9)' }}
         title={lowOnly ? `هيئة التدريس · بحاجة لمتابعة (${lowComp})` : 'هيئة التدريس'}
+        subtitle={total != null
+          ? `${countAr(total, ['أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً'])}${searching ? ' مطابقة للبحث' : ''}${professors.length < total ? ` · تُعرض أول ${professors.length}` : ''}`
+          : undefined}
         icon={School}
       >
+        {professors.length === 0 && searching ? (
+          <EmptyState
+            illustration="empty-search"
+            icon={School}
+            title="لا نتائج مطابقة"
+            description="لم نجد أستاذاً يطابق البحث — جرّب اسمًا آخر أو امسح البحث."
+            action={(
+              <button type="button" className="btn ghost sm" onClick={clearSearch}>
+                <Icon icon={X} size={13} />
+                مسح البحث
+              </button>
+            )}
+          />
+        ) : (
+          <>
+        {/* r183-B5: the standard roster search chrome (admin-students-
+            toolbar family) wired to the debounced server-side `q`. */}
+        <div className="admin-students-toolbar">
+          <div className="admin-students-search">
+            <Icon icon={Search} size={14} />
+            <input
+              type="search"
+              placeholder="ابحث باسم الأستاذ…"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              className="admin-students-input"
+              aria-label="البحث في الأساتذة"
+            />
+          </div>
+        </div>
         {lowOnly && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', flexWrap: 'wrap', marginBlockEnd: 'var(--sp-3)' }}>
             <Badge color="red">مصفّى: التزام أقلّ من 50%</Badge>
@@ -836,6 +980,8 @@ export function QualityProfessorsPage() {
             </tbody>
           </table>
         </div>
+          </>
+        )}
       </Card>
     </div>
   );

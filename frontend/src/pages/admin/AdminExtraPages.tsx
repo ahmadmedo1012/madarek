@@ -17,7 +17,7 @@ import { withInstitutionScope } from '../../lib/queryClient';
 import { toast } from '../../lib/toast';
 import { useFaculties, useCurrentInstitutionSlug, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
-import { TablePaginationFooter } from './AdminPages';
+import { TablePaginationFooter, useCompactRosterBand } from './AdminPages';
 // D14 css split (13-17): colleges.css has owned the admin-extras surfaces
 // (.admin-students-*, .digital-stat-*, .settings-*, .top-courses-*)
 // since "Sub-project D" — see its ownership banner. It lands in the chunk
@@ -120,6 +120,14 @@ export function AdminStudentsPage() {
     placeholderData: (prev) => prev,
   });
 
+  // r183-B5 (A8 wave-A P2): the students roster scrolled 57px sideways
+  // at 768 — the compact band (the AdminCoursesPage / QualityPages
+  // column-diet pattern) folds «السنة»+«المستوى» into the رقم القيد
+  // meta line at ≤1024 (8 → 6 columns). ≤640 keeps .tbl-stack; the
+  // folded fields stay visible in the meta line there too.
+  const compact = useCompactRosterBand();
+  const studentCols = compact ? 6 : 8;
+
   return (
     <div className="page admin-students">
       <header className="page-header">
@@ -161,8 +169,9 @@ export function AdminStudentsPage() {
         </div>
 
         {/* 8 columns — the actions header makes the skeleton advertise the
-            full column count (r157 / 6A9 #9). */}
-        {studentsQ.isPending && <TableSkeleton rows={6} cols={8} />}
+            full column count (r157 / 6A9 #9). r183-B5: the compact diet
+            renders 6 at ≤1024. */}
+        {studentsQ.isPending && <TableSkeleton rows={6} cols={studentCols} />}
         {studentsQ.isError && <ErrorState error={studentsQ.error} message="تعذّر تحميل قائمة الطلاب" onRetry={() => studentsQ.refetch()} />}
         {studentsQ.data && (
           <>
@@ -177,16 +186,20 @@ export function AdminStudentsPage() {
                     <th scope="col">الطالب</th>
                     <th scope="col">رقم القيد</th>
                     <th scope="col">الكلّيّة / القسم</th>
-                    <th scope="col">السنة</th>
+                    {/* r183-B5: folded into the رقم القيد meta line at
+                        ≤1024 (the compact band) — the fields stay on the
+                        row (the same fold grammar the courses roster
+                        uses for «تسجيلات»/«الفصول»). */}
+                    {!compact && <th scope="col">السنة</th>}
                     <th scope="col">المعدّل</th>
-                    <th scope="col">المستوى</th>
+                    {!compact && <th scope="col">المستوى</th>}
                     <th scope="col">الحالة</th>
                     <th scope="col">إجراءات</th>
                   </tr>
                 </thead>
                 <tbody>
                   {studentsQ.data.data.length === 0 && (
-                    <tr><td colSpan={8}><EmptyState illustration="empty-search" title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع." action={hasActiveFilters ? (
+                    <tr><td colSpan={studentCols}><EmptyState illustration="empty-search" title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع." action={hasActiveFilters ? (
                       <button type="button" className="btn ghost sm" onClick={clearSearch}>
                         <Icon icon={X} size={13} />
                         مسح البحث
@@ -206,16 +219,29 @@ export function AdminStudentsPage() {
                           </div>
                         </div>
                       </td>
-                      <td data-label="رقم القيد" className="font-mono">
-                        {s.studentProfile?.universityId ? <bdi>{s.studentProfile.universityId}</bdi> : '—'}
+                      <td data-label="رقم القيد">
+                        {compact ? (
+                          <div>
+                            <div className="font-mono">
+                              {s.studentProfile?.universityId ? <bdi>{s.studentProfile.universityId}</bdi> : '—'}
+                            </div>
+                            <div className="text-xxs text-subtle">
+                              السنة {s.studentProfile?.year ?? '—'} · المستوى {s.studentProfile?.level ?? '—'}
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="font-mono">
+                            {s.studentProfile?.universityId ? <bdi>{s.studentProfile.universityId}</bdi> : '—'}
+                          </span>
+                        )}
                       </td>
                       <td data-label="الكلّيّة / القسم">
                         <div>{s.studentProfile?.faculty.name ?? '—'}</div>
                         <div className="text-subtle text-xxs">{s.studentProfile?.department.name ?? ''}</div>
                       </td>
-                      <td data-label="السنة" className="font-mono">{s.studentProfile?.year ?? '—'}</td>
+                      {!compact && <td data-label="السنة" className="font-mono">{s.studentProfile?.year ?? '—'}</td>}
                       <td data-label="المعدّل" className="font-mono">{s.studentProfile?.gpa ?? '—'}</td>
-                      <td data-label="المستوى" className="font-mono">{s.studentProfile?.level ?? '—'}</td>
+                      {!compact && <td data-label="المستوى" className="font-mono">{s.studentProfile?.level ?? '—'}</td>}
                       <td data-label="الحالة">
                         <span className={`pill ${s.isActive ? 'on' : ''}`}>
                           {s.isActive ? 'نشط' : 'موقوف'}
@@ -583,7 +609,7 @@ export function AdminSettingsPage() {
           <div className="settings-row">
             <div>
               <div className="settings-label">اسم المنصّة</div>
-              <div className="settings-value">منصّة الزاوية للتعليم الذكيّ</div>
+              <div className="settings-value">مدارك — منصّة التعليم الذكي</div>
             </div>
           </div>
           <div className="settings-row">

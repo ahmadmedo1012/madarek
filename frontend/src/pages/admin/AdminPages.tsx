@@ -66,6 +66,36 @@ function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {
   );
 }
 
+/**
+ * ≤1024px compact-roster band (r183-B5, port of the QualityPages
+ * 5-A8 P2-2 pattern): .tbl-stack only arms at ≤640, so the 8-column
+ * admin rosters sideways-scrolled at 768 (courses 162px, students
+ * 57px — A8 wave-A evidence). At ≤1024 the column-diet folds the
+ * lowest-priority columns into the row's meta line instead (see
+ * AdminCoursesPage / AdminStudentsPage). One copy serves the whole
+ * admin family — AdminExtraPages imports it (same contract as
+ * TablePaginationFooter above). QualityPages keeps its own copy
+ * (file-scope wave rule — the CountIn precedent); promote both into
+ * a shared hooks module in a lib-owning wave. jsdom's matchMedia stub
+ * returns matches:false, so unit tests keep exercising the desktop
+ * path (same contract as GlobalSearch's band hook).
+ */
+export function useCompactRosterBand(): boolean {
+  const [compact, setCompact] = useState(
+    () => typeof window !== 'undefined'
+      && typeof window.matchMedia === 'function'
+      && window.matchMedia('(max-width: 1024px)').matches,
+  );
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const mq = window.matchMedia('(max-width: 1024px)');
+    const onChange = () => setCompact(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  return compact;
+}
+
 /** Quick-stat row — 5-B4 (5-A8 P1-3/§5 row 6): optionally navigable.
  *  The whole row is the target; the arrow names the direction (RTL
  *  forward = ArrowLeft). */
@@ -1566,6 +1596,14 @@ export function AdminCoursesPage() {
     return () => clearTimeout(t);
   }, [q]);
 
+  // r183-B5 (A8 wave-A P2): the 8-column roster scrolled 162px sideways
+  // at 768 — the compact band folds «تسجيلات»+«الفصول» into the row's
+  // meta line at ≤1024 (8 → 6 columns, the QualityPages column-diet
+  // pattern). ≤640 keeps the .tbl-stack card collapse; the folded counts
+  // stay visible in the meta line there too.
+  const compact = useCompactRosterBand();
+  const courseCols = compact ? 6 : 8;
+
   const coursesQ = useAdminCourses({
     page,
     limit: 20,
@@ -1635,8 +1673,9 @@ export function AdminCoursesPage() {
         </div>
 
         {/* 8 columns now — the r155c actions header made the skeleton's
-            cols={7} under-advertise the table it stands in for. */}
-        {coursesQ.isPending && <TableSkeleton rows={6} cols={8} />}
+            cols={7} under-advertise the table it stands in for.
+            r183-B5: the compact diet renders 6. */}
+        {coursesQ.isPending && <TableSkeleton rows={6} cols={courseCols} />}
         {coursesQ.isError && (
           <ErrorState
             error={coursesQ.error}
@@ -1653,9 +1692,11 @@ export function AdminCoursesPage() {
                   <th scope="col">اسم المقرّر</th>
                   <th scope="col">الكلّيّة / القسم</th>
                   <th scope="col" className="admin-table-num" style={{ width: 70 }}>س.م</th>
-                  <th scope="col" className="admin-table-num" style={{ width: 110 }}>تسجيلات</th>
+                  {/* r183-B5: folded into the name cell's meta line at
+                      ≤1024 (the compact band) — counts stay on the row. */}
+                  {!compact && <th scope="col" className="admin-table-num" style={{ width: 110 }}>تسجيلات</th>}
                   <th scope="col" className="admin-table-num" style={{ width: 100 }}>محاضرات</th>
-                  <th scope="col" className="admin-table-num" style={{ width: 100 }}>الفصول</th>
+                  {!compact && <th scope="col" className="admin-table-num" style={{ width: 100 }}>الفصول</th>}
                   {/* r155c: the rows already carried an 8th data-label cell
                       (الإجراءات — تعديل/حذف) with no matching header, and the
                       empty-state row spanned 7 of 8 columns. Follows the
@@ -1675,7 +1716,7 @@ export function AdminCoursesPage() {
               <tbody>
                 {courses.length === 0 && (
                   <tr>
-                    <td colSpan={8}>
+                    <td colSpan={courseCols}>
                       <EmptyState illustration="empty-search"
                         title="لا توجد نتائج"
                         description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع."
@@ -1697,7 +1738,16 @@ export function AdminCoursesPage() {
                         {c.themeColor && (
                           <span className="admin-course-tint" style={{ background: c.themeColor }} aria-hidden />
                         )}
-                        <span className="font-semibold" style={{ color: 'var(--text)' }}>{c.name}</span>
+                        <div>
+                          <span className="font-semibold" style={{ color: 'var(--text)' }}>{c.name}</span>
+                          {compact && (
+                            <div className="text-xxs text-subtle">
+                              {countAr(c.totalEnrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'])}
+                              {' · '}
+                              {countAr(c.offeringCount, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td data-label="الكلّيّة / القسم">
@@ -1712,9 +1762,9 @@ export function AdminCoursesPage() {
                       )}
                     </td>
                     <td className="admin-table-num font-mono" data-label="ساعات معتمدة">{c.credits}</td>
-                    <td className="admin-table-num font-mono" data-label="تسجيلات">{c.totalEnrollments}</td>
+                    {!compact && <td className="admin-table-num font-mono" data-label="تسجيلات">{c.totalEnrollments}</td>}
                     <td className="admin-table-num font-mono" data-label="محاضرات">{c.totalLectures}</td>
-                    <td className="admin-table-num font-mono" data-label="الفصول">{c.offeringCount}</td>
+                    {!compact && <td className="admin-table-num font-mono" data-label="الفصول">{c.offeringCount}</td>}
                     {/* r157 (6A9 #9): font-mono dropped — the actions cell
                         carries Arabic button labels, not figures; the mono
                         face was a copy-paste from the numeric neighbors.

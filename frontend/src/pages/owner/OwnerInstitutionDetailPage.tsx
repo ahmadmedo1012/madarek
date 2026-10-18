@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  Plus, Landmark, ChevronDown, Building2, Users,
+  Plus, Landmark, ChevronDown, ChevronLeft, ChevronRight, Building2, Users,
   School, AlertTriangle, X, ArrowLeft, BookOpen,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, AlertRow, FormField } from '../../components/primitives';
@@ -61,16 +61,69 @@ const STATUS_LABELS: Record<OwnerInstitution['status'], string> = {
   SUSPENDED: 'معلّقة',
 };
 
+/* ── The faculty census (r183-B5, A9 wave-A P1) ─────────────────── */
+
+/** One renderable faculty card: the row + how many identical empty
+ * seed rows were folded into it (1 = nothing folded). Exported pure
+ * so the fold rule is pinned DB-free (the pageList precedent). */
+export interface FacultyCensusEntry {
+  faculty: AdminFaculty;
+  duplicateCount: number;
+}
+
+/**
+ * r183-B5 (A9 wave-A P1 — the duplicate seed census): the raw
+ * /admin/faculties listing may carry byte-identical seed rows — same
+ * name AND city (the documented uniqueness key) with zero counts —
+ * which rendered as N indistinguishable «0 قسماً 0 مقرّراً 0 طالباً»
+ * cards burying the real faculties. The census folds every such
+ * duplicate group into ONE card (annotated «سجلّ مكرّر ×N» — the DB
+ * rows stay untouched, the fold is display-only and says so); rows
+ * with real content are never folded, and same-name faculties in
+ * different cities render separately (the card meta now shows the
+ * city, so they are distinguishable at last). Pure + order-preserving.
+ */
+export function dedupeFacultyCensus(
+  faculties: ReadonlyArray<AdminFaculty>,
+): FacultyCensusEntry[] {
+  const groups = new Map<string, AdminFaculty[]>();
+  for (const f of faculties) {
+    const key = `${f.name.trim()}\u0000${f.city.trim()}`;
+    const bucket = groups.get(key);
+    if (bucket) bucket.push(f);
+    else groups.set(key, [f]);
+  }
+  const out: FacultyCensusEntry[] = [];
+  for (const bucket of groups.values()) {
+    const foldable =
+      bucket.length > 1 &&
+      bucket.every(
+        (f) => f.departmentCount === 0 && f.courseCount === 0 && f.studentCount === 0,
+      );
+    if (foldable) {
+      // Non-empty by construction (buckets are created with the first
+      // row) — the assertion is the family's indexed-access idiom.
+      out.push({ faculty: bucket[0]!, duplicateCount: bucket.length });
+    } else {
+      for (const f of bucket) out.push({ faculty: f, duplicateCount: 1 });
+    }
+  }
+  return out;
+}
+
 /* ── A faculty card in the owner's institution context ─────────── */
 
 function OwnerFacultyCard({
-  faculty, open, onToggle, onAddDepartment, writesDisabled,
+  faculty, open, onToggle, onAddDepartment, writesDisabled, duplicateCount = 1,
 }: {
   faculty: AdminFaculty;
   open: boolean;
   onToggle: () => void;
   onAddDepartment: () => void;
   writesDisabled: boolean;
+  /** >1 when identical empty seed rows were folded into this card
+   * (r183-B5, A9 P1) — the badge names the fold, the DB rows stay. */
+  duplicateCount?: number;
 }) {
   const hasDepts = faculty.departments.length > 0;
   const head = (
@@ -81,6 +134,13 @@ function OwnerFacultyCard({
       <div className="admin-faculty-body">
         <div className="admin-faculty-titles">
           <span className="admin-faculty-name">{faculty.name}</span>
+          {duplicateCount > 1 && (
+            <span
+              title={`${duplicateCount} سجلات متطابقة بلا محتوى في قاعدة البيانات — تُعرض هنا مجمّعةً في بطاقة واحدة، والسجلات كما هي`}
+            >
+              <Badge>سجلّ مكرّر ×{duplicateCount}</Badge>
+            </span>
+          )}
           {faculty.nameEn && (
             <span className="admin-faculty-name-en font-mono text-xs text-subtle">
               · <bdi>{faculty.nameEn}</bdi>
@@ -88,6 +148,10 @@ function OwnerFacultyCard({
           )}
         </div>
         <div className="admin-faculty-meta">
+          {/* r183-B5 (A9 P1): the city rides every card — name+city is
+              the uniqueness key, so same-name faculties in different
+              cities are finally distinguishable. */}
+          <span>{faculty.city.trim() || '—'}</span>
           <span>{countAr(faculty.departmentCount, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}</span>
           <span>{countAr(faculty.courseCount, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}</span>
           <span>{countAr(faculty.studentCount, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
@@ -350,6 +414,12 @@ export function OwnerInstitutionDetailPage() {
 
   const faculties = facultiesQ.data ?? [];
   const totalDepartments = faculties.reduce((s, f) => s + f.departmentCount, 0);
+  /* r183-B5 (A9 P1): the census — duplicate empty seed rows (same
+   * name+city, zero counts) fold into one annotated card; the RAW
+   * count still drives the KPIs (the DB census is the truth, the
+   * fold is display-only and says so in the subtitle). */
+  const facultyCensus = dedupeFacultyCensus(faculties);
+  const foldedRows = facultyCensus.reduce((s, e) => s + (e.duplicateCount - 1), 0);
   const mutationBusy =
     createFaculty.isPending || createDepartment.isPending ||
     createCourse.isPending || createOffering.isPending;
@@ -405,7 +475,7 @@ export function OwnerInstitutionDetailPage() {
         style={{ marginBlockStart: 'var(--sp-9)' }}
         title="البنية الأكاديمية"
         icon={Building2}
-        subtitle={`${countAr(faculties.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} · ${countAr(totalDepartments, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}`}
+        subtitle={`${countAr(faculties.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} · ${countAr(totalDepartments, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}${foldedRows > 0 ? ` · ${foldedRows} سجلّ بذر مكرّر مُجمَّع` : ''}`}
       >
         <div className="admin-students-toolbar">
           <button
@@ -426,13 +496,14 @@ export function OwnerInstitutionDetailPage() {
         )}
         {facultiesQ.data && (
           <div className="flex-col gap-3">
-            {faculties.map((f) => (
+            {facultyCensus.map((entry) => (
               <OwnerFacultyCard
-                key={f.id}
-                faculty={f}
-                open={openDepts.has(f.id)}
-                onToggle={() => toggleDepts(f.id)}
-                onAddDepartment={() => openDeptForm(f)}
+                key={entry.faculty.id}
+                faculty={entry.faculty}
+                duplicateCount={entry.duplicateCount}
+                open={openDepts.has(entry.faculty.id)}
+                onToggle={() => toggleDepts(entry.faculty.id)}
+                onAddDepartment={() => openDeptForm(entry.faculty)}
                 writesDisabled={suspended}
               />
             ))}
@@ -539,13 +610,18 @@ export function OwnerInstitutionDetailPage() {
                   صفحة {coursesMeta.page.toLocaleString('ar-LY')} من {coursesMeta.totalPages.toLocaleString('ar-LY')} · {countAr(coursesMeta.total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}
                 </span>
                 <span className="table-row-actions">
+                  {/* r183-B5 (A10 wave-A P2 — RTL directionality): «السابق»
+                      points RIGHT (backward in RTL) and «التالي» points
+                      LEFT (forward) — the MessagesInbox convention, replacing
+                      the per-instance scaleX(-1) mirror that swapped the
+                      semantics on every other paginated surface. */}
                   <button
                     type="button"
                     className="btn ghost sm"
                     disabled={coursePage <= 1 || coursesQ.isFetching}
                     onClick={() => setCoursePage((p) => Math.max(1, p - 1))}
                   >
-                    <Icon icon={ArrowLeft} size={13} />
+                    <Icon icon={ChevronRight} size={13} />
                     السابق
                   </button>
                   <button
@@ -555,7 +631,7 @@ export function OwnerInstitutionDetailPage() {
                     onClick={() => setCoursePage((p) => p + 1)}
                   >
                     التالي
-                    <Icon icon={ArrowLeft} size={13} style={{ transform: 'scaleX(-1)' }} />
+                    <Icon icon={ChevronLeft} size={13} />
                   </button>
                 </span>
               </div>
@@ -739,7 +815,11 @@ export function OwnerInstitutionDetailPage() {
               )}
             </select>
           </FormField>
-          <FormField label="الساعات المعتمدة" id="owner-course-credits">
+          <FormField
+            label="الساعات المعتمدة"
+            id="owner-course-credits"
+            hint="بين 1 و10 — الحدّ الذي يقبله الخادم؛ الزرّ يبقى معطّلًا خارجه"
+          >
             <input
               className="input"
               type="number"
@@ -758,7 +838,17 @@ export function OwnerInstitutionDetailPage() {
             type="button"
             className="btn primary"
             onClick={submitCourse}
-            disabled={!courseForm.code || !courseForm.name || !courseForm.departmentId || createCourse.isPending}
+            disabled={
+              !courseForm.code
+              || !courseForm.name
+              || !courseForm.departmentId
+              // r183-B5 (A9 P3): the client mirror of the backend zod
+              // bounds (min 1 / max 10). Number('') → 0 and NaN both
+              // fail the range check, so a cleared input can never ride
+              // the 400 round-trip.
+              || !(courseForm.credits >= 1 && courseForm.credits <= 10)
+              || createCourse.isPending
+            }
           >
             {createCourse.isPending ? 'جارٍ الحفظ…' : 'إضافة المقرّر'}
           </button>

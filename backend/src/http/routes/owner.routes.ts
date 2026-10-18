@@ -145,6 +145,23 @@ router.get(
             avatarInitials: true,
             isActive: true,
             createdAt: true,
+            /* r183-B5 (A9 wave-A P2 — the directory's institution scope):
+             * the ACTIVE memberships + institution identity, so the
+             * console's most powerful mutations (role change, disable)
+             * can name the institution(s) a user belongs to. Additive
+             * field — the r178 courseInstitutionSelect convention;
+             * deterministic order so the chips render stably. Revoked
+             * memberships stay out (the institutions console owns that
+             * view); a user with none renders the honest «بلا مؤسسة». */
+            memberships: {
+              where: { isActive: true },
+              select: {
+                institution: {
+                  select: { id: true, name: true, slug: true, status: true },
+                },
+              },
+              orderBy: [{ institution: { name: 'asc' } }],
+            },
           },
         }),
         prisma.user.count({ where }),
