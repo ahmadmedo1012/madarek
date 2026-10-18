@@ -89,7 +89,7 @@
     font-size: 14px; /* type-gate: allow — sidebar wordmark glyph (font-display brand tile) */
   }
   [data-theme="dark"] .sidebar-brand-mark { background: var(--accent); color: var(--accent-fg); }
-  .sidebar-brand-text { display: flex; flex-direction: column; gap: 2px; min-inline-size: 0; flex: 1; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة */
+  .sidebar-brand-text { display: flex; flex-direction: column; gap: var(--sp-0-5); min-inline-size: 0; flex: 1; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة */
   .sidebar-brand-name {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
@@ -107,14 +107,14 @@
   .nav-group {
     display: flex;
     flex-direction: column;
-    gap: 2px; /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية */
+    gap: var(--sp-0-5); /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية */
     padding-block: var(--sp-2);
   }
   .nav-section-label {
     font-size: var(--fs-xxs);
     color: var(--text-muted);
     font-weight: var(--fw-semibold);
-    padding: var(--sp-2) var(--sp-3) 4px;
+    padding: var(--sp-2) var(--sp-3) var(--sp-1);
     letter-spacing: 0;
   }
 
@@ -192,7 +192,7 @@
     /* wave 2-b: was the raw 10px sub-token floor — lifted to --fs-xxs
        (11px) per the craft-floor font sweep. */
     font-size: var(--fs-xxs);
-    padding: 2px var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 (كانت 2/7) */
+    padding: var(--sp-0-5) var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 (كانت 2/7) */
     border-radius: var(--r-full);
     background: var(--surface-3);
     color: var(--text-muted);
@@ -226,7 +226,7 @@
     transition: background var(--t-fast) var(--ease);
   }
   .sidebar-user:hover { background: var(--sidebar-item-hover-bg); }
-  .sidebar-user-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-inline-size: 0; } /* r149 (R3-A2 R6): 1px → 2px */
+  .sidebar-user-info { display: flex; flex-direction: column; gap: var(--sp-0-5); flex: 1; min-inline-size: 0; } /* r149 (R3-A2 R6): 1px → 2px */
   .sidebar-user-name {
     font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -522,7 +522,7 @@
        the old physical shorthand `4px 10px 4px 4px` put the wide inset
        on the avatar side in RTL. */
     padding-block: var(--sp-1);
-    padding-inline: var(--sp-1) 10px;
+    padding-inline: var(--sp-1) var(--sp-2-5);
     border-radius: var(--r-full);
     border: 1px solid var(--rule);
     background: var(--surface);
@@ -593,7 +593,7 @@
     align-items: center;
     justify-content: center;
     min-inline-size: 22px;
-    padding: 2px var(--sp-1);
+    padding: var(--sp-0-5) var(--sp-1);
     font-family: var(--font-mono);
     font-size: var(--fs-xxs);
     color: var(--text-muted);
@@ -649,7 +649,7 @@
     padding: var(--sp-2);
   }
   .search-section-label {
-    margin-block-end: 4px;
+    margin-block-end: var(--sp-1);
   }
   .search-row {
     border-radius: var(--r-sm);
@@ -778,7 +778,7 @@
     min-inline-size: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--sp-0-5);
   }
   .search-row-title {
     font-weight: var(--fw-semibold);
@@ -875,7 +875,7 @@
     background: var(--surface-2);
     border: 1px solid var(--rule);
     color: var(--text-secondary);
-    padding: 4px 12px;
+    padding: var(--sp-1) var(--sp-3);
     border-radius: var(--r-full);
     font-size: var(--fs-xs);
     cursor: pointer;
@@ -934,7 +934,7 @@
     background: var(--surface-2);
     border: 1px solid var(--rule);
     border-radius: var(--r-full);
-    padding: 3px;
+    padding: 3px; /* spacing-gate: allow — theme-toggle track inset — thumb geometry, not a scale rung */
     gap: 0;
   }
   .theme-toggle-option {

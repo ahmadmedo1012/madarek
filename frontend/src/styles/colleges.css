@@ -149,7 +149,7 @@
   font-size: var(--type-label-size-sm);
   font-weight: var(--type-label-weight);
   color: var(--text-muted);
-  margin-block-start: 2px;
+  margin-block-start: var(--sp-0-5);
   /* P3-2 (A12): one line — long English names (Physical Education &
      Sports) wrapped and split the grid into two card height classes
      (223/260px). The full name rides the title attribute set in
@@ -235,7 +235,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  padding: 8px var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
   border: 1px solid var(--rule);
   border-radius: var(--r-full);
   background: var(--surface);
@@ -280,7 +280,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  padding: 8px var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
   background: transparent;
   border: none;
   color: var(--text-muted);
@@ -588,7 +588,7 @@
      polish.css's .landing-campus-eyebrow: size + weight + color only. */
   letter-spacing: normal;
   text-transform: none;
-  margin-block-end: 4px;
+  margin-block-end: var(--sp-1);
 }
 .college-hero-name {
   font-size: var(--type-headline-size-lg);
@@ -601,7 +601,7 @@
 .college-hero-sub {
   font-size: var(--fs-sm);
   color: var(--text-muted);
-  margin-block-start: 4px;
+  margin-block-start: var(--sp-1);
 }
 
 /* ── Two-column section grid ───────────────────────────────── */
@@ -643,7 +643,7 @@
 .leadership-row-role {
   font-size: var(--fs-xs);
   color: var(--text-muted);
-  margin-block-start: 2px;
+  margin-block-start: var(--sp-0-5);
 }
 
 /* ── Department rows ──────────────────────────────────────── */
@@ -779,7 +779,7 @@
 .live-meta {
   font-size: var(--fs-xxs);
   color: var(--text-muted);
-  margin-block-start: 4px;
+  margin-block-start: var(--sp-1);
   display: inline-flex;
   flex-wrap: wrap;
   gap: var(--sp-2);
@@ -818,7 +818,7 @@
   display: inline-flex;
   flex-wrap: wrap;
   gap: var(--sp-1);
-  margin-block-start: 4px;
+  margin-block-start: var(--sp-1);
   font-size: var(--fs-xxs);
   color: var(--text-muted);
 }
@@ -982,7 +982,7 @@ a.comp-card:focus-visible .comp-go {
 .leaderboard-college-meta {
   font-size: var(--fs-xxs);
   color: var(--text-muted);
-  margin-block-start: 2px;
+  margin-block-start: var(--sp-0-5);
 }
 .leaderboard-cell {
   white-space: nowrap;
@@ -1219,7 +1219,7 @@ a.comp-card:focus-visible .comp-go {
 .comp-entry-meta {
   font-size: var(--fs-xxs);
   color: var(--text-muted);
-  margin-block-start: 2px;
+  margin-block-start: var(--sp-0-5);
 }
 .comp-entry-text {
   font-size: var(--fs-sm);

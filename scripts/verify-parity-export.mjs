@@ -281,6 +281,8 @@ const CHECKS = [
   ['root', '--r-full', '9999px', 'pill radius'],
   // ── :root primitives — spacing ──
   ['root', '--sp-1', '4px', 'spacing base'],
+  ['root', '--sp-0-5', '2px', 'r185 micro rung (chip 2/8 ladder + optical nudges)'],
+  ['root', '--sp-2-5', '10px', 'r185 compact-control rung'],
   ['root', '--sp-7', '32px', 'divergent revision had 28px'],
   ['root', '--sp-8', '40px', 'divergent revision had 32px'],
   ['root', '--sp-10', '56px', 'missing from the divergent revision'],

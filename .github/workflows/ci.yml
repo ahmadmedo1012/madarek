@@ -220,7 +220,7 @@ jobs:
           retention-days: 7
 
   design-gates:
-    name: Design gates (icons + motion + colors + raw-css type/radius + parity + CSP)
+    name: Design gates (icons + motion + colors + raw-css type/radius/spacing + parity + CSP)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -247,9 +247,16 @@ jobs:
       # r184 (Phase I — عقد A3 T1/R1): بوابات الخط/نصف القطر الخام —
       # كل font-size/border-radius خارج نظام التوكنات يفشل CI إلا في
       # المناطق المعفاة (tokens/fonts/parity/landing/colleges) أو بسطر
-      # سماح موثق. الفراغات تبقى جردًا مرئيًا (نفس مسار r149→r150a
-      # للبوابات قبل التفرغ للتثبيت).
+      # سماح موثق. r185 أضافت محور الفراغات إلى نفس البوابة الصارمة
+      # (مسار r150a الكامل: جرد 160 ← ترحيل 192 + 3 درجات calc +
+      # 37 استثناءً مُعلَّلًا ← صفر) بمحرّك هيكلي جديد على مستوى
+      # الإعلان، ونطاق فراغات مستقلًا: 17 ورقة (تطبيق + colleges +
+      # زوج parity)، وlanding جردُ إيقاعٍ مرئيًا.
       - run: bash scripts/check-raw-css.sh --strict
+      # r185-B2: حصن البوابة نفسها — 31 حالة طفرية على تركيبات
+      # اصطناعية تثبت أن كل فئة عمياء تُكتشف وأن العلامات المعيبة
+      # تُرفض وأن الفشل يُغلق مغلقًا. تعمل بلا node_modules.
+      - run: bash scripts/test-raw-css-gate.sh
 
   surface-drift:
     name: Surface drift

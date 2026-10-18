@@ -9,7 +9,7 @@
   flex-direction: column;
   gap: 0;
   position: relative;
-  padding-inline-start: 24px;
+  padding-inline-start: var(--sp-6);
 }
 
 .owner-timeline::before {
@@ -31,8 +31,8 @@
 .owner-timeline-item {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
   position: relative;
   border-bottom: 1px solid var(--border);
   transition: background var(--t-fast) var(--ease), border-radius var(--t-fast) var(--ease);
@@ -111,7 +111,7 @@
 .owner-toggle-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--sp-3);
   padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
   border-bottom: 1px solid var(--border);
 }
@@ -211,7 +211,7 @@
 .owner-toggle-label {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--sp-0-5);
   flex: 1;
   /* the label text toggles too (ToggleSwitch.tsx wave 3-c) — native
      label-for behavior for a switch row */
@@ -350,11 +350,11 @@
      motion language. */
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-2);
   cursor: pointer;
   font-size: var(--fs-sm);
   inline-size: 100%;
-  padding: 2px 0;
+  padding: var(--sp-0-5) 0;
   background: none;
   border: none;
   border-radius: var(--r-xs);
@@ -399,8 +399,8 @@
 }
 
 .owner-error-entry-stack {
-  margin-top: 8px;
-  padding: 8px 12px;
+  margin-top: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
   background: var(--surface-2);
   border-radius: var(--r-sm);
   font-family: var(--font-mono);
@@ -435,7 +435,7 @@
 .owner-user-cell {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--sp-2-5);
 }
 
 .owner-user-cell .name {
@@ -461,7 +461,7 @@
   flex: 1;
   max-width: 360px;
   /* r149 (R3-A2 #11): المحاذاة الكنونية 16px (كانت 14 خامًا) */
-  padding: 8px var(--sp-4);
+  padding: var(--sp-2) var(--sp-4);
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-md);
@@ -572,7 +572,7 @@
 .owner-meta-preview {
   /* r153h: 6px → --sp-1-5 (الـ10px خارج السلم — دين منفصل) */
   margin-top: var(--sp-1-5);
-  padding: var(--sp-1-5) 10px;
+  padding: var(--sp-1-5) var(--sp-2-5);
   background: var(--surface-2);
   border-radius: var(--r-sm);
   font-family: var(--font-mono);
@@ -1022,7 +1022,7 @@
 .owner-timeline-meta {
   font-size: var(--fs-xs);
   color: var(--text-muted);
-  margin-block-start: 2px;
+  margin-block-start: var(--sp-0-5);
 }
 
 .owner-timeline-email {
@@ -1044,9 +1044,9 @@
 .owner-detail-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
   margin-block-start: var(--sp-1);
-  padding: 2px 4px;
+  padding: var(--sp-0-5) var(--sp-1);
   background: none;
   border: none;
   border-radius: var(--r-xs);
@@ -1123,7 +1123,7 @@
 .owner-timeline-skel {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--sp-3);
   padding: var(--sp-3) var(--sp-2);
 }
 
@@ -1400,7 +1400,7 @@
 
 .owner-brand-notice > svg {
   flex-shrink: 0;
-  margin-block-start: 2px;
+  margin-block-start: var(--sp-0-5);
 }
 
 .owner-swatch-grid {

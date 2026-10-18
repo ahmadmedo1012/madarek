@@ -34,7 +34,7 @@
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: 8px var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
   background: var(--surface-1);
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
@@ -461,19 +461,19 @@
   border-radius: var(--r-sm);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 .annotation-item-head {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-2);
   flex-wrap: wrap;
 }
 .annotation-jump {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: var(--sp-1-5) 10px; /* r153h: 6px → --sp-1-5 (الـ10px خارج السلم — دين منفصل) */
+  gap: 3px; /* spacing-gate: allow — annotation jump-link arrow-to-label hairline gap */
+  padding: var(--sp-1-5) var(--sp-2-5); /* r153h: 6px → --sp-1-5 (الـ10px خارج السلم — دين منفصل) */
   background: var(--accent-soft);
   color: var(--accent-ink, var(--accent));
   border: 0;

@@ -394,7 +394,7 @@
     min-inline-size: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--sp-0-5);
   }
   .lesson-row-title {
     font-size: var(--fs-sm);
@@ -639,7 +639,7 @@
   .badge-tile-rarity {
     display: inline-flex;
     align-items: center;
-    padding: 2px var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 */
+    padding: var(--sp-0-5) var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 */
     border-radius: var(--r-full);
     font-size: var(--fs-xxs);
     font-weight: var(--fw-semibold);

@@ -378,7 +378,7 @@
      down to icons too. */
   @media (min-width: 921px) {
     .sidebar.collapsed {
-      padding-inline: 8px;
+      padding-inline: var(--sp-2);
     }
     .sidebar.collapsed .sidebar-brand {
       justify-content: center;
@@ -395,7 +395,7 @@
     }
     .sidebar.collapsed .nav-item {
       grid-template-columns: 22px;
-      padding: 8px;
+      padding: var(--sp-2);
       justify-content: center;
     }
     .sidebar.collapsed .nav-icon {
@@ -433,7 +433,7 @@
       inset-inline-start: calc(100% + 8px);
       inset-block-start: 50%;
       transform: translateY(-50%);
-      padding: 4px 10px;
+      padding: var(--sp-1) var(--sp-2-5);
       background: var(--text);
       color: var(--bg);
       font-size: var(--fs-xxs);
@@ -836,7 +836,7 @@
     background: var(--surface-2);
     border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--rule));
     border-radius: var(--r-full);
-    padding: 3px 10px;
+    padding: 3px var(--sp-2-5); /* spacing-gate: allow — topbar scope chip micro grade 3/10 vertical hairline */
     margin-inline-start: var(--sp-2);
     white-space: nowrap;
   }
@@ -928,7 +928,7 @@
     border: solid var(--accent-fg, white);
     border-width: 0 0 2px 2px;
     transform: rotate(-45deg) translate(1px, -1px);
-    margin-block-start: -2px;
+    margin-block-start: calc(-1 * var(--sp-0-5));
   }
 
   /* Radio dot */
@@ -1129,7 +1129,7 @@
      its weight so it doesn't fight the page title for attention. */
   .topbar-actions .btn.primary.sm {
     height: 32px;
-    padding-inline: 12px;
+    padding-inline: var(--sp-3);
     font-size: var(--fs-xs); /* r157: 12.5px → --fs-xs (تقريب نصف بكسل مقصود) */
     font-weight: 600;
   }
@@ -1201,7 +1201,7 @@
   /* (WS-D2 orphan sweep: the .notif-panel container override was dead —
      the NotificationPanel primitive owns the container surface.) */
   .notif-panel-head {
-    padding: 14px 16px;
+    padding: 14px var(--sp-4); /* spacing-gate: allow — panel head compact band grade 14/16 */
     background: linear-gradient(180deg,
       var(--surface) 0%,
       color-mix(in srgb, var(--surface) 96%, var(--accent-soft)) 100%);
@@ -1218,7 +1218,7 @@
   /* Items get tighter padding + a subtle hairline between rows so the panel
      reads as a stack rather than a wall of buttons */
   .notif-item {
-    padding: 12px 16px;
+    padding: var(--sp-3) var(--sp-4);
     border-block-end: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
     /* (4-A11 P2-10: the hover affordance used to grow
        padding-inline-start 16→18px — text reflow on every hover of
@@ -1238,7 +1238,7 @@
     border-radius: var(--r-md);
     flex-shrink: 0;
     align-self: flex-start;
-    margin-block-start: 2px;
+    margin-block-start: var(--sp-0-5);
   }
   .notif-item-title {
     font-size: var(--fs-sm); /* r157: 13px → --fs-sm (exact) */
@@ -1250,7 +1250,7 @@
     color: var(--text-muted);
     font-size: var(--fs-xs); /* r157: 12px → --fs-xs (exact) */
     line-height: 1.5;
-    margin-block-start: 2px;
+    margin-block-start: var(--sp-0-5);
     /* Clamp to 2 lines so a noisy notification doesn't blow up the panel */
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -1297,7 +1297,7 @@
     border-radius: var(--r-full);
     background: var(--surface-2);
     color: var(--text-subtle);
-    margin: 0 auto 12px;
+    margin: 0 auto var(--sp-3);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1308,7 +1308,7 @@
      is the overrides-layer winner for the well's geometry/radius.) */
 
   .notif-panel-foot {
-    padding: 10px 16px;
+    padding: var(--sp-2-5) var(--sp-4);
     border-block-start: 1px solid var(--rule);
     background: var(--surface-2);
   }
@@ -1387,7 +1387,7 @@
     font-weight: var(--fw-bold);
     background: var(--surface-2);
     color: var(--text-muted);
-    padding: 2px var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 (كانت 1/6) */
+    padding: var(--sp-0-5) var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 (كانت 1/6) */
     border-radius: var(--r-full);
     font-variant-numeric: tabular-nums;
   }
@@ -1640,7 +1640,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (max-width: 920px) {
     .page {
-      padding-block-end: calc(64px + env(safe-area-inset-bottom) + var(--sp-4));
+      padding-block-end: calc(64px + env(safe-area-inset-bottom) + var(--sp-4)); /* spacing-gate: allow — sticky topbar height constant 64px + safe-area + rung — page chrome clearance */
     }
   }
 
@@ -1658,7 +1658,7 @@
   @media (max-width: 640px) {
     .btn { min-block-size: 44px; }
     .btn.sm { min-block-size: 44px; }
-    .bottom-nav-item { min-block-size: 52px; padding-block: 8px; }
+    .bottom-nav-item { min-block-size: 52px; padding-block: var(--sp-2); }
   }
 
 
@@ -2369,7 +2369,7 @@
     position: absolute;
     inset: -1px;
     border-radius: inherit;
-    padding: 1px;
+    padding: 1px; /* spacing-gate: allow — gradient focus ring: padding IS the 1px ring thickness, a shape construct */
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--accent) 35%, transparent) 0%,
@@ -3882,7 +3882,7 @@
       display: none !important;
     }
     .has-shell { grid-template-columns: 1fr !important; }
-    .page { padding: 16px !important; }
+    .page { padding: var(--sp-4) !important; }
 
     /* D4. Freeze every effect: motion, shadows, glass, text-shadow. */
     *, *::before, *::after {

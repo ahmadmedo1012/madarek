@@ -305,7 +305,7 @@
        228px expanded (a 48px delta no media query can see). */
     container: kpis / inline-size;
   }
-  .compact-kpi { display: flex; flex-direction: column; gap: 2px; padding: var(--sp-2); }
+  .compact-kpi { display: flex; flex-direction: column; gap: var(--sp-0-5); padding: var(--sp-2); }
   .compact-kpi-label { font-size: var(--type-label-size-sm); color: var(--text-muted); }
   .compact-kpi-value { font-size: var(--type-headline-size-sm); font-weight: var(--fw-bold); color: var(--text); font-variant-numeric: tabular-nums; }
   .compact-kpi-trend { font-size: var(--fs-xxs); color: var(--text-muted); }
@@ -682,7 +682,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--sp-1-5); /* r149 (R3-A2 #1) */
-    padding: 7px 14px;
+    padding: 7px 14px; /* spacing-gate: allow — pill grade 7/14 — compact control padding below the sp-3 rung */
     border-radius: var(--r-full);
     font-size: var(--type-label-size-sm);
     font-weight: var(--fw-semibold);
@@ -836,7 +836,7 @@
     inline-size: 8px; block-size: 8px;
     border-radius: 50%;
     background: var(--accent);
-    margin-block-start: 7px;
+    margin-block-start: 7px; /* spacing-gate: allow — alert-dot optical baseline against the adjacent text line */
     flex-shrink: 0;
   }
   .alert.red    .alert-dot { background: var(--danger); }
@@ -853,7 +853,7 @@
   .alert-body { display: flex; flex-direction: column; gap: var(--sp-1); min-inline-size: 0; flex: 1; }
   .alert-title { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--type-label-size); }
   .alert-desc  { font-size: var(--type-label-size); color: var(--text-secondary); line-height: var(--lh-base); }
-  .alert-time  { font-size: var(--fs-xxs); color: var(--text-muted); margin-block-start: 2px; }
+  .alert-time  { font-size: var(--fs-xxs); color: var(--text-muted); margin-block-start: var(--sp-0-5); }
   /* r166a (E1 unread-visibility defect): the alerts page's read/unread
      rows carried the SAME surface, border and title weight — the state
      lived only in a small «غير مقروء» Badge, so the list could not be
@@ -1336,7 +1336,7 @@
                 0 12px 40px -8px color-mix(in srgb, var(--c-copper-deep) 50%, transparent);
     transform: scale(1.05);
   }
-  .dash-gpa-text { display: flex; flex-direction: column; gap: 2px; }
+  .dash-gpa-text { display: flex; flex-direction: column; gap: var(--sp-0-5); }
   .dash-gpa-value {
     font-family: var(--font-display);
     font-size: var(--type-metric-size-xl);
@@ -1354,7 +1354,7 @@
   .dash-progress-note {
     font-size: var(--fs-xs);
     color: var(--text-muted);
-    padding-inline-start: 2px;
+    padding-inline-start: var(--sp-0-5);
   }
 
   .dash-doughnut {
@@ -1456,7 +1456,7 @@
     background: var(--c-rose-bg);
     color: var(--c-rose-deep);
   }
-  .dash-agenda-text { display: flex; flex-direction: column; gap: 2px; min-inline-size: 0; flex: 1; }
+  .dash-agenda-text { display: flex; flex-direction: column; gap: var(--sp-0-5); min-inline-size: 0; flex: 1; }
   .dash-agenda-title { font-weight: var(--fw-semibold); font-size: var(--fs-sm); color: var(--text); }
   .dash-agenda-meta  { font-size: var(--fs-xs); color: var(--text-muted); }
 
@@ -1478,7 +1478,7 @@
      (label/button/a داخل ExamAuthorPages) — الصفوف الساكنة
      (TemplateRow/QuestionBankRow/المحاولات) لا تُضاء كاذبة. */
   label.list-row:hover, button.list-row:hover, a.list-row:hover { background: var(--surface-2); }
-  .list-row-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-inline-size: 0; }
+  .list-row-body { display: flex; flex-direction: column; gap: var(--sp-0-5); flex: 1; min-inline-size: 0; }
   .list-row-title { font-weight: var(--fw-semibold); font-size: var(--type-label-size); color: var(--text); }
   .list-row-sub   { font-size: var(--type-label-size-sm); color: var(--text-muted); }
   .list-row-meta  { font-size: var(--type-label-size-sm); color: var(--text-muted); flex-shrink: 0; }
@@ -1500,7 +1500,7 @@
   .queue-group-head {
     display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap;
   }
-  .queue-group-main { display: flex; flex-direction: column; gap: 2px; flex: 1; min-inline-size: 0; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة */
+  .queue-group-main { display: flex; flex-direction: column; gap: var(--sp-0-5); flex: 1; min-inline-size: 0; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة */
   .queue-group-title {
     font-weight: var(--fw-semibold);
     font-size: var(--type-label-size);
@@ -1895,7 +1895,7 @@
 
   .kbd {
     display: inline-flex; align-items: center; justify-content: center;
-    min-inline-size: 22px; padding: 2px 7px;
+    min-inline-size: 22px; padding: var(--sp-0-5) 7px; /* spacing-gate: allow — kbd key-cap glyph inset — rides the glyph ladder, not the spacing scale */
     font-family: var(--font-mono);
     font-size: var(--fs-xxs);
     color: var(--text-muted);
@@ -2444,7 +2444,7 @@
   .onboarding-flow-dots {
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: var(--sp-2);
     padding-block: var(--sp-2);
   }
   .onboarding-flow-dot {
@@ -2849,7 +2849,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--sp-1) var(--sp-2);
-    margin-block-start: 2px;
+    margin-block-start: var(--sp-0-5);
     font-size: var(--fs-xs);
     color: var(--text-muted);
   }
@@ -2874,7 +2874,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 2px;
+    gap: var(--sp-0-5);
     margin-inline-start: auto; /* wraps under on narrow screens, stays end-aligned */
     text-align: end;
     flex-shrink: 0;
@@ -2969,7 +2969,7 @@
   .perm-row-info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--sp-0-5);
     min-inline-size: 0;
   }
   .perm-row-title {
@@ -3107,7 +3107,7 @@
   .trend-bars {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 3px; /* spacing-gate: allow — trend sparkline hairline bar separation */
     flex: 1;
     min-inline-size: 0;
   }
@@ -3233,7 +3233,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--sp-1);
-    padding: 3px var(--sp-2);
+    padding: 3px var(--sp-2); /* spacing-gate: allow — verified-badge micro grade 3/8 vertical hairline */
     border-radius: var(--r-full);
     background: var(--success-soft);
     color: var(--success-ink);
@@ -3364,7 +3364,7 @@
     accent-color: var(--accent);
     inline-size: 16px;
     block-size: 16px;
-    margin-block-start: 3px; /* optical baseline with the first text line */
+    margin-block-start: 3px; /* optical baseline with the first text line */ /* spacing-gate: allow — radio-dot optical baseline with the first choice text line */
     flex-shrink: 0;
     cursor: inherit;
   }
@@ -3983,7 +3983,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-inline-start: 4px;
+    margin-inline-start: var(--sp-1);
     border-radius: var(--r-full);
     animation: madarek-kpi-delta var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
   }
@@ -4230,7 +4230,7 @@
     inline-size: 28px;
     block-size: 28px;
     flex-shrink: 0;
-    margin-block-start: 2px;
+    margin-block-start: var(--sp-0-5);
     border-radius: var(--r-sm);
     background: var(--gold-soft);
     color: var(--gold-ink);

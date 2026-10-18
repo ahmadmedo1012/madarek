@@ -166,8 +166,8 @@
     display: block;
     inline-size: calc(100% + var(--sp-6));
     margin-inline: calc(-1 * var(--sp-3));
-    padding-block: 10px;
-    margin-block-end: -2px;
+    padding-block: var(--sp-2-5);
+    margin-block-end: calc(-1 * var(--sp-0-5));
     cursor: pointer;
     touch-action: none;
   }
@@ -288,7 +288,7 @@
     min-inline-size: 104px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--sp-0-5);
     padding: var(--sp-1);
     border: 1px solid var(--vpc-hairline);
     border-radius: var(--r-lg);

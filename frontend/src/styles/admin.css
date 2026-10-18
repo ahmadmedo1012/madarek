@@ -124,7 +124,7 @@
 .settings-value {
   font-size: var(--fs-sm);
   color: var(--text);
-  margin-block-start: 2px;
+  margin-block-start: var(--sp-0-5);
 }
 .settings-actions {
   display: flex;

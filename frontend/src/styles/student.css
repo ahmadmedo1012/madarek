@@ -72,7 +72,7 @@
   }
 
   /* ── Meta block under the player ── */
-  .lecture-meta { display: flex; flex-direction: column; gap: 2px; }
+  .lecture-meta { display: flex; flex-direction: column; gap: var(--sp-0-5); }
   .lecture-meta-badges {
     display: flex;
     align-items: center;
@@ -248,7 +248,7 @@
   .chapter-row:active { background: var(--surface-3); }
   .chapter-time {
     flex-shrink: 0;
-    padding: 2px var(--sp-1);
+    padding: var(--sp-0-5) var(--sp-1);
     border-radius: var(--r-xs);
     background: var(--surface-2);
     font-family: var(--font-mono);
@@ -260,7 +260,7 @@
   .chapter-body {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--sp-0-5);
     flex: 1;
     min-inline-size: 0;
   }
@@ -804,7 +804,7 @@
   }
   .cal-dots {
     display: flex;
-    gap: 3px;
+    gap: 3px; /* spacing-gate: allow — calendar dot trail hairline gap */
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -878,7 +878,7 @@
     color: var(--danger-ink);
     background: var(--danger-soft);
     border-radius: var(--r-full, 999px);
-    padding: 1px var(--sp-2);
+    padding: 1px var(--sp-2); /* spacing-gate: allow — calendar phase chip hairline vertical inset */
   }
   .cal-event-chevron { flex-shrink: 0; color: var(--text-muted); }
 
@@ -1026,9 +1026,9 @@
   .chat-typing {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 5px; /* spacing-gate: allow — typing-dots cadence gap for the three-dot animation */
     /* r149 (R3-A2 R8): نفس حشو فقاعة الدردشة 10/14 (كانت 12/14 درجة أعلى) */
-    padding: 10px 14px;
+    padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat bubble compact grade 10/14 — r149 R3-A2 R8 message density */
     border-radius: var(--r-xl);
     /* bot-bubble tail corner — the polish chat language */
     border-start-start-radius: 4px; /* radius-gate: allow — chat-bubble tail corner, asymmetric shape detail */
@@ -1056,7 +1056,7 @@
     align-items: flex-start;
     gap: var(--sp-2);
     max-inline-size: min(640px, 78%);
-    padding: 10px 14px;
+    padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat error bubble compact grade 10/14 — r149 R3-A2 R8 message density */
     border-radius: var(--r-xl);
     border-start-start-radius: 4px; /* radius-gate: allow — chat-bubble tail corner, asymmetric shape detail */
     background: var(--danger-soft);
@@ -1379,7 +1379,7 @@
          on the well's line, deterministic regardless of title length. */
       flex-basis: calc(100% - 36px - var(--sp-3));
     }
-    .course-lec-row > .badge { margin-inline-start: calc(36px + var(--sp-3)); }
+    .course-lec-row > .badge { margin-inline-start: calc(36px + var(--sp-3)); } /* spacing-gate: allow — aligns the badge past the 36px icon well (geometry constant) */
   }
 
   /* ═══ Exam grade emphasis (PP-X2 note: the /student/exams hub that
@@ -1532,7 +1532,7 @@
     min-inline-size: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--sp-0-5);
   }
   .webinar-row-title {
     font-size: var(--type-label-size);
@@ -1630,7 +1630,7 @@
   .job-title-block {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 1px; /* spacing-gate: allow — title-to-subtitle hairline stacking gap */
     min-inline-size: 0;
   }
   .job-title,
@@ -2033,8 +2033,8 @@
   .live-chip {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 3px var(--sp-2);
+    gap: 5px; /* spacing-gate: allow — live-chip dot-to-label micro gap */
+    padding: 3px var(--sp-2); /* spacing-gate: allow — live-chip hairline vertical inset */
     border-radius: var(--r-full);
     background: var(--danger-soft);
     color: var(--danger-ink);
@@ -2071,7 +2071,7 @@
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
     color: var(--text);
-    margin-block-end: 2px;
+    margin-block-end: var(--sp-0-5);
   }
   /* live rows keep the 1px hairline language but tint it toward the
      danger accent — status coding without a stripe */
@@ -2194,7 +2194,7 @@
     display: inline-block;
     inline-size: 8px;
     block-size: 1.05em;
-    margin-inline-start: 2px;
+    margin-inline-start: var(--sp-0-5);
     background: var(--text-on-dark);
     vertical-align: text-bottom;
     animation: terminal-blink var(--motion-duration-skeleton) var(--motion-ease-standard) infinite;
@@ -2273,10 +2273,10 @@
   .step-body {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--sp-0-5);
     flex: 1;
     min-inline-size: 0;
-    padding-block-start: 5px; /* optically centers on the 32px well */
+    padding-block-start: 5px; /* optically centers on the 32px well */ /* spacing-gate: allow — optical centering on the 32px step well (documented in place) */
   }
   .step-title { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); line-height: 1.4; }
   .step.on .step-title { color: var(--accent-strong); }
@@ -2486,7 +2486,7 @@
   .payment-checklist svg {
     color: var(--success-ink);
     flex-shrink: 0;
-    margin-block-start: 2px;
+    margin-block-start: var(--sp-0-5);
   }
 
   /* ═══ Profile — academic-link rows (extracted from ~40 lines of
@@ -2525,7 +2525,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: var(--sp-2);
-    margin-block-end: 2px;
+    margin-block-end: var(--sp-0-5);
   }
   .profile-link-title {
     font-size: var(--type-body-size);
@@ -2671,7 +2671,7 @@
     color: var(--text-muted);
     font-variant-numeric: tabular-nums;
     background: var(--surface-2);
-    padding: 2px var(--sp-2);
+    padding: var(--sp-0-5) var(--sp-2);
     border-radius: var(--r-full);
   }
   /* alerts-page skeleton rows (dot + two lines) */
@@ -2816,7 +2816,7 @@
     gap: var(--sp-1);
     flex-shrink: 0;
     margin-inline-start: auto;
-    padding: 3px var(--sp-3);
+    padding: 3px var(--sp-3); /* spacing-gate: allow — announcement pin chip hairline vertical inset */
     border-radius: var(--r-full);
     background: var(--accent-soft);
     color: var(--accent-strong);
@@ -2976,9 +2976,9 @@
      moves focus; scroll-margin lands the card clear of the sticky bar
      (the bar carries the map row — measured heights: 113px bar at
      ≥768, 162px at 390 with the 44px dots; +8px optical gap). ── */
-  .exam-q { scroll-margin-block-start: 124px; }
-  @media (max-width: 768px) { .exam-q { scroll-margin-block-start: 136px; } }
-  @media (max-width: 640px) { .exam-q { scroll-margin-block-start: 176px; } }
+  .exam-q { scroll-margin-block-start: 124px; } /* spacing-gate: allow — exam sticky-header clearance 124px (header stack, desktop) */
+  @media (max-width: 768px) { .exam-q { scroll-margin-block-start: 136px; } } /* spacing-gate: allow — exam sticky-header clearance 136px (header stack, ≤768px) */
+  @media (max-width: 640px) { .exam-q { scroll-margin-block-start: 176px; } } /* spacing-gate: allow — exam sticky-header clearance 176px (header stack, ≤640px) */
   /* Programmatic focus lands here (tabIndex -1) — the universal
      motion.css ring excludes tabindex=-1 by design, so the landing
      cue is declared here: the ring shows while the jumped card owns
@@ -3000,7 +3000,7 @@
   .exam-q-state {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 5px; /* spacing-gate: allow — exam question-state chip micro gap */
     font-size: var(--fs-xs);
     font-weight: var(--fw-medium);
     animation: exam-save-in var(--motion-duration-micro) var(--motion-ease-standard);
@@ -3277,7 +3277,7 @@
 
   .chat-bubble {
     max-inline-size: min(640px, 78%);
-    padding: 10px 14px;
+    padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat bubble compact grade 10/14 — r149 R3-A2 R8 message density */
     border-radius: var(--r-xl);
     font-size: var(--fs-sm);
     line-height: var(--lh-base);
@@ -3321,7 +3321,7 @@
     margin-block-start: var(--sp-1);
   }
   .ai-quick-chip {
-    padding: var(--sp-1-5) 12px; /* r153h: 6px → --sp-1-5 */
+    padding: var(--sp-1-5) var(--sp-3); /* r153h: 6px → --sp-1-5 */
     border-radius: var(--r-full);
     border: 1px solid var(--border);
     background: var(--surface);
@@ -3502,7 +3502,7 @@
     display: flex;
     align-items: center;
     gap: var(--sp-1);
-    margin-block-start: 2px;
+    margin-block-start: var(--sp-0-5);
     font-size: var(--fs-xxs); /* r184: literal → token (11px = --fs-xxs), zero visual change */
     color: var(--text-subtle);
     font-variant-numeric: tabular-nums;
@@ -3519,7 +3519,7 @@
     gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   }
   .matrix-cell {
-    padding: 8px 10px;
+    padding: var(--sp-2) var(--sp-2-5);
     border-radius: var(--r-xs);
     font-size: var(--fs-xs); /* r184: literal → token (12px = --fs-xs), zero visual change */
     color: var(--text);
@@ -3587,7 +3587,7 @@
     gap: var(--sp-1);
     background: transparent;
     border: 0;
-    padding: var(--sp-1) 8px;
+    padding: var(--sp-1) var(--sp-2);
     border-radius: var(--r-sm);
     font-size: var(--fs-xs); /* r184: literal → token (12px = --fs-xs), zero visual change */
     color: var(--text-muted);
@@ -3611,7 +3611,7 @@
     display: flex;
     align-items: center;
     gap: var(--sp-2);
-    padding: 8px var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
     border-radius: var(--r-sm);
     background: var(--surface-2);
     border: 1px solid color-mix(in srgb, var(--rule) 50%, transparent);

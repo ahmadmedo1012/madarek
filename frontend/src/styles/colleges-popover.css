@@ -98,7 +98,7 @@
   color: var(--text);
 }
 .colleges-popover-sub {
-  margin: 4px 0 0;
+  margin: var(--sp-1) 0 0;
   font-size: var(--type-label-size);
   color: var(--text-muted);
 }
@@ -213,7 +213,7 @@
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   background: var(--surface-2);
-  padding: 2px 8px;
+  padding: var(--sp-0-5) var(--sp-2);
   border-radius: var(--r-full);
 }
 
@@ -223,7 +223,7 @@
   padding: 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
+  gap: var(--sp-1);
 }
 .colleges-popover-row {
   display: grid;
@@ -284,7 +284,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  padding: 8px var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-md);
   background: var(--accent);
   color: var(--accent-fg, white);

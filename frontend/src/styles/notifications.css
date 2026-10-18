@@ -26,7 +26,7 @@
   /* r155d: 16px → --sp-4 (exact rung); the 14px block inset is off-ladder
      (no 14px spacing rung) — left raw, noted as debt like the 8px at
      .notif-panel-action. */
-  padding: 14px var(--sp-4);
+  padding: 14px var(--sp-4); /* spacing-gate: allow — panel head compact band grade 14/16 */
   border-bottom: 1px solid var(--border);
 }
 .notif-panel-title {
@@ -46,7 +46,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1); /* r157: 4px → --sp-1 */
-  padding: var(--sp-1-5) 8px; /* r153h: 6px → --sp-1-5 (الـ8px = --sp-2 — دين منفصل) */
+  padding: var(--sp-1-5) var(--sp-2); /* r153h: 6px → --sp-1-5 (الـ8px = --sp-2 — دين منفصل) */
   border: 0;
   background: transparent;
   color: var(--accent-ink, var(--accent));
@@ -152,7 +152,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--sp-0-5);
 }
 /* (r151c dead-twin sweep: .notif-item-title / -desc / -time rules
    deleted here — polish's overrides layer re-specifies every
@@ -246,7 +246,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--sp-1); /* r157: 4px → --sp-1 */
-  padding: var(--sp-1-5) 2px 4px; /* r153h: 6px → --sp-1-5 */
+  padding: var(--sp-1-5) var(--sp-0-5) var(--sp-1); /* r153h: 6px → --sp-1-5 */
   border: 0;
   background: transparent;
   color: var(--text-subtle);
@@ -332,7 +332,7 @@
 @media (max-width: 360px) {
   /* (r151c: padding deleted — polish's overrides-layer container owns
      it; the ≤360 gap tightening is the one live declaration.) */
-  .bottom-nav { gap: 2px; }
+  .bottom-nav { gap: var(--sp-0-5); }
   .bottom-nav-icon { width: 32px; height: 26px; }
 }
 
@@ -340,7 +340,7 @@
   /* (r151c: `.bottom-nav { display: flex }` deleted — polish's ≤920px
      overrides-layer `display: grid` always won.) */
   /* Push content above the bottom nav so it isn't clipped */
-  .content { padding-bottom: max(80px, calc(72px + env(safe-area-inset-bottom))); }
+  .content { padding-bottom: max(80px, calc(var(--sp-11) + env(safe-area-inset-bottom))); } /* spacing-gate: allow — bottom clearance floor 80px for the floating toast stack */
 }
 
 /* Reduced motion */
@@ -423,7 +423,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-block-start: 1px;
+  margin-block-start: 1px; /* spacing-gate: allow — toast icon optical baseline nudge (glyph sits high) */
 }
 .toast-icon-info    { background: var(--info-soft);    color: var(--info-ink); }
 .toast-icon-success { background: var(--success-soft); color: var(--success-ink); }
@@ -440,7 +440,7 @@
   font-size: var(--fs-sm);
   color: var(--text-muted);
   line-height: 1.55;
-  margin-block-start: 2px;
+  margin-block-start: var(--sp-0-5);
   overflow-wrap: anywhere;
 }
 .toast-stack .toast-body {
@@ -453,7 +453,7 @@
   border: 0;
   background: transparent;
   padding: var(--sp-1) 0;
-  margin-block-start: 2px;
+  margin-block-start: var(--sp-0-5);
   font: inherit;
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);

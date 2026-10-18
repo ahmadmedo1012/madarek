@@ -1,0 +1,39 @@
+/* fixture app.css — the CLEAN baseline. scripts/test-raw-css-gate.sh
+   asserts --strict passes on this exact tree, then mutates copies of
+   it (raw literals injected, allows broken/removed, files deleted)
+   and asserts the gate fails. Line numbers in this file are pinned by
+   the harness's attribution cases — edit with care. */
+@layer base, pages;
+
+/* ── positive cases (all must stay silent) ──────────────────────── */
+.rule-a { padding: var(--sp-4); }                              /* L9 */
+.rule-b { padding-inline-start: var(--sp-6); }                 /* L10 */
+.rule-c { margin-block-end: var(--sp-2); }                     /* L11 */
+.rule-d {
+  gap: var(--sp-2);
+  row-gap: var(--sp-3);
+  column-gap: var(--sp-1);
+}
+.rule-e { margin: 0 auto; }                                    /* zero + auto permitted */
+.rule-f { padding: 5% 1em 0.5rem; }                            /* non-px units out of contract */
+.rule-g { padding-inline: env(safe-area-inset-left, 0px); }    /* env() fallback zero permitted */
+.rule-h { gap: clamp(var(--sp-2), 4vw, var(--sp-4)); }         /* functions full of tokens */
+.rule-i {
+  padding-block:
+    var(--sp-3);
+}                                                              /* multiline declaration */
+.rule-j { margin-block-start: 2px; /* spacing-gate: allow — optical baseline nudge under ascenders */ }
+.rule-k { font-size: var(--fs-sm); border-radius: var(--r-md); } /* type/radius tokens fine */
+.rule-l { scroll-margin-block-start: var(--sp-9); }            /* scroll-margin family in scope */
+.rule-m { --card-padding: var(--sp-4); }                       /* custom prop, name ends in -padding */
+.rule-n { content: "padding: 5px;"; }                          /* quoted prose, never a declaration */
+.rule-o { margin: 0px; }                                       /* 0px zero permitted */
+.rule-p {
+  margin-block-start:
+    2px;  /* spacing-gate: allow — multiline decl, marker on its end line */
+}
+/* comment examples must not flag:
+   .ghost { padding: 5px; margin: 13px; gap: 7px; } */
+@media (max-width: 768px) {
+  .rule-b { padding-inline-start: var(--sp-4); }               /* nested block, prelude colon */
+}

@@ -1,0 +1,5 @@
+/* fixture landing.css — proves the world-census path: this sheet is
+   exempt from STRICT spacing (documented display-world policy) but
+   its raw literals stay VISIBLE in every report. The harness asserts
+   strict passes while the census line counts these literals. */
+.world-hero { padding: 14px; margin-block-start: 9px; gap: 26px; }

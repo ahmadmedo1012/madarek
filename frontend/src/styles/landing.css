@@ -179,7 +179,7 @@
 .landing .ln-marquee-track {
   display: flex;
   align-items: center;
-  gap: 48px; /* keep in lockstep with the +24px seam correction below */
+  gap: var(--sp-9); /* keep in lockstep with the +24px seam correction below */
   inline-size: max-content;
   animation: ln-marquee var(--ln-dur-marquee) var(--ln-ease-linear) infinite;
 }
@@ -208,7 +208,7 @@
   font-size: 0;
   inline-size: 5px;
   block-size: 5px;
-  margin-inline-start: 48px; /* evens text↔dot↔next-text rhythm */
+  margin-inline-start: var(--sp-9); /* evens text↔dot↔next-text rhythm */
   border-radius: var(--ln-radius-pill);
   background: var(--ln-lime);
   flex-shrink: 0;
@@ -223,7 +223,7 @@
   border-block-end: 1px solid var(--ln-line-soft);
   position: relative;
   z-index: var(--ln-z-strip);
-  padding-inline: 16px; /* nothing touches the edge — always (spec §4.3) */
+  padding-inline: var(--sp-4); /* nothing touches the edge — always (spec §4.3) */
 }
 .landing .ministry-strip-inner {
   max-inline-size: 1280px;
@@ -231,7 +231,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: var(--sp-2-5);
   min-block-size: 38px;
 }
 .landing .ministry-strip-emblem { display: inline-flex; flex-shrink: 0; }
@@ -256,13 +256,13 @@
 .landing .landing-nav {
   max-inline-size: 1280px;
   margin-inline: auto;
-  padding: 12px clamp(20px, 4vw, 48px);
+  padding: var(--sp-3) clamp(var(--sp-5), 4vw, var(--sp-9));
   display: flex;
   align-items: center;
   gap: var(--sp-6);
 }
 
-.landing .landing-brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+.landing .landing-brand { display: inline-flex; align-items: center; gap: var(--sp-2-5); text-decoration: none; }
 .landing .landing-brand-mark {
   inline-size: 34px;
   block-size: 34px;
@@ -352,7 +352,7 @@
   inset-inline-start: 0;
   top: calc(100% + 10px);
   min-inline-size: 340px;
-  padding: 10px;
+  padding: var(--sp-2-5);
   border-radius: var(--r-xl);
   background: var(--ln-ink-2);
   border: 1px solid var(--ln-line);
@@ -373,8 +373,8 @@
 .landing .landing-megamenu-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
   border-radius: var(--r-md);
   text-decoration: none;
   transition: background var(--ln-t-fast) var(--ln-ease-soft);
@@ -430,7 +430,7 @@
 .landing .ln-menu-ico.azure { background: color-mix(in srgb, var(--ln-violet) 16%, transparent); color: var(--ln-violet); }
 .landing .ln-menu-ico.mist { background: color-mix(in srgb, var(--ln-cream) 8%, transparent); color: var(--ln-cream-dim); }
 .landing .landing-megamenu-item-title { display: block; color: var(--ln-cream); font-size: 14px; font-weight: var(--fw-semibold); }
-.landing .landing-megamenu-item-desc { display: block; color: var(--ln-cream-dim); font-size: 12px; margin-block-start: 2px; }
+.landing .landing-megamenu-item-desc { display: block; color: var(--ln-cream-dim); font-size: 12px; margin-block-start: var(--sp-0-5); }
 
 .landing .landing-header-cta { display: flex; align-items: center; gap: var(--sp-2); }
 
@@ -458,7 +458,7 @@
 .landing .landing-mobile-menu {
   flex-direction: column;
   gap: var(--sp-3);
-  padding: var(--sp-4) 16px var(--sp-6);
+  padding: var(--sp-4) var(--sp-4) var(--sp-6);
   background: var(--ln-ink-2);
   border-block-end: 1px solid var(--ln-line-soft);
   display: none;
@@ -506,7 +506,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: var(--sp-2-5);
   border-radius: var(--ln-radius-pill);
   font-weight: var(--fw-semibold);
   text-decoration: none;
@@ -530,7 +530,7 @@
    Slim agency height (~46px desktop). The ONE accent-filled surface
    on the page. */
 .landing .ln-btn-gold {
-  padding: 10px 26px;
+  padding: var(--sp-2-5) 26px;
   font-size: 15px;
   min-block-size: 46px;
   background: var(--accent);
@@ -553,13 +553,13 @@
    كنون DESIGN.md §1a يحظر تدرّجات الأزرار صراحةً بلا استثناء
    (وترويسة هذه الورقة تمنعها منذ الجولة 3)؛ عمق الزر يأتي من
    ركمة الظل المسطّحة في P4-04 وحدها. */
-.landing .ln-btn-gold.xl { padding: 12px 34px; font-size: 16px; min-block-size: 48px; }
+.landing .ln-btn-gold.xl { padding: var(--sp-3) 34px; font-size: 16px; min-block-size: 48px; }
 
 /* the outline pill — transparent, 1px hairline; hover is a quiet tint,
    never a lime fill (VLM R3-W5 lime roster). Ruling #2: zero tracking —
    both consumers are pure-Arabic CTAs (0.01em removed r133-F7). */
 .landing .ln-btn-ghost {
-  padding: 10px 24px;
+  padding: var(--sp-2-5) var(--sp-6);
   font-size: 15px;
   min-block-size: 46px;
   letter-spacing: 0;
@@ -579,11 +579,11 @@
   /* Elevated ghost on hover */
   box-shadow: 0 2px 8px color-mix(in srgb, var(--black) 10%, transparent);
 }
-.landing .ln-btn-ghost.xl { padding: 12px 32px; font-size: 16px; min-block-size: 48px; }
+.landing .ln-btn-ghost.xl { padding: var(--sp-3) var(--sp-7); font-size: 16px; min-block-size: 48px; }
 
 /* quiet tertiary — opens the college registry */
 .landing .ln-btn-text {
-  padding: 10px 16px;
+  padding: var(--sp-2-5) var(--sp-4);
   font-size: 14px;
   min-block-size: 44px;
   background: transparent;
@@ -652,7 +652,7 @@
   /* 7vw inline inset — the monolith keeps its distance from the viewport
      edges (VLM R3-W5: reference breathes ~80% negative space). Mobile
      re-anchors to the 16px floor in the ≤920 block below. */
-  padding: clamp(110px, 15vh, 170px) max(7vw, 16px) clamp(96px, 13vh, 140px);
+  padding: clamp(110px, 15vh, 170px) max(7vw, var(--sp-4)) clamp(var(--sp-12), 13vh, 140px);
   isolation: isolate;
 }
 /* the sky: flat ink + the single sanctioned depth radial (α 0.10 ≤ 0.12),
@@ -777,14 +777,14 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 20px;
+  gap: var(--sp-3) var(--sp-5);
   margin: 0;
   padding: 0;
   list-style: none;
   color: var(--ln-cream-dim);
   font-size: 13px;
 }
-.landing .ln-hero-meta li { display: inline-flex; align-items: center; gap: 12px; padding-block: var(--sp-1-5); } /* r153h: 6px → --sp-1-5 */
+.landing .ln-hero-meta li { display: inline-flex; align-items: center; gap: var(--sp-3); padding-block: var(--sp-1-5); } /* r153h: 6px → --sp-1-5 */
 .landing .ln-hero-meta li svg { color: var(--ln-cream-dim); }
 .landing .ln-hero-meta-dot {
   inline-size: 3px;
@@ -811,7 +811,7 @@
   bottom: calc(100% - 100svh + 134px);
   display: grid;
   justify-items: center;
-  gap: 10px;
+  gap: var(--sp-2-5);
   text-decoration: none;
   color: var(--ln-cream-dim);
   transition: color var(--ln-t-fast) var(--ln-ease-soft);
@@ -852,7 +852,7 @@
 
 /* ── 6 · trust band ────────────────────────────────────────────────── */
 .landing .ln-trust {
-  padding: var(--sp-6) max(5vw, 16px);
+  padding: var(--sp-6) max(5vw, var(--sp-4));
   border-block: 1px solid var(--ln-line);
   background: var(--ln-ink-2);
   /* P4-21: subtle top gradient for depth — trust band feels grounded */
@@ -875,7 +875,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 12px 24px;
+  gap: var(--sp-3) var(--sp-6);
   color: var(--ln-cream-dim);
   font-size: 14px; /* GAP-4: 13.5 read as fine print — social proof must be READ */
 }
@@ -897,7 +897,7 @@
 /* ── 7 · chapter scaffolding — let every scene breathe ─────────────── */
 .landing .ln-chapter {
   position: relative;
-  padding: clamp(96px, 12vh, 140px) var(--page-gutter); /* 96–140 rhythm (spec §4.2.10) */
+  padding: clamp(var(--sp-12), 12vh, 140px) var(--page-gutter); /* 96–140 rhythm (spec §4.2.10) */
   /* P3-27: subtle bottom hairline to separate chapters visually */
   border-block-end: 1px solid var(--ln-line-soft);
 }
@@ -909,7 +909,7 @@
 .landing .ln-chapter-head {
   max-inline-size: 1280px;
   margin-inline: auto;
-  margin-block-end: clamp(32px, 4.5vh, 56px);
+  margin-block-end: clamp(var(--sp-7), 4.5vh, var(--sp-10));
   display: grid;
   gap: var(--sp-5);
 }
@@ -942,7 +942,7 @@
 
 /* colleges chapter breathes wider than its siblings: more air between
    label/title/lede and around the sky-chart visual (VLM R3-W5 §1) */
-.landing .ln-colleges .ln-chapter-head { gap: var(--sp-6); margin-block-end: clamp(48px, 7vh, 84px); }
+.landing .ln-colleges .ln-chapter-head { gap: var(--sp-6); margin-block-end: clamp(var(--sp-9), 7vh, 84px); }
 
 /* ── 8 · colleges constellation ────────────────────────────────────── */
 .landing .ln-colleges { overflow: hidden; }
@@ -1037,7 +1037,7 @@
 .landing .ln-constellation-tip {
   position: absolute;
   translate: -50% calc(-100% - 14px);
-  padding: 8px 12px;
+  padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-md);
   background: var(--ln-ink-2);
   border: 1px solid var(--ln-line);
@@ -1067,8 +1067,8 @@
 .landing .ln-constellation-browse {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 24px;
+  gap: var(--sp-2-5);
+  padding: var(--sp-2-5) var(--sp-6);
   min-block-size: 46px;
   border-radius: var(--ln-radius-pill);
   background: transparent;
@@ -1100,7 +1100,7 @@
   margin: var(--sp-8) auto 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--sp-3);
   color: var(--ln-cream-dim);
   font-size: 13px;
   line-height: 1.65;
@@ -1145,7 +1145,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: clamp(32px, 5vh, 52px);
+  gap: clamp(var(--sp-7), 5vh, 52px);
   position: relative;
   z-index: 1;
 }
@@ -1200,7 +1200,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: var(--sp-3);
   margin-block-end: var(--sp-4);
 }
 .landing .ln-station-n { color: var(--ln-cream-dim); font-size: 13px; }
@@ -1216,7 +1216,7 @@
 }
 .landing .ln-station-tag {
   margin-inline-start: auto;
-  padding: 4px 12px;
+  padding: var(--sp-1) var(--sp-3);
   border-radius: var(--ln-radius-pill);
   border: 1px solid var(--ln-line);
   color: var(--ln-cream-dim);
@@ -1231,7 +1231,7 @@
   max-inline-size: 1280px;
   margin-inline: auto;
   display: grid;
-  gap: clamp(40px, 6vw, 80px);
+  gap: clamp(var(--sp-8), 6vw, 80px);
   align-items: center;
 }
 @media (min-width: 1025px) {
@@ -1343,8 +1343,8 @@
   line-height: 1.1;
   direction: ltr;
 }
-.landing .ln-stat-unit { color: var(--ln-cream-dim); font-size: 24px; margin-inline-start: 2px; } /* r157 (F2-13): 24px درجة عرض محلية للصفحة — وحدة الإحصاء بجوار رقم 40px، تبقى عمدًا */
-.landing .ln-stat-label { margin-block-start: 8px; color: var(--ln-cream); font-size: 14px; font-weight: var(--fw-semibold); overflow-wrap: anywhere; }
+.landing .ln-stat-unit { color: var(--ln-cream-dim); font-size: 24px; margin-inline-start: var(--sp-0-5); } /* r157 (F2-13): 24px درجة عرض محلية للصفحة — وحدة الإحصاء بجوار رقم 40px، تبقى عمدًا */
+.landing .ln-stat-label { margin-block-start: var(--sp-2); color: var(--ln-cream); font-size: 14px; font-weight: var(--fw-semibold); overflow-wrap: anywhere; }
 .landing .ln-stat-note { margin-block-start: 3px; color: var(--ln-cream-dim); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
 
 .landing .ln-progress-source {
@@ -1363,7 +1363,7 @@
   margin-inline: auto;
   padding-inline: var(--page-gutter);
   display: grid;
-  gap: clamp(40px, 6vh, 64px);
+  gap: clamp(var(--sp-8), 6vh, 64px);
 }
 .landing .ln-campus-frame {
   margin: 0;
@@ -1392,8 +1392,8 @@
   inset-inline: var(--sp-6);
   bottom: var(--sp-6);
   display: grid;
-  gap: 8px; /* +2 — VLM note: caption sat tight against its own block */
-  padding-block-start: 10px; /* breathing room above the mono eyebrow */
+  gap: var(--sp-2); /* +2 — VLM note: caption sat tight against its own block */
+  padding-block-start: var(--sp-2-5); /* breathing room above the mono eyebrow */
 }
 .landing .ln-campus-line { color: var(--ln-cream); font-size: clamp(15px, 2vw, 19px); font-weight: var(--fw-medium); max-inline-size: 44ch; }
 .landing .ln-campus-line em { color: var(--ln-cream); font-style: normal; }
@@ -1487,7 +1487,7 @@
    roles chapter as a sub-section instead of reading as an appendix. */
 .landing .ln-system-head {
   max-inline-size: 1280px;
-  margin: clamp(48px, 8vh, 88px) auto 0;
+  margin: clamp(var(--sp-9), 8vh, 88px) auto 0;
 }
 .landing .ln-system-trio {
   max-inline-size: 1280px;
@@ -1609,7 +1609,7 @@
   margin: var(--sp-4) 0 0;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-2);
   color: var(--ln-cream-dim);
   font-size: 13px;
 }
@@ -1635,8 +1635,8 @@
      WCAG 2.2 AA 24px floor. Inline-block + symmetric padding grows the
      tap target to 32px+ without leaving the paragraph's visual rhythm. */
   display: inline-block;
-  padding-block: 6px;
-  margin-block: -6px;
+  padding-block: var(--sp-1-5);
+  margin-block: calc(-1 * var(--sp-1-5));
   transition:
     color var(--ln-t-base) var(--ln-ease),
     text-decoration-color var(--ln-t-base) var(--ln-ease);
@@ -1714,7 +1714,7 @@ button.landing-footer-link {
   color: var(--ln-cream-dim);
   font-size: 13px;
 }
-.landing .ln-footer-cluster { display: inline-flex; align-items: center; gap: 8px; }
+.landing .ln-footer-cluster { display: inline-flex; align-items: center; gap: var(--sp-2); }
 
 /* (r151c: the .landing-colleges-trigger-badge override deleted — the
    base class in colleges.css was a dead-dead twin (TSX renders
@@ -1783,14 +1783,14 @@ button.landing-footer-link {
   .landing .ln-journey-path-base { stroke-width: 2; }
   .landing .ln-journey-path-light { stroke-width: 2.5; }
   .landing .ln-journey-stage { padding-inline-start: 30px; }
-  .landing .landing-nav { padding-inline: 16px; }
-  .landing .landing-mobile-menu { padding-inline: 16px; }
+  .landing .landing-nav { padding-inline: var(--sp-4); }
+  .landing .landing-mobile-menu { padding-inline: var(--sp-4); }
   .landing .ln-progress-grid { grid-template-columns: 1fr; }
   .landing .ln-progress-visual { min-block-size: 280px; }
   .landing .ln-campus { padding-inline: var(--page-gutter-mobile); }
   .landing .ln-chapter { padding-inline: var(--page-gutter-mobile); }
-  .landing .ln-hero { padding-inline: max(5vw, 16px); }
-  .landing .ln-trust { padding-inline: max(5vw, 16px); }
+  .landing .ln-hero { padding-inline: max(5vw, var(--sp-4)); }
+  .landing .ln-trust { padding-inline: max(5vw, var(--sp-4)); }
   .landing .marketing-container { padding-inline: var(--page-gutter-mobile); }
   .landing .ln-hero-scroll { display: none; }
 
@@ -1816,10 +1816,10 @@ button.landing-footer-link {
      experience (user directive): tighter chapters, tighter heads, a
      calmer journey — same narrative, phone-native pacing. */
   .landing .ln-chapter { padding-block: clamp(60px, 9vh, 84px); }
-  .landing .ln-chapter-head { margin-block-end: clamp(24px, 3.5vh, 36px); gap: var(--sp-4); }
+  .landing .ln-chapter-head { margin-block-end: clamp(var(--sp-6), 3.5vh, 36px); gap: var(--sp-4); }
   .landing .ln-journey-stations { gap: 28px; }
   .landing .ln-trust { padding-block: var(--sp-5); }
-  .landing .ln-cta { padding-block: clamp(72px, 11vh, 104px); }
+  .landing .ln-cta { padding-block: clamp(var(--sp-11), 11vh, 104px); }
 
   /* constellation: the full sky is too dense — domain strip instead */
   .landing .ln-constellation-stage { display: none; }
@@ -1834,8 +1834,8 @@ button.landing-footer-link {
   .landing .ln-constellation-chip {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px; /* spec §4.3 — never below 16px */
+    gap: var(--sp-3);
+    padding: var(--sp-4); /* spec §4.3 — never below 16px */
     min-height: 0;
     border-radius: var(--r-2xl);
     border: 1px solid color-mix(in srgb, var(--ln-cream) 5%, transparent);
@@ -1923,9 +1923,9 @@ button.landing-footer-link {
        the WHOLE value story sits inside the 390px fold. */
     min-block-size: auto;
     align-content: center;
-    padding-block: 12px;
+    padding-block: var(--sp-3);
   }
-  .landing .ln-hero-eyebrow { margin-block-end: 10px; }
+  .landing .ln-hero-eyebrow { margin-block-end: var(--sp-2-5); }
   .landing .ln-hero-title {
     font-size: clamp(2rem, 9vh, 3.25rem);
     /* r149 (R3-A4 F4.1): 1.12 → 1.2 — نفس صنف القصّ الذي استأصله
@@ -1939,9 +1939,9 @@ button.landing-footer-link {
     line-height: 1.5;
     margin-block-end: 18px;
   }
-  .landing .ln-hero-actions { margin-block-end: 8px; }
-  .landing .ln-hero-meta { font-size: 12px; gap: 4px 16px; }
-  .landing .ln-hero-meta li { padding-block: 2px; gap: 8px; }
+  .landing .ln-hero-actions { margin-block-end: var(--sp-2); }
+  .landing .ln-hero-meta { font-size: 12px; gap: var(--sp-1) var(--sp-4); }
+  .landing .ln-hero-meta li { padding-block: var(--sp-0-5); gap: var(--sp-2); }
   .landing .ln-hero-scroll { display: none; }
 }
 
@@ -1961,7 +1961,7 @@ button.landing-footer-link {
   left: 50%;
   translate: -50% -150%;
   z-index: var(--ln-z-skip);
-  padding: 10px 18px;
+  padding: var(--sp-2-5) 18px;
   border-radius: var(--ln-radius-pill);
   background: var(--accent);
   color: var(--accent-fg);
@@ -2259,7 +2259,7 @@ button.landing-footer-link {
    65% من تمرير الجوال بلا أي فعل /auth. أرض ink-2 بطبقة hairline
    كي يقرأ كمحطة لا كفصل كامل. */
 .landing .ln-cta-bridge {
-  padding-block: clamp(56px, 7vh, 84px);
+  padding-block: clamp(var(--sp-10), 7vh, 84px);
   background: var(--ln-ink-2);
 }
 .landing .ln-cta-bridge-inner {

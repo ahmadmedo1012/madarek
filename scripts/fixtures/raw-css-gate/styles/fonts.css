@@ -1,0 +1,12 @@
+/* fixture fonts.css — @font-face only. WHOLESALE zone for every
+   axis: prove raw px here is never a finding. */
+@font-face {
+  font-family: "Fixture Sans";
+  src: url(fixture-sans.woff2) format("woff2");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Fixture Display";
+  src: url(fixture-display.woff2);
+  /* padding: 4px; — wholesale zone: not scanned, not a finding */
+}

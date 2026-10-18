@@ -262,7 +262,7 @@
     width: 1px;
     height: 1px;
     padding: 0;
-    margin: -1px;
+    margin: -1px; /* spacing-gate: allow — sr-only clip recipe (a11y idiom, not a scale rung) */
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
@@ -278,7 +278,7 @@
   .input-affix .input {
     inline-size: 100%;
     /* leave room for the spinner so text doesn't run under it */
-    padding-inline-end: var(--sp-9, 48px);
+    padding-inline-end: var(--sp-9);
   }
   .input-affix-spinner {
     position: absolute;

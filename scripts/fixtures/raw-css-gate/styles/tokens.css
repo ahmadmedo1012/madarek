@@ -1,0 +1,17 @@
+/* fixture tokens.css — the mini ladder the fixture scanner loads
+   (10 rungs; the fail-closed floor is 8). Mirrors the real sheet's
+   declaration style. This file is a WHOLESALE zone: its own raw px
+   values are the ladder, never findings. */
+:root {
+  --sp-0-5: 2px;
+  --sp-1:   4px;
+  --sp-1-5: 6px;
+  --sp-2:   8px;
+  --sp-3:   12px;
+  --sp-4:   16px;
+  --sp-6:   24px;
+  --sp-7:   32px;
+  --sp-9:   48px;
+  --fs-sm: 13px;
+  --r-md: 10px;
+}
