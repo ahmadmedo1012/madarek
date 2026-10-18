@@ -1042,7 +1042,11 @@ describe('MessagesPage — server-side pagination (15-d P2-7)', () => {
     act(() => { useAuthStore.setState({ user: TEACHER }); });
     renderMessages();
 
-    expect(screen.getByRole('heading', { level: 1, name: 'صندوق الرسائل' })).toBeInTheDocument();
+    /* r183-B8 (A7 finding 2): the h1 follows the nav/topbar name
+     * «الرسائل» — the old «صندوق الرسائل» was surface-name drift
+     * (two names for one surface). */
+    expect(screen.getByRole('heading', { level: 1, name: 'الرسائل' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 1, name: 'صندوق الرسائل' })).toBeNull();
     // The over-promising subtitle and the redundant «الرسائل الأخيرة»
     // card title (A6 P3) are both gone.
     expect(screen.queryByText('محادثاتك المباشرة عبر المنصّة.')).toBeNull();
@@ -1252,6 +1256,36 @@ describe('r144 — AssignmentFormModal + MaterialFormModal (authoring half)', ()
       </MemoryRouter>,
     );
     expect(screen.getByRole('button', { name: /واجب جديد/ })).toBeInTheDocument();
+    unmount();
+  });
+
+  it('AssignmentFormModal carries the sibling datetime pattern — hint, dir="ltr", Arabic echo (r183-B8 / A7 P3-1)', async () => {
+    mocks.offerings = [OFFERING];
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+
+    const { unmount } = render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /واجب جديد/ }));
+    await screen.findByRole('dialog', { name: 'إنشاء واجب جديد' });
+
+    // Empty state: the same calendar hint the three exam-authoring
+    // siblings carry (ExamAuthorPages «يفتح في / يغلق في»)…
+    expect(
+      screen.getByText('اختر من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'),
+    ).toBeInTheDocument();
+    // …the control is dir="ltr" like its siblings (datetime-local
+    // must not be bidi-scrambled by the RTL modal)…
+    const due = screen.getByLabelText(/الموعد النهائي للتسليم/);
+    expect(due).toHaveAttribute('dir', 'ltr');
+    // …and picking a value swaps the hint for the verifiable echo.
+    fireEvent.change(due, { target: { value: '2026-12-01T23:59' } });
+    expect(screen.getByText(/^المحدَّد: /)).toBeInTheDocument();
+    expect(
+      screen.queryByText('اختر من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'),
+    ).toBeNull();
     unmount();
   });
 

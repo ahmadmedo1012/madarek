@@ -72,14 +72,14 @@ describe('DocumentViewerPage — the filename param gate (r164f)', () => {
   it('the back link survives on the refusal state (the way back to context)', () => {
     renderAt('/document/notes.txt?back=%2Fstudent%2Fresearch');
 
-    const back = screen.getByRole('link', { name: 'رجوع' });
+    const back = screen.getByRole('link', { name: 'العودة إلى الصفحة السابقة' });
     expect(back).toHaveAttribute('href', '/student/research');
   });
 
   it('the back link falls back to the library research tab when ?back= is absent/foreign', () => {
     renderAt('/document/notes.txt');
 
-    expect(screen.getByRole('link', { name: 'رجوع' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'العودة إلى الصفحة السابقة' })).toHaveAttribute(
       'href',
       '/student/library?tab=research',
     );
@@ -96,7 +96,7 @@ describe('DocumentViewerPage — the filename param gate (r164f)', () => {
 
     expect(screen.getByText('المستند غير محدّد')).toBeInTheDocument();
     expect(screen.getByText(/الرابط لا يحمل اسم ملف/)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'رجوع' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'العودة إلى الصفحة السابقة' })).toBeInTheDocument();
   });
 });
 

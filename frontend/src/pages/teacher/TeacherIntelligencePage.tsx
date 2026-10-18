@@ -26,6 +26,7 @@ import {
   type TeacherOffering, type RiskLevel, type TeacherStudentRow,
 } from '../../hooks/useResources';
 import { countAr } from '../../lib/format';
+import { useEntityPageTitle } from '../../components/layout/AppShell'; // r183-B6 (A4 P3-4): entity tab title, one call only
 import '../../styles/owner.css'; // ConfirmDialog surfaces via curriculum authoring (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-hero/.track-card/.filter-pill/.back-link families (D11 css split, 12-15)
 
@@ -219,6 +220,8 @@ export function TeacherOfferingDetailPage() {
   const { offeringId } = useParams<{ offeringId: string }>();
   const offerings = useTeacherOfferings();
   const offering = offerings.data?.find((o) => o.id === offeringId);
+  // r183-B6 (A4 P3-4): the tab names the OFFERING's course, not the pattern.
+  useEntityPageTitle(offering?.course.name ?? null);
   const students = useTeacherStudents(offeringId);
   const analytics = useOfferingAnalytics(offeringId);
   const suggest = useCurriculumSuggest();

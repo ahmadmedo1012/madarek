@@ -54,25 +54,25 @@ describe('D-02 — the document viewer back fallback is role-aware', () => {
   it('STUDENT keeps the library research-tab fallback', () => {
     useAuthStore.setState({ user: STUDENT });
     renderViewerAt('/document/notes.txt');
-    expect(screen.getByRole('link', { name: 'رجوع' })).toHaveAttribute('href', '/student/library?tab=research');
+    expect(screen.getByRole('link', { name: 'العودة إلى الصفحة السابقة' })).toHaveAttribute('href', '/student/library?tab=research');
   });
 
   it('TEACHER falls back to THEIR library research tab (was: a silent guard-bounce)', () => {
     useAuthStore.setState({ user: { ...STUDENT, role: 'TEACHER', id: 't1' } });
     renderViewerAt('/document/notes.txt');
-    expect(screen.getByRole('link', { name: 'رجوع' })).toHaveAttribute('href', '/teacher/library?tab=research');
+    expect(screen.getByRole('link', { name: 'العودة إلى الصفحة السابقة' })).toHaveAttribute('href', '/teacher/library?tab=research');
   });
 
   it('ADMIN falls back to their dashboard home (oversight roles have no library tab)', () => {
     useAuthStore.setState({ user: { ...STUDENT, role: 'ADMIN', id: 'a1' } });
     renderViewerAt('/document/notes.txt');
-    expect(screen.getByRole('link', { name: 'رجوع' })).toHaveAttribute('href', '/admin/dashboard');
+    expect(screen.getByRole('link', { name: 'العودة إلى الصفحة السابقة' })).toHaveAttribute('href', '/admin/dashboard');
   });
 
   it('an explicit in-app ?back= still wins for every role (the A13 off-app guard is unchanged)', () => {
     useAuthStore.setState({ user: { ...STUDENT, role: 'OWNER', id: 'o1' } });
     renderViewerAt('/document/notes.txt?back=%2Fowner%2Fsystem');
-    expect(screen.getByRole('link', { name: 'رجوع' })).toHaveAttribute('href', '/owner/system');
+    expect(screen.getByRole('link', { name: 'العودة إلى الصفحة السابقة' })).toHaveAttribute('href', '/owner/system');
   });
 });
 

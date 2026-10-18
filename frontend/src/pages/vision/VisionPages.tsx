@@ -240,7 +240,7 @@ export function VisionDetailPage() {
           the old ChevronLeft pointed «forward» in RTL. */}
       <Link to="/vision" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
         <Icon icon={ChevronRight} size={13} />
-        كل الابتكارات
+        العودة إلى الابتكارات
       </Link>
 
       {/* Hero — gradient chip + status + statement on the .page-title

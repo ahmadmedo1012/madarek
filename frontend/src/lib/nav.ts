@@ -19,7 +19,18 @@ export interface NavItem {
   label: string;
   badge?: { text: string; tone?: 'brand' | 'gold' | 'default' };
 }
-export interface NavGroup { label: string; items: NavItem[]; }
+export interface NavGroup {
+  label: string;
+  items: NavItem[];
+  /* r183-B7 (A4 P2-3, the 3.2-screen student drawer): groups marked
+   * `collapsed` render as ONE toggle row by default (Sidebar.tsx) —
+   * the drawer's default scrollHeight stays ≤2 screens at 390px
+   * while every route keeps its sidebar home. The group auto-expands
+   * while one of its routes is the active page, and one tap opens it
+   * any time. The icon rail (desktop `collapsed` sidebar) ignores
+   * the flag — it renders every item as an icon anyway. */
+  collapsed?: boolean;
+}
 
 export const STUDENT_NAV: NavGroup[] = [
   {
@@ -51,21 +62,33 @@ export const STUDENT_NAV: NavGroup[] = [
       // premium-polish audit ruled the hub a lost click + choice paralysis.
       { to: '/student/library', icon: Library, label: 'المكتبة الإلكترونية' },
       { to: '/student/research', icon: BookMarked, label: 'بحوثي العلمية' },
-      { to: '/student/labs', icon: FlaskConical, label: 'المعامل الافتراضية' },
-      { to: '/student/ar', icon: Box, label: 'تجارب AR/VR' },
-      { to: '/student/live', icon: Radio, label: 'البث المباشر' },
       { to: '/student/ai', icon: Bot, label: 'المساعد الذكي', badge: { text: 'AI', tone: 'gold' } },
     ],
   },
   {
-    /* 5-B5 (A4 P2-7 curation): the old «التطوير والمجتمع» + «المزيد»
-       pair (7 + 8 items) is re-cut by intent. Growth surfaces — the
-       progress trio (achievements / XP / skills, A4 P3-4 icon dedupe:
-       Award / Medal / BadgeCheck) + external courses + webinars — form
-       one «التطوير والتقدّم» family; community surfaces move to
-       «المجتمع والفرص»; utility surfaces fold into «حسابي والخدمات».
-       The junk drawer is gone; every route keeps a sidebar home. */
+    /* r183-B7 (A4 P2-3): the immersive-learning trio (virtual labs /
+       AR-VR / live broadcast) is a coherent low-frequency family —
+       one collapsed toggle row instead of three always-visible rows.
+       Unique icons preserved (A4 P3-4). */
+    label: 'المعامل والتقنيات',
+    collapsed: true,
+    items: [
+      { to: '/student/labs', icon: FlaskConical, label: 'المعامل الافتراضية' },
+      { to: '/student/ar', icon: Box, label: 'تجارب AR/VR' },
+      { to: '/student/live', icon: Radio, label: 'البث المباشر' },
+    ],
+  },
+  {
+    /* 5-B5 (A4 P2-7 curation) + r183-B7 (A4 P2-3): the growth family
+       — self-development hub + the achievements trio + external
+       courses + webinars. The achievements fold A4 proposed («النقاط»
+       + «مهاراتي» into /achievements) would orphan both routes: the
+       achievements page (TrainingPages.tsx) exposes no entries to
+       them, and no other surface links either route — so the trio
+       keeps its sidebar homes, and the whole family collapses to one
+       row instead. */
     label: 'التطوير والتقدّم',
+    collapsed: true,
     items: [
       { to: '/training', icon: GraduationCap, label: 'التطوير الذاتي' },
       { to: '/achievements', icon: Award, label: 'الإنجازات والشهادات' },
@@ -76,11 +99,14 @@ export const STUDENT_NAV: NavGroup[] = [
     ],
   },
   {
-    /* 5-B5 (A4 P2-1 + P2-7): «منافسة الكلّيّات» left the sidebar — its
-       NavLink prefix-match lit BOTH /colleges and /colleges/leaderboard
-       (double-active). The destination stays one click away via the
-       leaderboard CTA on /colleges (CollegePages.tsx). */
+    /* 5-B5 (A4 P2-1 + P2-7) + r183-B7 (A4 P2-3): «منافسة الكلّيّات»
+       left the sidebar (NavLink prefix-match double-active) — the
+       leaderboard stays one click from /colleges. The community
+       family collapses to one row; /community also stays reachable
+       from the webinars page CTA and /competitions from the
+       community page CTA. */
     label: 'المجتمع والفرص',
+    collapsed: true,
     items: [
       { to: '/community', icon: Megaphone, label: 'المجتمع الجامعي' },
       { to: '/student/social', icon: MessageCircle, label: 'الشبكة الاجتماعية' },
@@ -90,7 +116,7 @@ export const STUDENT_NAV: NavGroup[] = [
     ],
   },
   {
-    label: 'حسابي والخدمات',
+    label: 'حسابي',
     items: [
       { to: '/student/profile', icon: UserCircle, label: 'ملفي الشخصي' },
       /* r171a: the student messages inbox — the DM lifecycle's student
@@ -102,6 +128,20 @@ export const STUDENT_NAV: NavGroup[] = [
          only — desktop had zero nav marker for it. Every role now
          carries its alerts page as a first-class sidebar item. */
       { to: '/student/alerts', icon: Bell, label: 'الإشعارات' },
+    ],
+  },
+  {
+    /* r183-B7 (A4 P2-3): the university-services family A4 asked to
+       hub. No hub surface exists — UniversityInfoPage is a facts page
+       with no links to the siblings (map/downloads/payment), and the
+       pages themselves are out of this wave's file scope — so the
+       task's fallback applies: ONE collapsed «خدمات الجامعة» section
+       (payment / university / campus guide / downloads / roadmap).
+       Auto-expands while one of them is active; map → university has
+       its own cross-link (CampusMapPage CTA). */
+    label: 'خدمات الجامعة',
+    collapsed: true,
+    items: [
       { to: '/student/payment', icon: Wallet, label: 'الشؤون المالية' },
       /* 5-B5 (A4 P3-4): Building2 ×2 dedupe — the university page
          takes Landmark, colleges keeps Building2. */
@@ -133,11 +173,22 @@ export const TEACHER_NAV: NavGroup[] = [
          per intent — the fuller names win everywhere. */
       { to: '/teacher/schedule', icon: Calendar, label: 'جدول المحاضرات' },
       { to: '/teacher/attendance', icon: ClipboardCheck, label: 'الحضور والغياب' },
-      { to: '/teacher/grades', icon: ListChecks, label: 'درجات الطلاب' },
       /* 5-B5 (A4 P1-3): «قائمة الطلاب» lived only in the mobile
          bottom-nav — desktop-reachable by URL alone. */
       { to: '/teacher/students', icon: Users, label: 'قائمة الطلاب' },
       { to: '/teacher/materials', icon: Upload, label: 'الملفات التعليمية' },
+    ],
+  },
+  {
+    /* r183-B6 (A4 P3-8): the grading trio (grades / assignments / exams)
+       left «لوحة التدريس» at 10 items — the only group in any role's
+       nav above the 9-item ceiling the student drawer already honors
+       (nav-coverage pins it for ALL roles now). They are one intent
+       family (produce work → grade it), so they become their own
+       «التقييم والتصحيح» group instead of a 10-item mega-group. */
+    label: 'التقييم والتصحيح',
+    items: [
+      { to: '/teacher/grades', icon: ListChecks, label: 'درجات الطلاب' },
       { to: '/teacher/assignments', icon: ClipboardList, label: 'الواجبات والاختبارات' },
       // 18-F1 — unified online-exam authoring (question bank + templates).
       // Distinct from الواجبات والاختبارات (classroom grading): this is the

@@ -31,6 +31,7 @@ import {
 } from '../../hooks/useResources';
 import { TIER_LABEL, TIER_COLOR, RARITY_COLOR, RARITY_LABEL } from '../../lib/gamification';
 import { apiErrorMessage, countAr } from '../../lib/format';
+import { useEntityPageTitle } from '../../components/layout/AppShell';
 import '../../styles/training.css'; // training surfaces + shared families this module owns (D11 css split, 12-15)
 
 const CATEGORY_LABEL: Record<TrainingCategory, string> = {
@@ -331,6 +332,8 @@ export function TrainingTrackPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const trackQ = useTrainingTrack(slug);
+  // r183-B6 (A4 P3-4): the tab names the TRACK, not «مسار تدريبي».
+  useEntityPageTitle(trackQ.data?.title ?? null);
   const enroll = useEnrollTrack();
   const [enrollError, setEnrollError] = useState(false);
 
@@ -340,7 +343,7 @@ export function TrainingTrackPage() {
       <div className="page">
         <Link to="/training" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          كل المسارات
+          العودة إلى المسارات
         </Link>
         <ErrorState message="تعذَّر تحميل المسار" error={trackQ.error} onRetry={() => trackQ.refetch()} />
       </div>
@@ -383,7 +386,7 @@ export function TrainingTrackPage() {
     <div className="page">
       <Link to="/training" className="back-link">
         <Icon icon={ChevronRight} size={14} />
-        كل المسارات
+        العودة إلى المسارات
       </Link>
 
       {/* Hero band — track-themed (tint + hairline via --track-accent;
@@ -514,6 +517,8 @@ export function TrainingLessonPage() {
   const { slug, lessonId } = useParams<{ slug: string; lessonId: string }>();
   const navigate = useNavigate();
   const trackQ = useTrainingTrack(slug);
+  // r183-B6 (A4 P3-4): the tab names the LESSON, not «درس تدريبي».
+  useEntityPageTitle(trackQ.data?.lessons.find((l) => l.id === lessonId)?.title ?? null);
   const complete = useCompleteLesson();
   const [quizAnswer, setQuizAnswer] = useState('');
   const [feedback, setFeedback] = useState<{ ok: boolean; msg: string; reward?: { points: number; level: number; tier: Tier; badges: Array<{ slug: string; title: string; iconEmoji: string }> } } | null>(null);
@@ -524,7 +529,7 @@ export function TrainingLessonPage() {
       <div className="page">
         <Link to="/training" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          كل المسارات
+          العودة إلى المسارات
         </Link>
         <ErrorState message="تعذَّر تحميل الدرس" error={trackQ.error} onRetry={() => trackQ.refetch()} />
       </div>
@@ -593,7 +598,9 @@ export function TrainingLessonPage() {
     <div className="page">
       <Link to={`/training/${track.slug}`} className="back-link">
         <Icon icon={ChevronRight} size={14} />
-        {track.title}
+        {/* r183-B6 (A4 P3-6): the back-link family's unified grammar —
+            «العودة إلى X» (this was the bare-title variant). */}
+        العودة إلى {track.title}
       </Link>
 
       <Card>

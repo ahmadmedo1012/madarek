@@ -1,6 +1,6 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { LogOut, ChevronsLeft, ChevronsRight, X, Compass } from 'lucide-react';
+import { LogOut, ChevronsLeft, ChevronsRight, ChevronDown, X, Compass } from 'lucide-react';
 import { Icon } from '../Icon';
 import { BrandMark } from '../BrandMark';
 import { UserAvatar } from '../primitives';
@@ -14,7 +14,7 @@ import { useOnboardingStore } from '../../stores/onboarding.store';
 import { useUiStore } from '../../stores/ui.store';
 import { acquireScrollLock, releaseScrollLock } from '../../lib/scrollLock';
 import { overlayStack } from '../../lib/overlayStack';
-import { NAV_BY_ROLE, displayRoleLabel } from '../../lib/nav';
+import { NAV_BY_ROLE, displayRoleLabel, type NavGroup } from '../../lib/nav';
 
 export function Sidebar() {
   const user = useAuthStore((s) => s.user);
@@ -158,6 +158,30 @@ export function Sidebar() {
     return () => document.removeEventListener('keydown', onEsc, true);
   }, [sidebarOpen, closeSidebar, drawerId]);
 
+  /* ── Collapsible nav groups (r183-B7, A4 P2-3) ────────────────────
+     Groups flagged `collapsed` in nav.ts render as ONE toggle row in
+     the full-label sidebar (drawer + desktop) so the student drawer's
+     default scrollHeight stays ≤2 screens at 390px. Two rules:
+       - the group AUTO-EXPANDS while one of its routes is the active
+         page (the sidebar's single active marker must never hide
+         behind a collapsed header — A4's «كل مسار له علامة جانبية
+         واحدة» contract);
+       - a user toggle is sticky for the sidebar's life and beats the
+         derived default (deliberately collapsing your own active
+         group is allowed).
+     The icon rail ignores the accordion: it renders every item as an
+     icon anyway, and a chevron row in a 64px rail would be a dead
+     control. */
+  const location = useLocation();
+  const [groupOverrides, setGroupOverrides] = useState<Record<string, boolean>>({});
+  const toggleGroup = (label: string, next: boolean) => {
+    setGroupOverrides((prev) => ({ ...prev, [label]: next }));
+  };
+  const isGroupActive = (g: NavGroup) =>
+    g.items.some(
+      (it) => location.pathname === it.to || location.pathname.startsWith(`${it.to}/`),
+    );
+
   // Reflect collapse state on the shell so the grid track resizes.
   // Toggled on documentElement so any descendent (topbar, etc.) can read it.
   // 5-C3 (A9 P1-2 residual, live-measured): this ran in useEffect, so
@@ -265,14 +289,83 @@ export function Sidebar() {
             unaffected: the .nav-group elements stay siblings inside
             this wrapper. */}
         <div className="sidebar-nav">
-          {groups.map((g) => (
+          {groups.map((g) => {
+            /* r183-B7 (accordion-band fix): the accordion applies in
+               the full-label sidebar — the mobile DRAWER (drawerBand,
+               ≤920px, where the .collapsed class is inert CSS: drawer
+               styles are band-scoped) and the desktop EXPANDED
+               sidebar. The original `!sidebarCollapsed` gate read the
+               desktop ICON-RAIL preference, which DEFAULTS to true —
+               so a fresh user never saw the accordion in the drawer
+               and the re-cut had no effect (measured 1841px). */
+            const accordion = g.collapsed === true && (drawerBand || !sidebarCollapsed);
+            const groupOpen = groupOverrides[g.label] ?? (!accordion || isGroupActive(g));
+            return (
             <div className="nav-group" key={g.label}>
-              <div className="nav-section-label">{g.label}</div>
-              {g.items.map((item) => {
+              {accordion ? (
+                /* The section label becomes the disclosure toggle —
+                   same look (the .nav-section-label class carries the
+                   type styling), plus a rotating chevron (the
+                   AdminPages faculty-card precedent) and the drawer
+                   band's 44px touch floor. Inline resets only: no new
+                   stylesheet rules (CSS files are frozen for this
+                   wave). */
+                <button
+                  type="button"
+                  className="nav-section-label nav-group-toggle"
+                  aria-expanded={groupOpen}
+                  onClick={() => toggleGroup(g.label, !groupOpen)}
+                  title={groupOpen ? `طيّ ${g.label}` : `توسيع ${g.label}`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--sp-2)',
+                    width: '100%',
+                    minBlockSize: '44px',
+                    marginBlockEnd: 'var(--sp-1)',
+                    background: 'none',
+                    border: 0,
+                    padding: '0 var(--sp-3)',
+                    font: 'inherit',
+                    fontWeight: 'var(--fw-semibold)',
+                    letterSpacing: 'inherit',
+                    color: 'inherit',
+                    cursor: 'pointer',
+                    textAlign: 'start',
+                    borderRadius: 'var(--r-sm)',
+                  }}
+                >
+                  <span style={{ flex: 1, textAlign: 'start', minWidth: 0 }}>{g.label}</span>
+                  <Icon
+                    icon={ChevronDown}
+                    size={14}
+                    aria-hidden
+                    style={{
+                      color: 'var(--text-muted)',
+                      flexShrink: 0,
+                      transition: 'transform var(--t-base) var(--ease)',
+                      transform: groupOpen ? 'rotate(180deg)' : 'none',
+                    }}
+                  />
+                </button>
+              ) : (
+                <div className="nav-section-label">{g.label}</div>
+              )}
+              {groupOpen && g.items.map((item) => {
                 const link = (
                   <NavLink
                     key={item.to}
                     to={item.to}
+                    /* r183-B7 (overlay history): while the drawer is
+                       open, a nav click lands on the drawer's own
+                       marker history entry — REPLACE it instead of
+                       pushing above it, so the entry is consumed by
+                       the navigation itself and browser Back returns
+                       to the pre-drawer page (no stranded marker, no
+                       dead back press). The desktop sidebar keeps
+                       normal pushes (sidebarOpen is false there — the
+                       ghost-drawer effect guarantees it). */
+                    replace={sidebarOpen}
                     className={({ isActive }) => `nav-item${isActive ? ' on' : ''}`}
                     onClick={closeSidebar}
                     /* Collapsed rail a11y (axe link-name, serious): the
@@ -310,7 +403,8 @@ export function Sidebar() {
                 );
               })}
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="sidebar-footer">

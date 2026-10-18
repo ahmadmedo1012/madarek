@@ -18,6 +18,7 @@ import {
   type FacultyFormInput, type DepartmentFormInput, type CourseFormInput, type OfferingFormInput,
 } from '../../hooks/useResources';
 import { useOwnerInstitutions } from '../../hooks/useInstitutions';
+import { useEntityPageTitle } from '../../components/layout/AppShell';
 import { countAr } from '../../lib/format';
 import type { OwnerInstitution } from '../../lib/api';
 // The roster chrome (admin-students-toolbar family) the courses table
@@ -226,6 +227,9 @@ export function OwnerInstitutionDetailPage() {
   const institution = routeSlug
     ? institutions.find((i) => i.slug === routeSlug) ?? null
     : null;
+  // r183-B6 (A4 P3-4): the tab names the INSTITUTION, not «إعداد مؤسسة»
+  // (the page's h1 already carries it — now the tab agrees).
+  useEntityPageTitle(institution?.name ?? null);
 
   /* Every academic mutation binds to the SELECTED institution's slug —
    * the r181 hook extensions thread it into the request query/body.

@@ -13,6 +13,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '../../src/lib/queryClient';
 import { AppRoutes } from '../../src/App';
 import { useAuthStore, type AuthUser, type AppRole } from '../../src/stores/auth.store';
+import { useToastStore } from '../../src/lib/toast';
 
 // Stub the page behind the canonical route: this test is about the route
 // table, not the auth page's internals.
@@ -382,5 +383,57 @@ describe('AppRoutes — personal notifications mounts (r165d, D2)', () => {
     await screen.findByTestId('owner-alerts');
     expect(screen.queryByTestId('alerts-page')).toBeNull();
     expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/owner/alerts');
+  });
+});
+
+/* ── r183-B6 (A4 P2-1): the cross-role deny explains itself ──────────
+ *
+ * The deny path of ProtectedRoute used to be a bare <Navigate replace>
+ * — a student deep-linking /admin/dashboard was silently swapped onto
+ * their own dashboard with zero feedback. The pin: the bounce STILL
+ * lands on the role home with `replace` (back returns to the page
+ * BEFORE the denied one), and exactly ONE info toast names the cause.
+ * The toast store is asserted directly (the ToastStack lives at the
+ * App root, above this suite's cut). */
+describe('AppRoutes — cross-role deny fires one explanatory toast (r183-B6, A4 P2-1)', () => {
+  const student: AuthUser = {
+    id: 'deny-pin-student',
+    email: 'deny-student@uoz.edu',
+    firstName: 'طالب',
+    lastName: 'الحراسة',
+    role: 'STUDENT',
+  };
+
+  beforeEach(() => {
+    useToastStore.setState({ items: [] });
+    useAuthStore.setState({ user: student, isHydrated: true });
+  });
+
+  afterEach(() => {
+    useAuthStore.setState({ user: null });
+    useToastStore.setState({ items: [] });
+  });
+
+  it('a STUDENT hitting /admin/dashboard lands on their home with ONE toast — not a silent swap', async () => {
+    renderAt('/admin/dashboard');
+    // The role-home landing (the pre-existing `replace` contract).
+    await screen.findByTestId('student-dashboard');
+    expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/student/dashboard');
+    // Exactly one toast, naming the cause and the destination.
+    const items = useToastStore.getState().items;
+    expect(items).toHaveLength(1);
+    expect(items[0]?.message).toBe('هذه الصفحة غير متاحة لدور حسابك — أُعيدك إلى لوحتك');
+    expect(items[0]?.variant).toBe('info');
+  });
+
+  it('a second, DIFFERENT deny later in the session still explains itself', async () => {
+    const { unmount } = renderAt('/admin/dashboard');
+    await screen.findByTestId('student-dashboard');
+    unmount();
+    useToastStore.setState({ items: [] });
+    renderAt('/owner/dashboard');
+    await screen.findByTestId('student-dashboard');
+    expect(useToastStore.getState().items).toHaveLength(1);
+    expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/student/dashboard');
   });
 });

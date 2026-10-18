@@ -199,15 +199,27 @@ function CollegesLayout() {
   if (!isHydrated) return <HydrationSplash />;
   if (user) return <AppShell />;
   return (
-    <main id="main" className="content-inner">
-      <div style={{ marginBlockEnd: 'var(--sp-6)' }}>
-        <Link to="/" className="btn ghost sm">
-          <Icon icon={ArrowRight} size={14} />
-          العودة إلى الصفحة الرئيسية
-        </Link>
-      </div>
-      <Outlet />
-    </main>
+    <>
+      {/* r183-B8 (A10 finding 3): the chrome-less public funnel was the
+       * ONLY probed surface without a skip link — AppShell.tsx:360 is
+       * the sole emitter and the landing ships its own (r172a), so a
+       * keyboard user on the guest gallery tabbed through the whole
+       * funnel chrome before the content. Same a11y pattern/anchor as
+       * AppShell: the base.css .skip-link contract makes any
+       * <a class="skip-link" href="#main"> the first Tab stop, visually
+       * hidden until focused; tabIndex=-1 on the target lets
+       * programmatic focus land after the skip. */}
+      <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
+      <main id="main" tabIndex={-1} className="content-inner">
+        <div style={{ marginBlockEnd: 'var(--sp-6)' }}>
+          <Link to="/" className="btn ghost sm">
+            <Icon icon={ArrowRight} size={14} />
+            العودة إلى الصفحة الرئيسية
+          </Link>
+        </div>
+        <Outlet />
+      </main>
+    </>
   );
 }
 

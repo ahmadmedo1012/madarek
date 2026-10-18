@@ -284,8 +284,9 @@ describe('ExamTakerPage terminal submit answers (r165a)', () => {
     // No list re-read was forced (nothing changed server-side).
     expect(mocks.refetch).not.toHaveBeenCalled();
     // r165a: the one live screen that had no exit now carries the same
-    // «كل الاختبارات» back-link every other screen of this flow has.
-    expect(screen.getByRole('link', { name: 'كل الاختبارات' })).toBeTruthy();
+    // back-link every other screen of this flow has — «العودة إلى X»
+    // grammar since r183-B6 (A4 P3-6, the three back-link text rules).
+    expect(screen.getByRole('link', { name: 'العودة إلى الاختبارات' })).toBeTruthy();
 
     // The retry succeeds → the real result screen.
     mocks.finish.mockResolvedValueOnce({ score: 8, maxScore: 10, status: 'GRADED', needsManual: 0, passed: true });

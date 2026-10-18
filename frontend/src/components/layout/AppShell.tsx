@@ -19,6 +19,7 @@ import { OnboardingFlow } from '../onboarding/OnboardingFlow';
 import { MilestoneScene } from '../onboarding/MilestoneScene';
 import { HydrationSplash } from '../HydrationSplash';
 import { overlayStack } from '../../lib/overlayStack';
+import { toast } from '../../lib/toast';
 import { NAV_BY_ROLE, ROLE_HOME } from '../../lib/nav';
 // CONCRETE module import (r157 6A4-2/6A13-3): shell tests mock the
 // motion BARREL with PageTransition only — importing useReducedMotion
@@ -95,6 +96,34 @@ export function resolveTitle(pathname: string): string {
   // 4-A14 P2-1: the fallback used to name «منصة الزاوية» — the
   // university platform, not the product. The product is «مدارك».
   return 'مدارك';
+}
+
+/* ───────────────────────────────────────────────────────────
+   ENTITY-NAME TITLES (r183-B6, A4 P3-4)
+   ───────────────────────────────────────────────────────────
+   The guests already get payload names in their tabs (useDocTitle in
+   CollegePages / VisionPages / CompetitionsPages) while every AUTHED
+   entity page resolved to its DYNAMIC_TITLES pattern — «تفاصيل
+   المقرّر · مدارك» for BOTH «هندسة البرمجيات» and «قواعد البيانات».
+   This hook is the authed half of that contract: the page hands its
+   resolved entity name up and the tab (plus history entries / SR
+   announcements, WCAG 2.4.2) names the thing, not the pattern.
+
+   Same stomp-avoidance contract as the guest useDocTitle: the shell's
+   pathname-title effect is the PARENT effect — it runs after the
+   page's effect in the same commit, so a direct write would be
+   stomped. The 0ms macrotask schedules after every effect in the
+   commit and the entity title survives. A null/undefined name (query
+   pending, unknown id) writes nothing — the shell's own resolution
+   owns the tab then, exactly like the guest variant. */
+export function useEntityPageTitle(entityName?: string | null): void {
+  useEffect(() => {
+    if (!entityName) return;
+    const set = window.setTimeout(() => {
+      document.title = `${entityName} · مدارك`;
+    }, 0);
+    return () => window.clearTimeout(set);
+  }, [entityName]);
 }
 
 /* ───────────────────────────────────────────────────────────
@@ -407,6 +436,29 @@ export function AppShell({ children }: { children?: ReactNode }) {
   );
 }
 
+/* r183-B6 (A4 P2-1): the cross-role deny used to swap the page under
+   the user with ZERO feedback — a student deep-linking /admin/dashboard
+   landed on their own dashboard with no explanation of what just
+   happened. One info toast at deny time names the cause and the
+   destination («أُعيدك إلى لوحتك»). The ref guard keeps it exactly
+   ONE toast per visit: React StrictMode double-invokes mount effects
+   in dev, and the ref survives that simulated cycle, so the second
+   invocation is a no-op. The <Navigate state> carries deniedFrom for
+   any landing surface that later wants the breadcrumb; the redirect
+   itself stays `replace` — browser back returns to the page BEFORE
+   the denied one (recorded in App-routes.test.tsx). */
+const DENIED_ROLE_MESSAGE = 'هذه الصفحة غير متاحة لدور حسابك — أُعيدك إلى لوحتك';
+
+function DeniedRoleNotice() {
+  const announced = useRef(false);
+  useEffect(() => {
+    if (announced.current) return;
+    announced.current = true;
+    toast.info(DENIED_ROLE_MESSAGE);
+  }, []);
+  return null;
+}
+
 export function ProtectedRoute({ allow }: { allow?: AppRole[] }) {
   const isHydrated = useAuthStore((s) => s.isHydrated);
   const user = useAuthStore((s) => s.user);
@@ -415,7 +467,12 @@ export function ProtectedRoute({ allow }: { allow?: AppRole[] }) {
   if (!isHydrated) return <HydrationSplash />;
   if (!user) return <Navigate to="/auth" replace state={{ from: location }} />;
   if (allow && !allow.includes(user.role)) {
-    return <Navigate to={ROLE_HOME[user.role]} replace />;
+    return (
+      <>
+        <DeniedRoleNotice />
+        <Navigate to={ROLE_HOME[user.role]} replace state={{ deniedFrom: location.pathname }} />
+      </>
+    );
   }
   return <Outlet />;
 }

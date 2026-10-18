@@ -86,6 +86,16 @@ jobs:
       - run: npm --prefix backend run prisma:generate
       - run: npm --prefix backend run build
       - run: npm --prefix frontend run build
+      # r183-B8 (A11 finding 1): the bundle-size gate. The pipeline
+      # ships four strict design gates (icons/motion/colors/parity) but
+      # NOTHING watched JS weight — 123 chunks / ~600KB gz total were
+      # shipping silently. Dependency-free (node:fs/path/url/zlib — the
+      # verify-parity-export.mjs pattern), so no extra install step: it
+      # walks the dist the step above just produced and fails this job
+      # when a pinned ceiling breaks (total gz ≤ 650KB · entry
+      # index-*.js ≤ 80KB · pdf-*.js ≤ 110KB — A11's LAB measurements
+      # plus ~8-10% headroom, pinned in the script header).
+      - run: node scripts/check-bundle-size.mjs
 
   test-frontend:
     name: Test (frontend)

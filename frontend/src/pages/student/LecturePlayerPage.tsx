@@ -11,6 +11,7 @@ import { Modal } from '../../components/overlays/Modal';
 import { VideoPlayerChrome } from '../../components/player/VideoPlayerChrome';
 import { OfferingMaterialsCard } from '../../components/player/OfferingMaterialsCard';
 import { useLecture, useOfferingLectures, useReportWatch, useAnswerCheckpoint, type LectureCheckpoint } from '../../hooks/useResources';
+import { useEntityPageTitle } from '../../components/layout/AppShell';
 import { useAuthStore } from '../../stores/auth.store';
 import { apiBaseURL } from '../../lib/api';
 import { countAr, formatMmSs } from '../../lib/format';
@@ -122,6 +123,8 @@ function LectureSkeleton() {
 export default function LecturePlayerPage() {
   const { lectureId } = useParams<{ lectureId: string }>();
   const { data, isPending, isError, error, refetch } = useLecture(lectureId);
+  // r183-B6 (A4 P3-4): the tab names the LECTURE, not «مشغّل المحاضرة».
+  useEntityPageTitle(data?.title ?? null);
   const reportWatch = useReportWatch();
   const answerCheckpoint = useAnswerCheckpoint();
   const qc = useQueryClient();

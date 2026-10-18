@@ -76,16 +76,22 @@ const QUALITY: BottomItem[] = [
   { to: '/quality/reports',    label: 'التقارير', icon: FileText      },
 ];
 
-/* OWNER — 5 most-used: Dashboard, Users, Realtime, Alerts, Governance.
+/* OWNER — 5 most-used: Dashboard, Users, Realtime, Notifications, Governance.
    Verified routes: /owner/dashboard, /owner/users, /owner/realtime,
-   /owner/alerts, /owner/governance. NOTE: no /owner/profile route exists
-   (unlike the other roles), so the 5th slot is the live monitor. */
+   /owner/notifications, /owner/governance. NOTE: no /owner/profile route exists
+   (unlike the other roles), so the 5th slot is the live monitor.
+   r183-B6 (A4 P3-9): the alerts slot pointed at /owner/alerts (the
+   OPERATIONAL board) while the topbar bell opens /owner/notifications
+   (the personal inbox) — same intent, two destinations. The bottom-nav
+   item now follows the bell (and every other role's «الإشعارات»
+   grammar — student label included); the operational board keeps its
+   sidebar home under «التنبيهات التشغيلية». */
 const OWNER: BottomItem[] = [
-  { to: '/owner/dashboard', label: 'الرئيسية',  icon: Home        },
-  { to: '/owner/users',     label: 'المستخدمون', icon: Users      },
-  { to: '/owner/realtime',  label: 'المراقبة',  icon: Activity    },
-  { to: '/owner/alerts',    label: 'التنبيهات', icon: Bell        },
-  { to: '/owner/governance', label: 'الحوكمة',  icon: ShieldCheck },
+  { to: '/owner/dashboard',     label: 'الرئيسية',  icon: Home        },
+  { to: '/owner/users',         label: 'المستخدمون', icon: Users      },
+  { to: '/owner/realtime',      label: 'المراقبة',  icon: Activity    },
+  { to: '/owner/notifications', label: 'الإشعارات', icon: Bell        },
+  { to: '/owner/governance',    label: 'الحوكمة',   icon: ShieldCheck },
 ];
 
 export function BottomNav() {

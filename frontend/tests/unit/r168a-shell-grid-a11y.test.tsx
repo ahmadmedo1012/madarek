@@ -142,11 +142,14 @@ describe('r168a — destructive row actions are danger-tinted ghosts', () => {
 });
 
 describe('r168a — student dashboard leads its outline with its identity', () => {
-  it('sr-only h1 «لوحة الطالب» + greeting demoted to h2', () => {
+  it('sr-only h1 «لوحة التحكم» + greeting demoted to h2', () => {
     const page = stripJsx(read('src/pages/student/DashboardPage.tsx'));
-    expect(page).toContain('<h1 className="sr-only">لوحة الطالب</h1>');
+    // r183-B6 (A4 P3-7): the identity string moved from «لوحة الطالب»
+    // to «لوحة التحكم» — h1 must equal resolveTitle('/student/dashboard')
+    // (the nav label the topbar and document.title already carry).
+    expect(page).toContain('<h1 className="sr-only">لوحة التحكم</h1>');
     // All four header states (skeleton/error/preview/main) share it.
-    expect(page.match(/<h1 className="sr-only">لوحة الطالب<\/h1>/g)?.length).toBe(4);
+    expect(page.match(/<h1 className="sr-only">لوحة التحكم<\/h1>/g)?.length).toBe(4);
     expect(page).toMatch(/<h2 className="page-title">\s*\{greeting\}/);
     // The v8 hero is untouched: welcome-card + its title classes remain.
     expect(page).toContain('page-header welcome-card');

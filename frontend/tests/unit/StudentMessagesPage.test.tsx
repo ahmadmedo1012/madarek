@@ -298,8 +298,12 @@ describe('StudentMessagesPage — compose recipients (r171a)', () => {
 /* ── Nav coverage ───────────────────────────────────────────── */
 
 describe('nav — the student inbox has a sidebar home (r171a)', () => {
-  it("'/student/messages' is a STUDENT_NAV destination in «حسابي والخدمات», between profile and alerts", () => {
-    const group = STUDENT_NAV.find((g) => g.label === 'حسابي والخدمات');
+  // r183-B7: the group was re-cut from «حسابي والخدمات» to «حسابي» —
+  // the university-services items moved to the collapsed «خدمات
+  // الجامعة» group (A4 P2-3 drawer budget). The inbox placement
+  // contract is unchanged.
+  it("'/student/messages' is a STUDENT_NAV destination in «حسابي», between profile and alerts", () => {
+    const group = STUDENT_NAV.find((g) => g.label === 'حسابي');
     expect(group).toBeDefined();
     const tos = group!.items.map((i) => i.to);
     expect(tos).toContain('/student/messages');

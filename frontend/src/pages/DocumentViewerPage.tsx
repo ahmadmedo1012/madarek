@@ -87,7 +87,7 @@ export default function DocumentViewerPage() {
           <div className="page-title-block">
             <Link to={back} className="back-link document-viewer-back">
               <Icon icon={ChevronRight} size={14} />
-              رجوع
+              العودة إلى الصفحة السابقة
             </Link>
             <h1 className="page-title" style={{ marginTop: 4 }}>{title ?? 'مستند'}</h1>
           </div>
@@ -126,7 +126,7 @@ export default function DocumentViewerPage() {
               خارج اللغة). */}
           <Link to={back} className="back-link document-viewer-back">
             <Icon icon={ChevronRight} size={14} />
-            رجوع
+            العودة إلى الصفحة السابقة
           </Link>
           <h1 className="page-title" style={{ marginTop: 4 }}>{title ?? 'مستند'}</h1>
         </div>

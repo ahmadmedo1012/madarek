@@ -26,7 +26,7 @@
  * actually ships.
  */
 import { describe, expect, it, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { readFileSync } from 'node:fs';
@@ -78,7 +78,102 @@ const NON_SHELL_TITLED: Record<string, string> = {
   '/404': 'الصفحة غير موجودة · مدارك',
 };
 
-import { resolveTitle } from '../../src/components/layout/AppShell';
+import { resolveTitle, useEntityPageTitle } from '../../src/components/layout/AppShell';
+
+/* ── r183-B6 (A4 P3-4): entity names on authed dynamic routes ────
+ *
+ * The guest listing/detail surfaces layer payload names onto the tab
+ * (useDocTitle in CollegePages / VisionPages / CompetitionsPages)
+ * while the AUTHED entity pages resolved to their DYNAMIC_TITLES
+ * pattern — «تفاصيل المقرّر · مدارك» for two DIFFERENT courses.
+ * useEntityPageTitle is the authed half: the page hands its resolved
+ * entity name up; the 0ms macrotask lands it past the shell's
+ * pathname-title effect (parent effects run after child effects in
+ * the same commit — a direct write would be stomped). */
+describe('useEntityPageTitle — the authed entity-name layer (r183-B6, A4 P3-4)', () => {
+  function TitleProbe({ name }: { name: string | null }) {
+    useEntityPageTitle(name);
+    return null;
+  }
+
+  it('two different entities produce two different document.titles', async () => {
+    // The shell's pathname resolution stands in for the parent effect.
+    document.title = `${resolveTitle('/student/courses/x')} · مدارك`;
+    const { rerender } = render(<TitleProbe name="هندسة البرمجيات" />);
+    await waitFor(() => expect(document.title).toBe('هندسة البرمجيات · مدارك'));
+    // Same pattern route, different entity — the tab must differ.
+    rerender(<TitleProbe name="قواعد البيانات" />);
+    await waitFor(() => expect(document.title).toBe('قواعد البيانات · مدارك'));
+    // A null name (query pending / unknown id) writes nothing — the
+    // shell's own resolution owns the tab then.
+    rerender(<TitleProbe name={null} />);
+    expect(document.title).toBe('قواعد البيانات · مدارك');
+    document.title = 'مدارك · منصّة التعليم الذكي';
+  });
+
+  it('the seven authed entity surfaces adopt the hook (fs pin)', () => {
+    const pages = [
+      'src/pages/student/CourseDetailPage.tsx',
+      'src/pages/student/LecturePlayerPage.tsx',
+      'src/pages/student/TrainingPages.tsx',
+      'src/pages/exams/OnlineExamsPages.tsx',
+      'src/pages/teacher/TeacherIntelligencePage.tsx',
+      'src/pages/owner/OwnerInstitutionDetailPage.tsx',
+      'src/pages/admin/AdminGovernancePages.tsx',
+    ];
+    for (const p of pages) {
+      expect(read(p), p).toContain('useEntityPageTitle(');
+    }
+  });
+});
+
+/* ── r183-B6 (A4 P3-6): one back-link grammar, «العودة إلى X» ────
+ *
+ * A4 measured THREE back-link text rules live at once: the
+ * everything-list style («كل المسارات» / «كل الاختبارات» / «كل
+ * الابتكارات»), the bare «رجوع» (DocumentViewer), and the intended
+ * «العودة إلى X». The unification keeps the third everywhere (the
+ * three already-correct pages — course detail, governance, owner
+ * institution — are verified, not edited). Source pins: the DOM
+ * suites cover two of the surfaces (r176e D-02, r165a terminal) —
+ * the fs pins below hold the whole family at once. */
+describe('back-link grammar — «العودة إلى X» everywhere (r183-B6, A4 P3-6)', () => {
+  it('the four edited surfaces carry the unified grammar (fs pins)', () => {
+    const pins: Array<[string, string]> = [
+      ['src/pages/vision/VisionPages.tsx', 'العودة إلى الابتكارات'],
+      ['src/pages/student/TrainingPages.tsx', 'العودة إلى المسارات'],
+      // The lesson → track link was the bare-title variant.
+      ['src/pages/student/TrainingPages.tsx', 'العودة إلى {track.title}'],
+      ['src/pages/exams/OnlineExamsPages.tsx', 'العودة إلى الاختبارات'],
+      ['src/pages/DocumentViewerPage.tsx', 'العودة إلى الصفحة السابقة'],
+    ];
+    for (const [p, marker] of pins) {
+      expect(read(p), `${p} → ${marker}`).toContain(marker);
+    }
+  });
+
+  it('the three already-correct surfaces stay correct (verify-only trio)', () => {
+    const pins: Array<[string, string]> = [
+      ['src/pages/student/CourseDetailPage.tsx', 'العودة إلى مقرراتي'],
+      ['src/pages/admin/AdminGovernancePages.tsx', 'العودة إلى الأساتذة'],
+      ['src/pages/owner/OwnerInstitutionDetailPage.tsx', 'العودة إلى المؤسسات'],
+    ];
+    for (const [p, marker] of pins) {
+      expect(read(p), `${p} → ${marker}`).toContain(marker);
+    }
+  });
+
+  it('the legacy grammars are gone from the edited surfaces (fs pins)', () => {
+    // Vision / exams / document-viewer: the old strings are fully gone.
+    expect(read('src/pages/vision/VisionPages.tsx')).not.toContain('كل الابتكارات');
+    expect(read('src/pages/exams/OnlineExamsPages.tsx')).not.toContain('كل الاختبارات');
+    expect(read('src/pages/DocumentViewerPage.tsx')).not.toContain('رجوع');
+    // Training: the ONLY surviving «كل المسارات» is the filter chip
+    // (it carries the row count «كل المسارات (N)») — a bare
+    // back-link-style occurrence fails this lookahead.
+    expect(read('src/pages/student/TrainingPages.tsx')).not.toMatch(/كل المسارات(?!\s*\()/);
+  });
+});
 
 describe('route-title coverage — every App.tsx route resolves a title (WCAG 2.4.2)', () => {
   it('the route-table extraction found the real table (guards the regex itself)', () => {

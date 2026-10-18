@@ -40,6 +40,7 @@ import { withInstitutionScope } from '../../lib/queryClient';
 import { countAr } from '../../lib/format';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../../stores/auth.store';
+import { useEntityPageTitle } from '../../components/layout/AppShell';
 import '../../styles/training.css'; // .back-link family (D11 css split, 12-15)
 // r152c (A2): the colleges.css import is GONE — it existed only for
 // .comp-form-field, and the six governance selects now ride the
@@ -876,6 +877,8 @@ const PULSE_CLEAR_MS = 1200;
 export function AdminPermissionsPage() {
   const { id } = useParams<{ id: string }>();
   const { data, isPending, isError, error, refetch } = useUserPermissions(id);
+  // r183-B6 (A4 P3-4): the tab names the USER, not «إدارة الصلاحيات».
+  useEntityPageTitle(data ? `${data.user.firstName} ${data.user.lastName}` : null);
   const setCap = useSetCapability();
   /* r164-i (permissions UX — blocked-action explanation): the backend
    * rejects every self-edit with 403 «لا يمكنك تعديل صلاحياتك بنفسك»

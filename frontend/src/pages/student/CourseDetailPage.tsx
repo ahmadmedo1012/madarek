@@ -10,6 +10,7 @@ import { ErrorState, EmptyState, Skeleton, KpiSkeleton, ListSkeleton } from '../
 import { Reveal, RevealGroup, useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useOfferingFull, selectNextLecture, pendingCheckpoints } from '../../hooks/useResources';
+import { useEntityPageTitle } from '../../components/layout/AppShell';
 import { materialHref } from '../../lib/materialHref';
 import { countAr, formatDateAr, WEEKDAY_NAMES_AR } from '../../lib/format';
 import { courseIcon, courseTint, ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, type AssignmentKind, type MaterialType } from '../../lib/courseMeta';
@@ -81,6 +82,9 @@ function useCountUp(target: number): number {
 export default function CourseDetailPage() {
   const { offeringId } = useParams<{ offeringId: string }>();
   const { data, isPending, isError, error, refetch } = useOfferingFull(offeringId);
+  // r183-B6 (A4 P3-4): the tab names the COURSE, not the pattern —
+  // null while pending leaves the shell's «تفاصيل المقرّر» in place.
+  useEntityPageTitle(data?.course.name ?? null);
 
   // Derived BEFORE the early returns so the count-up hook (useState /
   // useEffect / useReducedMotion inside) keeps a stable order across the

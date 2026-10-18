@@ -317,7 +317,7 @@ export function QualityDashboardPage() {
       <div className="page">
         <header className="page-header">
           <div className="page-title-block">
-            <h1 className="page-title">مركز ضمان الجودة</h1>
+            <h1 className="page-title">لوحة الجودة</h1>
             <p className="page-subtitle">رؤية لحظية لسير العملية التعليمية في الجامعة.</p>
           </div>
         </header>
@@ -343,7 +343,7 @@ export function QualityDashboardPage() {
       <div className="page">
         <header className="page-header">
           <div className="page-title-block">
-            <h1 className="page-title">مركز ضمان الجودة</h1>
+            <h1 className="page-title">لوحة الجودة</h1>
             <p className="page-subtitle">رؤية لحظية لسير العملية التعليمية في الجامعة.</p>
           </div>
         </header>
@@ -389,7 +389,7 @@ export function QualityDashboardPage() {
     <div className="page">
       <header className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">مركز ضمان الجودة</h1>
+          <h1 className="page-title">لوحة الجودة</h1>
           <p className="page-subtitle">
             بناء نظام تعليمي فعّال عبر تطوير الأداء الأكاديمي والإداري والتقني — وفقاً لمتطلبات
             الاعتماد المحلية والدولية.

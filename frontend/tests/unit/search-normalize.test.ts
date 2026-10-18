@@ -76,6 +76,28 @@ describe('matchesQueryTokens (quick-action word matching)', () => {
     expect(matchesQueryTokens('شبكات الحاسوب', '')).toBe(false);
   });
 
+  it('folds the singular to the plural — مسابقة finds المسابقات (r183-B6, A4 P3-5)', () => {
+    // A4's live miss: typing the singular feature word answered zero
+    // rows because the nav labels carry the plurals.
+    expect(matchesQueryTokens('المسابقات الأكاديميّة', 'مسابقة')).toBe(true);
+    // The sound-feminine fold rides the ة→ات pattern.
+    expect(matchesQueryTokens('كلّيّات الجامعة', 'كلية')).toBe(true);
+    // Unrelated labels stay unmatched — the fold widens, it never bridges.
+    expect(matchesQueryTokens('المكتبة الإلكترونية', 'مسابقة')).toBe(false);
+    expect(matchesQueryTokens('شبكات الحاسوب', 'جامعة')).toBe(false);
+  });
+
+  it('folds the singular to the BROKEN plural — رساله finds الرسائل (r183-B6, A4 P3-5)', () => {
+    // رسالة → رسائل (فَعائل): both sides normalize (ة→ه, ئ→ي) and the
+    // candidate fold bridges the drift.
+    expect(matchesQueryTokens('الرسائل', 'رساله')).toBe(true);
+    expect(matchesQueryTokens('الرسائل', 'رسالة')).toBe(true);
+    // The reverse direction rides the token-side fold.
+    expect(matchesQueryTokens('الرسائل', 'رسائل')).toBe(true);
+    // Unrelated label — no leak through the fold.
+    expect(matchesQueryTokens('المساعد الذكي', 'رسالة')).toBe(false);
+  });
+
   it('multiword matches word-order-insensitively (every query word hits some token)', () => {
     // The audit's example: reversed word order found nothing before.
     expect(matchesQueryTokens('بنك الأسئلة والاختبارات', 'الاختبارات بنك')).toBe(true);

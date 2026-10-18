@@ -1735,10 +1735,24 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
             </select>
           </FormField>
 
-          <FormField label="الموعد النهائي للتسليم" error={validationError && !dueAt ? validationError : undefined}>
+          {/* r183-B8 (A7 finding 1): the due-date field now carries the
+              hint + dir="ltr" + Arabic echo pattern its three exam-
+              authoring siblings already have (ExamAuthorPages.tsx
+              «يفتح في / يغلق في»): datetime-local renders in the
+              browser's locale inside an Arabic modal, so the hint names
+              the native calendar as the safe path and the picked value
+              becomes an echo the author can verify against. */}
+          <FormField
+            label="الموعد النهائي للتسليم"
+            error={validationError && !dueAt ? validationError : undefined}
+            hint={dueAt
+              ? `المحدَّد: ${formatDateTimeAr(dueAt)}`
+              : 'اختر من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'}
+          >
             <input
               type="datetime-local"
               className="input"
+              dir="ltr"
               value={dueAt}
               onChange={(e) => setDueAt(e.target.value)}
               disabled={create.isPending}
@@ -2413,7 +2427,7 @@ function TeacherMessageCompose({
 export function MessagesPage() {
   return (
     <MessagesInbox
-      title="صندوق الرسائل"
+      title="الرسائل"
       subtitle="كل رسالة وصلتك أو أرسلتها عبر المنصّة — أنشئ رسالة جديدة أو ردّ على الواردة منها، والمستلمون المتاحون هم طلاب مقرّراتك ومن راسلتك سابقاً."
       renderCompose={(args) => <TeacherMessageCompose {...args} />}
     />

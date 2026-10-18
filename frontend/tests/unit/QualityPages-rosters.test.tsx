@@ -383,14 +383,17 @@ describe('QualityDashboardPage — alerts card error path retries in place (A8 P
  * roster tests above already pin the header's presence).
  */
 describe('QualityDashboardPage / QualityProfessorsPage — error states keep the page chrome (r157, 6A9 #5)', () => {
-  it('dashboard error: the h1 «مركز ضمان الجودة» stays above the retry', async () => {
+  it('dashboard error: the h1 «لوحة الجودة» stays above the retry', async () => {
     delete FIXTURES['/quality/overview']; // → the mocked api rejects
     renderPage(<QualityDashboardPage />);
 
     // Await the error settle (the pending skeleton carries the same
     // h1 — the retry button is the error-state marker).
     const retry = await screen.findByRole('button', { name: /إعادة المحاولة/ });
-    const h1 = screen.getByRole('heading', { level: 1, name: 'مركز ضمان الجودة' });
+    // r183-B6 (A4 P3-7): the h1 moved from «مركز ضمان الجودة» to
+    // «لوحة الجودة» — it must equal resolveTitle('/quality/dashboard')
+    // (the nav label the topbar and document.title already carry).
+    const h1 = screen.getByRole('heading', { level: 1, name: 'لوحة الجودة' });
     // DOM order: the header (h1) renders before the retry button.
     expect(
       h1.compareDocumentPosition(retry) & Node.DOCUMENT_POSITION_FOLLOWING,

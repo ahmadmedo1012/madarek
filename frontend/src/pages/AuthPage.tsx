@@ -299,7 +299,16 @@ export default function AuthPage() {
             <span className="auth-meta">(بوابة المنصّة)</span>
             <h1 className="auth-form-title">مرحباً بعودتك</h1>
             <p className="auth-form-sub">
-              سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية.
+              {/* r183-B8 (A5 finding 2): journey-aware wall copy — a
+                  visitor bounced here by a protected route (or a public
+                  college CTA carrying state.from, r183-B3) is told the
+                  login resumes THE page they asked for; a plain visit
+                  keeps the platform pitch. readFromPath keeps the
+                  condition honest: only a real in-app from-path (the
+                  exact thing navigateAfterLogin will resume) counts. */}
+              {readFromPath(location.state)
+                ? 'سجّل الدخول للمتابعة إلى الصفحة التي طلبها.'
+                : 'سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية.'}
             </p>
           </div>
 

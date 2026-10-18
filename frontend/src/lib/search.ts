@@ -120,7 +120,8 @@ function withinOneEdit(a: string, b: string): boolean {
  *
  *  - Single-word queries keep the substring contract of
  *    `matchesNormalizedQuery` (foldings + `ال` tolerance), plus the
- *    vocabulary aliases above.
+ *    vocabulary aliases above, plus (r183-B6, A4 P3-5) a bounded
+ *    singular↔plural tolerance — see `singularCandidates`.
  *  - Multiword queries match when EVERY query word matches SOME label
  *    token — word order free, so «الاختبارات بنك» finds «بنك الأسئلة
  *    والاختبارات». A word↔token pair matches by containment (either
@@ -128,6 +129,35 @@ function withinOneEdit(a: string, b: string): boolean {
  *    guarded to 3+ letters so prepositions like «في» cannot leak in)
  *    or, at 4+ letters, within one edit (so «الطالب» finds «الطلاب»).
  */
+
+/** r183-B6 (A4 P3-5): the Arabic singular↔plural drift, bounded.
+ *
+ *  A4 measured the live miss: typing the SINGULAR of a nav feature
+ *  («مسابقة», «رسالة») answered zero rows because the nav labels
+ *  carry the plurals («المسابقات الأكاديميّة», «الرسائل»). Two folds
+ *  cover the drift class, applied at match time on normalized words
+ *  (ة already folded to ه, ئ to ي):
+ *
+ *   - sound feminine plural: trailing ه → ات («مسابقه»→«مسابقات»,
+ *     «جامعه»→«جامعات», «كليه»→«كليات»);
+ *   - the رسالة→رسائل class (normalized: «رساله»→«رسايل»): a word
+ *     ending in له pluralizes by the فَعائل pattern — drop the له,
+ *     append يل («رساله»→«رسايل», «امتحاله»-shaped words simply
+ *     match nothing and stay harmless).
+ *
+ *  Gated to 4+ letter words — the same floor as `withinOneEdit`
+ *  (below that the fold rewrites most of the word and degrades into
+ *  matching everything). Candidates only ever WIDEN the match: the
+ *  word itself always comes first. */
+function singularCandidates(word: string): string[] {
+  const out = [word];
+  if (word.length >= 4) {
+    if (word.endsWith('ه')) out.push(`${word.slice(0, -1)}ات`);
+    if (word.endsWith('له')) out.push(`${word.slice(0, -2)}يل`);
+  }
+  return out;
+}
+
 export function matchesQueryTokens(haystack: string, rawQuery: string): boolean {
   const q = normalizeArabicSearch(rawQuery);
   if (!q) return false;
@@ -136,14 +166,29 @@ export function matchesQueryTokens(haystack: string, rawQuery: string): boolean 
     .filter(Boolean)
     .map((w) => QUERY_WORD_ALIASES[stripAlPrefix(w)] ?? stripAlPrefix(w));
   const h = normalizeArabicSearch(haystack);
-  const first = words[0] ?? '';
-  if (words.length <= 1) {
-    return h.includes(first);
-  }
   const tokens = h
     .split(/\s+/)
     .filter(Boolean)
     .map((t) => QUERY_WORD_ALIASES[stripAlPrefix(t)] ?? stripAlPrefix(t));
+  const first = words[0] ?? '';
+  if (words.length <= 1) {
+    // The substring contract first — a plain containment on the whole
+    // haystack (the /search/global mirror).
+    if (first && h.includes(first)) return true;
+    // Then the singular↔plural folds, token-by-token with the SAME
+    // containment predicate (either side containing the other, 3+
+    // letters) the multiword branch uses — «مسابقه» finds the
+    // «مسابقات» of «المسابقات الأكاديميّة», «رساله» finds «الرسائل».
+    const candidates = singularCandidates(first);
+    return tokens.some((token) => {
+      const tokenCandidates = singularCandidates(token);
+      return candidates.some((c) =>
+        tokenCandidates.some((tc) =>
+          (tc.length >= 3 && c.includes(tc)) || (c.length >= 3 && tc.includes(c)),
+        ),
+      );
+    });
+  }
   return words.every((word) =>
     tokens.some((token) => {
       const shorter = Math.min(word.length, token.length);

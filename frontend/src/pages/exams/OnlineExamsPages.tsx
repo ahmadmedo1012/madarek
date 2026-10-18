@@ -27,6 +27,7 @@ import {
 } from '../../hooks/useResources';
 import { apiErrorDetailRaw, apiErrorMessage, countAr, formatDateTimeAr } from '../../lib/format';
 import { overlayStack } from '../../lib/overlayStack';
+import { useEntityPageTitle } from '../../components/layout/AppShell';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-card / .back-link families (D11 css split, 12-15)
 
@@ -557,6 +558,9 @@ export function ExamTakerPage() {
     attemptId: string;
     score: number; maxScore: number; passed: boolean | null; needsManual: number; status: string;
   } | null>(null);
+  // r183-B6 (A4 P3-4): the tab names the EXAM, not «اختبار إلكتروني» —
+  // the started attempt first, else the list's row for this id.
+  useEntityPageTitle(attempt?.title ?? (examsQ.data ?? []).find((e) => e.id === id)?.title ?? null);
   const [alreadyDone, setAlreadyDone] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -969,7 +973,7 @@ export function ExamTakerPage() {
       <div className="page">
         <Link to="/student/online-exams" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          كل الاختبارات
+          العودة إلى الاختبارات
         </Link>
         <Card>
           {/* 5-A6 plan-7 — verdict lockup: icon → title → grade → badge
@@ -1048,7 +1052,7 @@ export function ExamTakerPage() {
       <div className="page">
         <Link to="/student/online-exams" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          كل الاختبارات
+          العودة إلى الاختبارات
         </Link>
         <Card>
           <div className="empty-state">
@@ -1097,7 +1101,7 @@ export function ExamTakerPage() {
       <div className="page">
         <Link to="/student/online-exams" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          كل الاختبارات
+          العودة إلى الاختبارات
         </Link>
         <Card>
           {/* 5-A6 plan-7 — verdict lockup (see the done-state screen). */}
@@ -1172,15 +1176,16 @@ export function ExamTakerPage() {
       {/* r165a: the one live screen that had NO way out. While a submit
           error keeps the retry path (a network fault — never a terminal
           answer, those settle the attempt above), the student gets the
-          same «كل الاختبارات» back-link every other screen of this flow
-          carries. Leaving is safe and honest: answers autosave per
+          same «العودة إلى الاختبارات» back-link every other screen of
+          this flow carries. Leaving is safe and honest: answers autosave
+          per
           question, the attempt stays IN_PROGRESS server-side and the
           list offers «متابعة» back into it (beforeunload still guards
           an accidental full-page reload). */}
       {submitError && (
         <Link to="/student/online-exams" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          كل الاختبارات
+          العودة إلى الاختبارات
         </Link>
       )}
       <div className="exam-bar">

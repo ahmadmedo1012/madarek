@@ -127,13 +127,112 @@ describe('nav.ts — 5-B5 IA fixes (A4 P1-3 + P2-1/P2-2/P2-7 + 5-B4 hand-off)', 
     expect(new Set(icons).size).toBe(icons.length);
   });
 
-  it('no student group exceeds the 9-item ceiling — the junk drawer is gone (A4 P2-7)', () => {
-    for (const g of STUDENT_NAV) {
-      expect(
-        g.items.length,
-        `${g.label}: ${g.items.length} items`,
-      ).toBeLessThanOrEqual(9);
+  it('no group in ANY role exceeds the 9-item ceiling — the junk drawer is gone (A4 P2-7; r183-B6)', () => {
+    // r183-B6 (A4 P3-8): the student-only ceiling let «لوحة التدريس»
+    // grow to 10 items — the grading trio (grades/assignments/exams)
+    // now lives in its own «التقييم والتصحيح» group, and the gate
+    // covers every role's every group so no mega-group can regrow.
+    for (const [role, nav] of Object.entries(NAV_BY_ROLE)) {
+      for (const g of nav) {
+        expect(
+          g.items.length,
+          `${role} · ${g.label}: ${g.items.length} items`,
+        ).toBeLessThanOrEqual(9);
+      }
     }
+  });
+
+  it('the teacher grading trio is its own «التقييم والتصحيح» group (r183-B6, A4 P3-8)', () => {
+    const groups = new Map(TEACHER_NAV.map((g) => [g.label, g.items.map((i) => i.to)]));
+    const grading = groups.get('التقييم والتصحيح');
+    expect(grading).toEqual(['/teacher/grades', '/teacher/assignments', '/teacher/exams']);
+    // «لوحة التدريس» shed exactly the trio — nothing else moved.
+    expect(groups.get('لوحة التدريس')).toEqual([
+      '/teacher/dashboard',
+      '/teacher/intelligence',
+      '/teacher/performance',
+      '/teacher/schedule',
+      '/teacher/attendance',
+      '/teacher/students',
+      '/teacher/materials',
+    ]);
+  });
+});
+
+describe('STUDENT_NAV — the r183-B7 drawer re-cut (A4 P2-3: 33 items / 3.2 screens → ≤2)', () => {
+  // A4 live-measured the student drawer at 390×844: 33 items / 5 groups,
+  // .sidebar-nav scrollHeight 1749px vs 546px clientHeight = 3.2 screens
+  // of scrolling before the account cluster. The re-cut folds the
+  // low-frequency families behind collapsible group headers (nav.ts
+  // `collapsed: true`, rendered as ONE toggle row by Sidebar.tsx) so the
+  // DEFAULT drawer is ≤16 rows while every route keeps its sidebar home.
+  // The achievements fold A4 sketched («النقاط»+«مهاراتي» into
+  // /achievements) was measured infeasible: the achievements page
+  // exposes no entries to them and no other surface links either route
+  // (census r183-B7) — so the family collapses as a whole instead.
+
+  it('every route keeps its sidebar home — the A4 census 33, zero cuts', () => {
+    // The orphan guards above stay green because NOTHING left the nav;
+    // any future cut must consciously update this pin AND re-verify the
+    // destination is linked from another nav item's page.
+    expect(allDestinations(STUDENT_NAV)).toHaveLength(33);
+  });
+
+  it('the default-visible drawer is ≤16 items — A4\'s 33-row drawer folds behind 4 collapsed groups', () => {
+    const visible = STUDENT_NAV.filter((g) => !g.collapsed).flatMap((g) => g.items);
+    expect(visible.length).toBeLessThanOrEqual(16);
+    const collapsedLabels = STUDENT_NAV.filter((g) => g.collapsed).map((g) => g.label);
+    // The exact four families (drift guard): immersive learning, growth,
+    // community/opportunities, university services.
+    expect(collapsedLabels).toEqual([
+      'المعامل والتقنيات',
+      'التطوير والتقدّم',
+      'المجتمع والفرص',
+      'خدمات الجامعة',
+    ]);
+  });
+
+  it('the always-visible spine carries the high-frequency study surfaces', () => {
+    const visible = STUDENT_NAV.filter((g) => !g.collapsed).flatMap((g) => g.items.map((i) => i.to));
+    for (const core of [
+      '/student/dashboard',
+      '/student/schedule',
+      '/student/calendar',
+      '/student/courses',
+      '/student/catalog',
+      '/student/results',
+      '/student/online-exams',
+      '/student/library',
+      '/student/ai',
+      '/student/profile',
+      '/student/messages',
+      '/student/alerts',
+    ]) {
+      expect(visible, core).toContain(core);
+    }
+  });
+
+  it('the university-services hub A4 sketched: no hub surface exists — the task\'s collapsed-section fallback', () => {
+    // UniversityInfoPage links nothing to map/downloads/payment (and the
+    // pages are out of the wave's file scope), so the four utilities +
+    // the roadmap live in ONE collapsed «خدمات الجامعة» group. The
+    // campus-map CTA still cross-links map → university.
+    const services = STUDENT_NAV.find((g) => g.label === 'خدمات الجامعة');
+    expect(services?.collapsed).toBe(true);
+    expect(services?.items.map((i) => i.to)).toEqual([
+      '/student/payment',
+      '/student/university',
+      '/student/map',
+      '/student/downloads',
+      '/vision',
+    ]);
+  });
+
+  it('the achievements trio keeps its three sidebar homes (fold would orphan — census r183-B7)', () => {
+    const dests = allDestinations(STUDENT_NAV);
+    expect(dests).toContain('/achievements');
+    expect(dests).toContain('/student/gamification');
+    expect(dests).toContain('/student/skills');
   });
 });
 

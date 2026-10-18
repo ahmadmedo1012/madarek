@@ -480,6 +480,25 @@
   .gallery-chip-strip::-webkit-scrollbar { display: none; }
   .gallery-chip { scroll-snap-align: start; flex-shrink: 0; }
 
+  /* r183-B8 (A10 finding 4): the hidden-scrollbar AFFORDANCE. The strip
+     above hides its scrollbar entirely (scrollbar-width:none +
+     ::-webkit-scrollbar display:none), so at 320-390 the only
+     continuation cue was a 9px sliver of the next campus chip — 3 of 7
+     filters were effectively undiscoverable. An inline-end edge fade
+     now hints the scroll: a mask (not paint) ramps alpha transparent →
+     opaque across the first 24px of the inline end, over the scrolled
+     content. Physical `to left` IS inline-end under the app-wide RTL
+     (the same documented physical↔logical coupling as base.css
+     .skip-link). The opaque stop consumes --surface for token
+     compliance — masks only read the alpha channel, so any opaque
+     token works and NO raw color literal enters the sheet (color
+     gate); masks don't intercept pointer events, so drag/scroll/
+     scroll-snap are untouched. */
+  .gallery-chip-strip {
+    -webkit-mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px);
+    mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px);
+  }
+
   .college-grid { grid-template-columns: 1fr; }
 }
 .college-stat-chip {

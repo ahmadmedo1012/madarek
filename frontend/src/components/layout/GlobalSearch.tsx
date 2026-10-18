@@ -585,7 +585,15 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
 
   const goTo = (href: string) => {
     onClose();
-    navigate(href);
+    /* r183-B7 (overlay history, A4 finding 2): the open palette owns a
+       marker history entry (overlayStack pushes one per blocking
+       layer). At select-time that entry is still CURRENT, so REPLACE
+       it with the destination instead of pushing above it — the
+       navigation itself consumes the marker, leaving browser Back a
+       clean trip to the pre-palette page (no stranded same-URL entry
+       = no dead back press). Same UX as the old push (Back from the
+       destination still lands on the page the palette opened over). */
+    navigate(href, { replace: true });
     /* 5-B5 (A4 §7): release focus from the input NOW. The palette
        unmounts asynchronously (exit window) — without this, the input
        keeps focus through the navigation commit and only releases it

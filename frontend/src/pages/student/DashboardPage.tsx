@@ -444,7 +444,7 @@ export default function StudentDashboardPage() {
             visible greeting drops to h2, matching the family's
             title + greeting hierarchy. */}
         <header className="page-header welcome-card">
-          <h1 className="sr-only">لوحة الطالب</h1>
+          <h1 className="sr-only">لوحة التحكم</h1>
           <h2 className="page-title">{greeting}، {user?.firstName ?? '…'}</h2>
           <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
         </header>
@@ -479,7 +479,7 @@ export default function StudentDashboardPage() {
     return (
       <div className="page student-dashboard">
         <header className="page-header welcome-card">
-          <h1 className="sr-only">لوحة الطالب</h1>
+          <h1 className="sr-only">لوحة التحكم</h1>
           <h2 className="page-title">{greeting}، {user?.firstName ?? '…'}</h2>
         </header>
         <ErrorState
@@ -499,7 +499,7 @@ export default function StudentDashboardPage() {
     return (
       <div className="page student-dashboard">
         <header className="page-header welcome-card">
-          <h1 className="sr-only">لوحة الطالب</h1>
+          <h1 className="sr-only">لوحة التحكم</h1>
           <h2 className="page-title">{greeting}، {user?.firstName ?? ''}</h2>
           <p className="page-subtitle">
             معاينة لوحة الطالب — يحتاج هذا العرض إلى ملف طالب فعليّ.
@@ -586,7 +586,7 @@ export default function StudentDashboardPage() {
   return (
     <div className="page student-dashboard">
       <header className="page-header welcome-card">
-        <h1 className="sr-only">لوحة الطالب</h1>
+        <h1 className="sr-only">لوحة التحكم</h1>
         <h2 className="page-title">
           {greeting}، {user?.firstName ?? ''}
         </h2>

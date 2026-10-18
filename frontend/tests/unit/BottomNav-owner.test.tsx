@@ -4,6 +4,10 @@
  * Previously the OWNER role fell through the role ternary to the STUDENT
  * item set (/student/dashboard, …) — all blocked by ProtectedRoute for
  * OWNER. The OWNER branch now renders real /owner/* routes.
+ *
+ * r183-B6 (A4 P3-9): the alerts slot now points at /owner/notifications
+ * (the personal inbox the topbar bell opens) with the «الإشعارات» label
+ * every other role uses — NOT /owner/alerts (the operational board).
  */
 import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
@@ -56,9 +60,22 @@ describe('BottomNav — OWNER branch', () => {
       '/owner/dashboard',
       '/owner/users',
       '/owner/realtime',
-      '/owner/alerts',
+      '/owner/notifications',
       '/owner/governance',
     ]);
+  });
+
+  it('the notifications slot is the personal inbox, not the operational board (r183-B6, A4 P3-9)', () => {
+    renderNav();
+    const nav = screen.getByRole('navigation', { name: 'التنقّل السريع' });
+    // Same destination the topbar bell opens, same «الإشعارات» label
+    // grammar as the other roles (the student bar included).
+    expect(within(nav).getByRole('link', { name: 'الإشعارات' })).toHaveAttribute(
+      'href',
+      '/owner/notifications',
+    );
+    const hrefs = within(nav).getAllByRole('link').map((l) => l.getAttribute('href'));
+    expect(hrefs).not.toContain('/owner/alerts');
   });
 
   it('never links to student routes for the OWNER role', () => {
