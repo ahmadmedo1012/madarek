@@ -49,7 +49,7 @@
 
 ```bash
 npm install                  # تثبيت (workspaces: backend + frontend)
-npm run lint                 # ESLint على frontend/src + backend/src (0 أخطاء إلزامية؛ 18 تحذير exhaustive-deps مسموح موثق)
+npm run lint                 # ESLint على frontend/src + backend/src (0 أخطاء إلزامية؛ 19 تحذير exhaustive-deps مسموح موثق — r187)
 npm run typecheck            # tsc للشيفرة والاختبارات في الجهتين — لا يحتاج قاعدة بيانات
 npm test                     # vitest للجهتين — لا يحتاج قاعدة بيانات (1975 واجهة + 1775 خلفية — r186) — والأرقام تُقاس من الشجرة الحاليّة لا تُنسخ من الجولات السابقة
 npm run test:integration    # حزام تكامل DB الاختياري (12 ملفًا / 116 اختبارًا — r186) — يحتاج DATABASE_URL محلية تجريبية (الحراس يرفض غيرها)
@@ -64,6 +64,7 @@ bash scripts/check-icons.sh             # انضباط الأيقونات (Lucid
 bash scripts/check-motion-tokens.sh     # منع قيم الحركة الخام
 bash scripts/check-csp-hash.sh          # مطابقة بصمات CSP بعد أي تعديل على frontend/index.html
 npm run validate:colleges               # هوية 25 كلية (تباين AA، أصول، أيقونات)
+npm run db:provision-owner              # تجهيز مالك بهوية المشغّل (r187 — عقد مُثبَّت في db-ops.test.ts)
 ```
 
 ملاحظات إلزامية:

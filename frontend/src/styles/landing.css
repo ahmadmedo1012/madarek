@@ -723,6 +723,32 @@
 .landing .ln-hero-line { display: block; }
 .landing .ln-hero-title .ln-hero-line.reveal-up { transform: translateY(26px); }
 
+/* ── 5b · HERO — short-viewport fold rescue (r187) ────────────────────
+   Measured at 1280×800: the monolith wraps to 3 visual lines (the
+   authored 2-line copy is ~813px wide at 105px in the 589px copy
+   column — it never fit), the content stack reaches 681px, and the
+   primary CTA's top edge lands at y=797 — below the fold on an
+   800px viewport, fully hidden on ≤768px laptops. Height-aware
+   re-scale: cap the title at 84px (--ln-h1-short) and tighten the
+   hero's vertical rhythm so CTA + meta sit above the fold. The
+   vw ≥ 1025 floor keeps phones/tablets on their authored mobile
+   rhythm; on wide-short screens (≥1440px) the 84px title actually
+   re-fits the authored TWO lines (651px ≤ the 720px column). */
+@media (min-width: 1025px) and (max-height: 860px) {
+  .landing .ln-hero {
+    padding-block-start: clamp(var(--sp-11), 10vh, var(--sp-13));
+    padding-block-end: clamp(var(--sp-9), 9vh, var(--sp-12));
+  }
+  .landing .ln-hero-eyebrow { margin-block-end: var(--sp-3); }
+  .landing .ln-hero-title {
+    margin-block-end: var(--sp-6);
+    font-size: var(--ln-h1-short);
+  }
+  .landing .ln-hero-sub { margin-block-end: var(--sp-6); }
+  .landing .ln-hero-actions { margin-block-end: var(--sp-5); }
+}
+
+
 /* word stagger — transform + opacity only (no blur filter, no layer
    pinning: the transition promotes for its 720ms and releases) */
 .landing .ln-hero-title .ln-w {

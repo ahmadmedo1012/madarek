@@ -7,7 +7,7 @@ import {
   Download, RefreshCw, Mail, X,
   GraduationCap, UserMinus, AlertCircle,
 } from 'lucide-react';
-import { Card, MetricCard, Badge } from '../../components/primitives';
+import { Card, MetricCard, Badge, UserAvatar } from '../../components/primitives';
 import { ErrorState, EmptyState, KpiSkeleton, TableSkeleton, Skeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { Icon } from '../../components/Icon';
@@ -210,9 +210,13 @@ export function AdminStudentsPage() {
                     <tr key={s.id}>
                       <td data-label="الطالب">
                         <div className="admin-students-name">
-                          <span className="avatar" style={{ width: 28, height: 28, fontSize: 11, ...(s.avatarColor ? { background: s.avatarColor } : {}) }}>
-                            {s.avatarInitials ?? `${s.firstName[0]}${s.lastName[0]}`}
-                          </span>
+                          {/* r187 (a11y): was a hand-rolled .avatar span —
+                              bypassed the primitive's avatarInk gate, so a
+                              grey #6B7280 ground painted --accent-fg at
+                              3.91:1 (AA fail, the exact 21-c class of bug
+                              the gate exists for). UserAvatar keeps the
+                              28px/11px geometry and gates the ink. */}
+                          <UserAvatar size={28} initials={s.avatarInitials ?? `${s.firstName[0]}${s.lastName[0]}`} color={s.avatarColor ?? undefined} />
                           <div>
                             <div>{s.firstName} {s.lastName}</div>
                             <div className="admin-students-email"><bdi>{s.email}</bdi></div>

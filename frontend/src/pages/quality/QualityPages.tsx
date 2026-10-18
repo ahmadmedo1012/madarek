@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
-import { Card, MetricCard, Badge, AlertRow, ProgressBar } from '../../components/primitives';
+import { Card, MetricCard, Badge, AlertRow, ProgressBar, UserAvatar } from '../../components/primitives';
 import { ChartFrame } from '../../components/charts';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListSkeleton, TableSkeleton, Skeleton, CardSkeleton } from '../../components/primitives/States';
@@ -933,15 +933,13 @@ export function QualityProfessorsPage() {
                   <tr key={t.id}>
                     <td data-label="الأستاذ">
                       <div className="flex items-center gap-2">
-                        <div
-                          className="avatar"
-                          style={{
-                            width: 28, height: 28, fontSize: 11,
-                            background: t.avatarColor ?? 'var(--accent)',
-                          }}
-                        >
-                          {t.avatarInitials ?? `${t.firstName[0] ?? ''}${t.lastName[0] ?? ''}`}
-                        </div>
+                        {/* r187 (a11y): was a hand-rolled .avatar div — the
+                            twin of the AdminExtraPages fix: bypassed
+                            avatarInk, so grey grounds measured 3.91:1
+                            (--accent-fg). UserAvatar gates the ink; the
+                            undefined-color fallback keeps the accent
+                            ground via the CSS pair (accent/accent-fg). */}
+                        <UserAvatar size={28} initials={t.avatarInitials ?? `${t.firstName[0] ?? ''}${t.lastName[0] ?? ''}`} color={t.avatarColor ?? undefined} />
                         <div>
                           <div className="tbl-strong">د. {t.firstName} {t.lastName}</div>
                           <div className="text-xxs text-subtle">

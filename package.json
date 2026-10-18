@@ -25,6 +25,7 @@
     "db:seed": "npm run prisma:seed -w backend",
     "db:seed:force": "MADAREK_SEED_FORCE=1 npm run db:seed",
     "db:rotate-password": "npm run rotate:password -w backend --",
+    "db:provision-owner": "npm run provision:owner -w backend --",
     "db:backup": "node scripts/db-backup.mjs",
     "db:restore": "node scripts/db-restore.mjs",
     "smoke": "node scripts/smoke-deploy.mjs",

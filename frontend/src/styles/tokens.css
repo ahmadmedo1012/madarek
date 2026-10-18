@@ -438,6 +438,15 @@
                                  consumer is the landing .ln-grain veil. */
     --ln-radius-pill: var(--r-full);  /* pills via --r-full (WS-D2) */
     --ln-h1:         clamp(2.75rem, 8.2vw, 6.75rem);  /* hero, ≤108px */
+    --ln-h1-short:   5.25rem;  /* r187 (hero fold rescue): cap for short
+                                   viewports (vh ≤ 860 ∧ vw ≥ 1025). The
+                                   authored 2-line copy measures 813px at
+                                   105px in a 589px column — it wraps to 3
+                                   lines on every desktop, and the 681px
+                                   stack pushed the primary CTA's top to
+                                   y=797 on an 800px viewport (fully hidden
+                                   on ≤768px laptops). 84px keeps the
+                                   monolith; landing.css §5b applies it. */
     --ln-h1-lh:      1.2;       /* r148 (AUDIT-4 C3): كان 1.04 — أضيق قيادة
                                    لعرض عربي ضخم متعدد الأسطر بمدّات وتشكيل
                                    («مدارًا»، «نقطتك»): الأسطر تتلامس مع أكوام

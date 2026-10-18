@@ -409,6 +409,75 @@ describe('rotate-demo-passwords contract (r166c)', () => {
   });
 });
 
+// ─── Source pins: provision-owner contract (r187) ───────────────────
+
+describe('provision-owner contract (r187)', () => {
+  const provisionSource = readSource('../../scripts/provision-owner.mjs');
+  /** Same extractor as the rotate pins — one argon truth across the repo. */
+  const argonParamsOf = (src: string) => ({
+    type: /type:\s*argon2\.argon2id/.test(src) ? 'argon2id' : null,
+    memoryCost: src.match(/memoryCost:\s*(\d[\d_]*)/)?.[1] ?? null,
+    timeCost: src.match(/timeCost:\s*(\d+)/)?.[1] ?? null,
+    parallelism: src.match(/parallelism:\s*(\d+)/)?.[1] ?? null,
+  });
+
+  it('argon2 parameters are IDENTICAL to password.ts — the third member of the pinned pair', () => {
+    expect(argonParamsOf(provisionSource)).toEqual(argonParamsOf(passwordLibSource));
+    expect(argonParamsOf(provisionSource)).toEqual({
+      type: 'argon2id',
+      memoryCost: '19_456',
+      timeCost: '2',
+      parallelism: '1',
+    });
+  });
+
+  it('password bounds mirror passwordSchema (min 12 / max 72)', () => {
+    expect(provisionSource.match(/PASSWORD_MIN\s*=\s*(\d+)/)?.[1]).toBe('12');
+    expect(provisionSource.match(/PASSWORD_MAX\s*=\s*(\d+)/)?.[1]).toBe('72');
+  });
+
+  it('root + backend package.json wire db:provision-owner (the rotate invocation pattern)', () => {
+    expect(rootPackage.scripts?.['db:provision-owner']).toBe('npm run provision:owner -w backend --');
+    expect(backendPackage.scripts?.['provision:owner']).toBe('node scripts/provision-owner.mjs');
+  });
+
+  it('the generated secret is printed EXACTLY ONCE (the delivery block); env-provided secrets are never printed', () => {
+    // passwordRaw reaches console.* in one line only — the one-time
+    // delivery block — and that block lives in the generated-secret
+    // branch (passwordFromEnv prints "never printed" instead).
+    const printed = provisionSource.match(/console\.\w+\([^)]*passwordRaw/g) ?? [];
+    expect(printed).toHaveLength(1);
+    expect(provisionSource).toContain('ONE-TIME CREDENTIAL');
+    expect(provisionSource).toContain('The env-var password was never printed');
+  });
+
+  it('no silent privilege escalation: the exists-check refuses OWNER (→ rotate) and any other role outright', () => {
+    expect(provisionSource).toMatch(/findUnique\(\{\s*where:\s*\{\s*email\s*\}\s*\}\)/);
+    expect(provisionSource).toContain('no silent privilege escalation');
+    expect(provisionSource).toContain('is ALREADY an OWNER');
+    expect(provisionSource).toMatch(/role:\s*'OWNER'/);
+    // The race re-check inside the transaction keeps the guard atomic.
+    expect(provisionSource).toContain('RACE: email appeared');
+  });
+
+  it('the creation writes the audit row (OWNER_PROVISION, operator-script source)', () => {
+    expect(provisionSource).toMatch(/action:\s*'OWNER_PROVISION'/);
+    expect(provisionSource).toContain("source: 'operator-script'");
+  });
+
+  it('--suspend-demo-owner: created-first ordering, suspension + session revocation in the SAME transaction', () => {
+    expect(provisionSource).toMatch(/DEMO_OWNER_EMAIL\s*=\s*'owner@zu\.edu\.ly'/);
+    // the demo-owner update is inside the $transaction callback…
+    expect(provisionSource).toMatch(/\$transaction\(async \(tx\)/);
+    // …and revokes live sessions atomically with the suspension.
+    expect(provisionSource).toMatch(/isActive:\s*false,\s*tokenVersion:\s*\{\s*increment:\s*1\s*\}/);
+  });
+
+  it('DATABASE_URL only ever appears redacted', () => {
+    expect(provisionSource).toMatch(/redactUrl\(process\.env\.DATABASE_URL/);
+  });
+});
+
 // ─── Source pins: db-restore safety contract ───────────────────────
 
 describe('db-restore safety contract (r166c)', () => {
