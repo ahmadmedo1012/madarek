@@ -166,7 +166,7 @@ export default function CatalogPage() {
           lineHeight: 'var(--lh-base)',
         }}
       >
-        <span style={{ flexShrink: 0, marginTop: 2 }}><Icon icon={Info} size={15} /></span>
+        <span style={{ flexShrink: 0, marginTop: 'var(--sp-0-5)' }}><Icon icon={Info} size={15} /></span>
         <span>التسجيل في المقررات تتم إدارته عبر إدارة الكلية — تواصل مع إدارة مؤسستك.</span>
       </div>
 

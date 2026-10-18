@@ -395,7 +395,7 @@ function PaperRow({
             <RouterLink
               to={`/document/${encodeURIComponent(paper.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(paper.title)}&back=${encodeURIComponent('/student/research')}&paper=${encodeURIComponent(paper.id)}`}
               className="btn outline sm"
-              style={{ marginTop: 6, alignSelf: 'flex-start' }}
+              style={{ marginTop: 'var(--sp-1-5)', alignSelf: 'flex-start' }}
             >
               <Icon icon={MessageSquare} size={13} />
               مراجعة البحث مع ملاحظات الأستاذ

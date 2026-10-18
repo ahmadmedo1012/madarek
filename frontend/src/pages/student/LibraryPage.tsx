@@ -781,7 +781,7 @@ export default function LibraryPage() {
                     {(p.plagiarismPct != null || p.aiContentPct != null) && (
                       <span className="text-xxs text-subtle">محاكاة</span>
                     )}
-                    <span style={{ marginInlineStart: 'auto', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <span style={{ marginInlineStart: 'auto', display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-1)' }}>
                       <Icon icon={ShieldCheck} size={11} strokeWidth={2} />
                       تم التحقق من النشر
                     </span>

@@ -432,7 +432,7 @@ export function PageSkeleton() {
               fallback). min(px, 100%) keeps desktop exact and clamps
               mobile. */}
           <Skeleton width="min(260px, 100%)" height={28} />
-          <div style={{ marginTop: 8 }}>
+          <div style={{ marginTop: 'var(--sp-2)' }}>
             <Skeleton width="min(420px, 100%)" height={12} />
           </div>
         </div>
@@ -458,7 +458,7 @@ export function DetailSkeleton() {
           {/* Same ≤390px overflow guard as PageSkeleton (A10 P1-1): the
               detail header's 300/480px bars clamped to the content box. */}
           <Skeleton width="min(300px, 100%)" height={28} />
-          <div style={{ marginTop: 8 }}>
+          <div style={{ marginTop: 'var(--sp-2)' }}>
             <Skeleton width="min(480px, 100%)" height={12} />
           </div>
         </div>

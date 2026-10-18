@@ -366,7 +366,7 @@ export function AlertRow({
         />
       )}
       {icon && (
-        <span style={{ color: ICON_INK[color], marginTop: 2 }}>
+        <span style={{ color: ICON_INK[color], marginTop: 'var(--sp-0-5)' }}>
           <Icon icon={icon} size={16} />
         </span>
       )}

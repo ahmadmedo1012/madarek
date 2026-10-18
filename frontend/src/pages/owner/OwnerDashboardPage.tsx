@@ -179,14 +179,14 @@ function OwnerActionStrip({ alerts }: { alerts: OperationalAlert[] }) {
             title={r.hint}
             style={{ textDecoration: 'none' }}
           >
-            <span style={{ color: OWNER_ACTION_TONE_INK[r.tone], marginTop: 2 }}>
+            <span style={{ color: OWNER_ACTION_TONE_INK[r.tone], marginTop: 'var(--sp-0-5)' }}>
               <Icon icon={r.icon} size={16} />
             </span>
             <div className="alert-body">
               <div className="alert-title">{r.title}</div>
               <div className="alert-desc">{r.desc}</div>
             </div>
-            <Icon icon={ArrowLeft} size={14} style={{ color: 'var(--text-muted)', marginTop: 2 }} />
+            <Icon icon={ArrowLeft} size={14} style={{ color: 'var(--text-muted)', marginTop: 'var(--sp-0-5)' }} />
           </Link>
         ))}
       </div>

@@ -362,14 +362,14 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
           )}
         </div>
         {exam.myAttempt?.status === 'IN_PROGRESS' && (
-          <div style={{ marginTop: 8 }}>
+          <div style={{ marginTop: 'var(--sp-2)' }}>
             {/* «— متابعة» only while the attempt is actually resumable
                 — a shut window strands the attempt server-side. */}
             <Badge color="amber">{ws === 'closed' ? 'محاولة قيد التقدم' : 'محاولة قيد التقدم — متابعة'}</Badge>
           </div>
         )}
         {verdict && (
-          <div style={{ marginTop: 8 }}>
+          <div style={{ marginTop: 'var(--sp-2)' }}>
             {/* r164-e: score + honest state in one chip. A SUBMITTED
                 attempt carries its provisional machine score with the
                 neutral awaiting label; EXPIRED carries no score (never
@@ -384,7 +384,7 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
         {exam.myAttempt
           && (exam.myAttempt.status === 'GRADED' || exam.myAttempt.status === 'SUBMITTED')
           && exam.kind !== 'PRACTICE' && (
-          <div style={{ marginTop: 8 }}>
+          <div style={{ marginTop: 'var(--sp-2)' }}>
             {/* 5-A6 P1-1 companion — a finished attempt is not a dead end:
               the taker renders the honest done-state (score or awaiting
               grading) for this deep link, so history stays reachable.
@@ -405,17 +405,17 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
             window only — a shut window shows «أغلق باب التسليم» above,
             and that is the truth for a retake too. */}
         {exam.kind === 'PRACTICE' && ws === 'open' && exam.myAttempt && exam.myAttempt.status !== 'IN_PROGRESS' && (
-          <div style={{ marginTop: 8 }}>
+          <div style={{ marginTop: 'var(--sp-2)' }}>
             <Badge color="brand">تدريبي — إعادة المحاولة متاحة</Badge>
           </div>
         )}
         {ws === 'upcoming' && exam.openAt && (
-          <div style={{ marginTop: 8 }}>
+          <div style={{ marginTop: 'var(--sp-2)' }}>
             <Badge color="brand">يفتح {formatDateTimeAr(exam.openAt)}</Badge>
           </div>
         )}
         {ws === 'closed' && (
-          <div style={{ marginTop: 8 }}>
+          <div style={{ marginTop: 'var(--sp-2)' }}>
             <Badge>أغلق باب التسليم</Badge>
           </div>
         )}
@@ -1276,7 +1276,7 @@ export function ExamTakerPage() {
                     textarea (aria-labelledby) and the choice group
                     (role=radiogroup), so a screen reader never meets an
                     unnamed graded input. */}
-                <div className="text-xxs text-subtle" id={`exam-q-${q.id}-num`} style={{ marginBottom: 4 }}>
+                <div className="text-xxs text-subtle" id={`exam-q-${q.id}-num`} style={{ marginBottom: 'var(--sp-1)' }}>
                   السؤال <bdi>{i + 1}</bdi> من <bdi>{attempt.questions.length}</bdi> · <bdi>{q.points}</bdi> {q.points === 1 ? 'نقطة' : 'نقاط'}
                 </div>
                 <div className="exam-prompt" id={`exam-q-${q.id}-prompt`}>{q.prompt}</div>
@@ -1533,12 +1533,12 @@ function ModerationQuestionRow({
         {/* مفتاح الإجابة — الخلفية تُخفيه (null) عن كل عارض ليس من
             أجله؛ null لا يُعرض إطلاقاً (لا مفتاحاً مزيّفاً). */}
         {key && (
-          <div className="text-xs" style={{ color: 'var(--success-ink)', marginBlockStart: 2 }}>
+          <div className="text-xs" style={{ color: 'var(--success-ink)', marginBlockStart: 'var(--sp-0-5)' }}>
             <Icon icon={CheckCircle2} size={11} /> {key}
           </div>
         )}
         {!q.isApproved && q.moderationNote && (
-          <div className="text-xs" style={{ color: 'var(--danger-ink)', marginBlockStart: 2 }}>
+          <div className="text-xs" style={{ color: 'var(--danger-ink)', marginBlockStart: 'var(--sp-0-5)' }}>
             <Icon icon={Info} size={11} /> {q.moderationNote}
           </div>
         )}

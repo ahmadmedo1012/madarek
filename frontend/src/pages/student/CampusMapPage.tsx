@@ -190,7 +190,7 @@ export default function CampusMapPage() {
         </div>
 
         <div className="campus-map-note">
-          <Icon icon={Info} size={14} style={{ flexShrink: 0, marginBlockStart: 2 }} />
+          <Icon icon={Info} size={14} style={{ flexShrink: 0, marginBlockStart: 'var(--sp-0-5)' }} />
           <span>
             خريطة الحرم التفاعليّة قيد التطوير. حاليّاً يمكنك الاطّلاع على المواقع الفعليّة عبر الموقع
             الرسميّ:{' '}

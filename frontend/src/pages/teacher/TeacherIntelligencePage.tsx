@@ -516,7 +516,7 @@ function StudentRow({ student, dimmed }: { student: TeacherStudentRow; dimmed: b
           <span><Icon icon={BookOpen} size={11} /> متابعة <bdi>{student.watchPct}%</bdi></span>
         </div>
         {student.signals.length > 0 && (
-          <div className="risk-row-meta" style={{ marginBlockStart: 4 }}>
+          <div className="risk-row-meta" style={{ marginBlockStart: 'var(--sp-1)' }}>
             {student.signals.map((s) => <Badge key={s} color="amber"><Icon icon={AlertCircle} size={11} /> {s}</Badge>)}
           </div>
         )}

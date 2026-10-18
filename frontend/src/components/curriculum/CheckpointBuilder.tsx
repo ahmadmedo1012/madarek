@@ -222,7 +222,7 @@ export function CheckpointFormModal({
             />
           </FormField>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-1-5)' }}>
             <label id={optionsLabelId} className="text-sm" style={{ fontWeight: 'var(--fw-semibold, 600)' }}>
               الخيارات ({options.fields.length}/{MAX_CHECKPOINT_OPTIONS})
             </label>
@@ -235,8 +235,8 @@ export function CheckpointFormModal({
                       style={{
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: 6,
-                        marginTop: 14,
+                        gap: 'var(--sp-1-5)',
+                        marginTop: 'calc(var(--sp-3) + var(--sp-0-5))',
                         cursor: 'pointer',
                         whiteSpace: 'nowrap',
                       }}
@@ -261,7 +261,7 @@ export function CheckpointFormModal({
                         {...form.register(`options.${index}.value` as const)}
                       />
                       {optionError && (
-                        <span className="auth-field-error" role="alert" style={{ display: 'block', marginTop: 4 }}>
+                        <span className="auth-field-error" role="alert" style={{ display: 'block', marginTop: 'var(--sp-1)' }}>
                           {optionError}
                         </span>
                       )}
@@ -269,7 +269,7 @@ export function CheckpointFormModal({
                     <button
                       type="button"
                       className="btn ghost sm"
-                      style={{ marginTop: 12, color: 'var(--danger)' }}
+                      style={{ marginTop: 'var(--sp-3)', color: 'var(--danger)' }}
                       disabled={options.fields.length <= MIN_CHECKPOINT_OPTIONS}
                       onClick={() => removeOption(index)}
                       aria-label={`إزالة الخيار ${index + 1}`}

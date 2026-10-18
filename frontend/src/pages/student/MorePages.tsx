@@ -102,7 +102,7 @@ export function GamificationPage() {
                       ? `${TIER_LABEL[me.level.tier]} · المستوى ${me.level.level} في التطوير الذاتي`
                       : 'لم يبدأ مسار التطوير الذاتي بعد'}
                 </div>
-                <div className="text-xs text-subtle" style={{ marginBottom: 8 }}>
+                <div className="text-xs text-subtle" style={{ marginBottom: 'var(--sp-2)' }}>
                   {xp !== null ? (
                     <>
                       {pointsAr(xp)}
@@ -120,7 +120,7 @@ export function GamificationPage() {
                   )}
                 </div>
                 {training.isError && (
-                  <div style={{ marginBlockEnd: 8 }}>
+                  <div style={{ marginBlockEnd: 'var(--sp-2)' }}>
                     <button type="button" className="btn ghost sm" onClick={() => training.refetch()}>
                       إعادة محاولة تحميل المستوى
                     </button>
@@ -144,7 +144,7 @@ export function GamificationPage() {
                         style={{ transform: `scaleX(${me.level.pctIntoLevel / 100})`, background: 'var(--tier-color)' }}
                       />
                     </div>
-                    <div className="text-xxs text-subtle" style={{ marginTop: 4 }}>
+                    <div className="text-xxs text-subtle" style={{ marginTop: 'var(--sp-1)' }}>
                       متبقّي <bdi>{pointsAr(me.level.toNext)}</bdi> للمستوى التالي
                     </div>
                   </>
@@ -999,7 +999,7 @@ export function ArVrPage() {
                 <Badge color={e.type === 'VR' ? 'purple' : 'brand'}><bdi>{e.type}</bdi></Badge>
               </div>
               <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{e.title}</div>
-              <div className="text-xs text-subtle" style={{ marginTop: 4 }}>{e.subject}</div>
+              <div className="text-xs text-subtle" style={{ marginTop: 'var(--sp-1)' }}>{e.subject}</div>
               {e.description && (
                 <p className="text-xs text-muted" style={{ marginTop: 'var(--sp-2)', lineHeight: 1.5 }}>
                   {e.description}
@@ -1220,7 +1220,7 @@ export function SocialPage() {
                   </div>
                 )}
                 <div className="flex items-center justify-between">
-                  <span className="text-xxs text-subtle" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <span className="text-xxs text-subtle" style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-1-5)' }}>
                     {draft.trim() !== '' && <span>مسودة محفوظة تلقائيّاً</span>}
                     <span><bdi>{formatNum(draft.length)}</bdi> / <bdi>2000</bdi></span>
                   </span>
@@ -1300,7 +1300,7 @@ export function SocialPage() {
                   </div>
                   <div className="post-body">{p.body}</div>
                   {p.hashtags && p.hashtags.length > 0 && (
-                    <div className="flex flex-wrap gap-1" style={{ marginTop: 6 }}>
+                    <div className="flex flex-wrap gap-1" style={{ marginTop: 'var(--sp-1-5)' }}>
                       {p.hashtags.map((t) => (
                         // r183-B3 (A6 P3): Arabic hashtags never ride the
                         // numeric-mono costume (same ruling as the library

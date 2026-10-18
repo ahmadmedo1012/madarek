@@ -410,7 +410,7 @@ export function PostsFeedPanel() {
                 </div>
               )}
               <div className="flex items-center justify-between">
-                <span className="text-xxs text-subtle" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <span className="text-xxs text-subtle" style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-1-5)' }}>
                   {draft.trim() !== '' && <span>مسودة محفوظة تلقائيّاً</span>}
                   <span><bdi>{formatNum(draft.length)}</bdi> / <bdi>2000</bdi></span>
                 </span>
@@ -488,7 +488,7 @@ export function PostsFeedPanel() {
                 </div>
                 <div className="post-body">{p.body}</div>
                 {p.hashtags && p.hashtags.length > 0 && (
-                  <div className="flex flex-wrap gap-1" style={{ marginTop: 6 }}>
+                  <div className="flex flex-wrap gap-1" style={{ marginTop: 'var(--sp-1-5)' }}>
                     {p.hashtags.map((t) => (
                       <span key={t} className="text-xxs font-mono" style={{ color: 'var(--accent-ink, var(--accent))' }}>#{t}</span>
                     ))}

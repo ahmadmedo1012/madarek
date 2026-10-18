@@ -319,7 +319,7 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
                   <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
                     {user.firstName} {user.lastName}
                   </div>
-                  <div className="text-xxs font-mono text-subtle" style={{ marginTop: 2 }}>
+                  <div className="text-xxs font-mono text-subtle" style={{ marginTop: 'var(--sp-0-5)' }}>
                     {/* r148 (AUDIT-3 M6): البريد بلا bdi قد يعرض بترتيب خاطئ في
                         سياق RTL — نفس عرف ProfilePage/OwnerUsersPage. */}
                     <bdi dir="ltr">{user.email}</bdi>

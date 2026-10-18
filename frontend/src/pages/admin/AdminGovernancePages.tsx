@@ -433,7 +433,7 @@ function TeacherListSkeleton({ rows = 5 }: { rows?: number }) {
       {Array.from({ length: rows }).map((_, i) => (
         <div key={i} className="teacher-row" style={{ cursor: 'default' }}>
           <Skeleton width={40} height={40} rounded="50%" />
-          <div className="flex-col" style={{ flex: 1, gap: 6 }}>
+          <div className="flex-col" style={{ flex: 1, gap: 'var(--sp-1-5)' }}>
             <Skeleton width="55%" height={12} />
             <Skeleton width="40%" height={10} />
           </div>
@@ -517,7 +517,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
         </div>
         {data.teacher.subjectKeywords.length > 0 && (
           <div className="gov-keywords">
-            <div className="text-xxs text-subtle" style={{ marginBottom: 4 }}>المجالات</div>
+            <div className="text-xxs text-subtle" style={{ marginBottom: 'var(--sp-1)' }}>المجالات</div>
             <div className="gov-keywords-list">
               {data.teacher.subjectKeywords.map((k) => <Badge key={k}><bdi>{k}</bdi></Badge>)}
             </div>

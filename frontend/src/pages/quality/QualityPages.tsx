@@ -1252,8 +1252,10 @@ export function QualityCurriculumPage() {
                 return (
                   <div key={d.id}>
                     <div className="section-title">{d.name}</div>
+                    {/* r186: 6px 0 → var(--sp-1-5) 0 — the TSX seam joins
+                        the enforced spacing axis (same value). */}
                     {!d.courses.length ? (
-                      <div className="text-xs text-subtle" style={{ padding: '6px 0' }}>لا مقرّرات</div>
+                      <div className="text-xs text-subtle" style={{ padding: 'var(--sp-1-5) 0' }}>لا مقرّرات</div>
                     ) : (
                       <>
                         <div className="q-dept-stat">
@@ -1358,14 +1360,14 @@ export function QualityReportsPage() {
               title={`فتح ${item.title}`}
               style={{ textDecoration: 'none' }}
             >
-              <span style={{ color: 'var(--accent-ink, var(--accent))', marginTop: 2 }}>
+              <span style={{ color: 'var(--accent-ink, var(--accent))', marginTop: 'var(--sp-0-5)' }}>
                 <Icon icon={item.icon} size={16} />
               </span>
               <div className="alert-body">
                 <div className="alert-title">{item.title}</div>
                 <div className="alert-desc">{item.desc}</div>
               </div>
-              <Icon icon={ArrowLeft} size={14} style={{ color: 'var(--text-muted)', marginTop: 2 }} />
+              <Icon icon={ArrowLeft} size={14} style={{ color: 'var(--text-muted)', marginTop: 'var(--sp-0-5)' }} />
             </Link>
           ))}
         </div>

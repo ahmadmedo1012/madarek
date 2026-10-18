@@ -89,7 +89,7 @@ export default function DocumentViewerPage() {
               <Icon icon={ChevronRight} size={14} />
               العودة إلى الصفحة السابقة
             </Link>
-            <h1 className="page-title" style={{ marginTop: 4 }}>{title ?? 'مستند'}</h1>
+            <h1 className="page-title" style={{ marginTop: 'var(--sp-1)' }}>{title ?? 'مستند'}</h1>
           </div>
         </header>
         <div className="document-viewer-layout">
@@ -128,7 +128,7 @@ export default function DocumentViewerPage() {
             <Icon icon={ChevronRight} size={14} />
             العودة إلى الصفحة السابقة
           </Link>
-          <h1 className="page-title" style={{ marginTop: 4 }}>{title ?? 'مستند'}</h1>
+          <h1 className="page-title" style={{ marginTop: 'var(--sp-1)' }}>{title ?? 'مستند'}</h1>
         </div>
       </header>
 

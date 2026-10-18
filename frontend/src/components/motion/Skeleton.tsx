@@ -56,7 +56,7 @@ export function Skeleton({
         aria-label={ariaLabel}
         aria-busy={ariaLabel ? 'true' : undefined}
         aria-hidden={ariaLabel ? undefined : true}
-        style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2, 8px)' }}
+        style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}
         {...rest}
       >
         {Array.from({ length: rows }, (_, i) => (

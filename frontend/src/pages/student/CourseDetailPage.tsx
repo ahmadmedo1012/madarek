@@ -279,7 +279,7 @@ export default function CourseDetailPage() {
                     </div>
                     <div className="list-row-body">
                       <div className="list-row-title">
-                        <span className="text-xxs text-subtle" style={{ marginInlineEnd: 6 }}>
+                        <span className="text-xxs text-subtle" style={{ marginInlineEnd: 'var(--sp-1-5)' }}>
                           المحاضرة <bdi className="font-mono">{String(lec.ordinal).padStart(2, '0')}</bdi>
                         </span>
                         {lec.title}
@@ -294,7 +294,7 @@ export default function CourseDetailPage() {
                         <span>{countAr(lec._count.checkpoints, ['نقطة تفاعل واحدة', 'نقطتا تفاعل', 'نقاط تفاعل', 'نقطة تفاعل'])}</span>
                       </div>
                       {watchedPct > 0 && watchedPct < 100 && (
-                        <div style={{ marginTop: 6, maxWidth: 240 }}>
+                        <div style={{ marginTop: 'var(--sp-1-5)', maxWidth: 240 }}>
                           {/* r157 (W2-F7): named per-lecture bar — every
                               progressbar on the page needs its own accessible
                               name (the hero's has one; these rows had none,

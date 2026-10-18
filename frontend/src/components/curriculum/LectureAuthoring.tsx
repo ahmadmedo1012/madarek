@@ -288,7 +288,7 @@ export function LectureAuthoringList({
                 <span className="text-sm" style={{ display: 'block', fontWeight: 'var(--fw-semibold, 600)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {lecture.title}
                 </span>
-                <span className="text-xs text-muted" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', marginTop: 2 }}>
+                <span className="text-xs text-muted" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', marginTop: 'var(--sp-0-5)' }}>
                   <span><Icon icon={Clock} size={11} /> {lecture.durationSec > 0 ? formatSec(lecture.durationSec) : 'مدة غير محددة'}</span>
                   {/* 5-B6 (A7 P2-4): counted nouns — «3 فصل» was raw;
                       the zero case names the reality instead of «0 فصل». */}

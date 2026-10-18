@@ -880,7 +880,9 @@ export function AchievementsPage() {
                           heading is the h1; a cert title is a list-item
                           label. Visuals byte-identical (display family,
                           bold, fs-md, lh 1.3, same margins). */}
-                      <div style={{ fontSize: 'var(--fs-md)', fontFamily: 'var(--font-display)', fontWeight: 'var(--fw-bold)', lineHeight: 1.3, margin: '4px 0 6px' }}>{c.title}</div>
+                      {/* r186: 4px 0 6px → tokens — same values, the TSX
+                          seam joins the enforced spacing axis. */}
+                      <div style={{ fontSize: 'var(--fs-md)', fontFamily: 'var(--font-display)', fontWeight: 'var(--fw-bold)', lineHeight: 1.3, margin: 'var(--sp-1) 0 var(--sp-1-5)' }}>{c.title}</div>
                       <div className="text-xs text-muted">{c.issuer}</div>
                       <div style={{ display: 'flex', gap: 'var(--sp-2)', marginTop: 'var(--sp-2)', flexWrap: 'wrap' }}>
                         <Badge color="green"><Icon icon={CheckCircle2} size={11} /> مكتملة</Badge>

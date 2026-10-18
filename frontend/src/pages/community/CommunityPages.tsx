@@ -637,7 +637,7 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
               concatenated into a garbled accessible name. */}
           <div className="form-field">
             <label className="form-field-label" htmlFor={pinnedId}>تثبيت</label>
-            <span className="flex items-center gap-2" style={{ marginBlockStart: 8 }}>
+            <span className="flex items-center gap-2" style={{ marginBlockStart: 'var(--sp-2)' }}>
               <input id={pinnedId} type="checkbox" {...form.register('pinned')} />
               <span className="text-sm text-muted">إبقاء الإعلان في أعلى التغذية</span>
             </span>

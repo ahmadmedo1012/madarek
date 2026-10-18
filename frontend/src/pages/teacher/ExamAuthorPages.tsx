@@ -1303,7 +1303,7 @@ function ChoicesEditor({
   const isTF = draft.type === 'TRUE_FALSE';
   const optionsLabel = `${isTF ? 'الخياران' : `الخيارات (${draft.choices.length}/20)`}`;
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-1-5)' }}>
       {/* r150c: canonical label grammar (was .form-label) — a group
           caption, not a field label, so no FormField wrapper. */}
       <span className="form-field-label">{optionsLabel}</span>
@@ -1312,7 +1312,7 @@ function ChoicesEditor({
           <div key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--sp-2)' }}>
             <label
               className="text-xs"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 10, cursor: 'pointer', whiteSpace: 'nowrap' }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-1-5)', marginTop: 'var(--sp-2-5)', cursor: 'pointer', whiteSpace: 'nowrap' }}
             >
               <input
                 type="radio"
@@ -1339,7 +1339,7 @@ function ChoicesEditor({
               <button
                 type="button"
                 className="btn ghost sm"
-                style={{ marginTop: 8, color: 'var(--danger)' }}
+                style={{ marginTop: 'var(--sp-2)', color: 'var(--danger)' }}
                 disabled={draft.choices.length <= 2}
                 onClick={() => removeChoice(index)}
                 aria-label={`إزالة الخيار ${index + 1}`}
@@ -1834,7 +1834,7 @@ function QuestionPicker({
                   checked={checked}
                   onChange={() => toggle(question.id)}
                   aria-label={`اختيار السؤال: ${question.prompt.slice(0, 60)}`}
-                  style={{ marginTop: 4, flexShrink: 0 }}
+                  style={{ marginTop: 'var(--sp-1)', flexShrink: 0 }}
                 />
                 <div className="list-row-body">
                   <div className="list-row-title" title={question.prompt}>{question.prompt}</div>
@@ -2370,7 +2370,7 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
             </Field>
 
             {resetNotice && (
-              <p className="text-sm text-muted" role="note" style={{ margin: 0, display: 'flex', gap: 6, alignItems: 'flex-start' }}>
+              <p className="text-sm text-muted" role="note" style={{ margin: 0, display: 'flex', gap: 'var(--sp-1-5)', alignItems: 'flex-start' }}>
                 <Icon icon={Info} size={14} />
                 <span>{resetNotice}</span>
               </p>
@@ -2735,7 +2735,7 @@ function GradeAttemptModal({
               <p
                 className="text-sm text-muted"
                 role="note"
-                style={{ margin: 0, display: 'flex', gap: 6, alignItems: 'flex-start' }}
+                style={{ margin: 0, display: 'flex', gap: 'var(--sp-1-5)', alignItems: 'flex-start' }}
               >
                 <Icon icon={Info} size={14} />
                 <span>
@@ -2817,12 +2817,12 @@ function TemplateQuestionRow({
         {/* Answer key — the backend nulls correctAnswer for every viewer
             it is not for; null renders nothing (never a fake key). */}
         {key && (
-          <div className="text-xs" style={{ color: 'var(--success-ink)', marginBlockStart: 2 }}>
+          <div className="text-xs" style={{ color: 'var(--success-ink)', marginBlockStart: 'var(--sp-0-5)' }}>
             <Icon icon={CheckCircle2} size={11} /> {key}
           </div>
         )}
         {!q.isApproved && q.moderationNote && (
-          <div className="text-xs" style={{ color: 'var(--danger-ink)', marginBlockStart: 2 }}>
+          <div className="text-xs" style={{ color: 'var(--danger-ink)', marginBlockStart: 'var(--sp-0-5)' }}>
             <Icon icon={Info} size={11} /> {q.moderationNote}
           </div>
         )}

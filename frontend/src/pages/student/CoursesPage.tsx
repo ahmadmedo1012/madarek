@@ -434,7 +434,7 @@ export function SubmitAssignmentModal({
               color: late ? 'var(--warning-ink)' : 'var(--success-ink)',
               display: 'flex',
               flexDirection: 'column',
-              gap: 4,
+              gap: 'var(--sp-1)',
             }}
           >
             <div className="flex items-center gap-2 font-semibold text-sm">

@@ -186,7 +186,7 @@ export default function ProfilePage() {
             <div className="text-md font-semibold" style={{ color: 'var(--text)', fontSize: 'var(--fs-lg)' }}>
               {user.firstName} {user.lastName}
             </div>
-            <div className="flex items-center gap-2 text-xs text-subtle" style={{ marginTop: 4 }}>
+            <div className="flex items-center gap-2 text-xs text-subtle" style={{ marginTop: 'var(--sp-1)' }}>
               <Icon icon={Mail} size={12} />
               <bdi dir="ltr" className="font-mono">{user.email}</bdi>
               {profile.data ? (
@@ -627,7 +627,7 @@ function ProfileField({
       <Icon icon={icon} size={16} className="text-subtle" aria-hidden />
       <div style={{ flex: 1, minWidth: 0 }}>
         <div className="text-xxs text-subtle">{label}</div>
-        <div className="text-sm" style={{ color: 'var(--text)', marginTop: 2 }}>
+        <div className="text-sm" style={{ color: 'var(--text)', marginTop: 'var(--sp-0-5)' }}>
           {mono ? <bdi dir="ltr" className="font-mono">{value}</bdi> : value}
         </div>
       </div>

@@ -72,9 +72,23 @@
 #    pair mirrors the full --sp ladder internally, so var() resolves
 #    within the export.)
 #
-#  TSX inline styles: out of scope for every axis (v1 policy —
-#  audit-counted, not gated). Current inline spacing px count is
-#  reported at the bottom of every run so the seam stays visible.
+#  TSX inline styles (r186): the r184/r185 audit seam is now a
+#  strict SPACING axis. React style objects turn bare numbers into
+#  px at runtime, so BOTH quoted '…px…' values and whole-value bare
+#  numbers are findings. Scope: frontend/src/**/*.tsx minus anything
+#  with 'test' in the file name or '/tests/' in the path (same
+#  exclusion the audit count used). Exemptions without a token:
+#  zero (no rung for zero) — everything else needs a ladder token
+#  (var(--sp-*)) or a per-declaration allow marker:
+#    // spacing-gate: allow — <reason ≥ 2 words, ≥ 8 chars>
+#  matched on the declaration's own line or the line above (JS //
+#  comments and {/* */} both carry the marker text; the grammar is
+#  the shared one — bare/vague markers FAIL so they get fixed).
+#  Type/interface members (`gap: number;`) terminate at ';' so a
+#  member never swallows its neighbours; prop matches inside
+#  strings/templates are never findings (quote-aware walk).
+#  TYPE/RADIUS stay CSS-only (TSX inline font-size/radius literals
+#  remain audit-visible via the census line, not enforced).
 #
 # ══════════════════════════════════════════════════════════════════
 #  CLASSIFICATION (spacing)
@@ -101,10 +115,14 @@
 #  --report (default)  full inventory + census, exit 0 (triage mode;
 #                      scanner errors still fail closed)
 #  --strict            exit 1 on any type/radius/spacing violation
-#                      (CI mode — design-gates job)
+#                      (CI mode — design-gates job). Since r186 the
+#                      strict condition includes the TSX inline
+#                      spacing axis (findings + malformed markers).
 #  --styles-dir <dir>  scan that directory instead (fixtures for
 #                      scripts/test-raw-css-gate.sh; it must contain
 #                      a tokens.css with the ladder)
+#  --src-dir <dir>     TSX root to scan (default frontend/src; the
+#                      fixture harness points it at a synthetic src)
 #
 #  Exit: 0 clean/report · 1 strict violations · 2 bad invocation ·
 #        4 scanner error (fail closed: unreadable file, unbalanced
@@ -122,6 +140,7 @@ cd "$ROOT"
 
 MODE="--report"
 STYLES_DIR=""
+SRC_DIR=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --report) MODE="--report"; shift ;;
@@ -129,25 +148,30 @@ while [ $# -gt 0 ]; do
     --styles-dir)
       [ $# -ge 2 ] || { echo "check-raw-css.sh: --styles-dir needs a path" >&2; exit 2; }
       STYLES_DIR="$2"; shift 2 ;;
+    --src-dir)
+      [ $# -ge 2 ] || { echo "check-raw-css.sh: --src-dir needs a path" >&2; exit 2; }
+      SRC_DIR="$2"; shift 2 ;;
     -h|--help)
       sed -n '2,/^set -euo pipefail$/p' "$0" | sed -e 's/^# \{0,1\}//' -e '/^set -euo/d'
       exit 0 ;;
     *)
       echo "check-raw-css.sh: unknown argument: $1" >&2
-      echo "Usage: scripts/check-raw-css.sh [--report|--strict] [--styles-dir <dir>]" >&2
+      echo "Usage: scripts/check-raw-css.sh [--report|--strict] [--styles-dir <dir>] [--src-dir <dir>]" >&2
       exit 2 ;;
   esac
 done
 
 scan_status=0
-python3 - "$MODE" "$STYLES_DIR" <<'PYSCANNER' || scan_status=$?
+python3 - "$MODE" "$STYLES_DIR" "$SRC_DIR" <<'PYSCANNER' || scan_status=$?
 import re
 import sys
 from pathlib import Path
 
 mode = sys.argv[1]
 styles_arg = sys.argv[2]
+src_arg = sys.argv[3]
 STYLES = Path(styles_arg) if styles_arg else Path('frontend/src/styles')
+SRC = Path(src_arg) if src_arg else Path('frontend/src')
 
 
 class ScanError(Exception):
@@ -472,7 +496,6 @@ def main():
     world_census = {}            # landing.css — visible, not enforced
     type_radius_files = 0
     spacing_files = 0
-    tsx_inline_px = None         # filled below (report seam)
 
     sheets = sorted(STYLES.glob('*.css'))
     for f in sheets:
@@ -546,22 +569,146 @@ def main():
                         world_census[f.name]['literals'] += 1
                         world_census[f.name][cls] += 1
 
-    # TSX inline spacing seam (audit count, out of gate scope)
-    try:
-        src = Path('frontend/src')
-        if src.is_dir():
-            tsx_inline_px = 0
-            pat = re.compile(
-                r'(?:padding|margin|gap|rowGap|columnGap)'
-                r'(?:Top|Right|Bottom|Left|Block|Inline|BlockStart|'
-                r'BlockEnd|InlineStart|InlineEnd)?\s*:\s*'
-                r'''["'\s]*(-?\d+(?:\.\d+)?)px''')
-            for t in src.rglob('*.tsx'):
-                if 'test' in t.name or '/tests/' in str(t):
+    # ── TSX inline spacing (r186): audit seam → strict axis ──────
+    # React style objects turn bare numbers into px at runtime, so
+    # both quoted '…Npx…' values and whole-value bare numbers are
+    # findings. Walk is quote-aware (prop matches inside strings/
+    # templates are never findings) and property accesses (.margin)
+    # are skipped. Type members terminate at ';'. Zero is exempt.
+    if not SRC.is_dir():
+        raise ScanError(f'missing TSX source directory: {SRC}')
+    tsx_files = 0
+    tsx_findings = []      # (rel, line, prop, value, lit, cls, cand)
+    tsx_allowed = []       # documented allows (valid markers)
+    tsx_invalid = []       # malformed markers
+    TSX_PROP = re.compile(
+        r'(?<![.\w])(padding|margin|gap|rowGap|columnGap)'
+        r'(?:Top|Right|Bottom|Left|Block|Inline|BlockStart|BlockEnd|'
+        r'InlineStart|InlineEnd)?\s*:')
+
+    def tsx_marker_state(raw_lines, line):
+        """(state, reason) for the TSX allow marker: the prop's own
+        line or the line above (JS // and {/* */} comments both carry
+        the marker text; the grammar is the shared one)."""
+        span = '\n'.join(raw_lines[max(0, line - 2):line])
+        m = ALLOW_SPACING.search(span)
+        if not m:
+            return ('none', None)
+        reason = (m.group('reason') or '').strip().rstrip('*').strip()
+        words = [w for w in re.split(r'\s+', reason) if w]
+        if (len(reason) < 8 or len(words) < 2
+                or reason.lower() in VAGUE_REASONS):
+            return ('invalid', reason if reason else '<empty>')
+        return ('valid', reason)
+
+    for t in sorted(SRC.rglob('*.tsx')):
+        if 'test' in t.name or '/tests/' in str(t):
+            continue
+        rel = str(t.relative_to(SRC))
+        try:
+            raw = t.read_text(encoding='utf-8')
+        except (OSError, UnicodeDecodeError) as e:
+            raise ScanError(f'{rel}: unreadable ({e})') from e
+        raw_lines = raw.split('\n')
+        tsx_files += 1
+        n = len(raw)
+        i = 0
+        quote = None
+        while i < n:
+            ch = raw[i]
+            if quote:
+                if ch == '\\':
+                    i += 2
                     continue
-                tsx_inline_px += len(pat.findall(t.read_text(errors='replace')))
-    except OSError:
-        tsx_inline_px = None
+                if ch == quote:
+                    quote = None
+                i += 1
+                continue
+            if ch in '"\'`':
+                quote = ch
+                i += 1
+                continue
+            # comments are prose, never declarations — the walk skips
+            # them entirely (JSX {/* */} notes and // line comments
+            # can quote «margin: 4px» as documentation)
+            if ch == '/' and i + 1 < n:
+                if raw[i + 1] == '/':
+                    nl = raw.find('\n', i)
+                    i = nl if nl != -1 else n
+                    continue
+                if raw[i + 1] == '*':
+                    end = raw.find('*/', i + 2)
+                    i = (end + 2) if end != -1 else n
+                    continue
+            m = TSX_PROP.match(raw, i)
+            if not m:
+                i += 1
+                continue
+            # value span: after ':' to the first ',' ';' or '}' at
+            # paren/bracket depth 0 (quotes inside the value tracked,
+            # so 'a, b' strings never split a span).
+            j = m.end()
+            depth = 0
+            vq = None
+            while j < n:
+                c = raw[j]
+                if vq:
+                    if c == '\\':
+                        j += 2
+                        continue
+                    if c == vq:
+                        vq = None
+                    j += 1
+                    continue
+                if c in '"\'`':
+                    vq = c
+                    j += 1
+                    continue
+                if c in '([{':
+                    depth += 1
+                elif c in ')]':
+                    depth -= 1
+                elif c == '}' and depth == 0:
+                    break
+                elif c in ',;' and depth == 0:
+                    break
+                j += 1
+            value = raw[m.end():j]
+            vstrip = value.strip()
+            prop = m.group(0).split(':')[0].strip()
+            line = raw[:m.start()].count('\n') + 1
+            # JS comments inside the span are prose, not values (the
+            # r157 migration notes «6px → token» live there) — strip
+            # them before literal scanning, mirroring the CSS walk.
+            vscan = re.sub(r'/\*.*?\*/', ' ', vstrip, flags=re.S)
+            vscan = re.sub(r'//[^\n]*', ' ', vscan)
+            lits = []
+            for lm in re.finditer(r'(-?)(\d+(?:\.\d+)?)px\b', vscan):
+                sign = -1.0 if lm.group(1) == '-' else 1.0
+                lits.append((lm.group(0), sign * float(lm.group(2))))
+            if not lits:
+                unq = vscan.strip('\'" \t')
+                if re.fullmatch(r'-?\d+(?:\.\d+)?', unq):
+                    sign = -1.0 if unq.startswith('-') else 1.0
+                    lits.append((unq, sign * abs(float(unq))))
+            if not lits:
+                i = j
+                continue
+            state, reason = tsx_marker_state(raw_lines, line)
+            if state == 'invalid':
+                tsx_invalid.append((rel, line, prop, vstrip[:60], reason))
+                i = j
+                continue
+            for lit_text, signed in lits:
+                cls, cand = classify(signed, ladder)
+                if cls == 'zero':
+                    continue
+                entry = (rel, line, prop, vstrip[:60], lit_text, cls, cand)
+                if state == 'valid':
+                    tsx_allowed.append(entry + (reason,))
+                else:
+                    tsx_findings.append(entry)
+            i = j
 
     # ── report ────────────────────────────────────────────────────
     tr_total = len(type_violations) + len(radius_violations)
@@ -615,11 +762,21 @@ def main():
         print('  SPACING by sheet: '
               + ' · '.join(f'{p} ×{c}' for p, c in
                            sorted(byfile.items(), key=lambda x: (-x[1], x[0]))))
-    if tsx_inline_px is not None:
-        print(f'  TSX inline spacing (audit seam, out of gate scope): '
-              f'{tsx_inline_px} raw px site(s)')
+    # r186: the TSX seam is a strict axis now — same listing shape.
+    print(f'  TSX inline spacing (strict, r186): {len(tsx_findings)} '
+          f'finding(s) · {len(tsx_allowed)} documented allow(s) across '
+          f'{tsx_files} tsx file(s)')
+    for rel, line, prop, value, lit, cls, cand in tsx_findings:
+        cand_s = f' (candidate {cand})' if cand else ''
+        print(f'    {rel}:{line}: {prop}: {value}')
+        print(f'        {lit} → {cls}{cand_s} [tsx inline]')
+    for rel, line, prop, value, reason in tsx_invalid:
+        print(f'    INVALID MARKER {rel}:{line}: {prop}: {value} — '
+              f'reason "{reason}" fails the grammar (≥2 words, ≥8 '
+              f'chars, not vague); fix or remove the marker')
 
-    if tr_total or spacing_findings or invalid_markers:
+    if (tr_total or spacing_findings or invalid_markers
+            or tsx_findings or tsx_invalid):
         if mode == '--strict':
             print('FAIL (strict): raw literals outside the token system — '
                   'convert to var(--sp-*/--fs-*/--r-*) or document the '
