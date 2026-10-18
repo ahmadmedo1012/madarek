@@ -112,3 +112,6 @@ tools/package-lock.json
 backend/storage/papers/*
 !backend/storage/papers/sample.pdf
 backend/storage/materials/
+# r188: the dev-stack local-driver root (STORAGE_DIR override in the
+# gitignored backend/.env) — never commit dev upload artifacts.
+backend/storage-dev/
