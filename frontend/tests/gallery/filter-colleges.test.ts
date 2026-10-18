@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { filterColleges, type FilterableCollege } from '../../src/pages/colleges/filter-colleges';
 
+// r188: the fixture uses the fictional demo campuses (حرم المعرفة ·
+// حرم الابتكار · حرم البيان) + an orphan city for the «مناطق أخرى»
+// bucket — same grouping behavior, synthetic registry.
 const colleges: FilterableCollege[] = [
-  { city: 'الزاوية', name: 'كلية الهندسة', nameEn: 'College of Engineering' },
-  { city: 'الزاوية', name: 'كلية الطب البشري', nameEn: 'Faculty of Human Medicine' },
-  { city: 'الزاوية', name: 'كلية تقنية المعلومات', nameEn: 'College of IT' },
-  { city: 'العجيلات', name: 'كلية العلوم', nameEn: 'College of Sciences' },
-  { city: 'العجيلات', name: 'كلية الاقتصاد', nameEn: 'College of Economics' },
-  { city: 'زوارة', name: 'كلية الآداب', nameEn: 'College of Arts' },
+  { city: 'حرم المعرفة', name: 'كلية الهندسة', nameEn: 'College of Engineering' },
+  { city: 'حرم المعرفة', name: 'كلية الطب البشري', nameEn: 'Faculty of Human Medicine' },
+  { city: 'حرم المعرفة', name: 'كلية تقنية المعلومات', nameEn: 'College of IT' },
+  { city: 'حرم الابتكار', name: 'كلية العلوم', nameEn: 'College of Sciences' },
+  { city: 'حرم الابتكار', name: 'كلية الاقتصاد', nameEn: 'College of Economics' },
+  { city: 'حرم البيان', name: 'كلية الآداب', nameEn: 'College of Arts' },
   { city: 'بئر الغنم', name: 'كلية هندسة الموارد الطبيعية', nameEn: 'Natural Resources Engineering' },
 ];
 
@@ -22,9 +25,9 @@ describe('filterColleges', () => {
     const out = filterColleges(colleges, { query: '', campus: null });
     expect(out.total).toBe(7);
     const keys = Array.from(out.byCampus.keys());
-    expect(keys[0]).toBe('الزاوية');
-    expect(keys[1]).toBe('العجيلات');
-    expect(keys[2]).toBe('زوارة');
+    expect(keys[0]).toBe('حرم المعرفة');
+    expect(keys[1]).toBe('حرم الابتكار');
+    expect(keys[2]).toBe('حرم البيان');
     expect(keys[keys.length - 1]).toBe('مناطق أخرى');
   });
 
@@ -36,16 +39,16 @@ describe('filterColleges', () => {
   });
 
   it('drops empty groups', () => {
-    const out = filterColleges(colleges, { query: '', campus: 'الزاوية' });
-    expect(out.byCampus.has('العجيلات')).toBe(false);
-    expect(out.byCampus.has('زوارة')).toBe(false);
-    expect(out.byCampus.has('الزاوية')).toBe(true);
+    const out = filterColleges(colleges, { query: '', campus: 'حرم المعرفة' });
+    expect(out.byCampus.has('حرم الابتكار')).toBe(false);
+    expect(out.byCampus.has('حرم البيان')).toBe(false);
+    expect(out.byCampus.has('حرم المعرفة')).toBe(true);
   });
 
   it('filters by campus', () => {
-    const out = filterColleges(colleges, { query: '', campus: 'العجيلات' });
+    const out = filterColleges(colleges, { query: '', campus: 'حرم الابتكار' });
     expect(out.total).toBe(2);
-    expect(out.byCampus.get('العجيلات')?.length).toBe(2);
+    expect(out.byCampus.get('حرم الابتكار')?.length).toBe(2);
   });
 
   it('Arabic substring match (no diacritics typed)', () => {
@@ -58,7 +61,7 @@ describe('filterColleges', () => {
     // "الهَنْـدَسة" — with explicit fatha + sukun + tatweel — should still match
     // since both query and target are normalized.
     const list: FilterableCollege[] = [
-      { city: 'الزاوية', name: 'كلية الهَنْـدَسة', nameEn: null },
+      { city: 'حرم المعرفة', name: 'كلية الهَنْـدَسة', nameEn: null },
     ];
     const out = filterColleges(list, { query: 'هندس', campus: null });
     expect(out.total).toBe(1);
@@ -72,8 +75,8 @@ describe('filterColleges', () => {
    * folded diacritics only. */
   it('r146 — colloquial ة→ه and ى→ي spellings match via the canonical fold (parity with /search/global)', () => {
     const list: FilterableCollege[] = [
-      { city: 'الزاوية', name: 'كلية الهندسة', nameEn: null },
-      { city: 'الزاوية', name: 'كلية التقنى الطبية', nameEn: null },
+      { city: 'حرم المعرفة', name: 'كلية الهندسة', nameEn: null },
+      { city: 'حرم المعرفة', name: 'كلية التقنى الطبية', nameEn: null },
     ];
     // ة typed as ه…
     expect(filterColleges(list, { query: 'هندسه', campus: null }).total).toBe(1);
@@ -90,13 +93,13 @@ describe('filterColleges', () => {
   it('English match works with mixed case', () => {
     const out = filterColleges(colleges, { query: 'ECONOM', campus: null });
     expect(out.total).toBe(1);
-    expect(out.byCampus.get('العجيلات')?.[0]?.nameEn).toContain('Economics');
+    expect(out.byCampus.get('حرم الابتكار')?.[0]?.nameEn).toContain('Economics');
   });
 
   it('combines campus filter with search (logical AND)', () => {
-    const out = filterColleges(colleges, { query: 'هندس', campus: 'الزاوية' });
+    const out = filterColleges(colleges, { query: 'هندس', campus: 'حرم المعرفة' });
     expect(out.total).toBe(1);
-    expect(out.byCampus.get('الزاوية')?.[0]?.name).toBe('كلية الهندسة');
+    expect(out.byCampus.get('حرم المعرفة')?.[0]?.name).toBe('كلية الهندسة');
   });
 
   it('returns zero total when query matches nothing', () => {

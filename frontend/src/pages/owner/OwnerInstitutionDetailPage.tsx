@@ -681,7 +681,7 @@ export function OwnerInstitutionDetailPage() {
               className="input"
               value={facultyForm.city}
               onChange={(e) => setFacultyForm({ ...facultyForm, city: e.target.value })}
-              placeholder="الزاوية"
+              placeholder="حرم المعرفة"
             />
           </FormField>
           <FormField label="رمز تعبيري (اختياري)" id="owner-faculty-icon">

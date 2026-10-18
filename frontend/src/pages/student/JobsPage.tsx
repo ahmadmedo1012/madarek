@@ -145,7 +145,7 @@ export default function JobsPage() {
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">فرص العمل</h1>
-          <p className="page-subtitle">وظائف وفرص تدريب مفتوحة لطلاب وخرّيجي جامعة الزاوية.</p>
+          <p className="page-subtitle">وظائف وفرص تدريب تجريبية مفتوحة لطلاب وخرّيجي الجامعة (بيانات عرض).</p>
         </div>
       </header>
 

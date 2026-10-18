@@ -51,7 +51,7 @@ describe('r177 — public metadata is platform-neutral (index.html)', () => {
     expect(html).not.toMatch(/twitter:title" content="[^"]*جامعة الزاوية/);
   });
 
-  it('JSON-LD site node is Madarek; the university survives as showcase data under about', () => {
+  it('r188 — JSON-LD site node is Madarek ALONE: no `about` university node exists at all', () => {
     const ld = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
     expect(ld).not.toBeNull();
     const data = JSON.parse(ld![1]!);
@@ -62,11 +62,11 @@ describe('r177 — public metadata is platform-neutral (index.html)', () => {
     for (const claim of OFFICIAL_CLAIMS) {
       expect(flat).not.toContain(claim);
     }
-    // the showcase institution keeps its full public record (25 colleges)
-    expect(data['about']['@type']).toBe('EducationalOrganization');
-    expect(data['about']['name']).toBe('جامعة الزاوية');
-    expect(data['about']['department']).toHaveLength(25);
-    expect(data['about']['description']).toContain('المؤسّسة المرجعية للعرض');
+    // r188: the retired real-university `about` node is GONE — the only
+    // demo-data mention is the fictional tenant, inside the description.
+    expect(data['about']).toBeUndefined();
+    expect(data['description']).toContain('جامعة مدارك التجريبية');
+    expect(data['description']).toContain('اصطناعية');
   });
 
   it('no ministry/official claim remains in any meta line', () => {
@@ -85,11 +85,15 @@ describe('r177 — landing/auth copy is affiliation-free', () => {
       expect(code, `landing still carries: ${claim}`).not.toContain(claim);
     }
     expect(landing).toContain('مستقلّة');
-    expect(landing).toContain('مؤسّسة العرض: جامعة الزاوية');
+    // r188: the only sample-data story is the FICTIONAL demo tenant,
+    // stated in the independence manifesto with its synthetic label.
+    expect(landing).toContain('جامعة مدارك التجريبية');
+    expect(landing).toContain('اصطناعية بالكامل');
+    expect(landing).not.toContain('جامعة الزاوية');
     // brand subtitle is a product descriptor, not a university
-    expect(landing.match(/landing-brand-sub">\s*([^<\s])/g)?.length ?? 0).toBe(2);
-    expect(landing).not.toMatch(/landing-brand-sub">\s*جامعة الزاوية/);
-    expect(landing.match(/landing-brand-sub">\s*منصّة التعليم الذكي/g)?.length).toBe(2);
+    expect(landing.match(/fo-brand-sub">\s*([^<\s])/g)?.length ?? 0).toBe(2);
+    expect(landing).not.toMatch(/fo-brand-sub">\s*جامعة الزاوية/);
+    expect(landing.match(/fo-brand-sub">\s*منصّة التعليم الذكي/g)?.length).toBe(2);
     // the copyright is the platform's alone
     expect(landing).toContain('© {year} مدارك</span>');
   });
@@ -223,8 +227,11 @@ describe('r183 — brand-identity closure (the surfaces r177 missed)', () => {
     // showcase-data provenance (the file stays on disk, assets.test.ts keeps it)
     expect(brand).not.toContain('src="/brand/zu-mark.svg"');
     const favicon = read('public/favicon.svg');
+    // r188: the mark is the khatam star (copper→gold) — the retired
+    // blue/violet shield gradient and the ZU crest colors are gone.
     // derived from the madarek shield mark palette — NOT the ZU crest palette
-    expect(favicon).toContain('#2952C8');
+    expect(favicon).toContain('#B57438');
+    expect(favicon).toContain('#E9B44C');
     expect(favicon).not.toContain('#0E3F6C');
     expect(favicon).not.toContain('#3FB6C9');
   });

@@ -46,11 +46,11 @@ const router = Router();
 //      still be ACTIVE, which the lookup below enforces);
 //   3. anonymous/contextless land on the SHOWCASE default — the
 //      reference institution that owns the public 25-faculty registry
-//      (seed.ts: slug `zawia-showcase`). A fresh install without the
+//      (seed.ts: slug `madarek-demo`). A fresh install without the
 //      showcase row degrades to an empty 200 listing, not a dead page.
 
 /** The showcase institution's slug (the public landing default). */
-export const SHOWCASE_INSTITUTION_SLUG = 'zawia-showcase';
+export const SHOWCASE_INSTITUTION_SLUG = 'madarek-demo';
 
 /** One resolved colleges target — `explicit` drives the fail-closed
  * posture (explicit targets 404 when unresolvable; the implicit

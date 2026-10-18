@@ -309,7 +309,7 @@ export default function ProfilePage() {
             {/* 5-D1 (A11 P2-2): 11px mono accent-as-text measured 3.52:1
                 on surface-2 — --accent-ink is the text-safe accent (10.72:1
                 on surface); dark already passed either way. */}
-            <bdi dir="ltr" className="font-mono" style={{ color: 'var(--accent-ink)' }}>info@zu.edu.ly</bdi>.
+            <bdi dir="ltr" className="font-mono" style={{ color: 'var(--accent-ink)' }}>info@demo.madarek.ly</bdi>.
           </div>
         </Card>
       )}

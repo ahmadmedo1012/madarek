@@ -79,11 +79,11 @@ type LoginInputs = z.infer<typeof loginSchema>;
 const SHOW_DEMO_LOGIN = import.meta.env.DEV;
 
 const DEMO_EMAIL: Record<AppRole, string> = {
-  STUDENT: 'student@zu.edu.ly',
-  TEACHER: 'teacher@zu.edu.ly',
-  ADMIN:   'admin@zu.edu.ly',
-  QUALITY: 'quality@zu.edu.ly',
-  OWNER:   'owner@zu.edu.ly',
+  STUDENT: 'student@demo.madarek.ly',
+  TEACHER: 'teacher@demo.madarek.ly',
+  ADMIN:   'admin@demo.madarek.ly',
+  QUALITY: 'quality@demo.madarek.ly',
+  OWNER:   'owner@demo.madarek.ly',
 };
 /** Demo password — canonical value shared with the backend seed
  *  (backend/prisma/seed.ts) and the snap/probe scripts. Keeping one

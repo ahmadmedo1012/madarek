@@ -204,7 +204,7 @@
   font-size: var(--type-label-size);
   font-weight: var(--fw-semibold);
   color: var(--text);
-  /* r148 (AUDIT-4 I1): 0.02em على أسماء مدن عربية («الزاوية») — تصفير
+  /* r148 (AUDIT-4 I1): 0.02em على أسماء حرَم عربية («حرم المعرفة») — تصفير
      التتبع حفاظًا على اتصال الحروف. */
   letter-spacing: 0;
 }

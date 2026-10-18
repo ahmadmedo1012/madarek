@@ -3738,25 +3738,26 @@
     box-shadow: var(--shadow-card-premium);
     transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
     margin-block-end: var(--sp-6);
-    /* v17 photo overlay (D15 / audit 11-g P2-3): the 640px q55 WebP cut
-       (~25KB) — never the 99.6KB full-res hero. Theme-aware gradients
-       keep the text readable over the campus photo in both modes. */
+    /* r188 brand reset: the retired campus-photo overlay is gone (no
+       real-university imagery anywhere). The welcome card now paints a
+       calm editorial wash — layered accent-soft token recipes with a
+       hairline edge, readable in both themes, zero image payload. */
     background:
       linear-gradient(135deg,
         color-mix(in srgb, var(--accent-soft) 95%, transparent) 0%,
-        color-mix(in srgb, var(--accent-soft) 30%, transparent) 60%,
-        transparent 100%
-      ),
-      url('/main_photo-card.webp') 50% 30% / cover no-repeat;
+        color-mix(in srgb, var(--accent-soft) 42%, transparent) 58%,
+        color-mix(in srgb, var(--surface-2) 88%, transparent) 100%
+      );
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--rule));
   }
   [data-theme="dark"] .student-dashboard .page-header.welcome-card {
     background:
       linear-gradient(135deg,
         color-mix(in srgb, var(--bg) 92%, var(--accent) 8%) 0%,
-        color-mix(in srgb, var(--bg) 75%, transparent) 60%,
+        color-mix(in srgb, var(--bg) 78%, transparent) 58%,
         var(--bg) 100%
-      ),
-      url('/main_photo-card.webp') 50% 30% / cover no-repeat;
+      );
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--rule));
   }
   .student-dashboard .page-header.welcome-card:hover {
     box-shadow: var(--shadow-card-premium-h);

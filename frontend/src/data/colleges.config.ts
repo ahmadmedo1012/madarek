@@ -2,31 +2,33 @@
 // Source of truth (this PR): static config. Long-term: backend College table.
 //
 // ═══════════════════════════════════════════════════════════════════
-// COVERAGE (wave 6-c, ruling #6): all 25 University of Zawia faculties,
-// transcribed exactly from the canonical seed list
-// (backend/prisma/seed.ts — 13 الزاوية + 8 العجيلات + 1 زوارة + 3 أخرى).
-// The structured list in zu.edu.ly.md agrees on 25; its prose header
-// ("26") and the README ("29") are both wrong. THE TRUE COUNT IS 25.
+// r188 — FICTIONAL DEMONSTRATION REGISTRY (جامعة مدارك التجريبية).
+//
+// The registry previously transcribed the real University of Zawia
+// faculty list (13 الزاوية + 8 العجيلات + 1 زوارة + 3 أخرى — real
+// Libyan cities tied to a real institution). r188 replaces it with a
+// coherent SYNTHETIC catalogue for the demonstration institution:
+// 25 faculties across three fictional knowledge-named campuses
+// (حرم المعرفة · حرم الابتكار · حرم البيان). Names stay realistic
+// academic names (a credible demo needs credible structure), but no
+// entry resolves to a real university's registry — the campuses are
+// concept labels, not places, and the owning institution is explicitly
+// synthetic (see seed.ts / docs).
 //
 // PRINCIPLE III (university-truth): no synthetic hero imagery. heroImage
 // and motif are intentionally omitted from every entry — CollegePages
 // falls back to its default emoji masthead whenever heroImage is absent.
-// When real UoZ photography lands under `frontend/public/colleges/<slug>/`,
-// add `heroImage` (and optionally `motif`) to the entry following
-// `specs/001-premium-motion-system/contracts/college-identity-profile.md`
-// ("Adding a New College") — the page consumes them with zero further
-// code change.
 //
-// SLUG SCHEME: `<facultyKey>-<cityKey>` — ASCII, lowercase, hyphenated.
+// SLUG SCHEME: `<facultyKey>-<campusKey>` — ASCII, lowercase, hyphenated.
 //   facultyKey — compact English key derived from nameEn:
 //     it · engineering · sciences · medicine · arts · economics ·
 //     education · law · pharmacy · dentistry · medical-technology ·
 //     sports · nursing · veterinary · sharia-law · public-health ·
-//     natural-resources-engineering · oil-gas · natural-resources
-//   cityKey — transliterated city:
-//     الزاوية→zawiya · العجيلات→ajlulat · زوارة→zuwara ·
-//     أبو عيسى→abu-isa · ناصر→naser · مناطق أخرى→other
-//   e.g. 'it-zawiya', 'engineering-zawiya', 'economics-ajlulat'.
+//     natural-resources-engineering · oil-gas · natural-resources ·
+//     languages · arts-design
+//   campusKey — the fictional campus:
+//     حرم المعرفة→maarifa · حرم الابتكار→ibtikar · حرم البيان→bayan
+//   e.g. 'it-maarifa', 'engineering-maarifa', 'economics-ibtikar'.
 //
 // API ⇄ REGISTRY RECONCILIATION: the API keys colleges by Prisma id
 // (cuid); this registry keys by slug. `getCollegeIdentityByRecord()`
@@ -39,18 +41,19 @@ import type { LucideIcon } from 'lucide-react';
 import {
   Laptop, Cog, FlaskConical, Stethoscope, BookOpen, Briefcase, GraduationCap,
   Scale, Pill, Smile, Microscope, Dumbbell, HeartPulse, Leaf, Scroll,
-  Hospital, Mountain, Fuel, Sprout,
+  Hospital, Mountain, Fuel, Sprout, Languages, Palette,
 } from 'lucide-react';
 
 export type CollegeIdentityProfile = {
-  /** Stable college slug; `<facultyKey>-<cityKey>` per the scheme above. */
+  /** Stable college slug; `<facultyKey>-<campusKey>` per the scheme above. */
   slug: string;
   nameAr: string;
   nameEn: string;
   /**
-   * Arabic city name exactly as the API/seed records it (e.g. 'الزاوية').
-   * The deterministic API-record bridge (`getCollegeIdentityByRecord`)
-   * keys on `nameAr|cityAr`; entries without it match no API record.
+   * Arabic campus label exactly as the API/seed records it (e.g.
+   * 'حرم المعرفة'). The deterministic API-record bridge
+   * (`getCollegeIdentityByRecord`) keys on `nameAr|cityAr`; entries
+   * without it match no API record.
    */
   cityAr?: string;
   /** Primary accent (hex). AA-validated at build. */
@@ -87,152 +90,151 @@ export type CollegeIdentityProfile = {
 // Feasible luminance band for both: [0.129, 0.174]; all 25 sit at
 // L ≈ 0.150 (verified with the WCAG math mirrored from lib/theme.ts).
 //
-// Same-name colleges in different cities share a hue family with a
-// shade step (documented in the table): Education ×4 rust→copper→
-// bronze→tan, Economics ×2 green→emerald, Sciences ×2 teal→deep teal,
-// Arts ×2 plum→mauve.
+// Same-name colleges in different campuses share a hue family with a
+// shade step (documented in the table): Education ×2 rust→copper,
+// Economics ×2 green→emerald, Sciences ×2 teal→deep teal, Arts ×2
+// plum→mauve.
 //
 // slug                                accent    vs #FBFAF9  vs #191918
 // ─────────────────────────────────── ────────  ─────────  ─────────
-// it-zawiya                           #236BC8     5.03:1      3.36:1
-// engineering-zawiya                  #46708F     5.07:1      3.33:1
-// sciences-zawiya                     #2D776F     5.06:1      3.33:1
-// medicine-zawiya                     #CA2F44     5.03:1      3.35:1
-// arts-zawiya                         #9948BA     5.05:1      3.34:1
-// economics-zawiya                    #2E7A3B     5.08:1      3.32:1
-// education-zawiya                    #975F28     5.06:1      3.34:1
-// law-zawiya                          #4963CF     5.08:1      3.33:1
-// pharmacy-zawiya                     #2A7861     5.09:1      3.32:1
-// dentistry-zawiya                    #277591     4.99:1      3.38:1
-// medical-technology-zawiya           #AA4599     5.01:1      3.37:1
-// sports-zawiya                       #B54C20     5.01:1      3.37:1
-// nursing-zawiya                      #B6407B     5.03:1      3.36:1
-// economics-ajlulat                   #327951     5.05:1      3.34:1
-// veterinary-ajlulat                  #4A7833     5.00:1      3.37:1
-// education-ajlulat                   #8C652A     5.02:1      3.36:1
-// sharia-law-ajlulat                  #785BBC     5.01:1      3.37:1
-// sciences-ajlulat                    #27777C     5.02:1      3.36:1
-// public-health-ajlulat               #675EC6     5.04:1      3.35:1
-// natural-resources-engineering-ajlulat #626C82   5.05:1      3.34:1
-// oil-gas-ajlulat                     #8D6513     5.03:1      3.35:1
-// arts-zuwara                         #9D4BA7     5.04:1      3.35:1
-// education-abu-isa                   #A25926     5.04:1      3.35:1
-// education-naser                     #7C6B32     5.03:1      3.36:1
-// natural-resources-other             #657233     5.03:1      3.36:1
+// it-maarifa                          #236BC8     5.03:1      3.36:1
+// engineering-maarifa                 #46708F     5.07:1      3.33:1
+// sciences-maarifa                    #2D776F     5.06:1      3.33:1
+// medicine-maarifa                    #CA2F44     5.03:1      3.35:1
+// arts-maarifa                        #9948BA     5.05:1      3.34:1
+// economics-maarifa                   #2E7A3B     5.08:1      3.32:1
+// education-maarifa                   #975F28     5.06:1      3.34:1
+// law-maarifa                         #4963CF     5.08:1      3.33:1
+// pharmacy-maarifa                    #2A7861     5.09:1      3.32:1
+// dentistry-maarifa                   #277591     4.99:1      3.38:1
+// medical-technology-maarifa          #AA4599     5.01:1      3.37:1
+// sports-maarifa                      #B54C20     5.01:1      3.37:1
+// nursing-maarifa                     #B6407B     5.03:1      3.36:1
+// economics-ibtikar                   #327951     5.05:1      3.34:1
+// veterinary-ibtikar                  #4A7833     5.00:1      3.37:1
+// education-ibtikar                   #8C652A     5.02:1      3.36:1
+// sharia-law-ibtikar                  #785BBC     5.01:1      3.37:1
+// sciences-ibtikar                    #27777C     5.02:1      3.36:1
+// public-health-ibtikar               #675EC6     5.04:1      3.35:1
+// natural-resources-engineering-ibtikar #626C82   5.05:1      3.34:1
+// oil-gas-ibtikar                     #8D6513     5.03:1      3.35:1
+// arts-bayan                          #9D4BA7     5.04:1      3.35:1
+// languages-bayan                     #31689E     5.01:1      3.37:1
+// arts-design-bayan                   #7A3E8F     5.02:1      3.36:1
+// natural-resources-bayan             #657233     5.03:1      3.36:1
 // ═══════════════════════════════════════════════════════════════════
 
 export const colleges: CollegeIdentityProfile[] = [
-  // ── الزاوية (main campus, 13 faculties) ──────────────────
+  // ── حرم المعرفة (main campus, 13 faculties) ──────────────
   {
-    slug: 'it-zawiya', nameAr: 'كلية تقنية المعلومات', nameEn: 'Information Technology',
-    cityAr: 'الزاوية', accent: '#236BC8', icon: 'Laptop',
+    slug: 'it-maarifa', nameAr: 'كلية تقنية المعلومات', nameEn: 'Information Technology',
+    cityAr: 'حرم المعرفة', accent: '#236BC8', icon: 'Laptop',
   },
   {
-    slug: 'engineering-zawiya', nameAr: 'كلية الهندسة', nameEn: 'Engineering',
-    cityAr: 'الزاوية', accent: '#46708F', icon: 'Cog',
+    slug: 'engineering-maarifa', nameAr: 'كلية الهندسة', nameEn: 'Engineering',
+    cityAr: 'حرم المعرفة', accent: '#46708F', icon: 'Cog',
   },
   {
-    slug: 'sciences-zawiya', nameAr: 'كلية العلوم', nameEn: 'Sciences',
-    cityAr: 'الزاوية', accent: '#2D776F', icon: 'FlaskConical',
+    slug: 'sciences-maarifa', nameAr: 'كلية العلوم', nameEn: 'Sciences',
+    cityAr: 'حرم المعرفة', accent: '#2D776F', icon: 'FlaskConical',
   },
   {
-    slug: 'medicine-zawiya', nameAr: 'كلية الطب البشري', nameEn: 'Human Medicine',
-    cityAr: 'الزاوية', accent: '#CA2F44', icon: 'Stethoscope',
+    slug: 'medicine-maarifa', nameAr: 'كلية الطب البشري', nameEn: 'Human Medicine',
+    cityAr: 'حرم المعرفة', accent: '#CA2F44', icon: 'Stethoscope',
   },
   {
-    slug: 'arts-zawiya', nameAr: 'كلية الآداب', nameEn: 'Arts',
-    cityAr: 'الزاوية', accent: '#9948BA', icon: 'BookOpen',
+    slug: 'arts-maarifa', nameAr: 'كلية الآداب', nameEn: 'Arts',
+    cityAr: 'حرم المعرفة', accent: '#9948BA', icon: 'BookOpen',
   },
   {
-    slug: 'economics-zawiya', nameAr: 'كلية الاقتصاد', nameEn: 'Economics',
-    cityAr: 'الزاوية', accent: '#2E7A3B', icon: 'Briefcase',
+    slug: 'economics-maarifa', nameAr: 'كلية الاقتصاد', nameEn: 'Economics',
+    cityAr: 'حرم المعرفة', accent: '#2E7A3B', icon: 'Briefcase',
   },
   {
-    slug: 'education-zawiya', nameAr: 'كلية التربية', nameEn: 'Education',
-    cityAr: 'الزاوية', accent: '#975F28', icon: 'GraduationCap',
+    slug: 'education-maarifa', nameAr: 'كلية التربية', nameEn: 'Education',
+    cityAr: 'حرم المعرفة', accent: '#975F28', icon: 'GraduationCap',
   },
   {
-    slug: 'law-zawiya', nameAr: 'كلية القانون', nameEn: 'Law',
-    cityAr: 'الزاوية', accent: '#4963CF', icon: 'Scale',
+    slug: 'law-maarifa', nameAr: 'كلية القانون', nameEn: 'Law',
+    cityAr: 'حرم المعرفة', accent: '#4963CF', icon: 'Scale',
   },
   {
-    slug: 'pharmacy-zawiya', nameAr: 'كلية الصيدلة', nameEn: 'Pharmacy',
-    cityAr: 'الزاوية', accent: '#2A7861', icon: 'Pill',
+    slug: 'pharmacy-maarifa', nameAr: 'كلية الصيدلة', nameEn: 'Pharmacy',
+    cityAr: 'حرم المعرفة', accent: '#2A7861', icon: 'Pill',
   },
   {
-    slug: 'dentistry-zawiya', nameAr: 'كلية طب وجراحة الفم والأسنان', nameEn: 'Dentistry & Oral Surgery',
-    cityAr: 'الزاوية', accent: '#277591', icon: 'Smile',
+    slug: 'dentistry-maarifa', nameAr: 'كلية طب وجراحة الفم والأسنان', nameEn: 'Dentistry & Oral Surgery',
+    cityAr: 'حرم المعرفة', accent: '#277591', icon: 'Smile',
   },
   {
-    slug: 'medical-technology-zawiya', nameAr: 'كلية التقنية الطبية', nameEn: 'Medical Technology',
-    cityAr: 'الزاوية', accent: '#AA4599', icon: 'Microscope',
+    slug: 'medical-technology-maarifa', nameAr: 'كلية التقنية الطبية', nameEn: 'Medical Technology',
+    cityAr: 'حرم المعرفة', accent: '#AA4599', icon: 'Microscope',
   },
   {
-    slug: 'sports-zawiya', nameAr: 'كلية الرياضة والتربية البدنية', nameEn: 'Physical Education & Sports',
-    cityAr: 'الزاوية', accent: '#B54C20', icon: 'Dumbbell',
+    slug: 'sports-maarifa', nameAr: 'كلية الرياضة والتربية البدنية', nameEn: 'Physical Education & Sports',
+    cityAr: 'حرم المعرفة', accent: '#B54C20', icon: 'Dumbbell',
   },
   {
-    slug: 'nursing-zawiya', nameAr: 'كلية التمريض', nameEn: 'Nursing',
-    cityAr: 'الزاوية', accent: '#B6407B', icon: 'HeartPulse',
+    slug: 'nursing-maarifa', nameAr: 'كلية التمريض', nameEn: 'Nursing',
+    cityAr: 'حرم المعرفة', accent: '#B6407B', icon: 'HeartPulse',
   },
-  // ── العجيلات (8 faculties) ────────────────────────────────
+  // ── حرم الابتكار (8 faculties) ──────────────────────────
   {
-    slug: 'economics-ajlulat', nameAr: 'كلية الاقتصاد', nameEn: 'Economics',
-    cityAr: 'العجيلات', accent: '#327951', icon: 'Briefcase',
-  },
-  {
-    slug: 'veterinary-ajlulat', nameAr: 'كلية البيطرة والعلوم الزراعية', nameEn: 'Veterinary & Agricultural Sciences',
-    cityAr: 'العجيلات', accent: '#4A7833', icon: 'Leaf',
+    slug: 'economics-ibtikar', nameAr: 'كلية الاقتصاد', nameEn: 'Economics',
+    cityAr: 'حرم الابتكار', accent: '#327951', icon: 'Briefcase',
   },
   {
-    slug: 'education-ajlulat', nameAr: 'كلية التربية', nameEn: 'Education',
-    cityAr: 'العجيلات', accent: '#8C652A', icon: 'GraduationCap',
+    slug: 'veterinary-ibtikar', nameAr: 'كلية البيطرة والعلوم الزراعية', nameEn: 'Veterinary & Agricultural Sciences',
+    cityAr: 'حرم الابتكار', accent: '#4A7833', icon: 'Leaf',
   },
   {
-    slug: 'sharia-law-ajlulat', nameAr: 'كلية الشريعة والقانون', nameEn: 'Sharia & Law',
-    cityAr: 'العجيلات', accent: '#785BBC', icon: 'Scroll',
+    slug: 'education-ibtikar', nameAr: 'كلية التربية', nameEn: 'Education',
+    cityAr: 'حرم الابتكار', accent: '#8C652A', icon: 'GraduationCap',
   },
   {
-    slug: 'sciences-ajlulat', nameAr: 'كلية العلوم', nameEn: 'Sciences',
-    cityAr: 'العجيلات', accent: '#27777C', icon: 'FlaskConical',
+    slug: 'sharia-law-ibtikar', nameAr: 'كلية الشريعة والقانون', nameEn: 'Sharia & Law',
+    cityAr: 'حرم الابتكار', accent: '#785BBC', icon: 'Scroll',
   },
   {
-    slug: 'public-health-ajlulat', nameAr: 'كلية الصحة العامة', nameEn: 'Public Health',
-    cityAr: 'العجيلات', accent: '#675EC6', icon: 'Hospital',
+    slug: 'sciences-ibtikar', nameAr: 'كلية العلوم', nameEn: 'Sciences',
+    cityAr: 'حرم الابتكار', accent: '#27777C', icon: 'FlaskConical',
   },
   {
-    slug: 'natural-resources-engineering-ajlulat', nameAr: 'كلية هندسة الموارد الطبيعية', nameEn: 'Natural Resources Engineering',
-    cityAr: 'العجيلات', accent: '#626C82', icon: 'Mountain',
+    slug: 'public-health-ibtikar', nameAr: 'كلية الصحة العامة', nameEn: 'Public Health',
+    cityAr: 'حرم الابتكار', accent: '#675EC6', icon: 'Hospital',
   },
   {
-    slug: 'oil-gas-ajlulat', nameAr: 'كلية هندسة النفط والغاز', nameEn: 'Oil & Gas Engineering',
-    cityAr: 'العجيلات', accent: '#8D6513', icon: 'Fuel',
-  },
-  // ── زوارة ────────────────────────────────────────────────
-  {
-    slug: 'arts-zuwara', nameAr: 'كلية الآداب', nameEn: 'Arts',
-    cityAr: 'زوارة', accent: '#9D4BA7', icon: 'BookOpen',
-  },
-  // ── مناطق أخرى ───────────────────────────────────────────
-  {
-    slug: 'education-abu-isa', nameAr: 'كلية التربية', nameEn: 'Education',
-    cityAr: 'أبو عيسى', accent: '#A25926', icon: 'GraduationCap',
+    slug: 'natural-resources-engineering-ibtikar', nameAr: 'كلية هندسة الموارد الطبيعية', nameEn: 'Natural Resources Engineering',
+    cityAr: 'حرم الابتكار', accent: '#626C82', icon: 'Mountain',
   },
   {
-    slug: 'education-naser', nameAr: 'كلية التربية', nameEn: 'Education',
-    cityAr: 'ناصر', accent: '#7C6B32', icon: 'GraduationCap',
+    slug: 'oil-gas-ibtikar', nameAr: 'كلية هندسة النفط والغاز', nameEn: 'Oil & Gas Engineering',
+    cityAr: 'حرم الابتكار', accent: '#8D6513', icon: 'Fuel',
+  },
+  // ── حرم البيان (4 faculties) ─────────────────────────────
+  {
+    slug: 'arts-bayan', nameAr: 'كلية الآداب', nameEn: 'Arts',
+    cityAr: 'حرم البيان', accent: '#9D4BA7', icon: 'BookOpen',
   },
   {
-    slug: 'natural-resources-other', nameAr: 'كلية الموارد الطبيعية', nameEn: 'Natural Resources',
-    cityAr: 'مناطق أخرى', accent: '#657233', icon: 'Sprout',
+    slug: 'languages-bayan', nameAr: 'كلية اللغات', nameEn: 'Languages',
+    cityAr: 'حرم البيان', accent: '#31689E', icon: 'Languages',
+  },
+  {
+    slug: 'arts-design-bayan', nameAr: 'كلية الفنون والتصميم', nameEn: 'Arts & Design',
+    cityAr: 'حرم البيان', accent: '#7A3E8F', icon: 'Palette',
+  },
+  {
+    slug: 'natural-resources-bayan', nameAr: 'كلية الموارد الطبيعية', nameEn: 'Natural Resources',
+    cityAr: 'حرم البيان', accent: '#657233', icon: 'Sprout',
   },
 ];
 
 /**
- * Deterministic API-record bridge: (nameAr, city) → profile. The API keys
+ * Deterministic API-record bridge: (nameAr, campus) → profile. The API keys
  * colleges by Prisma id (cuid) and the registry by slug, so consumers that
  * hold an API record (gallery cards, detail page, popover rows) reconcile
- * through this exact `nameAr|cityAr` match — the same (name, city) pair the
+ * through this exact `nameAr|cityAr` match — the same (name, campus) pair the
  * seed's upsert uniqueness constraint uses.
  */
 const BY_RECORD = new Map(
@@ -251,13 +253,13 @@ export function getCollegeIdentityByRecord(
  * Icon-name → lucide-react component registry. Keys are the exact
  * `lucide-react` EXPORT names (PascalCase) — the same form
  * `scripts/validate-college-identity.ts` verifies against the package's
- * exports (verified for every name in wave 6-c). Returns null for unknown
- * names so callers can apply their own fallback.
+ * exports. Returns null for unknown names so callers can apply their
+ * own fallback.
  */
 const COLLEGE_ICONS: Record<string, LucideIcon> = {
   Laptop, Cog, FlaskConical, Stethoscope, BookOpen, Briefcase, GraduationCap,
   Scale, Pill, Smile, Microscope, Dumbbell, HeartPulse, Leaf, Scroll,
-  Hospital, Mountain, Fuel, Sprout,
+  Hospital, Mountain, Fuel, Sprout, Languages, Palette,
 };
 
 export function collegeIcon(name: string): LucideIcon | null {

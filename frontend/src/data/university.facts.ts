@@ -1,38 +1,39 @@
 /**
- * University institutional facts — the landing's single source of truth
- * (r153k / r153-D).
+ * Demonstration-institution facts — the demo tenant's synthetic profile
+ * (r188; previously the r153k University-of-Zawia fact sheet).
  *
- * Provenance: every literal below traces to the curated backend source
- * (backend/src/lib/zu-sync/static-source.ts, key `identity.*` /
- * `memberships`) or derives from the canonical colleges registry
- * (data/colleges.config.ts — the same registry `validate:colleges`
- * guards). The landing used to hand-retype these facts per section,
- * which is exactly how «متوسطيّة» became «إسلاميّة» (the curated source
- * says the Mediterranean union, not the Islamic one) and how «4 مدن»
- * contradicted both the registry (5 named cities) and the colleges
- * popover (6 حُرم). One module, one provenance comment per fact —
- * the colleges.config.ts content-registry precedent.
+ * Provenance: every literal below is SYNTHETIC demo data for «جامعة
+ * مدارك التجريبية» — the platform's fictional demonstration tenant.
+ * It mirrors the curated backend source shape
+ * (backend/src/lib/zu-sync/static-source.ts, key `identity.*`) so the
+ * same fact surfaces keep working, but nothing here claims a real
+ * institution: no real founding decree, no real memberships, no real
+ * addresses. The consuming surfaces label it بيانات تجريبية.
  */
-import { colleges } from './colleges.config';
-
 export const UNIVERSITY_FACTS = {
-  /** zu.edu.ly:about via static-source.ts (`identity.founded`). */
-  foundedYear: 1988,
-  /** zu.edu.ly:about via static-source.ts (`identity.decree`). */
-  decreeNumber: 135,
-  /** zu.edu.ly:about via static-source.ts (`memberships`) — Arab,
-   * African, and MEDITERRANEAN unions. «إسلاميّة» was a retyping
-   * error, not a fact. */
-  memberships: [
-    { label: 'عربيّة', full: 'اتحاد الجامعات العربية' },
-    { label: 'أفريقيّة', full: 'اتحاد الجامعات الأفريقية' },
-    { label: 'متوسطيّة', full: 'اتحاد الجامعات المتوسطية' },
+  /** Synthetic founding year of the demo institution (demo-source). */
+  foundedYear: 2015,
+  /** Demo tenant — the platform's showcase institution (r188). */
+  institutionNameAr: 'جامعة مدارك التجريبية',
+  institutionNameEn: 'Madarek Demo University',
+  /**
+   * Demo structure profile — what the student «about my university»
+   * page shows instead of the retired real-university membership
+   * claims: the demo tenant's fictional structure highlights.
+   */
+  profile: [
+    { label: 'تجريبية', full: 'مؤسّسة عرض اصطناعية — بياناتها مولَّدة لأغراض العرض' },
+    { label: 'ثلاثة حرَم', full: 'حرم المعرفة · حرم الابتكار · حرم البيان' },
+    { label: 'متعددة الكليات', full: 'بنية أكاديمية تجريبية بمسارات البكالوريوس والدراسات العليا' },
   ],
 } as const;
 
-/** Named campus cities from the canonical registry — «مناطق أخرى» is a
- * bucket, not a city, and is excluded from the count. Registry order
- * (الزاوية، العجيلات، زوارة، أبو عيسى، ناصر). */
+/** Fictional campus labels from the canonical registry — «مناطق أخرى»
+ * style buckets do not exist in the r188 catalogue, but the filter
+ * keeps the same guard shape (future-proof against re-introduced
+ * bucket rows). Registry order (حرم المعرفة، حرم الابتكار، حرم البيان). */
+import { colleges } from './colleges.config';
+
 export const CAMPUS_CITIES: readonly string[] = Array.from(
   new Set(
     colleges

@@ -45,7 +45,7 @@ function StudentScopeChip() {
 }
 
 /** r178 (multi-institution): the institution context chip — the
- *  current institution («جامعة الزاوية») rendered in the topbar so the
+ *  current institution («جامعة مدارك التجريبية») rendered in the topbar so the
  *  visitor always knows which institution's context the token carries.
  *  Single-membership users get the passive `.topbar-scope` pill (the
  *  same class the student faculty chip and admin scope chip already

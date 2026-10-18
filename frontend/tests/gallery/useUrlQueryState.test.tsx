@@ -13,10 +13,10 @@ function makeWrapper(initialEntries: string[]) {
 describe('useUrlQueryState', () => {
   it('reads initial state from the URL', () => {
     const { result } = renderHook(() => useUrlQueryState(), {
-      wrapper: makeWrapper(['/colleges?q=هندس&campus=الزاوية']),
+      wrapper: makeWrapper(['/colleges?q=هندس&campus=حرم المعرفة']),
     });
     expect(result.current.state.query).toBe('هندس');
-    expect(result.current.state.campus).toBe('الزاوية');
+    expect(result.current.state.campus).toBe('حرم المعرفة');
   });
 
   it('falls back to default state on a clean URL', () => {
@@ -46,8 +46,8 @@ describe('useUrlQueryState', () => {
       wrapper: makeWrapper(['/colleges']),
     });
 
-    act(() => result.current.hook.setCampus('العجيلات'));
-    expect(result.current.params.get('campus')).toBe('العجيلات');
+    act(() => result.current.hook.setCampus('حرم الابتكار'));
+    expect(result.current.params.get('campus')).toBe('حرم الابتكار');
 
     act(() => result.current.hook.setCampus(null));
     expect(result.current.params.get('campus')).toBeNull();
@@ -85,7 +85,7 @@ describe('useUrlQueryState', () => {
       hook: useUrlQueryState(),
       params: useSearchParams()[0],
     }), {
-      wrapper: makeWrapper(['/colleges?q=هندس&campus=الزاوية']),
+      wrapper: makeWrapper(['/colleges?q=هندس&campus=حرم المعرفة']),
     });
 
     act(() => result.current.hook.clear());

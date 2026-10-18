@@ -105,7 +105,7 @@ export function CollegesPopover({
         <header className="colleges-popover-head">
           <div className="colleges-popover-titles">
             <h2 className="colleges-popover-title" id="colleges-popover-title">
-              كلّيّات جامعة الزاوية
+              كلّيّات الجامعة التجريبية
             </h2>
             <p className="colleges-popover-sub">
               {data.length > 0 ? (

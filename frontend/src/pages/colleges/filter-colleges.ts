@@ -17,9 +17,9 @@
 import { normalizeArabicSearch } from '../../lib/search';
 
 export type CityName =
-  | 'الزاوية'
-  | 'العجيلات'
-  | 'زوارة'
+  | 'حرم المعرفة'
+  | 'حرم الابتكار'
+  | 'حرم البيان'
   | 'أبو عيسى'
   | 'ناصر'
   | 'مناطق أخرى';
@@ -36,9 +36,9 @@ export type FilterResult<T> = {
 
 /** Canonical campus order — main campus first, orphans last. */
 export const CAMPUS_ORDER: ReadonlyArray<CityName> = [
-  'الزاوية',
-  'العجيلات',
-  'زوارة',
+  'حرم المعرفة',
+  'حرم الابتكار',
+  'حرم البيان',
   'أبو عيسى',
   'ناصر',
   'مناطق أخرى',

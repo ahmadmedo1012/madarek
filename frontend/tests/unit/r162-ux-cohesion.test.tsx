@@ -43,11 +43,10 @@ import { describe, expect, it, vi, beforeAll, beforeEach, afterEach } from 'vite
 import { render, screen, fireEvent, act, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync as existsSyncRaw } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { queryClient } from '../../src/lib/queryClient';
-import { parseColorTriplet, ORBIT_LIGHT_ALPHA } from '../../src/components/landing/OrbitScene';
 import { useThemeStore } from '../../src/stores/theme.store';
 import LandingPage from '../../src/pages/LandingPage';
 
@@ -70,6 +69,7 @@ beforeAll(() => {
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const read = (p: string) => readFileSync(path.join(root, p), 'utf8');
+const existsSyncP = (p: string) => existsSyncRaw(path.join(root, p));
 /** Drop /* … *‌/ blocks so tombstone prose can't satisfy a selector pin. */
 const stripComments = (src: string) => src.replace(/\/\*[\s\S]*?\*\//g, '');
 
@@ -106,7 +106,7 @@ describe('r172a §8 — the landing carries the REAL theme control', () => {
   it('the shared ThemeToggle mounts in the landing header (فاتح · داكن · تلقائي)', () => {
     const { container } = renderLanding();
     const headerToggle = container.querySelector<HTMLDivElement>(
-      '.landing-header-cta .theme-toggle',
+      '.fo-header-actions .theme-toggle',
     );
     expect(headerToggle).not.toBeNull();
     expect(headerToggle?.getAttribute('aria-label')).toBe('السمة');
@@ -118,7 +118,7 @@ describe('r172a §8 — the landing carries the REAL theme control', () => {
   it('the mobile menu carries the LABELED theme row (المظهر) with its own toggle', () => {
     const { container } = renderLanding();
     fireEvent.click(screen.getByRole('button', { name: 'فتح القائمة' }));
-    const row = container.querySelector('.landing-mobile-theme');
+    const row = container.querySelector('.fo-mobile-theme');
     expect(row).not.toBeNull();
     expect(row?.textContent).toContain('المظهر');
     expect(row?.querySelector('.theme-toggle')).not.toBeNull();
@@ -126,7 +126,7 @@ describe('r172a §8 — the landing carries the REAL theme control', () => {
 
   it('flipping the header toggle flips data-theme AND persists to the shared store', () => {
     const { container } = renderLanding();
-    const headerToggle = container.querySelector('.landing-header-cta .theme-toggle') as HTMLElement;
+    const headerToggle = container.querySelector('.fo-header-actions .theme-toggle') as HTMLElement;
     act(() => {
       fireEvent.click(within(headerToggle).getByRole('button', { name: 'فاتح' }));
     });
@@ -155,13 +155,13 @@ describe('r172a §8 — the landing carries the REAL theme control', () => {
   it('the mobile theme row does NOT close the menu (stopPropagation contract)', () => {
     const { container } = renderLanding();
     fireEvent.click(screen.getByRole('button', { name: 'فتح القائمة' }));
-    const row = container.querySelector('.landing-mobile-theme') as HTMLElement;
+    const row = container.querySelector('.fo-mobile-theme') as HTMLElement;
     act(() => {
       fireEvent.click(within(row).getByRole('button', { name: 'فاتح' }));
     });
     // the menu's own click-to-close contract must not eat a theme flip —
     // the visitor may want to try both looks before navigating.
-    expect(container.querySelector('.landing-mobile-menu')).not.toBeNull();
+    expect(container.querySelector('.fo-mobile-menu')).not.toBeNull();
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
   });
 });
@@ -314,51 +314,46 @@ describe('r172a §1 — --ln-* token theme-flip resolution (tokens.css)', () => 
 
 /* ── r172a §2 — canonical-accent CTA + skip-link (landing.css) ───── */
 
-describe('r172a §2 — the landing CTA rides the canonical accent pair', () => {
+describe('r172a §2 → r188 — the landing CTA rides the canonical accent pair', () => {
   const css = stripComments(read('src/styles/landing.css'));
 
-  it('.ln-btn-gold consumes --accent/--accent-fg with the --accent-hover hover (the .btn.accent recipe)', () => {
-    const at = css.indexOf('.landing .ln-btn-gold {');
-    expect(at).toBeGreaterThanOrEqual(0);
-    const body = css.slice(at, css.indexOf('}', at));
-    expect(body).toContain('background: var(--accent)');
-    expect(body).toContain('color: var(--accent-fg)');
-    const hoverAt = css.indexOf('.landing .ln-btn-gold:hover {');
-    const hover = css.slice(hoverAt, css.indexOf('}', hoverAt));
-    expect(hover).toContain('background: var(--accent-hover)');
+  it('the folio landing declares NO landing-private CTA colors — .btn.accent/.btn.primary ARE the recipes', () => {
+    // r188: the hero/finale primary is the app's own .btn.accent and the
+    // header/mobile primary is .btn.primary (components.css recipes) —
+    // the landing re-declares neither background nor color for any
+    // button (no .ln-btn-gold-style private CTA sheet exists anymore).
+    for (const sel of ['.fo-hero-cta', '.fo-cta-actions', '.fo-header-actions .btn', '.fo-mobile-menu .btn']) {
+      const ruleRe = new RegExp(`${sel.replace(/\./g, '\\.')}(?![\\w-])[^{]*\\{[^}]*\\}`, 'g');
+      for (const rule of css.match(ruleRe) ?? []) {
+        expect(rule, `${sel} must not paint a private CTA color`).not.toMatch(/background\s*:/);
+      }
+    }
   });
 
-  it('the header/mobile .btn.primary joins the same pair (no landing-private CTA colors)', () => {
-    const at = css.indexOf('.landing .btn.primary,');
-    expect(at).toBeGreaterThanOrEqual(0);
-    const body = css.slice(at, css.indexOf('}', css.indexOf('}', at) + 1));
-    expect(body).toContain('background: var(--accent)');
-    expect(body).toContain('color: var(--accent-fg)');
-    const hoverAt = css.indexOf('.landing .btn.primary:hover,');
-    const hover = css.slice(hoverAt, css.indexOf('}', hoverAt));
-    expect(hover).toContain('background: var(--accent-hover)');
-  });
-
-  it('no CTA rule paints lime anymore — the lime roster is editorial-only', () => {
-    for (const sel of ['.ln-btn-gold', '.btn.primary']) {
+  it('no CTA rule paints the retired lime roster — the space palette is gone', () => {
+    for (const sel of ['.btn.accent', '.btn.primary']) {
       const ruleRe = new RegExp(`\\.landing ${sel.replace('.', '\\.')}(?![\\w-])[^{]*\\{[^}]*\\}`, 'g');
       for (const rule of css.match(ruleRe) ?? []) {
         expect(rule).not.toContain('var(--ln-lime');
       }
     }
+    // …and the sheet never consumes the scene inks at all.
+    expect(css).not.toMatch(/var\(--ln-(cream|lime|violet)/);
   });
 
   it('the skip-link joins the accent family', () => {
-    const at = css.indexOf('.landing .ln-skip-link {');
+    const at = css.indexOf('.fo-skip-link {');
     expect(at).toBeGreaterThanOrEqual(0);
     const body = css.slice(at, css.indexOf('}', at));
     expect(body).toContain('background: var(--accent)');
     expect(body).toContain('color: var(--accent-fg)');
   });
 
-  it('the reduced-motion press tint follows the accent hover too', () => {
-    const at = css.indexOf('background: var(--accent-hover);');
-    expect(at).toBeGreaterThanOrEqual(0); // P4-07's re-pointed active state
+  it('the landing CTA markup consumes the canonical classes (no private CTA class)', () => {
+    const tsx = read('src/pages/LandingPage.tsx');
+    expect(tsx).toContain('btn accent lg fo-hero-cta');
+    expect(tsx).toContain('btn primary sm');
+    expect(tsx).not.toContain('ln-btn-gold');
   });
 });
 
@@ -377,99 +372,46 @@ describe('r172a §3 — the landing\'s private :focus-visible sub-language is de
 
   it('the universal cream-outline rule + the CTA ring-swap overrides are gone', () => {
     expect(css).not.toMatch(/\.landing\s+:focus-visible\s*\{/);
-    expect(css).not.toMatch(/\.ln-btn-ghost:focus-visible,\s*\.landing \.btn\.ghost:focus-visible\s*\{\s*outline-color/);
-    expect(css).not.toMatch(/\.btn\.primary:focus-visible\s*\{\s*outline-color:\s*var\(--ln-ink\)/);
+    expect(css).not.toMatch(/\.ln-btn-ghost:focus-visible/);
     expect(css).not.toContain('outline: 2px solid var(--ln-cream)');
+    // r188: every folio focus ring IS the product outline token — no
+    // private focus color anywhere in the sheet.
+    expect(css).not.toMatch(/outline-color:/);
   });
 });
 
 /* ── r172a §4 — grain polarity follows the theme ──────────────────── */
 
-describe('r172a §4 — grain veil polarity (black noise in light)', () => {
+describe('r172a §4 → r188 — the grain veil is retired with the Orbit-Ink world', () => {
   const css = stripComments(read('src/styles/landing.css'));
 
-  it('the base veil is the authored WHITE noise (night look, alpha row intact)', () => {
-    const at = css.indexOf('.landing .ln-grain {');
-    const body = css.slice(at, css.indexOf('}', at));
-    expect(body).toContain('values=\'0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.55 0\'');
-    expect(body).toContain('opacity: var(--ln-grain-op)');
-  });
-
-  it('[data-theme="light"] swaps in the BLACK noise matrix at the same alpha row', () => {
-    const at = css.indexOf('[data-theme="light"] .landing .ln-grain {');
-    expect(at).toBeGreaterThanOrEqual(0);
-    const body = css.slice(at, css.indexOf('}', at));
-    expect(body).toContain('values=\'0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0\'');
+  it('no grain layer exists in the folio sheet (clean paper world)', () => {
+    expect(css).not.toContain('.ln-grain');
+    expect(css).not.toMatch(/--ln-grain-op/);
+    expect(css).not.toMatch(/feColorMatrix/);
   });
 });
 
 /* ── r172a §5 — scene vars in the landing TSX ─────────────────────── */
 
-describe('r172a §5 — no frozen cream rgba literals in the landing components', () => {
-  it('JourneyLightPath: the base track rides the theme-aware scene token', () => {
-    const src = read('src/components/landing/JourneyLightPath.tsx');
-    expect(src).toContain("const BASE_STROKE = 'var(--ln-scene-line)'");
-    expect(src).not.toMatch(/rgba\(245,243,231/);
-    expect(src).toContain("const LIGHT_STROKE = 'var(--ln-cream)'");
-  });
-
-  it('CollegeConstellation: idle/rest dots are --ln-cream derivations, not frozen literals', () => {
-    const src = read('src/components/landing/CollegeConstellation.tsx');
-    expect(src).toContain("color-mix(in srgb, var(--ln-cream) 65%, transparent)");
-    expect(src).toContain("color-mix(in srgb, var(--ln-cream) 95%, transparent)");
-    expect(src).not.toMatch(/rgba\(245,243,231/);
-  });
-
-  it('OrbitScene: the palette comes from the live tokens (no module-level frozen color strings)', () => {
-    const src = read('src/components/landing/OrbitScene.tsx');
-    expect(src).toContain("getPropertyValue('--ln-cream')");
-    expect(src).toContain("getPropertyValue('--ln-lime')");
-    expect(src).toContain("getPropertyValue('--ln-violet')");
-    // the frozen per-frame strings are gone (r172a read them per theme)
-    expect(src).not.toMatch(/const STAR_COLORS/);
-    expect(src).not.toMatch(/const NODE_FILL/);
-    expect(src).not.toMatch(/const RING_STROKE/);
+describe('r172a §5 → r188 — the Orbit-Ink scene components are retired', () => {
+  it('the canvas/scene components are gone from the tree (folio = vector figure, no canvas)', () => {
+    for (const f of ['OrbitScene.tsx', 'HeroDepthLayer.tsx', 'CollegeConstellation.tsx', 'JourneyLightPath.tsx']) {
+      const p = `src/components/landing/${f}`;
+      expect(existsSyncP(p), `${f} must stay deleted (r188)`).toBe(false);
+    }
+    // TestimonialSection survives (renders nothing by design — external
+    // testimonials are documented as blocked on real consent).
+    expect(existsSyncP('src/components/landing/TestimonialSection.tsx')).toBe(true);
   });
 });
 
 /* ── r172a §6 — OrbitScene theme contract (pure-function parts) ──── */
 
-describe('r172a §6 — OrbitScene pure-function theme contract', () => {
-  it('parseColorTriplet reads hex 6-digit (the token values resolve)', () => {
-    expect(parseColorTriplet('#F5F3E7')).toEqual([245, 243, 231]);
-    expect(parseColorTriplet('#191918')).toEqual([25, 25, 24]);
-    expect(parseColorTriplet(' #55701D ')).toEqual([85, 112, 29]);
-  });
-
-  it('parseColorTriplet reads rgb()/rgba() (comma and space forms)', () => {
-    expect(parseColorTriplet('rgb(122, 107, 242)')).toEqual([122, 107, 242]);
-    expect(parseColorTriplet('rgba(223, 237, 178, 0.95)')).toEqual([223, 237, 178]);
-    expect(parseColorTriplet('rgb(25 25 24 / 50%)')).toEqual([25, 25, 24]);
-  });
-
-  it('parseColorTriplet rejects non-colors (null → engine keeps its fallback palette)', () => {
-    expect(parseColorTriplet('')).toBeNull();
-    expect(parseColorTriplet('inherit')).toBeNull();
-    expect(parseColorTriplet('#12')).toBeNull();
-  });
-
-  it('the light alpha multipliers match the r172a record', () => {
-    expect(ORBIT_LIGHT_ALPHA.star).toBe(1.6);
-    expect(ORBIT_LIGHT_ALPHA.ring).toBe(1.8);
-    expect(ORBIT_LIGHT_ALPHA.link).toBeGreaterThanOrEqual(1.6);
-    expect(ORBIT_LIGHT_ALPHA.link).toBeLessThanOrEqual(1.7);
-    expect(ORBIT_LIGHT_ALPHA.nebula).toBeGreaterThanOrEqual(1.6);
-    expect(ORBIT_LIGHT_ALPHA.nebula).toBeLessThanOrEqual(1.7);
-    expect(ORBIT_LIGHT_ALPHA.glow).toBe(1.3);
-    expect(ORBIT_LIGHT_ALPHA.horizon).toBe(0.55);
-  });
-
-  it('observer wiring: data-theme attributeFilter + teardown disconnect (source pin)', () => {
-    const src = read('src/components/landing/OrbitScene.tsx');
-    expect(src).toContain("attributeFilter: ['data-theme']");
-    expect(src).toMatch(/themeObserver\.disconnect\(\)/);
-    // the observer rebuilds the palette (sprites + nebula) on flips
-    expect(src).toMatch(/const themeObserver = new MutationObserver\(\(\) => \{\s*applyPalette\(\);/);
+describe('r172a §6 → r188 — the OrbitScene theme contract retired with the component', () => {
+  it('no landing TSX reads --ln-* scene tokens (the folio is canonical-token only)', () => {
+    const tsx = read('src/pages/LandingPage.tsx');
+    expect(tsx).not.toMatch(/--ln-/);
   });
 });
 

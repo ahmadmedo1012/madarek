@@ -51,21 +51,26 @@ describe('r168b — landing copy claims only what ships', () => {
     expect(page).toContain('تحديدٌ لفجواتك المعرفيّة');
   });
 
-  it('megamenu: illustrative figures are not "actual experiment results"', () => {
+  it('r188 — the illustrative-figures section is gone entirely (no stats story at all)', () => {
+    // The r188 folio landing drops the progress-stats chapter wholesale:
+    // no 40/70/90 figures, no «تأسست 1988» trust band, no invented
+    // adoption — the truth LEDGER (٠٣ ما يُشحن اليوم) carries status
+    // labels instead of numbers.
     const page = stripJsx(read('src/pages/LandingPage.tsx'));
     expect(page).not.toContain('نتائج تجربة فعلية');
-    expect(page).toContain('أرقام توضيحيّة لرحلة التقدّم');
+    expect(page).not.toContain('CountUp');
+    expect(page).not.toContain('أرقام توضيحيّة');
+    expect(page).toContain('بحالته الفعلية');
   });
 
-  it('labs card: AR/VR is a catalog, not running experiments', () => {
+  it('r188 — the ledger labels the AR/VR row as a catalog, not running experiments', () => {
     const page = stripJsx(read('src/pages/LandingPage.tsx'));
-    expect(page).not.toContain('وتجارب AR/VR للتطبيق العملي الآمن');
-    expect(page).toContain('مع فهرس لتجارب AR/VR');
+    expect(page).toContain('المعامل الافتراضية وتجارب AR/VR — فهرس بلا تشغيل بعد');
   });
 
-  it('the two CTA landmarks carry distinct aria-labels', () => {
+  it('r188 — the section landmarks carry distinct aria-labels', () => {
     const page = stripJsx(read('src/pages/LandingPage.tsx'));
-    expect(page).toContain('aria-label="ابدأ رحلتك — جاهز للبدء"');
+    expect(page).toContain('aria-label="مدارك — منصّة التعليم الذكي"');
     expect(page).toContain('aria-label="ابدأ رحلتك — أنشئ حسابك"');
     // The old duplicate pair must not reappear.
     const dupe = page.match(/aria-label="ابدأ رحلتك"/g);

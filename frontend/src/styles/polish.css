@@ -4190,7 +4190,7 @@
      exclusion — it renders a <div>, not an <a>.
    · B  .landing-campus-eyebrow (v14) follows ruling #2: no Latin
      letter-spacing / text-transform on the Arabic eyebrow copy
-     «جامعة الزاوية». (8-a's "vision-eyebrow out of file scope" note is
+     «the demo university». (8-a's "vision-eyebrow out of file scope" note is
      stale — that class has zero consumers AND zero definitions
      anywhere in frontend/, nothing to fix.)
    · C  ONE mobile .btn.sm tap-target floor: the v11 overrides-layer

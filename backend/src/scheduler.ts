@@ -25,7 +25,7 @@ import { logger } from './logger.js';
  *    targets exactly ONE institution, and the scheduler only syncs
  *    the institutions with a CONFIGURED source
  *    (`INSTITUTION_SYNC_CONFIGS` in lib/zu-sync — today only the
- *    zawia-showcase institution; e.g. alandalus-demo has no configured
+ *    demo tenant (madarek-demo); e.g. alandalus-demo has no configured
  *    source and is never synced). Institutions are resolved against
  *    the live ACTIVE rows, so a configured-but-missing institution is
  *    skipped (fresh/disposable databases never hit a dangling FK).

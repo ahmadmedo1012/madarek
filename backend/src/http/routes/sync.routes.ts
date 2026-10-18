@@ -25,10 +25,10 @@ import {
  *                              → honest 400). OWNER: any institution
  *                              explicitly, or the showcase default.
  *
- * The University of Zawia source is NOT a global source for every
+ * The demo-tenant curated source is NOT a global source for every
  * university: which institutions have a configured source is decided
  * by the in-code registry in lib/zu-sync (INSTITUTION_SYNC_CONFIGS —
- * zawia-showcase only today). A sync for one institution can never
+ * the demo tenant only today). A sync for one institution can never
  * mark another institution's facts stale or overwrite its data (the
  * composite (institutionId, key) upserts and stale-marking in runSync
  * guarantee it; pinned by unit + integration tests).
@@ -279,7 +279,7 @@ router.get('/admin/sync', requireCapability('USERS_MANAGE', 'QUALITY_VIEW'), asy
  * r179d (phase-5): the run is INSTITUTION-SCOPED —
  *  - ADMIN (with a verified institution context) triggers THEIR
  *    institution's sync. An institution with no configured source
- *    answers an honest 400 — the Zawia source is not a default for
+ *    answers an honest 400 — the demo source is not a default for
  *    every university. Contextless admins get 403
  *    INSTITUTION_CONTEXT_REQUIRED.
  *  - OWNER triggers the ?institution=slug institution explicitly, or

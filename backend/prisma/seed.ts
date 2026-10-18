@@ -5,11 +5,14 @@
  * Run:  npm run db:seed
  *
  * r178 (multi-institution foundation): the demo data now spans TWO
- * institutions — جامعة الزاوية (slug zawia-showcase, the reference
- * showcase institution that owns the 25 faculties + all academic demo
- * content) and مؤسسة الأندلس التعليمية (slug alandalus-demo, a generic
- * demo institution, NOT a real-university claim). The Al-Andalus demo
- * course reuses the SAME code as Zawia's CS-department course and its
+ * institutions — جامعة مدارك التجريبية (slug madarek-demo, the
+ * r188 FICTIONAL demonstration institution that owns the 25-faculty
+ * synthetic catalogue + all academic demo content — renamed from the
+ * retired real-university showcase; the row keeps its stable id
+ * inst-zawia-showcase, a legacy identifier, not identity) and مؤسسة
+ * الأندلس التعليمية (slug alandalus-demo, a generic demo institution,
+ * NOT a real-university claim). The Al-Andalus demo
+ * course reuses the SAME code as the demo university's CS course and its
  * student reuses the SAME reg-number — both now institution-scoped
  * (unique per institution), which is exactly what the second institution
  * proves. Demo users carry Membership rows per institution; the platform
@@ -17,11 +20,11 @@
  *
  * Demo accounts (password = "Madarek2026!" for all — chosen to satisfy
  * the 8-char minimum in the register policy, see auth.dto.ts):
- *   student@zu.edu.ly        → STUDENT (أحمد الزروق) — membership in zawia-showcase
- *   teacher@zu.edu.ly        → TEACHER (د. سالم البوسيفي) — membership in zawia-showcase
- *   admin@zu.edu.ly          → ADMIN   (إدارة الجامعة) — membership in zawia-showcase
- *   quality@zu.edu.ly        → QUALITY (ضمان الجودة) — membership in zawia-showcase
- *   owner@zu.edu.ly          → OWNER   (مالك المنصة) — NO membership (platform owner)
+ *   student@demo.madarek.ly        → STUDENT (أحمد الزروق) — membership in madarek-demo
+ *   teacher@demo.madarek.ly        → TEACHER (د. سالم البوسيفي) — membership in madarek-demo
+ *   admin@demo.madarek.ly          → ADMIN   (إدارة الجامعة) — membership in madarek-demo
+ *   quality@demo.madarek.ly        → QUALITY (ضمان الجودة) — membership in madarek-demo
+ *   owner@demo.madarek.ly          → OWNER   (مالك المنصة) — NO membership (platform owner)
  *   student2@demo.madarek.ly → STUDENT (ليلى المهدي) — membership in alandalus-demo
  *   admin2@demo.madarek.ly   → ADMIN   (إدارة الأندلس) — membership in alandalus-demo
  *
@@ -101,24 +104,29 @@ async function main() {
   }
   console.log('🌱 Seeding database...');
 
-  // ─── Institutions (r178) ─────────────────────────────
-  // Upsert by slug. The Zawia showcase row is created with the FIXED
-  // literal id 'inst-zawia-showcase' — the same id the migration
-  // backfill uses — so the migrated dev DB and a fresh seeded DB agree
-  // on the reference id (and tests can rely on it).
+  // ─── Institutions (r178 → r188) ───────────────────────────
+  // Upsert by slug. The demonstration tenant is جامعة مدارك التجريبية —
+  // fully FICTIONAL (r188). The row is created with the FIXED literal
+  // id 'inst-zawia-showcase' — a LEGACY stable identifier carried from
+  // the pre-r188 era (renaming ids would churn every FK for zero
+  // product value; the string is internal, never public identity) —
+  // the same id the migration backfill used, so migrated databases and
+  // fresh seeded databases agree on the reference id (tests rely on
+  // it). The r188 migration renames an existing zawia-showcase row to
+  // this slug/name; fresh installs create it directly.
   const zawia = await prisma.institution.upsert({
-    where: { slug: 'zawia-showcase' },
-    update: { name: 'جامعة الزاوية', nameEn: 'University of Zawia', status: 'ACTIVE' },
+    where: { slug: 'madarek-demo' },
+    update: { name: 'جامعة مدارك التجريبية', nameEn: 'Madarek Demo University', status: 'ACTIVE' },
     create: {
       id: 'inst-zawia-showcase',
-      name: 'جامعة الزاوية',
-      nameEn: 'University of Zawia',
-      slug: 'zawia-showcase',
+      name: 'جامعة مدارك التجريبية',
+      nameEn: 'Madarek Demo University',
+      slug: 'madarek-demo',
       status: 'ACTIVE',
     },
   });
   // Generic demo institution — a context label, not a real-university
-  // claim (its demo users live on demo.madarek.ly, not zu.edu.ly).
+  // claim (all demo users live on demo.madarek.ly).
   const alandalus = await prisma.institution.upsert({
     where: { slug: 'alandalus-demo' },
     update: { name: 'مؤسسة الأندلس التعليمية', nameEn: 'Al-Andalus Education Institute', status: 'ACTIVE' },
@@ -130,17 +138,19 @@ async function main() {
     },
   });
 
-  // ─── Faculties & Departments (جامعة الزاوية) ───────────
-  // Source-of-truth: the official Zawia University site (zu.edu.ly), as
-  // captured in `zu.edu.ly.md` at the repo root. The institution lists 25
-  // distinct faculty/city pairs — same name can repeat across cities
-  // (Economics in الزاوية AND العجيلات are two separate campuses), and
-  // since r178 the composite unique key is (institutionId, name, city).
+  // ─── Faculties & Departments (جامعة مدارك التجريبية) ───
+  // r188: the FICTIONAL demonstration catalogue — 25 faculties across
+  // three synthetic knowledge-named campuses (حرم المعرفة · حرم
+  // الابتكار · حرم البيان). Same name CAN repeat across campuses
+  // (Economics in المعرفة AND الابتكار are two separate faculties) —
+  // the composite unique key stays (institutionId, name, city). No
+  // real-university registry is transcribed here anymore.
   //
   // Order of the first 4 entries (IT, Engineering, Sciences, Medicine) is
   // load-bearing — index references later in this file assume it.
 
-  // One-time rename: legacy "كلية الطب" row → source-correct name.
+  // One-time rename: legacy "كلية الطب" row → source-correct name (kept
+  // idempotent — modern databases already match).
   await prisma.faculty.updateMany({
     where: { name: 'كلية الطب', institutionId: zawia.id },
     data: { name: 'كلية الطب البشري', nameEn: 'Human Medicine', iconEmoji: '⚕️' },
@@ -148,33 +158,32 @@ async function main() {
 
   const faculties = await Promise.all(
     [
-      // ── الزاوية (main campus, 13 faculties) ──────────────────
-      { name: 'كلية تقنية المعلومات', nameEn: 'Information Technology', iconEmoji: '💻', city: 'الزاوية' },
-      { name: 'كلية الهندسة', nameEn: 'Engineering', iconEmoji: '⚙️', city: 'الزاوية' },
-      { name: 'كلية العلوم', nameEn: 'Sciences', iconEmoji: '🔬', city: 'الزاوية' },
-      { name: 'كلية الطب البشري', nameEn: 'Human Medicine', iconEmoji: '⚕️', city: 'الزاوية' },
-      { name: 'كلية الآداب', nameEn: 'Arts', iconEmoji: '📚', city: 'الزاوية' },
-      { name: 'كلية الاقتصاد', nameEn: 'Economics', iconEmoji: '💼', city: 'الزاوية' },
-      { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'الزاوية' },
-      { name: 'كلية القانون', nameEn: 'Law', iconEmoji: '⚖️', city: 'الزاوية' },
-      { name: 'كلية الصيدلة', nameEn: 'Pharmacy', iconEmoji: '💊', city: 'الزاوية' },
-      { name: 'كلية طب وجراحة الفم والأسنان', nameEn: 'Dentistry & Oral Surgery', iconEmoji: '🦷', city: 'الزاوية' },
-      { name: 'كلية التقنية الطبية', nameEn: 'Medical Technology', iconEmoji: '🩺', city: 'الزاوية' },
-      { name: 'كلية الرياضة والتربية البدنية', nameEn: 'Physical Education & Sports', iconEmoji: '⚽', city: 'الزاوية' },
-      { name: 'كلية التمريض', nameEn: 'Nursing', iconEmoji: '👩‍⚕️', city: 'الزاوية' },
-      // ── العجيلات (8 faculties) ────────────────────────────────
-      { name: 'كلية الاقتصاد', nameEn: 'Economics', iconEmoji: '💼', city: 'العجيلات' },
-      { name: 'كلية البيطرة والعلوم الزراعية', nameEn: 'Veterinary & Agricultural Sciences', iconEmoji: '🌾', city: 'العجيلات' },
-      { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'العجيلات' },
-      { name: 'كلية الشريعة والقانون', nameEn: 'Sharia & Law', iconEmoji: '⚖️', city: 'العجيلات' },
-      { name: 'كلية العلوم', nameEn: 'Sciences', iconEmoji: '🔬', city: 'العجيلات' },
-      { name: 'كلية الصحة العامة', nameEn: 'Public Health', iconEmoji: '🏥', city: 'العجيلات' },
-      { name: 'كلية هندسة الموارد الطبيعية', nameEn: 'Natural Resources Engineering', iconEmoji: '⛰️', city: 'العجيلات' },
-      { name: 'كلية هندسة النفط والغاز', nameEn: 'Oil & Gas Engineering', iconEmoji: '⛽', city: 'العجيلات' },
-      // ── زوارة ────────────────────────────────────────────────
-      { name: 'كلية الآداب', nameEn: 'Arts', iconEmoji: '📚', city: 'زوارة' },
-      // ── مناطق أخرى ───────────────────────────────────────────
-      { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'أبو عيسى' },
+      // ── حرم المعرفة (main campus, 13 faculties) ─────────────
+      { name: 'كلية تقنية المعلومات', nameEn: 'Information Technology', iconEmoji: '💻', city: 'حرم المعرفة' },
+      { name: 'كلية الهندسة', nameEn: 'Engineering', iconEmoji: '⚙️', city: 'حرم المعرفة' },
+      { name: 'كلية العلوم', nameEn: 'Sciences', iconEmoji: '🔬', city: 'حرم المعرفة' },
+      { name: 'كلية الطب البشري', nameEn: 'Human Medicine', iconEmoji: '⚕️', city: 'حرم المعرفة' },
+      { name: 'كلية الآداب', nameEn: 'Arts', iconEmoji: '📚', city: 'حرم المعرفة' },
+      { name: 'كلية الاقتصاد', nameEn: 'Economics', iconEmoji: '💼', city: 'حرم المعرفة' },
+      { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'حرم المعرفة' },
+      { name: 'كلية القانون', nameEn: 'Law', iconEmoji: '⚖️', city: 'حرم المعرفة' },
+      { name: 'كلية الصيدلة', nameEn: 'Pharmacy', iconEmoji: '💊', city: 'حرم المعرفة' },
+      { name: 'كلية طب وجراحة الفم والأسنان', nameEn: 'Dentistry & Oral Surgery', iconEmoji: '🦷', city: 'حرم المعرفة' },
+      { name: 'كلية التقنية الطبية', nameEn: 'Medical Technology', iconEmoji: '🩺', city: 'حرم المعرفة' },
+      { name: 'كلية الرياضة والتربية البدنية', nameEn: 'Physical Education & Sports', iconEmoji: '⚽', city: 'حرم المعرفة' },
+      { name: 'كلية التمريض', nameEn: 'Nursing', iconEmoji: '👩‍⚕️', city: 'حرم المعرفة' },
+      // ── حرم الابتكار (8 faculties) ──────────────────────────────────
+      { name: 'كلية الاقتصاد', nameEn: 'Economics', iconEmoji: '💼', city: 'حرم الابتكار' },
+      { name: 'كلية البيطرة والعلوم الزراعية', nameEn: 'Veterinary & Agricultural Sciences', iconEmoji: '🌾', city: 'حرم الابتكار' },
+      { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'حرم الابتكار' },
+      { name: 'كلية الشريعة والقانون', nameEn: 'Sharia & Law', iconEmoji: '⚖️', city: 'حرم الابتكار' },
+      { name: 'كلية العلوم', nameEn: 'Sciences', iconEmoji: '🔬', city: 'حرم الابتكار' },
+      { name: 'كلية الصحة العامة', nameEn: 'Public Health', iconEmoji: '🏥', city: 'حرم الابتكار' },
+      { name: 'كلية هندسة الموارد الطبيعية', nameEn: 'Natural Resources Engineering', iconEmoji: '⛰️', city: 'حرم الابتكار' },
+      { name: 'كلية هندسة النفط والغاز', nameEn: 'Oil & Gas Engineering', iconEmoji: '⛽', city: 'حرم الابتكار' },
+      // ── حرم البيان (4 faculties) ─────────────────────────────────────
+      { name: 'كلية الآداب', nameEn: 'Arts', iconEmoji: '📚', city: 'حرم البيان' },
+            { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'أبو عيسى' },
       { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'ناصر' },
       { name: 'كلية الموارد الطبيعية', nameEn: 'Natural Resources', iconEmoji: '⛰️', city: 'مناطق أخرى' },
     ].map((f) => prisma.faculty.upsert({
@@ -209,9 +218,9 @@ async function main() {
     update: {},
   });
 
-  // Sciences — full department list per the official Zawia source
-  // (botany, zoology, chemistry, mathematics, geology, physics,
-  //  statistics, computer science). Established 1988.
+  // Sciences — full department list (a coherent synthetic set:
+  //  botany, zoology, chemistry, mathematics, geology, physics,
+  //  statistics, computer science).
   const sciFaculty = faculties[2]!;
   for (const dept of [
     { name: 'قسم النبات', nameEn: 'Botany' },
@@ -245,7 +254,7 @@ async function main() {
   const password = await hashPassword('Madarek2026!');
 
   // r178: the demo reg-number literal — deliberately shared by BOTH demo
-  // students (Zawia + Al-Andalus) to prove reg-number uniqueness is
+  // students (demo university + Al-Andalus) to prove reg-number uniqueness is
   // institution-scoped, not global.
   const DEMO_REG_NUMBER = 'UZ-2024-00001';
 
@@ -262,11 +271,11 @@ async function main() {
   // User upserts no longer nest profile creation (a profile needs its
   // membershipId first). Per-account order: user → membership → profile.
   const student = await prisma.user.upsert({
-    where: { email: 'student@zu.edu.ly' },
+    where: { email: 'student@demo.madarek.ly' },
     // Re-seeding resets the demo password so it always matches the docs.
     update: { passwordHash: password },
     create: {
-      email: 'student@zu.edu.ly',
+      email: 'student@demo.madarek.ly',
       passwordHash: password,
       role: Role.STUDENT,
       firstName: 'أحمد',
@@ -298,10 +307,10 @@ async function main() {
   });
 
   const teacher = await prisma.user.upsert({
-    where: { email: 'teacher@zu.edu.ly' },
+    where: { email: 'teacher@demo.madarek.ly' },
     update: { passwordHash: password },
     create: {
-      email: 'teacher@zu.edu.ly',
+      email: 'teacher@demo.madarek.ly',
       passwordHash: password,
       role: Role.TEACHER,
       firstName: 'سالم',
@@ -331,10 +340,10 @@ async function main() {
   }
 
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@zu.edu.ly' },
+    where: { email: 'admin@demo.madarek.ly' },
     update: { passwordHash: password },
     create: {
-      email: 'admin@zu.edu.ly',
+      email: 'admin@demo.madarek.ly',
       passwordHash: password,
       role: Role.ADMIN,
       firstName: 'إدارة',
@@ -347,10 +356,10 @@ async function main() {
   await ensureMembership(admin.id, zawia.id, Role.ADMIN);
 
   const quality = await prisma.user.upsert({
-    where: { email: 'quality@zu.edu.ly' },
+    where: { email: 'quality@demo.madarek.ly' },
     update: { passwordHash: password },
     create: {
-      email: 'quality@zu.edu.ly',
+      email: 'quality@demo.madarek.ly',
       passwordHash: password,
       role: Role.QUALITY,
       firstName: 'ضمان',
@@ -369,10 +378,10 @@ async function main() {
   // is User.role == OWNER only. The AuthPage OWNER demo button and the
   // snap.mjs owner cohort log in as this user.
   await prisma.user.upsert({
-    where: { email: 'owner@zu.edu.ly' },
+    where: { email: 'owner@demo.madarek.ly' },
     update: { passwordHash: password },
     create: {
-      email: 'owner@zu.edu.ly',
+      email: 'owner@demo.madarek.ly',
       passwordHash: password,
       role: Role.OWNER,
       firstName: 'مالك',
@@ -385,8 +394,8 @@ async function main() {
 
   // ─── Second institution demo (مؤسسة الأندلس التعليمية) ───
   // One faculty + one department + (later below) one course whose code
-  // deliberately collides with a Zawia course code, plus a student whose
-  // reg-number deliberately collides with the Zawia student's — the
+  // deliberately collides with the demo university's course code, plus a student whose
+  // reg-number deliberately collides with the demo student's — the
   // two institution-scoped-uniqueness proofs of the r178 seed.
   const aaFaculty = await prisma.faculty.upsert({
     where: {
@@ -424,7 +433,7 @@ async function main() {
     },
   });
   const student2Membership = await ensureMembership(student2.id, alandalus.id, Role.STUDENT);
-  // SAME reg-number as the Zawia demo student — allowed because the
+  // SAME reg-number as the demo student — allowed because the
   // unique key is (institutionId, universityId), not universityId alone.
   await prisma.studentProfile.upsert({
     where: { institutionId_universityId: { institutionId: alandalus.id, universityId: DEMO_REG_NUMBER } },
@@ -491,7 +500,7 @@ async function main() {
       },
     });
   }
-  // Al-Andalus course — code 'SE301': the SAME literal as Zawia's
+  // Al-Andalus course — code 'SE301': the SAME literal as the demo
   // هندسة البرمجيات course (the collision itself is the point:
   // identical code, different institution, both rows coexist under
   // @@unique(institutionId, code)). Created HERE — before the offering
@@ -527,7 +536,7 @@ async function main() {
     create: { studentId: student2.id, offeringId: aaOffering.id, status: 'active' },
   });
   // Lecture has no unique key on (offeringId, ordinal) — natural-key
-  // guard (the same pattern the Zawia lectures use).
+  // guard (the same pattern the demo lectures use).
   const aaLectureExisting = await prisma.lecture.findFirst({
     where: { offeringId: aaOffering.id, ordinal: 1 },
   });
@@ -565,7 +574,7 @@ async function main() {
   const courses = [];
   for (const c of courseDefs) {
     const created = await prisma.course.upsert({
-      // r178: course code is unique PER INSTITUTION (Zawia CS dept here).
+      // r178: course code is unique PER INSTITUTION (demo CS dept here).
       where: { institutionId_code: { institutionId: zawia.id, code: c.code } },
       update: {},
       create: {
@@ -738,7 +747,7 @@ async function main() {
 
   // ─── Jobs ───────────────────────────────────────────────────
   const jobs = [
-    { title: 'مطور ويب Full Stack', company: 'شركة تقنية الزاوية', location: 'الزاوية · حضوري', type: JobType.FULL_TIME, salary: '2.500 ل.د', category: 'tech', iconEmoji: '💻' },
+    { title: 'مطور ويب Full Stack', company: 'شركة تقنية المعرفة', location: 'حرم المعرفة · حضوري', type: JobType.FULL_TIME, salary: '2.500 ل.د', category: 'tech', iconEmoji: '💻' },
     { title: 'محلل بيانات Data Analyst', company: 'البنك التجاري الليبي', location: 'طرابلس · هجين', type: JobType.FULL_TIME, salary: '3.200 ل.د', category: 'tech', iconEmoji: '📊' },
     { title: 'تدريب صيفي — برمجة Python', company: 'ليبيا تك هاب', location: 'مصراتة · عن بُعد', type: JobType.INTERNSHIP, salary: 'مدفوع', category: 'intern', iconEmoji: '🐍' },
     { title: 'مصمم UI/UX', company: 'وكالة إبداع رقمي', location: 'عن بُعد', type: JobType.FREELANCE, salary: 'بالمشروع', category: 'remote', iconEmoji: '🎨' },
@@ -834,7 +843,7 @@ async function main() {
     const existing = await prisma.post.findFirst({
       where: { authorId: p.authorId, body: p.body },
     });
-    // r179 (phase-5): community posts are institution-scoped — the Zawia
+    // r179 (phase-5): community posts are institution-scoped — the demo
     // demo community belongs to the showcase institution.
     if (!existing) await prisma.post.create({ data: { ...p, institutionId: zawia.id } });
   }
@@ -1163,7 +1172,7 @@ async function main() {
       studentId: student.id,
       reviewerId: teacher.id,
       offeringId: seOffering.id,
-      title: 'تأثير استراتيجية الصف المعكوس على تحصيل طلاب الهندسة في جامعة الزاوية',
+      title: 'تأثير استراتيجية الصف المعكوس على تحصيل طلاب الهندسة في جامعة مدارك التجريبية',
       abstract:
         'دراسة شبه تجريبية على 84 طالباً من أقسام الهندسة، تقارن متوسط التحصيل بين فصلين أحدهما اعتمد الصف المعكوس مدعوماً بمنصة مدارك. النتائج تُظهر فرقاً ذا دلالة إحصائية لصالح المجموعة التجريبية.',
       status: ResearchPaperStatus.PUBLISHED,
@@ -1279,7 +1288,7 @@ async function main() {
       category: 'ONBOARDING', level: 'BEGINNER', iconEmoji: '🧭', themeColor: '#2952C8',
       estMinutes: 25, pointsAward: 150, order: 1,
       lessons: [
-        { title: 'الترحيب والتسجيل', summary: 'كيفية إنشاء الحساب وإكمال الملف الشخصي', content: 'أهلاً بك في منصّة مدارك للتعليم الذكي. تبدأ رحلتك بإنشاء حسابك الجامعي عبر صفحة "إنشاء حساب"، وإدخال بياناتك الأساسية. بعدها أكمل ملفك الشخصي بإضافة الكلية والقسم والمعرّف الجامعي.', quiz: { q: 'ما النطاق الرسمي لإيميل الجامعة؟', a: 'zu.edu.ly' } },
+        { title: 'الترحيب والتسجيل', summary: 'كيفية إنشاء الحساب وإكمال الملف الشخصي', content: 'أهلاً بك في منصّة مدارك للتعليم الذكي. تبدأ رحلتك بإنشاء حسابك الجامعي عبر صفحة "إنشاء حساب"، وإدخال بياناتك الأساسية. بعدها أكمل ملفك الشخصي بإضافة الكلية والقسم والمعرّف الجامعي.', quiz: { q: 'ما نطاق بريد حسابات العرض في المنصّة؟', a: 'demo.madarek.ly' } },
         { title: 'لوحة التحكم الرئيسية', summary: 'فهم العناصر في الصفحة الرئيسية', content: 'لوحة التحكم تعرض: المقررات الحالية، نسبة الإنجاز، الإشعارات، والمساعد الذكي. كل بطاقة قابلة للنقر وتأخذك إلى التفاصيل.' },
         { title: 'المصفوفة التعليمية', summary: 'كيف تعمل وكيف تستفيد منها', content: 'المصفوفة التعليمية تتبع فهمك لكل مفهوم على حدة وتقترح فيديوهات لسد أي فجوة معرفية تظهر في امتحاناتك أو نقاط التفاعل.' },
         { title: 'البحوث والمكتبة', summary: 'رفع البحث والبحث في المكتبة', content: 'يمكنك رفع بحثك من قسم البحوث، وستجري المنصة فحص انتحال وفحص ذكاء اصطناعي قبل الإرسال للأستاذ. المكتبة تتيح البحث عبر آلاف الأبحاث المنشورة.', quiz: { q: 'ما النسبة القصوى المقبولة للانتحال في البحث؟', a: '15' } },
@@ -1296,7 +1305,7 @@ async function main() {
       estMinutes: 45, pointsAward: 250, order: 2,
       lessons: [
         { title: 'مبادئ التفكير النقدي', summary: 'تحليل المعلومات وتقييم المصادر', content: 'التفكير النقدي يبدأ بطرح الأسئلة: من؟ ماذا؟ متى؟ لماذا؟ كيف؟ على أي معلومة قبل قبولها. المصادر الأكاديمية الموثوقة تأتي من مجلات مفهرسة، كتب أكاديمية، وقواعد بيانات معترف بها مثل Scopus وWeb of Science.' },
-        { title: 'صياغة سؤال البحث', summary: 'من الفكرة العامة إلى السؤال الدقيق', content: 'سؤال البحث الجيد محدد، قابل للقياس، ومرتبط بمشكلة قائمة. ابدأ بسؤال عام ثم ضيقه تدريجياً. مثال: من "تأثير التكنولوجيا" إلى "أثر استخدام منصات التعليم المدمج على درجات طلاب الهندسة في جامعة الزاوية".', quiz: { q: 'كم عدد خصائص سؤال البحث الجيد؟', a: '3' } },
+        { title: 'صياغة سؤال البحث', summary: 'من الفكرة العامة إلى السؤال الدقيق', content: 'سؤال البحث الجيد محدد، قابل للقياس، ومرتبط بمشكلة قائمة. ابدأ بسؤال عام ثم ضيقه تدريجياً. مثال: من "تأثير التكنولوجيا" إلى "أثر استخدام منصات التعليم المدمج على درجات طلاب الهندسة في الجامعة".', quiz: { q: 'كم عدد خصائص سؤال البحث الجيد؟', a: '3' } },
         { title: 'مراجعة الأدبيات', summary: 'كيف تكتشف ما تم نشره من قبل', content: 'مراجعة الأدبيات هي خريطة المعرفة الموجودة. ابحث في Google Scholar وResearchGate باستخدام كلمات مفتاحية دقيقة. اقرأ الملخصات أولاً، ثم المقدمات، ثم النتائج.' },
         { title: 'هيكل التقرير الأكاديمي', summary: 'IMRaD ولماذا يستخدم', content: 'IMRaD = Introduction, Methods, Results, and Discussion. هذا الهيكل القياسي يتيح للقارئ فهم بحثك بسرعة. كل قسم له هدف محدد.', quiz: { q: 'ماذا تعني الحروف IMRaD؟', a: 'Introduction Methods Results Discussion' } },
         { title: 'الأخلاقيات الأكاديمية', summary: 'الانتحال والأمانة العلمية', content: 'الانتحال يدمر مسيرتك الأكاديمية. وثّق كل اقتباس، استخدم علامات التنصيص، وادرج المرجع كاملاً. منصتنا تستخدم منظومات كشف انتحال متقدمة.' },
@@ -1430,7 +1439,7 @@ async function main() {
       slug: 'vision-ai-data',
       title: 'الذكاء الاصطناعي وعلم البيانات',
       titleEn: 'AI & Data Science (Vision Track)',
-      summary: 'مسار متخصص ضمن رؤية جامعة الزاوية المستقبلية.',
+      summary: 'مسار متخصص ضمن رؤية الجامعة التجريبية المستقبلية.',
       category: 'VISION', level: 'ADVANCED', iconEmoji: '🤖', themeColor: '#7B3AED',
       estMinutes: 70, pointsAward: 400, order: 11,
       lessons: [
@@ -1506,7 +1515,7 @@ async function main() {
     { slug: 'badge-polymath', title: 'متعدد المعارف', description: 'أنهيت 3 مسارات في فئات مختلفة', iconEmoji: '🧠', rarity: 'EPIC' },
     { slug: 'badge-marathoner', title: 'الماراثوني', description: '7 أيام متتالية من التعلم', iconEmoji: '🏃', rarity: 'RARE' },
     { slug: 'badge-perfectionist', title: 'الكامل', description: 'أنهيت مسارا بإجابات صحيحة 100%', iconEmoji: '💯', rarity: 'EPIC' },
-    { slug: 'badge-zu-pioneer', title: 'رائد جامعة الزاوية', description: 'أكملت 5 مسارات على المنصة', iconEmoji: '🏆', rarity: 'LEGENDARY' },
+    { slug: 'badge-demo-pioneer', title: 'رائد المسارات', description: 'أكملت 5 مسارات على المنصة', iconEmoji: '🏆', rarity: 'LEGENDARY' },
   ]) {
     await prisma.badge.upsert({
       where: { slug: b.slug },
@@ -1790,7 +1799,7 @@ async function main() {
   const competitionDefs = [
       {
         title: 'مسابقة أفضل بحث طلابي في الذكاء الاصطناعي',
-        description: 'تستقبل جامعة الزاوية البحوث الطلابية في مجال الذكاء الاصطناعي وتطبيقاته. الفائز يحصل على منحة لحضور مؤتمر دولي.',
+        description: 'تستقبل الجامعة البحوث الطلابية في مجال الذكاء الاصطناعي وتطبيقاته. الفائز يحصل على منحة لحضور مؤتمر دولي.',
         category: 'بحث', prize: 'منحة مؤتمر دولي + 2,000 د.ل',
         deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         organizerId: teacher.id, institutionId: zawia.id, iconEmoji: '🔬', themeColor: '#7B3AED',

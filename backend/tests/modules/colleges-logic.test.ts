@@ -244,8 +244,8 @@ describe('parseInstitutionSlug + resolveCollegesTarget (public colleges funnel)'
 
   it('the showcase slug constant matches the seeded reference institution', () => {
     // seed.ts upserts the showcase institution by slug `zawia-showcase`
-    // with the fixed id `inst-zawia-showcase` — the public landing
-    // default must name exactly that slug.
-    expect(SHOWCASE_INSTITUTION_SLUG).toBe('zawia-showcase');
+    // r188: the demo tenant keeps the legacy fixed id
+    // `inst-zawia-showcase` — the public default names the r188 slug.
+    expect(SHOWCASE_INSTITUTION_SLUG).toBe('madarek-demo');
   });
 });

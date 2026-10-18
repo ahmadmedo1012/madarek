@@ -73,35 +73,36 @@ function sourceLabelAr(label: string): string {
 }
 
 /**
- * r179 (phase-5): the sync runs against a SPECIFIC institution. The
- * University of Zawia static source (zu.edu.ly.md) is the ZAWIA
- * SHOWCASE institution's configured source — not a global source for
- * every university. A run for one institution never touches another
+ * r179 (phase-5) → r188: the sync runs against a SPECIFIC institution.
+ * The curated synthetic fact sheet (static-source.ts) is the DEMO
+ * institution's configured source — not a global source for every
+ * university. A run for one institution never touches another
  * institution's facts (upserts, stale-marking, and run history are all
  * keyed by institutionId). The fixed default keeps existing callers
- * (runSync with no opts) on the showcase institution.
+ * (runSync with no opts) on the demonstration tenant.
  */
 export const DEFAULT_SYNC_INSTITUTION_ID = 'inst-zawia-showcase';
 
 /**
- * r179d (phase-5): the per-institution CONFIGURED sync sources — the
- * registry that decides WHICH institutions the scheduler syncs and
+ * r179d (phase-5) → r188: the per-institution CONFIGURED sync sources —
+ * the registry that decides WHICH institutions the scheduler syncs and
  * WHICH source POST /admin/sync/trigger runs.
  *
- * The University of Zawia static-markdown source (zu.edu.ly.md) is the
- * ZAWIA SHOWCASE institution's source, NOT a global source for every
- * university. An institution absent from this registry (today: every
- * institution other than zawia-showcase, e.g. alandalus-demo) has NO
- * configured source — the scheduler never syncs it, and a manual
- * trigger for it answers an honest 400.
+ * The demonstration tenant's curated synthetic source (static-source.ts,
+ * r188 fictional «جامعة مدارك التجريبية» fact sheet) is the DEMO
+ * institution's source, NOT a global source for every university. An
+ * institution absent from this registry (today: every institution other
+ * than the demo tenant, e.g. alandalus-demo) has NO configured source —
+ * the scheduler never syncs it, and a manual trigger for it answers an
+ * honest 400.
  *
  * Matching is by institution id OR slug (both unique in the DB): the
- * showcase row is created with the FIXED id `inst-zawia-showcase` and
- * slug `zawia-showcase` (prisma/seed.ts), so either identity resolves
- * the same row. This is deliberately a simple in-code registry — there
- * is no operator-editable source-config surface yet, so a DB config
- * table would be speculative. Adding a future source = adding an entry
- * here (a live-http fetcher plugs into loadFacts below).
+ * demo row keeps the FIXED legacy id `inst-zawia-showcase` (stable FK
+ * anchor) with the r188 slug `madarek-demo` (prisma/seed.ts), so either
+ * identity resolves the same row. This is deliberately a simple in-code
+ * registry — there is no operator-editable source-config surface yet,
+ * so a DB config table would be speculative. Adding a future source =
+ * adding an entry here (a live-http fetcher plugs into loadFacts below).
  */
 export interface InstitutionSyncConfig {
   /** Institution id this config resolves to (fixed ids come from seed.ts). */
@@ -115,20 +116,19 @@ export interface InstitutionSyncConfig {
 export const INSTITUTION_SYNC_CONFIGS: readonly InstitutionSyncConfig[] = [
   {
     institutionId: DEFAULT_SYNC_INSTITUTION_ID,
-    institutionSlug: 'zawia-showcase',
+    institutionSlug: 'madarek-demo',
     source: 'static-markdown',
   },
 ];
 
 /**
  * The institution whose facts the PUBLIC `GET /university/facts`
- * serves when no `?institution=slug` param arrives — the showcase
- * institution (the public landing's labeled reference data). Distinct
- * from the registry on purpose: the public default and the scheduled
- * sources are separate decisions, even though both are the showcase
- * today.
+ * serves when no `?institution=slug` param arrives — the demonstration
+ * tenant (the explicitly-fictional reference data). Distinct from the
+ * registry on purpose: the public default and the scheduled sources
+ * are separate decisions, even though both are the demo tenant today.
  */
-export const PUBLIC_FACTS_DEFAULT_SLUG = 'zawia-showcase';
+export const PUBLIC_FACTS_DEFAULT_SLUG = 'madarek-demo';
 
 /**
  * The configured source for an institution, matched by id OR slug.

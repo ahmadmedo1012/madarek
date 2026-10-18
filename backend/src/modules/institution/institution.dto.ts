@@ -13,7 +13,7 @@ import { passwordSchema } from '../auth/auth.dto.js';
 /**
  * Slug contract: lowercase alphanumerics + dashes, 2–63 chars, must
  * start alphanumerically. Same shape the seed uses for the showcase
- * institutions ('zawia-showcase', 'alandalus-demo').
+ * institutions ('madarek-demo', 'alandalus-demo').
  */
 const SLUG_PATTERN = /^[a-z0-9][a-z0-9-]{1,62}$/;
 

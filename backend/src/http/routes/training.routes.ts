@@ -394,7 +394,7 @@ router.post(
                 userId,
                 title: lesson.track.title,
                 // r183-B2: issuer is the platform's own name — the
-                // University of Zawia is showcase data, never the
+                // The demo university is synthetic showcase data, never the
                 // certificate-issuing authority.
                 issuer: 'منصّة مدارك التعليميّة',
                 issuedAt: new Date(),

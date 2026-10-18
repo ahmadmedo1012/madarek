@@ -41,7 +41,7 @@ export default function NotFoundPage() {
           </Link>
           <Link to="/colleges" className="btn lg">
             <Icon icon={Building2} size={16} />
-            تصفّح كلّيّات الجامعة
+            تصفّح الكلّيّات التجريبية
           </Link>
           {/* r164b: the returning-visitor way back — ONE primary stays
               (home); login joins colleges as a secondary exit. */}

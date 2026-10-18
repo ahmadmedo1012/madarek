@@ -66,58 +66,46 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   });
 });
 
-describe('hero image optimization (perf fix: 2 MB PNG)', () => {
-  it('the 2 MB PNG is gone; WebP + JPEG replacements exist', () => {
-    expect(existsSync(path.join(root, 'public/main_photo.png'))).toBe(false);
-    const webp = statSync(path.join(root, 'public/main_photo.webp'));
-    const jpg = statSync(path.join(root, 'public/main_photo.jpg'));
-    // budget: 250 KB for the primary format (came in at ~100 KB)
-    expect(webp.size).toBeGreaterThan(0);
-    expect(webp.size).toBeLessThan(250 * 1024);
-    expect(jpg.size).toBeGreaterThan(0);
-    expect(jpg.size).toBeLessThan(400 * 1024);
+describe('r188 brand reset — campus photography retired (no real-university imagery)', () => {
+  it('every main_photo campus cut is gone (the whole photo family)', () => {
+    // The retired real-university campus imagery (main_photo.{png,jpg,webp}
+    // + the 750w/card cuts) stays deleted — the folio landing ships a
+    // vector manuscript figure, and no public surface may re-introduce
+    // photography of a real campus.
+    for (const f of [
+      'main_photo.png', 'main_photo.jpg', 'main_photo.webp',
+      'main_photo-750.webp', 'main_photo-card.webp',
+    ]) {
+      expect(existsSync(path.join(root, 'public', f)), `${f} must stay deleted (r188)`).toBe(false);
+    }
   });
 
-  it('750w mobile srcset variant exists within budget (~43 KB)', () => {
-    const v = statSync(path.join(root, 'public/main_photo-750.webp'));
-    expect(v.size).toBeGreaterThan(0);
-    // must meaningfully beat the 99.6 KB full-size file it saves phones from
-    expect(v.size).toBeLessThan(60 * 1024);
-  });
-
-  it('LandingPage renders the responsive <picture> art with intrinsic dimensions', () => {
+  it('LandingPage ships no <picture>/photo art — the manuscript figure is vector', () => {
     const src = read('src/pages/LandingPage.tsx');
-    expect(src).toContain('<picture>');
-    expect(src).toContain('srcSet="/main_photo-750.webp 750w, /main_photo.webp 1377w"');
-    expect(src).toContain('src="/main_photo.jpg"');
-    expect(src).toMatch(/width=\{1377\}/);
-    expect(src).toMatch(/height=\{768\}/);
-    // sizes mirrors the marketing-container gutters (20px mobile / 48px
-    // desktop, 1200px container cap → 1104px max frame width)
-    expect(src).toContain(
-      'sizes="(max-width: 920px) calc(100vw - 40px), (max-width: 1296px) calc(100vw - 96px), 1104px"',
-    );
-    expect(src).toContain('loading="lazy"');
-    expect(src).toContain('decoding="async"');
+    expect(src).not.toContain('<picture>');
+    expect(src).not.toContain('main_photo');
+    // the hero figure: the khatam-star plate + ruled TOC (vector, theme-aware)
+    expect(src).toContain('fo-figure-star');
+    expect(src).toContain('fo-figure-toc');
   });
 
-  it('no source file references the deleted PNG anymore', () => {
-    const landing = read('src/pages/LandingPage.tsx');
-    expect(landing).not.toContain('main_photo.png');
+  it('no stylesheet ships a campus photo as a CSS background', () => {
+    for (const f of readdirSync(path.join(root, 'src/styles'))) {
+      if (!f.endsWith('.css')) continue;
+      const css = read(`src/styles/${f}`);
+      expect(css, `${f} references retired campus photography`).not.toMatch(
+        /url\(['"]?\/main_photo[^)]*\)/,
+      );
+    }
   });
 });
 
-describe('welcome-card background + dead brand assets (audit 11-g P2-3 / P1-4)', () => {
-  it('student welcome card uses the lightweight cut, not the full-res hero', () => {
-    const v = statSync(path.join(root, 'public/main_photo-card.webp'));
-    expect(v.size).toBeGreaterThan(0);
-    // decorative low-visibility role: ≪ the 99.6 KB hero it replaced
-    expect(v.size).toBeLessThan(32 * 1024);
-
-    // r153f: the photo overlay moved home with the welcome-card family
-    // (polish.css → student.css §WELCOME-CARD).
+describe('welcome-card background + dead brand assets (audit 11-g P2-3 / P1-4 → r188)', () => {
+  it('student welcome card paints token recipes, not photography (r188)', () => {
+    // The retired campus-photo overlay is gone with the brand reset —
+    // the welcome-card family grounds on accent-soft token recipes.
     const css = read('src/styles/student.css');
-    expect(css).toContain("url('/main_photo-card.webp')");
+    expect(css).not.toContain("url('/main_photo-card.webp')");
     expect(css).not.toContain("url('/main_photo.webp')");
   });
 
@@ -145,9 +133,15 @@ describe('welcome-card background + dead brand assets (audit 11-g P2-3 / P1-4)',
     for (const f of dead) {
       expect(existsSync(path.join(root, 'public/brand', f)), `${f} should stay deleted`).toBe(false);
     }
-    // keepers: og:image/twitter/JSON-LD (index.html), seed posterUrl, BrandMark
-    for (const f of ['madarek-logo-lg.jpg', 'madarek-mark.svg', 'zu-mark.svg']) {
+    // keepers (r188): og:image/twitter (index.html → madarek-og.jpg) +
+    // BrandMark / favicon (madarek-mark.svg). The retired ZU crest
+    // (zu-mark.svg) and the old logo sheet (madarek-logo-lg.jpg) joined
+    // the dead list — no real-university asset remains on disk.
+    for (const f of ['madarek-og.jpg', 'madarek-mark.svg']) {
       expect(existsSync(path.join(root, 'public/brand', f)), `${f} must remain`).toBe(true);
+    }
+    for (const f of ['zu-mark.svg', 'madarek-logo-lg.jpg']) {
+      expect(existsSync(path.join(root, 'public/brand', f)), `${f} must stay deleted (r188 brand reset)`).toBe(false);
     }
   });
 });

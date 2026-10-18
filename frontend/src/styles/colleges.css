@@ -583,7 +583,7 @@
   font-size: var(--fs-xxs);
   color: color-mix(in srgb, var(--college-accent, var(--accent)) 55%, var(--text));
   /* 21-c (A8 P2-1): 0.05em letter-spacing broke the cursive joins of
-     «جامعة الزاوية · {city}», and uppercase is a Latin-only concept.
+     «the demo university · {campus}», and uppercase is a Latin-only concept.
      Same ruling as the Vision eyebrow (removed per ruling #2) and
      polish.css's .landing-campus-eyebrow: size + weight + color only. */
   letter-spacing: normal;

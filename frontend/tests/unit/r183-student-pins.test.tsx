@@ -178,10 +178,11 @@ const STUDENT = {
 } as const;
 
 const ZAWIA: InstitutionSummary = {
+  // r188: the demonstration tenant — fictional identity, legacy id kept.
   id: 'inst-zawia-showcase',
-  name: 'جامعة الزاوية',
-  nameEn: 'University of Zawia',
-  slug: 'zawia-showcase',
+  name: 'جامعة مدارك التجريبية',
+  nameEn: 'Madarek Demo University',
+  slug: 'madarek-demo',
 };
 
 const ANDALUS: InstitutionSummary = {
@@ -192,9 +193,9 @@ const ANDALUS: InstitutionSummary = {
 };
 
 const ZAWIA_FACULTIES = [
-  { id: 'f1', name: 'كلية الآداب', city: 'الزاوية', iconEmoji: null },
-  { id: 'f2', name: 'كلية العلوم', city: 'الزاوية', iconEmoji: null },
-  { id: 'f3', name: 'كلية التربية', city: 'العجيلات', iconEmoji: null },
+  { id: 'f1', name: 'كلية الآداب', city: 'حرم المعرفة', iconEmoji: null },
+  { id: 'f2', name: 'كلية العلوم', city: 'حرم المعرفة', iconEmoji: null },
+  { id: 'f3', name: 'كلية التربية', city: 'حرم الابتكار', iconEmoji: null },
 ];
 
 const ANDALUS_FACULTIES = [
@@ -228,16 +229,16 @@ function changeLines(container: HTMLElement): string[] {
 }
 
 describe('r183-B3 — /student/university derives its identity from the session institution (A6 P2)', () => {
-  it('zawia-showcase session: the ZU showcase facts stay, labeled as the reference display institution', () => {
+  it('madarek-demo session: the fictional demo facts stay, labeled as the demonstration institution', () => {
     const { container } = renderUniversity(ZAWIA, ZAWIA_FACULTIES);
 
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('جامعة الزاوية');
-    expect(screen.getByText(/مؤسّسة العرض المرجعية/)).toBeInTheDocument();
-    // The curated showcase facts.
-    expect(screen.getByText('سنة التأسيس')).toBeInTheDocument();
-    expect(screen.getByText('1988')).toBeInTheDocument();
-    expect(screen.getAllByText(/بقرار رقم 135/).length).toBeGreaterThan(0);
-    expect(screen.getByText('العضويّات الدوليّة')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('جامعة مدارك التجريبية');
+    // r188: the real-university facts (1988/decree/memberships) are GONE —
+    // the demo tenant's synthetic profile is the only fact story.
+    expect(screen.queryByText('1988')).toBeNull();
+    expect(screen.queryAllByText(/بقرار رقم/)).toHaveLength(0);
+    expect(screen.queryByText('العضويّات الدوليّة')).toBeNull();
+    expect(screen.getByText('بطاقة تعريف المؤسّسة')).toBeInTheDocument();
     // The campus-split cards.
     expect(screen.getByText('داخل الحرم الجامعيّ')).toBeInTheDocument();
     expect(screen.getByText('فروع خارجيّة')).toBeInTheDocument();
@@ -268,7 +269,7 @@ describe('r183-B3 — /student/university derives its identity from the session 
   });
 
   it('the «فروع خارجيّة» cities line counts the REAL outside cities (was «1 في 0 مدينة»)', () => {
-    // All faculties outside الزاوية: 1 faculty, 1 distinct city.
+    // All faculties outside حرم المعرفة: 1 faculty, 1 distinct campus.
     const outside = [{ id: 'g1', name: 'كلية الأندلس للعلوم', city: 'طرابلس', iconEmoji: null }];
     const { container } = renderUniversity(ZAWIA, outside);
     const lines = changeLines(container);
@@ -278,8 +279,8 @@ describe('r183-B3 — /student/university derives its identity from the session 
 
   it('zero outside faculties: no cities line at all (the old code said «في 0 مدينة» here)', () => {
     const inside = [
-      { id: 'f1', name: 'كلية الآداب', city: 'الزاوية', iconEmoji: null },
-      { id: 'f2', name: 'كلية العلوم', city: 'الزاوية', iconEmoji: null },
+      { id: 'f1', name: 'كلية الآداب', city: 'حرم المعرفة', iconEmoji: null },
+      { id: 'f2', name: 'كلية العلوم', city: 'حرم المعرفة', iconEmoji: null },
     ];
     const { container } = renderUniversity(ZAWIA, inside);
     expect(changeLines(container).some((l) => l.startsWith('في '))).toBe(false);

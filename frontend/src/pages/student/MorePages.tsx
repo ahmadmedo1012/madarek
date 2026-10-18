@@ -1491,20 +1491,20 @@ export function DownloadsPage() {
 /* r183-B3 (A6 P2): the slug of the reference showcase institution —
  * the same contract as the backend's SHOWCASE_INSTITUTION_SLUG
  * (http/routes/colleges.routes.ts) and the seed row (prisma/seed.ts,
- * slug `zawia-showcase`). Only this institution renders the curated
+ * slug `madarek-demo` — r188 fictional demo tenant). Only this institution renders the curated
  * ZU showcase facts; every other institution gets its own identity
  * and only the facts the platform actually holds for it. */
-const SHOWCASE_INSTITUTION_SLUG = 'zawia-showcase';
+const SHOWCASE_INSTITUTION_SLUG = 'madarek-demo';
 
 export function UniversityInfoPage() {
   const institution = useAuthStore((s) => s.currentInstitution);
   const facs = useFaculties(useCurrentInstitutionSlug()); // r180: caller-institution scoping
   const faculties = facs.data ?? [];
-  const insideCampus = faculties.filter((f) => f.city === 'الزاوية');
-  const outsideCampus = faculties.filter((f) => f.city !== 'الزاوية');
+  const insideCampus = faculties.filter((f) => f.city === 'حرم المعرفة');
+  const outsideCampus = faculties.filter((f) => f.city !== 'حرم المعرفة');
   const cityCount = new Set(faculties.map((f) => f.city)).size;
   /* r183-B3: the outside-branch change line said «في 0 مدينة» whenever
-   * every faculty sat outside الزاوية — a self-contradictory KPI (the
+   * every faculty sat outside the main campus — a self-contradictory KPI (the
    * alandalus view). Phrase the line ONLY from the real distinct
    * cities of the outside faculties, and only when there are any. */
   const outsideCityCount = new Set(outsideCampus.map((f) => f.city)).size;
@@ -1525,7 +1525,7 @@ export function UniversityInfoPage() {
   if (!isShowcase) {
     /* ── The institution's OWN page (r183-B3): name/slug facts + the
      * faculties scoped to it. The ZU-specific facts (founding year,
-     * decree, الزاوية campus split, memberships, strategic plan,
+     * campus split, demo profile, strategic plan,
      * contact block) are showcase-curated content and are dropped —
      * never re-attributed to another institution. */
     const inst: InstitutionSummary = institution;
@@ -1609,13 +1609,13 @@ export function UniversityInfoPage() {
 
   return (
     <div className="page">
-      {/* The showcase branch keeps the curated ZU facts — labeled as
-          the platform's reference display institution (the landing's
-          «مؤسّسة العرض» vocabulary), so the copy never claims a
-          university the platform itself is not. */}
+      {/* r188: the demonstration tenant — the platform's explicitly
+          FICTIONAL reference institution. Every fact below is synthetic
+          demo data (no real founding year, decree, or history); the
+          page labels the tenant as بيانات تجريبية throughout. */}
       <PageHeader
-        title="جامعة الزاوية"
-        subtitle="مؤسّسة العرض المرجعية على منصّة مدارك — مؤسّسة تعليميّة حكوميّة، تأسّست عام 1988 وتمتدّ عبر عدّة مدن في الإقليم الغربيّ."
+        title="جامعة مدارك التجريبية"
+        subtitle="مؤسّسة العرض على منصّة مدارك — مؤسّسة اصطناعية بالكامل تُظهر سير العمل الأكاديمي ببيانات تجريبية عبر ثلاثة حرَم معرفيّة."
       />
 
       <div className="grid-4">
@@ -1630,7 +1630,7 @@ export function UniversityInfoPage() {
           icon={GraduationCap}
           label="داخل الحرم الجامعيّ"
           value={facs.isPending ? '…' : facs.isError ? '—' : insideCampus.length.toLocaleString('ar-LY')}
-          change="الزاوية"
+          change="حرم المعرفة"
           color="green"
         />
         <MetricCard
@@ -1642,37 +1642,37 @@ export function UniversityInfoPage() {
         />
         <MetricCard
           icon={Award}
-          label="سنة التأسيس"
-          value="1988"
-          change="بقرار رقم 135"
+          label="الحرَم الأكاديميّة"
+          value="3"
+          change="بيانات تجريبية"
           color="gold"
         />
       </div>
 
-      {/* Vision + Mission */}
+      {/* Vision + Mission (the demo tenant's synthetic strategy —
+          mirrors static-source.ts strategicPlan.*) */}
       <div className="grid-2">
         <Card title="الرؤية" icon={Target}>
           <p style={{ fontSize: 'var(--fs-md)', color: 'var(--text)', lineHeight: 'var(--lh-loose)', margin: 0 }}>
-            تحقيق التميّز والريادة في مجال التعليم والبحث العلميّ وخدمة المجتمع.
+            منصّة عرض تُبرهن على تعليم عالي منظَّم رقميًا — ببيانات اصطناعية آمنة.
           </p>
         </Card>
         <Card title="الرسالة" icon={Star}>
           <p style={{ fontSize: 'var(--fs-sm)', color: 'var(--text-muted)', lineHeight: 'var(--lh-loose)', margin: 0 }}>
-            تقديم خدمات تعليميّة وبحثيّة متميّزة في خدمة المجتمع من خلال كوادر مؤهّلة، وبرامج علميّة،
-            وبيئة محفّزة، وشراكات فعّالة مع المؤسّسات المحليّة والدوليّة، وتلبية احتياجات سوق العمل
-            ومعايير الجودة والاعتماد.
+            إظهار سير العمل الأكاديمي الكامل — من الهيكل إلى الإتقان — داخل مدارك:
+            تجربة الطالب، تقييم الأستاذ، عزل المؤسّسات، وجودة قابلة للقياس، كلها كأمثلة حيّة.
           </p>
         </Card>
       </div>
 
       <Card title="بطاقة تعريف" icon={Building2}>
         <div className="grid-2">
-          <FactRow label="الاسم الرسميّ" value="جامعة الزاوية" />
-          <FactRow label="الاسم السابق" value="جامعة السابع من أبريل" />
-          <FactRow label="النوع" value="جامعة حكوميّة عامّة" />
-          <FactRow label="تاريخ التأسيس" value="1988 م (بقرار رقم 135)" />
-          <FactRow label="الموقع" value="الزاوية، ليبيا" />
-          <FactRow label="الموقع الإلكترونيّ" value="zu.edu.ly" mono />
+          <FactRow label="الاسم الرسميّ" value="جامعة مدارك التجريبية" />
+          <FactRow label="النطاق" value="بيانات اصطناعية — لا مؤسّسة حقيقية" />
+          <FactRow label="النوع" value="مؤسّسة عرض تجريبية (اصطناعية)" />
+          <FactRow label="بريد العرض" value="demo.madarek.ly" mono />
+          <FactRow label="الحرم" value="حرم المعرفة · حرم الابتكار · حرم البيان" />
+          <FactRow label="طابع البيانات" value="مولَّدة لأغراض العرض" />
         </div>
       </Card>
 
@@ -1691,7 +1691,7 @@ export function UniversityInfoPage() {
           <Card
             title="الكليّات داخل الحرم الجامعيّ"
             icon={Building2}
-            subtitle={facs.isPending ? 'جارٍ التحميل…' : `${countAr(insideCampus.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} في مدينة الزاوية`}
+            subtitle={facs.isPending ? 'جارٍ التحميل…' : `${countAr(insideCampus.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} في الحرم الرئيسي`}
           >
             {facs.isPending ? (
               <div className="flex-col gap-2" aria-busy="true">
@@ -1739,7 +1739,7 @@ export function UniversityInfoPage() {
                 ))}
               </div>
             ) : outsideCampus.length === 0 ? (
-              <EmptyState illustration="empty-search" title="لا توجد فروع خارج الحرم" description="كل الكليّات المسجَّلة داخل مدينة الزاوية." />
+              <EmptyState illustration="empty-search" title="لا توجد فروع خارج الحرم" description="كل الكليّات المسجَّلة داخل الحرم الرئيسي." />
             ) : (
               <div className="grid-auto-260" style={{ gap: 'var(--sp-2)' }}>
                 {outsideCampus.map((f) => (
@@ -1761,7 +1761,7 @@ export function UniversityInfoPage() {
         </>
       )}
 
-      <Card title="العضويّات الدوليّة" icon={Crown}>
+      <Card title="بطاقة تعريف المؤسّسة" icon={Crown}>
         <div className="flex-col gap-2">
           {/* r155b: العضويّات تُقرأ من UNIVERSITY_FACTS (data/university.facts.ts
               — مصدر الحقيقة الوحيد المعتمد على static-source.ts). النسخة
@@ -1769,7 +1769,7 @@ export function UniversityInfoPage() {
               «اتحاد الجامعات الإسلامية» بدل المتوسطيّة. الشارة تحمل تصنيف
               العضويّة (label) — الاختصارات اللاتينيّة القديمة لم تكن ضمن
               المصدر المعتمد أصلاً. */}
-          {UNIVERSITY_FACTS.memberships.map((m) => (
+          {UNIVERSITY_FACTS.profile.map((m) => (
             <div key={m.label} className="flex items-center justify-between" style={{
               padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)',
             }}>
@@ -1835,12 +1835,12 @@ export function UniversityInfoPage() {
 
       <Card title="معلومات التواصل" icon={Headset}>
         <div className="grid-2">
-          <FactRow label="العنوان" value="جامعة الزاوية، الزاوية، ليبيا" />
+          <FactRow label="العنوان" value="بيانات عرض — بلا عنوان حقيقي (مؤسّسة اصطناعية)" />
           <FactRow label="الهاتف" value="+218 23 762659" mono />
           <FactRow label="هاتف بديل" value="+218 23 762882" mono />
-          <FactRow label="البريد العامّ" value="info@zu.edu.ly" mono />
-          <FactRow label="التعاون الدوليّ" value="ico@zu.edu.ly" mono />
-          <FactRow label="الموقع الرسميّ" value="zu.edu.ly" mono />
+          <FactRow label="البريد العامّ" value="info@demo.madarek.ly" mono />
+          <FactRow label="بريد العرض" value="ico@demo.madarek.ly" mono />
+          <FactRow label="نطاق العرض" value="demo.madarek.ly" mono />
         </div>
       </Card>
     </div>

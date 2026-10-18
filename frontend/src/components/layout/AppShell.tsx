@@ -93,7 +93,7 @@ export function resolveTitle(pathname: string): string {
   for (const [pattern, title] of DYNAMIC_TITLES) {
     if (pattern.test(pathname)) return title;
   }
-  // 4-A14 P2-1: the fallback used to name «منصة الزاوية» — the
+  // 4-A14 P2-1: the fallback used to name the demo university — the
   // university platform, not the product. The product is «مدارك».
   return 'مدارك';
 }

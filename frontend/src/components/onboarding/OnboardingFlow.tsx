@@ -49,7 +49,7 @@ interface FrameCopy {
 const GENERIC_FRAMES: FrameCopy[] = [
   {
     headline: 'أهلاً بك في مدارك',
-    body: 'وفّر وقتك وتركيزك: كل ما يخصّ حياتك الدراسية في جامعة الزاوية يجتمع هنا في مكان واحد.',
+    body: 'وفّر وقتك وتركيزك: كل ما يخصّ حياتك الدراسية في جامعتك يجتمع هنا في مكان واحد.',
     illustration: 'onboarding-frame-1',
   },
   {

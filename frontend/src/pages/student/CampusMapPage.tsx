@@ -55,7 +55,7 @@ export default function CampusMapPage() {
         <div className="page-title-block">
           <h1 className="page-title">دليل الحرم الجامعيّ</h1>
           <p className="page-subtitle">
-            كلّيّات جامعة الزاوية بحسب المدينة، مع روابط لصفحاتها التفصيليّة.
+            كلّيّات جامعة مدارك التجريبية بحسب الحرم، مع روابط لصفحاتها التفصيليّة — بيانات عرض اصطناعية.
           </p>
         </div>
       </header>
@@ -184,8 +184,8 @@ export default function CampusMapPage() {
           </div>
           <div className="fact-tile">
             <span className="text-xxs text-subtle">البريد الإلكتروني</span>
-            <bdi dir="ltr" className="font-mono text-sm">info@zu.edu.ly</bdi>
-            <bdi dir="ltr" className="font-mono text-sm">ico@zu.edu.ly</bdi>
+            <bdi dir="ltr" className="font-mono text-sm">info@demo.madarek.ly</bdi>
+            <bdi dir="ltr" className="font-mono text-sm">ico@demo.madarek.ly</bdi>
           </div>
         </div>
 
@@ -194,8 +194,8 @@ export default function CampusMapPage() {
           <span>
             خريطة الحرم التفاعليّة قيد التطوير. حاليّاً يمكنك الاطّلاع على المواقع الفعليّة عبر الموقع
             الرسميّ:{' '}
-            <a href="https://www.zu.edu.ly" target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'underline' }}>
-              zu.edu.ly <Icon icon={ExternalLink} size={11} />
+            <a href="https://demo.madarek.ly" target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'underline' }}>
+              demo.madarek.ly <Icon icon={ExternalLink} size={11} />
             </a>
           </span>
         </div>
@@ -204,7 +204,7 @@ export default function CampusMapPage() {
       <Card>
         <Link to="/student/university" className="btn primary sm">
           <Icon icon={ArrowLeft} size={13} />
-          صفحة جامعة الزاوية الكاملة
+          صفحة الجامعة التجريبية الكاملة
         </Link>
       </Card>
     </div>

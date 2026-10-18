@@ -164,37 +164,35 @@ function renderLanding() {
   );
 }
 
-describe('r170d — landing megamenu keyboard contract (Escape + aria-expanded)', () => {
-  it('Enter opens, aria-expanded=true; Escape closes, aria-expanded=false and focus returns to the trigger', () => {
+describe('r170d → r188 — landing burger keyboard contract (Escape + aria-expanded)', () => {
+  it('Enter opens, aria-expanded=true; Escape closes, aria-expanded=false and focus returns to the burger', () => {
+    // r188: the megamenu retired with the Orbit-Ink world; the mobile
+    // burger carries the same keyboard contract (F2-5, unchanged).
     renderLanding();
-    const trigger = screen.getByRole('button', { name: /المنصة/ });
+    const trigger = screen.getByRole('button', { name: 'فتح القائمة' });
     expect(trigger.getAttribute('aria-expanded')).toBe('false');
-    expect(trigger.getAttribute('aria-haspopup')).toBe('true');
 
     fireEvent.click(trigger);
     expect(trigger.getAttribute('aria-expanded')).toBe('true');
 
-    // all four megamenu items are named (icon+title+desc), so a keyboard
-    // walk announces them — pin the names the probe verified live
-    // (scoped to the megamenu: «مدارات الكلّيّات» also appears in the
-    // hero/finale copy, so a global query matches more than one link).
-    const menu = document.querySelector('.landing-megamenu') as HTMLElement;
+    // the menu's four section anchors + theme row + both funnel buttons
+    const menu = document.querySelector('.fo-mobile-menu') as HTMLElement;
     expect(menu).not.toBeNull();
     const items = within(menu).getAllByRole('link');
-    expect(items).toHaveLength(4);
-    for (const name of ['رحلة التعلّم', 'مدارات الكلّيّات', 'المساعد الأكاديمي', 'قصة التقدّم']) {
+    expect(items.length).toBeGreaterThanOrEqual(6);
+    for (const name of ['كيف تعمل', 'الأدوار', 'ما يُشحن اليوم', 'الاستقلالية']) {
       expect(items.some((a) => (a.textContent || '').includes(name))).toBe(true);
     }
 
-    // focus is inside the group (first item), Escape fires there
+    // focus is inside the menu, Escape fires there
     const firstItem = items[0] as HTMLAnchorElement;
     expect(firstItem).toBeDefined();
     firstItem.focus();
     expect(document.activeElement).toBe(firstItem);
-    fireEvent.keyDown(firstItem.closest('.landing-nav-group') as HTMLElement, { key: 'Escape' });
+    fireEvent.keyDown(menu, { key: 'Escape' });
 
     expect(trigger.getAttribute('aria-expanded')).toBe('false');
-    // the handler refocuses the trigger — the keyboard user is never
+    // the handler refocuses the burger — the keyboard user is never
     // stranded inside a closed menu.
     expect(document.activeElement).toBe(trigger);
   });

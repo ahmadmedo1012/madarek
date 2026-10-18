@@ -100,8 +100,8 @@ export default function PaymentPage() {
           <div className="flex-col gap-3">
             <ContactRow icon={Phone} label="الهاتف" value="+218 23 762659" mono />
             <ContactRow icon={Phone} label="هاتف بديل" value="+218 23 762882" mono />
-            <ContactRow icon={Mail} label="البريد الإلكترونيّ" value="info@zu.edu.ly" mono />
-            <ContactRow icon={Building2} label="العنوان" value="جامعة الزاوية — الزاوية، ليبيا" />
+            <ContactRow icon={Mail} label="البريد الإلكترونيّ" value="info@demo.madarek.ly" mono />
+            <ContactRow icon={Building2} label="العنوان" value="جامعة مدارك التجريبية — بيانات عرض" />
           </div>
         </Card>
 

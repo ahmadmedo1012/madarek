@@ -8,7 +8,7 @@
  *     institution missing from the live directory is skipped; matching
  *     is by id OR slug; the planned id is the LIVE row id.
  *  2. the REAL registry contract (lib/zu-sync): exactly one configured
- *     institution — zawia-showcase with the static-markdown source.
+ *     institution — the r188 demo tenant (madarek-demo) with the static-markdown source.
  *  3. `runScheduledSyncs` (mocked directory + mocked runSync): syncs
  *     each configured institution with its own source, one failing
  *     institution never aborts the rest, a directory failure plans
@@ -49,7 +49,7 @@ import { prisma } from '../../src/db.js';
 const runSyncMock = vi.mocked(runSync);
 const institutionFindMany = vi.mocked(prisma.institution.findMany);
 
-const ZAWIA = { id: DEFAULT_SYNC_INSTITUTION_ID, slug: 'zawia-showcase' };
+const ZAWIA = { id: DEFAULT_SYNC_INSTITUTION_ID, slug: 'madarek-demo' };
 const OTHER = { id: 'inst-other', slug: 'other-demo' };
 
 beforeEach(() => {
@@ -120,22 +120,22 @@ describe('planScheduledSyncs — pure decision', () => {
 // ── the real registry contract (r179d) ──────────────────────────────
 
 describe('the real INSTITUTION_SYNC_CONFIGS registry', () => {
-  it('configures exactly ONE institution: zawia-showcase with the static-markdown source', () => {
+  it('configures exactly ONE institution: the demo tenant (madarek-demo) with the static-markdown source', () => {
     expect(INSTITUTION_SYNC_CONFIGS).toEqual([
-      { institutionId: 'inst-zawia-showcase', institutionSlug: 'zawia-showcase', source: 'static-markdown' },
+      { institutionId: 'inst-zawia-showcase', institutionSlug: 'madarek-demo', source: 'static-markdown' },
     ]);
   });
 
   it('findInstitutionSyncConfig resolves the showcase by id OR slug, and any other institution to null', () => {
     expect(findInstitutionSyncConfig({ id: 'inst-zawia-showcase', slug: 'whatever' })).not.toBeNull();
-    expect(findInstitutionSyncConfig({ id: 'cuid-x', slug: 'zawia-showcase' })).not.toBeNull();
-    // The Zawia source is NOT a global source for every university:
+    expect(findInstitutionSyncConfig({ id: 'cuid-x', slug: 'madarek-demo' })).not.toBeNull();
+    // The demo source is NOT a global source for every university:
     expect(findInstitutionSyncConfig({ id: 'cuid-x', slug: 'alandalus-demo' })).toBeNull();
     expect(findInstitutionSyncConfig({ id: 'cuid-x', slug: 'other' })).toBeNull();
   });
 
   it('the public facts default is the showcase slug', () => {
-    expect(PUBLIC_FACTS_DEFAULT_SLUG).toBe('zawia-showcase');
+    expect(PUBLIC_FACTS_DEFAULT_SLUG).toBe('madarek-demo');
   });
 });
 

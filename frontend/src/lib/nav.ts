@@ -145,7 +145,7 @@ export const STUDENT_NAV: NavGroup[] = [
       { to: '/student/payment', icon: Wallet, label: 'الشؤون المالية' },
       /* 5-B5 (A4 P3-4): Building2 ×2 dedupe — the university page
          takes Landmark, colleges keeps Building2. */
-      { to: '/student/university', icon: Landmark, label: 'جامعة الزاوية' },
+      { to: '/student/university', icon: Landmark, label: 'الجامعة التجريبية' },
       /* 5-B5 (A4 P3-1): one name per surface — the page's own h1 is
          «دليل الحرم الجامعيّ»; the title map used to say «خريطة الحرم
          الجامعي» (a third variant). Titles now derive from these

@@ -227,7 +227,7 @@ describe('AuthPage — journey alignment (imm-5)', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'طالب' }));
     await waitFor(() => {
-      expect(email.value).toBe('student@zu.edu.ly');
+      expect(email.value).toBe('student@demo.madarek.ly');
       expect(password.value).toBe('Madarek2026!');
     });
     // One-click FILL only — the visitor submits the form themselves.

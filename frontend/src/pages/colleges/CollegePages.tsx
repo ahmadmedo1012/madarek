@@ -291,7 +291,7 @@ export function CollegesIndexPage() {
     <div className="page colleges-index">
       <SectionAccent kind="scene-paint" as="header" className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">كلّيّات مؤسّسة العرض — جامعة الزاوية</h1>
+          <h1 className="page-title">البنية الأكاديمية التجريبية — جامعة مدارك التجريبية</h1>
           <p className="page-subtitle">استكشف الكلّيّات والأقسام في سجلّ المؤسّسة المرجعية للعرض، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطها.</p>
         </div>
         {isGuest && <GuestJoinRow />}
@@ -651,7 +651,7 @@ export function CollegeDetailPage() {
           <div className="college-hero-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={36} /></div>
         )}
         <div className="college-hero-titles">
-          <div className="college-hero-eyebrow">جامعة الزاوية · {c.city}</div>
+          <div className="college-hero-eyebrow">جامعة مدارك التجريبية · {c.city} · بيانات تجريبية</div>
           <h1 className="page-title college-hero-name">{c.name}</h1>
           {c.nameEn && <div className="college-hero-sub">{c.nameEn}</div>}
         </div>

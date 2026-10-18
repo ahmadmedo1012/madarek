@@ -1,5 +1,5 @@
 /**
- * Admin · University Sync (PRD: daily zu.edu.ly sync)
+ * Admin · University Sync (the demo tenant's curated-source sync)
  *
  *   /admin/sync   show last run, stats, facts by category, manual trigger
  */
@@ -212,7 +212,7 @@ export function AdminSyncPage() {
         <div className="page-title-block">
           <h1 className="page-title">المزامنة مع البيانات الرسمية</h1>
           <p className="page-subtitle">
-            استيراد البيانات العامة من <span className="font-mono"><bdi>zu.edu.ly</bdi></span> يومياً للحفاظ على
+            استيراد بيانات المؤسّسة من المصدر المنسَّق <span className="font-mono"><bdi>demo-source</bdi></span> للحفاظ على
             معلومات الجامعة محدّثة. يمكنك تشغيل المزامنة يدوياً عند الحاجة.
           </p>
         </div>

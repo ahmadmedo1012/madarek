@@ -131,7 +131,7 @@ function mockDetailBundle() {
     // r179 (phase-5): the bundle's events/competitions are scoped to
     // the faculty's institution — the mock carries it like the real
     // include does.
-    institution: { id: 'inst-showcase', name: 'جامعة الزاوية', nameEn: null, slug: 'zawia-showcase' },
+    institution: { id: 'inst-showcase', name: 'جامعة مدارك التجريبية', nameEn: 'Madarek Demo University', slug: 'madarek-demo' },
     departments: [
       { id: 'dep-1', name: 'قسم اللغة العربية', _count: { students: 40, teachers: 3, courses: 6 } },
     ],
@@ -296,7 +296,7 @@ describe('GET /api/v1/colleges(+/leaderboard) — institution-aware listing (r17
     await get('/api/v1/colleges');
     // The target institution row resolved by slug (the showcase default)…
     expect(prisma.institution.findUnique).toHaveBeenCalledWith({
-      where: { slug: 'zawia-showcase' },
+      where: { slug: 'madarek-demo' },
       select: { id: true, status: true },
     });
     // …and the faculty listing is scoped to the resolved institution id.
@@ -366,7 +366,7 @@ describe('GET /api/v1/colleges(+/leaderboard) — institution-aware listing (r17
     mockLeaderboardBundle();
     await get('/api/v1/colleges/leaderboard');
     expect(prisma.institution.findUnique).toHaveBeenCalledWith({
-      where: { slug: 'zawia-showcase' },
+      where: { slug: 'madarek-demo' },
       select: { id: true, status: true },
     });
     expect(prisma.faculty.findMany).toHaveBeenCalledWith(

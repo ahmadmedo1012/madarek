@@ -1,15 +1,15 @@
 /**
- * r155b — UniversityInfoPage memberships source-of-truth pin.
+ * r188 — UniversityInfoPage demo-profile source-of-truth pin.
  *
- * The page hand-retyped the memberships list and reproduced the exact
- * retyping error university.facts.ts documents: «اتحاد الجامعات
- * الإسلامية» (FUIW) instead of the MEDITERRANEAN union the curated
- * source carries. The local MEMBERSHIPS array is gone — the render
- * reads UNIVERSITY_FACTS.memberships; this pin keeps the factual fix
- * from regressing via another local retyping.
+ * The retired real-university memberships card (r155b: the
+ * MEDITERRANEAN/ARAB/AFRICAN unions list — real-institution claims)
+ * is gone with the brand reset. The card now renders the demo
+ * tenant's SYNTHETIC profile from UNIVERSITY_FACTS.profile: the
+ * r155b retyping-error lesson (never hand-retype the fact list)
+ * carries over — the render still reads the single source module.
  *
  * useFaculties mocked at the module boundary (the ...actual spread
- * pattern); the memberships card itself is static data.
+ * pattern); the profile card itself is static data.
  */
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
@@ -42,27 +42,20 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-describe('UniversityInfoPage — العضويّات الدوليّة (r155b)', () => {
-  it('renders the MEDITERRANEAN union — never the documented retyping error', () => {
+describe('UniversityInfoPage — بطاقة تعريف المؤسّسة (r188)', () => {
+  it('renders the demo-tenant profile straight from UNIVERSITY_FACTS (no hand-retyped list)', () => {
     renderPage();
 
-    expect(screen.getByText('اتحاد الجامعات المتوسطية')).toBeInTheDocument();
-    expect(screen.getByText('اتحاد الجامعات العربية')).toBeInTheDocument();
-    expect(screen.getByText('اتحاد الجامعات الأفريقية')).toBeInTheDocument();
-    // The exact factual error the facts file documents (an Islamic
-    // union membership the university does not hold).
-    expect(screen.queryByText('اتحاد الجامعات الإسلامية')).toBeNull();
+    // the synthetic profile's three entries, in module order
+    for (const entry of UNIVERSITY_FACTS.profile) {
+      expect(screen.getAllByText(entry.full).length).toBeGreaterThan(0);
+    }
+    // the card title states what this is
+    expect(screen.getByText('بطاقة تعريف المؤسّسة')).toBeInTheDocument();
   });
 
-  it('renders every membership the canonical facts module carries — same source, same count', () => {
+  it('the fictional institution name is the one the page carries', () => {
     renderPage();
-
-    for (const m of UNIVERSITY_FACTS.memberships) {
-      expect(screen.getByText(m.full)).toBeInTheDocument();
-      expect(screen.getByText(m.label)).toBeInTheDocument();
-    }
-    expect(screen.getAllByText(/اتحاد الجامعات/)).toHaveLength(
-      UNIVERSITY_FACTS.memberships.length,
-    );
+    expect(screen.getAllByText('جامعة مدارك التجريبية').length).toBeGreaterThan(0);
   });
 });
