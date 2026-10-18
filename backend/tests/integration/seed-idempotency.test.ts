@@ -31,7 +31,7 @@
  *   WatchEvent/Grade     | —              | PRESERVED       | PRESERVED
  *   (user-managed)       |                |                 |
  *   demo password        | Madarek2026!   | NOT reset (an   | RESET to
- *   (student@zu.edu.ly)  |                | operator-       | Madarek2026!
+ *   (student@demo.madarek.ly) |             | operator-       | Madarek2026!
  *   real-user password   | —              |  rotated value  | (documented)
  *                        |                |  survives)      | UNCHANGED
  */
@@ -86,22 +86,22 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
       });
       const slugs = institutions.map((i) => i.slug).sort();
       expect(slugs).toContain('alandalus-demo');
-      expect(slugs).toContain('zawia-showcase');
+      expect(slugs).toContain('madarek-demo');
 
       const student = await prisma.user.findUniqueOrThrow({
-        where: { email: 'student@zu.edu.ly' },
+        where: { email: 'student@demo.madarek.ly' },
       });
       expect(student.role).toBe('STUDENT');
       // The documented demo credential actually verifies.
       await expect(verifyPassword(student.passwordHash, DEMO_PASSWORD)).resolves.toBe(true);
 
       // Memberships: the multi-institution backbone (r178) — the demo
-      // student belongs to zawia-showcase, and the OWNER deliberately
+      // student belongs to madarek-demo, and the OWNER deliberately
       // has NO membership (platform scope).
       const memberships = await prisma.membership.count();
       expect(memberships).toBeGreaterThanOrEqual(7);
       const owner = await prisma.user.findUniqueOrThrow({
-        where: { email: 'owner@zu.edu.ly' },
+        where: { email: 'owner@demo.madarek.ly' },
       });
       const ownerMemberships = await prisma.membership.count({
         where: { userId: owner.id },
@@ -121,7 +121,7 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
       // (a) the operator rotated a demo account's password (r166c path
       //     documents this as a real production occurrence);
       const demo = await prisma.user.findUniqueOrThrow({
-        where: { email: 'student@zu.edu.ly' },
+        where: { email: 'student@demo.madarek.ly' },
       });
       const operatorPassword = `OpRotated-${Date.now()}-pw`;
       await prisma.user.update({
@@ -198,7 +198,7 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
       //     redeploy — the operator's rotated value survives (the r180
       //     automatic reset is retired; the reset is FORCE-only below).
       const demoAfter = await prisma.user.findUniqueOrThrow({
-        where: { email: 'student@zu.edu.ly' },
+        where: { email: 'student@demo.madarek.ly' },
       });
       await expect(verifyPassword(demoAfter.passwordHash, operatorPassword)).resolves.toBe(true);
       await expect(verifyPassword(demoAfter.passwordHash, DEMO_PASSWORD)).resolves.toBe(false);
@@ -222,7 +222,7 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
 
       // Same live-usage simulation as the redeploy test.
       const demo = await prisma.user.findUniqueOrThrow({
-        where: { email: 'student@zu.edu.ly' },
+        where: { email: 'student@demo.madarek.ly' },
       });
       const operatorPassword = `OpRotated-${Date.now()}-pw`;
       await prisma.user.update({
@@ -267,7 +267,7 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
       // (1) Demo credential reset to the documented value — the ONE
       //     deliberate repeating write of the force path.
       const demoAfter = await prisma.user.findUniqueOrThrow({
-        where: { email: 'student@zu.edu.ly' },
+        where: { email: 'student@demo.madarek.ly' },
       });
       await expect(verifyPassword(demoAfter.passwordHash, DEMO_PASSWORD)).resolves.toBe(true);
       await expect(verifyPassword(demoAfter.passwordHash, operatorPassword)).resolves.toBe(false);
