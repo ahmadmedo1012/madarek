@@ -95,7 +95,9 @@ const THEME_BOOTSTRAP_SHA256 = 'U4sTnQg8QBxUnke9CmispMPonECA5Z12VkqqdUs/uO4=';
  * `about` node is gone — the only demo-data story is the explicitly
  * fictional «جامعة مدارك التجريبية», named in the description as
  * synthetic data, never as affiliation). Verified by check-csp-hash.sh. */
-const JSON_LD_SHA256 = 'GMV/ZV2zsVkBRb7ieZQrHu/fLPcGp06OaTyuI2iwXi8=';
+// r191: pin refreshed — the JSON-LD description dropped the rejected
+// provenance slogan with the meta copy fix.
+const JSON_LD_SHA256 = 'IRTvs2lj91QMTupUETl0okZh8+Bgoccsoy/MNlneYDI=';
 
 export function createApp() {
   const app = express();

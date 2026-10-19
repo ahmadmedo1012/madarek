@@ -12,13 +12,13 @@ test.describe('الصفحة العامة للزوار', () => {
 
     // العنوان الرئيسي — «كلُّ معرفةٍ تبدأ نقطة، وتنمو في مدارك.»
     await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
-    // هوية المنصّة في الترويسة (r188: لا جامعة حقيقية — الاستقلالية)
+    // هوية المنصّة في الترويسة (r188: لا جامعة حقيقية — الاستقلالية؛ r191: العبارة المحذوفة صُنعت في ليبيا لم تعد اسم المنتج)
     await expect(page.locator('.fo-header-actions')).toBeVisible();
-    await expect(page.getByText('منصّة تعليم ذكي مستقلّة').first()).toBeVisible();
+    await expect(page.getByText('منصّة التعليم الذكي').first()).toBeVisible();
     // بيان الاستقلالية يسمّي المؤسّسة التجريبية الاصطناعية بالاسم
     await expect(page.getByText('جامعة مدارك التجريبية').first()).toBeVisible();
-    // دفتر الصدق: حالات «ما يُشحن اليوم» الظاهرة
-    await expect(page.getByText('ما يُشحن اليوم').first()).toBeVisible();
+    // دفتر الصدق بعد r191: القسم يسمّي مصدر أرقامه (ما يعمل اليوم بدل ما يُشحن اليوم)
+    await expect(page.getByText('ما يعمل اليوم').first()).toBeVisible();
     // RTL بالهيكل — التطبيق عربي بالكامل (قفل index.html)
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   });

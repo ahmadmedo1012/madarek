@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { StarMark } from '../components/StarMark';
-import { LibyaFlag } from '../components/LibyaFlag';
 import { useLogin, useSelectInstitution } from '../hooks/useAuth';
 import { listPublicInstitutions } from '../lib/api';
 import { apiErrorCode } from '../lib/format';
@@ -217,8 +216,10 @@ export default function AuthPage() {
           <Icon icon={Home} size={14} />
           الصفحة الرئيسية
         </Link>
+        {/* r191: the brand mark owns the auth chrome — the national-flag
+            provenance marker is retired with the rejected slogan family. */}
         <span className="auth-context">
-          <LibyaFlag size={14} /> مدارك
+          <StarMark size={14} /> مدارك
         </span>
       </header>
 
@@ -530,8 +531,9 @@ export default function AuthPage() {
       </main>
 
       <footer className="auth-bottom">
-        {/* r177: was the ministry/university line — now the platform's own identity */}
-        صُنع في ليبيا · <strong>منصّة تعليم ذكي مستقلّة</strong>
+        {/* r177 → r191: the platform's own identity; the operator-rejected
+            provenance slogan is gone — the honest identity stays. */}
+        <strong>منصّة تعليم ذكية مستقلّة</strong> · عربية أولًا
       </footer>
     </div>
   );

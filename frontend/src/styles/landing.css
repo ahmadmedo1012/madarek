@@ -105,25 +105,6 @@
   will-change: transform;
 }
 
-/* ════════════════════════════════════════════════════════════════════
-   THE MISSION-CONTROL CHROME — fixed stage colors (both themes)
-   ════════════════════════════════════════════════════════════════════ */
-
-.fo-identity-strip {
-  background: var(--stage-ink);
-  color: var(--stage-cream-dim);
-  border-block-end: 1px solid var(--stage-line-soft);
-  font-size: 0.75rem;
-  text-align: center;
-  padding: var(--sp-1-5) var(--sp-4);
-}
-.fo-identity-strip strong { color: var(--stage-cream); font-weight: var(--fw-medium); }
-.fo-identity-strip-inner {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-}
-.fo-identity-strip-flag { display: inline-flex; opacity: 0.9; }
 
 /* ── the header — mission-control chrome: always the stage ink.
    Transparent would show the cream page ground in light mode and
@@ -463,41 +444,7 @@
    THE BODY — canonical two-theme editorial sections
    ════════════════════════════════════════════════════════════════════ */
 
-/* ── capabilities band — the quiet ruled strip ────────────────────── */
-.fo-capabilities {
-  border-block-end: 1px solid var(--rule);
-  padding-block: var(--sp-4);
-  background: var(--surface);
-}
-.fo-capabilities-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-2-5) var(--sp-5);
-  max-inline-size: 1320px;
-  margin-inline: auto;
-  padding-inline: var(--sp-6);
-  margin-block: 0;
-  list-style: none;
-  color: var(--text-secondary);
-  font-size: 0.8125rem;
-}
-.fo-capabilities-list li { display: inline-flex; align-items: center; gap: var(--sp-2-5); }
-.fo-capabilities-sep {
-  inline-size: 4px;
-  block-size: 4px;
-  background: var(--accent);
-  opacity: 0.7;
-}
 
-/* ── chapters — the numbered editorial sections ───────────────────── */
-.fo-chapter {
-  max-inline-size: 1320px;
-  margin-inline: auto;
-  padding: var(--sp-14) var(--sp-6);
-}
-.fo-chapter-head { margin-block-end: var(--sp-9); max-inline-size: 720px; }
 .fo-label {
   display: inline-flex;
   align-items: center;
@@ -513,286 +460,16 @@
   background: var(--accent);
 }
 .fo-label .fo-mono { color: var(--accent); }
-.fo-chapter-title {
-  margin: 0 0 var(--sp-4);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: var(--fs-display-lg);            /* clamp(36px → 64px) */
-  line-height: var(--type-display-line-height);
-  text-wrap: balance;
-}
-.fo-chapter-title em { font-style: normal; color: var(--accent-ink); }
-.fo-chapter-lede {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: 1.0625rem;
-  line-height: 1.8;
-  max-inline-size: 56ch;
-}
 
-/* ── the stations — numbered mission rows (never icon-card grids) ── */
-.fo-stations {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-block-start: 1px solid var(--rule);
-}
-.fo-station {
-  display: grid;
-  grid-template-columns: 56px 44px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--sp-5);
-  padding: var(--sp-6) var(--sp-2);
-  border-block-end: 1px solid var(--rule);
-  position: relative;
-}
-.fo-station::before {
-  content: "";
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: -8px;
-  inline-size: 2px;
-  background: var(--accent);
-  opacity: 0;
-  transition: opacity var(--t-fast) var(--ease);
-}
-.fo-station:hover::before { opacity: 1; }
-.fo-station:hover { background: color-mix(in srgb, var(--accent) 4%, transparent); }
 
-.fo-station-lead .fo-mono {
-  font-size: 1.5rem;
-  color: var(--text-faint);
-  font-variant-numeric: tabular-nums;
-}
-.fo-station-icon {
-  display: grid;
-  place-items: center;
-  inline-size: 44px;
-  block-size: 44px;
-  color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 9%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-}
-.fo-station-body { min-inline-size: 0; }
-.fo-station-title {
-  margin: 0 0 var(--sp-1);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.25rem;
-}
-.fo-station-desc { margin: 0; color: var(--text-secondary); line-height: 1.75; max-inline-size: 64ch; }
-.fo-station-tag {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  color: var(--accent-ink);
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-  padding: var(--sp-1) var(--sp-2-5);
-  white-space: nowrap;
-}
 
-/* ── the roles — index rows with tone marks ───────────────────────── */
-.fo-roles {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
-.fo-role {
-  display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
-  gap: var(--sp-5);
-  padding: var(--sp-5) var(--sp-4);
-  border: 1px solid var(--rule);
-  background: var(--surface);
-  position: relative;
-  transition: border-color var(--t-fast) var(--ease);
-}
-.fo-role:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--rule)); }
-.fo-role-icon {
-  display: grid;
-  place-items: center;
-  inline-size: 52px;
-  block-size: 52px;
-  border: 1px solid var(--rule);
-}
-.fo-role.tone-gold .fo-role-icon { color: var(--c-copper-ink); background: var(--c-copper-bg); border-color: color-mix(in srgb, var(--c-copper-ink) 30%, transparent); }
-.fo-role.tone-azure .fo-role-icon { color: var(--c-sky-ink); background: var(--c-sky-bg); border-color: color-mix(in srgb, var(--c-sky-ink) 30%, transparent); }
-.fo-role.tone-mist .fo-role-icon { color: var(--text-secondary); background: var(--surface-2); }
-.fo-role-name {
-  margin: 0 0 var(--sp-1);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.125rem;
-}
-.fo-role-desc { margin: 0 0 var(--sp-2); color: var(--text-secondary); line-height: 1.7; }
-.fo-role-caps { margin: 0; color: var(--text-muted); font-size: 0.75rem; line-height: 1.8; }
-.fo-role-caps .fo-mono { color: var(--accent); }
 
-/* ════════════════════════════════════════════════════════════════════
-   THE PROOF LEDGER — «ما يُشحن اليوم» on an atmospheric violet band
-   (the reference's «Operating on orbit today» moment)
-   ════════════════════════════════════════════════════════════════════ */
-.fo-proof {
-  position: relative;
-  isolation: isolate;
-  padding-block: var(--sp-14);
-  background:
-    /* the telemetry paper — a 22px dot matrix at 12% accent (the
-       reference's grid-paper under the data sections; the 10% rule
-       keeps it texture, never noise) */
-    radial-gradient(circle,
-      color-mix(in srgb, var(--accent) 12%, transparent) 1px,
-      transparent 1.6px),
-    radial-gradient(90% 100% at 100% 0%,
-      color-mix(in srgb, var(--aura-violet) 10%, transparent) 0%,
-      transparent 55%),
-    color-mix(in srgb, var(--accent-soft) 55%, var(--surface));
-  background-size: 22px 22px, 100% 100%, 100% 100%;
-  border-block: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
-}
-.fo-proof-inner {
-  max-inline-size: 1320px;
-  margin-inline: auto;
-  padding-inline: var(--sp-6);
-}
 .fo-proof .fo-label { color: var(--text-secondary); }
-.fo-proof .fo-chapter-lede { color: var(--text-secondary); }
 
-.fo-proof-ledger {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-block-start: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-}
-.fo-proof-row {
-  display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
-  gap: var(--sp-5);
-  align-items: center;
-  padding: var(--sp-4) var(--sp-2);
-  border-block-end: 1px solid color-mix(in srgb, var(--accent) 16%, transparent);
-}
-.fo-proof-item { line-height: 1.7; }
 
-.fo-proof-status {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  padding: var(--sp-1) var(--sp-2-5);
-  border: 1px solid currentColor;
-  white-space: nowrap;
-}
-.fo-proof-status-mark { inline-size: 7px; block-size: 7px; background: currentColor; }
-.fo-proof-status.is-live   { color: var(--success-ink); }
-.fo-proof-status.is-local  { color: var(--accent-ink); }
-.fo-proof-status.is-sim    { color: var(--warning-ink); }
-.fo-proof-status.is-soon   { color: var(--text-muted); }
 
-.fo-proof-note {
-  margin: var(--sp-5) 0 0;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-}
-.fo-proof-note .fo-mono { color: var(--accent); }
 
-/* ════════════════════════════════════════════════════════════════════
-   THE MANIFESTO — independence, staged data, real institutions
-   ════════════════════════════════════════════════════════════════════ */
-.fo-manifesto {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--sp-5);
-}
-.fo-manifesto-block {
-  padding: var(--sp-6);
-  border: 1px solid var(--rule);
-  background: var(--surface);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
-.fo-manifesto-block p { margin: 0; line-height: 1.85; color: var(--text-secondary); }
-.fo-manifesto-block strong { color: var(--text); }
-.fo-manifesto-mark {
-  display: grid;
-  place-items: center;
-  inline-size: 40px;
-  block-size: 40px;
-  color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 9%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-}
-.fo-manifesto-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  color: var(--accent-ink);
-  text-decoration: none;
-  font-size: 0.8125rem;
-  margin-block-start: auto;
-  padding-block: var(--sp-1);
-  border-block-end: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
-  transition: border-color var(--t-fast) var(--ease);
-}
-.fo-manifesto-link:hover { border-block-end-color: var(--accent); }
 
-/* ════════════════════════════════════════════════════════════════════
-   THE MEDIA STAGE — the orbit-ring art + the vision copy
-   ════════════════════════════════════════════════════════════════════ */
-.fo-media {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: var(--sp-9);
-  align-items: center;
-  max-inline-size: 1320px;
-  margin-inline: auto;
-  padding: var(--sp-14) var(--sp-6);
-}
-.fo-media-figure { margin: 0; position: relative; }
-.fo-media-art {
-  display: block;
-  inline-size: 100%;
-  aspect-ratio: 1344 / 768;
-  object-fit: cover;
-  border: 1px solid var(--rule);
-  background: var(--stage-ink);
-}
-.fo-media-figure figcaption {
-  position: absolute;
-  inset-block-end: calc(-1 * var(--sp-6));
-  inset-inline-start: var(--sp-2);
-  color: var(--text-muted);
-  background: var(--bg);
-  padding: var(--sp-1) var(--sp-3);
-  border: 1px solid var(--rule);
-}
-.fo-media-copy { padding-block: var(--sp-6); }
-.fo-media-title {
-  margin: 0 0 var(--sp-4);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: var(--fs-display-md);            /* clamp(28px → 44px) */
-  line-height: var(--type-display-line-height);
-  text-wrap: balance;
-}
-.fo-media-title em { font-style: normal; color: var(--accent-ink); }
-.fo-media-lede { margin: 0 0 var(--sp-6); color: var(--text-secondary); line-height: 1.85; max-inline-size: 52ch; }
-.fo-media-points { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
-.fo-media-points li {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-4);
-  border: 1px solid var(--rule);
-  background: var(--surface);
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-}
-.fo-media-points li svg { color: var(--accent); flex: none; }
 
 /* ════════════════════════════════════════════════════════════════════
    THE FINALE — point of departure
@@ -910,19 +587,7 @@
   .fo-telemetry { gap: var(--sp-2) var(--sp-5); }
   .fo-telemetry-end { margin-inline-start: 0; }
 
-  .fo-station {
-    grid-template-columns: 44px minmax(0, 1fr);
-    grid-template-areas: "lead body" "icon body" "tag body";
-    gap: var(--sp-2) var(--sp-4);
-  }
-  .fo-station-lead { grid-area: lead; align-self: start; }
-  .fo-station-icon { grid-area: icon; }
-  .fo-station-body { grid-area: body; }
-  .fo-station-tag { grid-area: tag; align-self: end; white-space: normal; }
-  .fo-station-lead .fo-mono { font-size: 1.125rem; }
 
-  .fo-media { grid-template-columns: 1fr; gap: var(--sp-7); }
-  .fo-media-copy { padding-block: 0; }
 
   .fo-footer-grid { grid-template-columns: 1fr 1fr; gap: var(--sp-6); }
 }
@@ -944,13 +609,8 @@
     font-size: 0.6875rem;
   }
 
-  .fo-chapter { padding: var(--sp-10) var(--sp-4); }
-  .fo-chapter-title { font-size: clamp(28px, 8vw, 40px); }
-  .fo-station { padding: var(--sp-5) var(--sp-1); }
-  .fo-proof-row { grid-template-columns: 1fr; gap: var(--sp-2); }
   .fo-cta-title { font-size: clamp(32px, 9vw, 44px); }
   .fo-footer-grid { grid-template-columns: 1fr; gap: var(--sp-5); }
-  .fo-manifesto { grid-template-columns: 1fr; }
 }
 
 /* ════════════════════════════════════════════════════════════════════
@@ -963,4 +623,761 @@
   }
   .fo-orbit-node { animation: none; opacity: 1; }
   .fo-progress-bar { transition: none; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   r191 — SCROLL CHOREOGRAPHY (رحلة المعرفة)
+   The reference's observed mechanics: pinned mega-stage + crossfading
+   scenes, scroll-bound map state, staggered stat march, parallax vision,
+   giant closing wordmark. ONE --sp var per stage (written by
+   useScrollStage, rAF-coalesced); all motion below is CSS calc off it.
+   Docs: docs/design/r191-turion-fidelity-spec.md
+   ═════════════════════════════════════════════════════════════════════ */
+
+@property --sp { syntax: '<number>'; inherits: true; initial-value: 0; }
+
+/* ── hero corner instruments + scroll cue ─────────────────────────── */
+.fo-hero-corner {
+  position: absolute;
+  inset-inline-start: 0;
+  bottom: 132px;
+  padding: var(--sp-2, 8px) var(--sp-6, 24px);
+}
+.fo-hero-mission {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: 132px;
+  margin: 0;
+  padding: var(--sp-2, 8px) var(--sp-6, 24px);
+  max-width: 46ch;
+  text-align: start;
+}
+.fo-hero-corner .fo-mono { color: var(--stage-violet); }
+.fo-scroll-cue {
+  position: absolute;
+  inset-inline-start: 50%;
+  translate: 50% 0;
+  bottom: 14px;
+  width: 26px; height: 40px;
+  border: 1px solid var(--stage-line);
+  border-radius: var(--r-full, 9999px);
+  display: grid; place-items: start center;
+  padding-top: 7px;
+}
+.fo-scroll-cue-dot {
+  width: 4px; height: 4px;
+  background: var(--stage-cream);
+  border-radius: 1px;
+  animation: fo-cue-drop 2.4s var(--transition-smooth, cubic-bezier(.4,0,.2,1)) infinite;
+}
+@keyframes fo-cue-drop {
+  0% { transform: translateY(0); opacity: 0; }
+  25% { opacity: 1; }
+  70% { transform: translateY(18px); opacity: 1; }
+  100% { transform: translateY(22px); opacity: 0; }
+}
+
+/* ── MG: خريطة التعلّم — the pinned mega-stage ──────────────────────
+   Desktop pinned mode (data-pinned="on"): 620vh tall, a 100vh sticky
+   frame holds the radial map + crossfading content column. Mobile /
+   reduced motion (data-pinned="off"): normal flow — every frame reads. */
+.mg-stage {
+  position: relative;
+  background:
+    radial-gradient(120vw 90vh at 85% -10%, color-mix(in srgb, var(--stage-violet) 10%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--stage-ink) 0%, var(--stage-ink-2) 100%);
+  color: var(--stage-cream);
+  overflow: clip;
+}
+.mg-stage[data-pinned='on'] { height: 700vh; }
+.mg-pin {
+  position: relative;
+  height: 100%;
+}
+.mg-stage[data-pinned='on'] .mg-pin,
+.mg-stage[data-pinned='on'] .mg-pin-secondary {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: clip;
+}
+.mg-pin-secondary { pointer-events: none; }
+
+/* the radial map — bottom/inline-end anchored + cropped, like the
+   reference's half-off-canvas orbit map */
+.mg-map {
+  position: absolute;
+  inset-inline-end: -30vw;
+  bottom: -58vh;
+  width: 120vh;
+  height: 120vh;
+  min-width: 640px;
+  min-height: 640px;
+  color: var(--stage-cream);
+}
+.mg-map-rotor { transform-origin: 450px 450px; }
+.mg-stage[data-pinned='on'] .mg-map-rotor {
+  transform: rotate(calc(var(--sp) * -8deg));
+}
+.mg-core-ring { fill: none; stroke: var(--stage-line); stroke-width: 1; }
+.mg-core-dot { fill: var(--stage-violet); }
+.mg-ring {
+  fill: none;
+  stroke: var(--stage-line-soft);
+  stroke-width: 1;
+}
+.mg-path {
+  stroke: var(--stage-violet);
+  stroke-width: 1;
+  stroke-dasharray: 4 6;
+  opacity: clamp(0, calc((var(--sp) - var(--p-in)) / 0.08), 1);
+}
+.mg-node-mark { fill: var(--stage-cream); opacity: .35; }
+.mg-node-mark,
+.mg-node-label {
+  opacity: clamp(0, calc((var(--sp) - var(--n-in)) / 0.06), 1);
+  transition: opacity 0s;
+}
+.mg-node-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  fill: var(--stage-cream-dim);
+}
+.mg-node:nth-of-type(even) .mg-node-mark { fill: var(--stage-violet); }
+
+/* persistent micro-labels inside the pinned frame */
+.mg-meta {
+  position: absolute;
+  top: 96px;
+  inset-inline-start: max(24px, env(safe-area-inset-inline-start, 24px));
+  margin: 0;
+  color: var(--stage-cream-dim);
+}
+.mg-meta .fo-mono { color: var(--stage-violet); }
+.mg-scale-note {
+  position: absolute;
+  bottom: 18px;
+  inset-inline-end: 24px;
+  margin: 0;
+  color: var(--stage-cream-dim);
+  opacity: .8;
+}
+
+/* the content column + frames */
+.mg-frames {
+  position: relative;
+  max-width: 620px;
+  margin-inline-start: 0;
+  margin-inline-end: auto;
+  margin-inline: 0 0;
+}
+.mg-stage[data-pinned='on'] .mg-frames {
+  position: absolute;
+  inset-inline-start: max(24px, calc(50vw - 660px));
+  top: 18vh;
+  inline-size: min(92vw, 600px);
+  height: 64vh;
+  pointer-events: none;
+}
+.mg-frame {
+  position: relative;
+  padding: 24px;
+}
+.mg-stage[data-pinned='on'] .mg-frame {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  opacity: calc(
+    clamp(0, (var(--sp) - var(--in)) / 0.045, 1) *
+    clamp(0, (var(--out) - var(--sp)) / 0.045, 1)
+  );
+  transform: translateY(calc(
+    (1 - clamp(0, (var(--sp) - var(--in)) / 0.10, 1)) * 26px +
+    clamp(0, (var(--sp) - (var(--out) - 0.06)) / 0.06, 1) * -22px
+  ));
+  will-change: opacity, transform;
+}
+.mg-frame-label {
+  display: inline-block;
+  color: var(--stage-violet);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+}
+.mg-frame-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(28px, 3.1vw, 44px);
+  line-height: 1.18;
+  margin: 0 0 14px;
+  color: var(--stage-cream);
+}
+.mg-frame-title em {
+  font-style: normal;
+  color: var(--stage-violet);
+}
+.mg-frame-lede {
+  font-size: 16px;
+  line-height: 1.8;
+  /* r191 acceptance: +15% toward cream over the dim token — the VLM
+     pass flagged fast-scroll readability of body copy on the void. */
+  color: color-mix(in srgb, var(--stage-cream-dim) 85%, var(--stage-cream));
+  margin: 0;
+  max-width: 52ch;
+}
+.mg-frame-bullets {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.mg-frame-bullets li {
+  padding-inline-start: 18px;
+  position: relative;
+  color: var(--stage-cream);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.mg-frame-bullets li::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.62em;
+  width: 7px; height: 7px;
+  background: var(--stage-violet);
+}
+
+/* comparison circles (scene ٠٣) */
+.mg-compare {
+  display: flex;
+  align-items: flex-end;
+  gap: 28px;
+  margin-top: 22px;
+  transform: scale(calc(0.86 + 0.14 * clamp(0, (var(--sp) - var(--in)) / 0.16, 1)));
+  transform-origin: inline-start center;
+}
+.mg-compare-a {
+  inline-size: 120px;
+  block-size: 120px;
+  border: 1px solid var(--stage-line);
+  border-radius: 50%;
+  display: grid;
+  place-items: end center;
+  padding-bottom: -0px;
+}
+.mg-compare-b {
+  inline-size: 44px;
+  block-size: 44px;
+  background: var(--stage-violet);
+  border-radius: 50%;
+  box-shadow: 0 0 42px color-mix(in srgb, var(--stage-violet) 50%, transparent);
+  display: grid;
+  place-items: center;
+  align-self: center;
+}
+.mg-compare-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--stage-cream-dim);
+  white-space: nowrap;
+  translate: 0 36px;
+}
+
+/* capability bar — the 01–06 checklist */
+.mg-capbar {
+  display: none;
+}
+.mg-stage[data-pinned='on'] .mg-capbar {
+  display: flex;
+  position: absolute;
+  bottom: 16px;
+  inset-inline: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  opacity: calc(
+    clamp(0, (var(--sp) - 0.47) / 0.05, 1) *
+    clamp(0, (1.02 - var(--sp)) / 0.05, 1)
+  );
+}
+.mg-cap {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--stage-cream-dim);
+  padding: 4px 2px;
+  border-bottom: 1px solid transparent;
+  transition: color .45s ease, border-color .45s ease;
+}
+.mg-cap .fo-mono { margin-inline-end: 6px; }
+.mg-cap[data-on='true'] {
+  color: var(--stage-cream);
+  border-bottom-color: var(--stage-violet);
+}
+
+/* ── PD: المنظومة — product cards slider (cream body) ─────────────── */
+.pd-section {
+  background: var(--bg);
+  color: var(--text);
+  padding: clamp(72px, 10vh, 120px) clamp(20px, 5vw, 64px);
+}
+.pd-head {
+  max-width: 1160px;
+  margin: 0 auto 40px;
+  text-align: start;
+}
+.pd-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(28px, 4.4vw, 56px);
+  line-height: 1.16;
+  margin: 12px 0 14px;
+  max-width: 22ch;
+}
+.pd-title em { font-style: normal; color: var(--accent); }
+.pd-lede {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.8;
+  max-width: 60ch;
+}
+.pd-slider-wrap { position: relative; max-width: 1160px; margin: 0 auto; }
+.pd-slider {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-block: 8px;
+}
+.pd-slider::-webkit-scrollbar { display: none; }
+.pd-card {
+  scroll-snap-align: start;
+  flex: 0 0 min(88vw, 560px);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-3xl, 6px);
+  overflow: clip;
+}
+.pd-card-media { position: relative; margin: 0; height: 300px; }
+.pd-card-media img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  background: var(--stage-ink-2);
+}
+.pd-card-n {
+  position: absolute;
+  top: 14px;
+  inset-inline-start: 16px;
+  color: var(--stage-cream);
+  background: color-mix(in srgb, var(--stage-ink) 55%, transparent);
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: var(--r-xs, 2px);
+}
+.pd-card-body { padding: 22px 24px 26px; }
+.pd-card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 21px;
+  margin: 0 0 10px;
+}
+.pd-card-lede {
+  margin: 0 0 16px;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+.pd-card-tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+.pd-card-tags li {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  border: 1px solid var(--rule);
+  padding: 3px 9px;
+  border-radius: var(--r-xs, 2px);
+}
+.pd-arrows {
+  position: absolute;
+  top: -58px;
+  inset-inline-end: 0;
+  display: flex;
+  gap: 10px;
+}
+.pd-arrow {
+  inline-size: 42px;
+  block-size: 42px;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm, 2px);
+  cursor: pointer;
+  transition: border-color .3s ease, color .3s ease;
+}
+.pd-arrow:hover { border-color: var(--accent); color: var(--accent); }
+/* focus: the product's universal AA ring owns it (r172a §3) — no
+   private :focus-visible sub-language on the landing. */
+
+/* ── PF: ما يعمل اليوم — pinned staggered stat march ───────────────── */
+.pf-stage {
+  position: relative;
+  color: var(--stage-cream);
+  background:
+    radial-gradient(90vw 70vh at 20% 15%, color-mix(in srgb, var(--stage-violet) 14%, transparent), transparent 55%),
+    linear-gradient(180deg, var(--stage-ink-2) 0%, var(--stage-ink) 100%);
+  overflow: clip;
+}
+.pf-stage[data-pinned='on'] { height: 260vh; }
+.pf-pin { position: relative; }
+.pf-stage[data-pinned='on'] .pf-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: clip;
+}
+.pf-head { max-width: 1160px; margin: 0 auto; padding: 15vh 24px 0; text-align: center; }
+.pf-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(34px, 5.6vw, 72px);
+  line-height: 1.12;
+  margin: 10px 0 12px;
+}
+.pf-title em { font-style: normal; color: var(--stage-violet); }
+.pf-lede { color: var(--stage-cream-dim); margin: 0; }
+.pf-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  max-width: 1080px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+.pf-stage[data-pinned='on'] .pf-cards { margin-top: 6vh; }
+.pf-card {
+  position: relative;
+  border: 1px solid var(--stage-line);
+  background: color-mix(in srgb, var(--stage-ink-2) 35%, transparent);
+  border-radius: var(--r-3xl, 6px);
+  overflow: clip;
+  display: grid;
+  grid-template-rows: auto auto;
+}
+.pf-card-media { margin: 0; height: 170px; }
+.pf-card-media img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: .8;
+  filter: saturate(.85);
+}
+.pf-card-n {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 14px 18px 0;
+  font-family: var(--font-mono);
+}
+.pf-card-n strong { font-size: 40px; font-weight: 500; color: var(--stage-cream); }
+.pf-card-unit { font-size: 15px; color: var(--stage-violet); }
+.pf-card-sub {
+  margin: 6px 18px 18px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--stage-cream-dim) 88%, var(--stage-cream));
+}
+/* the march: card i enters/leaves across its own scroll band */
+.pf-stage[data-pinned='on'] .pf-card {
+  opacity: calc(
+    clamp(0, (var(--sp) - (0.06 + var(--ci) * 0.21)) / 0.05, 1) *
+    clamp(0, ((0.34 + var(--ci) * 0.21) - var(--sp)) / 0.06, 1)
+  );
+  transform: translateY(calc(
+    (1 - clamp(0, (var(--sp) - (0.06 + var(--ci) * 0.21)) / 0.28, 1)) * 34vh
+  ));
+  will-change: opacity, transform;
+}
+
+/* ── RL: لمن صُنعت — role cards (cream) ────────────────────────────── */
+.rl-section {
+  background: var(--bg);
+  color: var(--text);
+  padding: clamp(72px, 10vh, 120px) clamp(20px, 5vw, 64px);
+}
+.rl-cards {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 1160px;
+}
+.rl-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-3xl, 6px);
+  overflow: clip;
+}
+.rl-card-media { margin: 0; height: 190px; }
+.rl-card-media img { width: 100%; height: 100%; object-fit: cover; display: block; background: var(--stage-ink-2); }
+.rl-card-body { padding: 20px 22px 24px; }
+.rl-card-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 3px 10px;
+  border-radius: var(--r-xs, 2px);
+}
+.rl-card-title { font-family: var(--font-display); font-weight: 600; font-size: 19px; margin: 12px 0 8px; }
+.rl-card-lede { margin: 0; color: var(--text-muted); font-size: 14px; line-height: 1.8; }
+.rl-more {
+  max-width: 1160px;
+  margin: 28px auto 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  line-height: 1.8;
+}
+
+/* ── VS: إلى أين — parallax vision stage ───────────────────────────── */
+.vs-section {
+  position: relative;
+  background: var(--stage-ink);
+  color: var(--stage-cream);
+  overflow: clip;
+  padding: clamp(90px, 14vh, 160px) clamp(20px, 5vw, 64px) clamp(110px, 16vh, 180px);
+}
+.vs-bg {
+  position: absolute;
+  inset: -20% 0;
+  z-index: 0;
+  will-change: transform;
+}
+.vs-bg img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: .55;
+}
+.vs-section[data-pinned='on'] .vs-bg,
+.vs-bg {
+  transform: translateY(calc((var(--sp) - 0.5) * -7vh));
+}
+.vs-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+.vs-label { color: var(--stage-cream-dim); }
+.vs-label .fo-mono { color: var(--stage-violet); }
+.vs-wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(72px, 17vw, 200px);
+  line-height: 0.95;
+  margin: 18px 0 8px;
+  color: var(--stage-cream);
+  opacity: clamp(0, (var(--sp) - 0.02) / 0.10, 1);
+  translate: 0 calc((1 - clamp(0, (var(--sp) - 0.02) / 0.18, 1)) * 40px);
+  letter-spacing: -0.01em;
+  text-align: center;
+  white-space: nowrap;
+}
+.vs-copy {
+  max-width: 560px;
+  margin-inline-start: auto;
+  margin-inline-end: 0;
+  text-align: start;
+}
+.vs-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(22px, 2.6vw, 34px);
+  line-height: 1.3;
+  margin: 24px 0 12px;
+}
+.vs-title em { font-style: normal; color: var(--stage-violet); }
+.vs-lede {
+  margin: 0 0 20px;
+  color: color-mix(in srgb, var(--stage-cream-dim) 85%, var(--stage-cream));
+  font-size: 15px;
+  line-height: 1.85;
+}
+.vs-status {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid var(--stage-line-soft);
+  padding-top: 16px;
+}
+.vs-status li {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 14px;
+  align-items: baseline;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.vs-status-k {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--stage-cream);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.vs-status li.is-live .vs-status-k { color: var(--stage-violet); }
+.vs-status-v { color: var(--stage-cream-dim); }
+
+/* ── QT: مبدأ مدارك — the quote card ───────────────────────────────── */
+.qt-section {
+  background:
+    radial-gradient(80vw 60vh at 80% 110%, color-mix(in srgb, var(--stage-violet) 10%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--stage-ink) 0%, var(--stage-ink-2) 100%);
+  color: var(--stage-cream);
+  padding: clamp(80px, 12vh, 140px) clamp(20px, 5vw, 64px);
+}
+.qt-card {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(260px, 380px) 1fr;
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+  border: 1px solid var(--stage-line);
+  background: color-mix(in srgb, var(--stage-ink-2) 30%, transparent);
+  padding: clamp(24px, 4vw, 48px);
+  border-radius: var(--r-3xl, 6px);
+}
+.qt-media img {
+  width: 100%;
+  aspect-ratio: 1 / 1.04;
+  object-fit: cover;
+  display: block;
+  border-radius: var(--r-sm, 2px);
+}
+.qt-body { margin: 0; }
+.qt-text {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(20px, 2.6vw, 32px);
+  line-height: 1.55;
+  margin: 0 0 18px;
+}
+.qt-attribution {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--stage-violet);
+}
+.qt-corners { position: absolute; inset: 10px; pointer-events: none; }
+.qt-corner { position: absolute; inline-size: 14px; block-size: 14px; }
+.qt-c-tl { top: 0; inset-inline-start: 0; border-top: 1px solid var(--stage-violet); border-inline-start: 1px solid var(--stage-violet); }
+.qt-c-br { bottom: 0; inset-inline-end: 0; border-bottom: 1px solid var(--stage-violet); border-inline-end: 1px solid var(--stage-violet); }
+
+/* ── footer giant wordmark — the closing rush ───────────────────────── */
+.fo-footer { position: relative; }
+.fo-footer-mark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(64px, 16.5vw, 224px);
+  line-height: 0.82;
+  text-align: center;
+  letter-spacing: -0.01em;
+  color: var(--stage-cream);
+  opacity: calc(clamp(0, (var(--sp) - 0.45) / 0.30, 1) * 0.16);
+  translate: 0 calc((1 - clamp(0, (var(--sp) - 0.45) / 0.35, 1)) * 120px);
+  margin-top: 40px;
+  margin-bottom: -0.14em;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* ── FLOW MODE: mobile + reduced motion (the reference's own measured
+      mobile behavior: no pinning — frames stack, everything reads) ── */
+@media (max-width: 900px) {
+  .mg-stage { padding: 72px 20px 40px; }
+  .mg-pin {
+    position: absolute;
+    inset: 0;
+    opacity: .3;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .mg-map {
+    inset-inline-end: -58vw;
+    bottom: -20vh;
+    min-width: 480px;
+    min-height: 480px;
+  }
+  .mg-frames { position: relative; z-index: 1; max-width: none; }
+  .mg-frame {
+    background: color-mix(in srgb, var(--stage-ink) 55%, transparent);
+    border: 1px solid var(--stage-line-soft);
+    border-radius: var(--r-3xl, 6px);
+    margin-bottom: 16px;
+  }
+  .mg-frame-title { font-size: clamp(24px, 6.4vw, 32px); }
+  .mg-meta { position: static; margin-bottom: 18px; }
+  .mg-capbar, .mg-scale-note { display: none; }
+  .vs-copy { margin-inline: 0; }
+  .vs-status li { grid-template-columns: 1fr; }
+  .vs-wordmark { font-size: clamp(64px, 19vw, 96px); white-space: normal; }
+  .qt-card { grid-template-columns: 1fr; }
+  .qt-media img { aspect-ratio: 16 / 9; }
+  .fo-hero-corner, .fo-hero-mission { position: static; padding: 0; max-width: none; margin: 0 0 10px; }
+  .fo-scroll-cue { display: none; }
+  .pf-head { padding-top: 8vh; }
+  .pf-cards { grid-template-columns: 1fr; }
+  .pd-arrows { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mg-stage, .pf-stage { height: auto; }
+  .mg-stage .mg-pin,
+  .pf-stage .pf-pin { position: static; height: auto; overflow: visible; }
+  .mg-stage[data-pinned='on'] .mg-frame {
+    position: relative;
+    inset: auto;
+    opacity: 1;
+    transform: none;
+  }
+  .mg-frames { height: auto; }
+  .mg-capbar { display: flex; position: static; margin-top: 24px; opacity: 1; }
+  .mg-scale-note { display: none; }
+  .mg-stage[data-pinned='on'] .mg-map-rotor { transform: none; }
+  .pf-stage[data-pinned='on'] .pf-card { opacity: 1; transform: none; }
+  .vs-bg { transform: none; }
+  .vs-wordmark { opacity: 1; translate: none; }
+  .fo-footer-mark { opacity: .16; translate: none; }
+  .mg-node-mark, .mg-node-label, .mg-path { opacity: 1; }
+  .fo-scroll-cue-dot { animation: none; }
 }

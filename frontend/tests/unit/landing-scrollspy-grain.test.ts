@@ -74,7 +74,9 @@ describe('r188 — the folio chrome that ships', () => {
   });
 
   it('chapter anchors: the four nav links resolve to real section ids', () => {
-    for (const s of ['journey', 'roles', 'ledger', 'independence']) {
+    // r191: the anchors renamed with the operator-ordered copy
+    // (ledger → live, independence → roles, + the new system anchor).
+    for (const s of ['journey', 'system', 'live', 'roles']) {
       expect(tsx).toContain(`id="${s}"`);
       expect(tsx).toContain(`href="#${s}"`);
     }

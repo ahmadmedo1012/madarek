@@ -4606,6 +4606,10 @@
     font-size: var(--fs-xxs);
     color: var(--accent);
   }
+  /* r191 a11y (axe catch): on elevated night surfaces (#121a36) the
+     11px tag's --accent (#9A5CFF) lands at 4.36:1 — just under AA.
+     The strong accent tier (#B085FF, 7.14:1 on night) clears it. */
+  [data-theme='dark'] .ledger-tag { color: var(--accent-strong); }
   /* zone tinting — the ONE place pastel families become section
      bands (the VLM trial's stolen tinted-head, both-theme-safe via
      the -bg/-deep pair of each family). */

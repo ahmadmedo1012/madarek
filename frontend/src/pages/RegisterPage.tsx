@@ -434,8 +434,9 @@ export default function RegisterPage() {
       </main>
 
       <footer className="auth-bottom">
-        {/* r177: was the ministry/university line — now the platform's own identity */}
-        صُنع في ليبيا · <strong>منصّة تعليم ذكي مستقلّة</strong>
+        {/* r177 → r191: the platform's own identity; the operator-rejected
+            provenance slogan is gone — the honest identity stays. */}
+        <strong>منصّة تعليم ذكية مستقلّة</strong> · عربية أولًا
       </footer>
     </div>
   );

@@ -286,6 +286,7 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     expect(container.querySelector('main.auth-center')).not.toBeNull();
     const contentInfo = container.querySelector('footer.auth-bottom');
     expect(contentInfo).not.toBeNull();
-    expect(contentInfo).toHaveTextContent('منصّة تعليم ذكي مستقلّة');
+    // r191: the rejected slogan is gone; the identity reads ذكية.
+    expect(contentInfo).toHaveTextContent('منصّة تعليم ذكية مستقلّة');
   });
 });

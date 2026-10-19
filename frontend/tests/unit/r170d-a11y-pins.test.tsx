@@ -180,7 +180,9 @@ describe('r170d → r188 — landing burger keyboard contract (Escape + aria-exp
     expect(menu).not.toBeNull();
     const items = within(menu).getAllByRole('link');
     expect(items.length).toBeGreaterThanOrEqual(6);
-    for (const name of ['كيف تعمل', 'الأدوار', 'ما يُشحن اليوم', 'الاستقلالية']) {
+    // r191: the operator-ordered copy rename — the four anchors stay,
+    // their labels change (ما يُشحن اليوم → ما يعمل اليوم, الاستقلالية → لمن صُنعت).
+    for (const name of ['كيف تعمل', 'المنظومة', 'ما يعمل اليوم', 'لمن صُنعت']) {
       expect(items.some((a) => (a.textContent || '').includes(name))).toBe(true);
     }
 

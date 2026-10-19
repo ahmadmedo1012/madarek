@@ -42,7 +42,8 @@ describe('r177 — public metadata is platform-neutral (index.html)', () => {
 
   it('title and description carry the independent platform identity', () => {
     expect(html).toContain('<title>مدارك · منصّة التعليم الذكي</title>');
-    expect(html).toContain('منصّة تعليم ذكي مستقلّة');
+    // r191: ذكي → ذكية (the rejected provenance slogan removed)
+    expect(html).toContain('منصّة تعليم ذكية مستقلّة');
   });
 
   it('OG / Twitter cards describe Madarek, not a university', () => {
@@ -95,7 +96,8 @@ describe('r177 — landing/auth copy is affiliation-free', () => {
     expect(landing).not.toMatch(/fo-brand-sub">\s*جامعة الزاوية/);
     expect(landing.match(/fo-brand-sub">\s*منصّة التعليم الذكي/g)?.length).toBe(2);
     // the copyright is the platform's alone
-    expect(landing).toContain('© {year} مدارك</span>');
+    // r191: the year renders in Arabic-Indic digits (AR(year)).
+    expect(landing).toContain('© {AR(year)} مدارك</span>');
   });
 
   it('auth pages carry the platform identity, no ministry strip', () => {
@@ -104,7 +106,8 @@ describe('r177 — landing/auth copy is affiliation-free', () => {
       for (const claim of OFFICIAL_CLAIMS) {
         expect(src, `${f} still carries: ${claim}`).not.toContain(claim);
       }
-      expect(src).toContain('منصّة تعليم ذكي مستقلّة');
+      // r191: the auth identity strip (rejected slogan removed).
+      expect(src).toContain('منصّة تعليم ذكية مستقلّة');
     }
   });
 

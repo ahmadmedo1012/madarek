@@ -45,31 +45,37 @@ describe('r168b — Oasis chips are engine-gated in source', () => {
 });
 
 describe('r168b — landing copy claims only what ships', () => {
-  it('station-03: no chapter-summaries/quiz promise', () => {
+  it('r191 — station-03: no chapter-summaries/quiz promise; the AI card claims only the local engine', () => {
     const page = stripJsx(read('src/pages/LandingPage.tsx'));
     expect(page).not.toContain('تلخيصات للفصول الطويلة');
-    expect(page).toContain('تحديدٌ لفجواتك المعرفيّة');
+    // r191 copy: the الذكاء الأكاديمي product card — honest local-composer
+    // scope, carried over verbatim from the r190/r168b wording contract.
+    expect(page).toContain('شروحات مخصَّصة');
+    expect(page).toContain('خطط مراجعة حسب أدائك الفعلي');
   });
 
-  it('r188 — the illustrative-figures section is gone entirely (no stats story at all)', () => {
+  it('r188 → r191 — no invented adoption story; the proof section states its source', () => {
     // The r188 folio landing drops the progress-stats chapter wholesale:
     // no 40/70/90 figures, no «تأسست 1988» trust band, no invented
-    // adoption — the truth LEDGER (٠٣ ما يُشحن اليوم) carries status
-    // labels instead of numbers.
+    // adoption. r191 keeps the contract with the new copy: the proof
+    // section's numbers are computed from the code and it says so.
     const page = stripJsx(read('src/pages/LandingPage.tsx'));
     expect(page).not.toContain('نتائج تجربة فعلية');
     expect(page).not.toContain('CountUp');
     expect(page).not.toContain('أرقام توضيحيّة');
-    // r190 «مدار المعرفة»: the same honesty contract, new copy — the
-    // proof section states each capability's REAL operational state
-    // and sources it to the feature docs (no numbers anywhere).
-    expect(page).toContain('حالتها التشغيلية الحقيقية');
-    expect(page).toContain('لا أرقام تسويقية ولا شراكات مُختلقة');
+    expect(page).toContain('كل رقم يُحسب من حالة الميزات في النظام');
+    // r191 operator gate: the rejected wording must never resurface on
+    // user-facing surfaces (صُنعت في ليبيا + ما يُشحن اليوم).
+    expect(page).not.toContain('صُنعت في ليبيا');
+    expect(page).not.toContain('ما يُشحن');
+    const html = read('index.html');
+    expect(html).not.toContain('صُنعت في ليبيا');
   });
 
-  it('r188 — the ledger labels the AR/VR row as a catalog, not running experiments', () => {
+  it('r188 → r191 — the vision stage labels AR/VR as a catalog, not running experiments', () => {
     const page = stripJsx(read('src/pages/LandingPage.tsx'));
-    expect(page).toContain('المعامل الافتراضية وتجارب AR/VR — فهرس بلا تشغيل بعد');
+    expect(page).toContain('المعامل الافتراضية');
+    expect(page).toContain('دون تشغيل بعد');
   });
 
   it('r188 — the section landmarks carry distinct aria-labels', () => {
