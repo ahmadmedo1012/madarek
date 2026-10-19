@@ -10,6 +10,7 @@ import {
   FlaskConical, X,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
+import { StarMark } from '../components/StarMark';
 import { LibyaFlag } from '../components/LibyaFlag';
 import { useLogin, useSelectInstitution } from '../hooks/useAuth';
 import { listPublicInstitutions } from '../lib/api';
@@ -225,7 +226,7 @@ export default function AuthPage() {
         <div className="auth-card glass">
 
           <div className="auth-brand-mini">
-            <span className="auth-brand-mini-mark">م</span>
+            <StarMark size={28} className="auth-brand-mini-mark" />
             <span className="auth-brand-mini-text">مدارك</span>
           </div>
 

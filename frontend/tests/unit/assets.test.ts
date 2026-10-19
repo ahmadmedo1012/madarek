@@ -11,7 +11,7 @@
  * Pure fs assertions — no jsdom interaction needed.
  */
 import { describe, expect, it } from 'vitest';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 

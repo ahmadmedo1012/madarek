@@ -7,6 +7,7 @@ import {
   Library, MessagesSquare, CalendarDays, BadgeCheck, Cog,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
+import { StarMark, StarFigure } from '../components/StarMark';
 import { ThemeToggle, useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { LibyaFlag } from '../components/LibyaFlag';
@@ -270,12 +271,7 @@ export default function LandingPage() {
           <Link to="/" className="fo-brand" aria-label="مدارك — الصفحة الرئيسية">
             {/* the khatam-star mark — same geometry as the favicon,
                 ink-stroked so it themes with the page */}
-            <svg className="fo-brand-mark" viewBox="0 0 64 64" aria-hidden focusable="false">
-              <rect x="17" y="17" width="30" height="30" fill="none" stroke="var(--accent)" strokeWidth="4" strokeLinejoin="round" />
-              <rect x="17" y="17" width="30" height="30" fill="none" stroke="var(--accent)" strokeWidth="4" strokeLinejoin="round" transform="rotate(45 32 32)" />
-              <rect x="27" y="27" width="10" height="10" fill="var(--accent)" transform="rotate(45 32 32)" />
-              <circle cx="47" cy="17" r="5" fill="var(--gold)" />
-            </svg>
+            <StarMark size={34} className="fo-brand-mark" />
             <span className="fo-brand-text">
               <span className="fo-brand-name">مدارك</span>
               <span className="fo-brand-sub">منصّة التعليم الذكي</span>
@@ -405,24 +401,7 @@ export default function LandingPage() {
                 the khatam star, ruled contents. */}
             <RevealCssClass as="figure" className="fo-hero-figure" delay={2} aria-hidden>
               <div className="fo-figure-plate">
-                <svg className="fo-figure-star" viewBox="0 0 200 200" focusable="false">
-                  {/* hairline orbit circles */}
-                  <circle cx="100" cy="100" r="92" fill="none" stroke="var(--rule)" strokeWidth="1" />
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="var(--border-faint)" strokeWidth="1" />
-                  {/* crosshair rules */}
-                  <line x1="100" y1="0" x2="100" y2="14" stroke="var(--rule)" strokeWidth="1" />
-                  <line x1="100" y1="186" x2="100" y2="200" stroke="var(--rule)" strokeWidth="1" />
-                  <line x1="0" y1="100" x2="14" y2="100" stroke="var(--rule)" strokeWidth="1" />
-                  <line x1="186" y1="100" x2="200" y2="100" stroke="var(--rule)" strokeWidth="1" />
-                  {/* the khatam star — two rotated squares */}
-                  <rect x="45" y="45" width="110" height="110" fill="none" stroke="var(--accent)" strokeWidth="6" strokeLinejoin="round" />
-                  <rect x="45" y="45" width="110" height="110" fill="none" stroke="var(--accent)" strokeWidth="6" strokeLinejoin="round" transform="rotate(45 100 100)" />
-                  {/* solid core diamond */}
-                  <rect x="80" y="80" width="40" height="40" fill="var(--accent)" transform="rotate(45 100 100)" />
-                  {/* نقطة — the point of light at the NE tip */}
-                  <circle cx="141" cy="59" r="9" fill="var(--gold)" />
-                  <circle cx="141" cy="59" r="16" fill="var(--gold)" opacity="0.18" />
-                </svg>
+                <StarFigure className="fo-figure-star" />
                 <figcaption className="fo-figure-caption">
                   <span className="fo-mono">الشكل ٠١</span>
                   <span>نجمة مدارك — ثمانية رؤوس لأمدار المعرفة</span>
@@ -455,7 +434,7 @@ export default function LandingPage() {
               'لوحات لخمسة أدوار',
             ].map((cap) => (
               <li key={cap}>
-                <span className="fo-capabilities-sep" aria-hidden>✳</span>
+                <span className="fo-capabilities-sep" aria-hidden />
                 {cap}
               </li>
             ))}
@@ -606,12 +585,7 @@ export default function LandingPage() {
         {/* ═══ الخاتمة — نقطة البداية ═══ */}
         <section className="fo-cta" aria-label="ابدأ رحلتك — أنشئ حسابك">
           <span className="fo-cta-star" aria-hidden>
-            <svg viewBox="0 0 64 64" focusable="false">
-              <rect x="17" y="17" width="30" height="30" fill="none" stroke="var(--accent)" strokeWidth="4" strokeLinejoin="round" />
-              <rect x="17" y="17" width="30" height="30" fill="none" stroke="var(--accent)" strokeWidth="4" strokeLinejoin="round" transform="rotate(45 32 32)" />
-              <rect x="27" y="27" width="10" height="10" fill="var(--accent)" transform="rotate(45 32 32)" />
-              <circle cx="47" cy="17" r="5" fill="var(--gold)" />
-            </svg>
+            <StarMark size={48} withHalo />
           </span>
           <div className="fo-cta-inner">
             <RevealCssClass as="h2" className="fo-cta-title" delay={1}>
@@ -644,12 +618,7 @@ export default function LandingPage() {
           <div className="fo-footer-grid">
             <div className="fo-footer-col">
               <Link to="/" className="fo-brand" aria-label="مدارك">
-                <svg className="fo-brand-mark" viewBox="0 0 64 64" aria-hidden focusable="false">
-                  <rect x="17" y="17" width="30" height="30" fill="none" stroke="var(--accent)" strokeWidth="4" strokeLinejoin="round" />
-                  <rect x="17" y="17" width="30" height="30" fill="none" stroke="var(--accent)" strokeWidth="4" strokeLinejoin="round" transform="rotate(45 32 32)" />
-                  <rect x="27" y="27" width="10" height="10" fill="var(--accent)" transform="rotate(45 32 32)" />
-                  <circle cx="47" cy="17" r="5" fill="var(--gold)" />
-                </svg>
+                <StarMark size={34} className="fo-brand-mark" />
                 <span className="fo-brand-text">
                   <span className="fo-brand-name">مدارك</span>
                   <span className="fo-brand-sub">منصّة التعليم الذكي</span>

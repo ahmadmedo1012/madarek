@@ -7,14 +7,18 @@
 import { test, expect } from './fixtures/e2e';
 
 test.describe('الصفحة العامة للزوار', () => {
-  test('الهبوط يعرض مشهد مدارك: العنوان الجوهري وهوية الجامعة', async ({ page }) => {
+  test('الهبوط يعرض مشهد مدارك: العنوان الجوهري وهوية المنصّة المستقلّة (r188)', async ({ page }) => {
     await page.goto('/');
 
-    // العنوان الرئيسي — «… وتبدأ نقطة وتصبح مدارًا»
-    await expect(page.locator('.ln-hero-title')).toContainText('مدارًا');
-    // هوية الجامعة في الشريط العلوي
-    await expect(page.locator('.landing-header-cta')).toBeVisible();
-    await expect(page.getByText('جامعة الزاوية').first()).toBeVisible();
+    // العنوان الرئيسي — «كلُّ معرفةٍ تبدأ نقطة، وتنمو في مدارك.»
+    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    // هوية المنصّة في الترويسة (r188: لا جامعة حقيقية — الاستقلالية)
+    await expect(page.locator('.fo-header-actions')).toBeVisible();
+    await expect(page.getByText('منصّة تعليم ذكي مستقلّة').first()).toBeVisible();
+    // بيان الاستقلالية يسمّي المؤسّسة التجريبية الاصطناعية بالاسم
+    await expect(page.getByText('جامعة مدارك التجريبية').first()).toBeVisible();
+    // دفتر الصدق: حالات «ما يُشحن اليوم» الظاهرة
+    await expect(page.getByText('ما يُشحن اليوم').first()).toBeVisible();
     // RTL بالهيكل — التطبيق عربي بالكامل (قفل index.html)
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   });

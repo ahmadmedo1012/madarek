@@ -9,6 +9,7 @@ import {
   Eye, EyeOff, Check,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
+import { StarMark } from '../components/StarMark';
 import { useRegister } from '../hooks/useAuth';
 import { useFaculties } from '../hooks/useResources';
 import { useInstitutions } from '../hooks/useInstitutions';
@@ -317,7 +318,7 @@ export default function RegisterPage() {
             never reflows the layout; only the keyed panel slides. */}
         <div className="auth-card auth-card--wide">
           <div className="auth-brand-mini">
-            <span className="auth-brand-mini-mark">م</span>
+            <StarMark size={28} className="auth-brand-mini-mark" />
             <span className="auth-brand-mini-text">مدارك</span>
           </div>
 

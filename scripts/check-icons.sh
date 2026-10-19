@@ -10,6 +10,8 @@
 #   - frontend/src/components/LibyaFlag.tsx        (national symbol)
 #   - frontend/src/components/Icon.tsx             (Lucide wrapper)
 #   - frontend/src/components/Illustration.tsx     (scene wrapper)
+#   - frontend/src/components/StarMark.tsx         (r188: the brand
+#     symbol primitive — khatam star; the LibyaFlag category)
 #   - frontend/src/lib/illustrations/              (bespoke scene SVGs)
 #   - frontend/src/styles/                         (CSS / decorative)
 #   - frontend/public/                             (static assets)
@@ -53,7 +55,7 @@ violations=0
 # illustrative diagram authoring (a constellation map, a computed light
 # path), the same category as lib/illustrations — NOT UI iconography.
 # UI icons inside the landing still go through <Icon icon={...} />.
-ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration)\.tsx|frontend/src/components/landing/|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/'
+ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration|StarMark)\.tsx|frontend/src/components/landing/|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/'
 
 # 1. Emoji presentation in source code outside allowlist.
 #    Emoji ranges (BMP + supplementary):

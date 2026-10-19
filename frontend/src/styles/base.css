@@ -357,6 +357,12 @@
     justify-content: space-between;
     gap: var(--sp-5);
     padding-block-end: var(--sp-5);
+    /* r188 (folio): every page opens like a folio — the hairline rule
+       closes the header block before content begins. The landing's
+       chapter system, carried into the product at the shared header
+       contract (zero per-page changes: 90+ pages inherit at once). */
+    border-block-end: 1px solid var(--rule);
+    margin-block-end: var(--sp-5);
     flex-wrap: wrap;
   }
   .page-title-block {

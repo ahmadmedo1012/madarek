@@ -81,14 +81,12 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--neutral-900);
-    color: var(--neutral-50);
+    /* r188: the khatam-star mark is self-colored (copper→gold gradient
+       strokes) — the retired dark letter-tile paint is gone; the mark
+       floats clean on both themes. */
+    background: transparent;
     flex-shrink: 0;
-    font-family: var(--font-display);
-    font-weight: var(--fw-black);
-    font-size: 14px; /* type-gate: allow — sidebar wordmark glyph (font-display brand tile) */
   }
-  [data-theme="dark"] .sidebar-brand-mark { background: var(--accent); color: var(--accent-fg); }
   .sidebar-brand-text { display: flex; flex-direction: column; gap: var(--sp-0-5); min-inline-size: 0; flex: 1; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة */
   .sidebar-brand-name {
     font-family: var(--font-display);
@@ -111,12 +109,17 @@
     padding-block: var(--sp-2);
   }
   .nav-section-label {
+    /* r188 (folio): the chapter-label voice — mono, accent-ink, with a
+       hairline rule closing each group. The sidebar reads as a table
+       of contents now, matching the landing's numbered chapters. */
+    font-family: var(--font-mono);
     font-size: var(--fs-xxs);
-    color: var(--text-muted);
+    color: var(--accent-ink);
     font-weight: var(--fw-semibold);
     padding: var(--sp-2) var(--sp-3) var(--sp-1);
     letter-spacing: 0;
   }
+  .nav-group + .nav-group { border-block-start: 1px solid var(--border-faint); }
 
   .nav-item {
     display: grid;

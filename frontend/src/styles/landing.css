@@ -355,7 +355,15 @@
   color: var(--text-muted);
 }
 .fo-capabilities-list li { display: inline-flex; align-items: center; gap: var(--sp-2); }
-.fo-capabilities-sep { color: var(--accent); }
+.fo-capabilities-sep {
+  /* the separator is the star's core diamond — 6px accent, rotated
+     (r188: the ✳ emoji glyph retired with the icon gate). */
+  inline-size: 6px;
+  block-size: 6px;
+  background: var(--accent);
+  transform: rotate(45deg);
+  flex: none;
+}
 
 /* ── Chapter system ─────────────────────────────────────────────────── */
 .fo-chapter {
