@@ -117,7 +117,7 @@ SMOKE_EMAIL2=<بريد ب> SMOKE_PASSWORD2=<كلمة ب> npm run smoke
    يتحقق أن مجموعتي الشعب **منفصلتان تمامًا**، ثم يطلب المستخدم
    الأول شعبة مؤسسة الثاني (`GET /offerings/:id/full`) ويتحقق أن
    الرفض 403/404 — أبدًا 200. (مثال جاهز: الطالبان التجريبيان
-   `student@zu.edu.ly` و`student2@demo.madarek.ly`.)
+   `student@demo.madarek.ly` و`student2@demo.madarek.ly`.)
    برسالة صريحة (لا تخطٍّ صامت).
 
 > قاعدة صدق: الفحص يلمس النشر الحي فقط ولا يُشغّل داخل CI أبدًا
@@ -292,10 +292,10 @@ pg_restore --no-owner --no-privileges \
 export NEW_PASSWORD="$(openssl rand -base64 24)"
 
 # 2) معاينة (قراءة فقط: يتحقق من الحساب ويعرض التغيير المخطط):
-npm run db:rotate-password -- --email owner@zu.edu.ly --new-password-env NEW_PASSWORD --dry-run
+npm run db:rotate-password -- --email owner@demo.madarek.ly --new-password-env NEW_PASSWORD --dry-run
 
 # 3) التنفيذ — يتطلب --yes (وإلزامي كذلك عند NODE_ENV=production):
-npm run db:rotate-password -- --email owner@zu.edu.ly --new-password-env NEW_PASSWORD --yes
+npm run db:rotate-password -- --email owner@demo.madarek.ly --new-password-env NEW_PASSWORD --yes
 ```
 
 دلالات السكربت تطابق `changePassword` في التطبيق
@@ -308,7 +308,7 @@ npm run db:rotate-password -- --email owner@zu.edu.ly --new-password-env NEW_PAS
 نفسها)؛ قائمة كلمات المرور الشائعة حرس طبقة الـDTO داخل التطبيق —
 اختر كلمة قوية كما في الأمر أعلاه.
 
-> حسابات العرض الأربعة (student/teacher/admin/quality@zu.edu.ly)
+> حسابات العرض الأربعة (student/teacher/admin/quality@demo.madarek.ly)
 > دُوّيرت في الإنتاج عبر التطبيق نفسه (`/auth/change-password`) —
 > كلمة `1234` لم تعد مقبولة هناك. هذا السكربت للأغراض المشغّلية
 > المستقبلية ولحساب المالك خاصة.
@@ -330,7 +330,7 @@ npm run db:rotate-password -- --email owner@zu.edu.ly --new-password-env NEW_PAS
   كلمة المرور المختارة عبر متغير البيئة لا تُطبع أبدًا.
 - **صف تدقيق**: كل إنشاء يسجّل `OWNER_PROVISION`
   (مصدر operator-script) في `AuditLog` داخل نفس المعاملة.
-- **`--suspend-demo-owner`**: يعلّق حساب العرض `owner@zu.edu.ly`
+- **`--suspend-demo-owner`**: يعلّق حساب العرض `owner@demo.madarek.ly`
   (isActive=false + إبطال جلساته) **بعد** إنشاء الحساب الجديد
   وبنفس المعاملة — لا تنتهي المنصة بصفر مالكين نشطين أبدًا.
 - **مثبَّت باختبارات**: عقد السكربت كله (معاملات argon، حدود

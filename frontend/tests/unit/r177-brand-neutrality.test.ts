@@ -144,11 +144,15 @@ describe('r182 — the docs center intro stays affiliation-free', () => {
    * (brand-audit-and-changes.md) documents it as already fixed.
    * Pin the corrected wording so the docs index can never drift
    * back into university co-branding. */
-  it('docs/README.md presents Madarek as the independent platform with Zawia as showcase', () => {
+  it('docs/README.md presents Madarek as the independent platform with the fictional demo tenant', () => {
     const docsIndex = readRepo('docs/README.md');
     expect(docsIndex).toContain('منصّة تعليم');
     expect(docsIndex).toContain('مستقلّة');
-    expect(docsIndex).toContain('مؤسّسة العرض المرجعية');
+    // r188: the demo tenant is the fictional «جامعة مدارك التجريبية» —
+    // synthetic data, never a real-university showcase framing.
+    expect(docsIndex).toContain('جامعة مدارك التجريبية');
+    expect(docsIndex).toContain('اصطناعية');
+    expect(docsIndex).not.toContain('مؤسّسة العرض المرجعية');
     expect(docsIndex).not.toContain('منصة التعلم الذكية\nلجامعة الزاوية');
     expect(docsIndex).not.toMatch(/مشروع \*\*مدارك\*\* — منصة[^\n]*جامعة الزاوية/);
   });

@@ -62,7 +62,7 @@
 # دخول (استبدل البيانات بحساب تجريبي محلي — لا أسرار هنا)
 curl -s -X POST http://localhost:4000/api/v1/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"identifier":"student@zu.edu.ly","password":"<كلمة حسابك المحلية>"}'
+  -d '{"identifier":"student@demo.madarek.ly","password":"<كلمة حسابك المحلية>"}'
 
 # استدعاء محمي
 curl -s http://localhost:4000/api/v1/me/dashboard \

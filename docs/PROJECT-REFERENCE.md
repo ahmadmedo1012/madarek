@@ -190,11 +190,11 @@ DATABASE_URL='...' JWT_ACCESS_SECRET='...' JWT_REFRESH_SECRET='...' npm run db:s
 ```
 
 Demo accounts (password `Madarek2026!` — re-seeding resets it):
-- `student@zu.edu.ly` → STUDENT (أحمد الزروق)
-- `teacher@zu.edu.ly` → TEACHER (د. سالم البوسيفي)
-- `admin@zu.edu.ly` → ADMIN (إدارة الجامعة)
-- `quality@zu.edu.ly` → QUALITY (مكتب ضمان الجودة)
-- `owner@zu.edu.ly` → OWNER (مالك المنصة)
+- `student@demo.madarek.ly` → STUDENT (أحمد الزروق)
+- `teacher@demo.madarek.ly` → TEACHER (د. سالم البوسيفي)
+- `admin@demo.madarek.ly` → ADMIN (إدارة الجامعة)
+- `quality@demo.madarek.ly` → QUALITY (مكتب ضمان الجودة)
+- `owner@demo.madarek.ly` → OWNER (مالك المنصة)
 
 ## Deployment (Render)
 

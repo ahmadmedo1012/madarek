@@ -62,16 +62,18 @@ npm run dev                        # backend :4000
 npm run dev:web                    # frontend :5173 (proxies /api → :4000)
 ```
 
-**Demo accounts** after seeding (password `Madarek2026!` — public demo
-credential, re-seeding resets it), spanning the **two demo institutions**:
+**Demo accounts** after seeding — **the password is NOT published here**
+(r188: removed from public docs; delivered via the operator pilot guide and
+a private handoff), spanning the **two demo institutions**:
 
-- University of Zawia (the reference showcase, 25 faculties):
-  `student@`, `teacher@`, `admin@`, `quality@zu.edu.ly`
+- Madarek Demo University (the explicitly-fictional demo tenant, r188 —
+  25 faculties across three knowledge campuses):
+  `student@`, `teacher@`, `admin@`, `quality@demo.madarek.ly`
 - Al-Andalus Education Institute (the second demo institution proving
   isolation): `student2@`, `teacher2@`, `admin2@demo.madarek.ly`
-- Platform owner (no membership — platform scope): `owner@zu.edu.ly`
+- Platform owner (no membership — platform scope): `owner@demo.madarek.ly`
 
-Log in as `student@zu.edu.ly` then `student2@demo.madarek.ly` — the two
+Log in as `student@demo.madarek.ly` then `student2@demo.madarek.ly` — the two
 students share reg-number `UZ-2024-00001` on purpose and each sees only
 their institution's courses (a foreign offering answers 403). Deploy-time
 seeding on Render runs after every deploy, non-destructively (r180).
