@@ -1513,3 +1513,76 @@
   }
 }
 }
+
+/* ═════════════════════════════════════════════════════════════
+   wave r190-D4 — «مدار المعرفة» mission-control telemetry
+   (append-only; later source order inside @layer pages wins over
+   the wave 6-a declarations this section refines)
+   ═════════════════════════════════════════════════════════════ */
+@layer pages {
+
+/* ── 1 · The live pulse — the ring glows VIOLET ─────────────────
+   The R190 reference grammar: orbital glow + luminous violet
+   nodes. The pulse's expanding ::after ring becomes the violet
+   ORBIT while the core dot keeps its honest status color (green
+   healthy / amber alerts / red degraded), and the dot gains a
+   violet aura. The frozen states (pending/degraded) restore the
+   status-colored frozen ring below — a neutral or danger dot must
+   never carry a violet orbit. */
+.owner-live-pulse {
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.owner-live-pulse::after {
+  background: var(--accent);
+}
+
+.owner-live-status.has-alerts .owner-live-pulse {
+  box-shadow: 0 0 10px color-mix(in srgb, var(--warning) 55%, transparent);
+}
+
+.owner-live-status.is-degraded .owner-live-pulse,
+.owner-live-status.is-pending .owner-live-pulse {
+  box-shadow: none;
+}
+
+/* r153e's freeze contract, extended to the ring's new color: the
+   frozen pending/degraded rings read as the dot's own status tone
+   (inherit), never as a violet orbit claiming life. */
+.owner-live-status.is-degraded .owner-live-pulse::after,
+.owner-live-status.is-pending .owner-live-pulse::after {
+  background: inherit;
+  animation: none;
+}
+
+/* ── 2 · The live tick — the 7px VIOLET SQUARE ──────────────────
+   The live-tile label markers join the §R190 telemetry signature
+   (the 7×7 zero-radius square before .stat-label/.ledger-tag):
+   the tick stops being a green circle and becomes the violet
+   square, still breathing on the skeleton cadence. It is a LIVE
+   marker, not a status — the traffic-light semantics stay on the
+   .owner-health-dot family. */
+.owner-live-tick {
+  border-radius: 0;   /* raw-css: permitted zero */
+  background: var(--accent);
+}
+
+/* ── 3 · The status band — glass on the void ────────────────────
+   §R190 gives .card/.ledger/.stat-strip the translucent luminosity
+   step on the dark theme; the mission-control band joins its
+   family instead of a flat surface-1 slab. Light keeps the inked
+   hairline (the cream editorial grammar). */
+[data-theme="dark"] .owner-live-status {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--text) 4%, var(--surface)),
+      color-mix(in srgb, var(--text) 1.5%, var(--surface)));
+  border-color: var(--surface-border);
+}
+
+/* the warning wash rides OVER the glass step (wave 6-a's own mix,
+   rebased on --surface so the luminosity language survives) */
+[data-theme="dark"] .owner-live-status.has-alerts {
+  background: color-mix(in srgb, var(--warning) 6%, var(--surface));
+}
+}

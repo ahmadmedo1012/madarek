@@ -40,11 +40,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   AlertTriangle, Archive, BadgeCheck, Ban, BookOpen, CheckCircle2,
-  ChevronRight, ClipboardCheck, Clock, Copy, FileQuestion, FileText, Hourglass, Info,
-  ListChecks, Pencil, Plus, Search, Send, ShieldCheck, Target, Trash2, X,
+  ChevronRight, ClipboardCheck, Copy, FileQuestion, FileText, Hourglass, Info,
+  ListChecks, Pencil, Plus, Search, Send, ShieldCheck, Trash2, X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { Badge, Button, Card, FormField, Input, MetricCard, Tabs } from '../../components/primitives';
+import { Badge, Button, Card, FormField, Input, Tabs } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import type { ThemeColor } from '../../components/primitives';
 import {
   DetailSkeleton, EmptyState, ErrorState, ListSkeleton, LoadingState,
@@ -1990,32 +1991,36 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
         </p>
       )}
 
-      <div className="grid-4">
-        <MetricCard
-          icon={ListChecks}
-          label="الأسئلة"
-          value={template.questions.length.toString()}
-          color="brand"
-        />
-        <MetricCard
-          icon={Clock}
-          label="المدة"
-          value={countAr(template.durationMin, ['دقيقة واحدة', 'دقيقتان', 'دقائق', 'دقيقة'])}
-          color="purple"
-        />
-        <MetricCard
-          icon={Target}
-          label="مجموع النقاط"
-          value={countAr(totalPoints, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}
-          color="amber"
-        />
-        <MetricCard
-          icon={BadgeCheck}
-          label="درجة النجاح"
-          value={<bdi>{template.passingScore}%</bdi>}
-          color="green"
-        />
-      </div>
+      {/* R190 D-2: the template's fact strip — the four header numbers
+       * as the ledger stat line (mono labels, metric values, honest
+       * trend notes) instead of four icon-card tiles. */}
+      <StatStrip
+        ariaLabel="حقائق القالب"
+        cells={[
+          {
+            label: 'الأسئلة',
+            value: template.questions.length.toString(),
+            trend: template.randomized ? 'عشوائي لكل طالب' : 'بترتيب الإنشاء',
+            trendTone: 'flat',
+          },
+          {
+            label: 'المدة',
+            value: countAr(template.durationMin, ['دقيقة واحدة', 'دقيقتان', 'دقائق', 'دقيقة']),
+            trendTone: 'flat',
+          },
+          {
+            label: 'مجموع النقاط',
+            value: countAr(totalPoints, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة']),
+            trendTone: 'flat',
+          },
+          {
+            label: 'درجة النجاح',
+            value: <bdi>{template.passingScore}%</bdi>,
+            trend: 'الحد الأدنى للاجتياز',
+            trendTone: 'flat',
+          },
+        ]}
+      />
 
       <Card title="تفاصيل القالب" icon={FileText} compact>
         <div className="flex-col gap-2">

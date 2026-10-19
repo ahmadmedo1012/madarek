@@ -14,11 +14,12 @@ import { useMemo, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
-  GraduationCap, Sparkles, Award, Trophy, Clock, CheckCircle2, Lock,
+  Sparkles, Award, Clock, CheckCircle2, Lock,
   ChevronLeft, ChevronRight, BookOpen, Target, Crown, Star, Medal,
   AlertTriangle,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, ProgressBar, UserAvatar, AlertRow, PageHeader } from '../../components/primitives';
+import { Card, Badge, ProgressBar, UserAvatar, AlertRow, PageHeader } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import { PageSkeleton, DetailSkeleton, ErrorState, EmptyState, Skeleton, ListSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -122,32 +123,15 @@ export default function TrainingCatalogPage() {
         </Card>
       ) : me ? (
         <>
-          <div className="grid-4">
-            <MetricCard
-              icon={Trophy} color="gold"
-              label="نقاطك"
-              value={formatNum(me.points)}
-              change={`المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}`}
-            />
-            <MetricCard
-              icon={Award} color="purple"
-              label="الأوسمة"
-              value={formatNum(me.badgeCount)}
-              change={badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])} في المنصة` : 'في مسارات التطوير الذاتي'}
-            />
-            <MetricCard
-              icon={GraduationCap} color="brand"
-              label="مسارات نشطة"
-              value={formatNum(enrolledCount)}
-              change={countAr(completedCount, ['واحد مكتمل', 'مكتملان', 'مكتملة', 'مكتمل'])}
-            />
-            <MetricCard
-              icon={Medal} color="green"
-              label="الشهادات"
-              value={formatNum(me.certificateCount)}
-              change="إتمام موثَّق من المنصة"
-            />
-          </div>
+          <StatStrip
+            ariaLabel="ملخّص إنجازاتك"
+            cells={[
+              { label: 'نقاطك', value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
+              { label: 'الأوسمة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])} في المنصة` : 'في مسارات التطوير الذاتي' },
+              { label: 'مسارات نشطة', value: formatNum(enrolledCount), trend: countAr(completedCount, ['واحد مكتمل', 'مكتملان', 'مكتملة', 'مكتمل']) },
+              { label: 'الشهادات', value: formatNum(me.certificateCount), trend: 'إتمام موثَّق من المنصة' },
+            ]}
+          />
 
           {/* Level progress band */}
           <Card>
@@ -774,11 +758,14 @@ export function AchievementsPage() {
           />
         </Card>
       ) : me ? (
-        <div className="grid-3">
-          <MetricCard icon={Trophy} color="gold" label="مجموع النقاط" value={formatNum(me.points)} change={`المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}`} />
-          <MetricCard icon={Award} color="purple" label="الأوسمة المحقّقة" value={formatNum(me.badgeCount)} change={badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])}` : undefined} />
-          <MetricCard icon={Medal} color="green" label="الشهادات" value={formatNum(me.certificateCount)} change="إتمام موثَّق من المنصة" />
-        </div>
+        <StatStrip
+          ariaLabel="ملخّص نقاطك"
+          cells={[
+            { label: 'مجموع النقاط', value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
+            { label: 'الأوسمة المحقّقة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])}` : undefined },
+            { label: 'الشهادات', value: formatNum(me.certificateCount), trend: 'إتمام موثَّق من المنصة' },
+          ]}
+        />
       ) : null}
 
       {/* Tabs — manual role/aria annotation (the tabs carry icons, which the

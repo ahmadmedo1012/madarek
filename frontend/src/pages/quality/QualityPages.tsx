@@ -9,17 +9,17 @@ import {
 import {
   ShieldCheck, BookOpen, Activity,
   AlertTriangle, TrendingUp, FileText, ClipboardCheck, ListChecks,
-  Building2, School, Star, Clock, ArrowLeft, X,
+  Building2, School, Star, ArrowLeft, X,
   CheckCircle2, Search,
   type LucideIcon,
 } from 'lucide-react';
 import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
-import { Card, MetricCard, Badge, AlertRow, ProgressBar, UserAvatar } from '../../components/primitives';
+import { Card, Badge, AlertRow, ProgressBar, UserAvatar } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ChartFrame } from '../../components/charts';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
-import { ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListSkeleton, TableSkeleton, Skeleton, CardSkeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, ChartSkeleton, ListSkeleton, TableSkeleton, Skeleton, CardSkeleton } from '../../components/primitives/States';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
@@ -300,6 +300,29 @@ function CountIn({ value, suffix = '' }: { value: number; suffix?: string }) {
       })}
       {suffix}
     </>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   R190 (D4): the StatStrip's own shape-matched skeleton — the
+   KpiSkeleton's .metric boxes swapped for the strip's real cells so
+   the pending → resolved handoff moves nothing (the OwnerDashboard
+   loading-closure pattern, in-page because the shared States module
+   is outside this wave's file scope).
+   ════════════════════════════════════════════════════════════════ */
+function StatStripSkeleton({ cells = 3 }: { cells?: number }) {
+  return (
+    <div className="stat-strip" aria-busy="true">
+      {Array.from({ length: cells }).map((_, i) => (
+        <div key={i} className="stat-cell">
+          <Skeleton width={70} height={11} />
+          <div style={{ marginBlock: 'var(--sp-1)' }}>
+            <Skeleton width={90} height={28} />
+          </div>
+          <Skeleton width={120} height={11} />
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -839,7 +862,7 @@ export function QualityProfessorsPage() {
             <p className="page-subtitle">رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.</p>
           </div>
         </header>
-        <KpiSkeleton />
+        <StatStripSkeleton cells={3} />
         <Card title="هيئة التدريس" icon={School}><TableSkeleton rows={5} cols={8} /></Card>
       </div>
     );
@@ -885,18 +908,35 @@ export function QualityProfessorsPage() {
         </div>
       </header>
 
-      <div className="grid-3">
-        <MetricCard icon={Star} label="متوسط رضا الطلاب" value={<CountIn value={Math.round(avgSat * 10) / 10} />} change="من 5.0" color="gold" />
-        <MetricCard icon={Clock} label="متوسط الاستجابة" value={<CountIn value={Math.round(avgResp)} suffix=" س" />} change="على رسائل الطلاب" color="brand" />
-        <MetricCard
-          icon={AlertTriangle}
-          label="بحاجة لمتابعة"
-          value={<CountIn value={lowComp} />}
-          change="التزام أقلّ من 50%"
-          color="red"
-          {...(lowComp > 0 ? { onClick: () => setLowOnly((v) => !v), actionHint: lowOnly ? 'عرض جميع الأساتذة' : 'عرض الأساتذة بحاجة لمتابعة', pressed: lowOnly } : {})}
-        />
-      </div>
+      {/* R190 (D4): the typographic stat strip — was the grid-3
+          icon-tile band (the audit's "identical icon-box grid" read).
+          The «بحاجة لمتابعة» cell stays a stat; its roster FILTER
+          affordance moved down into the toolbar as a pressed pill
+          (the filter belongs beside the search — the pinned toggle
+          contract lives there now). */}
+      <StatStrip
+        ariaLabel="مؤشرات هيئة التدريس"
+        cells={[
+          {
+            label: 'متوسط رضا الطلاب',
+            value: <CountIn value={Math.round(avgSat * 10) / 10} />,
+            trend: 'من 5.0',
+            trendTone: 'flat',
+          },
+          {
+            label: 'متوسط الاستجابة',
+            value: <CountIn value={Math.round(avgResp)} suffix=" س" />,
+            trend: 'على رسائل الطلاب',
+            trendTone: 'flat',
+          },
+          {
+            label: 'بحاجة لمتابعة',
+            value: <CountIn value={lowComp} />,
+            trend: 'التزام أقلّ من 50%',
+            trendTone: lowComp > 0 ? 'down' : 'flat',
+          },
+        ]}
+      />
 
       {/* 5-A8 §6 step 6 (rhythm): the roster is the page's primary
           section — it takes the breath after the KPI band. */}
@@ -924,7 +964,9 @@ export function QualityProfessorsPage() {
         ) : (
           <>
         {/* r183-B5: the standard roster search chrome (admin-students-
-            toolbar family) wired to the debounced server-side `q`. */}
+            toolbar family) wired to the debounced server-side `q`, plus
+            R190 (D4): the «بحاجة لمتابعة» filter as a pressed pill —
+            the former icon-tile KPI toggle, now where filters live. */}
         <div className="admin-students-toolbar">
           <div className="admin-students-search">
             <Icon icon={Search} size={14} />
@@ -937,6 +979,18 @@ export function QualityProfessorsPage() {
               aria-label="البحث في الأساتذة"
             />
           </div>
+          {lowComp > 0 && (
+            <button
+              type="button"
+              className={`filter-pill${lowOnly ? ' on' : ''}`}
+              aria-pressed={lowOnly}
+              onClick={() => setLowOnly((v) => !v)}
+              title={lowOnly ? 'عرض جميع الأساتذة' : 'عرض الأساتذة بحاجة لمتابعة فقط'}
+            >
+              بحاجة لمتابعة
+              <span className="filter-pill-count">{lowComp}</span>
+            </button>
+          )}
         </div>
         {lowOnly && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', flexWrap: 'wrap', marginBlockEnd: 'var(--sp-3)' }}>
@@ -1045,7 +1099,7 @@ export function QualityEngagementPage() {
     return (
       <div className="page">
         {pageHeader}
-        <KpiSkeleton />
+        <StatStripSkeleton cells={4} />
         <div className="grid-2-1">
           <Card><ChartSkeleton height={240} /></Card>
           <Card><ListSkeleton rows={3} /></Card>

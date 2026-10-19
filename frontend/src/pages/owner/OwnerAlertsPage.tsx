@@ -1,8 +1,9 @@
-import { AlertTriangle, ShieldAlert, Bell, CheckCircle2, Activity, RefreshCw } from 'lucide-react';
+import { CheckCircle2, Activity, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { CSSProperties } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, MetricCard, Badge } from '../../components/primitives';
+import { Card, Badge } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api } from '../../lib/api';
@@ -124,26 +125,33 @@ export function OwnerAlertsPage() {
         </div>
       </header>
 
-      <div className="grid-3">
-        <MetricCard
-          icon={Bell}
-          label="تنبيهات مفتوحة"
-          value={kpiValue(openTotal)}
-          color={kpiKnown ? (openTotal === 0 ? 'green' : 'brand') : 'brand'}
-        />
-        <MetricCard
-          icon={ShieldAlert}
-          label="تنبيهات حرجة"
-          value={kpiValue(criticalCount)}
-          color={kpiKnown ? (criticalCount === 0 ? 'green' : 'red') : 'brand'}
-        />
-        <MetricCard
-          icon={AlertTriangle}
-          label="تحذيرات"
-          value={kpiValue(warningCount)}
-          color={kpiKnown ? (warningCount === 0 ? 'green' : 'amber') : 'brand'}
-        />
-      </div>
+      {/* R190 (D4): the typographic stat strip — was the grid-3 icon
+          tiles. The severity state the old `color` prop painted on the
+          tile box now rides the trend note's tone (up = green ink /
+          down = red ink) — the same semantics, the strip's language. */}
+      <StatStrip
+        ariaLabel="مؤشرات التنبيهات التشغيليّة"
+        cells={[
+          {
+            label: 'تنبيهات مفتوحة',
+            value: kpiValue(openTotal),
+            trend: kpiKnown ? (openTotal === 0 ? 'لا شيء مفتوحًا' : 'تستوجب مراجعة') : 'بانتظار البيانات',
+            trendTone: kpiKnown ? (openTotal > 0 ? 'down' : 'up') : 'flat',
+          },
+          {
+            label: 'تنبيهات حرجة',
+            value: kpiValue(criticalCount),
+            trend: kpiKnown ? (criticalCount === 0 ? 'لا شيء حرجًا' : 'تستوجب قرارًا الآن') : 'بانتظار البيانات',
+            trendTone: kpiKnown ? (criticalCount > 0 ? 'down' : 'up') : 'flat',
+          },
+          {
+            label: 'تحذيرات',
+            value: kpiValue(warningCount),
+            trend: kpiKnown ? (warningCount === 0 ? 'لا تحذيرات' : 'تحتاج متابعة') : 'بانتظار البيانات',
+            trendTone: kpiKnown ? (warningCount > 0 ? 'down' : 'up') : 'flat',
+          },
+        ]}
+      />
 
       <Card title="التنبيهات النشطة">
         {alertsQuery.isPending ? (

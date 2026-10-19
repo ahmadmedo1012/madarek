@@ -2,6 +2,8 @@
 
 > **مدارك** — منصّة تعليم ذكي مستقلّة عربية-أولًا · the design canon as it ships in code.
 
+> **R190 «مدار المعرفة»** (the current direction): the whole product speaks the Turion-derived orbit grammar — **electric-violet accent** (light `#6C4AE0` · dark `#9A5CFF`, both AA-verified; copper/gold demoted to the ACHIEVEMENT family), **Alexandria** as the Arabic display voice (body stays Plex Sans Arabic, telemetry stays Plex Mono), a **near-square radius ladder** (2–6px), **glow/glass separation on the void**, white-slab primary CTAs on dark, and the **§R190 telemetry layer** (7px square markers, violet hover edges, momentum aura, masthead orbit node) on the r189 ledger primitives. Full reference analysis: `docs/design/r190-reference-matrix.md` · Wave-D recipe: `docs/design/r190-wave-d-recipe.md`.
+
 This document states the canon as it **ships in code**. Every value below was extracted from `frontend/src/styles/` at the audited tree (r131/r132) — not from specs (those carry plan-time values, kept as archaeology) and not from memory. When this file and `tokens.css` disagree, `tokens.css` wins; file an issue.
 
 ---
@@ -12,11 +14,11 @@ A design reference is gates, not a gallery. Madarek's canon is machine-enforced 
 
 | Gate | Command | What it asserts |
 |---|---|---|
-| **Parity export** | `node scripts/verify-parity-export.mjs` | **165/165 token checks** (163 before the r185 half-rung pins) — the export pair distills `tokens.css` faithfully; headline pins (night `#070B16`, gold `#E9B44C`, copper `#B57438`, cream `#FBFAF9`, sand `#F2EFE6`) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · 43 retired values absent · brace balance. |
+| **Parity export** | `node scripts/verify-parity-export.mjs` | **165/165 token checks** (163 before the r185 half-rung pins) — the export pair distills `tokens.css` faithfully; headline pins (night `#070B16`, violet `#9A5CFF`/`#6C4AE0`, cream `#FBFAF9`, sand `#F2EFE6` — the r190 accent swap updated pins + export pair together, documented in the CHECKS table) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · 43 retired values absent · brace balance. |
 | **Motion tokens** | `npm run check:motion-tokens` | No raw motion values outside the canonical token files. |
 | **Icon discipline** | `npm run check:icons` | Lucide-only — no other icon source. |
 | **Color tokens** | `npm run check:colors` (`--strict` in CI) | No raw hex/rgb()/hsl() outside the sanctioned zones (tokens.css · fonts.css · the export pair · documented `color-gate: allow` lines). r150a sorted the last 269 literals into tokens / `color-mix()` derivations / documented allows — the census is zero and the gate is strict. |
-| **Type, radius & spacing tokens** | `bash scripts/check-raw-css.sh` (`--strict` in CI; type/radius r184, spacing r185, **TSX inline spacing r186**; mutation-tested by `scripts/test-raw-css-gate.sh` — 49 fixture cases incl. every r185 blind-spot class) | A declaration-level structural scan (comments/strings/parens/multiline-aware, exact line pins): no raw `font-size`/`border-radius`/`padding`-`margin`-`gap` px literals outside the sanctioned zones. **Spacing scope (r185, deliberately different from the type scope):** 17 sheets — the 14 app sheets **plus** colleges.css and the parity pair (their spacing is ladder-shaped and the export mirrors the ladder internally); landing.css alone stays a **visible census** (its spec'd Orbit Ink editorial rhythm — spec §4.2.10/§4.3, 30+ rhythm values — is world design, not ladder debt; the count prints every run so drift never hides). Zero/`env()`/relative units are permitted without tokens; everything else is a ladder `var(--sp-*)` or a per-declaration `spacing-gate: allow — <reasoned>` line (bare/vague markers fail). Grid compliance ≠ token compliance — `28px` on the grid is still a finding without a rung. **TSX inline spacing (r186):** the r184/r185 audit seam became a strict axis — React style objects turn bare numbers into px at runtime, so quoted `…Npx…` values AND whole-value bare numbers are findings; the walk is quote- and comment-aware (prose in strings/templates/JSX comments never flags), property accesses and type members never flag, and the same reasoned-marker grammar exempts on the line above. The r185 audit line said «2 sites» — the blind regex had hidden 60. |
+| **Type, radius & spacing tokens** | `bash scripts/check-raw-css.sh` (`--strict` in CI; type/radius r184, spacing r185, **TSX inline spacing r186**; mutation-tested by `scripts/test-raw-css-gate.sh` — 49 fixture cases incl. every r185 blind-spot class) | A declaration-level structural scan (comments/strings/parens/multiline-aware, exact line pins): no raw `font-size`/`border-radius`/`padding`-`margin`-`gap` px literals outside the sanctioned zones. **Spacing scope (r185, deliberately different from the type scope):** 17 sheets — the 14 app sheets **plus** colleges.css and the parity pair (their spacing is ladder-shaped and the export mirrors the ladder internally); landing.css alone stays a **visible census** (its authored «مدار المعرفة» editorial rhythm — 30+ rhythm values — is world design, not ladder debt; the count prints every run so drift never hides). Zero/`env()`/relative units are permitted without tokens; everything else is a ladder `var(--sp-*)` or a per-declaration `spacing-gate: allow — <reasoned>` line (bare/vague markers fail). Grid compliance ≠ token compliance — `28px` on the grid is still a finding without a rung. **TSX inline spacing (r186):** the r184/r185 audit seam became a strict axis — React style objects turn bare numbers into px at runtime, so quoted `…Npx…` values AND whole-value bare numbers are findings; the walk is quote- and comment-aware (prose in strings/templates/JSX comments never flags), property accesses and type members never flag, and the same reasoned-marker grammar exempts on the line above. The r185 audit line said «2 sites» — the blind regex had hidden 60. |
 | **Token snapshots** | `frontend` vitest suite | Role-accent hexes read LIVE from tokens.css (r184 RA1: a tampered role table or retuned theme fails here first — the old hand-copied hexes had silently rotted), drift + route-title + a11y nets. |
 | **CI** | `.github/workflows/ci.yml` | 9 jobs: lint · typecheck · build · frontend tests · backend tests · db-integration · e2e · design gates (icons + motion tokens + CSP pins + parity export + **color gate, strict** + **raw-css type/radius/spacing gate, strict** — CSS sheets + TSX inline styles — + its mutation harness) · surface drift. |
 
@@ -24,7 +26,7 @@ A design reference is gates, not a gallery. Madarek's canon is machine-enforced 
 
 | Distilled in the export pair | Stays outside the export |
 |---|---|
-| Product theme (copper/gold), pastel families, elevation, motion ladder, z-scale, structural recipes — distilled in `frontend/src/styles/unified-parity.css` (canonical export) + `shared-design-system.css` (structural skeleton) | Orbit Ink landing world (`--ln-*`, grain, 42s marquee) — landing-only vocabulary |
+| Product theme (copper/gold), pastel families, elevation, motion ladder, z-scale, structural recipes — distilled in `frontend/src/styles/unified-parity.css` (canonical export) + `shared-design-system.css` (structural skeleton) | Landing world r190: the `--stage-*` media-stage family + `--aura-*` atmospheric stops — landing-only vocabulary (the retired Orbit-Ink `--ln-*` rungs stay defined in tokens.css as documented archaeology; zero live consumers) |
 | The export pair is a **reference artifact** — not imported by madarek's app; the parity gate diffs it against `tokens.css` so silent drift fails loudly | Role/college accent slots (`body[data-role]`) — madarek-app identity slots, outside the export |
 | | Illustration palette (`--ill-*`) — illustration-layer vocabulary |
 
@@ -34,7 +36,7 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 
 | File | Owns |
 |---|---|
-| `tokens.css` | ALL tokens — primitives, light/dark theme blocks, Orbit Ink `--ln-*`, pastel families, elevation, z, state tokens, the r150a basis constants (`--black`/`--white`/`--warm-ink`, theme-fixed), the overlay-veil ramp (`--overlay-veil[-deep/-max]`, per theme) and the print light-lock remap |
+| `tokens.css` | ALL tokens — primitives, light/dark theme blocks, the r190 stage/aura families, retired Orbit-Ink `--ln-*` (archaeology), pastel families, elevation, z, state tokens, the r150a basis constants (`--black`/`--white`/`--warm-ink`, theme-fixed), the overlay-veil ramp (`--overlay-veil[-deep/-max]`, per theme) and the print light-lock remap |
 | `fonts.css` | self-hosted Plex subsets (woff2) + `@font-face` declarations |
 | `motion.css` | reveal / skeleton / spinner motion grammar, semantic durations |
 | `base.css` | element reset, heading styles, reduced-motion belt, autofill/caret polish |
@@ -42,7 +44,7 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 | `layout.css` | sidebar / nav recipes |
 | `auth.css` · `notifications.css` · `student.css` | eager remainder — auth-page recipes, toasts/bottom-nav, student-surface patches |
 | `polish.css` | overrides layer — the last word on layered surfaces (legacy sections v6–v8 remain `@layer pages` by design — census pinned in the file's «Polish Bundle (consolidated v6 → v21)» header banner, polish.css:1-9; v9+ are overrides) |
-| `landing.css` | Orbit Ink world (§1a) — the only place `--ln-*` is consumed at scale |
+| `landing.css` | «مدار المعرفة» world (§1a) — the stage chrome, telemetry grammar, and editorial body sections (r190 rewrite; the only place `--stage-*` is consumed) |
 | `colleges.css` · `colleges-popover.css` · `admin.css` · `owner.css` · `training.css` · `pdf.css` · `player.css` | page-scoped sheets, imported by their lazy pages (admin.css born r150e — the colleges.css split; colleges-popover.css born r151h — the popover split, rides the LandingPage chunk; 10 eager via `main.tsx` + 8 page-scoped = the 18 in-app sheets) |
 | r152 ownership wave | the search family (v21) → `layout.css`; the megamino stagger (v18) → `landing.css`; the auth-card entrance + pdf-toolbar fade (v19) → `auth.css` / `pdf.css`; the whole `.state` family (v8+v11+v21) → `components.css` §STATE; the a11y utilities core (sr-only / skip-link / :target / tap-highlight / img-lazy) → `base.css` — polish.css keeps ONLY true overrides, belts and pins (5446 → ~4680 lines over r151–r152); r152j retired the dead Plex Serif italic pair (12 → 10 faces, zero live consumers) |
 | r153 ownership wave | the welcome-card family (v8 premium · v9 stack · v11 surface · v13 isolation · v17 photo overlay · v22 dots — 7 waves consolidated) → `student.css` §WELCOME-CARD, with the generic `.page-header` rules scoped off via `:not(.welcome-card)` so the pages-layer rule needs no pin; the owner realtime pulse (v17 heartbeat + ring + alert glow) → `owner.css` (restoring the frozen-dot honesty contract for is-pending/is-degraded); the colleges hero bar-draw + card emoji motion → `colleges.css` — polish shrinks to ~4470 lines; the last 68 raw `6px` literals migrated to `--sp-1-5` / `--motion-distance-small` (r153h — zero spacing/motion raw violations remain; 16 intentional raw uses documented as geometry/shadow) |
@@ -54,46 +56,40 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 
 ## 1. Two worlds — عالمان
 
-Madarek paints **two deliberate worlds**: the Orbit Ink marketing surface and the Notion-flavored product surface. They never mix vocabulary — but since r172a they share the SAME theme grounds and the SAME theme state: the landing is a first-class two-theme surface, grounded on the canonical `var(--bg)` (cream light / night dark) and driven by the shared ThemeToggle/theme store (no second theme state anywhere).
+**r190: ONE identity across the public + product surfaces.** The marketing surface and the product speak the same grammar — violet accent, Alexandria display, near-square geometry, telemetry markers — with the landing alone painting the theme-FIXED stage family (`--stage-*`, the void media surface: hero + mission-control chrome), while the landing's BODY sections and the whole product follow the canonical two-theme grounds (cream light / night dark), driven by the one shared ThemeToggle/theme store (no second theme state anywhere).
 
-### 1a. Orbit Ink — the landing world (الواجهة التعريفية)
+### 1a. «مدار المعرفة» — the landing world (الواجهة التعريفية, r190)
 
-Theme-aware `--ln-*` tokens (remapped per `data-theme` in `tokens.css` — light re-grounds on cream, dark keeps the authored night):
+The landing paints a **theme-fixed media stage** + theme-following body:
 
-| Token | Light | Dark | Notes |
-|---|---|---|---|
-| `--ln-ink` | `var(--bg)` **#FBFAF9** | `var(--bg)` **#070B16** | canonical grounds — was a fixed `#252A3E` ink stage painted identically in both themes (r172a) |
-| `--ln-ink-2` | `var(--c-sand-bg)` #F1ECDF | `var(--neutral-100)` #121A36 | scene-separation step (sand light / night ramp dark) |
-| `--ln-cream` | `#191918` (ink) | `#F5F3E7` | primary text — **16.9:1 / 17.7:1 AAA** |
-| `--ln-cream-dim` | `#5F5D57` | `#C9C6B4` | secondary — **6.31:1 / 5.58:1 on sand** (light) · 11.4:1 (dark). Light dim is one step darker than the app's `--text-muted` (which measured 4.45:1 on the sand step and was axe-caught live) |
-| `--ln-lime` / `-deep` | `#55701D` (pair collapses to the lime ink) | `#DFEDB2` / `#B9D778` | **the ONE editorial accent** (5.41:1 light on ground / 15.8:1 dark) — roster-limited: hero accent word, chapter labels, marquee separators. The light pair collapses: the bright pistachio is illegible on paper, and `.ln-label` is 12px text on the sand chapter |
-| `--ln-violet` / `-deep` | `#7A6BF2` / `#D7D3FB` | `#7A6BF2` / `#4E2FB8` | accent-2, icon/large tier (3.86:1 light / 4.88:1 dark); `-deep` is the `::selection` ground — night = cream-on-violet 7.78:1, light = ink-on-lilac ≈12.2:1 |
-| `--ln-line` / `-soft` | `var(--rule)` / `var(--border-faint)` | same aliases | **canonical hairlines** — the landing's structural edges ARE the product edges |
-| `--ln-scene-line` / `-soft` | `rgba(25,25,24,0.28)` / `0.14` | `rgba(245,243,231,0.14)` / `0.07` | NEW r172a decorative-stroke pair — light roughly DOUBLEs the ink alpha (authored cream alphas were VLM-measured "nearly invisible" on paper) |
-| Landing cards | `color-mix(--ln-cream 3%, transparent)` fill + 1px `--ln-line-soft` + 20px radius (both themes) | same | border-shift hovers, **no lift** |
-| Hero headline | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh **1.2** (mobile 1.18) | same | the only display-size surface in the family — r148 (AUDIT-4 C3): 1.04 clipped Arabic diacritic stacks |
-| Primary CTA | `--accent` fill + `--accent-fg` text + `--accent-hover` | same recipe | **the canonical accent pair, same recipe as `.btn.accent`** — copper #B57438 + #1A0F06 = 4.95:1 light / gold #E9B44C + #05070F = 10.63:1 dark. No landing-private CTA colors (was the lime fill; r172a). The skip-link joins the same family |
-| Marquee | `--ln-dur-marquee: 42s` linear, one slow pass (college ring) | same | spelled only via the token |
-| Grain veil | `--ln-grain-op: 0.075`, **polarity follows the theme** (black noise light / white noise dark) | see §4 |
-| Canvas scene | OrbitScene reads live computed `--ln-cream/-lime/-violet` at boot + a MutationObserver on `data-theme` rebuilds sprites + nebula and repaints | same | light alpha multipliers: star ×1.6 · ring ×1.8 · link/nebula ×1.6–1.7 · glow ×1.3 · horizon ×0.55 |
-| Theme control | the shared `ThemeToggle` (فاتح · داكن · تلقائي) in the landing header; ≤640px the pill yields to a labeled mobile-menu row | same | one theme state for the whole product |
-
-**Hard rules:** no glass/blur · flat ground + ONE radial (α ≤ 0.12) hero-sky only · pills everywhere · no gradient text, no glows on type, no button gradients · focus rings = the product's universal AA ring (the landing's private cream-outline sub-language was deleted in r172a — it was invisible in light) · **no boot hack** — body/splash/landing paint `var(--bg)` from the first styled frame in both themes (the `html[data-landing-boot]` machinery is retired end-to-end).
-
-### 1b. Product theme — copper-on-cream light · gold-on-night dark (هوية المنتج)
-
-| Role | Light | Dark |
+| Layer | Tokens | Notes |
 |---|---|---|
-| ground `--bg` | `#FBFAF9` (neutral-50) | `#070B16` (night indigo) |
-| `--surface` / `--surface-2` / `--surface-3` | `#FFFFFF` / `#F7F6F3` / `#F1EFEC` | `#0D1428` / `#121A36` / `#182142` |
-| ink `--text` | `#191918` | `#F2EFE6` (warm sand) |
-| `--text-muted` / `--text-faint` | `#6E6C65` (**5.04:1**) / `#74706A` | `#8E97B8` (**6.80:1**) / `#7A83A0` |
-| accent `--accent` | copper `#B57438` | gold `#E9B44C` (**10.39:1**) |
-| accent hover / `--accent-strong` / accent fg | `#9A5F25` / `#5C3416` / `#1A0F06` | `#F5D48A` / `#C9962F` / `#05070F` |
-| focus-ring color | `--accent-strong #5C3416` (AA rule) | `--accent-strong #C9962F` (**7.38:1** — the ring resolves to the strong step in dark, not `--accent`; r176f doc correction to the real cascade) |
-| borders `--rule` / `--rule-strong` | `#E9E7E2` / `#D9D6D0` | `#1B2444` / `#263052` |
+| Stage ground | `--stage-ink #05070F` · `--stage-ink-2 #0D1428` | the void under the hero/chrome, BOTH themes (a media surface, not a theme rebellion — AA-verified pair below) |
+| Stage text | `--stage-cream #F2EFE6` (16.9:1) · `--stage-cream-dim #C3C8DC` (9:1) | the stage's own ink/cream pair |
+| Stage accent | `--stage-violet #9A5CFF` (5:1) | the dark-theme accent value, fixed on the stage |
+| Stage edges | `--stage-line` / `--stage-line-soft` | cream-alpha hairlines (16%/7%) |
+| Atmospheric stops | `--aura-violet` / `--aura-violet-deep` / `--aura-horizon` (per theme) | the radial-illumination vocabulary for hero/proof/CTA scenes |
+| Original art | `/brand/hero-scene.webp` (95 KB) · `/brand/orbit-ring.webp` (66 KB) | AI-art-directed abstract scenes — no text, no logos, no real-place imagery (QA-verified); the r188 photography ban's intent (no real-university imagery) holds |
+| Orbit path | `components/landing/OrbitPath.tsx` | one thin trajectory line + one glowing node, drawn once on load (reduced-motion static) — the icon-gate's documented landing-scene zone |
+| Telemetry strip | mono 11px + 7px violet square markers | honest counts computed from the LEDGER data (never typed) |
+| Body sections | canonical `var(--bg)`/`var(--text)`/`var(--rule)` + `--accent` | stations/roles/manifesto/media/footer follow the active theme — the two-theme system, same as the product |
+| Focus | ONE language, token-routed | `.fo-header/.fo-hero/.fo-mobile-menu { --state-focus-ring-color: var(--stage-violet); }` — the universal outline (base.css) consumes the re-pointed token; zero private outline rules in landing.css (the r172a contract holds, re-pinned r162 test) |
+| Progress ribbon | `transform: scaleX(var(--p, 0))` + `--accent` (stage-routed) | GPU-composited; the `--accent` token resolves to its stage expression inside `.fo-progress` |
+| Proof section | violet band + 22px dot matrix at 12% accent | «ما يُشحن اليوم» — the reference's «Operating today» moment, honest statuses only |
 
-**9 pastel section families** `--c-{peach,mint,lavender,sky,yellow,rose,sand,grey,copper}-{bg,ink,deep}` — light grounded on cream (e.g. copper `#F4E4D2`/`#B57438`/`#5C3416`, mint `#DCF1E2`/`#4FA66D`/`#1F4F30`), dark **re-grounded on night** (copper `#2C2312`/`#E9B44C`/`#F5D48A`, mint `#0F241C`/`#7FD39A`/`#C9EAD3` …). Status **text** uses the `-ink`/`-deep` tiers (AA); **fills** keep base tokens. Chart palette `--chart-1..8` (copper/mint/sky/rose/lavender + gold/teal/mauve, theme-lifted).
+### 1b. Product theme — violet-on-cream light · violet-on-night dark (هوية المنتج، r190)
+
+| Token | Light | Dark |
+|---|---|---|
+| accent `--accent` | violet `#6C4AE0` (**5.46:1**) | violet `#9A5CFF` (**5.01:1**) |
+| accent ink `-ink` | `#4B2FB0` (8.66:1) | `#9A5CFF` (5.01:1) |
+| accent soft | `#ECE5FB` | `#241D40` |
+| accent strong / ring | `#4B2FB0` (8.66:1) | `#B085FF` (7.14:1) |
+| accent on-fill `-fg` | `#FFFFFF` (5.46:1 on violet) | `#0A0614` (4.75:1 on violet) |
+| primary `--primary` | ink slab `#191918` (the reference's light-section CTA) | **white slab `#FFFFFF`** (the void CTA) |
+| achievement family | `--gold` = copper/yellow inks (badges, streaks, gamification) | same — copper/gold is NO LONGER the chrome accent (r190) |
+
+**9 pastel section families** `--c-{peach,mint,lavender,sky,yellow,rose,sand,grey,copper}-{bg,ink,deep}` — light grounded on cream (e.g. copper `#F4E4D2`/`#B57438`/`#5C3416`, mint `#DCF1E2`/`#4FA66D`/`#1F4F30`), dark **re-grounded on night** (copper `#2C2312`/`#E9B44C`/`#F5D48A`, mint `#0F241C`/`#7FD39A`/`#C9EAD3` …). Status **text** uses the `-ink`/`-deep` tiers (AA); **fills** keep base tokens. Chart palette `--chart-1..8` (**violet** (r190: series 1 = the accent) /mint/sky/rose/lavender + gold/teal/mauve, theme-lifted) — data points render as SQUARE markers (chart.js `pointStyle: 'rect'`, r190) and bars at 2px radius.
 
 ---
 
@@ -114,10 +110,10 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 | Companion scale | Values |
 |---|---|
 | Metric rungs | **22 / 30 / 44** — fixed-width figures by design (600/1000 UPM in the shipped woff2s; `tnum`/`lnum`/`ss01` features do not exist in the shipped faces — r149 fontTools audit). `tabular-nums` declarations remain as harmless insurance |
-| Landing hero | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh 1.2 — the exception, §1a (r148: was 1.04 — clipped Arabic diacritics) |
+| Landing hero | `--fs-display-xl: clamp(48px, 7vw, 96px)` · lh `calc(1.14 − 0.02)` — Alexandria, the stage's display voice (r190; the old `--ln-h1` rung retired with the Orbit Ink world) |
 | Display clamps | `--fs-display-md 28–40 · --fs-display-lg 34–56 · --fs-display-xl 40–72` — rungs exist; only `-md` has live consumers (top rungs stay: the parity-export scale pins the full ladder; the phantom `--fs-mega 48–104` listed here before was retired with r132-F5) |
 | Line heights | `--lh-tight 1.05` · `--lh-snug 1.20` · `--lh-base 1.65` · `--lh-loose 1.85` |
-| Font stack | `--font-sans: 'ibm plex sans arabic', 'tajawal', system-ui, …` — self-hosted woff2 subsets, no external CDN |
+| Font stack | `--font-sans: 'ibm plex sans arabic', 'tajawal', system-ui, …` + `--font-display: 'alexandria', 'ibm plex sans arabic', …` (r190) — self-hosted woff2 subsets (arabic+latin), no external CDN · `font-display: swap` on all 16 faces |
 
 - **Leading:** body **1.65** · headline **1.20** · metric **1.10** · display role **1.15 light / 1.20 dark** (dark adds a step).
 - **Weights: 400 / 500 / 600 / 700 — real.** Plex Sans Arabic ships no 800: `--fw-black` resolves to 700. Never ask for 800/900.
@@ -132,7 +128,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 | `--type-label-*` | 500 · 1.50 |
 | `--type-metric-*` | 700 · 1.10 · `tnum lnum` |
 
-- **Mono voice:** `--ln-mono = 'IBM Plex Mono' → 'IBM Plex Sans Arabic'` fallback — per character: Latin+digits render mono, Arabic continues in the brand sans (12px / 0 tracking / tabular). Tracking is 0 even on the mono classes: their live runs mix Arabic (ruling #2, r133-F7) and `tabular-nums` carries the alignment role.
+- **Mono voice:** `--font-mono = 'IBM Plex Mono' → 'IBM Plex Sans Arabic'` fallback — per character: Latin+digits render mono, Arabic continues in the brand sans (11px telemetry / 12px chrome / 0 tracking / tabular). Tracking is 0 even on the mono classes: their live runs mix Arabic (ruling #2, r133-F7) and `tabular-nums` carries the alignment role.
 
 ---
 
@@ -165,7 +161,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 
 ## 4. Grain & elevation — الحبيبات والارتفاع
 
-**Grain (Orbit Ink only):** `.ln-grain` — a fixed veil over the whole landing: SVG `feTurbulence fractalNoise` (baseFrequency 0.9, 2 octaves, stitchTiles), feColorMatrix noise (alpha row 0.55), 200×200px repeatable tile, `opacity: var(--ln-grain-op) = 0.075` (single source in `tokens.css` — the old landing-local override was lifted in r132). Sits below native dialog top-layer; `pointer-events: none`. **r172a: the noise POLARITY follows the theme** — white noise on the night ground (the authored look), **black noise on paper** (a white veil over cream washes the ink type out). The product surface is **clean** — no grain past `landing.css`.
+**Grain — RETIRED (r188, pinned by landing-scrollspy-grain.test):** the film-grain veil is gone; the landing's texture is the proof section's 22px dot matrix (12% accent) — a data-section treatment, never a whole-page veil. The product surface stays **clean**.
 
 **Elevation (`--elev-1..5`):**
 
@@ -200,7 +196,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 | **Sheet** | `min(420px, 100%)` · r-2xl 20 **leading edge only (logical)** · `--elev-4` · z 300 · 240ms decel slide · scrim blur 4px · grabber |
 | **Toast** | **bottom-end** stack (20px inset) · max `min(420px, 100vw − 24px)` · 28px tone-icon well (soft bg + `-ink` icon) · in 240 decel / out 160 accel · swipe-dismiss · z 500 · **error toasts dismiss manually** |
 | **Empty state** | `.state-icon` **56×56 grey well** (`--c-grey-bg`/`-deep`, r-xl) · icon 20 · title **18px / 700** · desc 13 muted 42ch · actionable default copy · opt-in 160px illustration · **≤640px** (r166b): padding sp-6/sp-4, well 44px, illustration 120px |
-| **Sidebar** | 256px (64 collapsed) · item min-30px · r-sm 8 · active = wash bg + **3×16px role-accent bar at inline-start −3px** + 240ms pop · night: gold wash + constellation gradients |
+| **Sidebar** | 256px (64 collapsed) · item min-30px · r-sm 8 · active = wash bg + **3×16px role-accent bar at inline-start −3px** + 240ms pop · night: **violet wash** `rgb(154 92 255 / 0.16)` (r190 — was gold) |
 | **KPI card** | min-block **132px** · value **30px / 700 `tnum lnum`** lh 1.10 · label 12/600 muted · icon well **44px** r-lg + 1.5px role-accent rim (30%) · hover −2px · **semantic `color` prop** (r166b): `green/amber/red/purple/gold` override the icon well + leading edge via the pastel families (badge grammar — `--c-*-bg` well + both-theme-safe `*-ink` glyph, 3:1+ both themes); value/label text never change color |
 | **Table** | wrap r-xl + rule border · thead **12px** / 600 / muted (no tracking, no transform — Arabic) on **surface-2** · body 13px · **zebra-on-hover** (`tr:hover → surface-2`) — hover shift, *not* static stripes · last row borderless · pagination 44px targets · **≤640px ladder** (r151b): `tbl-stack` + per-td `data-label` → row-cards (label at inline-start, first-read RTL); a plain `.table` keeps its layout and self-scrolls — never squishes, never drags the page; pagination cluster wraps |
 | **Spinner** | 22px · 2px · top arc neutral-900 (light) / accent (dark) · **700ms linear** (sm 14px) |
@@ -228,11 +224,11 @@ Arabic is the first-class direction; LTR is the port.
 
 ## 7. Theming & accessibility — الوصولية
 
-- **Themes:** light default + `[data-theme="dark"]` — both fully specified (§1b); no "auto-only" surface. **r172a: the landing is a first-class two-theme surface** — §1a's `--ln-*` family remaps per theme in `tokens.css`, the shared `ThemeToggle` (فاتح · داكن · تلقائي) mounts in the landing header (labeled mobile-menu row ≤640px), and the boot-hack (`html[data-landing-boot]`, the `#252A3E` theme-color override, `useLandingBootGround`) is retired: body/splash/landing all paint `var(--bg)` from the first styled frame in both themes.
+- **Themes:** light default + `[data-theme="dark"]` — both fully specified (§1b); no "auto-only" surface. **r172a/r190: the landing is a first-class two-theme surface** — the shared `ThemeToggle` (فاتح · داكن · تلقائي) mounts in the landing header (labeled mobile-menu row ≤640px); the hero + chrome paint the theme-FIXED `--stage-*` family (a media surface), the body sections follow `var(--bg)`/`var(--text)`, and no second theme state exists anywhere.
 - **Role accents:** `body[data-role]` — 7 roles × 2 themes, hexes **pinned by token-snapshot tests**; college accent slot carries a runtime contrast gate.
-- **Contrast tiers:** status/badge text always uses the `-ink`/`-deep` tier of its pastel family (AA); fills keep base tokens. Light-mode icon wells use the **`-ink` tier** (r131 hardening: 6.98–9.02:1; dark untouched). Landing light dim (`--ln-cream-dim #5F5D57`) clears **≥5.58:1** on every landing surface (r172a, axe-verified live).
+- **Contrast tiers:** status/badge text always uses the `-ink`/`-deep` tier of its pastel family (AA); fills keep base tokens. Light-mode icon wells use the **`-ink` tier** (r131 hardening: 6.98–9.02:1; dark untouched). Landing stage text (`--stage-cream-dim #C3C8DC`) clears **9:1** on the stage ink (r190, axe-verified live).
 - **`prefers-contrast: more`:** elevations become rings, borders strengthened, glass de-blurred, illustration strokes 1.5 → 2.
-- **Focus rings — ONE language (r172a):** the product's universal `:where()` 2px/2px ring in `--accent-strong` (light) / gold (dark) owns EVERY control, landing included — the Orbit Ink private cream-outline sub-language (invisible on the light ground) was deleted with the two-theme re-grounding. Landing controls keep their non-outline focus behaviors (scale pops, menu reveal).
+- **Focus rings — ONE language (r172a → r190):** the universal `:where()` 2px/2px ring owns EVERY control — it consumes `--state-focus-ring-color` (light `#4B2FB0` / dark `#B085FF`, both AA); the landing's stage chrome TOKEN-ROUTES the same token to `--stage-violet` inside `.fo-header/.fo-hero/.fo-mobile-menu` (no private outline rule anywhere — r162 pin).
 - **Reduced motion:** full kill-belt in `base.css` + token zeroing (§3) — motion never survives RM; direction mirroring does.
 
 ---
@@ -244,7 +240,7 @@ Arabic is the first-class direction; LTR is the port.
 1s. **Spacing runs through `--sp-*` (r185)** — every `padding`/`margin`/`gap` family value in the 17 strict sheets is a ladder rung, a permitted zero/relative unit, or a documented `/* spacing-gate: allow — reason */` line. A 4px-grid value is **not** automatically a token (`28px` has no rung); new rungs require a repeated coherent design need (the r153h `--sp-1-5` ×64 / r185 `--sp-0-5` ×54 / `--sp-2-5` ×28 standard) and must be mirrored in the parity export; never round a literal to the nearest rung silently — verify the visual change or keep the exception.
 2. **Extend at the composition layer only** — new surfaces compose existing tokens/primitives; the token files are closed for casual edits (gate-protected).
 3. **The export pair (`unified-parity.css` + `shared-design-system.css`) is the verification surface, not a file to import** — the app consumes `tokens.css` / `motion.css` / `components.css` directly. See [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md).
-4. **What the export covers:** §1b product theme, §2 typography, §3 motion, §4 elevation, §5 recipes, §6 RTL, §7 a11y. **What it excludes:** Orbit Ink (`--ln-*`), role/college accent slots, `--ill-*`.
+4. **What the export covers:** §1b product theme, §2 typography, §3 motion, §4 elevation, §5 recipes, §6 RTL, §7 a11y. **What it excludes:** the r190 stage/aura families + retired Orbit-Ink (`--ln-*`) archaeology, role/college accent slots, `--ill-*`.
 5. **Drift is a bug** — the parity gate fails loudly on any divergence between `tokens.css` and the export pair; fix the canonical source first, never hand-patch the export.
 
 ---

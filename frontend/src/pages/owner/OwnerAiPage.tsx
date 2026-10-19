@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { Bot, Zap, CheckCircle2, Clock, Sparkles } from 'lucide-react';
+import { Bot, Sparkles } from 'lucide-react';
 import { Bar, Line } from 'react-chartjs-2';
 import { useMemo } from 'react';
 import {
@@ -14,9 +14,10 @@ import {
   Legend,
   Filler,
 } from 'chart.js';
-import { Card, MetricCard, Badge } from '../../components/primitives';
+import { Card, Badge } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import {
-  ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, TableSkeleton,
+  ErrorState, EmptyState, ChartSkeleton, TableSkeleton, Skeleton,
 } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts/ChartFrame';
 import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
@@ -36,6 +37,26 @@ const FEATURE_LABELS: Record<string, string> = {
 /** Arabic label for a feature key, bidi-isolated when unknown (raw enum). */
 function featureLabel(feature: string) {
   return FEATURE_LABELS[feature] ?? <bdi>{feature}</bdi>;
+}
+
+/** The StatStrip's shape-matched pending placeholder (R190 D4 — the
+ *  resolved band is the strip, so the strip's cells are what the
+ *  skeleton must occupy; the shared KpiSkeleton's .metric boxes were
+ *  the old icon-tile band's shape). */
+function StatStripSkeleton() {
+  return (
+    <div className="stat-strip" aria-busy="true">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="stat-cell">
+          <Skeleton width={70} height={11} />
+          <div style={{ marginBlock: 'var(--sp-1)' }}>
+            <Skeleton width={90} height={28} />
+          </div>
+          <Skeleton width={120} height={11} />
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export function OwnerAiPage() {
@@ -112,7 +133,7 @@ export function OwnerAiPage() {
       {aiMetrics.isPending ? (
         <>
           {/* Shape-matched skeletons — one per card the data will fill. */}
-          <KpiSkeleton />
+          <StatStripSkeleton />
           <div className="owner-ai-chart-grid">
             <Card title="الطلبات حسب الميزة"><ChartSkeleton height={240} /></Card>
             <Card title="اتّجاه الاستخدام (7 أيّام)"><ChartSkeleton height={240} /></Card>
@@ -125,27 +146,40 @@ export function OwnerAiPage() {
         </Card>
       ) : (
         <>
-          {/* Metric Cards — real values; Latin unit runs are bidi-isolated.
-              22-b (4-A7 P2-6): a zero-request platform still gets its KPI
-              strip — honest zeros are this console's own convention, and
-              the page no longer collapses to a single dead-end EmptyState. */}
-          <div className="grid-4">
-            <MetricCard icon={Bot} label="إجمالي الطلبات" value={<bdi>{data.totalRequests.toLocaleString('ar-LY')}</bdi>} color="brand" />
-            <MetricCard
-              icon={Zap}
-              label="إجمالي التوكنات"
-              value={data.totalTokens >= 1_000_000
-                ? <bdi>{(data.totalTokens / 1_000_000).toFixed(1)}M</bdi>
-                : <bdi>{data.totalTokens.toLocaleString('ar-LY')}</bdi>}
-              color="purple"
-            />
-            {/* 6A10-3: KPIs render whole numbers — 97.4% and 812.6ms
-                carried false precision (the backend's aggregates are
-                ratios/averages, not measured to the tenth); Math.round
-                keeps the tiles honest: 97.4→97, 812.6→813. */}
-            <MetricCard icon={CheckCircle2} label="معدّل النجاح" value={<bdi>{Math.round(data.successRate)}%</bdi>} color="green" />
-            <MetricCard icon={Clock} label="متوسّط الاستجابة" value={<bdi>{Math.round(data.avgLatencyMs)}ms</bdi>} color="gold" />
-          </div>
+          {/* R190 (D4): the typographic stat strip — was the grid-4 icon
+              tiles. Latin unit runs stay bidi-isolated; 6A10-3 keeps the
+              values whole-number honest (97.4→97, 812.6→813). */}
+          <StatStrip
+            ariaLabel="مؤشرات استخدام الذكاء الاصطناعيّ"
+            cells={[
+              {
+                label: 'إجمالي الطلبات',
+                value: <bdi>{data.totalRequests.toLocaleString('ar-LY')}</bdi>,
+                trend: 'تراكميّة على المنصّة',
+                trendTone: 'flat',
+              },
+              {
+                label: 'إجمالي التوكنات',
+                value: data.totalTokens >= 1_000_000
+                  ? <bdi>{(data.totalTokens / 1_000_000).toFixed(1)}M</bdi>
+                  : <bdi>{data.totalTokens.toLocaleString('ar-LY')}</bdi>,
+                trend: 'مقيسة من المزوّد',
+                trendTone: 'flat',
+              },
+              {
+                label: 'معدّل النجاح',
+                value: <bdi>{Math.round(data.successRate)}%</bdi>,
+                trend: data.successRate >= 90 ? 'تشغيل مستقرّ' : 'راجع الأعطال الأخيرة',
+                trendTone: data.successRate >= 90 ? 'up' : 'down',
+              },
+              {
+                label: 'متوسّط الاستجابة',
+                value: <bdi>{Math.round(data.avgLatencyMs)}ms</bdi>,
+                trend: 'زمن الردّ المتوسط',
+                trendTone: 'flat',
+              },
+            ]}
+          />
 
           <div className="owner-ai-chart-grid">
             <Card title="الطلبات حسب الميزة">

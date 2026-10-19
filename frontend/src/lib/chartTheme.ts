@@ -649,9 +649,14 @@ export function cartesianOptions(opts?: {
         hoverRadius: 4,
         hoverBorderWidth: 2,
         hoverBackgroundColor: c.surface,
+        // r190 «مدار المعرفة»: data points read as telemetry — square
+        // markers, the same 7px-square grammar the stat labels carry
+        // (the reference's square-node orbits; hover points included).
+        pointStyle: 'rect',
+        hoverPointStyle: 'rect',
       },
       bar: {
-        borderRadius: 4,
+        borderRadius: 2,   /* r190: the near-square bar edge */
         borderSkipped: false,
       },
     },

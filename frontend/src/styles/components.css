@@ -293,18 +293,7 @@
      the family: .kpi-label and .kpi-value deleted too — the only live
      KPI markups are TeacherDashboard's .compact-kpi* below and the
      landing page's own .landing-mockup-kpi-* (landing.css). */
-  .compact-kpis {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
-    gap: var(--sp-3); padding: var(--sp-4);
-    background: var(--surface-2);
-    border: 1px solid var(--rule); border-radius: var(--r-lg);
-    /* Premium depth — multi-layer shadow for world-class elevation */
-    box-shadow: var(--shadow-card-premium);
-    /* r152i (A3): the strip reads ITSELF, not the viewport — the same
-       1152px viewport measured 180px tiles with the rail collapsed and
-       228px expanded (a 48px delta no media query can see). */
-    container: kpis / inline-size;
-  }
+  
   .compact-kpi { display: flex; flex-direction: column; gap: var(--sp-0-5); padding: var(--sp-2); }
   .compact-kpi-label { font-size: var(--type-label-size-sm); color: var(--text-muted); }
   .compact-kpi-value { font-size: var(--type-headline-size-sm); font-weight: var(--fw-bold); color: var(--text); font-variant-numeric: tabular-nums; }
@@ -313,11 +302,7 @@
   /* r152i: was @media (max-width: 640px) — the restyle now follows the
      strip's own width (phones AND narrow side-columns alike). */
   @container kpis (max-width: 480px)  {
-    .compact-kpis {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--sp-2);
-      padding: var(--sp-3);
-    }
+    
     .compact-kpi {
       padding: var(--sp-3);
       background: var(--surface);
@@ -1253,17 +1238,7 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  DASH AGENDA / GPA / TERM                                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .dash-eyebrow {
-    font-size: var(--fs-xs);
-    text-transform: uppercase;
-    /* r148 (AUDIT-3 M1): 0.10em على نص عربي صريح («أكمل من حيث توقفت»)
-       يفكك اتصال الحروف — مخالف ruling #2 (notifications.css:298
-       «no letter-spacing on Arabic, ever»). uppercase بلا أثر على العربي. */
-    letter-spacing: 0;
-    color: var(--text-muted);
-    font-weight: var(--fw-semibold);
-    margin-block-end: var(--sp-2);
-  }
+  
   .dash-section-title {
     font-family: var(--font-display);
     font-size: var(--fs-h2);
@@ -1283,182 +1258,63 @@
     margin-block-start: var(--sp-2);
     opacity: 0.85;
   }
-  .dash-hero-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--sp-5); }
+  
   /* r155d: 1100 → 1024 — same fold as the grid-helpers block above
      (r152i ladder; 1024 is the documented rung, 1100 had no other
      consumers). The 1025-1100 band keeps the two-panel hero row. */
-  @media (max-width: 1024px) { .dash-hero-row { grid-template-columns: 1fr; } }
+  @media (max-width: 1024px) {  }
 
-  .dash-gpa-card,
-  .dash-progress-card,
-  .dash-term-card,
-  .dash-agenda {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-xl);
-    padding: var(--sp-6);
-    display: flex; flex-direction: column; gap: var(--sp-4);
-    box-shadow: var(--shadow-card-premium);
-    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
-  }
-  .dash-gpa-card:hover,
-  .dash-progress-card:hover,
-  .dash-term-card:hover,
-  .dash-agenda:hover {
-    box-shadow: var(--shadow-card-premium-h);
-    transform: translateY(-2px);
-  }
-  .dash-gpa-card,
-  .dash-progress-card { min-block-size: 156px; }
+  
+  
+  
 
-  .dash-gpa-body { display: flex; align-items: center; gap: var(--sp-5); }
+  
   /* 22-c (A3 P3-9): orb 88px + text ~88px left ~78px of dead trailing
      space in the ~294px phone track (flush-inline-start content) —
      space-between spreads the pair across the card instead. */
   @media (max-width: 640px) {
-    .dash-gpa-body { justify-content: space-between; }
+    
   }
-  .dash-gpa-orb {
-    inline-size: 88px; block-size: 88px;
-    /* no 24px step on the radius scale — 2xl (20) and 3xl (28) are
-       equidistant, so the raw value stays to preserve the orb silhouette */
-    border-radius: 24px; /* radius-gate: allow — documented intentional 24px (A3-verified sheet exception) */
-    background: var(--c-copper-bg);
-    color: var(--c-copper-deep);
-    display: inline-flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-copper-deep) 15%, transparent),
-                0 8px 32px -8px color-mix(in srgb, var(--c-copper-deep) 40%, transparent);
-    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
-  }
-  .dash-gpa-orb:hover {
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-copper-deep) 25%, transparent),
-                0 12px 40px -8px color-mix(in srgb, var(--c-copper-deep) 50%, transparent);
-    transform: scale(1.05);
-  }
-  .dash-gpa-text { display: flex; flex-direction: column; gap: var(--sp-0-5); }
-  .dash-gpa-value {
-    font-family: var(--font-display);
-    font-size: var(--type-metric-size-xl);
-    font-weight: var(--type-metric-weight);
-    color: var(--text);
-    line-height: var(--type-metric-line-height);
-    letter-spacing: var(--type-metric-letter-spacing);
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: var(--type-metric-feature-settings);
-  }
+  
+  
+  
+  
 
-  .dash-progress-body { display: flex; flex-direction: column; gap: var(--sp-3); }
-  .dash-progress-text { font-size: var(--fs-sm); color: var(--text-secondary); }
-  .dash-progress-value { font-size: var(--fs-h2); font-weight: var(--fw-black); color: var(--text); font-variant-numeric: tabular-nums; }
-  .dash-progress-note {
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    padding-inline-start: var(--sp-0-5);
-  }
+  
+  
+  
+  
 
-  .dash-doughnut {
-    position: relative;
-    inline-size: 168px;
-    block-size: 168px;
-    flex-shrink: 0;
-    margin-inline: auto;
-    /* r174 (the ring-over-square defect): this well carried a decorative
-       conic-gradient + an `opacity: 0` meant to hide it — a dead guard.
-       The polish entrance animation (madarek-chart-in, fill-mode both)
-       overrode the opacity back to 1 for good, painting an accent wedge
-       on a 10px-radius SQUARE behind the transparent Chart.js canvas —
-       the "circular ring layered over an unrelated square gradient"
-       screenshot. The well is now purely geometric: transparent, not
-       clipped, no background — the canvas draws the whole composition
-       (track ring + progress arc), and no decorative gradient competes
-       with the data (DESIGN.md §1a hard rule, applied to the product
-       surface). r155d's 50% → r-md note retired with the gradient. */
-  }
-  .dash-doughnut canvas { inline-size: 100% !important; block-size: 100% !important; }
-  .dash-doughnut-center {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-display);
-    font-size: var(--fs-h1);
-    font-weight: var(--fw-black);
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: var(--ls-tight);
-    pointer-events: none;
-  }
-  .dash-progress-card .dash-progress-body {
-    flex-direction: row;
-    align-items: center;
-    gap: var(--sp-6);
-  }
-  .dash-progress-card .dash-progress-text { flex: 1; min-inline-size: 0; }
+  
+  
+  
+  
+  
   /* 22-c (A3 P1-1): at ≤640px the row left the text column 114px wide
      next to the unshrinkable 168px doughnut — the 22px progress value
      wrapped to ~6 ragged lines. Stack below phone, mirroring the
      .dash-progress-body base rule above. */
   @media (max-width: 640px) {
-    .dash-progress-card .dash-progress-body {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: var(--sp-4);
-    }
+    
   }
 
-  .dash-term-head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
-  .dash-term-foot { display: flex; align-items: center; justify-content: space-between; font-size: var(--fs-xs); color: var(--text-muted); }
-  .dash-term-pct { font-family: var(--font-display); font-size: var(--fs-h2); color: var(--text); font-variant-numeric: tabular-nums; font-weight: var(--fw-black); }
-  .dash-term-bar {
-    block-size: 10px;
-    background: var(--surface-3);
-    border-radius: var(--r-full);
-    overflow: clip;
-    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--black) 8%, transparent);
-  }
+  
+  
+  
+  
 
-  .dash-agenda-head { display: flex; align-items: center; justify-content: space-between; }
-  .dash-agenda-list { display: flex; flex-direction: column; gap: var(--sp-2); }
-  .dash-agenda-item {
-    display: flex; align-items: center; gap: var(--sp-3);
-    padding: var(--sp-3) var(--sp-4);
-    border-radius: var(--r-md);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    transition: background var(--t-fast) var(--ease), box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
-    cursor: pointer;
-    box-shadow: var(--shadow-card);
-  }
-  .dash-agenda-item:hover {
-    background: var(--surface-2);
-    box-shadow: var(--shadow-card-premium-h);
-    transform: translateY(-1px);
-  }
-  .dash-agenda-item:hover { background: var(--surface-2); }
-  .dash-agenda-icon {
-    inline-size: 36px; block-size: 36px;
-    border-radius: var(--r-md);
-    background: var(--c-copper-bg); color: var(--c-copper-deep);
-    display: inline-flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 2px 8px -4px color-mix(in srgb, var(--c-copper-deep) 35%, transparent);
-    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
-  }
-  .dash-agenda-icon[data-tone="brand"] {
-    background: color-mix(in srgb, var(--accent) 12%, var(--surface-3));
-    color: var(--accent-ink, var(--accent-strong));
-  }
-  .dash-agenda-icon[data-tone="green"] {
-    background: var(--c-mint-bg);
-    color: var(--c-mint-deep);
-  }
-  .dash-agenda-icon[data-tone="red"] {
-    background: var(--c-rose-bg);
-    color: var(--c-rose-deep);
-  }
-  .dash-agenda-text { display: flex; flex-direction: column; gap: var(--sp-0-5); min-inline-size: 0; flex: 1; }
-  .dash-agenda-title { font-weight: var(--fw-semibold); font-size: var(--fs-sm); color: var(--text); }
-  .dash-agenda-meta  { font-size: var(--fs-xs); color: var(--text-muted); }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   /* 16-E8 (15-f FE-8): .chart-container/.tall/.short deleted — zero TSX
      consumers; every chart lives in .owner-chart-container (owner.css)

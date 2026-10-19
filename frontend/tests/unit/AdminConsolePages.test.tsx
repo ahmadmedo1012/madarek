@@ -334,9 +334,10 @@ describe('AdminDashboardPage — action strip + navigable KPIs (§6 steps 1/3)',
     // Zero-content courses row → /admin/courses
     const coursesRow = await screen.findByText('مقرّرات بلا محتوى تعليميّ');
     expect(coursesRow.closest('a')!.getAttribute('href')).toBe('/admin/courses');
-    // Stale sync fields row → /admin/sync
+    // Stale sync fields row → the sync drill, pre-armed (?stale=1 opens
+    // the first stale category on landing — r190-D3: the URL is the action)
     const syncRow = screen.getByText('حقول بيانات جامعية قديمة');
-    expect(syncRow.closest('a')!.getAttribute('href')).toBe('/admin/sync');
+    expect(syncRow.closest('a')!.getAttribute('href')).toBe('/admin/sync?stale=1');
     // Graded-papers row → the register, pre-filtered (§5 landing craft)
     const papersRow = screen.getByText('بحوث مقيَّمة بانتظار النشر');
     expect(papersRow.closest('a')!.getAttribute('href')).toBe('/admin/reports?status=GRADED');
@@ -475,12 +476,16 @@ describe('AdminReportsPage — papers register + the analysis fold', () => {
     });
   });
 
-  it('makes the papers KPIs act on the register (button + pre-filtered landing)', async () => {
+  it('makes the papers KPIs act on the register — the URL is the action (r190-D3)', async () => {
     installApi();
     renderPage(<AdminReportsPage />);
 
     await screen.findByText('حركة البحوث العلمية');
-    const published = screen.getByRole('button', { name: /بحوث منشورة/ });
+    // The stat cell is a deep link now: ?status=PUBLISHED lands the
+    // register pre-filtered (the page's URL-driven status filter does
+    // what the old button+scroll pair did — bookmarkably).
+    const published = screen.getByRole('link', { name: /بحوث منشورة/ });
+    expect(published.getAttribute('href')).toBe('/admin/reports?status=PUBLISHED');
     fireEvent.click(published);
     await waitFor(() => {
       expect(papersCalls().some((p) => p.status === 'PUBLISHED')).toBe(true);
@@ -713,8 +718,10 @@ describe('AdminSyncPage — «حقول قديمة» drills into the first stale 
     });
     renderPage(<AdminSyncPage />);
 
-    // The stale tile acts (a button) — click opens the first STALE category.
-    const tile = await screen.findByRole('button', { name: /حقول مُزامنة/ });
+    // r190-D3: the stale tile is a deep link now (?stale=1) — clicking
+    // it arms the URL, and the page's landing effect opens the first
+    // STALE category (bookmarkable; the param strips itself after).
+    const tile = await screen.findByRole('link', { name: /حقول مُزامنة/ });
     fireEvent.click(tile);
     const heads = Array.from(document.querySelectorAll('.category-row-head'));
     const contact = heads.find((h) => (h.textContent ?? '').includes('بيانات التواصل'));

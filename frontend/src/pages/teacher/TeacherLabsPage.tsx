@@ -23,7 +23,8 @@ import {
   FlaskConical, Network, Cpu, Atom, Zap, Microscope, Bot as BotIcon,
   ExternalLink, ChevronLeft, AlertCircle, type LucideIcon,
 } from 'lucide-react';
-import { Card, Badge, MetricCard } from '../../components/primitives';
+import { Card, Badge } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, Skeleton, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useLabs, type VirtualLab } from '../../hooks/useResources';
@@ -60,20 +61,18 @@ function categoryLabel(category: string): React.ReactNode {
   return <bdi>{category}</bdi>;
 }
 
-/** Shape-matched skeleton for the labs KPI strip + card grid. */
+/** Shape-matched skeleton for the stat strip + card grid. */
 function LabsSkeleton() {
   return (
     <>
-      <div className="grid-3" aria-busy="true" aria-live="polite">
+      <div className="stat-strip" aria-busy="true" aria-live="polite">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="metric" aria-hidden>
-            <div style={{ marginBlockEnd: 'var(--sp-3)' }}>
-              <Skeleton width={90} height={11} />
+          <div key={i} className="stat-cell" aria-hidden>
+            <Skeleton width={70} height={11} />
+            <div style={{ marginBlock: 'var(--sp-1)' }}>
+              <Skeleton width={60} height={28} />
             </div>
-            <Skeleton width={60} height={26} />
-            <div style={{ marginBlockStart: 'var(--sp-2)' }}>
-              <Skeleton width={120} height={11} />
-            </div>
+            <Skeleton width={110} height={11} />
           </div>
         ))}
       </div>
@@ -117,11 +116,14 @@ export default function TeacherLabsPage() {
         <LabsSkeleton />
       ) : isError ? (
         <>
-          <div className="grid-3">
-            <MetricCard icon={FlaskConical} label="معامل متاحة" value="—" color="brand" />
-            <MetricCard icon={Microscope} label="فئات المعامل" value="—" color="purple" />
-            <MetricCard icon={Network} label="منصّات التدريب" value="—" color="green" />
-          </div>
+          <StatStrip
+            ariaLabel="إحصاءات المعامل"
+            cells={[
+              { label: 'معامل متاحة', value: '—' },
+              { label: 'فئات المعامل', value: '—' },
+              { label: 'منصّات التدريب', value: '—' },
+            ]}
+          />
           <Card>
             <ErrorState
               message="تعذَّر تحميل المعامل الافتراضية"
@@ -132,29 +134,29 @@ export default function TeacherLabsPage() {
         </>
       ) : (
         <>
-          <div className="grid-3">
-            <MetricCard
-              icon={FlaskConical}
-              label="معامل متاحة"
-              value={(labs?.length ?? 0).toString()}
-              change="جاهزة للتجربة"
-              color="brand"
-            />
-            <MetricCard
-              icon={Microscope}
-              label="فئات المعامل"
-              value={categories.toString()}
-              change="شبكات، علوم، ذكاء اصطناعي…"
-              color="purple"
-            />
-            <MetricCard
-              icon={Network}
-              label="منصّات التدريب"
-              value={platforms.toString()}
-              change="منصّات مختلفة داخل المعامل"
-              color="green"
-            />
-          </div>
+          <StatStrip
+            ariaLabel="إحصاءات المعامل"
+            cells={[
+              {
+                label: 'معامل متاحة',
+                value: (labs?.length ?? 0).toString(),
+                trend: 'جاهزة للتجربة',
+                trendTone: 'flat',
+              },
+              {
+                label: 'فئات المعامل',
+                value: categories.toString(),
+                trend: 'شبكات، علوم، ذكاء اصطناعي…',
+                trendTone: 'flat',
+              },
+              {
+                label: 'منصّات التدريب',
+                value: platforms.toString(),
+                trend: 'منصّات مختلفة داخل المعامل',
+                trendTone: 'flat',
+              },
+            ]}
+          />
 
           <Card>
             <div className="flex items-center gap-3">

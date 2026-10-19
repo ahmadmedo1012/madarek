@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Building2, GraduationCap, BookOpen, BarChart3, FileText, Users, TrendingUp, Award, Microscope, ClipboardCheck, AlertTriangle, Database, Search, X, ChevronLeft, ChevronRight, ChevronDown, ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { Building2, BookOpen, BarChart3, FileText, TrendingUp, ClipboardCheck, AlertTriangle, Database, Search, X, ChevronLeft, ChevronRight, ChevronDown, ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { Card, MetricCard, Badge, Tabs, UserAvatar, AlertRow, FormField } from '../../components/primitives';
+import { Card, Badge, Tabs, UserAvatar, AlertRow, FormField } from '../../components/primitives';
 import { StatStrip, LedgerPanel, LedgerRow } from '../../components/primitives/Ledger';
 import {
   EmptyState, ErrorState,
@@ -33,6 +33,7 @@ import { api, unwrap } from '../../lib/api';
 import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
 import { countAr, formatPct, formatRelativeArShort } from '../../lib/format';
+import { formatNum } from '../../utils/numbers';
 import { Bar, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement,
@@ -196,8 +197,11 @@ function ActionStrip() {
       icon: Database,
       title: 'حقول بيانات جامعية قديمة',
       desc: `${countAr(sync.data.staleCount, ['حقل واحد', 'حقلان', 'حقول', 'حقلاً'])} يحتاج مزامنة جديدة مع المصدر الرسميّ`,
-      to: '/admin/sync',
-      hint: 'فتح صفحة المزامنة',
+      /* r190-D3: the drill deep-links with ?stale=1 — the sync page's
+       * URL effect opens the first stale category on landing (the
+       * question arrives with its answer open). */
+      to: '/admin/sync?stale=1',
+      hint: 'فتح صفحة المزامنة مع الحقول القديمة',
     });
   }
   if (gradedPapers.data && gradedPapers.data.meta.total > 0) {
@@ -1171,10 +1175,6 @@ export function AdminReportsPage() {
       return next;
     });
   };
-  const scrollToRegister = () => registerRef.current?.scrollIntoView({
-    block: 'start',
-    behavior: reducedMotion ? 'auto' : 'smooth',
-  });
 
   if (isPending) {
     return (
@@ -1203,36 +1203,39 @@ export function AdminReportsPage() {
     <div className="page">
       <PageHeader title="التقارير المؤسسية" subtitle="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية." />
 
-      {/* §5 row 8: the papers KPIs land on the register — same-page rows
-          act (button + scroll), the cross-page targets (dashboard quick
-          stats) arrive as links. */}
-      <div className="grid-4">
-        <MetricCard
-          icon={Microscope}
-          label="إجمالي البحوث"
-          value={data.headline.totalPapers}
-          color="brand"
-          onClick={() => { setStatusFilter(undefined); scrollToRegister(); }}
-          actionHint="عرض سجلّ البحوث كاملاً"
-        />
-        <MetricCard
-          icon={Award}
-          label="بحوث منشورة"
-          value={data.headline.publishedPapers}
-          color="green"
-          onClick={() => { setStatusFilter('PUBLISHED'); scrollToRegister(); }}
-          actionHint="عرض البحوث المنشورة"
-        />
-        <MetricCard
-          icon={GraduationCap}
-          label="طلاب نشطون"
-          value={data.headline.activeStudents.toLocaleString('ar-LY')}
-          color="purple"
-          to="/admin/students"
-          actionHint="عرض قائمة الطلاب"
-        />
-        <MetricCard icon={Users} label="إجمالي المستخدمين" value={data.headline.totalUsers.toLocaleString('ar-LY')} color="amber" />
-      </div>
+      {/* §5 row 8: the papers KPIs land on the register — the URL is
+          the action: ?status=PUBLISHED lands the register pre-filtered
+          (the page's own landing effect scrolls to it), the students
+          cell crosses pages. R190: the typographic stat line replaces
+          the icon-box MetricCard grid (the r189-prerelease pattern). */}
+      <StatStrip
+        ariaLabel="مؤشّرات التقارير المؤسسية"
+        cells={[
+          {
+            label: 'إجمالي البحوث',
+            value: formatNum(data.headline.totalPapers),
+            trend: periodLabel ? `آخر 6 أشهر · ${periodLabel}` : 'في النظام',
+            to: status ? '/admin/reports' : undefined,
+          },
+          {
+            label: 'بحوث منشورة',
+            value: formatNum(data.headline.publishedPapers),
+            trend: 'جاهزة في مكتبة الجامعة',
+            to: '/admin/reports?status=PUBLISHED',
+          },
+          {
+            label: 'طلاب نشطون',
+            value: formatNum(data.headline.activeStudents),
+            trend: 'حسابات تعمل الآن',
+            to: '/admin/students',
+          },
+          {
+            label: 'إجمالي المستخدمين',
+            value: formatNum(data.headline.totalUsers),
+            trend: 'كل الأدوار',
+          },
+        ]}
+      />
 
       {/* 5-A8 §6 step 2: the analysis page folds in as the trend's table
           view — one bundle, two presentations, no third arrangement.

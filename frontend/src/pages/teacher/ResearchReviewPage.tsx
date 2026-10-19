@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Microscope, FileText, ShieldCheck, Bot as BotIcon,
-  ScanSearch, CheckCircle2, X, Sparkles, BookMarked, BarChart3, MessageSquare,
-  Award, StickyNote, RefreshCw,
+  ScanSearch, CheckCircle2, X, Sparkles, BookMarked, MessageSquare,
+  StickyNote, RefreshCw,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, UserAvatar, Tabs, FormField } from '../../components/primitives';
+import { Card, Badge, UserAvatar, Tabs, FormField } from '../../components/primitives';
+import { StatStrip, type StatCellData } from '../../components/primitives/Ledger';
 import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
@@ -38,20 +39,49 @@ const STATUS_LABEL: Record<PaperStatus, string> = {
 
 type Tab = 'review' | 'mine';
 
-/** Shape-matched skeleton for the 3-KPI strip (metric-card anatomy). */
+/** Shape-matched skeleton for the 3-cell stat strip (label / value /
+ * trend — the anatomy StatStrip renders). */
 function Kpi3Skeleton() {
   return (
-    <div className="grid-3" aria-busy="true" aria-live="polite">
+    <div className="stat-strip" aria-busy="true" aria-live="polite">
       {[0, 1, 2].map((i) => (
-        <div key={i} className="metric" aria-hidden>
-          <div style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            <Skeleton width={90} height={11} />
+        <div key={i} className="stat-cell" aria-hidden>
+          <Skeleton width={90} height={11} />
+          <div style={{ marginBlock: 'var(--sp-1)' }}>
+            <Skeleton width={60} height={28} />
           </div>
-          <Skeleton width={60} height={26} />
+          <Skeleton width={110} height={11} />
         </div>
       ))}
     </div>
   );
+}
+
+/** The review-tab KPI trio as ledger stat cells — the queue's honest
+ *  counts; the tone moves from the old tile tints to the trend inks.
+ *  KPIs never show a masked "0" on API-down (ruling #14) — the `down`
+ *  flag renders the honest em-dash instead. */
+function reviewKpiCells(passed: number, failed: number, readyToPublish: number, down: boolean): StatCellData[] {
+  return [
+    {
+      label: 'بانتظار تقييمك',
+      value: down ? '—' : passed,
+      trend: 'بحوث اجتازت الفحص',
+      trendTone: 'flat',
+    },
+    {
+      label: 'تعذّر اجتياز الفحص',
+      value: down ? '—' : failed,
+      trend: 'لا تحتاج تقييماً',
+      trendTone: failed > 0 ? 'down' : 'flat',
+    },
+    {
+      label: 'جاهزة للنشر',
+      value: down ? '—' : readyToPublish,
+      trend: 'بحوث مُقيَّمة',
+      trendTone: readyToPublish > 0 ? 'up' : 'flat',
+    },
+  ];
 }
 
 export default function ResearchReviewPage() {
@@ -68,8 +98,6 @@ export default function ResearchReviewPage() {
   // Real count replacing the old dead "—" KPI (audit 0-e P2-40) — and
   // r157 / 6A8: it can finally be non-zero (the queue carries GRADED).
   const readyToPublish = graded.length;
-  // KPIs never show a masked "0" on API-down (ruling #14).
-  const kpiValue = (n: number) => (queue.isError ? '—' : n);
 
   return (
     <div className="page">
@@ -93,11 +121,10 @@ export default function ResearchReviewPage() {
           {queue.isPending ? (
             <Kpi3Skeleton />
           ) : (
-            <div className="grid-3">
-              <MetricCard icon={CheckCircle2} label="بانتظار تقييمك" value={kpiValue(passed.length)} color="amber" />
-              <MetricCard icon={X} label="تعذّر اجتياز الفحص" value={kpiValue(failed.length)} color="red" />
-              <MetricCard icon={BookMarked} label="جاهزة للنشر" value={kpiValue(readyToPublish)} color="purple" />
-            </div>
+            <StatStrip
+              ariaLabel="حالة قائمة المراجعة"
+              cells={reviewKpiCells(passed.length, failed.length, readyToPublish, queue.isError)}
+            />
           )}
 
           <Card title="قائمة المراجعة" icon={ScanSearch} subtitle="بحوث الطلاب التي اجتازت الفحص التجريبي (محاكاة) وبانتظار تقييمك">
@@ -559,27 +586,27 @@ function MyPublications() {
 
   return (
     <>
-      <div className="grid-3">
-        <MetricCard
-          icon={Microscope}
-          label="منشورات في ملفّك"
-          value={publications.length.toLocaleString('ar-LY')}
-          change={publications.length === 0 ? 'لم تُسجَّل بعد' : undefined}
-          color="brand"
-        />
-        <MetricCard
-          icon={Award}
-          label="شهادات وجوائز"
-          value={(certifications.length + awards.length).toLocaleString('ar-LY')}
-          color="green"
-        />
-        <MetricCard
-          icon={BarChart3}
-          label="سنوات الخبرة"
-          value={(profile.data?.yearsExperience ?? 0).toLocaleString('ar-LY')}
-          color="amber"
-        />
-      </div>
+      <StatStrip
+        ariaLabel="ملخّص النشاط العلمي"
+        cells={[
+          {
+            label: 'منشورات في ملفّك',
+            value: publications.length.toLocaleString('ar-LY'),
+            trend: publications.length === 0 ? 'لم تُسجَّل بعد' : 'في ملفك الأكاديمي',
+            trendTone: 'flat',
+          },
+          {
+            label: 'شهادات وجوائز',
+            value: (certifications.length + awards.length).toLocaleString('ar-LY'),
+            trendTone: 'flat',
+          },
+          {
+            label: 'سنوات الخبرة',
+            value: (profile.data?.yearsExperience ?? 0).toLocaleString('ar-LY'),
+            trendTone: 'flat',
+          },
+        ]}
+      />
       <Card title="منشوراتي" icon={Microscope}>
         {publications.length === 0 ? (
           <EmptyState illustration="empty-search"

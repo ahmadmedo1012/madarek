@@ -8,7 +8,7 @@ import {
 import { Card, ProgressBar } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import {
-  ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, TableSkeleton, ListSkeleton,
+  ErrorState, EmptyState, ChartSkeleton, TableSkeleton, ListSkeleton, Skeleton,
 } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts/ChartFrame';
 import { cartesianOptions, chartColors, valueLabels, useChartThemeKey } from '../../lib/chartTheme';
@@ -32,6 +32,25 @@ function facultiesCountLabel(n: number): string {
   if (n === 2) return 'كليتان';
   if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} كليات`;
   return `${n.toLocaleString('ar-LY')} كلية`;
+}
+
+/** The StatStrip's shape-matched pending placeholder (R190 D4 — the
+ *  resolved band is the strip, so the strip's cells are what the
+ *  skeleton must occupy). */
+function EduStripSkeleton() {
+  return (
+    <div className="stat-strip" aria-busy="true">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="stat-cell">
+          <Skeleton width={80} height={11} />
+          <div style={{ marginBlock: 'var(--sp-1)' }}>
+            <Skeleton width={90} height={28} />
+          </div>
+          <Skeleton width={120} height={11} />
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export function OwnerEducationPage() {
@@ -111,7 +130,7 @@ export function OwnerEducationPage() {
           </div>
         </header>
         {/* Shape-matched skeletons — one per card the data will fill. */}
-        <KpiSkeleton />
+        <EduStripSkeleton />
         <Card title="المقرّرات حسب الكلّيّة"><ChartSkeleton height={240} /></Card>
         <Card title="أكثر المقرّرات تسجيلاً"><TableSkeleton rows={5} cols={4} /></Card>
         <Card title="توزيع حِمل أعضاء هيئة التدريس"><ListSkeleton rows={5} /></Card>
@@ -213,7 +232,11 @@ export function OwnerEducationPage() {
               </thead>
               <tbody>
                 {topCourses.map((course) => (
-                  <tr key={course.code}>
+                  // R190 (D4): the composite key — two faculties can carry
+                  // the same course code (SE301 in both), so the bare
+                  // `course.code` collided and React warned on duplicate
+                  // keys. The faculty-scoped pair is the row's identity.
+                  <tr key={`${course.code}·${course.facultyName}`}>
                     <td data-label="الرمز"><bdi className="owner-num" dir="ltr">{course.code}</bdi></td>
                     <td className="tbl-strong" data-label="اسم المقرّر">{course.name}</td>
                     <td data-label="الكلّيّة" className="owner-cell-muted">{course.facultyName}</td>

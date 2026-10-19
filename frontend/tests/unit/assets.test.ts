@@ -38,11 +38,11 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('every @font-face in fonts.css points to an existing woff2 file', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const urls = [...css.matchAll(/url\('?(\/fonts\/[^)']+\.woff2)'?\)/g)].map((m) => m[1]!);
-    // 10 IBM Plex (Sans Arabic 400-700 arabic+latin + Mono ×2) —
-    // premium-polish PP-X1 deleted the dead Noto Kufi ×6 + Amiri +
-    // Rubik families; r152j (A7) deleted the dead Serif italic ×2
-    // (zero font-family consumers — the browser never fetched them).
-    expect(urls.length).toBe(10);
+    // 16 faces — 10 IBM Plex (Sans Arabic 400-700 arabic+latin + Mono
+    // ×2) + 6 Alexandria (r190: the Arabic display family, 500/600/700
+    // arabic+latin). Premium-polish PP-X1 deleted the dead Noto Kufi
+    // ×6 + Amiri + Rubik; r152j (A7) deleted the dead Serif italic ×2.
+    expect(urls.length).toBe(16);
     for (const u of urls) {
       const file = path.join(root, 'public', u.replace(/^\//, ''));
       expect(existsSync(file), `${u} missing from public/fonts`).toBe(true);
@@ -52,7 +52,7 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('all font faces use font-display: swap', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const faces = css.match(/@font-face\s*\{/g)?.length ?? 0;
-    expect(faces).toBe(10);
+    expect(faces).toBe(16);   // 10 Plex + 6 Alexandria (r190)
     expect(css.match(/font-display:\s*swap/g)?.length).toBe(faces);
   });
 
@@ -80,13 +80,18 @@ describe('r188 brand reset — campus photography retired (no real-university im
     }
   });
 
-  it('LandingPage ships no <picture>/photo art — the manuscript figure is vector', () => {
+  it('r190 — landing art is ORIGINAL ABSTRACT (AI-art-directed scenes), never photography of real institutions', () => {
     const src = read('src/pages/LandingPage.tsx');
     expect(src).not.toContain('<picture>');
     expect(src).not.toContain('main_photo');
-    // the hero figure: the khatam-star plate + ruled TOC (vector, theme-aware)
-    expect(src).toContain('fo-figure-star');
-    expect(src).toContain('fo-figure-toc');
+    // the r188 photography ban's INTENT: no real-university imagery.
+    // r190 ships original abstract scenes (hero + media stage) —
+    // no identifiable place, person, logo, or text in the art; the
+    // real-institution ban is re-pinned on the file inventory:
+    expect(src).toContain('hero-scene.webp');
+    expect(src).toContain('orbit-ring.webp');
+    // …and the r188 provenance strings survive (brand gates below
+    // still pin جامعة مدارك التجريبية as synthetic data).
   });
 
   it('no stylesheet ships a campus photo as a CSS background', () => {

@@ -271,9 +271,14 @@ describe('OwnerAlertsPage — error-as-critical (6A10-2)', () => {
 
     // The critical KPI counts the error-severity alert (pair, not
     // strict equality) and paints red because it is above zero.
-    const criticalTile = screen.getByText('تنبيهات حرجة').closest('.metric')!;
-    expect(criticalTile).toHaveClass('red');
-    expect(criticalTile.querySelector('.metric-value')!.textContent).toBe('1');
+    /* R190 D4 re-pin: the icon tile's `red` class became the stat
+     * cell's trend note in the down (red-ink) tone — the same
+     * "critical paints red" contract in the strip's anatomy. */
+    const criticalCell = screen.getByText('تنبيهات حرجة').closest('.stat-cell')!;
+    const criticalTrend = criticalCell.querySelector('.stat-trend')!;
+    expect(criticalTrend).toHaveClass('down');
+    expect(criticalTrend.textContent).toBe('تستوجب قرارًا الآن');
+    expect(criticalCell.querySelector('.stat-value')!.textContent).toBe('1');
     // The card itself renders the pair's Arabic vocabulary — «خطأ»,
     // never the raw Latin enum.
     expect(screen.queryByText('error')).toBeNull();

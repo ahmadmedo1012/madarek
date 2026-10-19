@@ -15,7 +15,8 @@ import {
   Radio, Plus, Play, Square, X, Calendar, Clock, AlertCircle,
   CheckCircle2, RefreshCw,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, FormField } from '../../components/primitives';
+import { Card, Badge, FormField } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, Skeleton, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -39,17 +40,18 @@ const STATUS_COLOR: Record<LiveSessionRow['status'], 'amber' | 'red' | 'green' |
   CANCELLED: 'brand',
 };
 
-/** Shape-matched skeleton for the KPI strip + session rows. */
+/** Shape-matched skeleton for the stat strip + session rows. */
 function LiveSkeleton() {
   return (
     <>
-      <div className="grid-3" aria-busy="true" aria-live="polite">
+      <div className="stat-strip" aria-busy="true" aria-live="polite">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="metric" aria-hidden>
-            <div style={{ marginBlockEnd: 'var(--sp-3)' }}>
-              <Skeleton width={90} height={11} />
+          <div key={i} className="stat-cell" aria-hidden>
+            <Skeleton width={70} height={11} />
+            <div style={{ marginBlock: 'var(--sp-1)' }}>
+              <Skeleton width={60} height={28} />
             </div>
-            <Skeleton width={60} height={26} />
+            <Skeleton width={110} height={11} />
           </div>
         ))}
       </div>
@@ -142,11 +144,14 @@ export default function TeacherLivePage() {
         <LiveSkeleton />
       ) : sessions.isError ? (
         <>
-          <div className="grid-3">
-            <MetricCard icon={Radio} label="مباشرة الآن" value="—" color="red" />
-            <MetricCard icon={Calendar} label="مجدولة" value="—" color="amber" />
-            <MetricCard icon={CheckCircle2} label="منتهية" value="—" color="green" />
-          </div>
+          <StatStrip
+            ariaLabel="حالة الجلسات"
+            cells={[
+              { label: 'مباشرة الآن', value: '—' },
+              { label: 'مجدولة', value: '—' },
+              { label: 'منتهية', value: '—' },
+            ]}
+          />
           <Card>
             <ErrorState
               message="تعذَّر تحميل جلسات البث"
@@ -157,32 +162,32 @@ export default function TeacherLivePage() {
         </>
       ) : (
         <>
-          <div className="grid-3">
-            {/* A6 P2 (22-a): keep the honest zeros, add the one-word
-                context — the bare 0/0/0 wall read as a malfunction
-                ("Zero Wall" / "depressing" VLM verdicts). */}
-            <MetricCard
-              icon={Radio}
-              label="مباشرة الآن"
-              value={live.length.toString()}
-              color="red"
-              change={live.length === 0 ? 'لا بثّ نشط حالياً' : undefined}
-            />
-            <MetricCard
-              icon={Calendar}
-              label="مجدولة"
-              value={scheduled.length.toString()}
-              color="amber"
-              change={scheduled.length === 0 ? 'لا جلسات قادمة' : undefined}
-            />
-            <MetricCard
-              icon={CheckCircle2}
-              label="منتهية"
-              value={past.length.toString()}
-              color="green"
-              change={past.length === 0 ? 'لا جلسات سابقة' : undefined}
-            />
-          </div>
+          <StatStrip
+            ariaLabel="حالة الجلسات"
+            cells={[
+              {
+                label: 'مباشرة الآن',
+                value: live.length.toString(),
+                /* A6 P2 (22-a): keep the honest zeros, add the one-word
+                   context — the bare 0/0/0 wall read as a malfunction
+                   ("Zero Wall" / "depressing" VLM verdicts). */
+                trend: live.length === 0 ? 'لا بثّ نشط حالياً' : 'يمكن إنهاؤها من هنا',
+                trendTone: 'flat',
+              },
+              {
+                label: 'مجدولة',
+                value: scheduled.length.toString(),
+                trend: scheduled.length === 0 ? 'لا جلسات قادمة' : 'قادمة في جدولك',
+                trendTone: scheduled.length === 0 ? 'flat' : 'up',
+              },
+              {
+                label: 'منتهية',
+                value: past.length.toString(),
+                trend: past.length === 0 ? 'لا جلسات سابقة' : 'معروضة في الأسفل',
+                trendTone: 'flat',
+              },
+            ]}
+          />
 
           {/* New-session form */}
           {showForm && (

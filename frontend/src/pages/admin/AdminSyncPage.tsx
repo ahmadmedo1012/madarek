@@ -3,13 +3,15 @@
  *
  *   /admin/sync   show last run, stats, facts by category, manual trigger
  */
-import { useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   RefreshCw, CheckCircle2, AlertTriangle, Clock, Database,
-  ArrowDownToLine, AlertCircle, type LucideIcon,
+  AlertCircle, type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, AlertRow } from '../../components/primitives';
+import { Card, Badge, AlertRow } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import { PageSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useReducedMotion } from '../../components/motion';
@@ -18,7 +20,7 @@ import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
 import { apiErrorMessage } from '../../hooks/useResources';
 import { formatRelativeArShort, countAr } from '../../lib/format';
-import { formatDate } from '../../utils/numbers';
+import { formatDate, formatNum } from '../../utils/numbers';
 
 interface SyncRun {
   id: string;
@@ -136,18 +138,31 @@ export function AdminSyncPage() {
   const trigger = useTriggerSync();
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const reducedMotion = useReducedMotion();
-  // 5-B4 (5-A8 §5 row 10 — client-side drill): the «حقول قديمة» KPI
-  // opens the first stale category and scrolls to it — the number
-  // becomes a question with a one-click answer.
+  /* r190-D3: the «حقول قديمة» drill is URL-driven now (?stale=1) — the
+   * KPI cell and the dashboard's action row deep-link here, and the
+   * effect below opens the first stale category + scrolls to it (the
+   * same 5-B4 behavior, but bookmarkable and linkable from anywhere).
+   * The param is read once per landing: while it stays in the URL the
+   * effect re-opens the category if a later poll closes it — leaving
+   * after the drill removes the param. */
+  const [searchParams, setSearchParams] = useSearchParams();
+  const drillStale = searchParams.get('stale') === '1';
   const categoriesRef = useRef<HTMLDivElement | null>(null);
-  const focusStaleFields = () => {
-    const firstStale = data?.categories.find((cat) => cat.items.some((f) => f.isStale));
-    if (firstStale) setOpenCategory(firstStale.category);
+  useEffect(() => {
+    if (!drillStale || !data) return;
+    const firstStale = data.categories.find((cat) => cat.items.some((f) => f.isStale));
+    if (!firstStale) return;
+    setOpenCategory(firstStale.category);
     categoriesRef.current?.scrollIntoView({
       block: 'start',
       behavior: reducedMotion ? 'auto' : 'smooth',
     });
-  };
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.delete('stale');
+      return next;
+    }, { replace: true });
+  }, [drillStale, data, reducedMotion, setSearchParams]);
 
   if (isPending) return <PageSkeleton />;
   // Distinguish error (retry) from "no sync ever run" (empty state).
@@ -248,38 +263,40 @@ export function AdminSyncPage() {
         />
       )}
 
-      {/* KPI strip */}
-      <div className="grid-4">
-        <MetricCard
-          icon={Database}
-          label="حقول مُزامنة"
-          value={data.factCount.toString()}
-          change={data.staleCount > 0 ? countAr(data.staleCount, ['حقل قديم واحد', 'حقلان قديمان', 'حقول قديمة', 'حقلاً قديماً']) : 'كل البيانات حديثة'}
-          color={data.staleCount > 0 ? 'amber' : 'green'}
-          {...(data.staleCount > 0 ? { onClick: focusStaleFields, actionHint: 'عرض الحقول القديمة' } : {})}
-        />
-        <MetricCard
-          icon={Clock}
-          label="آخر مزامنة ناجحة"
-          value={lastSuccess?.completedAt ? formatRelativeArShort(lastSuccess.completedAt) : '—'}
-          change={lastSuccess ? sourceLabelAr(lastSuccess.source) : 'لم تكتمل بعد'}
-          color="brand"
-        />
-        <MetricCard
-          icon={STATUS_ICON[lastRun ? lastRun.status : 'SUCCESS']}
-          label="حالة آخر تشغيل"
-          value={lastRun ? (STATUS_LABEL[lastRun.status] ?? lastRun.status) : '—'}
-          change={lastRun?.durationMs != null && lastRun.durationMs > 0 ? formatDurationAr(lastRun.durationMs) : ''}
-          color={lastRun ? STATUS_COLOR[lastRun.status] : 'brand'}
-        />
-        <MetricCard
-          icon={ArrowDownToLine}
-          label="إضافات هذا التشغيل"
-          value={lastRun ? `${lastRun.factsAdded + lastRun.factsUpdated}` : '—'}
-          change={lastRun ? `${lastRun.factsAdded} جديد · ${lastRun.factsUpdated} محدّث` : 'لم يُشغَّل بعد'}
-          color="purple"
-        />
-      </div>
+      {/* KPI strip — R190: the typographic stat line (the icon-box
+          MetricCard grid was the r189-prerelease template pattern; the
+          sync facts are counts and statuses, exactly what the ■-marked
+          mono labels + metric values are for). The stale count drills
+          via ?stale=1 — the URL opens the first stale category. */}
+      <StatStrip
+        ariaLabel="حالة المزامنة"
+        cells={[
+          {
+            label: 'حقول مُزامنة',
+            value: formatNum(data.factCount),
+            trend: data.staleCount > 0
+              ? countAr(data.staleCount, ['حقل قديم واحد', 'حقلان قديمان', 'حقول قديمة', 'حقلاً قديماً'])
+              : 'كل البيانات حديثة',
+            trendTone: data.staleCount > 0 ? 'down' : 'up',
+            ...(data.staleCount > 0 ? { to: '/admin/sync?stale=1' } : {}),
+          },
+          {
+            label: 'آخر مزامنة ناجحة',
+            value: lastSuccess?.completedAt ? formatRelativeArShort(lastSuccess.completedAt) : '—',
+            trend: lastSuccess ? sourceLabelAr(lastSuccess.source) : 'لم تكتمل بعد',
+          },
+          {
+            label: 'حالة آخر تشغيل',
+            value: lastRun ? (STATUS_LABEL[lastRun.status] ?? lastRun.status) : '—',
+            trend: lastRun?.durationMs != null && lastRun.durationMs > 0 ? formatDurationAr(lastRun.durationMs) : undefined,
+          },
+          {
+            label: 'إضافات هذا التشغيل',
+            value: lastRun ? formatNum(lastRun.factsAdded + lastRun.factsUpdated) : '—',
+            trend: lastRun ? `${formatNum(lastRun.factsAdded)} جديد · ${formatNum(lastRun.factsUpdated)} محدّث` : 'لم يُشغَّل بعد',
+          },
+        ]}
+      />
 
       {/* Latest run failure details */}
       {lastRun && lastRun.status !== 'SUCCESS' && lastRun.errorMsg && (

@@ -60,7 +60,11 @@ describe('r168b — landing copy claims only what ships', () => {
     expect(page).not.toContain('نتائج تجربة فعلية');
     expect(page).not.toContain('CountUp');
     expect(page).not.toContain('أرقام توضيحيّة');
-    expect(page).toContain('بحالته الفعلية');
+    // r190 «مدار المعرفة»: the same honesty contract, new copy — the
+    // proof section states each capability's REAL operational state
+    // and sources it to the feature docs (no numbers anywhere).
+    expect(page).toContain('حالتها التشغيلية الحقيقية');
+    expect(page).toContain('لا أرقام تسويقية ولا شراكات مُختلقة');
   });
 
   it('r188 — the ledger labels the AR/VR row as a catalog, not running experiments', () => {

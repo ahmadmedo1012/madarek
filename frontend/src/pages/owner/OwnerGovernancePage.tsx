@@ -1,4 +1,3 @@
-import { ShieldCheck, UserPlus, Key } from 'lucide-react';
 import { Line, Doughnut } from 'react-chartjs-2';
 import { useMemo } from 'react';
 import {
@@ -13,7 +12,8 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Card, MetricCard } from '../../components/primitives';
+import { Card } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import {
   ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton,
 } from '../../components/primitives/States';
@@ -25,17 +25,19 @@ import { useReducedMotion } from '../../components/motion';
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, ArcElement, Filler, Title, Tooltip, Legend);
 
-/** 3-up KPI strip skeleton — the grid-3 twin of States' KpiSkeleton. */
-function GovKpiSkeleton() {
+/** The StatStrip's shape-matched pending placeholder (R190 D4 —
+ *  three cells, one per governance fact; replaces the old .metric
+ *  box trio the KPI band used to resolve into). */
+function GovStripSkeleton() {
   return (
-    <div className="grid-3" aria-busy="true">
+    <div className="stat-strip" aria-busy="true">
       {[0, 1, 2].map((i) => (
-        <div key={i} className="metric">
-          <div className="flex-col gap-2">
-            <Skeleton width={90} height={11} />
+        <div key={i} className="stat-cell">
+          <Skeleton width={90} height={11} />
+          <div style={{ marginBlock: 'var(--sp-1)' }}>
             <Skeleton width={70} height={26} />
-            <Skeleton width={130} height={11} />
           </div>
+          <Skeleton width={130} height={11} />
         </div>
       ))}
     </div>
@@ -169,7 +171,7 @@ export function OwnerGovernancePage() {
       {/* Governance metrics — each area owns its pending/error state, so a
           failing endpoint never blanks the sections that resolved. */}
       {governance.isPending ? (
-        <GovKpiSkeleton />
+        <GovStripSkeleton />
       ) : governance.isError || !govData ? (
         <Card>
           <ErrorState
@@ -179,11 +181,31 @@ export function OwnerGovernancePage() {
           />
         </Card>
       ) : (
-        <div className="grid-3">
-          <MetricCard icon={Key} label="تغييرات الصلاحيات" value={govData.permissionChanges.toLocaleString('ar-LY')} color="purple" />
-          <MetricCard icon={ShieldCheck} label="تغييرات الأدوار" value={govData.roleChanges.toLocaleString('ar-LY')} color="brand" />
-          <MetricCard icon={UserPlus} label="مستخدمون جدد هذا الشهر" value={govData.newUsersThisMonth.toLocaleString('ar-LY')} color="green" />
-        </div>
+        /* R190 (D4): the typographic stat strip — was the grid-3 icon
+         * tiles; each area still owns its pending/error state above. */
+        <StatStrip
+          ariaLabel="مؤشرات الحوكمة"
+          cells={[
+            {
+              label: 'تغييرات الصلاحيات',
+              value: govData.permissionChanges.toLocaleString('ar-LY'),
+              trend: 'تجاوزات موثّقة في السجلّ',
+              trendTone: 'flat',
+            },
+            {
+              label: 'تغييرات الأدوار',
+              value: govData.roleChanges.toLocaleString('ar-LY'),
+              trend: 'تعيينات وتحويلات',
+              trendTone: 'flat',
+            },
+            {
+              label: 'مستخدمون جدد هذا الشهر',
+              value: govData.newUsersThisMonth.toLocaleString('ar-LY'),
+              trend: 'من باب التسجيل',
+              trendTone: 'up',
+            },
+          ]}
+        />
       )}
 
       <div className="owner-ai-chart-grid">

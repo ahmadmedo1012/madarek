@@ -101,11 +101,12 @@ describe('r166a — dashboard greeting + agenda empty state', () => {
     expect(dash).not.toContain('سهرة');
   });
 
-  it('the agenda empty slot is compact: scoped sp-5 padding, no illustration', () => {
-    const rule = student.match(/\.student-dashboard \.dash-agenda \.state\.state-empty \{[^}]*\}/)?.[0] ?? '';
-    expect(rule).toContain('padding: var(--sp-5)');
-    // The 160px illustration is gone from the agenda slot's EmptyState.
-    const slot = dash.match(/\{agenda\.length === 0 \? \([\s\S]{0,900}?EmptyState/)?.[0] ?? '';
-    expect(slot).not.toContain('illustration=');
+  it('r190 — the agenda slot is the TODAY ledger now; the dead .dash-agenda family is deleted', () => {
+    // r189 rewired the agenda into the TODAY ledger (LedgerPanel rows);
+    // r190 Wave F deletes the orphaned .dash-agenda CSS family (zero TSX
+    // consumers since r189). The compact-slot intent survives: the
+    // dashboard's empty states carry no illustration anywhere.
+    expect(dash).not.toContain('illustration=');
+    expect(student).not.toContain('.dash-agenda');
   });
 });

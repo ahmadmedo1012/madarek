@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import {
-  LogIn, FileText, UserCog, Server, AlertTriangle, Activity, Shield, Clock, XCircle,
+  LogIn, FileText, UserCog, Server, AlertTriangle, Clock,
   RefreshCw, ChevronDown, ChevronRight, ChevronLeft,
 } from 'lucide-react';
-import { Card, MetricCard, Tabs } from '../../components/primitives';
+import { Card, Tabs } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useOwnerActivity } from '../../hooks/useOwner';
@@ -192,37 +193,38 @@ export function OwnerActivityPage() {
         </div>
       </header>
 
-      {/* Real KPIs (per-page; full counts would need a dedicated endpoint) */}
-      <div className="grid-4">
-        <MetricCard
-          icon={Activity}
-          label="إجمالي الأحداث"
-          value={kpiValue(activity.data?.meta.total ?? kpi.total)}
-          change="المسجَّلة على المنصّة"
-          color="brand"
-        />
-        <MetricCard
-          icon={LogIn}
-          label="تسجيلات دخول"
-          value={kpiValue(kpi.logins)}
-          change="ضمن الصفحة الحاليّة"
-          color="green"
-        />
-        <MetricCard
-          icon={XCircle}
-          label="عمليّات فاشلة"
-          value={kpiValue(kpi.failed)}
-          change="ضمن الصفحة الحاليّة"
-          color={kpiKnown ? (kpi.failed === 0 ? 'green' : 'red') : 'brand'}
-        />
-        <MetricCard
-          icon={Shield}
-          label="تغييرات صلاحيّات"
-          value={kpiValue(kpi.roles)}
-          change="ضمن الصفحة الحاليّة"
-          color="purple"
-        />
-      </div>
+      {/* R190 (D4): the typographic stat strip — was the grid-4 icon
+          tiles. Real per-page KPIs (full counts would need a dedicated
+          endpoint) with the same honest '…'/'—' unknowns. */}
+      <StatStrip
+        ariaLabel="مؤشرات سجلّ النشاط"
+        cells={[
+          {
+            label: 'إجمالي الأحداث',
+            value: kpiValue(activity.data?.meta.total ?? kpi.total),
+            trend: 'المسجَّلة على المنصّة',
+            trendTone: 'flat',
+          },
+          {
+            label: 'تسجيلات دخول',
+            value: kpiValue(kpi.logins),
+            trend: 'ضمن الصفحة الحاليّة',
+            trendTone: 'flat',
+          },
+          {
+            label: 'عمليّات فاشلة',
+            value: kpiValue(kpi.failed),
+            trend: kpiKnown ? (kpi.failed === 0 ? 'لا إخفاقات ضمن الصفحة' : 'تحقّق من التفاصيل أدناه') : 'بانتظار البيانات',
+            trendTone: kpiKnown && kpi.failed > 0 ? 'down' : 'flat',
+          },
+          {
+            label: 'تغييرات صلاحيّات',
+            value: kpiValue(kpi.roles),
+            trend: 'ضمن الصفحة الحاليّة',
+            trendTone: 'flat',
+          },
+        ]}
+      />
 
       <Card>
         <Tabs value={filter} onChange={setFilter} items={tabItems} />

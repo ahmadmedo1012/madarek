@@ -360,7 +360,6 @@ export default function LandingPage() {
               className="fo-hero-art"
               src="/brand/hero-scene.webp"
               alt=""
-              fetchpriority="high"
               decoding="async"
             />
             {/* the orbital light-path — one thin line, one glowing node
@@ -520,8 +519,8 @@ export default function LandingPage() {
                 ما يُشحن <em>اليوم</em>
               </RevealCssClass>
               <RevealCssClass as="p" className="fo-chapter-lede" delay={2}>
-                لا أرقام تسويقية ولا شراكات مُختلقة — كل قدرة تُعلن حالتها
-                التشغيلية الحقيقية كما هي في الكود.
+                لا أرقام تسويقية ولا شراكات مُختلقة — كل قدرة تُعلن
+                {"حالتها التشغيلية الحقيقية"} كما هي في الكود.
               </RevealCssClass>
             </header>
 

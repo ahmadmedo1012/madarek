@@ -205,9 +205,13 @@ describe('OwnerAiPage — the empty state stops selling flags (r165g)', () => {
    ════════════════════════════════════════════════════════════════ */
 
 describe('OwnerAlertsPage — KPI reads meta, not the capped list (r165g)', () => {
-  /** The numeric value of the KPI tile carrying the given label. */
+  /** The numeric value of the KPI cell carrying the given label.
+   * (R190 D4 re-pin: the KPI band is now the StatStrip — the value
+   * rides .stat-value inside .stat-cell. Same product contract — the
+   * label's counted figure — in the strip's anatomy; was
+   * .metric > .metric-value on the icon-tile band.) */
   const tileValue = (label: string) =>
-    screen.getByText(label).closest('.metric')!.querySelector('.metric-value')!.textContent;
+    screen.getByText(label).closest('.stat-cell')!.querySelector('.stat-value')!.textContent;
 
   it('«تنبيهات مفتوحة» shows the meta total (63), not the array length (2)', async () => {
     BODIES['/owner/alerts'] = {

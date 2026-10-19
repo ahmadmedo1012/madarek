@@ -4,12 +4,13 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
   Users, BarChart3, ClipboardCheck, ClipboardList,
   AlertTriangle, Calendar, Upload, RefreshCw,
-  TrendingUp, Send, FileText, X, CheckCircle2,
+  Send, FileText, X, CheckCircle2,
   ExternalLink,
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
-import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle, FormField, Pill } from '../../components/primitives';
-import { ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
+import { Card, Badge, ProgressBar, UserAvatar, SectionTitle, FormField, Pill } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
+import { ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import {
@@ -1259,19 +1260,20 @@ export function MaterialsPage() {
         )}
       />
 
-      {/* P3: the channel copy is honest now — direct PDF upload is
-          live (the modal's default mode); by-link stays for other types. */}
-      <Card title="إضافة مادة" icon={Upload}>
-        <div className="flex items-center gap-3">
-          <Icon icon={Upload} size={18} style={{ color: 'var(--accent)', flexShrink: 0 }} />
-          <div className="text-xs text-muted">
-            <strong>ارفع ملف PDF مباشرة من جهازك، أو أضف رابطاً خارجياً لأي نوع آخر.</strong>{' '}
-            الملفات المرفوعة تُخزّن على المنصة ويفتحها طلاب المقرّر من العارض الداخلي مباشرة، ومع الروابط يبقى مجال الفيديو والعروض وغيرها.
-          </div>
-        </div>
-      </Card>
-
-      <Card title="ملفاتك" icon={FileText}>
+      {/* R190 D-2: the standalone "how to add" explainer card is gone —
+          its honest channel copy folds into the files card's subtitle
+          (one card fewer of dead weight above the actual data; the
+          header's primary CTA already names the action). */}
+      <Card
+        title="ملفاتك"
+        icon={FileText}
+        subtitle={(
+          <span>
+            ارفع ملف PDF مباشرة من جهازك، أو أضف رابطاً خارجياً لأي نوع آخر — الملفات
+            المرفوعة تُخزَّن على المنصة ويفتحها طلاب المقرّر من العارض الداخلي.
+          </span>
+        )}
+      >
         {q.isPending ? (
           <TableSkeleton rows={4} cols={7} />
         ) : q.isError ? (
@@ -1457,6 +1459,26 @@ export function StudentsListPage() {
   );
 }
 
+/* R190 D-2: the performance page's KPI row speaks the ledger stat
+ * strip (mono label + metric value + trend note) — the icon-card tile
+ * grid was the template pattern the transformation retires. Skeleton
+ * mirrors the strip's anatomy so the data-land swap doesn't move. */
+function StatStripSkeleton({ cells = 3 }: { cells?: number }) {
+  return (
+    <div className="stat-strip" aria-busy="true" aria-live="polite">
+      {Array.from({ length: cells }, (_, i) => (
+        <div key={i} className="stat-cell" aria-hidden>
+          <Skeleton width={70} height={11} />
+          <div style={{ marginBlock: 'var(--sp-1)' }}>
+            <Skeleton width={90} height={28} />
+          </div>
+          <Skeleton width={110} height={11} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function PerformancePage() {
   const { offsQ, offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
   const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
@@ -1490,7 +1512,7 @@ export function PerformancePage() {
     return (
       <div className="page">
         <PageHeader title="الأداء والتحليل" subtitle="رؤى على أداء فصلك — مُستخرجة من بيانات الحضور والدرجات الفعليّة." />
-        <KpiSkeleton />
+        <StatStripSkeleton />
         <CardSkeleton lines={5} />
       </div>
     );
@@ -1528,11 +1550,11 @@ export function PerformancePage() {
         <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض تحليل أداء فصلك." illustration="empty-search" />
       ) : stuQ.isPending || analytics.isPending ? (
         /* 5-C3 (A9 P2-2): bare spinner → the shapes that land — the
-           3-KPI row + the distribution card — so the data-land swap
+           stat strip + the distribution card — so the data-land swap
            doesn't move the page (A9 V1 measured the spinner→content
            jump on this family). */
         <>
-          <KpiSkeleton />
+          <StatStripSkeleton />
           <CardSkeleton lines={5} />
         </>
       ) : stuQ.isError ? (
@@ -1541,29 +1563,29 @@ export function PerformancePage() {
         <ErrorState message="تعذَّر تحميل مؤشّرات المقرّر" error={analytics.error} onRetry={() => analytics.refetch()} />
       ) : (
         <>
-          <div className="grid-3">
-            <MetricCard
-              icon={TrendingUp}
-              label="معدّل النجاح"
-              value={students.length > 0 ? `${passRate}%` : '—'}
-              change={students.length > 0 ? `${passing} من ${students.length}` : 'لا توجد بيانات'}
-              color={passRate >= 70 ? 'green' : passRate >= 50 ? 'amber' : 'red'}
-            />
-            <MetricCard
-              icon={Users}
-              label="طلاب متفوّقون"
-              value={top.toString()}
-              change={students.length > 0 ? `من ${students.length}` : '—'}
-              color="brand"
-            />
-            <MetricCard
-              icon={AlertTriangle}
-              label="بحاجة دعم"
-              value={atRisk.toString()}
-              change={atRisk > 0 ? 'مراقبة مستمرّة' : 'لا تنبيهات'}
-              color={atRisk === 0 ? 'green' : 'amber'}
-            />
-          </div>
+          <StatStrip
+            ariaLabel="مؤشّرات أداء المقرّر"
+            cells={[
+              {
+                label: 'معدّل النجاح',
+                value: students.length > 0 ? `${passRate}%` : '—',
+                trend: students.length > 0 ? `${passing} من ${students.length}` : 'لا توجد بيانات',
+                trendTone: students.length === 0 ? 'flat' : passRate >= 70 ? 'up' : passRate >= 50 ? 'flat' : 'down',
+              },
+              {
+                label: 'طلاب متفوّقون',
+                value: top.toString(),
+                trend: students.length > 0 ? `من ${students.length}` : 'لا توجد بيانات',
+                trendTone: 'flat',
+              },
+              {
+                label: 'بحاجة دعم',
+                value: atRisk.toString(),
+                trend: atRisk > 0 ? 'مراقبة مستمرّة' : 'لا تنبيهات',
+                trendTone: atRisk === 0 ? 'up' : 'down',
+              },
+            ]}
+          />
 
           <Card
             title={offering ? `توزيع الدرجات — ${offering.course.name}` : 'توزيع الدرجات'}

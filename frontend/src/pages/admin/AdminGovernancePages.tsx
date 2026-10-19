@@ -18,7 +18,8 @@ import {
   AlertCircle, Sparkles, Briefcase, Building2, Users, Crown, BookOpen,
   Search, X,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, UserAvatar, AlertRow, FormField } from '../../components/primitives';
+import { Card, Badge, UserAvatar, AlertRow, FormField, PageHeader } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import {
   CardSkeleton, DetailSkeleton, ErrorState, EmptyState, Skeleton,
 } from '../../components/primitives/States';
@@ -38,6 +39,7 @@ import { api, unwrap } from '../../lib/api';
 import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
 import { countAr } from '../../lib/format';
+import { formatNum } from '../../utils/numbers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../../stores/auth.store';
 import { useEntityPageTitle } from '../../components/layout/AppShell';
@@ -292,10 +294,19 @@ export function AdminTeachersPage() {
           anywhere in the /admin/users payload (verification is
           per-teacher via TEACHERS_VERIFY), and a hardcoded «فعّال»
           fakes a platform-wide status the backend never asserts. The
-          honest server-backed count stays. */}
-      <div className="grid-2">
-        <MetricCard icon={Users} label="عدد الأساتذة" value={teacherCount} color="brand" />
-      </div>
+          honest server-backed count stays.
+          R190-D3: the lone icon-box tile becomes the typographic stat
+          line — one fact, no half-empty grid-2 row. */}
+      <StatStrip
+        ariaLabel="إحصاءات الأساتذة"
+        cells={[
+          {
+            label: 'عدد الأساتذة',
+            value: teacherCount,
+            trend: count.isPending ? 'قراءة عدّاد الخادم…' : count.data ? 'في هذه المؤسّسة' : 'تعذّر قراءة العدّاد',
+          },
+        ]}
+      />
 
       <div className="grid-2-1">
         <Card title="قائمة الأساتذة" icon={Users}>
@@ -949,18 +960,29 @@ export function AdminPermissionsPage() {
         <Icon icon={ChevronRight} size={14} /> العودة إلى الأساتذة
       </Link>
 
-      <Card title="إدارة الصلاحيات" icon={ShieldCheck} subtitle={<>{data.user.firstName} {data.user.lastName} · <bdi>{data.user.email}</bdi></>}>
-        <div className="grid-3" style={{ marginBottom: 'var(--sp-3)' }}>
-          <MetricCard
-            icon={GraduationCap}
-            label="الدور الحالي"
-            value={ROLE_LABEL[data.user.role] ?? <bdi>{data.user.role}</bdi>}
-            color="brand"
-          />
-          <MetricCard icon={CheckCircle2} label="صلاحيات فعلية" value={data.effective.length.toString()} color="green" />
-          <MetricCard icon={AlertCircle} label="استثناءات يدوية" value={data.overrides.length.toString()} color="amber" />
-        </div>
+      {/* r190-D3: the page finally owns a masthead — the editor used to
+          * open straight onto a back-link + card (NO h1: the only admin
+          * route without one — axe page-has-heading-one). The h1 names
+          * the USER (same contract as the tab title above); the mono
+          * meta line carries the role + email facts. */}
+      <PageHeader
+        title={<>{data.user.firstName} {data.user.lastName}</>}
+        subtitle="إدارة صلاحيات هذا المستخدم: الدور الافتراضي، والاستثناءات اليدوية، والنطاق."
+        meta={<>{roleLabel} · <bdi>{data.user.email}</bdi></>}
+      />
 
+      {/* R190-D3: the icon-box MetricCard trio → the typographic stat
+          * line (■ mono labels + metric values; no icon wells). */}
+      <StatStrip
+        ariaLabel="حالة صلاحيات المستخدم"
+        cells={[
+          { label: 'الدور الحالي', value: ROLE_LABEL[data.user.role] ?? <bdi>{data.user.role}</bdi> },
+          { label: 'صلاحيات فعلية', value: formatNum(data.effective.length), trend: 'مفعّلة الآن' },
+          { label: 'استثناءات يدوية', value: formatNum(data.overrides.length), trend: data.overrides.length > 0 ? 'منح أو سحب يدويّ' : 'لا استثناءات' },
+        ]}
+      />
+
+      <Card title="محرّر الصلاحيات" icon={ShieldCheck}>
         {(data.user.role === 'ADMIN' || data.user.role === 'QUALITY') && (
           <ScopeAssignmentCard
             key={data.user.id}

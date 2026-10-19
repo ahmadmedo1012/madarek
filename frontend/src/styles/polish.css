@@ -207,7 +207,6 @@
      5-D3 (A2 P3-16): select joins the group — the native control kept
      the default arrow while every sibling control answers pointer
      (measured on the admin filters). */
-  .compact-kpi,
   .metric,
   [role="button"],
   [role="tab"],
@@ -599,17 +598,7 @@
   /* ── Tabular numerals on metrics + KPIs ────────────────────────
      CSS-only typographic upgrade — numbers align across rows,
      animations don't shift the baseline. */
-  .metric-value,
-  .compact-kpi-value,
-  .dash-gpa-value,
-  .dash-doughnut-center,
-  .dash-term-pct,
-  [data-numeric="true"],
-  .tbl-num,
-  .font-mono,
-  .leaderboard-value {
-    font-variant-numeric: tabular-nums;
-  }
+  
 
   /* ── Better metric card depth ─────────────────────────────────
      The KPI strip is the most-seen part of every dashboard. Add a
@@ -1435,10 +1424,7 @@
      student.css (pages layer) must not be beaten by this overrides-
      layer flex-basis (320px would stretch the column-stack's only
      child). Same :not() source-guard precedent as r151e. */
-  .page-header:not(.welcome-card) .page-title-block {
-    flex: 1 1 320px;
-    min-inline-size: 0;
-  }
+  
   .page-title {
     overflow-wrap: break-word;
   }
@@ -1591,7 +1577,7 @@
      ║  Tighter vertical rhythm between header and first content row, ║
      ║  more generous horizontal breathing on welcome cards.          ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .page > .page-header:not(.welcome-card) { margin-block-end: var(--sp-5); }
+  
 
   /* (r153f grave: the v11 welcome-card surface — accent-soft gradient
      bg (dead since v17's photo overlay), rule border, r-2xl radius,
@@ -1700,9 +1686,7 @@
      ║  TYPOGRAPHY MICRO-FIXES                                        ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* Numerals always tabular-aligned in metrics — already in some places, applied globally for KPI cards */
-  .metric-value, .dash-gpa-value, .dash-doughnut-center, .dash-term-pct {
-    font-variant-numeric: tabular-nums;
-  }
+  
 
   /* Subtle text smoothing for Plex Arabic on retina
      (r149 R3-A5 #6: حُذف الإعلان المكرر — base.css:11-16 هو البيت
@@ -2119,10 +2103,7 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  DOUGHNUT / CHARTS — fade up so they don't pop in cold         ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .dash-doughnut,
-  .owner-chart-container {
-    animation: madarek-chart-in var(--t-slower) var(--ease-out) both;
-  }
+  
   @keyframes madarek-chart-in {
     from { opacity: 0; transform: scale(0.96); }
     to   { opacity: 1; transform: none; }
@@ -2133,15 +2114,7 @@
      ║  REDUCED MOTION — globally honored                             ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (prefers-reduced-motion: reduce) {
-    .page,
-    .grid-2 > *, .grid-3 > *, .grid-4 > *,
-    .grid-auto-200 > *, .grid-auto-260 > *,
-    .metric-value,
-    .topbar,
-    .dash-doughnut,
-    .owner-chart-container {
-      animation: none !important;
-    }
+    
     .btn:active:not(:disabled),
     a > .card:active,
     button > .card:active,
@@ -2905,15 +2878,13 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  STUDENT DASHBOARD — agenda items glide in                     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .dash-agenda-list .dash-agenda-item {
-    animation: madarek-agenda-in var(--motion-duration-long) var(--ease-out) both;
-  }
-  .dash-agenda-list .dash-agenda-item:nth-child(1) { animation-delay: 80ms; }
-  .dash-agenda-list .dash-agenda-item:nth-child(2) { animation-delay: 140ms; }
-  .dash-agenda-list .dash-agenda-item:nth-child(3) { animation-delay: 200ms; }
-  .dash-agenda-list .dash-agenda-item:nth-child(4) { animation-delay: 260ms; }
-  .dash-agenda-list .dash-agenda-item:nth-child(5) { animation-delay: 320ms; }
-  .dash-agenda-list .dash-agenda-item:nth-child(n+6) { animation-delay: 380ms; }
+  
+  
+  
+  
+  
+  
+  
   @keyframes madarek-agenda-in {
     from { opacity: 0; transform: translateX(-8px); }
     to   { opacity: 1; transform: none; }
@@ -2924,19 +2895,13 @@
     from { opacity: 0; transform: translateX(8px); }
     to   { opacity: 1; transform: none; }
   }
-  [dir="rtl"] .dash-agenda-list .dash-agenda-item {
-    animation-name: madarek-agenda-in-rtl;
-  }
+  
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  STUDENT DASHBOARD — doughnut center number transitions        ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .dash-doughnut-center {
-    transition:
-      transform var(--t-slower) var(--ease-spring-bounce),
-      color var(--motion-duration-page) var(--ease);
-  }
+  
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2965,40 +2930,12 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  COMPACT KPI — accent stripe + value pop                       ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .compact-kpi {
-    position: relative;
-    overflow: hidden;
-    transition:
-      border-color var(--motion-duration-medium) var(--ease),
-      box-shadow var(--motion-duration-medium) var(--ease-spring-soft),
-      transform var(--motion-duration-medium) var(--ease-spring-soft);
-  }
-  .compact-kpi::before {
-    content: '';
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: 0;
-    inline-size: 28px;
-    block-size: 3px;
-    background: var(--accent);
-    border-radius: 0 0 var(--r-sm) 0;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform var(--motion-duration-reveal) var(--ease-spring-soft);
-  }
-  [dir="rtl"] .compact-kpi::before {
-    transform-origin: right;
-    border-radius: 0 0 0 var(--r-sm);
-  }
-  .compact-kpi:hover::before { transform: scaleX(1); }
-  .compact-kpi:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--elev-2);
-  }
-  .compact-kpi-value {
-    font-variant-numeric: tabular-nums;
-    transition: color var(--motion-duration-medium) var(--ease);
-  }
+  
+  
+  
+  
+  
+  
 
 
   /* (r153e: the v17 OWNER REALTIME heartbeat family — .owner-live-pulse +
@@ -3025,11 +2962,7 @@
      ║  Chart.js animations are JS-driven; we add a CSS hint that     ║
      ║  fades the canvas in so it doesn't pop cold.                   ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .owner-chart-container canvas,
-  .dash-doughnut canvas,
-  [class*="chart-container"] canvas {
-    animation: madarek-canvas-in var(--t-slower) var(--ease-out) both;
-  }
+  
   @keyframes madarek-canvas-in {
     from { opacity: 0; }
     to   { opacity: 1; }
@@ -3114,19 +3047,7 @@
      ║  REDUCED MOTION                                                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (prefers-reduced-motion: reduce) {
-    .dash-agenda-list .dash-agenda-item,
-    .feed .feed-item,
-    .owner-health-dot.green,
-    .owner-live-pulse,
-    .owner-health-dot.green::after,
-    .owner-live-pulse::after,
-    .owner-live-status.has-alerts,
-    .owner-chart-container canvas,
-    .dash-doughnut canvas,
-    .college-hero::before,
-    .comp-hero::before {
-      animation: none !important;
-    }
+    
   }
 }
 

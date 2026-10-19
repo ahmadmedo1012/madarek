@@ -20,8 +20,9 @@ import {
   ShieldCheck, AlertCircle, Edit3, Save, X, FileText, Sparkles,
   ChevronLeft,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, UserAvatar, FormField } from '../../components/primitives';
-import { DetailSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
+import { Card, Badge, UserAvatar, FormField } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
+import { ErrorState, EmptyState, Skeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
@@ -87,7 +88,43 @@ export default function TeacherProfilePage() {
     onClose: discardDraft,
   });
 
-  if (isPending) return <DetailSkeleton />;
+  if (isPending) {
+    /* R190 D-2: shape-matched to what lands — masthead + teacher card
+     * + the workload stat strip + content cards (the generic
+     * DetailSkeleton painted icon-card KPI tiles the strip replaced). */
+    return (
+      <div className="page page-profile" aria-busy="true" aria-live="polite">
+        <div className="page-header">
+          <div className="page-title-block">
+            <Skeleton width="min(220px, 100%)" height={28} />
+            <Skeleton width="min(420px, 100%)" height={12} />
+          </div>
+        </div>
+        <Card>
+          <div className="teacher-header">
+            <Skeleton width={72} height={72} rounded="50%" />
+            <div className="flex-col gap-2 flex-1">
+              <Skeleton width="40%" height={20} />
+              <Skeleton width="60%" height={12} />
+            </div>
+          </div>
+        </Card>
+        <div className="stat-strip">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="stat-cell" aria-hidden>
+              <Skeleton width={70} height={11} />
+              <div style={{ marginBlock: 'var(--sp-1)' }}>
+                <Skeleton width={80} height={28} />
+              </div>
+              <Skeleton width={100} height={11} />
+            </div>
+          ))}
+        </div>
+        <CardSkeleton lines={4} />
+        <CardSkeleton lines={3} />
+      </div>
+    );
+  }
   if (isError) {
     return (
       <div className="page">
@@ -238,30 +275,32 @@ export default function TeacherProfilePage() {
         </div>
       </Card>
 
-      {/* Workload KPIs */}
-      <div className="grid-3">
-        <MetricCard
-          icon={BookOpen}
-          label="المقرّرات هذا الفصل"
-          value={profile.workload.courseCount.toString()}
-          change={countAr(profile.workload.totalCredits, ['وحدة معتمدة واحدة', 'وحدتان معتمدتان', 'وحدات معتمدة', 'وحدة معتمدة'])}
-          color="brand"
-        />
-        <MetricCard
-          icon={Users2}
-          label="إجمالي الطلاب"
-          value={profile.workload.totalEnrolled.toString()}
-          change="مسجَّلون في مقرّراتك"
-          color="green"
-        />
-        <MetricCard
-          icon={Award}
-          label="الدرجة العلمية"
-          value={DEGREE_LABEL[profile.degreeLevel] ?? profile.degreeLevel}
-          change={countAr(profile.yearsExperience, ['سنة خبرة واحدة', 'سنتا خبرة', 'سنوات خبرة', 'سنة خبرة'])}
-          color="purple"
-        />
-      </div>
+      {/* Workload — the typographic stat strip (mono label + metric
+       * value + trend note); the icon-card KPI grid is the retired
+       * template pattern. */}
+      <StatStrip
+        ariaLabel="حجم التدريس هذا الفصل"
+        cells={[
+          {
+            label: 'المقرّرات هذا الفصل',
+            value: profile.workload.courseCount.toString(),
+            trend: countAr(profile.workload.totalCredits, ['وحدة معتمدة واحدة', 'وحدتان معتمدتان', 'وحدات معتمدة', 'وحدة معتمدة']),
+            trendTone: 'flat',
+          },
+          {
+            label: 'إجمالي الطلاب',
+            value: profile.workload.totalEnrolled.toString(),
+            trend: 'مسجَّلون في مقرّراتك',
+            trendTone: 'flat',
+          },
+          {
+            label: 'الدرجة العلمية',
+            value: DEGREE_LABEL[profile.degreeLevel] ?? profile.degreeLevel,
+            trend: countAr(profile.yearsExperience, ['سنة خبرة واحدة', 'سنتا خبرة', 'سنوات خبرة', 'سنة خبرة']),
+            trendTone: 'flat',
+          },
+        ]}
+      />
 
       {/* Bio + contact (editable) */}
       <Card title="نبذة شخصية" icon={FileText}>

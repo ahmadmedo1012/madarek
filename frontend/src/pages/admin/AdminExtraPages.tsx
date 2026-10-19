@@ -2,12 +2,13 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
-  Users, BookOpen, Activity, ShieldCheck, Server,
-  Wifi, Radio, Settings, Search,
+  ShieldCheck, Server,
+  Radio, Settings, Search,
   Download, RefreshCw, Mail, X,
-  GraduationCap, UserMinus, AlertCircle,
+  GraduationCap, UserMinus, AlertCircle, BookOpen,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, UserAvatar } from '../../components/primitives';
+import { Card, Badge, UserAvatar } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, EmptyState, KpiSkeleton, TableSkeleton, Skeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { Icon } from '../../components/Icon';
@@ -18,6 +19,8 @@ import { toast } from '../../lib/toast';
 import { useFaculties, useCurrentInstitutionSlug, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { TablePaginationFooter, useCompactRosterBand } from './AdminPages';
+import { countAr } from '../../lib/format';
+import { formatNum } from '../../utils/numbers';
 // D14 css split (13-17): colleges.css has owned the admin-extras surfaces
 // (.admin-students-*, .digital-stat-*, .settings-*, .top-courses-*)
 // since "Sub-project D" — see its ownership banner. It lands in the chunk
@@ -134,6 +137,14 @@ export function AdminStudentsPage() {
         <div className="page-title-block">
           <h1 className="page-title">إدارة الطلاب</h1>
           <p className="page-subtitle">قائمة الطلاب المسجَّلين في الجامعة، مع البحث والتصفية حسب الكلّيّة.</p>
+          {/* r190-D3: the mono telemetry fact line — the server meta total
+              (the roster's most-scanned number) rides the masthead; the
+              footer keeps the per-page counting. */}
+          <p className="page-header-meta">
+            {studentsQ.data
+              ? `${countAr(studentsQ.data.meta.total, ['طالب واحد مسجَّل', 'طالبان مسجَّلان', 'طلاب مسجَّلون', 'طالباً مسجَّلاً'])} · بحث الخادم`
+              : 'قراءة سجلّ الطلاب…'}
+          </p>
         </div>
       </header>
 
@@ -495,18 +506,18 @@ export function AdminDigitalPage() {
       {q.isError && <ErrorState error={q.error} message="تعذّر تحميل مؤشّرات التحوّل الرقميّ" onRetry={() => q.refetch()} />}
       {q.data && (
         <>
-          <div className="grid-4">
-            <MetricCard icon={Users} label="إجمالي الحسابات" value={q.data.totalUsers.toLocaleString('ar-LY')} color="brand" />
-            <MetricCard icon={Activity} label="حسابات نشطة" value={q.data.activeUsers.toLocaleString('ar-LY')} color="green" />
-            <MetricCard
-              icon={Wifi}
-              label="نسبة التبنّي"
-              value={`${q.data.adoptionPct}%`}
-              change={`${q.data.activeUsers}/${q.data.totalUsers}`}
-              color="amber"
-            />
-            <MetricCard icon={BookOpen} label="ملفات تعليمية مرفوعة" value={q.data.materialsUploaded.toLocaleString('ar-LY')} color="purple" />
-          </div>
+          {/* R190-D3: the typographic stat line replaces the icon-box
+              MetricCard grid — the adoption numbers are exactly what
+              the ■-marked mono labels + metric values speak. */}
+          <StatStrip
+            ariaLabel="مؤشّرات التبنّي العامّة"
+            cells={[
+              { label: 'إجمالي الحسابات', value: formatNum(q.data.totalUsers), trend: 'كل الأدوار في الجامعة' },
+              { label: 'حسابات نشطة', value: formatNum(q.data.activeUsers), trend: `${formatNum(q.data.activeUsers)}/${formatNum(q.data.totalUsers)}`, trendTone: 'up' },
+              { label: 'نسبة التبنّي', value: `${formatNum(q.data.adoptionPct)}٪`, trend: 'حصة الحسابات النشطة' },
+              { label: 'ملفات تعليمية مرفوعة', value: formatNum(q.data.materialsUploaded) },
+            ]}
+          />
 
           {/* 5-A8 §6 step 4 (route identity): the four single-stat cards
               fold into ONE «تبنّي المكوّنات» register — this was the third

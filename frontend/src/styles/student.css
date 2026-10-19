@@ -542,28 +542,16 @@
      23-b (A11 P2-10 — scaleX debt cleared): the value rides
      transform: scaleX() (set inline by the page) from the inline-start
      edge; the width layout transition is gone. */
-  .dash-term-bar > span {
-    display: block;
-    block-size: 100%;
-    inline-size: 100%;
-    border-radius: inherit;
-    background: var(--accent);
-    transform-origin: left center;
-    transform: scaleX(0);
-    /* the calm "term is moving" fill */
-    transition: transform var(--motion-duration-stat) var(--motion-ease-decelerate);
-  }
-  [dir="rtl"] .dash-term-bar > span { transform-origin: right center; }
+  
+  
 
   /* ChartFrame adoption: the frame fills the fixed doughnut well; the
      center number overlays it (positioning stays on .dash-doughnut). */
-  .dash-doughnut-frame { position: absolute; inset: 0; }
+  
 
   /* Center number rises + settles whenever the average changes
      (key={pct} remount in the TSX). */
-  .dash-doughnut-center {
-    animation: dash-center-in var(--motion-duration-stat) var(--motion-ease-decelerate) both;
-  }
+  
   @keyframes dash-center-in {
     from { opacity: 0; transform: scale(0.85); }
     to { opacity: 1; transform: none; }
@@ -571,20 +559,14 @@
 
   /* Arabic labels never take letter-spacing/uppercase — both break the
      cursive join (ruling #2; the shared rules predate it). */
-  .dash-eyebrow { letter-spacing: normal; text-transform: none; }
+  
   .student-dashboard .metric-label { letter-spacing: normal; text-transform: none; }
 
   /* Agenda tone wells — the TSX always carried data-tone but Card never
      spread it to the DOM (silently dead); the tone now rides the icon
      well. Text/icons on pastel use the -deep WCAG-pinned inks. */
-  .dash-agenda-icon[data-tone='gold'] {
-    background: var(--c-yellow-bg);
-    color: var(--c-yellow-deep);
-  }
-  .dash-agenda-icon[data-tone='red'] {
-    background: var(--c-rose-bg);
-    color: var(--c-rose-deep);
-  }
+  
+  
   /* r166a (E1 oversized-empty defect): the agenda's EMPTY slot held a
      ~375px card (the opt-in 160px illustration + the state's
      breathing padding) for one line of meaning — dominating the
@@ -594,24 +576,14 @@
      icon well + one-line copy + sp-5 padding. Scoped to the
      dashboard's agenda only; every other empty state keeps the
      shared .state canon. */
-  .student-dashboard .dash-agenda .state.state-empty {
-    padding: var(--sp-5);
-  }
+  
   /* PP-X2 (audit P1-8): agenda rows ARE links now (class → course,
      assignment → course, live → broadcast). The 22-c "affordance lie"
      overrides below (cursor: default + rest-only hover) are reverted —
      the pointer + surface-2 hover + chevron now tell the truth. Focus
      rides the platform's global :focus-visible ring. */
-  .dash-agenda-item.agenda-row {
-    cursor: pointer;
-    border-radius: var(--r-lg);
-    transition: background var(--t-fast) var(--ease), box-shadow var(--t-base) var(--ease);
-    box-shadow: var(--shadow-card);
-  }
-  .dash-agenda-item.agenda-row:hover {
-    background: var(--surface-2);
-    box-shadow: var(--shadow-card-premium-h);
-  }
+  
+  
   .agenda-row-chevron {
     flex-shrink: 0;
     color: var(--text-muted);
@@ -622,11 +594,7 @@
   /* The chevron nudges toward FORWARD (inline-end): --motion-direction
      is −1 in RTL, so the translate lands leftward — the reading
      direction's "next". */
-  .dash-agenda-item.agenda-row:hover .agenda-row-chevron,
-  .dash-agenda-item.agenda-row:focus-visible .agenda-row-chevron {
-    color: var(--accent-ink, var(--accent));
-    transform: translateX(calc(var(--motion-direction) * 2px));
-  }
+  
 
   /* ═══ Continue-learning hero (PP-X2, audit P0-3) ═══
      The PRIMARY action of the dashboard: one click from cold-open to
@@ -1113,10 +1081,7 @@
   /* Guardrail #6 — keyframe off-switches (the base.css token belt
      handles the duration-based rules; these kill the keyframes). */
   @media (prefers-reduced-motion: reduce) {
-    .dash-doughnut-center,
-    .matrix-gap-list .list-row,
-    .chat-typing-dot,
-    .chat-error { animation: none; }
+    
   }
 
   /* ── §lists — Courses · CourseDetail · Exams · Mooc · Webinars · Jobs (wave 4-b) ── */
@@ -1690,10 +1655,7 @@
     .webinar-live-dot { animation: none !important; }
     .webinar-row { transition: none; }
     /* The agenda chevron nudge is a hover garnish, not information. */
-    .dash-agenda-item.agenda-row:hover .agenda-row-chevron,
-    .dash-agenda-item.agenda-row:focus-visible .agenda-row-chevron {
-      transform: none;
-    }
+    
   }
 
   /* ── §research — ResearchPage · LibraryPage · LivePage · LabsPage (wave 4-c) ── */
@@ -3266,8 +3228,8 @@
      greeting, agenda second, KPIs after. */
   @media (max-width: 640px) {
     .student-dashboard .dash-resume { order: -3; }
-    .student-dashboard .welcome-card { order: -2; }
-    .student-dashboard .dash-agenda { order: -1; }
+    
+    
   }
 
   /* P2-9 — results: the page's one data visualization leads on phone
@@ -3284,9 +3246,9 @@
      first lines share the card padding line (also improves the desktop
      pair). The ≤640px stacked layout re-asserts its centered column —
      this block's higher specificity would otherwise beat components.css. */
-  .student-dashboard .dash-progress-card .dash-progress-body { align-items: flex-start; }
+  
   @media (max-width: 640px) {
-    .student-dashboard .dash-progress-card .dash-progress-body { align-items: center; }
+    
   }
 
   /* ── University accreditation chip (P2-7, page 7.5): the inline
@@ -3724,113 +3686,29 @@
      .welcome-card via :not() so this pages-layer rule-set needs no
      overrides-layer pin. */
 
-  .student-dashboard .page-header.welcome-card {
-    position: relative;
-    overflow: hidden;
-    isolation: isolate;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: var(--sp-2);
-    padding: var(--sp-7) var(--sp-6);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-2xl);
-    box-shadow: var(--shadow-card-premium);
-    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
-    margin-block-end: var(--sp-6);
-    /* r188 brand reset: the retired campus-photo overlay is gone (no
-       real-university imagery anywhere). The welcome card now paints a
-       calm editorial wash — layered accent-soft token recipes with a
-       hairline edge, readable in both themes, zero image payload. */
-    background:
-      linear-gradient(135deg,
-        color-mix(in srgb, var(--accent-soft) 95%, transparent) 0%,
-        color-mix(in srgb, var(--accent-soft) 42%, transparent) 58%,
-        color-mix(in srgb, var(--surface-2) 88%, transparent) 100%
-      );
-    border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--rule));
-  }
-  [data-theme="dark"] .student-dashboard .page-header.welcome-card {
-    background:
-      linear-gradient(135deg,
-        color-mix(in srgb, var(--bg) 92%, var(--accent) 8%) 0%,
-        color-mix(in srgb, var(--bg) 78%, transparent) 58%,
-        var(--bg) 100%
-      );
-    border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--rule));
-  }
-  .student-dashboard .page-header.welcome-card:hover {
-    box-shadow: var(--shadow-card-premium-h);
-    transform: translateY(-1px);
-  }
+  
+  
+  
 
   /* Title above the decorative layers: the stack's only child grows to
      fill the row and holds a local paint-order z-index (not a --z-*
      layer). */
-  .welcome-card .page-title-block {
-    inline-size: 100%;
-    flex: 1 1 auto;
-    min-inline-size: 0;
-    position: relative;
-    z-index: 1;
-  }
-  .welcome-card .page-title,
-  .welcome-card .page-subtitle {
-    position: relative;
-    z-index: 1;
-    overflow-wrap: break-word;
-    word-break: normal;
-  }
-  .welcome-card .page-title {
-    font-size: clamp(20px, 3.4vw, 28px); /* type-gate: allow — welcome-card responsive display clamp, no token equivalent */
-    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
-    line-height: 1.22;
-    /* hero gradient text (v8) — the greeting is the page's hero */
-    background: linear-gradient(135deg, var(--text) 0%, color-mix(in srgb, var(--accent) 70%, var(--text)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    transition: opacity var(--t-base) var(--ease);
-  }
-  .welcome-card:hover .page-title {
-    opacity: 0.95;
-  }
-  .welcome-card .page-subtitle {
-    color: var(--text-muted);
-    font-size: var(--fs-sm);
-  }
+  
+  
+  
+  
+  
 
   /* Corner dot grid on ::before (v22's re-home from the v8/v13 ::after
      conflict) with the valid RTL-correct fade: dots sit at the
      inline-end corner, opaque at the edge, fading toward the content —
      `to left` for LTR (inline-end = right), `to right` for RTL. */
-  .welcome-card::before {
-    content: "";
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    width: 200px;
-    height: 100%;
-    background-image: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--accent) 22%, transparent) 1px,
-      transparent 1.5px
-    );
-    background-size: 14px 14px;
-    background-position: 0 0;
-    opacity: 0.35;
-    -webkit-mask-image: linear-gradient(to left, black 30%, transparent 100%);
-    mask-image: linear-gradient(to left, black 30%, transparent 100%);
-    pointer-events: none;
-  }
-  [dir="rtl"] .welcome-card::before {
-    -webkit-mask-image: linear-gradient(to right, black 30%, transparent 100%);
-    mask-image: linear-gradient(to right, black 30%, transparent 100%);
-  }
+  
+  
   @media (max-width: 640px) {
-    .student-dashboard .page-header.welcome-card { padding: var(--sp-5) var(--sp-4); }
-    .welcome-card::before { width: 110px; opacity: 0.22; }
-    .welcome-card .page-title { font-size: clamp(18px, 5.5vw, 22px); /* type-gate: allow — welcome-card mobile display clamp, no token equivalent */ }
+    
+    
+    
   }
 
 }

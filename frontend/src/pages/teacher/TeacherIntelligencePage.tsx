@@ -14,8 +14,9 @@ import {
   Users, ClipboardCheck, BarChart3, Brain, Lightbulb, ArrowUpRight,
   CheckCircle2, AlertCircle, RefreshCw,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, UserAvatar, Tabs } from '../../components/primitives';
-import { DetailSkeleton, ErrorState, EmptyState, KpiSkeleton, ListSkeleton, Skeleton } from '../../components/primitives/States';
+import { Card, Badge, UserAvatar, Tabs } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
+import { DetailSkeleton, ErrorState, EmptyState, ListSkeleton, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { CurriculumAuthoringPanel } from '../../components/curriculum';
@@ -215,6 +216,25 @@ function OfferingCard({ offering }: { offering: TeacherOffering }) {
   );
 }
 
+/** R190 D-2: shape-matched skeleton for the analytics stat strip —
+ * the icon-card KpiSkeleton the page used painted 4 × 132px tiles
+ * that the strip (label/value/trend) replaces. */
+function AnalyticsStripSkeleton() {
+  return (
+    <div className="stat-strip" aria-busy="true" aria-live="polite">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="stat-cell" aria-hidden>
+          <Skeleton width={70} height={11} />
+          <div style={{ marginBlock: 'var(--sp-1)' }}>
+            <Skeleton width={80} height={28} />
+          </div>
+          <Skeleton width={100} height={11} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /* ═══════════════ Per-offering deep dive ═══════════════ */
 export function TeacherOfferingDetailPage() {
   const { offeringId } = useParams<{ offeringId: string }>();
@@ -343,7 +363,7 @@ export function TeacherOfferingDetailPage() {
         </div>
       </div>
 
-      {analytics.isPending && <KpiSkeleton />}
+      {analytics.isPending && <AnalyticsStripSkeleton />}
       {analytics.isError && (
         <div className="inline-retry" role="alert">
           <span className="text-sm text-muted">تعذَّر تحميل مؤشرات المقرّر.</span>
@@ -353,12 +373,35 @@ export function TeacherOfferingDetailPage() {
         </div>
       )}
       {analytics.data && (
-        <div className="grid-4">
-          <MetricCard icon={Users} label="مسجَّلون" value={analytics.data.enrolled.toString()} color="brand" />
-          <MetricCard icon={ClipboardCheck} label="الحضور العام" value={`${analytics.data.overallAttendance}%`} color={analytics.data.overallAttendance >= 75 ? 'green' : 'amber'} />
-          <MetricCard icon={BarChart3} label="متوسط الدرجات" value={`${analytics.data.avgGrade}%`} color={analytics.data.avgGrade >= 65 ? 'green' : 'amber'} />
-          <MetricCard icon={CheckCircle2} label="نسبة النجاح" value={`${analytics.data.passRate}%`} color="purple" />
-        </div>
+        <StatStrip
+          ariaLabel="مؤشّرات المقرّر"
+          cells={[
+            {
+              label: 'مسجَّلون',
+              value: analytics.data.enrolled.toString(),
+              trend: 'تسجيلات نشطة في المقرّر',
+              trendTone: 'flat',
+            },
+            {
+              label: 'الحضور العام',
+              value: `${analytics.data.overallAttendance}%`,
+              trend: analytics.data.overallAttendance >= 75 ? 'فوق حدّ 75%' : 'تحت حدّ 75%',
+              trendTone: analytics.data.overallAttendance >= 75 ? 'up' : 'down',
+            },
+            {
+              label: 'متوسط الدرجات',
+              value: `${analytics.data.avgGrade}%`,
+              trend: analytics.data.avgGrade >= 65 ? 'فوق حدّ 65%' : 'تحت حدّ 65%',
+              trendTone: analytics.data.avgGrade >= 65 ? 'up' : 'down',
+            },
+            {
+              label: 'نسبة النجاح',
+              value: `${analytics.data.passRate}%`,
+              trend: 'طلاب عند 50 فأعلى',
+              trendTone: analytics.data.passRate >= 50 ? 'up' : 'down',
+            },
+          ]}
+        />
       )}
 
       <Tabs

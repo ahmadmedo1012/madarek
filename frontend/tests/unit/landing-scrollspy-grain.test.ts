@@ -60,8 +60,11 @@ describe('r188 — the folio chrome that ships', () => {
     // markup: the bar ref + the imperative --p write (r172 pattern).
     expect(tsx).toContain('fo-progress-bar');
     expect(tsx).toMatch(/style\.setProperty\('--p'/);
-    // CSS: the width consumes --p; the paint is the canonical accent.
-    expect(live).toContain('inline-size: calc(var(--p, 0) * 100%)');
+    // CSS (r190): the bar consumes --p via transform (GPU-composited —
+    // no per-scroll layout paint; the width-based recipe retired) and
+    // the paint is the canonical accent token (routed to its stage
+    // expression on the fixed-dark chrome — see landing.css).
+    expect(live).toContain('transform: scaleX(var(--p, 0))');
     expect(live).toContain('background: var(--accent)');
   });
 

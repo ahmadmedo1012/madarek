@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   Plus, Landmark, ChevronDown, ChevronLeft, ChevronRight, Building2, Users,
-  School, AlertTriangle, X, ArrowLeft, BookOpen,
+  AlertTriangle, X, ArrowLeft, BookOpen,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, AlertRow, FormField } from '../../components/primitives';
-import { EmptyState, ErrorState, TableSkeleton, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
+import { Card, Badge, AlertRow, FormField } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
+import { EmptyState, ErrorState, TableSkeleton, CardSkeleton, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { Modal } from '../../components/overlays/Modal';
@@ -369,7 +370,17 @@ export function OwnerInstitutionDetailPage() {
             <h1 className="page-title">جارٍ تحميل المؤسسة…</h1>
           </div>
         </header>
-        <KpiSkeleton />
+        <div className="stat-strip" aria-busy="true">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="stat-cell">
+              <Skeleton width={80} height={11} />
+              <div style={{ marginBlock: 'var(--sp-1)' }}>
+                <Skeleton width={90} height={28} />
+              </div>
+              <Skeleton width={120} height={11} />
+            </div>
+          ))}
+        </div>
         <CardSkeleton lines={7} />
       </div>
     );
@@ -467,11 +478,38 @@ export function OwnerInstitutionDetailPage() {
         />
       )}
 
-      <div className="grid-4" style={{ marginBlockStart: suspended ? 'var(--sp-4)' : undefined }}>
-        <MetricCard icon={Users} label="الأعضاء النشطون" value={institution.activeMembershipCount.toLocaleString('ar-LY')} color="brand" />
-        <MetricCard icon={Building2} label="الكلّيّات" value={faculties.length.toLocaleString('ar-LY')} color="purple" />
-        <MetricCard icon={School} label="الأقسام" value={totalDepartments.toLocaleString('ar-LY')} color="green" />
-        <MetricCard icon={BookOpen} label="المقرّرات" value={(coursesMeta?.total ?? 0).toLocaleString('ar-LY')} color="amber" />
+      {/* R190 (D4): the typographic stat strip — was the grid-4 icon
+          tiles (the census facts as the printed stat line). */}
+      <div style={{ marginBlockStart: suspended ? 'var(--sp-4)' : undefined }}>
+        <StatStrip
+          ariaLabel="مؤشرات المؤسسة"
+          cells={[
+            {
+              label: 'الأعضاء النشطون',
+              value: institution.activeMembershipCount.toLocaleString('ar-LY'),
+              trend: 'عضويّات فاعلة',
+              trendTone: 'flat',
+            },
+            {
+              label: 'الكلّيّات',
+              value: faculties.length.toLocaleString('ar-LY'),
+              trend: 'البنية الأكاديميّة',
+              trendTone: 'flat',
+            },
+            {
+              label: 'الأقسام',
+              value: totalDepartments.toLocaleString('ar-LY'),
+              trend: 'داخل الكلّيّات',
+              trendTone: 'flat',
+            },
+            {
+              label: 'المقرّرات',
+              value: (coursesMeta?.total ?? 0).toLocaleString('ar-LY'),
+              trend: coursesMeta ? 'خزينة المقرّرات' : 'بانتظار الإحصاء',
+              trendTone: 'flat',
+            },
+          ]}
+        />
       </div>
 
       {/* ── Section 1: the academic structure (faculties + departments) ── */}

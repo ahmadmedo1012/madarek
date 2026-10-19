@@ -353,12 +353,10 @@
   margin-block-start: var(--sp-1);
 }
 
-/* A8 P1-2 public-zeros: a guest's single real stat (data-thin
-   college) renders at a sane measure — a full-width KPI tile for one
-   number would be all air. */
-.college-stat-solo {
-  max-inline-size: 360px;
-}
+/* (r190-D3): .college-stat-solo retired — the detail page's stats are
+   the app-wide typographic StatStrip now, whose auto-fit columns absorb
+   any surviving count without orphan-grid patches (zero TSX consumers,
+   rg-verified). */
 
 /* The honest thin-board line (A8 P1-2): when a guest's college page
    carries no real data at all, ONE line tells that story — never a

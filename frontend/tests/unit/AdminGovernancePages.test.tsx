@@ -130,9 +130,11 @@ const rosterCalls = () => usersCalls().filter((p) => p.limit === 20);
 
 /** Scoped metric-value query — the KPI card carrying `label`. */
 const kpiValue = (label: string) => {
-  const card = screen.getByText(label).closest('div.metric');
-  expect(card).not.toBeNull();
-  return within(card as HTMLElement).getByText;
+  // r190-D3: the icon-box .metric tile became the typographic
+  // .stat-cell (the honest server count survives verbatim).
+  const cell = screen.getByText(label).closest('.stat-cell');
+  expect(cell).not.toBeNull();
+  return within(cell as HTMLElement).getByText;
 };
 
 beforeEach(() => {

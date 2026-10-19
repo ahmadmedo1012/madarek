@@ -364,7 +364,13 @@ describe('r172a §3 — the landing\'s private :focus-visible sub-language is de
 
   it('no :focus-visible rule in landing.css writes an outline', () => {
     const rules = css.match(/[^{}]*:focus-visible[^{}]*\{[^}]*\}/g) ?? [];
-    expect(rules.length).toBeGreaterThan(0); // scale-pop / reveal behaviors survive…
+    // r190: the sheet now carries ZERO :focus-visible rules — all
+    // focus behavior (visibility included, via the token routing)
+    // is delegated to the universal language in base.css. Zero is
+    // the purest form of "no private sub-language"; if a future
+    // behavior (scale-pop/reveal) needs a rule, it still may not
+    // write an outline — the loop below stays the enforcement.
+    expect(rules.length).toBe(0);
     for (const rule of rules) {
       expect(rule).not.toMatch(/outline(-color)?:/);
     }

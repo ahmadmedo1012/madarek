@@ -12,7 +12,8 @@ import { withInstitutionScope } from '../../lib/queryClient';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { UserAvatar } from '../../components/primitives';
-import { Card, MetricCard } from '../../components/primitives';
+import { Card } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import { EmptyState, ErrorState, DetailSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Reveal, Skeleton } from '../../components/motion';
 import { SectionAccent } from '../../components/motion/SectionAccent';
@@ -556,20 +557,28 @@ export function CollegeDetailPage() {
    * data-thin — a GUEST's first page must not be a wall of «لا توجد…
    * بعد» internal-workflow empties («لم يتمّ تعيين قيادة…», four zero
    * KPI tiles). For guests, zero-data sections collapse entirely and
-   * zero KPIs drop out of the strip; what remains is the college's
+   * zero stats drop out of the strip; what remains is the college's
    * real story (name, city, departments, whatever activity exists) +
    * ONE honest «قريباً» line when the board is thin. Authed roles keep
    * the full honest view (FR-010 — genuine zeros stay visible to the
-   * people who run the university). */
+   * people who run the university).
+   * R190-D3: the strip is the app-wide typographic StatStrip now —
+   * auto-fit columns absorb ANY surviving count (the old grid-2/3/4 +
+   * solo-span gymnastics existed only to patch empty grid cells). */
   const isGuest = !user;
-  const guestStats = isGuest
+  const statCells = (isGuest
     ? [
-        { label: 'عدد الأقسام', value: c.stats.departmentCount, icon: Building2, color: 'brand' as const },
-        { label: 'إجمالي الطلاب', value: c.stats.studentCount, icon: GraduationCap, color: 'green' as const },
-        { label: 'هيئة التدريس', value: c.stats.teacherCount, icon: Users, color: 'purple' as const },
-        { label: 'عدد المقرّرات', value: c.stats.courseCount, icon: BookOpen, color: 'amber' as const },
+        { label: 'عدد الأقسام', value: c.stats.departmentCount },
+        { label: 'إجمالي الطلاب', value: c.stats.studentCount },
+        { label: 'هيئة التدريس', value: c.stats.teacherCount },
+        { label: 'عدد المقرّرات', value: c.stats.courseCount },
       ].filter((m) => m.value > 0)
-    : null;
+    : [
+        { label: 'عدد الأقسام', value: c.stats.departmentCount },
+        { label: 'إجمالي الطلاب', value: c.stats.studentCount },
+        { label: 'هيئة التدريس', value: c.stats.teacherCount },
+        { label: 'عدد المقرّرات', value: c.stats.courseCount },
+      ]);
   const showLeadership = !isGuest || c.leadership.length > 0;
   const showDepartments = !isGuest || c.departments.length > 0;
   const showTopStudents = !isGuest || c.topStudents.length > 0;
@@ -657,35 +666,22 @@ export function CollegeDetailPage() {
         </div>
       </SectionAccent>
 
-      {/* Stats row — guests see only the real numbers (A8 P1-2 ruling);
-          authed roles keep the full four-tile strip including zeros.
-          The grid always matches the count: no trailing empty cell. */}
-      {isGuest ? (
-        guestStats && guestStats.length === 1 ? (
-          <section className="college-stat-solo">
-            <MetricCard label={guestStats[0]!.label} value={guestStats[0]!.value.toLocaleString('ar-LY')} icon={guestStats[0]!.icon} color={guestStats[0]!.color} />
-          </section>
-        ) : guestStats && guestStats.length >= 2 ? (
-          <section className={guestStats.length === 2 ? 'grid-2' : guestStats.length === 3 ? 'grid-3' : 'grid-4'}>
-            {guestStats.map((m) => (
-              <MetricCard key={m.label} label={m.label} value={m.value.toLocaleString('ar-LY')} icon={m.icon} color={m.color} />
-            ))}
-          </section>
-        ) : null
-      ) : (
-        <section className="grid-4">
-          <MetricCard label="عدد الأقسام" value={c.stats.departmentCount.toLocaleString('ar-LY')} icon={Building2} color="brand" />
-          <MetricCard label="إجمالي الطلاب" value={c.stats.studentCount.toLocaleString('ar-LY')} icon={GraduationCap} color="green" />
-          <MetricCard label="هيئة التدريس" value={c.stats.teacherCount.toLocaleString('ar-LY')} icon={Users} color="purple" />
-          <MetricCard label="عدد المقرّرات" value={c.stats.courseCount.toLocaleString('ar-LY')} icon={BookOpen} color="amber" />
-        </section>
+      {/* Stats strip — guests see only the real numbers (A8 P1-2
+          ruling); authed roles keep the full four-stat line including
+          zeros. The strip's auto-fit grid matches any count: no empty
+          cells, no orphan spans. */}
+      {statCells.length > 0 && (
+        <StatStrip
+          ariaLabel="إحصاءات الكلّيّة"
+          cells={statCells.map((m) => ({ label: m.label, value: formatNum(m.value) }))}
+        />
       )}
 
       {/* Guests on a college whose OWN four counters are all zero: one
           honest institutional line replaces the zero strip (A8 P1-2's
           exact sketch) — university-wide activity below stays visible
           because it is real. */}
-      {isGuest && guestStats !== null && guestStats.length === 0 && (
+      {isGuest && statCells.length === 0 && (
         <p className="college-coming-soon text-sm text-muted">
           كلّيّة حديثة التأسيس — تُحدَّث بياناتها مع بدء التسجيل.
         </p>

@@ -48,9 +48,15 @@
 .landing *::before,
 .landing *::after { box-sizing: border-box; }
 
-.landing :focus-visible {
-  outline: 2px solid var(--state-focus-ring-color);
-  outline-offset: 2px;
+/* r190 stage focus visibility — ONE focus language, token-routed: the
+   universal outline (base.css) consumes --state-focus-ring-color; the
+   stage subtree re-points that TOKEN so the ring stays visible on the
+   fixed-dark chrome. No private outline/outline-color rule exists in
+   this sheet (the r172a contract holds). */
+.fo-header,
+.fo-hero,
+.fo-mobile-menu {
+  --state-focus-ring-color: var(--stage-violet);
 }
 
 /* the mono voice — telemetry labels, numerals, markers */
@@ -67,8 +73,8 @@
   inset-inline-start: var(--sp-4);
   z-index: 100;
   padding: var(--sp-2-5) var(--sp-5);
-  background: var(--stage-violet);
-  color: var(--stage-ink);
+  background: var(--accent);
+  color: var(--accent-fg);
   font-weight: var(--fw-semibold);
   text-decoration: none;
   border-radius: 0;
@@ -85,13 +91,17 @@
   z-index: 90;
   background: transparent;
   pointer-events: none;
+  /* the ribbon rides the STAGE chrome below it — the accent token
+     resolves to its stage expression here (same token-routing as the
+     focus ring above; the bar has no descendants to inherit). */
+  --accent: var(--stage-violet);
 }
 .fo-progress-bar {
   block-size: 100%;
   inline-size: 100%;
   transform: scaleX(var(--p, 0));
   transform-origin: right;   /* RTL: progress grows from the reading start */
-  background: linear-gradient(90deg, var(--aura-violet-deep), var(--stage-violet));
+  background: var(--accent);
   will-change: transform;
 }
 
@@ -629,10 +639,17 @@
   isolation: isolate;
   padding-block: var(--sp-14);
   background:
+    /* the telemetry paper — a 22px dot matrix at 12% accent (the
+       reference's grid-paper under the data sections; the 10% rule
+       keeps it texture, never noise) */
+    radial-gradient(circle,
+      color-mix(in srgb, var(--accent) 12%, transparent) 1px,
+      transparent 1.6px),
     radial-gradient(90% 100% at 100% 0%,
       color-mix(in srgb, var(--aura-violet) 10%, transparent) 0%,
       transparent 55%),
     color-mix(in srgb, var(--accent-soft) 55%, var(--surface));
+  background-size: 22px 22px, 100% 100%, 100% 100%;
   border-block: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
 }
 .fo-proof-inner {
