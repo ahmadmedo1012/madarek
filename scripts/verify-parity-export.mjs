@@ -12,10 +12,10 @@
         parity export, builds resolved light/dark token maps for both
         (theme blocks + var() chains + fallbacks), and asserts 150+ key
         tokens match EXACTLY. For the headline tokens the canonical side
-        is additionally pinned to its documented value (night #070B16,
-        gold #E9B44C, copper #B57438, cream #FBFAF9, sand #F2EFE6 …), so
-        a future drift of tokens.css itself fails loudly instead of
-        silently dragging the export along.
+        is additionally pinned to its documented value (r195 egn re-key:
+        night ground #0A0A0A, teal #027380/#2FB6C6, light ground #F7F7F7,
+        ink #333333/#F2F2F2 …), so a future drift of tokens.css itself
+        fails loudly instead of silently dragging the export along.
      2. UNDEFINED-VAR AUDIT — every var(--x) in the export must resolve
         within the export itself (directly, or through a complete
         fallback chain). Opt-in consumer hooks (--reveal-distance,
@@ -344,56 +344,56 @@ const CHECKS = [
   ['root', '--sidebar-w', '256px', 'divergent revision fallback: 260px'],
   ['root', '--content-max-w', '1280px', 'content measure'],
 
-  // ── LIGHT theme — grounds, ink, copper ──
+  // ── LIGHT theme — grounds, ink, teal (r195 egn re-key) ──
   ['light', '--neutral-0', '#ffffff', 'light surface'],
-  ['light', '--neutral-50', '#fbfaf9', 'CREAM page ground (divergent: #ffffff)'],
-  ['light', '--neutral-100', '#f7f6f3', 'subtle band'],
-  ['light', '--neutral-150', '#f1efec', 'surface-3'],
-  ['light', '--neutral-200', '#e9e7e2', 'hairline (divergent: Tailwind gray-200)'],
-  ['light', '--neutral-300', '#d9d6d0', 'divider (divergent: Tailwind gray-300)'],
-  ['light', '--neutral-900', '#191918', 'INK (divergent: #151515)'],
-  ['light', '--text', '#191918', 'light text = ink'],
-  ['light', '--text-muted', '#6e6c65', 'WCAG-fixed muted'],
-  ['light', '--text-faint', '#74706a', 'WCAG-fixed faint'],
-  ['light', '--accent', '#6c4ae0', 'VIOLET r190 (divergent eras: saffron/ember/copper)'],
-  ['light', '--accent-hover', '#5a3ac4', 'violet hover (r190)'],
-  ['light', '--accent-soft', '#ece5fb', 'violet soft ground (r190)'],
-  ['light', '--accent-strong', '#4b2fb0', 'deep violet (r190)'],
-  ['light', '--accent-fg', '#ffffff', 'white on violet fill — 5.46:1 (r190)'],
-  ['light', '--accent-ink', '#4b2fb0', 'text-safe violet ink (r190)'],
-  ['light', '--state-focus-ring-color', '#4b2fb0', 'light ring = deep violet (8.66:1) (r190)'],
-  ['light', '--success', '#4fa66d', 'mint (divergent: Tailwind emerald)'],
-  ['light', '--warning', '#d6a330', 'yellow (divergent: Tailwind amber)'],
-  ['light', '--danger', '#dd6e78', 'rose (divergent: Tailwind red)'],
-  ['light', '--info', '#5c8fce', 'sky (divergent: Tailwind blue)'],
-  ['light', '--success-ink', '#1f4f30', 'mint text ink'],
-  ['light', '--warning-ink', '#6b4c0b', 'yellow text ink'],
-  ['light', '--danger-ink', '#6b2128', 'rose text ink'],
-  ['light', '--info-ink', '#1f3d63', 'sky text ink'],
+  ['light', '--neutral-50', '#f7f7f7', 'egn light page ground (r195 gray re-key)'],
+  ['light', '--neutral-100', '#eeeeee', 'subtle band (r195)'],
+  ['light', '--neutral-150', '#e5e5e5', 'surface-3 (r195)'],
+  ['light', '--neutral-200', '#ececec', 'hairline (r195: egn light hairline)'],
+  ['light', '--neutral-300', '#d9d9d9', 'divider (r195)'],
+  ['light', '--neutral-900', '#333333', 'INK (r195: egn body ink)'],
+  ['light', '--text', '#333333', 'light text = ink (r195)'],
+  ['light', '--text-muted', '#666666', 'WCAG-fixed muted (r195: cool gray)'],
+  ['light', '--text-faint', '#6e6e6e', 'WCAG-fixed faint (r195: AA tier)'],
+  ['light', '--accent', '#027380', 'TEAL r195 peacock (eras: violet r190, saffron/ember/copper before)'],
+  ['light', '--accent-hover', '#015c66', 'teal hover (r195)'],
+  ['light', '--accent-soft', '#e0f2f3', 'teal soft ground (r195)'],
+  ['light', '--accent-strong', '#014a52', 'deep teal — 9.06:1 ring tier (r195)'],
+  ['light', '--accent-fg', '#ffffff', 'white on teal fill — AA (r195)'],
+  ['light', '--accent-ink', '#014a52', 'text-safe teal ink (r195)'],
+  ['light', '--state-focus-ring-color', '#014a52', 'light ring = deep teal (9.06:1) (r195)'],
+  ['light', '--success', '#027380', 'mint = brand teal (r195: status reads as the accent)'],
+  ['light', '--warning', '#a68a2e', 'yellow (r195: egn ochre)'],
+  ['light', '--danger', '#b5665f', 'rose (r195: egn muted rose)'],
+  ['light', '--info', '#2f6e7e', 'sky (r195: egn steel-teal)'],
+  ['light', '--success-ink', '#014a52', 'mint text ink (r195: teal deep)'],
+  ['light', '--warning-ink', '#6b5510', 'yellow text ink (r195)'],
+  ['light', '--danger-ink', '#7a3028', 'rose text ink (r195)'],
+  ['light', '--info-ink', '#1a4a56', 'sky text ink (r195)'],
   ['light', '--danger-fg', '#191918', 'ink on danger fill'],
-  ['light', '--primary', '#191918', 'light primary = ink slab'],
+  ['light', '--primary', '#333333', 'light primary = ink slab (r195)'],
   ['light', '--primary-fg', '#ffffff', 'on primary'],
   // ── LIGHT theme — family triads ──
-  ['light', '--c-copper-bg', '#f4e4d2', 'copper triad: bg'],
-  ['light', '--c-copper-ink', '#b57438', 'copper triad: ink'],
+  ['light', '--c-copper-bg', '#ece4d2', 'copper triad: bg (r195)'],
+  ['light', '--c-copper-ink', '#9a7438', 'copper triad: ink (r195)'],
   ['light', '--c-copper-deep', '#5c3416', 'copper triad: deep'],
-  ['light', '--c-sand-bg', '#f1ecdf', 'sand triad: bg'],
-  ['light', '--c-sand-ink', '#b59868', 'sand triad: ink'],
-  ['light', '--c-sand-deep', '#5a4623', 'sand triad: deep'],
-  ['light', '--c-peach-bg', '#ffe9dc', 'peach triad: bg'],
-  ['light', '--c-mint-ink', '#4fa66d', 'mint triad: ink'],
-  ['light', '--c-lavender-deep', '#3f2d7a', 'lavender triad: deep'],
-  ['light', '--c-sky-ink', '#5c8fce', 'sky triad: ink'],
-  ['light', '--c-yellow-bg', '#fcf1cd', 'yellow triad: bg'],
-  ['light', '--c-rose-ink', '#dd6e78', 'rose triad: ink'],
+  ['light', '--c-sand-bg', '#ecece7', 'sand triad: bg (r195)'],
+  ['light', '--c-sand-ink', '#8a7a52', 'sand triad: ink (r195)'],
+  ['light', '--c-sand-deep', '#5a4a24', 'sand triad: deep (r195)'],
+  ['light', '--c-peach-bg', '#fbeded', 'peach triad: bg (r195)'],
+  ['light', '--c-mint-ink', '#027380', 'mint triad: ink = brand teal (r195)'],
+  ['light', '--c-lavender-deep', '#2a4a56', 'lavender triad: deep (r195: steel-teal)'],
+  ['light', '--c-sky-ink', '#2f6e7e', 'sky triad: ink (r195: steel-teal)'],
+  ['light', '--c-yellow-bg', '#f7f1d8', 'yellow triad: bg (r195)'],
+  ['light', '--c-rose-ink', '#b5665f', 'rose triad: ink (r195)'],
   ['light', '--c-grey-deep', '#2d2a24', 'grey triad: deep'],
   // ── LIGHT theme — glass, elevation, charts ──
-  ['light', '--glass-bg', 'rgba(251,250,249,0.78)', 'cream glass (divergent: white 0.82)'],
+  ['light', '--glass-bg', 'rgba(255,255,255,0.78)', 'white glass (r195: egn white — cream tint retired)'],
   ['light', '--glass-blur', '16px', 'glass blur (divergent: 20px)'],
-  ['light', '--glass-bg-strong', 'rgba(251,250,249,0.92)', 'strong glass ground (r140 fleet unification: 0.90/0.92/0.94 → 0.92)'],
+  ['light', '--glass-bg-strong', 'rgba(255,255,255,0.92)', 'strong glass ground (r195 egn white; r140 fleet unification: 0.90/0.92/0.94 → 0.92)'],
   ['light', '--glass-blur-strong', '16px', 'strong tier keeps the canonical 16px blur (r140 ruling: nothing stronger than 16)'],
   ['light', '--chart-6', '#a67a22', 'series amber'],
-  ['light', '--chart-text', '#6e6c65', 'chart text ink'],
+  ['light', '--chart-text', '#666666', 'chart text ink (r195: cool gray, matches muted)'],
   [
     'light',
     '--elev-1',
@@ -416,56 +416,56 @@ const CHECKS = [
   // ConstellationCanvas went away; only --journey-glow survives, on
   // auth.css, and it was never a pinned row.)
 
-  // ── DARK theme — the night indigo ramp ──
-  ['dark', '--neutral-0', '#0d1428', 'night surface 0 (divergent: #151515)'],
-  ['dark', '--neutral-50', '#070b16', 'NIGHT ground (divergent: generic #0f0f0f)'],
-  ['dark', '--neutral-100', '#121a36', 'night surface (divergent: #1a1a1a)'],
-  ['dark', '--neutral-150', '#182142', 'sky-2 (divergent file referenced it undefined)'],
-  ['dark', '--neutral-200', '#1b2444', 'night hairline (divergent: #2a2a2a)'],
-  ['dark', '--neutral-300', '#263052', 'night divider (divergent: #3d3d3d)'],
-  ['dark', '--neutral-400', '#7a83a0', 'night faint'],
-  ['dark', '--neutral-500', '#8e97b8', 'night mist (divergent: Tailwind gray-400)'],
-  ['dark', '--neutral-700', '#c3c8dc', 'night secondary (divergent: #c4c0b8)'],
-  ['dark', '--neutral-800', '#dde1ee', 'night strong'],
-  ['dark', '--neutral-900', '#f2efe6', 'SAND text (divergent file had this one right)'],
-  ['dark', '--text', '#f2efe6', 'dark text = sand'],
-  ['dark', '--text-muted', '#8e97b8', 'dark muted = mist'],
-  ['dark', '--text-faint', '#7a83a0', 'dark faint'],
+  // ── DARK theme — the night gray ramp (r195 egn re-key) ──
+  ['dark', '--neutral-0', '#171717', 'night surface 0 (r195)'],
+  ['dark', '--neutral-50', '#0a0a0a', 'NIGHT ground (r195: egn near-black)'],
+  ['dark', '--neutral-100', '#141414', 'night surface (r195)'],
+  ['dark', '--neutral-150', '#1e1e1e', 'night surface-3 (r195)'],
+  ['dark', '--neutral-200', '#2a2a2a', 'night hairline (r195: canonical dark neutral-200 — legitimized, see Gate 3)'],
+  ['dark', '--neutral-300', '#353535', 'night divider (r195)'],
+  ['dark', '--neutral-400', '#666666', 'night faint (r195)'],
+  ['dark', '--neutral-500', '#8a8a8a', 'night mist (r195: cool gray)'],
+  ['dark', '--neutral-700', '#bfbfbf', 'night secondary (r195)'],
+  ['dark', '--neutral-800', '#dddddd', 'night strong (r195)'],
+  ['dark', '--neutral-900', '#f2f2f2', 'night ink (r195: near-white — sand retired)'],
+  ['dark', '--text', '#f2f2f2', 'dark text = night ink (r195)'],
+  ['dark', '--text-muted', '#8a8a8a', 'dark muted = mist (r195)'],
+  ['dark', '--text-faint', '#828282', 'dark faint (r195: AA tier, one step under muted)'],
   ['dark', '--text-on-accent', '#05070f', 'void ink on accent'],
-  // ── DARK theme — the gold accent family ──
-  ['dark', '--accent', '#9a5cff', 'VIOLET r190 (eras: gold before, saffron before that)'],
-  ['dark', '--accent-hover', '#ad7bff', 'pale violet (r190)'],
-  ['dark', '--accent-soft', '#241d40', 'violet soft ground (r190)'],
-  ['dark', '--accent-strong', '#b085ff', 'strong violet — 7.14:1 ring tier (r190)'],
-  ['dark', '--accent-fg', '#0a0614', 'void ink on violet (r190)'],
+  // ── DARK theme — the teal accent family (r195) ──
+  ['dark', '--accent', '#2fb6c6', 'TEAL r195 night accent (eras: violet r190, gold/saffron before)'],
+  ['dark', '--accent-hover', '#4dc7d6', 'pale teal (r195)'],
+  ['dark', '--accent-soft', '#174a52', 'teal soft ground (r195)'],
+  ['dark', '--accent-strong', '#7fced9', 'strong teal — 11.06:1 ring tier (r195)'],
+  ['dark', '--accent-fg', '#061417', 'void ink on teal (r195)'],
   ['dark', '--primary', '#ffffff', 'dark primary = white slab (r190 void CTA)'],
-  ['dark', '--primary-fg', '#05070f', 'on gold'],
+  ['dark', '--primary-fg', '#05070f', 'void ink on the white slab (r195)'],
   ['dark', '--danger-fg', '#05070f', 'void ink on night rose'],
-  ['dark', '--success-ink', '#7fd39a', 'night mint ink'],
+  ['dark', '--success-ink', '#2fb6c6', 'night mint ink (r195: teal)'],
   // ── DARK theme — night family triads ──
-  ['dark', '--c-copper-bg', '#2c2312', 'night copper triad: bg'],
-  ['dark', '--c-copper-ink', '#e9b44c', 'night copper triad: ink = gold'],
-  ['dark', '--c-copper-deep', '#f5d48a', 'night copper triad: deep = pale gold'],
-  ['dark', '--c-sand-bg', '#241f14', 'night sand triad: bg'],
-  ['dark', '--c-sand-ink', '#d9c18c', 'night sand triad: ink'],
-  ['dark', '--c-sand-deep', '#efe2c5', 'night sand triad: deep'],
-  ['dark', '--c-yellow-ink', '#ecc97d', 'night yellow ink'],
-  ['dark', '--c-rose-ink', '#f0938f', 'night rose ink'],
-  ['dark', '--c-mint-ink', '#7fd39a', 'night mint ink'],
-  ['dark', '--c-sky-deep', '#c9dcee', 'night sky deep'],
-  ['dark', '--c-lavender-ink', '#b7a0f4', 'night lavender ink'],
-  ['dark', '--c-grey-bg', '#161d33', 'night grey ground'],
+  ['dark', '--c-copper-bg', '#2a2313', 'night copper triad: bg (r195)'],
+  ['dark', '--c-copper-ink', '#d8ae5c', 'night copper triad: ink = egn gold (r195)'],
+  ['dark', '--c-copper-deep', '#f0d89c', 'night copper triad: deep (r195)'],
+  ['dark', '--c-sand-bg', '#252013', 'night sand triad: bg (r195)'],
+  ['dark', '--c-sand-ink', '#b7a36a', 'night sand triad: ink (r195)'],
+  ['dark', '--c-sand-deep', '#e4d6a6', 'night sand triad: deep (r195)'],
+  ['dark', '--c-yellow-ink', '#bfa14e', 'night yellow ink (r195)'],
+  ['dark', '--c-rose-ink', '#c07e78', 'night rose ink (r195)'],
+  ['dark', '--c-mint-ink', '#2fb6c6', 'night mint ink (r195: teal)'],
+  ['dark', '--c-sky-deep', '#a7cbd5', 'night sky deep (r195: fixed the malformed hex)'],
+  ['dark', '--c-lavender-ink', '#7ba7b3', 'night lavender ink (r195: steel-teal)'],
+  ['dark', '--c-grey-bg', '#161616', 'night grey ground (r195: pure gray — indigo tint retired)'],
   // ── DARK theme — glass, surfaces, charts, motion ──
-  ['dark', '--glass-bg', 'rgba(11,16,32,0.78)', 'night glass (divergent: rgba(15,15,15,0.9))'],
+  ['dark', '--glass-bg', 'rgba(10,10,10,0.78)', 'night glass (r195: neutral tint — indigo retired)'],
   ['dark', '--glass-blur', '16px', 'glass blur'],
-  ['dark', '--glass-bg-strong', 'rgba(11,16,32,0.92)', 'night strong glass ground (r140 fleet unification)'],
+  ['dark', '--glass-bg-strong', 'rgba(10,10,10,0.92)', 'night strong glass ground (r195; r140 fleet unification)'],
   ['dark', '--glass-blur-strong', '16px', 'night strong tier keeps the canonical 16px blur'],
-  ['dark', '--sidebar-item-active-bg', 'rgb(154 92 255/0.16)', 'sidebar violet wash (r190)'],
-  ['dark', '--topbar-bg', 'rgba(7,11,22,0.86)', 'night topbar'],
+  ['dark', '--sidebar-item-active-bg', 'rgb(47 182 198/0.16)', 'sidebar teal wash (r195)'],
+  ['dark', '--topbar-bg', 'rgba(10,10,10,0.86)', 'night topbar (r195: neutral chrome)'],
   ['dark', '--chart-6', '#f2c766', 'night gold series'],
   ['dark', '--chart-7', '#5fafaf', 'night teal series'],
   ['dark', '--chart-8', '#c57da9', 'night mauve series'],
-  ['dark', '--chart-text', '#8e97b8', 'night chart text = mist'],
+  ['dark', '--chart-text', '#8a8a8a', 'night chart text = mist (r195)'],
   [
     'dark',
     '--elev-1',
@@ -481,11 +481,11 @@ const CHECKS = [
   [
     'dark',
     '--shadow-modal',
-    '0 12px 32px rgba(2,4,12,0.66),0 32px 80px rgba(2,4,12,0.70),0 0 0 1px rgba(142,151,184,0.12)',
-    'indigo shadow + mist hairline',
+    '0 12px 32px rgba(0,0,0,0.66),0 32px 80px rgba(0,0,0,0.70),0 0 0 1px rgba(255,255,255,0.11)',
+    'black shadow + white hairline (r195 — indigo/mist retired)',
   ],
   ['dark', '--type-display-line-height', '1.32', 'dark display leading (r192: one step over light)'],
-  ['dark', '--state-focus-ring-color', '#b085ff', 'canonical cascade: dark ring → accent-strong (r190)'],
+  ['dark', '--state-focus-ring-color', '#7fced9', 'canonical cascade: dark ring → accent-strong (r195 teal)'],
 ];
 
 /* ── Gate 3: forbidden retired values (scanned on the FULL text) ────── */
@@ -493,12 +493,16 @@ const CHECKS = [
 const FORBIDDEN_VALUES = [
   '#bc4700', '#a33d00', '#d45500', // retired saffron/ember accents
   '#0f0f0f', '#151515', '#1a1a1a', '#222222', // generic dark grounds
-  '#c4c0b8', '#2a2a2a', '#3d3d3d', // divergent dark secondary/borders
+  '#c4c0b8', '#3d3d3d', // divergent dark secondary/borders
+  // r195: #2a2a2a legitimized as the egn dark hairline (canonical dark neutral-200); retired from the forbidden list
   '#f7f8fa', '#f0f1f3', '#e5e7eb', '#d1d5db', // Tailwind grays
   '#6b7280', '#9ca3af', // Tailwind gray-500/400
   '#3b82f6', '#dc2626', '#d97706', '#0ea579', // Tailwind status colors
   'oklch(', // oklch shadows (canonical uses warm rgba / indigo rgba)
-  '99999', // invented z-max
+  'z-index: 99999', // invented z-max — spelled with its property so the
+                    // r195 canonical light --neutral-400 #999999 (six
+                    // 9s, no property) is export-legal; the invented
+                    // --z-max NAME is still blocked by its own needle.
   'blur(20px)', // non-canonical glass blur
   '0.16, 1, 0.2, 1', '0.16,1,0.2,1', // the WRONG ease-out curve
   '--lh-relaxed', // invented line-height name

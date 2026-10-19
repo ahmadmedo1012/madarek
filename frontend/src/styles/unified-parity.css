@@ -312,33 +312,35 @@
   }
 
   /* ══════════════════════════════════════════════════════════════════
-     LIGHT THEME — Notion's warm cream + copper
+     LIGHT THEME — egn.university light: white/gray + peacock teal (r195)
      ══════════════════════════════════════════════════════════════════ */
   :root,
   [data-theme="light"] {
-    /* canonical neutrals */
+    /* canonical neutrals — r195 egn cool-gray ramp */
     --neutral-0:   #FFFFFF;
-    --neutral-50:  #FBFAF9;          /* page ground — cream */
-    --neutral-100: #F7F6F3;          /* card hover, subtle band */
-    --neutral-150: #F1EFEC;
-    --neutral-200: #E9E7E2;          /* hairline */
-    --neutral-300: #D9D6D0;          /* divider */
-    --neutral-400: #8E8A82;
-    --neutral-500: #6F6C66;
-    --neutral-700: #4F4D48;
-    --neutral-800: #322F2A;
-    --neutral-900: #191918;          /* primary ink */
+    --neutral-50:  #F7F7F7;          /* page ground — near-white */
+    --neutral-100: #EEEEEE;          /* card hover, subtle band */
+    --neutral-150: #E5E5E5;
+    --neutral-200: #ECECEC;          /* hairline */
+    --neutral-300: #D9D9D9;          /* divider */
+    --neutral-400: #999999;   /* r195: canonical rung — the retired z-max needle gained a terminator so this hex is export-legal */
+    --neutral-500: #666666;
+    --neutral-700: #444444;
+    --neutral-800: #262626;
+    --neutral-900: #333333;          /* primary ink — egn body ink */
 
-    /* the 9 section-color families — pastel ground / saturated ink / deep */
-    --c-peach-bg:     #FFE9DC;   --c-peach-ink:    #E07856;   --c-peach-deep:   #6B2D1A;
-    --c-mint-bg:      #DCF1E2;   --c-mint-ink:     #4FA66D;   --c-mint-deep:    #1F4F30;
-    --c-lavender-bg:  #ECE6FA;   --c-lavender-ink: #8A6FE0;   --c-lavender-deep: #3F2D7A;
-    --c-sky-bg:       #DDEBF7;   --c-sky-ink:      #5C8FCE;   --c-sky-deep:     #1F3D63;
-    --c-yellow-bg:    #FCF1CD;   --c-yellow-ink:   #D6A330;   --c-yellow-deep:  #6B4C0B;
-    --c-rose-bg:      #FCE0E2;   --c-rose-ink:     #DD6E78;   --c-rose-deep:    #6B2128;
-    --c-sand-bg:      #F1ECDF;   --c-sand-ink:     #B59868;   --c-sand-deep:    #5A4623;
-    --c-grey-bg:      #EFECE7;   --c-grey-ink:     #6B665E;   --c-grey-deep:    #2D2A24;
-    --c-copper-bg:    #F4E4D2;   --c-copper-ink:   #B57438;   --c-copper-deep:  #5C3416;
+    /* the 9 section-color families — near-neutral grounds + teal-family
+       inks (r195 egn re-key; --c-mint-ink IS the brand teal, so the
+       primary status reads as the accent, not a second hue) */
+    --c-peach-bg:     #FBEDED;   --c-peach-ink:    #C96A5B;   --c-peach-deep:   #7A3224;
+    --c-mint-bg:      #E0F2F3;   --c-mint-ink:     #027380;   --c-mint-deep:    #014A52;
+    --c-lavender-bg:  #E6EDEF;   --c-lavender-ink: #4A6C7A;   --c-lavender-deep:#2A4A56;
+    --c-sky-bg:       #E0EEF2;   --c-sky-ink:      #2F6E7E;   --c-sky-deep:     #1A4A56;
+    --c-yellow-bg:    #F7F1D8;   --c-yellow-ink:   #A68A2E;   --c-yellow-deep:  #6B5510;
+    --c-rose-bg:      #F3DEDE;   --c-rose-ink:     #B5665F;   --c-rose-deep:    #7A3028;
+    --c-sand-bg:      #ECECE7;   --c-sand-ink:     #8A7A52;   --c-sand-deep:    #5A4A24;
+    --c-grey-bg:      #ECECE7;   --c-grey-ink:     #6B665E;   --c-grey-deep:    #2D2A24;
+    --c-copper-bg:    #ECE4D2;   --c-copper-ink:   #9A7438;   --c-copper-deep:  #5C3416;
 
     /* ─── ROLE TOKENS ─────────────────────────────────────────────── */
     --bg:               var(--neutral-50);
@@ -350,52 +352,52 @@
 
     --text:        var(--neutral-900);
     --text-secondary: var(--neutral-700);
-    --text-muted:  #6E6C65;   /* 5.04:1 on cream */
-    --text-faint:  #74706A;   /* 4.72:1 on cream */
+    --text-muted:  #666666;   /* r195: neutral-500 cool gray — 5.36:1 on --bg #F7F7F7 */
+    --text-faint:  #6E6E6E;   /* r195: AA-safe faint — 4.76:1 on --bg, 4.50:1 on --surface-2 */
     --text-on-accent: #FFFFFF;
     --text-on-dark:   var(--neutral-50);
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
-    --border-faint:  rgba(25,25,24,0.06);
+    --border-faint:  rgba(0,0,0,0.06);
     --rule:          var(--neutral-200);
     --rule-strong:   var(--border-strong);
-    --surface-border:  rgba(0,0,0,0.08);
-    --surface-divider: rgba(0,0,0,0.05);
+    --surface-border:  rgba(0,0,0,0.06);
+    --surface-divider: rgba(0,0,0,0.04);
 
-    /* copper accent family */
-    --accent:        #6C4AE0;              /* r190 violet — 5.46:1 on cream */
-    --accent-hover:  #5A3AC4;
-    --accent-soft:   #ECE5FB;
-    --accent-strong: #4B2FB0;               /* 8.66:1 */
-    --accent-fg:     #FFFFFF;               /* 5.46:1 on violet fill */
-    --accent-ink:    var(--accent-strong);  /* text-safe violet ink */
+    /* teal accent family — r195 egn.university peacock */
+    --accent:        #027380;              /* peacock teal — 4.64:1 on --bg (AA) */
+    --accent-hover:  #015C66;
+    --accent-soft:   #E0F2F3;
+    --accent-strong: #014A52;               /* 9.06:1 on --bg */
+    --accent-fg:     #FFFFFF;               /* egn: AA on the teal fill */
+    --accent-ink:    var(--accent-strong);  /* text-safe teal ink */
 
-    /* the focus ring must clear 4.5:1 — copper itself is 3.65:1 on
-       cream, so the light ring rides the deep copper (10.29:1). */
+    /* the focus ring must clear 4.5:1 — the light ring rides the deep
+       teal #014A52 (9.06:1 on the gray ground). */
     --state-focus-ring-color: var(--accent-strong);
 
-    --success:      var(--c-mint-ink);     /* #4FA66D */
+    --success:      var(--c-mint-ink);     /* #027380 — the brand teal */
     --success-soft: var(--c-mint-bg);
-    --warning:      var(--c-yellow-ink);   /* #D6A330 */
+    --warning:      var(--c-yellow-ink);   /* #A68A2E */
     --warning-soft: var(--c-yellow-bg);
-    --danger:       var(--c-rose-ink);     /* #DD6E78 */
+    --danger:       var(--c-rose-ink);     /* #B5665F */
     --danger-soft:  var(--c-rose-bg);
-    --info:         var(--c-sky-ink);      /* #5C8FCE */
+    --info:         var(--c-sky-ink);      /* #2F6E7E */
     --info-soft:    var(--c-sky-bg);
 
     /* status INKS for text (base fills fail AA as light text) */
-    --success-ink: var(--c-mint-deep);     /* #1F4F30 */
-    --warning-ink: var(--c-yellow-deep);   /* #6B4C0B */
-    --danger-ink:  var(--c-rose-deep);     /* #6B2128 */
-    --info-ink:    var(--c-sky-deep);      /* #1F3D63 */
+    --success-ink: var(--c-mint-deep);     /* #014A52 */
+    --warning-ink: var(--c-yellow-deep);   /* #6B5510 */
+    --danger-ink:  var(--c-rose-deep);     /* #7A3028 */
+    --info-ink:    var(--c-sky-deep);      /* #1A4A56 */
 
     /* ink on a --danger fill (both themes) */
     --danger-fg:   #191918;
 
     /* (r148-d: --brand retired with the canon — zero consumers;
        --brand-purple stays, the one live brand slot) */
-    --brand-purple:  var(--c-lavender-ink);
+    --brand-purple:  var(--accent);        /* r195: the one live brand slot = the teal accent */
     --gold:          var(--c-yellow-ink);
     --gold-ink:      var(--c-yellow-deep);
     --primary:       var(--neutral-900);   /* ink */
@@ -418,13 +420,13 @@
     --elev-4: 0 16px 32px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.06);
     --elev-5: 0 32px 64px rgba(0,0,0,0.12), 0 16px 32px rgba(0,0,0,0.08);
 
-    --glass-bg:    rgba(251,250,249,0.78);
+    --glass-bg:    rgba(255,255,255,0.78);   /* r195: egn white glass — the cream tint died with the cream ground */
     --glass-blur:  16px;
     --glass-border: rgba(25,25,24,0.06);
     /* r140 — strong tier canonized: the fleet's three divergent
        opacities unify on 0.92; the blur stays the canonical 16px
        (r140 ruling: nothing stronger than 16). */
-    --glass-bg-strong:   rgba(251,250,249,0.92);
+    --glass-bg-strong:   rgba(255,255,255,0.92);
     --glass-blur-strong: 16px;
     --scrim-blur:  4px;
 
@@ -437,7 +439,7 @@
     --sidebar-item-active-text: var(--neutral-900);
     /* (r148-d: --sidebar-active-bar retired with the canon) */
 
-    --topbar-bg:    rgba(251,250,249,0.86);
+    --topbar-bg:    rgba(255,255,255,0.86);   /* r195: egn white chrome */
     --topbar-border: var(--neutral-200);
 
     --scrollbar-thumb: rgba(25,25,24,0.16);
@@ -449,9 +451,9 @@
     --shadow-sm: var(--shadow-card);
     /* (r148-d: --shadow-md/lg/xl/2xl retired with the canon) */
 
-    --chart-text: #6E6C65;
+    --chart-text: #666666;  /* r195: cool gray — matches --text-muted; 5.36:1 on --bg */
     --chart-grid: rgba(25,25,24,0.08);
-    --chart-1: var(--c-copper-ink);
+    --chart-1: var(--accent);   /* egn: series 1 = the teal accent */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
@@ -462,40 +464,40 @@
 
     /* journey scene — r148-d: the node/line/core/ticker family retired
        with the canon (zero consumers; ConstellationCanvas is gone);
-       the copper glow wash survives for the auth card. */
-    --journey-glow:        rgba(181, 116, 56, 0.10);
+       the teal glow wash survives for the auth card (r195 egn re-key). */
+    --journey-glow:        rgba(2, 115, 128, 0.10);
   }
 
   /* ══════════════════════════════════════════════════════════════════
-     DARK THEME — مدارك night: indigo depths, warm sand text, gold
+     DARK THEME — egn night: near-black gray ground, night-teal accent (r195)
      ══════════════════════════════════════════════════════════════════ */
   [data-theme="dark"] {
     /* one more leading step for light-on-dark display text */
     --type-display-line-height: 1.32;   /* r192: Alexandria display leading — measured-safe */
 
-    /* inverted neutral ramp — the indigo night */
-    --neutral-0:   #0D1428;
-    --neutral-50:  #070B16;          /* night ground */
-    --neutral-100: #121A36;
-    --neutral-150: #182142;
-    --neutral-200: #1B2444;          /* hairline */
-    --neutral-300: #263052;          /* divider */
-    --neutral-400: #7A83A0;
-    --neutral-500: #8E97B8;          /* mist */
-    --neutral-700: #C3C8DC;
-    --neutral-800: #DDE1EE;
-    --neutral-900: #F2EFE6;          /* warm sand text */
+    /* inverted neutral ramp — the egn gray night (r195) */
+    --neutral-0:   #171717;          /* raised surface */
+    --neutral-50:  #0A0A0A;          /* night ground — egn near-black */
+    --neutral-100: #141414;
+    --neutral-150: #1E1E1E;
+    --neutral-200: #2A2A2A;          /* hairline */
+    --neutral-300: #353535;          /* divider */
+    --neutral-400: #666666;
+    --neutral-500: #8A8A8A;          /* mist — cool gray */
+    --neutral-700: #BFBFBF;
+    --neutral-800: #DDDDDD;
+    --neutral-900: #F2F2F2;          /* near-white night ink */
 
-    /* night hue families — space-tinted grounds + luminous inks */
-    --c-peach-bg:     #2C1A16;   --c-peach-ink:    #F2A07F;   --c-peach-deep:   #FCD9C4;
-    --c-mint-bg:      #0F241C;   --c-mint-ink:     #7FD39A;   --c-mint-deep:    #C9EAD3;
-    --c-lavender-bg:  #221B3A;   --c-lavender-ink: #B7A0F4;   --c-lavender-deep: #DCD2F9;
-    --c-sky-bg:       #14213A;   --c-sky-ink:      #8FBBF2;   --c-sky-deep:     #C9DCEE;
-    --c-yellow-bg:    #2C2410;   --c-yellow-ink:   #ECC97D;   --c-yellow-deep:  #F8E5B5;
-    --c-rose-bg:      #2C1620;   --c-rose-ink:     #F0938F;   --c-rose-deep:    #FACDD2;
-    --c-sand-bg:      #241F14;   --c-sand-ink:     #D9C18C;   --c-sand-deep:    #EFE2C5;
-    --c-grey-bg:      #161D33;   --c-grey-ink:     #A9B0C8;   --c-grey-deep:    #D5DAE8;
-    --c-copper-bg:    #2C2312;   --c-copper-ink:   #E9B44C;   --c-copper-deep:  #F5D48A;
+    /* night hue families — egn deep grounds + luminous cool inks (r195) */
+    --c-peach-bg:     #2A1A17;   --c-peach-ink:    #C96A5B;   --c-peach-deep:   #E0BBA9;
+    --c-mint-bg:      #0E2324;   --c-mint-ink:     #2FB6C6;   --c-mint-deep:    #7FCED9;
+    --c-lavender-bg:  #1A3038;   --c-lavender-ink: #7BA7B3;   --c-lavender-deep:#B8D6DE;
+    --c-sky-bg:       #12323A;   --c-sky-ink:      #5AA7B5;   --c-sky-deep:     #A7CBD5;
+    --c-yellow-bg:    #2A2514;   --c-yellow-ink:   #BFA14E;   --c-yellow-deep:  #E3D19A;
+    --c-rose-bg:      #2C1819;   --c-rose-ink:     #C07E78;   --c-rose-deep:    #E7B7B2;
+    --c-sand-bg:      #252013;   --c-sand-ink:     #B7A36A;   --c-sand-deep:    #E4D6A6;
+    --c-grey-bg:      #161616;   --c-grey-ink:     #9AA4B5;   --c-grey-deep:    #C7CFDD;   /* r195: pure cool-gray ground — the indigo tint died with the indigo night */
+    --c-copper-bg:    #2A2313;   --c-copper-ink:   #D8AE5C;   --c-copper-deep:  #F0D89C;
 
     --bg:               var(--neutral-50);
     --surface:          var(--neutral-0);
@@ -507,24 +509,24 @@
     --text:        var(--neutral-900);
     --text-secondary: var(--neutral-700);
     --text-muted:  var(--neutral-500);
-    --text-faint:  #7A83A0;
+    --text-faint:  #828282;   /* r195: AA tier, one step under muted */
     --text-on-accent: #05070F;   /* void ink */
     --text-on-dark:   var(--neutral-900);
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
-    --border-faint:  rgba(142,151,184,0.10);
+    --border-faint:  rgba(200,200,200,0.10);   /* egn: cool-gray hairline */
     --rule:          var(--neutral-200);
     --rule-strong:   var(--border-strong);
-    --surface-border:  rgba(142,151,184,0.14);
-    --surface-divider: rgba(142,151,184,0.08);
+    --surface-border:  rgba(200,200,200,0.12);
+    --surface-divider: rgba(200,200,200,0.07);
 
-    /* the accent becomes the landing's gold */
-    --accent:        #9A5CFF;            /* r190 violet — 5.01:1 on night */
-    --accent-hover:  #AD7BFF;
-    --accent-soft:   #241D40;
-    --accent-strong: #B085FF;            /* 7.14:1 — the ring tier */
-    --accent-fg:     #0A0614;            /* void ink on violet — 4.75:1 */
+    /* egn night accent — night teal (r195; the violet era ends) */
+    --accent:        #2FB6C6;            /* night teal — the accent family */
+    --accent-hover:  #4DC7D6;
+    --accent-soft:   #174A52;
+    --accent-strong: #7FCED9;            /* the night focus-ring tier */
+    --accent-fg:     #061417;            /* void ink on teal */
     --accent-ink:    var(--accent);      /* night inks pass as-is */
 
     /* the -ink family clears AA on the night ground — same values the
@@ -547,17 +549,17 @@
 
     /* (r148-d: --brand retired with the canon — zero consumers;
        --brand-purple stays, the one live brand slot) */
-    --brand-purple:  var(--c-lavender-ink);
-    --gold:          var(--accent);
+    --brand-purple:  var(--accent);
+    --gold:          var(--c-copper-ink);   /* r195: gold = the copper achievement family */
     --gold-ink:      var(--c-yellow-ink);
     --primary:       #FFFFFF;           /* r190: the void CTA — white slab */
     --primary-fg:    #05070F;
 
-    /* shadows — indigo depth with mist hairlines */
+    /* shadows — black depth with white hairlines (r195) */
     --shadow-card:    var(--elev-1);
-    --shadow-card-h:  0 1px 2px rgba(2,4,12,0.50), 0 8px 22px rgba(2,4,12,0.55), 0 0 0 1px rgba(142,151,184,0.08);
-    --shadow-pop:     0 2px 4px rgba(2,4,12,0.55), 0 10px 28px rgba(2,4,12,0.62), 0 0 0 1px rgba(142,151,184,0.10);
-    --shadow-modal:   0 12px 32px rgba(2,4,12,0.66), 0 32px 80px rgba(2,4,12,0.70), 0 0 0 1px rgba(142,151,184,0.12);
+    --shadow-card-h:  0 1px 2px rgba(0,0,0,0.50), 0 8px 22px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07);
+    --shadow-pop:     0 2px 4px rgba(0,0,0,0.55), 0 10px 28px rgba(0,0,0,0.62), 0 0 0 1px rgba(255,255,255,0.09);
+    --shadow-modal:   0 12px 32px rgba(0,0,0,0.66), 0 32px 80px rgba(0,0,0,0.70), 0 0 0 1px rgba(255,255,255,0.11);
     /* (r148-d: --shadow-mockup retired with the canon) */
 
     /* elevation language — dark (fill-led, shadow muted, hairline top) */
@@ -567,28 +569,28 @@
     --elev-4: 0 16px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.07);
     --elev-5: 0 32px 64px rgba(0,0,0,0.50), inset 0 1px 0 rgba(255,255,255,0.08);
 
-    --glass-bg:    rgba(11,16,32,0.78);
+    --glass-bg:    rgba(10,10,10,0.78);   /* r195: neutral night glass — the indigo tint died with the indigo night */
     --glass-blur:  16px;
-    --glass-border: rgba(142,151,184,0.12);
+    --glass-border: rgba(255,255,255,0.10);   /* r195: white hairline on dark glass (the elev grammar) */
     /* r140 — night strong tier (see the light block comment). */
-    --glass-bg-strong:   rgba(11,16,32,0.92);
+    --glass-bg-strong:   rgba(10,10,10,0.92);
     --glass-blur-strong: 16px;
     --scrim-blur:  4px;
 
-    /* sidebar / topbar — the gold wash marks the active orbit */
+    /* sidebar / topbar — the teal wash marks the active orbit (r195) */
     --sidebar-bg:        var(--neutral-50);
     --sidebar-rule:      var(--neutral-200);
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
-    --sidebar-item-active-bg:   rgb(154 92 255 / 0.16);  /* r190: violet wash */
+    --sidebar-item-active-bg:   rgb(47 182 198 / 0.16);  /* r195: teal wash — the traveller's current orbit */
     --sidebar-item-active-text: var(--neutral-900);
     /* (r148-d: --sidebar-active-bar retired with the canon) */
 
-    --topbar-bg:    rgba(7,11,22,0.86);
+    --topbar-bg:    rgba(10,10,10,0.86);   /* r195: neutral night chrome */
     --topbar-border: var(--neutral-200);
 
-    --scrollbar-thumb: rgba(142,151,184,0.20);
-    --scrollbar-thumb-hover: rgba(142,151,184,0.34);
+    --scrollbar-thumb: rgba(255,255,255,0.16);
+    --scrollbar-thumb-hover: rgba(255,255,255,0.28);
 
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
@@ -596,8 +598,8 @@
     /* (r148-d: --shadow-md/lg/xl/2xl retired with the canon) */
 
     --chart-text: var(--neutral-500);
-    --chart-grid: rgba(142,151,184,0.10);
-    --chart-1: var(--c-copper-ink);
+    --chart-grid: rgba(255,255,255,0.08);
+    --chart-1: var(--accent);   /* egn: series 1 = the teal accent */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
@@ -607,8 +609,8 @@
     --chart-8: #C57DA9;   /* mauve (lifted for dark) */
 
     /* journey scene — r148-d: night node/line/core/ticker retired with
-       the canon; the gold-thread glow survives for the auth card. */
-    --journey-glow:        rgba(233,180,76,0.14);
+       the canon; the teal glow survives for the auth card (r195). */
+    --journey-glow:        rgba(47,182,198,0.12);
   }
 
   /* ─── Reduced motion — zero ALL raw --t-* rungs (not just the
@@ -870,14 +872,14 @@
   }
   .btn.primary:hover:not(:disabled)::before { background-position: -60% 0; }
   [data-theme="dark"] .btn.primary {
-    /* night: the quiet elevated action — sky-2 ground #182142, ink
-       text, hairline border — so the gold accent stays the one loud
+    /* night: the quiet elevated action — surface-3 ground #1E1E1E, ink
+       text, hairline border — so the teal accent stays the one loud
        CTA. Explicit fallbacks: the divergent revision referenced an
        un-inverted --neutral-150 here and rendered transparent. */
-    --_btn-bg: var(--neutral-150, #182142);
+    --_btn-bg: var(--neutral-150, #1E1E1E);
     --_btn-fg: var(--text);
     --_btn-bd: var(--border-strong);
-    --_btn-bg-hover: var(--neutral-200, #1B2444);
+    --_btn-bg-hover: var(--neutral-200, #2A2A2A);
     --_btn-bd-hover: var(--border-strong);
   }
 
@@ -909,20 +911,22 @@
   .btn.accent:hover:not(:disabled)::before,
   .btn.gold:hover:not(:disabled)::before { background-position: -60% 0; }
 
-  /* night — the gold CTA becomes metal: the landing's exact treatment */
+  /* night — the accent CTA becomes metal: the landing's exact treatment,
+     token-driven (r195: the teal family rides var(--accent), mirroring
+     the canonical components.css recipe). */
   [data-theme="dark"] .btn.accent,
   [data-theme="dark"] .btn.gold {
-    --_btn-bg: linear-gradient(145deg, #E9B44C 0%, #C9962F 100%);
-    --_btn-bg-hover: linear-gradient(145deg, #F5D48A 0%, #E9B44C 100%);
-    box-shadow: 0 0 0 1px rgb(233 180 76 / 0.30), 0 6px 20px -8px rgb(233 180 76 / 0.35);
+    --_btn-bg: linear-gradient(145deg, var(--accent) 0%, var(--accent-strong) 100%);
+    --_btn-bg-hover: linear-gradient(145deg, var(--accent-hover) 0%, var(--accent) 100%);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 6px 20px -8px color-mix(in srgb, var(--accent) 35%, transparent);
   }
   [data-theme="dark"] .btn.accent:hover:not(:disabled),
   [data-theme="dark"] .btn.gold:hover:not(:disabled) {
-    box-shadow: 0 0 0 1px rgb(233 180 76 / 0.45), 0 8px 26px -8px rgb(233 180 76 / 0.45);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent), 0 8px 26px -8px color-mix(in srgb, var(--accent) 45%, transparent);
   }
 
-  /* light hover BRIGHTENS the copper (the #9A5F25 darken drops the
-     accent pair to 3.47:1 — WCAG fix, canonical) */
+  /* light hover BRIGHTENS the accent (the old darken-in-place hover
+     dropped the accent pair below AA — WCAG fix, canonical) */
   :root:not([data-theme="dark"]) .btn.accent,
   :root:not([data-theme="dark"]) .btn.gold {
     --_btn-bg-hover: color-mix(in oklab, var(--accent) 86%, var(--neutral-0));

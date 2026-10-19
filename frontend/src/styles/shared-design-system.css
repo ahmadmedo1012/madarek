@@ -7,8 +7,9 @@
    recipes (card / btn / badge / metric / stagger / reveal / skeleton).
 
    COLOR ALWAYS COMES FROM THE PARITY FILE — unified-parity.css
-   owns both theme blocks (light cream+copper, dark night+gold), the
-   status/accent families, the elevation recipes and the glass
+   owns both theme blocks (r195 egn re-key: light white/gray +
+   peacock teal #027380, dark near-black gray + night teal #2FB6C6),
+   the status/accent families, the elevation recipes and the glass
    surfaces. Where the two files overlap (radius, motion, z values,
    structural recipes) they are value-identical by contract; verify
    with: node scripts/verify-parity-export.mjs
@@ -341,7 +342,7 @@
 
   /* ─── Glass premium card ───────────────────────────────────────── */
   .card.glass-premium {
-    background: var(--glass-bg, rgba(251,250,249,0.78));
+    background: var(--glass-bg, rgba(255,255,255,0.78));   /* r195: egn white glass fallback */
     backdrop-filter: blur(var(--glass-blur, 16px)) saturate(180%);
     -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(180%);
     border-color: var(--glass-border, rgba(25,25,24,0.06));

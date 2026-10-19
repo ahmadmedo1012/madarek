@@ -49,21 +49,24 @@
     --sp-9: 48px;   --sp-10:56px;   --sp-11:72px;   --sp-12:96px;
     --sp-13:128px;  --sp-14:160px;  --sp-15:192px;  --sp-16:240px;
 
-    /* ─── r190 media-stage family — theme-FIXED void values ──────────
+    /* ─── r195 media-stage family — theme-FIXED void values ──────────
        The landing hero + media stages paint the void regardless of the
-       active theme (the reference alternates void hero ↔ cream body;
-       a light visitor still meets the dark cinematic stage — it is a
-       media surface, not a theme rebellion: the section carries its
-       own AA-verified ink/cream pair and never touches --bg/--text).
-       Values double-checked: cream #F2EFE6 on #05070F = 16.9:1 · dim
-       #C3C8DC = 9.0:1 · violet #9A5CFF = 5.0:1 · all AAA/AA. */
-    --stage-ink:      #05070F;
-    --stage-ink-2:    #0D1428;
-    --stage-cream:    #F2EFE6;
-    --stage-cream-dim:#C3C8DC;
-    --stage-violet:   #9A5CFF;
-    --stage-line:     rgba(245,243,230,0.16);
-    --stage-line-soft:rgba(245,243,230,0.07);
+       active theme (a light visitor still meets the dark cinematic
+       stage — it is a media surface, not a theme rebellion: the section
+       carries its own AA-verified ink pair and never touches
+       --bg/--text). r195: the Turion indigo void + warm cream + violet
+       accent die with the egn.university palette — the stage now paints
+       the reference's own near-black sections (#0E0E0E) with pure white
+       ink and the night teal accent.
+       Values double-checked: cream #FFFFFF on #0E0E0E = 18.9:1 · dim
+       #B3B3B3 = 8.7:1 · teal #2FB6C6 = 8.1:1 · all AAA/AA. */
+    --stage-ink:      #0E0E0E;
+    --stage-ink-2:    #171717;
+    --stage-cream:    #FFFFFF;
+    --stage-cream-dim:#B3B3B3;
+    --stage-accent:   #2FB6C6;
+    --stage-line:     rgba(255,255,255,0.16);
+    --stage-line-soft:rgba(255,255,255,0.07);
 
     /* (r136 dead-token sweep: the --sp-2x…16x "legacy" aliases deleted —
        rg-verified zero consumers in-app and across the fleet; the "retained
@@ -566,31 +569,39 @@
   :root,
   [data-theme="light"] {
 
-    /* Notion's actual neutrals */
+    /* egn.university palette — cool grayscale, no warm cream.
+       --neutral-900 = #333333 body ink (reference: 4402 uses of
+       #333333, the comfortable long-read text); the deepest inks
+       (#262626 / #0E0E0E) are reserved for display headings and the
+       landing hero's dark sections (high-contrast editorial). */
     --neutral-0:   #FFFFFF;
-    --neutral-50:  #FBFAF9;          /* page ground */
-    --neutral-100: #F7F6F3;          /* card hover, subtle band */
-    --neutral-150: #F1EFEC;
-    --neutral-200: #E9E7E2;          /* hairline */
-    --neutral-300: #D9D6D0;          /* divider */
-    --neutral-400: #8E8A82;          /* was #B5B1A8 — contrast 2.05:1 failed WCAG AA. New: 3.30:1 (AA-large only) */
-    --neutral-500: #6F6C66;          /* was #898680 — contrast 3.48:1 failed WCAG AA. New: 5.02:1 (passes AA) */
-    --neutral-700: #4F4D48;
-    --neutral-800: #322F2A;
-    --neutral-900: #191918;          /* primary ink */
+    --neutral-50:  #F7F7F7;          /* page ground (near-white) */
+    --neutral-100: #EEEEEE;          /* card hover, subtle band */
+    --neutral-150: #E5E5E5;
+    --neutral-200: #ECECEC;          /* hairline (reference light neutral) */
+    --neutral-300: #D9D9D9;          /* divider */
+    --neutral-400: #999999;          /* non-text rung — 2.57:1 on white; text consumes --text-faint #6E6E6E (r195) */
+    --neutral-500: #666666;          /* muted-2 — AA body-secondary */
+    --neutral-700: #444444;
+    --neutral-800: #262626;
+    --neutral-900: #333333;          /* primary ink (reference #333333) */
 
     /* The 9 Notion-style section colors. Each has a soft pastel ground
        (full-bleed band fill), a saturated "ink" for accents, and a
        deep shade for text-on-pastel.                                  */
-    --c-peach-bg:     #FFE9DC;   --c-peach-ink:    #E07856;   --c-peach-deep:   #6B2D1A;
-    --c-mint-bg:      #DCF1E2;   --c-mint-ink:     #4FA66D;   --c-mint-deep:    #1F4F30;
-    --c-lavender-bg:  #ECE6FA;   --c-lavender-ink: #8A6FE0;   --c-lavender-deep:#3F2D7A;
-    --c-sky-bg:       #DDEBF7;   --c-sky-ink:      #5C8FCE;   --c-sky-deep:     #1F3D63;
-    --c-yellow-bg:    #FCF1CD;   --c-yellow-ink:   #D6A330;   --c-yellow-deep:  #6B4C0B;
-    --c-rose-bg:      #FCE0E2;   --c-rose-ink:     #DD6E78;   --c-rose-deep:    #6B2128;
-    --c-sand-bg:      #F1ECDF;   --c-sand-ink:     #B59868;   --c-sand-deep:    #5A4623;
-    --c-grey-bg:      #EFECE7;   --c-grey-ink:     #6B665E;   --c-grey-deep:    #2D2A24;
-    --c-copper-bg:    #F4E4D2;   --c-copper-ink:   #B57438;   --c-copper-deep:  #5C3416;
+    --c-peach-bg:     #FBEDED;   --c-peach-ink:    #C96A5B;   --c-peach-deep:   #7A3224;
+    --c-mint-bg:      #E0F2F3;   --c-mint-ink:     #027380;   --c-mint-deep:    #014A52;
+    --c-lavender-bg:  #E6EDEF;   --c-lavender-ink: #4A6C7A;   --c-lavender-deep:#2A4A56;
+    --c-sky-bg:       #E0EEF2;   --c-sky-ink:      #2F6E7E;   --c-sky-deep:     #1A4A56;
+    --c-yellow-bg:    #F7F1D8;   --c-yellow-ink:   #A68A2E;   --c-yellow-deep:  #6B5510;
+    --c-rose-bg:      #F3DEDE;   --c-rose-ink:     #B5665F;   --c-rose-deep:    #7A3028;
+    --c-sand-bg:      #ECECE7;   --c-sand-ink:     #8A7A52;   --c-sand-deep:    #5A4A24;
+    --c-grey-bg:      #ECECE7;   --c-grey-ink:     #6B665E;   --c-grey-deep:    #2D2A24;
+    --c-copper-bg:    #ECE4D2;   --c-copper-ink:   #9A7438;   --c-copper-deep:  #5C3416;
+    /* egn.university: pastels receded to near-neutral grounds with
+       teal-family inks; --c-mint-ink IS the brand teal, so the primary
+       status reads as the accent, not a second hue. Lavender/sky cooled
+       to steel-teal so nothing fights the peacock. */
 
     /* ═════ ROLE TOKENS — components consume these ═════ */
     --bg:               var(--neutral-50);
@@ -611,18 +622,23 @@
        #6E6C65 L=0.1498 → 1.0072/0.1998 = 5.04:1 ✓ AA (4.86:1 on
        --surface-2 #F7F6F3, 5.26:1 on --surface #FFFFFF). --neutral-500
        itself is untouched (ramp stays intact for non-text uses). */
-    --text-muted:  #6E6C65;
-    /* T3-F4 — was var(--neutral-400) #B5B1A8 = 2.05:1 on --bg (failed
-       both text AA and 3:1 non-text). #74706A L=0.1634 → 4.72:1 on --bg,
-       4.92:1 on --surface, 4.55:1 on --surface-2 — now AA-safe even for
-       placeholder/hint text; still reads one step fainter than muted. */
-    --text-faint:  #74706A;
+    --text-muted:  #666666;          /* egn: neutral-500 cool gray — 5.36:1 on --bg #F7F7F7 */
+    /* r195 — R194 set #999999: 2.66:1 on the NEW #F7F7F7 ground (the
+       old 4.72:1 math was measured on the retired cream #FBFAF9 and
+       did not travel with the palette swap). #6E6E6E L=0.156 →
+       4.76:1 on --bg, 5.10:1 on --surface, 4.50:1 on --surface-2
+       #EEEEEE — restores the repo bar (faint is AA-safe even for
+       placeholder/hint text) while staying one step fainter than
+       muted. The r183 pin keeps holding: on --accent-soft #E0F2F3 it
+       measures 4.47:1 — deliberately under AA, faint never carries
+       text there. */
+    --text-faint:  #6E6E6E;          /* r195: AA-safe faint — egn cool gray */
     --text-on-accent: #FFFFFF;
     --text-on-dark:   var(--neutral-50);
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
-    --border-faint:  rgba(25,25,24,0.06);
+    --border-faint:  rgba(0,0,0,0.06);
     --rule:          var(--neutral-200);
     /* 5-C1 (A2 P1-2): --rule-strong was consumed in five places
        (--state-card-hover-border fallback chain + polish.css ×2 +
@@ -639,18 +655,16 @@
        --surface-border currently has no component consumer; kept for
        the contract's token surface — any future elevation utility
        should consume it.) */
-    --surface-border:  rgba(0,0,0,0.08);
-    --surface-divider: rgba(0,0,0,0.05);
+    --surface-border:  rgba(0,0,0,0.06);
+    --surface-divider: rgba(0,0,0,0.04);
 
-    /* r190 «مدار المعرفة» — the accent becomes electric violet (the
-       reference's #8F4BFF family, AA-tuned for cream). Copper moves to
-       its new home: the achievement/warm-status family (--gold,
-       --c-copper-*, gamification). Contrast: #6C4AE0 = 5.46:1 on
-       --bg; #4B2FB0 (ink) = 8.66:1; #FFF on accent fill = 5.46:1. */
-    --accent:        #6C4AE0;
-    --accent-hover:  #5A3AC4;
-    --accent-soft:   #ECE5FB;
-    --accent-strong: #4B2FB0;
+    /* egn.university — the accent is now peacock teal #027380 (was
+       electric violet). Copper keeps its achievement/warm-status home.
+       Contrast: #027380 = 4.64:1 on --bg (AA); #014A52 ink = 9.06:1. */
+    --accent:        #027380;   /* egn.university peacock teal — brand accent */
+    --accent-hover:  #015C66;
+    --accent-soft:   #E0F2F3;
+    --accent-strong: #014A52;
     /* T3-F4 WCAG fix — was #FFFFFF: 3.80:1 on --accent #B57438 (L=0.2260)
        ✗ AA for 13–15px button labels. #1A0F06 L=0.0057 →
        (0.2260+0.05)/(0.0057+0.05) = 4.95:1 ✓ AA. This mirrors Dark's
@@ -658,13 +672,13 @@
        see the dark block below), so accent buttons read as one family
        across themes. (r134: previously quoted the retired #191918 on
        #E0A067 = 7.87:1 — the night accent moved to #E9B44C.) */
-    --accent-fg:     #FFFFFF;   /* 5.46:1 on the violet fill — AA for labels */
+    --accent-fg:     #FFFFFF;   /* egn: #027380 = 4.64:1 on white — AA for labels */
     /* --focus-ring retired (premium-polish): the ~32%-alpha halo measured
        ≈1.5:1 on cream and survived only by losing layer order to the v22
        outline. The ONE focus language is --state-focus-ring (outline) +
        --state-input-focus-halo (input/wrapper halo). */
 
-    --accent-ink:    var(--accent-strong);   /* #4B2FB0 = 8.66:1 on --bg */
+    --accent-ink:    var(--accent-strong);   /* egn: #014A52 = 9.06:1 on --bg */
 
     /* 001 interaction-tokens self-rule: the focus ring MUST clear 4.5:1
        against the background. Light --accent #B57438 is 3.65:1 on --bg,
@@ -719,14 +733,19 @@
     --primary:       var(--neutral-900);   /* ink slab — the reference's light-section CTA */
     --primary-fg:    #FFFFFF;
 
-    /* r190 — the violet glow register (reference: luminous focal points
-       against depth). Background aura only; never a text treatment. */
-    --glow-accent:        0 0 20px rgba(108,74,224,0.22), 0 0 56px rgba(108,74,224,0.10);
-    --glow-accent-strong: 0 0 28px rgba(108,74,224,0.30), 0 0 80px rgba(108,74,224,0.14);
-    /* atmospheric scene stops (landing/auth stages) */
-    --aura-violet:        #8F5BFF;
-    --aura-violet-deep:   #4B2FB0;
-    --aura-horizon:       #D4849C;
+    /* r190 → r195 — the glow register (reference: luminous focal
+       points against depth). Background aura only; never a text
+       treatment. r195: the violet era ends — one teal register. */
+    --glow-accent:        0 0 20px rgba(2,115,128,0.20), 0 0 56px rgba(2,115,128,0.09);
+    --glow-accent-strong: 0 0 28px rgba(2,115,128,0.26), 0 0 80px rgba(2,115,128,0.12);
+    /* atmospheric scene stops (landing stages) — r195: the family
+       re-keys to the egn pair: accent teal + the reference's single
+       warm counterpoint (salmon #F9A09C) for horizon glows. The old
+       --aura-violet/-deep names are retired with the violet era
+       (consumers renamed in the same change). */
+    --aura-accent:        #027380;
+    --aura-accent-deep:   #014A52;
+    --aura-horizon:       #F9A09C;
 
     /* shadows — Notion-soft
        (premium-polish F2: --shadow-card now aliases the canonical
@@ -743,14 +762,14 @@
     --shadow-card-premium-h: 0 4px 8px rgba(15,15,15,0.06), 0 12px 32px rgba(15,15,15,0.10), 0 4px 12px rgba(15,15,15,0.05);
     --shadow-card-glow:     0 0 0 1px var(--accent-soft), 0 2px 4px rgba(15,15,15,0.04), 0 8px 24px rgba(15,15,15,0.08); /* r149 (R3-A8): حُذف fallback أزرق Tailwind — يطابق المرآة الآن */
 
-    --glass-bg:    rgba(251,250,249,0.78);
+    --glass-bg:    rgba(255,255,255,0.78);   /* r195: egn white glass — the cream tint died with the cream ground */
     --glass-blur:  16px;
     --glass-border: rgba(25,25,24,0.06);
     /* r140 — تبنّي الكنون للطبقة القوية: ثلاثة منتجات استخدمتها بقيم
        متباعدة 0.90/0.92/0.94 بضباب 20 و24 — الكنون يوحّدها. الطبقة القوية
        = خلفية أكثر عتامة (0.92)، والضباب يبقى 16px الكنوني (قرار r140:
        لا ضباب أقوى من 16). */
-    --glass-bg-strong:   rgba(251,250,249,0.92);
+    --glass-bg-strong:   rgba(255,255,255,0.92);
     --glass-blur-strong: 16px;
     /* T3-F4 — scrim blur for dimming overlays (modal/sheet/dialog
        backdrops). Consolidates the six ad-hoc blur values
@@ -776,7 +795,7 @@
     /* (r148-d: --sidebar-active-bar retired — zero consumers; the
        active rail is painted by the sidebar recipes directly.) */
 
-    --topbar-bg:    rgba(251,250,249,0.86);
+    --topbar-bg:    rgba(255,255,255,0.86);   /* r195: egn white chrome */
     --topbar-border:var(--neutral-200);
 
     --scrollbar-thumb: rgba(25,25,24,0.16);
@@ -795,9 +814,9 @@
     /* (r148-d: --shadow-md/lg/xl/2xl retired — zero consumers; the
        canonical --shadow-* names speak directly.) */
 
-    --chart-text: #6E6C65;  /* T3-F4: was var(--neutral-500) #898680 = 3.48:1 → 5.04:1 ✓ (same fix as --text-muted) */
+    --chart-text: #666666;  /* r195: warm #6E6C65 → cool gray — matches --text-muted; 5.36:1 on --bg */
     --chart-grid: rgba(25,25,24,0.08);
-    --chart-1: var(--accent);   /* r190: series 1 = the violet accent */
+    --chart-1: var(--accent);   /* egn: series 1 = the teal accent */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
@@ -824,7 +843,7 @@
        (rg-verified zero consumers). --journey-glow survives: auth.css
        floats the auth card on the same ambient wash (pinned by
        AuthPage-alignment.test.tsx). */
-    --journey-glow:        rgba(108, 74, 224, 0.12);   /* r190: violet ambient wash */
+    --journey-glow:        rgba(2, 115, 128, 0.10);   /* egn: teal ambient wash */
 
     /* ─── Orbit Ink — LIGHT remap (r172a: the landing joins the
        two-theme system; was a fixed #252A3E dark stage in both
@@ -880,31 +899,31 @@
        the legal one). r192: dark rides 1.32 (light 1.28 + one step). */
     --type-display-line-height: 1.32;   /* r192: Alexandria display leading — measured-safe on the void */
 
-    --neutral-0:   #0D1428;
-    --neutral-50:  #070B16;
-    --neutral-100: #121A36;
-    --neutral-150: #182142;
-    --neutral-200: #1B2444;
-    --neutral-300: #263052;
-    --neutral-400: #7A83A0;
-    --neutral-500: #8E97B8;
-    --neutral-700: #C3C8DC;
-    --neutral-800: #DDE1EE;
-    --neutral-900: #F2EFE6;
+    --neutral-0:   #171717;   /* raised surface */
+    --neutral-50:  #0A0A0A;   /* egn: near-black night ground */
+    --neutral-100: #141414;
+    --neutral-150: #1E1E1E;
+    --neutral-200: #2A2A2A;   /* hairline */
+    --neutral-300: #353535;   /* divider */
+    --neutral-400: #666666;
+    --neutral-500: #8A8A8A;
+    --neutral-700: #BFBFBF;
+    --neutral-800: #DDDDDD;
+    --neutral-900: #F2F2F2;   /* egn: near-white night ink */
 
     /* مدارك night (v3): hue families re-grounded on the indigo night —
        deep space-tinted bgs + luminous inks. Contrast on --bg #070B16
        (night-contrast-check.py, 26/26 pass): mint 10.94, rose 8.68,
        sky 9.88, yellow 12.37, lavender 8.75 — all clear text-AA. */
-    --c-peach-bg:     #2C1A16;   --c-peach-ink:    #F2A07F;   --c-peach-deep:   #FCD9C4;
-    --c-mint-bg:      #0F241C;   --c-mint-ink:     #7FD39A;   --c-mint-deep:    #C9EAD3;
-    --c-lavender-bg:  #221B3A;   --c-lavender-ink: #B7A0F4;   --c-lavender-deep:#DCD2F9;
-    --c-sky-bg:       #14213A;   --c-sky-ink:      #8FBBF2;   --c-sky-deep:     #C9DCEE;
-    --c-yellow-bg:    #2C2410;   --c-yellow-ink:   #ECC97D;   --c-yellow-deep:  #F8E5B5;
-    --c-rose-bg:      #2C1620;   --c-rose-ink:     #F0938F;   --c-rose-deep:    #FACDD2;
-    --c-sand-bg:      #241F14;   --c-sand-ink:     #D9C18C;   --c-sand-deep:    #EFE2C5;
-    --c-grey-bg:      #161D33;   --c-grey-ink:     #A9B0C8;   --c-grey-deep:    #D5DAE8;
-    --c-copper-bg:    #2C2312;   --c-copper-ink:   #E9B44C;   --c-copper-deep:  #F5D48A;
+    --c-peach-bg:     #2A1A17;   --c-peach-ink:    #C96A5B;   --c-peach-deep:   #E0BBA9;
+    --c-mint-bg:      #0E2324;   --c-mint-ink:     #2FB6C6;   --c-mint-deep:    #7FCED9;
+    --c-lavender-bg:  #1A3038;   --c-lavender-ink: #7BA7B3;   --c-lavender-deep:#B8D6DE;
+    --c-sky-bg:       #12323A;   --c-sky-ink:      #5AA7B5;   --c-sky-deep:     #A7CBD5;   /* r195: fixed the malformed #A7CB D5 (stray space — invalid hex, silently unpainted) */
+    --c-yellow-bg:    #2A2514;   --c-yellow-ink:   #BFA14E;   --c-yellow-deep:  #E3D19A;
+    --c-rose-bg:      #2C1819;   --c-rose-ink:     #C07E78;   --c-rose-deep:    #E7B7B2;
+    --c-sand-bg:      #252013;   --c-sand-ink:     #B7A36A;   --c-sand-deep:    #E4D6A6;
+    --c-grey-bg:      #161616;   --c-grey-ink:     #9AA4B5;   --c-grey-deep:    #C7CFDD;   /* r195: pure cool-gray ground (the indigo tint died with the indigo night) */
+    --c-copper-bg:    #2A2313;   --c-copper-ink:   #D8AE5C;   --c-copper-deep:  #F0D89C;
 
     --bg:               var(--neutral-50);
     --surface:          var(--neutral-0);
@@ -918,36 +937,40 @@
     --text-secondary: var(--neutral-700);
     /* (r148-d: --text-strong retired with the journey scene's --ink
        slab — both were zero-consumer mirrors of --text/--neutral-900.) */
-    --text-muted:  var(--neutral-500);
-    /* 15-g P1-3 night mirror: --text-faint = landing's axe-verified
-       #7A83A0 → 5.22:1 on --bg #070B16, 4.86:1 on --surface #0D1428
-       (AA on every night text surface; one step fainter than
-       --text-muted #8E97B8 at 6.80:1). */
-    --text-faint:  #7A83A0;
+    --text-muted:  var(--neutral-500);   /* egn: neutral-500 cool gray = #8A8A8A */
+    /* r195: R194 set --text-faint to the very same #8A8A8A as
+       --text-muted — the hierarchy step collapsed silently. #828282
+       is the AA-verified one-step-fainter tier on the NEW gray night:
+       5.08:1 on --bg #0A0A0A, 4.59:1 on --surface #171717, 4.85:1 on
+       --surface-2 #141414 — clears 4.5 on every dark text surface
+       while reading visibly fainter than muted. The r183 pin keeps
+       holding: 2.53:1 on --accent-soft #174A52 — faint never carries
+       text there. */
+    --text-faint:  #828282;   /* r195: AA tier, one step under muted */
     --text-on-accent: #05070F;
     --text-on-dark:   var(--neutral-900);
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
-    --border-faint:  rgba(142,151,184,0.10);
+    --border-faint:  rgba(200,200,200,0.10);   /* egn: cool-gray hairline */
     --rule:          var(--neutral-200);
     /* 5-C1 (A2 P1-2) — see the light block: the dead-token fix is
        theme-agnostic (references --border-strong, which remaps to
        night's #263052 divider here). */
     --rule-strong:   var(--border-strong);
     /* 012 theme-tokens contract §1 — formalised surface edge tokens. */
-    --surface-border:  rgba(142,151,184,0.14);
-    --surface-divider: rgba(142,151,184,0.08);
+    --surface-border:  rgba(200,200,200,0.12);
+    --surface-divider: rgba(200,200,200,0.07);
 
     /* r190 «مدار المعرفة» — night accent: electric violet (the
        reference's #8F4BFF family, AA-tuned for the night ground).
        #9A5CFF = 5.01:1 as text on --bg #070B16; void ink on the violet
        fill = 4.75:1. The gold family moves to --gold/--c-copper-*. */
-    --accent:        #9A5CFF;
-    --accent-hover:  #AD7BFF;
-    --accent-soft:   #241D40;
-    --accent-strong: #B085FF;   /* 7.14:1 on night — the focus ring tier */
-    --accent-fg:     #0A0614;
+    --accent:        #2FB6C6;   /* egn: night teal accent */
+    --accent-hover:  #4DC7D6;
+    --accent-soft:   #174A52;
+    --accent-strong: #7FCED9;   /* egn: night focus-ring tier */
+    --accent-fg:     #061417;
     /* --focus-ring retired — see the light-theme note above. */
 
     /* Night theme passes as-is: the -ink family clears AA on the night
@@ -982,33 +1005,35 @@
     --primary:       #FFFFFF;               /* r190: the void CTA — white slab, void ink label (reference grammar) */
     --primary-fg:    #05070F;
 
-    /* r190 — the violet glow register for night (aura-only, never text). */
-    --glow-accent:        0 0 22px rgba(154,92,255,0.30), 0 0 64px rgba(154,92,255,0.14);
-    --glow-accent-strong: 0 0 32px rgba(154,92,255,0.38), 0 0 96px rgba(154,92,255,0.18);
-    /* atmospheric scene stops (landing/auth stages — same stops, night-tuned) */
-    --aura-violet:        #9A5CFF;
-    --aura-violet-deep:   #6C4AE0;
-    --aura-horizon:       #D4849C;
+    /* r195 — the night glow register (aura-only, never text). R194
+       re-keyed the strong twin to teal but left this one violet —
+       one register now. */
+    --glow-accent:        0 0 22px rgba(47,182,198,0.30), 0 0 64px rgba(47,182,198,0.14);
+    --glow-accent-strong: 0 0 32px rgba(47,182,198,0.30), 0 0 96px rgba(47,182,198,0.14);
+    /* atmospheric scene stops (landing stages — same stops, night-tuned) */
+    --aura-accent:        #2FB6C6;
+    --aura-accent-deep:   #174752;
+    --aura-horizon:       #F9A09C;
 
     --shadow-card:    var(--elev-1);
-    --shadow-card-h:  0 1px 2px rgba(2,4,12,0.50), 0 8px 22px rgba(2,4,12,0.55), 0 0 0 1px rgba(142,151,184,0.08);
-    --shadow-pop:     0 2px 4px rgba(2,4,12,0.55), 0 10px 28px rgba(2,4,12,0.62), 0 0 0 1px rgba(142,151,184,0.10);
-    --shadow-modal:   0 12px 32px rgba(2,4,12,0.66), 0 32px 80px rgba(2,4,12,0.70), 0 0 0 1px rgba(142,151,184,0.12);
+    --shadow-card-h:  0 1px 2px rgba(0,0,0,0.50), 0 8px 22px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07);
+    --shadow-pop:     0 2px 4px rgba(0,0,0,0.55), 0 10px 28px rgba(0,0,0,0.62), 0 0 0 1px rgba(255,255,255,0.09);
+    --shadow-modal:   0 12px 32px rgba(0,0,0,0.66), 0 32px 80px rgba(0,0,0,0.70), 0 0 0 1px rgba(255,255,255,0.11);
     /* (r148-d: --shadow-mockup retired — zero consumers) */
     /* r148 (AUDIT-5 K1): العائلة premium كانت ساقطة على قيم الفاتح
        (rgba(15,15,15,0.04–0.10) على #070B16 = غير مرئية) في ~35 موقعًا.
        إعادة تعريف بلغة الليل نفسها: ظل أعمق + حلقة mist — تُحاكي
        منطق --shadow-card-h أعلاه بعمق إضافي للبطاقات البارزة. */
-    --shadow-card-premium:  0 1px 2px rgba(2,4,12,0.45), 0 8px 22px rgba(2,4,12,0.52), 0 0 0 1px rgba(142,151,184,0.07), inset 0 1px 0 rgba(255,255,255,0.04);
-    --shadow-card-premium-h: 0 2px 4px rgba(2,4,12,0.52), 0 12px 32px rgba(2,4,12,0.60), 0 0 0 1px rgba(142,151,184,0.10), inset 0 1px 0 rgba(255,255,255,0.05);
-    --shadow-card-glow:     0 0 0 1px var(--accent-soft), 0 1px 2px rgba(2,4,12,0.45), 0 8px 22px rgba(2,4,12,0.52), inset 0 1px 0 rgba(255,255,255,0.04);
+    --shadow-card-premium:  0 1px 2px rgba(0,0,0,0.45), 0 8px 22px rgba(0,0,0,0.52), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.04);
+    --shadow-card-premium-h: 0 2px 4px rgba(0,0,0,0.52), 0 12px 32px rgba(0,0,0,0.60), 0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
+    --shadow-card-glow:     0 0 0 1px var(--accent-soft), 0 1px 2px rgba(0,0,0,0.45), 0 8px 22px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.04);
 
-    --glass-bg:    rgba(11,16,32,0.78);
+    --glass-bg:    rgba(10,10,10,0.78);   /* r195: neutral glass — the indigo tint died with the indigo night */
     --glass-blur:  16px;
-    --glass-border: rgba(142,151,184,0.12);
+    --glass-border: rgba(255,255,255,0.10);   /* r195: white hairline on dark glass (the elev grammar) */
     /* r140 — الطبقة القوية في الليل (انظر تعليق الثيم الفاتح): توحيد
        0.90/0.92/0.94 الأسطولية على 0.92، والضباب 16px — لا أقوى. */
-    --glass-bg-strong:   rgba(11,16,32,0.92);
+    --glass-bg-strong:   rgba(10,10,10,0.92);
     --glass-blur-strong: 16px;
     --scrim-blur:  4px;   /* T3-F4 — dimming-scrim blur (see light block) */
 
@@ -1022,22 +1047,22 @@
     /* r150a — the night shell's azure aurora wash (layout.css dark
        sidebar). One-off ambient accent at 5% alpha; quoted as a token
        so the gate census stays honest and the wash is retunable. */
-    --shell-aurora-azure: #9A5CFF;   /* r190: the aurora turns violet — name kept (fleet consumer) */
+    --shell-aurora-azure: #2FB6C6;   /* r195: the aurora re-keys teal — name kept (fleet consumer) */
 
     --sidebar-bg:        var(--neutral-50);
     --sidebar-rule:      var(--neutral-200);
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
-    --sidebar-item-active-bg:   rgb(154 92 255 / 0.16);  /* r190: violet wash — the traveller's current orbit */
+    --sidebar-item-active-bg:   rgb(47 182 198 / 0.16);  /* r195: teal wash — the traveller's current orbit */
     --sidebar-item-active-text: var(--neutral-900);
     /* (r148-d: --sidebar-active-bar retired — zero consumers; the
        active rail is painted by the sidebar recipes directly.) */
 
-    --topbar-bg:    rgba(7,11,22,0.86);
+    --topbar-bg:    rgba(10,10,10,0.86);   /* r195: neutral night chrome */
     --topbar-border:var(--neutral-200);
 
-    --scrollbar-thumb: rgba(142,151,184,0.20);
-    --scrollbar-thumb-hover: rgba(142,151,184,0.34);
+    --scrollbar-thumb: rgba(255,255,255,0.16);
+    --scrollbar-thumb-hover: rgba(255,255,255,0.28);
 
     /* (dark block of the 21-c dead-alias sweep — see the light block's
        banner; the same 25 paper/ink/gold-{100,300,500,700,900}/
@@ -1049,8 +1074,8 @@
        canonical --shadow-* names speak directly.) */
 
     --chart-text: var(--neutral-500);
-    --chart-grid: rgba(142,151,184,0.10);
-    --chart-1: var(--accent);   /* r190: series 1 = the violet accent */
+    --chart-grid: rgba(255,255,255,0.08);
+    --chart-1: var(--accent);   /* egn: series 1 = the teal accent */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
@@ -1062,7 +1087,7 @@
     /* ─── Immersive journey scene — r148-d: the night node/line/core/
        ticker variants retired with the light block's set (see the
        light theme's note); the gold-thread glow survives for auth.css. */
-    --journey-glow:        rgba(154,92,255,0.16);
+    --journey-glow:        rgba(47,182,198,0.12);   /* egn: night teal wash */
 
     /* ─── Orbit Ink — DARK remap (r172a). The authored round-3 night
        palette, now expressed as the explicit dark half of the
@@ -1356,42 +1381,42 @@
     :root[data-theme="dark"] {
       /* light neutral ramp */
       --neutral-0:   #FFFFFF;
-      --neutral-50:  #FBFAF9;
-      --neutral-100: #F7F6F3;
-      --neutral-150: #F1EFEC;
-      --neutral-200: #E9E7E2;
-      --neutral-300: #D9D6D0;
-      --neutral-400: #8E8A82;
-      --neutral-500: #6F6C66;
-      --neutral-700: #4F4D48;
-      --neutral-800: #322F2A;
-      --neutral-900: #191918;
+      --neutral-50:  #F7F7F7;
+      --neutral-100: #EEEEEE;
+      --neutral-150: #E5E5E5;
+      --neutral-200: #ECECEC;
+      --neutral-300: #D9D9D9;
+      --neutral-400: #999999;
+      --neutral-500: #666666;
+      --neutral-700: #444444;
+      --neutral-800: #262626;
+      --neutral-900: #333333;
       /* light pastel families */
-      --c-peach-bg:     #FFE9DC;  --c-peach-ink:    #E07856;  --c-peach-deep:    #6B2D1A;
-      --c-mint-bg:      #DCF1E2;  --c-mint-ink:     #4FA66D;  --c-mint-deep:     #1F4F30;
-      --c-lavender-bg:  #ECE6FA;  --c-lavender-ink: #8A6FE0;  --c-lavender-deep: #3F2D7A;
-      --c-sky-bg:       #DDEBF7;  --c-sky-ink:      #5C8FCE;  --c-sky-deep:      #1F3D63;
-      --c-yellow-bg:    #FCF1CD;  --c-yellow-ink:   #D6A330;  --c-yellow-deep:   #6B4C0B;
-      --c-rose-bg:      #FCE0E2;  --c-rose-ink:     #DD6E78;  --c-rose-deep:     #6B2128;
-      --c-sand-bg:      #F1ECDF;  --c-sand-ink:     #B59868;  --c-sand-deep:     #5A4623;
-      --c-grey-bg:      #EFECE7;  --c-grey-ink:     #6B665E;  --c-grey-deep:     #2D2A24;
-      --c-copper-bg:    #F4E4D2;  --c-copper-ink:   #B57438;  --c-copper-deep:   #5C3416;
+      --c-peach-bg:     #FBEDEF;  --c-peach-ink:    #C96A5B;  --c-peach-deep:    #7A3224;
+      --c-mint-bg:      #E0F2F3;  --c-mint-ink:     #027380;  --c-mint-deep:     #014A52;
+      --c-lavender-bg:  #E6EDEF;  --c-lavender-ink: #4A6C7A;  --c-lavender-deep: #2A4A56;
+      --c-sky-bg:       #E0EEF2;  --c-sky-ink:      #2F6E7E;  --c-sky-deep:      #1A4A56;
+      --c-yellow-bg:    #F7F1D8;  --c-yellow-ink:   #A68A2E;  --c-yellow-deep:   #6B5510;
+      --c-rose-bg:      #F3DEDE;  --c-rose-ink:     #B5665F;  --c-rose-deep:     #7A3028;
+      --c-sand-bg:      #ECECE7;  --c-sand-ink:     #8A7A52;  --c-sand-deep:     #5A4A24;
+      --c-grey-bg:      #ECECE7;  --c-grey-ink:     #6B665E;  --c-grey-deep:     #2D2A24;
+      --c-copper-bg:    #ECE4D2;  --c-copper-ink:   #9A7438;  --c-copper-deep:   #5C3416;
       /* literals the dark block hardcodes (not chained to neutrals) */
-      --text-muted:     #6E6C65;
-      --text-faint:     #74706A;
+      --text-muted:     #666666;
+      --text-faint:     #999999;
       --text-on-accent: #FFFFFF;
-      --accent-hover:   #9A5F25;
-      --accent-fg:      #1A0F06;
+      --accent-hover:   #015C66;
+      --accent-fg:      #FFFFFF;
       /* r148 (AUDIT-5 M3): التعبئات/الحدود الذهبية الداكنة (#E9B44C على
          ورق أبيض = ~1.8:1) كانت تُطبع باهتة — إعادة ربط عائلة النحاس
          الفاتحة للحبر الورقي. --accent-ink أدناه يبقى الأعمق للنصوص. */
-      --accent:          #B57438;
-      --accent-strong:   #5C3416;
+      --accent:          #027380;
+      --accent-strong:   #014A52;
       --state-focus-ring-color: var(--accent-strong);
-      --border-faint:   rgba(25,25,24,0.06);
-      --surface-border: rgba(0,0,0,0.08);
-      --surface-divider: rgba(0,0,0,0.05);
-      --chart-text:     #6E6C65;
+      --border-faint:   rgba(0,0,0,0.06);
+      --surface-border: rgba(0,0,0,0.05);
+      --surface-divider: rgba(0,0,0,0.04);
+      --chart-text:     #666666;
       --gold:           var(--c-yellow-ink);
       /* text-safe inks: dark maps them to the -ink shades; light uses
          the deeper -deep shades so status text stays ≥4.5:1 on paper */

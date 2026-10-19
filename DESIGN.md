@@ -2,7 +2,9 @@
 
 > **مدارك** — منصّة تعليم ذكي مستقلّة عربية-أولًا · the design canon as it ships in code.
 
-> **R191 «رحلة المعرفة»** (the current direction): R190 established the Turion-derived *tokens* (electric-violet accent — light `#6C4AE0` · dark `#9A5CFF`, both AA-verified; **Alexandria** display voice; near-square radius ladder 2–6px; the `--stage-*` void family; Plex Mono micro-labels). R191 adds what the operator actually demanded — the reference's **observed mechanics**: a scroll-choreography engine (`useScrollStage` — one rAF-coalesced `--sp` per stage, zero React renders per scroll tick; CSS calc derives every motion), a **pinned 700vh mega-stage** (radial knowledge map SVG + six crossfading narrative scenes + capability bar + scroll-bound rotation), a **pinned honest stat march** (numbers computed from the code), **parallax vision + quote + footer wordmark** layers, and the reference's measured **mobile/reduced-motion strategy** (no pinning — frames stack in flow, every scene readable). Copy gates: the operator-rejected wording («صُنعت في ليبيا», «ما يُشحن اليوم») is pinned OUT of every user-facing surface (`r168b`). Full measurements + mapping: `docs/design/r191-turion-fidelity-spec.md` · R190 analysis: `docs/design/r190-reference-matrix.md`.
+> **R191 «رحلة المعرفة»** (the current direction): R190 established the Turion-derived *tokens* (teal accent — light `#027380` · dark `#2FB6C6`, both AA-verified; was electric-violet until the r195 re-key; **Alexandria** display voice; near-square radius ladder 2–6px; the `--stage-*` void family; Plex Mono micro-labels). R191 adds what the operator actually demanded — the reference's **observed mechanics**: a scroll-choreography engine (`useScrollStage` — one rAF-coalesced `--sp` per stage, zero React renders per scroll tick; CSS calc derives every motion), a **pinned 700vh mega-stage** (radial knowledge map SVG + six crossfading narrative scenes + capability bar + scroll-bound rotation), a **pinned honest stat march** (numbers computed from the code), **parallax vision + quote + footer wordmark** layers, and the reference's measured **mobile/reduced-motion strategy** (no pinning — frames stack in flow, every scene readable). Copy gates: the operator-rejected wording («صُنعت في ليبيا», «ما يُشحن اليوم») is pinned OUT of every user-facing surface (`r168b`). Full measurements + mapping: `docs/design/r191-turion-fidelity-spec.md` · R190 analysis: `docs/design/r190-reference-matrix.md`.
+
+> **R195 (egn.university re-key)**: the palette re-keys to the egn reference — light accent `#027380` / dark accent `#2FB6C6`, cool-gray ramps (light ground `#F7F7F7` · ink `#333333`; dark ground `#0A0A0A` · ink `#F2F2F2`); every violet/cream/indigo value quoted below is retired (pins + export pair re-synced in the same change).
 
 This document states the canon as it **ships in code**. Every value below was extracted from `frontend/src/styles/` at the audited tree (r131/r132) — not from specs (those carry plan-time values, kept as archaeology) and not from memory. When this file and `tokens.css` disagree, `tokens.css` wins; file an issue.
 
@@ -14,7 +16,7 @@ A design reference is gates, not a gallery. Madarek's canon is machine-enforced 
 
 | Gate | Command | What it asserts |
 |---|---|---|
-| **Parity export** | `node scripts/verify-parity-export.mjs` | **165/165 token checks** (163 before the r185 half-rung pins) — the export pair distills `tokens.css` faithfully; headline pins (night `#070B16`, violet `#9A5CFF`/`#6C4AE0`, cream `#FBFAF9`, sand `#F2EFE6` — the r190 accent swap updated pins + export pair together, documented in the CHECKS table) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · 43 retired values absent · brace balance. |
+| **Parity export** | `node scripts/verify-parity-export.mjs` | **165/165 token checks** (163 before the r185 half-rung pins) — the export pair distills `tokens.css` faithfully; headline pins (r195 egn re-key: night `#0A0A0A`, teal `#027380`/`#2FB6C6`, light ground `#F7F7F7`, ink `#333333`/`#F2F2F2` — the r195 palette swap updated pins + export pair together, documented in the CHECKS table) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · 42 retired values absent (r195: `#2A2A2A` legitimized as the canonical dark hairline) · brace balance. |
 | **Motion tokens** | `npm run check:motion-tokens` | No raw motion values outside the canonical token files. |
 | **Icon discipline** | `npm run check:icons` | Lucide-only — no other icon source. |
 | **Color tokens** | `npm run check:colors` (`--strict` in CI) | No raw hex/rgb()/hsl() outside the sanctioned zones (tokens.css · fonts.css · the export pair · documented `color-gate: allow` lines). r150a sorted the last 269 literals into tokens / `color-mix()` derivations / documented allows — the census is zero and the gate is strict. |
@@ -56,7 +58,7 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 
 ## 1. Two worlds — عالمان
 
-**r190: ONE identity across the public + product surfaces.** The marketing surface and the product speak the same grammar — violet accent, Alexandria display, near-square geometry, telemetry markers — with the landing alone painting the theme-FIXED stage family (`--stage-*`, the void media surface: hero + mission-control chrome), while the landing's BODY sections and the whole product follow the canonical two-theme grounds (cream light / night dark), driven by the one shared ThemeToggle/theme store (no second theme state anywhere).
+**r190: ONE identity across the public + product surfaces.** The marketing surface and the product speak the same grammar — teal accent (r195), Alexandria display, near-square geometry, telemetry markers — with the landing alone painting the theme-FIXED stage family (`--stage-*`, the void media surface: hero + mission-control chrome), while the landing's BODY sections and the whole product follow the canonical two-theme grounds (white/gray light / near-black dark), driven by the one shared ThemeToggle/theme store (no second theme state anywhere).
 
 ### 1a. «مدار المعرفة» — the landing world (الواجهة التعريفية, r190)
 
@@ -64,32 +66,32 @@ The landing paints a **theme-fixed media stage** + theme-following body:
 
 | Layer | Tokens | Notes |
 |---|---|---|
-| Stage ground | `--stage-ink #05070F` · `--stage-ink-2 #0D1428` | the void under the hero/chrome, BOTH themes (a media surface, not a theme rebellion — AA-verified pair below) |
-| Stage text | `--stage-cream #F2EFE6` (16.9:1) · `--stage-cream-dim #C3C8DC` (9:1) | the stage's own ink/cream pair |
-| Stage accent | `--stage-violet #9A5CFF` (5:1) | the dark-theme accent value, fixed on the stage |
-| Stage edges | `--stage-line` / `--stage-line-soft` | cream-alpha hairlines (16%/7%) |
-| Atmospheric stops | `--aura-violet` / `--aura-violet-deep` / `--aura-horizon` (per theme) | the radial-illumination vocabulary for hero/proof/CTA scenes |
+| Stage ground | `--stage-ink #0E0E0E` · `--stage-ink-2 #171717` | the void under the hero/chrome, BOTH themes (a media surface, not a theme rebellion — AA-verified pair below) |
+| Stage text | `--stage-cream #FFFFFF` (18.9:1) · `--stage-cream-dim #B3B3B3` (8.7:1) | the stage's own ink pair (r195: the cream text values died with the cream) |
+| Stage accent | `--stage-accent #2FB6C6` (8.1:1) | the dark-theme accent value, fixed on the stage (r195 rename: was `--stage-violet`) |
+| Stage edges | `--stage-line` / `--stage-line-soft` | white-alpha hairlines (16%/7%) |
+| Atmospheric stops | `--aura-accent` / `--aura-accent-deep` / `--aura-horizon` (per theme) | the radial-illumination vocabulary for hero/proof/CTA scenes (r195 rename: was `--aura-violet`) |
 | Original art | `/brand/hero-scene.webp` (95 KB) · `/brand/orbit-ring.webp` (66 KB) | AI-art-directed abstract scenes — no text, no logos, no real-place imagery (QA-verified); the r188 photography ban's intent (no real-university imagery) holds |
 | Orbit path | `components/landing/OrbitPath.tsx` | one thin trajectory line + one glowing node, drawn once on load (reduced-motion static) — the icon-gate's documented landing-scene zone |
-| Telemetry strip | mono 11px + 7px violet square markers | honest counts computed from the LEDGER data (never typed) |
+| Telemetry strip | mono 11px + 7px teal square markers | honest counts computed from the LEDGER data (never typed) |
 | Body sections | canonical `var(--bg)`/`var(--text)`/`var(--rule)` + `--accent` | stations/roles/manifesto/media/footer follow the active theme — the two-theme system, same as the product |
-| Focus | ONE language, token-routed | `.fo-header/.fo-hero/.fo-mobile-menu { --state-focus-ring-color: var(--stage-violet); }` — the universal outline (base.css) consumes the re-pointed token; zero private outline rules in landing.css (the r172a contract holds, re-pinned r162 test) |
+| Focus | ONE language, token-routed | `.fo-header/.fo-hero/.fo-mobile-menu { --state-focus-ring-color: var(--stage-accent); }` — the universal outline (base.css) consumes the re-pointed token; zero private outline rules in landing.css (the r172a contract holds, re-pinned r162 test) |
 | Progress ribbon | `transform: scaleX(var(--p, 0))` + `--accent` (stage-routed) | GPU-composited; the `--accent` token resolves to its stage expression inside `.fo-progress` |
-| Proof section | violet band + 22px dot matrix at 12% accent | «ما يُشحن اليوم» — the reference's «Operating today» moment, honest statuses only |
+| Proof section | teal band + 22px dot matrix at 12% accent | «ما يُشحن اليوم» — the reference's «Operating today» moment, honest statuses only |
 
-### 1b. Product theme — violet-on-cream light · violet-on-night dark (هوية المنتج، r190)
+### 1b. Product theme — teal-on-gray light · teal-on-night dark (هوية المنتج، r195)
 
 | Token | Light | Dark |
 |---|---|---|
-| accent `--accent` | violet `#6C4AE0` (**5.46:1**) | violet `#9A5CFF` (**5.01:1**) |
-| accent ink `-ink` | `#4B2FB0` (8.66:1) | `#9A5CFF` (5.01:1) |
-| accent soft | `#ECE5FB` | `#241D40` |
-| accent strong / ring | `#4B2FB0` (8.66:1) | `#B085FF` (7.14:1) |
-| accent on-fill `-fg` | `#FFFFFF` (5.46:1 on violet) | `#0A0614` (4.75:1 on violet) |
-| primary `--primary` | ink slab `#191918` (the reference's light-section CTA) | **white slab `#FFFFFF`** (the void CTA) |
+| accent `--accent` | teal `#027380` (**4.64:1**) | teal `#2FB6C6` (**8.1:1**) |
+| accent ink `-ink` | `#014A52` (9.06:1) | `#2FB6C6` (8.1:1) |
+| accent soft | `#E0F2F3` | `#174A52` |
+| accent strong / ring | `#014A52` (9.06:1) | `#7FCED9` (11.1:1) |
+| accent on-fill `-fg` | `#FFFFFF` (AA on teal) | `#061417` (7.7:1 on teal) |
+| primary `--primary` | ink slab `#333333` (the reference's light-section CTA) | **white slab `#FFFFFF`** (the void CTA) |
 | achievement family | `--gold` = copper/yellow inks (badges, streaks, gamification) | same — copper/gold is NO LONGER the chrome accent (r190) |
 
-**9 pastel section families** `--c-{peach,mint,lavender,sky,yellow,rose,sand,grey,copper}-{bg,ink,deep}` — light grounded on cream (e.g. copper `#F4E4D2`/`#B57438`/`#5C3416`, mint `#DCF1E2`/`#4FA66D`/`#1F4F30`), dark **re-grounded on night** (copper `#2C2312`/`#E9B44C`/`#F5D48A`, mint `#0F241C`/`#7FD39A`/`#C9EAD3` …). Status **text** uses the `-ink`/`-deep` tiers (AA); **fills** keep base tokens. Chart palette `--chart-1..8` (**violet** (r190: series 1 = the accent) /mint/sky/rose/lavender + gold/teal/mauve, theme-lifted) — data points render as SQUARE markers (chart.js `pointStyle: 'rect'`, r190) and bars at 2px radius.
+**9 pastel section families** `--c-{peach,mint,lavender,sky,yellow,rose,sand,grey,copper}-{bg,ink,deep}` — light grounded on near-white gray (r195: e.g. copper `#ECE4D2`/`#9A7438`/`#5C3416`, mint `#E0F2F3`/`#027380`/`#014A52`), dark **re-grounded on the egn night** (copper `#2A2313`/`#D8AE5C`/`#F0D89C`, mint `#0E2324`/`#2FB6C6`/`#7FCED9` …). Status **text** uses the `-ink`/`-deep` tiers (AA); **fills** keep base tokens. Chart palette `--chart-1..8` (**teal** (r195: series 1 = the accent) /mint/sky/rose/lavender + gold/teal/mauve, theme-lifted) — data points render as SQUARE markers (chart.js `pointStyle: 'rect'`, r190) and bars at 2px radius.
 
 ---
 
@@ -190,13 +192,13 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 
 | Component | Recipe |
 |---|---|
-| **Button** | 40px · 13px (`--type-label-size`) · 600 · r-md 10px · press `scale(.97)` @80 · primary: ink fill (light `#191918` / fg `#FBFAF9`) + sheen `::before` + premium shadow, hover −2px + `--shadow-card-premium-h` · disabled .55 · no letter-spacing |
+| **Button** | 40px · 13px (`--type-label-size`) · 600 · r-md 10px · press `scale(.97)` @80 · primary: ink fill (light `#333333` / fg `#FFFFFF`) + sheen `::before` + premium shadow, hover −2px + `--shadow-card-premium-h` · disabled .55 · no letter-spacing |
 | **Input** | 44px · `max(16px, 15px)` iOS floor · r-md 10 · focus = accent border + **3px 22% halo** (`--state-input-focus-halo`) + AA `:focus-visible` ring · placeholder `--text-faint` · disabled .6 / not-allowed / surface-2 |
 | **Dialog** | `min(560px, 100%)` · r-xl 16 · `--elev-4` · top accent-gradient hairline (3px, inset-inline 30%) · title 22/700 · pop 240ms decel · overlay .40/.62 + fade 240 |
 | **Sheet** | `min(420px, 100%)` · r-2xl 20 **leading edge only (logical)** · `--elev-4` · z 300 · 240ms decel slide · scrim blur 4px · grabber |
 | **Toast** | **bottom-end** stack (20px inset) · max `min(420px, 100vw − 24px)` · 28px tone-icon well (soft bg + `-ink` icon) · in 240 decel / out 160 accel · swipe-dismiss · z 500 · **error toasts dismiss manually** |
 | **Empty state** | `.state-icon` **56×56 grey well** (`--c-grey-bg`/`-deep`, r-xl) · icon 20 · title **18px / 700** · desc 13 muted 42ch · actionable default copy · opt-in 160px illustration · **≤640px** (r166b): padding sp-6/sp-4, well 44px, illustration 120px |
-| **Sidebar** | 256px (64 collapsed) · item min-30px · r-sm 8 · active = wash bg + **3×16px role-accent bar at inline-start −3px** + 240ms pop · night: **violet wash** `rgb(154 92 255 / 0.16)` (r190 — was gold) |
+| **Sidebar** | 256px (64 collapsed) · item min-30px · r-sm 8 · active = wash bg + **3×16px role-accent bar at inline-start −3px** + 240ms pop · night: **teal wash** `rgb(47 182 198 / 0.16)` (r195 — was violet, gold before that) |
 | **KPI card** | min-block **132px** · value **30px / 700 `tnum lnum`** lh 1.10 · label 12/600 muted · icon well **44px** r-lg + 1.5px role-accent rim (30%) · hover −2px · **semantic `color` prop** (r166b): `green/amber/red/purple/gold` override the icon well + leading edge via the pastel families (badge grammar — `--c-*-bg` well + both-theme-safe `*-ink` glyph, 3:1+ both themes); value/label text never change color |
 | **Table** | wrap r-xl + rule border · thead **12px** / 600 / muted (no tracking, no transform — Arabic) on **surface-2** · body 13px · **zebra-on-hover** (`tr:hover → surface-2`) — hover shift, *not* static stripes · last row borderless · pagination 44px targets · **≤640px ladder** (r151b): `tbl-stack` + per-td `data-label` → row-cards (label at inline-start, first-read RTL); a plain `.table` keeps its layout and self-scrolls — never squishes, never drags the page; pagination cluster wraps |
 | **Spinner** | 22px · 2px · top arc neutral-900 (light) / accent (dark) · **700ms linear** (sm 14px) |
@@ -226,9 +228,9 @@ Arabic is the first-class direction; LTR is the port.
 
 - **Themes:** light default + `[data-theme="dark"]` — both fully specified (§1b); no "auto-only" surface. **r172a/r190: the landing is a first-class two-theme surface** — the shared `ThemeToggle` (فاتح · داكن · تلقائي) mounts in the landing header (labeled mobile-menu row ≤640px); the hero + chrome paint the theme-FIXED `--stage-*` family (a media surface), the body sections follow `var(--bg)`/`var(--text)`, and no second theme state exists anywhere.
 - **Role accents:** `body[data-role]` — 7 roles × 2 themes, hexes **pinned by token-snapshot tests**; college accent slot carries a runtime contrast gate.
-- **Contrast tiers:** status/badge text always uses the `-ink`/`-deep` tier of its pastel family (AA); fills keep base tokens. Light-mode icon wells use the **`-ink` tier** (r131 hardening: 6.98–9.02:1; dark untouched). Landing stage text (`--stage-cream-dim #C3C8DC`) clears **9:1** on the stage ink (r190, axe-verified live).
+- **Contrast tiers:** status/badge text always uses the `-ink`/`-deep` tier of its pastel family (AA); fills keep base tokens. Light-mode icon wells use the **`-ink` tier** (r131 hardening: 6.98–9.02:1; dark untouched). Landing stage text (`--stage-cream-dim #B3B3B3`) clears **8.7:1** on the stage ink (r195 values; axe-verified live at r190).
 - **`prefers-contrast: more`:** elevations become rings, borders strengthened, glass de-blurred, illustration strokes 1.5 → 2.
-- **Focus rings — ONE language (r172a → r190):** the universal `:where()` 2px/2px ring owns EVERY control — it consumes `--state-focus-ring-color` (light `#4B2FB0` / dark `#B085FF`, both AA); the landing's stage chrome TOKEN-ROUTES the same token to `--stage-violet` inside `.fo-header/.fo-hero/.fo-mobile-menu` (no private outline rule anywhere — r162 pin).
+- **Focus rings — ONE language (r172a → r195):** the universal `:where()` 2px/2px ring owns EVERY control — it consumes `--state-focus-ring-color` (light `#014A52` / dark `#7FCED9`, both AA); the landing's stage chrome TOKEN-ROUTES the same token to `--stage-accent` inside `.fo-header/.fo-hero/.fo-mobile-menu` (no private outline rule anywhere — r162 pin).
 - **Reduced motion:** full kill-belt in `base.css` + token zeroing (§3) — motion never survives RM; direction mirroring does.
 
 ---
