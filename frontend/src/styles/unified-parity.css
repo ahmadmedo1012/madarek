@@ -240,14 +240,14 @@
     /* ─── Type roles — role-locked semantic typography ────────────── */
     --type-display-size-md:        var(--fs-display-md);   /* 28..40px */
     --type-display-weight:         var(--fw-black);        /* → 700 */
-    --type-display-line-height:    1.14;
+    --type-display-line-height:    1.28;
     --type-display-letter-spacing: var(--ls-normal);       /* 0 */
 
     --type-headline-size-lg:        var(--fs-h1);          /* 30px */
     --type-headline-size-md:        var(--fs-h2);          /* 22px */
     --type-headline-size-sm:        var(--fs-h3);          /* 18px */
     --type-headline-weight:         var(--fw-bold);        /* 700 */
-    --type-headline-line-height:    var(--lh-snug);        /* 1.20 */
+    --type-headline-line-height:    1.34;
     --type-headline-letter-spacing: var(--ls-normal);      /* 0 */
 
     --type-body-size:           var(--fs-body);            /* 15px */
@@ -471,7 +471,7 @@
      ══════════════════════════════════════════════════════════════════ */
   [data-theme="dark"] {
     /* one more leading step for light-on-dark display text */
-    --type-display-line-height: 1.14;   /* r190: Alexandria display leading */
+    --type-display-line-height: 1.32;   /* r192: Alexandria display leading — measured-safe */
 
     /* inverted neutral ramp — the indigo night */
     --neutral-0:   #0D1428;

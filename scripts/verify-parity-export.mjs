@@ -339,7 +339,7 @@ const CHECKS = [
   ['root', '--fs-xxs', '11px', 'divergent revision invented 10px here'],
   ['root', '--fs-chrome', '0.875rem', 'fleet chrome step 14px (r133 fleet accord — canonized r140)'],
   ['root', '--fs-h1', '34px', 'r190 Alexandria display scale'],
-  ['root', '--type-display-line-height', '1.14', 'r190 Alexandria display leading'],
+  ['root', '--type-display-line-height', '1.28', 'r192 measured-safe Arabic display leading'],
   // ── :root primitives — layout ──
   ['root', '--sidebar-w', '256px', 'divergent revision fallback: 260px'],
   ['root', '--content-max-w', '1280px', 'content measure'],
@@ -484,7 +484,7 @@ const CHECKS = [
     '0 12px 32px rgba(2,4,12,0.66),0 32px 80px rgba(2,4,12,0.70),0 0 0 1px rgba(142,151,184,0.12)',
     'indigo shadow + mist hairline',
   ],
-  ['dark', '--type-display-line-height', '1.14', 'dark display leading (r190)'],
+  ['dark', '--type-display-line-height', '1.32', 'dark display leading (r192: one step over light)'],
   ['dark', '--state-focus-ring-color', '#b085ff', 'canonical cascade: dark ring → accent-strong (r190)'],
 ];
 
