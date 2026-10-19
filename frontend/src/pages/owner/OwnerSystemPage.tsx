@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Server, Clock, AlertTriangle, Activity, RefreshCw, Settings, CheckCircle2, ChevronDown, HardDrive } from 'lucide-react';
-import { Card, MetricCard, Badge, AlertRow } from '../../components/primitives';
+import { AlertTriangle, RefreshCw, Settings, CheckCircle2, ChevronDown, HardDrive } from 'lucide-react';
+import { Card, Badge, AlertRow } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import { EmptyState, ErrorState, TableSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { ToggleSwitch } from '../../components/owner/ToggleSwitch';
@@ -173,8 +174,7 @@ export function OwnerSystemPage() {
   // On error the service card turns into an honest error chip; other
   // values show "—" for unknown (never a fake number, never green).
   const serviceValue = sys.isError ? 'تعذّر الاتصال' : sysData ? 'متصل' : '…';
-  const serviceColor: 'red' | 'green' | 'brand' = sys.isError ? 'red' : sysData ? 'green' : 'brand';
-  const unknownValue = sys.isError ? '—' : '…';
+    const unknownValue = sys.isError ? '—' : '…';
 
   return (
     <div className="page">
@@ -193,27 +193,35 @@ export function OwnerSystemPage() {
       </header>
 
       {/* Real metrics — service health derives from the live query state */}
-      <div className="grid-4">
-        <MetricCard icon={Server} label="حالة الخدمة" value={serviceValue} color={serviceColor} />
-        <MetricCard
-          icon={Clock}
-          label="آخر مزامنة"
-          value={sysData ? formatRelative(sysData.sync.lastRunAt) : unknownValue}
-          color="brand"
-        />
-        <MetricCard
-          icon={AlertTriangle}
-          label="تنبيهات حرجة مفتوحة"
-          value={sysData ? sysData.alerts.criticalCount.toLocaleString('ar-LY') : unknownValue}
-          color={sysData ? (sysData.alerts.criticalCount > 0 ? 'red' : 'green') : 'brand'}
-        />
-        <MetricCard
-          icon={Activity}
-          label="أحداث آخر 7 أيام"
-          value={sysData ? sysData.activity.recentEventsLast7Days.toLocaleString('ar-LY') : unknownValue}
-          color="purple"
-        />
-      </div>
+      <StatStrip
+        ariaLabel="مؤشرات حالة النظام"
+        cells={[
+          {
+            label: 'حالة الخدمة',
+            value: serviceValue,
+            trend: 'من حالة الاستعلام الحيّ',
+            trendTone: sysData ? (sysData.alerts.criticalCount > 0 ? 'down' : 'up') : 'flat',
+          },
+          {
+            label: 'آخر مزامنة',
+            value: sysData ? formatRelative(sysData.sync.lastRunAt) : unknownValue,
+            trend: 'مع المصدر الرسميّ',
+            trendTone: 'flat',
+          },
+          {
+            label: 'تنبيهات حرجة مفتوحة',
+            value: sysData ? sysData.alerts.criticalCount.toLocaleString('ar-LY') : unknownValue,
+            trend: sysData ? (sysData.alerts.criticalCount > 0 ? 'تستوجب قرارًا' : 'لا شيء حرجًا') : 'بانتظار البيانات',
+            trendTone: sysData ? (sysData.alerts.criticalCount > 0 ? 'down' : 'up') : 'flat',
+          },
+          {
+            label: 'أحداث آخر 7 أيام',
+            value: sysData ? sysData.activity.recentEventsLast7Days.toLocaleString('ar-LY') : unknownValue,
+            trend: 'سجلّ تشغيليّ',
+            trendTone: 'flat',
+          },
+        ]}
+      />
 
       {/* r164-i: upload-storage truthfulness — the state of the PDF
           upload substrate, straight from the /owner/system payload's

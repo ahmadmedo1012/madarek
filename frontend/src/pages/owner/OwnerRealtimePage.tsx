@@ -1,5 +1,6 @@
-import { Radio, Bot, MonitorPlay, FileCheck, Activity, RefreshCw } from 'lucide-react';
-import { Card, MetricCard } from '../../components/primitives';
+import { Radio, RefreshCw } from 'lucide-react';
+import { Card } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useOwnerRealtime, useOwnerAlerts } from '../../hooks/useOwner';
@@ -119,12 +120,12 @@ export function OwnerRealtimePage() {
               values remount (keyed) so each change re-settles.
               r149 (R3-A1 #9): grid-4 الكنونية — كانت شبكة خاصة بفجوة
               وكسر مختلفين عن كل شرائط KPI في المنصة. */}
-          <section className="grid-4" aria-live="polite" aria-label="مؤشرات المراقبة الحيّة للمنصّة">
-            <MetricCard icon={Activity} label={liveLabel('الجلسات النشطة')} value={tickValue(data.activeSessions, 'الجلسات النشطة')} color="brand" />
-            <MetricCard icon={Bot} label={liveLabel('طلبات AI / دقيقة')} value={tickValue(data.aiRequestsPerMin, 'طلبات AI / دقيقة')} color="gold" />
-            <MetricCard icon={MonitorPlay} label={liveLabel('بثّ مباشر')} value={tickValue(data.liveBroadcasts, 'بثّ مباشر')} color="purple" />
-            <MetricCard icon={FileCheck} label={liveLabel('اختبارات جارية')} value={tickValue(data.activeExams, 'اختبارات جارية')} color="green" />
-          </section>
+          <section role="status" aria-live="polite"><StatStrip ariaLabel="مؤشرات المراقبة الحيّة للمنصّة" cells={[
+            { label: liveLabel('الجلسات النشطة'), value: tickValue(data.activeSessions, 'الجلسات النشطة'), trend: 'حيّ', trendTone: 'flat' },
+            { label: liveLabel('طلبات AI / دقيقة'), value: tickValue(data.aiRequestsPerMin, 'طلبات AI / دقيقة'), trend: 'حيّ', trendTone: 'flat' },
+            { label: liveLabel('بثّ مباشر'), value: tickValue(data.liveBroadcasts, 'بثّ مباشر'), trend: 'حيّ', trendTone: 'flat' },
+            { label: liveLabel('اختبارات جارية'), value: tickValue(data.activeExams, 'اختبارات جارية'), trend: 'حيّ', trendTone: 'flat' },
+          ]} /></section>
 
           <Card title="ملخّص النشاط الحيّ" icon={Radio}>
             {/* r151b (R5-A4): the 23 sibling tables all ship a .table-wrap

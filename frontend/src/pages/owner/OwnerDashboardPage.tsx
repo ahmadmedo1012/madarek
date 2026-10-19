@@ -1,6 +1,6 @@
 import {
-  Users, Activity, BookOpen, GraduationCap, ShieldCheck, FileWarning,
-  Clock, Radio, AlertTriangle, Settings, RefreshCw, ArrowLeft,
+  Users, GraduationCap, ShieldCheck, FileWarning,
+  Clock, Radio, AlertTriangle, Settings, RefreshCw,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -8,9 +8,10 @@ import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
-import { Card, MetricCard } from '../../components/primitives';
+import { Card, Badge } from '../../components/primitives';
+import { StatStrip, LedgerPanel, LedgerRow } from '../../components/primitives/Ledger';
 import { useReducedMotion } from '../../components/motion';
-import { EmptyState, ErrorState, PageSkeleton, TableSkeleton, KpiSkeleton, CardSkeleton, StripSkeleton, Skeleton } from '../../components/primitives/States';
+import { EmptyState, ErrorState, PageSkeleton, TableSkeleton, CardSkeleton, StripSkeleton, Skeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { radialOptions, chartPalette, useChartThemeKey } from '../../lib/chartTheme';
@@ -96,11 +97,6 @@ interface OwnerActionRow {
   hint: string;
 }
 
-const OWNER_ACTION_TONE_INK: Record<OwnerActionRow['tone'], string> = {
-  amber: 'var(--warning-ink)',
-  brand: 'var(--accent-ink, var(--accent))',
-};
-
 const CRITICAL_ALERT_FORMS: [string, string, string, string] = [
   'تنبيه حرج واحد', 'تنبيهان حرجان', 'تنبيهات حرجة', 'تنبيهاً حرجاً',
 ];
@@ -164,33 +160,27 @@ function OwnerActionStrip({ alerts }: { alerts: OperationalAlert[] }) {
   }
 
   if (rows.length === 0) return null;
+  // The rose zone rides ONLY the amber tone (any critical open alert)
+  // — the brand default keeps the calm band (the 5-D3 tone contract).
+  const anyAmber = rows.some((r) => r.tone === 'amber');
   return (
-    <Card
+    <LedgerPanel
       title="يحتاج انتباهك"
-      icon={AlertTriangle}
-      subtitle={countAr(rows.length, ['بند واحد', 'بندان', 'بنود', 'بنداً'])}
+      zone={anyAmber ? 'rose' : undefined}
+      tag={countAr(rows.length, ['بند واحد', 'بندان', 'بنود', 'بنداً'])}
+      ariaLabel="حالات تحتاج انتباهك"
     >
-      <div className="flex-col gap-2">
-        {rows.map((r) => (
-          <Link
-            key={r.key}
-            to={r.to}
-            className={`alert ${r.tone}`}
-            title={r.hint}
-            style={{ textDecoration: 'none' }}
-          >
-            <span style={{ color: OWNER_ACTION_TONE_INK[r.tone], marginTop: 'var(--sp-0-5)' }}>
-              <Icon icon={r.icon} size={16} />
-            </span>
-            <div className="alert-body">
-              <div className="alert-title">{r.title}</div>
-              <div className="alert-desc">{r.desc}</div>
-            </div>
-            <Icon icon={ArrowLeft} size={14} style={{ color: 'var(--text-muted)', marginTop: 'var(--sp-0-5)' }} />
-          </Link>
-        ))}
-      </div>
-    </Card>
+      {rows.map((r) => (
+        <LedgerRow
+          key={r.key}
+          to={r.to}
+          leadLabel={r.tone === 'amber' ? 'حرج' : 'انتباه'}
+          title={r.title}
+          subtitle={r.desc}
+          tail={<Badge color={r.tone === 'amber' ? 'red' : 'brand'}>{r.tone === 'amber' ? 'مستعجل' : 'معلّق'}</Badge>}
+        />
+      ))}
+    </LedgerPanel>
   );
 }
 
@@ -269,7 +259,17 @@ export function OwnerDashboardPage() {
           <span className="status-text">جارٍ جلب حالة التنبيهات…</span>
         </div>
         <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />
-        <KpiSkeleton />
+        <div className="stat-strip" aria-busy="true">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="stat-cell">
+              <Skeleton width={70} height={11} />
+              <div style={{ marginBlock: 'var(--sp-1)' }}>
+                <Skeleton width={90} height={28} />
+              </div>
+              <Skeleton width={120} height={11} />
+            </div>
+          ))}
+        </div>
         <div className="grid-2-1">
           <Card title="توزيع المستخدمين">
             <Skeleton width="100%" height={348} rounded="var(--r-lg)" />
@@ -361,6 +361,9 @@ export function OwnerDashboardPage() {
         <div className="page-title-block">
           <h1 className="page-title">لوحة التحكم الرئيسية</h1>
           <p className="page-subtitle">نظرة شاملة وإحصائيات حيّة عن المنصة</p>
+          <p className="page-header-meta">
+            {new Date().toLocaleDateString('ar-LY', { weekday: 'long', day: 'numeric', month: 'long' })} · قياس مباشر من قاعدة البيانات
+          </p>
         </div>
       </header>
 
@@ -373,18 +376,36 @@ export function OwnerDashboardPage() {
           we" (5-B4's admin ordering). */}
       <OwnerActionStrip alerts={alerts} />
 
-      {/* Metric Cards — every value comes from the API. 22-b (4-A7
-          P2-3): the second grid-2 strip (طلبات AI + تنبيهات مفتوحة)
-          folded away — six identical tiles flattened the page's
-          hierarchy; the AI rate now lives in the health list below and
-          the alert count is already carried by the status band +
-          «حالة المنصة» row, so no signal was lost. */}
-      <div className="grid-4">
-        <MetricCard icon={Users} label="إجمالي المستخدمين" value={<bdi>{data.totalUsers.toLocaleString('ar-LY')}</bdi>} color="brand" />
-        <MetricCard icon={Activity} label="الجلسات النشطة" value={<bdi>{realtimeData.activeSessions.toLocaleString('ar-LY')}</bdi>} color="green" />
-        <MetricCard icon={BookOpen} label="المقرّرات الدراسية" value={<bdi>{data.totalCourses.toLocaleString('ar-LY')}</bdi>} color="purple" />
-        <MetricCard icon={GraduationCap} label="إجمالي التسجيلات" value={<bdi>{data.totalEnrollments.toLocaleString('ar-LY')}</bdi>} color="gold" />
-      </div>
+      {/* R189 — the typographic stat strip (was the grid-4 tiles). */}
+      <StatStrip
+        ariaLabel="إحصائيات المنصّة"
+        cells={[
+          {
+            label: 'إجمالي المستخدمين',
+            value: <bdi>{data.totalUsers.toLocaleString('ar-LY')}</bdi>,
+            trend: `${data.students.toLocaleString('ar-LY')} طالبًا · ${data.teachers.toLocaleString('ar-LY')} أستاذًا`,
+            trendTone: 'flat',
+          },
+          {
+            label: 'الجلسات النشطة',
+            value: <bdi>{realtimeData.activeSessions.toLocaleString('ar-LY')}</bdi>,
+            trend: 'في هذه اللحظة',
+            trendTone: 'flat',
+          },
+          {
+            label: 'المقرّرات الدراسية',
+            value: <bdi>{data.totalCourses.toLocaleString('ar-LY')}</bdi>,
+            trend: `${data.totalOfferings.toLocaleString('ar-LY')} شعبة تدريس فاعلة`,
+            trendTone: 'flat',
+          },
+          {
+            label: 'إجمالي التسجيلات',
+            value: <bdi>{data.totalEnrollments.toLocaleString('ar-LY')}</bdi>,
+            trend: 'تسجيلات مقرّرات تراكمية',
+            trendTone: 'flat',
+          },
+        ]}
+      />
 
       {/* Chart + Operational status */}
       <div className="grid-2-1">

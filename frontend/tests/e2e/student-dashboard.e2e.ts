@@ -17,21 +17,18 @@ test.describe('لوحة تحكم الطالب', () => {
 
     // التحية من الساعة المجمدة (10:00 UTC → «صباح الخير») + الاسم من
     // جلسة mdrk-auth المبذورة.
-    // r168a: اللوحة تفتح مخططها بهويتها — h1 للقراء فقط (sr-only)
-    // والتحية البطولية h2 (بنفس صنف page-title). r183-B6: الاسم
-    // محاذٍ لعنوان الشريط/التبويب — «لوحة التحكم» (كان «لوحة
-    // الطالب» فاختلف عن ما يسمعه/يراه المستخدم في الشريط).
-    const srTitle = page.locator('h1.sr-only');
-    await expect(srTitle).toHaveText('لوحة التحكم');
-    const title = page.locator('h2.page-title');
-    await expect(title).toContainText(GREETING_RE);
-    await expect(title).toContainText('أحمد');
+    /* R189 re-pin: the masthead — h1 carries the nav-label identity
+       («لوحة التحكم»، r183-B6 contract), the greeting + name + faculty
+       ride the subtitle, and the KPI row is the typographic stat strip. */
+    const h1 = page.locator('h1.page-title');
+    await expect(h1).toHaveText('لوحة التحكم');
+    const subtitle = page.locator('.page-subtitle').first();
+    await expect(subtitle).toContainText(GREETING_RE);
+    await expect(subtitle).toContainText('أحمد');
+    await expect(subtitle).toContainText('كلية الهندسة');
 
-    // سطر الكلية/القسم من profile الوهمي.
-    await expect(page.locator('.page-subtitle').first()).toContainText('كلية الهندسة');
-
-    // صفّ KPI — التسميات الأربع الحقيقية (الأرقام تتظاهر عبر CountIn).
-    for (const label of ['مقررات نشطة', 'نسبة الحضور', 'مهام معلّقة', 'نقاط الإنجاز']) {
+    // صفّ المؤشرات — التسميات الخمس الحقيقية (الأرقام تتظاهر عبر CountIn).
+    for (const label of ['المعدل التراكمي', 'نسبة الحضور', 'مهام معلّقة', 'نقاط الإنجاز', 'إنجاز المقرّرات']) {
       await expect(page.getByText(label, { exact: true })).toBeVisible();
     }
   });
@@ -53,14 +50,18 @@ test.describe('لوحة تحكم الطالب', () => {
   test('الأجندة تعرض حصص اليوم/الغد والمهمة القادمة مع تسمية الموعد', async ({ page }) => {
     await page.goto('/student/dashboard');
 
-    await expect(page.getByRole('heading', { name: 'المهام والفصول القادمة' })).toBeVisible();
+    /* R189 re-pin: the agenda is the TODAY ledger + the week ledger.
+       حصة اليوم تقود سجلّ اليوم؛ والمهمة بعد 3 أيام تسكن سجلّ الأسبوع. */
+    await expect(page.getByRole('heading', { name: 'جدول اليوم' })).toBeVisible();
+    await expect(page.getByText('المهام والفصول القادمة', { exact: true })).toHaveCount(0);
 
-    const agenda = page.locator('.dash-agenda-list');
-    // حصة اليوم — التسمية الحرفية «اليوم» من DAY_LABEL.
-    const todayRow = agenda.locator('.dash-agenda-item', { hasText: 'مقدمة في الخوارزميات' });
+    // حصة اليوم — في سجلّ اليوم، التسمية الحرفية «اليوم» من DAY_LABEL.
+    const todayRow = page.locator('.ledger-row', { hasText: 'مقدمة في الخوارزميات' });
     await expect(todayRow).toContainText('اليوم');
-    // مهمة بعد 3 أيام — formatDue على ساعة مجمّدة.
-    const taskRow = agenda.locator('.dash-agenda-item', { hasText: 'واجب الأسبوع الثالث' });
+    // مهمة بعد 3 أيام — formatDue على ساعة مجمّدة، في سجلّ الأسبوع.
+    const week = page.locator('.ledger', { hasText: 'أسبوعك القادم' });
+    await expect(week).toBeVisible();
+    const taskRow = week.locator('.week-item', { hasText: 'واجب الأسبوع الثالث' });
     await expect(taskRow).toContainText('بعد 3 أيام');
     // صف الأجندة هو نفسه الرابط (PP-X2 audit P1-8 — Link على مستوى الصف).
     await expect(todayRow).toHaveAttribute('href', '/student/courses/offr_e2e_algorithms');

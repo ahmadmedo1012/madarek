@@ -112,11 +112,13 @@ describe('OwnerDashboardPage — action strip (5-D3)', () => {
      * pending StripSkeleton carries the static identity), so awaiting
      * the title no longer proves the rows landed — await the ROW
      * itself (only the resolved strip renders it). */
-    // Amber tone (any critical severity open) + the counted critical pair.
+    /* R189 re-pin: the strip is a ledger panel — the amber tone rides
+     * the panel's zone-rose head, the row is the link (LedgerRow). */
     const row = (await screen.findByText('تنبيهات تشغيليّة مفتوحة')).closest('a');
     expect(row).not.toBeNull();
-    expect(row).toHaveClass('alert', 'amber');
+    expect(row).toHaveClass('ledger-row-link');
     expect(row).toHaveAttribute('href', '/owner/alerts');
+    expect(row!.closest('.ledger')).toHaveClass('zone-rose');
     expect(screen.getByText(/تنبيهان مفتوحان — منها تنبيه حرج واحد/)).toBeInTheDocument();
   });
 
@@ -127,10 +129,12 @@ describe('OwnerDashboardPage — action strip (5-D3)', () => {
     renderDashboard();
 
     const row = (await screen.findByText('تنبيهات تشغيليّة مفتوحة')).closest('a');
-    expect(row).toHaveClass('alert', 'brand');
-    // No critical pair to call out — the desc is the plain counted noun
-    // (the status band above carries the same count; scope to the row).
-    expect(row!.querySelector('.alert-desc')).toHaveTextContent('تنبيه مفتوح واحد');
+    expect(row).toHaveClass('ledger-row-link');
+    // No critical pair → no rose zone (the brand default).
+    expect(row!.closest('.ledger')).not.toHaveClass('zone-rose');
+    // The plain counted noun (the status band above carries the same
+    // count; scope to the row's subtitle).
+    expect(row!.querySelector('.ledger-what small')).toHaveTextContent('تنبيه مفتوح واحد');
   });
 
   it('surfaces idle teachers from the education payload, linking to the education page', async () => {
@@ -142,7 +146,7 @@ describe('OwnerDashboardPage — action strip (5-D3)', () => {
 
     const row = (await screen.findByText('أساتذة بلا حصص تدريس هذا الفصل')).closest('a');
     expect(row).not.toBeNull();
-    expect(row).toHaveClass('alert', 'brand');
+    expect(row).toHaveClass('ledger-row-link');
     expect(row).toHaveAttribute('href', '/owner/education');
     expect(screen.getByText(/أستاذان لم تُسند إليهم مقرّرات/)).toBeInTheDocument();
   });

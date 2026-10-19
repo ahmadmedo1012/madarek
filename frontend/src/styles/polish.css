@@ -708,12 +708,27 @@
   }
 
   /* ── Page-header rhythm refinement ──────────────────────────── */
+  /* R189 «سجلّ مدارك» masthead: the page opener is now an editorial
+     masthead — the 2px INK rule (not a faint hairline; the VLM
+     direction trial's strongest single mark, /home/z/probes/preview)
+     plus deeper breathing under it. Every route inherits this through
+     the PageHeader primitive; dashboards additionally pass the mono
+     `meta` line (date/week context — data, never a decorative
+     eyebrow: the meta renders only when a page supplies real facts). */
   .page-header {
-    /* base.css set padding-block-end to var(--sp-5); we keep that breathing
-       room and just add a hairline rule for cleaner section separation. */
-    padding-block-end: var(--sp-4);
-    border-block-end: 1px solid color-mix(in srgb, var(--rule) 50%, transparent);
-    margin-block-end: var(--sp-2);
+    /* base.css set padding-block-end to var(--sp-5); the masthead
+       tightens to the rule and gives the gap to the margin below. */
+    padding-block-end: var(--sp-3);
+    border-block-end: var(--sp-0-5) solid var(--text);
+    margin-block-end: var(--sp-4);
+    row-gap: var(--sp-1);
+  }
+  .page-header-meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    margin: 0;
+    margin-block-start: var(--sp-1);
   }
   /* (r153f: the v8 welcome-card hairline exemption moved home to
      student.css §WELCOME-CARD — the family's only consumer is the

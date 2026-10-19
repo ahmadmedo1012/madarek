@@ -189,7 +189,10 @@ Run once with production DATABASE_URL:
 DATABASE_URL='...' JWT_ACCESS_SECRET='...' JWT_REFRESH_SECRET='...' npm run db:seed
 ```
 
-Demo accounts (password `Madarek2026!` — re-seeding resets it):
+Demo accounts (the seed's dev-only shared password lives in `seed.ts` —
+a local-build fixture; production accounts carry per-account rotated
+secrets since r189, delivered privately — never reseed production to
+change credentials):
 - `student@demo.madarek.ly` → STUDENT (أحمد الزروق)
 - `teacher@demo.madarek.ly` → TEACHER (د. سالم البوسيفي)
 - `admin@demo.madarek.ly` → ADMIN (إدارة الجامعة)

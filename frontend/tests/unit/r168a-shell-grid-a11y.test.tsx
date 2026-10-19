@@ -142,18 +142,20 @@ describe('r168a — destructive row actions are danger-tinted ghosts', () => {
 });
 
 describe('r168a — student dashboard leads its outline with its identity', () => {
-  it('sr-only h1 «لوحة التحكم» + greeting demoted to h2', () => {
+  it('R189 re-pin: the visible masthead h1 leads every header state (identity first)', () => {
     const page = stripJsx(read('src/pages/student/DashboardPage.tsx'));
-    // r183-B6 (A4 P3-7): the identity string moved from «لوحة الطالب»
-    // to «لوحة التحكم» — h1 must equal resolveTitle('/student/dashboard')
-    // (the nav label the topbar and document.title already carry).
-    expect(page).toContain('<h1 className="sr-only">لوحة التحكم</h1>');
-    // All four header states (skeleton/error/preview/main) share it.
-    expect(page.match(/<h1 className="sr-only">لوحة التحكم<\/h1>/g)?.length).toBe(4);
-    expect(page).toMatch(/<h2 className="page-title">\s*\{greeting\}/);
-    // The v8 hero is untouched: welcome-card + its title classes remain.
-    expect(page).toContain('page-header welcome-card');
-    expect(page).not.toMatch(/<h1 className="page-title">/);
+    /* R189 «سجلّ مدارك»: the identity is now the VISIBLE masthead h1 —
+       the r168a sr-only + welcome-hero form died with the hero banner
+       (the r189 VLM trial: the greeting hero was dead weight). The h1
+       must still equal resolveTitle('/student/dashboard')'s nav label
+       world («لوحة …»), and every header state (pending/error/preview/
+       main) shares it. */
+    expect(page).toContain('<h1 className="page-title">لوحة التحكم</h1>');
+    expect(page.match(/<h1 className="page-title">لوحة التحكم<\/h1>/g)?.length).toBe(4);
+    // The greeting rides the masthead subtitle (never a heading).
+    expect(page).not.toMatch(/<h2 className="page-title">/);
+    // The welcome-hero is gone: no welcome-card anywhere.
+    expect(page).not.toContain('welcome-card');
   });
 });
 

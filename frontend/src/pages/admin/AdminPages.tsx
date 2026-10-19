@@ -1,15 +1,10 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import {
-  Building2, GraduationCap, School, BookOpen,
-  BarChart3, FileText, Users, TrendingUp,
-  Award, Microscope, ClipboardCheck,
-  AlertTriangle, Database, Search, X,
-  ChevronLeft, ChevronRight, ChevronDown, ArrowLeft,
-  Plus, Trash2, type LucideIcon,
-} from 'lucide-react';
+import { Building2, GraduationCap, BookOpen, BarChart3, FileText, Users, TrendingUp, Award, Microscope, ClipboardCheck, AlertTriangle, Database, Search, X, ChevronLeft, ChevronRight, ChevronDown, ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Card, MetricCard, Badge, Tabs, UserAvatar, AlertRow, FormField } from '../../components/primitives';
+import { StatStrip, LedgerPanel, LedgerRow } from '../../components/primitives/Ledger';
 import {
   EmptyState, ErrorState,
   KpiSkeleton, CardSkeleton, TableSkeleton, StripSkeleton, Skeleton,
@@ -141,11 +136,6 @@ interface ActionRow {
   hint: string;
 }
 
-const ACTION_TONE_INK: Record<ActionRow['tone'], string> = {
-  amber: 'var(--warning-ink)',
-  brand: 'var(--accent-ink, var(--accent))',
-};
-
 /**
  * The dashboard's "what needs a decision" list. Every row is built from
  * a count the ADMIN role can actually fetch — the audit's original
@@ -224,32 +214,23 @@ function ActionStrip() {
 
   if (rows.length === 0) return null;
   return (
-    <Card
+    <LedgerPanel
       title="يحتاج انتباهك"
-      icon={AlertTriangle}
-      subtitle={countAr(rows.length, ['بند واحد', 'بندان', 'بنود', 'بنداً'])}
+      zone="rose"
+      tag={countAr(rows.length, ['بند واحد', 'بندان', 'بنود', 'بنداً'])}
+      ariaLabel="حالات تحتاج انتباهك"
     >
-      <div className="flex-col gap-2">
-        {rows.map((r) => (
-          <Link
-            key={r.key}
-            to={r.to}
-            className={`alert ${r.tone}`}
-            title={r.hint}
-            style={{ textDecoration: 'none' }}
-          >
-            <span style={{ color: ACTION_TONE_INK[r.tone], marginTop: 'var(--sp-0-5)' }}>
-              <Icon icon={r.icon} size={16} />
-            </span>
-            <div className="alert-body">
-              <div className="alert-title">{r.title}</div>
-              <div className="alert-desc">{r.desc}</div>
-            </div>
-            <Icon icon={ArrowLeft} size={14} style={{ color: 'var(--text-muted)', marginTop: 'var(--sp-0-5)' }} />
-          </Link>
-        ))}
-      </div>
-    </Card>
+      {rows.map((r) => (
+        <LedgerRow
+          key={r.key}
+          to={r.to}
+          leadLabel={r.tone === 'brand' ? 'نشر' : 'انتباه'}
+          title={r.title}
+          subtitle={r.desc}
+          tail={<Badge color={r.tone === 'brand' ? 'brand' : 'amber'}>{r.tone === 'brand' ? 'جاهز' : 'معلّق'}</Badge>}
+        />
+      ))}
+    </LedgerPanel>
   );
 }
 
@@ -282,7 +263,17 @@ export function AdminDashboardPage() {
           </div>
         </header>
         <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />
-        <KpiSkeleton />
+        <div className="stat-strip" aria-busy="true">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="stat-cell">
+              <Skeleton width={70} height={11} />
+              <div style={{ marginBlock: 'var(--sp-1)' }}>
+                <Skeleton width={90} height={28} />
+              </div>
+              <Skeleton width={120} height={11} />
+            </div>
+          ))}
+        </div>
         <div className="grid-2-1" style={{ marginBlockStart: 'var(--sp-9)' }}>
           <Card title="توزّع الطلاب حسب الكلّيّة">
             <Skeleton width="100%" height={174} rounded="var(--r-lg)" />
@@ -343,6 +334,9 @@ export function AdminDashboardPage() {
         <div className="page-title-block">
           <h1 className="page-title">لوحة الإدارة</h1>
           <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة المنصّة.</p>
+          <p className="page-header-meta">
+            {new Date().toLocaleDateString('ar-LY', { weekday: 'long', day: 'numeric', month: 'long' })} · {countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])} · حساب لحظيّ
+          </p>
         </div>
       </header>
 
@@ -350,46 +344,41 @@ export function AdminDashboardPage() {
           dashboard answers "what needs me" before "how big are we". */}
       <ActionStrip />
 
-      {/* 5-A8 §6 step 3 / P1-3: every KPI answers its follow-up question
-          in one click (§5 rows 1-4 — all FE-only, all pre-existing routes). */}
-      <div className="grid-4">
-        <MetricCard
-          icon={Building2}
-          label="الكلّيّات"
-          value={facultyCount.toLocaleString('ar-LY')}
-          change={`موزّعة على ${countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`}
-          color="brand"
-          to="/admin/faculties"
-          actionHint="عرض الكلّيّات وأقسامها"
-        />
-        <MetricCard
-          icon={GraduationCap}
-          label="الطلاب"
-          value={s.totalStudents.toLocaleString('ar-LY')}
-          change="مسجَّل في النظام"
-          color="green"
-          to="/admin/students"
-          actionHint="عرض قائمة الطلاب"
-        />
-        <MetricCard
-          icon={School}
-          label="هيئة التدريس"
-          value={s.totalTeachers.toLocaleString('ar-LY')}
-          change="عضو"
-          color="amber"
-          to="/admin/teachers"
-          actionHint="عرض إدارة الأساتذة"
-        />
-        <MetricCard
-          icon={BookOpen}
-          label="المقرّرات"
-          value={s.totalCourses.toLocaleString('ar-LY')}
-          change={countAr(s.totalEnrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'])}
-          color="purple"
-          to="/admin/courses"
-          actionHint="عرض إدارة المقرّرات"
-        />
-      </div>
+      {/* R189 — the typographic stat strip (was the grid-4 KPI tiles);
+          every cell still answers its follow-up in one click. */}
+      <StatStrip
+        ariaLabel="إحصائيات المؤسّسة"
+        cells={[
+          {
+            label: 'الكلّيّات',
+            value: facultyCount.toLocaleString('ar-LY'),
+            trend: `موزّعة على ${countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`,
+            trendTone: 'flat',
+            to: '/admin/faculties',
+          },
+          {
+            label: 'الطلاب',
+            value: s.totalStudents.toLocaleString('ar-LY'),
+            trend: 'مسجَّل في النظام',
+            trendTone: 'flat',
+            to: '/admin/students',
+          },
+          {
+            label: 'هيئة التدريس',
+            value: s.totalTeachers.toLocaleString('ar-LY'),
+            trend: studentTeacherRatio !== null ? `نسبة ${studentTeacherRatio.toLocaleString('ar-LY', { minimumFractionDigits: 1 })} طالب لكل أستاذ` : 'عضو',
+            trendTone: 'flat',
+            to: '/admin/teachers',
+          },
+          {
+            label: 'المقرّرات',
+            value: s.totalCourses.toLocaleString('ar-LY'),
+            trend: countAr(s.totalEnrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً']),
+            trendTone: 'flat',
+            to: '/admin/courses',
+          },
+        ]}
+      />
 
       {/* 5-A8 §6 step 6 (rhythm): the charts row is the page's breathing
           section — 88px above it vs the KPI strip's 40px (taste.md:
@@ -771,12 +760,15 @@ export function AdminFacultiesPage() {
     <div className="page">
       <PageHeader title="الكلّيّات والأقسام" subtitle="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية." />
 
-      <div className="grid-4">
-        <MetricCard icon={Building2} label="عدد الكلّيّات" value={data.length} color="brand" />
-        <MetricCard icon={School} label="عدد الأقسام" value={totalDepts} color="purple" />
-        <MetricCard icon={GraduationCap} label="إجمالي الطلاب" value={totalStudents.toLocaleString('ar-LY')} color="green" />
-        <MetricCard icon={Users} label="هيئة التدريس" value={totalTeachers.toLocaleString('ar-LY')} color="amber" />
-      </div>
+      <StatStrip
+        ariaLabel="إحصائيات الكلّيّات والأقسام"
+        cells={[
+          { label: 'الكلّيّات', value: data.length.toLocaleString('ar-LY'), trend: 'في هذه المؤسّسة', trendTone: 'flat' },
+          { label: 'الأقسام', value: totalDepts.toLocaleString('ar-LY'), trend: 'عبر الكلّيّات', trendTone: 'flat' },
+          { label: 'إجمالي الطلاب', value: totalStudents.toLocaleString('ar-LY'), trend: 'مسجَّلون', trendTone: 'flat' },
+          { label: 'هيئة التدريس', value: totalTeachers.toLocaleString('ar-LY'), trend: 'أعضاء', trendTone: 'flat' },
+        ]}
+      />
 
       {/* 5-A8 §6 step 6 (rhythm): the directory is the page's primary
           section — it takes the breath after the KPI band. */}

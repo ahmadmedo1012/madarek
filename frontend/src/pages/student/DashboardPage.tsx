@@ -1,28 +1,34 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Doughnut } from 'react-chartjs-2';
 import {
-  Chart as ChartJS, ArcElement, Tooltip, Legend,
-} from 'chart.js';
-import {
-  GraduationCap, Presentation, FileText, FlaskConical,
-  BookOpen, CalendarCheck, ClipboardList, Trophy, Radio,
-  Play, ChevronLeft, Eye, ClipboardCheck,
+  Presentation, FileText, FlaskConical,
+  ClipboardList, Radio,
+  Play, Eye, ClipboardCheck,
   type LucideIcon,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Card, Badge, MetricCard, ProgressBar } from '../../components/primitives';
-import { ErrorState, EmptyState, KpiSkeleton, CardSkeleton, ListSkeleton, Skeleton } from '../../components/primitives/States';
-import { ChartFrame } from '../../components/charts';
+import { Badge } from '../../components/primitives';
+import {
+  ErrorState, EmptyState, ListSkeleton, Skeleton,
+} from '../../components/primitives/States';
+import { StatStrip, ProgressRing, LedgerPanel, LedgerRow, WeekRow } from '../../components/primitives/Ledger';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useStudentDashboard, useResume, useTrainingCatalog } from '../../hooks/useResources';
-import { useChartThemeKey, chartColors, radialOptions } from '../../lib/chartTheme';
-import { ASSIGNMENT_KIND_LABEL, EXAM_KIND_LABEL } from '../../lib/courseMeta';
+import { EXAM_KIND_LABEL } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+/* ═══════════════════════════════════════════════════════════════════
+   R189 «سجلّ مدارك» — the student dashboard speaks the ledger language
+   (the VLM direction trial's winner, /home/z/probes/preview):
+   masthead → TODAY ledger (the hero: the student's actual commitments,
+   not a greeting banner) → momentum ring (continue learning) → the
+   typographic stat strip (no icon-box KPI grid) → the week ledger.
+   The pure helpers below (classWhenMs / safeMs / examAgendaRow /
+   pickTrainingResume) keep their exported contracts — the unit pins
+   (DashboardPage-agenda / -exams-resume) stay byte-identical.
+   ═══════════════════════════════════════════════════════════════ */
 
 /**
  * Greeting that adapts to the local hour. Calm, conversational.
@@ -44,10 +50,6 @@ const ASSIGNMENT_ICON: Record<'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM', LucideIc
   PROJECT: FlaskConical,
   EXAM: FileText,
 };
-
-/* ASSIGNMENT_KIND_LABEL (the assignment-kind Arabic labels) lives in
- * lib/courseMeta.ts — the 13-15 fold of this page's ASSIGNMENT_LABEL
- * and CourseDetailPage's TYPE_LABELS (values byte-identical). */
 
 const DAY_LABEL: Record<'today' | 'tomorrow', string> = {
   today: 'اليوم',
@@ -73,24 +75,16 @@ function formatDue(iso: string): string {
 }
 
 /* r158 (6A14 P2) — agenda chronology. The agenda used to concatenate
- * its three sources BY KIND, so a live broadcast could render below
- * tomorrow's class. Every item now carries a numeric whenMs and the
- * merged list sorts ascending by it. Both helpers are PURE (exported
- * for tests/unit/DashboardPage-agenda.test.ts) and never return NaN:
- *   - classWhenMs anchors today/tomorrow to the slot's own startTime;
- *     a malformed time falls back to END-OF-DAY (23:59:59.999 of the
- *     SAME day — after every well-formed slot of that day, before the
- *     next day). Empty parts ("", "09:", "9") and out-of-range values
- *     fail the guard below, so the result is never NaN.
- *   - safeMs parses ISO dates (dueAt / scheduledAt); a malformed string
- *     sorts LAST (MAX_SAFE_INTEGER — no parseable ISO exceeds it). */
+ * per-kind buckets; these helpers anchor every row to a real instant
+ * so the merged stream sorts ascending (the week ledger keeps that
+ * truth). Exported for tests/unit/DashboardPage-agenda.test.ts. */
 export function classWhenMs(
-  slot: { when: 'today' | 'tomorrow'; startTime: string },
+  c: { when: 'today' | 'tomorrow'; startTime: string },
   now: Date = new Date(),
 ): number {
-  const day = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  if (slot.when === 'tomorrow') day.setDate(day.getDate() + 1);
-  const parts = slot.startTime.split(':');
+  const day = new Date(now);
+  if (c.when === 'tomorrow') day.setDate(day.getDate() + 1);
+  const parts = c.startTime.split(':');
   const h = Number(parts[0]);
   const m = Number(parts[1]);
   const wellFormed =
@@ -145,11 +139,11 @@ export function examAgendaRow(e: AgendaExamSource): ExamAgendaRow {
   };
 }
 
-function gpaTone(gpa: number): { label: string; color: 'green' | 'amber' | 'red' } {
-  if (gpa >= 3.5) return { label: 'ممتاز', color: 'green' };
-  if (gpa >= 3.0) return { label: 'جيد جدّاً', color: 'green' };
-  if (gpa >= 2.0) return { label: 'جيد', color: 'amber' };
-  return { label: 'بحاجة لتحسين', color: 'red' };
+function gpaTone(gpa: number): { label: string; color: 'green' | 'amber' | 'red'; trend: 'up' | 'down' | 'flat' } {
+  if (gpa >= 3.5) return { label: 'ممتاز', color: 'green', trend: 'up' };
+  if (gpa >= 3.0) return { label: 'جيد جدّاً', color: 'green', trend: 'up' };
+  if (gpa >= 2.0) return { label: 'جيد', color: 'amber', trend: 'flat' };
+  return { label: 'بحاجة لتحسين', color: 'red', trend: 'down' };
 }
 
 /**
@@ -239,14 +233,7 @@ type AgendaItem = {
  * enrollments at all — the next honest action is the training track the
  * student is partway through (edX's "resume" promise, extended to the
  * self-development surface). Pure (exported for
- * tests/unit/DashboardPage-exams-resume.test.ts):
- *  · candidates = enrolled && !isCompleted tracks, in catalog order;
- *  · a track with completedLessons > 0 is a true CONTINUE — the most
- *    advanced one wins (the nearest finish line is the strongest
- *    next-action signal);
- *  · otherwise the FIRST unstarted enrolled track is a START nudge;
- *  · no candidates → null → the hero renders nothing, exactly like the
- *    lecture half. */
+ * tests/unit/DashboardPage-exams-resume.test.ts). */
 export interface TrainingResumeTrack {
   slug: string;
   title: string;
@@ -284,13 +271,12 @@ export function pickTrainingResume(
   };
 }
 
-/* PP-X2 (audit P0-3) — the continue-learning hero. The PRIMARY action
- * of the dashboard: one click from cold-open to the exact second the
- * student left off (GET /me/resume). null → renders nothing; a pending
- * query renders its own ~88px skeleton so the rest of the dashboard
- * never waits on it. r164-c: when the lecture payload is null, the
- * hero falls through to the TRAINING arm above — the card never
- * silently disappears while a self-development track is mid-flight. */
+/* ── The momentum hero (PP-X2 / audit P0-3) — R189 ledger anatomy ──
+ * The continue-learning surface: a real progress ring (the data the
+ * VLM trial stole from direction B), the title + chips + ONE dominant
+ * CTA. Keeps the honest branch ladder: pending → own-footprint
+ * skeleton; error → the retry grammar; null+null → nothing (the
+ * training arm answers first). */
 function ResumeHero({
   resume,
   training,
@@ -299,30 +285,24 @@ function ResumeHero({
   training: ReturnType<typeof useTrainingCatalog>;
 }) {
   if (resume.isPending) {
-    // The card's own skeleton — same footprint as the loaded card, so
-    // the KPI row below doesn't shift when the resume payload lands.
-    // r172b: 88 → 176 — the loaded card measures 176px in the live
-    // geometry lab; the 88px claim was stale (the hero grew across
-    // rounds), and every resolve re-paid an 88px push. Both this and
-    // the page-level mirror skeleton render 176 so the whole chain —
-    // page pending → page resolved (hero pending) → hero loaded — is
-    // height-stable end to end.
-    // r174: the 176px pin was DESKTOP-only — the phone card stacks the
-    // full-width CTA under the text (224px live), so every mobile
-    // resolve still pushed the KPI row 48px. The footprint now rides
-    // the section class per breakpoint (student.css .dash-resume-pending)
-    // and the bar fills it (height 100%).
+    /* The momentum-shaped skeleton — same footprint as the loaded row
+       (ring 112 + paddings ≈ 176px block), so the TODAY ledger above
+       and the stat strip below never shift when the payload lands. */
     return (
-      <section className="dash-resume dash-resume-pending" aria-busy="true">
-        <Skeleton width="100%" height="100%" rounded="var(--r-xl)" />
+      <section className="momentum dash-resume-pending" aria-busy="true">
+        <Skeleton width="112px" height="112px" rounded="var(--r-full)" />
+        <div className="momentum-info" style={{ flex: 1 }}>
+          <Skeleton width="52%" height="18" />
+          <Skeleton width="78%" height="12" />
+          <Skeleton width="40%" height="11" />
+        </div>
       </section>
     );
   }
   /* r157 (W2-F7): honest error branch — a failed /me/resume used to
    * render NOTHING here (the `!r` return swallowed the query error),
    * so the dashboard's PRIMARY action silently vanished on a network
-   * blip. Same grammar as the player's completion-report retry
-   * (.lecture-report-retry: role=alert + retry + escape hatch). */
+   * blip. Same grammar as the player's completion-report retry. */
   if (resume.isError) {
     return (
       <section className="dash-resume">
@@ -342,71 +322,94 @@ function ResumeHero({
   }
   const r = resume.data;
   if (!r) {
-    // r164-c — lecture half empty: the training arm. A pending catalog
-    // renders nothing yet (the card pops in when the payload lands —
-    // the hero is above the fold and the KPI row never depended on it);
-    // an error or no candidates renders nothing, same as before.
+    // r164-c — lecture half empty: the training arm.
     const t = training.data ? pickTrainingResume(training.data) : null;
     if (!t) return null;
     return (
-      <section className="dash-resume" aria-label="أكمل من حيث توقفت">
-        <Card className="dash-resume-card">
-          <div className="dash-resume-main">
-            <div className="dash-eyebrow">أكمل من حيث توقفت</div>
-            <div className="dash-resume-course">
-              <span className="dash-resume-course-name">{t.title}</span>
-              <Badge>تطوير ذاتي</Badge>
-            </div>
-            <div className="dash-resume-lecture">
-              {t.started
-                ? `مسار بدأته وأنجزت ${t.progressPct}% من دروسه — أكمل الدرس التالي.`
-                : 'مسار سجّلت فيه ولم تبدأه بعد — ابدأه من الدرس الأول.'}
-            </div>
-            {t.started && (
-              <div className="dash-resume-progress">
-                <ProgressBar value={t.progressPct} label="تقدّم المسار" ariaLabel="نسبة إنجاز المسار التدريبي المتوقّف" />
-              </div>
-            )}
+      <section className="momentum" aria-label="أكمل من حيث توقفت">
+        <ProgressRing
+          value={t.started ? t.progressPct : 0}
+          ariaLabel={t.started ? `تقدّم المسار التدريبي: ${t.progressPct}%` : 'مسار لم يبدأ بعد'}
+          center={
+            <>
+              <b>{t.progressPct}%</b>
+              <small>من المسار</small>
+            </>
+          }
+        />
+        <div className="momentum-info">
+          <h2 className="momentum-title">{t.title}</h2>
+          <p className="momentum-sub">
+            {t.started
+              ? `مسار بدأته وأنجزت ${t.progressPct}% من دروسه — أكمل الدرس التالي.`
+              : 'مسار سجّلت فيه ولم تبدأه بعد — ابدأه من الدرس الأول.'}
+          </p>
+          <div className="momentum-actions">
+            <Link to={`/training/${t.slug}`} className="btn primary">
+              <Icon icon={Play} size={15} />
+              {t.started ? 'متابعة المسار' : 'ابدأ المسار'}
+            </Link>
+            <Link to="/training" className="btn ghost">كل المسارات</Link>
           </div>
-          <Link
-            to={`/training/${t.slug}`}
-            className="btn primary dash-resume-cta"
-          >
-            <Icon icon={Play} size={15} />
-            {t.started ? 'متابعة المسار' : 'ابدأ المسار'}
-          </Link>
-        </Card>
+        </div>
       </section>
     );
   }
   const continuing = r.mode === 'continue';
+  const ringPct = continuing ? r.progressPct : 0;
   return (
-    <section className="dash-resume" aria-label="أكمل من حيث توقفت">
-      <Card className="dash-resume-card">
-        <div className="dash-resume-main">
-          <div className="dash-eyebrow">أكمل من حيث توقفت</div>
-          <div className="dash-resume-course">
-            <span className="dash-resume-course-name">{r.lecture.course.name}</span>
-            <Badge><bdi className="font-mono">{r.lecture.course.code}</bdi></Badge>
-          </div>
-          <div className="dash-resume-lecture">
-            المحاضرة <bdi>{r.lecture.ordinal}</bdi> · {r.lecture.title}
-          </div>
-          {continuing && (
-            <div className="dash-resume-progress">
-              <ProgressBar value={r.progressPct} label="تقدّم المشاهدة" ariaLabel="نسبة مشاهدة المحاضرة المتوقّفة" />
-            </div>
-          )}
+    <section className="momentum" aria-label="أكمل من حيث توقفت">
+      <ProgressRing
+        value={ringPct}
+        ariaLabel={
+          continuing
+            ? `تقدّم مشاهدة المحاضرة المتوقّفة: ${r.progressPct}%`
+            : 'المحاضرة الأولى لم تُشاهد بعد'
+        }
+        center={
+          <>
+            <b>{ringPct}%</b>
+            <small>من المحاضرة</small>
+          </>
+        }
+      />
+      <div className="momentum-info">
+        <h2 className="momentum-title">
+          {r.lecture.course.name} · المحاضرة <bdi>{r.lecture.ordinal}</bdi>
+        </h2>
+        <p className="momentum-sub">{r.lecture.title}</p>
+        <div className="momentum-chips">
+          <span className="chip"><bdi className="font-mono">{r.lecture.course.code}</bdi></span>
+          {continuing && <span className="chip">متابعة من حيث توقفت</span>}
         </div>
-        <Link
-          to={`/student/lectures/${r.lecture.id}`}
-          className="btn primary dash-resume-cta"
-        >
-          <Icon icon={Play} size={15} />
-          {continuing ? 'متابعة المحاضرة' : 'ابدأ أول محاضرة'}
-        </Link>
-      </Card>
+        <div className="momentum-actions">
+          <Link to={`/student/lectures/${r.lecture.id}`} className="btn primary">
+            <Icon icon={Play} size={15} />
+            {continuing ? 'متابعة المحاضرة' : 'ابدأ أول محاضرة'}
+          </Link>
+          <Link to="/student/courses" className="btn ghost">كل المقرّرات</Link>
+        </div>
+      </div>
     </section>
+  );
+}
+
+/* The TODAY ledger row grammar — one row per commitment, bold kind
+ * label in the mono lead + content + honest status pill. The row is
+ * the link (PP-X2 P1-8); the time detail rides the subtitle. */
+function TodayRow({ item }: { item: AgendaItem }) {
+  return (
+    <LedgerRow
+      to={item.to}
+      leadLabel={
+        item.kind === 'class' ? 'محاضرة' :
+        item.kind === 'live' ? 'بثّ مباشر' :
+        item.kind === 'exam' ? 'اختبار' : 'تسليم'
+      }
+      title={item.title}
+      subtitle={item.meta}
+      tail={item.tone === 'red' ? <Badge color="red">عاجل</Badge> : item.tone === 'accent' ? <Badge>اليوم</Badge> : <Badge color="gold">قادم</Badge>}
+    />
   );
 }
 
@@ -415,72 +418,51 @@ export default function StudentDashboardPage() {
   const greeting = useGreeting();
   const dash = useStudentDashboard();
   // Independent of the dashboard aggregate — the hero renders (or not)
-  // the moment ITS payload lands, and never blocks the KPIs above.
+  // the moment ITS payload lands, and never blocks the strip below.
   const resume = useResume();
   // r164-c: the training catalog feeds the hero's second arm (only
   // consulted when the lecture payload is null — see pickTrainingResume).
   const trainingCatalog = useTrainingCatalog();
-  // Remounts every Chart.js canvas when the light/dark theme flips, so
-  // canvas colours are re-resolved instead of staying stale.
-  const themeKey = useChartThemeKey();
 
   if (dash.isPending) {
-    /* r172b (loading closure): a MIRROR skeleton — the resolved page
-       leads with the welcome header, the ResumeHero card, the KPI row,
-       the dash-hero-row premium pair, the term card, then the agenda.
-       The old skeleton had NO resume slot (the hero mounted late and
-       pushed the KPI row 233px down) and its CardSkeletons didn't
-       match the premium pair's 218px boxes. Every slot below renders
-       the resolved section's class + footprint, so the pending →
-       resolved handoff moves nothing (skeletons stay the single
-       loading owner — zero spinners, zero splash). */
+    /* R189 loading mirror — the resolved page leads with the masthead,
+       the TODAY ledger, the momentum hero, the stat strip, then the
+       week ledger. Every slot below renders the resolved section's
+       class + approximate footprint, so the pending → resolved
+       handoff moves nothing (the r172b loading-closure contract,
+       re-mirrored for the ledger anatomy). */
     return (
       <div className="page student-dashboard" aria-busy="true" aria-live="polite">
-        {/* r168a: family alignment — every dashboard's outline leads
-            with its identity (لوحة الأستاذ / لوحة الإدارة…) while the
-            student h1 was the personal greeting alone. sr-only h1 keeps
-            the v8 welcome-card hero pixels untouched (the gradient
-            greeting is .page-title class-driven, tag-agnostic) and the
-            visible greeting drops to h2, matching the family's
-            title + greeting hierarchy. */}
-        <header className="page-header welcome-card">
-          <h1 className="sr-only">لوحة التحكم</h1>
-          <h2 className="page-title">{greeting}، {user?.firstName ?? '…'}</h2>
+        <header className="page-header">
+          <h1 className="page-title">لوحة التحكم</h1>
           <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
         </header>
-        {/* ResumeHero slot — the resolved card's full footprint (the
-            hero's own pending skeleton renders the same per-breakpoint
-            block-size, see ResumeHero above). */}
-        <section className="dash-resume dash-resume-pending" aria-busy="true">
-          <Skeleton width="100%" height="100%" rounded="var(--r-xl)" />
-        </section>
-        <KpiSkeleton />
-        {/* dash-hero-row slot — the two premium cards' footprints, per
-            breakpoint (r174: r172b's flat 168px-inner boxes were the
-            DESKTOP pair; the phone/tabl resolved pair is asymmetric —
-            the compact GPA card and the stacked-doughnut progress card —
-            so each slot carries its own block-size in student.css). */}
-        <section className="dash-hero-row" aria-busy="true">
-          <div className="card card-glass-premium dash-hero-slot dash-hero-slot-gpa">
-            <Skeleton width="100%" height="100%" rounded="var(--r-xl)" />
-          </div>
-          <div className="card card-glass-premium dash-hero-slot dash-hero-slot-progress">
-            <Skeleton width="100%" height="100%" rounded="var(--r-xl)" />
+        <ListSkeleton rows={3} />
+        <section className="momentum dash-resume-pending" aria-busy="true">
+          <Skeleton width="112px" height="112px" rounded="var(--r-full)" />
+          <div className="momentum-info" style={{ flex: 1 }}>
+            <Skeleton width="52%" height="18" />
+            <Skeleton width="78%" height="12" />
+            <Skeleton width="40%" height="11" />
           </div>
         </section>
-        {/* Below-fold slots (term card + agenda) — no CLS stake, kept
-            for scroll-position honesty. */}
-        <CardSkeleton lines={3} />
-        <ListSkeleton rows={4} />
+        <div className="stat-strip" aria-busy="true">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="stat-cell">
+              <Skeleton width={70} height={11} />
+              <Skeleton width={56} height={28} />
+            </div>
+          ))}
+        </div>
+        <ListSkeleton rows={3} />
       </div>
     );
   }
   if (dash.isError || !dash.data) {
     return (
       <div className="page student-dashboard">
-        <header className="page-header welcome-card">
-          <h1 className="sr-only">لوحة التحكم</h1>
-          <h2 className="page-title">{greeting}، {user?.firstName ?? '…'}</h2>
+        <header className="page-header">
+          <h1 className="page-title">لوحة التحكم</h1>
         </header>
         <ErrorState
           message="تعذَّر تحميل لوحة التحكّم"
@@ -498,16 +480,13 @@ export default function StudentDashboardPage() {
   if (d.preview || !d.profile) {
     return (
       <div className="page student-dashboard">
-        <header className="page-header welcome-card">
-          <h1 className="sr-only">لوحة التحكم</h1>
-          <h2 className="page-title">{greeting}، {user?.firstName ?? ''}</h2>
+        <header className="page-header">
+          <h1 className="page-title">لوحة التحكم</h1>
           <p className="page-subtitle">
             معاينة لوحة الطالب — يحتاج هذا العرض إلى ملف طالب فعليّ.
           </p>
         </header>
-        <Card>
-          {/* r149 (R3-A1 #6): EmptyState الكنونية — كانت فقرة مجردة بلا
-              تشريح (لا بئر، لا عنوان، لا role=status). */}
+        <div className="card">
           <EmptyState
             icon={Eye}
             title="عرض معاينة"
@@ -515,15 +494,13 @@ export default function StudentDashboardPage() {
               user?.role === 'OWNER' ? 'مالك المنصّة' : 'إداريّ'
             }، لذلك تظهر لك صفحة معاينة فارغة. للاطّلاع على لوحة طالب حقيقيّة، استخدم حساب طالب مسجَّل أو زر صفحة كلّيّة من قائمة الكلّيّات.`}
           />
-        </Card>
+        </div>
       </div>
     );
   }
 
   const tone = gpaTone(d.profile.gpa);
   const courseProgressPct = d.progress.avgEnrollmentProgressPct;
-  const remainingPct = Math.max(0, 100 - courseProgressPct);
-  const cc = chartColors();
 
   // Compose the agenda from three real sources, then merge them into
   // ONE chronological stream — ascending whenMs (r158 6A14 P2: the old
@@ -536,7 +513,7 @@ export default function StudentDashboardPage() {
       kind: 'class', id: `c-${c.id}`,
       whenMs: classWhenMs(c),
       to: `/student/courses/${c.offeringId}`,
-      title: `${c.courseName}${c.room ? ` — ${c.room}` : ''}`,
+      title: <>{c.courseName}{c.room ? ` — ${c.room}` : ''}</>,
       meta: <>{DAY_LABEL[c.when]} · <bdi>{c.startTime}–{c.endTime}</bdi></>,
       icon: Presentation, tone: c.when === 'today' ? 'accent' : 'gold',
     })),
@@ -544,7 +521,7 @@ export default function StudentDashboardPage() {
       kind: 'assign', id: `a-${a.id}`,
       whenMs: safeMs(a.dueAt),
       to: `/student/courses/${a.offeringId}`,
-      title: <>{ASSIGNMENT_KIND_LABEL[a.type]}: {a.title} (<bdi>{a.courseCode}</bdi>)</>,
+      title: <>{a.title} (<bdi>{a.courseCode}</bdi>)</>,
       meta: <>تسليم {formatDue(a.dueAt)}</>,
       icon: ASSIGNMENT_ICON[a.type], tone: 'gold',
     })),
@@ -559,12 +536,7 @@ export default function StudentDashboardPage() {
       meta: <><bdi>{l.offering.course.code}</bdi> · {formatDue(l.scheduledAt)}</>,
       icon: Radio, tone: 'red',
     })),
-    // r164-c — the fourth bucket: still-actable exams. Distinct treatment
-    // (ClipboardCheck well + red tone + the «يفتح/آخر موعد» phrasing) and
-    // a deep link straight into the exam taker; whenMs anchors on the row's
-    // own milestone (whenAt) so the exam interleaves with the rest of the
-    // week chronologically. `?? []` keeps a stale pre-r164-c cached payload
-    // rendering as an empty bucket instead of crashing.
+    // r164-c — the fourth bucket: still-actable exams.
     ...(d.agenda.exams ?? []).slice(0, 4).map<AgendaItem>((e) => {
       const row = examAgendaRow(e);
       return {
@@ -573,7 +545,7 @@ export default function StudentDashboardPage() {
         to: row.to,
         title: (
           <>
-            {row.kindLabel}: {e.title}
+            {e.title}
             {e.courseCode ? <> (<bdi>{e.courseCode}</bdi>)</> : null}
           </>
         ),
@@ -583,206 +555,147 @@ export default function StudentDashboardPage() {
     }),
   ].sort((a, b) => a.whenMs - b.whenMs);
 
+  /* R189 — the TODAY split: rows whose instant is before end-of-today
+   * (started or still upcoming today) lead the page in the TODAY
+   * ledger; the rest feed the week ledger grouped by real date. */
+  const endOfToday = new Date();
+  endOfToday.setHours(23, 59, 59, 999);
+  const today = agenda.filter((it) => it.whenMs <= endOfToday.getTime());
+  const later = agenda.filter((it) => it.whenMs > endOfToday.getTime());
+
+  // Week ledger grouping — by the row's own calendar day (day name +
+  // mono date), preserving the chronological order.
+  const weekGroups: Array<{ key: string; day: string; date: string; items: AgendaItem[] }> = [];
+  for (const it of later) {
+    const dt = it.whenMs === Number.MAX_SAFE_INTEGER ? null : new Date(it.whenMs);
+    const day = dt
+      ? dt.toLocaleDateString('ar-LY', { weekday: 'long' })
+      : 'موعد غير محدّد';
+    const date = dt ? dt.toLocaleDateString('ar-LY', { day: 'numeric', month: 'numeric' }) : '';
+    const key = `${day}-${date}`;
+    const last = weekGroups[weekGroups.length - 1];
+    if (last && last.key === key) last.items.push(it);
+    else weekGroups.push({ key, day, date, items: [it] });
+  }
+
+  const now = new Date();
+  const dateLine = now.toLocaleDateString('ar-LY', { weekday: 'long', day: 'numeric', month: 'long' });
+  const termPct = d.term.progressPct;
+
   return (
     <div className="page student-dashboard">
-      <header className="page-header welcome-card">
-        <h1 className="sr-only">لوحة التحكم</h1>
-        <h2 className="page-title">
-          {greeting}، {user?.firstName ?? ''}
-        </h2>
+      {/* The masthead — the route's identity + the day's facts (meta is
+          DATA: the date + the term's real progress). */}
+      <header className="page-header">
+        <h1 className="page-title">لوحة التحكم</h1>
         <p className="page-subtitle">
-          {d.profile.facultyName
+          {greeting}، {user?.firstName ?? ''} — {d.profile.facultyName
             ? `${d.profile.facultyName}${d.profile.departmentName ? ` · ${d.profile.departmentName}` : ''} · السنة ${d.profile.year}`
             : 'لوحة متابعة تقدّمك الأكاديمي.'}
         </p>
+        <p className="page-header-meta">
+          {dateLine} · {termPct}% من الفصل مضى · يبدأ {new Date(d.term.startsAt).toLocaleDateString('ar-LY', { day: '2-digit', month: '2-digit' })} وينتهي {new Date(d.term.endsAt).toLocaleDateString('ar-LY', { day: '2-digit', month: '2-digit' })}
+        </p>
       </header>
 
-      {/* Continue-learning hero (PP-X2 / audit P0-3) — the page's
-          primary action, above the KPI row: course + code chip + lecture
-          + watched share + ONE dominant CTA to the exact lecture. */}
+      {/* TODAY — the agenda's today-slice as the page's hero ledger.
+          The student's actual commitments, not a greeting banner. */}
+      <LedgerPanel
+        title="جدول اليوم"
+        tag={countAr(today.length, ['التزام واحد', 'التزامان', 'التزامات', 'التزامًا'])}
+        zone={today.some((it) => it.tone === 'red') ? 'rose' : undefined}
+        ariaLabel="التزامات اليوم"
+      >
+        {today.length === 0 ? (
+          <div className="ledger-row ledger-row-flat">
+            <span className="ledger-lead"><b>اليوم</b>راحة</span>
+            <span className="ledger-what">
+              لا حصص أو مهام أو اختبارات اليوم — أسبوعك القادم أدناه، وتعلّمك ينتظرك في الأعلى.
+            </span>
+            <Badge color="green">يوم مفتوح</Badge>
+          </div>
+        ) : (
+          today.map((item) => <TodayRow key={item.id} item={item} />)
+        )}
+      </LedgerPanel>
+
+      {/* Continue-learning hero (PP-X2 / audit P0-3) — the ring row. */}
       <ResumeHero resume={resume} training={trainingCatalog} />
 
-      {/* At-a-glance KPI row — real values; the count-up reveal rides the
-          grid's entrance stagger (polish grid children) as the page moment */}
-      <section className="grid-4">
-        <MetricCard
-          icon={BookOpen}
-          label="مقررات نشطة"
-          value={<CountIn value={d.kpi.courseCount} />}
-          change={d.kpi.courseCount > 0 ? 'هذا الفصل' : 'لا توجد تسجيلات'}
-          color="brand"
-        />
-        <MetricCard
-          icon={CalendarCheck}
-          label="نسبة الحضور"
-          value={d.kpi.attendancePct !== null ? <CountIn value={d.kpi.attendancePct} suffix="%" /> : '—'}
-          change={d.kpi.attendancePct !== null ? 'إجمالي الفصل' : 'لا توجد سجلات بعد'}
-          color={d.kpi.attendancePct === null ? 'brand' : d.kpi.attendancePct >= 80 ? 'green' : d.kpi.attendancePct >= 60 ? 'amber' : 'red'}
-        />
-        <MetricCard
-          icon={ClipboardList}
-          label="مهام معلّقة"
-          value={<CountIn value={d.kpi.pendingAssignmentsCount} />}
-          change={d.agenda.assignments[0] ? `أقربها ${formatDue(d.agenda.assignments[0].dueAt)}` : 'لا مهام قريبة'}
-          color={d.kpi.pendingAssignmentsCount === 0 ? 'green' : d.kpi.pendingAssignmentsCount > 3 ? 'red' : 'amber'}
-        />
-        <MetricCard
-          icon={Trophy}
-          label="نقاط الإنجاز"
-          value={<CountIn value={d.kpi.totalXp} />}
-          change={d.kpi.cohortSize > 1 ? <>المركز <bdi>{d.kpi.rank}</bdi> من <bdi>{d.kpi.cohortSize}</bdi> على دفعتك</> : 'مستوى ' + d.profile.level}
-          color="purple"
-        />
-      </section>
+      {/* The typographic stat strip — real values, trend notes carry
+          the nearest deadline / cohort rank (data, not decoration). */}
+      <StatStrip
+        ariaLabel="ملخص الأداء الأكاديمي"
+        cells={[
+          {
+            label: 'المعدل التراكمي',
+            value: formatNum(d.profile.gpa, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+            trend: tone.label,
+            trendTone: tone.trend,
+          },
+          {
+            label: 'نسبة الحضور',
+            value: d.kpi.attendancePct !== null ? <CountIn value={d.kpi.attendancePct} suffix="%" /> : '—',
+            trend: d.kpi.attendancePct !== null
+              ? d.kpi.attendancePct >= 80 ? 'مطمئن هذا الفصل' : d.kpi.attendancePct >= 60 ? 'قريب من الحد' : 'تحت الحد — راجع حضورك'
+              : 'لا توجد سجلات بعد',
+            trendTone: d.kpi.attendancePct === null ? 'flat' : d.kpi.attendancePct >= 80 ? 'up' : d.kpi.attendancePct >= 60 ? 'flat' : 'down',
+          },
+          {
+            label: 'مهام معلّقة',
+            value: <CountIn value={d.kpi.pendingAssignmentsCount} />,
+            trend: d.agenda.assignments[0] ? `أقربها ${formatDue(d.agenda.assignments[0].dueAt)}` : 'لا مهام قريبة',
+            trendTone: d.kpi.pendingAssignmentsCount === 0 ? 'up' : 'flat',
+          },
+          {
+            label: 'نقاط الإنجاز',
+            value: <CountIn value={d.kpi.totalXp} />,
+            trend: d.kpi.cohortSize > 1
+              ? <>المركز <bdi>{d.kpi.rank}</bdi> من <bdi>{d.kpi.cohortSize}</bdi> على دفعتك</>
+              : `مستوى ${d.profile.level}`,
+            trendTone: 'flat',
+          },
+          {
+            label: 'إنجاز المقرّرات',
+            value: d.kpi.courseCount > 0 ? <CountIn value={courseProgressPct} suffix="%" /> : '—',
+            trend: d.kpi.courseCount > 0
+              ? `${countAr(d.kpi.courseCount, ['مقرّر نشط واحد', 'مقرّران نشطان', 'مقرّرات نشطة', 'مقررًا نشطًا'])} · ${
+                  courseProgressPct >= 75 ? 'متقدّم كثيراً عن المطلوب'
+                  : courseProgressPct >= 50 ? 'على الطريق الصحيح'
+                  : courseProgressPct === 0 ? 'ابدأ أول محاضرة لتتقدّم'
+                  : 'تحتاج إلى دفعة إضافيّة'}`
+              : 'لم تُسجّل في مقرّر بعد',
+            trendTone: d.kpi.courseCount === 0 ? 'flat' : courseProgressPct >= 75 ? 'up' : courseProgressPct === 0 ? 'down' : 'flat',
+          },
+        ]}
+      />
 
-      {/* Hero KPIs — GPA + Progress side-by-side, stacks on phone */}
-      <section className="dash-hero-row">
-        <Card className="dash-gpa-card card-glass-premium">
-          <div className="dash-gpa-body">
-            <div className="dash-gpa-text">
-              <div className="dash-eyebrow gradient-text">المعدل التراكمي</div>
-              <div className="dash-gpa-value" data-numeric="true">{formatNum(d.profile.gpa, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-              <Badge color={tone.color}>{tone.label}</Badge>
-            </div>
-            <div className="dash-gpa-orb">
-              <Icon icon={GraduationCap} size={26} />
-            </div>
-          </div>
-        </Card>
-
-        <Card className="dash-progress-card card-glass-premium">
-          <div className="dash-progress-body">
-            <div className="dash-doughnut">
-              <ChartFrame
-                className="dash-doughnut-frame"
-                ariaLabel={`متوسط التقدّم في المقرّرات: ${courseProgressPct}% منجز و${remainingPct}% متبقٍّ`}
-                summary={
-                  d.kpi.courseCount > 0
-                    ? `أنجزت ${courseProgressPct}% من متوسط مقرّراتك المسجَّلة هذا الفصل.`
-                    : 'لم تسجّل في أي مقرّر بعد.'
-                }
-                table={{
-                  caption: 'متوسط التقدّم في المقرّرات النشطة',
-                  columns: ['الحالة', 'النسبة'],
-                  rows: [['منجز', `${courseProgressPct}%`], ['متبقٍّ', `${remainingPct}%`]],
-                }}
-              >
-                <Doughnut
-                  key={themeKey}
-                  data={{
-                    labels: ['منجز', 'متبقي'],
-                    datasets: [{
-                      data: [courseProgressPct, remainingPct],
-                      backgroundColor: [cc.accent, cc.surfaceMuted],
-                      borderWidth: 0,
-                      spacing: 2,
-                    }],
-                  }}
-                  options={radialOptions({ cutout: '78%', legend: false })}
-                />
-              </ChartFrame>
-              {/* key → the number re-rises whenever a refetch moves the
-                  average (the authored data-change transition). No
-                  data-numeric here — polish's generic [data-numeric]
-                  entrance would override the authored one. */}
-              <div className="dash-doughnut-center" key={courseProgressPct}>
-                {courseProgressPct}%
-              </div>
-            </div>
-            <div className="dash-progress-text">
-              <div className="dash-eyebrow">تقدّم المقرّرات</div>
-              <div className="dash-progress-value">
-                {d.kpi.courseCount > 0
-                  ? `متوسّط تقدّمك في ${countAr(d.kpi.courseCount, ['مقرّر نشط واحد', 'مقرّرين نشطين', 'مقرّرات نشطة', 'مقرّراً نشطاً'])}`
-                  : 'لم تسجّل في أي مقرّر بعد'}
-              </div>
-              <div className="dash-progress-note">
-                {/* r183-B3 (A6 P3): 0% + enrolled used to read «تحتاج إلى
-                    دفعة إضافيّة» — a verdict on progress that cannot exist
-                    yet. At 0% the honest note is the directive one: start
-                    the first lecture. */}
-                {courseProgressPct >= 75 ? 'متقدّم كثيراً عن المطلوب' :
-                  courseProgressPct >= 50 ? 'على الطريق الصحيح' :
-                  courseProgressPct === 0 && d.kpi.courseCount > 0 ? 'ابدأ أول محاضرة لتتقدّم' :
-                  d.kpi.courseCount > 0 ? 'تحتاج إلى دفعة إضافيّة' : '—'}
-              </div>
-            </div>
-          </div>
-        </Card>
-      </section>
-
-      {/* Term progress bar — based on real calendar dates */}
-      <Card className="dash-term-card">
-        <header className="dash-term-head">
-          <span className="dash-eyebrow">تقدّم الفصل الدراسي الحالي</span>
-          <span className="dash-term-pct" data-numeric="true">{d.term.progressPct}%</span>
-        </header>
-        <div
-          className="dash-term-bar"
-          role="progressbar"
-          aria-label="تقدّم الفصل الدراسي الحالي"
-          aria-valuenow={d.term.progressPct}
-          aria-valuemin={0}
-          aria-valuemax={100}
+      {/* THE WEEK — the later agenda grouped by real day. */}
+      {later.length > 0 && (
+        <LedgerPanel
+          title="أسبوعك القادم"
+          zone="sky"
+          tag={countAr(later.length, ['التزام واحد', 'التزامان', 'التزامات', 'التزامًا'])}
+          ariaLabel="التزامات الأسبوع القادم"
+          actions={<Link to="/student/calendar" className="btn ghost sm">التقويم الكامل</Link>}
         >
-          {/* 23-b (A11 P2-10): scaleX from the inline-start edge (RTL
-              transform-origin in student.css) instead of an inline
-              width — compositor-only fill animation. */}
-          <span style={{ transform: `scaleX(${d.term.progressPct / 100})` }} />
-        </div>
-        <footer className="dash-term-foot">
-          <span>بداية الفصل · {new Date(d.term.startsAt).toLocaleDateString('ar-LY', { day: '2-digit', month: '2-digit' })}</span>
-          <span>نهاية الفصل · {new Date(d.term.endsAt).toLocaleDateString('ar-LY', { day: '2-digit', month: '2-digit' })}</span>
-        </footer>
-      </Card>
-
-      {/* Up-coming agenda — composed from real classes/assignments/live.
-          Items slide in from inline-start (polish agenda stagger). */}
-      <section className="dash-agenda">
-        <header className="dash-agenda-head">
-          <h2 className="dash-section-title">المهام والفصول القادمة</h2>
-        </header>
-        {agenda.length === 0 ? (
-          <Card>
-            {/* r166a (E1 oversized-empty): dropped the 160px
-                illustration — this slot is a status strip at the tail
-                of the column (desktop) / slot 2 (mobile), not a
-                destination page; the icon well + compact padding
-                (student.css .dash-agenda .state) keep one honest line
-                from dominating the dashboard. */}
-            <EmptyState
-              icon={CalendarCheck}
-              title="أجندتك فارغة"
-              description="لا حصص أو مهام أو اختبارات قادمة في أجندك بعد — سجّل في مقرّر أو طَلِب مهمة لظهورها هنا."
-            />
-          </Card>
-        ) : (
-          <div className="dash-agenda-list">
-            {agenda.map((item) => (
-              /* PP-X2 (audit P1-8): the row is the link — the same
-                 .card .dash-agenda-item anatomy, now navigable. The
-                 chevron points inline-end (LEFT in RTL = forward). */
-              <Link
-                key={item.id}
-                to={item.to}
-                className="card dash-agenda-item agenda-row"
-              >
-                {/* data-tone rides the icon well — Card doesn't spread
-                    unknown props, so the old root-level data-tone never
-                    reached the DOM (silently dead since inception). */}
-                <div className="dash-agenda-icon" data-tone={item.tone}>
-                  <Icon icon={item.icon} size={22} />
-                </div>
-                <div className="dash-agenda-text">
-                  <div className="dash-agenda-title">{item.title}</div>
-                  <div className="dash-agenda-meta">{item.meta}</div>
-                </div>
-                <Icon icon={ChevronLeft} size={16} className="agenda-row-chevron" aria-hidden />
-              </Link>
-            ))}
-          </div>
-        )}
-      </section>
+          {weekGroups.map((g) => (
+            <WeekRow key={g.key} day={g.day} date={g.date}>
+              <div className="week-rows">
+                {g.items.map((item) => (
+                  <Link key={item.id} to={item.to} className="week-item">
+                    <span className="week-item-title">{item.title}</span>
+                    <span className="week-item-meta">{item.meta}</span>
+                    {item.kind === 'live' ? <Badge color="red">مباشر</Badge> :
+                      item.kind === 'exam' ? <Badge color="brand">اختبار</Badge> :
+                      <Badge color="gold">تسليم</Badge>}
+                  </Link>
+                ))}
+              </div>
+            </WeekRow>
+          ))}
+        </LedgerPanel>
+      )}
     </div>
   );
 }

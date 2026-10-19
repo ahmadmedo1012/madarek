@@ -316,11 +316,13 @@ describe('MetricCard — additive navigable variant', () => {
 
 /* ── 2. AdminDashboardPage (5-A8 §6 steps 1/3/5) ───────────────── */
 
-/** The KPI link whose tile carries `label` (the strip becomes the map). */
+/** The KPI link whose cell carries `label` (the strip is the map).
+ * R189 re-pin: the KPI band is the typographic stat strip — the
+ * navigable cells are a.stat-cell-link (same one-tap contract). */
 const kpiLinkByLabel = (label: string) => {
-  const el = Array.from(document.querySelectorAll('a.metric-link'))
+  const el = Array.from(document.querySelectorAll('a.stat-cell-link'))
     .find((a) => a.textContent?.includes(label));
-  expect(el, `no metric-link tile carries «${label}»`).toBeDefined();
+  expect(el, `no stat-cell-link cell carries «${label}»`).toBeDefined();
   return el!;
 };
 

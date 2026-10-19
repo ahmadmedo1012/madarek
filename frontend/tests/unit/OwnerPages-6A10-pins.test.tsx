@@ -292,9 +292,11 @@ describe('OwnerDashboardPage — error-as-critical strip (6A10-2)', () => {
     ];
     renderPage(<OwnerDashboardPage />);
 
+    /* R189 re-pin: the amber tone rides the ledger panel's zone-rose. */
     const row = (await screen.findByText('تنبيهات تشغيليّة مفتوحة')).closest('a');
     expect(row).not.toBeNull();
-    expect(row).toHaveClass('alert', 'amber');
+    expect(row).toHaveClass('ledger-row-link');
+    expect(row!.closest('.ledger')).toHaveClass('zone-rose');
     expect(screen.getByText(/تنبيه مفتوح واحد — منها تنبيه حرج واحد/)).toBeInTheDocument();
   });
 });

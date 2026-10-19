@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import {
-  Users, GraduationCap, BookOpen, ShieldCheck, Search,
-  ChevronLeft, ChevronRight, X, AlertCircle,
-} from 'lucide-react';
-import { Card, MetricCard, Badge, UserAvatar, AlertRow } from '../../components/primitives';
+import { Users, Search, ChevronLeft, ChevronRight, X, AlertCircle } from 'lucide-react';
+import { StatStrip } from '../../components/primitives/Ledger';
+import { Card, Badge, UserAvatar, AlertRow } from '../../components/primitives';
 import { ErrorState, EmptyState, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
@@ -281,12 +279,15 @@ export function OwnerUsersPage() {
 
       {/* Metrics — real values only: '…' while loading, '—' on error
           (never a fake zero). */}
-      <div className="grid-4">
-        <MetricCard icon={Users} label="إجمالي المستخدمين" value={kpiValue(statData?.totalUsers ?? 0)} color="brand" />
-        <MetricCard icon={GraduationCap} label="الطلاب" value={kpiValue(statData?.students ?? 0)} color="green" />
-        <MetricCard icon={BookOpen} label="الأساتذة" value={kpiValue(statData?.teachers ?? 0)} color="purple" />
-        <MetricCard icon={ShieldCheck} label="إداريون وجودة" value={kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0))} color="gold" />
-      </div>
+      <StatStrip
+        ariaLabel="إحصائيات مستخدمي المنصّة"
+        cells={[
+          { label: 'إجمالي المستخدمين', value: kpiValue(statData?.totalUsers ?? 0), trend: 'حسابات مسجَّلة', trendTone: 'flat' },
+          { label: 'الطلاب', value: kpiValue(statData?.students ?? 0), trend: 'أكبر شريحة', trendTone: 'flat' },
+          { label: 'الأساتذة', value: kpiValue(statData?.teachers ?? 0), trend: 'هيئة التدريس', trendTone: 'flat' },
+          { label: 'إداريون وجودة', value: kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0)), trend: 'إدارة ومتابعة', trendTone: 'flat' },
+        ]}
+      />
 
       {/* Search and Filter */}
       <Card>

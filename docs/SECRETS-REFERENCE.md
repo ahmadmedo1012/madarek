@@ -55,7 +55,15 @@ override is applied only to the `prisma migrate deploy` child process.
 
 ## Demo Accounts
 
-All use password `Madarek2026!` (after seeding — re-seeding resets the password so it always matches the docs):
+**r189 credential policy — no shared password is published in any tracked file.**
+Every production demo account now carries its own strong random secret, rotated
+via the audited `db:rotate-password` path (r187 mechanism) and delivered to the
+operator through a private channel. The previously published shared password
+was rejected live at rotation time (401 on all five accounts). Local/dev
+environments seed their own demo passwords (see `backend/prisma/seed.ts` — a
+dev-only fixture, and re-seeding a dev DB resets it); production is never
+reseeded to change credentials (`MADAREK_SEED_FORCE` is the operator's explicit,
+isolated act — see [12-deployment](12-deployment.md)).
 
 | Email | Role | Arabic Name |
 |-------|------|-------------|
@@ -64,6 +72,9 @@ All use password `Madarek2026!` (after seeding — re-seeding resets the passwor
 | `admin@demo.madarek.ly` | ADMIN | إدارة الجامعة |
 | `quality@demo.madarek.ly` | QUALITY | مكتب ضمان الجودة |
 | `owner@demo.madarek.ly` | OWNER | مالك المنصة |
+
+To rotate again: `npm run db:rotate-password -- --email <account> --new-password-env NEW_PASSWORD --yes`
+(the secret travels only via the env var; the script never logs it).
 
 ## Production URLs
 

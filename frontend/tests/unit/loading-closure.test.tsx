@@ -104,51 +104,33 @@ beforeEach(() => {
 /* ── 1 · Student pending mirror ─────────────────────────────────── */
 
 describe('r172b §1 — student dashboard pending mirror', () => {
-  it('renders the welcome header, the resume slot at the loaded footprint, the KPI strip and the premium hero pair', () => {
+  it('renders the masthead, the TODAY-ledger slot, the momentum ring slot, the stat strip and the below-fold list slots', () => {
     const { container } = renderPage(<StudentDashboardPage />);
 
-    // Real header (not skeleton bars) — identity is stable across the
-    // handoff, and its 128px box is content-identical.
-    const header = container.querySelector('header.page-header.welcome-card');
+    /* R189 re-pin — the ledger anatomy: masthead (h1 + pending
+       subtitle) → TODAY ledger slot → momentum ring slot → stat strip
+       → week-list slots. Every slot renders the resolved section's
+       class, so the pending → resolved handoff moves nothing (the
+       r172b mirror contract, re-mirrored for «سجلّ مدارك»). */
+    const header = container.querySelector('header.page-header');
     expect(header).not.toBeNull();
+    expect(screen.getByRole('heading', { level: 1, name: 'لوحة التحكم' })).toBeTruthy();
     expect(screen.getByText(/جارٍ تحضير لوحتك/)).toBeTruthy();
 
-    // ResumeHero slot — the section class (CSS margins identical to the
-    // resolved page) carrying the per-breakpoint footprint. r174: the
-    // r172b flat 176px inline height was DESKTOP-only — the phone card
-    // measures 224px (CTA stacks full-width), so the pin moved to the
-    // .dash-resume-pending block-size ladder in student.css (176 >640 /
-    // 224 ≤640) and the bar fills it (height 100%). jsdom can't see CSS
-    // media queries — the class contract is what's pinnable here; the
-    // per-breakpoint geometry is verified by the live CLS probe
-    // (tests/capture/r174-cls.ts — pending == resolved at 390/768/1280).
-    const resume = container.querySelector('section.dash-resume');
-    expect(resume).not.toBeNull();
-    const resumeEl = resume as HTMLElement;
-    expect(resumeEl.getAttribute('aria-busy')).toBe('true');
-    expect(resumeEl.classList.contains('dash-resume-pending')).toBe(true);
-    const resumeBar = resumeEl.querySelector('.skeleton') as HTMLElement;
-    expect(resumeBar.style.height).toBe('100%');
+    // Momentum slot — the ring row's own footprint (112px ring + bars).
+    const momentum = container.querySelectorAll('section.momentum.dash-resume-pending');
+    expect(momentum.length).toBeGreaterThanOrEqual(1);
+    for (const m of Array.from(momentum)) {
+      expect((m as HTMLElement).getAttribute('aria-busy')).toBe('true');
+      expect(m.querySelector('.skeleton')).not.toBeNull();
+    }
 
-    // KPI strip.
-    expect(container.querySelectorAll('.grid-4 .metric')).toHaveLength(4);
+    // The stat strip — 4 typographic cells.
+    expect(container.querySelectorAll('.stat-strip .stat-cell')).toHaveLength(4);
 
-    // The premium hero pair — two cards at the resolved boxes. r174:
-    // the pair is ASYMMETRIC below 1024 (compact GPA 156 + doughnut
-    // card 218/302), so each slot carries its own block-size class
-    // (student.css .dash-hero-slot ladder) instead of r172b's flat
-    // 168px inline boxes (which overshot the GPA card by 54px on
-    // tablet/phone resolves). The bars fill their slots (100%).
-    const heroRow = container.querySelector('section.dash-hero-row');
-    expect(heroRow).not.toBeNull();
-    const heroRowEl = heroRow as HTMLElement;
-    expect(heroRowEl.getAttribute('aria-busy')).toBe('true');
-    expect(heroRowEl.querySelectorAll('.card.card-glass-premium')).toHaveLength(2);
-    expect(heroRowEl.querySelectorAll('.dash-hero-slot-gpa')).toHaveLength(1);
-    expect(heroRowEl.querySelectorAll('.dash-hero-slot-progress')).toHaveLength(1);
-    const inner = heroRowEl.querySelectorAll('.skeleton') as NodeListOf<HTMLElement>;
-    expect(inner.length).toBeGreaterThanOrEqual(2);
-    expect(Array.from(inner).every((el) => el.style.height === '100%')).toBe(true);
+    // The list slots — the TODAY ledger + week ledger placeholders.
+    const listSlots = container.querySelectorAll('.flex-col .flex.items-center');
+    expect(listSlots.length).toBeGreaterThanOrEqual(6);
   });
 
   it('pins ONE loading owner: zero spinners and zero hydration splash in the pending window', () => {
@@ -214,7 +196,8 @@ describe('r172b §4 — admin dashboard pending mirror', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'لوحة الإدارة' })).toBeTruthy();
     // The strip slot carries the real strip identity.
     expect(screen.getByText('يحتاج انتباهك')).toBeTruthy();
-    expect(container.querySelectorAll('.grid-4 .metric')).toHaveLength(4);
+    // R189 re-pin: the KPI band is the typographic stat strip.
+    expect(container.querySelectorAll('.stat-strip .stat-cell')).toHaveLength(4);
     // The charts row — same grid + margin as the resolved page, two
     // card slots.
     const charts = container.querySelector('.grid-2-1');
@@ -247,7 +230,7 @@ describe('r172b §4 — admin dashboard pending mirror', () => {
     expect(screen.getByText('إحصائيات حيّة عن طلاب وأساتذة المنصّة.')).toBeTruthy();
     expect(screen.getByText('توزّع الطلاب حسب الكلّيّة')).toBeTruthy();
     expect(screen.getByText('مؤشرات سريعة')).toBeTruthy();
-    const strip = container.querySelector('.grid-4')?.previousElementSibling;
+    const strip = container.querySelector('.stat-strip')?.previousElementSibling;
     expect(strip).not.toBeNull();
     const stripEl = strip as HTMLElement;
     expect(stripEl.classList.contains('card')).toBe(true);
@@ -275,7 +258,8 @@ describe('r172b §6 — owner dashboard pending mirror', () => {
     // Strip slot + KPI + charts pair + the two below-fold card slots
     // (strip + CardSkeleton ×2 are the .page's direct .card children).
     expect(screen.getByText('يحتاج انتباهك')).toBeTruthy();
-    expect(container.querySelectorAll('.grid-4 .metric')).toHaveLength(4);
+    // R189 re-pin: the KPI band is the typographic stat strip.
+    expect(container.querySelectorAll('.stat-strip .stat-cell')).toHaveLength(4);
     const charts = container.querySelector('.grid-2-1');
     expect(charts).not.toBeNull();
     expect((charts as HTMLElement).querySelectorAll(':scope > .card')).toHaveLength(2);
@@ -297,7 +281,7 @@ describe('r172b §6 — owner dashboard pending mirror', () => {
     // Resolved page (real KPI value proves it) + pending education →
     // the strip skeleton sits between the band and the KPI row.
     expect(screen.getByText('لوحة التحكم الرئيسية')).toBeTruthy();
-    const strip = container.querySelector('.grid-4')?.previousElementSibling;
+    const strip = container.querySelector('.stat-strip')?.previousElementSibling;
     expect(strip).not.toBeNull();
     const stripEl = strip as HTMLElement;
     expect(stripEl.getAttribute('aria-busy')).toBe('true');

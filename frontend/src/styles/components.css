@@ -4705,3 +4705,310 @@
     }
   }
 }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  R189 · سجلّ مدارك — THE LEDGER PRODUCT LANGUAGE                ║
+     ║  (append-only; later source order within @layer components    ║
+     ║   wins — the standing convention of this file)                 ║
+     ╚═══════════════════════════════════════════════════════════════╝
+     The R189 direction («سجلّ مدارك», VLM-compared 2-direction trial,
+     /home/z/probes/preview/): the authenticated product speaks the
+     editorial-ledger language continuous with the folio landing —
+     masthead openers (polish.css §page-header), ledger-row data
+     anatomy, typographic stat strips, tinted zone heads, a momentum
+     ring and data-bearing sparklines. Kills the generic KPI-card-grid
+     template on every dashboard. Everything consumes existing tokens
+     (zero new tokens — the parity export stays 165/165). */
+@layer components {
+
+
+  /* ── 1 · The ledger panel — the bordered data surface ────────── */
+  .ledger {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+  }
+  .ledger-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-2-5) var(--sp-5);
+    border-block-end: 1px solid var(--rule);
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  .ledger-title {
+    font-size: var(--type-body-size);
+    font-weight: var(--fw-semibold);
+  }
+  .ledger-aux { margin-inline-start: auto; }
+  .ledger-tag {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xxs);
+    color: var(--accent);
+  }
+  /* zone tinting — the ONE place pastel families become section
+     bands (the VLM trial's stolen tinted-head, both-theme-safe via
+     the -bg/-deep pair of each family). */
+  .ledger.zone-sky > .ledger-head {
+    background: var(--c-sky-bg);
+    color: var(--c-sky-deep);
+    border-block-end-color: color-mix(in srgb, var(--c-sky-ink) 25%, transparent);
+  }
+  .ledger.zone-rose > .ledger-head {
+    background: var(--c-rose-bg);
+    color: var(--c-rose-deep);
+    border-block-end-color: color-mix(in srgb, var(--c-rose-ink) 25%, transparent);
+  }
+  .ledger.zone-mint > .ledger-head {
+    background: var(--c-mint-bg);
+    color: var(--c-mint-deep);
+    border-block-end-color: color-mix(in srgb, var(--c-mint-ink) 25%, transparent);
+  }
+  .ledger.zone-copper > .ledger-head {
+    background: var(--c-copper-bg);
+    color: var(--c-copper-deep);
+    border-block-end-color: color-mix(in srgb, var(--c-copper-ink) 25%, transparent);
+  }
+  .ledger.zone-lavender > .ledger-head {
+    background: var(--c-lavender-bg);
+    color: var(--c-lavender-deep);
+    border-block-end-color: color-mix(in srgb, var(--c-lavender-ink) 25%, transparent);
+  }
+
+  /* ── 2 · The ledger row — the app's repeating data atom ─────────
+     grid: [lead | body | status/actions] — the lead column is mono
+     data (time, count, code), the body carries the Arabic content,
+     the tail carries status pills and inline actions. */
+  .ledger-row {
+    display: grid;
+    grid-template-columns: minmax(64px, auto) minmax(0, 1fr) auto;
+    gap: var(--sp-4);
+    align-items: center;
+    padding: var(--sp-3) var(--sp-5);
+    border-block-end: 1px solid var(--rule);
+    color: inherit;
+    text-decoration: none;
+  }
+  .ledger-row:last-child { border-block-end: 0; }
+  .ledger-row-link { cursor: pointer; }
+  .ledger-row-link:hover { background: var(--surface-2); }
+  .ledger-row-link:active { background: var(--surface-3); }
+  .ledger-lead {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    min-inline-size: 0;
+  }
+  .ledger-lead b {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text);
+  }
+  .ledger-what { font-size: var(--type-body-size); min-inline-size: 0; }
+  .ledger-what strong { font-weight: var(--fw-semibold); }
+  .ledger-what small {
+    display: block;
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    margin-block-start: var(--sp-0-5);
+  }
+  .ledger-tail {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    flex: none;
+  }
+
+  /* ── 3 · The stat strip — the typographic KPI replacement ───────
+     label (mono) over value (metric role) over trend note. No icon
+     wells, no accent boxes, no 132px tiles — the printed stat line. */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+  }
+  .stat-cell {
+    padding: var(--sp-4) var(--sp-5);
+    border-inline-start: 1px solid var(--rule);
+    min-inline-size: 0;
+  }
+  .stat-cell:first-child { border-inline-start: 0; }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+    margin-block-end: var(--sp-1);
+  }
+  .stat-value {
+    font-size: var(--type-metric-size);
+    font-weight: var(--type-metric-weight);
+    line-height: var(--type-metric-line-height);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-trend {
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-medium);
+    color: var(--text-muted);
+    margin-block-start: var(--sp-1);
+  }
+  .stat-trend.up { color: var(--c-mint-deep); }
+  .stat-trend.down { color: var(--c-rose-deep); }
+  /* phone reflow — 2×2 with honest borders (the grid4 content
+     container owns the query, same ancestor .grid-4 flips on) */
+  @container grid4 (max-width: 640px) {
+    .stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stat-cell { border-inline-start: 0; border-block-start: 1px solid var(--rule); }
+    .stat-cell:nth-child(even) { border-inline-start: 1px solid var(--rule); }
+    .stat-cell:nth-child(-n + 2) { border-block-start: 0; }
+    .stat-cell { padding: var(--sp-3) var(--sp-4); }
+  }
+
+  /* ── 4 · Momentum — the continue-learning ring row ───────────── */
+  .momentum {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-5);
+    padding: var(--sp-5) var(--sp-6);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+  }
+  .momentum-ring {
+    position: relative;
+    inline-size: var(--ring-size, 112px);
+    block-size: var(--ring-size, 112px);
+    flex: none;
+  }
+  .momentum-ring .ring-track { stroke: var(--surface-3); }
+  .momentum-ring .ring-fill {
+    stroke: var(--accent);
+    transition: stroke-dasharray var(--t-slow) var(--ease-decelerate);
+  }
+  .momentum-center {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    text-align: center;
+    gap: var(--sp-0-5);
+  }
+  .momentum-center b {
+    font-size: var(--type-metric-size);
+    font-weight: var(--type-metric-weight);
+    line-height: var(--type-metric-line-height);
+    font-variant-numeric: tabular-nums;
+  }
+  .momentum-center small { font-size: var(--fs-xxs); color: var(--text-muted); }
+  .momentum-info { flex: 1; min-inline-size: 0; }
+  .momentum-title {
+    font-size: var(--type-headline-size-sm);
+    font-weight: var(--fw-bold);
+    margin: 0 0 var(--sp-1);
+  }
+  .momentum-sub { margin: 0; color: var(--text-muted); font-size: var(--fs-sm); }
+  .momentum-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-3);
+  }
+  .momentum-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-4);
+  }
+  @container grid4 (max-width: 720px) {
+    .momentum { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* ── 5 · The week ledger — day-anchored rows ──────────────────── */
+  .week-row {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: var(--sp-3);
+    padding: var(--sp-2-5) var(--sp-4);
+    border-block-end: 1px solid color-mix(in srgb, var(--rule) 55%, transparent);
+    align-items: baseline;
+  }
+  .week-row:last-child { border-block-end: 0; }
+  .week-day {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .week-day b {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text);
+  }
+  .week-what { font-size: var(--fs-sm); min-inline-size: 0; }
+
+  /* ── 6 · Sparkline — the data-bearing trend mark ────────────────
+     pure SVG polyline (a chart, not an icon: ChartFrame canvases are
+     the same class of media); the visible stroke is the data, the
+     text alternative rides role="img" + aria-label. */
+  .spark { display: inline-flex; flex: none; }
+  .spark svg { display: block; }
+
+  /* ── 7 · Meta chip — outlined factual token (momentum chips) ─── */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-medium);
+    padding: var(--sp-0-5) var(--sp-2-5);
+    border-radius: var(--r-full);
+    border: 1px solid var(--rule);
+    color: var(--text-secondary);
+    background: var(--surface);
+  }
+
+
+  /* ── 8 · Ledger internals: week items + empty + link cells ──────
+     (r189 follow-up: the week ledger's inner rows — smaller than
+     ledger rows, they ride INSIDE a WeekRow's content column) */
+  .week-rows { display: flex; flex-direction: column; min-inline-size: 0; }
+  .week-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-2);
+    padding: var(--sp-1) 0;
+    color: inherit;
+    text-decoration: none;
+    min-inline-size: 0;
+  }
+  .week-item + .week-item { border-block-start: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); }
+  .week-item:hover .week-item-title { color: var(--accent-strong); }
+  .week-item-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    min-inline-size: 0;
+    transition: color var(--t-fast) var(--ease);
+  }
+  .week-item-meta {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    margin-inline-start: auto;
+    flex: none;
+  }
+  .ledger-empty { padding: var(--sp-5); }
+  .stat-cell-link { text-decoration: none; color: inherit; }
+  .stat-cell-link:hover { background: var(--surface-2); }
+
+  /* ledger-row-flat — the honest zero-state row (one line, no well) */
+  .ledger-row-flat { align-items: center; }
+  .ledger-row-flat .ledger-what { color: var(--text-secondary); }
+}

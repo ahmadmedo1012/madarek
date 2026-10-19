@@ -4,11 +4,11 @@ import {
   Users,
   AlertTriangle, FileText, Bell,
   CheckCircle2, Filter, Sparkles, Microscope,
-  ArrowUpRight, ArrowDownRight,
   ClipboardCheck, Calendar,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
+import { StatStrip, LedgerPanel, LedgerRow } from '../../components/primitives/Ledger';
 import { ErrorState, ChartSkeleton, ListSkeleton, Skeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
@@ -200,17 +200,19 @@ export function TeacherDashboardPage() {
             <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
           </div>
         </header>
-        <div className="compact-kpis">
+        <div className="stat-strip" aria-busy="true">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="compact-kpi">
+            <div key={i} className="stat-cell">
               <Skeleton width={70} height={11} />
-              <div style={{ marginBlock: 'var(--sp-2)' }}>
-                <Skeleton width={90} height={26} />
+              <div style={{ marginBlock: 'var(--sp-1)' }}>
+                <Skeleton width={90} height={28} />
               </div>
               <Skeleton width={120} height={11} />
             </div>
           ))}
         </div>
+        <ListSkeleton rows={3} />
+        <ListSkeleton rows={3} />
         <Card title="اتجاه الأداء والحضور">
           <ChartSkeleton height={240} />
         </Card>
@@ -265,6 +267,9 @@ export function TeacherDashboardPage() {
           <p className="page-subtitle">
             كل ما يحتاج تدخّلك اليوم — في تيار واحد، مرتّب حسب الأولوية.
           </p>
+          <p className="page-header-meta">
+            {WEEKDAY_NAMES_AR[new Date().getDay()]} · {new Date().toLocaleDateString('ar-LY', { day: 'numeric', month: 'long' })}
+          </p>
         </div>
         <Badge color="brand">
           {visible.length === 0
@@ -273,37 +278,36 @@ export function TeacherDashboardPage() {
         </Badge>
       </header>
 
-      {/* Compact KPI strip — real values. The delta chip re-pulses whenever
-          its value changes (keyed remount) — the page's authored moment. */}
-      <div className="compact-kpis">
-        <CompactKpi
-          label="طلاب"
-          value={d.kpi.studentCount.toLocaleString('ar-LY')}
-          trend="عبر مقرّراتك"
-          trendColor="neutral"
-        />
-        <CompactKpi
-          label="متوسط الأداء"
-          value={d.kpi.avgGradePct !== null ? `${d.kpi.avgGradePct}%` : '—'}
-          trend={d.kpi.avgGradePct === null ? 'لا تقييمات بعد' : 'كل التقييمات المعتمدة'}
-          trendColor={d.kpi.avgGradePct === null ? 'neutral' : d.kpi.avgGradePct >= 70 ? 'positive' : 'negative'}
-          delta={d.kpi.avgGradePct === null ? undefined : d.kpi.avgGradePct >= 70 ? 'up' : 'dn'}
-        />
-        <CompactKpi
-          label="حضور"
-          value={d.kpi.attendancePct !== null ? `${d.kpi.attendancePct}%` : '—'}
-          trend={d.kpi.attendancePct === null ? 'لا جلسات حضور بعد' : 'كل الجلسات المسجَّلة'}
-          trendColor={d.kpi.attendancePct === null ? 'neutral' : d.kpi.attendancePct >= 75 ? 'positive' : 'negative'}
-          delta={d.kpi.attendancePct === null ? undefined : d.kpi.attendancePct >= 75 ? 'up' : 'dn'}
-        />
-        <CompactKpi
-          label="بحاجة تقييم"
-          value={d.kpi.needsReview.toLocaleString('ar-LY')}
-          trend="واجبات + بحوث"
-          trendColor={d.kpi.needsReview === 0 ? 'positive' : d.kpi.needsReview > 10 ? 'negative' : 'neutral'}
-          delta={d.kpi.needsReview === 0 ? 'up' : d.kpi.needsReview > 10 ? 'dn' : undefined}
-        />
-      </div>
+      {/* R189 — the typographic stat strip (the compact-kpi row, ledgered). */}
+      <StatStrip
+        ariaLabel="ملخص نشاط التدريس"
+        cells={[
+          {
+            label: 'طلابك',
+            value: d.kpi.studentCount.toLocaleString('ar-LY'),
+            trend: 'عبر مقرّراتك',
+            trendTone: 'flat',
+          },
+          {
+            label: 'متوسط الأداء',
+            value: d.kpi.avgGradePct !== null ? `${d.kpi.avgGradePct}%` : '—',
+            trend: d.kpi.avgGradePct === null ? 'لا تقييمات بعد' : 'كل التقييمات المعتمدة',
+            trendTone: d.kpi.avgGradePct === null ? 'flat' : d.kpi.avgGradePct >= 70 ? 'up' : 'down',
+          },
+          {
+            label: 'الحضور',
+            value: d.kpi.attendancePct !== null ? `${d.kpi.attendancePct}%` : '—',
+            trend: d.kpi.attendancePct === null ? 'لا جلسات حضور بعد' : 'كل الجلسات المسجّلة',
+            trendTone: d.kpi.attendancePct === null ? 'flat' : d.kpi.attendancePct >= 75 ? 'up' : 'down',
+          },
+          {
+            label: 'بحاجة تقييم',
+            value: d.kpi.needsReview.toLocaleString('ar-LY'),
+            trend: 'واجبات + بحوث',
+            trendTone: d.kpi.needsReview === 0 ? 'up' : d.kpi.needsReview > 10 ? 'down' : 'flat',
+          },
+        ]}
+      />
 
       {/* ── r164-h: the daily-work trio — actionable first (the Canvas
           home pattern): the pending-grading queue (the work that waits
@@ -462,31 +466,6 @@ function trendChartData(trend: TeacherDashboard['trend']) {
   };
 }
 
-function CompactKpi({ label, value, trend, trendColor, delta }: {
-  label: string; value: string; trend: string; trendColor: 'positive' | 'negative' | 'neutral';
-  delta?: 'up' | 'dn';
-}) {
-  return (
-    <div className="compact-kpi">
-      <div className="compact-kpi-label">{label}</div>
-      <div className="compact-kpi-value">{value}</div>
-      <div className="compact-kpi-trend" data-trend={trendColor}>
-        {trend}
-        {delta && (
-          <span
-            key={value}
-            className="compact-kpi-delta"
-            data-dir={delta}
-            aria-hidden
-          >
-            <Icon icon={delta === 'up' ? ArrowUpRight : ArrowDownRight} size={12} />
-          </span>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function FeedRow({ item }: { item: TeacherDashboard['feed'][number] }) {
   const Icon_ = KIND_ICON[item.kind];
   const tone = KIND_TONE[item.kind];
@@ -538,14 +517,11 @@ function FeedRow({ item }: { item: TeacherDashboard['feed'][number] }) {
 function PendingGradingCard({ entries }: { entries: TeacherDashboard['pendingGrading'] }) {
   const total = entries.reduce((sum, e) => sum + e.count, 0);
   return (
-    <Card
+    <LedgerPanel
       title="طابور التصحيح"
-      icon={ClipboardCheck}
-      subtitle={
-        total === 0
-          ? undefined
-          : countAr(total, ['تسليم بانتظار درجتك', 'تسليمان بانتظار درجتك', 'تسليمات بانتظار درجتك', 'تسليماً بانتظار درجتك'])
-      }
+      zone="rose"
+      tag={total === 0 ? undefined : countAr(total, ['تسليم بانتظار درجتك', 'تسليمان بانتظار درجتك', 'تسليمات بانتظار درجتك', 'تسليماً بانتظار درجتك'])}
+      ariaLabel="طابور التصحيح"
       actions={total > 0 ? (
         <Link to="/teacher/assignments" className="btn primary sm">
           <Icon icon={ClipboardCheck} size={13} /> ابدأ التصحيح
@@ -553,36 +529,31 @@ function PendingGradingCard({ entries }: { entries: TeacherDashboard['pendingGra
       ) : undefined}
     >
       {entries.length === 0 ? (
-        <div className="state" role="status">
-          <div className="state-icon state-icon-success">
-            <Icon icon={CheckCircle2} size={20} />
-          </div>
-          <div className="state-title">لا انتظار — كل التسليمات مُقيَّمة</div>
-          <div className="state-desc">ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك.</div>
-        </div>
+        <LedgerRow
+          title="لا انتظار — كل التسليمات مُقيَّمة"
+          subtitle="ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك."
+          leadLabel="صفر"
+          lead="انتظار"
+          tail={<Badge color="green">مكتمل</Badge>}
+        />
       ) : (
-        <div className="flex-col gap-2">
-          {entries.map((e) => (
-            <Link key={e.assignmentId} to={e.actionTo} className="list-row">
-              <div className="list-row-body">
-                <div className="list-row-title">{e.title}</div>
-                <div className="list-row-sub">
-                  {e.course.name} · <bdi>{e.course.code}</bdi>
-                  {e.oldestSubmittedAt && (
-                    <>
-                      {' '}· أقدم تسليم {formatRelativeAr(e.oldestSubmittedAt)}
-                    </>
-                  )}
-                </div>
-              </div>
-              <Badge color="amber">
-                {countAr(e.count, ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'])}
-              </Badge>
-            </Link>
-          ))}
-        </div>
+        entries.map((e) => (
+          <LedgerRow
+            key={e.assignmentId}
+            to={e.actionTo}
+            leadLabel={countAr(e.count, ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'])}
+            title={e.title}
+            subtitle={
+              <>
+                {e.course.name} · <bdi>{e.course.code}</bdi>
+                {e.oldestSubmittedAt && <> · أقدم تسليم {formatRelativeAr(e.oldestSubmittedAt)}</>}
+              </>
+            }
+            tail={<Badge color="amber">بانتظارك</Badge>}
+          />
+        ))
       )}
-    </Card>
+    </LedgerPanel>
   );
 }
 
@@ -600,50 +571,53 @@ function TodayStripCard() {
   const todayDow = now.getDay();
 
   return (
-    <Card
+    <LedgerPanel
       title="محاضرات اليوم"
-      icon={Calendar}
-      subtitle={WEEKDAY_NAMES_AR[todayDow]}
+      zone="sky"
+      tag={WEEKDAY_NAMES_AR[todayDow]}
+      ariaLabel="محاضرات اليوم"
       actions={(
         <Link to="/teacher/schedule" className="btn ghost sm">
-          <Icon icon={Calendar} size={13} /> الجدول الأسبوعيّ
+          <Icon icon={Calendar} size={13} /> الأسبوعيّ
         </Link>
       )}
     >
       {offsQ.isPending ? (
-        <ListSkeleton rows={2} />
+        <div className="ledger-empty">
+          <ListSkeleton rows={2} />
+        </div>
       ) : offsQ.isError ? (
-        <ErrorState message="تعذَّر تحميل جدول اليوم" error={offsQ.error} onRetry={() => offsQ.refetch()} />
+        <div className="ledger-empty">
+          <ErrorState message="تعذَّر تحميل جدول اليوم" error={offsQ.error} onRetry={() => offsQ.refetch()} />
+        </div>
       ) : slots.length === 0 ? (
-        <div className="state" role="status">
-          <div className="state-icon">
-            <Icon icon={Calendar} size={20} />
-          </div>
-          <div className="state-title">لا محاضرات اليوم</div>
-          <div className="state-desc">جدول اليوم فارغ — استرح أو راجع الجدول الأسبوعيّ.</div>
-        </div>
+        <LedgerRow
+          title="لا محاضرات اليوم"
+          subtitle="جدول اليوم فارغ — استرح أو راجع الجدول الأسبوعيّ."
+          leadLabel="اليوم"
+          lead="راحة"
+          tail={<Badge color="green">يوم مفتوح</Badge>}
+        />
       ) : (
-        <div className="flex-col gap-2">
-          {slots.map((slot) => {
-            const phase = slotPhase(slot, now);
-            return (
-              <Link key={slot.key} to="/teacher/schedule" className="list-row">
-                <bdi className="list-row-meta" title={phase === 'done' ? 'انتهت' : undefined}>
-                  {slot.startTime} — {slot.endTime}
-                </bdi>
-                <div className="list-row-body">
-                  <div className="list-row-title">{slot.courseName}</div>
-                  <div className="list-row-sub">
-                    {slot.room ? `${slot.room} · ` : ''}{phase === 'done' ? 'انتهت' : phase === 'ongoing' ? 'جارٍ الآن' : 'قادمة'}
-                  </div>
-                </div>
-                <Badge><bdi>{slot.courseCode}</bdi></Badge>
-              </Link>
-            );
-          })}
-        </div>
+        slots.map((slot) => {
+          const phase = slotPhase(slot, now);
+          return (
+            <LedgerRow
+              key={slot.key}
+              to="/teacher/schedule"
+              lead={<bdi>{slot.startTime} — {slot.endTime}</bdi>}
+              title={slot.courseName}
+              subtitle={slot.room ? `${slot.room} · ${phase === 'done' ? 'انتهت' : phase === 'ongoing' ? 'جارٍ الآن' : 'قادمة'}` : (phase === 'done' ? 'انتهت' : phase === 'ongoing' ? 'جارٍ الآن' : 'قادمة')}
+              tail={
+                phase === 'ongoing' ? <Badge color="red">جارٍ الآن</Badge> :
+                phase === 'done' ? <Badge>انتهت</Badge> :
+                <Badge color="gold">قادمة</Badge>
+              }
+            />
+          );
+        })
       )}
-    </Card>
+    </LedgerPanel>
   );
 }
 
@@ -658,56 +632,46 @@ function AtRiskShortcutsCard() {
   const top = risks.data ? topRisks(risks.data) : [];
 
   return (
-    <Card
+    <LedgerPanel
       title="طلاب يحتاجون متابعة"
-      icon={AlertTriangle}
-      subtitle={risks.data && risks.data.length > 0
+      tag={risks.data && risks.data.length > 0
         ? countAr(risks.data.length, ['طالب تحت المتابعة', 'طالبان تحت المتابعة', 'طلاب تحت المتابعة', 'طالباً تحت المتابعة'])
         : undefined}
+      ariaLabel="طلاب يحتاجون متابعة"
       actions={risks.data && risks.data.length > 0 ? (
-        <Link to="/teacher/intelligence" className="btn outline sm">
+        <Link to="/teacher/intelligence" className="btn ghost sm">
           <Icon icon={Users} size={13} /> القائمة الكاملة
         </Link>
       ) : undefined}
     >
       {risks.isPending ? (
-        <ListSkeleton rows={3} />
+        <div className="ledger-empty">
+          <ListSkeleton rows={3} />
+        </div>
       ) : risks.isError ? (
-        <ErrorState message="تعذَّر تحميل قائمة المتابعة" error={risks.error} onRetry={() => risks.refetch()} />
+        <div className="ledger-empty">
+          <ErrorState message="تعذَّر تحميل قائمة المتابعة" error={risks.error} onRetry={() => risks.refetch()} />
+        </div>
       ) : top.length === 0 ? (
-        <div className="state" role="status">
-          <div className="state-icon state-icon-success">
-            <Icon icon={CheckCircle2} size={20} />
-          </div>
-          <div className="state-title">جميع طلابك في وضع جيد</div>
-          <div className="state-desc">لا مؤشّرات خطر حاليّاً — ستظهر هنا أقصر طرق المتابعة فور رصدها.</div>
-        </div>
+        <LedgerRow
+          title="جميع طلابك في وضع جيد"
+          subtitle="لا مؤشّرات خطر حاليّاً — ستظهر هنا أقصر طرق المتابعة فور رصدها."
+          leadLabel="صفر"
+          lead="مخاطرة"
+          tail={<Badge color="green">مستقر</Badge>}
+        />
       ) : (
-        <div className="flex-col gap-2">
-          {top.map((r) => (
-            <Link
-              key={`${r.studentId}:${r.offeringId}`}
-              to={`/teacher/intelligence/${r.offeringId}`}
-              className="list-row"
-              title={`سياق المخاطرة في ${r.courseName}`}
-            >
-              <UserAvatar
-                initials={r.avatarInitials ?? r.name.slice(0, 2)}
-                color={r.avatarColor ?? undefined}
-                size={32}
-              />
-              <div className="list-row-body">
-                <div className="list-row-title">{r.name}</div>
-                <div className="list-row-sub">{r.courseIcon} {r.courseName}</div>
-              </div>
-              <div className="flex gap-1 items-center">
-                <Badge color={RISK_TONE[r.riskLevel]}>{RISK_LABEL[r.riskLevel]}</Badge>
-                <span className="text-xs font-mono text-muted"><bdi>{r.riskScore}%</bdi></span>
-              </div>
-            </Link>
-          ))}
-        </div>
+        top.map((r) => (
+          <LedgerRow
+            key={`${r.studentId}:${r.offeringId}`}
+            to={`/teacher/intelligence/${r.offeringId}`}
+            lead={<bdi>{r.riskScore}%</bdi>}
+            title={r.name}
+            subtitle={<>{r.courseIcon} {r.courseName}</>}
+            tail={<Badge color={RISK_TONE[r.riskLevel]}>{RISK_LABEL[r.riskLevel]}</Badge>}
+          />
+        ))
       )}
-    </Card>
+    </LedgerPanel>
   );
 }

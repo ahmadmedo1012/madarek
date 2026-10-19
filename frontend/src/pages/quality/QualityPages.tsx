@@ -7,7 +7,7 @@ import {
   LineElement, BarElement, ArcElement, Filler, Tooltip, Legend,
 } from 'chart.js';
 import {
-  ShieldCheck, Users, BookOpen, GraduationCap, Activity,
+  ShieldCheck, BookOpen, Activity,
   AlertTriangle, TrendingUp, FileText, ClipboardCheck, ListChecks,
   Building2, School, Star, Clock, ArrowLeft, X,
   CheckCircle2, Search,
@@ -16,6 +16,7 @@ import {
 import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
 import { Card, MetricCard, Badge, AlertRow, ProgressBar, UserAvatar } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import { ChartFrame } from '../../components/charts';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListSkeleton, TableSkeleton, Skeleton, CardSkeleton } from '../../components/primitives/States';
@@ -321,7 +322,17 @@ export function QualityDashboardPage() {
             <p className="page-subtitle">رؤية لحظية لسير العملية التعليمية في الجامعة.</p>
           </div>
         </header>
-        <KpiSkeleton />
+        <div className="stat-strip" aria-busy="true">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <div key={i} className="stat-cell">
+              <Skeleton width={70} height={11} />
+              <div style={{ marginBlock: 'var(--sp-1)' }}>
+                <Skeleton width={90} height={28} />
+              </div>
+              <Skeleton width={120} height={11} />
+            </div>
+          ))}
+        </div>
         <div className="grid-2-1">
           <Card><ChartSkeleton /></Card>
           <Card><ChartSkeleton height={180} /></Card>
@@ -394,24 +405,52 @@ export function QualityDashboardPage() {
             بناء نظام تعليمي فعّال عبر تطوير الأداء الأكاديمي والإداري والتقني — وفقاً لمتطلبات
             الاعتماد المحلية والدولية.
           </p>
+          <p className="page-header-meta">
+            {new Date().toLocaleDateString('ar-LY', { weekday: 'long', day: 'numeric', month: 'long' })} · قراءة لحظية للمؤشرات
+          </p>
         </div>
         <Badge color="gold" icon={ShieldCheck}>وصول قراءة فقط</Badge>
       </header>
 
-      <div className="grid-4">
-        <MetricCard icon={GraduationCap} label="الطلاب النشطون" value={<CountIn value={d.users.STUDENT ?? 0} />} change="مسجَّل في النظام" color="brand" />
-        <MetricCard icon={Users} label="هيئة التدريس" value={<CountIn value={d.users.TEACHER ?? 0} />} color="green" to="/quality/professors" actionHint="عرض تقييم الأساتذة" />
-        <MetricCard icon={BookOpen} label="مقرّرات نشطة" value={<CountIn value={d.offerings} />} change={countAr(d.lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])} color="amber" to="/quality/courses" actionHint="عرض جودة المقرّرات" />
-        <MetricCard
-          icon={Activity}
-          label="معدل الحضور"
-          value={<CountIn value={Math.round(e.attendance.presentRate)} suffix="%" />}
-          change={countAr(e.attendance.total, ['سجل واحد', 'سجلان', 'سجلات', 'سجلاً'])}
-          color="purple"
-          to="/quality/courses?metric=attendance"
-          actionHint="عرض الحضور لكل مقرّر"
-        />
-      </div>
+      {/* R189 — the typographic stat strip (was the grid-4 KPI tiles). */}
+      <StatStrip
+        ariaLabel="مؤشرات الجودة الأساسية"
+        cells={[
+          {
+            label: 'الطلاب النشطون',
+            value: <CountIn value={d.users.STUDENT ?? 0} />,
+            trend: 'مسجَّل في النظام',
+            trendTone: 'flat',
+          },
+          {
+            label: 'هيئة التدريس',
+            value: <CountIn value={d.users.TEACHER ?? 0} />,
+            trend: 'أعضاء فاعلون',
+            trendTone: 'flat',
+            to: '/quality/professors',
+          },
+          {
+            label: 'مقرّرات نشطة',
+            value: <CountIn value={d.offerings} />,
+            trend: countAr(d.lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة']),
+            trendTone: 'flat',
+            to: '/quality/courses',
+          },
+          {
+            label: 'معدل الحضور',
+            value: <CountIn value={Math.round(e.attendance.presentRate)} suffix="%" />,
+            trend: countAr(e.attendance.total, ['سجل واحد', 'سجلان', 'سجلات', 'سجلاً']),
+            trendTone: e.attendance.presentRate >= 75 ? 'up' : e.attendance.presentRate >= 60 ? 'flat' : 'down',
+            to: '/quality/courses?metric=attendance',
+          },
+          {
+            label: 'بحوث مكتملة',
+            value: `${Math.round(paperProgress)}%`,
+            trend: paperTotal > 0 ? `${(paperDone).toLocaleString('ar-LY')} من ${(paperTotal).toLocaleString('ar-LY')} بحثًا` : 'لا بحوث بعد',
+            trendTone: 'flat',
+          },
+        ]}
+      />
 
       {/* 5-A8 §6 step 6 (rhythm): the charts row breathes — 88px above
           it vs the KPI strip's 40px (taste.md: contrast, not uniformity). */}
@@ -1038,28 +1077,37 @@ export function QualityEngagementPage() {
     <div className="page">
       {pageHeader}
 
-      <div className="grid-4">
-        <MetricCard
-          icon={ClipboardCheck}
-          label="معدل الحضور"
-          value={<CountIn value={Math.round(d.attendance.presentRate)} suffix="%" />}
-          change={countAr(d.attendance.total, ['سجل واحد', 'سجلان', 'سجلات', 'سجلاً'])}
-          color="green"
-          to="/quality/courses?metric=attendance"
-          actionHint="عرض الحضور لكل مقرّر"
-        />
-        <MetricCard
-          icon={Activity}
-          label="إكمال المحاضرات"
-          value={<CountIn value={Math.round(d.videos.completionRate)} suffix="%" />}
-          change={countAr(d.videos.completedLectures, ['محاضرة مكتملة', 'محاضرتان مكتملتان', 'محاضرات مكتملة', 'محاضرة مكتملة'])}
-          color="brand"
-          to="/quality/courses?metric=completion"
-          actionHint="عرض الإكمال لكل مقرّر"
-        />
-        <MetricCard icon={GraduationCap} label="معدل التسجيل" value={<CountIn value={Math.round(enrollmentRate)} suffix="%" />} change={countAr(d.enrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'])} color="amber" />
-        <MetricCard icon={TrendingUp} label="متوسط النشاط الأسبوعي" value={weeklyAvg === null ? '—' : <CountIn value={weeklyAvg} />} change="مستخدم/يوم" color="purple" />
-      </div>
+      <StatStrip
+        ariaLabel="مؤشرات الانخراط"
+        cells={[
+          {
+            label: 'معدل الحضور',
+            value: <CountIn value={Math.round(d.attendance.presentRate)} suffix="%" />,
+            trend: countAr(d.attendance.total, ['سجل واحد', 'سجلان', 'سجلات', 'سجلاً']),
+            trendTone: d.attendance.presentRate >= 75 ? 'up' : d.attendance.presentRate >= 60 ? 'flat' : 'down',
+            to: '/quality/courses?metric=attendance',
+          },
+          {
+            label: 'إكمال المحاضرات',
+            value: <CountIn value={Math.round(d.videos.completionRate)} suffix="%" />,
+            trend: countAr(d.videos.completedLectures, ['محاضرة مكتملة', 'محاضرتان مكتملتان', 'محاضرات مكتملة', 'محاضرة مكتملة']),
+            trendTone: 'flat',
+            to: '/quality/courses?metric=completion',
+          },
+          {
+            label: 'معدل التسجيل',
+            value: <CountIn value={Math.round(enrollmentRate)} suffix="%" />,
+            trend: countAr(d.enrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً']),
+            trendTone: 'flat',
+          },
+          {
+            label: 'متوسط النشاط الأسبوعي',
+            value: weeklyAvg === null ? '—' : <CountIn value={weeklyAvg} />,
+            trend: 'مستخدم/يوم',
+            trendTone: 'flat',
+          },
+        ]}
+      />
 
       {/* 5-A8 §6 step 6 (rhythm): the charts row is the page's breathing
           section after the tight KPI band (the quality dashboard's

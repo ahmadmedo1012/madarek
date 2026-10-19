@@ -27,12 +27,12 @@ test.describe('تسجيل الدخول', () => {
     // ROLE_HOME.STUDENT — lib/nav.ts هو المصدر الوحيد للتحويل.
     await expect(page).toHaveURL(/\/student\/dashboard$/);
 
-    // الجلسة حقيقية داخل الواجهة: التحية بالاسم الأول من جلسة الستور
-    // + بيانات لوحة الطالب من النقل الوهمي (ليست صفحة هيكلية).
-    // r168a: التحية الآن h2 (h1 = هوية «لوحة الطالب» sr-only).
-    await expect(page.locator('h2.page-title')).toContainText('أحمد');
-    await expect(page.getByText('مقررات نشطة')).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'المهام والفصول القادمة' })).toBeVisible();
+    /* R189 re-pin: the masthead h1 + subtitle carry the identity; the
+       stat strip + TODAY ledger prove real dashboard data (not a shell). */
+    await expect(page.locator('h1.page-title')).toHaveText('لوحة التحكم');
+    await expect(page.locator('.page-subtitle').first()).toContainText('أحمد');
+    await expect(page.getByText('نسبة الحضور')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'جدول اليوم' })).toBeVisible();
   });
 
   test('الفشل يعرض رسالة الخلفية العربية الصريحة ويبقى في البوابة', async ({ page }) => {

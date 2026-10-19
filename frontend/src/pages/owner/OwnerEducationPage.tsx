@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import type { CSSProperties } from 'react';
-import { BookOpen, Users, Calendar, TrendingUp } from 'lucide-react';
 import { Bar, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement,
   PointElement, LineElement, Filler, Tooltip, Legend,
 } from 'chart.js';
-import { Card, MetricCard, ProgressBar } from '../../components/primitives';
+import { Card, ProgressBar } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import {
   ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, TableSkeleton, ListSkeleton,
 } from '../../components/primitives/States';
@@ -168,12 +168,15 @@ export function OwnerEducationPage() {
         </div>
       </header>
 
-      <div className="grid-4">
-        <MetricCard icon={BookOpen} label="إجمالي المقرّرات" value={totals.totalCourses.toLocaleString('ar-LY')} color="brand" />
-        <MetricCard icon={Users} label="عدد الأساتذة" value={totals.teachers.toLocaleString('ar-LY')} color="green" />
-        <MetricCard icon={Calendar} label="العروض النشطة" value={totals.totalOfferings.toLocaleString('ar-LY')} color="purple" />
-        <MetricCard icon={TrendingUp} label="متوسط التسجيل في العرض" value={totals.avgEnrolment.toLocaleString('ar-LY')} color="gold" />
-      </div>
+      <StatStrip
+        ariaLabel="إحصائيات التعليم"
+        cells={[
+          { label: 'إجمالي المقرّرات', value: totals.totalCourses.toLocaleString('ar-LY'), trend: 'مقرّرات مسجَّلة', trendTone: 'flat' },
+          { label: 'عدد الأساتذة', value: totals.teachers.toLocaleString('ar-LY'), trend: 'هيئة التدريس', trendTone: 'flat' },
+          { label: 'العروض النشطة', value: totals.totalOfferings.toLocaleString('ar-LY'), trend: 'شعب تدريس فاعلة', trendTone: 'flat' },
+          { label: 'متوسط التسجيل في العرض', value: totals.avgEnrolment.toLocaleString('ar-LY'), trend: 'طالب لكل شعبة', trendTone: 'flat' },
+        ]}
+      />
 
       <Card title="المقرّرات حسب الكلّيّة" subtitle="عدد المقرّرات المُدرَّجة في كل كلّيّة">
         {byFaculty.length === 0 ? (

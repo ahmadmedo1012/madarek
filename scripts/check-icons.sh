@@ -55,7 +55,13 @@ violations=0
 # illustrative diagram authoring (a constellation map, a computed light
 # path), the same category as lib/illustrations — NOT UI iconography.
 # UI icons inside the landing still go through <Icon icon={...} />.
-ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration|StarMark)\.tsx|frontend/src/components/landing/|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/'
+# R189: primitives/Ledger.tsx — the «سجلّ مدارك» data-viz primitives
+# (Sparkline polyline + ProgressRing stroke-dasharray circle) are
+# CHART-class media (the same family ChartFrame's <canvas> charts
+# belong to), each carrying a role="img"/progressbar contract and real
+# data — NOT iconography. UI icons keep going through <Icon icon={...} />
+# everywhere, this file included.
+ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration|StarMark)\.tsx|frontend/src/components/landing/|frontend/src/components/primitives/Ledger\.tsx|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/'
 
 # 1. Emoji presentation in source code outside allowlist.
 #    Emoji ranges (BMP + supplementary):

@@ -29,7 +29,8 @@ test.describe('ثبات السمة', () => {
     expect(stored).toContain('"mode":"dark"');
 
     /* الصفحة ما تزال حيّة بعد إعادة التحميل (وليست شاشة إقلاع عالقة) */
-    // r168a: التحية الآن h2 (h1 = هوية «لوحة الطالب» sr-only).
-    await expect(page.locator('h2.page-title')).toContainText('أحمد');
+    // R189: الماستhead — h1 الهوية + التحية في السطر الثاني.
+    await expect(page.locator('h1.page-title')).toHaveText('لوحة التحكم');
+    await expect(page.locator('.page-subtitle').first()).toContainText('أحمد');
   });
 });

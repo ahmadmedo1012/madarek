@@ -35,12 +35,17 @@ import type { ReactNode } from 'react';
 export function PageHeader({
   title,
   subtitle,
+  meta,
   actions,
 }: {
   /** Page title — rendered as the route's single semantic h1. */
   title: ReactNode;
   /** Optional page subtitle (page-subtitle class, measure-capped 72ch). */
   subtitle?: ReactNode;
+  /** R189 masthead: optional mono FACT line (date, week, entity count —
+   *  real data only; this is a data slot, never a decorative eyebrow,
+   *  and pages that have no fact simply omit it). */
+  meta?: ReactNode;
   /** Optional header actions — rendered as a direct flex child, as-is. */
   actions?: ReactNode;
 }) {
@@ -49,6 +54,7 @@ export function PageHeader({
       <div className="page-title-block">
         <h1 className="page-title">{title}</h1>
         {subtitle !== undefined && <p className="page-subtitle">{subtitle}</p>}
+        {meta !== undefined && <p className="page-header-meta">{meta}</p>}
       </div>
       {actions}
     </header>
