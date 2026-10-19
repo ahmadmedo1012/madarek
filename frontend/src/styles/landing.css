@@ -142,7 +142,7 @@
   color: var(--stage-cream);
 }
 .fo-brand-mark { color: var(--stage-violet); flex: none; }
-.fo-brand-text { display: flex; flex-direction: column; line-height: 1.15; }
+.fo-brand-text { display: flex; flex-direction: column; line-height: 1.25; }
 .fo-brand-name {
   font-family: var(--font-display);
   font-weight: 600;
@@ -276,14 +276,16 @@
   z-index: -1;
   pointer-events: none;
 }
+/* r192: hero art panel — 1440px source caps the display box at 700px
+   so a 2× display never upscales (was min(62%,860px) → 1.2× upscale). */
 .fo-hero-art {
   position: absolute;
   inset-block: 0;
   inset-inline-end: 0;
-  inline-size: min(62%, 860px);
+  inline-size: min(58%, 700px);
   block-size: 100%;
   object-fit: cover;
-  object-position: 78% 42%;
+  object-position: 62% 42%;
   /* the art melts into the stage toward the reading start */
   mask-image: linear-gradient(to left, black 34%, transparent 82%);
   -webkit-mask-image: linear-gradient(to left, black 34%, transparent 82%);
@@ -326,14 +328,20 @@
   margin-inline: auto;
   padding-inline: var(--sp-6);
 }
-.fo-hero-copy { max-inline-size: 620px; }
+/* r192: measured span ink: «كلُّ معرفةٍ تبدأ نقطة،» = 10.03em → 883px
+   @88px. The 2-line composition needs fs 72px (722px) inside a 740px
+   column — measured, not guessed. Below ~1000px the spans wrap
+   naturally (balance) at the same safe 1.32 leading. */
+.fo-hero-copy { max-inline-size: 740px; }
 
 .fo-eyebrow {
   display: flex;
   align-items: center;
   gap: var(--sp-2-5);
   margin: 0 0 var(--sp-5);
-  color: var(--stage-cream-dim);
+  /* r192: +30% toward cream — the dim token read as low-contrast over
+     the void in review; the eyebrow must lead, not whisper. */
+  color: color-mix(in srgb, var(--stage-cream-dim) 70%, var(--stage-cream));
   font-size: 0.8125rem;
 }
 .fo-eyebrow::before {
@@ -345,11 +353,16 @@
 }
 
 .fo-hero-title {
-  margin: 0 0 var(--sp-6);
+  margin: 0 0 var(--sp-7);
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: var(--fs-display-xl);           /* clamp(48px → 96px) */
-  line-height: calc(var(--type-display-line-height) - 0.02);
+  font-size: clamp(44px, 6.4vw, 72px);
+  /* r192: lh 1.12 overlapped wrapped Arabic lines ~10px (measured on
+     production); the display token now carries the measured-safe 1.28
+     and the hero consumes it directly — zero subtractions on Arabic.
+     Cap 72px: span ink 10.03em must hold one line inside the 740px
+     copy column (measured). */
+  line-height: var(--type-display-line-height);
   letter-spacing: var(--ls-normal);
   text-wrap: balance;
 }
@@ -597,7 +610,7 @@
   .fo-header-actions .btn.primary { display: none; }
   .fo-brand-text { display: none; }
 
-  .fo-hero-title { font-size: clamp(40px, 11vw, 56px); }
+  .fo-hero-title { font-size: clamp(40px, 10.5vw, 56px); }
   .fo-hero-actions .btn { inline-size: 100%; }
   .fo-hero-meta { flex-direction: column; align-items: flex-start; gap: var(--sp-2); }
   .fo-hero-meta-dot { display: none; }
@@ -703,46 +716,59 @@
 }
 .mg-pin-secondary { pointer-events: none; }
 
-/* the radial map — bottom/inline-end anchored + cropped, like the
-   reference's half-off-canvas orbit map */
+/* the radial map — inline-end anchored with a deliberate partial crop
+   off the reading-end edge (r192: was bottom:-58vh, which pushed the
+   glowing core below the fold and left its labels floating in the
+   void — measured + flagged. Now the core stays in view: the ring
+   crown sits high, only the lower arc bleeds off-canvas). */
 .mg-map {
   position: absolute;
-  inset-inline-end: -30vw;
-  bottom: -58vh;
-  width: 120vh;
-  height: 120vh;
+  inset-inline-end: -14vw;
+  bottom: -10vh;
+  width: 104vh;
+  height: 104vh;
   min-width: 640px;
   min-height: 640px;
   color: var(--stage-cream);
 }
 .mg-map-rotor { transform-origin: 450px 450px; }
+/* r192: -8° tilted every Arabic label as the stage scrolled — the
+   reference rotates the geometry, not the reading. -4° keeps the
+   motion alive while labels stay essentially upright. */
 .mg-stage[data-pinned='on'] .mg-map-rotor {
-  transform: rotate(calc(var(--sp) * -8deg));
+  transform: rotate(calc(var(--sp) * -4deg));
 }
 .mg-core-ring { fill: none; stroke: var(--stage-line); stroke-width: 1; }
 .mg-core-dot { fill: var(--stage-violet); }
 .mg-ring {
   fill: none;
-  stroke: var(--stage-line-soft);
+  /* r192: stage-line-soft was invisible against the void — the
+     reference's map reads as a PRESENT instrument from the first
+     pinned frame, not an empty half-screen that fills in later. */
+  stroke: var(--stage-line);
   stroke-width: 1;
 }
 .mg-path {
   stroke: var(--stage-violet);
-  stroke-width: 1;
+  stroke-width: 1.25;
   stroke-dasharray: 4 6;
   opacity: clamp(0, calc((var(--sp) - var(--p-in)) / 0.08), 1);
 }
-.mg-node-mark { fill: var(--stage-cream); opacity: .35; }
-.mg-node-mark,
-.mg-node-label {
-  opacity: clamp(0, calc((var(--sp) - var(--n-in)) / 0.06), 1);
+/* r192: node MARKS are structural — present from the first pinned
+   frame (0.5 floor), igniting to full on their scene. Labels keep
+   the per-scene fade; the geometry never leaves the left half empty. */
+.mg-node-mark { fill: var(--stage-cream); }
+.mg-node-mark {
+  opacity: calc(0.45 + 0.55 * clamp(0, calc((var(--sp) - var(--n-in)) / 0.06), 1));
   transition: opacity 0s;
 }
 .mg-node-label {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.06em;
   fill: var(--stage-cream-dim);
+  opacity: clamp(0, calc((var(--sp) - var(--n-in)) / 0.06), 1);
+  transition: opacity 0s;
 }
 .mg-node:nth-of-type(even) .mg-node-mark { fill: var(--stage-violet); }
 
@@ -775,9 +801,9 @@
 .mg-stage[data-pinned='on'] .mg-frames {
   position: absolute;
   inset-inline-start: max(24px, calc(50vw - 660px));
-  top: 18vh;
+  top: 16vh;
   inline-size: min(92vw, 600px);
-  height: 64vh;
+  height: 70vh;
   pointer-events: none;
 }
 .mg-frame {
@@ -809,8 +835,9 @@
   font-family: var(--font-display);
   font-weight: 600;
   font-size: clamp(28px, 3.1vw, 44px);
-  line-height: 1.18;
-  margin: 0 0 14px;
+  /* r192: 1.18 clipped Alexandria ascenders at 44px; 1.32 measured-safe. */
+  line-height: 1.32;
+  margin: 0 0 16px;
   color: var(--stage-cream);
 }
 .mg-frame-title em {
@@ -934,8 +961,9 @@
   font-family: var(--font-display);
   font-weight: 600;
   font-size: clamp(28px, 4.4vw, 56px);
-  line-height: 1.16;
-  margin: 12px 0 14px;
+  /* r192: 1.16 clipped 56px Arabic ascenders; 1.3 measured-safe. */
+  line-height: 1.3;
+  margin: 12px 0 16px;
   max-width: 22ch;
 }
 .pd-title em { font-style: normal; color: var(--accent); }
@@ -989,6 +1017,7 @@
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 21px;
+  line-height: 1.4;
   margin: 0 0 10px;
 }
 .pd-card-lede {
@@ -1046,7 +1075,7 @@
     linear-gradient(180deg, var(--stage-ink-2) 0%, var(--stage-ink) 100%);
   overflow: clip;
 }
-.pf-stage[data-pinned='on'] { height: 260vh; }
+.pf-stage[data-pinned='on'] { height: 240vh; }
 .pf-pin { position: relative; }
 .pf-stage[data-pinned='on'] .pf-pin {
   position: sticky;
@@ -1059,8 +1088,10 @@
   font-family: var(--font-display);
   font-weight: 600;
   font-size: clamp(34px, 5.6vw, 72px);
-  line-height: 1.12;
-  margin: 10px 0 12px;
+  /* r192: 1.12 clipped 72px ink (scrollH 84 > clientH 81 measured);
+     the display token (1.32 on the void) is the legal leading. */
+  line-height: var(--type-display-line-height);
+  margin: 14px 0 18px;
 }
 .pf-title em { font-style: normal; color: var(--stage-violet); }
 .pf-lede { color: var(--stage-cream-dim); margin: 0; }
@@ -1069,7 +1100,9 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* r192: three honest computed cards — a single staged row (the
+     reference's metric trio), no design-slot filler card. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
   max-width: 1080px;
   margin-inline: auto;
@@ -1108,14 +1141,15 @@
   line-height: 1.7;
   color: color-mix(in srgb, var(--stage-cream-dim) 88%, var(--stage-cream));
 }
-/* the march: card i enters/leaves across its own scroll band */
+/* the march (r192): cards stagger IN and STAY — the r191 exit bands
+   (0.34+0.21·ci) emptied the stage one card at a time and left the
+   final ~25% of the pin blank (measured mid-states: 0 cards visible).
+   The reference's staged metrics dwell complete; ours now do too:
+   all three settle by sp≈0.57 and hold until the unpin. */
 .pf-stage[data-pinned='on'] .pf-card {
-  opacity: calc(
-    clamp(0, (var(--sp) - (0.06 + var(--ci) * 0.21)) / 0.05, 1) *
-    clamp(0, ((0.34 + var(--ci) * 0.21) - var(--sp)) / 0.06, 1)
-  );
+  opacity: clamp(0, (var(--sp) - (0.05 + var(--ci) * 0.14)) / 0.05, 1);
   transform: translateY(calc(
-    (1 - clamp(0, (var(--sp) - (0.06 + var(--ci) * 0.21)) / 0.28, 1)) * 34vh
+    (1 - clamp(0, (var(--sp) - (0.05 + var(--ci) * 0.14)) / 0.24, 1)) * 30vh
   ));
   will-change: opacity, transform;
 }
@@ -1156,7 +1190,7 @@
   padding: 3px 10px;
   border-radius: var(--r-xs, 2px);
 }
-.rl-card-title { font-family: var(--font-display); font-weight: 600; font-size: 19px; margin: 12px 0 8px; }
+.rl-card-title { font-family: var(--font-display); font-weight: 600; font-size: 19px; line-height: 1.45; margin: 12px 0 8px; }
 .rl-card-lede { margin: 0; color: var(--text-muted); font-size: 14px; line-height: 1.8; }
 .rl-more {
   max-width: 1160px;
@@ -1203,12 +1237,16 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(72px, 17vw, 200px);
-  line-height: 0.95;
+  /* r192: 0.95 clipped 27px of «مدارك» ink; Alexandria's Arabic glyph
+     box measures 1.16em — lh 1.2 holds the full ink (scrollH 232 ≤
+     240). Negative tracking also removed — Arabic cursive joins must
+     never be tracked. */
+  line-height: 1.2;
   margin: 18px 0 8px;
   color: var(--stage-cream);
   opacity: clamp(0, (var(--sp) - 0.02) / 0.10, 1);
   translate: 0 calc((1 - clamp(0, (var(--sp) - 0.02) / 0.18, 1)) * 40px);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   text-align: center;
   white-space: nowrap;
 }
@@ -1222,7 +1260,7 @@
   font-family: var(--font-display);
   font-weight: 600;
   font-size: clamp(22px, 2.6vw, 34px);
-  line-height: 1.3;
+  line-height: 1.4;
   margin: 24px 0 12px;
 }
 .vs-title em { font-style: normal; color: var(--stage-violet); }
@@ -1313,14 +1351,18 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(64px, 16.5vw, 224px);
-  line-height: 0.82;
+  /* r192: lh 0.82 + margin-bottom -0.14em cut the wordmark mid-glyph
+     (measured ink 259px on a 224px font — a 1.16em glyph box). lh 1.2
+     + zero negative margin keeps every glyph whole while the
+     opacity/translate rush survives. */
+  line-height: 1.2;
   text-align: center;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   color: var(--stage-cream);
   opacity: calc(clamp(0, (var(--sp) - 0.45) / 0.30, 1) * 0.16);
   translate: 0 calc((1 - clamp(0, (var(--sp) - 0.45) / 0.35, 1)) * 120px);
   margin-top: 40px;
-  margin-bottom: -0.14em;
+  margin-bottom: 0;
   white-space: nowrap;
   user-select: none;
 }
@@ -1337,8 +1379,8 @@
     pointer-events: none;
   }
   .mg-map {
-    inset-inline-end: -58vw;
-    bottom: -20vh;
+    inset-inline-end: -36vw;
+    bottom: -8vh;
     min-width: 480px;
     min-height: 480px;
   }

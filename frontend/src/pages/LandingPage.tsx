@@ -153,8 +153,11 @@ const PRODUCTS = [
   },
 ];
 
-/* ── Proof stat cards (ما يعمل اليوم) — every number computed or
- * product-true; the artificial-demo transparency card is deliberate. */
+/* ── Proof stat cards (ما يعمل اليوم) — r192: three computed truths.
+ * The operator-rejected «١٠٠٪ بيانات عرض معلَنة» design-slot card is
+ * GONE; the demo-data disclosure lives where it belongs — one quiet
+ * line in the hero telemetry and the footer about text. Every number
+ * below is computed from this table or hard product truth. */
 /** r191 responsive art: every generated brand image ships a -480 webp
  *  twin — mobile viewports fetch ~10KB variants instead of the 960w art
  *  (the audit's bytes-transferred axis measures the real selection). */
@@ -169,7 +172,6 @@ const PROOF_CARDS = [
   { n: AR(LIVE_COUNT), unit: 'قدرات', sub: 'تعمل الآن — موثَّقة في دليل الميزات', img: '/brand/card-assessment.webp' },
   { n: '٥', unit: 'أدوار', sub: 'مسارات وصلاحيات منفصلة لكل دور', img: '/brand/journey-institution.webp' },
   { n: '٤', unit: 'أنواع أسئلة', sub: 'بتصحيح تلقائي للأسئلة الموضوعية', img: '/brand/card-content.webp' },
-  { n: '١٠٠٪', unit: 'بيانات عرض معلَنة', sub: 'بيانات العرض اصطناعية تجريبية — لا تُقدَّم كواقع', img: '/brand/journey-student.webp' },
 ];
 
 /* ── Role cards (لمن صُنعت) — three reader-facing journeys + the honest
@@ -230,7 +232,11 @@ export default function LandingPage() {
    * Each stage container carries ONE --sp progress var written by
    * useScrollStage (rAF-coalesced, passive); CSS derives every motion. */
   const megaRef = useScrollStage<HTMLElement>({ startOffset: 0, endOffset: 1 });
-  const proofRef = useScrollStage<HTMLElement>({ startOffset: 0, endOffset: 1 });
+  // r192: the stat cards must arrive WITH the section (the reference's
+  // staged metrics are visible as the stage slides in) — startOffset 0
+  // kept them invisible until the pin engaged, showing an empty band
+  // under the header during approach (measured: 0 cards at 260px-in).
+  const proofRef = useScrollStage<HTMLElement>({ startOffset: 1, endOffset: 1 });
   const visionRef = useScrollStage<HTMLElement>();
   const footerRef = useScrollStage<HTMLElement>();
   const productsRef = useRef<HTMLDivElement>(null);
@@ -445,11 +451,15 @@ export default function LandingPage() {
         {/* ═══ النقطة — the 1-viewport cinematic hero ═══ */}
         <section className="fo-hero" aria-label="مدارك — منصّة التعليم الذكي">
           <div className="fo-hero-stage" aria-hidden>
+            {/* r192: the art panel is min(58%, 700px) — not full-bleed
+                (r191's sizes=100vw fetched the 1344w master for a
+                700px box on DPR-1 desktops). The declared sizes now
+                say what renders. */}
             <img
               className="fo-hero-art"
               src="/brand/hero-scene.webp"
-              srcSet="/brand/hero-scene-720.webp 720w, /brand/hero-scene.webp 1440w"
-              sizes="100vw"
+              srcSet="/brand/hero-scene-720.webp 720w, /brand/hero-scene.webp 1344w"
+              sizes="(max-width: 960px) 100vw, (max-width: 1280px) 640px, 700px"
               alt=""
               decoding="async"
               fetchPriority="high"
@@ -500,10 +510,10 @@ export default function LandingPage() {
               ٠٠١ at the start corner (RTL: bottom-right), mission sentence
               opposite. Honest counts only. */}
           <RevealCssClass as="div" className="fo-hero-corner fo-micro" delay={5}>
-            <span className="fo-mono">٠٠١</span> · تعليمٌ يستحق مساره
+            <span className="fo-mono">٠٠١</span> · رحلة تعلّم متكاملة
           </RevealCssClass>
           <RevealCssClass as="p" className="fo-hero-mission fo-micro" delay={5}>
-            من المحاضرة الأولى إلى الإتقان — منظومة واحدة تصنع رحلة كل طالب.
+            من المحاضرة الأولى إلى الإتقان — منظومة واحدة تلازم رحلة الطالب.
           </RevealCssClass>
 
           {/* the quiet honest strip — replaces the old flag strip */}
@@ -522,7 +532,7 @@ export default function LandingPage() {
             </li>
             <li className="fo-telemetry-item fo-telemetry-end">
               <span className="fo-telemetry-mark" aria-hidden />
-              <span className="fo-mono">※</span> بيانات العرض تجريبية معلَنة
+              <span className="fo-mono">※</span> بيانات العرض توضيحية
             </li>
           </RevealCssClass>
 
@@ -728,7 +738,7 @@ export default function LandingPage() {
             parallax backdrop, body column, and honest status pairs. */}
         <section className="vs-section" aria-labelledby="vs-title" ref={visionRef}>
           <div className="vs-bg" aria-hidden>
-            <img src="/brand/vision-bg.webp" srcSet="/brand/vision-bg-768.webp 768w, /brand/vision-bg.webp 1536w" sizes="100vw" alt="" loading="lazy" decoding="async" />
+            <img src="/brand/vision-bg.webp" srcSet="/brand/vision-bg-768.webp 768w, /brand/vision-bg.webp 1344w" sizes="100vw" alt="" loading="lazy" decoding="async" />
           </div>
           <div className="vs-inner">
             <span className="fo-label vs-label"><span className="fo-mono">٠٠٦</span> — إلى أين</span>

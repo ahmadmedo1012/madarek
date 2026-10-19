@@ -32,7 +32,7 @@ export function KnowledgeMap({ className }: { className?: string }) {
     { id: 'lecture', label: 'المحاضرة', r: 150, a: 205, inAt: 0.18 },
     { id: 'matrix', label: 'المصفوفة', r: 240, a: 250, inAt: 0.30 },
     { id: 'exam', label: 'الاختبار', r: 150, a: 130, inAt: 0.55 },
-    { id: 'research', label: 'البحث', r: 320, a: 155, inAt: 0.42 },
+    { id: 'research', label: 'البحث', r: 288, a: 132, inAt: 0.42 },
     { id: 'assistant', label: 'المساعد', r: 240, a: 95, inAt: 0.66 },
     { id: 'certificate', label: 'الشهادة', r: 320, a: 45, inAt: 0.78 },
     { id: 'messages', label: 'الرسائل', r: 240, a: 330, inAt: 0.50 },

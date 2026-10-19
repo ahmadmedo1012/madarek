@@ -354,12 +354,13 @@
     /* Display — hero headlines only. One per page max. */
     --type-display-size-md:        var(--fs-display-md);   /* 28..40px */
     --type-display-weight:         var(--fw-black);        /* → 700: Plex has no 800 */
-    /* 21-c (A12 P2-7 — the P1-12 “Arabic-leading study”): 1.05 was
-       Latin-tuned and clipped Arabic diacritic stacks at display
-       sizes; 1.15 is the Arabic floor (dark adds one more step —
-       typeset guidance: light-on-dark wants slightly more leading).
-       Landing's mega already rode calc(display-lh + .05) → 1.20. */
-    --type-display-line-height:    1.14;
+    /* r192: 1.14 clipped measured Arabic ink at 44–96px (Alexandria
+       ascenders + diacritic stacks measured scrollHeight > clientHeight
+       on production hero/proof/CTA titles). 1.28 is the proven-safe
+       Arabic display floor for this family — tight enough to keep the
+       Turion-grade impact, open enough that «كلُّ معرفةٍ» never
+       collides across wrapped lines. */
+    --type-display-line-height:    1.28;
     /* 5-C2 (A3 P1-1 / 21-c headline precedent): was --ls-mega
        (-0.032em) — every consumer of the display role is Arabic
        landing display text (mega/section/band/final-CTA headings +
@@ -374,7 +375,11 @@
     --type-headline-size-md:        var(--fs-h2);          /* 22px */
     --type-headline-size-sm:        var(--fs-h3);          /* 18px */
     --type-headline-weight:         var(--fw-bold);        /* 700 */
-    --type-headline-line-height:    var(--lh-snug);        /* 1.20 */
+    /* r192: was --lh-snug (1.20) — Arabic page titles at 22–30px with
+       tashkeel-bearing headlines clipped their top ink at 1.20
+       (same measured family as the display fix). 1.34 keeps app
+       headlines compact but never clips. */
+    --type-headline-line-height:    1.34;
     /* 21-c (A3 P2-4 / ruling #2): was --ls-snug (-0.012em) — tracking
        breaks Arabic cursive joins on every headline consumer
        (colleges.css ×4, student.css ×2, the modal title). The role is
@@ -872,8 +877,8 @@
     /* 21-c (A12 P2-7): one more leading step for light-on-dark display
        text (typeset guidance — compensate on all perceptual axes; the
        tracking/weight axes are banned on Arabic cursive, leading is
-       the legal one). Landing mega rides calc(display-lh + .05) → 1.25. */
-    --type-display-line-height: 1.14;   /* r190: Alexandria display leading — tight as Arabic allows */
+       the legal one). r192: dark rides 1.32 (light 1.28 + one step). */
+    --type-display-line-height: 1.32;   /* r192: Alexandria display leading — measured-safe on the void */
 
     --neutral-0:   #0D1428;
     --neutral-50:  #070B16;
