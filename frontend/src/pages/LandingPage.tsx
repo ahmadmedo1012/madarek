@@ -134,19 +134,19 @@ const CAPABILITY_BAR = [
 /* ── Product cards (المنظومة slider). */
 const PRODUCTS = [
   {
-    n: '٠١', img: '/brand/card-content.jpg', title: 'المحتوى والمحاضرات',
+    n: '٠١', img: '/brand/card-content.webp', title: 'المحتوى والمحاضرات',
     lede: 'محاضرات مسجَّلة بنقاط فحص مدمجة — الحضور يُحتسب تلقائيًا عند الإكمال، والفهم يُبنى بوتيرة الطالب.',
     tags: ['محاضرات', 'نقاط فحص', 'حضور تلقائي'],
     icon: BookOpenCheck,
   },
   {
-    n: '٠٢', img: '/brand/card-assessment.jpg', title: 'القياس والاختبارات',
+    n: '٠٢', img: '/brand/card-assessment.webp', title: 'القياس والاختبارات',
     lede: 'أربعة أنواع أسئلة بتصحيح تلقائي للموضوعي، وتصحيح المقالات بملاحظات مكتوبة — والنتائج تتصل مباشرة بالمصفوفة.',
     tags: ['اختيار متعدد', 'صح/خطأ', 'إجابة قصيرة', 'مقالة'],
     icon: ClipboardCheck,
   },
   {
-    n: '٠٣', img: '/brand/card-ai.jpg', title: 'الذكاء الأكاديمي',
+    n: '٠٣', img: '/brand/card-ai.webp', title: 'الذكاء الأكاديمي',
     lede: 'مساعد يعرف مقرَّراتك ومحاضراتك ودرجاتك: شروحات مخصَّصة، وتحديد فجوات، وخطط مراجعة حسب أدائك الفعلي.',
     tags: ['شروحات', 'فجوات معرفية', 'خطط مراجعة'],
     icon: Brain,
@@ -155,30 +155,38 @@ const PRODUCTS = [
 
 /* ── Proof stat cards (ما يعمل اليوم) — every number computed or
  * product-true; the artificial-demo transparency card is deliberate. */
+/** r191 responsive art: every generated brand image ships a -480 webp
+ *  twin — mobile viewports fetch ~10KB variants instead of the 960w art
+ *  (the audit's bytes-transferred axis measures the real selection). */
+const srcset480 = (src: string) => {
+  const m = src.match(/^(.*)\.webp$/);
+  return m ? `${m[1]}-480.webp 480w, ${src} 960w` : src;
+};
+
 const AR = (n: number) => String(n).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[+d] ?? d);
 
 const PROOF_CARDS = [
-  { n: AR(LIVE_COUNT), unit: 'قدرات', sub: 'تعمل الآن — موثَّقة في دليل الميزات', img: '/brand/card-assessment.jpg' },
-  { n: '٥', unit: 'أدوار', sub: 'مسارات وصلاحيات منفصلة لكل دور', img: '/brand/journey-institution.jpg' },
-  { n: '٤', unit: 'أنواع أسئلة', sub: 'بتصحيح تلقائي للأسئلة الموضوعية', img: '/brand/card-content.jpg' },
-  { n: '١٠٠٪', unit: 'بيانات عرض معلَنة', sub: 'بيانات العرض اصطناعية تجريبية — لا تُقدَّم كواقع', img: '/brand/journey-student.jpg' },
+  { n: AR(LIVE_COUNT), unit: 'قدرات', sub: 'تعمل الآن — موثَّقة في دليل الميزات', img: '/brand/card-assessment.webp' },
+  { n: '٥', unit: 'أدوار', sub: 'مسارات وصلاحيات منفصلة لكل دور', img: '/brand/journey-institution.webp' },
+  { n: '٤', unit: 'أنواع أسئلة', sub: 'بتصحيح تلقائي للأسئلة الموضوعية', img: '/brand/card-content.webp' },
+  { n: '١٠٠٪', unit: 'بيانات عرض معلَنة', sub: 'بيانات العرض اصطناعية تجريبية — لا تُقدَّم كواقع', img: '/brand/journey-student.webp' },
 ];
 
 /* ── Role cards (لمن صُنعت) — three reader-facing journeys + the honest
  * quiet row for the two oversight roles. */
 const ROLE_CARDS = [
   {
-    img: '/brand/journey-student.jpg', icon: GraduationCap, tag: 'للطالب',
+    img: '/brand/journey-student.webp', icon: GraduationCap, tag: 'للطالب',
     title: 'رحلة تعلّم شخصية',
     lede: 'مقرَّراتك وتقدُّمك وفجواتك وإنجازاتك في مكان واحد — ومساعد يقترح خطوة المراجعة التالية.',
   },
   {
-    img: '/brand/journey-teacher.jpg', icon: Brain, tag: 'للأستاذ',
+    img: '/brand/journey-teacher.webp', icon: Brain, tag: 'للأستاذ',
     title: 'أدوات تدريس وقياس',
     lede: 'بناء المحاضرات والاختبارات، متابعة الطلاب، تصحيح معلَّم للمقالات، ومراجعة البحوث — ببضع نقرات.',
   },
   {
-    img: '/brand/journey-institution.jpg', icon: Building2, tag: 'للإدارة',
+    img: '/brand/journey-institution.webp', icon: Building2, tag: 'للإدارة',
     title: 'إدارة مؤسّستك كاملة',
     lede: 'الكليات والأقسام والمقرَّرات والمستخدمون والصلاحيات — وتقارير حيّة على مستوى المؤسّسة.',
   },
@@ -440,8 +448,11 @@ export default function LandingPage() {
             <img
               className="fo-hero-art"
               src="/brand/hero-scene.webp"
+              srcSet="/brand/hero-scene-720.webp 720w, /brand/hero-scene.webp 1440w"
+              sizes="100vw"
               alt=""
               decoding="async"
+              fetchPriority="high"
             />
             <OrbitPath className="fo-orbit-path" />
           </div>
@@ -620,7 +631,7 @@ export default function LandingPage() {
               {PRODUCTS.map((p) => (
                 <article key={p.n} className="pd-card">
                   <figure className="pd-card-media">
-                    <img src={p.img} alt="" loading="lazy" decoding="async" />
+                    <img src={p.img} srcSet={srcset480(p.img)} sizes="(max-width: 900px) 88vw, 560px" alt="" loading="lazy" decoding="async" />
                     <span className="fo-mono pd-card-n">{p.n}</span>
                   </figure>
                   <div className="pd-card-body">
@@ -669,7 +680,7 @@ export default function LandingPage() {
                   aria-hidden={false}
                 >
                   <figure className="pf-card-media">
-                    <img src={c.img} alt="" loading="lazy" decoding="async" />
+                    <img src={c.img} srcSet={srcset480(c.img)} sizes="(max-width: 900px) 88vw, 500px" alt="" loading="lazy" decoding="async" />
                   </figure>
                   <p className="pf-card-n">
                     <strong className="fo-mono">{c.n}</strong>
@@ -695,7 +706,7 @@ export default function LandingPage() {
             {ROLE_CARDS.map((r, i) => (
               <RevealCssClass as="li" key={r.tag} className="rl-card" delay={((i % 3) + 1) as 1 | 2 | 3}>
                 <figure className="rl-card-media">
-                  <img src={r.img} alt="" loading="lazy" decoding="async" />
+                  <img src={r.img} srcSet={srcset480(r.img)} sizes="(max-width: 900px) 88vw, 360px" alt="" loading="lazy" decoding="async" />
                 </figure>
                 <div className="rl-card-body">
                   <span className="rl-card-tag"><Icon icon={r.icon} size={14} /> {r.tag}</span>
@@ -717,7 +728,7 @@ export default function LandingPage() {
             parallax backdrop, body column, and honest status pairs. */}
         <section className="vs-section" aria-labelledby="vs-title" ref={visionRef}>
           <div className="vs-bg" aria-hidden>
-            <img src="/brand/vision-bg.jpg" alt="" loading="lazy" decoding="async" />
+            <img src="/brand/vision-bg.webp" srcSet="/brand/vision-bg-768.webp 768w, /brand/vision-bg.webp 1536w" sizes="100vw" alt="" loading="lazy" decoding="async" />
           </div>
           <div className="vs-inner">
             <span className="fo-label vs-label"><span className="fo-mono">٠٠٦</span> — إلى أين</span>
@@ -750,7 +761,7 @@ export default function LandingPage() {
               <span className="qt-corner qt-c-tl" /><span className="qt-corner qt-c-br" />
             </div>
             <div className="qt-media">
-              <img src="/brand/orbit-ring.webp" alt="" loading="lazy" decoding="async" />
+              <img src="/brand/orbit-ring.webp" srcSet="/brand/orbit-ring-480.webp 480w, /brand/orbit-ring.webp 800w" sizes="(max-width: 900px) 88vw, 380px" alt="" loading="lazy" decoding="async" />
             </div>
             <blockquote className="qt-body">
               <RevealCssClass as="p" className="qt-text" delay={1}>

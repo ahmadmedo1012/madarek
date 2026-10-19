@@ -38,11 +38,13 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('every @font-face in fonts.css points to an existing woff2 file', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const urls = [...css.matchAll(/url\('?(\/fonts\/[^)']+\.woff2)'?\)/g)].map((m) => m[1]!);
-    // 16 faces — 10 IBM Plex (Sans Arabic 400-700 arabic+latin + Mono
-    // ×2) + 6 Alexandria (r190: the Arabic display family, 500/600/700
-    // arabic+latin). Premium-polish PP-X1 deleted the dead Noto Kufi
-    // ×6 + Amiri + Rubik; r152j (A7) deleted the dead Serif italic ×2.
-    expect(urls.length).toBe(16);
+    // 14 faces — 10 IBM Plex (Sans Arabic 400-700 arabic+latin + Mono
+    // ×2) + 4 Alexandria (r191: the Arabic display family is 600/700
+    // only — the 500 rungs retired with the wire-weight diet; the two
+    // 500-weight landing consumers moved to 600). r190 added the
+    // family (500/600/700); Premium-polish PP-X1 deleted the dead Noto
+    // Kufi ×6 + Amiri + Rubik; r152j (A7) deleted the dead Serif ×2.
+    expect(urls.length).toBe(14);
     for (const u of urls) {
       const file = path.join(root, 'public', u.replace(/^\//, ''));
       expect(existsSync(file), `${u} missing from public/fonts`).toBe(true);
@@ -52,7 +54,7 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('all font faces use font-display: swap', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const faces = css.match(/@font-face\s*\{/g)?.length ?? 0;
-    expect(faces).toBe(16);   // 10 Plex + 6 Alexandria (r190)
+    expect(faces).toBe(14);   // 10 Plex + 4 Alexandria (r191: 600/700 only)
     expect(css.match(/font-display:\s*swap/g)?.length).toBe(faces);
   });
 

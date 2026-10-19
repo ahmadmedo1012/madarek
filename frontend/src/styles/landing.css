@@ -909,7 +909,9 @@
   color: var(--stage-cream-dim);
   padding: 4px 2px;
   border-bottom: 1px solid transparent;
-  transition: color .45s ease, border-color .45s ease;
+  /* motion ladder: the canonical --t-slow rung (380ms) — 450ms was an
+     ad-hoc literal the surface-drift gate correctly rejected. */
+  transition: color var(--t-slow) var(--ease), border-color var(--t-slow) var(--ease);
 }
 .mg-cap .fo-mono { margin-inline-end: 6px; }
 .mg-cap[data-on='true'] {
@@ -1028,7 +1030,8 @@
   border: 1px solid var(--rule);
   border-radius: var(--r-sm, 2px);
   cursor: pointer;
-  transition: border-color .3s ease, color .3s ease;
+  /* motion ladder: --t-slow (380ms) — no ad-hoc durations. */
+  transition: border-color var(--t-slow) var(--ease), color var(--t-slow) var(--ease);
 }
 .pd-arrow:hover { border-color: var(--accent); color: var(--accent); }
 /* focus: the product's universal AA ring owns it (r172a §3) — no
@@ -1097,7 +1100,7 @@
   margin: 14px 18px 0;
   font-family: var(--font-mono);
 }
-.pf-card-n strong { font-size: 40px; font-weight: 500; color: var(--stage-cream); }
+.pf-card-n strong { font-size: 40px; font-weight: 600; color: var(--stage-cream); }
 .pf-card-unit { font-size: 15px; color: var(--stage-violet); }
 .pf-card-sub {
   margin: 6px 18px 18px;
@@ -1288,7 +1291,7 @@
 .qt-body { margin: 0; }
 .qt-text {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 600;
   font-size: clamp(20px, 2.6vw, 32px);
   line-height: 1.55;
   margin: 0 0 18px;
