@@ -1,743 +1,861 @@
 /* ═════════════════════════════════════════════════════════════════════
-   «دفتر مدارك» — The Madarek Folio (r188)
+   «مدار المعرفة» — THE R190 LANDING WORLD
    ─────────────────────────────────────────────────────────────────────
-   The landing's editorial world: paper & ink, hairline rules, folio
-   numerals, manuscript figures. A first-class TWO-THEME surface that
-   grounds itself on the CANONICAL tokens (--bg / --text / --rule /
-   --accent) exactly like the product shell — the retired Orbit-Ink
-   --ln-* scene family stays defined in tokens.css (parity pins) but
-   nothing here consumes it.
+   The Turion-derived orbit grammar (docs/design/r190-reference-matrix.md):
 
-   Composition principles (UUPM: Editorial Grid/Magazine × E-Ink/Paper
-   × Bold Typography, adapted Arabic-first):
-     · Masthead hero — display type at ~5:1 body, one primary CTA.
-     · Chapters numbered ٠١..٠٤ with mono labels + hairline rules.
-     · Index rows (roles/ledger) instead of card grids.
-     · A static manuscript figure — no canvas, no marquee, no loops.
-     · Generous vertical rhythm, max-measure prose, calm motion only.
-   ════════════════════════════════════════════════════════════════════ */
+   · THE VOID STAGE — the hero + top chrome paint the theme-FIXED
+     stage family (tokens.css --stage-*): deep void, atmospheric
+     violet illumination, the original «مدار المعرفة» art, one thin
+     orbital light-path with a glowing node. A media surface, not a
+     theme rebellion — the body below follows the canonical
+     two-theme system (cream editorial light / void night dark).
 
-/* ── Root ─────────────────────────────────────────────────────────── */
+   · MISSION-CONTROL CHROME — identity strip + header are fixed-dark
+     (the mission bar): cream text on the stage, glass on scroll,
+     stage-scoped buttons and theme toggle.
+
+   · TELEMETRY GRAMMAR — mono micro-labels (Plex Mono, Arabic runs
+     continue in Plex Sans Arabic per the --font-mono stack), square
+     7px violet markers, honest counts computed from the data.
+
+   · EDITORIAL BODY — chapters ride var(--bg) with ink rules and
+     generous Alexandria display; stations/roles are numbered ROWS
+     (never icon-card grids — the craft floor); the proof ledger
+     rides an atmospheric violet band; the media stage pairs the
+     orbit-ring art with the vision copy.
+
+   · GEOMETRY — near-square (2–6px); one hairline family
+     (--rule/--stage-line); no rounded card world on this page.
+
+   Contracts carried from the r188 folio (tests pin them):
+   .fo-progress-bar --p imperative · .fo-header.scrolled ·
+   .fo-mobile-menu Escape contract · .fo-skip-link · 5+5 funnel ·
+   LEDGER truth strings. Spacing: authored editorial rhythm (the
+   landing's sanctioned census — 30+ world-design values, --sp-*
+   adopted opportunistically). Colors: tokens + color-mix only.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ── page shell ──────────────────────────────────────────────────── */
 .landing {
-  min-block-size: 100dvh;
+  /* the canonical ground — the BODY sections follow the theme */
   background: var(--bg);
   color: var(--text);
-  overflow-x: clip; /* RTL overflow guard */
   font-family: var(--font-sans);
+  min-block-size: 100vh;
+  overflow-x: clip;
 }
-
 .landing *,
 .landing *::before,
-.landing *::after {
-  box-sizing: border-box;
+.landing *::after { box-sizing: border-box; }
+
+.landing :focus-visible {
+  outline: 2px solid var(--state-focus-ring-color);
+  outline-offset: 2px;
 }
 
-/* the folio mono voice — Latin/numerals in Plex Mono, Arabic falls back
-   to the brand face (the r149 R3-A4 F3.1 fallback-per-glyph pattern) */
+/* the mono voice — telemetry labels, numerals, markers */
 .fo-mono {
   font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: 0; /* Arabic cursive-join safety (ruling #2) */
-  color: var(--text-muted);
+  font-size: 0.6875rem;   /* 11px — the telemetry size */
+  letter-spacing: 0;
 }
 
-/* ── Skip link ─────────────────────────────────────────────────────── */
+/* ── skip link ────────────────────────────────────────────────────── */
 .fo-skip-link {
-  position: fixed;
-  inset-block-start: var(--sp-2);
-  inset-inline-start: var(--sp-2);
+  position: absolute;
+  inset-block-start: -48px;
+  inset-inline-start: var(--sp-4);
   z-index: 100;
-  padding: var(--sp-2) var(--sp-4);
-  background: var(--accent);
-  color: var(--accent-fg);
-  border-radius: var(--r-full);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  transform: translateY(calc(-100 * var(--motion-direction) * 1px));
-  opacity: 0;
-  pointer-events: none;
-  transition: transform var(--t-fast) var(--ease), opacity var(--t-fast) var(--ease);
+  padding: var(--sp-2-5) var(--sp-5);
+  background: var(--stage-violet);
+  color: var(--stage-ink);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  border-radius: 0;
+  transition: inset-block-start var(--t-fast) var(--ease);
 }
-/* (r188: focus contract unchanged from r172a — the product's universal
-   AA ring (polish v22) owns every landing control's :focus-visible;
-   this sheet writes no focus declarations at all. The skip-link keeps
-   its visibility transition only.) */
-.fo-skip-link:focus-visible {
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: auto;
-}
+.fo-skip-link:focus { inset-block-start: var(--sp-2); }
 
-/* ── Scroll progress ribbon ────────────────────────────────────────── */
+/* ── scroll-progress ribbon (imperative --p) ─────────────────────── */
 .fo-progress {
   position: fixed;
   inset-block-start: 0;
   inset-inline: 0;
-  z-index: 60;
-  block-size: var(--sp-0-5);
+  block-size: 2px;
+  z-index: 90;
   background: transparent;
   pointer-events: none;
 }
 .fo-progress-bar {
   block-size: 100%;
-  inline-size: calc(var(--p, 0) * 100%);
-  background: var(--accent);
-  transform-origin: var(--motion-origin, right);
+  inline-size: 100%;
+  transform: scaleX(var(--p, 0));
+  transform-origin: right;   /* RTL: progress grows from the reading start */
+  background: linear-gradient(90deg, var(--aura-violet-deep), var(--stage-violet));
+  will-change: transform;
 }
 
-/* ── Identity strip (independence provenance) ─────────────────────── */
+/* ════════════════════════════════════════════════════════════════════
+   THE MISSION-CONTROL CHROME — fixed stage colors (both themes)
+   ════════════════════════════════════════════════════════════════════ */
+
 .fo-identity-strip {
-  background: var(--surface-2);
-  border-block-end: 1px solid var(--rule);
-  font-size: var(--fs-chrome);
-  color: var(--text-muted);
+  background: var(--stage-ink);
+  color: var(--stage-cream-dim);
+  border-block-end: 1px solid var(--stage-line-soft);
+  font-size: 0.75rem;
+  text-align: center;
+  padding: var(--sp-1-5) var(--sp-4);
 }
+.fo-identity-strip strong { color: var(--stage-cream); font-weight: var(--fw-medium); }
 .fo-identity-strip-inner {
-  max-inline-size: var(--content-max-w);
-  margin-inline: auto;
-  padding: var(--sp-1-5) var(--page-gutter-mobile);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-2);
-}
-.fo-identity-strip-inner strong { color: var(--text); font-weight: var(--fw-semibold); }
-.fo-identity-strip-flag { display: inline-flex; color: var(--text-secondary); }
-
-/* ── Header (masthead) ─────────────────────────────────────────────── */
-.fo-header {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 50;
-  background: var(--topbar-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  border-block-end: 1px solid transparent;
-  transition: border-color var(--t-base) var(--ease);
-}
-.fo-header.scrolled { border-block-end-color: var(--rule); }
-.fo-header-inner {
-  max-inline-size: var(--content-max-w);
-  margin-inline: auto;
-  padding: var(--sp-2) var(--page-gutter-mobile);
-  display: flex;
-  align-items: center;
-  gap: var(--sp-4);
-  min-block-size: var(--topbar-h);
-}
-
-/* brand lockup — the khatam-star mark + wordmark */
-.fo-brand {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  text-decoration: none;
-  color: var(--text);
-  border-radius: var(--r-sm);
 }
-.fo-brand-mark { inline-size: 34px; block-size: 34px; flex: none; }
-.fo-brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+.fo-identity-strip-flag { display: inline-flex; opacity: 0.9; }
+
+/* ── the header — mission-control chrome: always the stage ink.
+   Transparent would show the cream page ground in light mode and
+   break the chrome between the identity strip and the hero stage;
+   scrolled swaps in the glass blur. */
+.fo-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 80;
+  background: var(--stage-ink);
+  border-block-end: 1px solid var(--stage-line-soft);
+  transition:
+    background var(--t-base) var(--ease),
+    border-color var(--t-base) var(--ease);
+}
+.fo-header.scrolled {
+  background: color-mix(in srgb, var(--stage-ink) 86%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.fo-header-inner {
+  max-inline-size: 1320px;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-3) var(--sp-6);
+}
+
+.fo-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  text-decoration: none;
+  color: var(--stage-cream);
+}
+.fo-brand-mark { color: var(--stage-violet); flex: none; }
+.fo-brand-text { display: flex; flex-direction: column; line-height: 1.15; }
 .fo-brand-name {
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-bold);
-  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.375rem;
 }
-.fo-brand-sub {
-  font-size: var(--fs-xxs);
-  color: var(--text-muted);
-  font-weight: var(--fw-regular);
-}
+.fo-brand-sub { font-size: 0.6875rem; color: var(--stage-cream-dim); }
 
-.fo-nav {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-1);
-  margin-inline-start: auto;
-  margin-inline-end: var(--sp-2);
-}
+.fo-nav { display: flex; gap: var(--sp-1); margin-inline-start: auto; }
 .fo-nav-link {
-  padding: var(--sp-1-5) var(--sp-3);
-  font-size: var(--fs-chrome);
-  color: var(--text-secondary);
+  position: relative;
+  color: var(--stage-cream-dim);
   text-decoration: none;
-  border-radius: var(--r-sm);
-  transition: color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
+  font-size: 0.8125rem;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: 0;
+  transition: color var(--t-fast) var(--ease);
 }
-.fo-nav-link:hover { color: var(--text); background: var(--surface-2); }
+.fo-nav-link::before {
+  content: "";
+  position: absolute;
+  inset-block-end: 4px;
+  inset-inline-start: var(--sp-3);
+  inline-size: 6px;
+  block-size: 6px;
+  background: var(--stage-violet);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
+}
+.fo-nav-link:hover { color: var(--stage-cream); }
+.fo-nav-link:hover::before { opacity: 1; }
 
-.fo-header-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
+.fo-header-actions { display: flex; align-items: center; gap: var(--sp-2-5); }
+
+/* stage-scoped buttons — the chrome never paints theme surfaces */
+.fo-header .btn.ghost,
+.fo-mobile-menu .btn.ghost {
+  --_btn-bg: transparent;
+  --_btn-fg: var(--stage-cream);
+  --_btn-bd: var(--stage-line);
+  --_btn-bg-hover: color-mix(in srgb, var(--stage-cream) 8%, transparent);
+  --_btn-bd-hover: var(--stage-cream-dim);
+  --_btn-shadow: none;
 }
-.fo-header-actions .btn { flex: none; }
+.fo-header .btn.primary,
+.fo-mobile-menu .btn.primary {
+  --_btn-bg: var(--stage-cream);
+  --_btn-fg: var(--stage-ink);
+  --_btn-bd: var(--stage-cream);
+  --_btn-bg-hover: var(--white);
+  --_btn-bd-hover: var(--white);
+  --_btn-shadow: none;
+}
+/* the theme toggle rides the stage chrome */
+.fo-header .theme-toggle-option,
+.fo-mobile-menu .theme-toggle-option {
+  border-color: var(--stage-line);
+  color: var(--stage-cream-dim);
+}
+.fo-header .theme-toggle-option.is-active,
+.fo-mobile-menu .theme-toggle-option.is-active {
+  background: color-mix(in srgb, var(--stage-violet) 22%, transparent);
+  color: var(--stage-cream);
+}
 
 .fo-burger {
   display: none;
-  margin-inline-start: auto;
-  inline-size: 44px; /* touch floor */
+  inline-size: 44px;
   block-size: 44px;
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid var(--rule);
-  border-radius: var(--r-sm);
-  color: var(--text);
+  border: 1px solid var(--stage-line);
+  color: var(--stage-cream);
   cursor: pointer;
+  border-radius: 0;
 }
 
 .fo-mobile-menu {
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
-  padding: var(--sp-4) var(--page-gutter-mobile) var(--sp-6);
-  border-block-start: 1px solid var(--rule);
-  background: var(--bg);
+  padding: var(--sp-4) var(--sp-5) var(--sp-6);
+  background: color-mix(in srgb, var(--stage-ink) 96%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-block-start: 1px solid var(--stage-line-soft);
 }
 .fo-mobile-theme {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: var(--sp-2) var(--sp-3);
-  border-block: 1px solid var(--border-faint);
-}
-.fo-mobile-theme-label {
-  font-size: var(--fs-chrome);
-  color: var(--text-muted);
+  padding: var(--sp-2) var(--sp-2);
+  color: var(--stage-cream-dim);
+  font-size: 0.8125rem;
 }
 
-/* ── Hero — «النقطة» masthead ──────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════════════
+   THE VOID HERO STAGE
+   ════════════════════════════════════════════════════════════════════ */
 .fo-hero {
-  padding-block: clamp(var(--sp-10), 10vw, var(--sp-13)) clamp(var(--sp-9), 8vw, var(--sp-12));
-  border-block-end: 1px solid var(--rule);
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-block-size: min(88vh, 860px);
+  padding-block: var(--sp-16) var(--sp-14);
+  color: var(--stage-cream);
+  /* the void: fixed stage ground + atmospheric violet illumination
+     rising from the reading-start horizon + a deep indigo bloom */
+  background:
+    radial-gradient(120% 90% at 85% 108%,
+      color-mix(in srgb, var(--aura-violet) 34%, transparent) 0%,
+      transparent 58%),
+    radial-gradient(90% 70% at 12% 88%,
+      color-mix(in srgb, var(--aura-horizon) 12%, transparent) 0%,
+      transparent 52%),
+    radial-gradient(140% 120% at 50% -20%,
+      color-mix(in srgb, var(--stage-ink-2) 70%, transparent) 0%,
+      transparent 70%),
+    var(--stage-ink);
+  overflow: hidden;
+  /* the designed cut — a violet horizon line closes the stage (the
+     reference's hard section alternation, made deliberate) */
+  border-block-end: 1px solid color-mix(in srgb, var(--stage-violet) 38%, transparent);
 }
+
+.fo-hero-stage {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.fo-hero-art {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: min(62%, 860px);
+  block-size: 100%;
+  object-fit: cover;
+  object-position: 78% 42%;
+  /* the art melts into the stage toward the reading start */
+  mask-image: linear-gradient(to left, black 34%, transparent 82%);
+  -webkit-mask-image: linear-gradient(to left, black 34%, transparent 82%);
+  opacity: 0.92;
+}
+
+/* the orbital light-path — one thin line + one glowing node
+   (RTL-rising trajectory; drawn once on load, reduced-motion safe) */
+.fo-orbit-path {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+}
+.fo-orbit-path-line {
+  fill: none;
+  stroke: var(--stage-line);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: fo-orbit-draw 2200ms var(--ease-out) 300ms both;
+}
+.fo-orbit-node {
+  fill: var(--stage-violet);
+  opacity: 0;
+  animation: fo-node-ignite 700ms var(--ease-out) 2300ms both,
+             fo-node-breathe 3600ms var(--ease-soft) 3000ms infinite;
+}
+@keyframes fo-orbit-draw { to { stroke-dashoffset: 0; } }
+@keyframes fo-node-ignite { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fo-node-breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
 .fo-hero-grid {
-  max-inline-size: var(--content-max-w);
+  max-inline-size: 1320px;
+  inline-size: 100%;
   margin-inline: auto;
-  padding-inline: var(--page-gutter-mobile);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--sp-9);
-  align-items: center;
+  padding-inline: var(--sp-6);
 }
-@media (min-width: 1024px) {
-  .fo-hero-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
-}
+.fo-hero-copy { max-inline-size: 620px; }
 
 .fo-eyebrow {
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  color: var(--accent-ink);
-  font-weight: var(--fw-medium);
-  padding-block-end: var(--sp-2);
-  margin-block-end: var(--sp-4);
-  border-block-end: 1px solid var(--rule);
-  max-inline-size: max-content;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2-5);
+  margin: 0 0 var(--sp-5);
+  color: var(--stage-cream-dim);
+  font-size: 0.8125rem;
+}
+.fo-eyebrow::before {
+  content: "";
+  inline-size: 7px;
+  block-size: 7px;
+  background: var(--stage-violet);
+  flex: none;
 }
 
 .fo-hero-title {
-  font-size: var(--fs-display-xl);
-  font-weight: var(--fw-bold);
-  line-height: var(--type-display-line-height);
-  color: var(--text);
-  margin-block: 0 var(--sp-5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
+  margin: 0 0 var(--sp-6);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-display-xl);           /* clamp(48px → 96px) */
+  line-height: calc(var(--type-display-line-height) - 0.02);
+  letter-spacing: var(--ls-normal);
+  text-wrap: balance;
 }
-.fo-hero-title em {
-  font-style: normal; /* Arabic — weight & color carry the accent */
+.fo-hero-line { display: block; }
+/* the accent words — the reference's luminous violet word treatment */
+.fo-hero-title em { font-style: normal; color: var(--stage-violet); }
+.fo-hero-title .fo-orbit {
+  /* مدارك — the orbit word carries the node: a violet square orbit
+     marker at its baseline end (decorative, aria-safe via CSS) */
+  position: relative;
+  padding-inline-end: var(--sp-2);
 }
-.fo-hero-title .fo-dot { color: var(--accent-ink); }
-.fo-hero-title .fo-orbit { color: var(--accent-ink); }
+.fo-hero-title .fo-orbit::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 0.14em;
+  inset-inline-end: 0;
+  inline-size: 0.14em;
+  block-size: 0.14em;
+  background: var(--stage-violet);
+}
 
 .fo-hero-sub {
-  font-size: var(--fs-body-lg);
-  line-height: var(--lh-loose);
-  color: var(--text-secondary);
-  max-inline-size: 56ch;
-  margin-block: 0 var(--sp-7);
+  margin: 0 0 var(--sp-8);
+  max-inline-size: 54ch;
+  color: var(--stage-cream-dim);
+  font-size: 1.0625rem;
+  line-height: 1.8;
 }
 
-.fo-hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-3);
-  margin-block-end: var(--sp-6);
+.fo-hero-actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-block-end: var(--sp-6); }
+/* hero CTAs — the stage's void grammar: white slab + violet accent */
+.fo-hero .btn.accent {
+  --_btn-bg: var(--stage-violet);
+  --_btn-fg: var(--stage-ink);
+  --_btn-bd: var(--stage-violet);
+  --_btn-bg-hover: color-mix(in srgb, var(--stage-violet) 82%, var(--white));
+  --_btn-bd-hover: color-mix(in srgb, var(--stage-violet) 82%, var(--white));
+  --_btn-shadow: 0 0 24px color-mix(in srgb, var(--stage-violet) 38%, transparent);
 }
-.fo-hero-cta { min-inline-size: max-content; }
+.fo-hero .btn.ghost {
+  --_btn-bg: transparent;
+  --_btn-fg: var(--stage-cream);
+  --_btn-bd: var(--stage-line);
+  --_btn-bg-hover: color-mix(in srgb, var(--stage-cream) 8%, transparent);
+  --_btn-bd-hover: var(--stage-cream-dim);
+  --_btn-shadow: none;
+}
 
 .fo-hero-meta {
-  list-style: none;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-2);
+  gap: var(--sp-2-5);
   margin: 0;
   padding: 0;
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
+  list-style: none;
+  color: var(--stage-cream-dim);
+  font-size: 0.8125rem;
 }
 .fo-hero-meta li { display: inline-flex; align-items: center; gap: var(--sp-1-5); }
-.fo-hero-meta li:first-child { color: var(--text-secondary); }
-.fo-hero-meta-dot { inline-size: 3px; block-size: 3px; border-radius: var(--r-full); background: var(--text-faint); }
+.fo-hero-meta li svg { color: var(--stage-violet); }
+.fo-hero-meta-dot { inline-size: 3px; block-size: 3px; background: var(--stage-cream-dim); opacity: 0.5; }
 
-/* the manuscript figure — a hairline-framed plate + ruled TOC */
-.fo-hero-figure {
+/* ── the telemetry strip — the hero's HUD bottom bar ─────────────── */
+.fo-telemetry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3) var(--sp-8);
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-}
-.fo-figure-plate {
-  border: 1px solid var(--rule);
-  border-radius: var(--r-md);
-  background: var(--surface);
-  padding: var(--sp-6);
-  box-shadow: var(--shadow-card);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--sp-4);
-}
-.fo-figure-star { inline-size: min(240px, 70%); block-size: auto; }
-.fo-figure-caption {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--sp-0-5);
-  border-block-start: 1px solid var(--border-faint);
-  padding-block-start: var(--sp-3);
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  text-align: center;
-}
-.fo-figure-caption .fo-mono { color: var(--accent-ink); }
-
-.fo-figure-toc {
+  padding: var(--sp-4) var(--sp-6);
   list-style: none;
-  margin: 0;
-  padding: 0;
-  border: 1px solid var(--rule);
-  border-radius: var(--r-md);
-  background: var(--surface);
-  overflow: hidden;
+  max-inline-size: 1320px;
+  inline-size: 100%;
+  margin-inline: auto;
+  border-block-start: 1px solid var(--stage-line-soft);
+  color: var(--stage-cream-dim);
+  font-size: 0.6875rem;
 }
-.fo-figure-toc li {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-4);
-  font-size: var(--fs-chrome);
-  color: var(--text-secondary);
-  border-block-end: 1px solid var(--border-faint);
+.fo-telemetry-item { display: inline-flex; align-items: center; gap: var(--sp-2); }
+.fo-telemetry-mark {
+  inline-size: 7px;
+  block-size: 7px;
+  background: var(--stage-violet);
+  flex: none;
 }
-.fo-figure-toc li:last-child { border-block-end: none; }
-.fo-figure-toc .fo-mono { color: var(--accent-ink); flex: none; }
-.fo-figure-toc svg { flex: none; color: var(--text-faint); }
+.fo-telemetry-item .fo-mono { color: var(--stage-cream); }
+.fo-telemetry-end { margin-inline-start: auto; }
 
-/* ── Capabilities band ─────────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════════════
+   THE BODY — canonical two-theme editorial sections
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── capabilities band — the quiet ruled strip ────────────────────── */
 .fo-capabilities {
   border-block-end: 1px solid var(--rule);
-  background: var(--surface-2);
+  padding-block: var(--sp-4);
+  background: var(--surface);
 }
 .fo-capabilities-list {
-  list-style: none;
-  max-inline-size: var(--content-max-w);
-  margin-inline: auto;
-  padding: var(--sp-4) var(--page-gutter-mobile);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--sp-2) var(--sp-4);
-  font-size: var(--fs-chrome);
-  color: var(--text-muted);
+  gap: var(--sp-2-5) var(--sp-5);
+  max-inline-size: 1320px;
+  margin-inline: auto;
+  padding-inline: var(--sp-6);
+  margin-block: 0;
+  list-style: none;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
 }
-.fo-capabilities-list li { display: inline-flex; align-items: center; gap: var(--sp-2); }
+.fo-capabilities-list li { display: inline-flex; align-items: center; gap: var(--sp-2-5); }
 .fo-capabilities-sep {
-  /* the separator is the star's core diamond — 6px accent, rotated
-     (r188: the ✳ emoji glyph retired with the icon gate). */
-  inline-size: 6px;
-  block-size: 6px;
+  inline-size: 4px;
+  block-size: 4px;
   background: var(--accent);
-  transform: rotate(45deg);
-  flex: none;
+  opacity: 0.7;
 }
 
-/* ── Chapter system ─────────────────────────────────────────────────── */
+/* ── chapters — the numbered editorial sections ───────────────────── */
 .fo-chapter {
-  padding-block: clamp(var(--sp-10), 8vw, var(--sp-12));
-  border-block-end: 1px solid var(--rule);
-}
-.fo-chapter-head {
-  max-inline-size: var(--content-max-w);
+  max-inline-size: 1320px;
   margin-inline: auto;
-  padding-inline: var(--page-gutter-mobile);
-  margin-block-end: var(--sp-8);
+  padding: var(--sp-14) var(--sp-6);
 }
+.fo-chapter-head { margin-block-end: var(--sp-9); max-inline-size: 720px; }
 .fo-label {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  color: var(--accent-ink);
-  font-weight: var(--fw-medium);
-  padding-block-end: var(--sp-2);
+  color: var(--text-muted);
+  font-size: 0.75rem;
   margin-block-end: var(--sp-3);
-  border-block-end: 2px solid var(--accent);
 }
-.fo-label .fo-mono { color: inherit; font-size: inherit; }
+.fo-label::before {
+  content: "";
+  inline-size: 7px;
+  block-size: 7px;
+  background: var(--accent);
+}
+.fo-label .fo-mono { color: var(--accent); }
 .fo-chapter-title {
-  font-size: var(--fs-display-lg);
-  font-weight: var(--fw-bold);
-  line-height: var(--type-display-line-height);
-  color: var(--text);
   margin: 0 0 var(--sp-4);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-display-lg);            /* clamp(36px → 64px) */
+  line-height: var(--type-display-line-height);
+  text-wrap: balance;
 }
 .fo-chapter-title em { font-style: normal; color: var(--accent-ink); }
 .fo-chapter-lede {
-  font-size: var(--fs-body-lg);
-  color: var(--text-secondary);
-  line-height: var(--lh-loose);
-  max-inline-size: 62ch;
   margin: 0;
+  color: var(--text-secondary);
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  max-inline-size: 56ch;
 }
 
-/* ── Stations (٠١ كيف تعمل) ────────────────────────────────────────── */
+/* ── the stations — numbered mission rows (never icon-card grids) ── */
 .fo-stations {
   list-style: none;
-  max-inline-size: var(--content-max-w);
-  margin-inline: auto;
-  padding-inline: var(--page-gutter-mobile);
-  margin-block: 0;
-  display: flex;
-  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--rule);
 }
 .fo-station {
   display: grid;
-  grid-template-columns: var(--sp-14) minmax(0, 1fr);
+  grid-template-columns: 56px 44px minmax(0, 1fr) auto;
+  align-items: center;
   gap: var(--sp-5);
-  padding-block: var(--sp-6);
-  border-block-start: 1px solid var(--border-faint);
-  border-radius: var(--r-sm);
-  transition: background-color var(--t-base) var(--ease);
+  padding: var(--sp-6) var(--sp-2);
+  border-block-end: 1px solid var(--rule);
+  position: relative;
 }
-.fo-station:first-child { border-block-start-color: var(--rule); }
-.fo-station:hover { background: var(--surface); }
-.fo-station-rail {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--sp-2);
+.fo-station::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: -8px;
+  inline-size: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
 }
-.fo-station-n {
-  font-size: var(--fs-metric-md);
-  font-weight: var(--fw-bold);
-  color: var(--accent-ink);
-  line-height: 1;
-}
-.fo-station-body { min-inline-size: 0; }
-.fo-station-head {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  flex-wrap: wrap;
-  margin-block-end: var(--sp-2);
-}
-.fo-station-ico {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 40px;
-  block-size: 40px;
-  border-radius: var(--r-sm);
-  flex: none;
-}
-.fo-station-ico.tone-gold { background: var(--c-copper-bg); color: var(--c-copper-deep); }
-.fo-station-ico.tone-azure { background: var(--c-sky-bg); color: var(--c-sky-deep); }
-.fo-station-ico.tone-mist { background: var(--c-grey-bg); color: var(--c-grey-deep); }
-.fo-station-title {
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-bold);
-  color: var(--text);
-  margin: 0;
-}
-.fo-station-tag {
-  font-size: var(--fs-xxs);
-  font-weight: var(--fw-medium);
-  color: var(--text-muted);
-  padding: var(--sp-0-5) var(--sp-2);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-full);
-}
-.fo-station-desc {
-  margin: 0;
-  font-size: var(--fs-body);
-  color: var(--text-secondary);
-  line-height: var(--lh-base);
-  max-inline-size: 64ch;
-}
+.fo-station:hover::before { opacity: 1; }
+.fo-station:hover { background: color-mix(in srgb, var(--accent) 4%, transparent); }
 
-/* ── Roles index (٠٢ الأدوار) ───────────────────────────────────────── */
-.fo-roles {
-  list-style: none;
-  max-inline-size: var(--content-max-w);
-  margin-inline: auto;
-  padding-inline: var(--page-gutter-mobile);
-  margin-block: 0;
-  display: flex;
-  flex-direction: column;
-}
-.fo-role-row {
-  display: grid;
-  grid-template-columns: var(--sp-10) var(--sp-10) minmax(0, 1fr);
-  gap: var(--sp-4);
-  align-items: start;
-  padding-block: var(--sp-5);
-  border-block-start: 1px solid var(--border-faint);
-  border-radius: var(--r-sm);
-  transition: background-color var(--t-base) var(--ease);
-}
-.fo-role-row:first-child { border-block-start-color: var(--rule); }
-.fo-role-row:hover { background: var(--surface); }
-.fo-role-index {
-  font-size: var(--fs-metric-lg);
-  font-weight: var(--fw-bold);
-  line-height: 1;
-  color: color-mix(in srgb, var(--accent-ink) 38%, var(--bg));
+.fo-station-lead .fo-mono {
+  font-size: 1.5rem;
+  color: var(--text-faint);
   font-variant-numeric: tabular-nums;
 }
-.fo-role-ico {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--sp-10);
-  block-size: var(--sp-10);
-  border-radius: var(--r-sm);
-}
-.fo-role-ico.gold { background: var(--c-copper-bg); color: var(--c-copper-deep); }
-.fo-role-ico.azure { background: var(--c-sky-bg); color: var(--c-sky-deep); }
-.fo-role-ico.mist { background: var(--c-grey-bg); color: var(--c-grey-deep); }
-.fo-role-body { min-inline-size: 0; }
-.fo-role-name {
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-bold);
-  color: var(--text);
-  margin: 0 0 var(--sp-1);
-}
-.fo-role-desc {
-  margin: 0 0 var(--sp-2);
-  font-size: var(--fs-body);
-  color: var(--text-secondary);
-  line-height: var(--lh-base);
-}
-.fo-role-caps {
-  margin: 0;
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  line-height: var(--lh-base);
-}
-
-/* ── Truth ledger (٠٣ ما يُشحن اليوم) ───────────────────────────────── */
-.fo-ledger { background: var(--surface-2); }
-.fo-ledger-list {
-  list-style: none;
-  max-inline-size: var(--content-max-w);
-  margin-inline: auto;
-  padding-inline: var(--page-gutter-mobile);
-  margin-block: 0;
-  display: flex;
-  flex-direction: column;
-}
-.fo-ledger-row {
+.fo-station-icon {
   display: grid;
-  grid-template-columns: var(--sp-16) minmax(0, 1fr);
-  gap: var(--sp-4);
-  align-items: baseline;
-  padding-block: var(--sp-4);
-  border-block-start: 1px solid var(--border-faint);
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
 }
-.fo-ledger-row:first-child { border-block-start-color: var(--rule); }
-.fo-ledger-row:hover { background: var(--surface); border-radius: var(--r-sm); }
-.fo-ledger-status {
-  justify-self: start;
-  display: inline-flex;
-  align-items: center;
-  font-size: var(--fs-xxs);
-  font-weight: var(--fw-semibold);
-  padding: var(--sp-0-5) var(--sp-2-5);
-  border-radius: var(--r-full);
+.fo-station-body { min-inline-size: 0; }
+.fo-station-title {
+  margin: 0 0 var(--sp-1);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+.fo-station-desc { margin: 0; color: var(--text-secondary); line-height: 1.75; max-inline-size: 64ch; }
+.fo-station-tag {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--accent-ink);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  padding: var(--sp-1) var(--sp-2-5);
   white-space: nowrap;
 }
-.fo-ledger-status.is-live { background: var(--c-mint-bg); color: var(--c-mint-deep); }
-.fo-ledger-status.is-local { background: var(--c-sand-bg); color: var(--c-sand-deep); }
-.fo-ledger-status.is-sim { background: var(--c-yellow-bg); color: var(--c-yellow-deep); }
-.fo-ledger-status.is-soon { background: var(--c-grey-bg); color: var(--c-grey-deep); }
-.fo-ledger-item {
-  font-size: var(--fs-body);
-  color: var(--text);
-  line-height: var(--lh-base);
-}
-.fo-ledger-rule { display: none; }
 
-.fo-ledger-legend {
-  max-inline-size: var(--content-max-w);
-  margin-inline: auto;
-  padding-inline: var(--page-gutter-mobile);
-  margin-block-start: var(--sp-6);
+/* ── the roles — index rows with tone marks ───────────────────────── */
+.fo-roles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-2) var(--sp-6);
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
+  flex-direction: column;
+  gap: var(--sp-3);
 }
-.fo-ledger-legend span { display: inline-flex; align-items: center; gap: var(--sp-1-5); }
-.fo-ledger-legend svg { color: var(--text-faint); }
-
-/* ── Independence manifesto (٠٤) ────────────────────────────────────── */
-.fo-manifesto {
-  max-inline-size: var(--content-max-w);
-  margin-inline: auto;
-  padding-inline: var(--page-gutter-mobile);
+.fo-role {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: 52px minmax(0, 1fr);
   gap: var(--sp-5);
-}
-@media (min-width: 900px) {
-  .fo-manifesto { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-.fo-manifesto-block {
+  padding: var(--sp-5) var(--sp-4);
   border: 1px solid var(--rule);
-  border-radius: var(--r-md);
   background: var(--surface);
-  padding: var(--sp-6);
-  box-shadow: var(--shadow-card);
+  position: relative;
+  transition: border-color var(--t-fast) var(--ease);
 }
-.fo-manifesto-mark {
+.fo-role:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--rule)); }
+.fo-role-icon {
+  display: grid;
+  place-items: center;
+  inline-size: 52px;
+  block-size: 52px;
+  border: 1px solid var(--rule);
+}
+.fo-role.tone-gold .fo-role-icon { color: var(--c-copper-ink); background: var(--c-copper-bg); border-color: color-mix(in srgb, var(--c-copper-ink) 30%, transparent); }
+.fo-role.tone-azure .fo-role-icon { color: var(--c-sky-ink); background: var(--c-sky-bg); border-color: color-mix(in srgb, var(--c-sky-ink) 30%, transparent); }
+.fo-role.tone-mist .fo-role-icon { color: var(--text-secondary); background: var(--surface-2); }
+.fo-role-name {
+  margin: 0 0 var(--sp-1);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+.fo-role-desc { margin: 0 0 var(--sp-2); color: var(--text-secondary); line-height: 1.7; }
+.fo-role-caps { margin: 0; color: var(--text-muted); font-size: 0.75rem; line-height: 1.8; }
+.fo-role-caps .fo-mono { color: var(--accent); }
+
+/* ════════════════════════════════════════════════════════════════════
+   THE PROOF LEDGER — «ما يُشحن اليوم» on an atmospheric violet band
+   (the reference's «Operating on orbit today» moment)
+   ════════════════════════════════════════════════════════════════════ */
+.fo-proof {
+  position: relative;
+  isolation: isolate;
+  padding-block: var(--sp-14);
+  background:
+    radial-gradient(90% 100% at 100% 0%,
+      color-mix(in srgb, var(--aura-violet) 10%, transparent) 0%,
+      transparent 55%),
+    color-mix(in srgb, var(--accent-soft) 55%, var(--surface));
+  border-block: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.fo-proof-inner {
+  max-inline-size: 1320px;
+  margin-inline: auto;
+  padding-inline: var(--sp-6);
+}
+.fo-proof .fo-label { color: var(--text-secondary); }
+.fo-proof .fo-chapter-lede { color: var(--text-secondary); }
+
+.fo-proof-ledger {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.fo-proof-row {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: var(--sp-5);
+  align-items: center;
+  padding: var(--sp-4) var(--sp-2);
+  border-block-end: 1px solid color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.fo-proof-item { line-height: 1.7; }
+
+.fo-proof-status {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  padding: var(--sp-1) var(--sp-2-5);
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+.fo-proof-status-mark { inline-size: 7px; block-size: 7px; background: currentColor; }
+.fo-proof-status.is-live   { color: var(--success-ink); }
+.fo-proof-status.is-local  { color: var(--accent-ink); }
+.fo-proof-status.is-sim    { color: var(--warning-ink); }
+.fo-proof-status.is-soon   { color: var(--text-muted); }
+
+.fo-proof-note {
+  margin: var(--sp-5) 0 0;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+.fo-proof-note .fo-mono { color: var(--accent); }
+
+/* ════════════════════════════════════════════════════════════════════
+   THE MANIFESTO — independence, staged data, real institutions
+   ════════════════════════════════════════════════════════════════════ */
+.fo-manifesto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--sp-5);
+}
+.fo-manifesto-block {
+  padding: var(--sp-6);
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.fo-manifesto-block p { margin: 0; line-height: 1.85; color: var(--text-secondary); }
+.fo-manifesto-block strong { color: var(--text); }
+.fo-manifesto-mark {
+  display: grid;
+  place-items: center;
   inline-size: 40px;
   block-size: 40px;
-  border-radius: var(--r-full);
-  background: var(--accent-soft);
-  color: var(--accent-ink);
-  margin-block-end: var(--sp-4);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
 }
-.fo-manifesto-block p {
-  margin: 0;
-  font-size: var(--fs-body);
-  color: var(--text-secondary);
-  line-height: var(--lh-base);
-}
-.fo-manifesto-block strong { color: var(--text); font-weight: var(--fw-semibold); }
 .fo-manifesto-link {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1-5);
-  margin-block-start: var(--sp-4);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
+  gap: var(--sp-2);
   color: var(--accent-ink);
   text-decoration: none;
-  border-block-end: 1px solid var(--accent);
-  padding-block-end: var(--sp-0-5);
+  font-size: 0.8125rem;
+  margin-block-start: auto;
+  padding-block: var(--sp-1);
+  border-block-end: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  transition: border-color var(--t-fast) var(--ease);
 }
-.fo-manifesto-link:hover { color: var(--accent-strong); }
+.fo-manifesto-link:hover { border-block-end-color: var(--accent); }
 
-/* ── CTA finale ─────────────────────────────────────────────────────── */
-.fo-cta {
-  padding-block: clamp(var(--sp-11), 9vw, var(--sp-13));
-  text-align: center;
-  position: relative;
-}
-.fo-cta-star {
-  display: inline-flex;
-  margin-block-end: var(--sp-5);
-}
-.fo-cta-star svg { inline-size: 48px; block-size: 48px; }
-.fo-cta-inner {
-  max-inline-size: 760px;
+/* ════════════════════════════════════════════════════════════════════
+   THE MEDIA STAGE — the orbit-ring art + the vision copy
+   ════════════════════════════════════════════════════════════════════ */
+.fo-media {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--sp-9);
+  align-items: center;
+  max-inline-size: 1320px;
   margin-inline: auto;
-  padding-inline: var(--page-gutter-mobile);
+  padding: var(--sp-14) var(--sp-6);
 }
-.fo-cta-title {
-  font-size: var(--fs-display-lg);
-  font-weight: var(--fw-bold);
-  color: var(--text);
-  line-height: var(--type-display-line-height);
+.fo-media-figure { margin: 0; position: relative; }
+.fo-media-art {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 1344 / 768;
+  object-fit: cover;
+  border: 1px solid var(--rule);
+  background: var(--stage-ink);
+}
+.fo-media-figure figcaption {
+  position: absolute;
+  inset-block-end: calc(-1 * var(--sp-6));
+  inset-inline-start: var(--sp-2);
+  color: var(--text-muted);
+  background: var(--bg);
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--rule);
+}
+.fo-media-copy { padding-block: var(--sp-6); }
+.fo-media-title {
   margin: 0 0 var(--sp-4);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-display-md);            /* clamp(28px → 44px) */
+  line-height: var(--type-display-line-height);
+  text-wrap: balance;
 }
-.fo-cta-title em { font-style: normal; color: var(--accent-ink); }
-.fo-cta-lede {
-  font-size: var(--fs-body-lg);
-  color: var(--text-secondary);
-  line-height: var(--lh-loose);
-  margin: 0 0 var(--sp-7);
-}
-.fo-cta-actions {
+.fo-media-title em { font-style: normal; color: var(--accent-ink); }
+.fo-media-lede { margin: 0 0 var(--sp-6); color: var(--text-secondary); line-height: 1.85; max-inline-size: 52ch; }
+.fo-media-points { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
+.fo-media-points li {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   align-items: center;
   gap: var(--sp-3);
-  margin-block-end: var(--sp-6);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
 }
-.fo-cta-meta {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1-5);
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  margin: 0;
-}
+.fo-media-points li svg { color: var(--accent); flex: none; }
 
-/* ── Colophon footer ────────────────────────────────────────────────── */
-.fo-footer {
-  background: var(--surface-2);
+/* ════════════════════════════════════════════════════════════════════
+   THE FINALE — point of departure
+   ════════════════════════════════════════════════════════════════════ */
+.fo-cta {
+  position: relative;
+  isolation: isolate;
+  text-align: center;
+  padding: var(--sp-16) var(--sp-6);
+  overflow: hidden;
+  background:
+    radial-gradient(70% 90% at 50% 115%,
+      color-mix(in srgb, var(--aura-violet) 22%, transparent) 0%,
+      transparent 60%),
+    var(--bg);
   border-block-start: 1px solid var(--rule);
-  margin-block-start: auto;
+}
+.fo-cta-star {
+  display: inline-grid;
+  place-items: center;
+  color: var(--accent);
+  margin-block-end: var(--sp-5);
+}
+.fo-cta-inner { max-inline-size: 640px; margin-inline: auto; }
+.fo-cta-title {
+  margin: 0 0 var(--sp-4);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-display-lg);
+  line-height: var(--type-display-line-height);
+}
+.fo-cta-title em { font-style: normal; color: var(--accent-ink); }
+.fo-cta-lede { margin: 0 0 var(--sp-7); color: var(--text-secondary); line-height: 1.85; }
+.fo-cta-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--sp-3); margin-block-end: var(--sp-6); }
+.fo-cta-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+.fo-cta-meta svg { color: var(--accent); }
+
+/* ════════════════════════════════════════════════════════════════════
+   THE COLOPHON FOOTER
+   ════════════════════════════════════════════════════════════════════ */
+.fo-footer {
+  border-block-start: 1px solid var(--rule);
+  background: var(--surface);
+  padding-block: var(--sp-10) var(--sp-5);
 }
 .fo-footer-inner {
-  max-inline-size: var(--content-max-w);
+  max-inline-size: 1320px;
   margin-inline: auto;
-  padding: var(--sp-9) var(--page-gutter-mobile) var(--sp-6);
+  padding-inline: var(--sp-6);
 }
 .fo-footer-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--sp-7);
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--sp-8);
+  margin-block-end: var(--sp-8);
 }
-@media (min-width: 760px) {
-  .fo-footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
-}
-.fo-footer-about {
-  margin: var(--sp-4) 0 0;
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  line-height: var(--lh-base);
-  max-inline-size: 40ch;
-}
+.fo-footer-col { display: flex; flex-direction: column; gap: var(--sp-2-5); }
+.fo-footer .fo-brand { color: var(--text); }
+.fo-footer .fo-brand-mark { color: var(--accent); }
+.fo-footer .fo-brand-sub { color: var(--text-muted); }
+.fo-footer-about { margin: var(--sp-2) 0 0; color: var(--text-muted); font-size: 0.8125rem; line-height: 1.8; max-inline-size: 40ch; }
 .fo-footer-heading {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  color: var(--text);
-  margin-block-end: var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  margin-block-end: var(--sp-1);
 }
 .fo-footer-link {
-  display: block;
-  padding-block: var(--sp-1);
-  font-size: var(--fs-chrome);
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-decoration: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  text-align: start;
-  width: 100%;
+  font-size: 0.8125rem;
+  transition: color var(--t-fast) var(--ease);
 }
 .fo-footer-link:hover { color: var(--accent-ink); }
 .fo-footer-bottom {
@@ -746,53 +864,86 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-3);
-  margin-block-start: var(--sp-8);
   padding-block-start: var(--sp-5);
   border-block-start: 1px solid var(--rule);
-}
-.fo-footer-cluster {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1-5);
-  font-size: var(--fs-xs);
   color: var(--text-muted);
 }
+.fo-footer-cluster { display: inline-flex; align-items: center; gap: var(--sp-2); font-size: 0.75rem; }
 
-/* ── Responsive composition ─────────────────────────────────────────── */
-@media (max-width: 1080px) {
+/* ════════════════════════════════════════════════════════════════════
+   RESPONSIVE — designed small, not shrunk
+   ════════════════════════════════════════════════════════════════════ */
+@media (max-width: 960px) {
   .fo-nav { display: none; }
-  .fo-header-actions .btn { display: none; } /* the mobile menu owns the funnel */
-}
-@media (min-width: 1081px) {
-  .fo-burger { display: none; }
-}
-@media (max-width: 1023px) {
-  .fo-hero-figure { order: 2; } /* the plate follows the copy when stacked */
-  .fo-figure-plate { padding: var(--sp-5); }
-}
-@media (max-width: 760px) {
-  .fo-station { grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); }
-  .fo-station-rail { flex-direction: row; align-items: baseline; gap: var(--sp-3); }
-  .fo-role-row { grid-template-columns: var(--sp-10) minmax(0, 1fr); }
-  .fo-role-ico { display: none; }
-  .fo-role-index { grid-column: 1; align-self: start; margin-block-start: var(--sp-1); }
-  .fo-role-body { grid-column: 2; }
-  .fo-ledger-row { grid-template-columns: minmax(0, 1fr); gap: var(--sp-2); }
-  .fo-manifesto-block { padding: var(--sp-5); }
-  .fo-cta-actions .btn { inline-size: 100%; justify-content: center; }
-}
-@media (max-width: 480px) {
-  .fo-hero-actions .btn { inline-size: 100%; justify-content: center; }
-  .fo-hero-title { font-size: var(--fs-display-md); }
-  .fo-chapter-title { font-size: var(--fs-display-md); }
-  .fo-cta-title { font-size: var(--fs-display-md); }
+  .fo-header-actions .btn.ghost { display: none; }
+  .fo-burger { display: inline-flex; }
+
+  .fo-hero { min-block-size: auto; padding-block: var(--sp-12) var(--sp-10); }
+  .fo-hero-art {
+    inline-size: 100%;
+    inset-inline: 0;
+    object-position: 62% 30%;
+    opacity: 0.55;
+    mask-image: linear-gradient(to top, black 20%, transparent 78%);
+    -webkit-mask-image: linear-gradient(to top, black 20%, transparent 78%);
+  }
+  .fo-hero-copy { max-inline-size: none; }
+  .fo-hero-sub { font-size: 1rem; }
+
+  .fo-telemetry { gap: var(--sp-2) var(--sp-5); }
+  .fo-telemetry-end { margin-inline-start: 0; }
+
+  .fo-station {
+    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-areas: "lead body" "icon body" "tag body";
+    gap: var(--sp-2) var(--sp-4);
+  }
+  .fo-station-lead { grid-area: lead; align-self: start; }
+  .fo-station-icon { grid-area: icon; }
+  .fo-station-body { grid-area: body; }
+  .fo-station-tag { grid-area: tag; align-self: end; white-space: normal; }
+  .fo-station-lead .fo-mono { font-size: 1.125rem; }
+
+  .fo-media { grid-template-columns: 1fr; gap: var(--sp-7); }
+  .fo-media-copy { padding-block: 0; }
+
+  .fo-footer-grid { grid-template-columns: 1fr 1fr; gap: var(--sp-6); }
 }
 
-/* ── Reveal entrances (the base .reveal-up contract lives in
-      polish.css; the folio adds only the calibrated distances) ─────── */
-.landing .fo-hero-title .reveal-up { transform: translateY(18px); }
-.landing[data-intro-seen='true'] .fo-hero-title .reveal-up { transform: translateY(8px); }
+@media (max-width: 640px) {
+  .fo-header-inner { padding: var(--sp-2-5) var(--sp-4); gap: var(--sp-3); }
+  .fo-header-actions .btn.primary { display: none; }
+  .fo-brand-text { display: none; }
 
-/* ── Reduced motion: the token ladder already zeroes --t-*; the reveal
-      family's visibility is owned by polish.css's RM block. No infinite
-      loops exist in the folio world — nothing else to switch off. ──── */
+  .fo-hero-title { font-size: clamp(40px, 11vw, 56px); }
+  .fo-hero-actions .btn { inline-size: 100%; }
+  .fo-hero-meta { flex-direction: column; align-items: flex-start; gap: var(--sp-2); }
+  .fo-hero-meta-dot { display: none; }
+
+  .fo-telemetry {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-2-5);
+    font-size: 0.6875rem;
+  }
+
+  .fo-chapter { padding: var(--sp-10) var(--sp-4); }
+  .fo-chapter-title { font-size: clamp(28px, 8vw, 40px); }
+  .fo-station { padding: var(--sp-5) var(--sp-1); }
+  .fo-proof-row { grid-template-columns: 1fr; gap: var(--sp-2); }
+  .fo-cta-title { font-size: clamp(32px, 9vw, 44px); }
+  .fo-footer-grid { grid-template-columns: 1fr; gap: var(--sp-5); }
+  .fo-manifesto { grid-template-columns: 1fr; }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   REDUCED MOTION — the stage's animations respect the switch
+   ════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .fo-orbit-path-line {
+    stroke-dasharray: none;
+    animation: none;
+  }
+  .fo-orbit-node { animation: none; opacity: 1; }
+  .fo-progress-bar { transition: none; }
+}

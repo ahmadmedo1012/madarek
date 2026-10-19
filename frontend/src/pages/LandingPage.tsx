@@ -4,47 +4,49 @@ import {
   Brain, GraduationCap, Building2, Compass, ShieldCheck, ArrowLeft,
   Menu, X, PlayCircle, Route as RouteIcon, ClipboardCheck, Medal,
   Keyboard, MoonStar, Check, Crown, Landmark, FlaskConical,
-  Library, MessagesSquare, CalendarDays, BadgeCheck, Cog,
+  Cog, Telescope,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
-import { StarMark, StarFigure } from '../components/StarMark';
+import { StarMark } from '../components/StarMark';
 import { ThemeToggle, useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { LibyaFlag } from '../components/LibyaFlag';
+import { OrbitPath } from '../components/landing/OrbitPath';
 import { RevealCssClass } from '../hooks/useReveal';
-// landing.css is this page's own sheet — «دفتر مدارك», the r188 editorial
-// world: a two-theme paper/ink surface grounded on the canonical tokens
-// (--bg/--text/--rule/--accent), hairline structure, folio numerals and
-// manuscript figures. It replaces the r172a Orbit-Ink sheet wholesale;
-// the retired Orbit-Ink scene tokens stay defined in tokens.css
-// (parity pins) but this page no longer consumes them.
+// landing.css is this page's own sheet — «مدار المعرفة», the r190
+// direction: the public surface speaks the Turion-derived orbit
+// grammar (void media stage, atmospheric violet illumination,
+// Alexandria display, telemetry micro-labels with square markers,
+// near-square geometry) while every funnel/a11y/truth contract of
+// the r188 folio landing carries forward unchanged (landing-funnel,
+// r170d, r177, r188, r168b pins — see docs/design/r190-reference-matrix.md).
 import '../styles/landing.css';
 
 /**
- * Landing — «دفتر مدارك» (The Madarek Folio), r188.
+ * Landing — «مدار المعرفة» (The Orbit of Knowledge), r190.
  *
- * A complete editorial redesign of the public surface: the product
- * speaks as an independent Arabic-first platform in a paper-and-ink
- * ledger composition (masthead hero, folio-numbered chapters, hairline
- * rules, manuscript figures) — no canvas scene, no marquee, no campus
- * photography, no university identity story.
+ * A complete re-composition of the public surface in the reference
+ * grammar: a cinematic void hero stage (original art, orbital line,
+ * telemetry strip), cream/void alternating body sections, the honest
+ * truth-ledger as the PROOF moment, and an atmospheric media stage —
+ * one identity across both themes (the stage family is theme-fixed,
+ * the body follows the canonical two-theme system).
  *
  * Sections:
- *   الترويسة (masthead header) → النقطة (hero) → شريط القدرات
+ *   الترويسة (header) → النقطة (void hero stage) → شريط القياس
  *   → ٠١ كيف تعمل (five stations) → ٠٢ الأدوار الخمسة
- *   → ٠٣ ما يُشحن اليوم (honest feature ledger)
- *   → ٠٤ الاستقلالية (independence manifesto) → الخاتمة (CTA)
- *   → التذييل (colophon footer).
- *
- * Brand truth (r188): Madarek is an independent platform. The only
- * sample data story is the explicitly-synthetic demonstration
- * institution — «جامعة مدارك التجريبية» — referenced as data, never
- * as identity, and only inside the manifesto chapter with a link to
- * the demo academic structure.
+ *   → ٠٣ ما يُشحن اليوم (honest feature ledger — the proof)
+ *   → ٠٤ الاستقلالية (manifesto) → مدار الرؤية (media stage)
+ *   → الخاتمة (CTA) → COLOPHON footer.
  */
 
-/** Journey stations — the «how learning works» chapter (r168b-vetted copy). */
-const JOURNEY: Array<{
+type RevealDelay = 1 | 2 | 3 | 4 | 5;
+const d3 = (i: number): RevealDelay => ((i % 3) + 1) as RevealDelay;
+const d4 = (i: number): RevealDelay => ((i % 4) + 1) as RevealDelay;
+
+/** The five stations — the journey from first lesson to mastery,
+ *  told as orbital stations (the reference's mission-areas grammar). */
+const STATIONS: Array<{
   n: string; icon: typeof PlayCircle; title: string; desc: string; tag: string;
 }> = [
   {
@@ -135,16 +137,8 @@ const LEDGER_STATUS: Record<LedgerStatus, { label: string; cls: string }> = {
   soon: { label: 'قادم', cls: 'is-soon' },
 };
 
-/** The hero figure's module index — the platform's own table of
- *  contents (real modules, folio-numbered). */
-const FIGURE_TOC: Array<{ icon: typeof PlayCircle; label: string }> = [
-  { icon: PlayCircle, label: 'المحاضرات التفاعلية' },
-  { icon: RouteIcon, label: 'المصفوفة المعرفية' },
-  { icon: ClipboardCheck, label: 'الاختبارات والدرجات' },
-  { icon: Library, label: 'المكتبة والبحوث' },
-  { icon: MessagesSquare, label: 'الرسائل والإشعارات' },
-  { icon: CalendarDays, label: 'الجدول الأسبوعي' },
-];
+/** The telemetry strip's honest live count — computed, never typed. */
+const LIVE_COUNT = LEDGER.filter((r) => r.status === 'live').length;
 
 export default function LandingPage() {
   useThemeSync();
@@ -353,8 +347,27 @@ export default function LandingPage() {
 
       <main id="main" tabIndex={-1}>
 
-        {/* ═══ النقطة — the masthead hero ═══ */}
+        {/* ═══ النقطة — the void hero stage ═══
+            A cinematic media stage: the original «مدار المعرفة» art
+            (orbiting nodes of knowledge over the void), an orbital
+            light-path, Alexandria display, and the telemetry strip.
+            Theme-fixed stage family (tokens.css --stage-*) — a media
+            surface, not a theme rebellion; the body below follows the
+            canonical two-theme system. */}
         <section className="fo-hero" aria-label="مدارك — منصّة التعليم الذكي">
+          <div className="fo-hero-stage" aria-hidden>
+            <img
+              className="fo-hero-art"
+              src="/brand/hero-scene.webp"
+              alt=""
+              fetchpriority="high"
+              decoding="async"
+            />
+            {/* the orbital light-path — one thin line, one glowing node
+                (the reference's trajectory grammar, RTL rising) */}
+            <OrbitPath className="fo-orbit-path" />
+          </div>
+
           <div className="fo-hero-grid">
             <div className="fo-hero-copy">
               <RevealCssClass as="p" className="fo-eyebrow">
@@ -394,34 +407,32 @@ export default function LandingPage() {
                 <li aria-hidden className="fo-hero-meta-dot" />
                 <li><Icon icon={MoonStar} size={13} /> وضع فاتح وداكن</li>
               </RevealCssClass>
-            </div>
-
-            {/* the manuscript figure — «الشكل ٠١» plate with the platform
-                TOC. A static, print-inspired composition: hairline frame,
-                the khatam star, ruled contents. */}
-            <RevealCssClass as="figure" className="fo-hero-figure" delay={2} aria-hidden>
-              <div className="fo-figure-plate">
-                <StarFigure className="fo-figure-star" />
-                <figcaption className="fo-figure-caption">
-                  <span className="fo-mono">الشكل ٠١</span>
-                  <span>نجمة مدارك — ثمانية رؤوس لأمدار المعرفة</span>
-                </figcaption>
-              </div>
-              <ul className="fo-figure-toc">
-                {FIGURE_TOC.map((entry, i) => (
-                  <li key={entry.label}>
-                    <span className="fo-mono">{String(i + 1).padStart(2, '0')}</span>
-                    <Icon icon={entry.icon} size={14} />
-                    <span>{entry.label}</span>
-                  </li>
-                ))}
-              </ul>
-            </RevealCssClass>
           </div>
+        </div>
+
+          {/* the telemetry strip — the reference's bottom HUD bar:
+              square markers, mono micro-labels, honest counts. */}
+          <RevealCssClass as="ul" className="fo-telemetry" delay={5} aria-label="قياس المنصّة">
+            <li className="fo-telemetry-item">
+              <span className="fo-telemetry-mark" aria-hidden />
+              <span className="fo-mono">٠١</span> منصّة عربية أولًا
+            </li>
+            <li className="fo-telemetry-item">
+              <span className="fo-telemetry-mark" aria-hidden />
+              <span className="fo-mono">٠٢</span> خمسة أدوار أكاديمية
+            </li>
+            <li className="fo-telemetry-item">
+              <span className="fo-telemetry-mark" aria-hidden />
+              <span className="fo-mono">٠٣</span> {LIVE_COUNT} قدرات تعمل اليوم
+            </li>
+            <li className="fo-telemetry-item fo-telemetry-end">
+              <span className="fo-telemetry-mark" aria-hidden />
+              <span className="fo-mono">LI</span> صُنعت في ليبيا
+            </li>
+          </RevealCssClass>
         </section>
 
-        {/* ═══ شريط القدرات — a quiet ruled band (static, a11y-safe —
-            the animated marquee retired with r188) ═══ */}
+        {/* ═══ شريط القدرات — the quiet ruled band (static, a11y-safe) ═══ */}
         <section className="fo-capabilities" aria-label="قدرات المنصّة">
           <ul className="fo-capabilities-list">
             {[
@@ -449,32 +460,23 @@ export default function LandingPage() {
               من أوّل درس إلى <em>الإتقان</em> — خمس محطات
             </RevealCssClass>
             <RevealCssClass as="p" className="fo-chapter-lede" delay={2}>
-              كل محطة تبني على ما قبلها — خطٌّ واحد يربط رحلة التعلّم
-              داخل المنصّة من أوّل محاضرة حتى شهادة الإتمام.
+              كل محطة تُبنى على ما قبلها: تشاهد، تُقاس، تُوجَّه، ثم تُتقن —
+              والمنصّة تسجّل كل خطوة في مدارك الخاص.
             </RevealCssClass>
           </header>
 
           <ol className="fo-stations">
-            {JOURNEY.map((s, i) => (
-              <RevealCssClass
-                as="li"
-                key={s.n}
-                className="fo-station"
-                delay={((i % 3) + 1) as 1 | 2 | 3}
-              >
-                <span className="fo-station-rail" aria-hidden>
-                  <span className="fo-mono fo-station-n">{s.n}</span>
+            {STATIONS.map((st, i) => (
+              <RevealCssClass as="li" key={st.n} className="fo-station" delay={d3(i)}>
+                <span className="fo-station-lead" aria-hidden>
+                  <span className="fo-mono">{st.n}</span>
                 </span>
-                <article className="fo-station-body">
-                  <header className="fo-station-head">
-                    <span className={`fo-station-ico tone-${i % 3 === 0 ? 'gold' : i % 3 === 1 ? 'azure' : 'mist'}`}>
-                      <Icon icon={s.icon} size={20} />
-                    </span>
-                    <h3 className="fo-station-title">{s.title}</h3>
-                    <span className="fo-station-tag">{s.tag}</span>
-                  </header>
-                  <p className="fo-station-desc">{s.desc}</p>
-                </article>
+                <span className="fo-station-icon"><Icon icon={st.icon} size={22} /></span>
+                <div className="fo-station-body">
+                  <h3 className="fo-station-title">{st.title}</h3>
+                  <p className="fo-station-desc">{st.desc}</p>
+                </div>
+                <span className="fo-station-tag">{st.tag}</span>
               </RevealCssClass>
             ))}
           </ol>
@@ -483,80 +485,80 @@ export default function LandingPage() {
         {/* ═══ ٠٢ — الأدوار الخمسة ═══ */}
         <section id="roles" className="fo-chapter" aria-labelledby="roles-title">
           <header className="fo-chapter-head">
-            <span className="fo-label"><span className="fo-mono">٠٢</span> — المجتمع</span>
+            <span className="fo-label"><span className="fo-mono">٠٢</span> — الأدوار</span>
             <RevealCssClass as="h2" className="fo-chapter-title" delay={1} id="roles-title">
-              خمسة <em>أدوار</em>، دفترٌ واحد
+              منصّة واحدة، <em>خمس مسؤوليات</em>
             </RevealCssClass>
             <RevealCssClass as="p" className="fo-chapter-lede" delay={2}>
-              كل دور أكاديمي يرى ما يخصّه فقط — صلاحيات مدروسة وفصلٌ واضح
-              بين الواجبات، من قاعة الدراسة إلى مركز تحكّم المنصّة.
+              كل دور يجد أدواته ومقاييسه — بنفس الهوية، وبعزل صلاحيات كامل.
             </RevealCssClass>
           </header>
 
           <ul className="fo-roles">
-            {ROLES.map((r, i) => (
-              <RevealCssClass as="li" key={r.name} className="fo-role-row" delay={((i % 3) + 1) as 1 | 2 | 3}>
-                <span className="fo-role-index fo-mono" aria-hidden>{String(i + 1).padStart(2, '0')}</span>
-                <span className={`fo-role-ico ${r.tone}`}><Icon icon={r.icon} size={24} strokeWidth={1.7} /></span>
+            {ROLES.map((role, i) => (
+              <RevealCssClass as="li" key={role.name} className={`fo-role tone-${role.tone}`} delay={d3(i)}>
+                <span className="fo-role-icon"><Icon icon={role.icon} size={24} /></span>
                 <div className="fo-role-body">
-                  <h3 className="fo-role-name">{r.name}</h3>
-                  <p className="fo-role-desc">{r.desc}</p>
-                  <p className="fo-role-caps">{r.caps}</p>
+                  <h3 className="fo-role-name">{role.name}</h3>
+                  <p className="fo-role-desc">{role.desc}</p>
+                  <p className="fo-role-caps"><span className="fo-mono">↔</span> {role.caps}</p>
                 </div>
               </RevealCssClass>
             ))}
           </ul>
         </section>
 
-        {/* ═══ ٠٣ — ما يُشحن اليوم (truth ledger) ═══ */}
-        <section id="ledger" className="fo-chapter fo-ledger" aria-labelledby="ledger-title">
-          <header className="fo-chapter-head">
-            <span className="fo-label"><span className="fo-mono">٠٣</span> — الصدق</span>
-            <RevealCssClass as="h2" className="fo-chapter-title" delay={1} id="ledger-title">
-              ما يُشحن <em>اليوم</em> — بحالته الفعلية
-            </RevealCssClass>
-            <RevealCssClass as="p" className="fo-chapter-lede" delay={2}>
-              دفتر صادق: كل قدرة تُذكر بحالتها الحقيقية — ما يعمل يعمل،
-              وما يُحاكى يُعلَن، وما لم يصل بعد يُقال بوضوح.
-            </RevealCssClass>
-          </header>
-
-          <ul className="fo-ledger-list">
-            {LEDGER.map((row, i) => (
-              <RevealCssClass as="li" key={row.item} className="fo-ledger-row" delay={((i % 3) + 1) as 1 | 2 | 3}>
-                <span className={`fo-ledger-status ${LEDGER_STATUS[row.status].cls}`}>
-                  {LEDGER_STATUS[row.status].label}
-                </span>
-                <span className="fo-ledger-item">{row.item}</span>
-                <span className="fo-ledger-rule" aria-hidden />
+        {/* ═══ ٠٣ — ما يُشحن اليوم (the proof ledger) ═══
+            The reference's «Operating on orbit today» moment, told
+            honestly: every capability ships with its REAL status —
+            يعمل / محلي / محاكاة / قادم — on an atmospheric band. */}
+        <section id="ledger" className="fo-proof" aria-labelledby="ledger-title">
+          <div className="fo-proof-inner">
+            <header className="fo-chapter-head">
+              <span className="fo-label"><span className="fo-mono">٠٣</span> — الدليل</span>
+              <RevealCssClass as="h2" className="fo-chapter-title" delay={1} id="ledger-title">
+                ما يُشحن <em>اليوم</em>
               </RevealCssClass>
-            ))}
-          </ul>
+              <RevealCssClass as="p" className="fo-chapter-lede" delay={2}>
+                لا أرقام تسويقية ولا شراكات مُختلقة — كل قدرة تُعلن حالتها
+                التشغيلية الحقيقية كما هي في الكود.
+              </RevealCssClass>
+            </header>
 
-          <RevealCssClass as="div" className="fo-ledger-legend" delay={3}>
-            <span><Icon icon={BadgeCheck} size={13} /> يعمل: ميزة مكتملة قابلة للاستخدام الآن</span>
-            <span><Icon icon={Cog} size={13} /> محلي: تعمل داخل الخادم بلا مزوّد خارجي</span>
-            <span><Icon icon={FlaskConical} size={13} /> محاكاة: نتائج تجريبية معلَنة بلا كشف حقيقي</span>
-            <span><Icon icon={Compass} size={13} /> قادم: مصمَّمة وغير مُفعَّلة بعد</span>
-          </RevealCssClass>
+            <ul className="fo-proof-ledger">
+              {LEDGER.map((row, i) => (
+                <RevealCssClass as="li" key={row.item} className="fo-proof-row" delay={d4(i)}>
+                  <span className={`fo-proof-status ${LEDGER_STATUS[row.status].cls}`}>
+                    <span className="fo-proof-status-mark" aria-hidden />
+                    {LEDGER_STATUS[row.status].label}
+                  </span>
+                  <span className="fo-proof-item">{row.item}</span>
+                </RevealCssClass>
+              ))}
+            </ul>
+
+            <RevealCssClass as="p" className="fo-proof-note" delay={3}>
+              <span className="fo-mono">※</span> الحالات مصدرها وثائق الميزات
+              نفسها (docs/02-features) — تتغيّر مع كل إصدار، لا مع كل حملة.
+            </RevealCssClass>
+          </div>
         </section>
 
-        {/* ═══ ٠٤ — الاستقلالية (manifesto) ═══ */}
-        <section id="independence" className="fo-chapter fo-independence" aria-labelledby="independence-title">
+        {/* ═══ ٠٤ — الاستقلالية ═══ */}
+        <section id="independence" className="fo-chapter" aria-labelledby="independence-title">
           <header className="fo-chapter-head">
             <span className="fo-label"><span className="fo-mono">٠٤</span> — الاستقلالية</span>
             <RevealCssClass as="h2" className="fo-chapter-title" delay={1} id="independence-title">
-              منصّة مستقلّة، <em>بيانات واضحة</em>
+              مستقلّة بالتصميم، <em>شديدة الوضوح</em> بالبيانات
             </RevealCssClass>
           </header>
-
           <div className="fo-manifesto">
             <RevealCssClass as="div" className="fo-manifesto-block" delay={1}>
               <span className="fo-manifesto-mark"><Icon icon={Landmark} size={20} /></span>
               <p>
-                مدارك منتج برمجي مستقلّ صُنع في ليبيا. لا تتبع المنصّة أيّ
-                جامعة أو وزارة أو جهة رسمية، ولا تتبنّاها — استقلاليتها
-                جزء من عقدها مع مستخدميها.
+                مدارك منصّة تقنية مستقلّة لا تتبع وزارة ولا جامعة ولا جهة
+                منح — الاشتراك يُدار من إدارة مؤسستك مباشرة، والمنصّة
+                تبقى حيادية أمام الجميع.
               </p>
             </RevealCssClass>
             <RevealCssClass as="div" className="fo-manifesto-block" delay={2}>
@@ -578,6 +580,37 @@ export default function LandingPage() {
                 موثّق وممارَس من إدارتها — بحساباتها وهيكلها الأكاديمي
                 الخاص، ومعزولة بياناتها عن غيرها بالكامل.
               </p>
+            </RevealCssClass>
+          </div>
+        </section>
+
+        {/* ═══ مدار الرؤية — the atmospheric media stage ═══
+            The orbit-ring art: knowledge as a system in motion. */}
+        <section className="fo-media" aria-labelledby="media-title">
+          <figure className="fo-media-figure">
+            <img
+              className="fo-media-art"
+              src="/brand/orbit-ring.webp"
+              alt="حلقة مدارية من نقاط الضوء — تمثيل مجرّد لمنظومة المعرفة المتصلة"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption className="fo-mono">الشكل ٠٢ — منظومة المعرفة</figcaption>
+          </figure>
+          <div className="fo-media-copy">
+            <span className="fo-label"><span className="fo-mono">٠٥</span> — الرؤية</span>
+            <RevealCssClass as="h2" className="fo-media-title" delay={1} id="media-title">
+              المعرفة <em>منظومة</em>، لا مواد متفرّقة
+            </RevealCssClass>
+            <RevealCssClass as="p" className="fo-media-lede" delay={2}>
+              نبني مدارك لتبقى كل نقطة معرفة متصلة بمدارها: المحاضرة تخدم
+              المصفوفة، والمصفوفة تخدم الاختبار، والاختبار يخدم خطتك —
+              والذكاء المحلي يجمعها كلها حول الطالب.
+            </RevealCssClass>
+            <RevealCssClass as="ul" className="fo-media-points" delay={3}>
+              <li><Icon icon={Telescope} size={16} /> قياس يتّصل بالتعليم لا بالمراقبة</li>
+              <li><Icon icon={Compass} size={16} /> مسارات تتكيّف مع كل طالب</li>
+              <li><Icon icon={Cog} size={16} /> تشغيل مؤسسي معزول وموثَّق</li>
             </RevealCssClass>
           </div>
         </section>

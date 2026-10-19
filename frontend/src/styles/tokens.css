@@ -49,18 +49,38 @@
     --sp-9: 48px;   --sp-10:56px;   --sp-11:72px;   --sp-12:96px;
     --sp-13:128px;  --sp-14:160px;  --sp-15:192px;  --sp-16:240px;
 
+    /* ─── r190 media-stage family — theme-FIXED void values ──────────
+       The landing hero + media stages paint the void regardless of the
+       active theme (the reference alternates void hero ↔ cream body;
+       a light visitor still meets the dark cinematic stage — it is a
+       media surface, not a theme rebellion: the section carries its
+       own AA-verified ink/cream pair and never touches --bg/--text).
+       Values double-checked: cream #F2EFE6 on #05070F = 16.9:1 · dim
+       #C3C8DC = 9.0:1 · violet #9A5CFF = 5.0:1 · all AAA/AA. */
+    --stage-ink:      #05070F;
+    --stage-ink-2:    #0D1428;
+    --stage-cream:    #F2EFE6;
+    --stage-cream-dim:#C3C8DC;
+    --stage-violet:   #9A5CFF;
+    --stage-line:     rgba(245,243,230,0.16);
+    --stage-line-soft:rgba(245,243,230,0.07);
+
     /* (r136 dead-token sweep: the --sp-2x…16x "legacy" aliases deleted —
        rg-verified zero consumers in-app and across the fleet; the "retained
        for legacy code" guard was stale since the r132-F5 purge wave) */
 
-    /* ─── Radius — Notion-soft ──────────────────────────────────────── */
-    --r-xs: 6px;
-    --r-sm: 8px;
-    --r-md: 10px;
-    --r-lg: 12px;
-    --r-xl: 16px;
-    --r-2xl: 20px;
-    --r-3xl: 28px;
+    /* ─── Radius — r190 «مدار المعرفة»: near-square ───────────────────
+       Turion sets corners at 0px; a hair of radius (2–6px) keeps the
+       working app from reading hostile while landing squarely in the
+       reference's squared world. Pills (--r-full) survive for avatars
+       and round status dots only. */
+    --r-xs: 2px;
+    --r-sm: 2px;
+    --r-md: 3px;
+    --r-lg: 3px;
+    --r-xl: 3px;
+    --r-2xl: 4px;
+    --r-3xl: 6px;
     --r-full: 9999px;
 
     /* (r136 dead-token sweep: --st-r-default/lg/xl/2xl/full deleted —
@@ -71,7 +91,10 @@
     /* ─── Type — bold + warm ────────────────────────────────────────── */
     --font-sans:    'IBM Plex Sans Arabic', 'Tajawal', system-ui, -apple-system,
                     'Segoe UI', Roboto, sans-serif;
-    --font-display: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+    /* r190: Alexandria — the Arabic-native answer to the reference's
+       Funnel Display 500 (geometric, squarish terminals). Display
+       headings speak Alexandria 600/700; body stays Plex Sans Arabic. */
+    --font-display: 'Alexandria', 'IBM Plex Sans Arabic', system-ui, sans-serif;
     /* (--font-serif retired r148-d — zero consumers; the sanctioned
        Latin serif runs are a fonts.css @font-face policy, not a token
        slot, and nothing in app css/tsx asked for the family.) */
@@ -99,12 +122,14 @@
        because the parity-export product scale pins the full ladder.) */
 
     /* fluid display — Notion goes BIG on hero */
-    --fs-display-xl: clamp(40px, 6.0vw, 72px);
-    --fs-display-lg: clamp(34px, 4.8vw, 56px);
-    --fs-display-md: clamp(28px, 3.6vw, 40px);
+    /* r190: the display ladder opens up — reference display runs
+       56–200px; Arabic display lives at 44–96px with lh floors. */
+    --fs-display-xl: clamp(48px, 7.0vw, 96px);
+    --fs-display-lg: clamp(36px, 5.0vw, 64px);
+    --fs-display-md: clamp(28px, 3.6vw, 44px);
 
-    --fs-h1: 30px;
-    --fs-h2: 22px;
+    --fs-h1: 34px;
+    --fs-h2: 24px;
     --fs-h3: 18px;
 
     --fs-body-lg: 17px;
@@ -329,7 +354,7 @@
        sizes; 1.15 is the Arabic floor (dark adds one more step —
        typeset guidance: light-on-dark wants slightly more leading).
        Landing's mega already rode calc(display-lh + .05) → 1.20. */
-    --type-display-line-height:    1.15;
+    --type-display-line-height:    1.14;
     /* 5-C2 (A3 P1-1 / 21-c headline precedent): was --ls-mega
        (-0.032em) — every consumer of the display role is Arabic
        landing display text (mega/section/band/final-CTA headings +
@@ -607,11 +632,15 @@
     --surface-border:  rgba(0,0,0,0.08);
     --surface-divider: rgba(0,0,0,0.05);
 
-    /* primary brand accent — Notion-orange-with-Madarek-copper energy */
-    --accent:        var(--c-copper-ink);
-    --accent-hover:  #9A5F25;
-    --accent-soft:   var(--c-copper-bg);
-    --accent-strong: var(--c-copper-deep);
+    /* r190 «مدار المعرفة» — the accent becomes electric violet (the
+       reference's #8F4BFF family, AA-tuned for cream). Copper moves to
+       its new home: the achievement/warm-status family (--gold,
+       --c-copper-*, gamification). Contrast: #6C4AE0 = 5.46:1 on
+       --bg; #4B2FB0 (ink) = 8.66:1; #FFF on accent fill = 5.46:1. */
+    --accent:        #6C4AE0;
+    --accent-hover:  #5A3AC4;
+    --accent-soft:   #ECE5FB;
+    --accent-strong: #4B2FB0;
     /* T3-F4 WCAG fix — was #FFFFFF: 3.80:1 on --accent #B57438 (L=0.2260)
        ✗ AA for 13–15px button labels. #1A0F06 L=0.0057 →
        (0.2260+0.05)/(0.0057+0.05) = 4.95:1 ✓ AA. This mirrors Dark's
@@ -619,16 +648,13 @@
        see the dark block below), so accent buttons read as one family
        across themes. (r134: previously quoted the retired #191918 on
        #E0A067 = 7.87:1 — the night accent moved to #E9B44C.) */
-    --accent-fg:     #1A0F06;
+    --accent-fg:     #FFFFFF;   /* 5.46:1 on the violet fill — AA for labels */
     /* --focus-ring retired (premium-polish): the ~32%-alpha halo measured
        ≈1.5:1 on cream and survived only by losing layer order to the v22
        outline. The ONE focus language is --state-focus-ring (outline) +
        --state-input-focus-halo (input/wrapper halo). */
 
-    /* T3-F4 — text-safe accent ink for links/eyebrows on light surfaces.
-       #5C3416 = 10.29:1 on --bg, 10.72:1 on --surface, 8.62:1 on
-       --accent-soft. --accent stays the fill/border/underline colour. */
-    --accent-ink:    var(--accent-strong);
+    --accent-ink:    var(--accent-strong);   /* #4B2FB0 = 8.66:1 on --bg */
 
     /* 001 interaction-tokens self-rule: the focus ring MUST clear 4.5:1
        against the background. Light --accent #B57438 is 3.65:1 on --bg,
@@ -672,14 +698,25 @@
 
     /* (r148-d: --brand retired — zero consumers; --brand-purple stays,
        the one live brand slot.) */
-    --brand-purple:  var(--c-lavender-ink);
+    --brand-purple:  var(--accent);
+    /* r190: gold/copper is the ACHIEVEMENT family (badges, streaks,
+       gamification fills) — no longer the primary chrome accent. */
     --gold:          var(--c-yellow-ink);
     /* T3-F4 — gold text ink (fills/strokes keep --gold):
        #6B4C0B = 7.56:1 on --bg. TSX gold-as-text consumers should switch
        to var(--gold-ink) (follow-up logged for the TSX wave). */
     --gold-ink:      var(--c-yellow-deep);
-    --primary:       var(--neutral-900);
+    --primary:       var(--neutral-900);   /* ink slab — the reference's light-section CTA */
     --primary-fg:    #FFFFFF;
+
+    /* r190 — the violet glow register (reference: luminous focal points
+       against depth). Background aura only; never a text treatment. */
+    --glow-accent:        0 0 20px rgba(108,74,224,0.22), 0 0 56px rgba(108,74,224,0.10);
+    --glow-accent-strong: 0 0 28px rgba(108,74,224,0.30), 0 0 80px rgba(108,74,224,0.14);
+    /* atmospheric scene stops (landing/auth stages) */
+    --aura-violet:        #8F5BFF;
+    --aura-violet-deep:   #4B2FB0;
+    --aura-horizon:       #D4849C;
 
     /* shadows — Notion-soft
        (premium-polish F2: --shadow-card now aliases the canonical
@@ -750,7 +787,7 @@
 
     --chart-text: #6E6C65;  /* T3-F4: was var(--neutral-500) #898680 = 3.48:1 → 5.04:1 ✓ (same fix as --text-muted) */
     --chart-grid: rgba(25,25,24,0.08);
-    --chart-1: var(--c-copper-ink);
+    --chart-1: var(--accent);   /* r190: series 1 = the violet accent */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
@@ -777,7 +814,7 @@
        (rg-verified zero consumers). --journey-glow survives: auth.css
        floats the auth card on the same ambient wash (pinned by
        AuthPage-alignment.test.tsx). */
-    --journey-glow:        rgba(181, 116, 56, 0.10);   /* ambient wash */
+    --journey-glow:        rgba(108, 74, 224, 0.12);   /* r190: violet ambient wash */
 
     /* ─── Orbit Ink — LIGHT remap (r172a: the landing joins the
        two-theme system; was a fixed #252A3E dark stage in both
@@ -831,7 +868,7 @@
        text (typeset guidance — compensate on all perceptual axes; the
        tracking/weight axes are banned on Arabic cursive, leading is
        the legal one). Landing mega rides calc(display-lh + .05) → 1.25. */
-    --type-display-line-height: 1.2;
+    --type-display-line-height: 1.14;   /* r190: Alexandria display leading — tight as Arabic allows */
 
     --neutral-0:   #0D1428;
     --neutral-50:  #070B16;
@@ -892,14 +929,15 @@
     --surface-border:  rgba(142,151,184,0.14);
     --surface-divider: rgba(142,151,184,0.08);
 
-    /* مدارك night: the accent becomes the landing's gold — the single
-       strongest identity bridge between سماء مدارك and the product.
-       #E9B44C = 10.39:1 as text on --bg; void ink on gold = 10.63:1. */
-    --accent:        #E9B44C;
-    --accent-hover:  #F5D48A;
-    --accent-soft:   var(--c-copper-bg);
-    --accent-strong: #C9962F;
-    --accent-fg:     #05070F;
+    /* r190 «مدار المعرفة» — night accent: electric violet (the
+       reference's #8F4BFF family, AA-tuned for the night ground).
+       #9A5CFF = 5.01:1 as text on --bg #070B16; void ink on the violet
+       fill = 4.75:1. The gold family moves to --gold/--c-copper-*. */
+    --accent:        #9A5CFF;
+    --accent-hover:  #AD7BFF;
+    --accent-soft:   #241D40;
+    --accent-strong: #B085FF;   /* 7.14:1 on night — the focus ring tier */
+    --accent-fg:     #0A0614;
     /* --focus-ring retired — see the light-theme note above. */
 
     /* Night theme passes as-is: the -ink family clears AA on the night
@@ -928,11 +966,19 @@
 
     /* (r148-d: --brand retired — zero consumers; --brand-purple stays,
        the one live brand slot.) */
-    --brand-purple:  var(--c-lavender-ink);
-    --gold:          var(--accent);
+    --brand-purple:  var(--accent);
+    --gold:          var(--c-copper-ink);   /* r190: gold returns to its copper family — the ACHIEVEMENT accent */
     --gold-ink:      var(--c-yellow-ink);   /* T3-F4 — dark gold text ink (12.37:1 on --bg) */
-    --primary:       var(--accent);
+    --primary:       #FFFFFF;               /* r190: the void CTA — white slab, void ink label (reference grammar) */
     --primary-fg:    #05070F;
+
+    /* r190 — the violet glow register for night (aura-only, never text). */
+    --glow-accent:        0 0 22px rgba(154,92,255,0.30), 0 0 64px rgba(154,92,255,0.14);
+    --glow-accent-strong: 0 0 32px rgba(154,92,255,0.38), 0 0 96px rgba(154,92,255,0.18);
+    /* atmospheric scene stops (landing/auth stages — same stops, night-tuned) */
+    --aura-violet:        #9A5CFF;
+    --aura-violet-deep:   #6C4AE0;
+    --aura-horizon:       #D4849C;
 
     --shadow-card:    var(--elev-1);
     --shadow-card-h:  0 1px 2px rgba(2,4,12,0.50), 0 8px 22px rgba(2,4,12,0.55), 0 0 0 1px rgba(142,151,184,0.08);
@@ -966,13 +1012,13 @@
     /* r150a — the night shell's azure aurora wash (layout.css dark
        sidebar). One-off ambient accent at 5% alpha; quoted as a token
        so the gate census stays honest and the wash is retunable. */
-    --shell-aurora-azure: #6FA8FF;
+    --shell-aurora-azure: #9A5CFF;   /* r190: the aurora turns violet — name kept (fleet consumer) */
 
     --sidebar-bg:        var(--neutral-50);
     --sidebar-rule:      var(--neutral-200);
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
-    --sidebar-item-active-bg:   rgb(233 180 76 / 0.10);  /* مدارك night: gold wash — the traveller's current orbit */
+    --sidebar-item-active-bg:   rgb(154 92 255 / 0.16);  /* r190: violet wash — the traveller's current orbit */
     --sidebar-item-active-text: var(--neutral-900);
     /* (r148-d: --sidebar-active-bar retired — zero consumers; the
        active rail is painted by the sidebar recipes directly.) */
@@ -994,7 +1040,7 @@
 
     --chart-text: var(--neutral-500);
     --chart-grid: rgba(142,151,184,0.10);
-    --chart-1: var(--c-copper-ink);
+    --chart-1: var(--accent);   /* r190: series 1 = the violet accent */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
@@ -1006,7 +1052,7 @@
     /* ─── Immersive journey scene — r148-d: the night node/line/core/
        ticker variants retired with the light block's set (see the
        light theme's note); the gold-thread glow survives for auth.css. */
-    --journey-glow:        rgba(233,180,76,0.14);
+    --journey-glow:        rgba(154,92,255,0.16);
 
     /* ─── Orbit Ink — DARK remap (r172a). The authored round-3 night
        palette, now expressed as the explicit dark half of the

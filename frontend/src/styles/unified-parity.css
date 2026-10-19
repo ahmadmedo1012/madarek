@@ -66,13 +66,13 @@
     /* (r136: --sp-*x legacy aliases deleted with the canon — see tokens.css) */
 
     /* ─── Radius — Notion-soft, 7 rungs + full ────────────────────── */
-    --r-xs: 6px;
-    --r-sm: 8px;
-    --r-md: 10px;
-    --r-lg: 12px;
-    --r-xl: 16px;
-    --r-2xl: 20px;
-    --r-3xl: 28px;
+    --r-xs: 2px;
+    --r-sm: 2px;
+    --r-md: 3px;
+    --r-lg: 3px;
+    --r-xl: 3px;
+    --r-2xl: 4px;
+    --r-3xl: 6px;
     --r-full: 9999px;
 
     /* (r136: --st-r-* deleted with the canon — see tokens.css.
@@ -101,7 +101,7 @@
     --fs-display-lg: clamp(34px, 4.8vw, 56px);
     --fs-display-md: clamp(28px, 3.6vw, 40px);
 
-    --fs-h1: 30px;
+    --fs-h1: 34px;
     --fs-h2: 22px;
     --fs-h3: 18px;
 
@@ -240,7 +240,7 @@
     /* ─── Type roles — role-locked semantic typography ────────────── */
     --type-display-size-md:        var(--fs-display-md);   /* 28..40px */
     --type-display-weight:         var(--fw-black);        /* → 700 */
-    --type-display-line-height:    1.15;
+    --type-display-line-height:    1.14;
     --type-display-letter-spacing: var(--ls-normal);       /* 0 */
 
     --type-headline-size-lg:        var(--fs-h1);          /* 30px */
@@ -364,12 +364,12 @@
     --surface-divider: rgba(0,0,0,0.05);
 
     /* copper accent family */
-    --accent:        var(--c-copper-ink);   /* #B57438 */
-    --accent-hover:  #9A5F25;
-    --accent-soft:   var(--c-copper-bg);    /* #F4E4D2 */
-    --accent-strong: var(--c-copper-deep);  /* #5C3416 */
-    --accent-fg:     #1A0F06;               /* 4.95:1 on copper */
-    --accent-ink:    var(--accent-strong);  /* text-safe copper ink */
+    --accent:        #6C4AE0;              /* r190 violet — 5.46:1 on cream */
+    --accent-hover:  #5A3AC4;
+    --accent-soft:   #ECE5FB;
+    --accent-strong: #4B2FB0;               /* 8.66:1 */
+    --accent-fg:     #FFFFFF;               /* 5.46:1 on violet fill */
+    --accent-ink:    var(--accent-strong);  /* text-safe violet ink */
 
     /* the focus ring must clear 4.5:1 — copper itself is 3.65:1 on
        cream, so the light ring rides the deep copper (10.29:1). */
@@ -471,7 +471,7 @@
      ══════════════════════════════════════════════════════════════════ */
   [data-theme="dark"] {
     /* one more leading step for light-on-dark display text */
-    --type-display-line-height: 1.2;
+    --type-display-line-height: 1.14;   /* r190: Alexandria display leading */
 
     /* inverted neutral ramp — the indigo night */
     --neutral-0:   #0D1428;
@@ -520,11 +520,11 @@
     --surface-divider: rgba(142,151,184,0.08);
 
     /* the accent becomes the landing's gold */
-    --accent:        #E9B44C;            /* gold — 10.39:1 on night */
-    --accent-hover:  #F5D48A;            /* pale gold */
-    --accent-soft:   var(--c-copper-bg); /* #2C2312 */
-    --accent-strong: #C9962F;
-    --accent-fg:     #05070F;            /* void ink on gold — 10.63:1 */
+    --accent:        #9A5CFF;            /* r190 violet — 5.01:1 on night */
+    --accent-hover:  #AD7BFF;
+    --accent-soft:   #241D40;
+    --accent-strong: #B085FF;            /* 7.14:1 — the ring tier */
+    --accent-fg:     #0A0614;            /* void ink on violet — 4.75:1 */
     --accent-ink:    var(--accent);      /* night inks pass as-is */
 
     /* the -ink family clears AA on the night ground — same values the
@@ -550,7 +550,7 @@
     --brand-purple:  var(--c-lavender-ink);
     --gold:          var(--accent);
     --gold-ink:      var(--c-yellow-ink);
-    --primary:       var(--accent);      /* gold */
+    --primary:       #FFFFFF;           /* r190: the void CTA — white slab */
     --primary-fg:    #05070F;
 
     /* shadows — indigo depth with mist hairlines */
@@ -580,7 +580,7 @@
     --sidebar-rule:      var(--neutral-200);
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
-    --sidebar-item-active-bg:   rgb(233 180 76 / 0.10);  /* gold wash */
+    --sidebar-item-active-bg:   rgb(154 92 255 / 0.16);  /* r190: violet wash */
     --sidebar-item-active-text: var(--neutral-900);
     /* (r148-d: --sidebar-active-bar retired with the canon) */
 

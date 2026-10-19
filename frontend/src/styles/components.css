@@ -5012,3 +5012,122 @@
   .ledger-row-flat { align-items: center; }
   .ledger-row-flat .ledger-what { color: var(--text-secondary); }
 }
+
+
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║  R190 · مدار المعرفة — THE TELEMETRY LAYER                      ║
+   ║  (append-only; source order within @layer components wins)      ║
+   ╚══════════════════════════════════════════════════════════════════╝
+   The Turion-derived upgrade of the r189 ledger primitives. The
+   direction reference (docs/design/r190-reference-matrix.md):
+   · dark = the VOID — panels become translucent luminosity steps
+     (color-mix white washes over --surface), separation by light,
+     not hairlines; hover states glow violet at the inline-start edge.
+   · light = the CREAM editorial — panels keep their inked hairlines
+     (they ARE the reference's light-section grammar) but pick up the
+     violet telemetry markers.
+   · the square marker (7×7, zero radius) before mono labels is the
+     reference's telemetry signature — data areas only, never
+     decorative headers (the 10% rule).
+   · the momentum ring's fill gains an aura drop-shadow; the
+     page-header rule gains its orbit node.
+   All values ride tokens or color-mix(var()) — zero raw literals,
+   zero new tokens (parity stays 165/165). */
+@layer components {
+
+
+  /* ── 1 · Void panels — luminosity replaces hairline (dark only) ── */
+  [data-theme="dark"] .ledger,
+  [data-theme="dark"] .stat-strip,
+  [data-theme="dark"] .momentum,
+  [data-theme="dark"] .card {
+    background:
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--text) 4%, var(--surface)),
+        color-mix(in srgb, var(--text) 1.5%, var(--surface)));
+    border-color: var(--surface-border);
+  }
+  /* the zone heads keep their tinted bands — on the void they ride a
+     translucent family wash so the luminosity step still reads
+     through (the family INK at 14% over the void) */
+  [data-theme="dark"] .ledger.zone-sky > .ledger-head      { background: color-mix(in srgb, var(--c-sky-ink) 14%, transparent); }
+  [data-theme="dark"] .ledger.zone-rose > .ledger-head     { background: color-mix(in srgb, var(--c-rose-ink) 14%, transparent); }
+  [data-theme="dark"] .ledger.zone-mint > .ledger-head     { background: color-mix(in srgb, var(--c-mint-ink) 14%, transparent); }
+  [data-theme="dark"] .ledger.zone-copper > .ledger-head   { background: color-mix(in srgb, var(--c-copper-ink) 14%, transparent); }
+  [data-theme="dark"] .ledger.zone-lavender > .ledger-head { background: color-mix(in srgb, var(--c-lavender-ink) 14%, transparent); }
+  [data-theme="dark"] .ledger.zone-sky > .ledger-head      { border-block-end-color: color-mix(in srgb, var(--c-sky-ink) 30%, transparent); }
+  [data-theme="dark"] .ledger.zone-rose > .ledger-head     { border-block-end-color: color-mix(in srgb, var(--c-rose-ink) 30%, transparent); }
+  [data-theme="dark"] .ledger.zone-mint > .ledger-head     { border-block-end-color: color-mix(in srgb, var(--c-mint-ink) 30%, transparent); }
+  [data-theme="dark"] .ledger.zone-copper > .ledger-head   { border-block-end-color: color-mix(in srgb, var(--c-copper-ink) 30%, transparent); }
+  [data-theme="dark"] .ledger.zone-lavender > .ledger-head { border-block-end-color: color-mix(in srgb, var(--c-lavender-ink) 30%, transparent); }
+
+  /* ── 2 · Telemetry markers — the 7px violet square ────────────── */
+  .stat-label::before,
+  .ledger-tag::before,
+  .page-header-meta::before {
+    content: "";
+    display: inline-block;
+    inline-size: 7px;
+    block-size: 7px;
+    margin-inline-end: var(--sp-1-5);
+    background: var(--accent);
+    /* vertical alignment against 11px mono text */
+    vertical-align: 0.06em;
+    border-radius: 0;   /* raw-css: permitted zero */
+  }
+  .ledger-tag::before { background: currentColor; }
+
+  /* ── 3 · Row hover — the violet orbit edge ────────────────────── */
+  .ledger-row-link { position: relative; }
+  .ledger-row-link::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 2px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity var(--t-fast) var(--ease);
+  }
+  .ledger-row-link:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  .ledger-row-link:hover::before { opacity: 1; }
+  .ledger-row-link:active { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .stat-cell-link:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+
+  /* ── 4 · The momentum aura + orbit node on the masthead ───────── */
+  .momentum-ring .ring-fill {
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 45%, transparent));
+  }
+  .page-header { position: relative; }
+  .page-header::after {
+    /* the orbit node — where the masthead rule terminates */
+    content: "";
+    position: absolute;
+    inset-block-end: -4px;
+    inset-inline-end: 0;
+    inline-size: 8px;
+    block-size: 8px;
+    background: var(--accent);
+    border-radius: 0;   /* raw-css: permitted zero */
+  }
+  .page-header-meta { color: var(--text-muted); }
+
+  /* ── 5 · Void buttons — the ghost that illuminates ────────────── */
+  [data-theme="dark"] .btn { --_btn-shadow: none; }
+  [data-theme="dark"] .btn:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  }
+  [data-theme="dark"] .btn.primary {
+    /* the white void CTA gains its halo on hover — aura, never text */
+    box-shadow: var(--elev-2);
+  }
+  [data-theme="dark"] .btn.primary:hover {
+    box-shadow: var(--elev-2), var(--glow-accent);
+  }
+
+  /* ── 6 · Reduced motion — the aura and edges respect the switch ── */
+  @media (prefers-reduced-motion: reduce) {
+    .ledger-row-link::before { transition: none; }
+    .momentum-ring .ring-fill { filter: none; }
+  }
+}
