@@ -148,4 +148,13 @@ export const KNOWN_DURATIONS_MS: ReadonlyArray<number> = [
   // ring's single documented slow pass (tokens.css §landing motion;
   // consumers reference var(--ln-dur-marquee), never a re-spelled 42s).
   42_000,
+  // r190 integration: the AMBIENT ladder (tokens.css §ambient loops —
+  // pulse 1.6s / base 2.4s / slow 3.6s / drift 6s / scene 22s) was
+  // authored AFTER this list and never folded in — the r190 landing's
+  // node-breathe (ambient-slow) tripped the audit like the r164
+  // slower rungs once did. Plus the r190 scene entrance:
+  // --motion-duration-scene-reveal (2.2s — the hero's one-time
+  // orbital draw; consumers reference the token, never a re-spelled
+  // value).
+  1_600, 2_400, 3_600, 6_000, 22_000, 2_200,
 ];

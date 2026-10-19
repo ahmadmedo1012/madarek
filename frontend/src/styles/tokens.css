@@ -250,6 +250,11 @@
     --motion-duration-reveal:   360ms;
     --motion-duration-stat:     700ms;
     --motion-duration-skeleton: 1200ms;
+    /* r190 «مدار المعرفة»: the landing stage's ONE-TIME orbital draw
+       (the hero's light-path draws itself over ~2.2s on first paint —
+       a scene entrance, so it lives on the semantic ladder, not the
+       ambient loop ladder; reduced-motion turns it static). */
+    --motion-duration-scene-reveal: 2200ms;
 
     /* Ambient loop durations — 5-C1 (A2 §1a, 4-A11 §1.3 P1-5): the
        dedicated scale for INFINITE decorative loops (breathe / sway /
