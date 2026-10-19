@@ -33,10 +33,14 @@ test.describe('لوحة الأوامر والبحث الشامل', () => {
     await expect(hit).toBeVisible();
     await expect(hit).toContainText('CS-201');
 
-    /* الاختيار: يغلق اللوحة ويستقر في تفاصيل المقرّر */
+    /* الاختيار: يغلق اللوحة ويستقر في تفاصيل المقرّر.
+       r183-B6 (A4 P3-4) — the tab names the THING, not the pattern:
+       useEntityPageTitle hands the course's name up, so the title is
+       the entity name. (The old generic-pattern pin raced the
+       entity-name write — CI's slower machines exposed it.) */
     await hit.click();
     await expect(page).toHaveURL(new RegExp(`/student/courses/${OFFERING_ID}$`));
-    await expect(page).toHaveTitle('تفاصيل المقرّر · مدارك');
+    await expect(page).toHaveTitle('مقدمة في الخوارزميات · مدارك');
     // اللوحة أُغلقت بالتنقّل (goTo يستدعي onClose).
     await expect(page.getByRole('combobox', { name: 'الأوامر والبحث' })).toHaveCount(0);
   });
