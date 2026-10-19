@@ -29,7 +29,10 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:4000',
+        // Dev-only override: VITE_API_TARGET lets a local UI iterate
+        // against a remote API (e.g. the production deployment) without
+        // booting the backend. Unset → the canonical localhost:4000.
+        target: process.env.VITE_API_TARGET || 'http://localhost:4000',
         changeOrigin: true,
         secure: false,
       },

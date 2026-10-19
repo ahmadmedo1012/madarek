@@ -1144,7 +1144,7 @@ describe('r180-F2 — GradesPage semester-grade entry', () => {
     // The six GradeKind labels ride the selector.
     const options = screen.getAllByRole('option') as HTMLOptionElement[];
     expect(options.map((o) => o.textContent)).toEqual(
-      expect.arrayContaining(['واجب', 'اختبار قصير ١', 'اختبار قصير ٢', 'نصفي', 'مشروع', 'نهائي']),
+      expect.arrayContaining(['واجب', 'اختبار قصير 1', 'اختبار قصير 2', 'نصفي', 'مشروع', 'نهائي']),
     );
     unmount();
   });

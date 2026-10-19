@@ -919,7 +919,7 @@ export function OwnerInstitutionDetailPage() {
               سيُدرَّس مقرّر «{offeringCourse.name}» (<bdi>{offeringCourse.code}</bdi>) في الشعبة الجديدة داخل «{institution.name}».
             </p>
           )}
-          <FormField label="الفصل الدراسي" id="owner-offering-term" hint="نص حرّ من ١ إلى ٥٠ حرفًا — مثال: 2024-FALL">
+          <FormField label="الفصل الدراسي" id="owner-offering-term" hint="نص حرّ من 1 إلى 50 حرفًا — مثال: 2024-FALL">
             <input
               className="input"
               value={offeringForm.term}

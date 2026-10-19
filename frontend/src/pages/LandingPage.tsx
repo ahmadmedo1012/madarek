@@ -66,7 +66,7 @@ const MEGA_SCENES: MegaScene[] = [
   {
     id: 'what',
     meta: 'منصّة تعليمية متكاملة',
-    label: '٠٠٢ · ما هي مدارك',
+    label: '002 · ما هي مدارك',
     title: <>كل ما تحتاجه الجامعة، <em>في منظومة واحدة</em></>,
     lede: 'مدارك تجمع المحتوى والقياس والبحث والتواصل في مكان واحد — كل قدرة تخدم التي بعدها — والطالب في مركزها.',
   },
@@ -76,7 +76,7 @@ const MEGA_SCENES: MegaScene[] = [
     label: 'اليوم',
     title: <>تعلّم متصل <em>بثلاث ركائز</em></>,
     lede: 'كل ركيزة تُبنى على ما قبلها:',
-    bullets: ['٠١ محتوى تفاعلي يُشاهد ويُفحص', '٠٢ قياس وإتقان يكشف الفجوات', '٠٣ ذكاء أكاديمي يقترح الخطوة التالية'],
+    bullets: ['01 محتوى تفاعلي يُشاهد ويُفحص', '02 قياس وإتقان يكشف الفجوات', '03 ذكاء أكاديمي يقترح الخطوة التالية'],
     barActive: 0,
   },
   {
@@ -123,30 +123,30 @@ const FRAME_OUT = [0.2, 0.37, 0.54, 0.71, 0.87, 1.05];
 
 /* ── Capability bar (the reference's 01–06 checklist grammar). */
 const CAPABILITY_BAR = [
-  { n: '٠١', t: 'المحتوى' },
-  { n: '٠٢', t: 'المصفوفة' },
-  { n: '٠٣', t: 'التقييم' },
-  { n: '٠٤', t: 'البحوث' },
-  { n: '٠٥', t: 'الرسائل' },
-  { n: '٠٦', t: 'المساعد' },
+  { n: '01', t: 'المحتوى' },
+  { n: '02', t: 'المصفوفة' },
+  { n: '03', t: 'التقييم' },
+  { n: '04', t: 'البحوث' },
+  { n: '05', t: 'الرسائل' },
+  { n: '06', t: 'المساعد' },
 ];
 
 /* ── Product cards (المنظومة slider). */
 const PRODUCTS = [
   {
-    n: '٠١', img: '/brand/card-content.webp', title: 'المحتوى والمحاضرات',
+    n: '01', img: '/brand/card-content.webp', title: 'المحتوى والمحاضرات',
     lede: 'محاضرات مسجَّلة بنقاط فحص مدمجة — الحضور يُحتسب تلقائيًا عند الإكمال، والفهم يُبنى بوتيرة الطالب.',
     tags: ['محاضرات', 'نقاط فحص', 'حضور تلقائي'],
     icon: BookOpenCheck,
   },
   {
-    n: '٠٢', img: '/brand/card-assessment.webp', title: 'القياس والاختبارات',
+    n: '02', img: '/brand/card-assessment.webp', title: 'القياس والاختبارات',
     lede: 'أربعة أنواع أسئلة بتصحيح تلقائي للموضوعي، وتصحيح المقالات بملاحظات مكتوبة — والنتائج تتصل مباشرة بالمصفوفة.',
     tags: ['اختيار متعدد', 'صح/خطأ', 'إجابة قصيرة', 'مقالة'],
     icon: ClipboardCheck,
   },
   {
-    n: '٠٣', img: '/brand/card-ai.webp', title: 'الذكاء الأكاديمي',
+    n: '03', img: '/brand/card-ai.webp', title: 'الذكاء الأكاديمي',
     lede: 'مساعد يعرف مقرَّراتك ومحاضراتك ودرجاتك: شروحات مخصَّصة، وتحديد فجوات، وخطط مراجعة حسب أدائك الفعلي.',
     tags: ['شروحات', 'فجوات معرفية', 'خطط مراجعة'],
     icon: Brain,
@@ -166,12 +166,10 @@ const srcset480 = (src: string) => {
   return m ? `${m[1]}-480.webp 480w, ${src} 960w` : src;
 };
 
-const AR = (n: number) => String(n).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[+d] ?? d);
-
 const PROOF_CARDS = [
-  { n: AR(LIVE_COUNT), unit: 'قدرات', sub: 'تعمل الآن — موثَّقة في دليل الميزات', img: '/brand/card-assessment.webp' },
-  { n: '٥', unit: 'أدوار', sub: 'مسارات وصلاحيات منفصلة لكل دور', img: '/brand/journey-institution.webp' },
-  { n: '٤', unit: 'أنواع أسئلة', sub: 'بتصحيح تلقائي للأسئلة الموضوعية', img: '/brand/card-content.webp' },
+  { n: String(LIVE_COUNT), unit: 'قدرات', sub: 'تعمل الآن — موثَّقة في دليل الميزات', img: '/brand/card-assessment.webp' },
+  { n: '5', unit: 'أدوار', sub: 'مسارات وصلاحيات منفصلة لكل دور', img: '/brand/journey-institution.webp' },
+  { n: '4', unit: 'أنواع أسئلة', sub: 'بتصحيح تلقائي للأسئلة الموضوعية', img: '/brand/card-content.webp' },
 ];
 
 /* ── Role cards (لمن صُنعت) — three reader-facing journeys + the honest
@@ -238,7 +236,13 @@ export default function LandingPage() {
   // under the header during approach (measured: 0 cards at 260px-in).
   const proofRef = useScrollStage<HTMLElement>({ startOffset: 1, endOffset: 1 });
   const visionRef = useScrollStage<HTMLElement>();
-  const footerRef = useScrollStage<HTMLElement>();
+  // r193: the footer is the document's LAST element — the default
+  // endOffset 0 (progress 1 = bottom at viewport TOP) is unreachable at
+  // document end, so the closing wordmark's rush froze at ~4% opacity /
+  // +93px (QA-measured at 390 and 1440). endOffset 1 completes the rush
+  // exactly when the page bottoms out — the same unreachable-end fix the
+  // proof stage got in r192.
+  const footerRef = useScrollStage<HTMLElement>({ startOffset: 1, endOffset: 1 });
   const productsRef = useRef<HTMLDivElement>(null);
 
   // Which mega frame is active (for aria only — visuals stay CSS-driven;
@@ -507,28 +511,32 @@ export default function LandingPage() {
           </div>
 
           {/* micro-labels — the reference's corner instrument grammar:
-              ٠٠١ at the start corner (RTL: bottom-right), mission sentence
-              opposite. Honest counts only. */}
-          <RevealCssClass as="div" className="fo-hero-corner fo-micro" delay={5}>
-            <span className="fo-mono">٠٠١</span> · رحلة تعلّم متكاملة
-          </RevealCssClass>
-          <RevealCssClass as="p" className="fo-hero-mission fo-micro" delay={5}>
-            من المحاضرة الأولى إلى الإتقان — منظومة واحدة تلازم رحلة الطالب.
-          </RevealCssClass>
+              001 at the start corner (RTL: bottom-right), mission sentence
+              opposite. Honest counts only. r193: both live in ONE flow row
+              (.fo-hero-instruments) pinned above the telemetry strip — the
+              old absolute positioning collided with the strip on 1440×900. */}
+          <div className="fo-hero-instruments">
+            <RevealCssClass as="div" className="fo-hero-corner fo-micro" delay={5}>
+              <span className="fo-mono">001</span> · رحلة تعلّم متكاملة
+            </RevealCssClass>
+            <RevealCssClass as="p" className="fo-hero-mission fo-micro" delay={5}>
+              من المحاضرة الأولى إلى الإتقان — منظومة واحدة تلازم رحلة الطالب.
+            </RevealCssClass>
+          </div>
 
           {/* the quiet honest strip — replaces the old flag strip */}
           <RevealCssClass as="ul" className="fo-telemetry" delay={5} aria-label="حقائق سريعة عن المنصّة">
             <li className="fo-telemetry-item">
               <span className="fo-telemetry-mark" aria-hidden />
-              <span className="fo-mono">٠١</span> عربية أولًا
+              <span className="fo-mono">01</span> عربية أولًا
             </li>
             <li className="fo-telemetry-item">
               <span className="fo-telemetry-mark" aria-hidden />
-              <span className="fo-mono">٠٢</span> خمسة أدوار أكاديمية
+              <span className="fo-mono">02</span> خمسة أدوار أكاديمية
             </li>
             <li className="fo-telemetry-item">
               <span className="fo-telemetry-mark" aria-hidden />
-              <span className="fo-mono">٠٣</span> {AR(LIVE_COUNT)} قدرات تعمل اليوم
+              <span className="fo-mono">03</span> {LIVE_COUNT} قدرات تعمل اليوم
             </li>
             <li className="fo-telemetry-item fo-telemetry-end">
               <span className="fo-telemetry-mark" aria-hidden />
@@ -568,7 +576,7 @@ export default function LandingPage() {
               to the 100vh pin, not to the 620vh stage. */}
           <div className="mg-pin-secondary">
           <div className="mg-meta fo-micro" aria-hidden={pinnedMode ? undefined : true}>
-            <span className="fo-mono">٠٠٢</span> · منصّة تعليمية متكاملة
+            <span className="fo-mono">002</span> · منصّة تعليمية متكاملة
           </div>
 
           <div className="mg-frames">
@@ -627,7 +635,7 @@ export default function LandingPage() {
         {/* ═══ المنظومة — product cards slider (cream) ═══ */}
         <section id="system" className="pd-section" aria-labelledby="system-title">
           <header className="pd-head">
-            <span className="fo-label"><span className="fo-mono">٠٠٣</span> — المنظومة</span>
+            <span className="fo-label"><span className="fo-mono">003</span> — المنظومة</span>
             <RevealCssClass as="h2" className="pd-title" delay={1} id="system-title">
               ما تجده في مدارك — <em>منظومة واحدة متكاملة</em>
             </RevealCssClass>
@@ -672,7 +680,7 @@ export default function LandingPage() {
         <section id="live" className="pf-stage" aria-labelledby="live-title" ref={proofRef} data-pinned={pinnedMode ? 'on' : 'off'}>
           <div className="pf-pin">
             <header className="pf-head">
-              <span className="fo-label"><span className="fo-mono">٠٠٤</span> — ما يعمل اليوم</span>
+              <span className="fo-label"><span className="fo-mono">004</span> — ما يعمل اليوم</span>
               <h2 className="pf-title" id="live-title">
                 قدرات <em>موثَّقة</em>، لا ادّعاءات
               </h2>
@@ -706,7 +714,7 @@ export default function LandingPage() {
         {/* ═══ لمن صُنعت — role cards (cream) ═══ */}
         <section id="roles" className="rl-section" aria-labelledby="roles-title">
           <header className="pd-head">
-            <span className="fo-label"><span className="fo-mono">٠٠٥</span> — لمن صُنعت</span>
+            <span className="fo-label"><span className="fo-mono">005</span> — لمن صُنعت</span>
             <RevealCssClass as="h2" className="pd-title" delay={1} id="roles-title">
               منصّة واحدة، <em>خمسة مسارات</em>
             </RevealCssClass>
@@ -741,7 +749,7 @@ export default function LandingPage() {
             <img src="/brand/vision-bg.webp" srcSet="/brand/vision-bg-768.webp 768w, /brand/vision-bg.webp 1344w" sizes="100vw" alt="" loading="lazy" decoding="async" />
           </div>
           <div className="vs-inner">
-            <span className="fo-label vs-label"><span className="fo-mono">٠٠٦</span> — إلى أين</span>
+            <span className="fo-label vs-label"><span className="fo-mono">006</span> — إلى أين</span>
             <h2 className="vs-wordmark" aria-hidden="true">مدارك</h2>
             <div className="vs-copy">
               <RevealCssClass as="h3" className="vs-title" delay={1} id="vs-title">
@@ -807,7 +815,7 @@ export default function LandingPage() {
             </RevealCssClass>
             <RevealCssClass as="p" className="fo-cta-meta" delay={4}>
               <Icon icon={Check} size={13} />
-              مدارك · {AR(year)} · منصّة تعليمية مستقلّة
+              مدارك · {year} · منصّة تعليمية مستقلّة
             </RevealCssClass>
           </div>
         </section>
@@ -858,7 +866,7 @@ export default function LandingPage() {
             </nav>
           </div>
           <div className="fo-footer-bottom">
-            <span className="fo-mono">© {AR(year)} مدارك</span>
+            <span className="fo-mono">© {year} مدارك</span>
             <span className="fo-footer-cluster">منصّة مستقلّة · عربية أولًا</span>
           </div>
           {/* the giant closing wordmark — parallax rush like the reference */}

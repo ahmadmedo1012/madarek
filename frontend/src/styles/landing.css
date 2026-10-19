@@ -286,9 +286,14 @@
   block-size: 100%;
   object-fit: cover;
   object-position: 62% 42%;
-  /* the art melts into the stage toward the reading start */
-  mask-image: linear-gradient(to left, black 34%, transparent 82%);
-  -webkit-mask-image: linear-gradient(to left, black 34%, transparent 82%);
+  /* the art melts into the stage toward the reading start. r193: the
+     panel's inline-start edge (RTL: the boundary facing the copy column)
+     must be the fading one — "to right" puts transparent at that edge and
+     keeps the viewport-side edge solid. Measured on prod: both previous
+     gradients kept the copy-facing edge opaque (hard seam at the panel
+     boundary, 1440×900). */
+  mask-image: linear-gradient(to right, black 30%, transparent 78%);
+  -webkit-mask-image: linear-gradient(to right, black 30%, transparent 78%);
   opacity: 0.92;
 }
 
@@ -338,7 +343,12 @@
   display: flex;
   align-items: center;
   gap: var(--sp-2-5);
-  margin: 0 0 var(--sp-5);
+  /* r193 (measured, not guessed): the hero title's stacked shadda+damma
+     marks reach 105px of ink above the baseline at 72px while the 1.32
+     line box reserves 73px — 32px of ink pokes ABOVE the h1 box. The old
+     20px gap let that ink land inside the eyebrow's text. 40px keeps the
+     tight stage coupling with 8px of guaranteed clearance. */
+  margin: 0 0 var(--sp-8);
   /* r192: +30% toward cream — the dim token read as low-contrast over
      the void in review; the eyebrow must lead, not whisper. */
   color: color-mix(in srgb, var(--stage-cream-dim) 70%, var(--stage-cream));
@@ -357,6 +367,10 @@
   font-family: var(--font-display);
   font-weight: 600;
   font-size: clamp(44px, 6.4vw, 72px);
+  /* r193: the base sheet's h1..h6 { color: var(--text) } beats inherited
+     stage cream — on the FIXED void that meant near-black display ink in
+     light theme (measured). The stage owns its ink; re-assert it. */
+  color: var(--stage-cream);
   /* r192: lh 1.12 overlapped wrapped Arabic lines ~10px (measured on
      production); the display token now carries the measured-safe 1.28
      and the hero consumes it directly — zero subtractions on Arabic.
@@ -444,6 +458,41 @@
   font-size: 0.6875rem;
 }
 .fo-telemetry-item { display: inline-flex; align-items: center; gap: var(--sp-2); }
+
+/* ── r193 hero bottom: deterministic flow, not absolute corners ──────
+   The corner label and mission sentence used to be absolutely positioned
+   (bottom:132px) over a telemetry strip whose height varies by viewport —
+   measured on production: the mission collided with the strip's last item
+   («بيانات العرض توضيحية») on 1440×900 and would only get worse when the
+   strip wrapped. Both instruments now live in ONE flow row pinned above
+   the telemetry by an auto margin; no viewport can overlap them again. */
+.fo-hero-instruments {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-3) var(--sp-6);
+  inline-size: 100%;
+  max-inline-size: 1320px;
+  margin-inline: auto;
+  margin-block-start: auto;
+  padding-inline: var(--sp-6);
+}
+.fo-hero-corner,
+.fo-hero-mission {
+  position: static;
+  padding: 0;
+}
+.fo-hero-mission {
+  margin: 0;
+  max-width: 46ch;
+  text-align: start;
+  /* r193: micro voice on the void — an inherited theme ink read as dim
+     gray mud in light theme. */
+  color: var(--stage-cream-dim);
+}
+.fo-hero-corner { color: var(--stage-cream-dim); }
+.fo-telemetry { margin-block-start: var(--sp-6); }
 .fo-telemetry-mark {
   inline-size: 7px;
   block-size: 7px;
@@ -464,7 +513,10 @@
   gap: var(--sp-2);
   color: var(--text-muted);
   font-size: 0.75rem;
-  margin-block-end: var(--sp-3);
+  /* r193: 12px let display titles' diacritic ink (Alexandria stacks
+     shadda+fatha to ~0.3em above the line box) land inside the label.
+     20px clears every measured title poke on the landing. */
+  margin-block-end: var(--sp-5);
 }
 .fo-label::before {
   content: "";
@@ -649,22 +701,10 @@
 
 @property --sp { syntax: '<number>'; inherits: true; initial-value: 0; }
 
-/* ── hero corner instruments + scroll cue ─────────────────────────── */
-.fo-hero-corner {
-  position: absolute;
-  inset-inline-start: 0;
-  bottom: 132px;
-  padding: var(--sp-2, 8px) var(--sp-6, 24px);
-}
-.fo-hero-mission {
-  position: absolute;
-  inset-inline-end: 0;
-  bottom: 132px;
-  margin: 0;
-  padding: var(--sp-2, 8px) var(--sp-6, 24px);
-  max-width: 46ch;
-  text-align: start;
-}
+/* ── hero corner instruments + scroll cue ───────────────────────────
+   r193: the corner label + mission sentence moved into the flow row
+   .fo-hero-instruments (see the hero-bottom block above) — these two
+   rules keep only their VOICE (mono ink). Position is flow-owned. */
 .fo-hero-corner .fo-mono { color: var(--stage-violet); }
 .fo-scroll-cue {
   position: absolute;
@@ -707,11 +747,24 @@
   position: relative;
   height: 100%;
 }
-.mg-stage[data-pinned='on'] .mg-pin,
+.mg-stage[data-pinned='on'] .mg-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: clip;
+}
+/* r193 (measured): .mg-pin keeps its 100vh in flow, so .mg-pin-secondary —
+   the layer that carries the frames, meta and capability bar — had its
+   natural top one full viewport BELOW the stage top. The pin's first
+   viewport showed only the map; frame 0 was already fading out by the
+   time its text scrolled into view. A -100vh margin cancels that flow
+   space: the content layer's natural top = stage top, so both layers
+   engage their sticky pinning at the same scroll position. */
 .mg-stage[data-pinned='on'] .mg-pin-secondary {
   position: sticky;
   top: 0;
   height: 100vh;
+  margin-block-start: -100vh;
   overflow: clip;
 }
 .mg-pin-secondary { pointer-events: none; }
@@ -763,10 +816,18 @@
   transition: opacity 0s;
 }
 .mg-node-label {
+  /* r193: Arabic labels must NOT take letter-spacing (it cuts the cursive
+     joins) and must carry a void-colored halo: the left-side nodes' labels
+     cross the rings and the core glow — paint-order:stroke keeps every
+     glyph readable regardless of what passes underneath. */
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0;
   fill: var(--stage-cream-dim);
+  stroke: var(--stage-ink);
+  stroke-width: 3px;
+  paint-order: stroke fill;
+  stroke-linejoin: round;
   opacity: clamp(0, calc((var(--sp) - var(--n-in)) / 0.06), 1);
   transition: opacity 0s;
 }
@@ -828,7 +889,11 @@
   display: inline-block;
   color: var(--stage-violet);
   font-size: 12px;
-  letter-spacing: 0.08em;
+  /* r193: letter-spacing removed — these labels are ARABIC words riding
+     the mono voice, and tracking cuts the cursive joins. The mg-frame-title
+     below pokes up to 8px of diacritic ink above its line box (measured,
+     Alexandria 600 @44px); 14px of margin stays the floor. */
+  letter-spacing: 0;
   margin-bottom: 14px;
 }
 .mg-frame-title {
@@ -876,23 +941,25 @@
   background: var(--stage-violet);
 }
 
-/* comparison circles (scene ٠٣) */
+/* comparison circles — «متفرّق» ring vs «متصلة» orb. r193: the ring's
+   border was stage-line (16% alpha) — invisible on the void, so the
+   contrast the scene is ABOUT didn't read. 34% cream keeps it dim but
+   clearly present; the violet orb stays the bright pole. */
 .mg-compare {
   display: flex;
   align-items: flex-end;
   gap: 28px;
   margin-top: 22px;
   transform: scale(calc(0.86 + 0.14 * clamp(0, (var(--sp) - var(--in)) / 0.16, 1)));
-  transform-origin: inline-start center;
+  transform-origin: 100% center;
 }
 .mg-compare-a {
   inline-size: 120px;
   block-size: 120px;
-  border: 1px solid var(--stage-line);
+  border: 1px solid color-mix(in srgb, var(--stage-cream) 34%, transparent);
   border-radius: 50%;
   display: grid;
   place-items: end center;
-  padding-bottom: -0px;
 }
 .mg-compare-b {
   inline-size: 44px;
@@ -1092,6 +1159,9 @@
      the display token (1.32 on the void) is the legal leading. */
   line-height: var(--type-display-line-height);
   margin: 14px 0 18px;
+  /* r193: base h2 ink re-asserted for the fixed-void stage (light theme
+     rendered this 72px title near-black on the void). */
+  color: var(--stage-cream);
 }
 .pf-title em { font-style: normal; color: var(--stage-violet); }
 .pf-lede { color: var(--stage-cream-dim); margin: 0; }
@@ -1262,6 +1332,8 @@
   font-size: clamp(22px, 2.6vw, 34px);
   line-height: 1.4;
   margin: 24px 0 12px;
+  /* r193: same base-heading ink override — the vs stage is void-fixed. */
+  color: var(--stage-cream);
 }
 .vs-title em { font-style: normal; color: var(--stage-violet); }
 .vs-lede {

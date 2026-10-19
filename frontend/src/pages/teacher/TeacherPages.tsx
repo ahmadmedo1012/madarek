@@ -596,8 +596,8 @@ export function GradesPage() {
  * accident); client-side validation speaks before the wire does. */
 const GRADE_KIND_LABEL: Record<GradeKindFE, string> = {
   HOMEWORK: 'واجب',
-  QUIZ_1: 'اختبار قصير ١',
-  QUIZ_2: 'اختبار قصير ٢',
+  QUIZ_1: 'اختبار قصير 1',
+  QUIZ_2: 'اختبار قصير 2',
   MIDTERM: 'نصفي',
   PROJECT: 'مشروع',
   FINAL: 'نهائي',

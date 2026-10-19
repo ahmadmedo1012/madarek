@@ -110,7 +110,15 @@ export function KnowledgeMap({ className }: { className?: string }) {
                 transform={`translate(${x} ${y})`}
               >
                 <rect x="-5" y="-5" width="10" height="10" className="mg-node-mark" />
-                <text x="14" y="4" className="mg-node-label" direction="rtl">
+                {/* r193: text-anchor="end" — with direction=rtl the label's
+                    inline-end (its LEFT edge) anchors at x=14, so the text
+                    extends RIGHTWARD away from the 10×10 node mark. The
+                    previous anchor="start" ran the word LEFTWARD across the
+                    mark, and its light-gray ink crossing the cream square
+                    made every label read as clipped mid-glyph. The CSS halo
+                    (paint-order: stroke) keeps the text readable over the
+                    rings and glow it crosses on the left-side nodes. */}
+                <text x="14" y="4" className="mg-node-label" direction="rtl" textAnchor="end">
                   {n.label}
                 </text>
               </g>

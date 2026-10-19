@@ -96,8 +96,10 @@ describe('r177 — landing/auth copy is affiliation-free', () => {
     expect(landing).not.toMatch(/fo-brand-sub">\s*جامعة الزاوية/);
     expect(landing.match(/fo-brand-sub">\s*منصّة التعليم الذكي/g)?.length).toBe(2);
     // the copyright is the platform's alone
-    // r191: the year renders in Arabic-Indic digits (AR(year)).
-    expect(landing).toContain('© {AR(year)} مدارك</span>');
+    // r193: the year renders in WESTERN digits — the platform's one
+    // numeral convention (formatNum ar-LY→latn); the r191 Arabic-Indic
+    // AR() helper was the drift and is gone.
+    expect(landing).toContain('© {year} مدارك</span>');
   });
 
   it('auth pages carry the platform identity, no ministry strip', () => {
