@@ -1025,7 +1025,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (max-width: 920px) {
     .page {
-      padding-block-end: calc(64px + env(safe-area-inset-bottom) + var(--sp-4)); /* spacing-gate: allow — sticky topbar height constant 64px + safe-area + rung — page chrome clearance */
+      padding-block-end: calc(64px + env(safe-area-inset-bottom) + var(--sp-4)); /* spacing-gate: allow — fixed bottom-nav clearance (measured dock 78px at 390px; 64px + rung clears it) + safe-area + rung — NOT the topbar (r299 comment fix: the old comment misattributed this to the topbar, whose real height is --topbar-h 60px) */
     }
   }
 
@@ -1203,6 +1203,21 @@
   html {
     scroll-behavior: smooth;
     scrollbar-gutter: stable;
+  }
+  /* r299 (final-shell, measured): the v13 gutter reservation is PHANTOM
+     on shell pages — .has-shell bounds html to 100dvh and .content is
+     the app's only scroller, so html's scrollbar never exists, yet
+     `stable` still reserves ~10px of the initial containing block on
+     classic-scrollbar desktops. Every position:fixed surface measured
+     10px short of the real viewport edge: the mobile drawer stopped
+     10px from the edge and its backdrop left an undimmed strip (RTL
+     390px band; doc scrollWidth 1430 vs clientWidth 1440), and 100vw
+     caps (toast-stack, wake-pill) over-permitted by the same 10px.
+     Scope the reservation OFF exactly where the shell is mounted;
+     public scrolling surfaces (landing/auth/404) keep the v13
+     anti-shift behavior unchanged. */
+  html:has(.has-shell) {
+    scrollbar-gutter: auto;
   }
 
 

@@ -178,7 +178,7 @@
      ║  topbar so the heading isn't hidden underneath it.             ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   :target {
-    scroll-margin-block-start: calc(64px + var(--sp-4)); /* spacing-gate: allow — sticky topbar height constant 64px + rung — :target anchor clearance */
+    scroll-margin-block-start: calc(var(--topbar-h) + var(--sp-4)); /* r299: consumes --topbar-h (60px, tokens.css) — the raw 64px predated the r158 re-measure and kept the anchor 4px lower than the bar it clears */
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
