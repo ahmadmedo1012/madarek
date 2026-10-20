@@ -1,23 +1,27 @@
 /**
- * r186 — typographic book jackets (library covers).
+ * r186 → r199 → r232 — the book jacket, renegotiated for the row library.
  *
- * The books grid used to render every book as the same generic icon
- * tile (category icon on a tint wash). The jacket is a deterministic
- * cover composed from the book's own data — title, author, category
- * tint — with no upload path and no binary storage. These pins hold
- * the closed contract:
- *   1. The jacket shows the book's title and author visually (the
- *      duplication with the card body is the book-grid convention —
- *      the cover is the visual identity, the body is the data).
- *   2. The whole jacket is aria-hidden — a screen reader never meets
- *      the title twice; the accessible name stays in the body.
- *   3. The jacket rides the book's own themeColor (inline tint + the
- *      --book-tint custom property the spine/band/ink recipes read);
- *      a book without themeColor falls back to the shared
- *      DEFAULT_COURSE_TINT.
- *   4. The publisher strip names the category beside its icon.
- *   5. The loading skeleton matches the jacket's settled height
- *      (140px) — shape-matched loading, never a shape jump.
+ * The r186 grid shipped every book as a thumb card with a full
+ * typographic jacket (title + author painted on the cover). The r199
+ * Superlist re-compose replaced the uniform card grid with full-width
+ * ROWS; r232 moves those rows onto the shared RowList/RowItem patterns
+ * (Agent S's contract). The jacket becomes an IDENTITY CHIP in the
+ * row's leading slot: the book's tinted field, its category mark, and
+ * the category band. Painting the title on a chip was unreadable and
+ * duplicated the row body — the accessible name now lives ONLY in the
+ * row body (single read).
+ *
+ * Renegotiated pins (deliberate visual change, 4B family):
+ *   1. The jacket is a row-scale identity chip (tinted field + category
+ *      mark + band) — it no longer paints the title/author; the ROW
+ *      body carries title, author and category (single accessible read).
+ *   2. The whole jacket stays aria-hidden.
+ *   3. The jacket still rides the book's own themeColor (inline tint +
+ *      the --book-tint custom property); a book without themeColor
+ *      falls back to the shared DEFAULT_COURSE_TINT.
+ *   4. The band names the category beside its Lucide icon (never emoji).
+ *   5. Loading rides the shared RowList skeleton (aria-busy) — shape-
+ *      matched by the pattern, never a bare spinner.
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render } from '@testing-library/react';
@@ -62,40 +66,44 @@ const renderLibrary = () =>
     </MemoryRouter>,
   );
 
-const cardOf = (title: string) =>
-  Array.from(document.querySelectorAll('.thumb-card')).find((c) =>
-    (c.querySelector('.thumb-card-title')?.textContent ?? '').includes(title));
+const rowOf = (title: string) =>
+  Array.from(document.querySelectorAll('.pf-row')).find((c) =>
+    (c.querySelector('.pf-row-title')?.textContent ?? '').includes(title));
 
-describe('r186 — typographic book jackets', () => {
+describe('r232 — the book row identity chip (renegotiated r186 jacket on the shared rows)', () => {
   beforeEach(() => {
     state.pending = false;
     state.envelope.rows = [makeBook()];
     state.envelope.meta = { page: 1, limit: 24, total: 1, totalPages: 1 };
   });
 
-  it('shows the title and author on the jacket (visual duplication by design)', () => {
+  it('the ROW body carries the title, author and category (single accessible read)', () => {
     renderLibrary();
-    const cover = cardOf('شبكات الحاسوب')?.querySelector<HTMLElement>('.lib-book-cover');
-    expect(cover).not.toBeNull();
-    expect(cover?.querySelector('.lib-cover-title')?.textContent)
+    const row = rowOf('شبكات الحاسوب');
+    expect(row).not.toBeNull();
+    expect(row?.querySelector('.pf-row-title')?.textContent)
       .toBe('شبكات الحاسوب: النظرية والتطبيق');
-    expect(cover?.querySelector('.lib-cover-author')?.textContent)
-      .toBe('د. هدى بن عامر');
+    expect(row?.querySelector('.pf-row-meta')?.textContent)
+      .toContain('د. هدى بن عامر');
+    // The category reads in the row meta (and on the chip's band).
+    expect(row?.textContent).toContain('شبكات');
+    // The chip no longer paints the title — no duplicate read anywhere.
+    expect(row?.querySelector('.lib-cover-title')).toBeNull();
   });
 
-  it('the jacket is aria-hidden — the accessible title/author stay in the card body', () => {
+  it('the jacket chip is aria-hidden — the accessible title/author stay in the row body', () => {
     renderLibrary();
-    const cover = cardOf('شبكات الحاسوب')?.querySelector<HTMLElement>('.lib-book-cover');
+    const cover = rowOf('شبكات الحاسوب')?.querySelector<HTMLElement>('.lib-book-cover');
     expect(cover?.getAttribute('aria-hidden')).toBe('true');
-    // The body's title carries the hover/tooltip contract, not the cover.
-    const card = cover?.closest('.thumb-card');
-    expect(card?.querySelector('.thumb-card-title')?.getAttribute('title'))
+    // The row title is the accessible name; the chip carries no text twin.
+    const row = cover?.closest('.pf-row');
+    expect(row?.querySelector('.pf-row-title')?.textContent)
       .toBe('شبكات الحاسوب: النظرية والتطبيق');
   });
 
   it('rides the book themeColor (field + --book-tint); DEFAULT_COURSE_TINT when absent', () => {
     const first = renderLibrary();
-    const style = cardOf('شبكات الحاسوب')?.querySelector<HTMLElement>('.lib-book-cover')?.getAttribute('style') ?? '';
+    const style = rowOf('شبكات الحاسوب')?.querySelector<HTMLElement>('.lib-book-cover')?.getAttribute('style') ?? '';
     expect(style).toContain('#0ea5e9');
     expect(style).toContain('--book-tint');
     expect(style).toContain('color-mix(in srgb, #0ea5e9 12%, var(--surface))');
@@ -104,28 +112,23 @@ describe('r186 — typographic book jackets', () => {
     state.envelope.rows = [makeBook({ themeColor: null })];
     first.unmount();
     renderLibrary();
-    const fallback = cardOf('شبكات الحاسوب')?.querySelector<HTMLElement>('.lib-book-cover');
+    const fallback = rowOf('شبكات الحاسوب')?.querySelector<HTMLElement>('.lib-book-cover');
     expect(fallback?.getAttribute('style')).toContain('#3D6BD6');
   });
 
-  it('the publisher strip names the category beside its icon', () => {
+  it('the band names the category beside its Lucide icon (never an emoji)', () => {
     renderLibrary();
-    const band = cardOf('شبكات الحاسوب')?.querySelector('.lib-cover-band');
+    const band = rowOf('شبكات الحاسوب')?.querySelector('.lib-cover-band');
     expect(band?.textContent).toContain('شبكات');
-    // The band carries a lucide icon (svg), never an emoji.
     expect(band?.querySelector('svg')).not.toBeNull();
   });
 
-  it('the skeleton matches the jacket height (140px — shape-matched loading)', () => {
+  it('loading rides the shared RowList skeleton (aria-busy, never a bare spinner)', () => {
     state.pending = true;
     state.envelope.rows = [];
     state.envelope.meta = { page: 1, limit: 24, total: 0, totalPages: 1 };
     renderLibrary();
-    const tile = document.querySelector('.lib-skel-tile');
-    expect(tile).not.toBeNull();
-    const coverSkeleton = tile?.firstElementChild as HTMLElement | null;
-    // The Skeleton component writes its height inline — same settled
-    // height as the jacket, so loading never shifts the grid.
-    expect(coverSkeleton?.getAttribute('style')).toContain('height: 140px');
+    expect(document.querySelector('[aria-busy="true"]')).not.toBeNull();
+    expect(document.querySelector('.pf-row')).toBeNull();
   });
 });

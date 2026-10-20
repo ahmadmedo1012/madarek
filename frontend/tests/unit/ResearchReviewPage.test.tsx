@@ -189,7 +189,7 @@ describe('ResearchReviewPage — the GRADED queue card (r157 / 6A8)', () => {
     // trio is the ledger stat strip now (mono .stat-label over
     // .stat-value inside .stat-cell) — the icon-card .metric tile it
     // pinned was the retired template anatomy.
-    expect(screen.getByText('جاهزة للنشر', { selector: '.stat-label' }).closest('.stat-cell')).toHaveTextContent('1');
+    expect(screen.getByText('جاهزة للنشر', { selector: '.pf-stat-label' }).closest('.pf-stat')).toHaveTextContent('1');
     // The score travels on the row: «الدرجة: 17 / 20» (the numbers ride
     // <bdi> children — match the whole meta span).
     expect(
@@ -333,9 +333,9 @@ describe('ResearchReviewPage — queue state coherence (r164f)', () => {
     // The KPI strip counts all three states honestly (selector: the
     // label also appears on the failed row's badge — pick the stat
     // cell's own label). R190 D-2 re-pin: .stat-strip anatomy.
-    expect(screen.getByText('بانتظار تقييمك', { selector: '.stat-label' }).closest('.stat-cell')).toHaveTextContent('1');
-    expect(screen.getByText('تعذّر اجتياز الفحص', { selector: '.stat-label' }).closest('.stat-cell')).toHaveTextContent('1');
-    expect(screen.getByText('جاهزة للنشر', { selector: '.stat-label' }).closest('.stat-cell')).toHaveTextContent('1');
+    expect(screen.getByText('بانتظار تقييمك', { selector: '.pf-stat-label' }).closest('.pf-stat')).toHaveTextContent('1');
+    expect(screen.getByText('تعذّر اجتياز الفحص', { selector: '.pf-stat-label' }).closest('.pf-stat')).toHaveTextContent('1');
+    expect(screen.getByText('جاهزة للنشر', { selector: '.pf-stat-label' }).closest('.pf-stat')).toHaveTextContent('1');
   });
 
   it('the pending row scan meta keeps the simulation label (honesty badge, never real detection)', () => {
