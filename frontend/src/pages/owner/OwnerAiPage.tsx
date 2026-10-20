@@ -24,6 +24,7 @@ import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chart
 import { useOwnerAiMetrics } from '../../hooks/useOwner';
 import { useAiConfig } from '../../hooks/useResources';
 import { useReducedMotion } from '../../components/motion';
+import { formatNum } from '../../utils/numbers';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, Filler);
 
@@ -154,7 +155,7 @@ export function OwnerAiPage() {
             cells={[
               {
                 label: 'إجمالي الطلبات',
-                value: <bdi>{data.totalRequests.toLocaleString('ar-LY')}</bdi>,
+                value: <bdi>{formatNum(data.totalRequests)}</bdi>,
                 trend: 'تراكميّة على المنصّة',
                 trendTone: 'flat',
               },
@@ -162,7 +163,7 @@ export function OwnerAiPage() {
                 label: 'إجمالي التوكنات',
                 value: data.totalTokens >= 1_000_000
                   ? <bdi>{(data.totalTokens / 1_000_000).toFixed(1)}M</bdi>
-                  : <bdi>{data.totalTokens.toLocaleString('ar-LY')}</bdi>,
+                  : <bdi>{formatNum(data.totalTokens)}</bdi>,
                 trend: 'مقيسة من المزوّد',
                 trendTone: 'flat',
               },
@@ -219,7 +220,7 @@ export function OwnerAiPage() {
               ) : (
                 <ChartFrame
                   ariaLabel="مخطط خطّي لاتّجاه الاستخدام — الطلبات اليوميّة على مدى 7 أيّام"
-                  summary={`ذروة الاستخدام ${Math.max(...data.trend.map((t) => t.count)).toLocaleString('ar-LY')} طلب في يوم واحد.`}
+                  summary={`ذروة الاستخدام ${formatNum(Math.max(...data.trend.map((t) => t.count)))} طلب في يوم واحد.`}
                   table={{
                     caption: 'اتّجاه الاستخدام اليومي',
                     columns: ['اليوم', 'الطلبات'],
@@ -255,10 +256,10 @@ export function OwnerAiPage() {
                       return (
                         <tr key={f.feature} style={{ '--meter-i': i } as CSSProperties}>
                           <td className="tbl-strong" data-label="الميزة">{featureLabel(f.feature)}</td>
-                          <td className="owner-num" data-label="الطلبات">{f.count.toLocaleString('ar-LY')}</td>
-                          <td className="owner-num" data-label="التوكنات">{f.tokens.toLocaleString('ar-LY')}</td>
+                          <td className="owner-num" data-label="الطلبات">{formatNum(f.count)}</td>
+                          <td className="owner-num" data-label="التوكنات">{formatNum(f.tokens)}</td>
                           <td data-label="الحصة من التوكنات">
-                            <span className="owner-share" title={`${f.tokens.toLocaleString('ar-LY')} من ${data.totalTokens.toLocaleString('ar-LY')} توكن`}>
+                            <span className="owner-share" title={`${formatNum(f.tokens)} من ${formatNum(data.totalTokens)} توكن`}>
                               <span className="owner-share-track" aria-hidden>
                                 <span className="owner-share-fill" style={{ inlineSize: `${share}%` }} />
                               </span>

@@ -88,8 +88,10 @@ const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
  * r172a: pin refreshed again — the r162 (R1) landing-boot heuristic
  * (data-landing-boot + the #252A3E theme-color override) was retired
  * end-to-end with the landing's two-theme re-grounding; the bootstrap
- * now resolves the theme and syncs theme-color only. */
-const THEME_BOOTSTRAP_SHA256 = 'U4sTnQg8QBxUnke9CmispMPonECA5Z12VkqqdUs/uO4=';
+ * now resolves the theme and syncs theme-color only.
+ * r197: pin refreshed — syncThemeColor paints the r197 grounds
+ * (dark #16140F / light #F3EEE4, BLUEPRINT §4); the metas moved with it. */
+const THEME_BOOTSTRAP_SHA256 = 'h397AnvGw8lvH8G5RxSvI2go1KMu0b0oZ2oWeyVAuB0=';
 /* r188: pin refreshed — the JSON-LD block now describes the INDEPENDENT
  * Madarek platform alone (WebSite node; the retired University-of-Zawia
  * `about` node is gone — the only demo-data story is the explicitly

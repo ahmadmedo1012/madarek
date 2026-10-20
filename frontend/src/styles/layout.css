@@ -265,7 +265,7 @@
   [data-theme="dark"] .has-shell > .sidebar {
     background:
       radial-gradient(340px 200px at 82% -60px, color-mix(in srgb, var(--accent) 6%, transparent), transparent 72%),
-      radial-gradient(280px 220px at -20% 108%, color-mix(in srgb, var(--shell-aurora-azure) 5%, transparent), transparent 70%),
+      radial-gradient(280px 220px at -20% 108%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 70%),
       linear-gradient(180deg, var(--neutral-100) 0%, var(--neutral-50) 34%, var(--neutral-50) 100%);
   }
   /* PP-fix (premium-polish P0-1): the night shell's position declarations

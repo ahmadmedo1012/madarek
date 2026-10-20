@@ -11,6 +11,7 @@ import { Icon } from '../../components/Icon';
 import { useOwnerActivity } from '../../hooks/useOwner';
 import { formatRelativeAr } from '../../lib/format';
 import type { LucideIcon } from 'lucide-react';
+import { formatDate, formatNum } from '../../utils/numbers';
 
 type EventType = 'all' | 'login' | 'content' | 'roles' | 'system';
 
@@ -107,8 +108,8 @@ function eventsCountLabel(n: number): string {
   if (n === 0) return 'لا أحداث';
   if (n === 1) return 'حدث واحد';
   if (n === 2) return 'حدثان';
-  if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} أحداث`;
-  return `${n.toLocaleString('ar-LY')} حدثاً`;
+  if (n >= 3 && n <= 10) return `${formatNum(n)} أحداث`;
+  return `${formatNum(n)} حدثاً`;
 }
 
 /* formatRelativeAr (counted-plural relative time) lives in lib/format.ts
@@ -181,7 +182,7 @@ export function OwnerActivityPage() {
   // Honest KPIs (audit 0-e P1-27): '…' while loading, '—' on error —
   // never a confident "0" for data we don't have.
   const kpiValue = (n: number) =>
-    activity.isPending ? '…' : activity.isError ? '—' : <bdi>{n.toLocaleString('ar-LY')}</bdi>;
+    activity.isPending ? '…' : activity.isError ? '—' : <bdi>{formatNum(n)}</bdi>;
   const kpiKnown = activity.isSuccess;
 
   return (
@@ -287,7 +288,7 @@ export function OwnerActivityPage() {
                     </div>
                   )}
                 </div>
-                <span className="owner-timeline-time" title={new Date(event.createdAt).toLocaleString('ar-LY', { dateStyle: 'medium', timeStyle: 'short' })}>
+                <span className="owner-timeline-time" title={formatDate(event.createdAt, { dateStyle: 'medium', timeStyle: 'short' })}>
                   {formatRelativeAr(event.createdAt)}
                 </span>
               </div>

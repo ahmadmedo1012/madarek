@@ -22,6 +22,7 @@ import {
   type StudentDashboard,
   type Submission,
 } from '../../hooks/useResources';
+import { formatDate } from '../../utils/numbers';
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) + the assignment-kind
  * labels live in lib/courseMeta.ts (waves 9-a / 13-15 — this page's former
@@ -60,12 +61,12 @@ function matchesFilter(e: MyEnrollment, f: CourseFilter): boolean {
 function formatDue(iso: string): string {
   const d = new Date(iso);
   const days = Math.round((d.getTime() - Date.now()) / 86_400_000);
-  if (days < 0) return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
+  if (days < 0) return formatDate(d, { dateStyle: 'medium' });
   if (days === 0) return 'اليوم';
   if (days === 1) return 'غداً';
   if (days === 2) return 'بعد يومين';
   if (days <= 10) return `بعد ${days} أيام`;
-  return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
+  return formatDate(d, { dateStyle: 'medium' });
 }
 
 /** Honest status derived from the real due date — no fabricated urgency. */
@@ -417,7 +418,7 @@ export function SubmitAssignmentModal({
         <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{assignment.title}</div>
         <div className="text-xs text-subtle" style={{ marginBottom: 'var(--sp-4)' }}>
           {assignment.courseName} · <bdi className="font-mono">{assignment.courseCode}</bdi> · الموعد النهائي:{' '}
-          {new Date(assignment.dueAt).toLocaleDateString('ar-LY', { dateStyle: 'medium' })}
+          {formatDate(assignment.dueAt, { dateStyle: 'medium' })}
         </div>
 
         {done ? (

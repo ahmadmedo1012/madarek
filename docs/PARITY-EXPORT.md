@@ -6,7 +6,7 @@
 
 ```bash
 node scripts/verify-parity-export.mjs
-# PASS — 168 token checks verified against tokens.css; 0 broken var() refs; 0 retired values; both files parse.
+# PASS — 190 token checks verified against tokens.css; 0 broken var() refs; 0 retired values; both files parse.
 ```
 
 Dependency-free (`node:fs` / `node:path` / `node:url` only) — runs anywhere Node runs, including CI.
@@ -37,9 +37,9 @@ Dependency-free (`node:fs` / `node:path` / `node:url` only) — runs anywhere No
 
 | # | Gate | Asserts | Failure mode |
 |---|---|---|---|
-| **1** | **Token parity** | Builds resolved light/dark token maps for `tokens.css` and the export (theme blocks + `var()` chains + fallbacks) and asserts **163/163 key tokens match exactly** (168 قبل اجتياح r148-d). Headline tokens are additionally **pinned to their documented values** — night `#070B16`, gold `#E9B44C`, copper `#B57438`, cream `#FBFAF9`, sand `#F2EFE6` — so a future drift of the *reference itself* fails loudly instead of silently dragging the export along. A meta-check requires ≥100 token checks to be defined. | Any divergence, either direction, exits 1 with a readable diff. |
+| **1** | **Token parity** | Builds resolved light/dark token maps for `tokens.css` and the export (theme blocks + `var()` chains + fallbacks) and asserts **190/190 key tokens match exactly** (165 بعد إعادة بناء r196؛ 168 قبل اجتياح r148-d). Headline tokens are additionally **pinned to their documented values** — the r197 §4 palette: paper `#F3EEE4`, ink `#16140F`, signal `#2E45E6`, dark night paper `#16140F`, dark signal tier `#8E9BFF`, achievement gold `#B57438`/`#D9A05B` — so a future drift of the *reference itself* fails loudly instead of silently dragging the export along. A meta-check requires ≥100 token checks to be defined. | Any divergence, either direction, exits 1 with a readable diff. |
 | **2** | **Undefined-var audit** | Every `var(--x)` in the export must resolve within the export itself — directly or through a complete fallback chain. The shared skeleton is audited against `shared ∪ parity ∪` the documented host-alias set. | A broken reference (token defined nowhere) fails the run. |
-| **3** | **Forbidden retired values** | The **43 retired divergent spellings** (§3) must be absent from **both** files — comments included, so a "retired but mentioned" value still fails. | Any hit names the file and the exact needle. |
+| **3** | **Forbidden retired values** | The **63 retired spellings** (§3 — 43 pre-r197 + the 20 egn/teal/landing spellings r197 retired) must be absent from **both** files — comments included, so a "retired but mentioned" value still fails. | Any hit names the file and the exact needle. |
 | **4** | **Brace balance** | Both files must parse: balanced braces, no negative depth, after comment stripping. | Unbalanced file fails the run. |
 
 Sanctioned opt-in consumer hooks (the only undefined names allowed): `--reveal-distance`, `--reveal-index` — permitted **only** with complete fallback chains, so a host that never sets them still renders.
@@ -48,7 +48,7 @@ Documented canonical wrinkle: `--journey-core` historically spelled `var(--ink)`
 
 ---
 
-## 3. The 43 retired values · القيم المُحالة للتقاعد
+## 3. The 63 retired values · القيم المُحالة للتقاعد
 
 These spellings are **retired forever**. They must never reappear in the export pair — treat them as anti-patterns (the values that never shipped):
 
@@ -65,6 +65,9 @@ These spellings are **retired forever**. They must never reappear in the export 
 | Non-canonical glass blur | `blur(20px)` — canonical is 16px surfaces / 4px scrims |
 | Invented token names | `--lh-relaxed` · `--btn-primary-bg` · `--btn-primary-hover` · `--primary-hover` · `--primary-text` · `--elev-card` · `--elev-modal` · `--surface-raised` · `--motion-ease-decalerate` |
 | Renamed selector | `.input-field` — canonical is `.input` |
+| **r197 — the egn/teal identity era** | `#027380` · `#2fb6c6` · `#015c66` · `#014a52` · `#e0f2f3` · `#4dc7d6` · `#7fced9` · `#061417` · `#174752` · `#a7cbd5` · `#f9a09c` |
+| **r197 — retired chart ambers/mauves** | `#3f8b8b` · `#5fafaf` · `#f2c766` · `#c57da9` · `#a67a22` |
+| **r197 — retired landing vocabulary** | the NAMES `--ln-` · `--stage-` · `--aura-` · `--glow-accent` · `--shell-aurora-azure` (needle form — no definition or mention may return) |
 
 ---
 
@@ -72,7 +75,7 @@ These spellings are **retired forever**. They must never reappear in the export 
 
 | Stays out of the export | Why |
 |---|---|
-| **Orbit Ink (`--ln-*` family + the 42s marquee)** | Landing-only vocabulary — the marketing world is madarek's own. Reference doc: `DESIGN.md` §1a. **Fleet porting contract:** [`docs/PORT-KIT.md`](PORT-KIT.md) — adopted r140 (SM/SL/SO/SB cloned the layer through it; see §6هـ). |
+| **The r191 landing choreography vocabulary** (`--ln-*` family — DELETED from tokens.css r197, not just unexported) | The r197 re-key retired the family outright (zero consumers); the r196 direction rebuilds the homepage in stage 2 on the `--poster-*` namespace (which IS exported as root aliases). The historical fleet porting contract: [`docs/PORT-KIT.md`](PORT-KIT.md) — sibling clones of the deleted layer need their own re-pin rounds. |
 | **Role-accent / college-accent slots** (`body[data-role]`) | Madarek-app identity slots — stay out of the export. |
 | **Illustration palette (`--ill-*)`** | Illustration-layer vocabulary (incl. its `prefers-contrast` stroke thickening) — stays with the illustration system. |
 
@@ -98,7 +101,7 @@ harness) مستقل يُقارن نسخًا يدوية من القيم المر�
 مستودع بنفسه. لذلك أي تغيير قيمة يمر بالترتيب نفسه دائمًا:
 
 1. **`tokens.css` أولًا** — المصدر المُؤلَّف هو وحده مكان التعديل (قاعدة §8 أدناه).
-2. **إعادة توليد زوج التصدير في نفس الجولة** — `node scripts/verify-parity-export.mjs` يجب أن يبقى 163/163 أخضر قبل الدفع.
+2. **إعادة توليد زوج التصدير في نفس الجولة** — `node scripts/verify-parity-export.mjs` يجب أن يبقى 190/190 أخضر قبل الدفع.
 3. **الأشقاء يُعيدون التدبيس في جولاتهم** — مِحكّاتهم تفشل جهرةً حتى تُحدّث النسخ اليدوية؛ هذا هو التعاقد، لا إشعار يدوي.
 
 > هذه الفقرة وحدها — دون الجدول — هي الحد الأدنى الذي يجب أن يبقى صادقًا

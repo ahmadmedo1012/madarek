@@ -25,6 +25,7 @@ import {
   type CalendarEvent,
   type CalendarEventKind,
 } from '../../lib/calendar';
+import { formatDate } from '../../utils/numbers';
 
 /**
  * r164-c — /student/calendar: the ONE calendar view (the Canvas
@@ -67,7 +68,7 @@ function selectedDayLabel(key: string): string {
   if (!parts) return key;
   const date = new Date(Date.UTC(parts.year, parts.month, parts.day, 12));
   const dow = WEEKDAY_NAMES_AR[date.getUTCDay()];
-  const md = date.toLocaleDateString('ar-LY', { day: 'numeric', month: 'long' });
+  const md = formatDate(date, { day: 'numeric', month: 'long' });
   return `${dow} · ${md}`;
 }
 

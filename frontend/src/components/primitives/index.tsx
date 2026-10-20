@@ -4,6 +4,7 @@ import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowLeft } from 'lucide-react';
 import { Icon } from '../Icon';
+import { formatPct1 } from '../../utils/numbers';
 
 /* ─── Primitive inventory (refreshed 5-C4 per audit A10 P3-8 — the
    wave-13-16 list had gone stale; cf. the sibling note in
@@ -269,7 +270,7 @@ export function ProgressBar({
                --text-secondary (8.44:1 light / 9.28:1 dark) instead of the
                raw fill colour; the fill keeps the caller's hue. */
             <span className="font-mono text-xs" style={{ color: 'var(--text-secondary)' }}>
-              {v}%
+              {formatPct1(v)}% /* r197 §7: one decimal, float noise stripped («61.818…%» → «61.8%») */
             </span>
           )}
         </div>

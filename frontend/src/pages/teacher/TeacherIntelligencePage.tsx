@@ -30,6 +30,7 @@ import { countAr } from '../../lib/format';
 import { useEntityPageTitle } from '../../components/layout/AppShell'; // r183-B6 (A4 P3-4): entity tab title, one call only
 import '../../styles/owner.css'; // ConfirmDialog surfaces via curriculum authoring (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-hero/.track-card/.filter-pill/.back-link families (D11 css split, 12-15)
+import { formatPct1 } from '../../utils/numbers';
 
 /* Non-text edge for the 1px leading hairline (ruling #4). 5-D3 (5-D1
  * hand-off): WATCH's --gold measured 2.30:1 on the light .risk-row —
@@ -122,7 +123,7 @@ export default function TeacherIntelligencePage() {
                   </div>
                 </div>
                 <div className="risk-row-score" style={{ color: RISK_INK[r.riskLevel] }}>
-                  <div className="risk-row-pct"><bdi>{r.riskScore}%</bdi></div>
+                  <div className="risk-row-pct"><bdi>{formatPct1(r.riskScore)}%</bdi></div>
                   <div className="risk-row-label">{RISK_LABEL[r.riskLevel]}</div>
                 </div>
               </div>

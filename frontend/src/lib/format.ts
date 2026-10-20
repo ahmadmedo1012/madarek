@@ -1,3 +1,5 @@
+import { formatDate, formatTime } from '../utils/numbers';
+
 /**
  * Shared Arabic formatting helpers (wave 9-a; extended in 13-15 per
  * audit 11-f P2-1 / D13; error-language guard in 16-E10 per 15-j P0-1).
@@ -40,7 +42,7 @@ export function formatRelativeAr(iso: string): string {
   if (diffHr < 24) return `منذ ${countAr(diffHr, ['ساعة', 'ساعتين', 'ساعات', 'ساعة'])}`;
   const diffD = Math.round(diffHr / 24);
   if (diffD < 7) return `منذ ${countAr(diffD, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
-  return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
+  return formatDate(d, { dateStyle: 'medium' });
 }
 
 /**
@@ -119,7 +121,7 @@ export function timeAgoAr(iso: string): string {
  */
 export function formatDateAr(iso?: string | null): string {
   if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
+  return formatDate(new Date(iso), { day: 'numeric', month: 'short' });
 }
 
 /**
@@ -128,7 +130,7 @@ export function formatDateAr(iso?: string | null): string {
  */
 export function formatDateWithYearAr(iso?: string | null): string {
   if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short', year: 'numeric' });
+  return formatDate(new Date(iso), { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 /**
@@ -138,7 +140,9 @@ export function formatDateWithYearAr(iso?: string | null): string {
  */
 export function formatDateTimeAr(iso: string): string {
   const d = new Date(iso);
-  return d.toLocaleString('ar-LY', { dateStyle: 'medium', timeStyle: 'short' });
+  // r197: composed from the ONE formatter path (utils/numbers) — the
+  // combined Intl call rendered the same medium date + short time.
+  return `${formatDate(d, { dateStyle: 'medium' })}، ${formatTime(d, { hour: 'numeric', minute: '2-digit' })}`;
 }
 
 /**

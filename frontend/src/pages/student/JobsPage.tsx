@@ -7,6 +7,7 @@ import { Card, Badge } from '../../components/primitives';
 import { EmptyState, ErrorState, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useJobs, useApplyJob, apiErrorMessage, type Job } from '../../hooks/useResources';
+import { formatDate } from '../../utils/numbers';
 
 const TYPE_LABELS: Record<string, string> = {
   FULL_TIME: 'دوام كامل',
@@ -45,7 +46,7 @@ function fmtPosted(iso: string): string {
   if (days === 2) return 'منذ يومين';
   if (days <= 10) return `منذ ${days} أيام`;
   if (days <= 30) return `منذ ${days} يوماً`;
-  return d.toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
+  return formatDate(d, { day: 'numeric', month: 'short' });
 }
 
 /** One jobs-table row. `applied` is the SERVER truth seeded from the
@@ -97,7 +98,7 @@ function JobRow({ job, applied }: { job: Job; applied: boolean }) {
         <td
           className="tbl-num"
           data-label="النشر"
-          title={new Date(job.postedAt).toLocaleDateString('ar-LY', { dateStyle: 'long' })}
+          title={formatDate(job.postedAt, { dateStyle: 'long' })}
         >
           {fmtPosted(job.postedAt)}
         </td>

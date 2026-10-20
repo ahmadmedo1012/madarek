@@ -18,6 +18,7 @@ import {
   useAnnotations, apiErrorMessage,
   type ResearchPaper, type PaperStatus,
 } from '../../hooks/useResources';
+import { formatNum } from '../../utils/numbers';
 
 /* fmtDate (short ar-LY date, '—' for missing values) is
  * lib/format.formatDateAr (13-15 fold, audit 11-f P2-1) — shared with
@@ -591,18 +592,18 @@ function MyPublications() {
         cells={[
           {
             label: 'منشورات في ملفّك',
-            value: publications.length.toLocaleString('ar-LY'),
+            value: formatNum(publications.length),
             trend: publications.length === 0 ? 'لم تُسجَّل بعد' : 'في ملفك الأكاديمي',
             trendTone: 'flat',
           },
           {
             label: 'شهادات وجوائز',
-            value: (certifications.length + awards.length).toLocaleString('ar-LY'),
+            value: formatNum(certifications.length + awards.length),
             trendTone: 'flat',
           },
           {
             label: 'سنوات الخبرة',
-            value: (profile.data?.yearsExperience ?? 0).toLocaleString('ar-LY'),
+            value: formatNum(profile.data?.yearsExperience ?? 0),
             trendTone: 'flat',
           },
         ]}

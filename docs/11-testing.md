@@ -15,7 +15,7 @@
 | اختبارات الواجهة | `npm --prefix frontend run test` | **176 ملفًا، 1975 اختبارًا، كلها ناجحة** (~159 ثانية) |
 | اختبارات الخلفية | `npm --prefix backend run test` | **75 ملفًا، 1775 اختبارًا، كلها ناجحة** (~36 ثانية) |
 | اختبارات تكامل DB (اختيارية) | `DATABASE_URL=… npm run test:integration` | **12 ملفًا، 116 اختبارًا ناجحًا** (r181: أُضيف ملكية الملفات العابرة للمؤسستين وعزل المزامنة وتفارب القيود الفريدة؛ r182: أُضيف أمان إعادة تشغيل بذرة النشر) (~24 ثانية) — قاعدة تجريبية معزولة فقط، خارج `npm test` (القسم الخاص بها أدناه) |
-| بوابة التكافؤ | `node scripts/verify-parity-export.mjs` | **PASS — 163 فحص token** + تدقيق متغيرات غير معرفة + قيم مستبعدة + توازن أقواس |
+| بوابة التكافؤ | `node scripts/verify-parity-export.mjs` | **PASS — 190 فحص token** + تدقيق متغيرات غير معرفة + قيم مستبعدة + توازن أقواس |
 | الأيقونات | `bash scripts/check-icons.sh` | OK — Lucide فقط |
 | رموز الحركة | `bash scripts/check-motion-tokens.sh` | OK — لا قيم خام |
 | بصمات CSP | `bash scripts/check-csp-hash.sh` | OK — بعد تحديث بصمة bootstrap (انظر [14](14-troubleshooting.md)) |

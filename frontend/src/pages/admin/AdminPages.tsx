@@ -44,6 +44,7 @@ import { cartesianOptions, valueLabels, chartColors, useChartThemeKey } from '..
 // (its ownership banner) — the students-toolbar/pagination/trend-table
 // families the courses page + papers register now consume too.
 import '../../styles/admin.css'; // r150e: the roster chrome left colleges.css
+import { formatDate } from '../../utils/numbers';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip);
 
@@ -339,7 +340,7 @@ export function AdminDashboardPage() {
           <h1 className="page-title">لوحة الإدارة</h1>
           <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة المنصّة.</p>
           <p className="page-header-meta">
-            {new Date().toLocaleDateString('ar-LY', { weekday: 'long', day: 'numeric', month: 'long' })} · {countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])} · حساب لحظيّ
+            {formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · {countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])} · حساب لحظيّ
           </p>
         </div>
       </header>
@@ -355,28 +356,28 @@ export function AdminDashboardPage() {
         cells={[
           {
             label: 'الكلّيّات',
-            value: facultyCount.toLocaleString('ar-LY'),
+            value: formatNum(facultyCount),
             trend: `موزّعة على ${countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`,
             trendTone: 'flat',
             to: '/admin/faculties',
           },
           {
             label: 'الطلاب',
-            value: s.totalStudents.toLocaleString('ar-LY'),
+            value: formatNum(s.totalStudents),
             trend: 'مسجَّل في النظام',
             trendTone: 'flat',
             to: '/admin/students',
           },
           {
             label: 'هيئة التدريس',
-            value: s.totalTeachers.toLocaleString('ar-LY'),
-            trend: studentTeacherRatio !== null ? `نسبة ${studentTeacherRatio.toLocaleString('ar-LY', { minimumFractionDigits: 1 })} طالب لكل أستاذ` : 'عضو',
+            value: formatNum(s.totalTeachers),
+            trend: studentTeacherRatio !== null ? `نسبة ${formatNum(studentTeacherRatio, { maximumFractionDigits: 1 }) /* r197 §7: «1,0» → «1» */} طالب لكل أستاذ` : 'عضو',
             trendTone: 'flat',
             to: '/admin/teachers',
           },
           {
             label: 'المقرّرات',
-            value: s.totalCourses.toLocaleString('ar-LY'),
+            value: formatNum(s.totalCourses),
             trend: countAr(s.totalEnrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً']),
             trendTone: 'flat',
             to: '/admin/courses',
@@ -472,7 +473,7 @@ export function AdminDashboardPage() {
                 stat (the same two numbers lived on three routes). */}
             <Stat
               label="أكبر كلّيّة"
-              value={topFaculty ? `${topFaculty.name} (${topFaculty.studentCount.toLocaleString('ar-LY')})` : '—'}
+              value={topFaculty ? `${topFaculty.name} (${formatNum(topFaculty.studentCount)})` : '—'}
               to={topFaculty ? `/admin/students?facultyId=${topFaculty.id}` : undefined}
               hint="عرض طلاب هذه الكلّيّة"
             />
@@ -488,7 +489,7 @@ export function AdminDashboardPage() {
             />
             <Stat
               label="بحوث منشورة"
-              value={r.headline.publishedPapers.toLocaleString('ar-LY')}
+              value={formatNum(r.headline.publishedPapers)}
               to="/admin/reports?status=PUBLISHED"
               hint="فتح سجلّ البحوث المنشورة"
             />
@@ -767,10 +768,10 @@ export function AdminFacultiesPage() {
       <StatStrip
         ariaLabel="إحصائيات الكلّيّات والأقسام"
         cells={[
-          { label: 'الكلّيّات', value: data.length.toLocaleString('ar-LY'), trend: 'في هذه المؤسّسة', trendTone: 'flat' },
-          { label: 'الأقسام', value: totalDepts.toLocaleString('ar-LY'), trend: 'عبر الكلّيّات', trendTone: 'flat' },
-          { label: 'إجمالي الطلاب', value: totalStudents.toLocaleString('ar-LY'), trend: 'مسجَّلون', trendTone: 'flat' },
-          { label: 'هيئة التدريس', value: totalTeachers.toLocaleString('ar-LY'), trend: 'أعضاء', trendTone: 'flat' },
+          { label: 'الكلّيّات', value: formatNum(data.length), trend: 'في هذه المؤسّسة', trendTone: 'flat' },
+          { label: 'الأقسام', value: formatNum(totalDepts), trend: 'عبر الكلّيّات', trendTone: 'flat' },
+          { label: 'إجمالي الطلاب', value: formatNum(totalStudents), trend: 'مسجَّلون', trendTone: 'flat' },
+          { label: 'هيئة التدريس', value: formatNum(totalTeachers), trend: 'أعضاء', trendTone: 'flat' },
         ]}
       />
 

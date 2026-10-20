@@ -122,7 +122,15 @@ export const KNOWN_ELEV_MARKERS: ReadonlyArray<string> = [
   '--elev-4',
   '--elev-5',
   // Fallback values that the cascade may produce when the token is
-  // not yet resolved by the engine — shipped in tokens.css.
+  // not yet resolved by the engine — shipped in tokens.css (r197
+  // single-shadow grammar; the r196 multi-layer recipes retired).
+  '0 1px 2px rgba(22,20,15,0.06)',
+  '0 10px 15px rgba(22,20,15,0.08)',
+  '0 18px 40px rgba(22,20,15,0.12)',
+  '0 24px 56px rgba(22,20,15,0.14)',
+  '0 32px 72px rgba(22,20,15,0.16)',
+  // r196-era recipes kept one round so old captures still classify
+  // (removed after the next baseline re-promotion cycle).
   '0 1px 2px rgba(0,0,0,0.04)',
   '0 4px 8px rgba(0,0,0,0.06)',
   '0 8px 16px rgba(0,0,0,0.08)',
@@ -144,10 +152,8 @@ export const KNOWN_DURATIONS_MS: ReadonlyArray<number> = [
   // reveal-up family and the auth card entrance; without them the
   // audit flagged canonical token motion as "ad-hoc".
   520, 720,
-  // r164 integration: --ln-dur-marquee (42s) — the landing college
-  // ring's single documented slow pass (tokens.css §landing motion;
-  // consumers reference var(--ln-dur-marquee), never a re-spelled 42s).
-  42_000,
+  // (r197: the --ln-dur-marquee 42_000 entry retired with the
+  // --ln-* family — landing.css never consumed it.)
   // r190 integration: the AMBIENT ladder (tokens.css §ambient loops —
   // pulse 1.6s / base 2.4s / slow 3.6s / drift 6s / scene 22s) was
   // authored AFTER this list and never folded in — the r190 landing's

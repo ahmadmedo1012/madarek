@@ -27,6 +27,7 @@ import {
   type TeacherRiskRow,
 } from '../../hooks/useResources';
 import { countAr, formatRelativeAr, WEEKDAY_NAMES_AR } from '../../lib/format';
+import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -254,8 +255,8 @@ export function TeacherDashboardPage() {
     columns: ['الأسبوع', 'متوسط الأداء', 'الحضور'],
     rows: d.trend.map((t) => [
       t.week,
-      t.avgGradePct === null ? '—' : `${t.avgGradePct}%`,
-      t.attendancePct === null ? '—' : `${t.attendancePct}%`,
+      t.avgGradePct === null ? '—' : `${formatPct1(t.avgGradePct)}%`,
+      t.attendancePct === null ? '—' : `${formatPct1(t.attendancePct)}%`,
     ]),
   } as const;
 
@@ -268,7 +269,7 @@ export function TeacherDashboardPage() {
             كل ما يحتاج تدخّلك اليوم — في تيار واحد، مرتّب حسب الأولوية.
           </p>
           <p className="page-header-meta">
-            {WEEKDAY_NAMES_AR[new Date().getDay()]} · {new Date().toLocaleDateString('ar-LY', { day: 'numeric', month: 'long' })}
+            {WEEKDAY_NAMES_AR[new Date().getDay()]} · {formatDate(new Date(), { day: 'numeric', month: 'long' })}
           </p>
         </div>
         <Badge color="brand">
@@ -284,25 +285,25 @@ export function TeacherDashboardPage() {
         cells={[
           {
             label: 'طلابك',
-            value: d.kpi.studentCount.toLocaleString('ar-LY'),
+            value: formatNum(d.kpi.studentCount),
             trend: 'عبر مقرّراتك',
             trendTone: 'flat',
           },
           {
             label: 'متوسط الأداء',
-            value: d.kpi.avgGradePct !== null ? `${d.kpi.avgGradePct}%` : '—',
+            value: d.kpi.avgGradePct !== null ? `${formatPct1(d.kpi.avgGradePct)}%` : '—',
             trend: d.kpi.avgGradePct === null ? 'لا تقييمات بعد' : 'كل التقييمات المعتمدة',
             trendTone: d.kpi.avgGradePct === null ? 'flat' : d.kpi.avgGradePct >= 70 ? 'up' : 'down',
           },
           {
             label: 'الحضور',
-            value: d.kpi.attendancePct !== null ? `${d.kpi.attendancePct}%` : '—',
+            value: d.kpi.attendancePct !== null ? `${formatPct1(d.kpi.attendancePct)}%` : '—',
             trend: d.kpi.attendancePct === null ? 'لا جلسات حضور بعد' : 'كل الجلسات المسجّلة',
             trendTone: d.kpi.attendancePct === null ? 'flat' : d.kpi.attendancePct >= 75 ? 'up' : 'down',
           },
           {
             label: 'بحاجة تقييم',
-            value: d.kpi.needsReview.toLocaleString('ar-LY'),
+            value: formatNum(d.kpi.needsReview),
             trend: 'واجبات + بحوث',
             trendTone: d.kpi.needsReview === 0 ? 'up' : d.kpi.needsReview > 10 ? 'down' : 'flat',
           },
@@ -532,7 +533,7 @@ function PendingGradingCard({ entries }: { entries: TeacherDashboard['pendingGra
         <LedgerRow
           title="لا انتظار — كل التسليمات مُقيَّمة"
           subtitle="ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك."
-          leadLabel="صفر"
+          leadLabel="0" /* r197 §7: Western digits, not the spelled-out word */
           lead="انتظار"
           tail={<Badge color="green">مكتمل</Badge>}
         />
@@ -656,7 +657,7 @@ function AtRiskShortcutsCard() {
         <LedgerRow
           title="جميع طلابك في وضع جيد"
           subtitle="لا مؤشّرات خطر حاليّاً — ستظهر هنا أقصر طرق المتابعة فور رصدها."
-          leadLabel="صفر"
+          leadLabel="0" /* r197 §7: Western digits, not the spelled-out word */
           lead="مخاطرة"
           tail={<Badge color="green">مستقر</Badge>}
         />
@@ -665,7 +666,7 @@ function AtRiskShortcutsCard() {
           <LedgerRow
             key={`${r.studentId}:${r.offeringId}`}
             to={`/teacher/intelligence/${r.offeringId}`}
-            lead={<bdi>{r.riskScore}%</bdi>}
+            lead={<bdi>{formatPct1(r.riskScore)}%</bdi>}
             title={r.name}
             subtitle={<>{r.courseIcon} {r.courseName}</>}
             tail={<Badge color={RISK_TONE[r.riskLevel]}>{RISK_LABEL[r.riskLevel]}</Badge>}

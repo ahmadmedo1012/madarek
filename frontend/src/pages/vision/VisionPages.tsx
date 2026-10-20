@@ -8,6 +8,7 @@ import { EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { VISION_CONCEPTS, STATUS_LABEL, STATUS_COLOR, type VisionConcept } from '../../lib/vision';
 import { countAr } from '../../lib/format';
+import { formatNum } from '../../utils/numbers';
 
 /* 5-C5 (A12 P2-7): the detail page is a READING surface. Every value
  * below consumes the same grammar the platform's card headers use
@@ -116,7 +117,7 @@ export function VisionGalleryPage() {
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">
-            {total.toLocaleString('ar-LY')} ابتكاراً قادماً، نبني التعليم في يدك خطوة بخطوة.
+            {formatNum(total)} ابتكاراً قادماً، نبني التعليم في يدك خطوة بخطوة.
           </h1>
           <p className="page-subtitle">
             هذه نظرة على المسار التقني للمنصة —

@@ -154,13 +154,14 @@ describe('welcome-card background + dead brand assets (audit 11-g P2-3 / P1-4 �
 });
 
 describe('theme-color metas match the real canvas tokens', () => {
-  it('dark meta = #070B16 (fleet ruling R13 — the dark --bg ground), light meta = #FBFAF9 (tokens.css --bg)', () => {
+  it('dark meta = #16140F (r197 §4 night paper = dark --bg), light meta = #F3EEE4 (r197 paper = light --bg)', () => {
     const html = read('index.html');
-    expect(html).toContain('<meta name="theme-color" content="#070B16" media="(prefers-color-scheme: dark)"');
-    expect(html).toContain('<meta name="theme-color" content="#FBFAF9" media="(prefers-color-scheme: light)"');
-    // the runtime sync script must paint the same dark ground (r133-F7:
-    // was #191918 — light-theme ink that matches no dark surface)
-    expect(html.match(/['"]#070B16['"]/g)?.length ?? 0).toBeGreaterThanOrEqual(2);
+    expect(html).toContain('<meta name="theme-color" content="#16140F" media="(prefers-color-scheme: dark)"');
+    expect(html).toContain('<meta name="theme-color" content="#F3EEE4" media="(prefers-color-scheme: light)"');
+    // the runtime sync script must paint the same grounds (r197: the
+    // r195-era #070B16/#FBFAF9 pair died with the egn palette)
+    expect(html.match(/['"]#16140F['"]/g)?.length ?? 0).toBeGreaterThanOrEqual(2);
+    expect(html).not.toContain('#070B16');
     expect(html).not.toContain('#191918');
   });
 });

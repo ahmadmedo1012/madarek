@@ -23,6 +23,7 @@ import { Icon } from '../Icon';
 import { useMyMessages, useMarkAllMessagesRead, apiErrorMessage, type MessageRow } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 import { countAr, formatRelativeArShort, formatDateTimeAr } from '../../lib/format';
+import { formatDate } from '../../utils/numbers';
 
 /* One server page of the messages list (15-d P2-7). The old call
  * fetched 50 rows and rendered a client-side `.slice(0, 30)` — rows
@@ -196,7 +197,7 @@ export function groupMessagesByDay<T extends { createdAt: string }>(
       label = 'هذا الأسبوع';
     } else {
       key = `date:${localDayKey(d)}`;
-      label = d.toLocaleDateString('ar-LY', { day: 'numeric', month: 'short', year: 'numeric' });
+      label = formatDate(d, { day: 'numeric', month: 'short', year: 'numeric' });
     }
     let group = byKey.get(key);
     if (!group) {

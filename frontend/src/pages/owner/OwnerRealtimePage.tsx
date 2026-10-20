@@ -5,6 +5,7 @@ import { ErrorState, KpiSkeleton, CardSkeleton } from '../../components/primitiv
 import { Icon } from '../../components/Icon';
 import { useOwnerRealtime, useOwnerAlerts } from '../../hooks/useOwner';
 import { countAr } from '../../lib/format';
+import { formatNum, formatTime } from '../../utils/numbers';
 
 /* countAr lives in lib/format.ts (wave 9-a). */
 
@@ -34,7 +35,7 @@ function tickValue(n: number, label: string) {
           users (the label is NOT re-announced on tick — only the
           changed value subtree is). */}
       <span className="sr-only">{`${label}: `}</span>
-      {n.toLocaleString('ar-LY')}
+      {formatNum(n)}
     </bdi>
   );
 }
@@ -111,7 +112,7 @@ export function OwnerRealtimePage() {
                   landed — the old 10s client clock lied about
                   freshness between the 15s polls. */}
               <span className="owner-live-meta">
-                آخر تحديث: <bdi>{new Date(realtime.dataUpdatedAt).toLocaleTimeString('ar-LY', { hour: '2-digit', minute: '2-digit' })}</bdi>
+                آخر تحديث: <bdi>{formatTime(realtime.dataUpdatedAt, { hour: '2-digit', minute: '2-digit' })}</bdi>
               </span>
             </div>
           </div>
@@ -148,7 +149,7 @@ export function OwnerRealtimePage() {
                      tone); amber stays reserved for real thresholds. */}
                 <tr>
                   <td data-label="المؤشّر">الجلسات المتّصلة</td>
-                  <td className="num" data-label="القيمة"><bdi>{data.activeSessions.toLocaleString('ar-LY')}</bdi></td>
+                  <td className="num" data-label="القيمة"><bdi>{formatNum(data.activeSessions)}</bdi></td>
                   <td data-label="الحالة">
                     <span className={`owner-health-dot ${data.activeSessions > 0 ? 'green' : 'neutral'} inline`} />
                     <span className="visually-hidden">{data.activeSessions > 0 ? 'نشط' : 'هادئ'}</span>
@@ -156,7 +157,7 @@ export function OwnerRealtimePage() {
                 </tr>
                 <tr>
                   <td data-label="المؤشّر">طلبات الذكاء الاصطناعيّ</td>
-                  <td className="num" data-label="القيمة"><bdi>{data.aiRequestsPerMin.toLocaleString('ar-LY')}</bdi>/دقيقة</td>
+                  <td className="num" data-label="القيمة"><bdi>{formatNum(data.aiRequestsPerMin)}</bdi>/دقيقة</td>
                   <td data-label="الحالة">
                     <span className={`owner-health-dot ${data.aiRequestsPerMin > 0 ? 'green' : 'neutral'} inline`} />
                     <span className="visually-hidden">{data.aiRequestsPerMin > 0 ? 'نشط' : 'هادئ'}</span>
@@ -164,7 +165,7 @@ export function OwnerRealtimePage() {
                 </tr>
                 <tr>
                   <td data-label="المؤشّر">غرف البثّ المباشر</td>
-                  <td className="num" data-label="القيمة"><bdi>{data.liveBroadcasts.toLocaleString('ar-LY')}</bdi></td>
+                  <td className="num" data-label="القيمة"><bdi>{formatNum(data.liveBroadcasts)}</bdi></td>
                   <td data-label="الحالة">
                     <span className={`owner-health-dot ${data.liveBroadcasts > 0 ? 'green' : 'neutral'} inline`} />
                     <span className="visually-hidden">{data.liveBroadcasts > 0 ? 'نشط' : 'هادئ'}</span>
@@ -172,7 +173,7 @@ export function OwnerRealtimePage() {
                 </tr>
                 <tr>
                   <td data-label="المؤشّر">اختبارات قيد التنفيذ</td>
-                  <td className="num" data-label="القيمة"><bdi>{data.activeExams.toLocaleString('ar-LY')}</bdi></td>
+                  <td className="num" data-label="القيمة"><bdi>{formatNum(data.activeExams)}</bdi></td>
                   <td data-label="الحالة">
                     <span className={`owner-health-dot ${data.activeExams > 0 ? 'green' : 'neutral'} inline`} />
                     <span className="visually-hidden">{data.activeExams > 0 ? 'نشط' : 'هادئ'}</span>

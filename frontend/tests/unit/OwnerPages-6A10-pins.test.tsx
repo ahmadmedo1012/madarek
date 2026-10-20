@@ -45,6 +45,7 @@ import { OwnerAlertsPage } from '../../src/pages/owner/OwnerAlertsPage';
 import { OwnerSystemPage } from '../../src/pages/owner/OwnerSystemPage';
 import { OwnerRealtimePage } from '../../src/pages/owner/OwnerRealtimePage';
 import { isCriticalAlert } from '../../src/lib/ownerLabels';
+import { formatInt } from '../../src/utils/numbers';
 
 const { FIXTURES, FAILING, PAGINATED, REALTIME_SEQ } = vi.hoisted(() => ({
   FIXTURES: {} as Record<string, unknown>,
@@ -314,7 +315,7 @@ describe('OwnerRealtimePage — live region label:value (6A10-5)', () => {
 
     const ticks = Array.from(document.querySelectorAll('bdi.owner-value-tick'));
     expect(ticks).toHaveLength(4);
-    const fmt = (n: number) => n.toLocaleString('ar-LY');
+    const fmt = (n: number) => formatInt(n); // r197: the one formatter path (Western separators)
     for (const [label, value] of [
       ['الجلسات النشطة', 1240],
       ['طلبات AI / دقيقة', 18],
@@ -351,7 +352,7 @@ describe('OwnerRealtimePage — refresh failure degradation (6A10-9)', () => {
     await act(async () => { await vi.advanceTimersByTimeAsync(16_000); });
     expect(REALTIME_SEQ.calls).toBe(2);
     expect(document.querySelector('section[aria-live="polite"]')!.textContent)
-      .toContain((1241).toLocaleString('ar-LY'));
+      .toContain('1,241'); // r197 convention
   });
 
   it('degrades the band on a failed 15s refresh but KEEPS the last reading (no full clear)', async () => {
@@ -373,7 +374,7 @@ describe('OwnerRealtimePage — refresh failure degradation (6A10-9)', () => {
     // still renders the pre-failure values — no full-page clear.
     const region = document.querySelector('section[aria-live="polite"]');
     expect(region).not.toBeNull();
-    expect(region!.textContent).toContain((1240).toLocaleString('ar-LY'));
+    expect(region!.textContent).toContain('1,240'); // r197 convention
     expect(document.querySelector('.state-error')).toBeNull();
   });
 

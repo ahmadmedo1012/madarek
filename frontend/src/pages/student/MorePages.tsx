@@ -19,7 +19,7 @@ import { EmojiIcon } from '../../components/EmojiIcon';
 import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotificationsFeed, useMarkNotifRead, useMarkAllNotifsRead, notifDeepLink, useArExperiences, useStudentMaterials, useFaculties, useCurrentInstitutionSlug, useStudentDashboard, useTrainingMe, submissionStatusAr, type Post, type StudentMaterial } from '../../hooks/useResources';
 import { materialHref } from '../../lib/materialHref';
 import { UNIVERSITY_FACTS } from '../../data/university.facts';
-import { formatNum } from '../../utils/numbers';
+import { formatNum, formatPct1 } from '../../utils/numbers';
 import { useAuthStore, type InstitutionSummary } from '../../stores/auth.store';
 import { cartesianOptions, chartAnimation, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { arUnit, countAr, timeAgoAr, WEEKDAY_NAMES_AR, formatDateTimeAr } from '../../lib/format';
@@ -27,6 +27,7 @@ import { api, unwrap } from '../../lib/api';
 import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
 import { gradeBand, type GradeBandKey } from '../../lib/courseMeta';
 import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
+import { formatDate } from '../../utils/numbers';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
 
@@ -301,12 +302,12 @@ export function SkillsPage() {
                 the results bar chart further down the file). */}
             <ChartFrame
               ariaLabel="خريطة مهاراتك التقنية — مستوى الإتقان لكل مهارة"
-              summary={topSkill ? `أعلى إتقان: ${topSkill.skill.name} — ${topSkill.progressPct}%` : undefined}
+              summary={topSkill ? `أعلى إتقان: ${topSkill.skill.name} — ${formatPct1(topSkill.progressPct)}%` : undefined}
               height={300}
               table={{
                 caption: 'مستوى الإتقان لكل مهارة',
                 columns: ['المهارة', 'مستوى الإتقان'],
-                rows: skills.data.map((s) => [s.skill.name, `${s.progressPct}%`]),
+                rows: skills.data.map((s) => [s.skill.name, `${formatPct1(s.progressPct)}%`]),
               }}
             >
               <Radar
@@ -732,21 +733,21 @@ export function ResultsPage() {
         <MetricCard
           icon={Award}
           label="أعلى درجة"
-          value={d.headline.highest ? <bdi>{d.headline.highest.gradePct}%</bdi> : '—'}
+          value={d.headline.highest ? <bdi>{formatPct1(d.headline.highest.gradePct)}%</bdi> : '—'}
           change={d.headline.highest?.courseName ?? 'لا توجد درجات بعد'}
           color={d.headline.highest ? gradeBand(d.headline.highest.gradePct).color : 'green'}
         />
         <MetricCard
           icon={Activity}
           label="المتوسّط"
-          value={d.headline.avgGradePct !== null ? <bdi>{d.headline.avgGradePct}%</bdi> : '—'}
+          value={d.headline.avgGradePct !== null ? <bdi>{formatPct1(d.headline.avgGradePct)}%</bdi> : '—'}
           change={d.headline.courseCount > 0 ? `عبر ${countAr(d.headline.courseCount, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}` : 'لا تقييمات بعد'}
           color={d.headline.avgGradePct !== null ? gradeBand(d.headline.avgGradePct).color : 'amber'}
         />
         <MetricCard
           icon={AlertTriangle}
           label="أدنى درجة"
-          value={d.headline.lowest ? <bdi>{d.headline.lowest.gradePct}%</bdi> : '—'}
+          value={d.headline.lowest ? <bdi>{formatPct1(d.headline.lowest.gradePct)}%</bdi> : '—'}
           change={d.headline.lowest?.courseName ?? '—'}
           color={d.headline.lowest ? gradeBand(d.headline.lowest.gradePct).color : 'amber'}
         />
@@ -768,14 +769,14 @@ export function ResultsPage() {
             ariaLabel="درجاتك حسب المقرّر بالنسبة المئوية"
             summary={
               d.headline.avgGradePct !== null
-                ? `متوسّط درجاتك ${d.headline.avgGradePct}% عبر ${countAr(d.headline.courseCount, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}`
+                ? `متوسّط درجاتك ${formatPct1(d.headline.avgGradePct)}% عبر ${countAr(d.headline.courseCount, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}`
                 : 'لم تُسجَّل درجات بعد.'
             }
             height={Math.max(180, d.courses.length * 32)}
             table={{
               caption: 'درجاتك حسب المقرّر بالنسبة المئوية',
               columns: ['المقرّر', 'الدرجة'],
-              rows: d.courses.map((r) => [r.courseName, `${r.gradePct}%`]),
+              rows: d.courses.map((r) => [r.courseName, `${formatPct1(r.gradePct)}%`]),
             }}
           >
             {/* Horizontal bars — Arabic course names read at full width on
@@ -918,8 +919,8 @@ export function ResultsPage() {
                     title={
                       <span className="flex items-center gap-2 flex-wrap">
                         {a.grade != null && a.maxScore != null
-                          ? <>{a.title} — <bdi className="font-mono">{a.grade} / {a.maxScore}</bdi> <span className="text-xs text-subtle">(<bdi>{a.gradePct}%</bdi>)</span></>
-                          : <>{a.title} — <bdi>{a.gradePct}%</bdi></>}
+                          ? <>{a.title} — <bdi className="font-mono">{a.grade} / {a.maxScore}</bdi> <span className="text-xs text-subtle">(<bdi>{formatPct1(a.gradePct)}%</bdi>)</span></>
+                          : <>{a.title} — <bdi>{formatPct1(a.gradePct)}%</bdi></>}
                         <Badge color={band.color}>{band.label}</Badge>
                       </span>
                     }
@@ -1396,7 +1397,7 @@ function formatSize(bytes: number): string {
   return `${(bytes / 1024 / 1024 / 1024).toFixed(1)} GB`;
 }
 function formatShortDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
+  return formatDate(iso, { day: 'numeric', month: 'short' });
 }
 
 /* r157 (F8, 6A7): فعل التحميل كان رابطاً خاماً واحداً لكل الصفوف —
@@ -1517,7 +1518,7 @@ export function UniversityInfoPage() {
 
   const facCount = facs.isPending
     ? '…'
-    : facs.isError || faculties.length === 0 ? '—' : faculties.length.toLocaleString('ar-LY');
+    : facs.isError || faculties.length === 0 ? '—' : formatNum(faculties.length);
   const citiesChange = cityCount > 0
     ? `موزَّعة على ${countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`
     : undefined;
@@ -1629,14 +1630,14 @@ export function UniversityInfoPage() {
         <MetricCard
           icon={GraduationCap}
           label="داخل الحرم الجامعيّ"
-          value={facs.isPending ? '…' : facs.isError ? '—' : insideCampus.length.toLocaleString('ar-LY')}
+          value={facs.isPending ? '…' : facs.isError ? '—' : formatNum(insideCampus.length)}
           change="حرم المعرفة"
           color="green"
         />
         <MetricCard
           icon={Users2}
           label="فروع خارجيّة"
-          value={facs.isPending ? '…' : facs.isError ? '—' : outsideCampus.length.toLocaleString('ar-LY')}
+          value={facs.isPending ? '…' : facs.isError ? '—' : formatNum(outsideCampus.length)}
           change={outsideCityCount > 0 ? `في ${countAr(outsideCityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}` : undefined}
           color="purple"
         />

@@ -20,6 +20,7 @@ import {
 import { apiErrorMessage } from '../../hooks/useResources';
 import { toast } from '../../lib/toast';
 import type { InstitutionAdminRow, OwnerInstitution } from '../../lib/api';
+import { formatDate, formatNum } from '../../utils/numbers';
 
 /**
  * r178 (multi-institution foundation) — the OWNER's institution console.
@@ -45,8 +46,8 @@ function institutionsCountLabel(n: number): string {
   if (n === 0) return 'لا مؤسسات';
   if (n === 1) return 'مؤسسة واحدة';
   if (n === 2) return 'مؤسستان';
-  if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} مؤسسات`;
-  return `${n.toLocaleString('ar-LY')} مؤسسة`;
+  if (n >= 3 && n <= 10) return `${formatNum(n)} مؤسسات`;
+  return `${formatNum(n)} مؤسسة`;
 }
 
 const STATUS_LABELS: Record<OwnerInstitution['status'], string> = {
@@ -618,13 +619,13 @@ export function OwnerInstitutionsPage() {
                     <td data-label="الأعضاء النشطون">
                       <span className="owner-inst-metric">
                         <Icon icon={Users} size={13} />
-                        {institution.activeMembershipCount.toLocaleString('ar-LY')}
+                        {formatNum(institution.activeMembershipCount)}
                       </span>
                     </td>
                     <td data-label="الكليات">
                       <span className="owner-inst-metric">
                         <Icon icon={GraduationCap} size={13} />
-                        {institution.facultyCount.toLocaleString('ar-LY')}
+                        {formatNum(institution.facultyCount)}
                       </span>
                     </td>
                     <td data-label="المديرون">
@@ -660,7 +661,7 @@ export function OwnerInstitutionsPage() {
                     <td data-label="تاريخ الإنشاء">
                       <span className="owner-inst-metric">
                         <Icon icon={Calendar} size={13} />
-                        {new Date(institution.createdAt).toLocaleDateString('ar-LY', { dateStyle: 'medium' })}
+                        {formatDate(institution.createdAt, { dateStyle: 'medium' })}
                       </span>
                     </td>
                     <td data-label="إجراءات">

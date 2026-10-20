@@ -408,7 +408,7 @@ export function AdminSyncPage() {
                               a title carries the full date for hover. */}
                           <span
                             className="fact-source"
-                            title={new Date(f.syncedAt).toLocaleString('ar-LY', { dateStyle: 'medium', timeStyle: 'short' })}
+                            title={formatDate(f.syncedAt, { dateStyle: 'medium', timeStyle: 'short' })}
                           >
                             <bdi>{f.source}</bdi>
                             {' · آخر تحديث '}

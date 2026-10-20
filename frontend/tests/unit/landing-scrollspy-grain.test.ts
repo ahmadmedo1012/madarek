@@ -37,7 +37,7 @@ describe('r188 — the scroll-spy system is retired with the Orbit-Ink world', (
   });
 
   it('no film-grain veil: --ln-grain-op is unconsumed by the landing', () => {
-    // The token stays defined in tokens.css (parity pins); the landing
+    // The token was retired with the --ln-* family (r197); the landing
     // must not paint a grain layer again.
     expect(live).not.toMatch(/--ln-grain-op/);
     expect(live).not.toContain('.ln-grain');

@@ -11,7 +11,7 @@
    · IBM Plex Sans Arabic 400/500/600/700 — body text + display
      headings + chart.js labels + the landing's Arabic mono fallback
      (premium-polish P1-4: mono labels continue their Arabic runs in
-     this face via the landing's --ln-mono stack). The family has NO
+     this face — the r197 landing re-point removed the landing-local mono stack). The family has NO
      true 800 cut anywhere (not even on Google Fonts), and 700 is the
      heaviest file that ships here — so `font-weight: 800` never
      painted an 800: CSS font matching selects the closest available

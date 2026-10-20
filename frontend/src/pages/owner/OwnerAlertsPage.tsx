@@ -11,6 +11,7 @@ import { apiErrorMessage } from '../../hooks/useResources';
 import { useResolveAlert, type OperationalAlert } from '../../hooks/useOwner';
 import { SEVERITY_LABELS, SEVERITY_COLORS, CATEGORY_LABELS, isCriticalAlert } from '../../lib/ownerLabels';
 import { toast } from '../../lib/toast';
+import { formatDate, formatNum, formatTime } from '../../utils/numbers';
 
 /* severity 'error' added 17-a2 (15-a P1-6) and the maps hoisted to
  * lib/ownerLabels.ts by 22-b (4-A7 P1-1) so the System page renders
@@ -21,9 +22,9 @@ import { toast } from '../../lib/toast';
  * formatted 2-digit hour:minute, while the lib helper uses one combined
  * Intl call (medium date + short time). Swapping would change rendered
  * copy; fold only if a lib export with this exact shape is ever added. */
-function formatTime(iso: string): string {
+function formatTimestamp(iso: string): string {
   const d = new Date(iso);
-  return d.toLocaleDateString('ar-LY') + ' ' + d.toLocaleTimeString('ar-LY', { hour: '2-digit', minute: '2-digit' });
+  return formatDate(d) + ' ' + formatTime(d, { hour: '2-digit', minute: '2-digit' });
 }
 
 /** Shape-matched skeleton for the alert-card list — a badge row, a
@@ -113,7 +114,7 @@ export function OwnerAlertsPage() {
   // Honest KPIs (audit 0-e P2-46): '…' while loading, '—' when the
   // query failed — an API-down feed never renders a confident "0".
   const kpiValue = (n: number) =>
-    alertsQuery.isPending ? '…' : alertsQuery.isError ? '—' : <bdi>{n.toLocaleString('ar-LY')}</bdi>;
+    alertsQuery.isPending ? '…' : alertsQuery.isError ? '—' : <bdi>{formatNum(n)}</bdi>;
   const kpiKnown = alertsQuery.isSuccess;
 
   return (
@@ -192,7 +193,7 @@ export function OwnerAlertsPage() {
                         Pill (a button the user can't actually press). */}
                     <Badge>{CATEGORY_LABELS[alert.category] ?? <bdi>{alert.category}</bdi>}</Badge>
                     <span className="title">{alert.title}</span>
-                    <span className="time">{formatTime(alert.createdAt)}</span>
+                    <span className="time">{formatTimestamp(alert.createdAt)}</span>
                   </div>
                   <div className="message">{alert.message}</div>
                   <div className="actions">

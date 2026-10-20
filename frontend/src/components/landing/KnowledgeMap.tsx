@@ -53,9 +53,9 @@ export function KnowledgeMap({ className }: { className?: string }) {
     >
       <defs>
         <radialGradient id={`${clipId}-core`} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="var(--stage-accent)" stopOpacity="0.55" />
-          <stop offset="70%" stopColor="var(--stage-accent)" stopOpacity="0.12" />
-          <stop offset="100%" stopColor="var(--stage-accent)" stopOpacity="0" />
+          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.55" />
+          <stop offset="70%" stopColor="var(--accent)" stopOpacity="0.12" />
+          <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
         </radialGradient>
         <clipPath id={`${clipId}-clip`}>
           <rect x="0" y="0" width="900" height="900" rx="0" />

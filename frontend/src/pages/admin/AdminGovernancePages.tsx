@@ -48,6 +48,7 @@ import '../../styles/training.css'; // .back-link family (D11 css split, 12-15)
 // .comp-form-field, and the six governance selects now ride the
 // FormField canon (components.css .form-field) like the rest of the app.
 import '../../styles/admin.css'; // r150e: the borrowed admin-students-search chrome moved home
+import { formatDate } from '../../utils/numbers';
 
 const DEGREE_LABEL: Record<string, string> = {
   BACHELORS: 'بكالوريوس', MASTERS: 'ماجستير', PHD: 'دكتوراه',
@@ -216,8 +217,8 @@ function teachersCountLabel(n: number): string {
   if (n === 0) return 'لا أساتذة';
   if (n === 1) return 'أستاذ واحد';
   if (n === 2) return 'أستاذان';
-  if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} أساتذة`;
-  return `${n.toLocaleString('ar-LY')} أستاذاً`;
+  if (n >= 3 && n <= 10) return `${formatNum(n)} أساتذة`;
+  return `${formatNum(n)} أستاذاً`;
 }
 
 export function AdminTeachersPage() {
@@ -267,7 +268,7 @@ export function AdminTeachersPage() {
   // KPI honesty: '…' while loading, '—' on error — never a fake zero.
   // The count query's meta is the only server-backed teacher total.
   const teacherCount =
-    count.isPending ? '…' : count.data ? count.data.meta.total.toLocaleString('ar-LY') : '—';
+    count.isPending ? '…' : count.data ? formatNum(count.data.meta.total) : '—';
 
   const clearSearch = () => {
     setSearch('');
@@ -663,7 +664,7 @@ function PositionAssignmentCard({
     <Card title="المنصب القياديّ" icon={Crown} subtitle="يُمنح المنصب بالتعيين الإداريّ — يضاف فوق دور الأستاذ ولا يستبدله">
       {teacher.position && teacher.appointedAt && (
         <div className="text-xxs text-subtle" style={{ marginBlockEnd: 'var(--sp-2)' }}>
-          تمّ التعيين في {new Date(teacher.appointedAt).toLocaleDateString('ar-LY', { dateStyle: 'medium' })}
+          تمّ التعيين في {formatDate(teacher.appointedAt, { dateStyle: 'medium' })}
         </div>
       )}
 
