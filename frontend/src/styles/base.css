@@ -347,45 +347,70 @@
     .topbar { block-size: 60px; }
   }
 
-  /* ─── PAGE primitive ─────────────────────────────────────────────── */
-  .page { display: flex; flex-direction: column; gap: var(--sp-8); }
+  /* ─── PAGE primitive ───────────────────────────────────────────────
+     r288 (anatomy fold): the legacy frame joins the patterns-contract
+     geometry byte-for-byte — PageFrame's 1080px measure + centered
+     column + --sp-6 rhythm (the old --sp-8/40px air and the uncapped
+     1280 stretch retired). Files migrate to <PageFrame/> family by
+     family; while they do, this rule keeps both systems pixel-equal,
+     so crossing routes never jumps measure or rhythm. */
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+    max-inline-size: 1080px;
+    margin-inline: auto;
+  }
   .page > * { min-inline-size: 0; }
+  @media (max-width: 920px) {
+    .page { gap: var(--sp-5); }
+  }
 
   .page-header {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: var(--sp-5);
-    padding-block-end: var(--sp-5);
-    /* r188 (folio): every page opens like a folio — the hairline rule
-       closes the header block before content begins. The landing's
-       chapter system, carried into the product at the shared header
-       contract (zero per-page changes: 90+ pages inherit at once). */
-    border-block-end: 1px solid var(--rule);
-    margin-block-end: var(--sp-5);
+    gap: var(--sp-4);
     flex-wrap: wrap;
+    /* r288 (anatomy fold): the r188 folio hairline + its padding/margin
+       air retired for patterns parity — the contract header
+       (CONTRACT.md PageHeader) opens the page as a clean column block;
+       the hairline survived only on un-migrated files and made crossing
+       routes read as two systems. Geometry now mirrors
+       .pf-page-header-main. */
   }
   .page-title-block {
-    display: flex; flex-direction: column; gap: var(--sp-2);
+    display: flex; flex-direction: column; gap: var(--sp-1);
     min-inline-size: 0; max-inline-size: 100%;
   }
   /* 13-17 dead-selector sweep (11-g P2-7): .page-eyebrow deleted —
      zero TSX consumers. */
   .page-title {
     font-family: var(--font-display);
-    /* wave 2-a (0-a P1-6) — was raw clamp(28px, 3.4vw, 40px); now the
-       display-size role (28..40px, 3.6vw mid-band — a ≤2px normalization
-       at laptop widths). r148 (AUDIT-4 I2): line-height الآن يستهلك رمز
-       الدور فعليًا — التعويض الداكن (+0.05) كان معرّفًا ولا يُطبّق
-       قط (صفر مستهلكين). */
-    font-size: var(--type-display-size-md);
-    font-weight: var(--fw-black);
-    line-height: var(--type-display-line-height);
+    /* r288 (anatomy fold): the fluid display-size role retired in favor
+       of the contract's fixed title voice — byte-identical to
+       .pf-page-title (patterns.css): 30px Alexandria 700, --lh-snug.
+       The old clamp (24..38px) read 38px at desktop against the
+       contract pages' 30px — an 8px jump between sibling routes. */
+    font-size: var(--fs-h1);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-snug);
     /* r149 (R3-A4 F2): ‎--ls-tight → --ls-normal عند المنبع — كان الأمان
        كله معلقًا بحارس overrides واحد (polish 21-c)؛ العنوان عربي
        والقاعدة تقول صفر تتبع. الحارس يبقى كحزام إضافي. */
     letter-spacing: var(--ls-normal);
+    overflow-wrap: break-word;
     color: var(--text);
+  }
+  .page-subtitle {
+    /* r288: base.css now OWNS the subtitle (the polish v9 wave that
+       carried it folds home). Mirrors .pf-page-desc exactly: 13px,
+       secondary ink, 72ch measure, base leading. */
+    margin: 0;
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+    color: var(--text-secondary);
+    max-inline-size: var(--type-body-max-measure);
   }
   /* 13-17 dead-selector sweep (11-g P2-7): .page-lede and .page-actions
      deleted — zero TSX consumers (page headers render the title block;

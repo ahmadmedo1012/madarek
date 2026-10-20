@@ -139,12 +139,12 @@
 
   /* ── Mobile refinements ───────────────────────────────────────── */
   @media (max-width: 640px) {
-    /* Page header gets a tighter rhythm on phones — the desktop
-       8-spacing scale leaves too much air at narrow widths. */
-    .page { gap: var(--sp-6); }
-    .page-header { gap: var(--sp-1); }
-    .page-title { font-size: var(--fs-xl); line-height: 1.25; }
-    .page-subtitle { font-size: var(--fs-sm); }
+    /* r288 (anatomy fold): the four .page-family mobile lines deleted —
+       base.css now owns the whole legacy frame anatomy at patterns
+       parity (.page/.page-header/.page-title/.page-subtitle mirror
+       PageFrame/PageHeader geometry in both themes at every width);
+       the fs-xl mobile title shrank legacy titles to 24px while
+       contract pages stayed 30px — a mobile jump between siblings. */
 
     /* Tap targets — iOS HIG / Material guideline is 44px. (Wave 9-b
        tap-target consolidation, 6-a follow-up #5: .btn.sm dropped from
@@ -697,21 +697,14 @@
   }
 
   /* ── Page-header rhythm refinement ──────────────────────────── */
-  /* R189 «سجلّ مدارك» masthead: the page opener is now an editorial
-     masthead — the 2px INK rule (not a faint hairline; the VLM
-     direction trial's strongest single mark, /home/z/probes/preview)
-     plus deeper breathing under it. Every route inherits this through
-     the PageHeader primitive; dashboards additionally pass the mono
-     `meta` line (date/week context — data, never a decorative
-     eyebrow: the meta renders only when a page supplies real facts). */
-  .page-header {
-    /* base.css set padding-block-end to var(--sp-5); the masthead
-       tightens to the rule and gives the gap to the margin below. */
-    padding-block-end: var(--sp-3);
-    border-block-end: var(--sp-0-5) solid var(--text);
-    margin-block-end: var(--sp-4);
-    row-gap: var(--sp-1);
-  }
+  /* R189 «سجلّ مدارك» masthead — r288 (anatomy fold): the 2px ink
+     rule + its breathing block RETIRED. It painted only on un-migrated
+     legacy pages while every contract page (pf-page-header, r210
+     FROZEN) opens as a clean column — two header languages across
+     sibling routes. The geometry + typography of the whole .page
+     family now lives in base.css at patterns parity (see r288 fold
+     note there); .page-header-meta below stays — it has two live
+     hand-rolled consumers (Quality · Admin) until their file folds. */
   .page-header-meta {
     /* r284: mono retired per the r197 voice contract (mono = IDs/code
        only); the meta line is in-page sans at the 13px Arabic floor. */
@@ -723,33 +716,9 @@
   /* (r153f: the v8 welcome-card hairline exemption moved home to
      student.css §WELCOME-CARD — the family's only consumer is the
      student dashboard. Every rule below was the measured rendered
-     truth before the move; probe r153w1 pins it byte-identical.) */
-  .page-title {
-    /* 21-c (A3 P2-4 / A12 ruling #2): the -0.012em tracking broke
-       Arabic cursive joins on every page title («مقرّراتي الدراسية»…).
-       This block also lands the Arabic display-leading floor the
-       base.css .page-title TODO ("until the P1-12 Arabic-leading
-       study lands") parked at 1.1 — 1.15 clears diacritic stacks
-       (شدّة + تنوين) at 28–40px. */
-    letter-spacing: var(--ls-normal);
-    /* r148 (AUDIT-4 I2): استهلاك رمز الدور بدل الحرفي 1.15 — يُشغّل
-       التعويض الداكن 1.2 (tokens.css:745) الذي كان معرّفًا ولا يعمل. */
-    line-height: var(--type-display-line-height);
-  }
-  .page-subtitle {
-    line-height: 1.55;
-    /* 5-C2 (A3 P1-2): the subtitle had no measure cap and stretched to
-       the full 1280px content column on every wide page (measured
-       131.6ch/1184px on exams · library · community · admin · vision).
-       taste floor: body measure 45–75ch. Wires the existing
-       --type-body-max-measure token (72ch) that nothing consumed. */
-    max-inline-size: var(--type-body-max-measure);
-    color: var(--text-secondary);
-    transition: color var(--t-base) var(--ease);
-  }
-  .page-header:hover .page-subtitle {
-    color: var(--text);
-  }
+     truth before the move; probe r153w1 pins it byte-identical.)
+     r288: the .page-title / .page-subtitle blocks + the hover nicety
+     folded into base.css (patterns parity) — deleted here. */
 
   /* ── Card title icon — subtle accent tint ──────────────────── */
   .card-title-icon {
@@ -795,10 +764,9 @@
 
   /* ── Mobile — reduce vertical noise on small screens ────────── */
   @media (max-width: 640px) {
-    .page-header {
-      padding-block-end: var(--sp-1);
-      margin-block-end: var(--sp-2);
-    }
+    /* r288: .page-header mobile padding/margin deleted — the header
+       geometry folds home to base.css at patterns parity (no rule, no
+       per-band breathing). */
     .metric { padding: var(--sp-3) var(--sp-4); }
   }
 
@@ -1425,10 +1393,9 @@
      student.css (pages layer) must not be beaten by this overrides-
      layer flex-basis (320px would stretch the column-stack's only
      child). Same :not() source-guard precedent as r151e. */
-  
-  .page-title {
-    overflow-wrap: break-word;
-  }
+
+  /* r288: .page-title { overflow-wrap: break-word } folded into the
+     base.css r288 anatomy block — deleted here. */
 
   /* Avatars — never let one render as a flat coloured square.
      21-c (A12 P1-2): the default ink is now the theme's accent-fg
@@ -3383,13 +3350,12 @@
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  HEADINGS — section titles get a subtle text-shadow on dark    ║
-     ║  helps them feel weightier without changing colors             ║
+     ║  HEADINGS — r288 (anatomy fold): the dark-theme text-shadow     ║
+     ║  weighter-trick on .page-title/.college-hero-name RETIRED —     ║
+     ║  the contract title (.pf-page-title) carries no shadow; the     ║
+     ║  trick painted only on the legacy anatomy and made titles      ║
+     ║  read differently between sibling routes in dark. Deleted.     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  [data-theme="dark"] .page-title,
-  [data-theme="dark"] .college-hero-name {
-    text-shadow: 0 1px 2px color-mix(in srgb, var(--black) 25%, transparent);
-  }
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
