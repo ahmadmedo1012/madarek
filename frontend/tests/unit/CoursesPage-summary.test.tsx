@@ -115,9 +115,9 @@ describe('StudentCoursesPage — the light single-line summary (r173a)', () => {
     expect(container.querySelectorAll('.grid-4')).toHaveLength(0);
   });
 
-  it('the header keeps exactly h1 + one subtitle line (untouched)', () => {
+  it('the header keeps exactly h1 + one subtitle line (r221 re-pin: the patterns PageHeader)', () => {
     renderPage();
-    const header = document.querySelector('header.page-header') as HTMLElement;
+    const header = document.querySelector('header.pf-page-header') as HTMLElement;
     expect(header).not.toBeNull();
     expect(within(header).getByRole('heading', { level: 1, name: 'مقرّراتي الدراسية' }));
     expect(header.textContent).toContain('جميع المقرّرات التي سجّلت فيها هذا الفصل');
@@ -170,8 +170,9 @@ describe('StudentCoursesPage — pending mirror (r173a)', () => {
     expect((summary as HTMLElement).getAttribute('aria-busy')).toBe('true');
     expect((summary as HTMLElement).querySelector('.skeleton')).not.toBeNull();
 
-    // The grid skeleton still owns the card area.
-    expect(container.querySelector('.grid-3[aria-busy="true"]')).not.toBeNull();
+    // The row-list skeleton owns the list area (r221: the row list
+    // replaced the card grid — its skeleton mirrors the pf-row shape).
+    expect(container.querySelector('.pf-row[aria-hidden="true"]')).not.toBeNull();
     // The one-loading-owner rule.
     expect(container.querySelectorAll('.metric')).toHaveLength(0);
     expect(container.querySelectorAll('.spinner')).toHaveLength(0);

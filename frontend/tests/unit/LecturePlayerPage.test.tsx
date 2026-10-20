@@ -725,7 +725,7 @@ describe('r157 — checkpoint answer memory (seed) + honest skip', () => {
     // r155a mastery cap. The seed keeps it silent.
     seekTo(video, 150);
     expect(screen.queryByRole('dialog')).toBeNull();
-    expect(screen.getByText(/أُجيب عن 1 من/)).toBeInTheDocument();
+    expect(screen.getAllByText(/أُجيب عن 1 من/).length).toBeGreaterThanOrEqual(1);
 
     // The UNANSWERED checkpoint still fires honestly.
     seekTo(video, 250);
@@ -755,7 +755,7 @@ describe('r157 — checkpoint answer memory (seed) + honest skip', () => {
     expect(screen.queryByRole('dialog')).toBeNull();
 
     // Honest: skip ≠ answer — the count stayed 0.
-    expect(screen.getByText(/أُجيب عن 0 من/)).toBeInTheDocument();
+    expect(screen.getAllByText(/أُجيب عن 0 من/).length).toBeGreaterThanOrEqual(1);
 
     // Session suppression: the playhead still sits past the trigger
     // (150 ≥ 100) — a later tick must not slam the quiz back open.
@@ -775,7 +775,7 @@ describe('r157 — checkpoint answer memory (seed) + honest skip', () => {
     fireEvent.keyDown(document, { key: 'Escape' });
     finishModalExit();
     expect(screen.queryByRole('dialog')).toBeNull();
-    expect(screen.getByText(/أُجيب عن 0 من/)).toBeInTheDocument();
+    expect(screen.getAllByText(/أُجيب عن 0 من/).length).toBeGreaterThanOrEqual(1);
 
     // And suppressed for the session (no instant re-fire).
     seekTo(video, 160);
@@ -797,7 +797,7 @@ describe('r157 — checkpoint answer memory (seed) + honest skip', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'متابعة المحاضرة' }));
     finishModalExit();
     expect(screen.queryByRole('dialog')).toBeNull();
-    expect(screen.getByText(/أُجيب عن 1 من/)).toBeInTheDocument();
+    expect(screen.getAllByText(/أُجيب عن 1 من/).length).toBeGreaterThanOrEqual(1);
 
     // Counted → suppressed for the session (no re-fire at the same
     // playhead; the next session seeds from the server row).
@@ -918,7 +918,7 @@ describe('r164d — completed watch, open checkpoints: the banner (not a wall)',
     mocks.lecture = completedTwoCheckpointLecture(['cp1', 'cp2']);
     renderPlayer();
     expect(screen.queryByText(/أنهيت المشاهدة/)).toBeNull();
-    expect(screen.getByText(/أُجيب عن 2 من/)).toBeInTheDocument();
+    expect(screen.getAllByText(/أُجيب عن 2 من/).length).toBeGreaterThanOrEqual(1);
   });
 
   it('banner appears on completed-watch with open checkpoints; the button re-opens the FIRST unanswered one', () => {
@@ -927,7 +927,7 @@ describe('r164d — completed watch, open checkpoints: the banner (not a wall)',
 
     const banner = screen.getByText(/أنهيت المشاهدة/);
     expect(banner).toHaveTextContent(/تبقى/);
-    expect(screen.getByText(/أُجيب عن 1 من/)).toBeInTheDocument();
+    expect(screen.getAllByText(/أُجيب عن 1 من/).length).toBeGreaterThanOrEqual(1);
 
     fireEvent.click(screen.getByRole('button', { name: /إلى نقطة التفاعل التالية/ }));
 

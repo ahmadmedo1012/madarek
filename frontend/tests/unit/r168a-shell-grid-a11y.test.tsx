@@ -155,10 +155,14 @@ describe('r168a — student dashboard leads its outline with its identity', () =
        must still equal resolveTitle('/student/dashboard')'s nav label
        world («لوحة …»), and every header state (pending/error/preview/
        main) shares it. */
-    expect(page).toContain('<h1 className="page-title">لوحة التحكم</h1>');
-    expect(page.match(/<h1 className="page-title">لوحة التحكم<\/h1>/g)?.length).toBe(4);
-    // The greeting rides the masthead subtitle (never a heading).
-    expect(page).not.toMatch(/<h2 className="page-title">/);
+    /* r221 re-pin: the header states now ride the patterns PageHeader
+       (pf-page-title) — same identity contract, one h1 per state: the
+       pending mirror carries the literal h1, the error/preview/main
+       states pass the title to the PageHeader pattern. */
+    expect(page.match(/<h1 className="pf-page-title">لوحة التحكم<\/h1>/g)?.length).toBe(1);
+    expect(page.match(/title="لوحة التحكم"/g)?.length).toBe(3);
+    // The greeting rides the masthead description (never a heading).
+    expect(page).not.toMatch(/<h2 className="pf-page-title">/);
     // The welcome-hero is gone: no welcome-card anywhere.
     expect(page).not.toContain('welcome-card');
   });
