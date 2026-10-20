@@ -84,3 +84,10 @@ Removed from `student.css` (my family's sheet) in r220–r223:
 - **SkillsPage / ResultsPage composition swaps**: same reason — both are already chart+list-first with AA-checked primitives; only their headers remain pre-pattern.
 - **E-exam attempt redesign**: owned by 4C per BLUEPRINT §1 (correction row for 4A); issues logged above instead of edited.
 - **Training/games** (`/training*`, `/achievements`): owned by 4E per BLUEPRINT §1 (it wins over the prompt's family list); 4A's gamification surface above covers the student-facing points/level view.
+
+## Addendum (r227) — post-final integration of shell r211
+
+- Merged `origin/redesign/shell` @ r211 (`4ff866c`, chrome re-skin: BottomNav 4 destinations + «المزيد», layout.css row rhythm, notifications.css) into `redesign/4a-student` — merge commit `97bed9b`, pushed. Zero conflicts; no 4A file touched by the shell delta.
+- Gates re-run on the merged state: lint 0 errors / 19 warnings · typecheck ×4 ✅ · frontend **1971** + backend **1783** tests ✅ · motion/icons/colors/raw-css/CSP/colleges ✅.
+- Browser re-verification (real browser): dashboard/courses/matrix at 390px — no horizontal overflow, no console errors; dashboard 390+1440 light (verified via the app's own theme toggle — localStorage pinning overrides prefers-color-scheme) and dark; matrix 1440 light. The r211 BottomNav contract (4 links + more-drawer) and the re-skinned active-destination treatment compose cleanly with TodayList/StatLine/gap-rows on every owned surface.
+- Final branch head after integration: **`97bed9b`** (merge of r211 on top of r226).
