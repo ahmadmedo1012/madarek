@@ -19,8 +19,8 @@
        the .exam-review-chevron grammar in student.css.
      · Craft floor: ≥44px tap targets, 13px Arabic text floor, Western
        digits rendered by the page (utils/numbers convention), zero
-       letter-spacing, motion only through --t-*/--ease tokens (the
-       base.css reduced-motion belt backstops them).
+       letter-spacing, motion only through the --t-* and --ease token
+       families (the base.css reduced-motion belt backstops them).
    ═════════════════════════════════════════════════════════════════════ */
 
 @layer pages {

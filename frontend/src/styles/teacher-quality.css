@@ -165,6 +165,14 @@ button.tq-row:focus-visible {
   margin-block-start: var(--sp-9);
 }
 
+/* ─── Tap-target floor on the family's filter pills ─────────────────
+   BLUEPRINT §7 (tap targets): chips ride 44px on the 4C surfaces. The
+   shared .pill sits at 37px (components.css, 4E-owned — consumed, not
+   edited); family pages raise it locally in the row above the feed. */
+.pf-filterbar .pill {
+  min-block-size: 44px;
+}
+
 /* ─── Responsive recomposition (mobile) ──────────────────────────── */
 
 @media (max-width: 640px) {
