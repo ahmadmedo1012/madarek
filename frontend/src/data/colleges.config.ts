@@ -164,7 +164,10 @@ export const colleges: CollegeIdentityProfile[] = [
   },
   {
     slug: 'dentistry-maarifa', nameAr: 'كلية طب وجراحة الفم والأسنان', nameEn: 'Dentistry & Oral Surgery',
-    cityAr: 'حرم المعرفة', accent: '#277591', icon: 'Smile',
+    // r197: the paper ground (#F3EEE4) is darker than the r195 #FBFAF9 —
+    // #277591 measured 4.50:1 there and drops under AA on the paper, so
+    // the accent gets its deep accessible twin (6.16:1 on the paper).
+    cityAr: 'حرم المعرفة', accent: '#277591', accentAccessible: '#1F5F73', icon: 'Smile',
   },
   {
     slug: 'medical-technology-maarifa', nameAr: 'كلية التقنية الطبية', nameEn: 'Medical Technology',

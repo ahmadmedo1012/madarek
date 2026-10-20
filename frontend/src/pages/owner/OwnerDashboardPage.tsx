@@ -18,6 +18,7 @@ import { radialOptions, chartPalette, useChartThemeKey } from '../../lib/chartTh
 import { useOwnerStats, useOwnerRealtime, useOwnerAlerts, useOwnerActivity, useOwnerEducation, type OperationalAlert } from '../../hooks/useOwner';
 import { countAr, formatRelativeAr } from '../../lib/format';
 import { isCriticalAlert } from '../../lib/ownerLabels';
+import { formatDate, formatNum } from '../../utils/numbers';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -362,7 +363,7 @@ export function OwnerDashboardPage() {
           <h1 className="page-title">لوحة التحكم الرئيسية</h1>
           <p className="page-subtitle">نظرة شاملة وإحصائيات حيّة عن المنصة</p>
           <p className="page-header-meta">
-            {new Date().toLocaleDateString('ar-LY', { weekday: 'long', day: 'numeric', month: 'long' })} · قياس مباشر من قاعدة البيانات
+            {formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · قياس مباشر من قاعدة البيانات
           </p>
         </div>
       </header>
@@ -382,25 +383,25 @@ export function OwnerDashboardPage() {
         cells={[
           {
             label: 'إجمالي المستخدمين',
-            value: <bdi>{data.totalUsers.toLocaleString('ar-LY')}</bdi>,
-            trend: `${data.students.toLocaleString('ar-LY')} طالبًا · ${data.teachers.toLocaleString('ar-LY')} أستاذًا`,
+            value: <bdi>{formatNum(data.totalUsers)}</bdi>,
+            trend: `${formatNum(data.students)} طالبًا · ${formatNum(data.teachers)} أستاذًا`,
             trendTone: 'flat',
           },
           {
             label: 'الجلسات النشطة',
-            value: <bdi>{realtimeData.activeSessions.toLocaleString('ar-LY')}</bdi>,
+            value: <bdi>{formatNum(realtimeData.activeSessions)}</bdi>,
             trend: 'في هذه اللحظة',
             trendTone: 'flat',
           },
           {
             label: 'المقرّرات الدراسية',
-            value: <bdi>{data.totalCourses.toLocaleString('ar-LY')}</bdi>,
-            trend: `${data.totalOfferings.toLocaleString('ar-LY')} شعبة تدريس فاعلة`,
+            value: <bdi>{formatNum(data.totalCourses)}</bdi>,
+            trend: `${formatNum(data.totalOfferings)} شعبة تدريس فاعلة`,
             trendTone: 'flat',
           },
           {
             label: 'إجمالي التسجيلات',
-            value: <bdi>{data.totalEnrollments.toLocaleString('ar-LY')}</bdi>,
+            value: <bdi>{formatNum(data.totalEnrollments)}</bdi>,
             trend: 'تسجيلات مقرّرات تراكمية',
             trendTone: 'flat',
           },
@@ -441,7 +442,7 @@ export function OwnerDashboardPage() {
               <div className={`owner-health-dot ${realtimeData.activeSessions > 0 ? 'green' : 'neutral'}`} />
               <span className="owner-health-label">جلسات نشطة الآن</span>
               <span className="owner-health-value">
-                <bdi>{realtimeData.activeSessions.toLocaleString('ar-LY')}</bdi>
+                <bdi>{formatNum(realtimeData.activeSessions)}</bdi>
               </span>
             </div>
             <div className="owner-health-row">
@@ -452,21 +453,21 @@ export function OwnerDashboardPage() {
               <div className={`owner-health-dot ${realtimeData.liveBroadcasts > 0 ? 'green' : 'neutral'}`} />
               <span className="owner-health-label">بثّ مباشر جارٍ</span>
               <span className="owner-health-value">
-                <bdi>{realtimeData.liveBroadcasts.toLocaleString('ar-LY')}</bdi>
+                <bdi>{formatNum(realtimeData.liveBroadcasts)}</bdi>
               </span>
             </div>
             <div className="owner-health-row">
               <div className={`owner-health-dot ${realtimeData.activeExams > 0 ? 'green' : 'neutral'}`} />
               <span className="owner-health-label">اختبارات جارية</span>
               <span className="owner-health-value">
-                <bdi>{realtimeData.activeExams.toLocaleString('ar-LY')}</bdi>
+                <bdi>{formatNum(realtimeData.activeExams)}</bdi>
               </span>
             </div>
             <div className="owner-health-row">
               <div className={`owner-health-dot ${realtimeData.aiRequestsPerMin > 0 ? 'green' : 'neutral'}`} />
               <span className="owner-health-label">طلبات الذكاء الاصطناعيّ / دقيقة</span>
               <span className="owner-health-value">
-                <bdi>{realtimeData.aiRequestsPerMin.toLocaleString('ar-LY')}</bdi>
+                <bdi>{formatNum(realtimeData.aiRequestsPerMin)}</bdi>
               </span>
             </div>
             <div className="owner-health-row">
@@ -483,7 +484,7 @@ export function OwnerDashboardPage() {
               <div className={`owner-health-dot ${data.recentAuditLogs > 0 ? 'green' : 'neutral'}`} />
               <span className="owner-health-label">سجلّات آخر 7 أيام</span>
               <span className="owner-health-value">
-                <bdi>{data.recentAuditLogs.toLocaleString('ar-LY')}</bdi>
+                <bdi>{formatNum(data.recentAuditLogs)}</bdi>
               </span>
             </div>
           </div>

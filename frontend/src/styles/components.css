@@ -4982,7 +4982,7 @@
     box-shadow: var(--elev-2);
   }
   [data-theme="dark"] .btn.primary:hover {
-    box-shadow: var(--elev-2), var(--glow-accent);
+    box-shadow: var(--elev-2); /* r197: the glow register is retired — quiet elevation only */
   }
 
   /* ── 6 · Reduced motion — the aura and edges respect the switch ── */

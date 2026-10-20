@@ -25,6 +25,7 @@ import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .leaderboard-list/-points families (D11 css split, 12-15)
 import '../../styles/colleges.css'; // .comp-* index/hero/entry/modal families (D14 css split, 13-17)
+import { formatDate, formatNum } from '../../utils/numbers';
 
 /* Payload document title (A12 P3-6): the h1 carries the competition's
  * real name while the tab said «مسابقة · مدارك» for every competition.
@@ -85,7 +86,7 @@ function formatDeadline(iso: string): string {
   if (days === 1) return 'ينتهي غداً';
   if (days < 7) return `بعد ${countAr(days, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
   if (days < 30) return `بعد ${countAr(Math.round(days / 7), ['أسبوع', 'أسبوعين', 'أسابيع', 'أسبوعاً'])}`;
-  return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
+  return formatDate(d, { dateStyle: 'medium' });
 }
 
 /* formatRelativeArShort (compact relative time) lives in lib/format.ts
@@ -142,7 +143,7 @@ export function CompetitionsIndexPage() {
   };
   // Honest KPI values: '…' while the list loads, '—' when it failed
   // (the ErrorState below carries the retry) — never a fake zero.
-  const kpiValue = (n: number) => (q.isPending ? '…' : q.isError ? '—' : n.toLocaleString('ar-LY'));
+  const kpiValue = (n: number) => (q.isPending ? '…' : q.isError ? '—' : formatNum(n));
 
   return (
     <div className="page">

@@ -56,7 +56,7 @@
 .fo-header,
 .fo-hero,
 .fo-mobile-menu {
-  --state-focus-ring-color: var(--stage-accent);
+  --state-focus-ring-color: var(--accent);
 }
 
 /* the mono voice — telemetry labels, numerals, markers */
@@ -94,7 +94,7 @@
   /* the ribbon rides the STAGE chrome below it — the accent token
      resolves to its stage expression here (same token-routing as the
      focus ring above; the bar has no descendants to inherit). */
-  --accent: var(--stage-accent);
+  --accent: var(--accent);
 }
 .fo-progress-bar {
   block-size: 100%;
@@ -114,14 +114,14 @@
   position: sticky;
   inset-block-start: 0;
   z-index: 80;
-  background: var(--stage-ink);
-  border-block-end: 1px solid var(--stage-line-soft);
+  background: var(--poster-paper);
+  border-block-end: 1px solid var(--border-faint);
   transition:
     background var(--t-base) var(--ease),
     border-color var(--t-base) var(--ease);
 }
 .fo-header.scrolled {
-  background: color-mix(in srgb, var(--stage-ink) 86%, transparent);
+  background: color-mix(in srgb, var(--poster-paper) 86%, transparent);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
@@ -139,21 +139,21 @@
   align-items: center;
   gap: var(--sp-3);
   text-decoration: none;
-  color: var(--stage-cream);
+  color: var(--poster-ink);
 }
-.fo-brand-mark { color: var(--stage-accent); flex: none; }
+.fo-brand-mark { color: var(--accent); flex: none; }
 .fo-brand-text { display: flex; flex-direction: column; line-height: 1.25; }
 .fo-brand-name {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.375rem;
 }
-.fo-brand-sub { font-size: 0.6875rem; color: var(--stage-cream-dim); }
+.fo-brand-sub { font-size: 0.6875rem; color: var(--text-muted); }
 
 .fo-nav { display: flex; gap: var(--sp-1); margin-inline-start: auto; }
 .fo-nav-link {
   position: relative;
-  color: var(--stage-cream-dim);
+  color: var(--text-muted);
   text-decoration: none;
   font-size: 0.8125rem;
   padding: var(--sp-2) var(--sp-3);
@@ -167,11 +167,11 @@
   inset-inline-start: var(--sp-3);
   inline-size: 6px;
   block-size: 6px;
-  background: var(--stage-accent);
+  background: var(--accent);
   opacity: 0;
   transition: opacity var(--t-fast) var(--ease);
 }
-.fo-nav-link:hover { color: var(--stage-cream); }
+.fo-nav-link:hover { color: var(--poster-ink); }
 .fo-nav-link:hover::before { opacity: 1; }
 
 .fo-header-actions { display: flex; align-items: center; gap: var(--sp-2-5); }
@@ -180,17 +180,17 @@
 .fo-header .btn.ghost,
 .fo-mobile-menu .btn.ghost {
   --_btn-bg: transparent;
-  --_btn-fg: var(--stage-cream);
-  --_btn-bd: var(--stage-line);
-  --_btn-bg-hover: color-mix(in srgb, var(--stage-cream) 8%, transparent);
-  --_btn-bd-hover: var(--stage-cream-dim);
+  --_btn-fg: var(--poster-ink);
+  --_btn-bd: var(--border);
+  --_btn-bg-hover: color-mix(in srgb, var(--poster-ink) 8%, transparent);
+  --_btn-bd-hover: var(--text-muted);
   --_btn-shadow: none;
 }
 .fo-header .btn.primary,
 .fo-mobile-menu .btn.primary {
-  --_btn-bg: var(--stage-cream);
-  --_btn-fg: var(--stage-ink);
-  --_btn-bd: var(--stage-cream);
+  --_btn-bg: var(--poster-ink);
+  --_btn-fg: var(--poster-paper);
+  --_btn-bd: var(--poster-ink);
   --_btn-bg-hover: var(--white);
   --_btn-bd-hover: var(--white);
   --_btn-shadow: none;
@@ -198,13 +198,13 @@
 /* the theme toggle rides the stage chrome */
 .fo-header .theme-toggle-option,
 .fo-mobile-menu .theme-toggle-option {
-  border-color: var(--stage-line);
-  color: var(--stage-cream-dim);
+  border-color: var(--border);
+  color: var(--text-muted);
 }
 .fo-header .theme-toggle-option.is-active,
 .fo-mobile-menu .theme-toggle-option.is-active {
-  background: color-mix(in srgb, var(--stage-accent) 22%, transparent);
-  color: var(--stage-cream);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--poster-ink);
 }
 
 .fo-burger {
@@ -214,8 +214,8 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid var(--stage-line);
-  color: var(--stage-cream);
+  border: 1px solid var(--border);
+  color: var(--poster-ink);
   cursor: pointer;
   border-radius: 0;
 }
@@ -225,17 +225,17 @@
   flex-direction: column;
   gap: var(--sp-2);
   padding: var(--sp-4) var(--sp-5) var(--sp-6);
-  background: color-mix(in srgb, var(--stage-ink) 96%, transparent);
+  background: color-mix(in srgb, var(--poster-paper) 96%, transparent);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-block-start: 1px solid var(--stage-line-soft);
+  border-block-start: 1px solid var(--border-faint);
 }
 .fo-mobile-theme {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
   padding: var(--sp-2) var(--sp-2);
-  color: var(--stage-cream-dim);
+  color: var(--text-muted);
   font-size: 0.8125rem;
 }
 
@@ -250,24 +250,24 @@
   justify-content: center;
   min-block-size: min(88vh, 860px);
   padding-block: var(--sp-16) var(--sp-14);
-  color: var(--stage-cream);
+  color: var(--poster-ink);
   /* the void: fixed stage ground + atmospheric violet illumination
      rising from the reading-start horizon + a deep indigo bloom */
   background:
     radial-gradient(120% 90% at 85% 108%,
-      color-mix(in srgb, var(--aura-accent) 34%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 34%, transparent) 0%,
       transparent 58%),
     radial-gradient(90% 70% at 12% 88%,
-      color-mix(in srgb, var(--aura-horizon) 12%, transparent) 0%,
+      color-mix(in srgb, var(--gold) 12%, transparent) 0%,
       transparent 52%),
     radial-gradient(140% 120% at 50% -20%,
-      color-mix(in srgb, var(--stage-ink-2) 70%, transparent) 0%,
+      color-mix(in srgb, var(--surface) 70%, transparent) 0%,
       transparent 70%),
-    var(--stage-ink);
+    var(--poster-paper);
   overflow: hidden;
   /* the designed cut — a violet horizon line closes the stage (the
      reference's hard section alternation, made deliberate) */
-  border-block-end: 1px solid color-mix(in srgb, var(--stage-accent) 38%, transparent);
+  border-block-end: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
 }
 
 .fo-hero-stage {
@@ -308,14 +308,14 @@
 }
 .fo-orbit-path-line {
   fill: none;
-  stroke: var(--stage-line);
+  stroke: var(--border);
   stroke-width: 1.5;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   animation: fo-orbit-draw var(--motion-duration-scene-reveal) var(--ease-out) var(--motion-duration-page) both;
 }
 .fo-orbit-node {
-  fill: var(--stage-accent);
+  fill: var(--accent);
   opacity: 0;
   animation: fo-node-ignite var(--motion-duration-stat) var(--ease-out) 2300ms both,
              fo-node-breathe var(--motion-duration-ambient-slow) var(--ease-soft) 3000ms infinite;
@@ -351,14 +351,14 @@
   margin: 0 0 var(--sp-8);
   /* r192: +30% toward cream — the dim token read as low-contrast over
      the void in review; the eyebrow must lead, not whisper. */
-  color: color-mix(in srgb, var(--stage-cream-dim) 70%, var(--stage-cream));
+  color: color-mix(in srgb, var(--text-muted) 70%, var(--poster-ink));
   font-size: 0.8125rem;
 }
 .fo-eyebrow::before {
   content: "";
   inline-size: 7px;
   block-size: 7px;
-  background: var(--stage-accent);
+  background: var(--accent);
   flex: none;
 }
 
@@ -370,7 +370,7 @@
   /* r193: the base sheet's h1..h6 { color: var(--text) } beats inherited
      stage cream — on the FIXED void that meant near-black display ink in
      light theme (measured). The stage owns its ink; re-assert it. */
-  color: var(--stage-cream);
+  color: var(--poster-ink);
   /* r192: lh 1.12 overlapped wrapped Arabic lines ~10px (measured on
      production); the display token now carries the measured-safe 1.28
      and the hero consumes it directly — zero subtractions on Arabic.
@@ -382,7 +382,7 @@
 }
 .fo-hero-line { display: block; }
 /* the accent words — the reference's luminous violet word treatment */
-.fo-hero-title em { font-style: normal; color: var(--stage-accent); }
+.fo-hero-title em { font-style: normal; color: var(--accent); }
 .fo-hero-title .fo-orbit {
   /* مدارك — the orbit word carries the node: a violet square orbit
      marker at its baseline end (decorative, aria-safe via CSS) */
@@ -396,13 +396,13 @@
   inset-inline-end: 0;
   inline-size: 0.14em;
   block-size: 0.14em;
-  background: var(--stage-accent);
+  background: var(--accent);
 }
 
 .fo-hero-sub {
   margin: 0 0 var(--sp-8);
   max-inline-size: 54ch;
-  color: var(--stage-cream-dim);
+  color: var(--text-muted);
   font-size: 1.0625rem;
   line-height: 1.8;
 }
@@ -410,19 +410,19 @@
 .fo-hero-actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-block-end: var(--sp-6); }
 /* hero CTAs — the stage's void grammar: white slab + violet accent */
 .fo-hero .btn.accent {
-  --_btn-bg: var(--stage-accent);
-  --_btn-fg: var(--stage-ink);
-  --_btn-bd: var(--stage-accent);
-  --_btn-bg-hover: color-mix(in srgb, var(--stage-accent) 82%, var(--white));
-  --_btn-bd-hover: color-mix(in srgb, var(--stage-accent) 82%, var(--white));
-  --_btn-shadow: 0 0 24px color-mix(in srgb, var(--stage-accent) 38%, transparent);
+  --_btn-bg: var(--accent);
+  --_btn-fg: var(--poster-paper);
+  --_btn-bd: var(--accent);
+  --_btn-bg-hover: color-mix(in srgb, var(--accent) 82%, var(--white));
+  --_btn-bd-hover: color-mix(in srgb, var(--accent) 82%, var(--white));
+  --_btn-shadow: 0 0 24px color-mix(in srgb, var(--accent) 38%, transparent);
 }
 .fo-hero .btn.ghost {
   --_btn-bg: transparent;
-  --_btn-fg: var(--stage-cream);
-  --_btn-bd: var(--stage-line);
-  --_btn-bg-hover: color-mix(in srgb, var(--stage-cream) 8%, transparent);
-  --_btn-bd-hover: var(--stage-cream-dim);
+  --_btn-fg: var(--poster-ink);
+  --_btn-bd: var(--border);
+  --_btn-bg-hover: color-mix(in srgb, var(--poster-ink) 8%, transparent);
+  --_btn-bd-hover: var(--text-muted);
   --_btn-shadow: none;
 }
 
@@ -434,12 +434,12 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  color: var(--stage-cream-dim);
+  color: var(--text-muted);
   font-size: 0.8125rem;
 }
 .fo-hero-meta li { display: inline-flex; align-items: center; gap: var(--sp-1-5); }
-.fo-hero-meta li svg { color: var(--stage-accent); }
-.fo-hero-meta-dot { inline-size: 3px; block-size: 3px; background: var(--stage-cream-dim); opacity: 0.5; }
+.fo-hero-meta li svg { color: var(--accent); }
+.fo-hero-meta-dot { inline-size: 3px; block-size: 3px; background: var(--text-muted); opacity: 0.5; }
 
 /* ── the telemetry strip — the hero's HUD bottom bar ─────────────── */
 .fo-telemetry {
@@ -453,8 +453,8 @@
   max-inline-size: 1320px;
   inline-size: 100%;
   margin-inline: auto;
-  border-block-start: 1px solid var(--stage-line-soft);
-  color: var(--stage-cream-dim);
+  border-block-start: 1px solid var(--border-faint);
+  color: var(--text-muted);
   font-size: 0.6875rem;
 }
 .fo-telemetry-item { display: inline-flex; align-items: center; gap: var(--sp-2); }
@@ -489,17 +489,17 @@
   text-align: start;
   /* r193: micro voice on the void — an inherited theme ink read as dim
      gray mud in light theme. */
-  color: var(--stage-cream-dim);
+  color: var(--text-muted);
 }
-.fo-hero-corner { color: var(--stage-cream-dim); }
+.fo-hero-corner { color: var(--text-muted); }
 .fo-telemetry { margin-block-start: var(--sp-6); }
 .fo-telemetry-mark {
   inline-size: 7px;
   block-size: 7px;
-  background: var(--stage-accent);
+  background: var(--accent);
   flex: none;
 }
-.fo-telemetry-item .fo-mono { color: var(--stage-cream); }
+.fo-telemetry-item .fo-mono { color: var(--poster-ink); }
 .fo-telemetry-end { margin-inline-start: auto; }
 
 /* ════════════════════════════════════════════════════════════════════
@@ -547,7 +547,7 @@
   overflow: hidden;
   background:
     radial-gradient(70% 90% at 50% 115%,
-      color-mix(in srgb, var(--aura-accent) 22%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 22%, transparent) 0%,
       transparent 60%),
     var(--bg);
   border-block-start: 1px solid var(--rule);
@@ -705,21 +705,21 @@
    r193: the corner label + mission sentence moved into the flow row
    .fo-hero-instruments (see the hero-bottom block above) — these two
    rules keep only their VOICE (mono ink). Position is flow-owned. */
-.fo-hero-corner .fo-mono { color: var(--stage-accent); }
+.fo-hero-corner .fo-mono { color: var(--accent); }
 .fo-scroll-cue {
   position: absolute;
   inset-inline-start: 50%;
   translate: 50% 0;
   bottom: 14px;
   width: 26px; height: 40px;
-  border: 1px solid var(--stage-line);
+  border: 1px solid var(--border);
   border-radius: var(--r-full, 9999px);
   display: grid; place-items: start center;
   padding-top: 7px;
 }
 .fo-scroll-cue-dot {
   width: 4px; height: 4px;
-  background: var(--stage-cream);
+  background: var(--poster-ink);
   border-radius: 1px;
   animation: fo-cue-drop 2.4s var(--transition-smooth, cubic-bezier(.4,0,.2,1)) infinite;
 }
@@ -737,9 +737,9 @@
 .mg-stage {
   position: relative;
   background:
-    radial-gradient(120vw 90vh at 85% -10%, color-mix(in srgb, var(--stage-accent) 10%, transparent), transparent 60%),
-    linear-gradient(180deg, var(--stage-ink) 0%, var(--stage-ink-2) 100%);
-  color: var(--stage-cream);
+    radial-gradient(120vw 90vh at 85% -10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--poster-paper) 0%, var(--surface) 100%);
+  color: var(--poster-ink);
   overflow: clip;
 }
 .mg-stage[data-pinned='on'] { height: 700vh; }
@@ -782,7 +782,7 @@
   height: 104vh;
   min-width: 640px;
   min-height: 640px;
-  color: var(--stage-cream);
+  color: var(--poster-ink);
 }
 .mg-map-rotor { transform-origin: 450px 450px; }
 /* r192: -8° tilted every Arabic label as the stage scrolled — the
@@ -791,18 +791,18 @@
 .mg-stage[data-pinned='on'] .mg-map-rotor {
   transform: rotate(calc(var(--sp) * -4deg));
 }
-.mg-core-ring { fill: none; stroke: var(--stage-line); stroke-width: 1; }
-.mg-core-dot { fill: var(--stage-accent); }
+.mg-core-ring { fill: none; stroke: var(--border); stroke-width: 1; }
+.mg-core-dot { fill: var(--accent); }
 .mg-ring {
   fill: none;
   /* r192: stage-line-soft was invisible against the void — the
      reference's map reads as a PRESENT instrument from the first
      pinned frame, not an empty half-screen that fills in later. */
-  stroke: var(--stage-line);
+  stroke: var(--border);
   stroke-width: 1;
 }
 .mg-path {
-  stroke: var(--stage-accent);
+  stroke: var(--accent);
   stroke-width: 1.25;
   stroke-dasharray: 4 6;
   opacity: clamp(0, calc((var(--sp) - var(--p-in)) / 0.08), 1);
@@ -810,7 +810,7 @@
 /* r192: node MARKS are structural — present from the first pinned
    frame (0.5 floor), igniting to full on their scene. Labels keep
    the per-scene fade; the geometry never leaves the left half empty. */
-.mg-node-mark { fill: var(--stage-cream); }
+.mg-node-mark { fill: var(--poster-ink); }
 .mg-node-mark {
   opacity: calc(0.45 + 0.55 * clamp(0, calc((var(--sp) - var(--n-in)) / 0.06), 1));
   transition: opacity 0s;
@@ -823,15 +823,15 @@
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0;
-  fill: var(--stage-cream-dim);
-  stroke: var(--stage-ink);
+  fill: var(--text-muted);
+  stroke: var(--poster-paper);
   stroke-width: 3px;
   paint-order: stroke fill;
   stroke-linejoin: round;
   opacity: clamp(0, calc((var(--sp) - var(--n-in)) / 0.06), 1);
   transition: opacity 0s;
 }
-.mg-node:nth-of-type(even) .mg-node-mark { fill: var(--stage-accent); }
+.mg-node:nth-of-type(even) .mg-node-mark { fill: var(--accent); }
 
 /* persistent micro-labels inside the pinned frame */
 .mg-meta {
@@ -839,15 +839,15 @@
   top: 96px;
   inset-inline-start: max(24px, env(safe-area-inset-inline-start, 24px));
   margin: 0;
-  color: var(--stage-cream-dim);
+  color: var(--text-muted);
 }
-.mg-meta .fo-mono { color: var(--stage-accent); }
+.mg-meta .fo-mono { color: var(--accent); }
 .mg-scale-note {
   position: absolute;
   bottom: 18px;
   inset-inline-end: 24px;
   margin: 0;
-  color: var(--stage-cream-dim);
+  color: var(--text-muted);
   opacity: .8;
 }
 
@@ -887,7 +887,7 @@
 }
 .mg-frame-label {
   display: inline-block;
-  color: var(--stage-accent);
+  color: var(--accent);
   font-size: 12px;
   /* r193: letter-spacing removed — these labels are ARABIC words riding
      the mono voice, and tracking cuts the cursive joins. The mg-frame-title
@@ -903,18 +903,18 @@
   /* r192: 1.18 clipped Alexandria ascenders at 44px; 1.32 measured-safe. */
   line-height: 1.32;
   margin: 0 0 16px;
-  color: var(--stage-cream);
+  color: var(--poster-ink);
 }
 .mg-frame-title em {
   font-style: normal;
-  color: var(--stage-accent);
+  color: var(--accent);
 }
 .mg-frame-lede {
   font-size: 16px;
   line-height: 1.8;
   /* r191 acceptance: +15% toward cream over the dim token — the VLM
      pass flagged fast-scroll readability of body copy on the void. */
-  color: color-mix(in srgb, var(--stage-cream-dim) 85%, var(--stage-cream));
+  color: color-mix(in srgb, var(--text-muted) 85%, var(--poster-ink));
   margin: 0;
   max-width: 52ch;
 }
@@ -928,7 +928,7 @@
 .mg-frame-bullets li {
   padding-inline-start: 18px;
   position: relative;
-  color: var(--stage-cream);
+  color: var(--poster-ink);
   font-size: 15px;
   line-height: 1.6;
 }
@@ -938,7 +938,7 @@
   inset-inline-start: 0;
   top: 0.62em;
   width: 7px; height: 7px;
-  background: var(--stage-accent);
+  background: var(--accent);
 }
 
 /* comparison circles — «متفرّق» ring vs «متصلة» orb. r193: the ring's
@@ -956,7 +956,7 @@
 .mg-compare-a {
   inline-size: 120px;
   block-size: 120px;
-  border: 1px solid color-mix(in srgb, var(--stage-cream) 34%, transparent);
+  border: 1px solid color-mix(in srgb, var(--poster-ink) 34%, transparent);
   border-radius: 50%;
   display: grid;
   place-items: end center;
@@ -964,9 +964,9 @@
 .mg-compare-b {
   inline-size: 44px;
   block-size: 44px;
-  background: var(--stage-accent);
+  background: var(--accent);
   border-radius: 50%;
-  box-shadow: 0 0 42px color-mix(in srgb, var(--stage-accent) 50%, transparent);
+  box-shadow: 0 0 42px color-mix(in srgb, var(--accent) 50%, transparent);
   display: grid;
   place-items: center;
   align-self: center;
@@ -974,7 +974,7 @@
 .mg-compare-label {
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--stage-cream-dim);
+  color: var(--text-muted);
   white-space: nowrap;
   translate: 0 36px;
 }
@@ -1000,7 +1000,7 @@
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.05em;
-  color: var(--stage-cream-dim);
+  color: var(--text-muted);
   padding: 4px 2px;
   border-bottom: 1px solid transparent;
   /* motion ladder: the canonical --t-slow rung (380ms) — 450ms was an
@@ -1009,8 +1009,8 @@
 }
 .mg-cap .fo-mono { margin-inline-end: 6px; }
 .mg-cap[data-on='true'] {
-  color: var(--stage-cream);
-  border-bottom-color: var(--stage-accent);
+  color: var(--poster-ink);
+  border-bottom-color: var(--accent);
 }
 
 /* ── PD: المنظومة — product cards slider (cream body) ─────────────── */
@@ -1056,7 +1056,7 @@
   flex: 0 0 min(88vw, 560px);
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-radius: var(--r-3xl, 6px);
+  border-radius: var(--r-2xl);
   overflow: clip;
 }
 .pd-card-media { position: relative; margin: 0; height: 300px; }
@@ -1064,14 +1064,14 @@
   width: 100%; height: 100%;
   object-fit: cover;
   display: block;
-  background: var(--stage-ink-2);
+  background: var(--surface);
 }
 .pd-card-n {
   position: absolute;
   top: 14px;
   inset-inline-start: 16px;
-  color: var(--stage-cream);
-  background: color-mix(in srgb, var(--stage-ink) 55%, transparent);
+  color: var(--poster-ink);
+  background: color-mix(in srgb, var(--poster-paper) 55%, transparent);
   padding: 4px 10px;
   font-size: 12px;
   border-radius: var(--r-xs, 2px);
@@ -1136,10 +1136,10 @@
 /* ── PF: ما يعمل اليوم — pinned staggered stat march ───────────────── */
 .pf-stage {
   position: relative;
-  color: var(--stage-cream);
+  color: var(--poster-ink);
   background:
-    radial-gradient(90vw 70vh at 20% 15%, color-mix(in srgb, var(--stage-accent) 14%, transparent), transparent 55%),
-    linear-gradient(180deg, var(--stage-ink-2) 0%, var(--stage-ink) 100%);
+    radial-gradient(90vw 70vh at 20% 15%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 55%),
+    linear-gradient(180deg, var(--surface) 0%, var(--poster-paper) 100%);
   overflow: clip;
 }
 .pf-stage[data-pinned='on'] { height: 240vh; }
@@ -1161,10 +1161,10 @@
   margin: 14px 0 18px;
   /* r193: base h2 ink re-asserted for the fixed-void stage (light theme
      rendered this 72px title near-black on the void). */
-  color: var(--stage-cream);
+  color: var(--poster-ink);
 }
-.pf-title em { font-style: normal; color: var(--stage-accent); }
-.pf-lede { color: var(--stage-cream-dim); margin: 0; }
+.pf-title em { font-style: normal; color: var(--accent); }
+.pf-lede { color: var(--text-muted); margin: 0; }
 .pf-cards {
   list-style: none;
   margin: 0;
@@ -1181,9 +1181,9 @@
 .pf-stage[data-pinned='on'] .pf-cards { margin-top: 6vh; }
 .pf-card {
   position: relative;
-  border: 1px solid var(--stage-line);
-  background: color-mix(in srgb, var(--stage-ink-2) 35%, transparent);
-  border-radius: var(--r-3xl, 6px);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 35%, transparent);
+  border-radius: var(--r-2xl);
   overflow: clip;
   display: grid;
   grid-template-rows: auto auto;
@@ -1203,13 +1203,13 @@
   margin: 14px 18px 0;
   font-family: var(--font-mono);
 }
-.pf-card-n strong { font-size: 40px; font-weight: 600; color: var(--stage-cream); }
-.pf-card-unit { font-size: 15px; color: var(--stage-accent); }
+.pf-card-n strong { font-size: 40px; font-weight: 600; color: var(--poster-ink); }
+.pf-card-unit { font-size: 15px; color: var(--accent); }
 .pf-card-sub {
   margin: 6px 18px 18px;
   font-size: 13px;
   line-height: 1.7;
-  color: color-mix(in srgb, var(--stage-cream-dim) 88%, var(--stage-cream));
+  color: color-mix(in srgb, var(--text-muted) 88%, var(--poster-ink));
 }
 /* the march (r192): cards stagger IN and STAY — the r191 exit bands
    (0.34+0.21·ci) emptied the stage one card at a time and left the
@@ -1242,11 +1242,11 @@
 .rl-card {
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-radius: var(--r-3xl, 6px);
+  border-radius: var(--r-2xl);
   overflow: clip;
 }
 .rl-card-media { margin: 0; height: 190px; }
-.rl-card-media img { width: 100%; height: 100%; object-fit: cover; display: block; background: var(--stage-ink-2); }
+.rl-card-media img { width: 100%; height: 100%; object-fit: cover; display: block; background: var(--surface); }
 .rl-card-body { padding: 20px 22px 24px; }
 .rl-card-tag {
   display: inline-flex;
@@ -1274,8 +1274,8 @@
 /* ── VS: إلى أين — parallax vision stage ───────────────────────────── */
 .vs-section {
   position: relative;
-  background: var(--stage-ink);
-  color: var(--stage-cream);
+  background: var(--poster-paper);
+  color: var(--poster-ink);
   overflow: clip;
   padding: clamp(90px, 14vh, 160px) clamp(20px, 5vw, 64px) clamp(110px, 16vh, 180px);
 }
@@ -1301,8 +1301,8 @@
   max-width: 1160px;
   margin: 0 auto;
 }
-.vs-label { color: var(--stage-cream-dim); }
-.vs-label .fo-mono { color: var(--stage-accent); }
+.vs-label { color: var(--text-muted); }
+.vs-label .fo-mono { color: var(--accent); }
 .vs-wordmark {
   font-family: var(--font-display);
   font-weight: 700;
@@ -1313,7 +1313,7 @@
      never be tracked. */
   line-height: 1.2;
   margin: 18px 0 8px;
-  color: var(--stage-cream);
+  color: var(--poster-ink);
   opacity: clamp(0, (var(--sp) - 0.02) / 0.10, 1);
   translate: 0 calc((1 - clamp(0, (var(--sp) - 0.02) / 0.18, 1)) * 40px);
   letter-spacing: 0;
@@ -1333,12 +1333,12 @@
   line-height: 1.4;
   margin: 24px 0 12px;
   /* r193: same base-heading ink override — the vs stage is void-fixed. */
-  color: var(--stage-cream);
+  color: var(--poster-ink);
 }
-.vs-title em { font-style: normal; color: var(--stage-accent); }
+.vs-title em { font-style: normal; color: var(--accent); }
 .vs-lede {
   margin: 0 0 20px;
-  color: color-mix(in srgb, var(--stage-cream-dim) 85%, var(--stage-cream));
+  color: color-mix(in srgb, var(--text-muted) 85%, var(--poster-ink));
   font-size: 15px;
   line-height: 1.85;
 }
@@ -1348,7 +1348,7 @@
   padding: 0;
   display: grid;
   gap: 10px;
-  border-top: 1px solid var(--stage-line-soft);
+  border-top: 1px solid var(--border-faint);
   padding-top: 16px;
 }
 .vs-status li {
@@ -1362,20 +1362,20 @@
 .vs-status-k {
   font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--stage-cream);
+  color: var(--poster-ink);
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
-.vs-status li.is-live .vs-status-k { color: var(--stage-accent); }
-.vs-status-v { color: var(--stage-cream-dim); }
+.vs-status li.is-live .vs-status-k { color: var(--accent); }
+.vs-status-v { color: var(--text-muted); }
 
 /* ── QT: مبدأ مدارك — the quote card ───────────────────────────────── */
 .qt-section {
   background:
-    radial-gradient(80vw 60vh at 80% 110%, color-mix(in srgb, var(--stage-accent) 10%, transparent), transparent 60%),
-    linear-gradient(180deg, var(--stage-ink) 0%, var(--stage-ink-2) 100%);
-  color: var(--stage-cream);
+    radial-gradient(80vw 60vh at 80% 110%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--poster-paper) 0%, var(--surface) 100%);
+  color: var(--poster-ink);
   padding: clamp(80px, 12vh, 140px) clamp(20px, 5vw, 64px);
 }
 .qt-card {
@@ -1386,10 +1386,10 @@
   grid-template-columns: minmax(260px, 380px) 1fr;
   gap: clamp(24px, 4vw, 56px);
   align-items: center;
-  border: 1px solid var(--stage-line);
-  background: color-mix(in srgb, var(--stage-ink-2) 30%, transparent);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 30%, transparent);
   padding: clamp(24px, 4vw, 48px);
-  border-radius: var(--r-3xl, 6px);
+  border-radius: var(--r-2xl);
 }
 .qt-media img {
   width: 100%;
@@ -1410,12 +1410,12 @@
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.08em;
-  color: var(--stage-accent);
+  color: var(--accent);
 }
 .qt-corners { position: absolute; inset: 10px; pointer-events: none; }
 .qt-corner { position: absolute; inline-size: 14px; block-size: 14px; }
-.qt-c-tl { top: 0; inset-inline-start: 0; border-top: 1px solid var(--stage-accent); border-inline-start: 1px solid var(--stage-accent); }
-.qt-c-br { bottom: 0; inset-inline-end: 0; border-bottom: 1px solid var(--stage-accent); border-inline-end: 1px solid var(--stage-accent); }
+.qt-c-tl { top: 0; inset-inline-start: 0; border-top: 1px solid var(--accent); border-inline-start: 1px solid var(--accent); }
+.qt-c-br { bottom: 0; inset-inline-end: 0; border-bottom: 1px solid var(--accent); border-inline-end: 1px solid var(--accent); }
 
 /* ── footer giant wordmark — the closing rush ───────────────────────── */
 .fo-footer { position: relative; }
@@ -1430,7 +1430,7 @@
   line-height: 1.2;
   text-align: center;
   letter-spacing: 0;
-  color: var(--stage-cream);
+  color: var(--poster-ink);
   opacity: calc(clamp(0, (var(--sp) - 0.45) / 0.30, 1) * 0.16);
   translate: 0 calc((1 - clamp(0, (var(--sp) - 0.45) / 0.35, 1)) * 120px);
   margin-top: 40px;
@@ -1458,9 +1458,9 @@
   }
   .mg-frames { position: relative; z-index: 1; max-width: none; }
   .mg-frame {
-    background: color-mix(in srgb, var(--stage-ink) 55%, transparent);
-    border: 1px solid var(--stage-line-soft);
-    border-radius: var(--r-3xl, 6px);
+    background: color-mix(in srgb, var(--poster-paper) 55%, transparent);
+    border: 1px solid var(--border-faint);
+    border-radius: var(--r-2xl);
     margin-bottom: 16px;
   }
   .mg-frame-title { font-size: clamp(24px, 6.4vw, 32px); }

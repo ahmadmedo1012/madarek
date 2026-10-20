@@ -562,7 +562,7 @@ function DigitalRow({ component, label, value }: { component: string; label: Rea
     <tr>
       <td data-label="المكوّن"><span className="text-sm text-muted">{component}</span></td>
       <td data-label="المؤشّر">{label}</td>
-      <td className="admin-table-num font-mono" data-label="القيمة">{value.toLocaleString('ar-LY')}</td>
+      <td className="admin-table-num font-mono" data-label="القيمة">{formatNum(value)}</td>
     </tr>
   );
 }

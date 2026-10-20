@@ -8,6 +8,7 @@ import { Card, Badge } from '../../components/primitives';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useMoocs, type MoocCourse } from '../../hooks/useResources';
+import { formatNum } from '../../utils/numbers';
 
 const moocIcon = (cat: string): LucideIcon => {
   if (cat === 'prog') return Code;
@@ -80,7 +81,7 @@ function MoocCard({ m, index }: { m: MoocCourse; index: number }) {
         <div className="mooc-card-meta">
           <span><Icon icon={Clock} size={12} aria-hidden /> <bdi>{m.durationHours}س</bdi></span>
           <span><Icon icon={Star} size={12} strokeWidth={2.2} aria-hidden /> <bdi>{m.rating}</bdi></span>
-          <span><Icon icon={Users2} size={12} aria-hidden /> <bdi>{m.enrolled.toLocaleString('ar-LY')}</bdi></span>
+          <span><Icon icon={Users2} size={12} aria-hidden /> <bdi>{formatNum(m.enrolled)}</bdi></span>
         </div>
 
         <div className="flex items-center justify-between" style={{ marginTop: 'var(--sp-2)' }}>

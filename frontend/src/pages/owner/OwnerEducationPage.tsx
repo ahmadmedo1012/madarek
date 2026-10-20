@@ -14,6 +14,7 @@ import { ChartFrame } from '../../components/charts/ChartFrame';
 import { cartesianOptions, chartColors, valueLabels, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerEducation } from '../../hooks/useOwner';
 import { useReducedMotion } from '../../components/motion';
+import { formatNum } from '../../utils/numbers';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -22,16 +23,16 @@ function teachersCountLabel(n: number): string {
   if (n === 0) return 'لا أساتذة';
   if (n === 1) return 'أستاذ واحد';
   if (n === 2) return 'أستاذان';
-  if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} أساتذة`;
-  return `${n.toLocaleString('ar-LY')} أستاذاً`;
+  if (n >= 3 && n <= 10) return `${formatNum(n)} أساتذة`;
+  return `${formatNum(n)} أستاذاً`;
 }
 
 /** Proper Arabic counted plural for the faculty count (chart summary). */
 function facultiesCountLabel(n: number): string {
   if (n === 1) return 'كلية واحدة';
   if (n === 2) return 'كليتان';
-  if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} كليات`;
-  return `${n.toLocaleString('ar-LY')} كلية`;
+  if (n >= 3 && n <= 10) return `${formatNum(n)} كليات`;
+  return `${formatNum(n)} كلية`;
 }
 
 /** The StatStrip's shape-matched pending placeholder (R190 D4 — the
@@ -190,10 +191,10 @@ export function OwnerEducationPage() {
       <StatStrip
         ariaLabel="إحصائيات التعليم"
         cells={[
-          { label: 'إجمالي المقرّرات', value: totals.totalCourses.toLocaleString('ar-LY'), trend: 'مقرّرات مسجَّلة', trendTone: 'flat' },
-          { label: 'عدد الأساتذة', value: totals.teachers.toLocaleString('ar-LY'), trend: 'هيئة التدريس', trendTone: 'flat' },
-          { label: 'العروض النشطة', value: totals.totalOfferings.toLocaleString('ar-LY'), trend: 'شعب تدريس فاعلة', trendTone: 'flat' },
-          { label: 'متوسط التسجيل في العرض', value: totals.avgEnrolment.toLocaleString('ar-LY'), trend: 'طالب لكل شعبة', trendTone: 'flat' },
+          { label: 'إجمالي المقرّرات', value: formatNum(totals.totalCourses), trend: 'مقرّرات مسجَّلة', trendTone: 'flat' },
+          { label: 'عدد الأساتذة', value: formatNum(totals.teachers), trend: 'هيئة التدريس', trendTone: 'flat' },
+          { label: 'العروض النشطة', value: formatNum(totals.totalOfferings), trend: 'شعب تدريس فاعلة', trendTone: 'flat' },
+          { label: 'متوسط التسجيل في العرض', value: formatNum(totals.avgEnrolment), trend: 'طالب لكل شعبة', trendTone: 'flat' },
         ]}
       />
 
@@ -240,7 +241,7 @@ export function OwnerEducationPage() {
                     <td data-label="الرمز"><bdi className="owner-num" dir="ltr">{course.code}</bdi></td>
                     <td className="tbl-strong" data-label="اسم المقرّر">{course.name}</td>
                     <td data-label="الكلّيّة" className="owner-cell-muted">{course.facultyName}</td>
-                    <td className="owner-num" data-label="المسجَّلون">{course.enrolled.toLocaleString('ar-LY')}</td>
+                    <td className="owner-num" data-label="المسجَّلون">{formatNum(course.enrolled)}</td>
                   </tr>
                 ))}
               </tbody>

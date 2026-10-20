@@ -29,6 +29,7 @@ import '../../styles/training.css'; // .filter-pill family (D11 css split, 12-15
 // the same sheet AdminCoursesPage / AdminGovernancePages load when they
 // borrow the toolbar; owner's OwnerInstitutionDetailPage follows it too.
 import '../../styles/admin.css';
+import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Filler, Tooltip, Legend);
 
@@ -294,7 +295,7 @@ function CountIn({ value, suffix = '' }: { value: number; suffix?: string }) {
   const decimals = Number.isInteger(value) ? 0 : 1;
   return (
     <>
-      {display.toLocaleString('ar-LY', {
+      {formatNum(display, {
         minimumFractionDigits: decimals,
         maximumFractionDigits: decimals,
       })}
@@ -429,7 +430,7 @@ export function QualityDashboardPage() {
             الاعتماد المحلية والدولية.
           </p>
           <p className="page-header-meta">
-            {new Date().toLocaleDateString('ar-LY', { weekday: 'long', day: 'numeric', month: 'long' })} · قراءة لحظية للمؤشرات
+            {formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · قراءة لحظية للمؤشرات
           </p>
         </div>
         <Badge color="gold" icon={ShieldCheck}>وصول قراءة فقط</Badge>
@@ -469,7 +470,7 @@ export function QualityDashboardPage() {
           {
             label: 'بحوث مكتملة',
             value: `${Math.round(paperProgress)}%`,
-            trend: paperTotal > 0 ? `${(paperDone).toLocaleString('ar-LY')} من ${(paperTotal).toLocaleString('ar-LY')} بحثًا` : 'لا بحوث بعد',
+            trend: paperTotal > 0 ? `${formatNum(paperDone)} من ${formatNum(paperTotal)} بحثًا` : 'لا بحوث بعد',
             trendTone: 'flat',
           },
         ]}
@@ -1062,7 +1063,7 @@ export function QualityProfessorsPage() {
                     <td data-label="الالتزام">
                       <div className="q-compliance">
                         <ProgressBar value={t.compliance} showValue={false} ariaLabel={`التزام د. ${t.firstName} ${t.lastName}`} />
-                        <Badge color={compColor as never}>{t.compliance}%</Badge>
+                        <Badge color={compColor as never}>{formatPct1(t.compliance)}%</Badge>
                       </div>
                     </td>
                   </tr>

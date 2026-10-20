@@ -18,6 +18,7 @@ import { useStudentDashboard, useResume, useTrainingCatalog } from '../../hooks/
 import { EXAM_KIND_LABEL } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
+import { formatDate, formatTime } from '../../utils/numbers';
 
 /* ═══════════════════════════════════════════════════════════════════
    R189 «سجلّ مدارك» — the student dashboard speaks the ledger language
@@ -60,18 +61,18 @@ function formatDue(iso: string): string {
   const d = new Date(iso);
   const diff = d.getTime() - Date.now();
   const days = Math.round(diff / 86400000);
-  const time = d.toLocaleTimeString('ar-LY', { hour: '2-digit', minute: '2-digit' });
+  const time = formatTime(d, { hour: '2-digit', minute: '2-digit' });
   /* 22-c (A3 P3-2): a PAST-due assignment read «اليوم» (days <= 0) —
      "due today" for something due yesterday. Overdue gets its own
      label with the date; same-day (days === 0, incl. a passed hour)
      keeps «اليوم · الوقت». */
-  if (days < 0) return `فات الموعد · ${d.toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' })}`;
+  if (days < 0) return `فات الموعد · ${formatDate(d, { day: 'numeric', month: 'short' })}`;
   if (days === 0) return `اليوم · ${time}`;
   if (days === 1) return `غداً · ${time}`;
   // Arabic plural rules inside the ≤6-day window: dual, then plural.
   if (days === 2) return `بعد يومين · ${time}`;
   if (days < 7) return `بعد ${days} أيام · ${time}`;
-  return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
+  return formatDate(d, { dateStyle: 'medium' });
 }
 
 /* r158 (6A14 P2) — agenda chronology. The agenda used to concatenate
@@ -198,7 +199,7 @@ function CountIn({ value, suffix = '' }: { value: number; suffix?: string }) {
   const decimals = Number.isInteger(value) ? 0 : 1;
   return (
     <>
-      {display.toLocaleString('ar-LY', {
+      {formatNum(display, {
         minimumFractionDigits: decimals,
         maximumFractionDigits: decimals,
       })}
@@ -569,9 +570,9 @@ export default function StudentDashboardPage() {
   for (const it of later) {
     const dt = it.whenMs === Number.MAX_SAFE_INTEGER ? null : new Date(it.whenMs);
     const day = dt
-      ? dt.toLocaleDateString('ar-LY', { weekday: 'long' })
+      ? formatDate(dt, { weekday: 'long' })
       : 'موعد غير محدّد';
-    const date = dt ? dt.toLocaleDateString('ar-LY', { day: 'numeric', month: 'numeric' }) : '';
+    const date = dt ? formatDate(dt, { day: 'numeric', month: 'numeric' }) : '';
     const key = `${day}-${date}`;
     const last = weekGroups[weekGroups.length - 1];
     if (last && last.key === key) last.items.push(it);
@@ -579,7 +580,7 @@ export default function StudentDashboardPage() {
   }
 
   const now = new Date();
-  const dateLine = now.toLocaleDateString('ar-LY', { weekday: 'long', day: 'numeric', month: 'long' });
+  const dateLine = formatDate(now, { weekday: 'long', day: 'numeric', month: 'long' });
   const termPct = d.term.progressPct;
 
   return (
@@ -594,7 +595,7 @@ export default function StudentDashboardPage() {
             : 'لوحة متابعة تقدّمك الأكاديمي.'}
         </p>
         <p className="page-header-meta">
-          {dateLine} · {termPct}% من الفصل مضى · يبدأ {new Date(d.term.startsAt).toLocaleDateString('ar-LY', { day: '2-digit', month: '2-digit' })} وينتهي {new Date(d.term.endsAt).toLocaleDateString('ar-LY', { day: '2-digit', month: '2-digit' })}
+          {dateLine} · {termPct}% من الفصل مضى · يبدأ {formatDate(d.term.startsAt, { day: '2-digit', month: '2-digit' })} وينتهي {formatDate(d.term.endsAt, { day: '2-digit', month: '2-digit' })}
         </p>
       </header>
 
@@ -629,7 +630,7 @@ export default function StudentDashboardPage() {
         cells={[
           {
             label: 'المعدل التراكمي',
-            value: formatNum(d.profile.gpa, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+            value: formatNum(d.profile.gpa, { maximumFractionDigits: 2 }), /* r197 §7: no forced trailing zero («3.40» → «3.4») */
             trend: tone.label,
             trendTone: tone.trend,
           },

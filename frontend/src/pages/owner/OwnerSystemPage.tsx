@@ -12,6 +12,7 @@ import type { FeatureFlag } from '../../hooks/useOwner';
 import { SEVERITY_LABELS, SEVERITY_COLORS, CATEGORY_LABELS } from '../../lib/ownerLabels';
 import { formatDateTimeAr, formatRelativeArShort } from '../../lib/format';
 import { toast } from '../../lib/toast';
+import { formatNum } from '../../utils/numbers';
 
 /* 22-b (4-A7 P1-1): the severity/category label maps now live in
  * lib/ownerLabels.ts — the System page's operational-alert feed and the
@@ -48,8 +49,8 @@ function syncRunStatus(metadata: unknown): string | null {
 function failedSavesLabel(n: number): string {
   if (n === 1) return 'إعداد واحد';
   if (n === 2) return 'إعدادان';
-  if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} إعدادات`;
-  return `${n.toLocaleString('ar-LY')} إعداداً`;
+  if (n >= 3 && n <= 10) return `${formatNum(n)} إعدادات`;
+  return `${formatNum(n)} إعداداً`;
 }
 
 /* ── r164-i: upload-storage truthfulness ──────────────────────────
@@ -184,7 +185,7 @@ export function OwnerSystemPage() {
             النظام والتشغيل
             {sysData && sysData.alerts.openCount > 0 && (
               <span className="owner-badge-counter">
-                <bdi>{sysData.alerts.openCount.toLocaleString('ar-LY')}</bdi>
+                <bdi>{formatNum(sysData.alerts.openCount)}</bdi>
               </span>
             )}
           </h1>
@@ -210,13 +211,13 @@ export function OwnerSystemPage() {
           },
           {
             label: 'تنبيهات حرجة مفتوحة',
-            value: sysData ? sysData.alerts.criticalCount.toLocaleString('ar-LY') : unknownValue,
+            value: sysData ? formatNum(sysData.alerts.criticalCount) : unknownValue,
             trend: sysData ? (sysData.alerts.criticalCount > 0 ? 'تستوجب قرارًا' : 'لا شيء حرجًا') : 'بانتظار البيانات',
             trendTone: sysData ? (sysData.alerts.criticalCount > 0 ? 'down' : 'up') : 'flat',
           },
           {
             label: 'أحداث آخر 7 أيام',
-            value: sysData ? sysData.activity.recentEventsLast7Days.toLocaleString('ar-LY') : unknownValue,
+            value: sysData ? formatNum(sysData.activity.recentEventsLast7Days) : unknownValue,
             trend: 'سجلّ تشغيليّ',
             trendTone: 'flat',
           },

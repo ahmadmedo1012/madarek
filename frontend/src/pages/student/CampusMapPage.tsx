@@ -8,6 +8,7 @@ import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useFaculties, useCurrentInstitutionSlug } from '../../hooks/useResources';
+import { formatNum } from '../../utils/numbers';
 
 /**
  * Honest campus directory.
@@ -26,8 +27,8 @@ import { useFaculties, useCurrentInstitutionSlug } from '../../hooks/useResource
 function arCount(n: number, one: string, two: string, few: string, many: string): string {
   if (n === 1) return one;
   if (n === 2) return two;
-  if (n <= 10) return `${n.toLocaleString('ar-LY')} ${few}`;
-  return `${n.toLocaleString('ar-LY')} ${many}`;
+  if (n <= 10) return `${formatNum(n)} ${few}`;
+  return `${formatNum(n)} ${many}`;
 }
 
 export default function CampusMapPage() {
@@ -97,7 +98,7 @@ export default function CampusMapPage() {
               <span className="campus-city-track" aria-hidden>
                 <span className="campus-city-fill" style={{ inlineSize: '100%' }} />
               </span>
-              <span className="campus-city-count">{faculties.length.toLocaleString('ar-LY')}</span>
+              <span className="campus-city-count">{formatNum(faculties.length)}</span>
             </button>
             {cityStats.map((c, i) => (
               <button
@@ -115,7 +116,7 @@ export default function CampusMapPage() {
                     style={{ inlineSize: `${Math.max(8, Math.round((c.count / maxCount) * 100))}%` }}
                   />
                 </span>
-                <span className="campus-city-count">{c.count.toLocaleString('ar-LY')}</span>
+                <span className="campus-city-count">{formatNum(c.count)}</span>
               </button>
             ))}
           </div>

@@ -26,6 +26,7 @@ import type { OwnerInstitution } from '../../lib/api';
 // consumes — the same CSS AdminCoursesPage loads; the faculty cards
 // read the global components.css families (admin-faculty-*).
 import '../../styles/admin.css';
+import { formatNum } from '../../utils/numbers';
 
 /**
  * r181 (phase-8 owner setup) — the OWNER's institution detail &
@@ -486,25 +487,25 @@ export function OwnerInstitutionDetailPage() {
           cells={[
             {
               label: 'الأعضاء النشطون',
-              value: institution.activeMembershipCount.toLocaleString('ar-LY'),
+              value: formatNum(institution.activeMembershipCount),
               trend: 'عضويّات فاعلة',
               trendTone: 'flat',
             },
             {
               label: 'الكلّيّات',
-              value: faculties.length.toLocaleString('ar-LY'),
+              value: formatNum(faculties.length),
               trend: 'البنية الأكاديميّة',
               trendTone: 'flat',
             },
             {
               label: 'الأقسام',
-              value: totalDepartments.toLocaleString('ar-LY'),
+              value: formatNum(totalDepartments),
               trend: 'داخل الكلّيّات',
               trendTone: 'flat',
             },
             {
               label: 'المقرّرات',
-              value: (coursesMeta?.total ?? 0).toLocaleString('ar-LY'),
+              value: formatNum(coursesMeta?.total ?? 0),
               trend: coursesMeta ? 'خزينة المقرّرات' : 'بانتظار الإحصاء',
               trendTone: 'flat',
             },
@@ -649,7 +650,7 @@ export function OwnerInstitutionDetailPage() {
             {coursesMeta && coursesMeta.totalPages > 1 && (
               <div className="table-pagination">
                 <span>
-                  صفحة {coursesMeta.page.toLocaleString('ar-LY')} من {coursesMeta.totalPages.toLocaleString('ar-LY')} · {countAr(coursesMeta.total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}
+                  صفحة {formatNum(coursesMeta.page)} من {formatNum(coursesMeta.totalPages)} · {countAr(coursesMeta.total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}
                 </span>
                 <span className="table-row-actions">
                   {/* r183-B5 (A10 wave-A P2 — RTL directionality): «السابق»

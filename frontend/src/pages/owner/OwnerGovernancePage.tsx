@@ -22,6 +22,7 @@ import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '
 import { useOwnerGovernance, useOwnerLoginAnalytics } from '../../hooks/useOwner';
 import { countAr } from '../../lib/format';
 import { useReducedMotion } from '../../components/motion';
+import { formatNum } from '../../utils/numbers';
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, ArcElement, Filler, Title, Tooltip, Legend);
 
@@ -114,8 +115,8 @@ export function OwnerGovernancePage() {
    * ring's big center figure. */
   const doughnutData = useMemo(() => loginData ? {
     labels: [
-      `ناجحة · ${loginData.successCount.toLocaleString('ar-LY')}`,
-      `فاشلة · ${loginData.failureCount.toLocaleString('ar-LY')}`,
+      `ناجحة · ${formatNum(loginData.successCount)}`,
+      `فاشلة · ${formatNum(loginData.failureCount)}`,
     ],
     datasets: [
       {
@@ -133,7 +134,7 @@ export function OwnerGovernancePage() {
   const doughnutOptions = useMemo(() => radialOptions({
     legend: true,
     centerLabel: loginData
-      ? { value: loginData.total.toLocaleString('ar-LY'), label: 'إجمالي المحاولات' }
+      ? { value: formatNum(loginData.total), label: 'إجمالي المحاولات' }
       : undefined,
   }), [loginData, themeKey, reducedMotion]);
 
@@ -188,19 +189,19 @@ export function OwnerGovernancePage() {
           cells={[
             {
               label: 'تغييرات الصلاحيات',
-              value: govData.permissionChanges.toLocaleString('ar-LY'),
+              value: formatNum(govData.permissionChanges),
               trend: 'تجاوزات موثّقة في السجلّ',
               trendTone: 'flat',
             },
             {
               label: 'تغييرات الأدوار',
-              value: govData.roleChanges.toLocaleString('ar-LY'),
+              value: formatNum(govData.roleChanges),
               trend: 'تعيينات وتحويلات',
               trendTone: 'flat',
             },
             {
               label: 'مستخدمون جدد هذا الشهر',
-              value: govData.newUsersThisMonth.toLocaleString('ar-LY'),
+              value: formatNum(govData.newUsersThisMonth),
               trend: 'من باب التسجيل',
               trendTone: 'up',
             },
@@ -297,8 +298,8 @@ export function OwnerGovernancePage() {
                   {loginData.daily.map((d) => (
                     <tr key={d.date}>
                       <td data-label="التاريخ"><bdi className="owner-num" dir="ltr">{d.date}</bdi></td>
-                      <td className="owner-num owner-num-success" data-label="ناجحة">{d.success.toLocaleString('ar-LY')}</td>
-                      <td className="owner-num owner-num-warning" data-label="فاشلة">{d.failure.toLocaleString('ar-LY')}</td>
+                      <td className="owner-num owner-num-success" data-label="ناجحة">{formatNum(d.success)}</td>
+                      <td className="owner-num owner-num-warning" data-label="فاشلة">{formatNum(d.failure)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -322,7 +323,7 @@ export function OwnerGovernancePage() {
                 {loginData.topReasons.map((r) => (
                   <tr key={r.reason}>
                     <td data-label="السبب"><bdi>{r.reason}</bdi></td>
-                    <td className="owner-num" data-label="العدد">{r.count.toLocaleString('ar-LY')}</td>
+                    <td className="owner-num" data-label="العدد">{formatNum(r.count)}</td>
                   </tr>
                 ))}
               </tbody>

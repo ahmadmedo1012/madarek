@@ -46,6 +46,7 @@ import {
 import { ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, gradeBand, GRADE_BANDS } from '../../lib/courseMeta';
 import { validatePdfFile } from '../../lib/pdfUpload';
 import ResearchReviewPage from './ResearchReviewPage';
+import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
 
 /* The teacher dashboard now lives in TeacherDashboardPage.tsx
  * (social-media feed style). The previous KPI-grid version was
@@ -564,8 +565,8 @@ export function GradesPage() {
                     <tr key={s.studentId}>
                       <td className="tbl-strong" data-label="الطالب">{s.name}</td>
                       <td data-label="الرقم الجامعيّ"><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
-                      <td className="tbl-num" data-label="متوسّط الدرجات"><bdi>{s.avgGrade}%</bdi></td>
-                      <td className="tbl-num" data-label="الحضور">{s.attendancePct}%</td>
+                      <td className="tbl-num" data-label="متوسّط الدرجات"><bdi>{formatPct1(s.avgGrade)}%</bdi></td>
+                      <td className="tbl-num" data-label="الحضور">{formatPct1(s.attendancePct)}%</td>
                       <td data-label="التقدير"><Badge color={band.color}>{band.label}</Badge></td>
                     </tr>
                   );
@@ -1305,8 +1306,8 @@ export function MaterialsPage() {
                     <td data-label="المقرّر">{m.course.name}</td>
                     <td data-label="النوع"><Badge>{MATERIAL_TYPE_LABEL[m.type] ?? <bdi>{m.type}</bdi>}</Badge></td>
                     <td className="tbl-num" data-label="الحجم">{m.sizeBytes > 0 ? <bdi>{formatSize(m.sizeBytes)}</bdi> : '—'}</td>
-                    <td className="tbl-num" data-label="المشاهدات">{m.views.toLocaleString('ar-LY')}</td>
-                    <td className="tbl-num" data-label="التحميلات">{m.downloads.toLocaleString('ar-LY')}</td>
+                    <td className="tbl-num" data-label="المشاهدات">{formatNum(m.views)}</td>
+                    <td className="tbl-num" data-label="التحميلات">{formatNum(m.downloads)}</td>
                     <td className="text-subtle" data-label="التاريخ" title={formatDateTimeAr(m.createdAt)}>{formatRelativeArShort(m.createdAt)}</td>
                   </tr>
                 ))}
@@ -1441,8 +1442,8 @@ export function StudentsListPage() {
                         </Link>
                       </td>
                       <td data-label="الرقم الجامعيّ"><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
-                      <td className="tbl-num" data-label="الحضور">{s.attendancePct}%</td>
-                      <td className="tbl-num" data-label="المتوسّط"><bdi>{s.avgGrade}%</bdi></td>
+                      <td className="tbl-num" data-label="الحضور">{formatPct1(s.attendancePct)}%</td>
+                      <td className="tbl-num" data-label="المتوسّط"><bdi>{formatPct1(s.avgGrade)}%</bdi></td>
                       <td data-label="التقدير"><Badge color={band.color}>{band.label}</Badge></td>
                       <td data-label="المخاطرة">
                         <Badge color={STUDENT_RISK_TONE[s.riskLevel]}>{STUDENT_RISK_LABEL[s.riskLevel]}</Badge>
@@ -1568,7 +1569,7 @@ export function PerformancePage() {
             cells={[
               {
                 label: 'معدّل النجاح',
-                value: students.length > 0 ? `${passRate}%` : '—',
+                value: students.length > 0 ? `${formatPct1(passRate)}%` : '—',
                 trend: students.length > 0 ? `${passing} من ${students.length}` : 'لا توجد بيانات',
                 trendTone: students.length === 0 ? 'flat' : passRate >= 70 ? 'up' : passRate >= 50 ? 'flat' : 'down',
               },
@@ -1613,8 +1614,8 @@ export function PerformancePage() {
                       /* ReactNode label → the accessible name needs the
                          explicit ariaLabel (ProgressBar's string-label
                          fallback can't fire for markup). */
-                      ariaLabel={`حصة تقدير ${band.label} (${band.range}): ${pct}%`}
-                      label={<>{band.label} (<bdi>{band.range}</bdi>) · <bdi>{pct}%</bdi></>}
+                      ariaLabel={`حصة تقدير ${band.label} (${band.range}): ${formatPct1(pct)}%`}
+                      label={<>{band.label} (<bdi>{band.range}</bdi>) · <bdi>{formatPct1(pct)}%</bdi></>}
                       color={band.barColor}
                     />
                   </div>
@@ -1637,7 +1638,7 @@ function formatDue(iso: string): string {
   if (days === 0) return 'اليوم';
   if (days === 1) return 'غداً';
   if (days < 7) return `بعد ${countAr(days, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
-  return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
+  return formatDate(d, { dateStyle: 'medium' });
 }
 
 /* ─── r144: the teaching loop's authoring half ─────────────────────

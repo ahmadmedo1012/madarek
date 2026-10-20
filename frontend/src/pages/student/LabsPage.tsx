@@ -13,6 +13,7 @@ import { useReducedMotion } from '../../components/motion/useReducedMotion';
 import { useLabs, useMyLabSessions, useCompleteLabSession, type VirtualLab } from '../../hooks/useResources';
 import { courseTint } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
+import { formatNum } from '../../utils/numbers';
 
 interface LabExperiment {
   title: string;
@@ -162,7 +163,7 @@ export default function LabsPage() {
               <MetricCard
                 icon={Play}
                 label="جلسات نشطة"
-                value={labStats.data?.active.toLocaleString('ar-LY') ?? '—'}
+                value={labStats.data ? formatNum(labStats.data.active) : '—'}
                 /* 22-c (A4 P3-3): with zero lab sessions ever the change
                    line read «من أصل 0 جلسة» — dead copy. Only surface the
                    denominator once one exists. */
@@ -176,7 +177,7 @@ export default function LabsPage() {
               <MetricCard
                 icon={Award}
                 label="تجارب مكتملة"
-                value={labStats.data?.completed.toLocaleString('ar-LY') ?? '—'}
+                value={labStats.data ? formatNum(labStats.data.completed) : '—'}
                 color="gold"
               />
             </div>

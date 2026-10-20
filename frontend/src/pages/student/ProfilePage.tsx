@@ -17,6 +17,7 @@ import {
 } from '../../hooks/useChangePassword'; // r180-F4
 import { toast } from '../../lib/toast';
 import '../../styles/training.css'; // .achievement-* family (D11 css split, 12-15)
+import { formatNum } from '../../utils/numbers';
 
 type LinkKind = 'research-gate' | 'google-scholar' | 'orcid';
 
@@ -232,13 +233,13 @@ export default function ProfilePage() {
         <MetricCard
           icon={BookOpen}
           label="مقرّرات مسجَّلة"
-          value={enrollments.isPending ? '…' : enrollments.isError ? '—' : (enrollments.data?.length ?? 0).toLocaleString('ar-LY')}
+          value={enrollments.isPending ? '…' : enrollments.isError ? '—' : formatNum(enrollments.data?.length ?? 0)}
           color="brand"
         />
         <MetricCard
           icon={Trophy}
           label="إنجازات محققة"
-          value={achievements.isPending ? '…' : achievements.isError ? '—' : (achievements.data?.length ?? 0).toLocaleString('ar-LY')}
+          value={achievements.isPending ? '…' : achievements.isError ? '—' : formatNum(achievements.data?.length ?? 0)}
           color="gold"
         />
         <MetricCard
@@ -247,7 +248,7 @@ export default function ProfilePage() {
           value={
             research.isPending ? '…'
               : research.isError ? '—'
-                : (research.data?.filter((r) => r.status === 'PUBLISHED').length ?? 0).toLocaleString('ar-LY')
+                : formatNum(research.data?.filter((r) => r.status === 'PUBLISHED').length ?? 0)
           }
           color="purple"
         />

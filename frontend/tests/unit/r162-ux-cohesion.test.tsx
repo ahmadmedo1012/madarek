@@ -242,71 +242,25 @@ describe('r162 R2 — the landing warms the AuthPage chunk (PROD, idle)', () => 
 
 /* ═══ Part B — on-disk contracts (CSS + tokens + bootstrap) ════════ */
 
-/* ── r172a §1 — the --ln-* family resolves per theme in tokens.css ── */
+/* ── r197 §1 tombstone — the --ln-* Orbit Ink family is RETIRED ──── */
 
-describe('r172a §1 — --ln-* token theme-flip resolution (tokens.css)', () => {
+describe('r197 — the landing scene family is retired from tokens.css', () => {
   const tokens = read('src/styles/tokens.css');
   const live = stripComments(tokens);
 
-  it('the grounds alias the canonical var(--bg) in BOTH theme blocks', () => {
-    const defs = (live.match(/--ln-ink:\s*var\(--bg\)/g) ?? []).length;
-    expect(defs).toBe(2); // light block + dark block
-    // the fixed ink stage is gone from the family definition
-    expect(live).not.toMatch(/--ln-ink:\s*#252A3E/);
+  it('no --ln-* definitions remain (family deleted r197; BLUEPRINT §8 rebuilds the landing in stage 2)', () => {
+    expect(live).not.toMatch(/--ln-[\w-]+\s*:/);
   });
 
-  it('the frozen single :root color definitions are gone (the family moved into the theme blocks)', () => {
-    // the color half lived on plain :root pre-r172a; only the
-    // theme-independent half (grain/radius/type/motion) may remain
-    const rootBlock = live.slice(0, live.indexOf('[data-theme="dark"]'));
-    const head = rootBlock.slice(0, rootBlock.indexOf(':root,\n  [data-theme="light"]'));
-    for (const name of ['--ln-ink', '--ln-ink-2', '--ln-cream', '--ln-cream-dim',
-      '--ln-lime', '--ln-lime-deep', '--ln-violet', '--ln-violet-deep',
-      '--ln-line', '--ln-line-soft', '--ln-scene-line', '--ln-scene-soft']) {
-      expect(head).not.toMatch(new RegExp(`${name}\\s*:`));
-    }
-    // …and the theme-independent half is still there
-    expect(head).toMatch(/--ln-grain-op:\s*0\.075/);
-    expect(head).toMatch(/--ln-radius-pill:/);
+  it('no --stage-*/--aura-*/--glow-* definitions remain (the r195 stage/aura/glow register retired r197)', () => {
+    expect(live).not.toMatch(/--stage-[\w-]+\s*:/);
+    expect(live).not.toMatch(/--aura-[\w-]+\s*:/);
+    expect(live).not.toMatch(/--glow-[\w-]+\s*:/);
   });
 
-  it('light: cream = the ink family, dim = #5F5D57 (sand-safe), ink-2 = the sand step', () => {
-    const light = live.slice(0, live.indexOf('[data-theme="dark"]'));
-    expect(light).toMatch(/--ln-cream:\s*var\(--neutral-900\)/);
-    expect(light).toMatch(/--ln-cream-dim:\s*#5F5D57/);
-    expect(light).toMatch(/--ln-ink-2:\s*var\(--c-sand-bg\)/);
-  });
-
-  it('light: the lime pair collapses to the lime ink #55701D (pistachio is illegible on paper)', () => {
-    const light = live.slice(0, live.indexOf('[data-theme="dark"]'));
-    expect(light).toMatch(/--ln-lime:\s*#55701D/);
-    expect(light).toMatch(/--ln-lime-deep:\s*#55701D/);
-  });
-
-  it('light: hairlines alias the canonical --rule family + the scene pair doubles the ink alpha', () => {
-    const light = live.slice(0, live.indexOf('[data-theme="dark"]'));
-    expect(light).toMatch(/--ln-line:\s*var\(--rule\)/);
-    expect(light).toMatch(/--ln-line-soft:\s*var\(--border-faint\)/);
-    expect(light).toMatch(/--ln-scene-line:\s*rgba\(25,25,24,0\.28\)/);
-    expect(light).toMatch(/--ln-scene-soft:\s*rgba\(25,25,24,0\.14\)/);
-  });
-
-  it('dark: the authored night palette on the canonical night ground', () => {
-    const dark = live.slice(live.indexOf('[data-theme="dark"]'));
-    expect(dark).toMatch(/--ln-ink:\s*var\(--bg\)/);
-    expect(dark).toMatch(/--ln-ink-2:\s*var\(--neutral-100\)/);
-    expect(dark).toMatch(/--ln-cream:\s*#F5F3E7/);
-    expect(dark).toMatch(/--ln-cream-dim:\s*#C9C6B4/);
-    expect(dark).toMatch(/--ln-lime:\s*#DFEDB2/);
-    expect(dark).toMatch(/--ln-lime-deep:\s*#B9D778/);
-    expect(dark).toMatch(/--ln-violet:\s*#7A6BF2/);
-    expect(dark).toMatch(/--ln-scene-line:\s*rgba\(245,243,231,0\.14\)/);
-    expect(dark).toMatch(/--ln-scene-soft:\s*rgba\(245,243,231,0\.07\)/);
-  });
-
-  it('no #252A3E / #1C2032 anywhere in the token source — the ink stage is dead', () => {
-    // (comment-stripped: r172a tombstone prose legitimately quotes the
-    // retired hexes while documenting the re-grounding)
+  it('the r172a ink-stage hexes stay dead', () => {
+    // (comment-stripped: tombstone prose legitimately quotes the
+    // retired hexes while documenting the retirement)
     expect(live).not.toContain('#252A3E');
     expect(live).not.toContain('#1C2032');
   });

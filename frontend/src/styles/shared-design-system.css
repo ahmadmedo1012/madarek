@@ -7,11 +7,13 @@
    recipes (card / btn / badge / metric / stagger / reveal / skeleton).
 
    COLOR ALWAYS COMES FROM THE PARITY FILE — unified-parity.css
-   owns both theme blocks (r195 egn re-key: light white/gray +
-   peacock teal #027380, dark near-black gray + night teal #2FB6C6),
+   owns both theme blocks (r197 re-key: light warm paper #F3EEE4 +
+   ultramarine signal, dark warm night — see BLUEPRINT §4),
    the status/accent families, the elevation recipes and the glass
-   surfaces. Where the two files overlap (radius, motion, z values,
-   structural recipes) they are value-identical by contract; verify
+   surfaces. Where the two files overlap (motion, z values,
+   structural recipes) they are value-identical by contract; the
+   radius ladders are deliberately per-product (this skeleton ships
+   the softer fleet product scale). Verify
    with: node scripts/verify-parity-export.mjs
 
    Load order:  unified-parity.css         (color + motion + state source)

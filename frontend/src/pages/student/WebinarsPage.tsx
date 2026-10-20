@@ -7,6 +7,7 @@ import { Card, MetricCard, Badge } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useCampusEvents, useLiveSessions } from '../../hooks/useResources';
+import { formatDate, formatNum, formatTime } from '../../utils/numbers';
 
 /**
  * Honest webinars landing.
@@ -21,8 +22,8 @@ import { useCampusEvents, useLiveSessions } from '../../hooks/useResources';
 /** Human session slot: weekday + date + time (time isolated in a bdi). */
 function fmtSessionWhen(iso: string): ReactNode {
   const d = new Date(iso);
-  const date = d.toLocaleDateString('ar-LY', { weekday: 'long', day: 'numeric', month: 'short' });
-  const time = d.toLocaleTimeString('ar-LY', { hour: '2-digit', minute: '2-digit' });
+  const date = formatDate(d, { weekday: 'long', day: 'numeric', month: 'short' });
+  const time = formatTime(d, { hour: '2-digit', minute: '2-digit' });
   return <>{date} · <bdi>{time}</bdi></>;
 }
 
@@ -52,7 +53,7 @@ export default function WebinarsPage() {
         <MetricCard
           icon={Calendar}
           label="فعاليّات قادمة"
-          value={events.isPending ? '…' : events.isError ? '—' : (events.data?.length ?? 0).toLocaleString('ar-LY')}
+          value={events.isPending ? '…' : events.isError ? '—' : formatNum(events.data?.length ?? 0)}
           change={
             events.isError
               // Honest failure + a way out — never a masked zero (ruling #14).
@@ -64,7 +65,7 @@ export default function WebinarsPage() {
         <MetricCard
           icon={Mic2}
           label="بثوث مباشرة الآن"
-          value={live.isPending ? '…' : live.isError ? '—' : liveNow.length.toLocaleString('ar-LY')}
+          value={live.isPending ? '…' : live.isError ? '—' : formatNum(liveNow.length)}
           change={live.isError ? 'تعذّر التحميل' : 'مرتبطة بمقرّراتك'}
           color="red"
         />

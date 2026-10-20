@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { readMotionDurationMs } from './overlays/useDelayedUnmount';
 import { useReducedMotion } from './motion/useReducedMotion';
+import { formatNum } from '../utils/numbers';
 
 /**
  * CountUp — animates the numeric part of a marketing stat (e.g. "+50K", "#6",
@@ -16,25 +17,13 @@ import { useReducedMotion } from './motion/useReducedMotion';
  * across the 7 landing counters. Formatting uses one cached
  * Intl.NumberFormat instance per decimal count (`toLocaleString` is
  * specified as a NumberFormat call, so the output is byte-identical
- * while skipping the per-frame locale-object construction). The
+ * while skipping the per-frame locale-object construction — r197: it
+ * rides the shared cached formatNum pipeline, so the marketing stats
+ * render the platform's one numeral convention). The
  * animation writes mutate the text NODE React owns rather than
  * replacing it (textContent would orphan React's host instance and
  * break a later prop change).
  */
-const formatters = new Map<number, Intl.NumberFormat>();
-
-function formatterFor(decimals: number): Intl.NumberFormat {
-  let fmt = formatters.get(decimals);
-  if (!fmt) {
-    fmt = new Intl.NumberFormat('ar-LY', {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
-    });
-    formatters.set(decimals, fmt);
-  }
-  return fmt;
-}
-
 export function CountUp({ value, duration }: { value: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   // r157 (lead): the one-shot matchMedia check missed an OS-level RM toggle
@@ -63,7 +52,8 @@ export function CountUp({ value, duration }: { value: string; duration?: number 
     const decimals = numStr.includes('.') ? (numStr.split('.')[1]?.length ?? 0) : 0;
     if (Number.isNaN(target)) return;
 
-    const fmt = formatterFor(decimals);
+    const fmtFor = (n: number) =>
+      formatNum(n, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
     const write = (text: string) => {
       const node = el.firstChild;
       if (node && node.nodeType === Node.TEXT_NODE) {
@@ -84,7 +74,7 @@ export function CountUp({ value, duration }: { value: string; duration?: number 
         const p = Math.min((t - start) / ms, 1);
         const eased = 1 - Math.pow(1 - p, 3);
         // always settle on the real value
-        write(p < 1 ? `${prefix}${fmt.format(target * eased)}${suffix}` : value);
+        write(p < 1 ? `${prefix}${fmtFor(target * eased)}${suffix}` : value);
         if (p < 1) raf = requestAnimationFrame(tick);
       };
       raf = requestAnimationFrame(tick);

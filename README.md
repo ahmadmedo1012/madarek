@@ -26,7 +26,7 @@
 | البند | الحالة |
 |---|---|
 | ميزات الأدوار الخمسة | **منفَّذة ومشحَنة** — 1970 اختبار واجهة + 1783 خلفية خضراء + 116 اختبار تكامل قاعدة بيانات + 28 رحلة e2e (جولات r141–r191) |
-| نظام التصميم | موثّق في [`DESIGN.md`](DESIGN.md) — بوابة تكافؤ 163/163 خضراء |
+| نظام التصميم | موثّق في [`DESIGN.md`](DESIGN.md) — بوابة تكافؤ 190/190 خضراء |
 | مساعد «Oasis» الذكي | **محرّك محلي حتمي معلن (gap-aware-composer) افتراضيًا + مزوّد LLM حقيقي اختياري** عبر `AI_PROVIDER` — التفصيل: [docs/02](docs/02-features.md) |
 | فحص الانتحال | **محاكاة حتمية معلنة** (بلا خدمات خارجية) — التفصيل: [docs/02](docs/02-features.md) |
 | رفع PDF ورحلات E2E | **منفَّذة** — رفع PDF خام خلف تجريد التخزين (محلي/S3/**postgres لوضع الطيار r175**) + 28 رحلة متصفّح محكمّة؛ i18n الإنجليزي وحده غير منفَّذ — [docs/02](docs/02-features.md) و[docs/11](docs/11-testing.md) و[docs/16](docs/16-decisions-and-limitations.md) |
@@ -126,7 +126,7 @@ npm run dev:web                    # الواجهة :5173 (proxy ‏/api → :40
 npm run lint                         # ESLint — 0 أخطاء إلزامية
 npm run typecheck                    # tsc — src + tests، الجهتان (بلا DB)
 npm test                             # 1975 واجهة + 1775 خلفية (بلا DB؛ يشمل 7 اختبارات S3 حيّة ضد s3rver) — و npm run test:integration يضيف 116 اختبار تكامل على قاعدة محلية معزولة (منها 14 عابرة للمؤسستين لعزل r179 و 2 لأمان إعادة تشغيل البذرة r182)
-node scripts/verify-parity-export.mjs  # بوابة التكافؤ 163/163
+node scripts/verify-parity-export.mjs  # بوابة التكافؤ 190/190
 bash scripts/check-icons.sh            # انضباط Lucide
 bash scripts/check-motion-tokens.sh    # رموز الحركة
 bash scripts/check-csp-hash.sh         # بصمات CSP

@@ -7,6 +7,7 @@ import { Icon } from '../../components/Icon';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { apiErrorMessage } from '../../hooks/useResources';
 import { useOwnerStats, useOwnerUsers, useChangeUserRole, useToggleUserStatus } from '../../hooks/useOwner';
+import { formatDate, formatNum } from '../../utils/numbers';
 
 /**
  * Owner user management — the accounts directory.
@@ -95,8 +96,8 @@ function usersCountLabel(n: number): string {
   if (n === 0) return 'لا مستخدمين';
   if (n === 1) return 'مستخدم واحد';
   if (n === 2) return 'مستخدمان';
-  if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} مستخدمين`;
-  return `${n.toLocaleString('ar-LY')} مستخدماً`;
+  if (n >= 3 && n <= 10) return `${formatNum(n)} مستخدمين`;
+  return `${formatNum(n)} مستخدماً`;
 }
 
 /** A pending mutation targets at most one row — only that row waits. */
@@ -266,7 +267,7 @@ export function OwnerUsersPage() {
   const mutationBusy = changeRole.isPending || toggleStatus.isPending;
 
   const kpiValue = (n: number) =>
-    stats.isPending ? '…' : statData ? n.toLocaleString('ar-LY') : '—';
+    stats.isPending ? '…' : statData ? formatNum(n) : '—';
 
   return (
     <div className="page">
@@ -429,14 +430,14 @@ export function OwnerUsersPage() {
                         <Badge color={user.isActive ? 'green' : 'red'}>{user.isActive ? 'نشط' : 'معطّل'}</Badge>
                       </td>
                       <td data-label="تاريخ الانضمام">
-                        <span className="owner-joined" title={joined.toLocaleDateString('ar-LY', { dateStyle: 'full' })}>
+                        <span className="owner-joined" title={formatDate(joined, { dateStyle: 'full' })}>
                           {isRecent && (
                             <>
                               <span className="owner-health-dot green" aria-hidden />
                               <span className="visually-hidden">انضم خلال الأسبوع الماضي — </span>
                             </>
                           )}
-                          {joined.toLocaleDateString('ar-LY', { dateStyle: 'medium' })}
+                          {formatDate(joined, { dateStyle: 'medium' })}
                         </span>
                       </td>
                       <td data-label="إجراءات">

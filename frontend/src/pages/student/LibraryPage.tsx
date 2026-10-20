@@ -20,6 +20,7 @@ import {
 import { courseTint } from '../../lib/courseMeta';
 import { countAr, formatPct, apiErrorMessage, formatDateAr } from '../../lib/format';
 import { toast } from '../../lib/toast';
+import { formatDate, formatNum } from '../../utils/numbers';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'all', label: 'الكل', icon: LibraryIcon },
@@ -430,21 +431,21 @@ export default function LibraryPage() {
             <MetricCard
               icon={LibraryIcon}
               label={booksFiltered ? 'نتائج البحث' : 'كتب الفئة الحاليّة'}
-              value={books.isPending ? <Skeleton width={48} height={24} /> : (totalBooks !== null ? totalBooks.toLocaleString('ar-LY') : '—')}
+              value={books.isPending ? <Skeleton width={48} height={24} /> : (totalBooks !== null ? formatNum(totalBooks) : '—')}
               change={debouncedQ ? `بحث: ${debouncedQ}` : cat === 'all' ? 'الكلّ' : categoryLabel(cat)}
               color="brand"
             />
             <MetricCard
               icon={BookOpen}
               label="استعارات نشطة"
-              value={loans.isPending ? <Skeleton width={48} height={24} /> : activeLoans.length.toLocaleString('ar-LY')}
+              value={loans.isPending ? <Skeleton width={48} height={24} /> : formatNum(activeLoans.length)}
               change={loans.data ? `من أصل ${countAr(loans.data.length, ['استعارة واحدة', 'استعارتين', 'استعارات', 'استعارة'])}` : '—'}
               color={activeLoans.length === 0 ? 'brand' : 'green'}
             />
             <MetricCard
               icon={Clock}
               label="تنتهي قريباً"
-              value={loans.isPending ? <Skeleton width={48} height={24} /> : dueSoon.toLocaleString('ar-LY')}
+              value={loans.isPending ? <Skeleton width={48} height={24} /> : formatNum(dueSoon)}
               change={dueSoon > 0 ? 'خلال 3 أيام' : 'لا توجد إنذارات'}
               color={dueSoon > 0 ? 'amber' : 'green'}
             />
@@ -755,7 +756,7 @@ export default function LibraryPage() {
                         {p.publishedAt && (
                           <>
                             <span>•</span>
-                            <span className="font-mono"><bdi>{new Date(p.publishedAt).toLocaleDateString('ar-LY', { year: 'numeric', month: 'short', day: 'numeric' })}</bdi></span>
+                            <span className="font-mono"><bdi>{formatDate(p.publishedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</bdi></span>
                           </>
                         )}
                       </div>

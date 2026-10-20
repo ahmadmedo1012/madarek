@@ -34,6 +34,7 @@ import { useAuthStore, type AcademicPosition } from '../../stores/auth.store';
 // AdminExtra/AdminGovernance dropped their imports), so it lands in the
 // chunk-shared CSS.
 import '../../styles/colleges.css';
+import { formatDate } from '../../utils/numbers';
 
 interface CollegeListItem {
   id: string;
@@ -134,7 +135,7 @@ const POSITION_LABEL: Record<AcademicPosition, string> = {
 function countedGroupedAr(n: number, one: string, two: string, few: string, many: string): string {
   if (n === 1) return one;
   if (n === 2) return two;
-  return `${n.toLocaleString('ar-LY')} ${n <= 10 ? few : many}`;
+  return `${formatNum(n)} ${n <= 10 ? few : many}`;
 }
 
 /* formatDateTime (ar-LY medium date + short time) is
@@ -150,7 +151,7 @@ function formatRelative(iso: string): string {
   if (days === 1) return 'غداً';
   if (days === -1) return 'أمس';
   if (days > 1 && days < 7) return `بعد ${countAr(days, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
-  return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
+  return formatDate(d, { dateStyle: 'medium' });
 }
 
 /* ── Document titles (A12 P2-6 / P3-6) ─────────────────────────────
@@ -511,7 +512,7 @@ function CollegeStatChip({
   // genuine number including 0. Principle III — we never invent counts.
   const display = value === null || value === undefined
     ? '—'
-    : value.toLocaleString('ar-LY');
+    : formatNum(value);
   return (
     <span className="college-stat-chip">
       <Icon icon={icon} size={13} />
@@ -774,7 +775,7 @@ export function CollegeDetailPage() {
                   </div>
                   <div className="student-rank-xp">
                     <Icon icon={Award} size={12} />
-                    <strong>{s.totalXp.toLocaleString('ar-LY')}</strong>
+                    <strong>{formatNum(s.totalXp)}</strong>
                   </div>
                 </li>
               ))}
@@ -969,12 +970,12 @@ interface LeaderboardData {
 }
 
 const METRICS = [
-  { key: 'totalXp' as const, label: 'إجمالي نقاط الخبرة', icon: Award, format: (n: number) => n.toLocaleString('ar-LY') },
-  { key: 'avgGpa' as const, label: 'المعدّل العام', icon: BarChart3, format: (n: number) => formatNum(n, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) },
-  { key: 'publishedPapers' as const, label: 'الأبحاث المنشورة', icon: Microscope, format: (n: number) => n.toLocaleString('ar-LY') },
-  { key: 'examAttempts' as const, label: 'محاولات الاختبارات', icon: ClipboardCheck, format: (n: number) => n.toLocaleString('ar-LY') },
-  { key: 'labSessions' as const, label: 'جلسات المعامل', icon: FlaskConical, format: (n: number) => n.toLocaleString('ar-LY') },
-  { key: 'completedEnrollments' as const, label: 'تسجيلات مكتملة', icon: GraduationCap, format: (n: number) => n.toLocaleString('ar-LY') },
+  { key: 'totalXp' as const, label: 'إجمالي نقاط الخبرة', icon: Award, format: (n: number) => formatNum(n) },
+  { key: 'avgGpa' as const, label: 'المعدّل العام', icon: BarChart3, format: (n: number) => formatNum(n, { maximumFractionDigits: 2 }) /* r197 §7: no forced trailing zero */ },
+  { key: 'publishedPapers' as const, label: 'الأبحاث المنشورة', icon: Microscope, format: (n: number) => formatNum(n) },
+  { key: 'examAttempts' as const, label: 'محاولات الاختبارات', icon: ClipboardCheck, format: (n: number) => formatNum(n) },
+  { key: 'labSessions' as const, label: 'جلسات المعامل', icon: FlaskConical, format: (n: number) => formatNum(n) },
+  { key: 'completedEnrollments' as const, label: 'تسجيلات مكتملة', icon: GraduationCap, format: (n: number) => formatNum(n) },
 ];
 
 type MetricKey = (typeof METRICS)[number]['key'];

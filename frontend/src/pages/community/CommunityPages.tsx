@@ -37,6 +37,7 @@ import { arUnit } from '../../lib/format';
 import { StudyRoomsPanel, PostsFeedPanel, CreateStudyRoomModal } from '../../components/community/CommunitySocialPanels';
 import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
 import '../../styles/colleges.css'; // borrowed .comp-modal-*/.comp-form-*/.event-meta (D14 css split, 13-17)
+import { formatNum } from '../../utils/numbers';
 
 const SCOPE_LABEL: Record<string, string> = {
   PLATFORM: 'كل المنصة', FACULTY: 'كلّيّة', DEPARTMENT: 'قسم', OFFERING: 'مقرر',
@@ -100,9 +101,9 @@ export default function CommunityPage() {
   /* KPI values — honest query states (pending → ellipsis, error → dash,
      never a fabricated 0) + Arabic-Indic numerals like the rest of the
      KPI surfaces (audit 0-f P2-29). */
-  const annCount = ann.isPending ? '…' : ann.isError ? '—' : (ann.data?.length ?? 0).toLocaleString('ar-LY');
-  const compsCount = comps.isPending ? '…' : comps.isError ? '—' : openComps.toLocaleString('ar-LY');
-  const eventsCount = events.isPending ? '…' : events.isError ? '—' : upcomingEvents.toLocaleString('ar-LY');
+  const annCount = ann.isPending ? '…' : ann.isError ? '—' : formatNum(ann.data?.length ?? 0);
+  const compsCount = comps.isPending ? '…' : comps.isError ? '—' : formatNum(openComps);
+  const eventsCount = events.isPending ? '…' : events.isError ? '—' : formatNum(upcomingEvents);
 
   /* RTL tablist: ArrowLeft advances (toward inline-end), ArrowRight goes
      back — mirrors the shared Tabs primitive's keyboard contract. */

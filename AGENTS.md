@@ -6,7 +6,7 @@
 
 ## 1. ما هذا المشروع؟
 
-**مدارك** — منصّة تعليم ذكي **مستقلّة** (عربية-أولًا، صُنعت في ليبيا): تطبيق
+**مدارك** — منصّة تعليم ذكي **مستقلّة** (عربية-أولًا، بلا انتماء مؤسسي): تطبيق
 واحد يضم خلفية Express + TypeScript + Prisma وواجهة React 18 + Vite، يُشحَن
 كخدمة واحدة على Render مع قاعدة بيانات Neon PostgreSQL. عربية RTL بالكامل.
 نظام التصميم موثق بالكامل في `DESIGN.md` ومقيّد ببوابات تحقق آلية.
@@ -59,7 +59,7 @@ npm run build -w frontend    # بناء الواجهة فقط (لا يحتاج D
 npm run build -w backend     # بناء الخلفية فقط (prisma generate + tsc)
 npm run db:migrate           # prisma migrate dev محليًا — يحتاج DATABASE_URL حية
 npm run db:seed              # بذر البيانات التجريبية — يحتاج DATABASE_URL حية
-node scripts/verify-parity-export.mjs   # بوابة التكافؤ 163/163 (بلا اعتماديات؛ 168 قبل اجتياح r148-d)
+node scripts/verify-parity-export.mjs   # بوابة التكافؤ 190/190 (بلا اعتماديات؛ 165 بعد إعادة بناء r196، 190 بعد re-key r197)
 bash scripts/check-icons.sh             # انضباط الأيقونات (Lucide فقط)
 bash scripts/check-motion-tokens.sh     # منع قيم الحركة الخام
 bash scripts/check-csp-hash.sh          # مطابقة بصمات CSP بعد أي تعديل على frontend/index.html
