@@ -556,6 +556,11 @@
   position: relative;
   height: 260px;
   padding: var(--sp-3);
+  /* r294 (polish v8 fold): rectangular cartesian charts clip their
+     glow into an embedded well (circular doughnuts opt out — their
+     container must never take a rectangular clip). */
+  border-radius: var(--r-md);
+  overflow: hidden;
 }
 
 /* ── Health indicator ──────────────────────────────────────── */

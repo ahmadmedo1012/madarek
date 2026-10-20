@@ -69,6 +69,32 @@
   }
   .card.compact { padding: var(--sp-5); }
   .card.flush   { padding: 0; overflow: clip; }
+  /* r294 (polish v8 fold): cursor-follow spotlight — a quiet radial
+     wash fades in on hover over every non-flush card. The centre is
+     static (JS-free: no --cx/--cy tracking — the heavier pointer
+     glow stays landing-scoped). paint-order stays local. */
+  .card:not(.flush) {
+    position: relative;
+    isolation: isolate;
+  }
+  .card:not(.flush)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(
+        320px circle at var(--cx, 50%) var(--cy, 50%),
+        color-mix(in srgb, var(--accent) 5%, transparent),
+        transparent 70%
+      );
+    opacity: 0;
+    transition: opacity var(--motion-duration-medium) var(--ease-out);
+    pointer-events: none;
+    z-index: 0; /* paint-order baseline — local, not a --z-* layer */
+  }
+  .card:not(.flush):hover::before { opacity: 1; }
+  .card > * { position: relative; z-index: 1; }
   .card.bordered { border-color: var(--rule); }
   .card.glass {
     background: var(--glass-bg);
@@ -137,7 +163,7 @@
     gap: var(--sp-2);
     min-inline-size: 0;
   }
-  .card-title-icon { inline-size: 16px; block-size: 16px; color: var(--accent); flex-shrink: 0; }
+  .card-title-icon { inline-size: 16px; block-size: 16px; color: color-mix(in srgb, var(--accent) 70%, var(--text-muted)); flex-shrink: 0; } /* r294 (polish v8 fold): the accent-tinted 70/30 mix was the rendered truth over raw --accent */
   /* Premium-polish (semantic card headings): when Card renders its title
      as a real <h2>/<h3> (heading prop), the browser's default heading
      font-size/margin would break the row — reset them so the semantic
@@ -187,9 +213,12 @@
     justify-content: space-between;
     gap: var(--sp-4);
     overflow: clip;
+    /* r294 (polish v8+v13 fold): the OVERRIDES-layer v13 trio was
+       the rendered truth (it beat the v8 pages-layer copy, which beat
+       this base) — consolidated here, both polish copies deleted. */
     transition: border-color var(--t-base) var(--ease),
                 box-shadow var(--t-base) var(--ease),
-                transform var(--t-base) var(--ease);
+                transform var(--t-base) var(--ease-out);
     min-block-size: 132px;
     /* 012-design-graphics-uplift T056 — elevation language picks up
        the dark-mode top-edge highlight automatically (the --elev-1
@@ -201,9 +230,34 @@
      النطاق الآن على الصنف الدلالي metric-link الذي يرسمه MetricCard
      عند وجود to/onClick فقط. */
   .metric.metric-link:hover {
-    border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-premium-h);
-    transform: translateY(-2px);
+    /* r294 (polish v8 fold): the TOUCH path — v8's un-gated pages-layer
+       hover (sticky-hover devices) that the v13 overrides copy never
+       matched. Off-token by design: accent-tinted hover glow. */
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--accent) 32%, var(--rule));
+    box-shadow:
+      0 1px 2px color-mix(in srgb, var(--black) 3%, transparent),
+      0 4px 16px -4px color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+  @media (hover: hover) {
+    /* r294 (polish v13 fold): the POINTER path — the overrides-layer
+       hover that beat v8's on precise pointers; single owner now. */
+    .metric.metric-link:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--accent) 40%, var(--rule));
+      /* Off-token by design: accent glow layered on the card shadow token. */
+      box-shadow:
+        0 8px 24px -8px color-mix(in srgb, var(--accent) 20%, transparent),
+        var(--shadow-card-h);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .metric { transition: none; }
+    .metric.metric-link:hover { transform: none; }
+  }
+  /* r294 (polish v8 fold): reduce vertical noise on small screens. */
+  @media (max-width: 640px) {
+    .metric { padding: var(--sp-3) var(--sp-4); }
   }
 
   .metric-head { display: flex; flex-direction: column; gap: var(--sp-2); flex: 1; min-inline-size: 0; }
@@ -400,7 +454,12 @@
     --_btn-shadow: var(--elev-1);
     position: relative;
     overflow: hidden;
-    box-shadow: var(--shadow-card-premium);
+    /* r294 (polish v8 fold): chrome bevel (hairline + inner top
+       light), not elevation — the polish pages-layer trio was the
+       rendered truth. Off-token by design. */
+    box-shadow:
+      0 1px 0 color-mix(in srgb, var(--black) 5%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--white) 6%, transparent);
     /* r149 (R3-A3 §4): حُذف إعلان transition من هنا — كان ميتًا في
        الترتيب الطبقي (طبقة overrides في polish v15 تملك transition
        الخاص بـ.btn وتتقدم طبقة components مهما علت الخصوصية)، فعلّق
@@ -413,7 +472,19 @@
      layer's .btn.primary:hover:not(:disabled) gates complete the pair
      on the overrides layer; this is the components-layer half. */
   .btn.primary:hover:not(:disabled) {
-    box-shadow: var(--shadow-card-premium-h);
+    /* r294 (polish v15 fold): the OVERRIDES-layer hover was the
+       rendered truth (beat v8's pages-layer glow) — consolidated
+       here, the polish copy deleted. Off-token by design: strong
+       accent glow + contact layer, not elevation. (r157 gate:
+       no glow on disabled primary buttons.) */
+    box-shadow:
+      0 6px 16px -6px color-mix(in srgb, var(--accent) 55%, transparent),
+      0 2px 4px color-mix(in srgb, var(--black) 6%, transparent);
+  }
+  .btn.primary:active:not(:disabled) {
+    /* inset pressed well — interaction state, not elevation
+       (r294 polish v8 fold). */
+    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--black) 10%, transparent);
   }
   /* N1 (r133-F7): the primary −2px lift rides the same 5-C1 hover-capable
      gate as the −1px above — ungated (this rule originally sat at equal
@@ -675,8 +746,43 @@
     background: var(--surface);
     border: 1px solid var(--rule);
     cursor: pointer;
-    transition: var(--t-clean);
     white-space: nowrap;
+  }
+  /* r294 (polish v6+v8+v13+v15 fold): the pill interaction truth —
+     the v15 overrides-layer transition beat every earlier copy; the
+     v13 4-prop group owned .tab; v6's press-snap duration tweak
+     survives inside the :active states. All polish copies deleted. */
+  .pill {
+    transition:
+      background var(--motion-duration-short) var(--ease),
+      color var(--motion-duration-short) var(--ease),
+      border-color var(--motion-duration-short) var(--ease),
+      transform var(--motion-duration-short) var(--ease),
+      box-shadow var(--motion-duration-medium) var(--ease);
+  }
+  .pill.on {
+    /* soft accent selection halo — interaction state, not elevation */
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+  }
+  .pill:hover { transform: translateY(var(--hover-lift)); }
+  .pill:active:not(:disabled) { transform: scale(var(--press-scale)); }
+  .pill:active:not(.on) {
+    /* v6 press-snap: the press hop rides the micro duration */
+    transition-duration: var(--motion-duration-micro);
+  }
+  .tab {
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
+  }
+  .tab.on {
+    /* soft accent selection halo — interaction state, not elevation */
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  .tab:active {
+    transform: scale(0.96);
   }
   .pill:hover { color: var(--text); border-color: var(--border-strong); background: var(--surface-2); }
   .pill.on {
@@ -986,8 +1092,11 @@
   .form-label {
     display: block;
     font-size: var(--type-label-size-sm);
-    color: var(--text-secondary);
+    /* r294 (polish v8 fold): --text ink + ls-normal were the polish
+       pages-layer rendered truth over the older secondary tint. */
+    color: var(--text);
     font-weight: var(--fw-semibold);
+    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
     /* 6px is a deliberate half-step between --sp-1/--sp-2: the tuned
        label→control rhythm every non-auth form in the app carries
        (auth.css neutralizes it locally where the field gap owns the
@@ -999,6 +1108,69 @@
        are Arabic and the joins must stay untracked. (The wave 9-a
        section at the end of this file re-asserts this with !important
        because polish.css's pages-layer block still sets -0.005em.) */
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  CHECKBOXES + RADIOS — branded, accessible, RTL-aware          ║
+     ║  (r294 polish v8 fold: the whole family lived only in the     ║
+     ║  polish bundle — sole definition, clean move)                 ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  input[type="checkbox"],
+  input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    inline-size: 18px;
+    block-size: 18px;
+    margin: 0;
+    padding: 0;
+    background: var(--surface);
+    border: 1.5px solid var(--rule-strong, var(--rule));
+    cursor: pointer;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--t-clean);
+    position: relative;
+  }
+  input[type="checkbox"] { border-radius: var(--r-xs); }
+  input[type="radio"]    { border-radius: 50%; }
+
+  input[type="checkbox"]:hover,
+  input[type="radio"]:hover {
+    border-color: var(--accent);
+  }
+
+  input[type="checkbox"]:checked,
+  input[type="radio"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* Checkmark — drawn with a clip-path triangle (no SVG, no font) */
+  input[type="checkbox"]:checked::after {
+    content: "";
+    inline-size: 10px;
+    block-size: 6px;
+    border: solid var(--accent-fg, white);
+    border-width: 0 0 2px 2px;
+    transform: rotate(-45deg) translate(1px, -1px);
+    margin-block-start: calc(-1 * var(--sp-0-5));
+  }
+
+  /* Radio dot */
+  input[type="radio"]:checked::after {
+    content: "";
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: 50%;
+    background: var(--accent-fg, white);
+  }
+
+  input[type="checkbox"]:disabled,
+  input[type="radio"]:disabled {
+    opacity: var(--state-input-disabled-opacity);
+    cursor: not-allowed;
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1217,6 +1389,9 @@
     margin-block-end: var(--sp-4);
     display: flex; align-items: center; gap: var(--sp-3);
     position: relative;
+    /* r294 (polish v8 fold): the 3px accent stripe reads the
+       hierarchy at a glance alongside the ::after underline. */
+    padding-inline-start: var(--sp-3);
   }
   .section-title::after {
     content: '';
@@ -1233,6 +1408,23 @@
     inset-inline-start: auto;
     inset-inline-end: 0;
     background: linear-gradient(-90deg, var(--accent), transparent);
+  }
+  /* r294 (polish v8 fold): the ::before accent stripe — the
+     inline-start edge marker for section headings. */
+  .section-title::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 4px;
+    inset-block-end: 4px;
+    inline-size: 3px;
+    background: var(--accent);
+    /* r184 (A3 §F8 twin): logical corners — the inline-END pair faces
+     * the content in both directions (physical `0 2px 2px 0` rounded
+     * the sidebar-edge side under RTL); LTR is pixel-identical. */
+    border-start-end-radius: 2px; /* radius-gate: allow — section-title 3px stripe micro (r184 F8 twin, logical) */
+    border-end-end-radius: 2px; /* radius-gate: allow — section-title 3px stripe micro (r184 F8 twin, logical) */
+    opacity: 0.7;
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1641,8 +1833,10 @@
 
   .spinner {
     inline-size: 22px; block-size: 22px;
-    border: 2px solid var(--rule);
-    border-block-start-color: var(--neutral-900);
+    /* r294 (polish v8 fold): the soft text-tint track + accent leading
+       edge were the rendered truth (the polish copy beat this base). */
+    border: 2px solid color-mix(in srgb, var(--text) 8%, transparent);
+    border-block-start-color: var(--accent);
     border-radius: 50%;
     animation: madarek-spin var(--motion-duration-stat) var(--ease-linear) infinite;
   }
@@ -1659,6 +1853,16 @@
     display: flex; align-items: center; justify-content: center;
     background: var(--bg);
     z-index: var(--z-modal);
+    /* r294 (polish v8 fold): the calmer ambient pulse while auth
+       resolves — decorative, so it dies under reduced motion. */
+    animation: polish-hydration-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
+  }
+  @keyframes polish-hydration-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.6; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hydration-splash { animation: none; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -4984,7 +5188,15 @@
     background: var(--accent);
     border-radius: 0;   /* raw-css: permitted zero */
   }
-  .page-header-meta { color: var(--text-muted); }
+  /* r294 (polish v8 fold): the full meta line — sans at the 13px
+     Arabic floor (r284 retired mono per the r197 voice contract),
+     muted ink, one --sp-1 of air under the title block. */
+  .page-header-meta {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    margin: 0;
+    margin-block-start: var(--sp-1);
+  }
 
   /* ── 5 · Void buttons — the ghost that illuminates ────────────── */
   [data-theme="dark"] .btn { --_btn-shadow: none; }

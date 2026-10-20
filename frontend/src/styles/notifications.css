@@ -294,6 +294,20 @@
   color: var(--role-accent, var(--accent));
 }
 
+/* r294 (polish v8 fold): icon scale-up on activate — the single
+   bottom-nav moment; dies under reduced motion. */
+.bottom-nav-item.active .bottom-nav-icon {
+  animation: polish-bottomnav-pop var(--motion-duration-page) var(--ease-out);
+}
+@keyframes polish-bottomnav-pop {
+  0%   { transform: scale(0.92); }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav-item.active .bottom-nav-icon { animation: none; }
+}
+
 .bottom-nav-icon {
   display: inline-flex;
   align-items: center;

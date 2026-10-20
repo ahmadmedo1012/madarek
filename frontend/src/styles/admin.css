@@ -134,17 +134,27 @@
   box-shadow: var(--state-input-focus-halo);
 }
 .admin-students-search input {
-  /* 13-17 (D14 dedupe): border/background/height/outline deleted —
-     polish.css's pages-layer bare-input reset (height: auto, padding: 0)
-     is the approved final for this wrapper-as-pill surface and no longer
-     depends on this file loading first. Colleges keeps only what polish
-     does not set: flow, family, size and ink.
+  /* r294 (polish v8 fold): the bare-input reset comes home — the
+     wrapper is the pill (border/bg/halo on .admin-students-search),
+     so the input itself is bare. Colleges keeps flow, family, size
+     and ink.
      21-c (A10 P1 cross-ref): 13px → 16px — iOS Safari zooms the
      viewport on any <16px input focus. */
   flex: 1 1 auto;
   font-family: inherit;
   font-size: 16px; /* type-gate: allow — iOS-zoom floor (Safari zooms <16px inputs on focus; fix 21-c) */
   color: var(--text);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  height: auto;
+  padding: 0;
+}
+.admin-students-search input:focus {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 .admin-students-input {
   height: 36px;

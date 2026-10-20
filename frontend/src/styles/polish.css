@@ -289,11 +289,11 @@
      dark), so the accent read survives via the indicator. */
   .tab[aria-selected="true"] { color: var(--accent-ink); font-weight: var(--fw-semibold); }
 
-  /* ── Pill active state: subtle press ────────────────────────── */
-  .pill:active:not(.on) {
-    transform: scale(0.985);
-    transition-duration: var(--motion-duration-micro);
-  }
+  /* ── Pill active state: subtle press ────────────────────────────
+     r294: consolidated into components.css (the pill interaction
+     truth: v15 press-scale transform + this v6 micro press-snap
+     duration; the dead scale(0.985) — beaten by the overrides-layer
+     press-scale — is not carried over). */
 
   /* ── Table row hover: interactive rows ──────────────────────── */
   /* (Wave 9-b dead-selector sweep: the tr[data-clickable] hover rule
@@ -349,26 +349,11 @@
      Collapsible sidebar — desktop icon-rail mode
      ═══════════════════════════════════════════════════════════════ */
 
-  /* Toggle button next to the brand */
-  .sidebar-collapse-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    border-radius: var(--r-sm);
-    background: transparent;
-    border: 1px solid var(--rule);
-    color: var(--text-muted);
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: var(--t-clean);
-  }
-  .sidebar-collapse-btn:hover {
-    background: var(--surface-2);
-    color: var(--text);
-    border-color: var(--border-strong, var(--rule));
-  }
+  /* Toggle button next to the brand — r294: the v6 structural half
+     and the v8 refinement half are MERGED into layout.css
+     (.sidebar-collapse-btn, single definition: 28px surface pill,
+     accent hover). The collapsed-rail display:none below stays here
+     with the rest of the collapsed-rail system. */
   /* (Wave 1-a focus consolidation: outline suppression + weak halo deleted;
      border-color cue re-homed in v22, ring supplied by the v22 system.) */
 
@@ -478,485 +463,52 @@
    zero-consumer deletions recorded in situ before r294). */
 
 /* ═══════════════════════════════════════════════════════════════════
-   ▶ Section: polish-v8.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
-   MADAREK — Visual Polish v8 (cohesion + premium feel)
-   ─────────────────────────────────────────────────────────────────────
-   Loaded LAST. Adds:
-   - Cursor-follow highlight on every Card across the app
-   - Premium tabular numbers everywhere a metric lives
-   - Refined sidebar collapse button (anchored, not floating in brand)
-   - Smooth scrollbar styling for the sidebar
-   - Better section-title hierarchy with an accent stripe
-   - Subtle topbar gradient that ties into the collapsed-sidebar edge
-   ═════════════════════════════════════════════════════════════════════ */
-
-@layer pages {
-
-  /* ── Cursor-follow highlight on EVERY card ───────────────────
-     The landing-page bento cards already do this. Bringing it to
-     every .card across the app — with a much softer radius — gives
-     dashboards a quiet, alive quality without being noisy. */
-  .card:not(.flush) {
-    position: relative;
-    isolation: isolate;
-  }
-  .card:not(.flush)::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background:
-      radial-gradient(
-        320px circle at var(--cx, 50%) var(--cy, 50%),
-        color-mix(in srgb, var(--accent) 5%, transparent),
-        transparent 70%
-      );
-    opacity: 0;
-    transition: opacity var(--motion-duration-medium) var(--ease-out);
-    pointer-events: none;
-    z-index: 0; /* paint-order baseline — local, not a --z-* layer */
-  }
-  .card:not(.flush):hover::before { opacity: 1; }
-  .card > * { position: relative; z-index: 1; }
-
-  /* JS-free cursor tracking — relies on cursor entering each card.
-     We can't update --cx/--cy from pure CSS, but the radial centred
-     at hover-spot would need JS. For accessibility + simplicity
-     we keep the highlight centred and just fade it in. The heavier
-     pointer-tracking glow stays opt-in via .landing-feature-card. */
-
-  /* ── Tabular numerals on metrics + KPIs ────────────────────────
-     CSS-only typographic upgrade — numbers align across rows,
-     animations don't shift the baseline. */
-  
-
-  /* ── Better metric card depth ─────────────────────────────────
-     The KPI strip is the most-seen part of every dashboard. Add a
-     micro-shadow + crisper hover lift so it reads as the primary
-     "currently happening" surface. */
-  .metric {
-    transition:
-      transform var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease),
-      box-shadow var(--t-fast) var(--ease);
-  }
-  .metric.metric-link:hover { /* r148 (AUDIT-2 H1): نطاق التفاعل على القابل للنقر فقط */
-    transform: translateY(-1px);
-    border-color: color-mix(in srgb, var(--accent) 32%, var(--rule));
-    /* Off-token by design: accent-tinted hover glow, weaker + softer than
-       --elev-2 (single ambient layer at 16px blur). */
-    box-shadow:
-      0 1px 2px color-mix(in srgb, var(--black) 3%, transparent),
-      0 4px 16px -4px color-mix(in srgb, var(--accent) 8%, transparent);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .metric { transition: none; }
-    .metric.metric-link:hover { transform: none; }
-  }
-
-  /* ── Sidebar collapse button — refined ───────────────────────
-     Move from "extra child of brand" to its own pill button anchored
-     at the top-left of the sidebar with consistent positioning across
-     expanded/collapsed states. */
-  .sidebar-collapse-btn {
-    width: 28px;
-    height: 28px;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    /* hairline depth cue — not an elevation step */
-    box-shadow: 0 1px 0 color-mix(in srgb, var(--black) 2%, transparent);
-  }
-  .sidebar-collapse-btn:hover {
-    background: var(--surface-2);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-  .sidebar.collapsed .sidebar-collapse-btn {
-    /* When collapsed, the button is the only visible chrome in the
-       brand row — make it the clear interaction target. */
-    margin-inline-start: 0;
-    margin-inline-end: 0;
-  }
-
-  /* Subtle scrollbar inside the sidebar — the global page already has
-     one; the sidebar's internal scroll deserves the same restraint. */
-  .sidebar::-webkit-scrollbar { width: 4px; }
-  .sidebar::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--text) 8%, transparent);
-    border-radius: var(--r-full);
-  }
-  .sidebar::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--text) 18%, transparent);
-  }
-  .sidebar::-webkit-scrollbar-track { background: transparent; }
-  .sidebar { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--text) 8%, transparent) transparent; }
-
-  /* ── Topbar — soft gradient continuity with collapsed sidebar ──
-     When the sidebar is reduced to an icon rail, the topbar's left
-     edge gets a faint gradient tint so the collapsed rail visually
-     "belongs" to the topbar's chrome rather than floating alone. */
-  /* (Wave 1-a invalid-CSS fix: `linear-gradient(to inline-end, …)` is not
-     valid syntax — `to inline-end|inline-start` are not gradient keywords,
-     so both the light and dark tints were silently dropped by every
-     browser. Additionally this pages-layer block could never win over
-     polish v9's overrides-layer solid topbar background. The valid,
-     RTL-correct tint now lives in v22 — see audits/0-a-foundation.md P0-4.) */
-
-  /* ── Section title — accent stripe option ────────────────────
-     A small, optional visual upgrade for "section-title" headings:
-     a 3-px gold/accent stripe on the inline-start edge so the
-     hierarchy reads at a glance. Opt-in via [data-accent]. */
-  .section-title {
-    position: relative;
-    padding-inline-start: var(--sp-3);
-  }
-  .section-title::before {
-    content: "";
-    position: absolute;
-    inset-inline-start: 0;
-    inset-block-start: 4px;
-    inset-block-end: 4px;
-    width: 3px;
-    background: var(--accent);
-    /* r184 (A3 §F8 twin): logical corners — the inline-END pair faces
-     * the content in both directions (physical `0 2px 2px 0` rounded
-     * the sidebar-edge side under RTL); LTR is pixel-identical. */
-    border-start-end-radius: 2px; /* radius-gate: allow — section-title 3px stripe micro (r184 F8 twin, logical) */
-    border-end-end-radius: 2px; /* radius-gate: allow — section-title 3px stripe micro (r184 F8 twin, logical) */
-    opacity: 0.7;
-  }
-
-  /* ── Page-header rhythm refinement ──────────────────────────── */
-  /* R189 «سجلّ مدارك» masthead — r288 (anatomy fold): the 2px ink
-     rule + its breathing block RETIRED. It painted only on un-migrated
-     legacy pages while every contract page (pf-page-header, r210
-     FROZEN) opens as a clean column — two header languages across
-     sibling routes. The geometry + typography of the whole .page
-     family now lives in base.css at patterns parity (see r288 fold
-     note there); .page-header-meta below stays — it has two live
-     hand-rolled consumers (Quality · Admin) until their file folds. */
-  .page-header-meta {
-    /* r284: mono retired per the r197 voice contract (mono = IDs/code
-       only); the meta line is in-page sans at the 13px Arabic floor. */
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    margin: 0;
-    margin-block-start: var(--sp-1);
-  }
-  /* (r153f: the v8 welcome-card hairline exemption moved home to
-     student.css §WELCOME-CARD — the family's only consumer is the
-     student dashboard. Every rule below was the measured rendered
-     truth before the move; probe r153w1 pins it byte-identical.)
-     r288: the .page-title / .page-subtitle blocks + the hover nicety
-     folded into base.css (patterns parity) — deleted here. */
-
-  /* ── Card title icon — subtle accent tint ──────────────────── */
-  .card-title-icon {
-    color: color-mix(in srgb, var(--accent) 70%, var(--text-muted));
-    /* (r151e: bang retired — this pages-layer rule already beats the
-       components-layer base by layer order; the !important fought a
-       precedence war that never existed.) */
-  }
-
-  /* ── Loading spinner — cleaner */
-  .spinner {
-    border-width: 2px;
-    border-color: color-mix(in srgb, var(--text) 8%, transparent);
-    border-block-start-color: var(--accent);
-  }
-
-  /* (Wave 1-a focus consolidation: the academic-gold --focus-ring group
-     deleted (32%-alpha halo ≈1.5:1 on cream — WCAG fail). Every selector
-     here is an anchor/button and is covered by the single AA-safe ring
-     re-asserted in v22.) */
-
-  /* ── Button-press feedback — subtle, single tone ─────────────── */
-  .btn.primary {
-    /* Off-token by design: chrome bevel (hairline + inner top light),
-       not elevation. */
-    box-shadow:
-      0 1px 0 color-mix(in srgb, var(--black) 5%, transparent),
-      inset 0 1px 0 color-mix(in srgb, var(--white) 6%, transparent);
-  }
-  .btn.primary:hover:not(:disabled) {
-    /* Off-token by design: accent glow + bevel, not elevation. */
-    box-shadow:
-      0 2px 6px -1px color-mix(in srgb, var(--accent) 35%, transparent),
-      inset 0 1px 0 color-mix(in srgb, var(--white) 8%, transparent);
-  }
-  .btn.primary:active:not(:disabled) {
-    /* inset pressed well — interaction state, not elevation */
-    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--black) 10%, transparent);
-  }
-
-  /* (r152f: the v8 .state padding-block + .state-icon breathe moved
-     home to components.css §STATE — one family, one sheet, one layer.) */
-
-  /* ── Mobile — reduce vertical noise on small screens ────────── */
-  @media (max-width: 640px) {
-    /* r288: .page-header mobile padding/margin deleted — the header
-       geometry folds home to base.css at patterns parity (no rule, no
-       per-band breathing). */
-    .metric { padding: var(--sp-3) var(--sp-4); }
-  }
-
-  /* ── Print (rare but cheap) ─────────────────────────────────── */
-  /* 012-design-graphics-uplift T154 — print honours the contract:
-     force the Light theme palette regardless of the live runtime
-     theme, drop every glass + backdrop-filter, freeze every
-     decorative motion, hide chrome that doesn't belong on paper. */
-  /* (Wave 1-a print consolidation: this print block merged with the v20
-     one into a single student-document-aware block in v22 — light-lock for
-     dark-theme users, link href expansion, table-header repetition, break
-     rules. See audits/0-a-foundation.md P0-7 + P1-10.) */
-
-  /* ═══════════════════════════════════════════════════════════════
-     Welcome card — student dashboard greeting hero (premium)
-     ═══════════════════════════════════════════════════════════════ */
-  /* (r153f grave: the whole v8 family — premium surface, hover lift,
-     ::after dots, dark variant, hero title gradient — moved home to
-     student.css §WELCOME-CARD, consolidated with v9/v11/v13/v17/v22
-     into one owning rule-set. The v8 ::after dot grid itself was a
-     zombie since v13 restyled the same pseudo; the dots that render
-     are v22's ::before, which moved too. The v13 "breathing radial"
-     ::after is deleted, not moved: it painted NOTHING (over-constrained
-     geometry + RTL inset drop placed it entirely outside the card,
-     clipped by overflow:hidden — a 9s infinite loop animating an
-     invisible box). */
-
-  /* ═══════════════════════════════════════════════════════════════
-     Topbar polish — title weight + subtle scroll shadow refinement
-     ═══════════════════════════════════════════════════════════════ */
-  .topbar-title {
-    font-weight: var(--fw-semibold);
-    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
-  }
-  .topbar-scope {
-    /* Smaller, calmer chip than the title */
-    font-size: var(--fs-xxs);
-    font-weight: var(--fw-medium);
-    color: var(--text-muted);
-    background: var(--surface-2);
-    border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--rule));
-    border-radius: var(--r-full);
-    padding: 3px var(--sp-2-5); /* spacing-gate: allow — topbar scope chip micro grade 3/10 vertical hairline */
-    margin-inline-start: var(--sp-2);
-    white-space: nowrap;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     Dropdown menus — refined edge + shadow
-     ═══════════════════════════════════════════════════════════════ */
-  /* (WS-D2 orphan sweep: the .topbar-user-menu / .notification-dropdown
-     edge+shadow group was dead — primitives own those surfaces now.) */
-
-  /* ═══════════════════════════════════════════════════════════════
-     Form labels — subtle weight bump for hierarchy
-     ═══════════════════════════════════════════════════════════════ */
-  .form-label,
-  label.form-label,
-  .auth-field label {
-    font-weight: var(--fw-semibold);
-    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
-    color: var(--text);
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     Pill — tactile press feedback
-     ═══════════════════════════════════════════════════════════════ */
-  .pill {
-    transition:
-      background var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease),
-      transform var(--motion-duration-micro) var(--ease);
-  }
-  /* (Premium-polish: the pill sink deleted — pills join the button
-     scale register via --press-scale at the :active rule below.) */
-
-  /* ═══════════════════════════════════════════════════════════════
-     Bottom-nav — scale-up icon on activate
-     ═══════════════════════════════════════════════════════════════ */
-  .bottom-nav-item.active .bottom-nav-icon {
-    animation: polish-bottomnav-pop var(--motion-duration-page) var(--ease-out);
-  }
-  @keyframes polish-bottomnav-pop {
-    0%   { transform: scale(0.92); }
-    60%  { transform: scale(1.08); }
-    100% { transform: scale(1); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .bottom-nav-item.active .bottom-nav-icon { animation: none; }
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     Checkboxes + radios — branded, accessible, RTL-aware
-     ═══════════════════════════════════════════════════════════════ */
-  input[type="checkbox"],
-  input[type="radio"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    margin: 0;
-    padding: 0;
-    background: var(--surface);
-    border: 1.5px solid var(--rule-strong, var(--rule));
-    cursor: pointer;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--t-clean);
-    position: relative;
-  }
-  input[type="checkbox"] { border-radius: var(--r-xs); }
-  input[type="radio"]    { border-radius: 50%; }
-
-  input[type="checkbox"]:hover,
-  input[type="radio"]:hover {
-    border-color: var(--accent);
-  }
-
-  input[type="checkbox"]:checked,
-  input[type="radio"]:checked {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-
-  /* Checkmark — drawn with a clip-path triangle (no SVG, no font) */
-  input[type="checkbox"]:checked::after {
-    content: "";
-    width: 10px;
-    height: 6px;
-    border: solid var(--accent-fg, white);
-    border-width: 0 0 2px 2px;
-    transform: rotate(-45deg) translate(1px, -1px);
-    margin-block-start: calc(-1 * var(--sp-0-5));
-  }
-
-  /* Radio dot */
-  input[type="radio"]:checked::after {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent-fg, white);
-  }
-
-  /* (Wave 1-a focus consolidation: checkbox/radio outline suppression +
-     weak halo deleted — inputs take the single AA-safe ring from v22.) */
-
-  input[type="checkbox"]:disabled,
-  input[type="radio"]:disabled {
-    opacity: var(--state-input-disabled-opacity);
-    cursor: not-allowed;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     Global scrollbar — thin, branded, calm
-     The page-wide scrollbar uses browser defaults right now. Tinting
-     it to match the design system makes the platform feel cohesive
-     without screaming for attention.
-     ═══════════════════════════════════════════════════════════════ */
-  /* (Wave 1-a scrollbar consolidation: this block lost to the v11
-     overrides-layer one, and neither consumed the --scrollbar-thumb
-     tokens. One token-consuming definition now lives in v22, with the
-     sidebar's thinner rail re-landed on top. See 0-a P1-2.) */
-
-  /* ═══════════════════════════════════════════════════════════════
-     Hydration splash — calmer fade-out when auth loads
-     ═══════════════════════════════════════════════════════════════ */
-  .hydration-splash {
-    animation: polish-hydration-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
-  }
-  @keyframes polish-hydration-pulse {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0.6; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .hydration-splash { animation: none; }
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     Chart canvas — drop a soft outer glow so charts feel embedded
-     rather than pasted in
-     (r174: .dash-doughnut dropped — a CIRCULAR chart's well must not
-     take a rectangular 10px clip; the owner containers keep it for
-     their rectangular cartesian charts.)
-     ═══════════════════════════════════════════════════════════════ */
-  .owner-chart-container {
-    border-radius: var(--r-md);
-    overflow: hidden;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     Search input pattern — unify .topbar-search style across pages
-     ═══════════════════════════════════════════════════════════════ */
-  /* wave 2-b — .topbar-search / .global-search dropped from this
-     reset: the input itself is the pill now (components.css Inputs
-     section + the .topbar-search overlay chrome in layout.css), and
-     this pages-layer strip was killing it (audit 0-c P0-1). Only
-     .admin-students-search keeps the bare-input reset — colleges.css
-     owns that wrapper-as-pill surface. */
-  .admin-students-search input {
-    background: transparent;
-    border: 0;
-    outline: 0;
-    box-shadow: none;
-    height: auto;
-    padding: 0;
-  }
-  .admin-students-search input:focus {
-    background: transparent;
-    border: 0;
-    box-shadow: none;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     Sidebar — mobile drawer close button + sticky brand
-     ═══════════════════════════════════════════════════════════════ */
-  .sidebar-mobile-close {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border: 0;
-    background: var(--surface-2);
-    color: var(--text);
-    border-radius: var(--r-md);
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: var(--t-clean);
-    -webkit-tap-highlight-color: transparent;
-  }
-  .sidebar-mobile-close:hover { background: var(--surface-3); }
-  /* (Wave 1-a focus consolidation: outline suppression + weak halo deleted;
-     the close button takes the single AA-safe ring from v22.) */
-
-  @media (max-width: 920px) {
-    /* X button visible only in the mobile drawer */
-    .sidebar-mobile-close { display: inline-flex; }
-    /* No collapse rail on mobile — only open vs closed. (r151e: bang
-       retired — this rule already beats the earlier v6 base by source
-       order within the same pages layer.) */
-    .sidebar-collapse-btn { display: none; }
-    /* Brand row becomes a sticky drawer header */
-    .sidebar-brand {
-      position: sticky;
-      inset-block-start: 0;
-      background: var(--sidebar-bg);
-      z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
-      padding-block: var(--sp-3);
-      border-block-end: 1px solid var(--sidebar-rule);
-      margin-block-end: var(--sp-2);
-    }
-  }
-
-}
-
+   ▶ Section: polish-v8.css — RETIRED r294 (polish dismantle, wave 2)
+   ═══════════════════════════════════════════════════════════════════
+   The cohesion wave. Every live rule folded to its owning sheet,
+   with the polish pages-layer→owner-sheet layer shift verified
+   computed-neutral by the audit drift gate (72/72) + e2e + design
+   gates:
+   - card cursor-follow spotlight (.card:not(.flush) + .card > *)
+     → components.css CARD
+   - metric --t-fast transition trio + accent-tinted hover + RM +
+     ≤640px padding → components.css METRIC (replaced the older
+     premium-h/−2px hover pair — the polish body was the rendered
+     truth)
+   - section-title padding-inline-start + ::before stripe
+     → components.css SECTION-TITLE
+   - page-header-meta full line → components.css (merged with the
+     color-only survivor)
+   - card-title-icon 70/30 accent mix → components.css base
+   - spinner text-tint track + accent edge → components.css base
+   - btn.primary bevel/glow/press trio → components.css BTN
+   - form-label --text ink + ls-normal → components.css base (the
+     r151e note there already documented the retired bang war)
+   - pill tactile transition trio → components.css base
+   - checkbox/radio branded family (whole block — polish was the
+     sole definition) → components.css, before TABLE
+   - hydration-splash ambient pulse + keyframes + RM
+     → components.css base
+   - topbar-title fw-semibold + topbar-scope full chip recipe
+     → layout.css TOPBAR
+   - sidebar-collapse-btn trio + sidebar-mobile-close + ≤920px
+     drawer overrides → layout.css SIDEBAR
+   - bottom-nav pop keyframes + RM → notifications.css
+   - owner-chart-container radius/overflow well → owner.css
+   - admin-students-search bare-input reset → admin.css (the
+     comment there now owns the reasoning)
+   DELETED as measured-dead (not moved):
+   - .sidebar scrollbar group: the rail is overflow:hidden since
+     4-A2 P1-2 (.sidebar-nav is the scroller and already carries the
+     thin scrollbar) — painted nothing.
+   - .auth-field label element-variant: every auth label renders
+     .form-label (auth.css owns the full recipe at .auth-field
+     .form-label) — duplicate computed values.
+   Pre-r294 deletions already recorded in situ: welcome-card family
+   (r153f → student.css), topbar invalid gradients (P0-4 → v22),
+   global scrollbar (P1-2 → v22), dropdown chrome (WS-D2), print
+   block (P0-7 → v22), state padding (r152f → components.css),
+   checkbox weak halo + card weak halo (Wave 1-a → v22 AA ring). */
 
 /* ═══════════════════════════════════════════════════════════════════
    ▶ Section: polish-v9.css
@@ -1802,24 +1354,10 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  METRIC CARD — soft hover ring + value pop-in                  ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .metric {
-    transition:
-      border-color var(--t-base) var(--ease),
-      box-shadow var(--t-base) var(--ease),
-      transform var(--t-base) var(--ease-out);
-    /* A9 P1-2: pin min-height so PageSkeleton→real swap doesn't shift layout */
-    min-block-size: 132px;
-  }
-  @media (hover: hover) {
-    .metric.metric-link:hover { /* r148 (AUDIT-2 H1): نطاق التفاعل على القابل للنقر فقط */
-      transform: translateY(-2px);
-      border-color: color-mix(in srgb, var(--accent) 40%, var(--rule));
-      /* Off-token by design: accent glow layered on the card shadow token. */
-      box-shadow:
-        0 8px 24px -8px color-mix(in srgb, var(--accent) 20%, transparent),
-        var(--shadow-card-h);
-    }
-  }
+  /* (r294: the metric transition + pointer-hover pair consolidated
+     into components.css METRIC — the overrides-layer winners, with
+     the v8 touch-path hover kept beside them. The .metric-value
+     pop-in below still lives here until the v13 section folds.) */
   .metric-value {
     animation: madarek-pop-in var(--t-slower) var(--ease-spring) both;
   }
@@ -1919,20 +1457,10 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  PILLS / TABS — active selection has a soft glow               ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .pill, .tab {
-    transition:
-      background var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease),
-      transform var(--t-fast) var(--ease);
-  }
-  .pill.on, .tab.on {
-    /* soft accent selection halo — interaction state, not elevation */
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent);
-  }
-  .pill:active, .tab:active {
-    transform: scale(0.96);
-  }
+  /* (r294: the pill/tab transition + halo + press group consolidated
+     into components.css — per-selector winners preserved: .pill rides
+     the v15 5-property recipe + 16% halo, .tab keeps this 4-property
+     recipe + 14% halo + 0.96 press.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2301,15 +1829,9 @@
   /* (Wave 9-b dead-selector sweep: .btn-primary and .btn.accent
      removed — zero TSX consumers; only the .btn.primary variant is
      rendered.) */
-  .btn.primary:hover:not(:disabled) {
-    /* Off-token by design: strong accent glow + contact layer, not
-       elevation. (r157: :not(:disabled) gate — the glow no longer
-       paints on disabled primary buttons, mirroring the v16 gate
-       at .btn.primary:hover:not(:disabled) above.) */
-    box-shadow:
-      0 6px 16px -6px color-mix(in srgb, var(--accent) 55%, transparent),
-      0 2px 4px color-mix(in srgb, var(--black) 6%, transparent);
-  }
+  /* (r294: the primary hover glow consolidated into components.css
+     BTN — this overrides-layer winner beat v8's pages-layer glow;
+     single owner now, computed identical.) */
   /* Ghost button gains accent border on hover */
   .btn.ghost:hover {
     border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
@@ -2388,20 +1910,9 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  PILL & TAB — soft active glow + transition smoothing          ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .pill {
-    transition:
-      background var(--motion-duration-short) var(--ease),
-      color var(--motion-duration-short) var(--ease),
-      border-color var(--motion-duration-short) var(--ease),
-      transform var(--motion-duration-short) var(--ease),
-      box-shadow var(--motion-duration-medium) var(--ease);
-  }
-  .pill.on {
-    /* soft accent selection halo — interaction state, not elevation */
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
-  }
-  .pill:hover { transform: translateY(var(--hover-lift)); }
-  .pill:active:not(:disabled) { transform: scale(var(--press-scale)); }
+  /* (r294: the v15 pill interaction block consolidated into
+     components.css — the overrides-layer winners over v6/v8/v13;
+     single owner now, computed identical.) */
 
   /* Tab underline becomes spring-easy */
   .tab::after {

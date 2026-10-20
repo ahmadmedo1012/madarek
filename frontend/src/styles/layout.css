@@ -105,6 +105,39 @@
     color: var(--text-muted);
   }
 
+  /* r294 (polish v8 fold): the rail collapse control — its own pill
+     anchored in the brand row, consistent across expanded/collapsed
+     states. The v6 structural half (display/alignment/cursor) and
+     the v8 refinement half (28px surface pill + accent hover) are
+     merged here as ONE definition — both polish copies deleted. */
+  .sidebar-collapse-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 28px;
+    block-size: 28px;
+    border-radius: var(--r-sm);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    color: var(--text-muted);
+    /* hairline depth cue — not an elevation step */
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--black) 2%, transparent);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: var(--t-clean);
+  }
+  .sidebar-collapse-btn:hover {
+    background: var(--surface-2);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .sidebar.collapsed .sidebar-collapse-btn {
+    /* When collapsed, the button is the only visible chrome in the
+       brand row — make it the clear interaction target. */
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+  }
+
   .nav-group {
     display: flex;
     flex-direction: column;
@@ -240,6 +273,43 @@
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .sidebar-user-role { font-size: var(--fs-xxs); color: var(--text-muted); }
+
+  /* r294 (polish v8 fold): the mobile drawer's close button + the
+     ≤920px sidebar overrides. The X button is drawer-only; the rail
+     collapse control dies on mobile (open vs closed, no rail). */
+  .sidebar-mobile-close {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: 36px;
+    block-size: 36px;
+    border: 0;
+    background: var(--surface-2);
+    color: var(--text);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: var(--t-clean);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .sidebar-mobile-close:hover { background: var(--surface-3); }
+
+  @media (max-width: 920px) {
+    /* X button visible only in the mobile drawer */
+    .sidebar-mobile-close { display: inline-flex; }
+    /* No collapse rail on mobile — only open vs closed. */
+    .sidebar-collapse-btn { display: none; }
+    /* Brand row becomes a sticky drawer header */
+    .sidebar-brand {
+      position: sticky;
+      inset-block-start: 0;
+      background: var(--sidebar-bg);
+      z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
+      padding-block: var(--sp-3);
+      border-block-end: 1px solid var(--sidebar-rule);
+      margin-block-end: var(--sp-2);
+    }
+  }
   .sidebar-logout {
     inline-size: 32px; block-size: 32px;
     display: inline-flex; align-items: center; justify-content: center;
@@ -413,7 +483,9 @@
   .topbar-title {
     font-family: var(--font-display);
     font-size: var(--fs-h3);
-    font-weight: var(--fw-bold);
+    /* r294 (polish v8 fold): semibold — the polish pages-layer bump
+       overrode bold as the rendered truth. */
+    font-weight: var(--fw-semibold);
     color: var(--text);
     letter-spacing: 0; /* r148 (AUDIT-3 M8): عناوين صفحات عربية — لا تتبّع سالب */
     line-height: 1.2;
@@ -427,7 +499,20 @@
      .topbar-scope re-specifies every one except font-family, so only
      the family survives here. The ≤920px display:none below is live.) */
   .topbar-scope {
+    /* r294 (polish v8 fold): the full chip recipe returns home — the
+       polish bundle was the live definition (this rule held only
+       font-family since the r151c dead-twin sweep). Smaller, calmer
+       chip than the title. */
     font-family: var(--font-sans);
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-medium);
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--rule));
+    border-radius: var(--r-full);
+    padding: 3px var(--sp-2-5); /* spacing-gate: allow — topbar scope chip micro grade 3/10 vertical hairline */
+    margin-inline-start: var(--sp-2);
+    white-space: nowrap;
   }
   @media (max-width: 920px) {
     .topbar { grid-template-columns: auto 1fr auto; }
