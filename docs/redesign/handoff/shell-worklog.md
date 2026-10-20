@@ -142,3 +142,35 @@ Stage Summary:
 Integration requests:
 - Agent Z/4E: retire .page-header-meta mono treatment (components.css:4927, polish.css:715).
 - 4A: fix dashboard masthead meta bidi (wrap Latin runs in <bdi dir="ltr">).
+
+---
+Task ID: S-final (r212–r214)
+Agent: Agent S (integrator)
+Task: Auth completion + command-bar/bell verification + final handoff
+
+Work Log:
+- Bell honesty: verified REAL server-truth unread counter (meta.unread of
+  /notifications?limit=1, 60s poll, 99+ bidi cap, SR growth announcements) —
+  no faking needed; adopted the timed-out agent's docblock + dir="ltr" fix.
+- Command bar: verified /search/global is real (courses/lectures/papers/tracks,
+  Arabic normalization); palette renders 4 honest result rows for «هندسة» +
+  nav quick actions; «محاضرة» returns 0 legitimately (no title matches) and the
+  empty copy is search-aware. SR count «4 خيارات» correct.
+- Auth: .auth-meta mono voice retired (r212); glass card retired (r214, agent output).
+- e2e: updated mobile-bottom-nav.e2e.ts to the r211 contract (4 links + more button) — 28/28.
+- Full gates: lint 0 · typecheck ×4 · 1971 FE · 1783 BE · parity 190/190 ·
+  colors/raw-css/icons/motion/CSP/colleges green · build 635.0/650 KB gz (entry 71.2/80).
+- Critic pass: shell calm/list-first ✓ (glows, sky, mono gone) · nav complete per
+  role ✓ (zero deletions) · mobile recomposed ✓ (4+more → grouped drawer, 390 both
+  themes, no h-scroll) · RTL: one external defect found (dashboard masthead meta
+  bidi — 4A's page; documented in shell.md §8).
+
+Stage Summary:
+- Final SHA 8cd520d pushed; origin/redesign/shell in sync.
+- Deviations: subagent infra timed out twice → solo sequential milestones; the
+  agents' partial outputs were inspected, gate-verified and adopted (r214).
+  agent-browser screenshots stale → repo Playwright used for captures.
+  Audit baseline NOT re-promoted (mission forbids; Agent Z does).
+Integration requests:
+- See docs/redesign/handoff/shell.md §8 (patterns.css import line, page-header-meta
+  mono retirement, dashboard masthead bidi, onboarding ownership note).
