@@ -220,9 +220,10 @@ describe('TeacherDashboardPage — the daily-work trio (r164-h)', () => {
     expect(screen.getByText('طابور التصحيح')).toBeInTheDocument();
     expect(screen.getByText('واجب UML')).toBeInTheDocument();
     expect(screen.getByText('مشروع الفصل')).toBeInTheDocument();
-    // 2 entry rows + the card's «ابدأ التصحيح» CTA all land on the
-    // ONE surface that walks the full grading queue.
-    expect(document.querySelectorAll('a[href="/teacher/assignments"]')).toHaveLength(3);
+    // 2 entry rows + the section's «ابدأ التصحيح» CTA land on the
+    // ONE surface that walks the full grading queue. r242 adds a 4th:
+    // the StatLine's «بحاجة تقييم» stat links into the same queue
+    expect(document.querySelectorAll('a[href="/teacher/assignments"]')).toHaveLength(4);
   });
 
   it('empty queue → the win, not the void: «لا انتظار — كل التسليمات مُقيَّمة»', () => {
