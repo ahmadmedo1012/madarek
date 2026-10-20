@@ -1233,6 +1233,40 @@
     font-variant-numeric: tabular-nums;
   }
   .pill.on .courses-filter-count { color: inherit; }
+
+  /* r221 (4A redesign — Superlist): the course LIST replaces the card
+     grid — rows in the pattern RowList (detail attached to the row).
+     The API tint rides the leading icon well only; progress + CTA sit
+     on the row's trailing edge. */
+  .courses-row-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: var(--r-md);
+    flex-shrink: 0;
+  }
+  .courses-row-title {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: var(--fw-semibold);
+  }
+  .courses-row-title:hover { color: var(--accent-ink); }
+  .courses-row-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+  .courses-row-progress .progress { inline-size: 150px; }
+  .courses-row-go { flex-shrink: 0; }
+  @media (max-width: 640px) {
+    /* Phone rows: the chip is decorative (the row's title is the
+       link) — it yields to the text; the bar keeps the honest % only. */
+    .courses-row-go { display: none; }
+    .courses-row-progress .progress { inline-size: 96px; }
+    .courses-row-progress .progress-head span:first-child { display: none; }
+  }
   /* (r151f: bang retired — the v6 stagger's five selectors carry
      :not(.courses-grid):not(.mooc-grid) at the source now, so this
      rule fights nothing; kept as the documented belt that pins the
