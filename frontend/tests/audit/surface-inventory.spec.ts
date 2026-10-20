@@ -254,15 +254,25 @@ const OVERLAY_SELECTORS: ReadonlyArray<[OverlayKind, string]> = [
  * active, KPI tile, body text"). Selector names feed the drift
  * detector's numeric-KPI heuristic (metric-value → 7:1 budget).
  */
-const COLOR_SAMPLES: ReadonlyArray<[string, string]> = [
-  ['body', 'body'],
-  ['page-title', 'h1.page-title'],
-  ['page-subtitle', '.page-subtitle'],
-  ['metric-value', '.metric-value'],
-  ['metric-label', '.metric-label'],
-  ['card', '.card'],
-  ['sidebar-item', '.sidebar-item'],
-  ['text-subtle', '.text-subtle'],
+const COLOR_SAMPLES: ReadonlyArray<[string, string, boolean]> = [
+  /* r291 (§10 repair): the selectors were pinned to the retired legacy
+   * anatomy (h1.page-title / .metric-* / .sidebar-item — the sidebar
+   * family has been .nav-item since the shell reskin), so pattern-era
+   * routes matched NOTHING and 48/72 baseline captures shipped empty
+   * color arrays that drift passed over vacuously. Each sample is now
+   * «current-anatomy-first, legacy-fallback» and carries a flag: does
+   * it require DIRECT text (contrast samples) or is it a surface row
+   * (body ground / surfaces where the computed pair is meaningful
+   * without a direct text node). hasDirectText(body) was ALWAYS false
+   * — the ground sample never shipped; it no longer gates. */
+  ['body', 'body', false],
+  ['page-title', 'h1.pf-page-title, h1.page-title, h1.fo-hero-title, h1.auth-form-title', true],
+  ['page-subtitle', '.pf-page-desc, .page-subtitle', true],
+  ['metric-value', '.pf-stat-value, .metric-value', true],
+  ['metric-label', '.pf-stat-label, .metric-label', true],
+  ['card', '.card', false],
+  ['sidebar-item', '.nav-item.on, .sidebar .nav-item', true],
+  ['text-subtle', '.text-subtle', true],
 ];
 
 interface RawCapture {
@@ -273,6 +283,10 @@ interface RawCapture {
   collegeAccentFallback: boolean;
   motion: Array<{ selector: string; durationMs: number; easing: string }>;
   colors: Array<{ selector: string; background: string; color: string }>;
+  /* r291: the coverage probe + state-mount counts (see ColorProbe). */
+  colorMatched: string[];
+  colorNotFound: string[];
+  stateSurfaces: number;
   cls: number;
   fcpMs: number;
   bytesTransferred: number;
@@ -377,12 +391,29 @@ async function collectRaw(page: Page): Promise<RawCapture> {
         return 'rgba(0, 0, 0, 0)';
       };
       const colors = [] as Array<{ selector: string; background: string; color: string }>;
-      for (const [name, selector] of cfg.colorSamples as Array<[string, string]>) {
+      /* r291: the matched/notFound probe — a sample that matched nothing
+       * (or a text sample whose element carries no direct text) is
+       * RECORDED as notFound instead of silently dropped: drift can then
+       * tell «N/A on this route» apart from «the measurement vanished».
+       * The 3rd tuple flag = requires direct text (contrast samples);
+       * body/card are surface rows and never gate on text. */
+      const colorMatched: string[] = [];
+      const colorNotFound: string[] = [];
+      for (const [name, selector, needsText] of cfg.colorSamples as Array<[string, string, boolean]>) {
         const el = document.querySelector<HTMLElement>(selector);
-        if (!el || !hasDirectText(el)) continue;
+        if (!el || (needsText && !hasDirectText(el))) {
+          colorNotFound.push(name);
+          continue;
+        }
         const cs = getComputedStyle(el);
         colors.push({ selector: name, background: effectiveBg(el), color: cs.color });
+        colorMatched.push(name);
       }
+      /* r291: state-surface mounts — the EmptyState/ErrorState mounts
+       * that OWN illustrations. With zero illustrations AND zero state
+       * mounts, an empty illustrations[] is genuinely N/A; state mounts
+       * present but no [data-illustration] nodes = review signal. */
+      const stateSurfaces = document.querySelectorAll('.state').length;
 
       /* CLS (Chromium keeps buffered layout-shift entries) */
       const cls = (performance as Performance & {
@@ -410,6 +441,9 @@ async function collectRaw(page: Page): Promise<RawCapture> {
         collegeAccentFallback,
         motion,
         colors,
+        colorMatched,
+        colorNotFound,
+        stateSurfaces,
         cls,
         fcpMs: fcp,
         bytesTransferred: bytes,
@@ -643,6 +677,14 @@ test('sweep AUDIT_ROUTES × viewports × themes × dirs → surface-inventory.js
           }));
           const motionTreatments: MotionCapture[] = raw.motion;
           const computedColors = buildComputedColors(raw.colors, corpus);
+          /* r291: the coverage probe ships with every capture — the drift
+           * detector turns «fewer matched samples than expected» into a
+           * coverage-regression finding instead of a vacuous pass. */
+          const colorProbe = { matched: raw.colorMatched, notFound: raw.colorNotFound };
+          const illustrationMounts = {
+            illustrations: illustrations.length,
+            stateSurfaces: raw.stateSurfaces,
+          };
 
           captures.push({
             route,
@@ -656,6 +698,8 @@ test('sweep AUDIT_ROUTES × viewports × themes × dirs → surface-inventory.js
             collegeAccentFallback: raw.collegeAccentFallback,
             motionTreatments,
             computedColors,
+            colorProbe,
+            illustrationMounts,
             cls: Number(raw.cls.toFixed(3)),
             fcpMs: Math.round(raw.fcpMs),
             bytesTransferred: raw.bytesTransferred,

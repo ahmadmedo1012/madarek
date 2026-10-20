@@ -54,6 +54,26 @@ export interface ColorCapture {
   contrastRatio: number;
 }
 
+/**
+ * r291 (the §10 coverage repair): per-capture probe that distinguishes
+ * «the selector genuinely does not apply on this route» from «an
+ * expected measurement silently vanished». The r286 baseline shipped
+ * 48/72 captures with EMPTY computedColors because every sample
+ * selector targeted the retired legacy anatomy (h1.page-title /
+ * .metric-* / .sidebar-item) while most routes had already moved to
+ * the patterns contract — drift then passed vacuously over nothing.
+ * `matched` lists sample names that produced a color row;
+ * `notFound` lists sample names whose selector matched nothing on
+ * the page (applicable-but-absent = review) or matched but carried
+ * no direct text (text samples only). `probed` = matched+notFound
+ * length; a capture with probed < COLOR_SAMPLE_FLOOR or fewer
+ * matched than the baseline had → coverage-regression (drift.ts).
+ */
+export interface ColorProbe {
+  matched: string[];
+  notFound: string[];
+}
+
 export interface SurfaceCapture {
   route: string;
   viewport: ViewportKey;
@@ -69,6 +89,17 @@ export interface SurfaceCapture {
   cls: number;
   fcpMs: number;
   bytesTransferred: number;
+  /** r291: see ColorProbe — optional so pre-r291 baselines still parse. */
+  colorProbe?: ColorProbe;
+  /**
+   * r291: illustration-coverage context — how many illustration nodes
+   * are mounted, and how many .state surfaces (the EmptyState/ErrorState
+   * mount points that own them) exist on the page. 0 illustrations +
+   * 0 state mounts = «genuinely N/A» (a data-bearing page); a state
+   * mount with 0 illustrations on a route whose baseline had some =
+   * review. Distinguishes absence from vanishing (the §10 rule).
+   */
+  illustrationMounts?: { illustrations: number; stateSurfaces: number };
 }
 
 export interface SurfaceInventory {

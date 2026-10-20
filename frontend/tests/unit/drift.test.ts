@@ -236,6 +236,76 @@ describe('detectDrift', () => {
     );
     expect(findings.some((f) => f.kind === 'off-token-color')).toBe(true);
   });
+
+  /* ── r291 (§10 repair): coverage regression — the vacuous-pass hole.
+   * The r286 baseline shipped 48/72 captures with EMPTY computedColors
+   * (every sample selector targeted the retired legacy anatomy) and
+   * drift passed over nothing. These tests pin BOTH sides: vanishing
+   * measurements FAIL; honest not-applicable records PASS. ────────── */
+
+  it('flags a capture whose color probe matched fewer samples than the floor', () => {
+    const findings = detectDrift(
+      inventory([
+        emptyCapture({
+          colorProbe: { matched: ['body'], notFound: ['page-title', 'card'] },
+        }),
+      ]),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]!.kind).toBe('coverage-regression');
+    expect(findings[0]!.detail).toContain('matched 1');
+  });
+
+  it('flags a capture that regressed below its route baseline coverage', () => {
+    const findings = detectDrift(
+      inventory([
+        emptyCapture({
+          route: '/student/courses',
+          colorProbe: { matched: ['body', 'page-title'], notFound: ['metric-value'] },
+        }),
+      ]),
+      { colorCoverageBaseline: { '/student/courses': 5 } },
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]!.kind).toBe('coverage-regression');
+  });
+
+  it('passes a capture whose honest notFound entries keep matched >= floor', () => {
+    // 3 matched + 5 genuinely-absent samples (pattern route without
+    // cards/stats) — this is N/A, not a vanished measurement.
+    const findings = detectDrift(
+      inventory([
+        emptyCapture({
+          colorProbe: {
+            matched: ['body', 'page-title', 'text-subtle'],
+            notFound: ['metric-value', 'metric-label', 'card', 'sidebar-item', 'page-subtitle'],
+          },
+        }),
+      ]),
+    );
+    expect(findings).toEqual([]);
+  });
+
+  it('exempts pre-r291 captures without a colorProbe (old inventories parse)', () => {
+    const findings = detectDrift(inventory([emptyCapture()]));
+    expect(findings).toEqual([]);
+  });
+
+  it('keeps the coverage floor from masking contrast findings on the same capture', () => {
+    // A probe passing the floor does NOT silence contrast drift.
+    const findings = detectDrift(
+      inventory([
+        emptyCapture({
+          colorProbe: { matched: ['body', 'page-title'], notFound: [] },
+          computedColors: [
+            { selector: 'body', background: '#FBFAF7', color: '#ABABAB', contrastRatio: 1.9 },
+          ],
+        }),
+      ]),
+    );
+    expect(findings.some((f) => f.kind === 'contrast-regression')).toBe(true);
+    expect(findings.some((f) => f.kind === 'coverage-regression')).toBe(false);
+  });
 });
 
 describe('groupByKind', () => {
@@ -259,6 +329,7 @@ describe('groupByKind', () => {
       'cls-regression',
       'fcp-regression',
       'bundle-regression',
+      'coverage-regression',
     ]);
     expect(grouped['cls-regression']).toHaveLength(1);
   });

@@ -49,6 +49,30 @@ function buildFcpBaseline(baseline: SurfaceInventory | null): Record<string, num
   return map;
 }
 
+/**
+ * r291 (§10 repair): route → matched color-sample count, taken from the
+ * same canonical LIGHT/RTL/1280 entry. The drift detector uses it as a
+ * per-route coverage floor — a new capture that matches fewer samples
+ * than its baseline had flags coverage-regression instead of passing
+ * vacuously over an empty array. Captures WITHOUT colorProbe (a
+ * pre-r291 baseline) are exempt inside drift.ts, so the committed
+ * r286 baseline — with its 48 empty captures — contributes a floor of
+ * 0 and the absolute floor (body + h1) governs until the next
+ * baseline promotion re-captures with the probe.
+ */
+function buildColorCoverageBaseline(
+  baseline: SurfaceInventory | null,
+): Record<string, number> {
+  if (!baseline) return {};
+  const map: Record<string, number> = {};
+  for (const cap of baseline.captures) {
+    if (cap.theme === 'light' && cap.dir === 'rtl' && cap.viewport === 1280) {
+      map[cap.route] = cap.colorProbe ? cap.colorProbe.matched.length : 0;
+    }
+  }
+  return map;
+}
+
 function groupRoute(findings: DriftFinding[]): Record<string, DriftFinding[]> {
   const out: Record<string, DriftFinding[]> = {};
   for (const f of findings) {
@@ -67,6 +91,7 @@ function main(): number {
   }
   const baseline = readInventory(baselinePath);
   const fcpBaseline = buildFcpBaseline(baseline);
+  const colorCoverageBaseline = buildColorCoverageBaseline(baseline);
 
   /* r164 integration: FCP is the one budget axis that is inherently
    * hardware-dependent — a baseline captured on one machine cannot
@@ -80,7 +105,7 @@ function main(): number {
     if (Number.isFinite(ratio) && ratio >= 1) budget.fcpRegressionRatio = ratio;
   }
 
-  const findings = detectDrift(inventory, { fcpBaseline, budget });
+  const findings = detectDrift(inventory, { fcpBaseline, colorCoverageBaseline, budget });
   if (findings.length === 0) {
     console.log(
       `✓ surface drift: clean across ${inventory.captures.length} captures`,

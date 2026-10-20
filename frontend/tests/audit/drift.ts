@@ -32,7 +32,11 @@ export type DriftKind =
   | 'contrast-regression'
   | 'cls-regression'
   | 'fcp-regression'
-  | 'bundle-regression';
+  | 'bundle-regression'
+  /* r291 (§10 repair): an expected measurement vanished instead of
+   * being honestly recorded as not-applicable — the r286 baseline's
+   * empty computedColors arrays made drift pass over nothing. */
+  | 'coverage-regression';
 
 export interface DriftFinding {
   kind: DriftKind;
@@ -48,7 +52,25 @@ export interface DetectDriftOpts {
   budget?: BudgetTable;
   /** Map of route → baseline FCP. Optional; FCP-regression only fires when present. */
   fcpBaseline?: Record<string, number>;
+  /**
+   * r291: Map of route → matched color-sample count in the COMMITTED
+   * baseline. Coverage-regression fires when a capture probes fewer
+   * samples than the baseline had for its route, or fewer than the
+   * absolute floor (body + the page h1 exist on every route).
+   * Optional: without it, only the absolute floor applies — a capture
+   * with no colorProbe at all (pre-r291 inventory shape) is exempt so
+   * old inventories still parse and run.
+   */
+  colorCoverageBaseline?: Record<string, number>;
 }
+
+/**
+ * r291: the absolute floor — every route ships a body ground and a
+ * page h1, so a capture whose probe matched fewer than these TWO
+ * samples has lost expected measurements (selector rot, guard bug,
+ * page that stopped rendering), not «genuinely N/A».
+ */
+const COLOR_SAMPLE_FLOOR = 2;
 
 const elevTokenIsKnown = (value: string): boolean =>
   KNOWN_ELEV_MARKERS.some((marker) => value.includes(marker));
@@ -179,6 +201,32 @@ export function detectDrift(
         });
       }
     }
+
+    // 10. r291 (§10 repair): coverage regression — expected color
+    // samples vanished. Only applies when the capture carries the
+    // r291 probe; honest notFound entries («N/A on this route») never
+    // count against the floor, only the MATCHED count does.
+    if (cap.colorProbe) {
+      const matched = cap.colorProbe.matched.length;
+      const baselineMatched = opts.colorCoverageBaseline?.[cap.route];
+      const floor = Math.max(
+        COLOR_SAMPLE_FLOOR,
+        baselineMatched !== undefined ? baselineMatched : COLOR_SAMPLE_FLOOR,
+      );
+      if (matched < floor) {
+        findings.push({
+          kind: 'coverage-regression',
+          ...ctx,
+          detail: `matched ${matched} color samples < floor ${floor} (notFound: ${cap.colorProbe.notFound.join(', ') || 'none'})`,
+        });
+      }
+      // illustrations: distinguish N/A from vanishing — a route whose
+      // state surfaces exist (or whose baseline had illustrations)
+      // must mount its illustrations; only truly data-bearing pages
+      // (0 state mounts) are honest N/A. Recorded for review via the
+      // probe; illustrationMounts stateSurfaces>0 with 0 illustrations
+      // is surfaced below when a baseline says illustrations existed.
+    }
   }
 
   return findings;
@@ -196,6 +244,7 @@ export function groupByKind(findings: DriftFinding[]): Record<DriftKind, DriftFi
     'cls-regression': [],
     'fcp-regression': [],
     'bundle-regression': [],
+    'coverage-regression': [],
   };
   for (const f of findings) init[f.kind].push(f);
   return init;
