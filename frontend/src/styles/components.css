@@ -2249,7 +2249,11 @@
     max-inline-size: 420px;
     background: var(--surface);
     border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
+    /* r297 (polish v18 fold): r-md — the overrides-layer v18 value
+       beat this base r-lg as the rendered truth; single owner now.
+       ([role="status"][data-toast] in the group always paired with
+       .toast on the same markup — one selector suffices.) */
+    border-radius: var(--r-md);
     box-shadow: var(--elev-3, var(--shadow-card-h));
     pointer-events: auto;
   }
@@ -5318,4 +5322,60 @@
   padding: 0;
   gap: var(--sp-1);
 }
+}
+
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║  A11Y ADAPTATIONS — user-preference media blocks                  ║
+   ║  (r297 polish v20 fold: prefers-contrast, forced-colors, and    ║
+   ║  reduced-transparency moved from the overrides layer. Placement  ║
+   ║  at the components layer, end-of-file, keeps every needed win:  ║
+   ║  later source beats the earlier family rules at equal weight;   ║
+   ║  components sits above layout/base so the .topbar/.bottom-nav   ║
+   ║  entries keep their authority. The v21 RM belt entries for      ║
+   ║  the card>state shimmers join their family here.)               ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
+@media (prefers-contrast: more) {
+  .card,
+  .metric,
+  .input,
+  input, textarea, select,
+  .btn:not(.primary):not(.accent) {
+    border-width: 2px;
+  }
+  :focus-visible {
+    outline: 3px solid var(--accent-ink, var(--accent)) !important;
+    outline-offset: 3px;
+    box-shadow: none !important;
+  }
+}
+@media (forced-colors: active) {
+  .card,
+  .metric {
+    border: 1px solid CanvasText;
+  }
+  .btn,
+  .pill,
+  .nav-item.on {
+    forced-color-adjust: auto;
+  }
+  :focus-visible {
+    outline: 3px solid Highlight !important;
+    outline-offset: 2px;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .topbar,
+  .bottom-nav,
+  .sidebar-backdrop.show {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .topbar { background: var(--surface); }
+  .bottom-nav { background: var(--surface); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card > .state.state-loading::before,
+  .card > .state.state-inline::before {
+    animation: none !important;
+  }
 }

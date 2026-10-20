@@ -1224,6 +1224,32 @@ a.comp-card:focus-visible .comp-go {
   transition: var(--t-fast) var(--ease);
 }
 .comp-icon-btn:hover { border-color: var(--accent); }
+/* r297 (polish v18 fold): the overlay micro-interactions — the close
+   glyph rotates on hover, the head icon buttons breathe. */
+.comp-modal-close {
+  transition:
+    background var(--motion-duration-short) var(--ease),
+    color var(--motion-duration-short) var(--ease),
+    transform var(--motion-duration-short) var(--ease);
+}
+.comp-modal-close:hover {
+  transform: rotate(90deg);
+}
+.comp-icon-btn {
+  transition:
+    background var(--motion-duration-short) var(--ease),
+    border-color var(--motion-duration-short) var(--ease),
+    transform var(--motion-duration-short) var(--ease-spring-soft);
+}
+.comp-icon-btn:hover {
+  transform: scale(1.1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .comp-modal-close:hover {
+    animation: none !important;
+    transform: none !important;
+  }
+}
 .comp-icon-btn.on {
   background: var(--accent-soft, var(--surface-2));
   border-color: var(--accent);
