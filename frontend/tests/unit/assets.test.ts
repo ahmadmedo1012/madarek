@@ -82,18 +82,46 @@ describe('r188 brand reset — campus photography retired (no real-university im
     }
   });
 
-  it('r190 — landing art is ORIGINAL ABSTRACT (AI-art-directed scenes), never photography of real institutions', () => {
+  it('r198 — the poster landing ships NO raster hero art (SVG from real data)', () => {
     const src = read('src/pages/LandingPage.tsx');
     expect(src).not.toContain('<picture>');
     expect(src).not.toContain('main_photo');
-    // the r188 photography ban's INTENT: no real-university imagery.
-    // r190 ships original abstract scenes (hero + media stage) —
-    // no identifiable place, person, logo, or text in the art; the
-    // real-institution ban is re-pinned on the file inventory:
-    expect(src).toContain('hero-scene.webp');
-    expect(src).toContain('orbit-ring.webp');
+    // r198 (stage 2): the hero's ONE graphic object is the Constellation —
+    // a flat two-tone SVG generated from the real 25-college registry.
+    // No hero raster, no orbit ring, no vision backdrop, no AI scenes,
+    // no text inside images (the r188 intent, kept and tightened).
+    expect(src).toContain('Constellation');
+    expect(src).toContain("from '../data/colleges.config'");
     // …and the r188 provenance strings survive (brand gates below
     // still pin جامعة مدارك التجريبية as synthetic data).
+  });
+
+  it('r198 — the retired landing raster family stays deleted', () => {
+    // The r191 art-direction assets (hero scenes, orbit rings, vision
+    // backdrops, product/role card renders) died with the poster
+    // rebuild — only the two brand keepers remain in public/brand.
+    for (const f of [
+      'hero-scene.webp', 'hero-scene-720.webp', 'hero-scene.jpg',
+      'orbit-ring.webp', 'orbit-ring-480.webp', 'orbit-ring.jpg',
+      'vision-bg.webp', 'vision-bg-768.webp',
+      'card-content.webp', 'card-content-480.webp',
+      'card-assessment.webp', 'card-assessment-480.webp',
+      'card-ai.webp', 'card-ai-480.webp',
+      'journey-student.webp', 'journey-student-480.webp',
+      'journey-teacher.webp', 'journey-teacher-480.webp',
+      'journey-institution.webp', 'journey-institution-480.webp',
+    ]) {
+      expect(existsSync(path.join(root, 'public/brand', f)), `${f} must stay deleted (r198)`).toBe(false);
+    }
+    // The retired scene components never come back (new names may —
+    // the r162 pin holds on the r188 tombstones).
+    for (const f of [
+      'src/components/landing/KnowledgeMap.tsx',
+      'src/components/landing/OrbitPath.tsx',
+      'src/components/landing/TestimonialSection.tsx',
+    ]) {
+      expect(existsSync(path.join(root, f)), `${f} must stay deleted (r198)`).toBe(false);
+    }
   });
 
   it('no stylesheet ships a campus photo as a CSS background', () => {

@@ -1,18 +1,20 @@
 /**
- * Landing chrome contract (r132-F5 → r188 folio).
+ * Landing chrome contract (r132-F5 → r198 poster rebuild).
  *
  * The r188 editorial redesign RETIRED two landing mechanisms outright:
  *   · the scroll-spy underline system (IntersectionObserver →
  *     header[data-active-section] → per-section ::after underlines) —
- *     the folio nav is four plain anchor links with hover washes;
+ *     the nav is three plain anchor links with hover washes;
  *   · the film-grain veil (the Orbit-Ink texture layer) — the paper
  *     world is clean flat ink, no texture.
  *
- * This file pins the RETIRED state so neither mechanism (nor the
- * Orbit-Ink scene vocabulary it belonged to) can silently re-appear,
- * and pins the chrome the folio landing DOES ship: the imperative
- * scroll-progress ribbon (--p on .fo-progress-bar, the r172 zero-setState
- * pattern) and the .scrolled header hairline.
+ * r198 (stage 2, the OPTIKKA-direction poster) RETIRES the r191 pinned
+ * mega-stage vocabulary too (the mg-, pd-, pf- card families, the
+ * telemetry strip, data-pinned stages) and
+ * re-pins the chrome that still ships: the imperative scroll-progress
+ * ribbon (--p on .fo-progress-bar, the r172 zero-setState pattern) and
+ * the .scrolled header hairline. The nav anchors now resolve to the
+ * poster's chapter ids (chapters / live / roles / colleges).
  *
  * Pure fs assertions (assets.test.ts pattern) — no jsdom interaction.
  */
@@ -44,10 +46,22 @@ describe('r188 — the scroll-spy system is retired with the Orbit-Ink world', (
     expect(tsx).not.toContain('ln-grain');
   });
 
-  it('the Orbit-Ink scene vocabulary is gone from the folio sheet', () => {
+  it('the Orbit-Ink scene vocabulary is gone from the poster sheet', () => {
     for (const cls of ['ln-hero', 'ln-marquee', 'ln-constellation', 'ln-cta-orbits', 'landing-megamenu']) {
       expect(live, `${cls} should be retired`).not.toContain(cls);
     }
+  });
+
+  it('r198 — the r191 pinned-mega-stage vocabulary is retired with the poster rebuild', () => {
+    // Stage 2 replaced the 700vh pinned narrative with stacked poster
+    // chapters: no pinning, no telemetry strip, no scene components.
+    for (const cls of ['mg-stage', 'mg-pin', 'pd-card', 'pf-card', 'fo-telemetry', 'data-pinned']) {
+      expect(live, `${cls} should be retired (r198)`).not.toContain(cls);
+      expect(tsx).not.toContain(cls);
+    }
+    expect(tsx).not.toContain('KnowledgeMap');
+    expect(tsx).not.toContain('OrbitPath');
+    expect(tsx).not.toContain('TestimonialSection');
   });
 });
 
@@ -73,10 +87,10 @@ describe('r188 — the folio chrome that ships', () => {
     expect(live).toContain('.fo-header.scrolled');
   });
 
-  it('chapter anchors: the four nav links resolve to real section ids', () => {
-    // r191: the anchors renamed with the operator-ordered copy
-    // (ledger → live, independence → roles, + the new system anchor).
-    for (const s of ['journey', 'system', 'live', 'roles']) {
+  it('chapter anchors: the nav links resolve to real section ids (r198 poster chapters)', () => {
+    // r198: the poster's nav anchors — chapters (01–06), the honest
+    // ledger, the roles strip, and the colleges constellation.
+    for (const s of ['chapters', 'live', 'roles', 'colleges']) {
       expect(tsx).toContain(`id="${s}"`);
       expect(tsx).toContain(`href="#${s}"`);
     }

@@ -1,40 +1,39 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import {
-  Brain, GraduationCap, Building2, ArrowLeft, ArrowRight,
-  Menu, X, Keyboard, MoonStar, Check, FlaskConical,
-  BookOpenCheck, ClipboardCheck,
+  ArrowLeft, Menu, X, Check, FlaskConical, PlayCircle, PenLine, Timer, Users,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { StarMark } from '../components/StarMark';
 import { ThemeToggle, useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
-import { OrbitPath } from '../components/landing/OrbitPath';
-import { KnowledgeMap } from '../components/landing/KnowledgeMap';
+import { Constellation } from '../components/landing/Constellation';
+import { colleges } from '../data/colleges.config';
+import { formatInt, formatPct1 } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
 import { useScrollStage } from '../hooks/useScrollStage';
-// landing.css — «رحلة المعرفة»: the r191 scroll-choreography rebuild.
-// The public surface reproduces the reference's observed MECHANICS (pinned
-// narrative stage, scene crossfades, scroll-bound map state, parallax
-// layers, staggered stat march, giant closing wordmark) with original
-// Madarek content — see docs/design/r191-turion-fidelity-spec.md.
-// Every funnel/a11y/truth contract carries forward (landing-funnel, r183,
-// r170d, r177, r188) — re-pinned honestly in r191 for the operator-ordered
-// copy changes: the operator-rejected provenance slogan and the
-// engineering-jargon proof title are gone from every user-facing surface.
+// landing.css — «ملصق مدارك»: the r198 OPTIKKA-direction rebuild (stage 2).
+// Poster logic on the --poster-* namespace: paper/ink with one ultramarine
+// signal, oversized Arabic display type, one idea per scroll chapter,
+// numbered chapters 01–06 (Western digits, bidi-isolated). No pinned
+// stages, no preloader, no canvas/video, no new dependencies — the rAF
+// useScrollStage engine + IntersectionObserver reveals carry the motion.
+// Every funnel/a11y/truth contract carries forward (landing-funnel,
+// r168b, r170d, r177, r188) — see the tests pinned beside each surface.
 import '../styles/landing.css';
 
 /**
- * Landing — «رحلة المعرفة» (r191).
+ * Landing — «ملصق مدارك» (r198).
  *
- * Scene sequence (the reference's choreography, translated):
- *   header (fixed, scrolled variant) → النقطة (1-viewport cinematic hero)
- *   → خريطة التعلّم (pinned mega-stage: radial map + 6 crossfading scenes
- *   + capability bar) → المنظومة (cream product cards slider)
- *   → ما يعمل اليوم (pinned honest proof: staggered stat march)
- *   → لمن صُنعت (cream role cards) → إلى أين (parallax vision + giant
- *   wordmark + honest status pairs) → مبدأ مدارك (quote card)
- *   → الخاتمة (CTA) → footer (giant wordmark parallax).
+ * Chapter sequence (BLUEPRINT §6, every capability verified in code):
+ *   header (sticky, scrolled variant) → hero (brand word + triad +
+ *   two-tone constellation of the 25 colleges) → statement (student /
+ *   teacher / admin, block-revealed) → chapters 01–06 (flipped
+ *   classrooms, mastery matrix, research cycle, online exams, community
+ *   & training, quality & governance — each with an honest miniature
+ *   composed from real UI patterns + demo data) → ما يعمل اليوم (the
+ *   honest capability ledger) → roles strip → the interactive colleges
+ *   constellation → vision status pairs → CTA → slide-up footer.
  */
 
 /* ── Copy: the honest capability ledger (docs/02-features vocabulary).
@@ -50,147 +49,13 @@ const LIVE_CAPABILITIES = [
 ] as const;
 const LIVE_COUNT = LIVE_CAPABILITIES.length;
 
-/* ── Mega-stage scenes (خريطة التعلّم) — six frames, RTL content column,
- * crossfaded by scroll progress; boundaries as [in, out] progress. */
-type MegaScene = {
-  id: string;
-  meta: string;
-  label: string;
-  title: React.ReactNode;
-  lede: string;
-  bullets?: string[];
-  compare?: boolean;
-  barActive?: number;
-};
-const MEGA_SCENES: MegaScene[] = [
-  {
-    id: 'what',
-    meta: 'منصّة تعليمية متكاملة',
-    label: '002 · ما هي مدارك',
-    title: <>كل ما تحتاجه الجامعة، <em>في منظومة واحدة</em></>,
-    lede: 'مدارك تجمع المحتوى والقياس والبحث والتواصل في مكان واحد — كل قدرة تخدم التي بعدها — والطالب في مركزها.',
-  },
-  {
-    id: 'today',
-    meta: 'ثلاث ركائز متصلة',
-    label: 'اليوم',
-    title: <>تعلّم متصل <em>بثلاث ركائز</em></>,
-    lede: 'كل ركيزة تُبنى على ما قبلها:',
-    bullets: ['01 محتوى تفاعلي يُشاهد ويُفحص', '02 قياس وإتقان يكشف الفجوات', '03 ذكاء أكاديمي يقترح الخطوة التالية'],
-    barActive: 0,
-  },
-  {
-    id: 'why',
-    meta: 'لماذا مدارك',
-    label: 'الفكرة',
-    title: <>المعرفة <em>منظومة</em>، لا مواد متفرّقة</>,
-    lede: 'حين تتصل المحاضرة بالقياس، والقياس بخطة المراجعة، يتعلّم الطالب بجهد أقلّ وفهمٍ أبقى.',
-    compare: true,
-  },
-  {
-    id: 'first',
-    meta: 'من أوّل درس',
-    label: 'الخطوة الأولى',
-    title: <>تشاهد، فتُقاس، <em>ثم تتقن</em></>,
-    lede: 'المحاضرة التفاعلية نقطة البداية: بنقاط فحص تُثبّت الفهم، وحضور يُحتسب تلقائيًا عند الإكمال.',
-    barActive: 1,
-  },
-  {
-    id: 'measure',
-    meta: 'قياس يخدم التعلّم',
-    label: 'القياس',
-    title: <>قياسٌ <em>يخدم التعلّم</em>، لا المراقبة</>,
-    lede: 'تصحيح تلقائي للموضوعي، وتصحيح المقالات بملاحظات مكتوبة — والمصفوفة تربط كل درجة بالدرس الذي يحتاجه الطالب.',
-    bullets: ['اختيار متعدد · صح/خطأ · إجابة قصيرة · مقالة', 'المصفوفة تكشف الفجوة وتربطها بالمحتوى'],
-    barActive: 2,
-  },
-  {
-    id: 'whole',
-    meta: 'خمسة أدوار · عزل بيانات كامل',
-    label: 'منظومة متكاملة',
-    title: <>منظومةٌ تعمل اليوم — <em>وتتّسع غدًا</em></>,
-    lede: 'خمسة أدوار بمسارات وصلاحيات منفصلة، وبيانات كل مؤسّسة معزولة تمامًا، ومساعد يعرف مقرَّراتك ودرجاتك.',
-  },
-];
-
-/* Frame boundaries: frame i is fully in at IN[i], fades out by OUT[i].
- * The stage's --sp measures the PINNED window (top-at-viewport-top →
- * bottom-at-viewport-bottom — the reference's own pin span), so each
- * scene dwells ~1 viewport. Frame 0 enters slightly negative so it is
- * fully visible the moment the stage pins. */
-const FRAME_IN = [-0.06, 0.17, 0.34, 0.51, 0.68, 0.84];
-const FRAME_OUT = [0.2, 0.37, 0.54, 0.71, 0.87, 1.05];
-
-/* ── Capability bar (the reference's 01–06 checklist grammar). */
-const CAPABILITY_BAR = [
-  { n: '01', t: 'المحتوى' },
-  { n: '02', t: 'المصفوفة' },
-  { n: '03', t: 'التقييم' },
-  { n: '04', t: 'البحوث' },
-  { n: '05', t: 'الرسائل' },
-  { n: '06', t: 'المساعد' },
-];
-
-/* ── Product cards (المنظومة slider). */
-const PRODUCTS = [
-  {
-    n: '01', img: '/brand/card-content.webp', title: 'المحتوى والمحاضرات',
-    lede: 'محاضرات مسجَّلة بنقاط فحص مدمجة — الحضور يُحتسب تلقائيًا عند الإكمال، والفهم يُبنى بوتيرة الطالب.',
-    tags: ['محاضرات', 'نقاط فحص', 'حضور تلقائي'],
-    icon: BookOpenCheck,
-  },
-  {
-    n: '02', img: '/brand/card-assessment.webp', title: 'القياس والاختبارات',
-    lede: 'أربعة أنواع أسئلة بتصحيح تلقائي للموضوعي، وتصحيح المقالات بملاحظات مكتوبة — والنتائج تتصل مباشرة بالمصفوفة.',
-    tags: ['اختيار متعدد', 'صح/خطأ', 'إجابة قصيرة', 'مقالة'],
-    icon: ClipboardCheck,
-  },
-  {
-    n: '03', img: '/brand/card-ai.webp', title: 'الذكاء الأكاديمي',
-    lede: 'مساعد يعرف مقرَّراتك ومحاضراتك ودرجاتك: شروحات مخصَّصة، وتحديد فجوات، وخطط مراجعة حسب أدائك الفعلي.',
-    tags: ['شروحات', 'فجوات معرفية', 'خطط مراجعة'],
-    icon: Brain,
-  },
-];
-
-/* ── Proof stat cards (ما يعمل اليوم) — r192: three computed truths.
- * The operator-rejected «١٠٠٪ بيانات عرض معلَنة» design-slot card is
- * GONE; the demo-data disclosure lives where it belongs — one quiet
- * line in the hero telemetry and the footer about text. Every number
- * below is computed from this table or hard product truth. */
-/** r191 responsive art: every generated brand image ships a -480 webp
- *  twin — mobile viewports fetch ~10KB variants instead of the 960w art
- *  (the audit's bytes-transferred axis measures the real selection). */
-const srcset480 = (src: string) => {
-  const m = src.match(/^(.*)\.webp$/);
-  return m ? `${m[1]}-480.webp 480w, ${src} 960w` : src;
-};
-
-const PROOF_CARDS = [
-  { n: String(LIVE_COUNT), unit: 'قدرات', sub: 'تعمل الآن — موثَّقة في دليل الميزات', img: '/brand/card-assessment.webp' },
-  { n: '5', unit: 'أدوار', sub: 'مسارات وصلاحيات منفصلة لكل دور', img: '/brand/journey-institution.webp' },
-  { n: '4', unit: 'أنواع أسئلة', sub: 'بتصحيح تلقائي للأسئلة الموضوعية', img: '/brand/card-content.webp' },
-];
-
-/* ── Role cards (لمن صُنعت) — three reader-facing journeys + the honest
- * quiet row for the two oversight roles. */
-const ROLE_CARDS = [
-  {
-    img: '/brand/journey-student.webp', icon: GraduationCap, tag: 'للطالب',
-    title: 'رحلة تعلّم شخصية',
-    lede: 'مقرَّراتك وتقدُّمك وفجواتك وإنجازاتك في مكان واحد — ومساعد يقترح خطوة المراجعة التالية.',
-  },
-  {
-    img: '/brand/journey-teacher.webp', icon: Brain, tag: 'للأستاذ',
-    title: 'أدوات تدريس وقياس',
-    lede: 'بناء المحاضرات والاختبارات، متابعة الطلاب، تصحيح معلَّم للمقالات، ومراجعة البحوث — ببضع نقرات.',
-  },
-  {
-    img: '/brand/journey-institution.webp', icon: Building2, tag: 'للإدارة',
-    title: 'إدارة مؤسّستك كاملة',
-    lede: 'الكليات والأقسام والمقرَّرات والمستخدمون والصلاحيات — وتقارير حيّة على مستوى المؤسّسة.',
-  },
-];
+/* ── Computed truths (BLUEPRINT §6 sources): 25 colleges in 3 campuses
+ * from the real registry; 11 training tracks (TrainingPages); 6 quality
+ * boards (quality.routes); 2 isolated institutions (OwnerInstitutionsPage). */
+const CAMPUS_COUNT = new Set(colleges.map((c) => c.cityAr ?? '')).size;
+const TRAINING_TRACKS = 11;   // verified in pages/student/TrainingPages.tsx
+const QUALITY_BOARDS = 6;     // verified in backend quality.routes
+const INSTITUTIONS = 2;       // verified in OwnerInstitutionsPage isolation
 
 /* ── Honest status pairs (إلى أين) — natural wording for the ledger's
  * local/sim/soon rows; no operational jargon, no invented claims. */
@@ -199,6 +64,187 @@ const VISION_STATUS = [
   { k: 'فحص نزاهة البحوث', v: 'محاكاة — النتائج معلَّمة بوضوح', live: false },
   { k: 'المعامل الافتراضية', v: 'قيد التطوير — فهرس للاستعراض دون تشغيل بعد', live: false },
   { k: 'مزامنة بيانات المؤسّسات', v: 'وضع محدود — قيد التوسعة', live: false },
+];
+
+/* ── Roles strip: the five verified roles, one line each. */
+const ROLES = [
+  { role: 'للطالب', line: 'رحلة تعلّم شخصية — من المحاضرة الأولى إلى الإتقان' },
+  { role: 'للأستاذ', line: 'بناء المحاضرات والاختبارات، وتصحيح بملاحظات، ومتابعة الطلاب' },
+  { role: 'للإدارة', line: 'الكليات والأقسام والمقرَّرات والصلاحيات، وتقارير حيّة' },
+  { role: 'لضمان الجودة', line: 'مجالس الجودة والمعايرة وتقارير الالتزام' },
+  { role: 'لمالك المنصّة', line: 'الحاكمية والمؤسّسات وسجلّ التدقيق' },
+];
+
+/* ── Miniature — the honest demo frame each chapter pairs with.
+ * Composed from the app's own tokens and recipes (surface/border/radius/
+ * elevation + Western digits via utils/numbers) — never screenshots. */
+function Mini({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <figure className="mini" aria-label={`عرض توضيحي — ${label}`}>
+      <div className="mini-body">{children}</div>
+      <figcaption className="mini-caption">عرض توضيحي</figcaption>
+    </figure>
+  );
+}
+
+function MiniPlayer() {
+  return (
+    <Mini label="المحاضرة التفاعلية">
+      <div className="mini-title-row">
+        <span className="mini-course">أحياء · الوحدة الثانية</span>
+        <span className="mini-lecture">المحاضرة 04</span>
+      </div>
+      <div className="mini-video">
+        <Icon icon={PlayCircle} size={28} />
+        <span className="mini-video-time" dir="ltr">12:36</span>
+        <span className="mini-video-bar" aria-hidden><span style={{ inlineSize: '65%' }} /></span>
+      </div>
+      <div className="mini-quiz">
+        <p className="mini-quiz-q">نقطة فحص: أيُّ عضية تنتج طاقة الخلية؟</p>
+        <div className="mini-quiz-opts">
+          <span className="mini-opt is-right"><Icon icon={Check} size={12} /> الميتوكوندريا</span>
+          <span className="mini-opt">الرايبوسوم</span>
+        </div>
+      </div>
+      <p className="mini-foot">الحضور يُحتسب تلقائيًا عند الإكمال — والتقدُّم {formatPct1(65)}%</p>
+    </Mini>
+  );
+}
+
+function MiniMatrix() {
+  const rows = [
+    { name: 'النهايات', v: 82, state: 'متقن' },
+    { name: 'الاشتقاق', v: 54, state: 'قيد التحسين' },
+    { name: 'التكامل', v: 31, state: 'فجوة' },
+  ];
+  return (
+    <Mini label="مصفوفة الإتقان">
+      {rows.map((r) => (
+        <div key={r.name} className="mini-mx-row">
+          <span className="mini-mx-name">{r.name}</span>
+          <span className="mini-mx-bar" aria-hidden><span style={{ inlineSize: `${r.v}%` }} /></span>
+          <span className="mini-mx-val" dir="ltr">{formatPct1(r.v)}%</span>
+          <span className={`mini-chip${r.v >= 75 ? ' is-ok' : r.v < 40 ? ' is-gap' : ''}`}>{r.state}</span>
+        </div>
+      ))}
+      <p className="mini-foot">الخطوة التالية: محاضرة «التكامل الأساسية» — مقترحة حسب فجوتك.</p>
+    </Mini>
+  );
+}
+
+function MiniResearch() {
+  return (
+    <Mini label="دورة البحوث">
+      <div className="mini-doc">
+        <p className="mini-doc-title">بحث: معالجة المياه بالتناضح العكسي</p>
+        <span className="mini-doc-line" style={{ inlineSize: '92%' }} aria-hidden />
+        <span className="mini-doc-line" style={{ inlineSize: '78%' }} aria-hidden />
+        <span className="mini-doc-line" style={{ inlineSize: '85%' }} aria-hidden />
+        <span className="mini-doc-pin"><Icon icon={PenLine} size={11} /> ملاحظة المشرف</span>
+      </div>
+      <ol className="mini-steps" dir="rtl">
+        <li className="is-done"><span className="fo-mono" dir="ltr">01</span> تقديم PDF</li>
+        <li className="is-done"><span className="fo-mono" dir="ltr">02</span> فحص محاكاة معلَن</li>
+        <li className="is-now"><span className="fo-mono" dir="ltr">03</span> تحقيق مشروح</li>
+        <li><span className="fo-mono" dir="ltr">04</span> المكتبة</li>
+      </ol>
+    </Mini>
+  );
+}
+
+function MiniExam() {
+  return (
+    <Mini label="الاختبارات الإلكترونية">
+      <div className="mini-title-row">
+        <span className="mini-course">اختبار الوحدة الثانية</span>
+        <span className="mini-lecture"><Icon icon={Timer} size={12} /> 45 دقيقة</span>
+      </div>
+      <p className="mini-quiz-q">سؤال 6 من 20 — اختر الإجابة الصحيحة:</p>
+      <div className="mini-quiz-opts">
+        <span className="mini-opt">خيار أ</span>
+        <span className="mini-opt is-right"><Icon icon={Check} size={12} /> خيار ب</span>
+        <span className="mini-opt">خيار ج</span>
+        <span className="mini-opt">خيار د</span>
+      </div>
+      <p className="mini-foot">أربعة أنواع أسئلة · مطابقة صارمة للإجابات · تصحيح تلقائي للموضوعي</p>
+    </Mini>
+  );
+}
+
+function MiniCommunity() {
+  return (
+    <Mini label="المجتمع والتدريب">
+      <div className="mini-post">
+        <span className="mini-avatar" aria-hidden />
+        <div>
+          <p className="mini-post-title"><Icon icon={Users} size={12} /> نقاش: كيف تراجع قبل الاختبار؟</p>
+          <p className="mini-post-meta">وسوم: مراجعة · اختبارات — 12 ردًّا</p>
+        </div>
+      </div>
+      <div className="mini-post">
+        <span className="mini-avatar is-accent" aria-hidden />
+        <div>
+          <p className="mini-post-title">مسار الإحصاء التطبيقي</p>
+          <p className="mini-post-meta">{formatInt(TRAINING_TRACKS)} مسارًا تدريبيًا · {formatInt(240)} نقطة · شارة برونزية</p>
+        </div>
+      </div>
+    </Mini>
+  );
+}
+
+function MiniGovernance() {
+  const stats = [
+    { n: formatInt(QUALITY_BOARDS), t: 'مجالس جودة' },
+    { n: formatInt(INSTITUTIONS), t: 'مؤسّستَان معزولتان' },
+    { n: formatInt(colleges.length), t: 'كلية معروضة' },
+  ];
+  return (
+    <Mini label="الجودة والحاكمية">
+      <div className="mini-stats">
+        {stats.map((s) => (
+          <div key={s.t} className="mini-stat">
+            <span className="mini-stat-n fo-mono" dir="ltr">{s.n}</span>
+            <span className="mini-stat-t">{s.t}</span>
+          </div>
+        ))}
+      </div>
+      <p className="mini-foot">قفل حاكمية يوثّق آخر تعديل من المالك · سجل تدقيق كامل</p>
+    </Mini>
+  );
+}
+
+/* ── Chapters 01–06 (BLUEPRINT §6) — alternating poster layouts. */
+const CHAPTERS: { num: string; title: string; lede: React.ReactNode; layout: 'split' | 'bleed' | 'offset'; mini: React.ReactNode }[] = [
+  {
+    num: '01', layout: 'split', mini: <MiniPlayer />,
+    title: 'الفصول المقلوبة',
+    lede: 'محاضرة مسجَّلة بنقاط فحص تُثبِّت الفهم، واختبار قصير يُصحَّح تلقائيًا، وحضورٌ يُحتسب عند الإكمال.',
+  },
+  {
+    num: '02', layout: 'bleed', mini: <MiniMatrix />,
+    title: 'مصفوفة الإتقان',
+    lede: 'لكل مفهوم درجة إتقان؛ المصفوفة تكشف الفجوة وتربطها بالدرس — والمساعد يقترح شروحات مخصَّصة وخطط مراجعة حسب أدائك الفعلي.',
+  },
+  {
+    num: '03', layout: 'split', mini: <MiniResearch />,
+    title: 'دورة البحوث',
+    lede: 'قدِّم بحثك PDF، ويُفحص بفحص نزاهة محاكاة معلَن، ثم يصل أستاذك بملاحظات مشروحة، فتُفهرَس في مكتبة تبحث بالعربية.',
+  },
+  {
+    num: '04', layout: 'offset', mini: <MiniExam />,
+    title: 'الاختبارات الإلكترونية',
+    lede: 'بنك أسئلة بأربعة أنواع، وقوالب اختبارات جاهزة، ومحاولات بمطابقة صارمة للإجابات.',
+  },
+  {
+    num: '05', layout: 'split', mini: <MiniCommunity />,
+    title: 'المجتمع والتدريب',
+    lede: <>منشورات بوسوم وإعلانات مشتركة، ومسابقات وفعاليات، و{formatInt(TRAINING_TRACKS)} مسارًا تدريبيًا بنقاط وشارات ولوحة صدارة.</>,
+  },
+  {
+    num: '06', layout: 'bleed', mini: <MiniGovernance />,
+    title: 'الجودة والحاكمية',
+    lede: <>{formatInt(QUALITY_BOARDS)} مجالسَ للجودة، وقفل حاكمية يوثّق آخر تعديل من مالك المنصّة، وعزل تامّ لبيانات كل مؤسّسة.</>,
+  },
 ];
 
 export default function LandingPage() {
@@ -226,51 +272,15 @@ export default function LandingPage() {
   const headerRef = useRef<HTMLElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
-  /* ── r191 scroll-choreography wiring ─────────────────────────────
-   * Each stage container carries ONE --sp progress var written by
-   * useScrollStage (rAF-coalesced, passive); CSS derives every motion. */
-  const megaRef = useScrollStage<HTMLElement>({ startOffset: 0, endOffset: 1 });
-  // r192: the stat cards must arrive WITH the section (the reference's
-  // staged metrics are visible as the stage slides in) — startOffset 0
-  // kept them invisible until the pin engaged, showing an empty band
-  // under the header during approach (measured: 0 cards at 260px-in).
-  const proofRef = useScrollStage<HTMLElement>({ startOffset: 1, endOffset: 1 });
-  const visionRef = useScrollStage<HTMLElement>();
-  // r193: the footer is the document's LAST element — the default
-  // endOffset 0 (progress 1 = bottom at viewport TOP) is unreachable at
-  // document end, so the closing wordmark's rush froze at ~4% opacity /
-  // +93px (QA-measured at 390 and 1440). endOffset 1 completes the rush
-  // exactly when the page bottoms out — the same unreachable-end fix the
-  // proof stage got in r192.
+  /* ── r198 scroll wiring: the hero drifts (--sp on the hero section),
+   * the footer wordmark rushes up (--sp on the footer). Both are pure
+   * CSS calc consumers; chapters/sections reveal via IO (useReveal). */
+  const heroRef = useScrollStage<HTMLElement>();
   const footerRef = useScrollStage<HTMLElement>({ startOffset: 1, endOffset: 1 });
-  const productsRef = useRef<HTMLDivElement>(null);
 
-  // Which mega frame is active (for aria only — visuals stay CSS-driven;
-  // setState fires at most once per frame change, never per scroll tick).
-  const [activeFrame, setActiveFrame] = useState(0);
-  // Pinned mode = desktop-ish viewport + motion allowed. In flow mode
-  // (mobile / reduced motion) all frames read in normal document order.
-  const [pinnedMode, setPinnedMode] = useState(false);
-
-  // Returning-visitor calm: first session visit plays the full intro;
-  // later visits this session skip straight to the calm state.
-  const [introSeen] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    try {
-      return window.sessionStorage.getItem('madarek.intro.seen') === '1';
-    } catch {
-      return false;
-    }
-  });
-
-  useEffect(() => {
-    if (redirectHome || introSeen) return;
-    try {
-      window.sessionStorage.setItem('madarek.intro.seen', '1');
-    } catch {
-      // sessionStorage may be blocked in private mode — that's fine.
-    }
-  }, [redirectHome, introSeen]);
+  // The colleges constellation: which college the chip row selected.
+  const [selectedCollege, setSelectedCollege] = useState<string | null>(colleges[0]?.slug ?? null);
+  const selected = colleges.find((c) => c.slug === selectedCollege) ?? null;
 
   /* r162 (R2) → r164b: warm the AUTH BOUNDARIES while the visitor reads
    * the hero (prod only — dev has no chunk splitting to warm). */
@@ -309,17 +319,6 @@ export default function LandingPage() {
         const p = max > 0 ? Math.min(1, y / max) : 0;
         bar.style.setProperty('--p', p.toFixed(4));
       }
-      // active mega frame (aria only) from the same coalesced tick
-      const mega = megaRef.current;
-      if (mega) {
-        const sp = parseFloat(mega.style.getPropertyValue('--sp') || '0');
-        let idx = 0;
-        for (let i = FRAME_IN.length - 1; i >= 0; i--) {
-          const inAt = FRAME_IN[i];
-          if (inAt !== undefined && sp >= inAt) { idx = i; break; }
-        }
-        setActiveFrame((prev) => (prev === idx ? prev : idx));
-      }
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(apply);
@@ -331,40 +330,14 @@ export default function LandingPage() {
       window.removeEventListener('scroll', onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Pinned mode: viewport ≥901px AND motion allowed. Everything else
-  // stacks the frames in normal flow (the reference's own mobile
-  // behavior — measured: position:relative on mobile, no pinning).
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 901px)');
-    const rm = window.matchMedia('(prefers-reduced-motion: no-preference)');
-    const sync = () => setPinnedMode(mq.matches && rm.matches);
-    sync();
-    mq.addEventListener('change', sync);
-    rm.addEventListener('change', sync);
-    return () => {
-      mq.removeEventListener('change', sync);
-      rm.removeEventListener('change', sync);
-    };
-  }, []);
-
-  // Products slider: RTL-snap scroll + arrow controls (no state).
-  const scrollProducts = (dir: 1 | -1) => {
-    const el = productsRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLElement>('.pd-card');
-    const step = card ? card.offsetWidth + 24 : el.clientWidth * 0.8;
-    el.scrollBy({ left: dir * step, behavior: 'smooth' });
-  };
 
   if (redirectHome) return <Navigate to={redirectHome} replace />;
 
   const year = new Date().getFullYear();
 
   return (
-    <div className="landing" data-intro-seen={introSeen ? 'true' : undefined}>
+    <div className="landing">
 
       {/* P3-24: skip-to-content — first Tab stop, hidden until focused. */}
       <a href="#main" className="fo-skip-link">تخطَّ إلى المحتوى</a>
@@ -386,10 +359,9 @@ export default function LandingPage() {
           </Link>
 
           <nav className="fo-nav" aria-label="التنقل الرئيسي">
-            <a href="#journey" className="fo-nav-link">كيف تعمل</a>
-            <a href="#system" className="fo-nav-link">المنظومة</a>
+            <a href="#chapters" className="fo-nav-link">الفصول</a>
             <a href="#live" className="fo-nav-link">ما يعمل اليوم</a>
-            <a href="#roles" className="fo-nav-link">لمن صُنعت</a>
+            <a href="#colleges" className="fo-nav-link">الكليات</a>
           </nav>
 
           <div className="fo-header-actions">
@@ -430,10 +402,10 @@ export default function LandingPage() {
               }
             }}
           >
-            <a href="#journey" className="btn ghost">كيف تعمل</a>
-            <a href="#system" className="btn ghost">المنظومة</a>
+            <a href="#chapters" className="btn ghost">الفصول</a>
             <a href="#live" className="btn ghost">ما يعمل اليوم</a>
-            <a href="#roles" className="btn ghost">لمن صُنعت</a>
+            <a href="#roles" className="btn ghost">الأدوار</a>
+            <a href="#colleges" className="btn ghost">الكليات</a>
             <div
               className="fo-mobile-theme"
               onClick={(e) => e.stopPropagation()}
@@ -452,44 +424,23 @@ export default function LandingPage() {
 
       <main id="main" tabIndex={-1}>
 
-        {/* ═══ النقطة — the 1-viewport cinematic hero ═══ */}
-        <section className="fo-hero" aria-label="مدارك — منصّة التعليم الذكي">
-          <div className="fo-hero-stage" aria-hidden>
-            {/* r192: the art panel is min(58%, 700px) — not full-bleed
-                (r191's sizes=100vw fetched the 1344w master for a
-                700px box on DPR-1 desktops). The declared sizes now
-                say what renders. */}
-            <img
-              className="fo-hero-art"
-              src="/brand/hero-scene.webp"
-              srcSet="/brand/hero-scene-720.webp 720w, /brand/hero-scene.webp 1344w"
-              sizes="(max-width: 960px) 100vw, (max-width: 1280px) 640px, 700px"
-              alt=""
-              decoding="async"
-              fetchPriority="high"
-            />
-            <OrbitPath className="fo-orbit-path" />
-          </div>
-
+        {/* ═══ الملصق — the poster hero ═══ */}
+        <section className="fo-hero" aria-label="مدارك — منصّة التعليم الذكي" ref={heroRef}>
           <div className="fo-hero-grid">
             <div className="fo-hero-copy">
               <RevealCssClass as="p" className="fo-eyebrow">
                 منصّة تعليم ذكية · عربية أولًا · مستقلّة
               </RevealCssClass>
 
-              <h1 className="fo-hero-title">
-                <RevealCssClass as="span" className="fo-hero-line">
-                  كلُّ معرفةٍ تبدأ <em className="fo-dot">نقطة</em>،
-                </RevealCssClass>
-                <RevealCssClass as="span" className="fo-hero-line" delay={1}>
-                  وتنمو في <em className="fo-orbit">مدارك</em>.
-                </RevealCssClass>
-              </h1>
+              <h1 className="fo-hero-title">مدارك</h1>
+
+              <RevealCssClass as="p" className="fo-hero-triad" delay={1}>
+                تعلّم · <em>أتقن</em> · ابحث
+              </RevealCssClass>
 
               <RevealCssClass as="p" className="fo-hero-sub" delay={2}>
-                محاضرات تفاعلية، ومصفوفة معرفية، واختبارات، وبحوث، ورسائل —
-                في تجربة عربية واحدة لخمسة أدوار أكاديمية، من الطالب إلى
-                مالك المنصّة.
+                محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —
+                في تجربة عربية واحدة لخمسة أدوار أكاديمية.
               </RevealCssClass>
 
               <RevealCssClass as="div" className="fo-hero-actions" delay={3}>
@@ -497,300 +448,182 @@ export default function LandingPage() {
                   أنشئ حسابك الجامعي
                   <Icon icon={ArrowLeft} size={16} />
                 </Link>
-                <Link to="/auth" className="btn ghost lg">تسجيل الدخول</Link>
+                <a href="#chapters" className="btn ghost lg">كيف تعمل</a>
               </RevealCssClass>
 
               <RevealCssClass as="ul" className="fo-hero-meta" delay={4}>
-                <li><Icon icon={Check} size={13} /> بريدك الجامعي أو رقم قيدك</li>
-                <li aria-hidden className="fo-hero-meta-dot" />
-                <li><Icon icon={Keyboard} size={13} /> يعمل بلوحة المفاتيح</li>
-                <li aria-hidden className="fo-hero-meta-dot" />
-                <li><Icon icon={MoonStar} size={13} /> وضع فاتح وداكن</li>
+                <li>{formatInt(colleges.length)} كلية</li>
+                <li>{formatInt(CAMPUS_COUNT)} أحرُم أكاديمية</li>
+                <li>{formatInt(LIVE_COUNT)} قدرات تعمل اليوم</li>
+                <li className="fo-hero-meta-note">بيانات العرض توضيحية</li>
               </RevealCssClass>
+            </div>
+
+            {/* the ONE graphic object — flat two-tone constellation of the
+                real 25 colleges; drifts gently with the section's --sp */}
+            <div className="fo-hero-stage" aria-hidden>
+              <Constellation className="fo-hero-constellation" />
             </div>
           </div>
 
-          {/* micro-labels — the reference's corner instrument grammar:
-              001 at the start corner (RTL: bottom-right), mission sentence
-              opposite. Honest counts only. r193: both live in ONE flow row
-              (.fo-hero-instruments) pinned above the telemetry strip — the
-              old absolute positioning collided with the strip on 1440×900. */}
-          <div className="fo-hero-instruments">
-            <RevealCssClass as="div" className="fo-hero-corner fo-micro" delay={5}>
-              <span className="fo-mono">001</span> · رحلة تعلّم متكاملة
-            </RevealCssClass>
-            <RevealCssClass as="p" className="fo-hero-mission fo-micro" delay={5}>
-              من المحاضرة الأولى إلى الإتقان — منظومة واحدة تلازم رحلة الطالب.
-            </RevealCssClass>
-          </div>
-
-          {/* the quiet honest strip — replaces the old flag strip */}
-          <RevealCssClass as="ul" className="fo-telemetry" delay={5} aria-label="حقائق سريعة عن المنصّة">
-            <li className="fo-telemetry-item">
-              <span className="fo-telemetry-mark" aria-hidden />
-              <span className="fo-mono">01</span> عربية أولًا
-            </li>
-            <li className="fo-telemetry-item">
-              <span className="fo-telemetry-mark" aria-hidden />
-              <span className="fo-mono">02</span> خمسة أدوار أكاديمية
-            </li>
-            <li className="fo-telemetry-item">
-              <span className="fo-telemetry-mark" aria-hidden />
-              <span className="fo-mono">03</span> {LIVE_COUNT} قدرات تعمل اليوم
-            </li>
-            <li className="fo-telemetry-item fo-telemetry-end">
-              <span className="fo-telemetry-mark" aria-hidden />
-              <span className="fo-mono">※</span> بيانات العرض توضيحية
-            </li>
-          </RevealCssClass>
-
-          {/* scroll cue — the reference's quiet "keep going" affordance */}
+          {/* scroll cue — the quiet "keep going" affordance */}
           <div className="fo-scroll-cue" aria-hidden>
             <span className="fo-scroll-cue-dot" />
           </div>
         </section>
 
-        {/* ═══ خريطة التعلّم — the pinned mega-stage ═══
-            The reference's 9,900px pinned narrative, translated: a radial
-            knowledge map (SVG rings + nodes) that stays fixed while six
-            content frames crossfade — then unpins. Mobile / reduced
-            motion: the frames stack in normal flow (the reference's own
-            measured mobile behavior) and every word stays readable. */}
-        <section
-          id="journey"
-          className="mg-stage"
-          aria-labelledby="journey-title"
-          ref={megaRef}
-          data-pinned={pinnedMode ? 'on' : 'off'}
-        >
-          <h2 id="journey-title" className="sr-only">كيف تعمل مدارك</h2>
-
-          <div className="mg-pin" aria-hidden={pinnedMode ? undefined : false}>
-            {/* the radial map — bottom-anchored like the reference's
-                orbit map; its nodes light up as scenes resolve */}
-            <KnowledgeMap className="mg-map" />
-          </div>
-
-          {/* r191-catch: EVERY pinned layer below must live INSIDE the sticky
-              frame — meta, frames, capability bar and scale note all anchor
-              to the 100vh pin, not to the 620vh stage. */}
-          <div className="mg-pin-secondary">
-          <div className="mg-meta fo-micro" aria-hidden={pinnedMode ? undefined : true}>
-            <span className="fo-mono">002</span> · منصّة تعليمية متكاملة
-          </div>
-
-          <div className="mg-frames">
-            {MEGA_SCENES.map((sc, i) => (
-              <article
-                key={sc.id}
-                className="mg-frame"
-                style={{
-                  ['--in' as string]: FRAME_IN[i],
-                  ['--out' as string]: FRAME_OUT[i],
-                }}
-                aria-hidden={pinnedMode && i !== activeFrame ? 'true' : undefined}
-              >
-                <span className="fo-mono mg-frame-label">{sc.label}</span>
-                <h3 className="mg-frame-title">{sc.title}</h3>
-                <p className="mg-frame-lede">{sc.lede}</p>
-                {sc.bullets && (
-                  <ul className="mg-frame-bullets">
-                    {sc.bullets.map((b) => <li key={b}>{b}</li>)}
-                  </ul>
-                )}
-                {sc.compare && (
-                  <div className="mg-compare" aria-hidden>
-                    <span className="mg-compare-a">
-                      <span className="mg-compare-label">تعلّم متفرّق</span>
-                    </span>
-                    <span className="mg-compare-b">
-                      <span className="mg-compare-label">منظومة متصلة</span>
-                    </span>
-                  </div>
-                )}
-              </article>
-            ))}
-          </div>
-
-          {/* the capability bar — the reference's 01–06 checklist,
-              highlighted per scene */}
-          <div className="mg-capbar" aria-hidden={pinnedMode ? undefined : true}>
-            {CAPABILITY_BAR.map((c, i) => (
-              <span
-                key={c.n}
-                className="mg-cap"
-                data-on={pinnedMode && MEGA_SCENES[activeFrame]?.barActive === i ? 'true' : undefined}
-              >
-                <span className="fo-mono">{c.n}</span> {c.t}
-              </span>
-            ))}
-          </div>
-
-          <p className="mg-scale-note fo-micro" aria-hidden={pinnedMode ? undefined : true}>
-            خريطة توضيحية — المواضع والأحجام رمزية
-          </p>
+        {/* ═══ البيان — what Madarek does, one line per role ═══ */}
+        <section id="statement" className="st-section" aria-labelledby="statement-title">
+          <span className="fo-label">البيان</span>
+          <h2 id="statement-title" className="st-title">منصّة واحدة تخدم الرحلة كلّها</h2>
+          <div className="st-lines">
+            <RevealCssClass as="p" className="st-line">
+              <strong>للطالب:</strong> تشاهد محاضرة تفاعلية، فتُقاس فهمك لحظة بلحظة، فتعرف خطوتك التالية.
+            </RevealCssClass>
+            <RevealCssClass as="p" className="st-line" delay={1}>
+              <strong>للأستاذ:</strong> تبني المحاضرة والاختبار، وتصحّح المقالات بملاحظات مكتوبة، وترى من يحتاجك الآن.
+            </RevealCssClass>
+            <RevealCssClass as="p" className="st-line" delay={2}>
+              <strong>للإدارة:</strong> تدير الكليات والمقرَّرات والصلاحيات، وترى مؤسّستك حيّة على مستوى كل قسم.
+            </RevealCssClass>
           </div>
         </section>
 
-        {/* ═══ المنظومة — product cards slider (cream) ═══ */}
-        <section id="system" className="pd-section" aria-labelledby="system-title">
-          <header className="pd-head">
-            <span className="fo-label"><span className="fo-mono">003</span> — المنظومة</span>
-            <RevealCssClass as="h2" className="pd-title" delay={1} id="system-title">
-              ما تجده في مدارك — <em>منظومة واحدة متكاملة</em>
+        {/* ═══ الفصول 01–06 — one capability per chapter ═══ */}
+        <section id="chapters" className="chapters" aria-labelledby="chapters-title">
+          <header className="chapters-head">
+            <span className="fo-label">الفصول</span>
+            <RevealCssClass as="h2" className="chapters-title" delay={1} id="chapters-title">
+              ستُّ فصول — كلُّ فصلٍ قدرةٌ تعمل اليوم
             </RevealCssClass>
-            <RevealCssClass as="p" className="pd-lede" delay={2}>
-              كل قدرة تُبنى على التي قبلها: تشاهد، فتُقاس، فتُوجَّه، ثم تتقن.
+            <RevealCssClass as="p" className="chapters-lede" delay={2}>
+              لا لقطات شاشة ولا وعود: كل فصل يعرض واجهة مبنية من مكوّنات المنصّة نفسها ببيانات توضيحية.
             </RevealCssClass>
           </header>
 
-          <div className="pd-slider-wrap">
-            <div className="pd-slider" ref={productsRef} role="group" aria-label="بطاقات المنظومة" tabIndex={0}>
-              {PRODUCTS.map((p) => (
-                <article key={p.n} className="pd-card">
-                  <figure className="pd-card-media">
-                    <img src={p.img} srcSet={srcset480(p.img)} sizes="(max-width: 900px) 88vw, 560px" alt="" loading="lazy" decoding="async" />
-                    <span className="fo-mono pd-card-n">{p.n}</span>
-                  </figure>
-                  <div className="pd-card-body">
-                    <h3 className="pd-card-title"><Icon icon={p.icon} size={18} /> {p.title}</h3>
-                    <p className="pd-card-lede">{p.lede}</p>
-                    <ul className="pd-card-tags">
-                      {p.tags.map((t) => <li key={t} className="fo-mono">{t}</li>)}
-                    </ul>
-                  </div>
-                </article>
-              ))}
-            </div>
-            <div className="pd-arrows">
-              <button type="button" className="pd-arrow" aria-label="البطاقة التالية" onClick={() => scrollProducts(-1)}>
-                <Icon icon={ArrowRight} size={18} />
-              </button>
-              <button type="button" className="pd-arrow" aria-label="البطاقة السابقة" onClick={() => scrollProducts(1)}>
-                <Icon icon={ArrowLeft} size={18} />
-              </button>
-            </div>
-          </div>
+          {CHAPTERS.map((ch) => (
+            <article key={ch.num} className={`ch ch--${ch.layout}`} aria-labelledby={`ch-${ch.num}-title`}>
+              <header className="ch-head">
+                <span className="ch-num fo-mono" dir="ltr" aria-hidden>{ch.num}</span>
+                <RevealCssClass as="h3" className="ch-title" id={`ch-${ch.num}-title`} delay={1}>
+                  {ch.title}
+                </RevealCssClass>
+                <RevealCssClass as="p" className="ch-lede" delay={2}>{ch.lede}</RevealCssClass>
+              </header>
+              <RevealCssClass as="div" className="ch-mini" delay={2}>{ch.mini}</RevealCssClass>
+            </article>
+          ))}
         </section>
 
-        {/* ═══ ما يعمل اليوم — the pinned honest proof ═══
-            The reference's staggered stat march, told with numbers the
-            code can stand behind (computed above); the demo-data
-            transparency card is deliberate honesty, not decoration. */}
-        <section id="live" className="pf-stage" aria-labelledby="live-title" ref={proofRef} data-pinned={pinnedMode ? 'on' : 'off'}>
-          <div className="pf-pin">
-            <header className="pf-head">
-              <span className="fo-label"><span className="fo-mono">004</span> — ما يعمل اليوم</span>
-              <h2 className="pf-title" id="live-title">
-                قدرات <em>موثَّقة</em>، لا ادّعاءات
-              </h2>
-              <p className="pf-lede fo-micro">
-                كل رقم يُحسب من حالة الميزات في النظام — يتغيّر مع التحديثات، لا مع الحملات.
-              </p>
-            </header>
-
-            <ul className="pf-cards">
-              {PROOF_CARDS.map((c, i) => (
-                <li
-                  key={c.unit}
-                  className="pf-card"
-                  style={{ ['--ci' as string]: i }}
-                  aria-hidden={false}
-                >
-                  <figure className="pf-card-media">
-                    <img src={c.img} srcSet={srcset480(c.img)} sizes="(max-width: 900px) 88vw, 500px" alt="" loading="lazy" decoding="async" />
-                  </figure>
-                  <p className="pf-card-n">
-                    <strong className="fo-mono">{c.n}</strong>
-                    <span className="pf-card-unit">{c.unit}</span>
-                  </p>
-                  <p className="pf-card-sub">{c.sub}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
+        {/* ═══ ما يعمل اليوم — the honest capability ledger ═══ */}
+        <section id="live" className="lv-section" aria-labelledby="live-title">
+          <span className="fo-label">ما يعمل اليوم</span>
+          <RevealCssClass as="h2" className="lv-title" delay={1} id="live-title">
+            قدرات <em>موثَّقة</em>، لا ادّعاءات
+          </RevealCssClass>
+          <RevealCssClass as="p" className="lv-lede" delay={2}>
+            كل رقم يُحسب من حالة الميزات في النظام — يتغيّر مع التحديثات، لا مع الحملات.
+          </RevealCssClass>
+          <ol className="lv-list">
+            {LIVE_CAPABILITIES.map((cap, i) => (
+              <RevealCssClass as="li" key={cap} className="lv-row" delay={((i % 3) + 1) as 1 | 2 | 3}>
+                <span className="fo-mono lv-num" dir="ltr" aria-hidden>{String(i + 1).padStart(2, '0')}</span>
+                <span className="lv-text">{cap}</span>
+                <span className="lv-check" aria-hidden><Icon icon={Check} size={14} /></span>
+              </RevealCssClass>
+            ))}
+          </ol>
         </section>
 
-        {/* ═══ لمن صُنعت — role cards (cream) ═══ */}
+        {/* ═══ الأدوار — the five verified roles, one strip ═══ */}
         <section id="roles" className="rl-section" aria-labelledby="roles-title">
-          <header className="pd-head">
-            <span className="fo-label"><span className="fo-mono">005</span> — لمن صُنعت</span>
-            <RevealCssClass as="h2" className="pd-title" delay={1} id="roles-title">
-              منصّة واحدة، <em>خمسة مسارات</em>
-            </RevealCssClass>
-          </header>
-
-          <ul className="rl-cards">
-            {ROLE_CARDS.map((r, i) => (
-              <RevealCssClass as="li" key={r.tag} className="rl-card" delay={((i % 3) + 1) as 1 | 2 | 3}>
-                <figure className="rl-card-media">
-                  <img src={r.img} srcSet={srcset480(r.img)} sizes="(max-width: 900px) 88vw, 360px" alt="" loading="lazy" decoding="async" />
-                </figure>
-                <div className="rl-card-body">
-                  <span className="rl-card-tag"><Icon icon={r.icon} size={14} /> {r.tag}</span>
-                  <h3 className="rl-card-title">{r.title}</h3>
-                  <p className="rl-card-lede">{r.lede}</p>
-                </div>
+          <span className="fo-label">الأدوار</span>
+          <RevealCssClass as="h2" className="rl-title" delay={1} id="roles-title">
+            منصّة واحدة، <em>خمسة مسارات</em>
+          </RevealCssClass>
+          <ul className="rl-strip">
+            {ROLES.map((r, i) => (
+              <RevealCssClass as="li" key={r.role} className="rl-item" delay={((i % 3) + 1) as 1 | 2 | 3}>
+                <span className="rl-item-role">{r.role}</span>
+                <span className="rl-item-line">{r.line}</span>
               </RevealCssClass>
             ))}
           </ul>
-
           <RevealCssClass as="p" className="rl-more" delay={3}>
-            ولضمان الجودة ومالك المنصّة: مساحتان للمتابعة بصلاحيات منفصلة —
-            بهما تكتمل الأدوار الخمسة.
+            بيانات كل مؤسّسة معزولة تمامًا — والصلاحيات منفصلة دورًا بدور.
           </RevealCssClass>
         </section>
 
-        {/* ═══ إلى أين — the parallax vision stage ═══
-            The reference's Starforge grammar: giant brand wordmark over a
-            parallax backdrop, body column, and honest status pairs. */}
-        <section className="vs-section" aria-labelledby="vs-title" ref={visionRef}>
-          <div className="vs-bg" aria-hidden>
-            <img src="/brand/vision-bg.webp" srcSet="/brand/vision-bg-768.webp 768w, /brand/vision-bg.webp 1344w" sizes="100vw" alt="" loading="lazy" decoding="async" />
-          </div>
-          <div className="vs-inner">
-            <span className="fo-label vs-label"><span className="fo-mono">006</span> — إلى أين</span>
-            <h2 className="vs-wordmark" aria-hidden="true">مدارك</h2>
-            <div className="vs-copy">
-              <RevealCssClass as="h3" className="vs-title" delay={1} id="vs-title">
-                نحو تعليمٍ <em>يعرف كلَّ طالب</em>
-              </RevealCssClass>
-              <RevealCssClass as="p" className="vs-lede" delay={2}>
-                نبني منظومة تتذكّر ما شاهد الطالب وما أخطأ وما ينقصه —
-                ثم تقترح الخطوة التالية. بلا أرقام مختلقة ولا وعود بلا تنفيذ:
-                كل حالة أدناه كما هي في النظام اليوم.
-              </RevealCssClass>
-              <RevealCssClass as="ul" className="vs-status" delay={3}>
-                {VISION_STATUS.map((s) => (
-                  <li key={s.k} className={s.live ? 'is-live' : undefined}>
-                    <span className="vs-status-k"><Icon icon={s.live ? Check : FlaskConical} size={13} /> {s.k}</span>
-                    <span className="vs-status-v">{s.v}</span>
+        {/* ═══ الكليات — the interactive constellation ═══
+            The SVG stays decorative (aria-hidden); interaction lives in the
+            accessible chip row: 25 real colleges, keyboard-operable, with a
+            details panel instead of a floating popover (44px targets). */}
+        <section id="colleges" className="cg-section" aria-labelledby="cg-title">
+          <span className="fo-label">الجامعة التجريبية</span>
+          <RevealCssClass as="h2" className="cg-title" delay={1} id="cg-title">
+            {formatInt(colleges.length)} كلية في {formatInt(CAMPUS_COUNT)} أحرُم
+          </RevealCssClass>
+          <RevealCssClass as="p" className="cg-lede" delay={2}>
+            بيانات العرض تخصّ «جامعة مدارك التجريبية» — مؤسّسة اصطناعية بالكامل،
+            وبنية الكليات كاملة معروضة داخل المنصّة.
+          </RevealCssClass>
+
+          <div className="cg-stage">
+            <div className="cg-map" aria-hidden>
+              <Constellation interactive selectedSlug={selectedCollege} className="cg-constellation" />
+            </div>
+
+            <div className="cg-panel-wrap">
+              <ul className="cg-chips" aria-label="اختر كلية لاستعراضها">
+                {colleges.map((c) => (
+                  <li key={c.slug}>
+                    <button
+                      type="button"
+                      className="cg-chip"
+                      aria-pressed={selectedCollege === c.slug}
+                      onClick={() => setSelectedCollege(c.slug)}
+                    >
+                      {c.nameAr}
+                    </button>
                   </li>
                 ))}
-              </RevealCssClass>
+              </ul>
+
+              {selected && (
+                <aside className="cg-panel" aria-live="polite">
+                  <p className="cg-panel-name">{selected.nameAr}</p>
+                  <p className="cg-panel-campus">{selected.cityAr} · {selected.nameEn}</p>
+                  <Link to="/colleges" className="btn ghost sm">استعراض في صفحة الكلّيّات</Link>
+                </aside>
+              )}
             </div>
+          </div>
+
+          <div className="cg-cta-row">
+            <Link to="/colleges" className="btn ghost">تصفّح الكلّيّات التجريبية</Link>
+            <Link to="/auth" className="fo-text-link">سجِّل الدخول لاستعراض كليّتك داخل المنصّة</Link>
           </div>
         </section>
 
-        {/* ═══ مبدأ مدارك — the quote card ═══ */}
-        <section id="qt" className="qt-section" aria-labelledby="qt-title">
-          <figure className="qt-card">
-            <div className="qt-corners" aria-hidden>
-              <span className="qt-corner qt-c-tl" /><span className="qt-corner qt-c-br" />
-            </div>
-            <div className="qt-media">
-              <img src="/brand/orbit-ring.webp" srcSet="/brand/orbit-ring-480.webp 480w, /brand/orbit-ring.webp 800w" sizes="(max-width: 900px) 88vw, 380px" alt="" loading="lazy" decoding="async" />
-            </div>
-            <blockquote className="qt-body">
-              <RevealCssClass as="p" className="qt-text" delay={1}>
-                «بُنيت مدارك على مبدأ واحد: أن يعرف الطالب ما ينقصه،
-                وأن تصدق المنصّة فيما تعرضه.»
-              </RevealCssClass>
-              <figcaption className="qt-attribution">
-                <span className="fo-mono">—</span> مبدأ مدارك
-              </figcaption>
-            </blockquote>
-          </figure>
+        {/* ═══ إلى أين — honest status pairs ═══ */}
+        <section id="vision" className="vs-section" aria-labelledby="vs-title">
+          <span className="fo-label">إلى أين</span>
+          <RevealCssClass as="h2" className="vs-title" delay={1} id="vs-title">
+            نحو تعليمٍ <em>يعرف كلَّ طالب</em>
+          </RevealCssClass>
+          <RevealCssClass as="p" className="vs-lede" delay={2}>
+            نبني منظومة تتذكّر ما شاهد الطالب وما أخطأ وما ينقصه —
+            ثم تقترح الخطوة التالية. بلا أرقام مختلقة ولا وعود بلا تنفيذ:
+            كل حالة أدناه كما هي في النظام اليوم.
+          </RevealCssClass>
+          <RevealCssClass as="ul" className="vs-status" delay={3}>
+            {VISION_STATUS.map((s) => (
+              <li key={s.k} className={s.live ? 'is-live' : undefined}>
+                <span className="vs-status-k"><Icon icon={s.live ? Check : FlaskConical} size={13} /> {s.k}</span>
+                <span className="vs-status-v">{s.v}</span>
+              </li>
+            ))}
+          </RevealCssClass>
         </section>
 
         {/* ═══ الخاتمة ═══ */}
@@ -821,7 +654,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      {/* ── COLOPHON FOOTER — with the giant wordmark rush ── */}
+      {/* ── COLOPHON FOOTER — slide-up with the giant wordmark rush ── */}
       <footer className="fo-footer" ref={footerRef}>
         <div className="fo-footer-inner">
           <div className="fo-footer-grid">
@@ -841,9 +674,9 @@ export default function LandingPage() {
             </div>
             <nav className="fo-footer-col" aria-label="روابط المنصّة">
               <div className="fo-footer-heading">المنصّة</div>
-              <a href="#journey" className="fo-footer-link">كيف تعمل</a>
-              <a href="#system" className="fo-footer-link">المنظومة</a>
+              <a href="#chapters" className="fo-footer-link">الفصول</a>
               <a href="#live" className="fo-footer-link">ما يعمل اليوم</a>
+              <a href="#roles" className="fo-footer-link">الأدوار</a>
               <Link to="/colleges" className="fo-footer-link">الجامعة التجريبية</Link>
             </nav>
             <nav className="fo-footer-col" aria-label="روابط الحساب">
@@ -853,7 +686,7 @@ export default function LandingPage() {
             </nav>
             <nav className="fo-footer-col" aria-label="عن المشروع">
               <div className="fo-footer-heading">المشروع</div>
-              <a href="#qt" className="fo-footer-link">مبدأ مدارك والبيانات</a>
+              <a href="#vision" className="fo-footer-link">مبدأ مدارك والبيانات</a>
               <a
                 href="https://github.com/ahmadmedo1012/madarek"
                 className="fo-footer-link"
@@ -869,7 +702,7 @@ export default function LandingPage() {
             <span className="fo-mono">© {year} مدارك</span>
             <span className="fo-footer-cluster">منصّة مستقلّة · عربية أولًا</span>
           </div>
-          {/* the giant closing wordmark — parallax rush like the reference */}
+          {/* the giant closing wordmark — slide-up rush driven by --sp */}
           <div className="fo-footer-mark" aria-hidden="true">مدارك</div>
         </div>
       </footer>
