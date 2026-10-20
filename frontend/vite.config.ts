@@ -38,6 +38,23 @@ export default defineConfig({
       },
     },
   },
+  // r292: the audit protocol (DESIGN.md §9d / the surface-inventory
+  // header) captures its baseline against the BUILT app via
+  // `vite preview` — never the dev server — but the proxy lived only
+  // under `server`, so preview runs could not reach the API at all
+  // (role-guarded routes would all render error states). `preview`
+  // mirrors the dev proxy exactly; the same VITE_API_TARGET override
+  // applies.
+  preview: {
+    port: 4173,
+    proxy: {
+      '/api': {
+        target: process.env.VITE_API_TARGET || 'http://localhost:4000',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
   build: {
     outDir: 'dist',
     // Render free tier = 512 MB RAM: skip the gzip-size pass (it holds every

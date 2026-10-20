@@ -266,7 +266,7 @@ const COLOR_SAMPLES: ReadonlyArray<[string, string, boolean]> = [
    * without a direct text node). hasDirectText(body) was ALWAYS false
    * — the ground sample never shipped; it no longer gates. */
   ['body', 'body', false],
-  ['page-title', 'h1.pf-page-title, h1.page-title, h1.fo-hero-title, h1.auth-form-title', true],
+  ['page-title', 'h1.pf-page-title, h1.page-title, h1.fo-hero-title, h1.auth-form-title, h1.nf-title', true],
   ['page-subtitle', '.pf-page-desc, .page-subtitle', true],
   ['metric-value', '.pf-stat-value, .metric-value', true],
   ['metric-label', '.pf-stat-label, .metric-label', true],
@@ -546,14 +546,29 @@ function buildComputedColors(
     const bg = parseRgb(c.background);
     const fg = parseRgb(c.color);
     const ratio = bg && fg ? contrastRatio(bg, fg) : 0;
-    // off-token heuristic: neither the resolved fg nor bg matches any
-    // literal shipped in src/styles. colour-mix blends may trip this —
-    // the drift report is human-reviewed before a baseline promotion.
+    /* r292: the off-token sentinel now separates PROVABLE literals from
+     * token-derived blends. A computed value that serialises as
+     * `color(srgb …)` is by construction the result of a color-mix()
+     * over CSS custom properties (course-tint washes, the r292 StatLine
+     * contrast mixes) — the literal corpus can never contain it and the
+     * flag fired on every run for tokens-by-construction values. Blends
+     * record with a `blend:` selector prefix so the human review the
+     * header documents still SEES them every run; literal rgb()/hex
+     * values keep facing the full corpus check unchanged. */
+    const isBlend =
+      c.color.startsWith('color(srgb') || c.background.startsWith('color(srgb');
     const offToken =
+      !isBlend &&
       corpus.size > 0 &&
       ((fg !== null && !corpus.has(toHex(fg))) || (bg !== null && !corpus.has(toHex(bg))));
+    const blendNote =
+      isBlend && corpus.size > 0
+        ? `blend: ${c.selector} fg=${c.color} bg=${c.background}`
+        : null;
     out.push({
-      selector: offToken ? `off-token: ${c.selector} fg=${c.color} bg=${c.background}` : c.selector,
+      selector: offToken
+        ? `off-token: ${c.selector} fg=${c.color} bg=${c.background}`
+        : blendNote ?? c.selector,
       background: c.background,
       color: c.color,
       contrastRatio: Number(ratio.toFixed(2)),

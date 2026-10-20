@@ -287,6 +287,28 @@ a.pf-row-link {
 .pf-stat.warning .pf-stat-value  { color: var(--warning-ink); }
 .pf-stat.danger  .pf-stat-value  { color: var(--danger-ink); }
 .pf-stat.signal  .pf-stat-value  { color: var(--accent-ink); }
+
+/* r292: قيم الأرقام المقوّنة تعبر عتبة 7:1 — القيمة الرقمية بيانات
+   حاسمة وعتبة التدقيق للمقاييس (numericContrastMin=7) أصرّ من لون
+   النبرة الخام: success 6.93 · warning 6.18 · signal 5.84 على الورق
+   الفاتح، وdanger 6.58 على الليل. الوصفة: اشتقاق color-mix نحو
+   الحبر (فاتح) أو الورق (داكن) بأقل نسبة تُجاز العتبة — الهوية
+   اللونية محفوظة (النبرة تقود)، والعائلات العالمية (-ink tier
+   للشارات والنخب) لم تُمَس (تغييرها كان سيكسر parity export
+   وثوابت أدوار عشرات الأسطح). مقيسًا بعد: positive 7.62 ·
+   warning 7.28 · danger فاتح 8.21/داكن 7.53+ · signal 7.45. */
+:root:not([data-theme="dark"]) .pf-stat.positive .pf-stat-value {
+  color: color-mix(in srgb, var(--success-ink) 90%, var(--text));
+}
+:root:not([data-theme="dark"]) .pf-stat.warning .pf-stat-value {
+  color: color-mix(in srgb, var(--warning-ink) 85%, var(--text));
+}
+:root:not([data-theme="dark"]) .pf-stat.signal .pf-stat-value {
+  color: color-mix(in srgb, var(--accent-ink) 80%, var(--text));
+}
+[data-theme="dark"] .pf-stat.danger .pf-stat-value {
+  color: color-mix(in srgb, var(--danger-ink) 85%, var(--text));
+}
 @media (hover: hover) and (pointer: fine) {
   a.pf-stat:hover .pf-stat-value { color: var(--accent-ink); }
 }
