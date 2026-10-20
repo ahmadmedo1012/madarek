@@ -1,19 +1,29 @@
-import { useState, type CSSProperties } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Compass, Play, AlertCircle, Sparkles, ArrowLeft,
 } from 'lucide-react';
-import { Card, Badge } from '../../components/primitives';
+import { Badge } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
+import {
+  PageFrame, PageHeader, SectionHeader, RowList, RowItem, FilterBar,
+} from '../../components/patterns';
 import { Icon } from '../../components/Icon';
 import { useMatrix, useGaps } from '../../hooks/useResources';
 import { courseIcon, courseTint } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
 import { formatInt } from '../../utils/numbers';
-import '../../styles/training.css'; // .filter-pill family (D11 css split, 12-15)
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) live in
  * lib/courseMeta.ts (wave 9-a). */
+
+/* r299 (final C): the matrix joins the patterns contract — PageFrame/
+ * PageHeader open the page, the level filter rides FilterBar + the
+ * shared .pill grammar (the training.css filter-pill import is
+ * retired), and the priority-gaps Card becomes a SectionHeader +
+ * RowList — the same row anatomy the dashboard's gaps ledger carries.
+ * The heatmap itself (r220 legible grid, mobile recomposition, the
+ * r164d سدّ الفجوة link contract) is untouched. */
 
 /* r220 (4A redesign — Superlist direction): the matrix stays the
  * per-course dense concept grid, but every status is now legible
@@ -61,7 +71,7 @@ function conceptCount(n: number): string {
   return `${n} مفهوماً`;
 }
 
-/** Shape-matched skeleton for one course card of the heatmap. */
+/** Shape-matched skeleton for one course block of the heatmap. */
 function MatrixCourseSkeleton() {
   return (
     <div className="matrix-course" aria-hidden>
@@ -77,25 +87,6 @@ function MatrixCourseSkeleton() {
           <Skeleton key={i} height={46} />
         ))}
       </div>
-    </div>
-  );
-}
-
-/** Shape-matched skeleton for the gap recommendation rows. */
-function GapListSkeleton() {
-  return (
-    <div className="flex-col gap-2" aria-hidden>
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div className="list-row" key={i}>
-          <Skeleton width={16} height={16} />
-          <div className="list-row-body">
-            <Skeleton width="45%" height={12} />
-            <Skeleton width="30%" height={10} />
-          </div>
-          <Skeleton width={38} height={12} />
-          <Skeleton width={96} height={32} rounded="var(--r-sm)" />
-        </div>
-      ))}
     </div>
   );
 }
@@ -138,17 +129,18 @@ export default function MatrixPage() {
   const unmappedCount = (matrix.data ?? []).length - mappedCourses.length;
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">المصفوفة التعليمية</h1>
-          <p className="page-subtitle">
-            خريطة معرفيّة شخصيّة لكل مفهوم درسته. كل خلية تعكس درجة إتقانك،
-            بناءً على نقاط التفاعل في المحاضرات والاختبارات.
-          </p>
-        </div>
-        <Badge color="brand" icon={Sparkles}>تتبّع المعرفة</Badge>
-      </header>
+    <PageFrame width="default">
+      <PageHeader
+        title="المصفوفة التعليمية"
+        description={
+          'خريطة معرفيّة شخصيّة لكل مفهوم درسته. كل خلية تعكس درجة إتقانك، ' +
+          'بناءً على نقاط التفاعل في المحاضرات والاختبارات.'
+        }
+        meta={matrix.data && totalConcepts > 0
+          ? <>{countAr(totalConcepts, ['مفهوم واحد مُقاس', 'مفهومان مُقاسان', 'مفاهيم مُقاسة', 'مفهوماً مُقاساً'])} عبر {countAr(mappedCourses.length, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}</>
+          : undefined}
+        actions={<Badge color="brand" icon={Sparkles}>تتبّع المعرفة</Badge>}
+      />
 
       {/* Status key — the words ARE the encoding; the dots only anchor
           the eye. Ranges stated in text so the key never leans on hue. */}
@@ -160,14 +152,19 @@ export default function MatrixPage() {
         <div className="matrix-legend-item"><span className="matrix-legend-dot" style={{ background: 'var(--text-subtle)' }} /> لم يُختبر</div>
       </div>
 
-      {/* Top gaps with one-click fill */}
-      <Card
-        title="فجواتك ذات الأولوية"
-        icon={AlertCircle}
-        subtitle="ابدأ بسدّ هذه الفجوات — حيث تتوفّر توصية، يأخذك الزرّ مباشرة إلى المحاضرة المناسبة"
-      >
+      {/* Top gaps with one-click fill — r299: the same SectionHeader +
+          RowList anatomy the dashboard's gaps ledger carries. The سدّ
+          الفجوة contract is the r164d pin: where a recommendation
+          exists the WHOLE row is the link (RowItem to) and the chip
+          rides the trailing slot; no recommendation stays an honest
+          non-link row. */}
+      <section aria-label="فجوات الإتقان ذات الأولوية">
+        <SectionHeader
+          title="فجواتك ذات الأولوية"
+          description="ابدأ بسدّ هذه الفجوات — حيث تتوفّر توصية، يأخذك الصفّ مباشرة إلى المحاضرة المناسبة"
+        />
         {gaps.isPending ? (
-          <GapListSkeleton />
+          <RowList aria-label="قائمة الفجوات ذات الأولوية" loading />
         ) : gaps.isError ? (
           <ErrorState
             message="تعذَّر تحميل فجواتك"
@@ -177,34 +174,22 @@ export default function MatrixPage() {
         ) : !gaps.data?.length ? (
           <EmptyState icon={Sparkles} title="لا فجوات حالياً — أحسنت!" description="استمر بحضور المحاضرات والإجابة على نقاط التفاعل." />
         ) : (
-          <div className="flex-col gap-2 matrix-gap-list">
-            {gaps.data.slice(0, 5).map((g, i) => (
-              <div
-                className="list-row"
+          <RowList aria-label="قائمة الفجوات ذات الأولوية">
+            {gaps.data.slice(0, 5).map((g) => (
+              <RowItem
                 key={g.conceptId}
-                style={{ '--gap-i': i } as CSSProperties}
-              >
-                <span style={{ color: 'var(--warning-ink)' }}><Icon icon={AlertCircle} size={16} /></span>
-                <div className="list-row-body">
-                  <div className="list-row-title">{g.conceptName}</div>
-                  <div className="list-row-sub">{g.courseName}</div>
-                </div>
-                <span className="font-mono text-xs" style={{ color: 'var(--warning-ink)' }}>
-                  {formatInt(Math.round(g.level * 100))}%
-                </span>
-                {g.recommendedLectureId ? (
-                  <Link to={`/student/lectures/${g.recommendedLectureId}`} className="btn outline sm">
-                    <Icon icon={Play} size={13} />
-                    سدّ الفجوة
-                  </Link>
-                ) : (
-                  <Badge>لا توصية</Badge>
-                )}
-              </div>
+                leading={<Icon icon={AlertCircle} size={16} className="text-warning-ink" />}
+                title={g.conceptName}
+                meta={<>{g.courseName} · <bdi className="font-mono">{formatInt(Math.round(g.level * 100))}%</bdi> الآن</>}
+                to={g.recommendedLectureId ? `/student/lectures/${g.recommendedLectureId}` : undefined}
+                trailing={g.recommendedLectureId
+                  ? <span className="btn outline sm pf-chip"><Icon icon={Play} size={13} />سدّ الفجوة</span>
+                  : <Badge>لا توصية</Badge>}
+              />
             ))}
-          </div>
+          </RowList>
         )}
-      </Card>
+      </section>
 
       {/* The full matrix per course */}
       {matrix.isPending ? (
@@ -213,54 +198,52 @@ export default function MatrixPage() {
           <MatrixCourseSkeleton />
         </div>
       ) : matrix.isError ? (
-        <Card>
-          <ErrorState
-            message="تعذَّر تحميل المصفوفة التعليميّة"
-            error={matrix.error}
-            onRetry={() => matrix.refetch()}
-          />
-        </Card>
+        <ErrorState
+          message="تعذَّر تحميل المصفوفة التعليميّة"
+          error={matrix.error}
+          onRetry={() => matrix.refetch()}
+        />
       ) : !matrix.data?.length ? (
-        <Card><EmptyState illustration="empty-list"
+        <EmptyState illustration="empty-list"
           icon={Compass}
           title="لم تتشكّل مصفوفتك بعد"
           description="شاهد أول محاضرة وأجب عن نقاط التفاعل فيها، وستبدأ المصفوفة برسم خريطة معرفتك تلقائياً."
-        /></Card>
+        />
       ) : (
         <div className="flex-col gap-4">
           {/* Level filter — dimming non-matching cells animates the
               heatmap's shade transitions (the page's signature moment).
-              Same flush-card pill toolbar as the training catalog. */}
-          <Card flush>
-            <div
-              className="filter-pill-row"
-              role="group"
-              aria-label="تصفية المفاهيم بحسب درجة الإتقان"
-            >
-              <button
-                type="button"
-                className="filter-pill"
-                aria-pressed={filter === 'all'}
-                onClick={() => setFilter('all')}
-              >
-                الكل
-                <span className="filter-pill-count">{formatInt(totalConcepts)}</span>
-              </button>
-              {(Object.keys(FILTER_LABEL) as Array<Exclude<LevelFilter, 'all'>>).map((key) => (
+              r299: the FilterBar + shared .pill grammar (the CoursesPage
+              toolbar contract) replaces the training.css filter-pill
+              family — one filter voice across the student family. */}
+          <FilterBar
+            filters={
+              <div className="matrix-filter" role="group" aria-label="تصفية المفاهيم بحسب درجة الإتقان">
                 <button
-                  key={key}
                   type="button"
-                  className="filter-pill"
-                  aria-pressed={filter === key}
-                  onClick={() => setFilter(key)}
-                  disabled={levelCounts[key] === 0}
+                  className={`pill${filter === 'all' ? ' on' : ''}`}
+                  aria-pressed={filter === 'all'}
+                  onClick={() => setFilter('all')}
                 >
-                  {FILTER_LABEL[key]}
-                  <span className="filter-pill-count">{formatInt(levelCounts[key])}</span>
+                  الكل
+                  <span className="matrix-filter-count" aria-hidden>{formatInt(totalConcepts)}</span>
                 </button>
-              ))}
-            </div>
-          </Card>
+                {(Object.keys(FILTER_LABEL) as Array<Exclude<LevelFilter, 'all'>>).map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    className={`pill${filter === key ? ' on' : ''}`}
+                    aria-pressed={filter === key}
+                    onClick={() => setFilter(key)}
+                    disabled={levelCounts[key] === 0}
+                  >
+                    {FILTER_LABEL[key]}
+                    <span className="matrix-filter-count" aria-hidden>{formatInt(levelCounts[key])}</span>
+                  </button>
+                ))}
+              </div>
+            }
+          />
 
           {/* 22-c (A4 P3-7): the seed maps concepts on ONE course — the
               other five each rendered the same «لم تُحدَّد مفاهيم هذا
@@ -369,6 +352,6 @@ export default function MatrixPage() {
           )}
         </div>
       )}
-    </div>
+    </PageFrame>
   );
 }

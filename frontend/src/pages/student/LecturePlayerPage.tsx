@@ -728,7 +728,14 @@ export default function LecturePlayerPage() {
             sibling cards. ≤1024px the panel re-flows below the player.
             The panel title is the section's h2 (r168a heading outline:
             lecture title = h1, panel = h2, panel sections = h3). */}
-        <aside className="lecture-aside" aria-label="محتويات المحاضرة">
+        {/* r299 (final C): a labeled <section> (region), not <aside>
+            (complementary) — the panel is PART of the lecture view, and
+            an aside nested inside the shell's main landmark trips axe's
+            landmark-complementary-is-top-level (verified at every width,
+            both themes). Same class, same aria-label, same heading
+            outline (h2 panel / h3 sections) — only the landmark role
+            changes. */}
+        <section className="lecture-aside" aria-label="محتويات المحاضرة">
           <section className="lecture-panel">
             <h2 className="lecture-panel-title">داخل المحاضرة</h2>
 
@@ -809,7 +816,7 @@ export default function LecturePlayerPage() {
               away from the video (reads the course page's cached /full
               payload — see the component header). */}
           <OfferingMaterialsCard offeringId={data.offering.id} />
-        </aside>
+        </section>
       </div>
 
       {/* Checkpoint overlay — uses the shared Modal primitive so it

@@ -153,11 +153,20 @@ describe('ResultsPage — the ONE grade-band ladder (r164-a)', () => {
     expect(fills.some((el) => el.getAttribute('style')?.includes('var(--danger)'))).toBe(true);
   });
 
-  it('tones the KPI trio by the ladder: highest green, avg amber (70 = GOOD), lowest red', () => {
+  it('tones the headline trio by the ladder: highest positive, avg warning (70 = GOOD), lowest danger', () => {
     const { container } = renderPage();
-    expect(container.querySelector('.metric.green')).not.toBeNull();
-    expect(container.querySelector('.metric.amber')).not.toBeNull();
-    expect(container.querySelector('.metric.red')).not.toBeNull();
+    /* r299 (final C): the MetricCard KPI trio became the pattern
+       StatLine — the r164-a canonical band still decides every value's
+       tone (94.5 EXCELLENT → positive · 70 GOOD → warning · 47 WEAK →
+       danger); the ladder projection is bandTone in the page. */
+    expect(container.querySelector('.pf-stat.positive')).not.toBeNull();
+    expect(container.querySelector('.pf-stat.warning')).not.toBeNull();
+    expect(container.querySelector('.pf-stat.danger')).not.toBeNull();
+    // the values the tones ride on are the real headline numbers
+    // (formatPct1; the unit runner formats Western digits): 90 →
+    // positive, 40 → danger.
+    expect(container.querySelector('.pf-stat.positive .pf-stat-value')?.textContent).toContain('90');
+    expect(container.querySelector('.pf-stat.danger .pf-stat-value')?.textContent).toContain('40');
   });
 });
 
