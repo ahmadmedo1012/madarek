@@ -625,3 +625,13 @@
 @media (max-width: 640px) {
   .np-well { inline-size: var(--sp-8); block-size: var(--sp-8); }
 }
+
+/* r267 — الجوال: ترويسة بطاقة الإشعارات تلتفّ تحت العنوان بدل أن
+   تسحقه (الشارة المعدودة + زرّ «تعليم الكلّ» لا يتسعان سطرًا واحدًا
+   مع «إشعاراتي» على 390px). :has يُبقي القاعدة محصورة بصفحاتي. */
+@media (max-width: 640px) {
+  .card-header:has(.np-head-actions) {
+    flex-wrap: wrap;
+    row-gap: var(--sp-2);
+  }
+}

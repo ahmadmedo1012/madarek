@@ -897,3 +897,18 @@
     .xp-fill { transition: none; }
   }
 }
+
+/* r265 — صفوف المسارات: شريط التقدّم المضغوط داخل عمود الطرف
+   (عرض مضبوط لا يشدّ الصف) والسطر الثانوي عمودٌ من سطرين — البقية
+   من عقد patterns (§CP ROWS في components.css). */
+.cp-progress {
+  inline-size: 150px;
+}
+@media (max-width: 720px) {
+  .cp-progress { inline-size: 120px; }
+}
+.cp-meta-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}

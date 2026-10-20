@@ -422,7 +422,7 @@ export function AlertsPage() {
       <PageHeader title="الإشعارات" subtitle="آخر التحديثات والتذكيرات الأكاديمية." />
 
       <Card title="إشعاراتي" icon={Bell} actions={
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap np-head-actions">
           {unreadCount > 0 ? (
             <>
               <Badge color="brand">{arUnit(unreadCount, 'إشعار غير مقروء', 'إشعاران غير مقروءان', 'إشعارات غير مقروءة')}</Badge>

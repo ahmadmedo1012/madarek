@@ -268,9 +268,12 @@ export function ProgressBar({
           {showValue && (
             /* 21-c (A12 P1-3): the % is 12px text — AA 4.5:1. It consumes
                --text-secondary (8.44:1 light / 9.28:1 dark) instead of the
-               raw fill colour; the fill keeps the caller's hue. */
+               raw fill colour; the fill keeps the caller's hue.
+               r267 (4E): r197's note sat INSIDE the JSX text node after the
+               % readout and shipped to the screen as raw text — it moved
+               here, into a real comment slot. */
             <span className="font-mono text-xs" style={{ color: 'var(--text-secondary)' }}>
-              {formatPct1(v)}% /* r197 §7: one decimal, float noise stripped («61.818…%» → «61.8%») */
+              {formatPct1(v)}%
             </span>
           )}
         </div>
