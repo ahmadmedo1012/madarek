@@ -147,7 +147,10 @@ describe('back-link grammar — «العودة إلى X» everywhere (r183-B6, A
       // The lesson → track link was the bare-title variant.
       ['src/pages/student/TrainingPages.tsx', 'العودة إلى {track.title}'],
       ['src/pages/exams/OnlineExamsPages.tsx', 'العودة إلى الاختبارات'],
-      ['src/pages/DocumentViewerPage.tsx', 'العودة إلى الصفحة السابقة'],
+      // final-research D: the viewer exit names its destination
+      // («العودة إلى بحوثي/المكتبة/…» via backDestinationLabel) instead
+      // of the retired generic literal.
+      ['src/pages/DocumentViewerPage.tsx', 'العودة إلى ${backDestinationLabel(back)}'],
     ];
     for (const [p, marker] of pins) {
       expect(read(p), `${p} → ${marker}`).toContain(marker);

@@ -52,6 +52,21 @@ function safeBackPath(raw: string | null, role: AppRole): string {
   return ROLE_HOME[role];
 }
 
+/** final-research D: the back affordance NAMES its destination instead
+ *  of the generic «الصفحة السابقة» — the reader is a dead-end surface
+ *  by design (viewport-locked, no nav), so the exit link is the only
+ *  context trail; naming where it leads is the difference between a
+ *  trap door and a way back. Unknown destinations keep the generic
+ *  label (never guess a place we cannot name). */
+export function backDestinationLabel(path: string): string {
+  if (path.startsWith('/student/research')) return 'بحوثي';
+  if (path.startsWith('/student/library')) return 'المكتبة';
+  if (path.startsWith('/teacher/research')) return 'مراجعة البحوث';
+  if (path.startsWith('/teacher/library')) return 'المكتبة';
+  if (path.startsWith('/student/courses') || path.startsWith('/teacher/materials')) return 'المقرر';
+  return 'الصفحة السابقة';
+}
+
 /* P3: the file namespace the viewer fetches from. 'papers' is the
  * legacy default (research PDFs, /files/papers/:filename); 'materials'
  * rides the ?ns= param materialHref sets for uploaded course PDFs
@@ -70,6 +85,9 @@ export default function DocumentViewerPage() {
   const title = search.get('title') ?? undefined;
   const role = useAuthStore((s) => s.user?.role) ?? 'STUDENT';
   const back = safeBackPath(search.get('back'), role as AppRole);
+  /* final-research D: the exit names its destination («العودة إلى
+   * بحوثي») — see backDestinationLabel. */
+  const backLabel = `العودة إلى ${backDestinationLabel(back)}`;
   const paperId = search.get('paper') ?? undefined;
   const ns = fileNamespace(search.get('ns'));
 
@@ -115,7 +133,7 @@ export default function DocumentViewerPage() {
           <header className="doc-reader-head">
             <Link to={back} className="back-link document-viewer-back">
               <Icon icon={ChevronRight} size={14} />
-              العودة إلى الصفحة السابقة
+              {backLabel}
             </Link>
             <h1 className="doc-reader-title">{title ?? 'مستند'}</h1>
           </header>
@@ -146,12 +164,13 @@ export default function DocumentViewerPage() {
     // forced the print block to fight an inline style with !important.
     <div className="page document-viewer-page">
       <PageFrame width="full">
-      {/* Reader head — quiet chrome: one back affordance + the paper's
-          title; the reading surface owns the rest of the viewport. */}
+      {/* Reader head — quiet chrome: one back affordance (it names
+          its destination) + the paper's title; the reading surface owns
+          the rest of the viewport. */}
       <header className="doc-reader-head">
         <Link to={back} className="back-link document-viewer-back">
           <Icon icon={ChevronRight} size={14} />
-          العودة إلى الصفحة السابقة
+          {backLabel}
         </Link>
         <h1 className="doc-reader-title">{title ?? 'مستند'}</h1>
       </header>
