@@ -311,17 +311,10 @@
     pointer-events: none;
   }
 
-  /* ── Empty state CTA: centered, friendly ────────────────────── */
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--sp-4);
-    padding: var(--sp-10) var(--sp-6);
-    text-align: center;
-    min-block-size: 240px;
-  }
+  /* ── Empty state CTA: centered, friendly ──────────────────────
+     r296: consolidated into components.css STATE — the v10 overrides
+     values beat this pages-layer copy (gap/padding/color); the
+     min-block floor from here is carried over. */
   /* (Wave 9-b dead-selector sweep: the .empty-state-icon / -title /
      -desc child rules deleted — zero TSX consumers; pages render the
      bare .empty-state container (kept above) with Icon/text utilities,
@@ -924,79 +917,18 @@
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   ▶ Section: polish-v10.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
-   POLISH v10 — coverage for under-styled pages
-   AI Assistant chat, Matrix grid, gap rows, thumb cards, filter bars,
-   tracks, post composer.
-   ════════════════════════════════════════════════════════════════════ */
-
-@layer overrides {
-
-  /* ═══════════════════════════════════════════════════════════════
-     (r151i — m1 of the ownership migration, R5-A2): the v10 page
-     systems moved to their home sheet. The AI-assistant chat family,
-     the knowledge-map matrix family, the social-feed post family and
-     the university-info faculty chips were PRIMARY ownership living
-     in @layer overrides — nothing overrode them, and their only
-     consumers are student surfaces (AiAssistantPage, MatrixPage,
-     QualityPages, MorePages). They now live in student.css (@layer
-     pages, appended after its own refinements so they keep their
-     authority there). What STAYS here by design: v22's
-     .chat-input:focus-visible (the one true override), v8's .post
-     mockup-lift pair (border-radius/transition/hover — same r-lg
-     value, prop-disjoint from v10's base), and the v10 remainder
-     (thumb/filter/tracks/misc — m2 candidates). Cascade-verified
-     zero computed-style change.
-     ═══════════════════════════════════════════════════════════════ */
-
-
-
-  /* (r152h: the v10 gap-rows tombstone folded into the v10 section
-     header — the .gap-row family was deleted in wave 9-b (zero TSX
-     consumers; the matrix gaps render student.css's
-     .matrix-gap-in / .ai-gap-card families).) */
-
-  /* ═══════════════════════════════════════════════════════════════
-     Thumb cards (Library, AR/VR, Labs grid)
-     ═══════════════════════════════════════════════════════════════ */
-  /* (r152h: the v10 thumb-card pair — transition + accent hover glow —
-     deleted as cascade-dead: the v19 thumb-card family below (same
-     overrides layer, later source, same specificity) re-sets both the
-     transition and the hover box-shadow, so these two rules never
-     computed. The v19 family stays as the single owner.) */
-
-  /* ═══════════════════════════════════════════════════════════════
-     Filter bar (campus map, matrix legend, etc.)
-     ═══════════════════════════════════════════════════════════════ */
-  /* (r152h: the v10 twin retired — its only live declaration was the
-     6px gap (the rest duplicated components.css verbatim); the 6px
-     now lives in the canonical .filter-bar as var(--sp-1-5), so the
-     computed value is unchanged and the override is gone.) */
-  /* ═══════════════════════════════════════════════════════════════
-     Misc — small surfaces that were inheriting browser defaults
-     ═══════════════════════════════════════════════════════════════ */
-  .empty-state {
-    text-align: center;
-    padding: var(--sp-6) var(--sp-4);
-    color: var(--text-muted);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--sp-3);
-  }
-
-  /* Make any iframe / video inside cards rounded so they don't break the
-     premium frame */
-  .card iframe,
-  .card video {
-    border-radius: var(--r-md);
-    max-inline-size: 100%;
-  }
-
-}
-
+   ▶ Section: polish-v10.css — RETIRED r296 (polish dismantle, wave 3)
+   ═══════════════════════════════════════════════════════════════════
+   The student-surface wave. Everything live folded home:
+   - .empty-state centered container → components.css STATE — the v10
+     overrides-layer values merged with v6's min-block floor (both
+     polish copies deleted; v6/v11 gap-widening comment pointers
+     updated in situ).
+   - .card iframe/video frame-clipping radius → components.css CARD.
+   Pre-r296 deletions already recorded in situ: university-info
+     faculty chips (→ student.css, cascade-verified), thumb-card
+     pair (cascade-dead vs v19), filter-bar twin (6px gap →
+     components.css), gap-rows family (zero consumers). */
 
 /* ═══════════════════════════════════════════════════════════════════
    ▶ Section: polish-v11.css
@@ -1221,59 +1153,22 @@
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   ▶ Section: polish-v12.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
-   MADAREK — polish v12 · vitality
-   ─────────────────────────────────────────────────────────────────────
-   Motion + atmosphere for the landing page. CSS-only — no extra JS,
-   no extra hooks. Falls back gracefully under prefers-reduced-motion.
-
-   NOTE: The hero orb pseudo-elements that previously lived here were
-   shadowing the cursor-tracking spotlight from polish-v7 (which uses
-   the same `.landing-hero::before` selector with --hero-mx/--hero-my).
-   That broke the magnetic cursor effect on the banner. Removed in
-   favor of the original behavior — see polish-v7.css for the spotlight
-   and landing.css for the drifting color blobs. The remaining v12
-   effects (CTA breathe, eyebrow shimmer, mockup tilt, feature card
-   spotlight) all use distinct selectors and stay untouched.
-   ════════════════════════════════════════════════════════════════════ */
-
-@layer overrides {
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  CTA BREATHE                                                   ║
-     ║  Primary CTA in the hero gets a slow ambient glow halo.        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (Wave 9-b dead-selector sweep: the .landing-cta-stack entries
-     removed — zero TSX consumers; the hero CTA row is .landing-cta-row
-  @keyframes madarek-breathe {
-    0%, 100% { opacity: 0; transform: scale(0.9); }
-    50%      { opacity: 0.55; transform: scale(1.04); }
-  } */
-
-
-  /* (r157 dead-keyframe sweep: @keyframes madarek-sweep + its EYEBROW
-     CHIP banner deleted — rg across frontend/src: zero `animation`
-     consumers reference the name.) */
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  MOCKUP HOVER LIFT                                             ║
-     ║  LandingPage already writes --mx/--my on cards. Add a soft     ║
-     ║  3D tilt that follows the cursor.                              ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (r151c: the FEATURE CARDS magnetic-glow block deleted — all four
-     selectors (.landing-feature-card family + .landing-bento-card)
-     have had zero TSX consumers since the landing redesign.) */
-
-
-  /  /* STICKER ICONS + landing reduced-motion list — RETIRED (premium-polish
-     dead-code sweep): the .sticker family never rendered (zero TSX
-     consumers); its bobbing rule and the reduced-motion kill list (which
-     referenced the removed .landing-hero family) went with it. */
-}
-
+   ▶ Section: polish-v12.css — RETIRED r296 (polish dismantle, wave 3)
+   ═══════════════════════════════════════════════════════════════════
+   The landing-motion wave — every rule was already dead:
+   - CTA breathe: the .landing-cta-stack consumers were swept in wave
+     9-b (zero TSX consumers since the «سماء مدارك» rebuild); the
+     @keyframes madarek-breathe had zero animation references and
+     sat inside an unterminated Wave-9-b comment.
+   - MOCKUP HOVER LIFT / feature magnetic glow: zero consumers since
+     the landing redesign (r151c).
+   - STICKER family: never rendered (zero TSX consumers).
+   ALSO FIXED here: a stray `/` token before the STICKER comment —
+   a genuine syntax hazard that made CSS parsers skip the section's
+   closing `}` (browsers recovered by nesting every subsequent
+   @layer into v12's overrides block; harmless by CSS layer-merge
+   semantics, but a landmine for any future parse). The whole
+   section's dead weight is gone; the hazard with it. */
 
 /* ═══════════════════════════════════════════════════════════════════
    ▶ Section: polish-v13.css
