@@ -57,15 +57,21 @@
  *
  * The e2e mock transport (tests/e2e/fixtures/mock-transport.ts) is
  * installed on every sweep context, so the sweep runs against the
- * Vite dev server with NO backend and NO database: sessions come from
- * the fixture users (one per guarded role), the student surfaces get
- * the real fixture payloads, and every unfixed endpoint answers 501
- * MOCK_NOT_IMPLEMENTED so non-student pages render their honest
- * error/empty states. This mode exists to verify the CAPTURE PATH
- * (routing × seeding × collectors × JSON shape × drift detector) — a
- * baseline promoted from it would baseline error states. The real
- * baseline is still captured the seeded-DB way above, by the lead at
- * integration time. Optional knobs for this mode:
+ * production build via vite preview with NO backend and NO database:
+ * sessions come from the fixture users (one per guarded role), the
+ * baselined student surfaces get the real fixture payloads (param
+ * routes resolve to the transport's fixture IDs — see
+ * MOCK_PARAM_DEFAULTS), and every unfixed endpoint answers 501
+ * MOCK_NOT_IMPLEMENTED so unfixtured pages render their honest
+ * error/empty states. r293 settles the protocol: the COMMITTED
+ * baseline is captured this way, because the CI drift job
+ * re-captures in this exact mode on every push — a baseline promoted
+ * from any other environment (e.g. a seeded-DB capture, richer but
+ * machine-bound) cannot reproduce on CI and trips the r291 coverage
+ * floors, which is precisely how the r292 baseline failed. The
+ * seeded-DB sweep above remains the deeper local exploration pass;
+ * baseline promotion is mock-mode only. Optional knobs for this
+ * mode:
  *   AUDIT_INVENTORY_OUT=<path>  write the JSON somewhere else (temp)
  *   AUDIT_ROUTE_LIMIT=<n>       sweep only the first n routes (smoke)
  *   AUDIT_ROUTES_FROM=<n>       skip the first n routes (slice sweeps)
@@ -91,7 +97,12 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { installMockApi } from '../e2e/fixtures/mock-transport';
-import { ROLE_USERS, type FixtureUser } from '../e2e/fixtures/api-fixtures';
+import {
+  LECTURE_ID,
+  OFFERING_ID,
+  ROLE_USERS,
+  type FixtureUser,
+} from '../e2e/fixtures/api-fixtures';
 
 import { AUDIT_ROUTES, BASELINE_ROUTES, DIRS, THEMES, VIEWPORTS } from './routes';
 import type {
@@ -176,6 +187,22 @@ const PARAM_DEFAULTS: Record<string, string> = {
   filename: 'sample.pdf',
 };
 
+/* r293: mock-mode param defaults — the mock transport pins its
+ * offering fixtures to literal fixture IDs (only /lectures/:id is
+ * parametric), so :offeringId='1' answered 501 and the course-detail
+ * route rendered its error state in every DB-less capture — the CI
+ * drift job re-captures in mock mode, and the r291 coverage floors
+ * correctly failed the r292 baseline (captured against the real
+ * seeded DB, which could never reproduce in CI). With the fixture
+ * IDs wired here, mock-mode sweeps land on pages the transport
+ * actually serves — the same single source of truth the e2e
+ * journeys use. An explicit AUDIT_ROUTE_PARAMS still wins (the
+ * seeded-DB lead pass overrides per capture run). */
+const MOCK_PARAM_DEFAULTS: Record<string, string> = {
+  offeringId: OFFERING_ID,
+  lectureId: LECTURE_ID,
+};
+
 const ROUTE_PARAMS: Record<string, string> = (() => {
   if (!process.env.AUDIT_ROUTE_PARAMS) return {};
   try {
@@ -190,7 +217,10 @@ const ROUTE_PARAMS: Record<string, string> = (() => {
 
 function resolveRoute(route: string): string {
   return route.replace(/:([a-zA-Z]+)/g, (_m, name: string) =>
-    ROUTE_PARAMS[name] ?? PARAM_DEFAULTS[name] ?? '1',
+    ROUTE_PARAMS[name] ??
+      (MOCK_API ? MOCK_PARAM_DEFAULTS[name] : undefined) ??
+      PARAM_DEFAULTS[name] ??
+      '1',
   );
 }
 
