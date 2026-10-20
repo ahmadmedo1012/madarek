@@ -32,18 +32,6 @@
      ║  §catalog — track grid, track cards, filter pills              ║
      ╚═══════════════════════════════════════════════════════════════╝ */
 
-  .track-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--sp-5);
-  }
-  @media (max-width: 640px) {
-    .track-grid { grid-template-columns: 1fr; gap: var(--sp-3); }
-  }
-
-
-
-
   /* Filter pills — segmented-control feel on a wrapping row. The
      pressed pill is the ink chip (dark theme: accent chip), mirroring
      the .pill.on language in components.css. */
@@ -796,19 +784,57 @@
     }
     .xp-fill { transition: none; }
   }
-}
+  /* r265 — صفوف المسارات: شريط التقدّم المضغوط داخل عمود الطرف
+     (عرض مضبوط لا يشدّ الصف) والسطر الثانوي عمودٌ من سطرين — البقية
+     من عقد patterns (§CP ROWS في components.css). G: القواعد تعود
+     داخل @layer pages (كانت خارجها — شذوذ وزن مقابل §CP في
+     components.css). */
+  .cp-progress {
+    inline-size: 150px;
+  }
+  @media (max-width: 720px) {
+    .cp-progress { inline-size: 120px; }
+  }
+  .cp-meta-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
 
-/* r265 — صفوف المسارات: شريط التقدّم المضغوط داخل عمود الطرف
-   (عرض مضبوط لا يشدّ الصف) والسطر الثانوي عمودٌ من سطرين — البقية
-   من عقد patterns (§CP ROWS في components.css). */
-.cp-progress {
-  inline-size: 150px;
-}
-@media (max-width: 720px) {
-  .cp-progress { inline-size: 120px; }
-}
-.cp-meta-col {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
+  /* ── G النهائية — وصفات كانت سطرية في TrainingPages ─────────────── */
+
+  /* بطاقة الشهادة (بطاقة الإنجازات): أيقونة + جسم — القيم نفسها التي
+     كانت inline (r186/r148) على المحاور المفروضة. */
+  .cert-row {
+    display: flex;
+    gap: var(--sp-3);
+  }
+  .cert-body {
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .cert-title {
+    font-size: var(--fs-md);
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    line-height: 1.3;
+    margin: var(--sp-1) 0 var(--sp-1-5);
+  }
+  .cert-meta {
+    display: flex;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-2);
+    flex-wrap: wrap;
+  }
+
+  /* زرّ توسيع/طيّ الترتيب (الهاتف): عرض كامل فوق القائمة. */
+  .ach-lb-toggle {
+    inline-size: 100%;
+    margin-block-start: var(--sp-3);
+  }
+
+  /* ملخّص الدرس تحت عنوانه — المسافة كانت inline. */
+  .lesson-summary {
+    margin-block-end: var(--sp-3);
+  }
 }

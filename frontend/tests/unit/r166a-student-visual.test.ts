@@ -62,17 +62,35 @@ describe('r166a — lecture player 16:9 video stage owns its geometry', () => {
   });
 });
 
-describe('r166a — colleges gallery: equal-height rows in the multi-column layout', () => {
+describe('r166a → G final sweep — colleges gallery is a row list (retired card wall)', () => {
   const colleges = stripComments(read('src/styles/colleges.css'));
 
-  it('.college-grid uses 1fr auto rows on the multi-column layout', () => {
-    // The scoped rule (≥769px — the complement of the 768px 1-column
-    // breakpoint): every row shares the grid's tallest row height.
-    const scoped = colleges.match(/@media \(min-width: 769px\) \{\s*\.college-grid \{[^}]*\}/)?.[0] ?? '';
-    expect(scoped).toContain('grid-auto-rows: 1fr');
-    // The base grid is unchanged (auto-fill columns + the r149 20px gap).
-    const base = colleges.match(/\.college-grid \{[^}]*\}/)?.[0] ?? '';
-    expect(base).toContain('repeat(auto-fill, minmax(280px, 1fr))');
+  it('the .college-card wall stays retired — only the row affordance (.college-card-arrow) survives', () => {
+    // The r264 row recomposition renders RowItem rows; the G sweep
+    // deleted the dead card anatomy. A regression that re-introduces
+    // the card family (or the pre-r264 grid) must fail here.
+    expect(colleges).not.toMatch(/\.college-grid \{/);
+    expect(colleges).not.toMatch(/\.college-card \{/);
+    expect(colleges).not.toMatch(/\.college-card-cta \{/);
+    expect(colleges).not.toMatch(/\.comp-index-/);
+    // The one survivor still serves the RowItem trailing affordance.
+    expect(colleges).toMatch(/\.college-card-arrow \{/);
+  });
+
+  it('the campus chip strip keeps its mobile snap + edge fade contract (r183-B8)', () => {
+    // G restored the strip to live service inside the FilterBar's
+    // filters group (CollegePages renders className="gallery-chip-strip")
+    // after the r264 migration left the class without a consumer.
+    const strip = colleges.match(/@media \(max-width: 768px\) \{[\s\S]*?\}/)?.[0] ?? '';
+    expect(strip).toContain('.gallery-chip-strip');
+    expect(strip).toContain('flex-wrap: nowrap');
+    expect(strip).toContain('scroll-snap-type: x mandatory');
+    expect(colleges).toContain(
+      'mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px)',
+    );
+    // The TSX actually mounts the strip class in the FilterBar filters.
+    const tsx = read('src/pages/colleges/CollegePages.tsx');
+    expect(tsx).toContain('<div className="gallery-chip-strip" role="group" aria-label=');
   });
 });
 

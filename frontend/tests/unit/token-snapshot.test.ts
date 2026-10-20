@@ -141,7 +141,8 @@ const STYLESHEET_FILES = [
   'components.css',
   'landing.css',
   'colleges.css',
-  'colleges-popover.css',
+  // (G final sweep: colleges-popover.css deleted with the never-rendered
+  // CollegesPopover — r198's landing constellation owns that surface.)
   'admin.css',
   'layout.css',
   'notifications.css',
