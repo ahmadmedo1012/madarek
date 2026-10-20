@@ -1491,3 +1491,25 @@ a.comp-card:focus-visible .comp-go {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* r264 — صفوف الكليات: سطر ثانوي يحمل الاسم الإنجليزي والعدادات نصًّا
+   هادئًا (بدل شارات ثقيلة في الطرف) — الصف سطر واحد على كل عرض. */
+.cp-meta-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.cp-meta-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+/* الشارة نفسها تصير نصّ مدمج داخل السطر الثانوي (أخف من نسخة البطاقة). */
+.cp-meta-stats .college-stat-chip {
+  background: transparent;
+  border: none;
+  padding: 0;
+  gap: var(--sp-1);
+}

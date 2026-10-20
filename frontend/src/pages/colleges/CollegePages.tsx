@@ -5,7 +5,7 @@ import {
   Building2, Users, BookOpen, GraduationCap, Trophy, Megaphone,
   Calendar, Radio, Award, ArrowLeft, MapPin, Clock,
   FlaskConical, Microscope, ClipboardCheck, Medal, BarChart3,
-  Search, X, ChevronRight, ChevronDown, ChevronUp, ArrowUpDown,
+ X, ChevronRight, ChevronDown, ChevronUp, ArrowUpDown,
 } from 'lucide-react';
 import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
@@ -17,6 +17,10 @@ import { StatStrip } from '../../components/primitives/Ledger';
 import { EmptyState, ErrorState, DetailSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Reveal, Skeleton } from '../../components/motion';
 import { SectionAccent } from '../../components/motion/SectionAccent';
+/* r264 (4E — اتجاه Superlist): ترويسة وترحيب patterns هادئة بدل المسرح
+   الملوّن، شريط FilterBar موحّد للبحث والحرم، وصفوف كلية بدل شبكة
+   بطاقات (التفصيل على الصف، الشارات في الطرف). */
+import { PageHeader, RowList, RowItem, FilterBar } from '../../components/patterns';
 import { api, unwrap } from '../../lib/api';
 import { formatDateTimeAr, countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
@@ -291,13 +295,14 @@ export function CollegesIndexPage() {
 
   return (
     <div className="page colleges-index">
-      <SectionAccent kind="scene-paint" as="header" className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">البنية الأكاديمية التجريبية — جامعة مدارك التجريبية</h1>
-          <p className="page-subtitle">استكشف الكلّيّات والأقسام في سجلّ المؤسّسة المرجعية للعرض، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطها.</p>
-        </div>
-        {isGuest && <GuestJoinRow />}
-      </SectionAccent>
+      {/* r264: ترويسة patterns هادئة — «المسرح الملوّن» (SectionAccent
+          scene-paint) يتقاعد مع اتجاه Superlist: الهرمية عبر السطوح
+          لا عبر الطلاء. ضيف الزائر يبقى فوق الترويسة كإجراء صفحة. */}
+      <PageHeader
+        title="البنية الأكاديمية التجريبية — جامعة مدارك التجريبية"
+        description="استكشف الكلّيّات والأقسام في سجلّ المؤسّسة المرجعية للعرض، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطها."
+        actions={isGuest ? <GuestJoinRow /> : undefined}
+      />
 
       {q.isLoading && (
         <div className="gallery-skeleton" aria-hidden>
@@ -320,79 +325,50 @@ export function CollegesIndexPage() {
 
       {q.data && q.data.length > 0 && (
         <>
-          {/* Toolbar: search + campus chip strip + clear-filters. */}
-          <div className="gallery-toolbar" role="search">
-            <label className="visually-hidden" htmlFor="gallery-search">ابحث عن كلّيّة</label>
-            {/* A5 P1-1: the flex sizing lives in .gallery-search-wrap
-                (colleges.css) — the old inline `flex: 1 1 240px` was
-                written for the desktop row layout and, in the mobile
-                column direction, put a 240px BASIS ON THE VERTICAL
-                axis (a 196px dead gap under a 44px input). */}
-            <div className="gallery-search-wrap">
-              <Icon
-                icon={Search}
-                size={16}
-                style={{
-                  position: 'absolute',
-                  insetBlockStart: '50%',
-                  insetInlineStart: 'var(--sp-3)',
-                  transform: 'translateY(-50%)',
-                  color: 'var(--text-muted)',
-                  pointerEvents: 'none',
-                }}
-              />
-              <input
-                id="gallery-search"
-                type="search"
-                className="input gallery-search-input"
-                placeholder="ابحث عن كلّيّة…"
-                value={state.query}
-                onChange={(e) => setQuery(e.target.value)}
-                style={{ paddingInlineStart: 'var(--sp-9)' }}
-              />
-            </div>
-
-            {/* r157 (w2-F6): role=group + aria-pressed, not tablist —
-                these are single-select FILTER chips (no tab panels are
-                keyed to them), and a bare tablist without arrow-key
-                handling + aria-controls is an ARIA violation. Mirrors
-                CompetitionsPages' status pills. */}
-            <div className="gallery-chip-strip" role="group" aria-label="فلترة حسب الحرم">
-              <button
-                type="button"
-                aria-pressed={state.campus === null}
-                className={`gallery-chip${state.campus === null ? ' gallery-chip-on' : ''}`}
-                onClick={() => setCampus(null)}
-              >
-                <span>الكل</span>
-                <span className="gallery-chip-count">{data.length}</span>
-              </button>
-              {CAMPUS_ORDER.map((city) => {
-                const count = totalByCampus.get(city) ?? 0;
-                if (count === 0) return null;
-                const active = state.campus === city;
-                return (
-                  <button
-                    key={city}
-                    type="button"
-                    aria-pressed={active}
-                    className={`gallery-chip${active ? ' gallery-chip-on' : ''}`}
-                    onClick={() => setCampus(active ? null : city)}
-                  >
-                    <span>{city}</span>
-                    <span className="gallery-chip-count">{count}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {hasActiveFilters && (
+          {/* r264: شريط التصفية الموحّد (FilterBar — عقد Agent S):
+              بحث زجاجي + رقائق الحرم (role=group + aria-pressed كما
+              كانت — r157) + زرّ الإعادة في الطرف. لاصق بأعلى حاوية
+              التمرير حتى تبقى التصفية مرئية في القائمة الطويلة. */}
+          <FilterBar
+            sticky
+            search={{ value: state.query, onChange: setQuery, placeholder: 'ابحث عن كلّيّة…' }}
+            filters={(
+              <div role="group" aria-label="فلترة حسب الحرم">
+                <button
+                  type="button"
+                  aria-pressed={state.campus === null}
+                  className={`gallery-chip${state.campus === null ? ' gallery-chip-on' : ''}`}
+                  onClick={() => setCampus(null)}
+                >
+                  <span>الكل</span>
+                  <span className="gallery-chip-count">{data.length}</span>
+                </button>
+                {CAMPUS_ORDER.map((city) => {
+                  const count = totalByCampus.get(city) ?? 0;
+                  if (count === 0) return null;
+                  const active = state.campus === city;
+                  return (
+                    <button
+                      key={city}
+                      type="button"
+                      aria-pressed={active}
+                      className={`gallery-chip${active ? ' gallery-chip-on' : ''}`}
+                      onClick={() => setCampus(active ? null : city)}
+                    >
+                      <span>{city}</span>
+                      <span className="gallery-chip-count">{count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+            trailing={hasActiveFilters ? (
               <button type="button" className="gallery-clear" onClick={clear}>
                 <Icon icon={X} size={14} />
                 <span>إعادة تعيين</span>
               </button>
-            )}
-          </div>
+            ) : undefined}
+          />
 
           {/* Polite live region for filter result count (FR-031). */}
           <div role="status" aria-live="polite" aria-atomic="true" className="visually-hidden">
@@ -417,72 +393,60 @@ export function CollegesIndexPage() {
                   <h2 className="college-city-name">{city}</h2>
                   <span className="college-city-count">{countAr(list.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])}</span>
                 </header>
-                <div className="college-grid">
+                {/* r264: صفوف كلية هادئة (عقد RowList/RowItem) — الاسم هو
+                    باب الصف، الإنجليزية والعدادات سطر ثانوي، شارات
+                    الأعداد في الطرف مع سهم العبور. لهجة الهوية اللونية
+                    تُقرأ من رمز الكلية وصفحة التفصيل (حيث البوابة
+                    gateCollegeAccent تعمل) لا من طلاء الصف. */}
+                <RowList aria-label={`كلّيّات ${city}`}>
                   {list.map((c) => {
-                    // API records are id-keyed; reconcile with the slug-keyed
-                    // identity registry through the deterministic
-                    // (nameAr, city) bridge.
-                    const profile = getCollegeIdentityByRecord(c.name, c.city);
-                    const accent = profile?.accent ?? null;
-                    const accentStyle = accent
-                      ? ({ ['--college-accent']: accent } as React.CSSProperties)
-                      : undefined;
-                    return (
-                      <Link
-                        key={c.id}
-                        to={`/colleges/${c.id}`}
-                        className="college-card"
-                        data-college-accent={accent ?? undefined}
-                        style={accentStyle}
-                      >
-                        <div className="college-card-header">
-                          <span className="college-card-emoji" aria-hidden>
-                            {/* allow-emoji: data-default for admin-chosen icon */}
-                            <EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={26} />
+                    /* r264: العدادات نصّ هادئ في السطر الثانوي لا شارات
+                        في الطرف — الصف يبقى سطرًا واحدًا على كلّ عرض.
+                        Guest zero-suppression (A8 P2-6): كلّ صفر يختفي
+                        عن الضيف؛ الأدوار الداخلية تحتفظ برؤية FR-010
+                        كاملة (الأصفار الحقيقية تُرسم). */
+                    const stats = ([
+                      [Building2, c.departmentCount, 'قسم'],
+                      [GraduationCap, c.studentCount, 'طالب'],
+                      [Users, c.teacherCount, 'عضو هيئة'],
+                      [BookOpen, c.courseCount, 'مقرّر'],
+                    ] as const)
+                      .filter(([, v]) => !isGuest || (typeof v === 'number' && v > 0))
+                      .map(([icon, v, label]) => {
+                        const display = v === null || v === undefined ? '—' : formatNum(v as number);
+                        return (
+                          <span key={label} className="college-stat-chip">
+                            <Icon icon={icon} size={13} />
+                            <strong>{display}</strong>
+                            <span>{label}</span>
                           </span>
-                          <div className="college-card-titles">
-                            <div className="college-card-name">{c.name}</div>
-                            {/* P3-2: the English sub single-lines with the
-                                full name on title — long names (Physical
-                                Education & Sports) wrapped and split the
-                                grid into two card heights. */}
-                            {c.nameEn && (
-                              <div className="college-card-sub" title={c.nameEn}>{c.nameEn}</div>
-                            )}
-                          </div>
-                          <span className="college-card-arrow"><Icon icon={ArrowLeft} size={18} /></span>
-                        </div>
-                        <div className="college-card-stats">
-                          {/* Guest zero-chip suppression (A8 P2-6): the
-                              audit sketch assumed dept/course counts are
-                              non-zero — the seed has 21 colleges where
-                              they are 0 too, so a «0 قسم · 0 مقرّر» pair
-                              still read as a dead campus (VLM frame-1
-                              catch, re-measured). For guests EVERY
-                              zero chip drops; a card with no real
-                              numbers shows none at all. Authed roles
-                              keep the full FR-010 view. */}
-                          {(!isGuest || c.departmentCount > 0) && (
-                            <CollegeStatChip icon={Building2} value={c.departmentCount} label="قسم" />
-                          )}
-                          {(!isGuest || c.studentCount > 0) && (
-                            <CollegeStatChip icon={GraduationCap} value={c.studentCount} label="طالب" />
-                          )}
-                          {(!isGuest || c.teacherCount > 0) && (
-                            <CollegeStatChip icon={Users} value={c.teacherCount} label="عضو هيئة" />
-                          )}
-                          {(!isGuest || c.courseCount > 0) && (
-                            <CollegeStatChip icon={BookOpen} value={c.courseCount} label="مقرّر" />
-                          )}
-                        </div>
-                        <span className="college-card-cta">
-                          <span>زيارة الصفحة</span>
-                          <Icon icon={ArrowLeft} size={12} />
-                        </span>
-                      </Link>
+                        );
+                      });
+                    return (
+                      <RowItem
+                        key={c.id}
+                        leading={
+                          <span aria-hidden>
+                            {/* allow-emoji: data-default for admin-chosen icon */}
+                            <EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={22} />
+                          </span>
+                        }
+                        title={
+                          <Link to={`/colleges/${c.id}`} className="cp-row-link" title={c.name}>
+                            {c.name}
+                          </Link>
+                        }
+                        meta={
+                          <span className="cp-meta-row">
+                            {c.nameEn && <span title={c.nameEn}>{c.nameEn}</span>}
+                            {stats.length > 0 && <span className="cp-meta-stats">{stats}</span>}
+                          </span>
+                        }
+                        trailing={<span className="college-card-arrow" aria-hidden><Icon icon={ArrowLeft} size={16} /></span>}
+                      />
                     );
                   })}
-                </div>
+                </RowList>
               </Reveal>
             ))
           )}
@@ -496,29 +460,6 @@ export function CollegesIndexPage() {
         </>
       )}
     </div>
-  );
-}
-
-function CollegeStatChip({
-  icon,
-  value,
-  label,
-}: {
-  icon: typeof Building2;
-  value: number | null | undefined;
-  label: string;
-}) {
-  // FR-010: render "—" for unknown values, the formatted number for any
-  // genuine number including 0. Principle III — we never invent counts.
-  const display = value === null || value === undefined
-    ? '—'
-    : formatNum(value);
-  return (
-    <span className="college-stat-chip">
-      <Icon icon={icon} size={13} />
-      <strong>{display}</strong>
-      <span>{label}</span>
-    </span>
   );
 }
 

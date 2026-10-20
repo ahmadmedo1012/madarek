@@ -4,11 +4,15 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
-  Trophy, Calendar, Award, Plus, Filter, ChevronRight, Lock, Send, FileText, X, Check, Gavel,
+  Trophy, Calendar, Award, Plus, ChevronRight, Lock, Send, FileText, X, Check, Gavel,
   AlertTriangle,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, UserAvatar, FormField, PageHeader } from '../../components/primitives';
-import { ErrorState, EmptyState, CardSkeleton, DetailSkeleton } from '../../components/primitives/States';
+import { Card, Badge, UserAvatar, FormField } from '../../components/primitives';
+/* r263 (4E — اتجاه Superlist): العِدّاد يتقاعد لشريط أرقام هادئ، والشبكة
+   تصير قائمة صفوف (RowList/RowItem) بتفصيل على الصف، والتصفية شريط
+   FilterBar موحّد (عقد Agent S). */
+import { PageHeader, RowList, RowItem, StatLine, FilterBar } from '../../components/patterns';
+import { ErrorState, EmptyState, DetailSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { Icon } from '../../components/Icon';
@@ -149,50 +153,48 @@ export function CompetitionsIndexPage() {
     <div className="page">
       <PageHeader
         title="المسابقات الأكاديمية"
-        subtitle="شارك في تحديات المعرفة والابتكار، أو نظِّم مسابقتك الخاصّة."
+        description="شارك في تحديات المعرفة والابتكار، أو نظِّم مسابقتك الخاصّة."
         actions={
-          canRun && (
+          canRun ? (
             <button type="button" className="btn primary" onClick={() => setCreating(true)}>
               <Icon icon={Plus} size={14} />
               مسابقة جديدة
             </button>
-          )
+          ) : undefined
         }
       />
 
-      {/* KPI strip — .kpis-compact keeps the strip a strip on phones
-          (A12 P2-4, same rule as /community). */}
-      <div className="grid-3 kpis-compact">
-        <MetricCard icon={Trophy} label="مسابقات مفتوحة" value={kpiValue(stats.open)} color="green" />
-        <MetricCard icon={Calendar} label="تنتهي قريباً" value={kpiValue(stats.closingSoon)} color="amber" />
-        <MetricCard icon={Award} label="إجمالي المشاركات" value={kpiValue(stats.totalEntries)} color="purple" />
-      </div>
+      {/* r263: شريط أرقام هادئ بدل بطاقات KPI — القيم الصادقة نفسها. */}
+      <StatLine
+        items={[
+          { label: 'مسابقات مفتوحة', value: kpiValue(stats.open), tone: 'positive' },
+          { label: 'تنتهي قريباً', value: kpiValue(stats.closingSoon), tone: 'warning' },
+          { label: 'إجمالي المشاركات', value: kpiValue(stats.totalEntries) },
+        ]}
+      />
 
-      {/* Filter chips */}
-      <div className="feed-toolbar">
-        <div className="flex items-center gap-2" role="group" aria-label="تصفية المسابقات بحسب الحالة">
-          <Icon icon={Filter} size={14} className="text-subtle" />
-          <span className="text-xs text-subtle">تصفية:</span>
-          {([
-            ['all', 'الكل'], ['OPEN', 'مفتوحة'], ['CLOSED', 'مغلقة'], ['JUDGED', 'تمّ التحكيم'],
-          ] as const).map(([v, l]) => (
-            <button
-              key={v}
-              type="button"
-              className={`pill${filter === v ? ' on' : ''}`}
-              aria-pressed={filter === v}
-              onClick={() => setFilter(v)}
-            >{l}</button>
-          ))}
-        </div>
-      </div>
+      {/* r263: شريط التصفية الموحّد (FilterBar) — الرقائق نفسها بعقد
+          aria-pressed كما كانت. */}
+      <FilterBar
+        filters={(
+          <div className="flex items-center gap-2" role="group" aria-label="تصفية المسابقات بحسب الحالة">
+            {([
+              ['all', 'الكل'], ['OPEN', 'مفتوحة'], ['CLOSED', 'مغلقة'], ['JUDGED', 'تمّ التحكيم'],
+            ] as const).map(([v, l]) => (
+              <button
+                key={v}
+                type="button"
+                className={`pill${filter === v ? ' on' : ''}`}
+                aria-pressed={filter === v}
+                onClick={() => setFilter(v)}
+              >{l}</button>
+            ))}
+          </div>
+        )}
+      />
 
       {q.isPending ? (
-        <div className="comp-index-grid">
-          <CardSkeleton lines={4} />
-          <CardSkeleton lines={4} />
-          <CardSkeleton lines={4} />
-        </div>
+        <ListSkeleton rows={5} />
       ) :
        q.isError ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> :
        visible.length === 0 ? (
@@ -221,43 +223,46 @@ export function CompetitionsIndexPage() {
           />
         )
       ) : (
-        <div className="comp-index-grid">
+        /* r263: قائمة صفوف هادئة بتفصيل على الصف — العنوان هو باب الصف،
+           الحالة والوفاة والمشاركون في الطرف، والوصف سطر ثانوي مقصوص. */
+        <RowList aria-label="قائمة المسابقات">
           {visible.map((c) => (
-            <Link key={c.id} to={`/competitions/${c.id}`} className="comp-index-card">
-              <div className="comp-index-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏆'} size={26} /></div>
-              <div className="comp-index-body">
-                <div className="comp-index-head">
-                  <span className="comp-index-category">{c.category}</span>
+            <RowItem
+              key={c.id}
+              leading={<EmojiIcon emoji={c.iconEmoji ?? '🏆'} size={20} />}
+              title={
+                <Link to={`/competitions/${c.id}`} className="cp-row-link" title={c.title}>
+                  {c.title}
+                </Link>
+              }
+              meta={<span className="cp-clamp2" title={c.description}>{c.category} · {c.description}</span>}
+              trailing={
+                <span className="cp-trail">
                   {submissionEnded(c) ? (
                     <Badge color="amber">انتهى التقديم</Badge>
                   ) : (
                     <Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>
                   )}
-                </div>
-                {/* Card title demoted from h3 to a styled div (15-g P2-5
-                    — card titles sat at h3 directly under the page h1, a
-                    skipped level). The class carries the sizing; the inline
-                    family keeps the display voice the h3 rule provided. */}
-                <div className="comp-index-title" style={{ fontFamily: 'var(--font-display)' }}>{c.title}</div>
-                <p className="comp-index-desc">{c.description}</p>
-                <div className="comp-index-meta">
-                  <span><Icon icon={Calendar} size={12} /> {formatDeadline(c.deadline)}</span>
-                  <span>·</span>
-                  {/* A8 §7.7: a bare «0 مشترك» on every fresh competition
-                      reads as a dead contest — an invitation while the door
-                      is open, the honest absence after. */}
-                  <span>
+                  <span className="cp-inline">
+                    <Icon icon={Calendar} size={12} /> {formatDeadline(c.deadline)}
+                  </span>
+                  {/* A8 §7.7: a bare «0 مشترك» reads as a dead contest —
+                      an invitation while the door is open, the honest
+                      absence after. */}
+                  <span className="cp-inline">
                     <Icon icon={Award} size={12} />{' '}
                     {c._count.entries === 0
                       ? (submissionEnded(c) || c.status !== 'OPEN' ? 'لا مشاركات' : 'كن أول المشاركين')
                       : `${c._count.entries} مشترك`}
                   </span>
-                  {c.prize && <><span>·</span><span>الجائزة: {c.prize}</span></>}
-                </div>
-              </div>
-            </Link>
+                  {c.prize && (
+                    <span className="cp-inline">الجائزة: {c.prize}</span>
+                  )}
+                </span>
+              }
+            />
           ))}
-        </div>
+        </RowList>
       )}
 
       {creating && <CreateCompetitionModal onClose={() => setCreating(false)} />}
