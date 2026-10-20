@@ -3,13 +3,16 @@ import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   ShieldCheck, Server,
-  Radio, Settings, Search,
+  Radio, Settings,
   Download, RefreshCw, Mail, X,
   GraduationCap, UserMinus, AlertCircle, BookOpen,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
-import { ErrorState, EmptyState, KpiSkeleton, TableSkeleton, Skeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, KpiSkeleton, TableSkeleton, ListSkeleton, Skeleton } from '../../components/primitives/States';
+/* r253 (Phase B): the students roster composes the shell patterns —
+ * PageFrame + patterns PageHeader + FilterBar + RowList rows. */
+import { PageFrame, PageHeader as PatternsPageHeader, FilterBar, RowList, RowItem } from '../../components/patterns';
 import { Modal } from '../../components/overlays/Modal';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
@@ -18,7 +21,7 @@ import { withInstitutionScope } from '../../lib/queryClient';
 import { toast } from '../../lib/toast';
 import { useFaculties, useCurrentInstitutionSlug, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
-import { TablePaginationFooter, useCompactRosterBand } from './AdminPages';
+import { TablePaginationFooter } from './AdminPages';
 import { countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
 // D14 css split (13-17): colleges.css has owned the admin-extras surfaces
@@ -123,176 +126,122 @@ export function AdminStudentsPage() {
     placeholderData: (prev) => prev,
   });
 
-  // r183-B5 (A8 wave-A P2): the students roster scrolled 57px sideways
-  // at 768 — the compact band (the AdminCoursesPage / QualityPages
-  // column-diet pattern) folds «السنة»+«المستوى» into the رقم القيد
-  // meta line at ≤1024 (8 → 6 columns). ≤640 keeps .tbl-stack; the
-  // folded fields stay visible in the meta line there too.
-  const compact = useCompactRosterBand();
-  const studentCols = compact ? 6 : 8;
-
+  /* r253 (Phase B): the roster is RowList rows — identity + GPA/status
+   * at a glance, the academic facts (reg number · faculty · year/level)
+   * in the meta line, and the enrollments action behind the inline
+   * expansion. The compact band's column diet dies with the table: the
+   * row carries ALL fields at every width. */
   return (
-    <div className="page admin-students">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">إدارة الطلاب</h1>
-          <p className="page-subtitle">قائمة الطلاب المسجَّلين في الجامعة، مع البحث والتصفية حسب الكلّيّة.</p>
-          {/* r190-D3: the mono telemetry fact line — the server meta total
-              (the roster's most-scanned number) rides the masthead; the
-              footer keeps the per-page counting. */}
-          <p className="page-header-meta">
-            {studentsQ.data
-              ? `${countAr(studentsQ.data.meta.total, ['طالب واحد مسجَّل', 'طالبان مسجَّلان', 'طلاب مسجَّلون', 'طالباً مسجَّلاً'])} · بحث الخادم`
-              : 'قراءة سجلّ الطلاب…'}
-          </p>
-        </div>
-      </header>
+    <PageFrame width="default">
+      <PatternsPageHeader
+        title="إدارة الطلاب"
+        description="قائمة الطلاب المسجَّلين في الجامعة، مع البحث والتصفية حسب الكلّيّة."
+        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'الطلاب' }]}
+        meta={studentsQ.data
+          ? `${countAr(studentsQ.data.meta.total, ['طالب واحد مسجَّل', 'طالبان مسجَّلان', 'طلاب مسجَّلون', 'طالباً مسجَّلاً'])} · بحث الخادم`
+          : 'قراءة سجلّ الطلاب…'}
+      />
+
+      <FilterBar
+        search={{
+          value: q,
+          onChange: setQ,
+          placeholder: 'ابحث بالاسم أو البريد أو رقم القيد…',
+        }}
+        filters={(
+          <>
+            <select
+              className="admin-students-input"
+              value={facultyId}
+              onChange={(e) => { setFacultyId(e.target.value); setPage(1); }}
+              disabled={facQ.isPending}
+              aria-label="تصفية حسب الكلّيّة"
+            >
+              <option value="">{facQ.isPending ? 'جارٍ تحميل الكلّيّات…' : 'كلّ الكلّيّات'}</option>
+              {facQ.data?.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+            </select>
+            {facQ.isError && (
+              <button type="button" className="btn ghost sm" onClick={() => facQ.refetch()}>
+                <Icon icon={RefreshCw} size={13} />
+                إعادة تحميل الكلّيّات
+              </button>
+            )}
+          </>
+        )}
+      />
 
       <Card>
-        <div className="admin-students-toolbar">
-          <div className="admin-students-search">
-            <Icon icon={Search} size={14} />
-            <input
-              type="search"
-              placeholder="ابحث بالاسم أو البريد أو رقم القيد…"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              className="admin-students-input"
-              aria-label="البحث في الطلاب"
-            />
-          </div>
-          <select
-            className="admin-students-input"
-            value={facultyId}
-            onChange={(e) => { setFacultyId(e.target.value); setPage(1); }}
-            disabled={facQ.isPending}
-            aria-label="تصفية حسب الكلّيّة"
-          >
-            <option value="">{facQ.isPending ? 'جارٍ تحميل الكلّيّات…' : 'كلّ الكلّيّات'}</option>
-            {facQ.data?.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
-          </select>
-          {facQ.isError && (
-            <button type="button" className="btn ghost sm" onClick={() => facQ.refetch()}>
-              <Icon icon={RefreshCw} size={13} />
-              إعادة تحميل الكلّيّات
-            </button>
-          )}
-        </div>
-
-        {/* 8 columns — the actions header makes the skeleton advertise the
-            full column count (r157 / 6A9 #9). r183-B5: the compact diet
-            renders 6 at ≤1024. */}
-        {studentsQ.isPending && <TableSkeleton rows={6} cols={studentCols} />}
+        {studentsQ.isPending && <ListSkeleton rows={6} />}
         {studentsQ.isError && <ErrorState error={studentsQ.error} message="تعذّر تحميل قائمة الطلاب" onRetry={() => studentsQ.refetch()} />}
         {studentsQ.data && (
           <>
-            {/* r157 (6A9 #6): the shared .table-wrap — the local
-                .admin-students-table-wrap rule (overflow-x + bleed edge)
-                is deleted from admin.css; the canonical wrap adds the
-                framed surface + radius every sibling roster sits in. */}
-            <div className="table-wrap">
-              <table className="table tbl-stack">
-                <thead>
-                  <tr>
-                    <th scope="col">الطالب</th>
-                    <th scope="col">رقم القيد</th>
-                    <th scope="col">الكلّيّة / القسم</th>
-                    {/* r183-B5: folded into the رقم القيد meta line at
-                        ≤1024 (the compact band) — the fields stay on the
-                        row (the same fold grammar the courses roster
-                        uses for «تسجيلات»/«الفصول»). */}
-                    {!compact && <th scope="col">السنة</th>}
-                    <th scope="col">المعدّل</th>
-                    {!compact && <th scope="col">المستوى</th>}
-                    <th scope="col">الحالة</th>
-                    <th scope="col">إجراءات</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {studentsQ.data.data.length === 0 && (
-                    <tr><td colSpan={studentCols}><EmptyState illustration="empty-search" title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع." action={hasActiveFilters ? (
-                      <button type="button" className="btn ghost sm" onClick={clearSearch}>
-                        <Icon icon={X} size={13} />
-                        مسح البحث
-                      </button>
-                    ) : undefined} /></td></tr>
+            <RowList aria-label="قائمة الطلاب" empty={(
+              <EmptyState illustration="empty-search" title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع." action={hasActiveFilters ? (
+                <button type="button" className="btn ghost sm" onClick={clearSearch}>
+                  <Icon icon={X} size={13} />
+                  مسح البحث
+                </button>
+              ) : undefined} />
+            )}>
+              {studentsQ.data.data.map((s) => (
+                <RowItem
+                  key={s.id}
+                  leading={<UserAvatar size={32} initials={s.avatarInitials ?? `${s.firstName[0]}${s.lastName[0]}`} color={s.avatarColor ?? undefined} />}
+                  title={`${s.firstName} ${s.lastName}`}
+                  meta={(
+                    <>
+                      <bdi>{s.email}</bdi>
+                      {' · '}
+                      <span className="font-mono">
+                        {s.studentProfile?.universityId ? <bdi>{s.studentProfile.universityId}</bdi> : '—'}
+                      </span>
+                      {' · '}
+                      {s.studentProfile?.faculty.name ?? '—'}
+                    </>
                   )}
-                  {studentsQ.data.data.map((s) => (
-                    <tr key={s.id}>
-                      <td data-label="الطالب">
-                        <div className="admin-students-name">
-                          {/* r187 (a11y): was a hand-rolled .avatar span —
-                              bypassed the primitive's avatarInk gate, so a
-                              grey #6B7280 ground painted --accent-fg at
-                              3.91:1 (AA fail, the exact 21-c class of bug
-                              the gate exists for). UserAvatar keeps the
-                              28px/11px geometry and gates the ink. */}
-                          <UserAvatar size={28} initials={s.avatarInitials ?? `${s.firstName[0]}${s.lastName[0]}`} color={s.avatarColor ?? undefined} />
-                          <div>
-                            <div>{s.firstName} {s.lastName}</div>
-                            <div className="admin-students-email"><bdi>{s.email}</bdi></div>
-                          </div>
-                        </div>
-                      </td>
-                      <td data-label="رقم القيد">
-                        {compact ? (
-                          <div>
-                            <div className="font-mono">
-                              {s.studentProfile?.universityId ? <bdi>{s.studentProfile.universityId}</bdi> : '—'}
-                            </div>
-                            <div className="text-xxs text-subtle">
-                              السنة {s.studentProfile?.year ?? '—'} · المستوى {s.studentProfile?.level ?? '—'}
-                            </div>
-                          </div>
-                        ) : (
-                          <span className="font-mono">
-                            {s.studentProfile?.universityId ? <bdi>{s.studentProfile.universityId}</bdi> : '—'}
-                          </span>
-                        )}
-                      </td>
-                      <td data-label="الكلّيّة / القسم">
-                        <div>{s.studentProfile?.faculty.name ?? '—'}</div>
-                        <div className="text-subtle text-xxs">{s.studentProfile?.department.name ?? ''}</div>
-                      </td>
-                      {!compact && <td data-label="السنة" className="font-mono">{s.studentProfile?.year ?? '—'}</td>}
-                      <td data-label="المعدّل" className="font-mono">{s.studentProfile?.gpa ?? '—'}</td>
-                      {!compact && <td data-label="المستوى" className="font-mono">{s.studentProfile?.level ?? '—'}</td>}
-                      <td data-label="الحالة">
-                        <span className={`pill ${s.isActive ? 'on' : ''}`}>
-                          {s.isActive ? 'نشط' : 'موقوف'}
-                        </span>
-                      </td>
-                      <td data-label="إجراءات">
-                        <button
-                          type="button"
-                          className="btn ghost sm"
-                          onClick={() => setEnrollmentStudent(s)}
-                        >
-                          <Icon icon={GraduationCap} size={13} />
-                          تسجيلات
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {/* r157 (6A9 #7): the shared TablePaginationFooter — the
-                  local .admin-pagination block is gone (dead rule in
-                  admin.css); the family footer brings the bounded
-                  pageList + aria-current=page + the countAr «طالب»
-                  count + server-side page requests. Rendered while rows
-                  exist so the roster total stays visible on single-page
-                  results (the old footer's contract). */}
-              {studentsQ.data.data.length > 0 && (
-                <TablePaginationFooter
-                  page={studentsQ.data.meta.page}
-                  totalPages={studentsQ.data.meta.totalPages}
-                  total={studentsQ.data.meta.total}
-                  unit={['طالب واحد', 'طالبان', 'طلاب', 'طالباً']}
-                  onPage={setPage}
-                />
-              )}
-            </div>
+                  trailing={(
+                    <>
+                      <span className="font-mono" title="المعدّل التراكمي">{s.studentProfile?.gpa ?? '—'}</span>
+                      <span className={`pill ${s.isActive ? 'on' : ''}`}>
+                        {s.isActive ? 'نشط' : 'موقوف'}
+                      </span>
+                    </>
+                  )}
+                  expandLabel={`بيانات وتسجيلات ${s.firstName} ${s.lastName}`}
+                >
+                  {/* The expansion body — the full academic facts + the
+                      enrollments action (opens the EnrollmentModal). */}
+                  <div className="owner-row-actions">
+                    <span className="text-sm text-muted">
+                      القسم: {s.studentProfile?.department.name ?? '—'} · السنة {s.studentProfile?.year ?? '—'} · المستوى {s.studentProfile?.level ?? '—'}
+                    </span>
+                    <button
+                      type="button"
+                      className="btn ghost sm"
+                      onClick={() => setEnrollmentStudent(s)}
+                    >
+                      <Icon icon={GraduationCap} size={13} />
+                      تسجيلات
+                    </button>
+                  </div>
+                </RowItem>
+              ))}
+            </RowList>
+
+            {/* r157 (6A9 #7): the shared TablePaginationFooter — the
+                family footer brings the bounded pageList + aria-current=page
+                + the countAr «طالب» count + server-side page requests.
+                Rendered while rows exist so the roster total stays visible
+                on single-page results (the old footer's contract). */}
+            {studentsQ.data.data.length > 0 && (
+              <TablePaginationFooter
+                page={studentsQ.data.meta.page}
+                totalPages={studentsQ.data.meta.totalPages}
+                total={studentsQ.data.meta.total}
+                unit={['طالب واحد', 'طالبان', 'طلاب', 'طالباً']}
+                onPage={setPage}
+              />
+            )}
           </>
         )}
       </Card>
@@ -302,7 +251,7 @@ export function AdminStudentsPage() {
           onClose={() => setEnrollmentStudent(null)}
         />
       )}
-    </div>
+    </PageFrame>
   );
 }
 

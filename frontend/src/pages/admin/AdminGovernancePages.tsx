@@ -1132,7 +1132,7 @@ export function AdminPermissionsPage() {
                     className="govx-group-count"
                     aria-label={countAr(
                       effectiveCount,
-                      [`صلاحية واحدة مفعّلة`, `صلاحيتان مفعّلتان`, `${formatNum(effectiveCount)} صلاحيات مفعّلة`, `${formatNum(effectiveCount)} صلاحية مفعّلة`],
+                      ['صلاحية واحدة مفعّلة', 'صلاحيتان مفعّلتان', 'صلاحيات مفعّلة', 'صلاحية مفعّلة'],
                     )}
                   >
                     {formatNum(effectiveCount)} مفعّلة من {formatNum(caps.length)}

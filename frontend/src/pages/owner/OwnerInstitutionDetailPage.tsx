@@ -353,6 +353,9 @@ export function OwnerInstitutionDetailPage() {
 
   /* ── Collapsed-departments state ──────────────────────────────── */
   const [openDepts, setOpenDepts] = useState<ReadonlySet<string>>(new Set());
+  /* r254: the empty-faculties rollup disclosure — a HOOK, so it lives
+   * with the other state ABOVE the early returns (Rules of Hooks). */
+  const [showEmptyFaculties, setShowEmptyFaculties] = useState(false);
   const toggleDepts = (id: string) => {
     setOpenDepts((prev) => {
       const next = new Set(prev);
@@ -436,6 +439,18 @@ export function OwnerInstitutionDetailPage() {
    * fold is display-only and says so in the subtitle). */
   const facultyCensus = dedupeFacultyCensus(faculties);
   const foldedRows = facultyCensus.reduce((s, e) => s + (e.duplicateCount - 1), 0);
+  /* r254 (the 25× empty-card wall, BLUEPRINT §10 4D): the census splits
+   * into faculties with CONTENT (rendered as full cards) and the empty
+   * seed tail (collapsed behind one honest rollup disclosure — the
+   * wall of near-identical «0 قسماً · 0 مقرّراً · 0 طالباً» cards dies;
+   * the count stays visible, the rows stay one click away, and the DB
+   * is never touched). The disclosure state is the useState above. */
+  const activeCensus = facultyCensus.filter(
+    (e) => e.faculty.departmentCount > 0 || e.faculty.courseCount > 0 || e.faculty.studentCount > 0,
+  );
+  const emptyCensus = facultyCensus.filter(
+    (e) => e.faculty.departmentCount === 0 && e.faculty.courseCount === 0 && e.faculty.studentCount === 0,
+  );
   const mutationBusy =
     createFaculty.isPending || createDepartment.isPending ||
     createCourse.isPending || createOffering.isPending;
@@ -539,7 +554,7 @@ export function OwnerInstitutionDetailPage() {
         )}
         {facultiesQ.data && (
           <div className="flex-col gap-3">
-            {facultyCensus.map((entry) => (
+            {activeCensus.map((entry) => (
               <OwnerFacultyCard
                 key={entry.faculty.id}
                 faculty={entry.faculty}
@@ -550,6 +565,59 @@ export function OwnerInstitutionDetailPage() {
                 writesDisabled={suspended}
               />
             ))}
+            {/* r254: the empty tail rolls up — one disclosure row names
+                the count; expanding it lists the bare rows (name · city
+                · the duplicate annotation) each with its own add-dept
+                affordance. Honest-empty without the 25-card wall. */}
+            {emptyCensus.length > 0 && (
+              <div className="owner-empty-rollup">
+                <button
+                  type="button"
+                  className="owner-empty-rollup-head"
+                  aria-expanded={showEmptyFaculties}
+                  aria-controls="owner-empty-faculties"
+                  onClick={() => setShowEmptyFaculties((v) => !v)}
+                >
+                  <Icon icon={ChevronDown} size={14} className="owner-detail-chevron" aria-hidden />
+                  <span>
+                    {/* countAr prefixes the digit itself (lib/format) — the
+                        forms carry only the nouns. */}
+                    {countAr(emptyCensus.length, ['كلّيّة واحدة بلا محتوى بعد', 'كلّيتان بلا محتوى بعد', 'كلّيّات بلا محتوى بعد', 'كلّيّة بلا محتوى بعد'])}
+                    {' — '}أقسام ومقرّرات وطلابها لم تُنشأ بعد
+                  </span>
+                </button>
+                {showEmptyFaculties && (
+                  <div className="owner-empty-rollup-body" id="owner-empty-faculties">
+                    {emptyCensus.map((entry) => (
+                      <div key={entry.faculty.id} className="owner-empty-rollup-row">
+                        <span className="owner-empty-rollup-name">{entry.faculty.name}</span>
+                        <span className="owner-empty-rollup-meta">
+                          {entry.faculty.city.trim() || '—'}
+                          {entry.duplicateCount > 1 && (
+                            <>
+                              {' · '}
+                              <span title={`${entry.duplicateCount} سجلات متطابقة بلا محتوى في قاعدة البيانات — تُعرض هنا مجمّعةً، والسجلات كما هي`}>
+                                سجلّ مكرّر ×{entry.duplicateCount}
+                              </span>
+                            </>
+                          )}
+                        </span>
+                        <button
+                          type="button"
+                          className="btn ghost sm"
+                          onClick={() => openDeptForm(entry.faculty)}
+                          disabled={suspended}
+                          title={suspended ? 'التعديلات الأكاديمية متاحة للمؤسسات النشطة فقط' : `إضافة قسم إلى «${entry.faculty.name}»`}
+                        >
+                          <Icon icon={Plus} size={13} />
+                          إضافة قسم
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             {faculties.length === 0 && (
               <EmptyState
                 icon={Building2}
