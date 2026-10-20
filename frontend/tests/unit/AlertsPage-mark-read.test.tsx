@@ -147,23 +147,23 @@ describe('AlertsPage — mark-read capabilities (r155b)', () => {
     ).toBeNull();
   });
 
-  /* r166a (E1 unread-visibility): the row ITSELF must carry the state —
-   * .alert.unread (surface-2 wash + 2px accent inline-start bar) — so
-   * read/unread stay distinguishable WITHOUT the badge. Pins the
-   * modifier on exactly the unread rows and its absence on the read
-   * row (the CSS paint itself is components.css's contract, pinned by
-   * the fs-level regression test — r166a-student-visual.test.ts). */
-  it('unread rows carry the .alert.unread state class; the read row does not', () => {
+  /* r261 (4E redesign, Superlist direction): the row ITSELF must carry
+   * the state — .np-row.unread (signal well + strong title, painted by
+   * notifications.css §PAGE) — so read/unread stay distinguishable
+   * WITHOUT the badge. Pins the modifier on exactly the unread rows
+   * and its absence on the read row. The old .alert family stays for
+   * dashboard boards; this page ships quiet management rows. */
+  it('unread rows carry the .np-row.unread state class; the read row does not', () => {
     const { container } = renderPage();
 
-    const unreadRows = container.querySelectorAll('.alert.unread');
+    const unreadRows = container.querySelectorAll('.np-row.unread');
     expect(unreadRows).toHaveLength(2);
     expect(unreadRows[0]!.textContent).toContain('محاضرة غداً في القاعة B2');
     expect(unreadRows[1]!.textContent).toContain('اقترب موعد تسليم الواجب');
-    // Every rendered alert row, minus the two unread ones, is a read
+    // Every rendered row, minus the two unread ones, is a read
     // row without the modifier.
-    expect(container.querySelectorAll('.alert')).toHaveLength(3);
-    const readRow = container.querySelectorAll('.alert:not(.unread)');
+    expect(container.querySelectorAll('.np-row')).toHaveLength(3);
+    const readRow = container.querySelectorAll('.np-row:not(.unread)');
     expect(readRow).toHaveLength(1);
     expect(readRow[0]!.textContent).toContain('تحديث نظام الصلاحيات');
   });

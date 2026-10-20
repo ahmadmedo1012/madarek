@@ -16,6 +16,7 @@ import {
 } from '../../hooks/useResources';
 import { apiErrorMessage, formatRelativeAr } from '../../lib/format';
 import { formatReplyBlocks } from './aiReplyFormat';
+import '../../styles/ai.css'; /* r261: سطح المحادثة المركّز — البنية الجديدة فقط (.ai-layout/.ai-surface/.ai-gaps/.ai-composer) */
 
 interface ChatMsg {
   role: 'bot' | 'user';
@@ -325,12 +326,17 @@ export default function AiAssistantPage() {
         <Badge color="gold" icon={Sparkles}>{isRealLlm && aiConfig.data?.model ? aiConfig.data.model : 'AI'}</Badge>
       </header>
 
-      {/* Gap-aware starter cards — real data from /me/gaps. The card is a
-          progressive enhancement: honest skeleton while loading, an inline
-          error note on failure, and simply absent when there are no gaps. */}
+      {/* r261 (4E، اتجاه Superlist): شريط الفجوات — سياق المصادر يسبق
+          السطح بلا غلاف Card: سطر تعريف هادئ ثم بطاقات الفجوات في صفّ.
+          بيانات حقيقية من /me/gaps؛ هيكل صادق: هيكل مطابق أثناء التحميل،
+          ملاحظة خطأ مدمجة عند الفشل، وغياب تامّ بلا فجوات. */}
       {gaps.isPending ? (
-        <Card title="بناءً على أدائك" icon={Brain} subtitle="مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد">
-          <div className="grid-3" aria-busy="true" aria-live="polite">
+        <div className="ai-gaps" aria-busy="true" aria-live="polite">
+          <div className="ai-gaps-head">
+            <p className="ai-gaps-title"><Icon icon={Brain} size={14} />بناءً على أدائك</p>
+            <p className="ai-gaps-hint">مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد</p>
+          </div>
+          <div className="ai-gaps-row">
             {[0, 1, 2].map((i) => (
               <div key={i} className="ai-gap-card" aria-hidden>
                 <Skeleton width="60%" height={10} />
@@ -339,7 +345,7 @@ export default function AiAssistantPage() {
               </div>
             ))}
           </div>
-        </Card>
+        </div>
       ) : gaps.isError ? (
         <AlertRow
           color="red"
@@ -354,12 +360,12 @@ export default function AiAssistantPage() {
           }
         />
       ) : gaps.data && gaps.data.length > 0 ? (
-        <Card
-          title="بناءً على أدائك"
-          icon={Brain}
-          subtitle="مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد"
-        >
-          <div className="grid-3">
+        <div className="ai-gaps">
+          <div className="ai-gaps-head">
+            <p className="ai-gaps-title"><Icon icon={Brain} size={14} />بناءً على أدائك</p>
+            <p className="ai-gaps-hint">مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد</p>
+          </div>
+          <div className="ai-gaps-row">
             {gaps.data.slice(0, 3).map((g) => (
               <button
                 key={g.conceptId}
@@ -387,22 +393,24 @@ export default function AiAssistantPage() {
               </button>
             ))}
           </div>
-        </Card>
+        </div>
       ) : null}
 
-      <div className="grid-2-1">
-        <Card
-          title="محادثتك مع المساعد"
-          icon={Bot}
-          actions={
-            /* r164g context honesty: mastery context IS sent for
+      {/* r261: سطح المحادثة المركّز — اللوحة هي الصفحة: رأس شريط يحمل
+          سياق الوعي، السجلّ يملأ المسافة، والمرسِل يلتصق بأسفل اللوحة
+          (جوال أولًا). role=log + aria-live كما هي — العقد الاختبارية
+          (.chat-area وأسماء الأزرار) لم تتغيّر. */}
+      <div className="ai-layout">
+        <section className="ai-surface" aria-label="محادثتك مع المساعد">
+          <div className="ai-surface-head">
+            <span className="ai-surface-title"><Icon icon={Bot} size={16} />محادثتك مع المساعد</span>
+            {/* r164g context honesty: mastery context IS sent for
              * students (r160 prompt composition) in BOTH engine modes —
              * the local composer reads the same mastery rows. The chip
              * states exactly that awareness and nothing more; roles with
              * no mastery rows see no chip (nothing is invented). */
-            isStudent ? <Badge color="brand" icon={Brain}>واعٍ بمستوى إتقانك</Badge> : undefined
-          }
-        >
+            isStudent ? <Badge color="brand" icon={Brain}>واعٍ بمستوى إتقانك</Badge> : null}
+          </div>
           {/* role=log + aria-live: screen readers hear every reply and
               error as the conversation grows (audit 0-d P1).
               tabIndex (r152a A6 P2-2): the scroller has no focusable
@@ -493,12 +501,15 @@ export default function AiAssistantPage() {
             )}
           </div>
 
+          {/* المرسِل — رقائق سريعة + صفّ الإدخال + العدّاد، ملتصقة بأسفل
+              اللوحة (r261): إفصاح الخصوصية أولًا ثم الأدوات. */}
+          <div className="ai-composer">
           {/* r176c: the persistent privacy disclosure — the real engine
               processes messages off-platform; one honest line, always
               visible in real-LLM mode (the greeting alone would vanish
               after the first turn). */}
           {isRealLlm && (
-            <p className="text-xxs text-subtle" style={{ margin: 0 }}>
+            <p className="text-xxs text-subtle ai-privacy" style={{ margin: 0 }}>
               {PRIVACY_DISCLOSURE}
             </p>
           )}
@@ -566,12 +577,14 @@ export default function AiAssistantPage() {
               {input.length}/4000
             </p>
           )}
-        </Card>
+          </div>
+        </section>
 
         {/* r164g — conversation management: list/switch/clear with the
             current-conversation indicator and a two-step delete confirm
-            (clearing an exchange is irreversible — no accidental loss). */}
-        <div className="flex-col" style={{ gap: 'var(--sp-6)', minWidth: 0 }}>
+            (clearing an exchange is irreversible — no accidental loss).
+            r261: العمود الجانبي يهبط أسفل السطح على الجوال (ai-layout). */}
+        <aside className="ai-side">
           <Card
             title="محادثاتك"
             icon={MessageSquare}
@@ -698,7 +711,7 @@ export default function AiAssistantPage() {
               ))}
             </div>
           </Card>
-        </div>
+        </aside>
       </div>
     </div>
   );

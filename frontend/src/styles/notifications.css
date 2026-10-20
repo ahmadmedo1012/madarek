@@ -542,3 +542,86 @@
   background: var(--c-rose-ink);
   color: var(--c-rose-bg);
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   §PAGE — صفحة الإشعارات (AlertsPage · عائلة 4E، r261)
+   صفوف إدارة هادئة على اتجاه Superlist: القائمة أولًا والتفصيل على
+   الصف نفسه، فواصل شعرية وسطح ساكن بلا بطاقات ملوّنة متعدّدة. حالة
+   القراءة تُقرأ من بئر الإشارة والعنوان قبل أي شارة؛ التحكّم «تعليم
+   كمقروء» يسكن الصف. كل القيم من tokens.css (لا خام).
+   ═══════════════════════════════════════════════════════════════════ */
+.np-list {
+  display: flex;
+  flex-direction: column;
+  margin-block-start: calc(-1 * var(--sp-3));
+}
+.np-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--sp-3);
+  align-items: start;
+  padding-block: var(--sp-4);
+}
+.np-row + .np-row { border-block-start: 1px solid var(--surface-divider); }
+.np-well {
+  inline-size: var(--sp-9);
+  block-size: var(--sp-9);
+  border-radius: var(--r-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.np-well.danger  { background: var(--danger-soft);  color: var(--danger-ink); }
+.np-well.accent  { background: var(--accent-soft);  color: var(--accent-ink); }
+.np-well.warning { background: var(--warning-soft); color: var(--warning-ink); }
+.np-well.success { background: var(--success-soft); color: var(--success-ink); }
+.np-body { min-inline-size: 0; display: flex; flex-direction: column; gap: var(--sp-1); }
+.np-title {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-snug);
+  color: var(--text-secondary);
+  font-weight: var(--fw-regular);
+}
+.np-desc {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.np-time {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-faint);
+}
+/* غير المقروء: بئر الإشارة + عنوان قويّ — تُقرأ الحالة قبل أي شارة */
+.np-row.unread .np-well.danger,
+.np-row.unread .np-well.accent,
+.np-row.unread .np-well.warning,
+.np-row.unread .np-well.success { color: var(--text); }
+.np-row.unread .np-title { color: var(--text); font-weight: var(--fw-semibold); }
+.np-tail {
+  display: flex;
+  align-items: center;
+  padding-block-start: var(--sp-0-5);
+}
+.np-tail .btn { flex-shrink: 0; }
+.np-read-mark {
+  inline-size: var(--sp-7);
+  block-size: var(--sp-7);
+  border-radius: var(--r-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-faint);
+  background: var(--surface-2);
+}
+.np-skel .np-body { gap: var(--sp-2); padding-block-start: var(--sp-1); }
+@media (max-width: 640px) {
+  .np-well { inline-size: var(--sp-8); block-size: var(--sp-8); }
+}
