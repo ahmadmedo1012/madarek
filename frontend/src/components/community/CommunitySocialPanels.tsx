@@ -27,8 +27,9 @@ import {
   MessageCircle, Heart, TrendingUp, AlertTriangle, Users, CalendarDays,
   UserPlus, UserMinus, Send, X,
 } from 'lucide-react';
-import { Card, Badge, UserAvatar, FormField } from '../primitives';
-import { ErrorState, EmptyState, CardSkeleton, Skeleton } from '../primitives/States';
+import { Badge, Card, UserAvatar, FormField } from '../primitives';
+import { RowList, RowItem } from '../patterns';
+import { ErrorState, EmptyState, Skeleton } from '../primitives/States';
 import { Modal } from '../overlays';
 import { Icon } from '../Icon';
 import {
@@ -57,89 +58,90 @@ function StudyRoomCard({ room }: { room: StudyRoomRow }) {
   const initials = room.owner.avatarInitials
     ?? `${room.owner.firstName[0] ?? ''}${room.owner.lastName[0] ?? ''}`;
 
+  /* r262 (اتجاه Superlist): صفّ غرفة هادئ في RowList الأب — الصورة
+     الرمزية تقود، الموضوع والعدد سطر ثانوي، وانضمام/مغادرة في الطرف
+     (نفس أسماء aria والنصوص — العقد الاختباري ثابت). */
   return (
-    <Card>
-      <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
-        <UserAvatar initials={initials} size={44} />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{
-            fontFamily: 'var(--font-display)', fontWeight: 'var(--fw-bold)',
-            fontSize: 'var(--fs-md)', margin: '0 0 var(--sp-1-5) 0',
-            display: 'flex', flexWrap: 'wrap', gap: 'var(--sp-2)', alignItems: 'center',
-          }}>
-            <span title={room.name}>{room.name}</span>
-            {mine && <Badge color="gold">غرفتك</Badge>}
-          </div>
-          {room.topic && (
-            <p className="text-sm text-muted" style={{ margin: '0 0 var(--sp-2) 0' }}>{room.topic}</p>
-          )}
-          <div className="event-meta">
-            <span>أنشأها {room.owner.firstName} {room.owner.lastName}</span>
-            <span><Icon icon={Users} size={11} /> {arUnit(room._count.members, 'عضو', 'عضوان', 'أعضاء')}</span>
-            <span>
-              <Icon icon={CalendarDays} size={11} />{' '}
-              <time dateTime={room.createdAt}>
-                {formatDate(room.createdAt, { day: 'numeric', month: 'short', year: 'numeric' })}
-              </time>
-            </span>
-          </div>
-          <div className="event-actions">
-            {room.isMember ? (
-              /* المالك يرى زر المغادرة مثل كل عضو — الخلفية ترفض بحراسة
-                 400 «مالك الغرفة لا يغادرها» (r180) ويصل الردّ عبر toast
-                 الخُطّاف؛ شارة «غرفتك» + التلميح يشرحان السبب سلفًا. */
-              <button
-                type="button"
-                className="btn outline sm"
-                onClick={() => leave.mutate({ roomId: room.id, name: room.name })}
-                disabled={leavePending}
-                title={mine ? 'أنت مالك هذه الغرفة — لا يمكن مغادرتها' : undefined}
-                aria-label={mine ? `مغادرة ${room.name} — أنت مالكها` : `مغادرة ${room.name}`}
-              >
-                <Icon icon={UserMinus} size={12} />
-                {leavePending ? 'جارٍ المغادرة…' : 'مغادرة'}
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="btn primary sm"
-                onClick={() => join.mutate({ roomId: room.id, name: room.name })}
-                disabled={joinPending}
-                aria-label={`انضمام إلى ${room.name}`}
-              >
-                <Icon icon={UserPlus} size={12} />
-                {joinPending ? 'جارٍ الانضمام…' : 'انضمام'}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    </Card>
+    <RowItem
+      leading={<UserAvatar initials={initials} size={36} />}
+      title={
+        <span title={room.name} style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-2)', flexWrap: 'wrap' }}>
+          {room.name}
+          {mine && <Badge color="gold">غرفتك</Badge>}
+        </span>
+      }
+      meta={
+        <span className="event-meta">
+          {room.topic && <span className="cp-clamp1" title={room.topic}>{room.topic}</span>}
+          <span>أنشأها {room.owner.firstName} {room.owner.lastName}</span>
+          <span><Icon icon={Users} size={11} /> {arUnit(room._count.members, 'عضو', 'عضوان', 'أعضاء')}</span>
+          <span>
+            <Icon icon={CalendarDays} size={11} />{' '}
+            <time dateTime={room.createdAt}>
+              {formatDate(room.createdAt, { day: 'numeric', month: 'short', year: 'numeric' })}
+            </time>
+          </span>
+        </span>
+      }
+      trailing={
+        room.isMember ? (
+          /* المالك يرى زر المغادرة مثل كل عضو — الخلفية ترفض بحراسة
+             400 «مالك الغرفة لا يغادرها» (r180) ويصل الردّ عبر toast
+             الخُطّاف؛ شارة «غرفتك» + التلميح يشرحان السبب سلفًا. */
+          <span className="event-actions cp-rsvp">
+            <button
+              type="button"
+              className="btn outline sm"
+              onClick={() => leave.mutate({ roomId: room.id, name: room.name })}
+              disabled={leavePending}
+              title={mine ? 'أنت مالك هذه الغرفة — لا يمكن مغادرتها' : undefined}
+              aria-label={mine ? `مغادرة ${room.name} — أنت مالكها` : `مغادرة ${room.name}`}
+            >
+              <Icon icon={UserMinus} size={12} />
+              {leavePending ? 'جارٍ المغادرة…' : 'مغادرة'}
+            </button>
+          </span>
+        ) : (
+          <span className="event-actions cp-rsvp">
+            <button
+              type="button"
+              className="btn primary sm"
+              onClick={() => join.mutate({ roomId: room.id, name: room.name })}
+              disabled={joinPending}
+              aria-label={`انضمام إلى ${room.name}`}
+            >
+              <Icon icon={UserPlus} size={12} />
+              {joinPending ? 'جارٍ الانضمام…' : 'انضمام'}
+            </button>
+          </span>
+        )
+      }
+    />
   );
 }
 
-/** The «غرف الدراسة» tab body — renders as a fragment so the cards land
- *  as DIRECT children of the page's .grid-2 panel wrapper (the events
- *  tab's DOM shape). */
+/** The «غرف الدراسة» tab body — r262: RowList واحد يملك حالاته
+ *  (هيكل مطابق/خطأ/فراغ) وصفوف الغرف أبناؤه المباشرون. */
 export function StudyRoomsPanel() {
   const rooms = useStudyRooms();
   return (
-    <>
-      {rooms.isPending ? <>
-        <CardSkeleton lines={4} />
-        <CardSkeleton lines={4} />
-      </> :
-      rooms.isError ? (
-        <ErrorState message="تعذَّر تحميل غرف الدراسة" error={rooms.error} onRetry={() => rooms.refetch()} />
-      ) :
-      (rooms.data?.length ?? 0) === 0 ? (
-        <EmptyState
-          illustration="empty-search"
-          title="لا توجد غرف دراسة بعد"
-          description="أنشئ أول غرفة دراسية وادعُ زملاءك للانضمام إليها."
-        />
-      ) : rooms.data?.map((r) => <StudyRoomCard key={r.id} room={r} />)}
-    </>
+    rooms.isError ? (
+      <ErrorState message="تعذَّر تحميل غرف الدراسة" error={rooms.error} onRetry={() => rooms.refetch()} />
+    ) : (
+      <RowList
+        aria-label="قائمة غرف الدراسة"
+        loading={rooms.isPending}
+        empty={(
+          <EmptyState
+            illustration="empty-search"
+            title="لا توجد غرف دراسة بعد"
+            description="أنشئ أول غرفة دراسية وادعُ زملاءك للانضمام إليها."
+          />
+        )}
+      >
+        {rooms.data?.map((r) => <StudyRoomCard key={r.id} room={r} />)}
+      </RowList>
+    )
   );
 }
 
