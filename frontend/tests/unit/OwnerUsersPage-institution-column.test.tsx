@@ -81,7 +81,7 @@ function renderPage() {
   );
 }
 
-describe('OwnerUsersPage — the المؤسسات column (r183-B5, A9 P2)', () => {
+describe('OwnerUsersPage — the المؤسسات scope (r183-B5, A9 P2 · r252 re-pin)', () => {
   it('renders one chip per ACTIVE membership and annotates suspended institutions', () => {
     mocks.users.data = {
       data: [
@@ -94,7 +94,8 @@ describe('OwnerUsersPage — the المؤسسات column (r183-B5, A9 P2)', () =
     };
     renderPage();
 
-    expect(screen.getByText('المؤسسات', { selector: 'th' })).toBeInTheDocument();
+    // r252: the memberships ride the row's meta line (the column died
+    // with the table) — same chips, same suspended annotation.
     expect(screen.getByText('جامعة الزاوية')).toBeInTheDocument();
     // The suspended institution stays visible — annotated, never dropped.
     expect(screen.getByText(/مؤسسة الأندلس التعليمية · معلّقة/)).toBeInTheDocument();
@@ -123,6 +124,8 @@ describe('OwnerUsersPage — the المؤسسات column (r183-B5, A9 P2)', () =
     };
     renderPage();
 
+    // r252: expand the row first — the role picker lives in the body.
+    fireEvent.click(screen.getByRole('button', { name: 'إجراءات سالم الفيتوري' }));
     const select = screen.getByLabelText('دور سالم الفيتوري') as HTMLSelectElement;
     fireEvent.change(select, { target: { value: 'ADMIN' } });
 
@@ -137,6 +140,7 @@ describe('OwnerUsersPage — the المؤسسات column (r183-B5, A9 P2)', () =
     };
     renderPage();
 
+    fireEvent.click(screen.getByRole('button', { name: 'إجراءات سالم الفيتوري' }));
     const select = screen.getByLabelText('دور سالم الفيتوري') as HTMLSelectElement;
     fireEvent.change(select, { target: { value: 'ADMIN' } });
 

@@ -111,12 +111,14 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     // Decorative = static paint: no motion authored for the wash.
     expect(wash).not.toMatch(/transition|animation/);
 
-    // The eyebrow carries the coded-metadata voice: mixed-script mono
-    // stack (Plex Mono is latin-only), 12px label-sm floor, muted ink.
+    // r212 re-pin (Agent S, merged r253): the eyebrow's mono voice is
+    // RETIRED — Plex Mono is for IDs/code/tabular metrics only (r197),
+    // and an Arabic phrase resolves to the Arabic face anyway. The
+    // eyebrow is quiet sans metadata: same size, muted ink.
     const metaAt = css.indexOf('.auth-meta');
     expect(metaAt).toBeGreaterThanOrEqual(0);
     const metaRule = css.slice(metaAt, css.indexOf('}', metaAt));
-    expect(metaRule).toContain("'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, monospace");
+    expect(metaRule).toContain('var(--font-sans)');
     expect(metaRule).toContain('var(--type-label-size-sm)');
     expect(metaRule).toContain('var(--text-muted)');
     // Joined Arabic prose is never tracked (ruling #2).

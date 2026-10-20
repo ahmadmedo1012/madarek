@@ -1,11 +1,13 @@
 import { CheckCircle2, Activity, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, Badge } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { api } from '../../lib/api';
 import { apiErrorMessage } from '../../hooks/useResources';
 import { useResolveAlert, type OperationalAlert } from '../../hooks/useOwner';
@@ -90,12 +92,28 @@ export function OwnerAlertsPage() {
   const alerts = feed?.data ?? [];
   const meta = feed?.meta;
 
+  /* r251: resolving an operational alert is a consequential action —
+   * it closes the alert and writes an audit row — so the button ASKS
+   * first. The dialog names what happens; the mutation only fires
+   * from the dialog's confirm (the toast stays the success channel). */
+  const [resolveTarget, setResolveTarget] = useState<OperationalAlert | null>(null);
+
   // Toast confirms the resolve actually landed (the card disappears
   // silently otherwise — no inline success surface on this page).
-  const resolve = (id: string) =>
+  const resolve = (id: string) => {
     resolveAlert.mutate(id, {
       onSuccess: () => toast.success('أُغلق التنبيه وسُجّلت العمليّة في سجلّ النشاط.', { title: 'تمّ حلّ التنبيه' }),
     });
+  };
+  /** Dialog confirm — awaits the mutation so the dialog's in-flight
+   *  lock holds until the server answers, then closes. */
+  const confirmResolve = async (alert: OperationalAlert) => {
+    try {
+      await resolveAlert.mutateAsync(alert.id);
+    } finally {
+      setResolveTarget(null);
+    }
+  };
 
   /* 6A10-2: the critical KPI counts the critical PAIR (critical OR
    * error) via the shared lib/ownerLabels filter — the same pair
@@ -200,7 +218,7 @@ export function OwnerAlertsPage() {
                     <button
                       type="button"
                       className="btn primary"
-                      onClick={() => resolve(alert.id)}
+                      onClick={() => setResolveTarget(alert)}
                       disabled={resolving}
                     >
                       <Icon icon={CheckCircle2} size={13} />
@@ -229,6 +247,22 @@ export function OwnerAlertsPage() {
           </div>
         )}
       </Card>
+
+      {/* r251: the resolve confirmation — names the alert, and the
+       * consequence: the alert CLOSES and the resolution lands in the
+       * audit log; if the underlying condition persists the platform
+       * may raise a new alert. Cancel leaves everything untouched. */}
+      <ConfirmDialog
+        open={resolveTarget !== null}
+        title="حلّ التنبيه التشغيلي"
+        confirmLabel="حلّ التنبيه"
+        danger
+        message={resolveTarget
+          ? `سيُغلَق التنبيه «${resolveTarget.title}» نهائيًّا، ويُسجَّل الحل باسمك في سجلّ النشاط. إذا استمر السبب الذي أنشأه فقد يُرفع تنبيه جديد. لا يمكن التراجع عن الإغلاق من هذه الصفحة.`
+          : ''}
+        onConfirm={() => (resolveTarget ? confirmResolve(resolveTarget) : Promise.resolve())}
+        onCancel={() => setResolveTarget(null)}
+      />
     </div>
   );
 }

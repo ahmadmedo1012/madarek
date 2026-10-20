@@ -5,6 +5,7 @@ import { StatStrip } from '../../components/primitives/Ledger';
 import { EmptyState, ErrorState, TableSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { ToggleSwitch } from '../../components/owner/ToggleSwitch';
+import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import {
   useOwnerFeatureFlags, useToggleFeatureFlag, useOwnerSettings, useUpdateSetting, useOwnerSystem,
 } from '../../hooks/useOwner';
@@ -89,6 +90,10 @@ export function OwnerSystemPage() {
   const [editedSettings, setEditedSettings] = useState<Record<string, string>>({});
   const [expandedAlert, setExpandedAlert] = useState<string | null>(null);
   const [savingSettings, setSavingSettings] = useState(false);
+  /* r251: the flag toggle stops being a silent double-click hazard —
+   * the switch now ASKS first. While this is set, the dialog owns the
+   * change; cancel leaves the flag byte-identical on the server. */
+  const [flagConfirm, setFlagConfirm] = useState<FeatureFlag | null>(null);
 
   const handleSettingChange = (key: string, value: string) => {
     setEditedSettings((prev) => ({ ...prev, [key]: value }));
@@ -126,8 +131,17 @@ export function OwnerSystemPage() {
     }
     setSavingSettings(false);
   };
-  const handleFlagToggle = (flag: FeatureFlag) => {
-    toggleFlag.mutate({ slug: flag.slug, enabled: !flag.enabled });
+  /* r251: the toggle's onChange now OPENS the dialog; the mutation
+   * itself only fires from the dialog's confirm button. Failure still
+   * lands in the inline error row + retry (r176e contract below) —
+   * the dialog closes on settle either way, like every sibling
+   * confirm (users page pattern: await, then close). */
+  const confirmFlagToggle = async (flag: FeatureFlag) => {
+    try {
+      await toggleFlag.mutateAsync({ slug: flag.slug, enabled: !flag.enabled });
+    } finally {
+      setFlagConfirm(null);
+    }
   };
   /* r176e (D-03): a failed flag flip used to leave the switch at its
    * old server position with NO error and NO retry — the owner either
@@ -414,7 +428,9 @@ export function OwnerSystemPage() {
                   label={flag.name}
                   description={flag.description ?? undefined}
                   checked={flag.enabled}
-                  onChange={() => handleFlagToggle(flag)}
+                  /* r251: the switch REQUESTS the change; the ConfirmDialog
+                   * below is the one place that applies it. */
+                  onChange={() => setFlagConfirm(flag)}
                   /* r176e (D-03): only THE in-flight row is disabled —
                    * the coarse isPending gate used to freeze every row
                    * while any one toggle was in flight. */
@@ -442,6 +458,24 @@ export function OwnerSystemPage() {
           تُحفَظ حالة كل علم في قاعدة البيانات وتُوثَّق في سجلّ النشاط — لا تستهلكها
           أيّ بوابة تشغيل بعد، فلا يتغيّر سلوك المنصّة بتغييرها.
         </p>
+        {/* r251: change confirmation — the dialog names the flag, the
+         * direction (تفعيل/تعطيل), and the honest consequence: the
+         * registry row + the audit log are what actually change (the
+         * no-runtime-consumer caveat travels with the card above).
+         * danger only when DISABLING — matching the direction of harm. */}
+        <ConfirmDialog
+          open={flagConfirm !== null}
+          title={flagConfirm?.enabled ? 'تعطيل الميزة' : 'تفعيل الميزة'}
+          confirmLabel={flagConfirm?.enabled ? 'تعطيل الميزة' : 'تفعيل الميزة'}
+          danger={flagConfirm?.enabled ?? false}
+          message={flagConfirm
+            ? flagConfirm.enabled
+              ? `هل تريد تعطيل «${flagConfirm.name}»؟ سيُسجَّل الإجراء في سجلّ النشاط، ويمكن إعادته في أي وقت من هذه البطاقة.`
+              : `هل تريد تفعيل «${flagConfirm.name}»؟ سيُسجَّل الإجراء في سجلّ النشاط، ويمكن التراجع عنه من هذه البطاقة.`
+            : ''}
+          onConfirm={() => (flagConfirm ? confirmFlagToggle(flagConfirm) : Promise.resolve())}
+          onCancel={() => setFlagConfirm(null)}
+        />
       </Card>
 
       {/* Operational alerts — real data, replacing the fake error log.

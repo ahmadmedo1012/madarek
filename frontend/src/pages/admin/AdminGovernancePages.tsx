@@ -16,13 +16,27 @@ import { Link, useParams } from 'react-router-dom';
 import {
   ShieldCheck, GraduationCap, Award, ChevronLeft, ChevronRight, CheckCircle2,
   AlertCircle, Sparkles, Briefcase, Building2, Users, Crown, BookOpen,
-  Search, X,
+  X,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar, AlertRow, FormField, PageHeader } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
+import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import {
-  CardSkeleton, DetailSkeleton, ErrorState, EmptyState, Skeleton,
+  CardSkeleton, DetailSkeleton, ErrorState, EmptyState,
 } from '../../components/primitives/States';
+/* r251 (Phase B): the teachers page composes Agent S's frozen patterns
+ * (SplitView + RowList/RowItem + FilterBar + StatLine + PageFrame +
+ * patterns/PageHeader). The primitives PageHeader above stays imported —
+ * the permissions editor (same file) still rides it until its own pass. */
+import {
+  PageFrame,
+  PageHeader as PatternsPageHeader,
+  RowList,
+  RowItem,
+  SplitView,
+  StatLine,
+  FilterBar,
+} from '../../components/patterns';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
@@ -275,16 +289,43 @@ export function AdminTeachersPage() {
     setPage(1);
   };
 
+  /* r251 (Phase B — Superlist composition): the teachers console is the
+   * admin family's flagship list→detail surface, so it composes Agent S's
+   * frozen patterns end-to-end: PageFrame rhythm, the patterns PageHeader
+   * (breadcrumbs back to the family), a one-fact StatLine, the FilterBar
+   * search pill, and the SplitView (desktop sticky detail / mobile
+   * full-screen Sheet). Selection rides a stretched button inside each
+   * RowItem (a real <button> for keyboard focus; the ::after plate in
+   * admin.css makes the WHOLE row its tap target). Loading/empty/error
+   * stay honest: RowList's own skeleton + the family's EmptyState/ErrorState. */
+  const selectedTeacher = teachers.find((t) => t.id === selectedId) ?? null;
+  const selectedName = selectedTeacher
+    ? `${selectedTeacher.firstName} ${selectedTeacher.lastName}`
+    : 'ملف الأستاذ';
+
+  const teacherListEmpty = (
+    <EmptyState
+      icon={Users}
+      title={isSearching ? 'لا نتائج مطابقة' : 'لم يتم تسجيل أساتذة بعد'}
+      description={isSearching
+        ? 'لم نجد أساتذة تطابق البحث الحالي.'
+        : 'ستظهر القائمة فور تسجيل أول أستاذ في النظام.'}
+      action={isSearching ? (
+        <button type="button" className="btn ghost sm" onClick={clearSearch}>
+          <Icon icon={X} size={13} />
+          مسح البحث
+        </button>
+      ) : undefined}
+    />
+  );
+
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">إدارة الأساتذة</h1>
-          <p className="page-subtitle">
-            توثيق الملفات الأكاديمية واقتراح المقرّرات الأنسب لكل أستاذ بناء على تخصصه ودرجته العلمية وشهاداته.
-          </p>
-        </div>
-      </header>
+    <PageFrame width="wide">
+      <PatternsPageHeader
+        title="إدارة الأساتذة"
+        description="توثيق الملفات الأكاديمية واقتراح المقرّرات الأنسب لكل أستاذ بناء على تخصصه ودرجته العلمية وشهاداته."
+        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'الأساتذة' }]}
+      />
 
       {/* Metrics — real values only: '…' while loading, '—' on error
           (never a fake zero). The old «نشطون» KPI counted the fetched
@@ -294,86 +335,65 @@ export function AdminTeachersPage() {
           beside it is deleted — there is no verification-system signal
           anywhere in the /admin/users payload (verification is
           per-teacher via TEACHERS_VERIFY), and a hardcoded «فعّال»
-          fakes a platform-wide status the backend never asserts. The
-          honest server-backed count stays.
-          R190-D3: the lone icon-box tile becomes the typographic stat
-          line — one fact, no half-empty grid-2 row. */}
-      <StatStrip
-        ariaLabel="إحصاءات الأساتذة"
-        cells={[
-          {
-            label: 'عدد الأساتذة',
-            value: teacherCount,
-            trend: count.isPending ? 'قراءة عدّاد الخادم…' : count.data ? 'في هذه المؤسّسة' : 'تعذّر قراءة العدّاد',
-          },
-        ]}
+          fakes a platform-wide status the backend never asserts.
+          r251: the lone fact rides the patterns StatLine. */}
+      <StatLine
+        items={[{
+          label: 'عدد الأساتذة',
+          value: teacherCount,
+          hint: count.isPending ? 'قراءة عدّاد الخادم…' : count.data ? 'في هذه المؤسّسة' : 'تعذّر قراءة العدّاد',
+        }]}
       />
 
-      <div className="grid-2-1">
-        <Card title="قائمة الأساتذة" icon={Users}>
-          {/* Borrowed admin-family search chrome (the AdminStudentsPage
-              look) — admin.css owns it since r150e. */}
-          <div className="admin-students-search">
-            <Icon icon={Search} size={14} />
-            <input
-              type="search"
-              className="admin-students-input"
-              placeholder="ابحث بالاسم أو البريد الإلكتروني…"
-              aria-label="البحث في الأساتذة"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+      <FilterBar
+        search={{
+          value: search,
+          onChange: setSearch,
+          placeholder: 'ابحث بالاسم أو البريد الإلكتروني…',
+        }}
+      />
 
-          {roster.isPending ? (
-            <TeacherListSkeleton rows={5} />
-          ) : roster.isError ? (
+      <SplitView
+        listWidth="narrow"
+        detailTitle={selectedName}
+        list={
+          roster.isError ? (
             /* API-down must never read as "no teachers registered" — a
-               retryable error, with the KPI degrading to '—' above. */
-            <ErrorState
-              error={roster.error}
-              message="تعذّر تحميل قائمة الأساتذة"
-              onRetry={() => roster.refetch()}
-            />
-          ) : teachers.length === 0 ? (
-            <EmptyState
-              icon={Users}
-              title={isSearching ? 'لا نتائج مطابقة' : 'لم يتم تسجيل أساتذة بعد'}
-              description={isSearching
-                ? 'لم نجد أساتذة تطابق البحث الحالي.'
-                : 'ستظهر القائمة فور تسجيل أول أستاذ في النظام.'}
-              action={isSearching ? (
-                <button type="button" className="btn ghost sm" onClick={clearSearch}>
-                  <Icon icon={X} size={13} />
-                  مسح البحث
-                </button>
-              ) : undefined}
-            />
+               retryable error, with the count degrading to '—' above. */
+            <Card>
+              <ErrorState
+                error={roster.error}
+                message="تعذّر تحميل قائمة الأساتذة"
+                onRetry={() => roster.refetch()}
+              />
+            </Card>
           ) : (
             <>
-              <div className="flex-col gap-2">
+              <RowList aria-label="قائمة الأساتذة" loading={roster.isPending} empty={teacherListEmpty} density="compact">
                 {teachers.map((t) => (
-                  <button
+                  <RowItem
                     key={t.id}
-                    type="button"
-                    className={`teacher-row${selectedId === t.id ? ' selected' : ''}`}
-                    onClick={() => setSelectedId(t.id)}
-                  >
-                    <UserAvatar initials={t.avatarInitials ?? 'أس'} color={t.avatarColor ?? undefined} size={40} />
-                    <div style={{ flex: 1, textAlign: 'start' }}>
-                      <div className="teacher-row-name">{t.firstName} {t.lastName}</div>
-                      <div className="teacher-row-email font-mono text-xxs"><bdi>{t.email}</bdi></div>
-                    </div>
-                    <Icon icon={ChevronLeft} size={14} className="text-subtle" />
-                  </button>
+                    leading={<UserAvatar initials={t.avatarInitials ?? 'أس'} color={t.avatarColor ?? undefined} size={36} />}
+                    title={(
+                      <button
+                        type="button"
+                        className="govx-row-select"
+                        aria-pressed={selectedId === t.id}
+                        onClick={() => setSelectedId(t.id)}
+                      >
+                        {t.firstName} {t.lastName}
+                      </button>
+                    )}
+                    meta={<bdi>{t.email}</bdi>}
+                    trailing={<Icon icon={ChevronLeft} size={14} className="text-subtle" />}
+                  />
                 ))}
-              </div>
+              </RowList>
 
               {/* Server-side pagination footer — the .table-pagination
                   system with a bounded page window, RTL-correct chevrons
                   (prev points right) and the honest "page X of Y · N
-                  teachers" line: the OwnerUsersPage wave-6-b pattern
-                  (.owner-page-gap borrowed from the eager owner.css). */}
+                  teachers" line. */}
               {meta && totalPages > 1 && (
                 <div className="table-pagination">
                   <span>
@@ -417,41 +437,13 @@ export function AdminTeachersPage() {
                 </div>
               )}
             </>
-          )}
-        </Card>
-
-        {selectedId ? (
-          <TeacherProfileCard teacherId={selectedId} />
-        ) : roster.isPending ? (
-          <CardSkeleton lines={6} />
-        ) : (
-          <Card>
-            <EmptyState
-              icon={GraduationCap}
-              title="اختر أستاذاً من القائمة"
-              description="اعرض الملف الأكاديمي والمقرّرات المقترحة لتوثيقه أو إسناد منصب له."
-            />
-          </Card>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/** Shape-matched skeleton for the teachers list (avatar + name + email rows). */
-function TeacherListSkeleton({ rows = 5 }: { rows?: number }) {
-  return (
-    <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
-      {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="teacher-row" style={{ cursor: 'default' }}>
-          <Skeleton width={40} height={40} rounded="50%" />
-          <div className="flex-col" style={{ flex: 1, gap: 'var(--sp-1-5)' }}>
-            <Skeleton width="55%" height={12} />
-            <Skeleton width="40%" height={10} />
-          </div>
-        </div>
-      ))}
-    </div>
+          )
+        }
+        detail={selectedId ? <TeacherProfileCard teacherId={selectedId} /> : null}
+        detailOpen={selectedId !== null}
+        onDetailClose={() => setSelectedId(null)}
+      />
+    </PageFrame>
   );
 }
 
@@ -459,6 +451,11 @@ function TeacherListSkeleton({ rows = 5 }: { rows?: number }) {
 function TeacherProfileCard({ teacherId }: { teacherId: string }) {
   const { data, isLoading, isError, error, refetch } = useTeacherSuggestions(teacherId);
   const verify = useVerifyTeacher();
+  /* r251: verifying a teacher is a privilege change — the badge gates
+   * eligibility surfaces across the platform — so the CTA asks first.
+   * The dialog names the consequence; the mutation fires only from the
+   * confirm (retry path re-fires the same payload, inline AlertRow). */
+  const [verifyConfirm, setVerifyConfirm] = useState(false);
 
   if (isLoading) return <CardSkeleton lines={5} />;
   if (isError) {
@@ -492,7 +489,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
           : <button
               type="button"
               className="btn primary sm"
-              onClick={() => verify.mutate({ id: teacherId, verified: true })}
+              onClick={() => setVerifyConfirm(true)}
               disabled={verify.isPending}
             >
               {verify.isPending ? 'جارٍ التوثيق…' : 'توثيق الأستاذ'}
@@ -595,6 +592,25 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
       <Link to={`/admin/permissions/${teacherId}`} className="btn ghost">
         <Icon icon={ShieldCheck} size={13} /> إدارة الصلاحيات
       </Link>
+
+      {/* r251: the verify confirmation — names the privilege being
+       * granted (the verified badge + the teaching eligibility it
+       * stands for) and that the action is recorded in the audit
+       * log. Cancel leaves the teacher unverified. */}
+      <ConfirmDialog
+        open={verifyConfirm}
+        title="توثيق الأستاذ"
+        confirmLabel="توثيق"
+        message={`هل تريد توثيق «${data.teacher.name}»؟ سيحمل شارة التوثيق، ويظهر كمدرّس مؤهّل في المقرّرات المقترحة، ويُسجَّل الإجراء في سجلّ النشاط.`}
+        onConfirm={async () => {
+          try {
+            await verify.mutateAsync({ id: teacherId, verified: true });
+          } finally {
+            setVerifyConfirm(false);
+          }
+        }}
+        onCancel={() => setVerifyConfirm(false)}
+      />
     </div>
   );
 }
@@ -880,6 +896,48 @@ function ScopeAssignmentCard({
 
 /* ═══════════════ Per-user permissions editor ═══════════════ */
 
+/** Domain grouping for the permission matrix (r250 — Superlist
+ *  recomposition): the flat 17-row wall becomes six titled domains.
+ *  `Record<AppCapability, …>` makes a missed key a compile error the
+ *  moment the capability union grows — the grouping cannot silently
+ *  drop a capability. Labels carry the domain story, not the enum. */
+type CapDomain = 'research' | 'exams' | 'curriculum' | 'governance' | 'quality' | 'community';
+
+const CAP_DOMAIN: Record<AppCapability, CapDomain> = {
+  RESEARCH_GRADE_OWN: 'research',
+  RESEARCH_GRADE_ANY: 'research',
+  RESEARCH_PUBLISH: 'research',
+  EXAMS_AUTHOR: 'exams',
+  EXAMS_MODERATE: 'exams',
+  EXAMS_TAKE: 'exams',
+  CURRICULUM_EDIT_OWN: 'curriculum',
+  CURRICULUM_EDIT_ANY: 'curriculum',
+  USERS_MANAGE: 'governance',
+  ROLES_ASSIGN: 'governance',
+  TEACHERS_VERIFY: 'governance',
+  QUALITY_VIEW: 'quality',
+  QUALITY_REPORT: 'quality',
+  ANNOUNCE_PLATFORM: 'community',
+  ANNOUNCE_FACULTY: 'community',
+  COMPETITIONS_RUN: 'community',
+  EVENTS_RUN: 'community',
+};
+
+/** Fixed domain order — the matrix reads like the platform's org chart
+ *  (academic output first, governance last). Same order every render. */
+const CAP_DOMAIN_ORDER: CapDomain[] = [
+  'research', 'exams', 'curriculum', 'quality', 'community', 'governance',
+];
+
+const CAP_DOMAIN_LABEL: Record<CapDomain, string> = {
+  research: 'البحوث العلمية',
+  exams: 'الاختبارات الإلكترونية',
+  curriculum: 'المناهج والمقرّرات',
+  quality: 'ضمان الجودة',
+  community: 'الإعلانات والمجتمع',
+  governance: 'المستخدمون والحاكمية',
+};
+
 /** JS cadence constant — clears the one-shot confirm pulse shortly after
  *  the CSS animation (var(--t-slower) + ring settle) has finished. Not a
  *  CSS duration, so the motion-token gate does not apply; keep it in the
@@ -906,6 +964,11 @@ export function AdminPermissionsPage() {
   const [pulse, setPulse] = useState<{ cap: AppCapability; ok: boolean } | null>(null);
   /** Last attempted change — powers the inline retry after a failure. */
   const [lastAttempt, setLastAttempt] = useState<CapabilityPayload | null>(null);
+  /** r250: the matrix's live region — every successful change is
+   *  announced («مُنحت…/سُحبت…/أُعيدت…») so the screen-reader user gets
+   *  the same confirmation the sighted user gets from the one-shot
+   *  pulse. Cleared on the next change; never announces intent. */
+  const [announcement, setAnnouncement] = useState('');
 
   useEffect(() => {
     if (!pulse) return;
@@ -937,14 +1000,32 @@ export function AdminPermissionsPage() {
   const overridesByCap = new Map(data.overrides.map((o) => [o.capability, o]));
   const roleLabel = ROLE_LABEL[data.user.role] ?? data.user.role;
 
+  /** r250: the grouped matrix — capabilities bucketed into their fixed
+   *  domain order. Every capability lands in exactly one group (the
+   *  Record< CAPABILITY, domain > map guarantees it at compile time). */
+  const capGroups = CAP_DOMAIN_ORDER.map((domain) => ({
+    domain,
+    caps: allCaps.filter((cap) => CAP_DOMAIN[cap] === domain),
+  })).filter((g) => g.caps.length > 0);
+
   const applyCap = (capability: AppCapability, grant: boolean | null) => {
     if (!id) return;
     const payload: CapabilityPayload = { userId: id, capability, grant };
     setLastAttempt(payload);
     setCap.mutate(payload, {
       // The authored moment: the changed row confirms itself with a
-      // one-shot tone pulse while the badge flips.
-      onSuccess: () => setPulse({ cap: capability, ok: grant !== false }),
+      // one-shot tone pulse while the badge flips — and the live
+      // region says the same thing out loud.
+      onSuccess: () => {
+        setPulse({ cap: capability, ok: grant !== false });
+        setAnnouncement(
+          grant === null
+            ? `أُعيدت صلاحية «${CAP_LABEL[capability]}» إلى قيمة الدور الافتراضية`
+            : grant
+              ? `مُنحت صلاحية «${CAP_LABEL[capability]}»`
+              : `سُحبت صلاحية «${CAP_LABEL[capability]}»`,
+        );
+      },
     });
   };
 
@@ -1026,67 +1107,102 @@ export function AdminPermissionsPage() {
           />
         )}
 
-        <div className="permissions-grid">
-          {allCaps.map((cap) => {
-            const fromRole = data.roleDefaults.includes(cap);
-            const ovr = overridesByCap.get(cap);
-            const effective = data.effective.includes(cap);
-            const state: 'role' | 'granted' | 'revoked' | 'none' =
-              ovr ? (ovr.grant ? 'granted' : 'revoked') : (fromRole ? 'role' : 'none');
-            const pulsing = pulse?.cap === cap;
+        {/* r250: the announcement twin of the confirm pulse — polite
+            live region, sr-only (the pulse is the visual channel; this
+            is the audio one). Re-announces only on real changes. */}
+        <p role="status" aria-live="polite" className="sr-only">
+          {announcement}
+        </p>
 
+        {/* r250 (Superlist recomposition): the flat 17-row wall becomes
+            six titled domain sections. Each group carries an h3 + the
+            count of currently-effective capabilities inside it, and the
+            rows keep the .perm-row anatomy (state badge + one verb
+            button) — same mutation contract, same pulse, now readable
+            at a glance and navigable by heading. */}
+        <div className="govx-matrix">
+          {capGroups.map(({ domain, caps }) => {
+            const groupTitleId = `govx-group-${domain}`;
+            const effectiveCount = caps.filter((cap) => data.effective.includes(cap)).length;
             return (
-              <div
-                key={cap}
-                className={[
-                  'perm-row',
-                  `state-${state}`,
-                  pulsing ? (pulse.ok ? 'confirm-pulse pulse-ok' : 'confirm-pulse pulse-neutral') : '',
-                ].filter(Boolean).join(' ')}
-              >
-                <div className="perm-row-info">
-                  <div className="perm-row-title">{CAP_LABEL[cap]}</div>
-                  <code className="perm-row-key"><bdi>{cap}</bdi></code>
-                  <div className="perm-row-state">
-                    {state === 'role' && <Badge color="brand">من الدور</Badge>}
-                    {state === 'granted' && <Badge color="green">ممنوحة يدوياً</Badge>}
-                    {state === 'revoked' && <Badge color="amber">مسحوبة يدوياً</Badge>}
-                    {state === 'none' && <Badge>غير مفعّلة</Badge>}
-                  </div>
+              <section key={domain} className="govx-group" aria-labelledby={groupTitleId}>
+                <div className="govx-group-head">
+                  <h3 id={groupTitleId} className="govx-group-title">{CAP_DOMAIN_LABEL[domain]}</h3>
+                  <span
+                    className="govx-group-count"
+                    aria-label={countAr(
+                      effectiveCount,
+                      ['صلاحية واحدة مفعّلة', 'صلاحيتان مفعّلتان', 'صلاحيات مفعّلة', 'صلاحية مفعّلة'],
+                    )}
+                  >
+                    {formatNum(effectiveCount)} مفعّلة من {formatNum(caps.length)}
+                  </span>
                 </div>
-                <div className="perm-row-actions">
-                  {!effective && (
-                    <button
-                      type="button"
-                      className="btn primary sm"
-                      disabled={setCap.isPending || isSelf}
-                      onClick={() => applyCap(cap, true)}
-                    >
-                      منح
-                    </button>
-                  )}
-                  {effective && fromRole && !ovr && (
-                    <button
-                      type="button"
-                      className="btn ghost sm"
-                      disabled={setCap.isPending || isSelf}
-                      onClick={() => applyCap(cap, false)}
-                    >
-                      سحب
-                    </button>
-                  )}
-                  {ovr && (
-                    <button
-                      type="button"
-                      className="btn ghost sm"
-                      disabled={setCap.isPending || isSelf}
-                      onClick={() => applyCap(cap, null)}
-                    >
-                      إعادة للافتراضي
-                    </button>
-                  )}
+                <div className="govx-rows">
+                  {caps.map((cap) => {
+                    const fromRole = data.roleDefaults.includes(cap);
+                    const ovr = overridesByCap.get(cap);
+                    const effective = data.effective.includes(cap);
+                    const state: 'role' | 'granted' | 'revoked' | 'none' =
+                      ovr ? (ovr.grant ? 'granted' : 'revoked') : (fromRole ? 'role' : 'none');
+                    const pulsing = pulse?.cap === cap;
+
+                    return (
+                      <div
+                        key={cap}
+                        className={[
+                          'perm-row',
+                          `state-${state}`,
+                          pulsing ? (pulse.ok ? 'confirm-pulse pulse-ok' : 'confirm-pulse pulse-neutral') : '',
+                        ].filter(Boolean).join(' ')}
+                      >
+                        <div className="perm-row-info">
+                          <div className="perm-row-title">{CAP_LABEL[cap]}</div>
+                          <code className="perm-row-key"><bdi>{cap}</bdi></code>
+                          <div className="perm-row-state">
+                            {state === 'role' && <Badge color="brand">من الدور</Badge>}
+                            {state === 'granted' && <Badge color="green">ممنوحة يدوياً</Badge>}
+                            {state === 'revoked' && <Badge color="amber">مسحوبة يدوياً</Badge>}
+                            {state === 'none' && <Badge>غير مفعّلة</Badge>}
+                          </div>
+                        </div>
+                        <div className="perm-row-actions">
+                          {!effective && (
+                            <button
+                              type="button"
+                              className="btn primary sm"
+                              disabled={setCap.isPending || isSelf}
+                              onClick={() => applyCap(cap, true)}
+                            >
+                              منح
+                            </button>
+                          )}
+                          {effective && fromRole && !ovr && (
+                            <button
+                              type="button"
+                              className="btn ghost sm"
+                              disabled={setCap.isPending || isSelf}
+                              onClick={() => applyCap(cap, false)}
+                            >
+                              سحب
+                            </button>
+                          )}
+                          {ovr && (
+                            <button
+                              type="button"
+                              className="btn ghost sm"
+                              disabled={setCap.isPending || isSelf}
+                              onClick={() => applyCap(cap, null)}
+                            >
+                              إعادة للافتراضي
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              </div>
+              </section>
             );
           })}
         </div>

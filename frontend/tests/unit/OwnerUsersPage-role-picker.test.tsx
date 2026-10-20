@@ -95,8 +95,15 @@ function renderPage() {
 }
 
 describe('OwnerUsersPage — role picker (r154e)', () => {
+  /** r252 re-pin helper: actions live behind the row's inline expansion
+   *  (the RowList recomposition) — expand first, then query. */
+  function expandRow(name: string) {
+    fireEvent.click(screen.getByRole('button', { name: `إجراءات ${name}` }));
+  }
+
   it('renders a select with all four eligible roles for a non-OWNER user', async () => {
     renderPage();
+    expandRow('طالب تجريبي');
     // The STUDENT row's select exposes STUDENT/TEACHER/ADMIN/QUALITY — the
     // old binary toggle only offered STUDENT↔TEACHER.
     const studentSelect = screen.getByLabelText('دور طالب تجريبي') as HTMLSelectElement;
@@ -108,6 +115,7 @@ describe('OwnerUsersPage — role picker (r154e)', () => {
 
   it('renders the ADMIN row with the same four roles (no silent demote-to-STUDENT)', async () => {
     renderPage();
+    expandRow('إداري تجريبي');
     const adminSelect = screen.getByLabelText('دور إداري تجريبي') as HTMLSelectElement;
     const options = Array.from(adminSelect.options).map((o) => o.value);
     expect(options).toEqual(['STUDENT', 'TEACHER', 'ADMIN', 'QUALITY']);
@@ -118,16 +126,20 @@ describe('OwnerUsersPage — role picker (r154e)', () => {
 
   it('renders an OWNER row as read-only text (no select — owner role is not changeable here)', async () => {
     renderPage();
+    expandRow('مالك المنصة');
     // OWNER row has no select — the role-picker select is not rendered.
     expect(screen.queryByLabelText('دور مالك المنصة')).toBeNull();
     // The STUDENT and ADMIN rows DO have selects, proving the OWNER row is
     // the one excluded (not a rendering failure).
+    expandRow('طالب تجريبي');
+    expandRow('إداري تجريبي');
     expect(screen.getByLabelText('دور طالب تجريبي')).toBeTruthy();
     expect(screen.getByLabelText('دور إداري تجريبي')).toBeTruthy();
   });
 
   it('opens a confirm dialog naming the specific transition on role change', async () => {
     renderPage();
+    expandRow('طالب تجريبي');
     const studentSelect = screen.getByLabelText('دور طالب تجريبي') as HTMLSelectElement;
     fireEvent.change(studentSelect, { target: { value: 'TEACHER' } });
     await waitFor(() => {
@@ -140,6 +152,7 @@ describe('OwnerUsersPage — role picker (r154e)', () => {
 
   it('flags a promotion to ADMIN as dangerous (red confirm)', async () => {
     renderPage();
+    expandRow('طالب تجريبي');
     const studentSelect = screen.getByLabelText('دور طالب تجريبي') as HTMLSelectElement;
     fireEvent.change(studentSelect, { target: { value: 'ADMIN' } });
     await waitFor(() => {

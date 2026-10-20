@@ -443,6 +443,77 @@
   color: var(--text);
 }
 
+/* r252: the users directory's inline-expansion body (the .pf-row-body
+   child) — the actions row: joined date, role picker, status toggle.
+   Wraps on phones; controls keep the 44px craft floor via .btn/.input. */
+.owner-row-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding-block-start: var(--sp-2);
+}
+
+/* ── r254: the empty-faculties rollup (OwnerInstitutionDetailPage) ──
+   The 25× empty-card wall dies here: the content faculties render as
+   full cards; the empty seed tail collapses behind ONE disclosure row
+   whose body lists the bare rows (name · city · duplicate annotation)
+   each with its own add-department affordance. Surface-step styling
+   only — no new borders, no walls. */
+.owner-empty-rollup {
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+  padding: var(--sp-2) var(--sp-3);
+}
+.owner-empty-rollup-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  inline-size: 100%;
+  min-block-size: 44px;
+  padding: var(--sp-2);
+  border: 0;
+  background: none;
+  color: var(--text-secondary, var(--text));
+  font: inherit;
+  font-size: var(--fs-sm);
+  text-align: start;
+  cursor: pointer;
+  border-radius: var(--r-md);
+}
+.owner-empty-rollup-head .owner-detail-chevron {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+.owner-empty-rollup-head:hover {
+  background: var(--surface-3);
+}
+.owner-empty-rollup-body {
+  display: flex;
+  flex-direction: column;
+  padding-block-start: var(--sp-1);
+}
+.owner-empty-rollup-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding-block: var(--sp-1-5);
+  border-block-end: 1px dashed var(--border);
+}
+.owner-empty-rollup-row:last-child {
+  border-block-end: none;
+}
+.owner-empty-rollup-name {
+  font-weight: var(--fw-medium);
+  color: var(--text);
+}
+.owner-empty-rollup-meta {
+  color: var(--text-muted);
+  font-size: max(var(--fs-xxs), 13px); /* 13px Arabic floor */
+  margin-inline-end: auto;
+}
+
 /* ── Pagination ────────────────────────────────────────────── */
 /* 13-17 dead-selector sweep (11-g P2-7): .owner-pagination deleted —
    OwnerUsersPage finished the ruling-#5 migration to the
@@ -1030,6 +1101,20 @@
   font-size: var(--fs-xxs);
   direction: ltr;
   unicode-bidi: isolate;
+}
+
+/* r251: the affected row's ID — the timeline's ONE mono accent for
+   machine identifiers (1A rule: mono = IDs/code/metrics only). A quiet
+   chip on the surface-2 step; the full id stays in the title tooltip. */
+.owner-timeline-id {
+  font-family: var(--font-mono);
+  font-size: max(var(--fs-xxs), 13px); /* Arabic-adjacent metadata floor */
+  direction: ltr;
+  unicode-bidi: isolate;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border-radius: var(--r-xs);
+  padding-inline: var(--sp-1);
 }
 
 .owner-timeline-time {

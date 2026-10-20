@@ -8,10 +8,13 @@ import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
-import { Card, Badge } from '../../components/primitives';
-import { StatStrip, LedgerPanel, LedgerRow } from '../../components/primitives/Ledger';
+import { Card } from '../../components/primitives';
+/* r253 (Phase B): the owner dashboard composes the shell patterns —
+ * StatLine facts + the TodayList attention rows («يحتاج انتباهك») +
+ * RowList recent events. StatStrip/LedgerPanel retire from this page. */
+import { PageFrame, PageHeader as PatternsPageHeader, StatLine, TodayList, RowList, RowItem } from '../../components/patterns';
 import { useReducedMotion } from '../../components/motion';
-import { EmptyState, ErrorState, PageSkeleton, TableSkeleton, CardSkeleton, StripSkeleton, Skeleton } from '../../components/primitives/States';
+import { EmptyState, ErrorState, PageSkeleton, ListSkeleton, CardSkeleton, StripSkeleton, Skeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { radialOptions, chartPalette, useChartThemeKey } from '../../lib/chartTheme';
@@ -161,27 +164,22 @@ function OwnerActionStrip({ alerts }: { alerts: OperationalAlert[] }) {
   }
 
   if (rows.length === 0) return null;
-  // The rose zone rides ONLY the amber tone (any critical open alert)
-  // — the brand default keeps the calm band (the 5-D3 tone contract).
-  const anyAmber = rows.some((r) => r.tone === 'amber');
+  /* r253: the attention rows ride the patterns TodayList — the urgency
+   * dot carries the tone (now = critical, soon = pending, later =
+   * watch), replacing the ledger zone/lead-label vocabulary. The
+   * pending StripSkeleton above is untouched (same Card anatomy). */
   return (
-    <LedgerPanel
+    <TodayList
       title="يحتاج انتباهك"
-      zone={anyAmber ? 'rose' : undefined}
-      tag={countAr(rows.length, ['بند واحد', 'بندان', 'بنود', 'بنداً'])}
-      ariaLabel="حالات تحتاج انتباهك"
-    >
-      {rows.map((r) => (
-        <LedgerRow
-          key={r.key}
-          to={r.to}
-          leadLabel={r.tone === 'amber' ? 'حرج' : 'انتباه'}
-          title={r.title}
-          subtitle={r.desc}
-          tail={<Badge color={r.tone === 'amber' ? 'red' : 'brand'}>{r.tone === 'amber' ? 'مستعجل' : 'معلّق'}</Badge>}
-        />
-      ))}
-    </LedgerPanel>
+      items={rows.map((r) => ({
+        id: r.key,
+        title: r.title,
+        meta: r.desc,
+        leading: <Icon icon={r.icon} size={16} />,
+        to: r.to,
+        urgency: r.tone === 'amber' ? 'now' : r.key === 'idle-teachers' ? 'later' : 'soon',
+      }))}
+    />
   );
 }
 
@@ -248,21 +246,22 @@ export function OwnerDashboardPage() {
        resolved page shows while alerts pend), so the pending →
        resolved handoff moves nothing. */
     return (
-      <div className="page" aria-busy="true" aria-live="polite">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">لوحة التحكم الرئيسية</h1>
-            <p className="page-subtitle">نظرة شاملة وإحصائيات حيّة عن المنصة</p>
-          </div>
-        </header>
+      <PageFrame width="default">
+        <PatternsPageHeader
+          title="لوحة التحكم الرئيسية"
+          description="نظرة شاملة وإحصائيات حيّة عن المنصة"
+        />
         <div className="owner-live-status is-pending" aria-busy="true" aria-live="polite">
           <div className="owner-live-pulse" />
           <span className="status-text">جارٍ جلب حالة التنبيهات…</span>
         </div>
         <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />
-        <div className="stat-strip" aria-busy="true">
+        {/* r253: the KPI placeholder is the StatLine shape (4 flat
+            .pf-stat cells) so the pending → resolved handoff moves
+            nothing on the new composition. */}
+        <div className="pf-statline" aria-busy="true">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="stat-cell">
+            <div key={i} className="pf-stat">
               <Skeleton width={70} height={11} />
               <div style={{ marginBlock: 'var(--sp-1)' }}>
                 <Skeleton width={90} height={28} />
@@ -281,22 +280,20 @@ export function OwnerDashboardPage() {
         </div>
         <CardSkeleton lines={6} />
         <CardSkeleton lines={3} />
-      </div>
+      </PageFrame>
     );
   }
   if (stats.isError || realtime.isError) {
     return (
-      <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">لوحة التحكم الرئيسية</h1>
-          </div>
-        </header>
+      <PageFrame width="default">
+        <PatternsPageHeader
+          title="لوحة التحكم الرئيسية"
+        />
         <ErrorState
           error={stats.error ?? realtime.error}
           onRetry={() => { stats.refetch(); realtime.refetch(); }}
         />
-      </div>
+      </PageFrame>
     );
   }
 
@@ -357,53 +354,44 @@ export function OwnerDashboardPage() {
   );
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">لوحة التحكم الرئيسية</h1>
-          <p className="page-subtitle">نظرة شاملة وإحصائيات حيّة عن المنصة</p>
-          <p className="page-header-meta">
-            {formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · قياس مباشر من قاعدة البيانات
-          </p>
-        </div>
-      </header>
+    <PageFrame width="default">
+      <PatternsPageHeader
+        title="لوحة التحكم الرئيسية"
+        description="نظرة شاملة وإحصائيات حيّة عن المنصة"
+        meta={formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' }) + ' · قياس مباشر من قاعدة البيانات'}
+      />
 
       {/* Live Status — never claims "normal" unless the alerts query
           answered (see alertBand above). */}
       {alertBand}
 
-      {/* 5-D3: the action list rides directly under the status band —
+      {/* 5-D3: the attention list rides directly under the status band —
           the dashboard answers "what needs me" before "how big are
-          we" (5-B4's admin ordering). */}
+          we". r253: it is the patterns TodayList now. */}
       <OwnerActionStrip alerts={alerts} />
 
-      {/* R189 — the typographic stat strip (was the grid-4 tiles). */}
-      <StatStrip
-        ariaLabel="إحصائيات المنصّة"
-        cells={[
+      {/* r253 — the four platform facts ride the patterns StatLine. */}
+      <StatLine
+        items={[
           {
             label: 'إجمالي المستخدمين',
             value: <bdi>{formatNum(data.totalUsers)}</bdi>,
-            trend: `${formatNum(data.students)} طالبًا · ${formatNum(data.teachers)} أستاذًا`,
-            trendTone: 'flat',
+            hint: `${formatNum(data.students)} طالبًا · ${formatNum(data.teachers)} أستاذًا`,
           },
           {
             label: 'الجلسات النشطة',
             value: <bdi>{formatNum(realtimeData.activeSessions)}</bdi>,
-            trend: 'في هذه اللحظة',
-            trendTone: 'flat',
+            hint: 'في هذه اللحظة',
           },
           {
             label: 'المقرّرات الدراسية',
             value: <bdi>{formatNum(data.totalCourses)}</bdi>,
-            trend: `${formatNum(data.totalOfferings)} شعبة تدريس فاعلة`,
-            trendTone: 'flat',
+            hint: `${formatNum(data.totalOfferings)} شعبة تدريس فاعلة`,
           },
           {
             label: 'إجمالي التسجيلات',
             value: <bdi>{formatNum(data.totalEnrollments)}</bdi>,
-            trend: 'تسجيلات مقرّرات تراكمية',
-            trendTone: 'flat',
+            hint: 'تسجيلات مقرّرات تراكمية',
           },
         ]}
       />
@@ -493,45 +481,39 @@ export function OwnerDashboardPage() {
 
       {/* Recent Events — real audit log; every state is honest
           (pending = shape-matched skeleton, error = retry — an API
-          failure no longer renders as "no events", ruling #14). */}
+          failure no longer renders as "no events", ruling #14).
+          r253: the 4-column table becomes dense RowList rows — one row
+          per event (action · actor · resource · relative time), the
+          same facts without the grid. */}
       <Card title="الأحداث الأخيرة" icon={Clock} subtitle="آخر العمليّات على المنصّة">
         {activity.isPending ? (
-          <TableSkeleton rows={6} cols={4} />
+          <ListSkeleton rows={6} />
         ) : activity.isError ? (
           <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
         ) : events.length === 0 ? (
           <EmptyState illustration="empty-search" title="لا توجد أحداث بعد" description="ستظهر أحدث العمليّات هنا فور حدوثها." icon={FileWarning} />
         ) : (
-          /* 22-b (4-A7 P1-5): the shared .table.tbl-stack migration (the
-           * users page's pattern) — the bare .owner-table overflowed its
-           * card at 390px; on phones each row becomes a labelled card.
-           * (6A10-7: the trailing owner-events-table class was dead —
-           * no rule in owner.css ever matched it; the shared classes
-           * carry the whole contract.) */
-          <div className="table-wrap">
-            <table className="table tbl-stack">
-              <thead>
-                <tr>
-                  <th scope="col">الحدث</th>
-                  <th scope="col">المستخدم</th>
-                  <th scope="col">المورد</th>
-                  <th scope="col">الوقت</th>
-                </tr>
-              </thead>
-              <tbody>
-                {events.map((ev) => (
-                  <tr key={ev.id}>
-                    <td className="tbl-strong" data-label="الحدث">{actionLabel(ev.action)}</td>
-                    <td className="owner-cell-muted" data-label="المستخدم">
-                      {ev.user ? `${ev.user.firstName} ${ev.user.lastName}` : 'النظام'}
-                    </td>
-                    <td className="owner-cell-muted" data-label="المورد">{resourceLabel(ev.resourceType)}</td>
-                    <td className="owner-cell-muted" data-label="الوقت">{formatRelativeAr(ev.createdAt)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <RowList aria-label="الأحداث الأخيرة" density="compact">
+            {events.map((ev) => (
+              <RowItem
+                key={ev.id}
+                title={actionLabel(ev.action)}
+                meta={(
+                  <>
+                    {ev.user ? `${ev.user.firstName} ${ev.user.lastName}` : 'النظام'}
+                    {ev.resourceType && (
+                      <> · {resourceLabel(ev.resourceType)}</>
+                    )}
+                  </>
+                )}
+                trailing={
+                  <span className="owner-cell-muted" title={formatDate(ev.createdAt, { dateStyle: 'medium', timeStyle: 'short' })}>
+                    {formatRelativeAr(ev.createdAt)}
+                  </span>
+                }
+              />
+            ))}
+          </RowList>
         )}
       </Card>
 
@@ -557,6 +539,6 @@ export function OwnerDashboardPage() {
           </Link>
         </div>
       </Card>
-    </div>
+    </PageFrame>
   );
 }

@@ -173,6 +173,8 @@ describe('EnrollmentModal — the drop gate (r157 / 6A9 #4)', () => {
     installApi();
     renderStudentsPage();
 
+    fireEvent.click(await screen.findByRole('button', { name: 'بيانات وتسجيلات أحمد الزروق' }));
+    // r253 re-pin: the action lives behind the row's inline expansion.
     fireEvent.click(await screen.findByRole('button', { name: 'تسجيلات' }));
     const title = await screen.findByRole('heading', { level: 3, name: 'تسجيلات أحمد الزروق' });
     expect(title.tagName).toBe('H3');
@@ -182,6 +184,8 @@ describe('EnrollmentModal — the drop gate (r157 / 6A9 #4)', () => {
     installApi();
     renderStudentsPage();
 
+    fireEvent.click(await screen.findByRole('button', { name: 'بيانات وتسجيلات أحمد الزروق' }));
+    // r253 re-pin: the action lives behind the row's inline expansion.
     fireEvent.click(await screen.findByRole('button', { name: 'تسجيلات' }));
     // Two enrollments → two row buttons; gate the first (هندسة البرمجيات).
     const dropButtons = await screen.findAllByRole('button', { name: 'إلغاء التسجيل' });
@@ -211,6 +215,8 @@ describe('EnrollmentModal — the drop gate (r157 / 6A9 #4)', () => {
     deleteMock.mockImplementation(() => new Promise(() => {}));
     renderStudentsPage();
 
+    fireEvent.click(await screen.findByRole('button', { name: 'بيانات وتسجيلات أحمد الزروق' }));
+    // r253 re-pin: the action lives behind the row's inline expansion.
     fireEvent.click(await screen.findByRole('button', { name: 'تسجيلات' }));
     const dropButtons = await screen.findAllByRole('button', { name: 'إلغاء التسجيل' });
     expect(dropButtons).toHaveLength(2);

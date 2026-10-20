@@ -112,13 +112,15 @@ describe('OwnerDashboardPage — action strip (5-D3)', () => {
      * pending StripSkeleton carries the static identity), so awaiting
      * the title no longer proves the rows landed — await the ROW
      * itself (only the resolved strip renders it). */
-    /* R189 re-pin: the strip is a ledger panel — the amber tone rides
-     * the panel's zone-rose head, the row is the link (LedgerRow). */
+    /* r253 re-pin: the strip is the patterns TodayList — the critical
+     * pair drives the row's urgency dot (now = danger ink), the row is
+     * the link (pf-today-link). */
     const row = (await screen.findByText('تنبيهات تشغيليّة مفتوحة')).closest('a');
     expect(row).not.toBeNull();
-    expect(row).toHaveClass('ledger-row-link');
+    expect(row).toHaveClass('pf-today-link');
     expect(row).toHaveAttribute('href', '/owner/alerts');
-    expect(row!.closest('.ledger')).toHaveClass('zone-rose');
+    const item = row!.closest('.pf-today-item');
+    expect(item!.querySelector('.pf-today-urgency')).toHaveClass('now');
     expect(screen.getByText(/تنبيهان مفتوحان — منها تنبيه حرج واحد/)).toBeInTheDocument();
   });
 
@@ -129,12 +131,12 @@ describe('OwnerDashboardPage — action strip (5-D3)', () => {
     renderDashboard();
 
     const row = (await screen.findByText('تنبيهات تشغيليّة مفتوحة')).closest('a');
-    expect(row).toHaveClass('ledger-row-link');
-    // No critical pair → no rose zone (the brand default).
-    expect(row!.closest('.ledger')).not.toHaveClass('zone-rose');
+    expect(row).toHaveClass('pf-today-link');
+    // No critical pair → NOT «الآن» (the «قريبًا» soon dot instead).
+    expect(row!.closest('.pf-today-item')!.querySelector('.pf-today-urgency')).not.toHaveClass('now');
     // The plain counted noun (the status band above carries the same
     // count; scope to the row's subtitle).
-    expect(row!.querySelector('.ledger-what small')).toHaveTextContent('تنبيه مفتوح واحد');
+    expect(row!.closest('.pf-today-item')!.querySelector('.pf-today-meta')).toHaveTextContent('تنبيه مفتوح واحد');
   });
 
   it('surfaces idle teachers from the education payload, linking to the education page', async () => {
@@ -146,7 +148,7 @@ describe('OwnerDashboardPage — action strip (5-D3)', () => {
 
     const row = (await screen.findByText('أساتذة بلا حصص تدريس هذا الفصل')).closest('a');
     expect(row).not.toBeNull();
-    expect(row).toHaveClass('ledger-row-link');
+    expect(row).toHaveClass('pf-today-link');
     expect(row).toHaveAttribute('href', '/owner/education');
     expect(screen.getByText(/أستاذان لم تُسند إليهم مقرّرات/)).toBeInTheDocument();
   });

@@ -48,13 +48,20 @@ describe('r183-B5 [A8 P2] — admin rosters carry the ≤1024 compact-band diet'
     expect(page).toContain('const courseCols = compact ? 6 : 8;');
   });
 
-  it('AdminExtraPages students roster folds «السنة»+«المستوى» through the shared hook', () => {
+  /* r253 re-pin (4D Phase B): the STUDENTS roster left the table world —
+   * it is RowList rows now, and a row carries ALL fields at every width,
+   * so the compact column diet (and its hook import) is retired there.
+   * The courses roster above keeps the band; this pin now guards the
+   * students page's post-table contract instead. */
+  it('AdminExtraPages students roster is the RowList recomposition (no compact-band diet needed)', () => {
     const page = stripComments(read('src/pages/admin/AdminExtraPages.tsx'));
-    // The shared copy lives in AdminPages (same contract as the family).
-    expect(page).toContain('useCompactRosterBand()');
-    expect(page).toContain('{!compact && <th scope="col">السنة</th>}');
-    expect(page).toContain('{!compact && <th scope="col">المستوى</th>}');
-    expect(page).toContain('const studentCols = compact ? 6 : 8;');
+    // The row is the patterns RowItem — the academic fields ride the
+    // meta line and the expansion body at every width.
+    expect(page).toContain('RowItem');
+    expect(page).toContain('expandLabel=');
+    // The retired diet pins stay retired.
+    expect(page).not.toContain('const studentCols = compact ? 6 : 8;');
+    expect(page).not.toContain('{!compact && <th scope="col">السنة</th>}');
   });
 });
 
