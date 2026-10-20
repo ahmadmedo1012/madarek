@@ -59,7 +59,10 @@
 }
 .notif-panel-action:hover { background: var(--accent-soft); }
 .notif-panel-close {
-  width: 28px; height: 28px;
+  /* S-1b: width/height → the logical twins (identical at horizontal-tb;
+     polish never declares either on this control, so this rule is the
+     live geometry owner). */
+  inline-size: 28px; block-size: 28px;
   border: 0;
   background: transparent;
   color: var(--text-subtle);
@@ -73,7 +76,9 @@
 .notif-panel-close:hover { background: var(--surface-2); color: var(--text); }
 
 .notif-panel-list {
-  max-height: 420px;
+  /* S-1b: max-height → max-block-size (logical twin; horizontal-tb identical,
+     and the gate prefers the logical form — layout.css same idiom). */
+  max-block-size: 420px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: var(--sp-1); /* r157: 4px → --sp-1 */
@@ -90,7 +95,10 @@
   text-align: center;
 }
 .notif-empty-icon {
-  width: 44px; height: 44px;
+  /* S-1b: width/height → logical twins (polish's overrides twin already
+     declares inline-size/block-size 44px — this rule now mirrors it
+     instead of shipping the physical residue). */
+  inline-size: 44px; block-size: 44px;
   /* r155d: was var(--r-lg) — never painted: polish.css's overrides-layer
      .notif-empty-icon wins this property with var(--r-full) (the pill
      well). Aligned to the rendered winner; the rest of this rule is
@@ -119,6 +127,11 @@
   cursor: pointer;
   border-radius: var(--r-md);
   position: relative;
+  /* S-1b (Superlist re-skin): hard row floor — a title-only row never
+     dips under the platform's 44px hit floor (min-* beats nothing today:
+     polish's overrides-layer .notif-item declares padding/border/transition
+     only, so this floor is the live minimum at used-value time). */
+  min-block-size: 44px;
   /* (r151c dead-twin sweep: padding + transition deleted — polish's
      overrides-layer .notif-item re-specifies both with the identical
      values; the r149 alignment note retired with them.) */
@@ -196,7 +209,7 @@
 
 /* Mobile sizing — keep within viewport */
 @media (max-width: 480px) {
-  .notif-panel-list { max-height: 60vh; }
+  .notif-panel-list { max-block-size: 60vh; }
 }
 
 /* r164-j (WCAG 2.2 §2.5.8 / NN/g touch floor — audit residual): the
@@ -251,6 +264,9 @@
   background: transparent;
   color: var(--text-subtle);
   text-decoration: none;
+  /* r211: the fifth slot is a <button> (المزيد → drawer) — inherit the
+     app font so the UA button font never leaks into the label. */
+  font: inherit;
   /* 5-C2 (A3 P3-8): font-size 10.5px + letter-spacing 0.01em removed —
      dead since the label re-declares both on itself (.bottom-nav-label
      is the item's only text; BottomNav.tsx renders icon + label spans). */
@@ -293,11 +309,10 @@
 }
 
 .bottom-nav-item.active .bottom-nav-icon {
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--accent) 18%, var(--surface-1)) 0%,
-    color-mix(in srgb, var(--accent) 10%, var(--surface-1)) 100%);
-  /* Off-token by design: branded role-accent glow (012 FR-004), not elevation. */
-  box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--accent) 36%, transparent);
+  /* r211 (Superlist re-skin): the floating glow (36% accent box-shadow)
+     is retired — the active icon is a flat role-accent wash on the
+     surface, same calm grammar as the sidebar's active row. */
+  background: color-mix(in srgb, var(--role-accent, var(--accent)) 14%, var(--surface-1));
 }
 
 .bottom-nav-label {
@@ -343,12 +358,9 @@
   .content { padding-bottom: max(80px, calc(var(--sp-11) + env(safe-area-inset-bottom))); } /* spacing-gate: allow — bottom clearance floor 80px for the floating toast stack */
 }
 
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .bottom-nav-item.active .bottom-nav-icon {
-    box-shadow: none;
-  }
-}
+/* (r211: the reduced-motion box-shadow carve-out for the retired
+   active-icon glow went with the glow itself — the active state is
+   flat paint now, nothing to still.) */
 
 /* ═══════════════════════════════════════════════════════════════
    wave 7-a: TOAST STACK — the app-wide passive-feedback region
@@ -511,34 +523,63 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   UNLAYERED — notification badge digit contrast (4-A2 P2-7, 21-a)
+   UNLAYERED — panel shell re-skin (S-1b, Superlist calm tier)
    ═══════════════════════════════════════════════════════════════════
-   The badge's background/color live in polish.css's `@layer overrides`
-   (.topbar-notif-badge — background: var(--danger); color: #fff), and
-   `--danger` is a theme-tuned INK: light #DD6E78 (white digits =
-   3.2:1) and dark #F09BA3 (white digits = 2.12:1) — both under the
-   4.5:1 AA floor for the 10px bold count.
+   The .notification-panel CONTAINER surface is owned by components.css
+   (4E family — not editable from this sheet): it ships radius --r-xl
+   (14px) on the three rounded corners + the --elev-3 shadow.
 
-   This override intentionally sits OUTSIDE any @layer: per the CSS
-   cascade, unlayered normal declarations beat every layered
-   declaration regardless of source order, which is the only way a
-   rule in this file (imported before polish.css) can win the
-   overrides layer without !important.
+   The re-skin decision (BLUEPRINT §4 elevation ladder: one shadow per
+   level; --elev-2 = the calm card tier) keys the anchored panel to
+   --elev-2 and the --r-2xl modal/sheet radius rung — declared here as
+   an UNLAYERED normal block per the house precedent (4-A2 P2-7 badge
+   below, layout.css drawer-timing block): unlayered declarations beat
+   every layered one without !important, which is the only way a rule
+   in this file (imported BEFORE components.css/polish.css) can retune
+   a layered surface it does not own.
 
-   Fix per the audit sketch: pair the badge with per-theme rose tokens
-   whose contrast is already contract-documented (tokens.css light
-   block: "--c-rose-deep #6B2128 = 10.75:1" on white):
-     light — bg --c-rose-deep (#6B2128) + white digits  → 10.75:1
-     dark  — bg --c-rose-ink  (#F09BA3) + --c-rose-bg (#3D2126) digits
-             → ≈5.3:1 (light pink ground + deep maroon digits, the
-             dark theme's danger pairing)
-   The 2px var(--surface) ring (polish.css) keeps the badge isolated
-   from the bell icon in both themes. */
-.topbar-notif-badge {
-  background: var(--c-rose-deep);
-  color: var(--white);
+   Kept verbatim from the primitive's contract:
+   - the ANCHORED corner stays square (border-start-end is the one
+     corner components.css never rounds — it points at the bell);
+   - the glass @supports band and the popover entrance animation
+     (components.css) are untouched;
+   - polish.css's @media print belt (`box-shadow: none !important`)
+     still wins in print — !important outranks unlayered normal.
+   --elev-2 / --r-2xl are theme- and contrast-mode-aware tokens, so
+   dark + high-contrast re-resolve with zero extra rules. */
+.notification-panel {
+  border-start-start-radius: var(--r-2xl);
+  border-end-start-radius: var(--r-2xl);
+  border-end-end-radius: var(--r-2xl);
+  box-shadow: var(--elev-2);
 }
-[data-theme="dark"] .topbar-notif-badge {
-  background: var(--c-rose-ink);
-  color: var(--c-rose-bg);
+
+/* ═══════════════════════════════════════════════════════════════════
+   UNLAYERED — notification badge: semantic danger pair (S-1b re-skin
+   of 4-A2 P2-7 / 21-a)
+   ═══════════════════════════════════════════════════════════════════
+   The badge's geometry/font live in polish.css's `@layer overrides`
+   (.topbar-notif-badge — 13px digits via --fs-xxs, tabular-nums, the
+   2px var(--surface) isolation ring, the pulse), while its COLORS were
+   retired here: the old override pinned the raw ramp pair
+   (--c-rose-deep/--white light, --c-rose-ink/--c-rose-bg dark).
+
+   S-1b re-keys it to the SEMANTIC danger pair — the same tokens every
+   solid-danger chip on the platform speaks (see .btn.danger's
+   --_btn-fg chain):
+     light — bg var(--danger-ink) #7C2A22 + var(--danger-fg) #FFFFFF
+             (byte-identical to the retired light pairing)
+     dark  — bg var(--danger-ink) #E08074 + var(--danger-fg) #16140F
+             (6.6:1 — up from the ramp pair's 5.5:1, same family)
+   Both tokens re-resolve per theme/contrast block, so the explicit
+   [data-theme="dark"] twin died with the raw ramp names. Unlayered for
+   the same cascade reason as the panel block above: this file imports
+   before polish.css, whose overrides layer owns background/color for
+   this selector (var(--danger) + #fff — sub-AA in dark).
+   The unread count itself is REAL server truth (meta.unread of
+   GET /notifications?limit=1, polled 60s — useUnreadNotifications);
+   digits are Western, ≥13px, tabular. */
+.topbar-notif-badge {
+  background: var(--danger-ink);
+  color: var(--danger-fg);
 }
