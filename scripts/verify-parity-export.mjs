@@ -443,12 +443,12 @@ const CHECKS = [
   ['dark', '--neutral-200', '#37322a', 'night hairline (r197 warm)'],
   ['dark', '--neutral-300', '#4a443a', 'night divider (r197)'],
   ['dark', '--neutral-400', '#6e675c', 'night non-text rung (r197)'],
-  ['dark', '--neutral-500', '#8f887a', 'night §4 ink-muted (r197 — 4.78:1 ground)'],
+  ['dark', '--neutral-500', '#948d7e', 'night ink-muted (r283 — 5.10:1 ground · 4.81:1 surface-2)'],
   ['dark', '--neutral-700', '#c9c3b4', 'night §4 ink-secondary (r197)'],
   ['dark', '--neutral-800', '#e0dacd', 'night strong (r197)'],
   ['dark', '--neutral-900', '#f3eee4', 'night ink (§4 — 15.92:1 bg AAA)'],
   ['dark', '--text', '#f3eee4', 'dark text = night ink (§4)'],
-  ['dark', '--text-muted', '#8f887a', 'dark muted (§4)'],
+  ['dark', '--text-muted', '#948d7e', 'dark muted (r283 §4 — ≥4.81:1 on every dark surface)'],
   ['dark', '--text-faint', '#8c8674', 'dark faint (r197: AA tier, one step under muted)'],
   ['dark', '--text-on-accent', '#ffffff', 'white on signal fills — both themes (r197)'],
   // ── DARK theme — the signal family (r197) ──
@@ -492,7 +492,7 @@ const CHECKS = [
   ['dark', '--chart-6', '#e8c064', 'night amber series (r197)'],
   ['dark', '--chart-7', '#6fb3d9', 'night cyan-blue series (r197)'],
   ['dark', '--chart-8', '#d18ab4', 'night mauve series (r197)'],
-  ['dark', '--chart-text', '#8f887a', 'night chart text = muted (r197)'],
+  ['dark', '--chart-text', '#948d7e', 'night chart text = muted (r283)'],
   [
     'dark',
     '--elev-1',

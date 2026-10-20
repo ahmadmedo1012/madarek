@@ -405,7 +405,9 @@
   font-size: max(var(--fs-body), 16px);
 }
 .rs-search input::placeholder { color: var(--text-faint); }
-.rs-search input:hover { border-color: var(--border-strong); }
+@media (hover: hover) and (pointer: fine) {
+  .rs-search input:hover { border-color: var(--border-strong); }
+}
 .rs-search input:focus-visible {
   outline: var(--sp-0-5) solid var(--state-focus-ring-color);
   outline-offset: var(--sp-0-5);
@@ -427,7 +429,9 @@
 @media (max-width: 640px) {
   .rs-search .rs-search-clear { width: var(--sp-9); height: var(--sp-9); }
 }
-.rs-search .rs-search-clear:hover { background: var(--surface-2); color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .rs-search .rs-search-clear:hover { background: var(--surface-2); color: var(--text); }
+}
 
 /* Book row pieces — the row SURFACE is the shared .pf-row; the family
    owns the leading identity chip and the borrow tail. */

@@ -50,7 +50,9 @@
   padding: var(--sp-3) var(--sp-1);
   margin-block: calc(-1 * var(--sp-3));
 }
-.pf-breadcrumbs a:hover { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .pf-breadcrumbs a:hover { color: var(--text); }
+}
 .pf-breadcrumbs [aria-current='page'] {
   color: var(--text);
   font-weight: 600;
@@ -208,7 +210,9 @@ h3.pf-section-title { font-size: var(--fs-h3); }
   border-radius: var(--r-sm);
   cursor: pointer;
 }
-.pf-row-toggle:hover { background: var(--surface-2); color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .pf-row-toggle:hover { background: var(--surface-2); color: var(--text); }
+}
 .pf-row-toggle svg {
   transition: transform var(--motion-duration-short) var(--ease-out);
 }
@@ -271,7 +275,9 @@ h3.pf-section-title { font-size: var(--fs-h3); }
 .pf-stat.warning .pf-stat-value  { color: var(--warning-ink); }
 .pf-stat.danger  .pf-stat-value  { color: var(--danger-ink); }
 .pf-stat.signal  .pf-stat-value  { color: var(--accent-ink); }
-a.pf-stat:hover .pf-stat-value { color: var(--accent-ink); }
+@media (hover: hover) and (pointer: fine) {
+  a.pf-stat:hover .pf-stat-value { color: var(--accent-ink); }
+}
 
 /* ═══ FilterBar ═══════════════════════════════════════════════ */
 .pf-filterbar {
@@ -399,7 +405,9 @@ a.pf-stat:hover .pf-stat-value { color: var(--accent-ink); }
   text-decoration: none;
   border-radius: var(--r-sm);
 }
-.pf-today-link:hover { color: var(--accent-ink); }
+@media (hover: hover) and (pointer: fine) {
+  .pf-today-link:hover { color: var(--accent-ink); }
+}
 .pf-today-title-text {
   font-size: var(--fs-body);
   font-weight: 600;

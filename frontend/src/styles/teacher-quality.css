@@ -52,11 +52,18 @@ button.tq-row {
   cursor: pointer;
 }
 
-a.tq-row:hover,
-button.tq-row:hover,
 a.tq-row:focus-visible,
 button.tq-row:focus-visible {
   background: var(--surface-2);
+}
+
+/* r283: the hover wash rides only hover-capable pointers (sticky-hover
+ * on touch — the repo's own components.css guard convention). */
+@media (hover: hover) and (pointer: fine) {
+  a.tq-row:hover,
+  button.tq-row:hover {
+    background: var(--surface-2);
+  }
 }
 
 /* The tinted icon well — flat, RTL-neutral, keyed by --tq-accent. */

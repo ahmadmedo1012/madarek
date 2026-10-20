@@ -272,7 +272,9 @@
     transition: background var(--t-fast) var(--ease);
   }
   .qlt-link-row + .qlt-link-row { border-block-start: 1px solid var(--rule); }
+  @media (hover: hover) and (pointer: fine) {
   .qlt-link-row:hover { background: var(--surface-2); }
+  }
   .qlt-link-row-icon {
     display: inline-flex;
     align-items: center;

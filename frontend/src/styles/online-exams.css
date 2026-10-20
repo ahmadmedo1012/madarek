@@ -61,7 +61,9 @@
     transition: background var(--t-fast) var(--motion-ease-standard);
   }
 
+  @media (hover: hover) and (pointer: fine) {
   a.oex-row:hover { background: var(--surface-2); }
+  }
 
   .oex-row:focus-visible {
     outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
@@ -142,7 +144,9 @@
     transition: color var(--t-fast) var(--motion-ease-standard);
   }
 
+  @media (hover: hover) and (pointer: fine) {
   a.oex-row:hover .oex-row-action { color: var(--accent-strong); }
+  }
 
   /* Shape-matched loading rows — icon well + two text lines, one per
      pending row (the list is rows now, the skeleton follows). */
@@ -294,9 +298,11 @@
                 color var(--t-fast) var(--motion-ease-standard);
   }
 
+  @media (hover: hover) and (pointer: fine) {
   .oex-qmap-dot:hover {
     background: var(--surface-2);
     color: var(--text);
+  }
   }
 
   .oex-qmap-dot.answered {
@@ -397,7 +403,9 @@
                 border-color var(--t-fast) var(--motion-ease-standard);
   }
 
+  @media (hover: hover) and (pointer: fine) {
   .oex-choice:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  }
   .oex-choice:active { background: var(--surface-3); }
 
   /* The native radio stays in the accessibility tree (name = choice
@@ -460,9 +468,11 @@
     opacity: 0.7;
   }
 
+  @media (hover: hover) and (pointer: fine) {
   .oex-choice:has(input:disabled):hover {
     background: var(--surface);
     border-color: var(--border);
+  }
   }
 
   .oex-answer-field { margin-block-start: var(--sp-4); }

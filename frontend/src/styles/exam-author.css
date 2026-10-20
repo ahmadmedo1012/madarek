@@ -103,7 +103,9 @@
   /* The rows whose whole body is a link (templates, queue) — a hover
      tint names the affordance. Static rows (attempts without an
      action) keep a quiet surface: no false hover (the r148 rule). */
+  @media (hover: hover) and (pointer: fine) {
   .exa-row.exa-row-clickable:hover { background: var(--surface-2); }
+  }
 
   .exa-row-main {
     display: flex;
@@ -114,7 +116,9 @@
     color: inherit;
     text-decoration: none;
   }
+  @media (hover: hover) and (pointer: fine) {
   a.exa-row-main:hover { text-decoration: none; }
+  }
 
   .exa-row-title {
     font-size: var(--fs-body);
@@ -222,7 +226,9 @@
   }
   /* Hover names the disclosure while collapsed; an open row is a
      reading surface, so its tint rests. */
+  @media (hover: hover) and (pointer: fine) {
   .exa-bank-row:not(.is-open):hover { background: var(--surface-2); }
+  }
 
   .exa-bank-toggle {
     display: flex;

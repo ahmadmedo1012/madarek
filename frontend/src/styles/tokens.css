@@ -779,7 +779,7 @@
     --neutral-200: #37322A;   /* hairline */
     --neutral-300: #4A443A;   /* divider */
     --neutral-400: #6E675C;
-    --neutral-500: #8F887A;   /* §4 ink-muted — 4.78:1 ground */
+    --neutral-500: #948D7E;   /* r283 §4 ink-muted — 5.10:1 ground · 4.81:1 surface-2 (axe caught 4.41 composed washes at #8F887A; one warm step up keeps the hue) */
     --neutral-700: #C9C3B4;   /* §4 ink-secondary — 9.56:1 ground */
     --neutral-800: #E0DACD;
     --neutral-900: #F3EEE4;   /* §4 ink — text */
@@ -811,7 +811,7 @@
     --text-secondary: var(--neutral-700);
     /* (r148-d: --text-strong retired with the journey scene's --ink
        slab — both were zero-consumer mirrors of --text/--neutral-900.) */
-    --text-muted:  var(--neutral-500);   /* r197 §4: #8F887A — 4.78:1 ground · 5.23:1 bg */
+    --text-muted:  var(--neutral-500);   /* r283: #948D7E via neutral-500 — 5.10:1 ground · 5.58:1 bg */
     /* r195 → r197: the faint tier travels to the warm night —
        #8C8674 is the AA-verified one-step-fainter tier: 4.62:1 on
        --surface #201D17, 5.06:1 on --bg #16140F — clears 4.5 on every
