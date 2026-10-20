@@ -56,6 +56,7 @@ export const AUDIT_ROUTES = [
   '/student/research',
   '/student/profile',
   '/student/webinars',
+  '/student/catalog',
   '/student/online-exams',
   '/student/online-exams/:id',
   '/training',                // STUDENT-guarded in App.tsx
@@ -84,6 +85,8 @@ export const AUDIT_ROUTES = [
   '/teacher/live',
   '/teacher/labs',
   '/teacher/community',
+  '/teacher/exams',
+  '/teacher/exams/:templateId',
 
   // ── admin (ADMIN-guarded) ──────────────────────────────────────
   '/admin/dashboard',
@@ -110,6 +113,7 @@ export const AUDIT_ROUTES = [
   '/quality/alerts',
   '/quality/exam-moderation',
   '/quality/community',
+  '/quality/notifications',
 
   // ── owner (OWNER-guarded) ──────────────────────────────────────
   '/owner/dashboard',
@@ -122,6 +126,9 @@ export const AUDIT_ROUTES = [
   '/owner/ai',
   '/owner/alerts',
   '/owner/governance',
+  '/owner/institutions',
+  '/owner/institutions/:slug',
+  '/owner/notifications',
 
   // ── shared (any authenticated role; swept as STUDENT) ──────────
   '/vision',

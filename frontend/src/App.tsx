@@ -1,4 +1,4 @@
-import { BrowserRouter, Link, Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, Outlet, Route, Routes, useParams } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { lazy, Suspense } from 'react';
 import { ArrowRight } from 'lucide-react';
@@ -159,6 +159,18 @@ function HomeRedirect() {
   if (!isHydrated) return <HydrationSplash />;
   if (!user) return <LandingPage />;
   return <Navigate to={ROLE_HOME[user.role]} replace />;
+}
+
+/** r281 (BLUEPRINT §7): param-preserving deep-link alias. Stale
+ *  /student/* links to the top-level community/training/achievements
+ *  routes must land on the LIVE surface with their params intact, not
+ *  a flat redirect (which would strand /student/training/:slug mid-
+ *  journey) and not the 404. The build callback owns each target's
+ *  shape; every param reaching a target that does not accept it is
+ *  the target's own route to answer honestly. */
+function ParamRedirect({ build }: { build: (params: Record<string, string | undefined>) => string }) {
+  const params = useParams();
+  return <Navigate to={build(params)} replace />;
 }
 
 /** Guest-only guard (r157, 6A4-11): /auth + /auth/register.
@@ -326,6 +338,19 @@ export function AppRoutes() {
             <Route path="/student/profile" element={<ProfilePage />} />
             <Route path="/student/webinars" element={<WebinarsPage />} />
             <Route path="/student/exams" element={<Navigate to="/student/online-exams" replace />} />
+            {/* r281 (BLUEPRINT §7, 1B's deferred coordinator rows): the
+                top-level community/training/achievements/colleges routes
+                pre-date the nav re-org; stale deep links and old shares of
+                /student/* forms must land on the live surface, not the
+                404. Redirect rows only — the targets own the real routes
+                (student-guarded block for training/achievements/community;
+                the public CollegesLayout for colleges). */}
+            <Route path="/student/training" element={<Navigate to="/training" replace />} />
+            <Route path="/student/training/:slug" element={<ParamRedirect build={(p) => `/training/${p.slug}`} />} />
+            <Route path="/student/training/:slug/lesson/:lessonId" element={<ParamRedirect build={(p) => `/training/${p.slug}/lesson/${p.lessonId}`} />} />
+            <Route path="/student/achievements" element={<Navigate to="/achievements" replace />} />
+            <Route path="/student/community" element={<Navigate to="/community" replace />} />
+            <Route path="/student/colleges" element={<Navigate to="/colleges" replace />} />
             <Route path="/training" element={<TrainingCatalogPage />} />
             <Route path="/training/:slug" element={<TrainingTrackPage />} />
             <Route path="/training/:slug/lesson/:lessonId" element={<TrainingLessonPage />} />

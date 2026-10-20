@@ -55,8 +55,10 @@ for (const m of APP_SOURCE.matchAll(ROUTE_RE)) {
  * the redirect destination (which itself must pass this gate). r143:
  * NotFoundPage joins the set — the catch-all `*` now renders it (was
  * HomeRedirect), and /404 is already pinned end-to-end in
- * NON_SHELL_TITLED below (real document.title assertion). */
-const REDIRECT_ELEMENTS = new Set(['Navigate', 'HomeRedirect', 'NotFoundPage']);
+ * NON_SHELL_TITLED below (real document.title assertion). r281:
+ * ParamRedirect joins — the /student/* deep-link aliases it serves
+ * land on the live top-level surface, which owns the title. */
+const REDIRECT_ELEMENTS = new Set(['Navigate', 'HomeRedirect', 'NotFoundPage', 'ParamRedirect']);
 
 /* Routes whose element component renders an in-page <Navigate>. Each is
  * paired with the fs proof so the allowlist can't rot silently. */
