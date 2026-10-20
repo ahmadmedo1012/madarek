@@ -1,7 +1,11 @@
 /**
  * BottomNav — mobile-only quick-access bar.
- * Renders 5 most-used real routes per role, hidden on tablet+desktop.
- * Hidden when sidebar drawer is open so they don't stack visually.
+ * r211 (Superlist re-skin): FOUR prioritized destinations + a «المزيد»
+ * trigger that opens the full sidebar drawer (the designed sheet with
+ * the role's grouped nav — not a second, competing sheet UI). Every
+ * curated destination stays reachable; the drawer's accordion groups
+ * and 44px rows ARE the more-sheet contract.
+ * Hidden on tablet+desktop, and while the drawer itself is open.
  *
  * Routes verified against App.tsx so every link points to a real page.
  */
@@ -21,6 +25,7 @@ import {
   FileText,
   Activity,
   Brain,
+  MoreHorizontal,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
@@ -97,6 +102,7 @@ const OWNER: BottomItem[] = [
 export function BottomNav() {
   const role = useAuthStore((s) => s.user?.role);
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
+  const openSidebar = useUiStore((s) => s.openSidebar);
   const hidden = useHideOnScroll();
 
   if (!role) return null;
@@ -112,7 +118,10 @@ export function BottomNav() {
 
   return (
     <nav className={`bottom-nav${hidden ? ' is-hidden' : ''}`} aria-label="التنقّل السريع" data-role={role.toLowerCase()}>
-      {items.map((item) => (
+      {/* r211: the first FOUR slots are the prioritized destinations;
+          the fifth slot is always «المزيد» → the sidebar drawer, where
+          every curated route keeps its grouped home. */}
+      {items.slice(0, 4).map((item) => (
         <NavLink
           key={item.to}
           to={item.to}
@@ -126,6 +135,18 @@ export function BottomNav() {
           <span className="bottom-nav-label">{item.label}</span>
         </NavLink>
       ))}
+      <button
+        type="button"
+        className="bottom-nav-item"
+        onClick={openSidebar}
+        aria-label="المزيد — فتح القائمة الكاملة"
+        aria-haspopup="true"
+      >
+        <span className="bottom-nav-icon">
+          <Icon icon={MoreHorizontal} size={20} />
+        </span>
+        <span className="bottom-nav-label">المزيد</span>
+      </button>
     </nav>
   );
 }
