@@ -1314,6 +1314,45 @@
     to { opacity: 1; transform: none; }
   }
 
+  /* r221 (4A redesign — Superlist): the continue strip — the course
+     home's ONE next action with its progress riding beside it. The
+     old tinted hero card (course-hero family) retires; the tint now
+     washes only this strip's icon-side border and progress fill. */
+  .course-continue {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-5);
+    flex-wrap: wrap;
+    padding: var(--sp-5) var(--sp-6);
+    background: color-mix(in srgb, var(--course-tint) 7%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--course-tint) 22%, var(--rule));
+    border-radius: var(--r-lg);
+  }
+  [data-theme="dark"] .course-continue {
+    background: color-mix(in srgb, var(--course-tint) 12%, var(--surface));
+    border-color: color-mix(in srgb, var(--course-tint) 35%, var(--rule));
+  }
+  .course-continue-progress {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1-5);
+    flex: 1;
+    min-inline-size: min(240px, 100%);
+  }
+  .course-continue-next {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-1-5);
+    max-inline-size: 100%;
+  }
+  @media (max-width: 640px) {
+    .course-continue { padding: var(--sp-4); }
+    .course-continue-next { inline-size: 100%; }
+    .course-continue-next .btn { inline-size: 100%; justify-content: center; min-block-size: 44px; }
+  }
+
   /* ═══ CourseDetailPage — tinted hero + curriculum progress ═══
      Same anatomy as the training track-hero: hierarchy via tint wash +
      hairline, never a colored side-stripe (ruling #4). --course-tint
