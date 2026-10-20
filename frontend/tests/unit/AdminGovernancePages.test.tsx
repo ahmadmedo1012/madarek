@@ -132,7 +132,10 @@ const rosterCalls = () => usersCalls().filter((p) => p.limit === 20);
 const kpiValue = (label: string) => {
   // r190-D3: the icon-box .metric tile became the typographic
   // .stat-cell (the honest server count survives verbatim).
-  const cell = screen.getByText(label).closest('.stat-cell');
+  // r251 (4D Phase B): the teachers page moved to the patterns StatLine
+  // (.pf-stat) — the helper accepts either cell so the pin follows the
+  // strip the page actually renders, never the implementation.
+  const cell = screen.getByText(label).closest('.stat-cell, .pf-stat');
   expect(cell).not.toBeNull();
   return within(cell as HTMLElement).getByText;
 };

@@ -75,6 +75,42 @@
   gap: var(--sp-2);
 }
 
+/* ── r251: the SplitView row-select plate (.govx-row-select) ────────
+   The patterns RowItem contract has no selection prop, so selection
+   rides a REAL <button> in the title slot stretched over the whole
+   row (::after plate) — keyboard focusable, ≥44px effective target,
+   the accessible name is the teacher's name, and :has() marks the
+   row selected (the same idiom owner.css already uses). */
+.pf-row { position: relative; }
+.govx-row-select {
+  position: static;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  cursor: pointer;
+  text-align: start;
+}
+.govx-row-select::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.govx-row-select:focus-visible {
+  outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+  outline-offset: var(--state-focus-ring-offset);
+  border-radius: var(--r-sm);
+}
+.pf-row:has(.govx-row-select[aria-pressed='true']) {
+  background: var(--surface-2);
+}
+.pf-row:has(.govx-row-select[aria-pressed='true']) .pf-row-title {
+  color: var(--accent-ink, var(--accent));
+}
+
 .admin-students-toolbar {
   display: flex;
   gap: var(--sp-3);

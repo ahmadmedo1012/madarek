@@ -16,14 +16,27 @@ import { Link, useParams } from 'react-router-dom';
 import {
   ShieldCheck, GraduationCap, Award, ChevronLeft, ChevronRight, CheckCircle2,
   AlertCircle, Sparkles, Briefcase, Building2, Users, Crown, BookOpen,
-  Search, X,
+  X,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar, AlertRow, FormField, PageHeader } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import {
-  CardSkeleton, DetailSkeleton, ErrorState, EmptyState, Skeleton,
+  CardSkeleton, DetailSkeleton, ErrorState, EmptyState,
 } from '../../components/primitives/States';
+/* r251 (Phase B): the teachers page composes Agent S's frozen patterns
+ * (SplitView + RowList/RowItem + FilterBar + StatLine + PageFrame +
+ * patterns/PageHeader). The primitives PageHeader above stays imported —
+ * the permissions editor (same file) still rides it until its own pass. */
+import {
+  PageFrame,
+  PageHeader as PatternsPageHeader,
+  RowList,
+  RowItem,
+  SplitView,
+  StatLine,
+  FilterBar,
+} from '../../components/patterns';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
@@ -276,16 +289,43 @@ export function AdminTeachersPage() {
     setPage(1);
   };
 
+  /* r251 (Phase B — Superlist composition): the teachers console is the
+   * admin family's flagship list→detail surface, so it composes Agent S's
+   * frozen patterns end-to-end: PageFrame rhythm, the patterns PageHeader
+   * (breadcrumbs back to the family), a one-fact StatLine, the FilterBar
+   * search pill, and the SplitView (desktop sticky detail / mobile
+   * full-screen Sheet). Selection rides a stretched button inside each
+   * RowItem (a real <button> for keyboard focus; the ::after plate in
+   * admin.css makes the WHOLE row its tap target). Loading/empty/error
+   * stay honest: RowList's own skeleton + the family's EmptyState/ErrorState. */
+  const selectedTeacher = teachers.find((t) => t.id === selectedId) ?? null;
+  const selectedName = selectedTeacher
+    ? `${selectedTeacher.firstName} ${selectedTeacher.lastName}`
+    : 'ملف الأستاذ';
+
+  const teacherListEmpty = (
+    <EmptyState
+      icon={Users}
+      title={isSearching ? 'لا نتائج مطابقة' : 'لم يتم تسجيل أساتذة بعد'}
+      description={isSearching
+        ? 'لم نجد أساتذة تطابق البحث الحالي.'
+        : 'ستظهر القائمة فور تسجيل أول أستاذ في النظام.'}
+      action={isSearching ? (
+        <button type="button" className="btn ghost sm" onClick={clearSearch}>
+          <Icon icon={X} size={13} />
+          مسح البحث
+        </button>
+      ) : undefined}
+    />
+  );
+
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">إدارة الأساتذة</h1>
-          <p className="page-subtitle">
-            توثيق الملفات الأكاديمية واقتراح المقرّرات الأنسب لكل أستاذ بناء على تخصصه ودرجته العلمية وشهاداته.
-          </p>
-        </div>
-      </header>
+    <PageFrame width="wide">
+      <PatternsPageHeader
+        title="إدارة الأساتذة"
+        description="توثيق الملفات الأكاديمية واقتراح المقرّرات الأنسب لكل أستاذ بناء على تخصصه ودرجته العلمية وشهاداته."
+        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'الأساتذة' }]}
+      />
 
       {/* Metrics — real values only: '…' while loading, '—' on error
           (never a fake zero). The old «نشطون» KPI counted the fetched
@@ -295,86 +335,65 @@ export function AdminTeachersPage() {
           beside it is deleted — there is no verification-system signal
           anywhere in the /admin/users payload (verification is
           per-teacher via TEACHERS_VERIFY), and a hardcoded «فعّال»
-          fakes a platform-wide status the backend never asserts. The
-          honest server-backed count stays.
-          R190-D3: the lone icon-box tile becomes the typographic stat
-          line — one fact, no half-empty grid-2 row. */}
-      <StatStrip
-        ariaLabel="إحصاءات الأساتذة"
-        cells={[
-          {
-            label: 'عدد الأساتذة',
-            value: teacherCount,
-            trend: count.isPending ? 'قراءة عدّاد الخادم…' : count.data ? 'في هذه المؤسّسة' : 'تعذّر قراءة العدّاد',
-          },
-        ]}
+          fakes a platform-wide status the backend never asserts.
+          r251: the lone fact rides the patterns StatLine. */}
+      <StatLine
+        items={[{
+          label: 'عدد الأساتذة',
+          value: teacherCount,
+          hint: count.isPending ? 'قراءة عدّاد الخادم…' : count.data ? 'في هذه المؤسّسة' : 'تعذّر قراءة العدّاد',
+        }]}
       />
 
-      <div className="grid-2-1">
-        <Card title="قائمة الأساتذة" icon={Users}>
-          {/* Borrowed admin-family search chrome (the AdminStudentsPage
-              look) — admin.css owns it since r150e. */}
-          <div className="admin-students-search">
-            <Icon icon={Search} size={14} />
-            <input
-              type="search"
-              className="admin-students-input"
-              placeholder="ابحث بالاسم أو البريد الإلكتروني…"
-              aria-label="البحث في الأساتذة"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+      <FilterBar
+        search={{
+          value: search,
+          onChange: setSearch,
+          placeholder: 'ابحث بالاسم أو البريد الإلكتروني…',
+        }}
+      />
 
-          {roster.isPending ? (
-            <TeacherListSkeleton rows={5} />
-          ) : roster.isError ? (
+      <SplitView
+        listWidth="narrow"
+        detailTitle={selectedName}
+        list={
+          roster.isError ? (
             /* API-down must never read as "no teachers registered" — a
-               retryable error, with the KPI degrading to '—' above. */
-            <ErrorState
-              error={roster.error}
-              message="تعذّر تحميل قائمة الأساتذة"
-              onRetry={() => roster.refetch()}
-            />
-          ) : teachers.length === 0 ? (
-            <EmptyState
-              icon={Users}
-              title={isSearching ? 'لا نتائج مطابقة' : 'لم يتم تسجيل أساتذة بعد'}
-              description={isSearching
-                ? 'لم نجد أساتذة تطابق البحث الحالي.'
-                : 'ستظهر القائمة فور تسجيل أول أستاذ في النظام.'}
-              action={isSearching ? (
-                <button type="button" className="btn ghost sm" onClick={clearSearch}>
-                  <Icon icon={X} size={13} />
-                  مسح البحث
-                </button>
-              ) : undefined}
-            />
+               retryable error, with the count degrading to '—' above. */
+            <Card>
+              <ErrorState
+                error={roster.error}
+                message="تعذّر تحميل قائمة الأساتذة"
+                onRetry={() => roster.refetch()}
+              />
+            </Card>
           ) : (
             <>
-              <div className="flex-col gap-2">
+              <RowList aria-label="قائمة الأساتذة" loading={roster.isPending} empty={teacherListEmpty} density="compact">
                 {teachers.map((t) => (
-                  <button
+                  <RowItem
                     key={t.id}
-                    type="button"
-                    className={`teacher-row${selectedId === t.id ? ' selected' : ''}`}
-                    onClick={() => setSelectedId(t.id)}
-                  >
-                    <UserAvatar initials={t.avatarInitials ?? 'أس'} color={t.avatarColor ?? undefined} size={40} />
-                    <div style={{ flex: 1, textAlign: 'start' }}>
-                      <div className="teacher-row-name">{t.firstName} {t.lastName}</div>
-                      <div className="teacher-row-email font-mono text-xxs"><bdi>{t.email}</bdi></div>
-                    </div>
-                    <Icon icon={ChevronLeft} size={14} className="text-subtle" />
-                  </button>
+                    leading={<UserAvatar initials={t.avatarInitials ?? 'أس'} color={t.avatarColor ?? undefined} size={36} />}
+                    title={(
+                      <button
+                        type="button"
+                        className="govx-row-select"
+                        aria-pressed={selectedId === t.id}
+                        onClick={() => setSelectedId(t.id)}
+                      >
+                        {t.firstName} {t.lastName}
+                      </button>
+                    )}
+                    meta={<bdi>{t.email}</bdi>}
+                    trailing={<Icon icon={ChevronLeft} size={14} className="text-subtle" />}
+                  />
                 ))}
-              </div>
+              </RowList>
 
               {/* Server-side pagination footer — the .table-pagination
                   system with a bounded page window, RTL-correct chevrons
                   (prev points right) and the honest "page X of Y · N
-                  teachers" line: the OwnerUsersPage wave-6-b pattern
-                  (.owner-page-gap borrowed from the eager owner.css). */}
+                  teachers" line. */}
               {meta && totalPages > 1 && (
                 <div className="table-pagination">
                   <span>
@@ -418,41 +437,13 @@ export function AdminTeachersPage() {
                 </div>
               )}
             </>
-          )}
-        </Card>
-
-        {selectedId ? (
-          <TeacherProfileCard teacherId={selectedId} />
-        ) : roster.isPending ? (
-          <CardSkeleton lines={6} />
-        ) : (
-          <Card>
-            <EmptyState
-              icon={GraduationCap}
-              title="اختر أستاذاً من القائمة"
-              description="اعرض الملف الأكاديمي والمقرّرات المقترحة لتوثيقه أو إسناد منصب له."
-            />
-          </Card>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/** Shape-matched skeleton for the teachers list (avatar + name + email rows). */
-function TeacherListSkeleton({ rows = 5 }: { rows?: number }) {
-  return (
-    <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
-      {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="teacher-row" style={{ cursor: 'default' }}>
-          <Skeleton width={40} height={40} rounded="50%" />
-          <div className="flex-col" style={{ flex: 1, gap: 'var(--sp-1-5)' }}>
-            <Skeleton width="55%" height={12} />
-            <Skeleton width="40%" height={10} />
-          </div>
-        </div>
-      ))}
-    </div>
+          )
+        }
+        detail={selectedId ? <TeacherProfileCard teacherId={selectedId} /> : null}
+        detailOpen={selectedId !== null}
+        onDetailClose={() => setSelectedId(null)}
+      />
+    </PageFrame>
   );
 }
 

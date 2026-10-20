@@ -5,9 +5,13 @@ import {
   RefreshCw, ChevronDown, ChevronRight, ChevronLeft,
 } from 'lucide-react';
 import { Card, Tabs } from '../../components/primitives';
-import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+/* r252 (Phase B): the audit log composes the shell patterns — PageFrame
+ * rhythm, patterns PageHeader, the StatLine facts, and FilterBar as the
+ * sticky filter rail above the timeline (the mission's "filterable
+ * timeline of rows", not a raw table). */
+import { PageFrame, PageHeader as PatternsPageHeader, StatLine, FilterBar } from '../../components/patterns';
 import { useOwnerActivity } from '../../hooks/useOwner';
 import { formatRelativeAr } from '../../lib/format';
 import type { LucideIcon } from 'lucide-react';
@@ -186,50 +190,45 @@ export function OwnerActivityPage() {
   const kpiKnown = activity.isSuccess;
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">سجل النشاط والمراقبة</h1>
-          <p className="page-subtitle">جميع العمليّات المنفَّذة على المنصّة — حيّة من سجلّ التدقيق</p>
-        </div>
-      </header>
+    <PageFrame width="default">
+      <PatternsPageHeader
+        title="سجل النشاط والمراقبة"
+        description="جميع العمليّات المنفَّذة على المنصّة — حيّة من سجلّ التدقيق"
+        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'سجلّ النشاط' }]}
+      />
 
-      {/* R190 (D4): the typographic stat strip — was the grid-4 icon
-          tiles. Real per-page KPIs (full counts would need a dedicated
-          endpoint) with the same honest '…'/'—' unknowns. */}
-      <StatStrip
-        ariaLabel="مؤشرات سجلّ النشاط"
-        cells={[
+      {/* r252: the page's four facts ride the patterns StatLine —
+          same honest '…'/'—' unknowns, same real per-page counts. */}
+      <StatLine
+        items={[
           {
             label: 'إجمالي الأحداث',
             value: kpiValue(activity.data?.meta.total ?? kpi.total),
-            trend: 'المسجَّلة على المنصّة',
-            trendTone: 'flat',
+            hint: 'المسجَّلة على المنصّة',
           },
           {
             label: 'تسجيلات دخول',
             value: kpiValue(kpi.logins),
-            trend: 'ضمن الصفحة الحاليّة',
-            trendTone: 'flat',
+            hint: 'ضمن الصفحة الحاليّة',
           },
           {
             label: 'عمليّات فاشلة',
             value: kpiValue(kpi.failed),
-            trend: kpiKnown ? (kpi.failed === 0 ? 'لا إخفاقات ضمن الصفحة' : 'تحقّق من التفاصيل أدناه') : 'بانتظار البيانات',
-            trendTone: kpiKnown && kpi.failed > 0 ? 'down' : 'flat',
+            hint: kpiKnown ? (kpi.failed === 0 ? 'لا إخفاقات ضمن الصفحة' : 'تحقّق من التفاصيل أدناه') : 'بانتظار البيانات',
+            tone: kpiKnown && kpi.failed > 0 ? 'danger' : 'neutral',
           },
           {
             label: 'تغييرات صلاحيّات',
             value: kpiValue(kpi.roles),
-            trend: 'ضمن الصفحة الحاليّة',
-            trendTone: 'flat',
+            hint: 'ضمن الصفحة الحاليّة',
           },
         ]}
       />
 
-      <Card>
-        <Tabs value={filter} onChange={setFilter} items={tabItems} />
-      </Card>
+      {/* r252: the filter Tabs move INTO the FilterBar — one calm rail
+          above the timeline (sticky: the filter survives a long scroll
+          through 50 events; the app's only scroll container owns it). */}
+      <FilterBar sticky filters={<Tabs value={filter} onChange={setFilter} items={tabItems} />} />
 
       <Card title="سجلّ الأحداث" icon={Clock}>
         {activity.isPending ? (
@@ -339,6 +338,6 @@ export function OwnerActivityPage() {
           </div>
         )}
       </Card>
-    </div>
+    </PageFrame>
   );
 }

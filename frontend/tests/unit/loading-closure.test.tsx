@@ -256,14 +256,15 @@ describe('r172b §6 — owner dashboard pending mirror', () => {
     expect(band).not.toBeNull();
     expect(within(band as HTMLElement).getByText('جارٍ جلب حالة التنبيهات…')).toBeTruthy();
     // Strip slot + KPI + charts pair + the two below-fold card slots
-    // (strip + CardSkeleton ×2 are the .page's direct .card children).
+    // (strip + CardSkeleton ×2 are the page's direct .card children).
     expect(screen.getByText('يحتاج انتباهك')).toBeTruthy();
-    // R189 re-pin: the KPI band is the typographic stat strip.
-    expect(container.querySelectorAll('.stat-strip .stat-cell')).toHaveLength(4);
+    // r253 re-pin: the KPI band is the patterns StatLine shape, and
+    // the page frame is the patterns PageFrame (.pf-page).
+    expect(container.querySelectorAll('.pf-statline .pf-stat')).toHaveLength(4);
     const charts = container.querySelector('.grid-2-1');
     expect(charts).not.toBeNull();
     expect((charts as HTMLElement).querySelectorAll(':scope > .card')).toHaveLength(2);
-    expect(container.querySelectorAll('.page > .card')).toHaveLength(3);
+    expect(container.querySelectorAll('.pf-page > .card')).toHaveLength(3);
   });
 
   it("§7 — OwnerActionStrip renders its skeleton while education pends (never a silent null)", () => {
@@ -279,9 +280,10 @@ describe('r172b §6 — owner dashboard pending mirror', () => {
     FIXTURES['/owner/activity'] = { data: [], meta: { page: 1, limit: 8, total: 0, totalPages: 1 } };
     const { container } = renderPage(<OwnerDashboardPage />);
     // Resolved page (real KPI value proves it) + pending education →
-    // the strip skeleton sits between the band and the KPI row.
+    // the strip skeleton sits between the band and the KPI row
+    // (r253 re-pin: the KPI placeholder is the .pf-statline shape).
     expect(screen.getByText('لوحة التحكم الرئيسية')).toBeTruthy();
-    const strip = container.querySelector('.stat-strip')?.previousElementSibling;
+    const strip = container.querySelector('.pf-statline')?.previousElementSibling;
     expect(strip).not.toBeNull();
     const stripEl = strip as HTMLElement;
     expect(stripEl.getAttribute('aria-busy')).toBe('true');

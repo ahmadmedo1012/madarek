@@ -298,11 +298,12 @@ describe('OwnerDashboardPage — error-as-critical strip (6A10-2)', () => {
     ];
     renderPage(<OwnerDashboardPage />);
 
-    /* R189 re-pin: the amber tone rides the ledger panel's zone-rose. */
+    /* r253 re-pin: the urgency dot carries the tone — error severity
+     * IS the critical pair (isCriticalAlert), so the dot is «now». */
     const row = (await screen.findByText('تنبيهات تشغيليّة مفتوحة')).closest('a');
     expect(row).not.toBeNull();
-    expect(row).toHaveClass('ledger-row-link');
-    expect(row!.closest('.ledger')).toHaveClass('zone-rose');
+    expect(row).toHaveClass('pf-today-link');
+    expect(row!.closest('.pf-today-item')!.querySelector('.pf-today-urgency')).toHaveClass('now');
     expect(screen.getByText(/تنبيه مفتوح واحد — منها تنبيه حرج واحد/)).toBeInTheDocument();
   });
 });
