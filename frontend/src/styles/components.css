@@ -1746,6 +1746,18 @@
     transition: text-decoration-color var(--t-fast) var(--ease);
   }
   .text-link:hover { text-decoration-color: var(--accent-ink); }
+  /* r290: باب الخلية — رابط داخل خلية جدول يتمدّد على ارتفاع 44px+
+     (أرضية اللمس) دون كسر إيقاع الصف: حشوة متماثلة مع هوامش سالبة
+     مطابقة (صافي صفر)، وmin-block يضمن الأرضية في الوضع المكدّس.
+     يقيس على: اسم الطالب في قائمة الأستاذ (كان 21px)، وروابط
+     الخلايا الأخرى. عائلة الجداول هنا .table (و.tbl-* معدّلات خلايا). */
+  .table td a.text-link {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 44px;
+    padding-block: var(--sp-2-5);
+    margin-block: calc(-1 * var(--sp-2-5));
+  }
   .hide-on-mobile { display: revert; }
   @media (max-width: 640px) { .hide-on-mobile { display: none; } }
 

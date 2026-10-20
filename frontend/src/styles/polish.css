@@ -1630,6 +1630,22 @@
     .bottom-nav-item { min-block-size: 52px; padding-block: var(--sp-2); }
   }
 
+  /* r290: الأرضية تتبع المؤشر لا العرض — الأجهزة اللمسية بين 641–920px
+     (أجهزة لوحية، عرض 768) كانت تقيس .btn.sm عند 32px لأن نطاق العرض
+     وحده هو الذي يرفع الأرضية. (hover:none)+(pointer:coarse) يطبّق
+     44px على كل جهاز لمسي فعليًا بغضّ النظر عن العرض، والماوس الدقيق
+     يحتفظ بالـ32px المضغوطة عمدًا. نفس لغة نطاق العرض أعلاه — الآن
+     للجهاز اللمسي مباشرة. */
+  @media (hover: none) and (pointer: coarse) {
+    .btn { min-block-size: 44px; }
+    .btn.sm { min-block-size: 44px; }
+    .icon-btn { min-inline-size: 44px; min-block-size: 44px; }
+    /* أزرار التقسيم (36px ثابتة) وصفوف المؤشرات القابلة للنقر في
+       لوحة الإدارة (37px) — أرضية اللمس على الجهاز اللمسي. */
+    .table-pagination-actions button { min-inline-size: 44px; block-size: 44px; }
+    a.admin-stat-row { min-block-size: 44px; }
+  }
+
 
   /* (r151b — the mobile table→cards helper and the universal table
      fallback moved to their canon home: components.css §TABLE now
