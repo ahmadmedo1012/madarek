@@ -12,34 +12,17 @@
    pdf.css is loaded by DocumentViewerPage.
    ═══════════════════════════════════════════════════════════════════ */
 
-/* ─── 1. The list row — the family's unit of layout ────────────────
-   One full-width surface per paper/book/hit; detail attaches to the
-   row itself (head → pipeline → detail → actions), never a second
-   grid. Surface steps over border stacks; one hairline + hover step. */
-.rs-row {
+/* ─── 1. Row-body pieces (the row SURFACE is the shared .pf-row from
+   patterns.css; this sheet owns only the family's body content) ───── */
+/* My meta fragments are slot content built of separate runs (course,
+   code, date…) — the pattern renders .pf-row-meta as a plain block, so
+   this rule gives the runs the family's meta spacing. Scoped to my
+   pages: only they load this sheet. */
+.pf-row .pf-row-meta {
   display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  padding: var(--sp-4);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
-}
-.rs-row:hover { border-color: var(--border-strong); }
-.rs-row-head {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-3);
-  width: 100%;
-}
-.rs-row-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-1); }
-.rs-row-title {
-  font-size: var(--fs-body);
-  font-weight: var(--fw-semibold);
-  color: var(--text);
-  line-height: var(--lh-snug);
-  overflow-wrap: anywhere;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
 }
 .rs-row-meta {
   display: flex;
@@ -49,13 +32,6 @@
   font-size: var(--fs-sm);
   color: var(--text-muted);
 }
-.rs-row-side {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--sp-2);
-  flex-shrink: 0;
-}
 .rs-row-date { font-size: var(--fs-sm); color: var(--text-muted); white-space: nowrap; }
 .rs-row-snippet {
   margin: 0;
@@ -63,12 +39,6 @@
   color: var(--text-secondary);
   line-height: var(--lh-base);
   overflow-wrap: anywhere;
-}
-.rs-row-detail {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  width: 100%;
 }
 .rs-row-actions {
   display: flex;
@@ -126,10 +96,7 @@
 }
 
 @media (max-width: 640px) {
-  .rs-row { padding: var(--sp-3); }
-  .rs-row-head { flex-direction: column; }
-  .rs-row-side { flex-direction: row; align-items: center; justify-content: space-between; width: 100%; }
-  /* Thumb floor: row actions stretch full-width and clear 44px. */
+  /* Thumb floor: row-body actions stretch full-width and clear 44px. */
   .rs-row-actions .btn { flex: 1 1 100%; justify-content: center; min-height: 44px; }
   .rs-book-tail .btn { min-height: 44px; }
 }
@@ -233,21 +200,6 @@
 }
 
 /* ─── 2b. Process explainer — a numbered flow line, not a card grid ── */
-.rs-explainer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  padding: var(--sp-4);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-}
-.rs-explainer-title {
-  margin: 0;
-  font-size: var(--fs-body);
-  font-weight: var(--fw-semibold);
-  color: var(--text);
-}
 .rs-explainer-steps {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -405,12 +357,6 @@
 
 /* ─── 5. Library surfaces ─────────────────────────────────────────── */
 /* Section heading inside a tabpanel — one level under the page h1. */
-.rs-section-title {
-  margin: 0;
-  font-size: var(--fs-body);
-  font-weight: var(--fw-semibold);
-  color: var(--text);
-}
 /* The count line beside filters / under the strip. */
 .rs-count {
   font-size: var(--fs-sm);
@@ -483,52 +429,14 @@
 }
 .rs-search .rs-search-clear:hover { background: var(--surface-2); color: var(--text); }
 
-/* Book row — the borrow list unit (replaces the uniform thumb grid):
-   mini jacket | body (title/author/category) | tail (availability + CTA). */
-.rs-book-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-4);
-  padding: var(--sp-3) var(--sp-4);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
-}
-.rs-book-row:hover { border-color: var(--border-strong); background: var(--surface-1); }
-.rs-book-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-0-5); }
-.rs-book-title {
-  font-size: var(--fs-body);
-  font-weight: var(--fw-semibold);
-  color: var(--text);
-  line-height: var(--lh-snug);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow-wrap: anywhere;
-}
-.rs-book-author {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+/* Book row pieces — the row SURFACE is the shared .pf-row; the family
+   owns the leading identity chip and the borrow tail. */
 .rs-book-tail {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: var(--sp-1-5);
   flex-shrink: 0;
-}
-.rs-book-copies {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
 }
 
 /* The jacket at ROW scale — an identity chip, not a poster: the book's
@@ -537,7 +445,7 @@
    contract) is the shared recipe; these overrides only re-scale it for
    the row unit (the field/spine/ink recipes in student.css keep working
    through the same custom property). */
-.rs-book-row .lib-book-cover {
+.rs-book-cover {
   position: relative;
   display: flex;
   align-items: center;
@@ -549,8 +457,8 @@
   border: 1px solid var(--border);
   overflow: hidden;
 }
-.rs-book-row .lib-book-cover .lib-cover-mark { color: var(--book-tint, var(--accent)); }
-.rs-book-row .lib-book-cover .lib-cover-band {
+.rs-book-cover .lib-cover-mark { color: var(--book-tint, var(--accent)); }
+.rs-book-cover .lib-cover-band {
   position: absolute;
   inset-block-end: 0;
   inset-inline: 0;
@@ -565,24 +473,20 @@
   background: color-mix(in srgb, var(--surface) 72%, transparent);
 }
 @media (max-width: 640px) {
-  .rs-book-row { gap: var(--sp-3); }
-  .rs-book-row .lib-book-cover { inline-size: var(--sp-11); block-size: var(--sp-13); }
-  .rs-book-row .lib-book-cover .lib-cover-band { font-size: var(--fs-sm); }
-  .rs-book-tail { flex-direction: column; align-items: stretch; }
-  .rs-book-tail .btn { justify-content: center; min-height: 44px; }
+  /* Book-row mobile geometry: chip + body share the first line, the
+     borrow tail takes a full row under them. The chip drops to a
+     pocket size and its band keeps the icon only (the category text
+     lives in the row meta above). */
+  .pf-row-line { flex-wrap: wrap; row-gap: var(--sp-2); }
+  .pf-row-main { flex: 1 1 0; }
+  .pf-row-trailing { flex-basis: 100%; }
+  .rs-book-cover { inline-size: var(--sp-10); block-size: var(--sp-11); }
+  .rs-book-cover .lib-cover-band span { display: none; }
+  .rs-book-tail { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+  .rs-book-tail .btn { flex: 1 1 auto; justify-content: center; min-height: 44px; }
 }
 
 /* ─── 6. Review queue surfaces (teacher) ──────────────────────────── */
-.rs-review-meta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-2) var(--sp-3);
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-}
-.rs-review-meta .is-ok { color: var(--c-mint-ink); }
-.rs-review-meta .is-bad { color: var(--c-rose-ink); }
 .rs-review-actions {
   display: flex;
   align-items: center;

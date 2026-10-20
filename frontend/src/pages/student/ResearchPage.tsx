@@ -5,9 +5,8 @@ import {
   CheckCircle2, AlertCircle, Sparkles, MessageSquare, FileText,
   type LucideIcon,
 } from 'lucide-react';
-import { PageHeader, Badge, FormField, ProgressBar } from '../../components/primitives';
-import { StatStrip, type StatCellData } from '../../components/primitives/Ledger';
-import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
+import { Badge, FormField, ProgressBar } from '../../components/primitives';
+import { ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { PAPER_STATUS_TONE } from '../../lib/paperStatus';
@@ -20,6 +19,8 @@ import {
   useMyEnrollments, apiErrorMessage,
   type ResearchPaper, type PaperStatus,
 } from '../../hooks/useResources';
+import { PageFrame, PageHeader, RowList, RowItem, StatLine, SectionHeader } from '../../components/patterns';
+import type { StatLineItem } from '../../components/patterns';
 import { StatusPipeline } from '../../components/paper/StatusPipeline';
 import { ScanResults } from '../../components/paper/ScanResults';
 import '../../styles/research.css';
@@ -40,23 +41,6 @@ const STATUS_LABEL: Record<PaperStatus, string> = {
 /* fmtDate (short ar-LY date with year, '—' for missing values) is
  * lib/format.formatDateWithYearAr (13-15 fold, audit 11-f P2-1). */
 
-/* Shape-matched skeleton for a paper row (title + course + abstract). */
-function PaperRowSkeleton() {
-  return (
-    <div className="rs-row" aria-hidden>
-      <div className="rs-row-head">
-        <div className="rs-row-main">
-          <Skeleton width="55%" height={16} />
-          <div style={{ marginTop: 'var(--sp-2)' }}><Skeleton width={180} height={12} /></div>
-          <div style={{ marginTop: 'var(--sp-2)' }}><Skeleton width="90%" height={12} /></div>
-        </div>
-        <Skeleton width={96} height={22} rounded="var(--r-full)" />
-      </div>
-      <Skeleton width="100%" height={38} />
-    </div>
-  );
-}
-
 export default function StudentResearchPage() {
   const my = useMyResearch();
   const enrollments = useMyEnrollments();
@@ -74,9 +58,7 @@ export default function StudentResearchPage() {
   const stagedUpload = useRef<{ file: File; fileUrl: string } | null>(null);
   const [uploadOpen, setUploadOpen] = useState(false);
   /* r157 (F8): تعبئة مسبقة لإعادة الرفع — «رفع نسخة جديدة» على ورقة
-   * فاشلة يفتح النموذج معبّأً ببياناتها (العنوان/الملخّص/المقرّر).
-   * الفتح العادي (الترويسة/الحالة الفارغة) يصفّرها؛ الإغلاق يصفّرها
-   * أيضاً كي لا يتسرّب بحثٌ سابق إلى فتحٍ لاحق غير مقصود. */
+   * فاشلة يفتح النموذج معبّأً ببياناتها (العنوان/الملخّص/المقرّر). */
   const [resubmitPrefill, setResubmitPrefill] = useState<{
     title: string;
     abstract?: string;
@@ -86,22 +68,18 @@ export default function StudentResearchPage() {
   const [scanError, setScanError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   /* r164f: the file-stage upload fraction (0..1) while the raw body is
-   * on the wire — null means «no upload in flight»; feeds the modal's
-   * real progress bar (a disabled button was the only signal before). */
+   * on the wire — null means «no upload in flight». */
   const [fileProgress, setFileProgress] = useState<number | null>(null);
 
   const papers = my.data ?? [];
-  const counts = {
-    total: papers.length,
-    pending: papers.filter((p) => p.status === 'UPLOADED' || p.status === 'SCANNING' || p.status === 'CHECKS_PASSED').length,
-    graded: papers.filter((p) => p.status === 'GRADED' || p.status === 'PUBLISHED').length,
-    rejected: papers.filter((p) => p.status === 'CHECKS_FAILED').length,
-  };
-  const kpis: StatCellData[] = [
-    { label: 'إجمالي بحوثك', value: counts.total, trend: 'منذ أول رفعة', trendTone: 'flat' },
-    { label: 'قيد المراجعة', value: counts.pending, trend: counts.pending > 0 ? 'بانتظار خطوة تالية' : 'لا شيء معلّق', trendTone: 'flat' },
-    { label: 'مُقيَّمة', value: counts.graded, trend: counts.graded > 0 ? 'منها المنشور' : 'لا توجد بعد', trendTone: counts.graded > 0 ? 'up' : 'flat' },
-    { label: 'تعذّر اجتياز الفحص', value: counts.rejected, trend: counts.rejected > 0 ? 'تحتاج إعادة رفع' : 'لا شيء', trendTone: counts.rejected > 0 ? 'down' : 'flat' },
+  const pendingCount = papers.filter((p) => p.status === 'UPLOADED' || p.status === 'SCANNING' || p.status === 'CHECKS_PASSED').length;
+  const gradedCount = papers.filter((p) => p.status === 'GRADED' || p.status === 'PUBLISHED').length;
+  const failedCount = papers.filter((p) => p.status === 'CHECKS_FAILED').length;
+  const kpis: StatLineItem[] = [
+    { label: 'إجمالي بحوثك', value: papers.length, hint: 'منذ أول رفعة' },
+    { label: 'قيد المراجعة', value: pendingCount, hint: pendingCount > 0 ? 'بانتظار خطوة تالية' : 'لا شيء معلّق', tone: pendingCount > 0 ? 'signal' : 'neutral' },
+    { label: 'مُقيَّمة', value: gradedCount, hint: gradedCount > 0 ? 'منها المنشور' : 'لا توجد بعد', tone: gradedCount > 0 ? 'positive' : 'neutral' },
+    { label: 'تعذّر اجتياز الفحص', value: failedCount, hint: failedCount > 0 ? 'تحتاج إعادة رفع' : 'لا شيء', tone: failedCount > 0 ? 'danger' : 'neutral' },
   ];
 
   const startScan = async (id: string) => {
@@ -135,10 +113,10 @@ export default function StudentResearchPage() {
   };
 
   return (
-    <div className="page">
+    <PageFrame width="default">
       <PageHeader
         title="بحوثي العلمية"
-        subtitle={
+        description={
           /* r168b: the scan is a deterministic simulation until a real
               detection provider is activated — the results area carries
               the note since r154b; the header keeps matching it. */
@@ -153,63 +131,43 @@ export default function StudentResearchPage() {
       />
 
       {my.isPending ? (
-        <div className="stat-strip" aria-hidden="true" aria-busy="true">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="stat-cell">
-              <Skeleton width={90} height={11} />
-              <div style={{ marginBlock: 'var(--sp-1)' }}><Skeleton width={48} height={26} /></div>
-            </div>
-          ))}
-        </div>
+        <RowList aria-label="بحوثك" loading />
+      ) : my.isError ? (
+        <ErrorRetry error={my.error} onRetry={() => my.refetch()} />
       ) : (
-        <StatStrip ariaLabel="ملخّص بحوثك" cells={kpis} />
-      )}
+        <>
+          <StatLine items={kpis} />
 
-      {scanError && (
-        <div className="alert red" role="alert">
-          <span className="alert-dot" />
-          <div className="alert-body">
-            <div className="alert-title">تعذَّر إجراء الفحص</div>
-            <div className="alert-desc">{scanError}</div>
-          </div>
-        </div>
-      )}
+          {scanError && (
+            <div className="alert red" role="alert">
+              <span className="alert-dot" />
+              <div className="alert-body">
+                <div className="alert-title">تعذَّر إجراء الفحص</div>
+                <div className="alert-desc">{scanError}</div>
+              </div>
+            </div>
+          )}
 
-      {/* The list IS the page: each row carries its pipeline, results and
-          actions attached — no separate detail grid, no card walls. */}
-      <section className="flex-col gap-3" aria-label="بحوثك">
-        {my.isPending ? (
-          <>
-            <PaperRowSkeleton />
-            <PaperRowSkeleton />
-          </>
-        ) :
-         my.isError ? <ErrorState error={my.error} onRetry={() => my.refetch()} /> :
-         !papers.length ? (
-          <EmptyState
-            icon={BookMarked}
-            title="لم ترفع أي بحث بعد"
-            description="ابدأ برفع أول بحث لك ليتم فحصه ثم تقييمه من قبل الأستاذ."
-            illustration="empty-search"
-            action={
-              <button type="button" className="btn primary" onClick={openFreshUpload}>
-                <Icon icon={Upload} size={14} />
-                رفع بحث جديد
-              </button>
+          {/* The list IS the page: each row carries its journey, results
+              and actions attached — expandable so the list stays calm. */}
+          <RowList
+            aria-label="بحوثك"
+            empty={
+              <EmptyUpload onOpen={openFreshUpload} />
             }
-          />
-        ) : (
-          papers.map((p) => (
-            <PaperRow
-              key={p.id}
-              paper={p}
-              isScanning={scanningId === p.id || (p.status === 'SCANNING')}
-              onScan={() => void startScan(p.id)}
-              onResubmit={() => openResubmit(p)}
-            />
-          ))
-        )}
-      </section>
+          >
+            {papers.map((p) => (
+              <PaperRow
+                key={p.id}
+                paper={p}
+                isScanning={scanningId === p.id || (p.status === 'SCANNING')}
+                onScan={() => void startScan(p.id)}
+                onResubmit={() => openResubmit(p)}
+              />
+            ))}
+          </RowList>
+        </>
+      )}
 
       <ProcessExplainer />
 
@@ -222,11 +180,6 @@ export default function StudentResearchPage() {
           fileProgress={fileProgress}
           error={uploadError}
           initial={resubmitPrefill}
-          /* r164f: the staged File instance — after a create failure the
-           * modal shows the reuse hint on the picked row so the student
-           * KNOWS the retry will not re-upload the bytes. Instance
-           * identity is the same mechanism the staged upload itself
-           * uses (a re-picked file is a new instance → honest re-upload). */
           stagedFile={stagedUpload.current?.file ?? null}
           onClose={() => {
             setUploadOpen(false);
@@ -242,8 +195,7 @@ export default function StudentResearchPage() {
                * then the create mutation carries the returned fileUrl —
                * the paper row finally links a real file. A staged upload
                * from a previous failed create is reused (stagedUpload
-               * pins the File instance it belongs to). r164f: the stage
-               * reports its progress so the modal can paint it. */
+               * pins the File instance it belongs to). */
               let fileUrl: string | undefined;
               if (input.file) {
                 if (stagedUpload.current?.file !== input.file) {
@@ -279,11 +231,35 @@ export default function StudentResearchPage() {
           }}
         />
       )}
-    </div>
+    </PageFrame>
   );
 }
 
-/* ─── Paper row — the journey attached to its item ───────── */
+function ErrorRetry({ error, onRetry }: { error: unknown; onRetry: () => void }) {
+  return <ErrorState error={error} onRetry={onRetry} />;
+}
+
+function EmptyUpload({ onOpen }: { onOpen: () => void }) {
+  return (
+    <EmptyState
+      icon={BookMarked}
+      title="لم ترفع أي بحث بعد"
+      description="ابدأ برفع أول بحث لك ليتم فحصه ثم تقييمه من قبل الأستاذ."
+      illustration="empty-search"
+      action={
+        <button type="button" className="btn primary" onClick={onOpen}>
+          <Icon icon={Upload} size={14} />
+          رفع بحث جديد
+        </button>
+      }
+    />
+  );
+}
+
+/* ─── Paper row — the journey attached to its item ─────────
+   RowItem carries the line (title + course + badge); the body (open by
+   default whenever a next action exists) holds the pipeline, the
+   declared-simulation results, grade/feedback and the row's actions. */
 function PaperRow({
   paper, isScanning, onScan, onResubmit,
 }: {
@@ -293,30 +269,30 @@ function PaperRow({
   onResubmit: () => void;
 }) {
   const hasResults = paper.plagiarismPct != null || paper.aiContentPct != null;
+  /* A body opens by default when the student must ACT or watch — a
+     settled paper collapses so the list stays calm. */
+  const mustAct = paper.status === 'UPLOADED' || paper.status === 'CHECKS_FAILED' || isScanning;
   return (
-    <article className="rs-row">
-      <div className="rs-row-head">
-        <div className="rs-row-main">
-          <h2 className="rs-row-title">{paper.title}</h2>
-          <div className="rs-row-meta">
-            {paper.offering && (
-              <span>
-                {paper.offering.course.name} · <span className="font-mono"><bdi>{paper.offering.course.code}</bdi></span>
-              </span>
-            )}
-            <span className="rs-row-date">رُفع: {formatDateWithYearAr(paper.uploadedAt)}</span>
-          </div>
-        </div>
-        <div className="rs-row-side">
-          <Badge color={PAPER_STATUS_TONE[paper.status]}>{STATUS_LABEL[paper.status]}</Badge>
-        </div>
-      </div>
+    <RowItem
+      title={paper.title}
+      meta={
+        <>
+          {paper.offering && (
+            <span>
+              {paper.offering.course.name} · <span className="font-mono"><bdi>{paper.offering.course.code}</bdi></span>
+            </span>
+          )}
+          <span>·</span>
+          <span>رُفع: {formatDateWithYearAr(paper.uploadedAt)}</span>
+        </>
+      }
+      trailing={<Badge color={PAPER_STATUS_TONE[paper.status]}>{STATUS_LABEL[paper.status]}</Badge>}
+      defaultExpanded={mustAct}
+      expandLabel={`تفاصيل البحث: ${paper.title}`}
+    >
+      <div className="flex-col gap-3">
+        <StatusPipeline status={paper.status} />
 
-      {/* The journey rail — attached to the row, mirrors the badge. */}
-      <StatusPipeline status={paper.status} />
-
-      <div className="rs-row-detail">
-        {/* Pre-scan: the one next action */}
         {paper.status === 'UPLOADED' && !isScanning && (
           <div className="rs-row-actions">
             <button type="button" className="btn outline" onClick={onScan}>
@@ -334,7 +310,6 @@ function PaperRow({
         {/* Post-scan results — the declared simulation, gated values. */}
         {!isScanning && hasResults && <ScanResults plagiarismPct={paper.plagiarismPct} aiContentPct={paper.aiContentPct} />}
 
-        {/* Graded */}
         {(paper.status === 'GRADED' || paper.status === 'PUBLISHED') && paper.grade != null && (
           <div className="rs-row-grade">
             <div className="rs-row-grade-head">
@@ -351,8 +326,8 @@ function PaperRow({
               <Icon icon={AlertCircle} size={14} />
               تجاوز البحث الحدود التجريبية المسموح بها (محاكاة)
             </div>
-            {/* r157 (F8): الإرشاد السابق كان بلا فعل — الزرّ يفتح
-                UploadModal معبّأً من الورقة الفاشلة (see openResubmit). */}
+            {/* r157 (F8): الزرّ يفتح UploadModal معبّأً من الورقة
+                الفاشلة (see openResubmit). */}
             <div className="rs-row-actions">
               <button type="button" className="btn outline" onClick={onResubmit}>
                 <Icon icon={Upload} size={13} />
@@ -368,20 +343,20 @@ function PaperRow({
             تم نشر هذا البحث في مكتبة الجامعة.
           </p>
         )}
-      </div>
 
-      {(paper.status === 'GRADED' || paper.status === 'PUBLISHED') && paper.fileUrl && (
-        <div className="rs-row-actions">
-          <RouterLink
-            to={`/document/${encodeURIComponent(paper.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(paper.title)}&back=${encodeURIComponent('/student/research')}&paper=${encodeURIComponent(paper.id)}`}
-            className="btn outline"
-          >
-            <Icon icon={MessageSquare} size={13} />
-            مراجعة البحث مع ملاحظات الأستاذ
-          </RouterLink>
-        </div>
-      )}
-    </article>
+        {(paper.status === 'GRADED' || paper.status === 'PUBLISHED') && paper.fileUrl && (
+          <div className="rs-row-actions">
+            <RouterLink
+              to={`/document/${encodeURIComponent(paper.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(paper.title)}&back=${encodeURIComponent('/student/research')}&paper=${encodeURIComponent(paper.id)}`}
+              className="btn outline"
+            >
+              <Icon icon={MessageSquare} size={13} />
+              مراجعة البحث مع ملاحظات الأستاذ
+            </RouterLink>
+          </div>
+        )}
+      </div>
+    </RowItem>
   );
 }
 
@@ -394,8 +369,8 @@ function ProcessExplainer() {
     { n: 4, title: 'النشر في المكتبة', desc: 'البحوث المتميزة تُضاف إلى مكتبة الجامعة.', icon: BookMarked },
   ];
   return (
-    <section className="rs-explainer" aria-label="كيف يعمل النظام">
-      <h2 className="rs-explainer-title">كيف يعمل النظام</h2>
+    <section aria-label="كيف يعمل النظام">
+      <SectionHeader title="كيف يعمل النظام" as="h2" />
       <ol className="rs-explainer-steps">
         {STEPS.map((s) => (
           <li key={s.n} className="rs-explainer-step">
@@ -528,10 +503,7 @@ function UploadModal({
       </div>
       <div className="modal-body">
         {/* r152c (A2): the four upload-modal fields join the FormField
-            canon. This also fixes the dangling aria-describedby — the
-            old markup pointed at the error id unconditionally while the
-            message rendered conditionally; FormField wires the
-            association only while the error exists. */}
+            canon — labels stay htmlFor-wired. */}
         <FormField
           label="عنوان البحث (مطلوب)"
           id={titleId}
@@ -589,8 +561,7 @@ function UploadModal({
           />
         </FormField>
 
-        {/* P3: the picked-file row — name + a 44px remove target; the
-            row (not the input) is the affordance once a file is chosen. */}
+        {/* P3: the picked-file row — name + a 44px remove target. */}
         {file && (
           <>
             <div className="upload-file-field">
@@ -607,9 +578,8 @@ function UploadModal({
               </button>
             </div>
             {/* r164f: the staged-reuse hint — the bytes are already on
-                the server (a create failure kept the modal open), so a
-                retry re-registers the paper WITHOUT re-uploading. The
-                row itself says nothing about it; this note does. */}
+                the server, so a retry re-registers the paper WITHOUT
+                re-uploading. */}
             {file === stagedFile && (
               <p className="text-sm text-subtle" role="note" style={{ marginBlockStart: 'calc(-1 * var(--sp-1))' }}>
                 <Icon icon={CheckCircle2} size={13} />{' '}
@@ -636,10 +606,9 @@ function UploadModal({
         )}
       </div>
       <div className="modal-footer">
-        {/* r168b: the auth family announces missing fields («مطلوب»);
-          the upload modal's silent disabled button gave no reason —
-          the hint names the exact unmet condition and is announced
-          (role=status + aria-live) so keyboard/SR users hear it too. */}
+        {/* r168b: the hint names the exact unmet condition and is
+            announced (role=status + aria-live) so keyboard/SR users
+            hear it too. */}
         {!canSubmit && !isPending && (
           <p role="status" aria-live="polite" className="form-field-hint">
             أكمل عنوان البحث (3 أحرف على الأقل) لتتمكّن من الرفع.

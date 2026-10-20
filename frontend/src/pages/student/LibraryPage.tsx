@@ -8,9 +8,8 @@ import {
   SlidersHorizontal, Undo2, ChevronLeft, ChevronRight,
   type LucideIcon,
 } from 'lucide-react';
-import { PageHeader, Pill, Badge, UserAvatar } from '../../components/primitives';
-import { StatStrip, type StatCellData } from '../../components/primitives/Ledger';
-import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
+import { Pill, Badge, UserAvatar } from '../../components/primitives';
+import { ErrorState, EmptyState } from '../../components/primitives/States';
 import { Sheet } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
 import {
@@ -22,6 +21,10 @@ import { courseTint } from '../../lib/courseMeta';
 import { countAr, formatPct, apiErrorMessage, formatDateAr } from '../../lib/format';
 import { toast } from '../../lib/toast';
 import { formatDate, formatInt, formatNum } from '../../utils/numbers';
+import {
+  PageFrame, PageHeader, RowList, RowItem, StatLine, SectionHeader, FilterBar,
+} from '../../components/patterns';
+import type { StatLineItem } from '../../components/patterns';
 import '../../styles/research.css';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
@@ -93,48 +96,9 @@ const LIB_TABS: Array<{ key: Tab; label: string; icon: LucideIcon }> = [
   { key: 'research', label: 'بحوث الطلاب', icon: FileText },
 ];
 
-/* Shape-matched loading skeletons (brief §4: never a bare spinner where
-   a skeleton fits the settled shape). */
-function BookRowSkeleton({ rows = 6 }: { rows?: number }) {
-  return (
-    <div className="flex-col gap-3" aria-busy="true" aria-live="polite">
-      {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="rs-book-row" aria-hidden>
-          <Skeleton width={128} height={160} rounded="var(--r-md)" />
-          <div className="rs-book-body">
-            <Skeleton width="62%" height={16} />
-            <Skeleton width="38%" height={12} />
-          </div>
-          <Skeleton width={92} height={30} rounded="var(--r-md)" />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function ResearchListSkeleton({ rows = 3 }: { rows?: number }) {
-  return (
-    <div className="flex-col gap-3" aria-busy="true" aria-live="polite">
-      {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="rs-row" aria-hidden>
-          <div className="rs-row-head">
-            <Skeleton width={40} height={40} rounded="50%" />
-            <div className="rs-row-main">
-              <Skeleton width="45%" height={15} />
-              <Skeleton width="65%" height={11} />
-              <Skeleton width="90%" height={11} />
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/* r199: صفّ كتاب — الوحدة الجديدة لعرض المكتبة (صفوف كاملة العرض بدل
- * شبكة البطاقات المتطابقة). الستارة المصغّرة تحمل هوية الكتاب (أيقونة
- * الفئة + شريط الفئة على حقل بلون الكتاب) — aria-hidden دائمًا؛ الاسم
- * والمؤلف والفئة تُقرأ من جسم الصف مرة واحدة. */
+/* r199: صفّ كتاب — RowItem داخل RowList: رقاقة هوية الكتاب (الفئة على
+ * حقل بلون الكتاب — aria-hidden) | العنوان/المؤلف/الفئة | الحالة + زر
+ * الاستعارة. الاسم والمؤلف والفئة تُقرأ من جسم الصف مرة واحدة. */
 function BookRow({ book }: { book: Book }) {
   const borrow = useBorrowBook();
   const unavailable = book.availableCopies === 0;
@@ -156,32 +120,34 @@ function BookRow({ book }: { book: Book }) {
   };
 
   return (
-    <article className="rs-book-row">
-      {/* r186: typographic jacket (identity chip at row scale) —
-       * deterministic cover from the book's own data (category icon +
-       * band on the book's tint). No upload path, no binary storage.
-       * Decorative by contract: aria-hidden keeps the accessible
-       * title/author in the row body below (no double read). */}
-      <div
-        className="lib-book-cover rs-book-cover"
-        aria-hidden="true"
-        style={{
-          background: `color-mix(in srgb, ${tint} 12%, var(--surface))`,
-          ['--book-tint' as never]: tint,
-        }}
-      >
-        <span className="lib-cover-mark">
-          <Icon icon={Cmp} size={22} strokeWidth={1.6} />
+    <RowItem
+      leading={
+        /* r186: typographic jacket (identity chip at row scale) —
+         * deterministic cover from the book's own data (category icon +
+         * band on the book's tint). Decorative by contract: aria-hidden
+         * keeps the accessible title/author in the row body. */
+        <span
+          className="lib-book-cover rs-book-cover"
+          aria-hidden="true"
+          style={{
+            background: `color-mix(in srgb, ${tint} 12%, var(--surface))`,
+            ['--book-tint' as never]: tint,
+          }}
+        >
+          <span className="lib-cover-mark">
+            <Icon icon={Cmp} size={22} strokeWidth={1.6} />
+          </span>
+          <span className="lib-cover-band">
+            <Icon icon={Cmp} size={11} strokeWidth={2.2} />
+            <span>{categoryLabel(book.category)}</span>
+          </span>
         </span>
-        <div className="lib-cover-band">
-          <Icon icon={Cmp} size={11} strokeWidth={2.2} />
-          <span>{categoryLabel(book.category)}</span>
-        </div>
-      </div>
-      <div className="rs-book-body">
-        <div className="rs-book-title" title={book.title}>{book.title}</div>
-        <div className="rs-book-author">{book.author}</div>
-        <div className="rs-row-meta">
+      }
+      title={book.title}
+      meta={
+        <>
+          <span>{book.author}</span>
+          <span>·</span>
           <span>{categoryLabel(book.category)}</span>
           {book.rating != null && (
             <span className="flex items-center gap-1 font-mono">
@@ -189,28 +155,30 @@ function BookRow({ book }: { book: Book }) {
               <bdi>{book.rating}</bdi>
             </span>
           )}
-        </div>
-      </div>
-      <div className="rs-book-tail">
-        <Badge color={book.availableCopies > 0 ? 'green' : undefined}>
-          {book.availableCopies > 0 ? 'متاح' : 'مستعار'}
-        </Badge>
-        <button
-          type="button"
-          className="btn primary sm"
-          onClick={() => void onBorrow()}
-          disabled={unavailable || borrow.isPending}
-          title={unavailable ? 'لا توجد نسخ متاحة للاستعارة حالياً' : undefined}
-          aria-label={
-            unavailable
-              ? `استعارة ${book.title} — لا توجد نسخ متاحة حالياً`
-              : `استعارة ${book.title}`
-          }
-        >
-          {borrow.isPending ? 'جارٍ الاستعارة…' : 'استعارة'}
-        </button>
-      </div>
-    </article>
+        </>
+      }
+      trailing={
+        <span className="rs-book-tail">
+          <Badge color={book.availableCopies > 0 ? 'green' : undefined}>
+            {book.availableCopies > 0 ? 'متاح' : 'مستعار'}
+          </Badge>
+          <button
+            type="button"
+            className="btn primary sm"
+            onClick={() => void onBorrow()}
+            disabled={unavailable || borrow.isPending}
+            title={unavailable ? 'لا توجد نسخ متاحة للاستعارة حالياً' : undefined}
+            aria-label={
+              unavailable
+                ? `استعارة ${book.title} — لا توجد نسخ متاحة حالياً`
+                : `استعارة ${book.title}`
+            }
+          >
+            {borrow.isPending ? 'جارٍ الاستعارة…' : 'استعارة'}
+          </button>
+        </span>
+      }
+    />
   );
 }
 
@@ -237,30 +205,29 @@ function LoanRow({ loan }: { loan: MyLoan }) {
   };
 
   return (
-    <div className="rs-row">
-      <div className="rs-row-head">
-        <div className="rs-row-main">
-          <div className="rs-row-title" title={loan.book.title}>{loan.book.title}</div>
-          <div className="rs-row-meta">
-            <Badge color={state.color}>{state.label}</Badge>
-            <span>موعد الإرجاع: <bdi className="font-mono">{formatDateAr(loan.dueAt)}</bdi></span>
-            <span>استُعير: {formatDateAr(loan.borrowedAt)}</span>
-          </div>
-        </div>
-        <div className="rs-row-side">
-          <button
-            type="button"
-            className="btn ghost sm"
-            onClick={() => void onReturn()}
-            disabled={returnLoan.isPending}
-            aria-label={`إرجاع ${loan.book.title}`}
-          >
-            <Icon icon={Undo2} size={13} />
-            {returnLoan.isPending ? 'جارٍ الإرجاع…' : 'إرجاع'}
-          </button>
-        </div>
-      </div>
-    </div>
+    <RowItem
+      title={loan.book.title}
+      meta={
+        <>
+          <Badge color={state.color}>{state.label}</Badge>
+          <span>موعد الإرجاع: <bdi className="font-mono">{formatDateAr(loan.dueAt)}</bdi></span>
+          <span>·</span>
+          <span>استُعير: {formatDateAr(loan.borrowedAt)}</span>
+        </>
+      }
+      trailing={
+        <button
+          type="button"
+          className="btn ghost sm"
+          onClick={() => void onReturn()}
+          disabled={returnLoan.isPending}
+          aria-label={`إرجاع ${loan.book.title}`}
+        >
+          <Icon icon={Undo2} size={13} />
+          {returnLoan.isPending ? 'جارٍ الإرجاع…' : 'إرجاع'}
+        </button>
+      }
+    />
   );
 }
 
@@ -342,9 +309,7 @@ export default function LibraryPage() {
 
   // Loan facts
   const activeLoans = loans.data?.filter((l) => l.status === 'ACTIVE') ?? [];
-  /* r155b: الاستعارات «الفتوحة» للقائمة أدناه — ACTIVE و OVERDUE معاً
-   * (الخلفية تعُدّ OVERDUE حيازةً غير مُعادة في حرس ازدواج الاستعارة،
-   * فلا يختفي كتابٌ متأخر من قائمة المستعارات دون إرجاع فعلي). */
+  /* r155b: الاستعارات «الفتوحة» للقائمة — ACTIVE و OVERDUE معاً. */
   const openLoans = loans.data?.filter((l) => l.status !== 'RETURNED') ?? [];
   const dueSoon = activeLoans.filter((l) => {
     const days = (new Date(l.dueAt).getTime() - Date.now()) / 86400000;
@@ -362,27 +327,25 @@ export default function LibraryPage() {
     ? search.data!.data
     : research.data ?? [];
 
-  // Research-tab facts — one typographic strip, no card wall.
-  const researchCells: StatCellData[] = [
+  // Research-tab facts — one StatLine, no card wall.
+  const researchCells: StatLineItem[] = [
     {
       label: 'بحوث منشورة',
-      value: research.isPending ? <Skeleton width={48} height={24} /> : (research.data?.length != null ? formatInt(research.data.length) : '—'),
+      value: research.data?.length != null ? formatInt(research.data.length) : '—',
     },
     {
       label: 'مؤلفون طلابيون',
-      value: research.isPending ? <Skeleton width={48} height={24} /> : (research.data ? formatInt(new Set(research.data.map((p) => p.student.id)).size) : '—'),
+      value: research.data ? formatInt(new Set(research.data.map((p) => p.student.id)).size) : '—',
     },
     {
       label: 'متوسط التقييم',
-      value: research.isPending ? <Skeleton width={48} height={24} /> :
-        research.data && research.data.length
-          ? <bdi>{`${formatNum(Math.round((research.data.reduce((s, p) => s + (p.grade ?? 0), 0) / research.data.length) * 10) / 10, { maximumFractionDigits: 1 })}/20`}</bdi>
-          : '—',
+      value: research.data && research.data.length
+        ? <bdi>{`${formatNum(Math.round((research.data.reduce((s, p) => s + (p.grade ?? 0), 0) / research.data.length) * 10) / 10, { maximumFractionDigits: 1 })}/20`}</bdi>
+        : '—',
     },
     {
       label: 'منشورة هذا العام',
-      value: research.isPending ? <Skeleton width={48} height={24} /> :
-        (research.data ? formatInt(research.data.filter((p) => p.publishedAt && new Date(p.publishedAt).getFullYear() >= new Date().getFullYear()).length) : '—'),
+      value: research.data ? formatInt(research.data.filter((p) => p.publishedAt && new Date(p.publishedAt).getFullYear() >= new Date().getFullYear()).length) : '—',
     },
   ];
 
@@ -404,14 +367,39 @@ export default function LibraryPage() {
     document.getElementById(`lib-tab-${entry.key}`)?.focus();
   };
 
+  const tabsStrip = (
+    <div className="tabs lib-tabs" role="tablist" aria-label="أقسام المكتبة" onKeyDown={onTabsKeyDown}>
+      {LIB_TABS.map((t) => (
+        <button
+          key={t.key}
+          id={`lib-tab-${t.key}`}
+          type="button"
+          role="tab"
+          aria-selected={tab === t.key}
+          aria-controls={`lib-panel-${t.key}`}
+          tabIndex={tab === t.key ? 0 : -1}
+          className={tab === t.key ? 'tab on' : 'tab'}
+          onClick={() => setTab(t.key)}
+        >
+          <Icon icon={t.icon} size={14} />
+          {t.label}
+          {t.key === 'research' && (
+            <span className="tab-count">{research.data?.length ?? '—'}</span>
+          )}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
-    <div className="page">
+    <PageFrame width="default">
       <PageHeader
         title="المكتبة الإلكترونية"
-        subtitle={
+        description={
           /* 22-c (A3 P3-10): honest scope — no «آلاف الكتب» overclaim. */
           'كتب المكتبة الأكاديمية وبحوث طلاب الجامعة المنشورة — متاحة للاستعارة الفورية والاطّلاع المرجعي.'
         }
+        tabs={tabsStrip}
       />
 
       {/* Search-first: the page opens with the field, not a KPI wall.
@@ -440,37 +428,13 @@ export default function LibraryPage() {
         )}
       </div>
 
-      {/* Tab switch */}
-      <div className="tabs lib-tabs" role="tablist" aria-label="أقسام المكتبة" onKeyDown={onTabsKeyDown}>
-        {LIB_TABS.map((t) => (
-          <button
-            key={t.key}
-            id={`lib-tab-${t.key}`}
-            type="button"
-            role="tab"
-            aria-selected={tab === t.key}
-            aria-controls={`lib-panel-${t.key}`}
-            tabIndex={tab === t.key ? 0 : -1}
-            className={tab === t.key ? 'tab on' : 'tab'}
-            onClick={() => setTab(t.key)}
-          >
-            <Icon icon={t.icon} size={14} />
-            {t.label}
-            {t.key === 'research' && (
-              <span className="tab-count">{research.data?.length ?? '—'}</span>
-            )}
-          </button>
-        ))}
-      </div>
-
       {!isResearchTab ? (
         <div role="tabpanel" id="lib-panel-books" aria-labelledby="lib-tab-books" className="flex-col gap-4">
-          {/* استعاراتي النشطة — the loans strip: rows when open loans
-              exist, one honest line when they don't (no empty-state wall
-              on every visit; the copy keeps the affordance explained). */}
+          {/* استعاراتي النشطة — rows when open loans exist, one honest
+              line when they don't (no empty-state wall on every visit). */}
           <section className="flex-col gap-2" aria-label="استعاراتي النشطة">
             <div className="flex items-baseline gap-2 flex-wrap">
-              <h2 className="rs-section-title">استعاراتي النشطة</h2>
+              <SectionHeader title="استعاراتي النشطة" as="h2" />
               {!loans.isPending && !loans.isError && (
                 <span className="rs-row-meta">
                   {countAr(openLoans.length, ['استعارة واحدة', 'استعارتان', 'استعارات', 'استعارة'])}
@@ -479,9 +443,7 @@ export default function LibraryPage() {
               )}
             </div>
             {loans.isPending ? (
-              <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
-                <Skeleton width="100%" height={64} rounded="var(--r-lg)" />
-              </div>
+              <RowList aria-label="استعاراتي" loading density="compact" />
             ) : loans.isError ? (
               <ErrorState error={loans.error} onRetry={() => loans.refetch()} />
             ) : openLoans.length === 0 ? (
@@ -489,11 +451,11 @@ export default function LibraryPage() {
                 <strong>لا استعارات نشطة</strong> — اضغط «استعارة» على أي كتاب متاح ليظهر هنا مع موعد إرجاعه خلال 14 يوماً.
               </p>
             ) : (
-              <div className="flex-col gap-2">
+              <RowList aria-label="استعاراتي" density="compact">
                 {openLoans.map((l) => (
                   <LoanRow key={l.id} loan={l} />
                 ))}
-              </div>
+              </RowList>
             )}
           </section>
 
@@ -501,8 +463,8 @@ export default function LibraryPage() {
               trigger + bottom Sheet on phones (draft-then-apply; the
               trigger names the active category so the collapsed state
               never hides what the list is filtered by). */}
-          <div className="flex gap-3 items-center flex-wrap">
-            {isNarrow ? (
+          <FilterBar
+            filters={isNarrow ? (
               <button
                 type="button"
                 className="btn outline sm"
@@ -514,29 +476,33 @@ export default function LibraryPage() {
                 تصفية{cat !== 'all' ? ` · ${categoryLabel(cat)}` : ''}
               </button>
             ) : (
-              <div className="filter-bar lib-filters">
+              /* A bare fragment: FilterBar's own .pf-filterbar-filters is
+                 the flex row — the legacy .filter-bar wrapper (a
+                 container-type element that collapses as a nested flex
+                 child) would stack the pills vertically here. */
+              <>
                 {CATEGORIES.map((c) => (
                   <Pill key={c.id} on={cat === c.id} icon={c.icon} onClick={() => setCat(c.id)}>
                     {c.label}
                   </Pill>
                 ))}
-              </div>
+              </>
             )}
-            <span className="rs-count" style={{ marginInlineStart: 'auto' }}>
-              {books.isPending
-                ? <Skeleton width={90} height={14} />
-                : totalBooks !== null
-                  ? countAr(totalBooks, booksFiltered ? ['نتيجة واحدة', 'نتيجتان', 'نتائج', 'نتيجة'] : BOOK_UNIT)
-                  : '—'}
-            </span>
-          </div>
+            trailing={
+              <span className="rs-count">
+                {books.isPending
+                  ? '…'
+                  : totalBooks !== null
+                    ? countAr(totalBooks, booksFiltered ? ['نتيجة واحدة', 'نتيجتان', 'نتائج', 'نتيجة'] : BOOK_UNIT)
+                    : '—'}
+              </span>
+            }
+          />
 
           {/* Rendered unconditionally so a viewport resize while open
               never tears the exit animation; Sheet paints null when
-              closed. Bottom + 'fit' hugs the content, the apply/clear
-              actions dock in the footer above the safe-area inset, and
-              the grabber drags the tray away. The .lib-filters class
-              keeps the ≤640px 44px pill floor (student.css) inside. */}
+              closed. The .lib-filters class keeps the ≤640px 44px pill
+              floor (student.css) inside the sheet. */}
           <Sheet
             open={filterSheetOpen}
             onClose={() => setFilterSheetOpen(false)}
@@ -568,23 +534,24 @@ export default function LibraryPage() {
             </div>
           </Sheet>
 
-          {books.isPending ? (
-            <BookRowSkeleton />
-          ) : books.isError ? (
+          <RowList
+            aria-label="قائمة الكتب"
+            loading={books.isPending}
+            empty={
+              <EmptyState
+                icon={LibraryIcon}
+                illustration={booksFiltered ? 'empty-search' : undefined}
+                title={booksFiltered ? 'لا توجد كتب تطابق البحث' : 'لا توجد كتب بعد'}
+                description={booksFiltered ? 'جرّب كلمات بحث مختلفة أو إزالة التصنيفات.' : 'ستظهر هنا كتب المكتبة فور توفرها.'}
+              />
+            }
+          >
+            {!books.isError && bookRows.map((b) => (
+              <BookRow key={b.id} book={b} />
+            ))}
+          </RowList>
+          {books.isError && (
             <ErrorState error={books.error} onRetry={() => books.refetch()} />
-          ) : !bookRows.length ? (
-            <EmptyState
-              icon={LibraryIcon}
-              illustration={booksFiltered ? 'empty-search' : undefined}
-              title={booksFiltered ? 'لا توجد كتب تطابق البحث' : 'لا توجد كتب بعد'}
-              description={booksFiltered ? 'جرّب كلمات بحث مختلفة أو إزالة التصنيفات.' : 'ستظهر هنا كتب المكتبة فور توفرها.'}
-            />
-          ) : (
-            <div className="flex-col gap-2" aria-label="قائمة الكتب">
-              {bookRows.map((b) => (
-                <BookRow key={b.id} book={b} />
-              ))}
-            </div>
           )}
           {/* r184: the honest pager — replaces the silent `limit: 100`
               truncation. RTL: "previous" points inline-start-ward = the
@@ -624,114 +591,140 @@ export default function LibraryPage() {
         </div>
       ) : (
         <div role="tabpanel" id="lib-panel-research" aria-labelledby="lib-tab-research" className="flex-col gap-4">
-          <StatStrip ariaLabel="ملخّص أرشيف البحوث" cells={researchCells} />
+          <StatLine items={researchCells} />
 
-          <div className="rs-count">
+          <p className="rs-count" style={{ margin: 0 }}>
             {researchInUse
               ? <><bdi>{visibleResearch.length}</bdi> نتيجة لـ «<bdi>{debouncedQ}</bdi>»</>
               : <><bdi>{visibleResearch.length}</bdi> بحث منشور</>}
-          </div>
+          </p>
 
-          {(researchInUse ? search.isPending : research.isPending) ? (
-            <ResearchListSkeleton />
-          ) : (researchInUse ? search.isError : research.isError) ? (
+          <RowList
+            aria-label="قائمة البحوث المنشورة"
+            loading={researchInUse ? search.isPending : research.isPending}
+            empty={
+              <EmptyState
+                icon={FileText}
+                illustration={q ? 'empty-search' : undefined}
+                title={q ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
+                description={q ? `لم نجد بحثاً يطابق "${q}" — جرّب كلمات أخرى.` : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
+              />
+            }
+          >
+            {!(researchInUse ? search.isError : research.isError) && visibleResearch.map((p) => {
+              const hit = researchInUse ? (p as ResearchSearchHit) : null;
+              return (
+                <ResearchHitRow key={p.id} paper={p} hit={hit} />
+              );
+            })}
+          </RowList>
+          {(researchInUse ? search.isError : research.isError) && (
             <ErrorState
               error={researchInUse ? search.error : research.error}
               onRetry={() => (researchInUse ? search.refetch() : research.refetch())}
             />
-          ) : !visibleResearch.length ? (
-            <EmptyState
-              icon={FileText}
-              illustration={q ? 'empty-search' : undefined}
-              title={q ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
-              description={q ? `لم نجد بحثاً يطابق "${q}" — جرّب كلمات أخرى.` : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
-            />
-          ) : (
-            <div className="flex-col gap-2" aria-label="قائمة البحوث المنشورة">
-              {visibleResearch.map((p) => {
-                const hit = researchInUse ? (p as ResearchSearchHit) : null;
-                return (
-                  <article key={p.id} className="rs-row">
-                    <div className="rs-row-head">
-                      <UserAvatar
-                        initials={p.student.avatarInitials ?? `${p.student.firstName[0]}${p.student.lastName[0]}`}
-                        color={p.student.avatarColor ?? undefined}
-                        size={40}
-                      />
-                      <div className="rs-row-main">
-                        <h3 className="rs-row-title">{p.title}</h3>
-                        <div className="rs-row-meta">
-                          <span>{p.student.firstName} {p.student.lastName}</span>
-                          {p.offering?.course && (
-                            <span className="font-mono"><bdi>{p.offering.course.code}</bdi></span>
-                          )}
-                          {p.offering?.course && <span>{p.offering.course.name}</span>}
-                          {p.publishedAt && (
-                            <span className="font-mono"><bdi>{formatDate(p.publishedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</bdi></span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="rs-row-side">
-                        {hit && (
-                          <Badge color={hit.matchedIn === 'title' ? 'green' : hit.matchedIn === 'abstract' ? 'gold' : 'purple'}>
-                            {hit.matchedIn === 'title' ? 'تطابق في العنوان' : hit.matchedIn === 'abstract' ? 'تطابق في الملخص' : 'تطابق في المتن'}
-                          </Badge>
-                        )}
-                        {!hit && p.grade != null && (
-                          <Badge color={p.grade >= 17 ? 'green' : p.grade >= 14 ? 'gold' : 'amber'} icon={Award}>
-                            <bdi>{p.grade}/20</bdi>
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Snippet when searching (server-sanitized to a
-                        <mark>-only allowlist before injection); abstract
-                        otherwise. The highlight is the signal's soft
-                        ground — the matched term is the row's data. */}
-                    {hit && hit.snippet ? (
-                      <p
-                        className="rs-row-snippet rs-hit-row"
-                        dangerouslySetInnerHTML={{ __html: sanitizeSnippetHtml(hit.snippet) }}
-                      />
-                    ) : p.abstract ? (
-                      <p className="rs-row-snippet">{p.abstract}</p>
-                    ) : null}
-
-                    <div className="rs-row-meta">
-                      {p.plagiarismPct != null && (
-                        <span>انتحال: <bdi className="font-mono">{formatPct(p.plagiarismPct)}%</bdi></span>
-                      )}
-                      {p.aiContentPct != null && (
-                        <span>ذكاء اصطناعي: <bdi className="font-mono">{formatPct(p.aiContentPct)}%</bdi></span>
-                      )}
-                      {(p.plagiarismPct != null || p.aiContentPct != null) && (
-                        <span>محاكاة</span>
-                      )}
-                      <span style={{ marginInlineStart: 'auto', display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-1)' }}>
-                        <Icon icon={ShieldCheck} size={11} strokeWidth={2} />
-                        تم التحقق من النشر
-                      </span>
-                    </div>
-
-                    {p.fileUrl && (
-                      <div className="rs-row-actions">
-                        <Link
-                          to={`/document/${encodeURIComponent(p.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(p.title)}&back=${encodeURIComponent('/student/library?tab=research')}&paper=${encodeURIComponent(p.id)}`}
-                          className="btn primary sm"
-                        >
-                          <Icon icon={FileText} size={13} />
-                          اقرأ البحث كاملاً
-                        </Link>
-                      </div>
-                    )}
-                  </article>
-                );
-              })}
-            </div>
           )}
         </div>
       )}
-    </div>
+    </PageFrame>
+  );
+}
+
+/* صف نتيجة بحث — المقتطف مع إبراز المطابقة هو جسم الصف (مفتوح
+ * افتراضياً؛ القابلة للطيّ لمن يريد قائمة أهدأ). */
+function ResearchHitRow({ paper, hit }: {
+  paper: {
+    id: string;
+    title: string;
+    abstract?: string | null;
+    fileUrl?: string | null;
+    grade?: number | null;
+    plagiarismPct?: number | null;
+    aiContentPct?: number | null;
+    publishedAt?: string | null;
+    student: { id: string; firstName: string; lastName: string; avatarInitials?: string | null; avatarColor?: string | null };
+    offering?: { course: { code: string; name: string } } | null;
+  };
+  hit: ResearchSearchHit | null;
+}) {
+  return (
+    <RowItem
+      leading={
+        <UserAvatar
+          initials={paper.student.avatarInitials ?? `${paper.student.firstName[0]}${paper.student.lastName[0]}`}
+          color={paper.student.avatarColor ?? undefined}
+          size={40}
+        />
+      }
+      title={paper.title}
+      meta={
+        <>
+          <span>{paper.student.firstName} {paper.student.lastName}</span>
+          {paper.offering?.course && (
+            <span className="font-mono"><bdi>{paper.offering.course.code}</bdi></span>
+          )}
+          {paper.offering?.course && <span>{paper.offering.course.name}</span>}
+          {paper.publishedAt && (
+            <span className="font-mono"><bdi>{formatDate(paper.publishedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</bdi></span>
+          )}
+        </>
+      }
+      trailing={
+        hit ? (
+          <Badge color={hit.matchedIn === 'title' ? 'green' : hit.matchedIn === 'abstract' ? 'gold' : 'purple'}>
+            {hit.matchedIn === 'title' ? 'تطابق في العنوان' : hit.matchedIn === 'abstract' ? 'تطابق في الملخص' : 'تطابق في المتن'}
+          </Badge>
+        ) : paper.grade != null ? (
+          <Badge color={paper.grade >= 17 ? 'green' : paper.grade >= 14 ? 'gold' : 'amber'} icon={Award}>
+            <bdi>{paper.grade}/20</bdi>
+          </Badge>
+        ) : undefined
+      }
+      defaultExpanded
+      expandLabel={`تفاصيل البحث: ${paper.title}`}
+    >
+      <div className="flex-col gap-2">
+        {/* Snippet when searching (server-sanitized to a <mark>-only
+            allowlist before injection); abstract otherwise. The
+            highlight is the signal's soft ground — the matched term is
+            the row's data. */}
+        {hit && hit.snippet ? (
+          <p
+            className="rs-row-snippet rs-hit-row"
+            dangerouslySetInnerHTML={{ __html: sanitizeSnippetHtml(hit.snippet) }}
+          />
+        ) : paper.abstract ? (
+          <p className="rs-row-snippet">{paper.abstract}</p>
+        ) : null}
+
+        <div className="rs-row-meta">
+          {paper.plagiarismPct != null && (
+            <span>انتحال: <bdi className="font-mono">{formatPct(paper.plagiarismPct)}%</bdi></span>
+          )}
+          {paper.aiContentPct != null && (
+            <span>ذكاء اصطناعي: <bdi className="font-mono">{formatPct(paper.aiContentPct)}%</bdi></span>
+          )}
+          {(paper.plagiarismPct != null || paper.aiContentPct != null) && (
+            <span>محاكاة</span>
+          )}
+          <span style={{ marginInlineStart: 'auto', display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-1)' }}>
+            <Icon icon={ShieldCheck} size={11} strokeWidth={2} />
+            تم التحقق من النشر
+          </span>
+        </div>
+
+        {paper.fileUrl && (
+          <div className="rs-row-actions">
+            <Link
+              to={`/document/${encodeURIComponent(paper.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(paper.title)}&back=${encodeURIComponent('/student/library?tab=research')}&paper=${encodeURIComponent(paper.id)}`}
+              className="btn primary sm"
+            >
+              <Icon icon={FileText} size={13} />
+              اقرأ البحث كاملاً
+            </Link>
+          </div>
+        )}
+      </div>
+    </RowItem>
   );
 }

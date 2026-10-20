@@ -1,27 +1,27 @@
 /**
- * r186 → r199 — the book jacket, renegotiated for the row library.
+ * r186 → r199 → r232 — the book jacket, renegotiated for the row library.
  *
  * The r186 grid shipped every book as a thumb card with a full
  * typographic jacket (title + author painted on the cover). The r199
- * Superlist re-compose replaces the uniform card grid with full-width
- * ROWS (list-first, detail attached to the row), and the jacket becomes
- * an IDENTITY CHIP at row scale: the book's tinted field, its category
- * mark, and the category band. Painting the title on an 88px chip was
- * unreadable and duplicated the row body — the accessible name now
- * lives ONLY in the row body (single read).
+ * Superlist re-compose replaced the uniform card grid with full-width
+ * ROWS; r232 moves those rows onto the shared RowList/RowItem patterns
+ * (Agent S's contract). The jacket becomes an IDENTITY CHIP in the
+ * row's leading slot: the book's tinted field, its category mark, and
+ * the category band. Painting the title on a chip was unreadable and
+ * duplicated the row body — the accessible name now lives ONLY in the
+ * row body (single read).
  *
  * Renegotiated pins (deliberate visual change, 4B family):
  *   1. The jacket is a row-scale identity chip (tinted field + category
  *      mark + band) — it no longer paints the title/author; the ROW
  *      body carries title, author and category (single accessible read).
- *   2. The whole jacket stays aria-hidden — the accessible title/author
- *      live in the row body.
+ *   2. The whole jacket stays aria-hidden.
  *   3. The jacket still rides the book's own themeColor (inline tint +
  *      the --book-tint custom property); a book without themeColor
  *      falls back to the shared DEFAULT_COURSE_TINT.
  *   4. The band names the category beside its Lucide icon (never emoji).
- *   5. The loading skeleton matches the ROW's settled shape (cover chip
- *      + two text lines) — shape-matched loading, never a shape jump.
+ *   5. Loading rides the shared RowList skeleton (aria-busy) — shape-
+ *      matched by the pattern, never a bare spinner.
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render } from '@testing-library/react';
@@ -67,10 +67,10 @@ const renderLibrary = () =>
   );
 
 const rowOf = (title: string) =>
-  Array.from(document.querySelectorAll('.rs-book-row')).find((c) =>
-    (c.querySelector('.rs-book-title')?.textContent ?? '').includes(title));
+  Array.from(document.querySelectorAll('.pf-row')).find((c) =>
+    (c.querySelector('.pf-row-title')?.textContent ?? '').includes(title));
 
-describe('r199 — the book row identity chip (renegotiated r186 jacket)', () => {
+describe('r232 — the book row identity chip (renegotiated r186 jacket on the shared rows)', () => {
   beforeEach(() => {
     state.pending = false;
     state.envelope.rows = [makeBook()];
@@ -81,10 +81,10 @@ describe('r199 — the book row identity chip (renegotiated r186 jacket)', () =>
     renderLibrary();
     const row = rowOf('شبكات الحاسوب');
     expect(row).not.toBeNull();
-    expect(row?.querySelector('.rs-book-title')?.textContent)
+    expect(row?.querySelector('.pf-row-title')?.textContent)
       .toBe('شبكات الحاسوب: النظرية والتطبيق');
-    expect(row?.querySelector('.rs-book-author')?.textContent)
-      .toBe('د. هدى بن عامر');
+    expect(row?.querySelector('.pf-row-meta')?.textContent)
+      .toContain('د. هدى بن عامر');
     // The category reads in the row meta (and on the chip's band).
     expect(row?.textContent).toContain('شبكات');
     // The chip no longer paints the title — no duplicate read anywhere.
@@ -95,9 +95,9 @@ describe('r199 — the book row identity chip (renegotiated r186 jacket)', () =>
     renderLibrary();
     const cover = rowOf('شبكات الحاسوب')?.querySelector<HTMLElement>('.lib-book-cover');
     expect(cover?.getAttribute('aria-hidden')).toBe('true');
-    // The row body's title carries the hover/tooltip contract.
-    const row = cover?.closest('.rs-book-row');
-    expect(row?.querySelector('.rs-book-title')?.getAttribute('title'))
+    // The row title is the accessible name; the chip carries no text twin.
+    const row = cover?.closest('.pf-row');
+    expect(row?.querySelector('.pf-row-title')?.textContent)
       .toBe('شبكات الحاسوب: النظرية والتطبيق');
   });
 
@@ -123,16 +123,12 @@ describe('r199 — the book row identity chip (renegotiated r186 jacket)', () =>
     expect(band?.querySelector('svg')).not.toBeNull();
   });
 
-  it('the skeleton matches the row shape (cover chip + two lines — shape-matched loading)', () => {
+  it('loading rides the shared RowList skeleton (aria-busy, never a bare spinner)', () => {
     state.pending = true;
     state.envelope.rows = [];
     state.envelope.meta = { page: 1, limit: 24, total: 0, totalPages: 1 };
     renderLibrary();
-    const tile = document.querySelector('.rs-book-row[aria-hidden="true"]');
-    expect(tile).not.toBeNull();
-    // The Skeleton component writes its height inline — the chip's
-    // settled height, so loading never shifts the list.
-    const coverSkeleton = tile?.firstElementChild as HTMLElement | null;
-    expect(coverSkeleton?.getAttribute('style')).toContain('height: 160px');
+    expect(document.querySelector('[aria-busy="true"]')).not.toBeNull();
+    expect(document.querySelector('.pf-row')).toBeNull();
   });
 });
