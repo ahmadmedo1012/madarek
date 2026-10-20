@@ -10,7 +10,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  AlertTriangle, BookOpen, Sparkles, ChevronRight,
+  AlertTriangle, BookOpen, Sparkles, ChevronRight, ChevronLeft,
   Users, ClipboardCheck, BarChart3, Brain, Lightbulb, ArrowUpRight,
   CheckCircle2, AlertCircle, RefreshCw,
 } from 'lucide-react';
@@ -29,8 +29,9 @@ import {
 import { countAr } from '../../lib/format';
 import { useEntityPageTitle } from '../../components/layout/AppShell'; // r183-B6 (A4 P3-4): entity tab title, one call only
 import '../../styles/owner.css'; // ConfirmDialog surfaces via curriculum authoring (D11 css split, 12-15)
-import '../../styles/training.css'; // shared .track-hero/.track-card/.filter-pill/.back-link families (D11 css split, 12-15)
-import { formatPct1 } from '../../utils/numbers';
+import '../../styles/training.css'; // shared .track-hero/.filter-pill/.back-link families (D11 css split, 12-15)
+import '../../styles/teacher-quality.css'; // 4C family sheet (r241): the .tq list-row catalog grammar
+import { formatPct1, formatNum } from '../../utils/numbers';
 
 /* Non-text edge for the 1px leading hairline (ruling #4). 5-D3 (5-D1
  * hand-off): WATCH's --gold measured 2.30:1 on the light .risk-row —
@@ -157,9 +158,12 @@ export default function TeacherIntelligencePage() {
             description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل إدارة الشؤون الأكاديمية."
           />
         ) : (
-          <div className="track-grid">
+          /* r241 (Superlist): the catalog is a LIST — full-width rows with
+           * hairline separators and the counts inline, not a uniform
+           * card grid. Detail stays attached to the row (one tap). */
+          <div className="tq-rows" role="list">
             {offerings.data.map((o) => (
-              <OfferingCard key={o.id} offering={o} />
+              <OfferingRow key={o.id} offering={o} />
             ))}
           </div>
         )}
@@ -168,41 +172,46 @@ export default function TeacherIntelligencePage() {
   );
 }
 
-/** Shape-matched skeleton for the track-grid catalog (thumb-card anatomy). */
+/** Shape-matched skeleton for the row-list catalog (r241: rows, not
+ * thumb-card tiles — mirrors the .tq-rows anatomy the data renders). */
 function TrackGridSkeleton() {
   return (
-    <div className="track-grid" aria-busy="true" aria-live="polite">
+    <div className="tq-rows" aria-busy="true" aria-live="polite">
       {[0, 1, 2, 3].map((i) => (
-        <div key={i} className="track-card" aria-hidden>
-          <Skeleton width={48} height={48} rounded="var(--r-lg)" />
-          <div className="track-card-body">
-            <Skeleton width="45%" height={10} />
-            <Skeleton width="85%" height={16} />
-            <Skeleton width="60%" height={10} />
+        <div key={i} className="tq-row" aria-hidden>
+          <Skeleton width={44} height={44} rounded="var(--r-lg)" />
+          <div className="tq-row-body">
+            <Skeleton width="38%" height={10} />
+            <Skeleton width="72%" height={16} />
+            <Skeleton width="55%" height={10} />
           </div>
+          <Skeleton width={12} height={12} />
         </div>
       ))}
     </div>
   );
 }
 
-function OfferingCard({ offering }: { offering: TeacherOffering }) {
+/** r241 (Superlist): one offering = one row — icon well leading, code+
+ * term kicker, course name prominent, honest counts inline, trailing
+ * chevron. The icon-well tint keys off --tq-accent (teacher-quality.css
+ * owns the grammar); countAr(0) still names the reality (5-A7). */
+function OfferingRow({ offering }: { offering: TeacherOffering }) {
   const accent = offering.course.themeColor ?? 'var(--accent)';
   return (
     <Link
       to={`/teacher/intelligence/${offering.id}`}
-      className="track-card"
-      style={{ ['--track-accent' as never]: accent }}
+      className="tq-row"
+      role="listitem"
+      style={{ ['--tq-accent' as never]: accent }}
     >
-      {/* the icon well tint is painted by the .track-card-icon rule from
-          --track-accent (training.css owns the family) */}
-      <div className="track-card-icon">
+      <span className="tq-row-icon">
         <EmojiIcon emoji={offering.course.iconEmoji ?? '📚'} size={22} />
-      </div>
-      <div className="track-card-body">
-        <div className="track-card-cat"><bdi>{offering.course.code}</bdi> · {offering.term}</div>
-        <div className="track-card-title">{offering.course.name}</div>
-        <div className="track-card-meta">
+      </span>
+      <span className="tq-row-body">
+        <span className="tq-row-kicker"><bdi>{offering.course.code}</bdi> · {offering.term}</span>
+        <span className="tq-row-title">{offering.course.name}</span>
+        <span className="tq-row-meta">
           {/* P2-1/P2-4 (5-A7): countAr(0) renders the broken «0 محاضرة» —
               each zero case gets its own honest «لا …» copy. */}
           <span><Icon icon={Users} size={12} /> {offering._count.enrollments === 0 ? 'لا طلاب' : countAr(offering._count.enrollments, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
@@ -211,8 +220,9 @@ function OfferingCard({ offering }: { offering: TeacherOffering }) {
           {offering._count.examTemplates > 0 && (
             <span><Icon icon={Sparkles} size={12} /> {countAr(offering._count.examTemplates, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}</span>
           )}
-        </div>
-      </div>
+        </span>
+      </span>
+      <Icon icon={ChevronLeft} size={14} className="tq-row-chevron" />
     </Link>
   );
 }
@@ -379,25 +389,25 @@ export function TeacherOfferingDetailPage() {
           cells={[
             {
               label: 'مسجَّلون',
-              value: analytics.data.enrolled.toString(),
+              value: formatNum(analytics.data.enrolled),
               trend: 'تسجيلات نشطة في المقرّر',
               trendTone: 'flat',
             },
             {
               label: 'الحضور العام',
-              value: `${analytics.data.overallAttendance}%`,
+              value: `${formatNum(analytics.data.overallAttendance)}%`,
               trend: analytics.data.overallAttendance >= 75 ? 'فوق حدّ 75%' : 'تحت حدّ 75%',
               trendTone: analytics.data.overallAttendance >= 75 ? 'up' : 'down',
             },
             {
               label: 'متوسط الدرجات',
-              value: `${analytics.data.avgGrade}%`,
+              value: `${formatNum(analytics.data.avgGrade)}%`,
               trend: analytics.data.avgGrade >= 65 ? 'فوق حدّ 65%' : 'تحت حدّ 65%',
               trendTone: analytics.data.avgGrade >= 65 ? 'up' : 'down',
             },
             {
               label: 'نسبة النجاح',
-              value: `${analytics.data.passRate}%`,
+              value: `${formatNum(analytics.data.passRate)}%`,
               trend: 'طلاب عند 50 فأعلى',
               trendTone: analytics.data.passRate >= 50 ? 'up' : 'down',
             },

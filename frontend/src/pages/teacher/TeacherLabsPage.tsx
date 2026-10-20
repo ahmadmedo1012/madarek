@@ -28,7 +28,8 @@ import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, Skeleton, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useLabs, type VirtualLab } from '../../hooks/useResources';
-import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
+import { formatNum } from '../../utils/numbers';
+import '../../styles/teacher-quality.css'; // 4C family sheet (r241): the .tq list-row catalog grammar
 
 const CATEGORY_ICON: Record<string, LucideIcon> = {
   net: Network,
@@ -61,7 +62,8 @@ function categoryLabel(category: string): React.ReactNode {
   return <bdi>{category}</bdi>;
 }
 
-/** Shape-matched skeleton for the stat strip + card grid. */
+/** Shape-matched skeleton for the stat strip + row list (r241: rows,
+ * not thumb-card tiles — mirrors the .tq-rows anatomy). */
 function LabsSkeleton() {
   return (
     <>
@@ -77,14 +79,13 @@ function LabsSkeleton() {
         ))}
       </div>
       <Card>
-        <div className="track-grid" aria-hidden>
+        <div className="tq-rows" aria-hidden>
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="track-card">
-              <Skeleton width={48} height={48} rounded="var(--r-lg)" />
-              <div className="track-card-body">
-                <Skeleton width="45%" height={10} />
-                <Skeleton width="85%" height={16} />
-                <Skeleton width="60%" height={10} />
+            <div key={i} className="tq-row">
+              <Skeleton width={44} height={44} rounded="var(--r-lg)" />
+              <div className="tq-row-body">
+                <Skeleton width="38%" height={10} />
+                <Skeleton width="72%" height={16} />
               </div>
             </div>
           ))}
@@ -139,19 +140,19 @@ export default function TeacherLabsPage() {
             cells={[
               {
                 label: 'معامل متاحة',
-                value: (labs?.length ?? 0).toString(),
+                value: formatNum(labs?.length ?? 0),
                 trend: 'جاهزة للتجربة',
                 trendTone: 'flat',
               },
               {
                 label: 'فئات المعامل',
-                value: categories.toString(),
+                value: formatNum(categories),
                 trend: 'شبكات، علوم، ذكاء اصطناعي…',
                 trendTone: 'flat',
               },
               {
                 label: 'منصّات التدريب',
-                value: platforms.toString(),
+                value: formatNum(platforms),
                 trend: 'منصّات مختلفة داخل المعامل',
                 trendTone: 'flat',
               },
@@ -179,8 +180,11 @@ export default function TeacherLabsPage() {
             </Card>
           ) : (
             <Card title="المعامل المتاحة" icon={FlaskConical}>
-              <div className="track-grid">
-                {labs?.map((lab, i) => <LabCard key={lab.id} lab={lab} index={i} />)}
+              {/* r241 (Superlist): a LIST of labs, not a card wall — each
+                  row keeps the category/platform kicker, the honest
+                  experiment count, and its own معاينة action. */}
+              <div className="tq-rows" role="list">
+                {labs?.map((lab) => <LabRow key={lab.id} lab={lab} />)}
               </div>
             </Card>
           )}
@@ -190,36 +194,36 @@ export default function TeacherLabsPage() {
   );
 }
 
-function LabCard({ lab, index }: { lab: VirtualLab; index: number }) {
+/** r241 (Superlist): one lab = one row — icon well leading, category·
+ * platform kicker, name prominent, honest experiment count, and the
+ * معاينة كطالب action trailing (44px zone). */
+function LabRow({ lab }: { lab: VirtualLab }) {
   const Ico = iconFor(lab.category);
-  // --track-accent feeds the color-mix tints owned by training.css; the
-  // previous inline `${accent}1a` alpha was invalid CSS whenever the
+  // --tq-accent feeds the color-mix tint owned by teacher-quality.css;
+  // the previous inline `${accent}1a` alpha was invalid CSS whenever the
   // fallback fired (audit 0-e P1-15).
   const accent = lab.themeColor ?? 'var(--accent)';
   return (
-    <div
-      className="track-card is-static"
-      style={{ ['--track-accent' as never]: accent, ['--lab-i' as never]: index }}
-    >
-      <div className="track-card-icon">
+    <div className="tq-row" role="listitem" style={{ ['--tq-accent' as never]: accent }}>
+      <span className="tq-row-icon">
         <Icon icon={Ico} size={22} />
-      </div>
-      <div className="track-card-body">
-        <div className="track-card-cat">
+      </span>
+      <span className="tq-row-body">
+        <span className="tq-row-kicker">
           {categoryLabel(lab.category)}
           {lab.platform ? <> · <bdi>{lab.platform}</bdi></> : ''}
-        </div>
-        <div className="track-card-title" title={lab.name}>{lab.name}</div>
-        <div className="track-card-meta">
-          <Badge>{lab.totalExperiments ?? 0} تجربة معدّة</Badge>
-        </div>
-        <div className="track-card-actions">
-          <Link to="/student/labs" className="btn ghost sm">
-            <Icon icon={ExternalLink} size={12} /> معاينة كطالب
-            <Icon icon={ChevronLeft} size={12} />
-          </Link>
-        </div>
-      </div>
+        </span>
+        <span className="tq-row-title" title={lab.name}>{lab.name}</span>
+        <span className="tq-row-meta">
+          <Badge><span className="tq-num">{formatNum(lab.totalExperiments ?? 0)}</span> تجربة معدّة</Badge>
+        </span>
+      </span>
+      <span className="tq-row-actions">
+        <Link to="/student/labs" className="btn ghost sm">
+          <Icon icon={ExternalLink} size={12} /> معاينة كطالب
+          <Icon icon={ChevronLeft} size={12} />
+        </Link>
+      </span>
     </div>
   );
 }
