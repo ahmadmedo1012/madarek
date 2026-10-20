@@ -28,6 +28,10 @@ import './styles/motion.css';
 import './styles/base.css';
 import './styles/components.css';
 import './styles/layout.css';
+// patterns.css (Agent S r210) — the shared page-pattern sheet; all
+// classes are pf-prefixed, so the placement after layout.css is
+// collision-free. CONTRACT.md is the normative doc.
+import './styles/patterns.css';
 import './styles/auth.css';
 import './styles/notifications.css';
 import './styles/student.css';
