@@ -106,11 +106,16 @@ describe('r168a — the scroll region is keyboard-reachable and named', () => {
 });
 
 describe('r168a — lecture player owns a heading outline', () => {
-  it('lecture title is the h1; chapters card is an h2', () => {
+  /** r220 (4A redesign): the chapters Card became the unified
+   *  attachments panel — the heading OUTLINE contract survives: lecture
+   *  title = h1, the panel («داخل المحاضرة») = h2, panel sections
+   *  (نقاط التفاعل / فصول المحاضرة) = h3. */
+  it('lecture title is the h1; the attachments panel is the h2; its sections are h3', () => {
     const page = stripJsx(read('src/pages/student/LecturePlayerPage.tsx'));
     expect(page).toContain('<h1 className="lecture-meta-title">');
-    expect(page).toContain('title="فصول المحاضرة"');
-    expect(page).toMatch(/title="فصول المحاضرة"[^>]*heading="h2"/);
+    expect(page).toContain('<h2 className="lecture-panel-title">داخل المحاضرة</h2>');
+    expect(page).toContain('<h3 className="lecture-panel-sec-title">');
+    expect(page).toContain('فصول المحاضرة</h3>');
   });
 
   it('the tag swap stays pixel-identical (margin reset at source)', () => {
@@ -150,10 +155,14 @@ describe('r168a — student dashboard leads its outline with its identity', () =
        must still equal resolveTitle('/student/dashboard')'s nav label
        world («لوحة …»), and every header state (pending/error/preview/
        main) shares it. */
-    expect(page).toContain('<h1 className="page-title">لوحة التحكم</h1>');
-    expect(page.match(/<h1 className="page-title">لوحة التحكم<\/h1>/g)?.length).toBe(4);
-    // The greeting rides the masthead subtitle (never a heading).
-    expect(page).not.toMatch(/<h2 className="page-title">/);
+    /* r221 re-pin: the header states now ride the patterns PageHeader
+       (pf-page-title) — same identity contract, one h1 per state: the
+       pending mirror carries the literal h1, the error/preview/main
+       states pass the title to the PageHeader pattern. */
+    expect(page.match(/<h1 className="pf-page-title">لوحة التحكم<\/h1>/g)?.length).toBe(1);
+    expect(page.match(/title="لوحة التحكم"/g)?.length).toBe(3);
+    // The greeting rides the masthead description (never a heading).
+    expect(page).not.toMatch(/<h2 className="pf-page-title">/);
     // The welcome-hero is gone: no welcome-card anywhere.
     expect(page).not.toContain('welcome-card');
   });

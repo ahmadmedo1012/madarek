@@ -19,7 +19,7 @@
 
   .lecture-shell {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
     gap: var(--sp-6);
     align-items: start;
   }
@@ -27,6 +27,104 @@
     /* Sidebar collapses below the player on narrow screens. */
     .lecture-shell { grid-template-columns: 1fr; }
   }
+
+  /* r220 — the attachments panel: interaction points + chapters in ONE
+     calm surface beside the video. Sticky on desktop (it scrolls with
+     the player column and never outruns the topbar); static in the
+     ≤1024px flow where it reads as the sheet under the player. */
+  .lecture-aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    min-inline-size: 0;
+  }
+  .lecture-panel {
+    position: sticky;
+    top: var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    box-shadow: var(--elev-1);
+    max-block-size: calc(100vh - var(--sp-12));
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  @media (max-width: 1024px) {
+    .lecture-panel { position: static; max-block-size: none; overflow: visible; }
+  }
+  .lecture-panel-title {
+    margin: 0;
+    padding: var(--sp-4) var(--sp-4) var(--sp-2);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-bold);
+    color: var(--text);
+  }
+  .lecture-panel-sec {
+    padding: var(--sp-3) var(--sp-4) var(--sp-3);
+    border-block-start: 1px solid var(--surface-divider);
+  }
+  .lecture-panel-sec-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-2);
+    margin: 0 0 var(--sp-1);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-secondary);
+  }
+  .lecture-panel-sec-meta {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .lecture-panel-empty {
+    margin: 0;
+    padding: 0 var(--sp-4) var(--sp-4);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+  }
+  /* Interaction-point rows — the chapter-row grammar with a question
+     body; unanswered rows carry the alert ink, answered rows go quiet
+     green (state = word + icon + position, never hue alone: the time
+     chip + the answered count in the section head carry the same truth). */
+  .cp-list { display: flex; flex-direction: column; }
+  .cp-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
+    min-block-size: 44px;
+    padding: var(--sp-2-5) var(--sp-2);
+    background: transparent;
+    border: 0;
+    text-align: start;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    border-radius: var(--r-sm);
+    transition: background var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .cp-row + .cp-row { border-block-start: 1px solid var(--surface-divider); }
+  .cp-row:hover { background: var(--surface-2); }
+  .cp-row:active { background: var(--surface-3); }
+  .cp-row-q {
+    flex: 1;
+    min-inline-size: 0;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    line-height: 1.45;
+    color: var(--text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .cp-row.done .cp-row-q { color: var(--text-secondary); font-weight: var(--fw-normal); }
+  .cp-row.done .chapter-state { color: var(--success-ink); }
+  .cp-row:not(.done) .chapter-state { color: var(--warning-ink); }
 
   /* Video column — one flex rhythm for meta / progress / description,
      no per-child margins. */
@@ -1135,6 +1233,40 @@
     font-variant-numeric: tabular-nums;
   }
   .pill.on .courses-filter-count { color: inherit; }
+
+  /* r221 (4A redesign — Superlist): the course LIST replaces the card
+     grid — rows in the pattern RowList (detail attached to the row).
+     The API tint rides the leading icon well only; progress + CTA sit
+     on the row's trailing edge. */
+  .courses-row-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: var(--r-md);
+    flex-shrink: 0;
+  }
+  .courses-row-title {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: var(--fw-semibold);
+  }
+  .courses-row-title:hover { color: var(--accent-ink); }
+  .courses-row-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+  .courses-row-progress .progress { inline-size: 150px; }
+  .courses-row-go { flex-shrink: 0; }
+  @media (max-width: 640px) {
+    /* Phone rows: the chip is decorative (the row's title is the
+       link) — it yields to the text; the bar keeps the honest % only. */
+    .courses-row-go { display: none; }
+    .courses-row-progress .progress { inline-size: 96px; }
+    .courses-row-progress .progress-head span:first-child { display: none; }
+  }
   /* (r151f: bang retired — the v6 stagger's five selectors carry
      :not(.courses-grid):not(.mooc-grid) at the source now, so this
      rule fights nothing; kept as the documented belt that pins the
@@ -1180,6 +1312,45 @@
   @keyframes courses-card-in {
     from { opacity: 0; transform: translateY(8px) scale(0.985); }
     to { opacity: 1; transform: none; }
+  }
+
+  /* r221 (4A redesign — Superlist): the continue strip — the course
+     home's ONE next action with its progress riding beside it. The
+     old tinted hero card (course-hero family) retires; the tint now
+     washes only this strip's icon-side border and progress fill. */
+  .course-continue {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-5);
+    flex-wrap: wrap;
+    padding: var(--sp-5) var(--sp-6);
+    background: color-mix(in srgb, var(--course-tint) 7%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--course-tint) 22%, var(--rule));
+    border-radius: var(--r-lg);
+  }
+  [data-theme="dark"] .course-continue {
+    background: color-mix(in srgb, var(--course-tint) 12%, var(--surface));
+    border-color: color-mix(in srgb, var(--course-tint) 35%, var(--rule));
+  }
+  .course-continue-progress {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1-5);
+    flex: 1;
+    min-inline-size: min(240px, 100%);
+  }
+  .course-continue-next {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-1-5);
+    max-inline-size: 100%;
+  }
+  @media (max-width: 640px) {
+    .course-continue { padding: var(--sp-4); }
+    .course-continue-next { inline-size: 100%; }
+    .course-continue-next .btn { inline-size: 100%; justify-content: center; min-block-size: 44px; }
   }
 
   /* ═══ CourseDetailPage — tinted hero + curriculum progress ═══
@@ -3540,7 +3711,7 @@
   }
   .matrix-name {
     font-size: var(--fs-sm);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold);
     color: var(--text);
     line-height: 1.25;
   }
@@ -3549,32 +3720,63 @@
     align-items: center;
     gap: var(--sp-1);
     margin-block-start: var(--sp-0-5);
-    font-size: var(--fs-xxs); /* r184: literal → token (11px = --fs-xxs), zero visual change */
-    color: var(--text-subtle);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
     font-variant-numeric: tabular-nums;
   }
   .matrix-meta-pct {
-    color: var(--text-muted);
+    color: var(--text);
     font-weight: var(--fw-semibold);
+    font-family: var(--font-mono);
   }
 
-  /* Per-concept tile */
+  /* Per-concept tile (r220: wider min cell = long Arabic concept names
+     stop ellipsising; status word + tabular % mean the state never
+     rides on hue alone). */
   .matrix-cells {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   }
   .matrix-cell {
-    padding: var(--sp-2) var(--sp-2-5);
-    border-radius: var(--r-xs);
-    font-size: var(--fs-xs); /* r184: literal → token (12px = --fs-xs), zero visual change */
+    padding: var(--sp-2-5) var(--sp-3);
+    border-radius: var(--r-sm);
+    font-size: var(--fs-xs);
     color: var(--text);
     background: var(--surface-2);
     border: 1px solid var(--rule);
     text-align: start;
     cursor: default;
-    line-height: 1.3;
+    line-height: 1.4;
     transition: var(--t-clean);
+    min-inline-size: 0;
+  }
+  /* r220: the non-link cells join the keyboard order — focusable, with
+     the system focus ring so the grid is traversable without a pointer. */
+  .matrix-cell:focus-visible {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+  }
+
+  /* r220 — mobile recomposition: the dense grid becomes a concept list
+     with the SAME data (name + status word + %), one honest row per
+     concept — no sideways scroll, no clipped tiles. */
+  @media (max-width: 640px) {
+    .matrix-cells { grid-template-columns: 1fr; }
+    .matrix-cell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+    }
+    .matrix-name {
+      flex: 1;
+      min-inline-size: 0;
+    }
+    .matrix-meta {
+      margin-block-start: 0;
+      flex-shrink: 0;
+    }
   }
   .matrix-cell.lvl-strong   { background: color-mix(in srgb, var(--success) 14%, var(--surface)); border-color: color-mix(in srgb, var(--success) 26%, transparent); color: var(--c-mint-deep); }
   .matrix-cell.lvl-good     { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 24%, transparent); color: var(--accent-strong); }
@@ -3703,12 +3905,54 @@
      conflict) with the valid RTL-correct fade: dots sit at the
      inline-end corner, opaque at the edge, fading toward the content —
      `to left` for LTR (inline-end = right), `to right` for RTL. */
-  
-  
+
+
   @media (max-width: 640px) {
-    
-    
-    
+
+
+
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     r220 (4A redesign — Superlist direction) — dashboard TodayList
+     anatomy. All values ride tokens; overrides scope under
+     .student-dashboard so the shared primitives stay untouched.
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* The continue-learning item inside the TodayList: the small momentum
+     ring rides the leading slot; the chip CTA stays visual (the row is
+     the link — the agenda-row contract). */
+  .student-dashboard .dash-resume-ring {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--sp-1);
+  }
+  .student-dashboard .dash-resume-ring .momentum-ring {
+    inline-size: 56px;
+    block-size: 56px;
+  }
+  .student-dashboard .dash-resume-ring .momentum-center { display: none; }
+  /* The visual action chips riding list rows (never the only link). */
+  .student-dashboard .pf-chip { white-space: nowrap; }
+  .student-dashboard .text-warning-ink { color: var(--warning-ink); }
+
+  /* The week ledger day bands inside the pattern RowList. */
+  .dash-week-group {
+    display: flex;
+    flex-direction: column;
+  }
+  .dash-week-day {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4) var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+  }
+  .dash-week-day .font-mono {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
   }
 
 }

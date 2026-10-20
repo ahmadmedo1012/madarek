@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
-  CheckCircle2, ChevronLeft, ChevronRight, ListOrdered, ListVideo, Play, Sparkles, XCircle, AlertCircle,
+  CheckCircle2, ChevronLeft, ChevronRight, ListVideo, Play, Sparkles, XCircle, AlertCircle,
 } from 'lucide-react';
 import { Badge, Card } from '../../components/primitives';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
@@ -15,6 +15,7 @@ import { useEntityPageTitle } from '../../components/layout/AppShell';
 import { useAuthStore } from '../../stores/auth.store';
 import { apiBaseURL } from '../../lib/api';
 import { countAr, formatMmSs } from '../../lib/format';
+import { formatInt } from '../../utils/numbers';
 
 /* fmtTime (the m:ss media clock) is lib/format.formatMmSs (13-15 fold,
  * audit 11-f P2-1) — deliberately NOT curriculumValidation.formatSec,
@@ -721,51 +722,94 @@ export default function LecturePlayerPage() {
           )}
         </div>
 
-        {/* Sidebar: Chapters */}
-        <Card title="فصول المحاضرة" icon={ListOrdered} heading="h2">
-          {!data.chapters.length ? (
-            <EmptyState illustration="empty-search"
-              icon={ListVideo}
-              title="لم تُقسَّم هذه المحاضرة بعد"
-              description="لم يُضف المدرّس فصولاً لهذه المحاضرة — شاهدها كاملة دون تنقّل."
-            />
-          ) : (
-            <div className="chapter-list">
-              {data.chapters.map((ch, i) => {
-                const isActive = currentSec >= ch.startSec && currentSec < ch.endSec;
-                const isWatched = completed || currentSec >= ch.endSec;
-                return (
-                  <button
-                    type="button"
-                    key={ch.id}
-                    className={`chapter-row${isActive ? ' on' : ''}${isWatched ? ' watched' : ''}`}
-                    aria-current={isActive ? 'time' : undefined}
-                    style={{ '--ch-i': i } as CSSProperties}
-                    onClick={() => seekTo(ch.startSec)}
-                  >
-                    <span className="chapter-time" dir="ltr">{formatMmSs(ch.startSec)}</span>
-                    <span className="chapter-body">
-                      <span className="chapter-title">{ch.title}</span>
-                      {ch.concept && <span className="chapter-concept">{ch.concept.name}</span>}
-                    </span>
-                    <span className="chapter-state" aria-hidden>
-                      {isWatched ? (
-                        <Icon icon={CheckCircle2} size={14} />
-                      ) : isActive ? (
-                        <Icon icon={Play} size={12} />
-                      ) : null}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </Card>
+        {/* r220 (4A redesign — Superlist): the lecture's attachments
+            (interaction points + chapters) live in ONE calm panel beside
+            the video — detail attached to the item, not a stack of
+            sibling cards. ≤1024px the panel re-flows below the player.
+            The panel title is the section's h2 (r168a heading outline:
+            lecture title = h1, panel = h2, panel sections = h3). */}
+        <aside className="lecture-aside" aria-label="محتويات المحاضرة">
+          <section className="lecture-panel">
+            <h2 className="lecture-panel-title">داخل المحاضرة</h2>
 
-        {/* r164d (course flow): the offering's materials, one scroll
-            away from the video (reads the course page's cached /full
-            payload — see the component header). */}
-        <OfferingMaterialsCard offeringId={data.offering.id} />
+            {data.checkpoints.length > 0 && (
+              <div className="lecture-panel-sec">
+                <h3 className="lecture-panel-sec-title">
+                  نقاط التفاعل
+                  <span className="lecture-panel-sec-meta">
+                    أُجيب عن {formatInt(checkpointsAnswered)} من {formatInt(checkpointsTotal)}
+                  </span>
+                </h3>
+                <div className="cp-list">
+                  {data.checkpoints.map((c) => {
+                    const answered = answeredCheckpointIds.has(c.id);
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        className={`cp-row${answered ? ' done' : ''}`}
+                        onClick={() => (answered ? seekTo(c.triggerSec) : openCheckpoint(c))}
+                        aria-label={answered
+                          ? `راجع نقطة التفاعل عند ${formatMmSs(c.triggerSec)}: ${c.question}`
+                          : `أجب عن نقطة التفاعل عند ${formatMmSs(c.triggerSec)}: ${c.question}`}
+                      >
+                        <span className="chapter-time" dir="ltr">{formatMmSs(c.triggerSec)}</span>
+                        <span className="cp-row-q">{c.question}</span>
+                        <span className="chapter-state" aria-hidden>
+                          <Icon icon={answered ? CheckCircle2 : AlertCircle} size={14} />
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {data.chapters.length > 0 ? (
+              <div className="lecture-panel-sec">
+                <h3 className="lecture-panel-sec-title">فصول المحاضرة</h3>
+                <div className="chapter-list">
+                  {data.chapters.map((ch, i) => {
+                    const isActive = currentSec >= ch.startSec && currentSec < ch.endSec;
+                    const isWatched = completed || currentSec >= ch.endSec;
+                    return (
+                      <button
+                        type="button"
+                        key={ch.id}
+                        className={`chapter-row${isActive ? ' on' : ''}${isWatched ? ' watched' : ''}`}
+                        aria-current={isActive ? 'time' : undefined}
+                        style={{ '--ch-i': i } as CSSProperties}
+                        onClick={() => seekTo(ch.startSec)}
+                      >
+                        <span className="chapter-time" dir="ltr">{formatMmSs(ch.startSec)}</span>
+                        <span className="chapter-body">
+                          <span className="chapter-title">{ch.title}</span>
+                          {ch.concept && <span className="chapter-concept">{ch.concept.name}</span>}
+                        </span>
+                        <span className="chapter-state" aria-hidden>
+                          {isWatched ? (
+                            <Icon icon={CheckCircle2} size={14} />
+                          ) : isActive ? (
+                            <Icon icon={Play} size={12} />
+                          ) : null}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <p className="lecture-panel-empty">
+                لم تُقسَّم هذه المحاضرة إلى فصول — شاهدها كاملة دون تنقّل.
+              </p>
+            )}
+          </section>
+
+          {/* r164d (course flow): the offering's materials, one scroll
+              away from the video (reads the course page's cached /full
+              payload — see the component header). */}
+          <OfferingMaterialsCard offeringId={data.offering.id} />
+        </aside>
       </div>
 
       {/* Checkpoint overlay — uses the shared Modal primitive so it

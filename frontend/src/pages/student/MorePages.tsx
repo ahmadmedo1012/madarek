@@ -26,6 +26,7 @@ import { arUnit, countAr, timeAgoAr, WEEKDAY_NAMES_AR, formatDateTimeAr } from '
 import { api, unwrap } from '../../lib/api';
 import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
 import { gradeBand, type GradeBandKey } from '../../lib/courseMeta';
+import { PageFrame, PageHeader as PatternPageHeader, StatLine } from '../../components/patterns';
 import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
 import { formatDate } from '../../utils/numbers';
 
@@ -59,16 +60,43 @@ export function GamificationPage() {
   const cohortSize = dash.data?.kpi.cohortSize ?? 0;
   const me = training.data;
 
+  /* r224 (4A redesign — Superlist): the page opens with the pattern
+     header + one calm stat line (points / tier / cohort rank), then the
+     two playful panels keep their system grammar (training.css §
+     gamification: the tier orb and gold ride achievements ONLY). */
   return (
-    <div className="page">
-      <PageHeader
+    <PageFrame width="default">
+      <PatternPageHeader
         title="الإنجازات والنقاط"
-        subtitle="تقدّمك ومستواك مقارنة بزملائك في المنصة."
+        description="تقدّمك ومستواك مقارنة بزملائك في المنصة."
         actions={
           /* 22-c (A5 P3-2): one unit voice — the page mixed «XP»,
              «نقطة/نقاط» and bare «+N». pointsAr everywhere. */
           xp !== null && <Badge color="gold" icon={Star}>{pointsAr(xp)}</Badge>
         }
+      />
+
+      <StatLine
+        items={[
+          {
+            label: 'نقاط الإنجاز',
+            value: xp !== null ? formatNum(xp) : '—',
+            hint: dash.isError ? 'تعذّر تحميل النقاط' : undefined,
+            tone: 'signal',
+          },
+          {
+            label: 'مستوى التطوير الذاتي',
+            value: me ? formatNum(me.level.level) : '—',
+            hint: me ? TIER_LABEL[me.level.tier] : 'لم يبدأ المسار بعد',
+            tone: 'neutral',
+          },
+          {
+            label: 'مركزك على الدفعة',
+            value: rank !== null && cohortSize > 1 ? `${formatNum(rank)} من ${formatNum(cohortSize)}` : '—',
+            hint: rank !== null && cohortSize > 1 ? undefined : 'يظهر الترتيب فور توافر الدفعة',
+            tone: 'neutral',
+          },
+        ]}
       />
 
       <div className="grid-2">
@@ -246,7 +274,7 @@ export function GamificationPage() {
           )}
         </Card>
       </div>
-    </div>
+    </PageFrame>
   );
 }
 

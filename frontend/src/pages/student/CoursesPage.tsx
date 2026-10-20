@@ -1,11 +1,15 @@
-import { useRef, useState, type CSSProperties } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   CheckCircle2, AlertTriangle, ClipboardList, Send, X,
   BookOpen, ArrowLeft,
 } from 'lucide-react';
-import { Card, ProgressBar, Badge, FormField } from '../../components/primitives';
-import { ErrorState, EmptyState, Skeleton, TableSkeleton } from '../../components/primitives/States';
+import { Badge, FormField } from '../../components/primitives';
+import { ProgressBar } from '../../components/primitives';
+import {
+  PageFrame, PageHeader, SectionHeader, RowList, RowItem, FilterBar,
+} from '../../components/patterns';
+import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Icon } from '../../components/Icon';
@@ -77,22 +81,20 @@ function dueStatus(dueAt: string): { label: string; color: 'green' | 'amber' | '
   return { label: 'متبقّي وقت', color: 'green' };
 }
 
-/** Shape-matched loading skeleton for the course card grid (audit 0-d
- *  P2 — the page used a bare spinner where a thumb-card grid fits). */
-function CourseGridSkeleton() {
+/** Shape-matched loading skeleton for the course row list (audit 0-d
+ *  P2 — the page used a bare spinner where a list fits). */
+function CourseListSkeleton() {
   return (
-    <div className="grid-3" aria-busy="true" aria-live="polite">
+    <div aria-busy="true" aria-live="polite">
       {[0, 1, 2, 3, 4, 5].map((i) => (
-        <div className="thumb-card" key={i} aria-hidden>
-          <div className="thumb-card-image">
-            <Skeleton width={56} height={56} rounded="var(--r-lg)" />
-          </div>
-          <div className="thumb-card-body">
-            <Skeleton width="85%" height={16} />
-            <Skeleton width="55%" height={12} />
-            <div style={{ marginTop: 'var(--sp-3)' }}>
-              <Skeleton width="100%" height={4} rounded="var(--r-full)" />
+        <div className="pf-row" key={i} aria-hidden>
+          <div className="pf-row-line">
+            <Skeleton width={40} height={40} rounded="var(--r-md)" />
+            <div className="pf-row-main">
+              <Skeleton width="45%" height={15} />
+              <Skeleton width="60%" height={11} />
             </div>
+            <Skeleton width={140} height={8} rounded="var(--r-full)" />
           </div>
         </div>
       ))}
@@ -100,70 +102,58 @@ function CourseGridSkeleton() {
   );
 }
 
-/** PP-X2 (audit P2-9) — the course card as its own component: it needs
- *  a per-offering lectures query (the count scent «٣ محاضرات») + a
- *  nested CTA, neither of which can live in a map callback. */
-function CourseCard({ e, i }: { e: MyEnrollment; i: number }) {
+/** r221 (4A redesign — Superlist): the course row — the LIST is the
+ *  product. Needs a per-offering lectures query (the count scent «٣
+ *  محاضرات»); the whole title is the link and the CTA chip is visual
+ *  (no nested interactive inside an anchor). */
+function CourseRow({ e }: { e: MyEnrollment }) {
   const c = e.offering.course;
   const Cmp = courseIcon(c.code ?? c.name);
   const tint = courseTint(c.themeColor);
   const teacher = `د. ${e.offering.teacher.firstName} ${e.offering.teacher.lastName}`;
   // Lecture count — the same cached list the lecture player's prev/next
-  // bar reads (['offerings', id, 'lectures']), so the card's request is
-  // amortized across the visit. Fail-soft: no count line on error.
+  // bar reads (['offerings', id, 'lectures']), so the row's request is
+  // amortized across the visit. Fail-soft: no count on error.
   const lecturesQ = useOfferingLectures(e.offering.id);
   const lectureCount = lecturesQ.data?.length;
-  const to = `/student/courses/${e.offering.id}`;
   return (
-    <Link
-      to={to}
-      className="thumb-card glass"
-      style={{ '--cc-i': i, '--course-tint': tint } as CSSProperties}
-    >
-      <div className="thumb-card-image">
-        <span>
-          <Icon icon={Cmp} size={28} strokeWidth={1.6} />
+    <RowItem
+      leading={
+        <span
+          className="courses-row-icon"
+          style={{
+            background: `color-mix(in srgb, ${tint} 14%, var(--surface))`,
+            color: `color-mix(in srgb, ${tint} 60%, var(--text))`,
+          }}
+        >
+          <Icon icon={Cmp} size={18} />
         </span>
-      </div>
-      <div className="thumb-card-body">
-        {/* Scent row (P2-9): the course CODE chip (Badge + mono bdi, the
-            CourseDetail hero grammar) + the counted lecture noun — six
-            same-teacher same-% cards are told apart by code + workload. */}
-        <div className="thumb-card-meta">
+      }
+      title={<Link to={`/student/courses/${e.offering.id}`} className="courses-row-title">{c.name}</Link>}
+      meta={
+        <>
           <Badge><bdi className="font-mono">{c.code}</bdi></Badge>
-          {lectureCount === 0 ? (
-            /* r157 (W2-F7): an honest noun for the 0-lecture card —
-               * countAr(0, …) would have rendered «0 محاضرة». */
-            <span className="thumb-card-count">بانتظار محتوى المقرّر</span>
-          ) : lectureCount !== undefined && (
-            <span className="thumb-card-count">
-              {countAr(lectureCount, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}
-            </span>
+          {' '}{teacher}
+          {lectureCount !== undefined && lectureCount > 0 && (
+            <> · {countAr(lectureCount, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</>
           )}
-        </div>
-        <div className="thumb-card-title" title={c.name}>{c.name}</div>
-        <div className="thumb-card-sub" title={teacher}>{teacher}</div>
-        <div className="thumb-card-cta">
-          {/* 21-c (A12 P1-3): `color` is the BAR FILL hue
-              (decorative, rides the track) — the primitive
-              paints the 12px % readout in --text-secondary
-              (8.44:1) after the raw themeColor text measured
-              1.88–3.60:1 on the white cards. */}
+          {lectureCount === 0 && <> · بانتظار محتوى المقرّر</>}
+        </>
+      }
+      trailing={
+        <span className="courses-row-progress">
+          {/* 21-c (A12 P1-3): `color` is the BAR FILL hue (decorative,
+              rides the track) — the primitive paints the % readout in
+              --text-secondary (8.44:1) after the raw themeColor text
+              measured 1.88–3.60:1 on the white cards. */}
           <ProgressBar value={e.progressPct} color={tint} label="الإنجاز" />
-          {/* Labeled CTA (P2-9): a VISUAL chip only — the whole card
-              anchor is the interactive element (a nested interactive
-              control can't ride a parent anchor: it hijacked the click
-              and worked around it with stopPropagation + navigate,
-              leaving two competing “where does this click go” paths and
-              a broken middle-click/keyboard story). The span wears the
-              same .btn grammar so the visual contract is unchanged. */}
-          <span className="btn ghost sm thumb-card-go">
+          <span className="btn ghost sm courses-row-go">
             {e.progressPct > 0 ? 'تابع' : 'ابدأ'}
             <Icon icon={ArrowLeft} size={12} />
           </span>
-        </div>
-      </div>
-    </Link>
+        </span>
+      }
+    />
   );
 }
 
@@ -173,10 +163,6 @@ export default function StudentCoursesPage() {
 
   const [submitTarget, setSubmitTarget] = useState<{ assignment: AgendaAssignment; offeringId: string } | null>(null);
   const [filter, setFilter] = useState<CourseFilter>('all');
-  // The re-stagger authored moment fires on filter CHANGES only — the
-  // first data render lands without an entrance (no same-entrance
-  // antipattern); `data-stagger` opts the grid into the CSS animation.
-  const [stagger, setStagger] = useState(false);
 
   const upcoming = dashboard.data?.agenda.assignments ?? [];
 
@@ -189,41 +175,33 @@ export default function StudentCoursesPage() {
   const filtered = (data ?? []).filter((e) => matchesFilter(e, filter));
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">مقرّراتي الدراسية</h1>
-          <p className="page-subtitle">جميع المقرّرات التي سجّلت فيها هذا الفصل، مع تقدّمك في كل واحد منها.</p>
-        </div>
-      </header>
+    <PageFrame width="default">
+      <PageHeader
+        title="مقرّراتي الدراسية"
+        description="جميع المقرّرات التي سجّلت فيها هذا الفصل، مع تقدّمك في كل واحد منها."
+      />
 
       {isPending ? (
         <>
           {/* r173a: the summary-line mirror — the pending placeholder
-              keeps the settled line's own box (a 20px bar in the same
-              .courses-summary slot) so the data handoff never moves the
-              grid below; the four-tile KpiSkeleton died with the KPI
-              strip it mirrored. */}
+              keeps the settled line's own box so the data handoff never
+              moves the list below. */}
           <p className="courses-summary" aria-busy="true">
             <Skeleton width={220} height={20} rounded="var(--r-sm)" />
           </p>
-          <CourseGridSkeleton />
+          <CourseListSkeleton />
         </>
       ) : isError ? (
-        <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
+        <ErrorState error={error} onRetry={() => refetch()} />
       ) : !data?.length ? (
-        <Card><EmptyState illustration="empty-search" icon={BookOpen} title="لم تسجّل في أي مقرّر بعد" description="تواصل مع إدارة الكلّيّة لإكمال تسجيل مقرّرات الفصل — ستظهر هنا فور اعتمادها." /></Card>
+        <EmptyState illustration="empty-search" icon={BookOpen} title="لم تسجّل في أي مقرّر بعد" description="تواصل مع إدارة الكلّيّة لإكمال تسجيل مقرّرات الفصل — ستظهر هنا فور اعتمادها." />
       ) : (
         <>
           {/* r173a (the r171 VLM «courses header weight» deferred note):
-              the stats that used to wear four MetricCards — four icon
-              wells + 28px values, heavier than everything the page's
-              content rhythm renders below — now ride ONE light
-              text-muted line (AA 5.04:1 light / 6.80:1 dark). The SAME
-              counts object, zero data-logic change; the filter pills
-              below keep their per-bucket counts, so a bucket shows
-              here only when it is non-zero (a «بحاجة إلى اهتمام 0» line
-              is noise the pills already own). */}
+              the stats that used to wear four MetricCards now ride ONE
+              light text-muted line. The SAME counts object; the FilterBar
+              keeps the per-bucket counts, so a bucket shows here only
+              when it is non-zero. */}
           <p className="courses-summary">
             <bdi>{countAr(data.length, ['مقرّر مسجَّل واحد', 'مقرّران مسجّلان', 'مقرّرات مسجَّلة', 'مقرّراً مسجّلاً'])}</bdi>
             {counts.done > 0 && (
@@ -238,43 +216,49 @@ export default function StudentCoursesPage() {
           </p>
 
           {data.length > 1 && (
-            <div className="courses-filter" role="group" aria-label="تصفية المقرّرات حسب الحالة">
-              {FILTERS.map((f) => (
-                <button
-                  key={f.key}
-                  type="button"
-                  className={`pill${filter === f.key ? ' on' : ''}`}
-                  aria-pressed={filter === f.key}
-                  onClick={() => { setFilter(f.key); setStagger(true); }}
-                >
-                  {f.label}
-                  <span className="courses-filter-count" aria-hidden>{counts[f.key]}</span>
-                </button>
-              ))}
-            </div>
+            <FilterBar
+              filters={
+                <div className="courses-filter" role="group" aria-label="تصفية المقرّرات حسب الحالة">
+                  {FILTERS.map((f) => (
+                    <button
+                      key={f.key}
+                      type="button"
+                      className={`pill${filter === f.key ? ' on' : ''}`}
+                      aria-pressed={filter === f.key}
+                      onClick={() => setFilter(f.key)}
+                    >
+                      {f.label}
+                      <span className="courses-filter-count" aria-hidden>{counts[f.key]}</span>
+                    </button>
+                  ))}
+                </div>
+              }
+            />
           )}
 
-          {/* key={filter} remounts the grid on filter change so the CSS
+          {/* key={filter} remounts the list on filter change so the CSS
               re-stagger replays — data refetches alone never replay it. */}
-          <div className="grid-3 courses-grid" key={filter} data-stagger={stagger ? '' : undefined}>
-            {filtered.length ? filtered.map((e, i) => (
-              <CourseCard key={e.id} e={e} i={i} />
+          <RowList key={filter} aria-label="قائمة المقرّرات المسجّلة">
+            {filtered.length ? filtered.map((e) => (
+              <CourseRow key={e.id} e={e} />
             )) : (
-              <div className="courses-grid-empty">
-                <EmptyState illustration="empty-search"
-                  icon={BookOpen}
-                  title="لا توجد مقرّرات في هذا التصنيف"
-                  description="جرّب تصنيفاً آخر من الأزرار أعلاه لعرض مقرّراتك."
-                />
-              </div>
+              <EmptyState illustration="empty-search"
+                icon={BookOpen}
+                title="لا توجد مقرّرات في هذا التصنيف"
+                description="جرّب تصنيفاً آخر من الأزرار أعلاه لعرض مقرّراتك."
+              />
             )}
-          </div>
+          </RowList>
         </>
       )}
 
-      <Card title="الواجبات القادمة" icon={ClipboardList} subtitle="واجباتك المستحقة فعلياً خلال الأسبوع القادم ولم تُسلّمها بعد">
+      <section aria-label="الواجبات القادمة">
+        <SectionHeader
+          title="الواجبات القادمة"
+          description="واجباتك المستحقة فعلياً خلال الأسبوع القادم ولم تُسلّمها بعد"
+        />
         {dashboard.isPending ? (
-          <TableSkeleton rows={4} cols={5} />
+          <CourseListSkeleton />
         ) : dashboard.isError ? (
           <ErrorState error={dashboard.error} onRetry={() => dashboard.refetch()} />
         ) : !upcoming.length ? (
@@ -284,50 +268,35 @@ export default function StudentCoursesPage() {
             description="ستظهر هنا الواجبات المستحقة فور إضافتها من أساتذة مقرّراتك."
           />
         ) : (
-          <div className="table-wrap courses-assignments">
-            <table className="table tbl-stack">
-              <thead>
-                <tr>
-                  <th scope="col">المقرّر</th>
-                  <th scope="col">الواجب</th>
-                  <th scope="col">الموعد النهائي</th>
-                  <th scope="col">الحالة</th>
-                  <th scope="col">تسليم</th>
-                </tr>
-              </thead>
-              <tbody>
-                {upcoming.map((a) => {
-                  const due = dueStatus(a.dueAt);
-                  return (
-                    <tr key={a.id}>
-                      <td className="tbl-strong" data-label="المقرّر">{a.courseName}</td>
-                      <td data-label="الواجب">
-                        <Badge>{ASSIGNMENT_KIND_LABEL[a.type] ?? a.type}</Badge>{' '}
-                        {a.title}
-                      </td>
-                      <td className="tbl-num" data-label="الموعد النهائي">{formatDue(a.dueAt)}</td>
-                      <td data-label="الحالة"><Badge color={due.color}>{due.label}</Badge></td>
-                      <td data-label="التسليم">
-                        {a.offeringId ? (
-                          <button
-                            type="button"
-                            className="btn outline sm"
-                            onClick={() => setSubmitTarget({ assignment: a, offeringId: a.offeringId })}
-                          >
-                            <Icon icon={Send} size={12} /> تسليم
-                          </button>
-                        ) : (
-                          <span className="text-xs text-subtle">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <RowList aria-label="قائمة الواجبات القادمة">
+            {upcoming.map((a) => {
+              const due = dueStatus(a.dueAt);
+              return (
+                <RowItem
+                  key={a.id}
+                  leading={<Icon icon={Send} size={16} className="text-subtle" />}
+                  title={<>{ASSIGNMENT_KIND_LABEL[a.type] ?? a.type}: {a.title}</>}
+                  meta={<>{a.courseName} · الموعد {formatDue(a.dueAt)}</>}
+                  trailing={
+                    <>
+                      <Badge color={due.color}>{due.label}</Badge>
+                      {a.offeringId && (
+                        <button
+                          type="button"
+                          className="btn outline sm"
+                          onClick={() => setSubmitTarget({ assignment: a, offeringId: a.offeringId })}
+                        >
+                          <Icon icon={Send} size={12} /> تسليم
+                        </button>
+                      )}
+                    </>
+                  }
+                />
+              );
+            })}
+          </RowList>
         )}
-      </Card>
+      </section>
 
       {submitTarget && (
         <SubmitAssignmentModal
@@ -338,7 +307,7 @@ export default function StudentCoursesPage() {
         />
       )}
 
-    </div>
+    </PageFrame>
   );
 }
 

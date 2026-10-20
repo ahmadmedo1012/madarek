@@ -1,19 +1,23 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  Play, FileText, ClipboardList, Calendar, Users,
+  Play, FileText, ClipboardList, Calendar,
   Clock, CheckCircle2, ChevronLeft, ChevronRight, Presentation, Video, FileArchive, Image,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, Badge, ProgressBar, MetricCard } from '../../components/primitives';
-import { ErrorState, EmptyState, Skeleton, KpiSkeleton, ListSkeleton } from '../../components/primitives/States';
+import { Badge, ProgressBar } from '../../components/primitives';
+import { ErrorState, EmptyState, Skeleton, ListSkeleton } from '../../components/primitives/States';
+import {
+  PageFrame, PageHeader, SectionHeader, StatLine,
+} from '../../components/patterns';
 import { Reveal, RevealGroup, useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useOfferingFull, selectNextLecture, pendingCheckpoints } from '../../hooks/useResources';
 import { useEntityPageTitle } from '../../components/layout/AppShell';
 import { materialHref } from '../../lib/materialHref';
 import { countAr, formatDateAr, WEEKDAY_NAMES_AR } from '../../lib/format';
-import { courseIcon, courseTint, ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, type AssignmentKind, type MaterialType } from '../../lib/courseMeta';
+import { formatInt } from '../../utils/numbers';
+import { courseTint, ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, type AssignmentKind, type MaterialType } from '../../lib/courseMeta';
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) + the assignment-kind
  * labels live in lib/courseMeta.ts; countAr, formatDateAr + WEEKDAY_NAMES_AR
@@ -97,36 +101,30 @@ export default function CourseDetailPage() {
 
   if (isPending) {
     return (
-      <div className="page">
-        <Skeleton width={140} height={32} rounded="var(--r-md)" />
-        <Card><div style={{ display: 'flex', gap: 'var(--sp-4)' }}>
-          <Skeleton width={64} height={64} rounded="var(--r-lg)" />
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
-            <Skeleton width={80} height={14} />
-            <Skeleton width="60%" height={24} />
-            <Skeleton width="40%" height={12} />
-          </div>
-        </div></Card>
-        <KpiSkeleton />
-        <Card><ListSkeleton rows={3} /></Card>
-      </div>
+      <PageFrame width="default">
+        <Skeleton width={200} height={32} rounded="var(--r-md)" />
+        <div className="course-continue" aria-busy="true" aria-live="polite">
+          <Skeleton width="55%" height={20} />
+          <Skeleton width={220} height={8} rounded="var(--r-full)" />
+        </div>
+        <ListSkeleton rows={3} />
+      </PageFrame>
     );
   }
   if (isError || !data) {
     // Page chrome + way back (audit 0-d P2 — the bare ErrorState had
-    // no .page wrapper and no route back to the courses list).
+    // no page wrapper and no route back to the courses list).
     return (
-      <div className="page">
+      <PageFrame width="default">
         <Link to="/student/courses" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
           <Icon icon={ChevronRight} size={13} />
           العودة إلى مقرراتي
         </Link>
         <ErrorState error={error} onRetry={() => refetch()} />
-      </div>
+      </PageFrame>
     );
   }
 
-  const Cmp = courseIcon(data.course.code ?? data.course.name);
   // Course-level identity tint from the API. It is NOT a college accent
   // (the gateCollegeAccent machinery governs college-identity surfaces
   // only) — contrast is guaranteed by construction: the tint is consumed
@@ -143,112 +141,87 @@ export default function CourseDetailPage() {
   const nextPending = nextLec ? pendingCheckpoints(nextLec) : 0;
 
   return (
-    <div className="page course-page" style={{ '--course-tint': tint } as CSSProperties}>
-      {/* Hero header — .course-hero (§lists) carries the tinted band.
-          The raw hex only ever rides the --course-tint custom property
-          (set here at the page root so the lecture wells inherit it too). */}
-      <div className="course-hero">
-        <Link to="/student/courses" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
-          {/* ChevronRight = the RTL back direction (matches LecturePlayerPage) */}
-          <Icon icon={ChevronRight} size={13} />
-          مقرّراتي الدراسية
-        </Link>
-        <div className="course-hero-row">
-          <div className="course-hero-icon" aria-hidden>
-            <Icon icon={Cmp} size={28} />
+    <PageFrame width="default">
+      <PageHeader
+        title={data.course.name}
+        breadcrumbs={[
+          { label: 'مقرّراتي الدراسية', to: '/student/courses' },
+          { label: data.course.name },
+        ]}
+        description={
+          <>
+            د. {data.teacher.firstName} {data.teacher.lastName} ·{' '}
+            {countAr(data.course.credits, ['ساعة معتمدة واحدة', 'ساعتان معتمدتان', 'ساعات معتمدة', 'ساعة معتمدة'])} · الفصل <bdi>{data.term}</bdi>
+          </>
+        }
+        meta={<><Badge><bdi className="font-mono">{data.course.code}</bdi></Badge> · {data.course.department.name}</>}
+      />
+
+      {/* The continue strip — one unmistakable next action (the
+          Coursera/edX course-home rule). Progress rides beside it;
+          the tinted hero band keeps the course's identity wash. */}
+      <div className="course-continue" style={{ '--course-tint': tint } as CSSProperties}>
+        <div className="course-continue-progress">
+          <div className="course-hero-progress-head">
+            <span className="course-hero-progress-label">تقدّمك في المنهج</span>
+            <span className="course-hero-progress-value">{progressValue}%</span>
           </div>
-          <div className="course-hero-main">
-            <div className="course-hero-badges">
-              <Badge><bdi className="font-mono">{data.course.code}</bdi></Badge>
-              <span className="text-xs text-subtle">·</span>
-              <span className="text-xs text-subtle">{data.course.department.name}</span>
-            </div>
-            <h1 className="course-hero-title">{data.course.name}</h1>
-            <div className="course-hero-sub">
-              د. {data.teacher.firstName} {data.teacher.lastName} ·{' '}
-              {countAr(data.course.credits, ['ساعة معتمدة واحدة', 'ساعتان معتمدتان', 'ساعات معتمدة', 'ساعة معتمدة'])} ·{' '}
-              الفصل <bdi>{data.term}</bdi>
-            </div>
-          </div>
-          {/* Curriculum progress — count-up + tabular readout */}
-          <div className="course-hero-progress">
-            <div className="course-hero-progress-head">
-              <span className="course-hero-progress-label">تقدّمك في المنهج</span>
-              <span className="course-hero-progress-value">{progressValue}%</span>
-            </div>
-            <ProgressBar value={lecProgress} color={tint} showValue={false} ariaLabel="نسبة إكمال محاضرات المقرر" />
-            <div className="course-hero-progress-note">
-              {countAr(watchedCount, ['محاضرة مكتملة', 'محاضرتان مكتملتان', 'محاضرات مكتملة', 'محاضرة مكتملة'])} من {data.lectures.length}
-            </div>
-            {/* r164d (course flow): THE primary «التالي» CTA — the
-                Coursera/edX course-home rule: one unmistakable continue
-                entry at the top, not a scan of the rows below. Jumps
-                straight to the first unfinished lecture; when nothing
-                is left, the honest done state replaces the button (no
-                dead CTA). */}
-            {nextLec ? (
-              <>
-                <Link to={`/student/lectures/${nextLec.id}`} className="btn primary" title={nextLec.title}>
-                  <Icon icon={Play} size={13} />
-                  التالي: المحاضرة <bdi>{nextLec.ordinal}</bdi>
-                  {/* ChevronLeft = the RTL forward direction (matches
-                      the player's next-lecture button). */}
-                  <Icon icon={ChevronLeft} size={13} />
-                </Link>
-                <div
-                  className="course-hero-progress-note"
-                  style={nextPending > 0
-                    ? { color: 'var(--warning-ink)' }
-                    : { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  title={nextLec.title}
-                >
-                  {nextPending > 0
-                    ? `تبقى نقاط تفاعل لم تُجب (${nextPending})`
-                    : nextLec.title}
-                </div>
-              </>
-            ) : data.lectures.length > 0 ? (
-              <Badge color="green" icon={CheckCircle2}>أنهيت محاضرات المقرّر</Badge>
-            ) : null}
+          <ProgressBar value={lecProgress} color={tint} showValue={false} ariaLabel="نسبة إكمال محاضرات المقرر" />
+          <div className="course-hero-progress-note">
+            {countAr(watchedCount, ['محاضرة مكتملة', 'محاضرتان مكتملتان', 'محاضرات مكتملة', 'محاضرة مكتملة'])} من {data.lectures.length}
           </div>
         </div>
+        {/* r164d (course flow): THE primary «التالي» CTA — jumps
+            straight to the first unfinished lecture; when nothing is
+            left, the honest done state replaces the button (no dead
+            CTA). */}
+        {nextLec ? (
+          <div className="course-continue-next">
+            <Link to={`/student/lectures/${nextLec.id}`} className="btn primary" title={nextLec.title}>
+              <Icon icon={Play} size={13} />
+              التالي: المحاضرة <bdi>{nextLec.ordinal}</bdi>
+              {/* ChevronLeft = the RTL forward direction (matches
+                  the player's next-lecture button). */}
+              <Icon icon={ChevronLeft} size={13} />
+            </Link>
+            <div
+              className="course-hero-progress-note"
+              style={nextPending > 0
+                ? { color: 'var(--warning-ink)' }
+                : { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+              title={nextLec.title}
+            >
+              {nextPending > 0
+                ? `تبقى نقاط تفاعل لم تُجب (${nextPending})`
+                : nextLec.title}
+            </div>
+          </div>
+        ) : data.lectures.length > 0 ? (
+          <Badge color="green" icon={CheckCircle2}>أنهيت محاضرات المقرّر</Badge>
+        ) : null}
       </div>
 
-      {/* Course KPIs — the shared MetricCard primitive (was a local KPI
-          copy, audit 0-d P3). */}
-      <div className="grid-4">
-        <MetricCard
-          icon={Play}
-          label="المحاضرات"
-          value={data.lectures.length}
-          change={countAr(watchedCount, ['واحدة مكتملة', 'مكتملتان', 'مكتملة', 'مكتملة'])}
-        />
-        <MetricCard
-          icon={FileText}
-          label="المواد المرفقة"
-          value={data.materials.length}
-          change={countAr(data.materials.length, ['ملف واحد متاح', 'ملفان متاحان', 'ملفات متاحة', 'ملفاً متاحاً'])}
-        />
-        <MetricCard
-          icon={ClipboardList}
-          label="الواجبات"
-          value={data.assignments.length}
-          change="هذا الفصل"
-        />
-        <MetricCard
-          icon={Users}
-          label="الطلاب"
-          value={data._count.enrollments}
-          change={countAr(data._count.enrollments, ['طالب واحد مسجَّل', 'طالبان مسجَّلان', 'طلاب مسجَّلون', 'طالباً مسجَّلاً'])}
-        />
-      </div>
+      {/* The course's own facts as one stat line (r221: no icon-box
+          KPI wall). */}
+      <StatLine
+        items={[
+          { label: 'المحاضرات', value: formatInt(data.lectures.length), hint: countAr(watchedCount, ['واحدة مكتملة', 'مكتملتان', 'مكتملة', 'مكتملة']) },
+          { label: 'المواد المرفقة', value: formatInt(data.materials.length), hint: countAr(data.materials.length, ['ملف واحد متاح', 'ملفان متاحان', 'ملفات متاحة', 'ملفاً متاحاً']) },
+          { label: 'الواجبات', value: formatInt(data.assignments.length), hint: 'هذا الفصل' },
+          { label: 'الطلاب', value: formatInt(data._count.enrollments), hint: countAr(data._count.enrollments, ['طالب واحد مسجَّل', 'طالبان مسجَّلان', 'طلاب مسجَّلون', 'طالباً مسجَّلاً']) },
+        ]}
+      />
 
       {/* Lectures — the curriculum; rows reveal with a capped stagger
           (Reveal/RevealGroup primitives, reduced-motion aware).
           heading="h2" (PP-X2 / audit P3-24): SR heading navigation can
           jump between the page's sections instead of meeting a single
           H1 + anonymous card titles. */}
-      <Card heading="h2" title="المحاضرات" icon={Play} className="course-lectures" subtitle={`أكملت ${watchedCount} من ${countAr(data.lectures.length, ['محاضرة واحدة', 'محاضرتين', 'محاضرات', 'محاضرة'])}`}>
+      <section aria-label="محاضرات المقرر" className="course-lectures">
+        <SectionHeader
+          title="المحاضرات"
+          description={`أكملت ${watchedCount} من ${countAr(data.lectures.length, ['محاضرة واحدة', 'محاضرتين', 'محاضرات', 'محاضرة'])}`}
+        />
         {!data.lectures.length ? (
           <EmptyState
             icon={Play}
@@ -322,11 +295,13 @@ export default function CourseDetailPage() {
             })}
           </RevealGroup>
         )}
-      </Card>
+      </section>
 
       {/* Materials + Assignments + Schedule */}
       <div className="grid-2-1">
-        <Card heading="h2" title="المواد المرفقة" icon={FileText}>
+        <section aria-label="المواد المرفقة">
+        <SectionHeader title="المواد المرفقة" />
+        <div className="pf-rowlist">
           {!data.materials.length ? (
             <EmptyState
               icon={FileText}
@@ -380,9 +355,12 @@ export default function CourseDetailPage() {
               })}
             </div>
           )}
-        </Card>
+        </div>
+        </section>
 
-        <Card heading="h2" title="الجدول الأسبوعي" icon={Calendar}>
+        <section aria-label="الجدول الأسبوعي">
+        <SectionHeader title="الجدول الأسبوعي" />
+        <div className="pf-rowlist">
           {!data.schedule.length ? (
             <EmptyState illustration="empty-search"
               icon={Calendar}
@@ -402,10 +380,13 @@ export default function CourseDetailPage() {
               ))}
             </div>
           )}
-        </Card>
+        </div>
+        </section>
       </div>
 
-      <Card heading="h2" title="الواجبات" icon={ClipboardList}>
+      <section aria-label="واجبات المقرر">
+      <SectionHeader title="الواجبات" />
+      <div className="pf-rowlist">
         {!data.assignments.length ? (
           <EmptyState illustration="empty-search"
             icon={ClipboardList}
@@ -431,7 +412,8 @@ export default function CourseDetailPage() {
             </table>
           </div>
         )}
-      </Card>
-    </div>
+      </div>
+      </section>
+    </PageFrame>
   );
 }
