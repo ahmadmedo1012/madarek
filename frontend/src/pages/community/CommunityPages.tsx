@@ -15,8 +15,13 @@ import {
   CheckCircle2, Users, MessageCircle, Sparkles, Plus, X, Send, AlertTriangle,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, FormField, PageHeader } from '../../components/primitives';
-import { ErrorState, EmptyState, ListSkeleton, CardSkeleton } from '../../components/primitives/States';
+import { Badge, FormField } from '../../components/primitives';
+/* r262 (4E — اتجاه Superlist): الصفحة تُركّب من عقد الأنماط المشترك:
+   ترويسة patterns (بالألسنة داخلها)، شريط أرقام StatLine بدل جدار
+   بطاقات KPI، وقوائم RowList/RowItem هادئة بتفصيل ملتصق بالصف.
+   MetricCard يُتقاعد من هذه الصفحة (.kpis-compact يُذكر في ملف التسليم). */
+import { PageHeader, RowList, RowItem, StatLine } from '../../components/patterns';
+import { ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -124,13 +129,16 @@ export default function CommunityPage() {
 
   return (
     <div className="page">
+      {/* r262: ترويسة patterns — الألسنة تسكن الترويسة نفسها (نمط
+          ورقة Superlist ذات السطر الكبير)، والإجراءات الشرطية باقية
+          بلا تغيير في الأسماء/الأدوار. */}
       <PageHeader
         title="المجتمع الجامعي"
-        subtitle="إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية. المساحة الرسمية للحياة الأكاديمية اليومية."
+        description="إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية. المساحة الرسمية للحياة الأكاديمية اليومية."
         actions={
-          /* A fragment keeps the three conditional actions as DIRECT
-             flex children of .page-header — the DOM is byte-identical
-             to the hand-rolled markup this replaces (r164-a fold). */
+          /* A fragment keeps the conditional actions as direct children
+             of the header actions row — the conditional set per tab is
+             unchanged from the r164-a fold. */
           <>
             {tab === 'announcements' && canAnnounce && (
               <button type="button" className="btn primary" onClick={() => setCreatingAnnouncement(true)}>
@@ -158,80 +166,93 @@ export default function CommunityPage() {
             )}
           </>
         }
+        tabs={
+          /* Tabs — manual role/aria annotation (icons are content, so the raw
+              markup is kept; the shared Tabs primitive only accepts text labels).
+              Full ARIA tabs pattern: roving tabindex + RTL arrow keys +
+              id/aria-controls ↔ tabpanel wiring (audit 0-f P2-18). */
+          <div className="tabs" role="tablist" aria-label="أقسام المجتمع الجامعي" onKeyDown={onTabsKeyDown}>
+            {COMMUNITY_TABS.map((t) => (
+              <button
+                key={t.key}
+                id={`community-tab-${t.key}`}
+                type="button"
+                role="tab"
+                aria-selected={tab === t.key}
+                aria-controls={`community-panel-${t.key}`}
+                tabIndex={tab === t.key ? 0 : -1}
+                className={`tab${tab === t.key ? ' on' : ''}`}
+                onClick={() => setTab(t.key)}
+              >
+                <Icon icon={t.icon} size={13} /> {t.label}
+              </button>
+            ))}
+          </div>
+        }
       />
 
-      {/* KPI trio — .kpis-compact keeps the strip a strip on phones
-          (A12 P2-4): the plain .grid-3 stack burned 396px on three
-          single numbers and pushed the tabs below the fold. */}
-      <div className="grid-3 kpis-compact">
-        <MetricCard icon={Megaphone} label="إعلانات نشطة" value={annCount} color="brand" />
-        <MetricCard icon={Trophy} label="مسابقات مفتوحة" value={compsCount} color="gold" />
-        <MetricCard icon={CalendarDays} label="فعاليات قادمة" value={eventsCount} color="green" />
-      </div>
-
-      {/* Tabs — manual role/aria annotation (icons are content, so the raw
-          markup is kept; the shared Tabs primitive only accepts text labels).
-          Full ARIA tabs pattern: roving tabindex + RTL arrow keys +
-          id/aria-controls ↔ tabpanel wiring (audit 0-f P2-18). */}
-      <div className="tabs" role="tablist" aria-label="أقسام المجتمع الجامعي" onKeyDown={onTabsKeyDown}>
-        {COMMUNITY_TABS.map((t) => (
-          <button
-            key={t.key}
-            id={`community-tab-${t.key}`}
-            type="button"
-            role="tab"
-            aria-selected={tab === t.key}
-            aria-controls={`community-panel-${t.key}`}
-            tabIndex={tab === t.key ? 0 : -1}
-            className={`tab${tab === t.key ? ' on' : ''}`}
-            onClick={() => setTab(t.key)}
-          >
-            <Icon icon={t.icon} size={13} /> {t.label}
-          </button>
-        ))}
-      </div>
+      {/* r262: شريط أرقام هادئ بدل ثلاث بطاقات KPI (عقد StatLine):
+          القيم الصادقة نفسها (…/—/formatNum) بلا آبار أيقونات. */}
+      <StatLine
+        items={[
+          { label: 'إعلانات نشطة', value: annCount, tone: 'signal' },
+          { label: 'مسابقات مفتوحة', value: compsCount },
+          { label: 'فعاليات قادمة', value: eventsCount, tone: 'positive' },
+        ]}
+      />
 
       {/* Tab panels — shape-matched skeletons while pending (A9 P2-2,
           5-C3 hand-off): each panel's skeleton mirrors its loaded
           layout (announcement rows / track cards / event cards), never
           a bare spinner. */}
       {tab === 'announcements' && (
-        <div className="flex-col gap-3" role="tabpanel" id="community-panel-announcements" aria-labelledby="community-tab-announcements">
-          {ann.isPending ? <ListSkeleton rows={4} /> :
-           ann.isError ? <ErrorState message="تعذَّر تحميل الإعلانات" error={ann.error} onRetry={() => ann.refetch()} /> :
-           (ann.data?.length ?? 0) === 0 ? (
-            <EmptyState title="لا توجد إعلانات بعد" description="ستظهر هنا إعلانات الجامعة والكليات والأقسام." illustration="empty-notifs" />
-          ) : ann.data?.map((a) => <AnnouncementCard key={a.id} announcement={a} />)}
+        <div role="tabpanel" id="community-panel-announcements" aria-labelledby="community-tab-announcements">
+          {ann.isError ? (
+            <ErrorState message="تعذَّر تحميل الإعلانات" error={ann.error} onRetry={() => ann.refetch()} />
+          ) : (
+            <RowList
+              aria-label="قائمة الإعلانات"
+              loading={ann.isPending}
+              empty={<EmptyState title="لا توجد إعلانات بعد" description="ستظهر هنا إعلانات الجامعة والكليات والأقسام." illustration="empty-notifs" />}
+            >
+              {ann.data?.map((a) => <AnnouncementCard key={a.id} announcement={a} />)}
+            </RowList>
+          )}
         </div>
       )}
       {tab === 'competitions' && (
-        <div className="track-grid" role="tabpanel" id="community-panel-competitions" aria-labelledby="community-tab-competitions">
-          {comps.isPending ? <>
-            <CardSkeleton lines={4} />
-            <CardSkeleton lines={4} />
-            <CardSkeleton lines={4} />
-          </> :
-           comps.isError ? <ErrorState message="تعذَّر تحميل المسابقات" error={comps.error} onRetry={() => comps.refetch()} /> :
-           (comps.data?.length ?? 0) === 0 ? (
-            <EmptyState illustration="empty-search" title="لا توجد مسابقات بعد" description="ستظهر هنا تحديات المعرفة والابتكار عند إعلانها." />
-          ) : comps.data?.map((c) => <CompetitionCard key={c.id} competition={c} />)}
+        <div role="tabpanel" id="community-panel-competitions" aria-labelledby="community-tab-competitions">
+          {comps.isError ? (
+            <ErrorState message="تعذَّر تحميل المسابقات" error={comps.error} onRetry={() => comps.refetch()} />
+          ) : (
+            <RowList
+              aria-label="قائمة المسابقات"
+              loading={comps.isPending}
+              empty={<EmptyState illustration="empty-search" title="لا توجد مسابقات بعد" description="ستظهر هنا تحديات المعرفة والابتكار عند إعلانها." />}
+            >
+              {comps.data?.map((c) => <CompetitionCard key={c.id} competition={c} />)}
+            </RowList>
+          )}
         </div>
       )}
       {tab === 'events' && (
-        <div className="grid-2" role="tabpanel" id="community-panel-events" aria-labelledby="community-tab-events">
-          {events.isPending ? <>
-            <CardSkeleton lines={3} />
-            <CardSkeleton lines={3} />
-          </> :
-           events.isError ? <ErrorState message="تعذَّر تحميل الفعاليات" error={events.error} onRetry={() => events.refetch()} /> :
-           (events.data?.length ?? 0) === 0 ? (
-            <EmptyState illustration="empty-search" title="لا توجد فعاليات قادمة بعد" description="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها." />
-          ) : events.data?.map((e) => <EventCard key={e.id} event={e} />)}
+        <div role="tabpanel" id="community-panel-events" aria-labelledby="community-tab-events">
+          {events.isError ? (
+            <ErrorState message="تعذَّر تحميل الفعاليات" error={events.error} onRetry={() => events.refetch()} />
+          ) : (
+            <RowList
+              aria-label="قائمة الفعاليات"
+              loading={events.isPending}
+              empty={<EmptyState illustration="empty-search" title="لا توجد فعاليات قادمة بعد" description="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها." />}
+            >
+              {events.data?.map((e) => <EventCard key={e.id} event={e} />)}
+            </RowList>
+          )}
         </div>
       )}
 
       {tab === 'rooms' && (
-        <div className="grid-2" role="tabpanel" id="community-panel-rooms" aria-labelledby="community-tab-rooms">
+        <div role="tabpanel" id="community-panel-rooms" aria-labelledby="community-tab-rooms">
           <StudyRoomsPanel />
         </div>
       )}
@@ -259,44 +280,38 @@ export default function CommunityPage() {
 }
 
 function AnnouncementCard({ announcement: a }: { announcement: AnnouncementRow }) {
+  /* r262 (اتجاه Superlist): صفّ هادئ بتفصيل ملتصق — نصّ الإعلان يُعرض
+     عند الفتح (المثبّت يفتح افتراضيًا)، والنطاق/التثبيت شارتان في
+     الطرف، والسطر الثانوي يحمل الكاتب والنطاق الزمني. */
   return (
-    <article className={`announcement-card${a.pinned ? ' pinned' : ''}`}>
-      <div className="announcement-head">
-        <span className="announcement-icon" aria-hidden>
-          <EmojiIcon emoji={a.iconEmoji ?? '📢'} size={20} />
-        </span>
-        <div className="announcement-head-main">
-          {/* Card title demoted from h3 to a styled div (15-g P2-5 — card
-              titles sat at h3 directly under the page h1, a skipped level).
-              22-c (A5 P1-1/P3-5): the headline treatment moved from five
-              inline style props into .announcement-title (student.css). */}
-          <div className="announcement-title">{a.title}</div>
-          <div className="announcement-meta">
-            <Badge color={SCOPE_COLOR[a.scope]}>{SCOPE_LABEL[a.scope]}</Badge>
-            <span className="announcement-meta-item">
-              {a.author.firstName} {a.author.lastName} · {ROLE_LABEL[a.author.role]}
-            </span>
-            <time
-              className="announcement-meta-item"
-              dateTime={a.publishedAt}
-            >
-              {formatDate(a.publishedAt, { day: 'numeric', month: 'short' })}
-            </time>
-          </div>
-        </div>
-        {a.pinned && (
-          <span className="announcement-pin">
-            <Icon icon={Pin} size={11} /> مثبت
-          </span>
-        )}
-      </div>
-      <p className="announcement-body">{a.body}</p>
-    </article>
+    <RowItem
+      leading={<EmojiIcon emoji={a.iconEmoji ?? '📢'} size={20} />}
+      title={a.title}
+      meta={
+        <>
+          {a.author.firstName} {a.author.lastName} · {ROLE_LABEL[a.author.role]} ·{' '}
+          <time dateTime={a.publishedAt}>
+            {formatDate(a.publishedAt, { day: 'numeric', month: 'short' })}
+          </time>
+        </>
+      }
+      trailing={
+        <>
+          {a.pinned && (
+            <Badge color="brand" icon={Pin}>مثبت</Badge>
+          )}
+          <Badge color={SCOPE_COLOR[a.scope]}>{SCOPE_LABEL[a.scope]}</Badge>
+        </>
+      }
+      expandLabel={`عرض نص الإعلان: ${a.title}`}
+      defaultExpanded={a.pinned}
+    >
+      <p style={{ margin: 0 }}>{a.body}</p>
+    </RowItem>
   );
 }
 
 function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
-  const accent = c.themeColor ?? 'var(--accent)';
   /* Deadline truth is instant-based (15-h P1-4): an OPEN competition
      stays open until its deadline actually passes — the previous
      `Math.round(days) > 0` gate flipped the amber «مغلقة» badge on for
@@ -316,67 +331,54 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
       : hours >= 1 ? `تنتهي بعد ${arUnit(hours, 'ساعة', 'ساعتين', 'ساعات')}`
         : 'تنتهي خلال دقائق';
   return (
-    /* A real link, not a dead card (A12 P1-2 forward-path family): the
-     * community tab's competition cards were non-navigable divs — the
-     * only onward path was the header's «صفحة المسابقات الكاملة».
-     * .track-card already carries its anchor treatment (TrainingPages'
-     * tracks are Links through the same family). */
-    <Link
-      to={`/competitions/${c.id}`}
-      className="track-card glass"
-      style={{ ['--track-accent' as never]: accent }}
-    >
-      <div className="track-card-icon" style={{ background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent }}>
-        <EmojiIcon emoji={c.iconEmoji ?? '🏆'} size={24} />
-      </div>
-      <div className="track-card-body">
-        <div className="track-card-cat">{c.category}</div>
-        <div className="track-card-title" title={c.title}>{c.title}</div>
-        {/* summary is line-clamped by training.css — the full text rides
-            along in the title attribute (craft floor: no truncation
-            without a tooltip) */}
-        <p className="track-card-summary" title={c.description}>{c.description}</p>
-        <div className="track-card-meta">
-          {/* 5-A12 P2-3: honest display state. The old ternary assumed
-              !OPEN ⇒ CLOSED|JUDGED, so an OPEN competition whose deadline
-              had passed rendered a FALSE «تم التحكيم». The three states
-              are now exhaustive: open countdown / closed / judged /
-              ended (OPEN but past deadline — awaiting the organizer's
-              close action). */}
+    /* r262 (اتجاه Superlist): صفّ هادئ والعنوان هو باب الصف (عرف
+       «الاسم هو باب الصفّ») — رابط حقيقي إلى تفاصيل المسابقة بدل
+       بطاقة ميتة (A12 P1-2). الحالة/الجائزة/المشاركون في الطرف،
+       والوصف سطر ثانوي مقصوص بسطرين (النصّ الكامل في title). */
+    <RowItem
+      leading={<EmojiIcon emoji={c.iconEmoji ?? '🏆'} size={20} />}
+      title={
+        <Link to={`/competitions/${c.id}`} className="cp-row-link" title={c.title}>
+          {c.title}
+        </Link>
+      }
+      meta={<span className="cp-clamp2" title={c.description}>{c.category} · {c.description}</span>}
+      trailing={
+        <span className="cp-trail">
+          {/* 5-A12 P2-3: honest display state. The three states are
+              exhaustive: open countdown / closed / judged / ended (OPEN
+              but past deadline — awaiting the organizer's close). */}
           {isOpen ? (
             <Badge color="green"><Icon icon={Clock} size={11} /> {daysLabel}</Badge>
           ) : c.status === 'CLOSED' ? (
             <Badge color="amber">مغلقة</Badge>
           ) : c.status === 'JUDGED' ? (
-            /* r164-a: same wording as CompetitionsPages' STATUS_LABEL
-               («تمّ التحكيم») — the two surfaces show one status in one
-               voice. */
             <Badge color="gold">تمّ التحكيم</Badge>
           ) : (
             <Badge color="amber">انتهى التقديم</Badge>
           )}
-          {/* 5-D3 (5-D1 hand-off): --gold measured 2.30:1 on the light
-              card — the amber graphics tier (chart-6) instead. */}
-          {c.prize && <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--chart-6)' }} /> {c.prize}</span>}
+          {/* 5-D3: --gold measured 2.30:1 on the light card — the amber
+              graphics tier (chart-6) instead. */}
+          {c.prize && (
+            <span className="cp-inline">
+              <Icon icon={Sparkles} size={12} style={{ color: 'var(--chart-6)' }} /> {c.prize}
+            </span>
+          )}
           {/* A8 §7.7: a zero here reads as a dead competition — while
-              entries are still possible the honest line is an invitation
-              (the empty-state inside the detail page already speaks this
-              copy); after the door closes it names the absence. */}
-          <span>
+              entries are still possible the honest line is an invitation. */}
+          <span className="cp-inline">
             <Icon icon={Users} size={12} />
-            {' '}
             {c._count.entries === 0
               ? (isOpen ? 'كن أول المشاركين' : 'لا مشاركات')
               : c._count.entries === 1 ? 'مشترك واحد' : arUnit(c._count.entries, 'مشترك', 'مشتركان', 'مشتركين')}
           </span>
-        </div>
-      </div>
-    </Link>
+        </span>
+      }
+    />
   );
 }
 
 function EventCard({ event: e }: { event: CampusEventRow }) {
-  const accent = e.themeColor ?? 'var(--accent)';
   const start = new Date(e.startsAt);
   const end = new Date(e.endsAt);
   const rsvp = useRsvpEvent();
@@ -408,69 +410,85 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
     );
   };
 
+  /* r262 (اتجاه Superlist): صفّ فعالية هادئ — الوصف تفصيل ملتصق يُفتح
+     بالصف نفسه (expandLabel صريح)، والإجراءات الثلاثة في الطرف تنكسر
+     إلى سطر خاص تحت العنوان على الجوال (قاعدة .cp-rsvp في
+     colleges.css عبر :has — لا حاجة لخارج العقد). */
   return (
-    <Card>
-      <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
-        <div style={{
-          flexShrink: 0, width: 64, height: 64, borderRadius: 'var(--r-md)',
-          background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent,
-          display: 'grid', placeItems: 'center',
-        }}>
-          <EmojiIcon emoji={e.iconEmoji ?? '📅'} size={22} />
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          {/* Title demoted from h3 to a styled div (15-g P2-5 heading
-              skip) — inline styles keep the exact rendered look. */}
-          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--fw-bold)', fontSize: 'var(--fs-md)', margin: '0 0 var(--sp-1-5) 0' /* r157: 6px → token */ }}>{e.title}</div>
-          <p className="text-sm text-muted" style={{ margin: '0 0 var(--sp-2) 0' }}>{e.description}</p>
-          <div className="event-meta">
-            <span><Icon icon={CalendarDays} size={11} /> {fmtDateVal(start)}</span>
-            <span><Icon icon={Clock} size={11} /> {fmtTimeVal(start)} – {fmtTimeVal(end)}</span>
-            <span><Icon icon={MapPin} size={11} /> {e.location}</span>
-            {/* 5-B1: the count is GOING-only — «لن أحضر» declines never
-                occupied a seat; the tooltip states exactly what the pair
-                measures. */}
-            <span title="الحضور المؤكّدون من إجمالي السعة">
-              <Icon icon={Users} size={11} /> <bdi>{e._count.rsvps} / {e.capacity}</bdi>
-            </span>
-          </div>
-          <div className="event-actions">
-            <button
-              type="button"
-              className={`btn ${mine === 'GOING' ? 'primary' : 'outline'} sm`}
-              aria-pressed={mine === 'GOING'}
-              disabled={rsvpPending}
-              onClick={() => rsvpTo('GOING')}
-            >
-              <Icon icon={CheckCircle2} size={12} /> سأحضر
-            </button>
-            <button
-              type="button"
-              className={`btn ${mine === 'MAYBE' ? 'primary' : 'outline'} sm`}
-              aria-pressed={mine === 'MAYBE'}
-              disabled={rsvpPending}
-              onClick={() => rsvpTo('MAYBE')}
-            >
-              ربما
-            </button>
-            <button
-              type="button"
-              className={`btn ${mine === 'NO' ? 'primary' : 'outline'} sm`}
-              aria-pressed={mine === 'NO'}
-              disabled={rsvpPending}
-              onClick={() => rsvpTo('NO')}
-            >
-              لن أحضر
-            </button>
-            {failed && (
-              <span className="event-rsvp-fail" role="alert">
-                <Icon icon={AlertTriangle} size={12} aria-hidden /> تعذّر تسجيل ردّك
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-    </Card>
+    <RowItem
+      leading={<EmojiIcon emoji={e.iconEmoji ?? '📅'} size={20} />}
+      title={e.title}
+      meta={
+        <span className="event-meta">
+          <span><Icon icon={CalendarDays} size={11} /> {fmtDateVal(start)}</span>
+          <span><Icon icon={Clock} size={11} /> {fmtTimeVal(start)} – {fmtTimeVal(end)}</span>
+          <span><Icon icon={MapPin} size={11} /> {e.location}</span>
+          {/* 5-B1: the count is GOING-only — «لن أحضر» declines never
+              occupied a seat; the tooltip states exactly what the pair
+              measures. */}
+          <span title="الحضور المؤكّدون من إجمالي السعة">
+            <Icon icon={Users} size={11} /> <bdi>{e._count.rsvps} / {e.capacity}</bdi>
+          </span>
+        </span>
+      }
+      trailing={
+        <EventRsvpControls
+          mine={mine}
+          failed={failed}
+          rsvpPending={rsvpPending}
+          rsvpTo={rsvpTo}
+        />
+      }
+      expandLabel={`عرض وصف الفعالية: ${e.title}`}
+    >
+      <p style={{ margin: 0 }}>{e.description}</p>
+    </RowItem>
+  );
+}
+
+/* RSVP trio — kept as its own function so the event row's trailing slot
+   stays readable; identical buttons/aria contract (tests + SR). */
+function EventRsvpControls({ mine, failed, rsvpPending, rsvpTo }: {
+  mine: 'GOING' | 'MAYBE' | 'NO' | null;
+  failed: boolean;
+  rsvpPending: boolean;
+  rsvpTo: (status: 'GOING' | 'MAYBE' | 'NO') => void;
+}) {
+  return (
+    <span className="event-actions cp-rsvp">
+      <button
+        type="button"
+        className={`btn ${mine === 'GOING' ? 'primary' : 'outline'} sm`}
+        aria-pressed={mine === 'GOING'}
+        disabled={rsvpPending}
+        onClick={() => rsvpTo('GOING')}
+      >
+        <Icon icon={CheckCircle2} size={12} /> سأحضر
+      </button>
+      <button
+        type="button"
+        className={`btn ${mine === 'MAYBE' ? 'primary' : 'outline'} sm`}
+        aria-pressed={mine === 'MAYBE'}
+        disabled={rsvpPending}
+        onClick={() => rsvpTo('MAYBE')}
+      >
+        ربما
+      </button>
+      <button
+        type="button"
+        className={`btn ${mine === 'NO' ? 'primary' : 'outline'} sm`}
+        aria-pressed={mine === 'NO'}
+        disabled={rsvpPending}
+        onClick={() => rsvpTo('NO')}
+      >
+        لن أحضر
+      </button>
+      {failed && (
+        <span className="event-rsvp-fail" role="alert">
+          <Icon icon={AlertTriangle} size={12} aria-hidden /> تعذّر تسجيل ردّك
+        </span>
+      )}
+    </span>
   );
 }
 

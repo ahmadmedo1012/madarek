@@ -3,7 +3,10 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import {
   Sparkles, ArrowLeft, ChevronRight, Bell,
 } from 'lucide-react';
-import { Card, MetricCard, Badge } from '../../components/primitives';
+import { Card, Badge } from '../../components/primitives';
+/* r266 (4E — اتجاه Superlist): جدار بطاقات KPI يصير شريط أرقام هادئ،
+   وشبكات المفاهيم تصير قوائم صفوف بتفصيل على الصف. */
+import { RowList, RowItem, StatLine } from '../../components/patterns';
 import { EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { VISION_CONCEPTS, STATUS_LABEL, STATUS_COLOR, type VisionConcept } from '../../lib/vision';
@@ -134,13 +137,15 @@ export function VisionGalleryPage() {
         />
       ) : (
         <>
-          {/* Status summary */}
-          <div className="grid-4">
-            <MetricCard label="إصدار تجريبي" value={grouped.beta.length} color="green" />
-            <MetricCard label="نموذج أولي" value={grouped.prototype.length} color="brand" />
-            <MetricCard label="قيد التخطيط" value={grouped.planning.length} color="amber" />
-            <MetricCard label="قيد البحث" value={grouped.research.length} color="red" />
-          </div>
+          {/* r266: ملخّص الحالات شريط أرقام هادئ (القيم من البيانات). */}
+          <StatLine
+            items={[
+              { label: 'إصدار تجريبي', value: formatNum(grouped.beta.length), tone: 'positive' },
+              { label: 'نموذج أولي', value: formatNum(grouped.prototype.length), tone: 'signal' },
+              { label: 'قيد التخطيط', value: formatNum(grouped.planning.length), tone: 'warning' },
+              { label: 'قيد البحث', value: formatNum(grouped.research.length) },
+            ]}
+          />
 
           {/* The hub tells a status story (A12 P3-4): the LIVE concepts
               lead under «جرّبها الآن», everything in development follows
@@ -160,11 +165,11 @@ export function VisionGalleryPage() {
                   {countAr(grouped.beta.length, ['ابتكار متاح للتجربة', 'ابتكاران متاحان للتجربة', 'ابتكارات متاحة للتجربة', 'ابتكاراً متاحاً للتجربة'])}
                 </span>
               </header>
-              <div className="grid-3 vision-grid">
+              <RowList aria-label="ابتكارات متاحة للتجربة">
                 {grouped.beta.map((c) => (
                   <VisionConceptCard key={c.slug} concept={c} />
                 ))}
-              </div>
+              </RowList>
             </section>
           )}
           {[...grouped.prototype, ...grouped.planning, ...grouped.research].length > 0 && (
@@ -178,11 +183,11 @@ export function VisionGalleryPage() {
                   )}
                 </span>
               </header>
-              <div className="grid-3 vision-grid">
+              <RowList aria-label="ابتكارات في المراحل المبكرة">
                 {[...grouped.prototype, ...grouped.planning, ...grouped.research].map((c) => (
                   <VisionConceptCard key={c.slug} concept={c} />
                 ))}
-              </div>
+              </RowList>
             </section>
           )}
 
@@ -209,21 +214,19 @@ export function VisionGalleryPage() {
 /* One concept card — shared by both hub bands (the body moved out of
  * the gallery map when the grid gained status grouping, A12 P3-4). */
 function VisionConceptCard({ concept: c }: { concept: VisionConcept }) {
+  /* r266: صفّ مفهوم هادئ — الشريحة اللونية تقود، العنوان هو باب الصف،
+     الحالة شارة في الطرف. (التفصيل الكامل يبقى في صفحة المفهوم.) */
   return (
-    <Link to={`/vision/${c.slug}`} className="card vision-card">
-      <ConceptChip concept={c} box={44} glyph={20} />
-      <div>
-        <div className="vision-card-title font-semibold">{c.title}</div>
-        <div className="vision-card-sub text-sm text-muted">{c.subtitle}</div>
-      </div>
-      <div className="vision-card-foot flex items-center justify-between gap-2">
-        <Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>
-        <span className="text-xxs text-subtle flex items-center gap-1">
-          التفاصيل
-          <Icon icon={ArrowLeft} size={11} />
-        </span>
-      </div>
-    </Link>
+    <RowItem
+      leading={<ConceptChip concept={c} box={36} glyph={17} />}
+      title={
+        <Link to={`/vision/${c.slug}`} className="cp-row-link" title={c.title}>
+          {c.title}
+        </Link>
+      }
+      meta={c.subtitle}
+      trailing={<Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>}
+    />
   );
 }
 

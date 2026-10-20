@@ -4990,4 +4990,87 @@
     .ledger-row-link::before { transition: none; }
     .momentum-ring .ring-fill { filter: none; }
   }
+
+/* ═══════════════════════════════════════════════════════════════
+   §CP ROWS — لغة الصفوف العائلية فوق عقد patterns (عائلة 4E، r267)
+   إضافات ناعمة تستعملها صفوف المجتمع/المسابقات/الكليات/المسارات:
+   رابط العنوان، القصّ، أعمدة الطرف، شريط تقدّم مضغوط. مركزّة هنا
+   لأنّ الصفحات تُحمّل أوراقًا مختلفة والصفوف عقد واحد. توكنات فقط.
+   ═══════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   COMMUNITY ROWS (صفحة المجتمع · عائلة 4E، r262) — إضافات عائلة
+   الصفوف فوق عقد patterns (.pf-row) دون تعديل العقد: رابط العنوان،
+   قصّ الوصف، سطر إجراءات RSVP ينكسر تحت العنوان على الجوال.
+   كل القيم من tokens.css — لا خام.
+   ═══════════════════════════════════════════════════════════════ */
+/* العنوان هو باب الصف: رابط بلون الحبر يكتسي بلون الإشارة عند
+   المرور/التركيز (عرف «الاسم هو باب الصفّ»). */
+.cp-row-link {
+  color: var(--text);
+  text-decoration: none;
+  transition: color var(--motion-duration-short) var(--motion-ease-standard);
+}
+.cp-row-link:hover { color: var(--accent-strong); }
+.cp-row-link:focus-visible { outline: none; color: var(--accent-strong); }
+/* وصف المسابقة: سطران بحدّ أقصى والنصّ الكامل في title (أرضية
+   الحِرفة: لا قصّ بلا تلميح). */
+.cp-clamp2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* عمود الطرف للبطاقات المصغّرة: شارة الحالة ثم سطرا الجائزة/المشاركين. */
+.cp-trail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-1);
+}
+.cp-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+/* الجوال: إجراءات RSVP تهبط سطرًا كاملًا تحت العنوان (بدل سحق
+   العمود الرئيسي) — :has يُبقي العقد بلا className. */
+@media (max-width: 720px) {
+  .pf-row-line:has(.cp-rsvp) { flex-wrap: wrap; }
+  .cp-rsvp {
+    order: 9;
+    flex-basis: 100%;
+    justify-content: flex-start;
+    padding-block-start: var(--sp-2);
+  }
+}
+.cp-clamp1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* r264 — صفوف الكليات: سطر ثانوي يحمل الاسم الإنجليزي والعدادات نصًّا
+   هادئًا (بدل شارات ثقيلة في الطرف) — الصف سطر واحد على كل عرض. */
+.cp-meta-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.cp-meta-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+/* الشارة نفسها تصير نصّ مدمج داخل السطر الثانوي (أخف من نسخة البطاقة). */
+.cp-meta-stats .college-stat-chip {
+  background: transparent;
+  border: none;
+  padding: 0;
+  gap: var(--sp-1);
+}
 }

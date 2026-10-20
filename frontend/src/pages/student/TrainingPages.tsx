@@ -20,6 +20,10 @@ import {
 } from 'lucide-react';
 import { Card, Badge, ProgressBar, UserAvatar, AlertRow, PageHeader } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
+/* r265 (4E — اتجاه Superlist): شبكة بطاقات المسارات تصير قائمة صفوف
+   هادئة (عقد RowList/RowItem) — العنوان باب الصف والتفاصيل على السطر
+   الثانوي والتقدّم في الطرف. */
+import { RowList, RowItem } from '../../components/patterns';
 import { PageSkeleton, DetailSkeleton, ErrorState, EmptyState, Skeleton, ListSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -192,10 +196,11 @@ export default function TrainingCatalogPage() {
         </Card>
       )}
 
-      {/* Track cards grid — pending → shape-matched skeletons, error →
-          honest retry state (never "لا توجد مسارات" over a dead API). */}
+      {/* Track rows — r265: قائمة صفوف هادئة بدل شبكة بطاقات. pending →
+          هيكل مطابق، error → حالة إعادة محاولة صادقة (لا «لا توجد
+          مسارات» فوق واجهة ميتة). */}
       {tracksQ.isPending ? (
-        <TrackGridSkeleton />
+        <ListSkeleton rows={5} />
       ) : tracksQ.isError ? (
         <Card>
           <ErrorState
@@ -214,48 +219,59 @@ export default function TrainingCatalogPage() {
           />
         </Card>
       ) : (
-        <div className="track-grid">
+        <RowList aria-label="قائمة المسارات التدريبية">
           {visible.map((t) => (
             <TrackCard key={t.id} track={t} />
           ))}
-        </div>
+        </RowList>
       )}
     </div>
   );
 }
 
 function TrackCard({ track }: { track: TrainingTrackCard }) {
+  /* r265: صفّ مسار هادئ — العنوان هو باب الصف (رابط حقيقي)، الفئة/
+     المستوى والملخّص سطر ثانوي مقصوص، والزمن/الدروس/النقاط في الطرف،
+     وتقدّم المسجَّلين شريط مضغوط تحت المؤشّرات (دون سحب الصف لسطر
+     إضافي لغير المسجَّلين). */
   const accent = track.themeColor ?? 'var(--accent)';
   return (
-    <Link
-      to={`/training/${track.slug}`}
-      className="track-card glass"
-      style={{ ['--track-accent' as never]: accent }}
-    >
-      <div className="track-card-icon" aria-hidden>
-        <EmojiIcon emoji={track.iconEmoji ?? '🎓'} size={20} />
-      </div>
-      <div className="track-card-body">
-        <div className="track-card-cat">{CATEGORY_LABEL[track.category]} · {LEVEL_LABEL[track.level]}</div>
-        <div className="track-card-title">{track.title}</div>
-        <p className="track-card-summary" title={track.summary}>{track.summary}</p>
-        <div className="track-card-meta">
-          <span><Icon icon={Clock} size={12} /> {formatNum(track.estMinutes)} د</span>
-          <span><Icon icon={BookOpen} size={12} /> {countAr(track.totalLessons, ['درس واحد', 'درسان', 'دروس', 'درساً'])}</span>
-          {/* 5-D3 (5-D1 hand-off): --gold measured 2.30:1 on the light
-              card — the amber graphics tier (chart-6) instead. */}
-          <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--chart-6)' }} /> {pointsAr(track.pointsAward)}</span>
-        </div>
-        {track.enrolled && (
-          <ProgressBar
-            value={track.progressPct}
-            color={accent}
-            label={track.isCompleted ? 'مكتمل' : `${track.completedLessons} / ${countAr(track.totalLessons, ['درس', 'درسان', 'دروس', 'درساً'])}`}
-            ariaLabel={`تقدّم مسار ${track.title}`}
-          />
-        )}
-      </div>
-    </Link>
+    <RowItem
+      leading={<EmojiIcon emoji={track.iconEmoji ?? '🎓'} size={20} />}
+      title={
+        <Link to={`/training/${track.slug}`} className="cp-row-link" title={track.title}>
+          {track.title}
+        </Link>
+      }
+      meta={
+        <span className="cp-meta-col">
+          <span className="cp-clamp1" title={track.summary}>
+            {CATEGORY_LABEL[track.category]} · {LEVEL_LABEL[track.level]} · {track.summary}
+          </span>
+          <span className="cp-meta-stats">
+            <span className="cp-inline"><Icon icon={Clock} size={12} /> {formatNum(track.estMinutes)} د</span>
+            <span className="cp-inline"><Icon icon={BookOpen} size={12} /> {countAr(track.totalLessons, ['درس واحد', 'درسان', 'دروس', 'درساً'])}</span>
+            {/* 5-D3: --gold measured 2.30:1 on the light card — the amber
+                graphics tier (chart-6) instead. */}
+            <span className="cp-inline"><Icon icon={Sparkles} size={12} style={{ color: 'var(--chart-6)' }} /> {pointsAr(track.pointsAward)}</span>
+          </span>
+        </span>
+      }
+      trailing={
+        /* المسجَّل فقط: شريط تقدّم مضغوط في الطرف — غير المسجَّل يرى صفًّا
+           نظيفًا بلا زوائد. */
+        track.enrolled ? (
+          <span className="cp-progress">
+            <ProgressBar
+              value={track.progressPct}
+              color={accent}
+              label={track.isCompleted ? 'مكتمل' : `${track.completedLessons} / ${countAr(track.totalLessons, ['درس', 'درسان', 'دروس', 'درساً'])}`}
+              ariaLabel={`تقدّم مسار ${track.title}`}
+            />
+          </span>
+        ) : undefined
+      }
+    />
   );
 }
 
@@ -291,24 +307,6 @@ function LevelBandSkeleton() {
         </div>
       </div>
     </Card>
-  );
-}
-
-function TrackGridSkeleton({ count = 6 }: { count?: number }) {
-  return (
-    <div className="track-grid" aria-busy="true" aria-live="polite">
-      {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="track-card" aria-hidden>
-          <Skeleton width={48} height={48} rounded="var(--r-lg)" />
-          <div className="track-card-body">
-            <Skeleton width="55%" height={11} />
-            <Skeleton width="80%" height={16} />
-            <Skeleton width="100%" height={12} />
-            <Skeleton width="65%" height={12} />
-          </div>
-        </div>
-      ))}
-    </div>
   );
 }
 

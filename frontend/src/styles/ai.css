@@ -1,0 +1,148 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ai.css — «المساعد الذكيّ» (AiAssistantPage /student/ai · /teacher/ai · عائلة 4E، r261)
+   اتجاه Superlist: سطح محادثة مركّز — المحادثة هي الصفحة لا بطاقة داخل
+   شبكة. اللوحة صندوق واحد بارتفاع مقيَّد بسطح ساكن، الرأس شريط عُنوان،
+   والمرسِل يلتصق بأسفل اللوحة (جوال أولًا). الفجوات شريط سياق رقيق
+   فوق السطح (المصادر ظاهرة قبل السؤال). عائلة الفقاعات (.chat-*) و
+   البطاقات الجانبية تبقى من student.css/components.css دون تعديل —
+   هذا الملف يملك البنية الجديدة فقط (.ai-layout/.ai-surface/.ai-gaps/
+   .ai-composer/.ai-side). كل القيم من tokens.css — لا خام.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* الشبكة: المحادثة تأخذ العرض، العمود الجانبي (محادثات + مقترحات)
+   ثابت العرض على سطح المكتب ويهبط أسفل السطح على الجوال. */
+.ai-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  gap: var(--sp-5);
+  align-items: start;
+}
+@media (max-width: 980px) {
+  .ai-layout { grid-template-columns: minmax(0, 1fr); }
+}
+.ai-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-inline-size: 0;
+}
+
+/* شريط الفجوات — سياق المصادر فوق السطح مباشرة (بلا غلاف Card):
+   سطر تعريف هادئ ثم بطاقات الفجوات الثلاث في صفّ واحد يلتفّ على الجوال. */
+.ai-gaps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.ai-gaps-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding-inline: var(--sp-1);
+}
+.ai-gaps-title {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.ai-gaps-hint {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+.ai-gaps-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+/* الجوال: الصف يصير شريط تمرير أفقيًا بمحاذاة انطلاق — الشريط سطر
+   واحد لا ثلاث بطاقات مكدّسة تدفع المحادثة أسفل الطيّة. */
+@media (max-width: 760px) {
+  .ai-gaps-row {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(230px, 72%);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    padding-block-end: var(--sp-1);
+  }
+  .ai-gaps-row > * { scroll-snap-align: start; }
+}
+
+/* سطح المحادثة — اللوحة المركّزة: رأس شريط، سجلّ مرن يملأ المسافة،
+   مرسِل ملتصق بالأسفل. ارتفاع اللوحة مقيد بإطار العرض حتى يبقى
+   المرسِل مرئيًا دون تمرير الصفحة. */
+.ai-surface {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-2xl);
+  box-shadow: var(--shadow-card);
+  /* الارتفاع مقيد بإطار العرض (وليس الشاشة كاملة): الرأس وفوقه من
+     صفحة العنوان والفجوات يأكلان ~36-40dvh — يبقى السطح هو الكتلة
+     الغالبة والمرسِل قريبًا من الطيّة الأولى. */
+  block-size: clamp(440px, 60dvh, 780px);
+  overflow: hidden;
+  min-inline-size: 0;
+}
+@media (max-width: 760px) {
+  .ai-surface { block-size: clamp(430px, 64dvh, 640px); }
+}
+.ai-surface-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding: var(--sp-3) var(--sp-5);
+  border-block-end: 1px solid var(--surface-divider);
+  flex-shrink: 0;
+}
+.ai-surface-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+/* السجلّ يملأ المسافة بين الرأس والمرسِل — يلغي سقف student.css
+   (480px) المضبوط لأجرئ بطاقة-داخل-شبكة؛ الخصوصية أعلى (محدّدان). */
+.ai-surface .chat-area {
+  flex: 1;
+  min-block-size: 0;
+  max-block-size: none;
+  padding: var(--sp-5) var(--sp-4) var(--sp-3);
+}
+
+/* المرسِل — جوال أولًا: إفصاح الخصوصية، الرقائق السريعة، صفّ الإدخال
+   والعدّاد — كلها داخل قاعدة اللوحة فوق حدودها السفلية. */
+.ai-composer {
+  border-block-start: 1px solid var(--surface-divider);
+  padding: var(--sp-3) var(--sp-4) var(--sp-4);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  background: var(--surface);
+}
+.ai-privacy {
+  margin: 0;
+  padding-inline: var(--sp-1);
+}
+/* شريط الرقائق يرث من student.css؛ هنا نُسقط حشوه العمودي الزائد
+   داخل الصندوق المضبوط ونخفف حده العلوي (المرسِل يوفر الفاصل). */
+.ai-composer .ai-quick-actions {
+  border-block-start: none;
+  margin-block-start: 0;
+  padding: var(--sp-1) var(--sp-1) var(--sp-2);
+}
+.ai-composer .chat-input-row {
+  padding: var(--sp-1) var(--sp-1) 0;
+}

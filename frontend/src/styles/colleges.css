@@ -195,34 +195,8 @@
    See specs/004-colleges-gallery/contracts/gallery-state.md
    ═══════════════════════════════════════════════════════════════ */
 
-.gallery-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-3);
-  align-items: center;
-  margin-block: var(--sp-5) var(--sp-7);
-  padding: var(--sp-3) var(--sp-4);
-  background: var(--surface-2);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-lg);
-}
 
-/* Search wrapper — A5 P1-1: this sizing used to be an inline style
-   (CollegePages.tsx) written for the desktop row layout. It moved
-   here so the ≤767px column layout can reset it: in a column flex
-   container `flex-basis` applies to the VERTICAL axis, and 240px of
-   basis under a 44px input produced a ~196px dead gap + (with the
-   un-reset wrap) a 174-244px document overflow — the public funnel's
-   worst 320px cell. */
-.gallery-search-wrap {
-  flex: 1 1 240px;
-  position: relative;
-}
 
-.gallery-search-input {
-  flex: 1 1 240px;
-  min-inline-size: 240px;
-}
 
 .gallery-chip-strip {
   display: flex;
@@ -425,46 +399,8 @@
 /* r152i (A3): 767→768 — off-by-one vs the 768 family used by the same
    file (:520) and everywhere else; dvh per the iOS URL-bar canon. */
 @media (max-width: 768px) {
-  .gallery-toolbar {
-    position: sticky;
-    /* r157 (w2-F6): base 0 — guests browse /colleges inside the
-       chrome-less CollegesLayout (AppShell never mounts, so no
-       .topbar exists) and the former unconditional --topbar-h left
-       the sticky toolbar pinned to a bar that isn't rendered, eating
-       a dead band at the top of the public funnel. Authed visitors
-       get the offset back via the :has() guard below — same :has()
-       precedent as .college-hero's motif scoping near the file tail. */
-    top: 0;
-    z-index: var(--z-dropdown);
-    flex-direction: column;
-    /* A5 P1-1: the base `flex-wrap: wrap` was never reset for the
-       column layout — wrap made the chip strip's nowrap max-content
-       (~595px) size the wrap line's cross axis and `align-items:
-       stretch` then stretched BOTH children to 552px inside a 380px
-       toolbar → 174px @390 / 244px @320 document overflow on a
-       PUBLIC page. nowrap + the search reset below kill both the
-       overflow and the 196px dead gap. */
-    flex-wrap: nowrap;
-    align-items: stretch;
-    gap: var(--sp-2);
-    padding: var(--sp-3);
-    margin-inline: calc(-1 * var(--page-gutter-mobile));
-    border-radius: 0;
-    border-inline: 0;
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    background: color-mix(in srgb, var(--surface) 88%, transparent);
-  }
 
-  /* The authed offset: .topbar renders only inside AppShell (rg: the
-     single emitter is Topbar.tsx), so the toolbar sticks to the bar's
-     bottom edge exactly when the bar exists. Consumes --topbar-h as a
-     token — the token's own value belongs to layout owners (wave 3). */
-  body:has(.topbar) .gallery-toolbar { top: var(--topbar-h); }
 
-  /* The column-direction twin of the A5 P1-1 fix: no vertical basis,
-     height collapses to the 44px input. */
-  .gallery-search-wrap { flex: none; }
 
   .gallery-chip-strip {
     flex-wrap: nowrap;
@@ -1019,29 +955,6 @@ a.comp-card:focus-visible .comp-go {
    Competitions (Phase 6) — index, detail, modals
    ═══════════════════════════════════════════════════════════════ */
 
-.comp-index-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  /* r149 (R3-A2 R4): فجوة جدران البطاقات الموحدة 20px */
-  gap: var(--sp-5);
-  margin-block-start: var(--sp-4);
-}
-.comp-index-card {
-  display: flex;
-  gap: var(--sp-3);
-  padding: var(--sp-4);
-  border-radius: var(--r-lg);
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  text-decoration: none;
-  color: inherit;
-  transition: var(--t-clean);
-}
-.comp-index-card:hover {
-  border-color: var(--accent);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
-}
 .comp-index-emoji {
   font-size: 32px;
   width: 56px;
@@ -1058,12 +971,6 @@ a.comp-card:focus-visible .comp-go {
    layer — declarations verbatim, hover guard preserved. The local RM
    belt at the bottom of this file kills the card's own motion.) */
 @media (hover: hover) {
-  .comp-index-card .comp-index-emoji {
-    transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
-  }
-  .comp-index-card:hover .comp-index-emoji {
-    transform: scale(1.12) rotate(-6deg);
-  }
 }
 .comp-index-body {
   flex: 1 1 auto;
@@ -1330,10 +1237,6 @@ a.comp-card:focus-visible .comp-go {
   border-block-start: 1px solid var(--border);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .comp-index-card { animation: none; transition: none; }
-  .comp-index-card:hover { transform: none; }
-}
 
 /* ==================================================================
    wave 5-b: admin-extras — MOVED to admin.css (r150e)
@@ -1404,35 +1307,8 @@ a.comp-card:focus-visible .comp-go {
    ═══════════════════════════════════════════════════════════════ */
 
 @media (max-width: 640px) {
-  .kpis-compact {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--sp-2);
-  }
-  .kpis-compact .metric {
-    min-block-size: 0;
-    padding: var(--sp-3);
-    gap: var(--sp-2);
-  }
-  .kpis-compact .metric-icon {
-    inline-size: 28px;
-    block-size: 28px;
-    border-radius: var(--r-sm);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--role-accent, var(--accent)) 30%, transparent);
-  }
-  .kpis-compact .metric-icon svg {
-    inline-size: 15px;
-    block-size: 15px;
-  }
-  .kpis-compact .metric-value {
-    font-size: var(--type-metric-size);
-  }
-  .kpis-compact .metric-head { gap: var(--sp-1); }
 }
 @media (max-width: 360px) {
-  /* smallest phones: the label can wrap to two lines; keep the tile
-     readable without letting the icon dominate the row */
-  .kpis-compact .metric { flex-direction: column-reverse; align-items: flex-start; }
-  .kpis-compact .metric-icon { align-self: flex-end; }
 }
 
 }

@@ -403,7 +403,22 @@ export function SkillsPage() {
  * r157 (F8, 6A6): القصّ slice(0,30) كان يُخفي كل إشعار بعد الثلاثين
  * (الاستعلام نفسه limit=50). الآن صفحة كاملة عبر useNotificationsFeed
  * («عرض المزيد» تُلحق الصفحات)، وعدّاد غير المقروء يقرأه من meta الخادم
- * لا من الصفوف المحمّلة، وسطر «آخر N من M» يقول بصدق كم بقي مخفيّاً. */
+ * لا من الصفوف المحمّلة، وسطر «آخر N من M» يقول بصدق كم بقي مخفيّاً.
+ *
+ * r261 (4E إعادة تصميم — اتجاه Superlist): القائمة تتحوّل من بطاقات
+ * تنبيه ملوّنة (.alert) إلى صفوف إدارة هادئة — قائمة أولًا، التفصيل
+ * على الصف نفسه، فواصل شعرية وسطح ساكن. بئر أيقونة بلون النوع
+ * (soft) فقط، والعنوان/الوصف/الوقت بلون الحبر بحسب القراءة؛ غير
+ * المقروء يُقرأ من العنوان القويّ وبئر الإشارة قبل أي شارة، والتحكّم
+ * «تعليم كمقروء» يبقى داخل الصف (عرف variables-gating). الأنماط في
+ * notifications.css قسم .np-*. */
+const NP_TONE_CLASS: Record<'red' | 'brand' | 'amber' | 'green', 'danger' | 'accent' | 'warning' | 'success'> = {
+  red: 'danger',
+  brand: 'accent',
+  amber: 'warning',
+  green: 'success',
+};
+
 export function AlertsPage() {
   const feed = useNotificationsFeed();
   const markRead = useMarkNotifRead();
@@ -435,7 +450,7 @@ export function AlertsPage() {
       <PageHeader title="الإشعارات" subtitle="آخر التحديثات والتذكيرات الأكاديمية." />
 
       <Card title="إشعاراتي" icon={Bell} actions={
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap np-head-actions">
           {unreadCount > 0 ? (
             <>
               <Badge color="brand">{arUnit(unreadCount, 'إشعار غير مقروء', 'إشعاران غير مقروءان', 'إشعارات غير مقروءة')}</Badge>
@@ -474,12 +489,12 @@ export function AlertsPage() {
           </div>
         )}
         {feed.isPending ? (
-          /* shape-matched skeleton: alert rows (dot + two lines) */
-          <div className="flex-col gap-2" aria-busy="true">
+          /* shape-matched skeleton: np rows (well + title + desc lines) */
+          <div className="np-list" aria-busy="true">
             {[0, 1, 2, 3].map((i) => (
-              <div className="alert-skel" key={i} aria-hidden>
-                <Skeleton width={16} height={16} rounded="50%" />
-                <div className="flex-1 flex-col gap-2">
+              <div className="np-row np-skel" key={i} aria-hidden>
+                <Skeleton width={36} height={36} rounded="var(--r-md)" />
+                <div className="np-body flex-col gap-2">
                   <Skeleton width="42%" height={13} />
                   <Skeleton width="74%" height={11} />
                 </div>
@@ -491,7 +506,7 @@ export function AlertsPage() {
         ) : items.length === 0 ? (
           <EmptyState title="لا توجد إشعارات بعد" illustration="empty-search" description="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
         ) : (
-          <div className="flex-col gap-2">
+          <div className="np-list">
             {items.map((n) => {
               const unread = !n.readAt;
               /* r165d (D1): رابط التعمّق للإشعار — نفس قرار التوجيه الذي
@@ -518,45 +533,41 @@ export function AlertsPage() {
                  would freeze every row's button + flip its label. */
               const rowPending = markRead.isPending && markRead.variables === n.id;
               return (
-                <AlertRow
-                  key={n.id}
-                  color={toneFor(n.type)}
-                  icon={iconFor(n.type)}
-                  /* r166a (E1): الصفّ غير المقروء يحمل حالته البصرية
-                     الذاتية (.alert.unread — غسلة surface-2 + شريط
-                     accent 2px على الحافة الأولى) قبل أي شارة — يمسح
-                     المستخدم القائمة بنظرة واحدة دون قراءة الشارات.
-                     الشارة «غير مقروء» تبقى تأكيدًا مكمّلًا لا الإشارة
-                     الوحيدة (راجع التعليق أعلاه في title). */
-                  unread={unread}
-                  title={
-                    unread ? (
-                      /* الشارة تُميّز الصفّ غير المقروء بصرياً (اللافتة
-                         brand نفسها التي يحملها العدّاد أعلاه) — عائلة
-                         .notif-item.unread في CSS محصورة بصفوف اللوحة
-                         المنسدلة التفاعليّة، فالتزامن هنا يمرّ عبر مكوّن
-                         Badge الكنوني دون أي CSS جديد. */
-                      <span className="flex items-center gap-2 flex-wrap">
-                        {titleNode}
-                        <Badge color="brand">غير مقروء</Badge>
+                <div key={n.id} className={`np-row${unread ? ' unread' : ''}`}>
+                  <span className={`np-well ${NP_TONE_CLASS[toneFor(n.type)]}`} aria-hidden>
+                    <Icon icon={iconFor(n.type)} size={15} />
+                  </span>
+                  <div className="np-body">
+                    <p className="np-title">
+                      {unread ? (
+                        <span className="flex items-center gap-2 flex-wrap">
+                          {titleNode}
+                          <Badge color="brand">غير مقروء</Badge>
+                        </span>
+                      ) : titleNode}
+                    </p>
+                    {n.body && <p className="np-desc">{n.body}</p>}
+                    <p className="np-time">{timeAgoAr(n.createdAt)}</p>
+                  </div>
+                  <div className="np-tail">
+                    {unread ? (
+                      <button
+                        type="button"
+                        className="btn ghost sm"
+                        onClick={() => markRead.mutate(n.id)}
+                        disabled={rowPending}
+                        aria-label={`تعليم «${n.title}» كمقروء`}
+                      >
+                        <Icon icon={Check} size={13} />
+                        {rowPending ? 'جارٍ التعليم…' : 'تعليم كمقروء'}
+                      </button>
+                    ) : (
+                      <span className="np-read-mark" title="مقروء" aria-hidden>
+                        <Icon icon={Check} size={13} />
                       </span>
-                    ) : titleNode
-                  }
-                  description={n.body ?? undefined}
-                  time={timeAgoAr(n.createdAt)}
-                  actions={unread ? (
-                    <button
-                      type="button"
-                      className="btn ghost sm"
-                      onClick={() => markRead.mutate(n.id)}
-                      disabled={rowPending}
-                      aria-label={`تعليم «${n.title}» كمقروء`}
-                    >
-                      <Icon icon={Check} size={13} />
-                      {rowPending ? 'جارٍ التعليم…' : 'تعليم كمقروء'}
-                    </button>
-                  ) : undefined}
-                />
+                    )}
+                  </div>
+                </div>
               );
             })}
             {/* r157 (F8): الصفحات الإضافية — سطر الإفصاح يقول بصدق كم
