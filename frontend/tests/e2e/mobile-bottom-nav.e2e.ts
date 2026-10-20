@@ -1,8 +1,9 @@
 /**
  * mobile-bottom-nav.e2e.ts — إطار الجوال 390×844 (r164-k).
  *
- * شريط التنقّل السفلي (BottomNav — 5 وجهات لكل دور) يظهر في النطاق
- * الضيق فقط؛ النقر على «مقرراتي» يستقر في القائمة ويعرض عنوانها.
+ * شريط التنقّل السفلي يظهر في النطاق الضيق فقط. r211 (Agent S):
+ * أربع وجهات مُقدَّمة + زر «المزيد» يفتح الدرج الكامل — الوجهة الخامسة
+ * (حسابي) باقية في الدرج، وهذا الملف يثبّت العقد الجديد.
  */
 import { test, expect } from './fixtures/e2e';
 
@@ -14,10 +15,11 @@ test.describe('التنقّل السفلي على الجوال', () => {
 
     const nav = page.getByRole('navigation', { name: 'التنقّل السريع' });
     await expect(nav).toBeVisible();
-    // خمس وجهات الطالب: الرئيسية · مقرراتي · المساعد · الإشعارات · حسابي
-    for (const label of ['الرئيسية', 'مقرراتي', 'المساعد', 'الإشعارات', 'حسابي']) {
+    // r211: أربع وجهات مُقدَّمة + زر «المزيد» (الحساب في الدرق عبر المزيد).
+    for (const label of ['الرئيسية', 'مقرراتي', 'المساعد', 'الإشعارات']) {
       await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible();
     }
+    await expect(nav.getByRole('button', { name: 'المزيد — فتح القائمة الكاملة' })).toBeVisible();
 
     await nav.getByRole('link', { name: 'مقرراتي', exact: true }).click();
     await expect(page).toHaveURL(/\/student\/courses$/);

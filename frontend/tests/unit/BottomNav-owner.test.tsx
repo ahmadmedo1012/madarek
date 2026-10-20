@@ -8,6 +8,11 @@
  * r183-B6 (A4 P3-9): the alerts slot now points at /owner/notifications
  * (the personal inbox the topbar bell opens) with the «الإشعارات» label
  * every other role uses — NOT /owner/alerts (the operational board).
+ *
+ * r211 (Agent S shell re-skin): the bar is FOUR prioritized links + a
+ * «المزيد» <button> that opens the full sidebar drawer (the designed
+ * more-sheet). The fifth curated destination (/owner/governance for
+ * OWNER) keeps its drawer home — this file pins the new contract.
  */
 import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
@@ -49,20 +54,22 @@ describe('BottomNav — OWNER branch', () => {
     useAuthStore.setState({ user: null });
   });
 
-  it('renders exactly five /owner/* items for the OWNER role', () => {
+  it('renders exactly four prioritized /owner/* links plus the «المزيد» drawer trigger (r211)', () => {
     renderNav();
     const nav = screen.getByRole('navigation', { name: 'التنقّل السريع' });
     expect(nav).toHaveAttribute('data-role', 'owner');
     const links = within(nav).getAllByRole('link');
-    expect(links).toHaveLength(5);
+    expect(links).toHaveLength(4);
     const hrefs = links.map((l) => l.getAttribute('href'));
     expect(hrefs).toEqual([
       '/owner/dashboard',
       '/owner/users',
       '/owner/realtime',
       '/owner/notifications',
-      '/owner/governance',
     ]);
+    // The fifth slot is the drawer trigger — a named button, not a link.
+    const more = within(nav).getByRole('button', { name: 'المزيد — فتح القائمة الكاملة' });
+    expect(more).toHaveAttribute('aria-haspopup', 'true');
   });
 
   it('the notifications slot is the personal inbox, not the operational board (r183-B6, A4 P3-9)', () => {

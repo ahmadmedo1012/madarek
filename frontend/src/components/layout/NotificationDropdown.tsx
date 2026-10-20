@@ -17,6 +17,15 @@
  * while the panel is open — the payload fetches on first open, not
  * on every shell mount. Query cache (30s stale / 5min gc) serves
  * instant re-opens.
+ *
+ * Unread counter (S-1b audit): the badge is REAL server truth, not a
+ * client-side guess — meta.unread of GET /notifications?limit=1
+ * (me.routes.ts counts readAt=null rows for the recipient), polled
+ * every 60s while the tab is visible (useUnreadNotifications). The
+ * badge digits ride polish.css (--fs-xxs = the 13px floor,
+ * tabular-nums) and notifications.css's unlayered semantic pair
+ * (--danger-ink fill / --danger-fg digits — unread is urgent-tone
+ * semantics, matching the URGENT row well family).
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -136,7 +145,11 @@ export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
       >
         <Icon icon={Bell} size={16} />
         {unread > 0 && (
-          <span className="topbar-notif-badge" aria-hidden>
+          <span className="topbar-notif-badge" aria-hidden dir="ltr">
+            {/* S-1b: dir="ltr" isolates the Western-digit run — without
+                it the «99+» cap string's trailing plus (a bidi neutral)
+                can flip to «+99» in the RTL context. 1–2 digits render
+                unchanged. */}
             {unread > 99 ? '99+' : unread}
           </span>
         )}
