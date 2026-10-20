@@ -47,7 +47,11 @@
     color: inherit;
   }
 
-  .oex-rows > :last-child { border-block-end: 0; }
+  /* Static rows are direct children; startable rows ride inside the
+     listitem wrapper (.oex-row-slot) that keeps the anchor's implicit
+     link role — the last-row hairline must retire in both shapes. */
+  .oex-rows > :last-child,
+  .oex-rows > :last-child .oex-row { border-block-end: 0; }
 
   /* Startable rows are anchors — the hover tint is the row's whole
      elevation story (no lift, no shadow stacking; Superlist calm). The
@@ -455,10 +459,15 @@
     color: var(--accent-fg);
   }
 
-  /* Row-level focus cue: the universal ring lands on the visually
-     hidden radio; this ties the surrounding row to it. */
+  /* Row-level focus cue: the universal :focus-visible ring lands on the
+     visually hidden radio (motion.css); the surrounding row joins it
+     with the SAME system ring this sheet pins on .oex-row / .oex-q —
+     not a weaker border-only tint (the selected state keeps the accent
+     border, the ring carries the focus). */
   .oex-choice:has(input:focus-visible) {
     border-color: var(--accent);
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
   }
 
   /* Locked while this question's save is in flight — the same honesty
@@ -477,10 +486,13 @@
 
   .oex-answer-field { margin-block-start: var(--sp-4); }
 
-  /* The near-limit counter (last 400 chars) — quiet, end-aligned. */
+  /* The near-limit counter (last 400 chars) — quiet, end-aligned; the
+     N/4000 run is numeric, so it rides tabular figures (the same
+     font-variant-numeric idiom as .oex-timer / .oex-grade-value). */
   .oex-char-count {
     margin: 0;
     text-align: end;
+    font-variant-numeric: tabular-nums;
   }
 
   /* Save-state chip at the question footer — the positive half of the
@@ -555,6 +567,15 @@
     .oex-qmap-dot { min-inline-size: 44px; min-block-size: 44px; }
   }
 
+  /* r290 idiom (polish.css): the touch floor follows the POINTER, not
+     the width — coarse-pointer tablets (641–920px) kept the 36px dot
+     while it is this surface's primary question navigation. The same
+     declarations as the ≤640 rule above, now at ANY width on real
+     touch devices; the fine-pointer mouse keeps the compact 36px dot. */
+  @media (hover: none) and (pointer: coarse) {
+    .oex-qmap-dot { min-inline-size: 44px; min-block-size: 44px; }
+  }
+
   /* ═══ 3 · Begin / done / result screens ════════════════════════════ */
 
   .oex-begin-note {
@@ -584,6 +605,17 @@
     margin: 0;
     max-inline-size: 52ch;
     color: var(--text-muted);
+  }
+
+  /* Shape-matched loading for the deep-link done-state — the resolved
+     anatomy (moment → title → grade lockup → note → action) as bars,
+     centered like the .empty-state column it swaps for. */
+  .oex-result-skel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
   }
 
   /* The authored moment — the grade reveal: the real score lands as the

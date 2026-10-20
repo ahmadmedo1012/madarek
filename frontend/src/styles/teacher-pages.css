@@ -172,6 +172,14 @@
   }
   .tpg-grade-table .input-narrow { max-inline-size: 180px; }
 
+  /* The read-side table above the entry ledger: the % columns ride the
+     shared .tbl-num class, which has NO base rule — the same scoped
+     tabular-nums the students roster (.tpg-students .tbl-num) gets, so
+     the two read tables scan identically. */
+  .tpg-grades .tbl-num {
+    font-variant-numeric: tabular-nums;
+  }
+
   /* ── 4 · Materials — file rows with trailing meta ────────────────── */
   .tpg-mat-list { display: flex; flex-direction: column; }
   .tpg-mat-row {

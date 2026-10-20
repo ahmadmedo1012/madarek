@@ -14,7 +14,7 @@ import { X } from 'lucide-react';
 import { Modal } from '../overlays/Modal';
 import { ConfirmDialog } from '../owner/ConfirmDialog';
 import { Icon } from '../Icon';
-import { FormField as SharedFormField } from '../primitives/Form';
+import { Button, FormField as SharedFormField } from '../primitives/Form';
 import { apiErrorMessage } from '../../hooks/useResources';
 
 export function AuthoringModal({
@@ -22,6 +22,7 @@ export function AuthoringModal({
   onClose,
   closeOnOverlayClick,
   closeOnEscape = true,
+  pending = false,
   children,
 }: {
   title: string;
@@ -31,6 +32,10 @@ export function AuthoringModal({
   /** Defaults to true; pass false while a stacked dialog (e.g. the
    *  discard-confirm of useDiscardGuard) owns the Escape key. */
   closeOnEscape?: boolean;
+  /** True while the form's mutation is in flight — disables the header
+   *  X (requestClose is already a no-op while pending via r157; the
+   *  exam modals' disabled-X idiom makes that contract visible). */
+  pending?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -60,7 +65,16 @@ export function AuthoringModal({
         >
           {title}
         </h2>
-        <button type="button" className="btn ghost sm" onClick={onClose} aria-label="إغلاق">
+        {/* The exam modals' X-disable idiom (ExamAuthorPages): while a
+         *  mutation is pending the guard's requestClose is a safe no-op,
+         *  but a clickable X promises a close it will not deliver. */}
+        <button
+          type="button"
+          className="btn ghost sm"
+          onClick={onClose}
+          aria-label="إغلاق"
+          disabled={pending}
+        >
           <Icon icon={X} size={14} />
         </button>
       </header>
@@ -114,7 +128,14 @@ export function FormField({
 
 /** Form footer with cancel / submit — the submit button is type="submit"
  *  and must live INSIDE the <form> so the form's onSubmit (and Enter key)
- *  drives it; no separate onClick to avoid double submissions. */
+ *  drives it; no separate onClick to avoid double submissions.
+ *
+ *  The shared Button primitive's loading grammar (the exam modals'
+ *  idiom): while `pending` the button shows the canonical spinner, sets
+ *  aria-busy + data-loading and disables itself, while the label-swap
+ *  children (the Arabic pending label) ride the primitive's
+ *  visually-hidden span — so screen readers announce «جارٍ الحفظ…»
+ *  exactly like the exam surfaces' submits. */
 export function ModalActions({
   pending,
   pendingLabel,
@@ -139,12 +160,16 @@ export function ModalActions({
         marginTop: 'var(--sp-1)',
       }}
     >
-      <button type="button" className="btn ghost" onClick={onCancel} disabled={pending}>
+      <Button variant="ghost" onClick={onCancel} disabled={pending}>
         إلغاء
-      </button>
-      <button type="submit" className={`btn ${danger ? 'danger' : 'primary'}`} disabled={pending}>
+      </Button>
+      <Button
+        variant={danger ? 'danger' : 'primary'}
+        type="submit"
+        loading={pending}
+      >
         {pending ? (pendingLabel ?? 'جارٍ الحفظ…') : submitLabel}
-      </button>
+      </Button>
     </div>
   );
 }

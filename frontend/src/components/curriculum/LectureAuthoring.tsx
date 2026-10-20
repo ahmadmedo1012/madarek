@@ -105,6 +105,7 @@ export function LectureFormModal({
       onClose={requestClose}
       closeOnOverlayClick={!pending}
       closeOnEscape={!escapeLocked && !pending}
+      pending={pending}
     >
       <form onSubmit={onSubmit} noValidate>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
@@ -121,7 +122,10 @@ export function LectureFormModal({
             <textarea id={descId} rows={3} className="auth-input" style={{ blockSize: 'auto', paddingInlineStart: 'var(--sp-4)', resize: 'vertical' }} {...form.register('description')} />
           </FormField>
 
-          <div className="auth-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--sp-3)' }}>
+          {/* cur-grid-2 (teacher-quality.css): the 2-col field grid WITH
+           * the ≤480px collapse — the old inline grid-template-columns
+           * overrode the shared mobile ladder with no way back. */}
+          <div className="cur-grid-2">
             <FormField label="المدة (اختياري)" htmlFor={durId} error={err.duration?.message} hint="بصيغة دقائق:ثوانٍ مثل 45:00">
               <TimeInput
                 id={durId}
@@ -228,6 +232,7 @@ export function LectureAuthoringList({
         return (
           <div
             key={lecture.id}
+            className="cur-lec-row"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -297,28 +302,33 @@ export function LectureAuthoringList({
                 </span>
               </span>
             </button>
-            <a
-              href={lecture.videoUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="btn ghost sm"
-              aria-label={`فتح فيديو ${lecture.title}`}
-              title="فتح الفيديو"
-            >
-              <Icon icon={ExternalLink} size={12} />
-            </a>
-            <button type="button" className="btn ghost sm" onClick={() => onEdit(lecture)}>
-              <Icon icon={Pencil} size={12} /> تعديل
-            </button>
-            <button
-              type="button"
-              className="btn ghost sm"
-              style={{ color: 'var(--danger)' }}
-              onClick={() => setDeleting(lecture)}
-              aria-label={`حذف ${lecture.title}`}
-            >
-              <Icon icon={Trash2} size={12} />
-            </button>
+            {/* The trailing action cluster — ≤640px it wraps onto its own
+             * line (cur-lec-actions, teacher-quality.css) instead of
+             * squeezing the title to an unusable sliver on phones. */}
+            <div className="cur-lec-actions">
+              <a
+                href={lecture.videoUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="btn ghost sm"
+                aria-label={`فتح فيديو ${lecture.title}`}
+                title="فتح الفيديو"
+              >
+                <Icon icon={ExternalLink} size={12} />
+              </a>
+              <button type="button" className="btn ghost sm" onClick={() => onEdit(lecture)}>
+                <Icon icon={Pencil} size={12} /> تعديل
+              </button>
+              <button
+                type="button"
+                className="btn ghost sm"
+                style={{ color: 'var(--danger)' }}
+                onClick={() => setDeleting(lecture)}
+                aria-label={`حذف ${lecture.title}`}
+              >
+                <Icon icon={Trash2} size={12} />
+              </button>
+            </div>
           </div>
         );
       })}

@@ -55,12 +55,15 @@ function renderPage() {
   );
 }
 
+/* The waiting-age fixture: 3 hours before "now", so the rendered age
+ * is deterministically «منذ 3 ساعات» (formatRelativeArShort rounds to
+ * the hour — the test runs seconds after the fixture is built). */
 const QUEUE_ITEM = {
   id: 'tpl-1',
   title: 'اختبار نهائي — قواعد البيانات',
   kind: 'FINAL',
   durationMin: 60,
-  createdAt: new Date().toISOString(),
+  createdAt: new Date(Date.now() - 3 * 3_600_000).toISOString(),
   offering: { course: { name: 'قواعد البيانات' } },
   author: { firstName: 'سالم', lastName: 'الطاهر' },
   _count: { questions: 12 },
@@ -88,6 +91,17 @@ describe('ExamModerationPage — disclosure keyboard semantics (A8 P3-6)', () =>
     expect(panel).not.toBeNull();
     expect(panel).toHaveAttribute('role', 'region');
     expect(panel).toHaveAttribute('aria-label', 'مراجعة اختبار نهائي — قواعد البيانات');
+  });
+
+  it('discloses each row’s waiting age and the queue order — createdAt rendered, FIFO named', async () => {
+    renderPage();
+
+    // The payload's createdAt finally renders: the waiting age IS the
+    // prioritisation signal (the backend queue is oldest-first).
+    const row = await screen.findByRole('listitem');
+    expect(row).toHaveTextContent('بانتظار المراجعة منذ 3 ساعات');
+    // …and the queue card names its order contract up front.
+    expect(screen.getByText('الطابور بالأقدم أولًا')).toBeInTheDocument();
   });
 
   it('Escape closes the open panel and returns focus to its toggle', async () => {

@@ -27,7 +27,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { AttendancePage, AssignmentsPage, MaterialsPage, MessagesPage, GradesPage, StudentsListPage, TeacherSchedulePage } from '../../src/pages/teacher/TeacherPages';
+import { AttendancePage, AssignmentsPage, MaterialsPage, MessagesPage, GradesPage, StudentsListPage, TeacherSchedulePage, queueDueLabel } from '../../src/pages/teacher/TeacherPages';
 import { useAuthStore } from '../../src/stores/auth.store';
 import { useToastStore } from '../../src/lib/toast';
 import type { AuthUser } from '../../src/stores/auth.store';
@@ -1507,5 +1507,65 @@ describe('P3 — MaterialFormModal file mode (direct PDF upload)', () => {
     const typeSelect = screen.getByLabelText('النوع') as HTMLSelectElement;
     expect(typeSelect.value).toBe('PDF');
     expect(screen.getByLabelText(/الرابط \(https\)/)).toBeInstanceOf(HTMLInputElement);
+  });
+});
+
+/* ── E (workstream 3-a): the queue sub-line's overdue copy + the
+ * assignments ratio badge's deadline awareness ─────────────────── */
+describe('queueDueLabel — the queue sub-line due copy (E / 3-a)', () => {
+  it('flips the verb for an overdue group: «استحقّ منذ يومين» — never the contradictory «يستحقّ انتهى منذ يومين»', () => {
+    const overdue = new Date(Date.now() - 2 * 86_400_000).toISOString();
+    expect(queueDueLabel(overdue)).toBe('استحقّ منذ يومين');
+    expect(queueDueLabel(overdue)).not.toContain('انتهى');
+  });
+
+  it('keeps the present tense for future dates — today, tomorrow, counted days, calendar date', () => {
+    expect(queueDueLabel(new Date().toISOString())).toBe('يستحقّ اليوم');
+    expect(queueDueLabel(new Date(Date.now() + 86_400_000).toISOString())).toBe('يستحقّ غداً');
+    expect(queueDueLabel(new Date(Date.now() + 3 * 86_400_000).toISOString())).toBe('يستحقّ بعد 3 أيام');
+    // ≥7 days out, the calendar date rides the same present-tense prefix.
+    const far = queueDueLabel(new Date(Date.now() + 10 * 86_400_000).toISOString());
+    expect(far.startsWith('يستحقّ ')).toBe(true);
+    expect(far).not.toContain('منذ');
+  });
+});
+
+describe('AssignmentsPage — the ratio badge keys off the deadline (E / 3-a)', () => {
+  it('a future-due assignment with a low ratio renders NEUTRAL — low uptake is not a problem yet', () => {
+    mocks.assignments = [{
+      ...ASSIGNMENT,
+      submissions: 1,
+      enrolled: 4, // 25% — the old ratio-only tone map painted this red
+      dueAt: new Date(Date.now() + 3 * 86_400_000).toISOString(),
+    }];
+    render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+
+    const ratio = screen.getByText('25%');
+    expect(ratio).toHaveClass('badge');
+    // NEUTRAL: no tone class rides the badge (Badge with no color).
+    expect(ratio.classList.contains('red')).toBe(false);
+    expect(ratio.classList.contains('amber')).toBe(false);
+    expect(ratio.classList.contains('green')).toBe(false);
+  });
+
+  it('overdue keeps the strict mapping; due today is urgent; a healthy future ratio stays green', () => {
+    mocks.assignments = [
+      { ...ASSIGNMENT, id: 'late', title: 'واجب متأخر', submissions: 1, enrolled: 4, dueAt: new Date(Date.now() - 2 * 86_400_000).toISOString() },
+      { ...ASSIGNMENT, id: 'today', title: 'واجب اليوم', submissions: 2, enrolled: 4, dueAt: new Date().toISOString() },
+      { ...ASSIGNMENT, id: 'early', title: 'واجب مبكر', submissions: 3, enrolled: 4, dueAt: new Date(Date.now() + 5 * 86_400_000).toISOString() },
+    ];
+    render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('25%')).toHaveClass('red');   // overdue + low uptake → strict red
+    expect(screen.getByText('50%')).toHaveClass('amber'); // due today counts as urgent
+    expect(screen.getByText('75%')).toHaveClass('green'); // future + healthy → green either way
   });
 });

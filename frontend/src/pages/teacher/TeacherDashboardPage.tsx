@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import {
   Users,
   AlertTriangle, FileText, Bell,
-  CheckCircle2, Filter, Sparkles, Microscope,
+  CheckCircle2, Filter, Activity, Microscope,
   ClipboardCheck, Calendar,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
-import { ErrorState, ChartSkeleton, ListSkeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, ChartSkeleton, ListSkeleton } from '../../components/primitives/States';
 import {
   PageFrame, PageHeader, SectionHeader, RowList, RowItem, StatLine, TodayList, FilterBar,
 } from '../../components/patterns';
@@ -54,11 +54,24 @@ const KIND_TONE: Record<'submissions' | 'research' | 'attendance', 'amber' | 're
   attendance: 'red',
 };
 /* The action names what clicking actually does (mission H) — a generic
- * "مراجعة" on every row hides the destination. */
+ * "مراجعة" on every row hides the destination. The attendance action
+ * names the recording form it opens (/teacher/attendance) — no log
+ * view exists, so a "عرض السجل" label promised a page that isn't
+ * there. */
 const KIND_ACTION: Record<'submissions' | 'research' | 'attendance', string> = {
   submissions: 'تقييم التسليم',
   research: 'مراجعة البحث',
-  attendance: 'عرض السجل',
+  attendance: 'تسجيل الحضور',
+};
+/* Visual weight follows the action's kind — decision > review >
+ * informational: grading a submission is the teacher's decision queue
+ * (primary), reviewing research is a read-then-decide flow (outline),
+ * recording attendance is an informational form (ghost). The old
+ * all-primary row made every action shout equally. */
+const KIND_ACTION_CLASS: Record<'submissions' | 'research' | 'attendance', string> = {
+  submissions: 'btn primary sm',
+  research: 'btn outline sm',
+  attendance: 'btn ghost sm',
 };
 
 /* countAr + formatRelativeAr live in lib/format.ts (wave 9-a). */
@@ -316,20 +329,18 @@ export function TeacherDashboardPage() {
 
       {/* Performance + attendance trend — real 6-week data, wrapped for
           screen readers (aria-label + sr-only data table, audit 0-f). */}
-      <Card title="اتجاه الأداء والحضور" icon={Sparkles} subtitle="متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية">
+      <Card title="اتجاه الأداء والحضور" icon={Activity} subtitle="متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية">
         {!coverage.drawable ? (
           <>
-            <div className="state state-empty" role="status">
-              <div className="state-icon">
-                <Icon icon={Sparkles} size={20} />
-              </div>
-              <div className="state-title">لا تتوفّر بيانات كافية بعد لرسم الاتجاه</div>
-              <div className="state-desc">
-                {coverage.weeksRecorded === 0
+            <EmptyState
+              icon={Activity}
+              title="لا تتوفّر بيانات كافية بعد لرسم الاتجاه"
+              description={
+                coverage.weeksRecorded === 0
                   ? 'لم يُسجَّل أي أسبوع حتى الآن — يُرسم المخطط تلقائياً بعد اكتمال أسبوعين على الأقل.'
-                  : `${countAr(coverage.weeksRecorded, ['أسبوع واحد مسجَّل', 'أسبوعان مسجَّلان', 'أسابيع مسجَّلة', 'أسبوعاً مسجَّلاً'])} حتى الآن — يُرسم المخطط تلقائياً بعد اكتمال أسبوعين على الأقل.`}
-              </div>
-            </div>
+                  : `${countAr(coverage.weeksRecorded, ['أسبوع واحد مسجَّل', 'أسبوعان مسجَّلان', 'أسابيع مسجَّلة', 'أسبوعاً مسجَّلاً'])} حتى الآن — يُرسم المخطط تلقائياً بعد اكتمال أسبوعين على الأقل.`
+              }
+            />
             {/* The real data points stay available to screen readers
                 even while the canvas is withheld. */}
             <div className="visually-hidden">
@@ -410,19 +421,17 @@ export function TeacherDashboardPage() {
       <RowList
         aria-label="تيار المتابعة"
         empty={
-          <div className="state">
-            <div className="state-icon state-icon-success">
-              <Icon icon={CheckCircle2} size={20} />
-            </div>
-            <div className="state-title">لا متطلبات الآن — أحسنت!</div>
-            <div className="state-desc">سيظهر هنا أي عنصر جديد فور وصوله.</div>
-            <div style={{ marginBlockStart: 'var(--sp-3)' }}>
+          <EmptyState
+            icon={CheckCircle2}
+            title="لا متطلبات الآن — أحسنت!"
+            description="سيظهر هنا أي عنصر جديد فور وصوله."
+            action={
               <Link to="/teacher/intelligence" className="btn outline sm">
                 <Icon icon={Users} size={13} />
                 استعرض أداء مقرّراتك
               </Link>
-            </div>
-          </div>
+            }
+          />
         }
       >
         {visible.map((item) => <FeedRow key={item.id} item={item} />)}
@@ -492,7 +501,7 @@ function FeedRow({ item }: { item: TeacherDashboard['feed'][number] }) {
         </>
       }
       trailing={
-        <Link to={item.actionTo} className="btn primary sm">
+        <Link to={item.actionTo} className={KIND_ACTION_CLASS[item.kind]}>
           <Icon icon={Icon_} size={13} />
           {KIND_ACTION[item.kind]}
         </Link>
@@ -538,7 +547,18 @@ function PendingGradingQueue({ entries }: { entries: TeacherDashboard['pendingGr
             <RowItem
               key={e.assignmentId}
               to={e.actionTo}
-              leading={<span className="tq-num" aria-hidden="true">{formatNum(e.count)}</span>}
+              leading={
+                <>
+                  {/* The tabular count is decorative — the spoken value
+                      rides a visually-hidden counted noun (the
+                      queue-group badge vocabulary), so screen readers
+                      hear the per-row submission count. */}
+                  <span className="tq-num" aria-hidden="true">{formatNum(e.count)}</span>
+                  <span className="visually-hidden">
+                    {countAr(e.count, ['تسليم واحد', 'تسليمان', 'تسليمات', 'تسليماً'])}
+                  </span>
+                </>
+              }
               title={e.title}
               meta={
                 <>

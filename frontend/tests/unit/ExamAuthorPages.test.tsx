@@ -650,6 +650,21 @@ describe('CreateQuestionModal — validation before the wire', () => {
     });
     expect(postsTo('/question-bank')[0]![1]).toMatchObject({ type: 'SHORT', correctAnswer: 'رقم يعرّف الجهاز في الشبكة' });
   });
+
+  it('renders BOTH the choices error and the correct-answer error (3-d)', async () => {
+    const dialog = await openCreateQuestionModal();
+
+    fireEvent.change(within(dialog).getByLabelText('تصنيف السؤال'), { target: { value: 'cat1' } });
+    fireEvent.change(within(dialog).getByLabelText('نص السؤال'), { target: { value: 'ما هو بروتوكول TCP؟' } });
+    // Choice 1 filled, choice 2 left empty AND no correct answer marked —
+    // the old `correctError ?? choicesError` swallowed the choices error.
+    fireEvent.change(within(dialog).getByLabelText('نص الخيار 1'), { target: { value: 'بروتوكول نقل موثوق' } });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'حفظ السؤال' }));
+
+    expect(await within(dialog).findByText('حدِّد الإجابة الصحيحة قبل الحفظ.')).toBeInTheDocument();
+    expect(within(dialog).getByText('أكمل نص كل الخيارات.')).toBeInTheDocument();
+    expect(postsTo('/question-bank')).toHaveLength(0);
+  });
 });
 
 /* ── 5. Template builder ──────────────────────────────────────── */
@@ -723,6 +738,90 @@ describe('TemplateBuilderModal — picker sum + payload', () => {
     await screen.findByLabelText('النطاق');
     const scope = screen.getByLabelText('النطاق');
     expect(within(scope).getByRole('option', { name: 'عام (كل الكلّيّات)' })).toBeInTheDocument();
+  });
+
+  it('3-d — states the pick-order contract and shows live ordinal chips that renumber on unpick', async () => {
+    renderAt('/teacher/exams');
+    fireEvent.click(await screen.findByRole('button', { name: 'قالب اختبار جديد' }));
+
+    // The contract is stated up front (randomized defaults ON → the
+    // per-student shuffle note rides the same line).
+    expect(
+      await screen.findByText(/ترتيب اختيارك يحدّد ترتيب الأسئلة في الاختبار/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/ويُخلط عشوائياً لكل طالب عند بدئه/),
+    ).toBeInTheDocument();
+
+    const q1 = await screen.findByRole('checkbox', { name: /اختيار السؤال: ما هو بروتوكول TCP/ });
+    const q2 = screen.getByRole('checkbox', { name: /اختيار السؤال: بروتوكول UDP موثوق/ });
+    fireEvent.click(q1);
+    fireEvent.click(q2);
+
+    // Chips in row order: the first picked row carries 1, the second 2
+    // (the live pick sequence — the wire's questionIds array order).
+    let chips = await screen.findAllByTitle('ترتيب السؤال في الاختبار');
+    expect(chips).toHaveLength(2);
+    expect(chips[0]).toHaveTextContent('ترتيبه في الاختبار: 1');
+    expect(chips[1]).toHaveTextContent('ترتيبه في الاختبار: 2');
+
+    // Unpick the first → the remaining pick renumbers to 1.
+    fireEvent.click(q1);
+    chips = screen.getAllByTitle('ترتيب السؤال في الاختبار');
+    expect(chips).toHaveLength(1);
+    expect(chips[0]).toHaveTextContent('ترتيبه في الاختبار: 1');
+  });
+});
+
+/* ── 5-b. Caps honesty — the take:100 listings disclose the cap ── */
+
+describe('listings — the take:100 cap is disclosed, never silent (3-d)', () => {
+  it('bank: a full page renders the «first 100» note', async () => {
+    state.bank = Array.from({ length: 100 }, (_, i) =>
+      questionFixture({ id: `qb-${i}`, prompt: `سؤال البنك ${i + 1}` }));
+    renderAt('/teacher/exams');
+    fireEvent.click(await screen.findByRole('tab', { name: 'بنك الأسئلة' }));
+    expect(
+      await screen.findByText('تُعرض أول 100 نتيجة — قد تكون هناك المزيد.'),
+    ).toBeInTheDocument();
+  });
+
+  it('bank: fewer than 100 results carry no cap note', async () => {
+    renderAt('/teacher/exams');
+    fireEvent.click(await screen.findByRole('tab', { name: 'بنك الأسئلة' }));
+    await screen.findByText('ما هو بروتوكول TCP؟');
+    expect(screen.queryByText('تُعرض أول 100 نتيجة — قد تكون هناك المزيد.')).toBeNull();
+  });
+
+  it('templates: the same disclosure once the list fills the cap', async () => {
+    state.templates = Array.from({ length: 100 }, (_, i) =>
+      templateRowFixture({ id: `tt-${i}`, title: `قالب ${i + 1}` }));
+    renderAt('/teacher/exams');
+    expect(
+      await screen.findByText('تُعرض أول 100 نتيجة — قد تكون هناك المزيد.'),
+    ).toBeInTheDocument();
+  });
+});
+
+/* ── 5-c. Detail question order badges — the wire's eq.order ───── */
+
+describe('ExamTemplateDetailPage — question order badges (3-d)', () => {
+  it('badges carry the wire order, not the array index', async () => {
+    const base = detailFixture();
+    state.detail = detailFixture({
+      questions: [
+        { ...base.questions[0]!, order: 7 },
+        { ...base.questions[1]!, order: 12 },
+      ],
+    });
+    renderAt('/teacher/exams/t1');
+
+    const section = await screen.findByRole('region', { name: 'أسئلة القالب' });
+    // Non-sequential wire orders render as-is (index+1 would show 1/2).
+    const badge7 = within(section).getByText('7');
+    expect(badge7).toHaveClass('exa-order');
+    const badge12 = within(section).getByText('12');
+    expect(badge12).toHaveClass('exa-order');
   });
 });
 
@@ -1029,11 +1128,41 @@ describe('GradeAttemptModal — verdicts → payload → finalize', () => {
     await waitFor(() => {
       expect(postsTo('/exams/attempts/at1/grade')).toHaveLength(1);
     });
+    // 3-d: while in flight the submit announces its pending label —
+    // «جارٍ اعتماد الدرجة…» rides the Button's visually-hidden span.
+    expect(submit).toHaveAttribute('aria-busy', 'true');
+    expect(submit).toHaveTextContent('جارٍ اعتماد الدرجة…');
     fireEvent.click(submit);
     expect(postsTo('/exams/attempts/at1/grade')).toHaveLength(1);
 
     resolvePost({ data: { score: 7, maxScore: 10, status: 'GRADED', passed: true } });
     await within(dialog).findByText(/اعتُمدت الدرجة النهائية/);
+  });
+
+  it('flags only the cards still missing a verdict on a failed finalize (3-d)', async () => {
+    const dialog = await openGradeModal();
+    const g1 = within(dialog).getByRole('group', { name: 'حكم إجابة السؤال 1' });
+    const g2 = within(dialog).getByRole('group', { name: 'حكم إجابة السؤال 2' });
+
+    // Only the first answer gets a verdict → the client mirror blocks.
+    fireEvent.click(within(g1).getByRole('button', { name: 'صحيحة' }));
+    fireEvent.click(within(dialog).getByRole('button', { name: 'حفظ التصحيح واعتماد الدرجة' }));
+    expect(await within(dialog).findByText(/حدِّد حكمك — صحيحة أم خاطئة — لكل إجابة معلّقة/)).toBeInTheDocument();
+
+    // The undecided card is flagged (data-invalid + aria-invalid on its
+    // verdict group); the decided one is not.
+    const card1 = g1.closest('.exa-grade-card');
+    const card2 = g2.closest('.exa-grade-card');
+    expect(card1).not.toHaveAttribute('data-invalid');
+    expect(card2).toHaveAttribute('data-invalid', 'true');
+    expect(g1).not.toHaveAttribute('aria-invalid');
+    expect(g2).toHaveAttribute('aria-invalid', 'true');
+
+    // Landing the missing verdict clears that card's flag (derived state,
+    // no second submit needed).
+    fireEvent.click(within(g2).getByRole('button', { name: 'خاطئة' }));
+    expect(g2).not.toHaveAttribute('aria-invalid');
+    expect(card2).not.toHaveAttribute('data-invalid');
   });
 
   it('finalizes a nothing-parked SUBMITTED attempt with an empty answers payload', async () => {
