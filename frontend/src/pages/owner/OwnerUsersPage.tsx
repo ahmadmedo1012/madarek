@@ -1,8 +1,12 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { Users, Search, ChevronLeft, ChevronRight, X, AlertCircle } from 'lucide-react';
-import { StatStrip } from '../../components/primitives/Ledger';
+import { useEffect, useRef, useState } from 'react';
+import { Users, ChevronLeft, ChevronRight, X, AlertCircle } from 'lucide-react';
+/* r252 (Phase B): the directory composes the shell patterns — StatLine
+ * facts, FilterBar (search + role pills), and the table becomes dense
+ * RowList rows whose actions live behind the inline expansion (the
+ * Superlist "detail attached to the item" move). */
+import { PageFrame, PageHeader as PatternsPageHeader, StatLine, FilterBar, RowList, RowItem } from '../../components/patterns';
 import { Card, Badge, UserAvatar, AlertRow } from '../../components/primitives';
-import { ErrorState, EmptyState, TableSkeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, ListSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { apiErrorMessage } from '../../hooks/useResources';
@@ -18,9 +22,10 @@ import { formatDate, formatNum } from '../../utils/numbers';
  *  - pagination rebuilt on the .table-pagination system: windowed page
  *    numbers, RTL-correct chevrons (prev points right in RTL), honest
  *    "page X of Y · N users" line, aria-current, disabled edge states
- *  - table migrated to the .table system + .tbl-stack mobile collapse,
- *    row actions reveal on hover/focus (.table-row-actions)
- *  - row entrance stagger is the page's authored moment (owner.css §6-b)
+ *  - r252 (Phase B): the 7-column table becomes RowList rows — identity
+ *    + role/status at a glance, memberships in the meta line, and the
+ *    actions (role picker + status toggle + joined date) behind each
+ *    row's inline expansion. Same server contract, same confirm flow.
  */
 
 type RoleFilter = 'ALL' | 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY';
@@ -270,54 +275,49 @@ export function OwnerUsersPage() {
     stats.isPending ? '…' : statData ? formatNum(n) : '—';
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">إدارة المستخدمين</h1>
-          <p className="page-subtitle">عرض جميع حسابات المنصّة والبحث فيها وإدارتها</p>
-        </div>
-      </header>
+    <PageFrame width="default">
+      <PatternsPageHeader
+        title="إدارة المستخدمين"
+        description="عرض جميع حسابات المنصّة والبحث فيها وإدارتها"
+        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المستخدمون' }]}
+      />
 
       {/* Metrics — real values only: '…' while loading, '—' on error
-          (never a fake zero). */}
-      <StatStrip
-        ariaLabel="إحصائيات مستخدمي المنصّة"
-        cells={[
-          { label: 'إجمالي المستخدمين', value: kpiValue(statData?.totalUsers ?? 0), trend: 'حسابات مسجَّلة', trendTone: 'flat' },
-          { label: 'الطلاب', value: kpiValue(statData?.students ?? 0), trend: 'أكبر شريحة', trendTone: 'flat' },
-          { label: 'الأساتذة', value: kpiValue(statData?.teachers ?? 0), trend: 'هيئة التدريس', trendTone: 'flat' },
-          { label: 'إداريون وجودة', value: kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0)), trend: 'إدارة ومتابعة', trendTone: 'flat' },
+          (never a fake zero). r252: the patterns StatLine. */}
+      <StatLine
+        items={[
+          { label: 'إجمالي المستخدمين', value: kpiValue(statData?.totalUsers ?? 0), hint: 'حسابات مسجَّلة' },
+          { label: 'الطلاب', value: kpiValue(statData?.students ?? 0), hint: 'أكبر شريحة' },
+          { label: 'الأساتذة', value: kpiValue(statData?.teachers ?? 0), hint: 'هيئة التدريس' },
+          { label: 'إداريون وجودة', value: kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0)), hint: 'إدارة ومتابعة' },
         ]}
       />
 
-      {/* Search and Filter */}
-      <Card>
-        <div className="owner-search-bar">
-          <Icon icon={Search} size={16} />
-          <input
-            type="search"
-            placeholder="ابحث بالاسم أو البريد الإلكتروني…"
-            aria-label="بحث في حسابات المستخدمين"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <div className="owner-filter-pills" role="group" aria-label="تصفية حسب الدور">
-          {filterItems.map((f) => (
-            <button
-              key={f.value}
-              type="button"
-              className={`pill${roleFilter === f.value ? ' on' : ''}`}
-              aria-pressed={roleFilter === f.value}
-              onClick={() => { setRoleFilter(f.value); setPage(1); }}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-      </Card>
+      {/* r252: search + role pills ride one FilterBar rail. */}
+      <FilterBar
+        search={{
+          value: search,
+          onChange: setSearch,
+          placeholder: 'ابحث بالاسم أو البريد الإلكتروني…',
+        }}
+        filters={(
+          <div className="owner-filter-pills" role="group" aria-label="تصفية حسب الدور">
+            {filterItems.map((f) => (
+              <button
+                key={f.value}
+                type="button"
+                className={`pill${roleFilter === f.value ? ' on' : ''}`}
+                aria-pressed={roleFilter === f.value}
+                onClick={() => { setRoleFilter(f.value); setPage(1); }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        )}
+      />
 
-      {/* Users Table */}
+      {/* Users list — dense rows with inline expansion (r252). */}
       <Card className="owner-users-card">
         {actionError && (
           <AlertRow
@@ -349,8 +349,7 @@ export function OwnerUsersPage() {
         )}
 
         {ownerUsers.isPending ? (
-          /* 7 columns — r183-B5 added المؤسسات to the header row. */
-          <TableSkeleton rows={6} cols={7} />
+          <ListSkeleton rows={6} />
         ) : ownerUsers.isError ? (
           <ErrorState error={ownerUsers.error} onRetry={() => ownerUsers.refetch()} />
         ) : users.length === 0 ? (
@@ -369,51 +368,26 @@ export function OwnerUsersPage() {
             ) : undefined}
           />
         ) : (
-          <div className="table-wrap">
-            <table className="table tbl-stack owner-users-table">
-              <thead>
-                <tr>
-                  <th scope="col">المستخدم</th>
-                  <th scope="col">البريد الإلكتروني</th>
-                  <th scope="col">الدور</th>
-                  {/* r183-B5 (A9 wave-A P2): the institution scope — chips
-                      from the ACTIVE memberships the route now ships. */}
-                  <th scope="col">المؤسسات</th>
-                  <th scope="col">الحالة</th>
-                  <th scope="col">تاريخ الانضمام</th>
-                  <th scope="col">إجراءات</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user, i) => {
-                  const joined = new Date(user.createdAt);
-                  const sevenDaysAgo = new Date();
-                  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                  const isRecent = joined > sevenDaysAgo;
-                  return (
-                    <tr key={user.id} style={{ '--row-i': i } as CSSProperties}>
-                      <td className="tbl-strong" data-label="المستخدم">
-                        <div className="owner-user-cell">
-                          <UserAvatar initials={user.avatarInitials} color={user.avatarColor ?? undefined} size={32} />
-                          <span className="name">{user.firstName} {user.lastName}</span>
-                        </div>
-                      </td>
-                      <td data-label="البريد الإلكتروني">
+          <>
+            <RowList aria-label="قائمة المستخدمين">
+              {users.map((user) => {
+                const joined = new Date(user.createdAt);
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                const isRecent = joined > sevenDaysAgo;
+                return (
+                  <RowItem
+                    key={user.id}
+                    leading={<UserAvatar initials={user.avatarInitials} color={user.avatarColor ?? undefined} size={36} />}
+                    title={`${user.firstName} ${user.lastName}`}
+                    meta={(
+                      <>
                         <bdi className="owner-num" dir="ltr">{user.email}</bdi>
-                      </td>
-                      <td data-label="الدور">
-                        <Badge color={ROLE_COLORS[user.role]}>
-                          {ROLE_LABELS[user.role] ?? <bdi>{user.role}</bdi>}
-                        </Badge>
-                      </td>
-                      <td data-label="المؤسسات">
+                        {' · '}
                         {user.memberships.length === 0 ? (
                           <span className="text-xs text-subtle">بلا مؤسسة</span>
                         ) : (
-                          <span
-                            className="flex items-center gap-1"
-                            style={{ flexWrap: 'wrap' }}
-                          >
+                          <span className="flex items-center gap-1" style={{ flexWrap: 'wrap', display: 'inline-flex' }}>
                             {user.memberships.map((m) => (
                               <Badge
                                 key={m.institution.id}
@@ -425,78 +399,68 @@ export function OwnerUsersPage() {
                             ))}
                           </span>
                         )}
-                      </td>
-                      <td data-label="الحالة">
+                      </>
+                    )}
+                    trailing={(
+                      <>
+                        <Badge color={ROLE_COLORS[user.role]}>
+                          {ROLE_LABELS[user.role] ?? <bdi>{user.role}</bdi>}
+                        </Badge>
                         <Badge color={user.isActive ? 'green' : 'red'}>{user.isActive ? 'نشط' : 'معطّل'}</Badge>
-                      </td>
-                      <td data-label="تاريخ الانضمام">
-                        <span className="owner-joined" title={formatDate(joined, { dateStyle: 'full' })}>
-                          {isRecent && (
-                            <>
-                              <span className="owner-health-dot green" aria-hidden />
-                              <span className="visually-hidden">انضم خلال الأسبوع الماضي — </span>
-                            </>
-                          )}
-                          {formatDate(joined, { dateStyle: 'medium' })}
+                      </>
+                    )}
+                    expandLabel={`إجراءات ${user.firstName} ${user.lastName}`}
+                  >
+                    {/* The expansion body — the row's actions (r252): the
+                        role picker, the status toggle, and the joined
+                        date with its recent dot. Same confirm flow as
+                        the table era; nothing fires without its dialog. */}
+                    <div className="owner-row-actions">
+                      <span className="owner-joined" title={formatDate(joined, { dateStyle: 'full' })}>
+                        {isRecent && (
+                          <>
+                            <span className="owner-health-dot green" aria-hidden />
+                            <span className="visually-hidden">انضم خلال الأسبوع الماضي — </span>
+                          </>
+                        )}
+                        انضم {formatDate(joined, { dateStyle: 'medium' })}
+                      </span>
+                      {user.role === 'OWNER' ? (
+                        <span className="text-xs text-subtle" title="دور المالك لا يُغيَّر من هذه الواجهة">
+                          {ROLE_LABELS.OWNER}
                         </span>
-                      </td>
-                      <td data-label="إجراءات">
-                        {/* Actions stay quiet until the row is hovered /
-                            focused (CSS .table-row-actions — persistent on
-                            touch); part of the page's authored moment.
-                            (6A10-7: the trailing owner-row-actions class
-                            was dead — no rule in owner.css ever matched
-                            it; the shared .table-row-actions carries the
-                            whole reveal contract.) */}
-                        <span className="table-row-actions">
-                          {/* r154e: role picker replaces the binary
-                              STUDENT↔TEACHER toggle. The select exposes
-                              STUDENT/TEACHER/ADMIN/QUALITY (OWNER excluded —
-                              backend blocks it, and this UI doesn't create
-                              owners). A confirm dialog guards every change;
-                              promotions to ADMIN/QUALITY and demotions from
-                              those roles are flagged dangerous. */}
-                          {user.role === 'OWNER' ? (
-                            <span className="text-xs text-subtle" title="دور المالك لا يُغيَّر من هذه الواجهة">
-                              {ROLE_LABELS.OWNER}
-                            </span>
-                          ) : (
-                            <select
-                              className="input"
-                              style={{ width: 'auto', minWidth: 120 }}
-                              value={pendingRole?.user.id === user.id ? pendingRole.role : user.role}
-                              onChange={(e) => handleRoleSelect(user, e.target.value)}
-                              disabled={rowBusy(user)}
-                              aria-label={`دور ${user.firstName} ${user.lastName}`}
-                            >
-                              {ELIGIBLE_ROLES.map((r) => (
-                                <option key={r} value={r}>{ROLE_LABELS[r]}</option>
-                              ))}
-                            </select>
-                          )}
-                          <button
-                            type="button"
-                            className="btn ghost sm"
-                            onClick={() => handleToggleStatus(user)}
-                            disabled={rowBusy(user)}
-                          >
-                            {user.isActive ? 'تعطيل' : 'تفعيل'}
-                          </button>
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                      ) : (
+                        <select
+                          className="input"
+                          style={{ width: 'auto', minWidth: 120 }}
+                          value={pendingRole?.user.id === user.id ? pendingRole.role : user.role}
+                          onChange={(e) => handleRoleSelect(user, e.target.value)}
+                          disabled={rowBusy(user)}
+                          aria-label={`دور ${user.firstName} ${user.lastName}`}
+                        >
+                          {ELIGIBLE_ROLES.map((r) => (
+                            <option key={r} value={r}>{ROLE_LABELS[r]}</option>
+                          ))}
+                        </select>
+                      )}
+                      <button
+                        type="button"
+                        className="btn ghost sm"
+                        onClick={() => handleToggleStatus(user)}
+                        disabled={rowBusy(user)}
+                      >
+                        {user.isActive ? 'تعطيل' : 'تفعيل'}
+                      </button>
+                    </div>
+                  </RowItem>
+                );
+              })}
+            </RowList>
 
             {/* Server-side pagination — driven by API meta; bounded page
                 window + RTL-correct chevrons (prev points right in RTL).
                 r164-i (table-coherence): the footer renders whenever rows
-                exist, single page included — the roster's total is always
-                visible, matching the AdminStudentsPage family footer
-                (the old totalPages>1 gate left a single-page roster with
-                no count anywhere). */}
+                exist, single page included. */}
             {meta && users.length > 0 && (
               <div className="table-pagination">
                 <span>
@@ -539,7 +503,7 @@ export function OwnerUsersPage() {
                 </div>
               </div>
             )}
-          </div>
+          </>
         )}
       </Card>
 
@@ -553,6 +517,6 @@ export function OwnerUsersPage() {
         onConfirm={confirmConfig.onConfirm}
         onCancel={() => { setConfirmOpen(false); setPendingRole(null); }}
       />
-    </div>
+    </PageFrame>
   );
 }

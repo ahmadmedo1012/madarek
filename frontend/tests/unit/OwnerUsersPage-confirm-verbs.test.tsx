@@ -95,10 +95,13 @@ function renderPage() {
   );
 }
 
-/** The STUDENT row's table row (both pins act on the same user). */
+/** The STUDENT row (both pins act on the same user) — r252 re-pin:
+ *  the row is a .pf-row and its actions live behind the inline
+ *  expansion, so the helper expands before returning. */
 async function studentRow() {
   renderPage();
-  const row = (await screen.findByText('طالب تجريبي')).closest('tr')!;
+  fireEvent.click(await screen.findByRole('button', { name: 'إجراءات طالب تجريبي' }));
+  const row = (await screen.findByText('طالب تجريبي')).closest('.pf-row')!;
   expect(row).not.toBeNull();
   return row;
 }

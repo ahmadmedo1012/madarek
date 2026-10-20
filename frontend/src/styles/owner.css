@@ -443,6 +443,17 @@
   color: var(--text);
 }
 
+/* r252: the users directory's inline-expansion body (the .pf-row-body
+   child) — the actions row: joined date, role picker, status toggle.
+   Wraps on phones; controls keep the 44px craft floor via .btn/.input. */
+.owner-row-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding-block-start: var(--sp-2);
+}
+
 /* ── Pagination ────────────────────────────────────────────── */
 /* 13-17 dead-selector sweep (11-g P2-7): .owner-pagination deleted —
    OwnerUsersPage finished the ruling-#5 migration to the
