@@ -51,7 +51,7 @@
 npm install                  # تثبيت (workspaces: backend + frontend)
 npm run lint                 # ESLint على frontend/src + backend/src (0 أخطاء إلزامية؛ 19 تحذير exhaustive-deps مسموح موثق — r187)
 npm run typecheck            # tsc للشيفرة والاختبارات في الجهتين — لا يحتاج قاعدة بيانات
-npm test                     # vitest للجهتين — لا يحتاج قاعدة بيانات (1970 واجهة + 1783 خلفية — r189) — والأرقام تُقاس من الشجرة الحاليّة لا تُنسخ من الجولات السابقة
+npm test                     # vitest للجهتين — لا يحتاج قاعدة بيانات (1981 واجهة + 1783 خلفية — r285) — والأرقام تُقاس من الشجرة الحاليّة لا تُنسخ من الجولات السابقة
 npm run test:integration    # حزام تكامل DB الاختياري (12 ملفًا / 116 اختبارًا — r186) — يحتاج DATABASE_URL محلية تجريبية (الحراس يرفض غيرها)
 npm run dev                  # خلفية على :4000 (tsx watch)
 npm run dev:web              # واجهة على :5173 مع proxy ‏/api → :4000

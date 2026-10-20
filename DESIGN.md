@@ -12,6 +12,9 @@
 
 > **R198 (STAGE 2 SHIPPED — the public homepage is the OPTIKKA-direction poster)**: `LandingPage.tsx` + `landing.css` + `components/landing/` rebuilt as «ملصق مدارك». **Chapter plan (BLUEPRINT §6, all code-verified):** poster hero (h1 «مدارك» at a fluid display allow `clamp(56px, 11vw, 96px)`, triad «تعلّم · أتقن · ابحث» with the signal on «أتقن», two CTAs, honest meta chips) → statement (student/teacher/admin, block-revealed) → numbered chapters 01–06 (الفصول المقلوبة / مصفوفة الإتقان / دورة البحوث / الاختبارات الإلكترونية / المجتمع والتدريب / الجودة والحاكمية), alternating split/bleed/offset layouts, each pairing the accent numeral (Western digits, bidi-isolated, mono) with an honest miniature composed from app tokens + demo data and captioned «عرض توضيحي» → «ما يعمل اليوم» honest ledger (the 6 capabilities) → 5-role strip → interactive 25-college constellation (chips + details panel replace the never-rendered CollegesPopover; accessible buttons, no floating popover) → vision status pairs → CTA → slide-up footer with the giant wordmark. **ONE graphic object:** `Constellation.tsx` — flat two-tone SVG generated from the real 25-college registry (3 campus rings, golden-spread deterministic layout, no text in the graphic). **Motion:** the rAF `useScrollStage --sp` engine only (hero drift + footer slide-up/wordmark rush) + IO block reveals; the 700vh pinned mega-stage, telemetry strip, preloader, canvas, video and every r191 choreography are retired. **Deleted:** `TestimonialSection.tsx` (dead since r188), `KnowledgeMap.tsx`, `OrbitPath.tsx`, and 20 raster assets (hero-scene*, orbit-ring*, vision-bg*, card-*, journey-*) — the page ships zero raster imagery; only `madarek-mark.svg` + `madarek-og.jpg` remain in `public/brand/`. **Dark theme = the inversion:** `[data-theme="dark"] .landing` re-points `--poster-signal` → `--accent-strong` #8E9BFF (7.26:1) for text/numerals/nodes — the stage-2 divergence the namespace was designed for; CTA fills stay #2E45E6 with white labels. **Gates re-pinned in the same change:** landing.css moved OUT of the raw-css census into full enforcement (zero raw spacing literals — the census path retired with its fixture); scrollspy/assets/r162/r170d pins rewritten to the poster contract; `landing.css` poster display sizes ship exactly two `type-gate: allow` records (hero + footer wordmark). **Numbers:** every homepage figure computes from data (`colleges.length`, campus count, `LIVE_COUNT`) or code-verified constants (11 tracks / 6 boards / 2 institutions) through `utils/numbers.ts` — Western digits, no CountUp, no invented adoption. **Measured:** 8.5 viewport-heights at 1440×900 desktop (the six-chapter content floor; the ≈5 aspiration and the old 15.8 both rejected), LCP 2.63s under slow-4G + 4× CPU at 390, homepage transfer ≈288 KB incl. fonts, bundle 635.0/650 KB gz. Signed-in users still never see the page (HomeRedirect + in-component defense-in-depth, re-verified).
 
+
+> **R285 (SUPERLIST-ERA INTEGRATION SHIPPED — the redesign is the product)**: the family branches merged (`redesign/integration`, rounds r210–r285) and the OPTIKKA/Superlist direction is now the only system. **Shell & patterns:** the chrome re-skinned quiet (r211–r214: sidebar/topbar/bottom-nav — night smears, constellations, auras and mono labels retired; bottom-nav = 4 destinations + «المزيد» drawer; 44px rows) and the shared **patterns contract** (`components/patterns/` + `styles/patterns.css`, r210) carries the page grammar every family consumes — `PageFrame · PageHeader · SectionHeader · RowList/RowItem · SplitView · StatLine · FilterBar · TodayList` (the normative signatures live in `components/patterns/CONTRACT.md`). **Families recomposed on the contract** (r220–r269): student learning (TodayList-first dashboard, row-list courses, legible matrix + mobile concept list, video-first player), research & library (RowItem journey rail, search-first library, quiet reader + notes sheet), teacher/quality (grading queue with 44px «تصحيح», sticky tabular attendance ledger, quality oversight rows with severity edges — read-only badges everywhere), admin/owner (SplitView teachers, inline-expansion users/students, the 25× empty-card wall collapsed to an honest rollup, governance matrix groups), community/shared (community tabs on PageHeader, FilterBar indexes for competitions/colleges/training, quiet `.np-*` notification rows, focused assistant surface). **Illustration kit (mk-ill, r270–r280):** 16 original two-colour SVG pieces (ink `--ill-stroke` + signal, one tint max, dotted-ghost vocabulary, gold in `achievement` only, direction-neutral for RTL, lazy one-chunk-per-piece ≈0.5 KB gz each) + **BrandLoader** (the accessible loading mark); wired per its §5 mapping — EmptyState/ErrorState carry the kit contract (branch pieces `offline`/`error-generic`/`not-found`/`forbidden`), 113 call-site names remapped 1:1 (empty-list/empty-search/empty-courses/empty-research/empty-library/empty-community/empty-notifications/achievement…), the palette's no-results and the 404/not-found moment, onboarding frame 0 = `welcome-first-run`, the exam result screen = `exam-complete`, and the **«الخادم يستيقظ…» wake pill** (`lib/serverWake` — 4s slow-pending tracker + AppShell pill pairing `server-waking` with a decorative BrandLoader) for cold-start honesty; the legacy 012 scenes that lost every consumer retired (registry keeps milestone-section + onboarding frames 2–3 + role-intro). **r283–r285 refinement:** dark ink-muted re-keyed `#8F887A`→`#948D7E` (axe caught 4.41:1 composed washes; now ≥4.81:1 on every dark surface), 17 `:hover` rules in the new sheets guarded behind `@media (hover:hover) and (pointer:fine)`, the primitives PageHeader meta line retired from mono (r197's mono-for-IDs-only contract closes its last pocket), the landing colophon reveal is geometry-only (the 0.35-opacity fade rode muted copy below AA mid-scroll), `/student/*` deep-link aliases land on the live top-level routes (BLUEPRINT §7's deferred rows), and provably-dead polish waves deleted (old-landing footer/progress-bar, `.vision-card:hover`, `.gradient-text`). **polish.css status:** the overrides-only layer REMAINS LIVE for the shared component library (~4,400 L; a block-level liveness audit found 443/455 rules consumed) — its full fold into the owner sheets stays a baseline-slice campaign (see §9), documented here rather than pretended done. **Gates at ship:** lint 0/19 · typecheck ×4 · 1981 frontend + 1783 backend tests · parity 190/190 · colleges 25/25 · colors/icons/motion/raw-css/CSP green · bundle 648.7/650 KB gz (entry 71.2/80). 86 routes browser-verified at 1440 + the tight widths {360,390,430,768,1024} in both themes — zero horizontal overflow, ≥44px targets, Latin digits, RTL arrows; reduced-motion verified in Chromium (`reducedMotion: 'reduce'`): 0 running animations, complete static results on landing/shell/families.
+
 This document states the canon as it **ships in code**. Every value below was extracted from `frontend/src/styles/` at the audited tree (r131/r132) — not from specs (those carry plan-time values, kept as archaeology) and not from memory. When this file and `tokens.css` disagree, `tokens.css` wins; file an issue.
 
 ---
@@ -85,19 +88,18 @@ The landing paints a **theme-fixed media stage** + theme-following body:
 | Progress ribbon | `transform: scaleX(var(--p, 0))` + `--accent` (stage-routed) | GPU-composited; the `--accent` token resolves to its stage expression inside `.fo-progress` |
 | Proof section | teal band + 22px dot matrix at 12% accent | «ما يُشحن اليوم» — the reference's «Operating today» moment, honest statuses only |
 
-### 1b. Product theme — teal-on-gray light · teal-on-night dark (هوية المنتج، r195)
+### 1b. Product theme — ultramarine on warm paper light · ultramarine on night dark (هوية المنتج، r197/r283)
 
 | Token | Light | Dark |
 |---|---|---|
-| accent `--accent` | teal `#027380` (**4.64:1**) | teal `#2FB6C6` (**8.1:1**) |
-| accent ink `-ink` | `#014A52` (9.06:1) | `#2FB6C6` (8.1:1) |
-| accent soft | `#E0F2F3` | `#174A52` |
-| accent strong / ring | `#014A52` (9.06:1) | `#7FCED9` (11.1:1) |
-| accent on-fill `-fg` | `#FFFFFF` (AA on teal) | `#061417` (7.7:1 on teal) |
-| primary `--primary` | ink slab `#333333` (the reference's light-section CTA) | **white slab `#FFFFFF`** (the void CTA) |
-| achievement family | `--gold` = copper/yellow inks (badges, streaks, gamification) | same — copper/gold is NO LONGER the chrome accent (r190) |
+| accent `--accent` | ultramarine `#2E45E6` (**5.84:1** paper / 6.47 ground) | **same fill** `#2E45E6` (labels white, 6.75) |
+| accent text `-ink`/`-strong` | `#2E45E6` (AA as text) | `#8E9BFF` (**7.26:1** bg / 6.63 ground) |
+| accent soft | `--accent-soft` (signal-tinted step) | signal-tinted night step |
+| primary `--primary` | ink slab (white label 18.4:1) | **white slab `#FFFFFF`** (the night CTA, ink label) |
+| muted `--text-muted` | `#6B675C` (5.41 ground) | `#948D7E` (r283 — ≥4.81:1 every dark surface) |
+| achievement family | `--gold #B57438` / `--gold-ink #8F5A28` — achievements ONLY | `--gold #D9A05B` / `--gold-ink #E3B273` (8.00 bg) |
 
-**9 pastel section families** `--c-{peach,mint,lavender,sky,yellow,rose,sand,grey,copper}-{bg,ink,deep}` — light grounded on near-white gray (r195: e.g. copper `#ECE4D2`/`#9A7438`/`#5C3416`, mint `#E0F2F3`/`#027380`/`#014A52`), dark **re-grounded on the egn night** (copper `#2A2313`/`#D8AE5C`/`#F0D89C`, mint `#0E2324`/`#2FB6C6`/`#7FCED9` …). Status **text** uses the `-ink`/`-deep` tiers (AA); **fills** keep base tokens. Chart palette `--chart-1..8` (**teal** (r195: series 1 = the accent) /mint/sky/rose/lavender + gold/teal/mauve, theme-lifted) — data points render as SQUARE markers (chart.js `pointStyle: 'rect'`, r190) and bars at 2px radius.
+**Warm section families** `--c-{mint,rose,sky,yellow,lavender,copper,grey…}-{bg,ink,deep}` — re-grounded on the r197 warm paper/night (light near-white warm steps, dark deep warm-tinted grounds + luminous inks; text-AA verified per family). Status **text** uses the `-ink`/`-deep` tiers (AA); **fills** keep base tokens. Chart palette `--chart-1..8` (series 1 = the signal ultramarine, gold reserved for the achievement series, theme-lifted) — data points render as SQUARE markers (chart.js `pointStyle: 'rect'`, r190) and bars at 2px radius.
 
 ---
 
@@ -250,6 +252,41 @@ Arabic is the first-class direction; LTR is the port.
 3. **The export pair (`unified-parity.css` + `shared-design-system.css`) is the verification surface, not a file to import** — the app consumes `tokens.css` / `motion.css` / `components.css` directly. See [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md).
 4. **What the export covers:** §1b product theme, §2 typography, §3 motion, §4 elevation, §5 recipes, §6 RTL, §7 a11y. **What it excludes:** the r190 stage/aura families + retired Orbit-Ink (`--ln-*`) archaeology, role/college accent slots, `--ill-*`.
 5. **Drift is a bug** — the parity gate fails loudly on any divergence between `tokens.css` and the export pair; fix the canonical source first, never hand-patch the export.
+
+---
+
+## 9. Redesign-era architecture — معمارية ما بعد إعادة التصميم (r285, as it ships)
+
+**الصفحة الواحدة تُركَّب من ثلاث طبقات فقط: توكنات → قواعد → نمط صفحة.**
+
+### 9a. Stylesheet architecture · طبقات الأوراق
+
+| Sheet (import order) | Role | Owner |
+|---|---|---|
+| `tokens.css` | كل القيم: ألوان/نوع/مسافات/نصف قطر/ارتفاع/أدوار (562+ متغيرًا) — المصدر الوحيد، تفوز عند التعارض | منسّق النظام فقط (بوابة parity تحرسها) |
+| `base.css` + `motion.css` | تصفير + `:focus-visible` + حزام الحركة المخفضة (كل حركة عبر `--t-*`/`--motion-*`) + أساس الطباعة | منسّق النظام |
+| `fonts.css` | Alexandria (عرض) + IBM Plex Sans Arabic (نص) + Plex Mono (**معرّفات/شيفرة/مقاييس جدولية فقط** — عقد r197، آخر جيب أُقفل r284) | منسّق النظام |
+| `components.css` | مكتبة المكوّنات المشتركة (بطاقات/أزرار/جداول/تنبيهات…) | سطح مشترك — تغييراته كاسرة، يديرها المنسّق |
+| `layout.css` | هيكل التطبيق: sidebar/topbar/bottom-nav/درج/⌘K/بحث + **`.wake-pill`** (لحظة إيقاظ الخادم r280) | عائلة الهيكل |
+| `patterns.css` | عقد الأنماط الثمانية (`pf-*`) — قواعد الصفحة/الصفوف/الأشرطة لكل العائلات (r210) | عقد مجمّد: `components/patterns/CONTRACT.md` |
+| `illustrations.css` | عصبة الرسوم mk-ill (أحجام القطع + حركة BrandLoader فقط) | عصبة الرسوم |
+| Family sheets (page-scoped, lazy): `student.css`, `research.css`, `teacher-quality.css`, `teacher-pages.css`, `exam-author.css`, `online-exams.css`, `quality-pages.css`, `admin.css`, `owner.css`, `training.css`, `colleges.css`, `community` §CP rows in `components.css`, `ai.css`, `notifications.css`, `pdf.css`, `player.css`, `auth.css`, `landing.css` | أنماط عائلة واحدة، بادئة أصناف خاصة، داخل `@layer pages`، تستوردها وحدات الصفحات الكسولة | العائلة المالكة فقط |
+| `polish.css` | موجة التجاوزات التاريخية على المكوّنات المشتركة (آخر استيراد يفوز) — **لا تزال حيّة بمعظمها** (تدقيق r285: 443/455 قاعدة مستهلكة)؛ حذفها النهائي = حملة شرائح أساس سطح-بحساب (انظر §9c) | المنسّق (لا عائلة تحررها) |
+| `unified-parity.css` + `shared-design-system.css` | سطح التحقق فقط (لا استيراد تطبيقي) — بوابة parity ترفض أي انحراف | منسّق النظام |
+
+**قواعد الطبقات:** كل قيمة عبر توكن (بوابات colors/motion/raw-css صارمة على الأوراق كلها عدا المسموح الموثق)؛ الأيقونات Lucide فقط عبر `<Icon>` (عصبة الرسوم والخامات البيانية استثناءات موثقة)؛ الأرقام عبر `utils/numbers.ts` حصرًا (لاتينية، فواصل موحّدة).
+
+### 9b. The patterns · عقد الأنماط (r210)
+
+`PageFrame` (عرض القراءة/الافتراضي/العريض/الكامل) · `PageHeader` (عنوان/وصف/سطر حقائق/تبويبات/فتات/أزرار) · `SectionHeader` · `RowList/RowItem` (صف هادئ بتفصيل ملتصق، كثافة مريحة/مضغوطة، هياكل تحميل) · `SplitView` (قائمة/تفصيل، ≤920px يصبح Sheet) · `StatLine` (شريط أرقام مطبعي — لا صناديق أيقونات) · `FilterBar` (بحث+فلاتر+ترتيب، لاصق اختياري) · `TodayList` (أجندة بأولوية عاجل/الآن/لاحقًا). الأرقام تصل مُنسَّقة (لا تنسَّق داخل value). العقود النormative في `frontend/src/components/patterns/CONTRACT.md`؛ الدروس المتقادمة (primitives/PageHeader/Card/MetricCard) باقية خلف عقدها حتى تُسبك الموجة القادمة.
+
+### 9c. The illustration kit · عصبة الرسوم mk-ill (r270–r280)
+
+16 قطعة SVG أصلية بلونين (حبر `--ill-stroke` 1.5/2 + إشارة، ظل لوني واحد على الأكثر، معجم النقاط-الشبح «ليس بعد»، الذهب لقطعة `achievement` حصرًا، محايدة اتجاهيًا فلا انعكاس RTL)، عبر المُرسِل `<Illustration>` (كسول: قطعة=chunk ≈0.5KB gz) + `BrandLoader` (علامة التحميل النظامية، وضع `decorative` r280). الخريطة الحيّة: القوائم `empty-list` · البحث `empty-search` · المقرّرات `empty-courses` · البحوث `empty-research` · المكتبة `empty-library` · المجتمع `empty-community` · الإشعارات `empty-notifications` · الإنجاز `achievement` · أخطاء `offline`/`error-generic`/`forbidden`/`not-found` · النجاح `success-submitted` (متاح؛ لحظات النجاح اليوم toasts نصية أولًا — انحراف موثق) · `exam-complete` في شاشة نتيجة الاختبار · `welcome-first-run` إطار التهيئة الأول · `server-waking` + BrandLoader في `.wake-pill`. مشاهد 012 الوارثة الناجية: `milestone-section` + إطارا التهيئة 2-3 + مقدمة الدور (بقية العائلة تقاعدت r280).
+
+### 9d. polish.css fold — the remaining campaign · حملة السبك المتبقية
+
+الأمان الوحيد لسبك موجة `polish.css` إلى أوراق أصحابها: شريحة أساس (16 مسارًا) قبل/بعد كل دفعة، بوابة drift في CI هي الشاهد الوحيد (لا اختبارات مباشرة على polish). البروتوكول: (1) حصر القواعد المستهدفة لأسطح شريحة، (2) نقل القواعد الحيّة للورقة المالكة بصيغة متوافقة مع التوكنات، (3) حذف الموجة من polish، (4) `AUDIT_BASELINE=1` slice re-capture + promote + drift. دفعة/شريحة حتى اكتمال الملف.
 
 ---
 

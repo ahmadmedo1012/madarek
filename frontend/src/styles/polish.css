@@ -1801,20 +1801,7 @@
      have had zero TSX consumers since the landing redesign.) */
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PROGRESS BAR — gradient instead of flat accent                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-progress-bar {
-    background: linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--accent) 60%, transparent) 0%,
-      var(--accent) 50%,
-      color-mix(in srgb, var(--accent) 60%, transparent) 100%
-    );
-  }
-
-
-  /* STICKER ICONS + landing reduced-motion list — RETIRED (premium-polish
+  /  /* STICKER ICONS + landing reduced-motion list — RETIRED (premium-polish
      dead-code sweep): the .sticker family never rendered (zero TSX
      consumers); its bobbing rule and the reduced-motion kill list (which
      referenced the removed .landing-hero family) went with it. */
@@ -3265,13 +3252,7 @@
 
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  LANDING FOOTER — soft accent stripe at the start              ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-footer {
-    position: relative;
-  }
-  .landing-footer::before {
+  /  .landing-footer::before {
     content: '';
     position: absolute;
     inset-block-start: 0;
@@ -3309,15 +3290,9 @@
     transition: transform var(--motion-duration-page) var(--ease-spring-soft), box-shadow var(--t-base) var(--ease);
     box-shadow: var(--shadow-card);
   }
-  /* (4-A11 P2-11 / craft floor: images are not action targets — the
-     img used to scale 1.05 over 720ms on card hover. The container
-     now carries the feedback instead; the img never animates.) */
-  @media (hover: hover) {
-    .vision-card:hover {
-      transform: scale(1.02);
-      box-shadow: var(--shadow-card-premium-h);
-    }
-  }
+  /* (r285: the .vision-card half of this pair retired — the r266 vision
+     gallery renders rows; .vision-detail-hero keeps the zoom-on-hover
+     contract. The dead .vision-card:hover wave deleted with it.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3594,11 +3569,7 @@
      the pre-redesign pilot section. LandingPage renders .ln-pilot-*.) */
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  FIX 3 — landing footer legibility in dark theme               ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  [data-theme="dark"] .landing-footer { color: var(--text-secondary); }
-  [data-theme="dark"] .landing-footer-link {
+  /  [data-theme="dark"] .landing-footer-link {
     color: color-mix(in srgb, var(--text) 78%, transparent);
   }
   [data-theme="dark"] .landing-footer-link:hover { color: var(--text); }
@@ -4325,18 +4296,7 @@
     border-color: color-mix(in srgb, var(--glass-border) 60%, var(--border-strong));
   }
 
-  /* ── Gradient text utility ─────────────────────────────────────── */
-  .gradient-text {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong, var(--accent)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-
-
-
-  @media (prefers-reduced-motion: reduce) {
+  /  @media (prefers-reduced-motion: reduce) {
     .card.glass-premium::before { animation: none; }
   }
 
