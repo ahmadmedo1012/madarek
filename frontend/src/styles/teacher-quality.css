@@ -1,0 +1,194 @@
+/* ==================================================================
+   MADAREK — teacher & quality family sheet (teacher-quality.css)
+   ------------------------------------------------------------------
+   4C family sheet (Superlist direction, r241): the page-scoped layer
+   for Agent 4C's own surfaces — teacher dashboard, academic
+   intelligence (+ offering detail), teacher profile, live sessions,
+   virtual labs. Imported by the lazy page modules that consume it
+   (the D11 page-scoped split pattern: owner.css/pdf.css/training.css
+   precedents).
+
+   Class prefix: `tq-` (teacher-quality) — no collisions with the
+   shared sheets or sibling families' prefixes (exa-/oex-/qlt-/tpg-).
+
+   Grammar (translated Superlist principles, never copied assets):
+   - list-first rows over uniform card grids: every catalog on these
+     surfaces renders as full-width rows with hairline separators,
+     surface-step hover, and detail attached to the item;
+   - calm surfaces: hierarchy via surface steps + the single soft
+   - one signal: var(--accent) for active/selected/links/focus —
+     semantic greens/ambers/reds only for status chips;
+   - soft geometry: the --r-* ladder, generous --sp-* rhythm.
+   ================================================================== */
+
+@layer pages {
+
+/* ─── List rows: the family's catalog primitive ──────────────────── */
+
+.tq-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.tq-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-block: var(--sp-3);
+  padding-inline: var(--sp-3);
+  border-radius: var(--r-md);
+  transition: background-color var(--t-fast) var(--ease-out);
+}
+
+/* Hairline separators between rows — the calm list spine. Every row
+   but the first carries an inset rule so the hover surface reads as
+   one continuous plane. */
+.tq-row + .tq-row {
+  border-block-start: 1px solid var(--rule);
+}
+
+a.tq-row,
+button.tq-row {
+  cursor: pointer;
+}
+
+a.tq-row:hover,
+button.tq-row:hover,
+a.tq-row:focus-visible,
+button.tq-row:focus-visible {
+  background: var(--surface-2);
+}
+
+/* The tinted icon well — flat, RTL-neutral, keyed by --tq-accent. */
+.tq-row-icon {
+  inline-size: 44px;
+  block-size: 44px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--tq-accent, var(--accent)) 12%, transparent);
+  color: color-mix(in srgb, var(--tq-accent, var(--accent)) 75%, var(--text));
+}
+
+.tq-row-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.tq-row-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tq-row-kicker {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.tq-row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.tq-row-meta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.tq-row-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* The RTL-correct trailing chevron on navigable rows. */
+.tq-row-chevron {
+  flex-shrink: 0;
+  color: var(--text-subtle);
+}
+
+/* ─── Fact ledger: label/value read-only rows (profile, meta panels) ── */
+
+.tq-facts {
+  display: flex;
+  flex-direction: column;
+}
+
+.tq-fact {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding-block: var(--sp-2-5);
+}
+
+.tq-fact + .tq-fact {
+  border-block-start: 1px solid var(--rule);
+}
+
+.tq-fact-label {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.tq-fact-value {
+  font-size: var(--fs-sm);
+  color: var(--text);
+  text-align: end;
+  overflow-wrap: anywhere;
+}
+
+/* Tabular metrics (counts, percentages) ride the mono metric voice. */
+.tq-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Section rhythm: 40/80 Superlist breathing on family surfaces ─── */
+
+.tq-section {
+  margin-block-start: var(--sp-9);
+}
+
+/* ─── Tap-target floor on the family's filter pills ─────────────────
+   BLUEPRINT §7 (tap targets): chips ride 44px on the 4C surfaces. The
+   shared .pill sits at 37px (components.css, 4E-owned — consumed, not
+   edited); family pages raise it locally in the row above the feed. */
+.pf-filterbar .pill {
+  min-block-size: 44px;
+}
+
+/* ─── Responsive recomposition (mobile) ──────────────────────────── */
+
+@media (max-width: 640px) {
+  /* Rows keep the anatomy but shed the hover well; actions wrap under
+     the body and every control keeps its ≥44px zone. */
+  .tq-row {
+    flex-wrap: wrap;
+    padding-inline: var(--sp-2);
+  }
+  .tq-row-actions {
+    inline-size: 100%;
+    justify-content: flex-end;
+  }
+  .tq-row-title {
+    white-space: normal;
+  }
+}
+
+}

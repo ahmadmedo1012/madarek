@@ -31,7 +31,7 @@ import {
 } from '../../hooks/useResources';
 import { countAr } from '../../lib/format';
 import { formatDate } from '../../utils/numbers';
-import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
+import '../../styles/teacher-quality.css'; // 4C family sheet (r241): the .tq list-row catalog grammar
 
 const RANK_LABEL: Record<string, string> = {
   LECTURER: 'مُعيد / محاضر',
@@ -500,28 +500,12 @@ export default function TeacherProfilePage() {
             description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل إدارة الشؤون الأكاديمية."
           />
         ) : (
-          <div className="track-grid">
+          /* r241 (Superlist): the current courses are a LIST — one row
+              per offering with the tinted icon well, code·term kicker,
+              honest counts, and the deep-dive one tap away. */
+          <div className="tq-rows" role="list">
             {profile.courses.map((c) => (
-              <Link
-                key={c.offeringId}
-                to={`/teacher/intelligence/${c.offeringId}`}
-                className="track-card"
-                style={{ ['--track-accent' as never]: c.themeColor ?? 'var(--accent)' }}
-              >
-                {/* tint painted from --track-accent (training.css) — the old
-                    inline `${themeColor}1a` alpha was invalid CSS */}
-                <div className="track-card-icon">
-                  <EmojiIcon emoji={c.iconEmoji ?? '📚'} size={22} />
-                </div>
-                <div className="track-card-body">
-                  <div className="track-card-cat"><bdi>{c.code}</bdi> · {c.term}</div>
-                  <div className="track-card-title" title={c.name}>{c.name}</div>
-                  <div className="track-card-meta">
-                    <span><Icon icon={Users2} size={12} /> {countAr(c.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
-                    <span>{countAr(c.credits, ['وحدة واحدة', 'وحدتان', 'وحدات', 'وحدة'])}</span>
-                  </div>
-                </div>
-              </Link>
+              <CourseRow key={c.offeringId} course={c} />
             ))}
           </div>
         )}
@@ -530,5 +514,38 @@ export default function TeacherProfilePage() {
       {/* r157 / 6A9 — the discard-confirm for cancelEdit (portal-mounted). */}
       {discardGuard}
     </div>
+  );
+}
+
+/** r241 (Superlist): one teaching assignment = one row — tinted icon
+ * well, code·term kicker, course name, enrolled + credits inline, and
+ * the deep-dive chevron trailing. */
+function CourseRow({ course: c }: {
+  course: {
+    offeringId: string; code: string; term: string; name: string;
+    iconEmoji?: string | null; themeColor?: string | null;
+    enrolled: number; credits: number;
+  };
+}) {
+  return (
+    <Link
+      to={`/teacher/intelligence/${c.offeringId}`}
+      className="tq-row"
+      role="listitem"
+      style={{ ['--tq-accent' as never]: c.themeColor ?? 'var(--accent)' }}
+    >
+      <span className="tq-row-icon">
+        <EmojiIcon emoji={c.iconEmoji ?? '📚'} size={22} />
+      </span>
+      <span className="tq-row-body">
+        <span className="tq-row-kicker"><bdi>{c.code}</bdi> · {c.term}</span>
+        <span className="tq-row-title" title={c.name}>{c.name}</span>
+        <span className="tq-row-meta">
+          <span><Icon icon={Users2} size={12} /> {countAr(c.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
+          <span>{countAr(c.credits, ['وحدة واحدة', 'وحدتان', 'وحدات', 'وحدة'])}</span>
+        </span>
+      </span>
+      <Icon icon={ChevronLeft} size={14} className="tq-row-chevron" />
+    </Link>
   );
 }

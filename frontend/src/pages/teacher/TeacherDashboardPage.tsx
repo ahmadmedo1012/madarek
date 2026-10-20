@@ -8,8 +8,11 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
-import { StatStrip, LedgerPanel, LedgerRow } from '../../components/primitives/Ledger';
-import { ErrorState, ChartSkeleton, ListSkeleton, Skeleton } from '../../components/primitives/States';
+import { ErrorState, ChartSkeleton, ListSkeleton } from '../../components/primitives/States';
+import {
+  PageFrame, PageHeader, SectionHeader, RowList, RowItem, StatLine, TodayList, FilterBar,
+} from '../../components/patterns';
+import '../../styles/teacher-quality.css'; // 4C family sheet: the .tq-num tabular metric voice
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { Line } from 'react-chartjs-2';
@@ -193,50 +196,30 @@ export function TeacherDashboardPage() {
   }, [dash.data]);
 
   if (dash.isPending) {
+    /* r242 (Superlist composition): the loading frame mirrors what lands —
+     * header → stat line zone → two queue surfaces → the chart card. */
     return (
-      <div className="page" aria-busy="true" aria-live="polite">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">لوحة الأستاذ</h1>
-            <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
-          </div>
-        </header>
-        <div className="stat-strip" aria-busy="true">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="stat-cell">
-              <Skeleton width={70} height={11} />
-              <div style={{ marginBlock: 'var(--sp-1)' }}>
-                <Skeleton width={90} height={28} />
-              </div>
-              <Skeleton width={120} height={11} />
-            </div>
-          ))}
-        </div>
-        <ListSkeleton rows={3} />
-        <ListSkeleton rows={3} />
+      <PageFrame aria-busy="true" aria-live="polite">
+        <PageHeader title="لوحة الأستاذ" description="جارٍ تحضير لوحتك…" />
+        <RowList loading aria-label="ملخص نشاط التدريس" />
+        <RowList loading aria-label="طابور التصحيح" />
+        <RowList loading aria-label="طلاب يحتاجون متابعة" />
         <Card title="اتجاه الأداء والحضور">
           <ChartSkeleton height={240} />
         </Card>
-        <Card>
-          <ListSkeleton rows={5} />
-        </Card>
-      </div>
+      </PageFrame>
     );
   }
   if (dash.isError || !dash.data) {
     return (
-      <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">لوحة الأستاذ</h1>
-          </div>
-        </header>
+      <PageFrame>
+        <PageHeader title="لوحة الأستاذ" />
         <ErrorState
           message="تعذَّر تحميل لوحة الأستاذ"
           error={dash.error}
           onRetry={() => dash.refetch()}
         />
-      </div>
+      </PageFrame>
     );
   }
 
@@ -261,67 +244,75 @@ export function TeacherDashboardPage() {
   } as const;
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">لوحة الأستاذ</h1>
-          <p className="page-subtitle">
-            كل ما يحتاج تدخّلك اليوم — في تيار واحد، مرتّب حسب الأولوية.
-          </p>
-          <p className="page-header-meta">
+    /* r242 — the Superlist composition (patterns contract, r210):
+     * PageFrame → PageHeader → StatLine → the work queue (grading first,
+     * today's lectures beside it) → at-risk shortcuts → the trend chart →
+     * the feed behind a FilterBar. No KPI wall: the numbers ride one
+     * flat line, the ROWS carry the day's work. */
+    <PageFrame>
+      <PageHeader
+        title="لوحة الأستاذ"
+        description="كل ما يحتاج تدخّلك اليوم — في تيار واحد، مرتّب حسب الأولوية."
+        meta={
+          <>
             {WEEKDAY_NAMES_AR[new Date().getDay()]} · {formatDate(new Date(), { day: 'numeric', month: 'long' })}
-          </p>
-        </div>
-        <Badge color="brand">
-          {visible.length === 0
-            ? 'لا عناصر تحتاج متابعة'
-            : countAr(visible.length, ['عنصر يحتاج متابعة', 'عنصران يحتاجان متابعة', 'عناصر تحتاج متابعة', 'عنصراً يحتاج متابعة'])}
-        </Badge>
-      </header>
+          </>
+        }
+        actions={
+          <Badge color="brand">
+            {visible.length === 0
+              ? 'لا عناصر تحتاج متابعة'
+              : countAr(visible.length, ['عنصر يحتاج متابعة', 'عنصران يحتاجان متابعة', 'عناصر تحتاج متابعة', 'عنصراً يحتاج متابعة'])}
+          </Badge>
+        }
+      />
 
-      {/* R189 — the typographic stat strip (the compact-kpi row, ledgered). */}
-      <StatStrip
-        ariaLabel="ملخص نشاط التدريس"
-        cells={[
+      {/* The compact signal line (StatLine — one flat row, no tiles).
+          Tones are semantic only: work waiting reads amber, healthy
+          numbers stay neutral. */}
+      <StatLine
+        items={[
           {
             label: 'طلابك',
             value: formatNum(d.kpi.studentCount),
-            trend: 'عبر مقرّراتك',
-            trendTone: 'flat',
+            hint: 'عبر مقرّراتك',
           },
           {
             label: 'متوسط الأداء',
             value: d.kpi.avgGradePct !== null ? `${formatPct1(d.kpi.avgGradePct)}%` : '—',
-            trend: d.kpi.avgGradePct === null ? 'لا تقييمات بعد' : 'كل التقييمات المعتمدة',
-            trendTone: d.kpi.avgGradePct === null ? 'flat' : d.kpi.avgGradePct >= 70 ? 'up' : 'down',
+            hint: d.kpi.avgGradePct === null ? 'لا تقييمات بعد' : 'كل التقييمات المعتمدة',
+            tone: d.kpi.avgGradePct === null || d.kpi.avgGradePct >= 70 ? 'neutral' : 'warning',
           },
           {
             label: 'الحضور',
             value: d.kpi.attendancePct !== null ? `${formatPct1(d.kpi.attendancePct)}%` : '—',
-            trend: d.kpi.attendancePct === null ? 'لا جلسات حضور بعد' : 'كل الجلسات المسجّلة',
-            trendTone: d.kpi.attendancePct === null ? 'flat' : d.kpi.attendancePct >= 75 ? 'up' : 'down',
+            hint: d.kpi.attendancePct === null ? 'لا جلسات حضور بعد' : 'كل الجلسات المسجّلة',
+            tone: d.kpi.attendancePct === null || d.kpi.attendancePct >= 75 ? 'neutral' : 'warning',
           },
           {
             label: 'بحاجة تقييم',
             value: formatNum(d.kpi.needsReview),
-            trend: 'واجبات + بحوث',
-            trendTone: d.kpi.needsReview === 0 ? 'up' : d.kpi.needsReview > 10 ? 'down' : 'flat',
+            hint: 'واجبات + بحوث',
+            tone: d.kpi.needsReview === 0 ? 'positive' : 'warning',
+            to: '/teacher/assignments',
           },
         ]}
       />
 
-      {/* ── r164-h: the daily-work trio — actionable first (the Canvas
-          home pattern): the pending-grading queue (the work that waits
-          on the teacher's pen) + today's schedule strip, then the
-          at-risk shortcuts below. All three consume data already in
-          flight — the queue rides the dashboard aggregate, the strip
-          composes /me/offerings, the shortcuts ride /teacher/risks. */}
+      {/* ── r164-h trio, recomposed r242 — actionable first: the
+          pending-grading queue (the work that waits on the teacher's
+          pen) + today's schedule strip, then the at-risk shortcuts.
+          All three consume data already in flight — the queue rides the
+          dashboard aggregate, the strip composes /me/offerings, the
+          shortcuts ride /teacher/risks. */}
       <div className="grid-2-1">
-        <PendingGradingCard entries={d.pendingGrading} />
-        <TodayStripCard />
+        <section aria-label="طابور التصحيح">
+          <PendingGradingQueue entries={d.pendingGrading} />
+        </section>
+        <TodayLectures />
       </div>
 
-      <AtRiskShortcutsCard />
+      <AtRiskShortcuts />
 
       {/* Performance + attendance trend — real 6-week data, wrapped for
           screen readers (aria-label + sr-only data table, audit 0-f). */}
@@ -384,53 +375,59 @@ export function TeacherDashboardPage() {
         )}
       </Card>
 
-      {/* Filter toolbar */}
-      <div className="feed-toolbar">
-        <div className="flex items-center gap-2" role="group" aria-label="تصفية التيار">
-          <Icon icon={Filter} size={14} className="text-subtle" />
-          <span className="text-xs text-subtle">تصفية:</span>
-          {FILTER_OPTIONS.map((o) => (
-            <button
-              key={o.value}
-              type="button"
-              className={`pill${filter === o.value ? ' on' : ''}`}
-              aria-pressed={filter === o.value}
-              onClick={() => setFilter(o.value)}
-            >
-              {o.label}
-              <span className="filter-pill-count">{filterCounts[o.value]}</span>
-            </button>
-          ))}
-        </div>
-        <Link to="/teacher/alerts" className="btn ghost sm">
-          <Icon icon={Bell} size={13} />
-          الإشعارات الكاملة
-        </Link>
-      </div>
+      {/* Filter toolbar — the FilterBar pattern (r210): one calm row,
+          pills keep their aria-pressed state, the full-notifications
+          link rides the trailing slot. */}
+      <FilterBar
+        filters={
+          <div className="flex items-center gap-2" role="group" aria-label="تصفية التيار">
+            <Icon icon={Filter} size={14} className="text-subtle" />
+            <span className="text-xs text-subtle">تصفية:</span>
+            {FILTER_OPTIONS.map((o) => (
+              <button
+                key={o.value}
+                type="button"
+                className={`pill${filter === o.value ? ' on' : ''}`}
+                aria-pressed={filter === o.value}
+                onClick={() => setFilter(o.value)}
+              >
+                {o.label}
+                <span className="filter-pill-count">{filterCounts[o.value]}</span>
+              </button>
+            ))}
+          </div>
+        }
+        trailing={
+          <Link to="/teacher/alerts" className="btn ghost sm">
+            <Icon icon={Bell} size={13} />
+            الإشعارات الكاملة
+          </Link>
+        }
+      />
 
-      {/* The feed — rows stagger in from inline-start (wave 5-a CSS) */}
-      <div className="feed">
-        {visible.length === 0 ? (
-          <Card>
-            <div className="state">
-              <div className="state-icon state-icon-success">
-                <Icon icon={CheckCircle2} size={20} />
-              </div>
-              <div className="state-title">لا متطلبات الآن — أحسنت!</div>
-              <div className="state-desc">سيظهر هنا أي عنصر جديد فور وصوله.</div>
-              <div style={{ marginBlockStart: 'var(--sp-3)' }}>
-                <Link to="/teacher/intelligence" className="btn outline sm">
-                  <Icon icon={Users} size={13} />
-                  استعرض أداء مقرّراتك
-                </Link>
-              </div>
+      {/* The feed — the RowList grammar: one calm surface of rows, the
+          honest empty state names the win. */}
+      <RowList
+        aria-label="تيار المتابعة"
+        empty={
+          <div className="state">
+            <div className="state-icon state-icon-success">
+              <Icon icon={CheckCircle2} size={20} />
             </div>
-          </Card>
-        ) : (
-          visible.map((item) => <FeedRow key={item.id} item={item} />)
-        )}
-      </div>
-    </div>
+            <div className="state-title">لا متطلبات الآن — أحسنت!</div>
+            <div className="state-desc">سيظهر هنا أي عنصر جديد فور وصوله.</div>
+            <div style={{ marginBlockStart: 'var(--sp-3)' }}>
+              <Link to="/teacher/intelligence" className="btn outline sm">
+                <Icon icon={Users} size={13} />
+                استعرض أداء مقرّراتك
+              </Link>
+            </div>
+          </div>
+        }
+      >
+        {visible.map((item) => <FeedRow key={item.id} item={item} />)}
+      </RowList>
+    </PageFrame>
   );
 }
 
@@ -471,100 +468,98 @@ function FeedRow({ item }: { item: TeacherDashboard['feed'][number] }) {
   const Icon_ = KIND_ICON[item.kind];
   const tone = KIND_TONE[item.kind];
   return (
-    <div className="feed-item">
-      {item.author ? (
-        <UserAvatar
-          initials={item.author.avatarInitials ?? `${item.author.firstName[0]}${item.author.lastName[0]}`}
-          color={item.author.avatarColor ?? undefined}
-          size={40}
-        />
-      ) : (
-        <div className={`feed-item-avatar ${tone}`}>
-          <Icon icon={Icon_} size={18} />
-        </div>
-      )}
-      <div className="feed-item-body">
-        <div className="feed-item-head">
-          <span className="feed-item-author">
-            {item.author ? `${item.author.firstName} ${item.author.lastName}` : 'النظام'}
+    <RowItem
+      leading={
+        item.author ? (
+          <UserAvatar
+            initials={item.author.avatarInitials ?? `${item.author.firstName[0]}${item.author.lastName[0]}`}
+            color={item.author.avatarColor ?? undefined}
+            size={40}
+          />
+        ) : (
+          <span className={`feed-item-avatar ${tone}`}>
+            <Icon icon={Icon_} size={18} />
           </span>
-          <span className="feed-item-meta">·</span>
+        )
+      }
+      title={item.title}
+      meta={
+        <>
+          <span>{item.author ? `${item.author.firstName} ${item.author.lastName}` : 'النظام'}</span>
           {/* meta carries a Latin course code — bdi keeps RTL punctuation order */}
-          <bdi className="feed-item-meta">{item.meta}</bdi>
-          <span className="feed-item-meta feed-item-time">{formatRelativeAr(item.when)}</span>
-        </div>
-        <div className="feed-item-text">{item.title}</div>
-        <div className="feed-item-actions">
-          <Link to={item.actionTo} className="btn primary sm">
-            <Icon icon={Icon_} size={13} />
-            {KIND_ACTION[item.kind]}
-          </Link>
-        </div>
-      </div>
-    </div>
+          <bdi>{item.meta}</bdi>
+          <span>{formatRelativeAr(item.when)}</span>
+        </>
+      }
+      trailing={
+        <Link to={item.actionTo} className="btn primary sm">
+          <Icon icon={Icon_} size={13} />
+          {KIND_ACTION[item.kind]}
+        </Link>
+      }
+    />
   );
 }
 
-/* ═══════════ r164-h: the daily-work trio components ═══════════ */
+/* ═══════════ r164-h trio — recomposed r242 on the patterns ═══════════ */
 
 /**
- * The pending-grading queue card — the teacher home's first actionable
- * surface. Per-assignment counts of submissions awaiting a grade, each
- * row linking straight into the ONE surface that walks the full queue
+ * The pending-grading queue — the teacher home's first actionable
+ * surface (SectionHeader + RowList, the Superlist grammar). Each row's
+ * title links straight into the ONE surface that walks the full queue
  * (/teacher/assignments — actionTo travels from the backend rollup).
  * Empty state names the win, not the void: «لا انتظار — كل التسليمات
  * مُقيَّمة».
  */
-function PendingGradingCard({ entries }: { entries: TeacherDashboard['pendingGrading'] }) {
+function PendingGradingQueue({ entries }: { entries: TeacherDashboard['pendingGrading'] }) {
   const total = entries.reduce((sum, e) => sum + e.count, 0);
   return (
-    <LedgerPanel
-      title="طابور التصحيح"
-      zone="rose"
-      tag={total === 0 ? undefined : countAr(total, ['تسليم بانتظار درجتك', 'تسليمان بانتظار درجتك', 'تسليمات بانتظار درجتك', 'تسليماً بانتظار درجتك'])}
-      ariaLabel="طابور التصحيح"
-      actions={total > 0 ? (
-        <Link to="/teacher/assignments" className="btn primary sm">
-          <Icon icon={ClipboardCheck} size={13} /> ابدأ التصحيح
-        </Link>
-      ) : undefined}
-    >
-      {entries.length === 0 ? (
-        <LedgerRow
-          title="لا انتظار — كل التسليمات مُقيَّمة"
-          subtitle="ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك."
-          leadLabel="0" /* r197 §7: Western digits, not the spelled-out word */
-          lead="انتظار"
-          tail={<Badge color="green">مكتمل</Badge>}
-        />
-      ) : (
-        entries.map((e) => (
-          <LedgerRow
-            key={e.assignmentId}
-            to={e.actionTo}
-            leadLabel={countAr(e.count, ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'])}
-            title={e.title}
-            subtitle={
-              <>
-                {e.course.name} · <bdi>{e.course.code}</bdi>
-                {e.oldestSubmittedAt && <> · أقدم تسليم {formatRelativeAr(e.oldestSubmittedAt)}</>}
-              </>
-            }
-            tail={<Badge color="amber">بانتظارك</Badge>}
+    <>
+      <SectionHeader
+        title="طابور التصحيح"
+        description={total === 0 ? undefined : countAr(total, ['تسليم بانتظار درجتك', 'تسليمان بانتظار درجتك', 'تسليمات بانتظار درجتك', 'تسليماً بانتظار درجتك'])}
+        actions={total > 0 ? (
+          <Link to="/teacher/assignments" className="btn primary sm">
+            <Icon icon={ClipboardCheck} size={13} /> ابدأ التصحيح
+          </Link>
+        ) : undefined}
+      />
+      <RowList aria-label="طابور التصحيح">
+        {entries.length === 0 ? (
+          <RowItem
+            title="لا انتظار — كل التسليمات مُقيَّمة"
+            meta="ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك."
+            trailing={<Badge color="green">مكتمل</Badge>}
           />
-        ))
-      )}
-    </LedgerPanel>
+        ) : (
+          entries.map((e) => (
+            <RowItem
+              key={e.assignmentId}
+              leading={<span className="tq-num" aria-hidden="true">{formatNum(e.count)}</span>}
+              title={<Link to={e.actionTo}>{e.title}</Link>}
+              meta={
+                <>
+                  {e.course.name} · <bdi>{e.course.code}</bdi>
+                  {e.oldestSubmittedAt && <> · أقدم تسليم {formatRelativeAr(e.oldestSubmittedAt)}</>}
+                </>
+              }
+              trailing={<Badge color="amber">بانتظارك</Badge>}
+            />
+          ))
+        )}
+      </RowList>
+    </>
   );
 }
 
 /**
  * The today strip — today's ScheduleSlot entries composed client-side
  * from /teacher/me/offerings (the weekly Schedule page's own source;
- * no new backend surface). Each slot marks its phase relative to now:
- * «جارٍ الآن» while inside its window, dimmed time when done.
+ * no new backend surface), rendered as the TodayList pattern: each slot
+ * marks its phase relative to now (urgency dot + sr-only label), and
+ * the phase chip rides the row's trailing slot.
  */
-function TodayStripCard() {
+function TodayLectures() {
   const offsQ = useTeacherOfferings();
   // Compose once per render — `new Date()` decides the weekday + phases.
   const now = new Date();
@@ -572,53 +567,53 @@ function TodayStripCard() {
   const todayDow = now.getDay();
 
   return (
-    <LedgerPanel
-      title="محاضرات اليوم"
-      zone="sky"
-      tag={WEEKDAY_NAMES_AR[todayDow]}
-      ariaLabel="محاضرات اليوم"
-      actions={(
-        <Link to="/teacher/schedule" className="btn ghost sm">
-          <Icon icon={Calendar} size={13} /> الأسبوعيّ
-        </Link>
-      )}
-    >
+    <section aria-label="محاضرات اليوم">
+      <SectionHeader
+        title="محاضرات اليوم"
+        description={WEEKDAY_NAMES_AR[todayDow]}
+        actions={
+          <Link to="/teacher/schedule" className="btn ghost sm">
+            <Icon icon={Calendar} size={13} /> الجدول الأسبوعيّ
+          </Link>
+        }
+      />
       {offsQ.isPending ? (
-        <div className="ledger-empty">
-          <ListSkeleton rows={2} />
-        </div>
+        <ListSkeleton rows={2} />
       ) : offsQ.isError ? (
-        <div className="ledger-empty">
-          <ErrorState message="تعذَّر تحميل جدول اليوم" error={offsQ.error} onRetry={() => offsQ.refetch()} />
-        </div>
-      ) : slots.length === 0 ? (
-        <LedgerRow
-          title="لا محاضرات اليوم"
-          subtitle="جدول اليوم فارغ — استرح أو راجع الجدول الأسبوعيّ."
-          leadLabel="اليوم"
-          lead="راحة"
-          tail={<Badge color="green">يوم مفتوح</Badge>}
-        />
+        <ErrorState message="تعذَّر تحميل جدول اليوم" error={offsQ.error} onRetry={() => offsQ.refetch()} />
       ) : (
-        slots.map((slot) => {
-          const phase = slotPhase(slot, now);
-          return (
-            <LedgerRow
-              key={slot.key}
-              to="/teacher/schedule"
-              lead={<bdi>{slot.startTime} — {slot.endTime}</bdi>}
-              title={slot.courseName}
-              subtitle={slot.room ? `${slot.room} · ${phase === 'done' ? 'انتهت' : phase === 'ongoing' ? 'جارٍ الآن' : 'قادمة'}` : (phase === 'done' ? 'انتهت' : phase === 'ongoing' ? 'جارٍ الآن' : 'قادمة')}
-              tail={
+        <TodayList
+          items={slots.map((slot) => {
+            const phase = slotPhase(slot, now);
+            const phaseLabel = phase === 'done' ? 'انتهت' : phase === 'ongoing' ? 'جارٍ الآن' : 'قادمة';
+            return {
+              id: slot.key,
+              to: '/teacher/schedule',
+              title: slot.courseName,
+              meta: (
+                <>
+                  <bdi>{slot.startTime} — {slot.endTime}</bdi>
+                  {slot.room ? <> · {slot.room}</> : null}
+                  {' · '}{phaseLabel}
+                </>
+              ),
+              urgency: phase === 'ongoing' ? 'now' : phase === 'upcoming' ? 'soon' : 'later',
+              action:
                 phase === 'ongoing' ? <Badge color="red">جارٍ الآن</Badge> :
                 phase === 'done' ? <Badge>انتهت</Badge> :
-                <Badge color="gold">قادمة</Badge>
-              }
+                <Badge color="gold">قادمة</Badge>,
+            };
+          })}
+          emptyState={
+            <RowItem
+              title="لا محاضرات اليوم"
+              meta="جدول اليوم فارغ — استرح أو راجع الجدول الأسبوعيّ."
+              trailing={<Badge color="green">يوم مفتوح</Badge>}
             />
-          );
-        })
+          }
+        />
       )}
-    </LedgerPanel>
+    </section>
   );
 }
 
@@ -626,53 +621,50 @@ function TodayStripCard() {
  * The at-risk shortcuts — the top rows of /teacher/risks (worst-first,
  * green students never ride the endpoint), each row ONE tap from the
  * offering's intelligence deep dive. The full list lives on
- * /teacher/intelligence; this card is the ≤1-tap door to it.
+ * /teacher/intelligence; this section is the ≤1-tap door to it.
  */
-function AtRiskShortcutsCard() {
+function AtRiskShortcuts() {
   const risks = useTeacherRisks();
   const top = risks.data ? topRisks(risks.data) : [];
 
   return (
-    <LedgerPanel
-      title="طلاب يحتاجون متابعة"
-      tag={risks.data && risks.data.length > 0
-        ? countAr(risks.data.length, ['طالب تحت المتابعة', 'طالبان تحت المتابعة', 'طلاب تحت المتابعة', 'طالباً تحت المتابعة'])
-        : undefined}
-      ariaLabel="طلاب يحتاجون متابعة"
-      actions={risks.data && risks.data.length > 0 ? (
-        <Link to="/teacher/intelligence" className="btn ghost sm">
-          <Icon icon={Users} size={13} /> القائمة الكاملة
-        </Link>
-      ) : undefined}
-    >
+    <section aria-label="طلاب يحتاجون متابعة">
+      <SectionHeader
+        title="طلاب يحتاجون متابعة"
+        description={risks.data && risks.data.length > 0
+          ? countAr(risks.data.length, ['طالب تحت المتابعة', 'طالبان تحت المتابعة', 'طلاب تحت المتابعة', 'طالباً تحت المتابعة'])
+          : undefined}
+        actions={risks.data && risks.data.length > 0 ? (
+          <Link to="/teacher/intelligence" className="btn ghost sm">
+            <Icon icon={Users} size={13} /> القائمة الكاملة
+          </Link>
+        ) : undefined}
+      />
       {risks.isPending ? (
-        <div className="ledger-empty">
-          <ListSkeleton rows={3} />
-        </div>
+        <ListSkeleton rows={3} />
       ) : risks.isError ? (
-        <div className="ledger-empty">
-          <ErrorState message="تعذَّر تحميل قائمة المتابعة" error={risks.error} onRetry={() => risks.refetch()} />
-        </div>
-      ) : top.length === 0 ? (
-        <LedgerRow
-          title="جميع طلابك في وضع جيد"
-          subtitle="لا مؤشّرات خطر حاليّاً — ستظهر هنا أقصر طرق المتابعة فور رصدها."
-          leadLabel="0" /* r197 §7: Western digits, not the spelled-out word */
-          lead="مخاطرة"
-          tail={<Badge color="green">مستقر</Badge>}
-        />
+        <ErrorState message="تعذَّر تحميل قائمة المتابعة" error={risks.error} onRetry={() => risks.refetch()} />
       ) : (
-        top.map((r) => (
-          <LedgerRow
-            key={`${r.studentId}:${r.offeringId}`}
-            to={`/teacher/intelligence/${r.offeringId}`}
-            lead={<bdi>{formatPct1(r.riskScore)}%</bdi>}
-            title={r.name}
-            subtitle={<>{r.courseIcon} {r.courseName}</>}
-            tail={<Badge color={RISK_TONE[r.riskLevel]}>{RISK_LABEL[r.riskLevel]}</Badge>}
-          />
-        ))
+        <RowList aria-label="طلاب يحتاجون متابعة">
+          {top.length === 0 ? (
+            <RowItem
+              title="جميع طلابك في وضع جيد"
+              meta="لا مؤشّرات خطر حاليّاً — ستظهر هنا أقصر طرق المتابعة فور رصدها."
+              trailing={<Badge color="green">مستقر</Badge>}
+            />
+          ) : (
+            top.map((r) => (
+              <RowItem
+                key={`${r.studentId}:${r.offeringId}`}
+                leading={<bdi className="tq-num">{formatPct1(r.riskScore)}%</bdi>}
+                title={<Link to={`/teacher/intelligence/${r.offeringId}`}>{r.name}</Link>}
+                meta={<>{r.courseIcon} {r.courseName}</>}
+                trailing={<Badge color={RISK_TONE[r.riskLevel]}>{RISK_LABEL[r.riskLevel]}</Badge>}
+              />
+            ))
+          )}
+        </RowList>
       )}
-    </LedgerPanel>
+    </section>
   );
 }

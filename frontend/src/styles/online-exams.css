@@ -1,0 +1,817 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — online-exams.css · OnlineExamsPages (`.oex`) — Superlist
+   direction, list-first (4C-d, r240–r249 family)
+   ─────────────────────────────────────────────────────────────────────
+   Page-scoped sheet for the three online-exams taker surfaces:
+
+     /student/online-exams         OnlineExamsPage  — exam ROWS
+     /student/online-exams/:id     ExamTakerPage    — calm focus surface
+     /quality/exam-moderation      ExamModerationPage — read-heavy queue
+
+   Direction contract (docs/redesign/BLUEPRINT.md §1 §3 §4): product-
+   first, list-first, calm surfaces. Hierarchy via surface steps +
+   hairline var(--rule) separators, ONE soft shadow per surface, ONE
+   signal accent (var(--accent)) for selection/active/focus; semantic
+   colors only for status chips. Logical properties only; motion rides
+   var(--motion-duration-*) / var(--motion-ease-*) with a complete
+   static result under reduced motion; zero letter-spacing on Arabic.
+
+   Everything is prefixed `oex-` (online-exams). The sheet imports with
+   the lazy page module (D11 css split — side-effect import inside
+   OnlineExamsPages.tsx), so the rules only ship with the surfaces that
+   consume them. Token-only colors, spacing on the --sp ladder, radius
+   on the --r ladder, type on the --fs/--type ladders — the raw-css /
+   colors / motion / icons gates all apply and pass.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ═══ 1 · Student exam list — rows, not cards ══════════════════════
+     List-first composition (mission 4C-d): title + kind + course lead,
+     a status/time-window meta line, a trailing primary action. Hairline
+     separators between rows; hover = one calm background tint; the row
+     itself is the tap target (canStart rows render as <a>). */
+
+  .oex-rows {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .oex-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-3) var(--sp-4);
+    padding-block: var(--sp-4);
+    border-block-end: 1px solid var(--rule);
+    color: inherit;
+  }
+
+  .oex-rows > :last-child { border-block-end: 0; }
+
+  /* Startable rows are anchors — the hover tint is the row's whole
+     elevation story (no lift, no shadow stacking; Superlist calm). The
+     inset inline padding + mirrored negative margin keep the tint off
+     the hairline grid while the text column stays aligned. */
+  a.oex-row {
+    text-decoration: none;
+    margin-inline: calc(-1 * var(--sp-3));
+    padding-inline: var(--sp-3);
+    border-radius: var(--r-md);
+    transition: background var(--t-fast) var(--motion-ease-standard);
+  }
+
+  a.oex-row:hover { background: var(--surface-2); }
+
+  .oex-row:focus-visible {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+  }
+
+  /* Leading icon well — kind-tinted via the row's --oex-accent (the
+     KIND_COLOR map passes var() tokens only; dark re-keys for free). */
+  .oex-row-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: var(--r-md);
+    background: color-mix(in srgb, var(--oex-accent, var(--accent)) 10%, transparent);
+    color: var(--oex-accent, var(--accent));
+  }
+
+  .oex-row-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-0-5);
+    flex: 1 1 260px;
+    min-inline-size: 0;
+  }
+
+  .oex-row-title {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+
+  .oex-row-kicker {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+  .oex-row-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-4);
+    margin-block-start: var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+  .oex-row-meta > span {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+  }
+
+  .oex-row-chips {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-1-5);
+    margin-block-start: var(--sp-2);
+  }
+
+  /* Trailing primary action — «ابدأ / متابعة» on startable rows, the
+     «عرض النتيجة» ghost button on finished history rows, nothing when
+     the status chips already tell the whole truth (upcoming / closed).
+     The label is inside the row link, so the whole row is the control. */
+  .oex-row-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    flex-shrink: 0;
+    min-block-size: 44px; /* craft floor — the row link clears it many times over */
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--accent-ink);
+    transition: color var(--t-fast) var(--motion-ease-standard);
+  }
+
+  a.oex-row:hover .oex-row-action { color: var(--accent-strong); }
+
+  /* Shape-matched loading rows — icon well + two text lines, one per
+     pending row (the list is rows now, the skeleton follows). */
+  .oex-skel {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding-block: var(--sp-3);
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .oex-skel:last-child { border-block-end: 0; }
+
+  .oex-skel-icon {
+    flex-shrink: 0;
+    inline-size: 40px;
+    block-size: 40px;
+  }
+
+  .oex-skel-body {
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  /* ═══ 2 · Exam taker — the calm focus surface ══════════════════════
+     Sticky compact attempt header (title + progress + timer + question
+     map + time rail) ABOVE the questions; question cards large-type;
+     options as 44px selectable rows. The attempt lifecycle (autosave,
+     timer, submit, resume, terminal errors) is untouched — this is the
+     chrome those behaviors render through. */
+
+  .oex-bar {
+    position: sticky;
+    inset-block-start: 0;
+    /* Local paint order above the question cards; overlays are portaled
+       far above this, and the sticky app topbar still paints over. */
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-4);
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-card);
+  }
+
+  .oex-bar-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex: 1 1 200px;
+    min-inline-size: 0;
+  }
+
+  .oex-bar-title {
+    margin: 0;
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* «س3 من 10» — the on-screen progress chip (Western digits, bidi-
+     isolated in the TSX; aria-hidden — the map + subline carry the SR
+     story). One signal: it is quiet chrome, the timer owns the color. */
+  .oex-bar-progress {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: var(--sp-1) var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-full);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .oex-save-warn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    padding: var(--sp-1) var(--sp-3);
+    border-radius: var(--r-full);
+    background: var(--warning-soft);
+    color: var(--warning-ink);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+  }
+
+  /* The countdown — the one loud element on the surface (prominent +
+     accessible: role=timer, the urgency crossing announced once). */
+  .oex-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    flex-shrink: 0;
+    padding: var(--sp-2) var(--sp-4);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-full);
+    color: var(--text);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+    transition: background var(--t-base) var(--motion-ease-standard),
+                border-color var(--t-base) var(--motion-ease-standard),
+                color var(--t-base) var(--motion-ease-standard);
+  }
+
+  /* < 2 minutes left — danger chip. Color coding only, no pulse (the
+     documented no-flash decision): --danger-ink on --danger-soft is
+     ≈9.4:1 light / 7.2:1 dark. */
+  .oex-timer.urgent {
+    background: var(--danger-soft);
+    border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+    color: var(--danger-ink);
+  }
+
+  /* Question map — one dot per question, answered / save-failed /
+     current states at a glance; click or keyboard to jump. */
+  .oex-qmap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+    flex-basis: 100%;
+  }
+
+  .oex-qmap-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 36px;
+    min-block-size: 36px;
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: var(--r-full);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    cursor: pointer;
+    transition: background var(--t-fast) var(--motion-ease-standard),
+                border-color var(--t-fast) var(--motion-ease-standard),
+                color var(--t-fast) var(--motion-ease-standard);
+  }
+
+  .oex-qmap-dot:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+
+  .oex-qmap-dot.answered {
+    background: var(--accent-soft);
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    color: var(--accent-strong);
+  }
+
+  /* Save-failed — the warning-chip pairing (.oex-save-warn family). */
+  .oex-qmap-dot.failed {
+    background: var(--danger-soft);
+    border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+    color: var(--danger-ink);
+  }
+
+  /* The on-screen ring — inset accent, same language as the selected
+     choice row (no elevation, no glow). */
+  .oex-qmap-dot.current {
+    border-color: var(--accent);
+    box-shadow: var(--state-card-selected-ring);
+    color: var(--accent-ink);
+  }
+
+  /* The time-consumed hairline: drains from the inline-start edge —
+     RTL inline-start is the RIGHT edge, so the origin pins right (the
+     document is dir="rtl"); the [dir='ltr'] twin keeps the sheet honest
+     if the family is ever reused in a Latin shell. */
+  .oex-time-rail {
+    display: block;
+    flex-basis: 100%;
+    block-size: 2px;
+    border-radius: var(--r-full);
+    background: var(--rule);
+    overflow: hidden;
+  }
+
+  .oex-time-rail > span {
+    display: block;
+    block-size: 100%;
+    background: var(--accent);
+    transform-origin: right center;
+  }
+
+  [dir='ltr'] .oex-time-rail > span { transform-origin: left center; }
+
+  .oex-time-rail[data-urgent] { background: color-mix(in srgb, var(--danger) 16%, transparent); }
+  .oex-time-rail[data-urgent] > span { background: var(--danger); }
+
+  /* Question wrapper — the map's jump target. scroll-margin in rem so
+     the card lands clear of the sticky bar (measured: ≈7.5rem bar stack
+     desktop, +44px dot row ≤640). */
+  .oex-q { scroll-margin-block-start: 7.5rem; }
+  @media (max-width: 768px) { .oex-q { scroll-margin-block-start: 8.5rem; } }
+  @media (max-width: 640px) { .oex-q { scroll-margin-block-start: 10rem; } }
+
+  /* Programmatic focus lands here (tabIndex -1) — the universal ring
+     excludes tabindex=-1 by design, so the landing cue is declared
+     here and retires when the student clicks elsewhere. */
+  .oex-q:focus {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+    border-radius: var(--r-lg);
+  }
+
+  /* The question card: prompt is the large-type moment (16–18px band →
+     --fs-body-lg = 18px; authored line breaks survive). */
+  .oex-prompt {
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-medium);
+    color: var(--text);
+    line-height: var(--lh-base);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+
+  .oex-q-choices {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-4);
+  }
+
+  /* Options — selectable rows (44px+ floor), one quiet border, clear
+     selected state: accent tint + filled check. RTL-correct: the check
+     rides the inline-start edge via the flex flow, never left/right. */
+  .oex-choice {
+    position: relative; /* the visually-hidden radio anchors to its row */
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    min-block-size: 44px;
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: background var(--t-fast) var(--motion-ease-standard),
+                border-color var(--t-fast) var(--motion-ease-standard);
+  }
+
+  .oex-choice:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .oex-choice:active { background: var(--surface-3); }
+
+  /* The native radio stays in the accessibility tree (name = choice
+     text) but is visually replaced by the check affordance; focus
+     moves to the row through :has(). */
+  .oex-choice input[type='radio'] {
+    position: absolute;
+    opacity: 0;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+  }
+
+  .oex-choice-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    inline-size: 22px;
+    block-size: 22px;
+    margin-block-start: var(--sp-0-5);
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    color: transparent;
+    transition: background var(--t-fast) var(--motion-ease-standard),
+                border-color var(--t-fast) var(--motion-ease-standard),
+                color var(--t-fast) var(--motion-ease-standard);
+  }
+
+  .oex-choice-text {
+    flex: 1;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  /* Selected — the ONE signal moment of the answering surface. */
+  .oex-choice.selected {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+
+  .oex-choice.selected .oex-choice-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
+  }
+
+  /* Row-level focus cue: the universal ring lands on the visually
+     hidden radio; this ties the surrounding row to it. */
+  .oex-choice:has(input:focus-visible) {
+    border-color: var(--accent);
+  }
+
+  /* Locked while this question's save is in flight — the same honesty
+     as the choice radios (the save cannot be raced). */
+  .oex-choice:has(input:disabled) {
+    cursor: default;
+    opacity: 0.7;
+  }
+
+  .oex-choice:has(input:disabled):hover {
+    background: var(--surface);
+    border-color: var(--border);
+  }
+
+  .oex-answer-field { margin-block-start: var(--sp-4); }
+
+  /* The near-limit counter (last 400 chars) — quiet, end-aligned. */
+  .oex-char-count {
+    margin: 0;
+    text-align: end;
+  }
+
+  /* Save-state chip at the question footer — the positive half of the
+     autosave honesty pair (failed → danger, in-flight → muted,
+     server-confirmed → success). */
+  .oex-q-foot {
+    display: flex;
+    justify-content: flex-end;
+    margin-block-start: var(--sp-3);
+  }
+
+  .oex-q-state {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    animation: oex-save-in var(--motion-duration-micro) var(--motion-ease-standard);
+  }
+
+  .oex-q-state.saved { color: var(--success-ink); }
+  .oex-q-state.saving { color: var(--text-muted); }
+  .oex-q-state.failed { color: var(--danger-ink); }
+
+  @keyframes oex-save-in { from { opacity: 0; } }
+
+  /* Submit bar — the unanswered count rides inline; on phone the bar is
+     bottom-sticky above the fixed bottom-nav so a 60-question paper
+     never hides the way out. */
+  .oex-submit-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    margin-block-start: var(--sp-4);
+  }
+
+  .oex-submit-bar .form-error { flex-basis: 100%; }
+
+  .oex-submit-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+  }
+
+  .oex-submit-status.ok { color: var(--success-ink); }
+  .oex-submit-status.warn { color: var(--warning-ink); }
+
+  @media (max-width: 920px) {
+    .oex-submit-bar {
+      position: sticky;
+      /* 641–920px: .content has no bottom padding — full nav clearance
+         (≈72px + safe area) so the bar docks above the bottom-nav. */
+      bottom: calc(72px + env(safe-area-inset-bottom) + var(--sp-2));
+      z-index: 20;
+      padding: var(--sp-2) var(--sp-3);
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-card);
+    }
+  }
+
+  /* ≤640px: the scroller's own bottom padding reserves the nav clearance
+     (notifications.css idiom) — 0 docks the bar a hairline above it. */
+  @media (max-width: 640px) {
+    .oex-submit-bar { bottom: 0; }
+    .oex-qmap { flex-wrap: nowrap; overflow-x: auto; }
+    .oex-qmap-dot { min-inline-size: 44px; min-block-size: 44px; }
+  }
+
+  /* ═══ 3 · Begin / done / result screens ════════════════════════════ */
+
+  .oex-begin-note {
+    max-inline-size: 480px;
+    text-align: center;
+  }
+
+  .oex-begin-error {
+    margin-block-start: var(--sp-3);
+    max-inline-size: 480px;
+  }
+
+  .oex-begin-actions { margin-block-start: var(--sp-3); }
+
+  /* Verdict lockup: icon → title → grade → badge read as one tight
+     group inside .empty-state's rhythm. */
+  .oex-result .oex-result-title { margin: 0; }
+
+  .oex-result-lockup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+
+  .oex-result-note {
+    margin: 0;
+    max-inline-size: 52ch;
+    color: var(--text-muted);
+  }
+
+  /* The authored moment — the grade reveal: the real score lands as the
+     visual anchor (metric scale, one-shot rise + state ring — 0-spread
+     ring, never elevation). */
+  .oex-grade {
+    display: inline-flex;
+    align-items: baseline;
+    padding: var(--sp-3) var(--sp-5);
+    border-radius: var(--r-lg);
+    background: var(--accent-soft);
+    animation:
+      oex-grade-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards,
+      oex-grade-ring var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
+  }
+
+  .oex-grade-value {
+    font-family: var(--font-mono);
+    font-size: var(--type-metric-size-lg);
+    font-weight: var(--type-metric-weight);
+    line-height: var(--type-metric-line-height);
+    /* token WCAG math: --accent-strong on --accent-soft ≥ AA both themes */
+    color: var(--accent-strong);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: var(--type-metric-feature-settings);
+  }
+
+  @keyframes oex-grade-in {
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)) scale(0.96); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes oex-grade-ring {
+    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+    to { box-shadow: 0 0 0 12px transparent; }
+  }
+
+  /* ═══ 4 · Post-grading review ══════════════════════════════════════
+     Collapsed behind one toggle; the list re-asserts start alignment
+     inside .empty-state's centered column. Verdict chips carry the
+     semantics; rows stay hairline-calm. */
+
+  .oex-review {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
+  }
+
+  .oex-review-chevron {
+    transition: rotate var(--motion-duration-micro) var(--motion-ease-standard);
+  }
+
+  .oex-review-chevron.is-open { rotate: 180deg; }
+
+  .oex-review-list {
+    inline-size: min(100%, 640px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    text-align: start;
+  }
+
+  .oex-review-q {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-3);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+  }
+
+  .oex-review-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-2);
+  }
+
+  .oex-review-num {
+    flex-shrink: 0;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .oex-review-prompt {
+    flex: 1;
+    min-inline-size: 0;
+    font-weight: var(--fw-semibold);
+  }
+
+  .oex-review-head .badge { flex-shrink: 0; }
+
+  .oex-review-meta {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+  .oex-review-label { color: var(--text-muted); font-size: var(--fs-sm); }
+
+  .oex-review-ans,
+  .oex-review-key,
+  .oex-review-feedback {
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+  }
+
+  .oex-review-text { overflow-wrap: anywhere; }
+
+  .oex-review-missed { color: var(--text-muted); font-style: normal; }
+
+  .oex-review-key {
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+    color: var(--success-ink);
+  }
+
+  .oex-review-feedback {
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+  }
+
+  /* ═══ 5 · Quality moderation queue ═════════════════════════════════
+     Read-heavy oversight: queue rows with hairline separators (surface
+     steps, no filled chips), the review panel as one quiet surface-2
+     step, and the approve/reject grammar untouched (the shared
+     .moderation-pulse confirm animation keeps its components.css home). */
+
+  .oex-queue {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .oex-mod-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-3) var(--sp-4);
+    padding-block: var(--sp-4);
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .oex-mod-row:first-child { padding-block-start: 0; }
+  .oex-mod-row:last-child { border-block-end: 0; padding-block-end: 0; }
+
+  .oex-mod-main {
+    flex: 1 1 240px;
+    min-inline-size: 0;
+  }
+
+  .oex-mod-title {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+
+  .oex-mod-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-2);
+    margin-block-start: var(--sp-1);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+
+  /* Expanded review panel — one surface step down, no border stack. */
+  .oex-mod-panel {
+    flex-basis: 100%;
+    margin-block-start: var(--sp-3);
+    padding: var(--sp-4);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+  }
+
+  .oex-mod-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+
+  .oex-mod-preview { margin-block-end: var(--sp-4); }
+
+  .oex-mod-preview-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-2);
+  }
+
+  /* Per-question released key / moderation note lines inside the
+     preview rows (the .list-row grammar stays the family container). */
+  .oex-mod-key {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    margin-block-start: var(--sp-0-5);
+    font-size: var(--fs-xs);
+    color: var(--success-ink);
+  }
+
+  .oex-mod-note {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    margin-block-start: var(--sp-0-5);
+    font-size: var(--fs-xs);
+    color: var(--danger-ink);
+  }
+
+  .oex-mod-note-field { margin-block-end: var(--sp-2); }
+
+  .oex-mod-error { margin-block-start: var(--sp-2); }
+
+  /* ═══ 6 · Reduced motion — the complete static result ══════════════
+     The global belt (motion.css) already zeroes durations; these local
+     guarantees keep the oex moments honest even if a future keyframe
+     forgets the token ladder. */
+
+  @media (prefers-reduced-motion: reduce) {
+    .oex-q-state,
+    .oex-grade {
+      animation: none;
+    }
+
+    .oex-review-chevron,
+    a.oex-row,
+    .oex-row-action,
+    .oex-timer,
+    .oex-qmap-dot,
+    .oex-choice,
+    .oex-choice-check {
+      transition: none;
+    }
+  }
+
+}

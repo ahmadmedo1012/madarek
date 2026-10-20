@@ -40,12 +40,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   AlertTriangle, Archive, BadgeCheck, Ban, BookOpen, CheckCircle2,
-  ChevronRight, ClipboardCheck, Copy, FileQuestion, FileText, Hourglass, Info,
-  ListChecks, Pencil, Plus, Search, Send, ShieldCheck, Trash2, X,
+  ChevronDown, ChevronRight, ClipboardCheck, Copy, FileQuestion, FileText,
+  Hourglass, Info, Lock, Pencil, Plus, Search, Send, Trash2, X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { Badge, Button, Card, FormField, Input, Tabs } from '../../components/primitives';
-import { StatStrip } from '../../components/primitives/Ledger';
+import { Badge, Button, FormField, Input, Tabs } from '../../components/primitives';
 import type { ThemeColor } from '../../components/primitives';
 import {
   DetailSkeleton, EmptyState, ErrorState, ListSkeleton, LoadingState,
@@ -75,6 +74,7 @@ import {
 } from '../../hooks/useResources';
 import '../../styles/owner.css'; // ConfirmDialog + ToggleSwitch surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .back-link family (D11 css split, 12-15)
+import '../../styles/exam-author.css'; // 4C-a — this page's exa-* sheet (Superlist rows/split)
 
 /* ═══════════════ Label maps (TS-pinned over the full enums — 15-a) ═══════════════ */
 
@@ -559,11 +559,10 @@ export default function ExamAuthoringPage() {
             تأليف الأسئلة وبناء قوالب الاختبارات الموحَّدة، ومتابعة اعتمادها من الجودة حتى النشر.
           </p>
         </div>
-        {canAuthor && (
-          <Button variant="primary" onClick={() => setBuilding(true)}>
-            <Icon icon={Plus} size={14} /> قالب اختبار جديد
-          </Button>
-        )}
+        {/* 4C-a: the build CTA moved down to its tab's section head —
+            each tab owns its own action row (the page header stays a
+            calm masthead; the old always-visible button followed the
+            user onto tabs where it did nothing). */}
       </header>
 
       {perms.isPending ? (
@@ -605,21 +604,50 @@ function PermissionDeniedBlock() {
 
 /* ═══════════════ My templates tab ═══════════════ */
 
+/** 4C-a — the tab opener (Superlist grammar): a large-type section
+ *  title, ONE honest Arabic line, and the tab's actions at the
+ *  inline-end. Replaces the generic Card chrome the tabs used to
+ *  render inside; the row sheets below carry the content. */
+function ExaSectionHead({
+  title,
+  desc,
+  actions,
+}: {
+  title: string;
+  desc?: string;
+  actions?: React.ReactNode;
+}) {
+  return (
+    <div className="exa-section-head">
+      <div className="exa-section-heading">
+        <h2 className="exa-section-title">{title}</h2>
+        {desc && <p className="exa-section-desc">{desc}</p>}
+      </div>
+      {actions && <div className="exa-section-actions">{actions}</div>}
+    </div>
+  );
+}
+
 function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
   const q = useExamTemplates();
 
   return (
-    <Card
-      title="قوالب اختباراتي"
-      icon={FileText}
-      subtitle={
-        q.isPending
-          ? 'جارٍ التحميل…'
-          : q.data && q.data.length > 0
-            ? countAr(q.data.length, ['قالب واحد', 'قالبان', 'قوالب', 'قالباً'])
-            : undefined
-      }
-    >
+    <>
+      <ExaSectionHead
+        title="قوالب اختباراتي"
+        desc={
+          q.isPending
+            ? 'جارٍ التحميل…'
+            : q.data && q.data.length > 0
+              ? `${countAr(q.data.length, ['قالب واحد', 'قالبان', 'قوالب', 'قالباً'])} — يُفتح النشر بعد اعتماد الجودة.`
+              : 'ستظهر قوالبك هنا — ابنِ قالباً من أسئلة البنك المعتمدة.'
+        }
+        actions={
+          <Button variant="primary" onClick={onBuild}>
+            <Icon icon={Plus} size={14} /> قالب اختبار جديد
+          </Button>
+        }
+      />
       {q.isPending ? (
         <ListSkeleton rows={4} />
       ) : q.isError ? (
@@ -636,13 +664,13 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
           }
         />
       ) : (
-        <div className="flex-col gap-2">
+        <div className="exa-rows">
           {q.data.map((t) => (
             <TemplateRow key={t.id} template={t} />
           ))}
         </div>
       )}
-    </Card>
+    </>
   );
 }
 
@@ -655,11 +683,15 @@ function TemplateRow({ template }: { template: ExamTemplateRow }) {
     : template.faculty
       ? `كلّيّة ${template.faculty.name}`
       : GENERAL_SCOPE;
+  const detailHref = `/teacher/exams/${template.id}`;
   return (
-    <div className="list-row">
-      <div className="list-row-body">
-        <div className="list-row-title" title={template.title}>{template.title}</div>
-        <div className="list-row-sub" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+    /* 4C-a: the row IS the detail link — title, chips and counts ride
+       one full-width anchor; the trailing buttons stay real controls
+       beside it (no nested interactive elements). */
+    <div className="exa-row exa-row-clickable">
+      <Link className="exa-row-main" to={detailHref}>
+        <span className="exa-row-title" title={template.title}>{template.title}</span>
+        <span className="exa-row-sub">
           <Badge color="purple">{KIND_LABEL[template.kind]}</Badge>
           <TemplateStatusBadge status={template.status} />
           <span>{scope}</span>
@@ -670,21 +702,21 @@ function TemplateRow({ template }: { template: ExamTemplateRow }) {
           {template._count.attempts > 0 && (
             <span>{countAr(template._count.attempts, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])}</span>
           )}
-        </div>
+        </span>
         {template.status === 'REJECTED' && (
-          <p className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+          <p className="exa-row-note">
             {/* r170b: the fix path is now the template's own تعديل (the
                 edit resubmits it to the queue) — the old copy promised a
                 replacement-template detour that no longer exists. */}
             رفضته الجودة — افتح القالب للاطلاع على الملاحظات وعدّله ليعود إلى المراجعة.
           </p>
         )}
-      </div>
-      <div className="flex gap-2" style={{ flexShrink: 0 }}>
-        <Link className="btn ghost sm" to={`/teacher/exams/${template.id}`}>
+      </Link>
+      <div className="exa-row-actions">
+        <Link className="btn ghost sm" to={detailHref}>
           عرض
         </Link>
-        <PublishButton template={template} viewHref={`/teacher/exams/${template.id}`} />
+        <PublishButton template={template} viewHref={detailHref} />
       </div>
     </div>
   );
@@ -812,11 +844,11 @@ function PublishButton({
 /* A6 P2 (22-a + 23-b): the bank filter row (hub) and the picker filter
  * row (builder modal) are sibling surfaces — they used to carry eight
  * drifting inline magic-number widths (280/200/160/140 vs
- * 220/150/130/120). Both rows now consume the shared `.filter-bar`
- * class whose scoped `--w-input-filter-*` tokens own the width budget
- * (components.css, 23-b): the hub renders the boxed toolbar, the
- * picker nests inside the already-boxed "أسئلة القالب" section so it
- * takes the chrome-less `.filter-bar.flush` variant. */
+ * 220/150/130/120). The picker still consumes the shared `.filter-bar`
+ * width budget (components.css, 23-b) with the chrome-less `.flush`
+ * variant inside the boxed «أسئلة القالب» section; the hub's row was
+ * re-composed in 4C-a as the calm `.exa-toolbar` (search flex-1 +
+ * 44px selects) matching the Superlist row grammar. */
 
 function QuestionBankSection() {
   const [q, setQ] = useState('');
@@ -824,6 +856,12 @@ function QuestionBankSection() {
   const [categoryId, setCategoryId] = useState('');
   const [type, setType] = useState<'' | QType>('');
   const [difficulty, setDifficulty] = useState<'' | Difficulty>('');
+  // 4C-a — the accordion: one row expanded at a time keeps the list a
+  // list. Pure client-side state over the already-fetched rows — the
+  // bank listing's payload IS the expansion's data (no detail fetch,
+  // no new endpoints).
+  const [openId, setOpenId] = useState<string | null>(null);
+  const toggleOpen = (id: string) => setOpenId((cur) => (cur === id ? null : id));
 
   // Debounce the search input — wait 250ms of idle typing before firing
   // (the shared LibraryPage pattern).
@@ -844,26 +882,29 @@ function QuestionBankSection() {
   const filtered = categoryId !== '' || type !== '' || difficulty !== '' || debouncedQ !== '';
 
   return (
-    <Card
-      title="بنك الأسئلة المعتمدة"
-      icon={FileQuestion}
-      subtitle="الأسئلة التي اعتمدتها الجودة وتصلح لبناء القوالب — إنشاء سؤال جديد يمرّ على المراجعة أولاً."
-      actions={
-        <Button variant="primary" size="sm" onClick={() => setCreating(true)}>
-          <Icon icon={Plus} size={13} /> سؤال جديد
-        </Button>
-      }
-    >
+    <>
+      <ExaSectionHead
+        title="بنك الأسئلة المعتمدة"
+        desc="الأسئلة التي اعتمدتها الجودة وتصلح لبناء القوالب — إنشاء سؤال جديد يمرّ على المراجعة أولاً."
+        actions={
+          <Button variant="primary" onClick={() => setCreating(true)}>
+            <Icon icon={Plus} size={14} /> سؤال جديد
+          </Button>
+        }
+      />
+
+      {/* One calm toolbar — search flexes, the three selects wrap after
+          it; the debounce + endpoint contract are unchanged. */}
       <div
-        className="filter-bar"
+        className="exa-toolbar"
         role="group"
         aria-label="تصفية بنك الأسئلة"
-        style={{ marginBlockEnd: 'var(--sp-4)' }}
       >
-        <div className="topbar-search">
-          <span className="topbar-search-icon"><Icon icon={Search} size={14} /></span>
+        <div className="exa-search">
+          <span className="exa-search-icon"><Icon icon={Search} size={15} /></span>
           <input
             type="text"
+            className="input exa-search-input"
             placeholder="ابحث في نص الأسئلة…"
             aria-label="البحث في بنك الأسئلة"
             value={q}
@@ -871,7 +912,7 @@ function QuestionBankSection() {
           />
         </div>
         <select
-          className="input"
+          className="input exa-select"
           aria-label="تصفية حسب التصنيف"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
@@ -882,7 +923,7 @@ function QuestionBankSection() {
           ))}
         </select>
         <select
-          className="input"
+          className="input exa-select"
           aria-label="تصفية حسب نوع السؤال"
           value={type}
           onChange={(e) => setType(e.target.value as '' | QType)}
@@ -893,7 +934,7 @@ function QuestionBankSection() {
           ))}
         </select>
         <select
-          className="input"
+          className="input exa-select"
           aria-label="تصفية حسب مستوى الصعوبة"
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value as '' | Difficulty)}
@@ -934,38 +975,98 @@ function QuestionBankSection() {
           }
         />
       ) : (
-        <div className="flex-col gap-2">
+        <div className="exa-rows">
           {bank.data.map((question) => (
-            <QuestionBankRow key={question.id} question={question} />
+            <QuestionBankRow
+              key={question.id}
+              question={question}
+              open={openId === question.id}
+              onToggle={() => toggleOpen(question.id)}
+            />
           ))}
         </div>
       )}
 
       {creating && <CreateQuestionModal onClose={() => setCreating(false)} />}
-    </Card>
+    </>
   );
 }
 
-function QuestionBankRow({ question }: { question: QuestionRow }) {
+function QuestionBankRow({
+  question,
+  open,
+  onToggle,
+}: {
+  question: QuestionRow;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  // The panel id is aria-controls' only consumer — uniqueness comes
+  // from the wire id, no useId ceremony needed for a per-row toggle.
+  const panelId = `exa-q-${question.id}`;
   return (
-    <div className="list-row">
-      <div className="list-row-body">
-        <div className="list-row-title" title={question.prompt}>{question.prompt}</div>
-        <div className="list-row-sub" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
-          <Badge>{QTYPE_LABEL[question.type]}</Badge>
-          <Badge color={DIFFICULTY_COLOR[question.difficulty]}>{DIFFICULTY_LABEL[question.difficulty]}</Badge>
-          <span className="flex gap-1 items-center">
-            <EmojiIcon emoji={question.category.iconEmoji ?? '📚'} size={13} />
-            {question.category.title}
+    /* 4C-a — the centerpiece row: a real <button> toggles an in-place
+       expansion (aria-expanded/aria-controls, chevron rotates). The
+       expanded detail renders strictly from the fetched QuestionRow —
+       and it says honestly what the bank listing does and doesn't
+       carry: choices WITHOUT the key (the listing deliberately does
+       not leak the answer) and no mutation affordance (questions are
+       immutable once approved — create-new is the only edit path). */
+    <div className={`exa-bank-row${open ? ' is-open' : ''}`}>
+      <button
+        type="button"
+        className="exa-bank-toggle"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={onToggle}
+      >
+        <span className="exa-chevron"><Icon icon={ChevronDown} size={16} /></span>
+        <span className="exa-bank-head">
+          <span className="exa-bank-prompt" title={question.prompt}>{question.prompt}</span>
+          <span className="exa-bank-meta">
+            <Badge>{QTYPE_LABEL[question.type]}</Badge>
+            <Badge color={DIFFICULTY_COLOR[question.difficulty]}>{DIFFICULTY_LABEL[question.difficulty]}</Badge>
+            {/* The listing only serves approved questions (isApproved
+                filter in the route) — the chip states the pool's
+                invariant, priming the "only approved questions enter
+                templates" model. */}
+            <Badge color="green" icon={BadgeCheck}>معتمد</Badge>
+            <span className="exa-points">
+              {countAr(question.points, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}
+            </span>
+            <span className="flex gap-1 items-center">
+              <EmojiIcon emoji={question.category.iconEmoji ?? '📚'} size={13} />
+              {question.category.title}
+            </span>
           </span>
-          <span>{countAr(question.points, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}</span>
-          {question.tags.length > 0 && <span>· {question.tags.join('، ')}</span>}
+        </span>
+      </button>
+      {open && (
+        <div id={panelId} className="exa-bank-panel">
+          <p className="exa-qtext">{question.prompt}</p>
+          {question.choices && question.choices.length > 0 && (
+            <ul className="exa-choices">
+              {question.choices.map((choice, i) => (
+                <li key={i} className="exa-choice">
+                  <span className="exa-choice-index" aria-hidden>{i + 1}.</span>
+                  <span>{choice}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          <div className="exa-byline">
+            <span>التصنيف: {question.category.title}</span>
+            <span>أضافها: {question.author}</span>
+            {question.tags.length > 0 && <span>الوسوم: {question.tags.join('، ')}</span>}
+          </div>
+          <p className="exa-immutable" role="note">
+            <Icon icon={Lock} size={13} />
+            <span>
+              الأسئلة المعتمدة ثابتة — لا تُعدَّل بعد الاعتماد. أنشئ سؤالاً جديداً لصياغة معدَّلة.
+            </span>
+          </p>
         </div>
-      </div>
-      {/* The listing only serves approved questions (isApproved filter in
-          the route) — the chip states the pool's invariant, priming the
-          "only approved questions enter templates" model. */}
-      <Badge color="green" icon={BadgeCheck}>معتمد</Badge>
+      )}
     </div>
   );
 }
@@ -1866,17 +1967,17 @@ function ModerationQueueSection() {
   const q = useExamModerationQueue();
 
   return (
-    <Card
-      title="قوالب بانتظار المراجعة"
-      icon={ShieldCheck}
-      subtitle={
-        q.isPending
-          ? 'جارٍ التحميل…'
-          : q.data && q.data.length > 0
-            ? countAr(q.data.length, ['قالب واحد بانتظار قرارك', 'قالبان بانتظار قرارك', 'قوالب بانتظار قرارك', 'قالباً بانتظار قرارك'])
-            : undefined
-      }
-    >
+    <>
+      <ExaSectionHead
+        title="قوالب بانتظار المراجعة"
+        desc={
+          q.isPending
+            ? 'جارٍ التحميل…'
+            : q.data && q.data.length > 0
+              ? countAr(q.data.length, ['قالب واحد بانتظار قرارك', 'قالبان بانتظار قرارك', 'قوالب بانتظار قرارك', 'قالباً بانتظار قرارك'])
+              : undefined
+        }
+      />
       {q.isPending ? (
         <ListSkeleton rows={3} />
       ) : q.isError ? (
@@ -1888,12 +1989,12 @@ function ModerationQueueSection() {
           description="كل قوالب الاختبارات المرسلة اجتازت المراجعة — ستظهر القوالب الجديدة هنا فور إرسالها."
         />
       ) : (
-        <div className="flex-col gap-2">
+        <div className="exa-rows">
           {q.data.map((item) => (
-            <div key={item.id} className="list-row">
-              <div className="list-row-body">
-                <div className="list-row-title" title={item.title}>{item.title}</div>
-                <div className="list-row-sub" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+            <div key={item.id} className="exa-row exa-row-clickable">
+              <Link className="exa-row-main" to={`/teacher/exams/${item.id}`}>
+                <span className="exa-row-title" title={item.title}>{item.title}</span>
+                <span className="exa-row-sub">
                   <Badge color="purple">{KIND_LABEL[item.kind]}</Badge>
                   {item.offering && <Badge color="brand">{item.offering.course.name}</Badge>}
                   <span>
@@ -1901,16 +2002,18 @@ function ModerationQueueSection() {
                     {countAr(item.durationMin, ['دقيقة واحدة', 'دقيقتان', 'دقائق', 'دقيقة'])}
                   </span>
                   <span>قدّمه: {item.author.firstName} {item.author.lastName}</span>
-                </div>
-              </div>
-              <Link className="btn primary sm" to={`/teacher/exams/${item.id}`}>
-                مراجعة
+                </span>
               </Link>
+              <div className="exa-row-actions">
+                <Link className="btn primary sm" to={`/teacher/exams/${item.id}`}>
+                  مراجعة
+                </Link>
+              </div>
             </div>
           ))}
         </div>
       )}
-    </Card>
+    </>
   );
 }
 
@@ -1952,143 +2055,128 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
 
   return (
     <>
-      <header className="page-header">
-        <div className="page-title-block">
-          {/* A6 P3 (22-a): 2-line clamp — authored titles run long and
-              pushed the whole page down; the full title stays in the
-              title attr (and the clamp keeps the first two lines
-              readable, not a truncation). */}
-          <h1
-            className="page-title"
-            title={template.title}
-            style={{
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            } as React.CSSProperties}
-          >
-            {template.title}
-          </h1>
-          <p className="page-subtitle" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
-            <Badge color="purple">{KIND_LABEL[template.kind]}</Badge>
-            <TemplateStatusBadge status={template.status} />
-            {template.offering ? (
-              <span><Icon icon={BookOpen} size={12} /> {template.offering.course.name} · <bdi>{template.offering.course.code}</bdi></span>
-            ) : template.faculty ? (
-              <span>كلّيّة {template.faculty.name}</span>
-            ) : (
-              <span>عام — كل الكلّيّات</span>
-            )}
-          </p>
+      {/* 4C-a — the restructured detail header: back-link row (above),
+          then the large-type title with its status/scope line and the
+          actions strip on the inline-end. The publish control keeps
+          PublishButton's gated-disabled + reason honesty. */}
+      <header className="exa-detail-head">
+        <div className="exa-detail-top">
+          <div className="exa-detail-heading">
+            {/* A6 P3 (22-a): 2-line clamp lives in the exa sheet —
+                authored titles run long and pushed the whole page down;
+                the full title stays in the title attr. */}
+            <h1 className="exa-detail-title" title={template.title}>
+              {template.title}
+            </h1>
+            <div className="exa-detail-sub">
+              <Badge color="purple">{KIND_LABEL[template.kind]}</Badge>
+              <TemplateStatusBadge status={template.status} />
+              {template.offering ? (
+                <span><Icon icon={BookOpen} size={12} /> {template.offering.course.name} · <bdi>{template.offering.course.code}</bdi></span>
+              ) : template.faculty ? (
+                <span>كلّيّة {template.faculty.name}</span>
+              ) : (
+                <span>عام — كل الكلّيّات</span>
+              )}
+            </div>
+          </div>
+          <AuthorActions template={template} />
         </div>
-        <AuthorActions template={template} />
       </header>
 
       {(template.status === 'REJECTED' || template.status === 'PENDING_REVIEW') && template.moderationNote && (
-        <p className="text-sm" style={{ margin: 0, color: 'var(--danger-ink)' }} role="note">
-          <Icon icon={Info} size={13} /> ملاحظة الجودة: {template.moderationNote}
+        <p className="exa-note" role="note">
+          <Icon icon={Info} size={14} />
+          <span>ملاحظة الجودة: {template.moderationNote}</span>
         </p>
       )}
 
-      {/* R190 D-2: the template's fact strip — the four header numbers
-       * as the ledger stat line (mono labels, metric values, honest
-       * trend notes) instead of four icon-card tiles. */}
-      <StatStrip
-        ariaLabel="حقائق القالب"
-        cells={[
-          {
-            label: 'الأسئلة',
-            value: template.questions.length.toString(),
-            trend: template.randomized ? 'عشوائي لكل طالب' : 'بترتيب الإنشاء',
-            trendTone: 'flat',
-          },
-          {
-            label: 'المدة',
-            value: countAr(template.durationMin, ['دقيقة واحدة', 'دقيقتان', 'دقائق', 'دقيقة']),
-            trendTone: 'flat',
-          },
-          {
-            label: 'مجموع النقاط',
-            value: countAr(totalPoints, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة']),
-            trendTone: 'flat',
-          },
-          {
-            label: 'درجة النجاح',
-            value: <bdi>{template.passingScore}%</bdi>,
-            trend: 'الحد الأدنى للاجتياز',
-            trendTone: 'flat',
-          },
-        ]}
-      />
-
-      <Card title="تفاصيل القالب" icon={FileText} compact>
-        <div className="flex-col gap-2">
-          <DetailLine label="نطاق الاختبار">
-            {template.offering ? (
-              <>{template.offering.course.name} (<bdi>{template.offering.course.code}</bdi>)</>
-            ) : template.faculty ? (
-              <>كلّيّة {template.faculty.name}</>
-            ) : (
-              'عام — كل الكلّيّات'
-            )}
-          </DetailLine>
-          <DetailLine label="ترتيب الأسئلة">
-            {template.randomized ? 'عشوائي لكل طالب' : 'ثابت بترتيب الإنشاء'}
-          </DetailLine>
-          {template.openAt && (
-            <DetailLine label="يفتح في">{formatDateTimeAr(template.openAt)}</DetailLine>
-          )}
-          {template.closeAt && (
-            <DetailLine label="يغلق في">{formatDateTimeAr(template.closeAt)}</DetailLine>
-          )}
-          <DetailLine label="المؤلف">
-            {template.author.firstName} {template.author.lastName}
-          </DetailLine>
-          {template.moderatedBy && (
-            <DetailLine label="مراجع الجودة">
-              {template.moderatedBy.firstName} {template.moderatedBy.lastName}
-            </DetailLine>
-          )}
-          <DetailLine label="محاولات الطلاب">
-            {/* P2-1 (5-A7): countAr(0) renders the broken «0 محاولة» —
-                the zero case names the reality. */}
-            {template._count.attempts === 0
-              ? 'لا محاولات بعد'
-              : countAr(template._count.attempts, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])}
-          </DetailLine>
-          {template.description && <DetailLine label="الوصف">{template.description}</DetailLine>}
-        </div>
-      </Card>
-
-      {canGradeHere && <AttemptsSection template={template} />}
-
-      {canModerate && <TemplateModerationPanel template={template} />}
-
-      <Card
-        title="أسئلة القالب"
-        icon={ListChecks}
-        subtitle={countAr(template.questions.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])}
-      >
-        {template.questions.length === 0 ? (
-          <EmptyState illustration="empty-search"
-            icon={FileQuestion}
-            title="لا أسئلة في هذا القالب"
-            description="ربما أُوقفت أسئلته من البنك بعد بنائه."
-          />
-        ) : (
-          <div className="flex-col gap-2">
-            {template.questions.map((eq, i) => (
-              <TemplateQuestionRow
-                key={eq.id}
-                order={i + 1}
-                row={eq}
-                canModerate={canModerate}
+      {/* 4C-a — the two-column split: the questions + grading list on
+          the main side, the template's facts and the moderation decision
+          attached as the aside (stacks below on narrow screens). The
+          header numbers live where they answer questions: the count and
+          the running points total ride the questions section head, the
+          duration/pass mark/order ride the facts panel. */}
+      <div className="exa-split">
+        <div className="exa-main">
+          <section aria-label="أسئلة القالب">
+            <ExaSectionHead
+              title="أسئلة القالب"
+              desc={`${countAr(template.questions.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])} · مجموع النقاط ${countAr(totalPoints, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}`}
+            />
+            {template.questions.length === 0 ? (
+              <EmptyState illustration="empty-search"
+                icon={FileQuestion}
+                title="لا أسئلة في هذا القالب"
+                description="ربما أُوقفت أسئلته من البنك بعد بنائه."
               />
-            ))}
-          </div>
-        )}
-      </Card>
+            ) : (
+              <div className="exa-rows">
+                {template.questions.map((eq, i) => (
+                  <TemplateQuestionRow
+                    key={eq.id}
+                    order={i + 1}
+                    row={eq}
+                    canModerate={canModerate}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+
+          {canGradeHere && <AttemptsSection template={template} />}
+        </div>
+
+        <aside className="exa-aside" aria-label="تفاصيل القالب">
+          <section className="exa-panel">
+            <h2 className="exa-panel-title">تفاصيل القالب</h2>
+            <div className="exa-facts">
+              <DetailLine label="نطاق الاختبار">
+                {template.offering ? (
+                  <>{template.offering.course.name} (<bdi>{template.offering.course.code}</bdi>)</>
+                ) : template.faculty ? (
+                  <>كلّيّة {template.faculty.name}</>
+                ) : (
+                  'عام — كل الكلّيّات'
+                )}
+              </DetailLine>
+              <DetailLine label="المدة">
+                {countAr(template.durationMin, ['دقيقة واحدة', 'دقيقتان', 'دقائق', 'دقيقة'])}
+              </DetailLine>
+              <DetailLine label="درجة النجاح">
+                <bdi>{template.passingScore}%</bdi>
+              </DetailLine>
+              <DetailLine label="ترتيب الأسئلة">
+                {template.randomized ? 'عشوائي لكل طالب' : 'ثابت بترتيب الإنشاء'}
+              </DetailLine>
+              {template.openAt && (
+                <DetailLine label="يفتح في">{formatDateTimeAr(template.openAt)}</DetailLine>
+              )}
+              {template.closeAt && (
+                <DetailLine label="يغلق في">{formatDateTimeAr(template.closeAt)}</DetailLine>
+              )}
+              <DetailLine label="المؤلف">
+                {template.author.firstName} {template.author.lastName}
+              </DetailLine>
+              {template.moderatedBy && (
+                <DetailLine label="مراجع الجودة">
+                  {template.moderatedBy.firstName} {template.moderatedBy.lastName}
+                </DetailLine>
+              )}
+              <DetailLine label="محاولات الطلاب">
+                {/* P2-1 (5-A7): countAr(0) renders the broken «0 محاولة» —
+                    the zero case names the reality. */}
+                {template._count.attempts === 0
+                  ? 'لا محاولات بعد'
+                  : countAr(template._count.attempts, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])}
+              </DetailLine>
+              {template.description && <DetailLine label="الوصف">{template.description}</DetailLine>}
+            </div>
+          </section>
+
+          {canModerate && <TemplateModerationPanel template={template} />}
+        </aside>
+      </div>
     </>
   );
 }
@@ -2137,7 +2225,7 @@ function AuthorActions({ template }: { template: ExamTemplateDetail }) {
 
   return (
     <>
-      <div className="flex gap-2 flex-wrap" style={{ justifyContent: 'flex-end', flexShrink: 0 }}>
+      <div className="exa-detail-actions">
         {editable && (
           <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
             <Icon icon={Pencil} size={12} /> تعديل
@@ -2156,12 +2244,12 @@ function AuthorActions({ template }: { template: ExamTemplateDetail }) {
           </Button>
         )}
         <PublishButton template={template} authorId={template.authorId} explainGate />
+        {cloneFailed && (
+          <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+            {apiErrorMessage(clone.error, 'تعذَّر الاستنساخ — تحقّق من اتصالك وحاول مرة أخرى.')}
+          </p>
+        )}
       </div>
-      {cloneFailed && (
-        <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)', textAlign: 'end' }}>
-          {apiErrorMessage(clone.error, 'تعذَّر الاستنساخ — تحقّق من اتصالك وحاول مرة أخرى.')}
-        </p>
-      )}
       {editing && <EditTemplateModal template={template} onClose={() => setEditing(false)} />}
     </>
   );
@@ -2437,33 +2525,33 @@ function AttemptsSection({ template }: { template: ExamTemplateDetail }) {
   const visible = onlyPending ? attempts.filter((a) => a.status === 'SUBMITTED') : attempts;
 
   return (
-    <Card
-      title="التصحيح"
-      icon={ClipboardCheck}
-      subtitle={
-        q.isPending
-          ? 'جارٍ التحميل…'
-          : attempts.length > 0
-            ? /* P2-1 (5-A7): awaiting can be 0 while attempts exist —
-               * countAr(0) renders the broken «0 محاولة…». */
-              (awaiting === 0
-                ? 'لا محاولات بانتظار تصحيحك'
-                : countAr(awaiting, ['محاولة واحدة بانتظار تصحيحك', 'محاولتان بانتظار تصحيحك', 'محاولات بانتظار تصحيحك', 'محاولة بانتظار تصحيحك']))
-            : undefined
-      }
-      actions={
-        attempts.length > 0 ? (
-          <label className="flex gap-2 items-center text-xs" style={{ cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={onlyPending}
-              onChange={(e) => setOnlyPending(e.target.checked)}
-            />
-            بانتظار التصحيح فقط
-          </label>
-        ) : undefined
-      }
-    >
+    <section aria-label="التصحيح">
+      <ExaSectionHead
+        title="التصحيح"
+        desc={
+          q.isPending
+            ? 'جارٍ التحميل…'
+            : attempts.length > 0
+              ? /* P2-1 (5-A7): awaiting can be 0 while attempts exist —
+                 * countAr(0) renders the broken «0 محاولة…». */
+                (awaiting === 0
+                  ? 'لا محاولات بانتظار تصحيحك'
+                  : countAr(awaiting, ['محاولة واحدة بانتظار تصحيحك', 'محاولتان بانتظار تصحيحك', 'محاولات بانتظار تصحيحك', 'محاولة بانتظار تصحيحك']))
+              : undefined
+        }
+        actions={
+          attempts.length > 0 ? (
+            <label className="exa-check">
+              <input
+                type="checkbox"
+                checked={onlyPending}
+                onChange={(e) => setOnlyPending(e.target.checked)}
+              />
+              بانتظار التصحيح فقط
+            </label>
+          ) : undefined
+        }
+      />
       {q.isPending ? (
         <ListSkeleton rows={4} />
       ) : q.isError ? (
@@ -2479,7 +2567,7 @@ function AttemptsSection({ template }: { template: ExamTemplateDetail }) {
           }
         />
       ) : (
-        <div className="flex-col gap-2">
+        <div className="exa-rows">
           {visible.map((a) => (
             <AttemptRow key={a.id} attempt={a} onGrade={() => setGrading(a)} />
           ))}
@@ -2493,7 +2581,7 @@ function AttemptsSection({ template }: { template: ExamTemplateDetail }) {
           onClose={() => setGrading(null)}
         />
       )}
-    </Card>
+    </section>
   );
 }
 
@@ -2503,10 +2591,14 @@ function AttemptRow({ attempt, onGrade }: { attempt: ExamAttemptRow; onGrade: ()
       ? 'لم تُحسب الدرجة بعد'
       : `الدرجة الحالية: ${attempt.score} من ${attempt.maxScore}`;
   return (
-    <div className="list-row">
-      <div className="list-row-body">
-        <div className="list-row-title" title={attempt.studentName}>{attempt.studentName}</div>
-        <div className="list-row-sub" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+    /* 4C-a: a static row for finished/in-flight attempts (no hover —
+       nothing is clickable on them), the SUBMITTED one carrying the
+       single تصحيح action. The machine score rides the actions edge in
+       mono tabular figures. */
+    <div className="exa-row">
+      <div className="exa-row-main">
+        <div className="exa-row-title" title={attempt.studentName}>{attempt.studentName}</div>
+        <div className="exa-row-sub">
           <Badge color={ATTEMPT_STATUS_COLOR[attempt.status]}>{ATTEMPT_STATUS_LABEL[attempt.status]}</Badge>
           {attempt.submittedAt ? (
             <span title={formatDateTimeAr(attempt.submittedAt)}>
@@ -2524,10 +2616,10 @@ function AttemptRow({ attempt, onGrade }: { attempt: ExamAttemptRow; onGrade: ()
           )}
         </div>
       </div>
-      <div className="flex gap-2 items-center" style={{ flexShrink: 0 }}>
+      <div className="exa-row-actions">
         {/* The machine score so far — the SUBMITTED row's partial truth
             (auto-graded points), never a fabricated verdict. */}
-        <span className="text-xs font-mono text-muted" title={scoreTitle}>
+        <span className="exa-points" title={scoreTitle}>
           {attempt.score === null ? '—' : <bdi>{attempt.score} / {attempt.maxScore}</bdi>}
         </span>
         {attempt.status === 'SUBMITTED' && (
@@ -2805,15 +2897,15 @@ function TemplateQuestionRow({
   const key = answerKeySummary(q);
 
   return (
-    <div className="list-row" style={{ alignItems: 'flex-start' }}>
-      <bdi className="list-row-meta font-mono">{order}</bdi>
-      <div className="list-row-body">
-        <div className="list-row-title" title={q.prompt}>{q.prompt}</div>
-        <div className="list-row-sub" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+    <div className="exa-row exa-row-top">
+      <bdi className="exa-order">{order}</bdi>
+      <div className="exa-row-main">
+        <div className="exa-row-title exa-row-title-wrap" title={q.prompt}>{q.prompt}</div>
+        <div className="exa-row-sub">
           <Badge>{QTYPE_LABEL[q.type]}</Badge>
           <Badge color={DIFFICULTY_COLOR[q.difficulty]}>{DIFFICULTY_LABEL[q.difficulty]}</Badge>
           {q.category && <span>{q.category.title}</span>}
-          <span>
+          <span className="exa-points">
             {countAr(points, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}
             {row.pointsOverride !== null && ' (معدَّلة)'}
           </span>
@@ -2822,14 +2914,14 @@ function TemplateQuestionRow({
         {/* Answer key — the backend nulls correctAnswer for every viewer
             it is not for; null renders nothing (never a fake key). */}
         {key && (
-          <div className="text-xs" style={{ color: 'var(--success-ink)', marginBlockStart: 'var(--sp-0-5)' }}>
+          <p className="exa-key">
             <Icon icon={CheckCircle2} size={11} /> {key}
-          </div>
+          </p>
         )}
         {!q.isApproved && q.moderationNote && (
-          <div className="text-xs" style={{ color: 'var(--danger-ink)', marginBlockStart: 'var(--sp-0-5)' }}>
+          <p className="exa-row-note">
             <Icon icon={Info} size={11} /> {q.moderationNote}
-          </div>
+          </p>
         )}
       </div>
       {canModerate && <QuestionModerationActions questionId={q.id} isApproved={q.isApproved} />}
@@ -2904,7 +2996,9 @@ function TemplateModerationPanel({ template }: { template: ExamTemplateDetail })
   };
 
   return (
-    <Card title="قرار المراجعة" icon={ShieldCheck} subtitle={EXAM_STATUS_LABEL[template.status]}>
+    <section className="exa-panel" aria-label="قرار المراجعة">
+      <h2 className="exa-panel-title">قرار المراجعة</h2>
+      <p className="exa-panel-sub">الحالة: {EXAM_STATUS_LABEL[template.status]}</p>
       {template.status === 'PENDING_REVIEW' ? (
         <>
           <FormField label="ملاحظة للمؤلف (اختياري)" id="mod-note" style={{ marginBlockEnd: 'var(--sp-3)' }}>
@@ -2939,8 +3033,8 @@ function TemplateModerationPanel({ template }: { template: ExamTemplateDetail })
           </div>
         </>
       ) : (
-        <p className="text-sm text-muted" style={{ margin: 0 }}>
-          حالة القالب: {EXAM_STATUS_LABEL[template.status]} — يمكنك مراجعة أسئلته أدناه وإيقاف أيّ سؤال غير مناسب.
+        <p className="exa-panel-sub">
+          يمكنك مراجعة أسئلته أدناه وإيقاف أيّ سؤال غير مناسب.
         </p>
       )}
       {failed && (
@@ -2952,6 +3046,6 @@ function TemplateModerationPanel({ template }: { template: ExamTemplateDetail })
           </button>
         </div>
       )}
-    </Card>
+    </section>
   );
 }

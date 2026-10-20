@@ -360,7 +360,8 @@ async function openGradeModal() {
       <AssignmentsPage />
     </MemoryRouter>,
   );
-  fireEvent.click(await screen.findByRole('button', { name: 'تقييم' }));
+  // 4C-c: the queue row's action reads «تصحيح» (the grading-queue verb).
+  fireEvent.click(await screen.findByRole('button', { name: 'تصحيح' }));
   return screen.findByRole('dialog', { name: 'تقييم تسليم مشروع UML' });
 }
 
@@ -744,7 +745,7 @@ describe('GradeSubmissionModal — form + next-submission flow (5-B6 / A7 P2-2)'
     // One pending submission per group → two «تسليم واحد» count chips
     expect(screen.getAllByText('تسليم واحد')).toHaveLength(2);
 
-    fireEvent.click(screen.getAllByRole('button', { name: 'تقييم' })[0]!);
+    fireEvent.click(screen.getAllByRole('button', { name: 'تصحيح' })[0]!);
     await screen.findByRole('dialog', { name: 'تقييم تسليم مشروع UML' });
 
     fireEvent.change(screen.getByLabelText('الدرجة (من 0 إلى 10)'), { target: { value: '9' } });
@@ -820,8 +821,8 @@ describe('NeedsReviewCard — queue zero-case + grouping (5-B6 / A7 P2-1)', () =
         && (el.textContent ?? '').replace(/\s+/g, ' ').trim() === 'الدرجة من 10'),
     ).toBeInTheDocument();
     expect(screen.getByText('تسليمان')).toBeInTheDocument();
-    // …and two grade buttons for the two student rows
-    expect(screen.getAllByRole('button', { name: 'تقييم' })).toHaveLength(2);
+    // …and two grade buttons for the two student rows (4C-c: «تصحيح»)
+    expect(screen.getAllByRole('button', { name: 'تصحيح' })).toHaveLength(2);
   });
 });
 
@@ -851,8 +852,9 @@ describe('NeedsReviewCard — the pending-submissions queue (r157 / 6A8)', () =>
       </MemoryRouter>,
     );
 
-    // 8 rows → 8 grade buttons (the old feed window capped at 6).
-    expect(await screen.findAllByRole('button', { name: 'تقييم' })).toHaveLength(8);
+    // 8 rows → 8 grade buttons (the old feed window capped at 6);
+    // 4C-c: the row action reads «تصحيح».
+    expect(await screen.findAllByRole('button', { name: 'تصحيح' })).toHaveLength(8);
     // The subtitle counts the full queue honestly.
     expect(screen.getByText('8 تسليمات بانتظار درجتك')).toBeInTheDocument();
   });
