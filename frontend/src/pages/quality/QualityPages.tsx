@@ -10,7 +10,7 @@ import {
   ShieldCheck, BookOpen, Activity,
   AlertTriangle, TrendingUp, FileText, ClipboardCheck, ListChecks,
   Building2, School, Star, ArrowLeft, X,
-  CheckCircle2, Search,
+  CheckCircle2, Search, Eye,
   type LucideIcon,
 } from 'lucide-react';
 import { useInstitutionScope } from '../../stores/auth.store';
@@ -30,6 +30,11 @@ import '../../styles/training.css'; // .filter-pill family (D11 css split, 12-15
 // borrow the toolbar; owner's OwnerInstitutionDetailPage follows it too.
 import '../../styles/admin.css';
 import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
+// 4C-b: the quality sector's own page-scoped sheet (qlt-* classes —
+// board layout, KPI ledger, calm rosters, curriculum rows, link/alert
+// rows). Shared chrome (.page, .table/.tbl-stack, .stat-strip,
+// .filter-pill, .admin-students-*) keeps coming from its owner sheets.
+import '../../styles/quality-pages.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Filler, Tooltip, Legend);
 
@@ -213,6 +218,22 @@ const SEVERITY_TONE: Record<QualityAlert['severity'], 'red' | 'amber' | 'brand'>
   warning: 'amber',
   info: 'brand',
 };
+/* 4C-b: the alerts page's row chip label — the severity word rides the
+ * semantic badge so a row is readable at a glance (dashboard summary
+ * keeps the bare AlertRow grammar). */
+const SEVERITY_LABEL: Record<QualityAlert['severity'], string> = {
+  critical: 'حرج',
+  warning: 'تحذير',
+  info: 'معلومة',
+};
+/* 4C-b: the oversight-sector read-only cue — mirrors the dashboard's
+ * «وصول قراءة فقط» badge on every sibling header (muted neutral badge
+ * + Eye icon; the sector has no authoring affordances at all). */
+function ReadOnlyBadge() {
+  return (
+    <Badge icon={Eye}>قراءة فقط</Badge>
+  );
+}
 const CATEGORY_ICON: Record<QualityAlert['category'], LucideIcon> = {
   attendance: ClipboardCheck,
   plagiarism: FileText,
@@ -357,13 +378,18 @@ export function QualityDashboardPage() {
             </div>
           ))}
         </div>
-        <div className="grid-2-1">
-          <Card><ChartSkeleton /></Card>
-          <Card><ChartSkeleton height={180} /></Card>
-        </div>
-        <div className="grid-2-1">
-          <Card><ListSkeleton rows={5} /></Card>
-          <Card><ListSkeleton rows={3} /></Card>
+        {/* 4C-b: the pending skeleton mirrors the resolved board shape
+            (main: chart + KPI ledger · side: attendance + alerts) so the
+            handoff moves nothing (the loading-closure discipline). */}
+        <div className="qlt-board">
+          <div className="qlt-board-main">
+            <Card><ChartSkeleton /></Card>
+            <Card><ListSkeleton rows={5} /></Card>
+          </div>
+          <div className="qlt-board-side">
+            <Card><ChartSkeleton height={180} /></Card>
+            <Card><ListSkeleton rows={3} /></Card>
+          </div>
         </div>
       </div>
     );
@@ -476,18 +502,21 @@ export function QualityDashboardPage() {
         ]}
       />
 
-      {/* 5-A8 §6 step 6 (rhythm): the charts row breathes — 88px above
-          it vs the KPI strip's 40px (taste.md: contrast, not uniformity). */}
-      <div className="grid-2-1" style={{ marginBlockStart: 'var(--sp-9)' }}>
-        <Card
-          title="النشاط الأسبوعي"
-          subtitle={
-            e.weeklyActiveEstimated
-              ? 'عدد الجلسات اليومية النشطة على المنصة — منحنى تقديري لحدّة البيانات'
-              : 'عدد الجلسات اليومية النشطة على المنصة'
-          }
-          icon={TrendingUp}
-        >
+      {/* 4C-b (Superlist board): ONE compact signal line (the stat strip)
+          then the oversight board — main column = weekly activity chart +
+          the honest KPI ledger; side rail = attendance mix + alerts.
+          Charts stay ChartFrame-wrapped with their sr-only tables. */}
+      <div className="qlt-board qlt-section">
+        <div className="qlt-board-main">
+          <Card
+            title="النشاط الأسبوعي"
+            subtitle={
+              e.weeklyActiveEstimated
+                ? 'عدد الجلسات اليومية النشطة على المنصة — منحنى تقديري لحدّة البيانات'
+                : 'عدد الجلسات اليومية النشطة على المنصة'
+            }
+            icon={TrendingUp}
+          >
           <ChartFrame
             ariaLabel={`مخطط خطّي للنشاط الأسبوعي — جلسات نشطة يومياً${e.weeklyActiveEstimated ? ' (منحنى تقديري)' : ''}`}
             summary={
@@ -528,9 +557,24 @@ export function QualityDashboardPage() {
             options={opts}
           />
         </ChartFrame>
-        </Card>
+          </Card>
 
-        <Card title="توزيع الحضور" icon={ClipboardCheck}>
+          {/* 4C-b: the honest KPI ledger — the four payload-derived
+              progressbars as a calm list (hairline rows, mono tabular
+              values, thin rails). Labels/values/aria contract unchanged
+              (WS-F6 pins the four progressbar names). */}
+          <Card title="مؤشرات الجودة الأساسية" icon={ShieldCheck}>
+            <div className="qlt-kpi-ledger">
+              <ProgressBar value={e.attendance.presentRate} label="معدل الحضور التراكمي" ariaLabel="معدل الحضور التراكمي" color="var(--success)" />
+              <ProgressBar value={e.videos.completionRate} label="معدل إكمال المحاضرات" ariaLabel="معدل إكمال المحاضرات" color="var(--accent)" />
+              <ProgressBar value={enrollmentRate} label="معدل تسجيل الطلاب في المقرّرات" ariaLabel="معدل تسجيل الطلاب في المقرّرات" color="var(--brand-purple)" />
+              <ProgressBar value={paperProgress} label="نسبة البحوث المكتملة التقييم" ariaLabel="نسبة البحوث المكتملة التقييم" color="var(--gold)" />
+            </div>
+          </Card>
+        </div>
+
+        <div className="qlt-board-side">
+          <Card title="توزيع الحضور" icon={ClipboardCheck}>
           {/* Degenerate distribution (5-A8 P2-4): one ProgressBar + the
               honest note beats a solid ring that carries no signal. */}
           {attendanceDominant ? (
@@ -573,20 +617,9 @@ export function QualityDashboardPage() {
             />
           </ChartFrame>
           )}
-        </Card>
-      </div>
+          </Card>
 
-      <div className="grid-2-1">
-        <Card title="مؤشرات الجودة الأساسية" icon={ShieldCheck}>
-          <div className="flex-col gap-4">
-            <ProgressBar value={e.attendance.presentRate} label="معدل الحضور التراكمي" ariaLabel="معدل الحضور التراكمي" color="var(--success)" />
-            <ProgressBar value={e.videos.completionRate} label="معدل إكمال المحاضرات" ariaLabel="معدل إكمال المحاضرات" color="var(--accent)" />
-            <ProgressBar value={enrollmentRate} label="معدل تسجيل الطلاب في المقرّرات" ariaLabel="معدل تسجيل الطلاب في المقرّرات" color="var(--brand-purple)" />
-            <ProgressBar value={paperProgress} label="نسبة البحوث المكتملة التقييم" ariaLabel="نسبة البحوث المكتملة التقييم" color="var(--gold)" />
-          </div>
-        </Card>
-
-        <Card title="تنبيهات الجودة" icon={AlertTriangle}>
+          <Card title="تنبيهات الجودة" icon={AlertTriangle}>
           {al.isPending ? (
             <ListSkeleton rows={3} />
           ) : al.isError ? (
@@ -612,7 +645,7 @@ export function QualityDashboardPage() {
             />
           ) : (
             <>
-              <div className="flex-col gap-2">
+              <div className="qlt-alert-list">
                 {/* Server sorts critical-first; show the top 3 and link out. */}
                 {al.data.alerts.slice(0, 3).map((a) => (
                   <AlertRow
@@ -632,6 +665,7 @@ export function QualityDashboardPage() {
             </>
           )}
         </Card>
+        </div>
       </div>
     </div>
   );
@@ -684,6 +718,10 @@ export function QualityCoursesPage() {
               ? `${metricLabel} لكل مقرّر · مرتَّبة من الأدنى أولاً`
               : 'تتبّع جودة كل مقرّر: المحاضرات، الملفات، الواجبات، التسجيلات.'}
           </p>
+        </div>
+        {/* 4C-b: the oversight read-only cue (the sector has no authoring). */}
+        <div className="qlt-header-badges">
+          <ReadOnlyBadge />
         </div>
       </header>
       {c.isPending ? (
@@ -739,9 +777,12 @@ export function QualityCoursesPage() {
           </div>
           {/* tbl-stack (A8 P1-1): the roster collapses to labelled cards
               on phones — same .table-wrap > .table.tbl-stack pattern as
-              every admin roster (OwnerUsersPage reference). */}
+              every admin roster (OwnerUsersPage reference). 4C-b: the
+              page-scoped qlt-table restyle keeps the ONE shared DOM —
+              calm transparent header, mono tabular metric columns,
+              identity cell (name + code) leading. */}
           <div className="table-wrap">
-            <table className="table tbl-stack">
+            <table className="table tbl-stack qlt-table">
               <thead>
                 <tr>
                   <th scope="col">المقرّر</th>
@@ -768,7 +809,12 @@ export function QualityCoursesPage() {
                   const metricColor = mv == null ? null : mv >= 80 ? 'green' : mv >= 50 ? 'amber' : 'red';
                   return (
                     <tr key={o.id}>
-                      <td className="tbl-strong" data-label="المقرّر">{o.course.name}</td>
+                      <td className="tbl-strong" data-label="المقرّر">
+                        {/* 4C-b: identity leads — name prominent, Latin
+                            code bidi-isolated under it. */}
+                        <div className="qlt-course-name">{o.course.name}</div>
+                        <div className="qlt-course-code"><bdi>{o.course.code}</bdi></div>
+                      </td>
                       <td data-label="الأستاذ">د. {o.teacher.firstName} {o.teacher.lastName}</td>
                       <td className="font-mono text-xs" data-label="الفصل"><bdi>{o.term}</bdi></td>
                       <td className="tbl-num" data-label="الطلاب">{o._count.enrollments}</td>
@@ -862,6 +908,7 @@ export function QualityProfessorsPage() {
             <h1 className="page-title">تقييم الأساتذة</h1>
             <p className="page-subtitle">رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.</p>
           </div>
+          <div className="qlt-header-badges"><ReadOnlyBadge /></div>
         </header>
         <StatStripSkeleton cells={3} />
         <Card title="هيئة التدريس" icon={School}><TableSkeleton rows={5} cols={8} /></Card>
@@ -879,6 +926,7 @@ export function QualityProfessorsPage() {
             <h1 className="page-title">تقييم الأساتذة</h1>
             <p className="page-subtitle">رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.</p>
           </div>
+          <div className="qlt-header-badges"><ReadOnlyBadge /></div>
         </header>
         <Card>
           <ErrorState error={p.error} onRetry={() => p.refetch()} />
@@ -907,6 +955,7 @@ export function QualityProfessorsPage() {
               : ''}
           </p>
         </div>
+        <div className="qlt-header-badges"><ReadOnlyBadge /></div>
       </header>
 
       {/* R190 (D4): the typographic stat strip — was the grid-3
@@ -940,9 +989,10 @@ export function QualityProfessorsPage() {
       />
 
       {/* 5-A8 §6 step 6 (rhythm): the roster is the page's primary
-          section — it takes the breath after the KPI band. */}
+          section — it takes the breath after the KPI band (the
+          .qlt-section rung replaces the former inline margin). */}
       <Card
-        style={{ marginBlockStart: 'var(--sp-9)' }}
+        className="qlt-section"
         title={lowOnly ? `هيئة التدريس · بحاجة لمتابعة (${lowComp})` : 'هيئة التدريس'}
         subtitle={total != null
           ? `${countAr(total, ['أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً'])}${searching ? ' مطابقة للبحث' : ''}${professors.length < total ? ` · تُعرض أول ${professors.length}` : ''}`
@@ -994,7 +1044,7 @@ export function QualityProfessorsPage() {
           )}
         </div>
         {lowOnly && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', flexWrap: 'wrap', marginBlockEnd: 'var(--sp-3)' }}>
+          <div className="qlt-filter-note">
             <Badge color="red">مصفّى: التزام أقلّ من 50%</Badge>
             <button type="button" className="btn ghost sm" onClick={() => setLowOnly(false)}>
               <Icon icon={X} size={13} />
@@ -1007,7 +1057,7 @@ export function QualityProfessorsPage() {
             admin siblings. At ≤1024 the compact diet (above) keeps the
             tablet band inside the wrap. */}
         <div className="table-wrap">
-          <table className="table tbl-stack">
+          <table className="table tbl-stack qlt-roster">
             <thead>
               <tr>
                 <th scope="col">الأستاذ</th>
@@ -1094,6 +1144,7 @@ export function QualityEngagementPage() {
         <h1 className="page-title">الانخراط والحضور</h1>
         <p className="page-subtitle">نسب الحضور، إكمال المحاضرات، النقاط المتفاعلة.</p>
       </div>
+      <div className="qlt-header-badges"><ReadOnlyBadge /></div>
     </header>
   );
   if (e.isPending) {
@@ -1165,9 +1216,9 @@ export function QualityEngagementPage() {
       />
 
       {/* 5-A8 §6 step 6 (rhythm): the charts row is the page's breathing
-          section after the tight KPI band (the quality dashboard's
-          charts row carries the same break). */}
-      <div className="grid-2-1" style={{ marginBlockStart: 'var(--sp-9)' }}>
+          section after the tight KPI band (the .qlt-section rung — the
+          same rhythm the quality dashboard's board carries). */}
+      <div className="grid-2-1 qlt-section">
         <Card
           title="النشاط الأسبوعي"
           icon={TrendingUp}
@@ -1206,7 +1257,8 @@ export function QualityEngagementPage() {
         </Card>
 
         <Card title="تحليل المشاهدة" icon={Activity}>
-          <div className="flex-col gap-4">
+          {/* 4C-b: the payload-derived bars as a calm ledger list. */}
+          <div className="qlt-progress-list">
             <ProgressBar value={d.videos.completionRate} label="معدل الإكمال" ariaLabel="معدل إكمال المحاضرات" color="var(--accent)" />
             <ProgressBar value={(d.videos.completedLectures / Math.max(d.videos.totalLectures, 1)) * 100} label="نسبة المحاضرات المكتملة" ariaLabel="نسبة المحاضرات المكتملة" color="var(--success)" />
             <ProgressBar value={d.attendance.absentRate} label="نسبة الغياب" ariaLabel="نسبة الغياب" color="var(--danger)" />
@@ -1259,6 +1311,7 @@ export function QualityCurriculumPage() {
         <h1 className="page-title">مراجعة المناهج</h1>
         <p className="page-subtitle">شجرة الكلّيّات والأقسام والمقرّرات، مع مؤشرات اكتمال المحتوى.</p>
       </div>
+      <div className="qlt-header-badges"><ReadOnlyBadge /></div>
     </header>
   );
   if (c.isPending) {
@@ -1267,12 +1320,12 @@ export function QualityCurriculumPage() {
         {pageHeader}
         <CardSkeleton lines={2} />
         <Card>
-          {/* 5-C3 (A9 P2-5): the matrix placeholder announced nothing —
-              8 bars inside an aria-hidden wrapper with no busy signal
-              at all. Now it carries the primitives-family busy
-              semantics (the bars themselves stay aria-hidden). */}
-          <div className="matrix-cells" aria-busy="true" aria-live="polite">
-            {Array.from({ length: 8 }).map((_, i) => (
+          {/* 5-C3 (A9 P2-5): the placeholder carries the primitives-family
+              busy semantics (bars stay aria-hidden). 4C-b: the bars are
+              row-shaped now — the resolved surface is a course-row list,
+              so the handoff moves nothing. */}
+          <div className="qlt-course-rows" aria-busy="true" aria-live="polite">
+            {Array.from({ length: 6 }).map((_, i) => (
               <Skeleton key={i} width="100%" height={56} />
             ))}
           </div>
@@ -1303,8 +1356,9 @@ export function QualityCurriculumPage() {
       {pageHeader}
 
       {/* Filter + legend — the pills reuse the shared .filter-pill
-          segmented-control family; cells dim (not disappear) so the
-          heatmap stays whole while filtering (matrix-page language). */}
+          segmented-control family; rows dim (not disappear) so the
+          roster stays whole while filtering (4C-b keeps the matrix
+          page's dim-in-place contract on the row list). */}
       <Card>
         <div className="filter-pill-row" role="group" aria-label="تصفية المقرّرات بحسب نسبة اكتمال المحتوى">
           <button
@@ -1353,23 +1407,21 @@ export function QualityCurriculumPage() {
                 return (
                   <div key={d.id}>
                     <div className="section-title">{d.name}</div>
-                    {/* r186: 6px 0 → var(--sp-1-5) 0 — the TSX seam joins
-                        the enforced spacing axis (same value). */}
                     {!d.courses.length ? (
-                      <div className="text-xs text-subtle" style={{ padding: 'var(--sp-1-5) 0' }}>لا مقرّرات</div>
+                      <div className="qlt-empty-note">لا مقرّرات</div>
                     ) : (
                       <>
                         <div className="q-dept-stat">
                           <span>{countAr(d.courses.length, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}</span>
                           <span>متوسط الاكتمال <bdi>{deptAvg}%</bdi></span>
                         </div>
-                        {/* The heatmap — .matrix-cells/.matrix-cell + .lvl-*
-                            tiles (the platform's one heatmap language,
-                            shared with the student skills matrix). Cells
-                            transition between shades on data change
-                            (matrix-cell rides --t-clean) and recede via
-                            .is-dim when filtered out. */}
-                        <div className="matrix-cells">
+                        {/* 4C-b: the heatmap retires for oversight ROWS —
+                            identity leading (name + mono code), the honest
+                            content detail as visible text (was a title-only
+                            tooltip), mono tabular percentage + level chip
+                            trailing, and a thin completion rail under each
+                            row. Filtered-out rows dim via .is-dim. */}
+                        <div className="qlt-course-rows">
                           {d.courses.map((co) => {
                             const completion = courseCompletion(co);
                             const lvl = completionLevel(completion);
@@ -1378,14 +1430,33 @@ export function QualityCurriculumPage() {
                             return (
                               <div
                                 key={co.id}
-                                className={`matrix-cell ${lvl === 'strong' ? 'lvl-strong' : lvl === 'weak' ? 'lvl-weak' : 'lvl-poor'}${level !== 'all' && lvl !== level ? ' is-dim' : ''}`}
-                                title={`${co.name} (${co.code}) — اكتمال ${completion}% · ${countAr(lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])} · ${countAr(materials, ['ملف واحد', 'ملفان', 'ملفات', 'ملفاً'])} · ${countAr(co._count.concepts, ['مفهوم واحد', 'مفهومان', 'مفاهيم', 'مفهوماً'])}`}
+                                className={`qlt-course-row${level !== 'all' && lvl !== level ? ' is-dim' : ''}`}
                               >
-                                <div><bdi className="font-mono text-xxs">{co.code}</bdi></div>
-                                <div>{co.name}</div>
-                                <div className="matrix-meta">
-                                  <span className="matrix-meta-pct">{completion}%</span>
+                                <div className="qlt-course-main">
+                                  <div className="qlt-course-title">
+                                    {co.name}
+                                    <bdi className="qlt-course-code">{co.code}</bdi>
+                                  </div>
+                                  <div className="qlt-course-meta">
+                                    {countAr(lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}
+                                    {' · '}
+                                    {countAr(materials, ['ملف واحد', 'ملفان', 'ملفات', 'ملفاً'])}
+                                    {' · '}
+                                    {countAr(co._count.concepts, ['مفهوم واحد', 'مفهومان', 'مفاهيم', 'مفهوماً'])}
+                                  </div>
                                 </div>
+                                <div className="qlt-course-side">
+                                  <span className="qlt-course-pct"><bdi>{formatPct1(completion)}%</bdi></span>
+                                  <Badge color={lvl === 'strong' ? 'green' : lvl === 'weak' ? 'amber' : 'red'}>
+                                    {LEVEL_LABEL[lvl]}
+                                  </Badge>
+                                </div>
+                                <ProgressBar
+                                  value={completion}
+                                  showValue={false}
+                                  ariaLabel={`اكتمال ${co.name}`}
+                                  color={lvl === 'strong' ? 'var(--success)' : lvl === 'weak' ? 'var(--warning)' : 'var(--danger)'}
+                                />
                               </div>
                             );
                           })}
@@ -1449,33 +1520,37 @@ export function QualityReportsPage() {
           <h1 className="page-title">تقارير الجودة</h1>
           <p className="page-subtitle">لوحات حيّة بدلاً من تقارير ثابتة — تُحدَّث مع كل عمليّة على المنصّة.</p>
         </div>
+        <div className="qlt-header-badges"><ReadOnlyBadge /></div>
       </header>
 
+      {/* 4C-b: the link ledger — full-width ≥44px rows with an icon well,
+          title + one-line description and a trailing chevron; hairline
+          separators + a quiet hover wash (the former .alert link rows
+          retire with their card-in-card boxes). */}
       <Card title="اللوحات الحيّة" icon={ListChecks} subtitle="أربع لوحات مرتبطة ببعضها">
-        <div className="flex-col gap-2">
+        <div className="qlt-link-rows">
           {QUALITY_DASHBOARDS.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className="alert brand"
+              className="qlt-link-row"
               title={`فتح ${item.title}`}
-              style={{ textDecoration: 'none' }}
             >
-              <span style={{ color: 'var(--accent-ink, var(--accent))', marginTop: 'var(--sp-0-5)' }}>
+              <span className="qlt-link-row-icon" aria-hidden="true">
                 <Icon icon={item.icon} size={16} />
               </span>
-              <div className="alert-body">
-                <div className="alert-title">{item.title}</div>
-                <div className="alert-desc">{item.desc}</div>
-              </div>
-              <Icon icon={ArrowLeft} size={14} style={{ color: 'var(--text-muted)', marginTop: 'var(--sp-0-5)' }} />
+              <span className="qlt-link-row-body">
+                <span className="qlt-link-row-title">{item.title}</span>
+                <span className="qlt-link-row-desc">{item.desc}</span>
+              </span>
+              <Icon icon={ArrowLeft} size={14} className="qlt-link-row-chevron" />
             </Link>
           ))}
         </div>
       </Card>
 
       <Card title="تصدير تقارير ثابتة (PDF/Excel)" icon={FileText}>
-        <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0', lineHeight: 1.6 }}>
+        <p className="qlt-note">
           إصدار التقارير القابلة للتحميل قيد التطوير. حاليّاً يمكنك الاعتماد على اللوحات الحيّة أعلاه — كلّ
           الأرقام تُحدَّث فوريّاً مع البيانات في قاعدة المنصّة.
         </p>
@@ -1499,9 +1574,12 @@ export function QualityAlertsPage() {
           <h1 className="page-title">تنبيهات الجودة</h1>
           <p className="page-subtitle">أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريّاً من بيانات المنصّة.</p>
         </div>
-        {q.data && q.data.counts.critical > 0 && (
-          <Badge color="red">{countAr(q.data.counts.critical, ['تنبيه حرج', 'تنبيهان حرجان', 'تنبيهات حرجة', 'تنبيهاً حرجاً'])}</Badge>
-        )}
+        <div className="qlt-header-badges">
+          {q.data && q.data.counts.critical > 0 && (
+            <Badge color="red">{countAr(q.data.counts.critical, ['تنبيه حرج', 'تنبيهان حرجان', 'تنبيهات حرجة', 'تنبيهاً حرجاً'])}</Badge>
+          )}
+          <ReadOnlyBadge />
+        </div>
       </header>
 
       {q.isPending ? (
@@ -1522,16 +1600,22 @@ export function QualityAlertsPage() {
         </Card>
       ) : (
         <Card title="تنبيهات نشطة" icon={AlertTriangle}>
-          <div className="flex-col gap-2">
+          {/* 4C-b: oversight rows — leading severity edge (2px inline-start:
+              danger / warning / success tints), category icon, severity
+              chip (semantic colors kept) + relative time. */}
+          <div className="qlt-alert-list">
             {q.data.alerts.map((a) => (
-              <AlertRow
-                key={a.id}
-                color={SEVERITY_TONE[a.severity]}
-                icon={CATEGORY_ICON[a.category]}
-                title={a.title}
-                description={a.description}
-                time={formatRelativeArShort(a.occurredAt)}
-              />
+              <div key={a.id} className={`qlt-alert-row qlt-sev-${a.severity}`}>
+                <span className="qlt-alert-row-icon" aria-hidden="true">
+                  <Icon icon={CATEGORY_ICON[a.category]} size={16} />
+                </span>
+                <div className="qlt-alert-row-body">
+                  <div className="qlt-alert-row-title">{a.title}</div>
+                  <div className="qlt-alert-row-desc">{a.description}</div>
+                  <div className="qlt-alert-row-time">{formatRelativeArShort(a.occurredAt)}</div>
+                </div>
+                <Badge color={SEVERITY_TONE[a.severity]}>{SEVERITY_LABEL[a.severity]}</Badge>
+              </div>
             ))}
           </div>
         </Card>

@@ -9,11 +9,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
-  ClipboardCheck, Clock, CheckCircle2, AlertTriangle, ChevronRight, ChevronDown,
-  ShieldCheck, FileText, Hourglass, CalendarClock, ArrowLeft,
+  ClipboardCheck, Clock, CheckCircle2, AlertTriangle, ChevronRight, ChevronDown, ChevronLeft,
+  ShieldCheck, FileText, Hourglass, CalendarClock, ArrowLeft, Check,
   ListChecks, Info, Ban,
 } from 'lucide-react';
-import { Card, Badge, MetricCard } from '../../components/primitives';
+import { Card, Badge, MetricCard, PageHeader } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
 import { Skeleton, ListSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
@@ -29,7 +29,8 @@ import { apiErrorDetailRaw, apiErrorMessage, countAr, formatDateTimeAr } from '.
 import { overlayStack } from '../../lib/overlayStack';
 import { useEntityPageTitle } from '../../components/layout/AppShell';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
-import '../../styles/training.css'; // shared .track-card / .back-link families (D11 css split, 12-15)
+import '../../styles/training.css'; // shared .back-link family (D11 css split, 12-15)
+import '../../styles/online-exams.css'; // 4C-d — the .oex page-scoped sheet (list rows / taker chrome / moderation queue)
 
 const KIND_LABEL: Record<string, string> = {
   QUIZ: 'اختبار قصير', MIDTERM: 'نصفي', FINAL: 'نهائي', PRACTICE: 'تدريبي',
@@ -244,27 +245,23 @@ export default function OnlineExamsPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">الاختبارات الإلكترونية</h1>
-          <p className="page-subtitle">
-            اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات. تنبيه: لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية.
-          </p>
-        </div>
-      </header>
+      <PageHeader
+        title="الاختبارات الإلكترونية"
+        subtitle="اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات. تنبيه: لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية."
+      />
 
       {q.isPending ? (
-        /* Shape-matched loading — the real surface is a card grid, so the
-           skeleton tiles mirror the track-card anatomy (icon well + lines). */
+        /* Shape-matched loading — the real surface is a row list, so the
+           skeleton rows mirror the row anatomy (icon well + lines). */
         <Card title="اختبارات متاحة لك الآن" icon={ClipboardCheck}>
-          <div className="track-grid" aria-hidden>
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="exam-card-skel">
-                <div className="exam-card-skel-icon"><Skeleton width="100%" height="100%" rounded="var(--r-lg)" /></div>
-                <div className="exam-card-skel-body flex-col gap-2">
-                  <Skeleton width="55%" height={10} />
-                  <Skeleton width="90%" height={12} />
-                  <Skeleton width="70%" height={10} />
+          <div className="oex-rows" aria-hidden>
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="oex-skel">
+                <div className="oex-skel-icon"><Skeleton width="100%" height="100%" rounded="var(--r-md)" /></div>
+                <div className="oex-skel-body flex-col gap-2">
+                  <Skeleton width="38%" height={12} />
+                  <Skeleton width="90%" height={14} />
+                  <Skeleton width="62%" height={10} />
                 </div>
               </div>
             ))}
@@ -293,7 +290,7 @@ export default function OnlineExamsPage() {
                 }
               />
             )}
-            <div className="track-grid">
+            <div className="oex-rows">
               {available.map((e) => <ExamCard key={e.id} exam={e} canStart />)}
             </div>
           </Card>
@@ -307,7 +304,7 @@ export default function OnlineExamsPage() {
               icon={CalendarClock}
               subtitle={countAr(unavailable.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
             >
-              <div className="track-grid">
+              <div className="oex-rows">
                 {unavailable.map((e) => <ExamCard key={e.id} exam={e} canStart={false} />)}
               </div>
             </Card>
@@ -319,7 +316,7 @@ export default function OnlineExamsPage() {
               icon={FileText}
               subtitle={countAr(taken.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
             >
-              <div className="track-grid">
+              <div className="oex-rows">
                 {taken.map((e) => <ExamCard key={e.id} exam={e} canStart={false} />)}
               </div>
             </Card>
@@ -338,20 +335,33 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
    * machine score (never a verdict the server withheld), EXPIRED the
    * honest terminal truth, GRADED the final ناجح/لم يجتز. */
   const verdict = attemptVerdictChip(exam);
+  // 4C-d recomposition (list-first): the card became a row. The row is
+  // the link (canStart), the meta line carries the window truth, and a
+  // trailing primary action names the verb — «متابعة» for a live
+  // attempt, «ابدأ» for a fresh start. The chips (resume / verdict /
+  // retake / window) stay INSIDE the row so the link's accessible name
+  // keeps telling the whole state story (the D5 reachability pins).
+  const showResultLink = !!exam.myAttempt
+    && (exam.myAttempt.status === 'GRADED' || exam.myAttempt.status === 'SUBMITTED')
+    && exam.kind !== 'PRACTICE';
 
   const body = (
     <>
-      <div className="track-card-icon" style={{ background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent }}>
+      <span
+        className="oex-row-icon"
+        style={{ ['--oex-accent' as never]: accent }}
+        aria-hidden
+      >
         {/* 5-A6 P3-3 — the courses grid resolves the same course through
-            the lucide courseIcon() map; the exam card now speaks the same
+            the lucide courseIcon() map; the exam row now speaks the same
             iconography for one concept (emoji stays for the seeded
             training/community flavor surfaces). */}
-        <Icon icon={courseIcon(exam.courseName ?? exam.facultyName ?? '')} size={22} />
-      </div>
-      <div className="track-card-body">
-        <div className="track-card-cat">{KIND_LABEL[exam.kind]} · {exam.courseName ?? exam.facultyName ?? 'موحد'}</div>
-        <div className="track-card-title">{exam.title}</div>
-        <div className="track-card-meta">
+        <Icon icon={courseIcon(exam.courseName ?? exam.facultyName ?? '')} size={20} />
+      </span>
+      <span className="oex-row-body">
+        <span className="oex-row-title">{exam.title}</span>
+        <span className="oex-row-kicker">{KIND_LABEL[exam.kind]} · {exam.courseName ?? exam.facultyName ?? 'موحد'}</span>
+        <span className="oex-row-meta">
           <span><Icon icon={Clock} size={12} /> <bdi>{exam.durationMin}</bdi> دقيقة</span>
           <span><Icon icon={ClipboardCheck} size={12} /> <bdi>{exam.questionCount}</bdi> سؤال</span>
           <span>درجة النجاح <bdi>≥ {exam.passingScore}%</bdi></span>
@@ -360,86 +370,78 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
           {ws === 'open' && exam.closeAt && (
             <span><Icon icon={CalendarClock} size={12} /> يغلق {formatDateTimeAr(exam.closeAt)}</span>
           )}
-        </div>
-        {exam.myAttempt?.status === 'IN_PROGRESS' && (
-          <div style={{ marginTop: 'var(--sp-2)' }}>
-            {/* «— متابعة» only while the attempt is actually resumable
-                — a shut window strands the attempt server-side. */}
-            <Badge color="amber">{ws === 'closed' ? 'محاولة قيد التقدم' : 'محاولة قيد التقدم — متابعة'}</Badge>
-          </div>
+        </span>
+        {(exam.myAttempt?.status === 'IN_PROGRESS' || verdict || (exam.kind === 'PRACTICE' && ws === 'open' && exam.myAttempt && exam.myAttempt.status !== 'IN_PROGRESS') || (ws === 'upcoming' && exam.openAt) || ws === 'closed') && (
+          <span className="oex-row-chips">
+            {exam.myAttempt?.status === 'IN_PROGRESS' && (
+              /* «— متابعة» only while the attempt is actually resumable
+                  — a shut window strands the attempt server-side. */
+              <Badge color="amber">{ws === 'closed' ? 'محاولة قيد التقدم' : 'محاولة قيد التقدم — متابعة'}</Badge>
+            )}
+            {verdict && (
+              /* r164-e: score + honest state in one chip. A SUBMITTED
+                  attempt carries its provisional machine score with the
+                  neutral awaiting label; EXPIRED carries no score (never
+                  graded); GRADED carries the final verdict at full danger
+                  weight on fail — the result screen's language. */
+              <Badge color={verdict.color}>
+                {verdict.score && <><bdi>{verdict.score.value} / {verdict.score.max}</bdi> · </>}
+                {verdict.label}
+              </Badge>
+            )}
+            {/* 6A6-finding-2 — the retake badge says what the score badge
+                cannot: a finished practice attempt is retakeable NOW. Open
+                window only — a shut window shows «أغلق باب التسليم» below,
+                and that is the truth for a retake too. */}
+            {exam.kind === 'PRACTICE' && ws === 'open' && exam.myAttempt && exam.myAttempt.status !== 'IN_PROGRESS' && (
+              <Badge color="brand">تدريبي — إعادة المحاولة متاحة</Badge>
+            )}
+            {ws === 'upcoming' && exam.openAt && (
+              <Badge color="brand">يفتح {formatDateTimeAr(exam.openAt)}</Badge>
+            )}
+            {ws === 'closed' && (
+              <Badge>أغلق باب التسليم</Badge>
+            )}
+          </span>
         )}
-        {verdict && (
-          <div style={{ marginTop: 'var(--sp-2)' }}>
-            {/* r164-e: score + honest state in one chip. A SUBMITTED
-                attempt carries its provisional machine score with the
-                neutral awaiting label; EXPIRED carries no score (never
-                graded); GRADED carries the final verdict at full danger
-                weight on fail — the result screen's language. */}
-            <Badge color={verdict.color}>
-              {verdict.score && <><bdi>{verdict.score.value} / {verdict.score.max}</bdi> · </>}
-              {verdict.label}
-            </Badge>
-          </div>
-        )}
-        {exam.myAttempt
-          && (exam.myAttempt.status === 'GRADED' || exam.myAttempt.status === 'SUBMITTED')
-          && exam.kind !== 'PRACTICE' && (
-          <div style={{ marginTop: 'var(--sp-2)' }}>
-            {/* 5-A6 P1-1 companion — a finished attempt is not a dead end:
-              the taker renders the honest done-state (score or awaiting
-              grading) for this deep link, so history stays reachable.
-              6A6-finding-2: practice is excluded — its deep link lands on
-              the BEGIN screen (the server grants a retake), so a «عرض
-              النتيجة» link there would promise what it never shows.
-              r164-e: EXPIRED is excluded too — an expired attempt has no
-              result story to show; its truth is fully told by the chip
-              above, and the link would promise what never lands. */}
-            <Link to={`/student/online-exams/${exam.id}`} className="btn ghost sm">
-              <Icon icon={ArrowLeft} size={13} />
-              عرض النتيجة
-            </Link>
-          </div>
-        )}
-        {/* 6A6-finding-2 — the retake badge says what the score badge
-            cannot: a finished practice attempt is retakeable NOW. Open
-            window only — a shut window shows «أغلق باب التسليم» above,
-            and that is the truth for a retake too. */}
-        {exam.kind === 'PRACTICE' && ws === 'open' && exam.myAttempt && exam.myAttempt.status !== 'IN_PROGRESS' && (
-          <div style={{ marginTop: 'var(--sp-2)' }}>
-            <Badge color="brand">تدريبي — إعادة المحاولة متاحة</Badge>
-          </div>
-        )}
-        {ws === 'upcoming' && exam.openAt && (
-          <div style={{ marginTop: 'var(--sp-2)' }}>
-            <Badge color="brand">يفتح {formatDateTimeAr(exam.openAt)}</Badge>
-          </div>
-        )}
-        {ws === 'closed' && (
-          <div style={{ marginTop: 'var(--sp-2)' }}>
-            <Badge>أغلق باب التسليم</Badge>
-          </div>
-        )}
-      </div>
+      </span>
+      {/* Trailing action column — the verb on startable rows, the result
+          deep link on finished history rows, and quiet otherwise (the
+          window chips above already carry the upcoming/closed truth). */}
+      {canStart ? (
+        <span className="oex-row-action" aria-hidden>
+          {exam.myAttempt?.status === 'IN_PROGRESS' ? 'متابعة' : 'ابدأ'}
+          <Icon icon={ChevronLeft} size={14} />
+        </span>
+      ) : showResultLink ? (
+        <span className="oex-row-action">
+          {/* 5-A6 P1-1 companion — a finished attempt is not a dead end:
+            the taker renders the honest done-state (score or awaiting
+            grading) for this deep link, so history stays reachable.
+            6A6-finding-2: practice is excluded — its deep link lands on
+            the BEGIN screen (the server grants a retake), so a «عرض
+            النتيجة» link there would promise what it never shows.
+            r164-e: EXPIRED is excluded too — an expired attempt has no
+            result story to show; its truth is fully told by the chip
+            above, and the link would promise what never lands. */}
+          <Link to={`/student/online-exams/${exam.id}`} className="btn ghost sm">
+            <Icon icon={ArrowLeft} size={13} />
+            عرض النتيجة
+          </Link>
+        </span>
+      ) : null}
     </>
   );
 
-  // Taken exams render as a static card — no dead "#" link.
+  // Taken / windowed exams render as a static row — no dead "#" link.
   if (!canStart) {
-    return (
-      <div
-        className="track-card"
-        style={{ ['--track-accent' as never]: accent, cursor: 'default' }}
-      >
-        {body}
-      </div>
-    );
+    return <div className="oex-row">{body}</div>;
   }
 
   return (
     <Link
       to={`/student/online-exams/${exam.id}`}
-      className="track-card"
-      style={{ ['--track-accent' as never]: accent }}
+      className="oex-row"
     >
       {body}
     </Link>
@@ -466,34 +468,34 @@ function ReviewQuestionRow({ q, index }: { q: AttemptReviewQuestion; index: numb
   const verdict = reviewVerdict(q);
   const answered = myChoice !== null || (q.myAnswerText ?? '').trim() !== '';
   return (
-    <div className="exam-review-q">
-      <div className="exam-review-head">
-        <span className="exam-review-num" aria-hidden><bdi>{index + 1}</bdi></span>
-        <span className="exam-review-prompt">{q.prompt}</span>
+    <div className="oex-review-q">
+      <div className="oex-review-head">
+        <span className="oex-review-num" aria-hidden><bdi>{index + 1}</bdi></span>
+        <span className="oex-review-prompt">{q.prompt}</span>
         <Badge color={verdict.color}>{verdict.label}</Badge>
       </div>
-      <div className="exam-review-meta">
+      <div className="oex-review-meta">
         <bdi>{q.awardedPoints ?? 0} / {q.points}</bdi> درجة
       </div>
-      <div className="exam-review-ans">
-        <span className="exam-review-label">إجابتك:</span>{' '}
+      <div className="oex-review-ans">
+        <span className="oex-review-label">إجابتك:</span>{' '}
         {answered
-          ? (myChoice ?? <span className="exam-review-text">{q.myAnswerText}</span>)
-          : <span className="exam-review-missed">لم تُجب عن هذا السؤال</span>}
+          ? (myChoice ?? <span className="oex-review-text">{q.myAnswerText}</span>)
+          : <span className="oex-review-missed">لم تُجب عن هذا السؤال</span>}
       </div>
       {/* The released key: MCQ/TRUE_FALSE choice text, SHORT model
           answer. ESSAY rubrics and keyless shorts stay teacher-side
           (null) — nothing renders, the verdict + feedback carry it. */}
       {(keyChoice !== null || typeof q.correctAnswer === 'string') && (
-        <div className="exam-review-key">
-          <span className="exam-review-label">الإجابة الصحيحة:</span>{' '}
-          {keyChoice ?? <span className="exam-review-text">{q.correctAnswer as string}</span>}
+        <div className="oex-review-key">
+          <span className="oex-review-label">الإجابة الصحيحة:</span>{' '}
+          {keyChoice ?? <span className="oex-review-text">{q.correctAnswer as string}</span>}
         </div>
       )}
       {q.feedback && (
-        <div className="exam-review-feedback">
-          <span className="exam-review-label">ملاحظة الأستاذ:</span>{' '}
-          <span className="exam-review-text">{q.feedback}</span>
+        <div className="oex-review-feedback">
+          <span className="oex-review-label">ملاحظة الأستاذ:</span>{' '}
+          <span className="oex-review-text">{q.feedback}</span>
         </div>
       )}
     </div>
@@ -509,19 +511,19 @@ function ExamReviewSection({ attemptId }: { attemptId: string }) {
   const reviewQ = useExamReview(attemptId, open);
   const listId = `exam-review-${attemptId}`;
   return (
-    <div className="exam-review">
+    <div className="oex-review">
       <button
         type="button"
-        className="btn ghost sm exam-review-toggle"
+        className="btn ghost sm oex-review-toggle"
         aria-expanded={open}
         aria-controls={listId}
         onClick={() => setOpen((o) => !o)}
       >
-        <Icon icon={ChevronDown} size={14} className={open ? 'exam-review-chevron is-open' : 'exam-review-chevron'} />
+        <Icon icon={ChevronDown} size={14} className={open ? 'oex-review-chevron is-open' : 'oex-review-chevron'} />
         مراجعة الأسئلة
       </button>
       {open && (
-        <div id={listId} className="exam-review-list">
+        <div id={listId} className="oex-review-list">
           {reviewQ.isPending ? (
             <ListSkeleton rows={3} />
           ) : reviewQ.isError ? (
@@ -832,14 +834,15 @@ export function ExamTakerPage() {
       .filter((el): el is HTMLElement => el !== null);
     if (cards.length === 0) return;
     // The reading band starts under the sticky bar (its measured height:
-    // 113px ≥768, 162px at 390 — student.css; the band top mirrors the
-    // rootMargin below) and ends at the viewport's lower half, so a card
+    // the .oex-bar stack ≈120px ≥768, taller at 390 with the 44px dot
+    // row — online-exams.css; the band top mirrors the rootMargin below)
+    // and ends at the viewport's lower half, so a card
     // only counts once its title is actually readable. "Current" = the
     // first card whose header entered the band. A card that only drips
     // its tail into the band (the previous question scrolling out) never
     // wins; a long card filling the whole band keeps the ring (fallback:
     // topmost intersecting).
-    const BAND_TOP = 170;
+    const BAND_TOP = 120;
     const pickCurrent = () => {
       const vh = window.innerHeight;
       const bandBottom = vh * 0.5;
@@ -861,7 +864,7 @@ export function ExamTakerPage() {
       }
     };
     const io = new IntersectionObserver(pickCurrent, {
-      rootMargin: '-170px 0px -50% 0px',
+      rootMargin: '-120px 0px -50% 0px',
       threshold: 0,
     });
     cards.forEach((el) => io.observe(el));
@@ -979,25 +982,25 @@ export function ExamTakerPage() {
           {/* 5-A6 plan-7 — verdict lockup: icon → title → grade → badge
               read as one tight group (the grade and its verdict badge
               are a single decision), generous break before the action. */}
-          <div className="empty-state exam-result">
+          <div className="empty-state oex-result">
             {expired ? (
               <Icon icon={Hourglass} size={32} style={{ color: 'var(--warning)' }} />
             ) : (
               <Icon icon={CheckCircle2} size={32} style={{ color: 'var(--accent)' }} />
             )}
-            <h1 className="exam-result-title" style={H1_AS_H2_STYLE}>
+            <h1 className="oex-result-title" style={H1_AS_H2_STYLE}>
               {expired ? 'انتهت مدة هذه المحاولة' : 'لقد أكملت هذا الاختبار مسبقاً'}
             </h1>
             {expired ? (
               <>
-                <p className="exam-result-note">انتهى وقت المحاولة دون تسليم — لا تُحتسب لها نتيجة ولا يمكن إعادتها.</p>
-                <p className="exam-result-note">راجع مواعيد الاختبارات المتاحة من قائمة الاختبارات.</p>
+                <p className="oex-result-note">انتهى وقت المحاولة دون تسليم — لا تُحتسب لها نتيجة ولا يمكن إعادتها.</p>
+                <p className="oex-result-note">راجع مواعيد الاختبارات المتاحة من قائمة الاختبارات.</p>
               </>
             ) : exam && myAttempt && score !== null && score !== undefined ? (
               <>
-                <div className="exam-result-lockup">
-                  <div className="exam-grade">
-                    <span className="exam-grade-value"><bdi>{Number(score)} / {Number(myAttempt.maxScore)}</bdi></span>
+                <div className="oex-result-lockup">
+                  <div className="oex-grade">
+                    <span className="oex-grade-value"><bdi>{Number(score)} / {Number(myAttempt.maxScore)}</bdi></span>
                   </div>
                   {/* The verdict badge carries the fail case at full danger
                       weight — a withheld pass is not a soft warning. A
@@ -1008,7 +1011,7 @@ export function ExamTakerPage() {
                     <Badge color={verdict.color}>{verdict.label}</Badge>
                   )}
                 </div>
-                <p className="exam-result-note">
+                <p className="oex-result-note">
                   {myAttempt.status === 'SUBMITTED'
                     ? 'درجتك الأولية من الأسئلة الآلية — الدرجات المقالية بانتظار تقييم الأستاذ.'
                     : 'لا يمكن إعادة المحاولة بعد التسليم.'}
@@ -1020,11 +1023,11 @@ export function ExamTakerPage() {
                 {myAttempt.status === 'GRADED' ? (
                   <ExamReviewSection attemptId={myAttempt.id} />
                 ) : (
-                  <p className="exam-result-note">ستتمكّن من مراجعة أسئلتك بعد اكتمال التصحيح.</p>
+                  <p className="oex-result-note">ستتمكّن من مراجعة أسئلتك بعد اكتمال التصحيح.</p>
                 )}
               </>
             ) : examsQ.isPending ? (
-              <p className="exam-result-note">جارٍ جلب نتيجتك…</p>
+              <p className="oex-result-note">جارٍ جلب نتيجتك…</p>
             ) : examsQ.isError ? (
               <div className="form-error" role="alert">
                 <Icon icon={AlertTriangle} size={14} />
@@ -1033,8 +1036,8 @@ export function ExamTakerPage() {
               </div>
             ) : (
               <>
-                <p className="exam-result-note">لا يمكن إعادة المحاولة بعد التسليم.</p>
-                <p className="exam-result-note">النتيجة قيد الاحتساب أو بانتظار تقييم الأسئلة المقالية.</p>
+                <p className="oex-result-note">لا يمكن إعادة المحاولة بعد التسليم.</p>
+                <p className="oex-result-note">النتيجة قيد الاحتساب أو بانتظار تقييم الأسئلة المقالية.</p>
               </>
             )}
             <button type="button" className="btn primary" onClick={() => navigate('/student/online-exams')}>
@@ -1060,13 +1063,13 @@ export function ExamTakerPage() {
             <h1 style={{ margin: 'var(--sp-3) 0 var(--sp-2)', ...H1_AS_H2_STYLE }}>
               {hasLiveAttempt ? 'متابعة الاختبار' : 'هل أنت مستعد للبدء؟'}
             </h1>
-            <p className="text-sm text-muted" style={{ maxWidth: 480, textAlign: 'center' }}>
+            <p className="text-sm text-muted oex-begin-note">
               {hasLiveAttempt
                 ? 'لديك محاولة قيد التقدم لهذا الاختبار — الوقت لم يتوقف منذ البدء، وإجاباتك المحفوظة ستظهر كما تركتها.'
                 : 'بمجرد الضغط على «بدء الاختبار» سيبدأ المؤقت ولا يمكنك إيقافه. اقرأ كل سؤال جيداً قبل الإجابة. تُسجَّل إجابات الاختيار فور اختيارها، والإجابات النصية عند مغادرة الحقل — ويُسلَّم الاختبار تلقائياً عند انتهاء الوقت.'}
             </p>
             {startError && (
-              <div className="form-error" role="alert" style={{ marginTop: 'var(--sp-3)', maxWidth: 480 }}>
+              <div className="form-error oex-begin-error" role="alert">
                 <Icon icon={AlertTriangle} size={14} />
                 <span className="form-error-msg">{startError}</span>
               </div>
@@ -1078,10 +1081,9 @@ export function ExamTakerPage() {
                 resolve instantly, so this only guards hard deep links). */}
             <button
               type="button"
-              className="btn primary"
+              className="btn primary oex-begin-actions"
               onClick={onStart}
               disabled={start.isPending || examsQ.isPending}
-              style={{ marginTop: 'var(--sp-3)' }}
             >
               {start.isPending ? 'جارٍ التحضير…' : examsQ.isPending ? 'جارٍ التحقق…' : hasLiveAttempt ? 'متابعة الاختبار' : 'بدء الاختبار'}
             </button>
@@ -1105,21 +1107,21 @@ export function ExamTakerPage() {
         </Link>
         <Card>
           {/* 5-A6 plan-7 — verdict lockup (see the done-state screen). */}
-          <div className="empty-state exam-result">
+          <div className="empty-state oex-result">
             <Icon
               icon={awaitingManual ? Hourglass : result.passed ? CheckCircle2 : AlertTriangle}
               size={36}
               style={{ color: awaitingManual ? 'var(--info)' : result.passed ? 'var(--success)' : 'var(--warning)' }}
             />
-            <h1 className="exam-result-title" style={H1_AS_H2_STYLE}>
+            <h1 className="oex-result-title" style={H1_AS_H2_STYLE}>
               {awaitingManual ? 'تم تسليم اختبارك' : result.passed ? 'مبروك — لقد اجتزت الاختبار!' : 'الاختبار انتهى'}
             </h1>
             {/* The authored moment — the grade reveal: the real score
                 lands as the visual anchor (same exam-grade language as
                 the student results card; one-shot rise + state ring). */}
-            <div className="exam-result-lockup">
-              <div className="exam-grade">
-                <span className="exam-grade-value"><bdi>{result.score} / {result.maxScore}</bdi></span>
+            <div className="oex-result-lockup">
+              <div className="oex-grade">
+                <span className="oex-grade-value"><bdi>{result.score} / {result.maxScore}</bdi></span>
               </div>
               {awaitingManual ? (
                 <Badge>بانتظار التصحيح اليدوي</Badge>
@@ -1129,7 +1131,7 @@ export function ExamTakerPage() {
                 <Badge color={result.passed ? 'green' : 'red'}>{result.passed ? 'ناجح' : 'لم يجتز'}</Badge>
               )}
             </div>
-            <p className="exam-result-note">
+            <p className="oex-result-note">
               {result.needsManual > 0
                 ? <><bdi>{result.needsManual}</bdi> سؤال بحاجة لتقييم يدوي من الأستاذ — ستظهر الدرجة النهائية بعد المراجعة.</>
                 : 'تم احتساب النتيجة فوراً.'}
@@ -1140,7 +1142,7 @@ export function ExamTakerPage() {
                 the honest promise replaces the old "not available"
                 note (the key is not released until GRADED). */}
             {awaitingManual ? (
-              <p className="exam-result-note">ستتمكّن من مراجعة أسئلتك بعد اكتمال التصحيح اليدوي.</p>
+              <p className="oex-result-note">ستتمكّن من مراجعة أسئلتك بعد اكتمال التصحيح اليدوي.</p>
             ) : (
               <ExamReviewSection attemptId={result.attemptId} />
             )}
@@ -1188,9 +1190,9 @@ export function ExamTakerPage() {
           العودة إلى الاختبارات
         </Link>
       )}
-      <div className="exam-bar">
-        <div>
-          <h1 className="exam-bar-title">{attempt.title}</h1>
+      <div className="oex-bar">
+        <div className="oex-bar-main">
+          <h1 className="oex-bar-title">{attempt.title}</h1>
           {/* 5-A6 P2-2 — answered progress rides the bar subline so the
               unanswered count is visible while scrolling, not only in
               the submit dialog. */}
@@ -1198,12 +1200,19 @@ export function ExamTakerPage() {
             <bdi>{attempt.questions.length}</bdi> سؤال · أُجيب عن <bdi>{answeredCount}</bdi>
           </div>
         </div>
+        {/* 4C-d — the on-screen «س3 من 10» progress chip (Western digits,
+            bidi-isolated): the scroll-tracked current question, so it
+            moves as the student reads. aria-hidden — the map nav + the
+            subline above carry the same facts for assistive tech. */}
+        <span className="oex-bar-progress" aria-hidden="true">
+          س<bdi>{currentQid ? attempt.questions.findIndex((qq) => qq.id === currentQid) + 1 : 1}</bdi> من <bdi>{attempt.questions.length}</bdi>
+        </span>
         {/* Per-question save honesty (15-e P1-1): the chip names the
             exact questions whose answers are NOT on the server, and
             only saving THOSE questions clears it — a success elsewhere
             never hides an earlier failure. */}
         {failedNumbers.length > 0 && (
-          <span className="exam-save-warn" role="status">
+          <span className="oex-save-warn" role="status">
             <Icon icon={AlertTriangle} size={13} />
             {failedNumbers.length === 1
               ? `تعذَّر حفظ إجابة السؤال ${failedNumbers[0]} — أعد الإجابة عليه`
@@ -1214,7 +1223,7 @@ export function ExamTakerPage() {
             announcing every tick; the urgency threshold crossing is
             announced once via the live region below. */}
         <div
-          className={`exam-timer${timeUrgent ? ' urgent' : ''}`}
+          className={`oex-timer${timeUrgent ? ' urgent' : ''}`}
           role="timer"
           aria-label={`الوقت المتبقي: ${countAr(m, ['دقيقة', 'دقيقتين', 'دقائق', 'دقيقة'])} و${countAr(s, ['ثانية', 'ثانيتين', 'ثوانٍ', 'ثانية'])}`}
         >
@@ -1225,7 +1234,7 @@ export function ExamTakerPage() {
             save-failed states at a glance, click or keyboard to jump.
             flex-basis 100% wraps it onto its own bar row (the bar already
             wraps at 320px — 5-A5 measured the slot). */}
-        <nav className="exam-qmap" aria-label="خريطة الأسئلة">
+        <nav className="oex-qmap" aria-label="خريطة الأسئلة">
           {attempt.questions.map((q, i) => {
             const qFailed = failedQids.has(q.id);
             const qAnswered = isAnswered(q.id);
@@ -1234,7 +1243,7 @@ export function ExamTakerPage() {
               <button
                 key={q.id}
                 type="button"
-                className={`exam-qmap-dot${qAnswered ? ' answered' : ''}${qFailed ? ' failed' : ''}${qCurrent ? ' current' : ''}`}
+                className={`oex-qmap-dot${qAnswered ? ' answered' : ''}${qFailed ? ' failed' : ''}${qCurrent ? ' current' : ''}`}
                 aria-current={qCurrent ? 'true' : undefined}
                 aria-label={`السؤال ${i + 1} من ${attempt.questions.length} — ${qFailed ? 'تعذَّر الحفظ' : qAnswered ? 'مُجاب' : 'بدون إجابة'}`}
                 onClick={() => jumpToQuestion(q.id)}
@@ -1247,7 +1256,7 @@ export function ExamTakerPage() {
         {/* 5-A6 plan-6 — the time-consumed hairline: the window draining
             from the inline-start edge; color-only urgency below two
             minutes (the documented no-pulse decision stands). */}
-        <span className="exam-time-rail" aria-hidden="true" data-urgent={timeUrgent ? '' : undefined}>
+        <span className="oex-time-rail" aria-hidden="true" data-urgent={timeUrgent ? '' : undefined}>
           <span style={{ transform: `scaleX(${consumedFrac})` }} />
         </span>
       </div>
@@ -1269,33 +1278,32 @@ export function ExamTakerPage() {
              programmatic focus (tabIndex -1 keeps it out of tab order;
              scroll-margin clears the sticky bar). */
           return (
-            <div key={q.id} id={`exam-q-${q.id}`} className="exam-q" tabIndex={-1}>
-              <Card>
+            <div key={q.id} id={`exam-q-${q.id}`} className="oex-q" tabIndex={-1}>
+              <Card className="oex-q-card">
                 {/* 15-g P1-5 — the prompt is the accessible name of both
                     answer fields: number + prompt ids are referenced by the
                     textarea (aria-labelledby) and the choice group
                     (role=radiogroup), so a screen reader never meets an
                     unnamed graded input. */}
-                <div className="text-xxs text-subtle" id={`exam-q-${q.id}-num`} style={{ marginBottom: 'var(--sp-1)' }}>
+                <div className="text-xxs text-subtle" id={`exam-q-${q.id}-num`}>
                   السؤال <bdi>{i + 1}</bdi> من <bdi>{attempt.questions.length}</bdi> · <bdi>{q.points}</bdi> {q.points === 1 ? 'نقطة' : 'نقاط'}
                 </div>
-                <div className="exam-prompt" id={`exam-q-${q.id}-prompt`}>{q.prompt}</div>
+                <div className="oex-prompt" id={`exam-q-${q.id}-prompt`}>{q.prompt}</div>
                 {(q.type === 'MCQ' || q.type === 'TRUE_FALSE') && q.choices && (
                   <div
-                    className="flex-col gap-2"
-                    style={{ marginTop: 'var(--sp-3)' }}
+                    className="oex-q-choices"
                     role="radiogroup"
                     aria-labelledby={`exam-q-${q.id}-num exam-q-${q.id}-prompt`}
                   >
                     {q.choices.map((c, idx) => (
                       <label
                         key={idx}
-                        className={`exam-choice${answers[q.id]?.choiceIndex === idx ? ' selected' : ''}`}
+                        className={`oex-choice${answers[q.id]?.choiceIndex === idx ? ' selected' : ''}`}
                       >
                         {/* Locked while this question's save is in flight
                             (15-e P1-2) — the same honesty as the lecture
-                            checkpoint options; the .exam-choice:has(
-                            input:disabled) state already exists. */}
+                            checkpoint options; the .oex-choice:has(
+                            input:disabled) state ships with the sheet. */}
                         <input
                           type="radio"
                           name={q.id}
@@ -1303,7 +1311,15 @@ export function ExamTakerPage() {
                           onChange={() => onChoiceChange(q.id, idx)}
                           disabled={savingQids.has(q.id)}
                         />
-                        <span>{c}</span>
+                        {/* The selected-state check — the accent-tinted row
+                            plus this filled check is the ONE signal moment
+                            of the answering surface (Lucide, aria-inert —
+                            the radio's accessible name stays the choice
+                            text alone). */}
+                        <span className="oex-choice-check" aria-hidden="true">
+                          <Icon icon={Check} size={13} />
+                        </span>
+                        <span className="oex-choice-text">{c}</span>
                       </label>
                     ))}
                   </div>
@@ -1311,14 +1327,13 @@ export function ExamTakerPage() {
                 {(q.type === 'SHORT' || q.type === 'ESSAY') && (
                   <>
                     <textarea
-                      className="input"
+                      className="input oex-answer-field"
                       rows={q.type === 'ESSAY' ? 6 : 2}
                       placeholder="اكتب إجابتك هنا…"
                       aria-labelledby={`exam-q-${q.id}-num exam-q-${q.id}-prompt`}
                       value={answers[q.id]?.answerText ?? ''}
                       onChange={(e) => onTextChange(q.id, e.target.value)}
                       onBlur={() => onTextBlur(q.id)}
-                      style={{ marginTop: 'var(--sp-3)' }}
                       /* r176e (D-01): the backend's answerText bound
                          (z.string().max(4000), exams.routes.ts) mirrored
                          on the control — an uncapped paste used to fail
@@ -1329,15 +1344,15 @@ export function ExamTakerPage() {
                       maxLength={4000}
                     />
                     {(answers[q.id]?.answerText ?? '').length > 3600 && (
-                      <p className="text-xxs text-subtle" style={{ margin: 0 }}>
+                      <p className="text-xxs text-subtle oex-char-count">
                         {(answers[q.id]?.answerText ?? '').length}/4000
                       </p>
                     )}
                   </>
                 )}
                 {saveState && (
-                  <div className="exam-q-foot">
-                    <span className={`exam-q-state ${saveState}`}>
+                  <div className="oex-q-foot">
+                    <span className={`oex-q-state ${saveState}`}>
                       <Icon
                         icon={saveState === 'failed' ? AlertTriangle : saveState === 'saving' ? Clock : CheckCircle2}
                         size={12}
@@ -1361,14 +1376,14 @@ export function ExamTakerPage() {
       {/* 5-A6 P2-2 — the submit bar carries the unanswered count inline
           (not only inside the confirm dialog) and is bottom-sticky on
           phone so a 60-question paper never hides the way out. */}
-      <div className="exam-submit-bar">
+      <div className="oex-submit-bar">
         {submitError && (
           <div className="form-error" role="alert">
             <Icon icon={AlertTriangle} size={14} />
             <span className="form-error-msg">{submitError}</span>
           </div>
         )}
-        <span className={`exam-submit-status${unanswered > 0 ? ' warn' : ' ok'}`}>
+        <span className={`oex-submit-status${unanswered > 0 ? ' warn' : ' ok'}`}>
           <Icon icon={unanswered > 0 ? AlertTriangle : CheckCircle2} size={14} />
           {unanswered > 0
             ? countAr(unanswered, ['سؤال واحد بدون إجابة', 'سؤالان بدون إجابة', 'أسئلة بدون إجابة', 'سؤالاً بدون إجابة'])
@@ -1460,8 +1475,8 @@ function TemplateQuestionsPreview({ templateId }: { templateId: string }) {
   const questions = tplQ.data?.questions ?? [];
 
   return (
-    <div style={{ marginBlockEnd: 'var(--sp-3)' }}>
-      <div className="flex items-center gap-2" style={{ marginBlockEnd: 'var(--sp-2)' }}>
+    <div className="oex-mod-preview">
+      <div className="oex-mod-preview-head">
         <Icon icon={ListChecks} size={13} />
         <span className="text-xs text-muted">
           أسئلة القالب —{' '}
@@ -1533,12 +1548,12 @@ function ModerationQuestionRow({
         {/* مفتاح الإجابة — الخلفية تُخفيه (null) عن كل عارض ليس من
             أجله؛ null لا يُعرض إطلاقاً (لا مفتاحاً مزيّفاً). */}
         {key && (
-          <div className="text-xs" style={{ color: 'var(--success-ink)', marginBlockStart: 'var(--sp-0-5)' }}>
+          <div className="oex-mod-key">
             <Icon icon={CheckCircle2} size={11} /> {key}
           </div>
         )}
         {!q.isApproved && q.moderationNote && (
-          <div className="text-xs" style={{ color: 'var(--danger-ink)', marginBlockStart: 'var(--sp-0-5)' }}>
+          <div className="oex-mod-note">
             <Icon icon={Info} size={11} /> {q.moderationNote}
           </div>
         )}
@@ -1601,14 +1616,10 @@ export function ExamModerationPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">مراجعة الاختبارات</h1>
-          <p className="page-subtitle">
-            مراجعة قوالب الاختبارات الموحَّدة قبل اعتمادها وإتاحتها للطلاب — صلاحية حصرية لمكتب الجودة.
-          </p>
-        </div>
-      </header>
+      <PageHeader
+        title="مراجعة الاختبارات"
+        subtitle="مراجعة قوالب الاختبارات الموحَّدة قبل اعتمادها وإتاحتها للطلاب — صلاحية حصرية لمكتب الجودة."
+      />
 
       <div className="grid-3">
         {/* Honest KPIs: pending shows '…', an API-down queue shows '—'
@@ -1659,14 +1670,14 @@ export function ExamModerationPage() {
             <div className="state-desc">كل قوالب الاختبارات المتاحة للطلاب اجتازت المراجعة.</div>
           </div>
         ) : (
-          <div className="flex-col gap-2">
+          <div className="oex-queue">
             {queue?.map((item) => {
               const rowPending = acting?.id === item.id;
               return (
-                <div key={item.id} className="moderation-row">
-                  <div className="moderation-row-main">
-                    <div className="moderation-title">{item.title}</div>
-                    <div className="moderation-meta">
+                <div key={item.id} className="oex-mod-row">
+                  <div className="oex-mod-main">
+                    <div className="oex-mod-title">{item.title}</div>
+                    <div className="oex-mod-meta">
                       <Badge>{KIND_LABEL[item.kind]}</Badge>
                       {item.offering && <Badge color="brand">{item.offering.course.name}</Badge>}
                       <Badge><bdi>{item._count.questions}</bdi> سؤال · <bdi>{item.durationMin}</bdi> د</Badge>
@@ -1675,7 +1686,7 @@ export function ExamModerationPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="moderation-actions">
+                  <div className="oex-mod-actions">
                     {/* r166b (E2 #7 — weak CTA affordance): the row's ONLY
                         action rendered as a transparent 59×32 ghost button —
                         indistinguishable from a text label. The outline
@@ -1702,7 +1713,7 @@ export function ExamModerationPage() {
                   </div>
                   {open === item.id && (
                     <div
-                      className="moderation-panel"
+                      className="oex-mod-panel"
                       id={`moderation-panel-${item.id}`}
                       role="region"
                       aria-label={`مراجعة ${item.title}`}
@@ -1719,16 +1730,15 @@ export function ExamModerationPage() {
                           misleading connectivity error. Twin pattern
                           matched exactly (maxLength, no counter). */}
                       <textarea
-                        className="input"
+                        className="input oex-mod-note-field"
                         rows={2}
                         maxLength={500}
                         placeholder="ملاحظات للمؤلف (اختياري)…"
                         aria-label="ملاحظات المراجعة للمؤلف"
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
-                        style={{ marginBottom: 'var(--sp-2)' }}
                       />
-                      <div className="moderation-actions">
+                      <div className="oex-mod-actions">
                         <button
                           type="button"
                           className={`btn success sm${rowPending && acting?.approve ? ' moderation-pulse' : ''}`}
@@ -1749,7 +1759,7 @@ export function ExamModerationPage() {
                         </button>
                       </div>
                       {actionError?.id === item.id && (
-                        <div className="form-error" role="alert" style={{ marginTop: 'var(--sp-2)' }}>
+                        <div className="form-error oex-mod-error" role="alert">
                           <Icon icon={AlertTriangle} size={14} />
                           <span className="form-error-msg">{actionError.message}</span>
                           <button

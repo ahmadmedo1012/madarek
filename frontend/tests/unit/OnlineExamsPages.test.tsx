@@ -1106,7 +1106,10 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     ];
     const done = renderTaker();
     const doneH1 = screen.getByText('لقد أكملت هذا الاختبار مسبقاً', { selector: 'h1' });
-    expect(doneH1.className).toBe('exam-result-title');
+    // 4C-d: the title class moved to the page-scoped sheet (online-exams.css
+    // `.oex-result-title`) — the promoted-h1 contract itself is unchanged
+    // (h1 + the h2 metrics pinned inline via H1_AS_H2_STYLE).
+    expect(doneH1.className).toBe('oex-result-title');
     expect(doneH1.style.fontSize).toBe('var(--fs-h2)');
     expect(doneH1.style.lineHeight).toBe('var(--lh-snug)');
     done.unmount();
@@ -1126,7 +1129,7 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
       fireEvent.click(screen.getByRole('button', { name: 'تسليم نهائي' }));
     });
     const resultH1 = screen.getByText('مبروك — لقد اجتزت الاختبار!', { selector: 'h1' });
-    expect(resultH1.className).toBe('exam-result-title');
+    expect(resultH1.className).toBe('oex-result-title');
     expect(resultH1.style.fontSize).toBe('var(--fs-h2)');
     expect(resultH1.style.lineHeight).toBe('var(--lh-snug)');
   });

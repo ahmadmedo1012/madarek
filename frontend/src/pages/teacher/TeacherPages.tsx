@@ -5,10 +5,11 @@ import {
   Users, BarChart3, ClipboardCheck, ClipboardList,
   AlertTriangle, Calendar, Upload, RefreshCw,
   Send, FileText, X, CheckCircle2,
-  ExternalLink,
+  ExternalLink, Presentation, Video, FileArchive,
+  Image as ImageIcon, Paperclip,
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
-import { Card, Badge, ProgressBar, UserAvatar, SectionTitle, FormField, Pill } from '../../components/primitives';
+import { Card, Badge, ProgressBar, UserAvatar, FormField, Pill } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
@@ -47,6 +48,7 @@ import { ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, gradeBand, GRADE_BANDS } fr
 import { validatePdfFile } from '../../lib/pdfUpload';
 import ResearchReviewPage from './ResearchReviewPage';
 import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
+import '../../styles/teacher-pages.css';
 
 /* The teacher dashboard now lives in TeacherDashboardPage.tsx
  * (social-media feed style). The previous KPI-grid version was
@@ -161,38 +163,39 @@ export function TeacherSchedulePage() {
           description="ستظهر محاضراتك هنا فور تسجيل الجداول لمقرّراتك من قِبَل الإدارة."
         />
       ) : (
-        <Card title="الأسبوع" icon={Calendar}>
-          <div className="flex-col gap-3">
-            {days.map((d) => (
-              <div key={d.dow}>
-                <div className="flex items-center gap-2">
-                  <SectionTitle>{WEEKDAY_NAMES_AR[d.dow]}</SectionTitle>
-                  {d.dow === todayDow && <Badge color="brand">اليوم</Badge>}
-                </div>
-                <div className="flex-col">
-                  {d.items.map((it, i) => (
-                    <div key={i} className="list-row">
-                      {/* Latin time range inside an RTL line — bdi keeps
-                          the dash order stable (audit 0-e P2-47) */}
-                      <bdi className="list-row-meta">{it.startTime} — {it.endTime}</bdi>
-                      <div className="list-row-body">
-                        <div className="list-row-title">{it.courseName}</div>
-                        <div className="list-row-sub">
-                          {it.room ? `${it.room} · ` : ''}
-                          {/* P2-1 (5-A7): a scheduled slot with no enrollments
-                              names the reality — countAr(0) renders the
-                              broken «0 طالباً». */}
-                          {it.enrolled === 0 ? 'لا طلاب مسجَّلين' : countAr(it.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}
-                        </div>
-                      </div>
-                      <Badge><bdi>{it.courseCode}</bdi></Badge>
-                    </div>
-                  ))}
-                </div>
+        /* 4C-c Superlist recomposition: calm day sections in a grid —
+            each day a header (الاسم + «اليوم» marker) over its lecture
+            rows; ≤920px the grid folds into the day-by-day vertical
+            list (same DOM, source order = day order). */
+        <div className="tpg-sched">
+          {days.map((d) => (
+            <section key={d.dow} className="tpg-day" data-today={d.dow === todayDow ? 'true' : undefined} aria-label={WEEKDAY_NAMES_AR[d.dow]}>
+              <div className="tpg-day-head">
+                <span className="tpg-day-title">{WEEKDAY_NAMES_AR[d.dow]}</span>
+                {d.dow === todayDow && <Badge color="brand">اليوم</Badge>}
               </div>
-            ))}
-          </div>
-        </Card>
+              {d.items.map((it, i) => (
+                <div key={i} className="tpg-lecture">
+                  {/* Latin time range inside an RTL line — bdi keeps
+                      the dash order stable (audit 0-e P2-47); mono
+                      tabular so the ranges scan as one block. */}
+                  <bdi className="tpg-lecture-time">{it.startTime} — {it.endTime}</bdi>
+                  <div className="tpg-lecture-body">
+                    <div className="tpg-lecture-name">{it.courseName}</div>
+                    <div className="list-row-sub">
+                      {it.room ? `${it.room} · ` : ''}
+                      {/* P2-1 (5-A7): a scheduled slot with no enrollments
+                          names the reality — countAr(0) renders the
+                          broken «0 طالباً». */}
+                      {it.enrolled === 0 ? 'لا طلاب مسجَّلين' : countAr(it.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}
+                    </div>
+                  </div>
+                  <Badge><bdi>{it.courseCode}</bdi></Badge>
+                </div>
+              ))}
+            </section>
+          ))}
+        </div>
       )}
     </div>
   );
@@ -319,7 +322,7 @@ export function AttendancePage() {
         }
       />
 
-      <Card title="الجلسة" icon={Calendar}>
+      <Card title="الجلسة" icon={Calendar} className="tpg-session">
         <div className="form-row-3">
           <FormField label="المقرّر">
             <select className="input" value={effectiveOfferingId} onChange={(e) => setOfferingId(e.target.value)}>
@@ -379,10 +382,32 @@ export function AttendancePage() {
             <EmptyState title="لا يوجد طلاب" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." illustration="empty-search" />
           ) : (
             <div className="flex-col gap-2">
+              {/* 4C-c: the sticky session summary — present/late/absent/
+                  excused counts in mono tabular numerals ride above the
+                  roster while it scrolls (the save button stays in the
+                  page header; this line is the live truth of the sheet). */}
+              <div className="tpg-att-summary" role="status" aria-label="ملخّص الجلسة الحاليّ">
+                <span className="tpg-att-summary-item">
+                  <span className="tpg-att-summary-label">حاضر</span>
+                  <span className="tpg-att-summary-value">{formatNum(counts.p)}</span>
+                </span>
+                <span className="tpg-att-summary-item">
+                  <span className="tpg-att-summary-label">متأخّر</span>
+                  <span className="tpg-att-summary-value">{formatNum(counts.l)}</span>
+                </span>
+                <span className="tpg-att-summary-item">
+                  <span className="tpg-att-summary-label">غائب</span>
+                  <span className="tpg-att-summary-value">{formatNum(counts.a)}</span>
+                </span>
+                <span className="tpg-att-summary-item">
+                  <span className="tpg-att-summary-label">بعذر</span>
+                  <span className="tpg-att-summary-value">{formatNum(counts.e)}</span>
+                </span>
+              </div>
               {students.map((s) => {
                 const status = statusByStudent[s.studentId] ?? 'PRESENT';
                 return (
-                  <div key={s.studentId} className="list-row">
+                  <div key={s.studentId} className="list-row tpg-att-row">
                     <UserAvatar
                       initials={s.avatarInitials ?? s.name.split(' ').map((p) => p[0]).join('').slice(0, 2)}
                       color={s.avatarColor ?? undefined}
@@ -392,7 +417,7 @@ export function AttendancePage() {
                       <div className="list-row-title">{s.name}</div>
                       <div className="list-row-sub font-mono"><bdi>{s.universityId}</bdi></div>
                     </div>
-                    <div className="flex gap-1" role="group" aria-label={`حضور ${s.name}`}>
+                    <div className="tpg-att-toggles" role="group" aria-label={`حضور ${s.name}`}>
                       {ATT_OPTIONS.map((opt) => {
                         const on = status === opt.v;
                         return (
@@ -823,8 +848,12 @@ function SemesterGradeEntry({
         ) : gradesQ.isError ? (
           <ErrorState error={gradesQ.error} onRetry={() => gradesQ.refetch()} />
         ) : (
-          <div className="table-wrap">
-            <table className="table tbl-stack">
+          /* 4C-c: the ledger scrollport — .table-wrap.sticky pins the
+              header row while the roster scrolls (the shared opt-in).
+              The table keeps the shared .tbl-stack DOM: desktop rows,
+              mobile row-cards off the same data-label attributes. */
+          <div className="table-wrap sticky">
+            <table className="table tbl-stack tpg-grade-table">
               <thead>
                 <tr>
                   <th scope="col">الطالب</th>
@@ -926,6 +955,19 @@ function formatSize(bytes: number): string {
   if (bytes < 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
   return `${(bytes / 1024 / 1024 / 1024).toFixed(1)} GB`;
 }
+
+/* 4C-c: the material row's file-type mark — one Lucide icon per
+ * MaterialType (PDF is the house default). Content-driven iconography,
+ * same grammar as the type badge beside it. */
+const MATERIAL_TYPE_ICON: Record<string, typeof FileText> = {
+  PDF: FileText,
+  PPT: Presentation,
+  VIDEO: Video,
+  DOC: FileText,
+  ZIP: FileArchive,
+  IMAGE: ImageIcon,
+  OTHER: Paperclip,
+};
 
 /* ─── r144: add-material-by-URL — the backend's POST /offerings/:id/
  * materials contract (by-link, no multipart — AGENTS §5.6). Replaces
@@ -1276,43 +1318,39 @@ export function MaterialsPage() {
         )}
       >
         {q.isPending ? (
-          <TableSkeleton rows={4} cols={7} />
+          <ListSkeleton rows={5} />
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
           <EmptyState title="لم ترفع ملفات بعد" description="أضف أول مادة بزر «إضافة مادة» بالأعلى — سيظهر لطلاب المقرّر فوراً." illustration="empty-search" />
         ) : (
-          <div className="table-wrap">
-            <table className="table tbl-stack">
-              <thead>
-                <tr>
-                  <th scope="col">الملفّ</th>
-                  <th scope="col">المقرّر</th>
-                  <th scope="col">النوع</th>
-                  <th scope="col">الحجم</th>
-                  <th scope="col">المشاهدات</th>
-                  <th scope="col">التحميلات</th>
-                  <th scope="col">التاريخ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {q.data.map((m) => (
-                  <tr key={m.id}>
-                    <td className="tbl-strong" data-label="الملفّ">
-                      <a href={m.url} target="_blank" rel="noreferrer" className="text-link">
-                        {m.name}
-                      </a>
-                    </td>
-                    <td data-label="المقرّر">{m.course.name}</td>
-                    <td data-label="النوع"><Badge>{MATERIAL_TYPE_LABEL[m.type] ?? <bdi>{m.type}</bdi>}</Badge></td>
-                    <td className="tbl-num" data-label="الحجم">{m.sizeBytes > 0 ? <bdi>{formatSize(m.sizeBytes)}</bdi> : '—'}</td>
-                    <td className="tbl-num" data-label="المشاهدات">{formatNum(m.views)}</td>
-                    <td className="tbl-num" data-label="التحميلات">{formatNum(m.downloads)}</td>
-                    <td className="text-subtle" data-label="التاريخ" title={formatDateTimeAr(m.createdAt)}>{formatRelativeArShort(m.createdAt)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          /* 4C-c: file rows, not a 7-column table — the detail rides the
+              row (course · type badge · views · downloads), the trailing
+              column carries the honest size + updated-relative marks. */
+          <div className="tpg-mat-list">
+            {q.data.map((m) => {
+              const TypeIcon = MATERIAL_TYPE_ICON[m.type] ?? FileText;
+              return (
+                <div key={m.id} className="tpg-mat-row">
+                  <span className="tpg-mat-icon" aria-hidden><Icon icon={TypeIcon} size={18} /></span>
+                  <div className="tpg-mat-body">
+                    <a href={m.url} target="_blank" rel="noreferrer" className="text-link tpg-mat-title">
+                      <bdi>{m.name}</bdi>
+                    </a>
+                    <div className="tpg-mat-sub">
+                      <span>{m.course.name}</span>
+                      <Badge>{MATERIAL_TYPE_LABEL[m.type] ?? <bdi>{m.type}</bdi>}</Badge>
+                      <span>{formatNum(m.views)} مشاهدة</span>
+                      <span>{formatNum(m.downloads)} تحميل</span>
+                    </div>
+                  </div>
+                  <div className="tpg-mat-meta">
+                    <bdi className="font-mono">{m.sizeBytes > 0 ? formatSize(m.sizeBytes) : '—'}</bdi>
+                    <span title={formatDateTimeAr(m.createdAt)}>حُدِّث {formatRelativeArShort(m.createdAt)}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </Card>
@@ -1405,7 +1443,7 @@ export function StudentsListPage() {
         ) : students.length === 0 ? (
           <EmptyState title="لا يوجد طلاب مسجَّلون" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." illustration="empty-search" />
         ) : (
-          <div className="table-wrap">
+          <div className="table-wrap tpg-students">
             <table className="table tbl-stack">
               <thead>
                 <tr>
@@ -1601,21 +1639,23 @@ export function PerformancePage() {
             ) : (
               /* A6 P2 (22-a): empty buckets dim instead of painting
                  full-weight 0% tracks — the honest zero, not the
-                 "rendering bug" wall. */
-              <div className="flex-col gap-3">
+                 "rendering bug" wall. 4C-c: each band reads as a ledger
+                 line — label + range at the start, the tabular share at
+                 the end, the bar as the quiet fill underneath. */
+              <div className="tpg-dist">
                 {distribution.map(({ band, pct }) => (
                   <div key={band.key} style={{ opacity: pct === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
+                    <div className="tpg-dist-head">
+                      <span className="tpg-dist-label">{band.label} (<bdi>{band.range}</bdi>)</span>
+                      <bdi className="tpg-dist-value">{formatPct1(pct)}%</bdi>
+                    </div>
                     <ProgressBar
                       value={pct}
-                      /* A7 P2-6: the label already carries the pct — the
-                        bar's own value readout rendered it twice
-                        («0%0%» live in DOM). */
                       showValue={false}
-                      /* ReactNode label → the accessible name needs the
-                         explicit ariaLabel (ProgressBar's string-label
-                         fallback can't fire for markup). */
+                      /* ReactNode label omitted — the accessible name is
+                         the explicit ariaLabel (the ledger head above
+                         carries the visible text). */
                       ariaLabel={`حصة تقدير ${band.label} (${band.range}): ${formatPct1(pct)}%`}
-                      label={<>{band.label} (<bdi>{band.range}</bdi>) · <bdi>{formatPct1(pct)}%</bdi></>}
                       color={band.barColor}
                     />
                   </div>
@@ -1910,18 +1950,16 @@ export function AssignmentsPage() {
                     <div className="list-row-title">
                       {ASSIGNMENT_KIND_LABEL[a.type] ?? <bdi>{a.type}</bdi>}: {a.title}
                     </div>
-                    <div className="list-row-sub" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+                    {/* Grading context travels with the row — course,
+                        ceiling, the counted submissions and the tone-chip
+                        due date (overdue red, ≤3 days amber, beyond
+                        green; the full date rides the title). */}
+                    <div className="tpg-asg-meta">
                       <span>{a.course.name} · <bdi>{a.course.code}</bdi></span>
-                      {/* Grading context travels with the row — the same
-                          ceiling the modal enforces, visible up front. */}
                       <span>الدرجة من <bdi className="font-mono">{a.maxScore}</bdi></span>
                     </div>
                   </div>
-                  <div className="flex gap-2 items-center" style={{ flexShrink: 0 }}>
-                    {/* The due chip carries its own tone (A7 «assignments
-                        7.5 → 9»): overdue red, ≤3 days amber, beyond
-                        green — urgency readable without parsing relative
-                        dates. The full date rides the title (P3-2). */}
+                  <div className="tpg-asg-side">
                     <span title={formatDateTimeAr(a.dueAt)}>
                       <Badge color={dueTone}>{formatDue(a.dueAt)}</Badge>
                     </span>
@@ -2072,17 +2110,23 @@ function NeedsReviewCard({
         <ErrorState error={error} onRetry={onRetry} />
       ) : pending.length === 0 ? (
         <EmptyState
-          title="لا توجد تسليمات بانتظار التقييم"
+          title="لا تسليمات بانتظار التصحيح"
           illustration="empty-search"
           description="ستظهر هنا تسليمات طلابك فور وصولها."
         />
       ) : (
-        <div className="flex-col gap-3">
+        /* 4C-c Superlist recomposition: the groups are calm queue
+            sections — hairline frame, header rule (title · course · due
+            meta · ceiling · count) over full-height submission rows,
+            each with ONE trailing ≥44px signal action. The shared
+            .queue-group classes stay on the frame (the e2e locator pins
+            them); the tpg layer owns the composition. */
+        <div className="tpg-queue">
           {groups.map((g) => (
-            <div key={g.key} className="queue-group">
-              <div className="queue-group-head">
+            <div key={g.key} className="queue-group tpg-queue-section">
+              <div className="queue-group-head tpg-queue-head">
                 <div className="queue-group-main">
-                  <div className="queue-group-title">{g.assignmentTitle}</div>
+                  <div className="queue-group-title tpg-queue-title">{g.assignmentTitle}</div>
                   {(g.courseCode || g.dueAt) && (
                     <div className="queue-group-sub">
                       {g.courseCode && <bdi>{g.courseCode}</bdi>}
@@ -2102,15 +2146,15 @@ function NeedsReviewCard({
                   {countAr(g.rows.length, ['تسليم واحد', 'تسليمان', 'تسليمات', 'تسليماً'])}
                 </Badge>
               </div>
-              <div className="flex-col gap-2">
+              <div className="tpg-queue-rows">
                 {g.rows.map((p) => (
-                  <div key={p.submissionId} className="list-row">
+                  <div key={p.submissionId} className="list-row tpg-queue-row">
                     <UserAvatar
                       initials={p.studentName.split(' ').map((w) => w[0] ?? '').slice(0, 2).join('')}
                       size={32}
                     />
                     <div className="list-row-body">
-                      <div className="list-row-title" style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
+                      <div className="list-row-title tpg-asg-meta">
                         <span>{p.studentName}</span>
                         {/* 18-G's late flag — a small warning chip beside the
                             name, never a suffix inside the assignment title
@@ -2123,10 +2167,10 @@ function NeedsReviewCard({
                     </div>
                     <button
                       type="button"
-                      className="btn primary sm"
+                      className="btn primary sm tpg-act"
                       onClick={() => onGrade(p)}
                     >
-                      <Icon icon={Send} size={12} /> تقييم
+                      <Icon icon={ClipboardCheck} size={14} /> تصحيح
                     </button>
                   </div>
                 ))}
