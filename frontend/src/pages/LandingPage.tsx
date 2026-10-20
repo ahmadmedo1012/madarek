@@ -590,11 +590,16 @@ export default function LandingPage() {
               </ul>
 
               {selected && (
-                <aside className="cg-panel" aria-live="polite">
+                /* r282: a live region, not a landmark — axe's
+                   landmark-complementary rule flagged the <aside>
+                   nested inside the chapter <section>; the panel's
+                   real contract is the polite announcement, which
+                   role="status" carries on a plain div. */
+                <div className="cg-panel" role="status" aria-live="polite">
                   <p className="cg-panel-name">{selected.nameAr}</p>
                   <p className="cg-panel-campus">{selected.cityAr} · {selected.nameEn}</p>
                   <Link to="/colleges" className="btn ghost sm">استعراض في صفحة الكلّيّات</Link>
-                </aside>
+                </div>
               )}
             </div>
           </div>

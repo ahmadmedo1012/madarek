@@ -1108,11 +1108,14 @@
 }
 
 /* the slide-up reveal (BLUEPRINT §6 footer row): the colophon rises into
- * place on the footer's own --sp (0 while approaching → 1 at page end —
- * the r193 unreachable-end offsets), with the wordmark rushing harder. */
+ * place on the footer's own --sp. r282: the reveal is GEOMETRY ONLY —
+ * the old `opacity: calc(0.35 + 0.65 * var(--sp))` fade rode the muted
+ * footer copy at 0.35 effective alpha while the footer sat mid-viewport
+ * (axe caught #63605a / #403d34 on the dark ground — 2.93:1 and 1.69:1
+ * through the reveal window). Transform-only keeps the authored
+ * slide-up moment and keeps every frame AA-clean. */
 .fo-footer-inner {
   transform: translateY(calc((1 - var(--sp, 0)) * 120px));
-  opacity: calc(0.35 + 0.65 * var(--sp, 0));
 }
 
 .fo-footer-grid {
