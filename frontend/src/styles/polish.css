@@ -2471,20 +2471,12 @@
 
 
 
-  /  .landing-footer::before {
-    content: '';
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline: 0;
-    block-size: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      color-mix(in srgb, var(--accent) 50%, transparent) 30%,
-      color-mix(in srgb, var(--accent) 50%, transparent) 70%,
-      transparent 100%
-    );
-  }
+  /* r297 hazard fix: a stray `/` preceded this selector — esbuild
+     preserved it verbatim and browsers dropped the rule as invalid.
+     Beyond the hazard it was DOUBLY dead: .landing-footer has zero
+     TSX consumers since the «سماء مدارك» rebuild (the rendered footer
+     is .fo-footer — its top hairline is landing.css's own border-block
+     recipe). Deleted, not moved. */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3338,9 +3330,11 @@
     border-color: color-mix(in srgb, var(--glass-border) 60%, var(--border-strong));
   }
 
-  /  @media (prefers-reduced-motion: reduce) {
-    .card.glass-premium::before { animation: none; }
-  }
+  /* r297 hazard fix: a stray `/` preceded this media block — the
+     RM kill for the glass-premium shimmer never parsed. Behaviorally
+     redundant anyway: base.css's universal RM (!important
+     animation-duration 0.01ms + iteration-count 1) already freezes
+     the shimmer, so nothing is re-homed. The hazard is gone. */
 
 
   /* ── Scroll progress indicator ────────────────────────────────── */
