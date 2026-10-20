@@ -4921,10 +4921,12 @@
   [data-theme="dark"] .ledger.zone-copper > .ledger-head   { border-block-end-color: color-mix(in srgb, var(--c-copper-ink) 30%, transparent); }
   [data-theme="dark"] .ledger.zone-lavender > .ledger-head { border-block-end-color: color-mix(in srgb, var(--c-lavender-ink) 30%, transparent); }
 
-  /* ── 2 · Telemetry markers — the 7px violet square ────────────── */
+  /* ── 2 · Telemetry markers — the 7px violet square ──────────────
+     (r284: .page-header-meta::before retired — the in-page meta line
+     is date/week context, not telemetry; r197's mono-for-IDs-only
+     contract takes the square and the mono voice with it) */
   .stat-label::before,
-  .ledger-tag::before,
-  .page-header-meta::before {
+  .ledger-tag::before {
     content: "";
     display: inline-block;
     inline-size: 7px;

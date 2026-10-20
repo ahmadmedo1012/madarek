@@ -713,7 +713,8 @@
     row-gap: var(--sp-1);
   }
   .page-header-meta {
-    font-family: var(--font-mono);
+    /* r284: mono retired per the r197 voice contract (mono = IDs/code
+       only); the meta line is in-page sans at the 13px Arabic floor. */
     font-size: var(--fs-xs);
     color: var(--text-muted);
     margin: 0;
