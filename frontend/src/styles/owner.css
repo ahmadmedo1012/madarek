@@ -1032,6 +1032,20 @@
   unicode-bidi: isolate;
 }
 
+/* r251: the affected row's ID — the timeline's ONE mono accent for
+   machine identifiers (1A rule: mono = IDs/code/metrics only). A quiet
+   chip on the surface-2 step; the full id stays in the title tooltip. */
+.owner-timeline-id {
+  font-family: var(--font-mono);
+  font-size: max(var(--fs-xxs), 13px); /* Arabic-adjacent metadata floor */
+  direction: ltr;
+  unicode-bidi: isolate;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border-radius: var(--r-xs);
+  padding-inline: var(--sp-1);
+}
+
 .owner-timeline-time {
   font-size: var(--fs-xs);
   color: var(--text-subtle);

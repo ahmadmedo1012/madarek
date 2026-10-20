@@ -16,13 +16,64 @@
    .table-wrap, and the students footer rides the shared
    .table-pagination system (components.css). Zero TSX consumers.
 
+   r250 (Superlist recomposition, 4D): the .govx-* family — the
+   permissions matrix's domain grouping (page-scoped; the .perm-row
+   anatomy itself stays in components.css, consumed not copied).
+
    Consumers: AdminExtraPages (students/digital/analysis/settings),
    AdminPages (the borrowed toolbar chrome + the paper-row cell
-   anatomy), AdminGovernancePages (the borrowed search chrome).
+   anatomy), AdminGovernancePages (the borrowed search chrome + the
+   govx matrix groups + the owner detail page's faculty cards).
    Layer: pages (same as every page-scoped sheet).
    ================================================================== */
 
 @layer pages {
+
+/* ── r250: permission-matrix domain groups (.govx-*) ───────────────
+   The editor used to be a flat 17-row .permissions-grid wall. The
+   Superlist direction groups by domain under quiet section headers:
+   surface step (no border boxes), the count line answers "how many
+   are live in THIS domain" without opening anything, and the rows
+   keep the components.css .perm-row anatomy so the pulse + state
+   borders keep working unchanged. */
+.govx-matrix {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+  margin-block-start: var(--sp-4);
+}
+.govx-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.govx-group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding-block-end: var(--sp-2);
+  border-block-end: 1px solid var(--border);
+}
+.govx-group-title {
+  margin: 0;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--text);
+}
+.govx-group-count {
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+  /* 13px Arabic floor (1A): the metadata line never drops below the
+     floor even though fs-xxs is its nominal step. */
+  font-size: max(var(--fs-xxs), 13px);
+}
+.govx-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
 
 .admin-students-toolbar {
   display: flex;

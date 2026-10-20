@@ -270,6 +270,15 @@ export function OwnerActivityPage() {
                     {event.resourceType && (
                       <> &middot; {RESOURCE_LABELS[event.resourceType] ?? <bdi>{event.resourceType}</bdi>}</>
                     )}
+                    {/* r251: the affected row's ID finally renders — the
+                     * ONE place the timeline uses Plex Mono, per the 1A
+                     * rule (mono = IDs/code/metrics only). Bidi-isolated;
+                     * full id in the title tooltip for the audit trail. */}
+                    {event.resourceId && (
+                      <> &middot; <code className="owner-timeline-id font-mono" dir="ltr" title={event.resourceId}>
+                        <bdi>{event.resourceId.length > 14 ? `${event.resourceId.slice(0, 14)}…` : event.resourceId}</bdi>
+                      </code></>
+                    )}
                   </div>
                   {event.metadata !== null && event.metadata !== undefined && (
                     <button
@@ -283,6 +292,9 @@ export function OwnerActivityPage() {
                     </button>
                   )}
                   {expanded === event.id && event.metadata !== null && event.metadata !== undefined && (
+                    /* Machine JSON — the LTR mono block owner.css already
+                     * ships (var(--font-mono)); braces and quotes stay
+                     * legible inside the RTL page. */
                     <div className="owner-meta-preview" dir="ltr">
                       {JSON.stringify(event.metadata, null, 2)}
                     </div>
