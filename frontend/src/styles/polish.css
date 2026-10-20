@@ -463,87 +463,19 @@
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   ▶ Section: polish-v7.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
-   MADAREK — Visual Polish v7 (Notion-flavoured liveliness)
-   ─────────────────────────────────────────────────────────────────────
-   Loaded LAST. Adds scroll-driven and pointer-driven motion to the
-   landing page, plus widens hover/active feedback to whole pages of
-   primitives that were animated as a whole but never internally.
-   ═════════════════════════════════════════════════════════════════════ */
-
-@layer pages {
-
-  /* ── Hero spotlight — radial glow follows the cursor ─────────── */
-  /* (Premium-polish dead-code sweep): the pre-immersive-v2 landing
-     family lived here — .landing-title word-stagger, .landing-mockup
-     parallax/bars/badges + their polish-float/bar-breathe keyframes.
-     Zero TSX consumers since the «سماء مدارك» rebuild (LandingPage
-     renders only .ln-* + .landing-brand/footer chrome); 50 lines
-     removed. The .reveal-up family below is LIVE. */
-
-  /* ── Reveal-up — slightly snappier feel ──────────────────────── */
-  .reveal-up {
-    opacity: 0;
-    transform: translateY(14px);
-    transition:
-      opacity var(--t-slower) var(--ease-out),
-      transform var(--t-slower) var(--ease-out);
-  }
-  .reveal-up.in-view {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .reveal-d-1.in-view { transition-delay: 80ms; }
-  .reveal-d-2.in-view { transition-delay: 160ms; }
-  .reveal-d-3.in-view { transition-delay: 240ms; }
-  .reveal-d-4.in-view { transition-delay: 320ms; }
-  .reveal-d-5.in-view { transition-delay: 400ms; }
-  @media (prefers-reduced-motion: reduce) {
-    .reveal-up { opacity: 1; transform: none; }
-  }
-
-  /* ── Eyebrow pulse — make "جديد" badge actually feel live ─── */
-  /* (r151c: @keyframes polish-shimmer-sweep + the .landing-hero-eyebrow
-     RM kill deleted — zero animation: consumers anywhere (the landing
-     hero renders .ln-hero-eyebrow, which landing.css styles). */
-
-  /* ── Pilot stats: count-up entrance via grid stagger already in v6 ── */
-  /* (Wave 9-b dead-selector sweep: the .landing-pilot-num rules deleted
-     — zero TSX consumers; LandingPage renders .landing-pilot-value
-     inside .landing-pilot-stat.) */
-
-  /* ── Feature cards: subtle inner highlight on hover (Notion bento) ── */
-  /* (r151c: the .landing-feature-card / ::after / :hover::after / > *
-     selector entries deleted from the smooth-scroll group below —
-     zero TSX consumers since the landing redesign (LandingPage
-     renders .ln-feature-*); the group now correctly reads as the
-     html-only smooth-scroll rule it always executed as.) */
-
-  /* ── Pages without a .page-header convention still benefit from
-        the page-enter, but their card grids weren't always
-        .grid-{2,3,4}. Make custom-named grids ride the same cascade.  */
-  /* (Wave 9-b dead-selector sweep: this custom-grid stagger block
-     (ach-grid / skills-grid / alerts-list / live-grid / post-list +
-     its duplicate polish-rise keyframes) deleted — zero TSX consumers;
-     the page waves ship their own grids (.track-grid, .courses-grid…)
-     and the v6 .grid-* stagger above covers the layout primitives.
-     v6's original polish-rise keyframes remain.) */
-
-  /* ── Smooth-scroll for in-page anchor links on landing ─── */
-  html { scroll-behavior: smooth; }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-  }
-
-  /* ── Selection highlight — one definition only; see v22 ────── */
-  /* (Wave 1-a selection consolidation: v7's copy deleted — v14's recipe
-     was the visual winner and now lives as the single definition in v22.
-     See 0-a P1-1.) */
-
-}
-
+   ▶ Section: polish-v7.css — RETIRED r294 (polish dismantle)
+   ═══════════════════════════════════════════════════════════════════
+   Everything live in this section moved to its owning sheet:
+   - .reveal-up / .reveal-d-{1..5} + RM kill → landing.css (the only
+     consumer is RevealCssClass on LandingPage; zero other sheets
+     target these selectors — the layer shift is computed-neutral).
+   - html { scroll-behavior: smooth } + RM auto → deleted as a pure
+     duplicate of base.css's html rule (line 28) and the universal
+     RM !important there (transition/scroll governed centrally).
+   The remaining v7 content had been dead for generations (landing
+   pre-rebuild families: word-stagger, mockup parallax, feature-card
+   ::after spotlight, custom-grid stagger, eyebrow shimmer — all
+   zero-consumer deletions recorded in situ before r294). */
 
 /* ═══════════════════════════════════════════════════════════════════
    ▶ Section: polish-v8.css

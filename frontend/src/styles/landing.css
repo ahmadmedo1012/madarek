@@ -1320,3 +1320,32 @@
     transition: none;
   }
 }
+
+/* ── Reveal-up — the landing choreography class contract ────────────
+   Moved from polish.css v7 (the polish bundle is being dismantled
+   rule-by-rule into owning sheets — r294). The ONLY consumers are
+   RevealCssClass call sites on this page (see hooks/useReveal.ts);
+   nothing else in any sheet targets .reveal-up / .reveal-d-*, so the
+   layer shift (@layer pages → unlayered landing) is computed-style
+   neutral. The base.css universal reduced-motion !important already
+   owned the RM behaviour; this copy (opacity/transform only) keeps
+   the authored static poster outcome. */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity var(--t-slower) var(--ease-out),
+    transform var(--t-slower) var(--ease-out);
+}
+.reveal-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-d-1.in-view { transition-delay: 80ms; }
+.reveal-d-2.in-view { transition-delay: 160ms; }
+.reveal-d-3.in-view { transition-delay: 240ms; }
+.reveal-d-4.in-view { transition-delay: 320ms; }
+.reveal-d-5.in-view { transition-delay: 400ms; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal-up { opacity: 1; transform: none; }
+}

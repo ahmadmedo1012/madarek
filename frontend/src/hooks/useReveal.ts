@@ -261,7 +261,8 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options?: {
 /**
  * RevealCssClass — thin JSX wrapper around useReveal that manages the
  * `.reveal-up` / `.reveal-d-{1..5}` class contract used by the landing
- * page's choreography (landing.css + polish.css).
+ * page's choreography (landing.css — r294 moved the family home from
+ * the polish bundle).
  *
  * NOT the platform reveal primitive. `components/motion/Reveal.tsx`
  * (data-reveal / data-revealed + --reveal-distance tokens, RevealGroup
