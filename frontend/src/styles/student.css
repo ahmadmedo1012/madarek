@@ -3846,16 +3846,9 @@
      .student-dashboard so the shared primitives stay untouched.
      ═══════════════════════════════════════════════════════════════ */
 
-  /* The continue-learning item as a ledger row: the small momentum ring
-     rides the lead column; the chip CTA stays visual (the row is the
-     link — the agenda-row contract). */
-  .student-dashboard .momentum.dash-resume-pending {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    padding: var(--sp-4) var(--sp-5);
-    gap: var(--sp-4);
-  }
+  /* The continue-learning item inside the TodayList: the small momentum
+     ring rides the leading slot; the chip CTA stays visual (the row is
+     the link — the agenda-row contract). */
   .student-dashboard .dash-resume-ring {
     display: inline-flex;
     align-items: center;
@@ -3867,35 +3860,26 @@
     block-size: 56px;
   }
   .student-dashboard .dash-resume-ring .momentum-center { display: none; }
-  .student-dashboard .dash-resume-error .ledger-what a {
-    color: var(--accent-ink);
-    text-decoration: underline;
-  }
-  .student-dashboard .dash-resume-error .ledger-tail {
-    display: flex;
-    align-items: center;
-  }
+  /* The visual action chips riding list rows (never the only link). */
+  .student-dashboard .pf-chip { white-space: nowrap; }
+  .student-dashboard .text-warning-ink { color: var(--warning-ink); }
 
-  /* The «اختبارات قادمة» group label inside the day ledger. */
-  .ledger-group-label {
-    padding: var(--sp-2) var(--sp-5) var(--sp-1);
-    font-family: var(--font-mono);
+  /* The week ledger day bands inside the pattern RowList. */
+  .dash-week-group {
+    display: flex;
+    flex-direction: column;
+  }
+  .dash-week-day {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4) var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+  }
+  .dash-week-day .font-mono {
     font-size: var(--fs-xs);
     color: var(--text-muted);
-  }
-
-  /* The momentum stat line — compact: tighter cells, hairline
-     separators, quieter values. Still the StatStrip anatomy (mono
-     label over value over trend), just printed at line scale. */
-  .student-dashboard .stat-strip { border-radius: var(--r-lg); }
-  .student-dashboard .stat-cell {
-    padding: var(--sp-3) var(--sp-4);
-  }
-  .student-dashboard .stat-cell .stat-value { font-size: var(--fs-h3); }
-  .student-dashboard .stat-cell .stat-trend {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
 }

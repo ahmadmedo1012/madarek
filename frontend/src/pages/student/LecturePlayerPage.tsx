@@ -15,6 +15,7 @@ import { useEntityPageTitle } from '../../components/layout/AppShell';
 import { useAuthStore } from '../../stores/auth.store';
 import { apiBaseURL } from '../../lib/api';
 import { countAr, formatMmSs } from '../../lib/format';
+import { formatInt } from '../../utils/numbers';
 
 /* fmtTime (the m:ss media clock) is lib/format.formatMmSs (13-15 fold,
  * audit 11-f P2-1) — deliberately NOT curriculumValidation.formatSec,
@@ -736,7 +737,7 @@ export default function LecturePlayerPage() {
                 <h3 className="lecture-panel-sec-title">
                   نقاط التفاعل
                   <span className="lecture-panel-sec-meta">
-                    أُجيب عن {checkpointsAnswered} من {countAr(checkpointsTotal, ['واحدة', 'اثنتين', 'نقاط', 'نقطة'])}
+                    أُجيب عن {formatInt(checkpointsAnswered)} من {formatInt(checkpointsTotal)}
                   </span>
                 </h3>
                 <div className="cp-list">

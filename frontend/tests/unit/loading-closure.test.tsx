@@ -104,31 +104,29 @@ beforeEach(() => {
 /* ── 1 · Student pending mirror ─────────────────────────────────── */
 
 describe('r172b §1 — student dashboard pending mirror', () => {
-  it('renders the masthead, the TODAY-ledger slot, the momentum ring slot, the stat strip and the below-fold list slots', () => {
+  it('renders the masthead, the TODAY-list slot, the stat line and the below-fold list slots', () => {
     const { container } = renderPage(<StudentDashboardPage />);
 
-    /* R189 re-pin — the ledger anatomy: masthead (h1 + pending
-       subtitle) → TODAY ledger slot → momentum ring slot → stat strip
-       → week-list slots. Every slot renders the resolved section's
-       class, so the pending → resolved handoff moves nothing (the
-       r172b mirror contract, re-mirrored for «سجلّ مدارك»). */
-    const header = container.querySelector('header.page-header');
+    /* r220 re-pin — the pattern anatomy (Superlist): the PageFrame
+       masthead (h1 + pending description) → the TodayList slot → the
+       momentum StatLine slot → the week-list slot. Every slot renders
+       the resolved section's class, so the pending → resolved handoff
+       moves nothing (the r172b mirror contract, re-mirrored for the
+       PageFrame/StatLine anatomy). */
+    const header = container.querySelector('header.pf-page-header');
     expect(header).not.toBeNull();
+    expect(header?.getAttribute('aria-busy')).toBe('true');
     expect(screen.getByRole('heading', { level: 1, name: 'لوحة التحكم' })).toBeTruthy();
     expect(screen.getByText(/جارٍ تحضير لوحتك/)).toBeTruthy();
 
-    // Momentum slot — the ring row's own footprint (112px ring + bars).
-    const momentum = container.querySelectorAll('section.momentum.dash-resume-pending');
-    expect(momentum.length).toBeGreaterThanOrEqual(1);
-    for (const m of Array.from(momentum)) {
-      expect((m as HTMLElement).getAttribute('aria-busy')).toBe('true');
-      expect(m.querySelector('.skeleton')).not.toBeNull();
-    }
+    // The momentum StatLine — 4 skeleton cells at line scale.
+    const statline = container.querySelector('.pf-statline');
+    expect(statline).not.toBeNull();
+    expect(statline?.getAttribute('aria-busy')).toBe('true');
+    expect(container.querySelectorAll('.pf-statline .pf-stat')).toHaveLength(4);
+    expect(statline?.querySelector('.skeleton')).not.toBeNull();
 
-    // The stat strip — 4 typographic cells.
-    expect(container.querySelectorAll('.stat-strip .stat-cell')).toHaveLength(4);
-
-    // The list slots — the TODAY ledger + week ledger placeholders.
+    // The list slots — the TodayList + week-list placeholders.
     const listSlots = container.querySelectorAll('.flex-col .flex.items-center');
     expect(listSlots.length).toBeGreaterThanOrEqual(6);
   });
