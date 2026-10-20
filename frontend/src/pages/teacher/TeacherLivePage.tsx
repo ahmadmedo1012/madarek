@@ -350,7 +350,7 @@ export default function TeacherLivePage() {
               /* r149 (R3-A1 #6): EmptyState الكنونية — كانت يدوية بعلامة
                  مزدوجة (رسم + أيقونة معًا) وبلا تشريح العنوان/الدور. */
               <EmptyState
-                illustration="empty-search"
+                illustration="empty-list"
                 title="لا توجد جلسات قادمة"
                 description="أنشئ جلسة جديدة لتظهر هنا."
               />

@@ -125,7 +125,7 @@ export default function ResearchReviewPage() {
             {queue.isPending ? (
               <RowList aria-label="قائمة المراجعة" loading />
             ) : !queue.isError && !passed.length ? (
-              <EmptyState illustration="empty-search"
+              <EmptyState illustration="empty-research"
                 icon={CheckCircle2}
                 title="لا بحوث في الانتظار"
                 description="ستظهر هنا بحوث الطلاب فور اجتيازها الفحص التجريبي (محاكاة) للانتحال والمحتوى الآلي."
@@ -589,7 +589,7 @@ function MyPublications() {
       <section className="flex-col gap-2" aria-label="منشوراتي">
         <SectionHeader title="منشوراتي" as="h2" />
         {publications.length === 0 ? (
-          <EmptyState illustration="empty-search"
+          <EmptyState illustration="empty-research"
             icon={Microscope}
             title="لم تُسجَّل منشورات بعد"
             description="حدِّث ملفك الأكاديميّ لإضافة بحوثك المنشورة."

@@ -31,7 +31,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Bell, X, ChevronLeft, AlertTriangle, Info, GraduationCap, Users, Check, RefreshCw } from 'lucide-react';
 import { Icon } from '../Icon';
-import { Illustration } from '../Illustration';
+import { Illustration } from '../illustrations/Illustration';
 import { Skeleton } from '../primitives/States';
 import { NotificationPanel } from '../overlays';
 import { useFocusTrap } from '../overlays/useFocusTrap';
@@ -279,12 +279,12 @@ function NotificationPanelContent({
         </div>
       ) : items.length === 0 ? (
         <div className="notif-empty">
-          {/* Bespoke empty-notifs scene (illustration registry; audit
-              0-f P2-21 — the designed scene was dead inventory while
-              the panel showed a generic Lucide bell). Sizing lives in
-              the wave 8-c section of components.css. */}
+          {/* r280: the mk-ill kit's empty-notifications piece replaces
+              the retired legacy `empty-notifs` scene (same slot, same
+              sizing — the wave 8-c section of components.css still owns
+              the well geometry). */}
           <div className="notif-empty-illustration" aria-hidden>
-            <Illustration name="empty-notifs" decorative />
+            <Illustration name="empty-notifications" />
           </div>
           <p className="notif-empty-text">لا توجد إشعارات</p>
         </div>

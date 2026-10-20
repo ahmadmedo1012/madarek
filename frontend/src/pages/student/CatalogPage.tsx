@@ -214,7 +214,7 @@ export default function CatalogPage() {
         <Card>
           <EmptyState
             icon={BookOpen}
-            illustration={searching ? 'empty-search' : undefined}
+            illustration={searching ? 'empty-search' : 'empty-courses'}
             title={searching ? 'لا توجد مقرّرات تطابق البحث' : 'لا توجد مقرّرات بعد'}
             description={searching
               ? `لم نجد مقرّراً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`

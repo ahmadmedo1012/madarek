@@ -472,7 +472,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
   if (!data) {
     return (
       <Card>
-        <EmptyState illustration="empty-search"
+        <EmptyState illustration="empty-list"
           icon={GraduationCap}
           title="لا يوجد ملف أستاذ"
           description="هذا الحساب لم يُستكمل ملفه الأكاديمي بعد."

@@ -133,7 +133,7 @@ export function StudyRoomsPanel() {
         loading={rooms.isPending}
         empty={(
           <EmptyState
-            illustration="empty-search"
+            illustration="empty-community"
             title="لا توجد غرف دراسة بعد"
             description="أنشئ أول غرفة دراسية وادعُ زملاءك للانضمام إليها."
           />
@@ -460,7 +460,7 @@ export function PostsFeedPanel() {
         ) : !posts.data?.length ? (
           <Card>
             <EmptyState
-              illustration="empty-search"
+              illustration="empty-community"
               icon={MessageCircle}
               title="لا منشورات بعد"
               description="كن أول من يشارك تجربته أو سؤاله."

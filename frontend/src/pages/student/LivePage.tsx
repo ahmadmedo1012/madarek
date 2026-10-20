@@ -112,7 +112,7 @@ export default function LivePage() {
           {list.length === 0 ? (
             <Card>
               <EmptyState
-                illustration="empty-search"
+                illustration="empty-list"
                 icon={Video}
                 title="لا توجد بثوث بعد"
                 description="لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً."
@@ -127,7 +127,7 @@ export default function LivePage() {
               >
                 {live.length === 0 ? (
                   <EmptyState
-                    illustration="empty-search"
+                    illustration="empty-list"
                     icon={Radio}
                     title="لا بثّ مباشرة الآن"
                     description="لا توجد جلسات نشطة مقرراتك في هذه اللحظة؛ راجع الجلسات القادمة في القائمة أدناه."
@@ -143,7 +143,7 @@ export default function LivePage() {
               <Card title="جلسات قادمة" icon={Calendar}>
                 {upcoming.length === 0 ? (
                   <EmptyState
-                    illustration="empty-constellation"
+                    illustration="empty-list"
                     icon={Calendar}
                     title="لا توجد جلسات مجدولة"
                     description="لا توجد جلسات مجدولة لمقرراتك حالياً. سيظهر هنا أي بثّ يجدوله أساتذتك."

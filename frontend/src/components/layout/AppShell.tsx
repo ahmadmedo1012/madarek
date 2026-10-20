@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { BottomNav } from './BottomNav';
+import { ServerWakePill } from './ServerWakePill';
 import { CommandPaletteBody } from './GlobalSearch';
 import { CommandPalette } from '../overlays';
 import { useThemeSync } from './ThemeToggle';
@@ -427,6 +428,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
         </div>
       </main>
       <BottomNav />
+      <ServerWakePill />
       <OnboardingFlow />
       <MilestoneScene />
       <CommandPalette open={paletteOpen} onClose={closePalette} ariaLabel="لوحة الأوامر والبحث">

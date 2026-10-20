@@ -214,7 +214,7 @@ export default function TrainingCatalogPage() {
           <EmptyState
             icon={BookOpen}
             title={filter === 'all' ? 'لا توجد مسارات منشورة بعد' : 'لا توجد مسارات في هذه الفئة بعد'}
-            illustration="empty-search"
+            illustration="empty-community"
             description="ستظهر المسارات الجديدة هنا فور نشرها من فريق الجامعة."
           />
         </Card>
@@ -797,7 +797,7 @@ export function AchievementsPage() {
             </Card>
           ) : !badgesQ.data?.length ? (
             <Card>
-              <EmptyState illustration="empty-search"
+              <EmptyState illustration="achievement"
                 icon={Award}
                 title="لا توجد أوسمة بعد"
                 description="ابدأ بدروس التطوير الذاتي لتحصد أول وسام."
@@ -840,7 +840,7 @@ export function AchievementsPage() {
             </Card>
           ) : !certsQ.data?.length ? (
             <Card>
-              <EmptyState illustration="empty-search"
+              <EmptyState illustration="empty-list"
                 icon={Medal}
                 title="لم تحصل على شهادات بعد"
                 description="أكمل أول مسار تدريبي للحصول على شهادتك الأولى."
@@ -893,7 +893,7 @@ export function AchievementsPage() {
             ) : lbQ.isError ? (
               <ErrorState message="تعذَّر تحميل الترتيب" error={lbQ.error} onRetry={() => lbQ.refetch()} />
             ) : !lbQ.data?.length ? (
-              <EmptyState illustration="empty-search"
+              <EmptyState illustration="empty-list"
                 icon={Crown}
                 title="لا يوجد ترتيب بعد"
                 description="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."

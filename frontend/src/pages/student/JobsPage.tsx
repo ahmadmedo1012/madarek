@@ -158,7 +158,7 @@ export default function JobsPage() {
         <Card><EmptyState
           icon={Briefcase}
           title="لا توجد فرص نشطة هذا الأسبوع"
-          illustration="empty-search"
+          illustration="empty-list"
           description="نضيف فرص التوظيف والتدريب من شركات وطنية وعربية بشكل دوري. ستصلك إشعارات الفرص الملائمة لتخصصك تلقائياً."
         /></Card>
       ) : (

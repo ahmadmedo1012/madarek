@@ -130,7 +130,7 @@ export function VisionGalleryPage() {
       </header>
 
       {total === 0 ? (
-        <EmptyState illustration="empty-search"
+        <EmptyState illustration="empty-list"
           icon={Sparkles}
           title="لا توجد ابتكارات معروضة بعد"
           description="ستظهر خارطة الطريق التقنية للمنصة هنا حين تُنشر."

@@ -309,7 +309,7 @@ export function MessagesInbox({
         ) : !q.data || messages.length === 0 ? (
           <EmptyState
             title="لا توجد رسائل بعد"
-            illustration="empty-search"
+            illustration="empty-list"
             description="ستظهر هنا الرسائل المُرسَلة إليك أو منك عبر المنصّة."
           />
         ) : (

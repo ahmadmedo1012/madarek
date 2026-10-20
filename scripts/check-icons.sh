@@ -13,6 +13,11 @@
 #   - frontend/src/components/StarMark.tsx         (r188: the brand
 #     symbol primitive — khatam star; the LibyaFlag category)
 #   - frontend/src/lib/illustrations/              (bespoke scene SVGs)
+#   - frontend/src/components/illustrations/      (r280: the mk-ill
+#     state-graphics kit — 16 two-colour SVG scenes + BrandLoader; the
+#     same category as lib/illustrations, NOT UI iconography. The
+#     kit's own per-piece `allow-emoji` override comments stay in the
+#     files and are redundant-but-harmless under this entry.)
 #   - frontend/src/styles/                         (CSS / decorative)
 #   - frontend/public/                             (static assets)
 #   - frontend/tests/                              (fixtures)
@@ -61,7 +66,7 @@ violations=0
 # belong to), each carrying a role="img"/progressbar contract and real
 # data — NOT iconography. UI icons keep going through <Icon icon={...} />
 # everywhere, this file included.
-ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration|StarMark)\.tsx|frontend/src/components/landing/|frontend/src/components/primitives/Ledger\.tsx|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/'
+ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration|StarMark)\.tsx|frontend/src/components/landing/|frontend/src/components/illustrations/|frontend/src/components/primitives/Ledger\.tsx|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/'
 
 # 1. Emoji presentation in source code outside allowlist.
 #    Emoji ranges (BMP + supplementary):

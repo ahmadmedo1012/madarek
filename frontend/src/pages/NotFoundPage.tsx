@@ -1,8 +1,9 @@
 /**
  * NotFoundPage — the designed 404 surface for routes that don't match.
  *
- * Renders the bespoke `error-404` illustration scene (the telescope
- * motif points to "look elsewhere") with one witty-but-dignified line,
+ * Renders the mk-ill kit's `not-found` piece (r280 — replaces the
+ * retired legacy error-404 telescope scene; same "look elsewhere"
+ * read, the two-colour kit family grammar) with one witty-but-dignified line,
  * a prominent way home, and two secondary ways back for the two kinds
  * of lost visitor: the public browser (the colleges directory — ruling
  * #9, guests land here without the app shell and therefore without
@@ -15,7 +16,7 @@
 import { Link } from 'react-router-dom';
 import { Building2, Home, LogIn } from 'lucide-react';
 import { Icon } from '../components/Icon';
-import { Illustration } from '../components/Illustration';
+import { Illustration } from '../components/illustrations/Illustration';
 import { usePageTitle } from '../hooks/usePageTitle';
 
 export default function NotFoundPage() {
@@ -24,7 +25,7 @@ export default function NotFoundPage() {
     <main className="nf-shell">
       <div className="nf-scene">
         <div className="nf-illustration" aria-hidden>
-          <Illustration name="error-404" decorative />
+          <Illustration name="not-found" />
         </div>
         {/* The error code for assistive tech — the illustration carries
             it visually, the title carries the meaning. */}

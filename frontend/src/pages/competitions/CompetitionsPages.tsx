@@ -199,7 +199,7 @@ export function CompetitionsIndexPage() {
        q.isError ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> :
        visible.length === 0 ? (
         filter === 'all' ? (
-          <EmptyState illustration="empty-search"
+          <EmptyState illustration="empty-community"
             title="لا توجد مسابقات بعد"
             description={canRun
               ? 'ابدأ أوّل تحدٍّ للمعرفة على المنصّة وادعُ الطلاب للمشاركة.'
@@ -212,7 +212,7 @@ export function CompetitionsIndexPage() {
             ) : undefined}
           />
         ) : (
-          <EmptyState illustration="empty-search"
+          <EmptyState illustration="empty-community"
             title="لا توجد مسابقات في هذه الفئة"
             description="جرّب فئة أخرى أو اعرض كل المسابقات."
             action={(
@@ -448,7 +448,7 @@ export function CompetitionDetailPage() {
           the organizer scoring affordances. */}
       <Card title="المشاركات" subtitle={`${countAr(entries.length, ['مشاركة واحدة', 'مشاركتان', 'مشاركات', 'مشاركة'])}${isOrganizer ? '' : c.status === 'JUDGED' ? ' · مرتَّبة حسب النتيجة' : ' (يظهر العنوان فقط حتى يتمّ التحكيم)'}`}>
         {entries.length === 0 ? (
-          <EmptyState illustration="empty-search"
+          <EmptyState illustration="empty-list"
             title="لم يشارك أحد بعد"
             description={canEnter ? 'كن أوّل من يشارك!' : 'انتهت مهلة التقديم على هذه المسابقة.'}
             action={canEnter ? (

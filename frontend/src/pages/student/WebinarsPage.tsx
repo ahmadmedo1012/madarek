@@ -91,7 +91,7 @@ export default function WebinarsPage() {
           <EmptyState
             icon={Video}
             title="لا توجد جلسات مباشرة مجدولة الآن"
-            illustration="empty-search"
+            illustration="empty-list"
             description="عندما يبدأ أستاذك بثّاً مباشراً ستجده هنا وفي صفحة البثّ — مع التسجيلات بعد انتهاء الجلسة."
             action={<Link to="/student/live" className="btn outline sm">زيارة صفحة البثّ</Link>}
           />

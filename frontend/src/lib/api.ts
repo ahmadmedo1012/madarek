@@ -6,6 +6,7 @@ import type {
   SessionInstitutionExtras,
 } from '../stores/auth.store';
 import { queryClient } from './queryClient';
+import { wakeRequestStart, wakeRequestSettle } from './serverWake';
 
 /* ── r178: institution domain (multi-institution foundation) ────────
  *
@@ -170,14 +171,36 @@ export const api = axios.create({
   timeout: 20_000,
 });
 
-// ── Request: attach access token ─────────────────────────────────
+// r280: the cold-start truth signal (lib/serverWake) — every request
+// the instance mints is tracked; both response paths settle it. The
+// 401-refresh retry re-enters this interceptor (fresh id) after the
+// original settled, so the wake window tracks the retry as its own
+// request — exactly the truth the user sees.
+let wakeSeq = 0;
+type WakeConfig = AxiosRequestConfig & { __wakeId?: number };
+
+// ── Request: attach access token + open the wake window ────────
 api.interceptors.request.use((config) => {
+  (config as WakeConfig).__wakeId = ++wakeSeq;
+  wakeRequestStart((config as WakeConfig).__wakeId!);
   const token = useAuthStore.getState().accessToken;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
+
+// ── Response: settle the wake window (success + transport failure) ─
+api.interceptors.response.use(
+  (r: AxiosResponse) => {
+    wakeRequestSettle((r.config as WakeConfig).__wakeId);
+    return r;
+  },
+  (error: AxiosError) => {
+    wakeRequestSettle((error.config as WakeConfig | undefined)?.__wakeId);
+    return Promise.reject(error);
+  },
+);
 
 // ── Request: honour the backend's `q` contract ───────────────────
 /**
@@ -257,6 +280,10 @@ async function tryRefresh(): Promise<string | null> {
 api.interceptors.response.use(
   (r: AxiosResponse) => r,
   async (error: AxiosError<{ error?: { code?: string } }>) => {
+    // r280: the request is settled the moment it answers — the 401
+    // refresh retry below re-enters the request interceptor and opens
+    // a fresh wake id (the retry is its own request).
+    wakeRequestSettle((error.config as (AxiosRequestConfig & { __wakeId?: number }) | undefined)?.__wakeId);
     const original = error.config as (AxiosRequestConfig & { __retried?: boolean }) | undefined;
     const status = error.response?.status;
 

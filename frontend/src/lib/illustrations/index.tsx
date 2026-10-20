@@ -1,66 +1,47 @@
 /**
- * Illustration scene registry.
+ * Illustration scene registry — the legacy 012 scenes that survive the
+ * r280 mk-ill migration.
  *
- * Per specs/012-design-graphics-uplift/contracts/illustration-system.md.
+ * Per specs/012-design-graphics-uplift/contracts/illustration-system.md
+ * (the original contract) and the Agent I wiring guide
+ * (docs/redesign/handoff/illustrations.md §4 Option B).
  *
- * Scene inventory (wave 8-c audit — every V1 scene is consumed):
- *   homepage-hero        → LandingPage hero (eager, first paint)
- *   error-404            → NotFoundPage (direct <Illustration name=
- *                          "error-404">; ErrorState's illustration=
- *                          prop is app-dead, test-only — 15-f FE-11)
- *   empty-notifs         → NotificationDropdown empty state (the
- *                          notifications panel's inbox)
- *   empty-search         → LibraryPage filtered/book empty states
- *   milestone-section    → MilestoneScene celebration (the landing's
- *                          proof-head mount was dropped in 5-B2 — the
- *                          page keeps one scene, the hero's)
- *   onboarding-frame-1..3 → OnboardingFlow frames 0–2
+ * r280 scene inventory (post-migration — every surviving scene consumed):
+ *   milestone-section      → MilestoneScene celebration modal
+ *   onboarding-frame-2..3 → OnboardingFlow frames 1–2
  *   onboarding-role-intro → OnboardingFlow frame 3 (5 role motifs)
  *
- * Deviation from the contract (documented, audit 0-f P3-26): scenes
- * are statically imported rather than React.lazy — each is ≤ ~6KB, the
- * registry is one chunk, and every consumer mounts inside an already-
- * code-split surface, so lazy boundaries would add complexity for a
- * negligible payload win.
+ * Retired in r280 (all consumers moved to the mk-ill kit,
+ * `components/illustrations`): `homepage-hero` (the r198 landing
+ * stopped mounting it), `error-404` (→ kit `not-found`),
+ * `empty-notifs` (→ kit `empty-notifications`), `empty-search`
+ * (→ kit `empty-search`/`empty-list` per-surface), `empty-constellation`
+ * (→ kit `empty-list`), `onboarding-frame-1` (→ kit `welcome-first-run`).
  *
- * The registry maps a scene name to a React component. Scene components
- * read CSS variables (--ill-hue-1..6, --ill-stroke, --ill-paper,
- * --ill-shadow) so theme + prefers-contrast adaptation happen via the
- * existing token cascade — no per-scene logic.
+ * Deviation kept from the original contract (documented, audit 0-f
+ * P3-26): scenes are statically imported rather than React.lazy —
+ * each is ≤ ~6KB, the registry is one chunk, and every consumer mounts
+ * inside an already code-split surface.
+ *
+ * Scene components read CSS variables (--ill-hue-1..6, --ill-stroke,
+ * --ill-paper, --ill-shadow) so theme + prefers-contrast adaptation
+ * happen via the token cascade — no per-scene logic.
  */
 import type { ComponentType, ReactElement } from 'react';
 import type { AppRole } from '../../stores/auth.store';
-import { SceneEmptyNotifs } from './scenes/empty-notifs';
-import { SceneEmptySearch } from './scenes/empty-search';
-import { SceneEmptyConstellation } from './scenes/empty-constellation';
-import { SceneError404 } from './scenes/error-404';
-import { SceneHomepageHero } from './scenes/homepage-hero';
 import { SceneMilestoneSection } from './scenes/milestone-section';
-import { SceneOnboardingFrame1 } from './scenes/onboarding/frame-1';
 import { SceneOnboardingFrame2 } from './scenes/onboarding/frame-2';
 import { SceneOnboardingFrame3 } from './scenes/onboarding/frame-3';
 import { SceneOnboardingRoleIntro } from './scenes/onboarding/role-intro';
 
 export type IllustrationName =
-  | 'homepage-hero'
-  | 'error-404'
-  | 'empty-notifs'
-  | 'empty-search'
-  | 'empty-constellation'
   | 'milestone-section'
-  | 'onboarding-frame-1'
   | 'onboarding-frame-2'
   | 'onboarding-frame-3'
   | 'onboarding-role-intro';
 
 export const V1_ILLUSTRATION_NAMES: ReadonlyArray<IllustrationName> = [
-  'homepage-hero',
-  'error-404',
-  'empty-notifs',
-  'empty-search',
-  'empty-constellation',
   'milestone-section',
-  'onboarding-frame-1',
   'onboarding-frame-2',
   'onboarding-frame-3',
   'onboarding-role-intro',
@@ -87,13 +68,7 @@ export type { SceneComponent };
  * for those.
  */
 export const SCENE_REGISTRY: Record<IllustrationName, SceneComponent | null> = {
-  'homepage-hero': SceneHomepageHero as SceneComponent,
-  'error-404': SceneError404 as SceneComponent,
-  'empty-notifs': SceneEmptyNotifs as SceneComponent,
-  'empty-search': SceneEmptySearch as SceneComponent,
-  'empty-constellation': SceneEmptyConstellation as SceneComponent,
   'milestone-section': SceneMilestoneSection as SceneComponent,
-  'onboarding-frame-1': SceneOnboardingFrame1 as SceneComponent,
   'onboarding-frame-2': SceneOnboardingFrame2 as SceneComponent,
   'onboarding-frame-3': SceneOnboardingFrame3 as SceneComponent,
   'onboarding-role-intro': SceneOnboardingRoleIntro as SceneComponent,
@@ -119,9 +94,7 @@ export function SceneFallback(): ReactElement {
     >
       <circle cx="100" cy="100" r="64" fill="var(--ill-paper)" />
       <circle
-        cx="100"
-        cy="100"
-        r="64"
+        cx="100" cy="100" r="64"
         fill="none"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"

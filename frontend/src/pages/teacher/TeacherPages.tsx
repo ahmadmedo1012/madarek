@@ -159,7 +159,7 @@ export function TeacherSchedulePage() {
       {days.length === 0 ? (
         <EmptyState
           title="لا يوجد جدول مسجَّل"
-          illustration="empty-search"
+          illustration="empty-list"
           description="ستظهر محاضراتك هنا فور تسجيل الجداول لمقرّراتك من قِبَل الإدارة."
         />
       ) : (
@@ -373,13 +373,13 @@ export function AttendancePage() {
       <div className="grid-2-1">
         <Card title={offering ? `طلاب ${offering.course.name}` : 'الطلاب'} icon={ClipboardCheck}>
           {!effectiveOfferingId ? (
-            <EmptyState title="لا توجد مقرّرات" description="ستظهر المقرّرات هنا حين تُسنَد إليك." illustration="empty-search" />
+            <EmptyState title="لا توجد مقرّرات" description="ستظهر المقرّرات هنا حين تُسنَد إليك." illustration="empty-courses" />
           ) : stuQ.isPending ? (
             <ListSkeleton rows={5} />
           ) : stuQ.isError ? (
             <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
           ) : students.length === 0 ? (
-            <EmptyState title="لا يوجد طلاب" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." illustration="empty-search" />
+            <EmptyState title="لا يوجد طلاب" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." illustration="empty-list" />
           ) : (
             <div className="flex-col gap-2">
               {/* 4C-c: the sticky session summary — present/late/absent/
@@ -464,7 +464,7 @@ export function AttendancePage() {
               ))}
             </div>
           ) : students.length === 0 ? (
-            <EmptyState icon={ClipboardCheck} title="لا طلاب في هذا المقرّر بعد" description="لا إحصائيّات لعرضها — سجّل طالبًا أول لعرض حضوره وتأخّره." illustration="empty-search" />
+            <EmptyState icon={ClipboardCheck} title="لا طلاب في هذا المقرّر بعد" description="لا إحصائيّات لعرضها — سجّل طالبًا أول لعرض حضوره وتأخّره." illustration="empty-list" />
           ) : (
             <div className="flex-col gap-4">
               <div style={{ opacity: counts.p === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
@@ -561,13 +561,13 @@ export function GradesPage() {
         }
       >
         {!effectiveOfferingId ? (
-          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض درجات طلابه." illustration="empty-search" />
+          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض درجات طلابه." illustration="empty-courses" />
         ) : stuQ.isPending ? (
           <TableSkeleton rows={5} cols={5} />
         ) : stuQ.isError ? (
           <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : (stuQ.data ?? []).length === 0 ? (
-          <EmptyState title="لا يوجد طلاب" description="لا توجد تسجيلات في هذا المقرّر بعد." illustration="empty-search" />
+          <EmptyState title="لا يوجد طلاب" description="لا توجد تسجيلات في هذا المقرّر بعد." illustration="empty-list" />
         ) : (
           <div className="table-wrap">
             <table className="table tbl-stack">
@@ -836,13 +836,13 @@ function SemesterGradeEntry({
         </div>
 
         {!offeringId ? (
-          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لإدخال درجات طلابه." illustration="empty-search" />
+          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لإدخال درجات طلابه." illustration="empty-courses" />
         ) : studentsQ.isPending ? (
           <TableSkeleton rows={5} cols={3} />
         ) : studentsQ.isError ? (
           <ErrorState error={studentsQ.error} onRetry={() => studentsQ.refetch()} />
         ) : students.length === 0 ? (
-          <EmptyState title="لا يوجد طلاب" description="لا توجد تسجيلات في هذا المقرّر بعد — لا درجات لإدخالها." illustration="empty-search" />
+          <EmptyState title="لا يوجد طلاب" description="لا توجد تسجيلات في هذا المقرّر بعد — لا درجات لإدخالها." illustration="empty-list" />
         ) : gradesQ.isPending ? (
           <TableSkeleton rows={4} cols={3} />
         ) : gradesQ.isError ? (
@@ -1322,7 +1322,7 @@ export function MaterialsPage() {
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
-          <EmptyState title="لم ترفع ملفات بعد" description="أضف أول مادة بزر «إضافة مادة» بالأعلى — سيظهر لطلاب المقرّر فوراً." illustration="empty-search" />
+          <EmptyState title="لم ترفع ملفات بعد" description="أضف أول مادة بزر «إضافة مادة» بالأعلى — سيظهر لطلاب المقرّر فوراً." illustration="empty-list" />
         ) : (
           /* 4C-c: file rows, not a 7-column table — the detail rides the
               row (course · type badge · views · downloads), the trailing
@@ -1435,13 +1435,13 @@ export function StudentsListPage() {
         icon={Users}
       >
         {!effectiveOfferingId ? (
-          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض قائمة طلابه." illustration="empty-search" />
+          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض قائمة طلابه." illustration="empty-courses" />
         ) : stuQ.isPending ? (
           <TableSkeleton rows={5} cols={6} />
         ) : stuQ.isError ? (
           <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : students.length === 0 ? (
-          <EmptyState title="لا يوجد طلاب مسجَّلون" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." illustration="empty-search" />
+          <EmptyState title="لا يوجد طلاب مسجَّلون" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." illustration="empty-list" />
         ) : (
           <div className="table-wrap tpg-students">
             <table className="table tbl-stack">
@@ -1586,7 +1586,7 @@ export function PerformancePage() {
       />
 
       {!effectiveOfferingId ? (
-        <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض تحليل أداء فصلك." illustration="empty-search" />
+        <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض تحليل أداء فصلك." illustration="empty-courses" />
       ) : stuQ.isPending || analytics.isPending ? (
         /* 5-C3 (A9 P2-2): bare spinner → the shapes that land — the
            stat strip + the distribution card — so the data-land swap
@@ -1633,7 +1633,7 @@ export function PerformancePage() {
             {students.length === 0 ? (
               <EmptyState
                 title="لا توجد بيانات توزيع بعد"
-                illustration="empty-search"
+                illustration="empty-list"
                 description="سيظهر توزيع الدرجات هنا فور تسجيل طلاب في المقرّر."
               />
             ) : (
@@ -1931,7 +1931,7 @@ export function AssignmentsPage() {
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
-          <EmptyState title="لا توجد واجبات بعد" description="أنشئ أول واجب بزر «واجب جديد» بالأعلى — سيظهر لطلاب المقرّر فوراً." illustration="empty-search" />
+          <EmptyState title="لا توجد واجبات بعد" description="أنشئ أول واجب بزر «واجب جديد» بالأعلى — سيظهر لطلاب المقرّر فوراً." illustration="empty-list" />
         ) : (
           <div className="flex-col gap-2">
             {q.data.map((a) => {
@@ -2111,7 +2111,7 @@ function NeedsReviewCard({
       ) : pending.length === 0 ? (
         <EmptyState
           title="لا تسليمات بانتظار التصحيح"
-          illustration="empty-search"
+          illustration="empty-list"
           description="ستظهر هنا تسليمات طلابك فور وصولها."
         />
       ) : (

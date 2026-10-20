@@ -127,7 +127,7 @@ export default function MoocPage() {
         <Card><EmptyState
           icon={GraduationCap}
           title="لا توجد دورات خارجية مرتبطة"
-          illustration="empty-search"
+          illustration="empty-list"
           description="تربط إدارة الكلّيّة دورات Coursera ودورات edX المعتمدة بمقرّراتك؛ راجع المرشد الأكاديمي لمعرفة المعتمد هذا الفصل."
         /></Card>
       ) : (

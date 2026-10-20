@@ -320,7 +320,7 @@ export function CollegesIndexPage() {
       )}
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && q.data.length === 0 && (
-        <EmptyState illustration="empty-search" title="لا توجد كلّيّات بعد" description="ستظهر الكلّيّات هنا حين يقوم الإداريّون بإضافتها." />
+        <EmptyState illustration="empty-list" title="لا توجد كلّيّات بعد" description="ستظهر الكلّيّات هنا حين يقوم الإداريّون بإضافتها." />
       )}
 
       {q.data && q.data.length > 0 && (
@@ -697,7 +697,7 @@ export function CollegeDetailPage() {
         <Card title="الطلّاب المتميّزون" subtitle="حسب نقاط الخبرة" icon={Trophy} style={soloPair2 ? soloSpan : undefined}>
           {c.topStudents.length === 0 ? (
             <EmptyState
-              illustration="empty-constellation"
+              illustration="empty-list"
               title="لا توجد بيانات طلّاب بعد."
             />
           ) : (
@@ -730,7 +730,7 @@ export function CollegeDetailPage() {
         <Card title="الإعلانات" subtitle="آخر التحديثات" icon={Megaphone} style={soloPair2 ? soloSpan : undefined}>
           {c.announcements.length === 0 ? (
             <EmptyState
-              illustration="empty-notifs"
+              illustration="empty-community"
               title="لا توجد إعلانات حاليّاً."
             />
           ) : (
@@ -763,7 +763,7 @@ export function CollegeDetailPage() {
         <Card title="فعاليّات قادمة" icon={Calendar} style={soloPair3 ? soloSpan : undefined}>
           {c.upcomingEvents.length === 0 ? (
             <EmptyState
-              illustration="empty-constellation"
+              illustration="empty-list"
               title="لا توجد فعاليّات قادمة."
             />
           ) : (

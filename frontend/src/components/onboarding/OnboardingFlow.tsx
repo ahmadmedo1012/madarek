@@ -37,20 +37,31 @@ import { useEffect, useRef } from 'react';
 import { Modal } from '../overlays/Modal';
 import { Illustration } from '../Illustration';
 import type { IllustrationName } from '../../lib/illustrations';
+import { Illustration as MkIllustration } from '../illustrations/Illustration';
+import type { MkIllustrationName } from '../illustrations/names';
 import { useOnboardingState } from '../../hooks/useOnboardingState';
 import { useMe } from '../../hooks/useAuth';
 
+/* r280: frame 0's scene moves to the mk-ill kit (`welcome-first-run`,
+ * the wiring guide's §5 mapping for "Onboarding first frame") — the
+ * welcome moment now speaks the redesigned state-graphics family.
+ * Frames 1–2 and the role-intro keep their bespoke legacy scenes
+ * (they have no kit equivalents yet; both systems coexist per the
+ * Agent I guide §4). */
 interface FrameCopy {
   headline: string;
   body: string;
-  illustration: IllustrationName;
+  /** Legacy 012 scene (frames 1–2 + role-intro). */
+  illustration?: IllustrationName;
+  /** r280 kit piece (frame 0). Exactly one of the two is set. */
+  mkIllustration?: MkIllustrationName;
 }
 
 const GENERIC_FRAMES: FrameCopy[] = [
   {
     headline: 'أهلاً بك في مدارك',
     body: 'وفّر وقتك وتركيزك: كل ما يخصّ حياتك الدراسية في جامعتك يجتمع هنا في مكان واحد.',
-    illustration: 'onboarding-frame-1',
+    mkIllustration: 'welcome-first-run',
   },
   {
     headline: 'يومك الدراسي واضح من أول نظرة',
@@ -147,12 +158,14 @@ export function OnboardingFlow({
     else prev();
   };
 
-  let illustrationName: IllustrationName;
+  let illustrationName: IllustrationName | undefined;
+  let mkName: MkIllustrationName | undefined;
   let headline: string;
   let body: string;
   if (currentFrame < 3) {
     const f = frames[currentFrame] ?? frames[0]!;
     illustrationName = f.illustration;
+    mkName = f.mkIllustration;
     headline = f.headline;
     body = f.body;
   } else {
@@ -189,11 +202,15 @@ export function OnboardingFlow({
           data-frame-direction={direction}
         >
           <div className="onboarding-flow-illustration">
-            <Illustration
-              name={illustrationName}
-              role={role}
-              decorative
-            />
+            {mkName ? (
+              <MkIllustration name={mkName} />
+            ) : (
+              <Illustration
+                name={illustrationName!}
+                role={role}
+                decorative
+              />
+            )}
           </div>
 
           <div className="onboarding-flow-copy">

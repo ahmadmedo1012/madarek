@@ -213,7 +213,7 @@ export default function CommunityPage() {
             <RowList
               aria-label="قائمة الإعلانات"
               loading={ann.isPending}
-              empty={<EmptyState title="لا توجد إعلانات بعد" description="ستظهر هنا إعلانات الجامعة والكليات والأقسام." illustration="empty-notifs" />}
+              empty={<EmptyState title="لا توجد إعلانات بعد" description="ستظهر هنا إعلانات الجامعة والكليات والأقسام." illustration="empty-community" />}
             >
               {ann.data?.map((a) => <AnnouncementCard key={a.id} announcement={a} />)}
             </RowList>
@@ -228,7 +228,7 @@ export default function CommunityPage() {
             <RowList
               aria-label="قائمة المسابقات"
               loading={comps.isPending}
-              empty={<EmptyState illustration="empty-search" title="لا توجد مسابقات بعد" description="ستظهر هنا تحديات المعرفة والابتكار عند إعلانها." />}
+              empty={<EmptyState illustration="empty-community" title="لا توجد مسابقات بعد" description="ستظهر هنا تحديات المعرفة والابتكار عند إعلانها." />}
             >
               {comps.data?.map((c) => <CompetitionCard key={c.id} competition={c} />)}
             </RowList>
@@ -243,7 +243,7 @@ export default function CommunityPage() {
             <RowList
               aria-label="قائمة الفعاليات"
               loading={events.isPending}
-              empty={<EmptyState illustration="empty-search" title="لا توجد فعاليات قادمة بعد" description="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها." />}
+              empty={<EmptyState illustration="empty-community" title="لا توجد فعاليات قادمة بعد" description="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها." />}
             >
               {events.data?.map((e) => <EventCard key={e.id} event={e} />)}
             </RowList>

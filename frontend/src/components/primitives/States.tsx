@@ -1,9 +1,20 @@
 import type { LucideIcon } from 'lucide-react';
-import { Inbox, AlertTriangle, RefreshCw, ShieldAlert, ArrowRight } from 'lucide-react';
+import { Inbox, RefreshCw, ArrowRight } from 'lucide-react';
 import { Icon } from '../Icon';
-import { Illustration } from '../Illustration';
-import type { IllustrationName } from '../../lib/illustrations';
+import { Illustration as MkIllustration } from '../illustrations/Illustration';
+import type { MkIllustrationName } from '../illustrations/names';
+import { BrandLoader } from '../illustrations/BrandLoader';
 import { apiErrorDetail, apiErrorCode, isArabicText } from '../../lib/format';
+
+/* r280 (Agent Z wiring wave): the EmptyState/ErrorState `illustration`
+ * prop re-points from the legacy 012 scene registry to the mk-ill kit
+ * (`components/illustrations`) per the Agent I wiring guide (§4 Option
+ * B). The onboarding/milestone scenes stay on the legacy wrapper — they
+ * are consumed via `<Illustration>` directly (OnboardingFlow,
+ * MilestoneScene), never through this contract. The legacy `empty-*`
+ * scenes this contract used (empty-search/empty-notifs/error-404/
+ * empty-constellation) are retired with the same wave; call-site names
+ * were remapped 1:1 per the guide's §5 mapping table. */
 
 // r151c: 'page' | 'card' retired — no call site ever passed them (default
 // is inline, one minimal consumer), and their .state.state-* CSS rules
@@ -18,11 +29,16 @@ export function LoadingState({
   variant?: LoadingVariant;
 }) {
   if (variant === 'minimal') {
+    /* r280: BrandLoader owns the full-state `inline` variant; the
+     * `minimal` mark keeps the small CSS spinner — it rides tight inline
+     * slots (table cells, inline toolbars) where the loader's 20px floor
+     * would crowd the content (documented deviation from the wiring
+     * guide's "minimal/inline" wording; the visual result is calmer). */
     return <span className="spinner spinner-sm" role="status" aria-label={label} />;
   }
   return (
     <div className={`state state-loading state-${variant}`} role="status" aria-live="polite">
-      <div className="spinner" aria-hidden />
+      <BrandLoader label={label} size={32} />
       <div className="state-desc" style={{ marginTop: 'var(--sp-2)' }}>{label}</div>
     </div>
   );
@@ -44,12 +60,11 @@ export function EmptyState({
 }: {
   icon?: LucideIcon;
   /**
-   * 012-design-graphics-uplift T089: prefer a bespoke scene from the
-   * illustration system over the Lucide icon. When set, the
-   * illustration replaces the icon block; when unset, the existing
-   * icon path renders.
+   * r280: a bespoke mk-ill scene over the Lucide icon. When set, the
+   * piece replaces the icon block; when unset, the existing icon
+   * path renders. Kit names only (`components/illustrations/names`).
    */
-  illustration?: IllustrationName;
+  illustration?: MkIllustrationName;
   title?: string;
   description?: string;
   action?: React.ReactNode;
@@ -58,7 +73,7 @@ export function EmptyState({
     <div className="state state-empty" role="status">
       {illustration ? (
         <div className="state-illustration" aria-hidden>
-          <Illustration name={illustration} decorative />
+          <MkIllustration name={illustration} />
         </div>
       ) : (
         <div className="state-icon"><Icon icon={icon} size={20} /></div>
@@ -99,11 +114,11 @@ export function ErrorState({
 }: {
   message?: string;
   /**
-   * 012-design-graphics-uplift T089: optional bespoke scene to replace
-   * the warning-triangle icon. When unset, the existing AlertTriangle
-   * icon renders as before.
+   * r280: optional mk-ill scene to replace the default error piece.
+   * When unset, the branch-picked kit piece renders (error-generic /
+   * offline); when set, the caller's piece wins.
    */
-  illustration?: IllustrationName;
+  illustration?: MkIllustrationName;
   error?: unknown;
   /**
    * Retry affordance. Rendered by the generic branch and — as of
@@ -141,8 +156,11 @@ export function ErrorState({
   if (status === 404) {
     return (
       <div className="state state-error" role="alert">
-        <div className="state-icon" style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
-          <Icon icon={Inbox} size={20} />
+        {/* r280: the kit's not-found piece (replaces the Inbox icon
+            well; the scene carries the same "look elsewhere" read as
+            the retired legacy error-404 scene). */}
+        <div className="state-illustration" aria-hidden>
+          <MkIllustration name="not-found" />
         </div>
         <div className="state-title">العنصر غير موجود</div>
         <div className="state-desc">{apiDetail ?? 'ربما تم حذفه أو أن الرابط غير صحيح.'}</div>
@@ -162,14 +180,17 @@ export function ErrorState({
     <div className="state state-error" role="alert">
       {illustration ? (
         <div className="state-illustration" aria-hidden>
-          <Illustration name={illustration} decorative />
+          <MkIllustration name={illustration} />
         </div>
       ) : (
-        /* 5-D1 (A11 P2-3): -deep ink on the soft well — the base
-           --danger measured 2.59:1 in light (non-text floor 3:1);
-           mirrors .state-icon-success and the toast well grammar. */
-        <div className="state-icon" style={{ background: 'var(--danger-soft)', color: 'var(--danger-ink)' }}>
-          <Icon icon={AlertTriangle} size={20} />
+        /* r280: no caller piece → the kit's branch pieces. A network
+           fault (the server never answered) reads as `offline`; an
+           API-answered failure reads as the generic broken-connection
+           scene. The pieces replace the 5-D1 danger well with calmer
+           ink/signal family grammar; the danger-tone icon well stays
+           for callers that pass their own Lucide `icon` context. */
+        <div className="state-illustration" aria-hidden>
+          <MkIllustration name={apiAnswered ? 'error-generic' : 'offline'} />
         </div>
       )}
       <div className="state-title">{message}</div>
@@ -209,10 +230,11 @@ export function PermissionDeniedState({
 }) {
   return (
     <div className="state state-error" role="alert">
-      {/* 5-D1 (A11 P2-3): warning-ink on the soft well (was the base
-          --warning at 2.03:1 light — the audit's worst status icon). */}
-      <div className="state-icon" style={{ background: 'var(--warning-soft)', color: 'var(--warning-ink)' }}>
-        <Icon icon={ShieldAlert} size={20} />
+      {/* r280: the kit's `forbidden` piece replaces the warning-shield
+          icon well — the scene reads calmer and matches the 404/403
+          family grammar of the redesigned error surfaces. */}
+      <div className="state-illustration" aria-hidden>
+        <MkIllustration name="forbidden" />
       </div>
       <div className="state-title">{title}</div>
       <div className="state-desc">

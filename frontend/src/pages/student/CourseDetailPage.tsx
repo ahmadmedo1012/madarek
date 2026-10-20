@@ -226,7 +226,7 @@ export default function CourseDetailPage() {
           <EmptyState
             icon={Play}
             title="لم تُرفع محاضرات بعد"
-            illustration="empty-search"
+            illustration="empty-list"
             description="سيقوم الأستاذ بإضافة المحاضرات تباعاً مع تقدّم الفصل."
           />
         ) : (
@@ -306,7 +306,7 @@ export default function CourseDetailPage() {
             <EmptyState
               icon={FileText}
               title="الأستاذ لم يرفع مواد بعد"
-              illustration="empty-search"
+              illustration="empty-list"
               description="ستظهر هنا الملفات والمراجع فور رفعها — العروض التقديمية، أوراق العمل، والقراءات."
             />
           ) : (
@@ -362,7 +362,7 @@ export default function CourseDetailPage() {
         <SectionHeader title="الجدول الأسبوعي" />
         <div className="pf-rowlist">
           {!data.schedule.length ? (
-            <EmptyState illustration="empty-search"
+            <EmptyState illustration="empty-list"
               icon={Calendar}
               title="لم يُنشَر جدول هذا المقرّر بعد"
               description="سيظهر هنا فور تثبيت مواعيد المحاضرات الأسبوعيّة."
@@ -388,7 +388,7 @@ export default function CourseDetailPage() {
       <SectionHeader title="الواجبات" />
       <div className="pf-rowlist">
         {!data.assignments.length ? (
-          <EmptyState illustration="empty-search"
+          <EmptyState illustration="empty-list"
             icon={ClipboardList}
             title="لا توجد واجبات نشطة"
             description="حالياً لا شيء بانتظارك في هذا المقرر. وقت جيد لمراجعة المحاضرات السابقة."

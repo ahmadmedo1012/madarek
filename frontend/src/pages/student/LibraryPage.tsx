@@ -540,7 +540,7 @@ export default function LibraryPage() {
             empty={
               <EmptyState
                 icon={LibraryIcon}
-                illustration={booksFiltered ? 'empty-search' : undefined}
+                illustration={booksFiltered ? 'empty-search' : 'empty-library'}
                 title={booksFiltered ? 'لا توجد كتب تطابق البحث' : 'لا توجد كتب بعد'}
                 description={booksFiltered ? 'جرّب كلمات بحث مختلفة أو إزالة التصنيفات.' : 'ستظهر هنا كتب المكتبة فور توفرها.'}
               />
@@ -605,7 +605,7 @@ export default function LibraryPage() {
             empty={
               <EmptyState
                 icon={FileText}
-                illustration={q ? 'empty-search' : undefined}
+                illustration={q ? 'empty-search' : 'empty-research'}
                 title={q ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
                 description={q ? `لم نجد بحثاً يطابق "${q}" — جرّب كلمات أخرى.` : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
               />

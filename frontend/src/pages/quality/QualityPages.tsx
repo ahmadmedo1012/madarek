@@ -638,7 +638,7 @@ export function QualityDashboardPage() {
               }
             />
           ) : !al.data || al.data.alerts.length === 0 ? (
-            <EmptyState illustration="empty-search"
+            <EmptyState illustration="empty-notifications"
               icon={CheckCircle2}
               title="لا توجد تنبيهات"
               description="كل المؤشرات ضمن النطاق الطبيعي حالياً."
@@ -729,7 +729,7 @@ export function QualityCoursesPage() {
       ) :
        c.isError ? <ErrorState error={c.error} onRetry={() => c.refetch()} /> :
        !courses?.length ? <Card><EmptyState
-         illustration="empty-search"
+         illustration="empty-list"
          icon={BookOpen}
          title={debouncedQ ? 'لا نتائج مطابقة' : 'لا توجد مقرّرات نشطة بعد'}
          description={debouncedQ

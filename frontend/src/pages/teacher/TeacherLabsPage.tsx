@@ -173,7 +173,7 @@ export default function TeacherLabsPage() {
             <Card>
               {/* r149 (R3-A1 #6): EmptyState الكنونية — كانت يدوية بعلامة مزدوجة. */}
               <EmptyState
-                illustration="empty-search"
+                illustration="empty-list"
                 title="لم تُضف معامل بعد"
                 description="تواصل مع إدارة المنصة لإضافة معامل لكليتك."
               />

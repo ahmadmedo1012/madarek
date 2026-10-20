@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Card, Badge, MetricCard, PageHeader } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
+import { Illustration as MkIllustration } from '../../components/illustrations/Illustration';
 import { Skeleton, ListSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { useReducedMotion } from '../../components/motion';
@@ -281,7 +282,7 @@ export default function OnlineExamsPage() {
           >
             {available.length === 0 && (
               <EmptyState
-                illustration="empty-constellation"
+                illustration="empty-list"
                 title="لا توجد اختبارات متاحة حالياً"
                 description={
                   unavailable.length > 0
@@ -986,7 +987,12 @@ export function ExamTakerPage() {
             {expired ? (
               <Icon icon={Hourglass} size={32} style={{ color: 'var(--warning)' }} />
             ) : (
-              <Icon icon={CheckCircle2} size={32} style={{ color: 'var(--accent)' }} />
+              /* r280: the kit's exam-complete piece replaces the
+                 CheckCircle2 icon — the attempt-finished moment now
+                 speaks the two-colour state-graphics family (wiring
+                 guide §5). The expired branch keeps the honest
+                 hourglass — a missed deadline is not a celebration. */
+              <MkIllustration name="exam-complete" size={140} />
             )}
             <h1 className="oex-result-title" style={H1_AS_H2_STYLE}>
               {expired ? 'انتهت مدة هذه المحاولة' : 'لقد أكملت هذا الاختبار مسبقاً'}
@@ -1501,7 +1507,7 @@ function TemplateQuestionsPreview({ templateId }: { templateId: string }) {
         </div>
       ) : questions.length === 0 ? (
         <EmptyState
-          illustration="empty-search"
+          illustration="empty-list"
           icon={FileText}
           title="لا أسئلة في هذا القالب"
           description="ربما أُوقفت أسئلته من البنك بعد بنائه."

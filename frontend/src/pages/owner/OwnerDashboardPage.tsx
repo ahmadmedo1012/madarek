@@ -491,7 +491,7 @@ export function OwnerDashboardPage() {
         ) : activity.isError ? (
           <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
         ) : events.length === 0 ? (
-          <EmptyState illustration="empty-search" title="لا توجد أحداث بعد" description="ستظهر أحدث العمليّات هنا فور حدوثها." icon={FileWarning} />
+          <EmptyState illustration="empty-list" title="لا توجد أحداث بعد" description="ستظهر أحدث العمليّات هنا فور حدوثها." icon={FileWarning} />
         ) : (
           <RowList aria-label="الأحداث الأخيرة" density="compact">
             {events.map((ev) => (

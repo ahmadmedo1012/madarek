@@ -823,6 +823,12 @@
     padding: var(--sp-6) var(--sp-4);
     text-align: center;
   }
+  /* r280: the mk-ill `empty-search` piece above the no-results copy
+     (the palette's designed no-results moment). The kit sheet owns
+     the piece geometry; this slot only breathes. */
+  .search-empty-illustration {
+    margin-block-end: var(--sp-2);
+  }
   .search-empty-title {
     font-weight: var(--fw-bold);
     color: var(--text);
@@ -1097,3 +1103,69 @@
   }
 }
 
+
+
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  SERVER WAKE PILL (r280) — «الخادم يستيقظ…»                     ║
+   ╚═══════════════════════════════════════════════════════════════╝ */
+@media (min-width: 921px) {
+  .wake-pill {
+    position: fixed;
+    inset-block-end: var(--sp-5);
+    inset-inline-end: var(--sp-5);
+    z-index: var(--z-tooltip);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-4);
+    background: var(--surface-1);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-full);
+    box-shadow: var(--elev-2);
+    max-inline-size: min(480px, calc(100vw - var(--sp-8)));
+    animation: wake-pill-in var(--motion-duration-medium) var(--ease);
+  }
+}
+
+/* Mobile: the pill rides ABOVE the bottom-nav (never covering the tab
+   bar), respecting the safe-area inset the tab bar itself adds. */
+@media (max-width: 920px) {
+  .wake-pill {
+    position: fixed;
+    inset-block-end: calc(var(--sp-13) + env(safe-area-inset-bottom));
+    inset-inline: var(--sp-3);
+    z-index: var(--z-tooltip);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-4);
+    background: var(--surface-1);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-full);
+    box-shadow: var(--elev-2);
+    animation: wake-pill-in var(--motion-duration-medium) var(--ease);
+  }
+}
+
+.wake-pill-piece {
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+
+.wake-pill-text {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: var(--lh-snug);
+}
+
+@keyframes wake-pill-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-2));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

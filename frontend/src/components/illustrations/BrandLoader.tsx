@@ -9,9 +9,13 @@
  *   <BrandLoader label="…نجهّز لوحتك" size={40} />
  *
  * Contract:
- *   - `role="status"` + the caller's Arabic `label` as aria-label —
- *     the mark itself is aria-hidden decoration, so screen readers
- *     announce exactly the phrase the surface chose, once.
+ *   - default: `role="status"` + the caller's Arabic `label` as
+ *     aria-label — the mark itself is aria-hidden decoration, so
+ *     screen readers announce exactly the phrase the surface chose.
+ *   - r280 `decorative`: for compositions where an outer surface
+ *     already owns the single status announcement (e.g. the shell's
+ *     ServerWakePill): the mark renders fully aria-hidden with no
+ *     role — the caller's outer live region is the only voice.
  *   - Motion is calm and token-only: the signal arc orbits one
  *     revolution per var(--t-cinema) on var(--ease-linear) (the
  *     sanctioned constant-speed easing), the ink dot breathes on
@@ -28,24 +32,32 @@ import type { CSSProperties } from 'react';
 import '../../styles/illustrations.css';
 
 export interface BrandLoaderProps {
-  /** Arabic status text announced to assistive tech (required). */
+  /** Arabic status text announced to assistive tech (required when
+   * not decorative — a role="status" without a name violates the
+   * 11-e P2-18 rule the kit enforces everywhere else). */
   label: string;
   /** Square edge in px. Default 32; legible 20–64. */
   size?: number;
+  /** r280: fully aria-hidden decoration — the owning surface
+   * announces. Never combine with a non-decorative outer silence. */
+  decorative?: boolean;
   className?: string;
 }
 
-export function BrandLoader({ label, size = 32, className }: BrandLoaderProps) {
+export function BrandLoader({ label, size = 32, decorative = false, className }: BrandLoaderProps) {
   const classes = ['mk-loader', 'illustration'];
   if (className) classes.push(className);
   const style = { '--mk-loader-size': `${size}px` } as CSSProperties;
+
+  const accessibilityProps = decorative
+    ? { 'aria-hidden': true as const }
+    : { role: 'status' as const, 'aria-label': label };
 
   return (
     <span
       className={classes.join(' ')}
       style={style}
-      role="status"
-      aria-label={label}
+      {...accessibilityProps}
     >
       {/* 36×36 grid, 2.5u stroke at the loader's display tier. */}
       <svg // allow-emoji: bespoke loading mark (mk-ill state-graphics kit) — not UI iconography

@@ -400,7 +400,7 @@ export function AdminDashboardPage() {
               carries no distribution signal — degrade to the stat + its
               drill link instead of the lonely-bar form. */}
           {topByStudents.length === 0 ? (
-            <EmptyState illustration="empty-search"
+            <EmptyState illustration="empty-list"
               icon={BarChart3}
               title="لا توجد بيانات طلاب بعد"
               description="ستظهر التوزيعة هنا فور تسجيل الطلاب في الكلّيّات."
@@ -499,7 +499,7 @@ export function AdminDashboardPage() {
 
       <Card title="نشاط الإنتاج العلميّ — آخر 6 أشهر" icon={TrendingUp} subtitle="أبحاث مقدَّمة، مقيَّمة، ومنشورة شهرياً">
         {r.paperTrend.length === 0 || r.paperTrend.every((m) => m.submitted + m.graded + m.published === 0) ? (
-          <EmptyState illustration="empty-search"
+          <EmptyState illustration="empty-research"
             icon={TrendingUp}
             title="لا توجد بيانات أبحاث بعد"
             description="ستظهر حركة النشر هنا بعد رفع أول بحث إلى المنصة."
@@ -1260,7 +1260,7 @@ export function AdminReportsPage() {
         )}
       >
         {data.paperTrend.length === 0 ? (
-          <EmptyState illustration="empty-search"
+          <EmptyState illustration="empty-research"
             icon={TrendingUp}
             title="لا توجد بيانات نشر بعد"
             description="ستظهر حركة البحوث هنا بعد رفع أول بحث."
@@ -1431,7 +1431,7 @@ export function AdminReportsPage() {
       {/* Top courses */}
       <Card title="أكثر المقرّرات تسجيلاً" icon={ClipboardCheck} subtitle={data.topCourses.length > 0 ? `أعلى ${countAr(data.topCourses.length, ['مقرّر', 'مقرّرين', 'مقرّرات', 'مقرّراً'])} بناءً على عدد الطلاب` : undefined}>
         {data.topCourses.length === 0 ? (
-          <EmptyState illustration="empty-search"
+          <EmptyState illustration="empty-list"
             icon={ClipboardCheck}
             title="لا توجد تسجيلات بعد"
             description="ستظهر المقرّرات الأعلى تسجيلاً هنا فور تسجيل الطلاب في مقرّراتهم."

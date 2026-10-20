@@ -30,6 +30,7 @@ import { Search, X, ArrowLeft, Sun, Moon, CornerDownLeft } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
 import { EmojiIcon } from '../EmojiIcon';
+import { Illustration as MkIllustration } from '../illustrations/Illustration';
 import { api, unwrap } from '../../lib/api';
 import { matchesQueryTokens } from '../../lib/search';
 import { useAuthStore } from '../../stores/auth.store';
@@ -431,6 +432,12 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
 
           {!loading && !isError && enabled && totalOptions === 0 && (
             <div className="search-empty" role="presentation">
+              {/* r280: the mk-ill kit's empty-search piece (the palette's
+                  no-results moment — wiring guide §5 "Search-no-results
+                  (GlobalSearch palette…)"). */}
+              <div className="search-empty-illustration" aria-hidden>
+                <MkIllustration name="empty-search" size={120} />
+              </div>
               <div className="search-empty-title">لم نعثر على نتائج لـ«{debounced}»</div>
               <div className="search-empty-tips">
                 جرّب: <button type="button" className="search-tip-pill" onClick={() => setQuery('هندسة')}>هندسة</button>

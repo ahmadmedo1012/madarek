@@ -355,7 +355,7 @@ export function OwnerUsersPage() {
         ) : users.length === 0 ? (
           <EmptyState
             icon={Users}
-            illustration="empty-search"
+            illustration="empty-list"
             title={hasActiveFilters ? 'لا نتائج مطابقة' : 'لا يوجد مستخدمون بعد'}
             description={hasActiveFilters
               ? 'لم نجد حسابات تطابق البحث أو الدور المحدّد.'

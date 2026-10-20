@@ -236,7 +236,7 @@ export function GamificationPage() {
             </div>
           ) : lb.isError ? <ErrorState error={lb.error} onRetry={() => lb.refetch()} /> :
            !lb.data?.length ? (
-            <EmptyState illustration="empty-search"
+            <EmptyState illustration="empty-list"
               icon={Crown}
               title="لا يوجد ترتيب بعد"
               description="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
@@ -316,7 +316,7 @@ export function SkillsPage() {
           </div>
         ) : skills.isError ? <ErrorState error={skills.error} onRetry={() => skills.refetch()} /> :
          !skills.data?.length ? (
-          <EmptyState illustration="empty-search"
+          <EmptyState illustration="empty-list"
             icon={Target}
             title="لم تُسجَّل أي مهارة بعد"
             description="تُحتسب المهارات تلقائياً من إنجازاتك الأكاديمية ومسارات التطوير."
@@ -504,7 +504,7 @@ export function AlertsPage() {
         ) : feed.isError ? (
           <ErrorState error={feed.error} onRetry={() => feed.refetch()} />
         ) : items.length === 0 ? (
-          <EmptyState title="لا توجد إشعارات بعد" illustration="empty-search" description="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
+          <EmptyState title="لا توجد إشعارات بعد" illustration="empty-notifications" description="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
         ) : (
           <div className="np-list">
             {items.map((n) => {
@@ -665,7 +665,7 @@ export function SchedulePage() {
 
       {daysWithItems.length === 0 ? (
         <EmptyState
-          illustration="empty-search"
+          illustration="empty-list"
           title="لا يوجد جدول مسجّل"
           description="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول مقرّراتك."
         />
@@ -797,7 +797,7 @@ export function ResultsPage() {
           so the page's one data visualization starts at the fold. */}
       <Card title="درجاتك حسب المقرّر" icon={Activity} subtitle={hasGrades ? 'النسبة المرجَّحة لكل مقرّر' : 'ستظهر درجاتك هنا فور تسجيلها'} className="results-chart-card">
         {!hasGrades ? (
-          <EmptyState illustration="empty-search" title="لم تُسجَّل أي درجات بعد" description="يبدأ الحساب فور رصد أوّل تقييم في أي مقرّر." />
+          <EmptyState illustration="empty-list" title="لم تُسجَّل أي درجات بعد" description="يبدأ الحساب فور رصد أوّل تقييم في أي مقرّر." />
         ) : (
           // 5-A6 P1-2 — ChartFrame: the canvas gains role=img + an
           // accessible name, a prose summary and a visually-hidden data
@@ -1024,7 +1024,7 @@ export function ArVrPage() {
       ) : q.isError ? (
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       ) : !q.data || q.data.length === 0 ? (
-        <EmptyState illustration="empty-search"
+        <EmptyState illustration="empty-list"
           title="لا توجد تجارب AR/VR بعد"
           description="ستظهر هنا حين يقوم الإداريّون بإضافتها."
         />
@@ -1308,7 +1308,7 @@ export function SocialPage() {
           ) : !posts.data?.length ? (
             <Card>
               <EmptyState
-                illustration="empty-search"
+                illustration="empty-community"
                 icon={MessageCircle}
                 title="لا منشورات بعد"
                 description="كن أول من يشارك تجربته أو سؤاله."
@@ -1480,7 +1480,7 @@ export function DownloadsPage() {
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
           <EmptyState
-          illustration="empty-search"
+          illustration="empty-list"
             title="لا توجد ملفّات بعد"
             description="ستظهر هنا فور رفع موادّ في أيٍّ من مقرّراتك المسجَّلة."
           />
@@ -1623,7 +1623,7 @@ export function UniversityInfoPage() {
                 ))}
               </div>
             ) : faculties.length === 0 ? (
-              <EmptyState illustration="empty-search" title="لا توجد كلّيّات بعد" description="لم تُسجَّل كلّيّات في هذه المؤسّسة بعد." />
+              <EmptyState illustration="empty-list" title="لا توجد كلّيّات بعد" description="لم تُسجَّل كلّيّات في هذه المؤسّسة بعد." />
             ) : (
               <div className="grid-auto-260" style={{ gap: 'var(--sp-2)' }}>
                 {faculties.map((f) => (
@@ -1744,7 +1744,7 @@ export function UniversityInfoPage() {
                 ))}
               </div>
             ) : insideCampus.length === 0 ? (
-              <EmptyState illustration="empty-search" title="لا توجد بيانات" description="لم تُسجَّل كلّيّات داخل الحرم بعد." />
+              <EmptyState illustration="empty-list" title="لا توجد بيانات" description="لم تُسجَّل كلّيّات داخل الحرم بعد." />
             ) : (
               <div className="grid-auto-200" style={{ gap: 'var(--sp-2)' }}>
                 {insideCampus.map((f) => (
@@ -1779,7 +1779,7 @@ export function UniversityInfoPage() {
                 ))}
               </div>
             ) : outsideCampus.length === 0 ? (
-              <EmptyState illustration="empty-search" title="لا توجد فروع خارج الحرم" description="كل الكليّات المسجَّلة داخل الحرم الرئيسي." />
+              <EmptyState illustration="empty-list" title="لا توجد فروع خارج الحرم" description="كل الكليّات المسجَّلة داخل الحرم الرئيسي." />
             ) : (
               <div className="grid-auto-260" style={{ gap: 'var(--sp-2)' }}>
                 {outsideCampus.map((f) => (

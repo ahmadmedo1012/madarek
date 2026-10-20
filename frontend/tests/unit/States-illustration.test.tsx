@@ -1,26 +1,31 @@
 /**
- * EmptyState / ErrorState illustration wiring tests (T089).
+ * EmptyState / ErrorState illustration wiring tests (T089, r280 re-pins).
+ *
+ * r280: the `illustration` prop points at the mk-ill kit
+ * (`components/illustrations`) — pieces render as
+ * `[data-mk-ill="<name>"]` inside the `.state-illustration` well. The
+ * legacy 012 scenes no longer take part in this contract.
  */
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { EmptyState, ErrorState } from '../../src/components/primitives/States';
 
 describe('EmptyState', () => {
-  it('renders the legacy icon when no illustration prop is given', () => {
+  it('renders the Lucide icon when no illustration prop is given', () => {
     render(<EmptyState title="empty" />);
     expect(document.querySelector('.state-icon')).not.toBeNull();
     expect(document.querySelector('.state-illustration')).toBeNull();
   });
 
-  it('renders an illustration block when illustration is set', () => {
-    render(<EmptyState illustration="empty-notifs" title="no notifs" />);
+  it('renders a kit piece block when illustration is set', () => {
+    render(<EmptyState illustration="empty-notifications" title="no notifs" />);
     expect(document.querySelector('.state-icon')).toBeNull();
     expect(document.querySelector('.state-illustration')).not.toBeNull();
-    expect(document.querySelector('[data-illustration="empty-notifs"]')).not.toBeNull();
+    expect(document.querySelector('[data-mk-ill="empty-notifications"]')).not.toBeNull();
   });
 
-  it('the illustration block is decorative (aria-hidden)', () => {
-    render(<EmptyState illustration="empty-notifs" title="x" />);
+  it('the kit piece block is decorative (aria-hidden)', () => {
+    render(<EmptyState illustration="empty-notifications" title="x" />);
     const block = document.querySelector('.state-illustration');
     expect(block).toHaveAttribute('aria-hidden');
   });
@@ -47,20 +52,29 @@ describe('EmptyState', () => {
 });
 
 describe('ErrorState', () => {
-  it('renders the legacy AlertTriangle icon when no illustration prop is given', () => {
-    render(<ErrorState message="error" />);
-    expect(document.querySelector('.state-icon')).not.toBeNull();
-    expect(document.querySelector('.state-illustration')).toBeNull();
+  it('renders the kit offline piece for a network fault when no illustration is given', () => {
+    // r280: no caller piece → the branch-picked kit piece. A network
+    // fault (no response at all) reads as `offline`.
+    render(<ErrorState message="error" error={new Error('Network Error')} />);
+    expect(document.querySelector('.state-icon')).toBeNull();
+    expect(document.querySelector('.state-illustration')).not.toBeNull();
+    expect(document.querySelector('[data-mk-ill="offline"]')).not.toBeNull();
   });
 
-  it('renders an illustration block when illustration is set', () => {
-    render(<ErrorState illustration="error-404" message="not found" />);
+  it('renders the kit error-generic piece for an API-answered failure when no illustration is given', () => {
+    const error = { response: { status: 500, data: { error: { message: 'boom' } } } };
+    render(<ErrorState message="error" error={error} />);
+    expect(document.querySelector('[data-mk-ill="error-generic"]')).not.toBeNull();
+  });
+
+  it('renders the caller-overridden kit piece when illustration is set', () => {
+    render(<ErrorState illustration="error-generic" message="x" error={new Error('Network Error')} />);
     expect(document.querySelector('.state-icon')).toBeNull();
-    expect(document.querySelector('[data-illustration="error-404"]')).not.toBeNull();
+    expect(document.querySelector('[data-mk-ill="error-generic"]')).not.toBeNull();
   });
 
   it('still renders the retry button when onRetry is given', () => {
-    render(<ErrorState illustration="error-404" message="x" onRetry={() => {}} />);
+    render(<ErrorState illustration="error-generic" message="x" onRetry={() => {}} />);
     expect(screen.getByRole('button', { name: /إعادة/ })).toBeInTheDocument();
   });
 
@@ -75,6 +89,12 @@ describe('ErrorState', () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 
+  it('the 404 branch renders the kit not-found piece (r280)', () => {
+    const error = { response: { status: 404 } };
+    render(<ErrorState error={error} />);
+    expect(document.querySelector('[data-mk-ill="not-found"]')).not.toBeNull();
+  });
+
   it('404 without onRetry renders the not-found copy and no retry button', () => {
     const error = { response: { status: 404 } };
     render(<ErrorState error={error} />);
@@ -82,7 +102,7 @@ describe('ErrorState', () => {
     expect(screen.queryByRole('button')).toBeNull();
   });
 
-  it('403 renders the permission-denied state and never a retry button', () => {
+  it('403 renders the permission-denied state with the kit forbidden piece, never a retry button', () => {
     const onRetry = vi.fn();
     const error = {
       response: { status: 403, data: { error: { message: 'ممنوع' } } },
@@ -93,6 +113,7 @@ describe('ErrorState', () => {
     // (the 403 branch's documented contract, audit 11-e P2-18).
     expect(screen.getByText('لا تملك صلاحية الوصول')).toBeInTheDocument();
     expect(screen.queryByRole('button')).toBeNull();
+    expect(document.querySelector('[data-mk-ill="forbidden"]')).not.toBeNull();
   });
 });
 
