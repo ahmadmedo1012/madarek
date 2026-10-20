@@ -224,7 +224,10 @@ export default function AuthPage() {
       </header>
 
       <main className="auth-center">
-        <div className="auth-card glass">
+        {/* S-1a re-skin: the calm opaque surface card (the glass
+            variant retired with the copper chrome — one elevated
+            --surface moment, one --elev-2 shadow). */}
+        <div className="auth-card">
 
           <div className="auth-brand-mini">
             <StarMark size={28} className="auth-brand-mini-mark" />
