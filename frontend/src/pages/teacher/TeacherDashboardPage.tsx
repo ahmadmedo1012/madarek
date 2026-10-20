@@ -533,10 +533,13 @@ function PendingGradingQueue({ entries }: { entries: TeacherDashboard['pendingGr
           />
         ) : (
           entries.map((e) => (
+            /* r289: الصف كله الوصلة (RowItem to) — طابور التصحيح قائمة
+               تنقّل بالكامل، وأرضية اللمس بعرض الصف. */
             <RowItem
               key={e.assignmentId}
+              to={e.actionTo}
               leading={<span className="tq-num" aria-hidden="true">{formatNum(e.count)}</span>}
-              title={<Link to={e.actionTo}>{e.title}</Link>}
+              title={e.title}
               meta={
                 <>
                   {e.course.name} · <bdi>{e.course.code}</bdi>
@@ -654,10 +657,12 @@ function AtRiskShortcuts() {
             />
           ) : (
             top.map((r) => (
+              /* r289: الصف كله الوصلة — قائمة مؤشّرات الخطر تنقّلية. */
               <RowItem
                 key={`${r.studentId}:${r.offeringId}`}
+                to={`/teacher/intelligence/${r.offeringId}`}
                 leading={<bdi className="tq-num">{formatPct1(r.riskScore)}%</bdi>}
-                title={<Link to={`/teacher/intelligence/${r.offeringId}`}>{r.name}</Link>}
+                title={r.name}
                 meta={<>{r.courseIcon} {r.courseName}</>}
                 trailing={<Badge color={RISK_TONE[r.riskLevel]}>{RISK_LABEL[r.riskLevel]}</Badge>}
               />

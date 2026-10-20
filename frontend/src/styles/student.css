@@ -1247,12 +1247,9 @@
     border-radius: var(--r-md);
     flex-shrink: 0;
   }
-  .courses-row-title {
-    color: var(--text);
-    text-decoration: none;
-    font-weight: var(--fw-semibold);
-  }
-  .courses-row-title:hover { color: var(--accent-ink); }
+  /* r289: .courses-row-title حُذف — الصف كله الوصلة الآن (RowItem to،
+     .pf-row-link)؛ نصف العنوان نصف عقد الصف الأساسي والتحويم لغة
+     .pf-row-link. */
   .courses-row-progress {
     display: flex;
     align-items: center;

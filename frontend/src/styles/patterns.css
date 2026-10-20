@@ -165,6 +165,18 @@ h3.pf-section-title { font-size: var(--fs-h3); }
   min-block-size: 44px;
   padding: var(--sp-4);
 }
+/* r289: the whole-row link — RowItem `to` renders the line itself as
+   the anchor (agenda-row contract), so the tappable surface is the
+   full row (44px floor + paddings), never the title's text box.
+   Colors/typography inherit the row; hover quiets into the accent,
+   focus takes the universal ring. */
+a.pf-row-link {
+  color: inherit;
+  text-decoration: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  a.pf-row-link:hover .pf-row-title { color: var(--accent-strong); }
+}
 .pf-rowlist.compact .pf-row-line { padding-block: var(--sp-2-5); }
 .pf-row-leading {
   display: inline-flex;

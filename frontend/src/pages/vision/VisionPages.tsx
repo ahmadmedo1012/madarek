@@ -217,13 +217,11 @@ function VisionConceptCard({ concept: c }: { concept: VisionConcept }) {
   /* r266: صفّ مفهوم هادئ — الشريحة اللونية تقود، العنوان هو باب الصف،
      الحالة شارة في الطرف. (التفصيل الكامل يبقى في صفحة المفهوم.) */
   return (
+    /* r289: الصف كله الوصلة (RowItem to) — أرضية اللمس لكل الصف. */
     <RowItem
+      to={`/vision/${c.slug}`}
       leading={<ConceptChip concept={c} box={36} glyph={17} />}
-      title={
-        <Link to={`/vision/${c.slug}`} className="cp-row-link" title={c.title}>
-          {c.title}
-        </Link>
-      }
+      title={c.title}
       meta={c.subtitle}
       trailing={<Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>}
     />

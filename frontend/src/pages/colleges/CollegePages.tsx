@@ -423,19 +423,18 @@ export function CollegesIndexPage() {
                         );
                       });
                     return (
+                      /* r289: الصف كله الوصلة (RowItem to) — أرضية اللمس
+                         44px+ لكل الصف بدل صندوق نص الاسم. */
                       <RowItem
                         key={c.id}
+                        to={`/colleges/${c.id}`}
                         leading={
                           <span aria-hidden>
                             {/* allow-emoji: data-default for admin-chosen icon */}
                             <EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={22} />
                           </span>
                         }
-                        title={
-                          <Link to={`/colleges/${c.id}`} className="cp-row-link" title={c.name}>
-                            {c.name}
-                          </Link>
-                        }
+                        title={c.name}
                         meta={
                           <span className="cp-meta-row">
                             {c.nameEn && <span title={c.nameEn}>{c.nameEn}</span>}

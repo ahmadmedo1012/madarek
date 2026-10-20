@@ -117,7 +117,11 @@ function CourseRow({ e }: { e: MyEnrollment }) {
   const lecturesQ = useOfferingLectures(e.offering.id);
   const lectureCount = lecturesQ.data?.length;
   return (
+    /* r289: الصف كله الوصلة (RowItem to) — صف المقرّر باب دخول كامل
+       العرض؛ شارة «تابع/ابدأ» في الطرف تظل داخل الوصلة (علامة
+       غنية بلا عنصر تفاعلي متداخل). */
     <RowItem
+      to={`/student/courses/${e.offering.id}`}
       leading={
         <span
           className="courses-row-icon"
@@ -129,7 +133,7 @@ function CourseRow({ e }: { e: MyEnrollment }) {
           <Icon icon={Cmp} size={18} />
         </span>
       }
-      title={<Link to={`/student/courses/${e.offering.id}`} className="courses-row-title">{c.name}</Link>}
+      title={c.name}
       meta={
         <>
           <Badge><bdi className="font-mono">{c.code}</bdi></Badge>

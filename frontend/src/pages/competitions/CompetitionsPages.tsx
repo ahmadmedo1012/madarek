@@ -229,12 +229,9 @@ export function CompetitionsIndexPage() {
           {visible.map((c) => (
             <RowItem
               key={c.id}
+              to={`/competitions/${c.id}`}
               leading={<EmojiIcon emoji={c.iconEmoji ?? '🏆'} size={20} />}
-              title={
-                <Link to={`/competitions/${c.id}`} className="cp-row-link" title={c.title}>
-                  {c.title}
-                </Link>
-              }
+              title={c.title}
               meta={<span className="cp-clamp2" title={c.description}>{c.category} · {c.description}</span>}
               trailing={
                 <span className="cp-trail">

@@ -5005,15 +5005,11 @@
    قصّ الوصف، سطر إجراءات RSVP ينكسر تحت العنوان على الجوال.
    كل القيم من tokens.css — لا خام.
    ═══════════════════════════════════════════════════════════════ */
-/* العنوان هو باب الصف: رابط بلون الحبر يكتسي بلون الإشارة عند
-   المرور/التركيز (عرف «الاسم هو باب الصفّ»). */
-.cp-row-link {
-  color: var(--text);
-  text-decoration: none;
-  transition: color var(--motion-duration-short) var(--motion-ease-standard);
-}
-.cp-row-link:hover { color: var(--accent-strong); }
-.cp-row-link:focus-visible { outline: none; color: var(--accent-strong); }
+/* r289: .cp-row-link حُذف — كل مستهلكيه الخمسة (training/vision/
+   competitions/community/colleges) هاجروا إلى RowItem to (الصف
+   كله الوصلة، عقد صف الأجندة)؛ .pf-row-link في patterns.css
+   يملك اللغة الآن. عرف «الاسم هو باب الصفّ» يعيش في الوصلة
+   نفسها لا في صندوق نص العنوان. */
 /* وصف المسابقة: سطران بحدّ أقصى والنصّ الكامل في title (أرضية
    الحِرفة: لا قصّ بلا تلميح). */
 .cp-clamp2 {

@@ -334,14 +334,12 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
     /* r262 (اتجاه Superlist): صفّ هادئ والعنوان هو باب الصف (عرف
        «الاسم هو باب الصفّ») — رابط حقيقي إلى تفاصيل المسابقة بدل
        بطاقة ميتة (A12 P1-2). الحالة/الجائزة/المشاركون في الطرف،
-       والوصف سطر ثانوي مقصوص بسطرين (النصّ الكامل في title). */
+       والوصف سطر ثانوي مقصوص بسطرين (النصّ الكامل في title).
+       r289: الصف كله الوصلة (RowItem to) — أرضية اللمس 44px+ لكل الصف. */
     <RowItem
+      to={`/competitions/${c.id}`}
       leading={<EmojiIcon emoji={c.iconEmoji ?? '🏆'} size={20} />}
-      title={
-        <Link to={`/competitions/${c.id}`} className="cp-row-link" title={c.title}>
-          {c.title}
-        </Link>
-      }
+      title={c.title}
       meta={<span className="cp-clamp2" title={c.description}>{c.category} · {c.description}</span>}
       trailing={
         <span className="cp-trail">

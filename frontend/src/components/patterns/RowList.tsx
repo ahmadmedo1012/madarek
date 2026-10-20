@@ -1,6 +1,7 @@
 import { useId, useState } from 'react';
 import { Children } from 'react';
 import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { Icon } from '../Icon';
 import { EmptyState, ListSkeleton } from '../primitives/States';
@@ -63,6 +64,16 @@ export type RowItemProps = {
   defaultExpanded?: boolean;
   /** Accessible name for the disclosure control (defaults to «التفاصيل»). */
   expandLabel?: string;
+  /**
+   * r289: route destination — when set (and the row is not expandable),
+   * the WHOLE row line renders as the link (the agenda-row contract:
+   * «to renders the whole row as the link»), so the tappable area is
+   * the full row's ≥44px floor instead of the title text's line box
+   * (measured 24px on 360px phones — below the CONTRACT's own touch
+   * floor). Mutually exclusive with an expandable body: a row that is
+   * both a link and a disclosure would trap its toggle inside a link.
+   */
+  to?: string;
 };
 
 export function RowItem({
@@ -73,19 +84,39 @@ export function RowItem({
   children,
   defaultExpanded = false,
   expandLabel = 'التفاصيل',
+  to,
 }: RowItemProps) {
   const [open, setOpen] = useState(defaultExpanded);
   const bodyId = useId();
   const expandable = children !== undefined && children !== null;
+
+  /* The one row line — identical slot order whether it renders as a
+   * <div> (plain/expandable rows) or as the whole-row <Link> (to). */
+  const lineContent = (
+    <>
+      {leading !== undefined && <span className="pf-row-leading">{leading}</span>}
+      <span className="pf-row-main">
+        <span className="pf-row-title">{title}</span>
+        {meta !== undefined && <span className="pf-row-meta">{meta}</span>}
+      </span>
+      {trailing !== undefined && <span className="pf-row-trailing">{trailing}</span>}
+    </>
+  );
+
+  if (to !== undefined && !expandable) {
+    return (
+      <div className={`pf-row${open ? ' open' : ''}`}>
+        <Link to={to} className="pf-row-line pf-row-link">
+          {lineContent}
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className={`pf-row${open ? ' open' : ''}`}>
       <div className="pf-row-line">
-        {leading !== undefined && <span className="pf-row-leading">{leading}</span>}
-        <span className="pf-row-main">
-          <span className="pf-row-title">{title}</span>
-          {meta !== undefined && <span className="pf-row-meta">{meta}</span>}
-        </span>
-        {trailing !== undefined && <span className="pf-row-trailing">{trailing}</span>}
+        {lineContent}
         {expandable && (
           <button
             type="button"

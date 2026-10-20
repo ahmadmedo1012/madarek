@@ -236,13 +236,12 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
      إضافي لغير المسجَّلين). */
   const accent = track.themeColor ?? 'var(--accent)';
   return (
+    /* r289: الصف كله الوصلة (RowItem to) — أرضية اللمس 44px+ لكل الصف
+       بدل صندوق نص العنوان (24px على 360px). */
     <RowItem
+      to={`/training/${track.slug}`}
       leading={<EmojiIcon emoji={track.iconEmoji ?? '🎓'} size={20} />}
-      title={
-        <Link to={`/training/${track.slug}`} className="cp-row-link" title={track.title}>
-          {track.title}
-        </Link>
-      }
+      title={track.title}
       meta={
         <span className="cp-meta-col">
           <span className="cp-clamp1" title={track.summary}>
