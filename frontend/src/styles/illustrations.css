@@ -1,0 +1,95 @@
+/* ═══════════════════════════════════════════════════════════════════
+   illustrations.css — mk-ill state-graphics kit sheet
+   ───────────────────────────────────────────────────────────────────
+   Owned by the illustration-kit agent (branch redesign/illustrations)
+   alongside frontend/src/components/illustrations/. Imported by the
+   kit's Illustration.tsx / BrandLoader.tsx modules — NOT by main.tsx —
+   so the sheet rides whichever chunk first consumes the kit.
+
+   Rules honoured here (CI gates):
+   · colors:  zero raw literals — only var(--*) tokens.
+   · motion:  durations consume the --t-* rungs, easings the --ease-*
+              rungs, keyframes animate transform/opacity only
+              (no layout properties), and the spin consumes
+              --ease-linear per the 15-k P1-2 ruling.
+   · raw-css: no font-size literals, radius via var(--r-*)/50%, and
+              the padding/margin/gap family stays on --sp-* or 0.
+
+   Reduced motion: the base.css global 0.01ms !important belt already
+   zeroes every animation app-wide; the explicit @media block below
+   makes the loader's static frame a first-class state in its own
+   right, independent of that belt.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@layer components {
+
+  /* ── Wrapper sizing ──────────────────────────────────────────────
+     Default: fill the container (EmptyState's .state-illustration
+     slot = 160px desktop / 120px mobile), capped at 220px — the top
+     of the kit's readable range. `size` prop → --mk-ill-size var.
+     The doubled .mk-ill.mk-ill selector is deliberate: it outranks
+     the legacy `.illustration { inline-size: 100% }` rule in
+     components.css regardless of sheet order, so sized renders stay
+     exact even if the import cascade changes. */
+  .mk-ill.mk-ill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--mk-ill-size, 100%);
+    block-size: var(--mk-ill-size, 100%);
+    max-inline-size: min(220px, 100%);
+    max-block-size: min(220px, 100%);
+  }
+
+  .mk-ill > svg {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  /* ── BrandLoader ──────────────────────────────────────────────────
+     A calm mark: one signal arc orbiting a quiet track, one ink dot
+     breathing at the centre. role="status" lives on the wrapper
+     (BrandLoader.tsx); everything inside is aria-hidden decoration. */
+  .mk-loader {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--mk-loader-size, 32px);
+    block-size: var(--mk-loader-size, 32px);
+  }
+
+  .mk-loader > svg {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  @keyframes mk-loader-orbit {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  @keyframes mk-loader-breathe {
+    0%, 100% { transform: scale(1);    opacity: 1; }
+    50%      { transform: scale(1.2);  opacity: 0.7; }
+  }
+
+  .mk-loader-arc {
+    transform-box: view-box;
+    transform-origin: 50% 50%;
+    animation: mk-loader-orbit var(--t-cinema) var(--ease-linear) infinite;
+  }
+
+  .mk-loader-dot {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: mk-loader-breathe var(--t-slower) var(--ease-soft) infinite;
+  }
+
+  /* Static frame = full mark (track + arc + dot), not a blank box. */
+  @media (prefers-reduced-motion: reduce) {
+    .mk-loader-arc,
+    .mk-loader-dot {
+      animation: none;
+    }
+  }
+}
