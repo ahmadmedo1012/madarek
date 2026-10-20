@@ -9,10 +9,21 @@ import { Icon } from '../../components/Icon';
 import { useMatrix, useGaps } from '../../hooks/useResources';
 import { courseIcon, courseTint } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
+import { formatInt } from '../../utils/numbers';
 import '../../styles/training.css'; // .filter-pill family (D11 css split, 12-15)
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) live in
  * lib/courseMeta.ts (wave 9-a). */
+
+/* r220 (4A redesign — Superlist direction): the matrix stays the
+ * per-course dense concept grid, but every status is now legible
+ * WITHOUT colour (status word rides every cell as text), the grid is
+ * keyboard-legible (non-link cells are focusable list items with the
+ * shared focus ring), and ≤640px the same data recomposes into a
+ * concept list — one row per concept, status + % inline (the CSS-only
+ * recomposition lives in student.css §matrix). The gap-row contract
+ * (سدّ الفجوة / لا توصية) and the weak/poor-cells-link rule are the
+ * r164d contract, untouched (pinned by MatrixPage-links.test). */
 
 type MasteryClass = 'lvl-untouched' | 'lvl-strong' | 'lvl-good' | 'lvl-weak' | 'lvl-poor';
 
@@ -139,8 +150,9 @@ export default function MatrixPage() {
         <Badge color="brand" icon={Sparkles}>تتبّع المعرفة</Badge>
       </header>
 
-      {/* Legend */}
-      <div className="matrix-legend">
+      {/* Status key — the words ARE the encoding; the dots only anchor
+          the eye. Ranges stated in text so the key never leans on hue. */}
+      <div className="matrix-legend" role="group" aria-label="دليل حالات الإتقان">
         <div className="matrix-legend-item"><span className="matrix-legend-dot" style={{ background: 'var(--success)' }} /> إتقان (80%+)</div>
         <div className="matrix-legend-item"><span className="matrix-legend-dot" style={{ background: 'var(--accent)' }} /> جيد (60–80%)</div>
         <div className="matrix-legend-item"><span className="matrix-legend-dot" style={{ background: 'var(--warning)' }} /> يحتاج مراجعة (40–60%)</div>
@@ -178,7 +190,7 @@ export default function MatrixPage() {
                   <div className="list-row-sub">{g.courseName}</div>
                 </div>
                 <span className="font-mono text-xs" style={{ color: 'var(--warning-ink)' }}>
-                  {Math.round(g.level * 100)}%
+                  {formatInt(Math.round(g.level * 100))}%
                 </span>
                 {g.recommendedLectureId ? (
                   <Link to={`/student/lectures/${g.recommendedLectureId}`} className="btn outline sm">
@@ -232,7 +244,7 @@ export default function MatrixPage() {
                 onClick={() => setFilter('all')}
               >
                 الكل
-                <span className="filter-pill-count">{totalConcepts}</span>
+                <span className="filter-pill-count">{formatInt(totalConcepts)}</span>
               </button>
               {(Object.keys(FILTER_LABEL) as Array<Exclude<LevelFilter, 'all'>>).map((key) => (
                 <button
@@ -244,7 +256,7 @@ export default function MatrixPage() {
                   disabled={levelCounts[key] === 0}
                 >
                   {FILTER_LABEL[key]}
-                  <span className="filter-pill-count">{levelCounts[key]}</span>
+                  <span className="filter-pill-count">{formatInt(levelCounts[key])}</span>
                 </button>
               ))}
             </div>
@@ -283,7 +295,7 @@ export default function MatrixPage() {
                     <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>{c.courseName}</div>
                     <div className="text-xs text-subtle">
                       {conceptCount(totalConceptsInCourse)} ·{' '}
-                      {masteredConcepts > 0 ? `أتقنت ${masteredConcepts}` : 'لم تتقن منها بعد'} · متوسط {avgPct}%
+                      {masteredConcepts > 0 ? `أتقنت ${masteredConcepts}` : 'لم تتقن منها بعد'} · متوسط {formatInt(avgPct)}%
                     </div>
                   </div>
                   <Link to={`/student/courses/${c.offeringId}`} className="btn ghost sm">
@@ -292,19 +304,24 @@ export default function MatrixPage() {
                   </Link>
                 </div>
 
-                <div className="matrix-cells">
+                {/* The concept grid — a keyboard-legible list: every cell
+                    is focusable with a full aria-label (name + status +
+                    %), so the heatmap reads linearly without a pointer.
+                    Gap cells stay real links (r164d contract). */}
+                <div className="matrix-cells" aria-label={`مفاهيم مقرر ${c.courseName}`}>
                   {c.concepts.map((k) => {
                     const cls = levelClass(k.level, k.attempts);
                     const dimmed = filter !== 'all' && cls !== filter;
-                    const titleBase = `${k.name} — ${levelLabel(k.level, k.attempts)}${k.attempts > 0 ? ` (${Math.round(k.level * 100)}%)` : ''}`;
+                    const pctText = k.attempts > 0 ? `${formatInt(Math.round(k.level * 100))}%` : '—';
+                    const statusText = levelLabel(k.level, k.attempts);
+                    const cellAria = `${k.name} — ${statusText}${k.attempts > 0 ? ` (${pctText})` : ''}`;
+                    const titleBase = `${k.name} — ${statusText}${k.attempts > 0 ? ` (${pctText})` : ''}`;
                     const body = (
                       <>
                         <div className="matrix-name">{k.name}</div>
                         <div className="matrix-meta">
-                          <span>{levelLabel(k.level, k.attempts)}</span>
-                          <span className="matrix-meta-pct">
-                            {k.attempts > 0 ? `${Math.round(k.level * 100)}%` : '—'}
-                          </span>
+                          <span>{statusText}</span>
+                          <span className="matrix-meta-pct">{pctText}</span>
                         </div>
                       </>
                     );
@@ -321,6 +338,7 @@ export default function MatrixPage() {
                           className={`matrix-cell ${cls}${dimmed ? ' is-dim' : ''}`}
                           style={{ cursor: 'pointer' }}
                           title={`${titleBase} — راجع في: ${remediation.lectureTitle ?? 'المحاضرة الموصى بها'}`}
+                          aria-label={`${cellAria} — راجع في المحاضرة الموصى بها`}
                           key={k.id}
                         >
                           {body}
@@ -332,6 +350,8 @@ export default function MatrixPage() {
                         className={`matrix-cell ${cls}${dimmed ? ' is-dim' : ''}`}
                         key={k.id}
                         title={titleBase}
+                        aria-label={cellAria}
+                        tabIndex={0}
                       >
                         {body}
                       </div>

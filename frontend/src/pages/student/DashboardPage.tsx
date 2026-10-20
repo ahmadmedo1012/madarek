@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import {
-  Presentation, FileText, FlaskConical,
-  ClipboardList, Radio,
-  Play, Eye, ClipboardCheck,
-  type LucideIcon,
-} from 'lucide-react';
+import { Play, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Badge } from '../../components/primitives';
 import {
@@ -14,22 +9,25 @@ import { StatStrip, ProgressRing, LedgerPanel, LedgerRow, WeekRow } from '../../
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
-import { useStudentDashboard, useResume, useTrainingCatalog } from '../../hooks/useResources';
+import {
+  useStudentDashboard, useResume, useTrainingCatalog, useGaps,
+} from '../../hooks/useResources';
 import { EXAM_KIND_LABEL } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
-import { formatNum } from '../../utils/numbers';
-import { formatDate, formatTime } from '../../utils/numbers';
+import { formatInt, formatNum, formatDate, formatTime } from '../../utils/numbers';
 
 /* ═══════════════════════════════════════════════════════════════════
-   R189 «سجلّ مدارك» — the student dashboard speaks the ledger language
-   (the VLM direction trial's winner, /home/z/probes/preview):
-   masthead → TODAY ledger (the hero: the student's actual commitments,
-   not a greeting banner) → momentum ring (continue learning) → the
-   typographic stat strip (no icon-box KPI grid) → the week ledger.
+   r220 (4A redesign — Superlist direction) — the dashboard is ONE
+   TodayList, not a KPI wall:
+   masthead → «اليوم» ledger (the continue-learning item pinned first,
+   then today's real commitments, then every still-actable exam) →
+   «فجوات يُنصح بسدّها» (the recommended gaps with direct remediation)
+   → the momentum StatLine (compact typographic line, no icon boxes)
+   → the week ledger (day-anchored).
    The pure helpers below (classWhenMs / safeMs / examAgendaRow /
    pickTrainingResume) keep their exported contracts — the unit pins
    (DashboardPage-agenda / -exams-resume) stay byte-identical.
-   ═══════════════════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════════════ */
 
 /**
  * Greeting that adapts to the local hour. Calm, conversational.
@@ -44,13 +42,6 @@ function useGreeting(): string {
   if (h < 18) return 'مساء النور';
   return 'مساء الخير';
 }
-
-const ASSIGNMENT_ICON: Record<'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM', LucideIcon> = {
-  HOMEWORK: ClipboardList,
-  QUIZ: FileText,
-  PROJECT: FlaskConical,
-  EXAM: FileText,
-};
 
 const DAY_LABEL: Record<'today' | 'tomorrow', string> = {
   today: 'اليوم',
@@ -223,7 +214,6 @@ type AgendaItem = {
   to: string;
   title: ReactNode;
   meta: ReactNode;
-  icon: LucideIcon;
   tone: AgendaTone;
 };
 
@@ -272,13 +262,13 @@ export function pickTrainingResume(
   };
 }
 
-/* ── The momentum hero (PP-X2 / audit P0-3) — R189 ledger anatomy ──
- * The continue-learning surface: a real progress ring (the data the
- * VLM trial stole from direction B), the title + chips + ONE dominant
- * CTA. Keeps the honest branch ladder: pending → own-footprint
+/* ── The TodayList's first item: continue-learning ───────────────────
+ * r220: the momentum hero became a LEDGER ROW — the ring rides the
+ * lead column at list scale, the row is the link, the CTA chip is
+ * visual-only. Keeps the honest branch ladder: pending → own-footprint
  * skeleton; error → the retry grammar; null+null → nothing (the
  * training arm answers first). */
-function ResumeHero({
+function ResumeRow({
   resume,
   training,
 }: {
@@ -286,16 +276,15 @@ function ResumeHero({
   training: ReturnType<typeof useTrainingCatalog>;
 }) {
   if (resume.isPending) {
-    /* The momentum-shaped skeleton — same footprint as the loaded row
-       (ring 112 + paddings ≈ 176px block), so the TODAY ledger above
-       and the stat strip below never shift when the payload lands. */
+    /* The list-row-shaped skeleton — same footprint as the loaded row,
+       so the ledger above and the stat line below never shift when the
+       payload lands. */
     return (
       <section className="momentum dash-resume-pending" aria-busy="true">
-        <Skeleton width="112px" height="112px" rounded="var(--r-full)" />
+        <Skeleton width="56px" height="56px" rounded="var(--r-full)" />
         <div className="momentum-info" style={{ flex: 1 }}>
-          <Skeleton width="52%" height="18" />
-          <Skeleton width="78%" height="12" />
-          <Skeleton width="40%" height="11" />
+          <Skeleton width="38%" height="14" />
+          <Skeleton width="72%" height="11" />
         </div>
       </section>
     );
@@ -306,19 +295,18 @@ function ResumeHero({
    * blip. Same grammar as the player's completion-report retry. */
   if (resume.isError) {
     return (
-      <section className="dash-resume">
-        <div className="lecture-report-retry" role="alert">
-          <span>تعذّر تحميل بطاقة «أكمل من حيث توقفت» — يمكنك إعادة المحاولة الآن، أو الانتقال إلى مقرّراتك مباشرةً.</span>
-          <span className="lecture-report-retry-actions">
-            <button type="button" className="btn sm" onClick={() => resume.refetch()}>
-              إعادة المحاولة
-            </button>
-            <Link className="btn ghost sm" to="/student/courses">
-              اذهب إلى مقرّراتك
-            </Link>
-          </span>
-        </div>
-      </section>
+      <div className="ledger-row ledger-row-flat dash-resume-error" role="alert">
+        <span className="ledger-lead"><b>تابع</b>—</span>
+        <span className="ledger-what">
+          تعذّر تحميل بطاقة «أكمل من حيث توقفت» —{' '}
+          <Link to="/student/courses">اذهب إلى مقرّراتك</Link>
+        </span>
+        <span className="ledger-tail">
+          <button type="button" className="btn sm" onClick={() => resume.refetch()}>
+            إعادة المحاولة
+          </button>
+        </span>
+      </div>
     );
   }
   const r = resume.data;
@@ -327,71 +315,29 @@ function ResumeHero({
     const t = training.data ? pickTrainingResume(training.data) : null;
     if (!t) return null;
     return (
-      <section className="momentum" aria-label="أكمل من حيث توقفت">
-        <ProgressRing
-          value={t.started ? t.progressPct : 0}
-          ariaLabel={t.started ? `تقدّم المسار التدريبي: ${t.progressPct}%` : 'مسار لم يبدأ بعد'}
-          center={
-            <>
-              <b>{t.progressPct}%</b>
-              <small>من المسار</small>
-            </>
-          }
-        />
-        <div className="momentum-info">
-          <h2 className="momentum-title">{t.title}</h2>
-          <p className="momentum-sub">
-            {t.started
-              ? `مسار بدأته وأنجزت ${t.progressPct}% من دروسه — أكمل الدرس التالي.`
-              : 'مسار سجّلت فيه ولم تبدأه بعد — ابدأه من الدرس الأول.'}
-          </p>
-          <div className="momentum-actions">
-            <Link to={`/training/${t.slug}`} className="btn primary">
-              <Icon icon={Play} size={15} />
-              {t.started ? 'متابعة المسار' : 'ابدأ المسار'}
-            </Link>
-            <Link to="/training" className="btn ghost">كل المسارات</Link>
-          </div>
-        </div>
-      </section>
+      <LedgerRow
+        to={`/training/${t.slug}`}
+        lead={<span className="dash-resume-ring"><ProgressRing size={56} thickness={5} value={t.started ? t.progressPct : 0} ariaLabel={t.started ? `تقدّم المسار التدريبي: ${t.progressPct}%` : 'مسار لم يبدأ بعد'} center={null} /></span>}
+        leadLabel={t.started ? 'تابع' : 'ابدأ'}
+        title={t.title}
+        subtitle={t.started
+          ? `مسار التطوير الذاتي · أنجزت ${t.progressPct}% من دروسه — أكمل الدرس التالي.`
+          : 'مسار التطوير الذاتي · سجّلت فيه ولم تبدأه بعد — ابدأ من الدرس الأول.'}
+        tail={<span className="btn primary sm dash-row-chip"><Icon icon={Play} size={13} />{t.started ? 'متابعة' : 'ابدأ'}</span>}
+      />
     );
   }
   const continuing = r.mode === 'continue';
   const ringPct = continuing ? r.progressPct : 0;
   return (
-    <section className="momentum" aria-label="أكمل من حيث توقفت">
-      <ProgressRing
-        value={ringPct}
-        ariaLabel={
-          continuing
-            ? `تقدّم مشاهدة المحاضرة المتوقّفة: ${r.progressPct}%`
-            : 'المحاضرة الأولى لم تُشاهد بعد'
-        }
-        center={
-          <>
-            <b>{ringPct}%</b>
-            <small>من المحاضرة</small>
-          </>
-        }
-      />
-      <div className="momentum-info">
-        <h2 className="momentum-title">
-          {r.lecture.course.name} · المحاضرة <bdi>{r.lecture.ordinal}</bdi>
-        </h2>
-        <p className="momentum-sub">{r.lecture.title}</p>
-        <div className="momentum-chips">
-          <span className="chip"><bdi className="font-mono">{r.lecture.course.code}</bdi></span>
-          {continuing && <span className="chip">متابعة من حيث توقفت</span>}
-        </div>
-        <div className="momentum-actions">
-          <Link to={`/student/lectures/${r.lecture.id}`} className="btn primary">
-            <Icon icon={Play} size={15} />
-            {continuing ? 'متابعة المحاضرة' : 'ابدأ أول محاضرة'}
-          </Link>
-          <Link to="/student/courses" className="btn ghost">كل المقرّرات</Link>
-        </div>
-      </div>
-    </section>
+    <LedgerRow
+      to={`/student/lectures/${r.lecture.id}`}
+      lead={<span className="dash-resume-ring"><ProgressRing size={56} thickness={5} value={ringPct} ariaLabel={continuing ? `تقدّم مشاهدة المحاضرة المتوقّفة: ${r.progressPct}%` : 'المحاضرة الأولى لم تُشاهد بعد'} center={null} /></span>}
+      leadLabel={continuing ? 'تابع' : 'ابدأ'}
+      title={<>أكمل من حيث توقفت: {r.lecture.course.name} · المحاضرة <bdi>{r.lecture.ordinal}</bdi></>}
+      subtitle={<><bdi className="font-mono">{r.lecture.course.code}</bdi> · {r.lecture.title} · {ringPct}% من المحاضرة</>}
+      tail={<span className="btn primary sm dash-row-chip"><Icon icon={Play} size={13} />{continuing ? 'متابعة' : 'ابدأ'}</span>}
+    />
   );
 }
 
@@ -414,6 +360,25 @@ function TodayRow({ item }: { item: AgendaItem }) {
   );
 }
 
+/* The recommended-gap row — priority concept + direct remediation. */
+function GapRow({ g }: {
+  g: { conceptId: string; conceptName: string; courseName: string; level: number; recommendedLectureId?: string | null };
+}) {
+  const pct = formatInt(Math.round(g.level * 100));
+  return (
+    <LedgerRow
+      to={g.recommendedLectureId ? `/student/lectures/${g.recommendedLectureId}` : undefined}
+      lead={<span className="font-mono">{pct}%</span>}
+      leadLabel="فجوة"
+      title={g.conceptName}
+      subtitle={g.courseName}
+      tail={g.recommendedLectureId
+        ? <span className="btn outline sm dash-row-chip"><Icon icon={Play} size={13} />سدّ الفجوة</span>
+        : <Badge>لا توصية بعد</Badge>}
+    />
+  );
+}
+
 export default function StudentDashboardPage() {
   const user = useAuthStore((s) => s.user);
   const greeting = useGreeting();
@@ -424,29 +389,30 @@ export default function StudentDashboardPage() {
   // r164-c: the training catalog feeds the hero's second arm (only
   // consulted when the lecture payload is null — see pickTrainingResume).
   const trainingCatalog = useTrainingCatalog();
+  // r220: the recommended gaps join the TodayList (سدّ الفجوة direct).
+  const gaps = useGaps();
 
   if (dash.isPending) {
-    /* R189 loading mirror — the resolved page leads with the masthead,
-       the TODAY ledger, the momentum hero, the stat strip, then the
-       week ledger. Every slot below renders the resolved section's
-       class + approximate footprint, so the pending → resolved
-       handoff moves nothing (the r172b loading-closure contract,
-       re-mirrored for the ledger anatomy). */
+    /* r220 loading mirror — the resolved page leads with the masthead,
+       the TODAY ledger (its first slot = the resume row), the gaps
+       ledger, the stat line, then the week ledger. Every slot renders
+       the resolved section's class + approximate footprint, so the
+       pending → resolved handoff moves nothing (the r172b loading-
+       closure contract, re-mirrored for the TodayList anatomy). */
     return (
       <div className="page student-dashboard" aria-busy="true" aria-live="polite">
         <header className="page-header">
           <h1 className="page-title">لوحة التحكم</h1>
           <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
         </header>
-        <ListSkeleton rows={3} />
         <section className="momentum dash-resume-pending" aria-busy="true">
-          <Skeleton width="112px" height="112px" rounded="var(--r-full)" />
+          <Skeleton width="56px" height="56px" rounded="var(--r-full)" />
           <div className="momentum-info" style={{ flex: 1 }}>
-            <Skeleton width="52%" height="18" />
-            <Skeleton width="78%" height="12" />
-            <Skeleton width="40%" height="11" />
+            <Skeleton width="38%" height="14" />
+            <Skeleton width="72%" height="11" />
           </div>
         </section>
+        <ListSkeleton rows={4} />
         <div className="stat-strip" aria-busy="true">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="stat-cell">
@@ -516,7 +482,7 @@ export default function StudentDashboardPage() {
       to: `/student/courses/${c.offeringId}`,
       title: <>{c.courseName}{c.room ? ` — ${c.room}` : ''}</>,
       meta: <>{DAY_LABEL[c.when]} · <bdi>{c.startTime}–{c.endTime}</bdi></>,
-      icon: Presentation, tone: c.when === 'today' ? 'accent' : 'gold',
+      tone: c.when === 'today' ? 'accent' : 'gold',
     })),
     ...d.agenda.assignments.slice(0, 3).map<AgendaItem>((a) => ({
       kind: 'assign', id: `a-${a.id}`,
@@ -524,7 +490,7 @@ export default function StudentDashboardPage() {
       to: `/student/courses/${a.offeringId}`,
       title: <>{a.title} (<bdi>{a.courseCode}</bdi>)</>,
       meta: <>تسليم {formatDue(a.dueAt)}</>,
-      icon: ASSIGNMENT_ICON[a.type], tone: 'gold',
+      tone: 'gold',
     })),
     ...d.agenda.live.slice(0, 2).map<AgendaItem>((l) => ({
       kind: 'live', id: `l-${l.id}`,
@@ -535,7 +501,7 @@ export default function StudentDashboardPage() {
          so ascending sort puts it there naturally. */
       title: <>بثّ مباشر: {l.title}</>,
       meta: <><bdi>{l.offering.course.code}</bdi> · {formatDue(l.scheduledAt)}</>,
-      icon: Radio, tone: 'red',
+      tone: 'red',
     })),
     // r164-c — the fourth bucket: still-actable exams.
     ...(d.agenda.exams ?? []).slice(0, 4).map<AgendaItem>((e) => {
@@ -551,18 +517,20 @@ export default function StudentDashboardPage() {
           </>
         ),
         meta: <>{row.metaLabel} {formatDue(e.whenAt)}</>,
-        icon: ClipboardCheck, tone: 'red' as const,
+        tone: 'red' as const,
       };
     }),
   ].sort((a, b) => a.whenMs - b.whenMs);
 
-  /* R189 — the TODAY split: rows whose instant is before end-of-today
-   * (started or still upcoming today) lead the page in the TODAY
-   * ledger; the rest feed the week ledger grouped by real date. */
+  /* r220 — the TodayList split: today's rows lead the list; exams stay
+     actable wherever their window sits, so they join the SAME list
+     right after (never buried below the fold). The week ledger keeps
+     the non-exam remainder grouped by real date. */
   const endOfToday = new Date();
   endOfToday.setHours(23, 59, 59, 999);
   const today = agenda.filter((it) => it.whenMs <= endOfToday.getTime());
-  const later = agenda.filter((it) => it.whenMs > endOfToday.getTime());
+  const exams = agenda.filter((it) => it.kind === 'exam');
+  const later = agenda.filter((it) => it.whenMs > endOfToday.getTime() && it.kind !== 'exam');
 
   // Week ledger grouping — by the row's own calendar day (day name +
   // mono date), preserving the chronological order.
@@ -575,13 +543,18 @@ export default function StudentDashboardPage() {
     const date = dt ? formatDate(dt, { day: 'numeric', month: 'numeric' }) : '';
     const key = `${day}-${date}`;
     const last = weekGroups[weekGroups.length - 1];
-    if (last && last.key === key) last.items.push(it);
+    if (last && key === last.key) last.items.push(it);
     else weekGroups.push({ key, day, date, items: [it] });
   }
 
   const now = new Date();
   const dateLine = formatDate(now, { weekday: 'long', day: 'numeric', month: 'long' });
   const termPct = d.term.progressPct;
+
+  /* The gaps ledger: top 3 priority gaps with direct remediation.
+     Honest states: pending → row skeletons; error → quiet retry row;
+     empty → the panel says so in one line (no celebration banner). */
+  const topGaps = (gaps.data ?? []).slice(0, 3);
 
   return (
     <div className="page student-dashboard">
@@ -599,32 +572,66 @@ export default function StudentDashboardPage() {
         </p>
       </header>
 
-      {/* TODAY — the agenda's today-slice as the page's hero ledger.
-          The student's actual commitments, not a greeting banner. */}
+      {/* اليوم — the ONE TodayList: continue-learning pinned first,
+          then today's commitments, then every still-actable exam. */}
       <LedgerPanel
-        title="جدول اليوم"
-        tag={countAr(today.length, ['التزام واحد', 'التزامان', 'التزامات', 'التزامًا'])}
-        zone={today.some((it) => it.tone === 'red') ? 'rose' : undefined}
-        ariaLabel="التزامات اليوم"
+        title="اليوم"
+        tag={countAr(today.length + exams.length + 1, ['التزام واحد', 'التزامان', 'التزامات', 'التزامًا'])}
+        zone={(today.some((it) => it.tone === 'red') || exams.length > 0) ? 'rose' : undefined}
+        ariaLabel="قائمة اليوم"
       >
-        {today.length === 0 ? (
+        <ResumeRow resume={resume} training={trainingCatalog} />
+        {today.map((item) => <TodayRow key={item.id} item={item} />)}
+        {today.length === 0 && exams.length === 0 && (
           <div className="ledger-row ledger-row-flat">
             <span className="ledger-lead"><b>اليوم</b>راحة</span>
             <span className="ledger-what">
-              لا حصص أو مهام أو اختبارات اليوم — أسبوعك القادم أدناه، وتعلّمك ينتظرك في الأعلى.
+              لا حصص أو مهام اليوم — تعلّمك ينتظرك في أول صف، وأسبوعك القادم أدناه.
             </span>
             <Badge color="green">يوم مفتوح</Badge>
           </div>
+        )}
+        {exams.length > 0 && (
+          <div className="ledger-group-label" role="presentation">اختبارات قادمة</div>
+        )}
+        {exams.map((item) => <TodayRow key={item.id} item={item} />)}
+      </LedgerPanel>
+
+      {/* فجواتك — the recommended gaps with one-click remediation.
+          Honest states: pending → row skeletons; error → quiet retry
+          row; empty → one calm line (no celebration banner). */}
+      <LedgerPanel
+        title="فجوات يُنصح بسدّها"
+        zone="copper"
+        actions={<Link to="/student/matrix" className="btn ghost sm">المصفوفة الكاملة</Link>}
+        tag={gaps.data?.length ? formatInt(gaps.data.length) : undefined}
+        ariaLabel="فجوات الإتقان الموصى بها"
+      >
+        {gaps.isPending ? (
+          <ListSkeleton rows={2} />
+        ) : gaps.isError ? (
+          <div className="ledger-row ledger-row-flat" role="alert">
+            <span className="ledger-lead"><b>فجوات</b>—</span>
+            <span className="ledger-what">
+              تعذَّر تحميل فجواتك —{' '}
+              <button type="button" className="btn ghost sm" onClick={() => gaps.refetch()}>إعادة المحاولة</button>
+            </span>
+          </div>
+        ) : topGaps.length === 0 ? (
+          <div className="ledger-row ledger-row-flat">
+            <span className="ledger-lead"><b>فجوات</b>لا شيء</span>
+            <span className="ledger-what">
+              لا فجوات مكتشفة بعد — أجب عن نقاط التفاعل في محاضراتك لترسم خريطة إتقانك.
+            </span>
+          </div>
         ) : (
-          today.map((item) => <TodayRow key={item.id} item={item} />)
+          topGaps.map((g) => <GapRow key={g.conceptId} g={g} />)
         )}
       </LedgerPanel>
 
-      {/* Continue-learning hero (PP-X2 / audit P0-3) — the ring row. */}
-      <ResumeHero resume={resume} training={trainingCatalog} />
-
-      {/* The typographic stat strip — real values, trend notes carry
-          the nearest deadline / cohort rank (data, not decoration). */}
+      {/* The typographic stat line — real values, compact (r220: the
+          momentum line, no icon boxes). Trend notes carry the nearest
+          deadline / cohort rank (data, not decoration). */}
       <StatStrip
         ariaLabel="ملخص الأداء الأكاديمي"
         cells={[
@@ -671,7 +678,7 @@ export default function StudentDashboardPage() {
         ]}
       />
 
-      {/* THE WEEK — the later agenda grouped by real day. */}
+      {/* الأسبوع — the non-exam remainder grouped by real day. */}
       {later.length > 0 && (
         <LedgerPanel
           title="أسبوعك القادم"

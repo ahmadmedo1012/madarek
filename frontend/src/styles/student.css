@@ -19,7 +19,7 @@
 
   .lecture-shell {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
     gap: var(--sp-6);
     align-items: start;
   }
@@ -27,6 +27,104 @@
     /* Sidebar collapses below the player on narrow screens. */
     .lecture-shell { grid-template-columns: 1fr; }
   }
+
+  /* r220 — the attachments panel: interaction points + chapters in ONE
+     calm surface beside the video. Sticky on desktop (it scrolls with
+     the player column and never outruns the topbar); static in the
+     ≤1024px flow where it reads as the sheet under the player. */
+  .lecture-aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    min-inline-size: 0;
+  }
+  .lecture-panel {
+    position: sticky;
+    top: var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    box-shadow: var(--elev-1);
+    max-block-size: calc(100vh - var(--sp-12));
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  @media (max-width: 1024px) {
+    .lecture-panel { position: static; max-block-size: none; overflow: visible; }
+  }
+  .lecture-panel-title {
+    margin: 0;
+    padding: var(--sp-4) var(--sp-4) var(--sp-2);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-bold);
+    color: var(--text);
+  }
+  .lecture-panel-sec {
+    padding: var(--sp-3) var(--sp-4) var(--sp-3);
+    border-block-start: 1px solid var(--surface-divider);
+  }
+  .lecture-panel-sec-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-2);
+    margin: 0 0 var(--sp-1);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-secondary);
+  }
+  .lecture-panel-sec-meta {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .lecture-panel-empty {
+    margin: 0;
+    padding: 0 var(--sp-4) var(--sp-4);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+  }
+  /* Interaction-point rows — the chapter-row grammar with a question
+     body; unanswered rows carry the alert ink, answered rows go quiet
+     green (state = word + icon + position, never hue alone: the time
+     chip + the answered count in the section head carry the same truth). */
+  .cp-list { display: flex; flex-direction: column; }
+  .cp-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
+    min-block-size: 44px;
+    padding: var(--sp-2-5) var(--sp-2);
+    background: transparent;
+    border: 0;
+    text-align: start;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    border-radius: var(--r-sm);
+    transition: background var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .cp-row + .cp-row { border-block-start: 1px solid var(--surface-divider); }
+  .cp-row:hover { background: var(--surface-2); }
+  .cp-row:active { background: var(--surface-3); }
+  .cp-row-q {
+    flex: 1;
+    min-inline-size: 0;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    line-height: 1.45;
+    color: var(--text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .cp-row.done .cp-row-q { color: var(--text-secondary); font-weight: var(--fw-normal); }
+  .cp-row.done .chapter-state { color: var(--success-ink); }
+  .cp-row:not(.done) .chapter-state { color: var(--warning-ink); }
 
   /* Video column — one flex rhythm for meta / progress / description,
      no per-child margins. */
@@ -3540,7 +3638,7 @@
   }
   .matrix-name {
     font-size: var(--fs-sm);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold);
     color: var(--text);
     line-height: 1.25;
   }
@@ -3549,32 +3647,63 @@
     align-items: center;
     gap: var(--sp-1);
     margin-block-start: var(--sp-0-5);
-    font-size: var(--fs-xxs); /* r184: literal → token (11px = --fs-xxs), zero visual change */
-    color: var(--text-subtle);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
     font-variant-numeric: tabular-nums;
   }
   .matrix-meta-pct {
-    color: var(--text-muted);
+    color: var(--text);
     font-weight: var(--fw-semibold);
+    font-family: var(--font-mono);
   }
 
-  /* Per-concept tile */
+  /* Per-concept tile (r220: wider min cell = long Arabic concept names
+     stop ellipsising; status word + tabular % mean the state never
+     rides on hue alone). */
   .matrix-cells {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   }
   .matrix-cell {
-    padding: var(--sp-2) var(--sp-2-5);
-    border-radius: var(--r-xs);
-    font-size: var(--fs-xs); /* r184: literal → token (12px = --fs-xs), zero visual change */
+    padding: var(--sp-2-5) var(--sp-3);
+    border-radius: var(--r-sm);
+    font-size: var(--fs-xs);
     color: var(--text);
     background: var(--surface-2);
     border: 1px solid var(--rule);
     text-align: start;
     cursor: default;
-    line-height: 1.3;
+    line-height: 1.4;
     transition: var(--t-clean);
+    min-inline-size: 0;
+  }
+  /* r220: the non-link cells join the keyboard order — focusable, with
+     the system focus ring so the grid is traversable without a pointer. */
+  .matrix-cell:focus-visible {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+  }
+
+  /* r220 — mobile recomposition: the dense grid becomes a concept list
+     with the SAME data (name + status word + %), one honest row per
+     concept — no sideways scroll, no clipped tiles. */
+  @media (max-width: 640px) {
+    .matrix-cells { grid-template-columns: 1fr; }
+    .matrix-cell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+    }
+    .matrix-name {
+      flex: 1;
+      min-inline-size: 0;
+    }
+    .matrix-meta {
+      margin-block-start: 0;
+      flex-shrink: 0;
+    }
   }
   .matrix-cell.lvl-strong   { background: color-mix(in srgb, var(--success) 14%, var(--surface)); border-color: color-mix(in srgb, var(--success) 26%, transparent); color: var(--c-mint-deep); }
   .matrix-cell.lvl-good     { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 24%, transparent); color: var(--accent-strong); }
@@ -3703,12 +3832,70 @@
      conflict) with the valid RTL-correct fade: dots sit at the
      inline-end corner, opaque at the edge, fading toward the content —
      `to left` for LTR (inline-end = right), `to right` for RTL. */
-  
-  
+
+
   @media (max-width: 640px) {
-    
-    
-    
+
+
+
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     r220 (4A redesign — Superlist direction) — dashboard TodayList
+     anatomy. All values ride tokens; overrides scope under
+     .student-dashboard so the shared primitives stay untouched.
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* The continue-learning item as a ledger row: the small momentum ring
+     rides the lead column; the chip CTA stays visual (the row is the
+     link — the agenda-row contract). */
+  .student-dashboard .momentum.dash-resume-pending {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    padding: var(--sp-4) var(--sp-5);
+    gap: var(--sp-4);
+  }
+  .student-dashboard .dash-resume-ring {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--sp-1);
+  }
+  .student-dashboard .dash-resume-ring .momentum-ring {
+    inline-size: 56px;
+    block-size: 56px;
+  }
+  .student-dashboard .dash-resume-ring .momentum-center { display: none; }
+  .student-dashboard .dash-resume-error .ledger-what a {
+    color: var(--accent-ink);
+    text-decoration: underline;
+  }
+  .student-dashboard .dash-resume-error .ledger-tail {
+    display: flex;
+    align-items: center;
+  }
+
+  /* The «اختبارات قادمة» group label inside the day ledger. */
+  .ledger-group-label {
+    padding: var(--sp-2) var(--sp-5) var(--sp-1);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+
+  /* The momentum stat line — compact: tighter cells, hairline
+     separators, quieter values. Still the StatStrip anatomy (mono
+     label over value over trend), just printed at line scale. */
+  .student-dashboard .stat-strip { border-radius: var(--r-lg); }
+  .student-dashboard .stat-cell {
+    padding: var(--sp-3) var(--sp-4);
+  }
+  .student-dashboard .stat-cell .stat-value { font-size: var(--fs-h3); }
+  .student-dashboard .stat-cell .stat-trend {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
 }
