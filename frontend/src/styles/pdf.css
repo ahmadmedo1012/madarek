@@ -6,9 +6,9 @@
 .pdf-viewer {
   display: flex;
   flex-direction: column;
-  background: var(--surface-2);
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   overflow: hidden;
   min-height: 480px;
 }
@@ -325,15 +325,16 @@
   .pdf-touch-hint { display: inline-flex; }
 }
 
-/* ─── Annotations panel ──────────────────────────────────── */
+/* Annotations panel — a calm step on the paper ground, not a box in a
+   box: one hairline, one radius, the list owns the scroll. */
 .annotations-panel {
   display: flex;
   flex-direction: column;
   width: 320px;
   max-width: 100%;
-  background: var(--surface-1);
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -342,9 +343,9 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-2);
-  padding: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
   border-bottom: 1px solid var(--border);
-  background: var(--surface-2);
+  background: var(--surface);
   flex-wrap: wrap;
 }
 .annotations-list {
@@ -532,22 +533,39 @@
   .annotation-page-input { height: 44px; }
 }
 
-/* ─── Document viewer layout ───────────────────────────── */
-.document-viewer-layout {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  gap: var(--sp-3);
-  align-items: stretch;
-}
-.document-viewer-main {
-  flex: 1;
-  min-width: 0;
+/* ─── Reader page chrome ──────────────────────────────────
+   r199: the split surface (.doc-reader) moved to research.css — the
+   4B family sheet shared by the research/library pages. What stays
+   here is the reader's own chrome: the quiet head and the notes-sheet
+   embedding. */
+.doc-reader-head {
   display: flex;
   flex-direction: column;
+  gap: var(--sp-1);
+  margin-block-end: var(--sp-3);
 }
+.doc-reader-title {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  line-height: var(--lh-snug);
+  overflow-wrap: anywhere;
+}
+
+/* The annotations panel embedded in the mobile bottom Sheet — full
+   width, natural height with an internal scroll; the fixed 320px side
+   column is a desktop-only geometry. */
+.rs-notes-sheet-body .annotations-panel {
+  width: 100%;
+  max-height: min(60dvh, 480px);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
 @media (max-width: 920px) {
-  .document-viewer-layout { flex-direction: column; }
+  .doc-reader-title { font-size: var(--fs-body-lg); }
 }
 
 /* ─── The viewer route page — viewport-locked with dvh ──────
@@ -568,7 +586,7 @@
    sidebar, back link, the inline 100vh height). */
 @media print {
   .document-viewer-page { height: auto !important; }
-  .document-viewer-layout { display: block; }
+  .doc-reader-head { margin-block-end: 0; }
   .document-viewer-back,
   .pdf-toolbar,
   .pdf-searchbar,

@@ -1,13 +1,16 @@
 import { lazy, Suspense, useRef, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import { ChevronRight, FileQuestion } from 'lucide-react';
+import { ChevronRight, FileQuestion, MessageSquare } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { EmptyState } from '../components/primitives/States';
+import { Sheet } from '../components/overlays';
+import { useIsNarrowLayout } from '../hooks/useIsNarrowLayout';
 import { apiBaseURL } from '../lib/api';
 import { ROLE_HOME } from '../lib/nav';
 import { useAuthStore, type AppRole } from '../stores/auth.store';
 import { isViewerFilenameParam } from '../components/pdf/loadError';
-import '../styles/pdf.css'; // pdf viewer + annotations surfaces (D11 css split, 12-15)
+import '../styles/pdf.css';
+import '../styles/research.css';
 
 // Code-split: PdfViewer + pdfjs-dist + worker land in their own chunk.
 const PdfViewer = lazy(() => import('../components/pdf/PdfViewer'));
@@ -72,6 +75,29 @@ export default function DocumentViewerPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [numPages, setNumPages] = useState(1);
 
+  /* r199 (4B reader): the split surface belongs to the desktop shell;
+   * at the mobile shell boundary the annotations move into a bottom
+   * Sheet behind one floating trigger — the reader keeps the full
+   * viewport for the paper itself. */
+  const isNarrow = useIsNarrowLayout(920);
+  const [notesOpen, setNotesOpen] = useState(false);
+
+  const jumpAndClose = (n: number) => {
+    controlRef.current?.jumpToPage(n);
+    setNotesOpen(false);
+  };
+
+  const annotationsPanel = paperId ? (
+    <Suspense fallback={null}>
+      <AnnotationsPanel
+        paperId={paperId}
+        currentPage={currentPage}
+        numPages={numPages}
+        onJumpToPage={isNarrow ? jumpAndClose : (n) => controlRef.current?.jumpToPage(n)}
+      />
+    </Suspense>
+  ) : null;
+
   if (!params.filename || !isViewerFilenameParam(params.filename)) {
     /* r164f: the honest param gate — the client mirror of the serving
      * route's isSafePaperFilename (files.routes.ts). An absent or
@@ -83,17 +109,15 @@ export default function DocumentViewerPage() {
     const missing = !params.filename;
     return (
       <div className="page document-viewer-page">
-        <header className="page-header" style={{ marginBottom: 'var(--sp-3)' }}>
-          <div className="page-title-block">
-            <Link to={back} className="back-link document-viewer-back">
-              <Icon icon={ChevronRight} size={14} />
-              العودة إلى الصفحة السابقة
-            </Link>
-            <h1 className="page-title" style={{ marginTop: 'var(--sp-1)' }}>{title ?? 'مستند'}</h1>
-          </div>
+        <header className="doc-reader-head">
+          <Link to={back} className="back-link document-viewer-back">
+            <Icon icon={ChevronRight} size={14} />
+            العودة إلى الصفحة السابقة
+          </Link>
+          <h1 className="doc-reader-title">{title ?? 'مستند'}</h1>
         </header>
-        <div className="document-viewer-layout">
-          <div className="document-viewer-main">
+        <div className="doc-reader">
+          <div className="doc-reader-main">
             <EmptyState
               icon={FileQuestion}
               title={missing ? 'المستند غير محدّد' : 'الملف غير موجود'}
@@ -117,23 +141,18 @@ export default function DocumentViewerPage() {
     // — the inline calc(100vh) hid content behind the iOS URL bar and
     // forced the print block to fight an inline style with !important.
     <div className="page document-viewer-page">
-      <header className="page-header" style={{ marginBottom: 'var(--sp-3)' }}>
-        <div className="page-title-block">
-          {/* document-viewer-back: app chrome — hidden by the viewer-page
-              print rules (pdf.css); the document title stays on paper.
-              r149 (R3-A1 #10): ينضم لعائلة ‎.back-link الكنونية (كان رابطًا
-              خامًا 12px بلا أرضية لمس ولا hover — الصفحة التفصيلية الوحيدة
-              خارج اللغة). */}
-          <Link to={back} className="back-link document-viewer-back">
-            <Icon icon={ChevronRight} size={14} />
-            العودة إلى الصفحة السابقة
-          </Link>
-          <h1 className="page-title" style={{ marginTop: 'var(--sp-1)' }}>{title ?? 'مستند'}</h1>
-        </div>
+      {/* Reader head — quiet chrome: one back affordance + the paper's
+          title; the reading surface owns the rest of the viewport. */}
+      <header className="doc-reader-head">
+        <Link to={back} className="back-link document-viewer-back">
+          <Icon icon={ChevronRight} size={14} />
+          العودة إلى الصفحة السابقة
+        </Link>
+        <h1 className="doc-reader-title">{title ?? 'مستند'}</h1>
       </header>
 
-      <div className="document-viewer-layout">
-        <div className="document-viewer-main">
+      <div className="doc-reader">
+        <div className="doc-reader-main">
           <Suspense fallback={<ViewerFallback />}>
             <PdfViewer
               src={src}
@@ -146,17 +165,39 @@ export default function DocumentViewerPage() {
           </Suspense>
         </div>
 
-        {paperId && (
-          <Suspense fallback={null}>
-            <AnnotationsPanel
-              paperId={paperId}
-              currentPage={currentPage}
-              numPages={numPages}
-              onJumpToPage={(n) => controlRef.current?.jumpToPage(n)}
-            />
-          </Suspense>
+        {/* Desktop split: annotations ride beside the document (the
+            panel owns its own scroll). */}
+        {!isNarrow && (
+          <div className="doc-reader-side">{annotationsPanel}</div>
         )}
       </div>
+
+      {/* Mobile recomposition: full-screen reader + annotations in a
+          bottom Sheet behind one thumb-reachable trigger. The trigger
+          renders only when the paper supports annotations (paperId). */}
+      {isNarrow && paperId && (
+        <>
+          <button
+            type="button"
+            className="doc-notes-fab"
+            onClick={() => setNotesOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={notesOpen}
+          >
+            <Icon icon={MessageSquare} size={16} />
+            الملاحظات
+          </button>
+          <Sheet
+            open={notesOpen}
+            onClose={() => setNotesOpen(false)}
+            side="bottom"
+            ariaLabel="ملاحظات البحث"
+            title="ملاحظات البحث"
+          >
+            <div className="rs-notes-sheet-body">{annotationsPanel}</div>
+          </Sheet>
+        </>
+      )}
     </div>
   );
 }

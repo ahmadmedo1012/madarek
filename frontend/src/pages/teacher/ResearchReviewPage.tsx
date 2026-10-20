@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
-  Microscope, FileText, ShieldCheck, Bot as BotIcon,
-  ScanSearch, CheckCircle2, X, Sparkles, BookMarked, MessageSquare,
+  Microscope, FileText, CheckCircle2, X, Sparkles, MessageSquare,
   StickyNote, RefreshCw,
 } from 'lucide-react';
-import { Card, Badge, UserAvatar, Tabs, FormField } from '../../components/primitives';
+import { PageHeader, Badge, UserAvatar, Tabs, FormField } from '../../components/primitives';
 import { StatStrip, type StatCellData } from '../../components/primitives/Ledger';
 import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
@@ -18,7 +17,9 @@ import {
   useAnnotations, apiErrorMessage,
   type ResearchPaper, type PaperStatus,
 } from '../../hooks/useResources';
-import { formatNum } from '../../utils/numbers';
+import { formatInt } from '../../utils/numbers';
+import { ScanResults } from '../../components/paper/ScanResults';
+import '../../styles/research.css';
 
 /* fmtDate (short ar-LY date, '—' for missing values) is
  * lib/format.formatDateAr (13-15 fold, audit 11-f P2-1) — shared with
@@ -93,7 +94,7 @@ export default function ResearchReviewPage() {
   const passed = (queue.data ?? []).filter((p) => p.status === 'CHECKS_PASSED');
   const failed = (queue.data ?? []).filter((p) => p.status === 'CHECKS_FAILED');
   // r157 / 6A8 — GRADED papers stay in the queue until published: they
-  // render in their own card below with the publish CTA (the backend
+  // render in their own section below with the publish CTA (the backend
   // RESEARCH_QUEUE_STATUSES now includes GRADED, so this list is real).
   const graded = (queue.data ?? []).filter((p) => p.status === 'GRADED');
   // Real count replacing the old dead "—" KPI (audit 0-e P2-40) — and
@@ -102,20 +103,20 @@ export default function ResearchReviewPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">البحث العلمي</h1>
-          <p className="page-subtitle">قائمة بحوث الطلاب للمراجعة، ومنشوراتك العلمية.</p>
-        </div>
-        <Tabs<Tab>
-          value={tab}
-          onChange={setTab}
-          items={[
-            { value: 'review', label: `للمراجعة${queue.data ? ` (${passed.length})` : ''}` },
-            { value: 'mine', label: 'منشوراتي' },
-          ]}
-        />
-      </header>
+      <PageHeader
+        title="البحث العلمي"
+        subtitle="قائمة بحوث الطلاب للمراجعة، ومنشوراتك العلمية."
+        actions={
+          <Tabs<Tab>
+            value={tab}
+            onChange={setTab}
+            items={[
+              { value: 'review', label: `للمراجعة${queue.data ? ` (${passed.length})` : ''}` },
+              { value: 'mine', label: 'منشوراتي' },
+            ]}
+          />
+        }
+      />
 
       {tab === 'review' ? (
         <>
@@ -128,12 +129,16 @@ export default function ResearchReviewPage() {
             />
           )}
 
-          <Card title="قائمة المراجعة" icon={ScanSearch} subtitle="بحوث الطلاب التي اجتازت الفحص التجريبي (محاكاة) وبانتظار تقييمك">
+          {/* The queue IS the page: each paper is a full-width row with
+              its scan facts and actions attached. */}
+          <section className="flex-col gap-2" aria-label="قائمة المراجعة">
+            <h2 className="rs-section-title">قائمة المراجعة</h2>
+            <p className="rs-count">بحوث الطلاب التي اجتازت الفحص التجريبي (محاكاة) وبانتظار تقييمك</p>
             {queue.isPending ? (
               <div className="flex-col gap-3" aria-busy="true" aria-live="polite">
                 {[0, 1].map((i) => (
-                  <div key={i} className="paper-row" aria-hidden>
-                    <div className="flex items-center gap-3">
+                  <div key={i} className="rs-row" aria-hidden>
+                    <div className="rs-row-head">
                       <Skeleton width={36} height={36} rounded="50%" />
                       <div className="flex-col gap-2 flex-1">
                         <Skeleton width="55%" height={14} />
@@ -157,39 +162,39 @@ export default function ResearchReviewPage() {
                 description="ستظهر هنا بحوث الطلاب فور اجتيازها الفحص التجريبي (محاكاة) للانتحال والمحتوى الآلي."
               />
             ) : (
-              <div className="flex-col gap-3">
+              <div className="flex-col gap-2">
                 {passed.map((p) => (
                   <ReviewRow key={p.id} paper={p} onOpen={() => setReviewing(p)} />
                 ))}
               </div>
             )}
-          </Card>
+          </section>
 
           {failed.length > 0 && (
-            <Card title="رفضها الفحص التجريبي (محاكاة)" icon={X} subtitle="بحوث تجاوزت الحدود التجريبية — لا تحتاج تقييماً">
-              <div className="flex-col gap-3">
+            <section className="flex-col gap-2" aria-label="بحوث رفضها الفحص">
+              <h2 className="rs-section-title">رفضها الفحص التجريبي (محاكاة)</h2>
+              <p className="rs-count">بحوث تجاوزت الحدود التجريبية — لا تحتاج تقييماً</p>
+              <div className="flex-col gap-2">
                 {failed.map((p) => (
                   <ReviewRow key={p.id} paper={p} onOpen={() => setReviewing(p)} />
                 ))}
               </div>
-            </Card>
+            </section>
           )}
 
           {/* r157 / 6A8 — the publish loop's missing half: GRADED papers
-              render here (purple tone) with the publish CTA; the KPI
+              render here (gold tone) with the publish CTA; the KPI
               «جاهزة للنشر» finally counts something reachable. */}
           {graded.length > 0 && (
-            <Card
-              title="مُقيَّمة — جاهزة للنشر"
-              icon={BookMarked}
-              subtitle="بحوث قُيِّمت ويمكن نشرها في مكتبة الجامعة — النشر خطوة صريحة من مراجعة كل بحث"
-            >
-              <div className="flex-col gap-3">
+            <section className="flex-col gap-2" aria-label="بحوث جاهزة للنشر">
+              <h2 className="rs-section-title">مُقيَّمة — جاهزة للنشر</h2>
+              <p className="rs-count">بحوث قُيِّمت ويمكن نشرها في مكتبة الجامعة — النشر خطوة صريحة من مراجعة كل بحث</p>
+              <div className="flex-col gap-2">
                 {graded.map((p) => (
                   <GradedRow key={p.id} paper={p} onOpen={() => setReviewing(p)} />
                 ))}
               </div>
-            </Card>
+            </section>
           )}
         </>
       ) : (
@@ -203,42 +208,41 @@ export default function ResearchReviewPage() {
   );
 }
 
+/* One queue row — the paper's facts attached: who, what, scan numbers,
+ * and the row's next action. The scan cells live in the row detail (the
+ * declared-simulation presentation shared with the student surface). */
 function ReviewRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void }) {
   const initials = paper.student.avatarInitials ?? `${paper.student.firstName[0]}${paper.student.lastName[0]}`;
-  const plagOK = (paper.plagiarismPct ?? 0) < 15;
-  const aiOK = (paper.aiContentPct ?? 0) < 25;
   return (
-    // .paper-row family is owned by student.css §research (shared grammar)
-    <div className="paper-row">
-      <div className="paper-row-head">
-        <div className="flex items-center gap-3">
-          <UserAvatar initials={initials} color={paper.student.avatarColor ?? undefined} size={36} />
-          <div className="paper-row-main">
-            <div className="paper-row-title">{paper.title}</div>
-            <div className="paper-row-course">
-              {paper.student.firstName} {paper.student.lastName}
-              {paper.offering && (<> · {paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)</>)}
-            </div>
+    <article className="rs-row">
+      <div className="rs-row-head">
+        <UserAvatar initials={initials} color={paper.student.avatarColor ?? undefined} size={36} />
+        <div className="rs-row-main">
+          <h3 className="rs-row-title">{paper.title}</h3>
+          <div className="rs-row-meta">
+            <span>{paper.student.firstName} {paper.student.lastName}</span>
+            {paper.offering && (
+              <span>
+                {paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)
+              </span>
+            )}
+            <span>رُفع {formatDateAr(paper.uploadedAt)}</span>
           </div>
         </div>
-        <Badge color={paper.status === 'CHECKS_PASSED' ? 'amber' : 'red'}>
-          {STATUS_LABEL[paper.status]}
-        </Badge>
+        <div className="rs-row-side">
+          <Badge color={paper.status === 'CHECKS_PASSED' ? 'amber' : 'red'}>
+            {STATUS_LABEL[paper.status]}
+          </Badge>
+        </div>
       </div>
-      <div className="review-row-meta">
-        <span className={plagOK ? 'text-green' : 'text-red'}>
-          <Icon icon={ShieldCheck} size={12} />
-          انتحال: <bdi className="font-mono">{paper.plagiarismPct?.toFixed(1) ?? '—'}%</bdi>
-        </span>
-        <span className={aiOK ? 'text-green' : 'text-red'}>
-          <Icon icon={BotIcon} size={12} />
-          <bdi>AI</bdi>: <bdi className="font-mono">{paper.aiContentPct?.toFixed(1) ?? '—'}%</bdi>
-        </span>
-        <span className="text-xxs text-subtle">محاكاة</span>
-        <span className="text-subtle">·</span>
-        <span className="text-subtle">رُفع {formatDateAr(paper.uploadedAt)}</span>
+      <div className="rs-row-detail">
+        <ScanResults
+          plagiarismPct={paper.plagiarismPct}
+          aiContentPct={paper.aiContentPct}
+          note="النسب كما حسبها الفحص التجريبي — لا تحتاج تقييماً منك."
+        />
       </div>
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="rs-review-actions">
         <button type="button" className="btn primary sm" onClick={onOpen}>
           <Icon icon={FileText} size={13} />
           مراجعة وتقييم
@@ -253,38 +257,42 @@ function ReviewRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void
           </RouterLink>
         )}
       </div>
-    </div>
+    </article>
   );
 }
 
-/* r157 / 6A8 — one GRADED row: the purple tone mirrors the «جاهزة
- * للنشر» KPI, the score travels on the row, and the CTA opens the
- * review modal where publishing stays an EXPLICIT footer action (an
- * accidental Enter must never publish a paper to the public archive). */
+/* r157 / 6A8 — one GRADED row: the score travels on the row, and the
+ * CTA opens the review modal where publishing stays an EXPLICIT footer
+ * action (an accidental Enter must never publish a paper to the public
+ * archive). */
 function GradedRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void }) {
   const initials = paper.student.avatarInitials ?? `${paper.student.firstName[0]}${paper.student.lastName[0]}`;
   return (
-    // .paper-row family is owned by student.css §research (shared grammar)
-    <div className="paper-row">
-      <div className="paper-row-head">
-        <div className="flex items-center gap-3">
-          <UserAvatar initials={initials} color={paper.student.avatarColor ?? undefined} size={36} />
-          <div className="paper-row-main">
-            <div className="paper-row-title">{paper.title}</div>
-            <div className="paper-row-course">
-              {paper.student.firstName} {paper.student.lastName}
-              {paper.offering && (<> · {paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)</>)}
-            </div>
+    <article className="rs-row">
+      <div className="rs-row-head">
+        <UserAvatar initials={initials} color={paper.student.avatarColor ?? undefined} size={36} />
+        <div className="rs-row-main">
+          <h3 className="rs-row-title">{paper.title}</h3>
+          <div className="rs-row-meta">
+            <span>{paper.student.firstName} {paper.student.lastName}</span>
+            {paper.offering && (
+              <span>
+                {paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)
+              </span>
+            )}
+            <span>
+              قُيِّم {paper.gradedAt ? formatDateAr(paper.gradedAt) : formatDateAr(paper.uploadedAt)}
+            </span>
           </div>
         </div>
-        <Badge color="purple">{STATUS_LABEL[paper.status]}</Badge>
+        <div className="rs-row-side">
+          <Badge color="gold">{STATUS_LABEL[paper.status]}</Badge>
+          <span className="rs-row-date">
+            الدرجة: <bdi className="font-mono">{formatInt(paper.grade ?? 0)}</bdi> / <bdi className="font-mono">20</bdi>
+          </span>
+        </div>
       </div>
-      <div className="review-row-meta">
-        <span>الدرجة: <bdi className="font-mono">{paper.grade ?? '—'}</bdi> / <bdi className="font-mono">20</bdi></span>
-        <span className="text-subtle">·</span>
-        <span className="text-subtle">قيِّم {paper.gradedAt ? formatDateAr(paper.gradedAt) : formatDateAr(paper.uploadedAt)}</span>
-      </div>
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="rs-review-actions">
         <button type="button" className="btn primary sm" onClick={onOpen}>
           <Icon icon={Sparkles} size={13} />
           نشر في المكتبة
@@ -299,7 +307,7 @@ function GradedRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void
           </RouterLink>
         )}
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -397,26 +405,14 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
         )}
 
         <div className="section-title">نتائج الفحص الأوتوماتيكي</div>
-        {/* The grading form lives OUTSIDE the scan grid now — a misplaced
-            closing div used to nest the whole form inside .scan-bar
-            (audit 0-e P2-40). */}
-        <div className="scan-bar" style={{ marginBlockEnd: 'var(--sp-4)' }}>
-          <div className="scan-cell">
-            <span className="scan-cell-label flex items-center gap-1">
-              <Icon icon={ShieldCheck} size={11} /> نسبة الانتحال
-            </span>
-            <span className={`scan-cell-value ${(paper.plagiarismPct ?? 0) < 15 ? 'ok' : 'bad'}`}>
-              <bdi>{paper.plagiarismPct?.toFixed(1) ?? '—'}%</bdi>
-            </span>
-          </div>
-          <div className="scan-cell">
-            <span className="scan-cell-label flex items-center gap-1">
-              <Icon icon={BotIcon} size={11} /> محتوى <bdi>AI</bdi>
-            </span>
-            <span className={`scan-cell-value ${(paper.aiContentPct ?? 0) < 25 ? 'ok' : 'bad'}`}>
-              <bdi>{paper.aiContentPct?.toFixed(1) ?? '—'}%</bdi>
-            </span>
-          </div>
+        {/* The declared-simulation cells (shared with the student row) —
+            the grading form lives OUTSIDE them. */}
+        <div style={{ marginBlockEnd: 'var(--sp-4)' }}>
+          <ScanResults
+            plagiarismPct={paper.plagiarismPct}
+            aiContentPct={paper.aiContentPct}
+            note="نسب الفحص محاكاة تجريبية معلنة — ليست قياساً فعلياً."
+          />
         </div>
 
         <div className="section-title">التقييم</div>
@@ -560,28 +556,24 @@ function MyPublications() {
     return (
       <>
         <Kpi3Skeleton />
-        <Card>
-          <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="flex items-center gap-3" aria-hidden>
-                <Skeleton width={40} height={12} />
-                <Skeleton width={`${60 - i * 10}%`} height={14} />
-              </div>
-            ))}
-          </div>
-        </Card>
+        <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="flex items-center gap-3" aria-hidden>
+              <Skeleton width={40} height={12} />
+              <Skeleton width={`${60 - i * 10}%`} height={14} />
+            </div>
+          ))}
+        </div>
       </>
     );
   }
   if (profile.isError) {
     return (
-      <Card>
-        <ErrorState
-          message="تعذَّر تحميل منشوراتك"
-          error={profile.error}
-          onRetry={() => profile.refetch()}
-        />
-      </Card>
+      <ErrorState
+        message="تعذَّر تحميل منشوراتك"
+        error={profile.error}
+        onRetry={() => profile.refetch()}
+      />
     );
   }
 
@@ -592,23 +584,24 @@ function MyPublications() {
         cells={[
           {
             label: 'منشورات في ملفّك',
-            value: formatNum(publications.length),
+            value: formatInt(publications.length),
             trend: publications.length === 0 ? 'لم تُسجَّل بعد' : 'في ملفك الأكاديمي',
             trendTone: 'flat',
           },
           {
             label: 'شهادات وجوائز',
-            value: formatNum(certifications.length + awards.length),
+            value: formatInt(certifications.length + awards.length),
             trendTone: 'flat',
           },
           {
             label: 'سنوات الخبرة',
-            value: formatNum(profile.data?.yearsExperience ?? 0),
+            value: formatInt(profile.data?.yearsExperience ?? 0),
             trendTone: 'flat',
           },
         ]}
       />
-      <Card title="منشوراتي" icon={Microscope}>
+      <section className="flex-col gap-2" aria-label="منشوراتي">
+        <h2 className="rs-section-title">منشوراتي</h2>
         {publications.length === 0 ? (
           <EmptyState illustration="empty-search"
             icon={Microscope}
@@ -624,22 +617,26 @@ function MyPublications() {
         ) : (
           <div className="flex-col gap-2">
             {publications.map((p, i) => (
-              <div key={`${p.title}-${i}`} className="list-row">
-                <bdi className="list-row-meta font-mono">{p.year}</bdi>
-                <div className="list-row-body">
-                  <div className="list-row-title">{p.title}</div>
-                  {p.venue && <div className="list-row-sub">{p.venue}</div>}
+              <div key={`${p.title}-${i}`} className="rs-row">
+                <div className="rs-row-head">
+                  <bdi className="rs-row-date font-mono">{p.year}</bdi>
+                  <div className="rs-row-main">
+                    <div className="rs-row-title">{p.title}</div>
+                    {p.venue && <div className="rs-row-meta">{p.venue}</div>}
+                  </div>
+                  {p.url && (
+                    <div className="rs-row-side">
+                      <a href={p.url} target="_blank" rel="noreferrer" className="btn ghost sm">
+                        فتح
+                      </a>
+                    </div>
+                  )}
                 </div>
-                {p.url && (
-                  <a href={p.url} target="_blank" rel="noreferrer" className="btn ghost sm">
-                    فتح
-                  </a>
-                )}
               </div>
             ))}
           </div>
         )}
-      </Card>
+      </section>
     </>
   );
 }

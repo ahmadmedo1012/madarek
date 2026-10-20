@@ -1,11 +1,12 @@
 import { useId, useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
-  BookMarked, Upload, ShieldCheck, Bot as BotIcon,
-  CheckCircle2, XCircle, AlertCircle, ScanSearch, X, Workflow,
-  Sparkles, BarChart3, Clock, MessageSquare, FileText, type LucideIcon,
+  BookMarked, Upload, ScanSearch, X,
+  CheckCircle2, AlertCircle, Sparkles, MessageSquare, FileText,
+  type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, FormField, ProgressBar } from '../../components/primitives';
+import { PageHeader, Badge, FormField, ProgressBar } from '../../components/primitives';
+import { StatStrip, type StatCellData } from '../../components/primitives/Ledger';
 import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
@@ -19,6 +20,9 @@ import {
   useMyEnrollments, apiErrorMessage,
   type ResearchPaper, type PaperStatus,
 } from '../../hooks/useResources';
+import { StatusPipeline } from '../../components/paper/StatusPipeline';
+import { ScanResults } from '../../components/paper/ScanResults';
+import '../../styles/research.css';
 
 const STATUS_LABEL: Record<PaperStatus, string> = {
   UPLOADED: 'بانتظار الفحص',
@@ -33,32 +37,15 @@ const STATUS_LABEL: Record<PaperStatus, string> = {
   PUBLISHED: 'مُنشور في المكتبة',
 };
 
-/* r149 (R3-A1 #1): السلّم الكنوني المشترك — كان هنا انقسام دلالي
- * (CHECKS_PASSED brand/GRADED green/PUBLISHED purple) يخالف ما يراه
- * الإداري لنفس الورقة. الآن تعريف واحد في lib/paperStatus.ts. */
-
 /* fmtDate (short ar-LY date with year, '—' for missing values) is
  * lib/format.formatDateWithYearAr (13-15 fold, audit 11-f P2-1). */
-
-function plagColor(pct?: number | null) {
-  if (pct == null) return 'ok';
-  if (pct < 15) return 'ok';
-  if (pct < 25) return 'warn';
-  return 'bad';
-}
-function aiColor(pct?: number | null) {
-  if (pct == null) return 'ok';
-  if (pct < 25) return 'ok';
-  if (pct < 40) return 'warn';
-  return 'bad';
-}
 
 /* Shape-matched skeleton for a paper row (title + course + abstract). */
 function PaperRowSkeleton() {
   return (
-    <div className="paper-row" aria-hidden>
-      <div className="paper-row-head">
-        <div className="paper-row-main">
+    <div className="rs-row" aria-hidden>
+      <div className="rs-row-head">
+        <div className="rs-row-main">
           <Skeleton width="55%" height={16} />
           <div style={{ marginTop: 'var(--sp-2)' }}><Skeleton width={180} height={12} /></div>
           <div style={{ marginTop: 'var(--sp-2)' }}><Skeleton width="90%" height={12} /></div>
@@ -110,6 +97,12 @@ export default function StudentResearchPage() {
     graded: papers.filter((p) => p.status === 'GRADED' || p.status === 'PUBLISHED').length,
     rejected: papers.filter((p) => p.status === 'CHECKS_FAILED').length,
   };
+  const kpis: StatCellData[] = [
+    { label: 'إجمالي بحوثك', value: counts.total, trend: 'منذ أول رفعة', trendTone: 'flat' },
+    { label: 'قيد المراجعة', value: counts.pending, trend: counts.pending > 0 ? 'بانتظار خطوة تالية' : 'لا شيء معلّق', trendTone: 'flat' },
+    { label: 'مُقيَّمة', value: counts.graded, trend: counts.graded > 0 ? 'منها المنشور' : 'لا توجد بعد', trendTone: counts.graded > 0 ? 'up' : 'flat' },
+    { label: 'تعذّر اجتياز الفحص', value: counts.rejected, trend: counts.rejected > 0 ? 'تحتاج إعادة رفع' : 'لا شيء', trendTone: counts.rejected > 0 ? 'down' : 'flat' },
+  ];
 
   const startScan = async (id: string) => {
     setScanningId(id);
@@ -143,47 +136,53 @@ export default function StudentResearchPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">بحوثي العلمية</h1>
-          <p className="page-subtitle">
-            {/* r168b: the scan is a deterministic simulation until a real
-                detection provider is activated — the results area has
-                carried the note since r154b; the page's own header now
-                matches it (same phrasing as the landing research card). */}
-            ارفع بحوثك، اعرضها على فحص الانتحال وكشف الذكاء الاصطناعي
-            (محاكاة حتى تفعيل كشف حقيقي)،
-            ثم أرسلها لأستاذك للتقييم والنشر في مكتبة الجامعة.
-          </p>
-        </div>
-        <button type="button" className="btn primary" onClick={openFreshUpload}>
-          <Icon icon={Upload} size={14} />
-          رفع بحث جديد
-        </button>
-      </header>
+      <PageHeader
+        title="بحوثي العلمية"
+        subtitle={
+          /* r168b: the scan is a deterministic simulation until a real
+              detection provider is activated — the results area carries
+              the note since r154b; the header keeps matching it. */
+          'ارفع بحوثك، اعرضها على فحص الانتحال وكشف الذكاء الاصطناعي (محاكاة حتى تفعيل كشف حقيقي)، ثم أرسلها لأستاذك للتقييم والنشر في مكتبة الجامعة.'
+        }
+        actions={
+          <button type="button" className="btn primary" onClick={openFreshUpload}>
+            <Icon icon={Upload} size={14} />
+            رفع بحث جديد
+          </button>
+        }
+      />
 
-      <div className="grid-4">
-        <MetricCard icon={BookMarked} label="إجمالي البحوث" value={counts.total} color="brand" />
-        <MetricCard icon={Clock} label="قيد المراجعة" value={counts.pending} color="amber" />
-        <MetricCard icon={CheckCircle2} label="مُقيَّمة" value={counts.graded} color="green" />
-        <MetricCard icon={XCircle} label="تعذّر اجتياز الفحص" value={counts.rejected} color="red" />
-      </div>
-
-      <Card title="بحوثك" icon={BookMarked} subtitle="جميع البحوث التي رفعتها على المنصة">
-        {scanError && (
-          <div className="alert red" role="alert" style={{ marginBottom: 'var(--sp-3)' }}>
-            <span className="alert-dot" />
-            <div className="alert-body">
-              <div className="alert-title">تعذَّر إجراء الفحص</div>
-              <div className="alert-desc">{scanError}</div>
+      {my.isPending ? (
+        <div className="stat-strip" aria-hidden="true" aria-busy="true">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="stat-cell">
+              <Skeleton width={90} height={11} />
+              <div style={{ marginBlock: 'var(--sp-1)' }}><Skeleton width={48} height={26} /></div>
             </div>
+          ))}
+        </div>
+      ) : (
+        <StatStrip ariaLabel="ملخّص بحوثك" cells={kpis} />
+      )}
+
+      {scanError && (
+        <div className="alert red" role="alert">
+          <span className="alert-dot" />
+          <div className="alert-body">
+            <div className="alert-title">تعذَّر إجراء الفحص</div>
+            <div className="alert-desc">{scanError}</div>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* The list IS the page: each row carries its pipeline, results and
+          actions attached — no separate detail grid, no card walls. */}
+      <section className="flex-col gap-3" aria-label="بحوثك">
         {my.isPending ? (
-          <div className="flex-col gap-3">
+          <>
             <PaperRowSkeleton />
             <PaperRowSkeleton />
-          </div>
+          </>
         ) :
          my.isError ? <ErrorState error={my.error} onRetry={() => my.refetch()} /> :
          !papers.length ? (
@@ -200,19 +199,17 @@ export default function StudentResearchPage() {
             }
           />
         ) : (
-          <div className="flex-col gap-3">
-            {papers.map((p) => (
-              <PaperRow
-                key={p.id}
-                paper={p}
-                isScanning={scanningId === p.id || (p.status === 'SCANNING')}
-                onScan={() => void startScan(p.id)}
-                onResubmit={() => openResubmit(p)}
-              />
-            ))}
-          </div>
+          papers.map((p) => (
+            <PaperRow
+              key={p.id}
+              paper={p}
+              isScanning={scanningId === p.id || (p.status === 'SCANNING')}
+              onScan={() => void startScan(p.id)}
+              onResubmit={() => openResubmit(p)}
+            />
+          ))
         )}
-      </Card>
+      </section>
 
       <ProcessExplainer />
 
@@ -286,7 +283,7 @@ export default function StudentResearchPage() {
   );
 }
 
-/* ─── Paper row ─────────────────────────────────────────── */
+/* ─── Paper row — the journey attached to its item ───────── */
 function PaperRow({
   paper, isScanning, onScan, onResubmit,
 }: {
@@ -297,142 +294,94 @@ function PaperRow({
 }) {
   const hasResults = paper.plagiarismPct != null || paper.aiContentPct != null;
   return (
-    <div className="paper-row">
-      <div className="paper-row-head">
-        <div className="paper-row-main">
-          <div className="paper-row-title">{paper.title}</div>
-          {paper.offering && (
-            <div className="paper-row-course">
-              {paper.offering.course.name} · <span className="font-mono"><bdi>{paper.offering.course.code}</bdi></span>
-            </div>
-          )}
-          {paper.abstract && (
-            <p className="paper-row-abstract" title={paper.abstract}>{paper.abstract}</p>
-          )}
+    <article className="rs-row">
+      <div className="rs-row-head">
+        <div className="rs-row-main">
+          <h2 className="rs-row-title">{paper.title}</h2>
+          <div className="rs-row-meta">
+            {paper.offering && (
+              <span>
+                {paper.offering.course.name} · <span className="font-mono"><bdi>{paper.offering.course.code}</bdi></span>
+              </span>
+            )}
+            <span className="rs-row-date">رُفع: {formatDateWithYearAr(paper.uploadedAt)}</span>
+          </div>
         </div>
-        <div className="paper-row-side">
+        <div className="rs-row-side">
           <Badge color={PAPER_STATUS_TONE[paper.status]}>{STATUS_LABEL[paper.status]}</Badge>
-          <span className="text-xxs text-subtle">رُفع: {formatDateWithYearAr(paper.uploadedAt)}</span>
         </div>
       </div>
 
-      {/* Pre-scan: show CTA */}
-      {paper.status === 'UPLOADED' && !isScanning && (
-        <button type="button" className="btn outline paper-row-cta" onClick={onScan}>
-          <Icon icon={ScanSearch} size={14} />
-          ابدأ الفحص الآن
-        </button>
-      )}
+      {/* The journey rail — attached to the row, mirrors the badge. */}
+      <StatusPipeline status={paper.status} />
 
-      {/* Scanning: honest indeterminate state — the scan endpoint reports
-          no increments, so the cells sweep instead of faking numbers. */}
-      {isScanning && (
-        <div role="status" aria-live="polite">
-          <div className="scan-bar">
-            <div className="scan-cell">
-              <span className="scan-cell-label">
-                <Icon icon={ShieldCheck} size={11} /> فحص الانتحال
-              </span>
-              <span className="scan-cell-run" aria-hidden />
-              <span className="scan-cell-meta">جارٍ احتساب نسبة الانتحال التجريبية…</span>
+      <div className="rs-row-detail">
+        {/* Pre-scan: the one next action */}
+        {paper.status === 'UPLOADED' && !isScanning && (
+          <div className="rs-row-actions">
+            <button type="button" className="btn outline" onClick={onScan}>
+              <Icon icon={ScanSearch} size={14} />
+              ابدأ الفحص الآن
+            </button>
+          </div>
+        )}
+
+        {/* Scanning: honest indeterminate state — the scan endpoint
+            reports no increments, so the cells sweep instead of faking
+            numbers. */}
+        {isScanning && <ScanResults scanning />}
+
+        {/* Post-scan results — the declared simulation, gated values. */}
+        {!isScanning && hasResults && <ScanResults plagiarismPct={paper.plagiarismPct} aiContentPct={paper.aiContentPct} />}
+
+        {/* Graded */}
+        {(paper.status === 'GRADED' || paper.status === 'PUBLISHED') && paper.grade != null && (
+          <div className="rs-row-grade">
+            <div className="rs-row-grade-head">
+              <Icon icon={CheckCircle2} size={14} />
+              تقييم الأستاذ: <span className="font-mono"><bdi>{paper.grade.toFixed(1)} / 20</bdi></span>
             </div>
-            <div className="scan-cell">
-              <span className="scan-cell-label">
-                <Icon icon={BotIcon} size={11} /> كشف الذكاء الاصطناعي
-              </span>
-              <span className="scan-cell-run" aria-hidden />
-              <span className="scan-cell-meta">جارٍ احتساب نسبة المحتوى الآلي التجريبية…</span>
+            {paper.feedback && <p className="rs-row-grade-note">{paper.feedback}</p>}
+          </div>
+        )}
+
+        {paper.status === 'CHECKS_FAILED' && (
+          <div className="rs-row-alert" role="alert">
+            <div className="rs-row-alert-title">
+              <Icon icon={AlertCircle} size={14} />
+              تجاوز البحث الحدود التجريبية المسموح بها (محاكاة)
             </div>
-            <p className="scan-pulse">
-              <span className="scan-pulse-dot" aria-hidden />
-              جارٍ الفحص — قد تستغرق العملية بضع ثوانٍ
-            </p>
+            {/* r157 (F8): الإرشاد السابق كان بلا فعل — الزرّ يفتح
+                UploadModal معبّأً من الورقة الفاشلة (see openResubmit). */}
+            <div className="rs-row-actions">
+              <button type="button" className="btn outline" onClick={onResubmit}>
+                <Icon icon={Upload} size={13} />
+                رفع نسخة جديدة
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Post-scan: show results (.scan-bar/.scan-cell family owned by
-          components.css "wave 3-c") */}
-      {!isScanning && hasResults && (
-        <div className="scan-bar">
-          <div className="scan-cell">
-            <span className="scan-cell-label">
-              <Icon icon={ShieldCheck} size={11} /> نسبة الانتحال
-            </span>
-            <span className={`scan-cell-value ${plagColor(paper.plagiarismPct)}`}>
-              <bdi>{paper.plagiarismPct?.toFixed(1) ?? '—'}%</bdi>
-            </span>
-            <span className="scan-cell-meta">الحد المقبول: أقل من 15%</span>
-          </div>
-          <div className="scan-cell">
-            <span className="scan-cell-label">
-              <Icon icon={BotIcon} size={11} /> محتوى ذكاء اصطناعي
-            </span>
-            <span className={`scan-cell-value ${aiColor(paper.aiContentPct)}`}>
-              <bdi>{paper.aiContentPct?.toFixed(1) ?? '—'}%</bdi>
-            </span>
-            <span className="scan-cell-meta">الحد المقبول: أقل من 25%</span>
-          </div>
-        </div>
-      )}
-      {!isScanning && hasResults && (
-        <p className="text-xxs text-subtle" role="note" style={{ marginTop: 'var(--sp-2)' }}>
-          نسب الفحص قيم محاكاة تجريبية — ليست قياساً فعلياً حتى تفعيل كشف حقيقي.
-        </p>
-      )}
+        {paper.status === 'PUBLISHED' && (
+          <p className="rs-row-published" style={{ margin: 0 }}>
+            <Icon icon={Sparkles} size={13} />
+            تم نشر هذا البحث في مكتبة الجامعة.
+          </p>
+        )}
+      </div>
 
-      {/* Graded */}
-      {(paper.status === 'GRADED' || paper.status === 'PUBLISHED') && paper.grade != null && (
-        <div className="paper-row-grade">
-          <div className="paper-row-grade-head">
-            <Icon icon={CheckCircle2} size={14} />
-            تقييم الأستاذ: <span className="font-mono"><bdi>{paper.grade.toFixed(1)} / 20</bdi></span>
-          </div>
-          {paper.feedback && (
-            <p className="paper-row-grade-note">{paper.feedback}</p>
-          )}
-          {paper.fileUrl && (
-            <RouterLink
-              to={`/document/${encodeURIComponent(paper.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(paper.title)}&back=${encodeURIComponent('/student/research')}&paper=${encodeURIComponent(paper.id)}`}
-              className="btn outline sm"
-              style={{ marginTop: 'var(--sp-1-5)', alignSelf: 'flex-start' }}
-            >
-              <Icon icon={MessageSquare} size={13} />
-              مراجعة البحث مع ملاحظات الأستاذ
-            </RouterLink>
-          )}
-        </div>
-      )}
-
-      {paper.status === 'CHECKS_FAILED' && (
-        <div className="paper-row-failed" role="alert">
-          <div className="flex items-center gap-2 font-semibold">
-            <Icon icon={AlertCircle} size={14} />
-            تجاوز البحث الحدود التجريبية المسموح بها (محاكاة) — يُرجى مراجعة المحتوى وإعادة الرفع.
-          </div>
-          {/* r157 (F8): الإرشاد السابق كان بلا فعل — «راجع وأعد الرفع»
-              ثم يفتح الطالب النموذج فارغاً ويسترجع بياناته من ذاكرته.
-              الزرّ يفتح UploadModal معبّأً من الورقة الفاشلة
-              (العنوان/الملخّص/المقرّر — see openResubmit above). */}
-          <button
-            type="button"
-            className="btn outline sm"
-            onClick={onResubmit}
-            style={{ alignSelf: 'flex-start', marginTop: 'var(--sp-1)' }}
+      {(paper.status === 'GRADED' || paper.status === 'PUBLISHED') && paper.fileUrl && (
+        <div className="rs-row-actions">
+          <RouterLink
+            to={`/document/${encodeURIComponent(paper.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(paper.title)}&back=${encodeURIComponent('/student/research')}&paper=${encodeURIComponent(paper.id)}`}
+            className="btn outline"
           >
-            <Icon icon={Upload} size={13} />
-            رفع نسخة جديدة
-          </button>
+            <Icon icon={MessageSquare} size={13} />
+            مراجعة البحث مع ملاحظات الأستاذ
+          </RouterLink>
         </div>
       )}
-
-      {paper.status === 'PUBLISHED' && (
-        <div className="paper-row-published">
-          <Icon icon={Sparkles} size={13} />
-          تم نشر هذا البحث في مكتبة الجامعة.
-        </div>
-      )}
-    </div>
+    </article>
   );
 }
 
@@ -441,24 +390,24 @@ function ProcessExplainer() {
   const STEPS: Array<{ n: number; title: string; desc: string; icon: LucideIcon }> = [
     { n: 1, title: 'ارفع بحثك', desc: 'العنوان، الملخّص، والمقرّر المرتبط.', icon: Upload },
     { n: 2, title: 'فحص أوتوماتيكي', desc: 'كشف الانتحال + كشف توليد الذكاء الاصطناعي خلال ثوانٍ (محاكاة حتى تفعيل كشف حقيقي).', icon: ScanSearch },
-    { n: 3, title: 'تقييم الأستاذ', desc: 'بعد اجتياز الفحص، يُقيِّم الأستاذ البحث من 20.', icon: BarChart3 },
+    { n: 3, title: 'تقييم الأستاذ', desc: 'بعد اجتياز الفحص، يُقيِّم الأستاذ البحث من 20.', icon: FileText },
     { n: 4, title: 'النشر في المكتبة', desc: 'البحوث المتميزة تُضاف إلى مكتبة الجامعة.', icon: BookMarked },
   ];
   return (
-    <Card title="كيف يعمل النظام" icon={Workflow} subtitle="أربع مراحل — الفحص محاكاةٌ تجريبية">
-      <div className="grid-4">
+    <section className="rs-explainer" aria-label="كيف يعمل النظام">
+      <h2 className="rs-explainer-title">كيف يعمل النظام</h2>
+      <ol className="rs-explainer-steps">
         {STEPS.map((s) => (
-          <div key={s.n} className="process-step">
-            <div className="process-step-head">
-              <span className="process-step-num">{s.n}</span>
-              <Icon icon={s.icon} size={15} className="text-muted" />
+          <li key={s.n} className="rs-explainer-step">
+            <span className="rs-explainer-num" aria-hidden="true">{s.n}</span>
+            <div>
+              <div className="rs-explainer-step-title">{s.title}</div>
+              <div className="rs-explainer-step-desc">{s.desc}</div>
             </div>
-            <div className="process-step-title">{s.title}</div>
-            <div className="process-step-desc">{s.desc}</div>
-          </div>
+          </li>
         ))}
-      </div>
-    </Card>
+      </ol>
+    </section>
   );
 }
 
@@ -662,8 +611,8 @@ function UploadModal({
                 retry re-registers the paper WITHOUT re-uploading. The
                 row itself says nothing about it; this note does. */}
             {file === stagedFile && (
-              <p className="text-xxs text-subtle" role="note" style={{ marginBlockStart: 'calc(-1 * var(--sp-1))' }}>
-                <Icon icon={CheckCircle2} size={11} />{' '}
+              <p className="text-sm text-subtle" role="note" style={{ marginBlockStart: 'calc(-1 * var(--sp-1))' }}>
+                <Icon icon={CheckCircle2} size={13} />{' '}
                 الملف مرفوع بالفعل — إعادة المحاولة ستعيد استخدامه دون رفعه من جديد.
               </p>
             )}

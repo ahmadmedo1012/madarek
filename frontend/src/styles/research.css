@@ -1,0 +1,629 @@
+@layer pages {
+/* ═══════════════════════════════════════════════════════════════════
+   research.css — 4B family sheet (research cycle + library + reader).
+
+   Superlist translation, r199: list-first, detail attached to the row,
+   calm paper surfaces (steps, not border stacks), ONE signal
+   (ultramarine). Nothing here invents colors or motion — every value
+   rides tokens.css / motion.css rungs; the gate scans this sheet.
+
+   Owned by the research/library family only. Loaded by the three page
+   files (ResearchPage / LibraryPage / ResearchReviewPage) the same way
+   pdf.css is loaded by DocumentViewerPage.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── 1. The list row — the family's unit of layout ────────────────
+   One full-width surface per paper/book/hit; detail attaches to the
+   row itself (head → pipeline → detail → actions), never a second
+   grid. Surface steps over border stacks; one hairline + hover step. */
+.rs-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.rs-row:hover { border-color: var(--border-strong); }
+.rs-row-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  width: 100%;
+}
+.rs-row-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-1); }
+.rs-row-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  line-height: var(--lh-snug);
+  overflow-wrap: anywhere;
+}
+.rs-row-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+.rs-row-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-2);
+  flex-shrink: 0;
+}
+.rs-row-date { font-size: var(--fs-sm); color: var(--text-muted); white-space: nowrap; }
+.rs-row-snippet {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: var(--lh-base);
+  overflow-wrap: anywhere;
+}
+.rs-row-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: 100%;
+}
+.rs-row-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  width: 100%;
+}
+.rs-row-alert {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--c-rose-bg);
+}
+.rs-row-alert-title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--c-rose-ink);
+}
+.rs-row-published {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-sm);
+  color: var(--c-mint-ink);
+}
+.rs-row-grade {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  width: 100%;
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+}
+.rs-row-grade-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.rs-row-grade-note {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: var(--lh-base);
+}
+
+@media (max-width: 640px) {
+  .rs-row { padding: var(--sp-3); }
+  .rs-row-head { flex-direction: column; }
+  .rs-row-side { flex-direction: row; align-items: center; justify-content: space-between; width: 100%; }
+  .rs-row-actions .btn { flex: 1 1 100%; justify-content: center; }
+}
+
+/* ─── 2. Status pipeline — submitted → checked → in review → published
+   The row's honest journey rail. Four steps, connector segments drawn
+   by li::before; the segment inherits "done" from the CURRENT li (a
+   segment counts as traveled when the step it leads to is reached). */
+.rs-pipeline {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+}
+.rs-pipeline li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+.rs-pipeline li + li { padding-inline-start: var(--sp-5); }
+.rs-pipeline li + li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 50%;
+  translate: 0 -50%;
+  width: var(--sp-4);
+  height: var(--sp-0-5);
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+}
+.rs-pipeline li.is-done + li::before,
+.rs-pipeline li.is-current + li::before { background: var(--accent); }
+.rs-pipeline li.is-failed + li::before { background: var(--c-rose-ink); }
+
+.rs-pipe-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--sp-5);
+  height: var(--sp-5);
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+  color: var(--text-faint);
+  border: 1px solid var(--border);
+}
+.rs-pipeline .is-done .rs-pipe-dot {
+  background: var(--accent-soft);
+  border-color: transparent;
+  color: var(--accent-ink);
+}
+.rs-pipeline .is-current .rs-pipe-dot {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--accent-fg);
+}
+.rs-pipeline .is-failed .rs-pipe-dot {
+  background: var(--c-rose-bg);
+  border-color: transparent;
+  color: var(--c-rose-ink);
+}
+.rs-pipe-label {
+  font-size: var(--fs-sm);
+  color: var(--text-faint);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rs-pipeline .is-current .rs-pipe-label {
+  color: var(--accent-ink);
+  font-weight: var(--fw-semibold);
+}
+.rs-pipeline .is-done .rs-pipe-label { color: var(--text-secondary); }
+.rs-pipeline .is-failed .rs-pipe-label { color: var(--c-rose-ink); }
+
+/* The live-scan pulse — one calm opacity breath on the CURRENT dot,
+   killed wholesale by the platform reduced-motion belt (motion.css). */
+.rs-pipeline .is-pulse .rs-pipe-dot { animation: rs-pipe-pulse var(--motion-duration-stat) var(--ease-linear) infinite; }
+@keyframes rs-pipe-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+@media (max-width: 640px) {
+  .rs-pipeline li { flex-direction: column; align-items: center; gap: var(--sp-1); }
+  .rs-pipeline li + li { padding-inline-start: var(--sp-2); }
+  .rs-pipeline li + li::before { width: var(--sp-2); }
+  .rs-pipe-label { font-size: var(--fs-sm); }
+}
+
+/* ─── 2b. Process explainer — a numbered flow line, not a card grid ── */
+.rs-explainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.rs-explainer-title {
+  margin: 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.rs-explainer-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--sp-4) var(--sp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rs-explainer-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2-5);
+  min-width: 0;
+}
+.rs-explainer-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--sp-6);
+  height: var(--sp-6);
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+}
+.rs-explainer-step-title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.rs-explainer-step-desc {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  line-height: var(--lh-base);
+}
+
+/* ─── 3. Scan results — the declared-simulation presentation ────────
+   Two honest cells (value + threshold note + meter). The meter is a
+   4px track with the threshold ticked; the fill is the value's tier. */
+.rs-scan {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--sp-3);
+  width: 100%;
+}
+.rs-scan-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1-5);
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+}
+.rs-scan-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+.rs-scan-value {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.rs-scan-value.is-ok { color: var(--c-mint-ink); }
+.rs-scan-value.is-warn { color: var(--c-yellow-ink); }
+.rs-scan-value.is-bad { color: var(--c-rose-ink); }
+.rs-scan-meter {
+  position: relative;
+  height: var(--sp-1);
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+  /* The sweep fill is transform-driven (the motion gate forbids layout
+     animation) — the track clips it; the tick stays inside the track
+     so nothing paints outside the clip. */
+  overflow: hidden;
+}
+.rs-scan-meter-fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  border-radius: var(--r-full);
+  background: var(--c-mint-ink);
+}
+.rs-scan-meter-fill.is-warn { background: var(--c-yellow-ink); }
+.rs-scan-meter-fill.is-bad { background: var(--c-rose-ink); }
+.rs-scan-meter-tick {
+  position: absolute;
+  inset-block: 0;
+  width: var(--sp-0-5);
+  translate: calc(var(--sp-0-5) * -0.5) 0;
+  border-radius: var(--r-full);
+  background: var(--border-strong);
+}
+.rs-scan-note {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+.rs-scan-sim {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1-5);
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+/* The honesty tag — a small chip so «محاكاة» reads as a label, not
+   prose; same grammar as the badge family (soft ground + ink tier). */
+.rs-scan-sim-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--sp-1-5);
+  border-radius: var(--r-full);
+  background: var(--c-yellow-bg);
+  color: var(--c-yellow-ink);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+/* Indeterminate sweep while the simulated scan runs — honest motion
+   (no fake percentages); the belt kills it under reduced motion and
+   the static labels still read. */
+.rs-scan-cell.is-live .rs-scan-meter-fill {
+  inset-inline: 0;
+  inline-size: 40%;
+  /* Transform-only sweep — RTL-aware via --motion-direction (the same
+     mirroring contract as the shell's switch thumbs). */
+  animation: rs-scan-sweep var(--motion-duration-skeleton) var(--ease-linear) infinite;
+}
+@keyframes rs-scan-sweep {
+  from { transform: translateX(calc(var(--motion-direction) * -250%)); }
+  to { transform: translateX(calc(var(--motion-direction) * 250%)); }
+}
+
+/* ─── 4. Search hit rows + the <mark> highlight ─────────────────────
+   The library's search-first surface: full-width rows, matched term
+   highlighted in the signal's soft ground + ink tier (AA in both
+   themes), snippet keeps the Arabic body rhythm. */
+.rs-hit-row mark {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border-radius: var(--r-xs);
+  padding: 0 var(--sp-0-5);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* ─── 5. Library surfaces ─────────────────────────────────────────── */
+/* Section heading inside a tabpanel — one level under the page h1. */
+.rs-section-title {
+  margin: 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+/* The honest result count line beside filters / under the strip. */
+.rs-count {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+/* The quiet loans-empty note — one line, no empty-state wall. */
+.rs-loans-empty {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--r-lg);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  line-height: var(--lh-base);
+}
+
+/* The search field — first-class: the pill the page opens with. */
+.rs-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.rs-search-icon {
+  position: absolute;
+  inset-inline-start: var(--sp-4);
+  display: inline-flex;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+.rs-search input {
+  width: 100%;
+  height: var(--sp-10);
+  padding-inline: var(--sp-10) var(--sp-9);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: max(var(--fs-body), 16px);
+}
+.rs-search input::placeholder { color: var(--text-faint); }
+.rs-search input:hover { border-color: var(--border-strong); }
+.rs-search input:focus-visible {
+  outline: var(--sp-0-5) solid var(--state-focus-ring-color);
+  outline-offset: var(--sp-0-5);
+}
+.rs-search .rs-search-clear {
+  position: absolute;
+  inset-inline-end: var(--sp-1-5);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--sp-8);
+  height: var(--sp-8);
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+@media (max-width: 640px) {
+  .rs-search .rs-search-clear { width: var(--sp-9); height: var(--sp-9); }
+}
+.rs-search .rs-search-clear:hover { background: var(--surface-2); color: var(--text); }
+
+/* Book row — the borrow list unit (replaces the uniform thumb grid):
+   mini jacket | body (title/author/category) | tail (availability + CTA). */
+.rs-book-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.rs-book-row:hover { border-color: var(--border-strong); background: var(--surface-1); }
+.rs-book-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-0-5); }
+.rs-book-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  line-height: var(--lh-snug);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+.rs-book-author {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rs-book-tail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-1-5);
+  flex-shrink: 0;
+}
+.rs-book-copies {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+/* The jacket at ROW scale — an identity chip, not a poster: the book's
+   tinted field, its category mark centered, the category band docked at
+   the leading edge. The .lib-book-cover anatomy (and its --book-tint
+   contract) is the shared recipe; these overrides only re-scale it for
+   the row unit (the field/spine/ink recipes in student.css keep working
+   through the same custom property). */
+.rs-book-row .lib-book-cover {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--sp-14);
+  height: var(--sp-16);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.rs-book-row .lib-book-cover .lib-cover-mark { color: var(--book-tint, var(--accent)); }
+.rs-book-row .lib-book-cover .lib-cover-band {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  padding-block: var(--sp-1);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+}
+@media (max-width: 640px) {
+  .rs-book-row { gap: var(--sp-3); }
+  .rs-book-row .lib-book-cover { width: var(--sp-12); height: var(--sp-14); }
+  .rs-book-tail { flex-direction: column; align-items: stretch; }
+  .rs-book-tail .btn { justify-content: center; }
+}
+
+/* ─── 6. Review queue surfaces (teacher) ──────────────────────────── */
+.rs-review-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-3);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+.rs-review-meta .is-ok { color: var(--c-mint-ink); }
+.rs-review-meta .is-bad { color: var(--c-rose-ink); }
+.rs-review-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+/* ─── 7. Reader page chrome (DocumentViewerPage layout) ─────────────
+   The split surface: document main + annotations side. RTL-aware via
+   logical properties only; stacks at the mobile shell boundary. */
+.doc-reader {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+}
+.doc-reader-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.doc-reader-side { flex-shrink: 0; display: flex; }
+
+/* Floating annotations trigger — mobile only. 56px round, bottom-end,
+   thumb-reachable, carries the live count. */
+.doc-notes-fab {
+  display: none;
+  position: fixed;
+  bottom: calc(var(--sp-6) + env(safe-area-inset-bottom, 0px));
+  inset-inline-end: var(--sp-4);
+  z-index: var(--z-popover, 200);
+  align-items: center;
+  gap: var(--sp-1-5);
+  padding: var(--sp-3) var(--sp-4);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  box-shadow: var(--elev-3);
+}
+.doc-notes-fab:active { transform: scale(var(--press-scale)); }
+
+@media (max-width: 920px) {
+  .doc-reader { flex-direction: column; }
+  .doc-reader-side { display: none; }
+  .doc-notes-fab { display: inline-flex; }
+}
+
+@media print {
+  .doc-reader { display: block; }
+  .doc-reader-side,
+  .doc-notes-fab { display: none !important; }
+}
+}

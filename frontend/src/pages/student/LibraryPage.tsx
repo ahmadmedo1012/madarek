@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
-import type { CSSProperties, KeyboardEvent } from 'react';
+import type { KeyboardEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useIsNarrowLayout } from '../../hooks/useIsNarrowLayout';
 import {
-  Search, Library as LibraryIcon, BookOpen, Clock,
-  Code, Network, Database, Bot, ShieldCheck, Star, FileText, Award, GraduationCap, X,
+  Search, Library as LibraryIcon, BookOpen,
+  Code, Network, Database, Bot, ShieldCheck, Star, FileText, Award, X,
   SlidersHorizontal, Undo2, ChevronLeft, ChevronRight,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Pill, Badge, UserAvatar } from '../../components/primitives';
-import { Skeleton, EmptyState, ErrorState, ListSkeleton } from '../../components/primitives/States';
+import { PageHeader, Pill, Badge, UserAvatar } from '../../components/primitives';
+import { StatStrip, type StatCellData } from '../../components/primitives/Ledger';
+import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Sheet } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
 import {
@@ -20,7 +21,8 @@ import {
 import { courseTint } from '../../lib/courseMeta';
 import { countAr, formatPct, apiErrorMessage, formatDateAr } from '../../lib/format';
 import { toast } from '../../lib/toast';
-import { formatDate, formatNum } from '../../utils/numbers';
+import { formatDate, formatInt, formatNum } from '../../utils/numbers';
+import '../../styles/research.css';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'all', label: 'الكل', icon: LibraryIcon },
@@ -34,9 +36,8 @@ const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
 /* r184: Arabic plural noun for the pager's honest total — the
  * CatalogPage COURSE_UNIT convention (countAr four-form). */
 const BOOK_UNIT: [string, string, string, string] = ['كتاب واحد', 'كتابان', 'كتب', 'كتاباً'];
-/* r184: page size for the books grid — a thumb grid at ~200px min
- * cards shows 24 rows comfortably (2–4 rows on common widths) and
- * replaces the old silent `limit: 100` truncation. */
+/* r184: page size for the books list — a paginated envelope, never a
+ * silent truncation. */
 const BOOKS_PAGE_SIZE = 24;
 
 const categoryIcon = (cat: string): LucideIcon =>
@@ -94,17 +95,17 @@ const LIB_TABS: Array<{ key: Tab; label: string; icon: LucideIcon }> = [
 
 /* Shape-matched loading skeletons (brief §4: never a bare spinner where
    a skeleton fits the settled shape). */
-function BookGridSkeleton({ tiles = 8 }: { tiles?: number }) {
+function BookRowSkeleton({ rows = 6 }: { rows?: number }) {
   return (
-    <div className="grid-auto-200" aria-busy="true" aria-live="polite">
-      {Array.from({ length: tiles }).map((_, i) => (
-        <div key={i} className="lib-skel-tile">
-          {/* r186: 140px — the jacket's settled height (shape-matched) */}
-          <Skeleton width="100%" height={140} />
-          <div style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
-            <Skeleton width="75%" height={15} />
-            <Skeleton width="50%" height={11} />
+    <div className="flex-col gap-3" aria-busy="true" aria-live="polite">
+      {Array.from({ length: rows }).map((_, i) => (
+        <div key={i} className="rs-book-row" aria-hidden>
+          <Skeleton width={64} height={88} rounded="var(--r-md)" />
+          <div className="rs-book-body">
+            <Skeleton width="62%" height={16} />
+            <Skeleton width="38%" height={12} />
           </div>
+          <Skeleton width={92} height={30} rounded="var(--r-md)" />
         </div>
       ))}
     </div>
@@ -115,12 +116,14 @@ function ResearchListSkeleton({ rows = 3 }: { rows?: number }) {
   return (
     <div className="flex-col gap-3" aria-busy="true" aria-live="polite">
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="lib-skel-row">
-          <Skeleton width={40} height={40} rounded="50%" />
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
-            <Skeleton width="45%" height={15} />
-            <Skeleton width="65%" height={11} />
-            <Skeleton width="90%" height={11} />
+        <div key={i} className="rs-row" aria-hidden>
+          <div className="rs-row-head">
+            <Skeleton width={40} height={40} rounded="50%" />
+            <div className="rs-row-main">
+              <Skeleton width="45%" height={15} />
+              <Skeleton width="65%" height={11} />
+              <Skeleton width="90%" height={11} />
+            </div>
           </div>
         </div>
       ))}
@@ -128,20 +131,11 @@ function ResearchListSkeleton({ rows = 3 }: { rows?: number }) {
   );
 }
 
-/* 21-b hand-off (23-a): the category pills wrap into a tall stack on
-   phones, so ≤640px swaps the inline pill bar for a «تصفية» trigger +
-   the platform Sheet (its first real consumer). 5-C4 (A10 P2-2): the
-   tray rides the bottom presentation — the ≤640px band is where the
-   old full-height inline-end panel measured a 571px void. Conditional
-   rendering instead of CSS so the pills stay in the DOM on desktop
-   and the Sheet mounts only where it can open.
-   r157 (F8): the local useIsNarrowLayout copy moved to
-   hooks/useIsNarrowLayout.ts (shared extraction) — this page imports it. */
-
-/* r155b: بطاقة كتاب مكوّن مستقل (كانت خريطةً داخل الصفحة) لأن زر
- * «استعارة» يحتاج طفرةً خاصة بكل بطاقة — نمط JobRow في صفحة الوظائف
- * (useBorrowBook داخل الصف فpending معزول عن بقية الشبكة). */
-function BookCard({ book }: { book: Book }) {
+/* r199: صفّ كتاب — الوحدة الجديدة لعرض المكتبة (صفوف كاملة العرض بدل
+ * شبكة البطاقات المتطابقة). الستارة المصغّرة تحمل هوية الكتاب (أيقونة
+ * الفئة + شريط الفئة على حقل بلون الكتاب) — aria-hidden دائمًا؛ الاسم
+ * والمؤلف والفئة تُقرأ من جسم الصف مرة واحدة. */
+function BookRow({ book }: { book: Book }) {
   const borrow = useBorrowBook();
   const unavailable = book.availableCopies === 0;
   const Cmp = categoryIcon(book.category);
@@ -162,17 +156,14 @@ function BookCard({ book }: { book: Book }) {
   };
 
   return (
-    <div className="thumb-card glass">
-      {/* r186: typographic jacket — a deterministic cover composed from
-       * the book's own data (title, author, category tint) instead of
-       * the identical generic icon tile every book rendered. No upload
-       * path, no binary storage; the ink recipes reuse the icon tile's
-       * contrast family (field 12% / spine 45% / ink 70% over theme
-       * surfaces). Decorative by contract: aria-hidden keeps the
-       * accessible title/author in the card body below (no double
-       * read) — the visual duplication is the book-grid convention. */}
+    <article className="rs-book-row">
+      {/* r186: typographic jacket (identity chip at row scale) —
+       * deterministic cover from the book's own data (category icon +
+       * band on the book's tint). No upload path, no binary storage.
+       * Decorative by contract: aria-hidden keeps the accessible
+       * title/author in the row body below (no double read). */}
       <div
-        className="lib-book-cover"
+        className="lib-book-cover rs-book-cover"
         aria-hidden="true"
         style={{
           background: `color-mix(in srgb, ${tint} 12%, var(--surface))`,
@@ -182,32 +173,31 @@ function BookCard({ book }: { book: Book }) {
         <span className="lib-cover-mark">
           <Icon icon={Cmp} size={22} strokeWidth={1.6} />
         </span>
-        <div className="lib-cover-text">
-          <div className="lib-cover-title">{book.title}</div>
-          <div className="lib-cover-author">{book.author}</div>
-        </div>
         <div className="lib-cover-band">
           <Icon icon={Cmp} size={11} strokeWidth={2.2} />
           <span>{categoryLabel(book.category)}</span>
         </div>
       </div>
-      <div className="thumb-card-body">
-        <div className="thumb-card-title" style={{ minHeight: 36 }} title={book.title}>{book.title}</div>
-        <div className="thumb-card-sub">{book.author}</div>
-        <div className="flex items-center justify-between" style={{ marginTop: 'var(--sp-2)' }}>
-          <span className="text-xs text-subtle flex items-center gap-1 font-mono">
-            <Icon icon={Star} size={11} strokeWidth={2.2} />
-            <bdi>{book.rating ?? '—'}</bdi>
-          </span>
-          <Badge color={book.availableCopies > 0 ? 'green' : undefined}>
-            {book.availableCopies > 0 ? 'متاح' : 'مستعار'}
-          </Badge>
+      <div className="rs-book-body">
+        <div className="rs-book-title" title={book.title}>{book.title}</div>
+        <div className="rs-book-author">{book.author}</div>
+        <div className="rs-row-meta">
+          <span>{categoryLabel(book.category)}</span>
+          {book.rating != null && (
+            <span className="flex items-center gap-1 font-mono">
+              <Icon icon={Star} size={11} strokeWidth={2.2} />
+              <bdi>{book.rating}</bdi>
+            </span>
+          )}
         </div>
-        <div className="text-xxs text-subtle">{categoryLabel(book.category)}</div>
+      </div>
+      <div className="rs-book-tail">
+        <Badge color={book.availableCopies > 0 ? 'green' : undefined}>
+          {book.availableCopies > 0 ? 'متاح' : 'مستعار'}
+        </Badge>
         <button
           type="button"
           className="btn primary sm"
-          style={{ width: '100%', marginTop: 'var(--sp-2)' }}
           onClick={() => void onBorrow()}
           disabled={unavailable || borrow.isPending}
           title={unavailable ? 'لا توجد نسخ متاحة للاستعارة حالياً' : undefined}
@@ -220,14 +210,12 @@ function BookCard({ book }: { book: Book }) {
           {borrow.isPending ? 'جارٍ الاستعارة…' : 'استعارة'}
         </button>
       </div>
-    </div>
+    </article>
   );
 }
 
-/* r155b: صفّ استعارة نشطة داخل بطاقة «استعاراتي» — الطفرة (الإرجاع)
- * خاصة بالصف (نمط JobRow)، وحالة الاستحقاق تعيد استعمال منطق dueSoon
- * نفسه الذي تغذّيه KPI «تنتهي قريباً» (≤3 أيام) وتضيف المتأخر (< 0
- * أو حالة OVERDUE من السلك — الخلفية تعدّها حيازةً غير مُعادة). */
+/* صفّ استعارة نشطة — الطفرة (الإرجاع) خاصة بالصف، وحالة الاستحقاق
+ * تعيد استعمال منطق dueSoon نفسه (≤3 أيام) وتضيف المتأخر. */
 function LoanRow({ loan }: { loan: MyLoan }) {
   const returnLoan = useReturnLoan();
   const daysLeft = (new Date(loan.dueAt).getTime() - Date.now()) / 86_400_000;
@@ -249,25 +237,29 @@ function LoanRow({ loan }: { loan: MyLoan }) {
   };
 
   return (
-    <div className="list-row">
-      <div className="list-row-body">
-        <div className="list-row-title" title={loan.book.title}>{loan.book.title}</div>
-        <div className="list-row-sub" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
-          <Badge color={state.color}>{state.label}</Badge>
-          <span>موعد الإرجاع: <bdi className="font-mono">{formatDateAr(loan.dueAt)}</bdi></span>
-          <span className="text-xxs text-subtle">استُعير: {formatDateAr(loan.borrowedAt)}</span>
+    <div className="rs-row">
+      <div className="rs-row-head">
+        <div className="rs-row-main">
+          <div className="rs-row-title" title={loan.book.title}>{loan.book.title}</div>
+          <div className="rs-row-meta">
+            <Badge color={state.color}>{state.label}</Badge>
+            <span>موعد الإرجاع: <bdi className="font-mono">{formatDateAr(loan.dueAt)}</bdi></span>
+            <span>استُعير: {formatDateAr(loan.borrowedAt)}</span>
+          </div>
+        </div>
+        <div className="rs-row-side">
+          <button
+            type="button"
+            className="btn ghost sm"
+            onClick={() => void onReturn()}
+            disabled={returnLoan.isPending}
+            aria-label={`إرجاع ${loan.book.title}`}
+          >
+            <Icon icon={Undo2} size={13} />
+            {returnLoan.isPending ? 'جارٍ الإرجاع…' : 'إرجاع'}
+          </button>
         </div>
       </div>
-      <button
-        type="button"
-        className="btn ghost sm"
-        onClick={() => void onReturn()}
-        disabled={returnLoan.isPending}
-        aria-label={`إرجاع ${loan.book.title}`}
-      >
-        <Icon icon={Undo2} size={13} />
-        {returnLoan.isPending ? 'جارٍ الإرجاع…' : 'إرجاع'}
-      </button>
     </div>
   );
 }
@@ -348,9 +340,9 @@ export default function LibraryPage() {
   const loans = useMyLoans();
   const isResearchTab = tab === 'research';
 
-  // Loan-derived KPIs
+  // Loan facts
   const activeLoans = loans.data?.filter((l) => l.status === 'ACTIVE') ?? [];
-  /* r155b: الاستعارات «الفتوحة» للبطاقة أدناه — ACTIVE و OVERDUE معاً
+  /* r155b: الاستعارات «الفتوحة» للقائمة أدناه — ACTIVE و OVERDUE معاً
    * (الخلفية تعُدّ OVERDUE حيازةً غير مُعادة في حرس ازدواج الاستعارة،
    * فلا يختفي كتابٌ متأخر من قائمة المستعارات دون إرجاع فعلي). */
   const openLoans = loans.data?.filter((l) => l.status !== 'RETURNED') ?? [];
@@ -358,8 +350,8 @@ export default function LibraryPage() {
     const days = (new Date(l.dueAt).getTime() - Date.now()) / 86400000;
     return days >= 0 && days <= 3;
   }).length;
-  /* r184: the KPI reads the server's meta.total — the honest filtered
-   * total — instead of the (possibly truncated) array length. */
+  /* r184: the honest total reads the server's meta.total — never the
+   * (possibly truncated) array length. */
   const totalBooks = booksMeta?.total ?? null;
   const booksFiltered = debouncedQ.length > 0 || cat !== 'all';
 
@@ -369,6 +361,30 @@ export default function LibraryPage() {
   const visibleResearch = researchInUse
     ? search.data!.data
     : research.data ?? [];
+
+  // Research-tab facts — one typographic strip, no card wall.
+  const researchCells: StatCellData[] = [
+    {
+      label: 'بحوث منشورة',
+      value: research.isPending ? <Skeleton width={48} height={24} /> : (research.data?.length != null ? formatInt(research.data.length) : '—'),
+    },
+    {
+      label: 'مؤلفون طلابيون',
+      value: research.isPending ? <Skeleton width={48} height={24} /> : (research.data ? formatInt(new Set(research.data.map((p) => p.student.id)).size) : '—'),
+    },
+    {
+      label: 'متوسط التقييم',
+      value: research.isPending ? <Skeleton width={48} height={24} /> :
+        research.data && research.data.length
+          ? <bdi>{`${formatNum(Math.round((research.data.reduce((s, p) => s + (p.grade ?? 0), 0) / research.data.length) * 10) / 10, { maximumFractionDigits: 1 })}/20`}</bdi>
+          : '—',
+    },
+    {
+      label: 'منشورة هذا العام',
+      value: research.isPending ? <Skeleton width={48} height={24} /> :
+        (research.data ? formatInt(research.data.filter((p) => p.publishedAt && new Date(p.publishedAt).getFullYear() >= new Date().getFullYear()).length) : '—'),
+    },
+  ];
 
   // Manual tabs ARIA pattern (icons are not supported by the string-only
   // Tabs primitive): roving tabindex + RTL arrow keys + aria-controls,
@@ -390,17 +406,39 @@ export default function LibraryPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">المكتبة الإلكترونية</h1>
-          <p className="page-subtitle">
-            {/* 22-c (A3 P3-10): «آلاف الكتب» overclaimed a single-digit
-                seeded library — honest scope instead. */}
-            كتب المكتبة الأكاديمية وبحوث طلاب الجامعة المنشورة — متاحة
-            للاستعارة الفورية والاطّلاع المرجعي.
-          </p>
-        </div>
-      </header>
+      <PageHeader
+        title="المكتبة الإلكترونية"
+        subtitle={
+          /* 22-c (A3 P3-10): honest scope — no «آلاف الكتب» overclaim. */
+          'كتب المكتبة الأكاديمية وبحوث طلاب الجامعة المنشورة — متاحة للاستعارة الفورية والاطّلاع المرجعي.'
+        }
+      />
+
+      {/* Search-first: the page opens with the field, not a KPI wall.
+          Both tabs share one debounced query; the placeholder names the
+          searched scope so the pill never lies about what it covers. */}
+      <div className="rs-search" role="search">
+        <span className="rs-search-icon"><Icon icon={Search} size={18} /></span>
+        <input
+          type="text"
+          placeholder={isResearchTab
+            ? 'ابحث في عنوان البحث، الملخص، أو محتوى البحث الكامل…'
+            : 'ابحث عن كتاب أو مؤلف…'}
+          aria-label={isResearchTab ? 'ابحث في البحوث المنشورة' : 'ابحث في الكتب'}
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
+        {q && (
+          <button
+            type="button"
+            className="rs-search-clear"
+            onClick={() => setQ('')}
+            aria-label="مسح البحث"
+          >
+            <Icon icon={X} size={14} />
+          </button>
+        )}
+      </div>
 
       {/* Tab switch */}
       <div className="tabs lib-tabs" role="tablist" aria-label="أقسام المكتبة" onKeyDown={onTabsKeyDown}>
@@ -426,128 +464,79 @@ export default function LibraryPage() {
       </div>
 
       {!isResearchTab ? (
-        <div role="tabpanel" id="lib-panel-books" aria-labelledby="lib-tab-books">
-          <div className="grid-3">
-            <MetricCard
-              icon={LibraryIcon}
-              label={booksFiltered ? 'نتائج البحث' : 'كتب الفئة الحاليّة'}
-              value={books.isPending ? <Skeleton width={48} height={24} /> : (totalBooks !== null ? formatNum(totalBooks) : '—')}
-              change={debouncedQ ? `بحث: ${debouncedQ}` : cat === 'all' ? 'الكلّ' : categoryLabel(cat)}
-              color="brand"
-            />
-            <MetricCard
-              icon={BookOpen}
-              label="استعارات نشطة"
-              value={loans.isPending ? <Skeleton width={48} height={24} /> : formatNum(activeLoans.length)}
-              change={loans.data ? `من أصل ${countAr(loans.data.length, ['استعارة واحدة', 'استعارتين', 'استعارات', 'استعارة'])}` : '—'}
-              color={activeLoans.length === 0 ? 'brand' : 'green'}
-            />
-            <MetricCard
-              icon={Clock}
-              label="تنتهي قريباً"
-              value={loans.isPending ? <Skeleton width={48} height={24} /> : formatNum(dueSoon)}
-              change={dueSoon > 0 ? 'خلال 3 أيام' : 'لا توجد إنذارات'}
-              color={dueSoon > 0 ? 'amber' : 'green'}
-            />
-          </div>
-
-          {/* r155b: الاستعارات النشطة — كانت KPIs بلا قائمة ولا إجراء؛
-              البطاقة تجعل العنوان وموعد الإرجاع وزر «إرجاع» مرئيّة،
-              والحالة الفارغة تُسمّي الميزة بدل تجاهلها (نمط EmptyState
-              الكنوني في هذه الصفحة). */}
-          <Card
-            title="استعاراتي النشطة"
-            icon={BookOpen}
-            subtitle={
-              loans.isPending
-                ? 'جارٍ التحميل…'
-                : countAr(openLoans.length, ['استعارة واحدة', 'استعارتان', 'استعارات', 'استعارة'])
-            }
-          >
+        <div role="tabpanel" id="lib-panel-books" aria-labelledby="lib-tab-books" className="flex-col gap-4">
+          {/* استعاراتي النشطة — the loans strip: rows when open loans
+              exist, one honest line when they don't (no empty-state wall
+              on every visit; the copy keeps the affordance explained). */}
+          <section className="flex-col gap-2" aria-label="استعاراتي النشطة">
+            <div className="flex items-baseline gap-2 flex-wrap">
+              <h2 className="rs-section-title">استعاراتي النشطة</h2>
+              {!loans.isPending && !loans.isError && (
+                <span className="rs-row-meta">
+                  {countAr(openLoans.length, ['استعارة واحدة', 'استعارتان', 'استعارات', 'استعارة'])}
+                  {dueSoon > 0 ? ` · ${formatInt(dueSoon)} تنتهي قريباً` : ''}
+                </span>
+              )}
+            </div>
             {loans.isPending ? (
-              <ListSkeleton rows={2} />
+              <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
+                <Skeleton width="100%" height={64} rounded="var(--r-lg)" />
+              </div>
             ) : loans.isError ? (
               <ErrorState error={loans.error} onRetry={() => loans.refetch()} />
             ) : openLoans.length === 0 ? (
-              <EmptyState
-                icon={BookOpen}
-                title="لا استعارات نشطة"
-                description="اضغط «استعارة» على أي كتاب متاح ليظهر هنا مع موعد إرجاعه خلال 14 يوماً."
-              />
+              <p className="rs-loans-empty">
+                <strong>لا استعارات نشطة</strong> — اضغط «استعارة» على أي كتاب متاح ليظهر هنا مع موعد إرجاعه خلال 14 يوماً.
+              </p>
             ) : (
-              <div className="flex-col">
+              <div className="flex-col gap-2">
                 {openLoans.map((l) => (
                   <LoanRow key={l.id} loan={l} />
                 ))}
               </div>
             )}
-          </Card>
+          </section>
 
-          <Card compact>
-            <div className="flex gap-3 items-center flex-wrap">
-              {/* 22-c (A3 P1-3): the search was placeholder-only (no
-                  label association) and had no clear affordance — the
-                  GlobalSearch grammar instead: aria-label + a × clear
-                  button when the field carries text (has-clear reserves
-                  the input's end padding for it). */}
-              <div className={`topbar-search${q ? ' has-clear' : ''}`} style={{ width: '100%', maxWidth: 320 }}>
-                <span className="topbar-search-icon"><Icon icon={Search} size={14} /></span>
-                <input
-                  type="text"
-                  placeholder="ابحث عن كتاب أو مؤلف…"
-                  aria-label="ابحث في الكتب"
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                />
-                {q && (
-                  <button
-                    type="button"
-                    className="topbar-search-clear"
-                    onClick={() => setQ('')}
-                    aria-label="مسح البحث"
-                  >
-                    <Icon icon={X} size={12} />
-                  </button>
-                )}
+          {/* Filter row — pills inline on wide screens, one «تصفية»
+              trigger + bottom Sheet on phones (draft-then-apply; the
+              trigger names the active category so the collapsed state
+              never hides what the list is filtered by). */}
+          <div className="flex gap-3 items-center flex-wrap">
+            {isNarrow ? (
+              <button
+                type="button"
+                className="btn outline sm"
+                onClick={openFilterSheet}
+                aria-haspopup="dialog"
+                aria-expanded={filterSheetOpen}
+              >
+                <Icon icon={SlidersHorizontal} size={14} />
+                تصفية{cat !== 'all' ? ` · ${categoryLabel(cat)}` : ''}
+              </button>
+            ) : (
+              <div className="filter-bar lib-filters">
+                {CATEGORIES.map((c) => (
+                  <Pill key={c.id} on={cat === c.id} icon={c.icon} onClick={() => setCat(c.id)}>
+                    {c.label}
+                  </Pill>
+                ))}
               </div>
-              {isNarrow ? (
-                /* 21-b hand-off (23-a): ≤640px the wrapped pill stack
-                   becomes one «تصفية» trigger + Sheet. The trigger
-                   names the active category so the collapsed state
-                   never hides what the list is filtered by. */
-                <button
-                  type="button"
-                  className="btn outline sm"
-                  onClick={openFilterSheet}
-                  aria-haspopup="dialog"
-                  aria-expanded={filterSheetOpen}
-                >
-                  <Icon icon={SlidersHorizontal} size={14} />
-                  تصفية{cat !== 'all' ? ` · ${categoryLabel(cat)}` : ''}
-                </button>
-              ) : (
-                <div className="filter-bar lib-filters">
-                  {CATEGORIES.map((c) => (
-                    <Pill key={c.id} on={cat === c.id} icon={c.icon} onClick={() => setCat(c.id)}>
-                      {c.label}
-                    </Pill>
-                  ))}
-                </div>
-              )}
-            </div>
-          </Card>
+            )}
+            <span className="rs-count" style={{ marginInlineStart: 'auto' }}>
+              {books.isPending
+                ? <Skeleton width={90} height={14} />
+                : totalBooks !== null
+                  ? countAr(totalBooks, booksFiltered ? ['نتيجة واحدة', 'نتيجتان', 'نتائج', 'نتيجة'] : BOOK_UNIT)
+                  : '—'}
+            </span>
+          </div>
 
           {/* Rendered unconditionally so a viewport resize while open
               never tears the exit animation; Sheet paints null when
-              closed. 5-C4 (A10 P2-2): the filter tray migrates to the
-              Sheet package's bottom presentation — its trigger only
-              exists on the ≤640px band, where the old full-height
-              inline-end panel measured a 571px void (32% fill).
-              Bottom + 'fit' hugs the content, the apply/clear actions
-              dock in the footer above the safe-area inset, and the
-              grabber drags the tray away. The .lib-filters class keeps
-              the ≤640px 44px pill floor (student.css) inside the
-              sheet. */}
+              closed. Bottom + 'fit' hugs the content, the apply/clear
+              actions dock in the footer above the safe-area inset, and
+              the grabber drags the tray away. The .lib-filters class
+              keeps the ≤640px 44px pill floor (student.css) inside. */}
           <Sheet
             open={filterSheetOpen}
             onClose={() => setFilterSheetOpen(false)}
@@ -580,24 +569,20 @@ export default function LibraryPage() {
           </Sheet>
 
           {books.isPending ? (
-            <BookGridSkeleton />
+            <BookRowSkeleton />
           ) : books.isError ? (
-            <Card><ErrorState error={books.error} onRetry={() => books.refetch()} /></Card>
+            <ErrorState error={books.error} onRetry={() => books.refetch()} />
           ) : !bookRows.length ? (
-            <Card>
-              <EmptyState
-                icon={LibraryIcon}
-                illustration={booksFiltered ? 'empty-search' : undefined}
-                title={booksFiltered ? 'لا توجد كتب تطابق البحث' : 'لا توجد كتب بعد'}
-                description={booksFiltered ? 'جرّب كلمات بحث مختلفة أو إزالة التصنيفات.' : 'ستظهر هنا كتب المكتبة فور توفرها.'}
-              />
-            </Card>
+            <EmptyState
+              icon={LibraryIcon}
+              illustration={booksFiltered ? 'empty-search' : undefined}
+              title={booksFiltered ? 'لا توجد كتب تطابق البحث' : 'لا توجد كتب بعد'}
+              description={booksFiltered ? 'جرّب كلمات بحث مختلفة أو إزالة التصنيفات.' : 'ستظهر هنا كتب المكتبة فور توفرها.'}
+            />
           ) : (
-            <div className="grid-auto-200">
-              {/* r155b: البطاقة مكوّن BookCard (زرّ الاستعارة يحتاج طفرة
-                  لكل صف). البنية البصرية كما كانت حرفياً. */}
+            <div className="flex-col gap-2" aria-label="قائمة الكتب">
               {bookRows.map((b) => (
-                <BookCard key={b.id} book={b} />
+                <BookRow key={b.id} book={b} />
               ))}
             </div>
           )}
@@ -638,186 +623,109 @@ export default function LibraryPage() {
           )}
         </div>
       ) : (
-        <div role="tabpanel" id="lib-panel-research" aria-labelledby="lib-tab-research">
-          <div className="grid-4">
-            <MetricCard
-              icon={FileText}
-              label="إجمالي البحوث"
-              value={research.isPending ? <Skeleton width={48} height={24} /> : (research.data?.length ?? '—')}
-              color="brand"
-            />
-            <MetricCard
-              icon={GraduationCap}
-              label="مؤلفون طلابيون"
-              value={research.isPending ? <Skeleton width={48} height={24} /> : (new Set(research.data?.map((p) => p.student.id)).size || '—')}
-              color="purple"
-            />
-            <MetricCard
-              icon={Award}
-              label="متوسط التقييم"
-              value={
-                research.isPending ? <Skeleton width={48} height={24} /> :
-                research.data && research.data.length
-                  ? <bdi>{`${Math.round((research.data.reduce((s, p) => s + (p.grade ?? 0), 0) / research.data.length) * 10) / 10}/20`}</bdi>
-                  : '—'
-              }
-              color="gold"
-            />
-            <MetricCard
-              icon={BookOpen}
-              label="منشورة هذا العام"
-              value={
-                research.isPending ? <Skeleton width={48} height={24} /> :
-                (research.data?.filter((p) => p.publishedAt && new Date(p.publishedAt).getFullYear() >= new Date().getFullYear()).length ?? '—')
-              }
-              color="green"
-            />
-          </div>
+        <div role="tabpanel" id="lib-panel-research" aria-labelledby="lib-tab-research" className="flex-col gap-4">
+          <StatStrip ariaLabel="ملخّص أرشيف البحوث" cells={researchCells} />
 
-          <Card compact>
-            <div className="flex gap-3 items-center flex-wrap">
-              {/* 22-c (A3 P1-3): same grammar as the books search —
-                  labelled + clearable (this is the tab's primary
-                  interaction). */}
-              <div className={`topbar-search${q ? ' has-clear' : ''}`} style={{ width: '100%', maxWidth: 360 }}>
-                <span className="topbar-search-icon"><Icon icon={Search} size={14} /></span>
-                <input
-                  type="text"
-                  placeholder="ابحث في عنوان البحث، الملخص، أو محتوى البحث الكامل…"
-                  aria-label="ابحث في البحوث المنشورة"
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                />
-                {q && (
-                  <button
-                    type="button"
-                    className="topbar-search-clear"
-                    onClick={() => setQ('')}
-                    aria-label="مسح البحث"
-                  >
-                    <Icon icon={X} size={12} />
-                  </button>
-                )}
-              </div>
-              <div className="lib-count" style={{ marginInlineStart: 'auto' }}>
-                {researchInUse
-                  ? <><bdi>{visibleResearch.length}</bdi> نتيجة لـ «<bdi>{debouncedQ}</bdi>»</>
-                  : <><bdi>{visibleResearch.length}</bdi> بحث منشور</>}
-              </div>
-            </div>
-          </Card>
+          <div className="rs-count">
+            {researchInUse
+              ? <><bdi>{visibleResearch.length}</bdi> نتيجة لـ «<bdi>{debouncedQ}</bdi>»</>
+              : <><bdi>{visibleResearch.length}</bdi> بحث منشور</>}
+          </div>
 
           {(researchInUse ? search.isPending : research.isPending) ? (
             <ResearchListSkeleton />
           ) : (researchInUse ? search.isError : research.isError) ? (
-            <Card><ErrorState
+            <ErrorState
               error={researchInUse ? search.error : research.error}
               onRetry={() => (researchInUse ? search.refetch() : research.refetch())}
-            /></Card>
+            />
           ) : !visibleResearch.length ? (
-            <Card>
-              <EmptyState
-                icon={FileText}
-                illustration={q ? 'empty-search' : undefined}
-                title={q ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
-                description={q ? `لم نجد بحثاً يطابق "${q}" — جرّب كلمات أخرى.` : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
-              />
-            </Card>
+            <EmptyState
+              icon={FileText}
+              illustration={q ? 'empty-search' : undefined}
+              title={q ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
+              description={q ? `لم نجد بحثاً يطابق "${q}" — جرّب كلمات أخرى.` : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
+            />
           ) : (
-            <div className="flex-col gap-3">
-              {visibleResearch.map((p, i) => {
+            <div className="flex-col gap-2" aria-label="قائمة البحوث المنشورة">
+              {visibleResearch.map((p) => {
                 const hit = researchInUse ? (p as ResearchSearchHit) : null;
                 return (
-                <article
-                  key={p.id}
-                  className="research-card glass"
-                  style={{ '--rs-i': i } as CSSProperties}
-                >
-                  <div className="research-card-head">
-                    <UserAvatar
-                      initials={p.student.avatarInitials ?? `${p.student.firstName[0]}${p.student.lastName[0]}`}
-                      color={p.student.avatarColor ?? undefined}
-                      size={40}
-                    />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <h3 className="research-card-title">
-                        {p.title}
-                      </h3>
-                      <div className="research-card-meta">
-                        <span>{p.student.firstName} {p.student.lastName}</span>
-                        {p.offering?.course && (
-                          <>
-                            <span>•</span>
+                  <article key={p.id} className="rs-row">
+                    <div className="rs-row-head">
+                      <UserAvatar
+                        initials={p.student.avatarInitials ?? `${p.student.firstName[0]}${p.student.lastName[0]}`}
+                        color={p.student.avatarColor ?? undefined}
+                        size={40}
+                      />
+                      <div className="rs-row-main">
+                        <h3 className="rs-row-title">{p.title}</h3>
+                        <div className="rs-row-meta">
+                          <span>{p.student.firstName} {p.student.lastName}</span>
+                          {p.offering?.course && (
                             <span className="font-mono"><bdi>{p.offering.course.code}</bdi></span>
-                            <span>·</span>
-                            <span>{p.offering.course.name}</span>
-                          </>
-                        )}
-                        {p.publishedAt && (
-                          <>
-                            <span>•</span>
+                          )}
+                          {p.offering?.course && <span>{p.offering.course.name}</span>}
+                          {p.publishedAt && (
                             <span className="font-mono"><bdi>{formatDate(p.publishedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</bdi></span>
-                          </>
+                          )}
+                        </div>
+                      </div>
+                      <div className="rs-row-side">
+                        {hit && (
+                          <Badge color={hit.matchedIn === 'title' ? 'green' : hit.matchedIn === 'abstract' ? 'gold' : 'purple'}>
+                            {hit.matchedIn === 'title' ? 'تطابق في العنوان' : hit.matchedIn === 'abstract' ? 'تطابق في الملخص' : 'تطابق في المتن'}
+                          </Badge>
+                        )}
+                        {!hit && p.grade != null && (
+                          <Badge color={p.grade >= 17 ? 'green' : p.grade >= 14 ? 'gold' : 'amber'} icon={Award}>
+                            <bdi>{p.grade}/20</bdi>
+                          </Badge>
                         )}
                       </div>
                     </div>
-                    {hit && (
-                      <Badge color={hit.matchedIn === 'title' ? 'green' : hit.matchedIn === 'abstract' ? 'gold' : 'purple'}>
-                        {hit.matchedIn === 'title' ? 'تطابق في العنوان' : hit.matchedIn === 'abstract' ? 'تطابق في الملخص' : 'تطابق في المتن'}
-                      </Badge>
-                    )}
-                    {!hit && p.grade != null && (
-                      <Badge color={p.grade >= 17 ? 'green' : p.grade >= 14 ? 'gold' : 'amber'} icon={Award}>
-                        <bdi>{p.grade}/20</bdi>
-                      </Badge>
-                    )}
-                  </div>
 
-                  {/* Show snippet when searching, abstract otherwise.
-                      The server snippet is sanitized to a <mark>-only
-                      allowlist before injection. */}
-                  {hit && hit.snippet ? (
-                    <p
-                      className="text-sm text-muted research-snippet"
-                      style={{ lineHeight: 'var(--lh-base)' }}
-                      dangerouslySetInnerHTML={{ __html: sanitizeSnippetHtml(hit.snippet) }}
-                    />
-                  ) : p.abstract ? (
-                    <p className="text-sm text-muted" style={{ lineHeight: 'var(--lh-base)', marginBottom: 'var(--sp-2)' }}>
-                      {p.abstract}
-                    </p>
-                  ) : null}
-                  <div className="research-card-stats">
-                    {/* 22-c (A3 P2-1): the Arabic labels («انتحال»،
-                        «ذكاء اصطناعي») sat inside font-mono — Plex Mono
-                        has no Arabic glyphs, so the words fell to a system
-                        face mid-line while the digits stayed Plex. The
-                        mono costume now rides the numeric <bdi> only,
-                        mirroring the correct pattern at :394/:402. */}
-                    {p.plagiarismPct != null && (
-                      <span>انتحال: <bdi className="font-mono">{formatPct(p.plagiarismPct)}%</bdi></span>
+                    {/* Snippet when searching (server-sanitized to a
+                        <mark>-only allowlist before injection); abstract
+                        otherwise. The highlight is the signal's soft
+                        ground — the matched term is the row's data. */}
+                    {hit && hit.snippet ? (
+                      <p
+                        className="rs-row-snippet rs-hit-row"
+                        dangerouslySetInnerHTML={{ __html: sanitizeSnippetHtml(hit.snippet) }}
+                      />
+                    ) : p.abstract ? (
+                      <p className="rs-row-snippet">{p.abstract}</p>
+                    ) : null}
+
+                    <div className="rs-row-meta">
+                      {p.plagiarismPct != null && (
+                        <span>انتحال: <bdi className="font-mono">{formatPct(p.plagiarismPct)}%</bdi></span>
+                      )}
+                      {p.aiContentPct != null && (
+                        <span>ذكاء اصطناعي: <bdi className="font-mono">{formatPct(p.aiContentPct)}%</bdi></span>
+                      )}
+                      {(p.plagiarismPct != null || p.aiContentPct != null) && (
+                        <span>محاكاة</span>
+                      )}
+                      <span style={{ marginInlineStart: 'auto', display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-1)' }}>
+                        <Icon icon={ShieldCheck} size={11} strokeWidth={2} />
+                        تم التحقق من النشر
+                      </span>
+                    </div>
+
+                    {p.fileUrl && (
+                      <div className="rs-row-actions">
+                        <Link
+                          to={`/document/${encodeURIComponent(p.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(p.title)}&back=${encodeURIComponent('/student/library?tab=research')}&paper=${encodeURIComponent(p.id)}`}
+                          className="btn primary sm"
+                        >
+                          <Icon icon={FileText} size={13} />
+                          اقرأ البحث كاملاً
+                        </Link>
+                      </div>
                     )}
-                    {p.aiContentPct != null && (
-                      <span>ذكاء اصطناعي: <bdi className="font-mono">{formatPct(p.aiContentPct)}%</bdi></span>
-                    )}
-                    {(p.plagiarismPct != null || p.aiContentPct != null) && (
-                      <span className="text-xxs text-subtle">محاكاة</span>
-                    )}
-                    <span style={{ marginInlineStart: 'auto', display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-1)' }}>
-                      <Icon icon={ShieldCheck} size={11} strokeWidth={2} />
-                      تم التحقق من النشر
-                    </span>
-                  </div>
-                  {p.fileUrl && (
-                    <Link
-                      to={`/document/${encodeURIComponent(p.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(p.title)}&back=${encodeURIComponent('/student/library?tab=research')}&paper=${encodeURIComponent(p.id)}`}
-                      className="btn primary sm"
-                    >
-                      <Icon icon={FileText} size={13} />
-                      اقرأ البحث كاملاً
-                    </Link>
-                  )}
-                </article>
+                  </article>
                 );
               })}
             </div>
