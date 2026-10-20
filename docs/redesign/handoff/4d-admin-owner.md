@@ -65,6 +65,98 @@
 
 ### r250 — Phase A batch 1 (no shell-pattern deps)
 - Handoff file created; route goals + mobile recompositions written (this file).
-- Permissions matrix grouped + keyboard/live-region hardening (see commit).
+- Permissions matrix grouped into 6 domains (`.govx-*` in admin.css; the
+  `.perm-row` anatomy stays consumed from components.css) + polite
+  live-region announcing every successful grant/revoke/reset.
+- ConfirmDialogs naming consequences added to: teacher verify
+  (privilege change), feature-flag toggle (OwnerSystemPage — the
+  r176e error/retry pins kept verbatim), operational-alert resolve
+  (OwnerAlertsPage).
+- Audit timeline (OwnerActivityPage): `resourceId` renders as a mono
+  chip (`.owner-timeline-id`, 14-char ellipsis + full id in title);
+  metadata JSON block already mono (owner.css).
+- Verified in browser as admin + owner (dark 360/1280): matrix groups,
+  flag confirm flip end-to-end, resolve confirm end-to-end (2→1 cards),
+  mono ID chips in the timeline.
+
+### r251 — shell patterns merged + teachers SplitView + audit log + owner dashboard
+- Merged origin/redesign/shell (r210 contract, then r211/r212 shell reskin).
+- AdminTeachersPage: PageFrame + patterns PageHeader (breadcrumbs) +
+  StatLine + FilterBar + **SplitView** (listWidth narrow; selection via a
+  stretched `<button>` in the RowItem title slot — `.govx-row-select`
+  plate in admin.css, `:has([aria-pressed])` row highlight; mobile
+  detail = full-screen Sheet via the pattern).
+- OwnerActivityPage: PageFrame + patterns PageHeader + StatLine +
+  **FilterBar(sticky)** carrying the filter Tabs above the timeline.
+- OwnerDashboardPage: **StatLine** facts + **TodayList** attention rows
+  (urgency now/soon/later replaces the ledger zone) + recent events as
+  **RowList** rows; the pending mirror re-shaped (`.pf-statline`), and
+  pending/error returns ride PageFrame so the handoff moves nothing.
+- Pins re-pointed in MY pages' tests only (stat cells, urgency dots,
+  pf-page frame).
+
+### r252 — users directory inline expansion
+- OwnerUsersPage: the 7-column table → **RowList rows with inline
+  expansion** (identity + role/status trailing; memberships as meta
+  chips — the «المؤسسات» column dies with the table; role picker +
+  status toggle + joined date behind the per-row disclosure named
+  «إجراءات {الاسم}»). FilterBar carries search + role pills; StatLine
+  carries the facts. Same ConfirmDialog flow; tests re-pinned to
+  expand-first.
+
+### r253 — students roster + the 25× empty-card wall dies
+- AdminStudentsPage: the 8-column table (with its ≤1024 column diet)
+  → **RowList rows**: meta carries email · reg number (mono) · faculty;
+  trailing carries GPA + status; the expansion carries department +
+  year + level + the enrollments action. FilterBar carries search +
+  faculty select.
+- OwnerInstitutionDetailPage: content faculties render as cards; the
+  empty seed tail collapses behind ONE honest rollup disclosure
+  (`.owner-empty-rollup*` in owner.css) — count line + per-row
+  add-department affordance. The 25-card wall is now 4 cards + 1 row.
+- Fixed a double-digit countAr form bug the rollup exposed (the lib
+  prefixes the digit itself).
+
+### Selectors/files made obsolete (for Agent Z)
+- `components.css`: `.permissions-grid` (no TSX consumer — the matrix
+  is `.govx-matrix` in admin.css now).
+- `components.css`: `.teacher-row` family (the list is RowList now;
+  zero TSX consumers on my pages).
+- `owner.css`: `.owner-user-cell`, `.owner-users-table` stagger block
+  (`--row-i`), `.owner-search-bar` family (FilterBar owns search now) —
+  still defined, zero consumers on my pages.
+- `admin.css`: `.admin-students-toolbar/-search` still consumed by
+  AdminFacultiesPage/AdminCoursesPage/OwnerInstitutionDetailPage (not
+  obsolete); the students page stopped using them.
+- `owner.css`: `.owner-action-bar` fine; LedgerPanel/LedgerRow remain
+  for OTHER pages (admin dashboard) — not obsolete globally.
+- OwnerUsersPage/events table: `.table-wrap` + `.tbl-stack` usage on
+  the dashboard events card is gone (RowList), but both classes remain
+  heavily used elsewhere — NOT obsolete.
+
+### Sheet import lines that may conflict (for Agent Z)
+- `OwnerPages.tsx` (my barrel) imports `../../styles/owner.css` once —
+  unchanged. My pages import `patterns` (via components/patterns) which
+  main.tsx loads globally — no new import lines added by me beyond
+  admin.css/owner.css consumers that already existed.
+
+### Requests (tokens/primitives/patterns)
+- None blocking. If patterns grow a `RowItem onSelect`/`selected` prop
+  later, my `.govx-row-select` stretched-button plates can retire.
+
+### Incomplete / deferred (honest)
+- AdminFacultiesPage / AdminCoursesPage / AdminReportsPage /
+  AdminSyncPage / AdminDigitalPage / AdminSettingsPage /
+  OwnerInstitutionsPage / OwnerContentPage / OwnerEducationPage /
+  OwnerAiPage / OwnerGovernancePage / OwnerRealtimePage: NOT
+  recomposed onto patterns this round (they keep their r189–r196
+  layouts, which already follow the token/type/AA contract). Reason:
+  round budget went to the mission's named surfaces (teachers/users/
+  students/audit/dashboard/alerts/flags/institutions-detail) + the
+  Phase A governance set. These pages consume admin.css/owner.css and
+  inherit the 1A palette; Agent Z may assign a follow-up wave.
+- The verify-teacher confirm was verified as admin2 (الأندلس, the only
+  unverified teacher) — cancelled at the dialog (no write), so demo
+  data stays as seeded.
 
 (sections below appended per round)

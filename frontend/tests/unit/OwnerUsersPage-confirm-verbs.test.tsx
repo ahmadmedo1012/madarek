@@ -101,7 +101,7 @@ function renderPage() {
 async function studentRow() {
   renderPage();
   fireEvent.click(await screen.findByRole('button', { name: 'إجراءات طالب تجريبي' }));
-  const row = (await screen.findByText('طالب تجريبي')).closest('.pf-row')!;
+  const row = (await screen.findByText('طالب تجريبي')).closest('.pf-row') as HTMLElement;
   expect(row).not.toBeNull();
   return row;
 }
