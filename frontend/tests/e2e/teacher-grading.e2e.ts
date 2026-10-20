@@ -83,7 +83,7 @@ test.describe('حلقة تصحيح الأستاذ', () => {
     const lateRow = page.locator('.list-row', { hasText: 'سالم قدّور' });
     await expect(lateRow).toContainText('متأخر');
     await expect(lateRow).toContainText('وصل منذ يوم');
-    await expect(onTimeRow.getByRole('button', { name: 'تقييم' })).toBeVisible();
+    await expect(onTimeRow.getByRole('button', { name: 'تصحيح' })).toBeVisible();
 
     /* قائمة «جميع الواجبات» ساكنة بجانب الطابور. */
     await expect(page.locator('.card', { hasText: 'جميع الواجبات' })).toContainText('مقدمة في الخوارزميات');
@@ -99,7 +99,7 @@ test.describe('حلقة تصحيح الأستاذ', () => {
     await page.goto('/teacher/assignments');
 
     /* فتح نموذج التقييم من صف الطالبة الأولى. */
-    await page.locator('.list-row', { hasText: 'مروة البراني' }).getByRole('button', { name: 'تقييم' }).click();
+    await page.locator('.list-row', { hasText: 'مروة البراني' }).getByRole('button', { name: 'تصحيح' }).click();
     const dialog = page.getByRole('dialog', { name: 'تقييم تسليم واجب الأسبوع الثالث' });
     await expect(dialog).toBeVisible();
     await expect(dialog.locator('.modal-title')).toHaveText('تقييم التسليم');

@@ -27,12 +27,14 @@ test.describe('تسجيل الدخول', () => {
     // ROLE_HOME.STUDENT — lib/nav.ts هو المصدر الوحيد للتحويل.
     await expect(page).toHaveURL(/\/student\/dashboard$/);
 
-    /* R189 re-pin: the masthead h1 + subtitle carry the identity; the
-       stat strip + TODAY ledger prove real dashboard data (not a shell). */
-    await expect(page.locator('h1.page-title')).toHaveText('لوحة التحكم');
-    await expect(page.locator('.page-subtitle').first()).toContainText('أحمد');
+    /* R287 re-pin (r220/r221 reskin → patterns contract): the masthead
+       h1 is the patterns PageHeader (pf-page-title), the greeting rides
+       pf-page-desc, and the ONE TodayList owns its «اليوم» h2 — the same
+       identity + real-data proof, on the shipped anatomy. */
+    await expect(page.locator('h1.pf-page-title')).toHaveText('لوحة التحكم');
+    await expect(page.locator('.pf-page-desc').first()).toContainText('أحمد');
     await expect(page.getByText('نسبة الحضور')).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'جدول اليوم' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'اليوم', exact: true })).toBeVisible();
   });
 
   test('الفشل يعرض رسالة الخلفية العربية الصريحة ويبقى في البوابة', async ({ page }) => {

@@ -73,7 +73,7 @@ test.describe('مراجعة قوالب الاختبارات', () => {
     ).toHaveText('3');
 
     /* صفّ القالب: العنوان + شارة النوع + المقرّر + العدّ + مقدّمه. */
-    const quizRow = page.locator('.moderation-row', { hasText: 'اختبار قصير — الوحدة الرابعة' });
+    const quizRow = page.locator('.oex-mod-row', { hasText: 'اختبار قصير — الوحدة الرابعة' });
     await expect(quizRow).toContainText('اختبار قصير');
     await expect(quizRow).toContainText('مقدمة في الخوارزميات');
     await expect(quizRow).toContainText('2 سؤال · 20 د');
@@ -103,9 +103,9 @@ test.describe('مراجعة قوالب الاختبارات', () => {
     /* القرار: اللوحة تُغلق، والقالب يخرج من الطابور عند إعادة الجلب —
      * المؤشّر يتراجع إلى 1 والصفّ الآخر باقٍ. */
     await expect(page.getByRole('region', { name: 'مراجعة اختبار قصير — الوحدة الرابعة' })).toHaveCount(0);
-    await expect(page.locator('.moderation-row', { hasText: 'اختبار قصير — الوحدة الرابعة' })).toHaveCount(0);
+    await expect(page.locator('.oex-mod-row', { hasText: 'اختبار قصير — الوحدة الرابعة' })).toHaveCount(0);
     await expect(pendingKpi.locator('.metric-value')).toHaveText('1');
-    await expect(page.locator('.moderation-row', { hasText: 'اختبار نهائي — الشبكات' })).toBeVisible();
+    await expect(page.locator('.oex-mod-row', { hasText: 'اختبار نهائي — الشبكات' })).toBeVisible();
 
     expect(moderateBodies).toEqual([{ approve: true, note }]);
   });
@@ -118,7 +118,7 @@ test.describe('مراجعة قوالب الاختبارات', () => {
     await page.goto('/quality/exam-moderation');
 
     /* فتح مراجعة القالب الموحّد (بلا مقرّر — «موحد» على السلك). */
-    const finalRow = page.locator('.moderation-row', { hasText: 'اختبار نهائي — الشبكات' });
+    const finalRow = page.locator('.oex-mod-row', { hasText: 'اختبار نهائي — الشبكات' });
     await finalRow.getByRole('button', { name: 'مراجعة' }).click();
     const panel = page.getByRole('region', { name: 'مراجعة اختبار نهائي — الشبكات' });
     await expect(panel).toContainText('أسئلة القالب — سؤال واحد');
@@ -138,8 +138,8 @@ test.describe('مراجعة قوالب الاختبارات', () => {
 
     /* القرار وقع: الحوار أُغلق، القالب المرفوض خرج، والآخر بانتظار. */
     await expect(page.getByRole('dialog')).toHaveCount(0);
-    await expect(page.locator('.moderation-row', { hasText: 'اختبار نهائي — الشبكات' })).toHaveCount(0);
-    await expect(page.locator('.moderation-row', { hasText: 'اختبار قصير — الوحدة الرابعة' })).toBeVisible();
+    await expect(page.locator('.oex-mod-row', { hasText: 'اختبار نهائي — الشبكات' })).toHaveCount(0);
+    await expect(page.locator('.oex-mod-row', { hasText: 'اختبار قصير — الوحدة الرابعة' })).toBeVisible();
 
     expect(moderateBodies).toEqual([{ approve: false, note }]);
   });

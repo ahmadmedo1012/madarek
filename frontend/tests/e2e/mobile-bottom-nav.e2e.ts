@@ -23,6 +23,6 @@ test.describe('التنقّل السفلي على الجوال', () => {
 
     await nav.getByRole('link', { name: 'مقرراتي', exact: true }).click();
     await expect(page).toHaveURL(/\/student\/courses$/);
-    await expect(page.locator('h1.page-title')).toHaveText('مقرّراتي الدراسية');
+    await expect(page.locator('h1.pf-page-title')).toHaveText('مقرّراتي الدراسية');
   });
 });

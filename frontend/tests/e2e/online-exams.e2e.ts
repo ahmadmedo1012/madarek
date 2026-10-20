@@ -16,7 +16,7 @@ test.describe('الاختبارات الإلكترونية — القائمة', 
     await expect(page.locator('h1.page-title')).toHaveText('الاختبارات الإلكترونية');
 
     /* القسم المتاح — بطاقة الاختبار القصير */
-    const quizCard = page.locator('.track-card', { hasText: 'اختبار قصير — الوحدة الثالثة' });
+    const quizCard = page.locator('.oex-row', { hasText: 'اختبار قصير — الوحدة الثالثة' });
     await expect(quizCard).toContainText('اختبار قصير · مقدمة في الخوارزميات');
     await expect(quizCard).toContainText('15 دقيقة');
     await expect(quizCard).toContainText('8 سؤال');
@@ -25,7 +25,7 @@ test.describe('الاختبارات الإلكترونية — القائمة', 
     await expect(quizCard).toContainText('يغلق');
 
     /* السجل — المحاولة المصحّحة بشارة النتيجة */
-    const historyCard = page.locator('.track-card', { hasText: 'اختبار نصفي — الخوارزميات' });
+    const historyCard = page.locator('.oex-row', { hasText: 'اختبار نصفي — الخوارزميات' });
     await expect(historyCard).toContainText('82 / 100');
     await expect(historyCard).toContainText('ناجح');
     // نافذة منتهية → الشارة الصادقة «أغلق باب التسليم».

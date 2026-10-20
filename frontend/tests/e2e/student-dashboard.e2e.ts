@@ -17,12 +17,13 @@ test.describe('لوحة تحكم الطالب', () => {
 
     // التحية من الساعة المجمدة (10:00 UTC → «صباح الخير») + الاسم من
     // جلسة mdrk-auth المبذورة.
-    /* R189 re-pin: the masthead — h1 carries the nav-label identity
-       («لوحة التحكم»، r183-B6 contract), the greeting + name + faculty
-       ride the subtitle, and the KPI row is the typographic stat strip. */
-    const h1 = page.locator('h1.page-title');
+    /* R189→R287 re-pin: the masthead — the patterns PageHeader h1
+       carries the nav-label identity («لوحة التحكم»، r183-B6 contract),
+       the greeting + name + faculty ride pf-page-desc, and the KPI row
+       is the StatLine (pf-statlabel). */
+    const h1 = page.locator('h1.pf-page-title');
     await expect(h1).toHaveText('لوحة التحكم');
-    const subtitle = page.locator('.page-subtitle').first();
+    const subtitle = page.locator('.pf-page-desc').first();
     await expect(subtitle).toContainText(GREETING_RE);
     await expect(subtitle).toContainText('أحمد');
     await expect(subtitle).toContainText('كلية الهندسة');
@@ -36,15 +37,21 @@ test.describe('لوحة تحكم الطالب', () => {
   test('بطاقة «أكمل من حيث توقفت» تعرض المحاضرة المتوقّفة و CTA مباشرًا إليها', async ({ page }) => {
     await page.goto('/student/dashboard');
 
-    const resume = page.locator('section[aria-label="أكمل من حيث توقفت"]');
+    /* R287 re-pin: «أكمل من حيث توقفت» is now the FIRST row of the
+       ONE TodayList (r220) — the row link itself IS the CTA (its href
+       goes straight to the paused lecture), the meta carries the code
+       + lecture title + honest progress %. */
+    /* R287b anatomy truth: pf-today-link carries the TITLE only — the
+       meta (code + lecture title + progress) is the row's pf-today-meta
+       sibling. Pin the ROW for content, the LINK for the direct CTA. */
+    const resume = page.locator('li.pf-today-item', { hasText: 'أكمل من حيث توقفت' });
     await expect(resume).toBeVisible();
     await expect(resume).toContainText('مقدمة في الخوارزميات');
     await expect(resume).toContainText('CS-201');
     await expect(resume).toContainText('الخوارزميات الجشعة');
-
-    // CTA الابتدائي للصفحة: رابط واحد إلى المحاضرة نفسها.
-    const cta = resume.getByRole('link', { name: 'متابعة المحاضرة' });
-    await expect(cta).toHaveAttribute('href', '/student/lectures/lec_e2e_greedy');
+    await expect(
+      page.locator('a.pf-today-link[href="/student/lectures/lec_e2e_greedy"]'),
+    ).toBeVisible();
   });
 
   test('الأجندة تعرض حصص اليوم/الغد والمهمة القادمة مع تسمية الموعد', async ({ page }) => {
@@ -52,18 +59,23 @@ test.describe('لوحة تحكم الطالب', () => {
 
     /* R189 re-pin: the agenda is the TODAY ledger + the week ledger.
        حصة اليوم تقود سجلّ اليوم؛ والمهمة بعد 3 أيام تسكن سجلّ الأسبوع. */
-    await expect(page.getByRole('heading', { name: 'جدول اليوم' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'اليوم', exact: true })).toBeVisible();
     await expect(page.getByText('المهام والفصول القادمة', { exact: true })).toHaveCount(0);
 
-    // حصة اليوم — في سجلّ اليوم، التسمية الحرفية «اليوم» من DAY_LABEL.
-    const todayRow = page.locator('.ledger-row', { hasText: 'مقدمة في الخوارزميات' });
+    // حصة اليوم — في سجلّ «اليوم»، التسمية الحرفية «اليوم» من DAY_LABEL.
+    // (R287: نحدّد بالـhref — صفّ «أكمل من حيث توقفت» يحمل نفس اسم المقرّر في عنوانه.)
+    const todayRow = page.locator('li.pf-today-item', { hasText: 'قاعة A2' });
+    await expect(todayRow).toContainText('مقدمة في الخوارزميات');
     await expect(todayRow).toContainText('اليوم');
     // مهمة بعد 3 أيام — formatDue على ساعة مجمّدة، في سجلّ الأسبوع.
-    const week = page.locator('.ledger', { hasText: 'أسبوعك القادم' });
+    const week = page.locator('section[aria-label="التزامات الأسبوع القادم"]');
     await expect(week).toBeVisible();
-    const taskRow = week.locator('.week-item', { hasText: 'واجب الأسبوع الثالث' });
+    await expect(week).toContainText('أسبوعك القادم');
+    const taskRow = week.locator('a.week-item', { hasText: 'واجب الأسبوع الثالث' });
     await expect(taskRow).toContainText('بعد 3 أيام');
-    // صف الأجندة هو نفسه الرابط (PP-X2 audit P1-8 — Link على مستوى الصف).
-    await expect(todayRow).toHaveAttribute('href', '/student/courses/offr_e2e_algorithms');
+    // صف الأجندة: العنوان نفسه هو الرابط (PP-X2 audit P1-8 — Link على مستوى الصف).
+    await expect(
+      page.locator('a.pf-today-link[href="/student/courses/offr_e2e_algorithms"]'),
+    ).toBeVisible();
   });
 });

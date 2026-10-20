@@ -30,7 +30,7 @@ test.describe('ثبات السمة', () => {
 
     /* الصفحة ما تزال حيّة بعد إعادة التحميل (وليست شاشة إقلاع عالقة) */
     // R189: الماستhead — h1 الهوية + التحية في السطر الثاني.
-    await expect(page.locator('h1.page-title')).toHaveText('لوحة التحكم');
-    await expect(page.locator('.page-subtitle').first()).toContainText('أحمد');
+    await expect(page.locator('h1.pf-page-title')).toHaveText('لوحة التحكم');
+    await expect(page.locator('.pf-page-desc').first()).toContainText('أحمد');
   });
 });

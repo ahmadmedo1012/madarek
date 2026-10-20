@@ -83,16 +83,16 @@ test.describe('المكتبة الإلكترونية — الاستعارة وا
 
     await page.goto('/student/library');
     await expect(page).toHaveTitle('المكتبة الإلكترونية · مدارك');
-    await expect(page.locator('h1.page-title')).toHaveText('المكتبة الإلكترونية');
+    await expect(page.locator('h1.pf-page-title')).toHaveText('المكتبة الإلكترونية');
 
     /* تبويب البحوث يحمل عدّه من الحمولة (بحث واحد منشور). */
     await expect(page.locator('#lib-tab-research .tab-count')).toHaveText('1');
 
     /* بطاقة الكتاب الوحيد النسخة متاحة، وبطاقة الاستعارات فارغة بصدق. */
-    const bookCard = page.locator('.thumb-card', { hasText: 'البرمجة بلغة C' });
+    const bookCard = page.locator('[aria-label="قائمة الكتب"] .pf-row', { hasText: 'البرمجة بلغة C' });
     await expect(bookCard).toContainText('د. عبد الرحمن الشريف');
     await expect(bookCard.locator('.badge')).toContainText('متاح');
-    const loansCard = page.locator('.card', { hasText: 'استعاراتي النشطة' });
+    const loansCard = page.locator('section[aria-label="استعاراتي النشطة"]');
     await expect(loansCard).toContainText('لا استعارات نشطة');
 
     /* الاستعارة — صفّ القرض يظهر «نشطة» بموعد إرجاعه، وtoast
@@ -101,7 +101,7 @@ test.describe('المكتبة الإلكترونية — الاستعارة وا
     const borrowToast = page.locator('.toast-success');
     await expect(borrowToast.locator('.toast-title')).toHaveText('تمّت الاستعارة');
     await expect(borrowToast.locator('.toast-desc')).toContainText('موعد إرجاع «البرمجة بلغة C»');
-    const loanRowEl = loansCard.locator('.list-row', { hasText: 'البرمجة بلغة C' });
+    const loanRowEl = loansCard.locator('.pf-row', { hasText: 'البرمجة بلغة C' });
     await expect(loanRowEl).toBeVisible();
     await expect(loanRowEl).toContainText('نشطة');
     await expect(loanRowEl).toContainText('موعد الإرجاع:');
@@ -117,7 +117,7 @@ test.describe('المكتبة الإلكترونية — الاستعارة وا
     await loanRowEl.getByRole('button', { name: 'إرجاع البرمجة بلغة C' }).click();
     await expect(page.locator('.toast-success').last().locator('.toast-title')).toHaveText('تمّ الإرجاع');
     await expect(loansCard).toContainText('لا استعارات نشطة');
-    await expect(page.locator('.list-row', { hasText: 'البرمجة بلغة C' })).toHaveCount(0);
+    await expect(loansCard.locator('.pf-row', { hasText: 'البرمجة بلغة C' })).toHaveCount(0);
     await expect(bookCard.locator('.badge')).toContainText('متاح');
     await expect(bookCard.getByRole('button', { name: 'استعارة البرمجة بلغة C' })).toBeEnabled();
 

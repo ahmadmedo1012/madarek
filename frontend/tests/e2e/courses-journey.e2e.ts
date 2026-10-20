@@ -22,10 +22,14 @@ test.describe('رحلة المقرّرات', () => {
     // مسجّلان»)، re-pin صادق لواجهة الصفحة الجديدة.
     await expect(page.getByText('مقرّران مسجّلان', { exact: false })).toBeVisible();
 
+    /* R287 re-pin (r222 reskin): the course card is a RowItem — the
+       title Link carries the name; the code badge + teacher ride the
+       row meta. Scope the row, pin the anchor, click through it. */
     const card = page.locator(`a[href="/student/courses/${OFFERING_ID}"]`);
+    const cardRow = page.locator('[aria-label="قائمة المقرّرات المسجّلة"] .pf-row', { hasText: 'مقدمة في الخوارزميات' });
     await expect(card).toContainText('مقدمة في الخوارزميات');
-    await expect(card).toContainText('CS-201');
-    await expect(card).toContainText('د. ليلى الفيتوري');
+    await expect(cardRow).toContainText('CS-201');
+    await expect(cardRow).toContainText('د. ليلى الفيتوري');
 
     /* 2 — تفاصيل المقرّر */
     await card.click();
