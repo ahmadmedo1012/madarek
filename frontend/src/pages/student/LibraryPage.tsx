@@ -100,7 +100,7 @@ function BookRowSkeleton({ rows = 6 }: { rows?: number }) {
     <div className="flex-col gap-3" aria-busy="true" aria-live="polite">
       {Array.from({ length: rows }).map((_, i) => (
         <div key={i} className="rs-book-row" aria-hidden>
-          <Skeleton width={64} height={88} rounded="var(--r-md)" />
+          <Skeleton width={128} height={160} rounded="var(--r-md)" />
           <div className="rs-book-body">
             <Skeleton width="62%" height={16} />
             <Skeleton width="38%" height={12} />

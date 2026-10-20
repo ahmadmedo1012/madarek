@@ -129,45 +129,50 @@
   .rs-row { padding: var(--sp-3); }
   .rs-row-head { flex-direction: column; }
   .rs-row-side { flex-direction: row; align-items: center; justify-content: space-between; width: 100%; }
-  .rs-row-actions .btn { flex: 1 1 100%; justify-content: center; }
+  /* Thumb floor: row actions stretch full-width and clear 44px. */
+  .rs-row-actions .btn { flex: 1 1 100%; justify-content: center; min-height: 44px; }
+  .rs-book-tail .btn { min-height: 44px; }
 }
 
 /* ─── 2. Status pipeline — submitted → checked → in review → published
-   The row's honest journey rail. Four steps, connector segments drawn
-   by li::before; the segment inherits "done" from the CURRENT li (a
-   segment counts as traveled when the step it leads to is reached). */
+   The row's honest journey rail: four equal cells, the dot centered in
+   each, the rail segment drawn BEHIND the dot row from the previous
+   dot's center to this one (li::before, −50% → 100%). The segment is
+   "traveled" when the step it leads to is reached (done/current), and
+   rose into a failed step — the student sees WHERE the journey
+   stopped. Labels sit under their dots, so the geometry is identical
+   at every width. */
 .rs-pipeline {
   display: flex;
-  align-items: flex-start;
-  gap: var(--sp-1);
   margin: 0;
   padding: 0;
   list-style: none;
   width: 100%;
 }
 .rs-pipeline li {
+  flex: 1 1 0;
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: var(--sp-1-5);
-  flex: 1;
   min-width: 0;
-  position: relative;
 }
-.rs-pipeline li + li { padding-inline-start: var(--sp-5); }
-.rs-pipeline li + li::before {
+.rs-pipeline li::before {
   content: "";
   position: absolute;
-  inset-inline-start: 0;
-  top: 50%;
-  translate: 0 -50%;
-  width: var(--sp-4);
+  /* the dot is sp-5 tall → its center is sp-5/2; the rail is sp-0-5 */
+  top: calc(var(--sp-5) / 2 - var(--sp-0-5) / 2);
+  inset-inline-start: calc(-50%);
+  inline-size: 100%;
   height: var(--sp-0-5);
   border-radius: var(--r-full);
   background: var(--surface-3);
 }
-.rs-pipeline li.is-done + li::before,
-.rs-pipeline li.is-current + li::before { background: var(--accent); }
-.rs-pipeline li.is-failed + li::before { background: var(--c-rose-ink); }
+.rs-pipeline li:first-child::before { display: none; }
+.rs-pipeline li.is-done::before,
+.rs-pipeline li.is-current::before { background: var(--accent); }
+.rs-pipeline li.is-failed::before { background: var(--c-rose-ink); }
 
 .rs-pipe-dot {
   display: inline-flex;
@@ -200,9 +205,10 @@
   font-size: var(--fs-sm);
   color: var(--text-faint);
   font-weight: var(--fw-medium);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-align: center;
+  line-height: var(--lh-snug);
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 .rs-pipeline .is-current .rs-pipe-label {
   color: var(--accent-ink);
@@ -219,11 +225,11 @@
   50% { opacity: 0.55; }
 }
 
+/* (The dot-over-label geometry is width-independent — the pipeline
+   needs no mobile re-layout; the 640px block below only trims the
+   label's breathing room.) */
 @media (max-width: 640px) {
-  .rs-pipeline li { flex-direction: column; align-items: center; gap: var(--sp-1); }
-  .rs-pipeline li + li { padding-inline-start: var(--sp-2); }
-  .rs-pipeline li + li::before { width: var(--sp-2); }
-  .rs-pipe-label { font-size: var(--fs-sm); }
+  .rs-pipeline li { gap: var(--sp-1); }
 }
 
 /* ─── 2b. Process explainer — a numbered flow line, not a card grid ── */
@@ -405,12 +411,16 @@
   font-weight: var(--fw-semibold);
   color: var(--text);
 }
-/* The honest result count line beside filters / under the strip. */
+/* The count line beside filters / under the strip. */
 .rs-count {
   font-size: var(--fs-sm);
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
+/* The filter bar reads ITSELF (container: filterbar / inline-size), so
+   as a flex child its content contributes nothing to its base size —
+   without flex-grow the containment collapses it to its padding. */
+.filter-bar.lib-filters { flex: 1 1 auto; }
 /* The quiet loans-empty note — one line, no empty-state wall. */
 .rs-loans-empty {
   margin: 0;
@@ -533,8 +543,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: var(--sp-14);
-  height: var(--sp-16);
+  inline-size: var(--sp-13);
+  block-size: var(--sp-14);
   border-radius: var(--r-md);
   border: 1px solid var(--border);
   overflow: hidden;
@@ -556,9 +566,10 @@
 }
 @media (max-width: 640px) {
   .rs-book-row { gap: var(--sp-3); }
-  .rs-book-row .lib-book-cover { width: var(--sp-12); height: var(--sp-14); }
+  .rs-book-row .lib-book-cover { inline-size: var(--sp-11); block-size: var(--sp-13); }
+  .rs-book-row .lib-book-cover .lib-cover-band { font-size: var(--fs-sm); }
   .rs-book-tail { flex-direction: column; align-items: stretch; }
-  .rs-book-tail .btn { justify-content: center; }
+  .rs-book-tail .btn { justify-content: center; min-height: 44px; }
 }
 
 /* ─── 6. Review queue surfaces (teacher) ──────────────────────────── */
@@ -592,12 +603,12 @@
 .doc-reader-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .doc-reader-side { flex-shrink: 0; display: flex; }
 
-/* Floating annotations trigger — mobile only. 56px round, bottom-end,
-   thumb-reachable, carries the live count. */
+/* Floating annotations trigger — mobile only. Bottom-end, above the
+   shell's bottom-nav band, thumb-reachable, carries the label. */
 .doc-notes-fab {
   display: none;
   position: fixed;
-  bottom: calc(var(--sp-6) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(var(--sp-11) + env(safe-area-inset-bottom, 0px));
   inset-inline-end: var(--sp-4);
   z-index: var(--z-popover, 200);
   align-items: center;
@@ -612,6 +623,7 @@
   font-weight: var(--fw-semibold);
   cursor: pointer;
   box-shadow: var(--elev-3);
+  min-height: 44px;
 }
 .doc-notes-fab:active { transform: scale(var(--press-scale)); }
 

@@ -133,6 +133,6 @@ describe('r199 — the book row identity chip (renegotiated r186 jacket)', () =>
     // The Skeleton component writes its height inline — the chip's
     // settled height, so loading never shifts the list.
     const coverSkeleton = tile?.firstElementChild as HTMLElement | null;
-    expect(coverSkeleton?.getAttribute('style')).toContain('height: 88px');
+    expect(coverSkeleton?.getAttribute('style')).toContain('height: 160px');
   });
 });

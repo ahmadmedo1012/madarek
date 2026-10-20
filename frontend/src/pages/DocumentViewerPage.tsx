@@ -1,4 +1,5 @@
 import { lazy, Suspense, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ChevronRight, FileQuestion, MessageSquare } from 'lucide-react';
 import { Icon } from '../components/Icon';
@@ -174,29 +175,33 @@ export default function DocumentViewerPage() {
 
       {/* Mobile recomposition: full-screen reader + annotations in a
           bottom Sheet behind one thumb-reachable trigger. The trigger
-          renders only when the paper supports annotations (paperId). */}
+          renders only when the paper supports annotations (paperId).
+          The FAB portals to <body>: the shell's page-transition wrapper
+          is transformed, which would turn position:fixed into
+          viewport-relative-to-that-wrapper and clip the button. */}
+      {isNarrow && paperId && createPortal(
+        <button
+          type="button"
+          className="doc-notes-fab"
+          onClick={() => setNotesOpen(true)}
+          aria-haspopup="dialog"
+          aria-expanded={notesOpen}
+        >
+          <Icon icon={MessageSquare} size={16} />
+          الملاحظات
+        </button>,
+        document.body,
+      )}
       {isNarrow && paperId && (
-        <>
-          <button
-            type="button"
-            className="doc-notes-fab"
-            onClick={() => setNotesOpen(true)}
-            aria-haspopup="dialog"
-            aria-expanded={notesOpen}
-          >
-            <Icon icon={MessageSquare} size={16} />
-            الملاحظات
-          </button>
-          <Sheet
-            open={notesOpen}
-            onClose={() => setNotesOpen(false)}
-            side="bottom"
-            ariaLabel="ملاحظات البحث"
-            title="ملاحظات البحث"
-          >
-            <div className="rs-notes-sheet-body">{annotationsPanel}</div>
-          </Sheet>
-        </>
+        <Sheet
+          open={notesOpen}
+          onClose={() => setNotesOpen(false)}
+          side="bottom"
+          ariaLabel="ملاحظات البحث"
+          title="ملاحظات البحث"
+        >
+          <div className="rs-notes-sheet-body">{annotationsPanel}</div>
+        </Sheet>
       )}
     </div>
   );

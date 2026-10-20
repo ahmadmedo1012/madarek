@@ -35,10 +35,10 @@ export function aiTier(pct?: number | null): ScanTier {
   return 'bad';
 }
 
-const TIER_LABEL: Record<ScanTier, string> = {
+const TIER_NOTE: Record<ScanTier, string> = {
   ok: 'داخل الحد المقبول',
-  warn: 'قرب الحد',
-  bad: 'فوق الحد',
+  warn: 'قرب الحد — المقبول أقل من',
+  bad: 'فوق الحد المقبول — الحد عند',
 };
 
 function Meter({ pct, tier, threshold }: { pct: number; tier: ScanTier; threshold: number }) {
@@ -86,7 +86,11 @@ function Cell({
           </span>
           <Meter pct={pct ?? 0} tier={tier} threshold={threshold} />
           <span className="rs-scan-note">
-            {TIER_LABEL[tier]} · الحد المقبول: أقل من {threshold}%
+            {tier === 'ok' ? (
+              <>{TIER_NOTE[tier]} (أقل من {threshold}%)</>
+            ) : (
+              <>{TIER_NOTE[tier]} {threshold}%</>
+            )}
           </span>
         </>
       )}
