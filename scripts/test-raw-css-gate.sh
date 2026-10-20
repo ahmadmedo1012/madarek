@@ -94,11 +94,14 @@ expect 'baseline: TSX axis clean (0 findings, 1 reasoned allow)' 0 'TSX inline s
 expect 'baseline: prose px inside strings is never a TSX finding' 0 '' 'padding: 5px'
 expect 'baseline: template prose never a TSX finding' 0 '' 'margin: 4px'
 expect 'baseline: JSX-comment prose never a TSX finding' 0 '' 'gap: 9px'
-expect 'baseline: world census visible (landing.css 3 literals)' 0 'world census (not enforced): landing.css — 3 literal'
+expect 'baseline: landing.css enforced — census path retired (r198)' 0 '' 'world census (not enforced): landing.css'
 expect 'baseline: comment example never a finding' 0 '' 'ghost'
 expect 'baseline: quoted prose never a spacing decl' 0 '' 'content:'
 
 # ── blind-spot classes must all be detected (exit 1) ─────────────
+fresh; mutate "$WORK/styles/landing.css" 'padding: var(--sp-4);' 'padding: 16px;'
+expect 'landing.css raw literal is a FINDING (enforced since r198)' 1 'landing.css'
+
 fresh; mutate "$WORK/styles/app.css" 'padding: var(--sp-4); }' 'padding: 16px; }'
 expect 'exact-token raw literal (16px → candidate --sp-4)' 1 '16px → exact-token (candidate --sp-4)'
 
@@ -258,8 +261,10 @@ else failed=$((failed+1)); fail_names+=('broken ladder'); printf '  ✗ broken l
 # ── report mode: non-blocking while listing everything ───────────
 fresh; append app.css '.rule-new { margin-top: 14px; }'
 out="$(bash "$GATE" --report --styles-dir "$WORK/styles" --src-dir "$WORK/src" 2>&1)"; code=$?
-if [ "$code" -eq 0 ] && grep -q 'margin-top: 14px' <<<"$out" && grep -q 'world census' <<<"$out"; then
-  passed=$((passed+1)); printf '  ✓ report mode: exit 0 + findings + census listed\n'
+# r198: the world census path is retired (SPACING_EXTRA empty) — report
+# mode stays non-blocking and lists the finding.
+if [ "$code" -eq 0 ] && grep -q 'margin-top: 14px' <<<"$out"; then
+  passed=$((passed+1)); printf '  ✓ report mode: exit 0 + findings listed\n'
 else
   failed=$((failed+1)); fail_names+=('report mode'); printf '  ✗ report mode: exit 0 with findings listed, got %s\n' "$code"
 fi

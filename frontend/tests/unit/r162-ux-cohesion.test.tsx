@@ -354,15 +354,18 @@ describe('r172a §4 → r188 — the grain veil is retired with the Orbit-Ink wo
 
 /* ── r172a §5 — scene vars in the landing TSX ─────────────────────── */
 
-describe('r172a §5 → r188 — the Orbit-Ink scene components are retired', () => {
-  it('the canvas/scene components are gone from the tree (folio = vector figure, no canvas)', () => {
+describe('r172a §5 → r198 — the Orbit-Ink scene components are retired', () => {
+  it('the canvas/scene components are gone from the tree (poster = vector figure, no canvas)', () => {
     for (const f of ['OrbitScene.tsx', 'HeroDepthLayer.tsx', 'CollegeConstellation.tsx', 'JourneyLightPath.tsx']) {
       const p = `src/components/landing/${f}`;
       expect(existsSyncP(p), `${f} must stay deleted (r188)`).toBe(false);
     }
-    // TestimonialSection survives (renders nothing by design — external
-    // testimonials are documented as blocked on real consent).
-    expect(existsSyncP('src/components/landing/TestimonialSection.tsx')).toBe(true);
+    // r198 (stage 2): TestimonialSection (rendered null since r188 —
+    // external testimonials blocked on real consent) is deleted with
+    // the folio world; the poster lands Constellation.tsx instead.
+    expect(existsSyncP('src/components/landing/TestimonialSection.tsx')).toBe(false);
+    expect(existsSyncP('src/components/landing/KnowledgeMap.tsx')).toBe(false);
+    expect(existsSyncP('src/components/landing/OrbitPath.tsx')).toBe(false);
   });
 });
 

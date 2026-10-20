@@ -1,5 +1,6 @@
-/* fixture landing.css — proves the world-census path: this sheet is
-   exempt from STRICT spacing (documented display-world policy) but
-   its raw literals stay VISIBLE in every report. The harness asserts
-   strict passes while the census line counts these literals. */
-.world-hero { padding: 14px; margin-block-start: 9px; gap: 26px; }
+/* fixture landing.css — since r198 this sheet is FULLY ENFORCED
+   (the poster rebuild shipped zero raw spacing literals and left the
+   census; SPACING_EXTRA is empty). The harness asserts strict passes
+   on the clean token recipe and that any raw literal here is a
+   FINDING, not a census entry. */
+.world-hero { padding: var(--sp-4); margin-block-start: var(--sp-2); gap: var(--sp-3); }

@@ -187,7 +187,9 @@ TYPE_RADIUS_EXTRA = {
     'colleges.css',            # gallery display world (spec 004)
 }
 SPACING_EXTRA = {
-    'landing.css',             # Orbit Ink editorial rhythm (census)
+    # (r198: landing.css MOVED OUT of the census into full enforcement —
+    # the poster rebuild ships zero raw spacing literals. It stays
+    # documented here as a tombstone, not an exclusion.)
 }
 
 # ── spacing property family ───────────────────────────────────────

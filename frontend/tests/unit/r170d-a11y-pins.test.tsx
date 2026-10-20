@@ -180,9 +180,9 @@ describe('r170d → r188 — landing burger keyboard contract (Escape + aria-exp
     expect(menu).not.toBeNull();
     const items = within(menu).getAllByRole('link');
     expect(items.length).toBeGreaterThanOrEqual(6);
-    // r191: the operator-ordered copy rename — the four anchors stay,
-    // their labels change (ما يُشحن اليوم → ما يعمل اليوم, الاستقلالية → لمن صُنعت).
-    for (const name of ['كيف تعمل', 'المنظومة', 'ما يعمل اليوم', 'لمن صُنعت']) {
+    // r198: the poster's chapter anchors (the desktop nav shows three of
+    // them; the mobile menu adds الأدوار) — same keyboard contract.
+    for (const name of ['الفصول', 'ما يعمل اليوم', 'الأدوار', 'الكليات']) {
       expect(items.some((a) => (a.textContent || '').includes(name))).toBe(true);
     }
 
