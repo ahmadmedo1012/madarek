@@ -398,3 +398,82 @@ describe('OwnerInstitutionDetailPage — offering create flow (r181)', () => {
     expect(submit).toBeDisabled(); // teacher still missing
   });
 });
+
+/* ════════════════════════════════════════════════════════════════
+   r299 (workstream F) — the de-duplicated masthead + the modal
+   close contract.
+   · The KPI StatStrip died: every one of its four numbers already
+     lived on the page exactly where it belongs (members on the
+     header line, faculties/departments in the academic card's
+     subtitle, courses in the courses card's subtitle). One owner
+     per datum — a regression must not reintroduce the second
+     printing.
+   · The four create-modals' close buttons rode the `modal-close`
+     class — zero CSS rules anywhere (a naked X, no 44px floor, no
+     hover chip). They ride the canonical .icon-btn now.
+   ════════════════════════════════════════════════════════════════ */
+
+describe('OwnerInstitutionDetailPage — one owner per datum (r299)', () => {
+  it('renders NO StatStrip — the header line and the cards\' subtitles own the four numbers', () => {
+    mocks.listing.data = [ZAWIA];
+    mocks.faculties.data = [FACULTY_SCIENCE];
+    mocks.courses.data = {
+      data: [COURSE_CS101],
+      meta: { page: 1, limit: 20, total: 1, totalPages: 1 },
+    };
+    renderAt('zawia-showcase');
+
+    // The duplicated KPI band never renders…
+    expect(document.querySelector('.stat-strip')).toBeNull();
+    // …while the real owners stay: the header's member count…
+    expect(screen.getByText(/4 أعضاء نشطون/)).toBeInTheDocument();
+    // …and the academic card's faculty/department subtitle.
+    expect(screen.getByText(/كلّيّة واحدة · قسمان/)).toBeInTheDocument();
+  });
+});
+
+describe('OwnerInstitutionDetailPage — modal close contract (r299)', () => {
+  it('every create-modal\'s close affordance is the styled icon-btn chip, not the dead modal-close class', () => {
+    mocks.listing.data = [ZAWIA];
+    mocks.faculties.data = [FACULTY_SCIENCE];
+    mocks.courses.data = {
+      data: [COURSE_CS101],
+      meta: { page: 1, limit: 20, total: 1, totalPages: 1 },
+    };
+    renderAt('zawia-showcase');
+
+    // Every close button the modals ever mount rides the icon chip —
+    // modal-close had zero CSS rules (a naked X). Asserting on ALL of
+    // them at once also covers the persisted-dialog DOM (the Modal
+    // keeps mounted dialogs around), so the pin can never miss one.
+    /* The Modal keeps closed dialogs mounted in the DOM, so every
+     * successive modal adds another إغلاق button — assert on ALL of
+     * them (the pin can never miss one) and close via the LAST one
+     * (the currently-open dialog's own). */
+    const assertAndCloseLast = () => {
+      const closes = screen.getAllByRole('button', { name: 'إغلاق' });
+      expect(closes.length).toBeGreaterThan(0);
+      for (const close of closes) {
+        expect(close).toHaveClass('icon-btn');
+        expect(close).not.toHaveClass('modal-close');
+      }
+      fireEvent.click(closes[closes.length - 1]!);
+    };
+
+    // The faculty modal.
+    fireEvent.click(screen.getByRole('button', { name: /إضافة كلّيّة/ }));
+    assertAndCloseLast();
+
+    // The course modal.
+    fireEvent.click(screen.getByRole('button', { name: /إضافة مقرّر/ }));
+    assertAndCloseLast();
+
+    // The department modal rides a faculty card's row action.
+    fireEvent.click(screen.getByRole('button', { name: /إضافة قسم/ }));
+    const closes = screen.getAllByRole('button', { name: 'إغلاق' });
+    for (const close of closes) {
+      expect(close).toHaveClass('icon-btn');
+      expect(close).not.toHaveClass('modal-close');
+    }
+  });
+});

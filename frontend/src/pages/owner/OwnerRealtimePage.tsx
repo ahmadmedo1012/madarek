@@ -1,7 +1,10 @@
-import { Radio, RefreshCw } from 'lucide-react';
-import { Card } from '../../components/primitives';
+import { RefreshCw } from 'lucide-react';
 import { StatStrip } from '../../components/primitives/Ledger';
-import { ErrorState, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
+import { ErrorState } from '../../components/primitives/States';
+/* r299: the strip's shape-matched skeleton — one owner-owned helper
+ * replaces both the mismatched KpiSkeleton (the retired icon-tile
+ * anatomy) and the local copy-pasted variants. */
+import { StatStripSkeleton } from '../../components/owner/StripSkeletons';
 import { Icon } from '../../components/Icon';
 import { useOwnerRealtime, useOwnerAlerts } from '../../hooks/useOwner';
 import { countAr } from '../../lib/format';
@@ -66,11 +69,11 @@ export function OwnerRealtimePage() {
       </header>
 
       {realtime.isPending ? (
-        <>
-          {/* Shape-matched: the 4 KPI tiles + the summary card. */}
-          <KpiSkeleton />
-          <CardSkeleton lines={5} />
-        </>
+        /* r299: shape-matched — the resolved band is the typographic
+         * strip (the summary card that followed it died with it — every
+         * one of its four numbers repeated the strip above it twice
+         * on the same screen). */
+        <StatStripSkeleton />
       ) : !data ? (
         /* 6A10-9: initial load failure (no data ever landed) — the
            ONLY path that full-clears the page. */
@@ -120,69 +123,16 @@ export function OwnerRealtimePage() {
           {/* Live region: value changes are announced politely; the
               values remount (keyed) so each change re-settles.
               r149 (R3-A1 #9): grid-4 الكنونية — كانت شبكة خاصة بفجوة
-              وكسر مختلفين عن كل شرائط KPI في المنصة. */}
+              وكسر مختلفين عن كل شرائط KPI في المنصة.
+              r299: the «حيّ» trend notes died — the pulsing tick dot
+              beside every label already says «live»; four identical
+              words under four numbers were pure noise. */}
           <section role="status" aria-live="polite"><StatStrip ariaLabel="مؤشرات المراقبة الحيّة للمنصّة" cells={[
-            { label: liveLabel('الجلسات النشطة'), value: tickValue(data.activeSessions, 'الجلسات النشطة'), trend: 'حيّ', trendTone: 'flat' },
-            { label: liveLabel('طلبات AI / دقيقة'), value: tickValue(data.aiRequestsPerMin, 'طلبات AI / دقيقة'), trend: 'حيّ', trendTone: 'flat' },
-            { label: liveLabel('بثّ مباشر'), value: tickValue(data.liveBroadcasts, 'بثّ مباشر'), trend: 'حيّ', trendTone: 'flat' },
-            { label: liveLabel('اختبارات جارية'), value: tickValue(data.activeExams, 'اختبارات جارية'), trend: 'حيّ', trendTone: 'flat' },
+            { label: liveLabel('الجلسات النشطة'), value: tickValue(data.activeSessions, 'الجلسات النشطة') },
+            { label: liveLabel('طلبات AI / دقيقة'), value: tickValue(data.aiRequestsPerMin, 'طلبات AI / دقيقة') },
+            { label: liveLabel('بثّ مباشر'), value: tickValue(data.liveBroadcasts, 'بثّ مباشر') },
+            { label: liveLabel('اختبارات جارية'), value: tickValue(data.activeExams, 'اختبارات جارية') },
           ]} /></section>
-
-          <Card title="ملخّص النشاط الحيّ" icon={Radio}>
-            {/* r151b (R5-A4): the 23 sibling tables all ship a .table-wrap
-                scroller + per-td data-labels — this one missed both in the
-                r150d retirement (stacked bare values, no labels, no border). */}
-            <div className="table-wrap">
-            <table className="table tbl-stack owner-realtime-table">
-              <thead>
-                <tr>
-                  <th scope="col">المؤشّر</th>
-                  <th scope="col">القيمة</th>
-                  <th scope="col">الحالة</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* 22-b (4-A7 P2-1): zero activity is a QUIET campus, not
-                     a warning — the summary rows used to paint all four
-                     dots amber while the band above said «النظام يعمل
-                     بشكل طبيعيّ». Quiet = neutral (the unknown/pending
-                     tone); amber stays reserved for real thresholds. */}
-                <tr>
-                  <td data-label="المؤشّر">الجلسات المتّصلة</td>
-                  <td className="num" data-label="القيمة"><bdi>{formatNum(data.activeSessions)}</bdi></td>
-                  <td data-label="الحالة">
-                    <span className={`owner-health-dot ${data.activeSessions > 0 ? 'green' : 'neutral'} inline`} />
-                    <span className="visually-hidden">{data.activeSessions > 0 ? 'نشط' : 'هادئ'}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td data-label="المؤشّر">طلبات الذكاء الاصطناعيّ</td>
-                  <td className="num" data-label="القيمة"><bdi>{formatNum(data.aiRequestsPerMin)}</bdi>/دقيقة</td>
-                  <td data-label="الحالة">
-                    <span className={`owner-health-dot ${data.aiRequestsPerMin > 0 ? 'green' : 'neutral'} inline`} />
-                    <span className="visually-hidden">{data.aiRequestsPerMin > 0 ? 'نشط' : 'هادئ'}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td data-label="المؤشّر">غرف البثّ المباشر</td>
-                  <td className="num" data-label="القيمة"><bdi>{formatNum(data.liveBroadcasts)}</bdi></td>
-                  <td data-label="الحالة">
-                    <span className={`owner-health-dot ${data.liveBroadcasts > 0 ? 'green' : 'neutral'} inline`} />
-                    <span className="visually-hidden">{data.liveBroadcasts > 0 ? 'نشط' : 'هادئ'}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td data-label="المؤشّر">اختبارات قيد التنفيذ</td>
-                  <td className="num" data-label="القيمة"><bdi>{formatNum(data.activeExams)}</bdi></td>
-                  <td data-label="الحالة">
-                    <span className={`owner-health-dot ${data.activeExams > 0 ? 'green' : 'neutral'} inline`} />
-                    <span className="visually-hidden">{data.activeExams > 0 ? 'نشط' : 'هادئ'}</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            </div>
-          </Card>
         </>
       )}
     </div>
