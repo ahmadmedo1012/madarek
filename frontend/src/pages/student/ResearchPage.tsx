@@ -1,11 +1,12 @@
 import { useId, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   BookMarked, Upload, ScanSearch, X,
   CheckCircle2, AlertCircle, Sparkles, MessageSquare, FileText,
   type LucideIcon,
 } from 'lucide-react';
-import { Badge, FormField, ProgressBar } from '../../components/primitives';
+import { FormField, ProgressBar } from '../../components/primitives';
 import { ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
@@ -19,11 +20,15 @@ import {
   useMyEnrollments, apiErrorMessage,
   type ResearchPaper, type PaperStatus,
 } from '../../hooks/useResources';
-import { PageFrame, PageHeader, RowList, RowItem, StatLine, SectionHeader } from '../../components/patterns';
-import type { StatLineItem } from '../../components/patterns';
+import { PageFrame, PageHeader, RowList, RowItem } from '../../components/patterns';
 import { StatusPipeline } from '../../components/paper/StatusPipeline';
 import { ScanResults } from '../../components/paper/ScanResults';
+import { formatInt } from '../../utils/numbers';
 import '../../styles/research.css';
+/* R305-A7 «Heron»: the scoped research/PDF/library sheet — loaded
+ * DIRECTLY AFTER the family sheet so later source order inside
+ * @layer pages wins the equal-specificity ties (§0 scoping contract). */
+import '../../styles/r305-research-pdf-ai.css';
 
 const STATUS_LABEL: Record<PaperStatus, string> = {
   UPLOADED: 'بانتظار الفحص',
@@ -37,6 +42,28 @@ const STATUS_LABEL: Record<PaperStatus, string> = {
   GRADED: 'مُقيَّم',
   PUBLISHED: 'مُنشور في المكتبة',
 };
+
+/* R305-A7: status chips — dot + Arabic label (state never rides color
+ * alone). The TONE ladder stays canonical (lib/paperStatus.ts); this
+ * map only translates badge tones onto the shared chip vocabulary. */
+type ChipTone = 'accent' | 'success' | 'warning' | 'danger' | 'info' | 'gold';
+type BadgeTone = 'brand' | 'green' | 'amber' | 'red' | 'gold' | 'purple';
+const BADGE_TONE_TO_CHIP: Record<BadgeTone, ChipTone> = {
+  amber: 'warning',
+  brand: 'accent',
+  purple: 'info',
+  red: 'danger',
+  gold: 'gold',
+  green: 'success',
+};
+function StatusChip({ tone, label }: { tone: ChipTone; label: string }) {
+  return (
+    <span className={`r305rp-chip r305rp-chip--${tone}`}>
+      <span className="r305rp-chip-dot" aria-hidden="true" />
+      {label}
+    </span>
+  );
+}
 
 /* fmtDate (short ar-LY date with year, '—' for missing values) is
  * lib/format.formatDateWithYearAr (13-15 fold, audit 11-f P2-1). */
@@ -98,11 +125,16 @@ export default function StudentResearchPage() {
   const pendingCount = papers.filter((p) => p.status === 'UPLOADED' || p.status === 'SCANNING' || p.status === 'CHECKS_PASSED').length;
   const gradedCount = papers.filter((p) => p.status === 'GRADED' || p.status === 'PUBLISHED').length;
   const failedCount = papers.filter((p) => p.status === 'CHECKS_FAILED').length;
-  const kpis: StatLineItem[] = [
-    { label: 'إجمالي بحوثك', value: papers.length, hint: 'منذ أول رفعة' },
-    { label: 'قيد المراجعة', value: pendingCount, hint: pendingCount > 0 ? 'بانتظار خطوة تالية' : 'لا شيء معلّق', tone: pendingCount > 0 ? 'signal' : 'neutral' },
-    { label: 'مُقيَّمة', value: gradedCount, hint: gradedCount > 0 ? 'منها المنشور' : 'لا توجد بعد', tone: gradedCount > 0 ? 'positive' : 'neutral' },
-    { label: 'تعذّر اجتياز الفحص', value: failedCount, hint: failedCount > 0 ? 'تحتاج إعادة رفع' : 'لا شيء', tone: failedCount > 0 ? 'danger' : 'neutral' },
+  /* R305-A7: the summary rides the page's ONE deep band as a metric
+   * register — values formatted via utils/numbers (the StatLine canon:
+   * the component never formats; neither does the band). A real state
+   * (a failed paper) rides a danger dot + the hint line, never color
+   * alone. */
+  const kpis: Array<{ label: string; value: ReactNode; hint: string; flag?: boolean }> = [
+    { label: 'إجمالي بحوثك', value: formatInt(papers.length), hint: 'منذ أول رفعة' },
+    { label: 'قيد المراجعة', value: formatInt(pendingCount), hint: pendingCount > 0 ? 'بانتظار خطوة تالية' : 'لا شيء معلّق' },
+    { label: 'مُقيَّمة', value: formatInt(gradedCount), hint: gradedCount > 0 ? 'منها المنشور' : 'لا توجد بعد' },
+    { label: 'تعذّر اجتياز الفحص', value: formatInt(failedCount), hint: failedCount > 0 ? 'تحتاج إعادة رفع' : 'لا شيء', flag: failedCount > 0 },
   ];
 
   const startScan = async (id: string) => {
@@ -136,6 +168,10 @@ export default function StudentResearchPage() {
   };
 
   return (
+    /* R305-A7 marker root — every Heron rule in the scoped sheet hangs
+     * off .r305rp; the upload Modal (a portal) reaches through §9's
+     * body:has(.r305rp). The patterns PageFrame rides INSIDE. */
+    <div className="r305rp">
     <PageFrame width="default">
       <PageHeader
         title="بحوثي العلمية"
@@ -153,18 +189,15 @@ export default function StudentResearchPage() {
         <ErrorRetry error={my.error} onRetry={() => my.refetch()} />
       ) : (
         <>
-          {/* The submission CTA — the workflow's first move stays one
-              glance away above the list (the empty state carries its
-              own bigger twin below, so this rides only when there is
-              something to scroll past). */}
+          {/* The submission CTA — the workflow's first move rides the
+              ONE copper rail (r305rp-next): one line of intent next to
+              the single emphasized action. */}
           {papers.length > 0 && (
-            <section className="rs-upload-cta" aria-label="رفع بحث جديد">
-              <span className="rs-upload-cta-icon" aria-hidden="true">
-                <Icon icon={Upload} size={20} />
-              </span>
-              <div className="rs-upload-cta-body">
-                <div className="rs-upload-cta-title">بحث جديد؟</div>
-                <div className="rs-upload-cta-desc">
+            <section className="r305rp-next r305rp-res-cta" aria-label="رفع بحث جديد">
+              <div className="r305rp-res-cta-body">
+                <span className="r305rp-eyebrow">الخطوة الأولى</span>
+                <div className="r305rp-res-cta-title">بحث جديد؟</div>
+                <div className="r305rp-res-cta-desc">
                   ارفعه الآن — يُفحص أوتوماتيكياً، ثم يصل أستاذك للتقييم، وتميّزه ينشره في المكتبة.
                 </div>
               </div>
@@ -175,7 +208,22 @@ export default function StudentResearchPage() {
             </section>
           )}
 
-          <StatLine items={kpis} />
+          {/* R305-A7: the page's ONE deep band — the lifecycle summary. */}
+          <section className="r305rp-band r305rp-band--deep r305rp-res-band" aria-label="ملخص بحوثك">
+            <span className="r305rp-eyebrow">ملخص الحالة</span>
+            <dl className="r305rp-res-metrics">
+              {kpis.map((k) => (
+                <div key={k.label}>
+                  <dt className="r305rp-metric-label">{k.label}</dt>
+                  <dd className="r305rp-metric">
+                    {k.flag ? <span className="r305rp-res-flag" aria-hidden="true" /> : null}
+                    {k.value}
+                  </dd>
+                  <dd className="r305rp-band-secondary r305rp-res-metric-hint">{k.hint}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
 
           {scanError && (
             <div className="alert red" role="alert">
@@ -271,6 +319,7 @@ export default function StudentResearchPage() {
         />
       )}
     </PageFrame>
+    </div>
   );
 }
 
@@ -330,26 +379,36 @@ function PaperRow({
           <span>رُفع: {formatDateWithYearAr(paper.uploadedAt)}</span>
         </>
       }
-      trailing={<Badge color={PAPER_STATUS_TONE[paper.status]}>{STATUS_LABEL[paper.status]}</Badge>}
+      trailing={
+        <StatusChip
+          tone={BADGE_TONE_TO_CHIP[PAPER_STATUS_TONE[paper.status]]}
+          label={STATUS_LABEL[paper.status]}
+        />
+      }
       defaultExpanded={mustAct}
       expandLabel={`تفاصيل البحث: ${paper.title}`}
     >
       <div className="flex-col gap-3">
         <StatusPipeline status={paper.status} paper={paper} />
 
-        {/* The honest next step — one labelled line per status; the
-            actionable statuses carry their action on the same line. */}
-        <div className="rs-next">
-          <span className="rs-next-label">
+        {/* The honest next step — one labelled line per status, riding
+            the row's copper rail (r305rp-next); the actionable statuses
+            carry their action on the same line. */}
+        <div className="r305rp-next r305rp-res-next">
+          <span className="r305rp-eyebrow">
             <Icon icon={isScanning && paper.status !== 'CHECKS_FAILED' ? ScanSearch : Sparkles} size={13} />
-            <span className="rs-next-k">{next.k}</span>
+            {next.k}
           </span>
-          <span className="rs-next-hint">{next.hint}</span>
-          {paper.status === 'UPLOADED' && !isScanning && (
+          <span className="r305rp-res-next-hint">{next.hint}</span>
+          {paper.status === 'UPLOADED' && (
             <div className="rs-row-actions">
-              <button type="button" className="btn outline" onClick={onScan}>
+              {/* The scan start stays mounted while its request is in
+                  flight — disabled + honest label (the old pin vanished
+                  the button mid-flight, a state jump with no pending
+                  voice and no double-fire guard). */}
+              <button type="button" className="btn outline" onClick={onScan} disabled={isScanning}>
                 <Icon icon={ScanSearch} size={14} />
-                ابدأ الفحص الآن
+                {isScanning ? 'جارٍ بدء الفحص…' : 'ابدأ الفحص الآن'}
               </button>
             </div>
           )}
@@ -375,7 +434,15 @@ function PaperRow({
           <div className="rs-row-grade">
             <div className="rs-row-grade-head">
               <Icon icon={CheckCircle2} size={14} />
-              تقييم الأستاذ: <span className="font-mono"><bdi>{paper.grade.toFixed(1)} / 20</bdi></span>
+              {/* R305-A7: the reviewer identity is the API's OWN data
+                  (paper.reviewer) — shown when present, omitted when the
+                  server sends none (nothing invented). */}
+              <span>
+                {paper.reviewer
+                  ? <>تقييم الأستاذ <span className="r305rp-res-grade-reviewer">{paper.reviewer.firstName} {paper.reviewer.lastName}</span>: </>
+                  : 'تقييم الأستاذ: '}
+              </span>
+              <span className="font-mono"><bdi>{paper.grade.toFixed(1)} / 20</bdi></span>
             </div>
             {paper.feedback && <p className="rs-row-grade-note">{paper.feedback}</p>}
           </div>
@@ -419,15 +486,17 @@ function ProcessExplainer() {
     { n: 4, title: 'النشر في المكتبة', desc: 'البحوث المتميزة تُضاف إلى مكتبة الجامعة.', icon: BookMarked },
   ];
   return (
-    <section aria-label="كيف يعمل النظام">
-      <SectionHeader title="كيف يعمل النظام" as="h2" />
-      <ol className="rs-explainer-steps">
+    <section aria-label="كيف يعمل النظام" className="r305rp-res-how">
+      <div className="r305rp-kicker">
+        <h2 className="r305rp-kicker-title">كيف يعمل النظام</h2>
+      </div>
+      <ol className="r305rp-res-steps">
         {STEPS.map((s) => (
-          <li key={s.n} className="rs-explainer-step">
-            <span className="rs-explainer-num" aria-hidden="true">{s.n}</span>
-            <div>
-              <div className="rs-explainer-step-title">{s.title}</div>
-              <div className="rs-explainer-step-desc">{s.desc}</div>
+          <li key={s.n} className="r305rp-res-step">
+            <span className="r305rp-res-step-num" aria-hidden="true"><bdi>{formatInt(s.n)}</bdi></span>
+            <div className="r305rp-res-step-body">
+              <div className="r305rp-res-step-title">{s.title}</div>
+              <div className="r305rp-res-step-desc">{s.desc}</div>
             </div>
           </li>
         ))}
