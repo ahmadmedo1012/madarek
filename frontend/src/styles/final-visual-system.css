@@ -28,7 +28,8 @@
 .nav-item[aria-current="page"] {
   background: var(--accent-soft);
   color: var(--accent-strong);
-  box-shadow: inset 3px 0 0 var(--accent);
+  box-shadow: none;
+  border-inline-start: var(--sp-0-5) solid var(--accent);
 }
 
 .topbar {
@@ -43,12 +44,12 @@
 
 .btn.primary,
 .btn.accent {
-  box-shadow: 0 var(--sp-1) var(--sp-3) color-mix(in srgb, var(--accent) 20%, transparent);
+  box-shadow: 0 var(--sp-1) var(--sp-3) color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 .btn.primary:hover,
 .btn.accent:hover {
-  box-shadow: 0 var(--sp-2) var(--sp-4) color-mix(in srgb, var(--accent) 22%, transparent);
+  box-shadow: 0 var(--sp-2) var(--sp-4) color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .icon-btn {

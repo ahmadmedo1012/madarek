@@ -1450,7 +1450,7 @@
 }
 
 .fo-hero {
-  background: color-mix(in srgb, var(--surface) 92%, var(--accent-soft));
+  background: color-mix(in srgb, var(--surface) 96%, var(--accent-soft));
 }
 
 .fo-hero-stage {
@@ -1462,7 +1462,7 @@
 .fo-hero-stage::before {
   inline-size: min(92%, 600px);
   border-radius: var(--r-2xl);
-  background: color-mix(in srgb, var(--accent-soft) 70%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 54%, transparent);
   transform: rotate(-8deg);
 }
 

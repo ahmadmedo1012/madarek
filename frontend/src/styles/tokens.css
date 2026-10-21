@@ -518,17 +518,17 @@
        #F3EEE4 page ground; --neutral-0 is the GROUND #FBFAF7 that
        cards/inputs ride. The ramp is warm-gray, derived from the same
        hue family as ink/paper so hairlines and wells never read cold. */
-    --neutral-0:   #FBFAF7;          /* ground — cards/inputs (§4) */
-    --neutral-50:  #F3EEE4;          /* paper — page ground (§4) */
-    --neutral-100: #F0EADD;          /* card hover, subtle band */
-    --neutral-150: #EDE6D8;          /* inset wells (surface-3) */
-    --neutral-200: #DED5C3;          /* hairline */
-    --neutral-300: #C9BEA8;          /* divider / strong border */
-    --neutral-400: #A89E8A;          /* non-text rung — icons/disabled strokes */
-    --neutral-500: #7B7466;          /* mid gray — non-text */
-    --neutral-700: #57534A;          /* §4 ink-secondary — 7.34:1 ground */
-    --neutral-800: #2E2B24;
-    --neutral-900: #16140F;          /* §4 ink — text, icons */
+    --neutral-0:   #FFFFFF;          /* clear product surface */
+    --neutral-50:  #F7F6F3;          /* quiet Notion-like paper */
+    --neutral-100: #F1F0ED;          /* hover / subtle band */
+    --neutral-150: #E9E7E3;          /* inset well */
+    --neutral-200: #E1DFDB;          /* hairline */
+    --neutral-300: #CDCAC4;          /* divider / strong border */
+    --neutral-400: #A39F98;          /* non-text rung */
+    --neutral-500: #78736C;          /* mid gray */
+    --neutral-700: #514D47;          /* secondary ink */
+    --neutral-800: #302E2B;
+    --neutral-900: #252321;          /* primary ink */
 
     /* The 9 section colors (r197 warm-paper re-key). Each has a soft
        pastel ground (full-bleed band fill), a saturated "ink" for
@@ -564,13 +564,13 @@
     --text-secondary: var(--neutral-700);
     /* (r148-d: --text-strong retired with the journey scene's --ink
        slab — both were zero-consumer mirrors of --text/--neutral-900.) */
-    --text-muted:  #6B675C;          /* r197 §4 ink-muted — 5.41:1 ground · 4.88:1 paper · 4.55:1 surface-3 */
+    --text-muted:  #68635D;
     /* r197 — #726C5E is the AA-safe faint tier on the warm paper:
        5.00:1 on --surface, 4.52:1 on --bg, one step fainter than
        muted. The r183 pin keeps holding: on --accent-soft #E4E8FA it
        measures 4.28:1 — deliberately under AA, faint never carries
        text there (scratch/palette-check.mjs, 97/97). */
-    --text-faint:  #726C5E;          /* r197: AA-safe faint — warm gray */
+    --text-faint:  #706B64;
     --text-on-accent: #FFFFFF;
     --text-on-dark:   var(--neutral-50);
 
@@ -601,10 +601,10 @@
        seat for achievements only. Contrast: #2E45E6 = 5.84:1 on --bg
        paper / 6.47:1 on --surface ground (AA as text); white labels
        on the fill = 6.75:1 (AA). */
-    --accent:        #2E45E6;   /* ultramarine — the platform signal */
-    --accent-hover:  #2337C8;
-    --accent-soft:   #E4E8FA;
-    --accent-strong: #1F2FA8;
+    --accent:        #5B5CE2;   /* composed indigo signal */
+    --accent-hover:  #4849C5;
+    --accent-soft:   #ECECFE;
+    --accent-strong: #3E3FA8;
     --accent-fg:     #FFFFFF;   /* 6.75:1 on the signal fill — AA for labels */
     /* --focus-ring retired (premium-polish): the ONE focus language is
        --state-focus-ring (outline) + --state-input-focus-halo
@@ -772,17 +772,17 @@
     /* r197 — warm night ramp (BLUEPRINT §4): the page ground is the
        INK's twin #16140F; surfaces sit one warm step up. Same role
        tokens as light, re-keyed — never a cold blue-black. */
-    --neutral-0:   #201D17;   /* ground — cards/inputs (§4) */
-    --neutral-50:  #16140F;   /* paper — page ground (§4) */
-    --neutral-100: #262219;   /* raised step (surface-2) */
-    --neutral-150: #1D1A14;   /* inset well (surface-3) */
-    --neutral-200: #37322A;   /* hairline */
-    --neutral-300: #4A443A;   /* divider */
-    --neutral-400: #6E675C;
-    --neutral-500: #948D7E;   /* r283 §4 ink-muted — 5.10:1 ground · 4.81:1 surface-2 (axe caught 4.41 composed washes at #8F887A; one warm step up keeps the hue) */
-    --neutral-700: #C9C3B4;   /* §4 ink-secondary — 9.56:1 ground */
-    --neutral-800: #E0DACD;
-    --neutral-900: #F3EEE4;   /* §4 ink — text */
+    --neutral-0:   #22211F;
+    --neutral-50:  #181716;
+    --neutral-100: #2A2927;
+    --neutral-150: #201F1D;
+    --neutral-200: #3A3835;
+    --neutral-300: #514E49;
+    --neutral-400: #746F68;
+    --neutral-500: #AAA59E;
+    --neutral-700: #D5D1CA;
+    --neutral-800: #E6E2DB;
+    --neutral-900: #F7F5F1;
 
     /* مدارك night (r197): warm hue families re-grounded on the night
        paper — deep warm-tinted bgs + luminous inks. Contrast on --bg
@@ -839,10 +839,10 @@
        becomes the light signal tier #8E9BFF for text/icons/links on
        the night ground (7.26:1 bg / 6.63:1 ground — AA). The r190
        violet note and the egn teal die here. */
-    --accent:        #2E45E6;   /* ultramarine fill — same as light */
-    --accent-hover:  #4157EE;
-    --accent-soft:   #262B54;
-    --accent-strong: #8E9BFF;   /* light signal tier — text/links/ring on dark */
+    --accent:        #7475F2;
+    --accent-hover:  #8788FA;
+    --accent-soft:   #303159;
+    --accent-strong: #B5B5FF;
     --accent-fg:     #FFFFFF;
     /* --focus-ring retired — see the light-theme note above. */
 

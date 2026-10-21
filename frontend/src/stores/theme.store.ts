@@ -35,7 +35,9 @@ export const useThemeStore = create<ThemeState>()(
       // night; the sidebar's 3-state toggle (فاتح · داكن · تلقائي) keeps
       // the نهاري reading mode one tap away, and persisted choices are
       // untouched (zustand merges stored state over this default).
-      mode: 'dark',
+      // The workspace opens on its cleanest, most legible surface. Users can
+      // still choose dark or system mode and their saved preference wins.
+      mode: 'light',
       modeUpdatedAt: 0,
       setMode: (mode) => set({ mode, modeUpdatedAt: Date.now() }),
       _hydrateFromProfile: (mode, serverTs) => set({ mode, modeUpdatedAt: serverTs }),
