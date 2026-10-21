@@ -73,9 +73,16 @@ export const test = base.extend<E2eOptions>({
   e2eRole: ['guest', { option: true }],
   apiOverrides: [[], { option: true }],
   themeSeed: [null, { option: true }],
+  /* r305-A4 (integration review): the built-in `reducedMotion` context
+     option is NOT a registered fixture parameter in this @playwright/test
+     (the custom context fixture can't destructure it — "unknown
+     parameter"), so the option is re-registered here as an explicit
+     option fixture and forwarded into newContext below. Specs keep the
+     standard spelling `test.use({ reducedMotion: 'reduce' })`. */
+  reducedMotion: ['no-preference', { option: true }],
 
   context: async (
-    { browser, e2eRole, apiOverrides, themeSeed, viewport, locale, colorScheme },
+    { browser, e2eRole, apiOverrides, themeSeed, viewport, locale, colorScheme, reducedMotion },
     use,
   ) => {
     // Landmine guard (r165h): Playwright's option plumbing treats a
@@ -94,6 +101,11 @@ export const test = base.extend<E2eOptions>({
       viewport: viewport as ViewportSize | null,
       locale: locale as string | undefined,
       colorScheme: colorScheme as 'light' | 'dark' | 'no-preference' | undefined,
+      // r305-A4 (integration review): forward the standard context
+      // option — the custom fixture used to DROP it, so specs asking
+      // for reduced motion silently ran without the emulation
+      // (matchMedia stayed false and the 0.01ms belts never armed).
+      reducedMotion: reducedMotion as 'reduce' | 'no-preference' | null | undefined,
       // Deterministic wall clock for new Date().getHours() (greeting)
       // and date formatting (ar-LY) — runner TZ can vary.
       timezoneId: 'UTC',
