@@ -128,12 +128,17 @@ describe('detectDrift', () => {
   });
 
   it('accepts canonical motion durations from the foundation', () => {
+    // r305 Heron ladder (inventory-types KNOWN_DURATIONS_MS): the
+    // retired 160/240/320/360/380 rungs were removed with the r305
+    // baseline re-promotion — 240/360 are now ad-hoc and must flag
+    // (the previous pin asserted the pre-r305 ladder).
     const findings = detectDrift(
       inventory([
         emptyCapture({
           motionTreatments: [
-            { selector: '.x', durationMs: 240, easing: 'ease' },
-            { selector: '.y', durationMs: 360, easing: 'ease' },
+            { selector: '.x', durationMs: 200, easing: 'ease' },
+            { selector: '.y', durationMs: 400, easing: 'ease' },
+            { selector: '.z', durationMs: 500, easing: 'ease' },
           ],
         }),
       ]),
