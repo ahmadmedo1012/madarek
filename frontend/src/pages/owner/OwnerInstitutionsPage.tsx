@@ -16,6 +16,7 @@ import { Icon } from '../../components/Icon';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { Modal } from '../../components/overlays/Modal';
 import '../../styles/admin.css'; // R304: the ws-table family lives on the admin sheet
+import '../../styles/r305-admin-owner.css'; // R305-A8 «Heron» scoped sheet — directly after the family sheet (Task 1 contract)
 import {
   useCreateInstitution,
   useOwnerInstitutions,
@@ -567,7 +568,7 @@ export function OwnerInstitutionsPage() {
   };
 
   return (
-    <div className="page">
+    <div className="page r305ao">
       <PatternsPageHeader
         title="المؤسسات"
         description="إدارة المؤسسات التعليمية على المنصّة"
@@ -656,7 +657,12 @@ export function OwnerInstitutionsPage() {
                               <bdi className="owner-inst-admin-email" dir="ltr">{admin.email}</bdi>
                               <button
                                 type="button"
-                                className="btn ghost sm"
+                                /* R305-A8 danger hierarchy: revoking a live
+                                 * admin's membership cuts their access
+                                 * instantly — the destructive verb rides
+                                 * the danger fill; the restoring verb
+                                 * (استعادة) stays a quiet ghost action. */
+                                className={`btn ghost sm${admin.isActive ? ' r305ao-btn-danger' : ''}`}
                                 disabled={mutationBusy}
                                 onClick={() =>
                                   admin.isActive
@@ -703,7 +709,11 @@ export function OwnerInstitutionsPage() {
                         </button>
                         <button
                           type="button"
-                          className="btn ghost sm"
+                          /* R305-A8 danger hierarchy: suspending an
+                           * institution cuts every member's access — the
+                           * destructive verb gets the danger fill, while
+                           * the reactivating verb (تنشيط) stays ghost. */
+                          className={`btn ghost sm${institution.status === 'ACTIVE' ? ' r305ao-btn-danger' : ''}`}
                           onClick={() => onToggleStatus(institution)}
                           disabled={mutationBusy}
                         >

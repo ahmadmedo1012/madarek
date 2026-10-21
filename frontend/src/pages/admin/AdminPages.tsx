@@ -50,6 +50,11 @@ import { cartesianOptions, valueLabels, chartColors, useChartThemeKey } from '..
 // (its ownership banner) — the students-toolbar/pagination/trend-table
 // families the courses page + papers register now consume too.
 import '../../styles/admin.css'; // r150e: the roster chrome left colleges.css
+/* R305-A8: the Heron admin/owner grammar — imported directly AFTER
+ * admin.css so it wins the @layer pages tie. Every rule in the sheet
+ * is scoped under the .r305ao page-root marker class, so teacher /
+ * quality / community screens are untouched. */
+import '../../styles/r305-admin-owner.css';
 import { formatDate } from '../../utils/numbers';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip);
@@ -251,7 +256,7 @@ export function AdminDashboardPage() {
        slot. Every section below renders its shape-matched placeholder
        so the pending → resolved handoff moves nothing. */
     return (
-      <div className="page" aria-busy="true" aria-live="polite">
+      <div className="page r305ao" aria-busy="true" aria-live="polite">
         <PatternsPageHeader title="لوحة الإدارة" description="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
         <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />
         <div className="stat-strip" aria-busy="true">
@@ -282,7 +287,7 @@ export function AdminDashboardPage() {
     // wall, so an API blip stripped the admin's bearings (which page
     // am I on?) before offering the retry.
     return (
-      <div className="page">
+      <div className="page r305ao">
         <PatternsPageHeader title="لوحة الإدارة" description="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
         <Card>
           <ErrorState
@@ -315,7 +320,7 @@ export function AdminDashboardPage() {
     : null;
 
   return (
-    <div className="page">
+    <div className="page r305ao">
       <PatternsPageHeader
         title="لوحة الإدارة"
         description="إحصائيات حيّة عن طلاب وأساتذة المنصّة."
@@ -695,7 +700,7 @@ export function AdminFacultiesPage() {
 
   if (isPending) {
     return (
-      <div className="page">
+      <div className="page r305ao">
         <PatternsPageHeader
           title="الكلّيّات والأقسام"
           description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
@@ -708,7 +713,7 @@ export function AdminFacultiesPage() {
   }
   if (isError || !data) {
     return (
-      <div className="page">
+      <div className="page r305ao">
         <PatternsPageHeader
           title="الكلّيّات والأقسام"
           description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
@@ -744,7 +749,7 @@ export function AdminFacultiesPage() {
   };
 
   return (
-    <div className="page">
+    <div className="page r305ao">
       <PatternsPageHeader
         title="الكلّيّات والأقسام"
         description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
@@ -1198,7 +1203,7 @@ export function AdminReportsPage() {
 
   if (isPending) {
     return (
-      <div className="page">
+      <div className="page r305ao">
         <PatternsPageHeader
           title="التقارير المؤسسية"
           description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
@@ -1211,7 +1216,7 @@ export function AdminReportsPage() {
   }
   if (isError || !data) {
     return (
-      <div className="page">
+      <div className="page r305ao">
         <PatternsPageHeader
           title="التقارير المؤسسية"
           description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
@@ -1228,7 +1233,7 @@ export function AdminReportsPage() {
   const papersMeta = papers.data?.meta;
 
   return (
-    <div className="page">
+    <div className="page r305ao">
       <PatternsPageHeader
         title="التقارير المؤسسية"
         description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
@@ -1651,7 +1656,7 @@ export function AdminCoursesPage() {
   const courses = coursesQ.data?.data;
 
   return (
-    <div className="page">
+    <div className="page r305ao">
       <PatternsPageHeader
         title="إدارة المقرّرات"
         description={meta
@@ -1841,9 +1846,15 @@ export function AdminCoursesPage() {
                           <Icon icon={ArrowLeft} size={13} />
                           تعديل
                         </button>
+                        {/* R305-A8: the destructive verb stands apart —
+                            the Heron danger fill rides the standalone
+                            .r305ao-btn-danger class (the scoped sheet's
+                            §9 hierarchy) while the ghost danger variant
+                            stays for non-scoped surfaces. The confirm
+                            flow below is untouched. */}
                         <button
                           type="button"
-                          className="btn ghost sm danger"
+                          className="btn ghost sm danger r305ao-btn-danger"
                           onClick={() => remove(c)}
                           aria-label={`حذف ${c.name}`}
                         >

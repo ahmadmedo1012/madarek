@@ -196,172 +196,177 @@ export function OwnerActivityPage() {
   const kpiKnown = activity.isSuccess;
 
   return (
-    <PageFrame width="default">
-      <PatternsPageHeader
-        title="سجل النشاط والمراقبة"
-        description="جميع العمليّات المنفَّذة على المنصّة — حيّة من سجلّ التدقيق"
-        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'سجلّ النشاط' }]}
-      />
+    /* r305-A8 «Heron»: the scoped sheet keys every rule off the .r305ao
+       page-root marker (PageFrame owns rhythm/width and takes no
+       className, so the grammar rides a root wrapper). */
+    <div className="r305ao">
+      <PageFrame width="default">
+        <PatternsPageHeader
+          title="سجل النشاط والمراقبة"
+          description="جميع العمليّات المنفَّذة على المنصّة — حيّة من سجلّ التدقيق"
+          breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'سجلّ النشاط' }]}
+        />
 
-      {/* r252: the page's four facts ride the patterns StatLine —
-          same honest '…'/'—' unknowns, same real per-page counts. */}
-      <StatLine
-        items={[
-          {
-            label: 'إجمالي الأحداث',
-            value: kpiValue(activity.data?.meta.total ?? kpi.total),
-            hint: 'المسجَّلة على المنصّة',
-          },
-          {
-            label: 'تسجيلات دخول',
-            value: kpiValue(kpi.logins),
-            hint: 'ضمن الصفحة الحاليّة',
-          },
-          {
-            label: 'عمليّات فاشلة',
-            value: kpiValue(kpi.failed),
-            hint: kpiKnown ? (kpi.failed === 0 ? 'لا إخفاقات ضمن الصفحة' : 'تحقّق من التفاصيل أدناه') : 'بانتظار البيانات',
-            tone: kpiKnown && kpi.failed > 0 ? 'danger' : 'neutral',
-          },
-          {
-            label: 'تغييرات صلاحيّات',
-            value: kpiValue(kpi.roles),
-            hint: 'ضمن الصفحة الحاليّة',
-          },
-        ]}
-      />
+        {/* r252: the page's four facts ride the patterns StatLine —
+            same honest '…'/'—' unknowns, same real per-page counts. */}
+        <StatLine
+          items={[
+            {
+              label: 'إجمالي الأحداث',
+              value: kpiValue(activity.data?.meta.total ?? kpi.total),
+              hint: 'المسجَّلة على المنصّة',
+            },
+            {
+              label: 'تسجيلات دخول',
+              value: kpiValue(kpi.logins),
+              hint: 'ضمن الصفحة الحاليّة',
+            },
+            {
+              label: 'عمليّات فاشلة',
+              value: kpiValue(kpi.failed),
+              hint: kpiKnown ? (kpi.failed === 0 ? 'لا إخفاقات ضمن الصفحة' : 'تحقّق من التفاصيل أدناه') : 'بانتظار البيانات',
+              tone: kpiKnown && kpi.failed > 0 ? 'danger' : 'neutral',
+            },
+            {
+              label: 'تغييرات صلاحيّات',
+              value: kpiValue(kpi.roles),
+              hint: 'ضمن الصفحة الحاليّة',
+            },
+          ]}
+        />
 
-      {/* r252: the filter Tabs move INTO the FilterBar — one calm rail
-          above the timeline (sticky: the filter survives a long scroll
-          through 50 events; the app's only scroll container owns it). */}
-      <FilterBar sticky filters={<Tabs value={filter} onChange={setFilter} items={tabItems} />} />
+        {/* r252: the filter Tabs move INTO the FilterBar — one calm rail
+            above the timeline (sticky: the filter survives a long scroll
+            through 50 events; the app's only scroll container owns it). */}
+        <FilterBar sticky filters={<Tabs value={filter} onChange={setFilter} items={tabItems} />} />
 
-      <Card title="سجلّ الأحداث" icon={Clock}>
-        {activity.isPending ? (
-          <TimelineSkeleton rows={7} />
-        ) : activity.isError ? (
-          <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
-        ) : filtered.length === 0 ? (
-          <EmptyState illustration="empty-list"
-            title={filter === 'all' ? 'لا توجد أحداث مسجَّلة بعد' : 'لا أحداث في هذا التبويب'}
-            description={filter === 'all'
-              ? 'تُسجَّل الأحداث تلقائياً فور أول عمليّة على المنصّة.'
-              : 'جرِّب تبويباً آخر لمتابعة أنواع مختلفة من الأحداث.'}
-            action={filter === 'all' && (
-              <button type="button" className="btn ghost sm" onClick={() => activity.refetch()}>
-                <Icon icon={RefreshCw} size={12} />
-                تحديث السجلّ
-              </button>
-            )}
-          />
-        ) : (
-          <div className="owner-timeline">
-            {filtered.map((event, i) => (
-              <div
-                key={event.id}
-                className="owner-timeline-item"
-                style={{ '--owner-row-i': i } as CSSProperties}
-              >
-                <div className={`owner-event-icon ${event.config.colorClass}`}>
-                  <Icon icon={event.config.icon} size={16} />
-                </div>
-                <div className="owner-timeline-body">
-                  <div className="owner-timeline-title">{event.actionLabel}</div>
-                  <div className="owner-timeline-meta">
-                    {event.user ? `${event.user.firstName} ${event.user.lastName}` : 'النظام'}
-                    {event.user && (
-                      <> &middot; <bdi className="owner-timeline-email">{event.user.email}</bdi></>
+        <Card title="سجلّ الأحداث" icon={Clock}>
+          {activity.isPending ? (
+            <TimelineSkeleton rows={7} />
+          ) : activity.isError ? (
+            <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
+          ) : filtered.length === 0 ? (
+            <EmptyState illustration="empty-list"
+              title={filter === 'all' ? 'لا توجد أحداث مسجَّلة بعد' : 'لا أحداث في هذا التبويب'}
+              description={filter === 'all'
+                ? 'تُسجَّل الأحداث تلقائياً فور أول عمليّة على المنصّة.'
+                : 'جرِّب تبويباً آخر لمتابعة أنواع مختلفة من الأحداث.'}
+              action={filter === 'all' && (
+                <button type="button" className="btn ghost sm" onClick={() => activity.refetch()}>
+                  <Icon icon={RefreshCw} size={12} />
+                  تحديث السجلّ
+                </button>
+              )}
+            />
+          ) : (
+            <div className="owner-timeline">
+              {filtered.map((event, i) => (
+                <div
+                  key={event.id}
+                  className="owner-timeline-item"
+                  style={{ '--owner-row-i': i } as CSSProperties}
+                >
+                  <div className={`owner-event-icon ${event.config.colorClass}`}>
+                    <Icon icon={event.config.icon} size={16} />
+                  </div>
+                  <div className="owner-timeline-body">
+                    <div className="owner-timeline-title">{event.actionLabel}</div>
+                    <div className="owner-timeline-meta">
+                      {event.user ? `${event.user.firstName} ${event.user.lastName}` : 'النظام'}
+                      {event.user && (
+                        <> &middot; <bdi className="owner-timeline-email">{event.user.email}</bdi></>
+                      )}
+                      {event.resourceType && (
+                        <> &middot; {RESOURCE_LABELS[event.resourceType] ?? <bdi>{event.resourceType}</bdi>}</>
+                      )}
+                      {/* r251: the affected row's ID finally renders — the
+                       * ONE place the timeline uses Plex Mono, per the 1A
+                       * rule (mono = IDs/code/metrics only). Bidi-isolated;
+                       * full id in the title tooltip for the audit trail. */}
+                      {event.resourceId && (
+                        <> &middot; <code className="owner-timeline-id font-mono" dir="ltr" title={event.resourceId}>
+                          <bdi>{event.resourceId.length > 14 ? `${event.resourceId.slice(0, 14)}…` : event.resourceId}</bdi>
+                        </code></>
+                      )}
+                    </div>
+                    {event.metadata !== null && event.metadata !== undefined && (
+                      <button
+                        type="button"
+                        className="owner-detail-toggle"
+                        aria-expanded={expanded === event.id}
+                        onClick={() => setExpanded(expanded === event.id ? null : event.id)}
+                      >
+                        <Icon icon={ChevronDown} size={12} className="owner-detail-chevron" />
+                        {expanded === event.id ? 'إخفاء التفاصيل' : 'عرض التفاصيل'}
+                      </button>
                     )}
-                    {event.resourceType && (
-                      <> &middot; {RESOURCE_LABELS[event.resourceType] ?? <bdi>{event.resourceType}</bdi>}</>
-                    )}
-                    {/* r251: the affected row's ID finally renders — the
-                     * ONE place the timeline uses Plex Mono, per the 1A
-                     * rule (mono = IDs/code/metrics only). Bidi-isolated;
-                     * full id in the title tooltip for the audit trail. */}
-                    {event.resourceId && (
-                      <> &middot; <code className="owner-timeline-id font-mono" dir="ltr" title={event.resourceId}>
-                        <bdi>{event.resourceId.length > 14 ? `${event.resourceId.slice(0, 14)}…` : event.resourceId}</bdi>
-                      </code></>
+                    {expanded === event.id && event.metadata !== null && event.metadata !== undefined && (
+                      /* Machine JSON — the LTR mono block owner.css already
+                       * ships (var(--font-mono)); braces and quotes stay
+                       * legible inside the RTL page. */
+                      <div className="owner-meta-preview" dir="ltr">
+                        {JSON.stringify(event.metadata, null, 2)}
+                      </div>
                     )}
                   </div>
-                  {event.metadata !== null && event.metadata !== undefined && (
-                    <button
-                      type="button"
-                      className="owner-detail-toggle"
-                      aria-expanded={expanded === event.id}
-                      onClick={() => setExpanded(expanded === event.id ? null : event.id)}
-                    >
-                      <Icon icon={ChevronDown} size={12} className="owner-detail-chevron" />
-                      {expanded === event.id ? 'إخفاء التفاصيل' : 'عرض التفاصيل'}
-                    </button>
-                  )}
-                  {expanded === event.id && event.metadata !== null && event.metadata !== undefined && (
-                    /* Machine JSON — the LTR mono block owner.css already
-                     * ships (var(--font-mono)); braces and quotes stay
-                     * legible inside the RTL page. */
-                    <div className="owner-meta-preview" dir="ltr">
-                      {JSON.stringify(event.metadata, null, 2)}
-                    </div>
-                  )}
+                  <span className="owner-timeline-time" title={formatDate(event.createdAt, { dateStyle: 'medium', timeStyle: 'short' })}>
+                    {formatRelativeAr(event.createdAt)}
+                  </span>
                 </div>
-                <span className="owner-timeline-time" title={formatDate(event.createdAt, { dateStyle: 'medium', timeStyle: 'short' })}>
-                  {formatRelativeAr(event.createdAt)}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* r299: the canonical .table-pagination footer — windowed page
-            numbers + aria-current + RTL-correct chevrons, the same
-            grammar as the users directory (the hand-rolled prev/next-only
-            footer died with its .owner-activity-* classes). */}
-        {activity.data && activity.data.meta.totalPages > 1 && (
-          <div className="table-pagination">
-            <span>
-              الصفحة {page} من {activity.data.meta.totalPages} · {eventsCountLabel(activity.data.meta.total)}
-            </span>
-            <div className="table-pagination-actions">
-              {/* RTL: "previous" points inline-start-ward = the right
-                  chevron (wave 5-a convention). */}
-              <button
-                type="button"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page <= 1}
-                aria-label="الصفحة السابقة"
-              >
-                <Icon icon={ChevronRight} size={14} aria-hidden />
-                السابق
-              </button>
-              {pageList(page, activity.data.meta.totalPages).map((item, i) =>
-                item === 'gap' ? (
-                  <span key={`gap-${i}`} className="owner-page-gap" aria-hidden>…</span>
-                ) : (
-                  <button
-                    key={item}
-                    type="button"
-                    aria-current={item === page ? 'page' : undefined}
-                    aria-label={`الصفحة ${item}`}
-                    onClick={() => setPage(item)}
-                  >
-                    {item}
-                  </button>
-                ),
-              )}
-              <button
-                type="button"
-                onClick={() => setPage((p) => p + 1)}
-                disabled={page >= activity.data.meta.totalPages}
-                aria-label="الصفحة التالية"
-              >
-                التالي
-                <Icon icon={ChevronLeft} size={14} aria-hidden />
-              </button>
+              ))}
             </div>
-          </div>
-        )}
-      </Card>
-    </PageFrame>
+          )}
+
+          {/* r299: the canonical .table-pagination footer — windowed page
+              numbers + aria-current + RTL-correct chevrons, the same
+              grammar as the users directory (the hand-rolled prev/next-only
+              footer died with its .owner-activity-* classes). */}
+          {activity.data && activity.data.meta.totalPages > 1 && (
+            <div className="table-pagination">
+              <span>
+                الصفحة {page} من {activity.data.meta.totalPages} · {eventsCountLabel(activity.data.meta.total)}
+              </span>
+              <div className="table-pagination-actions">
+                {/* RTL: "previous" points inline-start-ward = the right
+                    chevron (wave 5-a convention). */}
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  aria-label="الصفحة السابقة"
+                >
+                  <Icon icon={ChevronRight} size={14} aria-hidden />
+                  السابق
+                </button>
+                {pageList(page, activity.data.meta.totalPages).map((item, i) =>
+                  item === 'gap' ? (
+                    <span key={`gap-${i}`} className="owner-page-gap" aria-hidden>…</span>
+                  ) : (
+                    <button
+                      key={item}
+                      type="button"
+                      aria-current={item === page ? 'page' : undefined}
+                      aria-label={`الصفحة ${item}`}
+                      onClick={() => setPage(item)}
+                    >
+                      {item}
+                    </button>
+                  ),
+                )}
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={page >= activity.data.meta.totalPages}
+                  aria-label="الصفحة التالية"
+                >
+                  التالي
+                  <Icon icon={ChevronLeft} size={14} aria-hidden />
+                </button>
+              </div>
+            </div>
+          )}
+        </Card>
+      </PageFrame>
+    </div>
   );
 }

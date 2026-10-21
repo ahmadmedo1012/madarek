@@ -1,0 +1,1100 @@
+/* ═══════════════════════════════════════════════════════════════════
+   MADAREK — R305-A8 «Heron» admin + platform-owner sheet
+   (r305-admin-owner.css)
+   ───────────────────────────────────────────────────────────────────
+   The administration & owner console reads as ONE technical surface:
+   flat fine-outline panels, hairline rules, strong display typography
+   over quiet tabular data, ONE restrained accent (copper) reserved
+   for primary actions / active states / focus, semantic tones only
+   for status, and a calm, explicit danger hierarchy.
+
+   ── SCOPING CONTRACT (§0) ──────────────────────────────────────────
+   · EVERY rule below lives under the `.r305ao` marker class, OR — for
+     PORTAL content only — under `body:has(.r305ao)` (§6). Portals
+     (Modal/Sheet) mount on document.body OUTSIDE the page root, so a
+     plain descendant selector can never reach them; `body:has()` ties
+     them to the same marker instead. Teacher/quality/community pages
+     never carry the marker → zero leakage, guaranteed, both routes.
+   · Import order: each page imports this sheet IMMEDIATELY AFTER its
+     existing `import '../../styles/admin.css';` /
+     `import '../../styles/owner.css';` line (OwnerPages barrel: after
+     owner.css). Same @layer pages + later source order → this sheet
+     wins every equal-specificity tie inside the layer.
+   · Layer: `pages` (declared in tokens.css:63 — tokens, base, layout,
+     components, pages, overrides). The `overrides` layer (polish.css)
+     still outranks this sheet by design: platform belts (focus halo,
+     cursor pointer, RM kills) keep winning.
+
+   ── CONSUMERS (the 17 admin/owner page modules) ────────────────────
+   AdminPages · AdminGovernancePages · AdminExtraPages · AdminSyncPage
+   OwnerPages (barrel) → Dashboard, Institutions, InstitutionDetail,
+   Users, System, Activity, Education, Ai, Alerts, Content, Realtime,
+   Governance.
+
+   ── CLASS VOCABULARY (what page agents may rely on) ────────────────
+   The families below are COVERED by this sheet: most are restyled
+   under .r305ao; the ones whose canonical recipe already matches the
+   grammar are explicitly left canonical (each §-banner names which —
+   page agents can rely on the register either way).
+   Restyled in place (existing names, under .r305ao):
+     page frame   .page .page-header .page-title-block .page-title
+                  .page-subtitle .back-link
+     patterns     .pf-page-header/-main/-text .pf-eyebrow .pf-page-title
+                  .pf-page-desc .pf-page-meta .pf-page-actions
+                  .pf-breadcrumbs .pf-crumb-sep .pf-section-*
+     stats        .stat-strip .stat-cell .stat-label .stat-value
+                  .stat-trend(.up/.down) .pf-statline .pf-stat*
+                  .admin-stat-row .admin-stat-value .owner-num*
+                  .owner-cell-muted .owner-health-* .owner-inst-metric
+     toolbars     .admin-students-* .pf-filterbar* .filter-bar
+                  .owner-filter-pills .pill(.on) .tabs .tab
+                  .owner-action-bar .admin-faculty-card
+     tables       .table-wrap .table .tbl-stack .ws-table .ws-id
+                  .ws-meta .tbl-strong .admin-table-num .owner-num
+                  .table-pagination* .owner-page-gap .table-row-actions
+                  .owner-inst-cell/-name/-sub/-admins .owner-joined*
+                  .owner-membership-chips .perm-row* .govx-*
+     forms        .input select textarea .form-label .form-grid-2
+                  .form-field .form-field-label/-hint/-error
+                  .owner-kv-row .owner-inst-create-form/-submit
+                  .settings-row/-label/-value/-actions/-links
+                  .auth-row-2 .gov-form-actions .owner-toggle-*
+     status       .badge(+color) .alert(+tone/.unread) .alert-*
+                  .owner-live-status(+is-pending/is-degraded/has-alerts)
+                  .owner-live-pulse/-tools/-meta/-label/-tick .status-text
+                  .owner-value-tick .owner-alert-card(+severity)
+                  .owner-alert-error .owner-badge-counter .owner-event-icon
+     states       .state .state-empty/-error/-loading .state-icon/-title
+                  .state-desc .skeleton .owner-timeline-skel*
+                  .owner-alert-skel*
+     ops          .owner-error-entry* .owner-stack-field .owner-meta-preview
+                  .owner-empty-rollup* .owner-timeline* .owner-swatch*
+                  .owner-share/-track/-fill .owner-meter .owner-workload
+                  .owner-chart-container .owner-ai-chart-grid
+                  .admin-sync-runs .fact-* .category-row* .cert-row
+                  .suggested-course-* .owner-detail-toggle/-chevron/-scope
+     dialogs      .modal-overlay .modal-card .modal-header/-title/-body
+                  /-footer .owner-confirm-title/-message/-actions
+   NEW classes introduced here (page agents opt in):
+     .r305ao-panel / .r305ao-panel-title   — the standard Heron surface
+                 for settings groups & operational panels
+     .r305ao-toolbar                       — generic wrapping toolbar rail
+     .r305ao-bulkbar / -count / -actions   — table selection action bar
+     .r305ao-danger-zone / -title / -note  — destructive group panel
+     .r305ao-btn-danger                    — the standalone danger button
+   Rules of engagement: colors/spacing/radius/type/motion are
+   token-only; logical properties only (Arabic RTL); icons Lucide-only.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+/* ════════════════════════════════════════════════════════════════
+   §1 · Page frame & headers
+   Scope: the legacy .page family (base.css) + patterns .pf-* family.
+   Grammar: the page title is the loudest voice (display face, bold);
+   everything under it steps DOWN — meta lines 13px muted, section
+   titles 18px semibold. The frame itself stays untouched (measure +
+   rhythm are r288 patterns-parity contracts); only voice + edges.
+   ════════════════════════════════════════════════════════════════ */
+
+/* Page title — Alexandria 700. Legacy .page-title keeps its h1 step,
+   the patterns title keeps its r304 24px product register. */
+.r305ao .page-title,
+.r305ao .pf-page-title {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-normal);
+  color: var(--text);
+}
+
+/* Descriptions & subtitles: the canonical second voice (--text-secondary,
+   --lh-base, 72ch measure) is already correct in base.css/patterns.css —
+   not restated. Meta lines get the change that matters: 13px floor +
+   tabular figures so live counts don't shimmer as digits arrive. */
+.r305ao .page-header-meta,
+.r305ao .pf-page-meta {
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Eyebrow — the section tag above a title: tiny semibold accent-ink
+   label (the AA-safe accent TEXT tier, never the raw fill tone). */
+.r305ao .pf-eyebrow {
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-semibold);
+  color: var(--accent-ink);
+}
+
+/* Breadcrumbs — 13px floor, quiet trail, current page in full ink. */
+.r305ao .pf-breadcrumbs li {
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+}
+.r305ao .pf-breadcrumbs [aria-current='page'] {
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+}
+.r305ao .pf-crumb-sep { color: var(--text-faint); }
+
+/* Back link (governance drill-downs) — a quiet navigational control
+   with the 44px touch floor. */
+.r305ao .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  min-block-size: 44px;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--accent-ink);
+  text-decoration: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .r305ao .back-link:hover { color: var(--accent-strong); }
+}
+
+/* Section headers — 18px semibold display (patterns.css pins size/weight
+   already; the display face + ink are restated as the Heron voice).
+   Card titles step DOWN to 16px semibold: page 24 → section 18 → card
+   16 keeps one scan ladder inside the console column. */
+.r305ao .pf-section-title {
+  font-family: var(--font-display);
+  color: var(--text);
+}
+.r305ao .card-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+
+/* Header actions rail — buttons keep the shared geometry; the rail
+   wraps as a group under the title on narrow canvases. */
+.r305ao .pf-page-actions,
+.r305ao .pf-section-actions {
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   §2 · Stat lines, summary strips, ledger panels
+   Scope: the R189 typographic strip (.stat-*), the patterns StatLine
+   (.pf-stat*), the admin legacy stat row, and the owner metric cells.
+   Grammar: numbers are the data — mono labels, metric values with
+   tabular figures, one hairline frame, NO icon wells, NO tile walls.
+   ════════════════════════════════════════════════════════════════ */
+
+/* The ledger band — restrained corner (r-lg, not the r-xl hero frame)
+   and the fine outline. Cells keep the internal hairline dividers. */
+.r305ao .stat-strip {
+  border-radius: var(--r-lg);
+  border-color: var(--rule);
+}
+.r305ao .stat-label {
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+}
+.r305ao .stat-value {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.r305ao .stat-trend {
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+/* Honest trend inks — the -ink (text-safe) tiers, not raw fills. */
+.r305ao .stat-trend.up   { color: var(--success-ink); }
+.r305ao .stat-trend.down { color: var(--danger-ink); }
+
+/* Navigable stat cells answer their follow-up: pointer cursor comes
+   from the anchor; hover quiets onto the surface step. */
+@media (hover: hover) and (pointer: fine) {
+  .r305ao .stat-cell-link:hover { background: var(--surface-2); }
+  .r305ao .stat-cell-link:hover .stat-value { color: var(--accent-ink); }
+}
+
+/* Patterns StatLine: patterns.css already pairs every tone with the
+   -ink tiers, tabular values and the hover-gated accent ink — no
+   restatement; the strip rides the canonical recipe untouched. */
+
+/* Admin legacy stat row (reports/analysis header figures) — columnar
+   gap + tabular bold values (the only voice change it needs). */
+.r305ao .admin-stat-row { gap: var(--sp-2) var(--sp-5); }
+.r305ao .admin-stat-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-bold);
+}
+
+/* Owner mono numerics: owner.css's .owner-num/.owner-cell-muted family
+   already ships the exact grammar — no restatement. */
+
+/* Health rows — one change: the divider drops to the faint hairline
+   (the row stack reads as a ledger, not a ruled table). */
+.r305ao .owner-health-row {
+  border-block-end: 1px solid var(--border-faint);
+}
+.r305ao .owner-health-row:last-child { border-block-end: 0; }
+
+/* Meters & share bars — the fill keeps the accent guarantee even when
+   a caller forgets the color prop; the track is canonical surface-3. */
+.r305ao .owner-meter .progress-fill { background: var(--accent); }
+
+/* ════════════════════════════════════════════════════════════════
+   §3 · Toolbars, filter rails, bulk actions
+   Scope: .admin-students-* (rosters toolbar), patterns .pf-filterbar,
+   the shared .filter-bar, owner filter pills, tabs, action bars —
+   plus the NEW .r305ao-bulkbar selection bar.
+   Grammar: outline-first controls, one rail height (44px), search
+   pills quiet until focused (focus = accent hairline + halo token).
+   ════════════════════════════════════════════════════════════════ */
+
+/* Generic toolbar rail — new opt-in for pages composing loose rows. */
+.r305ao .r305ao-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* Rosters toolbar — the pill search + selects keep their compact
+   chrome; the surface well reads as an input, not a button. */
+.r305ao .admin-students-toolbar { gap: var(--sp-2); }
+.r305ao .admin-students-search {
+  background: var(--surface);
+  border-color: var(--border);
+  border-radius: var(--r-md);
+}
+.r305ao .admin-students-input {
+  background: var(--surface);
+  border-color: var(--border);
+  border-radius: var(--r-md);
+}
+@media (hover: hover) and (pointer: fine) {
+  .r305ao .admin-students-search:hover,
+  .r305ao .admin-students-input:hover { border-color: var(--border-strong); }
+}
+.r305ao .admin-students-search:focus-within,
+.r305ao .admin-students-input:focus {
+  border-color: var(--state-input-focus-border);
+}
+
+/* Patterns FilterBar — the sticky rail frosts via the canonical glass
+   recipe (patterns.css owns it); here only the chrome calms. */
+.r305ao .pf-filterbar { gap: var(--sp-2); }
+.r305ao .pf-filterbar-search input {
+  border-color: var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+@media (hover: hover) and (pointer: fine) {
+  .r305ao .pf-filterbar-search input:hover { border-color: var(--border-strong); }
+}
+.r305ao .pf-filterbar-search-icon { color: var(--text-muted); }
+
+/* Shared .filter-bar consumers — one height, hairline controls. */
+.r305ao .filter-bar { gap: var(--sp-2); }
+.r305ao .filter-bar > .input { background: var(--surface); }
+
+/* Filter pills (owner consoles) — outline-first chips. */
+.r305ao .owner-filter-pills { gap: var(--sp-2); }
+.r305ao .pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  border-radius: var(--r-full);
+}
+@media (hover: hover) and (pointer: fine) {
+  .r305ao .pill:hover {
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+    color: var(--text);
+    transform: none;
+  }
+}
+/* The selected chip is the ONE accent moment on a filter rail:
+   accent-soft ground + accent-ink label + accent hairline. */
+.r305ao .pill.on {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--accent-ink);
+  font-weight: var(--fw-semibold);
+}
+
+/* Tabs — the segmented control rides the canonical underline; the
+   active label carries the accent ink. */
+.r305ao .tab { color: var(--text-muted); }
+.r305ao .tab.on,
+.r305ao .tab[aria-selected='true'] { color: var(--text); }
+
+/* Owner action bar — quiet rail, buttons grouped trailing. */
+.r305ao .owner-action-bar { gap: var(--sp-2); }
+
+/* ── Bulk actions bar (NEW) ───────────────────────────────────────
+   Opt-in bar for table selection: count + apply/clear. Sticky so it
+   stays reachable over long rosters; the count is the accent moment,
+   actions trail. Pair with `.r305ao .btn` clusters in -actions. */
+.r305ao .r305ao-bulkbar {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 2; /* local paint-order above table rows — not a --z-* layer */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2-5) var(--sp-4);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+}
+.r305ao .r305ao-bulkbar-count {
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-semibold);
+  color: var(--accent-ink);
+  font-variant-numeric: tabular-nums;
+}
+.r305ao .r305ao-bulkbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-inline-start: auto;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   §4 · Data tables
+   Scope: the canonical .table/.table-wrap family (components.css) and
+   the ws-table workspace family (admin.css) — the whole admin/owner
+   roster surface. Density + identity discipline, quiet headers,
+   tabular numerics, honest mobile row summaries.
+   ════════════════════════════════════════════════════════════════ */
+
+/* The wrap: components.css already ships the fine outline + r-lg corner
+   + flat ground (r304 fold) — no restatement.
+
+   Headers — density is the change: the 13px Arabic floor (--fs-xxs IS
+   the floor token), tighter block padding, and a rule-strong divider
+   so the header band reads as chrome. Quiet on purpose: the data
+   talks, the header whispers. */
+.r305ao .table thead th,
+.r305ao .ws-table thead th {
+  font-size: var(--fs-xxs); /* 13px Arabic floor (1A) */
+  padding: var(--sp-2-5) var(--sp-4);
+  border-block-end: 1px solid var(--rule-strong);
+}
+
+/* Body cells — dense rows (--sp-2-5 block) over faint hairlines. */
+.r305ao .table tbody td,
+.r305ao .ws-table tbody td {
+  padding-block: var(--sp-2-5);
+  border-block-end: 1px solid var(--border-faint);
+}
+
+/* Row hover — the quiet surface step, pointer-capable devices only. */
+@media (hover: hover) and (pointer: fine) {
+  .r305ao .table tbody tr:hover,
+  .r305ao .ws-table tbody tr:hover { background: var(--surface-2); }
+}
+
+/* Identity cells: admin.css owns the .ws-id/.ws-meta anatomy verbatim;
+   this sheet only GENERALIZES .ws-meta beyond identity cells (the
+   owner institution detail renders it standalone). */
+.r305ao .ws-meta {
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-regular);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* Numeric cells — tabular figures (alignment is the point: digits
+   must optically column across rows). */
+.r305ao .admin-table-num,
+.r305ao th.admin-table-num,
+.r305ao td.admin-table-num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Row actions — keep the canonical reveal, pointer-gated; keyboard
+   focus keeps them visible (components.css contract). */
+@media (hover: hover) and (pointer: fine) {
+  .r305ao .table tbody tr:hover .table-row-actions { opacity: 1; }
+}
+
+/* Sticky header opt-in — pinned th keeps its surface-2 ground so
+   rows slide UNDER a solid band, never a translucent blur. */
+.r305ao .table-wrap.sticky thead th {
+  position: sticky;
+  inset-block-start: 0;
+  background: var(--surface-2);
+}
+
+/* Selection checkboxes — aligned to the row's text baseline rhythm;
+   the accent checked state is the platform canon (components.css). */
+.r305ao .table td input[type='checkbox'] {
+  vertical-align: middle;
+  accent-color: var(--accent);
+}
+
+/* Pagination buttons — outlined quiet chrome; the current page carries
+   the accent ink (the one accent moment on the rail). */
+.r305ao .table-pagination-actions button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  border-radius: var(--r-sm);
+}
+@media (hover: hover) and (pointer: fine) {
+  .r305ao .table-pagination-actions button:hover:not(:disabled) {
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+}
+.r305ao .table-pagination-actions button.active,
+.r305ao .table-pagination-actions button[aria-current='page'] {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--accent-ink);
+  font-weight: var(--fw-semibold);
+}
+.r305ao .owner-page-gap { color: var(--text-faint); }
+
+/* Institutions console cells: owner.css owns name/sub/admin identity
+   voices; this sheet adds only the hairline BETWEEN admin entries. */
+.r305ao .owner-inst-admins li {
+  border-block-end: 1px solid var(--border-faint);
+}
+.r305ao .owner-inst-admins li:last-child { border-block-end: 0; }
+
+/* Joined marker + membership chips: canonical — no restatement. */
+
+/* Permission rows (components.css family) + the govx matrix — faint
+   outlines, mono keys in the accent ink tier. */
+.r305ao .perm-row { border-color: var(--border-faint); }
+.r305ao .perm-row-key {
+  font-family: var(--font-mono);
+  color: var(--accent-ink);
+}
+.r305ao .govx-group-head { border-block-end-color: var(--border-faint); }
+.r305ao .govx-group-count {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   §5 · Forms
+   Scope: the shared input family, FormField scaffold, settings rows,
+   owner kv rows, the institution create form, toggle switches.
+   Grammar: hairline controls on clear surface, 16px iOS-zoom floor
+   (owned by components.css — never lowered), labels 13px semibold,
+   hints quiet, errors in the danger INK tier.
+   ════════════════════════════════════════════════════════════════ */
+
+.r305ao .input,
+.r305ao select,
+.r305ao textarea {
+  background: var(--surface);
+  border-color: var(--border);
+  border-radius: var(--r-md);
+  color: var(--text);
+}
+@media (hover: hover) and (pointer: fine) {
+  .r305ao .input:hover,
+  .r305ao select:hover,
+  .r305ao textarea:hover { border-color: var(--border-strong); }
+}
+
+/* Legacy label + FormField scaffold — the same label voice. */
+.r305ao .form-label,
+.r305ao .form-field-label {
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  letter-spacing: var(--ls-normal);
+}
+.r305ao .form-field-hint {
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+  line-height: var(--lh-base);
+}
+/* Validation — the danger INK (AA on every ground), not raw --danger. */
+.r305ao .form-field-error {
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-medium);
+  color: var(--danger-ink);
+}
+.r305ao .form-error-msg,
+.r305ao .form-error {
+  font-size: var(--fs-xxs);
+  color: var(--danger-ink);
+}
+
+/* Settings rows — one change: solid faint hairlines (the dashed rhythm
+   reads drafty in a technical console). Labels/values/links ride the
+   admin.css voices verbatim. */
+.r305ao .settings-row {
+  border-block-end: 1px solid var(--border-faint);
+  gap: var(--sp-4);
+}
+
+/* Owner key/value rows — one change: the faint divider. Keys/inputs
+   keep owner.css's mono-accent + well recipe verbatim. */
+.r305ao .owner-kv-row {
+  border-block-end: 1px solid var(--border-faint);
+}
+
+/* Institution create form: owner.css pins the 30rem measure and gap;
+   auth-row-2 keeps the auth.css two-column grid — no restatement. */
+
+/* Governance form actions — a footer rail with a top hairline. */
+.r305ao .gov-form-actions {
+  border-block-start: 1px solid var(--border-faint);
+  padding-block-start: var(--sp-4);
+  gap: var(--sp-2);
+}
+
+/* Toggle switches (owner/system flags): the canonical track already
+   rides surface-3 → accent → accent-hover with the token ring — no
+   restatement; the 44px hit area must stay transparent (owner.css). */
+
+/* ════════════════════════════════════════════════════════════════
+   §6 · Dialogs & confirmations  —  PORTAL SCOPE
+   Scope: .modal-* surfaces + the ConfirmDialog (.owner-confirm-*).
+   ⚠ These portal to document.body OUTSIDE the page root, so every
+   rule here is gated by `body:has(.r305ao)`: the dialog only inherits
+   the Heron register when an admin/owner page (which always carries
+   the marker) is mounted. Teacher/quality dialogs never match.
+   Grammar: restrained corner, flat accent hairline (the gradient bar
+   retires), confirm titles step down to the section voice, and the
+   DANGER confirmation's button is the danger fill — no drama, no
+   glow, one honest red moment.
+   ════════════════════════════════════════════════════════════════ */
+
+/* The overlay veil: components.css already rides --overlay-veil +
+   --scrim-blur — no restatement.
+
+   The card — r-lg corner (restrained), hairline edge, modal shadow. */
+body:has(.r305ao) .modal-card {
+  border-radius: var(--r-lg);
+  border-color: var(--rule);
+  box-shadow: var(--shadow-modal);
+}
+/* The decorative top bar: flat accent tick instead of the gradient. */
+body:has(.r305ao) .modal-card::before {
+  background: var(--accent);
+  opacity: 0.9;
+}
+
+/* Chrome — display title, hairline header/footer rules. */
+body:has(.r305ao) .modal-title {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+body:has(.r305ao) .modal-header { border-block-end-color: var(--border-faint); }
+body:has(.r305ao) .modal-footer { border-block-start-color: var(--border-faint); }
+
+/* ConfirmDialog surfaces — the title steps DOWN from the generic
+   modal register: a confirm is a question, not a headline. */
+body:has(.r305ao) .owner-confirm-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+body:has(.r305ao) .owner-confirm-message {
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
+  line-height: var(--lh-base);
+}
+body:has(.r305ao) .owner-confirm-actions {
+  gap: var(--sp-2);
+  border-block-start-color: var(--border-faint);
+}
+/* Danger confirmation — the destructive verb rides the danger fill
+   (contrast contract owned by .btn.danger's --danger-fg ink). Flat:
+   no glow, no lift — the color alone says "irreversible". */
+body:has(.r305ao) .owner-confirm-actions .btn.danger {
+  box-shadow: none;
+}
+body:has(.r305ao) .owner-confirm-actions .btn.danger:hover:not(:disabled) {
+  box-shadow: none;
+  transform: none;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   §7 · Status: badges, alert rows, banners, live indicators
+   Scope: .badge, .pill, the .alert row primitive, the owner live
+   status band + severity cards + counters.
+   Grammar: tones ride --*-soft grounds with --*-ink text (WCAG-safe
+   pairs from tokens.css); "live" pulses only where truth pulses
+   (health/live dot), degraded/pending states go quiet, never dramatic.
+   ════════════════════════════════════════════════════════════════ */
+
+/* Badges — soft ground + deep ink (canonical), one hairline so the
+   pill holds its shape on tinted panels. */
+.r305ao .badge {
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  font-weight: var(--fw-medium);
+}
+.r305ao .badge.green  { background: var(--success-soft); color: var(--success-ink); }
+.r305ao .badge.amber  { background: var(--warning-soft); color: var(--warning-ink); }
+.r305ao .badge.red    { background: var(--danger-soft);  color: var(--danger-ink); }
+.r305ao .badge.purple { background: var(--c-lavender-bg); color: var(--c-lavender-deep); }
+.r305ao .badge.brand,
+.r305ao .badge.gold   { background: var(--accent-soft);  color: var(--accent-strong); }
+
+/* Alert rows — one change: the flat card + faint outline (the dot
+   anatomy, title/desc/time voices and the unread bar are canonical
+   components.css — no restatement). */
+.r305ao .alert {
+  background: var(--surface);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-md);
+  gap: var(--sp-3);
+}
+
+/* Owner live status band — honest ops readout: faint hairline + the
+   restrained corner. Text tiers (live/alerts/degraded/pending) keep
+   owner.css wave 6-a's -ink pairing verbatim. */
+.r305ao .owner-live-status {
+  border-color: var(--border-faint);
+  border-radius: var(--r-md);
+}
+
+/* Severity alert cards — hairline + soft wash; severity on the
+   leading edge. Critical pair keeps the danger wash. */
+.r305ao .owner-alert-card {
+  background: var(--surface);
+  border-color: var(--border-faint);
+  border-radius: var(--r-md);
+  box-shadow: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .r305ao .owner-alert-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: none;
+  }
+}
+.r305ao .owner-alert-card.critical,
+.r305ao .owner-alert-card.error {
+  border-inline-start-color: var(--danger);
+  background: color-mix(in srgb, var(--danger-soft) 55%, var(--surface));
+}
+.r305ao .owner-alert-card.warning {
+  border-inline-start-color: var(--warning);
+  background: color-mix(in srgb, var(--warning-soft) 55%, var(--surface));
+}
+.r305ao .owner-alert-card.info {
+  border-inline-start-color: var(--accent);
+}
+.r305ao .owner-alert-card-header .time {
+  font-size: var(--fs-xxs);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Event icons, inline resolve errors, live labels/meta: owner.css
+   already pairs the -soft grounds with the -ink glyphs (R131-F12) and
+   owns the mono identifier recipe — no restatement here. */
+
+/* Brand notice (content page) — the accent-soft info moment gains a
+   hairline in the accent's own family. */
+.r305ao .owner-brand-notice {
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  color: var(--accent-strong);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   §8 · Empty / error / loading refinement
+   Scope: the .state family (EmptyState/ErrorState/LoadingState) and
+   the owner skeletons.
+   Grammar: calm, honest, actionable — the icon sits in a hairline
+   well, the title speaks in the display face, the description is the
+   quiet "what now". Motion (wiggle/throb) is owned by the platform
+   overrides layer and dies under RM there; nothing added here.
+   ════════════════════════════════════════════════════════════════ */
+
+.r305ao .state-icon {
+  background: var(--surface-2);
+  border: 1px solid var(--border-faint);
+  color: var(--text-muted);
+  border-radius: var(--r-md);
+}
+.r305ao .state.state-error .state-icon {
+  background: var(--danger-soft);
+  border-color: color-mix(in srgb, var(--danger) 25%, transparent);
+  color: var(--danger-ink);
+}
+.r305ao .state-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.r305ao .state-desc {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  max-inline-size: 46ch;
+}
+/* Boxed states inside cards lose the extra radius chrome. */
+.r305ao .card > .state { border-radius: var(--r-md); }
+
+/* Owner skeletons — the shimmer rides the canonical skeleton recipe;
+   only the owners' custom shapes get the quiet ground. */
+.r305ao .owner-timeline-skel,
+.r305ao .owner-alert-skel {
+  border-radius: var(--r-md);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   §9 · Danger zones & the destructive hierarchy
+   Scope: NEW opt-in classes + the danger button grammar.
+   Contract: routine actions = outline/quiet; HIGH-IMPACT groups live
+   inside .r305ao-danger-zone (danger-soft wash + danger hairline +
+   clear zone header); the irreversible verb itself = .btn.danger fill
+   or .r305ao-btn-danger. Three calm signals, zero drama.
+   ════════════════════════════════════════════════════════════════ */
+
+/* The zone panel — a visible, quiet fence around destructive groups
+   (delete institution, role transfer, owner demotion, sync resets). */
+.r305ao .r305ao-danger-zone {
+  background: color-mix(in srgb, var(--danger-soft) 40%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+  border-radius: var(--r-md);
+  padding: var(--sp-4) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.r305ao .r305ao-danger-zone-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--danger-ink);
+}
+.r305ao .r305ao-danger-zone-note {
+  margin: 0;
+  font-size: var(--fs-xxs);
+  line-height: var(--lh-base);
+  color: var(--text-secondary);
+}
+
+/* The standalone danger button — pairs with .btn (or replaces a
+   variant): danger fill, warm-ink label, flat rest, honest hover. */
+.r305ao .r305ao-btn-danger {
+  background: var(--danger);
+  color: var(--danger-fg);
+  border: 1px solid var(--danger);
+  border-radius: var(--r-md);
+  font-weight: var(--fw-semibold);
+}
+@media (hover: hover) and (pointer: fine) {
+  .r305ao-btn-danger:hover:not(:disabled) {
+    background: color-mix(in oklab, var(--danger) 86%, var(--neutral-0));
+    border-color: color-mix(in oklab, var(--danger) 86%, var(--neutral-0));
+  }
+}
+.r305ao .r305ao-btn-danger:disabled {
+  opacity: var(--state-btn-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* Danger rows inside the zone — hairline, tone on the verb only. */
+.r305ao .r305ao-danger-zone .settings-row {
+  border-block-end: 1px solid color-mix(in srgb, var(--danger) 18%, transparent);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   §10 · Operational panels
+   Scope: the NEW panel primitives + sync runs, error entries, activity
+   timeline, empty rollups, fact rows, category rows, certificates,
+   suggested courses, swatches, chart containers.
+   Grammar: logs/keys/ids in --font-mono with tabular figures; data
+   rows on hairlines; wells are surface-2, never colored.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── The panel primitive (NEW — opt in for settings groups, ops
+   blocks, flag boards): one flat fine-outline surface + a mono-ish
+   label head. Composes with .settings-*, .owner-toggle-row, tables. */
+.r305ao .r305ao-panel {
+  background: var(--surface);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-md);
+  padding: var(--sp-4) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.r305ao .r305ao-panel-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+/* The gap owns the panel's rhythm — a prose/list child that follows
+   the title hands its default margin over. */
+.r305ao .r305ao-panel > .r305ao-panel-title + :is(p, ul, ol) {
+  margin: 0;
+}
+
+/* Sync runs table — rides the §4 ws-table density ride; the .font-mono
+   utility already carries tabular figures — no extra rules. */
+
+/* Error entries (system page) — one change: the faint divider. The
+   danger-ink message, tabular timestamp and mono stack well are
+   canonical owner.css (mono stays OFF the ar-LY timestamp per 22-b). */
+.r305ao .owner-error-entry {
+  border-block-end: 1px solid var(--border-faint);
+}
+.r305ao .owner-error-entry:last-child { border-block-end: 0; }
+
+/* Activity timeline — the spine stays owner.css's tinted accent
+   hairline; rows gain only the hover-gated quiet step. Title/meta/id
+   voices are canonical (mono = IDs/emails per the 1A rule). */
+@media (hover: hover) and (pointer: fine) {
+  .r305ao .owner-timeline-item:hover { background: var(--surface-2); }
+}
+.r305ao .owner-timeline-email,
+.r305ao .owner-timeline-id {
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+.r305ao .owner-timeline-time { color: var(--text-faint); }
+
+/* Metadata preview (pretty-printed JSON) — the canonical mono well
+   gains a hairline frame. */
+.r305ao .owner-meta-preview {
+  border: 1px solid var(--border-faint);
+}
+
+/* Empty rollups (realtime ops honesty) — dashed frame reads "no data
+   yet", not "broken". Names/metas keep owner.css voices. */
+.r305ao .owner-empty-rollup {
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-md);
+}
+
+/* Fact rows (reports/analysis) — the mono accent keys and faint mono
+   sources are canonical (components.css); this sheet adds the row
+   hairline and the semibold tabular value voice. */
+.r305ao .fact-row {
+  border-block-end: 1px solid var(--border-faint);
+}
+.r305ao .fact-value {
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Category expansion rows + certificates + suggested courses — the
+   quiet hairline rows; the head keeps its canonical hover. */
+.r305ao .category-row-head {
+  border-radius: var(--r-sm);
+}
+.r305ao .category-row-body {
+  border-block-start: 1px solid var(--border-faint);
+}
+.r305ao .cert-row,
+.r305ao .suggested-course-row {
+  border-block-end: 1px solid var(--border-faint);
+}
+.r305ao .suggested-course-score {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-semibold);
+  color: var(--accent-ink);
+}
+
+/* Brand swatches (content page) — documented data: hairline chips,
+   mono hex stepped down to the muted tier. */
+.r305ao .owner-swatch {
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-md);
+}
+.r305ao .owner-swatch-chip {
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-sm);
+}
+.r305ao .owner-swatch-hex { color: var(--text-muted); }
+
+/* Chart containers — hairline well, restrained corner. */
+.r305ao .owner-chart-container {
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+
+/* Detail disclosures: owner.css owns the accent-ink toggle voice and
+   the 44px mobile floor — no restatement (never mute the accent link). */
+
+/* ════════════════════════════════════════════════════════════════
+   §11 · Owner console specifics
+   Scope: the small owner-shell voices the pages render around the
+   canonical families — workload labels, card leads, row-action
+   clusters, the workload→meter coupling.
+   (List padding, save rows, users-card alert rhythm and the settle
+   animation are canonical owner.css — no restatement.)
+   ════════════════════════════════════════════════════════════════ */
+
+.r305ao .owner-workload { color: var(--text-muted); font-size: var(--fs-xxs); }
+.r305ao .owner-card-lead { color: var(--text-secondary); }
+.r305ao .owner-row-actions { gap: var(--sp-1); }
+.r305ao .owner-workload + .owner-meter { margin-block-start: var(--sp-1); }
+
+/* ════════════════════════════════════════════════════════════════
+   §12 · Responsive pass — ≤640 / ≤400 / ≤360
+   Contract: the 390px (iPhone Pro) and 360px (Android common) audits
+   are MANDATORY. Toolbars wrap, stat lines drop to 2 columns, tables
+   become row summaries (tbl-stack canon), dialogs go full-width, and
+   every control clears the 44px touch floor.
+   ════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+
+  /* Tables — the canonical stack (components.css) does the heavy
+     lifting; the workspace identity cell becomes the card title. */
+  .r305ao .table-wrap { border-radius: var(--r-md); }
+  .r305ao .ws-table.tbl-stack tr { display: flex; flex-direction: column; }
+  .r305ao .ws-table.tbl-stack td.ws-id {
+    order: -1;
+    display: block;
+    padding-block-end: var(--sp-2);
+    margin-block-end: var(--sp-1);
+    border-block-end: 1px solid var(--border-faint);
+  }
+  .r305ao .ws-table.tbl-stack td.ws-id::before { display: none; }
+  .r305ao .ws-table.tbl-stack td:last-child { padding-block-start: var(--sp-2); }
+  .r305ao .table.tbl-stack td[data-label]::before {
+    color: var(--text-muted);
+    font-weight: var(--fw-medium);
+  }
+
+  /* Stat strips — 2×2 with honest internal hairlines (the canonical
+     container query only fires inside .grid-4; the media query is the
+     belt for strips mounted bare). */
+  .r305ao .stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .r305ao .stat-cell {
+    padding: var(--sp-3) var(--sp-4);
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--border-faint);
+  }
+  .r305ao .stat-cell:nth-child(even) { border-inline-start: 1px solid var(--border-faint); }
+  .r305ao .stat-cell:nth-child(-n + 2) { border-block-start: 0; }
+
+  /* Touch floors — controls & pagination clear 44px. */
+  .r305ao .admin-students-input,
+  .r305ao .admin-students-search { min-block-size: 44px; }
+  .r305ao .pf-filterbar-search input { block-size: 44px; }
+  .r305ao .owner-filter-pills .pill { min-block-size: 44px; }
+  .r305ao .table-pagination-actions button {
+    min-inline-size: 44px;
+    min-block-size: 44px;
+  }
+  .r305ao .owner-page-gap { min-inline-size: 44px; block-size: 44px; }
+
+  /* Dialogs — full-width cards, tighter veil padding. */
+  body:has(.r305ao) .modal-overlay { padding: var(--sp-2-5); }
+  body:has(.r305ao) .modal-card { inline-size: 100%; }
+
+  /* Headers stack; the actions rail follows the title block. */
+  .r305ao .pf-page-header-main { align-items: stretch; }
+
+  /* Toolbars & bulkbar wrap as groups, never clip. */
+  .r305ao .pf-filterbar-filters,
+  .r305ao .pf-filterbar-sort,
+  .r305ao .pf-filterbar-trailing { flex-wrap: wrap; }
+  .r305ao-bulkbar { inset-block-end: var(--sp-2); }
+}
+
+@media (max-width: 400px) {
+  /* The 2×2 stat grid tightens: labels and values keep their pairing. */
+  .r305ao .stat-cell { padding: var(--sp-3); }
+  .r305ao .stat-value { font-size: var(--fs-metric-md); }
+
+  /* Key/value rows shrink the mono key well before wrapping. */
+  .r305ao .owner-kv-row code { min-inline-size: 96px; }
+
+  /* Health rows wrap label/value onto stacked lines instead of
+     truncating the label at 360. */
+  .r305ao .owner-health-row { flex-wrap: wrap; }
+}
+
+@media (max-width: 360px) {
+  /* Single column — the honest floor. No 2-up can survive 360px
+     without clipped Arabic strings. */
+  .r305ao .stat-strip { grid-template-columns: minmax(0, 1fr); }
+  .r305ao .stat-cell {
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--border-faint);
+  }
+  .r305ao .stat-cell:first-child { border-block-start: 0; }
+
+  /* The bulkbar stacks: count line, then actions full-width. */
+  .r305ao-bulkbar-actions { margin-inline-start: 0; inline-size: 100%; }
+  .r305ao-bulkbar-actions .btn { flex: 1 1 auto; }
+
+  /* Pagination centers its 44px cluster; page-gap shrinks to the
+     canonical 36px chrome again (touch floor already met by buttons). */
+  .r305ao .table-pagination-actions { justify-content: center; }
+
+  /* Timeline ids/emails break anywhere — they are the longest runs. */
+  .r305ao .owner-timeline-email,
+  .r305ao .owner-timeline-id { overflow-wrap: anywhere; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   §13 · Reduced motion & pointer guards
+   Contract: this sheet adds NO new animation loops. What it adds to
+   interaction (hover tints, focus borders) is transitional only and
+   dies here under prefers-reduced-motion. Hover tints are declared
+   under @media (hover: hover) at their definition sites (§§2–4, 7).
+   The platform RM belts (tokens.css raw ladder zero, motion.css,
+   base.css, polish overrides) stay authoritative.
+   ════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Interaction transitions introduced by this sheet: none survive. */
+  .r305ao .btn,
+  .r305ao .pill,
+  .r305ao .tab,
+  .r305ao .input,
+  .r305ao select,
+  .r305ao textarea,
+  .r305ao .table tbody tr,
+  .r305ao .ws-table tbody tr,
+  .r305ao .table-row-actions,
+  .r305ao .settings-links a,
+  .r305ao .back-link,
+  .r305ao .owner-alert-card,
+  .r305ao .owner-timeline-item,
+  .r305ao .stat-cell-link,
+  .r305ao .pf-stat,
+  .r305ao .table-pagination-actions button,
+  body:has(.r305ao) .modal-card::before {
+    transition: none;
+    animation: none;
+  }
+
+  /* Press feedback: the token-resolved scale snaps to identity. */
+  .r305ao .btn:active,
+  .r305ao .pill:active { transform: none; }
+}
+
+/* Print — the console is a screen product; keep printers honest by
+   dropping the veil/blur machinery rather than pretending to be paper.
+   (Tables and flows print via the platform print light-lock.) */
+@media print {
+  .r305ao .pf-filterbar.sticky,
+  .r305ao-bulkbar {
+    position: static;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+  }
+}
+
+}
+/* ═══ end r305-admin-owner.css — all rules scoped to .r305ao ═══ */
