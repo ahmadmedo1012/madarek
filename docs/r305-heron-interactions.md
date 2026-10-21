@@ -4,8 +4,10 @@ Branch: `redesign/r305-heron-interactions` · Base: `1b766512` (origin/main, pos
 Owner lane: A2 (cursor / buttons / shared motion). Reference: heronaiapp.com (mechanics reimplemented as
 original Madarek code — no Heron code, fonts, images, or assets were copied).
 
-> Consumable from: shell/pages/landing waves. Everything here is **opt-in and additive** — zero call sites
-> changed, zero removed rules; existing surfaces render bit-identically until they adopt a contract.
+Everything here is **additive** — zero call sites changed, zero removed rules; existing surfaces render
+bit-identically at rest until they adopt a contract. Two r305 hover families apply to pre-existing elements
+by class alone (`.btn.outline` sweep, `.nav-item` indicator): at-rest pixels are unchanged (the 72-capture
+drift run proves it) but their hover/focus feedback is upgraded without further opt-in.
 
 ---
 
@@ -45,6 +47,11 @@ lines 0.1, stop epsilon 0.001 — **zero work when the pointer rests**, Heron's 
 Transforms/opacity only; no layout reads in the hot path; cached container rect refreshed on rAF-throttled
 capture-phase scroll (works with the shell's `.content` scroller) + resize. StrictMode double-mount leaves
 zero listeners/raf (tested).
+
+Edge case (documented for the landing wave): if a `data-cursor-lines` container unmounts **while the pointer
+is parked and the rAF loop is idle**, the hairlines stay frozen until the next pointer wake-up
+(pointermove/press). No surface ships the attribute yet; when the landing adopts it, add an `isConnected`
+heal check to the press handlers (and the two one-line tests) — see review finding 4.
 
 Modules: `frontend/src/components/motion/CursorManager.tsx` (+ colocated `cursor.css`),
 `frontend/src/lib/motion/pointer.ts` (pure math: `lerp`, `distance`, `shouldStop`, `PointerTracker`,
@@ -123,5 +130,5 @@ Use these instead of duplicating numbers in JS — tokens.css stays the single s
   the mouse cannot see the layer.
 - Landing (`.landing`) is intentionally untouched: the world's own pointer parallax remains the single
   pointer reader there; pages that want the dot suppressed over canvas opt in with `data-cursor="none"`.
-- Tests: `frontend/tests/motion/{pointer,CursorManager,ButtonMotion,tokens,RevealLine}.test.*` (58 tests
-  in the motion dir). Browser QA evidence: see the branch handoff report (1440×1000 / 390×844 / 360×800).
+- Tests: `frontend/tests/motion/{pointer,CursorManager,ButtonMotion,tokens,RevealLine}.test.*` (80 tests in
+  the motion dir). Browser QA evidence: see the branch handoff report (1440×1000 / 390×844 / 360×800).
