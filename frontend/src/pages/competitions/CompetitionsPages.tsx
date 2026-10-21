@@ -179,7 +179,11 @@ export function CompetitionsIndexPage() {
       <FilterBar
         sticky
         filters={(
-          <div className="flex items-center gap-2" role="group" aria-label="تصفية المسابقات بحسب الحالة">
+          /* r305: the pill group carries the page-scoped class so
+             colleges.css can lift these primary filter controls to the
+             44px touch floor (.comp-filter-pills) without changing the
+             compact .pill grade used elsewhere (community/feed). */
+          <div className="comp-filter-pills" role="group" aria-label="تصفية المسابقات بحسب الحالة">
             {([
               ['all', 'الكل'], ['OPEN', 'مفتوحة'], ['CLOSED', 'مغلقة'], ['JUDGED', 'تمّ التحكيم'],
             ] as const).map(([v, l]) => (
