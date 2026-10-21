@@ -87,6 +87,49 @@ function Mini({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 
+/** A purpose-built physical learning scene for the first viewport. The three
+ * planes tell the actual flow: watch a lesson, answer a checkpoint, then see
+ * mastery progress. It is CSS-only, so it remains fast and accessible. */
+function HeroLearningObject() {
+  return (
+    <div className="hero-learning-object">
+      <div className="hero-object__orbit hero-object__orbit--a" />
+      <div className="hero-object__orbit hero-object__orbit--b" />
+      <div className="hero-object__board">
+        <div className="hero-object__board-head">
+          <span>خريطة التعلّم</span>
+          <span dir="ltr">03 / 06</span>
+        </div>
+        <div className="hero-object__board-grid" aria-hidden>
+          <i /><i /><i /><i /><i /><i /><i /><i /><i />
+        </div>
+      </div>
+
+      <div className="hero-object__lesson">
+        <div className="hero-object__lesson-top">
+          <span className="hero-object__dot" />
+          <span>أحياء · الوحدة الثانية</span>
+          <span dir="ltr">12:36</span>
+        </div>
+        <div className="hero-object__video">
+          <span className="hero-object__play">▶</span>
+          <span className="hero-object__wave" aria-hidden><i /><i /><i /><i /><i /></span>
+        </div>
+        <div className="hero-object__progress"><span /></div>
+      </div>
+
+      <div className="hero-object__checkpoint">
+        <span className="hero-object__kicker">نقطة فحص</span>
+        <strong>ما الخطوة التالية؟</strong>
+        <div className="hero-object__answer"><span>✓</span> أكمل المفهوم التالي</div>
+      </div>
+
+      <span className="hero-object__tag hero-object__tag--top">تعلّم</span>
+      <span className="hero-object__tag hero-object__tag--side">إتقان ٨٢٪</span>
+    </div>
+  );
+}
+
 function MiniPlayer() {
   return (
     <Mini label="المحاضرة التفاعلية">
@@ -459,10 +502,9 @@ export default function LandingPage() {
               </RevealCssClass>
             </div>
 
-            {/* the ONE graphic object — flat two-tone constellation of the
-                real 25 colleges; drifts gently with the section's --sp */}
+            {/* One physical learning object: lesson → checkpoint → mastery. */}
             <div className="fo-hero-stage" aria-hidden>
-              <Constellation className="fo-hero-constellation" />
+              <HeroLearningObject />
             </div>
           </div>
 

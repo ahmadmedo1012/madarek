@@ -1444,6 +1444,248 @@
   }
 }
 
+/* ── Final landing object — an original three-dimensional learning flow ── */
+.landing {
+  --poster-paper: var(--surface);
+}
+
+.fo-hero {
+  background: color-mix(in srgb, var(--surface) 92%, var(--accent-soft));
+}
+
+.fo-hero-stage {
+  min-block-size: 520px;
+  perspective: 1400px;
+  isolation: isolate;
+}
+
+.fo-hero-stage::before {
+  inline-size: min(92%, 600px);
+  border-radius: var(--r-2xl);
+  background: color-mix(in srgb, var(--accent-soft) 70%, transparent);
+  transform: rotate(-8deg);
+}
+
+.hero-learning-object {
+  position: relative;
+  inline-size: min(100%, 600px);
+  aspect-ratio: 1.06;
+  transform-style: preserve-3d;
+  transform: rotateX(6deg) rotateY(-12deg) translateY(calc((var(--sp, 0.5) - 0.5) * -28px));
+  transition: transform var(--t-slower) var(--ease-out);
+}
+
+.hero-object__orbit {
+  position: absolute;
+  inset: 8%;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  border-radius: 50%;
+  transform: translateZ(-20px) rotate(24deg);
+}
+
+.hero-object__orbit--b {
+  inset: 19% 2%;
+  transform: translateZ(-32px) rotate(-32deg);
+}
+
+.hero-object__board,
+.hero-object__lesson,
+.hero-object__checkpoint {
+  position: absolute;
+  border: 1px solid color-mix(in srgb, var(--poster-ink) 11%, transparent);
+  background: var(--surface);
+  box-shadow: var(--elev-3);
+}
+
+.hero-object__board {
+  inset: 10% 5% 17% 16%;
+  padding: var(--sp-6);
+  border-radius: var(--r-2xl);
+  background: color-mix(in srgb, var(--accent-soft) 58%, var(--surface));
+  transform: translateZ(2px) rotate(-4deg);
+}
+
+.hero-object__board-head,
+.hero-object__lesson-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: 650;
+}
+
+.hero-object__board-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-7);
+}
+
+.hero-object__board-grid i {
+  display: block;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+}
+
+.hero-object__board-grid i:nth-child(2),
+.hero-object__board-grid i:nth-child(6),
+.hero-object__board-grid i:nth-child(8) {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.hero-object__lesson {
+  inset: 24% 16% 11% 4%;
+  padding: var(--sp-5);
+  border-radius: var(--r-xl);
+  transform: translateZ(38px) rotate(5deg);
+}
+
+.hero-object__dot {
+  inline-size: var(--sp-2);
+  block-size: var(--sp-2);
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+
+.hero-object__video {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-block-size: 148px;
+  margin-block: var(--sp-5);
+  border-radius: var(--r-lg);
+  background: var(--poster-ink);
+  color: var(--surface);
+  overflow: hidden;
+}
+
+.hero-object__play {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  inline-size: var(--sp-10);
+  block-size: var(--sp-10);
+  padding-inline-start: var(--sp-1);
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: var(--fs-body);
+}
+
+.hero-object__wave {
+  position: absolute;
+  inset-inline: var(--sp-5);
+  inset-block-end: var(--sp-5);
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  block-size: var(--sp-7);
+}
+
+.hero-object__wave i {
+  inline-size: var(--sp-1);
+  block-size: 42%;
+  border-radius: var(--r-full);
+  background: color-mix(in srgb, var(--accent-strong) 72%, transparent);
+}
+
+.hero-object__wave i:nth-child(2),
+.hero-object__wave i:nth-child(4) { block-size: 100%; }
+.hero-object__wave i:nth-child(3) { block-size: 68%; }
+
+.hero-object__progress {
+  block-size: var(--sp-2);
+  overflow: hidden;
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+}
+
+.hero-object__progress span {
+  display: block;
+  inline-size: 66%;
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+.hero-object__checkpoint {
+  inset: 58% 0 2% 46%;
+  display: grid;
+  align-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  border-radius: var(--r-lg);
+  transform: translateZ(78px) rotate(-6deg);
+}
+
+.hero-object__checkpoint strong { font-size: var(--fs-body); }
+
+.hero-object__kicker,
+.hero-object__tag {
+  color: var(--accent-strong);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.hero-object__answer {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.hero-object__answer span {
+  display: grid;
+  place-items: center;
+  inline-size: var(--sp-5);
+  block-size: var(--sp-5);
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.hero-object__tag {
+  position: absolute;
+  z-index: 2;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  box-shadow: var(--elev-1);
+  transform: translateZ(96px);
+}
+
+.hero-object__tag--top { inset-block-start: 2%; inset-inline-start: 7%; }
+.hero-object__tag--side { inset-block-end: 14%; inset-inline-end: 2%; }
+
+@media (max-width: 960px) {
+  .fo-hero-stage { min-block-size: 410px; }
+  .hero-learning-object { inline-size: min(100%, 480px); }
+}
+
+@media (max-width: 640px) {
+  .fo-hero { padding-block-start: var(--sp-9); }
+  .fo-hero-stage { min-block-size: 330px; }
+  .hero-learning-object { inline-size: min(100%, 360px); }
+  .hero-object__board { padding: var(--sp-4); }
+  .hero-object__board-grid { margin-block-start: var(--sp-4); gap: var(--sp-2); }
+  .hero-object__lesson { padding: var(--sp-3); }
+  .hero-object__video { min-block-size: 102px; margin-block: var(--sp-3); }
+  .hero-object__checkpoint { padding: var(--sp-3); gap: var(--sp-2); }
+  .hero-object__tag { padding: var(--sp-1) var(--sp-2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-learning-object { transform: rotateX(6deg) rotateY(-12deg); }
+}
+
 /* ── Reveal-up — the landing choreography class contract ────────────
    Moved from polish.css v7 (the polish bundle is being dismantled
    rule-by-rule into owning sheets — r294). The ONLY consumers are

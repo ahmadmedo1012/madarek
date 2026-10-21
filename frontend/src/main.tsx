@@ -36,6 +36,9 @@ import './styles/auth.css';
 import './styles/notifications.css';
 import './styles/student.css';
 import './styles/polish.css';
+// Final product-wide visual language: quiet workspace surfaces, controls,
+// navigation and loading states. Kept last so it can normalize page families.
+import './styles/final-visual-system.css';
 import App from './App';
 
 // axe-core: surface a11y violations in the dev console only. No prod cost.
