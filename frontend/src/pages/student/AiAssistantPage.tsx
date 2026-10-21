@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Sparkles, AlertCircle, ArrowLeft, Brain, RefreshCw, Plus, Trash2, MessageSquare } from 'lucide-react';
-import { Card, Badge, UserAvatar, AlertRow } from '../../components/primitives';
+import { Bot, Send, Sparkles, AlertCircle, ArrowLeft, Brain, RefreshCw, Plus, Trash2, MessageSquare, UserRound } from 'lucide-react';
+import { Card, Badge, AlertRow } from '../../components/primitives';
 import { Skeleton, EmptyState } from '../../components/primitives/States';
 /* G النهائية: الترويسة على عقد patterns — السطح محادثة موطّنة داخل
    إطار العائلة نفسه (PageFrame/PageHeader) لا ودجات دردشة عامة. */
@@ -20,6 +20,7 @@ import {
 import { apiErrorMessage, formatRelativeAr } from '../../lib/format';
 import { formatReplyBlocks } from './aiReplyFormat';
 import '../../styles/ai.css'; /* r261: سطح المحادثة المركّز — البنية الجديدة فقط (.ai-layout/.ai-surface/.ai-gaps/.ai-composer) */
+import '../../styles/r305-research-pdf-ai.css'; /* R305-A7 «Heron»: لغة العائلة التقنيّة — يُستورد مباشرة بعد ai.css (عقد §0) */
 
 interface ChatMsg {
   role: 'bot' | 'user';
@@ -28,6 +29,10 @@ interface ChatMsg {
   error?: boolean;
   /** The user text to re-send when retrying a failed exchange. */
   retryText?: string;
+  /** r305-A7: the backend envelope's own support code (UPPER_SNAKE,
+   * e.g. TOO_MANY_REQUESTS) — rendered verbatim when present. Nothing
+   * is invented: a codeless failure stays codeless. */
+  code?: string;
   /* r166d (WS-F5) — per-turn engine attribution from the chat envelope.
    * Present only on turns received AFTER this change (a conversation
    * loaded from the server carries no per-message engine data — those
@@ -99,16 +104,29 @@ export function transcriptFromRows(rows: readonly AiMessageRow[], greeting: stri
   return mapped.length > 0 ? mapped : [{ role: 'bot', text: greeting }];
 }
 
+/**
+ * r305-A7 — the backend error envelope's own support code, verbatim.
+ * The envelope shape mirrors apiErrorDetailRaw (lib/format): the code
+ * is UPPER_SNAKE English by D17-3 and is MEANT for a support chip.
+ * Pure, local, and honest: absent code → null → nothing rendered.
+ */
+export function apiErrorCode(error: unknown): string | null {
+  const code = (error as { response?: { data?: { error?: { code?: unknown } } } })
+    ?.response?.data?.error?.code;
+  return typeof code === 'string' && code.length > 0 && code.length < 64 ? code : null;
+}
+
 /** Render text with newlines preserved (chat replies use \n).
  * r176c: assistant replies ride the markdown-lite formatter — plain
  * lines verbatim (emphasis/heading markers stripped), consecutive
  * `-`/`*` list lines as one RTL list. User text renders VERBATIM
- * (typed by a human, no markup to strip). */
+ * (typed by a human, no markup to strip). r305-A7: line/list chrome
+ * moved to §D classes — no TSX inline spacing. */
 function Multiline({ children }: { children: string }) {
   return (
     <>
       {children.split('\n').map((line, i) => (
-        <p key={i} style={{ margin: 0, minHeight: line ? undefined : '0.5em' }}>
+        <p key={i} className={line ? 'r305ai-line' : 'r305ai-line r305ai-line--breath'}>
           {line}
         </p>
       ))}
@@ -122,22 +140,14 @@ function ReplyText({ text }: { text: string }) {
     <>
       {formatReplyBlocks(text).map((block, i) =>
         block.kind === 'list' ? (
-          <ul
-            key={i}
-            style={{
-              margin: 0,
-              paddingInlineStart: 'var(--sp-4)',
-              display: 'grid',
-              gap: 'var(--sp-1)',
-            }}
-          >
+          <ul key={i} className="r305ai-list">
             {block.items.map((item, j) => (
-              <li key={j} style={{ margin: 0 }}>{item}</li>
+              <li key={j}>{item}</li>
             ))}
           </ul>
         ) : (
           block.lines.map((line, j) => (
-            <p key={`${i}-${j}`} style={{ margin: 0, minHeight: line ? undefined : '0.5em' }}>
+            <p key={`${i}-${j}`} className={line ? 'r305ai-line' : 'r305ai-line r305ai-line--breath'}>
               {line}
             </p>
           ))
@@ -153,6 +163,17 @@ type ConvLoad =
   | { phase: 'idle' }
   | { phase: 'loading' }
   | { phase: 'error'; id: string; message: string };
+
+/** Role micro-label — the ledger's identity line (label + tick; the
+ * role is NEVER carried by color alone). */
+function RoleLabel({ who }: { who: 'bot' | 'user' }) {
+  return (
+    <span className="r305ai-role">
+      <Icon icon={who === 'bot' ? Bot : UserRound} size={12} />
+      {who === 'bot' ? 'المساعد' : 'أنت'}
+    </span>
+  );
+}
 
 export default function AiAssistantPage() {
   const user = useAuthStore((s) => s.user);
@@ -235,10 +256,17 @@ export default function AiAssistantPage() {
       // own Arabic message wins when it has one (rate limit, honest
       // provider outage) — a fixed generic bubble would hide the real
       // cause (r164g; apiErrorMessage's Arabic guard keeps Latin
-      // transport prose out of the RTL log).
+      // transport prose out of the RTL log). r305-A7: the envelope's
+      // own support code rides the row verbatim when present.
       setMessages((m) => [
         ...m,
-        { role: 'bot', text: apiErrorMessage(err, 'تعذَّر الاتصال بالمساعد الآن.'), error: true, retryText: t },
+        {
+          role: 'bot',
+          text: apiErrorMessage(err, 'تعذَّر الاتصال بالمساعد الآن.'),
+          error: true,
+          retryText: t,
+          code: apiErrorCode(err) ?? undefined,
+        },
       ]);
     }
   };
@@ -310,417 +338,466 @@ export default function AiAssistantPage() {
     void send(`اشرح لي مفهوم "${conceptName}" — لاحظت أنّ لديّ فجوة فيه.`);
   };
 
-  const initials = user?.avatarInitials ?? 'أنا';
   const convList = conversations.data ?? [];
 
   return (
-    <PageFrame>
-      {/* G: ترويسة patterns — نفس بنية ترويسات العائلة كلها؛ وصف الوضع
-          الصادق يبقى نصًّا فرعيًّا والشارة في خانة الإجراءات. */}
-      <PageHeader
-        title="المساعد الذكيّ"
-        description={
-          isRealLlm
-            ? 'مساعدك الدراسيّ مدعوم بنموذج لغويّ حقيقيّ يرى بيانات إتقانك ويعطي إجابات مخصّصة لك.'
-            : 'يحلّل بيانات إتقانك محليّاً ويقترح خطوة مذاكرة تالية — مساعد تحليليّ محليّ، لا نموذج لغويّ خارجيّ.'
-        }
-        /* The badge names the real model when one answers — an LLM
-           badge on template replies (or the reverse) would be a lie. */
-        actions={<Badge color="gold" icon={Sparkles}>{isRealLlm && aiConfig.data?.model ? aiConfig.data.model : 'AI'}</Badge>}
-      />
-
-      {/* r261 (4E، اتجاه Superlist): شريط الفجوات — سياق المصادر يسبق
-          السطح بلا غلاف Card: سطر تعريف هادئ ثم بطاقات الفجوات في صفّ.
-          بيانات حقيقية من /me/gaps؛ هيكل صادق: هيكل مطابق أثناء التحميل،
-          ملاحظة خطأ مدمجة عند الفشل، وغياب تامّ بلا فجوات. */}
-      {gaps.isPending ? (
-        <div className="ai-gaps" aria-busy="true" aria-live="polite">
-          <div className="ai-gaps-head">
-            <p className="ai-gaps-title"><Icon icon={Brain} size={14} />بناءً على أدائك</p>
-            <p className="ai-gaps-hint">مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد</p>
-          </div>
-          <div className="ai-gaps-row">
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="ai-gap-card" aria-hidden>
-                <Skeleton width="60%" height={10} />
-                <Skeleton width="80%" height={14} />
-                <Skeleton width="45%" height={10} />
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : gaps.isError ? (
-        <AlertRow
-          color="red"
-          icon={AlertCircle}
-          title="تعذَّر تحليل فجواتك المعرفيّة"
-          description="لن تظهر بطاقات المفاهيم المقترحة، لكن يمكنك مواصلة المحادثة مع المساعد بشكل طبيعي."
-          actions={
-            <button type="button" className="btn ghost sm" onClick={() => gaps.refetch()}>
-              <Icon icon={RefreshCw} size={13} />
-              إعادة المحاولة
-            </button>
+    <div className="r305rp">
+      <PageFrame>
+        {/* G: ترويسة patterns — نفس بنية ترويسات العائلة كلها؛ وصف الوضع
+            الصادق يبقى نصًّا فرعيًّا والشارة في خانة الإجراءات. */}
+        <PageHeader
+          title="المساعد الذكيّ"
+          description={
+            isRealLlm
+              ? 'مساعدك الدراسيّ مدعوم بنموذج لغويّ حقيقيّ يرى بيانات إتقانك ويعطي إجابات مخصّصة لك.'
+              : 'يحلّل بيانات إتقانك محليّاً ويقترح خطوة مذاكرة تالية — مساعد تحليليّ محليّ، لا نموذج لغويّ خارجيّ.'
           }
+          /* The badge names the real model when one answers — an LLM
+             badge on template replies (or the reverse) would be a lie. */
+          actions={<Badge color="gold" icon={Sparkles}>{isRealLlm && aiConfig.data?.model ? aiConfig.data.model : 'AI'}</Badge>}
         />
-      ) : gaps.data && gaps.data.length > 0 ? (
-        <div className="ai-gaps">
-          <div className="ai-gaps-head">
-            <p className="ai-gaps-title"><Icon icon={Brain} size={14} />بناءً على أدائك</p>
-            <p className="ai-gaps-hint">مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد</p>
-          </div>
-          <div className="ai-gaps-row">
-            {gaps.data.slice(0, 3).map((g) => (
-              <button
-                key={g.conceptId}
-                type="button"
-                className="ai-gap-card"
-                onClick={() => askAboutGap(g.conceptName)}
-                disabled={busy}
-              >
-                <div className="ai-gap-head">
-                  <Icon icon={AlertCircle} size={14} className="ai-gap-warn" />
-                  <span className="text-xxs text-subtle">{g.courseName}</span>
-                  {/* 21-c (A5 P1-2): the mastery % is the card's whole
-                      point — student.css pairs it with --warning-ink
-                      (7.29:1 light / 9.90:1 dark) after the raw
-                      --warning gold measured 2.13:1 on the light card. */}
-                  <span className="ai-gap-pct">{Math.round(g.level * 100)}%</span>
+
+        {/* r261 (4E، اتجاه Superlist): شريط الفجوات — سياق المصادر يسبق
+            السطح بلا غلاف Card: سطر تعريف هادئ ثم بطاقات الفجوات في صفّ.
+            بيانات حقيقية من /me/gaps؛ هيكل صادق: هيكل مطابق أثناء التحميل,
+            ملاحظة خطأ مدمجة عند الفشل، وغياب تامّ بلا فجوات. */}
+        {gaps.isPending ? (
+          <div className="ai-gaps" aria-busy="true" aria-live="polite">
+            <div className="ai-gaps-head">
+              <p className="ai-gaps-title"><Icon icon={Brain} size={14} />بناءً على أدائك</p>
+              <p className="ai-gaps-hint">مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد</p>
+            </div>
+            <div className="ai-gaps-row">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="ai-gap-card" aria-hidden>
+                  <Skeleton width="60%" height={10} />
+                  <Skeleton width="80%" height={14} />
+                  <Skeleton width="45%" height={10} />
                 </div>
-                <div className="ai-gap-name">{g.conceptName}</div>
-                <div className="ai-gap-cta">
-                  اسأل المساعد عن هذا المفهوم
-                  {/* In RTL, "continue" points left — the literal → glyph
-                      mirrored the wrong way (audit 0-d P2). */}
-                  <Icon icon={ArrowLeft} size={12} />
-                </div>
-              </button>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      ) : null}
-
-      {/* r261: سطح المحادثة المركّز — اللوحة هي الصفحة: رأس شريط يحمل
-          سياق الوعي، السجلّ يملأ المسافة، والمرسِل يلتصق بأسفل اللوحة
-          (جوال أولًا). role=log + aria-live كما هي — العقد الاختبارية
-          (.chat-area وأسماء الأزرار) لم تتغيّر. */}
-      <div className="ai-layout">
-        <section className="ai-surface" aria-label="محادثتك مع المساعد">
-          <div className="ai-surface-head">
-            <span className="ai-surface-title"><Icon icon={Bot} size={16} />محادثتك مع المساعد</span>
-            {/* r164g context honesty: mastery context IS sent for
-             * students (r160 prompt composition) in BOTH engine modes —
-             * the local composer reads the same mastery rows. The chip
-             * states exactly that awareness and nothing more; roles with
-             * no mastery rows see no chip (nothing is invented). */
-            isStudent ? <Badge color="brand" icon={Brain}>واعٍ بمستوى إتقانك</Badge> : null}
-          </div>
-          {/* role=log + aria-live: screen readers hear every reply and
-              error as the conversation grows (audit 0-d P1).
-              tabIndex (r152a A6 P2-2): the scroller has no focusable
-              children and the input lives outside it — without a tab
-              stop, keyboard-only users could never arrow-scroll the
-              transcript. The universal :focus-visible ring applies. */}
-          <div className="chat-area" ref={scroller}
-              onScroll={handleScroll} role="log" tabIndex={0} aria-live="polite" aria-label="سجلّ المحادثة مع المساعد" aria-busy={busy}>
-            {convLoad.phase === 'loading' ? (
-              <div aria-busy="true" aria-live="polite" className="flex-col gap-2">
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className="chat-msg bot" aria-hidden>
-                    <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
-                    <div className="chat-bubble ai-bubble-skeleton">
-                      <Skeleton width={i === 1 ? '90%' : '60%'} height={12} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <>
-                {transcript.map((m, i) => (
-                  <div key={i} className={`chat-msg ${m.role}`}>
-                    {m.role === 'bot' ? (
-                      <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
-                    ) : (
-                      <UserAvatar initials={initials} size={28} color="var(--surface-3)" />
-                    )}
-                    {m.error ? (
-                      <div className="chat-error" role="alert">
-                        <span>{m.text}</span>
-                        {m.retryText && !chat.isPending && (
-                          <button
-                            type="button"
-                            className="chat-retry"
-                            onClick={() => retryExchange(i)}
-                          >
-                            <Icon icon={RefreshCw} size={12} />
-                            أعد إرسال سؤالك
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="chat-bubble">
-                        {m.role === 'bot' ? <ReplyText text={m.text} /> : <Multiline>{m.text}</Multiline>}
-                        {/* r166d per-turn engine tag — muted mono under the
-                            reply text, existing utility classes only (no new
-                            CSS). Honest in both directions: a real provider
-                            turn names its model, a composer turn names the
-                            composer; untagged = no data for that turn. */}
-                        {m.engine && (
-                          <div className="font-mono text-xxs text-subtle ai-engine-tag">
-                            {m.model ?? m.engine}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
-                {convLoad.phase === 'error' && (
-                  <div className="chat-msg bot">
-                    <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
-                    <div className="chat-error" role="alert">
-                      <span>{convLoad.message}</span>
-                      <button
-                        type="button"
-                        className="chat-retry"
-                        onClick={() => void openConversation(convLoad.id)}
-                      >
-                        <Icon icon={RefreshCw} size={12} />
-                        أعد فتح المحادثة
-                      </button>
-                    </div>
-                  </div>
-                )}
-                {chat.isPending && (
-                  <div className="chat-msg bot">
-                    <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
-                    <div className="chat-typing">
-                      <span className="chat-typing-dot" />
-                      <span className="chat-typing-dot" />
-                      <span className="chat-typing-dot" />
-                      <span className="visually-hidden">المساعد يجهّز الردّ…</span>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-
-          {/* المرسِل — رقائق سريعة + صفّ الإدخال + العدّاد، ملتصقة بأسفل
-              اللوحة (r261): إفصاح الخصوصية أولًا ثم الأدوات. */}
-          <div className="ai-composer">
-          {/* r176c: the persistent privacy disclosure — the real engine
-              processes messages off-platform; one honest line, always
-              visible in real-LLM mode (the greeting alone would vanish
-              after the first turn). */}
-          {isRealLlm && (
-            <p className="text-xxs text-subtle ai-privacy">
-              {PRIVACY_DISCLOSURE}
-            </p>
-          )}
-
-          {/* Quick-action chips above the input — Stitch signature.
-              r168b honesty gate: the local composer's REAL paths are
-              concept-explain and worst-gap surfacing (backend
-              composeReply — ai.routes.ts). «لخّص الفصل الأخير» and
-              «اختبار قصير» promise summarize/quiz generation the local
-              engine cannot deliver; they render ONLY when a real
-              provider is configured. Local/unknown mode keeps the two
-              chips the composer genuinely honors (concept-explain →
-              worst-gap answer; «أسوأ فجواتي» → the mastery-gap reply). */}
-          <div className="ai-quick-actions">
-            {isRealLlm ? (
-              <>
-                <button type="button" className="ai-quick-chip" onClick={() => void send('لخّص لي الفصل الأخير من المقرّر')} disabled={busy}>
-                  لخّص الفصل الأخير
-                </button>
-                <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')} disabled={busy}>
-                  اشرح مفهوماً
-                </button>
-                <button type="button" className="ai-quick-chip" onClick={() => void send('أنشئ لي اختباراً قصيراً (5 أسئلة)')} disabled={busy}>
-                  اختبار قصير
-                </button>
-                <button type="button" className="ai-quick-chip" onClick={() => void send('اقترح موارد دراسيّة إضافيّة')} disabled={busy}>
-                  موارد إضافيّة
-                </button>
-              </>
-            ) : (
-              <>
-                <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')} disabled={busy}>
-                  اشرح مفهوماً
-                </button>
-                <button type="button" className="ai-quick-chip" onClick={() => void send('ما المفاهيم التي أحتاج إلى مراجعتها؟')} disabled={busy}>
-                  أسوأ فجواتي
-                </button>
-              </>
-            )}
-          </div>
-
-          <div className="chat-input-row">
-            <input
-              className="chat-input"
-              placeholder="اكتب سؤالك…"
-              aria-label="اكتب سؤالك للمساعد"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') void send(); }}
-              disabled={busy}
-              maxLength={4000}
-            />
-            <button
-              type="button"
-              className="chat-send"
-              onClick={() => void send()}
-              disabled={!input.trim() || busy}
-              aria-label="إرسال"
-            >
-              <Icon icon={Send} size={15} />
-            </button>
-          </div>
-          {input.length > 3600 && (
-            <p className="text-xxs text-subtle ai-counter">
-              {input.length}/4000
-            </p>
-          )}
-          </div>
-        </section>
-
-        {/* r164g — conversation management: list/switch/clear with the
-            current-conversation indicator and a two-step delete confirm
-            (clearing an exchange is irreversible — no accidental loss).
-            r261: العمود الجانبي يهبط أسفل السطح على الجوال (ai-layout). */}
-        <aside className="ai-side">
-          <Card
-            title="محادثاتك"
-            icon={MessageSquare}
+        ) : gaps.isError ? (
+          <AlertRow
+            color="red"
+            icon={AlertCircle}
+            title="تعذَّر تحليل فجواتك المعرفيّة"
+            description="لن تظهر بطاقات المفاهيم المقترحة، لكن يمكنك مواصلة المحادثة مع المساعد بشكل طبيعي."
             actions={
-              <button type="button" className="btn ghost sm" onClick={startNewConversation} disabled={busy}>
-                <Icon icon={Plus} size={13} />
-                محادثة جديدة
+              <button type="button" className="btn ghost sm" onClick={() => gaps.refetch()}>
+                <Icon icon={RefreshCw} size={13} />
+                إعادة المحاولة
               </button>
             }
-          >
-            {conversations.isPending ? (
-              <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className="list-row" aria-hidden>
-                    <div className="list-row-body">
-                      <Skeleton width="70%" height={12} />
-                      <Skeleton width="35%" height={10} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : conversations.isError ? (
-              <AlertRow
-                color="red"
-                icon={AlertCircle}
-                title="تعذَّر تحميل محادثاتك"
-                description="يمكنك مواصلة محادثتك الحالية بشكل طبيعي، وستظهر القائمة عند إعادة المحاولة."
-                actions={
-                  <button type="button" className="btn ghost sm" onClick={() => conversations.refetch()}>
-                    <Icon icon={RefreshCw} size={13} />
-                    إعادة المحاولة
-                  </button>
-                }
-              />
-            ) : convList.length === 0 ? (
-              /* G: الحالة الفارغة على عقد الطقم المشترك (EmptyState +
-                  رسوم mk-ill) بدل فقرة نصّ مجرّدة — نفس بنية أخوية
-                  (الإعلانات/المسابقات/الغرف) داخل البطاقة. */
-              <EmptyState
-                illustration="empty-list"
-                title="لا توجد محادثات سابقة بعد"
-                description="ابدأ بأول سؤال وستظهر محادثاتك هنا."
-              />
-            ) : (
-              <div className="flex-col">
-                {delConversation.isError && (
-                  <div className="ai-conv-error-pad">
-                    <AlertRow
-                      color="red"
-                      icon={AlertCircle}
-                      title="تعذَّر حذف المحادثة"
-                      description={apiErrorMessage(delConversation.error, 'لم تُحذف المحادثة — حاول مرة أخرى.')}
-                    />
-                  </div>
-                )}
-                {convList.map((c) => {
-                  const current = c.id === conversationId;
-                  const title = c.title ?? 'محادثة';
-                  const confirming = confirmDeleteId === c.id;
-                  return (
-                    <div key={c.id} className="list-row ai-conv-row" aria-current={current ? 'true' : undefined}>
-                      <button
-                        type="button"
-                        className="list-row-body ai-conv-open"
-                        onClick={() => void openConversation(c.id)}
-                        disabled={busy}
-                        aria-label={`فتح محادثة: ${title}`}
-                      >
-                        <span className="list-row-title ai-conv-title">{title}</span>
-                        <span className="list-row-sub">{formatRelativeAr(c.createdAt)}</span>
-                      </button>
-                      {confirming ? (
-                        <div className="ai-conv-actions">
-                          <button
-                            type="button"
-                            className="btn danger sm"
-                            onClick={() => void deleteConversation(c.id)}
-                            disabled={delConversation.isPending}
-                            title="سيُحذف سجلّ هذه المحادثة نهائيًا"
-                          >
-                            <Icon icon={Trash2} size={13} />
-                            تأكيد الحذف
-                          </button>
-                          <button
-                            type="button"
-                            className="btn ghost sm"
-                            onClick={() => setConfirmDeleteId(null)}
-                            disabled={delConversation.isPending}
-                          >
-                            إلغاء
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="ai-conv-actions">
-                          {current && <Badge color="brand">الحالية</Badge>}
-                          <button
-                            type="button"
-                            className="btn ghost sm"
-                            onClick={() => setConfirmDeleteId(c.id)}
-                            disabled={busy || delConversation.isPending}
-                            aria-label={`حذف محادثة: ${title}`}
-                            title="حذف هذه المحادثة نهائيًا"
-                          >
-                            <Icon icon={Trash2} size={13} />
-                            حذف
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </Card>
-
-          <Card title="أسئلة مقترحة" icon={Sparkles}>
-            <div className="flex-col gap-2">
-              {suggestions.map((q) => (
+          />
+        ) : gaps.data && gaps.data.length > 0 ? (
+          <div className="ai-gaps">
+            <div className="ai-gaps-head">
+              <p className="ai-gaps-title"><Icon icon={Brain} size={14} />بناءً على أدائك</p>
+              <p className="ai-gaps-hint">مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد</p>
+            </div>
+            <div className="ai-gaps-row">
+              {gaps.data.slice(0, 3).map((g) => (
                 <button
-                  key={q}
+                  key={g.conceptId}
                   type="button"
-                  onClick={() => void send(q)}
-                  className="list-row"
+                  className="ai-gap-card"
+                  onClick={() => askAboutGap(g.conceptName)}
                   disabled={busy}
                 >
-                  <Icon icon={Sparkles} size={14} />
-                  <span className="list-row-body text-sm ai-suggestion-text">{q}</span>
+                  <div className="ai-gap-head">
+                    <Icon icon={AlertCircle} size={14} className="ai-gap-warn" />
+                    <span className="text-xxs text-subtle">{g.courseName}</span>
+                    {/* 21-c (A5 P1-2): the mastery % is the card's whole
+                        point — the mono numeral keeps the technical
+                        register; the % is data, never a state color. */}
+                    <span className="ai-gap-pct">{Math.round(g.level * 100)}%</span>
+                  </div>
+                  <div className="ai-gap-name">{g.conceptName}</div>
+                  <div className="ai-gap-cta">
+                    اسأل المساعد عن هذا المفهوم
+                    {/* In RTL, "continue" points left — the literal → glyph
+                        mirrored the wrong way (audit 0-d P2). */}
+                    <Icon icon={ArrowLeft} size={12} />
+                  </div>
                 </button>
               ))}
             </div>
-          </Card>
-        </aside>
-      </div>
-    </PageFrame>
+          </div>
+        ) : null}
+
+        {/* r261: سطح المحادثة المركّز — اللوحة هي الصفحة: رأس شريط يحمل
+            سياق الوعي، السجلّ يملأ المسافة، والمرسِل يلتصق بأسفل اللوحة
+            (جوال أولًا). role=log + aria-live كما هي — العقد الاختبارية
+            (.chat-area وأسماء الأزرار) لم تتغيّر. */}
+        <div className="ai-layout">
+          <section className="ai-surface" aria-label="محادثتك مع المساعد">
+            {/* r305-A7: رأس السجلّ هو النطاق العميق الوحيد (منطقة الحالة):
+                العنوان + رقائق الإفصاح (المحرّك/الوعي) + سطر الخصوصية
+                الدائم — كل الإفصاحات في مكان واحد صادق. */}
+            <div className="ai-surface-head r305rp-band--deep r305ai-head">
+              <div className="r305ai-head-main">
+                <span className="ai-surface-title r305ai-head-title"><Icon icon={Bot} size={16} />محادثتك مع المساعد</span>
+                <div className="r305ai-head-chips">
+                  {/* Engine/config chip — the /ai/config surface itself.
+                      Real provider → the dot turns copper and the chip
+                      names the provider LABEL verbatim; local/unverified
+                      → the honest local label (same default as the
+                      greeting copy). The boot-level model stays on the
+                      header badge; per-turn truth rides the reply tags. */}
+                  {isRealLlm ? (
+                    <span className="r305rp-chip r305rp-chip--accent r305ai-chip-deep">
+                      <span className="r305rp-chip-dot" />
+                      نموذج خارجيّ
+                      <span className="r305ai-mono">{aiConfig.data?.provider}</span>
+                    </span>
+                  ) : (
+                    <span className="r305rp-chip r305ai-chip-deep">
+                      <span className="r305rp-chip-dot" />
+                      مساعد محليّ
+                    </span>
+                  )}
+                  {/* r164g context honesty: mastery context IS sent for
+                   * students (r160 prompt composition) in BOTH engine modes —
+                   * the local composer reads the same mastery rows. The chip
+                   * states exactly that awareness and nothing more; roles with
+                   * no mastery rows see no chip (nothing is invented). */
+                  isStudent ? (
+                    <span className="r305rp-chip r305rp-chip--icon r305ai-chip-deep">
+                      <Icon icon={Brain} size={12} />
+                      واعٍ بمستوى إتقانك
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+              {/* r176c: the persistent privacy disclosure — the real engine
+                  processes messages off-platform; one honest line, always
+                  visible in real-LLM mode (the greeting alone would vanish
+                  after the first turn). */}
+              {isRealLlm && (
+                <p className="r305rp-band-secondary r305ai-head-privacy">
+                  {PRIVACY_DISCLOSURE}
+                </p>
+              )}
+            </div>
+            {/* role=log + aria-live: screen readers hear every reply and
+                error as the conversation grows (audit 0-d P1).
+                tabIndex (r152a A6 P2-2): the scroller has no focusable
+                children and the input lives outside it — without a tab
+                stop, keyboard-only users could never arrow-scroll the
+                transcript. The universal :focus-visible ring applies. */}
+            <div className="chat-area" ref={scroller}
+                onScroll={handleScroll} role="log" tabIndex={0} aria-live="polite" aria-label="سجلّ المحادثة مع المساعد" aria-busy={busy}>
+              {convLoad.phase === 'loading' ? (
+                <div aria-busy="true" aria-live="polite" className="flex-col gap-2">
+                  {[0, 1, 2].map((i) => (
+                    <div key={i} className="chat-msg bot" aria-hidden>
+                      <RoleLabel who="bot" />
+                      <div className="chat-bubble ai-bubble-skeleton">
+                        <Skeleton width={i === 1 ? '90%' : '60%'} height={12} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {transcript.map((m, i) => (
+                    <div key={i} className={`chat-msg ${m.role}`}>
+                      <RoleLabel who={m.role} />
+                      {m.error ? (
+                        <div className="chat-error" role="alert">
+                          <span>{m.text}</span>
+                          {/* The envelope's own support code, verbatim —
+                              never invented, never translated. */}
+                          {m.code && (
+                            <span className="r305ai-err-meta">
+                              <span>رمز الدعم:</span>
+                              <span className="r305ai-err-code">{m.code}</span>
+                            </span>
+                          )}
+                          {m.retryText && !chat.isPending && (
+                            <button
+                              type="button"
+                              className="chat-retry"
+                              onClick={() => retryExchange(i)}
+                            >
+                              <Icon icon={RefreshCw} size={12} />
+                              أعد إرسال سؤالك
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="chat-bubble">
+                          {m.role === 'bot' ? <ReplyText text={m.text} /> : <Multiline>{m.text}</Multiline>}
+                          {/* r166d per-turn engine tag — muted mono under the
+                              reply text, existing utility classes only (no new
+                              CSS). Honest in both directions: a real provider
+                              turn names its model, a composer turn names the
+                              composer; untagged = no data for that turn. */}
+                          {m.engine && (
+                            <div className="font-mono text-xxs text-subtle ai-engine-tag">
+                              {m.model ?? m.engine}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  {convLoad.phase === 'error' && (
+                    <div className="chat-msg bot">
+                      <RoleLabel who="bot" />
+                      <div className="chat-error" role="alert">
+                        <span>{convLoad.message}</span>
+                        <button
+                          type="button"
+                          className="chat-retry"
+                          onClick={() => void openConversation(convLoad.id)}
+                        >
+                          <Icon icon={RefreshCw} size={12} />
+                          أعد فتح المحادثة
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {chat.isPending && (
+                    <div className="chat-msg bot">
+                      <RoleLabel who="bot" />
+                      {/* Non-streaming API: the request is a single JSON
+                          round-trip — the status says what is true (the
+                          reply is being prepared), never a streaming
+                          pretense. Dots + label are tied to chat.isPending. */}
+                      <div className="chat-typing r305ai-status">
+                        <span className="chat-typing-dot" />
+                        <span className="chat-typing-dot" />
+                        <span className="chat-typing-dot" />
+                        <span className="r305ai-status-text">المساعد يجهّز الردّ…</span>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* المرسِل — رقائق سريعة + صفّ الإدخال + العدّاد، ملتصقة بأسفل
+                اللوحة (r261). r305-A7: صفّ الإدخال داخل سكة الإجراء
+                الوحيدة (.r305rp-next) والإرسال هو الزر المُشديد الوحيد. */}
+            <div className="ai-composer">
+              {/* Quick-action chips above the input — Stitch signature.
+                  r168b honesty gate: the local composer's REAL paths are
+                  concept-explain and worst-gap surfacing (backend
+                  composeReply — ai.routes.ts). «لخّص الفصل الأخير» and
+                  «اختبار قصير» promise summarize/quiz generation the local
+                  engine cannot deliver; they render ONLY when a real
+                  provider is configured. Local/unknown mode keeps the two
+                  chips the composer genuinely honors (concept-explain →
+                  worst-gap answer; «أسوأ فجواتي» → the mastery-gap reply). */}
+              <div className="ai-quick-actions">
+                {isRealLlm ? (
+                  <>
+                    <button type="button" className="ai-quick-chip" onClick={() => void send('لخّص لي الفصل الأخير من المقرّر')} disabled={busy}>
+                      لخّص الفصل الأخير
+                    </button>
+                    <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')} disabled={busy}>
+                      اشرح مفهوماً
+                    </button>
+                    <button type="button" className="ai-quick-chip" onClick={() => void send('أنشئ لي اختباراً قصيراً (5 أسئلة)')} disabled={busy}>
+                      اختبار قصير
+                    </button>
+                    <button type="button" className="ai-quick-chip" onClick={() => void send('اقترح موارد دراسيّة إضافيّة')} disabled={busy}>
+                      موارد إضافيّة
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')} disabled={busy}>
+                      اشرح مفهوماً
+                    </button>
+                    <button type="button" className="ai-quick-chip" onClick={() => void send('ما المفاهيم التي أحتاج إلى مراجعتها؟')} disabled={busy}>
+                      أسوأ فجواتي
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* The single emphasized region: input + send on the copper
+                  rail (.r305rp-next). Send is disabled while empty or
+                  in-flight — an honest button, never a fake action. */}
+              <div className="chat-input-row r305rp-next r305ai-input-rail">
+                <textarea
+                  className="chat-input"
+                  placeholder="اكتب سؤالك…"
+                  aria-label="اكتب سؤالك للمساعد"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    // Enter sends; Shift+Enter breaks the line; IME
+                    // composition is never hijacked.
+                    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+                      e.preventDefault();
+                      void send();
+                    }
+                  }}
+                  disabled={busy}
+                  maxLength={4000}
+                  rows={1}
+                />
+                <button
+                  type="button"
+                  className="btn accent chat-send"
+                  onClick={() => void send()}
+                  disabled={!input.trim() || busy}
+                  aria-label="إرسال"
+                >
+                  <Icon icon={Send} size={15} />
+                </button>
+              </div>
+              {input.length > 3600 && (
+                <p className="text-xxs text-subtle ai-counter">
+                  {input.length}/4000
+                </p>
+              )}
+            </div>
+          </section>
+
+          {/* r164g — conversation management: list/switch/clear with the
+              current-conversation indicator and a two-step delete confirm
+              (clearing an exchange is irreversible — no accidental loss).
+              r261: العمود الجانبي يهبط أسفل السطح على الجوال (ai-layout). */}
+          <aside className="ai-side">
+            <Card
+              title="محادثاتك"
+              icon={MessageSquare}
+              actions={
+                <button type="button" className="btn ghost sm" onClick={startNewConversation} disabled={busy}>
+                  <Icon icon={Plus} size={13} />
+                  محادثة جديدة
+                </button>
+              }
+            >
+              {conversations.isPending ? (
+                <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
+                  {[0, 1, 2].map((i) => (
+                    <div key={i} className="list-row" aria-hidden>
+                      <div className="list-row-body">
+                        <Skeleton width="70%" height={12} />
+                        <Skeleton width="35%" height={10} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : conversations.isError ? (
+                <AlertRow
+                  color="red"
+                  icon={AlertCircle}
+                  title="تعذَّر تحميل محادثاتك"
+                  description="يمكنك مواصلة محادثتك الحالية بشكل طبيعي، وستظهر القائمة عند إعادة المحاولة."
+                  actions={
+                    <button type="button" className="btn ghost sm" onClick={() => conversations.refetch()}>
+                      <Icon icon={RefreshCw} size={13} />
+                      إعادة المحاولة
+                    </button>
+                  }
+                />
+              ) : convList.length === 0 ? (
+                /* G: الحالة الفارغة على عقد الطقم المشترك (EmptyState +
+                    رسوم mk-ill) بدل فقرة نصّ مجرّدة — نفس بنية أخوية
+                    (الإعلانات/المسابقات/الغرف) داخل البطاقة. */
+                <EmptyState
+                  illustration="empty-list"
+                  title="لا توجد محادثات سابقة بعد"
+                  description="ابدأ بأول سؤال وستظهر محادثاتك هنا."
+                />
+              ) : (
+                <div className="flex-col">
+                  {delConversation.isError && (
+                    <div className="ai-conv-error-pad">
+                      <AlertRow
+                        color="red"
+                        icon={AlertCircle}
+                        title="تعذَّر حذف المحادثة"
+                        description={apiErrorMessage(delConversation.error, 'لم تُحذف المحادثة — حاول مرة أخرى.')}
+                      />
+                    </div>
+                  )}
+                  {convList.map((c) => {
+                    const current = c.id === conversationId;
+                    const title = c.title ?? 'محادثة';
+                    const confirming = confirmDeleteId === c.id;
+                    return (
+                      <div key={c.id} className="list-row ai-conv-row" aria-current={current ? 'true' : undefined}>
+                        <button
+                          type="button"
+                          className="list-row-body ai-conv-open"
+                          onClick={() => void openConversation(c.id)}
+                          disabled={busy}
+                          aria-label={`فتح محادثة: ${title}`}
+                        >
+                          <span className="list-row-title ai-conv-title">{title}</span>
+                          <span className="list-row-sub">{formatRelativeAr(c.createdAt)}</span>
+                        </button>
+                        {confirming ? (
+                          <div className="ai-conv-actions">
+                            <button
+                              type="button"
+                              className="btn danger sm"
+                              onClick={() => void deleteConversation(c.id)}
+                              disabled={delConversation.isPending}
+                              title="سيُحذف سجلّ هذه المحادثة نهائيًا"
+                            >
+                              <Icon icon={Trash2} size={13} />
+                              تأكيد الحذف
+                            </button>
+                            <button
+                              type="button"
+                              className="btn ghost sm"
+                              onClick={() => setConfirmDeleteId(null)}
+                              disabled={delConversation.isPending}
+                            >
+                              إلغاء
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="ai-conv-actions">
+                            {current && <Badge color="brand">الحالية</Badge>}
+                            <button
+                              type="button"
+                              className="btn ghost sm"
+                              onClick={() => setConfirmDeleteId(c.id)}
+                              disabled={busy || delConversation.isPending}
+                              aria-label={`حذف محادثة: ${title}`}
+                              title="حذف هذه المحادثة نهائيًا"
+                            >
+                              <Icon icon={Trash2} size={13} />
+                              حذف
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </Card>
+
+            <Card title="أسئلة مقترحة" icon={Sparkles}>
+              <div className="flex-col gap-2">
+                {suggestions.map((q) => (
+                  <button
+                    key={q}
+                    type="button"
+                    onClick={() => void send(q)}
+                    className="list-row"
+                    disabled={busy}
+                  >
+                    <Icon icon={Sparkles} size={14} />
+                    <span className="list-row-body text-sm ai-suggestion-text">{q}</span>
+                  </button>
+                ))}
+              </div>
+            </Card>
+          </aside>
+        </div>
+      </PageFrame>
+    </div>
   );
 }
