@@ -107,6 +107,14 @@ const GENERIC_REGISTER_ERROR =
 const NO_DEPARTMENTS_TEXT =
   'لا توجد أقسام مسجّلة في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع إدارة الجامعة.';
 
+/** r305 (2-a): the institution lookup gets the same honesty contract
+ *  (audit 0-b P0-4 — never a silently empty select): a ready-but-empty
+ *  public listing renders the honest empty box instead of a dead
+ *  «اختر…» select that promises options no deployment can offer.
+ *  Platform-administration voice per r177 (إدارة المنصّة). */
+const NO_INSTITUTIONS_TEXT =
+  'لا توجد مؤسسات تعليمية متاحة للتسجيل بعد — تواصل مع إدارة المنصّة.';
+
 /* ═─ r170-e: password strength hint (ASVS 2.1.8 advisory) ────────────
  *
  * A live, dependency-free heuristic under the password input, shared
@@ -840,7 +848,10 @@ function Field({ label, error, children }: FieldProps) {
  *  selection (both role forms share it); the load states follow the
  *  faculties lookup's exact contract (skeleton / retry alert / select —
  *  never a silently empty select, audit 0-b P0-4). Single-institution
- *  deployments still render the field, preselected by the page. */
+ *  deployments still render the field, preselected by the page.
+ *  r305 (2-a): ready-with-zero-items completes the contract — the
+ *  honest empty box (same grammar as NO_DEPARTMENTS) instead of a
+ *  dead select. */
 interface InstitutionFieldProps {
   institutions: InstitutionsState;
   institutionId: string;
@@ -869,16 +880,20 @@ function InstitutionField({
         </div>
       )}
       {institutions.status === 'ready' && (
-        <select
-          className="auth-input"
-          value={institutionId}
-          onChange={(e) => onInstitutionChange(e.target.value)}
-        >
-          <option value="">اختر…</option>
-          {institutions.items.map((inst) => (
-            <option key={inst.id} value={inst.id}>{inst.name}</option>
-          ))}
-        </select>
+        institutions.items.length === 0 ? (
+          <div className="auth-dept-empty">{NO_INSTITUTIONS_TEXT}</div>
+        ) : (
+          <select
+            className="auth-input"
+            value={institutionId}
+            onChange={(e) => onInstitutionChange(e.target.value)}
+          >
+            <option value="">اختر…</option>
+            {institutions.items.map((inst) => (
+              <option key={inst.id} value={inst.id}>{inst.name}</option>
+            ))}
+          </select>
+        )
       )}
     </Field>
   );
