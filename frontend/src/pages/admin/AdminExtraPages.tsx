@@ -34,6 +34,10 @@ import { formatNum } from '../../utils/numbers';
 // trend table the canonical .table-wrap (both local rules deleted this
 // round from admin.css).
 import '../../styles/admin.css'; // r150e: admin-extras surfaces own their sheet now
+// R305-A8 «Heron»: the scoped admin/owner sheet rides LAST (same @layer
+// pages, later source order → it wins the equal-specificity ties). Every
+// rule is scoped under the .r305ao page-root marker — zero leakage.
+import '../../styles/r305-admin-owner.css';
 
 /* ───────────────────────── /admin/students ─────────────────────────
  *
@@ -130,8 +134,13 @@ export function AdminStudentsPage() {
    * at a glance, the academic facts (reg number · faculty · year/level)
    * in the meta line, and the enrollments action behind the inline
    * expansion. The compact band's column diet dies with the table: the
-   * row carries ALL fields at every width. */
+   * row carries ALL fields at every width.
+   * R305-A8: the .r305ao marker scopes the Heron sheet to this page.
+   * PageFrame (a frozen pattern) takes no className, so the marker rides
+   * a quiet full-width wrapper div — .pf-page's measure/rhythm and the
+   * .content-inner > * entrance contract (exactly one child) hold. */
   return (
+    <div className="r305ao">
     <PageFrame width="default">
       <PatternsPageHeader
         title="إدارة الطلاب"
@@ -255,6 +264,7 @@ export function AdminStudentsPage() {
         />
       )}
     </PageFrame>
+    </div>
   );
 }
 
@@ -298,10 +308,22 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
           <Icon icon={X} size={16} />
         </button>
       </div>
-      <div className="modal-body">
-        {/* Current enrollments */}
-        <div className="flex-col gap-2" style={{ marginBlockEnd: 'var(--sp-4)' }}>
-          <div className="text-sm font-semibold">التسجيلات الحالية</div>
+      {/* R305-A8: the modal body carries the .r305ao marker too — the
+          dialog portals to document.body, so the scoped sheet's
+          descendant grammar (the danger zone below) reaches it through
+          this in-card marker while the chrome rides body:has(.r305ao). */}
+      <div className="modal-body r305ao">
+        {/* Current enrollments — R305-A8 danger zone: this group holds
+            the modal's destructive verbs (each row's «إلغاء التسجيل»
+            deletes the enrollment AND the student's progress in the
+            course, behind its confirm dialog). The quiet red fence sets
+            them apart from the routine enroll form below; the dialog
+            flow itself is untouched. */}
+        <div className="r305ao-danger-zone" style={{ marginBlockEnd: 'var(--sp-4)' }}>
+          <div className="r305ao-danger-zone-title">التسجيلات الحالية</div>
+          <p className="r305ao-danger-zone-note">
+            إلغاء التسجيل يحذف تسجيل الطالب في المقرّر وتقدُّمه فيه نهائيًا — يمرّ كل إلغاء على تأكيد صريح قبل التنفيذ.
+          </p>
           {enrollments.isPending ? (
             <div className="flex-col gap-2"><Skeleton width="100%" height={40} /><Skeleton width="100%" height={40} /></div>
           ) : enrollments.isError ? (
@@ -441,7 +463,7 @@ export function AdminDigitalPage() {
   });
 
   return (
-    <div className="page">
+    <div className="page r305ao">
       <PatternsPageHeader
         title="التحوّل الرقميّ"
         description="مؤشّرات تبنّي المنصّة الرقميّة عبر مكوّنات الجامعة."
@@ -562,7 +584,7 @@ export function AdminSettingsPage() {
   const dbOk = health.isSuccess && health.data?.ok === true;
 
   return (
-    <div className="page">
+    <div className="page r305ao">
       <PatternsPageHeader
         title="إعدادات المنصّة"
         description="إعدادات تشغيليّة على مستوى الجامعة. تفعيل المعدِّلات الفرديّة قيد التطوير."

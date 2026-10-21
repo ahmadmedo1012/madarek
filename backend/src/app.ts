@@ -90,8 +90,11 @@ const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
  * end-to-end with the landing's two-theme re-grounding; the bootstrap
  * now resolves the theme and syncs theme-color only.
  * r197: pin refreshed — syncThemeColor paints the r197 grounds
- * (dark #16140F / light #F3EEE4, BLUEPRINT §4); the metas moved with it. */
-const THEME_BOOTSTRAP_SHA256 = 'h397AnvGw8lvH8G5RxSvI2go1KMu0b0oZ2oWeyVAuB0=';
+ * (dark #16140F / light #F3EEE4, BLUEPRINT §4); the metas moved with it.
+ * r305: pin refreshed — syncThemeColor paints the Heron foundation
+ * grounds (dark #282828 / light #F6F8FA, r305-heron-reference-spec);
+ * the metas moved with it. */
+const THEME_BOOTSTRAP_SHA256 = '60gEpgshWC4IRnueel4CyAqJBdGFOsLbLF/ETBcwETI=';
 /* r188: pin refreshed — the JSON-LD block now describes the INDEPENDENT
  * Madarek platform alone (WebSite node; the retired University-of-Zawia
  * `about` node is gone — the only demo-data story is the explicitly

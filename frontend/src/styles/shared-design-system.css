@@ -7,13 +7,14 @@
    recipes (card / btn / badge / metric / stagger / reveal / skeleton).
 
    COLOR ALWAYS COMES FROM THE PARITY FILE — unified-parity.css
-   owns both theme blocks (r197 re-key: light warm paper #F3EEE4 +
-   ultramarine signal, dark warm night — see BLUEPRINT §4),
-   the status/accent families, the elevation recipes and the glass
-   surfaces. Where the two files overlap (motion, z values,
-   structural recipes) they are value-identical by contract; the
-   radius ladders are deliberately per-product (this skeleton ships
-   the softer fleet product scale). Verify
+   owns both theme blocks (r305 Heron foundation: light blueprint
+   paper + orange signal, dark charcoal night — see
+   docs/redesign/r305-heron-reference-spec.md), the status/accent
+   families, the elevation recipes and the glass surfaces. Where the
+   two files overlap (motion, z values, structural recipes) they are
+   value-identical by contract; the radius ladders are deliberately
+   per-product (this skeleton ships the fleet product scale — r305
+   syncs it to the squared ladder). Verify
    with: node scripts/verify-parity-export.mjs
 
    Load order:  unified-parity.css         (color + motion + state source)
@@ -42,8 +43,8 @@
     /* (r136: --sp-*x legacy aliases deleted with the canon — see tokens.css) */
 
     /* ─── Radius — soft, Notion-inspired ───────────────────────────── */
-    --r-xs: 6px;    --r-sm: 8px;    --r-md: 10px;   --r-lg: 12px;
-    --r-xl: 16px;   --r-2xl: 20px;  --r-3xl: 28px;  --r-full: 9999px;
+    --r-xs: 2px;    --r-sm: 4px;    --r-md: 6px;    --r-lg: 8px;
+    --r-xl: 12px;   --r-2xl: 16px;  --r-3xl: 20px;  --r-full: 9999px;
 
     /* (r148-d: the --radius-sm…full alias pair deleted with the canon —
        zero consumers; the ladder speaks --r-* directly) */
@@ -80,12 +81,12 @@
     /* (r148-d: --ls-wide deleted with the canon — zero consumers) */
 
     /* ─── Motion timing ────────────────────────────────────────────── */
-    --t-micro:   80ms;   --t-fast:  160ms;   --t-base:  240ms;
-    --t-slow:    380ms;  --t-slower:520ms;   --t-cinema:720ms;
+    --t-micro:   80ms;   --t-fast:  200ms;   --t-base:  400ms;
+    --t-slow:    500ms;  --t-slower:650ms;   --t-cinema:900ms;
 
-    --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+    --ease:        cubic-bezier(0.23, 1, 0.32, 1);
     --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+    --ease-in:     cubic-bezier(0.625, 0.05, 0, 1);
     --ease-linear: linear;
     --ease-soft:   cubic-bezier(0.22, 1, 0.36, 1);
     --ease-spring-soft:   cubic-bezier(0.34, 1.18, 0.64, 1);

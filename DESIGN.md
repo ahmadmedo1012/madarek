@@ -2,6 +2,8 @@
 
 > **مدارك** — منصّة تعليم ذكي مستقلّة عربية-أولًا · the design canon as it ships in code.
 
+> **R305 — THE HERON FOUNDATION (CURRENT CANON — supersedes the OPTIKKA/Superlist/Notion/ultramarine directions below; the era banners that follow remain as history)**: the visual system re-keys to the Heron AI reference (reverse-engineered LIVE at heronaiapp.com — every value measured from the DOM/computed styles + the 244 KB Webflow CSS bundle, never from screenshots alone; full evidence, effect sheets and licensing decisions in [`docs/redesign/r305-heron-reference-spec.md`](docs/redesign/r305-heron-reference-spec.md)). **Neutrals:** light page ground `#F6F8FA` (blueprint paper; the reference paints `#FAFAFA`/`#fff` — same family, every ratio verified on both), surface `#FFFFFF`, charcoal ink `#282828` (the reference's own `--content--primary`, 13.85:1 paper AAA); dark theme = the charcoal itself as ground `#282828` with cool raised surfaces and the paper twin `#F6F8FA` as ink. **Signal:** the vivid orange `#FA3600` (the reference's `--content--brand`) — raw orange is a LARGE-TEXT/UI tone (3.53:1 paper); TEXT routes through `--accent-ink #C72E00` (5.16 ground / 5.50 surface, binary-searched with margin), labels ON orange fills stay `--warm-ink` (4.69:1 — white 3.76 is banned), links carry the ink tier. Coral `#F15534` = the warm secondary (danger rhymes with it; `--c-coral-*` alias namespace added). **Technical greys straight from the bundle:** `#B4B4B0` grid/disable (dark TEXT tier at 7.09:1 — the redeemed grey), `#B3B3AF` hairlines (decorative on light, exposed as `--grid-line`), `#72726F`/`#626260`/`#414140` mid steps. **Squared corners:** radius ladder 2/4/6/8/12/16/20 + pill (the reference renders radius 0 everywhere; Madarek keeps hairline-crisp rungs). **Motion:** the measured register — 0.4s-dominant (×174 in the bundle) on `cubic-bezier(.23,1,.32,1)`, the `.48s` roll/exit curve `cubic-bezier(.625,.05,0,1)` → raw ladder 80/200/400/500/650/900, semantic page 400 / reveal 480; springs + the press register untouched. **Fonts:** BT Grotesk is PROPRIETARY and NOT reused — the shipped OFL faces carry the voice (Alexandria display / Plex Sans Arabic body / Plex Mono micro-labels); the reference's Geist Mono is OFL but adds no gain over Plex Mono (decision in the spec §fonts); zero letter-spacing on Arabic holds (the reference's −0.02em is a Latin-only device and stays banned). **The parity gate was RED at the r305 baseline (76/190** — r303/r304 re-keyed tokens without re-pinning) and is repaired in the same change: export pair re-distilled + every pin rewritten → **191/191 PASS**; the retired ultramarine/warm-paper/copper-era spellings joined the FORBIDDEN needle list (63 → 132); `#3d3d3d` legitimized as the night inset well (the r195 `#2a2a2a` precedent). **Circular economy:** the demoted copper hexes return as the ACHIEVEMENT GOLD pair (`#B57438`/`#8F5A28` light, `#E0A067`/`#F2B782` dark) — the old signal IS the new gold, distinct from the orange signal again. **Also re-keyed:** theme-color metas + `syncThemeColor` (dark `#282828` / light `#F6F8FA`) + the CSP bootstrap pin, `lib/theme.ts` CHROME_BG, `validate-college-identity` SURFACE_LIGHT, the role-accent table (quality retinted off the exact-3.00 floor; all 14 re-verified ≥3.0), status triads (computed, engine in the spec), elevation tints (charcoal-based), `--t-*` ladder. What did NOT change: token NAMES (zero renames — the full r304 alias layer survives verbatim), the type ladder as shipped, all 10 font faces, motion.css/base.css structure, component recipes, landing markup, AppShell, routes, backend contracts.
+
 > **R191 «رحلة المعرفة»** (the current direction): R190 established the Turion-derived *tokens* (teal accent — light `#027380` · dark `#2FB6C6`, both AA-verified; was electric-violet until the r195 re-key; **Alexandria** display voice; near-square radius ladder 2–6px; the `--stage-*` void family; Plex Mono micro-labels). R191 adds what the operator actually demanded — the reference's **observed mechanics**: a scroll-choreography engine (`useScrollStage` — one rAF-coalesced `--sp` per stage, zero React renders per scroll tick; CSS calc derives every motion), a **pinned 700vh mega-stage** (radial knowledge map SVG + six crossfading narrative scenes + capability bar + scroll-bound rotation), a **pinned honest stat march** (numbers computed from the code), **parallax vision + quote + footer wordmark** layers, and the reference's measured **mobile/reduced-motion strategy** (no pinning — frames stack in flow, every scene readable). Copy gates: the operator-rejected wording («صُنعت في ليبيا», «ما يُشحن اليوم») is pinned OUT of every user-facing surface (`r168b`). Full measurements + mapping: `docs/design/r191-turion-fidelity-spec.md` · R190 analysis: `docs/design/r190-reference-matrix.md`.
 
 > **R195 (egn.university re-key)**: the palette re-keys to the egn reference — light accent `#027380` / dark accent `#2FB6C6`, cool-gray ramps (light ground `#F7F7F7` · ink `#333333`; dark ground `#0A0A0A` · ink `#F2F2F2`); every violet/cream/indigo value quoted below is retired (pins + export pair re-synced in the same change).
@@ -29,7 +31,7 @@ A design reference is gates, not a gallery. Madarek's canon is machine-enforced 
 
 | Gate | Command | What it asserts |
 |---|---|---|
-| **Parity export** | `node scripts/verify-parity-export.mjs` | **165/165 token checks** (163 before the r185 half-rung pins) — the export pair distills `tokens.css` faithfully; headline pins (r195 egn re-key: night `#0A0A0A`, teal `#027380`/`#2FB6C6`, light ground `#F7F7F7`, ink `#333333`/`#F2F2F2` — the r195 palette swap updated pins + export pair together, documented in the CHECKS table) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · 42 retired values absent (r195: `#2A2A2A` legitimized as the canonical dark hairline) · brace balance. |
+| **Parity export** | `node scripts/verify-parity-export.mjs` | **191/191 token checks** (r305: the export pair re-distilled + every pin rewritten to the Heron foundation — the gate ran RED at the r305 baseline, 76/190, because r303/r304 moved tokens without re-pinning; repaired in the same change). Headline pins (r305: paper `#F6F8FA`, ink `#282828`, signal `#FA3600`, accent-ink `#C72E00`, night ground `#282828`, night ember `#FF5A1F`, gold `#B57438`/`#E0A067` — the demoted copper seat) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · **132** retired spellings absent (r305 adds the ultramarine + warm-paper + copper-accent-era needles; `#3d3d3d` legitimized as the night inset well — the r195 `#2A2A2A` precedent) · brace balance. |
 | **Motion tokens** | `npm run check:motion-tokens` | No raw motion values outside the canonical token files. |
 | **Icon discipline** | `npm run check:icons` | Lucide-only — no other icon source. |
 | **Color tokens** | `npm run check:colors` (`--strict` in CI) | No raw hex/rgb()/hsl() outside the sanctioned zones (tokens.css · fonts.css · the export pair · documented `color-gate: allow` lines). r150a sorted the last 269 literals into tokens / `color-mix()` derivations / documented allows — the census is zero and the gate is strict. |
@@ -79,11 +81,7 @@ The landing paints a **theme-fixed media stage** + theme-following body:
 
 | Layer | Tokens | Notes |
 |---|---|---|
-| Stage ground | `--stage-ink #0E0E0E` · `--stage-ink-2 #171717` | the void under the hero/chrome, BOTH themes (a media surface, not a theme rebellion — AA-verified pair below) |
-| Stage text | `--stage-cream #FFFFFF` (18.9:1) · `--stage-cream-dim #B3B3B3` (8.7:1) | the stage's own ink pair (r195: the cream text values died with the cream) |
-| Stage accent | `--stage-accent #2FB6C6` (8.1:1) | the dark-theme accent value, fixed on the stage (r195 rename: was `--stage-violet`) |
-| Stage edges | `--stage-line` / `--stage-line-soft` | white-alpha hairlines (16%/7%) |
-| Atmospheric stops | `--aura-accent` / `--aura-accent-deep` / `--aura-horizon` (per theme) | the radial-illumination vocabulary for hero/proof/CTA scenes (r195 rename: was `--aura-violet`) |
+| **r305 HISTORY — the stage/aura vocabulary is retired** (zero live consumers; the names are FORBIDDEN needles in the parity gate). The rows below describe the r190/r195 landing era and are kept as archaeology only: stage ground `--stage-ink #0E0E0E`/`#171717`, stage text `#FFFFFF`/`#B3B3B3`, stage accent `#2FB6C6`, white-alpha edges, `--aura-*` radial stops. The r305 landing consumes the canonical theme tokens + the `--poster-*` aliases (which now resolve to the Heron blueprint pair / the orange signal). |
 | Original art | `/brand/hero-scene.webp` (95 KB) · `/brand/orbit-ring.webp` (66 KB) | AI-art-directed abstract scenes — no text, no logos, no real-place imagery (QA-verified); the r188 photography ban's intent (no real-university imagery) holds |
 | Orbit path | `components/landing/OrbitPath.tsx` | one thin trajectory line + one glowing node, drawn once on load (reduced-motion static) — the icon-gate's documented landing-scene zone |
 | Telemetry strip | mono 11px + 7px teal square markers | honest counts computed from the LEDGER data (never typed) |
@@ -96,14 +94,18 @@ The landing paints a **theme-fixed media stage** + theme-following body:
 
 | Token | Light | Dark |
 |---|---|---|
-| accent `--accent` | ultramarine `#2E45E6` (**5.84:1** paper / 6.47 ground) | **same fill** `#2E45E6` (labels white, 6.75) |
-| accent text `-ink`/`-strong` | `#2E45E6` (AA as text) | `#8E9BFF` (**7.26:1** bg / 6.63 ground) |
-| accent soft | `--accent-soft` (signal-tinted step) | signal-tinted night step |
-| primary `--primary` | ink slab (white label 18.4:1) | **white slab `#FFFFFF`** (the night CTA, ink label) |
-| muted `--text-muted` | `#6B675C` (5.41 ground) | `#948D7E` (r283 — ≥4.81:1 every dark surface) |
-| achievement family | `--gold #B57438` / `--gold-ink #8F5A28` — achievements ONLY | `--gold #D9A05B` / `--gold-ink #E3B273` (8.00 bg) |
+| ground `--bg` | blueprint paper `#F6F8FA` (r305) | **charcoal `#282828`** (the reference ink promoted to ground) |
+| accent `--accent` | vivid orange `#FA3600` (**3.53:1** paper — UI/large tier; the reference's own register) | luminous ember `#FF5A1F` (**4.73:1** bg, AA-large/UI) |
+| accent text `--accent-ink` | `#C72E00` (**5.16:1** ground / 5.50 surface — AA as text) | `#FF5A1F` (**4.73:1** bg — AA text on dark) |
+| labels on the fill `--accent-fg`/`--text-on-accent` | `--warm-ink #191918` (**4.69:1** — white 3.76 banned) | `--warm-ink` (**5.64:1** on the ember) |
+| accent soft / strong | `#FCE3D9` / `#A32400` (deep 7.02) | `#432015` / `#FFC5AE` (tier 9.72) |
+| primary `--primary` | charcoal slab `#282828` (white label **14.74:1**) | **white slab `#FFFFFF`** (the night CTA, warm-ink label) |
+| muted `--text-muted` | `#626260` (5.74 ground / 6.11 surface / 5.16 s3) | `#B4B4B0` (r305 — the reference disable grey redeemed: 7.09 bg / 6.53 surface / 5.90 s2) |
+| faint `--text-faint` | `#72726F` (4.53 ground, under AA on soft/wells — deliberate) | `#A2A29D` (5.75 bg / 5.30 surface) |
+| focus ring | `#C72E00` (5.16/5.50 — ≥3:1 every adjacent surface) | `#FF6B33` (5.20/6.14/4.32) |
+| achievement family | `--gold #B57438` / `--gold-ink #8F5A28` — the demoted r304 copper seat, achievements ONLY | `--gold #E0A067` / `--gold-ink #F2B782` |
 
-**Warm section families** `--c-{mint,rose,sky,yellow,lavender,copper,grey…}-{bg,ink,deep}` — re-grounded on the r197 warm paper/night (light near-white warm steps, dark deep warm-tinted grounds + luminous inks; text-AA verified per family). Status **text** uses the `-ink`/`-deep` tiers (AA); **fills** keep base tokens. Chart palette `--chart-1..8` (series 1 = the signal ultramarine, gold reserved for the achievement series, theme-lifted) — data points render as SQUARE markers (chart.js `pointStyle: 'rect'`, r190) and bars at 2px radius.
+**Section families** `--c-{mint,rose,sky,yellow,lavender,copper,peach/coral,grey,sand…}-{bg,ink,deep}` — re-grounded on the r305 blueprint paper/charcoal night (computed triads, engine in the spec §verification: badge deep-vs-bg ≥4.5 and light icon-well deep-on-bg ≥3:1 re-verified every family). Danger rhymes with the coral `#F15534`; peach carries the same coral seat with `--c-coral-*` added as the semantic alias namespace. Status **text** uses the `-deep` tiers (AA); **fills** keep the `-ink` tones (danger fill labels stay `--warm-ink` — 5.10 light / 7.81 dark). Chart palette `--chart-1..8` (series 1 = the orange signal — 3.53 light / 4.73 dark, clearing the 3:1 non-text bar; gold reserved for the achievement series) — data points render as SQUARE markers (chart.js `pointStyle: 'rect'`, r190) and bars at 2px radius.
 
 ---
 
@@ -142,14 +144,15 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 | `--type-label-*` | 500 · 1.50 |
 | `--type-metric-*` | 700 · 1.10 · `tnum lnum` |
 
+- **Latin voices & licensing (r305 audit):** the design reference's grotesk (**BT Grotesk**) is proprietary — NOT reused; its mono (**Geist Mono**) is OFL but adds no coverage/a11y gain over the shipped Plex Mono, so the face set is unchanged. The Heron voice rides the shipped OFL trio: **Alexandria** (display) + **IBM Plex Sans Arabic** (body incl. Latin runs) + **IBM Plex Mono** (technical micro-labels — the reference's mono 10–11.67px uppercase voice maps onto the existing 11–12px telemetry/chrome grades). **Archivo** (OFL) is the documented future addition if a distinct Latin display voice is ever required (spec §fonts). The reference's UPPERCASE display style has no Arabic equivalent — hierarchy transfers via Alexandria 600/700 + the size ladder; its −0.02em display tracking stays banned (Latin-only device, Arabic joins).
 - **Mono voice:** `--font-mono = 'IBM Plex Mono' → 'IBM Plex Sans Arabic'` fallback — per character: Latin+digits render mono, Arabic continues in the brand sans (11px telemetry / 12px chrome / 0 tracking / tabular). Tracking is 0 even on the mono classes: their live runs mix Arabic (ruling #2, r133-F7) and `tabular-nums` carries the alignment role.
 
 ---
 
 ## 3. Motion canon — قانون الحركة
 
-**Raw ladder (`--t-*`):** `micro 80 · fast 160 · base 240 · slow 380 · slower 520 · cinema 720ms`.
-**Semantic:** `page 320 · reveal 360 · stat/spinner 700 · skeleton 1200ms`.
+**Raw ladder (`--t-*`, r305 — the measured Heron register):** `micro 80 · fast 200 · base 400 · slow 500 · slower 650 · cinema 900ms` — the reference's transition census is 0.4s-dominant (×174 in the bundle) on `cubic-bezier(.23,1,.32,1)`; the `.48s` rolling-label device uses `cubic-bezier(.625,.05,0,1)`, adopted as `--ease-in`'s exit curve.
+**Semantic:** `page 400 · reveal 480 · stat/spinner 700 · skeleton 1200ms` (page/reveal re-keyed to the register; stat/skeleton keep their rhythm — independent of the reference).
 **Ambient loop bands:** `1.6 / 2.4 / 3.6 / 6 / 22s` — rhythm only, **never** for hover/press. (r176f: the long-documented 9s band never existed in `tokens.css` — five bands, tokens win per AGENTS.md §2.)
 
 | Semantic | Pattern it owns |
@@ -162,7 +165,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 
 | Family | Values |
 |---|---|
-| Eases | standard `(0.4,0,0.2,1)` · decelerate `(0.16,1,0.3,1)` · accelerate `(0.7,0,0.84,0)` · soft/emphasized `(0.22,1,0.36,1)` |
+| Eases | standard `(--ease)` **`(0.23,1,0.32,1)`** (r305 — the reference's decel standard) · decelerate `(0.16,1,0.3,1)` · accelerate/exit **`(0.625,0.05,0,1)`** (r305 — the roll curve) · soft/emphasized `(0.22,1,0.36,1)` |
 | Springs | soft `1.18` · spring `1.36` · bounce `1.56` · snappy `(0.5,1.6,0.4,1)` |
 | Linear | **only via `--ease-linear`** — continuous loops only (spinner, skeleton, marquee) |
 | Press registers | controls `0.97` @80ms (`--press-scale`) · cards `0.99` · bottom-nav thumb `0.93` |
@@ -198,16 +201,16 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 
 | Ladder | Values |
 |---|---|
-| Radius `--r-*` | xs **6** · sm **8** · md **10** · lg **12** · xl **16** · 2xl **20** · 3xl **28** · full **9999px** (pill) |
+| Radius `--r-*` | xs **2** · sm **4** · md **6** · lg **8** · xl **12** · 2xl **16** · 3xl **20** · full **9999px** (pill) — the r305 SQUARED ladder (the reference renders radius 0 on every marketing surface; hairline-crisp rungs keep chips/inputs legible; pill survives for the primary CTA + search) |
 | Spacing `--sp-*` | 4px base — `sp-1` 4 · `sp-4` 16 · `sp-7` 32 · `sp-8` 40 · `sp-10` 56 · `sp-16` 240 · half rungs `sp-0-5` **2** · `sp-1-5` **6** (r153h) · `sp-2-5` **10** (r185) — the floor is 2px; below it is optical territory (documented allows, not rungs) |
 | Weights `--fw-*` | regular 400 · medium 500 · semibold 600 · bold 700 · `--fw-black` **resolves 700** (Plex has no 800) |
 
 | Component | Recipe |
 |---|---|
-| **Button** | 40px · 13px (`--type-label-size`) · 600 · r-md 10px · press `scale(.97)` @80 · primary: ink fill (light `#333333` / fg `#FFFFFF`) + sheen `::before` + premium shadow, hover −2px + `--shadow-card-premium-h` · disabled .55 · no letter-spacing |
-| **Input** | 44px · `max(16px, 15px)` iOS floor · r-md 10 · focus = accent border + **3px 22% halo** (`--state-input-focus-halo`) + AA `:focus-visible` ring · placeholder `--text-faint` · disabled .6 / not-allowed / surface-2 |
-| **Dialog** | `min(560px, 100%)` · r-xl 16 · `--elev-4` · top accent-gradient hairline (3px, inset-inline 30%) · title 22/700 · pop 240ms decel · overlay .40/.62 + fade 240 |
-| **Sheet** | `min(420px, 100%)` · r-2xl 20 **leading edge only (logical)** · `--elev-4` · z 300 · 240ms decel slide · scrim blur 4px · grabber |
+| **Button** | 40px · 13px (`--type-label-size`) · 600 · r-md 6px (r305 squared ladder) · press `scale(.97)` @80 · primary: charcoal slab fill (light `--primary #282828` / fg `#FFFFFF`, 14.74:1) + sheen `::before` + premium shadow, hover −2px + `--shadow-card-premium-h` · disabled .55 · no letter-spacing — the reference's own button register is charcoal-filled with white mono labels (measured `.btn-fill` bg `rgb(40,40,40)`); orange fills carry `--warm-ink` labels only (4.69:1) |
+| **Input** | 44px · `max(16px, 15px)` iOS floor · r-md **6** (r305 squared ladder) · focus = accent border + **3px 22% halo** (`--state-input-focus-halo`) + AA `:focus-visible` ring · placeholder `--text-faint` · disabled .6 / not-allowed / surface-2 |
+| **Dialog** | `min(560px, 100%)` · r-xl **12** (r305) · `--elev-4` · top accent-gradient hairline (3px, inset-inline 30%) · title 22/700 · pop 240ms decel · overlay .40/.62 + fade 240 |
+| **Sheet** | `min(420px, 100%)` · r-2xl **16** (r305) **leading edge only (logical)** · `--elev-4` · z 300 · 240ms decel slide · scrim blur 4px · grabber |
 | **Toast** | **bottom-end** stack (20px inset) · max `min(420px, 100vw − 24px)` · 28px tone-icon well (soft bg + `-ink` icon) · in 240 decel / out 160 accel · swipe-dismiss · z 500 · **error toasts dismiss manually** |
 | **Empty state** | `.state-icon` **56×56 grey well** (`--c-grey-bg`/`-deep`, r-xl) · icon 20 · title **18px / 700** · desc 13 muted 42ch · actionable default copy · opt-in 160px illustration · **≤640px** (r166b): padding sp-6/sp-4, well 44px, illustration 120px |
 | **Sidebar** | 256px (64 collapsed) · item min-30px · r-sm 8 · active = wash bg + **3×16px role-accent bar at inline-start −3px** + 240ms pop · night: **teal wash** `rgb(47 182 198 / 0.16)` (r195 — was violet, gold before that) |

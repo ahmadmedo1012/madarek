@@ -1,6 +1,13 @@
 /* ═════════════════════════════════════════════════════════════════════
-   MADAREK — Base layer (Notion-flavored)
+   MADAREK — Base layer (r305 — the Heron blueprint foundation)
    Reset · document · shell · browser surfaces · RTL · typography
+
+   r305: this sheet stays fully token-routed — the Heron re-key
+   (blueprint paper #F6F8FA, charcoal ink #282828, the #FA3600 signal
+   with its AA ink/label registers, squared radii, the 0.4s
+   cubic-bezier(.23,1,.32,1) register) flows through var() with zero
+   structural change here. Evidence + decisions:
+   docs/redesign/r305-heron-reference-spec.md
    ════════════════════════════════════════════════════════════════════ */
 
 @layer base {

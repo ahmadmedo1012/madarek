@@ -41,6 +41,10 @@ import { apiErrorMessage, countAr } from '../../lib/format';
 import { useIsNarrowLayout } from '../../hooks/useIsNarrowLayout';
 import { useEntityPageTitle } from '../../components/layout/AppShell';
 import '../../styles/training.css'; // training surfaces + shared families this module owns (D11 css split, 12-15)
+/* R305 Heron: the shared student vocabulary + the supplemental family's
+   page-scoped refinements (the achievements deep strip — §2 of that sheet). */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-supplemental.css';
 
 const CATEGORY_LABEL: Record<TrainingCategory, string> = {
   ONBOARDING: 'تعريف بالمنصة',
@@ -218,10 +222,13 @@ export default function TrainingCatalogPage() {
         </Card>
       ) : visible.length === 0 ? (
         <Card>
+          {/* r305 (2-c): خريطة العصبة — «المقرّرات empty-courses» لمحتوى
+              التعلّم (كانت empty-community)؛ أرضية المجتمع تبقى على
+              أسطح المجتمع فقط. */}
           <EmptyState
             icon={BookOpen}
             title={filter === 'all' ? 'لا توجد مسارات منشورة بعد' : 'لا توجد مسارات في هذه الفئة بعد'}
-            illustration="empty-community"
+            illustration="empty-courses"
             description="ستظهر المسارات الجديدة هنا فور نشرها من فريق الجامعة."
           />
         </Card>
@@ -434,9 +441,12 @@ export function TrainingTrackPage() {
         </Card>
       )}
 
-      {/* Lesson list — rows carry locked (not enrolled) / next / done states */}
+      {/* Lesson list — rows carry locked (not enrolled) / next / done states.
+          r305 (2-c): عنوان القائمة يصير h2 حقيقيًا (خريطة العناوين —
+          نفس .card-title بلا أي تحوّل بصري، عقد premium-polish). */}
       <Card
         title="الدروس"
+        heading="h2"
         icon={BookOpen}
         subtitle={track.enrolled ? 'اضغط على أي درس للبدء بمراجعته' : 'سجّل في المسار أعلاه لفتح الدروس'}
         style={{ ['--track-accent' as never]: accent }}
@@ -753,9 +763,35 @@ export function AchievementsPage() {
 
   return (
     <PageFrame>
+      {/* r305 (2-c): الألسنة تسكن الترويسة نفسها (نمط عائلة المجتمع
+          r262 — PageHeader tabs) بدل شريط عائم بين ملخّص النقاط
+          واللوحات؛ نفس الشيفرة/العقد ARIA حرفيًا، الموضع وحده
+          انضبط على تركيب العائلة الواحد. */}
       <PageHeader
         title="الإنجازات"
         description="رحلتك في التطوير الذاتي — نقاطك، أوسمتك، شهاداتك، وترتيبك بين الزملاء."
+        tabs={
+          /* Tabs — manual role/aria annotation (the tabs carry icons, which the
+              shared Tabs primitive's string-only labels don't support yet).
+              Roving tabindex + arrow keys + aria-controls complete the pattern. */
+          <div className="tabs" role="tablist" aria-label="أقسام الإنجازات" onKeyDown={onTabsKeyDown}>
+            {ACH_TABS.map((t) => (
+              <button
+                key={t.key}
+                id={`ach-tab-${t.key}`}
+                type="button"
+                role="tab"
+                aria-selected={tab === t.key}
+                aria-controls={`ach-panel-${t.key}`}
+                tabIndex={tab === t.key ? 0 : -1}
+                className={`tab${tab === t.key ? ' on' : ''}`}
+                onClick={() => setTab(t.key)}
+              >
+                <Icon icon={t.icon} size={13} /> {t.label}
+              </button>
+            ))}
+          </div>
+        }
       />
 
       {meQ.isPending ? (
@@ -769,36 +805,21 @@ export function AchievementsPage() {
           />
         </Card>
       ) : me ? (
-        <StatStrip
-          ariaLabel="ملخّص نقاطك"
-          cells={[
-            { label: 'مجموع النقاط', value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
-            { label: 'الأوسمة المحقّقة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])}` : undefined },
-            { label: 'الشهادات', value: formatNum(me.certificateCount), trend: 'إتمام موثَّق من المنصة' },
-          ]}
-        />
+        <div className="r305a-strip">
+          {/* R305 Heron: the achievements KPI strip rides the page's ONE deep
+              band (r305a-strip). The gold DISCIPLINE keeps --gold on the
+              achievement anatomy (tier orbs, xp fill, +XP chips — training.css
+              gamification section); the strip's numerals stay band-neutral ink. */}
+          <StatStrip
+            ariaLabel="ملخّص نقاطك"
+            cells={[
+              { label: 'مجموع النقاط', value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
+              { label: 'الأوسمة المحقّقة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])}` : undefined },
+              { label: 'الشهادات', value: formatNum(me.certificateCount), trend: 'إتمام موثَّق من المنصة' },
+            ]}
+          />
+        </div>
       ) : null}
-
-      {/* Tabs — manual role/aria annotation (the tabs carry icons, which the
-          shared Tabs primitive's string-only labels don't support yet).
-          Roving tabindex + arrow keys + aria-controls complete the pattern. */}
-      <div className="tabs" role="tablist" aria-label="أقسام الإنجازات" onKeyDown={onTabsKeyDown}>
-        {ACH_TABS.map((t) => (
-          <button
-            key={t.key}
-            id={`ach-tab-${t.key}`}
-            type="button"
-            role="tab"
-            aria-selected={tab === t.key}
-            aria-controls={`ach-panel-${t.key}`}
-            tabIndex={tab === t.key ? 0 : -1}
-            className={`tab${tab === t.key ? ' on' : ''}`}
-            onClick={() => setTab(t.key)}
-          >
-            <Icon icon={t.icon} size={13} /> {t.label}
-          </button>
-        ))}
-      </div>
 
       {tab === 'badges' && (
         <div role="tabpanel" id="ach-panel-badges" aria-labelledby="ach-tab-badges">
@@ -901,7 +922,12 @@ export function AchievementsPage() {
 
       {tab === 'leaderboard' && (
         <div role="tabpanel" id="ach-panel-leaderboard" aria-labelledby="ach-tab-leaderboard">
-          <Card title="الأعلى نقاطاً هذا الأسبوع" icon={Crown} subtitle="آخر 20 طالباً نشاطاً على المنصة">
+          <Card
+            title="الأعلى نقاطاً هذا الأسبوع"
+            heading="h2"
+            icon={Crown}
+            subtitle="آخر 20 طالباً نشاطاً على المنصة"
+          >
             {lbQ.isPending ? (
               <ListSkeleton rows={6} />
             ) : lbQ.isError ? (

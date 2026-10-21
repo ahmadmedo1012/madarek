@@ -8,7 +8,7 @@ import {
 import { Badge, ProgressBar } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton, ListSkeleton } from '../../components/primitives/States';
 import {
-  PageFrame, PageHeader, SectionHeader, StatLine, FilterBar, RowList, RowItem,
+  PageFrame, PageHeader, StatLine, FilterBar, RowList, RowItem,
 } from '../../components/patterns';
 import { Reveal, RevealGroup, useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
@@ -18,6 +18,9 @@ import { materialHref } from '../../lib/materialHref';
 import { countAr, formatDateAr, WEEKDAY_NAMES_AR } from '../../lib/format';
 import { formatInt } from '../../utils/numbers';
 import { courseTint, ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, type AssignmentKind, type MaterialType } from '../../lib/courseMeta';
+/* R305-A5 (Heron): the shared student vocabulary + this family's sheet. */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-courses.css';
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) + the assignment-kind
  * labels live in lib/courseMeta.ts; countAr, formatDateAr + WEEKDAY_NAMES_AR
@@ -132,7 +135,10 @@ export default function CourseDetailPage() {
     return (
       <PageFrame width="default">
         <Skeleton width={200} height={32} rounded="var(--r-md)" />
-        <div className="course-continue" aria-busy="true" aria-live="polite">
+        {/* R305: the pending mirror keeps the rail's exact box (the
+            r305s-next classes included) so the data handoff paints the
+            same copper edge it resolves into. */}
+        <div className="course-continue r305s-next r305c-continue" aria-busy="true" aria-live="polite">
           <Skeleton width="55%" height={20} />
           <Skeleton width={220} height={8} rounded="var(--r-full)" />
         </div>
@@ -196,10 +202,21 @@ export default function CourseDetailPage() {
       />
 
       {/* The continue strip — one unmistakable next action (the
-          Coursera/edX course-home rule). Progress rides beside it;
-          the tinted hero band keeps the course's identity wash. */}
-      <div className="course-continue" style={{ '--course-tint': tint } as CSSProperties}>
+          Coursera/edX course-home rule). Progress rides beside it.
+          R305 (Heron): the strip is THE page's one-action rail — the
+          foundation .r305s-next copper edge + accent wash replace the
+          tinted hero band (the course tint survives in the progress
+          fill and the curriculum rows below), and an .r305s-eyebrow
+          micro-label classifies the moment: the next step, the done
+          state, or the plan for an empty curriculum. */}
+      <div
+        className="course-continue r305s-next r305c-continue"
+        style={{ '--course-tint': tint } as CSSProperties}
+      >
         <div className="course-continue-progress">
+          <p className="r305s-eyebrow">
+            {nextLec ? 'الخطوة التالية' : data.lectures.length > 0 ? 'اكتمل المنهج' : 'خطة المنهج'}
+          </p>
           <div className="course-hero-progress-head">
             <span className="course-hero-progress-label">تقدّمك في المنهج</span>
             <span className="course-hero-progress-value">{progressValue}%</span>
@@ -254,12 +271,16 @@ export default function CourseDetailPage() {
           (Reveal/RevealGroup primitives, reduced-motion aware).
           heading="h2" (PP-X2 / audit P3-24): SR heading navigation can
           jump between the page's sections instead of meeting a single
-          H1 + anonymous card titles. */}
+          H1 + anonymous card titles. R305 (Heron): the section heading
+          rides the foundation kicker — title + counted note + hairline
+          as ONE editorial object. */}
       <section aria-label="محاضرات المقرر" className="course-lectures">
-        <SectionHeader
-          title="المحاضرات"
-          description={`أكملت ${watchedCount} من ${countAr(data.lectures.length, ['محاضرة واحدة', 'محاضرتين', 'محاضرات', 'محاضرة'])}`}
-        />
+        <div className="r305s-kicker r305c-kicker-wrap">
+          <h2 className="r305s-kicker-title">المحاضرات</h2>
+          <span className="r305s-metric-label">
+            أكملت {watchedCount} من {countAr(data.lectures.length, ['محاضرة واحدة', 'محاضرتين', 'محاضرات', 'محاضرة'])}
+          </span>
+        </div>
         {!data.lectures.length ? (
           <EmptyState
             icon={Play}
@@ -374,7 +395,7 @@ export default function CourseDetailPage() {
       {/* Materials + Assignments + Schedule */}
       <div className="grid-2-1">
         <section aria-label="المواد المرفقة">
-        <SectionHeader title="المواد المرفقة" />
+        <div className="r305s-kicker"><h2 className="r305s-kicker-title">المواد المرفقة</h2></div>
         <div className="pf-rowlist">
           {!data.materials.length ? (
             <EmptyState
@@ -433,7 +454,7 @@ export default function CourseDetailPage() {
         </section>
 
         <section aria-label="الجدول الأسبوعي">
-        <SectionHeader title="الجدول الأسبوعي" />
+        <div className="r305s-kicker"><h2 className="r305s-kicker-title">الجدول الأسبوعي</h2></div>
         <div className="pf-rowlist">
           {!data.schedule.length ? (
             <EmptyState illustration="empty-list"
@@ -459,10 +480,8 @@ export default function CourseDetailPage() {
       </div>
 
       <section aria-label="واجبات المقرر">
-      <SectionHeader
-        title="الواجبات"
-        description="مواعيد التسليم ووزن كل واجب في درجة المقرر — التسليم من صفحة مقرّراتك."
-      />
+      <div className="r305s-kicker"><h2 className="r305s-kicker-title">الواجبات</h2></div>
+      <p className="r305c-sec-note">مواعيد التسليم ووزن كل واجب في درجة المقرر — التسليم من صفحة مقرّراتك.</p>
       {!data.assignments.length ? (
         <EmptyState illustration="empty-list"
           icon={ClipboardList}

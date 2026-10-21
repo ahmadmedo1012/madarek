@@ -7,12 +7,13 @@ import {
   ClipboardCheck, Calendar,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, Badge, UserAvatar } from '../../components/primitives';
+import { Card, UserAvatar } from '../../components/primitives';
 import { ErrorState, EmptyState, ChartSkeleton, ListSkeleton } from '../../components/primitives/States';
 import {
   PageFrame, PageHeader, SectionHeader, RowList, RowItem, StatLine, TodayList, FilterBar,
 } from '../../components/patterns';
 import '../../styles/teacher-quality.css'; // 4C family sheet: the .tq-num tabular metric voice
+import '../../styles/r305-teacher-quality.css'; // R305 Heron: §0 hr- primitives + §A tqd- deltas (mounted via .hr-scope)
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { Line } from 'react-chartjs-2';
@@ -180,11 +181,15 @@ const RISK_LABEL: Record<TeacherRiskRow['riskLevel'], string> = {
   AT_RISK: 'في خطر',
   CRITICAL: 'حرج',
 };
-const RISK_TONE: Record<TeacherRiskRow['riskLevel'], 'green' | 'gold' | 'amber' | 'red'> = {
-  OK: 'green',
-  WATCH: 'gold',
-  AT_RISK: 'amber',
-  CRITICAL: 'red',
+/* R305 Heron: the risk chip rides the ONE status vocabulary of the
+ * round (.hr-chip[data-tone]) — green→ok, gold→info, amber→warn,
+ * red→danger — so a risk level reads identically here and on the
+ * students roster. */
+const RISK_TONE: Record<TeacherRiskRow['riskLevel'], 'ok' | 'info' | 'warn' | 'danger'> = {
+  OK: 'ok',
+  WATCH: 'info',
+  AT_RISK: 'warn',
+  CRITICAL: 'danger',
 };
 
 export function TeacherDashboardPage() {
@@ -212,27 +217,31 @@ export function TeacherDashboardPage() {
     /* r242 (Superlist composition): the loading frame mirrors what lands —
      * header → stat line zone → two queue surfaces → the chart card. */
     return (
-      <PageFrame aria-busy="true" aria-live="polite">
-        <PageHeader title="لوحة الأستاذ" description="جارٍ تحضير لوحتك…" />
-        <RowList loading aria-label="ملخص نشاط التدريس" />
-        <RowList loading aria-label="طابور التصحيح" />
-        <RowList loading aria-label="طلاب يحتاجون متابعة" />
-        <Card title="اتجاه الأداء والحضور">
-          <ChartSkeleton height={240} />
-        </Card>
-      </PageFrame>
+      <div className="hr-scope">
+        <PageFrame aria-busy="true" aria-live="polite">
+          <PageHeader title="لوحة الأستاذ" description="جارٍ تحضير لوحتك…" />
+          <RowList loading aria-label="ملخص نشاط التدريس" />
+          <RowList loading aria-label="طابور التصحيح" />
+          <RowList loading aria-label="طلاب يحتاجون متابعة" />
+          <Card title="اتجاه الأداء والحضور">
+            <ChartSkeleton height={240} />
+          </Card>
+        </PageFrame>
+      </div>
     );
   }
   if (dash.isError || !dash.data) {
     return (
-      <PageFrame>
-        <PageHeader title="لوحة الأستاذ" />
-        <ErrorState
-          message="تعذَّر تحميل لوحة الأستاذ"
-          error={dash.error}
-          onRetry={() => dash.refetch()}
-        />
-      </PageFrame>
+      <div className="hr-scope">
+        <PageFrame>
+          <PageHeader title="لوحة الأستاذ" />
+          <ErrorState
+            message="تعذَّر تحميل لوحة الأستاذ"
+            error={dash.error}
+            onRetry={() => dash.refetch()}
+          />
+        </PageFrame>
+      </div>
     );
   }
 
@@ -262,9 +271,13 @@ export function TeacherDashboardPage() {
      * today's lectures beside it) → at-risk shortcuts → the trend chart →
      * the feed behind a FilterBar. No KPI wall: the numbers ride one
      * flat line, the ROWS carry the day's work. */
+    /* R305 Heron: the .hr-scope wrapper (display:contents) declares
+     * the ember tokens + the §A tqd- deltas for this surface. */
+    <div className="hr-scope">
     <PageFrame>
       <PageHeader
         title="لوحة الأستاذ"
+        eyebrow="التدريس · متابعات اليوم"
         description="كل ما يحتاج تدخّلك اليوم — في تيار واحد، مرتّب حسب الأولوية."
         meta={
           <>
@@ -272,11 +285,13 @@ export function TeacherDashboardPage() {
           </>
         }
         actions={
-          <Badge color="brand">
+          /* R305 Heron: the follow-ups count rides the status-chip
+           * vocabulary — ember when work waits, green when clear. */
+          <span className="hr-chip" data-tone={visible.length === 0 ? 'ok' : 'ember'}>
             {visible.length === 0
               ? 'لا عناصر تحتاج متابعة'
               : countAr(visible.length, ['عنصر يحتاج متابعة', 'عنصران يحتاجان متابعة', 'عناصر تحتاج متابعة', 'عنصراً يحتاج متابعة'])}
-          </Badge>
+          </span>
         }
       />
 
@@ -437,6 +452,7 @@ export function TeacherDashboardPage() {
         {visible.map((item) => <FeedRow key={item.id} item={item} />)}
       </RowList>
     </PageFrame>
+    </div>
   );
 }
 
@@ -528,18 +544,22 @@ function PendingGradingQueue({ entries }: { entries: TeacherDashboard['pendingGr
         title="طابور التصحيح"
         description={total === 0 ? undefined : countAr(total, ['تسليم بانتظار درجتك', 'تسليمان بانتظار درجتك', 'تسليمات بانتظار درجتك', 'تسليماً بانتظار درجتك'])}
         actions={total > 0 ? (
-          <Link to="/teacher/assignments" className="btn primary sm">
+          /* R305 Heron: the ONE ember-flavored primary action of the
+           * home — the queue is the day's first decision surface. */
+          <Link to="/teacher/assignments" className="btn primary sm hr-cta">
             <Icon icon={ClipboardCheck} size={13} /> ابدأ التصحيح
           </Link>
         ) : undefined}
       />
       <RowList aria-label="طابور التصحيح">
         {entries.length === 0 ? (
-          <RowItem
-            title="لا انتظار — كل التسليمات مُقيَّمة"
-            meta="ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك."
-            trailing={<Badge color="green">مكتمل</Badge>}
-          />
+          /* R305 Heron: the structured empty (§0 .hr-empty) — the win
+           * named, its line closed by the green status chip. */
+          <div className="hr-empty">
+            <strong>لا انتظار — كل التسليمات مُقيَّمة</strong>
+            <span>ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك.</span>
+            <span className="hr-chip" data-tone="ok">مكتمل</span>
+          </div>
         ) : (
           entries.map((e) => (
             /* r289: الصف كله الوصلة (RowItem to) — طابور التصحيح قائمة
@@ -553,7 +573,7 @@ function PendingGradingQueue({ entries }: { entries: TeacherDashboard['pendingGr
                       rides a visually-hidden counted noun (the
                       queue-group badge vocabulary), so screen readers
                       hear the per-row submission count. */}
-                  <span className="tq-num" aria-hidden="true">{formatNum(e.count)}</span>
+                  <span className="tq-num tqd-count" aria-hidden="true">{formatNum(e.count)}</span>
                   <span className="visually-hidden">
                     {countAr(e.count, ['تسليم واحد', 'تسليمان', 'تسليمات', 'تسليماً'])}
                   </span>
@@ -566,7 +586,7 @@ function PendingGradingQueue({ entries }: { entries: TeacherDashboard['pendingGr
                   {e.oldestSubmittedAt && <> · أقدم تسليم {formatRelativeAr(e.oldestSubmittedAt)}</>}
                 </>
               }
-              trailing={<Badge color="amber">بانتظارك</Badge>}
+              trailing={<span className="hr-chip" data-tone="warn">بانتظارك</span>}
             />
           ))
         )}
@@ -622,16 +642,18 @@ function TodayLectures() {
               ),
               urgency: phase === 'ongoing' ? 'now' : phase === 'upcoming' ? 'soon' : 'later',
               action:
-                phase === 'ongoing' ? <Badge color="red">جارٍ الآن</Badge> :
-                phase === 'done' ? <Badge>انتهت</Badge> :
-                <Badge color="gold">قادمة</Badge>,
+                /* R305 Heron: the phase chips speak the ONE status
+                 * vocabulary (danger = live, info = upcoming). */
+                phase === 'ongoing' ? <span className="hr-chip" data-tone="danger">جارٍ الآن</span> :
+                phase === 'done' ? <span className="hr-chip">انتهت</span> :
+                <span className="hr-chip" data-tone="info">قادمة</span>,
             };
           })}
           emptyState={
             <RowItem
               title="لا محاضرات اليوم"
               meta="جدول اليوم فارغ — استرح أو راجع الجدول الأسبوعيّ."
-              trailing={<Badge color="green">يوم مفتوح</Badge>}
+              trailing={<span className="hr-chip" data-tone="ok">يوم مفتوح</span>}
             />
           }
         />
@@ -673,7 +695,7 @@ function AtRiskShortcuts() {
             <RowItem
               title="جميع طلابك في وضع جيد"
               meta="لا مؤشّرات خطر حاليّاً — ستظهر هنا أقصر طرق المتابعة فور رصدها."
-              trailing={<Badge color="green">مستقر</Badge>}
+              trailing={<span className="hr-chip" data-tone="ok">مستقر</span>}
             />
           ) : (
             top.map((r) => (
@@ -684,7 +706,7 @@ function AtRiskShortcuts() {
                 leading={<bdi className="tq-num">{formatPct1(r.riskScore)}%</bdi>}
                 title={r.name}
                 meta={<>{r.courseIcon} {r.courseName}</>}
-                trailing={<Badge color={RISK_TONE[r.riskLevel]}>{RISK_LABEL[r.riskLevel]}</Badge>}
+                trailing={<span className="hr-chip" data-tone={RISK_TONE[r.riskLevel]}>{RISK_LABEL[r.riskLevel]}</span>}
               />
             ))
           )}

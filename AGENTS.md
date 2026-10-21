@@ -59,7 +59,7 @@ npm run build -w frontend    # بناء الواجهة فقط (لا يحتاج D
 npm run build -w backend     # بناء الخلفية فقط (prisma generate + tsc)
 npm run db:migrate           # prisma migrate dev محليًا — يحتاج DATABASE_URL حية
 npm run db:seed              # بذر البيانات التجريبية — يحتاج DATABASE_URL حية
-node scripts/verify-parity-export.mjs   # بوابة التكافؤ 190/190 (بلا اعتماديات؛ 165 بعد إعادة بناء r196، 190 بعد re-key r197)
+node scripts/verify-parity-export.mjs   # بوابة التكافؤ 191/191 (بلا اعتماديات؛ r305: أزواج التصدير أُعيد بناؤها والأقفال أُعيد تثبيتها على أساس Heron — كانت البوابة حمراء 76/190 عند قاعدة r305)
 bash scripts/check-icons.sh             # انضباط الأيقونات (Lucide فقط)
 bash scripts/check-motion-tokens.sh     # منع قيم الحركة الخام
 bash scripts/check-csp-hash.sh          # مطابقة بصمات CSP بعد أي تعديل على frontend/index.html
@@ -92,6 +92,12 @@ npm run db:provision-owner              # تجهيز مالك بهوية الم�
 4. **نظام التصميم**: لا قيم حركة/ألوان خام خارج `tokens.css`/`motion.css`
    (بوابات CI ترفض). الأيقونات Lucide فقط عبر `Icon.tsx`. عند تعديل
    `frontend/index.html` الداخلي — حدّث بصمة CSP في `backend/src/app.ts`.
+   الكانون البصري الحالي (r305) = أساس Heron: ورق `#F6F8FA`، حبر
+   `#282828`، إشارة برتقالية `#FA3600` (نصّها الآمن `#C72E00`، وتسميات
+   الحشوات `--warm-ink` — الأبيض محظور على البرتقالي)، زوايا شبه مربّعة
+   (2/4/6/8/12/16/20 + pill)، وسلم حركة 80/200/400/500/650/900 على
+   `cubic-bezier(.23,1,.32,1)`. القرار الكامل والأدلة:
+   `docs/redesign/r305-heron-reference-spec.md`.
 5. **الحاكمية**: تعديلات الأدوار/الحالة تمر عبر حرّاس `lib/governance.ts`
    (قفل آخر مالك نشط بـ`SELECT … FOR UPDATE` + صف `AuditLog` بنفس المعاملة).
 6. **رفع PDF عبر تجريد التخزين**: الرفع منفَّذ الآن — جسم خام

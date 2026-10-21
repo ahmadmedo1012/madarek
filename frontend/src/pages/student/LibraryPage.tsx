@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import type { KeyboardEvent } from 'react';
+import type { KeyboardEvent, ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useIsNarrowLayout } from '../../hooks/useIsNarrowLayout';
 import {
   Search, Library as LibraryIcon, BookOpen,
-  Code, Network, Database, Bot, ShieldCheck, Star, FileText, Award, X,
+  Code, Network, Database, Bot, ShieldCheck, Star, FileText, X,
   SlidersHorizontal, Undo2, ChevronLeft, ChevronRight,
   type LucideIcon,
 } from 'lucide-react';
-import { Pill, Badge, UserAvatar } from '../../components/primitives';
+import { Pill, UserAvatar } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Sheet } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
@@ -22,10 +22,13 @@ import { countAr, formatPct, apiErrorMessage, formatDateAr } from '../../lib/for
 import { toast } from '../../lib/toast';
 import { formatDate, formatInt, formatNum } from '../../utils/numbers';
 import {
-  PageFrame, PageHeader, RowList, RowItem, StatLine, SectionHeader, FilterBar,
+  PageFrame, PageHeader, RowList, RowItem, FilterBar,
 } from '../../components/patterns';
-import type { StatLineItem } from '../../components/patterns';
 import '../../styles/research.css';
+/* R305-A7 «Heron»: the scoped research/PDF/library sheet — loaded
+ * DIRECTLY AFTER the family sheet so later source order inside
+ * @layer pages wins the equal-specificity ties (§0 scoping contract). */
+import '../../styles/r305-research-pdf-ai.css';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'all', label: 'الكل', icon: LibraryIcon },
@@ -46,6 +49,18 @@ const BOOKS_PAGE_SIZE = 24;
 const categoryIcon = (cat: string): LucideIcon =>
   CATEGORIES.find((c) => c.id === cat)?.icon ?? LibraryIcon;
 const categoryLabel = (cat: string) => CATEGORIES.find((c) => c.id === cat)?.label ?? cat;
+
+/* R305-A7: status chips — dot + Arabic label (state never rides color
+ * alone). The chips vocabulary rides the shared §4 anatomy. */
+type ChipTone = 'accent' | 'success' | 'warning' | 'danger' | 'info' | 'gold';
+function StatusChip({ tone, label }: { tone?: ChipTone; label: ReactNode }) {
+  return (
+    <span className={`r305rp-chip${tone ? ` r305rp-chip--${tone}` : ''}`}>
+      <span className="r305rp-chip-dot" aria-hidden="true" />
+      {label}
+    </span>
+  );
+}
 
 /** Escape every HTML-significant character. */
 function escapeHtml(s: string): string {
@@ -170,15 +185,17 @@ function BookRow({ book }: { book: Book }) {
       trailing={
         <span className="rs-book-tail">
           <span title={book.totalCopies > 0 ? `${availabilityHint} من ${formatInt(book.totalCopies)}` : undefined}>
-            <Badge color={book.availableCopies > 0 ? 'green' : undefined}>
-              {book.availableCopies > 0 ? 'متاح' : 'مستعار'}
-            </Badge>
+            <StatusChip
+              tone={book.availableCopies > 0 ? 'success' : undefined}
+              label={book.availableCopies > 0 ? 'متاح' : 'مستعار'}
+            />
           </span>
           <button
             type="button"
             className="btn primary sm"
             onClick={() => void onBorrow()}
             disabled={unavailable || borrow.isPending}
+            aria-disabled={borrow.isPending || undefined}
             title={unavailable ? 'لا توجد نسخ متاحة للاستعارة حالياً' : undefined}
             aria-label={
               unavailable
@@ -231,11 +248,13 @@ function LoanRow({ loan }: { loan: MyLoan }) {
   const daysLeft = (new Date(loan.dueAt).getTime() - Date.now()) / 86_400_000;
   const overdue = daysLeft < 0 || loan.status === 'OVERDUE';
   const dueSoon = !overdue && daysLeft <= 3;
+  /* R305-A7: the loan state rides the shared chip anatomy — dot + tone
+   * + the Arabic label, never color alone. */
   const state = overdue
-    ? { color: 'red' as const, label: 'متأخر الإرجاع' }
+    ? { tone: 'danger' as const, label: 'متأخر الإرجاع' }
     : dueSoon
-      ? { color: 'amber' as const, label: 'ينتهي قريباً' }
-      : { color: 'green' as const, label: 'نشطة' };
+      ? { tone: 'warning' as const, label: 'ينتهي قريباً' }
+      : { tone: 'success' as const, label: 'نشطة' };
 
   const onReturn = async () => {
     try {
@@ -259,7 +278,7 @@ function LoanRow({ loan }: { loan: MyLoan }) {
               <span aria-hidden="true">·</span>
             </>
           )}
-          <Badge color={state.color}>{state.label}</Badge>
+          <StatusChip tone={state.tone} label={state.label} />
         </>
       }
       trailing={
@@ -268,6 +287,7 @@ function LoanRow({ loan }: { loan: MyLoan }) {
           className="btn ghost sm"
           onClick={() => void onReturn()}
           disabled={returnLoan.isPending}
+          aria-disabled={returnLoan.isPending || undefined}
           aria-label={`إرجاع ${loan.book.title}`}
         >
           <Icon icon={Undo2} size={13} />
@@ -426,8 +446,9 @@ export default function LibraryPage() {
     return [...byCourse.values()];
   })();
 
-  // Research-tab facts — one StatLine, no card wall.
-  const researchCells: StatLineItem[] = [
+  // Research-tab facts — the ONE deep band on the page: the archive
+  // summary reads as a metric register (mono numerals over labels).
+  const researchCells: Array<{ label: string; value: ReactNode }> = [
     {
       label: 'بحوث منشورة',
       value: research.data?.length != null ? formatInt(research.data.length) : '—',
@@ -517,16 +538,28 @@ export default function LibraryPage() {
     </button>
   );
 
+  // The research empty-state names the search that ACTUALLY ran: a
+  // no-hits answer only when the debounced server search resolved
+  // empty; an unfinished or short query falls back to the honest
+  // archive-empty (the old pin keyed this off the RAW q, mislabeling
+  // an empty archive as a failed search).
+  const researchSearchActive = researchInUse && visibleResearch.length === 0;
   const researchEmpty = (
     <EmptyState
       icon={FileText}
-      illustration={q ? 'empty-search' : 'empty-research'}
-      title={q ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
-      description={q ? `لم نجد بحثاً يطابق "${q}" — جرّب كلمات أخرى.` : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
+      illustration={researchSearchActive ? 'empty-search' : 'empty-research'}
+      title={researchSearchActive ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
+      description={researchSearchActive
+        ? `لم نجد بحثاً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
+        : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
     />
   );
 
   return (
+    /* R305-A7 marker root — every Heron rule in the scoped sheet hangs
+     * off .r305rp; portals (the filter Sheet) reach through §9's
+     * body:has(.r305rp). The patterns PageFrame rides INSIDE. */
+    <div className="r305rp">
     <PageFrame width="default">
       <PageHeader
         title="المكتبة الإلكترونية"
@@ -540,8 +573,12 @@ export default function LibraryPage() {
       {/* Search-first: the page opens with the field, not a KPI wall.
           Both tabs share one debounced query; the count at the bar's
           trailing edge names the searched scope so it never lies about
-          what it covers. */}
+          what it covers. The field sits in the Heron well; the eyebrow
+          classifies the block. */}
       <div className="rs-toolbar" role="search">
+        <span className="r305rp-eyebrow r305rp-lib-searcheyebrow">
+          {isResearchTab ? 'بحث البحوث' : 'بحث المكتبة'}
+        </span>
         <div className="rs-search">
           <span className="rs-search-icon"><Icon icon={Search} size={18} /></span>
           <input
@@ -566,20 +603,24 @@ export default function LibraryPage() {
         </div>
         <div className="rs-toolbar-side">
           {filterChip}
-          <span className="rs-count">{toolbarCount}</span>
+          {/* r305-a7 a11y: the count is the async answer (debounced search,
+           * envelope totals, paging) — a polite live region so the resolved
+           * state is announced, not just painted. */}
+          <span className="rs-count" aria-live="polite">{toolbarCount}</span>
         </div>
       </div>
 
       {!isResearchTab ? (
         <div role="tabpanel" id="lib-panel-books" aria-labelledby="lib-tab-books" className="flex-col gap-4">
           {/* استعاراتي — the continue surface: rows when open loans
-              exist, one honest line when they don't (no empty-state
-              wall on every visit). */}
-          <section className="flex-col gap-2" aria-label="استعاراتي النشطة">
-            <div className="flex items-baseline gap-2 flex-wrap">
-              <SectionHeader title="استعاراتي" as="h2" />
+              exist, one honest technical empty line when they don't.
+              R305-A7: a framed panel; the kicker carries the heading +
+              the honest count with the hairline filling the remainder. */}
+          <section className="r305rp-panel r305rp-lib-loans" aria-label="استعاراتي النشطة">
+            <div className="r305rp-kicker">
+              <h2 className="r305rp-kicker-title">استعاراتي</h2>
               {!loans.isPending && !loans.isError && openLoans.length > 0 && (
-                <span className="rs-row-meta">
+                <span className="r305rp-meta-row r305rp-lib-loanscount">
                   {countAr(openLoans.length, ['استعارة واحدة', 'استعارتان', 'استعارات', 'استعارة'])}
                   {dueSoon > 0 ? ` · ${formatInt(dueSoon)} تنتهي قريباً` : ''}
                 </span>
@@ -590,9 +631,12 @@ export default function LibraryPage() {
             ) : loans.isError ? (
               <ErrorState error={loans.error} onRetry={() => loans.refetch()} />
             ) : openLoans.length === 0 ? (
-              <p className="rs-loans-empty">
-                <strong>لا استعارات نشطة</strong> — اضغط «استعارة» على أي كتاب متاح ليظهر هنا مع موعد إرجاعه خلال 14 يوماً.
-              </p>
+              <div className="r305rp-empty">
+                <span className="r305rp-eyebrow">الحالة</span>
+                <p className="r305rp-lib-loansempty-line">
+                  <strong>لا استعارات نشطة</strong> — اضغط «استعارة» على أي كتاب متاح ليظهر هنا مع موعد إرجاعه خلال 14 يوماً.
+                </p>
+              </div>
             ) : (
               <div className="rs-loans">
                 {openLoans.map((l) => (
@@ -725,7 +769,19 @@ export default function LibraryPage() {
         </div>
       ) : (
         <div role="tabpanel" id="lib-panel-research" aria-labelledby="lib-tab-research" className="flex-col gap-4">
-          <StatLine items={researchCells} />
+          {/* R305-A7: the page's ONE deep band — the archive summary as
+              a metric register (label over mono value). */}
+          <section className="r305rp-band r305rp-band--deep r305rp-lib-band" aria-label="ملخص أرشيف البحوث">
+            <span className="r305rp-eyebrow">ملخص الأرشيف</span>
+            <dl className="r305rp-lib-metrics">
+              {researchCells.map((c) => (
+                <div key={c.label}>
+                  <dt className="r305rp-metric-label">{c.label}</dt>
+                  <dd className="r305rp-metric">{c.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
 
           {/* Grouped when browsing ≥2 courses; flat while searching or
               when everything lives in one course (no decorative group
@@ -768,6 +824,7 @@ export default function LibraryPage() {
         </div>
       )}
     </PageFrame>
+    </div>
   );
 }
 
@@ -830,13 +887,15 @@ function ResearchHitRow({ paper, hit }: {
       }
       trailing={
         hit ? (
-          <Badge color={hit.matchedIn === 'title' ? 'green' : hit.matchedIn === 'abstract' ? 'gold' : 'purple'}>
-            {hit.matchedIn === 'title' ? 'تطابق في العنوان' : hit.matchedIn === 'abstract' ? 'تطابق في الملخص' : 'تطابق في المتن'}
-          </Badge>
+          <StatusChip
+            tone={hit.matchedIn === 'title' ? 'success' : hit.matchedIn === 'abstract' ? 'gold' : 'info'}
+            label={hit.matchedIn === 'title' ? 'تطابق في العنوان' : hit.matchedIn === 'abstract' ? 'تطابق في الملخص' : 'تطابق في المتن'}
+          />
         ) : paper.grade != null ? (
-          <Badge color={paper.grade >= 17 ? 'green' : paper.grade >= 14 ? 'gold' : 'amber'} icon={Award}>
-            <bdi>{paper.grade}/20</bdi>
-          </Badge>
+          <StatusChip
+            tone={paper.grade >= 17 ? 'success' : paper.grade >= 14 ? 'gold' : 'warning'}
+            label={<bdi>{paper.grade}/20</bdi>}
+          />
         ) : undefined
       }
       defaultExpanded

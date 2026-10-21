@@ -172,15 +172,18 @@ describe('ReviewWorkspace — the selection discard guard (15-e P1-6, r304 recom
 
 /* ── r157 / 6A8 — GRADED rides the queue; the publish loop is reachable ── */
 describe('ResearchReviewPage — the GRADED queue section (r157 / 6A8)', () => {
-  it('a GRADED paper renders the «مُقيَّمة — جاهزة للنشر» section with the gold badge, the publish CTA in the workspace and an honest KPI', async () => {
+  it('a GRADED paper renders the «مُقيَّمة — جاهزة للنشر» section with the gold status chip, the publish CTA in the workspace and an honest KPI', async () => {
     mocks.queue.data = [GRADED_PAPER];
     renderPage();
 
     // The section (label per the queue grammar)…
     expect(screen.getByText('مُقيَّمة — جاهزة للنشر')).toBeInTheDocument();
-    // …the status badge on the row…
-    const badge = screen.getByText('مُقيَّم').closest('.badge');
+    // …the status chip on the row (R305-A7: dot+label chip — the tone
+    // rides the dot modifier, the Arabic label rides beside it; state
+    // is never color alone)…
+    const badge = screen.getByText('مُقيَّم').closest('.r305rp-chip');
     expect(badge).not.toBeNull();
+    expect(badge!.className).toContain('r305rp-chip--gold');
     // …and the KPI finally counts something (the queue used to exclude
     // GRADED, so «جاهزة للنشر» was forever 0).
     expect(screen.getByText('جاهزة للنشر', { selector: '.pf-stat-label' }).closest('.pf-stat')).toHaveTextContent('1');
@@ -315,9 +318,12 @@ describe('ResearchReviewPage — queue state coherence (r164f)', () => {
     expect(screen.getByText('رفضها الفحص التجريبي (محاكاة)')).toBeInTheDocument();
     expect(screen.getByText('مُقيَّمة — جاهزة للنشر')).toBeInTheDocument();
 
-    // …the pending row's amber badge with the shared label…
-    const pendingBadge = screen.getByText('بانتظار التقييم').closest('.badge');
-    expect(pendingBadge?.className).toContain('amber');
+    // …the pending row's warning status chip with the shared label
+    // (R305-A7: the .badge amber class retired for the dot+label chip —
+    // the label text inside the chip is the pin, not the color)…
+    const pendingBadge = screen.getByText('بانتظار التقييم').closest('.r305rp-chip');
+    expect(pendingBadge?.className).toContain('r305rp-chip--warning');
+    expect(pendingBadge).toHaveTextContent('بانتظار التقييم');
 
     // …and the failed row is still selectable (the teacher can open the
     // workspace and read/write margin notes on a failed paper).

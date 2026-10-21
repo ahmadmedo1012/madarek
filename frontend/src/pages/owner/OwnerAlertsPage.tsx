@@ -139,7 +139,9 @@ export function OwnerAlertsPage() {
   const kpiKnown = alertsQuery.isSuccess;
 
   return (
-    <div className="page">
+    /* r305-A8 «Heron»: page-root marker — severity cards, tones and
+       states all key off the scoped sheet's .r305ao selector. */
+    <div className="page r305ao">
       <PatternsPageHeader
         title="التنبيهات التشغيليّة"
         description="إدارة ومراقبة التنبيهات والحوادث التشغيليّة — مباشرة من سجلّ المنصّة."

@@ -23,13 +23,18 @@
  * stack — Escape answers only the topmost layer (consumed via
  * stopImmediatePropagation) and returns focus to the trigger; the
  * trigger's aria-expanded/aria-haspopup are synced unless the consumer
- * declares them itself.
+ * declares them itself. r305: Esc is listened for on the CAPTURE phase
+ * (the same seat Dropdown and useFocusTrap use) and closes with focus
+ * still inside the panel also return it to the trigger
+ * (useAnchorFocusReturn — item/action activation no longer drops
+ * focus on <body>).
  */
 import { useEffect, useRef, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { overlayStack } from '../../lib/overlayStack';
 import { useAnchoredPosition } from './anchoredPosition';
 import { useAnchorAria } from './useAnchorAria';
+import { useAnchorFocusReturn } from './useAnchorFocusReturn';
 import { useDelayedUnmount } from './useDelayedUnmount';
 import { useOverlayRegistration } from './useOverlayRegistration';
 
@@ -65,23 +70,34 @@ export function Popover({
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const overlayId = useOverlayRegistration(open, 'popover');
   useAnchorAria(open, anchorRef, role === 'menu' ? 'menu' : 'dialog');
+  // Activation closes restore focus to the trigger (Esc already does).
+  useAnchorFocusReturn(open, anchorRef, popoverRef);
   const { rendered, onExitEnd } = useDelayedUnmount(open);
   const pos = useAnchoredPosition({ open, anchorRef, panelRef: popoverRef, placement });
 
   // Esc dismiss — only the topmost overlay layer answers (P1-2), and
   // the trigger gets focus back so keyboard users keep their place
-  // (P2-11, matching Dropdown).
+  // (P2-11, matching Dropdown). r305 grammar completion: the handler
+  // is armed whenever the popover is open — NOT gated on closeOnEscape
+  // — because the topmost layer OWNS the key even when it declines to
+  // close (the lib/overlayStack contract useFocusTrap and Dropdown
+  // already implement): consuming here is what keeps a layer below and
+  // document-level shortcuts from acting on an Esc aimed at the top.
   useEffect(() => {
-    if (!open || !closeOnEscape) return;
+    if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       if (!overlayStack.isTop(overlayId)) return;
       e.stopImmediatePropagation();
-      onClose();
-      anchorRef.current?.focus?.();
+      if (closeOnEscape) {
+        onClose();
+        anchorRef.current?.focus?.();
+      }
     };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    // Capture seat — the same one Dropdown and useFocusTrap listen from,
+    // so one Esc choreography owns the key before any inner handler.
+    document.addEventListener('keydown', onKey, true);
+    return () => document.removeEventListener('keydown', onKey, true);
   }, [open, closeOnEscape, onClose, anchorRef, overlayId]);
 
   // Click-outside dismiss. The trigger element's click is excluded so

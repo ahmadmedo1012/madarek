@@ -178,8 +178,13 @@ export const KNOWN_ELEV_MARKERS: ReadonlyArray<string> = [
  * this set in a captured motion treatment counts as ad-hoc.
  */
 export const KNOWN_DURATIONS_MS: ReadonlyArray<number> = [
-  // 001-* canonical durations
-  80, 160, 240, 320, 360, 380, 700, 1200,
+  // 001-* canonical durations (r305 Heron ladder re-key: the retired
+  // 160/240/320/360/380 rungs were removed with this list's update —
+  // the same change that re-promoted the surface baseline, per the
+  // one-cycle convention above; the new --t-* rungs joined instead:
+  // 200 fast / 400 base+page / 480 reveal / 500 slow / 650 slower.
+  // 900 cinema is animation-only and never captured as a transition.)
+  80, 200, 400, 480, 500, 650, 700, 1200,
   // 012 additions (animation-only)
   120, 180, 0,
   // r164 integration: the token ladder's slower rungs (tokens.css

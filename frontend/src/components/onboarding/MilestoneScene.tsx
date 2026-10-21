@@ -35,6 +35,23 @@
  *     exit window.
  *   - the auto-dismiss hold no longer restarts on parent re-renders
  *     (useMilestone's dismissPending is now referentially stable).
+ *
+ * r305 (2-b):
+ *   - the handoff latch self-heals: the gate-open branch no longer
+ *     early-returns when no closing overlay is found — it re-arms the
+ *     latch to ready. A handoff whose wait timer was torn down by a
+ *     quick re-open of the tour (store gate flips true→false→true
+ *     inside the exit window) otherwise strands the latch at false
+ *     and the queued milestone never presents (a stuck state). The
+ *     heal is a no-op in the common case (the latch starts ready).
+ *   - the celebration card is keyed by the milestone id: back-to-back
+ *     milestones remount the body, so the pop beat replays for the
+ *     second one instead of swapping content inside a finished
+ *     animation (the auto-dismiss hold re-arms on its own).
+ *   - dialog naming follows the r170-e contract: the accessible name
+ *     comes from the rendered headline (aria-labelledby) and the body
+ *     line rides aria-describedby, so screen readers announce the
+ *     same text sighted users read.
  */
 import { useEffect, useRef, useState } from 'react';
 import { Modal } from '../overlays/Modal';
@@ -107,7 +124,15 @@ export function MilestoneScene({ holdMs = HOLD_MS }: MilestoneSceneProps = {}) {
     prevGateRef.current = canShowMilestone;
     if (!canShowMilestone || !wasBlocked) return;
     const closingOverlay = document.querySelector('.modal-overlay[data-closing="true"]');
-    if (!closingOverlay) return;
+    if (!closingOverlay) {
+      // Self-heal (see docblock): nothing is exiting, so nothing needs
+      // waiting out — including a latch left down by a handoff whose
+      // timer a quick tour re-open tore down. React bails out when the
+      // value is unchanged, so the common first presentation (latch
+      // already ready) costs no render.
+      setHandoffReady(true);
+      return;
+    }
     const exitMs =
       readMotionDurationMs('--motion-duration-medium', 240) + HANDOFF_SLACK_MS;
     setHandoffReady(false);
@@ -147,14 +172,28 @@ export function MilestoneScene({ holdMs = HOLD_MS }: MilestoneSceneProps = {}) {
   const { headline, body } = describe(presentedScene);
 
   return (
-    <Modal open={presenting} onClose={dismissPending} ariaLabel={headline} closeOnOverlayClick>
-      <div className="onboarding-flow onboarding-flow--milestone" data-milestone={presentedScene}>
+    <Modal
+      open={presenting}
+      onClose={dismissPending}
+      ariaLabel={headline}
+      labelledById="milestone-scene-title"
+      describedById="milestone-scene-body"
+      closeOnOverlayClick
+    >
+      {/* Keyed by the milestone id: back-to-back milestones remount the
+          body so the celebration beat replays (the Modal shell and its
+          exit machinery persist — see the docblock). */}
+      <div
+        className="onboarding-flow onboarding-flow--milestone"
+        key={presentedScene}
+        data-milestone={presentedScene}
+      >
         <div className="onboarding-flow-illustration">
           <Illustration name="milestone-section" decorative />
         </div>
         <div className="onboarding-flow-copy">
-          <h2 className="onboarding-flow-headline">{headline}</h2>
-          <p className="onboarding-flow-body">{body}</p>
+          <h2 id="milestone-scene-title" className="onboarding-flow-headline">{headline}</h2>
+          <p id="milestone-scene-body" className="onboarding-flow-body">{body}</p>
         </div>
         <footer className="onboarding-flow-actions" style={{ justifyContent: 'center' }}>
           <button type="button" className="btn primary" onClick={dismissPending} autoFocus>

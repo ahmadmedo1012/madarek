@@ -67,8 +67,30 @@
   /* ── زرّ العودة يلتصق ببداية العمود (الصفحة عمود flex) ─────────── */
   .vision-back { align-self: flex-start; }
 
-  /* ── قيمة المقياس: درجة metric واحدة تحت رقم البطل ─────────────── */
-  .vision-metric-value { font-size: var(--type-metric-size); }
+  /* ── تفصيل المفهوم: بطولة القراءة (r305) ─────────────────────────
+     كانت .vision-detail-hero تجرّ جلد بطاقة يتيمًا من طبقة التجاوزات
+     (polish.css:2512 — box-shadow/overflow من عهد البطاقة، وزوم
+     التحويم تقاعد) على عنصر شفاف = هالة ظل عائمة بلا سطح. صفحة
+     التفصيل سطح قراءة (A12 P2-7): البطولة تتكوّن مسطّحة على أرض
+     الصفحة. الاسم الجديد .vision-hero أسقط المستهلك عن قاعدة polish
+     اليتيمة (قاعدة ميتة الآن — يُنصح مالك polish بحذفها). */
+  .vision-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-2);
+  }
+  .vision-hero-title {
+    font-family: var(--font-display);
+    /* سلّم المسح r304: عنوان الصفحة 24px display — درجة .pf-page-title
+       و.comp-hero-title نفسها، لا بلاطة الـ30px اللوحية. */
+    font-size: var(--fs-h2);
+    line-height: var(--lh-snug);
+    font-weight: var(--fw-bold);
+    letter-spacing: 0;
+    color: var(--text);
+    margin: 0;
+  }
 
   /* ── صفوف المميزات ─────────────────────────────────────────────── */
   .vision-feature { color: var(--text); }
@@ -119,7 +141,13 @@
   .vision-notify-hint { margin-block-start: var(--sp-1); }
 
   /* ── التنقّل السفلي بين المفاهيم ───────────────────────────────── */
-  .vision-prevnext { padding: var(--sp-4) var(--sp-5); }
+  .vision-prevnext {
+    padding: var(--sp-4) var(--sp-5);
+    /* r305: عناوين المفاهيم طويلة — على 360px يتزاحم الزران في سطر
+       واحد؛ الالتفاف يُنزّل «التالي» سطرًا كاملًا بدل سحق العنوان. */
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
   /* السهم «السابق» يعكس وجهته (RTL: التقدّم يسارًا) — انعكاس اتجاه
      ثابت لا حركة (mirroring لا تقتله أحزمة الحركة المخفّفة). */
   .vision-icon-back { transform: scaleX(-1); }

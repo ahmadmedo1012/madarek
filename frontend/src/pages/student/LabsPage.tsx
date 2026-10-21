@@ -6,7 +6,7 @@ import {
   AlertCircle,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, Badge, ProgressBar } from '../../components/primitives';
+import { Card, ProgressBar } from '../../components/primitives';
 import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { PageFrame, PageHeader, StatLine } from '../../components/patterns';
 import { Icon } from '../../components/Icon';
@@ -15,6 +15,12 @@ import { useLabs, useMyLabSessions, useCompleteLabSession, type VirtualLab } fro
 import { courseTint } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
+/* R305 Heron: the shared student vocabulary + this family's refinements.
+   The labs catalog rides the FOUNDATION classes only (kicker section
+   register, meta-row separators, status chips) — the family sheet adds
+   no page-scoped rules for this page. */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-supplemental.css';
 
 interface LabExperiment {
   title: string;
@@ -195,6 +201,15 @@ export default function LabsPage() {
             />
           )}
 
+          {/* R305 Heron: the catalog is ONE editorial section — the kicker
+              heading + hairline carry the rhythm instead of another boxed
+              card, and EVERY honest state (loading/error/empty/resolved)
+              lives inside it. */}
+          <section aria-label="دليل المعامل">
+            <div className="r305s-kicker">
+              <h2 className="r305s-kicker-title">دليل المعامل</h2>
+            </div>
+
           {labs.isPending ? (
             <div className="grid-3" aria-busy="true" aria-live="polite">
               {[0, 1, 2].map((i) => (
@@ -229,8 +244,13 @@ export default function LabsPage() {
                     </div>
                     <div className="thumb-card-body">
                       <div className="thumb-card-title" title={l.name}>{l.name}</div>
-                      <div className="thumb-card-sub">
-                        <bdi>{l.platform ?? '—'}</bdi> · <bdi>{l.totalExperiments}</bdi> تجربة
+                      {/* R305 Heron: the row's metadata rides the meta-row
+                          register — hairline separators instead of bare
+                          middots; the counted noun follows D17-2. */}
+                      <div className="r305s-meta-row">
+                        <bdi>{l.platform ?? '—'}</bdi>
+                        <span className="r305s-meta-sep" aria-hidden />
+                        <span>{countAr(l.totalExperiments, ['تجربة واحدة', 'تجربتان', 'تجارب', 'تجربة'])}</span>
                       </div>
                       <button
                         type="button"
@@ -248,6 +268,7 @@ export default function LabsPage() {
               })}
             </div>
           )}
+          </section>
         </>
       ) : (
         <LabRunner lab={activeLab} onExit={() => setActiveLab(null)} />
@@ -426,7 +447,13 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
         style={{ '--lab-accent': lab.themeColor ?? 'var(--accent)' } as CSSProperties}
       >
         <div className="lab-hero-head">
-          <Badge color="green">جلسة نشطة</Badge>
+          {/* R305 Heron: the shared chip register carries the session
+              status (semantic success dot + neutral well) — the same
+              anatomy the courses family uses for its state chips. */}
+          <span className="r305s-chip r305s-chip--success">
+            <span className="r305s-chip-dot" aria-hidden />
+            جلسة نشطة
+          </span>
           <span className="text-xs text-subtle">{lab.name}</span>
         </div>
         <h2 className="lab-hero-title">{exp.title}</h2>

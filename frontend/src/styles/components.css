@@ -5417,3 +5417,280 @@
     animation: none !important;
   }
 }
+
+/* ╔════════════════════════════════════════════════════════════════════╗
+   ║  r305-A2 · lane 2-b — CONTROL MICROINTERACTIONS (Heron-style,     ║
+   ║  ORIGINAL Madarek implementation). Opt-in only: every rule here    ║
+   ║  targets r305 namespaced classes (.btn-motion-* / .link-underline- ║
+   ║  -motion) or the gated .btn.outline / .nav-item pseudos below —    ║
+   ║  zero changes for elements that never opt in.                      ║
+   ║                                                                    ║
+   ║  CASCADE CONTRACT (read with polish.css): the overrides layer owns ║
+   ║  the .btn ROOT transition/press (polish v15) and the .btn::after   ║
+   ║  press ripple — so this section styles CHILD elements and          ║
+   ║  pseudo-elements the overrides layer never declares. The outline   ║
+   ║  sweep therefore rides ::BEFORE (::after is the ripple's); the     ║
+   ║  nav indicator rides ::AFTER (the overrides layer only declares    ║
+   ║  ::after on .nav-item.on — the rail dot — and inside the collapsed ║
+   ║  rail, which this section deliberately keeps untouched).           ║
+   ║                                                                    ║
+   ║  MOTION REGISTER: decel-heavy per the brief — slides ride          ║
+   ║  var(--t-slow) var(--ease-out), micro bars ride var(--t-fast)      ║
+   ║  var(--ease). No raw durations/easings (gate), no layout-property  ║
+   ║  transitions (transform/opacity only), NO perpetual animation of   ║
+   ║  any kind. Reduced motion: no dedicated block needed — the         ║
+   ║  tokens.css RM belt zeroes every --t-* token AND base.css's global ║
+   ║  0.01ms !important belt collapses every transition here to a snap. ║
+   ║                                                                    ║
+   ║  RTL: vertical slides are direction-neutral; every horizontal      ║
+   ║  expression multiplies by var(--motion-direction, 1) (tokens.css   ║
+   ║  flips it to -1 under [dir="rtl"]). Anchoring uses logical         ║
+   ║  inset-* properties only.                                          ║
+   ╚════════════════════════════════════════════════════════════════════╝ */
+@layer components {
+
+  /* ────────────────────────────────────────────────────────────────
+     1 · DUPLICATE-LABEL VERTICAL SLIDE — opt-in via Button labelMotion
+     ────────────────────────────────────────────────────────────────
+     Structure (Form.tsx r305): .btn-motion-label (clip window) >
+     .btn-motion-label-track (block, position relative, holds the real
+     label as in-flow content) + .btn-motion-label-dup (absolutely
+     positioned at inline-start 0 / block-start 100%).
+
+     WHY THE DUP IS ABSOLUTELY POSITIONED (the approach choice): the
+     dup is out of flow, so the track's height IS the live row's
+     height by construction — translateY(-100%) on the track always
+     travels exactly one row, no equal-height row bookkeeping, and no
+     row gets its own transform. Arabic sanity: at rest the visible
+     row is ordinary in-flow text with the button's inherited
+     line-height (button { font: inherit } → --lh-base 1.65) — the
+     clip window equals the plain label's own box, so ascenders/
+     descenders render exactly as they do today; only the parked dup
+     row sits inside the clipped region.
+
+     WRAP RULE INTERPLAY: the ≤420px `.btn:not(.icon-btn)`
+     { white-space: normal } band still applies (this section never
+     touches white-space). If the label wraps there, the dup — pinned
+     to the same width via inset-inline: 0 — wraps identically, the
+     track height becomes the full wrapped block, and the -100% slide
+     still travels exactly the live block's height. The dup therefore
+     never affects wrapping at rest (it is out of flow).
+
+     HOVER GATING: the hover slide rides (hover: hover) and
+     (pointer: fine) — the same gate the −1px/−2px lifts use (5-C1,
+     no iOS sticky-hover pinning). The :focus-visible slide is
+     deliberately UNGATED: focus-visible only matches keyboard focus,
+     so keyboard parity costs nothing on touch. Press/disabled
+     freeze: every state rule carries the
+     :not(:disabled):not([data-loading="true"]) gates (the overrides
+     layer owns the root freezes; when loading, Form.tsx renders the
+     spinner path with no motion wrapper at all). */
+  .btn-motion-label {
+    display: inline-flex;
+    overflow: hidden;
+    max-inline-size: 100%;
+  }
+  .btn-motion-label-track {
+    position: relative;
+    display: block;
+    transition: transform var(--t-slow) var(--ease-out);
+  }
+  .btn-motion-label-dup {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 100%;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn[data-motion-label]:hover:not(:disabled):not([data-loading="true"]) .btn-motion-label-track {
+      transform: translateY(-100%);
+    }
+  }
+  .btn[data-motion-label]:focus-visible:not(:disabled):not([data-loading="true"]) .btn-motion-label-track {
+    transform: translateY(-100%);
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     2 · DIRECTIONAL ARROW SWAP — opt-in via Button iconRight
+     ────────────────────────────────────────────────────────────────
+     A fixed 1.25em square window (.btn-motion-icon, aria-hidden —
+     decorative) holding the live icon and an aria-hidden duplicate.
+     Both layers are absolutely stacked to the full box, so
+     percentage translates are box-relative and identical for both:
+     the live icon exits along (100% · --motion-direction, -100%) —
+     toward the reading END and up — while the duplicate, parked at
+     the mirrored diagonal, settles into its place. Contract: pass a
+     single Lucide icon; the sizing rule below fills whatever svg
+     lands in either layer to the window box so the swap is seamless. */
+  .btn-motion-icon {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    overflow: hidden;
+    inline-size: 1.25em;
+    block-size: 1.25em;
+  }
+  .btn-motion-icon > :not(.btn-motion-icon-dup),
+  .btn-motion-icon-dup {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transition: transform var(--t-slow) var(--ease-out);
+  }
+  .btn-motion-icon svg,
+  .btn-motion-icon-dup svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+  .btn-motion-icon-dup {
+    transform: translate(calc(-100% * var(--motion-direction, 1)), 100%);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn[data-motion-icon]:hover:not(:disabled):not([data-loading="true"]) .btn-motion-icon > :not(.btn-motion-icon-dup) {
+      transform: translate(calc(100% * var(--motion-direction, 1)), -100%);
+    }
+    .btn[data-motion-icon]:hover:not(:disabled):not([data-loading="true"]) .btn-motion-icon-dup {
+      transform: translate(0, 0);
+    }
+  }
+  .btn[data-motion-icon]:focus-visible:not(:disabled):not([data-loading="true"]) .btn-motion-icon > :not(.btn-motion-icon-dup) {
+    transform: translate(calc(100% * var(--motion-direction, 1)), -100%);
+  }
+  .btn[data-motion-icon]:focus-visible:not(:disabled):not([data-loading="true"]) .btn-motion-icon-dup {
+    transform: translate(0, 0);
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     3 · OUTLINE FILL SWEEP — additive on .btn.outline
+     ────────────────────────────────────────────────────────────────
+     A 12% accent tint rises from the block-end edge on
+     hover/focus-visible. Two cascade-driven choices (r305 lane):
+     · ::BEFORE, not ::after — the overrides layer owns .btn::after
+       (the press ripple) for every button; a components-layer ::after
+       here could never win those declarations.
+     · The .btn root already carries position: relative +
+       overflow: hidden from the overrides layer — reused, never
+       re-declared. isolation: isolate (added ONLY here) gives the
+       outline button its own stacking context so the z-index: -1
+       layer paints ABOVE the button's own background (including the
+       opaque hover surface step) and BELOW the label — correct
+       painting in every state, no z-index juggling on the label.
+     · The :not(.primary)/:not(.accent)/:not(.gold) guards keep this
+       pseudo from ever interfering with the sheen ::before those
+       filled variants own in this same layer, even if a consumer
+       ever hand-compounds the classes.
+     Dark theme: color-mix over var(--accent) resolves to the night
+     gold automatically — no theme fork needed. Text color stays; the
+     tint is a contrast-safe wash below the ink. */
+  .btn.outline:not(.primary):not(.accent):not(.gold) {
+    isolation: isolate;
+  }
+  .btn.outline:not(.primary):not(.accent):not(.gold)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform var(--t-slow) var(--ease-out);
+    pointer-events: none;
+    z-index: -1;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn.outline:not(.primary):not(.accent):not(.gold):hover:not(:disabled):not([data-loading="true"])::before {
+      transform: scaleY(1);
+    }
+  }
+  .btn.outline:not(.primary):not(.accent):not(.gold):focus-visible:not(:disabled):not([data-loading="true"])::before {
+    transform: scaleY(1);
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     4 · NAV-ITEM LEADING INDICATOR — additive on .nav-item (non-active)
+     ────────────────────────────────────────────────────────────────
+     A 2px accent rail grows at the row's inline-start edge on
+     hover/focus-visible — transform/opacity only, zero layout shift.
+     Gated :not(.on) so the ACTIVE row's own machinery is untouched:
+     layout.css owns the .on rail geometry (::before) and the
+     overrides layer owns the .on ::after dot — both win the cascade
+     against this components-layer rule regardless.
+     ::AFTER is the only free pseudo on a non-active .nav-item (the
+     overrides ::before state rules own that axis), and it is free in
+     the default/expanded sidebar; inside .sidebar.collapsed the
+     overrides layer's `content: none` stand-down (0-c P2-4) wins and
+     suppresses it — the collapsed rail keeps its portaled Tooltip
+     contract instead. Anchoring: inset-inline-start only. */
+  .nav-item:not(.on)::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block: 25%;
+    inline-size: 2px;
+    border-radius: var(--r-full);
+    background: color-mix(in srgb, var(--accent) 55%, transparent);
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: center;
+    transition:
+      transform var(--t-fast) var(--ease),
+      opacity var(--t-fast) var(--ease);
+    pointer-events: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .nav-item:not(.on):hover::after {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+  }
+  .nav-item:not(.on):focus-visible::after {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     5 · TEXT-LINK UNDERLINE DRAW — opt-in .link-underline-motion
+     ────────────────────────────────────────────────────────────────
+     The shared link convention audit: polish.css v19 already gives
+     every bare <a> an animated ::after underline-draw (overrides
+     layer, physical-origin pair with [dir] flips). components.css
+     owns .text-link (static native underline on link-like BUTTONS).
+     This class is the opt-in draw for NON-ANCHOR link-like controls
+     — it is scoped :not(a) so an anchor carrier can never double-draw
+     (the overrides anchor treatment keeps its exclusive ::after
+     contract on <a>; that layer wins regardless).
+     Technique: a 1px ::before rail that scales from 0 → 1. The
+     transform-origin is computed from --motion-direction so the draw
+     always starts at the INLINE-START edge (LTR: 0% · RTL: 100%)
+     with no [dir] fork and no physical keywords. Hover rides the
+     hover-capable gate like every other rule in this section;
+     :focus-visible is ungated (keyboard parity). Pairing: carrying
+     .text-link too steps the static native underline aside. */
+  .link-underline-motion:not(a) {
+    position: relative;
+  }
+  .link-underline-motion:not(a)::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-end: -2px;
+    inline-size: 100%;
+    block-size: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: calc(50% - 50% * var(--motion-direction, 1)) 50%;
+    transition: transform var(--t-base) var(--ease-out);
+    pointer-events: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .link-underline-motion:not(a):hover::before {
+      transform: scaleX(1);
+    }
+  }
+  .link-underline-motion:not(a):focus-visible::before {
+    transform: scaleX(1);
+  }
+  .text-link.link-underline-motion {
+    text-decoration: none;
+  }
+}

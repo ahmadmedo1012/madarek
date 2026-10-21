@@ -10,6 +10,9 @@ import { PageFrame, PageHeader, FilterBar } from '../../components/patterns';
 import { useJobs, useApplyJob, apiErrorMessage, type Job } from '../../hooks/useResources';
 import { formatDate, formatInt } from '../../utils/numbers';
 import { countAr } from '../../lib/format';
+/* R305 Heron: the shared student vocabulary + this family's refinements. */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-supplemental.css';
 
 const TYPE_LABELS: Record<string, string> = {
   FULL_TIME: 'دوام كامل',
@@ -196,14 +199,19 @@ export default function JobsPage() {
           />
 
           {/* The counted line — honest about the filtered subset. */}
+          {/* R305 Heron: the counted line is page metadata — it rides the
+              chip register (accent dot = live fact) when a count exists. */}
           <p className="jobs-count" aria-live="polite">
             {filtered.length === 0 ? (
               'لا توجد فرص ضمن هذا النوع حاليّاً — جرّب نوعاً آخر.'
             ) : (
-              <bdi>
-                {openJobsLabel(filtered.length)}
-                {isFiltering ? ` من أصل ${formatInt(jobs.length)}` : ''}
-              </bdi>
+              <span className="r305s-chip r305s-chip--accent">
+                <span className="r305s-chip-dot" aria-hidden />
+                <bdi>
+                  {openJobsLabel(filtered.length)}
+                  {isFiltering ? ` من أصل ${formatInt(jobs.length)}` : ''}
+                </bdi>
+              </span>
             )}
           </p>
 

@@ -541,6 +541,7 @@ export function PostsFeedPanel() {
       {trending.length > 0 && (
         <Card
           title="الأكثر تداولاً"
+          heading="h2"
           icon={TrendingUp}
           subtitle="الوسوم الأكثر تكراراً في آخر 20 منشوراً محمَّلاً."
           style={{ alignSelf: 'start' }}
@@ -556,7 +557,8 @@ export function PostsFeedPanel() {
                   className="trend-count"
                   title={arUnit(t.count, 'منشور', 'منشوران', 'منشورات')}
                 >
-                  <bdi>{t.count}</bdi>
+                  {/* r305 (2-c): عقد الأرقام — formatNum حصرًا. */}
+                  <bdi>{formatNum(t.count)}</bdi>
                 </span>
               </li>
             ))}

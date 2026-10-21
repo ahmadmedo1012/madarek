@@ -72,6 +72,23 @@ export default defineConfig({
         locale: 'ar',
       },
     },
+    {
+      // r305 — the auth/public/shared-surfaces + independent-QA area
+      // (redesign/r305-heron-auth-public-qa). Isolated testDir so the
+      // existing e2e/audit projects and the vitest suites are untouched;
+      // specs self-configure viewport/theme/emulation per test, so the
+      // project ships no opinionated device bundle. `.e2e.ts` suffix for
+      // the same vitest-exclusion reason as the `e2e` project above.
+      // Reach it via: npm run test:r305
+      name: 'r305',
+      testDir: './tests/r305',
+      testMatch: /\.e2e\.ts$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        colorScheme: 'light',
+        locale: 'ar',
+      },
+    },
   ],
   webServer: process.env.MADAREK_E2E_BASE_URL
     ? undefined

@@ -1,0 +1,147 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R305-A5 · Heron design language — student DASHBOARD family
+   Branch: redesign/r305-student-a-dashboard
+   Owner: Agent 2-a · /student/dashboard only (DashboardPage.tsx)
+
+   The Heron VISUAL PASS on the r220–r285 dashboard composition. This
+   sheet is the family layer ON TOP of the shared vocabulary
+   (r305-student.css) and the frozen recipes it restyles (student.css's
+   .dash-resume-card/.stu-hero hero anatomy, patterns.css .pf-*). It
+   owns ONLY dashboard-scoped selectors. Load order: imported by
+   DashboardPage.tsx AFTER r305-student.css, and the page chunk loads
+   after main.tsx's global sheets — so these rules win same-specificity
+   ties over the frozen blocks they deliberately re-skin.
+
+   Sections:
+     1 · The hero band — deep surface + copper edge (the ONE action)
+     2 · Section kicker harmonics (wrap-safe at 320px)
+     3 · The momentum strip — labeled rule + technical dividers
+     4 · The week ledger — day-group hairlines
+     5 · Metadata registers — gap % mono numerals
+     6 · Interaction guard (hover media) + reduced-motion belt
+
+   Gate contract (enforced on this tree): var()/color-mix() colors
+   ONLY · token ladder for type/radius/spacing · every :hover inside
+   @media (hover:hover) and (pointer:fine) · motion tokens only.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── 1 · The hero band — the ONE next action ─────────────────────
+     The PP-X2 .dash-resume-card recipe (copper inline-start edge) now
+     sits on the Heron DEEP band (r305s-band--deep: ink ground in the
+     light theme, paper ground in the dark — the neutral ramp inverts,
+     so the band always contrasts its page). Inner inks re-derive from
+     the band's own fg/ground pair at the AA-safe 85/15 mix (85% band
+     fg toward the band ground) — the same theme-proof recipe the
+     foundation's .r305s-band-secondary pioneered, tuned so it clears
+     4.5:1 on BOTH poles (see the foundation report: the shared 72/28
+     mix lands ~3:1 on the dark-theme paper pole; this family uses its
+     own safe ratio until the foundation retunes). */
+  .dash-resume-card.dash-hero-deep {
+    background: var(--neutral-900);
+    color: var(--neutral-0);
+    border-color: transparent;
+    /* The copper rail survives the band's transparent border-color —
+       the .r305s-next grammar carried onto the deep surface. */
+    border-inline-start: 3px solid var(--accent);
+    box-shadow: none;
+  }
+  /* The deep band is its own contrast device: it does not lift. */
+  .dash-hero-deep .dash-resume-course-name {
+    color: var(--neutral-0);
+    /* The band's display line — the page's strongest content voice
+       after the h1 masthead (Heron strong type scale). Wraps, never
+       clips: long Arabic course names break instead of overflowing. */
+    font-size: var(--fs-h2);
+    line-height: var(--lh-snug);
+    overflow-wrap: break-word;
+  }
+  /* Micro-label + secondary lines: the 85/15 band-fg mix (4.5:1+ on
+     both theme poles — see the section header note). */
+  .dash-hero-deep .dash-resume-eyebrow {
+    color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
+  }
+  /* The eyebrow's leading tick rides the text ink (currentColor) —
+     theme-proof by construction, no per-theme rule. */
+  .dash-hero-deep .dash-resume-eyebrow::before { background: currentColor; }
+  .dash-hero-deep .dash-resume-lecture,
+  .dash-hero-deep .dash-resume-side-note,
+  .dash-hero-deep .dash-resume-side-note .font-mono {
+    color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
+  }
+  /* Quiet but precise progress on the deep band: the track mixes the
+     band fg 22% toward the band ground (a visible well on both poles);
+     the fill is the band's own fg ink — the copper stays in the edge
+     and the CTA, where the ONE-accent discipline wants it. */
+  .dash-hero-deep .progress-track {
+    background: color-mix(in srgb, var(--neutral-0) 22%, var(--neutral-900));
+  }
+  .dash-hero-deep .progress-fill { background: var(--neutral-0); }
+  .dash-hero-deep .momentum-ring .ring-track {
+    stroke: color-mix(in srgb, var(--neutral-0) 22%, var(--neutral-900));
+  }
+  .dash-hero-deep .momentum-ring .ring-fill { stroke: var(--neutral-0); }
+
+  /* ── 2 · Section kicker harmonics ─────────────────────────────────
+     The foundation .r305s-kicker carries every dashboard section
+     (اليوم / مقرّراتك / فجوات يُنصح بسدّها / أسبوعك القادم). One
+     wrap-safety refinement (scoped to THIS page's kickers — F2): the
+     action button may be up to ~110px and the title 130px+ at 320px
+     — the row wraps instead of clipping. */
+  .dash-section .r305s-kicker,
+  .dash-momentum .r305s-kicker { flex-wrap: wrap; }
+
+  /* ── 3 · The momentum strip — the page's metadata band ────────────
+     The labeled rule («زخم الفصل» stamped INTO the hairline) replaces
+     a boxed section header; between the stats the technical dividers
+     continue the rhythm. Dividers only where the line actually sits
+     on one row (container ≥700px) so a wrapped phone line never
+     carries a stray edge. */
+  .dash-momentum .r305s-rule-labeled { margin-block: 0 var(--sp-4); }
+  @container grid4 (min-width: 700px) {
+    .dash-momentum .pf-stat + .pf-stat {
+      border-inline-start: 1px solid var(--surface-divider);
+      /* F1: margin, not padding — the unlayered patterns.css
+         `.pf-stat { padding-inline: var(--sp-1) }` always wins the
+         longhand against @layer pages, so a padding inset here was
+         dead CSS. The margin sits outside that cascade war. */
+      margin-inline-start: var(--sp-5);
+    }
+  }
+
+  /* ── 4 · The week ledger — day groups as one hairline rhythm ──────
+     The day bands ride .dash-week-day (frozen); between groups the
+     thin technical divider keeps the ledger reading as one surface. */
+  .dash-week-group + .dash-week-group {
+    border-block-start: 1px solid var(--surface-divider);
+  }
+
+  /* ── 5 · Metadata registers ────────────────────────────────────────
+     The gaps rail's mastery level is a standalone metric — the mono
+     tabular register (the r197 mono contract: numerals only). */
+  .dash-gap-pct {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── 6 · Interaction guard + reduced-motion belt ───────────────────
+     This sheet's ONE hover statement: the deep band does not lift —
+     its surface contrast IS the affordance, so the frozen premium
+     shadow/translate recipe is neutralized for the band only. Guarded
+     per the motion contract; the universal :focus-visible ring is
+     never suppressed. */
+  @media (hover: hover) and (pointer: fine) {
+    .dash-resume-card.dash-hero-deep:hover {
+      box-shadow: none;
+      transform: none;
+    }
+  }
+  /* No animation is authored here (color/border steps only, all via
+     tokens); the belt stays as the explicit contract, mirroring the
+     foundation sheet. */
+  @media (prefers-reduced-motion: reduce) {
+    .dash-hero-deep .progress-fill,
+    .dash-hero-deep .momentum-ring .ring-fill { transition: none; }
+  }
+}

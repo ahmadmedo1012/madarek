@@ -20,8 +20,8 @@
          (style-src 'unsafe-inline'). -->
     <style>html{min-height:100%}</style>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#16140F" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#F3EEE4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#282828" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F6F8FA" media="(prefers-color-scheme: light)" />
     <meta name="description" content="مدارك — منصّة تعليم ذكية مستقلّة، عربية أولًا: محاضرات تفاعلية واختبارات ومصفوفة معرفية وبحوث في منظومة واحدة" />
     <title>مدارك · منصّة التعليم الذكي</title>
     <!-- 8-a (0-b P2-17) — canonical + Open Graph / Twitter card. og:image
@@ -131,8 +131,8 @@
         var syncThemeColor = function () {
           var color =
             document.documentElement.getAttribute('data-theme') === 'dark'
-              ? '#16140F'
-              : '#F3EEE4';
+              ? '#282828'
+              : '#F6F8FA';
           var metas = document.querySelectorAll('meta[name="theme-color"]');
           for (var i = 0; i < metas.length; i++) {
             metas[i].removeAttribute('media');

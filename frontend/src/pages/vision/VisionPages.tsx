@@ -214,15 +214,19 @@ export function VisionDetailPage() {
 
       {/* Hero — gradient chip + status + statement on the page-title
           grammar (the old raw clamp/letterSpacing inline blob and the
-          0px-rendering .vision-detail-hero-bg div are gone). */}
-      <div className="vision-detail-hero flex-col gap-2">
+          0px-rendering .vision-detail-hero-bg div are gone).
+          r305: .vision-hero owns the composition in vision.css — the
+          former .vision-detail-hero name dragged a stale card skin
+          (box-shadow/overflow) from the polish overrides layer onto a
+          transparent element; the reading surface composes flat. */}
+      <div className="vision-hero">
         <ConceptChip concept={concept} variant="hero" />
         <div>
           <Badge color={STATUS_COLOR[concept.status]} icon={Sparkles}>
             {STATUS_LABEL[concept.status]}
           </Badge>
         </div>
-        <h1 className="page-title vision-detail-title">{concept.title}</h1>
+        <h1 className="vision-hero-title">{concept.title}</h1>
         <p className="page-subtitle">{concept.subtitle}</p>
       </div>
 

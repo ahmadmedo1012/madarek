@@ -1,0 +1,926 @@
+/* ==================================================================
+   MADAREK — R305 HERON · teacher, quality & exam workflow sheet
+   (r305-teacher-quality.css)
+   ------------------------------------------------------------------
+   R305-A6 (the Heron round): the second, optional LAYER the family's
+   lazy page modules import AFTER `teacher-quality.css`. It carries the
+   Heron-inspired workflow visual system — strong headings, restrained
+   ember (orange) emphasis, disciplined outlines, legible status
+   vocabulary, dense-but-readable tables, consistent toolbars and
+   crisp button/form feedback — WITHOUT touching the R304 family sheet
+   (which stays verbatim), `admin.css`, `polish.css`, the shared
+   patterns contract or any global token file.
+
+   Scoping contract:
+   - Every restyled surface mounts a `.hr-scope` wrapper (a
+     `display: contents` div) INSIDE its PageFrame. Custom properties
+     inherit through it, so per-surface hooks stay one class deep.
+   - New primitives use the `hr-` prefix. Per-family sections use the
+     family suffixes below — never extend a section from outside it.
+
+   Sections (each owned by exactly ONE workstream — merge walls):
+     §0  hr-    shared Heron primitives (owned by the coordinator —
+                read/consume freely, edit by coordinator only)
+     §A  tqd-   Teacher dashboard + daily workflows (Agent 2-a:
+                TeacherDashboardPage.tsx · TeacherPages.tsx)
+     §B  exa2-  Exam authoring hub + template detail (Agent 2-b:
+                ExamAuthorPages.tsx)
+     §C  oex2-  Student exam list/taker + moderation (Agent 2-b:
+                OnlineExamsPages.tsx)
+     §D  qlt2-  Quality oversight boards (Agent 2-c: QualityPages.tsx)
+     §E  tax-   Teacher intelligence/profile/live/labs (Agent 2-d)
+
+   Grammar (Heron — translated, never copied):
+   - Workflow hierarchy first: a page reads brow → title → stat strip
+     → primary action zone → dense rows/tables. No generic card grids.
+   - ONE restrained signal: the ember (orange) accent, derived locally
+     from the sanctioned gold/warning tokens via color-mix() — used for
+     brows, active rail steps, primary numerals and the single most
+     important action per view. Never a large fill, never a text body
+     color.
+   - Statuses speak one chip vocabulary (data-tone) everywhere.
+   - Tables: hairline rows, 13px floor, sticky header option, tabular
+     numerals, sortable th buttons, inline-start severity edges.
+   - Arabic-first RTL: logical properties everywhere, no negative
+     tracking, ≥44px tap floors, hover effects guarded behind
+     (hover:hover) and (pointer:fine).
+   - Tokens only (tokens.css wins); motion via var(--t-*) only; no
+     !important; raw px only for hairline borders/geometry allowances
+     documented inline.
+   ================================================================== */
+
+@layer pages {
+
+/* ────────────────────────────────────────────────────────────────────
+   §0 · hr- — shared Heron primitives (coordinator-owned)
+   ──────────────────────────────────────────────────────────────── */
+
+/* The scope hook: boxless wrapper inside PageFrame. Declares the
+   Heron ember family locally — derived, theme-reactive, gate-clean. */
+.hr-scope {
+  display: contents;
+
+  /* The restrained ember: a warm orange that leans on the sanctioned
+     gold/amber ramp. Light theme pulls it deeper for AA contrast on
+     paper grounds; dark lifts it toward the copper ink. */
+  --hr-ember: color-mix(in srgb, var(--gold) 72%, var(--warning));
+  --hr-ember-ink: var(--gold-ink);
+  --hr-ember-soft: color-mix(in srgb, var(--gold-soft) 55%, transparent);
+  --hr-ember-edge: color-mix(in srgb, var(--gold-ink) 22%, transparent);
+  --hr-ember-wash: color-mix(in srgb, var(--gold-soft) 26%, transparent);
+}
+
+[data-theme='dark'] .hr-scope {
+  --hr-ember: color-mix(in srgb, var(--gold) 64%, var(--warning-ink));
+  --hr-ember-ink: color-mix(in srgb, var(--gold-ink) 55%, var(--gold));
+  --hr-ember-soft: color-mix(in srgb, var(--gold) 26%, transparent);
+}
+
+/* ─── Brow: the section eyebrow — mono micro-label + ember tick ─── */
+
+.hr-brow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--hr-ember-ink);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0;           /* Arabic joins — never track */
+  padding-inline: var(--sp-2);
+  padding-block: var(--sp-1);
+  border-inline-start: 3px solid var(--hr-ember);
+  border-radius: var(--r-xs);
+}
+
+.hr-brow::before {
+  content: '';
+  inline-size: var(--sp-2);
+  block-size: var(--sp-2);
+  border-radius: var(--r-full);
+  background: var(--hr-ember);
+}
+
+/* ─── Section head: strong, hairline-anchored, count-aware ─────── */
+
+.hr-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding-block-end: var(--sp-2);
+  border-block-end: 1px solid var(--border);
+  margin-block-end: var(--sp-3);
+}
+
+.hr-section-head h2,
+.hr-section-head h3 {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+
+.hr-section-count {
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  padding-inline: var(--sp-2-5);
+  padding-block: var(--sp-0-5);
+  min-block-size: 24px;         /* chip, not a tap target */
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ─── Toolbar: one placement grammar for search + filters + actions ── */
+
+.hr-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding-block: var(--sp-2);
+}
+
+.hr-toolbar-spacer {
+  flex: 1 1 auto;
+  min-inline-size: var(--sp-4);
+}
+
+/* ─── Status chip: THE status vocabulary of the round ──────────────── */
+
+.hr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  padding-inline: var(--sp-2-5);
+  padding-block: var(--sp-1);
+  min-block-size: 26px;
+  white-space: nowrap;
+}
+
+.hr-chip::before {
+  content: '';
+  inline-size: var(--sp-1-5);
+  block-size: var(--sp-1-5);
+  border-radius: var(--r-full);
+  background: var(--text-muted);
+  flex: none;
+}
+
+.hr-chip[data-tone='neutral']::before { background: var(--text-muted); }
+.hr-chip[data-tone='ok'] {
+  color: var(--success-ink);
+  background: var(--success-soft);
+  border-color: color-mix(in srgb, var(--success) 32%, transparent);
+}
+.hr-chip[data-tone='ok']::before { background: var(--success); }
+.hr-chip[data-tone='warn'] {
+  color: var(--warning-ink);
+  background: var(--warning-soft);
+  border-color: color-mix(in srgb, var(--warning) 36%, transparent);
+}
+.hr-chip[data-tone='warn']::before { background: var(--warning); }
+.hr-chip[data-tone='danger'] {
+  color: var(--danger-ink);
+  background: var(--danger-soft);
+  border-color: color-mix(in srgb, var(--danger) 32%, transparent);
+}
+.hr-chip[data-tone='danger']::before { background: var(--danger); }
+.hr-chip[data-tone='info'] {
+  color: var(--accent-ink);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.hr-chip[data-tone='info']::before { background: var(--accent); }
+.hr-chip[data-tone='ember'] {
+  color: var(--hr-ember-ink);
+  background: var(--hr-ember-wash);
+  border-color: var(--hr-ember-edge);
+}
+.hr-chip[data-tone='ember']::before { background: var(--hr-ember); }
+
+/* ─── Data table: dense-but-readable, hairline rows, tabular digits ── */
+
+.hr-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow-x: auto;
+  /* the ≤640 rung in components.css owns horizontal scrolling; this
+     wrapper adds the Heron frame without stealing its behavior */
+}
+
+.hr-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-xs);
+}
+
+.hr-table thead th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-align: start;
+  padding-inline: var(--sp-3);
+  padding-block: var(--sp-2-5);
+  border-block-end: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.hr-table tbody td {
+  padding-inline: var(--sp-3);
+  padding-block: var(--sp-2-5);
+  border-block-end: 1px solid color-mix(in srgb, var(--border) 62%, transparent);
+  vertical-align: middle;
+}
+
+.hr-table tbody tr:last-child td { border-block-end: none; }
+
+.hr-table .hr-num {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hr-table tbody tr:hover { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+}
+
+/* Sortable header buttons live inside th — 44px floor, one signal. */
+.hr-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--r-xs);
+}
+
+.hr-sort-btn[aria-sort='ascending'] .hr-sort-glyph,
+.hr-sort-btn[aria-sort='descending'] .hr-sort-glyph {
+  color: var(--hr-ember-ink);
+}
+
+/* ─── Severity edge: inline-start 3px — the due/overdue grammar ─── */
+
+.hr-edge {
+  border-inline-start: 3px solid transparent;
+  border-start-start-radius: var(--r-xs);
+  border-end-start-radius: var(--r-xs);
+}
+.hr-edge[data-severity='info']    { border-inline-start-color: var(--accent-soft); }
+.hr-edge[data-severity='soon']    { border-inline-start-color: var(--warning); }
+.hr-edge[data-severity='overdue'] { border-inline-start-color: var(--danger); }
+.hr-edge[data-severity='ember']   { border-inline-start-color: var(--hr-ember); }
+
+/* ─── Workflow rail: authored lifecycle steps (draft → review → …) ── */
+
+.hr-rail {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--surface-2) 42%, transparent);
+}
+
+.hr-rail-step {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  padding-inline: var(--sp-2);
+  padding-block: var(--sp-1);
+  min-block-size: 28px;
+  border-radius: var(--r-full);
+}
+
+.hr-rail-step::before {
+  content: '';
+  inline-size: var(--sp-2-5);
+  block-size: var(--sp-2-5);
+  border-radius: var(--r-full);
+  border: 2px solid currentColor;
+  flex: none;
+}
+
+.hr-rail-step[data-state='done'] { color: var(--success-ink); }
+.hr-rail-step[data-state='done']::before {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.hr-rail-step[data-state='current'] {
+  color: var(--hr-ember-ink);
+  background: var(--hr-ember-wash);
+}
+.hr-rail-step[data-state='current']::before {
+  border-color: var(--hr-ember);
+  background: color-mix(in srgb, var(--hr-ember) 30%, transparent);
+}
+
+.hr-rail-step[data-state='rejected'] { color: var(--danger-ink); }
+.hr-rail-step[data-state='rejected']::before {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.hr-rail-link {
+  flex: none;
+  align-self: center;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  /* the arrow glyph is aria-hidden in markup; direction flips via
+     [dir] in the consuming section if a directional arrow is used */
+}
+
+/* ─── KPI emphasis: the tabular metric voice with ember option ───── */
+
+.hr-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hr-kpi-value {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-strong);
+  line-height: 1.15;
+}
+
+.hr-kpi-value[data-emphasis='true'] { color: var(--hr-ember-ink); }
+
+.hr-kpi-label {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+/* ─── Empty / feedback: structured, honest, one illustration slot ── */
+
+.hr-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  text-align: center;
+  padding-inline: var(--sp-5);
+  padding-block: var(--sp-7);
+  border: 1px dashed color-mix(in srgb, var(--border) 80%, var(--text-muted));
+  border-radius: var(--r-lg);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.hr-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding-inline: var(--sp-3);
+  padding-block: var(--sp-2-5);
+}
+
+/* ─── Scoped feedback: crisp press states inside Heron surfaces ──── */
+
+.hr-scope .btn { transition: transform var(--t-micro) var(--ease-out), box-shadow var(--t-fast) var(--ease-out); }
+
+.hr-scope .btn:active:not(:disabled) { transform: translateY(1px); }
+
+.hr-scope .btn:disabled,
+.hr-scope .btn[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+/* Primary emphasis cap: ONE ember-flavored primary action per surface
+   is expressed by .hr-cta (never by re-painting .btn globally). */
+.hr-cta {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hr-ember) 38%, transparent);
+}
+
+/* Focus: never weaken the global ring — only add a visible offset
+   inside dense rows so focus lands clearly on hairline surfaces. */
+.hr-scope :focus-visible {
+  outline-offset: 2px;
+}
+
+/* ─── Mobile: rows stack, toolbars wrap, tables scroll ────────────── */
+
+@media (max-width: 640px) {
+  .hr-toolbar { align-items: stretch; flex-direction: column; }
+  .hr-toolbar .btn { min-block-size: 44px; }
+  .hr-rail { flex-direction: column; align-items: stretch; }
+  .hr-rail-step { min-block-size: 44px; }
+  .hr-table thead th, .hr-table tbody td { padding-inline: var(--sp-2-5); }
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   §A · tqd- — Teacher dashboard + daily workflows (Agent 2-a)
+   Files: TeacherDashboardPage.tsx · TeacherPages.tsx
+   ──────────────────────────────────────────────────────────────── */
+/* [§A-START — Agent 2-a edits ONLY between these markers]
+
+   §A · tqd- — Teacher dashboard + daily workflows (Agent 2-a)
+   Files: TeacherDashboardPage.tsx · TeacherPages.tsx
+
+   Every surface in scope mounts `.hr-scope` (dashboard wraps PageFrame;
+   the TeacherPages routes wrap their `.page` root; dialogs wrap their
+   Modal children) so the §0 primitives and the ember family resolve
+   locally. The R304 tpg- layer stays live underneath — this section
+   only adds the Heron deltas: workflow hierarchy anchors, the ONE
+   ember signal per view, the chip vocabulary, severity edges, sort
+   buttons, crisp press feedback and the mobile floors.
+
+   Table note: the rosters keep the shared .table/.tbl-stack DOM (the
+   mobile row-card ladder + R304 sort pins ride on it), so §0's
+   .hr-table frame is NOT re-tagged onto them; the Heron table deltas
+   ride scoped .hr-scope .table rules below instead. */
+
+/* ── A1 · Page head: brow → title → hairline anchor ────────────────
+   The TeacherPages routes open with the family's own .page-header
+   markup (h1.page-title is e2e-pinned). The Heron anchor is a hairline
+   under the head block, and the header's leading .hr-brow names the
+   workflow area (a real classification, never decoration). The
+   dashboard's contract header keeps its own anatomy — its .pf-eyebrow
+   line is re-voiced as the Heron brow under the scope. */
+.hr-scope .page-header {
+  padding-block-end: var(--sp-3);
+  border-block-end: 1px solid var(--border);
+}
+
+.hr-scope .pf-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  inline-size: fit-content;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--hr-ember-ink);
+  padding-inline: var(--sp-2);
+  padding-block: var(--sp-1);
+  border-inline-start: 3px solid var(--hr-ember);
+  border-radius: var(--r-xs);
+}
+
+.hr-scope .pf-eyebrow::before {
+  content: '';
+  inline-size: var(--sp-2);
+  block-size: var(--sp-2);
+  border-radius: var(--r-full);
+  background: var(--hr-ember);
+}
+
+/* ── A2 · Dashboard section heads: strong title, hairline anchor ───
+   The dashboard trio (queue / today / at-risk) reads brow → strong
+   section heading → rows. SectionHeader is a shared pattern; the
+   Heron weight rides the scope, one rule deep, dashboard-only. */
+.hr-scope .pf-section-header {
+  padding-block-end: var(--sp-2);
+  border-block-end: 1px solid var(--border);
+  margin-block-end: var(--sp-2);
+}
+
+.hr-scope .pf-section-title {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+
+/* ── A3 · Queue count numerals — the ember metric voice ────────────
+   The pending-grading queue's per-row count is THE numeral of the
+   home: tabular mono (via .tq-num, kept for the spoken-count pin)
+   lifted to the KPI register and inked ember. The at-risk %s beside
+   it keep the quiet .tq-num voice. */
+.tqd-count {
+  font-size: var(--fs-h3);
+  color: var(--hr-ember-ink);
+  line-height: 1.15;
+}
+
+/* ── A4 · Roster tables — Heron deltas over the shared .table ──────
+   Softer row hairlines (the 62% rule §0's .hr-table uses) so a dense
+   roster scans as rows, not a grid, and the active sort column reads
+   ember (the ONE signal on a read table). */
+.hr-scope .table tbody td {
+  border-block-end: 1px solid color-mix(in srgb, var(--border) 62%, transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hr-scope .table tbody tr:hover {
+    background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+  }
+}
+
+.hr-scope .table th[aria-sort] .tpg-sort {
+  color: var(--hr-ember-ink);
+}
+
+/* aria-sort lives on the th (the accessible contract); the glyph rides
+   a .hr-sort-glyph span so it can take the ember without touching the
+   column's accessible name. */
+.hr-scope .table th[aria-sort] .hr-sort-glyph {
+  color: var(--hr-ember-ink);
+}
+
+/* ── A5 · Grading queue — severity edges keep the Heron frame ──────
+   .queue-group.tpg-queue-section carries the R304 frame (r-xl) and the
+   data-due edge colors; adopting §0's .hr-edge adds the 3px
+   inline-start rule, so the frame's start corners are re-asserted to
+   the same r-xl (a mixed-radius edge would read as a glitch). */
+.hr-scope .queue-group.hr-edge {
+  border-start-start-radius: var(--r-xl);
+  border-end-start-radius: var(--r-xl);
+}
+
+/* Group header rule: the title is the scan anchor — strong ink over
+   the hairline the R304 head already draws. */
+.hr-scope .queue-group .tpg-queue-title {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+
+/* ── A6 · Attendance roll call — crisp toggle feedback ─────────────
+   The four state buttons are the page's whole write surface: fast
+   color state + a micro press dip, matching §0's .btn grammar. */
+.hr-scope .att-toggle {
+  transition:
+    background-color var(--t-fast) var(--ease-out),
+    color var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out),
+    transform var(--t-micro) var(--ease-out);
+}
+
+.hr-scope .att-toggle:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* ── A7 · Materials — the file-type tile takes the ember wash ──────
+   A wash, never a fill: the icon tile is the only warm note on an
+   otherwise neutral ledger of file rows. */
+.hr-scope .tpg-mat-icon {
+  color: var(--hr-ember-ink);
+  background: var(--hr-ember-wash);
+}
+
+/* ── A8 · Weekly schedule — today is THE ember signal ──────────────
+   The R304 today rule used the accent; under Heron the marked day
+   (border + day name + the «اليوم» chip) moves to the ember family so
+   a scanning teacher stops at one color. */
+.hr-scope .tpg-day[data-today='true'] {
+  border-color: var(--hr-ember);
+}
+
+.hr-scope .tpg-day[data-today='true'] .tpg-day-title {
+  color: var(--hr-ember-ink);
+}
+
+/* ── A9 · Performance distribution — the share numeral speaks ──────
+   The per-band % is the row's datum: strong ink, tabular (mono stack
+   comes from the R304 .tpg-dist-value). */
+.hr-scope .tpg-dist-value {
+  color: var(--text-strong);
+  font-weight: var(--fw-semibold);
+}
+
+/* ── A10 · Dialogs — press feedback reaches the modals ─────────────
+   Grade/authoring dialogs mount their own .hr-scope inside the Modal
+   portal; nothing else needed here — §0's scoped .btn grammar does
+   the work once the wrapper is present. */
+
+/* ── A11 · Mobile floors — page actions and queue sides ────────────
+   §0 tops up toolbars and rails; the family's own header actions and
+   the assignments row's trailing cluster get the same touch floor. */
+@media (max-width: 640px) {
+  .hr-scope .page-header .btn,
+  .hr-scope .pf-page-actions .btn {
+    min-block-size: 44px;
+  }
+
+  .hr-scope .tpg-asg-side {
+    flex-wrap: wrap;
+  }
+}
+/* [§A-END] */
+
+/* ────────────────────────────────────────────────────────────────────
+   §B · exa2- — Exam authoring hub + template detail (Agent 2-b)
+   File: ExamAuthorPages.tsx
+   ──────────────────────────────────────────────────────────────── */
+/* [§B-START — Agent 2-b edits ONLY between these markers]
+
+   §B · exa2- — the Heron layer over the exam authoring lifecycle
+   (ExamAuthorPages.tsx: the /teacher/exams hub + /teacher/exams/:id
+   detail). The R304 exa- sheet stays the layout foundation and keeps
+   every class the suite pins (exa-order, exa-grade-card, the row
+   sheet, the form scaffolding); this layer adds the Heron workflow
+   grammar on top — brow → strong heading → hairline-anchored section
+   head → toolbar → edge-marked status rows → the hr-rail lifecycle
+   strip → the one ember CTA per surface. Loaded after
+   teacher-quality.css, both inside @layer pages, so paired-class
+   refinements win ties by source order — never !important.
+   ──────────────────────────────────────────────────────────────── */
+
+/* Masthead brow (hub + detail): .hr-brow carries the anatomy; this
+   block margin hands the eye down to the page title (base.css owns
+   .page-header's rhythm). */
+.hr-scope .exa2-brow {
+  margin-block-end: var(--sp-2);
+}
+
+/* The template lifecycle rail: the R304 exa-lifecycle strip is now
+   the shared .hr-rail grammar (done / current / rejected via
+   data-state, aria-current preserved). The <ol> host needs only the
+   list reset; the steps speak the §0 step anatomy as-is. */
+.hr-scope ol.exa2-rail {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Section heads: the R304 .exa-section-head keeps its flex contract
+   and heading metrics; the paired .hr-section-head contributes the
+   hairline anchor + strong heading ink. Pin the crossbars back to
+   flex-end — a baseline axis over the column heading reads ragged
+   once a two-line description wraps. */
+.hr-scope .exa-section-head.hr-section-head {
+  align-items: flex-end;
+}
+
+/* The count chip rides the heading's crossbar, never wraps alone. */
+.hr-scope .exa-section-head .hr-section-count {
+  flex-shrink: 0;
+  margin-block-end: var(--sp-1);
+}
+
+/* The builder picker's pick-position chip: the one live signal of the
+   build surface speaks the ember family (derived in .hr-scope),
+   replacing the generic accent wash its R304 twin used. */
+.hr-scope .exa-pick-order {
+  background: var(--hr-ember-wash);
+  color: var(--hr-ember-ink);
+}
+
+/* Status rows wear the Heron severity edge (markup pairs .hr-edge +
+   data-severity beside .exa-row): the 3px inline-start bar mirrors
+   the row's chip tone so a row's state reads before its text. Square
+   rows inside the rounded .exa-rows sheet inherit its end radii —
+   no extra geometry here. */
+
+/* Mobile: §0 floors .hr-toolbar buttons; the section-head actions
+   (create CTA, filter checkbox) join the 44px floor when the head
+   wraps beneath the title. */
+@media (max-width: 640px) {
+  .hr-scope .exa-section-actions .btn { min-block-size: 44px; }
+}
+
+/* [§B-END] */
+
+/* ────────────────────────────────────────────────────────────────────
+   §C · oex2- — Student exams list/taker + moderation (Agent 2-b)
+   File: OnlineExamsPages.tsx
+   ──────────────────────────────────────────────────────────────── */
+/* [§C-START — Agent 2-b edits ONLY between these markers]
+
+   §C · oex2- — the Heron layer over the student exam surfaces and the
+   quality moderation queue (OnlineExamsPages.tsx: the list, the
+   taker, /quality/exam-moderation). The taker is behavior-critical —
+   its DOM changes here ONLY by the .hr-scope wrapper (press feedback
+   + focus offset) and .hr-cta on the begin/submit verbs; every state
+   class the attempt lifecycle renders (oex-q, oex-choice,
+   oex-qmap-dot, oex-q-state, oex-timer, oex-time-rail…) stays the
+   R304 anatomy verbatim. The list rows and the moderation queue adopt
+   the brow + severity-edge grammar; pinned locators (.oex-row,
+   .oex-mod-row, .oex-result-title, the listitem wrappers) survive.
+   ──────────────────────────────────────────────────────────────── */
+
+/* Masthead brow (list + moderation): same grammar as §B. */
+.hr-scope .oex2-brow {
+  margin-block-end: var(--sp-2);
+}
+
+/* Severity edges ride the R304 rows (.hr-edge + data-severity in
+   markup): startable anchor rows already carry r-md radii, so the bar
+   rounds into a tab; static history/queue rows are square and the
+   straight bar matches their hairline grid. */
+
+/* The moderation review panel: one hairline frame over the R304
+   surface-2 step — the region is announced by its aria-label and now
+   visibly bounded against the row above it. */
+.hr-scope .oex-mod-panel {
+  border: 1px solid var(--border);
+}
+
+/* [§C-END] */
+
+/* ────────────────────────────────────────────────────────────────────
+   §D · qlt2- — Quality oversight boards (Agent 2-c)
+   File: QualityPages.tsx
+   ──────────────────────────────────────────────────────────────── */
+/* [§D-START — Agent 2-c edits ONLY between these markers]
+
+   §D · qlt2- — Quality oversight boards (Agent 2-c)
+   ------------------------------------------------------------------
+   The Heron overlay for the seven /quality/* boards (dashboard,
+   courses, professors, engagement, curriculum, reports, alerts).
+   The R304 §3 qlt-* rules stay verbatim BENEATH this layer: the
+   quality pages import this sheet AFTER teacher-quality.css, so
+   equal-specificity conflicts resolve toward Heron. Everything here
+   is scoped to the mounting .hr-scope wrapper — a surface without it
+   keeps the R304 grammar untouched.
+
+   Composition contract (what each surface mounts, TSX-side):
+   · .page > .hr-scope — the boxless scope mounts INSIDE the legacy
+     .page frame so polish's route-enter (`.content-inner > *`) still
+     lands on a box; D0 re-arms the flex guard the interposition
+     absorbs.
+   · .hr-brow opens every board: brow → strong heading (D0).
+   · Toolbars compose .hr-toolbar onto the existing rails
+     (.tq-toolbar / .filter-pill-row / .qlt-alert-filter); pressed
+     filter pills speak the ember — the view's ONE governance signal
+     (D1).
+   · Rosters add .hr-table (§0) over the shared .table/.tbl-stack —
+     filled header, denser hairline rows (D2); the ≤640 labelled-card
+     recipe is re-armed in D4 against §0's density longhands.
+   · Statuses speak ONE chip vocabulary (.hr-chip data-tone) — the
+     R304 ThemeColor bands translated verbatim, thresholds unchanged
+     (TSX).
+   · Oversight rows wear severity edges: alert rows 3px inline-start
+     with critical→danger / warning→warn / info→info (D3); curriculum
+     course rows ride the §0 .hr-edge lexicon (weak→soon, poor→
+     overdue, strong stays transparent — TSX).
+   · Reports link rows are the page's primary actions — ember icon
+     wells (D5); the honest export note rides §0 .hr-note (TSX); the
+     dashboard's single oversight CTA rides §0 .hr-cta (TSX).
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── D0 · Scope plumbing ──────────────────────────────────────────
+   The interposed boxless scope absorbs .page's `> *` min-inline-size
+   flex guard — re-arm it on the scoped children. The brow keeps its
+   breath above the h1 inside .page-title-block (§0 owns its chrome). */
+.hr-scope > * { min-inline-size: 0; }
+
+.hr-scope .page-title-block .hr-brow {
+  margin-block-end: var(--sp-1);
+}
+
+/* ── D1 · Toolbars + the pressed-pill ember ───────────────────────
+   One placement grammar: every filter rail adds .hr-toolbar (TSX).
+   The pressed filter pill (professors «بحاجة لمتابعة», alerts
+   severity, curriculum levels) reads ember instead of the inverted
+   neutral — the adaptive §0 vars retune it per theme. Outranking the
+   training.css pressed rules needs the extra scope class only; both
+   themes resolve from one declaration. */
+.hr-scope .filter-pill[aria-pressed='true'] {
+  color: var(--hr-ember-ink);
+  background: var(--hr-ember-wash);
+  border-color: var(--hr-ember-edge);
+}
+
+/* ── D2 · Heron rosters ───────────────────────────────────────────
+   The rosters carry .hr-table alongside .table.tbl-stack. §0's rules
+   land after teacher-quality.css, so the filled header supersedes the
+   R304 transparent-header rung and the rows densify; nothing else in
+   the shared recipe (stack, scroll, labels) is touched here. */
+.hr-scope .hr-table .hr-chip {
+  white-space: nowrap;
+}
+
+/* ── D3 · Alert rows — the 3px severity edge ──────────────────────
+   The R304 2px edge joins the Heron hairline weight (3px, rounded
+   start corners — the .hr-edge geometry). Severity colors stay the
+   R304 semantic washes: critical→danger, warning→warn, info→info. */
+.hr-scope .qlt-alert-row {
+  border-inline-start-width: 3px;
+  border-start-start-radius: var(--r-xs);
+  border-end-start-radius: var(--r-xs);
+}
+
+.hr-scope .qlt-alert-row .hr-chip { flex-shrink: 0; }
+
+/* ── D5 · Reports — the live-boards ledger ────────────────────────
+   The link rows ARE this page's primary actions: their icon wells
+   trade the accent wash for the ember (the page's single signal);
+   row hover stays the guarded R304 wash. */
+.hr-scope .qlt-link-row-icon {
+  color: var(--hr-ember-ink);
+  background: var(--hr-ember-wash);
+  border: 1px solid var(--hr-ember-edge);
+}
+
+/* ── D4 · Mobile — re-arm the labelled-card stack ─────────────────
+   §0's .hr-table density longhands out-rank the shared stack recipe's
+   td shorthand (specificity, not order), so the ≤640 labelled-card
+   grammar is re-armed inside the quality scope: flush label/value
+   rows, dashed separators, no zebra. */
+@media (max-width: 640px) {
+  .hr-scope .table.tbl-stack td {
+    padding: var(--sp-2) 0;
+    border-block-end: 1px dashed var(--rule);
+  }
+}
+
+/* [§D-END] */
+
+/* ────────────────────────────────────────────────────────────────────
+   §E · tax- — Teacher intelligence/profile/live/labs (Agent 2-d)
+   Files: TeacherIntelligencePage.tsx · TeacherProfilePage.tsx ·
+          TeacherLivePage.tsx · TeacherLabsPage.tsx
+   ──────────────────────────────────────────────────────────────── */
+/* [§E-START — Agent 2-d edits ONLY between these markers] */
+
+/* ═══ §E · tax- — Teacher aux: intelligence · profile · live · labs ═══
+   Consumes the §0 primitives as-is (hr-scope · hr-brow · hr-chip ·
+   hr-edge · hr-kpi · hr-toolbar · hr-note · hr-cta). §E adds only
+   what §0 cannot know:
+     1. the four-level RISK severity set for the .hr-edge rail (the
+        risk ladder, not the due-date ladder) + the matching score
+        ink — status text always rides -ink tokens;
+     2. .tax-kpis — the flagged-tier KPI row (real counts only);
+     3. composition seams: brow breathing, the truncated-list
+        disclosure, and the labs note icon ink. */
+
+/* ── 1 · Risk rows: severity rail + score ink, one data attribute ──
+   .hr-edge paints the 3px inline-start rail; §E names the four risk
+   severities (data-severity on the row drives both the rail and the
+   numeral ink). Raw accents never render as text here. */
+.hr-scope .risk-row[data-severity='ok']       { border-inline-start-color: var(--success); }
+.hr-scope .risk-row[data-severity='watch']    { border-inline-start-color: var(--chart-6); }
+.hr-scope .risk-row[data-severity='warn']     { border-inline-start-color: var(--warning); }
+.hr-scope .risk-row[data-severity='critical'] { border-inline-start-color: var(--danger); }
+
+.hr-scope .risk-row[data-severity='ok']       .risk-row-score { color: var(--success-ink); }
+.hr-scope .risk-row[data-severity='watch']    .risk-row-score { color: var(--gold-ink); }
+.hr-scope .risk-row[data-severity='warn']     .risk-row-score { color: var(--warning-ink); }
+.hr-scope .risk-row[data-severity='critical'] .risk-row-score { color: var(--danger-ink); }
+
+/* The row keeps its own 12px card radius — .hr-edge's r-xs start
+   corners target flat table rows, not rounded risk cards. */
+.hr-scope .risk-row.hr-edge {
+  border-start-start-radius: var(--r-lg);
+  border-end-start-radius: var(--r-lg);
+}
+
+/* ── 2 · Flagged-tier KPI row — honest counts above the risk rows ──
+   Three cells for the three tiers the panel actually holds (the
+   /teacher/risks endpoint skips stable students, so «مستقر» is
+   deliberately absent rather than a lying zero). Ember emphasis is
+   reserved for a non-zero critical count. */
+.tax-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: var(--sp-3);
+  padding-block-end: var(--sp-3);
+  margin-block-end: var(--sp-3);
+  border-block-end: 1px solid var(--border);
+}
+
+@media (max-width: 480px) {
+  .tax-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ── 3 · Composition seams ─────────────────────────────────────────── */
+
+/* The Heron brow rides above each page title with a rung of air so
+   it reads as an eyebrow, not a floating pill. */
+.hr-scope .page-title-block .hr-brow { margin-block-end: var(--sp-2); }
+
+/* Truncated-list disclosure (live · «جلسات سابقة») — sheet class
+   replaces the old inline margin (r186 hygiene). */
+.tax-past-note { margin-block-start: var(--sp-3); }
+
+/* The labs disclaimer rides .hr-note; its leading icon stays quiet
+   ink so the sentence — not the glyph — carries the caution. */
+.hr-scope .hr-note > svg { flex: none; color: var(--text-muted); }
+
+/* [§E-END] */
+
+}

@@ -29,6 +29,10 @@ import { useInstitutionScope } from '../../stores/auth.store';
  * The sheet's other selectors are scoped to elements this page never
  * renders; loading it is the family's established convention. */
 import '../../styles/admin.css';
+// R305-A8 «Heron»: the scoped admin/owner sheet rides LAST (same @layer
+// pages, later source order → it wins the equal-specificity ties). Every
+// rule is scoped under the .r305ao page-root marker — zero leakage.
+import '../../styles/r305-admin-owner.css';
 import { withInstitutionScope } from '../../lib/queryClient';
 import { apiErrorMessage } from '../../hooks/useResources';
 import { formatRelativeArShort, countAr } from '../../lib/format';
@@ -219,7 +223,7 @@ export function AdminSyncPage() {
      * categories cards. Every section renders its shape-matched
      * placeholder so the pending → resolved handoff moves nothing. */
     return (
-      <div className="page" aria-busy="true" aria-live="polite">
+      <div className="page r305ao" aria-busy="true" aria-live="polite">
         <PatternsPageHeader
           title="المزامنة مع البيانات الرسمية"
           description="استيراد البيانات العامة من الموقع الرسمي للجامعة."
@@ -239,7 +243,7 @@ export function AdminSyncPage() {
   // retry offer.
   if (isError) {
     return (
-      <div className="page">
+      <div className="page r305ao">
         <PatternsPageHeader
           title="المزامنة مع البيانات الرسمية"
           description="استيراد البيانات العامة من الموقع الرسمي للجامعة."
@@ -258,7 +262,7 @@ export function AdminSyncPage() {
   // Resolved payload with nothing in it → honest empty state, not a blank page.
   if (!data) {
     return (
-      <div className="page">
+      <div className="page r305ao">
         <PatternsPageHeader
           title="المزامنة مع البيانات الرسمية"
           description="استيراد البيانات العامة من الموقع الرسمي للجامعة."
@@ -277,7 +281,7 @@ export function AdminSyncPage() {
   }
 
   return (
-    <div className="page">
+    <div className="page r305ao">
       <PatternsPageHeader
         title="المزامنة مع البيانات الرسمية"
         description={

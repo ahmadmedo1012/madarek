@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
-import { Card, Badge, AlertRow, ProgressBar, UserAvatar, type ThemeColor } from '../../components/primitives';
+import { Card, Badge, AlertRow, ProgressBar, UserAvatar } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ChartFrame } from '../../components/charts';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
@@ -31,6 +31,10 @@ import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
 // toolbar migrated OFF the borrowed .admin-students-* chrome onto the
 // family-owned .tq-toolbar/.tq-search pill.
 import '../../styles/teacher-quality.css';
+// R305 Heron (§0+§D): the shared hr- primitives + this family's
+// quality-boards overlay. Imported AFTER the R304 family sheet so the
+// equal-specificity Heron rules land last.
+import '../../styles/r305-teacher-quality.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Filler, Tooltip, Legend);
 
@@ -214,6 +218,13 @@ const SEVERITY_TONE: Record<QualityAlert['severity'], 'red' | 'amber' | 'brand'>
   warning: 'amber',
   info: 'brand',
 };
+/* R305 Heron (§D): the alert row chip rides §0's vocabulary — the same
+ * severity semantics the R304 edge paints, in the one chip lexicon. */
+const SEVERITY_CHIP_TONE: Record<QualityAlert['severity'], 'danger' | 'warn' | 'info'> = {
+  critical: 'danger',
+  warning: 'warn',
+  info: 'info',
+};
 /* 4C-b: the alerts page's row chip label — the severity word rides the
  * semantic badge so a row is readable at a glance (dashboard summary
  * keeps the bare AlertRow grammar). */
@@ -233,16 +244,26 @@ function ReadOnlyBadge() {
   );
 }
 
-/** r299 (E item 6): threshold tone bands typed to Badge's ThemeColor
- *  union — the roster score cells used to cast string unions `as never`.
- *  Two bands live in the sector: content scores 80/50 (courses), the
- *  professor compliance band 75/50. */
-function completionTone(score: number): ThemeColor {
-  return score >= 80 ? 'green' : score >= 50 ? 'amber' : 'red';
+/* R305 Heron (§D): the sector brow — every oversight board opens
+ * brow → strong heading so the seven surfaces read as ONE governance
+ * face. A separate element (never inside the h1) keeps heading names
+ * and pinned strings byte-identical. */
+function QualityBrow() {
+  return <span className="hr-brow">قطاع ضمان الجودة</span>;
 }
-function complianceTone(pct: number): ThemeColor {
-  return pct >= 75 ? 'green' : pct >= 50 ? 'amber' : 'red';
+
+/** R305 Heron (§D): the status vocabulary rides §0's .hr-chip tones —
+ *  the R304 ThemeColor bands (r299 E6) translated to the chip lexicon.
+ *  Same bands, one vocabulary: content scores 80/50 (courses), the
+ *  professor compliance band 75/50. Zero/no-data stays neutral (the
+ *  honest «لا محتوى بعد» register — never a colored fake). */
+function completionChipTone(score: number): 'ok' | 'warn' | 'danger' {
+  return score >= 80 ? 'ok' : score >= 50 ? 'warn' : 'danger';
 }
+function complianceChipTone(pct: number): 'ok' | 'warn' | 'danger' {
+  return pct >= 75 ? 'ok' : pct >= 50 ? 'warn' : 'danger';
+}
+
 const CATEGORY_ICON: Record<QualityAlert['category'], LucideIcon> = {
   attendance: ClipboardCheck,
   plagiarism: FileText,
@@ -375,6 +396,8 @@ export function QualityDashboardPage() {
   const pageHeader = (
     <header className="page-header">
       <div className="page-title-block">
+        {/* R305 Heron (§D): the sector brow opens the governance face. */}
+        <QualityBrow />
         <h1 className="page-title">لوحة الجودة</h1>
         <p className="page-subtitle">
           بناء نظام تعليمي فعّال عبر تطوير الأداء الأكاديمي والإداري والتقني — وفقاً لمتطلبات الاعتماد المحلية والدولية.
@@ -393,6 +416,7 @@ export function QualityDashboardPage() {
   if (ov.isPending || eg.isPending) {
     return (
       <div className="page">
+        <div className="hr-scope">
         {pageHeader}
         {/* r299 (E item 7a): the file's own StatStripSkeleton (five
             cells — the resolved strip's shape), not the inline twin. */}
@@ -410,6 +434,7 @@ export function QualityDashboardPage() {
             <Card><ListSkeleton rows={3} /></Card>
           </div>
         </div>
+        </div>
       </div>
     );
   }
@@ -425,12 +450,14 @@ export function QualityDashboardPage() {
     // when the section owns the header chrome).
     return (
       <div className="page">
+        <div className="hr-scope">
         {pageHeader}
         <ErrorState
           message="تعذَّر تحميل لوحة الجودة"
           error={ov.error ?? eg.error}
           onRetry={() => { ov.refetch(); eg.refetch(); }}
         />
+        </div>
       </div>
     );
   }
@@ -465,6 +492,7 @@ export function QualityDashboardPage() {
 
   return (
     <div className="page">
+      <div className="hr-scope">
       {pageHeader}
 
       {/* R189 — the typographic stat strip (was the grid-4 KPI tiles). */}
@@ -658,7 +686,7 @@ export function QualityDashboardPage() {
                   />
                 ))}
               </div>
-              <Link to="/quality/alerts" className="btn ghost sm" style={{ marginTop: 'var(--sp-3)' }}>
+              <Link to="/quality/alerts" className="btn ghost sm hr-cta" style={{ marginTop: 'var(--sp-3)' }}>
                 <Icon icon={ArrowLeft} size={13} />
                 عرض كل التنبيهات
               </Link>
@@ -666,6 +694,7 @@ export function QualityDashboardPage() {
           )}
         </Card>
         </div>
+      </div>
       </div>
     </div>
   );
@@ -719,8 +748,11 @@ export function QualityCoursesPage() {
     metric === 'attendance' ? o.metrics?.attendanceRate : o.metrics?.completionRate;
   return (
     <div className="page">
+      <div className="hr-scope">
       <header className="page-header">
         <div className="page-title-block">
+          {/* R305 Heron (§D): the sector brow opens the governance face. */}
+          <QualityBrow />
           <h1 className="page-title">جودة المقرّرات</h1>
           <p className="page-subtitle">
             {metric
@@ -754,7 +786,13 @@ export function QualityCoursesPage() {
         <Card
           title="المقرّرات النشطة"
           subtitle={total != null
-            ? `${countAr(total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}${debouncedQ ? ' مطابقة للبحث' : ''}${courses && courses.length < total ? ` · تُعرض أول ${courses.length}` : ''}`
+            ? (
+              /* R305 Heron (§D): the roster count line rides the §0
+                 section-count chip (text unchanged — tests pin it). */
+              <span className="hr-section-count">
+                {`${countAr(total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}${debouncedQ ? ' مطابقة للبحث' : ''}${courses && courses.length < total ? ` · تُعرض أول ${courses.length}` : ''}`}
+              </span>
+            )
             : undefined}
           icon={BookOpen}
           actions={metric ? (
@@ -771,8 +809,9 @@ export function QualityCoursesPage() {
           {/* R304: the roster search chrome — now the family-owned
               .tq-toolbar/.tq-search pill (migrated off the borrowed
               admin-students-* chrome) wired to the debounced
-              server-side `q`. */}
-          <div className="tq-toolbar">
+              server-side `q`. R305 Heron (§D): .hr-toolbar joins for
+              the one placement grammar. */}
+          <div className="tq-toolbar hr-toolbar">
             <div className="tq-search">
               <Icon icon={Search} size={14} />
               <input
@@ -789,10 +828,11 @@ export function QualityCoursesPage() {
               on phones — same .table-wrap > .table.tbl-stack pattern as
               every admin roster (OwnerUsersPage reference). 4C-b: the
               page-scoped qlt-table restyle keeps the ONE shared DOM —
-              calm transparent header, mono tabular metric columns,
-              identity cell (name + code) leading. */}
+              mono tabular metric columns, identity cell (name + code)
+              leading. R305 Heron (§D): .hr-table layers the filled
+              header + denser hairline rows over the shared recipe. */}
           <div className="table-wrap">
-            <table className="table tbl-stack qlt-table">
+            <table className="table tbl-stack qlt-table hr-table">
               <thead>
                 <tr>
                   <th scope="col">المقرّر</th>
@@ -817,10 +857,10 @@ export function QualityCoursesPage() {
                   // Score 0 = no content yet — a neutral state, never a
                   // danger register (A8 P2-4: red “0%” spent the danger
                   // color on “no data”). r299 (E item 6): typed tones —
-                  // the `as never` casts retired.
-                  const color = score === 0 ? undefined : completionTone(score);
+                  // the `as never` casts retired. R305 Heron (§D): the
+                  // bands ride the .hr-chip vocabulary verbatim.
+                  const tone = completionChipTone(score);
                   const mv = metric ? metricValue(o) : undefined;
-                  const metricColor = mv == null ? undefined : completionTone(mv);
                   return (
                     <tr key={o.id}>
                       <td className="tbl-strong" data-label="المقرّر">
@@ -851,14 +891,14 @@ export function QualityCoursesPage() {
                       {metric && (
                         <td className="tbl-num" data-label={metricLabel}>
                           {mv == null
-                            ? <Badge>لا بيانات</Badge>
-                            : <Badge color={metricColor}><bdi>{Math.round(mv)}%</bdi></Badge>}
+                            ? <span className="hr-chip">لا بيانات</span>
+                            : <span className="hr-chip" data-tone={completionChipTone(mv)}><bdi>{Math.round(mv)}%</bdi></span>}
                         </td>
                       )}
                       <td data-label="اكتمال المحتوى">
                         {score === 0
-                          ? <Badge>لا محتوى بعد</Badge>
-                          : <Badge color={color}>{score}%</Badge>}
+                          ? <span className="hr-chip">لا محتوى بعد</span>
+                          : <span className="hr-chip" data-tone={tone}>{score}%</span>}
                       </td>
                     </tr>
                   );
@@ -868,6 +908,7 @@ export function QualityCoursesPage() {
           </div>
         </Card>
       )}
+      </div>
     </div>
   );
 }
@@ -931,8 +972,11 @@ export function QualityProfessorsPage() {
   if (p.isPending) {
     return (
       <div className="page">
+        <div className="hr-scope">
         <header className="page-header">
           <div className="page-title-block">
+            {/* R305 Heron (§D): the sector brow. */}
+            <QualityBrow />
             <h1 className="page-title">تقييم الأساتذة</h1>
             <p className="page-subtitle">رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.</p>
           </div>
@@ -940,6 +984,7 @@ export function QualityProfessorsPage() {
         </header>
         <StatStripSkeleton cells={3} />
         <Card title="هيئة التدريس" icon={School}><TableSkeleton rows={5} cols={8} /></Card>
+        </div>
       </div>
     );
   }
@@ -951,14 +996,18 @@ export function QualityProfessorsPage() {
   if (p.isError || !p.data) {
     return (
       <div className="page">
+        <div className="hr-scope">
         <header className="page-header">
           <div className="page-title-block">
+            {/* R305 Heron (§D): the sector brow. */}
+            <QualityBrow />
             <h1 className="page-title">تقييم الأساتذة</h1>
             <p className="page-subtitle">رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.</p>
           </div>
           <div className="qlt-header-badges"><ReadOnlyBadge /></div>
         </header>
         <ErrorState message="تعذّر تحميل قائمة الأساتذة" error={p.error} onRetry={() => p.refetch()} />
+        </div>
       </div>
     );
   }
@@ -973,8 +1022,11 @@ export function QualityProfessorsPage() {
 
   return (
     <div className="page">
+      <div className="hr-scope">
       <header className="page-header">
         <div className="page-title-block">
+          {/* R305 Heron (§D): the sector brow. */}
+          <QualityBrow />
           <h1 className="page-title">تقييم الأساتذة</h1>
           <p className="page-subtitle">
             رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.
@@ -1023,7 +1075,13 @@ export function QualityProfessorsPage() {
         className="qlt-section"
         title={lowOnly ? `هيئة التدريس · بحاجة لمتابعة (${lowComp})` : 'هيئة التدريس'}
         subtitle={total != null
-          ? `${countAr(total, ['أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً'])}${searching ? ' مطابقة للبحث' : ''}${professors.length < total ? ` · تُعرض أول ${professors.length}` : ''}`
+          ? (
+            /* R305 Heron (§D): the count line rides the §0
+               section-count chip (text unchanged — tests pin it). */
+            <span className="hr-section-count">
+              {`${countAr(total, ['أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً'])}${searching ? ' مطابقة للبحث' : ''}${professors.length < total ? ` · تُعرض أول ${professors.length}` : ''}`}
+            </span>
+          )
           : undefined}
         icon={School}
       >
@@ -1035,8 +1093,9 @@ export function QualityProfessorsPage() {
             live. r299 (E item 5): the toolbar stays up even when the
             roster is empty (searched or not) — a fresh institution
             reads an honest empty state below, never a header-only
-            table. */}
-        <div className="tq-toolbar">
+            table. R305 Heron (§D): .hr-toolbar joins for the one
+            placement grammar; the pressed pill reads the ember. */}
+        <div className="tq-toolbar hr-toolbar">
           <div className="tq-search">
             <Icon icon={Search} size={14} />
             <input
@@ -1090,7 +1149,8 @@ export function QualityProfessorsPage() {
           <>
         {lowOnly && (
           <div className="qlt-filter-note">
-            <Badge color="red">مصفّى: التزام أقلّ من 50%</Badge>
+            {/* R305 Heron (§D): the filter state rides the chip lexicon. */}
+            <span className="hr-chip" data-tone="danger">مصفّى: التزام أقلّ من 50%</span>
             <button type="button" className="btn ghost sm" onClick={() => setLowOnly(false)}>
               <Icon icon={X} size={13} />
               عرض جميع الأساتذة
@@ -1100,9 +1160,10 @@ export function QualityProfessorsPage() {
         {/* tbl-stack (A8 P1-1): 8 columns sideways-scrolled 524px at
             390px — the roster now collapses to labelled cards like the
             admin siblings. At ≤1024 the compact diet (above) keeps the
-            tablet band inside the wrap. */}
+            tablet band inside the wrap. R305 Heron (§D): .hr-table
+            layers the filled header + denser hairline rows. */}
         <div className="table-wrap">
-          <table className="table tbl-stack qlt-roster">
+          <table className="table tbl-stack qlt-roster hr-table">
             <thead>
               <tr>
                 <th scope="col">الأستاذ</th>
@@ -1118,8 +1179,9 @@ export function QualityProfessorsPage() {
             <tbody>
               {visible.map((t) => {
                 // r299 (E item 6): the typed compliance band (75/50) —
-                // the `as never` Badge cast retired.
-                const compColor = complianceTone(t.compliance);
+                // the `as never` cast retired. R305 Heron (§D): the
+                // band rides the .hr-chip vocabulary verbatim.
+                const compTone = complianceChipTone(t.compliance);
                 return (
                   <tr key={t.id}>
                     <td data-label="الأستاذ">
@@ -1145,7 +1207,7 @@ export function QualityProfessorsPage() {
                       <div>{t.faculty}</div>
                       <div className="text-xxs text-subtle">{t.department}</div>
                     </td>
-                    {!compact && <td data-label="الرتبة"><Badge>{RANK_LABEL[t.rank] ?? t.rank}</Badge></td>}
+                    {!compact && <td data-label="الرتبة"><span className="hr-chip">{RANK_LABEL[t.rank] ?? t.rank}</span></td>}
                     {!compact ? (
                       <td className="tbl-num" data-label="المقرّرات">{t.offerings}</td>
                     ) : (
@@ -1165,7 +1227,7 @@ export function QualityProfessorsPage() {
                     <td data-label="الالتزام">
                       <div className="q-compliance">
                         <ProgressBar value={t.compliance} showValue={false} ariaLabel={`التزام د. ${t.firstName} ${t.lastName}`} />
-                        <Badge color={compColor}>{formatPct1(t.compliance)}%</Badge>
+                        <span className="hr-chip" data-tone={compTone}>{formatPct1(t.compliance)}%</span>
                       </div>
                     </td>
                   </tr>
@@ -1177,6 +1239,7 @@ export function QualityProfessorsPage() {
           </>
         )}
       </Card>
+      </div>
     </div>
   );
 }
@@ -1193,6 +1256,8 @@ export function QualityEngagementPage() {
   const pageHeader = (
     <header className="page-header">
       <div className="page-title-block">
+        {/* R305 Heron (§D): the sector brow. */}
+        <QualityBrow />
         <h1 className="page-title">الانخراط والحضور</h1>
         <p className="page-subtitle">نسب الحضور، إكمال المحاضرات، النقاط المتفاعلة.</p>
       </div>
@@ -1202,11 +1267,13 @@ export function QualityEngagementPage() {
   if (e.isPending) {
     return (
       <div className="page">
+        <div className="hr-scope">
         {pageHeader}
         <StatStripSkeleton cells={4} />
         <div className="grid-2-1">
           <Card><ChartSkeleton height={240} /></Card>
           <Card><ListSkeleton rows={3} /></Card>
+        </div>
         </div>
       </div>
     );
@@ -1214,10 +1281,12 @@ export function QualityEngagementPage() {
   if (e.isError || !e.data) {
     return (
       <div className="page">
+        <div className="hr-scope">
         {pageHeader}
         {/* r299 (E item 9): the sector's ONE page-level error grammar —
             bare ErrorState with a specific message, under the header. */}
         <ErrorState message="تعذّر تحميل مؤشرات الانخراط" error={e.error} onRetry={() => void e.refetch()} />
+        </div>
       </div>
     );
   }
@@ -1235,6 +1304,7 @@ export function QualityEngagementPage() {
 
   return (
     <div className="page">
+      <div className="hr-scope">
       {pageHeader}
 
       <StatStrip
@@ -1319,6 +1389,7 @@ export function QualityEngagementPage() {
           </div>
         </Card>
       </div>
+      </div>
     </div>
   );
 }
@@ -1362,6 +1433,8 @@ export function QualityCurriculumPage() {
   const pageHeader = (
     <header className="page-header">
       <div className="page-title-block">
+        {/* R305 Heron (§D): the sector brow. */}
+        <QualityBrow />
         <h1 className="page-title">مراجعة المناهج</h1>
         <p className="page-subtitle">شجرة الكلّيّات والأقسام والمقرّرات، مع مؤشرات اكتمال المحتوى.</p>
       </div>
@@ -1371,6 +1444,7 @@ export function QualityCurriculumPage() {
   if (c.isPending) {
     return (
       <div className="page">
+        <div className="hr-scope">
         {pageHeader}
         <CardSkeleton lines={2} />
         <Card>
@@ -1384,16 +1458,19 @@ export function QualityCurriculumPage() {
             ))}
           </div>
         </Card>
+        </div>
       </div>
     );
   }
   if (c.isError || !c.data) {
     return (
       <div className="page">
+        <div className="hr-scope">
         {pageHeader}
         {/* r299 (E item 9): the sector's ONE page-level error grammar —
             bare ErrorState with a specific message, under the header. */}
         <ErrorState message="تعذّر تحميل شجرة المناهج" error={c.error} onRetry={() => void c.refetch()} />
+        </div>
       </div>
     );
   }
@@ -1409,14 +1486,17 @@ export function QualityCurriculumPage() {
 
   return (
     <div className="page">
+      <div className="hr-scope">
       {pageHeader}
 
       {/* Filter + legend — the pills reuse the shared .filter-pill
           segmented-control family; rows dim (not disappear) so the
           roster stays whole while filtering (4C-b keeps the matrix
-          page's dim-in-place contract on the row list). */}
+          page's dim-in-place contract on the row list). R305 Heron
+          (§D): .hr-toolbar joins for the one placement grammar, and a
+          pressed pill reads the ember. */}
       <Card>
-        <div className="filter-pill-row" role="group" aria-label="تصفية المقرّرات بحسب نسبة اكتمال المحتوى">
+        <div className="filter-pill-row hr-toolbar" role="group" aria-label="تصفية المقرّرات بحسب نسبة اكتمال المحتوى">
           <button
             type="button"
             className="filter-pill"
@@ -1476,7 +1556,11 @@ export function QualityCurriculumPage() {
                             content detail as visible text (was a title-only
                             tooltip), mono tabular percentage + level chip
                             trailing, and a thin completion rail under each
-                            row. Filtered-out rows dim via .is-dim. */}
+                            row. Filtered-out rows dim via .is-dim. R305
+                            Heron (§D): the row wears the §0 severity edge
+                            (poor→overdue danger, weak→soon warning, strong
+                            rides transparent) and the level chip rides
+                            the .hr-chip lexicon. */}
                         <div className="qlt-course-rows">
                           {d.courses.map((co) => {
                             const completion = courseCompletion(co);
@@ -1486,7 +1570,8 @@ export function QualityCurriculumPage() {
                             return (
                               <div
                                 key={co.id}
-                                className={`qlt-course-row${level !== 'all' && lvl !== level ? ' is-dim' : ''}`}
+                                className={`qlt-course-row hr-edge${level !== 'all' && lvl !== level ? ' is-dim' : ''}`}
+                                data-severity={lvl === 'poor' ? 'overdue' : lvl === 'weak' ? 'soon' : undefined}
                               >
                                 <div className="qlt-course-main">
                                   <div className="qlt-course-title">
@@ -1503,9 +1588,9 @@ export function QualityCurriculumPage() {
                                 </div>
                                 <div className="qlt-course-side">
                                   <span className="qlt-course-pct"><bdi>{formatPct1(completion)}%</bdi></span>
-                                  <Badge color={lvl === 'strong' ? 'green' : lvl === 'weak' ? 'amber' : 'red'}>
+                                  <span className="hr-chip" data-tone={lvl === 'strong' ? 'ok' : lvl === 'weak' ? 'warn' : 'danger'}>
                                     {LEVEL_LABEL[lvl]}
-                                  </Badge>
+                                  </span>
                                 </div>
                                 <ProgressBar
                                   value={completion}
@@ -1525,6 +1610,7 @@ export function QualityCurriculumPage() {
             </div>
           </Card>
         ))}
+      </div>
       </div>
     </div>
   );
@@ -1571,8 +1657,11 @@ const QUALITY_DASHBOARDS: Array<{
 export function QualityReportsPage() {
   return (
     <div className="page">
+      <div className="hr-scope">
       <header className="page-header">
         <div className="page-title-block">
+          {/* R305 Heron (§D): the sector brow. */}
+          <QualityBrow />
           <h1 className="page-title">تقارير الجودة</h1>
           <p className="page-subtitle">لوحات حيّة بدلاً من تقارير ثابتة — تُحدَّث مع كل عمليّة على المنصّة.</p>
         </div>
@@ -1582,7 +1671,9 @@ export function QualityReportsPage() {
       {/* 4C-b: the link ledger — full-width ≥44px rows with an icon well,
           title + one-line description and a trailing chevron; hairline
           separators + a quiet hover wash (the former .alert link rows
-          retire with their card-in-card boxes). */}
+          retire with their card-in-card boxes). R305 Heron (§D): the
+          icon wells ride the ember — these rows are the page's primary
+          actions. */}
       <Card title="اللوحات الحيّة" icon={ListChecks} subtitle="أربع لوحات مرتبطة ببعضها">
         <div className="qlt-link-rows">
           {QUALITY_DASHBOARDS.map((item) => (
@@ -1606,11 +1697,14 @@ export function QualityReportsPage() {
       </Card>
 
       <Card title="تصدير تقارير ثابتة (PDF/Excel)" icon={FileText}>
-        <p className="qlt-note">
+        {/* R305 Heron (§D): the honest pending disclosure rides the §0
+            note box (copy unchanged). */}
+        <p className="qlt-note hr-note">
           إصدار التقارير القابلة للتحميل قيد التطوير. حاليّاً يمكنك الاعتماد على اللوحات الحيّة أعلاه — كلّ
           الأرقام تُحدَّث فوريّاً مع البيانات في قاعدة المنصّة.
         </p>
       </Card>
+      </div>
     </div>
   );
 }
@@ -1636,14 +1730,18 @@ export function QualityAlertsPage() {
 
   return (
     <div className="page">
+      <div className="hr-scope">
       <header className="page-header">
         <div className="page-title-block">
+          {/* R305 Heron (§D): the sector brow. */}
+          <QualityBrow />
           <h1 className="page-title">تنبيهات الجودة</h1>
           <p className="page-subtitle">أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريّاً من بيانات المنصّة.</p>
         </div>
         <div className="qlt-header-badges">
           {q.data && q.data.counts.critical > 0 && (
-            <Badge color="red">{countAr(q.data.counts.critical, ['تنبيه حرج', 'تنبيهان حرجان', 'تنبيهات حرجة', 'تنبيهاً حرجاً'])}</Badge>
+            /* R305 Heron (§D): the critical count rides the chip lexicon. */
+            <span className="hr-chip" data-tone="danger">{countAr(q.data.counts.critical, ['تنبيه حرج', 'تنبيهان حرجان', 'تنبيهات حرجة', 'تنبيهاً حرجاً'])}</span>
           )}
           <ReadOnlyBadge />
         </div>
@@ -1678,13 +1776,20 @@ export function QualityAlertsPage() {
                slices 20 rows server-side while counts.total stays the
                TRUE uncapped count (learning.routes.ts); the rosters'
                own grammar (countAr total · «تُعرض أول N»), so the
-               truncation is visible, never silent. */
-            ? `${countAr(q.data.counts.total, ['تنبيه واحد', 'تنبيهان', 'تنبيهات', 'تنبيهاً'])} · تُعرض أول ${q.data.alerts.length}`
+               truncation is visible, never silent. R305 Heron (§D):
+               the count rides the §0 section-count chip. */
+            ? (
+              <span className="hr-section-count">
+                {`${countAr(q.data.counts.total, ['تنبيه واحد', 'تنبيهان', 'تنبيهات', 'تنبيهاً'])} · تُعرض أول ${q.data.alerts.length}`}
+              </span>
+            )
             : undefined}
         >
           {/* R304: the severity filter rail — counts inline so the rail
-              answers both «كم؟» and «أيّها؟» in one line. */}
-          <div className="qlt-alert-filter" role="group" aria-label="تصفية التنبيهات بحسب الشدّة">
+              answers both «كم؟» and «أيّها؟» in one line. R305 Heron
+              (§D): .hr-toolbar joins for the one placement grammar; a
+              pressed pill reads the ember. */}
+          <div className="qlt-alert-filter hr-toolbar" role="group" aria-label="تصفية التنبيهات بحسب الشدّة">
             <button
               type="button"
               className={`filter-pill${severityFilter === 'all' ? ' on' : ''}`}
@@ -1708,14 +1813,16 @@ export function QualityAlertsPage() {
             ))}
           </div>
           {visibleAlerts.length === 0 ? (
-            <p className="qlt-empty-note">لا تنبيهات بهذه الشدّة حاليّاً — اختر شدّة أخرى أو أعد التصفية إلى «الكل».</p>
+            <p className="qlt-empty-note hr-note">لا تنبيهات بهذه الشدّة حاليّاً — اختر شدّة أخرى أو أعد التصفية إلى «الكل».</p>
           ) : (
             <>
               {/* 4C-b: oversight rows — leading severity edge (2px inline-start:
                   danger / warning / brand tints — r299: the info edge mirrors
                   the brand Badge's copper family, it was --success green while
                   the same row's chip rendered brand), category icon, severity
-                  chip (semantic colors kept) + relative time. */}
+                  chip + relative time. R305 Heron (§D): the edge joins the
+                  3px Heron hairline weight and the severity word rides the
+                  .hr-chip lexicon (critical→danger, warning→warn, info→info). */}
               <div className="qlt-alert-list">
                 {visibleAlerts.map((a) => (
                   <div key={a.id} className={`qlt-alert-row qlt-sev-${a.severity}`}>
@@ -1727,7 +1834,7 @@ export function QualityAlertsPage() {
                       <div className="qlt-alert-row-desc">{a.description}</div>
                       <div className="qlt-alert-row-time">{formatRelativeArShort(a.occurredAt)}</div>
                     </div>
-                    <Badge color={SEVERITY_TONE[a.severity]}>{SEVERITY_LABEL[a.severity]}</Badge>
+                    <span className="hr-chip" data-tone={SEVERITY_CHIP_TONE[a.severity]}>{SEVERITY_LABEL[a.severity]}</span>
                   </div>
                 ))}
               </div>
@@ -1735,6 +1842,7 @@ export function QualityAlertsPage() {
           )}
         </Card>
       )}
+      </div>
     </div>
   );
 }

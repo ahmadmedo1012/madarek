@@ -24,8 +24,15 @@
  * Keyboard:
  *   - arrows navigate frames (RTL-aware: ArrowLeft advances under
  *     dir="rtl"), Escape skips (the Modal's focus trap), Enter on the
- *     focused CTA advances/finishes
+ *     focused CTA advances/finishes — the forward arrow routes through
+ *     the SAME advance() path, so on the last frame it finishes the
+ *     tour exactly like the CTA (no silent clamp no-op)
  *   - focus lands on the primary CTA on open and on every frame change
+ *
+ * Dialog naming (r170-e): the accessible name tracks the rendered
+ * headline via aria-labelledby — screen readers announce the text
+ * sighted users read; the per-frame live region below carries the
+ * step counter + copy so every advance is announced as it changes.
  *
  * State flow: `open/frame/replay` live in the shared `onboarding.store`
  * (driven by AppShell's auto-start and the Sidebar replay trigger);
@@ -146,6 +153,15 @@ export function OnboardingFlow({
   // Arrow-key frame navigation (RTL-aware): under dir="rtl" the
   // reading direction runs right-to-left, so ArrowLeft points "forward"
   // — the same side of the modal the Next control sits on. LTR mirrors.
+  // The forward key routes through the SAME advance() path as the CTA
+  // (next → or finish on the last frame): an arrow press on the final
+  // frame completes the tour instead of silently no-oping against the
+  // clamp, so the keyboard story mirrors the buttons exactly.
+  const advance = () => {
+    if (isLast) finish();
+    else next();
+  };
+
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
     // Defensive: never hijack arrows from editable chrome.
@@ -154,9 +170,15 @@ export function OnboardingFlow({
     e.preventDefault();
     const rtl = typeof document === 'undefined' || document.documentElement.dir !== 'ltr';
     const forwardKey = rtl ? 'ArrowLeft' : 'ArrowRight';
-    if (e.key === forwardKey) next();
+    if (e.key === forwardKey) advance();
     else prev();
   };
+
+  // One total for every «N of M» surface: the dot strip and the live
+  // region must agree, and both must count the role-keyed frame the
+  // contract appends after the generic set (custom frame sets must
+  // keep that frame — see the live-region note below).
+  const totalFrames = frames.length + 1;
 
   let illustrationName: IllustrationName | undefined;
   let mkName: MkIllustrationName | undefined;
@@ -174,13 +196,14 @@ export function OnboardingFlow({
     body = roleBodies[role] ?? roleBodies.STUDENT ?? '';
   }
 
-  const advance = () => {
-    if (isLast) finish();
-    else next();
-  };
-
   return (
-    <Modal open={isOpen} onClose={skip} ariaLabel={headline} closeOnOverlayClick={false}>
+    <Modal
+      open={isOpen}
+      onClose={skip}
+      ariaLabel={headline}
+      labelledById="onboarding-flow-title"
+      closeOnOverlayClick={false}
+    >
       <div className="onboarding-flow" data-frame={currentFrame} onKeyDown={onKeyDown}>
         <header className="onboarding-flow-skip-row">
           <button
@@ -214,7 +237,7 @@ export function OnboardingFlow({
           </div>
 
           <div className="onboarding-flow-copy">
-            <h2 className="onboarding-flow-headline">{headline}</h2>
+            <h2 id="onboarding-flow-title" className="onboarding-flow-headline">{headline}</h2>
             <p className="onboarding-flow-body">{body}</p>
           </div>
 
@@ -240,19 +263,19 @@ export function OnboardingFlow({
           </footer>
         </div>
 
-        <DotStrip current={currentFrame} total={4} />
+        <DotStrip current={currentFrame} total={totalFrames} />
 
         {/* r157 F5: persistent sr-only live region — deliberately OUTSIDE
             the keyed frame remount above (a region that is recreated with
             each frame announces nothing: screen readers only speak when
             EXISTING live-region content changes). The SAME node stays
             mounted while the tour is open, so every frame advance is
-            announced as «الإطار N من 4: {headline}. {body}». Digits stay
-            latin (platform numeric convention); total assumes the
-            default 4-frame set (3 generic + the role frame) — custom
+            announced as «الإطار N من M: {headline}. {body}». Digits stay
+            latin (platform numeric convention); M = totalFrames counts
+            the default 4-frame set (3 generic + the role frame) — custom
             frame sets must keep the role frame. */}
         <p className="sr-only" role="status" aria-live="polite">
-          {`الإطار ${currentFrame + 1} من ${frames.length + 1}: ${headline}. ${body}`}
+          {`الإطار ${currentFrame + 1} من ${totalFrames}: ${headline}. ${body}`}
         </p>
       </div>
     </Modal>

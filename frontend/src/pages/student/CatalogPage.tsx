@@ -9,6 +9,9 @@ import { courseIcon, courseTint } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
 import { useAuthStore } from '../../stores/auth.store';
 import { useCoursesCatalog, type CatalogCourseRow } from '../../hooks/useResources';
+/* R305-A5 (Heron): the shared student vocabulary + this family's sheet. */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-courses.css';
 
 /**
  * r180-F4 — «دليل المقررات»: the student-facing catalogue of their
@@ -139,6 +142,11 @@ export default function CatalogPage() {
     <div className="page">
       <header className="page-header">
         <div className="page-title-block">
+          {/* R305 (Heron): the surface's classification rides the
+              foundation micro-label — this is the READ-ONLY reference
+              surface (enrollment is admin-mediated; the honest-door note
+              below names the real door). */}
+          <p className="r305s-eyebrow">مرجع للقراءة فقط</p>
           <h1 className="page-title">دليل المقرّرات</h1>
           <p className="page-subtitle">
             {institutionName
@@ -147,26 +155,18 @@ export default function CatalogPage() {
           </p>
         </div>
       </header>
+      {/* R305 (Heron): the thin technical rule that closes the header
+          register — the editorial divider carrying the page into its
+          filter/search row. */}
+      <hr className="r305s-rule r305s-rule--strong r305c-header-rule" />
 
       {/* The honest-door banner (the CoursesPage empty-state contract,
           now on the surface that invites the question): enrollment is
           admin-mediated in this product — accent-soft wash + accent-ink
-          (the SubmitAssignmentModal done-banner grammar, tokens only). */}
-      <div
-        role="note"
-        style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: 'var(--sp-2)',
-          padding: 'var(--sp-3) var(--sp-4)',
-          borderRadius: 'var(--r-md)',
-          background: 'var(--accent-soft)',
-          color: 'var(--accent-ink)',
-          fontSize: 'var(--fs-sm)',
-          lineHeight: 'var(--lh-base)',
-        }}
-      >
-        <span style={{ flexShrink: 0, marginTop: 'var(--sp-0-5)' }}><Icon icon={Info} size={15} /></span>
+          (the SubmitAssignmentModal done-banner grammar, R305: the
+          .r305c-note anatomy lives in the family sheet, tokens only). */}
+      <div role="note" className="r305c-note">
+        <span><Icon icon={Info} size={15} /></span>
         <span>التسجيل في المقررات تتم إدارته عبر إدارة الكلية — تواصل مع إدارة مؤسستك.</span>
       </div>
 

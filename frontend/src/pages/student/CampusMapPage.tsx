@@ -11,6 +11,10 @@ import { EmojiIcon } from '../../components/EmojiIcon';
 import { useFaculties, useCurrentInstitutionSlug } from '../../hooks/useResources';
 import { formatNum } from '../../utils/numbers';
 
+/* R305 Heron: the shared student vocabulary + this family's refinements. */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-supplemental.css';
+
 /**
  * Honest campus directory.
  *
@@ -195,12 +199,14 @@ export default function CampusMapPage() {
         </div>
       </Card>
 
-      <Card>
+      {/* R305 Heron: a card holding one link is box noise — the
+          cross-link rides the copper rail instead. */}
+      <div className="r305s-next r305p-rail">
         <Link to="/student/university" className="btn primary sm">
           <Icon icon={ArrowLeft} size={13} />
           صفحة الجامعة التجريبية الكاملة
         </Link>
-      </Card>
+      </div>
     </PageFrame>
   );
 }

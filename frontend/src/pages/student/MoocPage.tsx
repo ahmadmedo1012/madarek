@@ -12,6 +12,9 @@ import { useMoocs, type MoocCourse } from '../../hooks/useResources';
 import { formatInt, formatNum } from '../../utils/numbers';
 import { matchesNormalizedQuery } from '../../lib/search';
 import { countAr } from '../../lib/format';
+/* R305 Heron: the shared student vocabulary + this family's refinements. */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-supplemental.css';
 
 const moocIcon = (cat: string): LucideIcon => {
   if (cat === 'prog') return Code;
@@ -158,12 +161,17 @@ export default function MoocPage() {
 
           {/* The counted-results line — the settled total, and the
               filtered subset while searching (live under aria). */}
-          <p className="text-xs text-muted" aria-live="polite">
-            {searching ? (
-              <bdi>{formatInt(filtered.length)} من {formatInt(data.length)} دورة</bdi>
-            ) : (
-              <bdi>{countAr(data.length, ['دورة خارجية واحدة', 'دورتان خارجيتان', 'دورات خارجية', 'دورة خارجية'])}</bdi>
-            )}
+          {/* R305 Heron: the counted line is page metadata — it rides the
+              chip register (accent dot = live fact), not bare muted text. */}
+          <p className="r305s-meta-row" aria-live="polite">
+            <span className="r305s-chip r305s-chip--accent">
+              <span className="r305s-chip-dot" aria-hidden />
+              {searching ? (
+                <bdi>{formatInt(filtered.length)} من {formatInt(data.length)} دورة</bdi>
+              ) : (
+                <bdi>{countAr(data.length, ['دورة خارجية واحدة', 'دورتان خارجيتان', 'دورات خارجية', 'دورة خارجية'])}</bdi>
+              )}
+            </span>
           </p>
 
           {searching && filtered.length === 0 ? (

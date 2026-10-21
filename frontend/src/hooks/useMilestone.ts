@@ -30,21 +30,36 @@ export interface MilestoneState {
 
 export function useMilestone(): MilestoneState {
   const { data: me } = useMe();
-  // The set of milestone IDs already presented in this session.
-  // Seeded from the server's initial firedMilestones — if the user
-  // already had a milestone before this session, we never present it.
-  const presentedRef = useRef<Set<string> | null>(null);
+  // The set of milestone IDs already presented in this session, keyed
+  // by the user it was seeded from. Seeded from the server's initial
+  // firedMilestones — if the user already had a milestone before this
+  // session, we never present it.
+  //
+  // The user key hardens the "stale milestone" class: firedMilestones
+  // is a per-User column, so a presented-set seeded for one account
+  // is meaningless for the next. As long as the hook mounts, a session
+  // that swaps identity without an unmount (in-place re-login /
+  // session refresh paths) would otherwise let the successor account
+  // inherit the predecessor's presented-set — every milestone already
+  // on the successor's server row would look "genuinely new" and fire
+  // retroactively. On an identity change the cache reseeds from the
+  // incoming user's firedMilestones and any pending scene the
+  // previous user left behind is dropped (a scene keyed to account A
+  // must never present to account B).
+  const presentedRef = useRef<{ userId: string; presented: Set<string> } | null>(null);
   const [pendingScene, setPendingScene] = useState<MilestoneId | null>(null);
 
   useEffect(() => {
     if (!me?.id) return;
     const fired = me.firedMilestones ?? [];
 
-    // First observation: seed the presented set so anything already on
-    // the server is treated as "previously presented" and never fires
-    // a scene retroactively.
-    if (presentedRef.current === null) {
-      presentedRef.current = new Set(fired);
+    // First observation for this user (or an identity change): seed the
+    // presented set so anything already on the server is treated as
+    // "previously presented" and never fires a scene retroactively.
+    const cache = presentedRef.current;
+    if (cache === null || cache.userId !== me.id) {
+      presentedRef.current = { userId: me.id, presented: new Set(fired) };
+      if (cache !== null) setPendingScene(null);
       return;
     }
 
@@ -53,11 +68,11 @@ export function useMilestone(): MilestoneState {
     if (pendingScene !== null) return;
 
     // Find the first un-presented id in fired order. Anything earlier
-    // is already on the server but not yet in presentedRef → genuinely
-    // new for this session.
+    // is already on the server but not yet in the presented set →
+    // genuinely new for this session.
     for (const id of fired) {
-      if (!presentedRef.current.has(id)) {
-        presentedRef.current.add(id);
+      if (!cache.presented.has(id)) {
+        cache.presented.add(id);
         setPendingScene(id as MilestoneId);
         return;
       }

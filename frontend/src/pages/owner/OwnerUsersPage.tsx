@@ -292,261 +292,275 @@ export function OwnerUsersPage() {
     : null;
 
   return (
-    <PageFrame width="default">
-      <PatternsPageHeader
-        title="إدارة المستخدمين"
-        description="عرض جميع حسابات المنصّة والبحث فيها وإدارتها"
-        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المستخدمون' }]}
-      />
+    /* r305-A8 «Heron»: the scoped sheet keys every rule off the .r305ao
+       page-root marker (PageFrame owns rhythm/width and takes no
+       className, so the grammar rides a root wrapper). */
+    <div className="r305ao">
+      <PageFrame width="default">
+        <PatternsPageHeader
+          title="إدارة المستخدمين"
+          description="عرض جميع حسابات المنصّة والبحث فيها وإدارتها"
+          breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المستخدمون' }]}
+        />
 
-      {/* Metrics — real values only: '…' while loading, '—' on error
-          (never a fake zero). r252: the patterns StatLine. */}
-      <StatLine
-        items={[
-          { label: 'إجمالي المستخدمين', value: kpiValue(statData?.totalUsers ?? 0), hint: 'حسابات مسجَّلة' },
-          { label: 'الطلاب', value: kpiValue(statData?.students ?? 0), hint: topSegmentKey === 'students' ? 'الفئة الأكبر' : 'حسابات الطلاب' },
-          { label: 'الأساتذة', value: kpiValue(statData?.teachers ?? 0), hint: topSegmentKey === 'teachers' ? 'الفئة الأكبر' : 'هيئة التدريس' },
-          { label: 'إداريون وجودة', value: kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0)), hint: topSegmentKey === 'staff' ? 'الفئة الأكبر' : 'إدارة ومتابعة' },
-        ]}
-      />
+        {/* Metrics — real values only: '…' while loading, '—' on error
+            (never a fake zero). r252: the patterns StatLine. */}
+        <StatLine
+          items={[
+            { label: 'إجمالي المستخدمين', value: kpiValue(statData?.totalUsers ?? 0), hint: 'حسابات مسجَّلة' },
+            { label: 'الطلاب', value: kpiValue(statData?.students ?? 0), hint: topSegmentKey === 'students' ? 'الفئة الأكبر' : 'حسابات الطلاب' },
+            { label: 'الأساتذة', value: kpiValue(statData?.teachers ?? 0), hint: topSegmentKey === 'teachers' ? 'الفئة الأكبر' : 'هيئة التدريس' },
+            { label: 'إداريون وجودة', value: kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0)), hint: topSegmentKey === 'staff' ? 'الفئة الأكبر' : 'إدارة ومتابعة' },
+          ]}
+        />
 
-      {/* r252: search + role pills ride one FilterBar rail. */}
-      <FilterBar
-        search={{
-          value: search,
-          onChange: setSearch,
-          placeholder: 'ابحث بالاسم أو البريد الإلكتروني…',
-        }}
-        filters={(
-          <div className="owner-filter-pills" role="group" aria-label="تصفية حسب الدور">
-            {filterItems.map((f) => (
-              <button
-                key={f.value}
-                type="button"
-                className={`pill${roleFilter === f.value ? ' on' : ''}`}
-                aria-pressed={roleFilter === f.value}
-                onClick={() => { setRoleFilter(f.value); setPage(1); }}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-        )}
-      />
-
-      {/* Users list — dense rows with inline expansion (r252). */}
-      <Card className="owner-users-card">
-        {actionError && (
-          <AlertRow
-            color="red"
-            icon={AlertCircle}
-            title={actionError.title}
-            description={actionError.detail}
-            actions={
-              <>
+        {/* r252: search + role pills ride one FilterBar rail. */}
+        <FilterBar
+          search={{
+            value: search,
+            onChange: setSearch,
+            placeholder: 'ابحث بالاسم أو البريد الإلكتروني…',
+          }}
+          filters={(
+            <div className="owner-filter-pills" role="group" aria-label="تصفية حسب الدور">
+              {filterItems.map((f) => (
                 <button
+                  key={f.value}
                   type="button"
-                  className="btn ghost sm"
-                  onClick={() => lastAttempt && void runAttempt(lastAttempt)}
-                  disabled={mutationBusy || !lastAttempt}
+                  className={`pill${roleFilter === f.value ? ' on' : ''}`}
+                  aria-pressed={roleFilter === f.value}
+                  onClick={() => { setRoleFilter(f.value); setPage(1); }}
                 >
-                  إعادة المحاولة
+                  {f.label}
                 </button>
-                <button
-                  type="button"
-                  className="btn ghost sm"
-                  onClick={() => setActionError(null)}
-                  disabled={mutationBusy}
-                >
-                  إغلاق
-                </button>
-              </>
-            }
-          />
-        )}
+              ))}
+            </div>
+          )}
+        />
 
-        {ownerUsers.isPending ? (
-          <ListSkeleton rows={6} />
-        ) : ownerUsers.isError ? (
-          <ErrorState error={ownerUsers.error} onRetry={() => ownerUsers.refetch()} />
-        ) : users.length === 0 ? (
-          <EmptyState
-            icon={Users}
-            illustration="empty-list"
-            title={hasActiveFilters ? 'لا نتائج مطابقة' : 'لا يوجد مستخدمون بعد'}
-            description={hasActiveFilters
-              ? 'لم نجد حسابات تطابق البحث أو الدور المحدّد.'
-              : 'ستظهر الحسابات هنا فور تسجيل أوّل مستخدم في المنصّة.'}
-            action={hasActiveFilters ? (
-              <button type="button" className="btn ghost sm" onClick={clearFilters}>
-                <Icon icon={X} size={13} />
-                مسح البحث والفلاتر
-              </button>
-            ) : undefined}
-          />
-        ) : (
-          <>
-            <RowList aria-label="قائمة المستخدمين">
-              {users.map((user) => {
-                const joined = new Date(user.createdAt);
-                const sevenDaysAgo = new Date();
-                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                const isRecent = joined > sevenDaysAgo;
-                return (
-                  <RowItem
-                    key={user.id}
-                    leading={<UserAvatar initials={user.avatarInitials} color={user.avatarColor ?? undefined} size={36} />}
-                    title={`${user.firstName} ${user.lastName}`}
-                    meta={(
-                      <>
-                        <bdi className="owner-num" dir="ltr">{user.email}</bdi>
-                        {' · '}
-                        {user.memberships.length === 0 ? (
-                          <span className="text-xs text-subtle">بلا مؤسسة</span>
-                        ) : (
-                          /* r299: the utility-class + inline-style conflict
-                             died — one owner-owned class owns the chips'
-                              wrapping anatomy (owner.css). */
-                          <span className="owner-membership-chips">
-                            {user.memberships.map((m) => (
-                              <Badge
-                                key={m.institution.id}
-                                /* r299: a SUSPENDED institution reads red on
-                                   every other surface (the institutions
-                                   list, the detail header) — the chip used
-                                   to fall back to the neutral badge while
-                                   its own text said « · معلّقة». */
-                                color={m.institution.status === 'ACTIVE' ? 'brand' : 'red'}
-                              >
-                                {m.institution.name}
-                                {m.institution.status === 'SUSPENDED' ? ' · معلّقة' : ''}
-                              </Badge>
-                            ))}
-                          </span>
-                        )}
-                      </>
-                    )}
-                    trailing={(
-                      <>
-                        <Badge color={ROLE_COLORS[user.role]}>
-                          {ROLE_LABELS[user.role] ?? <bdi>{user.role}</bdi>}
-                        </Badge>
-                        <Badge color={user.isActive ? 'green' : 'red'}>{user.isActive ? 'نشط' : 'معطّل'}</Badge>
-                      </>
-                    )}
-                    expandLabel={`إجراءات ${user.firstName} ${user.lastName}`}
+        {/* Users list — dense rows with inline expansion (r252). */}
+        <Card className="owner-users-card">
+          {actionError && (
+            <AlertRow
+              color="red"
+              icon={AlertCircle}
+              title={actionError.title}
+              description={actionError.detail}
+              actions={
+                <>
+                  <button
+                    type="button"
+                    className="btn ghost sm"
+                    onClick={() => lastAttempt && void runAttempt(lastAttempt)}
+                    disabled={mutationBusy || !lastAttempt}
                   >
-                    {/* The expansion body — the row's actions (r252): the
-                        role picker, the status toggle, and the joined
-                        date with its recent dot. Same confirm flow as
-                        the table era; nothing fires without its dialog. */}
-                    <div className="owner-row-actions">
-                      <span className="owner-joined" title={formatDate(joined, { dateStyle: 'full' })}>
-                        {isRecent && (
-                          <>
-                            {/* r299: the recent-join marker is a quiet static
-                                dot, NOT the pulsing health-grammar dot —
-                                green + heartbeat means "system healthy" and
-                                pulled the eye with a status semantic a join
-                                date never carried. */}
-                            <span className="owner-joined-dot" aria-hidden />
-                            <span className="visually-hidden">انضم خلال الأسبوع الماضي — </span>
-                          </>
-                        )}
-                        انضم {formatDate(joined, { dateStyle: 'medium' })}
-                      </span>
-                      {user.role === 'OWNER' ? (
-                        <span className="text-xs text-subtle" title="دور المالك لا يُغيَّر من هذه الواجهة">
-                          {ROLE_LABELS.OWNER}
-                        </span>
-                      ) : (
-                        <select
-                          className="input"
-                          style={{ width: 'auto', minWidth: 120 }}
-                          value={pendingRole?.user.id === user.id ? pendingRole.role : user.role}
-                          onChange={(e) => handleRoleSelect(user, e.target.value)}
-                          disabled={rowBusy(user)}
-                          aria-label={`دور ${user.firstName} ${user.lastName}`}
-                        >
-                          {ELIGIBLE_ROLES.map((r) => (
-                            <option key={r} value={r}>{ROLE_LABELS[r]}</option>
-                          ))}
-                        </select>
+                    إعادة المحاولة
+                  </button>
+                  <button
+                    type="button"
+                    className="btn ghost sm"
+                    onClick={() => setActionError(null)}
+                    disabled={mutationBusy}
+                  >
+                    إغلاق
+                  </button>
+                </>
+              }
+            />
+          )}
+
+          {ownerUsers.isPending ? (
+            <ListSkeleton rows={6} />
+          ) : ownerUsers.isError ? (
+            <ErrorState error={ownerUsers.error} onRetry={() => ownerUsers.refetch()} />
+          ) : users.length === 0 ? (
+            <EmptyState
+              icon={Users}
+              illustration="empty-list"
+              title={hasActiveFilters ? 'لا نتائج مطابقة' : 'لا يوجد مستخدمون بعد'}
+              description={hasActiveFilters
+                ? 'لم نجد حسابات تطابق البحث أو الدور المحدّد.'
+                : 'ستظهر الحسابات هنا فور تسجيل أوّل مستخدم في المنصّة.'}
+              action={hasActiveFilters ? (
+                <button type="button" className="btn ghost sm" onClick={clearFilters}>
+                  <Icon icon={X} size={13} />
+                  مسح البحث والفلاتر
+                </button>
+              ) : undefined}
+            />
+          ) : (
+            <>
+              <RowList aria-label="قائمة المستخدمين">
+                {users.map((user) => {
+                  const joined = new Date(user.createdAt);
+                  const sevenDaysAgo = new Date();
+                  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                  const isRecent = joined > sevenDaysAgo;
+                  return (
+                    <RowItem
+                      key={user.id}
+                      leading={<UserAvatar initials={user.avatarInitials} color={user.avatarColor ?? undefined} size={36} />}
+                      title={`${user.firstName} ${user.lastName}`}
+                      meta={(
+                        <>
+                          <bdi className="owner-num" dir="ltr">{user.email}</bdi>
+                          {' · '}
+                          {user.memberships.length === 0 ? (
+                            <span className="text-xs text-subtle">بلا مؤسسة</span>
+                          ) : (
+                            /* r299: the utility-class + inline-style conflict
+                               died — one owner-owned class owns the chips'
+                                wrapping anatomy (owner.css). */
+                            <span className="owner-membership-chips">
+                              {user.memberships.map((m) => (
+                                <Badge
+                                  key={m.institution.id}
+                                  /* r299: a SUSPENDED institution reads red on
+                                     every other surface (the institutions
+                                     list, the detail header) — the chip used
+                                     to fall back to the neutral badge while
+                                     its own text said « · معلّقة». */
+                                  color={m.institution.status === 'ACTIVE' ? 'brand' : 'red'}
+                                >
+                                  {m.institution.name}
+                                  {m.institution.status === 'SUSPENDED' ? ' · معلّقة' : ''}
+                                </Badge>
+                              ))}
+                            </span>
+                          )}
+                        </>
                       )}
-                      <button
-                        type="button"
-                        className="btn ghost sm"
-                        onClick={() => handleToggleStatus(user)}
-                        disabled={rowBusy(user)}
-                      >
-                        {user.isActive ? 'تعطيل' : 'تفعيل'}
-                      </button>
-                    </div>
-                  </RowItem>
-                );
-              })}
-            </RowList>
+                      trailing={(
+                        <>
+                          <Badge color={ROLE_COLORS[user.role]}>
+                            {ROLE_LABELS[user.role] ?? <bdi>{user.role}</bdi>}
+                          </Badge>
+                          <Badge color={user.isActive ? 'green' : 'red'}>{user.isActive ? 'نشط' : 'معطّل'}</Badge>
+                        </>
+                      )}
+                      expandLabel={`إجراءات ${user.firstName} ${user.lastName}`}
+                    >
+                      {/* The expansion body — the row's actions (r252): the
+                          role picker, the status toggle, and the joined
+                          date with its recent dot. Same confirm flow as
+                          the table era; nothing fires without its dialog. */}
+                      <div className="owner-row-actions">
+                        <span className="owner-joined" title={formatDate(joined, { dateStyle: 'full' })}>
+                          {isRecent && (
+                            <>
+                              {/* r299: the recent-join marker is a quiet static
+                                  dot, NOT the pulsing health-grammar dot —
+                                  green + heartbeat means "system healthy" and
+                                  pulled the eye with a status semantic a join
+                                  date never carried. */}
+                              <span className="owner-joined-dot" aria-hidden />
+                              <span className="visually-hidden">انضم خلال الأسبوع الماضي — </span>
+                            </>
+                          )}
+                          انضم {formatDate(joined, { dateStyle: 'medium' })}
+                        </span>
+                        {user.role === 'OWNER' ? (
+                          <span className="text-xs text-subtle" title="دور المالك لا يُغيَّر من هذه الواجهة">
+                            {ROLE_LABELS.OWNER}
+                          </span>
+                        ) : (
+                          <select
+                            className="input"
+                            /* r305-A8: raw-px floor → ladder token (the picker
+                               keeps its auto inline size in the flex row). */
+                            style={{ width: 'auto', minWidth: 'var(--sp-13)' }}
+                            value={pendingRole?.user.id === user.id ? pendingRole.role : user.role}
+                            onChange={(e) => handleRoleSelect(user, e.target.value)}
+                            disabled={rowBusy(user)}
+                            aria-label={`دور ${user.firstName} ${user.lastName}`}
+                          >
+                            {ELIGIBLE_ROLES.map((r) => (
+                              <option key={r} value={r}>{ROLE_LABELS[r]}</option>
+                            ))}
+                          </select>
+                        )}
+                        {/* r305-A8 (user/role/permission audit): the status
+                            verb stands apart from routine row actions in the
+                            DESTRUCTIVE direction only — suspending an active
+                            account is the high-impact flow (the confirm dialog
+                            carries its danger treatment; reactivation stays a
+                            quiet outline verb). The ConfirmDialog verb logic is
+                            untouched (OwnerUsersPage-confirm-verbs pins it). */}
+                        <button
+                          type="button"
+                          className={`btn ghost sm${user.isActive ? ' r305ao-btn-danger' : ''}`}
+                          onClick={() => handleToggleStatus(user)}
+                          disabled={rowBusy(user)}
+                        >
+                          {user.isActive ? 'تعطيل' : 'تفعيل'}
+                        </button>
+                      </div>
+                    </RowItem>
+                  );
+                })}
+              </RowList>
 
-            {/* Server-side pagination — driven by API meta; bounded page
-                window + RTL-correct chevrons (prev points right in RTL).
-                r164-i (table-coherence): the footer renders whenever rows
-                exist, single page included. */}
-            {meta && users.length > 0 && (
-              <div className="table-pagination">
-                <span>
-                  الصفحة {page} من {totalPages} · {usersCountLabel(meta.total)}
-                </span>
-                <div className="table-pagination-actions">
-                  <button
-                    type="button"
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page <= 1}
-                    aria-label="الصفحة السابقة"
-                  >
-                    <Icon icon={ChevronRight} size={14} aria-hidden />
-                    السابق
-                  </button>
-                  {pageList(page, totalPages).map((item, i) =>
-                    item === 'gap' ? (
-                      <span key={`gap-${i}`} className="owner-page-gap" aria-hidden>…</span>
-                    ) : (
-                      <button
-                        key={item}
-                        type="button"
-                        aria-current={item === page ? 'page' : undefined}
-                        aria-label={`الصفحة ${item}`}
-                        onClick={() => setPage(item)}
-                      >
-                        {item}
-                      </button>
-                    ),
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={page >= totalPages}
-                    aria-label="الصفحة التالية"
-                  >
-                    التالي
-                    <Icon icon={ChevronLeft} size={14} aria-hidden />
-                  </button>
+              {/* Server-side pagination — driven by API meta; bounded page
+                  window + RTL-correct chevrons (prev points right in RTL).
+                  r164-i (table-coherence): the footer renders whenever rows
+                  exist, single page included. */}
+              {meta && users.length > 0 && (
+                <div className="table-pagination">
+                  <span>
+                    الصفحة {page} من {totalPages} · {usersCountLabel(meta.total)}
+                  </span>
+                  <div className="table-pagination-actions">
+                    <button
+                      type="button"
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      disabled={page <= 1}
+                      aria-label="الصفحة السابقة"
+                    >
+                      <Icon icon={ChevronRight} size={14} aria-hidden />
+                      السابق
+                    </button>
+                    {pageList(page, totalPages).map((item, i) =>
+                      item === 'gap' ? (
+                        <span key={`gap-${i}`} className="owner-page-gap" aria-hidden>…</span>
+                      ) : (
+                        <button
+                          key={item}
+                          type="button"
+                          aria-current={item === page ? 'page' : undefined}
+                          aria-label={`الصفحة ${item}`}
+                          onClick={() => setPage(item)}
+                        >
+                          {item}
+                        </button>
+                      ),
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={page >= totalPages}
+                      aria-label="الصفحة التالية"
+                    >
+                      التالي
+                      <Icon icon={ChevronLeft} size={14} aria-hidden />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
-          </>
-        )}
-      </Card>
+              )}
+            </>
+          )}
+        </Card>
 
-      {/* Confirm Dialog */}
-      <ConfirmDialog
-        open={confirmOpen}
-        title={confirmConfig.title}
-        message={confirmConfig.message}
-        danger={confirmConfig.danger}
-        confirmLabel={confirmConfig.confirmLabel}
-        onConfirm={confirmConfig.onConfirm}
-        onCancel={() => { setConfirmOpen(false); setPendingRole(null); }}
-      />
-    </PageFrame>
+        {/* Confirm Dialog */}
+        <ConfirmDialog
+          open={confirmOpen}
+          title={confirmConfig.title}
+          message={confirmConfig.message}
+          danger={confirmConfig.danger}
+          confirmLabel={confirmConfig.confirmLabel}
+          onConfirm={confirmConfig.onConfirm}
+          onCancel={() => { setConfirmOpen(false); setPendingRole(null); }}
+        />
+      </PageFrame>
+    </div>
   );
 }

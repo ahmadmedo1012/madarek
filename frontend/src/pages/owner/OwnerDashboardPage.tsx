@@ -183,6 +183,21 @@ function OwnerActionStrip({ alerts }: { alerts: OperationalAlert[] }) {
   );
 }
 
+/* R305-A8 «Heron» scoping: the r305-admin-owner.css sheet styles every
+ * rule under the .r305ao page-root marker, and the patterns PageFrame
+ * (a read-only shared primitive) renders no className of its own — so
+ * the dashboard's root is this one-div frame that carries the marker
+ * around the canonical PageFrame. EVERY return branch below (loading
+ * mirror, error, the never-crash skeleton guard, and the resolved
+ * page) mounts through it, so the scoped sheet reaches all of them. */
+function OwnerFrame({ children }: { children: ReactNode }) {
+  return (
+    <div className="r305ao">
+      <PageFrame width="default">{children}</PageFrame>
+    </div>
+  );
+}
+
 export function OwnerDashboardPage() {
   const stats = useOwnerStats();
   const realtime = useOwnerRealtime();
@@ -246,7 +261,7 @@ export function OwnerDashboardPage() {
        resolved page shows while alerts pend), so the pending →
        resolved handoff moves nothing. */
     return (
-      <PageFrame width="default">
+      <OwnerFrame>
         <PatternsPageHeader
           title="لوحة التحكم الرئيسية"
           description="نظرة شاملة وإحصائيات حيّة عن المنصة"
@@ -280,12 +295,12 @@ export function OwnerDashboardPage() {
         </div>
         <CardSkeleton lines={6} />
         <CardSkeleton lines={3} />
-      </PageFrame>
+      </OwnerFrame>
     );
   }
   if (stats.isError || realtime.isError) {
     return (
-      <PageFrame width="default">
+      <OwnerFrame>
         <PatternsPageHeader
           title="لوحة التحكم الرئيسية"
         />
@@ -293,7 +308,7 @@ export function OwnerDashboardPage() {
           error={stats.error ?? realtime.error}
           onRetry={() => { stats.refetch(); realtime.refetch(); }}
         />
-      </PageFrame>
+      </OwnerFrame>
     );
   }
 
@@ -303,7 +318,7 @@ export function OwnerDashboardPage() {
   // page honest (skeleton, never a crash) if a future refactor breaks
   // that invariant — query data is never non-null-asserted here.
   if (!data || !realtimeData) {
-    return <PageSkeleton />;
+    return <div className="r305ao"><PageSkeleton /></div>;
   }
 
   // The status band and the alerts KPI derive from the alerts query's
@@ -354,7 +369,7 @@ export function OwnerDashboardPage() {
   );
 
   return (
-    <PageFrame width="default">
+    <OwnerFrame>
       <PatternsPageHeader
         title="لوحة التحكم الرئيسية"
         description="نظرة شاملة وإحصائيات حيّة عن المنصة"
@@ -537,6 +552,6 @@ export function OwnerDashboardPage() {
           </Link>
         </div>
       </Card>
-    </PageFrame>
+    </OwnerFrame>
   );
 }

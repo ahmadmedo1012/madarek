@@ -118,3 +118,6 @@ backend/storage-dev/
 
 # r288 agent working captures (never ship)
 .zshots/
+
+# vitest blob reports (local artifact)
+.vitest-reports/
