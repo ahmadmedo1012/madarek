@@ -126,7 +126,11 @@ export interface BudgetTable {
 }
 
 export const DEFAULT_BUDGET: BudgetTable = {
-  routes: {},
+  /* '/' carries the r303/r304 WebGL world (three.module chunk) — the
+     same documented cost that raised the CI bundle ceiling 650→900 KB
+     gz (1ef0307). The surface budget syncs to that rationale; every
+     other route stays on the default 800 KB. */
+  routes: { '/': 900_000 },
   defaultBytes: 800_000,
   fcpRegressionRatio: 1.05,
   textContrastMin: 4.5,
