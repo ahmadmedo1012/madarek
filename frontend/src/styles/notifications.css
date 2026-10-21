@@ -511,7 +511,12 @@
    يبقى ≤640؛ 641–920 يرفع المكدس فقط فوق الدوك دون تغيير عرضه. */
 @media (max-width: 920px) {
   .toast-stack {
-    inset-block-end: calc(76px + env(safe-area-inset-bottom, 0px));
+    /* r299: 76px predated the r211 dock re-skin — the measured dock is
+       ~78px (6 + 64.9 + 6 + 1 at 390px), so toasts overlapped its top
+       border by ~2px (live-measured: toast bottom 768 vs dock top
+       766.1). 72 + 8 = 80px clears the dock; both sides keep their own
+       env(safe-area-inset-bottom) growth (the dock pads to it too). */
+    inset-block-end: calc(var(--sp-11) + var(--sp-2) + env(safe-area-inset-bottom, 0px));
   }
 }
 @media (max-width: 640px) {

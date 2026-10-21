@@ -70,8 +70,19 @@ function readPosition(anchor: HTMLElement, tip: HTMLElement | null): Position {
   const r = anchor.getBoundingClientRect();
   const tw = tip?.offsetWidth ?? 0;
   const th = tip?.offsetHeight ?? 0;
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
+  // r299: the tip is position:fixed — its containing block is the
+  // INITIAL CONTAINING BLOCK, whose box is documentElement.client*
+  // (excludes the classic scrollbar and any scrollbar-gutter
+  // reservation). window.inner* INCLUDE that zone, so clamping with it
+  // let the tip believe it had ~10px more shrink-to-fit room than
+  // reality: the label re-wrapped under the applied `left`, grew ~18px
+  // taller than the height the position was computed from, and the
+  // bubble rendered overlapping the anchor (live-measured on the
+  // collapsed icon rail). With the true box the clamp guarantees
+  // available width ≥ measured width, so the box can never re-wrap
+  // after positioning.
+  const vw = document.documentElement.clientWidth;
+  const vh = document.documentElement.clientHeight;
 
   // Prefer above; flip below when there is no room above but there is
   // below. If neither fits, clamp — the tip stays fully in view.

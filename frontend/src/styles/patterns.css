@@ -361,6 +361,18 @@ a.pf-row-link {
   align-items: center;
   gap: var(--sp-2);
 }
+/* r299 (final-shell): consumer `.flex` rows wrap inside the bar — both
+   of the pattern's own levels declare flex-wrap, but the filters slot
+   has received non-wrapping `.flex` utility rows (components.css `.flex`
+   carries no wrap), whose min-content is then the whole pill row:
+   ~18px clipped off-screen at 360–430px (measured on /teacher/dashboard
+   at 390 — pills row 378px in a 340px bar, the «حضور 0» count badge
+   clipped to a 5px sliver). Forcing wrap on utility children of this
+   slot only: a row that fits stays on one line (wrap is a no-op); a
+   row that overflows now breaks instead of clipping. */
+.pf-filterbar-filters > :where(.flex) {
+  flex-wrap: wrap;
+}
 .pf-filterbar-sort {
   display: flex;
   align-items: center;
