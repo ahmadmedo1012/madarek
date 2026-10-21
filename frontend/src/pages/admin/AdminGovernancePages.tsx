@@ -62,6 +62,10 @@ import '../../styles/training.css'; // .back-link family (D11 css split, 12-15)
 // .comp-form-field, and the six governance selects now ride the
 // FormField canon (components.css .form-field) like the rest of the app.
 import '../../styles/admin.css'; // r150e: the borrowed admin-students-search chrome moved home
+// R305-A8 «Heron»: the scoped admin/owner sheet rides LAST (same @layer
+// pages, later source order → it wins the equal-specificity ties). Every
+// rule is scoped under the .r305ao page-root marker — zero leakage.
+import '../../styles/r305-admin-owner.css';
 /* r299: the teachers roster's pagination rides the family's canonical
  * footer now (AdminPages' TablePaginationFooter — the cross-file
  * import precedent AdminPages itself set for pageList) instead of a
@@ -321,7 +325,13 @@ export function AdminTeachersPage() {
     />
   );
 
+  /* R305-A8: the .r305ao marker on the page root scopes the Heron sheet
+   * to this page only. PageFrame (a frozen pattern) takes no className,
+   * so the marker rides a quiet full-width wrapper div — the layout
+   * (.pf-page measure/rhythm) and the entrance animation
+   * (.content-inner > * — still exactly one child) are unchanged. */
   return (
+    <div className="r305ao">
     <PageFrame width="wide">
       <PatternsPageHeader
         title="إدارة الأساتذة"
@@ -413,6 +423,7 @@ export function AdminTeachersPage() {
         onDetailClose={() => setSelectedId(null)}
       />
     </PageFrame>
+    </div>
   );
 }
 
@@ -945,12 +956,14 @@ export function AdminPermissionsPage() {
     return () => clearTimeout(t);
   }, [pulse]);
 
-  if (isPending) return <DetailSkeleton />;
+  // R305-A8: every branch carries the .r305ao marker (here around the
+  // read-only DetailSkeleton, whose internal .page root we cannot tag).
+  if (isPending) return <div className="r305ao"><DetailSkeleton /></div>;
   // API-down must not infinite-skeleton (audit 0-e P0-5) — an honest,
   // recoverable error with a way back.
   if (isError || !data) {
     return (
-      <div className="page">
+      <div className="page r305ao">
         <Link to="/admin/teachers" className="back-link">
           <Icon icon={ChevronRight} size={14} /> العودة إلى الأساتذة
         </Link>
@@ -1026,7 +1039,7 @@ export function AdminPermissionsPage() {
   };
 
   return (
-    <div className="page">
+    <div className="page r305ao">
       <Link to="/admin/teachers" className="back-link">
         <Icon icon={ChevronRight} size={14} /> العودة إلى الأساتذة
       </Link>
@@ -1170,7 +1183,13 @@ export function AdminPermissionsPage() {
                           {effective && fromRole && !ovr && (
                             <button
                               type="button"
-                              className="btn ghost sm"
+                              /* R305-A8 danger hierarchy: «سحب» strips a
+                               * live capability the instant it is clicked
+                               * (no confirm gate on this verb) — the one
+                               * destructive direction in the matrix gets
+                               * the danger fill; منح stays the accent
+                               * primary, إعادة للافتراضي stays quiet. */
+                              className="btn sm r305ao-btn-danger"
                               disabled={setCap.isPending || isSelf}
                               onClick={() => applyCap(cap, false)}
                             >

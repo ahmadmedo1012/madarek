@@ -63,7 +63,10 @@ export function OwnerRealtimePage() {
   const anyDegraded = refreshFailed || alerts.isError;
 
   return (
-    <div className="page">
+    /* r305-A8 «Heron»: page-root marker — one root covers every branch
+       (pending skeleton, initial-load error, live band): all render
+       inside this div, so the scoped sheet reaches them all. */
+    <div className="page r305ao">
       <PatternsPageHeader
         title="المراقبة الحيّة"
         description="مراقبة العمليّات الحيّة للمنصّة في الوقت الفعليّ"

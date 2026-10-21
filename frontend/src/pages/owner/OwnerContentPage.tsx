@@ -105,7 +105,9 @@ export function OwnerContentPage() {
     [themeVersion],
   );
   return (
-    <div className="page">
+    /* r305-A8 «Heron»: page-root marker — swatches, notices and card
+       surfaces all key off the scoped sheet's .r305ao selector. */
+    <div className="page r305ao">
       <PatternsPageHeader
         title="المحتوى والعلامة التجاريّة"
         description="إدارة الإعلانات، أعلام الميزات، والهويّة البصريّة للمنصّة"

@@ -30,6 +30,7 @@ import type { OwnerInstitution } from '../../lib/api';
 // consumes — the same CSS AdminCoursesPage loads; the faculty cards
 // read the global components.css families (admin-faculty-*).
 import '../../styles/admin.css';
+import '../../styles/r305-admin-owner.css'; // R305-A8 «Heron» scoped sheet — directly after the family sheet (Task 1 contract)
 import { formatNum } from '../../utils/numbers';
 
 /**
@@ -372,7 +373,7 @@ export function OwnerInstitutionDetailPage() {
   /* ── Render: the listing-level honest states first ────────────── */
   if (listing.isPending) {
     return (
-      <div className="page" aria-busy="true" aria-live="polite">
+      <div className="page r305ao" aria-busy="true" aria-live="polite">
         <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">جارٍ تحميل المؤسسة…</h1>
@@ -389,7 +390,7 @@ export function OwnerInstitutionDetailPage() {
   }
   if (listing.isError) {
     return (
-      <div className="page">
+      <div className="page r305ao">
         <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">المؤسسة</h1>
@@ -405,7 +406,7 @@ export function OwnerInstitutionDetailPage() {
     /* The listing loaded but this slug matches nothing — the honest
      * not-found state, with the way back to the console. */
     return (
-      <div className="page">
+      <div className="page r305ao">
         <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">المؤسسة غير موجودة</h1>
@@ -454,7 +455,7 @@ export function OwnerInstitutionDetailPage() {
     createCourse.isPending || createOffering.isPending;
 
   return (
-    <div className="page">
+    <div className="page r305ao">
       <PatternsPageHeader
         title={institution.name}
         description={

@@ -115,7 +115,9 @@ export function OwnerEducationPage() {
 
   if (q.isPending) {
     return (
-      <div className="page" aria-busy="true">
+      /* r305-A8: the marker rides EVERY branch — pending included —
+         so the scoped sheet reaches the skeleton band too. */
+      <div className="page r305ao" aria-busy="true">
         <PatternsPageHeader
           title="النظرة التعليميّة"
           description="جارٍ جمع البيانات…"
@@ -132,7 +134,9 @@ export function OwnerEducationPage() {
   }
   if (q.isError || !edu) {
     return (
-      <div className="page">
+      /* r305-A8: the marker rides EVERY branch — the honest error
+         state renders under the same scoped grammar. */
+      <div className="page r305ao">
         <PatternsPageHeader
           title="النظرة التعليميّة"
           breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'النظرة التعليميّة' }]}
@@ -170,7 +174,9 @@ export function OwnerEducationPage() {
   ];
 
   return (
-    <div className="page">
+    /* r305-A8 «Heron»: page-root marker — meters (owner-workload),
+       tables and chart containers all key off the scoped sheet. */
+    <div className="page r305ao">
       <PatternsPageHeader
         title="النظرة التعليميّة"
         description="إحصائيات حيّة عن المقرّرات وأعضاء هيئة التدريس والطلاب"

@@ -106,7 +106,9 @@ export function OwnerAiPage() {
   const chartOptions = useMemo(() => cartesianOptions(), [themeKey, reducedMotion]);
 
   return (
-    <div className="page">
+    /* r305-A8 «Heron»: page-root marker — the scoped sheet keys every
+       rule off .r305ao; the provider badge stays the r160 honest read. */
+    <div className="page r305ao">
       <PatternsPageHeader
         title="مركز الذكاء الاصطناعيّ"
         description="مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ"

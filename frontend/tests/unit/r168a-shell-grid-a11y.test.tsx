@@ -141,7 +141,12 @@ describe('r168a — destructive row actions are danger-tinted ghosts', () => {
 
   it('the admin courses delete action uses it (not text-subtle)', () => {
     const page = stripJsx(read('src/pages/admin/AdminPages.tsx'));
-    expect(page).toContain('className="btn ghost sm danger"');
+    /* R305-A8 amendment: the Heron pass adds the scoped
+     * .r305ao-btn-danger class to the same button (the destructive
+     * verb's standalone danger fill inside .r305ao pages). The r168a
+     * semantic pin is unchanged — the ghost danger variant is still
+     * the base and text-subtle is still forbidden. */
+    expect(page).toContain('className="btn ghost sm danger r305ao-btn-danger"');
     expect(page).not.toContain('btn ghost sm text-subtle');
   });
 });
