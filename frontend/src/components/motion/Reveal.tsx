@@ -16,6 +16,11 @@ type RevealProps = {
   as?: 'div' | 'section' | 'article' | 'span' | 'li';
   /** Reveal distance. */
   distance?: 'small' | 'medium' | 'large';
+  /** Visual treatment. 'lift' (default) — the existing fade + rise
+   *  (unchanged DOM: no variant attribute rendered). 'line' — RTL-aware
+   *  rule wipe styled by the r305 section of motion.css; same belt,
+   *  same lifecycle, only the data attribute differs. */
+  variant?: 'lift' | 'line';
   /** IntersectionObserver threshold. */
   threshold?: number;
   /** Set automatically by RevealGroup; do not pass manually. */
@@ -43,12 +48,18 @@ const DISTANCE_TOKEN: Record<NonNullable<RevealProps['distance']>, string> = {
  * reveals, and a `scrollend` belt (rAF-throttled `scroll` fallback
  * where scrollend is unsupported) reconciles anything IO never saw.
  *
+ * variant="line" — Heron-style rule wipe (data-reveal-variant="line",
+ * styled in motion.css's r305 section). Same one-shot belt/lifecycle;
+ * the default 'lift' treatment renders no variant attribute at all, so
+ * existing DOM/snapshots are untouched.
+ *
  * See specs/001-premium-motion-system/contracts/motion-primitives.tsx.md
  */
 export function Reveal({
   children,
   as = 'div',
   distance = 'medium',
+  variant = 'lift',
   threshold = 0,
   staggerIndex = 0,
   className,
@@ -169,6 +180,9 @@ export function Reveal({
       className={className}
       data-reveal
       data-revealed={revealed ? 'true' : 'false'}
+      // r305-c: 'lift' (default) stays attribute-free for a zero DOM
+      // diff; 'line' opts into the wipe via the attribute only.
+      data-reveal-variant={variant === 'line' ? 'line' : undefined}
       style={
         {
           ...style,

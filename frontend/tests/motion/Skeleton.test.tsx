@@ -87,8 +87,10 @@ describe('motion barrel inventory (r157)', () => {
     // runtime under verbatimModuleSyntax-style re-exports).
     // SkeletonGroup's absence is pinned by the exact key list — the
     // module type no longer exports it (compile-time guaranteed too).
+    // r305-A2: CursorManager joins the live inventory (the global cursor
+    // layer, mounted once in App.tsx) — SkeletonGroup stays absent.
     expect(Object.keys(motionInventory).sort()).toEqual(
-      ['PageTransition', 'Reveal', 'RevealGroup', 'Skeleton', 'useReducedMotion'].sort(),
+      ['CursorManager', 'PageTransition', 'Reveal', 'RevealGroup', 'Skeleton', 'useReducedMotion'].sort(),
     );
   });
 });

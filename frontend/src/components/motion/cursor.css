@@ -1,0 +1,217 @@
+/* ═════════════════════════════════════════════════════════════════════
+   R305-A2 — cursor layer styles (colocated with CursorManager.tsx).
+
+   ADDITIVE pointer decoration — the NATIVE CURSOR IS NEVER HIDDEN
+   (no cursor:none anywhere in this sheet): if JS dies the layer never
+   mounts and the OS pointer is untouched everywhere.
+
+   Contract (written by CursorManager.tsx — DOM writes only, never
+   React state):
+   · .cursor-layer[data-active="true"]  → first pointermove happened
+   · .cursor-layer[data-state="…"]      → default | link | text | drag |
+                                          hidden | down (press)
+   · .cursor-layer[data-lines="on|off"] → construction-lines visibility
+   · .cursor-layer[data-lines-axis]     → cross | x | y (hairline axes)
+   · geometry vars on .cursor-lines (px, viewport space, same rAF tick):
+       --cursor-line-x / --cursor-line-y          follower position
+       --cursor-line-left / --cursor-line-top     container bounds origin
+       --cursor-line-width / --cursor-line-height container bounds size
+
+   Z rung: 399 — ABOVE page content and the floating-UI ladder
+   (--z-dropdown 100 / --z-popover 200 / --z-tooltip 250 / --z-sheet 300),
+   BELOW the interruption ladder (--z-modal 400, --z-toast 500,
+   --z-lightbox 600). The dot yields to dialogs and toasts by design.
+
+   Gate notes: colors flow only through tokens + color-mix; durations
+   and easings only through --t-* / --ease-*; the tracking anchor is
+   JS-driven so it carries NO transform transition — state visuals are
+   transform/opacity-only on the child elements.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ── layer ─────────────────────────────────────────────────────────── */
+.cursor-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 399; /* below --z-modal/--z-toast, above --z-sheet and content */
+}
+
+/* ── dot (anchor is positioned by JS translate3d every frame) ─────── */
+.cursor-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+
+.cursor-dot-core {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+  /* state visuals ride transform/opacity only; the anchor stays JS-owned */
+  transition:
+    opacity var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+
+.cursor-dot-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  /* hollow ring: 1px stroke around a transparent disc */
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+  transform: translate(-50%, -50%) scale(0);
+  transition:
+    opacity var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+
+/* drag crosshair — two hairlines through the dot, restrained */
+.cursor-dot::before,
+.cursor-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: color-mix(in srgb, var(--text) 45%, transparent);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
+}
+.cursor-dot::before {
+  width: 18px;
+  height: 1px;
+}
+.cursor-dot::after {
+  width: 1px;
+  height: 18px;
+}
+
+/* ── construction lines (geometry from manager-written vars) ──────── */
+.cursor-lines {
+  position: absolute;
+  inset: 0;
+}
+
+.cursor-line-h,
+.cursor-line-v {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: color-mix(in srgb, var(--text) 18%, transparent);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
+}
+.cursor-line-h {
+  width: var(--cursor-line-width, 0px);
+  height: 1px;
+  transform: translate3d(var(--cursor-line-left, 0px), var(--cursor-line-y, 0px), 0);
+}
+.cursor-line-v {
+  width: 1px;
+  height: var(--cursor-line-height, 0px);
+  transform: translate3d(var(--cursor-line-x, 0px), var(--cursor-line-top, 0px), 0);
+}
+
+/* ── coordinate readout ────────────────────────────────────────────── */
+.cursor-readout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  direction: ltr; /* "62% · 38%" reads as figures even in RTL pages */
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: var(--sp-0-5) var(--sp-1-5);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
+  transform: translate3d(
+    calc(var(--cursor-line-x, -9999px) + 14px),
+    calc(var(--cursor-line-y, -9999px) + 18px),
+    0
+  );
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   STATE VISIBILITY — everything starts inert (opacity 0); the manager
+   flips attributes, this block lights the pieces up. Order matters:
+   state overrides sit after the active-baseline rules.
+   ═════════════════════════════════════════════════════════════════════ */
+
+.cursor-layer[data-active='true'] .cursor-dot-core {
+  opacity: 1;
+}
+
+/* interactive: dot stays, hollow ring blooms around it */
+.cursor-layer[data-active='true'][data-state='link'] .cursor-dot-ring {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* text fields: shrink + fade — the native I-beam is the precise pointer */
+.cursor-layer[data-active='true'][data-state='text'] .cursor-dot-core {
+  opacity: 0.25;
+  transform: translate(-50%, -50%) scale(0.5);
+}
+
+/* custom-surface contract: suppress the dot entirely */
+.cursor-layer[data-active='true'][data-state='hidden'] .cursor-dot-core {
+  opacity: 0;
+}
+
+/* drag: crosshair hairlines on */
+.cursor-layer[data-active='true'][data-state='drag'] .cursor-dot::before,
+.cursor-layer[data-active='true'][data-state='drag'] .cursor-dot::after {
+  opacity: 1;
+}
+
+/* pressed: restrained press feedback */
+.cursor-layer[data-active='true'][data-state='down'] .cursor-dot-core {
+  transform: translate(-50%, -50%) scale(0.85);
+}
+
+/* construction lines: on while inside a [data-cursor-lines] container,
+   axis-limited via data-lines-axis ("x" keeps the horizontal hairline,
+   "y" the vertical one, "cross" both) */
+.cursor-layer[data-lines='on']:not([data-lines-axis='y']) .cursor-line-h {
+  opacity: 1;
+}
+.cursor-layer[data-lines='on']:not([data-lines-axis='x']) .cursor-line-v {
+  opacity: 1;
+}
+.cursor-layer[data-lines='on'] .cursor-readout {
+  opacity: 1;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   SAFETY BELTS
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* Touch/stylus surfaces: the JS gate never mounts the layer, this
+   hides it anyway if it ever existed. */
+@media (hover: none), (pointer: coarse) {
+  .cursor-layer {
+    display: none;
+  }
+}
+
+/* Reduced-motion belt: JS gate blocks mounting; CSS backstops. */
+@media (prefers-reduced-motion: reduce) {
+  .cursor-layer {
+    display: none;
+  }
+}

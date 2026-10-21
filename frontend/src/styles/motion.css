@@ -301,6 +301,120 @@
     border-color: var(--state-input-error-border);
     outline: none;
   }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  r305-c — SHARED MOTION ENGINE (task 2-c) — ADDITIVE SECTION   ║
+     ║  Everything below is new (branch redesign/r305-c-motion): the  ║
+     ║  line-wipe Reveal variant, the .motion-hairline utility and    ║
+     ║  the .motion-cine-lift opt-in. No rule above this point was    ║
+     ║  altered; the @layer order declaration and the reduced-motion  ║
+     ║  token zeroing block are untouched.                            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+
+  /* ── Reveal variant="line" — RTL-aware rule wipe ────────────────────
+     <Reveal variant="line"> renders data-reveal-variant="line" and
+     reuses the SAME one-shot data-reveal belt (mount check + IO +
+     fling clauses + scrollend/resize/load settle in Reveal.tsx); only
+     the visual treatment differs. The element wipes open from the
+     READING START edge — left in LTR, right in RTL via the [dir="rtl"]
+     mirror below (the codebase's physical-override convention, cf.
+     owner.css .progress-fill transform-origin). The wipe REPLACES the
+     default lift's opacity/translate rest state — the clip IS the
+     reveal, so the distance fade has nothing to do here.
+
+     No-JS safety (2-c brief): the risk profile is IDENTICAL to the
+     existing reveal — [data-reveal] elements are hidden at rest by
+     CSS today (opacity 0, unguarded — verified above at this file's
+     own reveal block), but such elements only exist once React has
+     rendered, and the belt guarantees the reveal fires (above-fold
+     mount check, IO, fling reconciliation, settle belts). The line
+     variant changes the HIDING mechanism (clip-path instead of
+     opacity), not the guarantee. */
+  [data-reveal][data-reveal-variant="line"]:not([data-revealed="true"]) {
+    /* (0,3,0) — beats the shared rest rule (0,2,0), opting the variant
+       out of the lift's opacity/translateY rest state. */
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 100% 0 0);
+  }
+  [dir="rtl"] [data-reveal][data-reveal-variant="line"]:not([data-revealed="true"]) {
+    clip-path: inset(0 0 0 100%);
+  }
+
+  /* Revealed — wipe open over the reveal token. The explicit
+     animation-delay re-declaration matters: the shorthand above resets
+     the longhand, and the variant must keep the shared stagger choreography. */
+  [data-reveal][data-reveal-variant="line"][data-revealed="true"] {
+    animation: reveal-line-wipe-ltr var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
+    animation-delay: calc(var(--motion-stagger-step) * var(--reveal-index, 0));
+  }
+  [dir="rtl"] [data-reveal][data-reveal-variant="line"][data-revealed="true"] {
+    animation-name: reveal-line-wipe-rtl;
+  }
+
+  @keyframes reveal-line-wipe-ltr {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
+  }
+  @keyframes reveal-line-wipe-rtl {
+    from { clip-path: inset(0 0 0 100%); }
+    to   { clip-path: inset(0 0 0 0); }
+  }
+
+  /* RM — an explicit per-effect kill IS required for the variant (the
+     existing RM approach does need per-effect rules whenever a variant
+     rule out-specifies the shared RM block): the (0,3,0)/(0,4,0) rules
+     above beat the shared RM reveal kill at (0,2,0), so without this
+     the wipe name + stagger delay would leak into reduced motion.
+     Mirrors the file's own per-effect RM pattern — reveal-fade
+     affordance, delay killed, final state pinned (both directions). */
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal][data-reveal-variant="line"][data-revealed="true"],
+    [dir="rtl"] [data-reveal][data-reveal-variant="line"][data-revealed="true"] {
+      animation: reveal-fade 80ms var(--motion-ease-standard) both;
+      animation-delay: 0ms;
+      transform: none;
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  /* ── .motion-hairline — the 1px rule utility ────────────────────────
+     The line language as a standalone element: a full-width 1px rule
+     painted with the canonical theme-aware hairline token (--rule).
+     block-size: 1px is the established raw hairline idiom in this repo
+     (auth.css connector rule) and sits outside every check-raw-css
+     axis (not type/radius/spacing). Apply to a <div> (or an <hr> — the
+     utility carries no border of its own, so hr's default border must
+     be handled by the consumer or base styles). */
+  .motion-hairline {
+    display: block;
+    inline-size: 100%;
+    block-size: 1px;
+    background: var(--rule);
+  }
+
+  /* ── .motion-cine-lift — opt-in cinematic pacing ────────────────────
+     Deliberately NOT a standalone hidden-at-rest keyframe utility: a
+     self-contained entrance would need its own trigger/observer (the
+     brief forbids new observers) and would leave content permanently
+     invisible if its class never fired. Instead the class RIDES the
+     platform Reveal belt — add it to <Reveal className="motion-cine-lift">
+     (pair with distance="large") and the shared reveal-rise
+     choreography (translateY --reveal-distance → 0 + opacity, easing
+     var(--motion-ease-decelerate), i.e. the --ease-out decel) simply
+     slows to the cinema token. Only the duration longhand is
+     overridden, so the shared RM block still owns the animation under
+     reduced motion (re-pinned below — this rule out-specifies it). */
+  [data-reveal].motion-cine-lift[data-revealed="true"] {
+    animation-duration: var(--t-cinema);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal].motion-cine-lift[data-revealed="true"] {
+      animation-duration: 80ms; /* the shared RM reveal affordance */
+    }
+  }
+
+  /* (End of the r305-c additive section.) */
 }
 
 /* ═══════════════════════════════════════════════════════════════════

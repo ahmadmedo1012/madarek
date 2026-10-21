@@ -28,6 +28,34 @@ import type {
  *   - Disables clicks via `aria-disabled` + native `disabled` so
  *     submission is blocked during the request.
  *
+ * r305-A2 (lane 2-b) — opt-in control microinteractions (default OFF,
+ * so every existing call site renders pixel-identical markup):
+ *
+ *   labelMotion?: boolean
+ *     Wraps the children in a duplicate-label vertical slide structure
+ *     (.btn-motion-label > .btn-motion-label-track, with the duplicate
+ *     row .btn-motion-label-dup aria-hidden). The accessible name stays
+ *     EXACTLY one copy of the label — the dup is aria-hidden and the
+ *     loading branch (spinner + visually-hidden span) still takes
+ *     precedence untouched when `loading` is set. leadingIcon renders
+ *     outside/before the motion label. CSS lives in components.css
+ *     (r305 section): hover rides the hover-capable media gate, the
+ *     :focus-visible slide is ungated for keyboard parity; reduced
+ *     motion snaps via the global token belt.
+ *
+ *   iconRight?: ReactNode
+ *     Renders a decorative trailing icon AFTER the label inside a
+ *     fixed 1.25em square (.btn-motion-icon) with an aria-hidden
+ *     duplicate (.btn-motion-icon-dup); hover/focus-visible swaps the
+ *     two along a direction-aware diagonal (RTL-safe via
+ *     var(--motion-direction)). The whole container is aria-hidden —
+ *     iconRight is decorative; the accessible name comes from the
+ *     label text alone. Pass a single Lucide icon (e.g. <ArrowLeft />).
+ *
+ *   When both props are set, both render (label span, then icon span).
+ *   The button root carries data-motion-label / data-motion-icon when
+ *   the respective prop is active (CSS hooks + QA selectors).
+ *
  * See specs/001-premium-motion-system/contracts/interaction-tokens.md
  */
 export type ButtonVariant =
@@ -49,6 +77,14 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
   /** Optional leading icon, rendered before children. */
   leadingIcon?: ReactNode;
+  /** r305 (lane 2-b): opt-in duplicate-label vertical slide on
+   *  hover/focus-visible. Default off — zero change for callers. The
+   *  loading branch always wins over the motion wrapper. */
+  labelMotion?: boolean;
+  /** r305 (lane 2-b): decorative trailing icon (single Lucide icon)
+   *  that swaps with an aria-hidden duplicate on hover/focus-visible
+   *  along a direction-aware diagonal. Rendered after the label. */
+  iconRight?: ReactNode;
 };
 
 const VARIANT_CLASS: Record<Exclude<ButtonVariant, 'default'>, string> = {
@@ -78,6 +114,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     loading = false,
     disabled,
     leadingIcon,
+    labelMotion = false,
+    iconRight,
     children,
     className,
     type = 'button',
@@ -112,6 +150,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       aria-disabled={isDisabled || undefined}
       aria-busy={isBusy || undefined}
       data-loading={loading || undefined}
+      data-motion-label={labelMotion || undefined}
+      data-motion-icon={iconRight != null || undefined}
       {...rest}
     >
       {loading ? (
@@ -125,7 +165,32 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ) : (
         <>
           {leadingIcon}
-          {children}
+          {labelMotion ? (
+            /* r305 (lane 2-b): duplicate-label slide. The dup row is
+               aria-hidden so the accessible name stays one copy of the
+               label; testing-library's name computation skips it. */
+            <span className="btn-motion-label">
+              <span className="btn-motion-label-track">
+                {children}
+                <span className="btn-motion-label-dup" aria-hidden="true">
+                  {children}
+                </span>
+              </span>
+            </span>
+          ) : (
+            children
+          )}
+          {iconRight != null && (
+            /* r305 (lane 2-b): decorative trailing arrow. The whole
+               container is aria-hidden — decorative icons must not
+               pollute the accessible name (the label names the button). */
+            <span className="btn-motion-icon" aria-hidden="true">
+              {iconRight}
+              <span className="btn-motion-icon-dup" aria-hidden="true">
+                {iconRight}
+              </span>
+            </span>
+          )}
         </>
       )}
     </button>
