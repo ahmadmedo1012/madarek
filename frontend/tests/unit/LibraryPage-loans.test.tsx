@@ -183,7 +183,7 @@ describe('LibraryPage — active loans list + return action', () => {
   it('lists open loans with the due date and a per-row «إرجاع» action', () => {
     renderPage();
 
-    expect(screen.getByText('استعاراتي النشطة')).toBeInTheDocument();
+    expect(screen.getByText('استعاراتي')).toBeInTheDocument();
     // The title shows twice by design (r199 renegotiation of r186): the
     // book ROW body + the loan row. The identity chip is aria-hidden
     // and no longer paints the title — one accessible read per surface.
@@ -260,7 +260,7 @@ describe('LibraryPage — ?tab=research deep link (r155b)', () => {
     expect(screen.getByRole('tab', { name: /بحوث الطلاب/ })).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByRole('tab', { name: 'الكتب' })).toHaveAttribute('aria-selected', 'false');
     // The books-only loans card stays on the books panel.
-    expect(screen.queryByText('استعاراتي النشطة')).toBeNull();
+    expect(screen.queryByText('استعاراتي')).toBeNull();
   });
 
   it('falls back to the books tab for an unknown ?tab value', () => {

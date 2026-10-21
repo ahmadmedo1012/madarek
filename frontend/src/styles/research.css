@@ -496,6 +496,365 @@
   gap: var(--sp-2);
 }
 
+/* ─── 6b. Library toolbar — the search-first control zone ───────────
+   One calm bar the page opens with: the search field owns the width,
+   the live count sits at its trailing edge so «what am I looking at»
+   never needs a second scan. */
+.rs-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+}
+.rs-toolbar .rs-search { flex: 1 1 auto; min-width: 0; }
+.rs-toolbar-side {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .rs-toolbar { flex-direction: column; align-items: stretch; gap: var(--sp-2); }
+  .rs-toolbar-side { justify-content: space-between; }
+}
+
+/* Active-filter summary chip — the collapsed filter state names itself
+   (the mobile Sheet trigger shows the same text, so the two agree). */
+.rs-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  padding: var(--sp-1) var(--sp-2-5);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+
+/* ─── 6c. Loans — the continue surface ──────────────────────────────
+   «استعاراتي» as a panel with its own identity: the header row states
+   the count; each loan carries a due meter (the 14-day loan window is
+   the honest scale — the fill is the time REMAINING, red past zero). */
+.rs-loans {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-lg);
+  box-shadow: var(--elev-1);
+}
+.rs-loans-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.rs-loan-due {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  width: 100%;
+}
+.rs-loan-due-track {
+  position: relative;
+  flex: 1 1 120px;
+  max-width: 160px;
+  height: var(--sp-1);
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.rs-loan-due-fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  border-radius: var(--r-full);
+  background: var(--c-mint-ink);
+}
+.rs-loan-due-fill.is-warn { background: var(--c-yellow-ink); }
+.rs-loan-due-fill.is-bad { background: var(--c-rose-ink); }
+.rs-loan-due-text {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── 6d. Document rows — the research archive ──────────────────────
+   The row title IS the way in: a linked title with the accent hover
+   makes «open the document» the row's primary affordance, before the
+   expanded body's buttons are even reached. */
+.rs-doc-link {
+  color: inherit;
+  text-decoration: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .rs-doc-link:hover { color: var(--accent-strong); }
+}
+.rs-doc-link:focus-visible {
+  outline: var(--sp-0-5) solid var(--state-focus-ring-color);
+  outline-offset: var(--sp-0-5);
+  border-radius: var(--r-xs);
+}
+
+/* Course group header — the archive groups by course when browsing
+   (flat while searching): one quiet label line per group. */
+.rs-group + .rs-group { margin-block-start: var(--sp-5); }
+.rs-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin-block-end: var(--sp-2);
+  padding-inline: var(--sp-1);
+}
+.rs-group-title {
+  margin: 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.rs-group-title .font-mono { color: var(--text-muted); font-weight: var(--fw-medium); }
+.rs-group-count {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── 6e. Student research workflow — the visible sequence ────────── */
+/* The submission CTA — a compact panel, not a hero: one line of intent
+   next to the primary action, so the page's first move is obvious. */
+.rs-upload-cta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-3) var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--surface);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-lg);
+  box-shadow: var(--elev-1);
+}
+.rs-upload-cta-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--sp-9);
+  height: var(--sp-9);
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.rs-upload-cta-body { flex: 1 1 260px; min-width: 0; }
+.rs-upload-cta-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.rs-upload-cta-desc {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  line-height: var(--lh-base);
+}
+
+/* Pipeline step timestamps — the journey rail gains its WHEN: the
+   done/current steps print their real dates under the labels, so the
+   sequence is evidence, not decoration. */
+.rs-pipe-when {
+  display: block;
+  font-size: var(--fs-xxs);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--lh-tight);
+}
+.rs-pipeline .is-current .rs-pipe-when { color: var(--accent-ink); }
+
+/* The honest next action — one labelled chip + the row's own action
+   riding the same line, so «what happens now» never needs inference. */
+.rs-next {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-3);
+  width: 100%;
+  padding: var(--sp-2-5) var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.rs-next-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.rs-next-label .rs-next-k {
+  color: var(--accent-ink);
+}
+.rs-next-hint {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  min-width: 0;
+}
+.rs-next .rs-row-actions { width: auto; margin-inline-start: auto; }
+@media (max-width: 640px) {
+  .rs-next .rs-row-actions { width: 100%; margin-inline-start: 0; }
+}
+
+/* ─── 6f. Teacher review — the document/review split ────────────────
+   Desktop: queue panel (inline-start) + sticky review workspace
+   (inline-end). The queue is the triage surface (priority order, wait
+   age, status); the workspace owns scan facts, the grade form and the
+   document annotations as three distinct sections. */
+.rs-review-split {
+  display: grid;
+  grid-template-columns: minmax(320px, 400px) minmax(0, 1fr);
+  gap: var(--sp-5);
+  align-items: start;
+}
+.rs-review-queue {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-inline-size: 0;
+}
+.rs-review-work {
+  position: sticky;
+  top: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-inline-size: 0;
+  max-block-size: calc(100dvh - var(--topbar-h, 64px) - var(--sp-8));
+  overflow-y: auto;
+  padding: var(--sp-5);
+  background: var(--surface);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-lg);
+  box-shadow: var(--elev-1);
+  /* Room for the scrollbar so content never rides the rounded edge. */
+  scrollbar-gutter: stable;
+}
+.rs-review-work-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+.rs-review-work-title {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  line-height: var(--lh-snug);
+  overflow-wrap: anywhere;
+}
+.rs-review-work-sub {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+/* Queue item — a button row (the whole surface is the selection
+   target), state carried by the accent hairline + soft ground. */
+.rs-queue-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  text-align: start;
+  background: var(--surface);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .rs-queue-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+}
+.rs-queue-item:active { background: var(--surface-2); }
+.rs-queue-item:focus-visible {
+  outline: var(--sp-0-5) solid var(--state-focus-ring-color);
+  outline-offset: var(--sp-0-5);
+}
+.rs-queue-item.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.rs-queue-item-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-1); }
+.rs-queue-item-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  line-height: var(--lh-snug);
+  overflow-wrap: anywhere;
+}
+.rs-queue-item.on .rs-queue-item-title { color: var(--accent-strong); }
+.rs-queue-item-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+.rs-queue-item-tail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-1-5);
+  flex-shrink: 0;
+}
+.rs-wait {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.rs-wait.is-old { color: var(--c-rose-ink); font-weight: var(--fw-semibold); }
+/* Workspace sections — document facts vs feedback vs annotations are
+   three labelled territories; the hairline is the boundary. */
+.rs-work-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2-5);
+  padding-block-start: var(--sp-4);
+  border-block-start: 1px solid var(--surface-divider);
+}
+.rs-work-section:first-of-type { border-block-start: 0; padding-block-start: 0; }
+/* The annotations reader — its own scroll so a long thread never
+   stretches the workspace; the workspace's own scroll stays for the
+   form. */
+.rs-work-notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  max-block-size: 280px;
+  overflow-y: auto;
+  padding-inline-end: var(--sp-1);
+}
+/* Mobile recomposition — the workspace rides a full bottom Sheet; the
+   sticky grid geometry is desktop-only. */
+.rs-review-sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+@media (max-width: 920px) {
+  .rs-review-split { grid-template-columns: minmax(0, 1fr); }
+  .rs-review-work { display: none; }
+  .rs-queue-item { min-height: 44px; }
+}
+@media (max-width: 640px) {
+  .rs-review-work-title { font-size: var(--fs-body-lg); }
+}
+
 /* ─── 7. Reader page chrome (DocumentViewerPage layout) ─────────────
    The split surface: document main + annotations side. RTL-aware via
    logical properties only; stacks at the mobile shell boundary. */

@@ -1,4 +1,161 @@
 @layer pages {
+
+/* ─── Viewer body — the workspace composition ─────────────────
+   r304: the viewer body becomes a deliberate composition — the page
+   canvas stays the primary surface; the thumbnail rail is a secondary
+   navigator that only exists when summoned. The rail sits at the
+   INLINE-START edge (right in RTL) like every reader's page rail. */
+.pdf-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  position: relative;
+}
+
+/* Thumbnail rail — a quiet strip of pages: button = page, the active
+   page carries the accent ring, each canvas renders lazily as the rail
+   scrolls (IntersectionObserver in PdfViewer). */
+.pdf-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  flex-shrink: 0;
+  inline-size: 148px;
+  padding: var(--sp-3);
+  overflow-y: auto;
+  border-inline-end: 1px solid var(--border);
+  background: var(--surface-1);
+  scrollbar-width: thin;
+}
+.pdf-thumb {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1-5);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pdf-thumb:hover { border-color: var(--border-strong); background: var(--surface-2); }
+}
+.pdf-thumb:active { background: var(--surface-2); }
+.pdf-thumb:focus-visible {
+  outline: var(--sp-0-5) solid var(--state-focus-ring-color);
+  outline-offset: var(--sp-0-5);
+}
+.pdf-thumb.on {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.pdf-thumb-canvas {
+  inline-size: 100%;
+  aspect-ratio: 210 / 297;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: white;
+  border-radius: var(--r-xs);
+}
+.pdf-thumb-canvas canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+.pdf-thumb-num {
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.pdf-thumb.on .pdf-thumb-num { color: var(--accent-ink); font-weight: var(--fw-semibold); }
+/* Placeholder for pages outside the render window — shape-matched, no
+   canvas mounted (the thumb list stays cheap on 300-page documents). */
+.pdf-thumb-ghost {
+  inline-size: 100%;
+  aspect-ratio: 210 / 297;
+  border-radius: var(--r-xs);
+  background:
+    linear-gradient(var(--surface-3) 0 0) top / 55% 8% no-repeat,
+    repeating-linear-gradient(
+      to bottom,
+      var(--surface-2) 0 var(--sp-1-5),
+      transparent var(--sp-1-5) calc(var(--sp-1-5) + var(--sp-2))
+    ) center / 78% 55% no-repeat,
+    var(--surface-1);
+}
+
+/* ≤920 (the mobile shell boundary): the rail becomes a drawer overlay
+   INSIDE the viewer — it never stacks under the document or eats its
+   height; the toolbar toggle summons it over the canvas edge. */
+@media (max-width: 920px) {
+  .pdf-thumbs {
+    position: absolute;
+    z-index: var(--z-dropdown);
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: min(200px, 72vw);
+    border-inline-end: 1px solid var(--border);
+    box-shadow: var(--elev-3);
+    background: var(--surface-1);
+  }
+}
+
+/* Annotations column resize — the drag strip between the document and
+   the side panel: an 8px hit strip whose visible hairline lights in
+   the accent while dragging; cursor col-resize both directions (RTL
+   flips the visual, not the verb). */
+.doc-side-resize {
+  flex-shrink: 0;
+  align-self: stretch;
+  inline-size: var(--sp-2);
+  margin-inline: calc(var(--sp-1) * -1);
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: col-resize;
+  position: relative;
+  touch-action: none;
+}
+.doc-side-resize::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline: calc(50% - var(--sp-0-5));
+  inline-size: var(--sp-1);
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+  transition: background var(--t-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .doc-side-resize:hover::before { background: var(--border-strong); }
+}
+.doc-side-resize[data-dragging="true"]::before { background: var(--accent); }
+.doc-side-resize:focus-visible {
+  outline: var(--sp-0-5) solid var(--state-focus-ring-color);
+  outline-offset: var(--sp-0-5);
+  border-radius: var(--r-full);
+}
+@media (max-width: 920px) {
+  .doc-side-resize { display: none; }
+}
+
+/* The resizable geometry: the side column takes --doc-side-w (set from
+   DocumentViewerPage state); the panel fills it. The default restores
+   the shipped 320px when the variable is absent. */
+.doc-reader-side { inline-size: var(--doc-side-w, 320px); }
+.doc-reader-side .annotations-panel {
+  inline-size: 100%;
+  width: 100%;
+}
+@media (max-width: 920px) {
+  .doc-reader-side { inline-size: auto; }
+}
 /* ─── PDF Viewer ──────────────────────────────────────────
    Self-contained viewer chrome. Theme-aware via CSS vars.
    ────────────────────────────────────────────────────── */

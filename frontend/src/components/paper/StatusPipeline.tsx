@@ -1,9 +1,11 @@
 import { Check, X } from 'lucide-react';
 import { Icon } from '../Icon';
-import type { PaperStatus } from '../../hooks/useResources';
+import type { PaperStatus, ResearchPaper } from '../../hooks/useResources';
+import { formatDateWithYearAr } from '../../lib/format';
 
 /**
- * StatusPipeline — the research paper's journey rail (r199, 4B family).
+ * StatusPipeline — the research paper's journey rail (r199, 4B family;
+ * r304 adds the WHEN: real dates under the reached steps).
  *
  * Four honest steps: رُفع (submitted) → الفحص (checked, declared
  * simulation) → التقييم (in review) → النشر (published). The rail is
@@ -23,6 +25,12 @@ import type { PaperStatus } from '../../hooks/useResources';
  * the student sees WHERE the journey stopped, not just that it did.
  * Dot glyphs: done → check, failed → cross icon, current/pending →
  * bare dot (the fill state carries the meaning; no icon noise).
+ *
+ * r304 (the visible sequence): when the caller passes the paper, each
+ * reached step prints its real timestamp under the label (uploadedAt /
+ * scannedAt / gradedAt / publishedAt) — the rail becomes evidence, not
+ * decoration. Missing dates print nothing (no invented «—» noise on a
+ * step that has not happened).
  */
 
 type StepState = 'done' | 'current' | 'failed' | 'pending';
@@ -70,12 +78,31 @@ function stepsFor(status: PaperStatus): PipelineStep[] {
   }));
 }
 
-export function StatusPipeline({ status }: { status: PaperStatus }) {
+/** The real instant each step was reached — 'done'/'current' steps only;
+ * an absent date prints nothing rather than a fake dash. */
+function stepDate(key: string, state: StepState, paper: ResearchPaper): string | null {
+  if (state !== 'done' && state !== 'current') return null;
+  switch (key) {
+    case 'uploaded':
+      return formatDateWithYearAr(paper.uploadedAt);
+    case 'scanned':
+      return paper.scannedAt ? formatDateWithYearAr(paper.scannedAt) : null;
+    case 'review':
+      return paper.gradedAt ? formatDateWithYearAr(paper.gradedAt) : null;
+    case 'published':
+      return paper.publishedAt ? formatDateWithYearAr(paper.publishedAt) : null;
+    default:
+      return null;
+  }
+}
+
+export function StatusPipeline({ status, paper }: { status: PaperStatus; paper?: ResearchPaper }) {
   const steps = stepsFor(status);
   return (
     <ol className="rs-pipeline" aria-label="مسار البحث: رُفع، فُحص، التقييم، النشر">
       {steps.map((s) => {
         const glyph = s.state === 'failed' ? X : s.state === 'done' ? Check : null;
+        const when = paper ? stepDate(s.key, s.state, paper) : null;
         return (
           <li
             key={s.key}
@@ -91,6 +118,7 @@ export function StatusPipeline({ status }: { status: PaperStatus }) {
             <span className="rs-pipe-label">
               {s.label}
               {s.state === 'failed' ? ' — تعذّر اجتياز الفحص' : ''}
+              {when && <span className="rs-pipe-when"><bdi>{when}</bdi></span>}
             </span>
           </li>
         );
