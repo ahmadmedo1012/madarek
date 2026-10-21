@@ -766,6 +766,314 @@
      class names may be restyled ONLY under the .r305rp marker. */
 
   /* ── a7-pdf appends here ── */
+     §C — the PDF reader workspace (marker .r305rp on the page root)
+     ────────────────────────────────────────────────────────────────
+     Grammar: the DOCUMENT CANVAS is the hero — a quiet hairline frame
+     around a maximal reading area, the paper as the only loud object.
+     Toolbars/search are HAIRLINE TRACKS (1px rules, no boxed cards)
+     with 44px-safe controls. Comments/annotations/metadata are clearly
+     SECONDARY panels: eyebrow-labeled, hairline-separated rows, mono
+     numerals. ONE emphasized action per region (composer «حفظ», search
+     «بحث», selection bar «ملاحظة على التحديد»).
+     New classes here are .r305pdf-*; existing pdf.css names are
+     re-styled ONLY under the .r305rp marker. */
+  /* ══════════════════════════════════════════════════════════════════ */
+
+  /* ── C1 · Reader frame — the canvas is the hero ─────────────────── */
+  /* The viewer chrome recedes: hairline frame, flat ground, no shadow
+     on the chrome itself — elevation is reserved for the paper. */
+  .r305rp .pdf-viewer {
+    border-color: var(--border);
+    box-shadow: none;
+    background: var(--surface);
+  }
+  .r305rp .pdf-canvas-wrap {
+    background: var(--surface-2);
+  }
+  /* The paper stays the one loud object (its elev-3 sheet shadow is
+     pdf.css's designed object — untouched). */
+
+  /* Reader head: one quiet bar of context — back affordance + title —
+     closed by a hairline so the canvas owns everything under it. */
+  .r305rp .doc-reader-head {
+    padding-block-end: var(--sp-3);
+    border-block-end: 1px solid var(--surface-divider);
+    margin-block-end: var(--sp-4);
+  }
+  .r305rp .doc-reader-title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    letter-spacing: 0;
+  }
+  /* Page-count context rides the head as a quiet chip (mono numerals
+     via .rs-count's own contract). */
+  .r305rp .doc-reader-meta {
+    color: var(--text-muted);
+    font-weight: var(--fw-medium);
+  }
+
+  /* ── C2 · Toolbar — a hairline track, 44px-safe controls ────────── */
+  .r305rp .pdf-toolbar {
+    background: var(--surface);
+    border-block-end: 1px solid var(--border);
+    padding-block: var(--sp-2);
+  }
+  .r305rp .pdf-title {
+    font-weight: var(--fw-semibold);
+    color: var(--text-secondary);
+  }
+  .r305rp .pdf-btn {
+    color: var(--text-muted);
+    border-radius: var(--r-sm);
+  }
+  .r305rp .pdf-btn.on {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+  /* The scale pill is the mono metric register of the toolbar. */
+  .r305rp .pdf-scale-pill {
+    border-color: var(--border);
+    background: var(--surface-1);
+    font-variant-numeric: tabular-nums;
+  }
+  .r305rp .pdf-pageinfo input {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── C3 · Search — a second hairline track + hit marks ──────────── */
+  .r305rp .pdf-searchbar {
+    background: var(--surface);
+    border-block-end: 1px solid var(--border);
+  }
+  /* «بحث» is the ONE emphasized action of the search region. */
+  .r305rp .pdf-search-go {
+    color: var(--accent-ink);
+    font-weight: var(--fw-semibold);
+  }
+  .r305rp .pdf-searchbar-count {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  /* Per-hit occurrence chip (dot + count) — metadata, not chrome. */
+  .r305pdf-hitcount {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    padding: var(--sp-1) var(--sp-2-5);
+    border-radius: var(--r-full);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .r305pdf-hitcount::before {
+    content: "";
+    inline-size: var(--sp-1-5);
+    block-size: var(--sp-1-5);
+    border-radius: var(--r-full);
+    background: var(--accent);
+    flex: none;
+  }
+  /* Match marks inside the text layer — the find-highlight tints the
+     text layer already declares (pdf.css --highlight-*). The paper is
+     white in both themes so the tint reads identically; glyphs stay
+     transparent (the layer's own contract). */
+  .r305pdf-hitmark {
+    background: var(--highlight-bg-color, color-mix(in srgb, var(--accent) 30%, transparent));
+    color: transparent;
+    border-radius: var(--sp-0-5);
+    box-decoration-break: clone;
+  }
+  .r305pdf-hitmark--current {
+    background: var(--highlight-selected-bg-color, color-mix(in srgb, var(--accent) 55%, transparent));
+  }
+
+  /* ── C4 · Load progress — tied to pdf.js loading events ─────────── */
+  .r305pdf-progress {
+    position: absolute;
+    bottom: var(--sp-5);
+    inset-inline: 0;
+    margin-inline: auto;
+    inline-size: min(320px, 72%);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-2);
+    pointer-events: none;
+  }
+  .r305pdf-progress-label {
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .r305pdf-progress-track {
+    display: block;
+    block-size: 1px;
+    background: var(--rule);
+    position: relative;
+    overflow: visible;
+  }
+  .r305pdf-progress-fill {
+    position: absolute;
+    inset-block-start: -1px;
+    inset-inline-start: 0;
+    inline-size: 100%;
+    block-size: 3px;
+    border-radius: var(--r-full);
+    background: var(--accent);
+    /* The fill rides transform (not inline-size): the motion gate
+       forbids layout properties in transitions — scaleX sweeps the
+       hairline with zero reflow. Origin follows the writing direction
+       (the xp-fill recipe, training.css). */
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--t-base) var(--ease);
+  }
+  [dir='rtl'] .r305pdf-progress-fill { transform-origin: right center; }
+
+  /* ── C5 · Selection → note bar (the contextual note affordance) ─── */
+  .r305pdf-selbar {
+    position: absolute;
+    bottom: var(--sp-5);
+    inset-inline: 0;
+    margin-inline: auto;
+    inline-size: max-content;
+    max-inline-size: min(92%, 480px);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: var(--elev-2);
+    z-index: var(--z-popover, 200);
+  }
+  .r305pdf-selbar-quote {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    min-inline-size: 0;
+  }
+  /* ONE emphasized action: the note verb carries the accent. */
+  .r305pdf-selbar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    padding: var(--sp-2) var(--sp-3);
+    border: 0;
+    border-radius: var(--r-sm);
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-family: inherit;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    white-space: nowrap;
+    min-height: 44px;
+    transition: background var(--t-fast) var(--ease);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .r305pdf-selbar-btn:hover { background: var(--accent-strong); }
+  }
+  .r305pdf-selbar-btn:active { transform: scale(var(--press-scale)); }
+  .r305pdf-selbar-dismiss {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 44px;
+    block-size: 44px;
+    border: 0;
+    background: transparent;
+    border-radius: var(--r-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    flex: none;
+    transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .r305pdf-selbar-dismiss:hover { background: var(--surface-2); color: var(--text); }
+  }
+  /* A live selection replaces the passive pinch hint — never both. */
+  .r305rp .pdf-canvas-wrap:has(.r305pdf-selbar) .pdf-touch-hint { display: none; }
+
+  /* ── C6 · Annotations — a clearly secondary panel ───────────────── */
+  /* Eyebrow-labeled head, hairline-separated rows (Notion list, not
+     boxed cards), the author-color hairline kept from the TSX. */
+  .r305rp .annotations-panel {
+    background: var(--surface-1);
+    border-color: var(--border);
+  }
+  .r305rp .annotations-header {
+    padding-block: var(--sp-3);
+    border-block-end: 1px solid var(--border);
+  }
+  .r305rp .annotations-header .text-sm.font-semibold {
+    color: var(--text-muted);
+    font-weight: var(--fw-semibold);
+  }
+  .r305rp .annotation-composer {
+    background: var(--surface-2);
+    border-block-end: 1px solid var(--border);
+  }
+  .r305rp .annotations-list {
+    padding-inline: var(--sp-3);
+  }
+  .r305rp .annotation-item {
+    background: transparent;
+    border-radius: 0;
+    padding-inline: 0;
+    border-block-end: 1px solid var(--surface-divider);
+  }
+  .r305rp .annotations-list > .annotation-item:last-child {
+    border-block-end: 0;
+  }
+  .r305rp .annotation-comment {
+    color: var(--text-secondary);
+  }
+  .r305rp .annotation-jump {
+    font-variant-numeric: tabular-nums;
+  }
+  /* The composer's «حفظ» stays the region's one emphasized action
+     (.btn.primary — the shared system carries it). */
+
+  /* ── C7 · Mobile rungs — stacked layout, no horizontal overflow ─── */
+  /* The 44px floor already lives in pdf.css ≤640; the selection bar's
+     44px controls above are always sized. The progress bar shrinks to
+     the phone measure. */
+  @media (max-width: 640px) {
+    .r305pdf-progress { inline-size: min(280px, 84%); bottom: var(--sp-8); }
+    .r305pdf-selbar {
+      max-inline-size: calc(100% - var(--sp-4));
+      padding: var(--sp-2);
+      flex-wrap: wrap;
+    }
+    .r305pdf-selbar-quote { -webkit-line-clamp: 1; flex: 1 1 100%; }
+  }
+
+  /* ── C8 · Print — hide the live chrome additions ─────────────────── */
+  @media print {
+    .r305pdf-progress,
+    .r305pdf-selbar,
+    .r305pdf-hitmark {
+      display: none !important;
+      background: transparent !important;
+    }
+  }
+
+  /* ── C9 · Reduced motion — this section adds no animation loops ─── */
+  @media (prefers-reduced-motion: reduce) {
+    .r305pdf-progress-fill { transition: none; }
+    .r305pdf-selbar-btn:active,
+    .r305pdf-selbar-dismiss:active { transform: none; }
+  }
+
+  /* ════════════════ end a7-pdf section (§C) ════════════════════════ */
 
   /* ══ §D · AI assistant (a7-ai) ════════════════════════════════════
      Owner: agent a7-ai. Classes prefixed .r305ai-*. Existing ai.css
