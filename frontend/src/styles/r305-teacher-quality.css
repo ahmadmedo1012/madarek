@@ -455,14 +455,110 @@
    §B · exa2- — Exam authoring hub + template detail (Agent 2-b)
    File: ExamAuthorPages.tsx
    ──────────────────────────────────────────────────────────────── */
-/* [§B-START — Agent 2-b edits ONLY between these markers] */
+/* [§B-START — Agent 2-b edits ONLY between these markers]
+
+   §B · exa2- — the Heron layer over the exam authoring lifecycle
+   (ExamAuthorPages.tsx: the /teacher/exams hub + /teacher/exams/:id
+   detail). The R304 exa- sheet stays the layout foundation and keeps
+   every class the suite pins (exa-order, exa-grade-card, the row
+   sheet, the form scaffolding); this layer adds the Heron workflow
+   grammar on top — brow → strong heading → hairline-anchored section
+   head → toolbar → edge-marked status rows → the hr-rail lifecycle
+   strip → the one ember CTA per surface. Loaded after
+   teacher-quality.css, both inside @layer pages, so paired-class
+   refinements win ties by source order — never !important.
+   ──────────────────────────────────────────────────────────────── */
+
+/* Masthead brow (hub + detail): .hr-brow carries the anatomy; this
+   block margin hands the eye down to the page title (base.css owns
+   .page-header's rhythm). */
+.hr-scope .exa2-brow {
+  margin-block-end: var(--sp-2);
+}
+
+/* The template lifecycle rail: the R304 exa-lifecycle strip is now
+   the shared .hr-rail grammar (done / current / rejected via
+   data-state, aria-current preserved). The <ol> host needs only the
+   list reset; the steps speak the §0 step anatomy as-is. */
+.hr-scope ol.exa2-rail {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Section heads: the R304 .exa-section-head keeps its flex contract
+   and heading metrics; the paired .hr-section-head contributes the
+   hairline anchor + strong heading ink. Pin the crossbars back to
+   flex-end — a baseline axis over the column heading reads ragged
+   once a two-line description wraps. */
+.hr-scope .exa-section-head.hr-section-head {
+  align-items: flex-end;
+}
+
+/* The count chip rides the heading's crossbar, never wraps alone. */
+.hr-scope .exa-section-head .hr-section-count {
+  flex-shrink: 0;
+  margin-block-end: var(--sp-1);
+}
+
+/* The builder picker's pick-position chip: the one live signal of the
+   build surface speaks the ember family (derived in .hr-scope),
+   replacing the generic accent wash its R304 twin used. */
+.hr-scope .exa-pick-order {
+  background: var(--hr-ember-wash);
+  color: var(--hr-ember-ink);
+}
+
+/* Status rows wear the Heron severity edge (markup pairs .hr-edge +
+   data-severity beside .exa-row): the 3px inline-start bar mirrors
+   the row's chip tone so a row's state reads before its text. Square
+   rows inside the rounded .exa-rows sheet inherit its end radii —
+   no extra geometry here. */
+
+/* Mobile: §0 floors .hr-toolbar buttons; the section-head actions
+   (create CTA, filter checkbox) join the 44px floor when the head
+   wraps beneath the title. */
+@media (max-width: 640px) {
+  .hr-scope .exa-section-actions .btn { min-block-size: 44px; }
+}
+
 /* [§B-END] */
 
 /* ────────────────────────────────────────────────────────────────────
    §C · oex2- — Student exams list/taker + moderation (Agent 2-b)
    File: OnlineExamsPages.tsx
    ──────────────────────────────────────────────────────────────── */
-/* [§C-START — Agent 2-b edits ONLY between these markers] */
+/* [§C-START — Agent 2-b edits ONLY between these markers]
+
+   §C · oex2- — the Heron layer over the student exam surfaces and the
+   quality moderation queue (OnlineExamsPages.tsx: the list, the
+   taker, /quality/exam-moderation). The taker is behavior-critical —
+   its DOM changes here ONLY by the .hr-scope wrapper (press feedback
+   + focus offset) and .hr-cta on the begin/submit verbs; every state
+   class the attempt lifecycle renders (oex-q, oex-choice,
+   oex-qmap-dot, oex-q-state, oex-timer, oex-time-rail…) stays the
+   R304 anatomy verbatim. The list rows and the moderation queue adopt
+   the brow + severity-edge grammar; pinned locators (.oex-row,
+   .oex-mod-row, .oex-result-title, the listitem wrappers) survive.
+   ──────────────────────────────────────────────────────────────── */
+
+/* Masthead brow (list + moderation): same grammar as §B. */
+.hr-scope .oex2-brow {
+  margin-block-end: var(--sp-2);
+}
+
+/* Severity edges ride the R304 rows (.hr-edge + data-severity in
+   markup): startable anchor rows already carry r-md radii, so the bar
+   rounds into a tab; static history/queue rows are square and the
+   straight bar matches their hairline grid. */
+
+/* The moderation review panel: one hairline frame over the R304
+   surface-2 step — the region is announced by its aria-label and now
+   visibly bounded against the row above it. */
+.hr-scope .oex-mod-panel {
+  border: 1px solid var(--border);
+}
+
 /* [§C-END] */
 
 /* ────────────────────────────────────────────────────────────────────

@@ -75,6 +75,7 @@ import {
 import '../../styles/owner.css'; // ConfirmDialog + ToggleSwitch surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .back-link family (D11 css split, 12-15)
 import '../../styles/teacher-quality.css'; // R304 — the family sheet (exa- section lives here)
+import '../../styles/r305-teacher-quality.css'; // R305 — the Heron layer (exa2- section lives here)
 
 /* ═══════════════ Label maps (TS-pinned over the full enums — 15-a) ═══════════════ */
 
@@ -348,13 +349,29 @@ function TemplateStatusBadge({ status }: { status: ExamStatusFE }) {
   );
 }
 
-/* R304 — the template lifecycle strip: authoring is a pipeline (draft →
+/* R305 Heron — the row severity edge per template status: the same
+ * truth the status chip tells, spoken as the inline-start 3px bar
+ * (.hr-edge). Presentation only — the chip beside the title stays the
+ * source of truth; DRAFT/CLOSED carry no edge (neutral states). */
+const TEMPLATE_EDGE: Record<ExamStatusFE, 'info' | 'soon' | 'overdue' | 'ember' | undefined> = {
+  DRAFT: undefined,
+  PENDING_REVIEW: 'soon',
+  APPROVED: 'info',
+  REJECTED: 'overdue',
+  PUBLISHED: 'ember',
+  CLOSED: undefined,
+};
+
+/* R304 → R305 — the template lifecycle rail: authoring is a pipeline (draft →
  * quality review → approval → publish), so the detail page shows WHERE
  * the template stands on that rail, not just its current status word.
  * The stage labels are deliberately NOT the status vocabulary (the
  * status Badge beside the title stays the source of truth) — a rejected
  * review step wears the danger state, a closed template shows the whole
- * rail done. Presentation only. */
+ * rail done. Presentation only. R305: the strip now speaks the shared
+ * Heron .hr-rail grammar (done/current/rejected data-states); the ol's
+ * aria-label and the current step's aria-current are the locator
+ * contract and are preserved verbatim. */
 const LIFECYCLE_STEPS = ['مسودة', 'مراجعة الجودة', 'الاعتماد', 'النشر للطلاب'] as const;
 
 function TemplateLifecycle({ status }: { status: ExamStatusFE }) {
@@ -367,20 +384,20 @@ function TemplateLifecycle({ status }: { status: ExamStatusFE }) {
     CLOSED: { done: 4, current: -1, rejected: false },
   } as const)[status];
   return (
-    <ol className="exa-lifecycle" aria-label="مسار القالب من الإنشاء إلى النشر">
+    <ol className="hr-rail exa2-rail" aria-label="مسار القالب من الإنشاء إلى النشر">
       {LIFECYCLE_STEPS.map((label, i) => {
-        const cls = i < state.done
-          ? ' is-done'
+        const stepState = i < state.done
+          ? ('done' as const)
           : i === state.current
-            ? (state.rejected ? ' is-rejected' : ' is-current')
-            : '';
+            ? (state.rejected ? ('rejected' as const) : ('current' as const))
+            : undefined;
         return (
           <li
             key={label}
-            className={`exa-step${cls}`}
+            className="hr-rail-step"
+            data-state={stepState}
             aria-current={i === state.current ? 'step' : undefined}
           >
-            <span className="exa-step-dot" aria-hidden="true" />
             <span>{label}</span>
           </li>
         );
@@ -592,42 +609,47 @@ export default function ExamAuthoringPage() {
         : tabs[0]!.value;
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">بنك الأسئلة والاختبارات</h1>
-          <p className="page-subtitle">
-            تأليف الأسئلة وبناء قوالب الاختبارات الموحَّدة، ومتابعة اعتمادها من الجودة حتى النشر.
-          </p>
-        </div>
-        {/* 4C-a: the build CTA moved down to its tab's section head —
-            each tab owns its own action row (the page header stays a
-            calm masthead; the old always-visible button followed the
-            user onto tabs where it did nothing). */}
-      </header>
+    <div className="hr-scope">
+      <div className="page">
+        <header className="page-header">
+          <div className="page-title-block">
+            {/* R305 Heron — the workflow brow: the exam lifecycle opens
+                every authoring surface with its stage strip. */}
+            <span className="hr-brow exa2-brow">مسار الاختبارات</span>
+            <h1 className="page-title">بنك الأسئلة والاختبارات</h1>
+            <p className="page-subtitle">
+              تأليف الأسئلة وبناء قوالب الاختبارات الموحَّدة، ومتابعة اعتمادها من الجودة حتى النشر.
+            </p>
+          </div>
+          {/* 4C-a: the build CTA moved down to its tab's section head —
+              each tab owns its own action row (the page header stays a
+              calm masthead; the old always-visible button followed the
+              user onto tabs where it did nothing). */}
+        </header>
 
-      {perms.isPending ? (
-        <LoadingState label="جارٍ التحقق من صلاحياتك…" />
-      ) : perms.isError ? (
-        <ErrorState
-          message="تعذَّر التحقق من صلاحياتك"
-          error={perms.error}
-          onRetry={() => perms.refetch()}
-        />
-      ) : !canAuthor && !canModerate ? (
-        /* Honest wall — authoring and moderation are capability grants,
-           not role defaults for every teacher. */
-        <PermissionDeniedBlock />
-      ) : (
-        <>
-          <Tabs<HubTab> value={active} onChange={setTab} items={tabs} />
-          {active === 'templates' && <MyTemplatesSection onBuild={() => setBuilding(true)} />}
-          {active === 'bank' && <QuestionBankSection />}
-          {active === 'moderation' && <ModerationQueueSection />}
-        </>
-      )}
+        {perms.isPending ? (
+          <LoadingState label="جارٍ التحقق من صلاحياتك…" />
+        ) : perms.isError ? (
+          <ErrorState
+            message="تعذَّر التحقق من صلاحياتك"
+            error={perms.error}
+            onRetry={() => perms.refetch()}
+          />
+        ) : !canAuthor && !canModerate ? (
+          /* Honest wall — authoring and moderation are capability grants,
+             not role defaults for every teacher. */
+          <PermissionDeniedBlock />
+        ) : (
+          <>
+            <Tabs<HubTab> value={active} onChange={setTab} items={tabs} />
+            {active === 'templates' && <MyTemplatesSection onBuild={() => setBuilding(true)} />}
+            {active === 'bank' && <QuestionBankSection />}
+            {active === 'moderation' && <ModerationQueueSection />}
+          </>
+        )}
 
-      {building && <TemplateBuilderModal onClose={() => setBuilding(false)} canModerate={canModerate} />}
+        {building && <TemplateBuilderModal onClose={() => setBuilding(false)} canModerate={canModerate} />}
+      </div>
     </div>
   );
 }
@@ -645,25 +667,30 @@ function PermissionDeniedBlock() {
 
 /* ═══════════════ My templates tab ═══════════════ */
 
-/** 4C-a — the tab opener (Superlist grammar): a large-type section
- *  title, ONE honest Arabic line, and the tab's actions at the
- *  inline-end. Replaces the generic Card chrome the tabs used to
- *  render inside; the row sheets below carry the content. */
+/** 4C-a — the tab opener (Superlist grammar → R305 Heron): a large-type
+ *  section title, ONE honest Arabic line, and the tab's actions at the
+ *  inline-end. R305: the head wears the shared .hr-section-head layer
+ *  (hairline anchor + strong heading ink) and an optional .hr-section-count
+ *  chip carries the surface's noun count. Replaces the generic Card chrome
+ *  the tabs used to render inside; the row sheets below carry the content. */
 function ExaSectionHead({
   title,
   desc,
+  count,
   actions,
 }: {
   title: string;
   desc?: string;
+  count?: React.ReactNode;
   actions?: React.ReactNode;
 }) {
   return (
-    <div className="exa-section-head">
+    <div className="exa-section-head hr-section-head">
       <div className="exa-section-heading">
         <h2 className="exa-section-title">{title}</h2>
         {desc && <p className="exa-section-desc">{desc}</p>}
       </div>
+      {count != null && <span className="hr-section-count">{count}</span>}
       {actions && <div className="exa-section-actions">{actions}</div>}
     </div>
   );
@@ -684,7 +711,7 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
               : 'ستظهر قوالبك هنا — ابنِ قالباً من أسئلة البنك المعتمدة.'
         }
         actions={
-          <Button variant="primary" onClick={onBuild}>
+          <Button variant="primary" className="hr-cta" onClick={onBuild}>
             <Icon icon={Plus} size={14} /> قالب اختبار جديد
           </Button>
         }
@@ -738,8 +765,9 @@ function TemplateRow({ template }: { template: ExamTemplateRow }) {
   return (
     /* 4C-a: the row IS the detail link — title, chips and counts ride
        one full-width anchor; the trailing buttons stay real controls
-       beside it (no nested interactive elements). */
-    <div className="exa-row exa-row-clickable">
+       beside it (no nested interactive elements). R305: the severity
+       edge speaks the status truth inline-start, ahead of the text. */
+    <div className="exa-row exa-row-clickable hr-edge" data-severity={TEMPLATE_EDGE[template.status]}>
       <Link className="exa-row-main" to={detailHref}>
         <span className="exa-row-title" title={template.title}>{template.title}</span>
         <span className="exa-row-sub">
@@ -843,6 +871,7 @@ function PublishButton({
         <Button
           variant="primary"
           size="sm"
+          className="hr-cta"
           disabled
           aria-describedby="publish-gate-reason"
         >
@@ -864,6 +893,7 @@ function PublishButton({
       <Button
         variant="primary"
         size="sm"
+        className="hr-cta"
         onClick={() => setConfirming(true)}
         /* A6 P3 (22-a): the tooltip names the consequence — the old
            «النشر متاح بعد اعتماد الجودة» was stale on an APPROVED
@@ -937,16 +967,17 @@ function QuestionBankSection() {
         title="بنك الأسئلة المعتمدة"
         desc="الأسئلة التي اعتمدتها الجودة وتصلح لبناء القوالب — إنشاء سؤال جديد يمرّ على المراجعة أولاً."
         actions={
-          <Button variant="primary" onClick={() => setCreating(true)}>
+          <Button variant="primary" className="hr-cta" onClick={() => setCreating(true)}>
             <Icon icon={Plus} size={14} /> سؤال جديد
           </Button>
         }
       />
 
       {/* One calm toolbar — search flexes, the three selects wrap after
-          it; the debounce + endpoint contract are unchanged. */}
+          it; the debounce + endpoint contract are unchanged. R305: the
+          shared .hr-toolbar placement grammar joins the R304 widths. */}
       <div
-        className="exa-toolbar"
+        className="exa-toolbar hr-toolbar"
         role="group"
         aria-label="تصفية بنك الأسئلة"
       >
@@ -2078,7 +2109,7 @@ function ModerationQueueSection() {
       ) : (
         <div className="exa-rows">
           {q.data.map((item) => (
-            <div key={item.id} className="exa-row exa-row-clickable">
+            <div key={item.id} className="exa-row exa-row-clickable hr-edge" data-severity="soon">
               <Link className="exa-row-main" to={`/teacher/exams/${item.id}`}>
                 <span className="exa-row-title" title={item.title}>{item.title}</span>
                 <span className="exa-row-sub">
@@ -2111,18 +2142,20 @@ export function ExamTemplateDetailPage() {
   const q = useExamTemplate(templateId);
 
   return (
-    <div className="page">
-      <Link to="/teacher/exams" className="back-link">
-        <Icon icon={ChevronRight} size={14} />
-        العودة إلى بنك الأسئلة والاختبارات
-      </Link>
-      {q.isPending ? (
-        <DetailSkeleton />
-      ) : q.isError ? (
-        <ErrorState message="تعذَّر تحميل القالب" error={q.error} onRetry={() => q.refetch()} />
-      ) : q.data ? (
-        <TemplateDetailBody template={q.data} />
-      ) : null}
+    <div className="hr-scope">
+      <div className="page">
+        <Link to="/teacher/exams" className="back-link">
+          <Icon icon={ChevronRight} size={14} />
+          العودة إلى بنك الأسئلة والاختبارات
+        </Link>
+        {q.isPending ? (
+          <DetailSkeleton />
+        ) : q.isError ? (
+          <ErrorState message="تعذَّر تحميل القالب" error={q.error} onRetry={() => q.refetch()} />
+        ) : q.data ? (
+          <TemplateDetailBody template={q.data} />
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -2149,6 +2182,8 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
       <header className="exa-detail-head">
         <div className="exa-detail-top">
           <div className="exa-detail-heading">
+            {/* R305 Heron — the lifecycle brow above the authored title. */}
+            <span className="hr-brow exa2-brow">دورة حياة القالب</span>
             {/* A6 P3 (22-a): 2-line clamp lives in the exa sheet —
                 authored titles run long and pushed the whole page down;
                 the full title stays in the title attr. */}
@@ -2166,8 +2201,8 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
                 <span>عام — كل الكلّيّات</span>
               )}
             </div>
-            {/* R304: the workflow rail — where this template stands on
-                draft → review → approval → publish. */}
+            {/* R304/R305: the workflow rail — where this template stands
+                on draft → review → approval → publish (the Heron .hr-rail). */}
             <TemplateLifecycle status={template.status} />
           </div>
           <AuthorActions template={template} />
@@ -2192,7 +2227,8 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
           <section aria-label="أسئلة القالب">
             <ExaSectionHead
               title="أسئلة القالب"
-              desc={`${countAr(template.questions.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])} · مجموع النقاط ${countAr(totalPoints, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}`}
+              count={countAr(template.questions.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])}
+              desc={`مجموع النقاط ${countAr(totalPoints, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}`}
             />
             {template.questions.length === 0 ? (
               <EmptyState illustration="empty-list"
@@ -2680,8 +2716,17 @@ function AttemptRow({ attempt, onGrade }: { attempt: ExamAttemptRow; onGrade: ()
     /* 4C-a: a static row for finished/in-flight attempts (no hover —
        nothing is clickable on them), the SUBMITTED one carrying the
        single تصحيح action. The machine score rides the actions edge in
-       mono tabular figures. */
-    <div className="exa-row">
+       mono tabular figures. R305: the severity edge mirrors the
+       attempt's state inline-start (SUBMITTED = awaiting action). */
+    <div className="exa-row hr-edge" data-severity={
+      attempt.status === 'SUBMITTED'
+        ? 'soon'
+        : attempt.status === 'GRADED'
+          ? 'info'
+          : attempt.status === 'EXPIRED'
+            ? 'overdue'
+            : undefined
+    }>
       <div className="exa-row-main">
         <div className="exa-row-title" title={attempt.studentName}>{attempt.studentName}</div>
         <div className="exa-row-sub">
