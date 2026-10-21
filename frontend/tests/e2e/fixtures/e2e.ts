@@ -50,6 +50,10 @@ export interface E2eOptions {
   apiOverrides: MockRouteDef[];
   /** Optional persisted theme to seed (madarek-theme localStorage). */
   themeSeed: 'light' | 'dark' | null;
+  /** r305-A4: the standard Playwright context option, re-registered as an
+   *  explicit option fixture so the custom context fixture below can
+   *  forward it (the built-in one is not a registered parameter here). */
+  reducedMotion: 'reduce' | 'no-preference';
 }
 
 const BASE_URL = process.env.MADAREK_E2E_BASE_URL ?? 'http://localhost:5173';

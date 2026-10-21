@@ -31,7 +31,8 @@
  * فجوة موثّقة بصدق: دور OWNER مقصود خارج التركيبة (عرف المستودع —
  * جولات OWNER مسحُ تدقيق فقط، والتركيبة e2eRole لا تُقدّمه).
  */
-import { test, expect, type Page } from './fixtures/e2e';
+import { test, expect } from './fixtures/e2e';
+import { type Page } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 

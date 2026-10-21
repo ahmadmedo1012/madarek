@@ -512,13 +512,17 @@ describe('R305 supplemental — the family sheet obeys the gate contract', () =>
     }
   });
 
-  it('MorePages carries the documented r305-d import block (the merge-conflict protocol region)', () => {
+  it('MorePages carries the documented r305-c+d import block (the merge-conflict protocol region)', () => {
     const src = read('src/pages/student/MorePages.tsx');
+    // R305-FINAL integrator note (handoff N1): the duplicated
+    // r305-student.css import from the two agent blocks was collapsed
+    // into one labeled region — the three family sheets remain imported
+    // in the pinned order, above the components.
     expect(src).toContain(
-      '/* ── r305-d (supplemental family) imports — the only region agent 2-d edits above the components ── */',
+      '/* ── r305-c (schedule family) + r305-d (supplemental family) imports —',
     );
     expect(src).toMatch(
-      /\/\* ── r305-d \(supplemental family\) imports — the only region agent 2-d edits above the components ── \*\/\nimport '\.\.\/\.\.\/styles\/r305-student\.css';\nimport '\.\.\/\.\.\/styles\/r305-student-supplemental\.css';/,
+      /\/\* ── r305-c \(schedule family\) \+ r305-d \(supplemental family\) imports —[\s\S]*?── \*\/\nimport '\.\.\/\.\.\/styles\/r305-student\.css';\nimport '\.\.\/\.\.\/styles\/r305-student-schedule\.css';\nimport '\.\.\/\.\.\/styles\/r305-student-supplemental\.css';/,
     );
   });
 });
