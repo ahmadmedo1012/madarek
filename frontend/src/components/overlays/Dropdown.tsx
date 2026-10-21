@@ -25,6 +25,13 @@
  * stopImmediatePropagation. The trigger's aria-expanded/aria-haspopup
  * are synced onto the anchor unless the consumer declares them itself.
  *
+ * r305 grammar: the topmost-only rule covers the WHOLE key surface, not
+ * just Escape — a menu buried under a blocking layer must not dismiss
+ * on Tab (yanking focus to its anchor) or move focus invisibly with the
+ * arrows. And every keyboard-relevant close path returns focus to the
+ * trigger: item activation used to drop focus on <body> when the menu
+ * unmounted (useAnchorFocusReturn).
+ *
  * Pair with `<DropdownItem>` for the standard menu row, or render any
  * custom child (the keyboard nav scans for `[role="menuitem"]`).
  *
@@ -40,6 +47,7 @@ import { createPortal } from 'react-dom';
 import { overlayStack } from '../../lib/overlayStack';
 import { useAnchoredPosition } from './anchoredPosition';
 import { useAnchorAria } from './useAnchorAria';
+import { useAnchorFocusReturn } from './useAnchorFocusReturn';
 import { useDelayedUnmount } from './useDelayedUnmount';
 import { useOverlayRegistration } from './useOverlayRegistration';
 
@@ -84,6 +92,10 @@ export function Dropdown({
   const menuRef = useRef<HTMLDivElement | null>(null);
   const overlayId = useOverlayRegistration(open, 'dropdown');
   useAnchorAria(open, anchorRef, 'menu');
+  // Item activation (and any consumer close that happens while focus is
+  // still inside the menu) hands focus back to the trigger — Esc/Tab
+  // already restore it themselves, so this is a no-op for those paths.
+  useAnchorFocusReturn(open, anchorRef, menuRef);
   const { rendered, onExitEnd } = useDelayedUnmount(open);
   const pos = useAnchoredPosition({ open, anchorRef, panelRef: menuRef, placement });
 
@@ -113,6 +125,12 @@ export function Dropdown({
         }
         return;
       }
+      // r305 (P1-2 extended): one key, one layer. With a blocking layer
+      // open above the menu, the menu is visually buried — dismissing it
+      // on Tab (and focusing its anchor under the scrim) or walking its
+      // items with the arrows acts on a layer that no longer owns the
+      // keyboard. The top layer's own handlers answer these keys.
+      if (!overlayStack.isTop(overlayId)) return;
       if (e.key === 'Tab') {
         e.preventDefault();
         onClose();

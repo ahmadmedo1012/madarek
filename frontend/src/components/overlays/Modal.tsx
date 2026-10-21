@@ -56,7 +56,13 @@ export function Modal({
 }: ModalProps) {
   const cardRef = useRef<HTMLDivElement | null>(null);
   useFocusTrap({ open, containerRef: cardRef, closeOnEscape, onClose, overlayKind: 'modal' });
-  const { rendered, onExitEnd } = useDelayedUnmount(open, '--motion-duration-medium');
+  // r305 token alignment: the exit window must read the SAME token the
+  // data-closing CSS animation consumes (components.css wave 7-a pins
+  // every exit — .modal-overlay's madarek-overlay-out included — at
+  // var(--motion-duration-short)). The old --motion-duration-medium read
+  // only stretched the no-animationend safety net (320ms) past the real
+  // 160ms exit; animationend-driven unmounts are unchanged.
+  const { rendered, onExitEnd } = useDelayedUnmount(open, '--motion-duration-short');
 
   if (!rendered || typeof document === 'undefined') return null;
 
