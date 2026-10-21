@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  Plus, Landmark, ChevronDown, ChevronLeft, ChevronRight, Building2, Users,
+  Plus, Landmark, ChevronDown, ChevronLeft, ChevronRight, Building2,
   AlertTriangle, X, ArrowLeft, BookOpen,
 } from 'lucide-react';
 import { Card, Badge, AlertRow, FormField } from '../../components/primitives';
 import { EmptyState, ErrorState, TableSkeleton, CardSkeleton, ListSkeleton } from '../../components/primitives/States';
+/* R304 (workstream 4D): the detail opens with the patterns PageHeader —
+ * the breadcrumb trail back to the console («كل المؤسسات») doubles as
+ * the way back, and the institution's scope facts (status + members)
+ * read as one quiet meta line under the name. */
+import { PageHeader as PatternsPageHeader } from '../../components/patterns';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { Modal } from '../../components/overlays/Modal';
@@ -21,7 +26,7 @@ import { useOwnerInstitutions } from '../../hooks/useInstitutions';
 import { useEntityPageTitle } from '../../components/layout/AppShell';
 import { countAr } from '../../lib/format';
 import type { OwnerInstitution } from '../../lib/api';
-// The roster chrome (admin-students-toolbar family) the courses table
+// The workspace table family (ws-table, admin.css) the courses table
 // consumes — the same CSS AdminCoursesPage loads; the faculty cards
 // read the global components.css families (admin-faculty-*).
 import '../../styles/admin.css';
@@ -450,36 +455,31 @@ export function OwnerInstitutionDetailPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          {/* The way back — the console's context never disappears. */}
-          <Link
-            to="/owner/institutions"
-            className="btn ghost sm"
-            style={{ marginBlockEnd: 'var(--sp-2)' }}
-          >
-            <Icon icon={ArrowLeft} size={13} />
-            كل المؤسسات
-          </Link>
-          <h1 className="page-title">{institution.name}</h1>
-          <p className="page-subtitle">
-            {/* r299: the Latin nameEn is bidi-isolated like the list
-                page renders it (a bare RTL-embedded Latin run can
-                jump separators at shaping time). */}
-            {institution.nameEn ? <><bdi dir="ltr">{institution.nameEn}</bdi> · </> : ''}
-            <span className="font-mono" dir="ltr">{institution.slug}</span>
-          </p>
-        </div>
-        <div className="flex items-center gap-2" style={{ marginBlockStart: 'var(--sp-2)' }}>
-          <Badge color={institution.status === 'ACTIVE' ? 'green' : 'red'}>
-            {STATUS_LABELS[institution.status]}
-          </Badge>
-          <span className="text-xs text-subtle">
-            <Icon icon={Users} size={13} style={{ verticalAlign: '-2px' }} />{' '}
-            {countAr(institution.activeMembershipCount, ['عضو نشط واحد', 'عضوان نشطان', 'أعضاء نشطون', 'عضواً نشطاً'])}
+      <PatternsPageHeader
+        title={institution.name}
+        description={
+          /* r299: the Latin nameEn is bidi-isolated like the list
+              page renders it (a bare RTL-embedded Latin run can
+              jump separators at shaping time). */
+          institution.nameEn
+            ? <><bdi dir="ltr">{institution.nameEn}</bdi> · <span className="font-mono" dir="ltr">{institution.slug}</span></>
+            : <span className="font-mono" dir="ltr">{institution.slug}</span>
+        }
+        breadcrumbs={[
+          { label: 'كل المؤسسات', to: '/owner/institutions' },
+          { label: institution.name },
+        ]}
+        meta={
+          <span className="owner-detail-scope">
+            <Badge color={institution.status === 'ACTIVE' ? 'green' : 'red'}>
+              {STATUS_LABELS[institution.status]}
+            </Badge>
+            <span>
+              {countAr(institution.activeMembershipCount, ['عضو نشط واحد', 'عضوان نشطان', 'أعضاء نشطون', 'عضواً نشطاً'])}
+            </span>
           </span>
-        </div>
-      </header>
+        }
+      />
 
       {suspended && (
         <AlertRow
@@ -502,8 +502,10 @@ export function OwnerInstitutionDetailPage() {
         title="البنية الأكاديمية"
         icon={Building2}
         subtitle={`${countAr(faculties.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} · ${countAr(totalDepartments, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}${foldedRows > 0 ? ` · ${foldedRows} سجلّ بذر مكرّر مُجمَّع` : ''}`}
-      >
-        <div className="admin-students-toolbar">
+        actions={(
+          /* r180/R304: the section's create action rides the section
+              header — the scope (this institution) is named by the
+              page itself; the button stays disabled while suspended. */
           <button
             type="button"
             className="btn primary sm"
@@ -515,7 +517,8 @@ export function OwnerInstitutionDetailPage() {
             <Icon icon={Plus} size={14} />
             إضافة كلّيّة
           </button>
-        </div>
+        )}
+      >
         {facultiesQ.isPending && <ListSkeleton rows={4} />}
         {facultiesQ.isError && (
           <ErrorState error={facultiesQ.error} onRetry={() => facultiesQ.refetch()} />
@@ -604,8 +607,7 @@ export function OwnerInstitutionDetailPage() {
         subtitle={coursesMeta
           ? countAr(coursesMeta.total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])
           : undefined}
-      >
-        <div className="admin-students-toolbar">
+        actions={(
           <button
             type="button"
             className="btn primary sm"
@@ -617,14 +619,18 @@ export function OwnerInstitutionDetailPage() {
             <Icon icon={Plus} size={14} />
             إضافة مقرّر
           </button>
-        </div>
+        )}
+      >
         {coursesQ.isPending && <TableSkeleton rows={5} cols={6} />}
         {coursesQ.isError && (
           <ErrorState error={coursesQ.error} onRetry={() => coursesQ.refetch()} />
         )}
         {coursesQ.data && (
           <div className="table-wrap">
-            <table className="table tbl-stack">
+            {/* R304: the supply chain rides the workspace table family —
+                the course's name is the identity cell; on phones it
+                becomes the summary card's title. */}
+            <table className="table tbl-stack ws-table">
               <thead>
                 <tr>
                   <th scope="col" style={{ width: 100 }}>الكود</th>
@@ -650,7 +656,7 @@ export function OwnerInstitutionDetailPage() {
                 {courses.map((c) => (
                   <tr key={c.id}>
                     <td className="font-mono text-subtle" data-label="الكود"><bdi>{c.code}</bdi></td>
-                    <td data-label="اسم المقرّر">
+                    <td className="ws-id" data-label="اسم المقرّر">
                       <span className="font-semibold" style={{ color: 'var(--text)' }}>{c.name}</span>
                     </td>
                     <td data-label="الكلّيّة / القسم">

@@ -4,6 +4,9 @@ import {
   Palette, Bell, ToggleRight, ArrowLeft, Info,
 } from 'lucide-react';
 import { Card } from '../../components/primitives';
+/* R304: the branding landing opens with the patterns PageHeader —
+ * breadcrumbs back to the owner dashboard. */
+import { PageHeader as PatternsPageHeader } from '../../components/patterns';
 import { Icon } from '../../components/Icon';
 
 /**
@@ -103,12 +106,11 @@ export function OwnerContentPage() {
   );
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">المحتوى والعلامة التجاريّة</h1>
-          <p className="page-subtitle">إدارة الإعلانات، أعلام الميزات، والهويّة البصريّة للمنصّة</p>
-        </div>
-      </header>
+      <PatternsPageHeader
+        title="المحتوى والعلامة التجاريّة"
+        description="إدارة الإعلانات، أعلام الميزات، والهويّة البصريّة للمنصّة"
+        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المحتوى والعلامة التجاريّة' }]}
+      />
 
       <div className="grid-2">
         <Card title="الإعلانات الرسميّة" icon={Bell}>

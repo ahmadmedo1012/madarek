@@ -1,9 +1,16 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Building2, BookOpen, BarChart3, FileText, TrendingUp, ClipboardCheck, AlertTriangle, Search, X, ChevronLeft, ChevronRight, ChevronDown, ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { Card, Badge, Tabs, UserAvatar, AlertRow, FormField } from '../../components/primitives';
 import { StatStrip, LedgerPanel, LedgerRow } from '../../components/primitives/Ledger';
+/* R304 (workstream 4D): the admin family rides the shell patterns —
+ * the patterns PageHeader opens every route (breadcrumbs back to the
+ * dashboard, one semantic h1) and the FilterBar is the one control
+ * rail above the rosters (search → filter → action, the family
+ * order). The local header twin this page carried since 5-A8 retired
+ * with the r288 anatomy fold. */
+import { PageHeader as PatternsPageHeader, FilterBar } from '../../components/patterns';
 import {
   EmptyState, ErrorState,
   CardSkeleton, TableSkeleton, StripSkeleton, Skeleton,
@@ -51,17 +58,11 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineEleme
    Shared helpers
    ════════════════════════════════════════════════════════════════ */
 
-function PageHeader({ title, subtitle, meta }: { title: string; subtitle: string; meta?: ReactNode }) {
-  return (
-    <header className="page-header">
-      <div className="page-title-block">
-        <h1 className="page-title">{title}</h1>
-        <p className="page-subtitle">{subtitle}</p>
-        {meta && <p className="page-header-meta">{meta}</p>}
-      </div>
-    </header>
-  );
-}
+/* R304: the local PageHeader retired onto the patterns PageHeader —
+ * the contract header carries breadcrumbs + meta + actions, and the
+ * r288 anatomy fold made the two pixel-equal. The AdminGovernance
+ * permissions page keeps the primitives PageHeader (ReactNode title
+ * — the pattern's title is string-only). */
 
 /**
  * ≤1024px compact-roster band (r183-B5, port of the QualityPages
@@ -251,7 +252,7 @@ export function AdminDashboardPage() {
        so the pending → resolved handoff moves nothing. */
     return (
       <div className="page" aria-busy="true" aria-live="polite">
-        <PageHeader title="لوحة الإدارة" subtitle="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
+        <PatternsPageHeader title="لوحة الإدارة" description="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
         <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />
         <div className="stat-strip" aria-busy="true">
           {[0, 1, 2, 3].map((i) => (
@@ -282,7 +283,7 @@ export function AdminDashboardPage() {
     // am I on?) before offering the retry.
     return (
       <div className="page">
-        <PageHeader title="لوحة الإدارة" subtitle="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
+        <PatternsPageHeader title="لوحة الإدارة" description="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
         <Card>
           <ErrorState
             error={stats.error ?? facs.error ?? reports.error}
@@ -315,9 +316,9 @@ export function AdminDashboardPage() {
 
   return (
     <div className="page">
-      <PageHeader
+      <PatternsPageHeader
         title="لوحة الإدارة"
-        subtitle="إحصائيات حيّة عن طلاب وأساتذة المنصّة."
+        description="إحصائيات حيّة عن طلاب وأساتذة المنصّة."
         meta={<>{formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · حساب لحظيّ</>}
       />
 
@@ -695,7 +696,11 @@ export function AdminFacultiesPage() {
   if (isPending) {
     return (
       <div className="page">
-        <PageHeader title="الكلّيّات والأقسام" subtitle="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية." />
+        <PatternsPageHeader
+          title="الكلّيّات والأقسام"
+          description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
+          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
+        />
         <StatStripSkeleton />
         <CardSkeleton lines={7} />
       </div>
@@ -704,7 +709,11 @@ export function AdminFacultiesPage() {
   if (isError || !data) {
     return (
       <div className="page">
-        <PageHeader title="الكلّيّات والأقسام" subtitle="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية." />
+        <PatternsPageHeader
+          title="الكلّيّات والأقسام"
+          description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
+          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
+        />
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       </div>
     );
@@ -736,7 +745,11 @@ export function AdminFacultiesPage() {
 
   return (
     <div className="page">
-      <PageHeader title="الكلّيّات والأقسام" subtitle="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية." />
+      <PatternsPageHeader
+        title="الكلّيّات والأقسام"
+        description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
+        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
+      />
 
       <StatStrip
         ariaLabel="إحصائيات الكلّيّات والأقسام"
@@ -758,42 +771,49 @@ export function AdminFacultiesPage() {
           ? `من أصل ${countAr(data.length, ['كلّيّة واحدة', 'كلّيّتين', 'كلّيّات', 'كلّيّة'])} · بعد التصفيّة`
           : `${countAr(totalDepts, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])} · ${countAr(totalCourses, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}`}
       >
-        {/* The students-roster toolbar chrome (colleges.css) — search +
-            city select; the directory finds a faculty in one glance. */}
-        <div className="admin-students-toolbar">
-          <div className="admin-students-search">
-            <Icon icon={Search} size={14} />
-            <input
-              type="search"
-              placeholder="ابحث باسم الكلّيّة أو القسم…"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              className="admin-students-input"
-              aria-label="البحث في الكلّيّات"
-            />
-          </div>
-          <select
-            className="admin-students-input"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            aria-label="تصفية حسب المدينة"
-          >
-            <option value="">كلّ المدن</option>
-            {cities.map((cty) => <option key={cty} value={cty}>{cty}</option>)}
-          </select>
-          {/* r180: the create affordance rides the toolbar exactly where
-              AdminCoursesPage puts «إضافة مقرّر» — the same primary sm
-              button + Plus icon, same aria-label contract. */}
-          <button
-            type="button"
-            className="btn primary sm"
-            onClick={openFacultyForm}
-            aria-label="إضافة كلّيّة جديدة"
-          >
-            <Icon icon={Plus} size={14} />
-            إضافة كلّيّة
-          </button>
-        </div>
+        {/* R304: the directory's control rail rides the patterns FilterBar —
+            search → city filter → the create action, the family order.
+            The labeled pill keeps its explicit aria-label (the students
+            roster's deep-link labels stay). */}
+        <FilterBar
+          filters={(
+            <>
+              <div className="admin-students-search">
+                <Icon icon={Search} size={14} />
+                <input
+                  type="search"
+                  placeholder="ابحث باسم الكلّيّة أو القسم…"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  className="admin-students-input"
+                  aria-label="البحث في الكلّيّات"
+                />
+              </div>
+              <select
+                className="admin-students-input"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                aria-label="تصفية حسب المدينة"
+              >
+                <option value="">كلّ المدن</option>
+                {cities.map((cty) => <option key={cty} value={cty}>{cty}</option>)}
+              </select>
+            </>
+          )}
+          trailing={(
+            /* r180: the create affordance rides the rail's trailing slot —
+                search → filter → action (the FilterBar contract). */
+            <button
+              type="button"
+              className="btn primary sm"
+              onClick={openFacultyForm}
+              aria-label="إضافة كلّيّة جديدة"
+            >
+              <Icon icon={Plus} size={14} />
+              إضافة كلّيّة
+            </button>
+          )}
+        />
 
         <div className="flex-col gap-3">
           {visible.map((f) => (
@@ -999,14 +1019,16 @@ const PAPER_STATUS_LABEL: Record<ResearchStatus, string> = {
 /* r149 (R3-A1 #1): انتقل التعريف إلى lib/paperStatus.ts — سلّم واحد
  * للطالب والإداري (هذه كانت النسخة الأغنى فاعتُمدت كما هي). */
 
-/** One register row — status badge + the moderation-relevant numbers. */
+/** One register row — status badge + the moderation-relevant numbers.
+ *  R304: the paper's title is the row's identity cell (ws-id) — its
+ *  offering context rides the ws-meta line under it. */
 function PaperRow({ p }: { p: AdminPaper }) {
   return (
     <tr>
-      <td data-label="البحث">
+      <td data-label="البحث" className="ws-id">
         <div className="font-semibold" style={{ color: 'var(--text)' }}>{p.title}</div>
         {p.offering && (
-          <div className="text-xxs text-subtle">{p.offering.course.name} · <bdi>{p.offering.course.code}</bdi></div>
+          <div className="ws-meta">{p.offering.course.name} · <bdi>{p.offering.course.code}</bdi></div>
         )}
       </td>
       <td data-label="الطالب">
@@ -1177,7 +1199,11 @@ export function AdminReportsPage() {
   if (isPending) {
     return (
       <div className="page">
-        <PageHeader title="التقارير المؤسسية" subtitle="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية." />
+        <PatternsPageHeader
+          title="التقارير المؤسسية"
+          description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
+          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+        />
         <StatStripSkeleton />
         <CardSkeleton lines={6} />
       </div>
@@ -1186,7 +1212,11 @@ export function AdminReportsPage() {
   if (isError || !data) {
     return (
       <div className="page">
-        <PageHeader title="التقارير المؤسسية" subtitle="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية." />
+        <PatternsPageHeader
+          title="التقارير المؤسسية"
+          description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
+          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+        />
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       </div>
     );
@@ -1199,7 +1229,11 @@ export function AdminReportsPage() {
 
   return (
     <div className="page">
-      <PageHeader title="التقارير المؤسسية" subtitle="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية." />
+      <PatternsPageHeader
+        title="التقارير المؤسسية"
+        description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
+        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+      />
 
       {/* §5 row 8: the papers KPIs land on the register — the URL is
           the action: ?status=PUBLISHED lands the register pre-filtered
@@ -1397,7 +1431,9 @@ export function AdminReportsPage() {
             />
           ) : papers.data ? (
             <div className="table-wrap">
-              <table className="table tbl-stack">
+              {/* R304: the register rides the workspace table family —
+                  identity-first cells, quiet 13px header voice. */}
+              <table className="table tbl-stack ws-table">
                 <thead>
                   <tr>
                     <th scope="col">البحث</th>
@@ -1435,7 +1471,7 @@ export function AdminReportsPage() {
           />
         ) : (
           <div className="table-wrap">
-            <table className="table tbl-stack">
+            <table className="table tbl-stack ws-table">
               <thead>
                 <tr>
                   <th scope="col" style={{ width: 110 }}>الكود</th>
@@ -1448,7 +1484,7 @@ export function AdminReportsPage() {
                 {data.topCourses.map((c) => (
                   <tr key={c.code}>
                     <td className="font-mono text-subtle" data-label="الكود"><bdi>{c.code}</bdi></td>
-                    <td data-label="اسم المقرّر">{c.name}</td>
+                    <td className="ws-id" data-label="اسم المقرّر">{c.name}</td>
                     <td className="admin-table-num font-mono" data-label="طلاب مسجَّلون">{c.enrollments}</td>
                     <td className="admin-table-num font-mono" data-label="المحاضرات">{c.lectures}</td>
                   </tr>
@@ -1616,57 +1652,63 @@ export function AdminCoursesPage() {
 
   return (
     <div className="page">
-      <PageHeader
+      <PatternsPageHeader
         title="إدارة المقرّرات"
-        subtitle={meta
+        description={meta
           ? `${countAr(meta.total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}${hasFilters ? ' مطابقة للبحث والتصفيّة' : ' في الجامعة'}`
           : 'جميع المقرّرات الجامعية مع إحصائيات حيّة.'}
+        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'المقرّرات' }]}
       />
 
       <Card>
-        {/* The students-roster toolbar (colleges.css chrome) — both
-            filters run server-side now; the old client-side faculty
-            pills counted a capped subset (the P2-1 mis-count). */}
-        <div className="admin-students-toolbar">
-          <div className="admin-students-search">
-            <Icon icon={Search} size={14} />
-            <input
-              type="search"
-              placeholder="ابحث بالاسم أو الكود…"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              className="admin-students-input"
-              aria-label="البحث في المقرّرات"
-            />
-          </div>
-          <select
-            className="admin-students-input"
-            value={facultyId}
-            onChange={(e) => { setFacultyId(e.target.value); setPage(1); }}
-            disabled={facQ.isPending}
-            aria-label="تصفية حسب الكلّيّة"
-          >
-            <option value="">{facQ.isPending ? 'جارٍ تحميل الكلّيّات…' : 'كلّ الكلّيّات'}</option>
-            {facQ.data?.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
-          </select>
-          {facQ.isError && (
-            <button type="button" className="btn ghost sm" onClick={() => facQ.refetch()}>
-              إعادة تحميل الكلّيّات
+        {/* R304: the roster's control rail rides the patterns FilterBar —
+            both filters run server-side; the create action rides the
+            trailing slot (search → filter → action, the family order).
+            The old capped-KPI header copy retired — the count reads the
+            server meta in the header description. */}
+        <FilterBar
+          filters={(
+            <>
+              <div className="admin-students-search">
+                <Icon icon={Search} size={14} />
+                <input
+                  type="search"
+                  placeholder="ابحث بالاسم أو الكود…"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  className="admin-students-input"
+                  aria-label="البحث في المقرّرات"
+                />
+              </div>
+              <select
+                className="admin-students-input"
+                value={facultyId}
+                onChange={(e) => { setFacultyId(e.target.value); setPage(1); }}
+                disabled={facQ.isPending}
+                aria-label="تصفية حسب الكلّيّة"
+              >
+                <option value="">{facQ.isPending ? 'جارٍ تحميل الكلّيّات…' : 'كلّ الكلّيّات'}</option>
+                {facQ.data?.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+              </select>
+              {facQ.isError && (
+                <button type="button" className="btn ghost sm" onClick={() => facQ.refetch()}>
+                  إعادة تحميل الكلّيّات
+                </button>
+              )}
+            </>
+          )}
+          trailing={(
+            <button
+              type="button"
+              className="btn primary sm"
+              onClick={openCreate}
+              aria-label="إضافة مقرّر جديد"
+            >
+              <Icon icon={Plus} size={14} />
+              إضافة مقرّر
             </button>
           )}
-          {/* r299: the create affordance rides the toolbar's trailing
-              slot — search → filter → action, the faculties toolbar's
-              order (the patterns FilterBar contract the family follows). */}
-          <button
-            type="button"
-            className="btn primary sm"
-            onClick={openCreate}
-            aria-label="إضافة مقرّر جديد"
-          >
-            <Icon icon={Plus} size={14} />
-            إضافة مقرّر
-          </button>
-        </div>
+        />
 
         {/* 8 columns now — the r155c actions header made the skeleton's
             cols={7} under-advertise the table it stands in for.
@@ -1681,7 +1723,10 @@ export function AdminCoursesPage() {
         )}
         {courses && (
           <div className="table-wrap">
-            <table className="table tbl-stack">
+            {/* R304: the roster rides the workspace table family —
+                identity-first name cell, quiet header voice, and on
+                phones the name becomes the summary card's title. */}
+            <table className="table tbl-stack ws-table">
               <thead>
                 <tr>
                   <th scope="col" style={{ width: 100 }}>الكود</th>
@@ -1729,7 +1774,7 @@ export function AdminCoursesPage() {
                 {courses.map((c) => (
                   <tr key={c.id}>
                     <td className="font-mono text-subtle" data-label="الكود"><bdi>{c.code}</bdi></td>
-                    <td data-label="اسم المقرّر">
+                    <td data-label="اسم المقرّر" className="ws-id">
                       <div className="flex items-center gap-2">
                         {c.themeColor && (
                           <span className="admin-course-tint" style={{ background: c.themeColor }} aria-hidden />
@@ -1737,7 +1782,7 @@ export function AdminCoursesPage() {
                         <div>
                           <span className="font-semibold" style={{ color: 'var(--text)' }}>{c.name}</span>
                           {compact && (
-                            <div className="text-xxs text-subtle">
+                            <div className="ws-meta">
                               {countAr(c.totalEnrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'])}
                               {' · '}
                               {countAr(c.offeringCount, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])}

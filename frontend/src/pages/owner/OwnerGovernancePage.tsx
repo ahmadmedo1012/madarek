@@ -14,6 +14,9 @@ import {
 } from 'chart.js';
 import { Card } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
+/* R304: the governance console opens with the patterns PageHeader —
+ * breadcrumbs back to the owner dashboard. */
+import { PageHeader as PatternsPageHeader } from '../../components/patterns';
 import {
   ErrorState, EmptyState, ChartSkeleton, TableSkeleton,
 } from '../../components/primitives/States';
@@ -149,12 +152,11 @@ export function OwnerGovernancePage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">الحوكمة المتقدّمة</h1>
-          <p className="page-subtitle">تتبّع الصلاحيات والنموّ وتحليل تسجيلات الدخول</p>
-        </div>
-      </header>
+      <PatternsPageHeader
+        title="الحوكمة المتقدّمة"
+        description="تتبّع الصلاحيات والنموّ وتحليل تسجيلات الدخول"
+        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'الحوكمة المتقدّمة' }]}
+      />
 
       {/* Governance metrics — each area owns its pending/error state, so a
           failing endpoint never blanks the sections that resolved. */}

@@ -442,12 +442,11 @@ export function AdminDigitalPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">التحوّل الرقميّ</h1>
-          <p className="page-subtitle">مؤشّرات تبنّي المنصّة الرقميّة عبر مكوّنات الجامعة.</p>
-        </div>
-      </header>
+      <PatternsPageHeader
+        title="التحوّل الرقميّ"
+        description="مؤشّرات تبنّي المنصّة الرقميّة عبر مكوّنات الجامعة."
+        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'التحوّل الرقميّ' }]}
+      />
 
       {q.isPending && (
         <>
@@ -484,7 +483,7 @@ export function AdminDigitalPage() {
             subtitle="ما يجري فعلاً عبر المنصّة في كل مكوّن"
           >
             <div className="table-wrap">
-              <table className="table tbl-stack">
+              <table className="table tbl-stack ws-table">
                 <thead>
                   <tr>
                     <th scope="col">المكوّن</th>
@@ -564,12 +563,11 @@ export function AdminSettingsPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">إعدادات المنصّة</h1>
-          <p className="page-subtitle">إعدادات تشغيليّة على مستوى الجامعة. تفعيل المعدِّلات الفرديّة قيد التطوير.</p>
-        </div>
-      </header>
+      <PatternsPageHeader
+        title="إعدادات المنصّة"
+        description="إعدادات تشغيليّة على مستوى الجامعة. تفعيل المعدِّلات الفرديّة قيد التطوير."
+        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'إعدادات المنصّة' }]}
+      />
 
       <div className="grid-2">
         <Card title="الهويّة المؤسّسيّة" icon={Settings}>
