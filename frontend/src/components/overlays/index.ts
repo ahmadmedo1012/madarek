@@ -26,6 +26,10 @@
  *     so stacked overlays and shell drawers compose safely.
  *   - Anchored menus/dialogs sync aria-expanded/aria-haspopup onto
  *     their trigger unless the consumer declares them itself.
+ *   - r305: anchored panels hand focus back to their trigger on any
+ *     close that happens while focus is still inside the panel
+ *     (useAnchorFocusReturn — activation closes no longer drop focus
+ *     on <body>; Esc/Tab/outside-click paths are untouched).
  */
 export { Modal } from './Modal';
 export type { ModalProps } from './Modal';

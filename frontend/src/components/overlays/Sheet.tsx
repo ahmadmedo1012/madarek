@@ -95,7 +95,12 @@ export function Sheet({
 }: SheetProps) {
   const panelRef = useRef<HTMLDivElement | null>(null);
   useFocusTrap({ open, containerRef: panelRef, closeOnEscape, onClose, overlayKind: 'sheet' });
-  const { rendered, onExitEnd } = useDelayedUnmount(open, '--motion-duration-medium');
+  // r305 token alignment: the safety net reads the token the data-closing
+  // exit animation consumes (components.css: madarek-overlay-out + the
+  // madarek-sheet-out-* pair at var(--motion-duration-short)) — the old
+  // --motion-duration-medium read only stretched the no-animationend
+  // fallback (320ms) past the real 160ms exit.
+  const { rendered, onExitEnd } = useDelayedUnmount(open, '--motion-duration-short');
   const resolvedSize: SheetSize = size ?? (side === 'bottom' ? 'fit' : 'full');
 
   /* Grabber drag-to-dismiss (bottom sheets, touch only) — the Toast's

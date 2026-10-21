@@ -1,0 +1,418 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — r305 «Heron» shell layer (R305-A4, Task 2-d)
+   ─────────────────────────────────────────────────────────────────────
+   The Heron Shell Contract's binding layer for the application chrome:
+   precise outlines · structured grid · restrained signal · disciplined
+   typography · crisp transitions · both themes.
+
+   CASCADE CONTRACT — read before editing:
+   · main.tsx loads fonts → tokens → motion → base → components →
+     layout → patterns → auth → notifications → student → polish, all
+     @layer'd. This sheet is NOT loaded there: AppShell.tsx imports it,
+     and module-graph order puts it AFTER polish.css in the bundle.
+   · The sheet is deliberately UNLAYERED — house precedent (layout.css's
+     unlayered drawer-visibility tail, notifications.css's unlayered
+     pairs): a normal unlayered declaration outranks every @layer rule
+     regardless of specificity, so these refinements get the last word
+     over the overrides layer WITHOUT !important. Keep it that way.
+   · Discipline: this file only (a) resolves grammar conflicts where a
+     layered sheet predates the Heron contract — every override names
+     the rule it retires and why; (b) unifies the chrome control
+     recipe and its press register; (c) completes the collapsed /
+     expanded rail as ONE grid; (d) styles the 2-a/2-b markup hooks
+     (accordion nav groups, the topbar kicker, the institution
+     context-lost signal) that the sibling branches added for this
+     sheet. Everything else stays in its owning sheet. No !important,
+     no raw values outside the gates, no new @keyframes except the
+     accordion reveal (token-only, entrance register, same-sheet RM
+     belt).
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   §0 — THE ONE SEAM (verified — no rules needed)
+   ═══════════════════════════════════════════════════════════════════
+   Rail | workspace meet on ONE hairline: base.css paints
+   `.has-shell > .sidebar { border-inline-end: 1px solid
+   var(--sidebar-rule) }` and --sidebar-rule ≡ --rule ≡ --neutral-200
+   in BOTH themes (tokens.css) — one token family, one seam, theme-
+   reactive without a single theme fork here. The topbar's bottom
+   hairline is always on (polish v9's overrides-layer border-block-end;
+   base.css re-colors it through .topbar.scrolled). Nav-group
+   separators stay quiet (--border-faint, layout.css). The mobile
+   drawer carries the same hairline on its content-facing edge
+   (border-inline-end, layout.css). Restating any of it here would be
+   drift, so this section documents and defers.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   §1 — ONE CONTROL RECIPE (rest flat · hover surface · press 0.97)
+   ═══════════════════════════════════════════════════════════════════
+   Every freestanding chrome control — rail collapse, drawer close,
+   tour trigger, search toggle, burger, bell, user chip, theme thumb —
+   wears one interaction skin:
+     · rest   hairline border, flat surface, NO shadow (the layout.css
+              conservation pass already retired the collapse button's
+              1px depth cue and the theme thumb's --shadow-card);
+     · hover  surface steps only (--surface-2/3), never accent washes;
+     · press  the BUTTON register: scale(var(--press-scale)) at the
+              micro duration (rows elsewhere press at the softer
+              card/nav registers; buttons compress here).
+   The unified transition shorthand (background/color/border-color at
+   --t-fast = the 160ms micro register, transform at
+   --motion-duration-micro) replaces each control's hand-rolled list —
+   polish v13's .btn recipe, applied to chrome. Controls whose recipe
+   rode --t-clean (the 6-property de-smuggled token) lose their phantom
+   box-shadow/opacity tracks with it: none of these controls animates
+   either anymore. */
+.sidebar-collapse-btn,
+.sidebar-mobile-close,
+.sidebar-tour-trigger,
+.topbar-search-toggle,
+.topbar-mobile-toggle,
+.topbar-notif,
+.topbar-user-trigger,
+.theme-toggle-option {
+  transition:
+    background var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    transform var(--motion-duration-micro) var(--ease);
+}
+.sidebar-collapse-btn:active,
+.sidebar-mobile-close:active,
+.sidebar-tour-trigger:active,
+.topbar-search-toggle:active,
+.topbar-mobile-toggle:active,
+.topbar-notif:active,
+.topbar-user-trigger:active,
+.theme-toggle-option:active {
+  transform: scale(var(--press-scale));
+  transition-duration: var(--motion-duration-micro);
+}
+/* Press feedback is motion — it dies with everything else (mirrors
+   polish v13's RM pair for .btn/.card press transforms). */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-collapse-btn:active,
+  .sidebar-mobile-close:active,
+  .sidebar-tour-trigger:active,
+  .topbar-search-toggle:active,
+  .topbar-mobile-toggle:active,
+  .topbar-notif:active,
+  .topbar-user-trigger:active,
+  .theme-toggle-option:active {
+    transform: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   §2 — THE RAIL IS ONE GRID (64px ≡ 256px, two states of one system)
+   ═══════════════════════════════════════════════════════════════════
+   Collapsed, the brand mark, the nav icons and the footer controls
+   must share ONE inline axis. polish v6 centers the nav items and the
+   user cluster, but its brand column stack left the 30px mark at the
+   inline-START edge: a definite-size flex item cannot stretch, so the
+   column's default align-items: stretch behaves as flex-start for it —
+   the mark hugged the edge while the icons below centered. Center the
+   brand stack, and center the icon-only tour trigger that rides the
+   same footer axis (its 12px inline padding was tuned for the expanded
+   label row).
+   Scoped ≥921px like every other .sidebar.collapsed rule: the mobile
+   drawer never collapses. */
+@media (min-width: 921px) {
+  .sidebar.collapsed .sidebar-brand { align-items: center; }
+  .sidebar.collapsed .sidebar-tour-trigger {
+    justify-content: center;
+    padding-inline: var(--sp-2);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   §3 — ONE ACTIVE MARKER (A4: «كل مسار له علامة جانبية واحدة»)
+   ═══════════════════════════════════════════════════════════════════
+   The active nav row is exactly three signals: ONE bar (::before,
+   role-aware --role-accent), ONE surface step
+   (--sidebar-item-active-bg), ONE icon tint. polish v16's ::after
+   rail dot was a FOURTH signal — painted raw var(--accent) against
+   the bar's role-aware tint and wearing a focus-halo glow (a
+   decoration borrowing the focus language). It also leaked: v6's
+   collapsed-rail hover tooltip paints attr(title) onto this same
+   pseudo-element, the markup no longer ships title attributes on nav
+   links, so hovering an ACTIVE row in the rail resolved attr() to ""
+   and faded in an empty dark pill. content: none retires the dot and
+   the leak together (the :not(.on) half of that tooltip was already
+   stood down in polish wave 7-b; the same-file RM belt entry for the
+   dot becomes inert with it). Same unlayered reach applies in both
+   rail states, so collapsed and expanded read the identical grammar.
+   */
+.nav-item.on::after { content: none; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   §4 — HOVER NEVER PREVIEWS THE SIGNAL
+   ═══════════════════════════════════════════════════════════════════
+   polish v13 faded the accent rail in at half opacity on plain hover
+   (.nav-item:hover::before — 0.5 opacity, 0.7 scaleY). Copper is
+   reserved for the committed marker; hover earns the row's surface
+   step (--sidebar-item-hover-bg, layout.css) and nothing else. This
+   re-asserts v13's own :not(.on) resting state over its hover half;
+   the .on state keeps the full bar.
+   */
+.nav-item:not(.on):hover::before {
+  opacity: 0;
+  transform: scaleY(0.4);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   §5 — TOPBAR: FLAT CHROME, NO GRADIENT PAINT
+   ═══════════════════════════════════════════════════════════════════
+   polish v22 §B1 tints the collapsed-rail topbar with a directional
+   surface gradient — four rules (LTR/RTL × light/dark) anchoring a
+   decorative fade at the rail edge. The Heron grammar bans decorative
+   gradient chrome paint, and the expanded topbar's treatment
+   (--topbar-bg warm glass + blur, r304's documented state) is the
+   coherent flat recipe for the collapsed state too — one topbar, one
+   ground, in every shell state. The reduced-transparency accommodation
+   (polish v22 §F) is re-asserted AFTER the flatten — unlayered rules
+   would otherwise out-rank the overrides-layer guard and hand the
+   opaque-ground fallback a translucent bar.
+   */
+html[data-sidebar-collapsed] .topbar,
+html[dir="rtl"][data-sidebar-collapsed] .topbar,
+html[data-theme="dark"][data-sidebar-collapsed] .topbar,
+html[dir="rtl"][data-theme="dark"][data-sidebar-collapsed] .topbar {
+  background: var(--topbar-bg);
+}
+@media (prefers-reduced-transparency: reduce) {
+  html[data-sidebar-collapsed] .topbar,
+  html[dir="rtl"][data-sidebar-collapsed] .topbar,
+  html[data-theme="dark"][data-sidebar-collapsed] .topbar,
+  html[dir="rtl"][data-theme="dark"][data-sidebar-collapsed] .topbar {
+    background: var(--surface);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   §6 — USER CHIP: SURFACE STEPS, NO LEVITATION
+   ═══════════════════════════════════════════════════════════════════
+   polish v16 lifts the topbar user trigger on hover (--elev-1) and
+   open (--elev-2). --elev-* is the overlay ladder; chrome controls
+   don't levitate. The chip's hover/open states already read through
+   the surface step + hairline (background --surface-2, stronger
+   border — layout.css + polish v16), so the shadows retire as pure
+   duplication of elevation the grammar doesn't sanction at rest.
+   The box-shadow track left §1's transition shorthand on purpose:
+   nothing here animates a shadow anymore.
+   */
+.topbar-user-trigger:hover { box-shadow: none; }
+.topbar-user-trigger[aria-expanded="true"] { box-shadow: none; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   §7 — ONBOARDING × SHELL INTEGRATION (components.css is frozen)
+   ═══════════════════════════════════════════════════════════════════
+   The onboarding flow rides the Modal primitive, so the overlay
+   grammar already holds for its surface: hairline border + --elev-4 +
+   --r-xl card, --overlay-veil scrim, v22 focus ring (its skip control
+   declares --state-focus-ring in components.css). The one gap the
+   frozen sheet carries is the skip control's hover — color-only,
+   which snaps with no surface acknowledgment. Bind it to the shell
+   hover register (surface step) without touching components.css.
+   Scoped under .has-shell: the flow only ever mounts inside the
+   shell's modal port.
+   */
+.has-shell .onboarding-flow-skip {
+  transition:
+    background var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease);
+}
+.has-shell .onboarding-flow-skip:hover { background: var(--surface-2); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   §8 — OVERLAYS (verified — no restatements)
+   ═══════════════════════════════════════════════════════════════════
+   The frozen components.css recipes already obey the overlay grammar:
+   dropdown (--elev-2/--r-md) < popover & notification panel
+   (--elev-3/--r-lg|--r-xl, glass) < sheet (--elev-4/--r-2xl) ≤ modal
+   & command palette (--elev-4|--elev-5/--r-xl|--r-2xl) < toast <
+   lightbox, on the --z-* ladder with the anchored-layer promotion
+   (scroll-locked) and the v22 ring. Restating whole recipes here is
+   banned by the brief; no scoped refinement earns its keep today —
+   the palette card, rows, input row and footer already ride layout.css's
+   body styles (hairline-separated rows, 44px touch floor, quiet
+   kbd chips). Re-read this section before adding any
+   `.has-shell .cmd-*` / `.has-shell .modal-*` overrides.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   §9 — FLOATING CHROME HYGIENE (320–1440, verified)
+   ═══════════════════════════════════════════════════════════════════
+   Audited against horizontal overflow at the band edges:
+   · wake pill — fixed, max-inline-size min(480px, 100vw - --sp-8),
+     inset-inline --sp-3 on mobile riding ABOVE the bottom nav's
+     safe-area inset (layout.css);
+   · scroll progress — fixed 3px strip at the viewport top, --z-popover
+     (polish v22), scaleX-driven, aria-hidden;
+   · bottom nav — fixed dock, safe-area-inset padding (polish v22 §F),
+     role-aware active ring;
+   · toasts — notifications.css's mobile stack clears the dock;
+   · the phantom gutter — html:has(.has-shell) releases v13's
+     scrollbar-gutter reservation (polish r299), so fixed surfaces
+     reach the true viewport edge in RTL.
+   Nothing can exceed the viewport or straddle the rail seam. No rules
+   needed — this section pins the audit for the next editor.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   §10 — NAV GROUPS: the 2-a accordion hooks
+   (data-nav-group · data-collapsible · data-group-open)
+   ═══════════════════════════════════════════════════════════════════
+   Sidebar.tsx (task 2-a) stamps every .nav-group with data-nav-group
+   and mirrors the accordion's derived state onto the collapsible ones
+   (aria-expanded on the toggle stays the a11y truth; these mirror it
+   for selectors only). The grammar work the hooks unlock:
+
+   · THE SEAM — layout.css already separates sibling groups with the
+     --border-faint hairline. An accordion group is a section the
+     reader can OPERATE, so the seam above one steps up to the
+     standard --rule hairline: the one firmer line an operable
+     boundary earns (precise outlines, still flat — no elevation).
+   · THE TOGGLE — .nav-group-toggle's base look is inline-styled
+     (r183-B7's frozen-CSS artifact: background/color/padding ride the
+     style attribute, where layer order cannot follow). The states CSS
+     owns WITHOUT a war are the ones inline never set: the press
+     transform (button register, --press-scale at the micro duration —
+     the toggle is a <button>, so it compresses like §1's controls),
+     and the label's ink step on hover (the inner label span carries
+     no inline color, so :hover reaches it directly). Focus-visible is
+     already the universal v22 ring; the chevron's rotation is the
+     markup's own inline truth. WISH for a later markup pass: lift the
+     toggle's inline background/color into layout.css so the ONE
+     control recipe can dress this control whole.
+   · THE REVEAL — an accordion group's rows mount on open; they enter
+     on the grammar's entrance register (opacity + --motion-distance-
+     small ≤ 8px, medium duration, decelerate) on the token stagger
+     ladder (--motion-stagger-step per row, capped at
+     --motion-stagger-cap — nav.ts's ≤8-items ceiling keeps every row
+     inside the cap; child 1 is the toggle itself). `backwards` fill,
+     NOT `both`: the fill must release after the entrance so polish
+     v13's :active press transform keeps working on the row after it
+     lands. Desktop band only — the ≤920px drawer already owns its
+     documented v16 spring stagger, and one band must not rewrite the
+     other's grammar.
+   */
+.nav-group + .nav-group[data-collapsible="true"] {
+  border-block-start-color: var(--rule);
+}
+[data-collapsible="true"] .nav-group-toggle {
+  transition: transform var(--motion-duration-micro) var(--ease);
+}
+[data-collapsible="true"] .nav-group-toggle:hover > span {
+  color: var(--text);
+}
+[data-collapsible="true"] .nav-group-toggle:active {
+  transform: scale(var(--press-scale));
+}
+@media (min-width: 921px) {
+  .nav-group[data-collapsible="true"][data-group-open="true"] > .nav-item {
+    animation: madarek-group-reveal var(--motion-duration-medium)
+      var(--motion-ease-decelerate) backwards;
+  }
+  /* Row 1 (child 2 — child 1 is the toggle) enters with no delay. */
+  .nav-group[data-collapsible="true"][data-group-open="true"] > .nav-item:nth-child(3) { animation-delay: calc(var(--motion-stagger-step) * 1); }
+  .nav-group[data-collapsible="true"][data-group-open="true"] > .nav-item:nth-child(4) { animation-delay: calc(var(--motion-stagger-step) * 2); }
+  .nav-group[data-collapsible="true"][data-group-open="true"] > .nav-item:nth-child(5) { animation-delay: calc(var(--motion-stagger-step) * 3); }
+  .nav-group[data-collapsible="true"][data-group-open="true"] > .nav-item:nth-child(6) { animation-delay: calc(var(--motion-stagger-step) * 4); }
+  .nav-group[data-collapsible="true"][data-group-open="true"] > .nav-item:nth-child(7) { animation-delay: calc(var(--motion-stagger-step) * 5); }
+  .nav-group[data-collapsible="true"][data-group-open="true"] > .nav-item:nth-child(8) { animation-delay: calc(var(--motion-stagger-step) * 6); }
+  .nav-group[data-collapsible="true"][data-group-open="true"] > .nav-item:nth-child(n + 9) { animation-delay: calc(var(--motion-stagger-cap) * var(--motion-stagger-step)); }
+}
+@keyframes madarek-group-reveal {
+  from { opacity: 0; transform: translateY(var(--motion-distance-small)); }
+  to   { opacity: 1; transform: none; }
+}
+/* The grammar's own RM belt for everything §10 authors (press is
+   motion; the reveal's stagger delays would hold rows invisible —
+   the kill clears both in one pair). */
+@media (prefers-reduced-motion: reduce) {
+  .nav-group[data-collapsible="true"][data-group-open="true"] > .nav-item {
+    animation: none;
+  }
+  [data-collapsible="true"] .nav-group-toggle:active {
+    transform: none;
+  }
+}
+
+/* The 2-a `title` hook on the account cluster's longest line: the
+   composite role label («أستاذ · عميد كلّيّة …») now clamps honestly
+   instead of wrapping the pinned footer. The name line above it
+   already carries the same clamp (layout.css). */
+.sidebar-user-role {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   §11 — THE TOPBAR KICKER (2-b's .topbar-kicker)
+   ═══════════════════════════════════════════════════════════════════
+   Topbar.tsx renders the sidebar-section label — derived from the
+   SAME NAV_BY_ROLE the rail renders, so nav and title can never
+   drift — as the title block's FIRST flex item: [section kicker]
+   [page title] [scope chips], the reading order the focus rescue
+   announces. 2-b left the visual join to this sheet: the join is a
+   hairline (precise outlines — chrome separates on 1px lines), the
+   voice is the quiet chrome register (sans — never the display face;
+   xxs; --text-secondary is the 13px AA ink). No self-ellipsis on the
+   label: it would synthesize the flex baseline (overflow ≠ visible)
+   and lift the text off the title's — the .topbar-scope sibling chip
+   sets the precedent (nowrap + the container's clip). ≤920px the band
+   turns the title into a block ellipsis and the kicker would
+   concatenate with the title text under no join — hidden there,
+   exactly like .topbar-scope (2-b's coordination note).
+   */
+.topbar-kicker {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  border-inline-end: 1px solid var(--rule);
+  padding-inline-end: var(--sp-2-5);
+  min-inline-size: 0;
+  white-space: nowrap;
+}
+@media (max-width: 920px) {
+  .topbar-kicker { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   §12 — INSTITUTION SWITCHER: the context-lost signal (2-b)
+   ═══════════════════════════════════════════════════════════════════
+   .topbar-inst-trigger is the co-class on the switcher's .btn ghost sm.
+   Its honest alarm state — a multi-membership session whose context
+   was lost («اختر مؤسستك») — rides the urgency family: the
+   danger-soft ground the destructive ghost already hovers to, plus
+   the danger-ink voice. Authored as a REST+HOVER pair because an
+   unlayered background would otherwise silence the layered .btn hover
+   step (this takeover is why the co-class exists); the settled chip
+   keeps the ghost recipe untouched — a settled state must not borrow
+   the alarm. Static on purpose: unlike the bell's unread pulse this
+   state persists until the user acts, and nagging is not urgency.
+   */
+.topbar-inst-trigger[data-context-lost="true"] {
+  background: var(--danger-soft);
+  color: var(--danger-ink);
+}
+.topbar-inst-trigger[data-context-lost="true"]:hover {
+  background: color-mix(in srgb, var(--danger-soft) 72%, var(--danger));
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   §13 — THE LOGOUT ROW (2-b's .topbar-user-logout) — audited, no rule
+   ═══════════════════════════════════════════════════════════════════
+   The co-class rides the user-menu logout row's inner span, whose rose
+   ink is the INLINE truth (style="color: var(--c-rose-deep)"). A CSS
+   twin would be dead code (inline outranks every layer) and a hover
+   deepen is unreachable for the same reason — the row's surface step
+   already comes from .dropdown-item:hover. Left standing: the inline
+   color stays the live truth until a markup pass lifts it into this
+   sheet; the co-class is the ready seam.
+   ═══════════════════════════════════════════════════════════════════ */

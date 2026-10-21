@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-21T14:28:10.885Z",
+  "generatedAt": "2026-10-21T18:30:46.956Z",
   "captures": [
     {
       "route": "/",
@@ -50,17 +50,17 @@
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "a.btn",
@@ -246,8 +246,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 228,
-      "bytesTransferred": 827213
+      "fcpMs": 892,
+      "bytesTransferred": 9732625
     },
     {
       "route": "/",
@@ -298,17 +298,17 @@
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "a.btn",
@@ -494,8 +494,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 196,
-      "bytesTransferred": 827213
+      "fcpMs": 888,
+      "bytesTransferred": 9732625
     },
     {
       "route": "/",
@@ -546,17 +546,17 @@
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "a.btn",
@@ -742,8 +742,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 204,
-      "bytesTransferred": 827213
+      "fcpMs": 980,
+      "bytesTransferred": 9732625
     },
     {
       "route": "/",
@@ -794,17 +794,17 @@
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "a.btn",
@@ -990,8 +990,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 212,
-      "bytesTransferred": 827213
+      "fcpMs": 948,
+      "bytesTransferred": 9732625
     },
     {
       "route": "/",
@@ -1042,17 +1042,17 @@
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "a.btn",
@@ -1238,8 +1238,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 232,
-      "bytesTransferred": 827213
+      "fcpMs": 1036,
+      "bytesTransferred": 9732625
     },
     {
       "route": "/",
@@ -1290,17 +1290,17 @@
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.theme-toggle-option",
           "durationMs": 160,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "a.btn",
@@ -1486,8 +1486,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 428,
-      "bytesTransferred": 827213
+      "fcpMs": 1504,
+      "bytesTransferred": 9732625
     },
     {
       "route": "/auth",
@@ -1541,6 +1541,11 @@
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
+          "selector": "button.auth-demo-hint-reopen",
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
+        },
+        {
           "selector": "a.auth-register-link",
           "durationMs": 160,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
@@ -1579,8 +1584,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 328,
-      "bytesTransferred": 509536
+      "fcpMs": 1444,
+      "bytesTransferred": 7898681
     },
     {
       "route": "/auth",
@@ -1634,6 +1639,11 @@
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
+          "selector": "button.auth-demo-hint-reopen",
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
+        },
+        {
           "selector": "a.auth-register-link",
           "durationMs": 160,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
@@ -1672,8 +1682,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 228,
-      "bytesTransferred": 509536
+      "fcpMs": 860,
+      "bytesTransferred": 7898681
     },
     {
       "route": "/auth",
@@ -1727,6 +1737,11 @@
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
+          "selector": "button.auth-demo-hint-reopen",
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
+        },
+        {
           "selector": "a.auth-register-link",
           "durationMs": 160,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
@@ -1765,8 +1780,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 192,
-      "bytesTransferred": 509536
+      "fcpMs": 916,
+      "bytesTransferred": 7871733
     },
     {
       "route": "/auth",
@@ -1820,6 +1835,11 @@
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
+          "selector": "button.auth-demo-hint-reopen",
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
+        },
+        {
           "selector": "a.auth-register-link",
           "durationMs": 160,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
@@ -1858,8 +1878,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 288,
-      "bytesTransferred": 509536
+      "fcpMs": 808,
+      "bytesTransferred": 7871733
     },
     {
       "route": "/auth",
@@ -1913,6 +1933,11 @@
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
+          "selector": "button.auth-demo-hint-reopen",
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
+        },
+        {
           "selector": "a.auth-register-link",
           "durationMs": 160,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
@@ -1951,8 +1976,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 232,
-      "bytesTransferred": 509536
+      "fcpMs": 816,
+      "bytesTransferred": 7871733
     },
     {
       "route": "/auth",
@@ -2006,6 +2031,11 @@
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
+          "selector": "button.auth-demo-hint-reopen",
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
+        },
+        {
           "selector": "a.auth-register-link",
           "durationMs": 160,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
@@ -2044,8 +2074,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 280,
-      "bytesTransferred": 509536
+      "fcpMs": 876,
+      "bytesTransferred": 7871733
     },
     {
       "route": "/auth/register",
@@ -2132,8 +2162,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 268,
-      "bytesTransferred": 475102
+      "fcpMs": 916,
+      "bytesTransferred": 7934407
     },
     {
       "route": "/auth/register",
@@ -2220,8 +2250,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 204,
-      "bytesTransferred": 475514
+      "fcpMs": 888,
+      "bytesTransferred": 7934407
     },
     {
       "route": "/auth/register",
@@ -2308,8 +2338,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 264,
-      "bytesTransferred": 475514
+      "fcpMs": 892,
+      "bytesTransferred": 7934407
     },
     {
       "route": "/auth/register",
@@ -2396,8 +2426,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 272,
-      "bytesTransferred": 475514
+      "fcpMs": 908,
+      "bytesTransferred": 7934407
     },
     {
       "route": "/auth/register",
@@ -2484,8 +2514,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 336,
-      "bytesTransferred": 475514
+      "fcpMs": 952,
+      "bytesTransferred": 7934407
     },
     {
       "route": "/auth/register",
@@ -2572,8 +2602,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 300,
-      "bytesTransferred": 475514
+      "fcpMs": 824,
+      "bytesTransferred": 7907459
     },
     {
       "route": "/404",
@@ -2667,8 +2697,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 184,
-      "bytesTransferred": 394831
+      "fcpMs": 784,
+      "bytesTransferred": 7517250
     },
     {
       "route": "/404",
@@ -2762,8 +2792,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 176,
-      "bytesTransferred": 394831
+      "fcpMs": 880,
+      "bytesTransferred": 7490302
     },
     {
       "route": "/404",
@@ -2857,8 +2887,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 196,
-      "bytesTransferred": 394831
+      "fcpMs": 976,
+      "bytesTransferred": 7517250
     },
     {
       "route": "/404",
@@ -2952,8 +2982,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 152,
-      "bytesTransferred": 394831
+      "fcpMs": 828,
+      "bytesTransferred": 7517250
     },
     {
       "route": "/404",
@@ -3047,8 +3077,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 152,
-      "bytesTransferred": 394831
+      "fcpMs": 808,
+      "bytesTransferred": 7517250
     },
     {
       "route": "/404",
@@ -3142,8 +3172,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 224,
-      "bytesTransferred": 394831
+      "fcpMs": 816,
+      "bytesTransferred": 7517250
     },
     {
       "route": "/student/dashboard",
@@ -3178,13 +3208,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -3308,7 +3338,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -3318,7 +3348,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -3328,7 +3358,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -3408,8 +3438,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 248,
-      "bytesTransferred": 633164
+      "fcpMs": 988,
+      "bytesTransferred": 7865892
     },
     {
       "route": "/student/dashboard",
@@ -3444,13 +3474,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -3574,7 +3604,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -3584,7 +3614,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -3594,7 +3624,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -3674,8 +3704,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 432,
-      "bytesTransferred": 633164
+      "fcpMs": 1244,
+      "bytesTransferred": 7865892
     },
     {
       "route": "/student/dashboard",
@@ -3710,13 +3740,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -3840,7 +3870,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -3850,7 +3880,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -3860,7 +3890,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -3940,8 +3970,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 376,
-      "bytesTransferred": 633164
+      "fcpMs": 1164,
+      "bytesTransferred": 7865892
     },
     {
       "route": "/student/dashboard",
@@ -3976,13 +4006,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -4106,7 +4136,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -4116,7 +4146,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -4126,7 +4156,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -4206,8 +4236,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 508,
-      "bytesTransferred": 633164
+      "fcpMs": 1528,
+      "bytesTransferred": 7865892
     },
     {
       "route": "/student/dashboard",
@@ -4242,13 +4272,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -4472,8 +4502,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 384,
-      "bytesTransferred": 633164
+      "fcpMs": 1688,
+      "bytesTransferred": 7865892
     },
     {
       "route": "/student/dashboard",
@@ -4508,13 +4538,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -4738,8 +4768,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 620,
-      "bytesTransferred": 633164
+      "fcpMs": 1684,
+      "bytesTransferred": 7865892
     },
     {
       "route": "/student/courses",
@@ -4774,13 +4804,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -4904,7 +4934,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -4914,7 +4944,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -4924,7 +4954,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -4992,8 +5022,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 452,
-      "bytesTransferred": 633033
+      "fcpMs": 1576,
+      "bytesTransferred": 7848114
     },
     {
       "route": "/student/courses",
@@ -5028,13 +5058,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -5158,7 +5188,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -5168,7 +5198,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -5178,7 +5208,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -5246,8 +5276,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 384,
-      "bytesTransferred": 633033
+      "fcpMs": 1296,
+      "bytesTransferred": 7848114
     },
     {
       "route": "/student/courses",
@@ -5282,13 +5312,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -5412,7 +5442,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -5422,7 +5452,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -5432,7 +5462,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -5500,8 +5530,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 292,
-      "bytesTransferred": 633033
+      "fcpMs": 1216,
+      "bytesTransferred": 7848114
     },
     {
       "route": "/student/courses",
@@ -5536,13 +5566,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -5666,7 +5696,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -5676,7 +5706,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -5686,7 +5716,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -5754,8 +5784,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 388,
-      "bytesTransferred": 633033
+      "fcpMs": 1504,
+      "bytesTransferred": 7848114
     },
     {
       "route": "/student/courses",
@@ -5790,13 +5820,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -6008,8 +6038,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 668,
-      "bytesTransferred": 633033
+      "fcpMs": 1428,
+      "bytesTransferred": 7848114
     },
     {
       "route": "/student/courses",
@@ -6044,13 +6074,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -6262,8 +6292,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 440,
-      "bytesTransferred": 633033
+      "fcpMs": 1572,
+      "bytesTransferred": 7848114
     },
     {
       "route": "/student/courses/:offeringId",
@@ -6298,13 +6328,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -6428,7 +6458,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -6438,7 +6468,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -6448,7 +6478,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -6534,8 +6564,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 372,
-      "bytesTransferred": 631053
+      "fcpMs": 1592,
+      "bytesTransferred": 7825337
     },
     {
       "route": "/student/courses/:offeringId",
@@ -6570,13 +6600,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -6700,7 +6730,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -6710,7 +6740,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -6720,7 +6750,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -6806,8 +6836,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 360,
-      "bytesTransferred": 631053
+      "fcpMs": 1396,
+      "bytesTransferred": 7825337
     },
     {
       "route": "/student/courses/:offeringId",
@@ -6842,13 +6872,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -6972,7 +7002,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -6982,7 +7012,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -6992,7 +7022,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -7078,8 +7108,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 348,
-      "bytesTransferred": 631053
+      "fcpMs": 1436,
+      "bytesTransferred": 7825337
     },
     {
       "route": "/student/courses/:offeringId",
@@ -7114,13 +7144,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -7244,7 +7274,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -7254,7 +7284,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -7264,7 +7294,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -7350,8 +7380,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 432,
-      "bytesTransferred": 631053
+      "fcpMs": 1504,
+      "bytesTransferred": 7825337
     },
     {
       "route": "/student/courses/:offeringId",
@@ -7386,13 +7416,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -7622,8 +7652,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 388,
-      "bytesTransferred": 631053
+      "fcpMs": 1996,
+      "bytesTransferred": 7825337
     },
     {
       "route": "/student/courses/:offeringId",
@@ -7658,13 +7688,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -7894,8 +7924,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 388,
-      "bytesTransferred": 631053
+      "fcpMs": 1564,
+      "bytesTransferred": 7825337
     },
     {
       "route": "/student/lectures/:lectureId",
@@ -7930,13 +7960,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -8060,7 +8090,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -8070,7 +8100,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -8080,7 +8110,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -8148,8 +8178,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 412,
-      "bytesTransferred": 639162
+      "fcpMs": 1604,
+      "bytesTransferred": 7936425
     },
     {
       "route": "/student/lectures/:lectureId",
@@ -8184,13 +8214,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -8314,7 +8344,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -8324,7 +8354,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -8334,7 +8364,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -8402,8 +8432,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 412,
-      "bytesTransferred": 639162
+      "fcpMs": 1204,
+      "bytesTransferred": 7936425
     },
     {
       "route": "/student/lectures/:lectureId",
@@ -8438,13 +8468,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -8568,7 +8598,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -8578,7 +8608,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -8588,7 +8618,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -8656,8 +8686,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 460,
-      "bytesTransferred": 639162
+      "fcpMs": 1296,
+      "bytesTransferred": 7936425
     },
     {
       "route": "/student/lectures/:lectureId",
@@ -8692,13 +8722,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -8822,7 +8852,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -8832,7 +8862,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -8842,7 +8872,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -8910,8 +8940,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 432,
-      "bytesTransferred": 639162
+      "fcpMs": 1328,
+      "bytesTransferred": 7936425
     },
     {
       "route": "/student/lectures/:lectureId",
@@ -8946,13 +8976,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -9164,8 +9194,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 472,
-      "bytesTransferred": 639162
+      "fcpMs": 1396,
+      "bytesTransferred": 7936425
     },
     {
       "route": "/student/lectures/:lectureId",
@@ -9200,13 +9230,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -9418,8 +9448,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 528,
-      "bytesTransferred": 639162
+      "fcpMs": 1456,
+      "bytesTransferred": 7936425
     },
     {
       "route": "/student/alerts",
@@ -9454,13 +9484,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -9584,7 +9614,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -9594,7 +9624,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -9604,7 +9634,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -9678,8 +9708,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 476,
-      "bytesTransferred": 588187
+      "fcpMs": 1452,
+      "bytesTransferred": 8672265
     },
     {
       "route": "/student/alerts",
@@ -9714,13 +9744,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -9844,7 +9874,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -9854,7 +9884,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -9864,7 +9894,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -9938,8 +9968,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 412,
-      "bytesTransferred": 588187
+      "fcpMs": 1228,
+      "bytesTransferred": 8672265
     },
     {
       "route": "/student/alerts",
@@ -9974,13 +10004,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -10104,7 +10134,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -10114,7 +10144,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -10124,7 +10154,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -10198,8 +10228,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 300,
-      "bytesTransferred": 588187
+      "fcpMs": 1204,
+      "bytesTransferred": 8672265
     },
     {
       "route": "/student/alerts",
@@ -10234,13 +10264,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -10364,7 +10394,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -10374,7 +10404,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -10384,7 +10414,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -10458,8 +10488,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 320,
-      "bytesTransferred": 588187
+      "fcpMs": 1316,
+      "bytesTransferred": 8672265
     },
     {
       "route": "/student/alerts",
@@ -10494,13 +10524,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -10718,8 +10748,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 400,
-      "bytesTransferred": 603195
+      "fcpMs": 1484,
+      "bytesTransferred": 8687273
     },
     {
       "route": "/student/alerts",
@@ -10754,13 +10784,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -10978,8 +11008,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 468,
-      "bytesTransferred": 603195
+      "fcpMs": 1348,
+      "bytesTransferred": 8687273
     },
     {
       "route": "/student/calendar",
@@ -11014,13 +11044,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -11144,7 +11174,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -11154,7 +11184,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -11164,7 +11194,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -11238,8 +11268,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 408,
-      "bytesTransferred": 595190
+      "fcpMs": 1344,
+      "bytesTransferred": 7776816
     },
     {
       "route": "/student/calendar",
@@ -11274,13 +11304,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -11404,7 +11434,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -11414,7 +11444,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -11424,7 +11454,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -11498,8 +11528,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 320,
-      "bytesTransferred": 595190
+      "fcpMs": 1108,
+      "bytesTransferred": 7776816
     },
     {
       "route": "/student/calendar",
@@ -11534,13 +11564,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -11664,7 +11694,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -11674,7 +11704,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -11684,7 +11714,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -11758,8 +11788,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 324,
-      "bytesTransferred": 595190
+      "fcpMs": 1044,
+      "bytesTransferred": 7776816
     },
     {
       "route": "/student/calendar",
@@ -11794,13 +11824,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -11924,7 +11954,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -11934,7 +11964,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -11944,7 +11974,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -12018,8 +12048,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 360,
-      "bytesTransferred": 595190
+      "fcpMs": 1204,
+      "bytesTransferred": 7776816
     },
     {
       "route": "/student/calendar",
@@ -12054,13 +12084,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -12278,8 +12308,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 396,
-      "bytesTransferred": 610198
+      "fcpMs": 1532,
+      "bytesTransferred": 7791824
     },
     {
       "route": "/student/calendar",
@@ -12314,13 +12344,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -12538,8 +12568,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 576,
-      "bytesTransferred": 610198
+      "fcpMs": 1316,
+      "bytesTransferred": 7791824
     },
     {
       "route": "/student/online-exams",
@@ -12581,13 +12611,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -12711,7 +12741,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -12721,7 +12751,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -12731,7 +12761,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -12805,8 +12835,8 @@
         "stateSurfaces": 1
       },
       "cls": 0,
-      "fcpMs": 388,
-      "bytesTransferred": 618180
+      "fcpMs": 1468,
+      "bytesTransferred": 8111672
     },
     {
       "route": "/student/online-exams",
@@ -12848,13 +12878,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -12978,7 +13008,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -12988,7 +13018,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -12998,7 +13028,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -13072,8 +13102,8 @@
         "stateSurfaces": 1
       },
       "cls": 0,
-      "fcpMs": 316,
-      "bytesTransferred": 618180
+      "fcpMs": 1264,
+      "bytesTransferred": 8111672
     },
     {
       "route": "/student/online-exams",
@@ -13115,13 +13145,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -13245,7 +13275,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -13255,7 +13285,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -13265,7 +13295,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -13339,8 +13369,8 @@
         "stateSurfaces": 1
       },
       "cls": 0,
-      "fcpMs": 324,
-      "bytesTransferred": 618180
+      "fcpMs": 1208,
+      "bytesTransferred": 8111672
     },
     {
       "route": "/student/online-exams",
@@ -13382,13 +13412,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -13512,7 +13542,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -13522,7 +13552,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -13532,7 +13562,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -13606,8 +13636,8 @@
         "stateSurfaces": 1
       },
       "cls": 0,
-      "fcpMs": 376,
-      "bytesTransferred": 618180
+      "fcpMs": 1336,
+      "bytesTransferred": 8111672
     },
     {
       "route": "/student/online-exams",
@@ -13649,13 +13679,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -13873,8 +13903,8 @@
         "stateSurfaces": 1
       },
       "cls": 0,
-      "fcpMs": 480,
-      "bytesTransferred": 633188
+      "fcpMs": 1576,
+      "bytesTransferred": 8126680
     },
     {
       "route": "/student/online-exams",
@@ -13916,13 +13946,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -14140,8 +14170,8 @@
         "stateSurfaces": 1
       },
       "cls": 0,
-      "fcpMs": 356,
-      "bytesTransferred": 633188
+      "fcpMs": 1324,
+      "bytesTransferred": 8126680
     },
     {
       "route": "/colleges",
@@ -14176,13 +14206,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -14306,7 +14336,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -14316,7 +14346,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -14326,7 +14356,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -14394,8 +14424,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 492,
-      "bytesTransferred": 600271
+      "fcpMs": 1412,
+      "bytesTransferred": 7974955
     },
     {
       "route": "/colleges",
@@ -14430,13 +14460,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -14560,7 +14590,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -14570,7 +14600,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -14580,7 +14610,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -14648,8 +14678,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 380,
-      "bytesTransferred": 600271
+      "fcpMs": 1216,
+      "bytesTransferred": 7974955
     },
     {
       "route": "/colleges",
@@ -14684,13 +14714,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -14814,7 +14844,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -14824,7 +14854,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -14834,7 +14864,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -14902,8 +14932,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 356,
-      "bytesTransferred": 600271
+      "fcpMs": 1120,
+      "bytesTransferred": 7974955
     },
     {
       "route": "/colleges",
@@ -14938,13 +14968,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -15068,7 +15098,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -15078,7 +15108,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -15088,7 +15118,7 @@
         },
         {
           "selector": "button.nav-section-label",
-          "durationMs": 160,
+          "durationMs": 80,
           "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
@@ -15156,8 +15186,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 396,
-      "bytesTransferred": 600271
+      "fcpMs": 1508,
+      "bytesTransferred": 7974955
     },
     {
       "route": "/colleges",
@@ -15192,13 +15222,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -15410,8 +15440,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 388,
-      "bytesTransferred": 615279
+      "fcpMs": 1468,
+      "bytesTransferred": 7989963
     },
     {
       "route": "/colleges",
@@ -15446,13 +15476,13 @@
         },
         {
           "selector": "button.sidebar-collapse-btn",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "button.sidebar-mobile-close",
-          "durationMs": 240,
-          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
+          "durationMs": 160,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)"
         },
         {
           "selector": "div.nav-section-label",
@@ -15664,8 +15694,8 @@
         "stateSurfaces": 0
       },
       "cls": 0,
-      "fcpMs": 376,
-      "bytesTransferred": 615279
+      "fcpMs": 1428,
+      "bytesTransferred": 7989963
     }
   ]
 }
