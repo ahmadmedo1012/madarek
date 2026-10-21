@@ -67,7 +67,9 @@ test.describe('المساعد الذكيّ — رحلة محادثة كاملة'
 
     await page.goto('/student/ai');
     await expect(page).toHaveTitle('المساعد الذكي · مدارك');
-    await expect(page.locator('h1.page-title')).toHaveText('المساعد الذكيّ');
+    // (G re-pin — R287 precedent: the header rides the patterns contract
+    // now, so the h1 carries the family's pf-page-title class.)
+    await expect(page.locator('h1.pf-page-title')).toHaveText('المساعد الذكيّ');
 
     /* السطح الصادق للنمط المحليّ: العنوان الفرعي + شارة AI العامة
      * (لا اسم نموذج يُدَّعى)، وتحية الملحّن المحليّ. */
@@ -76,8 +78,10 @@ test.describe('المساعد الذكيّ — رحلة محادثة كاملة'
     ).toBeVisible();
     await expect(page.locator('.badge', { hasText: 'AI' })).toBeVisible();
     await expect(page.getByText(/أحلّل بيانات إتقانك محليّاً/)).toBeVisible();
-    /* لا بطاقات فجوات (قائمة فارغة صادقة) ولا محادثات سابقة. */
-    await expect(page.getByText('لا توجد محادثات سابقة بعد — ابدأ بأول سؤال وستظهر محادثاتك هنا.')).toBeVisible();
+    /* لا بطاقات فجوات (قائمة فارغة صادقة) ولا محادثات سابقة —
+     * (G: الحالة الفارغة على عقد EmptyState؛ النص نفسه عنوان + وصف). */
+    await expect(page.getByText('لا توجد محادثات سابقة بعد')).toBeVisible();
+    await expect(page.getByText('ابدأ بأول سؤال وستظهر محادثاتك هنا.')).toBeVisible();
 
     /* الإرسال — فقّة السؤال تظهر فورًا، ثم الردّ بفقّته. */
     await page.getByLabel('اكتب سؤالك للمساعد').fill(QUESTION);

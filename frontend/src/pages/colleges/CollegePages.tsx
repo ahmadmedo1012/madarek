@@ -20,7 +20,7 @@ import { SectionAccent } from '../../components/motion/SectionAccent';
 /* r264 (4E — اتجاه Superlist): ترويسة وترحيب patterns هادئة بدل المسرح
    الملوّن، شريط FilterBar موحّد للبحث والحرم، وصفوف كلية بدل شبكة
    بطاقات (التفصيل على الصف، الشارات في الطرف). */
-import { PageHeader, RowList, RowItem, FilterBar } from '../../components/patterns';
+import { PageFrame, PageHeader, RowList, RowItem, FilterBar } from '../../components/patterns';
 import { api, unwrap } from '../../lib/api';
 import { formatDateTimeAr, countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
@@ -294,7 +294,7 @@ export function CollegesIndexPage() {
   }, [q.data]);
 
   return (
-    <div className="page colleges-index">
+    <PageFrame>
       {/* r264: ترويسة patterns هادئة — «المسرح الملوّن» (SectionAccent
           scene-paint) يتقاعد مع اتجاه Superlist: الهرمية عبر السطوح
           لا عبر الطلاء. ضيف الزائر يبقى فوق الترويسة كإجراء صفحة. */}
@@ -333,7 +333,10 @@ export function CollegesIndexPage() {
             sticky
             search={{ value: state.query, onChange: setQuery, placeholder: 'ابحث عن كلّيّة…' }}
             filters={(
-              <div role="group" aria-label="فلترة حسب الحرم">
+              /* G: فئة .gallery-chip-strip تعود إلى موضعه المصمَّم (r183-B8)
+                 — على الهاتف يصبح الشريط تمريرًا أفقيًا بمحاذاة انطلاق
+                 وقناع تلاشٍ عند الطرف بدل التفاف رقائق متعدد الأسطر. */
+              <div className="gallery-chip-strip" role="group" aria-label="فلترة حسب الحرم">
                 <button
                   type="button"
                   aria-pressed={state.campus === null}
@@ -458,7 +461,7 @@ export function CollegesIndexPage() {
           </div>
         </>
       )}
-    </div>
+    </PageFrame>
   );
 }
 
@@ -969,13 +972,13 @@ export function CollegesLeaderboardPage() {
         <Icon icon={ChevronRight} size={13} />
         كلّيّات الجامعة
       </Link>
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">منافسة الكلّيّات</h1>
-          <p className="page-subtitle">مقارنة الكلّيّات على مؤشّرات الأداء الأكاديميّ والنشاط الرقميّ.</p>
-        </div>
-        {isGuest && <GuestJoinRow />}
-      </header>
+      {/* G: ترويسة patterns — نفس عقد بقية العائلة (المجتمع/المسابقات/
+          الكليات)؛ صفّ الانضمام للضيف في خانة الإجراءات التي كان يشغلها. */}
+      <PageHeader
+        title="منافسة الكلّيّات"
+        description="مقارنة الكلّيّات على مؤشّرات الأداء الأكاديميّ والنشاط الرقميّ."
+        actions={isGuest ? <GuestJoinRow /> : undefined}
+      />
 
       {/* Shape-matched skeleton (A9 P2-2, 5-C3 hand-off): the payload
           is a 25-row × 7-col table — a bare spinner left the page

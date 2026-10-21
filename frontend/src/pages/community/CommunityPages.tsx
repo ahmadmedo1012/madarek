@@ -20,7 +20,7 @@ import { Badge, FormField } from '../../components/primitives';
    ترويسة patterns (بالألسنة داخلها)، شريط أرقام StatLine بدل جدار
    بطاقات KPI، وقوائم RowList/RowItem هادئة بتفصيل ملتصق بالصف.
    MetricCard يُتقاعد من هذه الصفحة (.kpis-compact يُذكر في ملف التسليم). */
-import { PageHeader, RowList, RowItem, StatLine } from '../../components/patterns';
+import { PageFrame, PageHeader, RowList, RowItem, StatLine } from '../../components/patterns';
 import { ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
@@ -40,7 +40,6 @@ import { arUnit } from '../../lib/format';
 // active, so their hooks (useStudyRooms/usePosts…) never fire for a
 // visitor sitting on the announcements/competitions/events tabs.
 import { StudyRoomsPanel, PostsFeedPanel, CreateStudyRoomModal } from '../../components/community/CommunitySocialPanels';
-import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
 import '../../styles/colleges.css'; // borrowed .comp-modal-*/.comp-form-*/.event-meta (D14 css split, 13-17)
 import { formatNum } from '../../utils/numbers';
 
@@ -128,7 +127,7 @@ export default function CommunityPage() {
   };
 
   return (
-    <div className="page">
+    <PageFrame>
       {/* r262: ترويسة patterns — الألسنة تسكن الترويسة نفسها (نمط
           ورقة Superlist ذات السطر الكبير)، والإجراءات الشرطية باقية
           بلا تغيير في الأسماء/الأدوار. */}
@@ -275,7 +274,7 @@ export default function CommunityPage() {
       {creatingRoom && (
         <CreateStudyRoomModal onClose={() => setCreatingRoom(false)} />
       )}
-    </div>
+    </PageFrame>
   );
 }
 

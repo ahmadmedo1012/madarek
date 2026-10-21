@@ -137,7 +137,10 @@ describe('r183-B8 — campus-filter scroller affordance (A10 finding 4)', () => 
   it('the fade is token-compliant — no raw color literal in the rule (color-gate parity)', () => {
     const start = css.indexOf('r183-B8 (A10 finding 4)');
     expect(start).toBeGreaterThanOrEqual(0);
-    const end = css.indexOf('.college-grid', start);
+    // (G final sweep re-anchor: the trailing .college-grid rule the
+    // slice used to stop at is deleted — the strip's mask block is the
+    // end of the ≤768 media now.)
+    const end = css.indexOf('.college-stat-chip', start);
     const rule = css.slice(start, end);
     expect(rule).not.toMatch(/#[0-9a-fA-F]{3,8}\b|\brgb\(|\bhsl\(|\boklch\(/);
     // The opaque stop consumes a design token.

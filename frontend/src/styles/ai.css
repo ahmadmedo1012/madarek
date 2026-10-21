@@ -136,6 +136,23 @@
   margin: 0;
   padding-inline: var(--sp-1);
 }
+/* ── G النهائية — عناصر كانت سطرية في AiAssistantPage ──────────── */
+.ai-engine-tag { margin-block-start: var(--sp-1); }
+.ai-counter { margin: 0; }
+.ai-bubble-skeleton { background: var(--surface-2); }
+.ai-conv-error-pad { padding: var(--sp-2); }
+.ai-suggestion-text { color: var(--text-muted); }
+
+/* ── G (عقد r290 نفسه): أرضية اللمس 44px لأدوات المحادثة على كل جهاز
+      لمسي فعلي — الأجهزة اللوحية فوق 640px كانت تقيس .chat-send عند
+      40px و.ai-quick-chip عند 35px (قياس مباشر على 1440). min-* فقط
+      تُكبّر صندوق النقر؛ إيقاع الماوس الدقيق يبقى مضغوطًا كما صُمِّم. */
+@media (pointer: coarse) {
+  .ai-surface .chat-input { min-block-size: 44px; }
+  .ai-surface .chat-send { min-inline-size: 44px; min-block-size: 44px; }
+  .ai-surface .ai-quick-chip { min-block-size: 44px; }
+  .ai-surface .chat-retry { min-block-size: 44px; }
+}
 /* شريط الرقائق يرث من student.css؛ هنا نُسقط حشوه العمودي الزائد
    داخل الصندوق المضبوط ونخفف حده العلوي (المرسِل يوفر الفاصل). */
 .ai-composer .ai-quick-actions {

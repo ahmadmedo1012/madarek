@@ -47,146 +47,22 @@
   font-variant-numeric: tabular-nums;
 }
 
-.college-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  /* r149 (R3-A2 R4): فجوة جدران البطاقات الموحدة 20px عبر الصفحات */
-  gap: var(--sp-5);
-}
-/* r166a (E1 jagged-heights defect): equal-height rows in the
-   multi-column gallery. Cards inside one row already stretch (grid
-   default), but the ROWS themselves took the height of their own
-   tallest card — a stats-chips row beside a chip-less row read as a
-   jagged rhythm (measured live: 151/183/223/168 within one section
-   grid). 1fr rows all share the grid's tallest row height → a uniform
-   gallery wall. Scoped ≥769px: on the 1-column mobile layout every
-   row holds exactly one card, and equalizing there would stretch
-   every card to the tallest one's height (measured: all 13 → 223px
-   of mostly padding) — the mobile rule at the 768px breakpoint below
-   keeps single-column rows natural. Link/press semantics untouched:
-   pure row-track sizing, the <a> cards keep stretching with it. */
-@media (min-width: 769px) {
-  .college-grid { grid-auto-rows: 1fr; }
-}
-
-.college-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-  padding: var(--sp-5);
-  border-radius: var(--r-lg);
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  text-decoration: none;
-  color: inherit;
-  /* Grid item: kill the automatic min-content minimum so the P3-2
-     nowrap English sub (see .college-card-sub) truncates instead of
-     sizing its track — without this the mobile 1fr column grew to the
-     longest name (303px inside a 270px grid at 320 viewport, a 3px
-     document overflow). */
-  min-width: 0;
-  /* r149 (R3-A3 R1): أُلحقت var(--ease) — كانت الحركات كلها تركب
-     منحنى المتصفح الافتراضي ease(0.25,0.1,0.25,1) بدل منحنى النظام. */
-  transition:
-    transform var(--t-fast) var(--ease),
-    border-color var(--t-fast) var(--ease),
-    box-shadow var(--t-fast) var(--ease);
-}
-.college-card:hover {
-  transform: translateY(-1px);
-  border-color: var(--accent);
-  box-shadow: var(--shadow-sm);
-}
-.college-card:focus-visible {
-  /* Premium-polish (ONE focus language): the old `outline:none` + weak
-     ~32%-alpha halo (≈1.5:1 on cream) killed the platform's canonical
-     2px ring — the global :focus-visible contract now paints it, and
-     the accent border stays as the color cue. */
-  border-color: var(--accent);
-}
-
-.college-card-header {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-}
-.college-card-emoji {
-  font-size: 28px;
-  width: 48px;
-  height: 48px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--r-md);
-  background: var(--surface-2);
-  flex: 0 0 auto;
-}
-
-/* (r153e: the v17 emoji breathe moved home from polish.css's
-   overrides layer — declarations verbatim, hover guard preserved.
-   Render-neutral: nothing else competes on these properties.
-   Reduced motion rides the global base.css belt.) */
-@media (hover: hover) {
-  .college-card .college-card-emoji {
-    transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
-  }
-  .college-card:hover .college-card-emoji {
-    transform: scale(1.1) rotate(4deg);
-  }
-}
-.college-card-titles {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.college-card-name {
-  font-size: var(--type-headline-size-sm);
-  font-weight: var(--type-headline-weight);
-  line-height: var(--type-headline-line-height);
-  letter-spacing: var(--type-headline-letter-spacing);
-  color: var(--text);
-}
-.college-card-sub {
-  font-size: var(--type-label-size-sm);
-  font-weight: var(--type-label-weight);
-  color: var(--text-muted);
-  margin-block-start: var(--sp-0-5);
-  /* P3-2 (A12): one line — long English names (Physical Education &
-     Sports) wrapped and split the grid into two card height classes
-     (223/260px). The full name rides the title attribute set in
-     CollegePages (craft floor: no truncation without a tooltip). */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  /* belt for the track fix on .college-card: the sub itself may never
-     push its ancestors wider than their box either. */
-  min-width: 0;
-  max-width: 100%;
-}
+/* (G dead-code sweep): the .college-card family retired with the r264
+   row recomposition — the gallery renders RowItem rows and only
+   .college-card-arrow survives (the row trailing affordance). */
 .college-card-arrow {
   color: var(--text-subtle);
   transition: transform var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
   flex: 0 0 auto;
 }
-.college-card:hover .college-card-arrow {
-  color: var(--accent);
-  transform: translateX(2px);
-}
-
-.college-card-stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--sp-2);
-}
 
 
 /* ═══════════════════════════════════════════════════════════════
-   (r151h): the colleges POPOVER family — the hero CTA trigger, the
-   native <dialog> picker and its skeleton — moved verbatim to its
-   own sheet, colleges-popover.css (imported by <CollegesPopover />,
-   riding the LandingPage chunk). The landing route no longer
-   downloads this gallery sheet for the popover's sake. The gallery,
-   detail, leaderboard, comp-* and KPI-strip families below are
-   unchanged.
+   (G final sweep): the colleges POPOVER family is RETIRED — the
+   r198 landing constellation replaced <CollegesPopover /> (never
+   rendered anywhere since) and its colleges-popover.css sheet is
+   deleted in the same change. The gallery, detail, leaderboard and
+   comp-* families below are unchanged.
    ═══════════════════════════════════════════════════════════════ */
 
 
@@ -340,43 +216,12 @@
   line-height: var(--lh-loose);
 }
 
-/* Identity-profile accent stripe on the leading edge of the card.
-   1px hairline (orchestrator ruling #4 — normalize every >1px colored
-   leading stripe; the accent reads through color, not weight). */
-.college-card[data-college-accent] {
-  border-inline-start: 1px solid var(--college-accent, var(--rule));
-}
-
 /* T3-F4 — detail-page cards mirror the index-card leading stripe so
    the gated college accent (inherited from the .college-detail root)
    actually reaches the page content chrome. 1px per ruling #4. */
 .college-detail .card,
 .college-detail .metric {
   border-inline-start: 1px solid var(--college-accent, var(--rule));
-}
-
-/* "→ زيارة الصفحة" hover affordance — fades in on hover, suppressed
-   on touch + reduced-motion. */
-.college-card-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  margin-block-start: var(--sp-2);
-  font-size: var(--type-label-size);
-  color: var(--accent-strong);
-  opacity: 0;
-  transform: translateX(-4px);
-  transition:
-    opacity var(--motion-duration-short) var(--motion-ease-standard),
-    transform var(--motion-duration-short) var(--motion-ease-decelerate);
-}
-.college-card:hover .college-card-cta,
-.college-card:focus-visible .college-card-cta {
-  opacity: 1;
-  transform: translateX(0);
-}
-@media (hover: none) {
-  .college-card-cta { display: none; }
 }
 
 /* Gallery-shaped skeleton: campus header + grid placeholder. */
@@ -432,8 +277,6 @@
     -webkit-mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px);
     mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px);
   }
-
-  .college-grid { grid-template-columns: 1fr; }
 }
 .college-stat-chip {
   display: inline-flex;
@@ -767,7 +610,7 @@
    links now — the page was a dead-end hub where nothing onward was
    clickable. Same hover language as the college cards (border
    strengthens + a forward chevron fades in at the inline-end edge);
-   suppressed on touch like .college-card-cta. */
+   suppressed on touch (the retired .college-card-cta idiom). */
 a.comp-card {
   text-decoration: none;
   color: inherit;
@@ -776,10 +619,14 @@ a.comp-card {
     box-shadow var(--motion-duration-short) var(--motion-ease-standard),
     transform var(--motion-duration-short) var(--motion-ease-standard);
 }
-a.comp-card:hover {
-  border-color: var(--border-strong);
-  box-shadow: var(--elev-2, var(--shadow-card-h));
-  transform: translateY(-1px);
+/* G (r283–285 hover belt): التحويم خلف حارس المؤشر الدقيق فقط —
+   اللمس لا يعلق البطاقة مرفوعة. */
+@media (hover: hover) and (pointer: fine) {
+  a.comp-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--elev-2, var(--shadow-card-h));
+    transform: translateY(-1px);
+  }
 }
 .comp-go {
   align-self: center;
@@ -808,13 +655,9 @@ a.comp-card:focus-visible .comp-go {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .college-card,
   .college-card-arrow,
   .student-rank-row {
     transition: none;
-  }
-  .college-card:hover {
-    transform: none;
   }
 }
 
@@ -955,73 +798,11 @@ a.comp-card:focus-visible .comp-go {
    Competitions (Phase 6) — index, detail, modals
    ═══════════════════════════════════════════════════════════════ */
 
-.comp-index-emoji {
-  font-size: 32px;
-  width: 56px;
-  height: 56px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--r-md);
-  background: var(--surface-2);
-  flex: 0 0 auto;
-}
-
-/* (r153e: the v17 emoji bob moved home from polish.css's overrides
-   layer — declarations verbatim, hover guard preserved. The local RM
-   belt at the bottom of this file kills the card's own motion.) */
-@media (hover: hover) {
-}
-.comp-index-body {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
-}
-.comp-index-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-2);
-}
-.comp-index-category {
-  font-size: var(--fs-xxs);
-  color: var(--text-subtle);
-  /* 21-c (ruling #2): Arabic category labels — no uppercase, no
-     0.05em tracking (breaks cursive joins). */
-  text-transform: none;
-  letter-spacing: normal;
-}
-.comp-index-title {
-  font-size: var(--fs-md);
-  font-weight: var(--fw-semibold);
-  color: var(--text);
-  margin: 0;
-  line-height: 1.3;
-}
-.comp-index-desc {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.comp-index-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-1);
-  font-size: var(--fs-xxs);
-  color: var(--text-muted);
-  margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-}
-.comp-index-meta span {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-}
+/* (G dead-code sweep): the .comp-index-* anatomy retired with the r263
+   row recomposition — the competitions index renders RowItem rows
+   (leading EmojiIcon + cp-clamp2 meta + trailing badges); 4E deleted
+   the grid/card but these inner classes were missed. The empty
+   (hover:hover) media (the v17 bob's gutted shell) went with them. */
 
 /* Detail */
 .comp-detail { gap: var(--sp-5); }
@@ -1320,21 +1101,14 @@ a.comp-card:focus-visible .comp-go {
   -webkit-mask-image: linear-gradient(to right, black 30%, transparent);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Community + competitions KPI strip — compact form (A12 P2-4).
-   These two pages' .grid-3 trios stacked into 3×132px full-width
-   tiles ≤640px (396px of single numbers) and pushed every real card
-   below the fold (tabs at 679px on an 844px screen). The strip keeps
-   three TILES (the information survives) but compact: tight padding,
-   small icon well, metric value one rung down. Opt-in per mount via
-   .kpis-compact — the shared .grid-3 has 30+ other consumers whose
-   stacking is correct. Loaded here because both /community and
-   /competitions already borrow this sheet (D14 css split).
-   ═══════════════════════════════════════════════════════════════ */
 
-@media (max-width: 640px) {
-}
-@media (max-width: 360px) {
-}
-
+  /* ── Community borrows (D14 split) — وسوم منشورات المجتمع ──────────
+     G: كانت سطرية في CommunitySocialPanels مع font-mono (مخالفة عقد
+     r197 — الوسم محتوى مستخدم لا معرّف)؛ الآن sans بلون accent-ink. */
+  .post-tags {
+    margin-block-start: var(--sp-1-5);
+  }
+  .post-tag {
+    color: var(--accent-ink, var(--accent));
+  }
 }
