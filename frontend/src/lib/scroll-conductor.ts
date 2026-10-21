@@ -1,99 +1,87 @@
 /**
- * Portable native-scroll conductor for a persistent multi-chapter WebGL
- * world — TypeScript port of the build-threejs-scroll-worlds skill's
- * references/scroll-conductor.js (kept contract-identical).
+ * Portable GSAP ScrollTrigger conductor for the persistent multi-chapter
+ * landing world — the R304 rewrite of the r303 native-scroll conductor.
  *
- * It has no Three.js dependency. Give it semantic section elements and
- * render the returned exact/smoothed progress through your own
- * camera/world systems.
+ * R304 contract (build-threejs-scroll-worlds × cinematic-scroll-storytelling):
+ *  · GSAP + ScrollTrigger are the AUTHORITATIVE choreography system: one
+ *    master ScrollTrigger reads native scroll (the ONLY scroll source of
+ *    truth — never wheel deltas, no Lenis, no custom loop);
+ *  · `gsap.ticker` is the single rAF heartbeat: conductor damping, DOM
+ *    publishing and world rendering all hang off it — one loop, no drift;
+ *  · `exact` is the reproducible story state (0..N-1 fractional chapter
+ *    progress across the measured `[data-cam]` anchors);
+ *  · `smooth` is the cinematic render state (exponential damping,
+ *    framerate-independent);
+ *  · reduced motion → smooth ≡ exact (snap, no chase);
+ *  · the same scroll position always recreates the same state — forward,
+ *    backward, after a fast jump, after reload.
  *
- * Contract (SKILL.md «Map native scroll to deterministic state»):
- *  · native scrollY is the ONLY source of truth (never wheel deltas);
- *  · `exact` is the reproducible story state (0..N-1 fractional);
- *  · `smooth` is the cinematic render state (exponential damping);
- *  · reduced motion → smooth ≡ exact (snap, no drift);
- *  · the same scroll position always recreates the same state.
+ * No Three.js dependency. The world (`MadarekWorld.tsx`) subscribes and
+ * renders; the DOM bus (`landing-story/story-dom.ts`) subscribes and
+ * publishes; both consume the same frames — there is nothing left to
+ * synchronize.
  */
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { STORY_CHAPTERS } from './landing-story/types';
+import type { StoryChapterId, StoryFrame } from './landing-story/types';
 
-export interface ConductorState {
-  /** Exact fractional chapter progress (e.g. 2.35). */
-  exact: number;
-  /** Damped fractional chapter progress (render state). */
-  smooth: number;
-  /** Chapter index derived from exact progress. */
-  index: number;
-  /** Adjacent chapter index (=== index at rest). */
-  next: number;
-  /** Exact progress within the current segment (0..1). */
-  localExact: number;
-  /** Damped progress within the current segment (0..1). */
-  localSmooth: number;
-  /** Chapter index derived from smooth progress. */
-  smoothIndex: number;
-  /** Adjacent chapter for the smooth segment. */
-  smoothNext: number;
-  /** Last scroll direction: 1 down, -1 up, 0 idle. */
-  direction: number;
-  /** Measured scroll offsets of each section anchor. */
-  anchors: number[];
-}
+gsap.registerPlugin(ScrollTrigger);
+/* Touch URL-bar height noise must not refresh-trigger layout shifts mid-read. */
+ScrollTrigger.config({ ignoreMobileResize: true });
 
-export interface ScrollConductor {
-  start: () => ScrollConductor;
-  stop: () => void;
-  destroy: () => void;
-  measure: () => number[];
-  read: () => void;
-  getState: () => ConductorState;
-  progressAt: (y: number) => number;
-  goTo: (index: number, behavior?: ScrollBehavior) => void;
-  setReducedMotion: (value: boolean) => void;
-}
-
-export interface ConductorOptions {
-  sections: Element[] | NodeListOf<Element>;
-  /** Exponential damping constant (default 5.2). */
+export interface ScrollConductorOptions {
+  /** Ordered `data-cam` chapter anchors (first = top of story). */
+  sections: HTMLElement[] | NodeListOf<HTMLElement>;
+  /** Scroll-span trigger; defaults to document.body. */
+  root?: HTMLElement | null;
+  /** Exponential damping constant (default 5.2 — the skill's value). */
   damping?: number;
   reducedMotion?: boolean;
-  onUpdate?: (state: ConductorState) => void;
-  onChapterChange?: (index: number, state: ConductorState) => void;
-  getScrollY?: () => number;
+}
+
+export type FrameListener = (frame: StoryFrame) => void;
+
+export interface ScrollConductor {
+  start: () => void;
+  destroy: () => void;
+  /** Re-measure anchors + ScrollTrigger.refresh (fonts, images, resize). */
+  refresh: () => void;
+  setReducedMotion: (value: boolean) => void;
+  getState: () => StoryFrame;
+  /** Per-publish frames (render ticks). Returns an unsubscribe fn. */
+  subscribe: (fn: FrameListener) => () => void;
+  /** Chapter-boundary crossings (exact progress). Returns unsubscribe fn. */
+  onChapterChange: (fn: FrameListener) => () => void;
+  scrollToChapter: (index: number | StoryChapterId, behavior?: ScrollBehavior) => void;
+  progressAt: (y: number) => number;
 }
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-function damp(current: number, target: number, lambda: number, dt: number): number {
-  return current + (target - current) * (1 - Math.exp(-lambda * dt));
-}
-
-export function createScrollConductor(options: ConductorOptions): ScrollConductor {
+export function createScrollConductor(options: ScrollConductorOptions): ScrollConductor {
   const sections = Array.from(options.sections ?? []);
   if (!sections.length) throw new Error('createScrollConductor requires sections');
 
+  const chapterCount = sections.length;
+  const last = chapterCount - 1;
   const damping = Number.isFinite(options.damping) ? (options.damping as number) : 5.2;
-  let reduce = Boolean(options.reducedMotion);
-  const onUpdate = typeof options.onUpdate === 'function' ? options.onUpdate : () => {};
-  const onChapterChange =
-    typeof options.onChapterChange === 'function' ? options.onChapterChange : () => {};
-  const getY =
-    typeof options.getScrollY === 'function'
-      ? options.getScrollY
-      : () => window.scrollY || window.pageYOffset || 0;
 
+  let reduce = Boolean(options.reducedMotion);
   let anchors: number[] = [];
   let exact = 0;
   let smooth = 0;
-  let direction = 0;
+  let direction: 1 | -1 | 0 = 0;
   let previousY = 0;
-  let active = -1;
   let running = false;
-  let frame = 0;
-  let lastTime = 0;
   let dirty = true;
-  let widthAtMeasure = 0;
-  let resizeObserver: ResizeObserver | null = null;
+  let destroyed = false;
+
+  const frameListeners = new Set<FrameListener>();
+  const chapterListeners = new Set<FrameListener>();
+  let activeChapterIndex = -1;
 
   function maxScroll(): number {
     return Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
@@ -101,20 +89,17 @@ export function createScrollConductor(options: ConductorOptions): ScrollConducto
 
   function measure(): number[] {
     const max = maxScroll();
-    widthAtMeasure = window.innerWidth;
+    const y = window.scrollY || 0;
     anchors = sections.map((element, index) => {
       if (index === 0) return 0;
-      if (index === sections.length - 1) return max;
-      const el = element as HTMLElement;
-      const value = el.offsetTop + el.offsetHeight * 0.5 - window.innerHeight * 0.5;
-      return clamp(value, 0, max);
+      if (index === last) return max;
+      // Document-absolute center crossing — immune to offsetParent traps.
+      const top = element.getBoundingClientRect().top + y;
+      return clamp(top + element.offsetHeight * 0.5 - window.innerHeight * 0.5, 0, max);
     });
-
-    for (let index = 1; index < anchors.length; index += 1) {
-      anchors[index] = Math.max(anchors[index] ?? 0, (anchors[index - 1] ?? 0) + 1);
+    for (let i = 1; i < anchors.length; i += 1) {
+      anchors[i] = Math.max(anchors[i] ?? 0, (anchors[i - 1] ?? 0) + 1);
     }
-
-    dirty = true;
     return anchors.slice();
   }
 
@@ -122,48 +107,49 @@ export function createScrollConductor(options: ConductorOptions): ScrollConducto
     if (!anchors.length) measure();
     const clampedY = clamp(y, 0, maxScroll());
     if (clampedY <= (anchors[0] ?? 0)) return 0;
-
-    for (let index = 0; index < anchors.length - 1; index += 1) {
-      const next = anchors[index + 1] ?? clampedY;
-      const prev = anchors[index] ?? 0;
+    for (let i = 0; i < last; i += 1) {
+      const next = anchors[i + 1] ?? clampedY;
+      const prev = anchors[i] ?? 0;
       if (clampedY <= next) {
         const span = Math.max(1, next - prev);
-        return index + clamp((clampedY - prev) / span, 0, 1);
+        return i + clamp((clampedY - prev) / span, 0, 1);
       }
     }
-    return anchors.length - 1;
+    return last;
   }
 
-  function segment(progress: number) {
-    const last = sections.length - 1;
-    const index = clamp(Math.floor(progress), 0, last);
+  function readTheme(): 'light' | 'dark' {
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  function buildFrame(): StoryFrame {
+    const index = clamp(Math.floor(exact), 0, last);
     const next = Math.min(last, index + 1);
-    return {
-      index,
-      next,
-      local: next === index ? 0 : clamp(progress - index, 0, 1),
-    };
-  }
-
-  function state(): ConductorState {
-    const exactSegment = segment(exact);
-    const smoothSegment = segment(smooth);
+    const local = next === index ? 0 : clamp(exact - index, 0, 1);
     return {
       exact,
       smooth,
-      index: exactSegment.index,
-      next: exactSegment.next,
-      localExact: exactSegment.local,
-      smoothIndex: smoothSegment.index,
-      smoothNext: smoothSegment.next,
-      localSmooth: smoothSegment.local,
+      storyProgress: last === 0 ? 0 : clamp(exact / last, 0, 1),
+      chapter: STORY_CHAPTERS[index] ?? 'hero',
+      chapterIndex: index,
+      chapterProgress: local,
       direction,
-      anchors,
+      reducedMotion: reduce,
+      theme: readTheme(),
     };
   }
 
-  function readScroll() {
-    const y = getY();
+  function publish(): void {
+    const frame = buildFrame();
+    frameListeners.forEach((fn) => fn(frame));
+    if (frame.chapterIndex !== activeChapterIndex) {
+      activeChapterIndex = frame.chapterIndex;
+      chapterListeners.forEach((fn) => fn(frame));
+    }
+  }
+
+  function readScroll(): void {
+    const y = window.scrollY || window.pageYOffset || 0;
     const delta = y - previousY;
     if (Math.abs(delta) > 0.25) direction = delta > 0 ? 1 : -1;
     previousY = y;
@@ -171,124 +157,160 @@ export function createScrollConductor(options: ConductorOptions): ScrollConducto
     dirty = true;
   }
 
-  function tick(now: number) {
+  /* ── The single heartbeat: gsap.ticker ────────────────────────────── */
+  const tick = (_time: number, deltaTime: number) => {
     if (!running) return;
-    const dt = lastTime ? Math.min((now - lastTime) / 1000, 1 / 30) : 1 / 60;
-    lastTime = now;
-
+    // gsap.ticker passes deltaTime in MILLISECONDS. The damp is a
+    // converging filter — allow generous dt so low-fps devices stay
+    // framerate-independent instead of slowing to a crawl.
+    const dt = Math.min(Math.max(deltaTime / 1000, 1 / 240), 0.25);
     const previousSmooth = smooth;
-    smooth = reduce ? exact : damp(smooth, exact, damping, dt);
-    // Snap the settle: 0.2% of a chapter is visually at-rest, and lets
-    // slow (software-GL) renderers stop the damp chase quickly.
+    smooth = reduce
+      ? exact
+      : smooth + (exact - smooth) * (1 - Math.exp(-damping * dt));
+    // 0.2% of a chapter is visually at-rest — stop the chase (and lets
+    // slow rasterizers settle instead of rendering micro-deltas forever).
     if (Math.abs(smooth - exact) < 0.002) smooth = exact;
-
-    const nextState = state();
-    if (nextState.index !== active) {
-      active = nextState.index;
-      onChapterChange(active, nextState);
-    }
 
     if (dirty || smooth !== previousSmooth) {
       dirty = false;
-      onUpdate(nextState);
+      publish();
     }
+  };
 
-    frame = requestAnimationFrame(tick);
-  }
+  /* ── ScrollTrigger — the authoritative scroll reader ──────────────── */
+  let masterST: ScrollTrigger | null = null;
 
-  function onScroll() {
-    readScroll();
-  }
-
-  function onResize() {
-    const widthChanged = window.innerWidth !== widthAtMeasure;
-    const coarse = window.matchMedia?.('(pointer: coarse)').matches;
-    if (coarse && !widthChanged) return; // ignore touch URL-bar height noise
+  const onSTRefresh = () => {
     measure();
     readScroll();
-  }
+  };
 
-  function onVisibility() {
-    if (document.hidden) {
-      cancelAnimationFrame(frame);
-      frame = 0;
-      lastTime = 0;
-      return;
-    }
-    if (running && !frame) frame = requestAnimationFrame(tick);
+  const onVisibility = () => {
+    if (document.hidden) return;
+    // Returning to the tab: scroll may have moved (restore, anchor jump).
     readScroll();
-  }
+  };
 
-  function start(): ScrollConductor {
-    if (running) return api;
-    running = true;
-    measure();
-    previousY = getY();
-    exact = progressAt(previousY);
-    smooth = reduce ? exact : exact;
+  const rmQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const onRMChange = (event: MediaQueryListEvent) => {
+    setReducedMotion(event.matches);
+  };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize, { passive: true });
-    window.addEventListener('orientationchange', onResize, { passive: true });
-    window.addEventListener('pageshow', onResize);
-    window.addEventListener('hashchange', onResize);
-    document.addEventListener('visibilitychange', onVisibility);
+  let resizeTimer = 0;
+  let resizeObserver: ResizeObserver | null = null;
+  const onSectionResize = () => {
+    if (!running || destroyed) return;
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      if (running && !destroyed) ScrollTrigger.refresh();
+    }, 180);
+  };
 
-    if (typeof ResizeObserver !== 'undefined') {
-      resizeObserver = new ResizeObserver(() => {
-        measure();
-        readScroll();
-      });
-      sections.forEach((section) => resizeObserver!.observe(section));
-    }
-
-    active = -1;
-    lastTime = 0;
-    frame = requestAnimationFrame(tick);
-    return api;
-  }
-
-  function stop() {
-    if (!running) return;
-    running = false;
-    cancelAnimationFrame(frame);
-    frame = 0;
-
-    window.removeEventListener('scroll', onScroll);
-    window.removeEventListener('resize', onResize);
-    window.removeEventListener('orientationchange', onResize);
-    window.removeEventListener('pageshow', onResize);
-    window.removeEventListener('hashchange', onResize);
-    document.removeEventListener('visibilitychange', onVisibility);
-    resizeObserver?.disconnect();
-    resizeObserver = null;
-  }
-
-  function setReducedMotion(value: boolean) {
+  function setReducedMotion(value: boolean): void {
     reduce = Boolean(value);
     if (reduce) smooth = exact;
     dirty = true;
+    publish();
   }
 
-  function goTo(index: number, behavior?: ScrollBehavior) {
-    const i = clamp(Math.round(index), 0, anchors.length - 1);
+  function refresh(): void {
+    if (destroyed) return;
+    ScrollTrigger.refresh();
+    measure();
+    readScroll();
+  }
+
+  function scrollToChapter(
+    index: number | StoryChapterId,
+    behavior?: ScrollBehavior,
+  ): void {
+    if (!anchors.length) measure();
+    const i =
+      typeof index === 'number'
+        ? clamp(Math.round(index), 0, last)
+        : Math.max(0, sections.findIndex((el) => el.getAttribute('data-cam') === index));
     window.scrollTo({
-      top: anchors[i],
+      top: anchors[i] ?? 0,
       behavior: reduce ? 'auto' : behavior || 'smooth',
     });
   }
 
-  const api: ScrollConductor = {
-    start,
-    stop,
-    destroy: stop,
-    measure,
-    read: readScroll,
-    getState: state,
-    progressAt,
-    goTo,
-    setReducedMotion,
-  };
+  function subscribe(fn: FrameListener): () => void {
+    frameListeners.add(fn);
+    return () => frameListeners.delete(fn);
+  }
 
-  return api;
+  function onChapterChange(fn: FrameListener): () => void {
+    chapterListeners.add(fn);
+    return () => chapterListeners.delete(fn);
+  }
+
+  function start(): void {
+    if (running || destroyed) return;
+    running = true;
+
+    measure();
+    previousY = window.scrollY || 0;
+    exact = progressAt(previousY);
+    smooth = exact;
+    direction = 0;
+    activeChapterIndex = -1;
+    dirty = true;
+
+    masterST = ScrollTrigger.create({
+      trigger: options.root ?? document.body,
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: readScroll,
+    });
+    ScrollTrigger.addEventListener('refresh', onSTRefresh);
+
+    document.addEventListener('visibilitychange', onVisibility);
+    if (typeof rmQuery.addEventListener === 'function') {
+      rmQuery.addEventListener('change', onRMChange);
+    }
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(onSectionResize);
+      sections.forEach((section) => resizeObserver!.observe(section));
+    }
+
+    gsap.ticker.add(tick);
+    // Publish before the first rAF so consumers never see an empty frame.
+    publish();
+  }
+
+  function destroy(): void {
+    if (destroyed) return;
+    destroyed = true;
+    running = false;
+
+    gsap.ticker.remove(tick);
+    if (masterST) {
+      masterST.kill();
+      masterST = null;
+    }
+    ScrollTrigger.removeEventListener('refresh', onSTRefresh);
+    document.removeEventListener('visibilitychange', onVisibility);
+    if (typeof rmQuery.removeEventListener === 'function') {
+      rmQuery.removeEventListener('change', onRMChange);
+    }
+    window.clearTimeout(resizeTimer);
+    resizeObserver?.disconnect();
+    resizeObserver = null;
+    frameListeners.clear();
+    chapterListeners.clear();
+  }
+
+  return {
+    start,
+    destroy,
+    refresh,
+    setReducedMotion,
+    getState: buildFrame,
+    subscribe,
+    onChapterChange,
+    scrollToChapter,
+    progressAt,
+  };
 }
