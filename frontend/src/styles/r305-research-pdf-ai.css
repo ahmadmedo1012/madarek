@@ -541,6 +541,225 @@
 
   /* ── a7-teach appends here ── */
 
+  /* ══ §B.1 · The triage queue — hairline rows, not boxed cards ════
+     The queue reads as a ledger: quiet rows separated by hairlines,
+     the selection carried by the 2px accent inline-start rail (always
+     reserved → no layout jitter) PLUS the visible «تُعرض الآن» chip —
+     selection is never color alone. Hover is pointer-guarded. */
+  .r305rp .r305rp-rev-queue {
+    display: flex;
+    flex-direction: column;
+  }
+  .r305rp .r305rp-rev-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    inline-size: 100%;
+    padding: var(--sp-3) var(--sp-2);
+    text-align: start;
+    background: transparent;
+    border: 0;
+    border-block-end: 1px solid var(--surface-divider);
+    border-inline-start: 2px solid transparent;
+    border-radius: 0;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background var(--t-fast) var(--ease);
+  }
+  .r305rp .r305rp-rev-row:last-child { border-block-end: 0; }
+  @media (hover: hover) and (pointer: fine) {
+    .r305rp .r305rp-rev-row:hover { background: var(--surface-2); }
+  }
+  .r305rp .r305rp-rev-row:focus-visible {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: calc(-1 * var(--state-focus-ring-offset));
+  }
+  .r305rp .r305rp-rev-row--on {
+    background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+    border-inline-start-color: var(--accent);
+  }
+  .r305rp .r305rp-rev-row-main {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .r305rp .r305rp-rev-row-title {
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    color: var(--text-strong);
+    line-height: var(--lh-snug);
+    overflow-wrap: anywhere;
+  }
+  .r305rp .r305rp-rev-row--on .r305rp-rev-row-title { color: var(--accent-ink); }
+  /* The row tail stacks status → wait/score → the selection marker;
+     capped so a long Arabic chip can never starve the title column. */
+  .r305rp .r305rp-rev-row-tail {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--sp-1-5);
+    flex: none;
+    max-inline-size: 45%;
+  }
+  .r305rp .r305rp-rev-row-tail .r305rp-chip {
+    /* The label may wrap INSIDE the chip when the queue column is
+       squeezed — a complete Arabic label beats a tidy ellipsis. */
+    max-inline-size: 100%;
+  }
+  .r305rp .r305rp-rev-row--static { cursor: default; }
+
+  /* ══ §B.2 · The review workspace ══════════════════════════════════
+     The workspace is the decisive surface: hairline panel (the legacy
+     elevation retires under the marker), the ONE deep band as its
+     masthead, a labeled «سجل الحالة» rule over the API's decision
+     timestamps, and the one-action decision rail. The workspace also
+     rides the mobile Sheet PORTAL — every rule mirrors under
+     body:has(.r305rp) per the §9 contract. */
+  .r305rp .rs-review-work.r305rp-rev-work {
+    border-color: var(--rule);
+    box-shadow: none;
+  }
+  .r305rp .r305rp-rev-masthead,
+  body:has(.r305rp) .r305rp-rev-masthead {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-5);
+  }
+  .r305rp .r305rp-rev-masthead-main,
+  body:has(.r305rp) .r305rp-rev-masthead-main {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .r305rp .r305rp-rev-masthead-title,
+  body:has(.r305rp) .r305rp-rev-masthead-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-snug);
+    color: inherit;
+    overflow-wrap: anywhere;
+  }
+  /* Meta ink re-derives from the neutral ramp — legible on the
+     inverted ground in BOTH themes (same recipe as §3). */
+  .r305rp .r305rp-rev-masthead .r305rp-meta-row,
+  body:has(.r305rp) .r305rp-rev-masthead .r305rp-meta-row {
+    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+  }
+  .r305rp .r305rp-rev-masthead .r305rp-meta-sep,
+  body:has(.r305rp) .r305rp-rev-masthead .r305rp-meta-sep {
+    background: var(--neutral-500);
+  }
+  .r305rp .r305rp-rev-masthead > .r305rp-chip,
+  body:has(.r305rp) .r305rp-rev-masthead > .r305rp-chip {
+    flex: none;
+  }
+
+  /* سجل الحالة — the decision record. The labeled rule sits tight (the
+     §2 sp-5 rhythm is for page sections; inside the panel it steps down). */
+  .r305rp .r305rp-rev-record,
+  body:has(.r305rp) .r305rp-rev-record {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+  .r305rp .r305rp-rev-record .r305rp-rule-labeled,
+  body:has(.r305rp) .r305rp-rev-record .r305rp-rule-labeled {
+    margin-block: 0;
+  }
+  .r305rp .r305rp-rev-record-item,
+  body:has(.r305rp) .r305rp-rev-record-item {
+    font-variant-numeric: tabular-nums;
+  }
+  .r305rp .r305rp-rev-record-label,
+  body:has(.r305rp) .r305rp-rev-record-label {
+    font-weight: var(--fw-semibold);
+    color: var(--text-secondary);
+  }
+
+  /* ══ §B.3 · The decision rail — before → after + ONE verb ═════════
+     The r305rp-next copper rail wraps: the current state, the state
+     the action PRODUCES, the honest draft marker, and the action row. */
+  .r305rp .r305rp-rev-decision,
+  body:has(.r305rp) .r305rp-rev-decision {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+  }
+  .r305rp .r305rp-rev-decision-flow,
+  body:has(.r305rp) .r305rp-rev-decision-flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2) var(--sp-4);
+  }
+  .r305rp .r305rp-rev-decision-state,
+  body:has(.r305rp) .r305rp-rev-decision-state {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-1);
+    min-inline-size: 0;
+  }
+  .r305rp .r305rp-rev-decision-flow .r305rp-chip,
+  body:has(.r305rp) .r305rp-rev-decision-flow .r305rp-chip {
+    flex: none;
+  }
+  .r305rp .r305rp-rev-decision-arrow,
+  body:has(.r305rp) .r305rp-rev-decision-arrow {
+    color: var(--text-faint);
+    flex: none;
+  }
+  .r305rp .r305rp-rev-decision-actions,
+  body:has(.r305rp) .r305rp-rev-decision-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+  .r305rp .r305rp-rev-decision-terminal,
+  body:has(.r305rp) .r305rp-rev-decision-terminal {
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+  }
+
+  /* The backend support-code chip (D17-3: English UPPER_SNAKE code,
+     Arabic message beside it). */
+  .r305rp .r305rp-rev-err-code,
+  body:has(.r305rp) .r305rp-rev-err-code {
+    flex: none;
+    font-size: var(--fs-xxs);
+    color: var(--danger-ink);
+    border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+    border-radius: var(--r-sm);
+    padding: var(--sp-0-5) var(--sp-1-5);
+  }
+
+  /* Technical empty states inside the workspace (title + honest sub). */
+  .r305rp .r305rp-rev-empty-title,
+  body:has(.r305rp) .r305rp-rev-empty-title {
+    margin: 0;
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-bold);
+    color: var(--text-strong);
+  }
+  .r305rp .r305rp-rev-empty-sub,
+  body:has(.r305rp) .r305rp-rev-empty-sub {
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    max-inline-size: 52ch;
+  }
+
+
   /* ══ §C · PDF reader workspace (a7-pdf) ═══════════════════════════
      Owner: agent a7-pdf. Classes prefixed .r305pdf-*. Covers
      DocumentViewerPage + components/pdf chrome. Existing pdf.css
