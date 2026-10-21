@@ -24,6 +24,17 @@
      · `.back-link` was an unowned class family (audit 0-d P0-2) — it is
        defined here once and also serves the teacher/admin/exams pages
        that render the same markup.
+
+   r305 (2-c — training/community register pass):
+     · .track-hero-title drops to the product header register (24px —
+       the r304 ruling in patterns.css .pf-page-title); the summary
+       speaks --fs-body; lesson-row titles speak the pf-row-title voice.
+     · Touch floors key on (pointer: coarse) like the r170-e belt —
+       .back-link's ≤640px rule was min-block-height (invalid property)
+       and never applied anywhere; restored + belt added.
+     · Shared-family classes (.filter-pill/.back-link/.leaderboard-*/
+       .tier-orb/.achievement-*) serve other owners' pages too — changes
+       stay register-level and are reported in the wave worklog.
    ═════════════════════════════════════════════════════════════════════ */
 
 @layer pages {
@@ -85,6 +96,12 @@
   @media (max-width: 640px) {
     .filter-pill { min-block-size: 44px; } /* touch target (craft floor) */
   }
+  /* r305 (2-c): حزام المؤشّر الخشن (عرف r170-e) — أرضية اللمس تُقاس
+     بقدرة الإدخال لا بالعرض، فتُغطى أجهزة اللمس الأوسع من 640px
+     (اللوحات) التي لا يبلغها نطاق 640 أعلاه. */
+  @media (pointer: coarse) {
+    .filter-pill { min-block-size: 44px; }
+  }
 
   /* My-summary level band (catalog). */
   .level-band {
@@ -128,7 +145,17 @@
     background: var(--surface-2);
   }
   @media (max-width: 640px) {
-    .back-link { min-block-height: 44px; } /* touch target (craft floor) */
+    /* r305 (2-c): كان min-block-height — خاصية غير موجودة في CSS
+       (المنطقية min-block-size) فلم يُطبَّق أرضية اللمس 44px أبدًا
+       على أي سطح مستعرِض للعائلة (التدريب/الأستاذ/الامتحانات/الإدارة).
+       إصلاح يُحيي القاعدة الموثّقة كما هي. */
+    .back-link { min-block-size: 44px; } /* touch target (craft floor) */
+  }
+  /* r305 (2-c): حزام المؤشّر الخشن — نفس عرف r170-e في components.css
+     (.btn): الأرضية تُقاس بقدرة الإدخال لا بعرض الشاشة، فتغطي أجهزة
+     اللمس الأوسع من 640px التي يفوّتها النطاق أعلاه. */
+  @media (pointer: coarse) {
+    .back-link { min-block-size: 44px; }
   }
 
   /* Track hero — tinted band. Hierarchy via tint + hairline, not a
@@ -171,14 +198,23 @@
   }
   .track-hero-title {
     font-family: var(--font-display);
-    font-size: var(--type-headline-size-lg);
+    /* r305 (2-c): سلّم ترويسة المنتج — 24px (--type-headline-size-md)،
+       نفس صوت .pf-page-title و.lesson-title (عقد r304 في patterns.css:
+       عنوان الإطار يقود دون أن يسيطر). كان --type-headline-size-lg
+       (30px — صوت الأرضية التعريفية). يصعد القاعدة لأرضيّتي track-hero:
+       صفحة المسار وهبوط المقرّر لدى الأستاذ (المستهلكان الحيّان). */
+    font-size: var(--type-headline-size-md);
     font-weight: var(--type-headline-weight);
-    line-height: 1.25;
+    line-height: var(--lh-snug);
     color: var(--text);
     margin: 0;
   }
   .track-hero-summary {
-    font-size: var(--fs-sm);
+    /* r305 (2-c): صوت الوصف في العائلة 16px (--fs-body، كما في
+       pf-page-desc) — كان 13px (fs-sm) فيقرأ وصف المسار كلحظة كروم
+       لا كلحظة متن. المستهلكة الوحيدة صفحة المسار (هبوط الأستاذ
+       لا يرسم هذا الصنف). */
+    font-size: var(--fs-body);
     color: var(--text-secondary);
     line-height: var(--lh-base);
     max-inline-size: 64ch;
@@ -285,7 +321,10 @@
     gap: var(--sp-0-5);
   }
   .lesson-row-title {
-    font-size: var(--fs-sm);
+    /* r305 (2-c): عنوان الصف بصوت عقد الصفوف (pf-row-title = 16px/
+       600) — كان 13px فيقرأ الدرس أسفل من أقرانه في قوائم العائلة
+       رغم أنه محتوى الصفحة نفسه. */
+    font-size: var(--fs-body);
     font-weight: var(--fw-semibold);
     color: var(--text);
   }
