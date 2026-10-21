@@ -30,6 +30,7 @@ import {
   QualityDashboardPage,
   QualityCoursesPage,
   QualityProfessorsPage,
+  QualityAlertsPage,
 } from '../../src/pages/quality/QualityPages';
 
 // jsdom has no canvas — stub the chart components.
@@ -356,8 +357,8 @@ describe('QualityProfessorsPage — server-side search + honest total (r183-B5)'
   });
 });
 
-describe('QualityDashboardPage — alerts card error path retries in place (A8 P3-5)', () => {
-  it('offers an in-place retry and a link to /quality/alerts instead of "reload the page"', async () => {
+describe('QualityDashboardPage — alerts card error path retries in place (A8 P3-5, r299 E9)', () => {
+  it('renders the shared ErrorState retry inside the section card instead of "reload the page"', async () => {
     // /quality/alerts is absent from FIXTURES → the mocked api rejects →
     // the card's error path renders (the other queries resolve).
     renderPage(<QualityDashboardPage />);
@@ -367,8 +368,11 @@ describe('QualityDashboardPage — alerts card error path retries in place (A8 P
 
     const retry = screen.getByRole('button', { name: /إعادة المحاولة/ });
     expect(retry).toBeInTheDocument();
-    const link = screen.getByRole('link', { name: 'صفحة التنبيهات' });
-    expect(link).toHaveAttribute('href', '/quality/alerts');
+    // r299 (E item 9): the shared ErrorState grammar — the retry rides
+    // the primitive's own primary button, and the state sits inside its
+    // section Card (the card owns the «تنبيهات الجودة» header chrome;
+    // page-level errors render bare, pinned below).
+    expect(retry.closest('.card')).not.toBeNull();
   });
 });
 
@@ -398,6 +402,9 @@ describe('QualityDashboardPage / QualityProfessorsPage — error states keep the
     expect(
       h1.compareDocumentPosition(retry) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    // r299 (E item 9): page-level errors render the state BARE — the
+    // untitled Card wrapper retired (one grammar across the sector).
+    expect(retry.closest('.card')).toBeNull();
   });
 
   it('professors error: the h1 «تقييم الأساتذة» stays above the retry', async () => {
@@ -409,5 +416,101 @@ describe('QualityDashboardPage / QualityProfessorsPage — error states keep the
     expect(
       h1.compareDocumentPosition(retry) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    // r299 (E item 9): bare page-level error state, same grammar.
+    expect(retry.closest('.card')).toBeNull();
+  });
+});
+
+/* r299 (E item 5) — the professors zero-state gap: the old page rendered
+ * its empty state ONLY when 0 professors AND searching; a fresh
+ * institution with 0 professors and no search got a toolbar-less,
+ * header-only empty table. Now the honest EmptyState renders whenever
+ * the roster is empty, and the toolbar (search) stays reachable. */
+describe('QualityProfessorsPage — zero professors without a search (r299 E5)', () => {
+  it('0 professors, no search → EmptyState + the toolbar still rendered', async () => {
+    FIXTURES['/quality/professors'] = { data: [], meta: { total: 0 } };
+    renderPage(<QualityProfessorsPage />);
+
+    expect(await screen.findByText('لا أساتذة بعد')).toBeInTheDocument();
+    expect(
+      screen.getByText('ستظهر هيئة التدريس ومؤشراتها هنا فور إضافة أعضائها إلى المؤسسة.'),
+    ).toBeInTheDocument();
+    // The toolbar stays reachable — no header-only table dead end.
+    expect(screen.getByRole('searchbox')).toBeInTheDocument();
+    expect(document.querySelector('table')).toBeNull();
+  });
+});
+
+/* r299 (E item 6) — the estimated-metric cells: satisfaction rides the
+ * unified numeral surface (one decimal, 0-5 scale — the KPI band's
+ * «من 5.0» convention), and the response time renders as a counted
+ * noun instead of the clipped «6س». */
+describe('QualityProfessorsPage — estimated metric cell formatting (r299 E6)', () => {
+  it('renders one-decimal satisfaction and counted-noun response hours', async () => {
+    renderPage(<QualityProfessorsPage />);
+    await screen.findByText(/سالم/);
+
+    const satCell = document.querySelector<HTMLElement>('td[data-label="رضا الطلاب"]');
+    expect(satCell).not.toBeNull();
+    expect(satCell!.textContent).toContain('4.2');
+    // The counted noun — never the clipped «6س».
+    const respCell = document.querySelector<HTMLElement>('td[data-label="زمن الاستجابة"]');
+    expect(respCell).not.toBeNull();
+    expect(respCell!.textContent).toBe('6 ساعات');
+    expect(screen.queryByText('6س')).toBeNull();
+  });
+});
+
+/* r299 (E items 3-4) — the alerts page's honest cap: the backend slices
+ * 20 rows server-side while counts.total stays the TRUE uncapped total
+ * (learning.routes.ts). The card subtitle discloses it with the rosters'
+ * own «countAr total · تُعرض أول N» grammar — and the empty state is the
+ * shared EmptyState primitive. */
+describe('QualityAlertsPage — honest cap note + shared empty state (r299 E3/E4)', () => {
+  const alert = (id: string, description: string) => ({
+    id,
+    severity: 'info',
+    category: 'content',
+    title: 'لم تُرفع مواد جديدة منذ 21 يوماً',
+    description,
+    occurredAt: new Date().toISOString(),
+  });
+
+  it('shows the cap note with counted nouns when counts.total exceeds the rendered rows', async () => {
+    FIXTURES['/quality/alerts'] = {
+      alerts: [alert('stale-1', 'مقرّر (CS101)'), alert('stale-2', 'مقرّر (CS102)'), alert('stale-3', 'مقرّر (CS103)')],
+      counts: { critical: 0, warning: 0, info: 7, total: 7 },
+    };
+    renderPage(<QualityAlertsPage />);
+
+    // 3-10 counted-noun form (تنبيهات) + the rosters' «تُعرض أول N» cap suffix.
+    expect(await screen.findByText('7 تنبيهات · تُعرض أول 3')).toBeInTheDocument();
+  });
+
+  it('no cap note when the full list is rendered', async () => {
+    FIXTURES['/quality/alerts'] = {
+      alerts: [alert('stale-1', 'مقرّر (CS101)'), alert('stale-2', 'مقرّر (CS102)')],
+      counts: { critical: 0, warning: 0, info: 2, total: 2 },
+    };
+    renderPage(<QualityAlertsPage />);
+
+    // Both rows render (unique descriptions — the shared title repeats).
+    expect(await screen.findByText('مقرّر (CS101)')).toBeInTheDocument();
+    expect(screen.getByText('مقرّر (CS102)')).toBeInTheDocument();
+    expect(screen.queryByText(/تُعرض أول/)).toBeNull();
+  });
+
+  it('empty → the shared EmptyState primitive with the same copy', async () => {
+    FIXTURES['/quality/alerts'] = {
+      alerts: [],
+      counts: { critical: 0, warning: 0, info: 0, total: 0 },
+    };
+    renderPage(<QualityAlertsPage />);
+
+    expect(await screen.findByText('لا توجد تنبيهات حالياً')).toBeInTheDocument();
+    expect(screen.getByText('كلّ المؤشّرات ضمن النطاق الطبيعيّ.')).toBeInTheDocument();
+    // The shared primitive — the old hand-rolled .state div is gone.
+    expect(document.querySelector('.state.state-empty')).not.toBeNull();
+    expect(document.querySelector('.state-icon-success')).toBeNull();
   });
 });

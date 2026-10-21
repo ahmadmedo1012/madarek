@@ -152,6 +152,41 @@ describe('QualityDashboardPage — real payload, no fabricated KPIs', () => {
 
     expect(await screen.findByText('لا توجد تنبيهات')).toBeInTheDocument();
   });
+
+  /* r299 (E item 1): the dashboard rides the sector's own read-only cue
+   * — the neutral Eye «قراءة فقط» badge. The former gold ShieldCheck
+   * «وصول قراءة فقط» badge retired (gold is achievements-only). */
+  it('rides the sector read-only cue — neutral Eye badge, gold retired (r299 E1)', async () => {
+    renderPage(<QualityDashboardPage />);
+
+    await screen.findByRole('progressbar', { name: 'معدل الحضور التراكمي' });
+    const badge = screen.getByText('قراءة فقط').closest('.badge');
+    expect(badge).not.toBeNull();
+    // Neutral — no gold class on the badge.
+    expect(badge!.className).toBe('badge');
+    expect(screen.queryByText('وصول قراءة فقط')).toBeNull();
+  });
+
+  /* r299 (E item 7): loading closure — the pending skeleton is the
+   * file's own StatStripSkeleton (5 cells, the resolved strip's shape),
+   * and the header carries the RESOLVED subtitle (the divergent
+   * «رؤية لحظية…» pending copy is gone). */
+  it('pending: the shared 5-cell StatStripSkeleton + the resolved subtitle (r299 E7)', async () => {
+    // A never-settling overview promise holds the page in its pending
+    // branch (unwrap adopts the inner promise — the query never lands).
+    FIXTURES['/quality/overview'] = new Promise(() => {});
+    renderPage(<QualityDashboardPage />);
+
+    const strip = document.querySelector('.stat-strip');
+    expect(strip).not.toBeNull();
+    expect(strip!.getAttribute('aria-busy')).toBe('true');
+    expect(strip!.querySelectorAll('.stat-cell')).toHaveLength(5);
+
+    // The subtitle equals the resolved header's copy — nothing moves on
+    // the pending → resolved handoff.
+    expect(screen.getByText(/بناء نظام تعليمي فعّال/)).toBeInTheDocument();
+    expect(screen.queryByText(/رؤية لحظية لسير العملية التعليمية/)).toBeNull();
+  });
 });
 
 describe('QualityEngagementPage — fabricated interaction bar removed', () => {

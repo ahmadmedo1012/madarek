@@ -664,11 +664,21 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
           }
         />
       ) : (
-        <div className="exa-rows">
-          {q.data.map((t) => (
-            <TemplateRow key={t.id} template={t} />
-          ))}
-        </div>
+        <>
+          <div className="exa-rows">
+            {q.data.map((t) => (
+              <TemplateRow key={t.id} template={t} />
+            ))}
+          </div>
+          {/* 3-d: the listing endpoint caps at take:100 with no total in
+              the envelope — a full page honestly says the list may
+              continue instead of implying it ends. */}
+          {q.data.length >= 100 && (
+            <p className="text-xs text-muted" role="note" style={{ margin: 'var(--sp-2) 0 0' }}>
+              تُعرض أول 100 نتيجة — قد تكون هناك المزيد.
+            </p>
+          )}
+        </>
       )}
     </>
   );
@@ -912,7 +922,7 @@ function QuestionBankSection() {
           />
         </div>
         <select
-          className="input exa-select"
+          className="input"
           aria-label="تصفية حسب التصنيف"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
@@ -923,7 +933,7 @@ function QuestionBankSection() {
           ))}
         </select>
         <select
-          className="input exa-select"
+          className="input"
           aria-label="تصفية حسب نوع السؤال"
           value={type}
           onChange={(e) => setType(e.target.value as '' | QType)}
@@ -934,7 +944,7 @@ function QuestionBankSection() {
           ))}
         </select>
         <select
-          className="input exa-select"
+          className="input"
           aria-label="تصفية حسب مستوى الصعوبة"
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value as '' | Difficulty)}
@@ -975,16 +985,25 @@ function QuestionBankSection() {
           }
         />
       ) : (
-        <div className="exa-rows">
-          {bank.data.map((question) => (
-            <QuestionBankRow
-              key={question.id}
-              question={question}
-              open={openId === question.id}
-              onToggle={() => toggleOpen(question.id)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="exa-rows">
+            {bank.data.map((question) => (
+              <QuestionBankRow
+                key={question.id}
+                question={question}
+                open={openId === question.id}
+                onToggle={() => toggleOpen(question.id)}
+              />
+            ))}
+          </div>
+          {/* 3-d: same take:100 cap as the templates listing — the bank
+              tab discloses it the same way when the page fills up. */}
+          {bank.data.length >= 100 && (
+            <p className="text-xs text-muted" role="note" style={{ margin: 'var(--sp-2) 0 0' }}>
+              تُعرض أول 100 نتيجة — قد تكون هناك المزيد.
+            </p>
+          )}
+        </>
       )}
 
       {creating && <CreateQuestionModal onClose={() => setCreating(false)} />}
@@ -1338,7 +1357,10 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
                 إلغاء
               </Button>
               <Button variant="primary" type="submit" loading={create.isPending}>
-                حفظ السؤال
+                {/* 3-d: the pending label rides Button's visually-hidden
+                    span while loading — SRs announce «جارٍ حفظ السؤال…»
+                    like every submit in the family. */}
+                {create.isPending ? 'جارٍ حفظ السؤال…' : 'حفظ السؤال'}
               </Button>
             </div>
           </form>
@@ -1453,10 +1475,19 @@ function ChoicesEditor({
           </div>
         ))}
       </div>
-      {(choicesError || correctError) && (
-        <span role="alert" className="text-xs" style={{ color: 'var(--danger-ink)' }}>
-          {correctError ?? choicesError}
-        </span>
+      {/* 3-d: both slots render, each in its own alert (the file's Field
+          error convention) — the old `correctError ?? choicesError`
+          swallowed the choices error whenever a correct-answer error
+          also existed. */}
+      {correctError && (
+        <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+          {correctError}
+        </p>
+      )}
+      {choicesError && (
+        <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+          {choicesError}
+        </p>
       )}
       {!isTF && (
         <div>
@@ -1774,7 +1805,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                 إلغاء
               </Button>
               <Button variant="primary" type="submit" loading={create.isPending}>
-                إنشاء القالب
+                {create.isPending ? 'جارٍ إنشاء القالب…' : 'إنشاء القالب'}
               </Button>
             </div>
           </form>
@@ -1827,6 +1858,17 @@ function QuestionPicker({
     patch({ questionIds: next });
   };
 
+  /* 3-d: the live pick-position per picked id — the payload's
+   * questionIds array (the Set's insertion order) IS the wire order
+   * (the backend assigns order: i+1 over it), so each picked row
+   * shows its position in the sequence, renumbered as picks change. */
+  const pickIndex = useMemo(() => {
+    const m = new Map<string, number>();
+    let i = 0;
+    for (const id of selected) m.set(id, (i += 1));
+    return m;
+  }, [selected]);
+
   return (
     <div
       style={{
@@ -1849,6 +1891,17 @@ function QuestionPicker({
           {countAr(points, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}
         </span>
       </div>
+
+      {/* 3-d: the pick order IS the exam order — the backend assigns each
+          template question its order from the pick sequence (order: i+1
+          over questionIds), so the author sees the contract while picking.
+          The randomized branch keeps it honest when the shuffle toggle is
+          on (the pick order seeds the per-student shuffle). */}
+      <p className="text-xs text-muted" style={{ margin: 0 }}>
+        {draft.randomized
+          ? 'ترتيب اختيارك يحدّد ترتيب الأسئلة في الاختبار — ويُخلط عشوائياً لكل طالب عند بدئه.'
+          : 'ترتيب اختيارك يحدّد ترتيب الأسئلة في الاختبار.'}
+      </p>
 
       <div
         className="filter-bar flush"
@@ -1938,6 +1991,15 @@ function QuestionPicker({
                   aria-label={`اختيار السؤال: ${question.prompt.slice(0, 60)}`}
                   style={{ marginTop: 'var(--sp-1)', flexShrink: 0 }}
                 />
+                {/* The row's live position in the pick sequence — the exam
+                    order this question will carry (exa-pick-order,
+                    exam-author.css); renumbered as picks change. */}
+                {checked && (
+                  <span className="exa-pick-order" title="ترتيب السؤال في الاختبار">
+                    <span className="visually-hidden">ترتيبه في الاختبار: </span>
+                    {pickIndex.get(question.id)}
+                  </span>
+                )}
                 <div className="list-row-body">
                   <div className="list-row-title" title={question.prompt}>{question.prompt}</div>
                   <div className="list-row-sub" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -2027,7 +2089,7 @@ export function ExamTemplateDetailPage() {
     <div className="page">
       <Link to="/teacher/exams" className="back-link">
         <Icon icon={ChevronRight} size={14} />
-        بنك الأسئلة والاختبارات
+        العودة إلى بنك الأسئلة والاختبارات
       </Link>
       {q.isPending ? (
         <DetailSkeleton />
@@ -2112,10 +2174,13 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
               />
             ) : (
               <div className="exa-rows">
-                {template.questions.map((eq, i) => (
+                {template.questions.map((eq) => (
                   <TemplateQuestionRow
                     key={eq.id}
-                    order={i + 1}
+                    /* 3-d: the wire's own order — the array position was
+                        an index fiction that would drift the moment the
+                        list is not densely numbered. */
+                    order={eq.order}
                     row={eq}
                     canModerate={canModerate}
                   />
@@ -2240,7 +2305,7 @@ function AuthorActions({ template }: { template: ExamTemplateDetail }) {
             onClick={() => void onClone()}
             title="نسخة كاملة من القالب بأسئلته — تُرسل إلى مراجعة الجودة"
           >
-            <Icon icon={Copy} size={12} /> استنساخ
+            <Icon icon={Copy} size={12} /> {clone.isPending ? 'جارٍ الاستنساخ…' : 'استنساخ'}
           </Button>
         )}
         <PublishButton template={template} authorId={template.authorId} explainGate />
@@ -2480,7 +2545,7 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
                 إلغاء
               </Button>
               <Button variant="primary" type="submit" loading={update.isPending}>
-                حفظ التعديل
+                {update.isPending ? 'جارٍ حفظ التعديل…' : 'حفظ التعديل'}
               </Button>
             </div>
           </form>
@@ -2635,12 +2700,16 @@ function AttemptRow({ attempt, onGrade }: { attempt: ExamAttemptRow; onGrade: ()
 /** One parked answer: prompt, the student's answer, a correct/incorrect
  *  verdict pair (the roll-call att-toggle grammar — pressed states,
  *  focus rings and 44px touch targets come with it) and an optional
- *  feedback note (≤ 2000, the backend's cap). */
+ *  feedback note (≤ 2000, the backend's cap). `invalid` (3-d) flags the
+ *  cards that still lack a verdict after a failed finalize — a data
+ *  attribute the sheet turns into a soft danger edge, plus aria-invalid
+ *  on the verdict group; it clears per-card the moment a verdict lands. */
 function PendingAnswerCard({
   order,
   answer,
   verdict,
   feedback,
+  invalid = false,
   onVerdict,
   onFeedback,
 }: {
@@ -2648,11 +2717,14 @@ function PendingAnswerCard({
   answer: PendingExamAnswer;
   verdict: boolean | undefined;
   feedback: string;
+  invalid?: boolean;
   onVerdict: (isCorrect: boolean) => void;
   onFeedback: (value: string) => void;
 }) {
   return (
     <div
+      className="exa-grade-card"
+      data-invalid={invalid || undefined}
       style={{
         border: '1px solid var(--rule)',
         borderRadius: 'var(--r-md)',
@@ -2690,7 +2762,12 @@ function PendingAnswerCard({
         )}
       </div>
 
-      <div className="flex gap-1 flex-wrap" role="group" aria-label={`حكم إجابة السؤال ${order}`}>
+      <div
+        className="flex gap-1 flex-wrap"
+        role="group"
+        aria-label={`حكم إجابة السؤال ${order}`}
+        aria-invalid={invalid || undefined}
+      >
         <button
           type="button"
           className={`att-toggle${verdict === true ? ' on' : ''}`}
@@ -2848,6 +2925,11 @@ function GradeAttemptModal({
                   answer={p}
                   verdict={verdicts[p.answerId]}
                   feedback={feedback[p.answerId] ?? ''}
+                  /* 3-d: derived from the existing validationError flag —
+                     only the cards still missing a verdict light up, and
+                     each clears the moment its verdict lands (the flag
+                     itself is not part of the submit decision). */
+                  invalid={validationError && verdicts[p.answerId] === undefined}
                   onVerdict={(isCorrect) => setVerdict(p.answerId, isCorrect)}
                   onFeedback={(value) => setFeedback((f) => ({ ...f, [p.answerId]: value }))}
                 />
@@ -2872,7 +2954,11 @@ function GradeAttemptModal({
               {/* Double-submit guard: isPending locks the submit AND the
                   guarded close, so a verdict can never ride twice. */}
               <Button variant="primary" type="submit" loading={grade.isPending}>
-                {pending.length === 0 ? 'اعتماد الدرجة النهائية' : 'حفظ التصحيح واعتماد الدرجة'}
+                {grade.isPending
+                  ? 'جارٍ اعتماد الدرجة…'
+                  : pending.length === 0
+                    ? 'اعتماد الدرجة النهائية'
+                    : 'حفظ التصحيح واعتماد الدرجة'}
               </Button>
             </div>
           </form>
@@ -2952,11 +3038,11 @@ function QuestionModerationActions({ questionId, isApproved }: { questionId: str
     <div className="flex-col gap-1" style={{ flexShrink: 0, alignItems: 'stretch' }}>
       {isApproved ? (
         <Button variant="ghost" size="sm" loading={moderateQ.isPending} onClick={() => void run(false)}>
-          <Icon icon={Ban} size={12} /> إيقاف السؤال
+          <Icon icon={Ban} size={12} /> {moderateQ.isPending ? 'جارٍ الإيقاف…' : 'إيقاف السؤال'}
         </Button>
       ) : (
         <Button variant="ghost" size="sm" loading={moderateQ.isPending} onClick={() => void run(true)}>
-          <Icon icon={BadgeCheck} size={12} /> اعتماد السؤال
+          <Icon icon={BadgeCheck} size={12} /> {moderateQ.isPending ? 'جارٍ الاعتماد…' : 'اعتماد السؤال'}
         </Button>
       )}
       {failed && (

@@ -300,3 +300,61 @@ describe('TeacherDashboardPage — the daily-work trio (r164-h)', () => {
     expect(screen.getByText('جميع طلابك في وضع جيد')).toBeInTheDocument();
   });
 });
+
+/* ── E (workstream 3-a): the feed's action hierarchy + the queue's
+ * spoken per-row count ───────────────────────────────────────── */
+describe('TeacherDashboardPage — feed action hierarchy + spoken queue counts (E / 3-a)', () => {
+  const FEED_ITEM = (kind: 'submissions' | 'research' | 'attendance', id: string) => ({
+    kind,
+    id,
+    author: null,
+    meta: 'SE101 · 2026-1',
+    when: new Date(Date.now() - 3_600_000).toISOString(),
+    title: `عنصر ${id}`,
+    actionTo: `/x/${id}`,
+  });
+
+  it("weights the trailing action by kind: submissions primary, research outline, attendance ghost", () => {
+    mocks.dashboard.data = {
+      ...DASH([]),
+      feed: [FEED_ITEM('submissions', 's1'), FEED_ITEM('research', 'r1'), FEED_ITEM('attendance', 'a1')],
+    };
+    mocks.offerings = [offering([])];
+    mocks.risks.data = [];
+
+    renderDashboard();
+
+    // Decision > review > informational — the classes ride the links.
+    expect(screen.getByRole('link', { name: 'تقييم التسليم' })).toHaveClass('btn', 'primary', 'sm');
+    expect(screen.getByRole('link', { name: 'مراجعة البحث' })).toHaveClass('btn', 'outline', 'sm');
+    expect(screen.getByRole('link', { name: 'تسجيل الحضور' })).toHaveClass('btn', 'ghost', 'sm');
+  });
+
+  it("the attendance action names the recording form — «تسجيل الحضور», never the «عرض السجل» log that doesn't exist", () => {
+    mocks.dashboard.data = {
+      ...DASH([]),
+      feed: [FEED_ITEM('attendance', 'a1')],
+    };
+    mocks.offerings = [offering([])];
+    mocks.risks.data = [];
+
+    renderDashboard();
+
+    expect(screen.getByRole('link', { name: 'تسجيل الحضور' })).toBeInTheDocument();
+    expect(screen.queryByText('عرض السجل')).toBeNull();
+  });
+
+  it('speaks the per-row submission count: the tq-num is aria-hidden, a visually-hidden counted noun carries it', () => {
+    mocks.dashboard.data = DASH([QUEUE_ENTRY()]); // count: 2
+    mocks.offerings = [offering([])];
+    mocks.risks.data = [];
+
+    renderDashboard();
+
+    const visual = document.querySelector('.tq-num');
+    expect(visual).not.toBeNull();
+    expect(visual).toHaveAttribute('aria-hidden', 'true');
+    // countAr(2) → the digitless dual «تسليمان», invisible but announced.
+    expect(screen.getByText('تسليمان')).toHaveClass('visually-hidden');
+  });
+});

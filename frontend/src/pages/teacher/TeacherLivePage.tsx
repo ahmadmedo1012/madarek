@@ -10,7 +10,7 @@
  *  - Attach a join URL (Zoom / BBB / Jitsi)
  *  - See session list with status filter
  */
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   Radio, Plus, Play, Square, X, Calendar, Clock, AlertCircle,
   CheckCircle2, RefreshCw,
@@ -18,8 +18,10 @@ import {
 import { Card, Badge, FormField } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, Skeleton, EmptyState } from '../../components/primitives/States';
+import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
+import '../../styles/owner.css'; // ConfirmDialog surfaces via the discard guard (D11 css split, 12-15)
 import {
   useTeacherOfferings, useLiveSessions, useCreateLiveSession,
   useLifecycleLiveSession, apiErrorMessage, type LiveSessionRow,
@@ -33,11 +35,16 @@ const STATUS_LABEL: Record<LiveSessionRow['status'], string> = {
   ENDED: 'منتهية',
   CANCELLED: 'ملغاة',
 };
-const STATUS_COLOR: Record<LiveSessionRow['status'], 'amber' | 'red' | 'green' | 'brand'> = {
+/* Badge tones: SCHEDULED amber (waiting), LIVE red (the authored
+ * moment), ENDED green (done) — and CANCELLED NEUTRAL: a cancelled
+ * session is a void state, not an accent one, so its Badge carries no
+ * color (the dashboard's done=neutral grammar; brand is an accent,
+ * never a status). */
+const STATUS_COLOR: Record<LiveSessionRow['status'], 'amber' | 'red' | 'green' | undefined> = {
   SCHEDULED: 'amber',
   LIVE: 'red',
   ENDED: 'green',
-  CANCELLED: 'brand',
+  CANCELLED: undefined,
 };
 
 /** Shape-matched skeleton for the stat strip + session rows. */
@@ -97,6 +104,25 @@ export default function TeacherLivePage() {
 
   const [createError, setCreateError] = useState<string | null>(null);
 
+  /* H3 (defect map 2-a): the inline create form is an authoring surface
+   * and gets the family's discard guard — the same useDiscardGuard idiom
+   * AssignmentFormModal uses. Every close path (the footer «إلغاء» and
+   * the header toggle) routes through requestClose while dirty; a clean
+   * form closes directly, and a pending create locks the guard (the
+   * r157 no-op rule). */
+  const closeForm = useCallback(() => setShowForm(false), []);
+  const dirty = form.offeringId !== ''
+    || form.title.trim() !== ''
+    || form.topic.trim() !== ''
+    || form.scheduledAt !== ''
+    || form.description.trim() !== ''
+    || form.joinUrl.trim() !== '';
+  const { requestClose, guard } = useDiscardGuard({
+    dirty,
+    pending: create.isPending,
+    onClose: closeForm,
+  });
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.offeringId || !form.title.trim() || !form.scheduledAt) return;
@@ -133,7 +159,7 @@ export default function TeacherLivePage() {
             جدولة المحاضرات الحية وتشغيلها وإيقافها. الطلاب يرون فقط الجلسات الخاصة بمقرّراتهم.
           </p>
         </div>
-        <button type="button" className="btn primary" onClick={() => setShowForm((v) => !v)}>
+        <button type="button" className="btn primary" onClick={() => (showForm ? requestClose() : setShowForm(true))}>
           <Icon icon={Plus} size={14} /> {showForm ? 'إغلاق النموذج' : 'جلسة جديدة'}
         </button>
       </header>
@@ -298,12 +324,13 @@ export default function TeacherLivePage() {
                   </div>
                 )}
                 <div className="flex justify-end gap-2">
-                  <button type="button" className="btn ghost" onClick={() => setShowForm(false)} disabled={create.isPending}>إلغاء</button>
+                  <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>إلغاء</button>
                   <button type="submit" className="btn primary" disabled={create.isPending || offerings.isError}>
                     {create.isPending ? 'جارٍ الإنشاء…' : 'جدولة الجلسة'}
                   </button>
                 </div>
               </form>
+              {guard}
             </Card>
           )}
 
