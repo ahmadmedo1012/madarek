@@ -114,7 +114,11 @@ export default function StudentCalendarPage() {
   // The view month + selected day live on the AUDIENCE calendar. The
   // initial view is today's Tripoli civil month; today's cell is the
   // initial selection. Lazy useState initializers read the clock once.
-  const [todayKey] = useState(() => civilKeyOf(tripoliToday()));
+  // r304: todayKey is STATE (not a frozen const) so the «اليوم»
+  // quick-return below can re-anchor the whole page to a freshly read
+  // tripoliToday() when the session crosses midnight mid-browse — the
+  // highlight, the view month and the selection can never disagree.
+  const [todayKey, setTodayKey] = useState(() => civilKeyOf(tripoliToday()));
   const [view, setView] = useState(() => {
     const t = tripoliToday();
     return { year: t.year, month: t.month };
@@ -190,6 +194,25 @@ export default function StudentCalendarPage() {
     });
   };
 
+  /* r304 — «اليوم» quick-return: month browsing (and day selection)
+   * loses the «where am I» anchor, so the header offers one honest tap
+   * back. The chip renders ONLY while the page is away from today —
+   * the visible month ≠ today's Tripoli civil month OR the selected
+   * day ≠ today. The handler re-reads tripoliToday() (the same
+   * lib/calendar.ts helper that built the initial state — no
+   * reinvented date math) and re-anchors view + selection + highlight
+   * together. Hidden when already on today: no dead control. */
+  const todayParts = civilDayParts(todayKey);
+  const awayFromToday = todayParts !== null &&
+    (view.year !== todayParts.year || view.month !== todayParts.month || selectedKey !== todayKey);
+  const goToday = () => {
+    const t = tripoliToday();
+    const key = civilKeyOf(t);
+    setTodayKey(key);
+    setView({ year: t.year, month: t.month });
+    setSelectedKey(key);
+  };
+
   // ── Loading / error shells (the shared States grammar) ──────────
   if (enrollments.isPending || dash.isPending || exams.isPending) {
     return (
@@ -220,6 +243,9 @@ export default function StudentCalendarPage() {
   }
 
   const selectedEvents = selectedKey ? byDay.get(selectedKey) ?? [] : [];
+  // The kinds landing on the selected day (drives the detail head's
+  // kind dots — the same legend dots the grid cells carry).
+  const selectedKindSet = new Set(selectedEvents.map((ev) => ev.kind));
 
   return (
     <PageFrame width="default">
@@ -233,7 +259,11 @@ export default function StudentCalendarPage() {
 
       <Card className="cal-card" flush>
         {/* Month navigation — «السابق» points inline-START (right in
-            RTL = the past), «التالي» inline-END (left = forward). */}
+            RTL = the past), «التالي» inline-END (left = forward).
+            r304: the «اليوم» chip rides the inline-end cluster and
+            appears ONLY while the page sits away from today (another
+            month browsed, or another day selected); one tap returns
+            the grid to today's month AND re-selects today. */}
         <header className="cal-head">
           <button
             type="button"
@@ -244,14 +274,28 @@ export default function StudentCalendarPage() {
             <Icon icon={ChevronRight} size={16} aria-hidden />
           </button>
           <h2 className="cal-month" aria-live="polite">{monthTitleAr(view.year, view.month)}</h2>
-          <button
-            type="button"
-            className="btn ghost sm cal-nav-btn"
-            onClick={() => shiftMonth(1)}
-            aria-label="الشهر التالي"
+          <div
+            style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}
           >
-            <Icon icon={ChevronLeft} size={16} aria-hidden />
-          </button>
+            {awayFromToday && (
+              <button
+                type="button"
+                className="btn ghost sm cal-nav-btn"
+                onClick={goToday}
+                aria-label="العودة إلى اليوم"
+              >
+                اليوم
+              </button>
+            )}
+            <button
+              type="button"
+              className="btn ghost sm cal-nav-btn"
+              onClick={() => shiftMonth(1)}
+              aria-label="الشهر التالي"
+            >
+              <Icon icon={ChevronLeft} size={16} aria-hidden />
+            </button>
+          </div>
         </header>
 
         {/* Legend — one dot color per event kind. */}
@@ -334,7 +378,20 @@ export default function StudentCalendarPage() {
                 <span className="cal-detail-date">
                   {selectedKey ? selectedDayLabel(selectedKey) : ''}
                 </span>
-                <Badge color="brand">{arUnit(selectedEvents.length, 'حدث واحد', 'حدثان', 'أحداث')}</Badge>
+                {/* r304 — the day's kind mix as legend dots beside the
+                    count (multi-kind days only): the rows carry the
+                    words, the dots anchor the eye — the same division
+                    of labour the legend and grid cells already use. */}
+                <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                  {selectedKindSet.size > 1 && (
+                    <span aria-hidden style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-1-5)' }}>
+                      {KIND_LEGEND.filter(({ kind }) => selectedKindSet.has(kind)).map(({ kind }) => (
+                        <i key={kind} className="cal-dot" data-kind={kind} />
+                      ))}
+                    </span>
+                  )}
+                  <Badge color="brand">{arUnit(selectedEvents.length, 'حدث واحد', 'حدثان', 'أحداث')}</Badge>
+                </span>
               </header>
               <div className="cal-detail-list">
                 {selectedEvents.map((ev) => (

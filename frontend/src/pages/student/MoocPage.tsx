@@ -1,14 +1,17 @@
-import { useState, type CSSProperties, type ReactNode } from 'react';
+import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import {
-  GraduationCap, Award, Users2, Clock, Star,
+  GraduationCap, Award, Users2, Clock, Star, Search,
   Code, Database, Palette, Languages, Briefcase,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, Badge } from '../../components/primitives';
+import { Badge } from '../../components/primitives';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { PageFrame, PageHeader, FilterBar } from '../../components/patterns';
 import { useMoocs, type MoocCourse } from '../../hooks/useResources';
-import { formatNum } from '../../utils/numbers';
+import { formatInt, formatNum } from '../../utils/numbers';
+import { matchesNormalizedQuery } from '../../lib/search';
+import { countAr } from '../../lib/format';
 
 const moocIcon = (cat: string): LucideIcon => {
   if (cat === 'prog') return Code;
@@ -110,31 +113,73 @@ function MoocCard({ m, index }: { m: MoocCourse; index: number }) {
 
 export default function MoocPage() {
   const { data, isPending, isError, error, refetch } = useMoocs();
+
+  /* Client-side search over the loaded catalog — title + organization,
+     through the shared Arabic-aware normalizer (the same foldings the
+     global search applies). No new hooks, no server round-trip. */
+  const [query, setQuery] = useState('');
+  const filtered = useMemo(() => {
+    const rows = data ?? [];
+    const q = query.trim();
+    if (!q) return rows;
+    return rows.filter(
+      (m) => matchesNormalizedQuery(m.title, q) || matchesNormalizedQuery(m.organization, q),
+    );
+  }, [data, query]);
+  const searching = query.trim().length > 0;
+
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">دورات خارجية</h1>
-          <p className="page-subtitle">دورات من منصّات تعليم عالمية وبرامج تدريبية معتمدة.</p>
-        </div>
-      </header>
+    <PageFrame width="default">
+      <PageHeader
+        title="دورات خارجية"
+        description="دورات من منصّات تعليم عالمية وبرامج تدريبية معتمدة — التسجيل يتم على موقع المنصّة نفسها."
+      />
 
       {isPending ? (
         <MoocGridSkeleton />
       ) : isError ? (
-        <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
+        <ErrorState error={error} onRetry={() => refetch()} />
       ) : !data?.length ? (
-        <Card><EmptyState
+        <EmptyState
           icon={GraduationCap}
           title="لا توجد دورات خارجية مرتبطة"
           illustration="empty-list"
           description="تربط إدارة الكلّيّة دورات Coursera ودورات edX المعتمدة بمقرّراتك؛ راجع المرشد الأكاديمي لمعرفة المعتمد هذا الفصل."
-        /></Card>
+        />
       ) : (
-        <div className="grid-3 mooc-grid">
-          {data.map((m, i) => <MoocCard key={m.id} m={m} index={i} />)}
-        </div>
+        <>
+          <FilterBar
+            search={{
+              value: query,
+              onChange: setQuery,
+              placeholder: 'ابحث بالعنوان أو الجهة…',
+            }}
+          />
+
+          {/* The counted-results line — the settled total, and the
+              filtered subset while searching (live under aria). */}
+          <p className="text-xs text-muted" aria-live="polite">
+            {searching ? (
+              <bdi>{formatInt(filtered.length)} من {formatInt(data.length)} دورة</bdi>
+            ) : (
+              <bdi>{countAr(data.length, ['دورة خارجية واحدة', 'دورتان خارجيتان', 'دورات خارجية', 'دورة خارجية'])}</bdi>
+            )}
+          </p>
+
+          {searching && filtered.length === 0 ? (
+            <EmptyState
+              icon={Search}
+              title="لا نتائج مطابقة للبحث"
+              illustration="empty-search"
+              description="جرّب كلمة أقصر، أو ابحث باسم الجهة التي تقدّم الدورة."
+            />
+          ) : (
+            <div className="grid-3 mooc-grid">
+              {filtered.map((m, i) => <MoocCard key={m.id} m={m} index={i} />)}
+            </div>
+          )}
+        </>
       )}
-    </div>
+    </PageFrame>
   );
 }
