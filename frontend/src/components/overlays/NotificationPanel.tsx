@@ -20,6 +20,13 @@
  * the trigger's aria-expanded/aria-haspopup are synced unless the
  * consumer declares them itself.
  *
+ * r305 grammar: Esc is listened for on the CAPTURE phase (the same
+ * seat Dropdown and useFocusTrap listen from — one Esc choreography
+ * owns the key before any inner handler), and a close that happens
+ * while focus is still inside the panel (row/action activation, a
+ * consumer close) also returns focus to the trigger
+ * (useAnchorFocusReturn) instead of dropping it on <body>.
+ *
  * Used by the bell icon in the topbar to drop down a list of recent
  * notifications.
  */
@@ -28,6 +35,7 @@ import { createPortal } from 'react-dom';
 import { overlayStack } from '../../lib/overlayStack';
 import { useAnchoredPosition } from './anchoredPosition';
 import { useAnchorAria } from './useAnchorAria';
+import { useAnchorFocusReturn } from './useAnchorFocusReturn';
 import { useDelayedUnmount } from './useDelayedUnmount';
 import { useOverlayRegistration } from './useOverlayRegistration';
 
@@ -55,6 +63,9 @@ export function NotificationPanel({
   const panelRef = useRef<HTMLDivElement | null>(null);
   const overlayId = useOverlayRegistration(open, 'notification-panel');
   useAnchorAria(open, anchorRef, 'dialog');
+  // Activation closes (a row action, a consumer close) restore focus to
+  // the bell trigger (Esc already does) — focus never falls to <body>.
+  useAnchorFocusReturn(open, anchorRef, panelRef);
   const { rendered, onExitEnd } = useDelayedUnmount(open);
   // The panel hangs from the anchor's inline-end edge — the shared
   // "end" placement resolves that per writing direction.
@@ -62,18 +73,27 @@ export function NotificationPanel({
 
   // Esc dismiss — only the topmost overlay layer answers (P1-2), and
   // the trigger gets focus back so keyboard users keep their place
-  // (P2-11, matching Dropdown).
+  // (P2-11, matching Dropdown). r305 grammar completion: armed whenever
+  // the panel is open — NOT gated on closeOnEscape — because the
+  // topmost layer OWNS the key even when it declines to close (the
+  // lib/overlayStack contract useFocusTrap and Dropdown already
+  // implement): consuming keeps layers below and global shortcuts from
+  // acting on an Esc aimed at the top.
   useEffect(() => {
-    if (!open || !closeOnEscape) return;
+    if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       if (!overlayStack.isTop(overlayId)) return;
       e.stopImmediatePropagation();
-      onClose();
-      anchorRef.current?.focus?.();
+      if (closeOnEscape) {
+        onClose();
+        anchorRef.current?.focus?.();
+      }
     };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    // Capture seat — the same one Dropdown and useFocusTrap listen from,
+    // so one Esc choreography owns the key before any inner handler.
+    document.addEventListener('keydown', onKey, true);
+    return () => document.removeEventListener('keydown', onKey, true);
   }, [open, closeOnEscape, onClose, anchorRef, overlayId]);
 
   useEffect(() => {
