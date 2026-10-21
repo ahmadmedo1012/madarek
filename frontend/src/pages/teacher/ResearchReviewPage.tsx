@@ -845,10 +845,12 @@ function ReviewNotes({ paperId }: { paperId: string }) {
           </button>
         </div>
       )}
+      {/* r305-a7 a11y: the notes thread is a real list (role=list +
+          listitem) — the rows branch is its only content. */}
       {annotations.data && rows.length > 0 && (
-        <div className="rs-work-notes">
+        <div className="rs-work-notes" role="list">
           {rows.map((a, i) => (
-            <div key={a.id} className={`annotation-row${i === 0 ? ' is-newest' : ''}`}>
+            <div key={a.id} className={`annotation-row${i === 0 ? ' is-newest' : ''}`} role="listitem">
               <span className="annotation-row-icon" aria-hidden>
                 <Icon icon={StickyNote} size={13} />
               </span>
@@ -946,7 +948,11 @@ function MyPublications() {
                 title={p.title}
                 meta={p.venue ?? undefined}
                 trailing={p.url ? (
-                  <a href={p.url} target="_blank" rel="noreferrer" className="btn ghost sm">
+                  /* r305-a7 a11y: the off-app target is disclosed to
+                     assistive tech, not only to sighted users who see
+                     the new tab (G201). */
+                  <a href={p.url} target="_blank" rel="noreferrer" className="btn ghost sm"
+                    aria-label="فتح — يفتح في نافذة جديدة">
                     فتح
                   </a>
                 ) : undefined}

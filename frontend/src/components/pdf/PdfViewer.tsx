@@ -287,6 +287,10 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
    * land on <body>. Focus returns to the search toggle that opened
    * the bar, but only when focus actually lived inside it. */
   const searchToggleRef = useRef<HTMLButtonElement>(null);
+  /* r305-a7 a11y: closing the thumbnail rail (Escape) while a thumb
+   * button owns focus must not strand the keyboard user on <body> —
+   * the same r152a A6 P3-4 contract the search bar honors. */
+  const thumbsToggleRef = useRef<HTMLButtonElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
   const fullscreenBtnRef = useRef<HTMLButtonElement>(null);
   const renderTaskRef = useRef<{ cancel: () => void; promise: Promise<void> } | null>(null);
@@ -686,6 +690,15 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         // r305-a7: Escape closes EVERY viewer overlay, not just search —
         // the thumbnail rail and the selection→note bar are overlays too.
         setThumbsOpen(false);
+        // r305-a7 a11y: an overlay that OWNS focus must hand it back
+        // before it unmounts — a thumbnail button or a selection-bar
+        // control focused on Escape would otherwise strand the keyboard
+        // user on <body> (the r152a A6 P3-4 contract, extended).
+        const active = document.activeElement;
+        if (active instanceof HTMLElement) {
+          if (active.closest('.pdf-thumbs') !== null) thumbsToggleRef.current?.focus();
+          else if (active.closest('.r305pdf-selbar') !== null) viewerRef.current?.focus();
+        }
         setSelQuote(null);
       } else if (e.key === '+' || e.key === '=') {
         e.preventDefault();
@@ -822,12 +835,23 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     return () => document.removeEventListener('selectionchange', onSelect);
   }, [onAnnotateSelection, canAnnotate]);
 
+  /* r305-a7 a11y: the selection bar unmounts on dismissal — if one of
+   * its controls owned focus (keyboard submit, Escape), focus would
+   * fall to <body>. Restore it to the viewer surface (tabIndex -1)
+   * BEFORE the unmount, the closeSearch() pattern. */
+  const dismissSelBar = useCallback(() => {
+    const active = document.activeElement;
+    const insideBar = active instanceof HTMLElement && active.closest('.r305pdf-selbar') !== null;
+    setSelQuote(null);
+    if (insideBar) viewerRef.current?.focus();
+  }, []);
+
   const annotateSelection = useCallback(() => {
     if (!selQuote || !onAnnotateSelection) return;
     onAnnotateSelection({ text: selQuote, page });
-    setSelQuote(null);
+    dismissSelBar();
     document.getSelection()?.removeAllRanges();
-  }, [selQuote, page, onAnnotateSelection]);
+  }, [selQuote, page, onAnnotateSelection, dismissSelBar]);
 
   // ── Fullscreen ───────────────────────────────────────────────────
   // fullscreenchange is the single source of truth for the toggle state:
@@ -933,6 +957,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         <div className="pdf-toolbar-group" role="group" aria-label="التنقل بين الصفحات">
           <button
             type="button"
+            ref={thumbsToggleRef}
             className={`pdf-btn${thumbsOpen ? ' on' : ''}`}
             onClick={() => setThumbsOpen((v) => !v)}
             aria-pressed={thumbsOpen}
@@ -1157,7 +1182,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
             <button
               type="button"
               className="r305pdf-selbar-dismiss"
-              onClick={() => setSelQuote(null)}
+              onClick={dismissSelBar}
               aria-label="تجاهل التحديد"
               title="تجاهل التحديد"
             >

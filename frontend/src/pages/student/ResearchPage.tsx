@@ -406,7 +406,7 @@ function PaperRow({
                   flight — disabled + honest label (the old pin vanished
                   the button mid-flight, a state jump with no pending
                   voice and no double-fire guard). */}
-              <button type="button" className="btn outline" onClick={onScan} disabled={isScanning}>
+              <button type="button" className="btn outline" onClick={onScan} disabled={isScanning} aria-disabled={isScanning || undefined}>
                 <Icon icon={ScanSearch} size={14} />
                 {isScanning ? 'جارٍ بدء الفحص…' : 'ابدأ الفحص الآن'}
               </button>
@@ -740,6 +740,7 @@ function UploadModal({
           type="button"
           className="btn primary"
           disabled={!canSubmit}
+          aria-disabled={isPending || undefined}
           onClick={submit}
         >
           <Icon icon={Upload} size={14} />

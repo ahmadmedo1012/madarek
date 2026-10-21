@@ -221,6 +221,35 @@ export default function AiAssistantPage() {
    * every conversation row. */
   const busy = chat.isPending || convLoad.phase === 'loading';
 
+  /* r305-A7 a11y — the busy-window focus restore: the pending turn
+   * disables the composer, the quick chips and the conversation rows,
+   * and disabling the FOCUSED control drops focus to <body> (browser
+   * behavior) — a keyboard user mid-conversation lands nowhere and Tab
+   * restarts from the page top, on EVERY message. Track the last
+   * focused element (focusin — capture must happen BEFORE the disable
+   * commit) and hand focus back when the window closes, but only if
+   * focus is genuinely stranded (never steal a focus the user moved
+   * elsewhere). */
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const track = () => {
+      const el = document.activeElement;
+      if (el instanceof HTMLElement && el !== document.body) lastFocusedRef.current = el;
+    };
+    document.addEventListener('focusin', track);
+    return () => document.removeEventListener('focusin', track);
+  }, []);
+  useEffect(() => {
+    if (busy) return;
+    const memo = lastFocusedRef.current;
+    if (!memo || !memo.isConnected) return;
+    const active = document.activeElement;
+    if (active === null || active === document.body) {
+      memo.focus();
+      lastFocusedRef.current = null;
+    }
+  }, [busy]);
+
   /* r176c (C3): auto-scroll only when the user is AT (or near ≤80px)
    * the bottom. A student who scrolled up to reread a definition must
    * not be yanked down when the reply lands. The ref (not state — no
@@ -646,6 +675,7 @@ export default function AiAssistantPage() {
                   className="btn accent chat-send"
                   onClick={() => void send()}
                   disabled={!input.trim() || busy}
+                  aria-disabled={busy || undefined}
                   aria-label="إرسال"
                 >
                   <Icon icon={Send} size={15} />
@@ -742,6 +772,7 @@ export default function AiAssistantPage() {
                               className="btn danger sm"
                               onClick={() => void deleteConversation(c.id)}
                               disabled={delConversation.isPending}
+                              aria-disabled={delConversation.isPending || undefined}
                               title="سيُحذف سجلّ هذه المحادثة نهائيًا"
                             >
                               <Icon icon={Trash2} size={13} />

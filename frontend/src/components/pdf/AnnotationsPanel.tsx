@@ -206,7 +206,7 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
               <button type="button" className="btn ghost sm" onClick={() => { setComposing(false); setDraft(''); }}>
                 إلغاء
               </button>
-              <button type="submit" className="btn primary sm" disabled={!draft.trim() || createA.isPending}>
+              <button type="submit" className="btn primary sm" disabled={!draft.trim() || createA.isPending} aria-disabled={createA.isPending || undefined}>
                 {createA.isPending ? 'جارٍ…' : 'حفظ'}
               </button>
             </div>
@@ -215,7 +215,14 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
       )}
 
       {/* List */}
-      <div className="annotations-list">
+      {/* r305-a7 a11y: the notes render as a real LIST (role=list +
+          listitem) — but only in the branch that actually renders rows;
+          the pending/error/empty and inline-delete-error states must not
+          put non-listitem children inside a list. */}
+      <div
+        className="annotations-list"
+        role={annotations.isPending || annotations.isError || !annotations.data?.length || deleteA.isError ? undefined : 'list'}
+      >
         {/* Failed delete: the annotation stays in the list (the honest
             state — the server still has it) and the failure is surfaced
             inline instead of silently vanishing (audit 11-f P1-1). */}
@@ -248,6 +255,7 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
               <article
                 key={a.id}
                 className="annotation-item"
+                role={annotations.isPending || annotations.isError || !annotations.data?.length || deleteA.isError ? undefined : 'listitem'}
                 /* 1px author-color hairline (orchestrator ruling #4: the
                    Notion hairline language — no >1px accent stripes). */
                 style={{ borderInlineStart: `1px solid ${a.color ?? 'var(--accent)'}` }}
@@ -282,6 +290,7 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
                     className="annotation-delete"
                     onClick={() => deleteA.mutate(a.id)}
                     disabled={deleteA.isPending}
+                    aria-disabled={deleteA.isPending || undefined}
                     aria-label="حذف الملاحظة"
                   >
                     <Icon icon={Trash2} size={11} />

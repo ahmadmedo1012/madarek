@@ -195,6 +195,7 @@ function BookRow({ book }: { book: Book }) {
             className="btn primary sm"
             onClick={() => void onBorrow()}
             disabled={unavailable || borrow.isPending}
+            aria-disabled={borrow.isPending || undefined}
             title={unavailable ? 'لا توجد نسخ متاحة للاستعارة حالياً' : undefined}
             aria-label={
               unavailable
@@ -286,6 +287,7 @@ function LoanRow({ loan }: { loan: MyLoan }) {
           className="btn ghost sm"
           onClick={() => void onReturn()}
           disabled={returnLoan.isPending}
+          aria-disabled={returnLoan.isPending || undefined}
           aria-label={`إرجاع ${loan.book.title}`}
         >
           <Icon icon={Undo2} size={13} />
@@ -601,7 +603,10 @@ export default function LibraryPage() {
         </div>
         <div className="rs-toolbar-side">
           {filterChip}
-          <span className="rs-count">{toolbarCount}</span>
+          {/* r305-a7 a11y: the count is the async answer (debounced search,
+           * envelope totals, paging) — a polite live region so the resolved
+           * state is announced, not just painted. */}
+          <span className="rs-count" aria-live="polite">{toolbarCount}</span>
         </div>
       </div>
 
