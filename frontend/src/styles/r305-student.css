@@ -116,7 +116,7 @@
   /* Secondary ink on the deep band: mix the band fg back toward the
      band ground — theme-proof by construction (no per-theme rules). */
   .r305s-band--deep .r305s-band-secondary {
-    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+    color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
   }
 
   /* ── 4 · Metadata + status chips ──────────────────────────────────

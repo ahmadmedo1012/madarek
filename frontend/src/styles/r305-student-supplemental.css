@@ -63,7 +63,7 @@
     align-items: center;
     gap: var(--sp-1) var(--sp-2);
     font-size: var(--fs-sm);
-    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+    color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
   }
   /* Completeness meter column — the band's trailing fact. */
   .r305p-hero-meter {
@@ -79,7 +79,7 @@
     justify-content: space-between;
     gap: var(--sp-2);
     font-size: var(--fs-sm);
-    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+    color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
   }
   /* The % readout keeps the r180 traffic-light -ink pairs ON the meter
      head; on the deep ground they switch to the band's own ink so the
@@ -118,7 +118,7 @@
   }
   .r305a-strip .stat-label { color: var(--neutral-500); }
   .r305a-strip .stat-value { color: var(--neutral-0); }
-  .r305a-strip .stat-trend { color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900)); }
+  .r305a-strip .stat-trend { color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900)); }
 
   /* ── §3 · alerts — the de-boxed register (ROLE-NEUTRAL) ───────────
      The notification list leaves its card box: hairline rows on the
@@ -152,14 +152,14 @@
   }
   .r305g-level-sub {
     font-size: var(--fs-xs);
-    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+    color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
   }
   .r305g-level .xp-track {
     background: color-mix(in srgb, var(--neutral-0) 14%, transparent);
   }
   .r305g-level-foot {
     font-size: var(--fs-xxs);
-    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+    color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
   }
   /* The retry affordance inside the band: quiet ghost on the dark
      ground keeps the one-action emphasis without a second fill. */

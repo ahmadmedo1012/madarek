@@ -772,12 +772,12 @@ export function AchievementsPage() {
             onRetry={() => meQ.refetch()}
           />
         </Card>
-      /* R305 Heron: the achievements KPI strip rides the page's ONE deep
-         band (r305a-strip). The gold DISCIPLINE keeps --gold on the
-         achievement anatomy (tier orbs, xp fill, +XP chips — training.css
-         gamification section); the strip's numerals stay band-neutral ink. */
       ) : me ? (
         <div className="r305a-strip">
+          {/* R305 Heron: the achievements KPI strip rides the page's ONE deep
+              band (r305a-strip). The gold DISCIPLINE keeps --gold on the
+              achievement anatomy (tier orbs, xp fill, +XP chips — training.css
+              gamification section); the strip's numerals stay band-neutral ink. */}
           <StatStrip
             ariaLabel="ملخّص نقاطك"
             cells={[

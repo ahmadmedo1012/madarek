@@ -112,22 +112,24 @@ export function GamificationPage() {
           --gold rides the tier orb / xp fill / +XP chips (training.css),
           never the band's type. */}
       <div className="r305s-band r305s-band--deep">
-        <div className="r305g-level">
-          {dash.isPending || training.isPending ? (
-            /* shape-matched skeleton: orb + lines + track */
-            <div className="flex items-center gap-4" style={{ marginBottom: 'var(--sp-5)' }} aria-busy="true">
-              <Skeleton width={72} height={72} rounded="50%" />
-              <div className="flex-1 flex-col gap-2">
-                <Skeleton width="55%" height={16} />
-                <Skeleton width="75%" height={12} />
-                <Skeleton width="100%" height={10} rounded="var(--r-full)" />
-              </div>
+        {/* N2: one .r305g-level — the wrapper class lives on the loaded
+            branch (it carries --tier-color); the pending skeleton keeps
+            its own shape-matched wrapper. */}
+        {dash.isPending || training.isPending ? (
+          /* shape-matched skeleton: orb + lines + track */
+          <div className="flex items-center gap-4" style={{ marginBottom: 'var(--sp-5)' }} aria-busy="true">
+            <Skeleton width={72} height={72} rounded="50%" />
+            <div className="flex-1 flex-col gap-2">
+              <Skeleton width="55%" height={16} />
+              <Skeleton width="75%" height={12} />
+              <Skeleton width="100%" height={10} rounded="var(--r-full)" />
             </div>
-          ) : (
-            <div
-              className="r305g-level"
-              style={{ ['--tier-color' as never]: me ? TIER_COLOR[me.level.tier] : undefined }}
-            >
+          </div>
+        ) : (
+          <div
+            className="r305g-level"
+            style={{ ['--tier-color' as never]: me ? TIER_COLOR[me.level.tier] : undefined }}
+          >
               <div
                 className="tier-orb lg"
                 data-empty={!me}
@@ -197,15 +199,13 @@ export function GamificationPage() {
 
           {/* R304 (6-d): الإنجازات على لغة الصفوف المشتركة (RowList/RowItem) —
               بئر أيقونة الإنجاز الذهبي يبقى من training.css (§gamification،
-              النظام نفسه الذي تحمله صفحة التطوير الذاتي وصفحة الملف)،
               بينما يحمل RowList السطح والفواصل والفراغات. */}
-        </div>
       </div>
 
       <div className="grid-2">
         <section aria-label="الإنجازات المحققة">
           <div className="r305s-kicker">
-            <h3 className="r305s-kicker-title">الإنجازات المحققة</h3>
+            <h2 className="r305s-kicker-title">الإنجازات المحققة</h2>
           </div>
           {ach.isError ? <ErrorState error={ach.error} onRetry={() => ach.refetch()} /> : (
             <RowList
@@ -235,7 +235,7 @@ export function GamificationPage() {
 
         <section aria-label="لوحة المتصدرين">
           <div className="r305s-kicker">
-            <h3 className="r305s-kicker-title">لوحة المتصدرين</h3>
+            <h2 className="r305s-kicker-title">لوحة المتصدرين</h2>
           </div>
           {lb.isPending ? (
             /* shape-matched skeleton: ranked rows */
@@ -1693,7 +1693,7 @@ export function UniversityInfoPage() {
           (the deep FactRow variant) inside the .r305u-facts grid. */}
         <section aria-label="بطاقة التعريف">
           <div className="r305s-kicker">
-            <h3 className="r305s-kicker-title">بطاقة تعريف</h3>
+            <h2 className="r305s-kicker-title">بطاقة تعريف</h2>
           </div>
           <div className="r305s-band r305s-band--deep">
             <div className="r305u-facts">
@@ -1825,7 +1825,7 @@ export function UniversityInfoPage() {
           (the deep FactRow variant) inside the .r305u-facts grid. */}
       <section aria-label="بطاقة التعريف">
         <div className="r305s-kicker">
-          <h3 className="r305s-kicker-title">بطاقة تعريف</h3>
+          <h2 className="r305s-kicker-title">بطاقة تعريف</h2>
         </div>
         <div className="r305s-band r305s-band--deep">
           <div className="r305u-facts">

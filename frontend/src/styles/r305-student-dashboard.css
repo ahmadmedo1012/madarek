@@ -86,9 +86,11 @@
   /* ── 2 · Section kicker harmonics ─────────────────────────────────
      The foundation .r305s-kicker carries every dashboard section
      (اليوم / مقرّراتك / فجوات يُنصح بسدّها / أسبوعك القادم). One
-     wrap-safety refinement: the action button may be up to ~110px and
-     the title 130px+ at 320px — the row wraps instead of clipping. */
-  .r305s-kicker { flex-wrap: wrap; }
+     wrap-safety refinement (scoped to THIS page's kickers — F2): the
+     action button may be up to ~110px and the title 130px+ at 320px
+     — the row wraps instead of clipping. */
+  .dash-section .r305s-kicker,
+  .dash-momentum .r305s-kicker { flex-wrap: wrap; }
 
   /* ── 3 · The momentum strip — the page's metadata band ────────────
      The labeled rule («زخم الفصل» stamped INTO the hairline) replaces
@@ -100,7 +102,11 @@
   @container grid4 (min-width: 700px) {
     .dash-momentum .pf-stat + .pf-stat {
       border-inline-start: 1px solid var(--surface-divider);
-      padding-inline-start: var(--sp-5);
+      /* F1: margin, not padding — the unlayered patterns.css
+         `.pf-stat { padding-inline: var(--sp-1) }` always wins the
+         longhand against @layer pages, so a padding inset here was
+         dead CSS. The margin sits outside that cascade war. */
+      margin-inline-start: var(--sp-5);
     }
   }
 

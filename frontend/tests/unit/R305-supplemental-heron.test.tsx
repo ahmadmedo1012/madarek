@@ -264,7 +264,8 @@ describe('R305 gamification — the level statement is the ONE deep band', () =>
     expect(band!.querySelector('.stat-strip')).toBeNull();
 
     // The two lists demote from boxed cards to kicker-headed sections.
-    const kickerTitles = Array.from(container.querySelectorAll('h3.r305s-kicker-title')).map((h) => h.textContent);
+    // (N4 re-pin: the kicker titles ride h2 — h1 → h2 sections, no level skip.)
+    const kickerTitles = Array.from(container.querySelectorAll('h2.r305s-kicker-title')).map((h) => h.textContent);
     expect(kickerTitles).toEqual(['الإنجازات المحققة', 'لوحة المتصدرين']);
   });
 
