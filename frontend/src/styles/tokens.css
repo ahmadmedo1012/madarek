@@ -101,15 +101,12 @@
     --sp-5x: var(--sp-5); --sp-6x: var(--sp-6); --sp-8x: var(--sp-7);
     --sp-12x:var(--sp-9); --sp-16x:var(--sp-13);
 
-    /* ─── r197 homepage poster namespace (stage-2 contract) ──────────
-       The landing keeps its art direction; the app carries the Heron
-       blueprint system. These aliases are the divergence hook: today
-       they mirror the canonical roles (custom properties resolve
-       per-element, so they stay theme-reactive); stage 2 may diverge
-       the poster ground without touching consumers. */
-    --poster-paper:  var(--bg);
-    --poster-ink:    var(--text);
-    --poster-signal: var(--accent);
+    /* ─── r306 — the poster namespace is RETIRED ─────────────────────
+       The landing page now speaks the single Heron canon directly
+       (docs/redesign/r306-heron-exclusivity-spec.md); the r197 diver-
+       gence hook (--poster-paper/ink/signal) was migrated with it —
+       every consumer reads the canonical roles below. The parity
+       gate's FORBIDDEN needle list guards the spelling. */
 
     /* ─── Radius — the SQUARED ladder (r305: Heron-informed) ─────────
        The reference renders radius 0 on every marketing surface (mea-

@@ -22,16 +22,13 @@
    PINNED CEILINGS (KB, gz — A11's measurements + ~8-10% headroom;
    A11 measured 599KB total / 71KB entry / 98KB pdf. Raise a ceiling
    ONLY with a documented reason in this block, never silently):
-     · total gz of all chunks  ≤ 900 KB   (r304 FINAL: 650 → 900 with
-       reason — the integration of the nine completed R304 workstreams
-       legitimately grows the product: the procedural ribbon artwork +
-       the landing story runtime ride the landing chunk, and the
-       student / teacher-quality / research-library / admin-owner
-       workstreams add their route-level chunks. Measured on the
-       integrated tree: 882.4 KB gz / 142 chunks. three.module (171.9
-       KB gz) has been a r303+ cost and is NOT the regression. Entry
-       (71.4 ≤ 80) and pdf (95.7 ≤ 110) ceilings unchanged — the
-       growth is route-level code the gates want visible, not hidden.)
+     · total gz of all chunks  ≤ 700 KB   (r306: 900 → 700 — the r304
+       raise's reason is VOID: the 3D landing world (three.module
+       171.9 KB gz + gsap + the scroll-conductor/story runtime) retired
+       with the Heron-only drawing-sheet rebuild, and the measured
+       integrated tree drops to 664.3 KB gz / 139 chunks. ~5% headroom
+       keeps the gate tight for route-level growth. Entry (73.7 ≤ 80)
+       and pdf (95.7 ≤ 110) ceilings unchanged.)
      · entry   index-*.js      ≤  80 KB
      · pdf     pdf-*.js        ≤ 110 KB
 

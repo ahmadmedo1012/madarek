@@ -1,5 +1,5 @@
 /**
- * Landing chrome contract (r132-F5 → r198 poster rebuild).
+ * Landing chrome contract (r132-F5 → r198 poster rebuild → r306 sheet).
  *
  * The r188 editorial redesign RETIRED two landing mechanisms outright:
  *   · the scroll-spy underline system (IntersectionObserver →
@@ -8,13 +8,14 @@
  *   · the film-grain veil (the Orbit-Ink texture layer) — the paper
  *     world is clean flat ink, no texture.
  *
- * r198 (stage 2, the OPTIKKA-direction poster) RETIRES the r191 pinned
- * mega-stage vocabulary too (the mg-, pd-, pf- card families, the
- * telemetry strip, data-pinned stages) and
- * re-pins the chrome that still ships: the imperative scroll-progress
- * ribbon (--p on .fo-progress-bar, the r172 zero-setState pattern) and
- * the .scrolled header hairline. The nav anchors now resolve to the
- * poster's chapter ids (chapters / live / roles / colleges).
+ * r198 (stage 2, the OPTIKKA-direction poster — since RETIRED by the
+ * r306 Heron-only drawing-sheet rebuild) also retired the r191 pinned
+ * mega-stage vocabulary (the mg-, pd-, pf- card families, the
+ * telemetry strip, data-pinned stages). r306 keeps this chrome
+ * contract verbatim on the new sheet: the imperative scroll-progress
+ * ribbon (--p on .fo-progress-bar, the r172 zero-setState pattern)
+ * and the .scrolled header hairline. The nav anchors resolve to the
+ * sheet's section ids (chapters / live / roles / colleges).
  *
  * Pure fs assertions (assets.test.ts pattern) — no jsdom interaction.
  */

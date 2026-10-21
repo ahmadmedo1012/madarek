@@ -350,10 +350,6 @@ const CHECKS = [
   ['root', '--type-metric-letter-spacing', '0', 'tracking misaligns tnum columns'],
   ['root', '--ls-tight', '0', 'zero tracking (Arabic joins; the reference -0.02em stays Latin-only-banned)'],
   ['root', '--ls-snug', '0', 'zero tracking (Arabic joins)'],
-  // ── :root primitives — poster namespace (r305 re-key) ──
-  ['root', '--poster-paper', '#f6f8fa', 'poster paper alias → --bg (light resolution)'],
-  ['root', '--poster-ink', '#282828', 'poster ink alias → --text'],
-  ['root', '--poster-signal', '#fa3600', 'poster signal alias → --accent'],
   // ── :root primitives — layout ──
   ['root', '--sidebar-w', '256px', 'sidebar width'],
   ['root', '--content-max-w', '1280px', 'content measure'],
@@ -568,6 +564,10 @@ const FORBIDDEN_VALUES = [
   // r305: the Webflow-default link blue leak (the reference's own vestige)
   '#3898ec',
   '--ln-', '--stage-', '--aura-', '--glow-accent', '--shell-aurora-azure', // retired landing vocabulary
+  // r306: the poster divergence namespace retired with the Heron-only
+  // landing rebuild (the spelling guards BOTH export files — a future
+  // reintroduction of the alias layer fails the gate)
+  '--poster-paper', '--poster-ink', '--poster-signal',
 ];
 const FORBIDDEN_PARITY_ONLY = [];
 

@@ -128,12 +128,18 @@ describe('detectDrift', () => {
   });
 
   it('accepts canonical motion durations from the foundation', () => {
+    // r306 (inherited-failure fix, evidenced at baseline d9f74004): this
+    // fixture still pinned the RETIRED r204 rungs (240/360) as canonical
+    // after the r305 ladder re-key removed them from KNOWN_DURATIONS_MS
+    // (the audit engine was updated in 56c75f5e but this unit fixture
+    // was missed) — the test failed on a clean origin/main checkout.
+    // Re-pinned to live r305 rungs: 200 fast / 400 base.
     const findings = detectDrift(
       inventory([
         emptyCapture({
           motionTreatments: [
-            { selector: '.x', durationMs: 240, easing: 'ease' },
-            { selector: '.y', durationMs: 360, easing: 'ease' },
+            { selector: '.x', durationMs: 200, easing: 'ease' },
+            { selector: '.y', durationMs: 400, easing: 'ease' },
           ],
         }),
       ]),

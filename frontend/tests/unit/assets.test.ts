@@ -82,17 +82,19 @@ describe('r188 brand reset — campus photography retired (no real-university im
     }
   });
 
-  it('r198 — the poster landing ships NO raster hero art (SVG from real data)', () => {
+  it('r306 — the drawing-sheet landing ships NO raster hero art (original SVG blueprint)', () => {
     const src = read('src/pages/LandingPage.tsx');
     expect(src).not.toContain('<picture>');
     expect(src).not.toContain('main_photo');
-    // r198 (stage 2) intent, re-pointed to the R304 architecture (r304):
-    // the hero's ONE graphic object is the persistent 3D world —
-    // MadarekWorld driving the procedural knowledge ribbon — plus the
-    // editorial type composed from the real 25-college registry.
+    // r306 (the Heron-only rebuild): the hero's ONE graphic object is
+    // the original flat SVG blueprint — BlueprintSvg, the technical
+    // sectional drawing of the learning system (line work on the
+    // token system, no WebGL, no canvas) — beside the title-block
+    // metadata composed from the real 25-college registry. The r304
+    // 3D world (MadarekWorld + the knowledge ribbon) is retired.
     // No hero raster, no orbit ring, no vision backdrop, no AI scenes,
     // no text inside images (the r188 intent, kept and tightened).
-    expect(src).toContain('MadarekWorld');
+    expect(src).toContain('BlueprintSvg');
     expect(src).toContain("from '../data/colleges.config'");
     // …and the r188 provenance strings survive (brand gates below
     // still pin جامعة مدارك التجريبية as synthetic data).

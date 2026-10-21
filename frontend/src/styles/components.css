@@ -747,8 +747,13 @@
   .badge.amber  { background: var(--c-yellow-bg);   color: var(--c-yellow-deep); }
   .badge.red    { background: var(--c-rose-bg);     color: var(--c-rose-deep); }
   .badge.purple { background: var(--c-lavender-bg); color: var(--c-lavender-deep); }
-  .badge.brand,
-  .badge.gold   { background: var(--c-copper-bg);   color: var(--c-copper-deep); }
+  .badge.brand { background: var(--c-copper-bg);   color: var(--c-copper-deep); }
+  /* r306 — the gold seat separates from the brand accent: achievement/
+     status gold (XP, certificates, GRADED, WATCH, QUALITY role) reads
+     the true gold role (--gold-soft/--gold-ink), never the orange
+     signal. Contrast: 4.85:1 light / 7.07:1 dark (AA at the 13px
+     600-weight badge register). */
+  .badge.gold  { background: var(--gold-soft);  color: var(--gold-ink); }
   /* r157 dead-selector sweep (audit 6A11 #8, fresh-rg verified):
      .badge.peach / .badge.sky / .badge.dot::before deleted — zero TSX
      consumers render any of the three (the Badge primitive's ThemeColor
@@ -985,8 +990,11 @@
   .avatar {
     display: inline-flex; align-items: center; justify-content: center;
     border-radius: 50%;
-    background: var(--c-copper-bg);
-    color: var(--c-copper-deep);
+    /* r306: the default avatar wash reaches the accent through the
+       semantic aliases (same seat the --c-copper-* family holds —
+       intent reads clearer than the legacy name). */
+    background: var(--accent-soft);
+    color: var(--accent-strong);
     font-weight: var(--fw-bold);
     font-family: var(--font-display);
     letter-spacing: 0; /* r148 (AUDIT-3 M8): أحرف أولى عربية — لا تتبّع سالب */
@@ -2929,7 +2937,7 @@
   .feed-item-avatar.amber  { background: var(--c-yellow-bg);   color: var(--c-yellow-deep); }
   .feed-item-avatar.red    { background: var(--c-rose-bg);     color: var(--c-rose-deep); }
   .feed-item-avatar.purple { background: var(--c-lavender-bg); color: var(--c-lavender-deep); }
-  .feed-item-avatar.gold   { background: var(--c-copper-bg);   color: var(--c-copper-deep); }
+  .feed-item-avatar.gold   { background: var(--gold-soft);   color: var(--gold-ink); }
   .feed-item-body {
     display: flex;
     flex-direction: column;
@@ -4910,9 +4918,12 @@
     border-block-end-color: color-mix(in srgb, var(--c-mint-ink) 25%, transparent);
   }
   .ledger.zone-copper > .ledger-head {
-    background: var(--c-copper-bg);
-    color: var(--c-copper-deep);
-    border-block-end-color: color-mix(in srgb, var(--c-copper-ink) 25%, transparent);
+    /* r306: the copper zone reaches the accent through the semantic
+       aliases — the ZoneTone union keeps its name (a live primitive
+       vocabulary), the paint contract reads canonical. */
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    border-block-end-color: color-mix(in srgb, var(--accent) 25%, transparent);
   }
   .ledger.zone-lavender > .ledger-head {
     background: var(--c-lavender-bg);
@@ -5194,12 +5205,12 @@
   [data-theme="dark"] .ledger.zone-sky > .ledger-head      { background: color-mix(in srgb, var(--c-sky-ink) 14%, transparent); }
   [data-theme="dark"] .ledger.zone-rose > .ledger-head     { background: color-mix(in srgb, var(--c-rose-ink) 14%, transparent); }
   [data-theme="dark"] .ledger.zone-mint > .ledger-head     { background: color-mix(in srgb, var(--c-mint-ink) 14%, transparent); }
-  [data-theme="dark"] .ledger.zone-copper > .ledger-head   { background: color-mix(in srgb, var(--c-copper-ink) 14%, transparent); }
+  [data-theme="dark"] .ledger.zone-copper > .ledger-head   { background: color-mix(in srgb, var(--accent) 14%, transparent); }
   [data-theme="dark"] .ledger.zone-lavender > .ledger-head { background: color-mix(in srgb, var(--c-lavender-ink) 14%, transparent); }
   [data-theme="dark"] .ledger.zone-sky > .ledger-head      { border-block-end-color: color-mix(in srgb, var(--c-sky-ink) 30%, transparent); }
   [data-theme="dark"] .ledger.zone-rose > .ledger-head     { border-block-end-color: color-mix(in srgb, var(--c-rose-ink) 30%, transparent); }
   [data-theme="dark"] .ledger.zone-mint > .ledger-head     { border-block-end-color: color-mix(in srgb, var(--c-mint-ink) 30%, transparent); }
-  [data-theme="dark"] .ledger.zone-copper > .ledger-head   { border-block-end-color: color-mix(in srgb, var(--c-copper-ink) 30%, transparent); }
+  [data-theme="dark"] .ledger.zone-copper > .ledger-head   { border-block-end-color: color-mix(in srgb, var(--accent) 30%, transparent); }
   [data-theme="dark"] .ledger.zone-lavender > .ledger-head { border-block-end-color: color-mix(in srgb, var(--c-lavender-ink) 30%, transparent); }
 
   /* ── 2 · Telemetry markers — the 7px violet square ──────────────
