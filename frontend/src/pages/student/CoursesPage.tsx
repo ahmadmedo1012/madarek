@@ -4,7 +4,7 @@ import {
   CheckCircle2, AlertTriangle, ClipboardList, Send, X,
   BookOpen, ArrowLeft,
 } from 'lucide-react';
-import { Badge, FormField } from '../../components/primitives';
+import { FormField } from '../../components/primitives';
 import { ProgressBar } from '../../components/primitives';
 import {
   PageFrame, PageHeader, SectionHeader, RowList, RowItem, FilterBar,
@@ -27,6 +27,11 @@ import {
   type Submission,
 } from '../../hooks/useResources';
 import { formatDate } from '../../utils/numbers';
+/* R305-A5 (Heron): the shared student vocabulary + this family's sheet.
+ * student.css (global shell import) styles the base page classes; these
+ * two carry the Heron primitives and the page-scoped refinements. */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-courses.css';
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) + the assignment-kind
  * labels live in lib/courseMeta.ts (waves 9-a / 13-15 — this page's former
@@ -73,13 +78,24 @@ function formatDue(iso: string): string {
   return formatDate(d, { dateStyle: 'medium' });
 }
 
-/** Honest status derived from the real due date — no fabricated urgency. */
+/** Honest status derived from the real due date — no fabricated urgency.
+ *  R305 (Heron): the due state renders as a foundation status chip —
+ *  the tone rides the dot only (semantic state tokens), the label stays
+ *  quiet ink. Same three honest buckets as CourseDetailPage's copy. */
 function dueStatus(dueAt: string): { label: string; color: 'green' | 'amber' | 'red' } {
   const days = (new Date(dueAt).getTime() - Date.now()) / 86_400_000;
   if (days < 0) return { label: 'فات الموعد', color: 'red' };
   if (days <= 2) return { label: 'يستحق قريباً', color: 'amber' };
   return { label: 'متبقّي وقت', color: 'green' };
 }
+
+/* The due color → the foundation chip's dot tone (semantic state tokens
+ * via .r305s-chip--*; the resting chip stays neutral). */
+const DUE_CHIP_TONE = {
+  green: 'r305s-chip--success',
+  amber: 'r305s-chip--warning',
+  red: 'r305s-chip--danger',
+} as const;
 
 /** Shape-matched loading skeleton for the course row list (audit 0-d
  *  P2 — the page used a bare spinner where a list fits). */
@@ -134,15 +150,28 @@ function CourseRow({ e }: { e: MyEnrollment }) {
         </span>
       }
       title={c.name}
+      /* R305 (Heron): the row's quiet metadata line — code · teacher ·
+       * lecture count — rides the foundation meta-row; separators are
+       * technical hairlines (divider color, not text opacity), the code
+       * stays bidi-isolated mono. Same data, same voice as before. */
       meta={
-        <>
-          <Badge><bdi className="font-mono">{c.code}</bdi></Badge>
-          {' '}{teacher}
+        <span className="r305s-meta-row">
+          <bdi className="font-mono">{c.code}</bdi>
+          <span className="r305s-meta-sep" aria-hidden />
+          <span>{teacher}</span>
           {lectureCount !== undefined && lectureCount > 0 && (
-            <> · {countAr(lectureCount, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</>
+            <>
+              <span className="r305s-meta-sep" aria-hidden />
+              <span>{countAr(lectureCount, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</span>
+            </>
           )}
-          {lectureCount === 0 && <> · بانتظار محتوى المقرّر</>}
-        </>
+          {lectureCount === 0 && (
+            <>
+              <span className="r305s-meta-sep" aria-hidden />
+              <span>بانتظار محتوى المقرّر</span>
+            </>
+          )}
+        </span>
       }
       trailing={
         <span className="courses-row-progress">
@@ -283,7 +312,13 @@ export default function StudentCoursesPage() {
                   meta={<>{a.courseName} · الموعد {formatDue(a.dueAt)}</>}
                   trailing={
                     <>
-                      <Badge color={due.color}>{due.label}</Badge>
+                      {/* R305 (Heron): the due state as a quiet status chip
+                          (tone = the dot; the label never shouts) — the
+                          one emphasized control is the تسليم action. */}
+                      <span className={`r305s-chip ${DUE_CHIP_TONE[due.color]}`}>
+                        <span className="r305s-chip-dot" aria-hidden />
+                        {due.label}
+                      </span>
                       {a.offeringId && (
                         <button
                           type="button"

@@ -27,6 +27,9 @@ import {
   type CalendarEventKind,
 } from '../../lib/calendar';
 import { formatDate } from '../../utils/numbers';
+/* ── r305-c (schedule family) imports — the only region agent 2-c edits above the components ── */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-schedule.css';
 
 /**
  * r164-c — /student/calendar: the ONE calendar view (the Canvas
@@ -298,8 +301,10 @@ export default function StudentCalendarPage() {
           </div>
         </header>
 
-        {/* Legend — one dot color per event kind. */}
+        {/* Heron micro-label: the legend is a metadata block — classify
+            it (the chips below carry the kinds; tone on the dot only). */}
         <div className="cal-legend" aria-label="مفتاح الرموز">
+          <span className="r305s-eyebrow">أنواع المواعيد</span>
           {KIND_LEGEND.map(({ kind, label }) => (
             <span key={kind} className="cal-legend-item">
               <i className="cal-dot" data-kind={kind} aria-hidden />
@@ -332,12 +337,17 @@ export default function StudentCalendarPage() {
             const eventCount = byDay.get(cell.key)?.length ?? 0;
             const isToday = cell.key === todayKey;
             const dayName = isToday ? `اليوم ${WEEKDAY_NAMES_AR[cell.dow]}` : WEEKDAY_NAMES_AR[cell.dow];
+            /* r305-c Heron chrome: the weekend (Libya: Friday + Saturday
+             * on the 0=Sunday contract) takes a quiet ink step — presentational
+             * only, the cell's data/aria contract is untouched. */
+            const isWeekend = cell.dow === 5 || cell.dow === 6;
             return (
               <button
                 key={cell.key}
                 type="button"
                 className="cal-cell"
                 data-in-month={cell.inMonth}
+                data-weekend={isWeekend || undefined}
                 data-today={isToday || undefined}
                 data-selected={selectedKey === cell.key || undefined}
                 aria-pressed={selectedKey === cell.key}

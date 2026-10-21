@@ -16,6 +16,11 @@ import { useAuthStore } from '../../stores/auth.store';
 import { apiBaseURL } from '../../lib/api';
 import { countAr, formatMmSs } from '../../lib/format';
 import { formatInt } from '../../utils/numbers';
+/* R305-A5 (Heron): the shared student vocabulary + this family's sheet.
+ * The video/progress/checkpoint logic is untouched — this pass only
+ * refines the surfaces around it. */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-courses.css';
 
 /* fmtTime (the m:ss media clock) is lib/format.formatMmSs (13-15 fold,
  * audit 11-f P2-1) — deliberately NOT curriculumValidation.formatSec,
@@ -597,14 +602,20 @@ export default function LecturePlayerPage() {
             </div>
           )}
 
-          <div className="lecture-meta">
+          {/* R305 (Heron): the now-playing block — the page's ONE deep
+              band. The meta under the video reads as the player chrome
+              world: ink ground in light, paper ground in dark (the
+              foundation band flips with the theme), with the h1 and the
+              secondary runs re-derived from the band's own ink ramp
+              (.r305s-band-secondary + the family-sheet override). */}
+          <div className="lecture-meta r305s-band r305s-band--deep r305c-now">
             <div className="lecture-meta-badges">
               <Badge><bdi>{data.offering.course.code}</bdi></Badge>
-              <span className="text-xs text-subtle">المحاضرة {data.ordinal}</span>
+              <span className="text-xs text-subtle r305s-band-secondary">المحاضرة {data.ordinal}</span>
               {completed && <Badge color="green" icon={CheckCircle2}>مكتملة</Badge>}
             </div>
             <h1 className="lecture-meta-title">{data.title}</h1>
-            <div className="lecture-meta-sub">
+            <div className="lecture-meta-sub r305s-band-secondary">
               د. {data.offering.teacher.firstName} {data.offering.teacher.lastName} ·{' '}
               <bdi className="font-mono">{formatMmSs(currentSec)} / {formatMmSs(reportTotalSec)}</bdi>
               {checkpointsTotal > 0 && <> · {countAr(checkpointsTotal, ['نقطة تفاعل واحدة', 'نقطتا تفاعل', 'نقاط تفاعل', 'نقطة تفاعل'])}</>}

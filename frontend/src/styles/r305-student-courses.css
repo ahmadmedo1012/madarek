@@ -1,0 +1,167 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R305-A5 · Heron design language, student courses family
+   Branch: redesign/r305-student-b-courses · Agent 2-b
+
+   Family sheet for the four learning routes:
+     /student/courses            (CoursesPage)
+     /student/catalog            (CatalogPage)
+     /student/courses/:offeringId (CourseDetailPage)
+     /student/lectures/:lectureId (LecturePlayerPage)
+
+   Layering contract: the FROZEN student.css owns the base page classes
+   (.courses-*, .course-continue, .lecture-*, .chapter-*, .cp-*) and the
+   shared foundation r305-student.css owns the Heron vocabulary. THIS
+   sheet only ADDS page-scoped refinements on top of both — every
+   selector is anchored to a class these four pages render, and no
+   frozen/foundation rule is rewritten. Import order (per page):
+     r305-student.css → r305-student-courses.css
+   (student.css arrives earlier from the global shell import.)
+
+   Gate contract (same as the foundation): colors var()/color-mix() only;
+   type/radius/spacing on the token ladder; hover guarded behind
+   (hover:hover) and (pointer:fine); no new animation (reduced-motion
+   safe by construction).
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── 1 · Courses list (/student/courses) ──────────────────────────
+     RowList rows: quiet Heron metadata + precise progress. The code/
+     teacher/lecture-count line rides the foundation .r305s-meta-row
+     (TSX); here only the row's progress track is tuned to the Heron
+     hairline register so the tabular % readout — not the bar — is the
+     loudest number on the row. */
+  .courses-row-progress .progress-track {
+    block-size: var(--sp-1-5);
+    background: var(--surface-2);
+    box-shadow: inset 0 0 0 1px var(--surface-border);
+  }
+  /* The row's % readout: the mono metric voice, one step stronger than
+     the head label (the readout is the row's data; the label is chrome). */
+  .courses-row-progress .progress-head { font-variant-numeric: tabular-nums; }
+
+  /* The upcoming-assignments rows: the due-state chip carries ONE verb
+     (تسليم) — the trailing action is the row's only emphasized control;
+     the chip stays quiet. Nothing to restyle — .r305s-chip is the
+     foundation's — but the chip must never wrap mid-label inside the
+     row's trailing cluster. */
+  .pf-row-trailing .r305s-chip { white-space: nowrap; }
+
+  /* ── 2 · Catalog (/student/catalog) ───────────────────────────────
+     Editorial heading register: the read-only classification (enrollment
+     is admin-mediated — the honest-door note below says the same thing)
+     rides the foundation eyebrow above the legacy .page-title block. */
+  .page-title-block .r305s-eyebrow { margin-block-end: var(--sp-1); }
+  /* The technical rule that closes the header register. */
+  .r305c-header-rule { margin-block: 0; }
+
+  /* The honest-door note (r180-F4): enrollment is admin-mediated. Same
+     accent-soft grammar the SubmitAssignmentModal done-banner uses —
+     moved from inline styles into the family sheet so the surface
+     anatomy is inspectable next to its siblings. */
+  .r305c-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-md);
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+  }
+  .r305c-note > span:first-child { flex-shrink: 0; margin-block-start: var(--sp-0-5); }
+
+  /* ── 3 · Course detail (/student/courses/:offeringId) ─────────────
+     The continue strip — the page's ONE next action. The frozen tint
+     wash (course identity) is replaced by the foundation's restrained
+     copper rail (.r305s-next): the accent edge + wash mark the action;
+     the course tint survives where identity belongs — the progress
+     fill and the curriculum rows. The doubled class specificity here
+     (page anchor + later sheet) is what lets this override both the
+     light and the [data-theme="dark"] tint recipes of student.css. */
+  .r305c-continue.r305s-next {
+    background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+    border-inline-start-color: var(--accent);
+    border-block-start-color: color-mix(in srgb, var(--accent) 22%, var(--rule));
+    border-inline-end-color: color-mix(in srgb, var(--accent) 22%, var(--rule));
+    border-block-end-color: color-mix(in srgb, var(--accent) 22%, var(--rule));
+  }
+  [data-theme="dark"] .r305c-continue.r305s-next {
+    background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+    border-inline-start-color: var(--accent);
+    border-block-start-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
+    border-inline-end-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
+    border-block-end-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
+  }
+  /* The strip's micro-label classifies the moment (next step / done /
+     plan) — the eyebrow opens the progress column. */
+  .r305c-continue .r305s-eyebrow { margin-block-end: var(--sp-0-5); }
+  /* The strip's % readout keeps its mono metric register; the tabular
+     digits never shift as the count-up animates. */
+  .r305c-continue .course-hero-progress-value { font-variant-numeric: tabular-nums; }
+
+  /* Editorial section headings — the four flat curriculum sections ride
+     the foundation kicker (title + hairline as ONE object). Counted
+     notes (أكملت N من M) ride the metric-label voice at the hairline's
+     start; long prose keeps its own quiet line under the heading. */
+  .r305c-sec-note {
+    margin: 0 0 var(--sp-3);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+    max-inline-size: var(--type-body-max-measure);
+  }
+  /* Kicker rows that carry a counted note may wrap on phones — the note
+     breaks to its own line instead of squeezing the hairline away
+     (zero horizontal overflow at 320px). */
+  .r305c-kicker-wrap { flex-wrap: wrap; row-gap: var(--sp-1); }
+
+  /* ── 4 · Lecture player (/student/lectures/:lectureId) ────────────
+     4a · The now-playing block — the page's ONE --deep band (Heron's
+     dark/light section contrast): the meta under the video reads as the
+     player chrome world (ink ground in light, paper ground in dark —
+     the foundation band flips with the theme). The h1 re-derives from
+     the band's own ink (student.css pins the page-ground --text, which
+     would vanish on the band); the sub line and the ordinal run ride
+     the foundation .r305s-band-secondary. */
+  .r305c-now .lecture-meta-title { color: inherit; }
+
+  /* 4b · The unified side panel («داخل المحاضرة») — kicker headings:
+     the h3 section titles gain the foundation's hairline BETWEEN the
+     title and the trailing count (::before ordered into the flex row —
+     no markup change, the r168a heading-outline source pins hold). */
+  .lecture-panel .lecture-panel-sec-title {
+    justify-content: flex-start;
+    gap: var(--sp-2);
+  }
+  .lecture-panel .lecture-panel-sec-title::before {
+    content: "";
+    order: 2;
+    flex: 1;
+    min-inline-size: var(--sp-4);
+    block-size: 1px;
+    background: var(--surface-divider);
+    align-self: center;
+  }
+  .lecture-panel .lecture-panel-sec-meta { order: 3; flex: none; }
+
+  /* Chapter/interaction time chips — the technical register: hairline
+     frame over the quiet well so the timestamps read as instruments,
+     not badges. */
+  .lecture-panel .chapter-time {
+    box-shadow: inset 0 0 0 1px var(--surface-border);
+  }
+  /* Interaction-point rows: the answered state goes fully quiet (its
+     open siblings keep the amber state icon) — the answered/open split
+     already rides icon + ink (never hue alone). */
+  .cp-row.done .chapter-time { color: var(--text-muted); }
+
+  /* Reduced-motion belt: this sheet introduces no animation of its own
+     (hover/focus are the shared system's grammar). The hairlines above
+     are static; nothing to disable — kept as the explicit contract. */
+  @media (prefers-reduced-motion: reduce) {
+    .lecture-panel .lecture-panel-sec-title::before,
+    .courses-row-progress .progress-track { transition: none; }
+  }
+}

@@ -41,6 +41,10 @@ import { apiErrorMessage, countAr } from '../../lib/format';
 import { useIsNarrowLayout } from '../../hooks/useIsNarrowLayout';
 import { useEntityPageTitle } from '../../components/layout/AppShell';
 import '../../styles/training.css'; // training surfaces + shared families this module owns (D11 css split, 12-15)
+/* R305 Heron: the shared student vocabulary + the supplemental family's
+   page-scoped refinements (the achievements deep strip — §2 of that sheet). */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-supplemental.css';
 
 const CATEGORY_LABEL: Record<TrainingCategory, string> = {
   ONBOARDING: 'تعريف بالمنصة',
@@ -769,14 +773,20 @@ export function AchievementsPage() {
           />
         </Card>
       ) : me ? (
-        <StatStrip
-          ariaLabel="ملخّص نقاطك"
-          cells={[
-            { label: 'مجموع النقاط', value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
-            { label: 'الأوسمة المحقّقة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])}` : undefined },
-            { label: 'الشهادات', value: formatNum(me.certificateCount), trend: 'إتمام موثَّق من المنصة' },
-          ]}
-        />
+        <div className="r305a-strip">
+          {/* R305 Heron: the achievements KPI strip rides the page's ONE deep
+              band (r305a-strip). The gold DISCIPLINE keeps --gold on the
+              achievement anatomy (tier orbs, xp fill, +XP chips — training.css
+              gamification section); the strip's numerals stay band-neutral ink. */}
+          <StatStrip
+            ariaLabel="ملخّص نقاطك"
+            cells={[
+              { label: 'مجموع النقاط', value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
+              { label: 'الأوسمة المحقّقة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])}` : undefined },
+              { label: 'الشهادات', value: formatNum(me.certificateCount), trend: 'إتمام موثَّق من المنصة' },
+            ]}
+          />
+        </div>
       ) : null}
 
       {/* Tabs — manual role/aria annotation (the tabs carry icons, which the

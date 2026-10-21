@@ -29,6 +29,10 @@ import { useLiveSessions, type LiveSessionRow } from '../../hooks/useResources';
 
 import { formatDate, formatInt } from '../../utils/numbers';
 
+/* R305 Heron: the shared student vocabulary + this family's refinements. */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-supplemental.css';
+
 export default function LivePage() {
   const { data: sessions, isPending, isError, error, refetch } = useLiveSessions();
 
@@ -194,22 +198,31 @@ function StudentSessionRow({
       }
       title={s.title}
       meta={
-        <>
-          <bdi>{s.offering.course.code}</bdi> · {s.offering.course.name}
-          {s.topic ? ` · ${s.topic}` : ''}
-          {' · '}
+        /* R305 Heron: the row's metadata rides the meta-row register —
+           hairline separators instead of bare middots. */
+        <span className="r305s-meta-row">
+          <bdi>{s.offering.course.code}</bdi>
+          <span className="r305s-meta-sep" aria-hidden />
+          {s.offering.course.name}
+          {s.topic && (
+            <>
+              <span className="r305s-meta-sep" aria-hidden />
+              {s.topic}
+            </>
+          )}
+          <span className="r305s-meta-sep" aria-hidden />
           <Icon icon={Clock} size={11} />{' '}
           <bdi>
             {formatDate(s.scheduledAt, {
               day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
             })}
           </bdi>
-          {' · '}
+          <span className="r305s-meta-sep" aria-hidden />
           {/* 22-c (A4 P3-5): a transliterated/Latin teacher name would
               scramble the Arabic sentence — isolated like the course
               code above. */}
           الأستاذ: د. <bdi>{s.teacher.firstName} {s.teacher.lastName}</bdi>
-        </>
+        </span>
       }
       trailing={
         <>
