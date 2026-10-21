@@ -1,22 +1,28 @@
 /**
- * r151b (R5-A4): the owner realtime summary table — the one .table
- * consumer that missed BOTH halves of the mobile contract in the
- * r150d retirement onto the canonical table system:
+ * r299 (workstream F): the owner realtime summary table died — every
+ * one of its four numbers repeated the live StatStrip directly above
+ * it twice on the same screen (mission: repeated KPI cards), and its
+ * only unique contribution (the quiet/active dot column) is the
+ * dashboard health-list grammar, not this page's.
  *
- * 1. No per-td data-labels — at ≤640px the tbl-stack rung rendered
- *    bare values («1,240» with no column name) on every row.
- * 2. No .table-wrap scroller — its 23 sibling tables all ship one;
- *    the wrap also gives the 641-1024px band the r-xl rule border.
+ * The r151b mobile contract this file pinned (wrap scroller + tbl-stack
+ * + 12/12 data-labels) went with the table it guarded. What still needs
+ * pinning on this page:
  *
- * This test pins the full mobile contract on the summary table
- * (12/12 labelled cells + tbl-stack + wrap), mirroring the
- * QualityPages-rosters pattern that guards the other rosters.
+ * 1. The dedup itself — the summary table never renders again (a
+ *    regression would silently reintroduce the duplicate KPI band).
+ * 2. The strip's four cells survive as the single owner of the data
+ *    (the live-tick label contract 6A10-5 guards in its own file).
+ * 3. The pending state occupies the STRIP's shape (the r299 mirror
+ *    rule: a KpiSkeleton icon-tile flash before a typographic strip
+ *    is a wrong-anatomy flash + CLS at the handoff).
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OwnerRealtimePage } from '../../src/pages/owner/OwnerRealtimePage';
+import { formatNum } from '../../src/utils/numbers';
 
 const FIXTURES: Record<string, unknown> = {};
 
@@ -38,11 +44,6 @@ const REALTIME = {
   activeExams: 42,
 };
 
-beforeEach(() => {
-  FIXTURES['/owner/realtime'] = REALTIME;
-  FIXTURES['/owner/alerts'] = [];
-});
-
 function renderPage() {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
@@ -56,26 +57,50 @@ function renderPage() {
   );
 }
 
-describe('OwnerRealtimePage — summary table mobile contract (r151b)', () => {
-  it('ships the wrap scroller + tbl-stack + a data-label on all 12 cells', async () => {
+describe('OwnerRealtimePage — one owner per metric (r299)', () => {
+  beforeEach(() => {
+    FIXTURES['/owner/realtime'] = REALTIME;
+    FIXTURES['/owner/alerts'] = [];
+  });
+
+  it('renders NO summary table — the live strip is the single owner of the four metrics', async () => {
     renderPage();
-    await screen.findByText('الجلسات المتّصلة');
+    await screen.findByText('الجلسات النشطة');
 
-    const table = document.querySelector('table.table.tbl-stack');
-    expect(table).not.toBeNull();
-    // The wrap scroller — every sibling table has one; this one missed
-    // it in the r150d retirement.
-    expect(table!.closest('.table-wrap')).not.toBeNull();
+    // The r151b table (and its «ملخّص النشاط الحيّ» card) never renders.
+    expect(screen.queryByRole('table')).toBeNull();
+    expect(screen.queryByText('ملخّص النشاط الحيّ')).toBeNull();
 
-    // 4 metric rows × 3 columns — every td names its column.
-    const cells = Array.from(table!.querySelectorAll('td'));
-    expect(cells).toHaveLength(12);
-    for (const td of cells) {
-      expect(td.getAttribute('data-label')).toBeTruthy();
+    // The strip's four tick nodes carry the live values once each —
+    // each bdi's text is «label: value» (6A10-5's announcement shape).
+    const ticks = Array.from(document.querySelectorAll('bdi.owner-value-tick'));
+    expect(ticks).toHaveLength(4);
+    const texts = ticks.map((t) => t.textContent ?? '');
+    for (const value of [REALTIME.activeSessions, REALTIME.aiRequestsPerMin, REALTIME.liveBroadcasts, REALTIME.activeExams]) {
+      const rendered = formatNum(value); // the page's own formatter (grouped numerals)
+      expect(
+        texts.some((t) => t.endsWith(rendered)),
+        `no tick carries the value ${rendered}`,
+      ).toBe(true);
     }
-    // The three column vocabularies the thead declares.
-    for (const label of ['المؤشّر', 'القيمة', 'الحالة']) {
-      expect(cells.filter((td) => td.getAttribute('data-label') === label)).toHaveLength(4);
-    }
+  });
+
+  it('occupies the STRIP\'s shape while pending — never the retired icon-tile anatomy', async () => {
+    // Hold the payload back: the query never settles, so the page
+    // renders its pending mirror for the whole assertion.
+    let release: (() => void) | undefined;
+    FIXTURES['/owner/realtime'] = new Promise((resolve) => { release = () => resolve(REALTIME); });
+    renderPage();
+
+    // The strip skeleton occupies the resolved band's own anatomy…
+    const skeleton = document.querySelector('.stat-strip[aria-busy="true"]');
+    expect(skeleton).not.toBeNull();
+    expect(skeleton!.querySelectorAll('.stat-cell')).toHaveLength(4);
+    // …and the retired icon-tile band (.metric in .grid-4 — the shared
+    // KpiSkeleton's shape) never renders on this page.
+    expect(document.querySelector('.grid-4 .metric')).toBeNull();
+
+    release?.();
+    await screen.findByText('الجلسات النشطة');
   });
 });

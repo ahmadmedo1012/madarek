@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Palette, Type, Bell, ToggleRight, ArrowLeft, Info,
+  Palette, Bell, ToggleRight, ArrowLeft, Info,
 } from 'lucide-react';
 import { Card } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
@@ -102,7 +102,7 @@ export function OwnerContentPage() {
     [themeVersion],
   );
   return (
-    <div className="page owner-content-page">
+    <div className="page">
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المحتوى والعلامة التجاريّة</h1>
@@ -142,6 +142,12 @@ export function OwnerContentPage() {
             تعديل ألوان العلامة التجاريّة (الأساسيّ، الثانويّ، التمييز) ومحتوى الصفحة الرئيسيّة قيد
             التطوير. حالياً تُعتمَد ألوان علامة مدارك الرسميّة المعتمدة في نظام التصميم — تُقرَأ
             مباشرةً من رموز نظام التصميم النشطة (فاتح/داكن) عند عرض الصفحة.
+            {/* r299: the one-sentence «محتوى الواجهة الرئيسيّة» card folded
+                in here — a whole bordered box for one sentence that restated
+                this same dev-status note; the «فوراً» honesty contract
+                (r165g) stays intact (no «instant» promises anywhere). */}
+            محرّر العنوان والوصف الفرعيّ ونصّ زرّ «ابدأ الآن» قيد التطوير — النصوص
+            الحاليّة محدّدة في كود الصفحة الرئيسيّة.
           </span>
         </div>
 
@@ -170,13 +176,6 @@ export function OwnerContentPage() {
             </div>
           ))}
         </div>
-      </Card>
-
-      <Card title="محتوى الواجهة الرئيسيّة" icon={Type} className="owner-card-settle">
-        <p className="owner-card-lead">
-          محرّر العنوان والوصف الفرعيّ ونصّ زرّ «ابدأ الآن» قيد التطوير. النصوص الحاليّة محدّدة
-          في كود الصفحة الرئيسيّة.
-        </p>
       </Card>
     </div>
   );

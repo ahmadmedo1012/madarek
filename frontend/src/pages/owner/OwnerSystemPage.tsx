@@ -272,8 +272,10 @@ export function OwnerSystemPage() {
           </div>
         ) : (
           <div className="owner-health-list">
+            {/* r299: the driver row lost its decorative dot — the dots are
+                the traffic-light grammar (state), and "which storage
+                driver" is a fact; the durability row below is the state. */}
             <div className="owner-health-row">
-              <div className="owner-health-dot neutral" />
               <span className="owner-health-label">السائق</span>
               <span className="owner-health-value">
                 {STORAGE_DRIVER_LABEL[sysData.storage.driver]
@@ -337,9 +339,10 @@ export function OwnerSystemPage() {
           rather than left unwired. */}
       <Card title="سجلّ المزامنة" icon={RefreshCw}>
         {sys.isPending ? (
-          /* Shape-matched (4-A7 P2-5): a 4-col table skeleton, not a
-           * bare spinner — the shape this card fills is known. */
-          <TableSkeleton rows={4} cols={4} />
+          /* Shape-matched (4-A7 P2-5): a 3-col table skeleton, not a
+           * bare spinner — the shape this card fills is known (r299:
+           * one time column now — absolute + relative in one cell). */
+          <TableSkeleton rows={4} cols={3} />
         ) : sys.isError ? (
           <ErrorState
             message="تعذّر جلب سجلّ المزامنة"
@@ -364,10 +367,13 @@ export function OwnerSystemPage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th scope="col">التاريخ</th>
+                  {/* r299: «التاريخ» + «منذ» folded into ONE column — the
+                      absolute date carries the relative age beside it
+                      (and in the title), freeing a column the tbl-stack
+                      cards spent on restating the same moment. */}
+                  <th scope="col">آخر تشغيل</th>
                   <th scope="col">النوع</th>
                   <th scope="col">المنفِّذ</th>
-                  <th scope="col">منذ</th>
                 </tr>
               </thead>
               <tbody>
@@ -375,7 +381,10 @@ export function OwnerSystemPage() {
                   const running = syncRunStatus(run.metadata) === 'RUNNING';
                   return (
                     <tr key={run.id}>
-                      <td className="owner-cell-muted" data-label="التاريخ">{formatDateTimeAr(run.at)}</td>
+                      <td className="owner-cell-muted" data-label="آخر تشغيل" title={formatRelative(run.at)}>
+                        {formatDateTimeAr(run.at)}{' '}
+                        <span className="text-xxs text-subtle">({formatRelative(run.at)})</span>
+                      </td>
                       <td data-label="النوع">
                         {/* 16-B6 hand-off: a RUNNING row reads as in-flight
                             (amber), not «مزامنة جزئية» — matches
@@ -385,7 +394,6 @@ export function OwnerSystemPage() {
                         </Badge>
                       </td>
                       <td className="owner-cell-muted" data-label="المنفِّذ">{run.actor}</td>
-                      <td className="owner-cell-muted" data-label="منذ">{formatRelative(run.at)}</td>
                     </tr>
                   );
                 })}
@@ -566,8 +574,12 @@ export function OwnerSystemPage() {
               {settings.map((setting) => (
                 <div key={setting.key} className="owner-kv-row">
                   <code>{setting.key}</code>
+                  {/* r299 (a11y): the editor's inputs never carried an
+                      accessible name — a screen reader announced a bare
+                      text box; the row's code label IS the input's name. */}
                   <input
                     type="text"
+                    aria-label={`قيمة الإعداد ${setting.key}`}
                     value={editedSettings[setting.key] ?? setting.value}
                     onChange={(e) => handleSettingChange(setting.key, e.target.value)}
                   />

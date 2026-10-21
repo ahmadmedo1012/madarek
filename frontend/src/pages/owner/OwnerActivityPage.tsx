@@ -16,6 +16,12 @@ import { useOwnerActivity } from '../../hooks/useOwner';
 import { formatRelativeAr } from '../../lib/format';
 import type { LucideIcon } from 'lucide-react';
 import { formatDate, formatNum } from '../../utils/numbers';
+/* r299: the windowed pageList helper — same barrel chunk (OwnerPages),
+ * so the import is chunk-neutral; the footer joins the .table-pagination
+ * grammar every paginated owner surface already rides (users), killing
+ * the prev/next-only .owner-activity-footer (linear clicking through
+ * a 50-row audit log). */
+import { pageList } from './OwnerUsersPage';
 
 type EventType = 'all' | 'login' | 'content' | 'roles' | 'system';
 
@@ -307,32 +313,50 @@ export function OwnerActivityPage() {
           </div>
         )}
 
+        {/* r299: the canonical .table-pagination footer — windowed page
+            numbers + aria-current + RTL-correct chevrons, the same
+            grammar as the users directory (the hand-rolled prev/next-only
+            footer died with its .owner-activity-* classes). */}
         {activity.data && activity.data.meta.totalPages > 1 && (
-          <div className="owner-activity-footer">
-            <span className="owner-activity-count">
-              الصفحة <bdi>{activity.data.meta.page}</bdi> من <bdi>{activity.data.meta.totalPages}</bdi>
-              {' '}· {eventsCountLabel(activity.data.meta.total)}
+          <div className="table-pagination">
+            <span>
+              الصفحة {page} من {activity.data.meta.totalPages} · {eventsCountLabel(activity.data.meta.total)}
             </span>
-            <div className="owner-activity-footer-actions">
+            <div className="table-pagination-actions">
               {/* RTL: "previous" points inline-start-ward = the right
                   chevron (wave 5-a convention). */}
               <button
                 type="button"
-                className="btn ghost sm"
-                disabled={page === 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                aria-label="الصفحة السابقة"
               >
-                <Icon icon={ChevronRight} size={14} />
+                <Icon icon={ChevronRight} size={14} aria-hidden />
                 السابق
               </button>
+              {pageList(page, activity.data.meta.totalPages).map((item, i) =>
+                item === 'gap' ? (
+                  <span key={`gap-${i}`} className="owner-page-gap" aria-hidden>…</span>
+                ) : (
+                  <button
+                    key={item}
+                    type="button"
+                    aria-current={item === page ? 'page' : undefined}
+                    aria-label={`الصفحة ${item}`}
+                    onClick={() => setPage(item)}
+                  >
+                    {item}
+                  </button>
+                ),
+              )}
               <button
                 type="button"
-                className="btn ghost sm"
-                disabled={page >= activity.data.meta.totalPages}
                 onClick={() => setPage((p) => p + 1)}
+                disabled={page >= activity.data.meta.totalPages}
+                aria-label="الصفحة التالية"
               >
                 التالي
-                <Icon icon={ChevronLeft} size={14} />
+                <Icon icon={ChevronLeft} size={14} aria-hidden />
               </button>
             </div>
           </div>
