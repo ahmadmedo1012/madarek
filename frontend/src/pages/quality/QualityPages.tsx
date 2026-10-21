@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
-import { Card, Badge, AlertRow, ProgressBar, UserAvatar } from '../../components/primitives';
+import { Card, Badge, AlertRow, ProgressBar, UserAvatar, type ThemeColor } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ChartFrame } from '../../components/charts';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
@@ -226,13 +226,26 @@ const SEVERITY_LABEL: Record<QualityAlert['severity'], string> = {
   warning: 'تحذير',
   info: 'معلومة',
 };
-/* 4C-b: the oversight-sector read-only cue — mirrors the dashboard's
- * «وصول قراءة فقط» badge on every sibling header (muted neutral badge
- * + Eye icon; the sector has no authoring affordances at all). */
+/* 4C-b: the oversight-sector read-only cue — rides every quality page
+ * header (muted neutral badge + Eye icon; the sector has no authoring
+ * affordances at all). r299 (E item 1): the dashboard joined its
+ * siblings — its former gold ShieldCheck «وصول قراءة فقط» badge
+ * retired (gold is achievements-only per the token discipline). */
 function ReadOnlyBadge() {
   return (
     <Badge icon={Eye}>قراءة فقط</Badge>
   );
+}
+
+/** r299 (E item 6): threshold tone bands typed to Badge's ThemeColor
+ *  union — the roster score cells used to cast string unions `as never`.
+ *  Two bands live in the sector: content scores 80/50 (courses), the
+ *  professor compliance band 75/50. */
+function completionTone(score: number): ThemeColor {
+  return score >= 80 ? 'green' : score >= 50 ? 'amber' : 'red';
+}
+function complianceTone(pct: number): ThemeColor {
+  return pct >= 75 ? 'green' : pct >= 50 ? 'amber' : 'red';
 }
 const CATEGORY_ICON: Record<QualityAlert['category'], LucideIcon> = {
   attendance: ClipboardCheck,
@@ -358,30 +371,40 @@ export function QualityDashboardPage() {
   // Remounts each chart canvas when the light/dark theme flips.
   const themeKey = useChartThemeKey();
 
+  // r299 (E item 7b): ONE header across pending/error/resolved — the
+  // subtitle, meta line and read-only cue are payload-independent, so
+  // every state carries the resolved copy. The former pending/error
+  // subtitle «رؤية لحظية لسير العملية التعليمية في الجامعة.» was a
+  // second, divergent string — the handoff moved text on load.
+  const pageHeader = (
+    <header className="page-header">
+      <div className="page-title-block">
+        <h1 className="page-title">لوحة الجودة</h1>
+        <p className="page-subtitle">
+          بناء نظام تعليمي فعّال عبر تطوير الأداء الأكاديمي والإداري والتقني — وفقاً لمتطلبات الاعتماد المحلية والدولية.
+        </p>
+        <p className="page-header-meta">
+          {formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · قراءة لحظية للمؤشرات
+        </p>
+      </div>
+      {/* r299 (E item 1): the sector's own read-only cue — the former
+          gold ShieldCheck «وصول قراءة فقط» badge retired (gold is
+          achievements-only per the token discipline). */}
+      <div className="qlt-header-badges"><ReadOnlyBadge /></div>
+    </header>
+  );
+
   if (ov.isPending || eg.isPending) {
     return (
       <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">لوحة الجودة</h1>
-            <p className="page-subtitle">رؤية لحظية لسير العملية التعليمية في الجامعة.</p>
-          </div>
-        </header>
-        <div className="stat-strip" aria-busy="true">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <div key={i} className="stat-cell">
-              <Skeleton width={70} height={11} />
-              <div style={{ marginBlock: 'var(--sp-1)' }}>
-                <Skeleton width={90} height={28} />
-              </div>
-              <Skeleton width={120} height={11} />
-            </div>
-          ))}
-        </div>
+        {pageHeader}
+        {/* r299 (E item 7a): the file's own StatStripSkeleton (five
+            cells — the resolved strip's shape), not the inline twin. */}
+        <StatStripSkeleton cells={5} />
         {/* 4C-b: the pending skeleton mirrors the resolved board shape
             (main: chart + KPI ledger · side: attendance + alerts) so the
             handoff moves nothing (the loading-closure discipline). */}
-        <div className="qlt-board">
+        <div className="qlt-board qlt-section">
           <div className="qlt-board-main">
             <Card><ChartSkeleton /></Card>
             <Card><ListSkeleton rows={5} /></Card>
@@ -400,20 +423,18 @@ export function QualityDashboardPage() {
     // wall, so an API blip stripped the centre's bearings before the
     // retry offer. (QualityCourses below keeps its in-page ternary
     // below the header — chrome by construction.)
+    // r299 (E item 9): page-level errors render the state BARE — the
+    // untitled Card wrapper retired (one grammar across the sector:
+    // bare under the header at page level, inside the section card
+    // when the section owns the header chrome).
     return (
       <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">لوحة الجودة</h1>
-            <p className="page-subtitle">رؤية لحظية لسير العملية التعليمية في الجامعة.</p>
-          </div>
-        </header>
-        <Card>
-          <ErrorState
-            error={ov.error ?? eg.error}
-            onRetry={() => { ov.refetch(); eg.refetch(); }}
-          />
-        </Card>
+        {pageHeader}
+        <ErrorState
+          message="تعذَّر تحميل لوحة الجودة"
+          error={ov.error ?? eg.error}
+          onRetry={() => { ov.refetch(); eg.refetch(); }}
+        />
       </div>
     );
   }
@@ -448,19 +469,7 @@ export function QualityDashboardPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">لوحة الجودة</h1>
-          <p className="page-subtitle">
-            بناء نظام تعليمي فعّال عبر تطوير الأداء الأكاديمي والإداري والتقني — وفقاً لمتطلبات
-            الاعتماد المحلية والدولية.
-          </p>
-          <p className="page-header-meta">
-            {formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · قراءة لحظية للمؤشرات
-          </p>
-        </div>
-        <Badge color="gold" icon={ShieldCheck}>وصول قراءة فقط</Badge>
-      </header>
+      {pageHeader}
 
       {/* R189 — the typographic stat strip (was the grid-4 KPI tiles). */}
       <StatStrip
@@ -623,19 +632,14 @@ export function QualityDashboardPage() {
           {al.isPending ? (
             <ListSkeleton rows={3} />
           ) : al.isError ? (
-            <EmptyState
-              icon={AlertTriangle}
-              title="تعذّر تحميل التنبيهات"
-              description="حدث خطأ في الاتصال أثناء جلب التنبيهات."
-              action={
-                <div className="flex items-center gap-2" style={{ flexWrap: 'wrap' }}>
-                  <button type="button" className="btn ghost sm" onClick={() => void al.refetch()}>
-                    <Icon icon={ArrowLeft} size={13} style={{ transform: 'scaleX(-1)' }} />
-                    إعادة المحاولة
-                  </button>
-                  <Link to="/quality/alerts" className="btn ghost sm">صفحة التنبيهات</Link>
-                </div>
-              }
+            /* r299 (E item 9): the shared ErrorState (retry built in) —
+               the hand-rolled EmptyState + ghost buttons retired. The
+               section Card keeps its header chrome (title/icon), so the
+               state renders inside it (page-level errors render bare). */
+            <ErrorState
+              message="تعذّر تحميل التنبيهات"
+              error={al.error}
+              onRetry={() => void al.refetch()}
             />
           ) : !al.data || al.data.alerts.length === 0 ? (
             <EmptyState illustration="empty-notifications"
@@ -705,6 +709,15 @@ export function QualityCoursesPage() {
   const c = useQualityCourses(metric, debouncedQ || undefined);
   const courses = c.data?.data;
   const total = c.data?.meta?.total;
+  // r299 (E item 8): the professors roster's ≤1024 compact band, applied
+  // to the courses table — the ?metric= drill reaches 8 columns and the
+  // tablet band sideways-scrolled inside .table-wrap (the audit's
+  // column-diet option). At ≤1024 the teacher folds under the course
+  // identity and lectures+files merge into ONE «النشاط التعليميّ»
+  // column (8 → 6). jsdom's matchMedia stub returns matches:false, so
+  // unit tests keep exercising the desktop path (same contract as the
+  // professors band hook).
+  const compact = useCompactRosterBand();
   const metricLabel = metric === 'attendance' ? 'معدل الحضور' : 'إكمال المحاضرات';
   const metricValue = (o: QualityCourse): number | null | undefined =>
     metric === 'attendance' ? o.metrics?.attendanceRate : o.metrics?.completionRate;
@@ -727,7 +740,7 @@ export function QualityCoursesPage() {
       {c.isPending ? (
         <Card title="المقرّرات النشطة" icon={BookOpen}><TableSkeleton rows={4} cols={8} /></Card>
       ) :
-       c.isError ? <ErrorState error={c.error} onRetry={() => c.refetch()} /> :
+       c.isError ? <ErrorState message="تعذّر تحميل قائمة المقرّرات" error={c.error} onRetry={() => c.refetch()} /> :
        !courses?.length ? <Card><EmptyState
          illustration="empty-list"
          icon={BookOpen}
@@ -786,11 +799,14 @@ export function QualityCoursesPage() {
               <thead>
                 <tr>
                   <th scope="col">المقرّر</th>
-                  <th scope="col">الأستاذ</th>
+                  {!compact && <th scope="col">الأستاذ</th>}
                   <th scope="col">الفصل</th>
                   <th scope="col">الطلاب</th>
-                  <th scope="col">المحاضرات</th>
-                  <th scope="col">الملفات</th>
+                  {!compact && <th scope="col">المحاضرات</th>}
+                  {!compact && <th scope="col">الملفات</th>}
+                  {compact && (
+                    <th scope="col" title="محاضرات المقرّر وملفاته المرفوعة">النشاط التعليميّ</th>
+                  )}
                   {metric && <th scope="col" className="tbl-num">{metricLabel}</th>}
                   {/* A8 P2-4: this is an estimated completion index, not
                       a measured “quality” — renamed + weights surfaced so
@@ -803,34 +819,49 @@ export function QualityCoursesPage() {
                   const score = Math.min(100, o._count.lectures * 20 + o._count.materials * 5 + o._count.assignments * 10);
                   // Score 0 = no content yet — a neutral state, never a
                   // danger register (A8 P2-4: red “0%” spent the danger
-                  // color on “no data”).
-                  const color = score === 0 ? null : score >= 80 ? 'green' : score >= 50 ? 'amber' : 'red';
+                  // color on “no data”). r299 (E item 6): typed tones —
+                  // the `as never` casts retired.
+                  const color = score === 0 ? undefined : completionTone(score);
                   const mv = metric ? metricValue(o) : undefined;
-                  const metricColor = mv == null ? null : mv >= 80 ? 'green' : mv >= 50 ? 'amber' : 'red';
+                  const metricColor = mv == null ? undefined : completionTone(mv);
                   return (
                     <tr key={o.id}>
                       <td className="tbl-strong" data-label="المقرّر">
                         {/* 4C-b: identity leads — name prominent, Latin
-                            code bidi-isolated under it. */}
+                            code bidi-isolated under it. r299 (E item 8):
+                            at ≤1024 the teacher folds under the identity
+                            (the professors band's rank fold). */}
                         <div className="qlt-course-name">{o.course.name}</div>
                         <div className="qlt-course-code"><bdi>{o.course.code}</bdi></div>
+                        {compact && (
+                          <div className="text-xxs text-subtle">د. {o.teacher.firstName} {o.teacher.lastName}</div>
+                        )}
                       </td>
-                      <td data-label="الأستاذ">د. {o.teacher.firstName} {o.teacher.lastName}</td>
+                      {!compact && <td data-label="الأستاذ">د. {o.teacher.firstName} {o.teacher.lastName}</td>}
                       <td className="font-mono text-xs" data-label="الفصل"><bdi>{o.term}</bdi></td>
                       <td className="tbl-num" data-label="الطلاب">{o._count.enrollments}</td>
-                      <td className="tbl-num" data-label="المحاضرات">{o._count.lectures}</td>
-                      <td className="tbl-num" data-label="الملفات">{o._count.materials}</td>
+                      {!compact ? (
+                        <>
+                          <td className="tbl-num" data-label="المحاضرات">{o._count.lectures}</td>
+                          <td className="tbl-num" data-label="الملفات">{o._count.materials}</td>
+                        </>
+                      ) : (
+                        <td data-label="النشاط التعليميّ">
+                          <div>{countAr(o._count.lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</div>
+                          <div className="text-xxs text-subtle">{countAr(o._count.materials, ['ملف واحد', 'ملفان', 'ملفات', 'ملفاً'])}</div>
+                        </td>
+                      )}
                       {metric && (
                         <td className="tbl-num" data-label={metricLabel}>
                           {mv == null
                             ? <Badge>لا بيانات</Badge>
-                            : <Badge color={metricColor as never}><bdi>{Math.round(mv)}%</bdi></Badge>}
+                            : <Badge color={metricColor}><bdi>{Math.round(mv)}%</bdi></Badge>}
                         </td>
                       )}
                       <td data-label="اكتمال المحتوى">
                         {score === 0
                           ? <Badge>لا محتوى بعد</Badge>
-                          : <Badge color={color as never}>{score}%</Badge>}
+                          : <Badge color={color}>{score}%</Badge>}
                       </td>
                     </tr>
                   );
@@ -918,6 +949,8 @@ export function QualityProfessorsPage() {
   // r157 (6A9 #5): same chrome-keeping discipline as the dashboard —
   // the early-error return wraps .page + header + h1 so the retry sits
   // inside the page the specialist landed on, not a chrome-less wall.
+  // r299 (E item 9): the state renders BARE (the untitled Card wrapper
+  // retired — one page-level error grammar across the sector).
   if (p.isError || !p.data) {
     return (
       <div className="page">
@@ -928,9 +961,7 @@ export function QualityProfessorsPage() {
           </div>
           <div className="qlt-header-badges"><ReadOnlyBadge /></div>
         </header>
-        <Card>
-          <ErrorState error={p.error} onRetry={() => p.refetch()} />
-        </Card>
+        <ErrorState message="تعذّر تحميل قائمة الأساتذة" error={p.error} onRetry={() => p.refetch()} />
       </div>
     );
   }
@@ -999,25 +1030,13 @@ export function QualityProfessorsPage() {
           : undefined}
         icon={School}
       >
-        {professors.length === 0 && searching ? (
-          <EmptyState
-            illustration="empty-search"
-            icon={School}
-            title="لا نتائج مطابقة"
-            description="لم نجد أستاذاً يطابق البحث — جرّب اسمًا آخر أو امسح البحث."
-            action={(
-              <button type="button" className="btn ghost sm" onClick={clearSearch}>
-                <Icon icon={X} size={13} />
-                مسح البحث
-              </button>
-            )}
-          />
-        ) : (
-          <>
         {/* r183-B5: the standard roster search chrome (admin-students-
             toolbar family) wired to the debounced server-side `q`, plus
             R190 (D4): the «بحاجة لمتابعة» filter as a pressed pill —
-            the former icon-tile KPI toggle, now where filters live. */}
+            the former icon-tile KPI toggle, now where filters live.
+            r299 (E item 5): the toolbar stays up even when the roster
+            is empty (searched or not) — a fresh institution reads an
+            honest empty state below, never a header-only table. */}
         <div className="admin-students-toolbar">
           <div className="admin-students-search">
             <Icon icon={Search} size={14} />
@@ -1043,6 +1062,33 @@ export function QualityProfessorsPage() {
             </button>
           )}
         </div>
+        {professors.length === 0 ? (
+          searching ? (
+            <EmptyState
+              illustration="empty-search"
+              icon={School}
+              title="لا نتائج مطابقة"
+              description="لم نجد أستاذاً يطابق البحث — جرّب اسمًا آخر أو امسح البحث."
+              action={(
+                <button type="button" className="btn ghost sm" onClick={clearSearch}>
+                  <Icon icon={X} size={13} />
+                  مسح البحث
+                </button>
+              )}
+            />
+          ) : (
+            /* r299 (E item 5): zero professors, no search — the honest
+               zero-state (the old page rendered a toolbar-less,
+               header-only empty table for a fresh institution). */
+            <EmptyState
+              illustration="empty-list"
+              icon={School}
+              title="لا أساتذة بعد"
+              description="ستظهر هيئة التدريس ومؤشراتها هنا فور إضافة أعضائها إلى المؤسسة."
+            />
+          )
+        ) : (
+          <>
         {lowOnly && (
           <div className="qlt-filter-note">
             <Badge color="red">مصفّى: التزام أقلّ من 50%</Badge>
@@ -1072,7 +1118,9 @@ export function QualityProfessorsPage() {
             </thead>
             <tbody>
               {visible.map((t) => {
-                const compColor = t.compliance >= 75 ? 'green' : t.compliance >= 50 ? 'amber' : 'red';
+                // r299 (E item 6): the typed compliance band (75/50) —
+                // the `as never` Badge cast retired.
+                const compColor = complianceTone(t.compliance);
                 return (
                   <tr key={t.id}>
                     <td data-label="الأستاذ">
@@ -1108,12 +1156,17 @@ export function QualityProfessorsPage() {
                       </td>
                     )}
                     {!compact && <td className="tbl-num" data-label="الملفات المرفوعة">{t.totals.materials}</td>}
-                    <td className="tbl-num" data-label="رضا الطلاب" style={{ color: 'var(--gold-ink, var(--c-yellow-deep))' }}><Icon icon={Star} size={14} /> {t.satisfaction}</td>
-                    <td className="tbl-num" data-label="زمن الاستجابة">{t.responseHours}س</td>
+                    {/* r299 (E item 6): the estimated metrics ride the
+                        unified numeral surface — satisfaction keeps its
+                        one-decimal 0-5 scale (the KPI band's «من 5.0»
+                        convention), and the response time reads as a
+                        counted noun instead of the clipped «6س». */}
+                    <td className="tbl-num" data-label="رضا الطلاب" style={{ color: 'var(--gold-ink, var(--c-yellow-deep))' }}><Icon icon={Star} size={14} /> {formatNum(t.satisfaction, { maximumFractionDigits: 1 })}</td>
+                    <td className="tbl-num" data-label="زمن الاستجابة">{countAr(t.responseHours, ['ساعة', 'ساعتين', 'ساعات', 'ساعة'])}</td>
                     <td data-label="الالتزام">
                       <div className="q-compliance">
                         <ProgressBar value={t.compliance} showValue={false} ariaLabel={`التزام د. ${t.firstName} ${t.lastName}`} />
-                        <Badge color={compColor as never}>{formatPct1(t.compliance)}%</Badge>
+                        <Badge color={compColor}>{formatPct1(t.compliance)}%</Badge>
                       </div>
                     </td>
                   </tr>
@@ -1163,7 +1216,9 @@ export function QualityEngagementPage() {
     return (
       <div className="page">
         {pageHeader}
-        <ErrorState error={e.error} onRetry={() => void e.refetch()} />
+        {/* r299 (E item 9): the sector's ONE page-level error grammar —
+            bare ErrorState with a specific message, under the header. */}
+        <ErrorState message="تعذّر تحميل مؤشرات الانخراط" error={e.error} onRetry={() => void e.refetch()} />
       </div>
     );
   }
@@ -1337,7 +1392,9 @@ export function QualityCurriculumPage() {
     return (
       <div className="page">
         {pageHeader}
-        <ErrorState error={c.error} onRetry={() => void c.refetch()} />
+        {/* r299 (E item 9): the sector's ONE page-level error grammar —
+            bare ErrorState with a specific message, under the header. */}
+        <ErrorState message="تعذّر تحميل شجرة المناهج" error={c.error} onRetry={() => void c.refetch()} />
       </div>
     );
   }
@@ -1587,21 +1644,38 @@ export function QualityAlertsPage() {
            ListSkeleton مطابق الشكل بدل السبينر الصفحي. */
         <Card><ListSkeleton rows={4} /></Card>
       ) : q.isError ? (
-        <ErrorState error={q.error} onRetry={() => q.refetch()} />
+        /* r299 (E item 9): the sector's ONE page-level error grammar —
+           bare ErrorState with a specific message, under the header. */
+        <ErrorState message="تعذّر تحميل التنبيهات" error={q.error} onRetry={() => q.refetch()} />
       ) : !q.data || q.data.alerts.length === 0 ? (
         <Card>
-          <div className="state">
-            <div className="state-icon state-icon-success">
-              <Icon icon={CheckCircle2} size={20} />
-            </div>
-            <div className="state-title">لا توجد تنبيهات حالياً</div>
-            <div className="state-desc">كلّ المؤشّرات ضمن النطاق الطبيعيّ.</div>
-          </div>
+          {/* r299 (E item 4): the shared EmptyState primitive (the
+              dashboard alerts card's own convention) — the hand-rolled
+              .state div retired; copy unchanged. */}
+          <EmptyState
+            illustration="empty-notifications"
+            icon={CheckCircle2}
+            title="لا توجد تنبيهات حالياً"
+            description="كلّ المؤشّرات ضمن النطاق الطبيعيّ."
+          />
         </Card>
       ) : (
-        <Card title="تنبيهات نشطة" icon={AlertTriangle}>
+        <Card
+          title="تنبيهات نشطة"
+          icon={AlertTriangle}
+          subtitle={q.data.counts.total > q.data.alerts.length
+            /* r299 (E item 3): the honest cap disclosure — the backend
+               slices 20 rows server-side while counts.total stays the
+               TRUE uncapped count (learning.routes.ts); the rosters'
+               own grammar (countAr total · «تُعرض أول N»), so the
+               truncation is visible, never silent. */
+            ? `${countAr(q.data.counts.total, ['تنبيه واحد', 'تنبيهان', 'تنبيهات', 'تنبيهاً'])} · تُعرض أول ${q.data.alerts.length}`
+            : undefined}
+        >
           {/* 4C-b: oversight rows — leading severity edge (2px inline-start:
-              danger / warning / success tints), category icon, severity
+              danger / warning / brand tints — r299: the info edge mirrors
+              the brand Badge's copper family, it was --success green while
+              the same row's chip rendered brand), category icon, severity
               chip (semantic colors kept) + relative time. */}
           <div className="qlt-alert-list">
             {q.data.alerts.map((a) => (

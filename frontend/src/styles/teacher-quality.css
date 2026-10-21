@@ -198,4 +198,44 @@ button.tq-row:focus-visible {
   }
 }
 
+/* ─── Curriculum authoring (cur-*) — final pass 3-d ────────────────
+   The curriculum builders (components/curriculum/*) mount under
+   TeacherIntelligencePage, which imports this sheet — this is their
+   page-scoped home. Their layout formerly rode inline styles that
+   defeated the shared mobile ladder (auth.css's .auth-row collapse
+   was unreachable under an inline grid-template-columns); these rules
+   restore collapse/wrap with tokens only, prefixed cur-. */
+
+/* Two-column field grid (lecture duration + ordinal, chapter start +
+   end) — collapses to one column ≤480px, matching the .auth-row /
+   .auth-row-2 ladder the forms' other rows already follow. The gap is
+   the builders' previous inline rhythm (--sp-3). */
+.cur-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+}
+@media (max-width: 480px) {
+  .cur-grid-2 { grid-template-columns: 1fr; }
+}
+
+/* Lecture rows: five control clusters on one flex line — ≤640px the
+   trailing action cluster (video · edit · delete) wraps onto its own
+   line, the .tq-row mobile recomposition, instead of squeezing the
+   title to an unusable sliver at 360px. The move pair (.lec-move) and
+   buttons keep their shared-sheet sizing (components.css owns them). */
+.cur-lec-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .cur-lec-row { flex-wrap: wrap; }
+  .cur-lec-actions {
+    inline-size: 100%;
+    justify-content: flex-end;
+  }
+}
+
 }

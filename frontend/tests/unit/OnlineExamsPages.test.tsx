@@ -507,6 +507,28 @@ describe('Exam taker ergonomics (5-A6 P2-2/P2-3)', () => {
     expect(screen.getByRole('button', { name: 'السؤال 1 من 2 — تعذَّر الحفظ' })).toBeTruthy();
   });
 
+  it('counts the per-question points with countAr — نقطة / نقطتان / N نقاط (22-c)', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload({
+      questions: [
+        { id: 'q1', type: 'MCQ', prompt: 'سؤال اختيار من متعدد', choices: ['الخيار الأول', 'الخيار الثاني'], points: 1 },
+        { id: 'q2', type: 'SHORT', prompt: 'سؤال قصير', choices: null, points: 2 },
+        { id: 'q3', type: 'ESSAY', prompt: 'سؤال مقالي', choices: null, points: 5 },
+      ],
+    }));
+
+    renderTaker();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'بدء الاختبار' }));
+    });
+
+    // The old نقطة/نقاط ternary broke 2 («نقطتان») and never had an 11+
+    // form; countAr speaks the counted-noun grammar.
+    expect(screen.getByText(/من · نقطة$/)).toBeTruthy();
+    expect(screen.getByText(/من · نقطتان$/)).toBeTruthy();
+    expect(screen.getByText(/من · 5 نقاط$/)).toBeTruthy();
+  });
+
   it('rings the map dot of the question on screen and retires it on unmount (5-A6 P2-2)', async () => {
     vi.useFakeTimers();
     mocks.start.mockResolvedValue(startedPayload());
@@ -584,15 +606,21 @@ describe('OnlineExamsPage list (D5 reachability)', () => {
     );
 
     // The live attempt links into the taker (the resume path back from
-    // a mid-exam reload)…
+    // a mid-exam reload)… — rows carry r241 list semantics via the
+    // listitem WRAPPER (never role on the anchor itself, which would
+    // strip the implicit link role and name-from-content), so the pin
+    // asserts the real link + href, wrapped in a listitem.
     const liveCard = screen.getByRole('link', { name: /محاولة قيد التقدم/ });
     expect(liveCard.getAttribute('href')).toBe('/student/online-exams/live');
+    expect(liveCard.closest('[role="listitem"]')).not.toBeNull();
 
-    // …the graded attempt stays a static history card, and an
-    // untouched exam links exactly as before.
+    // …the graded attempt stays a static history row (a listitem DIV,
+    // never an anchor), and an untouched exam links exactly as before.
     expect(screen.queryByRole('link', { name: /اختبار منتهٍ/ })).toBeNull();
-    expect(screen.getByRole('link', { name: /اختبار جديد/ })).toBeTruthy();
-    expect(screen.getByText('اختبار منتهٍ')).toBeTruthy();
+    expect(
+      screen.getByText('اختبار منتهٍ').closest('[role="listitem"]')?.tagName,
+    ).toBe('DIV');
+    expect(screen.getByRole('link', { name: /اختبار جديد/ }).closest('[role="listitem"]')).not.toBeNull();
   });
 
   it('a finished practice card stays a retake link — badge + score, no dead «عرض النتيجة», never history (6A6)', () => {
@@ -626,8 +654,12 @@ describe('OnlineExamsPage list (D5 reachability)', () => {
     // The open-window practice card is startable: a linked retake, the
     // retake badge, and the latest attempt score still visible on both
     // cards (a retake does not erase the last result).
-    const card = screen.getByRole('link', { name: /اختبار تدريبي/ });
+    // The startable practice row is a real link inside its listitem
+    // wrapper (the retake badge names it apart from the shut-window
+    // twin below).
+    const card = screen.getByRole('link', { name: /تدريبي — إعادة المحاولة متاحة/ });
     expect(card.getAttribute('href')).toBe('/student/online-exams/practice');
+    expect(card.closest('[role="listitem"]')).not.toBeNull();
     expect(screen.getByText('تدريبي — إعادة المحاولة متاحة')).toBeTruthy();
     expect(screen.getAllByText('7 / 10')).toHaveLength(2);
 
@@ -947,6 +979,9 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
 
     expect(screen.getByText('تم تسليم اختبارك')).toBeTruthy();
     expect(screen.getByText('بانتظار التصحيح اليدوي')).toBeTruthy();
+    // 22-c counted nouns — needsManual 2 renders the dual «سؤالان», not
+    // the broken «2 سؤال».
+    expect(screen.getByText(/سؤالان بحاجة لتقييم يدوي من الأستاذ/)).toBeTruthy();
     expect(screen.queryByText('لم يجتز')).toBeNull();
     expect(screen.queryByText('ناجح')).toBeNull();
   });
@@ -1218,9 +1253,10 @@ describe('exam window visibility (15-h P1-5)', () => {
       </MemoryRouter>,
     );
 
-    // The open-window exam stays linked under "available" and shows its
-    // close deadline.
-    expect(screen.getByRole('link', { name: /اختبار مفتوح/ })).toBeTruthy();
+    // The open-window exam stays a real link inside its listitem
+    // wrapper under "available" and shows its close deadline.
+    const openCard = screen.getByRole('link', { name: /اختبار مفتوح/ });
+    expect(openCard.closest('[role="listitem"]')).not.toBeNull();
     expect(screen.getByText(/يغلق /)).toBeTruthy();
 
     // Not-yet-open and closed exams keep their own dated group, carry

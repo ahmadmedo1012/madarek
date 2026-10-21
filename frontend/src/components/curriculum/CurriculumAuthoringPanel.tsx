@@ -61,10 +61,15 @@ export function CurriculumAuthoringPanel({
           : undefined
       }
       actions={
+        /* 3-d: the raw inline `background: accent` overrode .btn.primary's
+         * audited token fill with the unaudited course themeColor — the
+         * button keeps the token primary; the course accent survives only
+         * on the non-text icon-well tint of the selected lecture's
+         * structure head below (the --tq-accent idiom the family's rows
+         * already use, teacher-quality.css). */
         <button
           type="button"
           className="btn primary sm"
-          style={accent ? { background: accent } : undefined}
           onClick={() => setAdding(true)}
         >
           <Icon icon={Plus} size={13} /> محاضرة جديدة
@@ -116,6 +121,17 @@ export function CurriculumAuthoringPanel({
               marginBottom: 'var(--sp-3)',
             }}
           >
+            {/* The course accent's one surface — the family's tinted icon
+             * well (.tq-row-icon keys off --tq-accent, teacher-quality.css;
+             * the OfferingRow/LabRow idiom). Decorative only: no text ever
+             * rides the raw course color (contrast unaudited). */}
+            <span
+              className="tq-row-icon"
+              aria-hidden="true"
+              style={accent ? { ['--tq-accent' as never]: accent } : undefined}
+            >
+              <Icon icon={ListVideo} size={22} />
+            </span>
             <Badge color="brand">{selected.ordinal}</Badge>
             <span className="text-sm" style={{ fontWeight: 'var(--fw-bold, 700)' }}>
               هيكل المحاضرة: {selected.title}
@@ -130,14 +146,22 @@ export function CurriculumAuthoringPanel({
           {detail.data && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
               <section aria-label="فصول المحاضرة">
+                {/* 3-d: counted nouns (the panel subtitle's own forms) —
+                 * the raw «الفصول (N)» was broken Arabic for 1/2; the
+                 * empty list carries no count (the section's empty state
+                 * owns that message — the subtitle's rule). */}
                 <div className="text-xs text-muted" style={{ marginBottom: 'var(--sp-2)', fontWeight: 'var(--fw-semibold, 600)' }}>
-                  الفصول ({detail.data.chapters.length})
+                  {detail.data.chapters.length > 0
+                    ? `الفصول · ${countAr(detail.data.chapters.length, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])}`
+                    : 'الفصول'}
                 </div>
                 <ChapterList lecture={detail.data} chapters={detail.data.chapters} />
               </section>
               <section aria-label="أسئلة التفاعل">
                 <div className="text-xs text-muted" style={{ marginBottom: 'var(--sp-2)', fontWeight: 'var(--fw-semibold, 600)' }}>
-                  أسئلة التفاعل ({detail.data.checkpoints.length})
+                  {detail.data.checkpoints.length > 0
+                    ? `أسئلة التفاعل · ${countAr(detail.data.checkpoints.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])}`
+                    : 'أسئلة التفاعل'}
                 </div>
                 <CheckpointList lecture={detail.data} checkpoints={detail.data.checkpoints} />
               </section>

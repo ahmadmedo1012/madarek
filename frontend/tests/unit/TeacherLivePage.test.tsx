@@ -13,7 +13,7 @@
  * pattern); no lifecycle action is fired by these read-only pins.
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { act } from '@testing-library/react';
 import TeacherLivePage from '../../src/pages/teacher/TeacherLivePage';
@@ -129,5 +129,79 @@ describe('TeacherLivePage — past-sessions truncation disclosure (r157 / 6A9)',
         el instanceof HTMLElement
         && (el.textContent ?? '').replace(/\s+/g, ' ').trim() === 'أحدث 10 جلسات من أصل 12'),
     ).toBeInTheDocument();
+  });
+});
+
+/* ── E (workstream 3-a, defect map H3): the create-form discard guard.
+ * The inline form used to drop typed input silently — both the footer
+ * «إلغاء» and the header toggle closed it unconditionally. Mirrors the
+ * GradeSubmissionModal guard pins in TeacherPages.test.tsx. ─────── */
+describe('TeacherLivePage — create-form discard guard (E / 3-a)', () => {
+  it('opens the form from the header button — the fields render', () => {
+    renderPage();
+
+    fireEvent.click(screen.getByRole('button', { name: 'جلسة جديدة' }));
+
+    expect(screen.getByLabelText('عنوان الجلسة')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'جدولة الجلسة' })).toBeInTheDocument();
+  });
+
+  it('a clean form cancels directly — no discard confirm, no form left behind', async () => {
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'جلسة جديدة' }));
+
+    fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: 'جدولة الجلسة' })).toBeNull();
+    });
+    expect(screen.queryByRole('dialog', { name: 'تعديلات غير محفوظة' })).toBeNull();
+    // The header toggle flipped back to its closed label.
+    expect(screen.getByRole('button', { name: 'جلسة جديدة' })).toBeInTheDocument();
+  });
+
+  it('routes a dirty cancel through the discard confirm — draft intact, explicit discard is the only way out', async () => {
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'جلسة جديدة' }));
+    fireEvent.change(screen.getByLabelText('عنوان الجلسة'), {
+      target: { value: 'شرح الوحدة الثالثة — التعلم الآلي' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }));
+
+    await screen.findByRole('dialog', { name: 'تعديلات غير محفوظة' });
+    // The draft survives behind the confirm — never silently dropped.
+    expect(screen.getByLabelText('عنوان الجلسة')).toHaveValue('شرح الوحدة الثالثة — التعلم الآلي');
+
+    // «متابعة التحرير» keeps the form open with the draft.
+    fireEvent.click(screen.getByRole('button', { name: 'متابعة التحرير' }));
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'تعديلات غير محفوظة' })).toBeNull();
+    });
+    expect(screen.getByLabelText('عنوان الجلسة')).toHaveValue('شرح الوحدة الثالثة — التعلم الآلي');
+
+    // Explicit discard is the only way out with a dirty draft.
+    fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }));
+    await screen.findByRole('dialog', { name: 'تعديلات غير محفوظة' });
+    fireEvent.click(screen.getByRole('button', { name: 'التخلّي عن التعديلات' }));
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: 'جدولة الجلسة' })).toBeNull();
+    });
+    expect(screen.queryByRole('dialog', { name: 'تعديلات غير محفوظة' })).toBeNull();
+  });
+
+  it('the header toggle routes through the guard too — a dirty form never closes silently', async () => {
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'جلسة جديدة' }));
+    fireEvent.change(screen.getByLabelText('عنوان الجلسة'), {
+      target: { value: 'شرح الوحدة الثالثة — التعلم الآلي' },
+    });
+
+    // The toggle reads «إغلاق النموذج» while the form is open.
+    fireEvent.click(screen.getByRole('button', { name: 'إغلاق النموذج' }));
+
+    await screen.findByRole('dialog', { name: 'تعديلات غير محفوظة' });
+    // The form stays open behind the confirm.
+    expect(screen.getByRole('button', { name: 'جدولة الجلسة' })).toBeInTheDocument();
   });
 });

@@ -24,6 +24,7 @@ import { ConfirmDialog } from '../owner/ConfirmDialog';
 import { Icon } from '../Icon';
 import { Badge } from '../primitives';
 import { toast } from '../../lib/toast';
+import { countAr } from '../../lib/format';
 import {
   apiErrorMessage,
   useCreateCheckpoint,
@@ -193,6 +194,7 @@ export function CheckpointFormModal({
       onClose={requestClose}
       closeOnOverlayClick={!pending}
       closeOnEscape={!escapeLocked && !pending}
+      pending={pending}
     >
       <form onSubmit={onSubmit} noValidate>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
@@ -374,7 +376,9 @@ export function CheckpointList({
             {checkpoint.question}
           </span>
           <span className="text-xs text-muted" style={{ whiteSpace: 'nowrap' }}>
-            <Icon icon={CircleHelp} size={11} /> {checkpoint.options?.length ?? 0} خيارات
+            {/* 5-B6 (A7 P2-4) family grammar — the raw «N خيارات» was
+             * broken Arabic for 1 and 2 (counted nouns via countAr). */}
+            <Icon icon={CircleHelp} size={11} /> {countAr(checkpoint.options?.length ?? 0, ['خيار واحد', 'خياران', 'خيارات', 'خياراً'])}
           </span>
           <button type="button" className="btn ghost sm" onClick={() => setEditing(checkpoint)} aria-label={`تعديل السؤال عند ${formatSec(checkpoint.triggerSec)}`}>
             <Icon icon={Pencil} size={12} />
@@ -402,7 +406,7 @@ export function CheckpointList({
           open
           title="حذف السؤال التفاعلي"
           message={`سيتم حذف السؤال "${deleting.question}" نهائياً.`}
-          confirmLabel="حذف"
+          confirmLabel="حذف نهائي"
           danger
           onConfirm={confirmDelete}
           onCancel={() => setDeleting(null)}

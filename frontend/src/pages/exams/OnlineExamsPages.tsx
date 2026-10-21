@@ -10,10 +10,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ClipboardCheck, Clock, CheckCircle2, AlertTriangle, ChevronRight, ChevronDown, ChevronLeft,
-  ShieldCheck, FileText, Hourglass, CalendarClock, ArrowLeft, Check,
+  FileText, Hourglass, CalendarClock, ArrowLeft, Check,
   ListChecks, Info, Ban,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, PageHeader } from '../../components/primitives';
+import { Card, Badge, PageHeader } from '../../components/primitives';
+import { StatStrip } from '../../components/primitives/Ledger';
 import { Icon } from '../../components/Icon';
 import { Illustration as MkIllustration } from '../../components/illustrations/Illustration';
 import { Skeleton, ListSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
@@ -26,7 +27,9 @@ import {
   type MyExam, type StartedAttempt, type ResumedAttempt, type AttemptReviewQuestion,
   type ExamTemplateDetail, type QType, type Difficulty,
 } from '../../hooks/useResources';
-import { apiErrorDetailRaw, apiErrorMessage, countAr, formatDateTimeAr } from '../../lib/format';
+import {
+  apiErrorDetailRaw, apiErrorMessage, countAr, formatDateTimeAr, formatRelativeArShort,
+} from '../../lib/format';
 import { overlayStack } from '../../lib/overlayStack';
 import { useEntityPageTitle } from '../../components/layout/AppShell';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
@@ -39,7 +42,13 @@ const KIND_LABEL: Record<string, string> = {
 const KIND_COLOR: Record<string, string> = {
   QUIZ: 'var(--chart-3)',
   MIDTERM: 'var(--chart-5)',
-  FINAL: 'var(--danger)',
+  /* FINAL is an informational kind, not a failure status — the old
+     var(--danger) put danger semantics on a kind chip, against the
+     sheet's own contract ("semantic colors only for status chips",
+     online-exams.css §0). --chart-8 (mauve) keeps the data-series
+     family and stays distinct from QUIZ's sky, MIDTERM's lavender and
+     PRACTICE's mint, re-keying for dark like every chart token. */
+  FINAL: 'var(--chart-8)',
   PRACTICE: 'var(--chart-2)',
 };
 
@@ -291,7 +300,12 @@ export default function OnlineExamsPage() {
                 }
               />
             )}
-            <div className="oex-rows">
+            {/* r241 list semantics (the tq-rows family grammar): each
+                section's row container is a named list and every row a
+                listitem — startable rows keep their link semantics via
+                the listitem wrapper (never role on the anchor itself,
+                which would strip the implicit link role). */}
+            <div className="oex-rows" role="list" aria-label="اختبارات متاحة لك الآن">
               {available.map((e) => <ExamCard key={e.id} exam={e} canStart />)}
             </div>
           </Card>
@@ -305,7 +319,7 @@ export default function OnlineExamsPage() {
               icon={CalendarClock}
               subtitle={countAr(unavailable.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
             >
-              <div className="oex-rows">
+              <div className="oex-rows" role="list" aria-label="اختبارات غير متاحة الآن">
                 {unavailable.map((e) => <ExamCard key={e.id} exam={e} canStart={false} />)}
               </div>
             </Card>
@@ -317,7 +331,7 @@ export default function OnlineExamsPage() {
               icon={FileText}
               subtitle={countAr(taken.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
             >
-              <div className="oex-rows">
+              <div className="oex-rows" role="list" aria-label="اختبارات أجريتها">
                 {taken.map((e) => <ExamCard key={e.id} exam={e} canStart={false} />)}
               </div>
             </Card>
@@ -364,7 +378,9 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
         <span className="oex-row-kicker">{KIND_LABEL[exam.kind]} · {exam.courseName ?? exam.facultyName ?? 'موحد'}</span>
         <span className="oex-row-meta">
           <span><Icon icon={Clock} size={12} /> <bdi>{exam.durationMin}</bdi> دقيقة</span>
-          <span><Icon icon={ClipboardCheck} size={12} /> <bdi>{exam.questionCount}</bdi> سؤال</span>
+          {/* 22-c counted nouns — «N سؤال» broke the glossary for
+              2 (سؤالان) and 3–10 (أسئلة); countAr speaks the forms. */}
+          <span><Icon icon={ClipboardCheck} size={12} /> {countAr(exam.questionCount, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])}</span>
           <span>درجة النجاح <bdi>≥ {exam.passingScore}%</bdi></span>
           {/* 15-h P1-5 — an open-window exam carries its close deadline
               so the student knows how long they really have. */}
@@ -436,16 +452,24 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
 
   // Taken / windowed exams render as a static row — no dead "#" link.
   if (!canStart) {
-    return <div className="oex-row">{body}</div>;
+    return <div className="oex-row" role="listitem">{body}</div>;
   }
 
   return (
-    <Link
-      to={`/student/online-exams/${exam.id}`}
-      className="oex-row"
-    >
-      {body}
-    </Link>
+    /* The listitem WRAPPER (not role on the anchor itself): an explicit
+     * role="listitem" on the <Link> would override the anchor's implicit
+     * link role — the row would lose «link» semantics and name-from-content
+     * for assistive tech. The wrapper keeps the named list AND the real
+     * link (the patterns' RowList does the same: the link rides the row
+     * line inside the item). */
+    <div className="oex-row-slot" role="listitem">
+      <Link
+        to={`/student/online-exams/${exam.id}`}
+        className="oex-row"
+      >
+        {body}
+      </Link>
+    </div>
   );
 }
 
@@ -462,7 +486,7 @@ function reviewVerdict(q: AttemptReviewQuestion): { color: 'green' | 'red' | und
 }
 
 /** One reviewed question — the prompt, my answer, the released key
- *  and the verdict in one tight row group (student.css §5-D3). */
+ *  and the verdict in one tight row group (online-exams.css §4). */
 function ReviewQuestionRow({ q, index }: { q: AttemptReviewQuestion; index: number }) {
   const myChoice = q.myChoiceIndex !== null && q.choices ? q.choices[q.myChoiceIndex] ?? null : null;
   const keyChoice = typeof q.correctAnswer === 'number' && q.choices ? q.choices[q.correctAnswer] ?? null : null;
@@ -834,16 +858,21 @@ export function ExamTakerPage() {
       .map((q) => document.getElementById(`exam-q-${q.id}`))
       .filter((el): el is HTMLElement => el !== null);
     if (cards.length === 0) return;
-    // The reading band starts under the sticky bar (its measured height:
-    // the .oex-bar stack ≈120px ≥768, taller at 390 with the 44px dot
-    // row — online-exams.css; the band top mirrors the rootMargin below)
-    // and ends at the viewport's lower half, so a card
+    // The reading band starts under the sticky bar and ends at the
+    // viewport's lower half, so a card
     // only counts once its title is actually readable. "Current" = the
     // first card whose header entered the band. A card that only drips
     // its tail into the band (the previous question scrolling out) never
     // wins; a long card filling the whole band keeps the ring (fallback:
     // topmost intersecting).
-    const BAND_TOP = 120;
+    // The band top mirrors the sticky-bar stack the CSS really paints
+    // (online-exams.css .oex-q scroll-margin-block-start): ≈120px on
+    // wide viewports, 160px (10rem) at ≤640 where the bar grows the
+    // 44px dot row. The rect math below and the observer's rootMargin
+    // read the SAME value, so the trigger band and the decision band
+    // can never disagree. (jsdom defaults to a 1024px innerWidth, so
+    // tests stay on the 120px path.)
+    const bandTop = window.innerWidth <= 640 ? 160 : 120;
     const pickCurrent = () => {
       const vh = window.innerHeight;
       const bandBottom = vh * 0.5;
@@ -853,8 +882,8 @@ export function ExamTakerPage() {
       let crossingTop = Infinity;
       for (const el of cards) {
         const r = el.getBoundingClientRect();
-        if (r.bottom <= BAND_TOP || r.top >= bandBottom) continue; // outside the band
-        if (r.top >= BAND_TOP) {
+        if (r.bottom <= bandTop || r.top >= bandBottom) continue; // outside the band
+        if (r.top >= bandTop) {
           if (r.top < inBandTop) { inBandTop = r.top; inBand = el; }
         } else if (r.top < crossingTop) { crossingTop = r.top; crossing = el; }
       }
@@ -865,7 +894,7 @@ export function ExamTakerPage() {
       }
     };
     const io = new IntersectionObserver(pickCurrent, {
-      rootMargin: '-120px 0px -50% 0px',
+      rootMargin: `-${bandTop}px 0px -50% 0px`,
       threshold: 0,
     });
     cards.forEach((el) => io.observe(el));
@@ -1033,7 +1062,19 @@ export function ExamTakerPage() {
                 )}
               </>
             ) : examsQ.isPending ? (
-              <p className="oex-result-note">جارٍ جلب نتيجتك…</p>
+              /* Shape-matched loading (the r176f loading-closure
+                 discipline): the done-state's resolved anatomy — moment
+                 → title → grade lockup → note → action — as skeleton
+                 bars, so the pending → resolved swap moves nothing. The
+                 old one-line «جارٍ جلب نتيجتك…» note was the only
+                 non-shape-matched loading on these surfaces. */
+              <div className="oex-result-skel" aria-busy="true">
+                <Skeleton width={140} height={140} rounded="var(--r-lg)" />
+                <Skeleton width="min(320px, 100%)" height={26} />
+                <Skeleton width={120} height={56} rounded="var(--r-lg)" />
+                <Skeleton width="min(380px, 100%)" height={12} />
+                <Skeleton width={140} height={44} rounded="var(--r-full)" />
+              </div>
             ) : examsQ.isError ? (
               <div className="form-error" role="alert">
                 <Icon icon={AlertTriangle} size={14} />
@@ -1114,11 +1155,12 @@ export function ExamTakerPage() {
         <Card>
           {/* 5-A6 plan-7 — verdict lockup (see the done-state screen). */}
           <div className="empty-state oex-result">
-            <Icon
-              icon={awaitingManual ? Hourglass : result.passed ? CheckCircle2 : AlertTriangle}
-              size={36}
-              style={{ color: awaitingManual ? 'var(--info)' : result.passed ? 'var(--success)' : 'var(--warning)' }}
-            />
+            {/* The finished moment speaks the same state-graphics language
+                as the deep-link done-state twin above — the kit's
+                exam-complete piece (r280), not a lone 36px Lucide icon;
+                the verdict badge below owns the pass/fail/awaiting
+                semantics, exactly like the twin's lockup. */}
+            <MkIllustration name="exam-complete" size={140} />
             <h1 className="oex-result-title" style={H1_AS_H2_STYLE}>
               {awaitingManual ? 'تم تسليم اختبارك' : result.passed ? 'مبروك — لقد اجتزت الاختبار!' : 'الاختبار انتهى'}
             </h1>
@@ -1138,8 +1180,11 @@ export function ExamTakerPage() {
               )}
             </div>
             <p className="oex-result-note">
+              {/* 22-c counted nouns — «N سؤال» broke the glossary for
+                  2/3–10; countAr speaks the forms (the same grammar the
+                  submit dialog and the moderation rows carry). */}
               {result.needsManual > 0
-                ? <><bdi>{result.needsManual}</bdi> سؤال بحاجة لتقييم يدوي من الأستاذ — ستظهر الدرجة النهائية بعد المراجعة.</>
+                ? <>{countAr(result.needsManual, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])} بحاجة لتقييم يدوي من الأستاذ — ستظهر الدرجة النهائية بعد المراجعة.</>
                 : 'تم احتساب النتيجة فوراً.'}
             </p>
             {/* 5-D3 (5-B3 hand-off #1 / A6 P2-4): the review endpoint
@@ -1292,7 +1337,10 @@ export function ExamTakerPage() {
                     (role=radiogroup), so a screen reader never meets an
                     unnamed graded input. */}
                 <div className="text-xxs text-subtle" id={`exam-q-${q.id}-num`}>
-                  السؤال <bdi>{i + 1}</bdi> من <bdi>{attempt.questions.length}</bdi> · <bdi>{q.points}</bdi> {q.points === 1 ? 'نقطة' : 'نقاط'}
+                  {/* 22-c counted nouns — نقطة/نقطتان/N نقاط (the
+                      نقطة/نقاط ternary broke 2 and never had an 11+
+                      form; same grammar as the moderation rows). */}
+                  السؤال <bdi>{i + 1}</bdi> من <bdi>{attempt.questions.length}</bdi> · {countAr(q.points, ['نقطة', 'نقطتان', 'نقاط', 'نقطة'])}
                 </div>
                 <div className="oex-prompt" id={`exam-q-${q.id}-prompt`}>{q.prompt}</div>
                 {(q.type === 'MCQ' || q.type === 'TRUE_FALSE') && q.choices && (
@@ -1619,6 +1667,18 @@ export function ExamModerationPage() {
   };
 
   const queue = queueQ.data;
+  /* Honest KPIs (the values the strip renders below): pending shows
+   * '…', an API-down queue shows '—' (never a fake zero), and the
+   * system-status cell derives from the query instead of a hardcoded
+   * «نشط». 6A9-finding-8 — the static «نموذج الجودة: رؤية 2024–2028»
+   * tile was invented content (no such data source exists); the
+   * questions-awaiting KPI derives from the queue itself, summed over
+   * the pending rows. No decision timestamps exist in the page payload
+   * (PENDING queue only), so no «decisions this month» was invented
+   * either. */
+  const kpiKnown = !queueQ.isPending && !queueQ.isError;
+  const pendingCount = queue?.length ?? 0;
+  const questionsAwaiting = (queue ?? []).reduce((sum, item) => sum + item._count.questions, 0);
 
   return (
     <div className="page">
@@ -1627,68 +1687,86 @@ export function ExamModerationPage() {
         subtitle="مراجعة قوالب الاختبارات الموحَّدة قبل اعتمادها وإتاحتها للطلاب — صلاحية حصرية لمكتب الجودة."
       />
 
-      <div className="grid-3">
-        {/* Honest KPIs: pending shows '…', an API-down queue shows '—'
-            (never a fake zero), and the system-status card derives from
-            the query instead of a hardcoded "نشط". */}
-        <MetricCard
-          icon={ShieldCheck}
-          label="بانتظار المراجعة"
-          value={queueQ.isPending ? '…' : queueQ.isError ? '—' : `${queue?.length ?? 0}`}
-          color="amber"
-        />
-        <MetricCard
-          icon={queueQ.isError ? AlertTriangle : CheckCircle2}
-          label="حالة النظام"
-          value={queueQ.isPending ? '…' : queueQ.isError ? 'تعذّر الاتصال' : 'نشط'}
-          color={queueQ.isError ? 'red' : 'green'}
-        />
-        {/* 6A9-finding-8 — the static «نموذج الجودة: رؤية 2024–2028» tile
-            was invented content (no such data source exists). The honest
-            third KPI derives from the queue itself: the questions awaiting
-            review, summed over the pending rows ('…' while loading, '—' on
-            error — never a fake zero). No decision timestamps exist in the
-            page payload (PENDING queue only), so no «decisions this
-            month» was invented either. */}
-        <MetricCard
-          icon={ListChecks}
-          label="أسئلة بانتظار الفحص"
-          value={
-            queueQ.isPending
-              ? '…'
-              : queueQ.isError
-                ? '—'
-                : `${(queue ?? []).reduce((sum, item) => sum + item._count.questions, 0)}`
-          }
-          color="purple"
-        />
-      </div>
+      {/* The quality sector's typographic StatStrip (R189/R190 — the
+          same strip QualityPages carries), replacing the retired grid-3
+          icon-tile MetricCard grammar. The severity state the old
+          MetricCard `color` prop painted on the tile box now rides the
+          trend note's tone (down = rose ink / up = mint ink — the
+          OwnerAlertsPage mapping; the strip has no per-value tone of
+          its own, its value union is the plain up/down/flat trend
+          tone). */}
+      <StatStrip
+        ariaLabel="مؤشرات مراجعة الاختبارات"
+        cells={[
+          {
+            label: 'بانتظار المراجعة',
+            value: queueQ.isPending ? '…' : queueQ.isError ? '—' : `${pendingCount}`,
+            trend: kpiKnown ? (pendingCount === 0 ? 'لا شيء ينتظر' : 'تنتظر قرارك') : 'بانتظار البيانات',
+            trendTone: kpiKnown ? (pendingCount > 0 ? 'down' : 'up') : 'flat',
+          },
+          {
+            label: 'أسئلة بانتظار الفحص',
+            value: queueQ.isPending ? '…' : queueQ.isError ? '—' : `${questionsAwaiting}`,
+            trend: kpiKnown
+              ? (questionsAwaiting === 0 ? 'لا أسئلة معلّقة' : 'مجموع أسئلة القوالب المعلّقة')
+              : 'بانتظار البيانات',
+            trendTone: kpiKnown ? (questionsAwaiting > 0 ? 'down' : 'up') : 'flat',
+          },
+          {
+            label: 'حالة النظام',
+            value: queueQ.isPending ? '…' : queueQ.isError ? 'تعذّر الاتصال' : 'نشط',
+            trend: queueQ.isError ? 'تعذّر جلب الطابور' : kpiKnown ? 'اتصال سليم' : 'بانتظار البيانات',
+            trendTone: queueQ.isError ? 'down' : kpiKnown ? 'up' : 'flat',
+          },
+        ]}
+      />
 
-      <Card title="قائمة الانتظار" icon={ClipboardCheck}>
+      {/* The backend queue is strict FIFO oldest-first (exams.routes.ts
+          orders by createdAt asc) — the subtitle discloses the order the
+          rows arrive in, the honest contract for a read-heavy queue. */}
+      <Card title="قائمة الانتظار" icon={ClipboardCheck} subtitle="الطابور بالأقدم أولًا">
         {queueQ.isPending ? (
           <ListSkeleton rows={4} />
         ) : queueQ.isError ? (
           <ErrorState error={queueQ.error} onRetry={() => void queueQ.refetch()} />
         ) : queue && queue.length === 0 ? (
-          <div className="state">
-            <div className="state-icon state-icon-success"><Icon icon={CheckCircle2} size={20} /></div>
-            <div className="state-title">لا شيء بانتظار المراجعة</div>
-            <div className="state-desc">كل قوالب الاختبارات المتاحة للطلاب اجتازت المراجعة.</div>
-          </div>
+          /* The shared EmptyState primitive (the same call shape the
+             list page's sections use), keeping the exact copy + icon. */
+          <EmptyState
+            icon={CheckCircle2}
+            title="لا شيء بانتظار المراجعة"
+            description="كل قوالب الاختبارات المتاحة للطلاب اجتازت المراجعة."
+          />
         ) : (
-          <div className="oex-queue">
+          <div className="oex-queue" role="list" aria-label="طابور المراجعة">
             {queue?.map((item) => {
               const rowPending = acting?.id === item.id;
               return (
-                <div key={item.id} className="oex-mod-row">
+                <div key={item.id} className="oex-mod-row" role="listitem">
                   <div className="oex-mod-main">
                     <div className="oex-mod-title">{item.title}</div>
                     <div className="oex-mod-meta">
                       <Badge>{KIND_LABEL[item.kind]}</Badge>
                       {item.offering && <Badge color="brand">{item.offering.course.name}</Badge>}
-                      <Badge><bdi>{item._count.questions}</bdi> سؤال · <bdi>{item.durationMin}</bdi> د</Badge>
+                      {/* 22-c counted nouns — «N سؤال · N د» broke the
+                          glossary for 2 (سؤالان/دقيقتين) and 3–10
+                          (أسئلة/دقائق). */}
+                      <Badge>
+                        {countAr(item._count.questions, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])
+                          + ' · '
+                          + countAr(item.durationMin, ['دقيقة', 'دقيقتين', 'دقائق', 'دقيقة'])}
+                      </Badge>
                       <span className="text-xxs text-subtle">
                         قدّمه: {item.author.firstName} {item.author.lastName}
+                      </span>
+                      {/* The payload's createdAt finally renders — the
+                          waiting age IS the prioritisation signal (the
+                          queue is oldest-first); the reviewer sees how
+                          long each template has been waiting.
+                          formatRelativeArShort already carries the
+                          «منذ» prefix — no second one here. */}
+                      <span className="text-xxs text-subtle">
+                        بانتظار المراجعة {formatRelativeArShort(item.createdAt)}
                       </span>
                     </div>
                   </div>

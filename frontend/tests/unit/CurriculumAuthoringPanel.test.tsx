@@ -24,7 +24,7 @@
  *      (audit 11-f P1-7 — shift / reset-with-nudge)
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CurriculumAuthoringPanel } from '../../src/components/curriculum/CurriculumAuthoringPanel';
@@ -370,10 +370,23 @@ describe('CurriculumAuthoringPanel — lecture structure (chapters + checkpoints
     expect(await screen.findByText('المقدمة')).toBeInTheDocument();
     expect(screen.getByText('0:00 – 5:20')).toBeInTheDocument();
 
-    // checkpoint: trigger 125s → 2:05 + options count
+    // checkpoint: trigger 125s → 2:05 + options count — 3-d: counted
+    // nouns (the raw «2 خيارات» was broken Arabic for 1/2).
     expect(screen.getByText('ما هي وحدة قياس البيانات الأساسية؟')).toBeInTheDocument();
     expect(screen.getByText('2:05')).toBeInTheDocument();
-    expect(screen.getByText('2 خيارات')).toBeInTheDocument();
+    expect(screen.getByText('خياران')).toBeInTheDocument();
+  });
+
+  it('labels the structure sections with counted nouns, not raw digits (3-d)', async () => {
+    renderPanel();
+
+    fireEvent.click(await screen.findByText('المحاضرة الأولى: مدخل الشبكات'));
+
+    expect(await screen.findByText('هيكل المحاضرة: المحاضرة الأولى: مدخل الشبكات')).toBeInTheDocument();
+    // 1 chapter / 1 checkpoint on the fixture — the section headers carry
+    // the panel subtitle's own counted-noun forms (was «الفصول (1)»).
+    expect(await screen.findByText('الفصول · فصل واحد')).toBeInTheDocument();
+    expect(screen.getByText('أسئلة التفاعل · سؤال واحد')).toBeInTheDocument();
   });
 });
 
@@ -389,6 +402,34 @@ describe('CurriculumAuthoringPanel — create lecture modal', () => {
 
     expect(await screen.findByText('عنوان المحاضرة مطلوب')).toBeInTheDocument();
     expect(screen.getByText('رابط الفيديو مطلوب')).toBeInTheDocument();
+  });
+
+  it('swaps to the pending label with the Button loading grammar while the create is in flight (3-d)', async () => {
+    const { api } = await import('../../src/lib/api');
+    // A never-resolving POST pins the mutation in the pending window —
+    // exactly the state the loading contract must cover.
+    vi.mocked(api.post).mockImplementationOnce(
+      () => new Promise<{ data: { data: { ok: boolean } } }>(() => {}),
+    );
+
+    renderPanel();
+    fireEvent.click(screen.getByRole('button', { name: 'محاضرة جديدة' }));
+    const dialog = await screen.findByRole('dialog', { name: 'محاضرة جديدة' });
+    fireEvent.change(within(dialog).getByLabelText('عنوان المحاضرة'), { target: { value: 'محاضرة قيد الحفظ' } });
+    fireEvent.change(within(dialog).getByLabelText('رابط الفيديو'), { target: { value: 'https://cdn.example.com/new.mp4' } });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'إضافة المحاضرة' }));
+
+    // The exam modals' submit idiom, now shared: the Arabic pending label
+    // rides the primitive's visually-hidden span (SR-announced) with
+    // aria-busy + data-loading + disabled.
+    const busy = await within(dialog).findByRole('button', { name: 'جارٍ الحفظ…' });
+    expect(busy).toBeDisabled();
+    expect(busy).toHaveAttribute('aria-busy', 'true');
+    expect(busy).toHaveAttribute('data-loading', 'true');
+    // The other dismissal legs lock while pending — footer cancel and
+    // the header X (requestClose was already a no-op; now it looks it).
+    expect(within(dialog).getByRole('button', { name: 'إلغاء' })).toBeDisabled();
+    expect(within(dialog).getByRole('button', { name: 'إغلاق' })).toBeDisabled();
   });
 });
 
@@ -458,6 +499,29 @@ describe('Lecture deletion — ConfirmDialog gating', () => {
 
     // The context-anchored list banner persists underneath.
     expect(await screen.findByText('لا يمكن حذف محاضرة عليها سجل مشاهدات')).toBeInTheDocument();
+  });
+});
+
+describe('Delete confirm-verb unification — «حذف نهائي» across the three builders (3-d)', () => {
+  it('chapter and checkpoint deletes confirm with the same destructive verb as lectures', async () => {
+    renderPanel();
+    fireEvent.click(await screen.findByText('المحاضرة الأولى: مدخل الشبكات'));
+    await screen.findByText('المقدمة');
+
+    // Chapter delete → the destructive verb matches the lecture dialog.
+    fireEvent.click(screen.getByRole('button', { name: 'حذف المقدمة' }));
+    const chapterDialog = await screen.findByRole('dialog', { name: 'حذف الفصل' });
+    expect(within(chapterDialog).getByRole('button', { name: 'حذف نهائي' })).toBeInTheDocument();
+    fireEvent.click(within(chapterDialog).getByRole('button', { name: 'إلغاء' }));
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'حذف الفصل' })).toBeNull();
+    });
+
+    // Checkpoint delete → same verb (was plain «حذف» for an equally
+    // destructive cascade).
+    fireEvent.click(screen.getByRole('button', { name: 'حذف السؤال عند 2:05' }));
+    const cpDialog = await screen.findByRole('dialog', { name: 'حذف السؤال التفاعلي' });
+    expect(within(cpDialog).getByRole('button', { name: 'حذف نهائي' })).toBeInTheDocument();
   });
 });
 

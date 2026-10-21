@@ -131,6 +131,7 @@ export function ChapterFormModal({
       onClose={requestClose}
       closeOnOverlayClick={!pending}
       closeOnEscape={!escapeLocked && !pending}
+      pending={pending}
     >
       <form onSubmit={onSubmit} noValidate>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
@@ -138,7 +139,9 @@ export function ChapterFormModal({
             <input id={titleId} type="text" className="auth-input" {...form.register('title')} />
           </FormField>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--sp-3)' }}>
+          {/* cur-grid-2 (teacher-quality.css): 2-col grid with the
+           * ≤480px collapse the old inline template-columns defeated. */}
+          <div className="cur-grid-2">
             <FormField label="البداية" htmlFor={startId} error={err.start?.message} hint="مثل 05:20">
               <TimeInput
                 id={startId}
@@ -325,7 +328,7 @@ export function ChapterList({
           open
           title="حذف الفصل"
           message={`سيتم حذف الفصل "${deleting.title}" نهائياً.`}
-          confirmLabel="حذف"
+          confirmLabel="حذف نهائي"
           danger
           onConfirm={confirmDelete}
           onCancel={() => setDeleting(null)}

@@ -473,4 +473,44 @@
     flex-direction: column;
     gap: var(--sp-2);
   }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §picker-order — the builder picker's pick-sequence affordance  ║
+     ║  (final pass 3-d): the backend assigns each template question   ║
+     ║  its exam order from the PICK sequence (exams.routes creates    ║
+     ║  order: i+1 over the picked id array), so the picker shows the  ║
+     ║  live position of every picked row — a small accent-tinted      ║
+     ║  mono chip beside the checkbox, renumbered as picks change.     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .exa-pick-order {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 20px;
+    block-size: 20px;
+    padding-inline: var(--sp-1);
+    flex-shrink: 0;
+    border-radius: var(--r-full);
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--fs-xs);
+    /* The .tq-row-icon tint idiom (teacher-quality.css): a soft accent
+       wash + a text-safe accent mix — never raw accent as text. */
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: color-mix(in srgb, var(--accent) 75%, var(--text));
+  }
+  /* Center the chip on the picker row's leading line (the checkbox's
+     own offset — the row is align-items: flex-start by design). */
+  .list-row .exa-pick-order { margin-block-start: var(--sp-0-5); }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §grade-card — manual-grading parked-answer cards (final pass   ║
+     ║  3-d): on a failed finalize the cards still lacking a verdict   ║
+     ║  carry data-invalid + the verdict group carries aria-invalid.   ║
+     ║  The card's border rides an inline style (inline wins over any  ║
+     ║  border-color rule), so the invalid edge is an inset ring.      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .exa-grade-card[data-invalid='true'] {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 45%, var(--rule));
+  }
 }
