@@ -43,7 +43,7 @@ test.describe('حذف مقرّر بصلاحيات إدارية', () => {
     await page.goto('/admin/courses');
     await expect(page).toHaveTitle('إدارة المقرّرات · مدارك');
     // العدّ من meta.total: مقرّران في الجامعة.
-    await expect(page.locator('.page-subtitle')).toContainText('مقرّران في الجامعة');
+    await expect(page.locator('.pf-page-desc')).toContainText('مقرّران في الجامعة');
     const row = page.locator('tr', { hasText: 'مقدمة في الخوارزميات' });
     await expect(row).toContainText('CS-201');
     await expect(row).toContainText('كلية الهندسة');
@@ -92,6 +92,6 @@ test.describe('حذف مقرّر بصلاحيات إدارية', () => {
 
     /* المقرّر لم يُحذف — الصف باقٍ والعدّ لم يتغيّر. */
     await expect(page.locator('tr', { hasText: 'مقدمة في الخوارزميات' })).toBeVisible();
-    await expect(page.locator('.page-subtitle')).toContainText('مقرّران في الجامعة');
+    await expect(page.locator('.pf-page-desc')).toContainText('مقرّران في الجامعة');
   });
 });

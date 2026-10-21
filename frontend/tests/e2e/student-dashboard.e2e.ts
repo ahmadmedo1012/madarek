@@ -37,20 +37,20 @@ test.describe('لوحة تحكم الطالب', () => {
   test('بطاقة «أكمل من حيث توقفت» تعرض المحاضرة المتوقّفة و CTA مباشرًا إليها', async ({ page }) => {
     await page.goto('/student/dashboard');
 
-    /* R287 re-pin: «أكمل من حيث توقفت» is now the FIRST row of the
-       ONE TodayList (r220) — the row link itself IS the CTA (its href
-       goes straight to the paused lecture), the meta carries the code
-       + lecture title + honest progress %. */
-    /* R287b anatomy truth: pf-today-link carries the TITLE only — the
-       meta (code + lecture title + progress) is the row's pf-today-meta
-       sibling. Pin the ROW for content, the LINK for the direct CTA. */
-    const resume = page.locator('li.pf-today-item', { hasText: 'أكمل من حيث توقفت' });
+    /* R304 re-pin: the resume card left the TodayList — it is the
+       dashboard's ONE hero band now (.dash-resume-card.stu-hero,
+       DashResumeHero): the eyebrow carries the «أكمل من حيث توقفت»
+       verb, the main column the course name + lecture ordinal/title,
+       and the side note the code + lecture clock. The hero CTA is the
+       a.btn.accent whose href goes straight to the paused lecture. */
+    const resume = page.locator('.dash-resume-card');
     await expect(resume).toBeVisible();
+    await expect(resume.locator('.dash-resume-eyebrow')).toHaveText('أكمل من حيث توقفت');
     await expect(resume).toContainText('مقدمة في الخوارزميات');
     await expect(resume).toContainText('CS-201');
     await expect(resume).toContainText('الخوارزميات الجشعة');
     await expect(
-      page.locator('a.pf-today-link[href="/student/lectures/lec_e2e_greedy"]'),
+      resume.locator('a[href="/student/lectures/lec_e2e_greedy"]'),
     ).toBeVisible();
   });
 
