@@ -26,7 +26,7 @@
  * language guard is exercised end-to-end.
  */
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import ResearchReviewPage from '../../src/pages/teacher/ResearchReviewPage';
 

@@ -299,9 +299,9 @@ export function MadarekWorld({ className }: { className?: string }) {
         const sctx = shadowCanvas.getContext('2d');
         if (sctx) {
           const grad = sctx.createRadialGradient(128, 128, 8, 128, 128, 126);
-          grad.addColorStop(0, 'rgba(25,25,24,0.30)');
-          grad.addColorStop(0.55, 'rgba(25,25,24,0.12)');
-          grad.addColorStop(1, 'rgba(25,25,24,0)');
+          grad.addColorStop(0, 'rgba(25,25,24,0.30)'); // color-gate: allow — canvas-painted contact-shadow gradient; CSS vars do not resolve in 2D context
+          grad.addColorStop(0.55, 'rgba(25,25,24,0.12)'); // color-gate: allow — canvas-painted contact-shadow gradient; CSS vars do not resolve in 2D context
+          grad.addColorStop(1, 'rgba(25,25,24,0)'); // color-gate: allow — canvas-painted contact-shadow gradient; CSS vars do not resolve in 2D context
           sctx.fillStyle = grad;
           sctx.fillRect(0, 0, 256, 256);
         }
@@ -337,8 +337,8 @@ export function MadarekWorld({ className }: { className?: string }) {
         const dctx = dotCanvas.getContext('2d');
         if (dctx) {
           const g = dctx.createRadialGradient(16, 16, 1, 16, 16, 15);
-          g.addColorStop(0, 'rgba(120,110,95,0.85)');
-          g.addColorStop(1, 'rgba(120,110,95,0)');
+          g.addColorStop(0, 'rgba(120,110,95,0.85)'); // color-gate: allow — canvas-painted dust-sprite gradient; CSS vars do not resolve in 2D context
+          g.addColorStop(1, 'rgba(120,110,95,0)'); // color-gate: allow — canvas-painted dust-sprite gradient; CSS vars do not resolve in 2D context
           dctx.fillStyle = g;
           dctx.fillRect(0, 0, 32, 32);
         }

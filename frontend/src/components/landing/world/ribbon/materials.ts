@@ -169,7 +169,7 @@ export function createBrushedRoughnessTexture(
   const ctx = canvas.getContext('2d');
 
   if (ctx) {
-    ctx.fillStyle = 'rgb(150,150,150)';
+    ctx.fillStyle = 'rgb(150,150,150)'; // color-gate: allow — WebGL PMREM studio backdrop painted on a canvas; CSS vars do not resolve in 2D context
     ctx.fillRect(0, 0, size, size);
     // Per-row tonal bands: streaks run horizontally (along U).
     for (let y = 0; y < size; y += 1) {
