@@ -209,6 +209,12 @@ jobs:
         working-directory: frontend
         run: npx playwright install chromium --with-deps
       - run: npm --prefix frontend run test:e2e
+      # r305-final: the A9 cross-route QA belt (frontend/tests/r305/*.e2e.ts,
+      # 73 specs) — same hermetic model (own qa-transport page.route mocks,
+      # no backend/DB/network), added to CI so the R305 release's QA gates
+      # stay green on every push instead of being local-only. Verified
+      # 73/73 locally (~3m) inside this job's 12-minute budget.
+      - run: npm --prefix frontend run test:r305
       # Traces / screenshots / videos are retained-on-failure by
       # playwright.config.ts — publish them for post-mortem only then.
       - name: Upload failure artifacts
