@@ -41,6 +41,29 @@ const STATUS_LABEL: Record<PaperStatus, string> = {
 /* fmtDate (short ar-LY date with year, '—' for missing values) is
  * lib/format.formatDateWithYearAr (13-15 fold, audit 11-f P2-1). */
 
+/* ─── The visible sequence — the honest next step per status ────────
+   r304: the workflow is a sequence the student can READ. Each status
+   maps to ONE next action (or an explicit «no action needed»), in the
+   same vocabulary the row's badge and the pipeline rail speak. */
+function nextStepFor(paper: ResearchPaper, isScanning: boolean): { k: string; hint: string } {
+  switch (paper.status) {
+    case 'UPLOADED':
+      return isScanning
+        ? { k: 'جارٍ الآن', hint: 'الفحص الأوتوماتيكي يجري — النتائج تظهر هنا تلقائياً.' }
+        : { k: 'الخطوة التالية', hint: 'ابدأ الفحص الأوتوماتيكي (انتحال + محتوى ذكاء اصطناعي).' };
+    case 'SCANNING':
+      return { k: 'جارٍ الآن', hint: 'الفحص الأوتوماتيكي يجري — النتائج تظهر هنا تلقائياً.' };
+    case 'CHECKS_PASSED':
+      return { k: 'الخطوة التالية', hint: 'بانتظار تقييم أستاذك — لا إجراء مطلوب منك الآن.' };
+    case 'CHECKS_FAILED':
+      return { k: 'الخطوة التالية', hint: 'ارفع نسخة معدّلة — عنوانك وملخّصك يُعبّآن مسبقاً.' };
+    case 'GRADED':
+      return { k: 'التقييم وصل', hint: 'راجع الدرجة والملاحظات — النشر قرار الأستاذ.' };
+    case 'PUBLISHED':
+      return { k: 'مكتمل', hint: 'البحث متاح للجميع في مكتبة الجامعة.' };
+  }
+}
+
 export default function StudentResearchPage() {
   const my = useMyResearch();
   const enrollments = useMyEnrollments();
@@ -94,7 +117,7 @@ export default function StudentResearchPage() {
     }
   };
 
-  /* Opens the upload modal EMPTY (the normal path — header button and
+  /* Opens the upload modal EMPTY (the normal path — the CTA panel and
      the empty-state CTA both route here). */
   const openFreshUpload = () => {
     setResubmitPrefill(null);
@@ -122,12 +145,6 @@ export default function StudentResearchPage() {
               the note since r154b; the header keeps matching it. */
           'ارفع بحوثك، اعرضها على فحص الانتحال وكشف الذكاء الاصطناعي (محاكاة حتى تفعيل كشف حقيقي)، ثم أرسلها لأستاذك للتقييم والنشر في مكتبة الجامعة.'
         }
-        actions={
-          <button type="button" className="btn primary" onClick={openFreshUpload}>
-            <Icon icon={Upload} size={14} />
-            رفع بحث جديد
-          </button>
-        }
       />
 
       {my.isPending ? (
@@ -136,6 +153,28 @@ export default function StudentResearchPage() {
         <ErrorRetry error={my.error} onRetry={() => my.refetch()} />
       ) : (
         <>
+          {/* The submission CTA — the workflow's first move stays one
+              glance away above the list (the empty state carries its
+              own bigger twin below, so this rides only when there is
+              something to scroll past). */}
+          {papers.length > 0 && (
+            <section className="rs-upload-cta" aria-label="رفع بحث جديد">
+              <span className="rs-upload-cta-icon" aria-hidden="true">
+                <Icon icon={Upload} size={20} />
+              </span>
+              <div className="rs-upload-cta-body">
+                <div className="rs-upload-cta-title">بحث جديد؟</div>
+                <div className="rs-upload-cta-desc">
+                  ارفعه الآن — يُفحص أوتوماتيكياً، ثم يصل أستاذك للتقييم، وتميّزه ينشره في المكتبة.
+                </div>
+              </div>
+              <button type="button" className="btn primary" onClick={openFreshUpload}>
+                <Icon icon={Upload} size={14} />
+                رفع بحث جديد
+              </button>
+            </section>
+          )}
+
           <StatLine items={kpis} />
 
           {scanError && (
@@ -258,8 +297,9 @@ function EmptyUpload({ onOpen }: { onOpen: () => void }) {
 
 /* ─── Paper row — the journey attached to its item ─────────
    RowItem carries the line (title + course + badge); the body (open by
-   default whenever a next action exists) holds the pipeline, the
-   declared-simulation results, grade/feedback and the row's actions. */
+   default whenever a next action exists) holds the pipeline with its
+   real timestamps, the honest next-step line, the declared-simulation
+   results, grade/feedback and the row's actions. */
 function PaperRow({
   paper, isScanning, onScan, onResubmit,
 }: {
@@ -272,6 +312,10 @@ function PaperRow({
   /* A body opens by default when the student must ACT or watch — a
      settled paper collapses so the list stays calm. */
   const mustAct = paper.status === 'UPLOADED' || paper.status === 'CHECKS_FAILED' || isScanning;
+  const next = nextStepFor(paper, isScanning);
+  const readerPath = paper.fileUrl
+    ? `/document/${encodeURIComponent(paper.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(paper.title)}&back=${encodeURIComponent('/student/research')}&paper=${encodeURIComponent(paper.id)}`
+    : null;
   return (
     <RowItem
       title={paper.title}
@@ -291,16 +335,33 @@ function PaperRow({
       expandLabel={`تفاصيل البحث: ${paper.title}`}
     >
       <div className="flex-col gap-3">
-        <StatusPipeline status={paper.status} />
+        <StatusPipeline status={paper.status} paper={paper} />
 
-        {paper.status === 'UPLOADED' && !isScanning && (
-          <div className="rs-row-actions">
-            <button type="button" className="btn outline" onClick={onScan}>
-              <Icon icon={ScanSearch} size={14} />
-              ابدأ الفحص الآن
-            </button>
-          </div>
-        )}
+        {/* The honest next step — one labelled line per status; the
+            actionable statuses carry their action on the same line. */}
+        <div className="rs-next">
+          <span className="rs-next-label">
+            <Icon icon={isScanning && paper.status !== 'CHECKS_FAILED' ? ScanSearch : Sparkles} size={13} />
+            <span className="rs-next-k">{next.k}</span>
+          </span>
+          <span className="rs-next-hint">{next.hint}</span>
+          {paper.status === 'UPLOADED' && !isScanning && (
+            <div className="rs-row-actions">
+              <button type="button" className="btn outline" onClick={onScan}>
+                <Icon icon={ScanSearch} size={14} />
+                ابدأ الفحص الآن
+              </button>
+            </div>
+          )}
+          {paper.status === 'CHECKS_FAILED' && (
+            <div className="rs-row-actions">
+              <button type="button" className="btn outline" onClick={onResubmit}>
+                <Icon icon={Upload} size={13} />
+                رفع نسخة جديدة
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Scanning: honest indeterminate state — the scan endpoint
             reports no increments, so the cells sweep instead of faking
@@ -326,14 +387,6 @@ function PaperRow({
               <Icon icon={AlertCircle} size={14} />
               تجاوز البحث الحدود التجريبية المسموح بها (محاكاة)
             </div>
-            {/* r157 (F8): الزرّ يفتح UploadModal معبّأً من الورقة
-                الفاشلة (see openResubmit). */}
-            <div className="rs-row-actions">
-              <button type="button" className="btn outline" onClick={onResubmit}>
-                <Icon icon={Upload} size={13} />
-                رفع نسخة جديدة
-              </button>
-            </div>
           </div>
         )}
 
@@ -344,12 +397,9 @@ function PaperRow({
           </p>
         )}
 
-        {(paper.status === 'GRADED' || paper.status === 'PUBLISHED') && paper.fileUrl && (
+        {(paper.status === 'GRADED' || paper.status === 'PUBLISHED') && readerPath && (
           <div className="rs-row-actions">
-            <RouterLink
-              to={`/document/${encodeURIComponent(paper.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(paper.title)}&back=${encodeURIComponent('/student/research')}&paper=${encodeURIComponent(paper.id)}`}
-              className="btn outline"
-            >
+            <RouterLink to={readerPath} className="btn outline">
               <Icon icon={MessageSquare} size={13} />
               مراجعة البحث مع ملاحظات الأستاذ
             </RouterLink>

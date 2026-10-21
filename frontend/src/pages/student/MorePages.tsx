@@ -6,12 +6,12 @@ import {
   Target, Headset,
   Bell, AlertTriangle, BookOpen, Download,
   CheckCircle2, Check, MessageCircle, Heart, GraduationCap,
-  TrendingUp, Building2, Users2, Microscope,
+  TrendingUp, Building2, Microscope,
   Hourglass, ArrowLeft, X,
 } from 'lucide-react';
 import { Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
-import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle, PageHeader } from '../../components/primitives';
+import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
@@ -182,42 +182,34 @@ export function GamificationPage() {
             </div>
           )}
 
-          <SectionTitle>الإنجازات المحققة</SectionTitle>
-          {ach.isPending ? (
-            /* shape-matched skeleton: achievement rows */
-            <div className="flex-col gap-2" aria-busy="true">
-              {[0, 1, 2].map((i) => (
-                <div className="achievement" key={i} aria-hidden>
-                  <Skeleton width={40} height={40} rounded="var(--r-md)" />
-                  <div className="flex-1 flex-col gap-2">
-                    <Skeleton width="45%" height={13} />
-                    <Skeleton width="75%" height={11} />
-                  </div>
-                  <Skeleton width={48} height={20} rounded="var(--r-full)" />
-                </div>
+          {/* R304 (6-d): الإنجازات على لغة الصفوف المشتركة (RowList/RowItem) —
+              بئر أيقونة الإنجاز الذهبي يبقى من training.css (§gamification،
+              النظام نفسه الذي تحمله صفحة التطوير الذاتي وصفحة الملف)،
+              بينما يحمل RowList السطح والفواصل والفراغات. */}
+          <SectionHeader as="h3" title="الإنجازات المحققة" />
+          {ach.isError ? <ErrorState error={ach.error} onRetry={() => ach.refetch()} /> : (
+            <RowList
+              aria-label="الإنجازات المحققة"
+              loading={ach.isPending}
+              empty={
+                <EmptyState
+                  icon={Award}
+                  title="لا إنجازات بعد"
+                  description="أكمل دروساً ومسارات في التطوير الذاتي لتفتح أول إنجاز."
+                  action={<Link to="/training" className="btn primary sm">استكشف المسارات</Link>}
+                />
+              }
+            >
+              {ach.data?.map((a) => (
+                <RowItem
+                  key={a.achievement.id}
+                  leading={<span className="achievement-icon" aria-hidden><Icon icon={Trophy} size={16} /></span>}
+                  title={a.achievement.name}
+                  meta={a.achievement.description}
+                  trailing={<Badge color="gold">+{pointsAr(a.achievement.xp)}</Badge>}
+                />
               ))}
-            </div>
-          ) : ach.isError ? <ErrorState error={ach.error} onRetry={() => ach.refetch()} /> :
-           !ach.data?.length ? (
-            <EmptyState
-              icon={Award}
-              title="لا إنجازات بعد"
-              description="أكمل دروساً ومسارات في التطوير الذاتي لتفتح أول إنجاز."
-              action={<Link to="/training" className="btn primary sm">استكشف المسارات</Link>}
-            />
-          ) : (
-            <div className="flex-col gap-2">
-              {ach.data.map((a) => (
-                <div className="achievement" key={a.achievement.id}>
-                  <span className="achievement-icon" aria-hidden><Icon icon={Trophy} size={16} /></span>
-                  <div className="flex-1">
-                    <div className="achievement-name">{a.achievement.name}</div>
-                    <div className="achievement-desc">{a.achievement.description}</div>
-                  </div>
-                  <Badge color="gold">+{pointsAr(a.achievement.xp)}</Badge>
-                </div>
-              ))}
-            </div>
+            </RowList>
           )}
         </Card>
 
@@ -411,7 +403,12 @@ export function SkillsPage() {
  * (soft) فقط، والعنوان/الوصف/الوقت بلون الحبر بحسب القراءة؛ غير
  * المقروء يُقرأ من العنوان القويّ وبئر الإشارة قبل أي شارة، والتحكّم
  * «تعليم كمقروء» يبقى داخل الصف (عرف variables-gating). الأنماط في
- * notifications.css قسم .np-*. */
+ * notifications.css قسم .np-*.
+ *
+ * R304 (6-d): الصفحة على عقد الأنماط المشترك — PageFrame + PageHeader
+ * (الشارة المعدودة وزرّ «تعليم الكل» يعلون الصفحة بدل بطاقة وسيطة)،
+ * ولافتة فشل «تعليم الكل» مباشرة تحت الترويسة. تشريح القائمة
+ * (np-list/np-row) وسلوكياتها مثبّتة كما هي. */
 const NP_TONE_CLASS: Record<'red' | 'brand' | 'amber' | 'green', 'danger' | 'accent' | 'warning' | 'success'> = {
   red: 'danger',
   brand: 'accent',
@@ -446,48 +443,55 @@ export function AlertsPage() {
   };
 
   return (
-    <div className="page">
-      <PageHeader title="الإشعارات" subtitle="آخر التحديثات والتذكيرات الأكاديمية." />
-
-      <Card title="إشعاراتي" icon={Bell} actions={
-        <div className="flex items-center gap-2 flex-wrap np-head-actions">
-          {unreadCount > 0 ? (
-            <>
-              <Badge color="brand">{arUnit(unreadCount, 'إشعار غير مقروء', 'إشعاران غير مقروءان', 'إشعارات غير مقروءة')}</Badge>
-              <button
-                type="button"
-                className="btn ghost sm"
-                onClick={() => markAllRead.mutate()}
-                disabled={markAllRead.isPending}
-              >
-                <Icon icon={Check} size={13} />
-                {markAllRead.isPending ? 'جارٍ التعليم…' : 'تعليم الكل كمقروء'}
-              </button>
-            </>
-          ) : (
-            <Badge color="green">الكلّ مقروء</Badge>
-          )}
-        </div>
-      }>
-        {/* r165d (D3): فشل «تعليم الكل كمقروء» كان صامتًا — الزرّ يعطّل نفسه
-            أثناء الانتظار ثم يعود دون أي أثر (الخطّاف لا يُبطل الذاكرة
-            إلا عند النجاح). نفس عرف صفحة رسائل الأستاذ (TeacherPages —
-            form-feedback fail + «إعادة المحاولة» يعيد إطلاق العملية
-            نفسها): اللافتة تسمّي الفشل، والمحاولة تعيد الطلب الجماعي. */}
-        {markAllRead.isError && (
-          <div className="form-feedback fail" role="alert" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            <Icon icon={X} size={14} />
-            <span className="flex-1">تعذَّر تعليم الإشعارات كمقروءة — تحقّق من اتصالك ثم أعد المحاولة.</span>
-            <button
-              type="button"
-              className="btn ghost sm"
-              onClick={() => markAllRead.mutate()}
-              disabled={markAllRead.isPending}
-            >
-              <Icon icon={Check} size={12} /> إعادة المحاولة
-            </button>
+    <PageFrame width="default">
+      <PatternPageHeader
+        title="الإشعارات"
+        description="آخر التحديثات والتذكيرات الأكاديمية."
+        actions={
+          <div className="flex items-center gap-2 flex-wrap">
+            {unreadCount > 0 ? (
+              <>
+                <Badge color="brand">{arUnit(unreadCount, 'إشعار غير مقروء', 'إشعاران غير مقروءان', 'إشعارات غير مقروءة')}</Badge>
+                <button
+                  type="button"
+                  className="btn ghost sm"
+                  onClick={() => markAllRead.mutate()}
+                  disabled={markAllRead.isPending}
+                >
+                  <Icon icon={Check} size={13} />
+                  {markAllRead.isPending ? 'جارٍ التعليم…' : 'تعليم الكل كمقروء'}
+                </button>
+              </>
+            ) : (
+              <Badge color="green">الكلّ مقروء</Badge>
+            )}
           </div>
-        )}
+        }
+      />
+
+      {/* r165d (D3): فشل «تعليم الكل كمقروء» كان صامتًا — الزرّ يعطّل نفسه
+          أثناء الانتظار ثم يعود دون أي أثر (الخطّاف لا يُبطل الذاكرة
+          إلا عند النجاح). نفس عرف صفحة رسائل الأستاذ (TeacherPages —
+          form-feedback fail + «إعادة المحاولة» يعيد إطلاق العملية
+          نفسها): اللافتة تسمّي الفشل، والمحاولة تعيد الطلب الجماعي —
+          وتسكن مباشرة تحت الترويسة التي يقع فيها الفعل. */}
+      {markAllRead.isError && (
+        <div className="form-feedback fail" role="alert">
+          <Icon icon={X} size={14} />
+          <span className="flex-1">تعذَّر تعليم الإشعارات كمقروءة — تحقّق من اتصالك ثم أعد المحاولة.</span>
+          <button
+            type="button"
+            className="btn ghost sm"
+            onClick={() => markAllRead.mutate()}
+            disabled={markAllRead.isPending}
+          >
+            <Icon icon={Check} size={12} /> إعادة المحاولة
+          </button>
+        </div>
+      )}
+
+      {/* سطح القائمة الصامت — الترويسة أعلاه هي صاحبة العنوان والإجراءات. */}
+      <Card>
         {feed.isPending ? (
           /* shape-matched skeleton: np rows (well + title + desc lines) */
           <div className="np-list" aria-busy="true">
@@ -594,7 +598,7 @@ export function AlertsPage() {
           </div>
         )}
       </Card>
-    </div>
+    </PageFrame>
   );
 }
 
@@ -890,58 +894,67 @@ export function ResultsPage() {
           work that has not been graded yet had NO student surface at all:
           it silently dropped out of the agenda (which only lists the
           un-submitted) and never appeared in the graded feed below. This
-          card keeps the state visible — with its own timestamp and the
-          honest what-happens-next — until the teacher's grade lands. */}
-      <Card
+          section keeps the state visible — with its own timestamp and the
+          honest what-happens-next — until the teacher's grade lands.
+          R304 (6-d): the block rides the pattern row grammar (SectionHeader
+          + RowList/RowItem) — the same day-section anatomy the schedule
+          page carries; the graded feed below keeps its AlertRow tones. */}
+      <SectionHeader
         title="تسليمات بانتظار التقييم"
-        icon={Hourglass}
-        subtitle={
+        description={
           pendingSubs.length === 0
             ? 'لا شيء بانتظار تقييم الأستاذ حالياً'
             : countAr(pendingSubs.length, ['تسليم واحد بانتظار التقييم', 'تسليمان بانتظار التقييم', 'تسليمات بانتظار التقييم', 'تسليماً بانتظار التقييم'])
         }
-      >
-        {pendingSubs.length === 0 ? (
-          <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>
-            كل ما سلّمته وتمّ تقييمه يظهر في «آخر الواجبات المقيَّمة» أدناه — وسيصلك إشعار لحظة رصد أي درجة جديدة.
-          </p>
-        ) : (
-          <div className="flex-col gap-2">
-            {pendingSubs.slice(0, 6).map((p) => {
-              const st = submissionStatusAr(p.status);
-              return (
-                <AlertRow
-                  key={p.id}
-                  color={p.late ? 'red' : 'amber'}
-                  icon={Hourglass}
-                  title={
-                    <span style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
-                      {p.title}
-                      <Badge color={st.color}>{st.label}</Badge>
-                    </span>
-                  }
-                  description={st.hint}
-                  time={
+      />
+      {pendingSubs.length === 0 ? (
+        <p className="text-sm text-muted" style={{ margin: 0 }}>
+          كل ما سلّمته وتمّ تقييمه يظهر في «آخر الواجبات المقيَّمة» أدناه — وسيصلك إشعار لحظة رصد أي درجة جديدة.
+        </p>
+      ) : (
+        <RowList aria-label="تسليمات بانتظار التقييم">
+          {pendingSubs.slice(0, 6).map((p) => {
+            const st = submissionStatusAr(p.status);
+            return (
+              <RowItem
+                key={p.id}
+                leading={
+                  /* نفس بئر الإشارة اللين الذي تحمله صفوف الإشعارات —
+                     العبرة بالحالة قبل أي شارة (amber = سلّم في وقته،
+                     red = سلّم متأخرًا). */
+                  <span className={`np-well ${p.late ? 'danger' : 'warning'}`} aria-hidden>
+                    <Icon icon={Hourglass} size={15} />
+                  </span>
+                }
+                title={p.title}
+                meta={
+                  <span className="flex-col gap-1" style={{ display: 'flex' }}>
                     <span title={formatDateTimeAr(p.submittedAt)}>
                       {p.courseName} · <bdi>{p.courseCode}</bdi> · سلّمته {timeAgoAr(p.submittedAt)}
                     </span>
-                  }
-                  actions={(
-                    <Link
-                      to={`/student/courses/${p.offeringId}`}
-                      className="btn ghost sm"
-                      title="الرجوع إلى سياق المقرّر حيث يظهر هذا التكليف"
-                    >
-                      <Icon icon={ArrowLeft} size={13} />
-                      المقرّر
-                    </Link>
-                  )}
-                />
-              );
-            })}
-          </div>
-        )}
-      </Card>
+                    <span>{st.hint}</span>
+                  </span>
+                }
+                trailing={
+                  <span className="flex items-center gap-2">
+                    <Badge color={st.color}>{st.label}</Badge>
+                    {p.offeringId && (
+                      <Link
+                        to={`/student/courses/${p.offeringId}`}
+                        className="btn ghost sm"
+                        title="الرجوع إلى سياق المقرّر حيث يظهر هذا التكليف"
+                      >
+                        <Icon icon={ArrowLeft} size={13} />
+                        المقرّر
+                      </Link>
+                    )}
+                  </span>
+                }
+              />
+            );
+          })}
+        </RowList>
+      )}
 
       <div className="grid-2">
         <Card title="تفصيل النتائج" icon={Activity}>
@@ -1258,8 +1271,11 @@ export function SocialPage() {
     || (removeLike.isPending && removeLike.variables === id);
 
   return (
-    <div className="page">
-      <PageHeader title="الشبكة الاجتماعية" subtitle="تواصل مع زملائك وأساتذتك حول المقرّرات والمشاريع." />
+    <PageFrame width="default">
+      <PatternPageHeader
+        title="الشبكة الاجتماعية"
+        description="تواصل مع زملائك وأساتذتك حول المقرّرات والمشاريع."
+      />
 
       <div className="grid-2-1">
         <div className="flex-col gap-3">
@@ -1457,7 +1473,7 @@ export function SocialPage() {
           </Card>
         )}
       </div>
-    </div>
+    </PageFrame>
   );
 }
 
@@ -1504,7 +1520,7 @@ export function DownloadsPage() {
 
   return (
     <PageFrame width="default">
-      <PatternPageHeader title="مركز التحميلات" description="جميع الملفات التعليمية في مقرّراتك متاحة للتحميل." />
+      <PatternPageHeader title="مركز التحميلات" description="ملفّات مقرّراتك في مكان واحد — وحالة كل رابط معلَنة." />
 
       <Card title="ملفّات حديثة" icon={Download}>
         {q.isPending ? (
@@ -1689,38 +1705,43 @@ export function UniversityInfoPage() {
       <PatternPageHeader
         title="جامعة مدارك التجريبية"
         description="مؤسّسة العرض على منصّة مدارك — مؤسّسة اصطناعية بالكامل تُظهر سير العمل الأكاديمي ببيانات تجريبية عبر ثلاثة حرَم معرفيّة."
+        meta={outsideCityCount > 0 ? (
+          /* سطر التوزيع الحقيقي للفروع — العدّ من مدن الكليّات الخارجيّة
+             الفعليّة لا من السقّ النظري (عقد r183-B3: لا «في 0 مدينة»). */
+          <span>
+            الفروع الخارجيّة{' '}
+            <span className="metric-change">في {countAr(outsideCityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}</span>
+          </span>
+        ) : undefined}
       />
 
-      <div className="grid-4">
-        <MetricCard
-          icon={Building2}
-          label="عدد الكليّات"
-          value={facCount}
-          change={citiesChange}
-          color="brand"
-        />
-        <MetricCard
-          icon={GraduationCap}
-          label="داخل الحرم الجامعيّ"
-          value={facs.isPending ? '…' : facs.isError ? '—' : formatNum(insideCampus.length)}
-          change="حرم المعرفة"
-          color="green"
-        />
-        <MetricCard
-          icon={Users2}
-          label="فروع خارجيّة"
-          value={facs.isPending ? '…' : facs.isError ? '—' : formatNum(outsideCampus.length)}
-          change={outsideCityCount > 0 ? `في ${countAr(outsideCityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}` : undefined}
-          color="purple"
-        />
-        <MetricCard
-          icon={Award}
-          label="الحرَم الأكاديميّة"
-          value="3"
-          change="بيانات تجريبية"
-          color="gold"
-        />
-      </div>
+      {/* R304 (6-d): حائط بطاقات KPI السابق صار سطر أرقام واحد (StatLine) —
+          نفس الحقائق نفسها الصدق: العدّ الحقيقي من الكليّات المحمّلة،
+          وسطر التجريبيّة يعلن طابع البيانات. */}
+      <StatLine
+        items={[
+          {
+            label: 'عدد الكليّات',
+            value: facCount,
+            hint: citiesChange,
+            tone: 'signal',
+          },
+          {
+            label: 'داخل الحرم الجامعيّ',
+            value: facs.isPending ? '…' : facs.isError ? '—' : formatNum(insideCampus.length),
+            hint: 'حرم المعرفة',
+          },
+          {
+            label: 'فروع خارجيّة',
+            value: facs.isPending ? '…' : facs.isError ? '—' : formatNum(outsideCampus.length),
+          },
+          {
+            label: 'الحرَم الأكاديميّة',
+            value: formatNum(3),
+            hint: 'بيانات تجريبية',
+          },
+        ]}
+      />
 
       {/* Vision + Mission (the demo tenant's synthetic strategy —
           mirrors static-source.ts strategicPlan.*) */}

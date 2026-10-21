@@ -16,6 +16,10 @@ import {
 } from 'chart.js';
 import { Card, Badge } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
+/* R304: the AI console opens with the patterns PageHeader — breadcrumbs
+ * back to the owner dashboard; the provider badge rides the header's
+ * action slot (a fact about the service, kept beside its title). */
+import { PageHeader as PatternsPageHeader } from '../../components/patterns';
 import {
   ErrorState, EmptyState, ChartSkeleton, TableSkeleton,
 } from '../../components/primitives/States';
@@ -103,22 +107,21 @@ export function OwnerAiPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">مركز الذكاء الاصطناعيّ</h1>
-          <p className="page-subtitle">مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ</p>
-        </div>
-        {/* The r160 honesty contract on the monitoring side too: the
+      <PatternsPageHeader
+        title="مركز الذكاء الاصطناعيّ"
+        description="مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ"
+        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'مركز الذكاء الاصطناعيّ' }]}
+        /* The r160 honesty contract on the monitoring side too: the
             badge names the real model when one answers, and says
-            «محليّ» — not an LLM name — when the local composer does. */}
-        {aiConfig.data && (
+            «محليّ» — not an LLM name — when the local composer does. */
+        actions={aiConfig.data ? (
           /* r299: brand, not gold — R197 reserves gold for achievements;
              this badge names the provider (a fact, not a reward). */
           <Badge color="brand" icon={Sparkles}>
             {isRealLlm && aiConfig.data?.model ? <bdi>{aiConfig.data.model}</bdi> : 'محليّ'}
           </Badge>
-        )}
-      </header>
+        ) : undefined}
+      />
 
       {aiMetrics.isPending ? (
         <>

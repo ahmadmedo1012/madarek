@@ -1,27 +1,48 @@
 /* ==================================================================
    MADAREK — teacher & quality family sheet (teacher-quality.css)
    ------------------------------------------------------------------
-   4C family sheet (Superlist direction, r241): the page-scoped layer
-   for Agent 4C's own surfaces — teacher dashboard, academic
-   intelligence (+ offering detail), teacher profile, live sessions,
-   virtual labs. Imported by the lazy page modules that consume it
-   (the D11 page-scoped split pattern: owner.css/pdf.css/training.css
-   precedents).
+   R304 (Agent 7 — teacher, quality & assessment UX): the ONE page-
+   scoped sheet for the whole family. The five 4C-era sheets
+   (teacher-quality / teacher-pages / quality-pages / exam-author /
+   online-exams) are consolidated here verbatim per prefix section, so
+   the family speaks a single grammar from a single destination —
+   imported locally by every owned lazy page module (D11 split
+   pattern; Vite dedupes the shared import).
 
-   Class prefix: `tq-` (teacher-quality) — no collisions with the
-   shared sheets or sibling families' prefixes (exa-/oex-/qlt-/tpg-).
+   Sections (prefix = owner surfaces):
+     §1  tq-   shared family primitives + Teacher{Dashboard,Intelligence,
+               Profile,Live,Labs}
+     §2  tpg-  TeacherPages (schedule/attendance/grades/materials/
+               students/performance/assignments queue)
+     §3  qlt-  QualityPages (7 oversight surfaces)
+     §4  exa-  ExamAuthorPages (authoring hub + template detail)
+     §5  oex-  OnlineExamsPages (student list / taker / moderation)
+     §6  cur-  components/curriculum builders
+     §7  r304  new family-wide primitives (toolbar, sorting, workflow
+               strip, status edges) + reduced-motion belt
+
+   Migration note: the quality courses/professors toolbar no longer
+   borrows the `.admin-students-*` chrome from admin.css — the same
+   pill anatomy lives here as `tq-toolbar`/`tq-search` (§7), owned by
+   this family like every other surface owns its chrome.
 
    Grammar (translated Superlist principles, never copied assets):
-   - list-first rows over uniform card grids: every catalog on these
-     surfaces renders as full-width rows with hairline separators,
-     surface-step hover, and detail attached to the item;
-   - calm surfaces: hierarchy via surface steps + the single soft
+   - list-first rows over uniform card grids; detail attached to item;
+   - calm surfaces: hierarchy via surface steps + hairlines, ONE soft
+     shadow per level;
    - one signal: var(--accent) for active/selected/links/focus —
-     semantic greens/ambers/reds only for status chips;
-   - soft geometry: the --r-* ladder, generous --sp-* rhythm.
+     semantic greens/ambers/reds only for status chips and edges;
+   - Arabic-first RTL: logical properties everywhere; ≥44px tap
+     floors; 13px Arabic text floor; tabular mono numerals for metrics;
+   - tokens only (tokens.css wins); motion via var(--t-*); no
+     !important.
    ================================================================== */
 
 @layer pages {
+
+/* ────────────────────────────────────────────────────────────────────
+   §1 · tq- — family primitives + dashboard/intelligence/profile/live
+   ──────────────────────────────────────────────────────────────── */
 
 /* ─── List rows: the family's catalog primitive ──────────────────── */
 
@@ -236,6 +257,2398 @@ button.tq-row:focus-visible {
     inline-size: 100%;
     justify-content: flex-end;
   }
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   §2 · tpg- — TeacherPages (schedule / attendance / grades / materials
+        / students / performance / assignments queue)
+        (migrated verbatim from teacher-pages.css, 4C-c r24x)
+   ──────────────────────────────────────────────────────────────── 
+
+
+  /* ── 1 · Weekly schedule — calm day columns ────────────────────────
+     Desktop: a grid of day sections (one per weekday that has slots);
+     each day is a bordered surface with a tinted header line and
+     lecture rows under it. ≤920px the columns fold into the day-by-day
+     vertical list — same DOM, source order = day order. */
+  .tpg-sched {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--sp-3);
+    align-items: start;
+  }
+  @media (max-width: 920px) {
+    .tpg-sched { grid-template-columns: 1fr; }
+  }
+
+  .tpg-day {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  /* The today column keeps the signal: a hairline accent rule under the
+     day name (the «اليوم» badge stays the primary marker). */
+  .tpg-day[data-today='true'] { border-color: var(--accent); }
+
+  .tpg-day-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface-2);
+    border-block-end: 1px solid var(--rule);
+  }
+  .tpg-day-title {
+    font-weight: var(--fw-semibold);
+    font-size: var(--type-body-size);
+    color: var(--text);
+  }
+  .tpg-day[data-today='true'] .tpg-day-title { color: var(--accent-ink); }
+
+  .tpg-lecture {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    border-block-end: 1px solid var(--rule);
+    min-block-size: 44px;
+    box-sizing: border-box;
+  }
+  .tpg-lecture:last-child { border-block-end: 0; }
+
+  /* Time range: mono + tabular so 09:00–10:40 scans as one block. */
+  .tpg-lecture-time {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    line-height: 1.5;
+  }
+  .tpg-lecture-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-0-5);
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .tpg-lecture-name {
+    font-weight: var(--fw-semibold);
+    font-size: var(--type-label-size);
+    color: var(--text);
+  }
+
+  /* ── 2 · Attendance — session-first roll call ────────────────────── */
+  .tpg-session .input { min-block-size: 44px; }
+
+  /* Sticky session summary: present/late/absent/excused counts ride
+     above the roster while it scrolls (the topbar height + one step of
+     breathing room keeps it clear of the sticky chrome). */
+  .tpg-att-summary {
+    position: sticky;
+    inset-block-start: calc(var(--topbar-h) + var(--sp-2));
+    z-index: 1; /* local paint order above the roster rows — not a --z-* layer */
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-5);
+    padding: var(--sp-2) var(--sp-4);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    margin-block-end: var(--sp-3);
+  }
+  .tpg-att-summary-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-1-5);
+    min-inline-size: 0;
+  }
+  .tpg-att-summary-label {
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+  }
+  .tpg-att-summary-value {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--type-body-size);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+
+  /* Roll-call rows: large one-tap targets. The 32px avatar + the
+     list-row paddings already clear 44px; the toggles reach the floor
+     on every viewport (the shared mobile rule tops up ≤640). */
+  .tpg-att-row { min-block-size: 56px; box-sizing: border-box; }
+  .tpg-att-toggles {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    flex-wrap: wrap;
+  }
+  .tpg-att-row .att-toggle {
+    min-block-size: 44px;
+    min-inline-size: 44px;
+  }
+  @media (max-width: 640px) {
+    /* The four states become a full-width segmented row under the
+       name — one tap each, no pinch-zoom. */
+    .tpg-att-toggles { inline-size: 100%; }
+    .tpg-att-toggles .att-toggle {
+      flex: 1 1 0;
+      justify-content: center;
+    }
+  }
+
+  /* ── 3 · Grades — the semester-entry ledger ────────────────────────
+     The entry table keeps the shared .table/.tbl-stack DOM (desktop
+     rows → mobile row-cards via the shared data-label ladder) and the
+     .table-wrap.sticky scrollport (pinned header row). This sheet only
+     sets the ledger's input anatomy: 44px targets and mono tabular
+     digits. */
+  .tpg-grade-table tbody td { vertical-align: middle; }
+  .tpg-grade-table .input {
+    min-block-size: 44px;
+    box-sizing: border-box;
+  }
+  .tpg-grade-table input[type='number'] {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .tpg-grade-table .input-narrow { max-inline-size: 180px; }
+
+  /* The read-side table above the entry ledger: the % columns ride the
+     shared .tbl-num class, which has NO base rule — the same scoped
+     tabular-nums the students roster (.tpg-students .tbl-num) gets, so
+     the two read tables scan identically. */
+  .tpg-grades .tbl-num {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── 4 · Materials — file rows with trailing meta ────────────────── */
+  .tpg-mat-list { display: flex; flex-direction: column; }
+  .tpg-mat-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-1);
+    border-block-end: 1px solid var(--rule);
+    min-block-size: 56px;
+    box-sizing: border-box;
+  }
+  .tpg-mat-row:last-child { border-block-end: 0; }
+  .tpg-mat-icon {
+    flex: none;
+    inline-size: 40px;
+    block-size: 40px;
+    display: grid;
+    place-items: center;
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+    color: var(--accent-ink);
+  }
+  .tpg-mat-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-0-5);
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .tpg-mat-title {
+    font-weight: var(--fw-semibold);
+    font-size: var(--type-label-size);
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .tpg-mat-sub {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-2);
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+  }
+  .tpg-mat-meta {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--sp-0-5);
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+    text-align: end;
+  }
+  .tpg-mat-meta bdi,
+  .tpg-mat-meta .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 640px) {
+    .tpg-mat-meta { align-items: flex-start; text-align: start; }
+    .tpg-mat-row { flex-wrap: wrap; }
+  }
+
+  /* ── 5 · Assignments — the grading queue (flagship) ────────────────
+     The shared .queue-group frame stays (e2e + polish contract); the
+     tpg layer recomposes it into a calm queue section: hairline frame,
+     tinted header rule, full-height rows, one 44px signal action. */
+  .tpg-queue { display: flex; flex-direction: column; gap: var(--sp-3); }
+  .tpg-queue-section {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    padding: var(--sp-4);
+  }
+  .tpg-queue-head {
+    padding-block-end: var(--sp-3);
+    border-block-end: 1px solid var(--rule);
+  }
+  .tpg-queue-title { overflow-wrap: anywhere; }
+  .tpg-queue-rows { display: flex; flex-direction: column; }
+  .tpg-queue-row {
+    padding-inline: 0;
+    padding-block: var(--sp-3);
+    min-block-size: 56px;
+    box-sizing: border-box;
+  }
+  /* The one signal action — ≥44px so the queue is gradeable by touch. */
+  .tpg-act {
+    min-block-size: 44px;
+    min-inline-size: 72px;
+    flex-shrink: 0;
+  }
+
+  /* The assignments list rows (the authored half of the page). */
+  .tpg-asg-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+  .tpg-asg-side {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    flex-shrink: 0;
+  }
+
+  /* ── 6 · Performance — the distribution ledger ─────────────────────
+     Each grade band reads as a ledger line: label + range at the
+     start, the tabular share at the end, the bar as the quiet fill
+     underneath. Empty buckets keep the honest dim (unchanged logic). */
+  .tpg-dist { display: flex; flex-direction: column; gap: var(--sp-4); }
+  .tpg-dist-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    margin-block-end: var(--sp-1-5);
+  }
+  .tpg-dist-label {
+    font-size: var(--type-label-size);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .tpg-dist-value {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--type-label-size);
+    color: var(--text-secondary);
+    flex-shrink: 0;
+  }
+
+  /* ── 7 · Students roster — calm table language ─────────────────────
+     The roster keeps the shared table + tbl-stack DOM (the column
+     header + band-chip pins ride on it); the tpg scope only calms the
+     numeric columns and keeps the risk chip pinned to the row's end. */
+  .tpg-students .table tbody td {
+    vertical-align: middle;
+  }
+  .tpg-students .tbl-num {
+    font-variant-numeric: tabular-nums;
+  }
+  .tpg-students td:last-child { text-align: end; }
+
+
+/* ────────────────────────────────────────────────────────────────────
+   §3 · qlt- — QualityPages (dashboard / courses / professors /
+        engagement / curriculum / reports / alerts)
+        (migrated verbatim from quality-pages.css, 4C-b r24x)
+   ──────────────────────────────────────────────────────────────── 
+
+
+  /* ── 1 · Header read-only cue + badge cluster ──────────────────
+     The oversight mode rides every page header: «قراءة فقط» (Eye) —
+     muted, never mistaken for an authoring surface. */
+  .qlt-header-badges {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+
+  /* ── 2 · Section rhythm ────────────────────────────────────────
+     5-A8 §6 step 6: the page's primary board takes the breath after
+     the stat strip (the desktop .page gap + this rung ≈ the 88px
+     rhythm the quality dashboard already carried). */
+  .qlt-section { margin-block-start: var(--sp-9); }
+
+  /* ── 3 · Dashboard board — main column + oversight rail ────────
+     Superlist board: the weekly-activity chart + the KPI ledger own
+     the wide column; attendance mix + alert summary ride the side
+     rail. Stacks to one column at ≤1024 (charts full-width). */
+  .qlt-board {
+    display: grid;
+    grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+    gap: var(--sp-5);
+    align-items: start;
+  }
+  .qlt-board-main,
+  .qlt-board-side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+    min-inline-size: 0;
+  }
+  @media (max-width: 1024px) {
+    .qlt-board { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* ── 4 · KPI ledger (dashboard main column) ────────────────────
+     The four payload-derived progressbars as a calm ledger list:
+     hairline row separators, 13px labels, mono tabular values at the
+     inline-end, thin 4px rails (--sp-1). */
+  .qlt-kpi-ledger { display: flex; flex-direction: column; }
+  .qlt-kpi-ledger .progress { padding-block: var(--sp-3); }
+  .qlt-kpi-ledger .progress + .progress { border-block-start: 1px solid var(--rule); }
+  .qlt-kpi-ledger .progress:first-child { padding-block-start: 0; }
+  .qlt-kpi-ledger .progress:last-child { padding-block-end: 0; }
+  .qlt-kpi-ledger .progress-head { font-size: var(--fs-sm); }
+  .qlt-kpi-ledger .progress-head span:last-child { font-variant-numeric: tabular-nums; }
+  .qlt-kpi-ledger .progress-track { block-size: var(--sp-1); }
+
+  /* Calm progress list (engagement side card): same ledger rhythm
+     without the KPI weight — separators + breathing rows. */
+  .qlt-progress-list { display: flex; flex-direction: column; }
+  .qlt-progress-list .progress { padding-block: var(--sp-3); }
+  .qlt-progress-list .progress + .progress { border-block-start: 1px solid var(--rule); }
+  .qlt-progress-list .progress:first-child { padding-block-start: 0; }
+  .qlt-progress-list .progress:last-child { padding-block-end: 0; }
+
+  /* ── 5 · Alert row lists ───────────────────────────────────────
+     Dashboard summary card: the shared AlertRow grammar flattened to
+     hairline-separated rows — no card-in-card boxes inside the
+     section card (the row's dot/icon/time anatomy is untouched). */
+  .qlt-alert-list { display: flex; flex-direction: column; }
+  .qlt-alert-list .alert {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: var(--sp-3) 0;
+  }
+  .qlt-alert-list .alert + .alert { border-block-start: 1px solid var(--rule); }
+
+  /* Full alerts page — oversight rows with a leading severity edge
+     (2px inline-start: danger / warning / brand tints per severity)
+     + relative time. Rows stay inside the section card; hairlines
+     separate, washes tint — never a wall of uniform boxes. */
+  .qlt-alert-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding-block: var(--sp-3);
+    border-inline-start: 2px solid var(--rule);
+    padding-inline-start: var(--sp-3);
+    transition: background var(--t-fast) var(--ease);
+  }
+  .qlt-alert-row + .qlt-alert-row { border-block-start: 1px solid var(--rule); }
+  .qlt-alert-row.qlt-sev-critical {
+    border-inline-start-color: var(--danger);
+    background: color-mix(in srgb, var(--danger) 5%, var(--surface));
+  }
+  .qlt-alert-row.qlt-sev-warning {
+    border-inline-start-color: var(--warning);
+    background: color-mix(in srgb, var(--warning) 6%, var(--surface));
+  }
+  .qlt-alert-row.qlt-sev-info {
+    /* r299 (E item 2): the info edge mirrors the row's own brand Badge
+       (SEVERITY_TONE info='brand') — the same --c-copper-* family the
+       .badge.brand pair consumes (components.css). The old --success
+       green edge read as a fourth severity while the chip in the very
+       same row rendered brand copper. Same 2px edge + 5% tint
+       structure as the critical/warning rules. */
+    border-inline-start-color: var(--c-copper-deep);
+    background: color-mix(in srgb, var(--c-copper-deep) 5%, var(--surface));
+  }
+  .qlt-alert-row-icon {
+    display: inline-flex;
+    color: var(--text-muted);
+    margin-block-start: var(--sp-0-5);
+  }
+  .qlt-alert-row-body {
+    flex: 1;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .qlt-alert-row-title {
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    font-size: var(--fs-sm);
+  }
+  .qlt-alert-row-desc { font-size: var(--fs-xs); color: var(--text-secondary); }
+  .qlt-alert-row-time {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .qlt-alert-row .badge { flex-shrink: 0; }
+
+  /* ── 6 · Courses roster — calm dense table ─────────────────────
+     Desktop: the canonical .table keeps its hairline row separators;
+     the header row drops its fill (muted 13px labels only), metric
+     columns read in mono tabular numerals, badges hold the 13px
+     Arabic floor. */
+  .qlt-table thead th,
+  .qlt-roster thead th { background: transparent; }
+  .qlt-table .tbl-num,
+  .qlt-roster .tbl-num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .qlt-table .badge,
+  .qlt-roster .badge { font-size: var(--fs-xs); } /* 13px Arabic floor */
+  /* Course identity cell: name leads, Latin code rides isolated. */
+  .qlt-course-name { font-weight: var(--fw-semibold); color: var(--text); }
+  .qlt-course-code {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Mobile (rides the shared .tbl-stack recipe, ≤640): the course
+     cell becomes the stacked card's heading — label pseudo retired,
+     name prominent, code under it; metric/completion badges bolden. */
+  @media (max-width: 640px) {
+    .qlt-table td[data-label="المقرّر"] {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--sp-1);
+    }
+    .qlt-table td[data-label="المقرّر"]::before { display: none; }
+    .qlt-table .qlt-course-name { font-size: var(--fs-body); }
+    .qlt-table td[data-label="معدل الحضور"] .badge,
+    .qlt-table td[data-label="إكمال المحاضرات"] .badge,
+    .qlt-table td[data-label="اكتمال المحتوى"] .badge {
+      font-weight: var(--fw-bold);
+    }
+  }
+
+  /* ── 7 · Professors roster extras ──────────────────────────────
+     The compact-band table keeps its grammar; the filter chip row
+     (مصفّى: التزام أقلّ من 50% + reset) gets a class home. */
+  .qlt-filter-note {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-3);
+  }
+  .qlt-roster .q-compliance { min-inline-size: 150px; }
+
+  /* ── 8 · Curriculum course rows ────────────────────────────────
+     The heatmap retires for oversight rows: identity leading
+     (name + mono code), honest detail line, mono tabular percentage +
+     level chip trailing, thin rail under. Filtered-out rows dim in
+     place — the roster stays whole while a level filter is active. */
+  .qlt-course-rows { display: flex; flex-direction: column; }
+  .qlt-course-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: var(--sp-4);
+    row-gap: var(--sp-2);
+    padding-block: var(--sp-3);
+    transition: opacity var(--t-fast) var(--ease);
+  }
+  .qlt-course-row + .qlt-course-row { border-block-start: 1px solid var(--rule); }
+  .qlt-course-row > .progress { grid-column: 1 / -1; }
+  .qlt-course-row > .progress .progress-track { block-size: var(--sp-1); }
+  .qlt-course-row.is-dim { opacity: 0.38; }
+  .qlt-course-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-0-5);
+    min-inline-size: 0;
+  }
+  .qlt-course-title {
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    min-inline-size: 0;
+  }
+  .qlt-course-meta {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .qlt-course-side {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+  .qlt-course-pct {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--fs-sm);
+    color: var(--text);
+    min-inline-size: 4ch;
+    text-align: end;
+  }
+  .qlt-empty-note {
+    padding: var(--sp-1-5) 0;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+
+  /* ── 9 · Reports — the live-boards link ledger ─────────────────
+     Full-width link rows (the help-center row grammar): icon well,
+     title + one-line description, trailing chevron; hairlines between
+     rows, quiet hover wash, ≥44px rows. */
+  .qlt-link-rows { display: flex; flex-direction: column; }
+  .qlt-link-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-2);
+    min-block-size: 44px;
+    border-radius: var(--r-md);
+    color: inherit;
+    text-decoration: none;
+    transition: background var(--t-fast) var(--ease);
+  }
+  .qlt-link-row + .qlt-link-row { border-block-start: 1px solid var(--rule); }
+  @media (hover: hover) and (pointer: fine) {
+  .qlt-link-row:hover { background: var(--surface-2); }
+  }
+  .qlt-link-row-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 32px;
+    block-size: 32px;
+    flex-shrink: 0;
+    border-radius: var(--r-sm);
+    color: var(--accent-ink);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+  .qlt-link-row-body {
+    flex: 1;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-0-5);
+  }
+  .qlt-link-row-title { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--fs-chrome); }
+  .qlt-link-row-desc { font-size: var(--fs-xs); color: var(--text-muted); }
+  .qlt-link-row-chevron { color: var(--text-muted); flex-shrink: 0; }
+
+  /* Honest export note (the PDF/Excel pending disclosure). */
+  .qlt-note {
+    padding-block: var(--sp-3);
+    line-height: var(--lh-base);
+    color: var(--text-secondary);
+    font-size: var(--fs-sm);
+  }
+
+  /* ── 10 · Reduced motion ───────────────────────────────────────
+     Every transition above rides var(--t-*) and dies under the global
+     belt; the dim/filter state and hairlines are static — reduced
+     motion yields the complete static roster. */
+  @media (prefers-reduced-motion: reduce) {
+    .qlt-alert-row,
+    .qlt-course-row,
+    .qlt-link-row { transition: none; }
+  }
+
+
+/* ────────────────────────────────────────────────────────────────────
+   §4 · exa- — ExamAuthorPages (authoring hub + template detail)
+        (migrated verbatim from exam-author.css, 4C-a r24x)
+   ──────────────────────────────────────────────────────────────── 
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §section-head — each tab's opener: large-type title, one      ║
+     ║  honest line, actions anchored inline-end                      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .exa-section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--sp-2) var(--sp-5);
+  }
+  .exa-section-heading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    flex: 1 1 280px;
+    min-inline-size: 0;
+  }
+  .exa-section-title {
+    margin: 0;
+    font-size: var(--type-headline-size-md);
+    font-weight: var(--type-headline-weight);
+    line-height: var(--type-headline-line-height);
+    color: var(--text);
+  }
+  .exa-section-desc {
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    max-inline-size: var(--type-body-max-measure);
+  }
+  .exa-section-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    flex-shrink: 0;
+  }
+  @media (max-width: 640px) {
+    .exa-section-title { font-size: var(--type-headline-size-sm); }
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §rows — the shared row sheet: one surface, hairline            ║
+     ║  separators, hover = surface step (interactive rows only)       ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .exa-rows {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-card);
+    min-inline-size: 0;
+  }
+  /* Square rows inside a rounded sheet — round only the sheet's ends
+     so hover tints and focus rings are never clipped by overflow. */
+  .exa-rows > :first-child {
+    border-start-start-radius: var(--r-xl);
+    border-start-end-radius: var(--r-xl);
+  }
+  .exa-rows > :last-child {
+    border-end-start-radius: var(--r-xl);
+    border-end-end-radius: var(--r-xl);
+  }
+  .exa-rows > * + * { border-block-start: 1px solid var(--rule); }
+
+  .exa-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-3);
+    padding: var(--sp-4) var(--sp-5);
+    min-block-size: 44px;
+    min-inline-size: 0;
+    transition: background var(--t-fast) var(--ease);
+  }
+  /* The rows whose whole body is a link (templates, queue) — a hover
+     tint names the affordance. Static rows (attempts without an
+     action) keep a quiet surface: no false hover (the r148 rule). */
+  @media (hover: hover) and (pointer: fine) {
+  .exa-row.exa-row-clickable:hover { background: var(--surface-2); }
+  }
+
+  .exa-row-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    flex: 1;
+    min-inline-size: 0;
+    color: inherit;
+    text-decoration: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+  a.exa-row-main:hover { text-decoration: none; }
+  }
+
+  .exa-row-title {
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* Detail-surface rows read as content, not an index — the prompt
+     wraps instead of truncating (the full text is the point there). */
+  .exa-row-title-wrap {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .exa-row-sub {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1) var(--sp-2);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    min-inline-size: 0;
+  }
+  .exa-row-note {
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--danger-ink);
+  }
+  .exa-row-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    flex-shrink: 0;
+  }
+  /* Variant for rows whose trailing content rides higher than the
+     title baseline (template questions with key/note lines). */
+  .exa-row-top { align-items: flex-start; }
+
+  /* Mono numerals — points and scores travel as Plex Mono tabular
+     figures so columns of counts scan straight (Western digits only). */
+  .exa-points {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .exa-order {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    flex-shrink: 0;
+    padding-block-start: var(--sp-0-5);
+  }
+  .exa-check {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-block-size: 44px;
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §toolbar — the bank's one calm filter row: search flexes,      ║
+     ║  selects keep their label-safe width, everything ≥44px          ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .exa-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+  .exa-search {
+    position: relative;
+    display: flex;
+    flex: 1 1 260px;
+    min-inline-size: 0;
+  }
+  .exa-search-icon {
+    position: absolute;
+    inset-inline-start: var(--sp-3);
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+  .exa-search-input { padding-inline-start: var(--sp-8); }
+  .exa-toolbar > select {
+    flex: 0 1 auto;
+    inline-size: auto;
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §bank — the question-bank accordion rows. Collapsed: prompt    ║
+     ║  (2-line clamp) + chips + mono points + the pool's moderation   ║
+     ║  state. Expanded: the full question attached to the row.        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .exa-bank-row {
+    transition: background var(--t-fast) var(--ease);
+  }
+  /* Hover names the disclosure while collapsed; an open row is a
+     reading surface, so its tint rests. */
+  @media (hover: hover) and (pointer: fine) {
+  .exa-bank-row:not(.is-open):hover { background: var(--surface-2); }
+  }
+
+  .exa-bank-toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    inline-size: 100%;
+    padding: var(--sp-4) var(--sp-5);
+    min-block-size: 44px;
+    background: none;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+  .exa-bank-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .exa-bank-prompt {
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+  }
+  .exa-bank-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1) var(--sp-2);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    min-inline-size: 0;
+  }
+  .exa-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--sp-5);
+    flex-shrink: 0;
+    color: var(--text-muted);
+    transition: rotate var(--t-fast) var(--ease);
+  }
+  .exa-bank-toggle[aria-expanded="true"] .exa-chevron { rotate: 180deg; }
+  .exa-bank-toggle[aria-expanded="true"] .exa-chevron svg { color: var(--text); }
+
+  .exa-bank-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    /* Aligns the panel's content with the prompt text: the sheet's
+       padding + the chevron's fixed box + the toggle's gap — tokens
+       only, so the alignment survives any future rhythm retune. */
+    padding-block: 0 var(--sp-5);
+    padding-inline: calc(var(--sp-5) + var(--sp-5) + var(--sp-3)) var(--sp-5);
+  }
+  .exa-qtext {
+    margin: 0;
+    font-size: var(--fs-body);
+    line-height: var(--type-body-line-height);
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .exa-choices {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1-5);
+  }
+  .exa-choice {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+    font-size: var(--fs-sm);
+    color: var(--text);
+  }
+  .exa-choice-index {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .exa-byline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--sp-1) var(--sp-4);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  /* The honest immutability footer — questions have no update endpoint,
+     so the panel says so instead of faking an edit affordance. */
+  .exa-immutable {
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-1-5);
+    padding-block-start: var(--sp-3);
+    border-block-start: 1px solid var(--rule);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .exa-immutable svg { flex-shrink: 0; }
+
+  /* Answer-key line (template questions): the key is only ever the
+     wire's own — null renders nothing. */
+  .exa-key {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--success-ink);
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §detail — /teacher/exams/:templateId: back-link row, large     ║
+     ║  title + status line + actions strip, then the two-column       ║
+     ║  split (questions + grading left, facts + moderation right).    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .exa-detail-head { min-inline-size: 0; }
+  .exa-detail-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-3) var(--sp-6);
+  }
+  .exa-detail-heading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    flex: 1 1 320px;
+    min-inline-size: 0;
+  }
+  .exa-detail-title {
+    margin: 0;
+    font-size: var(--type-headline-size-lg);
+    font-weight: var(--type-headline-weight);
+    line-height: var(--type-headline-line-height);
+    color: var(--text);
+    /* A6 P3 (22-a): 2-line clamp — authored titles run long; the full
+       title stays in the title attribute. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .exa-detail-sub {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1-5) var(--sp-2);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .exa-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--sp-2);
+    flex-shrink: 0;
+  }
+
+  /* The quality note bar — a soft semantic well, never a raw stripe. */
+  .exa-note {
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-1-5);
+    padding: var(--sp-3) var(--sp-4);
+    border: 1px solid color-mix(in srgb, var(--danger) 28%, var(--rule));
+    border-radius: var(--r-lg);
+    background: color-mix(in srgb, var(--danger-soft) 55%, transparent);
+    color: var(--danger-ink);
+    font-size: var(--fs-sm);
+  }
+  .exa-note svg { flex-shrink: 0; }
+
+  .exa-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: var(--sp-6);
+    align-items: start;
+  }
+  .exa-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+    min-inline-size: 0;
+  }
+  .exa-aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    min-inline-size: 0;
+  }
+  @media (max-width: 1024px) {
+    .exa-split { grid-template-columns: 1fr; }
+  }
+
+  /* Aside panels — flat hairline sheets matching the row sheet's
+     elevation (one shadow per level: --shadow-card everywhere). */
+  .exa-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-card);
+    min-inline-size: 0;
+  }
+  .exa-panel-title {
+    margin: 0;
+    font-size: var(--type-headline-size-sm);
+    font-weight: var(--type-headline-weight);
+    line-height: var(--type-headline-line-height);
+    color: var(--text);
+  }
+  .exa-panel-sub {
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .exa-facts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §picker-order — the builder picker's pick-sequence affordance  ║
+     ║  (final pass 3-d): the backend assigns each template question   ║
+     ║  its exam order from the PICK sequence (exams.routes creates    ║
+     ║  order: i+1 over the picked id array), so the picker shows the  ║
+     ║  live position of every picked row — a small accent-tinted      ║
+     ║  mono chip beside the checkbox, renumbered as picks change.     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .exa-pick-order {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 20px;
+    block-size: 20px;
+    padding-inline: var(--sp-1);
+    flex-shrink: 0;
+    border-radius: var(--r-full);
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--fs-xs);
+    /* The .tq-row-icon tint idiom (teacher-quality.css): a soft accent
+       wash + a text-safe accent mix — never raw accent as text. */
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: color-mix(in srgb, var(--accent) 75%, var(--text));
+  }
+  /* Center the chip on the picker row's leading line (the checkbox's
+     own offset — the row is align-items: flex-start by design). */
+  .list-row .exa-pick-order { margin-block-start: var(--sp-0-5); }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §grade-card — manual-grading parked-answer cards (final pass   ║
+     ║  3-d): on a failed finalize the cards still lacking a verdict   ║
+     ║  carry data-invalid + the verdict group carries aria-invalid.   ║
+     ║  The card's border rides an inline style (inline wins over any  ║
+     ║  border-color rule), so the invalid edge is an inset ring.      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .exa-grade-card[data-invalid='true'] {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 45%, var(--rule));
+  }
+
+
+/* ────────────────────────────────────────────────────────────────────
+   §5 · oex- — OnlineExamsPages (student list / taker / moderation)
+        (migrated verbatim from online-exams.css, 4C-d r24x)
+   ──────────────────────────────────────────────────────────────── 
+
+
+  /* ═══ 1 · Student exam list — rows, not cards ══════════════════════
+     List-first composition (mission 4C-d): title + kind + course lead,
+     a status/time-window meta line, a trailing primary action. Hairline
+     separators between rows; hover = one calm background tint; the row
+     itself is the tap target (canStart rows render as <a>). */
+
+  .oex-rows {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .oex-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-3) var(--sp-4);
+    padding-block: var(--sp-4);
+    border-block-end: 1px solid var(--rule);
+    color: inherit;
+  }
+
+  /* Static rows are direct children; startable rows ride inside the
+     listitem wrapper (.oex-row-slot) that keeps the anchor's implicit
+     link role — the last-row hairline must retire in both shapes. */
+  .oex-rows > :last-child,
+  .oex-rows > :last-child .oex-row { border-block-end: 0; }
+
+  /* Startable rows are anchors — the hover tint is the row's whole
+     elevation story (no lift, no shadow stacking; Superlist calm). The
+     inset inline padding + mirrored negative margin keep the tint off
+     the hairline grid while the text column stays aligned. */
+  a.oex-row {
+    text-decoration: none;
+    margin-inline: calc(-1 * var(--sp-3));
+    padding-inline: var(--sp-3);
+    border-radius: var(--r-md);
+    transition: background var(--t-fast) var(--motion-ease-standard);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+  a.oex-row:hover { background: var(--surface-2); }
+  }
+
+  .oex-row:focus-visible {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+  }
+
+  /* Leading icon well — kind-tinted via the row's --oex-accent (the
+     KIND_COLOR map passes var() tokens only; dark re-keys for free). */
+  .oex-row-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: var(--r-md);
+    background: color-mix(in srgb, var(--oex-accent, var(--accent)) 10%, transparent);
+    color: var(--oex-accent, var(--accent));
+  }
+
+  .oex-row-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-0-5);
+    flex: 1 1 260px;
+    min-inline-size: 0;
+  }
+
+  .oex-row-title {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+
+  .oex-row-kicker {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+  .oex-row-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-4);
+    margin-block-start: var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+  .oex-row-meta > span {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+  }
+
+  .oex-row-chips {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-1-5);
+    margin-block-start: var(--sp-2);
+  }
+
+  /* Trailing primary action — «ابدأ / متابعة» on startable rows, the
+     «عرض النتيجة» ghost button on finished history rows, nothing when
+     the status chips already tell the whole truth (upcoming / closed).
+     The label is inside the row link, so the whole row is the control. */
+  .oex-row-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    flex-shrink: 0;
+    min-block-size: 44px; /* craft floor — the row link clears it many times over */
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--accent-ink);
+    transition: color var(--t-fast) var(--motion-ease-standard);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+  a.oex-row:hover .oex-row-action { color: var(--accent-strong); }
+  }
+
+  /* Shape-matched loading rows — icon well + two text lines, one per
+     pending row (the list is rows now, the skeleton follows). */
+  .oex-skel {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding-block: var(--sp-3);
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .oex-skel:last-child { border-block-end: 0; }
+
+  .oex-skel-icon {
+    flex-shrink: 0;
+    inline-size: 40px;
+    block-size: 40px;
+  }
+
+  .oex-skel-body {
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  /* ═══ 2 · Exam taker — the calm focus surface ══════════════════════
+     Sticky compact attempt header (title + progress + timer + question
+     map + time rail) ABOVE the questions; question cards large-type;
+     options as 44px selectable rows. The attempt lifecycle (autosave,
+     timer, submit, resume, terminal errors) is untouched — this is the
+     chrome those behaviors render through. */
+
+  .oex-bar {
+    position: sticky;
+    inset-block-start: 0;
+    /* Local paint order above the question cards; overlays are portaled
+       far above this, and the sticky app topbar still paints over. */
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-4);
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-card);
+  }
+
+  .oex-bar-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex: 1 1 200px;
+    min-inline-size: 0;
+  }
+
+  .oex-bar-title {
+    margin: 0;
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* «س3 من 10» — the on-screen progress chip (Western digits, bidi-
+     isolated in the TSX; aria-hidden — the map + subline carry the SR
+     story). One signal: it is quiet chrome, the timer owns the color. */
+  .oex-bar-progress {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: var(--sp-1) var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-full);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .oex-save-warn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    padding: var(--sp-1) var(--sp-3);
+    border-radius: var(--r-full);
+    background: var(--warning-soft);
+    color: var(--warning-ink);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+  }
+
+  /* The countdown — the one loud element on the surface (prominent +
+     accessible: role=timer, the urgency crossing announced once). */
+  .oex-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    flex-shrink: 0;
+    padding: var(--sp-2) var(--sp-4);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-full);
+    color: var(--text);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+    transition: background var(--t-base) var(--motion-ease-standard),
+                border-color var(--t-base) var(--motion-ease-standard),
+                color var(--t-base) var(--motion-ease-standard);
+  }
+
+  /* < 2 minutes left — danger chip. Color coding only, no pulse (the
+     documented no-flash decision): --danger-ink on --danger-soft is
+     ≈9.4:1 light / 7.2:1 dark. */
+  .oex-timer.urgent {
+    background: var(--danger-soft);
+    border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+    color: var(--danger-ink);
+  }
+
+  /* Question map — one dot per question, answered / save-failed /
+     current states at a glance; click or keyboard to jump. */
+  .oex-qmap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+    flex-basis: 100%;
+  }
+
+  .oex-qmap-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 36px;
+    min-block-size: 36px;
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: var(--r-full);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    cursor: pointer;
+    transition: background var(--t-fast) var(--motion-ease-standard),
+                border-color var(--t-fast) var(--motion-ease-standard),
+                color var(--t-fast) var(--motion-ease-standard);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+  .oex-qmap-dot:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  }
+
+  .oex-qmap-dot.answered {
+    background: var(--accent-soft);
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    color: var(--accent-strong);
+  }
+
+  /* Save-failed — the warning-chip pairing (.oex-save-warn family). */
+  .oex-qmap-dot.failed {
+    background: var(--danger-soft);
+    border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+    color: var(--danger-ink);
+  }
+
+  /* The on-screen ring — inset accent, same language as the selected
+     choice row (no elevation, no glow). */
+  .oex-qmap-dot.current {
+    border-color: var(--accent);
+    box-shadow: var(--state-card-selected-ring);
+    color: var(--accent-ink);
+  }
+
+  /* The time-consumed hairline: drains from the inline-start edge —
+     RTL inline-start is the RIGHT edge, so the origin pins right (the
+     document is dir="rtl"); the [dir='ltr'] twin keeps the sheet honest
+     if the family is ever reused in a Latin shell. */
+  .oex-time-rail {
+    display: block;
+    flex-basis: 100%;
+    block-size: 2px;
+    border-radius: var(--r-full);
+    background: var(--rule);
+    overflow: hidden;
+  }
+
+  .oex-time-rail > span {
+    display: block;
+    block-size: 100%;
+    background: var(--accent);
+    transform-origin: right center;
+  }
+
+  [dir='ltr'] .oex-time-rail > span { transform-origin: left center; }
+
+  .oex-time-rail[data-urgent] { background: color-mix(in srgb, var(--danger) 16%, transparent); }
+  .oex-time-rail[data-urgent] > span { background: var(--danger); }
+
+  /* Question wrapper — the map's jump target. scroll-margin in rem so
+     the card lands clear of the sticky bar (measured: ≈7.5rem bar stack
+     desktop, +44px dot row ≤640). */
+  .oex-q { scroll-margin-block-start: 7.5rem; }
+  @media (max-width: 768px) { .oex-q { scroll-margin-block-start: 8.5rem; } }
+  @media (max-width: 640px) { .oex-q { scroll-margin-block-start: 10rem; } }
+
+  /* Programmatic focus lands here (tabIndex -1) — the universal ring
+     excludes tabindex=-1 by design, so the landing cue is declared
+     here and retires when the student clicks elsewhere. */
+  .oex-q:focus {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+    border-radius: var(--r-lg);
+  }
+
+  /* The question card: prompt is the large-type moment (16–18px band →
+     --fs-body-lg = 18px; authored line breaks survive). */
+  .oex-prompt {
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-medium);
+    color: var(--text);
+    line-height: var(--lh-base);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+
+  .oex-q-choices {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-4);
+  }
+
+  /* Options — selectable rows (44px+ floor), one quiet border, clear
+     selected state: accent tint + filled check. RTL-correct: the check
+     rides the inline-start edge via the flex flow, never left/right. */
+  .oex-choice {
+    position: relative; /* the visually-hidden radio anchors to its row */
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    min-block-size: 44px;
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: background var(--t-fast) var(--motion-ease-standard),
+                border-color var(--t-fast) var(--motion-ease-standard);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+  .oex-choice:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  }
+  .oex-choice:active { background: var(--surface-3); }
+
+  /* The native radio stays in the accessibility tree (name = choice
+     text) but is visually replaced by the check affordance; focus
+     moves to the row through :has(). */
+  .oex-choice input[type='radio'] {
+    position: absolute;
+    opacity: 0;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+  }
+
+  .oex-choice-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    inline-size: 22px;
+    block-size: 22px;
+    margin-block-start: var(--sp-0-5);
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    color: transparent;
+    transition: background var(--t-fast) var(--motion-ease-standard),
+                border-color var(--t-fast) var(--motion-ease-standard),
+                color var(--t-fast) var(--motion-ease-standard);
+  }
+
+  .oex-choice-text {
+    flex: 1;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  /* Selected — the ONE signal moment of the answering surface. */
+  .oex-choice.selected {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+
+  .oex-choice.selected .oex-choice-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
+  }
+
+  /* Row-level focus cue: the universal :focus-visible ring lands on the
+     visually hidden radio (motion.css); the surrounding row joins it
+     with the SAME system ring this sheet pins on .oex-row / .oex-q —
+     not a weaker border-only tint (the selected state keeps the accent
+     border, the ring carries the focus). */
+  .oex-choice:has(input:focus-visible) {
+    border-color: var(--accent);
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+  }
+
+  /* Locked while this question's save is in flight — the same honesty
+     as the choice radios (the save cannot be raced). */
+  .oex-choice:has(input:disabled) {
+    cursor: default;
+    opacity: 0.7;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+  .oex-choice:has(input:disabled):hover {
+    background: var(--surface);
+    border-color: var(--border);
+  }
+  }
+
+  .oex-answer-field { margin-block-start: var(--sp-4); }
+
+  /* The near-limit counter (last 400 chars) — quiet, end-aligned; the
+     N/4000 run is numeric, so it rides tabular figures (the same
+     font-variant-numeric idiom as .oex-timer / .oex-grade-value). */
+  .oex-char-count {
+    margin: 0;
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Save-state chip at the question footer — the positive half of the
+     autosave honesty pair (failed → danger, in-flight → muted,
+     server-confirmed → success). */
+  .oex-q-foot {
+    display: flex;
+    justify-content: flex-end;
+    margin-block-start: var(--sp-3);
+  }
+
+  .oex-q-state {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    animation: oex-save-in var(--motion-duration-micro) var(--motion-ease-standard);
+  }
+
+  .oex-q-state.saved { color: var(--success-ink); }
+  .oex-q-state.saving { color: var(--text-muted); }
+  .oex-q-state.failed { color: var(--danger-ink); }
+
+  @keyframes oex-save-in { from { opacity: 0; } }
+
+  /* Submit bar — the unanswered count rides inline; on phone the bar is
+     bottom-sticky above the fixed bottom-nav so a 60-question paper
+     never hides the way out. */
+  .oex-submit-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    margin-block-start: var(--sp-4);
+  }
+
+  .oex-submit-bar .form-error { flex-basis: 100%; }
+
+  .oex-submit-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+  }
+
+  .oex-submit-status.ok { color: var(--success-ink); }
+  .oex-submit-status.warn { color: var(--warning-ink); }
+
+  @media (max-width: 920px) {
+    .oex-submit-bar {
+      position: sticky;
+      /* 641–920px: .content has no bottom padding — full nav clearance
+         (≈72px + safe area) so the bar docks above the bottom-nav. */
+      bottom: calc(72px + env(safe-area-inset-bottom) + var(--sp-2));
+      z-index: 20;
+      padding: var(--sp-2) var(--sp-3);
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-card);
+    }
+  }
+
+  /* ≤640px: the scroller's own bottom padding reserves the nav clearance
+     (notifications.css idiom) — 0 docks the bar a hairline above it. */
+  @media (max-width: 640px) {
+    .oex-submit-bar { bottom: 0; }
+    .oex-qmap { flex-wrap: nowrap; overflow-x: auto; }
+    .oex-qmap-dot { min-inline-size: 44px; min-block-size: 44px; }
+  }
+
+  /* r290 idiom (polish.css): the touch floor follows the POINTER, not
+     the width — coarse-pointer tablets (641–920px) kept the 36px dot
+     while it is this surface's primary question navigation. The same
+     declarations as the ≤640 rule above, now at ANY width on real
+     touch devices; the fine-pointer mouse keeps the compact 36px dot. */
+  @media (hover: none) and (pointer: coarse) {
+    .oex-qmap-dot { min-inline-size: 44px; min-block-size: 44px; }
+  }
+
+  /* ═══ 3 · Begin / done / result screens ════════════════════════════ */
+
+  .oex-begin-note {
+    max-inline-size: 480px;
+    text-align: center;
+  }
+
+  .oex-begin-error {
+    margin-block-start: var(--sp-3);
+    max-inline-size: 480px;
+  }
+
+  .oex-begin-actions { margin-block-start: var(--sp-3); }
+
+  /* Verdict lockup: icon → title → grade → badge read as one tight
+     group inside .empty-state's rhythm. */
+  .oex-result .oex-result-title { margin: 0; }
+
+  .oex-result-lockup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+
+  .oex-result-note {
+    margin: 0;
+    max-inline-size: 52ch;
+    color: var(--text-muted);
+  }
+
+  /* Shape-matched loading for the deep-link done-state — the resolved
+     anatomy (moment → title → grade lockup → note → action) as bars,
+     centered like the .empty-state column it swaps for. */
+  .oex-result-skel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
+  }
+
+  /* The authored moment — the grade reveal: the real score lands as the
+     visual anchor (metric scale, one-shot rise + state ring — 0-spread
+     ring, never elevation). */
+  .oex-grade {
+    display: inline-flex;
+    align-items: baseline;
+    padding: var(--sp-3) var(--sp-5);
+    border-radius: var(--r-lg);
+    background: var(--accent-soft);
+    animation:
+      oex-grade-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards,
+      oex-grade-ring var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
+  }
+
+  .oex-grade-value {
+    font-family: var(--font-mono);
+    font-size: var(--type-metric-size-lg);
+    font-weight: var(--type-metric-weight);
+    line-height: var(--type-metric-line-height);
+    /* token WCAG math: --accent-strong on --accent-soft ≥ AA both themes */
+    color: var(--accent-strong);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: var(--type-metric-feature-settings);
+  }
+
+  @keyframes oex-grade-in {
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)) scale(0.96); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes oex-grade-ring {
+    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+    to { box-shadow: 0 0 0 12px transparent; }
+  }
+
+  /* ═══ 4 · Post-grading review ══════════════════════════════════════
+     Collapsed behind one toggle; the list re-asserts start alignment
+     inside .empty-state's centered column. Verdict chips carry the
+     semantics; rows stay hairline-calm. */
+
+  .oex-review {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
+  }
+
+  .oex-review-chevron {
+    transition: rotate var(--motion-duration-micro) var(--motion-ease-standard);
+  }
+
+  .oex-review-chevron.is-open { rotate: 180deg; }
+
+  .oex-review-list {
+    inline-size: min(100%, 640px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    text-align: start;
+  }
+
+  .oex-review-q {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-3);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+  }
+
+  .oex-review-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-2);
+  }
+
+  .oex-review-num {
+    flex-shrink: 0;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .oex-review-prompt {
+    flex: 1;
+    min-inline-size: 0;
+    font-weight: var(--fw-semibold);
+  }
+
+  .oex-review-head .badge { flex-shrink: 0; }
+
+  .oex-review-meta {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+  .oex-review-label { color: var(--text-muted); font-size: var(--fs-sm); }
+
+  .oex-review-ans,
+  .oex-review-key,
+  .oex-review-feedback {
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+  }
+
+  .oex-review-text { overflow-wrap: anywhere; }
+
+  .oex-review-missed { color: var(--text-muted); font-style: normal; }
+
+  .oex-review-key {
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+    color: var(--success-ink);
+  }
+
+  .oex-review-feedback {
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+  }
+
+  /* ═══ 5 · Quality moderation queue ═════════════════════════════════
+     Read-heavy oversight: queue rows with hairline separators (surface
+     steps, no filled chips), the review panel as one quiet surface-2
+     step, and the approve/reject grammar untouched (the shared
+     .moderation-pulse confirm animation keeps its components.css home). */
+
+  .oex-queue {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .oex-mod-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-3) var(--sp-4);
+    padding-block: var(--sp-4);
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .oex-mod-row:first-child { padding-block-start: 0; }
+  .oex-mod-row:last-child { border-block-end: 0; padding-block-end: 0; }
+
+  .oex-mod-main {
+    flex: 1 1 240px;
+    min-inline-size: 0;
+  }
+
+  .oex-mod-title {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+
+  .oex-mod-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-2);
+    margin-block-start: var(--sp-1);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+
+  /* Expanded review panel — one surface step down, no border stack. */
+  .oex-mod-panel {
+    flex-basis: 100%;
+    margin-block-start: var(--sp-3);
+    padding: var(--sp-4);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+  }
+
+  .oex-mod-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+
+  .oex-mod-preview { margin-block-end: var(--sp-4); }
+
+  .oex-mod-preview-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-2);
+  }
+
+  /* Per-question released key / moderation note lines inside the
+     preview rows (the .list-row grammar stays the family container). */
+  .oex-mod-key {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    margin-block-start: var(--sp-0-5);
+    font-size: var(--fs-xs);
+    color: var(--success-ink);
+  }
+
+  .oex-mod-note {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    margin-block-start: var(--sp-0-5);
+    font-size: var(--fs-xs);
+    color: var(--danger-ink);
+  }
+
+  .oex-mod-note-field { margin-block-end: var(--sp-2); }
+
+  .oex-mod-error { margin-block-start: var(--sp-2); }
+
+  /* ═══ 6 · Reduced motion — the complete static result ══════════════
+     The global belt (motion.css) already zeroes durations; these local
+     guarantees keep the oex moments honest even if a future keyframe
+     forgets the token ladder. */
+
+  @media (prefers-reduced-motion: reduce) {
+    .oex-q-state,
+    .oex-grade {
+      animation: none;
+    }
+
+    .oex-review-chevron,
+    a.oex-row,
+    .oex-row-action,
+    .oex-timer,
+    .oex-qmap-dot,
+    .oex-choice,
+    .oex-choice-check {
+      transition: none;
+    }
+  }
+
+
+
+/* ────────────────────────────────────────────────────────────────────
+   §6 · r304 — new family-wide primitives
+   ──────────────────────────────────────────────────────────────── */
+
+/* ─── 6.1 · tq-toolbar / tq-search — the family search rail ────────
+   Migrated OFF the borrowed .admin-students-* chrome (admin.css): the
+   quality courses/professors toolbars now wear this family-owned pill
+   anatomy instead of reaching into another family's sheet. Same
+   anatomy — surface-2 pill, focus halo, 16px iOS-zoom floor input. */
+.tq-toolbar {
+  display: flex;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-3);
+  flex-wrap: wrap;
+}
+.tq-search {
+  position: relative;
+  flex: 1 1 240px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-block-size: 44px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+.tq-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: var(--state-input-focus-halo);
+}
+.tq-search > svg { flex-shrink: 0; }
+.tq-search .tq-search-input {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  font-family: inherit;
+  font-size: 16px; /* type-gate: allow — iOS-zoom floor (Safari zooms <16px inputs on focus; fix 21-c) */
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  height: auto;
+  padding: 0;
+}
+.tq-search .tq-search-input:focus {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+/* ─── 6.2 · Sortable roster headers (students + grades read tables) ─
+   The header button keeps the columnheader's accessible name; the
+   order glyph is aria-hidden decoration. An active th carries
+   aria-sort and the button takes the signal ink. */
+.tpg-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: start;
+}
+.tpg-sort:focus-visible {
+  outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+  outline-offset: var(--state-focus-ring-offset);
+  border-radius: var(--r-xs);
+}
+.tpg-sort svg { flex-shrink: 0; opacity: 0.55; }
+.table th[aria-sort] .tpg-sort { color: var(--accent-ink); }
+.table th[aria-sort] .tpg-sort svg { opacity: 1; }
+
+/* ─── 6.3 · Status legibility on the attendance roll call ──────────
+   The sticky summary strip gets tone-inked counts (present green,
+   late amber, absent rose, excused copper) so the session state reads
+   without comparing numbers; zero-count stats dim honestly. */
+.tpg-att-summary-item[data-tone=success] .tpg-att-summary-value { color: var(--success-ink); }
+.tpg-att-summary-item[data-tone=warning] .tpg-att-summary-value { color: var(--warning-ink); }
+.tpg-att-summary-item[data-tone=danger]  .tpg-att-summary-value { color: var(--danger-ink); }
+.tpg-att-summary-item[data-tone=brand]   .tpg-att-summary-value { color: var(--accent-ink); }
+.tpg-att-stat,
+.tpg-dist-row { transition: opacity var(--t-fast) var(--ease); }
+.tpg-att-stat.is-dim,
+.tpg-dist-row.is-dim { opacity: 0.55; }
+@media (max-width: 480px) {
+  .tpg-att-summary { gap: var(--sp-2) var(--sp-4); }
+}
+
+.tpg-feedback {
+  margin-block-start: var(--sp-3);
+}
+
+/* ─── 6.4 · Grading-queue due edges ────────────────────────────────
+   The «what needs me first» signal, in the same inline-start-edge
+   grammar the quality alerts rows use: overdue = danger, due within
+   3 days = warning, later = the calm default rule. */
+.tpg-queue-section[data-due=overdue] { border-inline-start: 3px solid var(--danger); }
+.tpg-queue-section[data-due=soon]    { border-inline-start: 3px solid var(--warning); }
+
+/* ─── 6.5 · exa-lifecycle — the template workflow strip ────────────
+   Exam authoring is a pipeline (draft → review → approval → publish);
+   the detail page shows where the template stands with a hairline
+   step rail: done steps take the signal dot, the current step rings,
+   a rejected review step turns danger. Presentation only — the wire
+   status badge in the title row stays the source of truth. */
+.exa-lifecycle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1-5) 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.exa-step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.exa-step + .exa-step::before {
+  content: ;
+  inline-size: var(--sp-5);
+  block-size: 1px;
+  background: var(--rule);
+  margin-inline-end: var(--sp-2);
+}
+.exa-step-dot {
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: var(--r-full);
+  background: var(--border-strong);
+  flex-shrink: 0;
+}
+.exa-step.is-done { color: var(--text-secondary); }
+.exa-step.is-done .exa-step-dot { background: var(--accent); }
+.exa-step.is-current {
+  color: var(--accent-ink);
+  font-weight: var(--fw-semibold);
+}
+.exa-step.is-current .exa-step-dot {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.exa-step.is-rejected { color: var(--danger-ink); font-weight: var(--fw-semibold); }
+.exa-step.is-rejected .exa-step-dot { background: var(--danger); }
+
+/* ─── 6.6 · exa form scaffolding — inline styles promoted ──────────
+   The authoring modals rode ~40 inline-style clusters for the same
+   four patterns (form column, footer rule, error line, textarea
+   reset); they now share these classes so every authoring surface
+   moves together. */
+.exa-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.exa-form-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding-block-start: var(--sp-3);
+  border-block-start: 1px solid var(--rule);
+}
+.exa-error-line {
+  margin: 0;
+  color: var(--danger-ink);
+  font-size: var(--fs-sm);
+}
+.tq-area {
+  resize: vertical;
+  font-family: inherit;
+}
+.exa-cap-note {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+/* ─── 6.7 · Quality alerts severity filter (read-only view control) ─
+   The alerts page gains client-side severity pills (same .filter-pill
+   grammar the professors roster uses) — the active filter note rides
+   this row. */
+.qlt-alert-filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-block-end: var(--sp-3);
+}
+
+/* ─── 6.8 · exa authoring scaffolding — inline styles promoted (R304) ─
+   The authoring modals/forms/detail rode ~50 inline-style clusters for
+   a dozen repeated patterns; they live here now so every authoring
+   surface (create question, build template, edit, moderate, grade)
+   moves together and the TSX reads as structure, not CSS. */
+
+/* The modals' one form column + footer rule. */
+.exa-form textarea.input,
+.exa-grade-card textarea.input {
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* The detail facts' dotted-leader ledger (was inline in DetailLine;
+   the row's utility composition stays in the TSX — the r167 pin). */
+.exa-fact-label {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.exa-fact-leader {
+  flex: 1 1 2rem;
+  min-inline-size: 1rem;
+  border-block-end: 1px dotted var(--border-strong);
+  transform: translateY(-0.2em);
+}
+.exa-fact-value {
+  font-size: var(--fs-sm);
+  text-align: end;
+}
+
+/* The gated publish control (disabled + reason) cluster. */
+.exa-gate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-1);
+  flex-shrink: 0;
+}
+.exa-gate-note {
+  margin: 0;
+  text-align: end;
+  max-inline-size: min(320px, 100%);
+}
+.exa-error-center { align-self: center; }
+
+/* The builder's question picker: boxed section + scroll body + rows. */
+.exa-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+}
+.exa-picker p { margin-block: 0; }
+.exa-picker-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  max-block-size: 260px;
+  overflow-block: auto;
+}
+.exa-pick-row { cursor: pointer; align-items: flex-start; margin-block: 0; }
+.exa-pick-check { margin-block-start: var(--sp-1); flex-shrink: 0; }
+.exa-pick-sub {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Manual grading: the parked-answer card + its answer surface. */
+.exa-grade-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+}
+.exa-answer-surface {
+  margin: 0;
+  padding: var(--sp-2);
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.exa-answer-missing { color: var(--warning-ink); }
+.exa-grade-prompt { flex: 1; min-inline-size: 200px; }
+.exa-grade-side { flex-shrink: 0; }
+
+/* The choices editor inside the question modal. */
+.exa-choice-list { display: flex; flex-direction: column; gap: var(--sp-1-5); }
+.exa-choice-rows { display: flex; flex-direction: column; gap: var(--sp-2); }
+.exa-choice-row { display: flex; align-items: flex-start; gap: var(--sp-2); }
+.exa-choice-correct {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  margin-block-start: var(--sp-2-5);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.exa-choice-field { flex: 1; min-inline-size: 0; }
+.exa-choice-remove {
+  margin-block-start: var(--sp-2);
+  color: var(--danger);
+}
+
+/* Moderation panels: the verdict-reset note line + actions column. */
+.exa-note-line {
+  margin: 0;
+  display: flex;
+  gap: var(--sp-1-5);
+  align-items: flex-start;
+}
+.exa-mod-actions-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  flex-shrink: 0;
+  align-items: stretch;
+}
+
+/* ─── 6.9 · cur — the curriculum builders' scaffolding (R304) ───────
+   The builders' rows/forms/structure block promoted out of inline
+   styles onto the family sheet — same anatomy, token rhythm, and the
+   lecture row's selection state now rides [data-selected] instead of
+   an inline border/background ternary. */
+
+/* Authoring form column (lecture + chapter + checkpoint modals). */
+.cur-form { display: flex; flex-direction: column; gap: var(--sp-3); }
+.cur-form p { margin-block: 0; }
+
+/* The checkpoint options editor. */
+.cur-options { display: flex; flex-direction: column; gap: var(--sp-1-5); }
+.cur-options-label { font-weight: var(--fw-semibold, 600); }
+.cur-options-rows { display: flex; flex-direction: column; gap: var(--sp-2); }
+.cur-opt-row { display: flex; align-items: flex-start; gap: var(--sp-2); }
+.cur-opt-correct {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  margin-block-start: calc(var(--sp-3) + var(--sp-0-5));
+  cursor: pointer;
+  white-space: nowrap;
+}
+.cur-opt-field { flex: 1; min-inline-size: 0; }
+.cur-opt-error { display: block; margin-block-start: var(--sp-1); }
+.cur-opt-remove { margin-block-start: var(--sp-3); color: var(--danger); }
+
+/* Chapter + checkpoint list rows (the compact one-line anatomy). */
+.cur-list { display: flex; flex-direction: column; gap: var(--sp-2); }
+.cur-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--rule);
+}
+.cur-row-time { color: var(--text-secondary, var(--text)); white-space: nowrap; }
+.cur-row-title {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cur-row-count { white-space: nowrap; }
+.cur-row-danger { color: var(--danger); }
+
+/* The lecture row: selection rides [data-selected] (the row wraps the
+   aria-pressed select button). */
+.cur-lec-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--rule);
+}
+.cur-lec-row[data-selected] {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+.cur-lec-select {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  text-align: start;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+}
+.cur-lec-main { flex: 1; min-inline-size: 0; }
+.cur-lec-title {
+  display: block;
+  font-weight: var(--fw-semibold, 600);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cur-lec-meta {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-block-start: var(--sp-0-5);
+}
+
+/* The selected-lecture structure block (CurriculumAuthoringPanel). */
+.cur-structure {
+  margin-block-start: var(--sp-4);
+  padding: var(--sp-4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--rule);
+  background: var(--surface-2);
+}
+.cur-structure-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-block-end: var(--sp-3);
+}
+.cur-structure-title { font-weight: var(--fw-bold, 700); }
+.cur-structure-body { display: flex; flex-direction: column; gap: var(--sp-4); }
+.cur-sec-label {
+  margin-block-end: var(--sp-2);
+  font-weight: var(--fw-semibold, 600);
 }
 
 }

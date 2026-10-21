@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { Card, Badge } from '../../components/primitives';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
+import { PageFrame, PageHeader, SectionHeader, RowList, RowItem } from '../../components/patterns';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useFaculties, useCurrentInstitutionSlug } from '../../hooks/useResources';
@@ -51,15 +52,13 @@ export default function CampusMapPage() {
   const visible = city === 'all' ? faculties : faculties.filter((f) => f.city === city);
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">دليل الحرم الجامعيّ</h1>
-          <p className="page-subtitle">
-            كلّيّات جامعة مدارك التجريبية بحسب الحرم، مع روابط لصفحاتها التفصيليّة — بيانات عرض اصطناعية.
-          </p>
-        </div>
-      </header>
+    <PageFrame width="default">
+      <PageHeader
+        title="دليل الحرم الجامعيّ"
+        description={
+          'كلّيّات جامعة مدارك التجريبية بحسب الحرم، مع روابط لصفحاتها التفصيليّة — بيانات عرض اصطناعية.'
+        }
+      />
 
       {/* The campus "map" — an honest footprint band (real counts per
           city; the bar length is proportional to the faculty count) that
@@ -124,56 +123,50 @@ export default function CampusMapPage() {
       </Card>
 
       {/* Directory — the band above owns the error state, so this
-          section only renders its honest empty state with data loaded. */}
-      {facs.isError ? null : facs.isPending ? (
-        <Card title="جميع الكليّات" icon={Building2}>
-          <div className="grid-3" aria-busy="true">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <div className="list-row" key={i} aria-hidden>
-                <Skeleton width={22} height={22} />
-                <div className="list-row-body flex-col gap-2">
-                  <Skeleton width="72%" height={13} />
-                  <Skeleton width="48%" height={11} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      ) : visible.length === 0 ? (
-        <EmptyState
-          icon={Building2}
-          title="لا توجد كلّيّات في هذه المدينة"
-          illustration="empty-list"
-          description="جرِّب اختيار مدينة أخرى من انتشار الكليّات الأعلى."
-        />
-      ) : (
-        <Card
-          title={city === 'all' ? 'جميع الكليّات' : `كلّيّات ${city}`}
-          icon={Building2}
-          subtitle={arCount(visible.length, 'كلّيّة واحدة', 'كلّيّتان', 'كليّات', 'كلّيّة')}
-        >
-          <div className="grid-3">
+          section only renders its honest empty state with data loaded.
+          R304: the grid of link tiles becomes a RowList of whole-row
+          links (`to` — the 44px row IS the tap target; the city Badge
+          and department count ride the meta line, never nested
+          interactives). */}
+      {facs.isError ? null : (
+        <section aria-label="دليل الكليّات">
+          <SectionHeader
+            title={city === 'all' ? 'جميع الكليّات' : `كلّيّات ${city}`}
+            description={facs.isSuccess ? arCount(visible.length, 'كلّيّة واحدة', 'كلّيّتان', 'كليّات', 'كلّيّة') : undefined}
+          />
+          <RowList
+            loading={facs.isPending}
+            aria-label="دليل الكليّات"
+            empty={
+              <EmptyState
+                icon={Building2}
+                title="لا توجد كلّيّات في هذه المدينة"
+                illustration="empty-list"
+                description="جرِّب اختيار مدينة أخرى من انتشار الكليّات الأعلى."
+              />
+            }
+          >
             {visible.map((f) => (
-              <Link
+              <RowItem
                 key={f.id}
                 to={`/colleges/${f.id}`}
-                className="list-row campus-faculty-link"
-              >
-                <span style={{ color: 'var(--accent)' }} aria-hidden>
-                  <EmojiIcon emoji={f.iconEmoji ?? '🏛️'} size={22} />
-                </span>
-                <div className="list-row-body">
-                  <div className="list-row-title">{f.name}</div>
-                  <div className="list-row-sub">
+                leading={
+                  <span style={{ color: 'var(--accent)' }} aria-hidden>
+                    <EmojiIcon emoji={f.iconEmoji ?? '🏛️'} size={20} />
+                  </span>
+                }
+                title={f.name}
+                meta={
+                  <>
                     <Badge color="purple">{f.city}</Badge>
                     {' '}
                     {arCount(f.departments.length, 'قسم واحد', 'قسمان', 'أقسام', 'قسماً')}
-                  </div>
-                </div>
-              </Link>
+                  </>
+                }
+              />
             ))}
-          </div>
-        </Card>
+          </RowList>
+        </section>
       )}
 
       <Card title="معلومات التواصل" icon={Phone}>
@@ -208,6 +201,6 @@ export default function CampusMapPage() {
           صفحة الجامعة التجريبية الكاملة
         </Link>
       </Card>
-    </div>
+    </PageFrame>
   );
 }

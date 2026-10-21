@@ -1644,3 +1644,68 @@
   background: color-mix(in srgb, var(--warning) 6%, var(--surface));
 }
 }
+
+/* ═════════════════════════════════════════════════════════════
+   R304 (workstream 4D — administration & owner workspaces)
+   The owner console joins the admin sheet's workspace grammar:
+   the dense institution tables ride the ws-table family (defined
+   in admin.css — the institution detail page already loads that
+   sheet; the institutions console imports it in R304), and the
+   page-scoped additions below close what owner-owned anatomy
+   remains: the always-visible create band and the detail header's
+   scope facts. Everything token-only, logical, hover-guarded.
+   ═════════════════════════════════════════════════════════════ */
+@layer pages {
+
+/* ── The create-institution band (OwnerInstitutionsPage) ─────────
+   Creation is a deliberate global action, and the form stays on the
+   page (the keep-edits contract renders it always-visible). The R304
+   treatment quiets the card into a BAND: the fields run as one
+   responsive grid with the submit riding the end edge, so the roster
+   — the page's real subject — starts higher up. */
+.owner-inst-create-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-3);
+  max-inline-size: none;
+}
+@media (min-width: 641px) {
+  .owner-inst-create-form {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+  /* The submit rides the row grid's last cell, aligned to the fields'
+     baseline; on phones it stacks under them full-width. */
+  .owner-inst-create-form .owner-inst-create-submit {
+    grid-column: auto;
+    justify-self: end;
+    align-self: end;
+  }
+}
+.owner-inst-create-form .owner-inst-create-submit {
+  min-block-size: 36px;
+}
+
+/* ── The detail header's scope facts (OwnerInstitutionDetailPage) ──
+   Status and members read as one quiet meta line under the patterns
+   PageHeader's description (the header slot is free-form ReactNode;
+   the plate keeps badge + count on one 24px-high row). */
+.owner-detail-scope {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+.owner-detail-scope .badge { flex-shrink: 0; }
+
+/* ── Institutions console: the admins cell on phones ──────────────
+   Inside the ws-table row summary the admins stack keeps its list
+   anatomy; the row action stays a 44px target beside the name. */
+@media (max-width: 640px) {
+  .owner-inst-admins li { padding-block: var(--sp-1); }
+}
+
+}
+

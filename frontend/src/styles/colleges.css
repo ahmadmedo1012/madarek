@@ -847,7 +847,11 @@ a.comp-card:focus-visible .comp-go {
   letter-spacing: normal;
 }
 .comp-hero-title {
-  font-size: var(--fs-2xl);
+  /* r304: the detail hero joins the product type register — display
+     voice at the 24px page-title rung (matches every pf-page-title),
+     not the dashboard 30px slab. */
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
   font-weight: var(--fw-bold);
   margin: 0;
   line-height: 1.2;

@@ -1,6 +1,9 @@
 import { RefreshCw } from 'lucide-react';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState } from '../../components/primitives/States';
+/* R304: the live board opens with the patterns PageHeader —
+ * breadcrumbs back to the owner dashboard. */
+import { PageHeader as PatternsPageHeader } from '../../components/patterns';
 /* r299: the strip's shape-matched skeleton — one owner-owned helper
  * replaces both the mismatched KpiSkeleton (the retired icon-tile
  * anatomy) and the local copy-pasted variants. */
@@ -61,12 +64,11 @@ export function OwnerRealtimePage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">المراقبة الحيّة</h1>
-          <p className="page-subtitle">مراقبة العمليّات الحيّة للمنصّة في الوقت الفعليّ</p>
-        </div>
-      </header>
+      <PatternsPageHeader
+        title="المراقبة الحيّة"
+        description="مراقبة العمليّات الحيّة للمنصّة في الوقت الفعليّ"
+        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المراقبة الحيّة' }]}
+      />
 
       {realtime.isPending ? (
         /* r299: shape-matched — the resolved band is the typographic

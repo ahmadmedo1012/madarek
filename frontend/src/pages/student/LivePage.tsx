@@ -7,170 +7,173 @@
  * Watch-only by design — students cannot create, schedule, or end
  * sessions. They see only sessions for offerings they are enrolled
  * in, and can join the teacher-provided URL.
+ *
+ * R304 rebuild: PageFrame + patterns PageHeader + ONE StatLine (the
+ * grid-3 MetricCard wall is gone) + per-status sections as
+ * RowList/RowItem rows. The session row is deliberately NOT a
+ * whole-row link — its trailing slot carries the real join/recording
+ * anchors, and a row that is itself a link must never nest an
+ * interactive control (patterns contract).
  */
 import { useMemo } from 'react';
 import type { CSSProperties } from 'react';
-import { Radio, Calendar, CheckCircle2, ExternalLink, Clock, Video } from 'lucide-react';
-import { Card, Badge, MetricCard } from '../../components/primitives';
-import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
+import { Radio, Calendar, ExternalLink, Clock, Video } from 'lucide-react';
+import { Badge } from '../../components/primitives';
+import { EmptyState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
+import {
+  PageFrame, PageHeader, SectionHeader, RowList, RowItem, StatLine,
+} from '../../components/patterns';
 import { useLiveSessions, type LiveSessionRow } from '../../hooks/useResources';
 
-import { formatDate } from '../../utils/numbers';
-
-/* Shape-matched loading skeleton: KPI strip + session rows. */
-function LiveSkeleton() {
-  return (
-    <>
-      <div className="grid-3" aria-busy="true" aria-live="polite">
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="metric">
-            <div style={{ marginBottom: 'var(--sp-3)' }}><Skeleton width={90} height={11} /></div>
-            <Skeleton width={56} height={26} />
-          </div>
-        ))}
-      </div>
-      <div className="flex-col gap-2" aria-hidden>
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="run-row">
-            <Skeleton width={40} height={40} rounded="50%" />
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
-              <Skeleton width="40%" height={13} />
-              <Skeleton width="65%" height={11} />
-            </div>
-            <Skeleton width={88} height={22} rounded="var(--r-full)" />
-          </div>
-        ))}
-      </div>
-    </>
-  );
-}
+import { formatDate, formatInt } from '../../utils/numbers';
 
 export default function LivePage() {
   const { data: sessions, isPending, isError, error, refetch } = useLiveSessions();
 
   // `sessions` is undefined while pending AND on error — derive from a
   // settled list only, so an API failure can never render as "no sessions".
-  const list = !isPending && !isError ? (sessions ?? []) : [];
+  const list = useMemo(
+    () => (!isPending && !isError ? (sessions ?? []) : []),
+    [isPending, isError, sessions],
+  );
 
   const live = useMemo(() => list.filter((s) => s.status === 'LIVE'), [list]);
   const upcoming = useMemo(() => list.filter((s) => s.status === 'SCHEDULED'), [list]);
-  const recent = useMemo(
-    () => list.filter((s) => s.status === 'ENDED').slice(0, 8),
-    [list],
-  );
+  const ended = useMemo(() => list.filter((s) => s.status === 'ENDED'), [list]);
+  // The section shows the latest window only; the StatLine keeps the
+  // honest ENDED total.
+  const recent = useMemo(() => ended.slice(0, 8), [ended]);
+
+  /* The header's one live-status answer — quiet while the query is
+     pending, an honest chip/badge once settled. */
+  const headerStatus = !isPending
+    ? live.length > 0
+      ? (
+          <span className="live-chip">
+            <span className="live-dot" aria-hidden />
+            على الهواء الآن
+          </span>
+        )
+      : !isError
+        ? <Badge>لا بثّ مباشر الآن</Badge>
+        : undefined
+    : undefined;
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">المحاضرات المباشرة</h1>
-          <p className="page-subtitle">
-            ينظِّم الأساتذة محاضرات حية لمقرراتك. ستجد هنا الجلسات النشطة والقادمة فقط لمقرراتك المسجَّلة.
-          </p>
-        </div>
-        {!isPending && (
-          live.length > 0 ? (
-            <span className="live-chip">
-              <span className="live-dot" aria-hidden />
-              على الهواء الآن
-            </span>
-          ) : (
-            !isError && <Badge>لا بثّ مباشر الآن</Badge>
-          )
-        )}
-      </header>
+    <PageFrame width="default">
+      <PageHeader
+        title="البث المباشر"
+        description="الجلسات الحيّة لمقرّراتك المسجَّلة — انضمّ للبثّ المباشر، وستجد التسجيلات هنا بعد انتهاء كل جلسة."
+        actions={headerStatus}
+      />
 
       {isPending ? (
-        <LiveSkeleton />
+        <RowList loading aria-label="جلسات البث" />
       ) : isError ? (
         /* API-down is the default demo state — surface it honestly with
            retry instead of masking it as an empty schedule. */
-        <Card>
-          <ErrorState
-            message="تعذَّر تحميل البثوث"
-            error={error}
-            onRetry={() => refetch()}
-          />
-        </Card>
+        <ErrorState
+          message="تعذَّر تحميل البثوث"
+          error={error}
+          onRetry={() => refetch()}
+        />
       ) : (
         <>
-          <div className="grid-3">
-            <MetricCard icon={Radio} label="مباشرة الآن" value={live.length.toString()} color="red" />
-            <MetricCard icon={Calendar} label="جلسات قادمة" value={upcoming.length.toString()} color="amber" />
-            <MetricCard icon={CheckCircle2} label="منتهية" value={recent.length.toString()} color="green" />
-          </div>
+          {/* The three MetricCards collapsed into ONE StatLine. «منتهية»
+              counts every ENDED session in the payload — the section
+              below renders only the latest window. */}
+          <StatLine
+            items={[
+              {
+                label: 'مباشرة الآن',
+                value: formatInt(live.length),
+                tone: live.length > 0 ? 'signal' : 'neutral',
+              },
+              { label: 'جلسات قادمة', value: formatInt(upcoming.length) },
+              { label: 'منتهية', value: formatInt(ended.length) },
+            ]}
+          />
 
           {/* 22-c (A4 P2-1): an empty schedule used to stack THREE
-              «nothing» cards (per-status empties + a global «لا توجد
-              بثوث بعد») on top of the 0/0/0 KPIs — a zero wall. The
-              per-status cards keep their stable slots (15-j §3 #10:
-              "is anything on air?" deserves a stable answer) only when
-              the schedule has ANY content; a fully-empty list gets the
-              single global empty card instead. */}
+              «nothing» cards on top of the 0/0/0 KPIs. A fully-empty
+              list gets ONE honest empty state; the per-status sections
+              keep their stable slots (15-j §3 #10: "is anything on
+              air?" deserves a stable answer) only when the schedule
+              has ANY content. */}
           {list.length === 0 ? (
-            <Card>
-              <EmptyState
-                illustration="empty-list"
-                icon={Video}
-                title="لا توجد بثوث بعد"
-                description="لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً."
-              />
-            </Card>
+            <EmptyState
+              illustration="empty-list"
+              icon={Video}
+              title="لا توجد بثوث بعد"
+              description="لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً."
+            />
           ) : (
             <>
-              <Card
-                title="مباشرة الآن"
-                icon={Radio}
-                subtitle={live.length > 0 ? 'انضمّ إلى أيّ جلسة بنقرة واحدة' : undefined}
-              >
-                {live.length === 0 ? (
-                  <EmptyState
-                    illustration="empty-list"
-                    icon={Radio}
-                    title="لا بثّ مباشرة الآن"
-                    description="لا توجد جلسات نشطة مقرراتك في هذه اللحظة؛ راجع الجلسات القادمة في القائمة أدناه."
-                  />
-                ) : (
-                  <div className="flex-col gap-2">
-                    {live.map((s) => <StudentSessionRow key={s.id} session={s} canJoin />)}
-                  </div>
-                )}
-              </Card>
+              <section aria-label="جلسات مباشرة الآن">
+                <SectionHeader
+                  title="مباشرة الآن"
+                  description={live.length > 0 ? 'انضمّ إلى أيّ جلسة بنقرة واحدة' : undefined}
+                />
+                <RowList
+                  aria-label="الجلسات المباشرة الآن"
+                  empty={(
+                    <EmptyState
+                      illustration="empty-list"
+                      icon={Radio}
+                      title="لا بثّ مباشرة الآن"
+                      description="لا توجد جلسات نشطة لمقرراتك في هذه اللحظة؛ راجع الجلسات القادمة في القائمة أدناه."
+                    />
+                  )}
+                >
+                  {live.map((s) => <StudentSessionRow key={s.id} session={s} canJoin />)}
+                </RowList>
+              </section>
 
-              {/* Upcoming */}
-              <Card title="جلسات قادمة" icon={Calendar}>
-                {upcoming.length === 0 ? (
-                  <EmptyState
-                    illustration="empty-list"
-                    icon={Calendar}
-                    title="لا توجد جلسات مجدولة"
-                    description="لا توجد جلسات مجدولة لمقرراتك حالياً. سيظهر هنا أي بثّ يجدوله أساتذتك."
+              <section aria-label="الجلسات القادمة">
+                <SectionHeader title="جلسات قادمة" />
+                <RowList
+                  aria-label="الجلسات القادمة"
+                  empty={(
+                    <EmptyState
+                      illustration="empty-list"
+                      icon={Calendar}
+                      title="لا توجد جلسات مجدولة"
+                      description="لا توجد جلسات مجدولة لمقرراتك حالياً. سيظهر هنا أي بثّ يجدوله أساتذتك."
+                    />
+                  )}
+                >
+                  {upcoming.map((s) => <StudentSessionRow key={s.id} session={s} />)}
+                </RowList>
+              </section>
+
+              {recent.length > 0 && (
+                <section aria-label="الجلسات المنتهية">
+                  <SectionHeader
+                    title="جلسات منتهية"
+                    description="أحدث الجلسات المنتهية — قد تتوفر لها تسجيلات"
                   />
-                ) : (
-                  <div className="flex-col gap-2">
-                    {upcoming.map((s) => <StudentSessionRow key={s.id} session={s} />)}
-                  </div>
-                )}
-              </Card>
+                  <RowList aria-label="الجلسات المنتهية">
+                    {recent.map((s) => <StudentSessionRow key={s.id} session={s} />)}
+                  </RowList>
+                </section>
+              )}
             </>
-          )}
-
-          {/* Recent */}
-          {recent.length > 0 && (
-            <Card title="جلسات منتهية" icon={CheckCircle2} subtitle="آخر 8 جلسات — قد تتوفر لها تسجيلات">
-              <div className="flex-col gap-2">
-                {recent.map((s) => <StudentSessionRow key={s.id} session={s} />)}
-              </div>
-            </Card>
           )}
         </>
       )}
-    </div>
+    </PageFrame>
   );
 }
 
+/**
+ * One session row (RowItem anatomy — no whole-row link). The join/
+ * recording anchors ride the trailing slot as real <a> targets; the
+ * status Badge keeps the stable status answer. The course emoji is
+ * DATA from the course record (icon policy: EmojiIcon is the
+ * data-layer emoji → Lucide bridge only).
+ */
 function StudentSessionRow({
   session: s,
   canJoin,
@@ -180,21 +183,22 @@ function StudentSessionRow({
 }) {
   const ended = s.status === 'ENDED' || s.status === 'CANCELLED';
   return (
-    <div
-      className={`run-row${s.status === 'LIVE' ? ' is-live' : ''}`}
-      style={{ '--row-accent': s.offering.course.themeColor ?? 'var(--accent)' } as CSSProperties}
-    >
-      <span className="live-row-icon">
-        <EmojiIcon emoji={s.offering.course.iconEmoji ?? '📡'} size={20} />
-      </span>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div className="live-row-title">{s.title}</div>
-        <div className="text-xs text-muted">
+    <RowItem
+      leading={
+        <span
+          className="live-row-icon"
+          style={{ '--row-accent': s.offering.course.themeColor ?? 'var(--accent)' } as CSSProperties}
+        >
+          <EmojiIcon emoji={s.offering.course.iconEmoji ?? '📡'} size={20} />
+        </span>
+      }
+      title={s.title}
+      meta={
+        <>
           <bdi>{s.offering.course.code}</bdi> · {s.offering.course.name}
           {s.topic ? ` · ${s.topic}` : ''}
-        </div>
-        <div className="text-xxs text-subtle">
-          <Icon icon={Clock} size={10} />{' '}
+          {' · '}
+          <Icon icon={Clock} size={11} />{' '}
           <bdi>
             {formatDate(s.scheduledAt, {
               day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
@@ -205,35 +209,34 @@ function StudentSessionRow({
               scramble the Arabic sentence — isolated like the course
               code above. */}
           الأستاذ: د. <bdi>{s.teacher.firstName} {s.teacher.lastName}</bdi>
-        </div>
-      </div>
-      {s.status === 'LIVE' && (
-        <span className="live-chip">
-          <span className="live-dot" aria-hidden />
-          مباشر
-        </span>
-      )}
-      {s.status === 'SCHEDULED' && <Badge color="amber">مجدولة</Badge>}
-      {ended && (
-        <Badge color={s.status === 'CANCELLED' ? 'red' : 'green'}>
-          {s.status === 'CANCELLED' ? 'ملغاة' : 'منتهية'}
-        </Badge>
-      )}
-      {canJoin && s.joinUrl && (
-        <a
-          href={s.joinUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="btn primary sm"
-        >
-          <Icon icon={ExternalLink} size={12} /> انضمام
-        </a>
-      )}
-      {ended && s.recordingUrl && (
-        <a href={s.recordingUrl} target="_blank" rel="noreferrer" className="btn sm">
-          <Icon icon={ExternalLink} size={12} /> التسجيل
-        </a>
-      )}
-    </div>
+        </>
+      }
+      trailing={
+        <>
+          {s.status === 'LIVE' && (
+            <span className="live-chip">
+              <span className="live-dot" aria-hidden />
+              مباشر
+            </span>
+          )}
+          {s.status === 'SCHEDULED' && <Badge color="amber">مجدولة</Badge>}
+          {ended && (
+            <Badge color={s.status === 'CANCELLED' ? 'red' : 'green'}>
+              {s.status === 'CANCELLED' ? 'ملغاة' : 'منتهية'}
+            </Badge>
+          )}
+          {canJoin && s.joinUrl && (
+            <a href={s.joinUrl} target="_blank" rel="noreferrer" className="btn primary sm">
+              <Icon icon={ExternalLink} size={12} /> انضمام
+            </a>
+          )}
+          {ended && s.recordingUrl && (
+            <a href={s.recordingUrl} target="_blank" rel="noreferrer" className="btn sm">
+              <Icon icon={ExternalLink} size={12} /> التسجيل
+            </a>
+          )}
+        </>
+      }
+    />
   );
 }

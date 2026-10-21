@@ -1,120 +1,112 @@
 /* ==================================================================
-   MADAREK — Admin extra pages sheet (admin.css)
+   MADAREK — Admin workspace sheet (admin.css)
    ------------------------------------------------------------------
-   Born in r150e — the colleges.css -> admin.css split R3-A7 mapped and
-   the r149 round deferred. colleges.css had secretly owned the admin
-   extra surfaces since "Sub-project D": the students roster chrome
-   (.admin-students-*), pagination, the trend wrap, and the settings
-   rows — plus the wave 5-b refinements layered on top. BOTH sections
-   moved here verbatim (the wave-5-b banner's own instruction), so the
-   admin surfaces finally own their sheet the way every other page
-   family does.
+   R304 (workstream 4D — administration & owner workspaces): the
+   administration console reads as ONE enterprise workspace. The
+   sheet carries the family's page-scoped layer:
 
-   r157 (6A9 #6) sweep: .admin-students-table-wrap, .admin-pagination,
-   .admin-pagination-actions and .trend-table-wrap died here — the
-   students roster + the reports trend table sit in the canonical
-   .table-wrap, and the students footer rides the shared
-   .table-pagination system (components.css). Zero TSX consumers.
+   §1  ws-table — the workspace table family (NEW): dense rosters
+       with identity-first cells, quiet headers and — on phones —
+       row summaries instead of scaled-down wide tables. Opt-in per
+       table (`ws-table`); teacher/quality sheets never render it,
+       so the shared .table canon is untouched.
+   §2  The rosters toolbar (.admin-students-*) — PRESERVED verbatim
+       in behavior; borrowed by QualityPages and the owner
+       institution detail (shared, never broken here).
+   §3  The permission-matrix domain groups (.govx-*) + the
+       SplitView row-select plate (r250/r251/r299) — PRESERVED.
+   §4  The settings rows (.settings-*) — PRESERVED.
+   §5  .spin — the sync in-flight motion (r299, contract-pinned:
+       motion-spin + duration token + --ease-linear).
+   §6  Workspace refinements: the faculty card's decorative hover
+       lift quiets to a surface step (an admin console lists, it
+       does not bounce), scoped to the pages this sheet serves.
 
-   r250 (Superlist recomposition, 4D): the .govx-* family — the
-   permissions matrix's domain grouping (page-scoped; the .perm-row
-   anatomy itself stays in components.css, consumed not copied).
-
-   Consumers: AdminExtraPages (students/digital/analysis/settings),
-   AdminPages (faculties/courses toolbars + the paper-row cell anatomy),
-   AdminGovernancePages (the govx matrix groups + the row-select
-   plate), QualityPages + OwnerInstitutionDetailPage (the borrowed
-   .admin-students-* toolbar chrome — shared, never touched here).
+   Consumers: AdminPages (faculties/courses/reports), AdminExtraPages
+   (students/digital/settings), AdminGovernancePages (teachers +
+   permissions matrix), AdminSyncPage, QualityPages (toolbar only),
+   OwnerInstitutionDetailPage + OwnerInstitutionsPage (R304 — the
+   workspace tables ride the same family).
    Layer: pages (same as every page-scoped sheet).
    ================================================================== */
 
 @layer pages {
 
-/* ── r250: permission-matrix domain groups (.govx-*) ───────────────
-   The editor used to be a flat 17-row .permissions-grid wall. The
-   Superlist direction groups by domain under quiet section headers:
-   surface step (no border boxes), the count line answers "how many
-   are live in THIS domain" without opening anything, and the rows
-   keep the components.css .perm-row anatomy so the pulse + state
-   borders keep working unchanged. */
-.govx-matrix {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-8);
-  margin-block-start: var(--sp-4);
-}
-.govx-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
-.govx-group-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  flex-wrap: wrap;
-  padding-block-end: var(--sp-2);
-  border-block-end: 1px solid var(--border);
-}
-.govx-group-title {
-  margin: 0;
-  font-size: var(--fs-base);
-  font-weight: 600;
-  color: var(--text);
-}
-.govx-group-count {
-  font-size: var(--fs-xxs);
-  color: var(--text-muted);
-  /* 13px Arabic floor (1A): the metadata line never drops below the
-     floor even though fs-xxs is its nominal step. */
-  font-size: max(var(--fs-xxs), 13px);
-}
-.govx-rows {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
+/* ════════════════════════════════════════════════════════════════
+   §1 · ws-table — the workspace table family (R304)
+   ════════════════════════════════════════════════════════════════
+   The canonical .table (components.css) already owns the surface:
+   hairline rows, surface-2 header band, hover tint. What the
+   workspace adds is DENSITY and IDENTITY discipline:
+
+   · .ws-table        — the opt-in table (rosters, registers, consoles)
+   · .ws-table th     — the 13px Arabic-floor header voice, tightened
+   · .ws-id           — the identity cell (the row's name): semibold
+                        ink over its quiet meta line; on phones it
+                        becomes the summary card's title (label hidden,
+                        hairline under) so the card reads name-first.
+   · .ws-meta         — the secondary line under an identity cell.
+
+   Everything is token-only, logical (RTL) and hover-guarded. */
+
+.ws-table thead th {
+  padding: var(--sp-2-5) var(--sp-4);
+  font-size: max(var(--fs-xxs), 13px); /* 13px Arabic floor (1A) */
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
 }
 
-/* ── r251: the SplitView row-select plate (.govx-row-select) ────────
-   The patterns RowItem contract has no selection prop, so selection
-   rides a REAL <button> in the title slot stretched over the whole
-   row (::after plate) — keyboard focusable, ≥44px effective target,
-   the accessible name is the teacher's name, and :has() marks the
-   row selected (the same idiom owner.css already uses).
-   r299: the position context is SCOPED to the rows that carry the
-   plate (.pf-row is patterns-owned and rendered app-wide; the bare
-   re-declaration below used to make every pf-row positioned the
-   moment any admin chunk loaded — a cross-family leak). */
-.pf-row:has(.govx-row-select) { position: relative; }
-.govx-row-select {
-  position: static;
-  padding: 0;
-  border: 0;
-  background: none;
-  font: inherit;
+.ws-table tbody td {
+  padding-block: var(--sp-2-5);
+}
+
+/* Identity cell — the row reads by its name first. */
+.ws-table td.ws-id {
   font-weight: var(--fw-semibold);
   color: var(--text);
-  cursor: pointer;
-  text-align: start;
 }
-.govx-row-select::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+.ws-id .ws-meta {
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-regular);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
 }
-.govx-row-select:focus-visible {
-  outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
-  outline-offset: var(--state-focus-ring-offset);
-  border-radius: var(--r-sm);
+
+/* Numeric emphasis inside ws-table keeps the canonical centered
+   .admin-table-num alignment; only the tabular figures are added. */
+.ws-table td.admin-table-num,
+.ws-table th.admin-table-num {
+  font-variant-numeric: tabular-nums;
 }
-.pf-row:has(.govx-row-select[aria-pressed='true']) {
-  background: var(--surface-2);
+
+/* Action clusters keep the family's always-visible grammar (the
+   hover-reveal .table-row-actions stays for icon-only clusters). */
+.ws-table td .flex { min-inline-size: 0; }
+
+/* ── Phones: row summaries, not a scaled-down grid ────────────────
+   ≤640 the canonical .tbl-stack turns every row into a labelled
+   card (components.css). The workspace upgrade: the identity cell
+   becomes the card's TITLE — it lifts to the first line (flex order,
+   the row becomes a quiet column), its attr() label hides, the name
+   sits strong with a hairline under it, and the rest of the fields
+   read as the label/value list the canon already paints. Actions
+   land as the card's footer row. */
+@media (max-width: 640px) {
+  .ws-table.tbl-stack tr { display: flex; flex-direction: column; }
+  .ws-table.tbl-stack td.ws-id {
+    order: -1;
+    display: block;
+    padding-block-end: var(--sp-2);
+    margin-block-end: var(--sp-1);
+    border-block-end: 1px solid var(--rule);
+  }
+  .ws-table.tbl-stack td.ws-id::before { display: none; }
+  .ws-table.tbl-stack td:last-child { padding-block-start: var(--sp-2); }
 }
-.pf-row:has(.govx-row-select[aria-pressed='true']) .pf-row-title {
-  color: var(--accent-ink, var(--accent));
-}
+
+/* ════════════════════════════════════════════════════════════════
+   §2 · The rosters toolbar (.admin-students-*) — PRESERVED
+   ════════════════════════════════════════════════════════════════ */
 
 .admin-students-toolbar {
   display: flex;
@@ -178,45 +170,156 @@
   box-shadow: var(--state-input-focus-halo);
 }
 
-/* (r150d): the .admin-students-table family RETIRED onto the canonical
-   .table — density steps up to the canonical 12/16 and the hover joins
-   the platform-wide surface-2 zebra. (r157 / 6A9 #6): the -wrap died
-   too — the roster sits in the shared .table-wrap like every sibling.
-   r299: the -name content class stays (the papers register's cell
-   anatomy); the -email class died — zero TSX/test consumers since
-   the students roster went RowList (r253), rg-verified. */
+/* r299: the -name content class stays (the papers register's cell
+   anatomy; the students roster's avatar+name pair). */
 .admin-students-name {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
 }
 
-/* r299 (D-1): the sync page's in-flight affordances (the trigger
-   button's RefreshCw while a run pends + the RUNNING badge in the
-   history) — .spin had ZERO stylesheet rules anywhere, so the
-   «جارٍ المزامنة…» state lost its motion signal entirely. The
-   keyframes (motion-spin) are global/eager (motion.css), the
-   duration/easing ride the motion tokens, and base.css's
-   reduced-motion belt kills it under RM (the documented owner of
-   that switch). */
-.spin {
-  display: inline-block;
-  animation: motion-spin var(--motion-duration-stat) var(--ease-linear) infinite;
+/* The wrapper-as-pill search field: polish.css's pages-layer bare-input
+   reset (height:auto / padding:0, higher specificity than the base
+   .admin-students-input rule) leaves the pill content-sized (~20px)
+   next to the 36px faculty select. Size the PILL — the wrapper owns
+   the surface — and let the bare input fill it (0,2,0 out-specifies
+   the polish reset's 0,1,1 across the same layer). */
+.admin-students-search { min-block-size: 36px; }
+.admin-students-search .admin-students-input {
+  align-self: stretch;
+  padding-inline: 0;
 }
 
-/* Digital page */
-/* Analysis page */
-/* (r150d): the .trend-table family RETIRED onto the canonical .table
-   (tbl-stack rides now). (r157 / 6A9 #6): the -wrap followed it — the
-   trend table view sits in the shared .table-wrap (framed surface +
-   radius), so the local overflow-x-only rule is deleted; zero TSX
-   consumers, rg-verified. */
+/* Mobile touch floor (craft floor: ≥44px) for the students toolbar
+   (the pill + the 36px select). */
+@media (max-width: 640px) {
+  .admin-students-input,
+  .admin-students-search { min-block-size: 44px; }
+}
 
-/* (r150e): the .top-courses-* family died here rather than moving —
-   zero TSX consumers since the premium-polish sweep (rg-verified;
-   only stale comments mention it). */
+/* r299: one control row, one height — inside the patterns FilterBar
+   the search pill is 44px (patterns.css), so the faculty select that
+   rides the same rail matches it. Scoped to .pf-filterbar only: the
+   shared .admin-students-* toolbar consumers (faculties/courses,
+   QualityPages, the owner institution detail) keep their compact
+   36px select outside the FilterBar.
+   R304: the select also gets a label-safe cap — a <select>'s auto
+   width follows its LONGEST option (a 25-faculty roster pushes it
+   ~600px wide), which alone broke the rail onto three wrapped lines.
+   The shared .filter-bar budget caps selects for the same reason. */
+.pf-filterbar .admin-students-input {
+  block-size: 44px;
+  min-block-size: 44px;
+  height: auto;
+  max-inline-size: 260px;
+}
 
-/* Settings page */
+/* R304: the toolbar pill inside the patterns rail keeps a bounded
+   measure — its roster toolbar grow (flex: 1 1 240px) filled the
+   whole filters slot and pushed the select/create onto their own
+   wrapped lines; bounded, search → filter → action read on one line
+   at desktop and wrap as a group on narrow screens. */
+.pf-filterbar .admin-students-search {
+  flex: 0 1 360px;
+  min-inline-size: 220px;
+}
+
+/* R304: the filters slot GROWS inside the workspace rail — as a
+   shrink-only sibling it resolved narrower than its own content
+   (the wrapping flex container's intrinsic-size quirk), internally
+   wrapping the select beneath the search while the bar still had
+   free space. Growing the slot lets its children pack one line and
+   pins the trailing action to the rail's far edge. */
+.pf-filterbar .pf-filterbar-filters {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   §3 · The permission-matrix domain groups (.govx-*) — PRESERVED
+   ════════════════════════════════════════════════════════════════ */
+
+.govx-matrix {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+  margin-block-start: var(--sp-4);
+}
+.govx-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.govx-group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding-block-end: var(--sp-2);
+  border-block-end: 1px solid var(--border);
+}
+.govx-group-title {
+  margin: 0;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--text);
+}
+.govx-group-count {
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+  /* 13px Arabic floor (1A): the metadata line never drops below the
+     floor even though fs-xxs is its nominal step. */
+  font-size: max(var(--fs-xxs), 13px);
+}
+.govx-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* ── The SplitView row-select plate (.govx-row-select) ─────────────
+   The patterns RowItem contract has no selection prop, so selection
+   rides a REAL <button> in the title slot stretched over the whole
+   row (::after plate) — keyboard focusable, ≥44px effective target,
+   the accessible name is the teacher's name, and :has() marks the
+   row selected (the same idiom owner.css already uses).
+   r299: the position context is SCOPED to the rows that carry the
+   plate (.pf-row is patterns-owned and rendered app-wide). */
+.pf-row:has(.govx-row-select) { position: relative; }
+.govx-row-select {
+  position: static;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  cursor: pointer;
+  text-align: start;
+}
+.govx-row-select::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.govx-row-select:focus-visible {
+  outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+  outline-offset: var(--state-focus-ring-offset);
+  border-radius: var(--r-sm);
+}
+.pf-row:has(.govx-row-select[aria-pressed='true']) {
+  background: var(--surface-2);
+}
+.pf-row:has(.govx-row-select[aria-pressed='true']) .pf-row-title {
+  color: var(--accent-ink, var(--accent));
+}
+
+/* ════════════════════════════════════════════════════════════════
+   §4 · The settings rows (.settings-*) — PRESERVED
+   ════════════════════════════════════════════════════════════════ */
+
 .settings-row {
   display: flex;
   align-items: center;
@@ -229,9 +332,6 @@
 .settings-label {
   font-size: var(--fs-xxs);
   color: var(--text-muted);
-  text-transform: uppercase;
-  /* r148 (AUDIT-3 M1): 0.05em على تسميات عربية — تصفير التتبع. */
-  letter-spacing: 0;
 }
 .settings-value {
   font-size: var(--fs-sm);
@@ -254,8 +354,9 @@
 .settings-links a {
   display: inline-flex;
   align-items: center;
-  padding: var(--sp-2);
-  border-radius: var(--r-sm);
+  min-block-size: 44px;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
   color: var(--accent-ink, var(--accent));
   text-decoration: none;
   font-size: var(--fs-sm);
@@ -263,72 +364,47 @@
 }
 .settings-links a:hover { background: var(--surface-2); }
 
-/* ------------------------------------------------------------------ */
+/* ════════════════════════════════════════════════════════════════
+   §5 · .spin — the sync in-flight motion (contract-pinned)
+   ════════════════════════════════════════════════════════════════
+   The trigger button's RefreshCw while a run pends + the RUNNING
+   badge in the history. The keyframes (motion-spin) are global/eager
+   (motion.css), the duration/easing ride the motion tokens, and
+   base.css's reduced-motion belt kills it under RM. */
 
-/* Ruling #2 — the settings labels are Arabic; uppercase is a no-op and
-   0.05em letter-spacing breaks cursive joining. Same specificity as
-   the base rule, later source order wins. */
-.settings-label {
-  text-transform: none;
-  letter-spacing: normal;
+.spin {
+  display: inline-block;
+  animation: motion-spin var(--motion-duration-stat) var(--ease-linear) infinite;
 }
 
-/* Settings resource links: real 44px hit area (craft floor) + the
-   page-level padding rhythm. Links are <Link> now (no full reloads),
-   still rendered as <a> so the base rules above keep applying. */
-.settings-links a {
-  min-block-size: 44px;
-  align-items: center;
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--r-md);
+/* ════════════════════════════════════════════════════════════════
+   §6 · Workspace refinements (R304)
+   ════════════════════════════════════════════════════════════════
+   The faculty directory card (components.css owns the anatomy) —
+   the console quiets its decorative hover: surface step + hairline,
+   no lift, no premium shadow. An administration surface lists; it
+   does not bounce. Scoped to this sheet's pages (the only
+   .admin-faculty-card consumers are the faculties console and the
+   owner institution detail — both load admin.css). */
+
+.admin-faculty-card {
+  box-shadow: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .admin-faculty-card:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--border-strong);
+  }
 }
 
-/* (Premium-polish dead-code sweep): the .digital-stat-* / .top-courses-*
-   families + their madarek-admin-extras-in stagger keyframes lived here —
-   AdminExtraPages renders .admin-students-* (the stale ownership comment
-   above lied); removed with zero TSX consumers. */
+/* Faculty header chevron — the collapse affordance keeps its 44px
+   touch discipline via the card head's own padding (the head button
+   fills the card); the departments grid stays the components
+   family's. (No new rules — this banner documents the decision.) */
 
-/* The wrapper-as-pill search field: polish.css's pages-layer bare-input
-   reset (height:auto / padding:0, higher specificity than the base
-   .admin-students-input rule) leaves the pill content-sized (~20px)
-   next to the 36px faculty select. Size the PILL — the wrapper owns
-   the surface — and let the bare input fill it (0,2,0 out-specifies
-   the polish reset's 0,1,1 across the same layer). */
-.admin-students-search { min-block-size: 36px; }
-.admin-students-search .admin-students-input {
-  align-self: stretch;
-  padding-inline: 0;
-}
+/* The create-institution band on the owner console borrows this
+   sheet (see owner.css §R304); the form keeps its 480px measure and
+   the fields ride the FormField canon — nothing to add here. */
 
-/* Mobile touch floor (craft floor: ≥44px) for the students toolbar
-   (the pill + the 36px select). (r151d: bangs retired — the stale
-   comment claimed polish pins .btn.sm at 32px; the wave 9-b
-   consolidation made polish's ≤640 block the ONE owner of the .btn
-   floors, so these same-value pins were dead weight. The pill rule
-   wins on specificity.) (r157 / 6A9 #6): the .admin-pagination-actions
-   44px arrows pin died here — the students footer rides the shared
-   .table-pagination system now, whose own ≤640 block owns the 44px
-   button floor (components.css). */
-@media (max-width: 640px) {
-  .admin-students-input,
-  .admin-students-search { min-block-size: 44px; }
-}
-
-/* r299: one control row, one height — inside the patterns FilterBar
-   the search pill is 44px (patterns.css), so the faculty select that
-   rides the same rail matches it. Scoped to .pf-filterbar only: the
-   shared .admin-students-* toolbar consumers (faculties/courses,
-   QualityPages, the owner institution detail) keep their compact
-   36px select outside the FilterBar. */
-.pf-filterbar .admin-students-input {
-  block-size: 44px;
-  min-block-size: 44px;
-  height: auto;
-}
-
-/* (r150e): the .digital-stat-* / .top-courses-* reduced-motion switch
-   died here rather than moving — both families are dead (zero TSX
-   consumers, rg-verified). (r151h: the old comment spelled the family
-   names with a bare asterisk-slash between them, which closed the
-   comment early and fed the minifier garbage.) */
 }

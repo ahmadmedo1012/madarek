@@ -74,7 +74,7 @@ import {
 } from '../../hooks/useResources';
 import '../../styles/owner.css'; // ConfirmDialog + ToggleSwitch surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .back-link family (D11 css split, 12-15)
-import '../../styles/exam-author.css'; // 4C-a — this page's exa-* sheet (Superlist rows/split)
+import '../../styles/teacher-quality.css'; // R304 — the family sheet (exa- section lives here)
 
 /* ═══════════════ Label maps (TS-pinned over the full enums — 15-a) ═══════════════ */
 
@@ -345,6 +345,47 @@ function TemplateStatusBadge({ status }: { status: ExamStatusFE }) {
     <Badge color={EXAM_STATUS_COLOR[status]} icon={EXAM_STATUS_ICON[status]}>
       {EXAM_STATUS_LABEL[status]}
     </Badge>
+  );
+}
+
+/* R304 — the template lifecycle strip: authoring is a pipeline (draft →
+ * quality review → approval → publish), so the detail page shows WHERE
+ * the template stands on that rail, not just its current status word.
+ * The stage labels are deliberately NOT the status vocabulary (the
+ * status Badge beside the title stays the source of truth) — a rejected
+ * review step wears the danger state, a closed template shows the whole
+ * rail done. Presentation only. */
+const LIFECYCLE_STEPS = ['مسودة', 'مراجعة الجودة', 'الاعتماد', 'النشر للطلاب'] as const;
+
+function TemplateLifecycle({ status }: { status: ExamStatusFE }) {
+  const state = ({
+    DRAFT: { done: 0, current: 0, rejected: false },
+    PENDING_REVIEW: { done: 1, current: 1, rejected: false },
+    APPROVED: { done: 2, current: 2, rejected: false },
+    REJECTED: { done: 1, current: 1, rejected: true },
+    PUBLISHED: { done: 3, current: 3, rejected: false },
+    CLOSED: { done: 4, current: -1, rejected: false },
+  } as const)[status];
+  return (
+    <ol className="exa-lifecycle" aria-label="مسار القالب من الإنشاء إلى النشر">
+      {LIFECYCLE_STEPS.map((label, i) => {
+        const cls = i < state.done
+          ? ' is-done'
+          : i === state.current
+            ? (state.rejected ? ' is-rejected' : ' is-current')
+            : '';
+        return (
+          <li
+            key={label}
+            className={`exa-step${cls}`}
+            aria-current={i === state.current ? 'step' : undefined}
+          >
+            <span className="exa-step-dot" aria-hidden="true" />
+            <span>{label}</span>
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
@@ -674,7 +715,7 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
               the envelope — a full page honestly says the list may
               continue instead of implying it ends. */}
           {q.data.length >= 100 && (
-            <p className="text-xs text-muted" role="note" style={{ margin: 'var(--sp-2) 0 0' }}>
+            <p className="text-xs text-muted exa-cap-note" role="note">
               تُعرض أول 100 نتيجة — قد تكون هناك المزيد.
             </p>
           )}
@@ -798,7 +839,7 @@ function PublishButton({
   // so screen readers announce WHY it is off, not just that it is.
   if (reason !== null) {
     return (
-      <span className="flex-col gap-1" style={{ alignItems: 'flex-end', flexShrink: 0 }}>
+      <span className="exa-gate">
         <Button
           variant="primary"
           size="sm"
@@ -809,9 +850,8 @@ function PublishButton({
         </Button>
         <span
           id="publish-gate-reason"
-          className="text-xs text-muted"
+          className="text-xs text-muted exa-gate-note"
           role="note"
-          style={{ margin: 0, textAlign: 'end', maxWidth: 'min(320px, 100%)' }}
         >
           {reason}
         </span>
@@ -833,7 +873,7 @@ function PublishButton({
         <Icon icon={Send} size={12} /> نشر
       </Button>
       {publish.isError && (
-        <span role="alert" className="text-xs" style={{ color: 'var(--danger-ink)', alignSelf: 'center' }}>
+        <span role="alert" className="text-xs exa-error-line exa-error-center">
           {apiErrorMessage(publish.error, 'تعذَّر النشر — حاول مرة أخرى.')}
         </span>
       )}
@@ -999,7 +1039,7 @@ function QuestionBankSection() {
           {/* 3-d: same take:100 cap as the templates listing — the bank
               tab discloses it the same way when the page fills up. */}
           {bank.data.length >= 100 && (
-            <p className="text-xs text-muted" role="note" style={{ margin: 'var(--sp-2) 0 0' }}>
+            <p className="text-xs text-muted exa-cap-note" role="note">
               تُعرض أول 100 نتيجة — قد تكون هناك المزيد.
             </p>
           )}
@@ -1199,7 +1239,7 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
           <form
             onSubmit={(e) => { e.preventDefault(); void onSubmit(); }}
             noValidate
-            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}
+            className="exa-form"
           >
             {/* 5-C4: the empty-categories notice rides the hint slot
                 (single-child contract) — it stays announced via
@@ -1254,7 +1294,6 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
                 rows={3}
                 maxLength={2000}
                 placeholder="اكتب نص السؤال كما سيظهر للطالب…"
-                style={{ resize: 'vertical', fontFamily: 'inherit' }}
                 value={draft.prompt}
                 onChange={(e) => patch({ prompt: e.target.value })}
               />
@@ -1299,7 +1338,6 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
                   rows={3}
                   maxLength={2000}
                   placeholder="مثال: يذكر الطالب ثلاث خصائص مع شرح موجز لكل منها…"
-                  style={{ resize: 'vertical', fontFamily: 'inherit' }}
                   value={draft.rubric}
                   onChange={(e) => patch({ rubric: e.target.value })}
                 />
@@ -1347,12 +1385,12 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
             </Field>
 
             {create.isError && (
-              <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+              <p role="alert" className="text-xs exa-error-line">
                 {apiErrorMessage(create.error, 'تعذَّر حفظ السؤال — تحقّق من البيانات وحاول مرة أخرى.')}
               </p>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--sp-2)', paddingTop: 'var(--sp-2)', borderTop: '1px solid var(--rule)' }}>
+            <div className="exa-form-foot">
               <Button variant="ghost" onClick={requestClose} disabled={create.isPending}>
                 إلغاء
               </Button>
@@ -1427,16 +1465,15 @@ function ChoicesEditor({
   const isTF = draft.type === 'TRUE_FALSE';
   const optionsLabel = `${isTF ? 'الخياران' : `الخيارات (${draft.choices.length}/20)`}`;
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-1-5)' }}>
+    <div className="exa-choice-list">
       {/* r150c: canonical label grammar (was .form-label) — a group
           caption, not a field label, so no FormField wrapper. */}
       <span className="form-field-label">{optionsLabel}</span>
-      <div role="group" aria-label={optionsLabel} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+      <div role="group" aria-label={optionsLabel} className="exa-choice-rows">
         {draft.choices.map((choice, index) => (
-          <div key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--sp-2)' }}>
+          <div key={index} className="exa-choice-row">
             <label
-              className="text-xs"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-1-5)', marginTop: 'var(--sp-2-5)', cursor: 'pointer', whiteSpace: 'nowrap' }}
+              className="text-xs exa-choice-correct"
             >
               <input
                 type="radio"
@@ -1447,7 +1484,7 @@ function ChoicesEditor({
               />
               صحيحة
             </label>
-            <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="exa-choice-field">
               <Input
                 type="text"
                 aria-label={`نص الخيار ${index + 1}`}
@@ -1462,8 +1499,7 @@ function ChoicesEditor({
             {!isTF && (
               <button
                 type="button"
-                className="btn ghost sm"
-                style={{ marginTop: 'var(--sp-2)', color: 'var(--danger)' }}
+                className="btn ghost sm exa-choice-remove"
                 disabled={draft.choices.length <= 2}
                 onClick={() => removeChoice(index)}
                 aria-label={`إزالة الخيار ${index + 1}`}
@@ -1480,12 +1516,12 @@ function ChoicesEditor({
           swallowed the choices error whenever a correct-answer error
           also existed. */}
       {correctError && (
-        <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+        <p role="alert" className="text-xs exa-error-line">
           {correctError}
         </p>
       )}
       {choicesError && (
-        <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+        <p role="alert" className="text-xs exa-error-line">
           {choicesError}
         </p>
       )}
@@ -1592,7 +1628,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
           <form
             onSubmit={(e) => { e.preventDefault(); void onSubmit(); }}
             noValidate
-            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}
+            className="exa-form"
           >
             <Field label="عنوان القالب" htmlFor="tpl-title" error={errors.title}>
               <Input
@@ -1774,7 +1810,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
               </Field>
             </div>
             {errors.window && (
-              <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+              <p role="alert" className="text-xs exa-error-line">
                 {errors.window}
               </p>
             )}
@@ -1786,7 +1822,6 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                 rows={2}
                 maxLength={2000}
                 placeholder="تعليمات مختصرة لطلابك…"
-                style={{ resize: 'vertical', fontFamily: 'inherit' }}
                 value={draft.description}
                 onChange={(e) => patch({ description: e.target.value })}
               />
@@ -1795,12 +1830,12 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
             <QuestionPicker draft={draft} patch={patch} error={errors.questionIds} />
 
             {create.isError && (
-              <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+              <p role="alert" className="text-xs exa-error-line">
                 {apiErrorMessage(create.error, 'تعذَّر إنشاء القالب — تحقّق من البيانات وحاول مرة أخرى.')}
               </p>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--sp-2)', paddingTop: 'var(--sp-2)', borderTop: '1px solid var(--rule)' }}>
+            <div className="exa-form-foot">
               <Button variant="ghost" onClick={requestClose} disabled={create.isPending}>
                 إلغاء
               </Button>
@@ -1870,16 +1905,7 @@ function QuestionPicker({
   }, [selected]);
 
   return (
-    <div
-      style={{
-        border: '1px solid var(--rule)',
-        borderRadius: 'var(--r-md)',
-        padding: 'var(--sp-3)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--sp-3)',
-      }}
-    >
+    <div className="exa-picker">
       <div className="flex items-center justify-between flex-wrap gap-2">
         {/* r150c: canonical label grammar (was .form-label with a
             zeroed margin) — a toolbar heading, not a field label. */}
@@ -1897,7 +1923,7 @@ function QuestionPicker({
           over questionIds), so the author sees the contract while picking.
           The randomized branch keeps it honest when the shuffle toggle is
           on (the pick order seeds the per-student shuffle). */}
-      <p className="text-xs text-muted" style={{ margin: 0 }}>
+      <p className="text-xs text-muted">
         {draft.randomized
           ? 'ترتيب اختيارك يحدّد ترتيب الأسئلة في الاختبار — ويُخلط عشوائياً لكل طالب عند بدئه.'
           : 'ترتيب اختيارك يحدّد ترتيب الأسئلة في الاختبار.'}
@@ -1967,29 +1993,28 @@ function QuestionPicker({
           </Button>
         </div>
       ) : !bank.data || bank.data.length === 0 ? (
-        <p className="text-xs text-muted" style={{ margin: 0 }}>
+        <p className="text-xs text-muted">
           لا توجد أسئلة معتمدة تطابق البحث — أسئلة جديدة تحتاج اعتماد الجودة أولاً قبل ظهورها هنا.
         </p>
       ) : (
         <div
           role="group"
           aria-label="اختيار أسئلة القالب"
-          style={{ maxHeight: 260, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}
+          className="exa-picker-scroll"
         >
           {bank.data.map((question) => {
             const checked = selected.has(question.id);
             return (
               <label
                 key={question.id}
-                className="list-row"
-                style={{ cursor: 'pointer', alignItems: 'flex-start', margin: 0 }}
+                className="list-row exa-pick-row"
               >
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={() => toggle(question.id)}
                   aria-label={`اختيار السؤال: ${question.prompt.slice(0, 60)}`}
-                  style={{ marginTop: 'var(--sp-1)', flexShrink: 0 }}
+                  className="exa-pick-check"
                 />
                 {/* The row's live position in the pick sequence — the exam
                     order this question will carry (exa-pick-order,
@@ -2002,7 +2027,7 @@ function QuestionPicker({
                 )}
                 <div className="list-row-body">
                   <div className="list-row-title" title={question.prompt}>{question.prompt}</div>
-                  <div className="list-row-sub" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+                  <div className="list-row-sub exa-pick-sub">
                     <Badge>{QTYPE_LABEL[question.type]}</Badge>
                     <Badge color={DIFFICULTY_COLOR[question.difficulty]}>{DIFFICULTY_LABEL[question.difficulty]}</Badge>
                     <span>{question.category.title}</span>
@@ -2015,7 +2040,7 @@ function QuestionPicker({
         </div>
       )}
       {error && (
-        <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+        <p role="alert" className="text-xs exa-error-line">
           {error}
         </p>
       )}
@@ -2141,6 +2166,9 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
                 <span>عام — كل الكلّيّات</span>
               )}
             </div>
+            {/* R304: the workflow rail — where this template stands on
+                draft → review → approval → publish. */}
+            <TemplateLifecycle status={template.status} />
           </div>
           <AuthorActions template={template} />
         </div>
@@ -2310,7 +2338,7 @@ function AuthorActions({ template }: { template: ExamTemplateDetail }) {
         )}
         <PublishButton template={template} authorId={template.authorId} explainGate />
         {cloneFailed && (
-          <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+          <p role="alert" className="text-xs exa-error-line">
             {apiErrorMessage(clone.error, 'تعذَّر الاستنساخ — تحقّق من اتصالك وحاول مرة أخرى.')}
           </p>
         )}
@@ -2417,9 +2445,9 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
           <form
             onSubmit={(e) => { e.preventDefault(); void onSubmit(); }}
             noValidate
-            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}
+            className="exa-form"
           >
-            <p className="text-sm text-muted" style={{ margin: 0 }}>
+            <p className="text-sm text-muted">
               الأسئلة ونوع الاختبار ونطاقه ثابتة بعد الإنشاء — عدّل بيانات العرض والتوقيت هنا،
               أو استنسخ القالب لنسخة تُبنى عليها أسئلة مختلفة.
             </p>
@@ -2509,7 +2537,7 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
               </Field>
             </div>
             {errors.window && (
-              <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+              <p role="alert" className="text-xs exa-error-line">
                 {errors.window}
               </p>
             )}
@@ -2521,26 +2549,25 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
                 rows={2}
                 maxLength={2000}
                 placeholder="تعليمات مختصرة لطلابك…"
-                style={{ resize: 'vertical', fontFamily: 'inherit' }}
                 value={draft.description}
                 onChange={(e) => patch({ description: e.target.value })}
               />
             </Field>
 
             {resetNotice && (
-              <p className="text-sm text-muted" role="note" style={{ margin: 0, display: 'flex', gap: 'var(--sp-1-5)', alignItems: 'flex-start' }}>
+              <p className="text-sm text-muted exa-note-line" role="note">
                 <Icon icon={Info} size={14} />
                 <span>{resetNotice}</span>
               </p>
             )}
 
             {update.isError && (
-              <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+              <p role="alert" className="text-xs exa-error-line">
                 {apiErrorMessage(update.error, 'تعذَّر حفظ التعديل — تحقّق من البيانات وحاول مرة أخرى.')}
               </p>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--sp-2)', paddingTop: 'var(--sp-2)', borderTop: '1px solid var(--rule)' }}>
+            <div className="exa-form-foot">
               <Button variant="ghost" onClick={requestClose} disabled={update.isPending}>
                 إلغاء
               </Button>
@@ -2561,19 +2588,13 @@ function DetailLine({ label, children }: { label: string; children: React.ReactN
     /* A6 P3 (22-a): a dotted leader gives each label/value pair a scan
      * line — the old bare justify-between rows had no rhythm and VLM
      * read the card as noise. Baseline-aligned; long values wrap to
-     * their own line (flex-wrap) with the leader shrinking to min. */
+     * their own line (flex-wrap) with the leader shrinking to min.
+     * R304: the leader/value anatomy lives in the family sheet
+     * (.exa-fact-*); the row's utility composition stays (r167 pin). */
     <div className="flex items-baseline gap-2 flex-wrap">
-      <span className="text-xs text-muted" style={{ flexShrink: 0 }}>{label}</span>
-      <span
-        aria-hidden
-        style={{
-          flex: '1 1 2rem',
-          minInlineSize: '1rem',
-          borderBottom: '1px dotted var(--border-strong)',
-          transform: 'translateY(-0.2em)',
-        }}
-      />
-      <span className="text-sm" style={{ textAlign: 'end' }}>{children}</span>
+      <span className="exa-fact-label">{label}</span>
+      <span className="exa-fact-leader" aria-hidden />
+      <span className="exa-fact-value">{children}</span>
     </div>
   );
 }
@@ -2725,20 +2746,12 @@ function PendingAnswerCard({
     <div
       className="exa-grade-card"
       data-invalid={invalid || undefined}
-      style={{
-        border: '1px solid var(--rule)',
-        borderRadius: 'var(--r-md)',
-        padding: 'var(--sp-3)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--sp-2)',
-      }}
     >
       <div className="flex items-start justify-between gap-2 flex-wrap">
-        <div className="list-row-title" title={answer.prompt} style={{ flex: 1, minWidth: 200 }}>
+        <div className="list-row-title exa-grade-prompt" title={answer.prompt}>
           <bdi className="font-mono">{order}</bdi> {answer.prompt}
         </div>
-        <div className="flex gap-2 items-center" style={{ flexShrink: 0 }}>
+        <div className="flex gap-2 items-center exa-grade-side">
           <Badge>{QTYPE_LABEL[answer.type]}</Badge>
           <span className="text-xs text-muted">
             {countAr(answer.points, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}
@@ -2746,17 +2759,11 @@ function PendingAnswerCard({
         </div>
       </div>
 
-      <div className="text-sm" style={{
-        margin: 0,
-        padding: 'var(--sp-2)',
-        background: 'var(--surface-2)',
-        borderRadius: 'var(--r-sm)',
-        whiteSpace: 'pre-wrap',
-      }}>
+      <div className="text-sm exa-answer-surface">
         {answer.studentAnswer !== null ? (
           answer.studentAnswer
         ) : (
-          <span className="text-xs" style={{ color: 'var(--warning-ink)' }}>
+          <span className="text-xs exa-answer-missing">
             لم يكتب الطالب إجابة لهذا السؤال — حكمك يحدد درجته.
           </span>
         )}
@@ -2794,7 +2801,6 @@ function PendingAnswerCard({
         maxLength={2000}
         placeholder="ملاحظة للطالب (اختيارية)…"
         aria-label={`ملاحظة على إجابة السؤال ${order}`}
-        style={{ resize: 'vertical', fontFamily: 'inherit' }}
         value={feedback}
         onChange={(e) => onFeedback(e.target.value)}
       />
@@ -2894,9 +2900,9 @@ function GradeAttemptModal({
           <form
             onSubmit={(e) => { e.preventDefault(); void onSubmit(); }}
             noValidate
-            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}
+            className="exa-form"
           >
-            <p className="text-sm text-muted" style={{ margin: 0 }}>
+            <p className="text-sm text-muted">
               {templateTitle} · الحالة: {ATTEMPT_STATUS_LABEL[attempt.status]}
               {attempt.score !== null && (
                 <>
@@ -2907,9 +2913,8 @@ function GradeAttemptModal({
 
             {pending.length === 0 ? (
               <p
-                className="text-sm text-muted"
+                className="text-sm text-muted exa-note-line"
                 role="note"
-                style={{ margin: 0, display: 'flex', gap: 'var(--sp-1-5)', alignItems: 'flex-start' }}
               >
                 <Icon icon={Info} size={14} />
                 <span>
@@ -2937,17 +2942,17 @@ function GradeAttemptModal({
             )}
 
             {validationError && (
-              <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+              <p role="alert" className="text-xs exa-error-line">
                 حدِّد حكمك — صحيحة أم خاطئة — لكل إجابة معلّقة قبل الحفظ.
               </p>
             )}
             {grade.isError && (
-              <p role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
+              <p role="alert" className="text-xs exa-error-line">
                 {apiErrorMessage(grade.error, 'تعذَّر حفظ التصحيح — تحقّق من اتصالك وحاول مرة أخرى.')}
               </p>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--sp-2)', paddingTop: 'var(--sp-2)', borderTop: '1px solid var(--rule)' }}>
+            <div className="exa-form-foot">
               <Button variant="ghost" onClick={requestClose} disabled={grade.isPending}>
                 إلغاء
               </Button>
@@ -3035,7 +3040,7 @@ function QuestionModerationActions({ questionId, isApproved }: { questionId: str
   };
 
   return (
-    <div className="flex-col gap-1" style={{ flexShrink: 0, alignItems: 'stretch' }}>
+    <div className="exa-mod-actions-col">
       {isApproved ? (
         <Button variant="ghost" size="sm" loading={moderateQ.isPending} onClick={() => void run(false)}>
           <Icon icon={Ban} size={12} /> {moderateQ.isPending ? 'جارٍ الإيقاف…' : 'إيقاف السؤال'}
@@ -3094,7 +3099,6 @@ function TemplateModerationPanel({ template }: { template: ExamTemplateDetail })
               maxLength={500}
               placeholder="تصل الملاحظة للمؤلف مع قرار الاعتماد أو الرفض…"
               aria-label="ملاحظة المراجعة للمؤلف"
-              style={{ resize: 'vertical', fontFamily: 'inherit' }}
               value={note}
               onChange={(e) => setNote(e.target.value)}
             />
@@ -3124,7 +3128,7 @@ function TemplateModerationPanel({ template }: { template: ExamTemplateDetail })
         </p>
       )}
       {failed && (
-        <div className="form-error" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
+        <div className="form-error tq-feedback" role="alert">
           <Icon icon={AlertTriangle} size={14} />
           <span className="form-error-msg">{apiErrorMessage(failed.error, 'تعذَّر تنفيذ القرار — تحقّق من اتصالك وحاول مرة أخرى.')}</span>
           <button type="button" className="btn ghost sm" onClick={() => void run(failed.approve)}>

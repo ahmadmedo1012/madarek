@@ -426,6 +426,16 @@ export default function LecturePlayerPage() {
     setAnswerError(false);
   };
 
+  /* R304 — the narrow-bandwidth jump: ≤1024px the contents panel
+     re-flows BELOW the player, so the meta block carries the one-chip
+     anchor that scrolls it into view (real navigation, not decoration). */
+  const jumpToContents = () => {
+    const el = document.getElementById('lecture-contents');
+    if (!el) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+  };
+
   /* Watch progress — live position (throttled to 1 render/sec below)
    * floored by the server-saved maximum; a resumed lecture also seeks
    * the <video> itself to the saved position on first metadata load
@@ -601,6 +611,19 @@ export default function LecturePlayerPage() {
             </div>
           </div>
 
+          {/* R304: the ≤1024px contents anchor — the panel re-flows below
+              the player on narrow bands; the chip keeps chapters and
+              checkpoints one tap away from the video. Hidden on desktop
+              (the panel sits beside it there). */}
+          <button
+            type="button"
+            className="btn ghost sm stu-panel-jump"
+            onClick={jumpToContents}
+          >
+            <Icon icon={ListVideo} size={13} />
+            الفصول ونقاط التفاعل
+          </button>
+
           <div className="lecture-progress">
             <div className="lecture-progress-head">
               <span>تقدّم المشاهدة</span>
@@ -678,6 +701,45 @@ export default function LecturePlayerPage() {
             </div>
           )}
 
+          {/* R304 — the coherent DONE state: watch complete AND every
+              checkpoint answered (or none exist). The completion closes
+              its loop by naming the next step — the same moment the
+              nav's next button pulses on `ended`. Token-styled inline
+              banner (the pending banner's grammar, success key). */}
+          {completed && (checkpointsTotal === 0 || allCheckpointsAnswered) && (
+            <div
+              role="status"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: 'var(--sp-2)',
+                padding: 'var(--sp-3) var(--sp-4)',
+                borderRadius: 'var(--r-md)',
+                background: 'var(--success-soft)',
+                color: 'var(--success-ink)',
+                fontSize: 'var(--type-label-size)',
+              }}
+            >
+              <span className="flex items-center gap-2">
+                <Icon icon={CheckCircle2} size={14} />
+                أنهيت هذه المحاضرة{checkpointsTotal > 0 ? ' — ونقاط تفاعلها كلّها مُجابة' : ''}.
+              </span>
+              {nextLec ? (
+                <Link to={`/student/lectures/${nextLec.id}`} className="btn sm">
+                  المحاضرة التالية · <bdi>{nextLec.ordinal}</bdi>
+                  <Icon icon={ChevronLeft} size={13} />
+                </Link>
+              ) : (
+                <Link to={`/student/courses/${data.offering.id}`} className="btn sm">
+                  عُد إلى المقرّر
+                  <Icon icon={ChevronLeft} size={13} />
+                </Link>
+              )}
+            </div>
+          )}
+
           {/* Prev / next (PP-X2 / audit P1-7) — the watch loop's exit ramp.
               prev rides the RTL back-chevron (ChevronRight), next the
               forward one (ChevronLeft); on end, next pulses once. */}
@@ -735,7 +797,7 @@ export default function LecturePlayerPage() {
             both themes). Same class, same aria-label, same heading
             outline (h2 panel / h3 sections) — only the landmark role
             changes. */}
-        <section className="lecture-aside" aria-label="محتويات المحاضرة">
+        <section className="lecture-aside" aria-label="محتويات المحاضرة" id="lecture-contents">
           <section className="lecture-panel">
             <h2 className="lecture-panel-title">داخل المحاضرة</h2>
 
@@ -810,6 +872,28 @@ export default function LecturePlayerPage() {
                 لم تُقسَّم هذه المحاضرة إلى فصول — شاهدها كاملة دون تنقّل.
               </p>
             )}
+
+            {/* R304 — the keyboard contract of the chrome, surfaced where
+                the chapters live (Space/K play, arrows ±10s, F fullscreen,
+                M mute — the same keys VideoPlayerChrome handles). */}
+            <div className="lecture-panel-sec lecture-keys" aria-label="اختصارات لوحة المفاتيح">
+              <span className="lecture-keys-row">
+                <kbd className="kbd" dir="ltr">Space</kbd>
+                <span>تشغيل / إيقاف</span>
+              </span>
+              <span className="lecture-keys-row">
+                <kbd className="kbd" dir="ltr">→ ←</kbd>
+                <span>تنقّل <bdi>10</bdi> ثوان</span>
+              </span>
+              <span className="lecture-keys-row">
+                <kbd className="kbd" dir="ltr">F</kbd>
+                <span>ملء الشاشة</span>
+              </span>
+              <span className="lecture-keys-row">
+                <kbd className="kbd" dir="ltr">M</kbd>
+                <span>كتم الصوت</span>
+              </span>
+            </div>
           </section>
 
           {/* r164d (course flow): the offering's materials, one scroll

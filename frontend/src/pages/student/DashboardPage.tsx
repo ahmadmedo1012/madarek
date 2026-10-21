@@ -1,33 +1,36 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Play, Eye, AlertCircle } from 'lucide-react';
+import { Play, Eye, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Badge } from '../../components/primitives';
+import { Badge, ProgressBar } from '../../components/primitives';
 import {
   ErrorState, EmptyState, ListSkeleton, Skeleton,
 } from '../../components/primitives/States';
 import { ProgressRing } from '../../components/primitives/Ledger';
 import {
   PageFrame, PageHeader, SectionHeader, RowList, RowItem, StatLine, TodayList,
-  type StatLineItem, type TodayItem,
+  type StatLineItem,
 } from '../../components/patterns';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import {
   useStudentDashboard, useResume, useTrainingCatalog, useGaps,
+  useMyEnrollments, type MyEnrollment,
 } from '../../hooks/useResources';
-import { EXAM_KIND_LABEL } from '../../lib/courseMeta';
+import { EXAM_KIND_LABEL, courseIcon, courseTint } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
 import { formatInt, formatNum, formatDate, formatTime } from '../../utils/numbers';
 
 /* ═══════════════════════════════════════════════════════════════════
-   r220 (4A redesign — Superlist direction) — the dashboard is ONE
-   TodayList, not a KPI wall:
-   masthead → «اليوم» ledger (the continue-learning item pinned first,
-   then today's real commitments, then every still-actable exam) →
-   «فجوات يُنصح بسدّها» (the recommended gaps with direct remediation)
-   → the momentum StatLine (compact typographic line, no icon boxes)
-   → the week ledger (day-anchored).
+   R304 (student workspace) — the dashboard reads like a workspace, not
+   a report: masthead → the ONE next-learning-action hero band (the
+   lecture arm first, then the training arm — its own surface again,
+   above the lists) → «اليوم» TodayList (today's commitments + every
+   still-actable exam) → the learning band (مقرّراتك rows with live
+   progress in the main column, the recommended gaps rail beside it,
+   every gap row a direct remediation link) → the momentum StatLine
+   (compact typographic line, no icon boxes) → the week ledger
+   (day-anchored).
    The pure helpers below (classWhenMs / safeMs / examAgendaRow /
    pickTrainingResume) keep their exported contracts — the unit pins
    (DashboardPage-agenda / -exams-resume) stay byte-identical.
@@ -279,56 +282,177 @@ function nodeText(n: ReactNode): string {
   return '';
 }
 
-/* The continue-learning item of the TodayList — the lecture arm, then
-   the training arm (r164-c contract). Returns null when both arms are
-   empty: the honest «nothing to continue» — the list simply doesn't
-   carry the row. */
-function resumeTodayItem(
+/* R304 — the next-learning-action decision (the r164-c contract kept:
+   the lecture arm answers first, the training arm only when the
+   lecture half is empty). Returns null when both arms are empty — the
+   honest «nothing pinned» — and the page renders no hero band. */
+type ResumeFocus =
+  | {
+    kind: 'lecture';
+    continuing: boolean;
+    progressPct: number;
+    courseCode: string;
+    courseName: string;
+    lectureTitle: string;
+    ordinal: number;
+    durationSec: number;
+    to: string;
+  }
+  | {
+    kind: 'track';
+    started: boolean;
+    progressPct: number;
+    title: string;
+    slug: string;
+  };
+
+function resumeFocus(
   resume: ReturnType<typeof useResume>,
   training: ReturnType<typeof useTrainingCatalog>,
-): TodayItem | null {
+): ResumeFocus | null {
   const r = resume.data;
   if (r) {
-    const continuing = r.mode === 'continue';
     return {
-      id: `resume-${r.lecture.id}`,
-      title: continuing
-        ? `أكمل من حيث توقفت: ${r.lecture.course.name} · المحاضرة ${r.lecture.ordinal}`
-        : `ابدأ أول محاضرة: ${r.lecture.course.name}`,
-      meta: <><bdi className="font-mono">{r.lecture.course.code}</bdi> · {r.lecture.title} · {continuing ? `${r.progressPct}% من المحاضرة` : 'لم تُشاهد بعد'}</>,
-      leading: (
-        <span className="dash-resume-ring">
-          <ProgressRing size={56} thickness={5} value={continuing ? r.progressPct : 0}
-            ariaLabel={continuing ? `تقدّم مشاهدة المحاضرة المتوقّفة: ${r.progressPct}%` : 'المحاضرة الأولى لم تُشاهد بعد'}
-            center={null} />
-        </span>
-      ),
+      kind: 'lecture',
+      continuing: r.mode === 'continue',
+      progressPct: r.progressPct,
+      courseCode: r.lecture.course.code,
+      courseName: r.lecture.course.name,
+      lectureTitle: r.lecture.title,
+      ordinal: r.lecture.ordinal,
+      durationSec: r.lecture.durationSec,
       to: `/student/lectures/${r.lecture.id}`,
-      action: <span className="btn primary sm pf-chip"><Icon icon={Play} size={13} />{continuing ? 'متابعة' : 'ابدأ'}</span>,
-      urgency: 'now',
     };
   }
   const t = training.data ? pickTrainingResume(training.data) : null;
   if (t) {
     return {
-      id: `resume-track-${t.slug}`,
-      title: t.started
-        ? `أكمل مسارك: ${t.title}`
-        : `ابدأ مسارك: ${t.title}`,
-      meta: <>مسار التطوير الذاتي · {t.started ? `أنجزت ${t.progressPct}% من دروسه` : 'سجّلت فيه ولم تبدأه بعد'}</>,
-      leading: (
-        <span className="dash-resume-ring">
-          <ProgressRing size={56} thickness={5} value={t.started ? t.progressPct : 0}
-            ariaLabel={t.started ? `تقدّم المسار التدريبي: ${t.progressPct}%` : 'مسار لم يبدأ بعد'}
-            center={null} />
-        </span>
-      ),
-      to: `/training/${t.slug}`,
-      action: <span className="btn primary sm pf-chip"><Icon icon={Play} size={13} />{t.started ? 'متابعة' : 'ابدأ'}</span>,
-      urgency: 'later',
+      kind: 'track',
+      started: t.started,
+      progressPct: t.progressPct,
+      title: t.title,
+      slug: t.slug,
     };
   }
   return null;
+}
+
+/** m:ss wall clock for the hero's context note (real media duration). */
+function formatClock(totalSec: number): string {
+  const s = Math.max(0, Math.round(totalSec));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+/* The hero band — the dashboard's ONE primary action. The PP-X2
+   .dash-resume-card recipe (tint wash + signal edge) carries the
+   surface; the R304 .stu-hero class adds the band's mass. The ring's
+   aria-label carries the honest state; the CTA names the destination
+   verb-first, and the side note keeps the course code + lecture clock
+   (data, never decoration). */
+function DashResumeHero({ focus }: { focus: ResumeFocus }) {
+  if (focus.kind === 'lecture') {
+    return (
+      <section aria-label="الخطوة التعليمية التالية">
+        <div className="dash-resume-card stu-hero">
+          <span className="dash-resume-ring">
+            <ProgressRing size={64} thickness={5} value={focus.continuing ? focus.progressPct : 0}
+              ariaLabel={focus.continuing ? `تقدّم مشاهدة المحاضرة المتوقّفة: ${focus.progressPct}%` : 'المحاضرة الأولى لم تُشاهد بعد'}
+              center={null} />
+          </span>
+          <div className="dash-resume-main">
+            <span className="dash-resume-eyebrow">{focus.continuing ? 'أكمل من حيث توقفت' : 'الخطوة التالية'}</span>
+            <span className="dash-resume-course-name">{focus.courseName}</span>
+            <span className="dash-resume-lecture">
+              المحاضرة <bdi>{formatInt(focus.ordinal)}</bdi> · {focus.lectureTitle}
+            </span>
+            {focus.continuing && (
+              <div className="dash-resume-progress">
+                <ProgressBar value={focus.progressPct} showValue={false}
+                  ariaLabel={`تقدّم مشاهدة المحاضرة: ${focus.progressPct}%`} />
+              </div>
+            )}
+          </div>
+          <div className="dash-resume-cta stu-hero-side">
+            <Link to={focus.to} className="btn accent lg">
+              <Icon icon={Play} size={16} />
+              {focus.continuing ? 'متابعة المشاهدة' : 'ابدأ المشاهدة'}
+            </Link>
+            <span className="dash-resume-side-note">
+              <bdi className="font-mono">{focus.courseCode}</bdi> · <bdi>{formatClock(focus.durationSec)}</bdi>
+            </span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+  return (
+    <section aria-label="الخطوة التعليمية التالية">
+      <div className="dash-resume-card stu-hero">
+        <span className="dash-resume-ring">
+          <ProgressRing size={64} thickness={5} value={focus.started ? focus.progressPct : 0}
+            ariaLabel={focus.started ? `تقدّم المسار التدريبي: ${focus.progressPct}%` : 'مسار لم يبدأ بعد'}
+            center={null} />
+        </span>
+        <div className="dash-resume-main">
+          <span className="dash-resume-eyebrow">{focus.started ? 'أكمل من حيث توقفت' : 'الخطوة التالية'}</span>
+          <span className="dash-resume-course-name">{focus.title}</span>
+          <span className="dash-resume-lecture">مسار التطوير الذاتي · {focus.started ? `أنجزت ${formatInt(focus.progressPct)}% من دروسه` : 'سجّلت فيه ولم تبدأه بعد'}</span>
+          {focus.started && (
+            <div className="dash-resume-progress">
+              <ProgressBar value={focus.progressPct} showValue={false}
+                ariaLabel={`تقدّم المسار التدريبي: ${focus.progressPct}%`} />
+            </div>
+          )}
+        </div>
+        <div className="dash-resume-cta stu-hero-side">
+          <Link to={`/training/${focus.slug}`} className="btn accent lg">
+            <Icon icon={Play} size={16} />
+            {focus.started ? 'متابعة المسار' : 'ابدأ المسار'}
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* The «مقرّراتك» row — the live-learning list of the workspace. Same
+   row grammar as the courses page (leading tinted well + trailing
+   progress), minus the per-offering lecture fetch the dashboard does
+   not need: the row's truth is its progress + its teacher. */
+function DashCourseRow({ e }: { e: MyEnrollment }) {
+  const c = e.offering.course;
+  const Cmp = courseIcon(c.code ?? c.name);
+  const tint = courseTint(c.themeColor);
+  const teacher = `د. ${e.offering.teacher.firstName} ${e.offering.teacher.lastName}`;
+  return (
+    <RowItem
+      to={`/student/courses/${e.offering.id}`}
+      leading={
+        <span
+          className="courses-row-icon"
+          style={{
+            background: `color-mix(in srgb, ${tint} 14%, var(--surface))`,
+            color: `color-mix(in srgb, ${tint} 60%, var(--text))`,
+          }}
+        >
+          <Icon icon={Cmp} size={18} />
+        </span>
+      }
+      title={c.name}
+      meta={<><Badge><bdi className="font-mono">{c.code}</bdi></Badge>{' '}{teacher}</>}
+      trailing={
+        <span className="stu-course-progress">
+          <ProgressBar value={e.progressPct} color={tint} showValue={false}
+            ariaLabel={`تقدّم مقرّر ${c.name}: ${e.progressPct}%`} />
+          <bdi className="stu-course-pct">{formatInt(Math.round(e.progressPct))}%</bdi>
+          <span className="btn ghost sm courses-row-go">
+            {e.progressPct > 0 ? 'تابع' : 'ابدأ'}
+            <Icon icon={ArrowLeft} size={12} />
+          </span>
+        </span>
+      }
+    />
+  );
 }
 
 export default function StudentDashboardPage() {
@@ -341,8 +465,11 @@ export default function StudentDashboardPage() {
   // r164-c: the training catalog feeds the hero's second arm (only
   // consulted when the lecture payload is null — see pickTrainingResume).
   const trainingCatalog = useTrainingCatalog();
-  // r220: the recommended gaps join the TodayList (سدّ الفجوة direct).
+  // r220: the recommended gaps join the learning band (سدّ الفجوة direct).
   const gaps = useGaps();
+  // R304: the «مقرّراتك» list rides its own query — the workspace's
+  // current-courses surface, independent of the dashboard aggregate.
+  const enrollments = useMyEnrollments();
 
   if (dash.isPending) {
     /* r220 loading mirror — the resolved page leads with the PageHeader,
@@ -361,6 +488,21 @@ export default function StudentDashboardPage() {
             </div>
           </div>
         </header>
+        {(resume.isPending || trainingCatalog.isPending) && (
+          /* The hero slot — reserved at the band's footprint so the
+             pending → resolved handoff moves nothing (the r172b
+             loading-closure contract, re-mirrored for the R304 hero).
+             It collapses honestly when BOTH arms settle to null. */
+          <div className="dash-resume-card stu-hero stu-hero-skel" aria-hidden="true">
+            <Skeleton width={64} height={64} rounded="var(--r-full)" />
+            <div className="dash-resume-main">
+              <Skeleton width={120} height={13} />
+              <Skeleton width="52%" height={20} />
+              <Skeleton width="38%" height={13} />
+            </div>
+            <Skeleton width={170} height={48} rounded="var(--r-full)" />
+          </div>
+        )}
         <ListSkeleton rows={3} />
         <div className="pf-statline" aria-busy="true">
           {[0, 1, 2, 3].map((i) => (
@@ -501,10 +643,15 @@ export default function StudentDashboardPage() {
      empty → the panel says so in one line (no celebration banner). */
   const topGaps = (gaps.data ?? []).slice(0, 3);
 
-  /* The TodayList's continue-learning item (independent query — the
-     row appears the moment ITS payload lands). While it pends, the
-     one-row skeleton keeps the list's footprint honest. */
-  const resumeItem = resumeTodayItem(resume, trainingCatalog);
+  /* The hero band's decision (independent query — the band appears
+     the moment ITS payload lands; the pending mirror above reserves
+     its footprint while it flights). */
+  const focus = resumeFocus(resume, trainingCatalog);
+
+  /* In-progress courses lead the list — the workspace surfaces the
+     nearest finish lines first, not the catalog order. */
+  const sortedEnrollments = [...(enrollments.data ?? [])]
+    .sort((a, b) => b.progressPct - a.progressPct);
 
   /* The momentum StatLine — same facts the old strip carried, printed
      as one calm line (r183-B3's verdict copy stays pinned here). */
@@ -569,13 +716,17 @@ export default function StudentDashboardPage() {
         }
       />
 
-      {/* اليوم — the ONE TodayList (r220): continue-learning pinned
-          first, then today's commitments, then every still-actable
-          exam. Urgency dots carry the honest now/soon/later state. */}
+      {/* الخطوة التالية — the hero band (R304): the ONE next learning
+          action, its own surface above the lists (r164-c arms kept:
+          lecture first, then the training track). */}
+      {focus && <DashResumeHero focus={focus} />}
+
+      {/* اليوم — the ONE TodayList (r220): today's commitments first,
+          then every still-actable exam. Urgency dots carry the honest
+          now/soon/later state. */}
       <TodayList
         title="اليوم"
         items={[
-          ...(resumeItem ? [resumeItem] : []),
           ...today.map((item) => ({
             id: item.id,
             title: nodeText(item.title),
@@ -595,53 +746,97 @@ export default function StudentDashboardPage() {
           <div className="ledger-row ledger-row-flat">
             <span className="ledger-lead"><b>اليوم</b>راحة</span>
             <span className="ledger-what">
-              لا حصص أو مهام أو اختبارات اليوم — أسبوعك القادم أدناه، وتعلّمك ينتظرك في أعلى القائمة.
+              لا حصص أو مهام أو اختبارات اليوم — أسبوعك القادم أدناه، ومقرّراتك تنتظرك في الأسفل.
             </span>
           </div>
         }
       />
 
-      {/* فجواتك — the recommended gaps with one-click remediation.
-          Honest states: pending → row skeletons; error → quiet retry
-          row; empty → one calm line (no celebration banner). */}
-      <section aria-label="فجوات الإتقان الموصى بها">
-        <SectionHeader
-          title="فجوات يُنصح بسدّها"
-          actions={<Link to="/student/matrix" className="btn ghost sm">المصفوفة الكاملة</Link>}
-        />
-        {gaps.isPending ? (
-          <ListSkeleton rows={2} />
-        ) : gaps.isError ? (
-          <div className="ledger-row ledger-row-flat" role="alert">
-            <span className="ledger-lead"><b>فجوات</b>—</span>
-            <span className="ledger-what">
-              تعذَّر تحميل فجواتك —{' '}
-              <button type="button" className="btn ghost sm" onClick={() => gaps.refetch()}>إعادة المحاولة</button>
-            </span>
-          </div>
-        ) : topGaps.length === 0 ? (
-          <div className="ledger-row ledger-row-flat">
-            <span className="ledger-lead"><b>فجوات</b>لا شيء</span>
-            <span className="ledger-what">
-              لا فجوات مكتشفة بعد — أجب عن نقاط التفاعل في محاضراتك لترسم خريطة إتقانك.
-            </span>
-          </div>
-        ) : (
-          <RowList aria-label="أولوية سدّ الفجوات">
-            {topGaps.map((g) => (
-              <RowItem
-                key={g.conceptId}
-                leading={<Icon icon={AlertCircle} size={16} className="text-warning-ink" />}
-                title={g.conceptName}
-                meta={<>{g.courseName} · {formatInt(Math.round(g.level * 100))}% الآن</>}
-                trailing={g.recommendedLectureId
-                  ? <span className="btn outline sm pf-chip"><Icon icon={Play} size={13} />سدّ الفجوة</span>
-                  : <Badge>لا توصية بعد</Badge>}
-              />
-            ))}
-          </RowList>
-        )}
-      </section>
+      {/* التعلّم — the workspace band (R304): مقرّراتك carries the main
+          column (in-progress first), the gaps rail sits beside it.
+          Honest states everywhere: pending → row skeletons; error →
+          quiet retry row; empty → one calm line (no celebration
+          banner). Every gap row with a recommendation is a WHOLE-ROW
+          link — the matrix page's سدّ الفجوة contract, now one voice
+          across both surfaces. */}
+      <div className="grid-2-1">
+        <section aria-label="مقرّراتك الحالية">
+          <SectionHeader
+            title="مقرّراتك"
+            actions={<Link to="/student/courses" className="btn ghost sm">كل المقرّرات</Link>}
+          />
+          {enrollments.isPending ? (
+            <ListSkeleton rows={2} />
+          ) : enrollments.isError ? (
+            <div className="ledger-row ledger-row-flat" role="alert">
+              <span className="ledger-lead"><b>مقرّراتك</b>—</span>
+              <span className="ledger-what">
+                تعذَّر تحميل مقرّراتك —{' '}
+                <button type="button" className="btn ghost sm" onClick={() => enrollments.refetch()}>إعادة المحاولة</button>
+              </span>
+            </div>
+          ) : sortedEnrollments.length === 0 ? (
+            <div className="ledger-row ledger-row-flat">
+              <span className="ledger-lead"><b>مقرّراتك</b>لا شيء بعد</span>
+              <span className="ledger-what">
+                لم تُسجَّل في مقرّرات هذا الفصل بعد — <Link to="/student/catalog">دليل المقرّرات</Link> يعرض ما تقدّمه كلّيّتك.
+              </span>
+            </div>
+          ) : (
+            <RowList aria-label="قائمة مقرّراتك">
+              {sortedEnrollments.map((e) => <DashCourseRow key={e.id} e={e} />)}
+            </RowList>
+          )}
+        </section>
+
+        <section aria-label="فجوات الإتقان الموصى بها">
+          <SectionHeader
+            title="فجوات يُنصح بسدّها"
+            actions={<Link to="/student/matrix" className="btn ghost sm">المصفوفة الكاملة</Link>}
+          />
+          {gaps.isPending ? (
+            <ListSkeleton rows={2} />
+          ) : gaps.isError ? (
+            <div className="ledger-row ledger-row-flat" role="alert">
+              <span className="ledger-lead"><b>فجوات</b>—</span>
+              <span className="ledger-what">
+                تعذَّر تحميل فجواتك —{' '}
+                <button type="button" className="btn ghost sm" onClick={() => gaps.refetch()}>إعادة المحاولة</button>
+              </span>
+            </div>
+          ) : topGaps.length === 0 ? (
+            <div className="ledger-row ledger-row-flat">
+              <span className="ledger-lead"><b>فجوات</b>لا شيء</span>
+              <span className="ledger-what">
+                لا فجوات مكتشفة بعد — أجب عن نقاط التفاعل في محاضراتك لترسم خريطة إتقانك.
+              </span>
+            </div>
+          ) : (
+            <RowList aria-label="أولوية سدّ الفجوات">
+              {topGaps.map((g) => (
+                g.recommendedLectureId ? (
+                  <RowItem
+                    key={g.conceptId}
+                    to={`/student/lectures/${g.recommendedLectureId}`}
+                    leading={<Icon icon={AlertCircle} size={16} className="text-warning-ink" />}
+                    title={g.conceptName}
+                    meta={<>{g.courseName} · {formatInt(Math.round(g.level * 100))}% الآن</>}
+                    trailing={<span className="btn outline sm pf-chip"><Icon icon={Play} size={13} />سدّ الفجوة</span>}
+                  />
+                ) : (
+                  <RowItem
+                    key={g.conceptId}
+                    leading={<Icon icon={AlertCircle} size={16} className="text-warning-ink" />}
+                    title={g.conceptName}
+                    meta={<>{g.courseName} · {formatInt(Math.round(g.level * 100))}% الآن</>}
+                    trailing={<Badge>لا توصية بعد</Badge>}
+                  />
+                )
+              ))}
+            </RowList>
+          )}
+        </section>
+      </div>
 
       {/* الحالة — the momentum StatLine (r220): compact label-over-value
           line, no icon boxes. Trend notes carry the nearest deadline /

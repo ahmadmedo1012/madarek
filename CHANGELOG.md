@@ -1,3 +1,68 @@
+## [r304 | مساحتا الإدارة والمالك — مساحة عمل مؤسسية موحّدة]
+
+**ترويسات بإجراء أساسي:** كل مسارات الإدارة (الكلّيّات، المقرّرات، التقارير،
+المزامنة، التحوّل الرقميّ، الإعدادات) ومسارات المالك (المؤسسات، تفصيل المؤسسة،
+التعليم، الذكاء الاصطناعيّ، الحوكمة، التنبيهات، المراقبة الحيّة، المحتوى) تُفتح
+بترويسة عقد الأنماط: مسار تنقّل يعود إلى لوحة الدور، وh1 دلالي واحد، وسطر بيانات
+حقيقي، والإجراء الأساسي للصفحة («مزامنة الآن»، «إضافة مقرّر»، «إضافة كلّيّة»)
+في خانة إجراءات الترويسة أو حافة شريط التصفية — بحث ← تصفية ← إجراء، بلا ازدواج.
+
+**عائلة جداول مساحة العمل (ws-table):** سجلّات المقرّرات والبحوث والمزامنة
+والتبنّي وتفصيل المؤسسة وقائمة المؤسسات تركب العائلة الجديدة في `admin.css`:
+ترويسة 13px (أرضية العربية)، خلية هوية أولاً (`ws-id`) بسطرها الثانوي، وأرقام
+جدولية. على الشاشات الضيّقة تتحول الصفوف إلى بطاقات ملخّص باسم السجل عنوانًا
+أولًا (ترتيب flex + إخفاء الـattr المكرر) والحقول أزواج تسمية/قيمة — بدل تقليص
+جداول عريضة.
+
+**بنية المالك:** تفصيل المؤسسة يقرأ نطاقها فورًا (شارة الحالة + الأعضاء في سطر
+meta تحت الاسم) وينقل إجراءات الإضافة («كلّيّة»/«مقرّر») إلى ترويسة القسم
+المعنيّ؛ نموذج إنشاء المؤسسة يصير شريطًا هادئًا بثلاثة حقول على صف واحد؛
+والحوكمة/التعليم/الذكاء/التنبيهات/المراقبة/المحتوى تنتقل لترويسة الأنماط مع
+مسار التنقّل. صفحة النظام تحتفظ بترويستها (عداد التنبيهات داخل h1).
+
+**CSS:** إعادة بناء `admin.css` بطبقات موثّقة (ws-table، شريط القوائم المحفوظ،
+مصفوفة govx، صفوف الإعدادات، spin) مع تهذيب حواف بطاقة الكلّيّة (بلا رفع
+تزييني) وضبط قياس حقل البحث والقائمة داخل شريط الأنماط؛ وملحق R304 في
+`owner.css` (شريط الإنشاء، لوحة نطاق التفصيل).
+
+**التحقق:** lint بلا أخطاء (18 تحذيرًا مسموحًا)، typecheck للجهتين، بناء
+الواجهة، بوابات الأيقونات والحركة وCSS الخام (0 مخالفات)، وألوان البوابة
+الصارمة بلا مخالفات في ملفات هذا النطاق. 95 اختبار وحدة لعائلة الإدارة/المالك
+خضراء، و2055 من 2062 في الحزمة الكاملة (السبعة الفاشلة والخطأ الواحد من
+r303/الهبوط — مثبتة على القاعدة e3caf8d نفسها قبل هذا التغيير: بوابة تكافؤ
+التصدير 86/190 ومخالفات ألوان canvas في `MadarekWorld` انضباط r303 خارج نطاق
+هذه الجولة). فحص متصفح موجّه على تطبيق حي: لوحة المالك، تفصيل المؤسسة (سطح
+المكتب والجوّال 390)، جدول المقرّرات الكثيف (فاتح/داكن/390)، والكلّيّات
+والمزامنة — بلا أخطاء تشغيل، وتلخيص الصفوف على الجوّال باسم السجل أولًا.
+
+## [r304 | هيكل المنتج المشترك بمعيار Superlist]
+
+**الشلال:** ورقة «final-visual-system.css» غير الطبقية (r301/r302) حُذفت
+وأُعيدت قيمها إلى بيوتها القانونية (layout.css للهيكل، components.css
+للأزرار والجداول والحالات) — الشلال ينتهي عند polish.css مجددًا، وعادت
+يعمل تظليل شريط الترويسة في وضع الطي الذي كان الورقة غير الطبقية تحجبه،
+وعاد سلّم تمرير الجداول الأفقي ≤640 الذي `overflow: clip` كان خنقه.
+
+**الهيكل:** شعار القضبان يجلس على بلاطته النحاسية، صفوف التنقل بنصف قطر
+مساحة العمل r-md بعلامة جانبية واحدة (توءام `aria-current` ذو الحدّ
+الثاني تقاعد)، وطبقة أنماط الصفحات تنتقل إلى سجل المنتج (عنوان 24px
+ووصف مقاس، أقسام 18px) مع صفوف روابط تُعلّي صفها الكامل عند المرور،
+وشريط تصفية مثبّت يضبب فوق التمرير.
+
+**حبر الأرقام:** شارات العدّاد ورقاقة النطاق ورقاقة ⌘K ترفع حبرها من
+--text-muted (3.1–3.35:1 على الأسطح الثانوية — قياس محور) إلى
+--text-secondary الذي يجتاز AA في الثيمين.
+
+**الأسطح المشتركة:** بطاقة منافسة/كلية تتبع عنوان الصفحة 24px بصوت
+العرض، وصفحة الرؤية تقرأ مقاييسها على StatLine بدل بطاقات `.metric`
+القديمة.
+
+**التحقق:** lint 0 أخطاء، typecheck نظيف، 2055 اختبار واجهة يمرّ (نفس
+7 إخفاقات سابقة على الأساس e3caf8d من جولة r303: أصول/تغريدات لوحة
+الرموز والصفحة الرئيسية — خارج الملكية)، بوابات الأيقونات/الحركة/
+raw-css خضراء، وفحص متصفح حيّ عبر النقل الوهمي على 22 سطحًا
+(1440/390 × فاتح/داكن: لا تمرير أفقي ولا أخطاء صفحة).
+
 ## [r301 | إعادة توجيه التجربة البصرية]
 
 **الصفحة الرئيسية:** استُبدل مركز صفحة مدارك العام بمشهد تعلّم أصلي ثلاثي
@@ -2808,3 +2873,45 @@ icons/motion/colors خضراء. ‏r195 لا تعيد بناء الإقامة ا
 **Verified in-browser:** hero/chapters/live/roles/colleges/vision/cta/footer at desktop
 1600×1000 (light+dark) and mobile 390×844; the camera journey, immersion moment,
 on-demand idle (61fps), no console errors, typecheck + eslint + production build green.
+
+## r304 — «إعادة تركيب الملصق التحريري» · The landing editorial reconstruction (Agent 3, R304)
+
+**Landing — the composition is rebuilt around the world (r303's canvas + conductor untouched):**
+- Every act now reserves its intentional empty-space zone so the sculpture never simply
+  washes across content: the hero keeps the sparse open (giant word bottom-reading-end,
+  statement bottom-reading-start over the dotted drafting grid); the statement runs as an
+  editorial spread with the copy pinned to the reading-start column; the live ledger becomes
+  THE COPPER CLIMAX — an inverted slab (ink-on-paper light / paper-on-night dark, local
+  signal re-pointed per theme so numerals stay AA on both grounds) beside an annotated empty
+  window that hands the reading-end third to the conductor's copper close-up; roles run as a
+  wide-panorama index of full hairline rows; colleges pin the panel + chip row to the
+  reading-start with a ghost «25» numeral floating in the open third; the vision passage
+  centers one statement over tall negative space; the colophon gets a settle veil so the
+  knot sinks into the horizon behind the footer links.
+- The paper veil — a soft radial of the poster paper behind every copy block that can cross
+  the knot (stacking + masking, never a panel): invisible on clear paper, depth-of-field
+  haze over the sculpture; AA-clean text without boxing the object away.
+- The chapter miniatures are recomposed as interface FRAGMENTS: a window-chrome bar
+  (identity dots + fragment name + the honest «demo» tag), the app's own surface recipe,
+  and a caption row pairing the copper «عرض توضيحي» marker with the fragment's name.
+- Section labels gain the drafting-rule eyebrow; hover washes are guarded behind
+  (hover:hover) and (pointer:fine); the static world-poster twin is now direction-safe
+  centered (the r303 RTL off-center bug); the statement roles + roles index + colleges head
+  + vision head got authored wrappers for the veils and the centered passage.
+- The r304 semantic story hooks ship beside the world's data-cam anchors (no second scroll
+  listener, no second framework): data-story-chapter mirrors every act, data-story-reveal
+  marks the reveal beats, data-story-media marks the fragments + registry stage, and
+  data-story-focus marks the hero word, the copper slab, the passage title and the resolve.
+
+**Gates re-pinned in the same change:** landing-poster-refinement.test.ts rewritten from the
+deleted-Constellation pins (r303 left it red at base) to the r304 geometry contract; the
+r177 fo-brand-sub pin (also red at base) is satisfied by restoring the brand stack
+(wordmark + «منصّة التعليم الذكي») in the header and footer.
+
+**Verified:** lint 0 errors · typecheck · 93/93 landing unit tests · raw-css/motion/icon
+gates · production build; one focused browser pass at 1440×900 and 390×844 in light+dark:
+hero→statement→chapters→live→roles→colleges→vision→cta→footer, chip interaction, nav
+anchors, the imperative scroll chrome, and the mobile flow compositions. The pre-existing
+CI reds outside this branch's ownership stand: check-colors --strict flags five canvas
+paints inside MadarekWorld.tsx (r303, off-limits for this branch) and the r162 suite logs
+the jsdom WebGL rejection from the same file (tests still pass).

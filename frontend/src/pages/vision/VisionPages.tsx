@@ -236,19 +236,18 @@ export function VisionDetailPage() {
       {/* Metrics — honest design facts (A8 P1-1: every invented
           precision number was removed from this data; what remains are
           real stages, real technology choices, and the one honest
-          measured counter the file ever had). The values are mostly
-          TEXT now, so they set one metric rung down (22px, not the
-          30px hero-number size) — a definition row, not a hero-metric
-          template (taste refuse list). */}
-      <div className="grid-3">
-        {concept.metrics.map((m) => (
-          <div key={m.label} className="metric">
-            <div className="metric-label">{m.label}</div>
-            <div className="metric-value vision-metric-value">{m.value}</div>
-            {m.sub && <div className="metric-change">{m.sub}</div>}
-          </div>
-        ))}
-      </div>
+          measured counter the file ever had). r304: the values are
+          mostly TEXT, so the definition row rides the StatLine
+          contract — the same quiet label/value/hint grammar every
+          framed page opens with — instead of the dashboard `.metric`
+          tile vocabulary the patterns contract retires. */}
+      <StatLine
+        items={concept.metrics.map((m) => ({
+          label: m.label,
+          value: m.value,
+          hint: m.sub,
+        }))}
+      />
 
       <div className="grid-2-1">
         {/* Features — a real h2 (the page had zero heading levels under

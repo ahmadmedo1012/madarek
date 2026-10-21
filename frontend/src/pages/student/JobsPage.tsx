@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Briefcase, MapPin, CheckCircle2,
   Code, BarChart3, Palette, Network, Smartphone, Shield, type LucideIcon,
 } from 'lucide-react';
-import { Card, Badge } from '../../components/primitives';
+import { Badge } from '../../components/primitives';
 import { EmptyState, ErrorState, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { PageFrame, PageHeader, FilterBar } from '../../components/patterns';
 import { useJobs, useApplyJob, apiErrorMessage, type Job } from '../../hooks/useResources';
-import { formatDate } from '../../utils/numbers';
+import { formatDate, formatInt } from '../../utils/numbers';
+import { countAr } from '../../lib/format';
 
 const TYPE_LABELS: Record<string, string> = {
   FULL_TIME: 'دوام كامل',
@@ -28,12 +30,10 @@ const jobIcon = (cat: string, title: string): LucideIcon => {
   return Briefcase;
 };
 
-/** Proper Arabic counted noun for the open-opportunities line. */
+/** Proper Arabic counted noun for the open-opportunities line
+ *  (countAr owns the one/two/few/many forms). */
 function openJobsLabel(n: number): string {
-  if (n === 1) return 'فرصة واحدة مفتوحة';
-  if (n === 2) return 'فرصتان مفتوحتان';
-  if (n >= 3 && n <= 10) return `${n} فرص مفتوحة`;
-  return `${n} فرصة مفتوحة`;
+  return countAr(n, ['فرصة واحدة مفتوحة', 'فرصتان مفتوحتان', 'فرص مفتوحة', 'فرصة مفتوحة']);
 }
 
 /** Relative posting age with proper Arabic plurals (audit 0-d —
@@ -139,52 +139,104 @@ export default function JobsPage() {
   const { data, isPending, isError, error, refetch } = useJobs();
   // 18-G: the payload carries the viewer's applications beside the
   // jobs — the «تمّ التقديم» badge starts from server truth.
-  const jobs = data?.data ?? [];
+  const jobs = useMemo(() => data?.data ?? [], [data]);
   const appliedJobIds = new Set(data?.appliedJobIds ?? []);
+
+  /* Client-side filter over the loaded rows by النوع — the type
+     column's own values. No new hooks, no server round-trip. */
+  const [type, setType] = useState<'ALL' | Job['type']>('ALL');
+  const types = useMemo(() => Array.from(new Set(jobs.map((j) => j.type))), [jobs]);
+  const isFiltering = type !== 'ALL';
+  const filtered = isFiltering ? jobs.filter((j) => j.type === type) : jobs;
+
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">فرص العمل</h1>
-          <p className="page-subtitle">وظائف وفرص تدريب تجريبية مفتوحة لطلاب وخرّيجي الجامعة (بيانات عرض).</p>
-        </div>
-      </header>
+    <PageFrame width="default">
+      <PageHeader
+        title="فرص العمل"
+        description="وظائف وفرص تدريب تجريبية مفتوحة لطلاب وخرّيجي الجامعة (بيانات عرض)."
+      />
 
       {isPending ? (
-        <Card><TableSkeleton rows={5} cols={6} /></Card>
+        <TableSkeleton rows={5} cols={6} />
       ) : isError ? (
-        <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
+        <ErrorState error={error} onRetry={() => refetch()} />
       ) : jobs.length === 0 ? (
-        <Card><EmptyState
+        <EmptyState
           icon={Briefcase}
           title="لا توجد فرص نشطة هذا الأسبوع"
           illustration="empty-list"
           description="نضيف فرص التوظيف والتدريب من شركات وطنية وعربية بشكل دوري. ستصلك إشعارات الفرص الملائمة لتخصصك تلقائياً."
-        /></Card>
+        />
       ) : (
         <>
-          <p className="jobs-count" aria-live="polite">{openJobsLabel(jobs.length)}</p>
-          <div className="table-wrap jobs-table-wrap">
-            <table className="table tbl-stack jobs-table">
-              <thead>
-                <tr>
-                  <th scope="col">الوظيفة</th>
-                  <th scope="col">الموقع</th>
-                  <th scope="col">النوع</th>
-                  <th scope="col">الراتب</th>
-                  <th scope="col">نُشرت</th>
-                  <th scope="col">الإجراء</th>
-                </tr>
-              </thead>
-              <tbody>
-                {jobs.map((j) => (
-                  <JobRow key={j.id} job={j} applied={appliedJobIds.has(j.id)} />
+          <FilterBar
+            filters={
+              <div className="flex items-center gap-2" role="group" aria-label="تصفية فرص العمل حسب النوع">
+                <button
+                  type="button"
+                  className={`pill${type === 'ALL' ? ' on' : ''}`}
+                  aria-pressed={type === 'ALL'}
+                  onClick={() => setType('ALL')}
+                >
+                  الكل
+                </button>
+                {types.map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    className={`pill${type === t ? ' on' : ''}`}
+                    aria-pressed={type === t}
+                    onClick={() => setType(t)}
+                  >
+                    {TYPE_LABELS[t] ?? t}
+                  </button>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </div>
+            }
+          />
+
+          {/* The counted line — honest about the filtered subset. */}
+          <p className="jobs-count" aria-live="polite">
+            {filtered.length === 0 ? (
+              'لا توجد فرص ضمن هذا النوع حاليّاً — جرّب نوعاً آخر.'
+            ) : (
+              <bdi>
+                {openJobsLabel(filtered.length)}
+                {isFiltering ? ` من أصل ${formatInt(jobs.length)}` : ''}
+              </bdi>
+            )}
+          </p>
+
+          {filtered.length === 0 ? (
+            <EmptyState
+              icon={Briefcase}
+              title="لا توجد فرص ضمن هذا النوع"
+              illustration="empty-search"
+              description="اختر نوعاً آخر من الأزرار أعلاه — كل الفرص المفتوحة تظهر تحت «الكل»."
+            />
+          ) : (
+            <div className="table-wrap jobs-table-wrap">
+              <table className="table tbl-stack jobs-table">
+                <thead>
+                  <tr>
+                    <th scope="col">الوظيفة</th>
+                    <th scope="col">الموقع</th>
+                    <th scope="col">النوع</th>
+                    <th scope="col">الراتب</th>
+                    <th scope="col">نُشرت</th>
+                    <th scope="col">الإجراء</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((j) => (
+                    <JobRow key={j.id} job={j} applied={appliedJobIds.has(j.id)} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </>
       )}
-    </div>
+    </PageFrame>
   );
 }

@@ -6,8 +6,9 @@ import {
   AlertCircle,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, ProgressBar } from '../../components/primitives';
+import { Card, Badge, ProgressBar } from '../../components/primitives';
 import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
+import { PageFrame, PageHeader, StatLine } from '../../components/patterns';
 import { Icon } from '../../components/Icon';
 import { useReducedMotion } from '../../components/motion/useReducedMotion';
 import { useLabs, useMyLabSessions, useCompleteLabSession, type VirtualLab } from '../../hooks/useResources';
@@ -119,14 +120,16 @@ const inferCategory = (lab: VirtualLab): string => {
   return lab.category;
 };
 
-/** Shape-matched KPI strip skeleton (3 metric cards). */
-function LabsKpiSkeleton() {
+/** Shape-matched StatLine skeleton (3 stat cells — R304 mirror of the
+ *  resolved strip, same pending→resolved handoff contract as the
+ *  dashboard's loading mirror). */
+function LabsStatsSkeleton() {
   return (
-    <div className="grid-3" aria-busy="true" aria-live="polite">
+    <div className="pf-statline" aria-busy="true" aria-live="polite">
       {[0, 1, 2].map((i) => (
-        <div key={i} className="metric">
-          <div style={{ marginBottom: 'var(--sp-3)' }}><Skeleton width={90} height={11} /></div>
-          <Skeleton width={56} height={26} />
+        <div key={i} className="pf-stat">
+          <Skeleton width={90} height={13} />
+          <Skeleton width={56} height={24} />
         </div>
       ))}
     </div>
@@ -144,43 +147,52 @@ export default function LabsPage() {
   const [activeLab, setActiveLab] = useState<VirtualLab | null>(null);
 
   return (
-    <div className="page">
+    <PageFrame width="default">
       {!activeLab ? (
         <>
-          <header className="page-header">
-            <div className="page-title-block">
-              <h1 className="page-title">المعامل الافتراضية</h1>
-              <p className="page-subtitle">
-                تجارب علمية تفاعلية بدون الحاجة لمعدات حقيقية — شغّل التجربة
-                خطوة بخطوة وراقب النتائج في طرفية المحاكاة.
-              </p>
-            </div>
-          </header>
+          <PageHeader
+            title="المعامل الافتراضية"
+            description={
+              'تجارب علمية تفاعلية بدون الحاجة لمعدات حقيقية — شغّل التجربة خطوة بخطوة وراقب النتائج في طرفية المحاكاة.'
+            }
+          />
 
-          {labs.isPending ? <LabsKpiSkeleton /> : (
-            <div className="grid-3">
-              <MetricCard icon={FlaskConical} label="معامل متاحة" value={labs.data?.length ?? '—'} color="brand" />
-              <MetricCard
-                icon={Play}
-                label="جلسات نشطة"
-                value={labStats.data ? formatNum(labStats.data.active) : '—'}
-                /* 22-c (A4 P3-3): with zero lab sessions ever the change
-                   line read «من أصل 0 جلسة» — dead copy. Only surface the
-                   denominator once one exists. */
-                change={
-                  labStats.data && labStats.data.total > 0
-                    ? `من أصل ${countAr(labStats.data.total, ['جلسة واحدة', 'جلستين', 'جلسات', 'جلسة'])}`
-                    : undefined
-                }
-                color="green"
-              />
-              <MetricCard
-                icon={Award}
-                label="تجارب مكتملة"
-                value={labStats.data ? formatNum(labStats.data.completed) : '—'}
-                color="gold"
-              />
-            </div>
+          {/* R304: the metric-card wall folds into ONE StatLine — same
+              three facts, same honest sources (pending → '…', error →
+              '—'); the tone recolors the value only where it means
+              something (live session = signal, earned completion =
+              positive). */}
+          {labs.isPending ? <LabsStatsSkeleton /> : (
+            <StatLine
+              items={[
+                {
+                  label: 'معامل متاحة',
+                  value: labs.isError ? '—' : formatNum(labs.data?.length ?? 0),
+                  hint: 'مسجَّلة في دليل المنصّة',
+                },
+                {
+                  label: 'جلسات نشطة',
+                  value: labStats.isPending ? '…' : labStats.isError || !labStats.data ? '—' : formatNum(labStats.data.active),
+                  /* 22-c (A4 P3-3): with zero lab sessions ever the hint
+                     would read «من أصل 0 جلسة» — dead copy. Only surface
+                     the denominator once one exists. */
+                  hint:
+                    labStats.data && labStats.data.total > 0
+                      ? `من أصل ${countAr(labStats.data.total, ['جلسة واحدة', 'جلستين', 'جلسات', 'جلسة'])}`
+                      : undefined,
+                  tone: labStats.data && labStats.data.active > 0 ? 'signal' : undefined,
+                },
+                {
+                  label: 'تجارب مكتملة',
+                  value: labStats.isPending ? '…' : labStats.isError || !labStats.data ? '—' : formatNum(labStats.data.completed),
+                  hint:
+                    labStats.data && labStats.data.completed === 0
+                      ? 'لم تُسجَّل تجربة مكتملة بعد'
+                      : undefined,
+                  tone: labStats.data && labStats.data.completed > 0 ? 'positive' : undefined,
+                },
+              ]}
+            />
           )}
 
           {labs.isPending ? (
@@ -240,7 +252,7 @@ export default function LabsPage() {
       ) : (
         <LabRunner lab={activeLab} onExit={() => setActiveLab(null)} />
       )}
-    </div>
+    </PageFrame>
   );
 }
 

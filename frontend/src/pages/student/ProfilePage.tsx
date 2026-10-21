@@ -3,12 +3,12 @@ import {
   User, Mail, GraduationCap, BookOpen, Award, ExternalLink,
   CheckCircle2, AlertCircle, Trophy, Hash, Lock, type LucideIcon,
 } from 'lucide-react';
-import { Card, FormField, MetricCard, ProgressBar, Badge, UserAvatar, Tabs } from '../../components/primitives';
+import { Card, FormField, ProgressBar, Badge, UserAvatar, Tabs } from '../../components/primitives';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
+import { PageFrame, PageHeader, StatLine } from '../../components/patterns';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useMyAchievements, useMyEnrollments, useMyResearch, useMyProfile } from '../../hooks/useResources';
-import { useIsNarrowLayout } from '../../hooks/useIsNarrowLayout'; // r157 (lead): shared extraction (F8) — local copy retired
 import {
   useChangePassword,
   changePasswordPolicy,
@@ -79,17 +79,6 @@ function persistLinks(next: Record<string, string>) {
 
 type ProfileTab = 'academic' | 'links' | 'achievements';
 
-/* A5 P2-4: the shared .grid-4 collapses to ONE column ≤640px
-   (components.css), so four full-width KPI cards pushed the tabs and
-   academic info down to ≈950px — below the 844px fold on a 390×844
-   phone; the hero already carries identity, the KPI strip is the
-   least important block on the page. The shared utility belongs to
-   the components-owning wave (A10's cross-cutting), so the profile
-   scopes its own 2×2 override: an inline grid-template-columns on
-   exactly this strip (inline style wins the cascade over the media
-   query; the ≤640px `gap: var(--sp-3)` from the utility still
-   applies, which is the right rhythm for half-width cards). */
-
 export default function ProfilePage() {
   const user = useAuthStore((s) => s.user);
   const enrollments = useMyEnrollments();
@@ -98,7 +87,6 @@ export default function ProfilePage() {
   const profile = useMyProfile();
 
   const [tab, setTab] = useState<ProfileTab>('academic');
-  const kpiTwoByTwo = useIsNarrowLayout(640);
 
   // Persist link state in localStorage — a LOCAL browser preference.
   // Nothing here is sent to any API (no server-side field exists for it),
@@ -171,13 +159,11 @@ export default function ProfilePage() {
   const initials = user.avatarInitials ?? `${user.firstName[0] ?? ''}${user.lastName[0] ?? ''}`;
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">ملفي الشخصي</h1>
-          <p className="page-subtitle">معلوماتك الأكاديمية، حساباتك العلمية، وإنجازاتك في المنصة.</p>
-        </div>
-      </header>
+    <PageFrame width="default">
+      <PageHeader
+        title="ملفي الشخصي"
+        description="معلوماتك الأكاديمية، حساباتك العلمية، وإنجازاتك في المنصة."
+      />
 
       {/* Hero */}
       <Card>
@@ -223,37 +209,37 @@ export default function ProfilePage() {
         </div>
       </Card>
 
-      {/* KPIs — honest query states: pending → ellipsis, error → dash.
-          A5 P2-4: 2×2 instead of 4 stacked cards ≤640px so the tabs
-          and academic info stay above the mobile fold. */}
-      <div
-        className="grid-4"
-        style={kpiTwoByTwo ? { gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' } : undefined}
-      >
-        <MetricCard
-          icon={BookOpen}
-          label="مقرّرات مسجَّلة"
-          value={enrollments.isPending ? '…' : enrollments.isError ? '—' : formatNum(enrollments.data?.length ?? 0)}
-          color="brand"
-        />
-        <MetricCard
-          icon={Trophy}
-          label="إنجازات محققة"
-          value={achievements.isPending ? '…' : achievements.isError ? '—' : formatNum(achievements.data?.length ?? 0)}
-          color="gold"
-        />
-        <MetricCard
-          icon={Award}
-          label="بحوث منشورة"
-          value={
-            research.isPending ? '…'
-              : research.isError ? '—'
-                : formatNum(research.data?.filter((r) => r.status === 'PUBLISHED').length ?? 0)
-          }
-          color="purple"
-        />
-        <MetricCard icon={Hash} label="روابط محفوظة في متصفحك" value={`${linkedCount} / 3`} color={linkedCount >= 2 ? 'green' : 'amber'} />
-      </div>
+      {/* R304: the 2×2 MetricCard wall folds into ONE StatLine — the
+          same four facts with the same real sources and the same
+          honest query states (pending → '…', error → '—'). The saved
+          links' count keeps its local-only disclosure: the hint says
+          WHERE the links live (browser localStorage), never implying a
+          server-side record. */}
+      <StatLine
+        items={[
+          {
+            label: 'مقرّرات مسجَّلة',
+            value: enrollments.isPending ? '…' : enrollments.isError ? '—' : formatNum(enrollments.data?.length ?? 0),
+          },
+          {
+            label: 'إنجازات محققة',
+            value: achievements.isPending ? '…' : achievements.isError ? '—' : formatNum(achievements.data?.length ?? 0),
+          },
+          {
+            label: 'بحوث منشورة',
+            value:
+              research.isPending ? '…'
+                : research.isError ? '—'
+                  : formatNum(research.data?.filter((r) => r.status === 'PUBLISHED').length ?? 0),
+          },
+          {
+            label: 'روابط محفوظة',
+            value: `${formatNum(linkedCount)} / ${formatNum(LINKS.length)}`,
+            hint: 'حفظ محليّ في متصفّحك فقط',
+            tone: linkedCount >= 2 ? 'positive' : linkedCount === 0 ? 'warning' : 'neutral',
+          },
+        ]}
+      />
 
       <Tabs
         value={tab}
@@ -462,7 +448,7 @@ export default function ProfilePage() {
           lives OUTSIDE the academic tabs (security is not one of the
           profile's academic facets). */}
       <ChangePasswordCard />
-    </div>
+    </PageFrame>
   );
 }
 

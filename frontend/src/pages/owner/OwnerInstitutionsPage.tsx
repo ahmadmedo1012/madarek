@@ -6,9 +6,16 @@ import {
 } from 'lucide-react';
 import { Card, Badge, FormField, AlertRow } from '../../components/primitives';
 import { ErrorState, EmptyState, TableSkeleton } from '../../components/primitives/States';
+/* R304 (workstream 4D): the console opens with the patterns PageHeader
+ * (breadcrumbs back to the owner dashboard; the always-visible create
+ * band stays on the page — the keep-edits contract renders it before
+ * any dialog) and the institutions register rides the workspace table
+ * family (ws-table, defined in admin.css — the detail page's sheet). */
+import { PageHeader as PatternsPageHeader } from '../../components/patterns';
 import { Icon } from '../../components/Icon';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { Modal } from '../../components/overlays/Modal';
+import '../../styles/admin.css'; // R304: the ws-table family lives on the admin sheet
 import {
   useCreateInstitution,
   useOwnerInstitutions,
@@ -147,7 +154,7 @@ function CreateInstitutionCard({
             maxLength={64}
           />
         </FormField>
-        <button type="submit" className="btn primary sm" disabled={!canSubmit} aria-busy={isPending}>
+        <button type="submit" className="btn primary sm owner-inst-create-submit" disabled={!canSubmit} aria-busy={isPending}>
           <Icon icon={Plus} size={13} />
           {isPending ? 'جارٍ الإنشاء…' : 'إنشاء المؤسسة'}
         </button>
@@ -561,12 +568,11 @@ export function OwnerInstitutionsPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">المؤسسات</h1>
-          <p className="page-subtitle">إدارة المؤسسات التعليمية على المنصّة</p>
-        </div>
-      </header>
+      <PatternsPageHeader
+        title="المؤسسات"
+        description="إدارة المؤسسات التعليمية على المنصّة"
+        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المؤسسات' }]}
+      />
 
       <CreateInstitutionCard
         isPending={createM.isPending}
@@ -590,7 +596,10 @@ export function OwnerInstitutionsPage() {
           />
         ) : (
           <div className="table-wrap">
-            <table className="table tbl-stack">
+            {/* R304: the register rides the workspace table family —
+                identity-first cells, quiet header voice, and on phones
+                the institution's name becomes the summary card's title. */}
+            <table className="table tbl-stack ws-table">
               <thead>
                 <tr>
                   <th scope="col">المؤسسة</th>
@@ -605,13 +614,13 @@ export function OwnerInstitutionsPage() {
               <tbody>
                 {institutions.map((institution) => (
                   <tr key={institution.id}>
-                    <td className="tbl-strong" data-label="المؤسسة">
+                    <td className="tbl-strong ws-id" data-label="المؤسسة">
                       <div className="owner-inst-cell">
                         <span className="owner-inst-name">{institution.name}</span>
                         {institution.nameEn && (
-                          <span className="owner-inst-sub" dir="ltr">{institution.nameEn}</span>
+                          <span className="owner-inst-sub ws-meta" dir="ltr">{institution.nameEn}</span>
                         )}
-                        <span className="owner-inst-sub font-mono" dir="ltr">{institution.slug}</span>
+                        <span className="owner-inst-sub font-mono ws-meta" dir="ltr">{institution.slug}</span>
                       </div>
                     </td>
                     <td data-label="الحالة">

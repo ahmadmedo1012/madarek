@@ -8,7 +8,7 @@ import {
 import { Badge, ProgressBar } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton, ListSkeleton } from '../../components/primitives/States';
 import {
-  PageFrame, PageHeader, SectionHeader, StatLine,
+  PageFrame, PageHeader, SectionHeader, StatLine, FilterBar, RowList, RowItem,
 } from '../../components/patterns';
 import { Reveal, RevealGroup, useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
@@ -27,6 +27,32 @@ import { courseTint, ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, type Assignment
 function fmtDuration(sec: number) {
   const m = Math.round(sec / 60);
   return `${m}د`;
+}
+
+/* r173a (the courses page's bucket semantics) — the assignment row's
+   honest due state. Local copy: the courses page owns its own, and the
+   two stay one voice («فات الموعد» red / «يستحق قريباً» amber / «متبقّي
+   وقت» green) without a shared module neither family asked for. */
+function dueStatus(dueAt: string): { label: string; color: 'green' | 'amber' | 'red' } {
+  const days = (new Date(dueAt).getTime() - Date.now()) / 86_400_000;
+  if (days < 0) return { label: 'فات الموعد', color: 'red' };
+  if (days <= 2) return { label: 'يستحق قريباً', color: 'amber' };
+  return { label: 'متبقّي وقت', color: 'green' };
+}
+
+/* R304 — the curriculum filter: the same pill language the courses and
+   matrix pages speak, over the page's real lecture states. Pure
+   client-side filtering of the already-loaded list. */
+type LectureFilter = 'all' | 'open' | 'done';
+const LECTURE_FILTERS: Array<{ key: LectureFilter; label: string }> = [
+  { key: 'all', label: 'الكل' },
+  { key: 'open', label: 'لم تكتمل' },
+  { key: 'done', label: 'مكتملة' },
+];
+function lectureBucket(lec: { watchEvents?: Array<{ completed: boolean }>; answeredCheckpoints?: number; _count: { checkpoints: number } }): 'open' | 'done' {
+  const we = lec.watchEvents?.[0];
+  const pending = (lec._count.checkpoints ?? 0) - (lec.answeredCheckpoints ?? 0);
+  return we?.completed && pending <= 0 ? 'done' : 'open';
 }
 
 /* r157 (W2-F7 / audit 6A13): per-format material icons — every row
@@ -90,6 +116,9 @@ export default function CourseDetailPage() {
   // null while pending leaves the shell's «تفاصيل المقرّر» in place.
   useEntityPageTitle(data?.course.name ?? null);
 
+  // R304: the curriculum filter — client-side over the loaded lectures.
+  const [lecFilter, setLecFilter] = useState<LectureFilter>('all');
+
   // Derived BEFORE the early returns so the count-up hook (useState /
   // useEffect / useReducedMotion inside) keeps a stable order across the
   // pending → data transition (the LabsPage audit P2 crash pattern).
@@ -139,6 +168,15 @@ export default function CourseDetailPage() {
   const nextLec = selectNextLecture(data.lectures);
   const nextLecIdx = nextLec ? data.lectures.indexOf(nextLec) : -1;
   const nextPending = nextLec ? pendingCheckpoints(nextLec) : 0;
+
+  // R304 — filter buckets counted from the real payload; the filter bar
+  // only mounts when the curriculum is long enough to need it (a
+  // 3-lecture course filters itself by existing).
+  const doneCount = data.lectures.filter((l) => lectureBucket(l) === 'done').length;
+  const openCount = data.lectures.length - doneCount;
+  const filteredLectures = lecFilter === 'all'
+    ? data.lectures
+    : data.lectures.filter((l) => lectureBucket(l) === lecFilter);
 
   return (
     <PageFrame width="default">
@@ -230,8 +268,42 @@ export default function CourseDetailPage() {
             description="سيقوم الأستاذ بإضافة المحاضرات تباعاً مع تقدّم الفصل."
           />
         ) : (
+          <>
+            {data.lectures.length > 3 && (
+              <FilterBar
+                filters={
+                  <div className="courses-filter" role="group" aria-label="تصفية المحاضرات حسب الحالة">
+                    {LECTURE_FILTERS.map((f) => {
+                      const n = f.key === 'all' ? data.lectures.length : f.key === 'done' ? doneCount : openCount;
+                      return (
+                        <button
+                          key={f.key}
+                          type="button"
+                          className={`pill${lecFilter === f.key ? ' on' : ''}`}
+                          aria-pressed={lecFilter === f.key}
+                          onClick={() => setLecFilter(f.key)}
+                        >
+                          {f.label}
+                          <span className="courses-filter-count" aria-hidden>{formatInt(n)}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                }
+              />
+            )}
+            {filteredLectures.length === 0 ? (
+              <EmptyState
+                icon={Play}
+                title="لا محاضرات في هذا التصنيف"
+                description={lecFilter === 'done'
+                  ? 'لم تُكمل محاضرة كاملة بعد — «تابع من هنا» يقودك إلى أول محاضرة غير منتهية.'
+                  : 'كل محاضرات المقرر مكتملة عندك — أنجزت المنهج كاملاً.'}
+              />
+            ) : (
           <RevealGroup className="flex-col gap-2">
-            {data.lectures.map((lec, lecIdx) => {
+            {filteredLectures.map((lec) => {
+              const lecIdx = data.lectures.indexOf(lec);
               const we = lec.watchEvents?.[0];
               const watchedPct = we && we.totalSec > 0 ? Math.round((we.watchedSec / we.totalSec) * 100) : 0;
               const completed = we?.completed ?? false;
@@ -294,6 +366,8 @@ export default function CourseDetailPage() {
               );
             })}
           </RevealGroup>
+            )}
+          </>
         )}
       </section>
 
@@ -385,34 +459,33 @@ export default function CourseDetailPage() {
       </div>
 
       <section aria-label="واجبات المقرر">
-      <SectionHeader title="الواجبات" />
-      <div className="pf-rowlist">
-        {!data.assignments.length ? (
-          <EmptyState illustration="empty-list"
-            icon={ClipboardList}
-            title="لا توجد واجبات نشطة"
-            description="حالياً لا شيء بانتظارك في هذا المقرر. وقت جيد لمراجعة المحاضرات السابقة."
-          />
-        ) : (
-          <div className="table-wrap">
-            <table className="table tbl-stack">
-              <thead>
-                <tr><th scope="col">العنوان</th><th scope="col">النوع</th><th scope="col">الموعد النهائي</th><th scope="col">الوزن</th></tr>
-              </thead>
-              <tbody>
-                {data.assignments.map((a) => (
-                  <tr key={a.id}>
-                    <td className="tbl-strong" data-label="العنوان">{a.title}</td>
-                    <td data-label="النوع">{ASSIGNMENT_KIND_LABEL[a.type as AssignmentKind] ?? a.type}</td>
-                    <td className="tbl-num" data-label="الموعد النهائي">{formatDateAr(a.dueAt)}</td>
-                    <td className="tbl-num" data-label="الوزن">{a.weight}%</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+      <SectionHeader
+        title="الواجبات"
+        description="مواعيد التسليم ووزن كل واجب في درجة المقرر — التسليم من صفحة مقرّراتك."
+      />
+      {!data.assignments.length ? (
+        <EmptyState illustration="empty-list"
+          icon={ClipboardList}
+          title="لا توجد واجبات نشطة"
+          description="حالياً لا شيء بانتظارك في هذا المقرر. وقت جيد لمراجعة المحاضرات السابقة."
+        />
+      ) : (
+        <RowList aria-label="قائمة واجبات المقرر" density="compact">
+          {[...data.assignments]
+            .sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime())
+            .map((a) => {
+              const due = dueStatus(a.dueAt);
+              return (
+                <RowItem
+                  key={a.id}
+                  title={a.title}
+                  meta={<>{ASSIGNMENT_KIND_LABEL[a.type as AssignmentKind] ?? a.type} · الوزن {formatInt(a.weight)}% · آخر موعد {formatDateAr(a.dueAt)}</>}
+                  trailing={<Badge color={due.color}>{due.label}</Badge>}
+                />
+              );
+            })}
+        </RowList>
+      )}
       </section>
     </PageFrame>
   );
