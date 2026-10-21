@@ -13,6 +13,11 @@ import {
 import { Card, Badge, AlertRow } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, EmptyState, CardSkeleton, Skeleton } from '../../components/primitives/States';
+/* R304 (workstream 4D): the sync console opens with the patterns
+ * PageHeader — breadcrumbs back to the dashboard and the manual
+ * trigger riding the header's action slot (the page's primary verb
+ * lives where the eyes land first). */
+import { PageHeader as PatternsPageHeader } from '../../components/patterns';
 import { Icon } from '../../components/Icon';
 import { useReducedMotion } from '../../components/motion';
 import { api, unwrap } from '../../lib/api';
@@ -193,6 +198,20 @@ export function AdminSyncPage() {
     }, { replace: true });
   }, [drillStale, data, reducedMotion, setSearchParams]);
 
+  /** The trigger button — one anatomy shared by the header action
+   *  slot and the empty state's CTA (same spin affordance). */
+  const triggerButton = (
+    <button
+      type="button"
+      className="btn primary"
+      onClick={() => trigger.mutate()}
+      disabled={trigger.isPending}
+    >
+      <Icon icon={RefreshCw} size={14} className={trigger.isPending ? 'spin' : undefined} />
+      {trigger.isPending ? 'جارٍ المزامنة…' : 'مزامنة الآن'}
+    </button>
+  );
+
   if (isPending) {
     /* r299 (loading closure): a MIRROR skeleton, not the generic
      * PageSkeleton — the resolved page leads with the real header +
@@ -201,21 +220,12 @@ export function AdminSyncPage() {
      * placeholder so the pending → resolved handoff moves nothing. */
     return (
       <div className="page" aria-busy="true" aria-live="polite">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">المزامنة مع البيانات الرسمية</h1>
-            <p className="page-subtitle">استيراد البيانات العامة من الموقع الرسمي للجامعة.</p>
-          </div>
-          <button
-            type="button"
-            className="btn primary"
-            onClick={() => trigger.mutate()}
-            disabled={trigger.isPending}
-          >
-            <Icon icon={RefreshCw} size={14} className={trigger.isPending ? 'spin' : undefined} />
-            {trigger.isPending ? 'جارٍ المزامنة…' : 'مزامنة الآن'}
-          </button>
-        </header>
+        <PatternsPageHeader
+          title="المزامنة مع البيانات الرسمية"
+          description="استيراد البيانات العامة من الموقع الرسمي للجامعة."
+          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
+          actions={triggerButton}
+        />
         <SyncStripSkeleton />
         <CardSkeleton lines={6} />
         <CardSkeleton lines={6} />
@@ -230,12 +240,11 @@ export function AdminSyncPage() {
   if (isError) {
     return (
       <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">المزامنة مع البيانات الرسمية</h1>
-            <p className="page-subtitle">استيراد البيانات العامة من الموقع الرسمي للجامعة.</p>
-          </div>
-        </header>
+        <PatternsPageHeader
+          title="المزامنة مع البيانات الرسمية"
+          description="استيراد البيانات العامة من الموقع الرسمي للجامعة."
+          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
+        />
         <Card>
           <ErrorState error={error} onRetry={() => refetch()} />
         </Card>
@@ -250,28 +259,17 @@ export function AdminSyncPage() {
   if (!data) {
     return (
       <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">المزامنة مع البيانات الرسمية</h1>
-            <p className="page-subtitle">استيراد البيانات العامة من الموقع الرسمي للجامعة.</p>
-          </div>
-        </header>
+        <PatternsPageHeader
+          title="المزامنة مع البيانات الرسمية"
+          description="استيراد البيانات العامة من الموقع الرسمي للجامعة."
+          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
+        />
         <Card>
           <EmptyState illustration="empty-list"
             icon={Database}
             title="لم تُنفَّذ أي مزامنة بعد"
             description="شغّل المزامنة الأولى لاستيراد بيانات الجامعة العامة من موقعها الرسمي."
-            action={
-              <button
-                type="button"
-                className="btn primary"
-                onClick={() => trigger.mutate()}
-                disabled={trigger.isPending}
-              >
-                <Icon icon={RefreshCw} size={14} className={trigger.isPending ? 'spin' : undefined} />
-                {trigger.isPending ? 'جارٍ المزامنة…' : 'مزامنة الآن'}
-              </button>
-            }
+            action={triggerButton}
           />
         </Card>
       </div>
@@ -280,30 +278,20 @@ export function AdminSyncPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">المزامنة مع البيانات الرسمية</h1>
-          <p className="page-subtitle">
-            {/* r299 (honesty, the r164i contract): the hard-coded
-                «demo-source» slug died — the payload's real source is
-                the curated static source (sourceLabelAr below maps it
-                to «بيانات جامعية موثّقة»); a fabricated identifier in
-                prose is exactly the dead-data the truthfulness gates
-                forbid. */}
-            استيراد بيانات المؤسّسة من المصدر المنسَّق للحفاظ على معلومات
-            الجامعة محدّثة. يمكنك تشغيل المزامنة يدوياً عند الحاجة.
-          </p>
-        </div>
-        <button
-          type="button"
-          className="btn primary"
-          onClick={() => trigger.mutate()}
-          disabled={trigger.isPending}
-        >
-          <Icon icon={RefreshCw} size={14} className={trigger.isPending ? 'spin' : undefined} />
-          {trigger.isPending ? 'جارٍ المزامنة…' : 'مزامنة الآن'}
-        </button>
-      </header>
+      <PatternsPageHeader
+        title="المزامنة مع البيانات الرسمية"
+        description={
+          /* r299 (honesty, the r164i contract): the hard-coded
+              «demo-source» slug died — the payload's real source is
+              the curated static source (sourceLabelAr below maps it
+              to «بيانات جامعية موثّقة»); a fabricated identifier in
+              prose is exactly the dead-data the truthfulness gates
+              forbid. */
+          'استيراد بيانات المؤسّسة من المصدر المنسَّق للحفاظ على معلومات الجامعة محدّثة. يمكنك تشغيل المزامنة يدوياً عند الحاجة.'
+        }
+        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
+        actions={triggerButton}
+      />
 
       {/* Manual-trigger failure — surfaced inline with a retry, never silent */}
       {trigger.isError && (
@@ -393,7 +381,7 @@ export function AdminSyncPage() {
           />
         ) : (
           <div className="table-wrap">
-            <table className="table tbl-stack admin-sync-runs">
+            <table className="table tbl-stack ws-table admin-sync-runs">
               <thead>
                 <tr>
                   <th scope="col">الحالة</th>

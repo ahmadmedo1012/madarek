@@ -7,6 +7,9 @@ import {
 } from 'chart.js';
 import { Card, ProgressBar } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
+/* R304: the education overview opens with the patterns PageHeader —
+ * breadcrumbs back to the owner dashboard. */
+import { PageHeader as PatternsPageHeader } from '../../components/patterns';
 import {
   ErrorState, EmptyState, ChartSkeleton, TableSkeleton, ListSkeleton,
 } from '../../components/primitives/States';
@@ -113,12 +116,11 @@ export function OwnerEducationPage() {
   if (q.isPending) {
     return (
       <div className="page" aria-busy="true">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">النظرة التعليميّة</h1>
-            <p className="page-subtitle">جارٍ جمع البيانات…</p>
-          </div>
-        </header>
+        <PatternsPageHeader
+          title="النظرة التعليميّة"
+          description="جارٍ جمع البيانات…"
+          breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'النظرة التعليميّة' }]}
+        />
         {/* Shape-matched skeletons — one per card the data will fill. */}
         <StatStripSkeleton />
         <Card title="المقرّرات حسب الكلّيّة"><ChartSkeleton height={240} /></Card>
@@ -131,11 +133,10 @@ export function OwnerEducationPage() {
   if (q.isError || !edu) {
     return (
       <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">النظرة التعليميّة</h1>
-          </div>
-        </header>
+        <PatternsPageHeader
+          title="النظرة التعليميّة"
+          breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'النظرة التعليميّة' }]}
+        />
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       </div>
     );
@@ -170,12 +171,11 @@ export function OwnerEducationPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">النظرة التعليميّة</h1>
-          <p className="page-subtitle">إحصائيات حيّة عن المقرّرات وأعضاء هيئة التدريس والطلاب</p>
-        </div>
-      </header>
+      <PatternsPageHeader
+        title="النظرة التعليميّة"
+        description="إحصائيات حيّة عن المقرّرات وأعضاء هيئة التدريس والطلاب"
+        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'النظرة التعليميّة' }]}
+      />
 
       {/* r299: the trend notes died — each one restated its own label
           («إجمالي المقرّرات» / «مقرّرات مسجَّلة») in different words; the

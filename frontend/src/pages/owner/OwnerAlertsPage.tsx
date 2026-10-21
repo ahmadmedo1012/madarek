@@ -5,6 +5,9 @@ import type { CSSProperties } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, Badge } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
+/* R304: the alerts board opens with the patterns PageHeader —
+ * breadcrumbs back to the owner dashboard. */
+import { PageHeader as PatternsPageHeader } from '../../components/patterns';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
@@ -137,12 +140,11 @@ export function OwnerAlertsPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">التنبيهات التشغيليّة</h1>
-          <p className="page-subtitle">إدارة ومراقبة التنبيهات والحوادث التشغيليّة — مباشرة من سجلّ المنصّة.</p>
-        </div>
-      </header>
+      <PatternsPageHeader
+        title="التنبيهات التشغيليّة"
+        description="إدارة ومراقبة التنبيهات والحوادث التشغيليّة — مباشرة من سجلّ المنصّة."
+        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'التنبيهات التشغيليّة' }]}
+      />
 
       {/* R190 (D4): the typographic stat strip — was the grid-3 icon
           tiles. The severity state the old `color` prop painted on the
