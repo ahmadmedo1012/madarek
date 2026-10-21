@@ -101,12 +101,13 @@ declare global {
   }
 }
 
-/* ── Agent-1 artwork bridge contract ───────────────────────────────────
- * `createKnowledgeRibbon(THREE, options)` — the artwork module is owned by
- * Agent 1; the controller accepts it WITHOUT changing its API. The handle
- * is probed defensively, so both bare Object3D returns and the full handle
- * shape below work. `update` receives (frame, channels) — a story-driven
- * artwork almost always wants one of those two objects. */
+/* ── R304 artwork bridge contract (final, typed) ───────────────────────
+ * The bridge (ribbon-bridge.ts) adapts the runtime's call shape onto the
+ * artwork factory `createKnowledgeRibbon(THREE, { renderer, quality,
+ * mobile })` and wraps its `{ group, update, dispose }` handle in the
+ * runtime's `{ object, update(frame, channels), applyTheme, dispose }`
+ * contract below. The renderer is forwarded so the artwork's private
+ * PMREM studio environment lights the metals. */
 export interface KnowledgeRibbonOptions {
   scene: unknown; // THREE.Scene — typed loosely to avoid importing three here
   host: HTMLElement;
@@ -114,6 +115,8 @@ export interface KnowledgeRibbonOptions {
   reducedMotion: boolean;
   quality: 'high' | 'standard';
   channels: WorldChannels;
+  /** The live WebGLRenderer — drives the artwork's PMREM environment. */
+  renderer?: unknown;
 }
 
 export interface KnowledgeRibbonHandle {

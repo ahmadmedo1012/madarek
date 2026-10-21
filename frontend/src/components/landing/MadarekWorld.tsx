@@ -4,7 +4,6 @@ import { createScrollConductor } from '../../lib/scroll-conductor';
 import { createStoryDom } from '../../lib/landing-story/story-dom';
 import { createChoreography } from '../../lib/landing-story/choreography';
 import { loadKnowledgeRibbon } from '../../lib/landing-story/ribbon-bridge';
-import { createSubjectKnot, type SubjectKnot } from '../../lib/landing-story/subject-knot';
 import type {
   StoryFrame,
   WorldChannels,
@@ -32,10 +31,12 @@ import type {
  *    `--chapter-progress`, `data-story-chapter`, `data-story-active`,
  *    `data-story-visible`, and the typed `madarek:story-progress` event.
  *    The DOM story never depends on WebGL.
- *  · The subject behind the camera is Agent 1's artwork when its
- *    `createKnowledgeRibbon(THREE, options)` module is present
- *    (auto-discovered by `ribbon-bridge.ts`); until then the r303 fin-knot
- *    (`subject-knot.ts`) carries the frame.
+ *  · The subject behind the camera IS the R304 procedural ribbon
+ *    («MERIDIAN»), instantiated through the typed contract in
+ *    `ribbon-bridge.ts` (explicit import, real options, real per-frame
+ *    state, theme reactivity, full disposal). The retired r303 220-ring
+ *    knot has NO fallback path: if the artwork fails to load the world
+ *    reports `unavailable` and the DOM story stands alone.
  *
  * Resilience ledger (skill §respect-motion-access-failure):
  *  · reduced motion → smooth ≡ exact; idle spin, dust drift and parallax
@@ -96,14 +97,11 @@ export function MadarekWorld({ className }: { className?: string }) {
       dustCount: number;
       shadow: import('three').Mesh;
       subject: WorldSubject;
-      fallbackKnot: SubjectKnot | null;
     }
 
     let renderState: RenderState | null = null;
     let lastFrame: StoryFrame | null = null;
     let contextLost = false;
-    let lastRenderAt = 0;
-    let spin = 0;
 
     /* Pointer parallax — a clamped input rig over the path rig, never
      * baked into waypoints (skill §author-the-camera). */
@@ -141,9 +139,6 @@ export function MadarekWorld({ className }: { className?: string }) {
       const state = renderState;
       if (!state || contextLost) return;
 
-      const now = performance.now();
-      const dt = lastRenderAt ? Math.min((now - lastRenderAt) / 1000, 1 / 30) : 1 / 60;
-      lastRenderAt = now;
 
       /* Camera — the choreography timeline is the pose authority. */
       const snap = choreography.sample(frame, isMobile());
@@ -167,16 +162,9 @@ export function MadarekWorld({ className }: { className?: string }) {
       state.fog.density = c.fogD;
       state.dustMat.opacity = c.dust;
 
-      if (state.fallbackKnot) {
-        state.fallbackKnot.setEmissive(c.emissive);
-        state.fallbackKnot.update(c);
-        if (!frame.reducedMotion) spin += c.spin * dt;
-        state.fallbackKnot.object.rotation.y = spin;
-        state.fallbackKnot.object.rotation.x = 0.34 + Math.sin(spin * 0.4) * 0.03;
-      } else {
-        // Agent 1's ribbon owns its own rotation/response via update().
-        state.subject.update?.(frame, c);
-      }
+      /* The ribbon owns its pose/response through the bridge's mapped
+       * update state; the channels still drive the stage (lights/fog). */
+      state.subject.update?.(frame, c);
 
       /* Ambience — contact shadow breathes with the spread; dust drifts
        * (seeded, non-synchronized; stilled under reduced motion). */
@@ -270,9 +258,8 @@ export function MadarekWorld({ className }: { className?: string }) {
 
         const scene = new THREE.Scene();
 
-        /* ── Subject — Agent 1's ribbon when present, else the knot ──── */
+        /* ── Subject — the R304 procedural ribbon, or nothing ────────── */
         let subject: WorldSubject | null = null;
-        let fallbackKnot: SubjectKnot | null = null;
         try {
           const factory = await loadKnowledgeRibbon();
           if (factory && !disposed) {
@@ -282,6 +269,7 @@ export function MadarekWorld({ className }: { className?: string }) {
               isMobile: isMobile(),
               reducedMotion: reduceMotion,
               quality,
+              renderer,
               channels: {
                 spread: 1, spin: 0.22, emissive: 0.35, dust: 0.5,
                 fogD: 0.028, key: 1.5, keyAz: -0.55, keyEl: 5, roll: 0,
@@ -294,13 +282,10 @@ export function MadarekWorld({ className }: { className?: string }) {
         }
         if (disposed) return;
         if (!subject) {
-          fallbackKnot = createSubjectKnot(THREE, { quality });
-          subject = {
-            object: fallbackKnot.object,
-            update: (_frame, channels) => fallbackKnot?.update(channels),
-            applyTheme: (tokens) => fallbackKnot?.applyTheme(tokens.paper, tokens.signal),
-            dispose: () => fallbackKnot?.dispose(),
-          };
+          /* NO legacy fallback: the retired 220-ring knot must never
+           * re-enter the active path. The DOM story stands alone. */
+          host.dataset.worldState = 'unavailable';
+          return;
         }
         scene.add(subject.object as import('three').Object3D);
 
@@ -395,6 +380,9 @@ export function MadarekWorld({ className }: { className?: string }) {
           const signal = css.getPropertyValue('--poster-signal').trim() || '#B57438';
           fog.color.set(paper);
           subject?.applyTheme?.({ paper, ink, signal });
+          /* Repaint without waiting for a scroll — the theme flip must be
+           * visible on the very next composited frame. */
+          if (lastFrame && !contextLost) renderFrame(lastFrame);
         };
         const themeObserver = new MutationObserver(applyThemeColors);
         themeObserver.observe(document.documentElement, {
@@ -421,7 +409,7 @@ export function MadarekWorld({ className }: { className?: string }) {
         renderState = {
           renderer, camera, scene, fog, key,
           dustMat, dustGeo, dustSeeds: dustSeed, dustCount: DUST,
-          shadow, subject, fallbackKnot,
+          shadow, subject,
         };
         host.dataset.worldState = 'active';
 
