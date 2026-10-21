@@ -51,11 +51,11 @@
 
    ── GATE CONTRACT (all enforced on this tree) ──────────────────────
    colors  — var()/color-mix() ONLY, zero raw literals;
-   type/radius/spacing — token ladder ONLY (var(--fs-*/--r-*/--sp-*)),
-     zero raw px declarations (1px hairlines are the sanctioned
-     exception, same as r305-student.css / r305-admin-owner.css);
+   type/radius/spacing — token ladders ONLY (the --fs-*, --r-* and
+     --sp-* families), zero raw px declarations (1px hairlines are the
+     sanctioned exception, same as r305-student.css / r305-admin-owner.css);
    icons   — Lucide via the Icon component only;
-   motion  — --t-*/--motion-* tokens only, hover guarded behind
+   motion  — the --t-* and --motion-* tokens only, hover guarded behind
      (hover:hover) and (pointer:fine), reduced-motion safe;
    Arabic-first RTL — every logical property (inline/block, start/
      end), no left/right physical direction in new rules.
