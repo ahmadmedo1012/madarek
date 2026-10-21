@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   MessageSquare, Plus, Trash2, ChevronLeft,
 } from 'lucide-react';
@@ -21,6 +21,12 @@ interface AnnotationsPanelProps {
   numPages: number;
   /** Caller subscribes to navigate to a specific page when the user clicks an annotation. */
   onJumpToPage: (page: number) => void;
+  /** r305-a7 (OPTIONAL — additive): a text selection made inside the
+   *  paper, offered as a contextual note. When `seq` changes, the
+   *  composer opens anchored to `page` with the quote seeded INSIDE the
+   *  comment draft — the persisted payload shape ({page, comment,
+   *  color}) is untouched. Ignored when absent. */
+  seedDraft?: { text: string; page: number; seq: number } | null;
 }
 
 /**
@@ -65,7 +71,7 @@ function AnnotationsSkeleton() {
   );
 }
 
-export default function AnnotationsPanel({ paperId, currentPage, numPages, onJumpToPage }: AnnotationsPanelProps) {
+export default function AnnotationsPanel({ paperId, currentPage, numPages, onJumpToPage, seedDraft }: AnnotationsPanelProps) {
   const annotations = useAnnotations(paperId);
   const createA = useCreateAnnotation(paperId);
   const deleteA = useDeleteAnnotation(paperId);
@@ -100,6 +106,26 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
     setComposing(true);
     setDraft('');
   };
+
+  /* r305-a7 — the contextual-note entry: a selection inside the paper
+   * arrives as seedDraft{seq} — the composer opens anchored to the
+   * selection's page with the quote INSIDE the comment draft (the
+   * persisted payload shape is untouched). The quote is bounded so a
+   * long selection cannot crowd out the reviewer's own words. */
+  const seededSeqRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!seedDraft || seedDraft.seq === seededSeqRef.current) return;
+    seededSeqRef.current = seedDraft.seq;
+    const quote = seedDraft.text.replace(/\s+/g, ' ').trim();
+    const bounded = quote.length > 300 ? `${quote.slice(0, 300).trimEnd()}…` : quote;
+    setComposing(true);
+    setDraftPage(Math.max(1, Math.min(numPages, seedDraft.page)));
+    setDraft((prev) => {
+      const seeded = `اقتباس: «${bounded}»`;
+      if (!prev.trim()) return `${seeded}\n`;
+      return `${seeded}\n${prev}`;
+    });
+  }, [seedDraft, numPages]);
 
   /* <section>, not <aside> (final-research D): the panel renders inside
    * the reader's landmark tree, and a complementary landmark nested in

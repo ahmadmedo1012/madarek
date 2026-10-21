@@ -14,6 +14,7 @@ import { useAuthStore, type AppRole } from '../stores/auth.store';
 import { isViewerFilenameParam } from '../components/pdf/loadError';
 import { PageFrame } from '../components/patterns';
 import '../styles/pdf.css';
+import '../styles/r305-research-pdf-ai.css';
 import '../styles/research.css';
 
 // Code-split: PdfViewer + pdfjs-dist + worker land in their own chunk.
@@ -180,6 +181,18 @@ export default function DocumentViewerPage() {
   const isNarrow = useIsNarrowLayout(920);
   const [notesOpen, setNotesOpen] = useState(false);
 
+  /* r305-a7 — the contextual-note handoff: PdfViewer emits a text
+   * selection submitted as a note; the page opens the (mobile) notes
+   * Sheet when needed and seeds the panel composer with the quote.
+   * seq keeps repeated selections of the SAME text distinguishable. */
+  const [seedDraft, setSeedDraft] = useState<{ text: string; page: number; seq: number } | null>(null);
+  const seedSeqRef = useRef(0);
+  const handleAnnotateSelection = useCallback((sel: { text: string; page: number }) => {
+    seedSeqRef.current += 1;
+    setSeedDraft({ text: sel.text, page: sel.page, seq: seedSeqRef.current });
+    if (isNarrow) setNotesOpen(true);
+  }, [isNarrow]);
+
   /* r304: the resizable annotations column — desktop only (the Sheet
    * recomposition owns ≤920). */
   const sideColumn = useSideColumnWidth(!isNarrow);
@@ -196,6 +209,7 @@ export default function DocumentViewerPage() {
         currentPage={currentPage}
         numPages={numPages}
         onJumpToPage={isNarrow ? jumpAndClose : (n) => controlRef.current?.jumpToPage(n)}
+        seedDraft={seedDraft}
       />
     </Suspense>
   ) : null;
@@ -210,7 +224,9 @@ export default function DocumentViewerPage() {
      * back to the caller's context (بحوثي / المقرر / المراجعة). */
     const missing = !params.filename;
     return (
-      <div className="page document-viewer-page">
+      // r305-a7: the Heron marker rides EVERY rendered root — including
+      // this refusal branch, so the styled sheet never flashes off.
+      <div className="page document-viewer-page r305rp">
         <PageFrame width="full">
           <header className="doc-reader-head">
             <Link to={back} className="back-link document-viewer-back">
@@ -244,7 +260,7 @@ export default function DocumentViewerPage() {
     // r152i (A3): the height moved to pdf.css (.document-viewer-page)
     // — the inline calc(100vh) hid content behind the iOS URL bar and
     // forced the print block to fight an inline style with !important.
-    <div className="page document-viewer-page">
+    <div className="page document-viewer-page r305rp">
       <PageFrame width="full">
       {/* Reader head — quiet chrome: one back affordance (it names
           its destination) + the paper's title; the reading surface owns
@@ -276,6 +292,7 @@ export default function DocumentViewerPage() {
               controlRef={controlRef}
               onPageChange={setCurrentPage}
               onDocumentLoaded={setNumPages}
+              onAnnotateSelection={handleAnnotateSelection}
             />
           </Suspense>
         </div>

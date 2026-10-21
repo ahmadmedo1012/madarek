@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState, useCallback, useMemo, memo } from 'react';
 import {
   ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2, Minimize2,
-  Download, Search, X, LayoutGrid,
+  Download, Search, X, LayoutGrid, MessageSquare,
 } from 'lucide-react';
 import { Icon } from '../Icon';
 import { ErrorState } from '../primitives/States';
 import { useAuthStore } from '../../stores/auth.store';
 import { toast } from '../../lib/toast';
+import { countAr } from '../../lib/format';
+import { normalizeArabicSearch } from '../../lib/search';
+import { formatInt } from '../../utils/numbers';
 import { classifyPdfLoadError } from './loadError';
+import { applySearchMarks, scanPageItems } from './searchFold';
 // pdfjs-dist v4 ships ESM; only three exports are used here
 // (GlobalWorkerOptions + getDocument + TextLayer). r134 (audit R134-W1-M
 // P2): the module is now imported DYNAMICALLY-ONLY — it was previously
@@ -59,6 +63,11 @@ interface PdfViewerProps {
   onPageChange?: (page: number) => void;
   /** Called once the document is loaded — parent gets total pages. */
   onDocumentLoaded?: (numPages: number) => void;
+  /** r305-a7: fired when the user submits a text selection as a
+   *  contextual note — { text, page }. The parent opens the annotation
+   *  composer seeded with the quote; the API payload shape ({page,
+   *  comment, color}) is unchanged — the quote rides INSIDE comment. */
+  onAnnotateSelection?: (sel: { text: string; page: number }) => void;
 }
 
 interface DocState {
@@ -243,7 +252,7 @@ function PdfThumbnails({
   );
 }
 
-export default function PdfViewer({ src, title, fill = true, controlRef, onPageChange, onDocumentLoaded }: PdfViewerProps) {
+export default function PdfViewer({ src, title, fill = true, controlRef, onPageChange, onDocumentLoaded, onAnnotateSelection }: PdfViewerProps) {
   const [doc, setDoc] = useState<DocState | null>(null);
   const [page, setPage] = useState(1);
   const [scale, setScale] = useState<number | 'fit-width'>('fit-width');
@@ -252,7 +261,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const [isRendering, setIsRendering] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchHits, setSearchHits] = useState<{ page: number; text: string }[]>([]);
+  const [searchHits, setSearchHits] = useState<{ page: number; count: number; snippet: string }[]>([]);
   const [searchIdx, setSearchIdx] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   /** r304: the thumbnail rail — summoned from the toolbar, never
@@ -263,6 +272,12 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   /** True while a search walk is visiting pages — without it, a
    *  300-page PDF looks frozen mid-search. */
   const [isSearching, setIsSearching] = useState(false);
+  /** r305-a7: byte progress from the pdf.js loading task's onProgress
+   *  events — the skeleton is shaped, this is the honest byte count. */
+  const [progress, setProgress] = useState<{ loaded: number; total: number } | null>(null);
+  /** r305-a7: the live text selection inside the paper (contextual
+   *  notes) — null when the selection is absent/outside the layer. */
+  const [selQuote, setSelQuote] = useState<string | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textLayerRef = useRef<HTMLDivElement>(null);
@@ -293,6 +308,12 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
    * over the newly loading document (audit 11-f P2-9).
    */
   const docRef = useRef<DocState | null>(null);
+  /** r305-a7: the ACTIVE query words (folded) — lives in a ref so a
+   *  page/zoom re-render repaints its marks without re-running the walk. */
+  const searchWordsRef = useRef<string[]>([]);
+  /** r305-a7: latest mark-painter — renderPage calls it through the ref
+   *  after the text layer rebuilds, without re-render churn. */
+  const paintMarksRef = useRef<() => void>(() => undefined);
 
   // ── Load document ────────────────────────────────────────────────
   useEffect(() => {
@@ -301,10 +322,12 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     setError(null);
     setDoc(null);
     docRef.current = null;
+    setProgress(null);
     // Kill any search walk from the previous document and drop its hits —
     // page numbers from document A must never navigate a viewer that is
     // now loading document B (audit 11-f P1-3).
     searchGenRef.current += 1;
+    searchWordsRef.current = [];
     setSearchHits([]);
     setSearchIdx(0);
     setIsSearching(false);
@@ -332,6 +355,13 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
       });
       task = t;
 
+      // r305-a7: real progress tied to pdf.js's own loading events —
+      // the skeleton shows the shape, these bytes show the truth.
+      t.onProgress = (data: { loaded: number; total: number }) => {
+        if (cancelled) return;
+        setProgress({ loaded: data.loaded, total: data.total });
+      };
+
       t.promise.then(
         (pdf) => {
           if (cancelled) { pdf.destroy(); return; }
@@ -343,6 +373,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
           // stale page error after this effect's initial reset — clear it
           // again so the fresh document starts clean (audit 11-f P2-9).
           setError(null);
+          setProgress(null);
           setLoading(false);
           onDocumentLoaded?.(pdf.numPages);
         },
@@ -356,6 +387,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
           // can never succeed (audit 11-f P2-8).
           const failure = classifyPdfLoadError(err);
           setError({ message: failure.message, detail: { message: failure.hint }, retryable: failure.retryable });
+          setProgress(null);
           setLoading(false);
         },
       );
@@ -371,6 +403,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
       // branch (the memo self-heals so the retry genuinely re-fetches).
       const failure = classifyPdfLoadError(err);
       setError({ message: failure.message, detail: { message: failure.hint }, retryable: failure.retryable });
+      setProgress(null);
       setLoading(false);
     });
 
@@ -492,6 +525,9 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
           // Text-layer issues are non-fatal — selection/search degrade,
           // the rendered page still works.
         }
+        // r305-a7: the fresh layer has no memory of the active search —
+        // repaint its match marks through the ref (no render churn).
+        paintMarksRef.current();
       }
     } catch (err) {
       // getPage() rejection — corrupt document past the load phase. Only
@@ -589,6 +625,9 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const closeSearch = useCallback(() => {
     searchGenRef.current += 1;
     setIsSearching(false);
+    // The marks belong to the term — drop the active query first so the
+    // hits-clear repaint unwraps every mark from the text layer.
+    searchWordsRef.current = [];
     // Focus restore BEFORE the unmount (r152a A6 P3-4): after the bar
     // is gone, document.activeElement has already fallen to <body> and
     // the origin is unrecoverable.
@@ -644,6 +683,10 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         // A walk can still be visiting pages while the bar is closed —
         // it must not jump the page from outside the visible search UI.
         stopSearchWalk();
+        // r305-a7: Escape closes EVERY viewer overlay, not just search —
+        // the thumbnail rail and the selection→note bar are overlays too.
+        setThumbsOpen(false);
+        setSelQuote(null);
       } else if (e.key === '+' || e.key === '=') {
         e.preventDefault();
         zoomIn();
@@ -662,10 +705,20 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   // write is guarded by the captured generation and the whole walk is
   // wrapped in try/catch, so a destroyed document rejects quietly
   // instead of surfacing an unhandled promise rejection (audit 11-f P1-3).
+  //
+  // r305-a7: matching folds BOTH sides through the platform's Arabic
+  // normalizer (lib/search.normalizeArabicSearch — the mirror of
+  // backend search/normalize.ts): diacritics/tatweel, alif/hamza
+  // variants, ى→ي, ة→ه. The «ال» tolerance from the search contract is
+  // applied at match time (scanPageItems), so «الشبكات» finds «شبكات»
+  // and vice versa. Hits are honest per-page OCCURRENCE counts, not
+  // just first-sight booleans.
   const runSearch = async () => {
-    if (!doc || !searchTerm.trim()) {
+    const q = normalizeArabicSearch(searchTerm);
+    if (!doc || !q) {
       // Nothing to walk — cancel whatever is in flight and reset the UI.
       searchGenRef.current += 1;
+      searchWordsRef.current = [];
       setSearchHits([]);
       setSearchIdx(0);
       setIsSearching(false);
@@ -673,20 +726,18 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     }
     const gen = ++searchGenRef.current; // supersedes any earlier walk
     const docSnapshot = doc;
-    const term = searchTerm.trim().toLowerCase();
-    const hits: { page: number; text: string }[] = [];
+    const words = q.split(/\s+/).filter(Boolean);
+    searchWordsRef.current = words;
+    const hits: { page: number; count: number; snippet: string }[] = [];
     setIsSearching(true);
     try {
       for (let n = 1; n <= docSnapshot.numPages; n++) {
         if (gen !== searchGenRef.current) return; // superseded — stop walking
         const p = await docSnapshot.pdf.getPage(n);
         const tc = await p.getTextContent();
-        const text = tc.items.map((it) => ('str' in it ? it.str : '')).join(' ').toLowerCase();
-        if (text.includes(term)) {
-          const idx = text.indexOf(term);
-          const snippet = text.slice(Math.max(0, idx - 30), idx + term.length + 30);
-          hits.push({ page: n, text: snippet });
-        }
+        if (gen !== searchGenRef.current) return; // superseded — stop walking
+        const scan = scanPageItems(tc.items, words);
+        if (scan) hits.push({ page: n, count: scan.count, snippet: scan.snippet });
       }
       if (gen !== searchGenRef.current) return; // superseded — drop results
       setSearchHits(hits);
@@ -719,6 +770,64 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     const hit = searchHits[next];
     if (hit) setPage(hit.page);
   };
+
+  // ── Search marks on the rendered page (r305-a7) ──────────────────
+  // findController-equivalent placement: the matched slices of the
+  // CURRENT page's text layer are wrapped in mark.r305pdf-hitmark so a
+  // hit is visible where it lives, not just navigable. Re-painted when
+  // the search state moves AND after every text-layer rebuild (the
+  // painter reads page/hits/idx through the ref's fresh closure).
+  const paintSearchMarks = useCallback(() => {
+    const layer = textLayerRef.current;
+    if (!layer) return;
+    const words = searchWordsRef.current;
+    const onHitPage = words.length > 0 && searchHits.some((h) => h.page === page);
+    applySearchMarks(layer, onHitPage ? words : [], searchHits[searchIdx]?.page === page);
+  }, [page, searchHits, searchIdx]);
+  paintMarksRef.current = paintSearchMarks;
+  useEffect(() => {
+    paintMarksRef.current();
+  }, [page, searchHits, searchIdx]);
+
+  // ── Text selection → contextual note (r305-a7) ───────────────────
+  // The reader is a review workspace: selecting text inside the paper
+  // offers the annotation composer seeded with the quote. The API
+  // payload shape stays {page, comment, color} — the quote rides
+  // INSIDE the comment text. Gated to the roles the backend's
+  // annotation POST accepts (mirrors AnnotationsPanel.canAnnotate);
+  // for everyone else a selection stays a plain selection.
+  const userRole = useAuthStore((s) => s.user?.role);
+  const canAnnotate = userRole === 'TEACHER' || userRole === 'ADMIN' || userRole === 'OWNER';
+  useEffect(() => {
+    if (!onAnnotateSelection || !canAnnotate) {
+      setSelQuote(null);
+      return;
+    }
+    const onSelect = () => {
+      const sel = typeof document.getSelection === 'function' ? document.getSelection() : null;
+      if (!sel || sel.isCollapsed) {
+        setSelQuote(null);
+        return;
+      }
+      const node = sel.anchorNode;
+      const el = node instanceof Element ? node : node?.parentElement ?? null;
+      if (!el || !el.closest('.pdf-textLayer')) {
+        setSelQuote(null);
+        return;
+      }
+      const text = sel.toString().replace(/\s+/g, ' ').trim();
+      setSelQuote(text.length >= 2 ? text : null);
+    };
+    document.addEventListener('selectionchange', onSelect);
+    return () => document.removeEventListener('selectionchange', onSelect);
+  }, [onAnnotateSelection, canAnnotate]);
+
+  const annotateSelection = useCallback(() => {
+    if (!selQuote || !onAnnotateSelection) return;
+    onAnnotateSelection({ text: selQuote, page });
+    setSelQuote(null);
+    document.getSelection()?.removeAllRanges();
+  }, [selQuote, page, onAnnotateSelection]);
 
   // ── Fullscreen ───────────────────────────────────────────────────
   // fullscreenchange is the single source of truth for the toggle state:
@@ -796,8 +905,28 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const scaleLabel = scale === 'fit-width' ? 'ملاءمة' : `${Math.round(scale * 100)}%`;
   const numPages = doc?.numPages ?? 1;
 
+  /* r305-a7 — honest byte progress from pdf.js's loading events:
+     percentage when the total is known, transferred KiB otherwise. */
+  const progressPct =
+    progress && progress.total > 0
+      ? Math.min(100, Math.round((progress.loaded / progress.total) * 100))
+      : null;
+  const progressLabel = !progress || progress.loaded <= 0 ? null : progressPct !== null
+    ? `جارٍ تحميل المستند… ${formatInt(progressPct)}%`
+    : `جارٍ تحميل المستند… ${formatInt(Math.floor(progress.loaded / 1024))} كيلوبايت`;
+  /* Total occurrences across all hit pages (the per-page counts the
+     walk reports) — rendered as its own chip, separate from the
+     «i / n» page-position counter. */
+  const totalOccurrences = searchHits.reduce((acc, h) => acc + h.count, 0);
+
   return (
     <div ref={viewerRef} tabIndex={-1} className={`pdf-viewer${fill ? ' fill' : ''}`}>
+      {/* Page-change announcements — the pageinfo input's aria-label
+          only covers itself; flips via buttons/arrow keys announce here
+          through a polite live region (r305-a7). */}
+      <p className="sr-only" role="status" aria-live="polite">
+        {`صفحة ${formatInt(page)} من ${formatInt(numPages)}`}
+      </p>
       {/* Toolbar */}
       <div className="pdf-toolbar">
         {title && <div className="pdf-title" title={title}>{title}</div>}
@@ -829,7 +958,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
               }}
               aria-label={`رقم الصفحة، الحالية ${page} من ${numPages}`}
             />
-            <span className="pdf-pageinfo-total" aria-hidden="true">من {doc?.numPages ?? '—'}</span>
+            <span className="pdf-pageinfo-total" aria-hidden="true">من {doc ? formatInt(doc.numPages) : '—'}</span>
           </span>
           <button type="button" className="pdf-btn" onClick={() => doc && setPage((p) => Math.min(doc.numPages, p + 1))} disabled={!doc || page >= numPages} title="الصفحة التالية" aria-label="الصفحة التالية">
             <Icon icon={ChevronLeft} size={16} />
@@ -916,13 +1045,18 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
               {searchIdx + 1} / {searchHits.length}
             </span>
           )}
+          {totalOccurrences > 0 && (
+            <span className="r305pdf-hitcount">
+              {countAr(totalOccurrences, ['موضع واحد', 'موضعان', 'مواضع', 'موضع'])}
+            </span>
+          )}
           <button type="button" className="pdf-btn sm" onClick={prevHit} disabled={!searchHits.length} aria-label="النتيجة السابقة">
             <Icon icon={ChevronRight} size={14} />
           </button>
           <button type="button" className="pdf-btn sm" onClick={nextHit} disabled={!searchHits.length} aria-label="النتيجة التالية">
             <Icon icon={ChevronLeft} size={14} />
           </button>
-          <button type="button" className="pdf-btn sm" onClick={runSearch}>
+          <button type="button" className="pdf-btn sm pdf-search-go" onClick={runSearch}>
             بحث
           </button>
           <button type="button" className="pdf-btn sm" onClick={closeSearch} aria-label="إغلاق البحث">
@@ -941,7 +1075,28 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
           <PdfThumbnails doc={doc.pdf} page={page} onJump={setPage} />
         )}
         <div className="pdf-canvas-wrap" ref={containerRef}>
-        {loading && <PdfPageSkeleton />}
+        {loading && (
+          <>
+            <PdfPageSkeleton />
+            {/* r305-a7: real progress tied to pdf.js onProgress — never a
+                fake percentage, never a skeleton pretending the bytes are
+                here. Hidden from AT (the skeleton carries the live label). */}
+            {progressLabel && (
+              <div className="r305pdf-progress" aria-hidden="true">
+                <span className="r305rp-eyebrow r305pdf-progress-label">{progressLabel}</span>
+                <span className="r305pdf-progress-track">
+                  <span
+                    className="r305pdf-progress-fill"
+                    /* The fill rides transform:scaleX (the motion gate
+                       forbids layout properties in transitions) — the
+                       inline start origin flips under [dir=rtl] in §C. */
+                    style={progressPct !== null ? { transform: `scaleX(${progressPct / 100})` } : undefined}
+                  />
+                </span>
+              </div>
+            )}
+          </>
+        )}
         {/* !loading gate: a superseded render of the previous document can
             plant a page error right as the next load starts — the skeleton
             and the error must never render together (audit 11-f P2-9).
@@ -981,6 +1136,35 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
           <Icon icon={ZoomIn} size={12} />
           قرّب بإصبعين لعرض التفاصيل
         </p>
+        {/* r305-a7 — selection → contextual note: a live text selection
+            inside the paper surfaces ONE emphasized verb that seeds the
+            annotation composer with the quote. Reviewer-gated (the
+            backend's annotation POST accepts TEACHER/ADMIN/OWNER only). */}
+        {canAnnotate && selQuote && onAnnotateSelection && (
+          <div className="r305pdf-selbar" role="group" aria-label="إضافة ملاحظة على النص المحدد">
+            <span className="r305pdf-selbar-quote" dir="auto">{selQuote}</span>
+            <button
+              type="button"
+              className="r305pdf-selbar-btn"
+              /* Keep the selection alive through the click — without this
+                 the mousedown clears it before onClick reads the state. */
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={annotateSelection}
+            >
+              <Icon icon={MessageSquare} size={13} />
+              ملاحظة على التحديد
+            </button>
+            <button
+              type="button"
+              className="r305pdf-selbar-dismiss"
+              onClick={() => setSelQuote(null)}
+              aria-label="تجاهل التحديد"
+              title="تجاهل التحديد"
+            >
+              <Icon icon={X} size={14} />
+            </button>
+          </div>
+        )}
         </div>
       </div>
     </div>
