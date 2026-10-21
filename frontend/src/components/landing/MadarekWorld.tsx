@@ -252,7 +252,11 @@ export function MadarekWorld({ className }: { className?: string }) {
             ? 0.7
             : Math.min(window.devicePixelRatio || 1, isMobile() ? 1.25 : 1.5),
         );
-        renderer.setSize(window.innerWidth, window.innerHeight, false);
+        /* Style write ON: the canvas must display at viewport CSS size —
+         * with `false` (buffer-only sizing) a DPR≠1 renderer (0.7 software
+         * tier, 1.25–1.5 capped Retina) displayed the canvas at its
+         * intrinsic buffer size, RTL-anchored off the projection center. */
+        renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.domElement.setAttribute('aria-hidden', 'true');
         host.appendChild(renderer.domElement);
 
@@ -402,7 +406,7 @@ export function MadarekWorld({ className }: { className?: string }) {
         const onResize = () => {
           camera.aspect = window.innerWidth / window.innerHeight;
           camera.updateProjectionMatrix();
-          renderer.setSize(window.innerWidth, window.innerHeight, false);
+          renderer.setSize(window.innerWidth, window.innerHeight);
         };
         window.addEventListener('resize', onResize, { passive: true });
 

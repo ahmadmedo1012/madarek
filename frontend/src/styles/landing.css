@@ -960,9 +960,12 @@ main,
 }
 
 .mini-doc-pin {
-  position: absolute;
-  inset-block-start: var(--sp-3);
-  inset-inline-end: var(--sp-3);
+  /* Flow as the sheet's first row at the inline-end corner — the old
+   * absolute corner placement overlapped the title's first line whenever
+   * the Arabic title wrapped (verified live at 390px, chapter 03). */
+  position: static;
+  order: -1;
+  justify-self: end;
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);

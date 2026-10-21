@@ -75,31 +75,54 @@ function flattenPose(entry: (typeof CHAPTER_LEDGER)[number]): PoseProxy {
 }
 
 export function createChoreography(): Choreography {
-  const pose: PoseProxy = flattenPose(CHAPTER_LEDGER[0]!);
+  /* The pose is computed as a PURE FUNCTION of smooth progress — segment
+   * endpoints from the ledger, blended with the authored per-segment ease.
+   *
+   * WHY NOT gsap.fromTo on one shared proxy (the previous implementation):
+   * eight overlapping fromTo tweens writing ONE mutable proxy made the
+   * written value depend on GSAP's seek/immediateRender order — at
+   * progress 0 the proxy held the LAST segment's start values (ledger[7]),
+   * so the world rendered CTA framing behind the hero and arbitrary
+   * poses elsewhere (verified live via a camera probe: smooth=0 →
+   * camera at the cta pose). A pure sampler is deterministic in both
+   * scrub directions, after jumps and after reload — the exact contract
+   * the old docstring promised but the tween graph could not keep.
+   *
+   * The paused timeline below stays as the reviewable ledger artifact
+   * (labels = chapter ids, same from→to data) tweening a DUMMY target,
+   * so DevTools inspection keeps working without ever touching the
+   * camera pose. */
+  const ledgerDummy = { __ledger: 0 };
   const timeline = gsap.timeline({ paused: true });
-
-  // Author every segment as an explicit from→to — the choreography is
-  // data, deterministic in both scrub directions, and reviewable as the
-  // ledger it is. Labels let DevTools (`gsap.timeline().labels`) and
-  // future navigation map chapters to timeline time directly.
   CHAPTER_LEDGER.forEach((entry, i) => {
     timeline.addLabel(entry.id, i);
     if (i === LAST) return;
-    const next = CHAPTER_LEDGER[i + 1]!;
     timeline.fromTo(
-      pose,
-      { ...flattenPose(entry) },
-      { ...flattenPose(next), duration: 1, ease: SEGMENT_EASES[i] ?? 'sine.inOut' },
+      ledgerDummy,
+      { __ledger: i },
+      { __ledger: i + 1, duration: 1, ease: 'none' },
       i,
     );
   });
 
+  const eases = SEGMENT_EASES.map((e) => gsap.parseEase(e ?? 'sine.inOut'));
+  const blendPose = (smooth: number): PoseProxy => {
+    const a = CHAPTER_LEDGER[0]!;
+    const out = flattenPose(a);
+    if (smooth <= 0) return out;
+    if (smooth >= LAST) return flattenPose(CHAPTER_LEDGER[LAST]!);
+    const i = Math.floor(smooth);
+    const t = eases[i]!(smooth - i);
+    const from = flattenPose(CHAPTER_LEDGER[i]!);
+    const to = flattenPose(CHAPTER_LEDGER[i + 1]!);
+    for (const k of Object.keys(out) as (keyof PoseProxy)[]) {
+      out[k] = from[k] + (to[k] - from[k]) * t;
+    }
+    return out;
+  };
+
   const sample = (frame: StoryFrame, isMobile: boolean): PoseSnapshot => {
-    timeline.progress(
-      Math.min(1, Math.max(0, frame.smooth / LAST)),
-      // The timeline is a pure pose function; suppress its own callbacks.
-      true,
-    );
+    const pose = blendPose(frame.smooth);
 
     // The scrub sits inside segment i..i+1 (or exactly on a boundary).
     const idx = Math.min(Math.floor(frame.smooth), LAST);
