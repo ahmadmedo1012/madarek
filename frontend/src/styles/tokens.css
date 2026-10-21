@@ -2,7 +2,8 @@
    «مدارك» — Design System (r197 — the REDesign foundation)
    ─────────────────────────────────────────────────────────────────────
    Warm paper ground #F3EEE4 · warm ink #16140F · ONE signal: ultramarine
-   #2E45E6 (links/active/focus/chart-1) · gold #B57438 achievements ONLY.
+   copper #B57438 (links/active/focus/chart-1) — the recovered Notion-style
+   palette (r303, from the historical Notion-style rebuild commit).
    Soft radius ladder (4→16+pill) · quiet single-shadow elevation ·
    13px Arabic text floor · zero letter-spacing (cursive joins + tnum).
    Dark = warm night #16140F ground, same role tokens re-keyed.
@@ -519,16 +520,16 @@
        cards/inputs ride. The ramp is warm-gray, derived from the same
        hue family as ink/paper so hairlines and wells never read cold. */
     --neutral-0:   #FFFFFF;          /* clear product surface */
-    --neutral-50:  #F7F6F3;          /* quiet Notion-like paper */
-    --neutral-100: #F1F0ED;          /* hover / subtle band */
-    --neutral-150: #E9E7E3;          /* inset well */
-    --neutral-200: #E1DFDB;          /* hairline */
-    --neutral-300: #CDCAC4;          /* divider / strong border */
-    --neutral-400: #A39F98;          /* non-text rung */
-    --neutral-500: #78736C;          /* mid gray */
-    --neutral-700: #514D47;          /* secondary ink */
-    --neutral-800: #302E2B;
-    --neutral-900: #252321;          /* primary ink */
+    --neutral-50:  #FBFAF9;          /* page ground — Notion's warm cream */
+    --neutral-100: #F7F6F3;          /* hover / subtle band */
+    --neutral-150: #F1EFEC;          /* inset well */
+    --neutral-200: #E9E7E2;          /* hairline */
+    --neutral-300: #D9D6D0;          /* divider / strong border */
+    --neutral-400: #B5B1A8;          /* non-text rung */
+    --neutral-500: #898680;          /* mid gray */
+    --neutral-700: #4F4D48;          /* secondary ink */
+    --neutral-800: #322F2A;
+    --neutral-900: #191918;          /* primary ink (Notion espresso) */
 
     /* The 9 section colors (r197 warm-paper re-key). Each has a soft
        pastel ground (full-bleed band fill), a saturated "ink" for
@@ -538,15 +539,15 @@
        ink ≥3, lavender bg-vs-deep ≥3) re-verified numerically —
        scratch/palette-check.mjs, 97/97 pass. The egn teal family is
        gone: mint is now the success green, sky the info slate-blue. */
-    --c-peach-bg:     #F8E7DE;   --c-peach-ink:    #C96A5B;   --c-peach-deep:   #7A3224;
-    --c-mint-bg:      #E1F0E5;   --c-mint-ink:     #217A48;   --c-mint-deep:    #175C36;
-    --c-lavender-bg:  #ECEAF7;   --c-lavender-ink: #655396;   --c-lavender-deep:#4A3C73;
-    --c-sky-bg:       #E4EBF5;   --c-sky-ink:      #46618C;   --c-sky-deep:     #33496B;
-    --c-yellow-bg:    #F6EFD5;   --c-yellow-ink:   #9A7B1F;   --c-yellow-deep:  #6E5410;
-    --c-rose-bg:      #F7E3E0;   --c-rose-ink:     #A63F35;   --c-rose-deep:    #7C2A22;
-    --c-sand-bg:      #EFE9DA;   --c-sand-ink:     #8A7A52;   --c-sand-deep:    #5A4A24;
-    --c-grey-bg:      #EDEAE2;   --c-grey-ink:     #6B675C;   --c-grey-deep:    #2D2A24;
-    --c-copper-bg:    #F0E6D2;   --c-copper-ink:   #9A7438;   --c-copper-deep:  #5C3416;
+    --c-peach-bg:     #FFE9DC;   --c-peach-ink:    #E07856;   --c-peach-deep:   #6B2D1A;
+    --c-mint-bg:      #DCF1E2;   --c-mint-ink:     #4FA66D;   --c-mint-deep:    #1F4F30;
+    --c-lavender-bg:  #ECE6FA;   --c-lavender-ink: #8A6FE0;   --c-lavender-deep:#3F2D7A;
+    --c-sky-bg:       #DDEBF7;   --c-sky-ink:      #5C8FCE;   --c-sky-deep:     #1F3D63;
+    --c-yellow-bg:    #FCF1CD;   --c-yellow-ink:   #D6A330;   --c-yellow-deep:  #6B4C0B;
+    --c-rose-bg:      #FCE0E2;   --c-rose-ink:     #DD6E78;   --c-rose-deep:    #6B2128;
+    --c-sand-bg:      #F1ECDF;   --c-sand-ink:     #B59868;   --c-sand-deep:    #5A4623;
+    --c-grey-bg:      #EFECE7;   --c-grey-ink:     #6B665E;   --c-grey-deep:    #2D2A24;
+    --c-copper-bg:    #F4E4D2;   --c-copper-ink:   #B57438;   --c-copper-deep:  #5C3416;
 
     /* ═════ ROLE TOKENS — components consume these ═════
        r197 two-surface rule: --bg is the PAPER (page ground),
@@ -564,7 +565,7 @@
     --text-secondary: var(--neutral-700);
     /* (r148-d: --text-strong retired with the journey scene's --ink
        slab — both were zero-consumer mirrors of --text/--neutral-900.) */
-    --text-muted:  #68635D;
+    --text-muted:  var(--neutral-500);
     /* r197 — #726C5E is the AA-safe faint tier on the warm paper:
        5.00:1 on --surface, 4.52:1 on --bg, one step fainter than
        muted. The r183 pin keeps holding: on --accent-soft #E4E8FA it
@@ -576,7 +577,7 @@
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
-    --border-faint:  rgba(22,20,15,0.07);
+    --border-faint:  rgba(25,25,24,0.07);
     --rule:          var(--neutral-200);
     /* 5-C1 (A2 P1-2): --rule-strong was consumed in five places
        (--state-card-hover-border fallback chain + polish.css ×2 +
@@ -593,19 +594,19 @@
        --surface-border currently has no component consumer; kept for
        the contract's token surface — any future elevation utility
        should consume it.) */
-    --surface-border:  rgba(22,20,15,0.07);
-    --surface-divider: rgba(22,20,15,0.05);
+    --surface-border:  rgba(25,25,24,0.07);
+    --surface-divider: rgba(25,25,24,0.05);
 
     /* r197 — the ONE signal: ultramarine #2E45E6 (BLUEPRINT §4).
        Links, active states, focus, chart-1. Gold leaves the accent
        seat for achievements only. Contrast: #2E45E6 = 5.84:1 on --bg
        paper / 6.47:1 on --surface ground (AA as text); white labels
        on the fill = 6.75:1 (AA). */
-    --accent:        #5B5CE2;   /* composed indigo signal */
-    --accent-hover:  #4849C5;
-    --accent-soft:   #ECECFE;
-    --accent-strong: #3E3FA8;
-    --accent-fg:     #FFFFFF;   /* 6.75:1 on the signal fill — AA for labels */
+    --accent:        var(--c-copper-ink);   /* r303: the recovered Notion-style copper seat */
+    --accent-hover:  #9A5F25;
+    --accent-soft:   var(--c-copper-bg);
+    --accent-strong: var(--c-copper-deep);
+    --accent-fg:     #FFFFFF;
     /* --focus-ring retired (premium-polish): the ONE focus language is
        --state-focus-ring (outline) + --state-input-focus-halo
        (input/wrapper halo). */
@@ -618,7 +619,7 @@
        there to --accent-strong #8E9BFF (7.26:1 on the night ground —
        the parity gate pins that cascade). Light resolves #1F2FA8
        (8.95:1 on paper). */
-    --state-focus-ring-color: var(--accent-strong);
+    --state-focus-ring-color: #9A5F25;
 
     --success:      var(--c-mint-ink);
     --success-soft: var(--c-mint-bg);
@@ -650,13 +651,11 @@
 
     /* (r148-d: --brand retired — zero consumers; --brand-purple stays,
        the one live brand slot.) */
-    --brand-purple:  var(--accent);
-    /* r197 §4 — gold is the ACHIEVEMENT family (badges, streaks,
-       gamification fills) and NOTHING else: #B57438 sits at 3.29:1 on
-       paper (decorative/large tier); gold TEXT consumes --gold-ink
-       #8F5A28 (5.50:1 on ground, 4.98:1 on --gold-soft). */
-    --gold:          #B57438;
-    --gold-ink:      #8F5A28;
+    --brand-purple:  var(--c-lavender-ink);
+    /* r303: gold rejoins the copper family (Notion-style) — the
+       achievement tone now matches the accent seat. */
+    --gold:          var(--c-copper-ink);
+    --gold-ink:      var(--c-copper-deep);
     --primary:       var(--neutral-900);   /* ink slab CTA — white label 18.4:1 */
     --primary-fg:    #FFFFFF;
 
@@ -680,14 +679,14 @@
     --shadow-card-premium-h: var(--elev-3);
     --shadow-card-glow:     0 0 0 1px var(--accent-soft), var(--elev-2); /* selection ring, not a glow */
 
-    --glass-bg:    rgba(251,250,247,0.78);   /* r197: warm ground glass */
+    --glass-bg:    rgba(251,250,249,0.78);   /* r197: warm ground glass */
     --glass-blur:  16px;
-    --glass-border: rgba(22,20,15,0.08);
+    --glass-border: rgba(25,25,24,0.08);
     /* r140 — تبنّي الكنون للطبقة القوية: ثلاثة منتجات استخدمتها بقيم
        متباعدة 0.90/0.92/0.94 بضباب 20 و24 — الكنون يوحّدها. الطبقة القوية
        = خلفية أكثر عتامة (0.92)، والضباب يبقى 16px الكنوني (قرار r140:
        لا ضباب أقوى من 16). */
-    --glass-bg-strong:   rgba(251,250,247,0.92);
+    --glass-bg-strong:   rgba(251,250,249,0.92);
     --glass-blur-strong: 16px;
     /* T3-F4 — scrim blur for dimming overlays (modal/sheet/dialog
        backdrops). Consolidates the six ad-hoc blur values
@@ -713,11 +712,11 @@
     /* (r148-d: --sidebar-active-bar retired — zero consumers; the
        active rail is painted by the sidebar recipes directly.) */
 
-    --topbar-bg:    rgba(251,250,247,0.86);   /* r197: warm chrome glass */
+    --topbar-bg:    rgba(251,250,249,0.86);   /* r197: warm chrome glass */
     --topbar-border:var(--neutral-200);
 
-    --scrollbar-thumb: rgba(22,20,15,0.16);
-    --scrollbar-thumb-hover: rgba(22,20,15,0.28);
+    --scrollbar-thumb: rgba(25,25,24,0.16);
+    --scrollbar-thumb-hover: rgba(25,25,24,0.28);
 
     /* legacy aliases — 21-c dead-alias sweep (A12 P3-12):
        the paper/ink/gold-{1,3,5,7,9} and green/amber/red/blue-{100,700}
@@ -733,8 +732,8 @@
        canonical --shadow-* names speak directly.) */
 
     --chart-text: var(--text-muted);  /* r197: 4.88:1 on paper — AA */
-    --chart-grid: rgba(22,20,15,0.08);
-    --chart-1: var(--accent);   /* series 1 = the ultramarine signal */
+    --chart-grid: rgba(25,25,24,0.08);
+    --chart-1: var(--accent);   /* series 1 = the copper signal (r303) */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
@@ -772,32 +771,32 @@
     /* r197 — warm night ramp (BLUEPRINT §4): the page ground is the
        INK's twin #16140F; surfaces sit one warm step up. Same role
        tokens as light, re-keyed — never a cold blue-black. */
-    --neutral-0:   #22211F;
-    --neutral-50:  #181716;
-    --neutral-100: #2A2927;
-    --neutral-150: #201F1D;
-    --neutral-200: #3A3835;
-    --neutral-300: #514E49;
-    --neutral-400: #746F68;
-    --neutral-500: #AAA59E;
-    --neutral-700: #D5D1CA;
-    --neutral-800: #E6E2DB;
-    --neutral-900: #F7F5F1;
+    --neutral-0:   #1F1F1E;
+    --neutral-50:  #191918;
+    --neutral-100: #232322;
+    --neutral-150: #2A2A28;
+    --neutral-200: #353532;
+    --neutral-300: #46453F;
+    --neutral-400: #6E6B61;
+    --neutral-500: #9A968A;
+    --neutral-700: #C8C2B2;
+    --neutral-800: #DDD7C5;
+    --neutral-900: #F2EAD8;
 
     /* مدارك night (r197): warm hue families re-grounded on the night
        paper — deep warm-tinted bgs + luminous inks. Contrast on --bg
        #16140F (scratch/palette-check.mjs, 97/97 pass): mint 9.32,
        rose 6.58, sky 7.59, yellow 9.65, lavender 6.52 — all text-AA;
        the badge triads (yellow/grey/peach deep-vs-bg) re-verified. */
-    --c-peach-bg:     #351E17;   --c-peach-ink:    #D08870;   --c-peach-deep:   #E8BCA8;
-    --c-mint-bg:      #1E3024;   --c-mint-ink:     #6FCB93;   --c-mint-deep:    #A5DDBB;
-    --c-lavender-bg:  #292541;   --c-lavender-ink: #A78BE8;   --c-lavender-deep:#CFC2F4;
-    --c-sky-bg:       #1E2A3C;   --c-sky-ink:      #8FA8CE;   --c-sky-deep:     #C0D2E8;
-    --c-yellow-bg:    #322A12;   --c-yellow-ink:   #DDB75E;   --c-yellow-deep:  #EED9A0;
-    --c-rose-bg:      #391D1B;   --c-rose-ink:     #E08074;   --c-rose-deep:    #EFB0A6;
-    --c-sand-bg:      #2A2416;   --c-sand-ink:     #B7A36A;   --c-sand-deep:    #DCCB94;
-    --c-grey-bg:      #1E1C18;   --c-grey-ink:     #A39B8B;   --c-grey-deep:    #CDC5B4;
-    --c-copper-bg:    #2E2513;   --c-copper-ink:   #D8AE5C;   --c-copper-deep:  #EFD9A4;
+    --c-peach-bg:     #3D2A23;   --c-peach-ink:    #F2A07F;   --c-peach-deep:   #FCD9C4;
+    --c-mint-bg:      #1F3429;   --c-mint-ink:     #82CB99;   --c-mint-deep:    #C9EAD3;
+    --c-lavender-bg:  #2D2545;   --c-lavender-ink: #B7A0F4;   --c-lavender-deep:#DCD2F9;
+    --c-sky-bg:       #1F2F45;   --c-sky-ink:      #92B4DC;   --c-sky-deep:     #C9DCEE;
+    --c-yellow-bg:    #3A3017;   --c-yellow-ink:   #ECC97D;   --c-yellow-deep:  #F8E5B5;
+    --c-rose-bg:      #3D2126;   --c-rose-ink:     #F09BA3;   --c-rose-deep:    #FACDD2;
+    --c-sand-bg:      #2D2820;   --c-sand-ink:     #D9C18C;   --c-sand-deep:    #EFE2C5;
+    --c-grey-bg:      #2A2823;   --c-grey-ink:     #B7B2A6;   --c-grey-deep:    #DDD8CB;
+    --c-copper-bg:    #3D2D1B;   --c-copper-ink:   #E0A067;   --c-copper-deep:  #F8DDBC;
 
     --bg:               var(--neutral-50);
     --surface:          var(--neutral-0);
@@ -819,12 +818,12 @@
        The r183 pin keeps holding: 3.71:1 on --accent-soft #262B54 —
        faint never carries text there (scratch/palette-check.mjs). */
     --text-faint:  #8C8674;   /* r197: AA tier, one step under muted */
-    --text-on-accent: #FFFFFF;   /* r197: signal fills stay #2E45E6 in BOTH themes — white 6.75:1 */
+    --text-on-accent: #191918;   /* r303: ink on the luminous night copper fill */
     --text-on-dark:   var(--neutral-900);
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
-    --border-faint:  rgba(243,238,228,0.10);   /* r197: warm-white hairline */
+    --border-faint:  rgba(242,234,216,0.08);   /* warm-white hairline */
     --rule:          var(--neutral-200);
     /* 5-C1 (A2 P1-2) — see the light block: the dead-token fix is
        theme-agnostic (references --border-strong, which remaps to
@@ -832,18 +831,18 @@
     --rule-strong:   var(--border-strong);
     /* 012 theme-tokens contract §1 — formalised surface edge tokens. */
     --surface-border:  rgba(243,238,228,0.12);
-    --surface-divider: rgba(243,238,228,0.07);
+    --surface-divider: rgba(242,234,216,0.07);
 
     /* r197 — night signal discipline: the FILL stays ultramarine
        #2E45E6 in both themes (white labels 6.75:1); --accent-strong
        becomes the light signal tier #8E9BFF for text/icons/links on
        the night ground (7.26:1 bg / 6.63:1 ground — AA). The r190
        violet note and the egn teal die here. */
-    --accent:        #7475F2;
-    --accent-hover:  #8788FA;
-    --accent-soft:   #303159;
-    --accent-strong: #B5B5FF;
-    --accent-fg:     #FFFFFF;
+    --accent:        var(--c-copper-ink);   /* r303: night copper — the recovered Notion-dark seat */
+    --accent-hover:  #F2B782;
+    --accent-soft:   var(--c-copper-bg);
+    --accent-strong: var(--c-copper-deep);
+    --accent-fg:     #191918;
     /* --focus-ring retired — see the light-theme note above. */
 
     /* Night theme passes as-is: the -ink family clears AA on the night
@@ -851,7 +850,7 @@
        --info 7.59:1, --accent-strong 7.26:1 on --bg #16140F), so -ink
        maps to the same values the base tokens already resolve to.
        The icon-well pin (dark --x-ink ≡ --x) holds via these aliases. */
-    --accent-ink:   var(--accent-strong);   /* r197: the light signal tier #8E9BFF — 7.26:1 bg as text */
+    --accent-ink:   var(--accent);   /* r303: night copper #E0A067 — AA as text on the night ground */
     --success-ink:  var(--c-mint-ink);
     --warning-ink:  var(--c-yellow-ink);
     --danger-ink:   var(--c-rose-ink);
@@ -873,9 +872,9 @@
 
     /* (r148-d: --brand retired — zero consumers; --brand-purple stays,
        the one live brand slot.) */
-    --brand-purple:  var(--accent);
-    --gold:          #D9A05B;   /* r197 §4: dark achievement gold — 8.00:1 on --bg */
-    --gold-ink:      #E3B273;   /* r197: dark gold text ink (9.42:1 on --bg, 7.37:1 on --gold-soft) */
+    --brand-purple:  var(--c-lavender-ink);
+    --gold:          var(--c-copper-ink);      /* r303: night copper achievement tone */
+    --gold-ink:      var(--c-copper-deep);
     --primary:       #FFFFFF;               /* the night CTA — white slab, ink label */
     --primary-fg:    #16140F;
 
@@ -894,12 +893,12 @@
     --shadow-card-premium-h: var(--elev-3);
     --shadow-card-glow:     0 0 0 1px var(--accent-soft), var(--elev-2);
 
-    --glass-bg:    rgba(22,20,15,0.78);   /* r197: warm night glass */
+    --glass-bg:    rgba(25,25,24,0.78);   /* r197: warm night glass */
     --glass-blur:  16px;
     --glass-border: rgba(243,238,228,0.10);   /* r197: warm-white hairline on dark glass */
     /* r140 — الطبقة القوية في الليل (انظر تعليق الثيم الفاتح): توحيد
        0.90/0.92/0.94 الأسطولية على 0.92، والضباب 16px — لا أقوى. */
-    --glass-bg-strong:   rgba(22,20,15,0.92);
+    --glass-bg-strong:   rgba(25,25,24,0.92);
     --glass-blur-strong: 16px;
     --scrim-blur:  4px;   /* T3-F4 — dimming-scrim blur (see light block) */
 
@@ -918,16 +917,16 @@
     --sidebar-rule:      var(--neutral-200);
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
-    --sidebar-item-active-bg:   rgb(142 155 255 / 0.16);  /* r197: signal wash — the traveller's current orbit */
+    --sidebar-item-active-bg:   rgb(224 160 103 / 0.16);  /* r303: night copper wash — the traveller's current orbit */
     --sidebar-item-active-text: var(--neutral-900);
     /* (r148-d: --sidebar-active-bar retired — zero consumers; the
        active rail is painted by the sidebar recipes directly.) */
 
-    --topbar-bg:    rgba(22,20,15,0.86);   /* r197: warm night chrome */
+    --topbar-bg:    rgba(25,25,24,0.86);   /* r303: Notion-night chrome */
     --topbar-border:var(--neutral-200);
 
-    --scrollbar-thumb: rgba(243,238,228,0.16);
-    --scrollbar-thumb-hover: rgba(243,238,228,0.28);
+    --scrollbar-thumb: rgba(242,234,216,0.16);
+    --scrollbar-thumb-hover: rgba(242,234,216,0.28);
 
     /* (dark block of the 21-c dead-alias sweep — see the light block's
        banner; the same 25 paper/ink/gold-{100,300,500,700,900}/
@@ -939,8 +938,8 @@
        canonical --shadow-* names speak directly.) */
 
     --chart-text: var(--neutral-500);
-    --chart-grid: rgba(243,238,228,0.08);
-    --chart-1: var(--accent-strong);   /* series 1 = the light signal tier */
+    --chart-grid: rgba(242,234,216,0.08);
+    --chart-1: var(--accent);   /* series 1 = the night copper signal (r303) */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
@@ -981,22 +980,22 @@
      teal retired with the egn family (→ green); owner's #6B7280 was
      a FORBIDDEN parity value (→ warm gray); student rides the signal
      itself; quality/admin/dept-head/dean keep their hue anchors. */
-  :root[data-theme="light"] body[data-role="student"]         { --role-accent: #2E45E6; }
-  :root[data-theme="light"] body[data-role="faculty"]         { --role-accent: #217A50; }
-  :root[data-theme="light"] body[data-role="department-head"] { --role-accent: #BF6A2A; }
-  :root[data-theme="light"] body[data-role="dean"]            { --role-accent: #7B3FB1; }
-  :root[data-theme="light"] body[data-role="admin"]           { --role-accent: #44546E; }
-  :root[data-theme="light"] body[data-role="quality"]         { --role-accent: #A33A4F; }
-  :root[data-theme="light"] body[data-role="owner"]           { --role-accent: #5F5B52; }
+  :root[data-theme="light"] body[data-role="student"]         { --role-accent: #B57438; }
+  :root[data-theme="light"] body[data-role="faculty"]         { --role-accent: #4FA66D; }
+  :root[data-theme="light"] body[data-role="department-head"] { --role-accent: #E07856; }
+  :root[data-theme="light"] body[data-role="dean"]            { --role-accent: #8A6FE0; }
+  :root[data-theme="light"] body[data-role="admin"]           { --role-accent: #5C8FCE; }
+  :root[data-theme="light"] body[data-role="quality"]         { --role-accent: #DD6E78; }
+  :root[data-theme="light"] body[data-role="owner"]           { --role-accent: #6B665E; }
 
   /* ─── Role-accent (Dark) ────────────────────────────────────── */
-  :root[data-theme="dark"]  body[data-role="student"]         { --role-accent: #8E9BFF; }
-  :root[data-theme="dark"]  body[data-role="faculty"]         { --role-accent: #6FCB93; }
-  :root[data-theme="dark"]  body[data-role="department-head"] { --role-accent: #E89456; }
-  :root[data-theme="dark"]  body[data-role="dean"]            { --role-accent: #B58EE6; }
-  :root[data-theme="dark"]  body[data-role="admin"]           { --role-accent: #8CA0C4; }
-  :root[data-theme="dark"]  body[data-role="quality"]         { --role-accent: #E47186; }
-  :root[data-theme="dark"]  body[data-role="owner"]           { --role-accent: #A89F8D; }
+  :root[data-theme="dark"]  body[data-role="student"]         { --role-accent: #E0A067; }
+  :root[data-theme="dark"]  body[data-role="faculty"]         { --role-accent: #82CB99; }
+  :root[data-theme="dark"]  body[data-role="department-head"] { --role-accent: #F2A07F; }
+  :root[data-theme="dark"]  body[data-role="dean"]            { --role-accent: #B7A0F4; }
+  :root[data-theme="dark"]  body[data-role="admin"]           { --role-accent: #92B4DC; }
+  :root[data-theme="dark"]  body[data-role="quality"]         { --role-accent: #F09BA3; }
+  :root[data-theme="dark"]  body[data-role="owner"]           { --role-accent: #B7B2A6; }
 
   /* Default when no data-role is set: fall through to existing --accent. */
   :root { --role-accent: var(--accent); }
@@ -1033,22 +1032,22 @@
 
   /* ─── 3. Elevation language — Light (r197: one shadow per level) ─── */
   :root[data-theme="light"] {
-    --elev-1: 0 1px 2px rgba(22,20,15,0.06);
-    --elev-2: 0 10px 15px rgba(22,20,15,0.08);
-    --elev-3: 0 18px 40px rgba(22,20,15,0.12);
-    --elev-4: 0 24px 56px rgba(22,20,15,0.14);
-    --elev-5: 0 32px 72px rgba(22,20,15,0.16);
+    --elev-1: 0 1px 2px rgba(25,25,24,0.06);
+    --elev-2: 0 10px 15px rgba(25,25,24,0.08);
+    --elev-3: 0 18px 40px rgba(25,25,24,0.12);
+    --elev-4: 0 24px 56px rgba(25,25,24,0.14);
+    --elev-5: 0 32px 72px rgba(25,25,24,0.16);
   }
 
   /* ─── Elevation language — Dark (fill-led, shadow muted) ──────────── */
   :root[data-theme="dark"] {
     /* r197: dark de-emphasizes shadows (surface step + hairline carry
        depth); the inset highlight re-keys to the warm paper tint. */
-    --elev-1: 0 1px 2px rgba(0,0,0,0.40), inset 0 1px 0 rgba(243,238,228,0.04);
-    --elev-2: 0 10px 15px rgba(0,0,0,0.35), inset 0 1px 0 rgba(243,238,228,0.05);
-    --elev-3: 0 18px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.06);
-    --elev-4: 0 24px 56px rgba(0,0,0,0.50), inset 0 1px 0 rgba(243,238,228,0.07);
-    --elev-5: 0 32px 72px rgba(0,0,0,0.55), inset 0 1px 0 rgba(243,238,228,0.08);
+    --elev-1: 0 1px 2px rgba(0,0,0,0.40), inset 0 1px 0 rgba(242,234,216,0.04);
+    --elev-2: 0 10px 15px rgba(0,0,0,0.35), inset 0 1px 0 rgba(242,234,216,0.05);
+    --elev-3: 0 18px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(242,234,216,0.06);
+    --elev-4: 0 24px 56px rgba(0,0,0,0.50), inset 0 1px 0 rgba(242,234,216,0.07);
+    --elev-5: 0 32px 72px rgba(0,0,0,0.55), inset 0 1px 0 rgba(242,234,216,0.08);
   }
 
   /* ─── 4. Illustration palette — Light ─────────────────────────────── */
@@ -1202,11 +1201,11 @@
      both themes once the runtime sets the attribute. Same values as
      the light block (duplicated on purpose — a default, not a fork). */
   :root {
-    --elev-1: 0 1px 2px rgba(22,20,15,0.06);
-    --elev-2: 0 10px 15px rgba(22,20,15,0.08);
-    --elev-3: 0 18px 40px rgba(22,20,15,0.12);
-    --elev-4: 0 24px 56px rgba(22,20,15,0.14);
-    --elev-5: 0 32px 72px rgba(22,20,15,0.16);
+    --elev-1: 0 1px 2px rgba(25,25,24,0.06);
+    --elev-2: 0 10px 15px rgba(25,25,24,0.08);
+    --elev-3: 0 18px 40px rgba(25,25,24,0.12);
+    --elev-4: 0 24px 56px rgba(25,25,24,0.14);
+    --elev-5: 0 32px 72px rgba(25,25,24,0.16);
   }
 
   /* ══════════════════════════════════════════════════════════════
@@ -1222,43 +1221,42 @@
      The color-scheme: light lock itself stays in polish.css. ═════ */
   @media print {
     :root[data-theme="dark"] {
-      /* light neutral ramp (r197 warm paper) */
-      --neutral-0:   #FBFAF7;
-      --neutral-50:  #F3EEE4;
-      --neutral-100: #F0EADD;
-      --neutral-150: #EDE6D8;
-      --neutral-200: #DED5C3;
-      --neutral-300: #C9BEA8;
-      --neutral-400: #A89E8A;
-      --neutral-500: #7B7466;
-      --neutral-700: #57534A;
-      --neutral-800: #2E2B24;
-      --neutral-900: #16140F;
-      /* light pastel families (r197) */
-      --c-peach-bg:     #F8E7DE;  --c-peach-ink:    #C96A5B;  --c-peach-deep:    #7A3224;
-      --c-mint-bg:      #E1F0E5;  --c-mint-ink:     #217A48;  --c-mint-deep:     #175C36;
-      --c-lavender-bg:  #ECEAF7;  --c-lavender-ink: #655396;  --c-lavender-deep: #4A3C73;
-      --c-sky-bg:       #E4EBF5;  --c-sky-ink:      #46618C;  --c-sky-deep:      #33496B;
-      --c-yellow-bg:    #F6EFD5;  --c-yellow-ink:   #9A7B1F;  --c-yellow-deep:   #6E5410;
-      --c-rose-bg:      #F7E3E0;  --c-rose-ink:     #A63F35;  --c-rose-deep:     #7C2A22;
-      --c-sand-bg:      #EFE9DA;  --c-sand-ink:     #8A7A52;  --c-sand-deep:     #5A4A24;
-      --c-grey-bg:      #EDEAE2;  --c-grey-ink:     #6B675C;  --c-grey-deep:     #2D2A24;
-      --c-copper-bg:    #F0E6D2;  --c-copper-ink:   #9A7438;  --c-copper-deep:   #5C3416;
+      /* light neutral ramp (r303 — the recovered Notion cream) */
+      --neutral-0:   #FFFFFF;
+      --neutral-50:  #FBFAF9;
+      --neutral-100: #F7F6F3;
+      --neutral-150: #F1EFEC;
+      --neutral-200: #E9E7E2;
+      --neutral-300: #D9D6D0;
+      --neutral-400: #B5B1A8;
+      --neutral-500: #898680;
+      --neutral-700: #4F4D48;
+      --neutral-800: #322F2A;
+      --neutral-900: #191918;
+      /* light pastel families (r303 — the recovered Notion-style palette) */
+      --c-peach-bg:     #FFE9DC;  --c-peach-ink:    #E07856;  --c-peach-deep:    #6B2D1A;
+      --c-mint-bg:      #DCF1E2;  --c-mint-ink:     #4FA66D;  --c-mint-deep:     #1F4F30;
+      --c-lavender-bg:  #ECE6FA;  --c-lavender-ink: #8A6FE0;  --c-lavender-deep: #3F2D7A;
+      --c-sky-bg:       #DDEBF7;  --c-sky-ink:      #5C8FCE;  --c-sky-deep:      #1F3D63;
+      --c-yellow-bg:    #FCF1CD;  --c-yellow-ink:   #D6A330;  --c-yellow-deep:   #6B4C0B;
+      --c-rose-bg:      #FCE0E2;  --c-rose-ink:     #DD6E78;  --c-rose-deep:     #6B2128;
+      --c-sand-bg:      #F1ECDF;  --c-sand-ink:     #B59868;  --c-sand-deep:     #5A4623;
+      --c-grey-bg:      #EFECE7;  --c-grey-ink:     #6B665E;  --c-grey-deep:     #2D2A24;
+      --c-copper-bg:    #F4E4D2;  --c-copper-ink:   #B57438;  --c-copper-deep:   #5C3416;
       /* literals the dark block hardcodes (not chained to neutrals) */
-      --text-muted:     #6B675C;
-      --text-faint:     #726C5E;
+      --text-muted:     #898680;
+      --text-faint:     #898680;
       --text-on-accent: #FFFFFF;
-      --accent-hover:   #2337C8;
+      --accent-hover:   #9A5F25;
       --accent-fg:      #FFFFFF;
-      /* r148 (AUDIT-5 M3): التعبئات الذهبية الداكنة كانت تُطبع باهتة —
-         r197 يعيد ربط العائلات الفاتحة كلها للحبر الورقي. */
-      --accent:          #2E45E6;
-      --accent-strong:   #1F2FA8;
-      --state-focus-ring-color: var(--accent-strong);
-      --border-faint:   rgba(22,20,15,0.07);
-      --surface-border: rgba(22,20,15,0.07);
-      --surface-divider: rgba(22,20,15,0.05);
-      --chart-text:     #6B675C;
+      /* r303: print rides the recovered copper seat too */
+      --accent:          #B57438;
+      --accent-strong:   #5C3416;
+      --state-focus-ring-color: #9A5F25;
+      --border-faint:   rgba(25,25,24,0.06);
+      --surface-border: rgba(25,25,24,0.06);
+      --surface-divider: rgba(25,25,24,0.05);
+      --chart-text:     #898680;
       --gold:           #B57438;
       /* text-safe inks: dark maps them to the -ink shades; light uses
          the deeper -deep shades so status text stays ≥4.5:1 on paper */
@@ -1267,7 +1265,7 @@
       --warning-ink: var(--c-yellow-deep);
       --danger-ink:  var(--c-rose-deep);
       --info-ink:    var(--c-sky-deep);
-      --gold-ink:    #8F5A28;
+      --gold-ink:    #5C3416;
     }
   }
 }

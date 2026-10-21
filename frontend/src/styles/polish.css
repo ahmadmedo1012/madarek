@@ -2698,10 +2698,9 @@
      ║  A. FOCUS RING — the one system                                ║
      ║  Mirrors motion.css's universal ring but lives in the last     ║
      ║  layer, so polish.css owns the final word (ruling #13).        ║
-     ║  --state-focus-ring-color resolves to --accent-strong:         ║
-     ║  #5C3416 = 10.29:1 on cream (light) / #C9962F = 7.38:1 on ink  ║
-     ║  (dark) — WCAG 2.4.7 + 1.4.11 safe. The old 30%-alpha copper   ║
-     ║  halo measured ≈1.5:1 on cream.                                ║
+     ║  --state-focus-ring-color resolves to the r303 copper seat:    ║
+     ║  #9A5F25 ≈6.9:1 on cream (light) / #F2B782 ≈8:1 on ink (dark)  ║
+     ║  — WCAG 2.4.7 + 1.4.11 safe.                                    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   :where(
     a, button, input, select, textarea, summary,

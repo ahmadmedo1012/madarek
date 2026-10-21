@@ -2771,3 +2771,40 @@ icons/motion/colors خضراء. ‏r195 لا تعيد بناء الإقامة ا
   (ليلي night/gold، نهاري cream/copper، IBM Plex Sans Arabic).
 - جولات صقل الواجهة: عمق البطل، تدرج الثقة، لوحة أرضية للتذييل، وإبراز
   القسم النشط في التنقل.
+
+## r303 — «إعادة البناء البصريّة الكاملة» · The full visual rebuild (OPTIKKA landing + recovered Notion palette + Superlist app system)
+
+**Landing — the OPTIKKA scroll world (built on the build-threejs-scroll-worlds skill):**
+- ONE persistent Three.js world behind the whole page: a torus-knot of 220 instanced
+  learning fins (paper ceramic + copper signal) on the warm paper ground, under studio
+  key/fill/rim lighting, with seeded dust motes, a canvas-baked contact shadow, and
+  theme-reactive materials (paper/copper/fog re-read from the CSS tokens on data-theme
+  changes).
+- A native-scroll conductor (TS port of the skill's scroll-conductor.js, λ=5.2 damping,
+  exact/smooth split, reduced-motion snap) drives a 9-chapter camera journey through
+  Catmull-Rom position/target curves: hero front → orbit → chapters → live close-up on
+  the copper fins → roles wide pullback → colleges → vision (camera passes INSIDE the
+  knot — the immersion moment) → CTA resolve → footer horizon. World channels (fin
+  spread, idle spin, copper emissive, dust, fog, key light) interpolate between
+  adjacent chapters from the same damped progress.
+- On-demand rendering (idle = zero GPU burn), quality governor (software-rasterizer
+  detection → standard-material tier + DPR 0.7; sticky slow-tier snap after sustained
+  >45ms renders), visibility pause, WebGL context-loss fallback to the static poster.
+  three.js rides its own lazy chunk — the landing DOM paints first, the canvas fades in.
+- The OPTIKKA editorial grid: dashed 2/2 quartering rules (measured from their
+  assets/lines SVG), the scroll-cue vertical label, the giant display word anchored
+  bottom-left, statement bottom-right.
+- The old flat hero mockup + the SVG constellation are retired with their CSS.
+
+**App — the recovered Notion-style palette (from the historical commit 296e213):**
+- Light: Notion's warm cream ramp (#FBFAF9 ground, #191918 espresso ink) + the exact
+  9 pastel families (peach/mint/lavender/sky/yellow/rose/sand/grey/copper) + the copper
+  accent seat (#B57438 — "Notion-orange-with-Madarek-copper energy").
+- Dark: the deep ink ramp (#191918 ground, #F2EAD8 warm sand text) + the 9 darker
+  pastel grounds with luminous inks + night copper (#E0A067).
+- Role accents, print light-lock, elevation tints, glass, scrollbars, focus rings and
+  chart series all re-keyed onto the recovered families — both themes, consistently.
+
+**Verified in-browser:** hero/chapters/live/roles/colleges/vision/cta/footer at desktop
+1600×1000 (light+dark) and mobile 390×844; the camera journey, immersion moment,
+on-demand idle (61fps), no console errors, typecheck + eslint + production build green.

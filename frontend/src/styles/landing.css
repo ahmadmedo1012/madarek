@@ -46,6 +46,42 @@
   font-family: var(--font-sans);
 }
 
+/* ── The persistent world — one fixed canvas behind the whole page ── */
+.world-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.world-layer canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.world-poster {
+  position: absolute;
+  inset-block-start: 6%;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  inline-size: min(46vw, 560px);
+  aspect-ratio: 1;
+  opacity: 0.55;
+}
+
+/* Sections + header + footer stack above the world layer. */
+.fo-header,
+main,
+.fo-progress,
+.fo-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.fo-header { position: sticky; }
+.fo-progress { position: fixed; }
+
 /* Every top-level band shares the poster container rhythm (40/80-adjacent
    section steps from the spacing ladder). */
 .fo-hero-grid,
@@ -101,7 +137,7 @@
  * white labels 6.75:1). The stage-2 divergence the --poster-* namespace
  * was designed for. */
 [data-theme="dark"] .landing {
-  --poster-signal: var(--accent-strong);
+  --poster-signal: var(--accent);
 }
 
 /* ── Skip link (r172a §2 pin: accent pair, app recipes own nothing here) */
@@ -167,32 +203,22 @@
   max-inline-size: 1240px;
   margin-inline: auto;
   padding-inline: var(--sp-6);
-  min-block-size: 72px;
+  min-block-size: 64px;
 }
 
 .fo-brand {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-3);
+  gap: var(--sp-2-5);
   min-block-size: 44px;
   text-decoration: none;
   color: var(--poster-ink);
-}
-
-.fo-brand-text {
-  display: grid;
-  line-height: 1.3;
 }
 
 .fo-brand-name {
   font-family: var(--font-display);
   font-size: var(--fs-h3);
   font-weight: 700;
-}
-
-.fo-brand-sub {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
 }
 
 .fo-nav {
@@ -276,19 +302,79 @@
   min-block-size: 100vh;
   min-block-size: 100svh;
   display: grid;
-  align-items: center;
+  align-items: stretch;
   padding-block: var(--sp-12);
 }
 
-.fo-hero-grid {
+/* the OPTIKKA editorial grid: faint dotted rules that quarter the
+ * first viewport. Pure poster chrome — aria-hidden decoration. */
+.fo-hero-gridlines {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* the OPTIKKA editorial grid (their assets/lines SVG): dashed 2/2
+   * quartering rules at ~10% ink — one center column line, two row
+   * lines, plus the outer margins. Dotted drafting-paper character. */
+  background-image:
+    repeating-linear-gradient(to left, color-mix(in srgb, var(--poster-ink) 30%, transparent) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(to bottom, color-mix(in srgb, var(--poster-ink) 30%, transparent) 0 1px, transparent 1px 6px);
+  background-size:
+    50% 100%,
+    100% 33.333%;
+  background-position:
+    50% 0,
+    0 30%;
+  background-repeat: no-repeat;
+  mask-image: linear-gradient(to bottom, black 62%, transparent 100%);
+  opacity: 0.42;
+}
+
+/* the 3D object — fills the first viewport, sits UNDER the editorial
+ * copy layer. --sp drives its CSS-side drift + scale; three.js reads
+ * the same var for the render choreography. */
+
+/* the copy layer floats over the grid+object: top-right the eyebrow,
+ * bottom-left the word + triad, bottom-right the paragraph + actions.
+ * One column that spans; the internal members place themselves. */
+.fo-hero-layer {
+  position: relative;
+  z-index: 2;
   display: grid;
-  /* final-homepage: rebalanced 1fr/1.06fr — the constellation is the
-   * poster's focal object and needs its full share of the stage; the
-   * copy's long measures are ch-capped so the narrower column is safe. */
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.06fr);
-  align-items: center;
-  gap: var(--sp-7);
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
   inline-size: 100%;
+  max-inline-size: 1240px;
+  margin-inline: auto;
+  padding-inline: var(--sp-6);
+  min-block-size: calc(100svh - var(--sp-12) * 2);
+}
+
+/* eyebrow: top of the reading column (inline-start = right in RTL) */
+.fo-hero-copy { grid-area: 1 / 1 / 2 / 2; }
+
+/* the display word + triad: bottom-LEFT cell — the OPTIKKA anchor */
+.fo-hero-word {
+  grid-area: 3 / 2 / 4 / 3;
+  align-self: end;
+  /* the OPTIKKA anchor: the word's baseline rides the section's
+   * bottom edge with only breathing room above the fold */
+  margin-block-end: var(--sp-2);
+}
+
+/* the statement paragraph + actions + meta: bottom-right cell
+ * (reading-start edge) */
+.fo-hero-aside {
+  grid-area: 3 / 1 / 4 / 2;
+  align-self: end;
+  display: grid;
+  justify-items: start;
+}
+
+.fo-hero-copy {
+  align-self: start;
+  padding-block-start: var(--sp-7);
+  max-inline-size: 30ch;
 }
 
 .fo-eyebrow {
@@ -298,16 +384,15 @@
   margin-block-end: var(--sp-5);
 }
 
-/* The poster word — the stage-2 display allow: the homepage hero rides
- * the BLUEPRINT §3 fluid-display technique (design widths 1280/375),
- * Arabic line-height ≥1.15, zero tracking. type-gate: allow — poster
- * display scale for the homepage hero (BLUEPRINT §6 hero row). */
+/* the poster word — display allow: fluid poster scale, Arabic
+ * line-height, zero tracking (cursive joins). */
 .fo-hero-title {
   font-family: var(--font-display);
-  font-size: clamp(56px, 11vw, 96px);
+  font-size: clamp(72px, 13vw, 168px);
   font-weight: 700;
-  line-height: 1.15;
-  margin-block: 0 var(--sp-4);
+  line-height: 1.04;
+  margin-block: 0 var(--sp-3);
+  letter-spacing: 0;
 }
 
 .fo-hero-triad {
@@ -315,26 +400,32 @@
   font-size: var(--fs-display-md);
   font-weight: 600;
   line-height: 1.3;
-  margin-block-end: var(--sp-5);
 }
 
+/* the statement paragraph lands bottom-inline-END (OPTIKKA's
+ * bottom-left in LTR maps to the reading-start edge; the sub +
+ * actions + meta live with it). */
 .fo-hero-sub {
-  max-inline-size: 52ch;
+  justify-self: start;
+  max-inline-size: 44ch;
   font-size: var(--fs-body-lg);
-  line-height: 1.7;
+  line-height: 1.8;
+  text-align: start;
   color: var(--text-secondary);
-  margin-block-end: var(--sp-7);
+  margin-block-end: var(--sp-6);
 }
 
 .fo-hero-actions {
+  justify-self: start;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-4);
-  margin-block-end: var(--sp-7);
+  margin-block-end: var(--sp-6);
 }
 
 .fo-hero-meta {
+  justify-self: start;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -349,77 +440,24 @@
   border-radius: var(--r-xs);
 }
 
-/* The ONE graphic object — flat two-tone constellation; it drifts a few
- * pixels with the hero's --sp (written by useScrollStage; pure CSS calc).
- * final-homepage: the r198 hairlines (22%/9% ink, 1px) rendered the
- * centerpiece weightless in BOTH themes — the OPTIKKA mapping demands
- * an object with mass. The stage now carries a soft radial signal field
- * behind the rings, and the strokes carry real ink. */
-.fo-hero-stage {
-  position: relative;
-  display: grid;
-  justify-items: center;
-}
-
-.fo-hero-stage::before {
-  content: '';
-  position: absolute;
-  inset-block-start: 50%;
-  inset-inline-start: 50%;
-  translate: -50% -50%;
-  inline-size: min(88%, 560px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  /* one quiet signal wash behind the rings — the field that gives the
-   * constellation its gravity; flat two-tone discipline intact (ink +
-   * ONE signal, no third hue, no raster). */
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--poster-signal) 9%, transparent) 0%,
-    color-mix(in srgb, var(--poster-signal) 4%, transparent) 46%,
-    transparent 68%
-  );
-}
-
-.fo-hero-constellation {
-  position: relative;
-  inline-size: min(100%, 620px);
-  block-size: auto;
-  transform: translateY(calc((var(--sp, 0.5) - 0.5) * -48px));
-}
-
-.const-ring {
-  stroke: color-mix(in srgb, var(--poster-ink) 34%, transparent);
-  stroke-width: 1.25;
-}
-
-.const-chord {
-  stroke: color-mix(in srgb, var(--poster-ink) 17%, transparent);
-  stroke-width: 1;
-}
-
-.const-center {
-  fill: var(--poster-signal);
-}
-
-.const-node-dot {
-  fill: var(--poster-ink);
-}
-
-.const-node.is-signal .const-node-dot,
-.const-node.is-active .const-node-dot {
-  fill: var(--poster-signal);
-}
-
-.const-node-halo {
-  fill: color-mix(in srgb, var(--poster-signal) 18%, transparent);
-}
-
+/* scroll cue — OPTIKKA's quiet vertical label at the viewport edge */
 .fo-scroll-cue {
   position: absolute;
   inset-block-end: var(--sp-6);
-  left: 50%;
-  transform: translateX(-50%);
+  inset-inline-start: var(--sp-6);
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-3);
+  pointer-events: none;
+}
+
+.fo-scroll-cue-text {
+  writing-mode: vertical-rl;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
 }
 
 .fo-scroll-cue-dot {
@@ -993,41 +1031,7 @@
 
 .cg-stage {
   display: grid;
-  grid-template-columns: minmax(300px, 460px) 1fr;
   gap: var(--sp-8);
-  align-items: center;
-}
-
-/* final-homepage: the map gets the hero's field treatment — one soft
- * radial signal wash behind the strengthened rings, so the section's
- * ONE graphic object carries the same mass as the poster's. */
-.cg-map {
-  position: relative;
-  display: grid;
-  justify-items: center;
-}
-
-.cg-map::before {
-  content: '';
-  position: absolute;
-  inset-block-start: 50%;
-  inset-inline-start: 50%;
-  translate: -50% -50%;
-  inline-size: 92%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--poster-signal) 8%, transparent) 0%,
-    color-mix(in srgb, var(--poster-signal) 3%, transparent) 48%,
-    transparent 68%
-  );
-}
-
-.cg-constellation {
-  position: relative;
-  inline-size: 100%;
-  block-size: auto;
 }
 
 .cg-panel-wrap {
@@ -1217,8 +1221,8 @@
 /* ── Footer — slide-up colophon with the giant wordmark ───────────── */
 .fo-footer {
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
-  padding-block: var(--sp-11) var(--sp-7);
-  overflow: hidden;
+  padding-block: var(--sp-11) var(--sp-12);
+  overflow: visible;
 }
 
 /* the slide-up reveal (BLUEPRINT §6 footer row): the colophon rises into
@@ -1291,13 +1295,15 @@
  * 7% ink never registered on either ground — 12% reads as a watermark
  * without competing with the colophon copy above it. */
 .fo-footer-mark {
-  margin-block-start: var(--sp-9);
+  margin-block: var(--sp-9) 0;
   font-family: var(--font-display);
   /* type-gate: allow — the giant closing wordmark (poster device,
-   * BLUEPRINT §6 footer row; decorative aria-hidden). */
-  font-size: clamp(96px, 14vw, 176px);
+   * BLUEPRINT §6 footer row; decorative aria-hidden). The 1.6 line
+   * box + generous block padding gives Arabic descenders their full
+   * reach — the word is NEVER clipped by the section edge. */
+  font-size: clamp(88px, 12vw, 152px);
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.6;
   text-align: center;
   color: color-mix(in srgb, var(--poster-ink) 12%, transparent);
   transform: translateY(calc((1 - var(--sp, 0)) * 96px));
@@ -1317,24 +1323,30 @@
     padding-block: var(--sp-10) var(--sp-10);
   }
 
-  .fo-hero-grid {
-    grid-template-columns: 1fr;
+  .fo-hero-copy,
+  .fo-hero-word,
+  .fo-hero-aside {
+    grid-area: auto;
+    justify-self: stretch;
   }
 
-  .fo-hero-stage {
-    order: 2;
-    margin-block-start: var(--sp-6);
+  .fo-hero-layer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+    min-block-size: auto;
   }
 
-  .fo-hero-constellation {
-    inline-size: min(100%, 400px);
+  .fo-hero-word .fo-hero-title {
+    font-size: clamp(64px, 17vw, 120px);
   }
 
-  .fo-hero-stage::before {
-    inline-size: min(86%, 360px);
+  .fo-hero-aside {
+    justify-items: stretch;
   }
 
   .fo-scroll-cue { display: none; }
+  .fo-hero-copy { padding-block-start: 0; }
 
   .ch--split,
   .ch--offset,
@@ -1361,10 +1373,6 @@
 
   .cg-stage {
     grid-template-columns: 1fr;
-  }
-
-  .cg-constellation {
-    inline-size: min(100%, 380px);
   }
 
   .rl-strip {
@@ -1427,7 +1435,6 @@
 
 /* ── Reduced motion: the complete static poster ───────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .fo-hero-constellation,
   .fo-footer-inner,
   .fo-footer-mark {
     transform: none;
@@ -1442,248 +1449,6 @@
   .mini-mx-bar > span {
     transition: none;
   }
-}
-
-/* ── Final landing object — an original three-dimensional learning flow ── */
-.landing {
-  --poster-paper: var(--surface);
-}
-
-.fo-hero {
-  background: color-mix(in srgb, var(--surface) 96%, var(--accent-soft));
-}
-
-.fo-hero-stage {
-  min-block-size: 520px;
-  perspective: 1400px;
-  isolation: isolate;
-}
-
-.fo-hero-stage::before {
-  inline-size: min(92%, 600px);
-  border-radius: var(--r-2xl);
-  background: color-mix(in srgb, var(--accent-soft) 54%, transparent);
-  transform: rotate(-8deg);
-}
-
-.hero-learning-object {
-  position: relative;
-  inline-size: min(100%, 600px);
-  aspect-ratio: 1.06;
-  transform-style: preserve-3d;
-  transform: rotateX(6deg) rotateY(-12deg) translateY(calc((var(--sp, 0.5) - 0.5) * -28px));
-  transition: transform var(--t-slower) var(--ease-out);
-}
-
-.hero-object__orbit {
-  position: absolute;
-  inset: 8%;
-  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
-  border-radius: 50%;
-  transform: translateZ(-20px) rotate(24deg);
-}
-
-.hero-object__orbit--b {
-  inset: 19% 2%;
-  transform: translateZ(-32px) rotate(-32deg);
-}
-
-.hero-object__board,
-.hero-object__lesson,
-.hero-object__checkpoint {
-  position: absolute;
-  border: 1px solid color-mix(in srgb, var(--poster-ink) 11%, transparent);
-  background: var(--surface);
-  box-shadow: var(--elev-3);
-}
-
-.hero-object__board {
-  inset: 10% 5% 17% 16%;
-  padding: var(--sp-6);
-  border-radius: var(--r-2xl);
-  background: color-mix(in srgb, var(--accent-soft) 58%, var(--surface));
-  transform: translateZ(2px) rotate(-4deg);
-}
-
-.hero-object__board-head,
-.hero-object__lesson-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  color: var(--text-secondary);
-  font-size: var(--fs-sm);
-  font-weight: 650;
-}
-
-.hero-object__board-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--sp-3);
-  margin-block-start: var(--sp-7);
-}
-
-.hero-object__board-grid i {
-  display: block;
-  aspect-ratio: 1;
-  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-  border-radius: var(--r-sm);
-  background: var(--surface);
-}
-
-.hero-object__board-grid i:nth-child(2),
-.hero-object__board-grid i:nth-child(6),
-.hero-object__board-grid i:nth-child(8) {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.hero-object__lesson {
-  inset: 24% 16% 11% 4%;
-  padding: var(--sp-5);
-  border-radius: var(--r-xl);
-  transform: translateZ(38px) rotate(5deg);
-}
-
-.hero-object__dot {
-  inline-size: var(--sp-2);
-  block-size: var(--sp-2);
-  border-radius: var(--r-full);
-  background: var(--accent);
-}
-
-.hero-object__video {
-  position: relative;
-  display: grid;
-  place-items: center;
-  min-block-size: 148px;
-  margin-block: var(--sp-5);
-  border-radius: var(--r-lg);
-  background: var(--poster-ink);
-  color: var(--surface);
-  overflow: hidden;
-}
-
-.hero-object__play {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  inline-size: var(--sp-10);
-  block-size: var(--sp-10);
-  padding-inline-start: var(--sp-1);
-  border-radius: var(--r-full);
-  background: var(--accent);
-  color: var(--accent-fg);
-  font-size: var(--fs-body);
-}
-
-.hero-object__wave {
-  position: absolute;
-  inset-inline: var(--sp-5);
-  inset-block-end: var(--sp-5);
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  block-size: var(--sp-7);
-}
-
-.hero-object__wave i {
-  inline-size: var(--sp-1);
-  block-size: 42%;
-  border-radius: var(--r-full);
-  background: color-mix(in srgb, var(--accent-strong) 72%, transparent);
-}
-
-.hero-object__wave i:nth-child(2),
-.hero-object__wave i:nth-child(4) { block-size: 100%; }
-.hero-object__wave i:nth-child(3) { block-size: 68%; }
-
-.hero-object__progress {
-  block-size: var(--sp-2);
-  overflow: hidden;
-  border-radius: var(--r-full);
-  background: var(--surface-3);
-}
-
-.hero-object__progress span {
-  display: block;
-  inline-size: 66%;
-  block-size: 100%;
-  border-radius: inherit;
-  background: var(--accent);
-}
-
-.hero-object__checkpoint {
-  inset: 58% 0 2% 46%;
-  display: grid;
-  align-content: center;
-  gap: var(--sp-3);
-  padding: var(--sp-5);
-  border-radius: var(--r-lg);
-  transform: translateZ(78px) rotate(-6deg);
-}
-
-.hero-object__checkpoint strong { font-size: var(--fs-body); }
-
-.hero-object__kicker,
-.hero-object__tag {
-  color: var(--accent-strong);
-  font-size: var(--fs-sm);
-  font-weight: 700;
-}
-
-.hero-object__answer {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  color: var(--text-secondary);
-  font-size: var(--fs-sm);
-}
-
-.hero-object__answer span {
-  display: grid;
-  place-items: center;
-  inline-size: var(--sp-5);
-  block-size: var(--sp-5);
-  border-radius: var(--r-full);
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-}
-
-.hero-object__tag {
-  position: absolute;
-  z-index: 2;
-  padding: var(--sp-2) var(--sp-3);
-  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-  border-radius: var(--r-full);
-  background: var(--surface);
-  box-shadow: var(--elev-1);
-  transform: translateZ(96px);
-}
-
-.hero-object__tag--top { inset-block-start: 2%; inset-inline-start: 7%; }
-.hero-object__tag--side { inset-block-end: 14%; inset-inline-end: 2%; }
-
-@media (max-width: 960px) {
-  .fo-hero-stage { min-block-size: 410px; }
-  .hero-learning-object { inline-size: min(100%, 480px); }
-}
-
-@media (max-width: 640px) {
-  .fo-hero { padding-block-start: var(--sp-9); }
-  .fo-hero-stage { min-block-size: 330px; }
-  .hero-learning-object { inline-size: min(100%, 360px); }
-  .hero-object__board { padding: var(--sp-4); }
-  .hero-object__board-grid { margin-block-start: var(--sp-4); gap: var(--sp-2); }
-  .hero-object__lesson { padding: var(--sp-3); }
-  .hero-object__video { min-block-size: 102px; margin-block: var(--sp-3); }
-  .hero-object__checkpoint { padding: var(--sp-3); gap: var(--sp-2); }
-  .hero-object__tag { padding: var(--sp-1) var(--sp-2); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-learning-object { transform: rotateX(6deg) rotateY(-12deg); }
 }
 
 /* ── Reveal-up — the landing choreography class contract ────────────

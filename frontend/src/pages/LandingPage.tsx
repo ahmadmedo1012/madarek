@@ -7,37 +7,36 @@ import { Icon } from '../components/Icon';
 import { StarMark } from '../components/StarMark';
 import { ThemeToggle, useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
-import { Constellation } from '../components/landing/Constellation';
 import { colleges } from '../data/colleges.config';
 import { formatInt, formatPct1 } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
 import { useScrollStage } from '../hooks/useScrollStage';
-// landing.css — «ملصق مدارك»: the r198 OPTIKKA-direction rebuild (stage 2).
-// Poster logic on the --poster-* namespace: paper/ink with one ultramarine
-// signal, oversized Arabic display type, one idea per scroll chapter,
-// numbered chapters 01–06 (Western digits, bidi-isolated). No pinned
-// stages, no preloader, no canvas/video, no new dependencies — the rAF
-// useScrollStage engine + IntersectionObserver reveals carry the motion.
+import { MadarekWorld } from '../components/landing/MadarekWorld';
+// landing.css — «ملصق مدارك r303» — the OPTIKKA rebuild.
+// Poster logic on the --poster-* namespace: paper/ink with ONE copper
+// signal, oversized Arabic display type, the editorial 4-column grid,
+// the numbered chapters 01–06, and the 3D knowledge sculpt
+// (three.js progressive enhancement over a static SVG twin).
 // Every funnel/a11y/truth contract carries forward (landing-funnel,
 // r168b, r170d, r177, r188) — see the tests pinned beside each surface.
 import '../styles/landing.css';
 
 /**
- * Landing — «ملصق مدارك» (r198).
+ * Landing — «ملصق مدارك» (r303, the OPTIKKA rebuild).
  *
- * Chapter sequence (BLUEPRINT §6, every capability verified in code):
- *   header (sticky, scrolled variant) → hero (brand word + triad +
- *   two-tone constellation of the 25 colleges) → statement (student /
- *   teacher / admin, block-revealed) → chapters 01–06 (flipped
- *   classrooms, mastery matrix, research cycle, online exams, community
- *   & training, quality & governance — each with an honest miniature
- *   composed from real UI patterns + demo data) → ما يعمل اليوم (the
- *   honest capability ledger) → roles strip → the interactive colleges
- *   constellation → vision status pairs → CTA → slide-up footer.
+ * Scroll choreography (OPTIKKA zoom-to-detail, adapted to Madarek):
+ *   header (sticky, thin-rule) → hero (brand word + eyebrow + the 3D
+ *   knowledge sculpt on the dotted editorial grid + SCROLL cue) →
+ *   statement (paragraph with signal emphasis, bottom-right) →
+ *   chapters 01–06 (numbered editorial spreads, alternating
+ *   split/bleed/offset with honest minis) → live ledger → roles →
+ *   colleges constellation (interactive, real registry) → vision →
+ *   closing CTA → colophon footer with the giant wordmark.
  */
 
-/* ── Copy: the honest capability ledger (docs/02-features vocabulary).
- * Every number below is computed from this table or hard product truth —
+/* ── Honest capability ledger (ما يعمل اليوم) — every line is a real
+ * product truth (see backend feature flags / routes). Every number
+ * below is computed from this table or hard product truth —
  * no invented adoption, no marketing metrics. */
 const LIVE_CAPABILITIES = [
   'المحاضرات التفاعلية بنقاط الفحص والحضور التلقائي',
@@ -84,49 +83,6 @@ function Mini({ label, children }: { label: string; children: React.ReactNode })
       <div className="mini-body">{children}</div>
       <figcaption className="mini-caption">عرض توضيحي</figcaption>
     </figure>
-  );
-}
-
-/** A purpose-built physical learning scene for the first viewport. The three
- * planes tell the actual flow: watch a lesson, answer a checkpoint, then see
- * mastery progress. It is CSS-only, so it remains fast and accessible. */
-function HeroLearningObject() {
-  return (
-    <div className="hero-learning-object">
-      <div className="hero-object__orbit hero-object__orbit--a" />
-      <div className="hero-object__orbit hero-object__orbit--b" />
-      <div className="hero-object__board">
-        <div className="hero-object__board-head">
-          <span>خريطة التعلّم</span>
-          <span dir="ltr">03 / 06</span>
-        </div>
-        <div className="hero-object__board-grid" aria-hidden>
-          <i /><i /><i /><i /><i /><i /><i /><i /><i />
-        </div>
-      </div>
-
-      <div className="hero-object__lesson">
-        <div className="hero-object__lesson-top">
-          <span className="hero-object__dot" />
-          <span>أحياء · الوحدة الثانية</span>
-          <span dir="ltr">12:36</span>
-        </div>
-        <div className="hero-object__video">
-          <span className="hero-object__play">▶</span>
-          <span className="hero-object__wave" aria-hidden><i /><i /><i /><i /><i /></span>
-        </div>
-        <div className="hero-object__progress"><span /></div>
-      </div>
-
-      <div className="hero-object__checkpoint">
-        <span className="hero-object__kicker">نقطة فحص</span>
-        <strong>ما الخطوة التالية؟</strong>
-        <div className="hero-object__answer"><span>✓</span> أكمل المفهوم التالي</div>
-      </div>
-
-      <span className="hero-object__tag hero-object__tag--top">تعلّم</span>
-      <span className="hero-object__tag hero-object__tag--side">إتقان ٨٢٪</span>
-    </div>
   );
 }
 
@@ -256,7 +212,7 @@ function MiniGovernance() {
   );
 }
 
-/* ── Chapters 01–06 (BLUEPRINT §6) — alternating poster layouts. */
+/* ── Chapters 01–06 — alternating poster layouts. */
 const CHAPTERS: { num: string; title: string; lede: React.ReactNode; layout: 'split' | 'bleed' | 'offset'; mini: React.ReactNode }[] = [
   {
     num: '01', layout: 'split', mini: <MiniPlayer />,
@@ -315,10 +271,9 @@ export default function LandingPage() {
   const headerRef = useRef<HTMLElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
-  /* ── r198 scroll wiring: the hero drifts (--sp on the hero section),
-   * the footer wordmark rushes up (--sp on the footer). Both are pure
-   * CSS calc consumers; chapters/sections reveal via IO (useReveal). */
-  const heroRef = useScrollStage<HTMLElement>();
+  /* ── Scroll wiring: the footer wordmark rush (--sp on the footer).
+   * The hero is now owned by the persistent world's conductor — no
+   * section-level --sp needed there anymore. */
   const footerRef = useScrollStage<HTMLElement>({ startOffset: 1, endOffset: 1 });
 
   // The colleges constellation: which college the chip row selected.
@@ -371,7 +326,7 @@ export default function LandingPage() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', onScroll);
-      if (raf) cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(apply as unknown as number);
     };
   }, []);
 
@@ -381,6 +336,12 @@ export default function LandingPage() {
 
   return (
     <div className="landing">
+
+      {/* ═══ THE PERSISTENT 3D WORLD ═══
+          One fixed canvas behind the whole page; the native scroll
+          conductor drives its camera through the data-cam chapters.
+          Built on the build-threejs-scroll-worlds skill. */}
+      <MadarekWorld className="world-layer" />
 
       {/* P3-24: skip-to-content — first Tab stop, hidden until focused. */}
       <a href="#main" className="fo-skip-link">تخطَّ إلى المحتوى</a>
@@ -394,11 +355,8 @@ export default function LandingPage() {
       <header className="fo-header" ref={headerRef}>
         <div className="fo-header-inner">
           <Link to="/" className="fo-brand" aria-label="مدارك — الصفحة الرئيسية">
-            <StarMark size={34} className="fo-brand-mark" />
-            <span className="fo-brand-text">
-              <span className="fo-brand-name">مدارك</span>
-              <span className="fo-brand-sub">منصّة التعليم الذكي</span>
-            </span>
+            <StarMark size={30} className="fo-brand-mark" />
+            <span className="fo-brand-name">مدارك</span>
           </Link>
 
           <nav className="fo-nav" aria-label="التنقل الرئيسي">
@@ -467,26 +425,34 @@ export default function LandingPage() {
 
       <main id="main" tabIndex={-1}>
 
-        {/* ═══ الملصق — the poster hero ═══ */}
-        <section className="fo-hero" aria-label="مدارك — منصّة التعليم الذكي" ref={heroRef}>
-          <div className="fo-hero-grid">
+        {/* ═══ HERO — the poster's first viewport (OPTIKKA grid) ═══ */}
+        <section className="fo-hero" data-cam="hero" aria-label="مدارك — منصّة التعليم الذكي">
+          <div className="fo-hero-gridlines" aria-hidden />
+
+          <div className="fo-hero-layer">
             <div className="fo-hero-copy">
               <RevealCssClass as="p" className="fo-eyebrow">
                 منصّة تعليم ذكية · عربية أولًا · مستقلّة
               </RevealCssClass>
+            </div>
 
-              <h1 className="fo-hero-title">مدارك</h1>
-
-              <RevealCssClass as="p" className="fo-hero-triad" delay={1}>
-                تعلّم · <em>أتقن</em> · ابحث
+            <div className="fo-hero-word">
+              <RevealCssClass as="h1" className="fo-hero-title" delay={1}>
+                مدارك
               </RevealCssClass>
 
-              <RevealCssClass as="p" className="fo-hero-sub" delay={2}>
+              <RevealCssClass as="p" className="fo-hero-triad" delay={2}>
+                تعلّم · <em>أتقن</em> · ابحث
+              </RevealCssClass>
+            </div>
+
+            <div className="fo-hero-aside">
+              <RevealCssClass as="p" className="fo-hero-sub" delay={3}>
                 محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —
                 في تجربة عربية واحدة لخمسة أدوار أكاديمية.
               </RevealCssClass>
 
-              <RevealCssClass as="div" className="fo-hero-actions" delay={3}>
+              <RevealCssClass as="div" className="fo-hero-actions" delay={4}>
                 <Link to="/auth/register" className="btn accent lg fo-hero-cta">
                   أنشئ حسابك الجامعي
                   <Icon icon={ArrowLeft} size={16} />
@@ -494,28 +460,24 @@ export default function LandingPage() {
                 <a href="#chapters" className="btn ghost lg">كيف تعمل</a>
               </RevealCssClass>
 
-              <RevealCssClass as="ul" className="fo-hero-meta" delay={4}>
+              <RevealCssClass as="ul" className="fo-hero-meta" delay={5}>
                 <li>{formatInt(colleges.length)} كلية</li>
                 <li>{formatInt(CAMPUS_COUNT)} أحرُم أكاديمية</li>
                 <li>{formatInt(LIVE_COUNT)} قدرات تعمل اليوم</li>
                 <li className="fo-hero-meta-note">بيانات العرض توضيحية</li>
               </RevealCssClass>
             </div>
-
-            {/* One physical learning object: lesson → checkpoint → mastery. */}
-            <div className="fo-hero-stage" aria-hidden>
-              <HeroLearningObject />
-            </div>
           </div>
 
           {/* scroll cue — the quiet "keep going" affordance */}
           <div className="fo-scroll-cue" aria-hidden>
+            <span className="fo-scroll-cue-text">تابع التمرير</span>
             <span className="fo-scroll-cue-dot" />
           </div>
         </section>
 
         {/* ═══ البيان — what Madarek does, one line per role ═══ */}
-        <section id="statement" className="st-section" aria-labelledby="statement-title">
+        <section id="statement" data-cam="statement" className="st-section" aria-labelledby="statement-title">
           <span className="fo-label">البيان</span>
           <h2 id="statement-title" className="st-title">منصّة واحدة تخدم الرحلة كلّها</h2>
           <div className="st-lines">
@@ -532,7 +494,7 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ الفصول 01–06 — one capability per chapter ═══ */}
-        <section id="chapters" className="chapters" aria-labelledby="chapters-title">
+        <section id="chapters" data-cam="chapters" className="chapters" aria-labelledby="chapters-title">
           <header className="chapters-head">
             <span className="fo-label">الفصول</span>
             <RevealCssClass as="h2" className="chapters-title" delay={1} id="chapters-title">
@@ -558,7 +520,7 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ ما يعمل اليوم — the honest capability ledger ═══ */}
-        <section id="live" className="lv-section" aria-labelledby="live-title">
+        <section id="live" data-cam="live" className="lv-section" aria-labelledby="live-title">
           <span className="fo-label">ما يعمل اليوم</span>
           <RevealCssClass as="h2" className="lv-title" delay={1} id="live-title">
             قدرات <em>موثَّقة</em>، لا ادّعاءات
@@ -578,7 +540,7 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ الأدوار — the five verified roles, one strip ═══ */}
-        <section id="roles" className="rl-section" aria-labelledby="roles-title">
+        <section id="roles" data-cam="roles" className="rl-section" aria-labelledby="roles-title">
           <span className="fo-label">الأدوار</span>
           <RevealCssClass as="h2" className="rl-title" delay={1} id="roles-title">
             منصّة واحدة، <em>خمسة مسارات</em>
@@ -600,7 +562,7 @@ export default function LandingPage() {
             The SVG stays decorative (aria-hidden); interaction lives in the
             accessible chip row: 25 real colleges, keyboard-operable, with a
             details panel instead of a floating popover (44px targets). */}
-        <section id="colleges" className="cg-section" aria-labelledby="cg-title">
+        <section id="colleges" data-cam="colleges" className="cg-section" aria-labelledby="cg-title">
           <span className="fo-label">الجامعة التجريبية</span>
           <RevealCssClass as="h2" className="cg-title" delay={1} id="cg-title">
             {formatInt(colleges.length)} كلية في {formatInt(CAMPUS_COUNT)} أحرُم
@@ -611,10 +573,6 @@ export default function LandingPage() {
           </RevealCssClass>
 
           <div className="cg-stage">
-            <div className="cg-map" aria-hidden>
-              <Constellation interactive selectedSlug={selectedCollege} className="cg-constellation" />
-            </div>
-
             <div className="cg-panel-wrap">
               <ul className="cg-chips" aria-label="اختر كلية لاستعراضها">
                 {colleges.map((c) => (
@@ -653,7 +611,7 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ إلى أين — honest status pairs ═══ */}
-        <section id="vision" className="vs-section" aria-labelledby="vs-title">
+        <section id="vision" data-cam="vision" className="vs-section" aria-labelledby="vs-title">
           <span className="fo-label">إلى أين</span>
           <RevealCssClass as="h2" className="vs-title" delay={1} id="vs-title">
             نحو تعليمٍ <em>يعرف كلَّ طالب</em>
@@ -674,7 +632,7 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ الخاتمة ═══ */}
-        <section className="fo-cta" aria-label="ابدأ رحلتك — أنشئ حسابك">
+        <section data-cam="cta" className="fo-cta" aria-label="ابدأ رحلتك — أنشئ حسابك">
           <span className="fo-cta-star" aria-hidden>
             <StarMark size={48} withHalo />
           </span>
@@ -702,16 +660,13 @@ export default function LandingPage() {
       </main>
 
       {/* ── COLOPHON FOOTER — slide-up with the giant wordmark rush ── */}
-      <footer className="fo-footer" ref={footerRef}>
+      <footer data-cam="footer" className="fo-footer" ref={footerRef}>
         <div className="fo-footer-inner">
           <div className="fo-footer-grid">
             <div className="fo-footer-col">
               <Link to="/" className="fo-brand" aria-label="مدارك">
-                <StarMark size={34} className="fo-brand-mark" />
-                <span className="fo-brand-text">
-                  <span className="fo-brand-name">مدارك</span>
-                  <span className="fo-brand-sub">منصّة التعليم الذكي</span>
-                </span>
+                <StarMark size={30} className="fo-brand-mark" />
+                <span className="fo-brand-name">مدارك</span>
               </Link>
               <p className="fo-footer-about">
                 {/* r188 honesty pin: «اصطناعية بالكامل» must stay contiguous

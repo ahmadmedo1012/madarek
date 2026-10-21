@@ -599,7 +599,7 @@
     --sidebar-rule:      var(--neutral-200);
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
-    --sidebar-item-active-bg:   rgb(142 155 255 / 0.16);  /* r197: signal wash */
+    --sidebar-item-active-bg:   rgb(224 160 103 / 0.16);  /* r197: signal wash */
     --sidebar-item-active-text: var(--neutral-900);
     /* (r148-d: --sidebar-active-bar retired with the canon) */
 
