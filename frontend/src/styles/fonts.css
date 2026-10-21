@@ -1,46 +1,38 @@
 /* ═══════════════════════════════════════════════════════════════════
-   Self-hosted IBM Plex fonts — served from /public/fonts.
+   Self-hosted fonts — served from /public/fonts. (r304)
    Replaces the render-blocking fonts.googleapis.com request chain
    (preconnect ×2 → css2 stylesheet → gstatic files) that used to sit
    in <head>. This file must be imported FIRST in main.tsx so the
    @font-face rules exist before any stylesheet that uses the
-   families (tokens.css --font-sans / -display / -serif / -mono).
+   families (tokens.css --font-sans / -display / -mono).
    ─────────────────────────────────────────────────────────────────
-   What the app actually uses (verified by grepping every
-   font-family / --fw-* / font-style usage in src/):
-   · IBM Plex Sans Arabic 400/500/600/700 — body text + display
-     headings + chart.js labels + the landing's Arabic mono fallback
-     (premium-polish P1-4: mono labels continue their Arabic runs in
-     this face — the r197 landing re-point removed the landing-local mono stack). The family has NO
-     true 800 cut anywhere (not even on Google Fonts), and 700 is the
-     heaviest file that ships here — so `font-weight: 800` never
-     painted an 800: CSS font matching selects the closest available
-     face (the REAL 700 file) and, because a face matched, applies NO
-     synthetic bold (synthesis only happens when no face of the
-     family matches at all). Every --fw-black consumer therefore
-     always rendered the 700 cut. wave 2-a: tokens.css now resolves
-     --fw-black to var(--fw-bold) (700) so the heaviest display
-     weight is what the tokens actually say — zero visual delta,
-     same woff2, and the fallback stacks get a real 700 instead of a
-     synthetic 800 while the webfont swaps in.
-   · IBM Plex Serif italic 400/500 — RETIRED (r152j, A7): see the
-     retirement note at the serif section below. The pair shipped as
-     “sanctioned Latin-runs-only” but had zero live font-family
-     consumers, so the browser never fetched the files — both woff2s
-     and both @font-face rules were deleted. Arabic emphasis remains
-     upright weight + accent ink (polish.css :lang(ar) em reset).
-   · IBM Plex Mono 400/500 — codes, IDs, numbers, emails (latin).
-   Subsets: arabic + latin for Sans Arabic, latin for the rest —
-   the browser downloads only what the page paints.
-   All weights/subsets = exact woff2 files the Google Fonts CSS2
-   API serves. font-display: swap on every face.
-   Total: 10 files ≈ 287 KB on disk (premium-polish P3 deleted the
-   dead Noto Kufi Arabic ×6, Amiri and Rubik families — zero
-   consumers since the round-3 Orbit Ink rebuild replaced the old
-   landing wave, 51% of the shipped font bytes; r152j then deleted
-   the dead Serif italic ×2 — the remaining 42.6 KB). A typical
-   first paint needs only the two preloaded arabic subsets (~86 KB).
-   ═════════════════════════════════════════════════════════════════ */
+   The app's families (assets.test.ts pins this file at 14 faces and
+   fails on any @font-face pointing at a missing file):
+   · IBM Plex Sans Arabic 400/500/600/700 (arabic + latin subsets) —
+     body text, chrome, chart.js labels, and the landing's Arabic mono
+     fallback (premium-polish P1-4: mono labels continue their Arabic
+     runs in this face). The family has NO true 800 cut anywhere (not
+     even on Google Fonts), so tokens.css resolves --fw-black to 700 —
+     the heaviest real cut — and every display weight is honest: CSS
+     font matching always lands on a real file, no synthetic bold.
+   · IBM Plex Serif italic — RETIRED (r152j): zero live consumers, both
+     woff2s deleted from disk. Arabic emphasis stays upright weight +
+     accent ink. Do not re-add without re-shipping files.
+   · IBM Plex Mono 400/500 (latin) — codes, IDs, numbers, emails.
+   · Alexandria 600/700 (arabic + latin subsets) — the DISPLAY voice
+     (r190 «مدار المعرفة»): geometric Kufi-flavored sans, true Arabic
+     + Latin in one family. Display hierarchy: 700 hero/headline ·
+     600 section. (The 500 cut's two woff2 files remain in
+     public/fonts but stay UNWIRED — the r191 wire contract is 600/700
+     only, pinned at 14 faces by assets.test.ts; re-wiring the 500
+     requires moving that pin and its consumers in the same change.)
+   Subsets: arabic + latin for the Arabic-capable families, latin for
+   the rest — the browser downloads only what the page paints.
+   All weights/subsets = exact woff2 files the Google Fonts CSS2 API
+   serves. font-display: swap on every face.
+   A typical first paint needs only the two preloaded arabic subsets
+   (~86 KB — see index.html preloads).
+   ═══════════════════════════════════════════════════════════════════ */
 
 /* ── IBM Plex Sans Arabic — arabic subset ─────────────────────────── */
 @font-face {
@@ -137,21 +129,20 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   R190 — Alexandria: the display family (Arabic + Latin).
+   Alexandria — the display family (Arabic + Latin).
    ─────────────────────────────────────────────────────────────────
-   «مدار المعرفة» direction: Turion Space sets its display voice in
-   Funnel Display 500 (squarish geometric, 56–200px, lh 0.88). The
-   Arabic-native equivalent with the same character is ALEXANDRIA
-   (Google Fonts, OFL — geometric Kufi-flavored sans, true Arabic +
-   Latin in one family). Body text stays IBM Plex Sans Arabic; mono
-   telemetry stays IBM Plex Mono. Weights shipped: 500/600/700
-   (Arabic display needs the heavier cuts for 44–96px headlines).
-   Self-hosted woff2, font-display: swap, arabic + latin subsets
-   only — same pattern as the Plex files above. ≈79 KB total.
+   «مدار المعرفة» direction: the Arabic-native display voice is
+   ALEXANDRIA (Google Fonts, OFL — geometric Kufi-flavored sans, true
+   Arabic + Latin in one family). Body text stays IBM Plex Sans
+   Arabic; mono telemetry stays IBM Plex Mono. Display hierarchy:
+   700 hero/headline · 600 section.
+   Weights shipped: 600/700 (Arabic display needs the heavier cuts
+   for 38–64px headlines; the 500 rungs stay unwired — see the header
+   note). Self-hosted woff2, font-display: swap, arabic + latin
+   subsets only — same pattern as the Plex files above.
    ═══════════════════════════════════════════════════════════════════ */
 
 /* ── Alexandria — arabic subset ──────────────────────────────────── */
-/* r191: Alexandria-500 retired — display voice is 600/700 only (−26KB wire). */
 
 @font-face {
   font-family: 'Alexandria';
@@ -171,7 +162,6 @@
 }
 
 /* ── Alexandria — latin subset ────────────────────────────────────── */
-/* r191: Alexandria-500 retired — display voice is 600/700 only (−26KB wire). */
 
 @font-face {
   font-family: 'Alexandria';
