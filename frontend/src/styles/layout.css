@@ -3,6 +3,11 @@
    r211 Superlist re-skin: calm surfaces, soft geometry, ONE signal
    accent, hierarchy via surface steps (not border stacks), zero
    decorative paint in the chrome. Logic untouched — visual only.
+   r304 app-shell round: the unlayered r301/r302 «final-visual-system»
+   bolt-on is FOLDED BACK into its canonical homes (this file +
+   components.css) and deleted — the cascade speaks in layers again:
+   tokens → base → layout/components → pages → overrides. The shell
+   recipes below are the single source for sidebar/topbar/nav chrome.
    ════════════════════════════════════════════════════════════════════ */
 
 @layer layout {
@@ -28,6 +33,10 @@
   .has-shell {
     block-size: 100dvh;
     grid-template-rows: minmax(0, 1fr);
+    /* r304 fold (ex «final-visual-system»): the workspace paints its own
+       ground so translucent chrome (topbar glass, drawer scrim) always
+       composites over the theme's paper, never over a bare body. */
+    background: var(--bg);
   }
   /* iOS scroll-chaining containment: when .content hits its edge the
      gesture must not chain to the (non-scrolling) document. */
@@ -40,6 +49,12 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .sidebar {
     inline-size: var(--sidebar-w);
+    /* r304 fold (ex «final-visual-system»): the rail rides one calm step
+       between the page paper and the cards — surface pulled 4% toward
+       the paper — instead of the flat --sidebar-bg wash. Content-facing
+       hairline stays on the inline-END edge (base.css owns the border;
+       the color lands on --rule there). */
+    background: color-mix(in srgb, var(--surface) 96%, var(--bg));
     padding: var(--sp-3) var(--sp-3) var(--sp-3);
     /* 4-A2 P1-2: the sidebar itself must NOT be the scroll container —
        with the whole rail scrolling, the pinned-intent footer
@@ -78,16 +93,16 @@
     flex-shrink: 0;
   }
   .sidebar-brand-mark {
-    inline-size: 28px;
-    block-size: 28px;
-    border-radius: var(--r-sm);
+    /* r304: the mark sits on its accent tile — the recognizable product
+       logo plate every Superlist-style rail opens with. The self-colored
+       copper→gold star keeps its gradient strokes on the quiet tint. */
+    inline-size: 30px;
+    block-size: 30px;
+    border-radius: var(--r-md);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    /* r188: the khatam-star mark is self-colored (copper→gold gradient
-       strokes) — the retired dark letter-tile paint is gone; the mark
-       floats clean on both themes. */
-    background: transparent;
+    background: var(--accent-soft);
     flex-shrink: 0;
   }
   .sidebar-brand-text { display: flex; flex-direction: column; gap: var(--sp-0-5); min-inline-size: 0; flex: 1; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة */
@@ -165,9 +180,12 @@
     gap: var(--sp-2);
     /* r211: calmer row rhythm (--sp-2 block) with a 36px desktop floor —
        roomier scan line, still far under the 44px touch floor that the
-       (hover: none) band enforces on real touch devices. */
+       (hover: none) band enforces on real touch devices.
+       r304 fold (ex «final-visual-system»): the row radius is the
+       workspace r-md — the same corner every clickable chrome control
+       carries, so hover/active pills read as one family. */
     padding: var(--sp-2) var(--sp-3);
-    border-radius: var(--r-sm);
+    border-radius: var(--r-md);
     /* r157 (6A4-9): nav links are chrome surface — DESIGN.md §2 maps
        «روابط التنقل» onto --fs-chrome (14px), the r133 fleet decision
        raw-14px sites consolidated. (Sidebar user names stay at
@@ -194,7 +212,11 @@
      exactly one boolean, the `on` class. (.search-row.active below and
      BottomNav's bottom-nav-item active are separate live families;
      polish.css twins are F1's parallel half. Gate:
-     tests/unit/nav-active-vocabulary.test.tsx.) */
+     tests/unit/nav-active-vocabulary.test.tsx.)
+     r304: the ex-«final-visual-system» `.nav-item[aria-current]` twin
+     (accent-soft pill + a SECOND 2px start border on top of this bar)
+     is retired with its file — A4's «كل مسار له علامة جانبية واحدة»
+     contract holds again: ONE bar, ONE surface step, ONE icon tint. */
   .nav-item.on {
     background: var(--sidebar-item-active-bg);
     color: var(--sidebar-item-active-text);
@@ -231,12 +253,15 @@
 
   .nav-badge {
     /* wave 2-b: was the raw 10px sub-token floor — lifted to --fs-xxs
-       (11px) per the craft-floor font sweep. */
+       (11px) per the craft-floor font sweep.
+       r304: the count rides --text-secondary — the muted tier measured
+       3.1:1 on surface-3 at 13px (axe, browser check), under the AA
+       text floor; secondary ink clears 7:1 in both themes. */
     font-size: var(--fs-xxs);
     padding: var(--sp-0-5) var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 (كانت 2/7) */
     border-radius: var(--r-full);
     background: var(--surface-3);
-    color: var(--text-muted);
+    color: var(--text-secondary);
     font-weight: var(--fw-semibold);
     font-variant-numeric: tabular-nums;
   }
@@ -506,7 +531,9 @@
     font-family: var(--font-sans);
     font-size: var(--fs-xxs);
     font-weight: var(--fw-medium);
-    color: var(--text-muted);
+    /* r304: --text-secondary — muted measured 3.35:1 on the surface-2
+       chip at 13px (axe, browser check); secondary clears AA both themes. */
+    color: var(--text-secondary);
     background: var(--surface-2);
     border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--rule));
     border-radius: var(--r-full);
@@ -649,7 +676,9 @@
     padding: var(--sp-0-5) var(--sp-1);
     font-family: var(--font-mono);
     font-size: var(--fs-xxs);
-    color: var(--text-muted);
+    /* r304: --text-secondary — muted measured 3.35:1 on the surface-2
+       chip at 13px (axe, browser check); secondary clears AA both themes. */
+    color: var(--text-secondary);
     background: var(--surface-2);
     border: 1px solid var(--rule);
     border-radius: var(--r-xs);
