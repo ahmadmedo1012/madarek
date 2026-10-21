@@ -50,6 +50,7 @@ import { validatePdfFile } from '../../lib/pdfUpload';
 import ResearchReviewPage from './ResearchReviewPage';
 import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
 import '../../styles/teacher-quality.css'; // R304: the family sheet (tpg- section lives here)
+import '../../styles/r305-teacher-quality.css'; // R305 Heron: §0 hr- primitives + §A tqd- deltas (mounted via .hr-scope)
 
 /* The teacher dashboard now lives in TeacherDashboardPage.tsx
  * (social-media feed style). The previous KPI-grid version was
@@ -58,10 +59,26 @@ import '../../styles/teacher-quality.css'; // R304: the family sheet (tpg- secti
  */
 
 /* ─── Generic placeholder structure ─── */
-function PageHeader({ title, subtitle, actions }: { title: string; subtitle: string; actions?: React.ReactNode }) {
+/* R305 Heron: the .hr-chip tone for each family Badge color — the ONE
+ * status vocabulary of the round (green→ok, brand/gold/purple→info,
+ * amber→warn, red→danger). Badges whose class names are e2e/unit-pinned
+ * (the queue ceiling + ratio chips) keep the .badge primitive. */
+const HR_CHIP_TONE: Record<'green' | 'amber' | 'red' | 'purple' | 'gold' | 'brand', 'ok' | 'info' | 'warn' | 'danger'> = {
+  green: 'ok',
+  brand: 'info',
+  gold: 'info',
+  purple: 'info',
+  amber: 'warn',
+  red: 'danger',
+};
+
+function PageHeader({ title, subtitle, actions, brow }: { title: string; subtitle: string; actions?: React.ReactNode; brow?: string }) {
   return (
     <header className="page-header">
       <div className="page-title-block">
+        {/* R305 Heron: the workflow brow — a mono micro-label naming the
+            daily-workflow area (a real classification, never decoration). */}
+        {brow && <span className="hr-brow">{brow}</span>}
         <h1 className="page-title">{title}</h1>
         <p className="page-subtitle">{subtitle}</p>
       </div>
@@ -155,8 +172,11 @@ export function TeacherSchedulePage() {
   const todayDow = new Date().getDay();
 
   return (
-    <div className="page">
-      <PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعيّ مع القاعات والأوقات." />
+    /* R305 Heron: .hr-scope (display:contents) declares the ember tokens
+     * + the §A tqd- deltas; the .page layout root stays untouched. */
+    <div className="hr-scope">
+      <div className="page">
+      <PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعيّ مع القاعات والأوقات." brow="التدريس · الجدول" />
       {days.length === 0 ? (
         <EmptyState
           title="لا يوجد جدول مسجَّل"
@@ -173,7 +193,9 @@ export function TeacherSchedulePage() {
             <section key={d.dow} className="tpg-day" data-today={d.dow === todayDow ? 'true' : undefined} aria-label={WEEKDAY_NAMES_AR[d.dow]}>
               <div className="tpg-day-head">
                 <span className="tpg-day-title">{WEEKDAY_NAMES_AR[d.dow]}</span>
-                {d.dow === todayDow && <Badge color="brand">اليوم</Badge>}
+                {/* R305 Heron: today is THE ember signal of the page —
+                    the marker chip rides the ember tone. */}
+                {d.dow === todayDow && <span className="hr-chip" data-tone="ember">اليوم</span>}
               </div>
               {d.items.map((it, i) => (
                 <div key={i} className="tpg-lecture">
@@ -191,18 +213,20 @@ export function TeacherSchedulePage() {
                       {it.enrolled === 0 ? 'لا طلاب مسجَّلين' : countAr(it.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}
                     </div>
                   </div>
-                  <Badge><bdi>{it.courseCode}</bdi></Badge>
+                  <span className="hr-chip"><bdi>{it.courseCode}</bdi></span>
                 </div>
               ))}
             </section>
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }
 
 type AttStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED';
+
 /* Selected state rides on [data-tone] + .on (CSS owns the colors) — the
  * old inline style block had no aria-pressed and no class-based state
  * (audit 0-e P1-32). EXCUSED (15-a P1-7) is the 4th AttendanceStatus:
@@ -284,9 +308,14 @@ function SortableHead({
       scope="col"
       aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : undefined}
     >
-      <button type="button" className="tpg-sort" onClick={() => onCycle(sortKey)}>
+      {/* R305 Heron: the shared .hr-sort-btn anatomy (44px floor) rides
+          beside the R304 .tpg-sort; the glyph span takes the ember when
+          the column is the active sort (aria-sort stays on the th). */}
+      <button type="button" className="tpg-sort hr-sort-btn" onClick={() => onCycle(sortKey)}>
         {label}
-        <Icon icon={Glyph} size={12} />
+        <span className="hr-sort-glyph" aria-hidden="true">
+          <Icon icon={Glyph} size={12} />
+        </span>
       </button>
     </th>
   );
@@ -375,14 +404,19 @@ export function AttendancePage() {
   };
 
   return (
+    /* R305 Heron: .hr-scope declares the ember tokens + §A tqd- deltas. */
+    <div className="hr-scope">
     <div className="page">
       <PageHeader
         title="الحضور والغياب"
         subtitle="سجِّل الحضور لكلّ محاضرة. يحفظ سجلّاً واحداً لكلّ تاريخ في قاعدة البيانات."
+        brow="التدريس · الحضور"
         actions={
           <button
             type="button"
-            className="btn primary"
+            /* R305 Heron: the ONE ember-flavored primary action of the
+             * page — the save is the session's whole point. */
+            className="btn primary hr-cta"
             onClick={onSave}
             disabled={!effectiveOfferingId || students.length === 0 || record.isPending}
           >
@@ -520,9 +554,9 @@ export function AttendancePage() {
               (the old "barely visible grey … looks like a rendering
               bug" VLM verdict). */}
           {!effectiveOfferingId ? (
-            <p className="text-xs text-muted" style={{ margin: 0 }}>
-              اختر مقرّراً لعرض إحصائيّات جلساته.
-            </p>
+            /* R305 Heron: the honest hint rides the structured .hr-note
+             * (was an inline-styled paragraph — r186 hygiene). */
+            <p className="hr-note">اختر مقرّراً لعرض إحصائيّات جلساته.</p>
           ) : stuQ.isPending ? (
             <div className="flex-col gap-4" aria-busy="true" aria-live="polite">
               {[0, 1, 2, 3].map((i) => (
@@ -575,6 +609,7 @@ export function AttendancePage() {
         </Card>
       </div>
     </div>
+    </div>
   );
 }
 
@@ -614,10 +649,13 @@ export function GradesPage() {
   }
 
   return (
+    /* R305 Heron: .hr-scope declares the ember tokens + §A tqd- deltas. */
+    <div className="hr-scope">
     <div className="page">
       <PageHeader
         title="درجات الطلاب"
         subtitle="نظرة على متوسّط درجات طلاب المقرّر الحاليّ."
+        brow="التدريس · الدرجات"
         actions={
           <OfferingPickerSelect
             offerings={offerings}
@@ -679,7 +717,9 @@ export function GradesPage() {
                           the RTL cell — same isolation as the average
                           column beside it. */}
                       <td className="tbl-num" data-label="الحضور"><bdi>{formatPct1(s.attendancePct)}%</bdi></td>
-                      <td data-label="التقدير"><Badge color={band.color}>{band.label}</Badge></td>
+                      {/* R305 Heron: the band chip speaks the ONE status
+                          vocabulary (.hr-chip[data-tone]). */}
+                      <td data-label="التقدير"><span className="hr-chip" data-tone={HR_CHIP_TONE[band.color]}>{band.label}</span></td>
                     </tr>
                   );
                 })}
@@ -693,6 +733,7 @@ export function GradesPage() {
           «إدخال الدرجات الفصليّة قيد التطوير» card (the endpoint it
           disclaimed now has its consumer). */}
       <SemesterGradeEntry offeringId={effectiveOfferingId} studentsQ={stuQ} />
+    </div>
     </div>
   );
 }
@@ -865,7 +906,8 @@ function SemesterGradeEntry({
       actions={
         <button
           type="button"
-          className="btn primary"
+          /* R305 Heron: the card's ONE ember-flavored primary. */
+          className="btn primary hr-cta"
           onClick={() => void onSave()}
           disabled={pending || !offeringId || students.length === 0}
         >
@@ -1182,6 +1224,9 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
       closeOnOverlayClick={!pending}
       closeOnEscape={!escapeLocked}
     >
+      {/* R305 Heron: the dialog mounts its own scope — §0's crisp press
+          feedback + focus offset reach the modal's controls. */}
+      <div className="hr-scope">
       <div className="modal-header">
         <div className="modal-title">إضافة مادة</div>
         <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={pending}>
@@ -1360,7 +1405,7 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
           <button type="button" className="btn ghost" onClick={requestClose} disabled={pending}>
             إلغاء
           </button>
-          <button type="submit" className="btn primary" disabled={pending}>
+          <button type="submit" className="btn primary hr-cta" disabled={pending}>
             {mode === 'file'
               ? (uploadMaterial.isPending ? 'جارٍ رفع الملف…' : 'إضافة المادة')
               : (create.isPending ? 'جارٍ الإضافة…' : 'إضافة المادة')}
@@ -1368,6 +1413,7 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
         </div>
       </form>
       {guard}
+      </div>
     </Modal>
   );
 }
@@ -1377,14 +1423,18 @@ export function MaterialsPage() {
   const [adding, setAdding] = useState(false);
 
   return (
+    /* R305 Heron: .hr-scope declares the ember tokens + §A tqd- deltas. */
+    <div className="hr-scope">
     <div className="page">
       <PageHeader
         title="الملفات التعليمية"
         subtitle="ملفّاتك المرفوعة على مقرّراتك — مع عدد المشاهدات والتحميلات الفعليّ."
+        brow="التدريس · المواد"
         actions={(
           /* r144 (T1-h F2): the channel the old dead-end card pointed
-           * at without providing. By-link creation (no multipart). */
-          <button type="button" className="btn primary" onClick={() => setAdding(true)}>
+           * at without providing. By-link creation (no multipart).
+           * R305 Heron: the page's ONE ember-flavored primary. */
+          <button type="button" className="btn primary hr-cta" onClick={() => setAdding(true)}>
             <Icon icon={Upload} size={15} /> إضافة مادة
           </button>
         )}
@@ -1426,7 +1476,9 @@ export function MaterialsPage() {
                     </a>
                     <div className="tpg-mat-sub">
                       <span>{m.course.name}</span>
-                      <Badge>{MATERIAL_TYPE_LABEL[m.type] ?? <bdi>{m.type}</bdi>}</Badge>
+                      {/* R305 Heron: the file type reads as the neutral chip
+                          of the one status vocabulary. */}
+                      <span className="hr-chip">{MATERIAL_TYPE_LABEL[m.type] ?? <bdi>{m.type}</bdi>}</span>
                       <span>{formatNum(m.views)} مشاهدة</span>
                       <span>{formatNum(m.downloads)} تحميل</span>
                     </div>
@@ -1443,6 +1495,7 @@ export function MaterialsPage() {
       </Card>
 
       {adding && <MaterialFormModal onClose={() => setAdding(false)} />}
+    </div>
     </div>
   );
 }
@@ -1500,10 +1553,13 @@ export function StudentsListPage() {
   }
 
   return (
+    /* R305 Heron: .hr-scope declares the ember tokens + §A tqd- deltas. */
+    <div className="hr-scope">
     <div className="page">
       <PageHeader
         title="قائمة الطلاب"
         subtitle="جميع الطلاب المسجَّلين في مقرّراتك."
+        brow="التدريس · الفصل"
         actions={
           <OfferingPickerSelect
             offerings={offerings}
@@ -1576,9 +1632,12 @@ export function StudentsListPage() {
                       <td data-label="الرقم الجامعيّ"><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
                       <td className="tbl-num" data-label="الحضور">{formatPct1(s.attendancePct)}%</td>
                       <td className="tbl-num" data-label="المتوسّط"><bdi>{formatPct1(s.avgGrade)}%</bdi></td>
-                      <td data-label="التقدير"><Badge color={band.color}>{band.label}</Badge></td>
+                      {/* R305 Heron: band + risk ride the ONE chip vocabulary
+                          (the same tones the grades table and the dashboard
+                          risk rows wear). */}
+                      <td data-label="التقدير"><span className="hr-chip" data-tone={HR_CHIP_TONE[band.color]}>{band.label}</span></td>
                       <td data-label="المخاطرة">
-                        <Badge color={STUDENT_RISK_TONE[s.riskLevel]}>{STUDENT_RISK_LABEL[s.riskLevel]}</Badge>
+                        <span className="hr-chip" data-tone={HR_CHIP_TONE[STUDENT_RISK_TONE[s.riskLevel]]}>{STUDENT_RISK_LABEL[s.riskLevel]}</span>
                       </td>
                     </tr>
                   );
@@ -1588,6 +1647,7 @@ export function StudentsListPage() {
           </div>
         )}
       </Card>
+    </div>
     </div>
   );
 }
@@ -1665,10 +1725,13 @@ export function PerformancePage() {
   const atRisk = students.filter((s) => s.riskLevel === 'AT_RISK' || s.riskLevel === 'CRITICAL').length;
 
   return (
+    /* R305 Heron: .hr-scope declares the ember tokens + §A tqd- deltas. */
+    <div className="hr-scope">
     <div className="page">
       <PageHeader
         title="الأداء والتحليل"
         subtitle="رؤى على أداء فصلك — مُستخرجة من بيانات الحضور والدرجات الفعليّة."
+        brow="التدريس · التحليل"
         actions={
           <OfferingPickerSelect
             offerings={offerings}
@@ -1761,6 +1824,7 @@ export function PerformancePage() {
           </Card>
         </>
       )}
+    </div>
     </div>
   );
 }
@@ -1868,6 +1932,9 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
           <Icon icon={X} size={16} />
         </button>
       </div>
+      {/* R305 Heron: the dialog mounts its own .hr-scope (§0 press
+          feedback + focus offset). */}
+      <div className="hr-scope">
       <form onSubmit={(e) => { e.preventDefault(); void onSubmit(); }} noValidate>
         <div className="modal-body">
           <FormField label="المقرّر" error={list.length === 0 ? 'لا توجد مقرّرات مرتبطة بحسابك — تواصل مع الإدارة.' : undefined}>
@@ -1972,12 +2039,13 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
           <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>
             إلغاء
           </button>
-          <button type="submit" className="btn primary" disabled={create.isPending}>
+          <button type="submit" className="btn primary hr-cta" disabled={create.isPending}>
             {create.isPending ? 'جارٍ الإنشاء…' : 'إنشاء الواجب'}
           </button>
         </div>
       </form>
       {guard}
+      </div>
     </Modal>
   );
 }
@@ -2017,15 +2085,19 @@ export function AssignmentsPage() {
     : null;
 
   return (
+    /* R305 Heron: .hr-scope declares the ember tokens + §A tqd- deltas. */
+    <div className="hr-scope">
     <div className="page">
       <PageHeader
         title="الواجبات والاختبارات"
         subtitle="كلّ الواجبات الموزَّعة على مقرّراتك، والتسليمات بانتظار تقييمك."
+        brow="التدريس · التصحيح"
         actions={(
           /* r144 (T1-h F1): the teaching loop's missing authoring half —
            * the copy used to promise «ستظهر هنا فور إنشاء أيّ واجب» with
-           * no creation affordance anywhere in the product. */
-          <button type="button" className="btn primary" onClick={() => setCreating(true)}>
+           * no creation affordance anywhere in the product.
+           * R305 Heron: the page's ONE ember-flavored primary. */
+          <button type="button" className="btn primary hr-cta" onClick={() => setCreating(true)}>
             <Icon icon={ClipboardList} size={15} /> واجب جديد
           </button>
         )}
@@ -2079,7 +2151,10 @@ export function AssignmentsPage() {
                     {/* Grading context travels with the row — course,
                         ceiling, the counted submissions and the tone-chip
                         due date (overdue red, ≤3 days amber, beyond
-                        green; the full date rides the title). */}
+                        green; the full date rides the title).
+                        R305 Heron: the due chip rides the ONE status
+                        vocabulary (.hr-chip[data-tone]); the ratio badge
+                        keeps the pinned .badge primitive. */}
                     <div className="tpg-asg-meta">
                       <span>{a.course.name} · <bdi>{a.course.code}</bdi></span>
                       <span>الدرجة من <bdi className="font-mono">{a.maxScore}</bdi></span>
@@ -2087,7 +2162,7 @@ export function AssignmentsPage() {
                   </div>
                   <div className="tpg-asg-side">
                     <span title={formatDateTimeAr(a.dueAt)}>
-                      <Badge color={dueTone}>{formatDue(a.dueAt)}</Badge>
+                      <span className="hr-chip" data-tone={HR_CHIP_TONE[dueTone]}>{formatDue(a.dueAt)}</span>
                     </span>
                     {/* LTR fraction order stays stable inside the RTL line;
                         the counted noun follows the numerator (1/few/many).
@@ -2120,6 +2195,7 @@ export function AssignmentsPage() {
       )}
 
       {creating && <AssignmentFormModal onClose={() => setCreating(false)} />}
+    </div>
     </div>
   );
 }
@@ -2254,8 +2330,11 @@ function NeedsReviewCard({
                inline-start-edge grammar as the quality alerts rows). */
             const days = g.dueAt ? Math.round((new Date(g.dueAt).getTime() - Date.now()) / 86400000) : null;
             const dueEdge: 'overdue' | 'soon' | undefined = days === null ? undefined : days < 0 ? 'overdue' : days <= 3 ? 'soon' : undefined;
+            /* R305 Heron: the §0 .hr-edge carries the 3px inline-start
+               severity rule (data-due stays for the R304 mapping); the
+               due + count chips speak the ONE status vocabulary. */
             return (
-            <div key={g.key} className="queue-group tpg-queue-section" data-due={dueEdge}>
+            <div key={g.key} className="queue-group tpg-queue-section hr-edge" data-due={dueEdge} data-severity={dueEdge}>
               <div className="queue-group-head tpg-queue-head">
                 <div className="queue-group-main">
                   <div className="queue-group-title tpg-queue-title">{g.assignmentTitle}</div>
@@ -2274,9 +2353,9 @@ function NeedsReviewCard({
                 {g.maxScore !== undefined && (
                   <Badge>الدرجة من <bdi className="font-mono">{g.maxScore}</bdi></Badge>
                 )}
-                <Badge color="amber">
+                <span className="hr-chip" data-tone="warn">
                   {countAr(g.rows.length, ['تسليم واحد', 'تسليمان', 'تسليمات', 'تسليماً'])}
-                </Badge>
+                </span>
               </div>
               <div className="tpg-queue-rows">
                 {g.rows.map((p) => (
@@ -2290,8 +2369,9 @@ function NeedsReviewCard({
                         <span>{p.studentName}</span>
                         {/* 18-G's late flag — a small warning chip beside the
                             name, never a suffix inside the assignment title
-                            (maxScore matches the stripped title). */}
-                        {p.late && <Badge color="amber">متأخر</Badge>}
+                            (maxScore matches the stripped title). R305 Heron:
+                            it rides the ONE status vocabulary. */}
+                        {p.late && <span className="hr-chip" data-tone="warn">متأخر</span>}
                       </div>
                       <div className="list-row-sub" title={formatDateTimeAr(p.submittedAt)}>
                         وصل {formatRelativeArShort(p.submittedAt)}
@@ -2427,6 +2507,9 @@ function GradeSubmissionModal({
           <Icon icon={X} size={16} />
         </button>
       </div>
+      {/* R305 Heron: the dialog mounts its own .hr-scope (§0 press
+          feedback + focus offset). */}
+      <div className="hr-scope">
       {/* A7 P2-2: a real <form> — Enter in the score field submits the
           grade (the GradeAttemptModal contract; this was the only
           grading/authoring modal without one). */}
@@ -2525,7 +2608,8 @@ function GradeSubmissionModal({
           ) : (
             <button
               type="submit"
-              className="btn primary"
+              /* R305 Heron: the dialog's ONE ember-flavored primary. */
+              className="btn primary hr-cta"
               disabled={grade.isPending}
             >
               {grade.isPending ? 'جارٍ الحفظ…' : 'حفظ الدرجة'}
@@ -2534,6 +2618,7 @@ function GradeSubmissionModal({
         </div>
       </form>
       {guard}
+      </div>
     </Modal>
   );
 }
@@ -2626,10 +2711,14 @@ function TeacherMessageCompose({
 
 export function MessagesPage() {
   return (
-    <MessagesInbox
-      title="الرسائل"
-      subtitle="كل رسالة وصلتك أو أرسلتها عبر المنصّة — أنشئ رسالة جديدة أو ردّ على الواردة منها، والمستلمون المتاحون هم طلاب مقرّراتك ومن راسلتك سابقاً."
-      renderCompose={(args) => <TeacherMessageCompose {...args} />}
-    />
+    /* R305 Heron: the inbox keeps its own component contract — the
+     * scope wrapper only declares the ember tokens around it. */
+    <div className="hr-scope">
+      <MessagesInbox
+        title="الرسائل"
+        subtitle="كل رسالة وصلتك أو أرسلتها عبر المنصّة — أنشئ رسالة جديدة أو ردّ على الواردة منها، والمستلمون المتاحون هم طلاب مقرّراتك ومن راسلتك سابقاً."
+        renderCompose={(args) => <TeacherMessageCompose {...args} />}
+      />
+    </div>
   );
 }

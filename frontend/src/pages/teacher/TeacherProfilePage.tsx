@@ -32,6 +32,7 @@ import {
 import { countAr } from '../../lib/format';
 import { formatDate } from '../../utils/numbers';
 import '../../styles/teacher-quality.css'; // 4C family sheet (r241): the .tq list-row catalog grammar
+import '../../styles/r305-teacher-quality.css'; // R305 Heron: §0 primitives + §E tax- composition
 
 const RANK_LABEL: Record<string, string> = {
   LECTURER: 'مُعيد / محاضر',
@@ -93,6 +94,7 @@ export default function TeacherProfilePage() {
      * + the workload stat strip + content cards (the generic
      * DetailSkeleton painted icon-card KPI tiles the strip replaced). */
     return (
+      <div className="hr-scope">
       <div className="page page-profile" aria-busy="true" aria-live="polite">
         <div className="page-header">
           <div className="page-title-block">
@@ -123,10 +125,12 @@ export default function TeacherProfilePage() {
         <CardSkeleton lines={4} />
         <CardSkeleton lines={3} />
       </div>
+      </div>
     );
   }
   if (isError) {
     return (
+      <div className="hr-scope">
       <div className="page">
         <header className="page-header">
           <div className="page-title-block">
@@ -139,12 +143,14 @@ export default function TeacherProfilePage() {
           onRetry={() => refetch()}
         />
       </div>
+      </div>
     );
   }
   if (!profile) {
     // Resolved, but the account has no teacher profile attached — an
     // honest distinct state (previously conflated with API errors).
     return (
+      <div className="hr-scope">
       <div className="page">
         <header className="page-header">
           <div className="page-title-block">
@@ -158,6 +164,7 @@ export default function TeacherProfilePage() {
             description="تواصل مع إدارة شؤون أعضاء هيئة التدريس لربط ملفك الأكاديمي بهذا الحساب."
           />
         </Card>
+      </div>
       </div>
     );
   }
@@ -199,16 +206,20 @@ export default function TeacherProfilePage() {
   };
 
   return (
+    <div className="hr-scope">
     <div className="page page-profile">
       <header className="page-header">
         <div className="page-title-block">
+          <span className="hr-brow">هيئة التدريس</span>
           <h1 className="page-title">الملف الأكاديمي</h1>
           <p className="page-subtitle">
             ملفك الأكاديمي كما يظهر للإدارة، مكتب الجودة، والطلاب. حدّثه باستمرار ليعكس نشاطك العلمي.
           </p>
         </div>
         {!editing ? (
-          <button type="button" className="btn primary" onClick={startEdit}>
+          /* R305: the surface's one primary action rides the ember-flavored
+           * .hr-cta emphasis cap. */
+          <button type="button" className="btn primary hr-cta" onClick={startEdit}>
             <Icon icon={Edit3} size={14} /> تعديل البيانات الشخصية
           </button>
         ) : (
@@ -216,7 +227,7 @@ export default function TeacherProfilePage() {
             <button type="button" className="btn ghost" onClick={cancelEdit} disabled={update.isPending}>
               <Icon icon={X} size={14} /> إلغاء
             </button>
-            <button type="button" className="btn primary" onClick={() => void saveEdit()} disabled={update.isPending}>
+            <button type="button" className="btn primary hr-cta" onClick={() => void saveEdit()} disabled={update.isPending}>
               <Icon icon={Save} size={14} /> {update.isPending ? 'جارٍ الحفظ…' : 'حفظ'}
             </button>
           </div>
@@ -513,6 +524,7 @@ export default function TeacherProfilePage() {
 
       {/* r157 / 6A9 — the discard-confirm for cancelEdit (portal-mounted). */}
       {discardGuard}
+    </div>
     </div>
   );
 }

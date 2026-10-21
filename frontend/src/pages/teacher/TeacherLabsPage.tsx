@@ -23,13 +23,15 @@ import {
   FlaskConical, Network, Cpu, Atom, Zap, Microscope, Bot as BotIcon,
   ExternalLink, ChevronLeft, AlertCircle, type LucideIcon,
 } from 'lucide-react';
-import { Card, Badge } from '../../components/primitives';
+import { Card } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, Skeleton, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useLabs, type VirtualLab } from '../../hooks/useResources';
+import { countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
 import '../../styles/teacher-quality.css'; // 4C family sheet (r241): the .tq list-row catalog grammar
+import '../../styles/r305-teacher-quality.css'; // R305 Heron: §0 primitives + §E tax- composition
 
 const CATEGORY_ICON: Record<string, LucideIcon> = {
   net: Network,
@@ -102,9 +104,11 @@ export default function TeacherLabsPage() {
   const platforms = labs ? new Set(labs.map((l) => l.platform).filter(Boolean)).size : 0;
 
   return (
+    <div className="hr-scope">
     <div className="page page-labs">
       <header className="page-header">
         <div className="page-title-block">
+          <span className="hr-brow">التعلّم العملي</span>
           <h1 className="page-title">المعامل الافتراضية</h1>
           <p className="page-subtitle">
             استعرض المعامل الافتراضية المتاحة على المنصة. يمكنك توجيه طلابك لها كمكمّل عملي
@@ -159,15 +163,15 @@ export default function TeacherLabsPage() {
             ]}
           />
 
-          <Card>
-            <div className="flex items-center gap-3">
-              <Icon icon={AlertCircle} size={18} style={{ color: 'var(--accent)' }} />
-              <div className="text-xs text-muted">
-                <strong>تنويه أكاديمي:</strong> المعامل الافتراضية هي بيئات محاكاة معتمدة في الجامعة.
-                استخدمها لتعزيز فهم الطلاب للمحتوى النظري — ليست بديلاً عن المختبر الواقعي.
-              </div>
+          {/* R305: the disclaimer rides the shared .hr-note primitive —
+              quiet ink, structured, no ad-hoc card. */}
+          <div className="hr-note">
+            <Icon icon={AlertCircle} size={16} />
+            <div className="text-xs">
+              <strong>تنويه أكاديمي:</strong> المعامل الافتراضية هي بيئات محاكاة معتمدة في الجامعة.
+              استخدمها لتعزيز فهم الطلاب للمحتوى النظري — ليست بديلاً عن المختبر الواقعي.
             </div>
-          </Card>
+          </div>
 
           {labs && labs.length === 0 ? (
             <Card>
@@ -179,7 +183,13 @@ export default function TeacherLabsPage() {
               />
             </Card>
           ) : (
-            <Card title="المعامل المتاحة" icon={FlaskConical}>
+            <Card
+              title="المعامل المتاحة"
+              icon={FlaskConical}
+              subtitle={labs && labs.length > 0
+                ? countAr(labs.length, ['معمل واحد متاح', 'معملان متاحان', 'معامل متاحة', 'معملاً متاحاً'])
+                : undefined}
+            >
               {/* r241 (Superlist): a LIST of labs, not a card wall — each
                   row keeps the category/platform kicker, the honest
                   experiment count, and its own معاينة action. */}
@@ -191,12 +201,14 @@ export default function TeacherLabsPage() {
         </>
       )}
     </div>
+    </div>
   );
 }
 
 /** r241 (Superlist): one lab = one row — icon well leading, category·
  * platform kicker, name prominent, honest experiment count, and the
- * معاينة كطالب action trailing (44px zone). */
+ * معاينة كطالب action trailing (44px zone). R305: the count rides the
+ * shared Heron chip (tabular digits stay .tq-num). */
 function LabRow({ lab }: { lab: VirtualLab }) {
   const Ico = iconFor(lab.category);
   // --tq-accent feeds the color-mix tint owned by teacher-quality.css;
@@ -215,7 +227,7 @@ function LabRow({ lab }: { lab: VirtualLab }) {
         </span>
         <span className="tq-row-title" title={lab.name}>{lab.name}</span>
         <span className="tq-row-meta">
-          <Badge><span className="tq-num">{formatNum(lab.totalExperiments ?? 0)}</span> تجربة معدّة</Badge>
+          <span className="hr-chip"><span className="tq-num">{formatNum(lab.totalExperiments ?? 0)}</span> تجربة معدّة</span>
         </span>
       </span>
       <span className="tq-row-actions">

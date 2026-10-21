@@ -38,6 +38,7 @@ import '../../styles/teacher-quality.css'; // R304 — the family sheet (oex- se
 /* ── r305-c (schedule family) imports — the only region agent 2-c edits above the components ── */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-schedule.css';
+import '../../styles/r305-teacher-quality.css'; // R305 — the Heron layer (oex2- section lives here)
 
 const KIND_LABEL: Record<string, string> = {
   QUIZ: 'اختبار قصير', MIDTERM: 'نصفي', FINAL: 'نهائي', PRACTICE: 'تدريبي',
@@ -257,8 +258,11 @@ export default function OnlineExamsPage() {
   );
 
   return (
-    <div className="page">
-      <PageHeader
+    <div className="hr-scope">
+      <div className="page">
+        {/* R305 Heron — the exams brow above the page header. */}
+        <span className="hr-brow oex2-brow">مركز الاختبارات</span>
+        <PageHeader
         title="الاختبارات الإلكترونية"
         subtitle="اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات. تنبيه: لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية."
       />
@@ -341,6 +345,7 @@ export default function OnlineExamsPage() {
           )}
         </>
       )}
+      </div>
     </div>
   );
 }
@@ -373,6 +378,21 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
   const showResultLink = !!exam.myAttempt
     && (exam.myAttempt.status === 'GRADED' || exam.myAttempt.status === 'SUBMITTED')
     && exam.kind !== 'PRACTICE';
+
+  /* R305 Heron — the row's severity edge: the window/attempt truth as the
+   * inline-start bar (.hr-edge). A live attempt is THE actionable signal
+   * (ember); a shut window is overdue; a not-yet-open one informational;
+   * an open window with a deadline rides 'soon'. Neutral otherwise. */
+  const edgeSeverity =
+    exam.myAttempt?.status === 'IN_PROGRESS'
+      ? 'ember'
+      : ws === 'closed'
+        ? 'overdue'
+        : ws === 'upcoming'
+          ? 'info'
+          : exam.closeAt
+            ? 'soon'
+            : undefined;
 
   const body = (
     <>
@@ -481,7 +501,7 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
 
   // Taken / windowed exams render as a static row — no dead "#" link.
   if (!canStart) {
-    return <div className="oex-row" role="listitem">{body}</div>;
+    return <div className="oex-row hr-edge" role="listitem" data-severity={edgeSeverity}>{body}</div>;
   }
 
   return (
@@ -494,7 +514,8 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
     <div className="oex-row-slot" role="listitem">
       <Link
         to={`/student/online-exams/${exam.id}`}
-        className="oex-row"
+        className="oex-row hr-edge"
+        data-severity={edgeSeverity}
       >
         {body}
       </Link>
@@ -1032,6 +1053,7 @@ export function ExamTakerPage() {
     const expired = myAttempt?.status === 'EXPIRED';
     const verdict = exam ? attemptVerdictChip(exam) : null;
     return (
+      <div className="hr-scope">
       <div className="page">
         <Link to="/student/online-exams" className="back-link">
           <Icon icon={ChevronRight} size={14} />
@@ -1122,12 +1144,14 @@ export function ExamTakerPage() {
           </div>
         </Card>
       </div>
+      </div>
     );
   }
 
   // Initial state — show "Begin" prompt
   if (!attempt && !result) {
     return (
+      <div className="hr-scope">
       <div className="page">
         <Link to="/student/online-exams" className="back-link">
           <Icon icon={ChevronRight} size={14} />
@@ -1157,7 +1181,7 @@ export function ExamTakerPage() {
                 resolve instantly, so this only guards hard deep links). */}
             <button
               type="button"
-              className="btn primary oex-begin-actions"
+              className="btn primary hr-cta oex-begin-actions"
               onClick={onStart}
               disabled={start.isPending || examsQ.isPending}
             >
@@ -1165,6 +1189,7 @@ export function ExamTakerPage() {
             </button>
           </div>
         </Card>
+      </div>
       </div>
     );
   }
@@ -1176,6 +1201,7 @@ export function ExamTakerPage() {
     // never render the «لم يجتز» failure the student has not earned.
     const awaitingManual = result.passed === null;
     return (
+      <div className="hr-scope">
       <div className="page">
         <Link to="/student/online-exams" className="back-link">
           <Icon icon={ChevronRight} size={14} />
@@ -1232,6 +1258,7 @@ export function ExamTakerPage() {
           </div>
         </Card>
       </div>
+      </div>
     );
   }
 
@@ -1254,6 +1281,7 @@ export function ExamTakerPage() {
     .filter((n): n is number => n !== null);
 
   return (
+    <div className="hr-scope">
     <div className="page">
       {/* r165a: the one live screen that had NO way out. While a submit
           error keeps the retry path (a network fault — never a terminal
@@ -1472,7 +1500,7 @@ export function ExamTakerPage() {
             ? countAr(unanswered, ['سؤال واحد بدون إجابة', 'سؤالان بدون إجابة', 'أسئلة بدون إجابة', 'سؤالاً بدون إجابة'])
             : 'أُجيب عن كل الأسئلة'}
         </span>
-        <button type="button" className="btn primary" onClick={() => setConfirming(true)} disabled={finish.isPending}>
+        <button type="button" className="btn primary hr-cta" onClick={() => setConfirming(true)} disabled={finish.isPending}>
           {finish.isPending ? 'جارٍ التسليم…' : 'تسليم الاختبار'}
         </button>
       </div>
@@ -1497,6 +1525,7 @@ export function ExamTakerPage() {
         }}
         onCancel={() => setConfirming(false)}
       />
+    </div>
     </div>
   );
 }
@@ -1710,7 +1739,10 @@ export function ExamModerationPage() {
   const questionsAwaiting = (queue ?? []).reduce((sum, item) => sum + item._count.questions, 0);
 
   return (
+    <div className="hr-scope">
     <div className="page">
+      {/* R305 Heron — the oversight brow above the page header. */}
+      <span className="hr-brow oex2-brow">طابور الاعتماد</span>
       <PageHeader
         title="مراجعة الاختبارات"
         subtitle="مراجعة قوالب الاختبارات الموحَّدة قبل اعتمادها وإتاحتها للطلاب — صلاحية حصرية لمكتب الجودة."
@@ -1771,7 +1803,7 @@ export function ExamModerationPage() {
             {queue?.map((item) => {
               const rowPending = acting?.id === item.id;
               return (
-                <div key={item.id} className="oex-mod-row" role="listitem">
+                <div key={item.id} className="oex-mod-row hr-edge" role="listitem" data-severity="soon">
                   <div className="oex-mod-main">
                     <div className="oex-mod-title">{item.title}</div>
                     <div className="oex-mod-meta">
@@ -1911,6 +1943,7 @@ export function ExamModerationPage() {
         }}
         onCancel={() => setConfirmingReject(null)}
       />
+      </div>
     </div>
   );
 }
