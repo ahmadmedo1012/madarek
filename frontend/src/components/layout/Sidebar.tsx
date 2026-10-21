@@ -301,7 +301,23 @@ export function Sidebar() {
             const accordion = g.collapsed === true && (drawerBand || !sidebarCollapsed);
             const groupOpen = groupOverrides[g.label] ?? (!accordion || isGroupActive(g));
             return (
-            <div className="nav-group" key={g.label}>
+            <div
+              className="nav-group"
+              key={g.label}
+              /* r305 (Heron markup pass, task 2-a): state hooks on the
+                 group wrapper, not a DOM redesign — data-nav-group marks
+                 the group for the shell CSS, and the accordion groups
+                 expose their derived state as data-collapsible /
+                 data-group-open so r305-shell.css can style the toggle,
+                 its stagger and its states without reaching into JS.
+                 aria-expanded on the toggle below stays the a11y source
+                 of truth (states-truthful contract); these attributes
+                 mirror it for selectors only. Everything else — classes,
+                 inline presentation, behavior — is untouched. */
+              data-nav-group=""
+              data-collapsible={accordion ? 'true' : undefined}
+              data-group-open={accordion ? (groupOpen ? 'true' : 'false') : undefined}
+            >
               {accordion ? (
                 /* The section label becomes the disclosure toggle —
                    same look (the .nav-section-label class carries the
@@ -429,7 +445,10 @@ export function Sidebar() {
               <div className="sidebar-user-name" title={`${user.firstName} ${user.lastName}`}>
                 {user.firstName} {user.lastName}
               </div>
-              <div className="sidebar-user-role">{roleLabel}</div>
+              {/* Grammar §4: ellipsis clamps carry `title` tooltips —
+                  the composite role line («أستاذ · عميد كلّيّة …») is the
+                  longest clamp candidate in the account cluster. */}
+              <div className="sidebar-user-role" title={roleLabel}>{roleLabel}</div>
             </div>
             <button
               type="button"
