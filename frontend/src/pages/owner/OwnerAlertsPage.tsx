@@ -172,7 +172,10 @@ export function OwnerAlertsPage() {
         ]}
       />
 
-      <Card title="التنبيهات النشطة">
+      {/* r299: «التنبيهات المفتوحة» — the KPI above says «مفتوحة», the
+          dashboard band says «مفتوحة»; one console, one word for one
+          concept («نشطة» described a different state on other pages). */}
+      <Card title="التنبيهات المفتوحة">
         {alertsQuery.isPending ? (
           <AlertListSkeleton />
         ) : alertsQuery.isError ? (

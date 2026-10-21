@@ -312,7 +312,11 @@ describe('OwnerRealtimePage — live region label:value (6A10-5)', () => {
   it('every tick node carries its sr-only label inside the re-anchored bdi — «التسمية: القيمة»', async () => {
     FIXTURES['/owner/realtime'] = { ...REALTIME_RICH };
     renderPage(<OwnerRealtimePage />);
-    await screen.findByText('الجلسات المتّصلة');
+    /* r299: the settle-wait rides the strip's own label — the
+     * «ملخّص النشاط الحيّ» summary table (and its «الجلسات المتّصلة»
+     * vocabulary) died: every one of its four numbers repeated the
+     * live strip above it twice on one screen. */
+    await screen.findByText('الجلسات النشطة');
 
     const ticks = Array.from(document.querySelectorAll('bdi.owner-value-tick'));
     expect(ticks).toHaveLength(4);

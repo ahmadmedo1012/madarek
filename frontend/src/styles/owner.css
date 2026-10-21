@@ -385,9 +385,14 @@
   transform: rotate(180deg);
 }
 
+/* r299 (the 22-b P3-3 family, third member): the mono stack came off —
+   these timestamps are ar-LY dates + Arabic day-periods («ص/م») and
+   Plex Mono has no Arabic glyphs, so every Arabic run fell to a
+   per-glyph system fallback mid-line. Tabular numerals stay so the
+   digits align; mono belongs to identifiers, not dates. */
 .owner-error-entry-head .timestamp {
-  font-family: var(--font-mono);
   font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
   color: var(--text-subtle);
   flex-shrink: 0;
 }
@@ -431,17 +436,10 @@
    utility re-scopes below; td.muted had zero consumers and is
    deleted. */
 
-/* ── User row ──────────────────────────────────────────────── */
-.owner-user-cell {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2-5);
-}
-
-.owner-user-cell .name {
-  font-weight: var(--fw-medium);
-  color: var(--text);
-}
+/* ── User row ────────────────────────────────────────────────
+   (r299 dead-selector sweep: .owner-user-cell + its .name child
+   died — zero TSX/test consumers since the directory went RowList
+   (r252), rg-verified; the actions plate below is the survivor. */
 
 /* r252: the users directory's inline-expansion body (the .pf-row-body
    child) — the actions row: joined date, role picker, status toggle.
@@ -520,36 +518,10 @@
    .table-pagination system (components.css) with flippable
    ChevronLeft/ChevronRight icons; zero TSX consumers remain. */
 
-/* ── Search bar ────────────────────────────────────────────── */
-.owner-search-bar {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  margin-bottom: var(--sp-4);
-}
-
-.owner-search-bar input {
-  flex: 1;
-  max-width: 360px;
-  /* r149 (R3-A2 #11): المحاذاة الكنونية 16px (كانت 14 خامًا) */
-  padding: var(--sp-2) var(--sp-4);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  /* 5-C2 (A3 1d, 21-b pattern): 13px → 16px floor, iOS zoom-on-focus
-     (same as .owner-kv-row input above). */
-  font-size: max(16px, var(--type-body-size));
-  color: var(--text);
-  transition: border-color var(--t-fast) var(--ease);
-}
-
-.owner-search-bar input:focus {
-  /* wave 3-c: the old --focus-ring halo (30% α, the pre-consolidation
-     system) always lost to polish v15's accent border + halo in the
-     overrides layer — dead weight. State the same accent border via
-     the state token (the system input focus language, components.css). */
-  border-color: var(--state-input-focus-border);
-}
+/* ── Search bar ──────────────────────────────────────────────
+   (r299 dead-selector sweep: the .owner-search-bar family died —
+   zero TSX consumers since r252 moved every owner search into the
+   patterns FilterBar, rg-verified.) */
 
 /* ── Chart container ───────────────────────────────────────── */
 .owner-chart-container {
@@ -750,6 +722,15 @@
   background: color-mix(in srgb, var(--danger) 3%, var(--surface-1));
 }
 
+/* r299: severity 'error' — the second member of the critical pair
+   (ownerLabels.isCriticalAlert) — had NO edge/wash rule, so the most
+   urgent cards rendered neutral while their Badge said «خطأ» in red.
+   The same danger treatment .critical carries. */
+.owner-alert-card.error {
+  border-inline-start-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 3%, var(--surface-1));
+}
+
 .owner-alert-card.warning {
   border-inline-start-color: var(--warning);
   background: color-mix(in srgb, var(--warning) 3%, var(--surface-1));
@@ -773,9 +754,12 @@
   color: var(--text);
 }
 
+/* r299 (the 22-b P3-3 family): mono off the container — the stamp
+   is an ar-LY date + Arabic day-period; the digits keep tabular
+   numerals (mono belongs to identifiers, not dates). */
 .owner-alert-card-header .time {
   font-size: var(--fs-xs);
-  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   color: var(--text-subtle);
 }
 
@@ -836,17 +820,10 @@
 /* (r149 R3-A1 #9: حُذفت الشبكة الخاصة — القسم يركب ‎.grid-4 الكنونية
    الآن بنفس فجوة وكسر كل شرائط KPI في المنصة.) */
 
-/* ── Command Center: Governance Timeline ──────────────────── */
-.owner-governance-section {
-  padding: var(--sp-3) 0;
-}
-
-.owner-governance-section h3 {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text);
-  margin-bottom: var(--sp-3);
-}
+/* ── Command Center: Governance Timeline ────────────────────
+   (r299 dead-selector sweep: .owner-governance-section + its h3
+   child died — the page unwrapped the redundant padding plate and
+   the h3 rule had no <h3> consumer, rg-verified. */
 
 /* ── Feature Flag Connected ───────────────────────────────── */
 /* (wave 3-c dead-code sweep, audit 0-e P2-45: .owner-flag-loading
@@ -947,28 +924,26 @@
   gap: var(--sp-3);
 }
 
+/* r299 (the 22-b P3-3 family): mono came OFF the container —
+   «آخر تحديث:» is Arabic and the bdi below renders an Arabic
+   day-period too; the numeric bdi alone keeps mono + tabular
+   digits (the .owner-health-value precedent). */
 .owner-live-meta {
-  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-size: var(--fs-xs);
   color: var(--text-subtle);
   white-space: nowrap;
 }
 
-/* ── owner-table utilities (audit 0-e P3: the per-cell inline
-   fontFamily/fontSize/color repeats → classes; shared family, the
-   cells opt in from the four core pages) ───────────────────── */
-.owner-realtime-table td.num {
+.owner-live-meta bdi {
   font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
 }
 
-/* Inline health dot inside a summary-table cell (was an inline
-   display:inline-block style, audit P1-27 sibling). */
-.owner-health-dot.inline {
-  display: inline-block;
-  vertical-align: middle;
-}
+/* ── owner-table utilities ──
+   (r299 dead-selector sweep: .owner-realtime-table td.num +
+   .owner-health-dot.inline died — the duplicated summary table they
+   served was removed (every one of its four numbers repeated the
+   live strip above it); zero TSX consumers remain, rg-verified.) */
 
 /* Neutral dot — the "unknown" state (query pending) so the health
    list never paints a claims-health green while loading. */
@@ -1180,27 +1155,11 @@
   word-break: break-all;
 }
 
-.owner-activity-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--sp-3);
-  margin-block-start: var(--sp-4);
-  padding-block-start: var(--sp-4);
-  border-block-start: 1px solid var(--rule);
-}
-
-.owner-activity-count {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.owner-activity-footer-actions {
-  display: flex;
-  gap: var(--sp-2);
-}
+/* (r299 dead-selector sweep: the .owner-activity-footer family
+   died — the audit log's footer rides the canonical .table-pagination
+   grammar now (windowed page numbers, aria-current), killing the
+   prev/next-only linear clicking through a 50-row log; zero
+   consumers remain, rg-verified.) */
 
 /* (r151d: the owner-live-tools mobile floor block deleted — the
    stale comment described polish pinning .btn at 40px / .btn.sm at
@@ -1280,26 +1239,15 @@
   font-size: var(--fs-xs);
 }
 
-/* ── Users table ───────────────────────────────────────────── */
-/* Row entrance stagger — the page's authored moment, paired with the
-   .table-row-actions hover/focus reveal (components.css). One-shot:
-   fill-mode backwards never pins the row transform, the ladder is
-   capped at 8 so long first pages don't crawl, and rows remount on
-   every page flip so the moment repeats per page, not per hover.
-   r130-W2-7: renamed from `owner-row-in` — it collided with the
-   activity-feed keyframes at the top of this file (same name, both
-   @layer pages: same-name keyframes do NOT merge; this later
-   definition was silently overriding the timeline's authored
-   RTL-aware translateX entrance for the whole document). Distinct
-   names, both authored moments render now. */
-.owner-users-table tbody tr {
-  animation: owner-users-row-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
-  animation-delay: calc(min(var(--row-i, 0), 8) * var(--motion-stagger-step));
-}
-
-@keyframes owner-users-row-in {
-  from { opacity: 0; transform: translateY(4px); }
-}
+/* ── Users table ─────────────────────────────────────────────
+   (r299 dead-selector sweep: the .owner-users-table row stagger +
+   its keyframes died — zero TSX consumers since the directory went
+   RowList (r252); the stagger lives on the pf rows now, rg-verified.)
+   The historical note is kept for the rename lesson it taught:
+   r130-W2-7 renamed this rule's keyframes from `owner-row-in` — it
+   collided with the activity-feed keyframes (same-name keyframes do
+   NOT merge across @layer pages) and was silently overriding the
+   timeline's authored entrance document-wide. */
 
 /* joined-date cell: "joined this week" dot + date on one line */
 .owner-joined {
@@ -1310,7 +1258,29 @@
   color: var(--text-muted);
 }
 
-.owner-joined .owner-health-dot { flex-shrink: 0; }
+/* r299: the recent-join marker — a quiet STATIC dot. The old marker
+   reused .owner-health-dot green, whose heartbeat pulses forever and
+   whose grammar means "system health"; a join date never carried
+   that status. */
+.owner-joined-dot {
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: var(--r-full);
+  background: var(--success);
+  flex-shrink: 0;
+}
+
+.owner-joined .owner-joined-dot { flex-shrink: 0; }
+
+/* r299: the memberships chips row (was a utility class + inline-style
+   pair that fought each other — .flex said display:flex, the inline
+   style said inline-flex). One class owns the anatomy now. */
+.owner-membership-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+}
 
 /* ellipsis run between windowed page numbers (bounded pagination,
    audit 0-e P1-25); sized to sit on the .table-pagination-actions
@@ -1325,11 +1295,9 @@
   user-select: none;
 }
 
-/* search icon tint (de-inlined from the TSX) */
-.owner-search-bar > svg {
-  color: var(--text-subtle);
-  flex-shrink: 0;
-}
+/* search icon tint (de-inlined from the TSX)
+   (r299 dead-selector sweep: .owner-search-bar > svg died with the
+   family — zero TSX consumers, rg-verified.) */
 
 /* the inline action-error alert sits above the table — give it the
    card's rhythm (the .alert primitive itself is margin-free) */
@@ -1380,10 +1348,9 @@
   font-variant-numeric: tabular-nums;
 }
 
-.owner-inst-metric svg {
-  color: var(--text-subtle);
-  flex-shrink: 0;
-}
+/* (r299 dead-selector sweep: .owner-inst-metric svg died with the
+   per-cell metric icons — the column headers already name the
+   metrics; zero consumers remain, rg-verified.) */
 
 /* admins cell: a compact stack of name + LTR email + the row action.
    The action button rides the same .table-row-actions reveal family
@@ -1561,9 +1528,10 @@
 /* ── wave 6-b reduced-motion off-switches (guardrail #6) ───── */
 /* The global belts zero the duration tokens, but these entrances carry
    animation-delay ladders — kill the whole animation so no element
-   waits invisible through a delay that no longer resolves. */
+   waits invisible through a delay that no longer resolves.
+   (r299: the .owner-users-table tbody tr entry died with the rule —
+   zero consumers, rg-verified.) */
 @media (prefers-reduced-motion: reduce) {
-  .owner-users-table tbody tr,
   .owner-meter .progress-fill,
   .owner-share-fill,
   .owner-swatch-chip,

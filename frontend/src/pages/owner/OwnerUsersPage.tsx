@@ -274,6 +274,23 @@ export function OwnerUsersPage() {
   const kpiValue = (n: number) =>
     stats.isPending ? '…' : statData ? formatNum(n) : '—';
 
+  /* r299 (honesty): «أكبر شريحة» used to render unconditionally — the
+   * hint asserted students are the largest segment without comparing
+   * the counts (a teachers-heavy platform would print a false claim).
+   * Now the claim only prints where it is true, the dashboard's
+   * topSegment idiom (r253) ported to the facts this page already
+   * fetched; otherwise the hint stays a neutral noun. */
+  const segments = statData
+    ? [
+        { key: 'students', n: statData.students },
+        { key: 'teachers', n: statData.teachers },
+        { key: 'staff', n: (statData.admins ?? 0) + (statData.quality ?? 0) },
+      ]
+    : [];
+  const topSegmentKey = segments.length > 0
+    ? segments.reduce((a, b) => (b.n > a.n ? b : a)).key
+    : null;
+
   return (
     <PageFrame width="default">
       <PatternsPageHeader
@@ -287,9 +304,9 @@ export function OwnerUsersPage() {
       <StatLine
         items={[
           { label: 'إجمالي المستخدمين', value: kpiValue(statData?.totalUsers ?? 0), hint: 'حسابات مسجَّلة' },
-          { label: 'الطلاب', value: kpiValue(statData?.students ?? 0), hint: 'أكبر شريحة' },
-          { label: 'الأساتذة', value: kpiValue(statData?.teachers ?? 0), hint: 'هيئة التدريس' },
-          { label: 'إداريون وجودة', value: kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0)), hint: 'إدارة ومتابعة' },
+          { label: 'الطلاب', value: kpiValue(statData?.students ?? 0), hint: topSegmentKey === 'students' ? 'الفئة الأكبر' : 'حسابات الطلاب' },
+          { label: 'الأساتذة', value: kpiValue(statData?.teachers ?? 0), hint: topSegmentKey === 'teachers' ? 'الفئة الأكبر' : 'هيئة التدريس' },
+          { label: 'إداريون وجودة', value: kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0)), hint: topSegmentKey === 'staff' ? 'الفئة الأكبر' : 'إدارة ومتابعة' },
         ]}
       />
 
@@ -387,11 +404,19 @@ export function OwnerUsersPage() {
                         {user.memberships.length === 0 ? (
                           <span className="text-xs text-subtle">بلا مؤسسة</span>
                         ) : (
-                          <span className="flex items-center gap-1" style={{ flexWrap: 'wrap', display: 'inline-flex' }}>
+                          /* r299: the utility-class + inline-style conflict
+                             died — one owner-owned class owns the chips'
+                              wrapping anatomy (owner.css). */
+                          <span className="owner-membership-chips">
                             {user.memberships.map((m) => (
                               <Badge
                                 key={m.institution.id}
-                                color={m.institution.status === 'ACTIVE' ? 'brand' : undefined}
+                                /* r299: a SUSPENDED institution reads red on
+                                   every other surface (the institutions
+                                   list, the detail header) — the chip used
+                                   to fall back to the neutral badge while
+                                   its own text said « · معلّقة». */
+                                color={m.institution.status === 'ACTIVE' ? 'brand' : 'red'}
                               >
                                 {m.institution.name}
                                 {m.institution.status === 'SUSPENDED' ? ' · معلّقة' : ''}
@@ -419,7 +444,12 @@ export function OwnerUsersPage() {
                       <span className="owner-joined" title={formatDate(joined, { dateStyle: 'full' })}>
                         {isRecent && (
                           <>
-                            <span className="owner-health-dot green" aria-hidden />
+                            {/* r299: the recent-join marker is a quiet static
+                                dot, NOT the pulsing health-grammar dot —
+                                green + heartbeat means "system healthy" and
+                                pulled the eye with a status semantic a join
+                                date never carried. */}
+                            <span className="owner-joined-dot" aria-hidden />
                             <span className="visually-hidden">انضم خلال الأسبوع الماضي — </span>
                           </>
                         )}

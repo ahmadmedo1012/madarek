@@ -62,6 +62,12 @@ import '../../styles/training.css'; // .back-link family (D11 css split, 12-15)
 // .comp-form-field, and the six governance selects now ride the
 // FormField canon (components.css .form-field) like the rest of the app.
 import '../../styles/admin.css'; // r150e: the borrowed admin-students-search chrome moved home
+/* r299: the teachers roster's pagination rides the family's canonical
+ * footer now (AdminPages' TablePaginationFooter — the cross-file
+ * import precedent AdminPages itself set for pageList) instead of a
+ * hand-rolled twin resting on an owner.css class this chunk never
+ * loads (.owner-page-gap rendered as bare inline text here). */
+import { TablePaginationFooter } from './AdminPages';
 import { formatDate } from '../../utils/numbers';
 
 const DEGREE_LABEL: Record<string, string> = {
@@ -226,14 +232,10 @@ export function pageList(page: number, totalPages: number): Array<number | 'gap'
   return out;
 }
 
-/** Proper Arabic counted plural for the roster footer's teachers total. */
-function teachersCountLabel(n: number): string {
-  if (n === 0) return 'لا أساتذة';
-  if (n === 1) return 'أستاذ واحد';
-  if (n === 2) return 'أستاذان';
-  if (n >= 3 && n <= 10) return `${formatNum(n)} أساتذة`;
-  return `${formatNum(n)} أستاذاً`;
-}
+/** Proper Arabic counted plural for the roster footer's teachers total —
+ *  r299: the local twin of countAr's unit forms died with the hand-rolled
+ *  footer; TablePaginationFooter's countAr([...]) renders the identical
+ *  strings (pinned by AdminGovernancePages.test). */
 
 export function AdminTeachersPage() {
   const [search, setSearch] = useState('');
@@ -390,51 +392,18 @@ export function AdminTeachersPage() {
                 ))}
               </RowList>
 
-              {/* Server-side pagination footer — the .table-pagination
-                  system with a bounded page window, RTL-correct chevrons
-                  (prev points right) and the honest "page X of Y · N
-                  teachers" line. */}
+              {/* r299: Server-side pagination — the family's canonical
+                  TablePaginationFooter (windowed page numbers, RTL-correct
+                  chevrons, honest "page X of Y · N teachers" line, aria-current).
+                  Same pinned strings as the hand-rolled twin it replaces. */}
               {meta && totalPages > 1 && (
-                <div className="table-pagination">
-                  <span>
-                    الصفحة {page} من {totalPages} · {teachersCountLabel(meta.total)}
-                  </span>
-                  <div className="table-pagination-actions">
-                    <button
-                      type="button"
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
-                      disabled={page <= 1}
-                      aria-label="الصفحة السابقة"
-                    >
-                      <Icon icon={ChevronRight} size={14} aria-hidden />
-                      السابق
-                    </button>
-                    {pageList(page, totalPages).map((item, i) =>
-                      item === 'gap' ? (
-                        <span key={`gap-${i}`} className="owner-page-gap" aria-hidden>…</span>
-                      ) : (
-                        <button
-                          key={item}
-                          type="button"
-                          aria-current={item === page ? 'page' : undefined}
-                          aria-label={`الصفحة ${item}`}
-                          onClick={() => setPage(item)}
-                        >
-                          {item}
-                        </button>
-                      ),
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                      disabled={page >= totalPages}
-                      aria-label="الصفحة التالية"
-                    >
-                      التالي
-                      <Icon icon={ChevronLeft} size={14} aria-hidden />
-                    </button>
-                  </div>
-                </div>
+                <TablePaginationFooter
+                  page={page}
+                  totalPages={totalPages}
+                  total={meta.total}
+                  unit={['أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً']}
+                  onPage={setPage}
+                />
               )}
             </>
           )
@@ -1026,13 +995,33 @@ export function AdminPermissionsPage() {
               : `سُحبت صلاحية «${CAP_LABEL[capability]}»`,
         );
       },
+      // r299: a failed change never leaves a stale announcement
+      // pretending the last grant/revoke landed.
+      onError: () => setAnnouncement(''),
     });
   };
 
   const retryLast = () => {
     if (!lastAttempt) return;
+    const { capability, grant } = lastAttempt;
     setCap.mutate(lastAttempt, {
-      onSuccess: () => setPulse({ cap: lastAttempt.capability, ok: lastAttempt.grant !== false }),
+      /* r299: the retry's success path now carries the SAME
+       * confirmation the direct path gives — the one-shot pulse AND
+       * the live-region announcement. A screen-reader user who
+       * failed, then retried, gets the same "it landed" the sighted
+       * user gets from the pulse; before, exactly the moment they
+       * needed it most stayed silent. */
+      onSuccess: () => {
+        setPulse({ cap: capability, ok: grant !== false });
+        setAnnouncement(
+          grant === null
+            ? `أُعيدت صلاحية «${CAP_LABEL[capability]}» إلى قيمة الدور الافتراضية`
+            : grant
+              ? `مُنحت صلاحية «${CAP_LABEL[capability]}»`
+              : `سُحبت صلاحية «${CAP_LABEL[capability]}»`,
+        );
+      },
+      onError: () => setAnnouncement(''),
     });
   };
 
@@ -1054,11 +1043,12 @@ export function AdminPermissionsPage() {
       />
 
       {/* R190-D3: the icon-box MetricCard trio → the typographic stat
-          * line (■ mono labels + metric values; no icon wells). */}
+          * line (■ mono labels + metric values; no icon wells).
+          * r299: «الدور الحالي» died — the header's meta line directly
+          * above carries role + email; one owner per datum. */}
       <StatStrip
         ariaLabel="حالة صلاحيات المستخدم"
         cells={[
-          { label: 'الدور الحالي', value: ROLE_LABEL[data.user.role] ?? <bdi>{data.user.role}</bdi> },
           { label: 'صلاحيات فعلية', value: formatNum(data.effective.length), trend: 'مفعّلة الآن' },
           { label: 'استثناءات يدوية', value: formatNum(data.overrides.length), trend: data.overrides.length > 0 ? 'منح أو سحب يدويّ' : 'لا استثناءات' },
         ]}

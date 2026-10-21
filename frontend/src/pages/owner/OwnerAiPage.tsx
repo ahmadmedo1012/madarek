@@ -17,8 +17,9 @@ import {
 import { Card, Badge } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import {
-  ErrorState, EmptyState, ChartSkeleton, TableSkeleton, Skeleton,
+  ErrorState, EmptyState, ChartSkeleton, TableSkeleton,
 } from '../../components/primitives/States';
+import { StatStripSkeleton } from '../../components/owner/StripSkeletons';
 import { ChartFrame } from '../../components/charts/ChartFrame';
 import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerAiMetrics } from '../../hooks/useOwner';
@@ -43,22 +44,8 @@ function featureLabel(feature: string) {
 /** The StatStrip's shape-matched pending placeholder (R190 D4 — the
  *  resolved band is the strip, so the strip's cells are what the
  *  skeleton must occupy; the shared KpiSkeleton's .metric boxes were
- *  the old icon-tile band's shape). */
-function StatStripSkeleton() {
-  return (
-    <div className="stat-strip" aria-busy="true">
-      {[0, 1, 2, 3].map((i) => (
-        <div key={i} className="stat-cell">
-          <Skeleton width={70} height={11} />
-          <div style={{ marginBlock: 'var(--sp-1)' }}>
-            <Skeleton width={90} height={28} />
-          </div>
-          <Skeleton width={120} height={11} />
-        </div>
-      ))}
-    </div>
-  );
-}
+ *  the old icon-tile band's shape) — r299: consumed from the owner
+ *  family's shared StripSkeletons helper (the local twin died). */
 
 export function OwnerAiPage() {
   const aiMetrics = useOwnerAiMetrics();
@@ -125,7 +112,9 @@ export function OwnerAiPage() {
             badge names the real model when one answers, and says
             «محليّ» — not an LLM name — when the local composer does. */}
         {aiConfig.data && (
-          <Badge color="gold" icon={Sparkles}>
+          /* r299: brand, not gold — R197 reserves gold for achievements;
+             this badge names the provider (a fact, not a reward). */
+          <Badge color="brand" icon={Sparkles}>
             {isRealLlm && aiConfig.data?.model ? <bdi>{aiConfig.data.model}</bdi> : 'محليّ'}
           </Badge>
         )}

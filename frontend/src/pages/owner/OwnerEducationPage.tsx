@@ -8,13 +8,16 @@ import {
 import { Card, ProgressBar } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import {
-  ErrorState, EmptyState, ChartSkeleton, TableSkeleton, ListSkeleton, Skeleton,
+  ErrorState, EmptyState, ChartSkeleton, TableSkeleton, ListSkeleton,
 } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts/ChartFrame';
 import { cartesianOptions, chartColors, valueLabels, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerEducation } from '../../hooks/useOwner';
 import { useReducedMotion } from '../../components/motion';
 import { formatNum } from '../../utils/numbers';
+/* r299: the strip's shape-matched skeleton — the owner family's shared
+ * helper (this page's local EduStripSkeleton twin died with it). */
+import { StatStripSkeleton } from '../../components/owner/StripSkeletons';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -37,22 +40,8 @@ function facultiesCountLabel(n: number): string {
 
 /** The StatStrip's shape-matched pending placeholder (R190 D4 — the
  *  resolved band is the strip, so the strip's cells are what the
- *  skeleton must occupy). */
-function EduStripSkeleton() {
-  return (
-    <div className="stat-strip" aria-busy="true">
-      {[0, 1, 2, 3].map((i) => (
-        <div key={i} className="stat-cell">
-          <Skeleton width={80} height={11} />
-          <div style={{ marginBlock: 'var(--sp-1)' }}>
-            <Skeleton width={90} height={28} />
-          </div>
-          <Skeleton width={120} height={11} />
-        </div>
-      ))}
-    </div>
-  );
-}
+ *  skeleton must occupy) — r299: consumed from the owner family's
+ *  shared StripSkeletons helper (the local twin died). */
 
 export function OwnerEducationPage() {
   const q = useOwnerEducation();
@@ -131,7 +120,7 @@ export function OwnerEducationPage() {
           </div>
         </header>
         {/* Shape-matched skeletons — one per card the data will fill. */}
-        <EduStripSkeleton />
+        <StatStripSkeleton />
         <Card title="المقرّرات حسب الكلّيّة"><ChartSkeleton height={240} /></Card>
         <Card title="أكثر المقرّرات تسجيلاً"><TableSkeleton rows={5} cols={4} /></Card>
         <Card title="توزيع حِمل أعضاء هيئة التدريس"><ListSkeleton rows={5} /></Card>
@@ -188,13 +177,16 @@ export function OwnerEducationPage() {
         </div>
       </header>
 
+      {/* r299: the trend notes died — each one restated its own label
+          («إجمالي المقرّرات» / «مقرّرات مسجَّلة») in different words; the
+          label already carries the noun. */}
       <StatStrip
         ariaLabel="إحصائيات التعليم"
         cells={[
-          { label: 'إجمالي المقرّرات', value: formatNum(totals.totalCourses), trend: 'مقرّرات مسجَّلة', trendTone: 'flat' },
-          { label: 'عدد الأساتذة', value: formatNum(totals.teachers), trend: 'هيئة التدريس', trendTone: 'flat' },
-          { label: 'العروض النشطة', value: formatNum(totals.totalOfferings), trend: 'شعب تدريس فاعلة', trendTone: 'flat' },
-          { label: 'متوسط التسجيل في العرض', value: formatNum(totals.avgEnrolment), trend: 'طالب لكل شعبة', trendTone: 'flat' },
+          { label: 'إجمالي المقرّرات', value: formatNum(totals.totalCourses) },
+          { label: 'عدد الأساتذة', value: formatNum(totals.teachers) },
+          { label: 'العروض النشطة', value: formatNum(totals.totalOfferings) },
+          { label: 'متوسط التسجيل في العرض', value: formatNum(totals.avgEnrolment) },
         ]}
       />
 

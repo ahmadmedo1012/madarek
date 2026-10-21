@@ -21,9 +21,10 @@
    anatomy itself stays in components.css, consumed not copied).
 
    Consumers: AdminExtraPages (students/digital/analysis/settings),
-   AdminPages (the borrowed toolbar chrome + the paper-row cell
-   anatomy), AdminGovernancePages (the borrowed search chrome + the
-   govx matrix groups + the owner detail page's faculty cards).
+   AdminPages (faculties/courses toolbars + the paper-row cell anatomy),
+   AdminGovernancePages (the govx matrix groups + the row-select
+   plate), QualityPages + OwnerInstitutionDetailPage (the borrowed
+   .admin-students-* toolbar chrome — shared, never touched here).
    Layer: pages (same as every page-scoped sheet).
    ================================================================== */
 
@@ -80,8 +81,12 @@
    rides a REAL <button> in the title slot stretched over the whole
    row (::after plate) — keyboard focusable, ≥44px effective target,
    the accessible name is the teacher's name, and :has() marks the
-   row selected (the same idiom owner.css already uses). */
-.pf-row { position: relative; }
+   row selected (the same idiom owner.css already uses).
+   r299: the position context is SCOPED to the rows that carry the
+   plate (.pf-row is patterns-owned and rendered app-wide; the bare
+   re-declaration below used to make every pf-row positioned the
+   moment any admin chunk loaded — a cross-family leak). */
+.pf-row:has(.govx-row-select) { position: relative; }
 .govx-row-select {
   position: static;
   padding: 0;
@@ -176,17 +181,27 @@
 /* (r150d): the .admin-students-table family RETIRED onto the canonical
    .table — density steps up to the canonical 12/16 and the hover joins
    the platform-wide surface-2 zebra. (r157 / 6A9 #6): the -wrap died
-   too — the roster sits in the shared .table-wrap like every sibling;
-   the -name/-email content classes stay (cell anatomy, not table
-   chrome). */
+   too — the roster sits in the shared .table-wrap like every sibling.
+   r299: the -name content class stays (the papers register's cell
+   anatomy); the -email class died — zero TSX/test consumers since
+   the students roster went RowList (r253), rg-verified. */
 .admin-students-name {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
 }
-.admin-students-email {
-  font-size: var(--fs-xxs);
-  color: var(--text-muted);
+
+/* r299 (D-1): the sync page's in-flight affordances (the trigger
+   button's RefreshCw while a run pends + the RUNNING badge in the
+   history) — .spin had ZERO stylesheet rules anywhere, so the
+   «جارٍ المزامنة…» state lost its motion signal entirely. The
+   keyframes (motion-spin) are global/eager (motion.css), the
+   duration/easing ride the motion tokens, and base.css's
+   reduced-motion belt kills it under RM (the documented owner of
+   that switch). */
+.spin {
+  display: inline-block;
+  animation: motion-spin var(--motion-duration-stat) var(--ease-linear) infinite;
 }
 
 /* Digital page */
@@ -297,6 +312,18 @@
 @media (max-width: 640px) {
   .admin-students-input,
   .admin-students-search { min-block-size: 44px; }
+}
+
+/* r299: one control row, one height — inside the patterns FilterBar
+   the search pill is 44px (patterns.css), so the faculty select that
+   rides the same rail matches it. Scoped to .pf-filterbar only: the
+   shared .admin-students-* toolbar consumers (faculties/courses,
+   QualityPages, the owner institution detail) keep their compact
+   36px select outside the FilterBar. */
+.pf-filterbar .admin-students-input {
+  block-size: 44px;
+  min-block-size: 44px;
+  height: auto;
 }
 
 /* (r150e): the .digital-stat-* / .top-courses-* reduced-motion switch

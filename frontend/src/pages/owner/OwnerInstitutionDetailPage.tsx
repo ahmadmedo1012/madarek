@@ -5,8 +5,7 @@ import {
   AlertTriangle, X, ArrowLeft, BookOpen,
 } from 'lucide-react';
 import { Card, Badge, AlertRow, FormField } from '../../components/primitives';
-import { StatStrip } from '../../components/primitives/Ledger';
-import { EmptyState, ErrorState, TableSkeleton, CardSkeleton, Skeleton } from '../../components/primitives/States';
+import { EmptyState, ErrorState, TableSkeleton, CardSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { Modal } from '../../components/overlays/Modal';
@@ -368,24 +367,18 @@ export function OwnerInstitutionDetailPage() {
   /* ── Render: the listing-level honest states first ────────────── */
   if (listing.isPending) {
     return (
-      <div className="page">
+      <div className="page" aria-busy="true" aria-live="polite">
         <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">جارٍ تحميل المؤسسة…</h1>
           </div>
         </header>
-        <div className="stat-strip" aria-busy="true">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="stat-cell">
-              <Skeleton width={80} height={11} />
-              <div style={{ marginBlock: 'var(--sp-1)' }}>
-                <Skeleton width={90} height={28} />
-              </div>
-              <Skeleton width={120} height={11} />
-            </div>
-          ))}
-        </div>
+        {/* r299: the pending mirror follows the resolved page — the
+            KPI strip died (its four numbers live on the header line
+            and the two cards' subtitles), so two card skeletons stand
+            for the two cards instead. */}
         <CardSkeleton lines={7} />
+        <CardSkeleton lines={6} />
       </div>
     );
   }
@@ -470,7 +463,10 @@ export function OwnerInstitutionDetailPage() {
           </Link>
           <h1 className="page-title">{institution.name}</h1>
           <p className="page-subtitle">
-            {institution.nameEn ? `${institution.nameEn} · ` : ''}
+            {/* r299: the Latin nameEn is bidi-isolated like the list
+                page renders it (a bare RTL-embedded Latin run can
+                jump separators at shaping time). */}
+            {institution.nameEn ? <><bdi dir="ltr">{institution.nameEn}</bdi> · </> : ''}
             <span className="font-mono" dir="ltr">{institution.slug}</span>
           </p>
         </div>
@@ -494,43 +490,15 @@ export function OwnerInstitutionDetailPage() {
         />
       )}
 
-      {/* R190 (D4): the typographic stat strip — was the grid-4 icon
-          tiles (the census facts as the printed stat line). */}
-      <div style={{ marginBlockStart: suspended ? 'var(--sp-4)' : undefined }}>
-        <StatStrip
-          ariaLabel="مؤشرات المؤسسة"
-          cells={[
-            {
-              label: 'الأعضاء النشطون',
-              value: formatNum(institution.activeMembershipCount),
-              trend: 'عضويّات فاعلة',
-              trendTone: 'flat',
-            },
-            {
-              label: 'الكلّيّات',
-              value: formatNum(faculties.length),
-              trend: 'البنية الأكاديميّة',
-              trendTone: 'flat',
-            },
-            {
-              label: 'الأقسام',
-              value: formatNum(totalDepartments),
-              trend: 'داخل الكلّيّات',
-              trendTone: 'flat',
-            },
-            {
-              label: 'المقرّرات',
-              value: formatNum(coursesMeta?.total ?? 0),
-              trend: coursesMeta ? 'خزينة المقرّرات' : 'بانتظار الإحصاء',
-              trendTone: 'flat',
-            },
-          ]}
-        />
-      </div>
+      {/* r299: the StatStrip died — every one of its four numbers was
+          already on the page exactly where it belongs: members in the
+          header line, faculties + departments in the academic card's
+          subtitle, courses in the courses card's subtitle. One owner
+          per datum; the strip was the second printing (mission item:
+          repeated KPI cards). The page keeps its uniform .page gap. */}
 
       {/* ── Section 1: the academic structure (faculties + departments) ── */}
       <Card
-        style={{ marginBlockStart: 'var(--sp-9)' }}
         title="البنية الأكاديمية"
         icon={Building2}
         subtitle={`${countAr(faculties.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} · ${countAr(totalDepartments, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}${foldedRows > 0 ? ` · ${foldedRows} سجلّ بذر مكرّر مُجمَّع` : ''}`}
@@ -548,7 +516,7 @@ export function OwnerInstitutionDetailPage() {
             إضافة كلّيّة
           </button>
         </div>
-        {facultiesQ.isPending && <TableSkeleton rows={4} cols={4} />}
+        {facultiesQ.isPending && <ListSkeleton rows={4} />}
         {facultiesQ.isError && (
           <ErrorState error={facultiesQ.error} onRetry={() => facultiesQ.refetch()} />
         )}
@@ -631,7 +599,6 @@ export function OwnerInstitutionDetailPage() {
 
       {/* ── Section 2: the courses + offerings supply chain ─────────── */}
       <Card
-        style={{ marginBlockStart: 'var(--sp-6)' }}
         title="المقرّرات والشُّعب"
         icon={BookOpen}
         subtitle={coursesMeta
@@ -651,7 +618,7 @@ export function OwnerInstitutionDetailPage() {
             إضافة مقرّر
           </button>
         </div>
-        {coursesQ.isPending && <TableSkeleton rows={5} cols={5} />}
+        {coursesQ.isPending && <TableSkeleton rows={5} cols={6} />}
         {coursesQ.isError && (
           <ErrorState error={coursesQ.error} onRetry={() => coursesQ.refetch()} />
         )}
@@ -755,7 +722,7 @@ export function OwnerInstitutionDetailPage() {
       <Modal open={facultyFormOpen} onClose={closeFacultyForm} ariaLabel="إضافة كلّيّة جديدة">
         <div className="modal-header">
           <h3 className="modal-title">إضافة كلّيّة جديدة</h3>
-          <button type="button" className="modal-close" onClick={closeFacultyForm} aria-label="إغلاق">
+          <button type="button" className="icon-btn" onClick={closeFacultyForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
@@ -782,7 +749,7 @@ export function OwnerInstitutionDetailPage() {
           <FormField
             label="المدينة"
             id="owner-faculty-city"
-            hint="الكلّيّات تتميّز بالاسم داخل كل مدينة — الاسم نفسه في مدينة أخرى لا يُعدّ تكرارًا"
+            hint="مطلوب — الكلّيّات تتميّز بالاسم داخل كل مدينة؛ الزرّ يبقى معطّلًا بدونه"
           >
             <input
               className="input"
@@ -827,7 +794,7 @@ export function OwnerInstitutionDetailPage() {
       <Modal open={deptTarget !== null} onClose={closeDeptForm} ariaLabel="إضافة قسم">
         <div className="modal-header">
           <h3 className="modal-title">إضافة قسم</h3>
-          <button type="button" className="modal-close" onClick={closeDeptForm} aria-label="إغلاق">
+          <button type="button" className="icon-btn" onClick={closeDeptForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
@@ -881,7 +848,7 @@ export function OwnerInstitutionDetailPage() {
       <Modal open={courseFormOpen} onClose={closeCourseForm} ariaLabel="إضافة مقرّر جديد">
         <div className="modal-header">
           <h3 className="modal-title">إضافة مقرّر جديد</h3>
-          <button type="button" className="modal-close" onClick={closeCourseForm} aria-label="إغلاق">
+          <button type="button" className="icon-btn" onClick={closeCourseForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
@@ -978,7 +945,7 @@ export function OwnerInstitutionDetailPage() {
       <Modal open={offeringCourse !== null} onClose={closeOfferingForm} ariaLabel="فتح شعبة">
         <div className="modal-header">
           <h3 className="modal-title">فتح شعبة</h3>
-          <button type="button" className="modal-close" onClick={closeOfferingForm} aria-label="إغلاق">
+          <button type="button" className="icon-btn" onClick={closeOfferingForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
