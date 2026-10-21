@@ -2,6 +2,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import {
   ArrowLeft, Menu, X, Check, FlaskConical, PlayCircle, PenLine, Timer, Users,
+  GraduationCap, Presentation, Building2, ShieldCheck, KeyRound,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { StarMark } from '../components/StarMark';
@@ -65,13 +66,14 @@ const VISION_STATUS = [
   { k: 'مزامنة بيانات المؤسّسات', v: 'وضع محدود — قيد التوسعة', live: false },
 ];
 
-/* ── Roles strip: the five verified roles, one line each. */
+/* ── Roles strip: the five verified roles, one line each. r304: each
+ * carries its Lucide mark so the five tracks read at a glance. */
 const ROLES = [
-  { role: 'للطالب', line: 'رحلة تعلّم شخصية — من المحاضرة الأولى إلى الإتقان' },
-  { role: 'للأستاذ', line: 'بناء المحاضرات والاختبارات، وتصحيح بملاحظات، ومتابعة الطلاب' },
-  { role: 'للإدارة', line: 'الكليات والأقسام والمقرَّرات والصلاحيات، وتقارير حيّة' },
-  { role: 'لضمان الجودة', line: 'مجالس الجودة والمعايرة وتقارير الالتزام' },
-  { role: 'لمالك المنصّة', line: 'الحاكمية والمؤسّسات وسجلّ التدقيق' },
+  { role: 'للطالب', line: 'رحلة تعلّم شخصية — من المحاضرة الأولى إلى الإتقان', icon: GraduationCap },
+  { role: 'للأستاذ', line: 'بناء المحاضرات والاختبارات، وتصحيح بملاحظات، ومتابعة الطلاب', icon: Presentation },
+  { role: 'للإدارة', line: 'الكليات والأقسام والمقرَّرات والصلاحيات، وتقارير حيّة', icon: Building2 },
+  { role: 'لضمان الجودة', line: 'مجالس الجودة والمعايرة وتقارير الالتزام', icon: ShieldCheck },
+  { role: 'لمالك المنصّة', line: 'الحاكمية والمؤسّسات وسجلّ التدقيق', icon: KeyRound },
 ];
 
 /* ── Miniature — the honest demo frame each chapter pairs with.
@@ -81,7 +83,9 @@ function Mini({ label, children }: { label: string; children: React.ReactNode })
   return (
     <figure className="mini" aria-label={`عرض توضيحي — ${label}`}>
       <div className="mini-body">{children}</div>
-      <figcaption className="mini-caption">عرض توضيحي</figcaption>
+      {/* r304: the caption names the capability — the demo is labeled
+       * proof, not a floating screenshot (Superlist linkage). */}
+      <figcaption className="mini-caption">عرض توضيحي — {label}</figcaption>
     </figure>
   );
 }
@@ -548,6 +552,9 @@ export default function LandingPage() {
           <ul className="rl-strip">
             {ROLES.map((r, i) => (
               <RevealCssClass as="li" key={r.role} className="rl-item" delay={((i % 3) + 1) as 1 | 2 | 3}>
+                <span className="rl-item-icon" aria-hidden>
+                  <Icon icon={r.icon} size={20} />
+                </span>
                 <span className="rl-item-role">{r.role}</span>
                 <span className="rl-item-line">{r.line}</span>
               </RevealCssClass>

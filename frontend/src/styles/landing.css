@@ -46,7 +46,11 @@
   font-family: var(--font-sans);
 }
 
-/* ── The persistent world — one fixed canvas behind the whole page ── */
+/* ── The persistent world — one fixed canvas behind the whole page ──
+ * r304: the canvas VEILS itself per chapter (MadarekWorld sets opacity
+ * on the canvas element — the at-source reading guard). The static SVG
+ * poster below is the NO-WebGL ground only: once the world boots it
+ * hands off via [data-world='live'] so the page carries ONE sculpture. */
 .world-layer {
   position: fixed;
   inset: 0;
@@ -68,6 +72,23 @@
   inline-size: min(46vw, 560px);
   aspect-ratio: 1;
   opacity: 0.55;
+}
+
+/* the handoff: WebGL live → the SVG twin retires */
+.world-layer[data-world='live'] .world-poster {
+  opacity: 0;
+}
+
+/* fallback composition (no WebGL / reduced poster path): the twin is
+ * quiet, small, and fades toward the reading bands instead of sitting
+ * hard behind mid-page copy. */
+@media (max-width: 768px) {
+  .world-poster {
+    inset-block-start: 1%;
+    inline-size: min(58vw, 300px);
+    opacity: 0.28;
+    mask-image: radial-gradient(120% 120% at 50% 30%, black 42%, transparent 78%);
+  }
 }
 
 /* Sections + header + footer stack above the world layer. */
@@ -327,7 +348,22 @@ main,
     0 30%;
   background-repeat: no-repeat;
   mask-image: linear-gradient(to bottom, black 62%, transparent 100%);
-  opacity: 0.42;
+  opacity: 0.3;
+}
+
+/* r304 mobile: the drafting grid retreats from the reading zone — a
+ * whisper at the top of the hero only, never through Arabic copy. */
+@media (max-width: 640px) {
+  .fo-hero-gridlines {
+    opacity: 0.12;
+    background-size:
+      50% 100%,
+      100% 40%;
+    background-position:
+      50% 0,
+      0 12%;
+    mask-image: linear-gradient(to bottom, black 30%, transparent 62%);
+  }
 }
 
 /* the 3D object — fills the first viewport, sits UNDER the editorial
@@ -476,7 +512,7 @@ main,
 
 /* ── البيان — statement sequence ──────────────────────────────────── */
 .st-section {
-  padding-block: var(--sp-10);
+  padding-block: var(--sp-13);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
 }
 
@@ -506,6 +542,31 @@ main,
   line-height: 1.45;
 }
 
+/* r304: localized reading wash — a feathered paper plate behind the two
+ * display-copy blocks the sculpture still passes near (the whole vision
+ * chapter, the statement lines). Invisible on the plain ground; lifts
+ * contrast only where the knot crosses. Surgical, not a site-wide
+ * overlay. */
+.st-lines,
+.vs-section {
+  position: relative;
+}
+
+.st-lines::before,
+.vs-section::before {
+  content: '';
+  position: absolute;
+  inset: -12% -18%;
+  z-index: -1;
+  background: radial-gradient(
+    100% 100% at 50% 50%,
+    color-mix(in srgb, var(--poster-paper) 72%, transparent) 38%,
+    color-mix(in srgb, var(--poster-paper) 34%, transparent) 68%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
 .st-line strong {
   color: var(--poster-signal);
   font-weight: 700;
@@ -513,12 +574,12 @@ main,
 
 /* ── الفصول 01–06 — numbered chapters, alternating layouts ────────── */
 .chapters {
-  padding-block: var(--sp-10);
+  padding-block: var(--sp-12);
 }
 
 .chapters-head {
   max-inline-size: 60ch;
-  margin-block-end: var(--sp-9);
+  margin-block-end: var(--sp-11);
 }
 
 .chapters-title {
@@ -538,8 +599,8 @@ main,
 .ch {
   display: grid;
   align-items: center;
-  gap: var(--sp-7);
-  padding-block: var(--sp-8);
+  gap: var(--sp-8);
+  padding-block: var(--sp-11);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
 }
 
@@ -616,23 +677,25 @@ main,
   color: var(--text-secondary);
 }
 
-/* ── Miniature — the honest demo frame (app recipes, demo data) ───── */
+/* ── Miniature — the honest demo frame (app recipes, demo data) ─────
+ * r304: the demo is the chapter's PROOF, not a footnote — one big,
+ * immediately recognizable interface fragment per feature beat. The
+ * frame gains the signal top rule (the ONE accent, reused), a taller
+ * stage, and a labeled caption («عرض توضيحي — <feature>»). */
 .mini {
   display: grid;
-  gap: var(--sp-3);
-  /* final-homepage: sp-4 → sp-5 — the frames read cramped against the
-   * poster's generous whitespace; one ladder step gives the demo data
-   * its own measure inside the card. */
-  padding: var(--sp-5);
+  gap: var(--sp-4);
+  padding: var(--sp-6);
   background: var(--surface);
   border: 1px solid var(--border);
+  border-block-start: 2px solid color-mix(in srgb, var(--poster-signal) 62%, transparent);
   border-radius: var(--r-lg);
   box-shadow: var(--elev-2);
 }
 
 .mini-body {
   display: grid;
-  gap: var(--sp-3);
+  gap: var(--sp-4);
 }
 
 .mini-caption {
@@ -651,7 +714,7 @@ main,
 
 .mini-course {
   font-weight: 700;
-  font-size: var(--fs-body);
+  font-size: var(--fs-h3);
 }
 
 .mini-lecture {
@@ -662,11 +725,15 @@ main,
   color: var(--text-muted);
 }
 
+.mini-lecture .fo-mono {
+  color: var(--text-secondary);
+}
+
 .mini-video {
   position: relative;
   display: grid;
   place-items: center;
-  min-block-size: 96px;
+  min-block-size: 168px;
   border: 1px solid var(--border);
   border-radius: var(--r-md);
   background: var(--neutral-900);
@@ -702,8 +769,9 @@ main,
 }
 
 .mini-quiz-q {
-  font-size: var(--fs-body);
+  font-size: var(--fs-h3);
   font-weight: 600;
+  line-height: 1.55;
 }
 
 .mini-quiz-opts {
@@ -914,7 +982,7 @@ main,
 
 /* ── ما يعمل اليوم — the honest ledger ────────────────────────────── */
 .lv-section {
-  padding-block: var(--sp-10);
+  padding-block: var(--sp-13);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
 }
 
@@ -963,7 +1031,7 @@ main,
 
 /* ── الأدوار — roles strip ────────────────────────────────────────── */
 .rl-section {
-  padding-block: var(--sp-9);
+  padding-block: var(--sp-13);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
 }
 
@@ -989,6 +1057,20 @@ main,
   border-block-start: 2px solid color-mix(in srgb, var(--poster-ink) 16%, transparent);
 }
 
+/* r304: the role mark — one quiet signal-soft chip so each of the five
+ * tracks is recognizable at a glance (the Superlist linkage principle,
+ * Lucide-only per the icon gate). */
+.rl-item-icon {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--r-full);
+  background: color-mix(in srgb, var(--poster-signal) 12%, transparent);
+  color: var(--poster-signal);
+  margin-block-end: var(--sp-2);
+}
+
 .rl-item-role {
   font-family: var(--font-display);
   font-size: var(--fs-h3);
@@ -1009,7 +1091,7 @@ main,
 
 /* ── الكليات — the interactive constellation ──────────────────────── */
 .cg-section {
-  padding-block: var(--sp-9);
+  padding-block: var(--sp-13);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
 }
 
@@ -1120,7 +1202,7 @@ main,
 
 /* ── إلى أين — vision status pairs ────────────────────────────────── */
 .vs-section {
-  padding-block: var(--sp-9);
+  padding-block: var(--sp-13);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
 }
 
@@ -1174,7 +1256,7 @@ main,
 
 /* ── الخاتمة ──────────────────────────────────────────────────────── */
 .fo-cta {
-  padding-block: var(--sp-10);
+  padding-block: var(--sp-14);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
   text-align: center;
 }
@@ -1398,10 +1480,23 @@ main,
     padding-inline: var(--sp-5);
   }
 
-  .st-section { padding-block: var(--sp-9); }
-  .lv-section { padding-block: var(--sp-9); }
-  .ch { padding-block: var(--sp-7); }
-  .chapters-head { margin-block-end: var(--sp-7); }
+  .st-section { padding-block: var(--sp-11); }
+  .lv-section { padding-block: var(--sp-11); }
+  .rl-section { padding-block: var(--sp-11); }
+  .cg-section { padding-block: var(--sp-11); }
+  .vs-section { padding-block: var(--sp-11); }
+  .fo-cta { padding-block: var(--sp-12); }
+  .ch { padding-block: var(--sp-8); }
+  .chapters { padding-block: var(--sp-10); }
+  .chapters-head { margin-block-end: var(--sp-8); }
+
+  .mini {
+    padding: var(--sp-5);
+  }
+
+  .mini-video {
+    min-block-size: 140px;
+  }
 
   .mini-stats {
     grid-template-columns: 1fr;
