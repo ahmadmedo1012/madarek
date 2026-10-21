@@ -52,6 +52,12 @@ function closedReset(): Pick<OnboardingState, 'isOpen' | 'currentFrame' | 'isRep
 }
 
 function clampFrame(frame: number): OnboardingFrame {
+  // Defensive: a non-finite argument (a NaN index from a broken
+  // caller-side computation) must not round-trip into the frame type —
+  // NaN poisons every clamp below and would desync `data-frame`,
+  // `isLast`/`isFirst` and the dot strip. Floor to the opening frame;
+  // there is no honest "current" to preserve for an invalid jump.
+  if (!Number.isFinite(frame)) return 0;
   return Math.max(0, Math.min(ONBOARDING_LAST_FRAME, Math.round(frame))) as OnboardingFrame;
 }
 
