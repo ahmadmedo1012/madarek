@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   MessageSquare, Plus, Trash2, ChevronLeft,
 } from 'lucide-react';
@@ -21,6 +21,12 @@ interface AnnotationsPanelProps {
   numPages: number;
   /** Caller subscribes to navigate to a specific page when the user clicks an annotation. */
   onJumpToPage: (page: number) => void;
+  /** r305-a7 (OPTIONAL — additive): a text selection made inside the
+   *  paper, offered as a contextual note. When `seq` changes, the
+   *  composer opens anchored to `page` with the quote seeded INSIDE the
+   *  comment draft — the persisted payload shape ({page, comment,
+   *  color}) is untouched. Ignored when absent. */
+  seedDraft?: { text: string; page: number; seq: number } | null;
 }
 
 /**
@@ -65,7 +71,7 @@ function AnnotationsSkeleton() {
   );
 }
 
-export default function AnnotationsPanel({ paperId, currentPage, numPages, onJumpToPage }: AnnotationsPanelProps) {
+export default function AnnotationsPanel({ paperId, currentPage, numPages, onJumpToPage, seedDraft }: AnnotationsPanelProps) {
   const annotations = useAnnotations(paperId);
   const createA = useCreateAnnotation(paperId);
   const deleteA = useDeleteAnnotation(paperId);
@@ -100,6 +106,26 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
     setComposing(true);
     setDraft('');
   };
+
+  /* r305-a7 — the contextual-note entry: a selection inside the paper
+   * arrives as seedDraft{seq} — the composer opens anchored to the
+   * selection's page with the quote INSIDE the comment draft (the
+   * persisted payload shape is untouched). The quote is bounded so a
+   * long selection cannot crowd out the reviewer's own words. */
+  const seededSeqRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!seedDraft || seedDraft.seq === seededSeqRef.current) return;
+    seededSeqRef.current = seedDraft.seq;
+    const quote = seedDraft.text.replace(/\s+/g, ' ').trim();
+    const bounded = quote.length > 300 ? `${quote.slice(0, 300).trimEnd()}…` : quote;
+    setComposing(true);
+    setDraftPage(Math.max(1, Math.min(numPages, seedDraft.page)));
+    setDraft((prev) => {
+      const seeded = `اقتباس: «${bounded}»`;
+      if (!prev.trim()) return `${seeded}\n`;
+      return `${seeded}\n${prev}`;
+    });
+  }, [seedDraft, numPages]);
 
   /* <section>, not <aside> (final-research D): the panel renders inside
    * the reader's landmark tree, and a complementary landmark nested in
@@ -180,7 +206,7 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
               <button type="button" className="btn ghost sm" onClick={() => { setComposing(false); setDraft(''); }}>
                 إلغاء
               </button>
-              <button type="submit" className="btn primary sm" disabled={!draft.trim() || createA.isPending}>
+              <button type="submit" className="btn primary sm" disabled={!draft.trim() || createA.isPending} aria-disabled={createA.isPending || undefined}>
                 {createA.isPending ? 'جارٍ…' : 'حفظ'}
               </button>
             </div>
@@ -189,7 +215,14 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
       )}
 
       {/* List */}
-      <div className="annotations-list">
+      {/* r305-a7 a11y: the notes render as a real LIST (role=list +
+          listitem) — but only in the branch that actually renders rows;
+          the pending/error/empty and inline-delete-error states must not
+          put non-listitem children inside a list. */}
+      <div
+        className="annotations-list"
+        role={annotations.isPending || annotations.isError || !annotations.data?.length || deleteA.isError ? undefined : 'list'}
+      >
         {/* Failed delete: the annotation stays in the list (the honest
             state — the server still has it) and the failure is surfaced
             inline instead of silently vanishing (audit 11-f P1-1). */}
@@ -222,6 +255,7 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
               <article
                 key={a.id}
                 className="annotation-item"
+                role={annotations.isPending || annotations.isError || !annotations.data?.length || deleteA.isError ? undefined : 'listitem'}
                 /* 1px author-color hairline (orchestrator ruling #4: the
                    Notion hairline language — no >1px accent stripes). */
                 style={{ borderInlineStart: `1px solid ${a.color ?? 'var(--accent)'}` }}
@@ -256,6 +290,7 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
                     className="annotation-delete"
                     onClick={() => deleteA.mutate(a.id)}
                     disabled={deleteA.isPending}
+                    aria-disabled={deleteA.isPending || undefined}
                     aria-label="حذف الملاحظة"
                   >
                     <Icon icon={Trash2} size={11} />

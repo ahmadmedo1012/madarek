@@ -91,7 +91,7 @@ test.describe('المكتبة الإلكترونية — الاستعارة وا
     /* بطاقة الكتاب الوحيد النسخة متاحة، وبطاقة الاستعارات فارغة بصدق. */
     const bookCard = page.locator('[aria-label="قائمة الكتب"] .pf-row', { hasText: 'البرمجة بلغة C' });
     await expect(bookCard).toContainText('د. عبد الرحمن الشريف');
-    await expect(bookCard.locator('.badge')).toContainText('متاح');
+    await expect(bookCard.locator('.r305rp-chip')).toContainText('متاح');
     const loansCard = page.locator('section[aria-label="استعاراتي النشطة"]');
     await expect(loansCard).toContainText('لا استعارات نشطة');
 
@@ -108,7 +108,7 @@ test.describe('المكتبة الإلكترونية — الاستعارة وا
     await expect(loansCard).not.toContainText('لا استعارات نشطة');
 
     /* النسخة الوحيدة انتهت: الشارة «مستعار» والزرّ معطّل. */
-    await expect(bookCard.locator('.badge')).toContainText('مستعار');
+    await expect(bookCard.locator('.r305rp-chip')).toContainText('مستعار');
     await expect(bookCard.getByRole('button', { name: 'استعارة البرمجة بلغة C' })).toBeDisabled();
 
     /* الإرجاع — الصف يزول، والحالة الفارغة تعود، والتوافر يُستعاد.
@@ -118,7 +118,7 @@ test.describe('المكتبة الإلكترونية — الاستعارة وا
     await expect(page.locator('.toast-success').last().locator('.toast-title')).toHaveText('تمّ الإرجاع');
     await expect(loansCard).toContainText('لا استعارات نشطة');
     await expect(loansCard.locator('.pf-row', { hasText: 'البرمجة بلغة C' })).toHaveCount(0);
-    await expect(bookCard.locator('.badge')).toContainText('متاح');
+    await expect(bookCard.locator('.r305rp-chip')).toContainText('متاح');
     await expect(bookCard.getByRole('button', { name: 'استعارة البرمجة بلغة C' })).toBeEnabled();
 
     /* الشكل على السلك حرفيًا: { bookId } فقط — عقد borrowBookSchema. */
