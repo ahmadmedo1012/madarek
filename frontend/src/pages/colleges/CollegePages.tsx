@@ -305,13 +305,24 @@ export function CollegesIndexPage() {
       />
 
       {q.isLoading && (
+        /* r305: row-shaped placeholder — the gallery renders campus
+           sections of RowList rows (r264), so the skeleton previews THAT
+           anatomy (title bar + bordered row stack per campus), not the
+           retired card grid. Decorative only (aria-hidden), per the
+           shared skeleton contract. */
         <div className="gallery-skeleton" aria-hidden>
-          {[0, 1, 2].map((s) => (
+          {[0, 1].map((s) => (
             <section key={s} className="gallery-skeleton-section">
               <Skeleton className="gallery-skeleton-title" />
-              <div className="gallery-skeleton-grid">
-                {[0, 1, 2, 3, 4, 5].map((i) => (
-                  <Skeleton key={i} variant="card" />
+              <div className="gallery-skeleton-rows">
+                {[0, 1, 2, 3].map((i) => (
+                  <div key={i} className="gallery-skeleton-row">
+                    <Skeleton className="gallery-skeleton-row-emoji" />
+                    <div className="gallery-skeleton-row-lines">
+                      <Skeleton className="gallery-skeleton-row-line-a" />
+                      <Skeleton className="gallery-skeleton-row-line-b" />
+                    </div>
+                  </div>
                 ))}
               </div>
             </section>
