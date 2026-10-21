@@ -10,6 +10,10 @@ import { PageFrame, PageHeader, SectionHeader, StatLine } from '../../components
 import { useCampusEvents, useLiveSessions } from '../../hooks/useResources';
 import { formatDate, formatInt, formatNum, formatTime } from '../../utils/numbers';
 
+/* R305 Heron: the shared student vocabulary + this family's refinements. */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-supplemental.css';
+
 /**
  * Honest webinars landing.
  *
@@ -165,8 +169,11 @@ export default function WebinarsPage() {
           title="أين أجد الفعاليّات الحقيقيّة؟"
           description="الفعاليّات الرسميّة تُنشر على لوحة المجتمع، وجلسات مقرّراتك تعيش في صفحة البثّ."
         />
-        <div className="webinar-dest-grid">
-          <div className="webinar-dest">
+        {/* R305 Heron: the two destinations fold from card tiles into the
+            copper-edged rails (the shared .r305s-next emphasis) — quiet
+            paths, not boxes. */}
+        <div className="r305w-dests">
+          <div className="r305s-next r305p-rail r305w-dest">
             {/* 5-D3 (A3 P3-2): demoted from h3 — card-internal labels
                 under the page's lone h1 (class carries the visuals). */}
             <div className="webinar-dest-title">
@@ -182,7 +189,7 @@ export default function WebinarsPage() {
             </Link>
           </div>
 
-          <div className="webinar-dest">
+          <div className="r305s-next r305p-rail r305w-dest">
             <div className="webinar-dest-title">
               <Icon icon={Video} size={16} aria-hidden /> البثّ المباشر
             </div>

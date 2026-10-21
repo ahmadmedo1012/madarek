@@ -33,6 +33,10 @@ import { formatDate } from '../../utils/numbers';
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-schedule.css';
 
+/* ── r305-d (supplemental family) imports — the only region agent 2-d edits above the components ── */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-supplemental.css';
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
 
 /** Counted Arabic noun for point values (D17-2): ar-LY grouping with the
@@ -102,8 +106,13 @@ export function GamificationPage() {
         ]}
       />
 
-      <div className="grid-2">
-        <Card title="مستوى التقدم" icon={Trophy}>
+      {/* R305 Heron: the level statement rides the page's ONE deep band;
+          the achievements + leaderboard lists stay quiet page-surface rows
+          under shared kickers (no card wall). The gold discipline holds:
+          --gold rides the tier orb / xp fill / +XP chips (training.css),
+          never the band's type. */}
+      <div className="r305s-band r305s-band--deep">
+        <div className="r305g-level">
           {dash.isPending || training.isPending ? (
             /* shape-matched skeleton: orb + lines + track */
             <div className="flex items-center gap-4" style={{ marginBottom: 'var(--sp-5)' }} aria-busy="true">
@@ -116,8 +125,8 @@ export function GamificationPage() {
             </div>
           ) : (
             <div
-              className="flex items-center gap-4"
-              style={{ marginBottom: 'var(--sp-5)', ['--tier-color' as never]: me ? TIER_COLOR[me.level.tier] : undefined }}
+              className="r305g-level"
+              style={{ ['--tier-color' as never]: me ? TIER_COLOR[me.level.tier] : undefined }}
             >
               <div
                 className="tier-orb lg"
@@ -126,15 +135,16 @@ export function GamificationPage() {
               >
                 {me ? me.level.level : '—'}
               </div>
-              <div className="flex-1">
-                <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>
+              <div className="r305g-level-main">
+                <span className="r305s-eyebrow">مستوى التقدّم</span>
+                <div className="r305g-level-title">
                   {training.isError
                     ? 'تعذّر تحميل مستوى التطوير الذاتي'
                     : me
                       ? `${TIER_LABEL[me.level.tier]} · المستوى ${me.level.level} في التطوير الذاتي`
                       : 'لم يبدأ مسار التطوير الذاتي بعد'}
                 </div>
-                <div className="text-xs text-subtle" style={{ marginBottom: 'var(--sp-2)' }}>
+                <div className="r305g-level-sub">
                   {xp !== null ? (
                     <>
                       {pointsAr(xp)}
@@ -176,7 +186,7 @@ export function GamificationPage() {
                         style={{ transform: `scaleX(${me.level.pctIntoLevel / 100})`, background: 'var(--tier-color)' }}
                       />
                     </div>
-                    <div className="text-xxs text-subtle" style={{ marginTop: 'var(--sp-1)' }}>
+                    <div className="r305g-level-foot">
                       متبقّي <bdi>{pointsAr(me.level.toNext)}</bdi> للمستوى التالي
                     </div>
                   </>
@@ -189,7 +199,14 @@ export function GamificationPage() {
               بئر أيقونة الإنجاز الذهبي يبقى من training.css (§gamification،
               النظام نفسه الذي تحمله صفحة التطوير الذاتي وصفحة الملف)،
               بينما يحمل RowList السطح والفواصل والفراغات. */}
-          <SectionHeader as="h3" title="الإنجازات المحققة" />
+        </div>
+      </div>
+
+      <div className="grid-2">
+        <section aria-label="الإنجازات المحققة">
+          <div className="r305s-kicker">
+            <h3 className="r305s-kicker-title">الإنجازات المحققة</h3>
+          </div>
           {ach.isError ? <ErrorState error={ach.error} onRetry={() => ach.refetch()} /> : (
             <RowList
               aria-label="الإنجازات المحققة"
@@ -214,9 +231,12 @@ export function GamificationPage() {
               ))}
             </RowList>
           )}
-        </Card>
+        </section>
 
-        <Card title="لوحة المتصدرين" icon={Crown}>
+        <section aria-label="لوحة المتصدرين">
+          <div className="r305s-kicker">
+            <h3 className="r305s-kicker-title">لوحة المتصدرين</h3>
+          </div>
           {lb.isPending ? (
             /* shape-matched skeleton: ranked rows */
             <div className="flex-col gap-1" aria-busy="true">
@@ -267,7 +287,7 @@ export function GamificationPage() {
               ))}
             </ol>
           )}
-        </Card>
+        </section>
       </div>
     </PageFrame>
   );
@@ -370,11 +390,12 @@ export function SkillsPage() {
               />
             </ChartFrame>
             <div className="flex-col gap-4">
+              <span className="r305s-eyebrow">سجلّ الإتقان</span>
               {skills.data.map((s) => (
                 <div key={s.skill.id} className="flex-col gap-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium" style={{ color: 'var(--text)' }}>{s.skill.name}</span>
-                    <Badge>المستوى {s.level} / 5</Badge>
+                    <span className="r305s-chip r305s-chip--accent"><span className="r305s-chip-dot" aria-hidden />المستوى {s.level} / 5</span>
                   </div>
                   <ProgressBar value={s.progressPct} showValue ariaLabel={`تقدّم مهارة ${s.skill.name}`} />
                 </div>
@@ -493,8 +514,15 @@ export function AlertsPage() {
         </div>
       )}
 
-      {/* سطح القائمة الصامت — الترويسة أعلاه هي صاحبة العنوان والإجراءات. */}
-      <Card>
+      {/* سطح القائمة الصامت — الترويسة أعلاه هي صاحبة العنوان والإجراءات.
+          R305 Heron: البطاقة تُسْقَط — الصفوف الشعرية تسكن سطح الصفحة مباشرة
+          (القائمة أولًا) واللاصق المشترك يصنّف الكتلة. هذا المقطع محايد
+          الدور: نفس المكوّن يخدم /admin/alerts و /teacher/alerts
+          و /quality/notifications و /owner/notifications. */}
+      <section className="r305p-alerts" aria-label="سجل الإشعارات">
+        <div className="r305s-kicker">
+          <h2 className="r305s-kicker-title">آخر الإشعارات</h2>
+        </div>
         {feed.isPending ? (
           /* shape-matched skeleton: np rows (well + title + desc lines) */
           <div className="np-list" aria-busy="true">
@@ -600,7 +628,7 @@ export function AlertsPage() {
             )}
           </div>
         )}
-      </Card>
+      </section>
     </PageFrame>
   );
 }
@@ -1085,13 +1113,9 @@ export function ArVrPage() {
       <PatternPageHeader title="تجارب AR / VR" description="فهرس تجارب AR/VR للمقرّرات العمليّة — التشغيل غير متاح بعد." />
 
       {q.isPending ? (
-        /* r148 (AUDIT-2 L8): شبكة بطاقات AR/VR — هيكل بطاقات مطابق
-           الشكل بدل السبينر الصفحي. */
-        <div className="grid-3" aria-busy="true">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="card"><CardSkeleton lines={2} /></div>
-          ))}
-        </div>
+        /* r148 (AUDIT-2 L8): هيكل مطابق الشكل بدل السبينر الصفحي —
+           R305 Heron: نفس صفوف القائمة (بئر + عنوان + سطران). */
+        <ListSkeleton rows={3} />
       ) : q.isError ? (
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       ) : !q.data || q.data.length === 0 ? (
@@ -1100,28 +1124,26 @@ export function ArVrPage() {
           description="ستظهر هنا حين يقوم الإداريّون بإضافتها."
         />
       ) : (
-        <div className="grid-3">
+        <RowList aria-label="فهرس تجارب AR/VR">
           {q.data.map((e) => (
-            <Card key={e.id} compact bordered>
-              <div className="flex items-start justify-between" style={{ marginBottom: 'var(--sp-3)' }}>
-                <div className="metric-icon" style={{ color: 'var(--brand-purple)' }}>
-                  <Icon icon={Headset} size={20} />
-                </div>
-                <Badge color={e.type === 'VR' ? 'purple' : 'brand'}><bdi>{e.type}</bdi></Badge>
-              </div>
-              <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{e.title}</div>
-              <div className="text-xs text-subtle" style={{ marginTop: 'var(--sp-1)' }}>{e.subject}</div>
-              {e.description && (
-                <p className="text-xs text-muted" style={{ marginTop: 'var(--sp-2)', lineHeight: 1.5 }}>
-                  {e.description}
-                </p>
-              )}
-              {/* No real launch action exists for AR/VR experiences yet — the
-                  old "ابدأ التجربة" button was a dead control, so it is removed
-                  rather than kept as a fake affordance. */}
-            </Card>
+            <RowItem
+              key={e.id}
+              leading={
+                <span className="r305v-well" aria-hidden>
+                  <Icon icon={Headset} size={18} />
+                </span>
+              }
+              title={e.title}
+              meta={
+                <>
+                  <span>{e.subject}</span>
+                  {e.description && <span className="r305v-desc">{e.description}</span>}
+                </>
+              }
+              trailing={<Badge color={e.type === 'VR' ? 'purple' : 'brand'}><bdi>{e.type}</bdi></Badge>}
+            />
           ))}
-        </div>
+        </RowList>
       )}
     </PageFrame>
   );
@@ -1334,7 +1356,7 @@ export function SocialPage() {
                   </div>
                 )}
                 <div className="flex items-center justify-between">
-                  <span className="text-xxs text-subtle" style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-1-5)' }}>
+                  <span className="r305s-meta-row">
                     {draft.trim() !== '' && <span>مسودة محفوظة تلقائيّاً</span>}
                     <span><bdi>{formatNum(draft.length)}</bdi> / <bdi>2000</bdi></span>
                   </span>
@@ -1536,8 +1558,14 @@ function MaterialAction({ material }: { material: StudentMaterial }) {
     );
   }
   /* المحجوزات (RFC 2606) والروابط غير الآمنة — الحالة الصادقة:
-     نص بلا مرساة؛ مرساة ميّتة أسوأ من لا مرساة. */
-  return <span className="text-xs text-subtle" role="note">غير متوفر بعد</span>;
+     نص بلا مرساة؛ مرساة ميّتة أسوأ من لا مرساة. R305 Heron: الحالة
+     تصنيفٌ، فتصعد على الرقاقة المحايدة المشتركة. */
+  return (
+    <span className="r305s-chip" role="note">
+      <span className="r305s-chip-dot" aria-hidden />
+      غير متوفر بعد
+    </span>
+  );
 }
 
 export function DownloadsPage() {
@@ -1660,15 +1688,23 @@ export function UniversityInfoPage() {
           />
         </div>
 
-        <Card title="بطاقة تعريف" icon={Building2}>
-          <div className="grid-2">
-            <FactRow label="الاسم الرسميّ" value={inst.name} />
-            {inst.nameEn ? (
-              <FactRow label="الاسم بالإنجليزيّة" value={inst.nameEn} mono />
-            ) : null}
-            <FactRow label="المعرّف على المنصّة" value={inst.slug} mono />
+      {/* R305 Heron: the identity card is the page's ONE deep band — the
+          authority surface. Facts ride the band-safe .r305u-fact anatomy
+          (the deep FactRow variant) inside the .r305u-facts grid. */}
+        <section aria-label="بطاقة التعريف">
+          <div className="r305s-kicker">
+            <h3 className="r305s-kicker-title">بطاقة تعريف</h3>
           </div>
-        </Card>
+          <div className="r305s-band r305s-band--deep">
+            <div className="r305u-facts">
+              <FactRow deep label="الاسم الرسميّ" value={inst.name} />
+              {inst.nameEn ? (
+                <FactRow deep label="الاسم بالإنجليزيّة" value={inst.nameEn} mono />
+              ) : null}
+              <FactRow deep label="المعرّف على المنصّة" value={inst.slug} mono />
+            </div>
+          </div>
+        </section>
 
         {facs.isError ? (
           /* One honest error surface for the shared query (the
@@ -1784,16 +1820,24 @@ export function UniversityInfoPage() {
         </Card>
       </div>
 
-      <Card title="بطاقة تعريف" icon={Building2}>
-        <div className="grid-2">
-          <FactRow label="الاسم الرسميّ" value="جامعة مدارك التجريبية" />
-          <FactRow label="النطاق" value="بيانات اصطناعية — لا مؤسّسة حقيقية" />
-          <FactRow label="النوع" value="مؤسّسة عرض تجريبية (اصطناعية)" />
-          <FactRow label="بريد العرض" value="demo.madarek.ly" mono />
-          <FactRow label="الحرم" value="حرم المعرفة · حرم الابتكار · حرم البيان" />
-          <FactRow label="طابع البيانات" value="مولَّدة لأغراض العرض" />
+      {/* R305 Heron: the identity card is the page's ONE deep band — the
+          authority surface. Facts ride the band-safe .r305u-fact anatomy
+          (the deep FactRow variant) inside the .r305u-facts grid. */}
+      <section aria-label="بطاقة التعريف">
+        <div className="r305s-kicker">
+          <h3 className="r305s-kicker-title">بطاقة تعريف</h3>
         </div>
-      </Card>
+        <div className="r305s-band r305s-band--deep">
+          <div className="r305u-facts">
+            <FactRow deep label="الاسم الرسميّ" value="جامعة مدارك التجريبية" />
+            <FactRow deep label="النطاق" value="بيانات اصطناعية — لا مؤسّسة حقيقية" />
+            <FactRow deep label="النوع" value="مؤسّسة عرض تجريبية (اصطناعية)" />
+            <FactRow deep label="بريد العرض" value="demo.madarek.ly" mono />
+            <FactRow deep label="الحرم" value="حرم المعرفة · حرم الابتكار · حرم البيان" />
+            <FactRow deep label="طابع البيانات" value="مولَّدة لأغراض العرض" />
+          </div>
+        </div>
+      </section>
 
       {facs.isError ? (
         /* One honest error surface for the shared query — no masked
@@ -1881,19 +1925,21 @@ export function UniversityInfoPage() {
       )}
 
       <Card title="بطاقة تعريف المؤسّسة" icon={Crown}>
-        <div className="flex-col gap-2">
+        <div className="r305u-rows">
           {/* r155b: العضويّات تُقرأ من UNIVERSITY_FACTS (data/university.facts.ts
               — مصدر الحقيقة الوحيد المعتمد على static-source.ts). النسخة
               المحليّة السابقة أعادت إنتاج خطأ إعادة الكتابة الموثّق هناك:
               «اتحاد الجامعات الإسلامية» بدل المتوسطيّة. الشارة تحمل تصنيف
               العضويّة (label) — الاختصارات اللاتينيّة القديمة لم تكن ضمن
               المصدر المعتمد أصلاً. */}
+          {/* R305 Heron: the inline surface-2 wells become hairline ledger
+              rows (.r305u-row). The membership Badge drops the gold tone —
+              gold is the ACHIEVEMENTS-only signal on the Madarek canon;
+              institutional classifications ride the neutral chip. */}
           {UNIVERSITY_FACTS.profile.map((m) => (
-            <div key={m.label} className="flex items-center justify-between" style={{
-              padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)',
-            }}>
-              <span className="text-sm">{m.full}</span>
-              <Badge color="gold">{m.label}</Badge>
+            <div key={m.label} className="r305u-row">
+              <span className="text-sm r305u-row-main">{m.full}</span>
+              <Badge>{m.label}</Badge>
             </div>
           ))}
         </div>
@@ -1908,7 +1954,7 @@ export function UniversityInfoPage() {
 
       {/* Strategic plan */}
       <Card title="الخطّة الاستراتيجيّة 2024–2028" icon={Target} subtitle="خارطة طريق للارتقاء بمكانة الجامعة وتعزيز دورها في خدمة المجتمع">
-        <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
+        <div className="grid-2 r305u-rows">
           {[
             'تقديم برامج تعليميّة وفق معايير الجودة المحليّة والدوليّة',
             'الارتقاء بمستوى البحث العلميّ',
@@ -1919,12 +1965,9 @@ export function UniversityInfoPage() {
             'دعم التعاون مع المؤسّسات المحليّة والدوليّة',
             'تجويد الخدمات التعليميّة والمجتمعيّة',
           ].map((g) => (
-            <div key={g} style={{
-              padding: 'var(--sp-3)', display: 'flex', alignItems: 'center', gap: 'var(--sp-2)',
-              background: 'var(--surface-2)', borderRadius: 'var(--r-sm)',
-            }}>
+            <div key={g} className="r305u-row">
               <Icon icon={CheckCircle2} size={14} style={{ color: 'var(--success)', flexShrink: 0 }} />
-              <span className="text-sm">{g}</span>
+              <span className="text-sm r305u-row-main">{g}</span>
             </div>
           ))}
         </div>
@@ -1966,7 +2009,22 @@ export function UniversityInfoPage() {
   );
 }
 
-function FactRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+function FactRow({ label, value, mono, deep }: { label: string; value: string; mono?: boolean; deep?: boolean }) {
+  /* R305 Heron deep variant: on the identity band the frozen .fact-tile
+     well (light surface-2) would fight the inverted ground — the deep
+     anatomy is label-over-value with a hairline base instead. */
+  if (deep) {
+    return (
+      <div className="r305u-fact">
+        <span className="r305u-fact-label">{label}</span>
+        {mono ? (
+          <bdi dir="ltr" className="font-mono r305u-fact-value">{value}</bdi>
+        ) : (
+          <span className="r305u-fact-value">{value}</span>
+        )}
+      </div>
+    );
+  }
   return (
     <div className="fact-tile">
       <span className="text-xxs text-subtle">{label}</span>
