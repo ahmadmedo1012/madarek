@@ -29,18 +29,18 @@ describe('getMotionDuration', () => {
     vi.stubGlobal('window', undefined);
     vi.stubGlobal('document', undefined);
     expect(getMotionDuration('micro')).toBe(80);
-    expect(getMotionDuration('short')).toBe(160);
-    expect(getMotionDuration('medium')).toBe(240);
-    expect(getMotionDuration('long')).toBe(380);
-    expect(getMotionDuration('page')).toBe(320);
-    expect(getMotionDuration('reveal')).toBe(360);
+    expect(getMotionDuration('short')).toBe(200);
+    expect(getMotionDuration('medium')).toBe(400);
+    expect(getMotionDuration('long')).toBe(500);
+    expect(getMotionDuration('page')).toBe(400);
+    expect(getMotionDuration('reveal')).toBe(480);
     expect(getMotionDuration('stat')).toBe(700);
     expect(getMotionDuration('skeleton')).toBe(1200);
   });
 
   it('reads the computed custom property (ms) — same source as CSS', () => {
-    mockComputed({ '--motion-duration-long': '380ms' });
-    expect(getMotionDuration('long')).toBe(380);
+    mockComputed({ '--motion-duration-long': '500ms' });
+    expect(getMotionDuration('long')).toBe(500);
   });
 
   it('returns 0 when reduced-motion zeroed the rung (callers treat 0 as instant)', () => {
@@ -50,12 +50,12 @@ describe('getMotionDuration', () => {
 
   it('unparseable value falls back to the documented rung', () => {
     mockComputed({ '--motion-duration-reveal': 'over-nine-thousand' });
-    expect(getMotionDuration('reveal')).toBe(360);
+    expect(getMotionDuration('reveal')).toBe(480);
   });
 
   it('missing value falls back to the documented rung', () => {
     mockComputed({});
-    expect(getMotionDuration('page')).toBe(320);
+    expect(getMotionDuration('page')).toBe(400);
     expect(getMotionDuration('skeleton')).toBe(1200);
   });
 });

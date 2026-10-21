@@ -53,9 +53,10 @@ is parked and the rAF loop is idle**, the hairlines stay frozen until the next p
 (pointermove/press). No surface ships the attribute yet; when the landing adopts it, add an `isConnected`
 heal check to the press handlers (and the two one-line tests) — see review finding 4.
 
-Modules: `frontend/src/components/motion/CursorManager.tsx` (+ colocated `cursor.css`),
-`frontend/src/lib/motion/pointer.ts` (pure math: `lerp`, `distance`, `shouldStop`, `PointerTracker`,
-`finePointerSupported`, `desktopCursorAllowed`, `resolveCursorState`, constants `LERP_FACTOR` 0.18,
+Modules: `frontend/src/components/motion/CursorManager.tsx` (+ colocated `cursor.css`, exports
+`resolveCursorState`), `frontend/src/lib/motion/pointer.ts` (pure math: `lerp`, `distance`,
+`shouldStop`, `PointerTracker`, `finePointerSupported`, `desktopCursorAllowed`, constants
+`LERP_FACTOR` 0.18,
 `LINE_LERP_FACTOR` 0.1, `STOP_EPS` 0.001, `MIN_VIEWPORT` 992).
 
 ---
@@ -77,7 +78,7 @@ Root hooks for CSS/QA: `data-motion-label="true"`, `data-motion-icon="true"`.
 Keyboard parity: every hover choreography is paired with an ungated `:focus-visible` twin.
 Gates everywhere: `:not(:disabled):not([data-loading="true"])`; hover slide additionally rides
 `@media (hover: hover) and (pointer: fine)` (no touch sticky-hover); RM snaps via the token belt.
-Timing: `var(--t-slow) var(--ease-out)` (380ms decel ≈ Heron's 0.48s snap, Madarek's own curve).
+Timing: `var(--t-slow) var(--ease-out)` (500ms decel on the r305 ladder — ≈ Heron's 0.48s roll register, Madarek's own curve).
 
 ### CSS classes (components.css r305 block)
 `.btn-motion-label > .btn-motion-label-track` (+ `.btn-motion-label-dup`) ·
@@ -106,7 +107,7 @@ out-specify the shared RM block).
 ### Runtime token bridge (`frontend/src/lib/motion/tokens.ts`)
 ```ts
 getMotionDuration('page');   // → 320 (ms) on real DOM; 0 under RM (caller treats 0 as instant);
-                             // SSR/no-DOM → documented rung fallbacks (80/160/240/380/320/360/700/1200)
+                             // SSR/no-DOM → documented rung fallbacks (80/200/400/500/400/480/700/1200 — the r305 ladder)
 getMotionEase('decelerate'); // → resolved cubic-bezier string on real DOM; 'var(--motion-ease-…)'
                              // reference fallback (raw beziers are banned in .ts by the motion gate)
 ```

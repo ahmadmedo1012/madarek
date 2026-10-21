@@ -1,28 +1,22 @@
 # R305-A1 reference evidence screenshots
 
-Captured live from heronaiapp.com (agent-browser/Playwright headless Chromium).
-Full-size originals remain in the R305-A1 evidence set; these are the probative subset.
+> **R305-FINAL release decision (integrator):** the 21 `2a-*/2b-*/2c-*` captures of
+> heronaiapp.com were **removed from the public repository** before the R305 release.
+> They are direct reproductions of a third-party commercial site's artwork and layout
+> (including identifiable people's photographs) and Madarek holds no rights to
+> redistribute them. The measured design values this program actually used are
+> documented as facts in `docs/redesign/r305-heron-reference-spec.md` (values read
+> from the DOM/CSS — not copied assets), and the Madarek implementation is original.
+> The removed captures remain preserved verbatim in the R305 release backup
+> (git bundle `madarek-full-backup-20261021T203532Z.bundle`) and on the
+> `redesign/r305-heron-foundation` branch until it is deleted, and the full-size
+> originals remain in the private R305-A1 evidence set. Only Madarek's own
+> post-redesign captures ship below.
+
+## Post-redesign captures (Madarek's own app — original work)
 
 | File | What it proves |
 |---|---|
-| 2a-intro-early.png / 2a-intro-2.png | the intro: blueprint draw, orange scanline + % counter, mono boot labels, agency credit |
-| 2a-hero-settled.png | settled hero @1440: ruler strip, `+` marks, caps display, hairline cells, ticker, orange CONTACT US |
-| 2a-btn-fill-hover.png | manifesto section: giant orange disc, construction lines, charcoal btn-fill (LEARN MORE) with dashed separator; clients strip |
-| 2a-nav-dropdown-hover.png | nav cell hover = solid charcoal; hairline dropdown panel, mono items |
-| 2a-focus-state.png | keyboard focus affordance on the reference (documented gap) |
-| 2a-footer.png | mid-reveal capture: masked line fade-up + outline→fill button register |
-| 2a-usecase-switched.png | duotone collage + accordion rows with dashed separators + coordinate readouts |
-| 2a-map-frame.png | the 500dvh scrolljack frame (giant centered caps statement) |
-| 2b-dash-hero.png | product hero: flat multiply mockup, kicker, caps h1, sub-row + DISCOVER MORE |
-| 2b-dash-key-slide1.png | scroll-synced feature chapter (tab bar `[01]…` + sticky image column + orange hairline) |
-| 2b-chat-hero.png | chat-widget mockup: charcoal header bar, squared frame, solid/outline bubble inversion |
-| 2b-pricing-cards.png | the 5-column hairline plan matrix (no cards), charcoal CTAs |
-| 2b-pricing-table.png | the 13×5 comparison table with squared checks + per-cell hairlines |
-| 2b-pricing-yearly.png | billing toggle click state: active block = solid charcoal, white text |
-| 2b-resources-cards.png | resources grid: hairline cards, mono meta rows, bracketed counts |
-| 2b-about-team.png | team grid: hairline cards, padded photo frames, caps name/role rows |
-| 2b-contact-top.png | contact hero + info columns with mono labels |
-| 2b-contact-focus.png | form focus state (effectively invisible — the documented a11y gap) |
-| 2c-intro-t1.png | mobile intro (390×844) |
-| 2c-menu-open.png | mobile open menu: right-aligned clip-path dropdown, 40px rows |
-| 2c-pricing-cards.png | mobile pricing stack + sticky toggle |
+| madarek-after-landing-light.png | the Madarek landing surface re-keyed to the Heron-derived canon (light) |
+| madarek-after-auth-light.png / madarek-after-auth-dark.png | authenticated shell on the new neutrals (both themes) |
+| madarek-after-mobile-dark.png | mobile shell (390) dark theme |

@@ -29,12 +29,11 @@ import { gradeBand, type GradeBandKey } from '../../lib/courseMeta';
 import { PageFrame, PageHeader as PatternPageHeader, SectionHeader, RowList, RowItem, StatLine } from '../../components/patterns';
 import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
 import { formatDate } from '../../utils/numbers';
-/* ── r305-c (schedule family) imports — the only region agent 2-c edits above the components ── */
+/* ── r305-c (schedule family) + r305-d (supplemental family) imports —
+   collapsed by the R305 integrator (handoff N1): the duplicated
+   r305-student.css import was legal (Vite dedupes) but confusing. ── */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-schedule.css';
-
-/* ── r305-d (supplemental family) imports — the only region agent 2-d edits above the components ── */
-import '../../styles/r305-student.css';
 import '../../styles/r305-student-supplemental.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);

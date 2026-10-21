@@ -67,11 +67,11 @@ const DURATION_VARS: Record<MotionDurationName, string> = {
  */
 const DURATION_FALLBACKS_MS: Record<MotionDurationName, number> = {
   micro: 80,
-  short: 160,
-  medium: 240,
-  long: 380,
-  page: 320,
-  reveal: 360,
+  short: 200,
+  medium: 400,
+  long: 500,
+  page: 400,
+  reveal: 480,
   stat: 700,
   skeleton: 1200,
 };
