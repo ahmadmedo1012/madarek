@@ -10,6 +10,14 @@ import { HydrationSplash } from './components/HydrationSplash';
 import { RouteErrorBoundary } from './components/ErrorBoundary';
 import { ToastStack } from './components/overlays/Toast';
 import { Icon } from './components/Icon';
+/* r305-A2: the single global cursor mount — a gated, additive pointer
+ * layer (fine pointer + ≥992px + motion allowed only) that renders null
+ * everywhere else, so touch/coarse/reduced-motion users keep the native
+ * pointer untouched. Sits next to ToastStack OUTSIDE the route tree and
+ * the error boundary: it must survive route changes and stay inert
+ * (pointer-events: none, aria-hidden) by construction. Mount contract:
+ * docs/r305-heron-interactions.md. */
+import { CursorManager } from './components/motion/CursorManager';
 
 /* ───────────────────────────────────────────────────────────
    Lazy-load every route component. Each `lazy(...)` boundary
@@ -514,6 +522,7 @@ export default function App() {
           <AppRoutes />
         </RouteErrorBoundary>
         <ToastStack />
+        <CursorManager />
       </BrowserRouter>
     </QueryClientProvider>
   );
