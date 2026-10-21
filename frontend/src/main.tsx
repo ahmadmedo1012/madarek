@@ -17,10 +17,10 @@ import { createRoot } from 'react-dom/client';
 // imported by its three lazy consumers (CollegePages, CompetitionsPages,
 // CommunityPages — r157: the admin roster chrome moved to admin.css,
 // r150e/r152c) and lands in
-// their shared chunk; the landing's colleges POPOVER split to its own
-// colleges-popover.css in r151h (imported by <CollegesPopover />, so
-// it rides the LandingPage chunk — the public route no longer
-// downloads the gallery sheet). auth.css/student.css stay global
+// their shared chunk. (G final sweep: the landing's colleges popover
+// is retired — r198's constellation replaced the never-rendered
+// <CollegesPopover /> and its colleges-popover.css sheet is deleted.)
+// auth.css/student.css stay global
 // (documented cross-page borrows, worklog 8-b).
 import './styles/fonts.css';
 import './styles/tokens.css';

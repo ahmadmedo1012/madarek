@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { Bot, Send, Sparkles, AlertCircle, ArrowLeft, Brain, RefreshCw, Plus, Trash2, MessageSquare } from 'lucide-react';
 import { Card, Badge, UserAvatar, AlertRow } from '../../components/primitives';
-import { Skeleton } from '../../components/primitives/States';
+import { Skeleton, EmptyState } from '../../components/primitives/States';
+/* G النهائية: الترويسة على عقد patterns — السطح محادثة موطّنة داخل
+   إطار العائلة نفسه (PageFrame/PageHeader) لا ودجات دردشة عامة. */
+import { PageFrame, PageHeader } from '../../components/patterns';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
@@ -311,20 +314,20 @@ export default function AiAssistantPage() {
   const convList = conversations.data ?? [];
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">المساعد الذكيّ</h1>
-          <p className="page-subtitle">
-            {isRealLlm
-              ? 'مساعدك الدراسيّ مدعوم بنموذج لغويّ حقيقيّ يرى بيانات إتقانك ويعطي إجابات مخصّصة لك.'
-              : 'يحلّل بيانات إتقانك محليّاً ويقترح خطوة مذاكرة تالية — مساعد تحليليّ محليّ، لا نموذج لغويّ خارجيّ.'}
-          </p>
-        </div>
-        {/* The badge names the real model when one answers — an LLM
-            badge on template replies (or the reverse) would be a lie. */}
-        <Badge color="gold" icon={Sparkles}>{isRealLlm && aiConfig.data?.model ? aiConfig.data.model : 'AI'}</Badge>
-      </header>
+    <PageFrame>
+      {/* G: ترويسة patterns — نفس بنية ترويسات العائلة كلها؛ وصف الوضع
+          الصادق يبقى نصًّا فرعيًّا والشارة في خانة الإجراءات. */}
+      <PageHeader
+        title="المساعد الذكيّ"
+        description={
+          isRealLlm
+            ? 'مساعدك الدراسيّ مدعوم بنموذج لغويّ حقيقيّ يرى بيانات إتقانك ويعطي إجابات مخصّصة لك.'
+            : 'يحلّل بيانات إتقانك محليّاً ويقترح خطوة مذاكرة تالية — مساعد تحليليّ محليّ، لا نموذج لغويّ خارجيّ.'
+        }
+        /* The badge names the real model when one answers — an LLM
+           badge on template replies (or the reverse) would be a lie. */
+        actions={<Badge color="gold" icon={Sparkles}>{isRealLlm && aiConfig.data?.model ? aiConfig.data.model : 'AI'}</Badge>}
+      />
 
       {/* r261 (4E، اتجاه Superlist): شريط الفجوات — سياق المصادر يسبق
           السطح بلا غلاف Card: سطر تعريف هادئ ثم بطاقات الفجوات في صفّ.
@@ -424,7 +427,7 @@ export default function AiAssistantPage() {
                 {[0, 1, 2].map((i) => (
                   <div key={i} className="chat-msg bot" aria-hidden>
                     <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
-                    <div className="chat-bubble" style={{ background: 'var(--surface-2)' }}>
+                    <div className="chat-bubble ai-bubble-skeleton">
                       <Skeleton width={i === 1 ? '90%' : '60%'} height={12} />
                     </div>
                   </div>
@@ -462,7 +465,7 @@ export default function AiAssistantPage() {
                             turn names its model, a composer turn names the
                             composer; untagged = no data for that turn. */}
                         {m.engine && (
-                          <div className="font-mono text-xxs text-subtle" style={{ marginBlockStart: 'var(--sp-1)' }}>
+                          <div className="font-mono text-xxs text-subtle ai-engine-tag">
                             {m.model ?? m.engine}
                           </div>
                         )}
@@ -509,7 +512,7 @@ export default function AiAssistantPage() {
               visible in real-LLM mode (the greeting alone would vanish
               after the first turn). */}
           {isRealLlm && (
-            <p className="text-xxs text-subtle ai-privacy" style={{ margin: 0 }}>
+            <p className="text-xxs text-subtle ai-privacy">
               {PRIVACY_DISCLOSURE}
             </p>
           )}
@@ -573,7 +576,7 @@ export default function AiAssistantPage() {
             </button>
           </div>
           {input.length > 3600 && (
-            <p className="text-xxs text-subtle" style={{ margin: 0 }}>
+            <p className="text-xxs text-subtle ai-counter">
               {input.length}/4000
             </p>
           )}
@@ -620,13 +623,18 @@ export default function AiAssistantPage() {
                 }
               />
             ) : convList.length === 0 ? (
-              <p className="list-row-sub" style={{ padding: 'var(--sp-2) var(--sp-1)' }}>
-                لا توجد محادثات سابقة بعد — ابدأ بأول سؤال وستظهر محادثاتك هنا.
-              </p>
+              /* G: الحالة الفارغة على عقد الطقم المشترك (EmptyState +
+                  رسوم mk-ill) بدل فقرة نصّ مجرّدة — نفس بنية أخوية
+                  (الإعلانات/المسابقات/الغرف) داخل البطاقة. */
+              <EmptyState
+                illustration="empty-list"
+                title="لا توجد محادثات سابقة بعد"
+                description="ابدأ بأول سؤال وستظهر محادثاتك هنا."
+              />
             ) : (
               <div className="flex-col">
                 {delConversation.isError && (
-                  <div style={{ padding: 'var(--sp-2)' }}>
+                  <div className="ai-conv-error-pad">
                     <AlertRow
                       color="red"
                       icon={AlertCircle}
@@ -706,13 +714,13 @@ export default function AiAssistantPage() {
                   disabled={busy}
                 >
                   <Icon icon={Sparkles} size={14} />
-                  <span className="list-row-body text-sm" style={{ color: 'var(--text-muted)' }}>{q}</span>
+                  <span className="list-row-body text-sm ai-suggestion-text">{q}</span>
                 </button>
               ))}
             </div>
           </Card>
         </aside>
       </div>
-    </div>
+    </PageFrame>
   );
 }

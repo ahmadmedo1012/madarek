@@ -11,7 +11,7 @@ import { Card, Badge, UserAvatar, FormField } from '../../components/primitives'
 /* r263 (4E — اتجاه Superlist): العِدّاد يتقاعد لشريط أرقام هادئ، والشبكة
    تصير قائمة صفوف (RowList/RowItem) بتفصيل على الصف، والتصفية شريط
    FilterBar موحّد (عقد Agent S). */
-import { PageHeader, RowList, RowItem, StatLine, FilterBar } from '../../components/patterns';
+import { PageFrame, PageHeader, RowList, RowItem, StatLine, FilterBar  } from '../../components/patterns';
 import { ErrorState, EmptyState, DetailSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
@@ -150,7 +150,7 @@ export function CompetitionsIndexPage() {
   const kpiValue = (n: number) => (q.isPending ? '…' : q.isError ? '—' : formatNum(n));
 
   return (
-    <div className="page">
+    <PageFrame>
       <PageHeader
         title="المسابقات الأكاديمية"
         description="شارك في تحديات المعرفة والابتكار، أو نظِّم مسابقتك الخاصّة."
@@ -174,8 +174,10 @@ export function CompetitionsIndexPage() {
       />
 
       {/* r263: شريط التصفية الموحّد (FilterBar) — الرقائق نفسها بعقد
-          aria-pressed كما كانت. */}
+          aria-pressed كما كانت. G: لاصق كشريط الكليات — القائمة تطول
+          والتصفية تبقى مرئية. */}
       <FilterBar
+        sticky
         filters={(
           <div className="flex items-center gap-2" role="group" aria-label="تصفية المسابقات بحسب الحالة">
             {([
@@ -263,7 +265,7 @@ export function CompetitionsIndexPage() {
       )}
 
       {creating && <CreateCompetitionModal onClose={() => setCreating(false)} />}
-    </div>
+    </PageFrame>
   );
 }
 

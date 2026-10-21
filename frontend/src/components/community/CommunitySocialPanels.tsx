@@ -490,9 +490,11 @@ export function PostsFeedPanel() {
                 </div>
                 <div className="post-body">{p.body}</div>
                 {p.hashtags && p.hashtags.length > 0 && (
-                  <div className="flex flex-wrap gap-1" style={{ marginTop: 'var(--sp-1-5)' }}>
+                  /* G (عقد mono — r197): الوسم محتوى مستخدم لا معرّف
+                     رقمي؛ sans هادئ بلون الحبر المكمّم. */
+                  <div className="flex flex-wrap gap-1 post-tags">
                     {p.hashtags.map((t) => (
-                      <span key={t} className="text-xxs font-mono" style={{ color: 'var(--accent-ink, var(--accent))' }}>#{t}</span>
+                      <span key={t} className="text-xxs post-tag">#{t}</span>
                     ))}
                   </div>
                 )}
