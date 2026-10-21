@@ -220,12 +220,20 @@ export function detectDrift(
           detail: `matched ${matched} color samples < floor ${floor} (notFound: ${cap.colorProbe.notFound.join(', ') || 'none'})`,
         });
       }
-      // illustrations: distinguish N/A from vanishing — a route whose
-      // state surfaces exist (or whose baseline had illustrations)
-      // must mount its illustrations; only truly data-bearing pages
-      // (0 state mounts) are honest N/A. Recorded for review via the
-      // probe; illustrationMounts stateSurfaces>0 with 0 illustrations
-      // is surfaced below when a baseline says illustrations existed.
+    }
+
+    // Illustration slots are an independent expected-measurement signal.
+    // It must work for older captures that have no color probe.
+    if (
+      cap.illustrationMounts &&
+      cap.illustrationMounts.stateSurfaces > 0 &&
+      cap.illustrations.length === 0
+    ) {
+      findings.push({
+        kind: 'coverage-regression',
+        ...ctx,
+        detail: `found ${cap.illustrationMounts.stateSurfaces} illustration slot(s) but no measurements`,
+      });
     }
   }
 

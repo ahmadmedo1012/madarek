@@ -2496,11 +2496,9 @@
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  PROFILE PAGES — avatar ring on hover                          ║
-  /* (r152e: the v19 auth-card entrance (madarek-auth-card-in) moved
-     home to auth.css — completing the handoff its own header documents.
-     The redundant `.auth-card{position:relative}` twin was deleted,
-     not moved: auth.css:151 already owns it. RM belt entry stays.) */
      ╚═══════════════════════════════════════════════════════════════╝ */
+  /* r152e: the auth-card entrance moved to auth.css, which already owns
+     its position rule. The reduced-motion belt entry stays here. */
   /* (Wave 9-b dead-selector sweep: this avatar-ring block deleted —
      .profile-avatar / .profile-page / .teacher-profile-avatar all
      have zero TSX consumers; the generic .avatar hover treatment in
@@ -2574,15 +2572,11 @@
     position: relative;
     transition: color var(--motion-duration-short) var(--ease);
   }
-  /* (r151d/r151e: :not(.back-link):not(.track-card) added to the four
-     ::after selectors — those card-like chip anchors opt out of the
-  /* (r152e: the v19 .pdf-toolbar fade-in (madarek-pdf-controls-in)
-     moved home to pdf.css. RM belt entry stays.) */
-     drawn underline at the source now (the wave 3-c components-layer
-     `content: none !important` pair retired with this change). The
-     BASE rule above deliberately stays un-guarded so those anchors
-     keep position:relative + the color transition they receive
-     today.) */
+  /* r151d/r151e: back-link and track-card anchors opt out of this
+     underline treatment. The PDF toolbar fade-in moved to pdf.css
+     (r152e); its reduced-motion entry stays here. The wave 3-c
+     components-layer content-none override was retired, while the
+     base rule above keeps its existing position/color transition. */
   a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):not(.back-link):not(.track-card)::after {
     content: '';
     position: absolute;

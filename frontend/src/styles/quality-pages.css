@@ -17,7 +17,7 @@
    the «قراءة فقط» header cue is markup (Badge + Eye icon), not CSS.
 
    Gates: token-only colors (var/color-mix-on-vars), --t-* motion,
-   --sp-* spacing, --r-* radii, --fs-*/--type-* type. No !important.
+   --sp-* spacing, --r-* radii, font-size/type tokens. No !important.
    ================================================================== */
 
 @layer pages {
