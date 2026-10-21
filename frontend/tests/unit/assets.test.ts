@@ -86,11 +86,13 @@ describe('r188 brand reset — campus photography retired (no real-university im
     const src = read('src/pages/LandingPage.tsx');
     expect(src).not.toContain('<picture>');
     expect(src).not.toContain('main_photo');
-    // r198 (stage 2): the hero's ONE graphic object is the Constellation —
-    // a flat two-tone SVG generated from the real 25-college registry.
+    // r198 (stage 2) intent, re-pointed to the R304 architecture (r304):
+    // the hero's ONE graphic object is the persistent 3D world —
+    // MadarekWorld driving the procedural knowledge ribbon — plus the
+    // editorial type composed from the real 25-college registry.
     // No hero raster, no orbit ring, no vision backdrop, no AI scenes,
     // no text inside images (the r188 intent, kept and tightened).
-    expect(src).toContain('Constellation');
+    expect(src).toContain('MadarekWorld');
     expect(src).toContain("from '../data/colleges.config'");
     // …and the r188 provenance strings survive (brand gates below
     // still pin جامعة مدارك التجريبية as synthetic data).
