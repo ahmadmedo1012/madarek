@@ -1,0 +1,483 @@
+/* ==================================================================
+   MADAREK — R305 HERON · teacher, quality & exam workflow sheet
+   (r305-teacher-quality.css)
+   ------------------------------------------------------------------
+   R305-A6 (the Heron round): the second, optional LAYER the family's
+   lazy page modules import AFTER `teacher-quality.css`. It carries the
+   Heron-inspired workflow visual system — strong headings, restrained
+   ember (orange) emphasis, disciplined outlines, legible status
+   vocabulary, dense-but-readable tables, consistent toolbars and
+   crisp button/form feedback — WITHOUT touching the R304 family sheet
+   (which stays verbatim), `admin.css`, `polish.css`, the shared
+   patterns contract or any global token file.
+
+   Scoping contract:
+   - Every restyled surface mounts a `.hr-scope` wrapper (a
+     `display: contents` div) INSIDE its PageFrame. Custom properties
+     inherit through it, so per-surface hooks stay one class deep.
+   - New primitives use the `hr-` prefix. Per-family sections use the
+     family suffixes below — never extend a section from outside it.
+
+   Sections (each owned by exactly ONE workstream — merge walls):
+     §0  hr-    shared Heron primitives (owned by the coordinator —
+                read/consume freely, edit by coordinator only)
+     §A  tqd-   Teacher dashboard + daily workflows (Agent 2-a:
+                TeacherDashboardPage.tsx · TeacherPages.tsx)
+     §B  exa2-  Exam authoring hub + template detail (Agent 2-b:
+                ExamAuthorPages.tsx)
+     §C  oex2-  Student exam list/taker + moderation (Agent 2-b:
+                OnlineExamsPages.tsx)
+     §D  qlt2-  Quality oversight boards (Agent 2-c: QualityPages.tsx)
+     §E  tax-   Teacher intelligence/profile/live/labs (Agent 2-d)
+
+   Grammar (Heron — translated, never copied):
+   - Workflow hierarchy first: a page reads brow → title → stat strip
+     → primary action zone → dense rows/tables. No generic card grids.
+   - ONE restrained signal: the ember (orange) accent, derived locally
+     from the sanctioned gold/warning tokens via color-mix() — used for
+     brows, active rail steps, primary numerals and the single most
+     important action per view. Never a large fill, never a text body
+     color.
+   - Statuses speak one chip vocabulary (data-tone) everywhere.
+   - Tables: hairline rows, 13px floor, sticky header option, tabular
+     numerals, sortable th buttons, inline-start severity edges.
+   - Arabic-first RTL: logical properties everywhere, no negative
+     tracking, ≥44px tap floors, hover effects guarded behind
+     (hover:hover) and (pointer:fine).
+   - Tokens only (tokens.css wins); motion via var(--t-*) only; no
+     !important; raw px only for hairline borders/geometry allowances
+     documented inline.
+   ================================================================== */
+
+@layer pages {
+
+/* ────────────────────────────────────────────────────────────────────
+   §0 · hr- — shared Heron primitives (coordinator-owned)
+   ──────────────────────────────────────────────────────────────── */
+
+/* The scope hook: boxless wrapper inside PageFrame. Declares the
+   Heron ember family locally — derived, theme-reactive, gate-clean. */
+.hr-scope {
+  display: contents;
+
+  /* The restrained ember: a warm orange that leans on the sanctioned
+     gold/amber ramp. Light theme pulls it deeper for AA contrast on
+     paper grounds; dark lifts it toward the copper ink. */
+  --hr-ember: color-mix(in srgb, var(--gold) 72%, var(--warning));
+  --hr-ember-ink: var(--gold-ink);
+  --hr-ember-soft: color-mix(in srgb, var(--gold-soft) 55%, transparent);
+  --hr-ember-edge: color-mix(in srgb, var(--gold-ink) 22%, transparent);
+  --hr-ember-wash: color-mix(in srgb, var(--gold-soft) 26%, transparent);
+}
+
+[data-theme='dark'] .hr-scope {
+  --hr-ember: color-mix(in srgb, var(--gold) 64%, var(--warning-ink));
+  --hr-ember-ink: color-mix(in srgb, var(--gold-ink) 55%, var(--gold));
+  --hr-ember-soft: color-mix(in srgb, var(--gold) 26%, transparent);
+}
+
+/* ─── Brow: the section eyebrow — mono micro-label + ember tick ─── */
+
+.hr-brow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--hr-ember-ink);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0;           /* Arabic joins — never track */
+  padding-inline: var(--sp-2);
+  padding-block: var(--sp-1);
+  border-inline-start: 3px solid var(--hr-ember);
+  border-radius: var(--r-xs);
+}
+
+.hr-brow::before {
+  content: '';
+  inline-size: var(--sp-2);
+  block-size: var(--sp-2);
+  border-radius: var(--r-full);
+  background: var(--hr-ember);
+}
+
+/* ─── Section head: strong, hairline-anchored, count-aware ─────── */
+
+.hr-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding-block-end: var(--sp-2);
+  border-block-end: 1px solid var(--border);
+  margin-block-end: var(--sp-3);
+}
+
+.hr-section-head h2,
+.hr-section-head h3 {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+
+.hr-section-count {
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  padding-inline: var(--sp-2-5);
+  padding-block: var(--sp-0-5);
+  min-block-size: 24px;         /* chip, not a tap target */
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ─── Toolbar: one placement grammar for search + filters + actions ── */
+
+.hr-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding-block: var(--sp-2);
+}
+
+.hr-toolbar-spacer {
+  flex: 1 1 auto;
+  min-inline-size: var(--sp-4);
+}
+
+/* ─── Status chip: THE status vocabulary of the round ──────────────── */
+
+.hr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  padding-inline: var(--sp-2-5);
+  padding-block: var(--sp-1);
+  min-block-size: 26px;
+  white-space: nowrap;
+}
+
+.hr-chip::before {
+  content: '';
+  inline-size: var(--sp-1-5);
+  block-size: var(--sp-1-5);
+  border-radius: var(--r-full);
+  background: var(--text-muted);
+  flex: none;
+}
+
+.hr-chip[data-tone='neutral']::before { background: var(--text-muted); }
+.hr-chip[data-tone='ok'] {
+  color: var(--success-ink);
+  background: var(--success-soft);
+  border-color: color-mix(in srgb, var(--success) 32%, transparent);
+}
+.hr-chip[data-tone='ok']::before { background: var(--success); }
+.hr-chip[data-tone='warn'] {
+  color: var(--warning-ink);
+  background: var(--warning-soft);
+  border-color: color-mix(in srgb, var(--warning) 36%, transparent);
+}
+.hr-chip[data-tone='warn']::before { background: var(--warning); }
+.hr-chip[data-tone='danger'] {
+  color: var(--danger-ink);
+  background: var(--danger-soft);
+  border-color: color-mix(in srgb, var(--danger) 32%, transparent);
+}
+.hr-chip[data-tone='danger']::before { background: var(--danger); }
+.hr-chip[data-tone='info'] {
+  color: var(--accent-ink);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.hr-chip[data-tone='info']::before { background: var(--accent); }
+.hr-chip[data-tone='ember'] {
+  color: var(--hr-ember-ink);
+  background: var(--hr-ember-wash);
+  border-color: var(--hr-ember-edge);
+}
+.hr-chip[data-tone='ember']::before { background: var(--hr-ember); }
+
+/* ─── Data table: dense-but-readable, hairline rows, tabular digits ── */
+
+.hr-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow-x: auto;
+  /* the ≤640 rung in components.css owns horizontal scrolling; this
+     wrapper adds the Heron frame without stealing its behavior */
+}
+
+.hr-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-xs);
+}
+
+.hr-table thead th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-align: start;
+  padding-inline: var(--sp-3);
+  padding-block: var(--sp-2-5);
+  border-block-end: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.hr-table tbody td {
+  padding-inline: var(--sp-3);
+  padding-block: var(--sp-2-5);
+  border-block-end: 1px solid color-mix(in srgb, var(--border) 62%, transparent);
+  vertical-align: middle;
+}
+
+.hr-table tbody tr:last-child td { border-block-end: none; }
+
+.hr-table .hr-num {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hr-table tbody tr:hover { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+}
+
+/* Sortable header buttons live inside th — 44px floor, one signal. */
+.hr-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--r-xs);
+}
+
+.hr-sort-btn[aria-sort='ascending'] .hr-sort-glyph,
+.hr-sort-btn[aria-sort='descending'] .hr-sort-glyph {
+  color: var(--hr-ember-ink);
+}
+
+/* ─── Severity edge: inline-start 3px — the due/overdue grammar ─── */
+
+.hr-edge {
+  border-inline-start: 3px solid transparent;
+  border-start-start-radius: var(--r-xs);
+  border-end-start-radius: var(--r-xs);
+}
+.hr-edge[data-severity='info']    { border-inline-start-color: var(--accent-soft); }
+.hr-edge[data-severity='soon']    { border-inline-start-color: var(--warning); }
+.hr-edge[data-severity='overdue'] { border-inline-start-color: var(--danger); }
+.hr-edge[data-severity='ember']   { border-inline-start-color: var(--hr-ember); }
+
+/* ─── Workflow rail: authored lifecycle steps (draft → review → …) ── */
+
+.hr-rail {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--surface-2) 42%, transparent);
+}
+
+.hr-rail-step {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  padding-inline: var(--sp-2);
+  padding-block: var(--sp-1);
+  min-block-size: 28px;
+  border-radius: var(--r-full);
+}
+
+.hr-rail-step::before {
+  content: '';
+  inline-size: var(--sp-2-5);
+  block-size: var(--sp-2-5);
+  border-radius: var(--r-full);
+  border: 2px solid currentColor;
+  flex: none;
+}
+
+.hr-rail-step[data-state='done'] { color: var(--success-ink); }
+.hr-rail-step[data-state='done']::before {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.hr-rail-step[data-state='current'] {
+  color: var(--hr-ember-ink);
+  background: var(--hr-ember-wash);
+}
+.hr-rail-step[data-state='current']::before {
+  border-color: var(--hr-ember);
+  background: color-mix(in srgb, var(--hr-ember) 30%, transparent);
+}
+
+.hr-rail-step[data-state='rejected'] { color: var(--danger-ink); }
+.hr-rail-step[data-state='rejected']::before {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.hr-rail-link {
+  flex: none;
+  align-self: center;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  /* the arrow glyph is aria-hidden in markup; direction flips via
+     [dir] in the consuming section if a directional arrow is used */
+}
+
+/* ─── KPI emphasis: the tabular metric voice with ember option ───── */
+
+.hr-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hr-kpi-value {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-strong);
+  line-height: 1.15;
+}
+
+.hr-kpi-value[data-emphasis='true'] { color: var(--hr-ember-ink); }
+
+.hr-kpi-label {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+/* ─── Empty / feedback: structured, honest, one illustration slot ── */
+
+.hr-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  text-align: center;
+  padding-inline: var(--sp-5);
+  padding-block: var(--sp-7);
+  border: 1px dashed color-mix(in srgb, var(--border) 80%, var(--text-muted));
+  border-radius: var(--r-lg);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.hr-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding-inline: var(--sp-3);
+  padding-block: var(--sp-2-5);
+}
+
+/* ─── Scoped feedback: crisp press states inside Heron surfaces ──── */
+
+.hr-scope .btn { transition: transform var(--t-micro) var(--ease-out), box-shadow var(--t-fast) var(--ease-out); }
+
+.hr-scope .btn:active:not(:disabled) { transform: translateY(1px); }
+
+.hr-scope .btn:disabled,
+.hr-scope .btn[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+/* Primary emphasis cap: ONE ember-flavored primary action per surface
+   is expressed by .hr-cta (never by re-painting .btn globally). */
+.hr-cta {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hr-ember) 38%, transparent);
+}
+
+/* Focus: never weaken the global ring — only add a visible offset
+   inside dense rows so focus lands clearly on hairline surfaces. */
+.hr-scope :focus-visible {
+  outline-offset: 2px;
+}
+
+/* ─── Mobile: rows stack, toolbars wrap, tables scroll ────────────── */
+
+@media (max-width: 640px) {
+  .hr-toolbar { align-items: stretch; flex-direction: column; }
+  .hr-toolbar .btn { min-block-size: 44px; }
+  .hr-rail { flex-direction: column; align-items: stretch; }
+  .hr-rail-step { min-block-size: 44px; }
+  .hr-table thead th, .hr-table tbody td { padding-inline: var(--sp-2-5); }
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   §A · tqd- — Teacher dashboard + daily workflows (Agent 2-a)
+   Files: TeacherDashboardPage.tsx · TeacherPages.tsx
+   ──────────────────────────────────────────────────────────────── */
+/* [§A-START — Agent 2-a edits ONLY between these markers] */
+/* [§A-END] */
+
+/* ────────────────────────────────────────────────────────────────────
+   §B · exa2- — Exam authoring hub + template detail (Agent 2-b)
+   File: ExamAuthorPages.tsx
+   ──────────────────────────────────────────────────────────────── */
+/* [§B-START — Agent 2-b edits ONLY between these markers] */
+/* [§B-END] */
+
+/* ────────────────────────────────────────────────────────────────────
+   §C · oex2- — Student exams list/taker + moderation (Agent 2-b)
+   File: OnlineExamsPages.tsx
+   ──────────────────────────────────────────────────────────────── */
+/* [§C-START — Agent 2-b edits ONLY between these markers] */
+/* [§C-END] */
+
+/* ────────────────────────────────────────────────────────────────────
+   §D · qlt2- — Quality oversight boards (Agent 2-c)
+   File: QualityPages.tsx
+   ──────────────────────────────────────────────────────────────── */
+/* [§D-START — Agent 2-c edits ONLY between these markers] */
+/* [§D-END] */
+
+/* ────────────────────────────────────────────────────────────────────
+   §E · tax- — Teacher intelligence/profile/live/labs (Agent 2-d)
+   Files: TeacherIntelligencePage.tsx · TeacherProfilePage.tsx ·
+          TeacherLivePage.tsx · TeacherLabsPage.tsx
+   ──────────────────────────────────────────────────────────────── */
+/* [§E-START — Agent 2-d edits ONLY between these markers] */
+/* [§E-END] */
+
+}
