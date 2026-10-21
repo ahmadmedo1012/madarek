@@ -1,6 +1,6 @@
 /* ═════════════════════════════════════════════════════════════════════
-   Canonical Madarek parity export v1 — faithful distillation of
-   tokens.css @ cc03c2e.
+   Canonical Madarek parity export v2 — faithful distillation of
+   tokens.css @ r305 (the Heron foundation re-key).
 
    Reference artifact for the design canon — the verification surface
    the parity gate diffs against tokens.css. This file is NOT imported
@@ -10,16 +10,18 @@
    HISTORY (r127-F1): the first revision of this file (added in cc03c2e
    with a false claim of external application — it was never applied
    anywhere) diverged from canonical
-   tokens.css in 40+ tokens: a generic near-black dark ground instead
-   of the night indigo, a 100/200/300ms motion scale instead of the
-   80/160/240/380/520/720 ladder, a saffron/ember light accent instead
-   of copper on cream, an invented 24px radius rung, Tailwind-gray
-   neutrals, a dark .btn.primary referencing an un-inverted neutral
-   ramp, a reduced-motion hole (raw --t-* never zeroed), and an
-   invented ten-band z-scale. This rewrite corrects every divergence
+   tokens.css in 40+ tokens. This rewrite corrects every divergence
    against the canonical sources; the retired divergent values are
    gone from the file entirely (enforced by the forbidden-value gate
    in the verify script).
+
+   r305 RE-SYNC: the export had drifted through two eras (it still
+   shipped the r197 ultramarine/warm-paper values while canonical had
+   moved through r303/r304) — the parity gate ran red at the r305
+   baseline (76/190). This revision re-distills the Heron foundation:
+   blueprint-paper neutrals, the #FA3600 signal with its AA ink/label
+   registers, the technical greys, the squared radius ladder and the
+   measured 0.4s motion register. Every value mirrors tokens.css.
 
    Verify with: node scripts/verify-parity-export.mjs
    (asserts 100+ key tokens against tokens.css :root + [data-theme="dark"]
@@ -71,12 +73,13 @@
     /* (r136: --sp-*x legacy aliases deleted with the canon — see tokens.css) */
 
     /* ─── Radius — Notion-soft, 7 rungs + full ────────────────────── */
-    --r-xs: 6px;
-    --r-sm: 8px;
-    --r-md: 10px;
-    --r-lg: 12px;
-    --r-xl: 16px;
-    --r-2xl: 20px;
+    --r-xs: 2px;
+    --r-sm: 4px;
+    --r-md: 6px;
+    --r-lg: 8px;
+    --r-xl: 12px;
+    --r-2xl: 16px;
+    --r-3xl: 20px;
     --r-full: 9999px;
 
     /* (r136: --st-r-* deleted with the canon — see tokens.css.
@@ -143,17 +146,17 @@
 
     /* ─── Motion — raw ladder 80/160/240/380/520/720 ──────────────── */
     --t-micro: 80ms;
-    --t-fast:  160ms;
-    --t-base:  240ms;
-    --t-slow:  380ms;
-    --t-slower: 520ms;
-    --t-cinema: 720ms;
+    --t-fast:  200ms;
+    --t-base:  400ms;
+    --t-slow:  500ms;
+    --t-slower: 650ms;
+    --t-cinema: 900ms;
 
     /* easings — ease-out settles at (0.16,1,0.3,1); the spring family
        overshoots 1.18/1.36/1.56 (soft/spring/bounce) + snappy rebound */
-    --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+    --ease:        cubic-bezier(0.23, 1, 0.32, 1);
     --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+    --ease-in:     cubic-bezier(0.625, 0.05, 0, 1);
     --ease-linear: linear;
     --ease-soft:   cubic-bezier(0.22, 1, 0.36, 1);
     --ease-spring-soft:   cubic-bezier(0.34, 1.18, 0.64, 1);
@@ -175,11 +178,11 @@
 
     /* ─── Motion — semantic layer ─────────────────────────────────── */
     --motion-duration-micro:    var(--t-micro);   /*  80ms */
-    --motion-duration-short:    var(--t-fast);    /* 160ms */
-    --motion-duration-medium:   var(--t-base);    /* 240ms */
-    --motion-duration-long:     var(--t-slow);    /* 380ms */
-    --motion-duration-page:     320ms;
-    --motion-duration-reveal:   360ms;
+    --motion-duration-short:    var(--t-fast);    /* 200ms */
+    --motion-duration-medium:   var(--t-base);    /* 400ms */
+    --motion-duration-long:     var(--t-slow);    /* 500ms */
+    --motion-duration-page:     400ms;
+    --motion-duration-reveal:   480ms;
     --motion-duration-stat:     700ms;
     --motion-duration-skeleton: 1200ms;
 
@@ -305,15 +308,22 @@
     --z-toast: 500;
     --z-lightbox: 600;
 
+    /* r150a basis constants — the achromatic extremes the alpha
+       derivations and fill labels route through (mirrored from
+       tokens.css; --warm-ink must NOT flip with the theme) */
+    --black:     #000000;
+    --white:     #FFFFFF;
+    --warm-ink:  #191918;
+
     /* both-theme soft gold ground (theme blocks remap --c-yellow-bg) */
     --gold-soft: var(--c-yellow-bg);
 
     /* ─── r197 homepage poster namespace (stage-2 contract) ──
        Theme-reactive aliases — the full contract lives on tokens.css;
        mirrored here so the export stays faithful. */
-    --poster-paper: #FBFAF9;
-    --poster-ink: #191918;
-    --poster-signal: #B57438;
+    --poster-paper:  var(--bg);
+    --poster-ink:    var(--text);
+    --poster-signal: var(--accent);
   }
 
   /* RTL flips the direction multiplier so logical motion expressions
@@ -328,117 +338,124 @@
   :root,
   [data-theme="light"] {
     /* canonical neutrals — r195 egn cool-gray ramp */
-    --neutral-0: #FFFFFF;          /* ground — cards/inputs */
-    --neutral-50: #FBFAF9;          /* paper — page ground */
-    --neutral-100: #F7F6F3;          /* card hover, subtle band */
-    --neutral-150: #F1EFEC;          /* inset wells */
-    --neutral-200: #E9E7E2;          /* hairline */
-    --neutral-300: #D9D6D0;          /* divider */
-    --neutral-400: #A89E8A;   /* non-text rung — icons/disabled strokes */
-    --neutral-500: #7B7466;
-    --neutral-700: #57534A;          /* ink-secondary */
-    --neutral-800: #2E2B24;
-    --neutral-900: #191918;          /* ink — 15.92:1 on paper (AAA) */
+    --neutral-0:   #FFFFFF;          /* ground — cards/inputs */
+    --neutral-50:  #F6F8FA;          /* paper — page ground (blueprint paper) */
+    --neutral-100: #F0F2F5;          /* card hover, subtle band */
+    --neutral-150: #E9ECEF;          /* inset wells */
+    --neutral-200: #E0E0DA;          /* hairline */
+    --neutral-300: #C8C8C8;          /* divider */
+    --neutral-400: #B4B4B0;   /* grid-line rung — the reference's technical grey */
+    --neutral-500: #72726F;
+    --neutral-700: #414140;          /* ink-secondary (the reference's own) */
+    --neutral-800: #333330;
+    --neutral-900: #282828;          /* ink — the charcoal, 13.85:1 on paper (AAA) */
 
     /* the 9 section-color families — near-neutral grounds + teal-family
        inks (r195 egn re-key; --c-mint-ink IS the brand teal, so the
        primary status reads as the accent, not a second hue) */
-    --c-peach-bg: #FFE9DC;   --c-peach-ink:    #C96A5B;   --c-peach-deep:   #7A3224;
-    --c-mint-bg:      #E1F0E5;   --c-mint-ink: #4FA66D;   --c-mint-deep:    #175C36;
-    --c-lavender-bg:  #ECEAF7;   --c-lavender-ink: #655396;   --c-lavender-deep: #3F2D7A;
-    --c-sky-bg:       #E4EBF5;   --c-sky-ink: #5C8FCE;   --c-sky-deep:     #33496B;
-    --c-yellow-bg: #FCF1CD;   --c-yellow-ink:   #9A7B1F;   --c-yellow-deep:  #6E5410;
-    --c-rose-bg:      #F7E3E0;   --c-rose-ink: #DD6E78;   --c-rose-deep:    #7C2A22;
-    --c-sand-bg: #F1ECDF;   --c-sand-ink: #B59868;   --c-sand-deep: #5A4623;
-    --c-grey-bg:      #EDEAE2;   --c-grey-ink:     #6B675C;   --c-grey-deep:    #2D2A24;
-    --c-copper-bg: #F4E4D2;   --c-copper-ink: #B57438;   --c-copper-deep:  #5C3416;
+    --c-peach-bg:     #FCE5DE;   --c-peach-ink:    #F15534;   --c-peach-deep:   #9C2B0F;
+    --c-mint-bg:      #E3EBE1;   --c-mint-ink:     #3F8F5C;   --c-mint-deep:    #1B5430;
+    --c-lavender-bg:  #ECE6FA;   --c-lavender-ink: #8A6FE0;   --c-lavender-deep:#3F2D7A;
+    --c-sky-bg:       #E1E9F0;   --c-sky-ink:      #4A7FA8;   --c-sky-deep:     #1F4968;
+    --c-yellow-bg:    #F5EBD6;   --c-yellow-ink:   #A8750F;   --c-yellow-deep:  #5E420C;
+    --c-rose-bg:      #F9E3DC;   --c-rose-ink:     #F15534;   --c-rose-deep:    #8C230A;
+    --c-sand-bg:      #F1ECDF;   --c-sand-ink:     #B59868;   --c-sand-deep:    #5A4623;
+    --c-grey-bg:      #ECEDEB;   --c-grey-ink:     #626260;   --c-grey-deep:    #282828;
+    --c-copper-bg:    #FCE3D9;   --c-copper-ink:   #FA3600;   --c-copper-deep:  #A32400;
+
+    /* r305 — the coral alias namespace (additive; resolves onto peach) */
+    --c-coral-bg:  var(--c-peach-bg);
+    --c-coral-ink: var(--c-peach-ink);
+    --c-coral-deep: var(--c-peach-deep);
 
     /* ─── ROLE TOKENS ─────────────────────────────────────────────── */
-    --bg: #FBFAF9;
-    --surface: #FFFFFF;
+    --bg:               var(--neutral-50);
+    --surface:          var(--neutral-0);
     --surface-1:        var(--neutral-0);
     --surface-2:        var(--neutral-100);
     --surface-3:        var(--neutral-150);
     /* (r148-d: --bg-soft/--surface-elevated retired with the canon) */
 
-    --text: #191918;
+    --text:        var(--neutral-900);
     --text-secondary: var(--neutral-700);
-    --text-muted: #6E6B63;   /* r197 §4: 5.41:1 ground · 4.88:1 paper */
-    --text-faint: #75726B;   /* r197: AA-safe faint — 5.00:1 ground, 4.28:1 on accent-soft (deliberate) */
-    --text-on-accent: #FFFFFF;
+    --text-muted:  #626260;   /* r305: the granite grey — 5.74:1 ground · 6.11:1 surface */
+    --text-faint:  #72726F;   /* r305: one step under muted — 4.53:1 ground, under AA on soft/wells (deliberate) */
+    --text-on-accent: var(--warm-ink);
     --text-on-dark:   var(--neutral-50);
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
-    --border-faint:  rgba(22,20,15,0.07);
-    --rule:          var(--neutral-200);
+    --border-faint:  rgba(40,40,40,0.07);
+    --rule:          var(--neutral-300);
     --rule-strong:   var(--border-strong);
-    --surface-border:  rgba(22,20,15,0.07);
-    --surface-divider: rgba(22,20,15,0.05);
+    --grid-line:     var(--neutral-400);
+    --surface-border:  rgba(40,40,40,0.07);
+    --surface-divider: rgba(40,40,40,0.05);
 
-    /* ultramarine signal family — r197 (the ONE accent; gold leaves
-       the accent seat for achievements only) */
-    --accent: #B57438;              /* 5.84:1 paper / 6.47:1 ground (AA) */
-    --accent-hover: #9A5F25;
-    --accent-soft: #F4E4D2;
-    --accent-strong: #5C3416;               /* 8.95:1 on paper */
-    --accent-fg: #191918;               /* 6.75:1 on the signal fill */
-    --accent-ink: #8F5A28;  /* text-safe signal ink */
+    /* the orange signal family — r305 (the ONE accent; raw orange is
+       UI/large tier; body-size text routes through --accent-ink) */
+    --accent:        #FA3600;              /* 3.53:1 paper / 3.76:1 surface — UI/large (AA-large) */
+    --accent-hover:  #D92F00;
+    --accent-soft:   #FCE3D9;
+    --accent-strong: #A32400;               /* 7.02:1 on paper — deep tier */
+    --accent-fg:     var(--warm-ink);       /* 4.69:1 on the vivid fill — never white (3.76) */
+    --accent-ink:    #C72E00;  /* text-safe signal ink — 5.16:1 ground / 5.50:1 surface */
 
-    /* the focus ring must clear 4.5:1 — light rides the deep signal
-       #1F2FA8 (8.95:1 on paper); dark resolves the cascade to #8E9BFF. */
-    --state-focus-ring-color: #9A5F25;
+    /* the focus ring clears >=3:1 on every adjacent light surface —
+       #C72E00 (5.16:1 paper); dark resolves the cascade to #FF6B33. */
+    --state-focus-ring-color: #C72E00;
 
-    --success: #4FA66D;     /* #217A48 — the success green */
+    --success:      var(--c-mint-ink);     /* #3F8F5C — the success green */
     --success-soft: var(--c-mint-bg);
-    --warning: #D6A330;   /* #9A7B1F */
+    --warning:      var(--c-yellow-ink);   /* #A8750F */
     --warning-soft: var(--c-yellow-bg);
-    --danger: #DD6E78;     /* #A63F35 */
+    --danger:       var(--c-rose-ink);     /* #F15534 — the coral */
     --danger-soft:  var(--c-rose-bg);
-    --info: #5C8FCE;      /* #46618C */
+    --info:         var(--c-sky-ink);      /* #4A7FA8 */
     --info-soft:    var(--c-sky-bg);
 
-    /* status INKS for text (base fills fail AA as light text) */
-    --success-ink: #1F4F30;     /* #175C36 */
-    --warning-ink: #6B4C0B;   /* #6E5410 */
-    --danger-ink: #6B2128;     /* #7C2A22 */
-    --info-ink: #1F3D63;      /* #33496B */
+    /* status INKS for text (deep shades — all >=7.2:1 on their tints) */
+    --success-ink: var(--c-mint-deep);     /* #1B5430 */
+    --warning-ink: var(--c-yellow-deep);   /* #5E420C */
+    --danger-ink:  var(--c-rose-deep);     /* #8C230A */
+    --info-ink:    var(--c-sky-deep);      /* #1F4968 */
 
-    /* label on a --danger fill (both themes — r197: white, 6.21:1) */
-    --danger-fg: #191918;
+    /* label on a --danger fill (r305: the coral #F15534 + warm-ink 5.10:1) */
+    --danger-fg:   var(--warm-ink);
 
     /* (r148-d: --brand retired with the canon — zero consumers;
        --brand-purple stays, the one live brand slot) */
-    --brand-purple:  var(--accent);        /* r197: the one live brand slot = the signal */
-    --gold:          #B57438;   /* r197 §4: achievement gold — decorative/large tier on paper */
-    --gold-ink: #5C3416;   /* r197: gold text ink — 5.50:1 ground */
-    --primary: #191918;   /* ink slab CTA */
+    --brand:         var(--accent);
+    --brand-purple:  var(--c-lavender-ink);
+    --gold:          #B57438;   /* r305: achievement gold — the demoted r304 copper seat, 3.57:1 large/deco tier */
+    --gold-ink:      #8F5A28;   /* r305: gold text ink — 5.39:1 ground */
+    --primary:       var(--neutral-900);   /* charcoal slab CTA — white label 14.74:1 */
     --primary-fg:    #FFFFFF;
 
     /* shadows — r197 quiet elevation: one shadow per level */
-    --shadow-card: 0 1px 2px rgba(15,15,15,0.05);
+    --shadow-card:    var(--elev-1);
     --shadow-card-h:  var(--elev-2);
     --shadow-pop:     var(--elev-3);
-    --shadow-modal: 0 12px 36px rgba(15,15,15,0.10), 0 32px 80px rgba(15,15,15,0.13);
+    --shadow-modal:   var(--elev-4);
     /* (r148-d: --shadow-mockup retired with the canon) */
     --shadow-card-premium:  var(--elev-2);
     --shadow-card-premium-h: var(--elev-3);
     --shadow-card-glow:     0 0 0 1px var(--accent-soft), var(--elev-2);
 
     /* elevation language — light (also the no-JS plain-:root defaults) */
-    --elev-1: 0 1px 2px rgba(15,15,15,0.05);
-    --elev-2: 0 1px 2px rgba(15,15,15,0.05), 0 6px 16px rgba(15,15,15,0.06);
-    --elev-3: 0 1px 2px rgba(15,15,15,0.06), 0 8px 24px rgba(15,15,15,0.08);
-    --elev-4: 0 12px 36px rgba(15,15,15,0.10), 0 32px 80px rgba(15,15,15,0.13);
-    --elev-5: 0 16px 44px rgba(15,15,15,0.12), 0 40px 96px rgba(15,15,15,0.16);
+    --elev-1: 0 1px 2px rgba(28,28,28,0.05);
+    --elev-2: 0 1px 2px rgba(28,28,28,0.05), 0 6px 16px rgba(28,28,28,0.06);
+    --elev-3: 0 1px 2px rgba(28,28,28,0.06), 0 8px 24px rgba(28,28,28,0.08);
+    --elev-4: 0 12px 36px rgba(28,28,28,0.10), 0 32px 80px rgba(28,28,28,0.13);
+    --elev-5: 0 16px 44px rgba(28,28,28,0.12), 0 40px 96px rgba(28,28,28,0.16);
 
-    --glass-bg: rgba(251,250,249,0.78);   /* r197: warm ground glass */
+    --glass-bg:    rgba(246,248,250,0.78);   /* r305: paper glass */
     --glass-blur:  16px;
-    --glass-border: rgba(22,20,15,0.08);
+    --glass-border: rgba(40,40,40,0.08);
     /* r140 — strong tier canonized: the fleet's three divergent
        opacities unify on 0.92; the blur stays the canonical 16px
        (r140 ruling: nothing stronger than 16). */
-    --glass-bg-strong: rgba(251,250,249,0.92);
+    --glass-bg-strong:   rgba(246,248,250,0.92);
     --glass-blur-strong: 16px;
     --scrim-blur:  4px;
 
@@ -451,33 +468,35 @@
     --sidebar-item-active-text: var(--neutral-900);
     /* (r148-d: --sidebar-active-bar retired with the canon) */
 
-    --topbar-bg:    rgba(251,250,247,0.86);   /* r197: warm chrome glass */
+    --topbar-bg:    rgba(246,248,250,0.86);   /* r305: paper chrome glass */
     --topbar-border: var(--neutral-200);
 
-    --scrollbar-thumb: rgba(22,20,15,0.16);
-    --scrollbar-thumb-hover: rgba(22,20,15,0.28);
+    --scrollbar-thumb: rgba(40,40,40,0.16);
+    --scrollbar-thumb-hover: rgba(40,40,40,0.28);
 
     /* live legacy aliases */
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
     --shadow-sm: var(--shadow-card);
-    /* (r148-d: --shadow-md/lg/xl/2xl retired with the canon) */
+    --shadow-md: var(--elev-3);
+    --shadow-lg: var(--elev-3);
+    --shadow-xl: var(--elev-4);
+    --shadow-2xl: var(--elev-5);
+    --shadow-mockup: 0 1px 2px rgba(28,28,28,0.05), 0 12px 32px rgba(28,28,28,0.08), 0 32px 80px rgba(28,28,28,0.06);
 
-    --chart-text: #6E6B63;  /* r197: 4.88:1 on paper — AA */
-    --chart-grid: rgba(22,20,15,0.08);
-    --chart-1: var(--accent);   /* series 1 = the ultramarine signal */
+    --chart-text: var(--text-muted);  /* r305: 5.74:1 on paper — AA */
+    --chart-grid: rgba(40,40,40,0.08);
+    --chart-1: var(--accent);   /* series 1 = the orange signal */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
     --chart-5: var(--c-lavender-ink);
-    --chart-6: #A6791F;   /* series amber — 3.38:1 on paper */
+    --chart-6: #A6791F;   /* series amber — 3.67:1 on paper */
     --chart-7: #2273A0;   /* cyan-blue */
     --chart-8: #A65D8A;   /* mauve */
 
-    /* journey scene — r148-d: the node/line/core/ticker family retired
-       with the canon (zero consumers; ConstellationCanvas is gone);
-       the signal glow wash survives for the auth card (r197 re-key). */
-    --journey-glow:        rgba(46, 69, 230, 0.10);
+    /* the auth-card glow wash survives (r305 re-key to the ember) */
+    --journey-glow:        rgba(250, 54, 0, 0.10);
   }
 
   /* ══════════════════════════════════════════════════════════════════
@@ -487,111 +506,123 @@
     /* one more leading step for light-on-dark display text */
     --type-display-line-height: 1.30;   /* r197: top of the §4 range, r192-safe */
 
-    /* inverted neutral ramp — the r197 warm night */
-    --neutral-0: #1F1F1E;          /* ground — cards/inputs */
-    --neutral-50: #191918;          /* paper — page ground */
-    --neutral-100: #232322;          /* raised step */
-    --neutral-150: #2A2A28;          /* inset well */
-    --neutral-200: #353532;          /* hairline */
-    --neutral-300: #46453F;          /* divider */
-    --neutral-400: #6E6B61;
-    --neutral-500: #9A968A;          /* r283 ink-muted (parity re-key) */
-    --neutral-700: #C8C2B2;          /* §4 ink-secondary */
-    --neutral-800: #DDD7C5;
-    --neutral-900: #F2EAD8;          /* ink */
+    /* the charcoal night ramp — r305 (the reference's own dark fills
+       promoted to a full theme; the technical greys come home) */
+    --neutral-0:   #2E2E2E;          /* ground — cards/inputs */
+    --neutral-50:  #282828;          /* paper — page ground (the charcoal) */
+    --neutral-100: #353535;          /* raised step */
+    --neutral-150: #3D3D3D;          /* inset well */
+    --neutral-200: #4A4A48;          /* hairline */
+    --neutral-300: #5C5C5A;          /* divider */
+    --neutral-400: #8A8A86;
+    --neutral-500: #B4B4B0;          /* r305 ink-muted — the redeemed disable grey, 7.09:1 */
+    --neutral-700: #C9C9C5;          /* ink-secondary */
+    --neutral-800: #E0E0DC;
+    --neutral-900: #F6F8FA;          /* ink — the paper twin */
 
-    /* night hue families — warm deep grounds + luminous inks (r197) */
-    --c-peach-bg:     #351E17;   --c-peach-ink:    #D08870;   --c-peach-deep:   #E8BCA8;
-    --c-mint-bg:      #1E3024;   --c-mint-ink: #82CB99;   --c-mint-deep:    #A5DDBB;
-    --c-lavender-bg:  #292541;   --c-lavender-ink: #B7A0F4;   --c-lavender-deep:#CFC2F4;
-    --c-sky-bg:       #1E2A3C;   --c-sky-ink:      #8FA8CE;   --c-sky-deep: #C9DCEE;
-    --c-yellow-bg:    #3A3017;   --c-yellow-ink: #ECC97D;   --c-yellow-deep:  #EED9A0;
-    --c-rose-bg:      #391D1B;   --c-rose-ink: #F09BA3;   --c-rose-deep:    #EFB0A6;
-    --c-sand-bg: #2D2820;   --c-sand-ink: #D9C18C;   --c-sand-deep: #EFE2C5;
-    --c-grey-bg: #2A2823;   --c-grey-ink:     #A39B8B;   --c-grey-deep:    #CDC5B4;
-    --c-copper-bg: #3D2D1B;   --c-copper-ink: #E0A067;   --c-copper-deep: #F8DDBC;
+    /* night hue families — ember-tinted deep grounds + luminous inks (r305) */
+    --c-peach-bg:     #43241C;   --c-peach-ink:    #FF8E68;   --c-peach-deep:   #FFC5AE;
+    --c-mint-bg:      #24372B;   --c-mint-ink:     #84D0A0;   --c-mint-deep:    #C4EBD2;
+    --c-lavender-bg:  #2D2545;   --c-lavender-ink: #B7A0F4;   --c-lavender-deep:#DCD2F9;
+    --c-sky-bg:       #23313F;   --c-sky-ink:      #93C2E9;   --c-sky-deep:     #C9E2F5;
+    --c-yellow-bg:    #3B331F;   --c-yellow-ink:   #EFC87B;   --c-yellow-deep:  #F8E3B4;
+    --c-rose-bg:      #43241C;   --c-rose-ink:     #FF8E68;   --c-rose-deep:    #FFC5AE;
+    --c-sand-bg:      #2D2820;   --c-sand-ink:     #D9C18C;   --c-sand-deep:    #EFE2C5;
+    --c-grey-bg:      #2A2A28;   --c-grey-ink:     #B7B2A6;   --c-grey-deep:    #DDD8CB;
+    --c-copper-bg:    #432015;   --c-copper-ink:   #FF5A1F;   --c-copper-deep:  #FFC5AE;
 
-    --bg: #191918;
-    --surface: #1F1F1E;
+    /* r305 — the night coral alias namespace (additive) */
+    --c-coral-bg:  var(--c-peach-bg);
+    --c-coral-ink: var(--c-peach-ink);
+    --c-coral-deep: var(--c-peach-deep);
+
+    --bg:               var(--neutral-50);
+    --surface:          var(--neutral-0);
     --surface-1:        var(--neutral-0);
     --surface-2:        var(--neutral-100);
     --surface-3:        var(--neutral-150);
     /* (r148-d: --bg-soft/--surface-elevated retired with the canon) */
 
-    --text: #F2EAD8;
+    --text:        var(--neutral-900);
     --text-secondary: var(--neutral-700);
-    --text-muted: #9A968A;
-    --text-faint:  #8C8674;   /* r197: AA tier, one step under muted — 4.62:1 ground */
-    --text-on-accent: #191918;   /* r197: fills stay #2E45E6 — white 6.75:1 */
+    --text-muted:  var(--neutral-500);
+    --text-faint:  #A2A29D;   /* r305: AA tier, one step under muted — 5.75:1 ground */
+    --text-on-accent: var(--warm-ink);   /* r305: ink on the luminous ember fill — 5.64:1 */
     --text-on-dark:   var(--neutral-900);
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
-    --border-faint:  rgba(243,238,228,0.10);   /* r197: warm-white hairline */
+    --border-faint:  rgba(246,248,250,0.08);   /* r305: paper-white hairline */
     --rule:          var(--neutral-200);
     --rule-strong:   var(--border-strong);
-    --surface-border:  rgba(243,238,228,0.12);
-    --surface-divider: rgba(243,238,228,0.07);
+    --grid-line:     var(--neutral-300);
+    --surface-border:  rgba(246,248,250,0.12);
+    --surface-divider: rgba(246,248,250,0.07);
 
-    /* night signal discipline — r197: the FILL stays ultramarine in
-       both themes; --accent-strong is the light text tier on dark */
-    --accent: #E0A067;            /* fill — same as light */
-    --accent-hover: #F2B782;
+    /* night signal discipline — r305: the FILL is the luminous ember
+       (4.73:1 bg; warm-ink labels 5.64:1); --accent-strong is the
+       light text tier on dark */
+    --accent:        #FF5A1F;            /* fill — the luminous ember */
+    --accent-hover:  #FF6B33;
+    --accent-soft:   #432015;
+    --accent-strong: #FFC5AE;            /* 9.72:1 bg — text/ring tier */
+    --accent-fg:     var(--warm-ink);
+    --accent-ink:    var(--accent);      /* night text tier — 4.73:1 bg */
+    /* r305 — the night ring re-keys to the luminous ember hover tier
+       (5.20:1 on the night ground). The grouped light block's #C72E00
+       would inherit here at 3.2:1-class — under the ring rule. */
     --state-focus-ring-color: var(--accent-hover);
-    --accent-soft: #3D2D1B;
-    --accent-strong: #F8DDBC;            /* 7.26:1 bg / 6.63:1 ground — text/ring tier */
-    --accent-fg: #191918;
-    --accent-ink: #E0A067;      /* night text tier */
 
     /* the -ink family clears AA on the night ground — same values the
        base tokens already resolve to */
-    --success-ink: #82CB99;
+    --success-ink:  var(--c-mint-ink);
     --warning-ink:  var(--c-yellow-ink);
     --danger-ink:   var(--c-rose-ink);
     --info-ink:     var(--c-sky-ink);
 
-    --danger-fg: #191918;
+    --danger-fg:    var(--warm-ink);
 
-    --success: #82CB99;
+    --success:      var(--c-mint-ink);
     --success-soft: var(--c-mint-bg);
-    --warning: #ECC97D;
+    --warning:      var(--c-yellow-ink);
     --warning-soft: var(--c-yellow-bg);
-    --danger: #F09BA3;
+    --danger:       var(--c-rose-ink);
     --danger-soft:  var(--c-rose-bg);
-    --info: #92B4DC;
+    --info:         var(--c-sky-ink);
     --info-soft:    var(--c-sky-bg);
 
     /* (r148-d: --brand retired with the canon — zero consumers;
        --brand-purple stays, the one live brand slot) */
-    --brand-purple:  var(--accent);
-    --gold: #E0A067;   /* r197 §4: dark achievement gold — 8.00:1 on --bg */
-    --gold-ink: #F8DDBC;   /* r197: dark gold text ink — 9.42:1 on --bg */
+    --brand:         var(--accent);
+    --brand-purple:  var(--c-lavender-ink);
+    --gold:          #E0A067;   /* r305: night gold achievement tone (the demoted r304 seat) */
+    --gold-ink:      #F2B782;
     --primary:       #FFFFFF;           /* the night CTA — white slab */
-    --primary-fg: #191918;
+    --primary-fg:    var(--warm-ink);
 
     /* shadows — r197: quiet elevation, shadows de-emphasized on dark;
        surface step + hairline carry depth */
     --shadow-card:    var(--elev-1);
     --shadow-card-h:  var(--elev-2);
     --shadow-pop:     var(--elev-3);
-    --shadow-modal: 0 12px 32px rgba(0,0,0,0.48), 0 32px 80px rgba(0,0,0,0.52), inset 0 1px 0 rgba(242,234,216,0.07);
+    --shadow-modal:   var(--elev-4);
     /* (r148-d: --shadow-mockup retired with the canon) */
     --shadow-card-premium:  var(--elev-2);
     --shadow-card-premium-h: var(--elev-3);
     --shadow-card-glow:     0 0 0 1px var(--accent-soft), var(--elev-2);
 
-    /* elevation language — dark (fill-led, shadow muted, warm inset) */
-    --elev-1: 0 1px 2px rgba(0,0,0,0.30), inset 0 1px 0 rgba(242,234,216,0.04);
-    --elev-2: 0 10px 15px rgba(0,0,0,0.35), inset 0 1px 0 rgba(243,238,228,0.05);
-    --elev-3: 0 18px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.06);
-    --elev-4: 0 24px 56px rgba(0,0,0,0.50), inset 0 1px 0 rgba(243,238,228,0.07);
-    --elev-5: 0 16px 44px rgba(0,0,0,0.52), 0 40px 96px rgba(0,0,0,0.58), inset 0 1px 0 rgba(242,234,216,0.08);
+    /* elevation language — dark (fill-led, shadow muted, paper inset) */
+    --elev-1: 0 1px 2px rgba(0,0,0,0.30), inset 0 1px 0 rgba(246,248,250,0.04);
+    --elev-2: 0 1px 2px rgba(0,0,0,0.30), 0 6px 16px rgba(0,0,0,0.32), inset 0 1px 0 rgba(246,248,250,0.05);
+    --elev-3: 0 8px 24px rgba(0,0,0,0.40), inset 0 1px 0 rgba(246,248,250,0.06);
+    --elev-4: 0 12px 32px rgba(0,0,0,0.48), 0 32px 80px rgba(0,0,0,0.52), inset 0 1px 0 rgba(246,248,250,0.07);
+    --elev-5: 0 16px 44px rgba(0,0,0,0.52), 0 40px 96px rgba(0,0,0,0.58), inset 0 1px 0 rgba(246,248,250,0.08);
 
-    --glass-bg: rgba(25,25,24,0.78);   /* r197: warm night glass */
+    --glass-bg:    rgba(30,30,30,0.78);   /* r305: charcoal night glass */
     --glass-blur:  16px;
-    --glass-border: rgba(243,238,228,0.10);   /* r197: warm-white hairline */
+    --glass-border: rgba(246,248,250,0.10);   /* r305: paper hairline */
     /* r140 — night strong tier (see the light block comment). */
-    --glass-bg-strong: rgba(25,25,24,0.92);
+    --glass-bg-strong:   rgba(30,30,30,0.92);
     --glass-blur-strong: 16px;
     --scrim-blur:  4px;
 
@@ -600,24 +631,24 @@
     --sidebar-rule:      var(--neutral-200);
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
-    --sidebar-item-active-bg:   rgb(224 160 103 / 0.16);  /* r197: signal wash */
+    --sidebar-item-active-bg:   rgb(255 90 31 / 0.16);  /* r305: night ember wash */
     --sidebar-item-active-text: var(--neutral-900);
     /* (r148-d: --sidebar-active-bar retired with the canon) */
 
-    --topbar-bg: rgba(25,25,24,0.86);   /* r197: warm night chrome */
+    --topbar-bg:    rgba(30,30,30,0.86);   /* r305: charcoal-night chrome */
     --topbar-border: var(--neutral-200);
 
-    --scrollbar-thumb: rgba(243,238,228,0.16);
-    --scrollbar-thumb-hover: rgba(243,238,228,0.28);
+    --scrollbar-thumb: rgba(246,248,250,0.16);
+    --scrollbar-thumb-hover: rgba(246,248,250,0.28);
 
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
     --shadow-sm: var(--shadow-card);
     /* (r148-d: --shadow-md/lg/xl/2xl retired with the canon) */
 
-    --chart-text: #9A968A;
-    --chart-grid: rgba(243,238,228,0.08);
-    --chart-1: var(--accent-strong);   /* series 1 = the light signal tier */
+    --chart-text: var(--neutral-500);
+    --chart-grid: rgba(246,248,250,0.08);
+    --chart-1: var(--accent);   /* series 1 = the night ember signal */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
@@ -626,9 +657,8 @@
     --chart-7: #6FB3D9;   /* cyan-blue (lifted for dark) */
     --chart-8: #D18AB4;   /* mauve (lifted for dark) */
 
-    /* journey scene — r148-d: night node/line/core/ticker retired with
-       the canon; the signal glow survives for the auth card (r197). */
-    --journey-glow:        rgba(142, 155, 255, 0.12);
+    /* the auth-card glow wash survives (r305 re-key to the ember) */
+    --journey-glow:        rgba(255, 90, 31, 0.12);
   }
 
   /* ─── Reduced motion — zero ALL raw --t-* rungs (not just the
@@ -691,7 +721,6 @@
       --rule:          rgba(255,255,255,0.48);
     }
   }
-
 }
 
 /* ════════════════════════════════════════════════════════════════════

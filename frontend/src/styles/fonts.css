@@ -1,5 +1,15 @@
 /* ═══════════════════════════════════════════════════════════════════
-   Self-hosted fonts — served from /public/fonts. (r304)
+   Self-hosted fonts — served from /public/fonts. (r305)
+
+   LICENSING (r305 audit — r305-heron-reference-spec.md §fonts): every
+   face below is SIL OFL 1.1 and legally self-hosted. The design
+   reference's display/body grotesk (BT Grotesk) is PROPRIETARY and is
+   NOT reused; its mono voice (Geist Mono) is OFL but adds no a11y or
+   coverage gain over the shipped Plex Mono, so the face set is
+   unchanged — the Heron voice is carried by Alexandria (display) +
+   IBM Plex Sans Arabic (body, Latin runs included) + IBM Plex Mono
+   (technical micro-labels). Archivo (OFL) is the documented future
+   addition if a distinct Latin display voice is ever required.
    Replaces the render-blocking fonts.googleapis.com request chain
    (preconnect ×2 → css2 stylesheet → gstatic files) that used to sit
    in <head>. This file must be imported FIRST in main.tsx so the

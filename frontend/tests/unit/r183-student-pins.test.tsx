@@ -110,8 +110,18 @@ describe('r183-B3 — active chapter concept ink (A6/A3 P1-2, WCAG 1.4.3)', () =
 
   it('dark: --text-secondary on --accent-soft clears 4.5:1 (pre-fix --text-faint: 4.12:1, live-measured A6)', () => {
     const fixed = ratio(dark, '--text-secondary', '--accent-soft');
-    expect(fixed).toBeGreaterThanOrEqual(4.5); // computed 9.302:1
-    expect(ratio(dark, '--text-faint', '--accent-soft')).toBeLessThan(4.5);
+    expect(fixed).toBeGreaterThanOrEqual(4.5); // r305 re-key computed: secondary #C9C9C5 on the ember tint #432015
+    // r183 documented the OLD failure (faint #8C8674 on the copper tint =
+    // 4.12:1, under AA). The r305 Heron re-key changed BOTH values (faint
+    // #A2A29D, accent-soft #432015), so the historical numeric tripwire no
+    // longer holds — the pair now measures ≈5.63:1. The CONTRACT survives
+    // as a usage rule (the row consumes --text-secondary, never faint —
+    // asserted structurally above), while this numeric assertion follows
+    // the shipped palette: faint still sits well UNDER secondary, so the
+    // hierarchy the fix established is preserved.
+    expect(ratio(dark, '--text-faint', '--accent-soft')).toBeLessThan(
+      ratio(dark, '--text-secondary', '--accent-soft'),
+    );
   });
 
   it('the siblings stay --accent-strong (the row keeps its hierarchy, both AA)', () => {

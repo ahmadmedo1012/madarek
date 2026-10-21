@@ -1,64 +1,83 @@
 /* ═════════════════════════════════════════════════════════════════════
-   «مدارك» — Design System (r304 — the Notion-style token foundation)
+   «مدارك» — Design System (r305 — the HERON token foundation)
    ─────────────────────────────────────────────────────────────────────
-   ONE coherent token system for the whole application, recovering and
-   refining the sophisticated Notion-style direction (historical rebuild
-   296e213 — the palette the project owner preferred, re-established by
-   r303 and completed here):
+   R305 re-keys the canon to the Heron-inspired visual system (the
+   reference reverse-engineered live at heronaiapp.com — full evidence,
+   measurements and licensing decisions in
+   docs/redesign/r305-heron-reference-spec.md). This SUPERSEDES the
+   OPTIKKA / Superlist / Notion directions (kept below as history).
 
-   · Warm cream / espresso neutrals — Notion's own ramp. Light page
-     ground #FBFAF9, card ground #FFFFFF, ink #191918; dark is the
-     deliberately designed counterpart: warm night ground #191918 with
-     raised surfaces and warm sand text — never a cold inversion.
-   · Nine coherent pastel families (peach/mint/lavender/sky/yellow/
-     rose/sand/grey/copper), each a bg/ink/deep triad. They distinguish
-     categories and states — they do not turn every card into a color.
-   · ONE interactive accent: copper #B57438 (links via the AA-safe
-     --accent-ink, active states, focus, chart-1). Gold stays in the
-     copper family for achievements only.
-   · Measured Notion-soft radii (6→8→10→12→16→20→28 + pill), restored
-     from the historical ladder.
-   · Subtle layered elevation — the historical Notion-soft shadow
-     register (low-alpha, warm-ink, two layers deep) on --elev-1..5;
-     dark keeps shadows de-emphasized with a warm inset highlight.
-   · Calm interaction timing — 80/160/240/380/520/720ms with soft
-     springs; zero letter-spacing platform-wide (Arabic cursive joins +
-     tnum columns); the 13px Arabic text floor.
-   · Arabic-friendly hierarchy: Alexandria 500/600/700 display (real
-     files ship), IBM Plex Sans Arabic 400–700 body, Plex Mono metrics
-     (tabular). Western digits 0-9 platform-wide (ar-LY latn).
+   The Heron system, as measured and semantically mapped:
+
+   · Blueprint-paper neutrals — cool near-white ground #F6F8FA over
+     white surfaces; charcoal ink #282828 (the reference's own
+     --content--primary, verified live). Dark is the deliberate
+     counterpart: the charcoal itself as ground, surfaces one cool step
+     up, near-white ink — the reference's dark fills promoted to a full
+     theme, never a cold blue-black.
+   · ONE vivid signal: orange #FA3600 (the reference's
+     --content--brand, used for the scanline, contact accents, error
+     chips and hover overlays). Raw orange is a LARGE-TEXT/UI tone
+     (3.53:1 on the ground — same class as the reference's own use);
+     TEXT routes through the darkened AA ink #C72E00 (5.16:1), and
+     labels ON orange fills stay --warm-ink (4.69:1) — never white
+     (3.76:1, measured). Coral #F15534 is the warm secondary (danger
+     rhymes with it; a --c-coral-* alias namespace exists).
+   · Technical greys straight from the reference bundle: #B4B4B0
+     (disable/mid), #B3B3AF (the hairline/grid grey — every construction
+     line on the reference), #72726F / #626260 / #414140 mid steps.
+     The grid grey is decorative on light (1.95:1 — the reference uses
+     it exactly that way) and a legitimate TEXT tone on dark (7.09:1 —
+     the redeemed dark muted).
+   · Deliberately squared corners: the radius ladder tightens to
+     2/4/6/8/12/16/20 + pill (the reference renders radius 0 on every
+     marketing surface; Madarek keeps hairline-crisp near-square rungs
+     so chips/inputs stay legible, and the pill survives for the
+     primary CTA + search per the standing component contract).
+   · The measured Heron motion register: 0.4s-dominant transitions
+     (174×.4s in the bundle) on cubic-bezier(.23,1,.32,1) with the
+     .48s roll/exit curve cubic-bezier(.625,.05,0,1) — adopted into the
+     raw ladder (80/200/400/500/650/900) and the semantic page/reveal
+     durations. Springs and the press register are untouched.
+   · Arabic-first holds unchanged: Alexandria 600/700 display, IBM Plex
+     Sans Arabic 400–700 body, Plex Mono technical voice, zero
+     letter-spacing on Arabic, Western digits, logical properties. The
+     reference's proprietary BT Grotesk is NOT licensed for reuse — the
+     Latin grotesk roles stay on the shipped OFL faces (licensing
+     audit in the spec; Archivo is the documented future addition if a
+     distinct Latin display voice is ever needed).
    · Role names are the contract: page ground (--bg), card ground
      (--surface), subtle surface (--surface-2/-3 / --bg-soft), elevated
      surface (--surface-elevated), primary/secondary/muted/faint text,
      borders (--border/--rule), focus (--state-focus-ring-*), the
      interactive accent family, status colors, chart colors and the
-     theme-aware --elev-* ladder. Internal pages consume these — they
-     never invent per-page colors. The landing keeps its OPTIKKA-style
-     art direction; --poster-* is its theme-reactive divergence hook.
+     theme-aware --elev-* ladder. NOTHING was renamed or removed —
+     sibling workstreams resolve the same names, only values re-keyed.
 
-   r304 alias restoration: the semantic alias names the fleet historically
-   spoke (--bg-soft, --surface-elevated, --text-strong, --brand,
+   r304 → r305 continuity: the entire r304 alias layer survives
+   verbatim (--bg-soft, --surface-elevated, --text-strong, --brand,
    --shadow-sm..2xl + --shadow-mockup, --radius-*, --st-r-*, --sp-Nx,
-   --fs-base, --fs-4xl + the headline and label pairs) are LIVE again,
-   mapped onto the role layer — additive only, so sibling workstreams
-   resolve them instead of inventing new tokens. No live token was
-   renamed or removed. Contrast refinements (all computed, both themes): light
-   --text-muted → #6E6B63 (≥4.5:1 on every ground incl. surface-3),
-   --text-faint → #75726B (AA on bg/surface, still deliberately under
-   AA on --accent-soft), --accent-ink → #8F5A28 (5.5:1 link ink),
-   labels on accent/danger fills → warm ink (--accent-fg,
-   --text-on-accent, --danger-fg), night focus ring → the luminous
-   copper hover tier, and the auth ambient wash re-keyed to copper.
+   --fs-base, --fs-4xl + the headline and label pairs). The copper
+   family (--c-copper-*) keeps its NAME as the compatible seat of the
+   ember/orange family (values re-keyed; renaming would break
+   consumers). The retired accent hexes get a circular economy: #B57438
+   / #8F5A28 (light) and #E0A067 / #F2B782 (dark) return as the
+   ACHIEVEMENT GOLD pair — the old signal demoted to the achievement
+   tone, distinct from the new orange signal again. Contrast notes in
+   the comments are recomputed for the new grounds (WCAG 2.1, engine:
+   docs/redesign/r305-heron-reference-spec.md §verification).
    ════════════════════════════════════════════════════════════════════ */
 
 /* Lineage (condensed — full history in docs/redesign + git): r132-F5 /
    r136 / r148-d dead-token sweeps pruned zero-consumer names; 21-c
    normalized tracking to 0 and pinned role tokens; r190 adopted
    Alexandria display; r197 rebuilt the ladder system (§4 BLUEPRINT);
-   r303 recovered the historical Notion-style palette; r304 (this file)
-   restores the historical radii/elevation register, re-keys the
-   remaining ultramarine-era values to the copper seat, repairs the
-   light-theme text contrast tiers, and restores the fleet alias layer. */
+   r303 recovered the historical Notion-style palette; r304 restored
+   the historical radii/elevation register and the fleet alias layer;
+   r305 (this file) re-keys the canon to the Heron system — blueprint
+   neutrals, the orange signal with its AA ink/fill/label registers,
+   the reference's technical greys, squared radii and the measured
+   0.4s motion register — while preserving every role name and alias. */
 
 @layer tokens, base, layout, components, pages, overrides;
 
@@ -83,29 +102,34 @@
     --sp-12x:var(--sp-9); --sp-16x:var(--sp-13);
 
     /* ─── r197 homepage poster namespace (stage-2 contract) ──────────
-       The landing keeps its OPTIKKA-style art direction; the app keeps
-       the Notion-style workspace. These aliases are the divergence
-       hook: today they mirror the canonical roles (custom properties
-       resolve per-element, so they stay theme-reactive); stage 2 may
-       diverge the poster ground without touching consumers. */
+       The landing keeps its art direction; the app carries the Heron
+       blueprint system. These aliases are the divergence hook: today
+       they mirror the canonical roles (custom properties resolve
+       per-element, so they stay theme-reactive); stage 2 may diverge
+       the poster ground without touching consumers. */
     --poster-paper:  var(--bg);
     --poster-ink:    var(--text);
     --poster-signal: var(--accent);
 
-    /* ─── Radius — Notion-soft ladder (r304: historical values restored)
-       The historical Notion-style ladder: chips/inputs 6, small
-       controls 8, buttons 10, cards 12, large surfaces 16, modals/
-       sheets 20, hero frames 28, pill for the primary CTA + search. */
-    --r-xs: 6px;
-    --r-sm: 8px;
-    --r-md: 10px;
-    --r-lg: 12px;
-    --r-xl: 16px;
-    --r-2xl: 20px;
-    --r-3xl: 28px;
+    /* ─── Radius — the SQUARED ladder (r305: Heron-informed) ─────────
+       The reference renders radius 0 on every marketing surface (mea-
+       sured: buttons, cards, tags, inputs, chat bubbles). Madarek
+       tightens to hairline-crisp near-square rungs — chips 2, small
+       controls 4, buttons/inputs 6, cards 8, media/hero frames 12,
+       modals/sheets 16, hero-scale surfaces 20 — and keeps the pill
+       (--r-full) for the primary CTA + search per the standing
+       component contract. */
+    --r-xs: 2px;
+    --r-sm: 4px;
+    --r-md: 6px;
+    --r-lg: 8px;
+    --r-xl: 12px;
+    --r-2xl: 16px;
+    --r-3xl: 20px;
     --r-full: 9999px;
-
-    /* r304 — radius aliases restored (historical names → rungs). */
+    /* r304 — radius aliases restored (historical names → rungs). The
+       rung VALUES re-key to the r305 squared ladder; the alias wires
+       are verbatim r304. */
     --radius-sm: var(--r-sm);   --radius-md: var(--r-md);
     --radius-lg: var(--r-lg);   --radius-xl: var(--r-xl);
     --radius-2xl: var(--r-2xl); --radius-full: var(--r-full);
@@ -113,7 +137,10 @@
     --st-r-xl: var(--r-lg);      --st-r-2xl: var(--r-xl);
     --st-r-full: var(--r-full);
 
-    /* ─── Type — bold + warm, Arabic-friendly ───────────────────────── */
+    /* ─── Type — bold + warm, Arabic-friendly (r305: UNCHANGED — the
+       re-key touches colors/radii/motion only; the reference's BT
+       Grotesk is not licensed so the OFL stacks below carry the voice —
+       audit: docs/redesign/r305-heron-reference-spec.md §4) ────────── */
     --font-sans:    'IBM Plex Sans Arabic', 'Tajawal', system-ui, -apple-system,
                     'Segoe UI', Roboto, sans-serif;
     /* Alexandria — the Arabic-native geometric display voice (r190).
@@ -160,43 +187,51 @@
     --fs-metric-lg: 30px;
     --fs-metric-md: 24px;
 
+    --lh-tight: 1.05;
+    --lh-snug: 1.20;
+    --lh-base: 1.65;
+    --lh-loose: 1.85;
+
     --fw-regular: 400;
     --fw-medium: 500;
     --fw-semibold: 600;
     --fw-bold: 700;
     --fw-black: 800; /* resolves to 700 at runtime below — Plex has no 800 */
 
-    /* line-heights — Arabic-comfortable, headline-tight.
-       --lh-tight (1.05) is the raw Latin-tuned scale value kept for the
-       ladder product; no role consumes it (roles carry Arabic-appropriate
-       literals below — r192: tighter leadings clipped diacritic stacks). */
-    --lh-tight: 1.05;
-    --lh-snug:  1.20;
-    --lh-base:  1.65;
-    --lh-loose: 1.85;
-
-    /* letter spacing — 0 platform-wide. Tracking breaks Arabic cursive
-       joins (ruling #2) and misaligns tabular numeral columns; the
-       names survive so legacy consumers resolve honestly. */
+    /* r190 discipline: NO letter-spacing on Arabic (cursive joins
+       break). The reference's −0.02em display tracking is a Latin-only
+       device and stays banned platform-wide; roles pin 0. */
     --ls-tight:  0;
     --ls-snug:   0;
     --ls-normal: 0;
 
-    /* ─── Motion — calm interaction timing ──────────────────────────── */
+    /* ─── Motion — the measured Heron register (r305) ─────────────────
+       The reference's transition census: .4s ×174 (dominant), .2/.3/.5s
+       secondary, .48s for the rolling dual-label device; easings
+       cubic-bezier(.23,1,.32,1) ×11 (decel standard) and
+       cubic-bezier(.625,.05,0,1) ×3 (enter/roll). Ladder re-keyed to
+       the same feel: micro stays 80 (press feedback), the interaction
+       band moves to 200/400/500, cinematic rungs 650/900. */
     --t-micro: 80ms;
-    --t-fast:  160ms;
-    --t-base:  240ms;
-    --t-slow:  380ms;
-    --t-slower:520ms;
-    --t-cinema:720ms;
+    --t-fast:  200ms;
+    --t-base:  400ms;
+    --t-slow:  500ms;
+    --t-slower:650ms;
+    --t-cinema:900ms;
 
-    --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+    /* r305 — --ease re-keys to the reference's decel standard
+       (.23,1,.32,1); --ease-in adopts its roll/exit curve (.625,.05,0,1).
+       --ease-out keeps the tighter (.16,1,.3,1) for entrances that must
+       settle faster than the standard. */
+    --ease:        cubic-bezier(0.23, 1, 0.32, 1);
     --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+    --ease-in:     cubic-bezier(0.625, 0.05, 0, 1);
     /* constant speed — the correct curve for CONTINUOUS infinite loops
        (spinners, skeleton sweeps, shimmer drifts) and scroll-linked
        progress. Beat-family loops (heartbeat, breathe, pulse) are
-       exempt — a beat needs its attack-and-settle. */
+       exempt — a beat needs its attack-and-settle. The reference's own
+       marquee runs 10s linear infinite (marqueeLeft, translateX(-100%))
+       — same grammar. */
     --ease-linear: linear;
     --ease-soft:   cubic-bezier(0.22, 1, 0.36, 1);
     /* Spring vocabulary — polish-authored springs adopted verbatim.
@@ -219,13 +254,15 @@
 
     /* ─── Motion (semantic layer — see contracts/motion-tokens.md) ───
        Canonical names new code MUST consume. Mapped to the raw --t-* /
-       --ease-* rungs so they remain a single source. */
+       --ease-* rungs so they remain a single source. r305: page/reveal
+       re-keyed to the Heron register (400/480); stat/skeleton keep
+       their existing rhythm (independent of the reference). */
     --motion-duration-micro:    var(--t-micro);   /*  80ms */
-    --motion-duration-short:    var(--t-fast);    /* 160ms */
-    --motion-duration-medium:   var(--t-base);    /* 240ms */
-    --motion-duration-long:     var(--t-slow);    /* 380ms */
-    --motion-duration-page:     320ms;
-    --motion-duration-reveal:   360ms;
+    --motion-duration-short:    var(--t-fast);    /* 200ms */
+    --motion-duration-medium:   var(--t-base);    /* 400ms */
+    --motion-duration-long:     var(--t-slow);    /* 500ms */
+    --motion-duration-page:     400ms;
+    --motion-duration-reveal:   480ms;
     --motion-duration-stat:     700ms;
     --motion-duration-skeleton: 1200ms;
     --motion-duration-scene-reveal: 2200ms;
@@ -353,7 +390,10 @@
        Theme-independent achromatic extremes the alpha derivations route
        through: --black (veil/shadow/matte basis), --white (sheens, text
        on luminous fills), --warm-ink (the #191918 that must NOT flip
-       with the theme — terminal grounds, labels on copper/rose fills). */
+       with the theme — terminal grounds, labels on the orange/coral
+       fills: 4.69:1 on #FA3600 and 5.10:1 on #F15534, both AA — r305
+       re-verified; white labels on the vivid fill are 3.76:1 and stay
+       banned). */
     --black:     #000000;
     --white:     #FFFFFF;
     --warm-ink:  #191918;
@@ -377,43 +417,62 @@
   }
 
   /* ════════════════════════════════════════════════════════════════════
-     LIGHT THEME — Notion's signature warm cream
+     LIGHT THEME — the Heron blueprint paper
      ════════════════════════════════════════════════════════════════════ */
+
   :root,
   [data-theme="light"] {
 
-    /* r303/r304 — the Notion neutral ramp: --neutral-900 is the
-       espresso INK #191918 (16.9:1 on the cream, AAA); --neutral-50 is
-       the warm cream PAGE GROUND; --neutral-0 is the clear card/input
-       ground. The ramp is warm-gray from the same family as the ink so
-       hairlines and wells never read cold. */
+    /* r305 — the blueprint-paper neutral ramp, re-keyed from the live
+       reference bundle: --neutral-900 is the charcoal INK #282828 (the
+       reference's --content--primary; 13.85:1 on the ground, AAA);
+       --neutral-50 is the cool near-white PAGE GROUND #F6F8FA (the
+       briefed light surface; the reference paints #FAFAFA/#fff — same
+       family, all ratios re-verified on both); --neutral-0 is the clear
+       card/input ground. The mid rungs are the reference's own
+       technical greys: #E0E0DA hairline, #C8C8C8 divider, #B4B4B0
+       grid-line/disable, #72726F granite, #414140 secondary ink. */
     --neutral-0:   #FFFFFF;          /* clear product surface */
-    --neutral-50:  #FBFAF9;          /* page ground — Notion's warm cream */
-    --neutral-100: #F7F6F3;          /* hover / subtle band */
-    --neutral-150: #F1EFEC;          /* inset well */
-    --neutral-200: #E9E7E2;          /* hairline */
-    --neutral-300: #D9D6D0;          /* divider / strong border */
-    --neutral-400: #B5B1A8;          /* non-text rung */
-    --neutral-500: #898680;          /* mid gray */
-    --neutral-700: #4F4D48;          /* secondary ink */
-    --neutral-800: #322F2A;
-    --neutral-900: #191918;          /* primary ink (Notion espresso) */
+    --neutral-50:  #F6F8FA;          /* page ground — blueprint paper */
+    --neutral-100: #F0F2F5;          /* hover / subtle band */
+    --neutral-150: #E9ECEF;          /* inset well */
+    --neutral-200: #E0E0DA;          /* hairline (the reference's warm edge) */
+    --neutral-300: #C8C8C8;          /* divider / strong border */
+    --neutral-400: #B4B4B0;          /* grid-line / non-text rung (technical grey) */
+    --neutral-500: #72726F;          /* mid gray (granite) */
+    --neutral-700: #414140;          /* secondary ink (the reference's own) */
+    --neutral-800: #333330;
+    --neutral-900: #282828;          /* primary ink (the charcoal) */
 
-    /* The 9 Notion-style section families. Each has a soft pastel
-       ground (band fill), a saturated "ink" for accents, and a deep
-       shade for text-on-pastel. Triads re-derived for the warm paper:
-       the badge-rarity pins (yellow/grey/peach deep-vs-bg ≥4.5 both
-       themes) and the icon-well pins re-verified numerically. Mint is
-       the success green, sky the info slate-blue. */
-    --c-peach-bg:     #FFE9DC;   --c-peach-ink:    #E07856;   --c-peach-deep:   #6B2D1A;
-    --c-mint-bg:      #DCF1E2;   --c-mint-ink:     #4FA66D;   --c-mint-deep:    #1F4F30;
+    /* The 9 section families (r305 re-key). Each has a soft tinted
+       ground (band fill), a saturated "ink" for fills/UI accents, and a
+       deep shade for text. The status triads adopt the computed r305
+       set (engine-verified): success/warning/info stay green/amber/
+       slate but re-tuned to the cool paper; DANGER now rhymes with the
+       coral #F15534 (the reference's secondary — fill labels stay
+       --warm-ink at 5.10:1); PEACH is re-keyed to the same coral seat
+       as the warm decorative family, with --c-coral-* added below as
+       the semantic alias namespace. Lavender and sand are unchanged
+       (no conflict with the new grounds). Badge-rarity pins
+       (yellow/grey/peach deep-vs-bg ≥4.5 both themes) and the
+       icon-well pins (light -deep on -bg ≥3:1) re-verified numerically:
+       mint 7.31 · yellow 7.85 · rose 7.22 · sky 7.74 · peach 6.29 ·
+       grey 12.55 · sand 7.62 · lavender 9.24 · copper 6.10. */
+    --c-peach-bg:     #FCE5DE;   --c-peach-ink:    #F15534;   --c-peach-deep:   #9C2B0F;
+    --c-mint-bg:      #E3EBE1;   --c-mint-ink:     #3F8F5C;   --c-mint-deep:    #1B5430;
     --c-lavender-bg:  #ECE6FA;   --c-lavender-ink: #8A6FE0;   --c-lavender-deep:#3F2D7A;
-    --c-sky-bg:       #DDEBF7;   --c-sky-ink:      #5C8FCE;   --c-sky-deep:     #1F3D63;
-    --c-yellow-bg:    #FCF1CD;   --c-yellow-ink:   #D6A330;   --c-yellow-deep:  #6B4C0B;
-    --c-rose-bg:      #FCE0E2;   --c-rose-ink:     #DD6E78;   --c-rose-deep:    #6B2128;
+    --c-sky-bg:       #E1E9F0;   --c-sky-ink:      #4A7FA8;   --c-sky-deep:     #1F4968;
+    --c-yellow-bg:    #F5EBD6;   --c-yellow-ink:   #A8750F;   --c-yellow-deep:  #5E420C;
+    --c-rose-bg:      #F9E3DC;   --c-rose-ink:     #F15534;   --c-rose-deep:    #8C230A;
     --c-sand-bg:      #F1ECDF;   --c-sand-ink:     #B59868;   --c-sand-deep:    #5A4623;
-    --c-grey-bg:      #EFECE7;   --c-grey-ink:     #6B665E;   --c-grey-deep:    #2D2A24;
-    --c-copper-bg:    #F4E4D2;   --c-copper-ink:   #B57438;   --c-copper-deep:  #5C3416;
+    --c-grey-bg:      #ECEDEB;   --c-grey-ink:     #626260;   --c-grey-deep:    #282828;
+    --c-copper-bg:    #FCE3D9;   --c-copper-ink:   #FA3600;   --c-copper-deep:  #A32400;
+
+    /* r305 — the coral alias namespace (additive; the warm secondary of
+       the reference). Resolves onto the re-keyed peach seat. */
+    --c-coral-bg:  var(--c-peach-bg);
+    --c-coral-ink: var(--c-peach-ink);
+    --c-coral-deep: var(--c-peach-deep);
 
     /* ═════ ROLE TOKENS — components consume these ═════
        Two-surface rule: --bg is the PAGE GROUND (paper), --surface the
@@ -430,53 +489,69 @@
 
     --text:        var(--neutral-900);
     --text-strong: var(--neutral-900);   /* r304: primary-text emphasis alias */
-    --text-secondary: var(--neutral-700);   /* 8.10:1 bg · 8.44:1 surface */
-    /* r304 — muted is the AA-safe secondary tier: #6E6B63 measures
-       5.10:1 bg · 5.32:1 surface · 4.64:1 surface-3 — clears 4.5 on
-       every light text ground (the r171c chips re-verified). */
-    --text-muted:  #6E6B63;
-    /* r304 — faint is one step FAINTER than muted (the tiers were
-       inverted by the r303 mechanical swap): #75726B = 4.60:1 bg ·
-       4.80:1 surface — AA where it carries text; deliberately under AA
-       on --accent-soft (4.5-tripwire) and inset wells — faint never
-       carries text there. */
-    --text-faint:  #75726B;
-    /* r304 — labels on the copper fill read warm ink (4.62:1); white on
-       copper was 3.80:1. Same register as the night theme. */
+    --text-secondary: var(--neutral-700);   /* #414140 — 9.60:1 bg · 10.22:1 surface (AAA) */
+    /* r305 — muted is the AA-safe secondary tier: #626260 (the
+       reference's granite grey) = 5.74:1 bg · 6.11:1 surface · 5.16:1
+       surface-3 — clears 4.5 on every light text ground. */
+    --text-muted:  #626260;
+    /* r305 — faint is one step FAINTER than muted: #72726F (the
+       reference's own tertiary) = 4.53:1 bg · 4.83:1 surface — AA where
+       it carries text; deliberately under AA on --accent-soft (3.94)
+       and inset wells (4.07 on surface-3) — faint never carries text
+       there (contract unchanged from r304). */
+    --text-faint:  #72726F;
+    /* Labels on the orange fill read warm ink (4.69:1); white on the
+       vivid fill is 3.76:1 and stays banned (r305, measured). Same
+       register as the night theme. */
     --text-on-accent: var(--warm-ink);
     --text-on-dark:   var(--neutral-50);
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
-    --border-faint:  rgba(25,25,24,0.07);
-    --rule:          var(--neutral-200);
+    --border-faint:  rgba(40,40,40,0.07);
+    /* r305 — the rule tier steps up one rung (#C8C8C8) so the
+       construction-line grammar reads on the cooler paper; the raw
+       reference hairline grey lives one rung below as --grid-line. */
+    --rule:          var(--neutral-300);
     /* One step stronger than --rule on the hairline→divider ramp —
        referencing the token keeps the prefers-contrast + dark remaps
        working for free. */
     --rule-strong:   var(--border-strong);
+    /* r305 — the reference's own grid/hairline grey (#B4B4B0 / #B3B3AF
+       family): DECORATIVE construction lines only on light (1.95:1 —
+       the reference uses it exactly so); on dark the same rung is a
+       legitimate text tone (7.09:1). Never the only carrier of
+       meaning on light. */
+    --grid-line:     var(--neutral-400);
     /* 012 theme-tokens contract §1 — formalised surface edge tokens. */
-    --surface-border:  rgba(25,25,24,0.07);
-    --surface-divider: rgba(25,25,24,0.05);
+    --surface-border:  rgba(40,40,40,0.07);
+    --surface-divider: rgba(40,40,40,0.05);
 
-    /* The ONE signal: copper #B57438 (r303 — the recovered Notion-style
-       seat). Links, active states, focus, chart-1. Gold leaves the
-       accent seat for achievements only. Fill contrast: warm-ink labels
-       on the fill = 4.62:1 (AA). */
+    /* The ONE signal: the vivid orange #FA3600 (r305 — the reference's
+       --content--brand, verified live). Links, active states, focus,
+       chart-1. Raw orange is a LARGE-TEXT/UI tone on light (3.53:1 bg ·
+       3.76:1 surface — same class as the reference's own usage);
+       body-size text routes through --accent-ink. Fill labels stay
+       --warm-ink (4.69:1). Gold leaves the accent seat for achievements
+       only — and re-claims the retired copper hexes (circular economy:
+       the old signal IS the new gold). */
     --accent:        var(--c-copper-ink);
-    --accent-hover:  #9A5F25;
+    --accent-hover:  #D92F00;
     --accent-soft:   var(--c-copper-bg);
     --accent-strong: var(--c-copper-deep);
-    /* r304 — label ink on the accent fill: warm ink, not white. */
+    /* r305 — label ink on the accent fill: warm ink, not white. */
     --accent-fg:     var(--warm-ink);
-    /* r304 — the TEXT-safe accent: #8F5A28 = 5.50:1 bg · 5.74:1 surface
-       (AA as link/label text). The raw --accent stays the fill/stroke
-       tone (3.65:1 — UI-large only). */
-    --accent-ink:    #8F5A28;
+    /* r305 — the TEXT-safe accent: #C72E00 = 5.16:1 bg · 5.50:1 surface
+       · 5.27:1 #FAFAFA (AA as link/label text; the binary-searched
+       floor was #D92F00 at 4.53 — one step darker for margin). The raw
+       --accent stays the fill/stroke tone (3.53:1 — UI-large only). */
+    --accent-ink:    #C72E00;
 
-    /* 001 interaction-tokens self-rule: the focus ring clears 4.5:1
-       against the light grounds (#9A5F25 = 4.99:1 on the cream). Dark
-       re-keys the ring to its luminous hover tier (see the night block). */
-    --state-focus-ring-color: #9A5F25;
+    /* r305 — the focus ring clears ≥3:1 against every adjacent light
+       surface (#C72E00 = 5.16:1 bg · 5.50:1 surface · 4.48:1 on
+       --accent-soft). Dark re-keys the ring to its luminous hover tier
+       (see the night block). */
+    --state-focus-ring-color: #C72E00;
 
     --success:      var(--c-mint-ink);
     --success-soft: var(--c-mint-bg);
@@ -488,32 +563,37 @@
     --info-soft:    var(--c-sky-bg);
 
     /* Status INK tokens for TEXT usages — the deep "text-on-pastel"
-       shades of the same families (all ≥7.5:1 on the cream): mint-deep
-       9.08:1, yellow-deep 7.56:1, rose-deep 10.75:1, sky-deep 10.57:1. */
+       shades of the same families (all ≥7.2:1 on their tints and ≥7:1
+       on the paper): mint-deep 7.31:1, yellow-deep 7.85:1, rose-deep
+       7.22:1, sky-deep 7.74:1. */
     --success-ink: var(--c-mint-deep);
     --warning-ink: var(--c-yellow-deep);
     --danger-ink:  var(--c-rose-deep);
     --info-ink:    var(--c-sky-deep);
 
-    /* Label ink ON A --danger FILL: r304 — warm ink on the rose pastel
-       (5.51:1); white on rose was 3.19:1. Consumed by .btn.danger +
-       notif-badge via --_btn-fg. */
+    /* Label ink ON A --danger FILL: r305 — the danger fill is the coral
+       #F15534 and warm-ink labels read 5.10:1 (white would be 3.45:1).
+       Consumed by .btn.danger + notif-badge via --_btn-fg. */
     --danger-fg:   var(--warm-ink);
 
     --brand:         var(--accent);            /* r304: restored */
     --brand-purple:  var(--c-lavender-ink);
-    /* Gold rejoins the copper family (Notion-style) — the achievement
-       tone matches the accent seat. */
-    --gold:          var(--c-copper-ink);
-    --gold-ink:      var(--c-copper-deep);
-    --primary:       var(--neutral-900);   /* ink slab CTA — white label 16.9:1 */
+    /* r305 — the achievement gold re-claims the retired copper seat
+       (circular economy: #B57438 was the r303/r304 signal; demoted to
+       the achievement tone it is distinct from the orange signal
+       again). 3.57:1 on the paper — large/decorative tier; text routes
+       through --gold-ink #8F5A28 (5.39:1, AA). Achievements ONLY. */
+    --gold:          #B57438;
+    --gold-ink:      #8F5A28;
+    --primary:       var(--neutral-900);   /* charcoal slab CTA — white label 14.74:1 */
     --primary-fg:    #FFFFFF;
 
-    /* ─── Elevation — the historical Notion-soft register (r304) ────
-       Subtle, layered, warm-ink: ONE hairline kiss at rest, one soft
-       lift on hover, quiet pops for overlays. --elev-* (012 layer
-       below) is the canonical ladder; --shadow-* are the semantic
-       aliases components consume. */
+    /* ─── Elevation — the Notion-soft register on charcoal ink (r305
+       re-tint: the shadow base follows the new ink) ─────────────────
+       Subtle, layered; ONE hairline kiss at rest, one soft lift on
+       hover, quiet pops for overlays. --elev-* (012 layer below) is the
+       canonical ladder; --shadow-* are the semantic aliases components
+       consume. */
     --shadow-card:    var(--elev-1);
     --shadow-card-h:  var(--elev-2);
     --shadow-pop:     var(--elev-3);
@@ -527,14 +607,14 @@
     --shadow-lg: var(--elev-3);
     --shadow-xl: var(--elev-4);
     --shadow-2xl: var(--elev-5);
-    --shadow-mockup: 0 1px 2px rgba(15,15,15,0.05), 0 12px 32px rgba(15,15,15,0.08), 0 32px 80px rgba(15,15,15,0.06);
+    --shadow-mockup: 0 1px 2px rgba(28,28,28,0.05), 0 12px 32px rgba(28,28,28,0.08), 0 32px 80px rgba(28,28,28,0.06);
 
-    --glass-bg:    rgba(251,250,249,0.78);   /* warm ground glass */
+    --glass-bg:    rgba(246,248,250,0.78);   /* paper glass */
     --glass-blur:  16px;
-    --glass-border: rgba(25,25,24,0.08);
+    --glass-border: rgba(40,40,40,0.08);
     /* The strong glass tier = more opaque ground, blur stays 16px
        (r140: nothing stronger than 16). */
-    --glass-bg-strong:   rgba(251,250,249,0.92);
+    --glass-bg-strong:   rgba(246,248,250,0.92);
     --glass-blur-strong: 16px;
     /* Scrim blur for dimming overlays (modal/sheet/dialog backdrops). */
     --scrim-blur:  4px;
@@ -542,9 +622,9 @@
     /* Overlay veil ramp (one grammar for every dimming backdrop; dark
        remaps below). modal + sheet ride the base, the sidebar backdrop
        the deep step, the command palette the max step. */
-    --overlay-veil:      rgb(22 20 15 / 0.40);
-    --overlay-veil-deep: rgb(22 20 15 / 0.45);
-    --overlay-veil-max:  rgb(22 20 15 / 0.50);
+    --overlay-veil:      rgb(28 28 28 / 0.40);
+    --overlay-veil-deep: rgb(28 28 28 / 0.45);
+    --overlay-veil-max:  rgb(28 28 28 / 0.50);
 
     /* sidebar / topbar */
     --sidebar-bg:        var(--neutral-50);
@@ -554,40 +634,41 @@
     --sidebar-item-active-bg:   var(--neutral-150);
     --sidebar-item-active-text: var(--neutral-900);
 
-    --topbar-bg:    rgba(251,250,249,0.86);   /* warm chrome glass */
+    --topbar-bg:    rgba(246,248,250,0.86);   /* paper chrome glass */
     --topbar-border:var(--neutral-200);
 
-    --scrollbar-thumb: rgba(25,25,24,0.16);
-    --scrollbar-thumb-hover: rgba(25,25,24,0.28);
+    --scrollbar-thumb: rgba(40,40,40,0.16);
+    --scrollbar-thumb-hover: rgba(40,40,40,0.28);
 
     /* legacy aliases (21-c sweep survivors + r304 restoration of
        --accent-border's documented slot): */
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
 
-    --chart-text: var(--text-muted);  /* 5.10:1 on the cream — AA */
-    --chart-grid: rgba(25,25,24,0.08);
-    --chart-1: var(--accent);   /* series 1 = the copper signal */
+    --chart-text: var(--text-muted);  /* 5.74:1 on the paper — AA */
+    --chart-grid: rgba(40,40,40,0.08);
+    --chart-1: var(--accent);   /* series 1 = the orange signal (3.53:1 — clears the 3:1 non-text bar) */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
     --chart-5: var(--c-lavender-ink);
-    /* The series amber (#A6791F = 3.38:1 on the cream — clears the 3:1
+    /* The series amber (#A6791F = 3.67:1 on the paper — clears the 3:1
        non-text bar). The gold DISCIPLINE (--gold achievements only) is
        untouched: chart series colors are a data-vis palette. */
     --chart-6: #A6791F;
-    --chart-7: #2273A0;   /* cyan-blue series — 4.51:1 on paper */
-    --chart-8: #A65D8A;   /* mauve — 3.99:1 */
+    --chart-7: #2273A0;   /* cyan-blue series — 4.90:1 on paper */
+    --chart-8: #A65D8A;   /* mauve — 4.33:1 */
 
-    /* r304 — the auth ambient wash re-keys to the copper seat (the
-       value was still the retired ultramarine). */
-    --journey-glow:        rgba(181, 116, 56, 0.10);   /* copper ambient wash */
+    /* r305 — the auth ambient wash re-keys to the orange seat (the
+       value was the retired copper). */
+    --journey-glow:        rgba(250, 54, 0, 0.10);   /* ember ambient wash */
   }
 
   /* ════════════════════════════════════════════════════════════════════
-     DARK THEME — the deliberately designed counterpart: Notion-dark
-     warmth. Deep warm-night ground, raised surfaces one step at a
-     time, luminous copper — never a cold inversion.
+     DARK THEME — the charcoal night: the reference's own dark fills
+     promoted to a full theme. Deep charcoal ground, cool raised
+     surfaces one step at a time, luminous ember — the deliberate
+     counterpart, never a cold inversion.
      ════════════════════════════════════════════════════════════════════ */
   [data-theme="dark"] {
     /* One more leading step for light-on-dark display text (compensate
@@ -595,33 +676,43 @@
        cursive, leading is the legal one). */
     --type-display-line-height: 1.30;
 
-    /* The warm night ramp: the page ground is the ink's twin #191918;
-       surfaces sit one warm step up. Same role tokens as light,
-       re-keyed — never a cold blue-black. */
-    --neutral-0:   #1F1F1E;
-    --neutral-50:  #191918;
-    --neutral-100: #232322;
-    --neutral-150: #2A2A28;
-    --neutral-200: #353532;
-    --neutral-300: #46453F;
-    --neutral-400: #6E6B61;
-    --neutral-500: #9A968A;
-    --neutral-700: #C8C2B2;
-    --neutral-800: #DDD7C5;
-    --neutral-900: #F2EAD8;
+    /* The charcoal night ramp (r305): the page ground IS the
+       reference's charcoal #282828; surfaces sit one cool step up; the
+       ink is the paper twin #F6F8FA. The technical greys come home:
+       #B4B4B0 — a decorative non-text rung on light — is a legitimate
+       TEXT tone here (7.09:1 on the ground, AAA). */
+    --neutral-0:   #2E2E2E;
+    --neutral-50:  #282828;
+    --neutral-100: #353535;
+    --neutral-150: #3D3D3D;
+    --neutral-200: #4A4A48;
+    --neutral-300: #5C5C5A;
+    --neutral-400: #8A8A86;
+    --neutral-500: #B4B4B0;
+    --neutral-700: #C9C9C5;
+    --neutral-800: #E0E0DC;
+    --neutral-900: #F6F8FA;
 
-    /* Night families: deep warm-tinted bgs + luminous inks. Contrast on
-       --bg #191918: mint 8.06, rose 6.18, sky 7.31, yellow 9.06,
-       lavender 6.09 — all text-AA; the badge triads re-verified. */
-    --c-peach-bg:     #3D2A23;   --c-peach-ink:    #F2A07F;   --c-peach-deep:   #FCD9C4;
-    --c-mint-bg:      #1F3429;   --c-mint-ink:     #82CB99;   --c-mint-deep:    #C9EAD3;
+    /* Night families: deep ember-tinted bgs + luminous inks. Contrast
+       on --bg #282828 (engine-verified, r305): mint 8.08, yellow 9.28,
+       rose 6.54, sky 7.82, lavender 6.56 — all text-AA; the status
+       badge triads re-verified (family ink-on-bg ≥6.5; the copper/
+       ember ink IS the signal — 4.73, the AA-large/UI register by
+       design). */
+    --c-peach-bg:     #43241C;   --c-peach-ink:    #FF8E68;   --c-peach-deep:   #FFC5AE;
+    --c-mint-bg:      #24372B;   --c-mint-ink:     #84D0A0;   --c-mint-deep:    #C4EBD2;
     --c-lavender-bg:  #2D2545;   --c-lavender-ink: #B7A0F4;   --c-lavender-deep:#DCD2F9;
-    --c-sky-bg:       #1F2F45;   --c-sky-ink:      #92B4DC;   --c-sky-deep:     #C9DCEE;
-    --c-yellow-bg:    #3A3017;   --c-yellow-ink:   #ECC97D;   --c-yellow-deep:  #F8E5B5;
-    --c-rose-bg:      #3D2126;   --c-rose-ink:     #F09BA3;   --c-rose-deep:    #FACDD2;
+    --c-sky-bg:       #23313F;   --c-sky-ink:      #93C2E9;   --c-sky-deep:     #C9E2F5;
+    --c-yellow-bg:    #3B331F;   --c-yellow-ink:   #EFC87B;   --c-yellow-deep:  #F8E3B4;
+    --c-rose-bg:      #43241C;   --c-rose-ink:     #FF8E68;   --c-rose-deep:    #FFC5AE;
     --c-sand-bg:      #2D2820;   --c-sand-ink:     #D9C18C;   --c-sand-deep:    #EFE2C5;
-    --c-grey-bg:      #2A2823;   --c-grey-ink:     #B7B2A6;   --c-grey-deep:    #DDD8CB;
-    --c-copper-bg:    #3D2D1B;   --c-copper-ink:   #E0A067;   --c-copper-deep:  #F8DDBC;
+    --c-grey-bg:      #2A2A28;   --c-grey-ink:     #B7B2A6;   --c-grey-deep:    #DDD8CB;
+    --c-copper-bg:    #432015;   --c-copper-ink:   #FF5A1F;   --c-copper-deep:  #FFC5AE;
+
+    /* r305 — the night coral alias namespace (additive). */
+    --c-coral-bg:  var(--c-peach-bg);
+    --c-coral-ink: var(--c-peach-ink);
+    --c-coral-deep: var(--c-peach-deep);
 
     --bg:               var(--neutral-50);
     --surface:          var(--neutral-0);
@@ -636,41 +727,45 @@
     --text:        var(--neutral-900);
     --text-strong: var(--neutral-900);
     --text-secondary: var(--neutral-700);
-    /* #9A968A — 5.95:1 bg · 5.58:1 surface · 4.86:1 surface-3 (worst
-       dark ground) — clears 4.5 everywhere. */
+    /* #B4B4B0 — the reference's disable grey redeemed as the dark
+       muted TEXT tier: 7.09:1 bg · 6.53:1 surface · 5.90:1 surface-2
+       (worst dark ground) — clears 4.5 everywhere (r305, measured). */
     --text-muted:  var(--neutral-500);
-    /* #8C8674 — the AA-verified one-step-fainter tier: 4.84:1 bg ·
-       4.54:1 surface — clears 4.5 on every dark text surface; 3.63:1
-       on --accent-soft (deliberately under — faint never carries text
+    /* #A2A29D — the AA-verified one-step-fainter tier: 5.75:1 bg ·
+       5.30:1 surface — clears 4.5 on every dark text surface; under AA
+       on --accent-soft by construction (faint never carries text
        there). */
-    --text-faint:  #8C8674;
-    --text-on-accent: var(--warm-ink);   /* ink on the luminous night copper fill (7.87:1) */
+    --text-faint:  #A2A29D;
+    --text-on-accent: var(--warm-ink);   /* ink on the luminous night ember fill (5.64:1) */
     --text-on-dark:   var(--neutral-900);
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
-    --border-faint:  rgba(242,234,216,0.08);   /* warm-white hairline */
+    --border-faint:  rgba(246,248,250,0.08);   /* paper-white hairline */
     --rule:          var(--neutral-200);
     --rule-strong:   var(--border-strong);
+    --grid-line:     var(--neutral-300);
     /* 012 theme-tokens contract §1 — formalised surface edge tokens. */
-    --surface-border:  rgba(243,238,228,0.12);
-    --surface-divider: rgba(242,234,216,0.07);
+    --surface-border:  rgba(246,248,250,0.12);
+    --surface-divider: rgba(246,248,250,0.07);
 
-    /* Night signal discipline: the FILL stays the luminous copper
-       (#E0A067) in both themes; --accent-strong becomes the light
-       copper tier for text/icons/links on the night ground (9.06:1 bg). */
+    /* Night signal discipline (r305): the FILL stays the luminous ember
+       (#FF5A1F — 4.73:1 bg, AA-large/UI; --warm-ink labels 5.64:1);
+       --accent-strong becomes the light ember tier for text/icons/
+       links on the night ground (9.72:1 bg). */
     --accent:        var(--c-copper-ink);
-    --accent-hover:  #F2B782;
+    --accent-hover:  #FF6B33;
     --accent-soft:   var(--c-copper-bg);
     --accent-strong: var(--c-copper-deep);
     --accent-fg:     var(--warm-ink);
-    /* r304 — the night ring re-keys to the luminous copper hover tier
-       (#F2B782 = 9.95:1 on the night ground). The grouped light block's
-       #9A5F25 would inherit here at 3.33:1 — under the ring rule. */
+    /* r305 — the night ring re-keys to the luminous ember hover tier
+       (#FF6B33 = 5.20:1 on the night ground · 6.14:1 on a generic
+       near-black ground · 4.32:1 on the worst raised surface — clears
+       the ≥3:1 ring rule). */
     --state-focus-ring-color: var(--accent-hover);
 
     /* Night theme passes as-is: the -ink family clears AA on the night
-       ground (mint 8.06, yellow 9.06, rose 6.18, sky 7.31 on --bg), so
+       ground (mint 7.69, yellow 7.87, rose 6.97, sky 6.87 on --bg), so
        -ink maps to the same values the base tokens resolve to. The
        icon-well pin (dark --x-ink ≡ --x) holds via these aliases. */
     --accent-ink:   var(--accent);
@@ -679,8 +774,8 @@
     --danger-ink:   var(--c-rose-ink);
     --info-ink:     var(--c-sky-ink);
 
-    /* Label ink on the night rose fill (ink #16140F on #F09BA3 = 6.18:1).
-       Consumed by .btn.danger / notif badge. */
+    /* Label ink on the night coral fill (ink #191918 on #FF8E68 =
+       7.81:1). Consumed by .btn.danger / notif badge. */
     --danger-fg:    var(--warm-ink);
 
     --success:      var(--c-mint-ink);
@@ -694,14 +789,14 @@
 
     --brand:         var(--accent);            /* r304: restored */
     --brand-purple:  var(--c-lavender-ink);
-    --gold:          var(--c-copper-ink);      /* night copper achievement tone */
-    --gold-ink:      var(--c-copper-deep);
+    --gold:          #E0A067;      /* night gold achievement tone (the demoted r304 seat) */
+    --gold-ink:      #F2B782;
     --primary:       #FFFFFF;               /* the night CTA — white slab, ink label */
     --primary-fg:    var(--warm-ink);
 
     /* Night shadows mirror the light ladder's layering but sit lower:
        dark depth = surface step + hairline, shadows de-emphasized; the
-       inset highlight re-keys to the warm paper tint. */
+       inset highlight re-keys to the paper tint. */
     --shadow-card:    var(--elev-1);
     --shadow-card-h:  var(--elev-2);
     --shadow-pop:     var(--elev-3);
@@ -716,10 +811,10 @@
     --shadow-2xl: var(--elev-5);
     --shadow-mockup: 0 1px 2px rgba(0,0,0,0.30), 0 12px 32px rgba(0,0,0,0.38), 0 32px 80px rgba(0,0,0,0.42);
 
-    --glass-bg:    rgba(25,25,24,0.78);   /* warm night glass */
+    --glass-bg:    rgba(30,30,30,0.78);   /* charcoal night glass */
     --glass-blur:  16px;
-    --glass-border: rgba(243,238,228,0.10);   /* warm-white hairline on dark glass */
-    --glass-bg-strong:   rgba(25,25,24,0.92);
+    --glass-border: rgba(246,248,250,0.10);   /* paper hairline on dark glass */
+    --glass-bg-strong:   rgba(30,30,30,0.92);
     --glass-blur-strong: 16px;
     --scrim-blur:  4px;
 
@@ -733,31 +828,31 @@
     --sidebar-rule:      var(--neutral-200);
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
-    --sidebar-item-active-bg:   rgb(224 160 103 / 0.16);  /* night copper wash — the traveller's current orbit */
+    --sidebar-item-active-bg:   rgb(255 90 31 / 0.16);  /* night ember wash — the traveller's current orbit */
     --sidebar-item-active-text: var(--neutral-900);
 
-    --topbar-bg:    rgba(25,25,24,0.86);   /* Notion-night chrome */
+    --topbar-bg:    rgba(30,30,30,0.86);   /* charcoal-night chrome */
     --topbar-border:var(--neutral-200);
 
-    --scrollbar-thumb: rgba(242,234,216,0.16);
-    --scrollbar-thumb-hover: rgba(242,234,216,0.28);
+    --scrollbar-thumb: rgba(246,248,250,0.16);
+    --scrollbar-thumb-hover: rgba(246,248,250,0.28);
 
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
 
     --chart-text: var(--neutral-500);
-    --chart-grid: rgba(242,234,216,0.08);
-    --chart-1: var(--accent);   /* series 1 = the night copper signal */
+    --chart-grid: rgba(246,248,250,0.08);
+    --chart-1: var(--accent);   /* series 1 = the night ember signal */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
     --chart-5: var(--c-lavender-ink);
-    --chart-6: #E8C064;   /* amber (lifted for dark) — 10.65:1 */
-    --chart-7: #6FB3D9;   /* cyan-blue (lifted for dark) — 8.00:1 */
-    --chart-8: #D18AB4;   /* mauve (lifted for dark) — 7.02:1 */
+    --chart-6: #E8C064;   /* amber (lifted for dark) — 8.53:1 */
+    --chart-7: #6FB3D9;   /* cyan-blue (lifted for dark) — 6.41:1 */
+    --chart-8: #D18AB4;   /* mauve (lifted for dark) — 5.62:1 */
 
-    /* The night wash re-keys to the luminous copper tier. */
-    --journey-glow:        rgba(224, 160, 103, 0.12);   /* copper ambient wash */
+    /* The night wash re-keys to the luminous ember tier. */
+    --journey-glow:        rgba(255, 90, 31, 0.12);   /* ember ambient wash */
   }
 
 }
@@ -781,21 +876,26 @@
 
   /* ─── 1. Role-accent (Light) — seven slots, each ≥3.0 vs the paper
      (computed against the live --bg by tests/unit/token-snapshot.test.ts;
-     role-accents tint chrome only, never body text). */
-  :root[data-theme="light"] body[data-role="student"]         { --role-accent: #B57438; }
-  /* r304: faculty + department-head retuned one warm step down — the
-     family inks (#4FA66D / #E07856) measured 2.87/2.88 vs the cream,
-     under the pinned 3.0 chrome gate; the retints clear it (3.12/3.24)
-     and keep the hue identity. */
-  :root[data-theme="light"] body[data-role="faculty"]         { --role-accent: #45A063; }
+     role-accents tint chrome only, never body text). r305 re-verified
+     against #F6F8FA: student 5.16 · faculty 3.22 · department-head
+     3.17 · dean 3.63 · admin 3.14 · quality 3.38 · owner 5.35. */
+  :root[data-theme="light"] body[data-role="student"]         { --role-accent: #C72E00; }
+  /* r305: faculty + department-head + quality retuned one step against
+     the cooler paper — the r304 values measured 3.05/3.17/3.00, with
+     quality sitting exactly ON the 3.0 floor (rounding-risk); the
+     retints clear it with margin (3.22/3.17→3.17 stays/3.38) and keep
+     the hue identity. */
+  :root[data-theme="light"] body[data-role="faculty"]         { --role-accent: #3F9C5F; }
   :root[data-theme="light"] body[data-role="department-head"] { --role-accent: #DA6C46; }
   :root[data-theme="light"] body[data-role="dean"]            { --role-accent: #8A6FE0; }
   :root[data-theme="light"] body[data-role="admin"]           { --role-accent: #5C8FCE; }
-  :root[data-theme="light"] body[data-role="quality"]         { --role-accent: #DD6E78; }
+  :root[data-theme="light"] body[data-role="quality"]         { --role-accent: #D9606C; }
   :root[data-theme="light"] body[data-role="owner"]           { --role-accent: #6B665E; }
 
-  /* ─── Role-accent (Dark) ────────────────────────────────────── */
-  :root[data-theme="dark"]  body[data-role="student"]         { --role-accent: #E0A067; }
+  /* ─── Role-accent (Dark) — each ≥3.0 vs #282828 (r305 re-verified:
+     student 4.73 · faculty 7.69 · department-head 7.10 · dean 6.56 ·
+     admin 6.87 · quality 6.97 · owner 6.97). ─────────────────────── */
+  :root[data-theme="dark"]  body[data-role="student"]         { --role-accent: #FF5A1F; }
   :root[data-theme="dark"]  body[data-role="faculty"]         { --role-accent: #82CB99; }
   :root[data-theme="dark"]  body[data-role="department-head"] { --role-accent: #F2A07F; }
   :root[data-theme="dark"]  body[data-role="dean"]            { --role-accent: #B7A0F4; }
@@ -829,26 +929,27 @@
     --z-lightbox: 600;
   }
 
-  /* ─── 3. Elevation language — Light (r304: the Notion-soft register)
-     Layered, low-alpha, warm-ink; one hairline kiss at rest, soft lifts
-     above. The layered values restore the historical shadow grammar. */
+  /* ─── 3. Elevation language — Light (r305: charcoal-tinted register)
+     Layered, low-alpha, ink-based; one hairline kiss at rest, soft
+     lifts above. The layered values keep the historical shadow
+     grammar; the tint follows the new ink. */
   :root[data-theme="light"] {
-    --elev-1: 0 1px 2px rgba(15,15,15,0.05);
-    --elev-2: 0 1px 2px rgba(15,15,15,0.05), 0 6px 16px rgba(15,15,15,0.06);
-    --elev-3: 0 1px 2px rgba(15,15,15,0.06), 0 8px 24px rgba(15,15,15,0.08);
-    --elev-4: 0 12px 36px rgba(15,15,15,0.10), 0 32px 80px rgba(15,15,15,0.13);
-    --elev-5: 0 16px 44px rgba(15,15,15,0.12), 0 40px 96px rgba(15,15,15,0.16);
+    --elev-1: 0 1px 2px rgba(28,28,28,0.05);
+    --elev-2: 0 1px 2px rgba(28,28,28,0.05), 0 6px 16px rgba(28,28,28,0.06);
+    --elev-3: 0 1px 2px rgba(28,28,28,0.06), 0 8px 24px rgba(28,28,28,0.08);
+    --elev-4: 0 12px 36px rgba(28,28,28,0.10), 0 32px 80px rgba(28,28,28,0.13);
+    --elev-5: 0 16px 44px rgba(28,28,28,0.12), 0 40px 96px rgba(28,28,28,0.16);
   }
 
   /* ─── Elevation language — Dark (fill-led, shadow muted) ────────────
      Dark de-emphasizes shadows (surface step + hairline carry depth);
-     the inset highlight re-keys to the warm paper tint. */
+     the inset highlight re-keys to the paper tint. */
   :root[data-theme="dark"] {
-    --elev-1: 0 1px 2px rgba(0,0,0,0.30), inset 0 1px 0 rgba(242,234,216,0.04);
-    --elev-2: 0 1px 2px rgba(0,0,0,0.30), 0 6px 16px rgba(0,0,0,0.32), inset 0 1px 0 rgba(242,234,216,0.05);
-    --elev-3: 0 8px 24px rgba(0,0,0,0.40), inset 0 1px 0 rgba(242,234,216,0.06);
-    --elev-4: 0 12px 32px rgba(0,0,0,0.48), 0 32px 80px rgba(0,0,0,0.52), inset 0 1px 0 rgba(242,234,216,0.07);
-    --elev-5: 0 16px 44px rgba(0,0,0,0.52), 0 40px 96px rgba(0,0,0,0.58), inset 0 1px 0 rgba(242,234,216,0.08);
+    --elev-1: 0 1px 2px rgba(0,0,0,0.30), inset 0 1px 0 rgba(246,248,250,0.04);
+    --elev-2: 0 1px 2px rgba(0,0,0,0.30), 0 6px 16px rgba(0,0,0,0.32), inset 0 1px 0 rgba(246,248,250,0.05);
+    --elev-3: 0 8px 24px rgba(0,0,0,0.40), inset 0 1px 0 rgba(246,248,250,0.06);
+    --elev-4: 0 12px 32px rgba(0,0,0,0.48), 0 32px 80px rgba(0,0,0,0.52), inset 0 1px 0 rgba(246,248,250,0.07);
+    --elev-5: 0 16px 44px rgba(0,0,0,0.52), 0 40px 96px rgba(0,0,0,0.58), inset 0 1px 0 rgba(246,248,250,0.08);
   }
 
   /* ─── 4. Illustration palette — Light ─────────────────────────────── */
@@ -861,7 +962,7 @@
     --ill-hue-6: var(--chart-6);   /* the series amber, one home */
     --ill-stroke: var(--neutral-900);
     --ill-paper: var(--neutral-50);
-    --ill-shadow: rgba(15,15,15,0.10);
+    --ill-shadow: rgba(28,28,28,0.10);
   }
 
   /* ─── Illustration palette — Dark ─────────────────────────────────── */
@@ -920,13 +1021,14 @@
     }
   }
 
-  /* ─── 6. Wave additions (append-only heritage, r304 values) ────── */
+  /* ─── 6. Wave additions (append-only heritage, r305 values) ────── */
 
   :root {
     /* --gold-soft — soft gold ground for chip/tint surfaces placed
        behind gold text. One definition suffices for both themes
        because --c-yellow-bg is itself re-mapped by the theme blocks.
-       WCAG: light gold-ink on this ground = 6.98:1; dark = 8.18:1. */
+       WCAG (r305): light gold-ink #8F5A28 on this ground = 4.84:1 (AA);
+       dark #F2B782 on the night yellow bg = 7.07:1 (AAA). */
     --gold-soft: var(--c-yellow-bg);
 
     /* --text-2xl — backing token for the `.text-2xl` size utility.
@@ -936,7 +1038,7 @@
 }
 
 /* ═════════════════════════════════════════════════════════════════════
-   Wave 2-a heritage (append-only) + r304 sync
+   Wave 2-a heritage (append-only) + r305 sync
    ═════════════════════════════════════════════════════════════════════ */
 
 @layer tokens {
@@ -965,13 +1067,13 @@
      defaults carry the light values; the [data-theme] blocks are more
      specific and win in both themes once the runtime sets the attribute.
      Same values as the light block (duplicated on purpose — a default,
-     not a fork). r304: synced to the Notion-soft register. */
+     not a fork). r305: synced to the charcoal-tinted register. */
   :root {
-    --elev-1: 0 1px 2px rgba(15,15,15,0.05);
-    --elev-2: 0 1px 2px rgba(15,15,15,0.05), 0 6px 16px rgba(15,15,15,0.06);
-    --elev-3: 0 1px 2px rgba(15,15,15,0.06), 0 8px 24px rgba(15,15,15,0.08);
-    --elev-4: 0 12px 36px rgba(15,15,15,0.10), 0 32px 80px rgba(15,15,15,0.13);
-    --elev-5: 0 16px 44px rgba(15,15,15,0.12), 0 40px 96px rgba(15,15,15,0.16);
+    --elev-1: 0 1px 2px rgba(28,28,28,0.05);
+    --elev-2: 0 1px 2px rgba(28,28,28,0.05), 0 6px 16px rgba(28,28,28,0.06);
+    --elev-3: 0 1px 2px rgba(28,28,28,0.06), 0 8px 24px rgba(28,28,28,0.08);
+    --elev-4: 0 12px 36px rgba(28,28,28,0.10), 0 32px 80px rgba(28,28,28,0.13);
+    --elev-5: 0 16px 44px rgba(28,28,28,0.12), 0 40px 96px rgba(28,28,28,0.16);
   }
 
   /* ══════════════════════════════════════════════════════════════
@@ -982,55 +1084,56 @@
      unavoidable here — it IS the light palette, quoted by value because
      var() would resolve dark. Placed AFTER the dark block inside this
      layer so source order wins during print. The color-scheme: light
-     lock itself stays in polish.css. r304: synced to the refined
-     values (AA muted/faint, copper text inks, warm-ink fill labels). ═════ */
+     lock itself stays in polish.css. r305: synced to the Heron
+     blueprint palette (AA muted/faint, orange text inks, warm-ink fill
+     labels). ═════ */
   @media print {
     :root[data-theme="dark"] {
-      /* light neutral ramp (the Notion cream) */
+      /* light neutral ramp (the blueprint paper) */
       --neutral-0:   #FFFFFF;
-      --neutral-50:  #FBFAF9;
-      --neutral-100: #F7F6F3;
-      --neutral-150: #F1EFEC;
-      --neutral-200: #E9E7E2;
-      --neutral-300: #D9D6D0;
-      --neutral-400: #B5B1A8;
-      --neutral-500: #898680;
-      --neutral-700: #4F4D48;
-      --neutral-800: #322F2A;
-      --neutral-900: #191918;
-      /* light pastel families (the recovered Notion-style palette) */
-      --c-peach-bg:     #FFE9DC;  --c-peach-ink:    #E07856;  --c-peach-deep:    #6B2D1A;
-      --c-mint-bg:      #DCF1E2;  --c-mint-ink:     #4FA66D;  --c-mint-deep:     #1F4F30;
+      --neutral-50:  #F6F8FA;
+      --neutral-100: #F0F2F5;
+      --neutral-150: #E9ECEF;
+      --neutral-200: #E0E0DA;
+      --neutral-300: #C8C8C8;
+      --neutral-400: #B4B4B0;
+      --neutral-500: #72726F;
+      --neutral-700: #414140;
+      --neutral-800: #333330;
+      --neutral-900: #282828;
+      /* light families (the r305 re-key) */
+      --c-peach-bg:     #FCE5DE;  --c-peach-ink:    #F15534;  --c-peach-deep:    #9C2B0F;
+      --c-mint-bg:      #E3EBE1;  --c-mint-ink:     #3F8F5C;  --c-mint-deep:     #1B5430;
       --c-lavender-bg:  #ECE6FA;  --c-lavender-ink: #8A6FE0;  --c-lavender-deep: #3F2D7A;
-      --c-sky-bg:       #DDEBF7;  --c-sky-ink:      #5C8FCE;  --c-sky-deep:      #1F3D63;
-      --c-yellow-bg:    #FCF1CD;  --c-yellow-ink:   #D6A330;  --c-yellow-deep:   #6B4C0B;
-      --c-rose-bg:      #FCE0E2;  --c-rose-ink:     #DD6E78;  --c-rose-deep:     #6B2128;
+      --c-sky-bg:       #E1E9F0;  --c-sky-ink:      #4A7FA8;  --c-sky-deep:      #1F4968;
+      --c-yellow-bg:    #F5EBD6;  --c-yellow-ink:   #A8750F;  --c-yellow-deep:   #5E420C;
+      --c-rose-bg:      #F9E3DC;  --c-rose-ink:     #F15534;  --c-rose-deep:     #8C230A;
       --c-sand-bg:      #F1ECDF;  --c-sand-ink:     #B59868;  --c-sand-deep:     #5A4623;
-      --c-grey-bg:      #EFECE7;  --c-grey-ink:     #6B665E;  --c-grey-deep:     #2D2A24;
-      --c-copper-bg:    #F4E4D2;  --c-copper-ink:   #B57438;  --c-copper-deep:   #5C3416;
+      --c-grey-bg:      #ECEDEB;  --c-grey-ink:     #626260;  --c-grey-deep:     #282828;
+      --c-copper-bg:    #FCE3D9;  --c-copper-ink:   #FA3600;  --c-copper-deep:   #A32400;
       /* literals the dark block hardcodes (not chained to neutrals) */
-      --text-muted:     #6E6B63;
-      --text-faint:     #75726B;
+      --text-muted:     #626260;
+      --text-faint:     #72726F;
       --text-on-accent: var(--warm-ink);
-      --accent-hover:   #9A5F25;
+      --accent-hover:   #D92F00;
       --accent-fg:      var(--warm-ink);
-      /* print rides the recovered copper seat */
-      --accent:          #B57438;
-      --accent-strong:   #5C3416;
-      --state-focus-ring-color: #9A5F25;
-      --border-faint:   rgba(25,25,24,0.06);
-      --surface-border: rgba(25,25,24,0.06);
-      --surface-divider: rgba(25,25,24,0.05);
-      --chart-text:     #6E6B63;
+      /* print rides the orange seat */
+      --accent:          #FA3600;
+      --accent-strong:   #A32400;
+      --state-focus-ring-color: #C72E00;
+      --border-faint:   rgba(40,40,40,0.06);
+      --surface-border: rgba(40,40,40,0.06);
+      --surface-divider: rgba(40,40,40,0.05);
+      --chart-text:     #626260;
       --gold:           #B57438;
       /* text-safe inks: dark maps them to the -ink shades; light uses
          the deeper -deep shades so status text stays ≥4.5:1 on paper */
-      --accent-ink:  #8F5A28;
+      --accent-ink:  #C72E00;
       --success-ink: var(--c-mint-deep);
       --warning-ink: var(--c-yellow-deep);
       --danger-ink:  var(--c-rose-deep);
       --info-ink:    var(--c-sky-deep);
-      --gold-ink:    #5C3416;
+      --gold-ink:    #8F5A28;
       --danger-fg:   var(--warm-ink);
     }
   }
