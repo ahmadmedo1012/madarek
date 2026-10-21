@@ -35,6 +35,9 @@ import { useEntityPageTitle } from '../../components/layout/AppShell';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .back-link family (D11 css split, 12-15)
 import '../../styles/teacher-quality.css'; // R304 — the family sheet (oex- section lives here)
+/* ── r305-c (schedule family) imports — the only region agent 2-c edits above the components ── */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-schedule.css';
 
 const KIND_LABEL: Record<string, string> = {
   QUIZ: 'اختبار قصير', MIDTERM: 'نصفي', FINAL: 'نهائي', PRACTICE: 'تدريبي',
@@ -342,6 +345,17 @@ export default function OnlineExamsPage() {
   );
 }
 
+/* r305-c (Heron): the list's attempt/window states render as the shared
+ * .r305s-chip register — tone rides the DOT, the honest words stay the
+ * chip body (never hue alone). This map projects the r164-e verdict
+ * colors onto the chip tones; the r164-e wire contract itself is
+ * untouched (attemptVerdictChip stays the one mapping). */
+const OEX_CHIP_TONE = {
+  green: 'r305s-chip--success',
+  amber: 'r305s-chip--warning',
+  red: 'r305s-chip--danger',
+} as const;
+
 function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
   const accent = KIND_COLOR[exam.kind] ?? 'var(--accent)';
   const ws = examWindowState(exam);
@@ -392,8 +406,13 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
           <span className="oex-row-chips">
             {exam.myAttempt?.status === 'IN_PROGRESS' && (
               /* «— متابعة» only while the attempt is actually resumable
-                  — a shut window strands the attempt server-side. */
-              <Badge color="amber">{ws === 'closed' ? 'محاولة قيد التقدم' : 'محاولة قيد التقدم — متابعة'}</Badge>
+                  — a shut window strands the attempt server-side. The
+                  in-flight state reads as the warning tone (time is
+                  burning) on the shared chip register. */
+              <span className="r305s-chip r305s-chip--warning">
+                <i className="r305s-chip-dot" aria-hidden />
+                {ws === 'closed' ? 'محاولة قيد التقدم' : 'محاولة قيد التقدم — متابعة'}
+              </span>
             )}
             {verdict && (
               /* r164-e: score + honest state in one chip. A SUBMITTED
@@ -401,23 +420,33 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
                   neutral awaiting label; EXPIRED carries no score (never
                   graded); GRADED carries the final verdict at full danger
                   weight on fail — the result screen's language. */
-              <Badge color={verdict.color}>
-                {verdict.score && <><bdi>{verdict.score.value} / {verdict.score.max}</bdi> · </>}
+              <span className={`r305s-chip ${OEX_CHIP_TONE[verdict.color]}`}>
+                <i className="r305s-chip-dot" aria-hidden />
+                {verdict.score && <><bdi className="font-mono">{verdict.score.value} / {verdict.score.max}</bdi> · </>}
                 {verdict.label}
-              </Badge>
+              </span>
             )}
-            {/* 6A6-finding-2 — the retake badge says what the score badge
+            {/* 6A6-finding-2 — the retake chip says what the score chip
                 cannot: a finished practice attempt is retakeable NOW. Open
                 window only — a shut window shows «أغلق باب التسليم» below,
                 and that is the truth for a retake too. */}
             {exam.kind === 'PRACTICE' && ws === 'open' && exam.myAttempt && exam.myAttempt.status !== 'IN_PROGRESS' && (
-              <Badge color="brand">تدريبي — إعادة المحاولة متاحة</Badge>
+              <span className="r305s-chip r305s-chip--info">
+                <i className="r305s-chip-dot" aria-hidden />
+                تدريبي — إعادة المحاولة متاحة
+              </span>
             )}
             {ws === 'upcoming' && exam.openAt && (
-              <Badge color="brand">يفتح {formatDateTimeAr(exam.openAt)}</Badge>
+              <span className="r305s-chip r305s-chip--info">
+                <i className="r305s-chip-dot" aria-hidden />
+                يفتح {formatDateTimeAr(exam.openAt)}
+              </span>
             )}
             {ws === 'closed' && (
-              <Badge>أغلق باب التسليم</Badge>
+              <span className="r305s-chip">
+                <i className="r305s-chip-dot" aria-hidden />
+                أغلق باب التسليم
+              </span>
             )}
           </span>
         )}
@@ -1336,7 +1365,7 @@ export function ExamTakerPage() {
                     textarea (aria-labelledby) and the choice group
                     (role=radiogroup), so a screen reader never meets an
                     unnamed graded input. */}
-                <div className="text-xxs text-subtle" id={`exam-q-${q.id}-num`}>
+                <div className="r305s-eyebrow" id={`exam-q-${q.id}-num`}>
                   {/* 22-c counted nouns — نقطة/نقطتان/N نقاط (the
                       نقطة/نقاط ternary broke 2 and never had an 11+
                       form; same grammar as the moderation rows). */}

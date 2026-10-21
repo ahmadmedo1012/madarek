@@ -13,6 +13,9 @@ import { useMatrix, useGaps } from '../../hooks/useResources';
 import { courseIcon, courseTint } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
 import { formatInt } from '../../utils/numbers';
+/* ── r305-c (schedule family) imports — the only region agent 2-c edits above the components ── */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-schedule.css';
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) live in
  * lib/courseMeta.ts (wave 9-a). */
@@ -61,6 +64,17 @@ const FILTER_LABEL: Record<Exclude<LevelFilter, 'all'>, string> = {
   'lvl-weak': 'يحتاج مراجعة',
   'lvl-poor': 'ضعف',
   'lvl-untouched': 'لم يُختبر',
+};
+
+/* r305-c (Heron): the cell's status renders as the shared chip register
+ * — tone on the DOT, the status word stays the body text (never hue
+ * alone; the r220 contract). Pure presentation map over MasteryClass. */
+const LEVEL_CHIP_TONE: Record<MasteryClass, string> = {
+  'lvl-strong': 'r305s-chip--success',
+  'lvl-good': 'r305s-chip--accent',
+  'lvl-weak': 'r305s-chip--warning',
+  'lvl-poor': 'r305s-chip--danger',
+  'lvl-untouched': '',
 };
 
 /** Arabic plural rules for concept counts (1 / dual / 3–10 / 11+). */
@@ -191,7 +205,7 @@ export default function MatrixPage() {
             {gaps.data.slice(0, 5).map((g) => (
               <RowItem
                 key={g.conceptId}
-                leading={<Icon icon={AlertCircle} size={16} className="text-warning-ink" />}
+                leading={<Icon icon={AlertCircle} size={16} style={{ color: 'var(--warning-ink)' }} />}
                 title={g.conceptName}
                 meta={<>{g.courseName} · <bdi className="font-mono">{formatInt(Math.round(g.level * 100))}%</bdi> الآن</>}
                 to={g.recommendedLectureId ? `/student/lectures/${g.recommendedLectureId}` : undefined}
@@ -338,7 +352,10 @@ export default function MatrixPage() {
                       <>
                         <div className="matrix-name">{k.name}</div>
                         <div className="matrix-meta">
-                          <span>{statusText}</span>
+                          <span className={`r305s-chip matrix-status-chip${LEVEL_CHIP_TONE[cls] ? ` ${LEVEL_CHIP_TONE[cls]}` : ''}`}>
+                            <i className="r305s-chip-dot" aria-hidden />
+                            {statusText}
+                          </span>
                           <span className="matrix-meta-pct">{pctText}</span>
                         </div>
                       </>

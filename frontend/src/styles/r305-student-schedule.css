@@ -1,0 +1,225 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R305-A5 · Heron design language, student SCHEDULE family
+   Agent 2-c · branch redesign/r305-student-c-schedule
+
+   Family sheet for the schedule/deadline surfaces:
+     §1  /student/calendar          (CalendarPage — month grid)
+     §2  /student/matrix            (MatrixPage — the mastery matrix)
+     §3  /student/schedule          (MorePages::SchedulePage — week rows)
+     §4  /student/results           (MorePages::ResultsPage — grades)
+     §5  /student/online-exams(+:id)(OnlineExamsPage + ExamTakerPage)
+
+   Heron translation (no token changes — every value rides the
+   r197/r303 ladders; the shared vocabulary lives in r305-student.css):
+   • Hairline-carried chrome — thin --surface-divider frames replace
+     shadow/lift elevation on the data surfaces; the grid reads as ONE
+     technical instrument, not a stack of cards.
+   • The ONE emphasized cell — today's calendar cell is the single
+     accent-washed cell of the month; everything else stays quiet ink.
+   • Micro-labels classify every block — eyebrows over the legend, the
+     summary band, and the taker's question header.
+   • Chips carry state — window/verdict/attempt states render as the
+     shared .r305s-chip register (tone on the DOT, honest words in the
+     body — never hue alone).
+   • ONE deep band where hierarchy earns it — the results summary strip
+     (theme-reactive by construction: the neutral ramp flips, and every
+     inner ink is re-derived toward the band's own fg pole, so AA holds
+     in both themes without per-theme rules).
+
+   Gate contract (enforced on this tree): colors var()/color-mix() only;
+   type/radius/spacing token ladder only; hover guarded behind
+   (hover:hover) and (pointer:fine); motion via --t-*/--motion-* only.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── §1 · /student/calendar — the quiet month instrument ─────────
+     student.css owns the calendar's base anatomy (r164-c) and its
+     a11y pins (out-of-month ink, pending mirror). This section lays
+     the Heron chrome OVER that anatomy without moving any pin:
+     hairline cell frames, the legend as chip register, today as the
+     ONE emphasized cell, and meta-row discipline on the event rows. */
+
+  /* The legend becomes the metadata register: one quiet chip per kind
+     (the kind dot keeps its data-kind tone from student.css). */
+  .cal-legend-item {
+    background: var(--surface-2);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--r-full);
+    padding: var(--sp-0-5) var(--sp-2-5);
+    font-weight: var(--fw-medium);
+    color: var(--text-secondary);
+  }
+  /* The eyebrow classifying the legend row (TSX renders the label). */
+  .cal-legend .r305s-eyebrow { margin-inline-end: var(--sp-1); }
+
+  /* Hairline grid chrome: every cell rides the technical frame instead
+     of floating; the selector keeps the same specificity as
+     student.css's transparent-border base (this sheet loads later). */
+  .cal-cell { border-color: var(--surface-divider); }
+
+  /* Weekend quiet (Libya: Friday + Saturday, dow 5/6 on the
+     WEEKDAY_NAMES_AR 0=Sunday contract) — an ink step, never opacity
+     (the r299 AA ruling). In-month only: out-of-month numerals are
+     already muted by the pinned student.css rule. The :not guard keeps
+     TODAY's numeral winning when the 1st-of-month math lands the
+     filled accent numeral on a weekend — today stays the ONE
+     emphasized cell (its specificity is lower than this rule's, so
+     without the guard the muted ink would swallow the accent fill). */
+  .cal-cell[data-in-month='true'][data-weekend='true']:not([data-today='true']) .cal-day-num {
+    color: var(--text-muted);
+    font-weight: var(--fw-regular);
+  }
+
+  /* Today = the ONE emphasized cell of the month: accent-soft wash +
+     copper edge (the numeral keeps its filled treatment). Selected
+     non-today cells keep student.css's surface-2 + accent border, so
+     the two states stay distinguishable at a glance. */
+  .cal-cell[data-today='true'] {
+    background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+    border-color: var(--accent);
+  }
+
+  /* The selected-day ledger: rows separated by hairlines (meta-row
+     discipline), the time in the mono metric voice, and a 44px touch
+     floor on every row (each row is the navigation affordance). */
+  .cal-event-row {
+    min-block-size: 44px;
+    border-block-end: 1px solid var(--surface-divider);
+    border-radius: 0;
+  }
+  .cal-event-row:last-child { border-block-end: 0; }
+  .cal-event-time {
+    font-family: var(--font-mono);
+    font-weight: var(--fw-medium);
+  }
+  /* The date head rides the kicker register: title + hairline as one
+     object (the count badge stays the trailing slot). */
+  .cal-detail-head::after {
+    content: "";
+    block-size: 1px;
+    flex: 1;
+    background: var(--surface-divider);
+  }
+
+  /* ── §2 · /student/matrix — the legible knowledge map ────────────
+     The r220/r168a contract (status word + tabular % per cell, ≥150px
+     cells, focusable cells, mobile recomposition) is untouched — this
+     section re-skins the chrome: hairline-carried course blocks, chip
+     statuses, and a quieter hover (data maps do not bounce). */
+
+  /* Course blocks: hairline frame, no elevation story. The old lift +
+     glow hover belongs to surfaces you ACT on; the matrix is a map. */
+  .matrix-course { border-color: var(--surface-divider); }
+  @media (hover: hover) and (pointer: fine) {
+    .matrix-course:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: var(--border-strong);
+    }
+  }
+
+  /* Cell statuses ride the shared chip register: tone on the dot, the
+     status WORD in the body, the tabular % beside it (TSX pairs
+     .r305s-chip with the level tone). The chip slims down inside the
+     dense cell so 150px tiles stay name-first. */
+  .matrix-cell .r305s-chip {
+    padding: 0 var(--sp-2);
+    background: transparent;
+    border: 0;
+  }
+  .matrix-meta { gap: var(--sp-1-5); }
+
+  /* Mobile recomposition (student.css §matrix) gains meta-row rhythm:
+     full-bleed hairline rows instead of floating tiles — the SAME
+     data (name + chip status + %) in the list register. */
+  @media (max-width: 640px) {
+    .matrix-cell {
+      border-radius: 0;
+      border-inline: 0;
+      padding-inline: 0;
+    }
+    .matrix-cell:first-child { border-block-start: 0; }
+  }
+
+  /* ── §3 · /student/schedule — the week ledger ────────────────────
+     Day sections already ride SectionHeader + RowList (the r299
+     contract). Heron adds the thin technical rule BETWEEN days and
+     the kicker hairline INSIDE each day header, so the week reads as
+     one ruled ledger instead of stacked boxes. */
+
+  .schedule-day .pf-section-header::after {
+    content: "";
+    block-size: 1px;
+    flex: 1;
+    align-self: center;
+    background: var(--surface-divider);
+  }
+  .schedule-day + .schedule-day {
+    border-block-start: 1px solid var(--surface-divider);
+    padding-block-start: var(--sp-4);
+  }
+
+  /* ── §4 · /student/results — the graded ledger ───────────────────
+     The page's ONE deep band: the summary strip. The pattern StatLine
+     keeps its anatomy and its canonical band tones (r164-a pins) —
+     the band re-derives the ink those tones RESOLVE to.
+
+     CASCADE NOTE (why tokens, not color overrides): patterns.css — the
+     StatLine owner — is UNLAYERED, and unlayered author styles beat
+     @layer pages at any specificity, so a `.results-summary .pf-stat…`
+     color rule here would silently lose to the pattern's own tone
+     rules (dead CSS; the canonical -ink inks are tuned for the page
+     paper, not for the inverted band). Scoped custom properties flip
+     the direction: the unlayered rules keep winning, but they now
+     resolve tokens inherited from the band's own fg pole (--neutral-0
+     flips with the theme, so one rule holds both — the foundation's
+     band-secondary recipe at label/hint strength). */
+  .results-summary {
+    --text: var(--neutral-0);
+    --text-muted: color-mix(in srgb, var(--neutral-0) 62%, var(--neutral-900));
+    --text-faint: color-mix(in srgb, var(--neutral-0) 55%, var(--neutral-900));
+    --success-ink: color-mix(in srgb, var(--success) 62%, var(--neutral-0));
+    --warning-ink: color-mix(in srgb, var(--warning) 62%, var(--neutral-0));
+    --danger-ink: color-mix(in srgb, var(--danger) 62%, var(--neutral-0));
+    --accent-ink: color-mix(in srgb, var(--accent) 62%, var(--neutral-0));
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-5);
+  }
+  /* Values ride the mono metric register (tabular-nums comes from the
+     pattern itself; nothing here competes with the pattern's rules). */
+  .results-summary .pf-stat-value { font-family: var(--font-mono); }
+
+  /* ── §5 · /student/online-exams — window chips + calm taker ──────
+     teacher-quality.css §5 owns the oex- anatomy and the attempt
+     lifecycle surfaces. This section only: the row kicker gains the
+     micro-label voice, and the status chips the list renders ride the
+     shared .r305s-chip register (TSX swaps Badge → chip with tone
+     dots; every text/aria contract is unchanged). */
+
+  .oex-row-kicker { font-weight: var(--fw-medium); }
+  .oex-row-chips .r305s-chip { max-inline-size: 100%; }
+
+  /* The taker's question header becomes the classified micro-label
+     («السؤال N من M · نقاط») — the eyebrow tick anchors each card. */
+  .oex-q-card .r305s-eyebrow { margin-block-end: var(--sp-1); }
+
+  /* ── §6 · Responsive + reduced-motion belt ─────────────────────── */
+
+  @media (max-width: 640px) {
+    .results-summary { padding: var(--sp-4); }
+    .cal-legend { gap: var(--sp-1-5) var(--sp-2); }
+  }
+
+  /* This sheet introduces no animation of its own — hover/focus ride
+     the shared system grammar (color/border steps only), and the
+     transitions it touches come from student.css/teacher-quality.css
+     (already reduced-motion aware). Kept as the explicit contract. */
+  @media (prefers-reduced-motion: reduce) {
+    .cal-event-row,
+    .matrix-course,
+    .matrix-cell { transition: none; }
+  }
+}

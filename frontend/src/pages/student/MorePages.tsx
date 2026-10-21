@@ -29,6 +29,9 @@ import { gradeBand, type GradeBandKey } from '../../lib/courseMeta';
 import { PageFrame, PageHeader as PatternPageHeader, SectionHeader, RowList, RowItem, StatLine } from '../../components/patterns';
 import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
 import { formatDate } from '../../utils/numbers';
+/* ── r305-c (schedule family) imports — the only region agent 2-c edits above the components ── */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-schedule.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
 
@@ -660,6 +663,10 @@ export function SchedulePage() {
     .map(([dow, items]) => ({ dow: Number(dow), items }))
     .filter((d) => d.items.length > 0);
 
+  /* r305-c (Heron): the header's meta line carries the week's real
+   * load — the counted slot total (honest data, never decoration). */
+  const totalSlots = daysWithItems.reduce((sum, d) => sum + d.items.length, 0);
+
   /* 22-c (A5 P3-6): the week rendered in a fixed 0–6 order regardless
      of the actual day. Anchor the rotation on TODAY (today's group
      first, then the coming days) and badge today's title. */
@@ -672,7 +679,13 @@ export function SchedulePage() {
 
   return (
     <PageFrame width="default">
-      <PatternPageHeader title="الجدول الدراسي" description="جدولك الأسبوعيّ مع أماكن المحاضرات." />
+      <PatternPageHeader
+        title="الجدول الدراسي"
+        description="جدولك الأسبوعيّ مع أماكن المحاضرات."
+        meta={totalSlots > 0
+          ? countAr(totalSlots, ['حصة واحدة أسبوعياً', 'حصتان أسبوعياً', 'حصص أسبوعياً', 'حصة أسبوعياً'])
+          : undefined}
+      />
 
       {daysWithItems.length === 0 ? (
         <EmptyState
@@ -687,7 +700,7 @@ export function SchedulePage() {
            row surface and its separators are the RowList's own). */
         <div className="flex-col gap-5">
           {orderedDays.map((d) => (
-            <section key={d.dow} aria-label={`جدول ${WEEKDAY_NAMES_AR[d.dow]}`}>
+            <section key={d.dow} className="schedule-day" aria-label={`جدول ${WEEKDAY_NAMES_AR[d.dow]}`}>
               <SectionHeader
                 title={
                   <>
@@ -739,14 +752,19 @@ export function ResultsPage() {
             measured +204px on the spinner→content swap). r299: the
             settled page leads with the StatLine + the chart card, so
             the mirror holds the stat line's own boxes + the chart
-            card's frame (the r172b loading-closure contract). */}
-        <div className="pf-statline" aria-busy="true">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="pf-stat">
-              <Skeleton width={70} height={13} />
-              <Skeleton width={56} height={24} />
-            </div>
-          ))}
+            card's frame (the r172b loading-closure contract).
+            r305-c: the mirror lives INSIDE the summary deep band — the
+            pending → resolved swap keeps the band's footprint. */}
+        <div className="r305s-band r305s-band--deep results-summary">
+          <p className="r305s-eyebrow">ملخّص الدرجات</p>
+          <div className="pf-statline" aria-busy="true">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="pf-stat">
+                <Skeleton width={70} height={13} />
+                <Skeleton width={56} height={24} />
+              </div>
+            ))}
+          </div>
         </div>
         <CardSkeleton lines={6} />
       </PageFrame>
@@ -803,8 +821,14 @@ export function ResultsPage() {
       {/* r299 (final C): the three headline KPI cards ride ONE StatLine —
           the same fact line the dashboard and the course page open
           with. The r164-a canonical grade band still colors each value
-          (tone is derived from the band, never re-invented here). */}
-      <StatLine
+          (tone is derived from the band, never re-invented here).
+          r305-c (Heron): the strip is the page's ONE deep band — the
+          theme-reactive inversion earns the hierarchy; the sheet
+          re-derives every inner ink toward the band's own fg pole so
+          the canonical tones stay AA in both themes. */}
+      <div className="r305s-band r305s-band--deep results-summary">
+        <p className="r305s-eyebrow">ملخّص الدرجات</p>
+        <StatLine
         items={[
           {
             label: 'أعلى درجة',
@@ -827,7 +851,8 @@ export function ResultsPage() {
             tone: d.headline.lowest ? bandTone(d.headline.lowest.gradePct) : 'neutral',
           },
         ]}
-      />
+        />
+      </div>
 
       {/* 5-A6 P2-9 — the chart card carries its own hook class: on phone
           (≤640px, student.css) it re-orders above the stacked KPI cards
