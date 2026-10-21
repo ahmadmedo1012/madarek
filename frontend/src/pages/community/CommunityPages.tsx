@@ -424,7 +424,9 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
               occupied a seat; the tooltip states exactly what the pair
               measures. */}
           <span title="الحضور المؤكّدون من إجمالي السعة">
-            <Icon icon={Users} size={11} /> <bdi>{e._count.rsvps} / {e.capacity}</bdi>
+            {/* r305 (2-c): عقد الأرقام — formatNum حصرًا (السعة حتى
+                10,000 تصل مجمّعة «1,000» لا خامًا). */}
+            <Icon icon={Users} size={11} /> <bdi>{formatNum(e._count.rsvps)} / {formatNum(e.capacity)}</bdi>
           </span>
         </span>
       }

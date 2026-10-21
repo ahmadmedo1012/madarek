@@ -97,12 +97,20 @@
     background var(--motion-duration-short) var(--motion-ease-standard),
     border-color var(--motion-duration-short) var(--motion-ease-standard),
     color var(--motion-duration-short) var(--motion-ease-standard);
-  /* generous touch target */
-  min-block-size: 36px;
+  /* r305: the platform's 44px touch floor (was 36px — a chip this
+     central to the gallery's only interaction sat under the canon
+     floor; the 7px/14px pill recipe inside .pf-filterbar got the same
+     lift via .comp-filter-pills). Padding keeps the 36px visual grade
+     at rest — the floor is met by block-size, not by inflating paint. */
+  min-block-size: 44px;
 }
-.gallery-chip:hover {
-  border-color: var(--rule-strong, var(--rule));
-  color: var(--text);
+/* r305 hover belt (r283 parity): the hover wash behind the fine-pointer
+   guard only — a touch tap must not paint a sticky hover state. */
+@media (hover: hover) and (pointer: fine) {
+  .gallery-chip:hover {
+    border-color: var(--rule-strong, var(--rule));
+    color: var(--text);
+  }
 }
 .gallery-chip.gallery-chip-on,
 .gallery-chip[aria-selected="true"] {
@@ -138,8 +146,12 @@
   cursor: pointer;
   border-radius: var(--r-sm);
   transition: color var(--motion-duration-short) var(--motion-ease-standard);
+  /* r305: 44px floor — the reset control sat beside 44px chips. */
+  min-block-size: 44px;
 }
-.gallery-clear:hover { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .gallery-clear:hover { color: var(--text); }
+}
 
 /* ═══════════════════════════════════════════════════════════════
    Guest funnel chrome (5-A12 P1-2) — the ONLY auth affordances on
@@ -224,21 +236,51 @@
   border-inline-start: 1px solid var(--college-accent, var(--rule));
 }
 
-/* Gallery-shaped skeleton: campus header + grid placeholder. */
+/* Gallery-shaped skeleton (r305 re-anatomy): the gallery renders
+   campus sections of ROWS (r264 RowList recomposition) — the old card
+   grid placeholder previewed an anatomy the page no longer has. The
+   placeholder now mirrors the real scan: one title bar per campus + a
+   bordered .pf-rowlist-shaped stack of list-row bars. */
 .gallery-skeleton-section {
-  margin-block: var(--sp-7);
+  margin-block: var(--sp-5) 0;
 }
 .gallery-skeleton-section .gallery-skeleton-title {
   inline-size: 160px;
   block-size: 22px;
   border-radius: var(--r-sm);
-  margin-block-end: var(--sp-4);
+  margin-block-end: var(--sp-3);
 }
-.gallery-skeleton-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--sp-4);
+.gallery-skeleton-rows {
+  border: 1px solid var(--surface-divider);
+  border-radius: var(--r-md);
+  overflow: hidden;
 }
+.gallery-skeleton-rows .skeleton {
+  display: block;
+}
+.gallery-skeleton-rows > * + * {
+  border-block-start: 1px solid var(--surface-divider);
+}
+.gallery-skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+}
+.gallery-skeleton-row-emoji {
+  inline-size: 24px;
+  block-size: 24px;
+  border-radius: var(--r-sm);
+  flex: 0 0 auto;
+}
+.gallery-skeleton-row-lines {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.gallery-skeleton-row-line-a { inline-size: 32%; block-size: 14px; border-radius: var(--r-sm); }
+.gallery-skeleton-row-line-b { inline-size: 55%; block-size: 11px; border-radius: var(--r-sm); }
 
 /* Mobile: stack cards single-column, sticky toolbar with backdrop blur. */
 /* r152i (A3): 767→768 — off-by-one vs the 768 family used by the same
@@ -368,10 +410,16 @@
   margin-block-end: var(--sp-1);
 }
 .college-hero-name {
-  font-size: var(--type-headline-size-lg);
-  font-weight: var(--type-headline-weight);
-  line-height: var(--type-headline-line-height);
-  letter-spacing: var(--type-headline-letter-spacing);
+  /* r305: the detail hero joins the product type register — the 24px
+     display voice every framed page opens with (.pf-page-title,
+     .comp-hero-title), not the dashboard 30px slab. The college hero
+     shares its column with the StatStrip and eight section cards; the
+     identity accent on the masthead stripe already leads the eye. */
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+  letter-spacing: 0;
   color: var(--text);
   margin: 0;
 }
@@ -470,7 +518,10 @@
   border-radius: var(--r-sm);
   transition: background var(--t-fast) var(--ease);
 }
-.student-rank-row:hover { background: var(--surface-2); }
+/* r305 hover belt (r283 parity): the wash guard. */
+@media (hover: hover) and (pointer: fine) {
+  .student-rank-row:hover { background: var(--surface-2); }
+}
 .student-rank-num {
   display: inline-flex;
   align-items: center;
@@ -693,7 +744,11 @@ a.comp-card:focus-visible .comp-go {
   text-align: start;
   padding: var(--sp-3);
   background: var(--surface-2);
-  color: var(--text-muted);
+  /* r305 ink lift (r304 chrome-ink precedent): --text-muted measured
+     3.1–3.35:1 on the surface-2 header ground at 12px — the same axe
+     finding the nav-badge/scope-chip lifts fixed in the shell. The
+     header labels are data chrome, not de-emphasized prose. */
+  color: var(--text-secondary);
   font-weight: var(--fw-semibold);
   font-size: var(--fs-xs);
   border-block-end: 1px solid var(--border);
@@ -717,13 +772,23 @@ a.comp-card:focus-visible .comp-go {
   border-radius: var(--r-sm);
   transition: color var(--t-fast) var(--ease);
 }
-.leaderboard-sort:hover { color: var(--text); }
+/* r305 hover belt: sort buttons are controls; their hover darkening is
+   meaningless on touch and sticks after a tap — fine-pointer only. */
+@media (hover: hover) and (pointer: fine) {
+  .leaderboard-sort:hover { color: var(--text); }
+  .leaderboard-sort:hover .leaderboard-sort-on { color: var(--accent-strong); }
+}
 .leaderboard-sort-on { color: var(--accent-strong); }
-.leaderboard-sort:hover .leaderboard-sort-on { color: var(--accent-strong); }
 .leaderboard-table tbody td {
   padding: var(--sp-3);
   border-block-end: 1px solid var(--border);
   vertical-align: middle;
+}
+/* r305: zebra-on-hover parity with the shared .table grammar — a quiet
+   surface-2 wash marks the scanned row (hover shift, not static
+   stripes); guarded for fine pointers per the r283 belt. */
+@media (hover: hover) and (pointer: fine) {
+  .leaderboard-table tbody tr:hover { background: var(--surface-2); }
 }
 .leaderboard-th {
   display: inline-flex;
@@ -739,7 +804,10 @@ a.comp-card:focus-visible .comp-go {
   color: inherit;
   transition: color var(--t-fast) var(--ease);
 }
-.leaderboard-college-link:hover .leaderboard-college-name { color: var(--accent-ink, var(--accent)); }
+/* r305 hover belt: the name-tint hover, fine-pointer only. */
+@media (hover: hover) and (pointer: fine) {
+  .leaderboard-college-link:hover .leaderboard-college-name { color: var(--accent-ink, var(--accent)); }
+}
 .leaderboard-emoji {
   font-size: 24px;
   width: 36px;
@@ -797,6 +865,23 @@ a.comp-card:focus-visible .comp-go {
 /* ═══════════════════════════════════════════════════════════════
    Competitions (Phase 6) — index, detail, modals
    ═══════════════════════════════════════════════════════════════ */
+
+/* r305: 44px touch floor for the index FilterBar's status pills — the
+   shared .pill recipe is a ~31px display chip (7/14 padding, 13px);
+   inside the competitions FilterBar they are the page's primary filter
+   controls. Scoped to this page's group (the class rides the filters
+   slot in CompetitionsPages), so community/feed pills keep their
+   compact grade (components.css lifts .feed-toolbar pills the same
+   way). */
+.comp-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.comp-filter-pills .pill {
+  min-block-size: 44px;
+}
 
 /* (G dead-code sweep): the .comp-index-* anatomy retired with the r263
    row recomposition — the competitions index renders RowItem rows
@@ -857,9 +942,15 @@ a.comp-card:focus-visible .comp-go {
   line-height: 1.2;
 }
 .comp-hero-desc {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
+  /* r305: the hero description is the detail page's body voice — 16px
+     on the shared body register (matches .pf-page-desc), not 13px
+     muted chrome. The white-space: pre-wrap multi-paragraph briefs
+     keep their authored line structure. */
+  font-size: var(--fs-body);
+  line-height: var(--lh-base);
+  color: var(--text-secondary);
   margin: 0;
+  max-inline-size: 72ch;
   white-space: pre-wrap;
 }
 .comp-hero-stats {
@@ -867,8 +958,8 @@ a.comp-card:focus-visible .comp-go {
   flex-wrap: wrap;
   gap: var(--sp-3);
   margin-block-start: var(--sp-2);
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
 }
 .comp-hero-stats > div {
   display: inline-flex;
@@ -972,8 +1063,16 @@ a.comp-card:focus-visible .comp-go {
   padding: var(--sp-2);
   border-radius: var(--r-sm);
   transition: background var(--t-fast) var(--ease);
+  /* r305: 44px hit floor for the modal's dismiss control (was a 32px
+     glyph well — under the platform floor with no compensating
+     padding). */
+  min-block-size: 44px;
+  min-inline-size: 44px;
 }
-.comp-modal-close:hover { background: var(--surface-2); color: var(--text); }
+/* r305 hover belt: the close-well wash, fine-pointer only. */
+@media (hover: hover) and (pointer: fine) {
+  .comp-modal-close:hover { background: var(--surface-2); color: var(--text); }
+}
 .comp-modal-form {
   /* r149 (R3-A2 R5): ‎24px كإيقاع ‎.modal-body الكنوني (كان 20). */
   padding: var(--sp-6);
@@ -998,8 +1097,11 @@ a.comp-card:focus-visible .comp-go {
   gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
 }
 .comp-icon-btn {
-  width: 36px;
-  height: 36px;
+  /* r305: 44px touch floor (was 36px — the picker is a primary
+     expressive control on phones, and the row wraps at the filter
+     rung anyway). */
+  width: 44px;
+  height: 44px;
   border-radius: var(--r-sm);
   background: var(--surface-2);
   border: 1px solid var(--border);
@@ -1010,15 +1112,19 @@ a.comp-card:focus-visible .comp-go {
 }
 .comp-icon-btn:hover { border-color: var(--accent); }
 /* r297 (polish v18 fold): the overlay micro-interactions — the close
-   glyph rotates on hover, the head icon buttons breathe. */
+   glyph rotates on hover, the head icon buttons breathe. r305: both
+   transforms are hover-capable-gated (r283 belt parity) — on touch
+   the rotate/scale used to stick after the first tap. */
 .comp-modal-close {
   transition:
     background var(--motion-duration-short) var(--ease),
     color var(--motion-duration-short) var(--ease),
     transform var(--motion-duration-short) var(--ease);
 }
-.comp-modal-close:hover {
-  transform: rotate(90deg);
+@media (hover: hover) and (pointer: fine) {
+  .comp-modal-close:hover {
+    transform: rotate(90deg);
+  }
 }
 .comp-icon-btn {
   transition:
@@ -1026,8 +1132,10 @@ a.comp-card:focus-visible .comp-go {
     border-color var(--motion-duration-short) var(--ease),
     transform var(--motion-duration-short) var(--ease-spring-soft);
 }
-.comp-icon-btn:hover {
-  transform: scale(1.1);
+@media (hover: hover) and (pointer: fine) {
+  .comp-icon-btn:hover {
+    transform: scale(1.1);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .comp-modal-close:hover {

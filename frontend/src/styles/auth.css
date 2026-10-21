@@ -29,6 +29,14 @@
    · .auth-field / .auth-error / .auth-field-error / .auth-row /
      .auth-form-summary / .auth-select-skeleton keep their contracts.
    · The card rise-in entrance (madarek-auth-card-in) stays local.
+   r305 (2-a) additions — honest-state completion, no contract churn:
+   · the ambiguity lookup's failure state reuses .auth-error /
+     .auth-retry-link (the register institution field's exact grammar);
+   · .auth-dept-empty is now the auth family's honest-EMPTY recipe for
+     both lookups (departments r157 F5 + institutions r305) — same
+     class, same visual language, name kept for the pinned contract;
+   · .nf-eyebrow joins §7 — the error scene's visible code marker,
+     sharing the auth-meta guest-surface eyebrow recipe.
    ════════════════════════════════════════════════════════════════════ */
 
 @layer pages {
@@ -414,7 +422,10 @@
   /* r157 F5 (finding 1): honest NO_DEPARTMENTS state — 21 of 25 live
      faculties ship zero departments; the dead select promised a choice
      that doesn't exist. Dashed hairline ("empty, not an error"), the
-     48px select floor, and the quiet ink of the page's empty states. */
+     48px select floor, and the quiet ink of the page's empty states.
+     r305 (2-a): this is the auth family's honest-empty recipe for BOTH
+     lookups now — the register institution field reuses the same class
+     for a ready-but-empty listing (audit 0-b P0-4 contract). */
   .auth-dept-empty {
     display: flex;
     align-items: center;
@@ -781,6 +792,23 @@
   .nf-illustration .illustration > svg {
     inline-size: 100%;
     block-size: auto;
+  }
+
+  /* r305 (2-a): the error scene's typographic eyebrow — the visible
+     «خطأ 404» code marker over the title (code → title → explanation →
+     actions). Same quiet-sans eyebrow recipe as the auth-meta rule: one
+     guest-surface eyebrow grammar, muted ink, zero tracking. The AT
+     carrier stays the sr-only span in NotFoundPage.tsx — this run is
+     aria-hidden there (the bento decorative code-badge precedent).
+     No motion, no color beyond the muted ink — the ::after wash above
+     is the scene's whole ambience. */
+  .nf-eyebrow {
+    font-family: var(--font-sans);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-snug);
+    letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
+    color: var(--text-muted);
   }
 
   .nf-title {

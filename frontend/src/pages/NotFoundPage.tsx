@@ -30,6 +30,13 @@ export default function NotFoundPage() {
         {/* The error code for assistive tech — the illustration carries
             it visually, the title carries the meaning. */}
         <span className="sr-only">خطأ 404.</span>
+        {/* r305 (2-a): the visible code marker — the error scene's
+            typographic eyebrow (code → title → explanation → actions,
+            the .auth-meta guest-surface grammar). Purely decorative in
+            the a11y sense: the sr-only span above is the AT carrier,
+            so the visible run is aria-hidden (the bento code-badge
+            precedent) and never announced twice. */}
+        <span className="nf-eyebrow" aria-hidden="true">خطأ 404</span>
         <h1 className="nf-title">هذه الصفحة تغيّبت عن الحضور</h1>
         <p className="nf-sub">
           الرابط الذي فتحته لا يطابق أيّ صفحة في مدارك — ربّما تغيّر عنوانها أو وُرِد
