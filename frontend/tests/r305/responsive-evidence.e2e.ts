@@ -11,6 +11,11 @@
  * committed (the audits/evidence precedent). Each capture asserts the
  * route's Arabic content BEFORE shooting — no splash/blank frames in
  * the evidence set.
+ *
+ * Capture is OPT-IN: the writes only happen with R305_EVIDENCE=1.
+ * A plain `npm run test:r305` asserts the same content but never
+ * rewrites the committed PNGs — a test run must never dirty the
+ * working tree (reviewer finding, r305 task 5).
  */
 import { test, expect } from './fixtures/qa';
 
@@ -27,6 +32,9 @@ const SHOT_OPTIONS = {
   caret: 'hide' as const,
 };
 
+/** Opt-in evidence capture — committed PNGs are refreshed only on demand. */
+const CAPTURE = process.env.R305_EVIDENCE === '1';
+
 test.describe('أدلة الاستجابة — أسطح الزائر', () => {
   for (const vp of EVIDENCE_VIEWPORTS) {
     test.describe(`عرض ${vp.name}`, () => {
@@ -36,27 +44,27 @@ test.describe('أدلة الاستجابة — أسطح الزائر', () => {
         await page.goto('/auth');
         await expect(page.locator('h1.auth-form-title')).toHaveText('مرحباً بعودتك');
         await page.screenshot({
-          path: `tests/r305/__evidence__/auth-${vp.name}.png`,
+          ...(CAPTURE ? { path: `tests/r305/__evidence__/auth-${vp.name}.png` } : {}),
           ...SHOT_OPTIONS,
-        });
+          });
       });
 
       test(`/404 — ${vp.name}`, async ({ page }) => {
         await page.goto('/404');
         await expect(page.locator('.nf-title')).toHaveText('هذه الصفحة تغيّبت عن الحضور');
         await page.screenshot({
-          path: `tests/r305/__evidence__/404-${vp.name}.png`,
+          ...(CAPTURE ? { path: `tests/r305/__evidence__/404-${vp.name}.png` } : {}),
           ...SHOT_OPTIONS,
-        });
+          });
       });
 
       test(`/colleges — ${vp.name}`, async ({ page }) => {
         await page.goto('/colleges');
         await expect(page.getByRole('group', { name: 'كلّيّات حرم المعرفة' })).toBeVisible();
         await page.screenshot({
-          path: `tests/r305/__evidence__/colleges-${vp.name}.png`,
+          ...(CAPTURE ? { path: `tests/r305/__evidence__/colleges-${vp.name}.png` } : {}),
           ...SHOT_OPTIONS,
-        });
+          });
       });
     });
   }
@@ -72,9 +80,9 @@ test.describe('أدلة الاستجابة — سطح الطالب داخل ال
         await expect(page.getByRole('heading', { level: 1, name: 'التطوير الذاتي' })).toBeVisible();
         await expect(page.locator('.pf-rowlist')).toContainText('إتقان البحث العلمي');
         await page.screenshot({
-          path: `tests/r305/__evidence__/training-${vp.name}.png`,
+          ...(CAPTURE ? { path: `tests/r305/__evidence__/training-${vp.name}.png` } : {}),
           ...SHOT_OPTIONS,
-        });
+          });
       });
     });
   }

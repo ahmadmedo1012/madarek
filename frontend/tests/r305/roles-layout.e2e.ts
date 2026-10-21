@@ -57,7 +57,7 @@ test.describe('الزائر — الأسطح العامة', () => {
     await expect(page.getByRole('link', { name: 'العودة إلى الصفحة الرئيسية' })).toBeVisible();
     await expect(page.locator('main#main')).toBeVisible();
     // The public gallery renders REAL payload rows (mock /colleges),
-    // grouped per city — the mock rows all ride «الزاوية».
+    // grouped per canonical campus — the mock rows all ride «حرم المعرفة».
     await expect(page.locator('h1.pf-page-title')).toContainText('جامعة مدارك التجريبية');
     const zawiaGroup = page.getByRole('group', { name: 'كلّيّات حرم المعرفة' });
     await expect(zawiaGroup).toBeVisible();

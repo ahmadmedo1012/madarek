@@ -14,6 +14,10 @@ Isolated Playwright area for `redesign/r305-heron-auth-public-qa` (R305-A9).
   loading/empty/error behavior, representative responsive screenshots
   (1440×1000, 768×1024, 390×844, 360×800, 320px).
 
+Evidence: `responsive-evidence.e2e.ts` refreshes the committed PNGs
+only with `R305_EVIDENCE=1 npx playwright test tests/r305/responsive-evidence.e2e.ts`
+(a plain run asserts content but never rewrites the tracked binaries).
+
 R305-A9 contract: do not rebaseline `tests/audit/surface-baseline.json`
 from here; do not weaken existing gates. Obsolete assertions are
 reported, never silently re-pinned.
