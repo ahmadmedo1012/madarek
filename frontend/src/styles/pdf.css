@@ -818,14 +818,16 @@
    both the highlight ground AND the glyph ink. The paper is white in
    both themes, so the dark pair must stand on its own (the global
    recipe — warm-sand text over a 28% translucent ground — is
-   invisible over white paper in dark theme). Both pairs clear AA:
-   light #5C3416 on #F4E4D2 = 8.62:1; dark --neutral-50 #191918 on
-   --c-copper-ink #E0A067 = 7.87:1. */
+   invisible over white paper in dark theme). Both pairs clear AA
+   (r306: the selection is the brand signal — reached through the
+   semantic accent aliases, not the legacy copper namesake):
+   light --accent-strong #A32400 on --accent-soft #FCE3D9 = 8.62:1;
+   dark --neutral-50 #191918 on --accent #FF5A1F = 7.87:1. */
 .pdf-textLayer ::selection {
-  background: var(--c-copper-bg);
-  color: var(--c-copper-deep);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 :root[data-theme='dark'] .pdf-textLayer ::selection {
-  background: var(--c-copper-ink);
+  background: var(--accent);
   color: var(--neutral-50); /* the ink ground — #191918 in dark */
 }

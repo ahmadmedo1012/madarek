@@ -318,12 +318,9 @@
     /* both-theme soft gold ground (theme blocks remap --c-yellow-bg) */
     --gold-soft: var(--c-yellow-bg);
 
-    /* ─── r197 homepage poster namespace (stage-2 contract) ──
-       Theme-reactive aliases — the full contract lives on tokens.css;
-       mirrored here so the export stays faithful. */
-    --poster-paper:  var(--bg);
-    --poster-ink:    var(--text);
-    --poster-signal: var(--accent);
+    /* ─── r306 — the poster namespace is RETIRED with the landing
+       rebuild; the export pair mirrors tokens.css exactly (no
+       --poster-* aliases remain on either side). */
   }
 
   /* RTL flips the direction multiplier so logical motion expressions

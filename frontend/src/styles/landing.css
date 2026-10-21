@@ -1,111 +1,115 @@
 /* ════════════════════════════════════════════════════════════════════
-   مدارك — LANDING (r304) · «ملصق مدارك» — the OPTIKKA editorial
-   reconstruction
+   مدارك — LANDING (r306) · «لوحة مدارك» — the Heron-only drawing
+   sheet
    ════════════════════════════════════════════════════════════════════
-   r304 rebuilds the COMPOSITION around the persistent world (r303's
-   conductor + canvas stay untouched). The page now behaves like an
-   art-directed editorial sequence, not a document with a background
-   object: every act reserves its intentional empty-space zone so the
-   sculpture NEVER simply washes across content —
+   r306 recomposes the landing page in the single canonical visual
+   system (docs/redesign/r306-heron-exclusivity-spec.md — the measured
+   reference grammar of heronaiapp.com, adapted for an Arabic-first
+   RTL educational platform). The r304 editorial poster is retired
+   with this sheet: no persistent 3D world, no OPTIKKA spreads, no
+   copper climax, no --poster-* namespace, no giant wordmark.
 
-     hero      the knot holds the center under the dotted drafting
-               grid; the word anchors bottom-reading-end, the statement
-               bottom-reading-start (OPTIKKA's sparse open, mirrored)
-     statement an editorial spread — copy owns the reading-start
-               column, the reading-end third stays open (the conductor
-               drifts the knot there)
-     chapters  numbered spreads; the interface fragments are elevated
-               opaque surfaces so the slow camera sweep reads as depth
-               BEHIND the proof, never through it
-     live      THE COPPER CLIMAX — the inverted ledger slab (ink on
-               paper / paper on night) holds the reading-start column,
-               and an annotated empty window hands the reading-end
-               third to the conductor's copper close-up (emissive 0.95)
-     roles     the wide-pullback index — full airy hairline rows over
-               the knot on the horizon
-     colleges  the knot lands behind the panel column; the elevated
-               panel + chip row own the reading start, the ghost count
-               floats in the open reading-end third
-     vision    THE PASSAGE — the composition steps back: one centered
-               statement, tall negative space, then the honest pairs
-     cta       the resolve — centered, emissive peaking behind
-     footer    colophon + the giant wordmark rush (--sp, geometry only)
+   The sheet's grammar —
+     · paper ground (--bg) with graphite ink (--text) and hairlines
+       (--grid-line / --border / --rule); ONE orange signal, routed
+       through the text-safe ink tier (--accent-ink) for copy and the
+       raw accent only for large marks/fills per the fill register;
+     · mono bracketed indices ([01]…), coordinates and metadata rows
+       (the drafting-sheet identity) — Latin micro-labels, dir=ltr,
+       tabular digits only, never below the 13px Arabic floor in
+       reading copy;
+     · near-square corners (--r-xs..--r-lg — the reference renders 0;
+       Madarek keeps the hairline-crisp rungs);
+     · hairline-framed sections and FLAT interface fragments — no
+       elevation on the proof surfaces, the depth IS the paper step;
+     · block-level reveals only (RevealCssClass), the imperative
+       scroll chrome (.scrolled + --p), and NOTHING that moves when
+       reduced-motion is set.
 
    Discipline (gates): zero raw colors (tokens + color-mix only) ·
-   radii via --r-* · spacing via the --sp-* ladder (the sheet stays in
-   the visible census) · font sizes on the type ladder except the two
-   authored poster displays (hero word / footer wordmark) and the
-   colleges ghost count, each commented · zero :focus-visible rules
-   (base.css owns focus) · hover washes guarded behind
-   (hover:hover) and (pointer:fine) · exactly one [data-theme="dark"]
-   .landing block · the RM block covers every mover + the reveals.
+   radii via --r-* · spacing via the --sp-* ladder (full enforcement
+   since r198 — every literal carries a documented allow or a token) ·
+   font sizes on the type ladder (landing rides the TYPE_RADIUS_EXTRA
+   exemption for the SVG micro-labels; the reading copy stays on the
+   ladder) · zero :focus-visible rules (base.css owns focus) · hover
+   washes guarded behind (hover:hover) and (pointer:fine) · exactly
+   one [data-theme="dark"] .landing block · the RM belt covers every
+   mover + the reveals · zero @keyframes.
    ════════════════════════════════════════════════════════════════════ */
 
 .landing {
-  background: var(--poster-paper);
-  color: var(--poster-ink);
+  background: var(--bg);
+  color: var(--text);
   overflow-x: clip;
   font-family: var(--font-sans);
 }
 
-/* ── The persistent world — one fixed canvas behind the whole page ── */
-.world-layer {
+/* ── The sheet frame — fixed corner registration marks + mono
+ * coordinates (the drawing-sheet identity). Decorative only:
+ * pointer-transparent, aria-hidden in the markup, desktop-only (the
+ * reference drops its drafting chrome ≤991 — small screens get the
+ * content). */
+.sheet-frame {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 50;
   pointer-events: none;
+  display: none;
 }
 
-.world-layer canvas {
+.sheet-mark {
   position: absolute;
-  inset: 0;
-  display: block;
+  color: var(--grid-line);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1;
 }
 
-.world-poster {
+.sheet-mark-tl { inset-block-start: var(--sp-1-5); inset-inline-start: var(--sp-1-5); }
+.sheet-mark-tr { inset-block-start: var(--sp-1-5); inset-inline-end: var(--sp-1-5); }
+.sheet-mark-bl { inset-block-end: var(--sp-1-5); inset-inline-start: var(--sp-1-5); }
+.sheet-mark-br { inset-block-end: var(--sp-1-5); inset-inline-end: var(--sp-1-5); }
+
+.sheet-coord {
   position: absolute;
-  inset-block-start: 6%;
-  inset-inline: 0;
-  margin-inline: auto; /* direction-safe centering (RTL + LTR) */
-  inline-size: min(46vw, 560px);
-  aspect-ratio: 1;
-  opacity: 0.55;
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0;
 }
 
-/* Sections + header + footer stack above the world layer. */
-.fo-header,
-main,
-.fo-progress,
-.fo-footer {
-  position: relative;
-  z-index: 1;
-}
+.sheet-coord-ts { inset-block-start: var(--sp-1-5); inset-inline-start: var(--sp-9); }
+.sheet-coord-be { inset-block-end: var(--sp-1-5); inset-inline-end: var(--sp-9); }
 
-.fo-header { position: sticky; }
-.fo-progress { position: fixed; }
-
-/* ── The poster measure — every top-level band shares it ──────────── */
+/* ── The sheet measure — every top-level band shares it ──────────── */
 .fo-header-inner,
-.fo-hero-layer,
+.fo-hero-copy,
+.fo-hero-fig,
+.fo-hero-meta,
 .st-section,
 .chapters,
-.lv-grid,
+.lv-section,
 .rl-section,
 .cg-section,
 .vs-section,
 .fo-cta,
 .fo-footer-inner {
-  max-inline-size: 1240px;
+  max-inline-size: 1160px;
   margin-inline: auto;
   padding-inline: var(--sp-6);
 }
 
-/* ── Section labels — the quiet editorial eyebrow: a short drafting
- * rule, then the label. Never mono (mono is for numerals only). ──── */
+/* Sections + header stack over the plain paper (no world layer —
+ * the sheet IS the ground). */
+.fo-header { position: sticky; }
+.fo-progress { position: fixed; }
+
+/* ── Section labels — the drafting eyebrow: the mono bracketed index
+ * beside the Arabic label. The index is Latin/technical (dir=ltr,
+ * tabular); the label never drops below the 13px floor. ──── */
 .fo-label {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-3);
+  gap: var(--sp-2-5);
   font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--text-muted);
@@ -113,9 +117,14 @@ main,
 
 .fo-label::before {
   content: '';
-  inline-size: var(--sp-6);
+  inline-size: var(--sp-5);
   block-size: 1px;
-  background: color-mix(in srgb, var(--poster-signal) 55%, transparent);
+  background: var(--rule-strong);
+}
+
+.fo-label .fo-mono {
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
 }
 
 .fo-mono {
@@ -124,137 +133,67 @@ main,
   font-variant-numeric: tabular-nums;
 }
 
-/* ── The paper veil — the r304 masking device ────────────────────────────
- * The world canvas sits behind the whole story, and the conductor parks
- * the knot in a different third per chapter. Wherever authored copy can
- * cross the sculpture, a soft radial of the poster paper fades the knot
- * OUT under the text — depth-of-field haze, not a panel: on clear paper
- * the veil is invisible (paper on paper), and over the knot it reads as
- * atmosphere. This is how the copy stays AA-clean without ever boxing
- * the object away: stacking + masking, never a wash across content.
- * The ::before drops behind the block's text but stays inside main's
- * stacking context (main owns z-index: 1) — always above the canvas. */
-.fo-hero-copy,
-.fo-hero-aside,
-.st-spread,
-.chapters-head,
-.ch-head,
-.rl-head,
-.rl-strip,
-.cg-head,
-.cg-panel-wrap,
-.vs-head,
-.fo-cta-inner {
-  position: relative;
-}
-
-.fo-hero-copy::before,
-.fo-hero-aside::before,
-.st-spread::before,
-.chapters-head::before,
-.ch-head::before,
-.rl-head::before,
-.rl-strip::before,
-.cg-head::before,
-.cg-panel-wrap::before,
-.vs-head::before,
-.fo-cta-inner::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset: calc(var(--sp-8) * -1);
-  background: radial-gradient(
-    64% 60% at 50% 50%,
-    color-mix(in srgb, var(--poster-paper) 90%, transparent) 30%,
-    transparent 92%
-  );
-  pointer-events: none;
-}
-
-/* ── Signal emphasis — the ONE accent, reused everywhere. Dark theme:
- * the poster signal re-points to the light signal tier — text,
- * numerals, links and the registry numeral invert with the ground.
- * CTA FILLS stay on the app recipes (the r197 fills contract). This
- * is the stage-2 divergence the --poster-* namespace was designed
- * for. */
-.fo-hero-triad em,
-.chapters-title em,
-.rl-title em,
-.vs-title em,
-.fo-cta-title em {
-  font-style: normal;
-  color: var(--poster-signal);
-}
-
-/* Dark theme: the poster signal re-points to the night accent — text,
- * numerals, links invert with the ground. CTA FILLS stay on the app
- * recipes (white labels on the night fill). The stage-2 divergence
- * the --poster-* namespace was designed for. */
-[data-theme="dark"] .landing {
-  --poster-signal: var(--accent);
-}
-
-/* ── Skip link (r172a §2 pin: accent pair, app recipes own nothing here) */
+/* ── Skip link (r172a §2 pin: the canonical accent pair — background
+ * --accent + --accent-fg label; the reveal rides :focus so the sheet
+ * keeps ZERO :focus-visible rules — base.css owns focus rings). */
 .fo-skip-link {
   position: fixed;
   inset-block-start: var(--sp-2);
   inset-inline-start: var(--sp-2);
   z-index: 100;
-  padding: var(--sp-2) var(--sp-4);
-  border-radius: var(--r-sm);
+  padding: var(--sp-2-5) var(--sp-4);
   background: var(--accent);
   color: var(--accent-fg);
+  border-radius: var(--r-xs);
   font-size: var(--fs-sm);
   font-weight: 600;
   text-decoration: none;
-  transform: translateY(calc(-100% - var(--sp-2)));
+  transform: translateY(-160%);
+  transition: transform var(--t-fast) var(--ease);
 }
 
 .fo-skip-link:focus {
-  transform: none;
+  transform: translateY(0);
 }
 
-/* ── Scroll-progress ribbon (r172 zero-setState: --p written imperatively) */
+/* ── Scroll-progress ribbon (r172 zero-setState: --p written imperatively)
+ * The bar consumes --p via transform (GPU-composited) and paints the
+ * canonical signal. */
 .fo-progress {
-  position: fixed;
   inset-block-start: 0;
   inset-inline: 0;
   z-index: 80;
-  block-size: var(--sp-0-5);
+  block-size: 2px;
   pointer-events: none;
 }
 
 .fo-progress-bar {
+  inline-size: 100%;
   block-size: 100%;
-  background: var(--accent);
   transform: scaleX(var(--p, 0));
-  transform-origin: right center;
+  transform-origin: inline-start;
+  background: var(--accent);
 }
 
-/* ── Masthead ──────────────────────────────────────────────────────── */
+/* ── Masthead — the 56px hairline bar ─────────────────────────────── */
 .fo-header {
-  position: sticky;
   inset-block-start: 0;
   z-index: 60;
-  background: color-mix(in srgb, var(--poster-paper) 80%, transparent);
-  backdrop-filter: blur(12px);
-  border-block-end: 1px solid transparent;
-  transition: background var(--t-slow) var(--ease),
-              border-color var(--t-slow) var(--ease),
-              box-shadow var(--t-slow) var(--ease);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(10px);
+  border-block-end: 1px solid var(--grid-line);
+  transition: background var(--t-slow) var(--ease);
 }
 
 .fo-header.scrolled {
-  background: color-mix(in srgb, var(--poster-paper) 94%, transparent);
-  border-block-end-color: color-mix(in srgb, var(--poster-ink) 10%, transparent);
-  box-shadow: var(--elev-1);
+  background: color-mix(in srgb, var(--bg) 95%, transparent);
 }
 
 .fo-header-inner {
   display: flex;
   align-items: center;
   gap: var(--sp-5);
-  min-block-size: 68px;
+  min-block-size: 56px;
 }
 
 .fo-brand {
@@ -263,7 +202,7 @@ main,
   gap: var(--sp-2-5);
   min-block-size: 44px;
   text-decoration: none;
-  color: var(--poster-ink);
+  color: var(--text);
 }
 
 /* the wordmark stack: name over descriptor — the brand block the
@@ -288,20 +227,32 @@ main,
 
 .fo-nav {
   display: flex;
-  align-items: center;
-  gap: var(--sp-6);
+  align-items: stretch;
+  gap: var(--sp-2);
   margin-inline-start: auto;
 }
 
+/* the nav cell — the reference's grammar: a mono-grade link that
+ * washes to a solid charcoal cell with paper text on hover. The
+ * resting ink is the SOLID secondary tier (never an alpha wash —
+ * alpha over the backdrop-filtered, semi-transparent header bar
+ * composites unpredictably behind content and measured 4.36:1 in
+ * axe's dev scan; the solid tier holds ≥7:1 on every composite).
+ * The wash lives behind the guarded media query below (coarse
+ * pointers get the plain link). */
 .fo-nav-link {
   display: inline-flex;
   align-items: center;
+  padding-inline: var(--sp-3);
   min-block-size: 44px;
   font-size: var(--fs-sm);
   font-weight: 600;
-  color: color-mix(in srgb, var(--poster-ink) 74%, transparent);
+  color: var(--text-secondary);
   text-decoration: none;
-  transition: color var(--t-fast) var(--ease);
+  border-radius: var(--r-xs);
+  transition:
+    color var(--t-base) var(--ease),
+    background-color var(--t-base) var(--ease);
 }
 
 .fo-header-actions {
@@ -310,7 +261,7 @@ main,
   gap: var(--sp-3);
 }
 
-/* The .btn recipes ship 32/40/48px — the poster lifts every landing
+/* The .btn recipes ship 32/40/48px — the sheet lifts every landing
  * control to the 44px floor (.lg CTAs stay 48). */
 .landing .btn:not(.lg) {
   block-size: 44px;
@@ -322,9 +273,9 @@ main,
   inline-size: 44px;
   block-size: 44px;
   border: 1px solid var(--border);
-  border-radius: var(--r-sm);
+  border-radius: var(--r-xs);
   background: transparent;
-  color: var(--poster-ink);
+  color: var(--text);
   cursor: pointer;
   margin-inline-start: auto;
 }
@@ -337,9 +288,9 @@ main,
   display: grid;
   gap: var(--sp-2);
   padding: var(--sp-5);
-  background: var(--poster-paper);
-  border: 1px solid color-mix(in srgb, var(--poster-ink) 12%, transparent);
-  border-radius: var(--r-2xl);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
   box-shadow: var(--elev-3);
 }
 
@@ -357,351 +308,425 @@ main,
   color: var(--text-muted);
 }
 
-/* ═══ HERO — the sparse open ═════════════════════════════════════════ */
+/* ═══ HERO — «لوحة مدارك»: the blueprint over the title-block band ═══
+ * Desktop: the drawing owns the upper sheet; the band below splits
+ * the copy (reading start) from the metadata block (reading end) —
+ * the reference's hero bottom-band grammar. Mobile (flow mode): the
+ * copy leads (LCP = the headline), then the drawing, then metadata. */
 .fo-hero {
-  position: relative;
-  min-block-size: 100vh;
-  min-block-size: 100svh;
   display: grid;
-  align-items: stretch;
-  padding-block: var(--sp-12);
+  padding-block-start: var(--sp-8);
+  padding-block-end: var(--sp-10);
 }
 
-/* the OPTIKKA drafting grid: dotted quartering rules that third the
- * first viewport — two verticals, two horizontals, drafting-paper
- * character. Pure poster chrome — aria-hidden decoration. */
-.fo-hero-gridlines {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    repeating-linear-gradient(to left, color-mix(in srgb, var(--poster-ink) 26%, transparent) 0 1px, transparent 1px 6px),
-    repeating-linear-gradient(to bottom, color-mix(in srgb, var(--poster-ink) 26%, transparent) 0 1px, transparent 1px 6px);
-  background-size:
-    33.3334% 100%,
-    100% 33.3334%;
-  background-position:
-    100% 0,
-    0 30%;
-  background-repeat: no-repeat;
-  mask-image: linear-gradient(to bottom, black 55%, transparent 96%);
-  opacity: 0.4;
-}
-
-/* the copy layer floats over the grid+object: top-reading-start the
- * eyebrow, bottom-reading-end the word + triad, bottom-reading-start
- * the paragraph + actions. One grid that spans the measure; the
- * members place themselves. */
-.fo-hero-layer {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-  inline-size: 100%;
-  min-block-size: calc(100svh - var(--sp-12) * 2);
-}
-
-/* eyebrow: top of the reading column (inline-start = right in RTL) */
 .fo-hero-copy {
-  grid-area: 1 / 1 / 2 / 2;
-  align-self: start;
-  padding-block-start: var(--sp-7);
-  max-inline-size: 30ch;
+  display: grid;
+  gap: var(--sp-4);
+  align-content: center;
 }
 
 .fo-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2-5);
   font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--text-muted);
-  margin-block-end: var(--sp-5);
 }
 
-/* the poster word — display allow: fluid poster scale, Arabic
- * line-height, zero tracking (cursive joins). The OPTIKKA anchor. */
-.fo-hero-word {
-  grid-area: 3 / 2 / 4 / 3;
-  align-self: end;
-  margin-block-end: var(--sp-2);
+.fo-eyebrow .fo-mono {
+  color: var(--accent-ink);
+  font-size: var(--fs-xxs);
 }
 
 .fo-hero-title {
   font-family: var(--font-display);
-  /* type-gate: allow — the hero poster word (the one authored display
-   * in the story; exempt sheet, commented for the census). */
-  font-size: clamp(76px, 13.5vw, 176px);
+  font-size: var(--fs-display-xl);
   font-weight: 700;
-  line-height: 1.08;
-  margin-block: 0 var(--sp-3);
-  letter-spacing: 0;
+  line-height: 1.05;
+  color: var(--text);
 }
 
-.fo-hero-triad {
+.fo-hero-statement {
   font-family: var(--font-display);
   font-size: var(--fs-display-md);
   font-weight: 600;
   line-height: 1.3;
+  color: var(--text);
+  max-inline-size: 24ch;
 }
 
-/* the statement paragraph + actions + meta live on the reading-start
- * edge (OPTIKKA's bottom-right paragraph, mirrored to RTL). */
-.fo-hero-aside {
-  grid-area: 3 / 1 / 4 / 2;
-  align-self: end;
-  display: grid;
-  justify-items: start;
+.fo-hero-statement em,
+.st-title em,
+.chapters-title em,
+.lv-title em,
+.rl-title em,
+.vs-title em,
+.fo-cta-title em {
+  font-style: normal;
+  color: var(--accent-ink);
 }
 
 .fo-hero-sub {
-  justify-self: start;
-  max-inline-size: 44ch;
   font-size: var(--fs-body-lg);
-  line-height: 1.8;
-  text-align: start;
+  line-height: 1.7;
   color: var(--text-secondary);
-  margin-block-end: var(--sp-6);
+  max-inline-size: 52ch;
 }
 
 .fo-hero-actions {
-  justify-self: start;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-4);
-  margin-block-end: var(--sp-6);
-}
-
-.fo-hero-meta {
-  justify-self: start;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-3) var(--sp-5);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-
-.fo-hero-meta-note {
-  padding: var(--sp-1) var(--sp-2);
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--r-xs);
-}
-
-/* scroll cue — the quiet vertical label at the reading-start edge,
- * lifted to the lower third (clear of the copy stack). */
-.fo-scroll-cue {
-  position: absolute;
-  inset-block-end: 20vh;
-  inset-inline-start: var(--sp-6);
-  z-index: 2;
-  display: grid;
-  justify-items: center;
   gap: var(--sp-3);
-  pointer-events: none;
 }
 
-.fo-scroll-cue-text {
-  writing-mode: vertical-rl;
-  font-size: var(--fs-xs);
+/* ══ The blueprint — the interactive technical drawing ═══════════════
+ * The stage is a relative box: the SVG draws the structures, the
+ * hotspot buttons overlay at percentage positions (desktop/tablet),
+ * and the panel reads the active stage. On phones the hotspots flow
+ * as a chip row under the drawing (44px targets, no overlay
+ * crowding) and the panel follows. */
+.fo-hero-fig {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.bp-stage {
+  position: relative;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  background: var(--surface);
+  padding: var(--sp-4);
+}
+
+.bp-svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+/* the drawing's own ink system — zero raw colors, every class rides
+ * the canonical tokens so the artwork follows both themes. */
+.bp-ink { stroke: var(--text); stroke-width: 1.5; fill: none; }
+.bp-ink-fill { stroke: var(--text); stroke-width: 1.5; fill: none; }
+.bp-hair { stroke: var(--grid-line); stroke-width: 1; fill: none; }
+.bp-dash { stroke: var(--rule-strong); stroke-width: 1; fill: none; stroke-dasharray: 5 5; }
+.bp-signal { stroke: var(--accent); stroke-width: 1.5; fill: none; }
+.bp-signal-fill { fill: var(--accent); stroke: none; }
+.bp-fill { fill: var(--surface); stroke: var(--text); stroke-width: 1.5; }
+.bp-name {
+  font-family: var(--font-sans);
+  font-size: 15px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  fill: var(--text-secondary);
+}
+.bp-tag {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  fill: var(--text-faint);
+}
+
+/* the active stage — the signal ring: the drawn structure's outline
+ * warms to the accent while the hotspot holds the pressed state. */
+.bp-stage-on .bp-fill,
+.bp-stage-on .bp-ink-fill {
+  stroke: var(--accent);
+}
+
+/* the hotspots — real buttons, keyboard-operable, aria-pressed. In
+ * OVERLAY mode (desktop/tablet) they are compact [NN] pins: the
+ * drafting convention — number-only markers at the annotation spot
+ * above each structure (they must MARK, never MASK, the artwork; the
+ * Arabic names live in the drawing + the panel, and the accessible
+ * name comes from aria-label). In FLOW mode (≤760px) the same buttons
+ * become full chip rows that carry the labels visibly. */
+.bp-hotspots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* the container passes through; the buttons take it back */
+}
+
+.bp-hotspot {
+  position: absolute;
+  inset-inline-start: var(--hot-x);
+  inset-block-start: var(--hot-y);
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  padding: var(--sp-1);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--t-base) var(--ease),
+    border-color var(--t-base) var(--ease),
+    color var(--t-base) var(--ease);
+}
+
+/* overlay mode: the visible label span is hidden (aria-label owns the
+ * accessible name — never tooltip-only); the flow chips below bring
+ * it back visibly. */
+.bp-hotspot-label {
+  display: none;
+}
+
+.bp-hotspot-num {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.bp-hotspot[aria-pressed='true'] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.bp-hotspot[aria-pressed='true'] .bp-hotspot-num {
+  color: var(--accent-ink);
+}
+
+/* the details panel — the title-block reading of the active stage.
+ * A polite live region in the markup: the same information with or
+ * without the pointer, announced on selection. */
+.bp-panel {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: baseline;
+  gap: var(--sp-2) var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--rule);
+  border-inline-start: 2px solid var(--accent);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+}
+
+.bp-panel-num {
+  color: var(--accent-ink);
+  font-size: var(--fs-xs);
+}
+
+.bp-panel-title {
+  font-weight: 700;
+  font-size: var(--fs-body);
+  color: var(--text);
+}
+
+.bp-panel-desc {
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.bp-panel-meta {
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+}
+
+/* ══ The title block — the metadata grid (the sheet's own identity) ══ */
+.fo-hero-meta,
+.cg-meta {
+  display: grid;
+  gap: 0;
+  align-content: start;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  overflow: clip;
+}
+
+.fo-meta-row {
+  display: grid;
+  grid-template-columns: minmax(96px, auto) 1fr;
+  align-items: baseline;
+  gap: var(--sp-4);
+  padding: var(--sp-2-5) var(--sp-4);
+  border-block-end: 1px solid var(--rule);
+}
+
+.fo-meta-row:last-child {
+  border-block-end: 0;
+}
+
+.fo-meta-k {
+  font-size: var(--fs-sm);
+  font-weight: 600;
   color: var(--text-muted);
 }
 
-.fo-scroll-cue-dot {
-  display: block;
-  inline-size: var(--sp-1-5);
-  block-size: var(--sp-1-5);
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--poster-ink) 40%, transparent);
-  animation: cue-bob 2.4s var(--ease-soft) infinite;
+.fo-meta-v {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
 }
 
-@keyframes cue-bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(var(--sp-1-5)); }
+.fo-meta-v .fo-mono {
+  color: var(--accent-ink);
+  font-size: var(--fs-xs);
 }
 
-/* ═══ البيان — the editorial spread ══════════════════════════════════ */
+/* ═══ البيان — the statement: a framed declaration ══════════════════ */
 .st-section {
-  padding-block: var(--sp-16) var(--sp-14);
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  padding-block: var(--sp-12);
 }
 
-/* copy owns the reading-start column; the reading-end track stays an
- * intentional empty zone — the conductor drifts the knot there. */
 .st-spread {
   display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
-  gap: var(--sp-8);
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--sp-10);
+  align-items: start;
+  border-block-start: 1px solid var(--rule-strong);
+  padding-block-start: var(--sp-8);
 }
 
-.st-copy { grid-column: 1; }
+.st-copy {
+  display: grid;
+  gap: var(--sp-3);
+}
 
 .st-title {
   font-family: var(--font-display);
   font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.25;
-  max-inline-size: 14ch;
-  margin-block: var(--sp-4) var(--sp-8);
+  line-height: 1.15;
+  color: var(--text);
 }
 
 .st-lines {
-  grid-column: 1;
   display: grid;
-  max-inline-size: 680px;
+  gap: var(--sp-4);
 }
 
 .st-line {
   display: grid;
-  grid-template-columns: minmax(96px, auto) 1fr;
-  align-items: baseline;
-  gap: var(--sp-3) var(--sp-6);
-  padding-block: var(--sp-5);
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  gap: var(--sp-1);
+  padding-block: var(--sp-3);
+  border-block-end: 1px solid var(--rule);
+}
+
+.st-line:last-child {
+  border-block-end: 0;
 }
 
 .st-line strong {
-  font-family: var(--font-display);
-  font-size: var(--fs-h3);
+  font-size: var(--fs-body);
   font-weight: 700;
-  color: var(--poster-ink);
+  color: var(--text);
 }
 
 .st-line span {
-  font-size: var(--fs-body-lg);
-  line-height: 1.75;
+  font-size: var(--fs-body);
+  line-height: 1.7;
   color: var(--text-secondary);
 }
 
-/* ═══ الفصول 01–06 — numbered spreads, composed fragments ════════════ */
+/* ═══ الفصول 01–06 — the capability ledger rows ═════════════════════
+ * One grammar for every chapter (the defect was six competing poster
+ * layouts): a numbered hairline row — index / copy / flat fragment. */
 .chapters {
-  padding-block: var(--sp-14);
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  padding-block: var(--sp-12);
 }
 
 .chapters-head {
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--sp-8);
   align-items: end;
-  gap: var(--sp-6) var(--sp-8);
-  margin-block-end: var(--sp-11);
+  margin-block-end: var(--sp-8);
+  border-block-start: 1px solid var(--rule-strong);
+  padding-block-start: var(--sp-8);
+}
+
+.chapters-head-copy {
+  display: grid;
+  gap: var(--sp-3);
 }
 
 .chapters-title {
   font-family: var(--font-display);
   font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.25;
-  max-inline-size: 16ch;
-  margin-block: var(--sp-4) 0;
+  line-height: 1.15;
+  color: var(--text);
 }
 
 .chapters-lede {
-  font-size: var(--fs-body-lg);
+  font-size: var(--fs-body);
   line-height: 1.7;
   color: var(--text-secondary);
-  max-inline-size: 44ch;
-  padding-block-end: var(--sp-1);
+}
+
+.ch-rows {
+  display: grid;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
+  overflow: clip;
 }
 
 .ch {
   display: grid;
-  align-items: center;
-  gap: var(--sp-8);
-  padding-block: var(--sp-11);
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  grid-template-columns: minmax(56px, auto) minmax(0, 7fr) minmax(0, 6fr);
+  gap: var(--sp-5);
+  padding: var(--sp-6);
+  border-block-end: 1px solid var(--rule);
+  align-items: start;
 }
 
-.ch--split {
-  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-}
-
-.ch--split .ch-head { grid-column: 1; grid-row: 1; }
-.ch--split .ch-mini { grid-column: 2; grid-row: 1; }
-
-/* the offset chapter mirrors the split (head inline-end, mini raised) */
-.ch--offset {
-  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
-}
-
-.ch--offset .ch-head { grid-column: 2; grid-row: 1; }
-.ch--offset .ch-mini { grid-column: 1; grid-row: 1; margin-block-start: var(--sp-9); }
-
-/* the bleed chapter: the mini column is wider AND the fragment runs
- * past the content measure toward the inline-start viewport edge —
- * the OPTIKKA «content pushed to the edges» move, in Madarek's RTL
- * geometry (grid track 1 = inline-start = the physical RIGHT side;
- * the card bleeds off the right edge). The head takes the inline-end
- * column, so the six chapters alternate mini-side L·R·L·R·L·R across
- * the poster. The NEGATIVE margin pulls the card into the gutter
- * between the 1240px measure and the viewport edge — min(calc(620px −
- * 50vw), 0) is ≤ 0 only above 1240px, so below the poster measure it
- * collapses to zero and can never overflow (the landing clips
- * overflow-x anyway). */
-.ch--bleed {
-  grid-template-columns: minmax(0, 8fr) minmax(0, 5fr);
-}
-
-.ch--bleed .ch-head { grid-column: 2; grid-row: 1; }
-.ch--bleed .ch-mini {
-  grid-column: 1;
-  grid-row: 1;
-  margin-inline-start: min(calc(620px - 50vw), 0px); /* spacing-gate: allow — half the 1240px poster measure, the full-bleed geometry pivot */
+.ch:last-child {
+  border-block-end: 0;
 }
 
 .ch-num {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-4);
-  font-family: var(--font-mono);
-  font-size: var(--fs-display-lg);
-  font-weight: 700;
+  font-size: var(--fs-h3);
+  font-weight: 500;
+  color: var(--accent-ink);
   line-height: 1;
-  color: var(--poster-signal);
-  margin-block-end: var(--sp-5);
+  padding-block-start: var(--sp-1);
 }
 
-/* the numbered chapter marker — the mono numeral draws a hairline rule
- * to the measure edge (the OPTIKKA chapter-marker move; a static
- * editorial device, no motion, tokens only). */
-.ch-num::after {
-  content: '';
-  flex: 1 1 auto;
-  block-size: 1px;
-  background: color-mix(in srgb, var(--poster-ink) 14%, transparent);
+.ch-head {
+  display: grid;
+  gap: var(--sp-2);
+  align-content: start;
 }
 
 .ch-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-md);
+  font-size: var(--fs-h2);
   font-weight: 700;
-  line-height: 1.3;
-  margin-block-end: var(--sp-4);
+  line-height: 1.2;
+  color: var(--text);
 }
 
 .ch-lede {
-  font-size: var(--fs-body-lg);
-  line-height: 1.75;
+  font-size: var(--fs-body);
+  line-height: 1.7;
   color: var(--text-secondary);
-  max-inline-size: 52ch;
 }
 
-/* ── The interface fragment — the honest demo frame (r304) ──────────
- * Composed as a WINDOW of the platform itself: the app's own chrome
- * bar (identity dots + fragment name + the honest demo tag), the demo
- * body on the app's surface recipe, and a caption row that carries
- * the «عرض توضيحي» marker beside the fragment's name. The elevated
- * opaque surface is what lets the world's slow camera sweep read as
- * depth BEHIND the proof — never through it. */
+.ch-mini {
+  min-inline-size: 0;
+}
+
+/* ── The interface fragment — the honest demo frame (r306, flat) ──
+ * The reference's product-mockup grammar: a 1px frame, radius 0→2,
+ * NO browser chrome, NO elevation — the fragment is a flat drawing
+ * on the sheet, not a floating window. The chrome is a quiet header
+ * row (fragment name + the honest demo tag); the caption carries the
+ * «عرض توضيحي» marker beside the fragment's name. */
 .mini {
   display: grid;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  box-shadow: var(--elev-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xs);
   overflow: clip;
 }
 
@@ -709,25 +734,9 @@ main,
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: var(--sp-2-5) var(--sp-4);
-  background: color-mix(in srgb, var(--poster-ink) 4%, transparent);
+  padding: var(--sp-2) var(--sp-3);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
   border-block-end: 1px solid var(--border);
-}
-
-.mini-dots {
-  display: inline-flex;
-  gap: var(--sp-1-5);
-}
-
-.mini-dots i {
-  inline-size: var(--sp-2);
-  block-size: var(--sp-2);
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--poster-ink) 18%, transparent);
-}
-
-.mini-dots i:nth-child(2) {
-  background: color-mix(in srgb, var(--poster-signal) 45%, transparent);
 }
 
 .mini-chrome-label {
@@ -743,7 +752,7 @@ main,
   margin-inline-start: auto;
   padding: 0 var(--sp-2);
   border: 1px solid var(--border-strong);
-  border-radius: var(--r-full);
+  border-radius: var(--r-xs);
   font-size: var(--fs-xxs);
   line-height: 1.6;
   color: var(--text-muted);
@@ -752,14 +761,14 @@ main,
 .mini-body {
   display: grid;
   gap: var(--sp-3);
-  padding: var(--sp-5);
+  padding: var(--sp-4);
 }
 
 .mini-caption {
   display: flex;
   align-items: baseline;
   gap: var(--sp-2);
-  padding: var(--sp-3) var(--sp-4);
+  padding: var(--sp-2-5) var(--sp-3);
   border-block-start: 1px solid var(--border);
   font-size: var(--fs-sm);
   color: var(--text-muted);
@@ -770,7 +779,7 @@ main,
   align-items: center;
   gap: var(--sp-1-5);
   font-weight: 600;
-  color: var(--poster-signal);
+  color: var(--accent-ink);
 }
 
 .mini-caption-tag::before {
@@ -778,7 +787,7 @@ main,
   inline-size: var(--sp-1-5);
   block-size: var(--sp-1-5);
   border-radius: 50%;
-  background: var(--poster-signal);
+  background: var(--accent);
 }
 
 .mini-caption-label {
@@ -813,7 +822,7 @@ main,
   place-items: center;
   min-block-size: 128px;
   border: 1px solid var(--border);
-  border-radius: var(--r-md);
+  border-radius: var(--r-xs);
   background: var(--neutral-900);
   color: var(--neutral-50);
 }
@@ -848,7 +857,7 @@ main,
   display: block;
   block-size: 100%;
   border-radius: inherit;
-  background: var(--poster-signal);
+  background: var(--accent);
 }
 
 .mini-quiz-q {
@@ -868,15 +877,15 @@ main,
   gap: var(--sp-1);
   padding: var(--sp-1-5) var(--sp-3);
   border: 1px solid var(--border);
-  border-radius: var(--r-sm);
+  border-radius: var(--r-xs);
   font-size: var(--fs-sm);
   color: var(--text-secondary);
 }
 
 .mini-opt.is-right {
-  border-color: var(--poster-signal);
-  color: var(--poster-signal);
-  background: color-mix(in srgb, var(--poster-signal) 8%, transparent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   font-weight: 600;
 }
 
@@ -901,14 +910,14 @@ main,
 .mini-mx-bar {
   block-size: var(--sp-2);
   border-radius: var(--r-full);
-  background: color-mix(in srgb, var(--poster-ink) 8%, transparent);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
 }
 
 .mini-mx-bar > span {
   display: block;
   block-size: 100%;
   border-radius: inherit;
-  background: var(--poster-signal);
+  background: var(--accent);
 }
 
 .mini-mx-val {
@@ -921,14 +930,14 @@ main,
 .mini-chip {
   padding: var(--sp-0-5) var(--sp-2);
   border-radius: var(--r-xs);
-  background: color-mix(in srgb, var(--poster-ink) 6%, transparent);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
   font-size: var(--fs-sm);
   color: var(--text-secondary);
 }
 
 .mini-chip.is-ok {
-  background: color-mix(in srgb, var(--poster-signal) 12%, transparent);
-  color: var(--poster-signal);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent-ink);
   font-weight: 600;
 }
 
@@ -944,8 +953,8 @@ main,
   gap: var(--sp-2);
   padding: var(--sp-4);
   border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-  background: var(--poster-paper);
+  border-radius: var(--r-xs);
+  background: var(--bg);
 }
 
 .mini-doc-title {
@@ -956,7 +965,7 @@ main,
 .mini-doc-line {
   block-size: var(--sp-1-5);
   border-radius: var(--r-full);
-  background: color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  background: color-mix(in srgb, var(--text) 10%, transparent);
 }
 
 .mini-doc-pin {
@@ -971,8 +980,8 @@ main,
   gap: var(--sp-1);
   padding: var(--sp-0-5) var(--sp-2);
   border-radius: var(--r-xs);
-  background: color-mix(in srgb, var(--poster-signal) 10%, transparent);
-  color: var(--poster-signal);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent-ink);
   font-size: var(--fs-sm);
   font-weight: 600;
 }
@@ -1000,12 +1009,12 @@ main,
 }
 
 .mini-steps li.is-now {
-  color: var(--poster-signal);
+  color: var(--accent-ink);
   font-weight: 600;
 }
 
 .mini-steps li.is-now .fo-mono {
-  color: var(--poster-signal);
+  color: var(--accent-ink);
 }
 
 .mini-stats {
@@ -1019,14 +1028,14 @@ main,
   gap: var(--sp-1);
   padding: var(--sp-3);
   border: 1px solid var(--border);
-  border-radius: var(--r-sm);
+  border-radius: var(--r-xs);
 }
 
 .mini-stat-n {
   font-size: var(--fs-display-md);
   font-weight: 700;
   line-height: 1.1;
-  color: var(--poster-signal);
+  color: var(--accent-ink);
 }
 
 .mini-stat-t {
@@ -1045,11 +1054,11 @@ main,
   inline-size: var(--sp-7);
   block-size: var(--sp-7);
   border-radius: 50%;
-  background: color-mix(in srgb, var(--poster-ink) 14%, transparent);
+  background: color-mix(in srgb, var(--text) 14%, transparent);
 }
 
 .mini-avatar.is-accent {
-  background: color-mix(in srgb, var(--poster-signal) 22%, transparent);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 .mini-post-title {
@@ -1065,198 +1074,180 @@ main,
   color: var(--text-muted);
 }
 
-/* ═══ ما يعمل اليوم — THE COPPER CLIMAX ══════════════════════════════
- * The inverted slab: ink ground on paper (light) / paper ground on
- * night (dark) — the same inversion recipe the fragment video uses.
- * The local signal re-points so the numerals + em stay AA on BOTH
- * slab grounds: light theme consumes the copper ink (4.85:1 on the
- * ink slab), night theme consumes the deep copper (11.5:1 on the
- * paper slab). */
+/* ═══ ما يعمل اليوم — the capability matrix (a hairline TABLE) ══════
+ * The reference's pricing grammar: a ruled matrix, numbered rows,
+ * checks, the bracketed count in the footer line. No slab, no
+ * inversion — the honest ledger reads as what it is: a table. */
 .lv-section {
-  padding-block: var(--sp-14);
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  padding-block: var(--sp-12);
+  border-block-start: 1px solid var(--rule-strong);
 }
 
-.lv-grid {
+.lv-head {
   display: grid;
-  grid-template-columns: minmax(0, 29fr) minmax(0, 20fr);
-  gap: var(--sp-8);
-  align-items: stretch;
-}
-
-.lv-slab {
-  background: var(--neutral-900);
-  color: var(--neutral-50);
-  border-radius: var(--r-2xl);
-  padding: var(--sp-9);
-  display: grid;
-  align-content: start;
-  justify-items: start;
-  --poster-signal: var(--c-copper-ink);
-}
-
-[data-theme="dark"] .lv-slab {
-  --poster-signal: var(--c-copper-bg);
-}
-
-.lv-slab .fo-label {
-  color: var(--neutral-300);
-}
-
-.lv-slab .fo-label::before {
-  background: color-mix(in srgb, var(--poster-signal) 65%, transparent);
+  gap: var(--sp-3);
+  max-inline-size: 64ch;
+  margin-block-end: var(--sp-8);
 }
 
 .lv-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-md);
+  font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.3;
-  margin-block: var(--sp-4) var(--sp-3);
-}
-
-.lv-title em {
-  font-style: normal;
-  color: var(--poster-signal);
+  line-height: 1.15;
+  color: var(--text);
 }
 
 .lv-lede {
   font-size: var(--fs-body);
   line-height: 1.7;
-  color: var(--neutral-300);
-  margin-block-end: var(--sp-7);
+  color: var(--text-secondary);
 }
 
 .lv-list {
   display: grid;
-  inline-size: 100%;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
+  overflow: clip;
 }
 
 .lv-row {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: minmax(48px, auto) 1fr auto;
   align-items: center;
-  gap: var(--sp-5);
-  padding-block: var(--sp-4);
-  border-block-start: 1px solid color-mix(in srgb, var(--neutral-50) 14%, transparent);
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  border-block-end: 1px solid var(--rule);
+}
+
+.lv-row:last-child {
+  border-block-end: 0;
 }
 
 .lv-num {
-  font-family: var(--font-mono);
-  font-size: var(--fs-display-md);
-  font-weight: 700;
+  color: var(--text-faint);
   line-height: 1;
-  font-variant-numeric: tabular-nums;
-  color: var(--poster-signal);
 }
 
 .lv-text {
-  font-size: var(--fs-body-lg);
-  line-height: 1.6;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--text);
 }
 
 .lv-check {
-  display: inline-flex;
-  color: var(--poster-signal);
+  display: inline-grid;
+  place-items: center;
+  inline-size: var(--sp-6);
+  block-size: var(--sp-6);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: var(--r-xs);
+  color: var(--accent-ink);
 }
 
-/* the annotated empty window — the intentional negative space that
- * hands the reading-end third to the conductor's copper close-up.
- * The dashed frame is the drafting-paper annotation: this emptiness
- * is authored, not missing. */
-.lv-window {
-  position: relative;
-  display: grid;
-  align-content: end;
-  padding: var(--sp-5);
-  border: 1px dashed color-mix(in srgb, var(--poster-ink) 20%, transparent);
-  border-radius: var(--r-lg);
+.lv-foot {
+  margin-block-start: var(--sp-3);
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
 }
 
-.lv-window-caption {
-  font-size: var(--fs-sm);
-  line-height: 1.7;
-  color: var(--text-muted);
-  max-inline-size: 26ch;
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--r-sm);
-  background: color-mix(in srgb, var(--poster-paper) 84%, transparent);
-}
-
-/* ═══ الأدوار — the wide-panorama index ══════════════════════════════ */
+/* ═══ الأدوار — the index rows ══════════════════════════════════════ */
 .rl-section {
-  padding-block: var(--sp-14);
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  padding-block: var(--sp-12);
+  border-block-start: 1px solid var(--rule-strong);
+}
+
+.rl-head {
+  display: grid;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-8);
 }
 
 .rl-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-md);
+  font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.3;
-  margin-block: var(--sp-4) var(--sp-8);
+  line-height: 1.15;
+  color: var(--text);
 }
 
 .rl-strip {
   display: grid;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
+  overflow: clip;
 }
 
 .rl-item {
   display: grid;
-  grid-template-columns: minmax(150px, 230px) 1fr;
-  align-items: baseline;
-  gap: var(--sp-4) var(--sp-8);
-  padding-block: var(--sp-5);
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  grid-template-columns: minmax(120px, 200px) 1fr auto;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-4) var(--sp-5);
+  border-block-end: 1px solid var(--rule);
+}
+
+.rl-item:last-child {
+  border-block-end: 0;
 }
 
 .rl-item-role {
   font-family: var(--font-display);
-  font-size: var(--fs-h2);
+  font-size: var(--fs-body-lg);
   font-weight: 700;
+  color: var(--text);
 }
 
 .rl-item-line {
-  font-size: var(--fs-body-lg);
+  font-size: var(--fs-body);
   line-height: 1.7;
   color: var(--text-secondary);
-  max-inline-size: 62ch;
+}
+
+.rl-item-arrow {
+  display: inline-grid;
+  place-items: center;
+  color: var(--text-faint);
 }
 
 .rl-more {
-  margin-block-start: var(--sp-8);
-  font-size: var(--fs-body);
+  margin-block-start: var(--sp-4);
+  font-size: var(--fs-sm);
   color: var(--text-muted);
 }
 
-/* ═══ الكليات — the interactive registry ═════════════════════════════ */
+/* ═══ الكليات — the interactive registry ════════════════════════════ */
 .cg-section {
-  padding-block: var(--sp-14);
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  padding-block: var(--sp-12);
+  border-block-start: 1px solid var(--rule-strong);
+}
+
+.cg-head {
+  display: grid;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-8);
 }
 
 .cg-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-md);
+  font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.3;
-  margin-block: var(--sp-4) var(--sp-3);
+  line-height: 1.15;
+  color: var(--text);
 }
 
 .cg-lede {
-  max-inline-size: 68ch;
   font-size: var(--fs-body);
   line-height: 1.7;
   color: var(--text-secondary);
-  margin-block-end: var(--sp-8);
+  max-inline-size: 64ch;
 }
 
-/* the panel column owns the reading start (the conductor parks the
- * knot behind it); the open reading-end track carries the ghost
- * count — a poster numeral, not content. */
 .cg-stage {
   display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
   gap: var(--sp-8);
   align-items: start;
 }
@@ -1264,6 +1255,7 @@ main,
 .cg-panel-wrap {
   display: grid;
   gap: var(--sp-5);
+  min-inline-size: 0;
 }
 
 .cg-chips {
@@ -1274,249 +1266,253 @@ main,
 
 .cg-chip {
   min-block-size: 44px;
-  padding: var(--sp-2) var(--sp-3);
-  border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-  background: var(--surface);
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xs);
+  background: transparent;
   color: var(--text-secondary);
   font-size: var(--fs-sm);
-  font-family: var(--font-sans);
+  font-weight: 600;
   cursor: pointer;
-  transition: border-color var(--t-fast) var(--ease),
-              background var(--t-fast) var(--ease),
-              color var(--t-fast) var(--ease);
+  transition:
+    background-color var(--t-base) var(--ease),
+    border-color var(--t-base) var(--ease),
+    color var(--t-base) var(--ease);
+}
+
+.cg-chip[aria-pressed='true'] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
 }
 
 .cg-panel {
   display: grid;
-  gap: var(--sp-2);
-  justify-items: start;
-  padding: var(--sp-6);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  box-shadow: var(--elev-2);
+  gap: var(--sp-1-5);
+  padding: var(--sp-5);
+  border: 1px solid var(--rule);
+  border-inline-start: 2px solid var(--accent);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
 }
 
 .cg-panel-name {
   font-family: var(--font-display);
   font-size: var(--fs-h2);
   font-weight: 700;
-  line-height: 1.35;
+  color: var(--text);
 }
 
 .cg-panel-campus {
   font-size: var(--fs-sm);
   color: var(--text-muted);
-  margin-block-end: var(--sp-2);
 }
 
-.cg-open {
-  display: grid;
-  place-items: center;
-  min-block-size: 280px;
-}
-
-.cg-count {
-  font-family: var(--font-display);
-  /* type-gate: allow — the ghost registry numeral (a poster device,
-   * decorative aria-hidden; the authored display of the open third). */
-  font-size: clamp(120px, 15vw, 220px);
-  font-weight: 700;
-  line-height: 1;
-  color: color-mix(in srgb, var(--poster-ink) 9%, transparent);
+.cg-meta {
+  margin-block-start: var(--sp-2);
 }
 
 .cg-cta-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-4) var(--sp-6);
-  margin-block-start: var(--sp-8);
+  gap: var(--sp-4);
+  margin-block-start: var(--sp-6);
 }
 
 .fo-text-link {
-  display: inline-flex;
-  align-items: center;
-  min-block-size: 44px;
-  font-size: var(--fs-body);
+  color: var(--accent-ink);
+  font-size: var(--fs-sm);
   font-weight: 600;
-  color: var(--poster-signal);
   text-decoration: none;
+  border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  padding-block-end: var(--sp-0-5);
 }
 
-.fo-text-link:hover {
-  text-decoration: underline;
-}
-
-/* ═══ إلى أين — THE PASSAGE ══════════════════════════════════════════
- * The conductor drives the camera through the knot here. The
- * composition steps back — tall negative space, one centered
- * statement — so the immersion carries the chapter. */
+/* ═══ إلى أين — the honest status pairs ═════════════════════════════ */
 .vs-section {
-  padding-block: var(--sp-16);
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
-  text-align: center;
+  padding-block: var(--sp-12);
+  border-block-start: 1px solid var(--rule-strong);
 }
 
-.vs-section .fo-label {
-  justify-content: center;
+.vs-head {
+  display: grid;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-8);
 }
 
 .vs-title {
   font-family: var(--font-display);
   font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.25;
-  max-inline-size: 18ch;
-  margin-inline: auto;
-  margin-block: var(--sp-5) var(--sp-5);
-}
-
-.vs-head {
-  display: grid;
-  justify-items: center;
+  line-height: 1.15;
+  color: var(--text);
 }
 
 .vs-lede {
-  max-inline-size: 56ch;
-  margin-inline: auto;
-  font-size: var(--fs-body-lg);
-  line-height: 1.75;
+  font-size: var(--fs-body);
+  line-height: 1.7;
   color: var(--text-secondary);
-  margin-block-end: var(--sp-9);
+  max-inline-size: 64ch;
 }
 
 .vs-status {
   display: grid;
-  max-inline-size: 780px;
-  margin-inline: auto;
-  text-align: start;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
+  overflow: clip;
 }
 
 .vs-status li {
   display: grid;
-  grid-template-columns: minmax(200px, auto) 1fr;
-  align-items: baseline;
-  gap: var(--sp-3) var(--sp-6);
-  padding-block: var(--sp-4);
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  grid-template-columns: minmax(140px, 220px) 1fr auto;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  border-block-end: 1px solid var(--rule);
+}
+
+.vs-status li:last-child {
+  border-block-end: 0;
 }
 
 .vs-status-k {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-2);
-  font-weight: 700;
+  gap: var(--sp-1-5);
   font-size: var(--fs-body);
-}
-
-.vs-status li.is-live .vs-status-k {
-  color: var(--poster-signal);
+  font-weight: 700;
+  color: var(--text);
 }
 
 .vs-status-v {
-  font-size: var(--fs-sm);
-  line-height: 1.6;
+  font-size: var(--fs-body);
+  line-height: 1.7;
   color: var(--text-secondary);
 }
 
-/* ═══ الخاتمة — the resolve ══════════════════════════════════════════ */
-.fo-cta {
-  padding-block: var(--sp-16);
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
-  text-align: center;
+.vs-status-tag {
+  padding: var(--sp-0-5) var(--sp-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xs);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
-.fo-cta-star {
-  display: inline-grid;
-  place-items: center;
-  margin-block-end: var(--sp-5);
+.vs-status-tag.is-live {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent-ink);
+}
+
+.vs-status li.is-live .vs-status-k {
+  color: var(--accent-ink);
+}
+
+/* ═══ الخاتمة — the coordinates row + the resolve ═══════════════════ */
+.fo-cta {
+  padding-block: var(--sp-14);
+  border-block-start: 1px solid var(--rule-strong);
+}
+
+.fo-cta-coords {
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+  border-block-end: 1px solid var(--rule);
+  padding-block-end: var(--sp-3);
+  margin-block-end: var(--sp-8);
+  text-align: start;
+}
+
+.fo-cta-inner {
+  display: grid;
+  gap: var(--sp-4);
+  justify-items: start;
 }
 
 .fo-cta-title {
   font-family: var(--font-display);
   font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.25;
-  margin-block-end: var(--sp-4);
+  line-height: 1.15;
+  color: var(--text);
 }
 
 .fo-cta-lede {
-  max-inline-size: 52ch;
-  margin-inline: auto;
   font-size: var(--fs-body-lg);
   line-height: 1.7;
   color: var(--text-secondary);
-  margin-block-end: var(--sp-7);
+  max-inline-size: 52ch;
 }
 
 .fo-cta-actions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--sp-4);
-  margin-block-end: var(--sp-6);
+  align-items: center;
+  gap: var(--sp-3);
 }
 
 .fo-cta-meta {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-2);
+  gap: var(--sp-1-5);
   font-size: var(--fs-sm);
   color: var(--text-muted);
 }
 
-/* ═══ Footer — the colophon close ════════════════════════════════════ */
+/* ═══ Footer — the colophon grid ════════════════════════════════════
+ * The hairline grid: brand + about, three link columns, the mono
+ * bottom row. The giant wordmark is retired with the poster — the
+ * sheet closes quietly. */
 .fo-footer {
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
-  padding-block: var(--sp-13) var(--sp-12);
-  overflow: visible;
-  /* the settle veil: the conductor parks the knot on the horizon here;
-   * a translucent paper wash lets it sink into the ground instead of
-   * washing through the colophon links (the dignified fade-out close). */
-  background: color-mix(in srgb, var(--poster-paper) 76%, transparent);
+  border-block-start: 1px solid var(--rule-strong);
+  background: color-mix(in srgb, var(--surface) 35%, transparent);
 }
 
-/* the slide-up reveal: the colophon rises into place on the footer's
- * own --sp. r282: the reveal is GEOMETRY ONLY — transform keeps every
- * frame AA-clean (the old opacity fade rode muted copy below AA). */
 .fo-footer-inner {
-  transform: translateY(calc((1 - var(--sp, 0)) * 120px));
+  padding-block: var(--sp-10);
+  display: grid;
+  gap: var(--sp-8);
 }
 
 .fo-footer-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 5fr) repeat(3, minmax(0, 3fr));
   gap: var(--sp-8);
 }
 
 .fo-footer-col {
   display: grid;
+  gap: var(--sp-2-5);
   align-content: start;
-  gap: var(--sp-3);
 }
 
 .fo-footer-about {
   font-size: var(--fs-sm);
-  line-height: 1.7;
-  color: var(--text-secondary);
-  max-inline-size: 44ch;
+  line-height: 1.8;
+  color: var(--text-muted);
+  max-inline-size: 48ch;
 }
 
 .fo-footer-heading {
   font-size: var(--fs-sm);
   font-weight: 700;
-  color: var(--poster-ink);
+  color: var(--text);
+  padding-block-end: var(--sp-1-5);
+  border-block-end: 1px solid var(--rule);
+  margin-block-end: var(--sp-1);
 }
 
 .fo-footer-link {
   font-size: var(--fs-sm);
   color: var(--text-secondary);
   text-decoration: none;
-  min-block-size: 44px;
+  min-block-size: 32px;
   display: inline-flex;
   align-items: center;
+  transition: color var(--t-fast) var(--ease);
 }
 
 .fo-footer-bottom {
@@ -1525,222 +1521,239 @@ main,
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-3);
-  margin-block-start: var(--sp-9);
   padding-block-start: var(--sp-5);
-  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  border-block-start: 1px solid var(--rule);
   color: var(--text-muted);
-}
-
-.fo-footer-cluster {
   font-size: var(--fs-sm);
 }
 
-/* the closing wordmark — rushes up with the footer's --sp (0→1 at page
- * bottom; the r193 unreachable-end fix keeps the offsets). 12% ink
- * reads as a watermark without competing with the colophon copy. */
-.fo-footer-mark {
-  margin-block: var(--sp-9) 0;
-  font-family: var(--font-display);
-  /* type-gate: allow — the giant closing wordmark (poster device,
-   * decorative aria-hidden). The 1.6 line box + generous block padding
-   * gives Arabic descenders their full reach — the word is NEVER
-   * clipped by the section edge. */
-  font-size: clamp(88px, 12vw, 152px);
-  font-weight: 700;
-  line-height: 1.6;
-  text-align: center;
-  color: color-mix(in srgb, var(--poster-ink) 12%, transparent);
-  transform: translateY(calc((1 - var(--sp, 0)) * 96px));
+.fo-footer-cluster {
+  color: var(--text-faint);
 }
 
 /* ── Hover washes — guarded to real pointers (the r283 convention) ── */
 @media (hover: hover) and (pointer: fine) {
   .fo-nav-link:hover {
-    color: var(--poster-ink);
-  }
-
-  .cg-chip:hover {
-    border-color: var(--border-strong);
-    color: var(--poster-ink);
+    background: var(--text);
+    color: var(--bg);
   }
 
   .fo-text-link:hover {
-    text-decoration: underline;
+    color: var(--accent);
+    border-block-end-color: var(--accent);
   }
 
   .fo-footer-link:hover {
-    color: var(--poster-signal);
+    color: var(--accent-ink);
+  }
+
+  .bp-hotspot:hover {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--bg);
+  }
+
+  .bp-hotspot:hover .bp-hotspot-num {
+    color: color-mix(in srgb, var(--bg) 72%, transparent);
+  }
+
+  .cg-chip:hover {
+    border-color: var(--text);
+    color: var(--text);
   }
 }
 
-/* ═══ Responsive: flow mode (the poster stacks, nothing pins) ════════ */
+/* ═══ Responsive — flow mode (the sheet stacks, nothing pins) ═══════ */
+@media (min-width: 992px) {
+  .sheet-frame {
+    display: block;
+  }
+}
+
 @media (max-width: 1080px) {
+  .fo-nav { display: none; }
   .fo-header-actions { display: none; }
   .fo-burger { display: grid; }
 }
 
-@media (max-width: 960px) {
-  .fo-nav { display: none; }
-
+@media (max-width: 1024px) {
+  /* the hero becomes the flow: copy → drawing → metadata */
   .fo-hero {
-    min-block-size: auto;
-    padding-block: var(--sp-10) var(--sp-10);
+    grid-template-columns: minmax(0, 1fr);
   }
-
-  .fo-hero-copy,
-  .fo-hero-word,
-  .fo-hero-aside {
-    grid-area: auto;
-    justify-self: stretch;
-  }
-
-  .fo-hero-layer {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-6);
-    min-block-size: auto;
-  }
-
-  .fo-hero-word .fo-hero-title {
-    font-size: clamp(64px, 17vw, 120px);
-  }
-
-  .fo-hero-aside {
-    justify-items: stretch;
-  }
-
-  .fo-hero-copy { padding-block-start: 0; }
-
-  /* the drafting grid stays, quieter — the object rides the center */
-  .fo-hero-gridlines { opacity: 0.28; }
-
-  /* the wide-canvas empty zones are desktop art direction — mobile
-   * gets its own authored composition: full-measure copy, no ghost
-   * numerals, no annotated window (the world pulls back already). */
-  .fo-scroll-cue { display: none; }
 
   .st-spread {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-6);
   }
 
   .chapters-head {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-4);
     align-items: start;
-    margin-block-end: var(--sp-8);
   }
 
-  .ch--split,
-  .ch--offset,
-  .ch--bleed {
-    grid-template-columns: 1fr;
+  .ch {
+    grid-template-columns: minmax(48px, auto) minmax(0, 1fr);
   }
 
-  .ch--split .ch-head,
-  .ch--split .ch-mini,
-  .ch--offset .ch-head,
-  .ch--offset .ch-mini,
-  .ch--bleed .ch-head,
-  .ch--bleed .ch-mini {
-    grid-column: 1;
-    grid-row: auto;
+  .ch-mini {
+    grid-column: 2;
   }
 
-  .ch--offset .ch-mini { margin-block-start: 0; }
+  .cg-stage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-6);
+  }
 
-  /* the viewport bleed is a wide-canvas device — it collapses to zero
-   * under 1240px by its own max() guard; the explicit reset keeps the
-   * stacked chapter at the container measure. */
-  .ch--bleed .ch-mini { margin-inline-start: 0; }
+  .fo-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 
-  .ch { padding-block: var(--sp-8); }
+@media (max-width: 760px) {
+  /* the hotspots leave the overlay and flow as a chip row under the
+   * drawing — 44px targets on touch, no crowding over the artwork;
+   * the chips carry the Arabic labels visibly again. */
+  .bp-hotspots {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    padding-block-start: var(--sp-3);
+    border-block-start: 1px solid var(--rule);
+  }
 
-  .lv-grid { grid-template-columns: 1fr; }
+  .bp-hotspot {
+    position: static;
+    transform: none;
+    inline-size: auto;
+    min-inline-size: 44px;
+    gap: var(--sp-1-5);
+    padding: var(--sp-1) var(--sp-2-5);
+  }
 
-  .lv-window { display: none; }
+  .bp-hotspot-label {
+    display: inline;
+  }
 
-  .lv-slab { padding: var(--sp-7); }
+  .bp-panel {
+    grid-template-columns: auto 1fr;
+  }
 
-  .rl-item {
-    grid-template-columns: 1fr;
+  .bp-panel-desc {
+    grid-column: 1 / -1;
+  }
+
+  .bp-panel-meta {
+    display: none;
+  }
+
+  /* the SVG's inner micro-labels drop under the flow widths (the
+   * hotspot chips carry the same labels at full size) — nothing
+   * renders below the 13px floor. */
+  .bp-name,
+  .bp-tag {
+    display: none;
+  }
+
+  .ch {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+  }
+
+  .ch-mini {
+    grid-column: auto;
+  }
+
+  .lv-row,
+  .rl-item,
+  .vs-status li {
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--sp-2);
   }
 
-  .cg-stage { grid-template-columns: 1fr; }
+  .lv-check,
+  .rl-item-arrow {
+    justify-self: start;
+  }
 
-  .cg-open { display: none; }
+  .vs-status-tag {
+    justify-self: start;
+  }
 
-  .fo-footer-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .st-spread {
+    padding-block-start: var(--sp-6);
+  }
+
+  .fo-cta {
+    padding-block: var(--sp-12);
   }
 }
 
 @media (max-width: 640px) {
-  .fo-header-inner,
-  .fo-hero-layer,
+  .fo-hero {
+    padding-block-start: var(--sp-5);
+    padding-block-end: var(--sp-8);
+  }
+
   .st-section,
   .chapters,
-  .lv-grid,
+  .lv-section,
   .rl-section,
   .cg-section,
-  .vs-section,
-  .fo-cta,
-  .fo-footer-inner {
-    padding-inline: var(--sp-5);
+  .vs-section {
+    padding-block: var(--sp-10);
   }
 
-  .st-section { padding-block: var(--sp-12) var(--sp-10); }
-  .chapters { padding-block: var(--sp-10); }
-  .lv-section { padding-block: var(--sp-10); }
-  .rl-section { padding-block: var(--sp-10); }
-  .cg-section { padding-block: var(--sp-10); }
-  .vs-section { padding-block: var(--sp-12); }
-  .fo-cta { padding-block: var(--sp-12); }
-  .fo-footer { padding-block: var(--sp-10) var(--sp-9); }
-
-  .lv-slab { padding: var(--sp-6); }
-
-  .mini-stats {
-    grid-template-columns: 1fr;
+  .fo-hero-statement {
+    font-size: var(--fs-h2);
   }
 
-  .mini-mx-row {
-    grid-template-columns: minmax(56px, auto) 1fr auto;
+  .fo-hero-actions .btn {
+    inline-size: 100%;
+    justify-content: center;
   }
 
-  .mini-mx-row .mini-chip {
-    grid-column: 1 / -1;
-    justify-self: start;
-  }
-
-  .rl-strip { grid-template-columns: 1fr; }
-
-  .vs-status li {
-    grid-template-columns: 1fr;
+  .bp-stage {
+    padding: var(--sp-2-5);
   }
 
   .fo-footer-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-6);
   }
 
   .fo-cta-actions .btn {
     inline-size: 100%;
+    justify-content: center;
   }
 }
 
-/* ═══ Reduced motion: the complete static poster ═════════════════════ */
+/* ═══ Dark theme — the complementary sheet ══════════════════════════
+ * One block, the whole re-point: the paper becomes the charcoal
+ * ground, the raised surface steps cool, and the signal warms to the
+ * night accent. The accent-ink tier keeps every text seat AA on both
+ * grounds; fills stay on the app recipes (the r197/r305 contracts). */
+[data-theme="dark"] .landing {
+  background: var(--bg);
+  color: var(--text);
+}
+
+[data-theme="dark"] .bp-fill {
+  fill: var(--surface);
+}
+
+/* ═══ Reduced motion: the complete static sheet ═════════════════════
+ * The global belt (motion.css token collapse + base.css universal
+ * clamp) already freezes every transition; this belt guarantees the
+ * authored outcome: reveals resolve to their settled state, nothing
+ * waits on a frame. */
 @media (prefers-reduced-motion: reduce) {
-  .fo-footer-inner,
-  .fo-footer-mark {
-    transform: none;
+  .landing .reveal-up {
     opacity: 1;
-  }
-
-  .fo-scroll-cue-dot {
-    animation: none;
-  }
-
-  .mini-video-bar > span,
-  .mini-mx-bar > span {
+    transform: none;
     transition: none;
   }
 }
@@ -1750,7 +1763,7 @@ main,
    hooks/useReveal.ts); nothing else in any sheet targets .reveal-up /
    .reveal-d-*. The base.css universal reduced-motion !important
    already owned the RM behaviour; this copy (opacity/transform only)
-   keeps the authored static poster outcome. */
+   keeps the authored static sheet outcome. */
 .reveal-up {
   opacity: 0;
   transform: translateY(14px);
