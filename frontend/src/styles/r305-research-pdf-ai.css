@@ -1,0 +1,665 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R305-A7 «Heron» research · PDF reader · library · AI sheet
+   (r305-research-pdf-ai.css)
+   ───────────────────────────────────────────────────────────────────
+   Branch: redesign/r305-heron-research-pdf-ai · baseline 1b766512
+   (r304 follow-up). The research & document family — student library,
+   student research, teacher review, the shared PDF workspace, and the
+   AI assistant — reads as ONE technical, restrained surface in the
+   Heron grammar established by R305-A5/A8:
+
+   • surface STEPS (bg → surface → surface-2/3), hairline frames,
+     radius per task (r-sm wells, r-lg panels, r-full chips);
+   • thin technical dividers that carry the layout instead of boxed
+     cards;
+   • micro-labels — 13px-floor semibold secondary-ink overlines that
+     classify every block (what / status / metadata / action);
+   • dark/light section contrast via the auto-inverting deep band;
+   • ONE restrained accent (copper --accent) for the single next
+     action / active state / key numerals; semantic tones only on
+     real states — state is NEVER color alone (chips pair dot + Arabic
+     label +, where space allows, an icon);
+   • the mono voice for IDs and tabular numerals (r197 contract).
+
+   ── SCOPING CONTRACT (§0) ──────────────────────────────────────────
+   · EVERY rule below lives under the `.r305rp` marker class, OR — for
+     PORTAL content only — under `body:has(.r305rp)` (§9). Portals
+     (Modal/Sheet/Tooltip) mount on document.body OUTSIDE the page
+     root, so `body:has()` ties them to the same marker. Pages outside
+     this family never carry the marker → zero leakage, both routes.
+   · Import order: each page imports this sheet IMMEDIATELY AFTER its
+     existing family sheet import (student.css / research.css /
+     pdf.css / ai.css / teacher-quality.css). Same @layer pages +
+     later source order → this sheet wins every equal-specificity tie
+     inside the layer.
+   · Layer: `pages` (declared in tokens.css). The `overrides` layer
+     (polish.css) still outranks this sheet by design: platform belts
+     (focus halo, cursor pointer, reduced-motion kills) keep winning.
+
+   ── CONSUMERS (the five owned page modules) ────────────────────────
+   student/LibraryPage · student/ResearchPage · teacher/ResearchReviewPage
+   student/AiAssistantPage · DocumentViewerPage (+ components/pdf/*).
+
+   ── SECTION MAP (append-only ownership — never edit another §) ─────
+     §1–§8   shared Heron primitives (integration-owned; consumers may
+             RELY on them, not restyle them)
+     §A      student library + student research   (a7-lib)
+     §B      teacher research review              (a7-teach)
+     §C      PDF reader workspace                 (a7-pdf)
+     §D      AI assistant                         (a7-ai)
+     §9      portal reach-through (shared)
+
+   ── GATE CONTRACT (all enforced on this tree) ──────────────────────
+   colors  — var()/color-mix() ONLY, zero raw literals;
+   type/radius/spacing — token ladder ONLY (var(--fs-*/--r-*/--sp-*)),
+     zero raw px declarations (1px hairlines are the sanctioned
+     exception, same as r305-student.css / r305-admin-owner.css);
+   icons   — Lucide via the Icon component only;
+   motion  — --t-*/--motion-* tokens only, hover guarded behind
+     (hover:hover) and (pointer:fine), reduced-motion safe;
+   Arabic-first RTL — every logical property (inline/block, start/
+     end), no left/right physical direction in new rules.
+
+   ── CLASS VOCABULARY (what page agents may rely on) ────────────────
+   .r305rp-eyebrow (+ optional .r305rp-eyebrow-rule)
+   .r305rp-rule · --strong · -v · -labeled
+   .r305rp-band · .r305rp-band--deep (+ .r305rp-band-secondary)
+   .r305rp-chip · .r305rp-chip-dot · --accent/--success/--warning/
+     --danger/--info/--gold (+ .r305rp-chip--icon)
+   .r305rp-metric · .r305rp-metric-label
+   .r305rp-kicker · -title · -action
+   .r305rp-next (the one-action emphasis rail)
+   .r305rp-meta-row · .r305rp-meta-sep
+   .r305rp-well (r-sm inset well), .r305rp-panel (r-lg framed panel)
+   .r305rp-toolbar (reader/section toolbar row), .r305rp-toolbar-sep
+   .r305rp-empty (technical empty state); polite live regions use the
+     shared `.sr-only` (base.css) + aria-live, never a local redefinition.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ══ §1 · Micro-label (the Heron overline) ════════════════════════
+     Classifies the block that follows: a status, a metadata family,
+     an action group. 13px floor via --fs-sm, semibold, secondary ink. */
+  .r305rp-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-muted);
+    letter-spacing: 0;
+    line-height: 1.4;
+  }
+  /* The short technical tick before the label text. */
+  .r305rp-eyebrow-rule::before,
+  .r305rp-eyebrow::before {
+    content: "";
+    inline-size: var(--sp-4);
+    block-size: 1px;
+    background: var(--rule-strong);
+    flex: none;
+  }
+
+  /* ══ §2 · Thin technical dividers ═════════════════════════════════
+     Hairlines carry the layout: horizontal section rule, vertical
+     column rule, and the labeled variant that stamps a micro-label
+     INTO the line (Heron's annotated divider). */
+  .r305rp-rule {
+    border: 0;
+    block-size: 1px;
+    background: var(--surface-divider);
+    margin-block: var(--sp-5);
+  }
+  .r305rp-rule--strong { background: var(--rule); }
+  .r305rp-rule-v {
+    inline-size: 1px;
+    align-self: stretch;
+    background: var(--surface-divider);
+    flex: none;
+  }
+  .r305rp-rule-labeled {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-block: var(--sp-5);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+  }
+  .r305rp-rule-labeled::before,
+  .r305rp-rule-labeled::after {
+    content: "";
+    block-size: 1px;
+    flex: 1;
+    background: var(--surface-divider);
+  }
+
+  /* ══ §3 · Surface bands — the dark/light section contrast ═════════
+     .r305rp-band       : the quiet step (surface-2 ground, hairline).
+     .r305rp-band--deep : the Heron inversion — ink ground in light
+                          theme, paper ground in dark (the neutral
+                          scale flips), so the band always contrasts
+                          its page. Inner ink re-derives from the SAME
+                          theme ramp — theme-proof by construction. */
+  .r305rp-band {
+    background: var(--surface-2);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--r-lg);
+    padding: var(--sp-5) var(--sp-6);
+  }
+  .r305rp-band--deep {
+    background: var(--neutral-900);
+    color: var(--neutral-0);
+    border-color: transparent;
+  }
+  .r305rp-band--deep .r305rp-eyebrow { color: var(--neutral-500); }
+  .r305rp-band--deep .r305rp-eyebrow::before { background: var(--neutral-300); }
+  .r305rp-band--deep .r305rp-band-secondary {
+    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+  }
+
+  /* ══ §4 · Metadata + status chips ═════════════════════════════════
+     One chip anatomy: quiet well, 13px floor, 44px-safe when
+     interactive. Tone variants color ONLY their dot/ink from semantic
+     state tokens; the resting chip stays neutral. State never rides
+     color alone: the chip always carries its Arabic label (and an
+     icon via --icon where the row allows). */
+  .r305rp-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    padding: var(--sp-1) var(--sp-2-5);
+    border-radius: var(--r-full);
+    background: var(--surface-2);
+    border: 1px solid var(--surface-border);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .r305rp-chip-dot {
+    inline-size: var(--sp-1-5);
+    block-size: var(--sp-1-5);
+    border-radius: var(--r-full);
+    background: var(--text-faint);
+    flex: none;
+  }
+  .r305rp-chip--accent .r305rp-chip-dot { background: var(--accent); }
+  .r305rp-chip--success .r305rp-chip-dot { background: var(--success); }
+  .r305rp-chip--warning .r305rp-chip-dot { background: var(--warning); }
+  .r305rp-chip--danger  .r305rp-chip-dot { background: var(--danger); }
+  .r305rp-chip--info    .r305rp-chip-dot { background: var(--info); }
+  .r305rp-chip--gold    .r305rp-chip-dot { background: var(--gold); }
+  .r305rp-chip--icon .r305rp-chip-dot { display: none; }
+
+  /* ══ §5 · Numerals — the technical metric register ════════════════
+     Metrics are the mono voice (IDs + tabular numerals only — the
+     r197 mono contract), always formatted upstream via
+     utils/numbers.ts; the class never formats, never counts. */
+  .r305rp-metric {
+    font-family: var(--font-mono);
+    font-size: var(--fs-metric-md);
+    font-weight: var(--fw-bold);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    color: var(--text-strong);
+  }
+  .r305rp-metric-label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  /* ══ §6 · Kicker row — editorial section heading ══════════════════
+     Title at the section register, optional trailing action, the
+     hairline filling the remainder: heading and divider as ONE object
+     instead of a boxed card header. */
+  .r305rp-kicker {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-block-end: var(--sp-4);
+  }
+  .r305rp-kicker-title {
+    font-size: var(--fs-h3);
+    font-weight: var(--fw-bold);
+    color: var(--text-strong);
+    line-height: 1.3;
+  }
+  .r305rp-kicker::after {
+    content: "";
+    block-size: 1px;
+    flex: 1;
+    background: var(--surface-divider);
+  }
+  .r305rp-kicker-action { flex: none; }
+
+  /* ══ §7 · The one-action emphasis ═════════════════════════════════
+     Heron restraint: exactly one emphasized action per view region.
+     The shared .btn system carries the fill; this wrapper adds the
+     copper edge-tint rail for hero strips. */
+  .r305rp-next {
+    border-inline-start: 2px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+    border-radius: var(--r-md);
+  }
+
+  /* ══ §8 · Density helpers, wells, panels, toolbars, empty states ══ */
+  .r305rp-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1) var(--sp-3);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .r305rp-meta-row > * { min-inline-size: 0; }
+  .r305rp-meta-sep {
+    inline-size: 1px;
+    block-size: var(--sp-3);
+    background: var(--rule);
+    flex: none;
+  }
+  /* The r-sm inset well: quiet sunken ground for search fields,
+     filters, quote/evidence blocks. */
+  .r305rp-well {
+    background: var(--surface-2);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--r-sm);
+  }
+  /* The r-lg framed panel: the primary content container. */
+  .r305rp-panel {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--r-lg);
+  }
+  /* Toolbar row: 44px-safe controls on a hairline track, wrap-safe. */
+  .r305rp-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2);
+    min-block-size: var(--sp-11);
+    border-block: 1px solid var(--surface-divider);
+    padding-block: var(--sp-1);
+  }
+  .r305rp-toolbar-sep {
+    inline-size: 1px;
+    block-size: var(--sp-5);
+    background: var(--surface-divider);
+    flex: none;
+  }
+  /* Technical empty state: eyebrow + line + honest explanation. */
+  .r305rp-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding: var(--sp-6) var(--sp-5);
+    background: var(--surface-2);
+    border: 1px dashed var(--surface-border);
+    border-radius: var(--r-lg);
+    color: var(--text-secondary);
+  }
+  /* Async state announcements use the platform utility `.sr-only`
+     (base.css) + aria-live="polite" — do NOT redefine it here. */
+
+  /* ══ §A · student library + student research (a7-lib) ════════════
+     Owner: agent a7-lib. Append page-specific rules ONLY inside this
+     section. Classes prefixed .r305rp-lib-* / .r305rp-res-*. */
+
+  /* ── a7-lib appends here ── */
+
+  /* ══ §B · teacher research review (a7-teach) ══════════════════════
+     Owner: agent a7-teach. Classes prefixed .r305rp-rev-*. */
+
+  /* ── a7-teach appends here ── */
+
+  /* ══ §C · PDF reader workspace (a7-pdf) ═══════════════════════════
+     Owner: agent a7-pdf. Classes prefixed .r305pdf-*. Covers
+     DocumentViewerPage + components/pdf chrome. Existing pdf.css
+     class names may be restyled ONLY under the .r305rp marker. */
+
+  /* ── a7-pdf appends here ── */
+
+  /* ══ §D · AI assistant (a7-ai) ════════════════════════════════════
+     Owner: agent a7-ai. Classes prefixed .r305ai-*. Existing ai.css
+     class names may be restyled ONLY under the .r305rp marker. */
+
+  /* ── a7-ai appends here ── */
+
+  /* ══ §D · AI assistant — the Heron ledger (a7-ai) ═════════════════
+     The conversation reads as a TECHNICAL LEDGER: each turn is a hairline
+     separated row carrying a role micro-label («المساعد» / «أنت») and a
+     quiet content panel; roles differ by label + indent + panel ground —
+     never color alone. The surface head is the ONE deep band (status
+     region): title + engine/config chips + the persistent privacy line.
+     The composer wraps input + send in the single .r305rp-next accent
+     rail with the page's one emphasized action. No streaming, no cancel
+     and no citations exist in the API — nothing of the sort is rendered.
+     Existing ai.css/student.css class names are restyled ONLY here,
+     under the .r305rp marker. */
+
+  /* ── D1 · the status head — the one deep band ──────────────────── */
+  .r305rp .r305ai-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-5);
+  }
+  .r305rp .r305ai-head-main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2) var(--sp-3);
+    min-inline-size: 0;
+  }
+  /* Title ink re-derives on the deep ground (band sets neutral-0; the
+     ai.css title color points at the page ink and must not win). */
+  .r305rp .r305ai-head-title {
+    color: var(--neutral-0);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+  }
+  .r305rp .r305ai-head-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1-5);
+    min-inline-size: 0;
+  }
+  /* Chips on the deep ground: the resting chip recipe re-mixed toward
+     the band's own fg — theme-proof by construction (same ramp). */
+  .r305rp .r305ai-chip-deep {
+    background: color-mix(in srgb, var(--neutral-0) 8%, transparent);
+    border-color: color-mix(in srgb, var(--neutral-0) 26%, transparent);
+    color: color-mix(in srgb, var(--neutral-0) 84%, var(--neutral-900));
+  }
+  .r305rp .r305ai-chip-deep .r305rp-chip-dot {
+    background: color-mix(in srgb, var(--neutral-0) 70%, transparent);
+  }
+  .r305rp .r305ai-head-privacy {
+    margin: 0;
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+  }
+
+  /* ── D2 · the ledger rows ───────────────────────────────────────── */
+  .r305rp .chat-area {
+    gap: 0; /* hairlines separate turns, not gaps */
+    padding: var(--sp-1) var(--sp-5) var(--sp-3);
+  }
+  .r305rp .chat-msg {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-1-5);
+    padding-block: var(--sp-4);
+  }
+  .r305rp .chat-msg + .chat-msg {
+    border-block-start: 1px solid var(--surface-divider);
+  }
+  /* Role = micro-label + indent (the user turn steps in from the start
+     edge); ink weight differences are a third signal, never the only one. */
+  .r305rp .chat-msg.user { padding-inline-start: var(--sp-10); }
+  .r305rp .r305ai-role {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-muted);
+  }
+  .r305rp .r305ai-role::before {
+    content: "";
+    inline-size: var(--sp-4);
+    block-size: 1px;
+    background: var(--rule-strong);
+    flex: none;
+  }
+  /* The quiet content panel (r-lg, hairline) — bubble chrome retired. */
+  .r305rp .chat-bubble {
+    max-inline-size: min(72ch, 100%);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-lg);
+    background: var(--surface-2);
+    border: 1px solid var(--surface-border);
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+    color: var(--text-strong);
+    animation: none; /* the ledger is calm; no per-row entrance */
+  }
+  .r305rp .chat-msg.user .chat-bubble {
+    background: transparent;
+    border-color: var(--surface-divider);
+    color: var(--text-secondary);
+  }
+  .r305rp .ai-bubble-skeleton {
+    background: var(--surface-2);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--r-lg);
+    padding: var(--sp-3) var(--sp-4);
+    max-inline-size: min(72ch, 100%);
+  }
+  /* Reply typography — moved out of TSX inline styles (r305 contract). */
+  .r305rp .r305ai-line { margin: 0; }
+  .r305rp .r305ai-line--breath { min-block-size: 0.5em; }
+  .r305rp .r305ai-list {
+    margin: 0;
+    padding-inline-start: var(--sp-4);
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .r305rp .r305ai-list li { margin: 0; }
+  .r305rp .ai-engine-tag { margin-block-start: var(--sp-1-5); }
+
+  /* ── D3 · error panels — message + support code + real retry ───── */
+  .r305rp .chat-error {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-2);
+    max-inline-size: min(72ch, 100%);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-lg);
+    background: var(--danger-soft);
+    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+    color: var(--danger-ink);
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+    animation: none;
+  }
+  .r305rp .r305ai-err-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .r305rp .r305ai-mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .r305rp .r305ai-err-code {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    padding: var(--sp-0-5) var(--sp-2);
+    border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+    border-radius: var(--r-sm);
+    color: var(--danger-ink);
+  }
+  .r305rp .chat-retry { border-radius: var(--r-full); }
+
+  /* ── D4 · the pending row — dots + a truthful status line ──────── */
+  .r305rp .chat-typing {
+    background: transparent;
+    border: 0;
+    border-start-start-radius: 0;
+    padding: 0;
+  }
+  .r305rp .r305ai-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+  .r305rp .r305ai-status-text {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+  /* ── D5 · the composer — one accent rail, one send ──────────────── */
+  .r305rp .ai-composer {
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4) var(--sp-4);
+  }
+  .r305rp .ai-composer .r305ai-input-rail {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--sp-2);
+    padding: var(--sp-2);
+  }
+  .r305rp .ai-composer .r305ai-input-rail:focus-within {
+    border-color: var(--accent);
+    box-shadow: var(--state-input-focus-halo);
+  }
+  .r305rp .chat-input {
+    flex: 1;
+    min-inline-size: 0;
+    block-size: auto;
+    /* 44px touch floor — the a11y contract (ai.css raises it on coarse
+       pointers; the floor holds everywhere for thumb reach). */
+    min-block-size: 44px;
+    max-block-size: 120px;
+    padding: var(--sp-2);
+    border: 0; /* the rail is the frame */
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--text);
+    font-family: inherit;
+    font-size: var(--fs-body); /* 16px — iOS-zoom floor (21-c) via token */
+    line-height: var(--lh-base);
+    resize: none;
+    overflow-y: auto;
+  }
+  .r305rp .chat-input:focus { outline: none; background: transparent; }
+  .r305rp .chat-send {
+    inline-size: 44px;
+    block-size: 44px;
+    padding: 0;
+    border-radius: var(--r-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .r305rp .chat-send:disabled {
+    opacity: var(--state-btn-disabled-opacity);
+    cursor: not-allowed;
+  }
+  .r305rp .ai-composer .ai-quick-actions {
+    padding: 0 var(--sp-1);
+    gap: var(--sp-1-5);
+  }
+  .r305rp .ai-quick-chip {
+    padding: var(--sp-1-5) var(--sp-3);
+    border-radius: var(--r-full);
+    border: 1px solid var(--surface-border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    cursor: pointer;
+    transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+      background var(--t-fast) var(--ease);
+  }
+  .r305rp .ai-quick-chip:disabled {
+    opacity: var(--state-btn-disabled-opacity);
+    cursor: not-allowed;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .r305rp .ai-quick-chip:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent-ink);
+      background: var(--accent-soft);
+    }
+  }
+  .r305rp .ai-counter { margin: 0; padding-inline: var(--sp-1); }
+
+  /* ── D6 · the gaps strip — quiet panels over the hairline head ──── */
+  .r305rp .ai-gaps-title::before {
+    content: "";
+    inline-size: var(--sp-4);
+    block-size: 1px;
+    background: var(--rule-strong);
+  }
+  .r305rp .ai-gap-card {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--r-lg);
+    padding: var(--sp-3) var(--sp-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    text-align: start;
+    cursor: pointer;
+    transition: border-color var(--t-fast) var(--ease);
+  }
+  .r305rp .ai-gap-card:disabled {
+    opacity: var(--state-btn-disabled-opacity);
+    cursor: not-allowed;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .r305rp .ai-gap-card:hover:not(:disabled) { border-color: var(--accent); }
+  }
+  .r305rp .ai-gap-name {
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    color: var(--text-strong);
+  }
+  .r305rp .ai-gap-pct {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--fw-bold);
+    color: var(--accent-ink);
+  }
+
+  /* ── D7 · the sidebar — conversations + suggestions as lists ────── */
+  .r305rp .card {
+    border-radius: var(--r-lg);
+    box-shadow: none;
+  }
+  .r305rp .ai-conv-row[aria-current="true"] {
+    border-inline-start: 2px solid var(--accent);
+    background: var(--surface-2);
+  }
+  .r305rp .ai-conv-row .list-row-sub {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── D8 · mobile — thumb reach, no horizontal overflow ──────────── */
+  @media (max-width: 760px) {
+    .r305rp .chat-msg.user { padding-inline-start: var(--sp-6); }
+    .r305rp .chat-area { padding-inline: var(--sp-3); }
+    .r305rp .r305ai-head { padding: var(--sp-3) var(--sp-4); }
+  }
+
+  /* ══ §9 · Portal reach-through ════════════════════════════════════
+     Portals (Modal/Sheet/Tooltip) mount on document.body — page agents
+     reach them with `body:has(.r305rp)` as the scope prefix (same
+     pattern as r305-admin-owner.css §6). No shared portal rules yet;
+     this section documents the contract. */
+
+  /* Reduced-motion belt: this sheet introduces no animation of its
+     own — hover/focus are the shared system's grammar (color/border
+     steps only). Nothing to disable; kept as the explicit contract. */
+  @media (prefers-reduced-motion: reduce) {
+    .r305rp-eyebrow::before,
+    .r305rp-rule-labeled::before,
+    .r305rp-rule-labeled::after,
+    .r305rp-kicker::after { transition: none; }
+  }
+}
