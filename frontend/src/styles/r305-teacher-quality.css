@@ -856,6 +856,71 @@
           TeacherLivePage.tsx · TeacherLabsPage.tsx
    ──────────────────────────────────────────────────────────────── */
 /* [§E-START — Agent 2-d edits ONLY between these markers] */
+
+/* ═══ §E · tax- — Teacher aux: intelligence · profile · live · labs ═══
+   Consumes the §0 primitives as-is (hr-scope · hr-brow · hr-chip ·
+   hr-edge · hr-kpi · hr-toolbar · hr-note · hr-cta). §E adds only
+   what §0 cannot know:
+     1. the four-level RISK severity set for the .hr-edge rail (the
+        risk ladder, not the due-date ladder) + the matching score
+        ink — status text always rides -ink tokens;
+     2. .tax-kpis — the flagged-tier KPI row (real counts only);
+     3. composition seams: brow breathing, the truncated-list
+        disclosure, and the labs note icon ink. */
+
+/* ── 1 · Risk rows: severity rail + score ink, one data attribute ──
+   .hr-edge paints the 3px inline-start rail; §E names the four risk
+   severities (data-severity on the row drives both the rail and the
+   numeral ink). Raw accents never render as text here. */
+.hr-scope .risk-row[data-severity='ok']       { border-inline-start-color: var(--success); }
+.hr-scope .risk-row[data-severity='watch']    { border-inline-start-color: var(--chart-6); }
+.hr-scope .risk-row[data-severity='warn']     { border-inline-start-color: var(--warning); }
+.hr-scope .risk-row[data-severity='critical'] { border-inline-start-color: var(--danger); }
+
+.hr-scope .risk-row[data-severity='ok']       .risk-row-score { color: var(--success-ink); }
+.hr-scope .risk-row[data-severity='watch']    .risk-row-score { color: var(--gold-ink); }
+.hr-scope .risk-row[data-severity='warn']     .risk-row-score { color: var(--warning-ink); }
+.hr-scope .risk-row[data-severity='critical'] .risk-row-score { color: var(--danger-ink); }
+
+/* The row keeps its own 12px card radius — .hr-edge's r-xs start
+   corners target flat table rows, not rounded risk cards. */
+.hr-scope .risk-row.hr-edge {
+  border-start-start-radius: var(--r-lg);
+  border-end-start-radius: var(--r-lg);
+}
+
+/* ── 2 · Flagged-tier KPI row — honest counts above the risk rows ──
+   Three cells for the three tiers the panel actually holds (the
+   /teacher/risks endpoint skips stable students, so «مستقر» is
+   deliberately absent rather than a lying zero). Ember emphasis is
+   reserved for a non-zero critical count. */
+.tax-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: var(--sp-3);
+  padding-block-end: var(--sp-3);
+  margin-block-end: var(--sp-3);
+  border-block-end: 1px solid var(--border);
+}
+
+@media (max-width: 480px) {
+  .tax-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ── 3 · Composition seams ─────────────────────────────────────────── */
+
+/* The Heron brow rides above each page title with a rung of air so
+   it reads as an eyebrow, not a floating pill. */
+.hr-scope .page-title-block .hr-brow { margin-block-end: var(--sp-2); }
+
+/* Truncated-list disclosure (live · «جلسات سابقة») — sheet class
+   replaces the old inline margin (r186 hygiene). */
+.tax-past-note { margin-block-start: var(--sp-3); }
+
+/* The labs disclaimer rides .hr-note; its leading icon stays quiet
+   ink so the sentence — not the glyph — carries the caution. */
+.hr-scope .hr-note > svg { flex: none; color: var(--text-muted); }
+
 /* [§E-END] */
 
 }

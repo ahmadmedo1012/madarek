@@ -12,7 +12,7 @@ import { Link, useParams } from 'react-router-dom';
 import {
   AlertTriangle, BookOpen, Sparkles, ChevronRight, ChevronLeft,
   Users, ClipboardCheck, BarChart3, Brain, Lightbulb, ArrowUpRight,
-  CheckCircle2, AlertCircle, RefreshCw,
+  CheckCircle2, RefreshCw,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar, Tabs } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
@@ -31,25 +31,27 @@ import { useEntityPageTitle } from '../../components/layout/AppShell'; // r183-B
 import '../../styles/owner.css'; // ConfirmDialog surfaces via curriculum authoring (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-hero/.filter-pill/.back-link families (D11 css split, 12-15)
 import '../../styles/teacher-quality.css'; // 4C family sheet (r241): the .tq list-row catalog grammar
+import '../../styles/r305-teacher-quality.css'; // R305 Heron: §0 primitives + §E tax- composition
 import { formatPct1, formatNum } from '../../utils/numbers';
 
-/* Non-text edge for the 1px leading hairline (ruling #4). 5-D3 (5-D1
- * hand-off): WATCH's --gold measured 2.30:1 on the light .risk-row —
- * the amber graphics tier (chart-6, 3.87:1 light / 10.32:1 dark)
- * instead; dark --gold was passing but resolved to the accent itself. */
-const RISK_EDGE: Record<RiskLevel, string> = {
-  OK: 'var(--success)',
-  WATCH: 'var(--chart-6)',
-  AT_RISK: 'var(--warning)',
-  CRITICAL: 'var(--danger)',
+/* The shared risk vocabulary (the dashboard mirrors these exact
+ * strings — never reword). The chip tones are the Heron §0 status
+ * vocabulary: stable=ok · watched=info · at-risk=warn · critical=danger.
+ * The severity rail + score ink no longer ride inline styles: the row
+ * carries data-severity and §E of r305-teacher-quality.css paints both
+ * (.hr-edge rail + -ink numerals) — the 5-D3 contrast decision (WATCH
+ * on --chart-6 as a graphic, --gold-ink as text) now lives in the sheet. */
+const RISK_SEV: Record<RiskLevel, 'ok' | 'watch' | 'warn' | 'critical'> = {
+  OK: 'ok',
+  WATCH: 'watch',
+  AT_RISK: 'warn',
+  CRITICAL: 'critical',
 };
-/* …and the text-safe ink for the score column (guardrail #3 — status
- * text always uses -ink tokens, the raw accents can fail AA as text). */
-const RISK_INK: Record<RiskLevel, string> = {
-  OK: 'var(--success-ink)',
-  WATCH: 'var(--gold-ink)',
-  AT_RISK: 'var(--warning-ink)',
-  CRITICAL: 'var(--danger-ink)',
+const RISK_TONE: Record<RiskLevel, 'ok' | 'info' | 'warn' | 'danger'> = {
+  OK: 'ok',
+  WATCH: 'info',
+  AT_RISK: 'warn',
+  CRITICAL: 'danger',
 };
 const RISK_LABEL: Record<RiskLevel, string> = {
   OK: 'مستقر',
@@ -63,10 +65,25 @@ export default function TeacherIntelligencePage() {
   const offerings = useTeacherOfferings();
   const risks = useTeacherRisks();
 
+  /* The flagged-tier ladder: honest counts of the rows this panel
+   * actually holds (the /teacher/risks endpoint skips stable students,
+   * so «مستقر» stays out of the ladder rather than reading as a
+   * lying zero). Real counts only — never invented. */
+  const flaggedCounts = useMemo(() => {
+    const rows = risks.data ?? [];
+    return {
+      WATCH: rows.filter((r) => r.riskLevel === 'WATCH').length,
+      AT_RISK: rows.filter((r) => r.riskLevel === 'AT_RISK').length,
+      CRITICAL: rows.filter((r) => r.riskLevel === 'CRITICAL').length,
+    };
+  }, [risks.data]);
+
   return (
+    <div className="hr-scope">
     <div className="page">
       <header className="page-header">
         <div className="page-title-block">
+          <span className="hr-brow">تحليل لحظي</span>
           <h1 className="page-title">الذكاء الأكاديمي</h1>
           <p className="page-subtitle">
             متابعة أداء طلابك مدعومة بتحليل لحظي للحضور والدرجات والمتابعة، مع توصيات تدخّل ذكية.
@@ -85,8 +102,10 @@ export default function TeacherIntelligencePage() {
         }
         actions={(
           /* A6 P3 (22-a): the Latin run is bdi-isolated like every other
-           * Latin fragment on teacher surfaces (ResearchReview grammar). */
-          <Badge color="amber"><Icon icon={Brain} size={11} /> <bdi>AI</bdi></Badge>
+           * Latin fragment on teacher surfaces (ResearchReview grammar).
+           * R305: the suggestion affordance rides the Heron ember chip —
+           * the one warm accent on this panel. */
+          <span className="hr-chip" data-tone="ember"><Icon icon={Brain} size={11} /> <bdi>AI</bdi></span>
         )}
       >
         {risks.isPending ? (
@@ -105,31 +124,34 @@ export default function TeacherIntelligencePage() {
             description="لا حاجة لتدخّل عاجل."
           />
         ) : (
-          <div className="flex-col gap-2">
-            {risks.data.map((r) => (
-              <div
-                key={r.studentId + r.offeringId}
-                className="risk-row"
-                style={{ borderInlineStart: `1px solid ${RISK_EDGE[r.riskLevel]}` }}
-              >
-                <UserAvatar initials={r.avatarInitials ?? r.name.slice(0, 2)} color={r.avatarColor ?? undefined} size={36} />
-                <div className="flex-1">
-                  <div className="risk-row-name">{r.name}</div>
-                  <div className="risk-row-meta">
-                    <span>{r.courseIcon} {r.courseName}</span>
-                    {r.signals.map((s) => <Badge key={s} color="amber">{s}</Badge>)}
+          <>
+            <FlaggedLadder counts={flaggedCounts} />
+            <div className="flex-col gap-2">
+              {risks.data.map((r) => (
+                <div
+                  key={r.studentId + r.offeringId}
+                  className="risk-row hr-edge"
+                  data-severity={RISK_SEV[r.riskLevel]}
+                >
+                  <UserAvatar initials={r.avatarInitials ?? r.name.slice(0, 2)} color={r.avatarColor ?? undefined} size={36} />
+                  <div className="flex-1">
+                    <div className="risk-row-name">{r.name}</div>
+                    <div className="risk-row-meta">
+                      <span>{r.courseIcon} {r.courseName}</span>
+                      {r.signals.map((s) => <span key={s} className="hr-chip" data-tone="warn">{s}</span>)}
+                    </div>
+                    <div className="risk-row-suggestion">
+                      <Icon icon={Lightbulb} size={11} style={{ color: 'var(--gold-ink)' }} /> {r.suggestion}
+                    </div>
                   </div>
-                  <div className="risk-row-suggestion">
-                    <Icon icon={Lightbulb} size={11} style={{ color: 'var(--gold-ink)' }} /> {r.suggestion}
+                  <div className="risk-row-score">
+                    <div className="risk-row-pct"><bdi>{formatPct1(r.riskScore)}%</bdi></div>
+                    <span className="hr-chip" data-tone={RISK_TONE[r.riskLevel]}>{RISK_LABEL[r.riskLevel]}</span>
                   </div>
                 </div>
-                <div className="risk-row-score" style={{ color: RISK_INK[r.riskLevel] }}>
-                  <div className="risk-row-pct"><bdi>{formatPct1(r.riskScore)}%</bdi></div>
-                  <div className="risk-row-label">{RISK_LABEL[r.riskLevel]}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         )}
       </Card>
 
@@ -168,6 +190,36 @@ export default function TeacherIntelligencePage() {
           </div>
         )}
       </Card>
+    </div>
+    </div>
+  );
+}
+
+/** R305 §E (.hr-kpi): the flagged-tier ladder — honest counts of what
+ * this panel holds (WATCH/AT_RISK/CRITICAL; the endpoint skips stable
+ * students, so «مستقر» is deliberately absent rather than a lying
+ * zero). Ember emphasis is reserved for a non-zero critical count. */
+function FlaggedLadder({ counts }: {
+  counts: { WATCH: number; AT_RISK: number; CRITICAL: number };
+}) {
+  const tiers = [
+    { v: 'WATCH' as const, label: RISK_LABEL.WATCH },
+    { v: 'AT_RISK' as const, label: RISK_LABEL.AT_RISK },
+    { v: 'CRITICAL' as const, label: RISK_LABEL.CRITICAL },
+  ];
+  return (
+    <div className="tax-kpis">
+      {tiers.map((t) => (
+        <div className="hr-kpi" key={t.v}>
+          <span
+            className="hr-kpi-value"
+            data-emphasis={t.v === 'CRITICAL' && counts.CRITICAL > 0 ? 'true' : undefined}
+          >
+            {formatNum(counts[t.v])}
+          </span>
+          <span className="hr-kpi-label">{t.label}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -295,9 +347,10 @@ export function TeacherOfferingDetailPage() {
 
   // Honest tri-state (audit 0-e P0-5): pending → skeleton, error → retry,
   // resolved-but-unknown id → a real 404 state — never an infinite skeleton.
-  if (offerings.isPending) return <DetailSkeleton />;
+  if (offerings.isPending) return <div className="hr-scope"><DetailSkeleton /></div>;
   if (offerings.isError) {
     return (
+      <div className="hr-scope">
       <div className="page">
         <Link to="/teacher/intelligence" className="back-link">
           <Icon icon={ChevronRight} size={14} />
@@ -314,10 +367,12 @@ export function TeacherOfferingDetailPage() {
           onRetry={() => offerings.refetch()}
         />
       </div>
+      </div>
     );
   }
   if (!offering) {
     return (
+      <div className="hr-scope">
       <div className="page">
         <Link to="/teacher/intelligence" className="back-link">
           <Icon icon={ChevronRight} size={14} />
@@ -334,6 +389,7 @@ export function TeacherOfferingDetailPage() {
           description="ربما حُذف هذا العرض أو أن الرابط غير صحيح."
         />
       </div>
+      </div>
     );
   }
   const accent = offering.course.themeColor ?? 'var(--accent)';
@@ -344,6 +400,7 @@ export function TeacherOfferingDetailPage() {
   const onSuggest = () => suggest.mutate(offeringId!);
 
   return (
+    <div className="hr-scope">
     <div className="page">
       <Link to="/teacher/intelligence" className="back-link">
         <Icon icon={ChevronRight} size={14} />
@@ -443,8 +500,9 @@ export function TeacherOfferingDetailPage() {
             <>
               {/* Risk-level filter — the page's authored moment: on a filter
                   change non-matching rows fade between shades (is-dim) while
-                  matching rows keep their color, mirroring the matrix. */}
-              <div className="flex items-center gap-2 flex-wrap" role="group" aria-label="تصفية بمستوى المخاطر">
+                  matching rows keep their color, mirroring the matrix.
+                  R305: the group rides the shared .hr-toolbar grammar. */}
+              <div className="hr-toolbar" role="group" aria-label="تصفية بمستوى المخاطر">
                 {([
                   { v: 'all' as const, label: 'الكل' },
                   { v: 'OK' as const, label: RISK_LABEL.OK },
@@ -483,9 +541,11 @@ export function TeacherOfferingDetailPage() {
           title="اقتراح هيكل منهج (محاكاة قالبية)"
           icon={Brain}
           actions={
+            /* R305: the tab's one primary action rides the ember-flavored
+             * .hr-cta emphasis cap (never a re-painted .btn). */
             <button
               type="button"
-              className="btn primary sm"
+              className="btn primary sm hr-cta"
               onClick={onSuggest}
               disabled={suggest.isPending}
             >
@@ -553,14 +613,15 @@ export function TeacherOfferingDetailPage() {
         <CurriculumAuthoringPanel offeringId={offeringId} accent={accent} />
       )}
     </div>
+    </div>
   );
 }
 
 function StudentRow({ student, dimmed }: { student: TeacherStudentRow; dimmed: boolean }) {
   return (
     <div
-      className={`risk-row${dimmed ? ' is-dim' : ''}`}
-      style={{ borderInlineStart: `1px solid ${RISK_EDGE[student.riskLevel]}` }}
+      className={`risk-row hr-edge${dimmed ? ' is-dim' : ''}`}
+      data-severity={RISK_SEV[student.riskLevel]}
     >
       <UserAvatar initials={student.avatarInitials ?? student.name.slice(0, 2)} color={student.avatarColor ?? undefined} size={40} />
       <div className="flex-1">
@@ -573,16 +634,16 @@ function StudentRow({ student, dimmed }: { student: TeacherStudentRow; dimmed: b
         </div>
         {student.signals.length > 0 && (
           <div className="risk-row-meta" style={{ marginBlockStart: 'var(--sp-1)' }}>
-            {student.signals.map((s) => <Badge key={s} color="amber"><Icon icon={AlertCircle} size={11} /> {s}</Badge>)}
+            {student.signals.map((s) => <span key={s} className="hr-chip" data-tone="warn">{s}</span>)}
           </div>
         )}
         <div className="risk-row-suggestion">
           <Icon icon={Lightbulb} size={11} style={{ color: 'var(--gold-ink)' }} /> {student.suggestion}
         </div>
       </div>
-      <div className="risk-row-score" style={{ color: RISK_INK[student.riskLevel] }}>
+      <div className="risk-row-score">
         <div className="risk-row-pct"><bdi>{student.riskScore}%</bdi></div>
-        <div className="risk-row-label">{RISK_LABEL[student.riskLevel]}</div>
+        <span className="hr-chip" data-tone={RISK_TONE[student.riskLevel]}>{RISK_LABEL[student.riskLevel]}</span>
       </div>
     </div>
   );
