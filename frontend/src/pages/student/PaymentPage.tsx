@@ -11,6 +11,9 @@ import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useMyProfile } from '../../hooks/useResources';
 import { toast } from '../../lib/toast';
+/* R305 Heron: the shared student vocabulary + this family's refinements. */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-supplemental.css';
 
 /**
  * Honest financial-affairs landing.
@@ -70,7 +73,10 @@ export default function PaymentPage() {
           once (small distance) — money-path restraint, no confetti. */}
       <Reveal distance="small">
         <Card title="حالة الرسوم" icon={Receipt}>
-          <div className="payment-panel">
+          {/* R305 Heron: the honest fees disclosure is the page's ONE
+              emphasized region — the copper rail (.r305s-next) instead of
+              the neutral panel well. */}
+          <div className="r305s-next r305p-rail">
             <p className="text-sm text-muted" style={{ margin: 0, lineHeight: 'var(--lh-loose)' }}>
               تكامل الدفع الإلكترونيّ مع نظام الخزينة الجامعيّة قيد التطوير، والمنصّة لا تعرض
               أيّ مبالغ تقديريّة. رصيدك الفعليّ وسجلّ سدادك مصدرهما مكتب الشؤون الماليّة —

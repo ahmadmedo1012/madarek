@@ -1,0 +1,284 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R305-A5 · Heron design language, student SUPPLEMENTAL family
+   Agent 2-d · branch redesign/r305-student-d-supplemental
+
+   Page-scoped refinements for the supplemental long tail, layered on the
+   shared vocabulary in r305-student.css (imported beside this sheet by
+   every page below). Gamification/achievement ANATOMY stays in
+   training.css (shared sheet — read-only here); this file only adds the
+   Heron surface register around it:
+
+   §1  profile      — the deep identity band (/student/profile hero)
+   §2  achievements — the gold register (/achievements KPI strip)
+   §3  alerts       — the de-boxed notification register (role-neutral:
+                      /student/alerts + /admin|teacher/alerts +
+                      /quality|owner/notifications share the markup)
+   §4  gamification — the deep level band (/student/gamification)
+   §5  arvr         — the honest catalog rows (/student/ar)
+   §6  webinars     — destination rails (/student/webinars)
+   §7  university   — identity/facts bands (/student/university)
+   §8  rails        — the shared quiet rail padding (payment / map)
+
+   Riding the FOUNDATION classes only (no page-scoped rules here):
+   messages (the pinned shared inbox), labs (kicker catalog section +
+   meta rows + status chips).
+
+   Gate contract (enforced on this tree): colors var()/color-mix() only;
+   type/radius/spacing on the token ladders; Lucide icons via Icon;
+   motion only via --t-*/--motion-* tokens and guarded hovers.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── §1 · profile — the deep identity band ────────────────────────
+     /student/profile opens with ONE dark/light contrast moment: the
+     identity band (avatar + name + verified state + completeness
+     meter) on the auto-inverting deep ground. The band base classes
+     (.r305s-band .r305s-band--deep) come from the foundation sheet;
+     only the internal anatomy lives here. */
+  .r305p-hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-4) var(--sp-5);
+  }
+  .r305p-hero-id {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    flex: 1;
+    min-inline-size: min-content;
+  }
+  /* The name steps up to the section register — the band is the page's
+     opening statement, the title row is its voice. */
+  .r305p-hero-name {
+    font-size: var(--fs-h3);
+    font-weight: var(--fw-bold);
+    color: var(--neutral-0);
+    line-height: var(--lh-snug);
+  }
+  .r305p-hero-mail {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1) var(--sp-2);
+    font-size: var(--fs-sm);
+    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+  }
+  /* Completeness meter column — the band's trailing fact. */
+  .r305p-hero-meter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    min-inline-size: min(220px, 100%);
+    flex: 0 1 220px;
+  }
+  .r305p-hero-meter-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+  }
+  /* The % readout keeps the r180 traffic-light -ink pairs ON the meter
+     head; on the deep ground they switch to the band's own ink so the
+     number never drops below the band's contrast floor. */
+  .r305p-hero-meter-value {
+    font-family: var(--font-mono);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+    color: var(--neutral-0);
+  }
+  /* The progress rail on the deep ground: a hairline track so the
+     semantic fill (accent/success/warning, unchanged) reads in both
+     themes without repainting the tokens. */
+  .r305p-hero-meter .progress {
+    background: color-mix(in srgb, var(--neutral-0) 14%, transparent);
+  }
+
+  @media (max-width: 640px) {
+    .r305p-hero { align-items: flex-start; }
+    .r305p-hero-meter { flex-basis: 100%; }
+  }
+
+  /* ── §2 · achievements — the gold register ────────────────────────
+     /achievements KPI strip rides the deep band (the page's ONE
+     inversion). Values stay band-neutral ink — the gold DISCIPLINE
+     puts --gold on the achievement anatomy (tier orbs, xp fill, +XP
+     chips — training.css §gamification), never on the strip's type. */
+  .r305a-strip .stat-strip {
+    background: var(--neutral-900);
+    border: 1px solid transparent;
+    border-radius: var(--r-lg);
+    padding: var(--sp-4) var(--sp-2);
+  }
+  .r305a-strip .stat-cell {
+    border-color: color-mix(in srgb, var(--neutral-0) 16%, transparent);
+  }
+  .r305a-strip .stat-label { color: var(--neutral-500); }
+  .r305a-strip .stat-value { color: var(--neutral-0); }
+  .r305a-strip .stat-trend { color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900)); }
+
+  /* ── §3 · alerts — the de-boxed register (ROLE-NEUTRAL) ───────────
+     The notification list leaves its card box: hairline rows on the
+     page surface, classified by the shared kicker. One scope fix only —
+     np-list's negative start margin compensated the card's padding. */
+  .r305p-alerts .np-list { margin-block-start: 0; }
+
+  /* ── §4 · gamification — the deep level band ──────────────────────
+     /student/gamification: the level/tier statement sits on the deep
+     ground; the achievements + leaderboard lists stay quiet page-surface
+     rows under shared kickers. Inner inks re-derive from the band's own
+     ramp (theme-proof by construction, same recipe as the foundation). */
+  .r305g-level {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-4);
+  }
+  .r305g-level-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    flex: 1;
+    min-inline-size: min-content;
+  }
+  .r305g-level-title {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--neutral-0);
+    line-height: var(--lh-snug);
+  }
+  .r305g-level-sub {
+    font-size: var(--fs-xs);
+    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+  }
+  .r305g-level .xp-track {
+    background: color-mix(in srgb, var(--neutral-0) 14%, transparent);
+  }
+  .r305g-level-foot {
+    font-size: var(--fs-xxs);
+    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+  }
+  /* The retry affordance inside the band: quiet ghost on the dark
+     ground keeps the one-action emphasis without a second fill. */
+  .r305g-level .btn.ghost {
+    color: var(--neutral-0);
+    border-color: color-mix(in srgb, var(--neutral-0) 30%, transparent);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .r305g-level .btn.ghost:hover {
+      background: color-mix(in srgb, var(--neutral-0) 10%, transparent);
+    }
+  }
+
+  /* ── §5 · arvr — the honest catalog rows ──────────────────────────
+     /student/ar: the seeded AR/VR index is a LIST (RowList anatomy),
+     not a card wall. The type well carries the discipline: soft tint,
+     ink-safe icon, no fake launch affordance. */
+  .r305v-well {
+    inline-size: var(--sp-9);
+    block-size: var(--sp-9);
+    border-radius: var(--r-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    flex: none;
+  }
+  .r305v-desc {
+    margin: 0;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+  }
+
+  /* ── §6 · webinars — destination rails ────────────────────────────
+     /student/webinars: «أين أجد الفعاليّات؟» folds from a two-card grid
+     into two copper-edged rails on the shared .r305s-next emphasis. The
+     inner title/desc keep the frozen student.css classes
+     (.webinar-dest-title carries the 5-D3 display-font pin). */
+  .r305w-dests {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: var(--sp-3);
+  }
+  .r305w-dest {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+  .r305w-dest .btn { align-self: flex-start; }
+
+  /* ── §7 · university — identity bands + fact rows ─────────────────
+     /student/university: the showcase identity card sits on the deep
+     ground; vision/mission ride the quiet step band. Fact rows here are
+     this page's own anatomy (label-over-value, hairline separated) so
+     they read on BOTH grounds — the frozen .fact-tile paints a light
+     well and would fight the band. */
+  .r305u-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: var(--sp-3);
+  }
+  .r305u-fact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-0-5);
+    padding-block-end: var(--sp-3);
+    border-block-end: 1px solid color-mix(in srgb, var(--neutral-0) 16%, transparent);
+    min-inline-size: 0;
+  }
+  .r305u-fact-label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--neutral-500);
+  }
+  .r305u-fact-value {
+    font-size: var(--fs-sm);
+    color: var(--neutral-0);
+    line-height: var(--lh-base);
+    overflow-wrap: anywhere;
+  }
+  /* Membership + strategic-goal rows — hairline ledger rows on the
+     card surface (the old inline surface-2 wells are retired). */
+  .r305u-rows {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+  }
+  .r305u-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding-block: var(--sp-3);
+    min-inline-size: 0;
+  }
+  .r305u-rows > .r305u-row + .r305u-row {
+    border-block-start: 1px solid var(--surface-divider);
+  }
+  .r305u-row-main {
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  /* ── §8 · rails — the shared quiet-rail padding ───────────────────
+     .r305s-next paints the copper edge + tint; this adds the anatomy
+     padding for the non-card rails (payment fees notice, campus-map
+     cross-link). */
+  .r305p-rail {
+    padding: var(--sp-4) var(--sp-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+
+  /* Reduced-motion belt: this sheet declares no animation of its own —
+     the one hover shift above is a color step already guarded behind
+     (hover:hover) and dies with the global RM belt. Explicit contract. */
+  @media (prefers-reduced-motion: reduce) {
+    .r305g-level .btn.ghost { transition: none; }
+  }
+}

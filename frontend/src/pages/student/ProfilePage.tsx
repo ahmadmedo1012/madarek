@@ -17,6 +17,10 @@ import {
 } from '../../hooks/useChangePassword'; // r180-F4
 import { toast } from '../../lib/toast';
 import '../../styles/training.css'; // .achievement-* family (D11 css split, 12-15)
+/* R305 Heron: the shared student vocabulary + this family's page-scoped
+   refinements (the deep profile hero band, §1 of the family sheet). */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-supplemental.css';
 import { formatNum } from '../../utils/numbers';
 
 type LinkKind = 'research-gate' | 'google-scholar' | 'orcid';
@@ -165,49 +169,48 @@ export default function ProfilePage() {
         description="معلوماتك الأكاديمية، حساباتك العلمية، وإنجازاتك في المنصة."
       />
 
-      {/* Hero */}
-      <Card>
-        <div className="flex items-center gap-4" style={{ flexWrap: 'wrap' }}>
-          <UserAvatar initials={initials} color={user.avatarColor ?? undefined} size={64} />
-          <div style={{ flex: 1, minWidth: 200 }}>
-            <div className="text-md font-semibold" style={{ color: 'var(--text)', fontSize: 'var(--fs-lg)' }}>
-              {user.firstName} {user.lastName}
-            </div>
-            <div className="flex items-center gap-2 text-xs text-subtle" style={{ marginTop: 'var(--sp-1)' }}>
-              <Icon icon={Mail} size={12} />
-              <bdi dir="ltr" className="font-mono">{user.email}</bdi>
-              {profile.data ? (
-                emailVerified ? (
-                  <Badge color="green" icon={CheckCircle2}>موثَّق</Badge>
-                ) : (
-                  <Badge color="amber" icon={AlertCircle}>البريد غير موثَّق</Badge>
-                )
-              ) : null}
-            </div>
-          </div>
-          <div className="flex-col gap-1" style={{ minWidth: 220 }}>
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-muted">اكتمال الملف</span>
-              {/* 5-D1 (A11 P2-2): the % is 12px mono TEXT — the base
-                  accent/success/warning fills measured 3.80/3.00/2.30:1
-                  on white (AA needs 4.5). The -ink pair (10.29/9.08/7.56:1)
-                  keeps the traffic-light tiers; dark's -ink tokens resolve
-                  to the same values the base tokens already had. The bar
-                  fill below keeps the base tokens (graphic, redundant with
-                  the % above it). */}
-              <span className="font-mono font-semibold" style={{ color: completeness >= 80 ? 'var(--success-ink)' : completeness >= 60 ? 'var(--accent-ink)' : 'var(--warning-ink)' }}>
-                {completeness}%
-              </span>
-            </div>
-            <ProgressBar
-              value={completeness}
-              showValue={false}
-              color={completeness >= 80 ? 'var(--success)' : completeness >= 60 ? 'var(--accent)' : 'var(--warning)'}
-              ariaLabel="اكتمال الملف الشخصي"
-            />
+      {/* R305 Heron hero — the ONE deep band on the page: identity
+          (avatar + name + verified state) and the completeness meter
+          share the auto-inverting ground; the eyebrow classifies the
+          band as the account block before the tabs classify content. */}
+      <div className="r305s-band r305s-band--deep r305p-hero">
+        <UserAvatar initials={initials} color={user.avatarColor ?? undefined} size={64} />
+        <div className="r305p-hero-id">
+          <span className="r305s-eyebrow">الملف الشخصي</span>
+          <div className="r305p-hero-name">{user.firstName} {user.lastName}</div>
+          <div className="r305p-hero-mail">
+            <Icon icon={Mail} size={12} />
+            <bdi dir="ltr" className="font-mono">{user.email}</bdi>
+            {profile.data ? (
+              emailVerified ? (
+                <Badge color="green" icon={CheckCircle2}>موثَّق</Badge>
+              ) : (
+                <Badge color="amber" icon={AlertCircle}>البريد غير موثَّق</Badge>
+              )
+            ) : null}
           </div>
         </div>
-      </Card>
+        <div className="r305p-hero-meter">
+          <div className="r305p-hero-meter-head">
+            <span>اكتمال الملف</span>
+            {/* 5-D1 (A11 P2-2): the % is mono TEXT — the base
+                accent/success/warning fills measured 3.80/3.00/2.30:1
+                on white (AA needs 4.5). The -ink pair kept the
+                traffic-light tiers on the old light hero; on the R305
+                deep band the readout rides the band's own ink
+                (.r305p-hero-meter-value) so contrast holds in both
+                themes, and the BAR keeps the base tokens (graphic,
+                redundant with the % above it). */}
+            <span className="r305p-hero-meter-value">{completeness}%</span>
+          </div>
+          <ProgressBar
+            value={completeness}
+            showValue={false}
+            color={completeness >= 80 ? 'var(--success)' : completeness >= 60 ? 'var(--accent)' : 'var(--warning)'}
+            ariaLabel="اكتمال الملف الشخصي"
+          />
+        </div>
+      </div>
 
       {/* R304: the 2×2 MetricCard wall folds into ONE StatLine — the
           same four facts with the same real sources and the same

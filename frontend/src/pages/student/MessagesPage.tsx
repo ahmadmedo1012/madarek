@@ -19,6 +19,17 @@ import {
 } from '../../components/messages/MessageComposeModal';
 import { useMyEnrollments } from '../../hooks/useResources';
 
+/* R305 Heron: the shared student vocabulary + this family's refinements.
+   The page itself is a thin shell — title, subtitle, and the compose
+   recipient discovery ride `MessagesInbox`, whose DOM (list rows, day
+   groups, honest loading/error/empty states, mark-all sweep) is the
+   r171a shared contract pinned by its own unit suites and byte-shared
+   with the teacher inbox. The Heron register therefore lands on the
+   student surface through those shared states unchanged — no wrapper
+   markup is added that would fork the two inboxes' anatomy. */
+import '../../styles/r305-student.css';
+import '../../styles/r305-student-supplemental.css';
+
 /** The student compose shell: the enrolled-teachers optgroup. One real
  * endpoint behind it (GET /enrollments/me — the same rows the courses
  * page renders). Teachers are deduped by id across offerings (one
