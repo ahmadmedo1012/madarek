@@ -540,11 +540,19 @@
    embedding. */
 .doc-reader-head {
   display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
   margin-block-end: var(--sp-3);
 }
 .doc-reader-title {
+  /* The title shares the head line with the back affordance — one quiet
+     bar of context above the paper, not two stacked blocks eating the
+     viewport-locked reader's height (final-research D). Wraps under
+     the back link on narrow screens. */
+  flex: 1 1 240px;
+  min-inline-size: 0;
   margin: 0;
   font-size: var(--fs-h3);
   font-weight: var(--fw-bold);
@@ -552,6 +560,7 @@
   line-height: var(--lh-snug);
   overflow-wrap: anywhere;
 }
+.document-viewer-back { flex-shrink: 0; }
 
 /* The annotations panel embedded in the mobile bottom Sheet — full
    width, natural height with an internal scroll; the fixed 320px side
@@ -571,10 +580,31 @@
 /* ─── The viewer route page — viewport-locked with dvh ──────
    r152i (A3): was an inline style on the route div (calc(100vh) —
    iOS URL-bar trap + forced the print block into an !important fight).
-   dvh tracks the dynamic viewport; the print override below stays. */
+   dvh tracks the dynamic viewport; the print override below stays.
+
+   final-research D — the reader FILLS the shell: PageFrame's
+   width="full" intent never materialized (the only consumer of that
+   mode is this page): .pf-page's own `margin-inline: auto` inside the
+   column-flex .page sizes the frame to its CONTENT (cross-axis auto
+   margins → shrink-to-fit), so the reader collapsed to ~900px and the
+   A4 canvas rendered 529px wide on a 1440 viewport. inline-size:100%
+   restores the stretch; max-inline-size widens the route from the
+   generic 1080px page cap to the app's own content cap (--content-
+   max-w) — the one surface that genuinely benefits from it. */
 .document-viewer-page {
   height: calc(100dvh - var(--topbar-h));
   padding-block-end: 0;
+  max-inline-size: var(--content-max-w);
+}
+.document-viewer-page .pf-page {
+  inline-size: 100%;
+  /* The definite height closes the loop: without it the auto-height
+     chain (pf-page → doc-reader → main → viewer) sizes itself to the
+     RENDERED A4 content (at the new reading width that is ~1060px —
+     taller than the viewport) and the reader overflows its locked
+     page. With block-size:100% the flex distribution bounds the
+     canvas area, which scrolls its paper like every document reader. */
+  block-size: 100%;
 }
 
 /* ─── Print — the paper, not the chrome ────────────────────

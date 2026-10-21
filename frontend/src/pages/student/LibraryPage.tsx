@@ -122,10 +122,13 @@ function BookRow({ book }: { book: Book }) {
   return (
     <RowItem
       leading={
-        /* r186: typographic jacket (identity chip at row scale) —
-         * deterministic cover from the book's own data (category icon +
-         * band on the book's tint). Decorative by contract: aria-hidden
-         * keeps the accessible title/author in the row body. */
+        /* final-research D: the identity chip at its true row scale —
+         * deterministic jacket from the book's own data (category glyph
+         * on the book's tint, spine strip on the leading edge).
+         * Decorative by contract: aria-hidden keeps the accessible
+         * title/author/category in the row body — the category name
+         * reads ONCE, in the row meta (the retired r232 band text was
+         * a second, cramped read). */
         <span
           className="lib-book-cover rs-book-cover"
           aria-hidden="true"
@@ -135,11 +138,7 @@ function BookRow({ book }: { book: Book }) {
           }}
         >
           <span className="lib-cover-mark">
-            <Icon icon={Cmp} size={22} strokeWidth={1.6} />
-          </span>
-          <span className="lib-cover-band">
-            <Icon icon={Cmp} size={11} strokeWidth={2.2} />
-            <span>{categoryLabel(book.category)}</span>
+            <Icon icon={Cmp} size={20} strokeWidth={1.8} />
           </span>
         </span>
       }
@@ -661,11 +660,16 @@ function ResearchHitRow({ paper, hit }: {
         <>
           <span>{paper.student.firstName} {paper.student.lastName}</span>
           {paper.offering?.course && (
-            <span className="font-mono"><bdi>{paper.offering.course.code}</bdi></span>
+            <>
+              <span aria-hidden="true">·</span>
+              <span><bdi className="font-mono">{paper.offering.course.code}</bdi> — {paper.offering.course.name}</span>
+            </>
           )}
-          {paper.offering?.course && <span>{paper.offering.course.name}</span>}
           {paper.publishedAt && (
-            <span className="font-mono"><bdi>{formatDate(paper.publishedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</bdi></span>
+            <>
+              <span aria-hidden="true">·</span>
+              <span className="font-mono"><bdi>{formatDate(paper.publishedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</bdi></span>
+            </>
           )}
         </>
       }

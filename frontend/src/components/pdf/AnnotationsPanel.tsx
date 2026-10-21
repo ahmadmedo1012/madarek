@@ -101,8 +101,14 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
     setDraft('');
   };
 
+  /* <section>, not <aside> (final-research D): the panel renders inside
+   * the reader's landmark tree, and a complementary landmark nested in
+   * another landmark is an axe violation (landmark-complementary-is-
+   * top-level — surfaced by the dev a11y belt on every reader visit).
+   * A labelled section carries the same semantics without the nesting
+   * rule; the label matches the mobile Sheet's title. */
   return (
-    <aside className="annotations-panel">
+    <section className="annotations-panel" aria-label="ملاحظات البحث">
       <header className="annotations-header">
         <div className="flex items-center gap-2">
           <Icon icon={MessageSquare} size={16} className="text-subtle" />
@@ -260,7 +266,7 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
           })
         )}
       </div>
-    </aside>
+    </section>
   );
 }
 
