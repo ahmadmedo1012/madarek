@@ -120,9 +120,9 @@ test.describe('الحركة الكاملة — الخط الأساسي (بدون
       };
     });
 
-    // The token ladder keeps its designed value (240ms for --t-base).
-    expect(probe.durationMedium).toBe('240ms');
-    // The CTA's own background transition rides --t-fast (160ms).
-    expect(probe.submitTransitionDuration).toBe('0.16s');
+    // The r305 Heron ladder (foundation): --t-base = 400ms.
+    expect(probe.durationMedium).toBe('400ms');
+    // The CTA's own background transition rides --t-fast (200ms on r305).
+    expect(probe.submitTransitionDuration).toBe('0.2s');
   });
 });
