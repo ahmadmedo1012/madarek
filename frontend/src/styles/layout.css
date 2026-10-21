@@ -8,6 +8,15 @@
    components.css) and deleted — the cascade speaks in layers again:
    tokens → base → layout/components → pages → overrides. The shell
    recipes below are the single source for sidebar/topbar/nav chrome.
+   r305 (Heron shell): conservation pass — the recipes below were
+   reconciled with the Heron Shell Contract (precise outlines ·
+   structured grid · restrained signal · disciplined type · crisp
+   transitions): resting controls lost their at-rest shadows (hairline
+   carries depth), hover states are surface steps (the accent never
+   previews on hover), and the active row keeps ONE marker (bar +
+   surface step + icon tint). The Heron layer that binds the whole
+   shell lives in r305-shell.css (imported by AppShell.tsx, unlayered
+   — last word in the cascade); this sheet remains the base recipes.
    ════════════════════════════════════════════════════════════════════ */
 
 @layer layout {
@@ -135,16 +144,24 @@
     background: var(--surface);
     border: 1px solid var(--rule);
     color: var(--text-muted);
-    /* hairline depth cue — not an elevation step */
-    box-shadow: 0 1px 0 color-mix(in srgb, var(--black) 2%, transparent);
+    /* r305 (Heron conservation): the 1px «hairline depth cue» shadow is
+       retired — resting chrome is FLAT (the hairline border IS the
+       outline; --elev-* is reserved for true overlays). Press/hover
+       registers for this control live in r305-shell.css's one
+       control recipe. */
     cursor: pointer;
     flex-shrink: 0;
     transition: var(--t-clean);
   }
   .sidebar-collapse-btn:hover {
+    /* r305 (Heron conservation): hover is a SURFACE STEP — the copper
+       border/ink here spent the signal on an uncommitted state (grammar
+       §3: copper only at the active marker / focus / primary CTA /
+       unread urgency / ⌘K chip). The ink steps with the surface; FOCUS
+       keeps the accent (polish v22's :focus-visible border cue). */
     background: var(--surface-2);
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--border-strong);
+    color: var(--text);
   }
   .sidebar.collapsed .sidebar-collapse-btn {
     /* When collapsed, the button is the only visible chrome in the
@@ -479,7 +496,8 @@
   }
   .topbar-mobile-toggle:hover { background: var(--surface-3); color: var(--text); }
   .topbar-mobile-toggle:active {
-    transform: scale(0.97);
+    /* r305: the raw 0.97 joins the one press register (--press-scale). */
+    transform: scale(var(--press-scale));
     transition-duration: var(--motion-duration-micro);
   }
   @media (max-width: 920px) {
@@ -535,7 +553,11 @@
        chip at 13px (axe, browser check); secondary clears AA both themes. */
     color: var(--text-secondary);
     background: var(--surface-2);
-    border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--rule));
+    /* r305 (Heron conservation): the 20% copper tint on this hairline
+       is retired — the scope chip is CONTEXT, not signal (grammar §3's
+       five copper sites don't include a passive chip); the plain rule
+       hairline carries it in both themes. */
+    border: 1px solid var(--rule);
     border-radius: var(--r-full);
     padding: 3px var(--sp-2-5); /* spacing-gate: allow — topbar scope chip micro grade 3/10 vertical hairline */
     margin-inline-start: var(--sp-2);
@@ -783,10 +805,10 @@
     letter-spacing: normal;
     color: var(--text-muted);
     font-weight: var(--fw-semibold);
-    background: linear-gradient(90deg, var(--surface-2), transparent);
-  }
-  [dir="rtl"] .search-section-label {
-    background: linear-gradient(-90deg, var(--surface-2), transparent);
+    /* r305 (Heron conservation): the 90deg surface-fade backdrop is
+       retired — decorative gradient paint in the chrome (the quiet
+       muted label carries the section; the dropdown hairlines carry
+       the structure). The [dir=rtl] gradient twin retired with it. */
   }
 
   .search-row {
@@ -828,7 +850,15 @@
   [dir="rtl"] .search-row::before {
     border-radius: var(--r-xs) 0 0 var(--r-xs);
   }
-  .search-row:hover,
+  /* r305 (Heron conservation): hover is a SURFACE STEP — the accent
+     wash + accent bar used to preview on plain hover, spending the
+     signal before the user committed. The bar + tinted step are the
+     SELECTED grammar (.active / aria-selected — the list's one
+     marker); hover earns --surface-2 only. LibraryPage reuses this
+     family, so both surfaces inherit the quieter hover. */
+  .search-row:hover {
+    background: var(--surface-2);
+  }
   .search-row.active,
   .search-row[aria-selected="true"] {
     background: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
@@ -838,7 +868,6 @@
   .search-row[aria-selected="true"] .search-row-icon {
     transform: translateX(calc(2px * var(--motion-direction)));
   }
-  .search-row:hover::before,
   .search-row.active::before,
   .search-row[aria-selected="true"]::before {
     transform: scaleY(1);
@@ -974,8 +1003,11 @@
       transform var(--motion-duration-short) var(--ease-spring-soft);
   }
   .search-tip-pill:hover {
-    background: color-mix(in srgb, var(--accent) 12%, var(--surface));
-    border-color: var(--accent);
+    /* r305 (Heron conservation): hover is a surface step + a stronger
+       hairline — was an accent wash + accent border (copper spent on
+       hover). The pill's ink steps up to keep the affordance legible. */
+    background: var(--surface-3);
+    border-color: var(--border-strong);
     color: var(--text);
     transform: translateY(-1px);
   }
@@ -1037,7 +1069,12 @@
   .theme-toggle-option.is-active {
     background: var(--surface);
     color: var(--text);
-    box-shadow: var(--shadow-card);
+    /* r305 (Heron conservation): the thumb floats by SURFACE STEP + an
+       inset hairline now (precise outlines) — the at-rest --shadow-card
+       on a chrome control read as elevation the overlay ladder doesn't
+       sanction. Inset ring, not a border: no layout shift inside the
+       segmented track. */
+    box-shadow: inset 0 0 0 1px var(--rule);
   }
 
   /* Collapsed icon rail (4-A2 P2-9): the 3 options used to squeeze
@@ -1285,10 +1322,18 @@
 }
 
 /* r297 (polish v21 fold): the search-family RM belt — the shimmers
-   die under reduced motion (the family lives in this sheet). */
+   die under reduced motion (the family lives in this sheet).
+   r305: the belt widens to cover EVERY animation this sheet authors —
+   the wake pill's entrance and the nav bar's pop join the pair, so the
+   sheet is self-contained under prefers-reduced-motion (the global
+   0.01ms belts in base.css/polish.css already bound them; these are
+   the explicit, per-selector kills the r305 shell contract test
+   asserts). */
 @media (prefers-reduced-motion: reduce) {
   .search-dropdown,
-  .search-shimmer {
+  .search-shimmer,
+  .wake-pill,
+  .nav-item.on::before {
     animation: none !important;
   }
 }
