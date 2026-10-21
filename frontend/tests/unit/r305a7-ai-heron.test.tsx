@@ -206,7 +206,7 @@ describe('R305-A7 — error panels disclose the envelope support code', () => {
     mocks.chat.mutateAsync.mockRejectedValueOnce({
       response: { data: { error: { code: 'TOO_MANY_REQUESTS', message: 'طلبات كثيرة — انتظر قليلاً ثم أعد المحاولة' } } },
     });
-    const { container } = renderPage();
+    renderPage();
     fireEvent.change(screen.getByLabelText('اكتب سؤالك للمساعد'), { target: { value: 'سؤالي' } });
     fireEvent.click(screen.getByRole('button', { name: 'إرسال' }));
     expect(await screen.findByText('طلبات كثيرة — انتظر قليلاً ثم أعد المحاولة')).toBeInTheDocument();

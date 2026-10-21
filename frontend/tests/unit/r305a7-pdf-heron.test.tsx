@@ -110,7 +110,7 @@ beforeAll(() => {
 
 afterAll(() => {
   vi.restoreAllMocks();
-  delete (Element.prototype as Element & { scrollIntoView?: () => void }).scrollIntoView;
+  delete (Element.prototype as Partial<Element> & { scrollIntoView?: () => void }).scrollIntoView;
 });
 
 afterEach(() => {
