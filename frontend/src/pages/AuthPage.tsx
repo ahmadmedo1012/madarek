@@ -408,22 +408,44 @@ export default function AuthPage() {
 
             {/* r180: the ambiguity recovery select — mounted only while
                 the last submit answered REG_NUMBER_AMBIGUOUS; choosing an
-                institution and resubmitting sends the slug hint. */}
+                institution and resubmitting sends the slug hint.
+                r305 (2-a): the lookup gets the SAME first-class load
+                contract as the register page's institution field
+                (audit 0-b P0-4 — never a silently empty select): the
+                failed query shows the honest Arabic alert with a retry
+                (the same .auth-error/.auth-retry-link grammar), while
+                the loading state stays the select's own placeholder
+                option. No API semantic changes — the choice still
+                rides the next submit as institutionSlug. */}
             {ambiguity && (
               <div className="auth-field">
                 <label htmlFor="auth-ambiguity-institution" className="form-label">مؤسستك</label>
-                <select
-                  id="auth-ambiguity-institution"
-                  className="auth-input"
-                  value={ambiguitySlug}
-                  onChange={(e) => setAmbiguitySlug(e.target.value)}
-                  disabled={institutions.isLoading}
-                >
-                  <option value="">{institutions.isLoading ? 'جارٍ تحميل المؤسسات…' : 'اختر المؤسسة…'}</option>
-                  {(institutions.data ?? []).map((i) => (
-                    <option key={i.id} value={i.slug}>{i.name}</option>
-                  ))}
-                </select>
+                {institutions.isError ? (
+                  <div className="auth-error" role="alert">
+                    <Icon icon={AlertCircle} size={14} />
+                    <span>تعذّر تحميل المؤسسات — تحقّق من اتصالك بالشبكة.</span>
+                    <button
+                      type="button"
+                      className="auth-retry-link"
+                      onClick={() => void institutions.refetch()}
+                    >
+                      إعادة المحاولة
+                    </button>
+                  </div>
+                ) : (
+                  <select
+                    id="auth-ambiguity-institution"
+                    className="auth-input"
+                    value={ambiguitySlug}
+                    onChange={(e) => setAmbiguitySlug(e.target.value)}
+                    disabled={institutions.isLoading}
+                  >
+                    <option value="">{institutions.isLoading ? 'جارٍ تحميل المؤسسات…' : 'اختر المؤسسة…'}</option>
+                    {(institutions.data ?? []).map((i) => (
+                      <option key={i.id} value={i.slug}>{i.name}</option>
+                    ))}
+                  </select>
+                )}
               </div>
             )}
 
