@@ -1,13 +1,12 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Building2, BookOpen, BarChart3, FileText, TrendingUp, ClipboardCheck, AlertTriangle, Database, Search, X, ChevronLeft, ChevronRight, ChevronDown, ArrowLeft, Plus, Trash2 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { Building2, BookOpen, BarChart3, FileText, TrendingUp, ClipboardCheck, AlertTriangle, Search, X, ChevronLeft, ChevronRight, ChevronDown, ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { Card, Badge, Tabs, UserAvatar, AlertRow, FormField } from '../../components/primitives';
 import { StatStrip, LedgerPanel, LedgerRow } from '../../components/primitives/Ledger';
 import {
   EmptyState, ErrorState,
-  KpiSkeleton, CardSkeleton, TableSkeleton, StripSkeleton, Skeleton,
+  CardSkeleton, TableSkeleton, StripSkeleton, Skeleton,
 } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { PAPER_STATUS_TONE } from '../../lib/paperStatus';
@@ -52,12 +51,13 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineEleme
    Shared helpers
    ════════════════════════════════════════════════════════════════ */
 
-function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {
+function PageHeader({ title, subtitle, meta }: { title: string; subtitle: string; meta?: ReactNode }) {
   return (
     <header className="page-header">
       <div className="page-title-block">
         <h1 className="page-title">{title}</h1>
         <p className="page-subtitle">{subtitle}</p>
+        {meta && <p className="page-header-meta">{meta}</p>}
       </div>
     </header>
   );
@@ -130,8 +130,6 @@ function Stat({
 
 interface ActionRow {
   key: string;
-  tone: 'amber' | 'brand';
-  icon: LucideIcon;
   title: string;
   desc: string;
   to: string;
@@ -182,8 +180,6 @@ function ActionStrip() {
     if (zeroContent.length > 0) {
       rows.push({
         key: 'zero-content',
-        tone: 'amber',
-        icon: BookOpen,
         title: 'مقرّرات بلا محتوى تعليميّ',
         desc: `${countAr(zeroContent.length, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])} لم تُرفع لها محاضرات أو ملفات بعد${capped ? ' (ضمن أول 100 مقرّر)' : ''}`,
         to: '/admin/courses',
@@ -194,8 +190,6 @@ function ActionStrip() {
   if (sync.data && sync.data.staleCount > 0) {
     rows.push({
       key: 'stale-sync',
-      tone: 'amber',
-      icon: Database,
       title: 'حقول بيانات جامعية قديمة',
       desc: `${countAr(sync.data.staleCount, ['حقل واحد', 'حقلان', 'حقول', 'حقلاً'])} يحتاج مزامنة جديدة مع المصدر الرسميّ`,
       /* r190-D3: the drill deep-links with ?stale=1 — the sync page's
@@ -208,8 +202,6 @@ function ActionStrip() {
   if (gradedPapers.data && gradedPapers.data.meta.total > 0) {
     rows.push({
       key: 'graded-papers',
-      tone: 'brand',
-      icon: FileText,
       title: 'بحوث مقيَّمة بانتظار النشر',
       desc: `${countAr(gradedPapers.data.meta.total, ['بحث واحد', 'بحثان', 'بحوث', 'بحثاً'])} جاهزة للنشر في مكتبة الجامعة`,
       to: '/admin/reports?status=GRADED',
@@ -229,10 +221,8 @@ function ActionStrip() {
         <LedgerRow
           key={r.key}
           to={r.to}
-          leadLabel={r.tone === 'brand' ? 'نشر' : 'انتباه'}
           title={r.title}
           subtitle={r.desc}
-          tail={<Badge color={r.tone === 'brand' ? 'brand' : 'amber'}>{r.tone === 'brand' ? 'جاهز' : 'معلّق'}</Badge>}
         />
       ))}
     </LedgerPanel>
@@ -261,12 +251,7 @@ export function AdminDashboardPage() {
        so the pending → resolved handoff moves nothing. */
     return (
       <div className="page" aria-busy="true" aria-live="polite">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">لوحة الإدارة</h1>
-            <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة المنصّة.</p>
-          </div>
-        </header>
+        <PageHeader title="لوحة الإدارة" subtitle="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
         <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />
         <div className="stat-strip" aria-busy="true">
           {[0, 1, 2, 3].map((i) => (
@@ -297,12 +282,7 @@ export function AdminDashboardPage() {
     // am I on?) before offering the retry.
     return (
       <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">لوحة الإدارة</h1>
-            <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة المنصّة.</p>
-          </div>
-        </header>
+        <PageHeader title="لوحة الإدارة" subtitle="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
         <Card>
           <ErrorState
             error={stats.error ?? facs.error ?? reports.error}
@@ -335,15 +315,11 @@ export function AdminDashboardPage() {
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">لوحة الإدارة</h1>
-          <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة المنصّة.</p>
-          <p className="page-header-meta">
-            {formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · {countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])} · حساب لحظيّ
-          </p>
-        </div>
-      </header>
+      <PageHeader
+        title="لوحة الإدارة"
+        subtitle="إحصائيات حيّة عن طلاب وأساتذة المنصّة."
+        meta={<>{formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · حساب لحظيّ</>}
+      />
 
       {/* 5-A8 §6 step 1: the action list sits above the KPI row — the
           dashboard answers "what needs me" before "how big are we". */}
@@ -371,7 +347,7 @@ export function AdminDashboardPage() {
           {
             label: 'هيئة التدريس',
             value: formatNum(s.totalTeachers),
-            trend: studentTeacherRatio !== null ? `نسبة ${formatNum(studentTeacherRatio, { maximumFractionDigits: 1 }) /* r197 §7: «1,0» → «1» */} طالب لكل أستاذ` : 'عضو',
+            trend: 'عضو',
             trendTone: 'flat',
             to: '/admin/teachers',
           },
@@ -470,13 +446,10 @@ export function AdminDashboardPage() {
           <div className="flex-col gap-2">
             {/* 5-A8 §5 row 6 + P3-2: the rows navigate where a route
                 answers them; the papers PAIR collapsed into one drill
-                stat (the same two numbers lived on three routes). */}
-            <Stat
-              label="أكبر كلّيّة"
-              value={topFaculty ? `${topFaculty.name} (${formatNum(topFaculty.studentCount)})` : '—'}
-              to={topFaculty ? `/admin/students?facultyId=${topFaculty.id}` : undefined}
-              hint="عرض طلاب هذه الكلّيّة"
-            />
+                stat (the same two numbers lived on three routes).
+                (r299: «أكبر كلّيّة» died — the sorted bar chart beside
+                this card IS that fact, and its hidden ChartFrame
+                summary announces it; one owner per datum.) */}
             <Stat
               label="أعلى عدد مقرّرات"
               value={topByCourses ? `${topByCourses.name} (${topByCourses.courseCount})` : '—'}
@@ -723,7 +696,7 @@ export function AdminFacultiesPage() {
     return (
       <div className="page">
         <PageHeader title="الكلّيّات والأقسام" subtitle="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية." />
-        <KpiSkeleton />
+        <StatStripSkeleton />
         <CardSkeleton lines={7} />
       </div>
     );
@@ -834,6 +807,7 @@ export function AdminFacultiesPage() {
           ))}
           {visible.length === 0 && (
             <EmptyState
+              illustration="empty-search"
               icon={Building2}
               title="لا توجد نتائج مطابقة"
               description="جرّب تعديل البحث أو اختيار مدينة أخرى."
@@ -864,7 +838,7 @@ export function AdminFacultiesPage() {
       >
         <div className="modal-header">
           <h3 className="modal-title">إضافة كلّيّة جديدة</h3>
-          <button type="button" className="modal-close" onClick={closeFacultyForm} aria-label="إغلاق">
+          <button type="button" className="icon-btn" onClick={closeFacultyForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
@@ -945,7 +919,7 @@ export function AdminFacultiesPage() {
       >
         <div className="modal-header">
           <h3 className="modal-title">إضافة قسم</h3>
-          <button type="button" className="modal-close" onClick={closeDeptForm} aria-label="إغلاق">
+          <button type="button" className="icon-btn" onClick={closeDeptForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
@@ -1071,6 +1045,29 @@ const PAPER_UNIT: [string, string, string, string] = ['ورقة واحدة', 'و
  *  students «طالب») instead of the hardcoded «ورقة» it shipped with
  *  back when the papers register was its only consumer. Exported: the
  *  students roster (AdminExtraPages) joined the family this round. */
+/** r299: the StatStrip's shape-matched pending placeholder — the
+ *  resolved band is the typographic strip, so the strip's cells are
+ *  what the skeleton must occupy (the shared KpiSkeleton's .metric
+ *  tiles are the retired icon-band's shape; a metric-tile flash
+ *  followed by a typographic strip is a wrong-anatomy flash + CLS).
+ *  Exported for AdminExtraPages (the digital page's pending mirror) —
+ *  the cross-file import precedent TablePaginationFooter set. */
+export function StatStripSkeleton({ cells = 4 }: { cells?: number }) {
+  return (
+    <div className="stat-strip" aria-busy="true">
+      {Array.from({ length: cells }).map((_, i) => (
+        <div key={i} className="stat-cell">
+          <Skeleton width={80} height={11} />
+          <div style={{ marginBlock: 'var(--sp-1)' }}>
+            <Skeleton width={90} height={28} />
+          </div>
+          <Skeleton width={120} height={11} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function TablePaginationFooter({
   page, totalPages, total, unit = PAPER_UNIT, onPage,
 }: {
@@ -1181,7 +1178,7 @@ export function AdminReportsPage() {
     return (
       <div className="page">
         <PageHeader title="التقارير المؤسسية" subtitle="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية." />
-        <KpiSkeleton />
+        <StatStripSkeleton />
         <CardSkeleton lines={6} />
       </div>
     );
@@ -1642,15 +1639,6 @@ export function AdminCoursesPage() {
               aria-label="البحث في المقرّرات"
             />
           </div>
-          <button
-            type="button"
-            className="btn primary sm"
-            onClick={openCreate}
-            aria-label="إضافة مقرّر جديد"
-          >
-            <Icon icon={Plus} size={14} />
-            إضافة مقرّر
-          </button>
           <select
             className="admin-students-input"
             value={facultyId}
@@ -1666,6 +1654,18 @@ export function AdminCoursesPage() {
               إعادة تحميل الكلّيّات
             </button>
           )}
+          {/* r299: the create affordance rides the toolbar's trailing
+              slot — search → filter → action, the faculties toolbar's
+              order (the patterns FilterBar contract the family follows). */}
+          <button
+            type="button"
+            className="btn primary sm"
+            onClick={openCreate}
+            aria-label="إضافة مقرّر جديد"
+          >
+            <Icon icon={Plus} size={14} />
+            إضافة مقرّر
+          </button>
         </div>
 
         {/* 8 columns now — the r155c actions header made the skeleton's
@@ -1839,7 +1839,7 @@ export function AdminCoursesPage() {
           <h3 className="modal-title">
             {formMode === 'edit' ? 'تعديل المقرّر' : 'إضافة مقرّر جديد'}
           </h3>
-          <button type="button" className="modal-close" onClick={closeForm} aria-label="إغلاق">
+          <button type="button" className="icon-btn" onClick={closeForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
@@ -1875,7 +1875,11 @@ export function AdminCoursesPage() {
               )}
             </select>
           </FormField>
-          <FormField label="الساعات المعتمدة" id="course-credits">
+          <FormField
+            label="الساعات المعتمدة"
+            id="course-credits"
+            hint="بين 1 و10 — الحدّ الذي يقبله الخادم؛ الزرّ يبقى معطّلًا خارجه"
+          >
             <input
               className="input"
               type="number"
@@ -1895,6 +1899,7 @@ export function AdminCoursesPage() {
             className="btn primary"
             onClick={submit}
             disabled={!form.code || !form.name || !form.departmentId ||
+              !(form.credits >= 1) ||
               createCourse.isPending || updateCourse.isPending}
           >
             {createCourse.isPending || updateCourse.isPending
@@ -1931,7 +1936,7 @@ export function AdminCoursesPage() {
       >
         <div className="modal-header">
           <h3 className="modal-title">فتح شعبة</h3>
-          <button type="button" className="modal-close" onClick={closeOfferingForm} aria-label="إغلاق">
+          <button type="button" className="icon-btn" onClick={closeOfferingForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>

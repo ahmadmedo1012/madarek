@@ -627,10 +627,17 @@ function StudentForm({ form, error, isPending, faculties, institutions, institut
         </p>
       )}
 
-      <button type="submit" className="auth-submit" disabled={isPending}>
+      <button type="submit" className="auth-submit" disabled={isPending} aria-busy={isPending}>
         {isPending && <span className="auth-submit-spinner" aria-hidden />}
         {isPending ? 'جارٍ الإنشاء…' : 'إنشاء الحساب'}
       </button>
+      {/* sr-only pending mirror (r157 F5 — عقد صفحة الدخول نفسه):
+          aria-busy وحده صامت؛ المنطقة المهذّبة تُعلن الانشغال. */}
+      {isPending && (
+        <span className="sr-only" role="status" aria-live="polite">
+          جارٍ إنشاء حسابك…
+        </span>
+      )}
     </form>
   );
 }
@@ -771,10 +778,17 @@ function TeacherForm({ form, error, isPending, faculties, institutions, institut
         </p>
       )}
 
-      <button type="submit" className="auth-submit" disabled={isPending}>
+      <button type="submit" className="auth-submit" disabled={isPending} aria-busy={isPending}>
         {isPending && <span className="auth-submit-spinner" aria-hidden />}
         {isPending ? 'جارٍ الإنشاء…' : 'إنشاء الحساب'}
       </button>
+      {/* sr-only pending mirror (r157 F5 — عقد صفحة الدخول نفسه):
+          aria-busy وحده صامت؛ المنطقة المهذّبة تُعلن الانشغال. */}
+      {isPending && (
+        <span className="sr-only" role="status" aria-live="polite">
+          جارٍ إنشاء حسابك…
+        </span>
+      )}
     </form>
   );
 }

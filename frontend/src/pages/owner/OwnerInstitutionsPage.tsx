@@ -2,7 +2,7 @@ import { useState, type InputHTMLAttributes } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Plus, Landmark, ShieldCheck, Ban, RotateCcw, UserPlus,
-  Users, GraduationCap, Calendar, ArrowLeft, AlertTriangle, Eye, EyeOff,
+  ArrowLeft, AlertTriangle, Eye, EyeOff,
 } from 'lucide-react';
 import { Card, Badge, FormField, AlertRow } from '../../components/primitives';
 import { ErrorState, EmptyState, TableSkeleton } from '../../components/primitives/States';
@@ -574,9 +574,12 @@ export function OwnerInstitutionsPage() {
         onCreate={onCreate}
       />
 
-      <Card className="owner-users-card" title="المؤسسات المسجّلة">
+      {/* r299: the vestigial .owner-users-card className died (its only
+          rule targets .alert inside — this card has none); the skeleton's
+          column count now advertises the real 7-column table. */}
+      <Card title="المؤسسات المسجّلة">
         {listing.isPending ? (
-          <TableSkeleton rows={4} cols={6} />
+          <TableSkeleton rows={4} cols={7} />
         ) : listing.isError ? (
           <ErrorState error={listing.error} onRetry={() => listing.refetch()} />
         ) : institutions.length === 0 ? (
@@ -617,14 +620,16 @@ export function OwnerInstitutionsPage() {
                       </Badge>
                     </td>
                     <td data-label="الأعضاء النشطون">
+                      {/* r299: the per-cell metric icons died — the column
+                          header already names the metric; a 13px icon before
+                          every figure was decoration competing with the
+                          numbers (and .owner-inst-metric svg with them). */}
                       <span className="owner-inst-metric">
-                        <Icon icon={Users} size={13} />
                         {formatNum(institution.activeMembershipCount)}
                       </span>
                     </td>
                     <td data-label="الكليات">
                       <span className="owner-inst-metric">
-                        <Icon icon={GraduationCap} size={13} />
                         {formatNum(institution.facultyCount)}
                       </span>
                     </td>
@@ -660,7 +665,6 @@ export function OwnerInstitutionsPage() {
                     </td>
                     <td data-label="تاريخ الإنشاء">
                       <span className="owner-inst-metric">
-                        <Icon icon={Calendar} size={13} />
                         {formatDate(institution.createdAt, { dateStyle: 'medium' })}
                       </span>
                     </td>

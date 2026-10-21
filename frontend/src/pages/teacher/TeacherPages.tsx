@@ -569,7 +569,7 @@ export function GradesPage() {
         ) : (stuQ.data ?? []).length === 0 ? (
           <EmptyState title="لا يوجد طلاب" description="لا توجد تسجيلات في هذا المقرّر بعد." illustration="empty-list" />
         ) : (
-          <div className="table-wrap">
+          <div className="table-wrap tpg-grades">
             <table className="table tbl-stack">
               <thead>
                 <tr>
@@ -591,7 +591,10 @@ export function GradesPage() {
                       <td className="tbl-strong" data-label="الطالب">{s.name}</td>
                       <td data-label="الرقم الجامعيّ"><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
                       <td className="tbl-num" data-label="متوسّط الدرجات"><bdi>{formatPct1(s.avgGrade)}%</bdi></td>
-                      <td className="tbl-num" data-label="الحضور">{formatPct1(s.attendancePct)}%</td>
+                      {/* bdi keeps the Latin %-sign placement stable in
+                          the RTL cell — same isolation as the average
+                          column beside it. */}
+                      <td className="tbl-num" data-label="الحضور"><bdi>{formatPct1(s.attendancePct)}%</bdi></td>
                       <td data-label="التقدير"><Badge color={band.color}>{band.label}</Badge></td>
                     </tr>
                   );
@@ -1671,14 +1674,34 @@ export function PerformancePage() {
 
 /* Relative due-date copy — module scope so the queue groups and the
  * assignments list share ONE wording (5-B6). */
+/** The elapsed core of an overdue date — «منذ يومين» … — shared by the
+ *  assignments-list badge («انتهى منذ يومين») and the queue sub-line's
+ *  past-tense label («استحقّ منذ يومين»). */
+function elapsedSince(daysOverdue: number): string {
+  return countAr(daysOverdue, ['منذ يوم', 'منذ يومين', 'منذ أيام', 'منذ يوماً']);
+}
+
 function formatDue(iso: string): string {
   const d = new Date(iso);
   const days = Math.round((d.getTime() - Date.now()) / 86400000);
-  if (days < 0) return `انتهى ${countAr(-days, ['منذ يوم', 'منذ يومين', 'منذ أيام', 'منذ يوماً'])}`;
+  if (days < 0) return `انتهى ${elapsedSince(-days)}`;
   if (days === 0) return 'اليوم';
   if (days === 1) return 'غداً';
   if (days < 7) return `بعد ${countAr(days, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
   return formatDate(d, { dateStyle: 'medium' });
+}
+
+/** The queue group sub-line's due copy. formatDue's overdue wording
+ * («انتهى منذ يومين») is correct as a standalone badge but reads as a
+ * contradiction under the old present-tense prefix («يستحقّ انتهى منذ
+ * يومين»): an overdue group flips the verb to the past — «استحقّ منذ
+ * يومين» — while future dates keep «يستحقّ اليوم/غداً/بعد …/التاريخ».
+ * Reuses formatDue internally so ONE relative vocabulary stays on the
+ * page. Pure + exported for the unit suite. */
+export function queueDueLabel(iso: string): string {
+  const days = Math.round((new Date(iso).getTime() - Date.now()) / 86400000);
+  if (days < 0) return `استحقّ ${elapsedSince(-days)}`;
+  return `يستحقّ ${formatDue(iso)}`;
 }
 
 /* ─── r144: the teaching loop's authoring half ─────────────────────
@@ -1936,7 +1959,6 @@ export function AssignmentsPage() {
           <div className="flex-col gap-2">
             {q.data.map((a) => {
               const ratio = a.enrolled > 0 ? a.submissions / a.enrolled : 0;
-              const tone: 'green' | 'amber' | 'red' = ratio > 0.5 ? 'green' : ratio > 0.25 ? 'amber' : 'red';
               /* 5-B6 (A7 «assignments 7.5 → 9»): the due chip carries its
                * own tone so a teacher scanning the list reads urgency
                * without parsing relative dates — overdue red, ≤3 days
@@ -1944,6 +1966,17 @@ export function AssignmentsPage() {
                * attribute (P3-2 parity with the exam attempts). */
               const days = Math.round((new Date(a.dueAt).getTime() - Date.now()) / 86400000);
               const dueTone: 'green' | 'amber' | 'red' = days < 0 ? 'red' : days <= 3 ? 'amber' : 'green';
+              /* Submission-ratio tone keys off the deadline too: strict
+               * green/amber/red only once the deadline is here or past
+               * (days <= 0) — a future-due assignment with a low ratio
+               * is not a problem yet (most of the class still has
+               * time), so it renders NEUTRAL unless more than half
+               * already submitted (a healthy signal under any
+               * deadline). Overdue keeps the strict mapping; due today
+               * counts as urgent. */
+              const ratioTone: 'green' | 'amber' | 'red' | undefined = days > 0
+                ? (ratio > 0.5 ? 'green' : undefined)
+                : (ratio > 0.5 ? 'green' : ratio > 0.25 ? 'amber' : 'red');
               return (
                 <div key={a.id} className="list-row">
                   <div className="list-row-body">
@@ -1971,7 +2004,7 @@ export function AssignmentsPage() {
                       <bdi>{a.submissions} / {a.enrolled}</bdi>{' '}
                       {a.submissions === 0 ? 'لا تسليمات بعد' : countAr(a.submissions, ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'])}
                     </span>
-                    <Badge color={tone}>{Math.round(ratio * 100)}%</Badge>
+                    <Badge color={ratioTone}>{Math.round(ratio * 100)}%</Badge>
                   </div>
                 </div>
               );
@@ -2133,7 +2166,7 @@ function NeedsReviewCard({
                       {g.dueAt && (
                         <>
                           {g.courseCode ? ' · ' : ''}
-                          <span title={formatDateTimeAr(g.dueAt)}>يستحقّ {formatDue(g.dueAt)}</span>
+                          <span title={formatDateTimeAr(g.dueAt)}>{queueDueLabel(g.dueAt)}</span>
                         </>
                       )}
                     </div>

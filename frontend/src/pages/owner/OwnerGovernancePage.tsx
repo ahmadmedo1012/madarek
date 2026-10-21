@@ -15,8 +15,9 @@ import {
 import { Card } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import {
-  ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton,
+  ErrorState, EmptyState, ChartSkeleton, TableSkeleton,
 } from '../../components/primitives/States';
+import { StatStripSkeleton } from '../../components/owner/StripSkeletons';
 import { ChartFrame } from '../../components/charts/ChartFrame';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerGovernance, useOwnerLoginAnalytics } from '../../hooks/useOwner';
@@ -27,23 +28,9 @@ import { formatNum } from '../../utils/numbers';
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, ArcElement, Filler, Title, Tooltip, Legend);
 
 /** The StatStrip's shape-matched pending placeholder (R190 D4 —
- *  three cells, one per governance fact; replaces the old .metric
- *  box trio the KPI band used to resolve into). */
-function GovStripSkeleton() {
-  return (
-    <div className="stat-strip" aria-busy="true">
-      {[0, 1, 2].map((i) => (
-        <div key={i} className="stat-cell">
-          <Skeleton width={90} height={11} />
-          <div style={{ marginBlock: 'var(--sp-1)' }}>
-            <Skeleton width={70} height={26} />
-          </div>
-          <Skeleton width={130} height={11} />
-        </div>
-      ))}
-    </div>
-  );
-}
+ *  three cells, one per governance fact) — r299: consumed from the
+ *  owner family's shared StripSkeletons helper with cells={3} (the
+ *  local GovStripSkeleton twin died). */
 
 export function OwnerGovernancePage() {
   const governance = useOwnerGovernance();
@@ -172,7 +159,7 @@ export function OwnerGovernancePage() {
       {/* Governance metrics — each area owns its pending/error state, so a
           failing endpoint never blanks the sections that resolved. */}
       {governance.isPending ? (
-        <GovStripSkeleton />
+        <StatStripSkeleton cells={3} />
       ) : governance.isError || !govData ? (
         <Card>
           <ErrorState
@@ -203,7 +190,11 @@ export function OwnerGovernancePage() {
               label: 'مستخدمون جدد هذا الشهر',
               value: formatNum(govData.newUsersThisMonth),
               trend: 'من باب التسجيل',
-              trendTone: 'up',
+              /* r299: flat, not 'up' — the strip's up/down tones mean
+                 delta-vs-baseline (R189); this is a raw monthly count
+                 with no comparison payload, so green ink claimed a
+                 growth the data never asserted. */
+              trendTone: 'flat',
             },
           ]}
         />
@@ -272,8 +263,11 @@ export function OwnerGovernancePage() {
         </Card>
       </div>
 
-      <div className="owner-governance-section">
-        <Card title="تفاصيل تسجيلات الدخول اليوميّة">
+      {/* r299: the .owner-governance-section wrapper died — it stacked
+          its own padding on top of the .page gap (double rhythm) and its
+          h3 rule had no <h3> consumer (the Card titles render <span>).
+          The Card rides the page's uniform gap like every sibling. */}
+      <Card title="تفاصيل تسجيلات الدخول اليوميّة">
           {loginAnalytics.isPending ? (
             <TableSkeleton rows={5} cols={3} />
           ) : loginAnalytics.isError || !loginData ? (
@@ -307,7 +301,6 @@ export function OwnerGovernancePage() {
             </div>
           )}
         </Card>
-      </div>
 
       {loginData && loginData.topReasons.length > 0 && (
         <Card title="أسباب تعذّر تسجيل الدخول">

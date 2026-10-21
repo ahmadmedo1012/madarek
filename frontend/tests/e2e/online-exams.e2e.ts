@@ -19,7 +19,8 @@ test.describe('الاختبارات الإلكترونية — القائمة', 
     const quizCard = page.locator('.oex-row', { hasText: 'اختبار قصير — الوحدة الثالثة' });
     await expect(quizCard).toContainText('اختبار قصير · مقدمة في الخوارزميات');
     await expect(quizCard).toContainText('15 دقيقة');
-    await expect(quizCard).toContainText('8 سؤال');
+    // 22-c counted nouns — 3–10 takes the plural form «أسئلة».
+    await expect(quizCard).toContainText('8 أسئلة');
     await expect(quizCard).toContainText('درجة النجاح');
     // نافذة مفتوحة (examWindowState على ساعة مجمّدة) → يعرض موعد الإغلاق.
     await expect(quizCard).toContainText('يغلق');

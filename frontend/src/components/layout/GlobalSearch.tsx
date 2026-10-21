@@ -196,7 +196,14 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
     [navActions, flatHits],
   );
 
-  useEffect(() => { setActiveIdx(0); }, [flatOptions.length]);
+  /* r299: reset on the list's IDENTITY, not its length — the length key
+     left the highlight stuck mid-list when a new query returned the same
+     option count (different items, stale activeIdx), and the length
+     transition could also fire BETWEEN ArrowDown presses as async
+     results landed (live-measured: identical ↓↓+Enter sequences
+     activating different rows run-to-run). Any list change re-seeds the
+     active row at 0 — the deterministic combobox contract. */
+  useEffect(() => { setActiveIdx(0); }, [flatOptions]);
 
   // ≤920px band: the pill is display:none (layout.css) — a focus() on
   // the hidden input is a no-op, so the "/" chord must route to the
@@ -557,6 +564,7 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState('');
   const [debounced, setDebounced] = useState('');
   const [activeIdx, setActiveIdx] = useState(0);
+  const [kbStamp, setKbStamp] = useState(0);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const listboxId = useId();
@@ -686,16 +694,26 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
     () => [...visibleRecents, ...actions, ...flatHits],
     [visibleRecents, actions, flatHits],
   );
-  useEffect(() => { setActiveIdx(0); }, [flatOptions.length]);
+  /* r299 (palette): reset on the list's IDENTITY, not its length — the
+     length key left the highlight stuck mid-list when a new query
+     returned the same option count (different items, stale activeIdx),
+     and the length transition could also fire BETWEEN ArrowDown presses
+     as async results landed (live-measured: identical ↓↓+Enter
+     sequences activating different rows run-to-run). Any list change
+     re-seeds the active row at 0 — the deterministic combobox
+     contract. */
+  useEffect(() => { setActiveIdx(0); }, [flatOptions]);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!flatOptions.length) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setActiveIdx((i) => (i + 1) % flatOptions.length);
+      setKbStamp((s) => s + 1);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setActiveIdx((i) => (i - 1 + flatOptions.length) % flatOptions.length);
+      setKbStamp((s) => s + 1);
     } else if (e.key === 'Enter') {
       const item = flatOptions[activeIdx];
       if (item) {
@@ -709,6 +727,24 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
   /* aria-activedescendant must resolve to a live option. */
   const activeOptionId =
     flatOptions[activeIdx] != null ? `${listboxId}-opt-${activeIdx}` : undefined;
+
+  /* r299: keyboard moves scroll the active row into view (the
+     aria-activedescendant pattern keeps focus in the input, so without
+     this the active row travels out of view in a scrolling list).
+     Hover intentionally does not scroll — the mouse user is already
+     looking at the row they entered. The ref mirror keeps the effect
+     keyed on kbStamp only, so hover-driven activeIdx changes never
+     trigger scrolling. */
+  const activeIdRef = useRef<string | null>(null);
+  useEffect(() => {
+    activeIdRef.current = activeOptionId ?? null;
+  });
+  useEffect(() => {
+    if (!kbStamp) return;
+    const id = activeIdRef.current;
+    if (!id) return;
+    document.getElementById(id)?.scrollIntoView({ block: 'nearest' });
+  }, [kbStamp]);
 
   /* Polite count announcement — actions + results settle together. */
   const announcement = loading ? '' : optionsCountAr(flatOptions.length);

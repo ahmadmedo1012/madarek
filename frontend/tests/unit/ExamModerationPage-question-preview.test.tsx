@@ -16,11 +16,14 @@
  *      no mutation fired by opening the panel);
  *   4. a failed preview surfaces an honest retryable error, never an
  *      empty-as-success state.
- *   5. 6A9-finding-8 (r157): the third KPI is «أسئلة بانتظار الفحص» —
- *      the sum of _count.questions over the pending queue rows, '…'
- *      while loading, '—' on error. The invented static «نموذج الجودة:
- *      رؤية 2024–2028» tile is gone; no decision timestamps exist in
- *      the page payload (PENDING queue only), so none were invented.
+ *   5. 6A9-finding-8 (r157): the questions KPI cell is «أسئلة بانتظار
+ *      الفحص» — the sum of _count.questions over the pending queue
+ *      rows, '…' while loading, '—' on error. The invented static
+ *      «نموذج الجودة: رؤية 2024–2028» tile is gone; no decision
+ *      timestamps exist in the page payload (PENDING queue only), so
+ *      none were invented. Since the R190 wave the KPIs ride the
+ *      sector's typographic StatStrip (`.stat-cell`/`.stat-value`),
+ *      not the retired MetricCard tiles.
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup, within } from '@testing-library/react';
@@ -213,7 +216,7 @@ describe('ExamModerationPage — question preview (r155b)', () => {
     expect(await screen.findByText('لا أسئلة في هذا القالب')).toBeInTheDocument();
   });
 
-  it('the third KPI is the queue’s own question count — honest in every state, «نموذج الجودة» gone (6A9-finding-8)', () => {
+  it('the KPI strip derives from the queue itself — honest in every state, «نموذج الجودة» gone (6A9-finding-8 / R190)', () => {
     // Two pending templates — 3 + 5 questions awaiting review.
     mocks.queue = [
       { ...QUEUE_ITEM, _count: { questions: 3 } },
@@ -229,10 +232,13 @@ describe('ExamModerationPage — question preview (r155b)', () => {
     ];
     const loaded = renderPage();
 
-    // The KPI is the sum over the pending queue rows — scoped to the
-    // tile so the other KPIs' values never collide with it.
-    const loadedTile = screen.getByText('أسئلة بانتظار الفحص').closest('.metric') as HTMLElement;
+    // The questions cell is the sum over the pending queue rows, the
+    // pending cell the queue length — each scoped to its StatStrip cell
+    // so the other cells' values never collide with it.
+    const loadedTile = screen.getByText('أسئلة بانتظار الفحص').closest('.stat-cell') as HTMLElement;
     expect(within(loadedTile).getByText('8')).toBeInTheDocument();
+    const loadedPendingTile = screen.getByText('بانتظار المراجعة').closest('.stat-cell') as HTMLElement;
+    expect(within(loadedPendingTile).getByText('2')).toBeInTheDocument();
     // The invented static tile is gone — no «نموذج الجودة», no vision.
     expect(screen.queryByText('نموذج الجودة')).toBeNull();
     expect(screen.queryByText('رؤية 2024–2028')).toBeNull();
@@ -241,7 +247,7 @@ describe('ExamModerationPage — question preview (r155b)', () => {
     // '…' while the queue itself is loading — never a fake zero.
     mocks.queuePending = true;
     const pending = renderPage();
-    const pendingTile = screen.getByText('أسئلة بانتظار الفحص').closest('.metric') as HTMLElement;
+    const pendingTile = screen.getByText('أسئلة بانتظار الفحص').closest('.stat-cell') as HTMLElement;
     expect(within(pendingTile).getByText('…')).toBeInTheDocument();
     pending.unmount();
 
@@ -249,7 +255,7 @@ describe('ExamModerationPage — question preview (r155b)', () => {
     mocks.queuePending = false;
     mocks.queueError = true;
     renderPage();
-    const errorTile = screen.getByText('أسئلة بانتظار الفحص').closest('.metric') as HTMLElement;
+    const errorTile = screen.getByText('أسئلة بانتظار الفحص').closest('.stat-cell') as HTMLElement;
     expect(within(errorTile).getByText('—')).toBeInTheDocument();
   });
 });

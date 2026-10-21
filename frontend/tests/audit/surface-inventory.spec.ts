@@ -164,6 +164,21 @@ const ROUTES_ONLY = process.env.AUDIT_ROUTES_ONLY
   : process.env.AUDIT_BASELINE_SLICE === '1'
     ? new Set<string>(BASELINE_ROUTES)
     : null;
+/** Optional focused viewport list for complete route/role checks at a
+ * shared desktop size. The normal inventory keeps its full responsive
+ * matrix; this only narrows it when explicitly requested. */
+const SWEEP_VIEWPORTS = process.env.AUDIT_VIEWPORTS
+  ? process.env.AUDIT_VIEWPORTS.split(',')
+      .map((value) => Number.parseInt(value.trim(), 10))
+      .filter((value): value is (typeof VIEWPORTS)[number] =>
+        VIEWPORTS.includes(value as (typeof VIEWPORTS)[number]),
+      )
+  : [...VIEWPORTS];
+if (!SWEEP_VIEWPORTS.length) {
+  throw new Error(
+    `AUDIT_VIEWPORTS must include one of the supported widths: ${VIEWPORTS.join(', ')}`,
+  );
+}
 const SWEEP_ROUTES = AUDIT_ROUTES.slice(
   ROUTES_FROM,
   ROUTES_FROM + (ROUTE_LIMIT ?? AUDIT_ROUTES.length - ROUTES_FROM),
@@ -330,11 +345,11 @@ async function collectRaw(page: Page): Promise<RawCapture> {
       const readVar = (el: Element | null, name: string): string =>
         el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
 
-      /* illustrations — [data-illustration] is set by <Illustration> */
+      /* illustrations — <Illustration> marks its real dispatcher node. */
       const illustrations = Array.from(
-        document.querySelectorAll<HTMLElement>('[data-illustration]'),
+        document.querySelectorAll<HTMLElement>('[data-mk-ill]'),
       ).map((el) => ({
-        name: el.getAttribute('data-illustration') ?? '<unknown>',
+        name: el.getAttribute('data-mk-ill') ?? '<unknown>',
         decorative: el.getAttribute('aria-hidden') === 'true',
         altResolved: el.getAttribute('aria-label'),
         svg: el.querySelector('svg')?.outerHTML ?? '',
@@ -439,11 +454,8 @@ async function collectRaw(page: Page): Promise<RawCapture> {
         colors.push({ selector: name, background: effectiveBg(el), color: cs.color });
         colorMatched.push(name);
       }
-      /* r291: state-surface mounts — the EmptyState/ErrorState mounts
-       * that OWN illustrations. With zero illustrations AND zero state
-       * mounts, an empty illustrations[] is genuinely N/A; state mounts
-       * present but no [data-illustration] nodes = review signal. */
-      const stateSurfaces = document.querySelectorAll('.state').length;
+      /* These slots promise an illustration; generic empty states may use an icon. */
+      const stateSurfaces = document.querySelectorAll('.state-illustration').length;
 
       /* CLS (Chromium keeps buffered layout-shift entries) */
       const cls = (performance as Performance & {
@@ -689,13 +701,22 @@ test('sweep AUDIT_ROUTES × viewports × themes × dirs → surface-inventory.js
   for (const route of SWEEP_ROUTES) {
     const role = roleForRoute(route);
     const url = resolveRoute(route);
-    for (const viewport of VIEWPORTS) {
+    for (const viewport of SWEEP_VIEWPORTS) {
       for (const theme of THEMES) {
         for (const dir of DIRS) {
           const page = await pageFor(role, theme);
           await page.setViewportSize({ width: viewport, height: 800 });
           await page.goto(url, { waitUntil: 'networkidle' });
           await page.waitForTimeout(SETTLE_MS);
+
+          // A successful SPA fallback is not sufficient route evidence:
+          // each path must render a heading or an explicit live state (for
+          // routes whose API is intentionally unmocked in this DB-less run).
+          const main = page.locator('main').first();
+          await expect(main, `${route} should render a main landmark`).toBeVisible();
+          expect((await main.innerText()).trim(), `${route} main landmark should have content`).not.toBe('');
+          const pageSignal = main.locator('h1:visible, h2:visible, [role="alert"]:visible, [role="status"]:visible').first();
+          await expect(pageSignal, `${route} should render a heading or explicit state`).toBeVisible();
 
           // Sweep invariants — fail loudly rather than baseline the
           // wrong surface.
@@ -774,7 +795,7 @@ test('sweep AUDIT_ROUTES × viewports × themes × dirs → surface-inventory.js
   writeFileSync(outPath, `${JSON.stringify(inventory, null, 2)}\n`, 'utf8');
 
   const expected =
-    SWEEP_ROUTES.length * VIEWPORTS.length * THEMES.length * DIRS.length;
+    SWEEP_ROUTES.length * SWEEP_VIEWPORTS.length * THEMES.length * DIRS.length;
   expect(captures).toHaveLength(expected);
   // Every capture must be structurally complete for the drift detector.
   for (const cap of captures) {

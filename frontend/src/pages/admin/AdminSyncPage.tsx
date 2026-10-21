@@ -12,11 +12,18 @@ import {
 } from 'lucide-react';
 import { Card, Badge, AlertRow } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
-import { PageSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
+import { ErrorState, EmptyState, CardSkeleton, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useReducedMotion } from '../../components/motion';
 import { api, unwrap } from '../../lib/api';
 import { useInstitutionScope } from '../../stores/auth.store';
+/* r299: the sync page joins the admin family's sheet (every other admin
+ * page already imports it) — the .spin rule the in-flight affordances
+ * consume lives there, and before this import the page's chunk never
+ * loaded it (the motion signal computed animation:none live-verified).
+ * The sheet's other selectors are scoped to elements this page never
+ * renders; loading it is the family's established convention. */
+import '../../styles/admin.css';
 import { withInstitutionScope } from '../../lib/queryClient';
 import { apiErrorMessage } from '../../hooks/useResources';
 import { formatRelativeArShort, countAr } from '../../lib/format';
@@ -106,6 +113,28 @@ function formatDurationAr(ms: number): string {
   return sec > 0 ? `${min} د و${sec} ث` : `${min} د`;
 }
 
+/** r299: the StatStrip's shape-matched pending placeholder (the same
+ *  local-twin idiom the owner chart pages use — this page is its own
+ *  lazy chunk, so it must not import AdminPages' exported skeleton).
+ *  The shared PageSkeleton renders the RETIRED icon-tile anatomy — a
+ *  metric-tile flash followed by the typographic strip is a
+ *  wrong-anatomy flash + CLS at the handoff (the r172b mirror rule). */
+function SyncStripSkeleton() {
+  return (
+    <div className="stat-strip" aria-busy="true">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="stat-cell">
+          <Skeleton width={80} height={11} />
+          <div style={{ marginBlock: 'var(--sp-1)' }}>
+            <Skeleton width={90} height={28} />
+          </div>
+          <Skeleton width={120} height={11} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function useSyncStatus() {
   return useQuery({
     /* r180: institution-scoped server-side — scoped key (the run
@@ -164,7 +193,35 @@ export function AdminSyncPage() {
     }, { replace: true });
   }, [drillStale, data, reducedMotion, setSearchParams]);
 
-  if (isPending) return <PageSkeleton />;
+  if (isPending) {
+    /* r299 (loading closure): a MIRROR skeleton, not the generic
+     * PageSkeleton — the resolved page leads with the real header +
+     * trigger, then the typographic strip, then the run-history and
+     * categories cards. Every section renders its shape-matched
+     * placeholder so the pending → resolved handoff moves nothing. */
+    return (
+      <div className="page" aria-busy="true" aria-live="polite">
+        <header className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">المزامنة مع البيانات الرسمية</h1>
+            <p className="page-subtitle">استيراد البيانات العامة من الموقع الرسمي للجامعة.</p>
+          </div>
+          <button
+            type="button"
+            className="btn primary"
+            onClick={() => trigger.mutate()}
+            disabled={trigger.isPending}
+          >
+            <Icon icon={RefreshCw} size={14} className={trigger.isPending ? 'spin' : undefined} />
+            {trigger.isPending ? 'جارٍ المزامنة…' : 'مزامنة الآن'}
+          </button>
+        </header>
+        <SyncStripSkeleton />
+        <CardSkeleton lines={6} />
+        <CardSkeleton lines={6} />
+      </div>
+    );
+  }
   // Distinguish error (retry) from "no sync ever run" (empty state).
   // r157 (6A9 #5): the early-error return keeps the page chrome
   // (.page + header + h1) — the retry used to land on a chrome-less
@@ -227,8 +284,14 @@ export function AdminSyncPage() {
         <div className="page-title-block">
           <h1 className="page-title">المزامنة مع البيانات الرسمية</h1>
           <p className="page-subtitle">
-            استيراد بيانات المؤسّسة من المصدر المنسَّق <span className="font-mono"><bdi>demo-source</bdi></span> للحفاظ على
-            معلومات الجامعة محدّثة. يمكنك تشغيل المزامنة يدوياً عند الحاجة.
+            {/* r299 (honesty, the r164i contract): the hard-coded
+                «demo-source» slug died — the payload's real source is
+                the curated static source (sourceLabelAr below maps it
+                to «بيانات جامعية موثّقة»); a fabricated identifier in
+                prose is exactly the dead-data the truthfulness gates
+                forbid. */}
+            استيراد بيانات المؤسّسة من المصدر المنسَّق للحفاظ على معلومات
+            الجامعة محدّثة. يمكنك تشغيل المزامنة يدوياً عند الحاجة.
           </p>
         </div>
         <button
@@ -266,20 +329,15 @@ export function AdminSyncPage() {
       {/* KPI strip — R190: the typographic stat line (the icon-box
           MetricCard grid was the r189-prerelease template pattern; the
           sync facts are counts and statuses, exactly what the ■-marked
-          mono labels + metric values are for). The stale count drills
-          via ?stale=1 — the URL opens the first stale category. */}
+          mono labels + metric values are for).
+          r299 (freshness-first): the page's question is «how fresh are
+          we?» — the freshness cells (last success + last run status)
+          lead; the size cell (fact count, with its ?stale=1 drill)
+          follows, additions last. The drill link stays on «حقول
+          مُزامنة» — the URL opens the first stale category. */}
       <StatStrip
         ariaLabel="حالة المزامنة"
         cells={[
-          {
-            label: 'حقول مُزامنة',
-            value: formatNum(data.factCount),
-            trend: data.staleCount > 0
-              ? countAr(data.staleCount, ['حقل قديم واحد', 'حقلان قديمان', 'حقول قديمة', 'حقلاً قديماً'])
-              : 'كل البيانات حديثة',
-            trendTone: data.staleCount > 0 ? 'down' : 'up',
-            ...(data.staleCount > 0 ? { to: '/admin/sync?stale=1' } : {}),
-          },
           {
             label: 'آخر مزامنة ناجحة',
             value: lastSuccess?.completedAt ? formatRelativeArShort(lastSuccess.completedAt) : '—',
@@ -291,6 +349,15 @@ export function AdminSyncPage() {
             trend: lastRun?.durationMs != null && lastRun.durationMs > 0 ? formatDurationAr(lastRun.durationMs) : undefined,
           },
           {
+            label: 'حقول مُزامنة',
+            value: formatNum(data.factCount),
+            trend: data.staleCount > 0
+              ? countAr(data.staleCount, ['حقل قديم واحد', 'حقلان قديمان', 'حقول قديمة', 'حقلاً قديماً'])
+              : 'كل البيانات حديثة',
+            trendTone: data.staleCount > 0 ? 'down' : 'up',
+            ...(data.staleCount > 0 ? { to: '/admin/sync?stale=1' } : {}),
+          },
+          {
             label: 'إضافات هذا التشغيل',
             value: lastRun ? formatNum(lastRun.factsAdded + lastRun.factsUpdated) : '—',
             trend: lastRun ? `${formatNum(lastRun.factsAdded)} جديد · ${formatNum(lastRun.factsUpdated)} محدّث` : 'لم يُشغَّل بعد',
@@ -298,26 +365,26 @@ export function AdminSyncPage() {
         ]}
       />
 
-      {/* Latest run failure details */}
+      {/* Latest run failure details — r299: overflow-wrap so a long
+          backend error string can't stretch the alert row. */}
       {lastRun && lastRun.status !== 'SUCCESS' && lastRun.errorMsg && (
         <AlertRow
           color="red"
           icon={AlertCircle}
           title={lastRun.status === 'FAILED' ? 'تعذّر إكمال التشغيل الأخير' : 'التشغيل الأخير اكتمل جزئياً'}
-          description={<span className="font-mono text-xs"><bdi>{lastRun.errorMsg}</bdi></span>}
+          description={<span className="font-mono text-xs" style={{ overflowWrap: 'anywhere' }}><bdi>{lastRun.errorMsg}</bdi></span>}
         />
       )}
 
-      {lastRun?.notes && (
-        <Card>
-          <div className="text-xs text-muted">
-            <span style={{ fontWeight: 600 }}>ملاحظات آخر تشغيل:</span> {lastRun.notes}
-          </div>
-        </Card>
-      )}
-
-      {/* Run history — .table system, stacks to cards on phones (tbl-stack) */}
+      {/* Run history — .table system, stacks to cards on phones (tbl-stack).
+          r299: the run notes ride the history card (a quiet lead line,
+          not their own bordered box — one box for one subject). */}
       <Card title="سجلّ المزامنات" icon={Clock} subtitle="آخر 10 عمليات">
+        {lastRun?.notes && (
+          <p className="text-xs text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+            <span style={{ fontWeight: 600 }}>ملاحظات آخر تشغيل:</span> {lastRun.notes}
+          </p>
+        )}
         {data.runHistory.length === 0 ? (
           <EmptyState illustration="empty-list"
             icon={Clock}
@@ -385,6 +452,11 @@ export function AdminSyncPage() {
           <div className="flex-col gap-2">
             {data.categories.map((cat) => {
               const isOpen = openCategory === cat.category;
+              /* r299: the head carries its own staleness — an amber
+                 count beside the field count, so the operator sees
+                 WHICH category holds the stale fields without opening
+                 each one (the ?stale=1 drill only auto-opens the first). */
+              const staleCount = cat.items.filter((f) => f.isStale).length;
               return (
                 <div key={cat.category} className="category-row">
                   <button
@@ -396,6 +468,11 @@ export function AdminSyncPage() {
                   >
                     <span style={{ fontWeight: 600 }}>{CATEGORY_LABEL[cat.category] ?? cat.category}</span>
                     <Badge>{cat.count} حقل</Badge>
+                    {staleCount > 0 && (
+                      <Badge color="amber">
+                        {countAr(staleCount, ['حقل قديم واحد', 'حقلان قديمان', 'حقول قديمة', 'حقلاً قديماً'])}
+                      </Badge>
+                    )}
                   </button>
                   {isOpen && (
                     <div className="category-row-body" id={`sync-cat-${cat.category}`}>

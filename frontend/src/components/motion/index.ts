@@ -11,8 +11,8 @@
  *     CourseDetailPage, OnlineExamsPages).
  *   - PageTransition → AppShell's route transition (the single mount).
  *   - Skeleton → RegisterPage (faculty field placeholder) +
- *     CollegesPopover / CollegePages gallery scaffolds — all three
- *     already sit inside explicit aria contexts of their own; the
+ *     CollegePages gallery scaffolds — both already sit inside
+ *     explicit aria contexts of their own; the
  *     primitive's aria-label prop is the opt-in busy cue for the
  *     consumer that needs it announced.
  *   - Reveal / RevealGroup → CourseDetailPage (PaymentPage imports

@@ -65,19 +65,30 @@ test.describe('مراجعة قوالب الاختبارات', () => {
     await expect(page.locator('h1.page-title')).toHaveText('مراجعة الاختبارات');
     await expect(page.locator('.page-subtitle')).toContainText('صلاحية حصرية لمكتب الجودة');
 
-    /* المؤشّرات مشتقّة من الطابور نفسه: قالبان + 3 أسئلة بانتظار الفحص. */
-    const pendingKpi = page.locator('.metric', { hasText: 'بانتظار المراجعة' });
-    await expect(pendingKpi.locator('.metric-value')).toHaveText('2');
+    /* المؤشّرات مشتقّة من الطابور نفسه: قالبان + 3 أسئلة بانتظار الفحص
+     * (شريط المؤشّرات الطباعي — StatStrip بدل بطاقات الأيقونات). */
+    const pendingCell = page.locator('.stat-cell', { hasText: 'بانتظار المراجعة' });
+    await expect(pendingCell.locator('.stat-value')).toHaveText('2');
     await expect(
-      page.locator('.metric', { hasText: 'أسئلة بانتظار الفحص' }).locator('.metric-value'),
+      page.locator('.stat-cell', { hasText: 'أسئلة بانتظار الفحص' }).locator('.stat-value'),
     ).toHaveText('3');
 
-    /* صفّ القالب: العنوان + شارة النوع + المقرّر + العدّ + مقدّمه. */
+    /* صفّ القالب: العنوان + شارة النوع + المقرّر + العدّ + مقدّمه.
+     * العدّ بصيغة الأسماء المعدودة (سؤالان · 20 دقيقة — 22-c). */
     const quizRow = page.locator('.oex-mod-row', { hasText: 'اختبار قصير — الوحدة الرابعة' });
     await expect(quizRow).toContainText('اختبار قصير');
     await expect(quizRow).toContainText('مقدمة في الخوارزميات');
-    await expect(quizRow).toContainText('2 سؤال · 20 د');
+    await expect(quizRow).toContainText('سؤالان · 20 دقيقة');
     await expect(quizRow).toContainText('قدّمه: ليلى الفيتوري');
+
+    /* عمر الانتظار (createdAt يُعرض أخيرًا — الساعة مجمّدة على
+     * FIXED_NOW: القالب قدِّم قبل 30 ساعة → «منذ يوم»، والنهائي قبل
+     * 70 ساعة → «منذ 3 أيام») وإفصاح ترتيب الطابور بالأقدم أولًا. */
+    await expect(quizRow).toContainText('بانتظار المراجعة منذ يوم');
+    await expect(
+      page.locator('.oex-mod-row', { hasText: 'اختبار نهائي — الشبكات' }),
+    ).toContainText('بانتظار المراجعة منذ 3 أيام');
+    await expect(page.getByText('الطابور بالأقدم أولًا')).toBeVisible();
 
     /* فتح المعاينة — لوحة الأسئلة قبل القرار (r155b). */
     await quizRow.getByRole('button', { name: 'مراجعة' }).click();
@@ -104,7 +115,7 @@ test.describe('مراجعة قوالب الاختبارات', () => {
      * المؤشّر يتراجع إلى 1 والصفّ الآخر باقٍ. */
     await expect(page.getByRole('region', { name: 'مراجعة اختبار قصير — الوحدة الرابعة' })).toHaveCount(0);
     await expect(page.locator('.oex-mod-row', { hasText: 'اختبار قصير — الوحدة الرابعة' })).toHaveCount(0);
-    await expect(pendingKpi.locator('.metric-value')).toHaveText('1');
+    await expect(pendingCell.locator('.stat-value')).toHaveText('1');
     await expect(page.locator('.oex-mod-row', { hasText: 'اختبار نهائي — الشبكات' })).toBeVisible();
 
     expect(moderateBodies).toEqual([{ approve: true, note }]);

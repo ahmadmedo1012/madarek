@@ -415,13 +415,11 @@ export function OwnerDashboardPage() {
 
         <Card title="الحالة التشغيليّة">
           <div className="owner-health-list">
-            <div className="owner-health-row">
-              <div className={`owner-health-dot ${alertsQuery.isPending ? 'neutral' : alertsQuery.isError ? 'red' : hasAlerts ? 'amber' : 'green'}`} />
-              <span className="owner-health-label">حالة المنصة</span>
-              <span className="owner-health-value">
-                {alertsQuery.isPending ? '…' : alertsQuery.isError ? 'تعذّر الجلب' : hasAlerts ? countAr(alerts.length, OPEN_ALERT_FORMS) : 'سليمة'}
-              </span>
-            </div>
+            {/* r299: the «حالة المنصة» row died — the live-status band
+                directly above OWNS alert status (same query, same
+                states) and the attention strip owns the action link;
+                a third restatement of the same count stacked three
+                boxes into ~600px. */}
             <div className="owner-health-row">
               {/* 6A10-4: zero live sessions is a QUIET campus, not a
                   healthy one — the dot mirrors the neighboring quiet

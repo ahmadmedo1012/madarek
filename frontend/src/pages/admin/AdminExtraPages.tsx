@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
-import { ErrorState, EmptyState, KpiSkeleton, TableSkeleton, ListSkeleton, Skeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, TableSkeleton, ListSkeleton, Skeleton } from '../../components/primitives/States';
 /* r253 (Phase B): the students roster composes the shell patterns —
  * PageFrame + patterns PageHeader + FilterBar + RowList rows. */
 import { PageFrame, PageHeader as PatternsPageHeader, FilterBar, RowList, RowItem } from '../../components/patterns';
@@ -21,7 +21,7 @@ import { withInstitutionScope } from '../../lib/queryClient';
 import { toast } from '../../lib/toast';
 import { useFaculties, useCurrentInstitutionSlug, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
-import { TablePaginationFooter } from './AdminPages';
+import { TablePaginationFooter, StatStripSkeleton } from './AdminPages';
 import { countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
 // D14 css split (13-17): colleges.css has owned the admin-extras surfaces
@@ -209,9 +209,12 @@ export function AdminStudentsPage() {
                   )}
                   expandLabel={`بيانات وتسجيلات ${s.firstName} ${s.lastName}`}
                 >
-                  {/* The expansion body — the full academic facts + the
-                      enrollments action (opens the EnrollmentModal). */}
-                  <div className="owner-row-actions">
+                  {/* r299: the expansion body — the full academic facts +
+                      the enrollments action. The owner.css
+                      .owner-row-actions plate is NOT loaded in this
+                      chunk (family-sheet ownership), so the same
+                      anatomy rides the global utilities instead. */}
+                  <div className="flex flex-wrap items-center gap-3" style={{ paddingBlockStart: 'var(--sp-2)' }}>
                     <span className="text-sm text-muted">
                       القسم: {s.studentProfile?.department.name ?? '—'} · السنة {s.studentProfile?.year ?? '—'} · المستوى {s.studentProfile?.level ?? '—'}
                     </span>
@@ -438,7 +441,7 @@ export function AdminDigitalPage() {
   });
 
   return (
-    <div className="page admin-digital">
+    <div className="page">
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">التحوّل الرقميّ</h1>
@@ -448,7 +451,7 @@ export function AdminDigitalPage() {
 
       {q.isPending && (
         <>
-          <KpiSkeleton />
+          <StatStripSkeleton />
           <TableSkeleton rows={6} cols={3} />
         </>
       )}
@@ -462,7 +465,7 @@ export function AdminDigitalPage() {
             ariaLabel="مؤشّرات التبنّي العامّة"
             cells={[
               { label: 'إجمالي الحسابات', value: formatNum(q.data.totalUsers), trend: 'كل الأدوار في الجامعة' },
-              { label: 'حسابات نشطة', value: formatNum(q.data.activeUsers), trend: `${formatNum(q.data.activeUsers)}/${formatNum(q.data.totalUsers)}`, trendTone: 'up' },
+              { label: 'حسابات نشطة', value: formatNum(q.data.activeUsers), trend: 'من إجمالي الحسابات' },
               { label: 'نسبة التبنّي', value: `${formatNum(q.data.adoptionPct)}٪`, trend: 'حصة الحسابات النشطة' },
               { label: 'ملفات تعليمية مرفوعة', value: formatNum(q.data.materialsUploaded) },
             ]}
@@ -560,7 +563,7 @@ export function AdminSettingsPage() {
   const dbOk = health.isSuccess && health.data?.ok === true;
 
   return (
-    <div className="page admin-settings">
+    <div className="page">
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">إعدادات المنصّة</h1>

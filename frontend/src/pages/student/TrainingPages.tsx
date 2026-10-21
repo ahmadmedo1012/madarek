@@ -18,12 +18,14 @@ import {
   ChevronLeft, ChevronRight, BookOpen, Target, Crown, Star, Medal,
   AlertTriangle,
 } from 'lucide-react';
-import { Card, Badge, ProgressBar, UserAvatar, AlertRow, PageHeader } from '../../components/primitives';
+import { Card, Badge, ProgressBar, UserAvatar, AlertRow } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 /* r265 (4E — اتجاه Superlist): شبكة بطاقات المسارات تصير قائمة صفوف
    هادئة (عقد RowList/RowItem) — العنوان باب الصف والتفاصيل على السطر
-   الثانوي والتقدّم في الطرف. */
-import { RowList, RowItem } from '../../components/patterns';
+   الثانوي والتقدّم في الطرف. G النهائية: الإطار/الترويسة/التصفية على
+   عقد patterns كاملة (PageFrame/PageHeader/FilterBar) — نفس لغة
+   عائلة المجتمع/المسابقات/الكليات. */
+import { PageFrame, PageHeader, RowList, RowItem, FilterBar } from '../../components/patterns';
 import { PageSkeleton, DetailSkeleton, ErrorState, EmptyState, Skeleton, ListSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -102,10 +104,10 @@ export default function TrainingCatalogPage() {
   const completedCount = tracks?.filter((t) => t.isCompleted).length ?? 0;
 
   return (
-    <div className="page">
+    <PageFrame>
       <PageHeader
         title="التطوير الذاتي"
-        subtitle="مسارات تدريبية مصمَّمة بعناية لتناسب احتياجاتك الأكاديمية والمهنية. أكمل مساراً لتحصل على سجلّ إتمام موثَّق من المنصة."
+        description="مسارات تدريبية مصمَّمة بعناية لتناسب احتياجاتك الأكاديمية والمهنية. أكمل مساراً لتحصل على سجلّ إتمام موثَّق من المنصة."
       />
 
       {/* My summary — KPI band + level progress. Pending → shape-matched
@@ -168,32 +170,37 @@ export default function TrainingCatalogPage() {
       ) : null}
 
       {/* Category filter pills — only once the catalog is loaded (an
-          empty pill row while loading/erroring would be a fake signal). */}
+          empty pill row while loading/erroring would be a fake signal).
+          G: ‏FilterBar اللاصق — نفس عقد الكليات/المسابقات بدل صفّ الرقائق
+          اليدوي داخل بطاقة؛ الرقائق نفسها بعقد aria-pressed كما كانت. */}
       {tracks && (
-        <Card flush>
-          <div className="filter-pill-row" role="group" aria-label="تصفية المسارات حسب الفئة">
-            <button
-              type="button"
-              className="filter-pill"
-              aria-pressed={filter === 'all'}
-              onClick={() => setFilter('all')}
-            >
-              <Icon icon={Sparkles} size={12} />
-              كل المسارات ({formatNum(tracks.length)})
-            </button>
-            {categoriesPresent.map((c) => (
+        <FilterBar
+          sticky
+          filters={(
+            <div role="group" aria-label="تصفية المسارات حسب الفئة">
               <button
-                key={c}
                 type="button"
                 className="filter-pill"
-                aria-pressed={filter === c}
-                onClick={() => setFilter(c)}
+                aria-pressed={filter === 'all'}
+                onClick={() => setFilter('all')}
               >
-                {CATEGORY_LABEL[c]} ({formatNum(tracks.filter((t) => t.category === c).length)})
+                <Icon icon={Sparkles} size={12} />
+                كل المسارات ({formatNum(tracks.length)})
               </button>
-            ))}
-          </div>
-        </Card>
+              {categoriesPresent.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className="filter-pill"
+                  aria-pressed={filter === c}
+                  onClick={() => setFilter(c)}
+                >
+                  {CATEGORY_LABEL[c]} ({formatNum(tracks.filter((t) => t.category === c).length)})
+                </button>
+              ))}
+            </div>
+          )}
+        />
       )}
 
       {/* Track rows — r265: قائمة صفوف هادئة بدل شبكة بطاقات. pending →
@@ -225,7 +232,7 @@ export default function TrainingCatalogPage() {
           ))}
         </RowList>
       )}
-    </div>
+    </PageFrame>
   );
 }
 
@@ -322,26 +329,26 @@ export function TrainingTrackPage() {
   if (trackQ.isPending) return <PageSkeleton />;
   if (trackQ.isError) {
     return (
-      <div className="page">
+      <PageFrame>
         <Link to="/training" className="back-link">
           <Icon icon={ChevronRight} size={14} />
           العودة إلى المسارات
         </Link>
         <ErrorState message="تعذَّر تحميل المسار" error={trackQ.error} onRetry={() => trackQ.refetch()} />
-      </div>
+      </PageFrame>
     );
   }
   const track = trackQ.data;
   if (!track) {
     return (
-      <div className="page">
+      <PageFrame>
         <EmptyState
           icon={BookOpen}
           title="المسار غير موجود"
           description="ربما تم حذفه أو أن الرابط غير صحيح."
           action={<Link to="/training" className="btn primary sm">تصفح المسارات</Link>}
         />
-      </div>
+      </PageFrame>
     );
   }
 
@@ -365,7 +372,7 @@ export function TrainingTrackPage() {
   };
 
   return (
-    <div className="page">
+    <PageFrame>
       <Link to="/training" className="back-link">
         <Icon icon={ChevronRight} size={14} />
         العودة إلى المسارات
@@ -380,7 +387,9 @@ export function TrainingTrackPage() {
         <div className="track-hero-main">
           <div className="track-hero-cat">{CATEGORY_LABEL[track.category]}</div>
           <h1 className="track-hero-title">{track.title}</h1>
-          {track.titleEn && <div className="text-xs text-subtle font-mono"><bdi>{track.titleEn}</bdi></div>}
+          {/* G (عقد mono — r197): الاسم الإنجليزي اسمٌ لا معرّف رقمي؛
+              sans هادئ داخل bdi بدل الصوت الأحادي. */}
+          {track.titleEn && <div className="text-xs text-subtle"><bdi>{track.titleEn}</bdi></div>}
           <p className="track-hero-summary">{track.summary}</p>
           <div className="track-hero-meta">
             <Badge><Icon icon={Clock} size={11} /> {countAr(track.estMinutes, ['دقيقة واحدة', 'دقيقتين', 'دقائق', 'دقيقة'])}</Badge>
@@ -394,9 +403,14 @@ export function TrainingTrackPage() {
           className="btn primary"
           onClick={onEnroll}
           disabled={enroll.isPending}
+          aria-busy={enroll.isPending}
         >
-          {!track.enrolled ? 'ابدأ المسار' : track.isCompleted ? 'مراجعة الدروس' : 'استكمل الدراسة'}
-          <Icon icon={ChevronLeft} size={14} />
+          {/* G (تعليق الزر): التسمية تتغيّر أثناء الطلب — عقد صفحة الدخول
+              نفسه (disabled + aria-busy + «جارٍ…») بدل صمت التعطيل. */}
+          {enroll.isPending
+            ? 'جارٍ البدء…'
+            : !track.enrolled ? 'ابدأ المسار' : track.isCompleted ? 'مراجعة الدروس' : 'استكمل الدراسة'}
+          {!enroll.isPending && <Icon icon={ChevronLeft} size={14} />}
         </button>
       </div>
 
@@ -439,7 +453,7 @@ export function TrainingTrackPage() {
           ))}
         </div>
       </Card>
-    </div>
+    </PageFrame>
   );
 }
 
@@ -508,40 +522,40 @@ export function TrainingLessonPage() {
   if (trackQ.isPending) return <DetailSkeleton />;
   if (trackQ.isError) {
     return (
-      <div className="page">
+      <PageFrame>
         <Link to="/training" className="back-link">
           <Icon icon={ChevronRight} size={14} />
           العودة إلى المسارات
         </Link>
         <ErrorState message="تعذَّر تحميل الدرس" error={trackQ.error} onRetry={() => trackQ.refetch()} />
-      </div>
+      </PageFrame>
     );
   }
   const track = trackQ.data;
   if (!track) {
     return (
-      <div className="page">
+      <PageFrame>
         <EmptyState
           icon={BookOpen}
           title="المسار غير موجود"
           description="ربما تم حذفه أو أن الرابط غير صحيح."
           action={<Link to="/training" className="btn primary sm">تصفح المسارات</Link>}
         />
-      </div>
+      </PageFrame>
     );
   }
 
   const lesson = track.lessons.find((l) => l.id === lessonId);
   if (!lesson) {
     return (
-      <div className="page">
+      <PageFrame>
         <EmptyState
           icon={BookOpen}
           title="الدرس غير موجود"
           description="ربما تم حذفه أو أن الرابط غير صحيح."
           action={<Link to={`/training/${track.slug}`} className="btn primary sm">عودة إلى المسار</Link>}
         />
-      </div>
+      </PageFrame>
     );
   }
 
@@ -577,7 +591,7 @@ export function TrainingLessonPage() {
   };
 
   return (
-    <div className="page">
+    <PageFrame>
       <Link to={`/training/${track.slug}`} className="back-link">
         <Icon icon={ChevronRight} size={14} />
         {/* r183-B6 (A4 P3-6): the back-link family's unified grammar —
@@ -592,7 +606,7 @@ export function TrainingLessonPage() {
           <span><Icon icon={Clock} size={10} /> {countAr(lesson.estMinutes, ['دقيقة واحدة', 'دقيقتين', 'دقائق', 'دقيقة'])}</span>
         </div>
         <h1 className="lesson-title">{lesson.title}</h1>
-        {lesson.summary && <p className="text-sm text-muted" style={{ marginBottom: 'var(--sp-3)' }}>{lesson.summary}</p>}
+        {lesson.summary && <p className="text-sm text-muted lesson-summary">{lesson.summary}</p>}
 
         <div className="lesson-content">
           {lesson.contentMarkdown.split(/\n+/).map((para, i) => (
@@ -690,7 +704,7 @@ export function TrainingLessonPage() {
           )}
         </div>
       </Card>
-    </div>
+    </PageFrame>
   );
 }
 
@@ -738,10 +752,10 @@ export function AchievementsPage() {
   };
 
   return (
-    <div className="page">
+    <PageFrame>
       <PageHeader
         title="الإنجازات"
-        subtitle="رحلتك في التطوير الذاتي — نقاطك، أوسمتك، شهاداتك، وترتيبك بين الزملاء."
+        description="رحلتك في التطوير الذاتي — نقاطك، أوسمتك، شهاداتك، وترتيبك بين الزملاء."
       />
 
       {meQ.isPending ? (
@@ -850,7 +864,10 @@ export function AchievementsPage() {
             <div className="grid-2">
               {certsQ.data.map((c) => (
                 <Card key={c.id}>
-                  <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
+                  {/* G: وصفة بطاقة الشهادة تنتقل إلى training.css
+                      (.cert-*) — القيم نفسها (r186/r148) بلا أسلوب
+                      سطري؛ --cert-accent يبقى سطريًا لأنه من البيانات. */}
+                  <div className="cert-row">
                     <div
                       className="cert-icon"
                       style={{ ['--cert-accent' as never]: c.themeColor ?? undefined }}
@@ -858,17 +875,15 @@ export function AchievementsPage() {
                     >
                       <EmojiIcon emoji={c.iconEmoji ?? '🏅'} size={22} />
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="cert-body">
                       <div className="text-xxs text-subtle">شهادة إتمام مسار</div>
                       {/* 5-D3 (A3 P3-2): demoted from h3 — the page's only
                           heading is the h1; a cert title is a list-item
                           label. Visuals byte-identical (display family,
                           bold, fs-md, lh 1.3, same margins). */}
-                      {/* r186: 4px 0 6px → tokens — same values, the TSX
-                          seam joins the enforced spacing axis. */}
-                      <div style={{ fontSize: 'var(--fs-md)', fontFamily: 'var(--font-display)', fontWeight: 'var(--fw-bold)', lineHeight: 1.3, margin: 'var(--sp-1) 0 var(--sp-1-5)' }}>{c.title}</div>
+                      <div className="cert-title">{c.title}</div>
                       <div className="text-xs text-muted">{c.issuer}</div>
-                      <div style={{ display: 'flex', gap: 'var(--sp-2)', marginTop: 'var(--sp-2)', flexWrap: 'wrap' }}>
+                      <div className="cert-meta">
                         <Badge color="green"><Icon icon={CheckCircle2} size={11} /> مكتملة</Badge>
                         {c.issuedAt && (
                           <Badge>{formatDate(c.issuedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</Badge>
@@ -927,8 +942,7 @@ export function AchievementsPage() {
               {lbIsNarrow && lbRows.length > 10 && (
                 <button
                   type="button"
-                  className="btn ghost sm"
-                  style={{ width: '100%', marginBlockStart: 'var(--sp-3)' }}
+                  className="btn ghost sm ach-lb-toggle"
                   aria-expanded={lbExpanded}
                   aria-controls="ach-leaderboard-list"
                   onClick={() => setLbExpanded((v) => !v)}
@@ -943,7 +957,7 @@ export function AchievementsPage() {
           </Card>
         </div>
       )}
-    </div>
+    </PageFrame>
   );
 }
 

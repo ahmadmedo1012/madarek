@@ -256,6 +256,19 @@ describe('detectDrift', () => {
     expect(findings[0]!.detail).toContain('matched 1');
   });
 
+  it('flags missing illustration measurements when an empty/error state is mounted', () => {
+    const findings = detectDrift(
+      inventory([
+        emptyCapture({
+          illustrationMounts: { illustrations: 0, stateSurfaces: 1 },
+        }),
+      ]),
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]!.kind).toBe('coverage-regression');
+    expect(findings[0]!.detail).toContain('no measurements');
+  });
+
   it('flags a capture that regressed below its route baseline coverage', () => {
     const findings = detectDrift(
       inventory([

@@ -2580,7 +2580,14 @@
       "viewport": 360,
       "theme": "light",
       "dir": "rtl",
-      "illustrations": [],
+      "illustrations": [
+        {
+          "name": "not-found",
+          "decorative": true,
+          "altResolved": null,
+          "sizeBytesGz": 402
+        }
+      ],
       "overlays": [],
       "roleAccent": null,
       "collegeAccent": "#2E45E6",
@@ -2656,7 +2663,7 @@
         ]
       },
       "illustrationMounts": {
-        "illustrations": 0,
+        "illustrations": 1,
         "stateSurfaces": 0
       },
       "cls": 0,
@@ -2668,7 +2675,14 @@
       "viewport": 360,
       "theme": "dark",
       "dir": "rtl",
-      "illustrations": [],
+      "illustrations": [
+        {
+          "name": "not-found",
+          "decorative": true,
+          "altResolved": null,
+          "sizeBytesGz": 402
+        }
+      ],
       "overlays": [],
       "roleAccent": null,
       "collegeAccent": "#2E45E6",
@@ -2744,7 +2758,7 @@
         ]
       },
       "illustrationMounts": {
-        "illustrations": 0,
+        "illustrations": 1,
         "stateSurfaces": 0
       },
       "cls": 0,
@@ -2756,7 +2770,14 @@
       "viewport": 768,
       "theme": "light",
       "dir": "rtl",
-      "illustrations": [],
+      "illustrations": [
+        {
+          "name": "not-found",
+          "decorative": true,
+          "altResolved": null,
+          "sizeBytesGz": 402
+        }
+      ],
       "overlays": [],
       "roleAccent": null,
       "collegeAccent": "#2E45E6",
@@ -2832,7 +2853,7 @@
         ]
       },
       "illustrationMounts": {
-        "illustrations": 0,
+        "illustrations": 1,
         "stateSurfaces": 0
       },
       "cls": 0,
@@ -2844,7 +2865,14 @@
       "viewport": 768,
       "theme": "dark",
       "dir": "rtl",
-      "illustrations": [],
+      "illustrations": [
+        {
+          "name": "not-found",
+          "decorative": true,
+          "altResolved": null,
+          "sizeBytesGz": 402
+        }
+      ],
       "overlays": [],
       "roleAccent": null,
       "collegeAccent": "#2E45E6",
@@ -2920,7 +2948,7 @@
         ]
       },
       "illustrationMounts": {
-        "illustrations": 0,
+        "illustrations": 1,
         "stateSurfaces": 0
       },
       "cls": 0,
@@ -2932,7 +2960,14 @@
       "viewport": 1280,
       "theme": "light",
       "dir": "rtl",
-      "illustrations": [],
+      "illustrations": [
+        {
+          "name": "not-found",
+          "decorative": true,
+          "altResolved": null,
+          "sizeBytesGz": 402
+        }
+      ],
       "overlays": [],
       "roleAccent": null,
       "collegeAccent": "#2E45E6",
@@ -3008,7 +3043,7 @@
         ]
       },
       "illustrationMounts": {
-        "illustrations": 0,
+        "illustrations": 1,
         "stateSurfaces": 0
       },
       "cls": 0,
@@ -3020,7 +3055,14 @@
       "viewport": 1280,
       "theme": "dark",
       "dir": "rtl",
-      "illustrations": [],
+      "illustrations": [
+        {
+          "name": "not-found",
+          "decorative": true,
+          "altResolved": null,
+          "sizeBytesGz": 402
+        }
+      ],
       "overlays": [],
       "roleAccent": null,
       "collegeAccent": "#2E45E6",
@@ -3096,7 +3138,7 @@
         ]
       },
       "illustrationMounts": {
-        "illustrations": 0,
+        "illustrations": 1,
         "stateSurfaces": 0
       },
       "cls": 0,
@@ -12504,7 +12546,14 @@
       "viewport": 360,
       "theme": "light",
       "dir": "rtl",
-      "illustrations": [],
+      "illustrations": [
+        {
+          "name": "empty-list",
+          "decorative": true,
+          "altResolved": null,
+          "sizeBytesGz": 319
+        }
+      ],
       "overlays": [],
       "roleAccent": "#2E45E6",
       "collegeAccent": "#2E45E6",
@@ -12752,7 +12801,7 @@
         ]
       },
       "illustrationMounts": {
-        "illustrations": 0,
+        "illustrations": 1,
         "stateSurfaces": 1
       },
       "cls": 0,
@@ -12764,7 +12813,14 @@
       "viewport": 360,
       "theme": "dark",
       "dir": "rtl",
-      "illustrations": [],
+      "illustrations": [
+        {
+          "name": "empty-list",
+          "decorative": true,
+          "altResolved": null,
+          "sizeBytesGz": 319
+        }
+      ],
       "overlays": [],
       "roleAccent": "#8E9BFF",
       "collegeAccent": "#2E45E6",
@@ -13012,7 +13068,7 @@
         ]
       },
       "illustrationMounts": {
-        "illustrations": 0,
+        "illustrations": 1,
         "stateSurfaces": 1
       },
       "cls": 0,
@@ -13024,7 +13080,14 @@
       "viewport": 768,
       "theme": "light",
       "dir": "rtl",
-      "illustrations": [],
+      "illustrations": [
+        {
+          "name": "empty-list",
+          "decorative": true,
+          "altResolved": null,
+          "sizeBytesGz": 319
+        }
+      ],
       "overlays": [],
       "roleAccent": "#2E45E6",
       "collegeAccent": "#2E45E6",
@@ -13272,7 +13335,7 @@
         ]
       },
       "illustrationMounts": {
-        "illustrations": 0,
+        "illustrations": 1,
         "stateSurfaces": 1
       },
       "cls": 0,
@@ -13284,7 +13347,14 @@
       "viewport": 768,
       "theme": "dark",
       "dir": "rtl",
-      "illustrations": [],
+      "illustrations": [
+        {
+          "name": "empty-list",
+          "decorative": true,
+          "altResolved": null,
+          "sizeBytesGz": 319
+        }
+      ],
       "overlays": [],
       "roleAccent": "#8E9BFF",
       "collegeAccent": "#2E45E6",
@@ -13532,7 +13602,7 @@
         ]
       },
       "illustrationMounts": {
-        "illustrations": 0,
+        "illustrations": 1,
         "stateSurfaces": 1
       },
       "cls": 0,
@@ -13544,7 +13614,14 @@
       "viewport": 1280,
       "theme": "light",
       "dir": "rtl",
-      "illustrations": [],
+      "illustrations": [
+        {
+          "name": "empty-list",
+          "decorative": true,
+          "altResolved": null,
+          "sizeBytesGz": 319
+        }
+      ],
       "overlays": [],
       "roleAccent": "#2E45E6",
       "collegeAccent": "#2E45E6",
@@ -13792,7 +13869,7 @@
         ]
       },
       "illustrationMounts": {
-        "illustrations": 0,
+        "illustrations": 1,
         "stateSurfaces": 1
       },
       "cls": 0,
@@ -13804,7 +13881,14 @@
       "viewport": 1280,
       "theme": "dark",
       "dir": "rtl",
-      "illustrations": [],
+      "illustrations": [
+        {
+          "name": "empty-list",
+          "decorative": true,
+          "altResolved": null,
+          "sizeBytesGz": 319
+        }
+      ],
       "overlays": [],
       "roleAccent": "#8E9BFF",
       "collegeAccent": "#2E45E6",
@@ -14052,7 +14136,7 @@
         ]
       },
       "illustrationMounts": {
-        "illustrations": 0,
+        "illustrations": 1,
         "stateSurfaces": 1
       },
       "cls": 0,

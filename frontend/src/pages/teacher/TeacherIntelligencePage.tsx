@@ -301,7 +301,7 @@ export function TeacherOfferingDetailPage() {
       <div className="page">
         <Link to="/teacher/intelligence" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          كل مقرّراتي
+          العودة إلى كل مقرّراتي
         </Link>
         <header className="page-header">
           <div className="page-title-block">
@@ -321,7 +321,7 @@ export function TeacherOfferingDetailPage() {
       <div className="page">
         <Link to="/teacher/intelligence" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          كل مقرّراتي
+          العودة إلى كل مقرّراتي
         </Link>
         <header className="page-header">
           <div className="page-title-block">
@@ -347,7 +347,7 @@ export function TeacherOfferingDetailPage() {
     <div className="page">
       <Link to="/teacher/intelligence" className="back-link">
         <Icon icon={ChevronRight} size={14} />
-        كل مقرّراتي
+        العودة إلى كل مقرّراتي
       </Link>
 
       {/* Tinted band painted by .track-hero from --track-accent (training.css
@@ -376,12 +376,14 @@ export function TeacherOfferingDetailPage() {
 
       {analytics.isPending && <AnalyticsStripSkeleton />}
       {analytics.isError && (
-        <div className="inline-retry" role="alert">
-          <span className="text-sm text-muted">تعذَّر تحميل مؤشرات المقرّر.</span>
-          <button type="button" className="btn ghost sm" onClick={() => analytics.refetch()}>
-            <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
-          </button>
-        </div>
+        /* The strip's compact slot keeps its placement — the shared
+         * ErrorState replaces the hand-rolled .inline-retry row (the
+         * same convention the students/risks sections below use). */
+        <ErrorState
+          message="تعذَّر تحميل مؤشرات المقرّر"
+          error={analytics.error}
+          onRetry={() => analytics.refetch()}
+        />
       )}
       {analytics.data && (
         <StatStrip

@@ -830,6 +830,23 @@
     gap: var(--sp-1);
     padding: 0 var(--sp-3) var(--sp-3);
   }
+  /* r299: the pending mirror's month footprint — the same 7-column
+     template and cell height as .cal-grid, its own class so the "no
+     .cal-grid while loading" pin keeps meaning the interactive grid. */
+  .cal-grid-skel {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--sp-1);
+    padding: 0 var(--sp-3) var(--sp-3);
+  }
+  .cal-cell-skel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-1);
+    min-block-size: 64px;
+  }
   .cal-cell {
     /* Buttons reset — the cell is a selector, not an action */
     appearance: none;
@@ -848,7 +865,13 @@
     transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
   }
   .cal-cell:hover { background: var(--surface-2); }
-  .cal-cell[data-in-month='false'] { opacity: 0.35; }
+  /* r299 (final C): out-of-month days — the old opacity:0.35 dim put the
+     13px numeral at 2.31:1 (light, axe color-contrast; opacity-as-
+     secondary-text is the taste anti-pattern r283 already retired
+     elsewhere). The honest distinction is INK, not transparency:
+     muted tier keeps ≥4.5:1 in both themes; the dots never render on
+     out-of-month cells (events bucket by the visible month's dayKeys). */
+  .cal-cell[data-in-month='false'] .cal-day-num { color: var(--text-muted); font-weight: 400; }
   .cal-cell[data-selected='true'] {
     background: var(--surface-2);
     border-color: var(--accent);
@@ -1001,19 +1024,6 @@
   .matrix-cell.is-dim {
     opacity: 0.38;
     filter: saturate(0.25);
-  }
-
-  /* Recommendation rows stagger in from inline-start (direction-aware
-     via --motion-direction, capped at --motion-stagger-cap). */
-  .matrix-gap-list .list-row {
-    animation: matrix-gap-in var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
-    animation-delay: calc(
-      var(--motion-stagger-step) * min(var(--gap-i, 0), var(--motion-stagger-cap))
-    );
-  }
-  @keyframes matrix-gap-in {
-    from { opacity: 0; transform: translateX(calc(var(--motion-direction) * -8px)); }
-    to { opacity: 1; transform: none; }
   }
 
   /* 22-c (A4 P3-7): one quiet summary line for courses with no mapped
@@ -1804,6 +1814,7 @@
        the whole card is the primary target, but the labeled CTA must
        stand on its own on touch too (zero sub-40px interactives). */
     .courses-filter .pill,
+    .matrix-filter .pill,
     .courses-assignments td .btn,
     .webinar-kpis .metric-change .btn,
     .jobs-table .table-row-actions .btn,
@@ -3402,11 +3413,12 @@
 
   /* P2-9 — results: the page's one data visualization leads on phone
      instead of starting below three stacked KPI cards (measured: chart
-     top 658px in a 784px viewport — past the fold). */
-  @media (max-width: 640px) {
-    .student-results .page-header { order: -2; }
-    .student-results .results-chart-card { order: -1; }
-  }
+     top 658px in a 784px viewport — past the fold). r299 (final C): the
+     KPI trio became the pattern StatLine, so the chart already rides
+     directly under it in the .pf-page column — the order hack (and its
+     .student-results scope, retired with the legacy .page wrapper) is
+     dead and deleted; the .results-chart-card hook class stays for the
+     Card itself. */
 
   /* P2-8 — hero pair eyebrows on one line: the progress card's text
      block centers against the 168px doughnut (components.css), landing
@@ -3668,6 +3680,27 @@
     border-radius: 50%;
     flex-shrink: 0;
   }
+
+  /* r299 (final C): the level filter joins the FilterBar + .pill
+     grammar — the CoursesPage toolbar contract (the training.css
+     filter-pill import is retired from this page). Container mirrors
+     .courses-filter; the live count rides inside the pill the same
+     .courses-filter-count way — muted tinted ink at rest, inherit on
+     the inverted active ground. */
+  .matrix-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    align-items: center;
+  }
+  .matrix-filter-count {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+  .pill.on .matrix-filter-count { color: inherit; }
+  .matrix-filter .pill:disabled { opacity: 0.55; }
 
   /* (Wave 6-c dead-selector sweep: .matrix-grid deleted — its only
      consumer (MatrixPage concept grid) switched to the designed

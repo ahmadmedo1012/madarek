@@ -215,11 +215,13 @@ function ReviewRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void
         <>
           <span>{paper.student.firstName} {paper.student.lastName}</span>
           {paper.offering && (
-            <span>
-              · {paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)
-            </span>
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)</span>
+            </>
           )}
-          <span>· رُفع {formatDateAr(paper.uploadedAt)}</span>
+          <span aria-hidden="true">·</span>
+          <span>رُفع {formatDateAr(paper.uploadedAt)}</span>
         </>
       }
       trailing={
@@ -270,11 +272,13 @@ function GradedRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void
         <>
           <span>{paper.student.firstName} {paper.student.lastName}</span>
           {paper.offering && (
-            <span>
-              · {paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)
-            </span>
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)</span>
+            </>
           )}
-          <span>· قُيِّم {paper.gradedAt ? formatDateAr(paper.gradedAt) : formatDateAr(paper.uploadedAt)}</span>
+          <span aria-hidden="true">·</span>
+          <span>قُيِّم {paper.gradedAt ? formatDateAr(paper.gradedAt) : formatDateAr(paper.uploadedAt)}</span>
         </>
       }
       trailing={

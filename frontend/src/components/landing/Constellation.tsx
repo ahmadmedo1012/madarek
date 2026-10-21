@@ -121,9 +121,11 @@ export function Constellation({
       })}
 
       {/* the center «نقطة» — every knowledge journey starts here */}
-      <circle cx="380" cy="380" r="7" className="const-center" />
+      <circle cx="380" cy="380" r="9" className="const-center" />
 
-      {/* the 25 college nodes */}
+      {/* the 25 college nodes — final-homepage: the r198 radii (4.5/6)
+       * rendered ≈3px dots at hero scale; the poster's focal object
+       * needs nodes that carry ink. 5.5/7 + a 9px center point. */}
       {nodes.map(({ college, x, y, isSignal }) => {
         const active = interactive && selectedSlug === college.slug;
         return (
@@ -136,8 +138,8 @@ export function Constellation({
             }
             data-college-slug={interactive ? college.slug : undefined}
           >
-            {active && <circle cx={x} cy={y} r="14" className="const-node-halo" />}
-            <circle cx={x} cy={y} r={active || isSignal ? 6 : 4.5} className="const-node-dot" />
+            {active && <circle cx={x} cy={y} r="18" className="const-node-halo" />}
+            <circle cx={x} cy={y} r={active || isSignal ? 7 : 5.5} className="const-node-dot" />
           </g>
         );
       })}
