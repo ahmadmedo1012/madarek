@@ -108,7 +108,7 @@ export function LectureFormModal({
       pending={pending}
     >
       <form onSubmit={onSubmit} noValidate>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
+        <div className="cur-form">
           <FormField label="عنوان المحاضرة" htmlFor={titleId} error={err.title?.message}>
             <input id={titleId} type="text" className="auth-input" {...form.register('title')} />
           </FormField>
@@ -233,15 +233,7 @@ export function LectureAuthoringList({
           <div
             key={lecture.id}
             className="cur-lec-row"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--sp-2)',
-              padding: 'var(--sp-3)',
-              borderRadius: 'var(--r-md)',
-              border: `1px solid ${selected ? 'var(--accent)' : 'var(--rule)'}`,
-              background: selected ? 'var(--surface-2)' : 'transparent',
-            }}
+            data-selected={selected || undefined}
           >
             {/* 5-B6 (A7 P2-3): up/down swap with the neighbor — the
                 accessible keyboard alternative to drag reorder. The
@@ -274,26 +266,14 @@ export function LectureAuthoringList({
               type="button"
               onClick={() => onSelect(lecture.id)}
               aria-pressed={selected}
-              style={{
-                flex: 1,
-                minWidth: 0,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--sp-3)',
-                textAlign: 'start',
-                background: 'none',
-                border: 'none',
-                padding: 0,
-                cursor: 'pointer',
-                color: 'inherit',
-              }}
+              className="cur-lec-select"
             >
               <Badge color={selected ? 'brand' : undefined}>{lecture.ordinal}</Badge>
-              <span style={{ flex: 1, minWidth: 0 }}>
-                <span className="text-sm" style={{ display: 'block', fontWeight: 'var(--fw-semibold, 600)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span className="cur-lec-main">
+                <span className="text-sm cur-lec-title">
                   {lecture.title}
                 </span>
-                <span className="text-xs text-muted" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', marginTop: 'var(--sp-0-5)' }}>
+                <span className="text-xs text-muted cur-lec-meta">
                   <span><Icon icon={Clock} size={11} /> {lecture.durationSec > 0 ? formatSec(lecture.durationSec) : 'مدة غير محددة'}</span>
                   {/* 5-B6 (A7 P2-4): counted nouns — «3 فصل» was raw;
                       the zero case names the reality instead of «0 فصل». */}
@@ -321,8 +301,7 @@ export function LectureAuthoringList({
               </button>
               <button
                 type="button"
-                className="btn ghost sm"
-                style={{ color: 'var(--danger)' }}
+                className="btn ghost sm cur-row-danger"
                 onClick={() => setDeleting(lecture)}
                 aria-label={`حذف ${lecture.title}`}
               >

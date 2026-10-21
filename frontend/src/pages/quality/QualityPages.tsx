@@ -25,16 +25,12 @@ import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 import { formatRelativeArShort, WEEKDAY_NAMES_AR, countAr } from '../../lib/format';
 import '../../styles/training.css'; // .filter-pill family (D11 css split, 12-15)
-// r183-B5: the roster search chrome (admin-students-toolbar family) —
-// the same sheet AdminCoursesPage / AdminGovernancePages load when they
-// borrow the toolbar; owner's OwnerInstitutionDetailPage follows it too.
-import '../../styles/admin.css';
 import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
-// 4C-b: the quality sector's own page-scoped sheet (qlt-* classes —
-// board layout, KPI ledger, calm rosters, curriculum rows, link/alert
-// rows). Shared chrome (.page, .table/.tbl-stack, .stat-strip,
-// .filter-pill, .admin-students-*) keeps coming from its owner sheets.
-import '../../styles/quality-pages.css';
+// R304: the teacher & quality family sheet (tq-/tpg-/qlt-/exa-/oex-/cur-)
+// — the quality sector's qlt-* rules consolidated there, and the roster
+// toolbar migrated OFF the borrowed .admin-students-* chrome onto the
+// family-owned .tq-toolbar/.tq-search pill.
+import '../../styles/teacher-quality.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Filler, Tooltip, Legend);
 
@@ -772,18 +768,19 @@ export function QualityCoursesPage() {
             </button>
           ) : undefined}
         >
-          {/* r183-B5: the standard roster search chrome (admin-students-
-              toolbar family — the AdminCoursesPage twin) wired to the
-              debounced server-side `q`. */}
-          <div className="admin-students-toolbar">
-            <div className="admin-students-search">
+          {/* R304: the roster search chrome — now the family-owned
+              .tq-toolbar/.tq-search pill (migrated off the borrowed
+              admin-students-* chrome) wired to the debounced
+              server-side `q`. */}
+          <div className="tq-toolbar">
+            <div className="tq-search">
               <Icon icon={Search} size={14} />
               <input
                 type="search"
                 placeholder="ابحث بالاسم أو الكود…"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                className="admin-students-input"
+                className="tq-search-input"
                 aria-label="البحث في المقرّرات"
               />
             </div>
@@ -1030,22 +1027,24 @@ export function QualityProfessorsPage() {
           : undefined}
         icon={School}
       >
-        {/* r183-B5: the standard roster search chrome (admin-students-
-            toolbar family) wired to the debounced server-side `q`, plus
-            R190 (D4): the «بحاجة لمتابعة» filter as a pressed pill —
-            the former icon-tile KPI toggle, now where filters live.
-            r299 (E item 5): the toolbar stays up even when the roster
-            is empty (searched or not) — a fresh institution reads an
-            honest empty state below, never a header-only table. */}
-        <div className="admin-students-toolbar">
-          <div className="admin-students-search">
+        {/* R304: the roster search chrome — the family-owned
+            .tq-toolbar/.tq-search pill (migrated off the borrowed
+            admin-students-* chrome) wired to the debounced server-side
+            `q`, plus R190 (D4): the «بحاجة لمتابعة» filter as a pressed
+            pill — the former icon-tile KPI toggle, now where filters
+            live. r299 (E item 5): the toolbar stays up even when the
+            roster is empty (searched or not) — a fresh institution
+            reads an honest empty state below, never a header-only
+            table. */}
+        <div className="tq-toolbar">
+          <div className="tq-search">
             <Icon icon={Search} size={14} />
             <input
               type="search"
               placeholder="ابحث باسم الأستاذ…"
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              className="admin-students-input"
+              className="tq-search-input"
               aria-label="البحث في الأساتذة"
             />
           </div>
@@ -1623,6 +1622,17 @@ export function QualityReportsPage() {
 
 export function QualityAlertsPage() {
   const q = useQualityAlerts();
+  /* R304: severity is the page's one scan axis — a read-only client-side
+   * view control (the .filter-pill grammar the professors roster uses)
+   * so the queue answers «ما الحرج الآن؟» without touching the wire.
+   * Default = الكل (every pinned row contract stays in view). */
+  const [severityFilter, setSeverityFilter] = useState<'all' | QualityAlert['severity']>('all');
+  const severityCounts = q.data?.counts;
+  const visibleAlerts = q.data
+    ? (severityFilter === 'all'
+        ? q.data.alerts
+        : q.data.alerts.filter((a) => a.severity === severityFilter))
+    : [];
 
   return (
     <div className="page">
@@ -1672,26 +1682,57 @@ export function QualityAlertsPage() {
             ? `${countAr(q.data.counts.total, ['تنبيه واحد', 'تنبيهان', 'تنبيهات', 'تنبيهاً'])} · تُعرض أول ${q.data.alerts.length}`
             : undefined}
         >
-          {/* 4C-b: oversight rows — leading severity edge (2px inline-start:
-              danger / warning / brand tints — r299: the info edge mirrors
-              the brand Badge's copper family, it was --success green while
-              the same row's chip rendered brand), category icon, severity
-              chip (semantic colors kept) + relative time. */}
-          <div className="qlt-alert-list">
-            {q.data.alerts.map((a) => (
-              <div key={a.id} className={`qlt-alert-row qlt-sev-${a.severity}`}>
-                <span className="qlt-alert-row-icon" aria-hidden="true">
-                  <Icon icon={CATEGORY_ICON[a.category]} size={16} />
-                </span>
-                <div className="qlt-alert-row-body">
-                  <div className="qlt-alert-row-title">{a.title}</div>
-                  <div className="qlt-alert-row-desc">{a.description}</div>
-                  <div className="qlt-alert-row-time">{formatRelativeArShort(a.occurredAt)}</div>
-                </div>
-                <Badge color={SEVERITY_TONE[a.severity]}>{SEVERITY_LABEL[a.severity]}</Badge>
-              </div>
+          {/* R304: the severity filter rail — counts inline so the rail
+              answers both «كم؟» and «أيّها؟» in one line. */}
+          <div className="qlt-alert-filter" role="group" aria-label="تصفية التنبيهات بحسب الشدّة">
+            <button
+              type="button"
+              className={`filter-pill${severityFilter === 'all' ? ' on' : ''}`}
+              aria-pressed={severityFilter === 'all'}
+              onClick={() => setSeverityFilter('all')}
+            >
+              الكل
+              <span className="filter-pill-count">{formatNum(q.data.alerts.length)}</span>
+            </button>
+            {(['critical', 'warning', 'info'] as const).map((sev) => (
+              <button
+                key={sev}
+                type="button"
+                className={`filter-pill${severityFilter === sev ? ' on' : ''}`}
+                aria-pressed={severityFilter === sev}
+                onClick={() => setSeverityFilter(sev)}
+              >
+                {SEVERITY_LABEL[sev]}
+                <span className="filter-pill-count">{formatNum(severityCounts?.[sev] ?? 0)}</span>
+              </button>
             ))}
           </div>
+          {visibleAlerts.length === 0 ? (
+            <p className="qlt-empty-note">لا تنبيهات بهذه الشدّة حاليّاً — اختر شدّة أخرى أو أعد التصفية إلى «الكل».</p>
+          ) : (
+            <>
+              {/* 4C-b: oversight rows — leading severity edge (2px inline-start:
+                  danger / warning / brand tints — r299: the info edge mirrors
+                  the brand Badge's copper family, it was --success green while
+                  the same row's chip rendered brand), category icon, severity
+                  chip (semantic colors kept) + relative time. */}
+              <div className="qlt-alert-list">
+                {visibleAlerts.map((a) => (
+                  <div key={a.id} className={`qlt-alert-row qlt-sev-${a.severity}`}>
+                    <span className="qlt-alert-row-icon" aria-hidden="true">
+                      <Icon icon={CATEGORY_ICON[a.category]} size={16} />
+                    </span>
+                    <div className="qlt-alert-row-body">
+                      <div className="qlt-alert-row-title">{a.title}</div>
+                      <div className="qlt-alert-row-desc">{a.description}</div>
+                      <div className="qlt-alert-row-time">{formatRelativeArShort(a.occurredAt)}</div>
+                    </div>
+                    <Badge color={SEVERITY_TONE[a.severity]}>{SEVERITY_LABEL[a.severity]}</Badge>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </Card>
       )}
     </div>

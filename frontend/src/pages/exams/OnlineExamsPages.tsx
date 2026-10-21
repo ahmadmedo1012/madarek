@@ -34,7 +34,7 @@ import { overlayStack } from '../../lib/overlayStack';
 import { useEntityPageTitle } from '../../components/layout/AppShell';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .back-link family (D11 css split, 12-15)
-import '../../styles/online-exams.css'; // 4C-d — the .oex page-scoped sheet (list rows / taker chrome / moderation queue)
+import '../../styles/teacher-quality.css'; // R304 — the family sheet (oex- section lives here)
 
 const KIND_LABEL: Record<string, string> = {
   QUIZ: 'اختبار قصير', MIDTERM: 'نصفي', FINAL: 'نهائي', PRACTICE: 'تدريبي',
