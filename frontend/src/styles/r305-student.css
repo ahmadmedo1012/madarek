@@ -1,0 +1,236 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R305-A5 · Heron design language, student workspace foundation
+   Branch: redesign/r305-heron-student · baseline 1b766512 (r304 follow-up)
+
+   The shared Heron vocabulary every student family sheet builds on.
+   Family sheets (r305-student-*.css) own their page-specific sections;
+   THIS file owns only the cross-family primitives below — append-only
+   per section, never rewrite another section.
+
+   Heron translation onto the Madarek canon (no token changes, gates
+   unmodified — every value rides the r197/r303 ladders):
+   • Surface geometry  — surface STEPS (bg → surface → surface-2/3),
+     hairline frames, radius chosen per task (r-sm wells, r-lg panels,
+     r-full chips) — never one global card recipe.
+   • Strong type scale — display/heading register from tokens; page 24
+     → section 18 → body 16 (the r304 product register).
+   • Thin technical dividers — hairline rules that carry the layout
+     instead of boxed cards.
+   • Micro-labels — 13px semibold secondary-ink overlines that classify
+     every block (what / status / metadata / action).
+   • Dark/light section contrast — theme-reactive "deep" bands built on
+     the auto-inverting neutral scale (ink ground in light, paper ground
+     in dark).
+   • Restrained warm signal — the copper accent (--accent family) used
+     sparingly: the ONE next action, active states, key numerals.
+     Gold stays achievements-only; state tones only on semantic states.
+
+   Gate contract for every consumer (all enforced on this tree):
+   colors  — var()/color-mix() ONLY, zero raw literals;
+   type/radius/spacing — token ladder ONLY (var(--fs-*/--r-*/--sp-*)),
+     zero raw px declarations, and none in TSX inline styles either;
+   icons   — Lucide via the Icon component;
+   motion  — --t-*/--motion-* tokens, guarded hover behind
+     @media (hover:hover) and (pointer:fine), reduced-motion safe.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── 1 · Micro-label (the Heron overline) ─────────────────────────
+     Classifies the block that follows: a status, a metadata family,
+     an action group. 13px floor, semibold, secondary ink. Pairs with
+     .r305s-eyebrow-rule for the leading tick. */
+  .r305s-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-muted);
+    letter-spacing: 0;
+    line-height: 1.4;
+  }
+  /* The short technical tick before the label text. */
+  .r305s-eyebrow::before {
+    content: "";
+    inline-size: var(--sp-4);
+    block-size: 1px;
+    background: var(--rule-strong);
+    flex: none;
+  }
+
+  /* ── 2 · Thin technical dividers ──────────────────────────────────
+     Hairlines carry the layout: horizontal section rule, vertical
+     column rule, and the labeled variant that stamps a micro-label
+     INTO the line (Heron's annotated divider). */
+  .r305s-rule {
+    border: 0;
+    block-size: 1px;
+    background: var(--surface-divider);
+    margin-block: var(--sp-5);
+  }
+  .r305s-rule--strong { background: var(--rule); }
+  .r305s-rule-v {
+    inline-size: 1px;
+    align-self: stretch;
+    background: var(--surface-divider);
+    flex: none;
+  }
+  .r305s-rule-labeled {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-block: var(--sp-5);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+  }
+  .r305s-rule-labeled::before,
+  .r305s-rule-labeled::after {
+    content: "";
+    block-size: 1px;
+    flex: 1;
+    background: var(--surface-divider);
+  }
+
+  /* ── 3 · Surface bands — the dark/light section contrast ─────────
+     .r305s-band       : the quiet step (surface-2 ground, hairline frame).
+     .r305s-band--deep : the Heron inversion — ink ground in light theme,
+                         paper ground in dark (the neutral scale flips),
+                         so the band always contrasts its page.
+     Inner ink on the deep band re-derives from the SAME theme ramp:
+     fg = the band's own opposite pole, secondary = mixed toward it. */
+  .r305s-band {
+    background: var(--surface-2);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--r-lg);
+    padding: var(--sp-5) var(--sp-6);
+  }
+  .r305s-band--deep {
+    background: var(--neutral-900);
+    color: var(--neutral-0);
+    border-color: transparent;
+  }
+  .r305s-band--deep .r305s-eyebrow { color: var(--neutral-500); }
+  .r305s-band--deep .r305s-eyebrow::before { background: var(--neutral-300); }
+  /* Secondary ink on the deep band: mix the band fg back toward the
+     band ground — theme-proof by construction (no per-theme rules). */
+  .r305s-band--deep .r305s-band-secondary {
+    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+  }
+
+  /* ── 4 · Metadata + status chips ──────────────────────────────────
+     One chip anatomy: quiet well, 13px, 44px-safe when interactive.
+     Tone variants color ONLY their dot/ink from semantic state tokens;
+     the resting chip stays neutral so status reads at a glance. */
+  .r305s-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    padding: var(--sp-1) var(--sp-2-5);
+    border-radius: var(--r-full);
+    background: var(--surface-2);
+    border: 1px solid var(--surface-border);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .r305s-chip-dot {
+    inline-size: var(--sp-1-5);
+    block-size: var(--sp-1-5);
+    border-radius: var(--r-full);
+    background: var(--text-faint);
+    flex: none;
+  }
+  .r305s-chip--accent .r305s-chip-dot { background: var(--accent); }
+  .r305s-chip--success .r305s-chip-dot { background: var(--success); }
+  .r305s-chip--warning .r305s-chip-dot { background: var(--warning); }
+  .r305s-chip--danger  .r305s-chip-dot { background: var(--danger); }
+  .r305s-chip--info    .r305s-chip-dot { background: var(--info); }
+  .r305s-chip--gold    .r305s-chip-dot { background: var(--gold); }
+
+  /* ── 5 · Numerals — the technical metric register ────────────────
+     Metrics are the mono voice (IDs + tabular numerals only — the
+     r197 mono contract), always formatted upstream via
+     utils/numbers.ts; the class never formats, never counts. */
+  .r305s-metric {
+    font-family: var(--font-mono);
+    font-size: var(--fs-metric-md);
+    font-weight: var(--fw-bold);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    color: var(--text-strong);
+  }
+  .r305s-metric-label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  /* ── 6 · Kicker row — editorial section heading ───────────────────
+     Title at the section register (18px), optional trailing action,
+     the hairline filling the remainder: heading and divider as ONE
+     object instead of a boxed card header. */
+  .r305s-kicker {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-block-end: var(--sp-4);
+  }
+  .r305s-kicker-title {
+    font-size: var(--fs-h3);
+    font-weight: var(--fw-bold);
+    color: var(--text-strong);
+    line-height: 1.3;
+  }
+  .r305s-kicker::after {
+    content: "";
+    block-size: 1px;
+    flex: 1;
+    background: var(--surface-divider);
+  }
+  .r305s-kicker-action { flex: none; }
+
+  /* ── 7 · The one-action emphasis ──────────────────────────────────
+     Heron restraint: exactly one emphasized action per view region.
+     The shared .btn.accent system carries the fill; this wrapper adds
+     the copper edge-tint rail for the non-button hero strips. */
+  .r305s-next {
+    border-inline-start: 2px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+    border-radius: var(--r-md);
+  }
+
+  /* ── 8 · Density helpers for rows and ledgers ─────────────────────
+     The pattern RowList remains the product; these only tune Heron
+     rhythm inside student sections (never re-style .pf-* globally). */
+  .r305s-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1) var(--sp-3);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .r305s-meta-row > * { min-inline-size: 0; }
+  /* Metadata separators ride the divider color, not text opacity. */
+  .r305s-meta-sep {
+    inline-size: 1px;
+    block-size: var(--sp-3);
+    background: var(--rule);
+    flex: none;
+  }
+
+  /* Reduced-motion belt: this sheet introduces no animation of its
+     own — hover/focus are the shared system's grammar (color/border
+     steps only). Nothing to disable; kept as the explicit contract. */
+  @media (prefers-reduced-motion: reduce) {
+    .r305s-eyebrow::before,
+    .r305s-rule-labeled::before,
+    .r305s-rule-labeled::after,
+    .r305s-kicker::after { transition: none; }
+  }
+}
