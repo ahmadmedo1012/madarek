@@ -224,6 +224,23 @@
     flex: none;
   }
 
+  /* ── 9 · Skeleton bones inside deep bands ─────────────────────────
+     The shared .skeleton shimmer sweeps toward a near-white highlight
+     (motion.css) tuned for the light page grounds. Inside a deep band
+     the pending mirrors keep REAL text (the pending-mirror = final
+     anatomy contract), so a near-white bone flashing under band-mixed
+     ink produces sub-second contrast faults in both themes. Bones on
+     the deep ground render as a calm static wash of the band's own
+     ink instead — no shimmer, no pole crossing. (r305-a5 browser QA:
+     transient axe color-contrast catches on the dashboard/player/
+     results/profile mirrors all traced here.) */
+  .r305s-band--deep .skeleton {
+    background-color: color-mix(in srgb, var(--neutral-0) 10%, transparent);
+    background-image: none;
+    animation: none;
+    opacity: 1;
+  }
+
   /* Reduced-motion belt: this sheet introduces no animation of its
      own — hover/focus are the shared system's grammar (color/border
      steps only). Nothing to disable; kept as the explicit contract. */
