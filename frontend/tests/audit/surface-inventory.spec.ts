@@ -715,7 +715,7 @@ test('sweep AUDIT_ROUTES × viewports × themes × dirs → surface-inventory.js
           const main = page.locator('main').first();
           await expect(main, `${route} should render a main landmark`).toBeVisible();
           expect((await main.innerText()).trim(), `${route} main landmark should have content`).not.toBe('');
-          const pageSignal = main.locator('h1, h2, [role="alert"], [role="status"]').first();
+          const pageSignal = main.locator('h1:visible, h2:visible, [role="alert"]:visible, [role="status"]:visible').first();
           await expect(pageSignal, `${route} should render a heading or explicit state`).toBeVisible();
 
           // Sweep invariants — fail loudly rather than baseline the
