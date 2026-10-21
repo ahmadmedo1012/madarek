@@ -15,13 +15,14 @@ import {
   Radio, Plus, Play, Square, X, Calendar, Clock, AlertCircle,
   CheckCircle2, RefreshCw,
 } from 'lucide-react';
-import { Card, Badge, FormField } from '../../components/primitives';
+import { Card, FormField } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, Skeleton, EmptyState } from '../../components/primitives/States';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import '../../styles/owner.css'; // ConfirmDialog surfaces via the discard guard (D11 css split, 12-15)
+import '../../styles/r305-teacher-quality.css'; // R305 Heron: §0 primitives + §E tax- composition
 import {
   useTeacherOfferings, useLiveSessions, useCreateLiveSession,
   useLifecycleLiveSession, apiErrorMessage, type LiveSessionRow,
@@ -35,16 +36,17 @@ const STATUS_LABEL: Record<LiveSessionRow['status'], string> = {
   ENDED: 'منتهية',
   CANCELLED: 'ملغاة',
 };
-/* Badge tones: SCHEDULED amber (waiting), LIVE red (the authored
- * moment), ENDED green (done) — and CANCELLED NEUTRAL: a cancelled
- * session is a void state, not an accent one, so its Badge carries no
- * color (the dashboard's done=neutral grammar; brand is an accent,
- * never a status). */
-const STATUS_COLOR: Record<LiveSessionRow['status'], 'amber' | 'red' | 'green' | undefined> = {
-  SCHEDULED: 'amber',
-  LIVE: 'red',
-  ENDED: 'green',
-  CANCELLED: undefined,
+/* Status vocabulary (R305 Heron .hr-chip tones): SCHEDULED warn (amber
+ * waiting), ENDED ok (done) — and CANCELLED neutral: a cancelled
+ * session is a void state, not an accent one (the dashboard's
+ * done=neutral grammar; brand is an accent, never a status). LIVE
+ * keeps its authored .live-chip with the breathing danger dot — the
+ * one moving moment on the page, so it stays out of the chip ramp. */
+const STATUS_TONE: Record<LiveSessionRow['status'], 'ok' | 'warn' | 'neutral' | undefined> = {
+  SCHEDULED: 'warn',
+  LIVE: undefined,
+  ENDED: 'ok',
+  CANCELLED: 'neutral',
 };
 
 /** Shape-matched skeleton for the stat strip + session rows. */
@@ -151,15 +153,21 @@ export default function TeacherLivePage() {
   };
 
   return (
+    <div className="hr-scope">
     <div className="page">
       <header className="page-header">
         <div className="page-title-block">
+          <span className="hr-brow">التعليم المتزامن</span>
           <h1 className="page-title">إدارة البث المباشر</h1>
           <p className="page-subtitle">
             جدولة المحاضرات الحية وتشغيلها وإيقافها. الطلاب يرون فقط الجلسات الخاصة بمقرّراتهم.
           </p>
         </div>
-        <button type="button" className="btn primary" onClick={() => (showForm ? requestClose() : setShowForm(true))}>
+        <button
+          type="button"
+          className="btn primary hr-cta"
+          onClick={() => (showForm ? requestClose() : setShowForm(true))}
+        >
           <Icon icon={Plus} size={14} /> {showForm ? 'إغلاق النموذج' : 'جلسة جديدة'}
         </button>
       </header>
@@ -407,7 +415,7 @@ export default function TeacherLivePage() {
                 ))}
               </div>
               {past.length > 10 && (
-                <div className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-3)' }}>
+                <div className="text-xs text-subtle tax-past-note">
                   أحدث <bdi>10</bdi> جلسات من أصل <bdi>{past.length}</bdi>
                 </div>
               )}
@@ -415,6 +423,7 @@ export default function TeacherLivePage() {
           )}
         </>
       )}
+    </div>
     </div>
   );
 }
@@ -474,9 +483,11 @@ function SessionRow({
           {STATUS_LABEL[s.status]}
         </span>
       ) : (
-        <Badge color={STATUS_COLOR[s.status]}>
+        /* R305: the settled states speak the shared Heron chip vocabulary
+            (warn=waiting · ok=done · neutral=void). */
+        <span className="hr-chip" data-tone={STATUS_TONE[s.status]}>
           {STATUS_LABEL[s.status]}
-        </Badge>
+        </span>
       )}
       <div className="run-row-actions">
         {onStart && (
