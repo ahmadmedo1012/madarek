@@ -39,7 +39,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import StudentCoursesPage from '../../src/pages/student/CoursesPage';
 import CourseDetailPage from '../../src/pages/student/CourseDetailPage';
-import LecturePlayerPage, { isWatchComplete, resolveReportTotalSec } from '../../src/pages/student/LecturePlayerPage';
+import { isWatchComplete, resolveReportTotalSec } from '../../src/pages/student/LecturePlayerPage';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const read = (p: string) => readFileSync(path.join(root, p), 'utf8');
