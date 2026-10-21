@@ -1,42 +1,44 @@
 /* ════════════════════════════════════════════════════════════════════
-   مدارك — LANDING (r198 + final-homepage) · «ملصق مدارك» — the
-   OPTIKKA-direction poster
+   مدارك — LANDING (r304) · «ملصق مدارك» — the OPTIKKA editorial
+   reconstruction
    ════════════════════════════════════════════════════════════════════
-   Stage 2 of the redesign (BLUEPRINT §6): poster logic on the --poster-*
-   namespace — paper/ink with ONE ultramarine signal, oversized Arabic
-   display type, one idea per scroll chapter, numbered chapters 01–06
-   (Western digits, bidi-isolated). Dark theme is the inversion of the
-   same design (the --poster-* aliases are theme-reactive by contract).
+   r304 rebuilds the COMPOSITION around the persistent world (r303's
+   conductor + canvas stay untouched). The page now behaves like an
+   art-directed editorial sequence, not a document with a background
+   object: every act reserves its intentional empty-space zone so the
+   sculpture NEVER simply washes across content —
 
-   RETIRED with this sheet (r198): the r191 Turion-derived choreography —
-   the 700vh pinned mega-stage, the mono telemetry strip, the orbit/scene
-   vocabulary, and every hero-scene/orbit-ring/vision-bg raster asset.
-   Motion now: the rAF useScrollStage --sp engine (hero drift + footer
-   rush) + IntersectionObserver block reveals. No preloader, no canvas,
-   no video, no new dependencies.
+     hero      the knot holds the center under the dotted drafting
+               grid; the word anchors bottom-reading-end, the statement
+               bottom-reading-start (OPTIKKA's sparse open, mirrored)
+     statement an editorial spread — copy owns the reading-start
+               column, the reading-end third stays open (the conductor
+               drifts the knot there)
+     chapters  numbered spreads; the interface fragments are elevated
+               opaque surfaces so the slow camera sweep reads as depth
+               BEHIND the proof, never through it
+     live      THE COPPER CLIMAX — the inverted ledger slab (ink on
+               paper / paper on night) holds the reading-start column,
+               and an annotated empty window hands the reading-end
+               third to the conductor's copper close-up (emissive 0.95)
+     roles     the wide-pullback index — full airy hairline rows over
+               the knot on the horizon
+     colleges  the knot lands behind the panel column; the elevated
+               panel + chip row own the reading start, the ghost count
+               floats in the open reading-end third
+     vision    THE PASSAGE — the composition steps back: one centered
+               statement, tall negative space, then the honest pairs
+     cta       the resolve — centered, emissive peaking behind
+     footer    colophon + the giant wordmark rush (--sp, geometry only)
 
-   final-homepage (workstream A, evidence-based refinement — no rebuild):
-   measured against the live OPTIKKA/Superlist references and the five
-   defects fixed are: the constellation centerpiece carried no mass
-   (rings 22%/chords 9% ink hairlines, ≈3px dots — now 34%/17% strokes,
-   poster-scale nodes, and a radial signal field on both stages);
-   `.ch--bleed` never shipped a rule (chapters 02/06 stacked full-width
-   minis — now the wide two-column bleed that runs the mini past the
-   1240px measure toward the viewport edge, completing the L·R alternation);
-   the hero grid now favors the focal-object column; the closing wordmark
-   registers at 12% ink; the section ladder carries uniform hairlines;
-   the chapter numeral draws its editorial rule. Two type tokens moved up
-   one rung (st-line, st-lines measure). Zero new motion, zero new
-   assets, zero token drift — the static reduced-motion poster is
-   unchanged and complete (landing-poster-refinement.test.ts pins it).
-
-   Discipline (gates): zero raw colors (tokens + color-mix only) · radii
-   via --r-* · spacing via the --sp-* ladder (enforced — this sheet is no
-   longer a census-only file; the one 620px full-bleed geometry constant
-   carries a spacing-gate allow) · font-size via type tokens, with exactly
-   two deliberate poster-display allows below · zero :focus-visible
-   rules (the universal base.css language owns focus) · zero --ln-*
-   archaeology.
+   Discipline (gates): zero raw colors (tokens + color-mix only) ·
+   radii via --r-* · spacing via the --sp-* ladder (the sheet stays in
+   the visible census) · font sizes on the type ladder except the two
+   authored poster displays (hero word / footer wordmark) and the
+   colleges ghost count, each commented · zero :focus-visible rules
+   (base.css owns focus) · hover washes guarded behind
+   (hover:hover) and (pointer:fine) · exactly one [data-theme="dark"]
+   .landing block · the RM block covers every mover + the reveals.
    ════════════════════════════════════════════════════════════════════ */
 
 .landing {
@@ -46,11 +48,7 @@
   font-family: var(--font-sans);
 }
 
-/* ── The persistent world — one fixed canvas behind the whole page ──
- * r304: the canvas VEILS itself per chapter (MadarekWorld sets opacity
- * on the canvas element — the at-source reading guard). The static SVG
- * poster below is the NO-WebGL ground only: once the world boots it
- * hands off via [data-world='live'] so the page carries ONE sculpture. */
+/* ── The persistent world — one fixed canvas behind the whole page ── */
 .world-layer {
   position: fixed;
   inset: 0;
@@ -67,28 +65,11 @@
 .world-poster {
   position: absolute;
   inset-block-start: 6%;
-  inset-inline-start: 50%;
-  translate: -50% 0;
+  inset-inline: 0;
+  margin-inline: auto; /* direction-safe centering (RTL + LTR) */
   inline-size: min(46vw, 560px);
   aspect-ratio: 1;
   opacity: 0.55;
-}
-
-/* the handoff: WebGL live → the SVG twin retires */
-.world-layer[data-world='live'] .world-poster {
-  opacity: 0;
-}
-
-/* fallback composition (no WebGL / reduced poster path): the twin is
- * quiet, small, and fades toward the reading bands instead of sitting
- * hard behind mid-page copy. */
-@media (max-width: 768px) {
-  .world-poster {
-    inset-block-start: 1%;
-    inline-size: min(58vw, 300px);
-    opacity: 0.28;
-    mask-image: radial-gradient(120% 120% at 50% 30%, black 42%, transparent 78%);
-  }
 }
 
 /* Sections + header + footer stack above the world layer. */
@@ -103,12 +84,12 @@ main,
 .fo-header { position: sticky; }
 .fo-progress { position: fixed; }
 
-/* Every top-level band shares the poster container rhythm (40/80-adjacent
-   section steps from the spacing ladder). */
-.fo-hero-grid,
+/* ── The poster measure — every top-level band shares it ──────────── */
+.fo-header-inner,
+.fo-hero-layer,
 .st-section,
 .chapters,
-.lv-section,
+.lv-grid,
 .rl-section,
 .cg-section,
 .vs-section,
@@ -119,14 +100,22 @@ main,
   padding-inline: var(--sp-6);
 }
 
-/* Section labels — quiet, never mono (mono is for numerals only). */
+/* ── Section labels — the quiet editorial eyebrow: a short drafting
+ * rule, then the label. Never mono (mono is for numerals only). ──── */
 .fo-label {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-2);
+  gap: var(--sp-3);
   font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--text-muted);
+}
+
+.fo-label::before {
+  content: '';
+  inline-size: var(--sp-6);
+  block-size: 1px;
+  background: color-mix(in srgb, var(--poster-signal) 55%, transparent);
 }
 
 .fo-mono {
@@ -135,15 +124,61 @@ main,
   font-variant-numeric: tabular-nums;
 }
 
-/* Signal emphasis — the ONE accent, reused everywhere. Dark theme: the
- * poster signal re-points to the light signal tier (--accent-strong
- * #8E9BFF = 7.26:1 on the night ground) — text, numerals, links and
- * constellation nodes invert with the ground. CTA FILLS stay #2E45E6 via
- * the app recipes (the r197 fills contract; white labels 6.75:1). This
- * is the stage-2 divergence the --poster-* namespace was designed for. */
+/* ── The paper veil — the r304 masking device ────────────────────────────
+ * The world canvas sits behind the whole story, and the conductor parks
+ * the knot in a different third per chapter. Wherever authored copy can
+ * cross the sculpture, a soft radial of the poster paper fades the knot
+ * OUT under the text — depth-of-field haze, not a panel: on clear paper
+ * the veil is invisible (paper on paper), and over the knot it reads as
+ * atmosphere. This is how the copy stays AA-clean without ever boxing
+ * the object away: stacking + masking, never a wash across content.
+ * The ::before drops behind the block's text but stays inside main's
+ * stacking context (main owns z-index: 1) — always above the canvas. */
+.fo-hero-copy,
+.fo-hero-aside,
+.st-spread,
+.chapters-head,
+.ch-head,
+.rl-head,
+.rl-strip,
+.cg-head,
+.cg-panel-wrap,
+.vs-head,
+.fo-cta-inner {
+  position: relative;
+}
+
+.fo-hero-copy::before,
+.fo-hero-aside::before,
+.st-spread::before,
+.chapters-head::before,
+.ch-head::before,
+.rl-head::before,
+.rl-strip::before,
+.cg-head::before,
+.cg-panel-wrap::before,
+.vs-head::before,
+.fo-cta-inner::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: calc(var(--sp-8) * -1);
+  background: radial-gradient(
+    64% 60% at 50% 50%,
+    color-mix(in srgb, var(--poster-paper) 90%, transparent) 30%,
+    transparent 92%
+  );
+  pointer-events: none;
+}
+
+/* ── Signal emphasis — the ONE accent, reused everywhere. Dark theme:
+ * the poster signal re-points to the light signal tier — text,
+ * numerals, links and the registry numeral invert with the ground.
+ * CTA FILLS stay on the app recipes (the r197 fills contract). This
+ * is the stage-2 divergence the --poster-* namespace was designed
+ * for. */
 .fo-hero-triad em,
 .chapters-title em,
-.lv-title em,
 .rl-title em,
 .vs-title em,
 .fo-cta-title em {
@@ -151,12 +186,10 @@ main,
   color: var(--poster-signal);
 }
 
-/* Dark theme: the poster signal re-points to the light signal tier
- * (--accent-strong #8E9BFF = 7.26:1 on the night ground) — text,
- * numerals, links and constellation nodes invert with the ground. CTA
- * FILLS stay #2E45E6 via the app recipes (the r197 fills contract;
- * white labels 6.75:1). The stage-2 divergence the --poster-* namespace
- * was designed for. */
+/* Dark theme: the poster signal re-points to the night accent — text,
+ * numerals, links invert with the ground. CTA FILLS stay on the app
+ * recipes (white labels on the night fill). The stage-2 divergence
+ * the --poster-* namespace was designed for. */
 [data-theme="dark"] .landing {
   --poster-signal: var(--accent);
 }
@@ -221,10 +254,7 @@ main,
   display: flex;
   align-items: center;
   gap: var(--sp-5);
-  max-inline-size: 1240px;
-  margin-inline: auto;
-  padding-inline: var(--sp-6);
-  min-block-size: 64px;
+  min-block-size: 68px;
 }
 
 .fo-brand {
@@ -236,16 +266,30 @@ main,
   color: var(--poster-ink);
 }
 
+/* the wordmark stack: name over descriptor — the brand block the
+ * r177 neutrality pin reads (exactly two «منصّة التعليم الذكي»). */
+.fo-brand-stack {
+  display: grid;
+  gap: 0;
+  line-height: 1.25;
+}
+
 .fo-brand-name {
   font-family: var(--font-display);
   font-size: var(--fs-h3);
   font-weight: 700;
 }
 
+.fo-brand-sub {
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
 .fo-nav {
   display: flex;
   align-items: center;
-  gap: var(--sp-5);
+  gap: var(--sp-6);
   margin-inline-start: auto;
 }
 
@@ -260,19 +304,14 @@ main,
   transition: color var(--t-fast) var(--ease);
 }
 
-.fo-nav-link:hover {
-  color: var(--poster-ink);
-}
-
 .fo-header-actions {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
 }
 
-/* BLUEPRINT §6 defect fix, generalized (critic Q7): the .btn recipes ship
- * 32/40/48px — the poster lifts every landing control to the 44px floor
- * (.lg CTAs stay 48). */
+/* The .btn recipes ship 32/40/48px — the poster lifts every landing
+ * control to the 44px floor (.lg CTAs stay 48). */
 .landing .btn:not(.lg) {
   block-size: 44px;
 }
@@ -287,6 +326,7 @@ main,
   background: transparent;
   color: var(--poster-ink);
   cursor: pointer;
+  margin-inline-start: auto;
 }
 
 .fo-mobile-menu {
@@ -317,7 +357,7 @@ main,
   color: var(--text-muted);
 }
 
-/* ── HERO — the poster's first viewport ───────────────────────────── */
+/* ═══ HERO — the sparse open ═════════════════════════════════════════ */
 .fo-hero {
   position: relative;
   min-block-size: 100vh;
@@ -327,52 +367,32 @@ main,
   padding-block: var(--sp-12);
 }
 
-/* the OPTIKKA editorial grid: faint dotted rules that quarter the
- * first viewport. Pure poster chrome — aria-hidden decoration. */
+/* the OPTIKKA drafting grid: dotted quartering rules that third the
+ * first viewport — two verticals, two horizontals, drafting-paper
+ * character. Pure poster chrome — aria-hidden decoration. */
 .fo-hero-gridlines {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  /* the OPTIKKA editorial grid (their assets/lines SVG): dashed 2/2
-   * quartering rules at ~10% ink — one center column line, two row
-   * lines, plus the outer margins. Dotted drafting-paper character. */
   background-image:
-    repeating-linear-gradient(to left, color-mix(in srgb, var(--poster-ink) 30%, transparent) 0 1px, transparent 1px 6px),
-    repeating-linear-gradient(to bottom, color-mix(in srgb, var(--poster-ink) 30%, transparent) 0 1px, transparent 1px 6px);
+    repeating-linear-gradient(to left, color-mix(in srgb, var(--poster-ink) 26%, transparent) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(to bottom, color-mix(in srgb, var(--poster-ink) 26%, transparent) 0 1px, transparent 1px 6px);
   background-size:
-    50% 100%,
-    100% 33.333%;
+    33.3334% 100%,
+    100% 33.3334%;
   background-position:
-    50% 0,
+    100% 0,
     0 30%;
   background-repeat: no-repeat;
-  mask-image: linear-gradient(to bottom, black 62%, transparent 100%);
-  opacity: 0.3;
+  mask-image: linear-gradient(to bottom, black 55%, transparent 96%);
+  opacity: 0.4;
 }
 
-/* r304 mobile: the drafting grid retreats from the reading zone — a
- * whisper at the top of the hero only, never through Arabic copy. */
-@media (max-width: 640px) {
-  .fo-hero-gridlines {
-    opacity: 0.12;
-    background-size:
-      50% 100%,
-      100% 40%;
-    background-position:
-      50% 0,
-      0 12%;
-    mask-image: linear-gradient(to bottom, black 30%, transparent 62%);
-  }
-}
-
-/* the 3D object — fills the first viewport, sits UNDER the editorial
- * copy layer. --sp drives its CSS-side drift + scale; three.js reads
- * the same var for the render choreography. */
-
-/* the copy layer floats over the grid+object: top-right the eyebrow,
- * bottom-left the word + triad, bottom-right the paragraph + actions.
- * One column that spans; the internal members place themselves. */
+/* the copy layer floats over the grid+object: top-reading-start the
+ * eyebrow, bottom-reading-end the word + triad, bottom-reading-start
+ * the paragraph + actions. One grid that spans the measure; the
+ * members place themselves. */
 .fo-hero-layer {
   position: relative;
   z-index: 2;
@@ -380,34 +400,12 @@ main,
   grid-template-rows: auto 1fr auto;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
   inline-size: 100%;
-  max-inline-size: 1240px;
-  margin-inline: auto;
-  padding-inline: var(--sp-6);
   min-block-size: calc(100svh - var(--sp-12) * 2);
 }
 
 /* eyebrow: top of the reading column (inline-start = right in RTL) */
-.fo-hero-copy { grid-area: 1 / 1 / 2 / 2; }
-
-/* the display word + triad: bottom-LEFT cell — the OPTIKKA anchor */
-.fo-hero-word {
-  grid-area: 3 / 2 / 4 / 3;
-  align-self: end;
-  /* the OPTIKKA anchor: the word's baseline rides the section's
-   * bottom edge with only breathing room above the fold */
-  margin-block-end: var(--sp-2);
-}
-
-/* the statement paragraph + actions + meta: bottom-right cell
- * (reading-start edge) */
-.fo-hero-aside {
-  grid-area: 3 / 1 / 4 / 2;
-  align-self: end;
-  display: grid;
-  justify-items: start;
-}
-
 .fo-hero-copy {
+  grid-area: 1 / 1 / 2 / 2;
   align-self: start;
   padding-block-start: var(--sp-7);
   max-inline-size: 30ch;
@@ -421,12 +419,20 @@ main,
 }
 
 /* the poster word — display allow: fluid poster scale, Arabic
- * line-height, zero tracking (cursive joins). */
+ * line-height, zero tracking (cursive joins). The OPTIKKA anchor. */
+.fo-hero-word {
+  grid-area: 3 / 2 / 4 / 3;
+  align-self: end;
+  margin-block-end: var(--sp-2);
+}
+
 .fo-hero-title {
   font-family: var(--font-display);
-  font-size: clamp(72px, 13vw, 168px);
+  /* type-gate: allow — the hero poster word (the one authored display
+   * in the story; exempt sheet, commented for the census). */
+  font-size: clamp(76px, 13.5vw, 176px);
   font-weight: 700;
-  line-height: 1.04;
+  line-height: 1.08;
   margin-block: 0 var(--sp-3);
   letter-spacing: 0;
 }
@@ -438,9 +444,15 @@ main,
   line-height: 1.3;
 }
 
-/* the statement paragraph lands bottom-inline-END (OPTIKKA's
- * bottom-left in LTR maps to the reading-start edge; the sub +
- * actions + meta live with it). */
+/* the statement paragraph + actions + meta live on the reading-start
+ * edge (OPTIKKA's bottom-right paragraph, mirrored to RTL). */
+.fo-hero-aside {
+  grid-area: 3 / 1 / 4 / 2;
+  align-self: end;
+  display: grid;
+  justify-items: start;
+}
+
 .fo-hero-sub {
   justify-self: start;
   max-inline-size: 44ch;
@@ -476,10 +488,11 @@ main,
   border-radius: var(--r-xs);
 }
 
-/* scroll cue — OPTIKKA's quiet vertical label at the viewport edge */
+/* scroll cue — the quiet vertical label at the reading-start edge,
+ * lifted to the lower third (clear of the copy stack). */
 .fo-scroll-cue {
   position: absolute;
-  inset-block-end: var(--sp-6);
+  inset-block-end: 20vh;
   inset-inline-start: var(--sp-6);
   z-index: 2;
   display: grid;
@@ -510,75 +523,70 @@ main,
   50% { transform: translateY(var(--sp-1-5)); }
 }
 
-/* ── البيان — statement sequence ──────────────────────────────────── */
+/* ═══ البيان — the editorial spread ══════════════════════════════════ */
 .st-section {
-  padding-block: var(--sp-13);
+  padding-block: var(--sp-16) var(--sp-14);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
 }
 
+/* copy owns the reading-start column; the reading-end track stays an
+ * intentional empty zone — the conductor drifts the knot there. */
+.st-spread {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  gap: var(--sp-8);
+}
+
+.st-copy { grid-column: 1; }
+
 .st-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-md);
+  font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.3;
-  margin-block: var(--sp-3) var(--sp-6);
+  line-height: 1.25;
+  max-inline-size: 14ch;
+  margin-block: var(--sp-4) var(--sp-8);
 }
 
 .st-lines {
+  grid-column: 1;
   display: grid;
-  gap: var(--sp-5);
-  /* final-homepage correction: 30ch collapsed to 288px at the 38px
-   * display rung (the ch unit is digit-width, far narrower than an
-   * Arabic glyph) — a fixed 640px measure gives each sentence a
-   * two-line editorial wrap at desktop and simply fills the flow
-   * below tablet. */
-  max-inline-size: 640px;
+  max-inline-size: 680px;
 }
 
 .st-line {
-  font-family: var(--font-display);
-  font-size: var(--fs-display-md);
-  font-weight: 600;
-  line-height: 1.45;
-}
-
-/* r304: localized reading wash — a feathered paper plate behind the two
- * display-copy blocks the sculpture still passes near (the whole vision
- * chapter, the statement lines). Invisible on the plain ground; lifts
- * contrast only where the knot crosses. Surgical, not a site-wide
- * overlay. */
-.st-lines,
-.vs-section {
-  position: relative;
-}
-
-.st-lines::before,
-.vs-section::before {
-  content: '';
-  position: absolute;
-  inset: -12% -18%;
-  z-index: -1;
-  background: radial-gradient(
-    100% 100% at 50% 50%,
-    color-mix(in srgb, var(--poster-paper) 72%, transparent) 38%,
-    color-mix(in srgb, var(--poster-paper) 34%, transparent) 68%,
-    transparent 100%
-  );
-  pointer-events: none;
+  display: grid;
+  grid-template-columns: minmax(96px, auto) 1fr;
+  align-items: baseline;
+  gap: var(--sp-3) var(--sp-6);
+  padding-block: var(--sp-5);
+  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
 }
 
 .st-line strong {
-  color: var(--poster-signal);
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
   font-weight: 700;
+  color: var(--poster-ink);
 }
 
-/* ── الفصول 01–06 — numbered chapters, alternating layouts ────────── */
+.st-line span {
+  font-size: var(--fs-body-lg);
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+/* ═══ الفصول 01–06 — numbered spreads, composed fragments ════════════ */
 .chapters {
-  padding-block: var(--sp-12);
+  padding-block: var(--sp-14);
+  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
 }
 
 .chapters-head {
-  max-inline-size: 60ch;
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: end;
+  gap: var(--sp-6) var(--sp-8);
   margin-block-end: var(--sp-11);
 }
 
@@ -587,13 +595,16 @@ main,
   font-size: var(--fs-display-lg);
   font-weight: 700;
   line-height: 1.25;
-  margin-block: var(--sp-3) var(--sp-4);
+  max-inline-size: 16ch;
+  margin-block: var(--sp-4) 0;
 }
 
 .chapters-lede {
   font-size: var(--fs-body-lg);
   line-height: 1.7;
   color: var(--text-secondary);
+  max-inline-size: 44ch;
+  padding-block-end: var(--sp-1);
 }
 
 .ch {
@@ -619,17 +630,17 @@ main,
 .ch--offset .ch-head { grid-column: 2; grid-row: 1; }
 .ch--offset .ch-mini { grid-column: 1; grid-row: 1; margin-block-start: var(--sp-9); }
 
-/* the bleed chapter (final-homepage): the mini column is wider AND the
- * miniature runs past the content measure toward the inline-start
- * viewport edge — the OPTIKKA «content pushed to the edges» move, in
- * Madarek's RTL geometry (grid track 1 = inline-start = the physical
- * RIGHT side; the card bleeds off the right edge). The head takes the
- * inline-end column, so the six chapters alternate mini-side
- * L·R·L·R·L·R across the poster. The NEGATIVE margin pulls the card
- * into the gutter between the 1240px measure and the viewport edge —
- * min(calc(620px − 50vw), 0) is ≤ 0 only above 1240px, so below the
- * poster measure it collapses to zero and can never overflow (the
- * landing clips overflow-x anyway). */
+/* the bleed chapter: the mini column is wider AND the fragment runs
+ * past the content measure toward the inline-start viewport edge —
+ * the OPTIKKA «content pushed to the edges» move, in Madarek's RTL
+ * geometry (grid track 1 = inline-start = the physical RIGHT side;
+ * the card bleeds off the right edge). The head takes the inline-end
+ * column, so the six chapters alternate mini-side L·R·L·R·L·R across
+ * the poster. The NEGATIVE margin pulls the card into the gutter
+ * between the 1240px measure and the viewport edge — min(calc(620px −
+ * 50vw), 0) is ≤ 0 only above 1240px, so below the poster measure it
+ * collapses to zero and can never overflow (the landing clips
+ * overflow-x anyway). */
 .ch--bleed {
   grid-template-columns: minmax(0, 8fr) minmax(0, 5fr);
 }
@@ -650,12 +661,12 @@ main,
   font-weight: 700;
   line-height: 1;
   color: var(--poster-signal);
-  margin-block-end: var(--sp-4);
+  margin-block-end: var(--sp-5);
 }
 
 /* the numbered chapter marker — the mono numeral draws a hairline rule
- * to the measure edge (final-homepage: the OPTIKKA chapter-marker move;
- * a static editorial device, no motion, tokens only). */
+ * to the measure edge (the OPTIKKA chapter-marker move; a static
+ * editorial device, no motion, tokens only). */
 .ch-num::after {
   content: '';
   flex: 1 1 auto;
@@ -673,38 +684,109 @@ main,
 
 .ch-lede {
   font-size: var(--fs-body-lg);
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--text-secondary);
+  max-inline-size: 52ch;
 }
 
-/* ── Miniature — the honest demo frame (app recipes, demo data) ─────
- * r304: the demo is the chapter's PROOF, not a footnote — one big,
- * immediately recognizable interface fragment per feature beat. The
- * frame gains the signal top rule (the ONE accent, reused), a taller
- * stage, and a labeled caption («عرض توضيحي — <feature>»). */
+/* ── The interface fragment — the honest demo frame (r304) ──────────
+ * Composed as a WINDOW of the platform itself: the app's own chrome
+ * bar (identity dots + fragment name + the honest demo tag), the demo
+ * body on the app's surface recipe, and a caption row that carries
+ * the «عرض توضيحي» marker beside the fragment's name. The elevated
+ * opaque surface is what lets the world's slow camera sweep read as
+ * depth BEHIND the proof — never through it. */
 .mini {
   display: grid;
-  gap: var(--sp-4);
-  padding: var(--sp-6);
   background: var(--surface);
   border: 1px solid var(--border);
-  border-block-start: 2px solid color-mix(in srgb, var(--poster-signal) 62%, transparent);
   border-radius: var(--r-lg);
   box-shadow: var(--elev-2);
+  overflow: clip;
+}
+
+.mini-chrome {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2-5) var(--sp-4);
+  background: color-mix(in srgb, var(--poster-ink) 4%, transparent);
+  border-block-end: 1px solid var(--border);
+}
+
+.mini-dots {
+  display: inline-flex;
+  gap: var(--sp-1-5);
+}
+
+.mini-dots i {
+  inline-size: var(--sp-2);
+  block-size: var(--sp-2);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--poster-ink) 18%, transparent);
+}
+
+.mini-dots i:nth-child(2) {
+  background: color-mix(in srgb, var(--poster-signal) 45%, transparent);
+}
+
+.mini-chrome-label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-chrome-tag {
+  margin-inline-start: auto;
+  padding: 0 var(--sp-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-full);
+  font-size: var(--fs-xxs);
+  line-height: 1.6;
+  color: var(--text-muted);
 }
 
 .mini-body {
   display: grid;
-  gap: var(--sp-4);
+  gap: var(--sp-3);
+  padding: var(--sp-5);
 }
 
 .mini-caption {
-  padding-block-start: var(--sp-3);
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
   border-block-start: 1px solid var(--border);
   font-size: var(--fs-sm);
   color: var(--text-muted);
 }
 
+.mini-caption-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-weight: 600;
+  color: var(--poster-signal);
+}
+
+.mini-caption-tag::before {
+  content: '';
+  inline-size: var(--sp-1-5);
+  block-size: var(--sp-1-5);
+  border-radius: 50%;
+  background: var(--poster-signal);
+}
+
+.mini-caption-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ── Fragment internals — demo data on the app's own recipes ──────── */
 .mini-title-row {
   display: flex;
   align-items: center;
@@ -714,7 +796,7 @@ main,
 
 .mini-course {
   font-weight: 700;
-  font-size: var(--fs-h3);
+  font-size: var(--fs-body);
 }
 
 .mini-lecture {
@@ -725,19 +807,20 @@ main,
   color: var(--text-muted);
 }
 
-.mini-lecture .fo-mono {
-  color: var(--text-secondary);
-}
-
 .mini-video {
   position: relative;
   display: grid;
   place-items: center;
-  min-block-size: 168px;
+  min-block-size: 128px;
   border: 1px solid var(--border);
   border-radius: var(--r-md);
   background: var(--neutral-900);
   color: var(--neutral-50);
+}
+
+.mini-video-play {
+  display: inline-grid;
+  place-items: center;
 }
 
 .mini-video-time {
@@ -769,9 +852,8 @@ main,
 }
 
 .mini-quiz-q {
-  font-size: var(--fs-h3);
+  font-size: var(--fs-body);
   font-weight: 600;
-  line-height: 1.55;
 }
 
 .mini-quiz-opts {
@@ -980,10 +1062,46 @@ main,
   color: var(--text-muted);
 }
 
-/* ── ما يعمل اليوم — the honest ledger ────────────────────────────── */
+/* ═══ ما يعمل اليوم — THE COPPER CLIMAX ══════════════════════════════
+ * The inverted slab: ink ground on paper (light) / paper ground on
+ * night (dark) — the same inversion recipe the fragment video uses.
+ * The local signal re-points so the numerals + em stay AA on BOTH
+ * slab grounds: light theme consumes the copper ink (4.85:1 on the
+ * ink slab), night theme consumes the deep copper (11.5:1 on the
+ * paper slab). */
 .lv-section {
-  padding-block: var(--sp-13);
+  padding-block: var(--sp-14);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+}
+
+.lv-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 29fr) minmax(0, 20fr);
+  gap: var(--sp-8);
+  align-items: stretch;
+}
+
+.lv-slab {
+  background: var(--neutral-900);
+  color: var(--neutral-50);
+  border-radius: var(--r-2xl);
+  padding: var(--sp-9);
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  --poster-signal: var(--c-copper-ink);
+}
+
+[data-theme="dark"] .lv-slab {
+  --poster-signal: var(--c-copper-bg);
+}
+
+.lv-slab .fo-label {
+  color: var(--neutral-300);
+}
+
+.lv-slab .fo-label::before {
+  background: color-mix(in srgb, var(--poster-signal) 65%, transparent);
 }
 
 .lv-title {
@@ -991,18 +1109,24 @@ main,
   font-size: var(--fs-display-md);
   font-weight: 700;
   line-height: 1.3;
-  margin-block: var(--sp-3) var(--sp-3);
+  margin-block: var(--sp-4) var(--sp-3);
+}
+
+.lv-title em {
+  font-style: normal;
+  color: var(--poster-signal);
 }
 
 .lv-lede {
   font-size: var(--fs-body);
   line-height: 1.7;
-  color: var(--text-secondary);
-  margin-block-end: var(--sp-8);
+  color: var(--neutral-300);
+  margin-block-end: var(--sp-7);
 }
 
 .lv-list {
   display: grid;
+  inline-size: 100%;
 }
 
 .lv-row {
@@ -1011,12 +1135,16 @@ main,
   align-items: center;
   gap: var(--sp-5);
   padding-block: var(--sp-4);
-  border-block-end: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  border-block-start: 1px solid color-mix(in srgb, var(--neutral-50) 14%, transparent);
 }
 
 .lv-num {
-  color: var(--poster-signal);
+  font-family: var(--font-mono);
+  font-size: var(--fs-display-md);
   font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--poster-signal);
 }
 
 .lv-text {
@@ -1029,9 +1157,32 @@ main,
   color: var(--poster-signal);
 }
 
-/* ── الأدوار — roles strip ────────────────────────────────────────── */
+/* the annotated empty window — the intentional negative space that
+ * hands the reading-end third to the conductor's copper close-up.
+ * The dashed frame is the drafting-paper annotation: this emptiness
+ * is authored, not missing. */
+.lv-window {
+  position: relative;
+  display: grid;
+  align-content: end;
+  padding: var(--sp-5);
+  border: 1px dashed color-mix(in srgb, var(--poster-ink) 20%, transparent);
+  border-radius: var(--r-lg);
+}
+
+.lv-window-caption {
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  color: var(--text-muted);
+  max-inline-size: 26ch;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--poster-paper) 84%, transparent);
+}
+
+/* ═══ الأدوار — the wide-panorama index ══════════════════════════════ */
 .rl-section {
-  padding-block: var(--sp-13);
+  padding-block: var(--sp-14);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
 }
 
@@ -1040,58 +1191,44 @@ main,
   font-size: var(--fs-display-md);
   font-weight: 700;
   line-height: 1.3;
-  margin-block: var(--sp-3) var(--sp-8);
+  margin-block: var(--sp-4) var(--sp-8);
 }
 
 .rl-strip {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: var(--sp-6);
 }
 
 .rl-item {
   display: grid;
-  align-content: start;
-  gap: var(--sp-2);
-  padding-block-start: var(--sp-4);
-  border-block-start: 2px solid color-mix(in srgb, var(--poster-ink) 16%, transparent);
-}
-
-/* r304: the role mark — one quiet signal-soft chip so each of the five
- * tracks is recognizable at a glance (the Superlist linkage principle,
- * Lucide-only per the icon gate). */
-.rl-item-icon {
-  display: inline-grid;
-  place-items: center;
-  inline-size: 44px;
-  block-size: 44px;
-  border-radius: var(--r-full);
-  background: color-mix(in srgb, var(--poster-signal) 12%, transparent);
-  color: var(--poster-signal);
-  margin-block-end: var(--sp-2);
+  grid-template-columns: minmax(150px, 230px) 1fr;
+  align-items: baseline;
+  gap: var(--sp-4) var(--sp-8);
+  padding-block: var(--sp-5);
+  border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
 }
 
 .rl-item-role {
   font-family: var(--font-display);
-  font-size: var(--fs-h3);
+  font-size: var(--fs-h2);
   font-weight: 700;
 }
 
 .rl-item-line {
-  font-size: var(--fs-sm);
-  line-height: 1.6;
+  font-size: var(--fs-body-lg);
+  line-height: 1.7;
   color: var(--text-secondary);
+  max-inline-size: 62ch;
 }
 
 .rl-more {
-  margin-block-start: var(--sp-7);
+  margin-block-start: var(--sp-8);
   font-size: var(--fs-body);
   color: var(--text-muted);
 }
 
-/* ── الكليات — the interactive constellation ──────────────────────── */
+/* ═══ الكليات — the interactive registry ═════════════════════════════ */
 .cg-section {
-  padding-block: var(--sp-13);
+  padding-block: var(--sp-14);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
 }
 
@@ -1100,7 +1237,7 @@ main,
   font-size: var(--fs-display-md);
   font-weight: 700;
   line-height: 1.3;
-  margin-block: var(--sp-3) var(--sp-3);
+  margin-block: var(--sp-4) var(--sp-3);
 }
 
 .cg-lede {
@@ -1111,9 +1248,14 @@ main,
   margin-block-end: var(--sp-8);
 }
 
+/* the panel column owns the reading start (the conductor parks the
+ * knot behind it); the open reading-end track carries the ghost
+ * count — a poster numeral, not content. */
 .cg-stage {
   display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
   gap: var(--sp-8);
+  align-items: start;
 }
 
 .cg-panel-wrap {
@@ -1142,23 +1284,11 @@ main,
               color var(--t-fast) var(--ease);
 }
 
-.cg-chip:hover {
-  border-color: var(--border-strong);
-  color: var(--poster-ink);
-}
-
-.cg-chip[aria-pressed="true"] {
-  border-color: var(--poster-signal);
-  background: color-mix(in srgb, var(--poster-signal) 10%, transparent);
-  color: var(--poster-signal);
-  font-weight: 600;
-}
-
 .cg-panel {
   display: grid;
   gap: var(--sp-2);
   justify-items: start;
-  padding: var(--sp-5);
+  padding: var(--sp-6);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
@@ -1176,6 +1306,22 @@ main,
   font-size: var(--fs-sm);
   color: var(--text-muted);
   margin-block-end: var(--sp-2);
+}
+
+.cg-open {
+  display: grid;
+  place-items: center;
+  min-block-size: 280px;
+}
+
+.cg-count {
+  font-family: var(--font-display);
+  /* type-gate: allow — the ghost registry numeral (a poster device,
+   * decorative aria-hidden; the authored display of the open third). */
+  font-size: clamp(120px, 15vw, 220px);
+  font-weight: 700;
+  line-height: 1;
+  color: color-mix(in srgb, var(--poster-ink) 9%, transparent);
 }
 
 .cg-cta-row {
@@ -1200,36 +1346,54 @@ main,
   text-decoration: underline;
 }
 
-/* ── إلى أين — vision status pairs ────────────────────────────────── */
+/* ═══ إلى أين — THE PASSAGE ══════════════════════════════════════════
+ * The conductor drives the camera through the knot here. The
+ * composition steps back — tall negative space, one centered
+ * statement — so the immersion carries the chapter. */
 .vs-section {
-  padding-block: var(--sp-13);
+  padding-block: var(--sp-16);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
+  text-align: center;
+}
+
+.vs-section .fo-label {
+  justify-content: center;
 }
 
 .vs-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-md);
+  font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.3;
-  margin-block: var(--sp-3) var(--sp-4);
+  line-height: 1.25;
+  max-inline-size: 18ch;
+  margin-inline: auto;
+  margin-block: var(--sp-5) var(--sp-5);
+}
+
+.vs-head {
+  display: grid;
+  justify-items: center;
 }
 
 .vs-lede {
-  max-inline-size: 68ch;
-  font-size: var(--fs-body);
-  line-height: 1.7;
+  max-inline-size: 56ch;
+  margin-inline: auto;
+  font-size: var(--fs-body-lg);
+  line-height: 1.75;
   color: var(--text-secondary);
-  margin-block-end: var(--sp-7);
+  margin-block-end: var(--sp-9);
 }
 
 .vs-status {
   display: grid;
-  max-inline-size: 820px;
+  max-inline-size: 780px;
+  margin-inline: auto;
+  text-align: start;
 }
 
 .vs-status li {
   display: grid;
-  grid-template-columns: minmax(180px, auto) 1fr;
+  grid-template-columns: minmax(200px, auto) 1fr;
   align-items: baseline;
   gap: var(--sp-3) var(--sp-6);
   padding-block: var(--sp-4);
@@ -1254,9 +1418,9 @@ main,
   color: var(--text-secondary);
 }
 
-/* ── الخاتمة ──────────────────────────────────────────────────────── */
+/* ═══ الخاتمة — the resolve ══════════════════════════════════════════ */
 .fo-cta {
-  padding-block: var(--sp-14);
+  padding-block: var(--sp-16);
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
   text-align: center;
 }
@@ -1300,20 +1464,20 @@ main,
   color: var(--text-muted);
 }
 
-/* ── Footer — slide-up colophon with the giant wordmark ───────────── */
+/* ═══ Footer — the colophon close ════════════════════════════════════ */
 .fo-footer {
   border-block-start: 1px solid color-mix(in srgb, var(--poster-ink) 10%, transparent);
-  padding-block: var(--sp-11) var(--sp-12);
+  padding-block: var(--sp-13) var(--sp-12);
   overflow: visible;
+  /* the settle veil: the conductor parks the knot on the horizon here;
+   * a translucent paper wash lets it sink into the ground instead of
+   * washing through the colophon links (the dignified fade-out close). */
+  background: color-mix(in srgb, var(--poster-paper) 76%, transparent);
 }
 
-/* the slide-up reveal (BLUEPRINT §6 footer row): the colophon rises into
- * place on the footer's own --sp. r282: the reveal is GEOMETRY ONLY —
- * the old `opacity: calc(0.35 + 0.65 * var(--sp))` fade rode the muted
- * footer copy at 0.35 effective alpha while the footer sat mid-viewport
- * (axe caught #63605a / #403d34 on the dark ground — 2.93:1 and 1.69:1
- * through the reveal window). Transform-only keeps the authored
- * slide-up moment and keeps every frame AA-clean. */
+/* the slide-up reveal: the colophon rises into place on the footer's
+ * own --sp. r282: the reveal is GEOMETRY ONLY — transform keeps every
+ * frame AA-clean (the old opacity fade rode muted copy below AA). */
 .fo-footer-inner {
   transform: translateY(calc((1 - var(--sp, 0)) * 120px));
 }
@@ -1352,10 +1516,6 @@ main,
   align-items: center;
 }
 
-.fo-footer-link:hover {
-  color: var(--poster-signal);
-}
-
 .fo-footer-bottom {
   display: flex;
   flex-wrap: wrap;
@@ -1373,16 +1533,15 @@ main,
 }
 
 /* the closing wordmark — rushes up with the footer's --sp (0→1 at page
- * bottom; the r193 unreachable-end fix keeps the offsets). final-homepage:
- * 7% ink never registered on either ground — 12% reads as a watermark
- * without competing with the colophon copy above it. */
+ * bottom; the r193 unreachable-end fix keeps the offsets). 12% ink
+ * reads as a watermark without competing with the colophon copy. */
 .fo-footer-mark {
   margin-block: var(--sp-9) 0;
   font-family: var(--font-display);
   /* type-gate: allow — the giant closing wordmark (poster device,
-   * BLUEPRINT §6 footer row; decorative aria-hidden). The 1.6 line
-   * box + generous block padding gives Arabic descenders their full
-   * reach — the word is NEVER clipped by the section edge. */
+   * decorative aria-hidden). The 1.6 line box + generous block padding
+   * gives Arabic descenders their full reach — the word is NEVER
+   * clipped by the section edge. */
   font-size: clamp(88px, 12vw, 152px);
   font-weight: 700;
   line-height: 1.6;
@@ -1391,7 +1550,27 @@ main,
   transform: translateY(calc((1 - var(--sp, 0)) * 96px));
 }
 
-/* ── Responsive: flow mode (the poster stacks, nothing pins) ──────── */
+/* ── Hover washes — guarded to real pointers (the r283 convention) ── */
+@media (hover: hover) and (pointer: fine) {
+  .fo-nav-link:hover {
+    color: var(--poster-ink);
+  }
+
+  .cg-chip:hover {
+    border-color: var(--border-strong);
+    color: var(--poster-ink);
+  }
+
+  .fo-text-link:hover {
+    text-decoration: underline;
+  }
+
+  .fo-footer-link:hover {
+    color: var(--poster-signal);
+  }
+}
+
+/* ═══ Responsive: flow mode (the poster stacks, nothing pins) ════════ */
 @media (max-width: 1080px) {
   .fo-header-actions { display: none; }
   .fo-burger { display: grid; }
@@ -1427,8 +1606,25 @@ main,
     justify-items: stretch;
   }
 
-  .fo-scroll-cue { display: none; }
   .fo-hero-copy { padding-block-start: 0; }
+
+  /* the drafting grid stays, quieter — the object rides the center */
+  .fo-hero-gridlines { opacity: 0.28; }
+
+  /* the wide-canvas empty zones are desktop art direction — mobile
+   * gets its own authored composition: full-measure copy, no ghost
+   * numerals, no annotated window (the world pulls back already). */
+  .fo-scroll-cue { display: none; }
+
+  .st-spread {
+    grid-template-columns: 1fr;
+  }
+
+  .chapters-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+    margin-block-end: var(--sp-8);
+  }
 
   .ch--split,
   .ch--offset,
@@ -1453,13 +1649,22 @@ main,
    * stacked chapter at the container measure. */
   .ch--bleed .ch-mini { margin-inline-start: 0; }
 
-  .cg-stage {
+  .ch { padding-block: var(--sp-8); }
+
+  .lv-grid { grid-template-columns: 1fr; }
+
+  .lv-window { display: none; }
+
+  .lv-slab { padding: var(--sp-7); }
+
+  .rl-item {
     grid-template-columns: 1fr;
+    gap: var(--sp-2);
   }
 
-  .rl-strip {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .cg-stage { grid-template-columns: 1fr; }
+
+  .cg-open { display: none; }
 
   .fo-footer-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1468,10 +1673,10 @@ main,
 
 @media (max-width: 640px) {
   .fo-header-inner,
-  .fo-hero-grid,
+  .fo-hero-layer,
   .st-section,
   .chapters,
-  .lv-section,
+  .lv-grid,
   .rl-section,
   .cg-section,
   .vs-section,
@@ -1480,23 +1685,16 @@ main,
     padding-inline: var(--sp-5);
   }
 
-  .st-section { padding-block: var(--sp-11); }
-  .lv-section { padding-block: var(--sp-11); }
-  .rl-section { padding-block: var(--sp-11); }
-  .cg-section { padding-block: var(--sp-11); }
-  .vs-section { padding-block: var(--sp-11); }
-  .fo-cta { padding-block: var(--sp-12); }
-  .ch { padding-block: var(--sp-8); }
+  .st-section { padding-block: var(--sp-12) var(--sp-10); }
   .chapters { padding-block: var(--sp-10); }
-  .chapters-head { margin-block-end: var(--sp-8); }
+  .lv-section { padding-block: var(--sp-10); }
+  .rl-section { padding-block: var(--sp-10); }
+  .cg-section { padding-block: var(--sp-10); }
+  .vs-section { padding-block: var(--sp-12); }
+  .fo-cta { padding-block: var(--sp-12); }
+  .fo-footer { padding-block: var(--sp-10) var(--sp-9); }
 
-  .mini {
-    padding: var(--sp-5);
-  }
-
-  .mini-video {
-    min-block-size: 140px;
-  }
+  .lv-slab { padding: var(--sp-6); }
 
   .mini-stats {
     grid-template-columns: 1fr;
@@ -1511,9 +1709,7 @@ main,
     justify-self: start;
   }
 
-  .rl-strip {
-    grid-template-columns: 1fr;
-  }
+  .rl-strip { grid-template-columns: 1fr; }
 
   .vs-status li {
     grid-template-columns: 1fr;
@@ -1528,7 +1724,7 @@ main,
   }
 }
 
-/* ── Reduced motion: the complete static poster ───────────────────── */
+/* ═══ Reduced motion: the complete static poster ═════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   .fo-footer-inner,
   .fo-footer-mark {
@@ -1547,14 +1743,11 @@ main,
 }
 
 /* ── Reveal-up — the landing choreography class contract ────────────
-   Moved from polish.css v7 (the polish bundle is being dismantled
-   rule-by-rule into owning sheets — r294). The ONLY consumers are
-   RevealCssClass call sites on this page (see hooks/useReveal.ts);
-   nothing else in any sheet targets .reveal-up / .reveal-d-*, so the
-   layer shift (@layer pages → unlayered landing) is computed-style
-   neutral. The base.css universal reduced-motion !important already
-   owned the RM behaviour; this copy (opacity/transform only) keeps
-   the authored static poster outcome. */
+   The ONLY consumers are RevealCssClass call sites on this page (see
+   hooks/useReveal.ts); nothing else in any sheet targets .reveal-up /
+   .reveal-d-*. The base.css universal reduced-motion !important
+   already owned the RM behaviour; this copy (opacity/transform only)
+   keeps the authored static poster outcome. */
 .reveal-up {
   opacity: 0;
   transform: translateY(14px);
@@ -1574,14 +1767,3 @@ main,
 @media (prefers-reduced-motion: reduce) {
   .reveal-up { opacity: 1; transform: none; }
 }
-
-/* ── (r297 correction) The v21 "dark landing footer" family and the   ─
-   .landing-megamenu RM belt are DEAD ARCHAEOLOGY, not live rules:
-   the «سماء مدارك» rebuild (r198) retired the whole .landing-footer
-   and .landing-megamenu families — the rendered footer is .fo-footer
-   and the rendered nav has no megamenu (rg: zero TSX consumers for
-   either). v21's stray-`/` bug was real but doubly moot: the rule it
-   ate targeted markup that no longer exists. Nothing was folded for
-   these families; the real footer (.fo-footer-link) reads
-   --text-secondary, already lifted over AA in dark by the r282
-   secondary-ink fix. Sweep-verified before this note was written. */
