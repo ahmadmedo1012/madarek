@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Microscope, FileText, CheckCircle2, X, Sparkles, MessageSquare,
-  StickyNote, RefreshCw, ClipboardCheck,
+  StickyNote, RefreshCw, ClipboardCheck, ArrowLeft,
 } from 'lucide-react';
-import { Badge, UserAvatar, Tabs, FormField } from '../../components/primitives';
+import { Button, UserAvatar, Tabs, FormField } from '../../components/primitives';
 import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Sheet } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
@@ -25,12 +25,23 @@ import {
 } from '../../components/patterns';
 import type { StatLineItem } from '../../components/patterns';
 import '../../styles/research.css';
+import '../../styles/r305-research-pdf-ai.css';
 
 /* fmtDate (short ar-LY date, '—' for missing values) is
  * lib/format.formatDateAr (13-15 fold, audit 11-f P2-1). The annotation
  * rows render timeAgoAr — the same helper the AnnotationsPanel uses for
  * the very same notes in the PDF reader, so both surfaces agree on one
- * instant (15-h P2-2, 16-E10). */
+ * instant (15-h P2-2, 16-E10).
+ *
+ * R305-A7 «Heron» — the review surface rebuilds in the research-family
+ * grammar (r305-research-pdf-ai.css §B, marker .r305rp on the page
+ * root): status is a dot+label chip (never color alone), the decisive
+ * action rides the one-action rail with an explicit before→after of
+ * the decision, the API's decision timestamps render as a record row,
+ * and in-flight requests show the canonical Button spinner. Every
+ * contract below is carried verbatim — payloads, endpoints, the
+ * <form> Enter semantics (r157/6A9), the 4000-char cap (r165b), the
+ * discard guard (15-e P1-6) and the error-language guard (15-j P0-1). */
 
 const STATUS_LABEL: Record<PaperStatus, string> = {
   UPLOADED: 'بانتظار الفحص',
@@ -41,6 +52,62 @@ const STATUS_LABEL: Record<PaperStatus, string> = {
   GRADED: 'مُقيَّم',
   PUBLISHED: 'مُنشور',
 };
+
+/* Heron chip tones — the dot carries the tone; the Arabic label rides
+ * beside it, so state never rides color alone (§4 contract). */
+type ChipTone = 'accent' | 'success' | 'warning' | 'danger' | 'info' | 'gold';
+
+const STATUS_CHIP_TONE: Record<PaperStatus, ChipTone> = {
+  UPLOADED: 'info',
+  SCANNING: 'info',
+  CHECKS_PASSED: 'warning',
+  CHECKS_FAILED: 'danger',
+  GRADED: 'gold',
+  PUBLISHED: 'success',
+};
+
+/** The status chip: dot (tone) + Arabic label. */
+function StatusChip({ status }: { status: PaperStatus }) {
+  return (
+    <span className={`r305rp-chip r305rp-chip--${STATUS_CHIP_TONE[status]}`}>
+      <span className="r305rp-chip-dot" aria-hidden="true" />
+      {STATUS_LABEL[status]}
+    </span>
+  );
+}
+
+/* The decision map — what the decisive action TURNS the paper into.
+ * The queue's three reachable states (backend RESEARCH_QUEUE_STATUSES):
+ * a waiting/failed paper becomes GRADED on save; a graded one becomes
+ * PUBLISHED on publish. PUBLISHED is terminal (unreachable from the
+ * queue — the publish removes it — but the workspace renders honestly
+ * if it ever appears). */
+const NEXT_STEP: Partial<Record<PaperStatus, { label: string; tone: ChipTone; afterLabel: string }>> = {
+  CHECKS_PASSED: { label: 'مُقيَّم', tone: 'gold', afterLabel: 'بعد حفظ التقييم' },
+  CHECKS_FAILED: { label: 'مُقيَّم', tone: 'gold', afterLabel: 'بعد حفظ التقييم' },
+  GRADED: { label: 'مُنشور', tone: 'success', afterLabel: 'بعد النشر' },
+};
+
+/** The paper's decision record — the timestamps the API actually
+ * returns (uploadedAt/scannedAt/gradedAt/publishedAt), shown so the
+ * reviewer sees WHERE the paper stands in its journey without opening
+ * the reader. Missing steps say so plainly. */
+function decisionRecord(paper: ResearchPaper): Array<{ label: string; value: string }> {
+  return [
+    { label: 'رُفع', value: formatDateAr(paper.uploadedAt) },
+    { label: 'فُحص', value: paper.scannedAt ? formatDateAr(paper.scannedAt) : 'لم يُفحص بعد' },
+    { label: 'قُيِّم', value: paper.gradedAt ? formatDateAr(paper.gradedAt) : 'لم يُقيَّم بعد' },
+    { label: 'نُشر', value: paper.publishedAt ? formatDateAr(paper.publishedAt) : 'لم يُنشر بعد' },
+  ];
+}
+
+/** The backend's UPPER_SNAKE support code (D17-3: codes stay English
+ * for the FE support-code chip; messages are Arabic). */
+function errorCodeOf(err: unknown): string | null {
+  const code = (err as { response?: { data?: { error?: { code?: unknown } } } })
+    ?.response?.data?.error?.code;
+  return typeof code === 'string' && code.length > 0 ? code : null;
+}
 
 type Tab = 'review' | 'mine';
 
@@ -68,14 +135,6 @@ function reviewKpiCells(passed: number, failed: number, readyToPublish: number, 
       tone: readyToPublish > 0 ? 'positive' : 'neutral',
     },
   ];
-}
-
-/** The paper's status → badge tone (the work-queue binary + the graded
- * gold — the r299 queue convention). */
-function statusTone(status: PaperStatus): 'amber' | 'red' | 'gold' {
-  if (status === 'CHECKS_FAILED') return 'red';
-  if (status === 'GRADED' || status === 'PUBLISHED') return 'gold';
-  return 'amber';
 }
 
 /** Deep link to the reader — the same mint every research surface uses
@@ -124,6 +183,9 @@ export default function ResearchReviewPage() {
   const [draftFeedback, setDraftFeedback] = useState<string | null>(null);
   const [gradeError, setGradeError] = useState<string | null>(null);
   const [publishError, setPublishError] = useState<string | null>(null);
+  // The backend's support codes for the two write paths (D17-3 chip).
+  const [gradeErrorCode, setGradeErrorCode] = useState<string | null>(null);
+  const [publishErrorCode, setPublishErrorCode] = useState<string | null>(null);
 
   const selected = allPapers.find((p) => p.id === selectedId) ?? null;
   const isGradedSelected = selected?.status === 'GRADED' || selected?.status === 'PUBLISHED';
@@ -207,6 +269,7 @@ export default function ResearchReviewPage() {
   const submitGrade = async () => {
     if (!selected || isGradedSelected || draftScore === null) return;
     setGradeError(null);
+    setGradeErrorCode(null);
     try {
       await grade.mutateAsync({ id: selected.id, grade: draftScore, feedback: draftFeedback || undefined });
       toast.success('صار البحث مُقيَّماً؛ يمكنك نشره في المكتبة من قسم «جاهزة للنشر».', {
@@ -214,12 +277,14 @@ export default function ResearchReviewPage() {
       });
     } catch (err) {
       setGradeError(apiErrorMessage(err, 'تعذَّر حفظ التقييم — تحقّق من اتصالك ثم أعد المحاولة.'));
+      setGradeErrorCode(errorCodeOf(err));
     }
   };
 
   const publishNow = async () => {
     if (!selected) return;
     setPublishError(null);
+    setPublishErrorCode(null);
     try {
       await publish.mutateAsync(selected.id);
       toast.success('أصبح البحث متاحاً للطلاب في مكتبة الجامعة.', {
@@ -227,6 +292,7 @@ export default function ResearchReviewPage() {
       });
     } catch (err) {
       setPublishError(apiErrorMessage(err, 'تعذَّر نشر البحث في المكتبة — تحقّق من اتصالك ثم أعد المحاولة.'));
+      setPublishErrorCode(errorCodeOf(err));
     }
   };
 
@@ -245,12 +311,15 @@ export default function ResearchReviewPage() {
     <ReviewWorkspace
       paper={selected}
       isGraded={isGradedSelected}
+      dirty={dirty}
       score={draftScore ?? (selected.grade ?? 15)}
       onScore={setDraftScore}
       feedback={draftFeedback ?? ''}
       onFeedback={setDraftFeedback}
       gradeError={gradeError}
+      gradeErrorCode={gradeErrorCode}
       publishError={publishError}
+      publishErrorCode={publishErrorCode}
       busy={busy}
       gradePending={grade.isPending}
       publishPending={publish.isPending}
@@ -260,155 +329,162 @@ export default function ResearchReviewPage() {
   ) : null;
 
   return (
-    <PageFrame width="default">
-      <PageHeader
-        title="البحث العلمي"
-        description="قائمة بحوث الطلاب للمراجعة، ومنشوراتك العلمية."
-        tabs={
-          <Tabs<Tab>
-            value={tab}
-            onChange={setTab}
-            items={[
-              { value: 'review', label: `للمراجعة${queue.data ? ` (${passed.length})` : ''}` },
-              { value: 'mine', label: 'منشوراتي' },
-            ]}
-          />
-        }
-      />
-
-      {tab === 'review' ? (
-        <>
-          {queue.isPending ? (
-            <StatLineSkeleton />
-          ) : queue.isError ? (
-            <ErrorState
-              message="تعذَّر تحميل قائمة المراجعة"
-              error={queue.error}
-              onRetry={() => queue.refetch()}
+    <div className="r305rp">
+      <PageFrame width="default">
+        <PageHeader
+          title="البحث العلمي"
+          description="قائمة بحوث الطلاب للمراجعة، ومنشوراتك العلمية."
+          tabs={
+            <Tabs<Tab>
+              value={tab}
+              onChange={setTab}
+              items={[
+                { value: 'review', label: `للمراجعة${queue.data ? ` (${passed.length})` : ''}` },
+                { value: 'mine', label: 'منشوراتي' },
+              ]}
             />
-          ) : (
-            <StatLine items={reviewKpiCells(passed.length, failed.length, readyToPublish, false)} />
-          )}
+          }
+        />
 
-          {queue.isPending ? (
-            <SplitSkeleton />
-          ) : !queue.isError ? (
-            <div className="rs-review-split">
-              {/* ── The queue — triage: priority (oldest wait first),
-                  status, and the wait age per paper. The selected row
-                  carries the accent ground. ── */}
-              <div className="rs-review-queue">
-                <section className="flex-col gap-2" aria-label="بانتظار التقييم">
-                  <SectionHeader
-                    title="بانتظار تقييمك"
-                    description="بحوث اجتازت الفحص التجريبي (محاكاة) — مرتّبة بالأقدم انتظاراً"
-                    as="h2"
-                  />
-                  {passed.length === 0 ? (
-                    <EmptyState illustration="empty-research"
-                      icon={CheckCircle2}
-                      title="لا بحوث في الانتظار"
-                      description="ستظهر هنا بحوث الطلاب فور اجتيازها الفحص التجريبي (محاكاة) للانتحال والمحتوى الآلي."
+        {tab === 'review' ? (
+          <>
+            {queue.isPending ? (
+              <StatLineSkeleton />
+            ) : queue.isError ? (
+              <ErrorState
+                message="تعذَّر تحميل قائمة المراجعة"
+                error={queue.error}
+                onRetry={() => queue.refetch()}
+              />
+            ) : (
+              <StatLine items={reviewKpiCells(passed.length, failed.length, readyToPublish, false)} />
+            )}
+
+            {queue.isPending ? (
+              <SplitSkeleton />
+            ) : !queue.isError ? (
+              <div className="rs-review-split">
+                {/* ── The queue — triage: priority (oldest wait first),
+                    status, and the wait age per paper. The selected row
+                    carries the accent ground AND a visible «تُعرض الآن»
+                    marker — selection is never color alone. ── */}
+                <div className="rs-review-queue">
+                  <section className="flex-col gap-2" aria-label="بانتظار التقييم">
+                    <SectionHeader
+                      title="بانتظار تقييمك"
+                      description="بحوث اجتازت الفحص التجريبي (محاكاة) — مرتّبة بالأقدم انتظاراً"
+                      as="h2"
                     />
-                  ) : (
-                    <div className="flex-col gap-2">
-                      {passed.map((p) => (
-                        <QueueItem key={p.id} paper={p} selected={p.id === selectedId} onSelect={() => attemptSelect(p)} />
-                      ))}
+                    {passed.length === 0 ? (
+                      <EmptyState illustration="empty-research"
+                        icon={CheckCircle2}
+                        title="لا بحوث في الانتظار"
+                        description="ستظهر هنا بحوث الطلاب فور اجتيازها الفحص التجريبي (محاكاة) للانتحال والمحتوى الآلي."
+                      />
+                    ) : (
+                      <div className="r305rp-rev-queue">
+                        {passed.map((p) => (
+                          <QueueItem key={p.id} paper={p} selected={p.id === selectedId} onSelect={() => attemptSelect(p)} />
+                        ))}
+                      </div>
+                    )}
+                  </section>
+
+                  {failed.length > 0 && (
+                    <section className="flex-col gap-2" aria-label="بحوث رفضها الفحص">
+                      <SectionHeader
+                        title="رفضها الفحص التجريبي (محاكاة)"
+                        description="بحوث تجاوزت الحدود التجريبية — لا تحتاج تقييماً"
+                        as="h2"
+                      />
+                      <div className="r305rp-rev-queue">
+                        {failed.map((p) => (
+                          <QueueItem key={p.id} paper={p} selected={p.id === selectedId} onSelect={() => attemptSelect(p)} />
+                        ))}
+                      </div>
+                    </section>
+                  )}
+
+                  {/* r157 / 6A8 — the publish loop's missing half: GRADED
+                      papers render here; publishing stays an EXPLICIT
+                      action inside the workspace. */}
+                  {graded.length > 0 && (
+                    <section className="flex-col gap-2" aria-label="بحوث جاهزة للنشر">
+                      <SectionHeader
+                        title="مُقيَّمة — جاهزة للنشر"
+                        description="بحوث قُيِّمت ويمكن نشرها في مكتبة الجامعة"
+                        as="h2"
+                      />
+                      <div className="r305rp-rev-queue">
+                        {graded.map((p) => (
+                          <QueueItem key={p.id} paper={p} selected={p.id === selectedId} onSelect={() => attemptSelect(p)} />
+                        ))}
+                      </div>
+                    </section>
+                  )}
+                </div>
+
+                {/* ── The workspace — document facts / your grade / the
+                    margin notes, three distinct territories. Desktop: a
+                    sticky panel beside the queue. Mobile: the same
+                    component rides a bottom Sheet (below). ── */}
+                <div className="rs-review-work r305rp-rev-work" aria-live="polite">
+                  {workspace ?? (
+                    <div className="r305rp-empty">
+                      <span className="r305rp-eyebrow">
+                        <Icon icon={ClipboardCheck} size={13} /> لوحة المراجعة
+                      </span>
+                      <p className="r305rp-rev-empty-title">اختر بحثاً من القائمة</p>
+                      <p className="r305rp-rev-empty-sub">
+                        تظهر نتائج الفحص ونموذج التقييم وملاحظاتك على المستند هنا.
+                      </p>
                     </div>
                   )}
-                </section>
-
-                {failed.length > 0 && (
-                  <section className="flex-col gap-2" aria-label="بحوث رفضها الفحص">
-                    <SectionHeader
-                      title="رفضها الفحص التجريبي (محاكاة)"
-                      description="بحوث تجاوزت الحدود التجريبية — لا تحتاج تقييماً"
-                      as="h2"
-                    />
-                    <div className="flex-col gap-2">
-                      {failed.map((p) => (
-                        <QueueItem key={p.id} paper={p} selected={p.id === selectedId} onSelect={() => attemptSelect(p)} />
-                      ))}
-                    </div>
-                  </section>
-                )}
-
-                {/* r157 / 6A8 — the publish loop's missing half: GRADED
-                    papers render here; publishing stays an EXPLICIT
-                    action inside the workspace. */}
-                {graded.length > 0 && (
-                  <section className="flex-col gap-2" aria-label="بحوث جاهزة للنشر">
-                    <SectionHeader
-                      title="مُقيَّمة — جاهزة للنشر"
-                      description="بحوث قُيِّمت ويمكن نشرها في مكتبة الجامعة"
-                      as="h2"
-                    />
-                    <div className="flex-col gap-2">
-                      {graded.map((p) => (
-                        <QueueItem key={p.id} paper={p} selected={p.id === selectedId} onSelect={() => attemptSelect(p)} />
-                      ))}
-                    </div>
-                  </section>
-                )}
+                </div>
               </div>
+            ) : null}
 
-              {/* ── The workspace — document facts / your grade / the
-                  margin notes, three distinct territories. Desktop: a
-                  sticky panel beside the queue. Mobile: the same
-                  component rides a bottom Sheet (below). ── */}
-              <div className="rs-review-work" aria-live="polite">
-                {workspace ?? (
-                  <EmptyState
-                    icon={ClipboardCheck}
-                    title="اختر بحثاً من القائمة"
-                    description="تظهر نتائج الفحص ونموذج التقييم وملاحظاتك على المستند هنا."
-                  />
-                )}
-              </div>
-            </div>
-          ) : null}
+            {/* Mobile recomposition: the queue fills the page; the same
+                workspace rides a full bottom Sheet behind one tap — no
+                overlap with the queue, no second layout. */}
+            {isNarrow && selected && (
+              <Sheet
+                open
+                onClose={attemptClose}
+                side="bottom"
+                size="full"
+                ariaLabel="مراجعة بحث"
+                title="مراجعة بحث"
+              >
+                {workspace}
+              </Sheet>
+            )}
 
-          {/* Mobile recomposition: the queue fills the page; the same
-              workspace rides a full bottom Sheet behind one tap — no
-              overlap with the queue, no second layout. */}
-          {isNarrow && selected && (
-            <Sheet
-              open
-              onClose={attemptClose}
-              side="bottom"
-              size="full"
-              ariaLabel="مراجعة بحث"
-              title="مراجعة بحث"
-            >
-              {workspace}
-            </Sheet>
-          )}
-
-          {/* The guarded paths: switching papers (or closing the mobile
-              sheet) while the grade draft is edited confirms first —
-              the same discard contract as every authoring modal. */}
-          {pendingConfirm && (
-            <ConfirmDialog
-              open
-              title="تعديلات غير محفوظة"
-              message="لديك تقييم لم تحفظه بعد. التبديل أو الإغلاق الآن يتخلّى عنه نهائياً."
-              confirmLabel="التخلّي عن التعديلات"
-              cancelLabel="متابعة التحرير"
-              danger
-              onConfirm={() => {
-                if (pendingConfirm.kind === 'switch') setSelectedId(pendingConfirm.nextId);
-                else setSelectedId(null);
-                setPendingConfirm(null);
-              }}
-              onCancel={() => setPendingConfirm(null)}
-            />
-          )}
-        </>
-      ) : (
-        <MyPublications />
-      )}
-    </PageFrame>
+            {/* The guarded paths: switching papers (or closing the mobile
+                sheet) while the grade draft is edited confirms first —
+                the same discard contract as every authoring modal. */}
+            {pendingConfirm && (
+              <ConfirmDialog
+                open
+                title="تعديلات غير محفوظة"
+                message="لديك تقييم لم تحفظه بعد. التبديل أو الإغلاق الآن يتخلّى عنه نهائياً."
+                confirmLabel="التخلّي عن التعديلات"
+                cancelLabel="متابعة التحرير"
+                danger
+                onConfirm={() => {
+                  if (pendingConfirm.kind === 'switch') setSelectedId(pendingConfirm.nextId);
+                  else setSelectedId(null);
+                  setPendingConfirm(null);
+                }}
+                onCancel={() => setPendingConfirm(null)}
+              />
+            )}
+          </>
+        ) : (
+          <MyPublications />
+        )}
+      </PageFrame>
+    </div>
   );
 }
 
@@ -431,22 +507,23 @@ function StatLineSkeleton() {
 }
 
 /** Shape-matched split skeleton — queue rows + the workspace panel's
- * shell, so the resolved layout doesn't reflow the page. */
+ * shell, so the resolved layout doesn't reflow the page. The rows
+ * mirror the Heron row anatomy (r305rp-rev-row). */
 function SplitSkeleton() {
   return (
     <div className="rs-review-split" aria-busy="true" aria-live="polite">
-      <div className="flex-col gap-2" aria-hidden>
+      <div className="r305rp-rev-queue" aria-hidden>
         {[0, 1, 2].map((i) => (
-          <div key={i} className="rs-queue-item" style={{ cursor: 'default' }}>
+          <div key={i} className="r305rp-rev-row r305rp-rev-row--static">
             <Skeleton width={36} height={36} rounded="var(--r-full)" />
-            <div className="rs-queue-item-main">
+            <span className="r305rp-rev-row-main">
               <Skeleton width="70%" height={13} />
               <Skeleton width="45%" height={10} />
-            </div>
+            </span>
           </div>
         ))}
       </div>
-      <div className="rs-review-work" aria-hidden>
+      <div className="rs-review-work r305rp-rev-work" aria-hidden>
         <Skeleton width="55%" height={18} />
         <Skeleton width="100%" height={90} />
         <Skeleton width="40%" height={12} />
@@ -459,7 +536,8 @@ function SplitSkeleton() {
 /* ─── Queue item — the triage row ───────────────────────────────────
    A real button (the whole surface selects), carrying who/what/status
    and — for pending papers — the honest wait age (priority reads
-   without opening anything). */
+   without opening anything; ≥7 days says «متأخر» in words, not only
+   in rose ink). The selected row adds a visible «تُعرض الآن» chip. */
 function QueueItem({ paper, selected, onSelect }: {
   paper: ResearchPaper;
   selected: boolean;
@@ -468,38 +546,42 @@ function QueueItem({ paper, selected, onSelect }: {
   const initials = paper.student.avatarInitials ?? `${paper.student.firstName[0]}${paper.student.lastName[0]}`;
   const waiting = paper.status === 'CHECKS_PASSED';
   const waitDays = (Date.now() - new Date(paper.uploadedAt).getTime()) / 86_400_000;
+  const late = waiting && waitDays >= 7;
   return (
     <button
       type="button"
-      className={`rs-queue-item${selected ? ' on' : ''}`}
+      className={`r305rp-rev-row${selected ? ' r305rp-rev-row--on' : ''}`}
       onClick={onSelect}
       aria-pressed={selected}
       aria-label={`${paper.title} — ${STATUS_LABEL[paper.status]}`}
     >
       <UserAvatar initials={initials} color={paper.student.avatarColor ?? undefined} size={36} />
-      <span className="rs-queue-item-main">
-        <span className="rs-queue-item-title">{paper.title}</span>
-        <span className="rs-queue-item-meta">
+      <span className="r305rp-rev-row-main">
+        <span className="r305rp-rev-row-title">{paper.title}</span>
+        <span className="r305rp-meta-row">
           <span>{paper.student.firstName} {paper.student.lastName}</span>
           {paper.offering && (
             <>
-              <span aria-hidden="true">·</span>
+              <span className="r305rp-meta-sep" aria-hidden="true" />
               <span><bdi className="font-mono">{paper.offering.course.code}</bdi></span>
             </>
           )}
         </span>
       </span>
-      <span className="rs-queue-item-tail">
-        <Badge color={statusTone(paper.status)}>
-          {STATUS_LABEL[paper.status]}
-        </Badge>
+      <span className="r305rp-rev-row-tail">
+        <StatusChip status={paper.status} />
         {waiting && (
-          <span className={`rs-wait${waitDays >= 7 ? ' is-old' : ''}`}>
-            بانتظار {timeAgoAr(paper.uploadedAt)}
+          <span className={`rs-wait${late ? ' is-old' : ''}`}>
+            بانتظار {timeAgoAr(paper.uploadedAt)}{late ? ' — متأخر' : ''}
           </span>
         )}
         {(paper.status === 'GRADED' || paper.status === 'PUBLISHED') && paper.grade != null && (
           <span className="rs-wait font-mono"><bdi>{formatInt(paper.grade)}</bdi>/20</span>
+        )}
+        {selected && (
+          <span className="r305rp-chip r305rp-chip--accent r305rp-rev-row-now">
+            تُعرض الآن
+          </span>
         )}
       </span>
     </button>
@@ -507,27 +589,32 @@ function QueueItem({ paper, selected, onSelect }: {
 }
 
 /* ─── The review workspace — the split's review half ────────────────
-   Three labelled territories separated by hairlines:
-     1. «نتائج الفحص الأوتوماتيكي» — the declared simulation cells.
-     2. «تقييمك» — the grade form (score + computed band + notes); a
-        real <form>, Enter submits (graded mode: guarded no-op).
-     3. «ملاحظات على البحث» — the margin-notes thread, distinct from
-        the feedback controls; the reader link rides the action row.
+   Heron territories, each with a kicker heading and hairline bounds:
+     1. The masthead — the ONE deep band: who/what/status + the title.
+     2. «سجل الحالة» — the decision record (API timestamps).
+     3. «نتائج الفحص الأوتوماتيكي» — the declared simulation cells.
+     4. «تقييمك» — the grade form; its decisive action rides the
+        one-action rail with the explicit before→after of the decision.
+     5. «ملاحظات على البحث» — the margin-notes thread.
    One component for BOTH compositions: the desktop sticky panel and
    the mobile bottom Sheet render the same content. */
 function ReviewWorkspace({
-  paper, isGraded, score, onScore, feedback, onFeedback,
-  gradeError, publishError, busy, gradePending, publishPending,
+  paper, isGraded, dirty, score, onScore, feedback, onFeedback,
+  gradeError, gradeErrorCode, publishError, publishErrorCode,
+  busy, gradePending, publishPending,
   onSubmitGrade, onPublish,
 }: {
   paper: ResearchPaper;
   isGraded: boolean;
+  dirty: boolean;
   score: number;
   onScore: (n: number) => void;
   feedback: string;
   onFeedback: (s: string) => void;
   gradeError: string | null;
+  gradeErrorCode: string | null;
   publishError: string | null;
+  publishErrorCode: string | null;
   busy: boolean;
   gradePending: boolean;
   publishPending: boolean;
@@ -536,23 +623,45 @@ function ReviewWorkspace({
 }) {
   const initials = paper.student.avatarInitials ?? `${paper.student.firstName[0]}${paper.student.lastName[0]}`;
   const readerPath = readerPathFor(paper, '/teacher/research');
+  const next = NEXT_STEP[paper.status];
+  const record = decisionRecord(paper);
   return (
     <div className="rs-review-sheet-body">
-      <div className="rs-review-work-head">
+      {/* The masthead — the page's one deep band (§3): the submission's
+          identity inverts so the workspace reads as the decisive
+          surface at a glance. */}
+      <div className="r305rp-band r305rp-band--deep r305rp-rev-masthead">
         <UserAvatar initials={initials} color={paper.student.avatarColor ?? undefined} size={40} />
-        <div className="flex-col gap-1" style={{ flex: 1, minWidth: 0 }}>
-          <h3 className="rs-review-work-title">{paper.title}</h3>
-          <div className="rs-review-work-sub">
-            {paper.student.firstName} {paper.student.lastName}
+        <div className="r305rp-rev-masthead-main">
+          <h3 className="r305rp-rev-masthead-title">{paper.title}</h3>
+          <div className="r305rp-meta-row r305rp-rev-masthead-meta">
+            <span>{paper.student.firstName} {paper.student.lastName}</span>
             {paper.offering && (
-              <> · {paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)</>
+              <>
+                <span className="r305rp-meta-sep" aria-hidden="true" />
+                <span>{paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)</span>
+              </>
             )}
-            {' '}· رُفع {formatDateAr(paper.uploadedAt)}
+            <span className="r305rp-meta-sep" aria-hidden="true" />
+            <span>رُفع {formatDateAr(paper.uploadedAt)}</span>
           </div>
         </div>
-        <Badge color={statusTone(paper.status)}>
-          {STATUS_LABEL[paper.status]}
-        </Badge>
+        <StatusChip status={paper.status} />
+      </div>
+
+      {/* سجل الحالة — the decision record from the API's own fields. */}
+      <div className="r305rp-rev-record">
+        <div className="r305rp-rule-labeled"><span>سجل الحالة</span></div>
+        <div className="r305rp-meta-row">
+          {record.map((fact, i) => (
+            <Fragment key={fact.label}>
+              {i > 0 && <span className="r305rp-meta-sep" aria-hidden="true" />}
+              <span className="r305rp-rev-record-item">
+                <span className="r305rp-rev-record-label">{fact.label}</span> {fact.value}
+              </span>
+            </Fragment>
+          ))}
+        </div>
       </div>
 
       {/* r157 / 6A9 — fields + actions ride one <form> (Enter submits
@@ -561,7 +670,7 @@ function ReviewWorkspace({
           host's flex rhythm while preserving real form semantics. */}
       <form onSubmit={onSubmitGrade} noValidate style={{ display: 'contents' }}>
         <section className="rs-work-section" aria-label="نتائج الفحص الأوتوماتيكي">
-          <div className="section-title">نتائج الفحص الأوتوماتيكي</div>
+          <div className="r305rp-kicker"><h4 className="r305rp-kicker-title">نتائج الفحص الأوتوماتيكي</h4></div>
           <ScanResults
             plagiarismPct={paper.plagiarismPct}
             aiContentPct={paper.aiContentPct}
@@ -570,7 +679,7 @@ function ReviewWorkspace({
         </section>
 
         <section className="rs-work-section" aria-label="تقييمك">
-          <div className="section-title">تقييمك</div>
+          <div className="r305rp-kicker"><h4 className="r305rp-kicker-title">تقييمك</h4></div>
           <div className="form-grid-2">
             <FormField label="الدرجة (من 20)">
               <input
@@ -581,7 +690,13 @@ function ReviewWorkspace({
                 inputMode="decimal"
                 className="input"
                 value={score}
-                onChange={(e) => onScore(Math.max(0, Math.min(20, Number(e.target.value))))}
+                onChange={(e) => {
+                  // A cleared/intermediate field ("", "-") parses as
+                  // NaN — clamp to the honest floor instead of posting
+                  // NaN to the backend (z.number() would 400 it).
+                  const n = Number(e.target.value);
+                  onScore(Number.isFinite(n) ? Math.max(0, Math.min(20, n)) : 0);
+                }}
                 disabled={isGraded || gradePending}
               />
             </FormField>
@@ -615,35 +730,81 @@ function ReviewWorkspace({
             />
           </FormField>
 
-          {/* The action row — grade vs publish are DIFFERENT verbs in
-              DIFFERENT states; publish stays type=button (an explicit
-              click, never an implicit form submit). */}
-          <div className="rs-review-actions" style={{ marginBlockStart: 'var(--sp-2)' }}>
-            {!isGraded ? (
-              <button type="submit" className="btn primary" disabled={busy}>
-                <Icon icon={CheckCircle2} size={14} />
-                {gradePending ? 'جارٍ الحفظ…' : 'تأكيد التقييم'}
-              </button>
+          {/* The decisive rail (§7 — ONE emphasized action): the
+              before→after of the decision sits beside the verb that
+              performs it. Publish stays type=button (an explicit click,
+              never an implicit form submit). */}
+          <div className="r305rp-next r305rp-rev-decision">
+            {next ? (
+              <div className="r305rp-rev-decision-flow">
+                <div className="r305rp-rev-decision-state">
+                  <span className="r305rp-eyebrow">الآن</span>
+                  <StatusChip status={paper.status} />
+                </div>
+                <Icon icon={ArrowLeft} size={14} className="r305rp-rev-decision-arrow" />
+                <div className="r305rp-rev-decision-state">
+                  <span className="r305rp-eyebrow">{next.afterLabel}</span>
+                  <span className={`r305rp-chip r305rp-chip--${next.tone}`}>
+                    <span className="r305rp-chip-dot" aria-hidden="true" />
+                    {next.label}
+                  </span>
+                </div>
+                {!isGraded && (
+                  <span
+                    className={`r305rp-chip r305rp-rev-dirty${dirty ? ' r305rp-chip--warning' : ''}`}
+                    role="status"
+                  >
+                    <span className="r305rp-chip-dot" aria-hidden="true" />
+                    {dirty ? 'مسودة غير محفوظة' : 'بلا تعديلات'}
+                  </span>
+                )}
+              </div>
             ) : (
-              paper.status === 'GRADED' && (
-                <button type="button" className="btn primary" onClick={onPublish} disabled={busy}>
-                  <Icon icon={Sparkles} size={14} />
-                  {publishPending ? 'جارٍ النشر…' : 'نشر في المكتبة'}
-                </button>
-              )
+              <p className="r305rp-rev-decision-terminal">
+                البحث منشور في المكتبة — لا إجراء متاح عليه هنا.
+              </p>
             )}
-            {readerPath && (
-              <RouterLink to={readerPath} className="btn outline">
-                <Icon icon={MessageSquare} size={13} />
-                قراءة البحث وكتابة ملاحظات
-              </RouterLink>
-            )}
+            <div className="r305rp-rev-decision-actions">
+              {!isGraded ? (
+                <Button
+                  type="submit"
+                  variant="primary"
+                  loading={gradePending}
+                  disabled={busy}
+                  leadingIcon={<Icon icon={CheckCircle2} size={14} />}
+                >
+                  تأكيد التقييم
+                </Button>
+              ) : (
+                paper.status === 'GRADED' && (
+                  <Button
+                    type="button"
+                    variant="primary"
+                    loading={publishPending}
+                    disabled={busy}
+                    onClick={onPublish}
+                    leadingIcon={<Icon icon={Sparkles} size={14} />}
+                  >
+                    نشر في المكتبة
+                  </Button>
+                )
+              )}
+              {readerPath && (
+                <RouterLink to={readerPath} className="btn outline">
+                  <Icon icon={MessageSquare} size={13} />
+                  قراءة البحث وكتابة ملاحظات
+                </RouterLink>
+              )}
+            </div>
           </div>
 
           {(gradeError || publishError) && (
             <div className="form-feedback fail" role="alert">
               <Icon icon={X} size={14} />
               <span className="flex-1">{gradeError ?? publishError}</span>
+              {(gradeErrorCode ?? publishErrorCode) && (
+                <bdi className="font-mono r305rp-rev-err-code">{gradeErrorCode ?? publishErrorCode}</bdi>
+              )}
             </div>
           )}
         </section>
@@ -665,8 +826,10 @@ function ReviewNotes({ paperId }: { paperId: string }) {
     : [];
   return (
     <section className="rs-work-section" aria-label="ملاحظات على البحث">
-      <div className="section-title">
-        <Icon icon={StickyNote} size={13} /> ملاحظات على البحث ({annotations.data?.length ?? 0})
+      <div className="r305rp-kicker">
+        <h4 className="r305rp-kicker-title">
+          <Icon icon={StickyNote} size={13} /> ملاحظات على البحث ({annotations.data?.length ?? 0})
+        </h4>
       </div>
       {annotations.isPending && (
         <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
@@ -700,9 +863,10 @@ function ReviewNotes({ paperId }: { paperId: string }) {
         </div>
       )}
       {annotations.data && rows.length === 0 && (
-        <p className="rs-review-work-sub" style={{ margin: 0 }}>
-          لا ملاحظات بعد — افتح البحث في العارض وثبّت ملاحظاتك على الصفحات.
-        </p>
+        <div className="r305rp-empty">
+          <span className="r305rp-eyebrow">لا ملاحظات بعد</span>
+          <p className="r305rp-rev-empty-sub">افتح البحث في العارض وثبّت ملاحظاتك على الصفحات.</p>
+        </div>
       )}
     </section>
   );
