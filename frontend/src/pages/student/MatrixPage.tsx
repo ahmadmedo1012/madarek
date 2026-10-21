@@ -128,6 +128,19 @@ export default function MatrixPage() {
   const mappedCourses = (matrix.data ?? []).filter((c) => c.concepts.length > 0);
   const unmappedCount = (matrix.data ?? []).length - mappedCourses.length;
 
+  /* r304 — course anchor density: with MORE than one mapped course,
+     the heatmap is a tall scroll and the filter bar's trailing slot
+     carries one quiet chip per course that jumps to its block (real
+     navigation, no new data — the blocks carry matrix-course-<id>
+     DOM ids). Reduced-motion aware: the same idiom the exam map and
+     the lecture-player contents anchor use. One course = no chips. */
+  const jumpToCourse = (courseId: string) => {
+    const el = document.getElementById(`matrix-course-${courseId}`);
+    if (!el) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+  };
+
   return (
     <PageFrame width="default">
       <PageHeader
@@ -243,6 +256,28 @@ export default function MatrixPage() {
                 ))}
               </div>
             }
+            trailing={mappedCourses.length > 1 ? (
+              /* r304 — course anchor chips: one quiet ghost chip per
+                  mapped course, jumping to its heatmap block below
+                  (the same quiet-anchor recipe the lecture player's
+                  contents chip uses). One course = nothing renders. */
+              <div
+                role="group"
+                aria-label="الانتقال السريع بين مقرّرات المصفوفة"
+                style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 'var(--sp-2)' }}
+              >
+                {mappedCourses.map((c) => (
+                  <button
+                    key={c.courseId}
+                    type="button"
+                    className="btn ghost sm"
+                    onClick={() => jumpToCourse(c.courseId)}
+                  >
+                    <bdi>{c.courseName}</bdi>
+                  </button>
+                ))}
+              </div>
+            ) : undefined}
           />
 
           {/* 22-c (A4 P3-7): the seed maps concepts on ONE course — the
@@ -259,7 +294,7 @@ export default function MatrixPage() {
               ? Math.round((c.concepts.reduce((s, x) => s + x.level, 0) / totalConceptsInCourse) * 100)
               : 0;
             return (
-              <div className="matrix-course" key={c.courseId}>
+              <div className="matrix-course" key={c.courseId} id={`matrix-course-${c.courseId}`}>
                 <div className="matrix-course-head">
                   <div
                     className="matrix-course-icon"
@@ -315,13 +350,19 @@ export default function MatrixPage() {
                       ? gapLectureByConcept.get(k.id)
                       : undefined;
                     if (remediation) {
+                      /* r164d + r304: the cell link's aria-name is the
+                       * ACTION, not just the state — «سدّ فجوة» + the
+                       * concept + the honest destination (the lecture
+                       * title when the payload names one). The concept
+                       * name stays in the name so the row link and the
+                       * cell link keep agreeing (MatrixPage-links pin). */
                       return (
                         <Link
                           to={`/student/lectures/${remediation.lectureId}`}
                           className={`matrix-cell ${cls}${dimmed ? ' is-dim' : ''}`}
                           style={{ cursor: 'pointer' }}
                           title={`${titleBase} — راجع في: ${remediation.lectureTitle ?? 'المحاضرة الموصى بها'}`}
-                          aria-label={`${cellAria} — راجع في المحاضرة الموصى بها`}
+                          aria-label={`سدّ فجوة: ${k.name} — انتقل إلى المحاضرة${remediation.lectureTitle ? ` «${remediation.lectureTitle}»` : ''}`}
                           key={k.id}
                         >
                           {body}

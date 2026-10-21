@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import {
-  Calendar, Globe, Mic2, Video, ArrowLeft, MessageSquare, Radio, Clock, ExternalLink,
+  Video, ArrowLeft, MessageSquare, Radio, Clock, ExternalLink,
 } from 'lucide-react';
-import { Card, MetricCard, Badge } from '../../components/primitives';
+import { Badge } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { PageFrame, PageHeader, SectionHeader, StatLine } from '../../components/patterns';
 import { useCampusEvents, useLiveSessions } from '../../hooks/useResources';
-import { formatDate, formatNum, formatTime } from '../../utils/numbers';
+import { formatDate, formatInt, formatNum, formatTime } from '../../utils/numbers';
 
 /**
  * Honest webinars landing.
@@ -17,6 +18,12 @@ import { formatDate, formatNum, formatTime } from '../../utils/numbers';
  * CampusEvent / LiveSession; this page surfaces the real live/upcoming
  * session schedule (live-vs-upcoming distinction: the pulse dot marks
  * LIVE sessions only) plus links to where events actually live.
+ *
+ * R304 rebuild: PageFrame + patterns PageHeader + ONE StatLine (the
+ * grid-2 MetricCard pair is gone — including the one that abused the
+ * `change` slot as an error control; that failure path now lives in
+ * its own quiet retry row under the StatLine). The session rows keep
+ * their `.webinar-row` anatomy inside SectionHeader sections.
  */
 
 /** Human session slot: weekday + date + time (time isolated in a bdi). */
@@ -39,45 +46,53 @@ export default function WebinarsPage() {
   const sessions = [...liveNow, ...upcoming];
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">الندوات وورش العمل</h1>
-          <p className="page-subtitle">
-            الفعاليّات الجامعيّة الرسميّة تُنشر على لوحة المجتمع — ستجد هنا جدول البثّ المباشر وروابط سريعة.
-          </p>
+    <PageFrame width="default">
+      <PageHeader
+        title="الندوات وورش العمل"
+        description="جدول البثّ المباشر لمقرّراتك، وروابط سريعة إلى حيث تُنشر الفعاليّات الجامعيّة الرسميّة."
+      />
+
+      {/* The two MetricCards collapsed into ONE StatLine — counts from
+          the real payloads only (honest «…»/«—» placeholders while the
+          queries settle / fail). */}
+      <StatLine
+        items={[
+          {
+            label: 'فعاليّات قادمة',
+            value: events.isPending ? '…' : events.isError ? '—' : formatNum(events.data?.length ?? 0),
+            hint: 'على لوحة المجتمع',
+          },
+          {
+            label: 'بثوث مباشرة الآن',
+            value: live.isPending ? '…' : live.isError ? '—' : formatInt(liveNow.length),
+            hint: 'مرتبطة بمقرّراتك',
+            tone: !live.isPending && !live.isError && liveNow.length > 0 ? 'signal' : 'neutral',
+          },
+        ]}
+      />
+
+      {/* Honest failure + a way out — never a masked zero (ruling #14).
+          Used to live inside a MetricCard `change` slot. */}
+      {events.isError && (
+        <div className="flex items-center gap-2 text-xs text-muted">
+          <span>تعذّر تحميل الفعاليّات الجامعيّة.</span>
+          <button type="button" className="btn ghost sm" onClick={() => void events.refetch()}>
+            أعد المحاولة
+          </button>
         </div>
-      </header>
+      )}
 
-      <div className="grid-2 webinar-kpis">
-        <MetricCard
-          icon={Calendar}
-          label="فعاليّات قادمة"
-          value={events.isPending ? '…' : events.isError ? '—' : formatNum(events.data?.length ?? 0)}
-          change={
-            events.isError
-              // Honest failure + a way out — never a masked zero (ruling #14).
-              ? <button type="button" className="btn ghost sm" onClick={() => void events.refetch()}>تعذّر التحميل — أعد المحاولة</button>
-              : 'على لوحة المجتمع'
-          }
-          color="brand"
+      <section aria-label="جلسات البثّ المباشر">
+        <SectionHeader
+          title="جلسات البثّ المباشر"
+          description="البثوث المرتبطة بمقرّراتك — المباشرة منها تُعلَّم بنبضة حمراء"
         />
-        <MetricCard
-          icon={Mic2}
-          label="بثوث مباشرة الآن"
-          value={live.isPending ? '…' : live.isError ? '—' : formatNum(liveNow.length)}
-          change={live.isError ? 'تعذّر التحميل' : 'مرتبطة بمقرّراتك'}
-          color="red"
-        />
-      </div>
-
-      <Card title="جلسات البثّ المباشر" icon={Video} subtitle="البثوث المرتبطة بمقرّراتك — المباشرة منها تُعلَّم بنبضة حمراء">
         {live.isPending ? (
           <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
             {[0, 1, 2].map((i) => (
               <div className="webinar-row" key={i} aria-hidden>
                 <Skeleton width={14} height={14} rounded="50%" />
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 'var(--sp-1)' }}>
+                <div className="webinar-row-body">
                   <Skeleton width="45%" height={13} />
                   <Skeleton width="65%" height={11} />
                 </div>
@@ -143,9 +158,13 @@ export default function WebinarsPage() {
             })}
           </div>
         )}
-      </Card>
+      </section>
 
-      <Card title="أين أجد الفعاليّات الحقيقيّة؟" icon={Globe}>
+      <section aria-label="أين أجد الفعاليّات الحقيقيّة؟">
+        <SectionHeader
+          title="أين أجد الفعاليّات الحقيقيّة؟"
+          description="الفعاليّات الرسميّة تُنشر على لوحة المجتمع، وجلسات مقرّراتك تعيش في صفحة البثّ."
+        />
         <div className="webinar-dest-grid">
           <div className="webinar-dest">
             {/* 5-D3 (A3 P3-2): demoted from h3 — card-internal labels
@@ -176,7 +195,7 @@ export default function WebinarsPage() {
             </Link>
           </div>
         </div>
-      </Card>
-    </div>
+      </section>
+    </PageFrame>
   );
 }

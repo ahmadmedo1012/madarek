@@ -1,10 +1,11 @@
 import {
-  Wallet, Receipt, Building2, Phone, Mail, Clock, ArrowLeft, Info, CheckCircle2,
+  Wallet, Receipt, Building2, Phone, Mail, Clock, ArrowLeft, Info, Megaphone,
 } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from '../../components/primitives';
 import { Skeleton } from '../../components/primitives/States';
+import { PageFrame, PageHeader, SectionHeader, RowList, RowItem } from '../../components/patterns';
 import { Reveal } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
@@ -42,13 +43,11 @@ export default function PaymentPage() {
   }, [profile.isError, profile.isSuccess]);
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">الشؤون الماليّة</h1>
-          <p className="page-subtitle">حالة رسومك الجامعيّة وكيفيّة سدادها.</p>
-        </div>
-      </header>
+    <PageFrame width="default">
+      <PageHeader
+        title="الشؤون الماليّة"
+        description="حالة رسومك الجامعيّة وكيفيّة سدادها."
+      />
 
       <Card title="بياناتك" icon={Wallet}>
         <div className="grid-3" style={{ gap: 'var(--sp-3)' }}>
@@ -77,23 +76,49 @@ export default function PaymentPage() {
               أيّ مبالغ تقديريّة. رصيدك الفعليّ وسجلّ سدادك مصدرهما مكتب الشؤون الماليّة —
               حتّى ذلك الحين، خُطواتك اليوم:
             </p>
-            <ul className="payment-checklist">
-              <li>
-                <Icon icon={CheckCircle2} size={14} aria-hidden />
-                <span>راجع مكتب الشؤون الماليّة في كلّيّتك أو تواصل معه عبر القنوات أدناه.</span>
-              </li>
-              <li>
-                <Icon icon={CheckCircle2} size={14} aria-hidden />
-                <span>أحضر رقمك الجامعيّ أو بطاقتك الجامعيّة عند المراجعة أو السداد.</span>
-              </li>
-              <li>
-                <Icon icon={CheckCircle2} size={14} aria-hidden />
-                <span>مواعيد الرسوم وإعلانات الإدارة الماليّة تُنشر على لوحة المجتمع الجامعيّ.</span>
-              </li>
-            </ul>
           </div>
         </Card>
       </Reveal>
+
+      {/* R304: the checklist becomes the RowList it always wanted to be —
+          three honest, non-fake steps. Only the row with a REAL
+          destination is a whole-row link (the community board); the
+          other two are guidance whose target is the contacts card
+          below and your own wallet — no invented checkout, no fake
+          deep links. */}
+      <section aria-label="خطواتك اليوم">
+        <SectionHeader title="خطواتك اليوم" />
+        <RowList aria-label="خطوات السداد اليوم">
+          <RowItem
+            leading={
+              <span style={{ color: 'var(--accent)' }} aria-hidden>
+                <Icon icon={Building2} size={18} />
+              </span>
+            }
+            title="راجع مكتب الشؤون الماليّة"
+            meta="في كلّيّتك، أو تواصل معه عبر القنوات أدناه"
+          />
+          <RowItem
+            leading={
+              <span style={{ color: 'var(--accent)' }} aria-hidden>
+                <Icon icon={Wallet} size={18} />
+              </span>
+            }
+            title="أحضر رقمك الجامعيّ أو بطاقتك الجامعيّة"
+            meta="عند المراجعة أو السداد"
+          />
+          <RowItem
+            to="/community"
+            leading={
+              <span style={{ color: 'var(--accent)' }} aria-hidden>
+                <Icon icon={Megaphone} size={18} />
+              </span>
+            }
+            title="تابع مواعيد الرسوم وإعلانات الإدارة الماليّة"
+            meta="تُنشر على لوحة المجتمع الجامعيّ"
+          />
+        </RowList>
+      </section>
 
       <div className="grid-2">
         <Card title="مكتب الشؤون الماليّة بالجامعة" icon={Building2}>
@@ -135,7 +160,7 @@ export default function PaymentPage() {
           فتح المجتمع الجامعيّ
         </Link>
       </Card>
-    </div>
+    </PageFrame>
   );
 }
 

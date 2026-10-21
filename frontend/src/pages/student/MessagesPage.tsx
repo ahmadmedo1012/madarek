@@ -72,7 +72,12 @@ function StudentMessageCompose({
 export function StudentMessagesPage() {
   return (
     <MessagesInbox
-      title="صندوق الرسائل"
+      /* R304 (6-f): the h1 must carry the route's ONE name — the nav
+         label «الرسائل» (nav.ts) is also the title-map source
+         (AppShell NAV_TITLES); «صندوق الرسائل» was a second variant
+         of the same surface. The subtitle keeps its honest recipient
+         ceiling (enrolled teachers + prior correspondents). */
+      title="الرسائل"
       subtitle="كل رسالة وصلتك أو أرسلتها — راسل أساتذة مقرّراتك أو ردّ على الوارد، والمستلمون المتاحون هم أساتذة مقرّراتك ومن راسلتك سابقاً."
       renderCompose={(args) => <StudentMessageCompose {...args} />}
     />

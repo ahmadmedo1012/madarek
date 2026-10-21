@@ -3985,4 +3985,102 @@
     color: var(--text-muted);
   }
 
+  /* ═══════════════════════════════════════════════════════════════
+     R304 (student workspace) — the next-learning-action hero band and
+     the dashboard's learning column. Appended per this file's
+     append-only contract; rides the patterns vocabulary + the r299
+     copper/cream tokens. No new colors — the hero keeps the PP-X2
+     .dash-resume-card recipe (tint wash + signal edge) and only adds
+     the eyebrow/side-note anatomy the hero grade needs.
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* Hero mass: the base .dash-resume-card recipe + a calmer padding and
+     radius so the band reads as the page's opening surface (the card
+     grid below uses r-xl too). Same layer, later source — the padding
+     lands without touching the frozen PP-X2 block above. */
+  .stu-hero {
+    padding: var(--sp-6);
+    border-radius: var(--r-xl);
+  }
+  .stu-hero .dash-resume-ring {
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+  /* The hero's classification line — real state, not decoration:
+     «أكمل من حيث توقفت» / «الخطوة التالية» / the track arms. */
+  .dash-resume-eyebrow {
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--type-label-weight);
+    color: var(--accent-ink);
+  }
+  /* The CTA column: button + the honest context note under it
+     (course code · lecture clock — data, never decoration). The
+     .dash-resume-cta class rides along so the PP-X2 prominence rules
+     (lg mass ≥921px, full-width thumb target ≤640px) keep applying. */
+  .stu-hero-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-1-5);
+    flex-shrink: 0;
+  }
+  .dash-resume-side-note {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .dash-resume-side-note .font-mono {
+    font-size: var(--fs-xs);
+  }
+  /* The pending hero slot (loading-closure mirror): same band, no
+     interaction, no flex-col utility classes (the mirror's slot count
+     belongs to the ListSkeleton placeholders only). */
+  .stu-hero-skel { pointer-events: none; }
+  @media (max-width: 640px) {
+    .stu-hero-side { inline-size: 100%; }
+    .stu-hero-side .btn { inline-size: 100%; justify-content: center; }
+  }
+
+  /* «مقرّراتك» rows borrow the courses-page row grammar (leading tinted
+     well + trailing progress/CTA); the dashboard's readout is slightly
+     tighter and adds the mono % beside the bar so the value survives
+     the bar's hidden label on phones. */
+  .stu-course-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+  .stu-course-progress .progress { inline-size: 120px; }
+  .stu-course-pct {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-secondary);
+  }
+  @media (max-width: 640px) {
+    .stu-course-progress .progress { inline-size: 84px; }
+  }
+
+  /* ── R304 · Lecture player page additions ───────────────────────
+     The contents anchor (≤1024px only — desktop's panel sits beside
+     the video) and the keyboard-contract legend that closes the side
+     panel. Both ride the existing lecture-* surface; no colors. */
+  .stu-panel-jump { display: none; }
+  @media (max-width: 1024px) {
+    .stu-panel-jump { display: inline-flex; align-self: flex-start; }
+  }
+  .lecture-keys {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-4);
+    color: var(--text-muted);
+  }
+  .lecture-keys-row {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    font-size: var(--fs-xs);
+  }
+  .lecture-keys .kbd { font-size: var(--fs-xxs); }
+
 }

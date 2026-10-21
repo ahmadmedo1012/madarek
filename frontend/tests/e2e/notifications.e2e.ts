@@ -36,6 +36,8 @@ test.describe('الإشعارات', () => {
     /* النقر على الصف يقود إلى صفحة التنبيهات الكاملة للدور */
     await item.click();
     await expect(page).toHaveURL(/\/student\/alerts$/);
-    await expect(page.locator('h1.page-title')).toBeVisible();
+    // R304: AlertsPage rides the patterns header (same selector update
+    // the ai-assistant/library migrations made).
+    await expect(page.locator('h1.pf-page-title')).toBeVisible();
   });
 });
