@@ -104,23 +104,8 @@ export function CurriculumAuthoringPanel({
       )}
 
       {selected && (
-        <div
-          style={{
-            marginTop: 'var(--sp-4)',
-            padding: 'var(--sp-4)',
-            borderRadius: 'var(--r-lg)',
-            border: '1px solid var(--rule)',
-            background: 'var(--surface-2)',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--sp-2)',
-              marginBottom: 'var(--sp-3)',
-            }}
-          >
+        <div className="cur-structure">
+          <div className="cur-structure-head">
             {/* The course accent's one surface — the family's tinted icon
              * well (.tq-row-icon keys off --tq-accent, teacher-quality.css;
              * the OfferingRow/LabRow idiom). Decorative only: no text ever
@@ -133,7 +118,7 @@ export function CurriculumAuthoringPanel({
               <Icon icon={ListVideo} size={22} />
             </span>
             <Badge color="brand">{selected.ordinal}</Badge>
-            <span className="text-sm" style={{ fontWeight: 'var(--fw-bold, 700)' }}>
+            <span className="text-sm cur-structure-title">
               هيكل المحاضرة: {selected.title}
             </span>
           </div>
@@ -144,13 +129,13 @@ export function CurriculumAuthoringPanel({
           )}
 
           {detail.data && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
+            <div className="cur-structure-body">
               <section aria-label="فصول المحاضرة">
                 {/* 3-d: counted nouns (the panel subtitle's own forms) —
                  * the raw «الفصول (N)» was broken Arabic for 1/2; the
                  * empty list carries no count (the section's empty state
                  * owns that message — the subtitle's rule). */}
-                <div className="text-xs text-muted" style={{ marginBottom: 'var(--sp-2)', fontWeight: 'var(--fw-semibold, 600)' }}>
+                <div className="text-xs text-muted cur-sec-label">
                   {detail.data.chapters.length > 0
                     ? `الفصول · ${countAr(detail.data.chapters.length, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])}`
                     : 'الفصول'}
@@ -158,7 +143,7 @@ export function CurriculumAuthoringPanel({
                 <ChapterList lecture={detail.data} chapters={detail.data.chapters} />
               </section>
               <section aria-label="أسئلة التفاعل">
-                <div className="text-xs text-muted" style={{ marginBottom: 'var(--sp-2)', fontWeight: 'var(--fw-semibold, 600)' }}>
+                <div className="text-xs text-muted cur-sec-label">
                   {detail.data.checkpoints.length > 0
                     ? `أسئلة التفاعل · ${countAr(detail.data.checkpoints.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])}`
                     : 'أسئلة التفاعل'}

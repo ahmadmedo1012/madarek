@@ -7,6 +7,7 @@ import {
   Send, FileText, X, CheckCircle2,
   ExternalLink, Presentation, Video, FileArchive,
   Image as ImageIcon, Paperclip,
+  ChevronsUpDown, ChevronUp, ChevronDown,
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Card, Badge, ProgressBar, UserAvatar, FormField, Pill } from '../../components/primitives';
@@ -48,7 +49,7 @@ import { ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, gradeBand, GRADE_BANDS } fr
 import { validatePdfFile } from '../../lib/pdfUpload';
 import ResearchReviewPage from './ResearchReviewPage';
 import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
-import '../../styles/teacher-pages.css';
+import '../../styles/teacher-quality.css'; // R304: the family sheet (tpg- section lives here)
 
 /* The teacher dashboard now lives in TeacherDashboardPage.tsx
  * (social-media feed style). The previous KPI-grid version was
@@ -223,6 +224,74 @@ function localDayKey(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+/* ─── R304: sortable roster headers (grades + students read tables) ────
+   A view control only — the wire payload and the default (server) order
+   are untouched, and the third click resets to it. The educator's first
+   click on a metric column reads the highest values first (من الأعلى)،
+   the second flips to who needs help (من الأدنى)؛ the name column opens
+   alphabetical. Pure helpers, unit-testable. */
+
+type RosterSortKey = 'name' | 'average' | 'attendance';
+interface RosterSort { key: RosterSortKey; dir: 'asc' | 'desc' }
+
+/** Click cycle: none → first direction → opposite → none. */
+function cycleRosterSort(current: RosterSort | null, key: RosterSortKey): RosterSort | null {
+  const firstDir: 'asc' | 'desc' = key === 'name' ? 'asc' : 'desc';
+  if (!current || current.key !== key) return { key, dir: firstDir };
+  if (current.dir === firstDir) return { key, dir: firstDir === 'asc' ? 'desc' : 'asc' };
+  return null;
+}
+
+/** Column value for a roster row (avg/attendance ride the row's numbers). */
+function rosterSortValue(row: { name: string; avgGrade: number; attendancePct: number }, key: RosterSortKey): string | number {
+  if (key === 'name') return row.name;
+  if (key === 'average') return row.avgGrade;
+  return row.attendancePct;
+}
+
+function compareRoster(a: string | number, b: string | number, key: RosterSortKey): number {
+  if (key === 'name') return String(a).localeCompare(String(b), 'ar');
+  return (a as number) - (b as number);
+}
+
+function sortRoster<T extends { name: string; avgGrade: number; attendancePct: number }>(
+  rows: T[],
+  sort: RosterSort | null,
+): T[] {
+  if (!sort) return rows;
+  const sorted = [...rows].sort((a, b) => compareRoster(rosterSortValue(a, sort.key), rosterSortValue(b, sort.key), sort.key));
+  return sort.dir === 'asc' ? sorted : sorted.reverse();
+}
+
+/** The sortable column header: a real button keeps the columnheader's
+ *  accessible name exactly the label (the order glyph is aria-hidden
+ *  decoration); an active th carries aria-sort for screen readers. */
+function SortableHead({
+  label,
+  sortKey,
+  sort,
+  onCycle,
+}: {
+  label: string;
+  sortKey: RosterSortKey;
+  sort: RosterSort | null;
+  onCycle: (key: RosterSortKey) => void;
+}) {
+  const active = sort?.key === sortKey;
+  const Glyph = !active ? ChevronsUpDown : sort.dir === 'asc' ? ChevronUp : ChevronDown;
+  return (
+    <th
+      scope="col"
+      aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : undefined}
+    >
+      <button type="button" className="tpg-sort" onClick={() => onCycle(sortKey)}>
+        {label}
+        <Icon icon={Glyph} size={12} />
+      </button>
+    </th>
+  );
+}
+
 export function AttendancePage() {
   const offsQ = useTeacherOfferings();
   const offerings = offsQ.data ?? [];
@@ -363,7 +432,7 @@ export function AttendancePage() {
           </FormField>
         </div>
         {dateError && (
-          <div id="att-date-error" className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
+          <div id="att-date-error" className="form-feedback fail tpg-feedback" role="alert">
             <Icon icon={AlertTriangle} size={14} />
             <span className="flex-1">{dateError}</span>
           </div>
@@ -386,20 +455,23 @@ export function AttendancePage() {
                   excused counts in mono tabular numerals ride above the
                   roster while it scrolls (the save button stays in the
                   page header; this line is the live truth of the sheet). */}
+              {/* R304: each count carries its status tone — the strip reads
+                  as a legend (حاضر أخضر، متأخّر كهرماني، غائب أحمر، بعذر
+                  نحاسي) without comparing numbers. */}
               <div className="tpg-att-summary" role="status" aria-label="ملخّص الجلسة الحاليّ">
-                <span className="tpg-att-summary-item">
+                <span className="tpg-att-summary-item" data-tone="success">
                   <span className="tpg-att-summary-label">حاضر</span>
                   <span className="tpg-att-summary-value">{formatNum(counts.p)}</span>
                 </span>
-                <span className="tpg-att-summary-item">
+                <span className="tpg-att-summary-item" data-tone="warning">
                   <span className="tpg-att-summary-label">متأخّر</span>
                   <span className="tpg-att-summary-value">{formatNum(counts.l)}</span>
                 </span>
-                <span className="tpg-att-summary-item">
+                <span className="tpg-att-summary-item" data-tone="danger">
                   <span className="tpg-att-summary-label">غائب</span>
                   <span className="tpg-att-summary-value">{formatNum(counts.a)}</span>
                 </span>
-                <span className="tpg-att-summary-item">
+                <span className="tpg-att-summary-item" data-tone="brand">
                   <span className="tpg-att-summary-label">بعذر</span>
                   <span className="tpg-att-summary-value">{formatNum(counts.e)}</span>
                 </span>
@@ -467,25 +539,27 @@ export function AttendancePage() {
             <EmptyState icon={ClipboardCheck} title="لا طلاب في هذا المقرّر بعد" description="لا إحصائيّات لعرضها — سجّل طالبًا أول لعرض حضوره وتأخّره." illustration="empty-list" />
           ) : (
             <div className="flex-col gap-4">
-              <div style={{ opacity: counts.p === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
+              {/* R304: the honest dim rides a class now (was 4× inline
+                  opacity/transition pairs). */}
+              <div className={`tpg-att-stat${counts.p === 0 ? ' is-dim' : ''}`}>
                 <ProgressBar value={counts.total > 0 ? Math.round((counts.p / counts.total) * 100) : 0} label={`الحضور (${counts.p})`} color="var(--success)" />
               </div>
-              <div style={{ opacity: counts.l === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
+              <div className={`tpg-att-stat${counts.l === 0 ? ' is-dim' : ''}`}>
                 <ProgressBar value={counts.total > 0 ? Math.round((counts.l / counts.total) * 100) : 0} label={`التأخّر (${counts.l})`} color="var(--warning)" />
               </div>
-              <div style={{ opacity: counts.a === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
+              <div className={`tpg-att-stat${counts.a === 0 ? ' is-dim' : ''}`}>
                 <ProgressBar value={counts.total > 0 ? Math.round((counts.a / counts.total) * 100) : 0} label={`الغياب (${counts.a})`} color="var(--danger)" />
               </div>
               {/* بعذر counts out of the session total (same denominator as
                   the other bars) — the analytics KPI keeps its own
                   EXCUSED-excluded math server-side. */}
-              <div style={{ opacity: counts.e === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
+              <div className={`tpg-att-stat${counts.e === 0 ? ' is-dim' : ''}`}>
                 <ProgressBar value={counts.total > 0 ? Math.round((counts.e / counts.total) * 100) : 0} label={`بعذر (${counts.e})`} color="var(--accent)" />
               </div>
             </div>
           )}
           {record.isError && (
-            <div className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
+            <div className="form-feedback fail tpg-feedback" role="alert">
               <Icon icon={AlertTriangle} size={14} />
               <span className="flex-1">
                 {apiErrorMessage(record.error, 'تعذَّر حفظ سجلّ الحضور.')} أعد المحاولة بالضغط على «حفظ السجلّ».
@@ -493,7 +567,7 @@ export function AttendancePage() {
             </div>
           )}
           {record.isSuccess && (
-            <div className="form-feedback ok" role="status" style={{ marginBlockStart: 'var(--sp-3)' }}>
+            <div className="form-feedback ok tpg-feedback" role="status">
               <Icon icon={CheckCircle2} size={14} />
               <span>تمّ حفظ سجلّ الحضور لهذا التاريخ.</span>
             </div>
@@ -507,6 +581,16 @@ export function AttendancePage() {
 export function GradesPage() {
   const { offsQ, offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
   const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
+  /* R304: client-side column sorting on the read table — a view control
+     over the already-fetched roster (the wire order stays the default). */
+  const [sort, setSort] = useState<RosterSort | null>(null);
+  const sortedStudents = useMemo(
+    () => sortRoster(stuQ.data ?? [], sort),
+    [stuQ.data, sort],
+  );
+  const cycleSort = useCallback((key: RosterSortKey) => {
+    setSort((cur) => cycleRosterSort(cur, key));
+  }, []);
 
   /* 5-C3 (A9 P1-3): gate the offerings query — during load AND on
      error this page rendered the false «اختر مقرّراً» empty plus a
@@ -573,15 +657,15 @@ export function GradesPage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th scope="col">الطالب</th>
+                  <SortableHead label="الطالب" sortKey="name" sort={sort} onCycle={cycleSort} />
                   <th scope="col">الرقم الجامعيّ</th>
-                  <th scope="col">متوسّط الدرجات</th>
-                  <th scope="col">الحضور</th>
+                  <SortableHead label="متوسّط الدرجات" sortKey="average" sort={sort} onCycle={cycleSort} />
+                  <SortableHead label="الحضور" sortKey="attendance" sort={sort} onCycle={cycleSort} />
                   <th scope="col">التقدير</th>
                 </tr>
               </thead>
               <tbody>
-                {(stuQ.data ?? []).map((s) => {
+                {sortedStudents.map((s) => {
                   /* One taxonomy everywhere (A6 P2, 22-a): the same
                    * gradeBand chip this student wears on /students and
                    * the same bucket they count into on /performance. */
@@ -1388,6 +1472,13 @@ export function StudentsListPage() {
   const { offsQ, offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
   const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
   const students = stuQ.data ?? [];
+  /* R304: the same sortable-header grammar as the grades table — name /
+     attendance / average cycle highest-first → lowest-first → default. */
+  const [sort, setSort] = useState<RosterSort | null>(null);
+  const sortedStudents = useMemo(() => sortRoster(stuQ.data ?? [], sort), [stuQ.data, sort]);
+  const cycleSort = useCallback((key: RosterSortKey) => {
+    setSort((cur) => cycleRosterSort(cur, key));
+  }, []);
 
   /* 5-C3 (A9 P1-3): same offerings gate as GradesPage — the false
      «اختر مقرّراً» empty fired during load and on error here too. */
@@ -1450,10 +1541,10 @@ export function StudentsListPage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th scope="col">الاسم</th>
+                  <SortableHead label="الاسم" sortKey="name" sort={sort} onCycle={cycleSort} />
                   <th scope="col">الرقم الجامعيّ</th>
-                  <th scope="col">الحضور</th>
-                  <th scope="col">المتوسّط</th>
+                  <SortableHead label="الحضور" sortKey="attendance" sort={sort} onCycle={cycleSort} />
+                  <SortableHead label="المتوسّط" sortKey="average" sort={sort} onCycle={cycleSort} />
                   {/* A6 P2 (22-a): «التقدير» — the same column name and
                       the same gradeBand chip as the grades table; the
                       old «الحالة» column carried a private vocabulary
@@ -1466,7 +1557,7 @@ export function StudentsListPage() {
                 </tr>
               </thead>
               <tbody>
-                {students.map((s) => {
+                {sortedStudents.map((s) => {
                   const band = gradeBand(s.avgGrade);
                   return (
                     <tr key={s.studentId}>
@@ -1647,7 +1738,9 @@ export function PerformancePage() {
                  the end, the bar as the quiet fill underneath. */
               <div className="tpg-dist">
                 {distribution.map(({ band, pct }) => (
-                  <div key={band.key} style={{ opacity: pct === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
+                  /* R304: the honest dim rides a class now (was inline
+                     opacity/transition per bucket). */
+                  <div key={band.key} className={`tpg-dist-row${pct === 0 ? ' is-dim' : ''}`}>
                     <div className="tpg-dist-head">
                       <span className="tpg-dist-label">{band.label} (<bdi>{band.range}</bdi>)</span>
                       <bdi className="tpg-dist-value">{formatPct1(pct)}%</bdi>
@@ -2155,8 +2248,14 @@ function NeedsReviewCard({
             .queue-group classes stay on the frame (the e2e locator pins
             them); the tpg layer owns the composition. */
         <div className="tpg-queue">
-          {groups.map((g) => (
-            <div key={g.key} className="queue-group tpg-queue-section">
+          {groups.map((g) => {
+            /* R304: the «what needs me first» edge — overdue queues wear
+               the danger rule, due within 3 days the warning rule (same
+               inline-start-edge grammar as the quality alerts rows). */
+            const days = g.dueAt ? Math.round((new Date(g.dueAt).getTime() - Date.now()) / 86400000) : null;
+            const dueEdge: 'overdue' | 'soon' | undefined = days === null ? undefined : days < 0 ? 'overdue' : days <= 3 ? 'soon' : undefined;
+            return (
+            <div key={g.key} className="queue-group tpg-queue-section" data-due={dueEdge}>
               <div className="queue-group-head tpg-queue-head">
                 <div className="queue-group-main">
                   <div className="queue-group-title tpg-queue-title">{g.assignmentTitle}</div>
@@ -2209,7 +2308,8 @@ function NeedsReviewCard({
                 ))}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </Card>

@@ -134,7 +134,7 @@ export function ChapterFormModal({
       pending={pending}
     >
       <form onSubmit={onSubmit} noValidate>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
+        <div className="cur-form">
           <FormField label="عنوان الفصل" htmlFor={titleId} error={err.title?.message}>
             <input id={titleId} type="text" className="auth-input" {...form.register('title')} />
           </FormField>
@@ -163,7 +163,7 @@ export function ChapterFormModal({
           </div>
 
           {lecture.durationSec > 0 && (
-            <p className="text-xs text-muted" style={{ margin: 0 }}>
+            <p className="text-xs text-muted">
               مدة المحاضرة: <span dir="ltr" className="font-mono">{formatSec(lecture.durationSec)}</span> — يجب أن يقع الفصل داخلها.
             </p>
           )}
@@ -247,9 +247,9 @@ export function ChapterList({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+    <div className="cur-list">
       {sorted.length === 0 && (
-        <p className="text-sm text-muted" style={{ margin: 0 }}>
+        <p className="text-sm text-muted">
           لا توجد فصول محددة بعد — أضِف فصولاً لمساعدة الطلاب على التنقل داخل المحاضرة.
         </p>
       )}
@@ -258,14 +258,7 @@ export function ChapterList({
         return (
         <div
           key={chapter.id}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--sp-2)',
-            padding: 'var(--sp-2) var(--sp-3)',
-            borderRadius: 'var(--r-md)',
-            border: '1px solid var(--rule)',
-          }}
+          className="cur-row"
         >
           {/* 5-D3 (5-B6 hand-off #2): up/down swap with the neighbor —
               the lecture pattern's mechanics (aria-labels, end-disable,
@@ -294,10 +287,10 @@ export function ChapterList({
               <Icon icon={ChevronDown} size={12} />
             </button>
           </div>
-          <span dir="ltr" className="font-mono text-xs" style={{ color: 'var(--text-secondary, var(--text))', whiteSpace: 'nowrap' }}>
+          <span dir="ltr" className="font-mono text-xs cur-row-time">
             {formatSec(chapter.startSec)} – {formatSec(chapter.endSec)}
           </span>
-          <span className="text-sm" style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span className="text-sm cur-row-title">
             {chapter.title}
           </span>
           {chapter.concept && <Badge>{chapter.concept.name}</Badge>}
@@ -306,8 +299,7 @@ export function ChapterList({
           </button>
           <button
             type="button"
-            className="btn ghost sm"
-            style={{ color: 'var(--danger)' }}
+            className="btn ghost sm cur-row-danger"
             onClick={() => setDeleting(chapter)}
             aria-label={`حذف ${chapter.title}`}
           >

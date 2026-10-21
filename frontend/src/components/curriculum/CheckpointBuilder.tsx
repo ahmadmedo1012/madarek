@@ -197,7 +197,7 @@ export function CheckpointFormModal({
       pending={pending}
     >
       <form onSubmit={onSubmit} noValidate>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
+        <div className="cur-form">
           <FormField label="نص السؤال" htmlFor={questionId} error={err.question?.message}>
             <textarea
               id={questionId}
@@ -224,26 +224,16 @@ export function CheckpointFormModal({
             />
           </FormField>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-1-5)' }}>
-            <label id={optionsLabelId} className="text-sm" style={{ fontWeight: 'var(--fw-semibold, 600)' }}>
+          <div className="cur-options">
+            <label id={optionsLabelId} className="text-sm cur-options-label">
               الخيارات ({options.fields.length}/{MAX_CHECKPOINT_OPTIONS})
             </label>
-            <div role="group" aria-labelledby={optionsLabelId} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+            <div role="group" aria-labelledby={optionsLabelId} className="cur-options-rows">
               {options.fields.map((field, index) => {
                 const optionError = optionErrorAt(err, index);
                 return (
-                  <div key={field.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--sp-2)' }}>
-                    <label
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 'var(--sp-1-5)',
-                        marginTop: 'calc(var(--sp-3) + var(--sp-0-5))',
-                        cursor: 'pointer',
-                        whiteSpace: 'nowrap',
-                      }}
-                      className="text-xs"
-                    >
+                  <div key={field.id} className="cur-opt-row">
+                    <label className="text-xs cur-opt-correct">
                       <input
                         type="radio"
                         name="correct-option"
@@ -253,7 +243,7 @@ export function CheckpointFormModal({
                       />
                       صحيحة
                     </label>
-                    <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="cur-opt-field">
                       <input
                         type="text"
                         className="auth-input"
@@ -263,15 +253,14 @@ export function CheckpointFormModal({
                         {...form.register(`options.${index}.value` as const)}
                       />
                       {optionError && (
-                        <span className="auth-field-error" role="alert" style={{ display: 'block', marginTop: 'var(--sp-1)' }}>
+                        <span className="auth-field-error cur-opt-error" role="alert">
                           {optionError}
                         </span>
                       )}
                     </div>
                     <button
                       type="button"
-                      className="btn ghost sm"
-                      style={{ marginTop: 'var(--sp-3)', color: 'var(--danger)' }}
+                      className="btn ghost sm cur-opt-remove"
                       disabled={options.fields.length <= MIN_CHECKPOINT_OPTIONS}
                       onClick={() => removeOption(index)}
                       aria-label={`إزالة الخيار ${index + 1}`}
@@ -299,7 +288,7 @@ export function CheckpointFormModal({
               </button>
             </div>
             {isEdit && (
-              <p className="text-xs text-muted" style={{ margin: 0 }}>
+              <p className="text-xs text-muted">
                 الإجابة الصحيحة الحالية محفوظة ولا تظهر هنا — اختر خياراً فقط إن أردت تغييرها،
                 وأعِد تحديدها إذا عدّلت قائمة الخيارات.
               </p>
@@ -351,31 +340,24 @@ export function CheckpointList({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+    <div className="cur-list">
       {checkpoints.length === 0 && (
-        <p className="text-sm text-muted" style={{ margin: 0 }}>
+        <p className="text-sm text-muted">
           لا توجد أسئلة تفاعلية بعد — أضِف سؤالاً يقيس فهم الطالب أثناء المشاهدة.
         </p>
       )}
       {checkpoints.map((checkpoint) => (
         <div
           key={checkpoint.id}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--sp-2)',
-            padding: 'var(--sp-2) var(--sp-3)',
-            borderRadius: 'var(--r-md)',
-            border: '1px solid var(--rule)',
-          }}
+          className="cur-row"
         >
           <Badge color="purple">
             <span dir="ltr" className="font-mono">{formatSec(checkpoint.triggerSec)}</span>
           </Badge>
-          <span className="text-sm" style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span className="text-sm cur-row-title">
             {checkpoint.question}
           </span>
-          <span className="text-xs text-muted" style={{ whiteSpace: 'nowrap' }}>
+          <span className="text-xs text-muted cur-row-count">
             {/* 5-B6 (A7 P2-4) family grammar — the raw «N خيارات» was
              * broken Arabic for 1 and 2 (counted nouns via countAr). */}
             <Icon icon={CircleHelp} size={11} /> {countAr(checkpoint.options?.length ?? 0, ['خيار واحد', 'خياران', 'خيارات', 'خياراً'])}
@@ -385,8 +367,7 @@ export function CheckpointList({
           </button>
           <button
             type="button"
-            className="btn ghost sm"
-            style={{ color: 'var(--danger)' }}
+            className="btn ghost sm cur-row-danger"
             onClick={() => setDeleting(checkpoint)}
             aria-label={`حذف السؤال عند ${formatSec(checkpoint.triggerSec)}`}
           >
