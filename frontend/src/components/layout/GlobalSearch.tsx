@@ -378,7 +378,10 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
           className="search-dropdown"
           role="listbox"
           id={listboxId}
-          aria-label="نتائج البحث"
+          /* The pill's listbox carries the quick actions FIRST (5-B5),
+             so the name names both halves — the palette's
+             «الأوامر والنتائج» one-voice honesty. */
+          aria-label="نتائج البحث والإجراءات"
         >
           {loading && (
             <div className="search-row search-loading" role="presentation">
@@ -511,9 +514,12 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
 
           {!loading && !isError && totalOptions > 0 && (
             <div className="search-footer" role="presentation">
-              <span className="kbd">↑</span><span className="kbd">↓</span> للتنقّل
-              <span className="kbd">↵</span> للفتح
-              <span className="kbd">Esc</span> للإغلاق
+              {/* kbd glyphs are a Latin/symbol run — dir="ltr" pins the
+                  bidi order inside the RTL footer line (Heron grammar:
+                  mixed-direction runs ride an explicit direction). */}
+              <span className="kbd" dir="ltr">↑</span><span className="kbd" dir="ltr">↓</span> للتنقّل
+              <span className="kbd" dir="ltr">↵</span> للفتح
+              <span className="kbd" dir="ltr">Esc</span> للإغلاق
             </div>
           )}
         </div>
@@ -803,7 +809,7 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
           autoComplete="off"
           spellCheck={false}
         />
-        <span className="cmd-input-esc"><span className="kbd">Esc</span></span>
+        <span className="cmd-input-esc"><span className="kbd" dir="ltr">Esc</span></span>
       </div>
 
       <div className="cmd-list" role="listbox" id={listboxId} aria-label="الأوامر والنتائج">
@@ -897,9 +903,9 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
       </div>
 
       <div className="cmd-foot" role="presentation">
-        <span className="kbd">↑</span><span className="kbd">↓</span> للتنقّل
-        <span className="kbd">↵</span> للتنفيذ
-        <span className="kbd">Esc</span> للإغلاق
+        <span className="kbd" dir="ltr">↑</span><span className="kbd" dir="ltr">↓</span> للتنقّل
+        <span className="kbd" dir="ltr">↵</span> للتنفيذ
+        <span className="kbd" dir="ltr">Esc</span> للإغلاق
       </div>
 
       {/* Combined-count live region — mounted unconditionally so a
