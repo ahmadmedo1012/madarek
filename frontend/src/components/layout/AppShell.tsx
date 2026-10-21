@@ -1,6 +1,13 @@
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { Suspense, useEffect, useRef, useState } from 'react';
+// R305-A4 Heron shell layer — the shell's own r305 treatment, scoped
+// here and UNLAYERED by design so it is the cascade's last word after
+// polish.css's overrides. Imported ONLY by the shell (the file itself
+// is owned by the 2-d CSS agent; this line is the 2-e coordination
+// point — main.tsx imports App after its CSS block, so this sheet
+// lands after polish.css in the bundle).
+import '../../styles/r305-shell.css';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { BottomNav } from './BottomNav';
