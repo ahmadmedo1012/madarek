@@ -6,7 +6,8 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge } from '../../components/primitives';
-import { ErrorState, EmptyState, CardSkeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
+import { PageFrame, PageHeader } from '../../components/patterns';
 import { Icon } from '../../components/Icon';
 import { useStudentDashboard, useMyEnrollments, useMyExams } from '../../hooks/useResources';
 import { WEEKDAY_NAMES_AR, arUnit } from '../../lib/format';
@@ -70,6 +71,39 @@ function selectedDayLabel(key: string): string {
   const dow = WEEKDAY_NAMES_AR[date.getUTCDay()];
   const md = formatDate(date, { day: 'numeric', month: 'long' });
   return `${dow} · ${md}`;
+}
+
+/* r299 (final C): shape-matched pending mirror — the settled page is
+ * a pattern header + the month grid; the skeleton holds the header's
+ * own box and a 7×6 cell grid of the same footprint (the CardSkeleton
+ * lines said "document", not "calendar" — the data-land swap jumped).
+ * Skeleton cells reuse .cal-cell geometry (aria-hidden). */
+function CalendarSkeleton() {
+  return (
+    <Card className="cal-card" flush>
+      <header className="cal-head">
+        <Skeleton width={28} height={28} rounded="var(--r-md)" />
+        <Skeleton width={120} height={20} />
+        <Skeleton width={28} height={28} rounded="var(--r-md)" />
+      </header>
+      <div className="cal-dow-row">
+        {WEEKDAY_NAMES_AR.map((name) => (
+          <span key={name} className="cal-dow"><Skeleton width={28} height={11} /></span>
+        ))}
+      </div>
+      {/* .cal-grid-skel — deliberately NOT .cal-grid: the pending
+          mirror holds the month's footprint without ever being the
+          interactive grid (the unit pin "no .cal-grid while loading"
+          keeps meaning exactly that). */}
+      <div className="cal-grid-skel" aria-hidden>
+        {Array.from({ length: 42 }).map((_, i) => (
+          <span key={i} className="cal-cell-skel">
+            <Skeleton width={24} height={24} rounded="var(--r-full, 999px)" />
+          </span>
+        ))}
+      </div>
+    </Card>
+  );
 }
 
 export default function StudentCalendarPage() {
@@ -159,26 +193,19 @@ export default function StudentCalendarPage() {
   // ── Loading / error shells (the shared States grammar) ──────────
   if (enrollments.isPending || dash.isPending || exams.isPending) {
     return (
-      <div className="page student-calendar" aria-busy="true" aria-live="polite">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">التقويم الأكاديمي</h1>
-            <p className="page-subtitle">جارٍ جمع مواعيدك…</p>
-          </div>
-        </header>
-        <CardSkeleton lines={6} />
-      </div>
+      <PageFrame width="default">
+        <PageHeader title="التقويم الأكاديمي" description="جارٍ جمع مواعيدك…" />
+        <div aria-busy="true" aria-live="polite">
+          <CalendarSkeleton />
+        </div>
+      </PageFrame>
     );
   }
   if (enrollments.isError || dash.isError || exams.isError) {
     const failed = enrollments.isError ? enrollments : dash.isError ? dash : exams;
     return (
-      <div className="page student-calendar">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">التقويم الأكاديمي</h1>
-          </div>
-        </header>
+      <PageFrame width="default">
+        <PageHeader title="التقويم الأكاديمي" />
         <ErrorState
           message="تعذَّر تحميل التقويم الأكاديمي"
           error={failed.error}
@@ -188,23 +215,21 @@ export default function StudentCalendarPage() {
             exams.refetch();
           }}
         />
-      </div>
+      </PageFrame>
     );
   }
 
   const selectedEvents = selectedKey ? byDay.get(selectedKey) ?? [] : [];
 
   return (
-    <div className="page student-calendar">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">التقويم الأكاديمي</h1>
-          <p className="page-subtitle">
-            كل مواعيدك في نظرة واحدة: الحصص الأسبوعية، ومواعيد تسليم الواجبات،
-            ونوافذ الاختبارات، والبث المباشر — بتوقيت ليبيا.
-          </p>
-        </div>
-      </header>
+    <PageFrame width="default">
+      <PageHeader
+        title="التقويم الأكاديمي"
+        description={
+          'كل مواعيدك في نظرة واحدة: الحصص الأسبوعية، ومواعيد تسليم الواجبات، ' +
+          'ونوافذ الاختبارات، والبث المباشر — بتوقيت ليبيا.'
+        }
+      />
 
       <Card className="cal-card" flush>
         {/* Month navigation — «السابق» points inline-START (right in
@@ -334,6 +359,6 @@ export default function StudentCalendarPage() {
           )}
         </div>
       </Card>
-    </div>
+    </PageFrame>
   );
 }

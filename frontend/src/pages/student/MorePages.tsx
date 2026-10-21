@@ -12,7 +12,7 @@ import {
 import { Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle, PageHeader } from '../../components/primitives';
-import { ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSkeleton, KpiSkeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -26,7 +26,7 @@ import { arUnit, countAr, timeAgoAr, WEEKDAY_NAMES_AR, formatDateTimeAr } from '
 import { api, unwrap } from '../../lib/api';
 import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
 import { gradeBand, type GradeBandKey } from '../../lib/courseMeta';
-import { PageFrame, PageHeader as PatternPageHeader, StatLine } from '../../components/patterns';
+import { PageFrame, PageHeader as PatternPageHeader, SectionHeader, RowList, RowItem, StatLine } from '../../components/patterns';
 import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
 import { formatDate } from '../../utils/numbers';
 
@@ -294,8 +294,8 @@ export function SkillsPage() {
     ? skills.data.reduce((a, b) => (b.progressPct > a.progressPct ? b : a))
     : undefined;
   return (
-    <div className="page">
-      <PageHeader title="المهارات والشهادات" subtitle="رصد مهاراتك التقنية وتطوّرها مع الوقت." />
+    <PageFrame width="default">
+      <PatternPageHeader title="المهارات والشهادات" description="رصد مهاراتك التقنية وتطوّرها مع الوقت." />
 
       <Card title="خريطة المهارات التقنية" icon={Target}>
         {skills.isPending ? (
@@ -388,7 +388,7 @@ export function SkillsPage() {
           </div>
         )}
       </Card>
-    </div>
+    </PageFrame>
   );
 }
 
@@ -606,23 +606,30 @@ export function SchedulePage() {
 
   if (q.isPending) {
     return (
-      <div className="page">
-        <PageHeader title="الجدول الدراسي" subtitle="جارٍ جمع جدولك…" />
-        {/* 5-C3 (A9 P2-2): bare spinner → day-card skeletons. The
-            settled page is a stack of day sections (title + card of
-            list rows); two card skeletons hold the visible band so the
-            data-land swap doesn't jump +410px (A9 V1). */}
-        <CardSkeleton lines={4} />
-        <CardSkeleton lines={3} />
-      </div>
+      <PageFrame width="default">
+        <PatternPageHeader title="الجدول الدراسي" description="جارٍ جمع جدولك…" />
+        {/* 5-C3 (A9 P2-2): bare spinner → day-section skeletons. The
+            settled page is a stack of day sections (SectionHeader +
+            RowList rows); two day skeletons hold the visible band so
+            the data-land swap doesn't jump (A9 V1). r299: the mirror
+            recomposed for the pattern anatomy. */}
+        {[0, 1].map((d) => (
+          <section key={d} aria-hidden>
+            <div className="pf-section-header">
+              <Skeleton width={90} height={16} />
+            </div>
+            <ListSkeleton rows={d === 0 ? 3 : 2} />
+          </section>
+        ))}
+      </PageFrame>
     );
   }
   if (q.isError) {
     return (
-      <div className="page">
-        <PageHeader title="الجدول الدراسي" />
+      <PageFrame width="default">
+        <PatternPageHeader title="الجدول الدراسي" />
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
-      </div>
+      </PageFrame>
     );
   }
 
@@ -660,8 +667,8 @@ export function SchedulePage() {
   ];
 
   return (
-    <div className="page">
-      <PageHeader title="الجدول الدراسي" subtitle="جدولك الأسبوعيّ مع أماكن المحاضرات." />
+    <PageFrame width="default">
+      <PatternPageHeader title="الجدول الدراسي" description="جدولك الأسبوعيّ مع أماكن المحاضرات." />
 
       {daysWithItems.length === 0 ? (
         <EmptyState
@@ -670,45 +677,51 @@ export function SchedulePage() {
           description="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول مقرّراتك."
         />
       ) : (
+        /* r299 (final C): day sections on the pattern anatomy —
+           SectionHeader + RowList rows (the manual first/last-row
+           borderRadius patch inside a Card flush is retired; the
+           row surface and its separators are the RowList's own). */
         <div className="flex-col gap-5">
           {orderedDays.map((d) => (
-            <div key={d.dow}>
-              <SectionTitle>
-                {WEEKDAY_NAMES_AR[d.dow]}
-                {d.dow === todayDow && (
-                  <Badge color="brand" >اليوم</Badge>
-                )}
-              </SectionTitle>
-              <Card flush>
-                <div className="flex-col">
-                  {d.items.map((it, i) => (
-                    <div
-                      key={i}
-                      className="list-row"
-                      style={{
-                        borderRadius:
-                          i === 0 ? 'var(--r-lg) var(--r-lg) 0 0' :
-                          i === d.items.length - 1 ? '0 0 var(--r-lg) var(--r-lg)' : 0,
-                      }}
-                    >
-                      <span className="list-row-meta">{it.time}</span>
-                      <div className="list-row-body">
-                        <div className="list-row-title">{it.name}</div>
-                        <div className="list-row-sub">{it.room} · {it.teacher}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </div>
+            <section key={d.dow} aria-label={`جدول ${WEEKDAY_NAMES_AR[d.dow]}`}>
+              <SectionHeader
+                title={
+                  <>
+                    {WEEKDAY_NAMES_AR[d.dow]}
+                    {d.dow === todayDow && <Badge color="brand">اليوم</Badge>}
+                  </>
+                }
+              />
+              <RowList aria-label={`حصص يوم ${WEEKDAY_NAMES_AR[d.dow]}`}>
+                {d.items.map((it, i) => (
+                  <RowItem
+                    key={i}
+                    leading={<bdi className="font-mono">{it.time}</bdi>}
+                    title={it.name}
+                    meta={<>{it.room} · {it.teacher}</>}
+                  />
+                ))}
+              </RowList>
+            </section>
           ))}
         </div>
       )}
-    </div>
+    </PageFrame>
   );
 }
 
 /* ─── Results ──────────────────────────────────────────── */
+/* r299: the canonical grade band (r164-a) projected onto the StatLine's
+ * semantic tone ladder — the value's color still comes from the SAME
+ * band the teacher's table and the chart bars consume. */
+function bandTone(gradePct: number): 'positive' | 'signal' | 'warning' | 'danger' {
+  const color = gradeBand(gradePct).color;
+  if (color === 'green') return 'positive';
+  if (color === 'brand') return 'signal';
+  if (color === 'amber' || color === 'gold') return 'warning';
+  return 'danger';
+}
+
 export function ResultsPage() {
   const q = useStudentResults();
   // Remount the chart (and re-resolve its colours) when the theme flips.
@@ -716,26 +729,35 @@ export function ResultsPage() {
 
   if (q.isPending) {
     return (
-      <div className="page">
-        <PageHeader title="النتائج والتقييمات" subtitle="جارٍ جمع درجاتك…" />
-        {/* 5-C3 (A9 P2-2): bare spinner → the shapes that land — the
-            KPI row + the chart card (A9 V1 measured +204px on the
-            spinner→content swap). */}
-        <KpiSkeleton />
+      <PageFrame width="default">
+        <PatternPageHeader title="النتائج والتقييمات" description="جارٍ جمع درجاتك…" />
+        {/* 5-C3 (A9 P2-2): bare spinner → the shapes that land (A9 V1
+            measured +204px on the spinner→content swap). r299: the
+            settled page leads with the StatLine + the chart card, so
+            the mirror holds the stat line's own boxes + the chart
+            card's frame (the r172b loading-closure contract). */}
+        <div className="pf-statline" aria-busy="true">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="pf-stat">
+              <Skeleton width={70} height={13} />
+              <Skeleton width={56} height={24} />
+            </div>
+          ))}
+        </div>
         <CardSkeleton lines={6} />
-      </div>
+      </PageFrame>
     );
   }
   if (q.isError || !q.data) {
     return (
-      <div className="page">
-        <PageHeader title="النتائج والتقييمات" />
+      <PageFrame width="default">
+        <PatternPageHeader title="النتائج والتقييمات" />
         <ErrorState
           message="تعذَّر تحميل هذا القسم"
           error={q.error}
           onRetry={() => q.refetch()}
         />
-      </div>
+      </PageFrame>
     );
   }
 
@@ -765,32 +787,43 @@ export function ResultsPage() {
   const baseOpts = cartesianOptions({ horizontal: true });
 
   return (
-    <div className="page student-results">
-      <PageHeader title="النتائج والتقييمات" subtitle="تفاصيل درجاتك وتحليل أدائك بناءً على بياناتك الفعليّة." />
+    <PageFrame width="default">
+      <PatternPageHeader
+        title="النتائج والتقييمات"
+        description="تفاصيل درجاتك وتحليل أدائك بناءً على بياناتك الفعليّة."
+        meta={d.headline.courseCount > 0
+          ? <>{countAr(d.headline.courseCount, ['مقرّر واحد مُقيَّم', 'مقرّران مُقيَّمان', 'مقرّرات مُقيَّمة', 'مقرّراً مُقيَّماً'])} هذا الفصل</>
+          : undefined}
+      />
 
-      <div className="grid-3">
-        <MetricCard
-          icon={Award}
-          label="أعلى درجة"
-          value={d.headline.highest ? <bdi>{formatPct1(d.headline.highest.gradePct)}%</bdi> : '—'}
-          change={d.headline.highest?.courseName ?? 'لا توجد درجات بعد'}
-          color={d.headline.highest ? gradeBand(d.headline.highest.gradePct).color : 'green'}
-        />
-        <MetricCard
-          icon={Activity}
-          label="المتوسّط"
-          value={d.headline.avgGradePct !== null ? <bdi>{formatPct1(d.headline.avgGradePct)}%</bdi> : '—'}
-          change={d.headline.courseCount > 0 ? `عبر ${countAr(d.headline.courseCount, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}` : 'لا تقييمات بعد'}
-          color={d.headline.avgGradePct !== null ? gradeBand(d.headline.avgGradePct).color : 'amber'}
-        />
-        <MetricCard
-          icon={AlertTriangle}
-          label="أدنى درجة"
-          value={d.headline.lowest ? <bdi>{formatPct1(d.headline.lowest.gradePct)}%</bdi> : '—'}
-          change={d.headline.lowest?.courseName ?? '—'}
-          color={d.headline.lowest ? gradeBand(d.headline.lowest.gradePct).color : 'amber'}
-        />
-      </div>
+      {/* r299 (final C): the three headline KPI cards ride ONE StatLine —
+          the same fact line the dashboard and the course page open
+          with. The r164-a canonical grade band still colors each value
+          (tone is derived from the band, never re-invented here). */}
+      <StatLine
+        items={[
+          {
+            label: 'أعلى درجة',
+            value: d.headline.highest ? <bdi>{formatPct1(d.headline.highest.gradePct)}%</bdi> : '—',
+            hint: d.headline.highest?.courseName ?? 'لا توجد درجات بعد',
+            tone: d.headline.highest ? bandTone(d.headline.highest.gradePct) : 'neutral',
+          },
+          {
+            label: 'المتوسّط',
+            value: d.headline.avgGradePct !== null ? <bdi>{formatPct1(d.headline.avgGradePct)}%</bdi> : '—',
+            hint: d.headline.courseCount > 0
+              ? `عبر ${countAr(d.headline.courseCount, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}`
+              : 'لا تقييمات بعد',
+            tone: d.headline.avgGradePct !== null ? bandTone(d.headline.avgGradePct) : 'neutral',
+          },
+          {
+            label: 'أدنى درجة',
+            value: d.headline.lowest ? <bdi>{formatPct1(d.headline.lowest.gradePct)}%</bdi> : '—',
+            hint: d.headline.lowest?.courseName ?? '—',
+            tone: d.headline.lowest ? bandTone(d.headline.lowest.gradePct) : 'neutral',
+          },
+        ]}
+      />
 
       {/* 5-A6 P2-9 — the chart card carries its own hook class: on phone
           (≤640px, student.css) it re-orders above the stacked KPI cards
@@ -994,7 +1027,7 @@ export function ResultsPage() {
           )}
         </Card>
       </div>
-    </div>
+    </PageFrame>
   );
 }
 
@@ -1006,12 +1039,12 @@ export function ArVrPage() {
   const q = useArExperiences();
 
   return (
-    <div className="page">
+    <PageFrame width="default">
       {/* r168b: honesty — the page is a CATALOG of seeded AR/VR titles;
           no launch action exists yet (the dead launch button was removed
           earlier). The subtitle no longer promises interactive 3D
           content delivery. */}
-      <PageHeader title="تجارب AR / VR" subtitle="فهرس تجارب AR/VR للمقرّرات العمليّة — التشغيل غير متاح بعد." />
+      <PatternPageHeader title="تجارب AR / VR" description="فهرس تجارب AR/VR للمقرّرات العمليّة — التشغيل غير متاح بعد." />
 
       {q.isPending ? (
         /* r148 (AUDIT-2 L8): شبكة بطاقات AR/VR — هيكل بطاقات مطابق
@@ -1052,7 +1085,7 @@ export function ArVrPage() {
           ))}
         </div>
       )}
-    </div>
+    </PageFrame>
   );
 }
 
@@ -1470,8 +1503,8 @@ export function DownloadsPage() {
   const q = useStudentMaterials();
 
   return (
-    <div className="page">
-      <PageHeader title="مركز التحميلات" subtitle="جميع الملفات التعليمية في مقرّراتك متاحة للتحميل." />
+    <PageFrame width="default">
+      <PatternPageHeader title="مركز التحميلات" description="جميع الملفات التعليمية في مقرّراتك متاحة للتحميل." />
 
       <Card title="ملفّات حديثة" icon={Download}>
         {q.isPending ? (
@@ -1522,7 +1555,7 @@ export function DownloadsPage() {
           </div>
         )}
       </Card>
-    </div>
+    </PageFrame>
   );
 }
 
@@ -1570,10 +1603,10 @@ export function UniversityInfoPage() {
      * never re-attributed to another institution. */
     const inst: InstitutionSummary = institution;
     return (
-      <div className="page">
-        <PageHeader
+      <PageFrame width="default">
+        <PatternPageHeader
           title={inst.name}
-          subtitle="مؤسّسة تعليميّة على منصّة مدارك — تعرض هذه الصفحة الكليّات المسجَّلة في مؤسّستك."
+          description="مؤسّسة تعليميّة على منصّة مدارك — تعرض هذه الصفحة الكليّات المسجَّلة في مؤسّستك."
         />
 
         <div className="grid-4">
@@ -1643,19 +1676,19 @@ export function UniversityInfoPage() {
             )}
           </Card>
         )}
-      </div>
+      </PageFrame>
     );
   }
 
   return (
-    <div className="page">
+    <PageFrame width="default">
       {/* r188: the demonstration tenant — the platform's explicitly
           FICTIONAL reference institution. Every fact below is synthetic
           demo data (no real founding year, decree, or history); the
           page labels the tenant as بيانات تجريبية throughout. */}
-      <PageHeader
+      <PatternPageHeader
         title="جامعة مدارك التجريبية"
-        subtitle="مؤسّسة العرض على منصّة مدارك — مؤسّسة اصطناعية بالكامل تُظهر سير العمل الأكاديمي ببيانات تجريبية عبر ثلاثة حرَم معرفيّة."
+        description="مؤسّسة العرض على منصّة مدارك — مؤسّسة اصطناعية بالكامل تُظهر سير العمل الأكاديمي ببيانات تجريبية عبر ثلاثة حرَم معرفيّة."
       />
 
       <div className="grid-4">
@@ -1883,7 +1916,7 @@ export function UniversityInfoPage() {
           <FactRow label="نطاق العرض" value="demo.madarek.ly" mono />
         </div>
       </Card>
-    </div>
+    </PageFrame>
   );
 }
 
