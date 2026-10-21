@@ -17,7 +17,7 @@
  * observable.
  */
 import { describe, expect, it, vi, beforeAll, afterEach } from 'vitest';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import { useScrollRestoration } from '../../src/components/layout/useScrollRestoration';
@@ -28,6 +28,16 @@ const flushFrame = () =>
       new Promise<void>((resolve) =>
         requestAnimationFrame(() => resolve()),
       ),
+  );
+
+const flushFrames = async (n: number) => {
+  for (let i = 0; i < n; i += 1) await flushFrame();
+};
+
+const sleep = (ms: number) =>
+  act(
+    async () =>
+      await new Promise<void>((resolve) => setTimeout(resolve, ms)),
   );
 
 function Harness() {
@@ -166,5 +176,152 @@ describe('useScrollRestoration', () => {
 
     getSpy.mockRestore();
     setSpy.mockRestore();
+  });
+});
+
+/* ── r305-A4 (task 2-e): POP through late-arriving content height ──
+ *
+ * The one-rAF restore apply can land while the destination's height
+ * hasn't arrived yet — the shell's inner Suspense fallback on a cold
+ * chunk, or a page whose data (lists/charts/media) lands after mount.
+ * A real scroller CLAMPS the programmatic write to
+ * scrollHeight − clientHeight, so the stored offset silently degrades
+ * to whatever the short state could hold, and the user loses their
+ * position the moment the real content replaces it.
+ *
+ * jsdom has no layout, so these two tests install a CLAMPING scrollTo
+ * stub (faithful to a real scroller) scoped to themselves, with
+ * clientHeight/scrollHeight defined on the scroller node.
+ */
+describe('useScrollRestoration — POP restores through the late content height (r305-A4)', () => {
+  /** Shared, mutable "layout": the scroller reads these via getters. */
+  function makeLateHarness() {
+    const layout = { contentHeight: 100, clientHeight: 600 };
+
+    // The destination mounts SHORT (Suspense fallback / pre-data state)
+    // and grows once its payload lands (~20ms after mount).
+    function LateHeightPage() {
+      const [tall, setTall] = useState(false);
+      useEffect(() => {
+        layout.contentHeight = 100;
+        const t = setTimeout(() => {
+          layout.contentHeight = 2000;
+          setTall(true);
+        }, 20);
+        return () => clearTimeout(t);
+      }, []);
+      return <div>{tall ? 'late list tall' : 'late list short'}</div>;
+    }
+
+    function LateHarness() {
+      const scrollerRef = useRef<HTMLDivElement>(null);
+      useScrollRestoration(scrollerRef);
+      const navigate = useNavigate();
+      return (
+        <div ref={scrollerRef} data-testid="scroller" style={{ overflow: 'auto' }}>
+          <button type="button" onClick={() => navigate('/detail')}>
+            go-detail
+          </button>
+          <button type="button" onClick={() => navigate(-1)}>
+            back
+          </button>
+          <Routes>
+            <Route path="/list" element={<LateHeightPage />} />
+            <Route path="/detail" element={<div>detail page</div>} />
+          </Routes>
+        </div>
+      );
+    }
+
+    return {
+      layout,
+      mountLate: () =>
+        render(
+          <MemoryRouter initialEntries={['/list']}>
+            <LateHarness />
+          </MemoryRouter>,
+        ),
+    };
+  }
+
+  /** jsdom-faithful scrollTo: clamps to the scrollable overflow, exactly
+   *  like a real scroller (the file-wide stub writes scrollTop raw). */
+  function installClampingStub(layout: { contentHeight: number; clientHeight: number }) {
+    const previous = HTMLElement.prototype.scrollTo;
+    const el = document.querySelector<HTMLElement>('[data-testid="scroller"]')!;
+    Object.defineProperty(el, 'clientHeight', { configurable: true, get: () => layout.clientHeight });
+    Object.defineProperty(el, 'scrollHeight', { configurable: true, get: () => layout.contentHeight });
+    (HTMLElement.prototype as unknown as { scrollTo: (opts?: ScrollToOptions) => void }).scrollTo =
+      function (this: HTMLElement, opts?: ScrollToOptions) {
+        const top = typeof opts === 'number' ? opts : (opts?.top ?? 0);
+        const max = Math.max(0, this.scrollHeight - this.clientHeight);
+        this.scrollTop = Math.min(top, max);
+      };
+    return () => {
+      HTMLElement.prototype.scrollTo = previous;
+      delete (el as unknown as { clientHeight?: number }).clientHeight;
+      delete (el as unknown as { scrollHeight?: number }).scrollHeight;
+    };
+  }
+
+  it('re-applies the stored offset once the destination height arrives', async () => {
+    const { layout, mountLate } = makeLateHarness();
+    mountLate();
+    const remove = installClampingStub(layout);
+    try {
+      // Wait out the first mount's short→tall flip, then scroll for real.
+      await sleep(40);
+      scrollToPosition(800);
+
+      // PUSH to /detail → top; read a bit; then browser-back to /list.
+      fireEvent.click(document.querySelector<HTMLButtonElement>('button')!);
+      await flushFrame();
+      expect(scrollerOf().scrollTop).toBe(0);
+      scrollToPosition(300);
+
+      // POP lands while /list is SHORT again (its payload is pending):
+      // the first rAF apply clamps to 0 — measured symptom.
+      fireEvent.click(document.querySelectorAll<HTMLButtonElement>('button')[1]!);
+      await flushFrame();
+      expect(scrollerOf().textContent).toContain('late list short');
+      expect(scrollerOf().scrollTop).toBe(0);
+
+      // The payload lands (~20ms) → the restore completes on its own.
+      await sleep(40);
+      await flushFrames(6);
+      expect(scrollerOf().textContent).toContain('late list tall');
+      expect(scrollerOf().scrollTop).toBe(800);
+    } finally {
+      remove();
+    }
+  });
+
+  it('stands down the moment the user scrolls the container themselves', async () => {
+    const { layout, mountLate } = makeLateHarness();
+    mountLate();
+    const remove = installClampingStub(layout);
+    try {
+      await sleep(40);
+      scrollToPosition(800);
+      fireEvent.click(document.querySelector<HTMLButtonElement>('button')!);
+      await flushFrame();
+      scrollToPosition(300);
+
+      // POP → clamped apply (0) arms the watcher; the user then takes
+      // the scroller — their intent wins, the pending restore aborts.
+      fireEvent.click(document.querySelectorAll<HTMLButtonElement>('button')[1]!);
+      await flushFrame();
+      expect(scrollerOf().scrollTop).toBe(0);
+      const el = scrollerOf();
+      el.scrollTop = 120;
+      fireEvent.scroll(el);
+
+      await sleep(40);
+      await flushFrames(6);
+      expect(scrollerOf().textContent).toContain('late list tall');
+      expect(scrollerOf().scrollTop).toBe(120);
+    } finally {
+      remove();
+    }
   });
 });
