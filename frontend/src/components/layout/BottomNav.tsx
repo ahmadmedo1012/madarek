@@ -23,7 +23,7 @@ import {
   Calendar,
   GraduationCap,
   ShieldCheck,
-  Building2,
+  Network,
   FileText,
   Activity,
   Brain,
@@ -31,7 +31,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
-import { useAuthStore } from '../../stores/auth.store';
+import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useUiStore } from '../../stores/ui.store';
 import { useHideOnScroll } from '../../hooks/useHideOnScroll';
 
@@ -71,10 +71,13 @@ const TEACHER: BottomItem[] = [
 
 /* ADMIN — 5 most-used: Home, Faculties, Students, Teachers, Reports.
    Verified routes: /admin/dashboard, /admin/faculties, /admin/students,
-   /admin/teachers, /admin/reports — no /admin/users or /admin/courses-only route. */
+   /admin/teachers, /admin/reports — no /admin/users or /admin/courses-only route.
+   r305 (nav audit): the faculties slot mirrors nav.ts's Building2 ×2
+   dedupe — the /admin/faculties console takes Network there, so the
+   mirrored slot takes Network here (same route, one glyph per screen). */
 const ADMIN: BottomItem[] = [
   { to: '/admin/dashboard',  label: 'الرئيسية',     icon: Home          },
-  { to: '/admin/faculties',  label: 'الكلّيّات',      icon: Building2     },
+  { to: '/admin/faculties',  label: 'الكلّيّات',      icon: Network       },
   { to: '/admin/students',   label: 'الطلاب',       icon: GraduationCap },
   { to: '/admin/teachers',   label: 'الأساتذة',     icon: School        },
   { to: '/admin/reports',    label: 'التقارير',     icon: FileText      },
@@ -109,6 +112,22 @@ const OWNER: BottomItem[] = [
   { to: '/owner/governance',    label: 'الحوكمة',   icon: ShieldCheck },
 ];
 
+/* r305 (nav audit, task 2-a): the per-role sets as ONE map — and the
+   render path reads it directly (`BOTTOM_NAV_BY_ROLE[role] ?? STUDENT`),
+   so the map the r305-nav-maps.test.tsx pins (5 destinations per role,
+   every route real in App.tsx, icons mirroring nav.ts per the r299
+   rule) IS the rendered source, not a mirror that can drift from a
+   parallel ternary. `?? STUDENT` keeps the historical fallthrough for
+   any non-union role value (stale persisted session) — the behavior
+   the owner suite has always exercised. */
+export const BOTTOM_NAV_BY_ROLE: Record<AppRole, BottomItem[]> = {
+  STUDENT,
+  TEACHER,
+  ADMIN,
+  QUALITY,
+  OWNER,
+};
+
 export function BottomNav() {
   const role = useAuthStore((s) => s.user?.role);
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
@@ -119,12 +138,7 @@ export function BottomNav() {
   // Hide while the sidebar drawer is open on phone — they would otherwise stack.
   if (sidebarOpen) return null;
 
-  const items =
-    role === 'TEACHER' ? TEACHER :
-    role === 'ADMIN'   ? ADMIN   :
-    role === 'QUALITY' ? QUALITY :
-    role === 'OWNER'   ? OWNER   :
-    STUDENT;
+  const items = BOTTOM_NAV_BY_ROLE[role] ?? STUDENT;
 
   return (
     <nav className={`bottom-nav${hidden ? ' is-hidden' : ''}`} aria-label="التنقّل السريع" data-role={role.toLowerCase()}>

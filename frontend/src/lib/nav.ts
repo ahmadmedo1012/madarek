@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Calendar, CalendarDays, BookOpen, BarChart3,
   Bot, Library, Trophy, FlaskConical,
-  GraduationCap, Briefcase, Building2,
+  GraduationCap, Briefcase, Building2, Network,
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, Microscope, School,
   FileText, FileQuestion, ShieldCheck, Activity, Compass, BookMarked, BookCopy,
@@ -236,7 +236,15 @@ export const ADMIN_NAV: NavGroup[] = [
     items: [
       { to: '/admin/dashboard', icon: LayoutDashboard, label: 'لوحة الإدارة' },
       { to: '/admin/teachers', icon: School, label: 'إدارة الأساتذة' },
-      { to: '/admin/faculties', icon: Building2, label: 'الكلّيّات والأقسام' },
+      /* r305 (nav audit, task 2-a): Building2 ×2 dedupe — the A4 P3-4
+         unique-icon-per-role rule the student/owner maps already honor
+         (university→Landmark, institutions→Landmark). «كلّيّات الجامعة»
+         (/colleges, the shared public surface carried by ALL five roles
+         with the same glyph) keeps Building2; the faculties-and-
+         departments CONSOLE takes Network — the faculty→department tree
+         it actually manages. BottomNav's mirrored ADMIN slot re-pointed
+         in the same change (r299 mirror contract). */
+      { to: '/admin/faculties', icon: Network, label: 'الكلّيّات والأقسام' },
       /* 5-B5 (A4 P3-1/P3-2): the admin nav was the only role calling
          the shared colleges surface «صفحات الكلّيّات» — one name per
          intent across the five roles. */
