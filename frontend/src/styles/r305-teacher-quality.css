@@ -745,7 +745,109 @@
    §D · qlt2- — Quality oversight boards (Agent 2-c)
    File: QualityPages.tsx
    ──────────────────────────────────────────────────────────────── */
-/* [§D-START — Agent 2-c edits ONLY between these markers] */
+/* [§D-START — Agent 2-c edits ONLY between these markers]
+
+   §D · qlt2- — Quality oversight boards (Agent 2-c)
+   ------------------------------------------------------------------
+   The Heron overlay for the seven /quality/* boards (dashboard,
+   courses, professors, engagement, curriculum, reports, alerts).
+   The R304 §3 qlt-* rules stay verbatim BENEATH this layer: the
+   quality pages import this sheet AFTER teacher-quality.css, so
+   equal-specificity conflicts resolve toward Heron. Everything here
+   is scoped to the mounting .hr-scope wrapper — a surface without it
+   keeps the R304 grammar untouched.
+
+   Composition contract (what each surface mounts, TSX-side):
+   · .page > .hr-scope — the boxless scope mounts INSIDE the legacy
+     .page frame so polish's route-enter (`.content-inner > *`) still
+     lands on a box; D0 re-arms the flex guard the interposition
+     absorbs.
+   · .hr-brow opens every board: brow → strong heading (D0).
+   · Toolbars compose .hr-toolbar onto the existing rails
+     (.tq-toolbar / .filter-pill-row / .qlt-alert-filter); pressed
+     filter pills speak the ember — the view's ONE governance signal
+     (D1).
+   · Rosters add .hr-table (§0) over the shared .table/.tbl-stack —
+     filled header, denser hairline rows (D2); the ≤640 labelled-card
+     recipe is re-armed in D4 against §0's density longhands.
+   · Statuses speak ONE chip vocabulary (.hr-chip data-tone) — the
+     R304 ThemeColor bands translated verbatim, thresholds unchanged
+     (TSX).
+   · Oversight rows wear severity edges: alert rows 3px inline-start
+     with critical→danger / warning→warn / info→info (D3); curriculum
+     course rows ride the §0 .hr-edge lexicon (weak→soon, poor→
+     overdue, strong stays transparent — TSX).
+   · Reports link rows are the page's primary actions — ember icon
+     wells (D5); the honest export note rides §0 .hr-note (TSX); the
+     dashboard's single oversight CTA rides §0 .hr-cta (TSX).
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── D0 · Scope plumbing ──────────────────────────────────────────
+   The interposed boxless scope absorbs .page's `> *` min-inline-size
+   flex guard — re-arm it on the scoped children. The brow keeps its
+   breath above the h1 inside .page-title-block (§0 owns its chrome). */
+.hr-scope > * { min-inline-size: 0; }
+
+.hr-scope .page-title-block .hr-brow {
+  margin-block-end: var(--sp-1);
+}
+
+/* ── D1 · Toolbars + the pressed-pill ember ───────────────────────
+   One placement grammar: every filter rail adds .hr-toolbar (TSX).
+   The pressed filter pill (professors «بحاجة لمتابعة», alerts
+   severity, curriculum levels) reads ember instead of the inverted
+   neutral — the adaptive §0 vars retune it per theme. Outranking the
+   training.css pressed rules needs the extra scope class only; both
+   themes resolve from one declaration. */
+.hr-scope .filter-pill[aria-pressed='true'] {
+  color: var(--hr-ember-ink);
+  background: var(--hr-ember-wash);
+  border-color: var(--hr-ember-edge);
+}
+
+/* ── D2 · Heron rosters ───────────────────────────────────────────
+   The rosters carry .hr-table alongside .table.tbl-stack. §0's rules
+   land after teacher-quality.css, so the filled header supersedes the
+   R304 transparent-header rung and the rows densify; nothing else in
+   the shared recipe (stack, scroll, labels) is touched here. */
+.hr-scope .hr-table .hr-chip {
+  white-space: nowrap;
+}
+
+/* ── D3 · Alert rows — the 3px severity edge ──────────────────────
+   The R304 2px edge joins the Heron hairline weight (3px, rounded
+   start corners — the .hr-edge geometry). Severity colors stay the
+   R304 semantic washes: critical→danger, warning→warn, info→info. */
+.hr-scope .qlt-alert-row {
+  border-inline-start-width: 3px;
+  border-start-start-radius: var(--r-xs);
+  border-end-start-radius: var(--r-xs);
+}
+
+.hr-scope .qlt-alert-row .hr-chip { flex-shrink: 0; }
+
+/* ── D5 · Reports — the live-boards ledger ────────────────────────
+   The link rows ARE this page's primary actions: their icon wells
+   trade the accent wash for the ember (the page's single signal);
+   row hover stays the guarded R304 wash. */
+.hr-scope .qlt-link-row-icon {
+  color: var(--hr-ember-ink);
+  background: var(--hr-ember-wash);
+  border: 1px solid var(--hr-ember-edge);
+}
+
+/* ── D4 · Mobile — re-arm the labelled-card stack ─────────────────
+   §0's .hr-table density longhands out-rank the shared stack recipe's
+   td shorthand (specificity, not order), so the ≤640 labelled-card
+   grammar is re-armed inside the quality scope: flush label/value
+   rows, dashed separators, no zebra. */
+@media (max-width: 640px) {
+  .hr-scope .table.tbl-stack td {
+    padding: var(--sp-2) 0;
+    border-block-end: 1px dashed var(--rule);
+  }
+}
+
 /* [§D-END] */
 
 /* ────────────────────────────────────────────────────────────────────
