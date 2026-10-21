@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useState, useRef } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { Menu, Sparkles, LogOut, User as UserIcon, Sun, Moon, Search, Building2 } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../Icon';
@@ -8,11 +8,11 @@ import { GlobalSearch } from './GlobalSearch';
 import { NotificationDropdown } from './NotificationDropdown';
 import { Dropdown, DropdownItem, DropdownSeparator } from '../overlays';
 import { useUiStore } from '../../stores/ui.store';
-import { useAuthStore, type MembershipInfo } from '../../stores/auth.store';
+import { useAuthStore, type MembershipInfo, type AppRole } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { useLogout, useMe, useSelectInstitution } from '../../hooks/useAuth';
 import { useMyProfile, apiErrorMessage } from '../../hooks/useResources';
-import { ROLE_LABELS } from '../../lib/nav';
+import { NAV_BY_ROLE, ROLE_LABELS } from '../../lib/nav';
 import { toast } from '../../lib/toast';
 
 interface TopbarProps {
@@ -23,6 +23,26 @@ interface TopbarProps {
    *  (4-A2 P1-3): the search pill is display:none ≤920px, so the
    *  topbar's search icon button and the "/" chord both route here. */
   onOpenCommandPalette?: () => void;
+}
+
+/** The quiet group-context kicker (R305-A4 Heron pass): the section
+ *  label the active route lives under in the sidebar, derived from the
+ *  SAME nav.ts data the sidebar renders — nav and title can never
+ *  drift. Truthful by construction: it renders only when the current
+ *  pathname is EXACTLY one of the role's nav destinations; detail
+ *  pages, redirects and unknown paths render no kicker rather than a
+ *  guess. The `.topbar-kicker` class is new markup vocabulary (no CSS
+ *  removed) — r305-shell.css owns its quiet xxs chrome voice. */
+function useNavGroupKicker(role: AppRole | undefined, pathname: string): string | null {
+  return useMemo(() => {
+    if (!role) return null;
+    for (const group of NAV_BY_ROLE[role]) {
+      for (const item of group.items) {
+        if (item.to === pathname) return group.label;
+      }
+    }
+    return null;
+  }, [role, pathname]);
 }
 
 /** Student scope chip — the college name next to the page title.
@@ -118,7 +138,7 @@ function InstitutionChip() {
       <button
         type="button"
         ref={triggerRef}
-        className="btn ghost sm"
+        className="btn ghost sm topbar-inst-trigger"
         onClick={() => setMenuOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={menuOpen}
@@ -128,6 +148,10 @@ function InstitutionChip() {
             ? 'اختر المؤسسة التي ستعمل ضمنها في هذه الجلسة'
             : `المؤسسة الحالية: ${currentInstitution!.name}`
         }
+        /* Truthful-state hook for the shell CSS (r305-shell.css): the
+           context-less multi-membership session («اختر مؤسستك») may
+           carry the unread-urgency signal, the settled chip must not. */
+        data-context-lost={contextLost ? 'true' : undefined}
       >
         <Icon icon={Building2} size={14} />
         <span className="hide-on-mobile">
@@ -174,6 +198,9 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
   const location = useLocation();
   const navigate = useNavigate();
   const logoutM = useLogout();
+  // R305-A4: the sidebar-section context for the title block (null on
+  // any path that is not exactly one of this role's nav destinations).
+  const navGroupKicker = useNavGroupKicker(role, location.pathname);
   // PRD: students see their college as a quick scope indicator.
   // `/me/profile` is student-only — see StudentScopeChip above for why
   // the request must not fire for the other four roles.
@@ -243,6 +270,13 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
         tabIndex={-1}
         title={typeof title === 'string' ? title : undefined}
       >
+        {/* The quiet group-context kicker rides BESIDE the page title
+            (focus rescue reads «القسم» then the page title as one
+            truthful name); `.topbar-scope` is deliberately NOT reused —
+            that class is the data-scope chip vocabulary with its own
+            semantics. Presentation (separation, the ≤920px band) is
+            r305-shell.css's — see the worklog coordination note. */}
+        {navGroupKicker && <span className="topbar-kicker">{navGroupKicker}</span>}
         {title}
         {role === 'STUDENT' && <StudentScopeChip />}
         {scopeFacultyName && (
@@ -354,7 +388,7 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
                    fire a second POST /auth/logout. */
                 disabled={logoutM.isPending}
                 onSelect={() => { setMenuOpen(false); logoutM.mutate(undefined, { onSettled: () => navigate('/auth', { replace: true }) }); }}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-2)', color: 'var(--c-rose-deep)' }}>
+                <span className="topbar-user-logout" style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-2)', color: 'var(--c-rose-deep)' }}>
                   <Icon icon={LogOut} size={14} />
                   تسجيل الخروج
                 </span>
