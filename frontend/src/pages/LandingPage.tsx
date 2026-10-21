@@ -12,26 +12,41 @@ import { formatInt, formatPct1 } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
 import { useScrollStage } from '../hooks/useScrollStage';
 import { MadarekWorld } from '../components/landing/MadarekWorld';
-// landing.css — «ملصق مدارك r303» — the OPTIKKA rebuild.
-// Poster logic on the --poster-* namespace: paper/ink with ONE copper
-// signal, oversized Arabic display type, the editorial 4-column grid,
-// the numbered chapters 01–06, and the 3D knowledge sculpt
-// (three.js progressive enhancement over a static SVG twin).
+// landing.css — «ملصق مدارك r304» — the OPTIKKA editorial reconstruction.
+// The poster logic on the --poster-* namespace: paper/ink with ONE copper
+// signal, oversized Arabic display type, the dotted drafting grid, and
+// the 3D knowledge sculpt (three.js progressive enhancement over a
+// static SVG twin). r304 rebuilds the DOM composition the way the world
+// is staged: every act reserves its intentional empty-space zone —
+// the knot takes the reading-end third (statement), the opposite column
+// (chapters), the copper close-up window (live), the horizon (roles),
+// the panel column (colleges), the passage (vision), the resolve (cta).
 // Every funnel/a11y/truth contract carries forward (landing-funnel,
 // r168b, r170d, r177, r188) — see the tests pinned beside each surface.
 import '../styles/landing.css';
 
 /**
- * Landing — «ملصق مدارك» (r303, the OPTIKKA rebuild).
+ * Landing — «ملصق مدارك» (r304, the editorial reconstruction).
  *
- * Scroll choreography (OPTIKKA zoom-to-detail, adapted to Madarek):
+ * Scroll choreography (the world conductor owns the camera; this sheet
+ * owns the composition that gives each chapter its stage):
  *   header (sticky, thin-rule) → hero (brand word + eyebrow + the 3D
  *   knowledge sculpt on the dotted editorial grid + SCROLL cue) →
- *   statement (paragraph with signal emphasis, bottom-right) →
- *   chapters 01–06 (numbered editorial spreads, alternating
- *   split/bleed/offset with honest minis) → live ledger → roles →
- *   colleges constellation (interactive, real registry) → vision →
+ *   statement (editorial spread — knot owns the reading-end third) →
+ *   chapters 01–06 (numbered spreads, alternating split/bleed/offset,
+ *   honest interface fragments) → live (THE COPPER CLIMAX — the
+ *   inverted ledger slab beside the knot close-up) → roles (the wide
+ *   panorama index) → colleges (the interactive registry, knot behind
+ *   the panel column) → vision (the passage — sparse centered) →
  *   closing CTA → colophon footer with the giant wordmark.
+ *
+ * Semantic hooks (the r304 animation contract, beside the world's
+ * data-cam anchors — no second scroll listener, no second framework):
+ *   data-story-chapter — mirrors data-cam on every act
+ *   data-story-reveal  — every RevealCssClass beat
+ *   data-story-media   — the interface fragments + the registry stage
+ *   data-story-focus   — the hero word, the copper slab, the passage
+ *                        title, the closing resolve
  */
 
 /* ── Honest capability ledger (ما يعمل اليوم) — every line is a real
@@ -74,14 +89,22 @@ const ROLES = [
   { role: 'لمالك المنصّة', line: 'الحاكمية والمؤسّسات وسجلّ التدقيق' },
 ];
 
-/* ── Miniature — the honest demo frame each chapter pairs with.
- * Composed from the app's own tokens and recipes (surface/border/radius/
- * elevation + Western digits via utils/numbers) — never screenshots. */
+/* ── Miniature — the honest demo frame each chapter pairs with (r304:
+ * composed as an interface FRAGMENT — the app's own window chrome,
+ * surface recipe and demo data; never screenshots). */
 function Mini({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <figure className="mini" aria-label={`عرض توضيحي — ${label}`}>
+    <figure className="mini" aria-label={`عرض توضيحي — ${label}`} data-story-media>
+      <div className="mini-chrome" aria-hidden="true">
+        <span className="mini-dots"><i /><i /><i /></span>
+        <span className="mini-chrome-label">مدارك — {label}</span>
+        <span className="mini-chrome-tag fo-mono" dir="ltr">demo</span>
+      </div>
       <div className="mini-body">{children}</div>
-      <figcaption className="mini-caption">عرض توضيحي</figcaption>
+      <figcaption className="mini-caption">
+        <span className="mini-caption-tag">عرض توضيحي</span>
+        <span className="mini-caption-label">{label}</span>
+      </figcaption>
     </figure>
   );
 }
@@ -94,7 +117,7 @@ function MiniPlayer() {
         <span className="mini-lecture">المحاضرة 04</span>
       </div>
       <div className="mini-video">
-        <Icon icon={PlayCircle} size={28} />
+        <span className="mini-video-play" aria-hidden><Icon icon={PlayCircle} size={28} /></span>
         <span className="mini-video-time" dir="ltr">12:36</span>
         <span className="mini-video-bar" aria-hidden><span style={{ inlineSize: '65%' }} /></span>
       </div>
@@ -356,7 +379,10 @@ export default function LandingPage() {
         <div className="fo-header-inner">
           <Link to="/" className="fo-brand" aria-label="مدارك — الصفحة الرئيسية">
             <StarMark size={30} className="fo-brand-mark" />
-            <span className="fo-brand-name">مدارك</span>
+            <span className="fo-brand-stack">
+              <span className="fo-brand-name">مدارك</span>
+              <span className="fo-brand-sub">منصّة التعليم الذكي</span>
+            </span>
           </Link>
 
           <nav className="fo-nav" aria-label="التنقل الرئيسي">
@@ -425,34 +451,34 @@ export default function LandingPage() {
 
       <main id="main" tabIndex={-1}>
 
-        {/* ═══ HERO — the poster's first viewport (OPTIKKA grid) ═══ */}
-        <section className="fo-hero" data-cam="hero" aria-label="مدارك — منصّة التعليم الذكي">
+        {/* ═══ HERO — the poster's first viewport (the sparse open) ═══ */}
+        <section className="fo-hero" data-cam="hero" data-story-chapter="hero" aria-label="مدارك — منصّة التعليم الذكي">
           <div className="fo-hero-gridlines" aria-hidden />
 
           <div className="fo-hero-layer">
             <div className="fo-hero-copy">
-              <RevealCssClass as="p" className="fo-eyebrow">
+              <RevealCssClass as="p" className="fo-eyebrow" data-story-reveal>
                 منصّة تعليم ذكية · عربية أولًا · مستقلّة
               </RevealCssClass>
             </div>
 
-            <div className="fo-hero-word">
-              <RevealCssClass as="h1" className="fo-hero-title" delay={1}>
+            <div className="fo-hero-word" data-story-focus>
+              <RevealCssClass as="h1" className="fo-hero-title" delay={1} data-story-reveal>
                 مدارك
               </RevealCssClass>
 
-              <RevealCssClass as="p" className="fo-hero-triad" delay={2}>
+              <RevealCssClass as="p" className="fo-hero-triad" delay={2} data-story-reveal>
                 تعلّم · <em>أتقن</em> · ابحث
               </RevealCssClass>
             </div>
 
             <div className="fo-hero-aside">
-              <RevealCssClass as="p" className="fo-hero-sub" delay={3}>
+              <RevealCssClass as="p" className="fo-hero-sub" delay={3} data-story-reveal>
                 محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —
                 في تجربة عربية واحدة لخمسة أدوار أكاديمية.
               </RevealCssClass>
 
-              <RevealCssClass as="div" className="fo-hero-actions" delay={4}>
+              <RevealCssClass as="div" className="fo-hero-actions" delay={4} data-story-reveal>
                 <Link to="/auth/register" className="btn accent lg fo-hero-cta">
                   أنشئ حسابك الجامعي
                   <Icon icon={ArrowLeft} size={16} />
@@ -460,7 +486,7 @@ export default function LandingPage() {
                 <a href="#chapters" className="btn ghost lg">كيف تعمل</a>
               </RevealCssClass>
 
-              <RevealCssClass as="ul" className="fo-hero-meta" delay={5}>
+              <RevealCssClass as="ul" className="fo-hero-meta" delay={5} data-story-reveal>
                 <li>{formatInt(colleges.length)} كلية</li>
                 <li>{formatInt(CAMPUS_COUNT)} أحرُم أكاديمية</li>
                 <li>{formatInt(LIVE_COUNT)} قدرات تعمل اليوم</li>
@@ -469,38 +495,48 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* scroll cue — the quiet "keep going" affordance */}
+          {/* scroll cue — the quiet "keep going" affordance at the edge */}
           <div className="fo-scroll-cue" aria-hidden>
             <span className="fo-scroll-cue-text">تابع التمرير</span>
             <span className="fo-scroll-cue-dot" />
           </div>
         </section>
 
-        {/* ═══ البيان — what Madarek does, one line per role ═══ */}
-        <section id="statement" data-cam="statement" className="st-section" aria-labelledby="statement-title">
-          <span className="fo-label">البيان</span>
-          <h2 id="statement-title" className="st-title">منصّة واحدة تخدم الرحلة كلّها</h2>
-          <div className="st-lines">
-            <RevealCssClass as="p" className="st-line">
-              <strong>للطالب:</strong> تشاهد محاضرة تفاعلية، فتُقاس فهمك لحظة بلحظة، فتعرف خطوتك التالية.
-            </RevealCssClass>
-            <RevealCssClass as="p" className="st-line" delay={1}>
-              <strong>للأستاذ:</strong> تبني المحاضرة والاختبار، وتصحّح المقالات بملاحظات مكتوبة، وترى من يحتاجك الآن.
-            </RevealCssClass>
-            <RevealCssClass as="p" className="st-line" delay={2}>
-              <strong>للإدارة:</strong> تدير الكليات والمقرَّرات والصلاحيات، وترى مؤسّستك حيّة على مستوى كل قسم.
-            </RevealCssClass>
+        {/* ═══ البيان — the editorial spread; the knot owns the
+            reading-end third, the copy holds the reading start ═══ */}
+        <section id="statement" data-cam="statement" data-story-chapter="statement" className="st-section" aria-labelledby="statement-title">
+          <div className="st-spread">
+            <div className="st-copy">
+              <span className="fo-label">البيان</span>
+              <h2 id="statement-title" className="st-title">منصّة واحدة تخدم الرحلة كلّها</h2>
+            </div>
+            <div className="st-lines">
+              <RevealCssClass as="p" className="st-line" data-story-reveal>
+                <strong>للطالب</strong>
+                <span>تشاهد محاضرة تفاعلية، فتُقاس فهمك لحظة بلحظة، فتعرف خطوتك التالية.</span>
+              </RevealCssClass>
+              <RevealCssClass as="p" className="st-line" delay={1} data-story-reveal>
+                <strong>للأستاذ</strong>
+                <span>تبني المحاضرة والاختبار، وتصحّح المقالات بملاحظات مكتوبة، وترى من يحتاجك الآن.</span>
+              </RevealCssClass>
+              <RevealCssClass as="p" className="st-line" delay={2} data-story-reveal>
+                <strong>للإدارة</strong>
+                <span>تدير الكليات والمقرَّرات والصلاحيات، وترى مؤسّستك حيّة على مستوى كل قسم.</span>
+              </RevealCssClass>
+            </div>
           </div>
         </section>
 
         {/* ═══ الفصول 01–06 — one capability per chapter ═══ */}
-        <section id="chapters" data-cam="chapters" className="chapters" aria-labelledby="chapters-title">
+        <section id="chapters" data-cam="chapters" data-story-chapter="chapters" className="chapters" aria-labelledby="chapters-title">
           <header className="chapters-head">
-            <span className="fo-label">الفصول</span>
-            <RevealCssClass as="h2" className="chapters-title" delay={1} id="chapters-title">
-              ستُّ فصول — كلُّ فصلٍ قدرةٌ تعمل اليوم
-            </RevealCssClass>
-            <RevealCssClass as="p" className="chapters-lede" delay={2}>
+            <div className="chapters-head-copy">
+              <span className="fo-label">الفصول</span>
+              <RevealCssClass as="h2" className="chapters-title" delay={1} id="chapters-title" data-story-reveal>
+                ستُّ فصول — كلُّ فصلٍ قدرةٌ تعمل اليوم
+              </RevealCssClass>
+            </div>
+            <RevealCssClass as="p" className="chapters-lede" delay={2} data-story-reveal>
               لا لقطات شاشة ولا وعود: كل فصل يعرض واجهة مبنية من مكوّنات المنصّة نفسها ببيانات توضيحية.
             </RevealCssClass>
           </header>
@@ -509,70 +545,91 @@ export default function LandingPage() {
             <article key={ch.num} className={`ch ch--${ch.layout}`} aria-labelledby={`ch-${ch.num}-title`}>
               <header className="ch-head">
                 <span className="ch-num fo-mono" dir="ltr" aria-hidden>{ch.num}</span>
-                <RevealCssClass as="h3" className="ch-title" id={`ch-${ch.num}-title`} delay={1}>
+                <RevealCssClass as="h3" className="ch-title" id={`ch-${ch.num}-title`} delay={1} data-story-reveal>
                   {ch.title}
                 </RevealCssClass>
-                <RevealCssClass as="p" className="ch-lede" delay={2}>{ch.lede}</RevealCssClass>
+                <RevealCssClass as="p" className="ch-lede" delay={2} data-story-reveal>{ch.lede}</RevealCssClass>
               </header>
-              <RevealCssClass as="div" className="ch-mini" delay={2}>{ch.mini}</RevealCssClass>
+              <RevealCssClass as="div" className="ch-mini" delay={2} data-story-reveal>{ch.mini}</RevealCssClass>
             </article>
           ))}
         </section>
 
-        {/* ═══ ما يعمل اليوم — the honest capability ledger ═══ */}
-        <section id="live" data-cam="live" className="lv-section" aria-labelledby="live-title">
-          <span className="fo-label">ما يعمل اليوم</span>
-          <RevealCssClass as="h2" className="lv-title" delay={1} id="live-title">
-            قدرات <em>موثَّقة</em>، لا ادّعاءات
-          </RevealCssClass>
-          <RevealCssClass as="p" className="lv-lede" delay={2}>
-            كل رقم يُحسب من حالة الميزات في النظام — يتغيّر مع التحديثات، لا مع الحملات.
-          </RevealCssClass>
-          <ol className="lv-list">
-            {LIVE_CAPABILITIES.map((cap, i) => (
-              <RevealCssClass as="li" key={cap} className="lv-row" delay={((i % 3) + 1) as 1 | 2 | 3}>
-                <span className="fo-mono lv-num" dir="ltr" aria-hidden>{String(i + 1).padStart(2, '0')}</span>
-                <span className="lv-text">{cap}</span>
-                <span className="lv-check" aria-hidden><Icon icon={Check} size={14} /></span>
+        {/* ═══ ما يعمل اليوم — THE COPPER CLIMAX ═══
+            The inverted ledger slab holds the reading-start column;
+            the reading-end third stays an intentional empty window —
+            the world's camera closes on the copper fins right there,
+            and the slab makes the emissive peak read as the section's
+            own signal. */}
+        <section id="live" data-cam="live" data-story-chapter="live" className="lv-section" aria-labelledby="live-title">
+          <div className="lv-grid">
+            <div className="lv-slab" data-story-focus>
+              <span className="fo-label">ما يعمل اليوم</span>
+              <RevealCssClass as="h2" className="lv-title" delay={1} id="live-title" data-story-reveal>
+                قدرات <em>موثَّقة</em>، لا ادّعاءات
               </RevealCssClass>
-            ))}
-          </ol>
+              <RevealCssClass as="p" className="lv-lede" delay={2} data-story-reveal>
+                كل رقم يُحسب من حالة الميزات في النظام — يتغيّر مع التحديثات، لا مع الحملات.
+              </RevealCssClass>
+              <ol className="lv-list">
+                {LIVE_CAPABILITIES.map((cap, i) => (
+                  <RevealCssClass as="li" key={cap} className="lv-row" delay={((i % 3) + 1) as 1 | 2 | 3} data-story-reveal>
+                    <span className="lv-num fo-mono" dir="ltr" aria-hidden>{String(i + 1).padStart(2, '0')}</span>
+                    <span className="lv-text">{cap}</span>
+                    <span className="lv-check" aria-hidden><Icon icon={Check} size={14} /></span>
+                  </RevealCssClass>
+                ))}
+              </ol>
+            </div>
+            <div className="lv-window">
+              <p className="lv-window-caption">المجسّم يُعرض حيًّا — طبقة رسم خلف الصفحة تتحرّك مع التمرير</p>
+            </div>
+          </div>
         </section>
 
-        {/* ═══ الأدوار — the five verified roles, one strip ═══ */}
-        <section id="roles" data-cam="roles" className="rl-section" aria-labelledby="roles-title">
-          <span className="fo-label">الأدوار</span>
-          <RevealCssClass as="h2" className="rl-title" delay={1} id="roles-title">
-            منصّة واحدة، <em>خمسة مسارات</em>
-          </RevealCssClass>
+        {/* ═══ الأدوار — the wide-panorama index ═══
+            The conductor pulls the camera wide here — the knot settles
+            on the horizon, so the cast list runs as full airy rows. */}
+        <section id="roles" data-cam="roles" data-story-chapter="roles" className="rl-section" aria-labelledby="roles-title">
+          <div className="rl-head">
+            <span className="fo-label">الأدوار</span>
+            <RevealCssClass as="h2" className="rl-title" delay={1} id="roles-title" data-story-reveal>
+              منصّة واحدة، <em>خمسة مسارات</em>
+            </RevealCssClass>
+          </div>
           <ul className="rl-strip">
             {ROLES.map((r, i) => (
-              <RevealCssClass as="li" key={r.role} className="rl-item" delay={((i % 3) + 1) as 1 | 2 | 3}>
+              <RevealCssClass as="li" key={r.role} className="rl-item" delay={((i % 3) + 1) as 1 | 2 | 3} data-story-reveal>
                 <span className="rl-item-role">{r.role}</span>
                 <span className="rl-item-line">{r.line}</span>
               </RevealCssClass>
             ))}
           </ul>
-          <RevealCssClass as="p" className="rl-more" delay={3}>
+          <RevealCssClass as="p" className="rl-more" delay={3} data-story-reveal>
             بيانات كل مؤسّسة معزولة تمامًا — والصلاحيات منفصلة دورًا بدور.
           </RevealCssClass>
         </section>
 
-        {/* ═══ الكليات — the interactive constellation ═══
-            The SVG stays decorative (aria-hidden); interaction lives in the
-            accessible chip row: 25 real colleges, keyboard-operable, with a
-            details panel instead of a floating popover (44px targets). */}
-        <section id="colleges" data-cam="colleges" className="cg-section" aria-labelledby="cg-title">
-          <span className="fo-label">الجامعة التجريبية</span>
-          <RevealCssClass as="h2" className="cg-title" delay={1} id="cg-title">
-            {formatInt(colleges.length)} كلية في {formatInt(CAMPUS_COUNT)} أحرُم
-          </RevealCssClass>
-          <RevealCssClass as="p" className="cg-lede" delay={2}>
-            بيانات العرض تخصّ «جامعة مدارك التجريبية» — مؤسّسة اصطناعية بالكامل،
-            وبنية الكليات كاملة معروضة داخل المنصّة.
-          </RevealCssClass>
+        {/* ═══ الكليات — the interactive registry ═══
+            The knot sits behind the panel column here (the conductor's
+            orbit lands it there), so the elevated panel + chip row own
+            the reading-start column and the count numeral floats in
+            the open reading-end third. The chips are the accessible
+            surface: 25 real colleges, keyboard-operable, 44px targets,
+            with a details panel instead of a floating popover. */}
+        <section id="colleges" data-cam="colleges" data-story-chapter="colleges" className="cg-section" aria-labelledby="cg-title">
+          <div className="cg-head">
+            <span className="fo-label">الجامعة التجريبية</span>
+            <RevealCssClass as="h2" className="cg-title" delay={1} id="cg-title" data-story-reveal>
+              {formatInt(colleges.length)} كلية في {formatInt(CAMPUS_COUNT)} أحرُم
+            </RevealCssClass>
+            <RevealCssClass as="p" className="cg-lede" delay={2} data-story-reveal>
+              بيانات العرض تخصّ «جامعة مدارك التجريبية» — مؤسّسة اصطناعية بالكامل،
+              وبنية الكليات كاملة معروضة داخل المنصّة.
+            </RevealCssClass>
+          </div>
 
-          <div className="cg-stage">
+          <div className="cg-stage" data-story-media>
             <div className="cg-panel-wrap">
               <ul className="cg-chips" aria-label="اختر كلية لاستعراضها">
                 {colleges.map((c) => (
@@ -602,6 +659,10 @@ export default function LandingPage() {
                 </div>
               )}
             </div>
+
+            <div className="cg-open" aria-hidden="true">
+              <span className="cg-count fo-mono" dir="ltr">{formatInt(colleges.length)}</span>
+            </div>
           </div>
 
           <div className="cg-cta-row">
@@ -610,18 +671,23 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ═══ إلى أين — honest status pairs ═══ */}
-        <section id="vision" data-cam="vision" className="vs-section" aria-labelledby="vs-title">
-          <span className="fo-label">إلى أين</span>
-          <RevealCssClass as="h2" className="vs-title" delay={1} id="vs-title">
-            نحو تعليمٍ <em>يعرف كلَّ طالب</em>
-          </RevealCssClass>
-          <RevealCssClass as="p" className="vs-lede" delay={2}>
-            نبني منظومة تتذكّر ما شاهد الطالب وما أخطأ وما ينقصه —
-            ثم تقترح الخطوة التالية. بلا أرقام مختلقة ولا وعود بلا تنفيذ:
-            كل حالة أدناه كما هي في النظام اليوم.
-          </RevealCssClass>
-          <RevealCssClass as="ul" className="vs-status" delay={3}>
+        {/* ═══ إلى أين — THE PASSAGE ═══
+            The conductor drives the camera through the knot here; the
+            composition steps back and lets the immersion carry the
+            chapter — one centered statement, then the honest pairs. */}
+        <section id="vision" data-cam="vision" data-story-chapter="vision" className="vs-section" aria-labelledby="vs-title">
+          <div className="vs-head">
+            <span className="fo-label">إلى أين</span>
+            <RevealCssClass as="h2" className="vs-title" delay={1} id="vs-title" data-story-focus data-story-reveal>
+              نحو تعليمٍ <em>يعرف كلَّ طالب</em>
+            </RevealCssClass>
+            <RevealCssClass as="p" className="vs-lede" delay={2} data-story-reveal>
+              نبني منظومة تتذكّر ما شاهد الطالب وما أخطأ وما ينقصه —
+              ثم تقترح الخطوة التالية. بلا أرقام مختلقة ولا وعود بلا تنفيذ:
+              كل حالة أدناه كما هي في النظام اليوم.
+            </RevealCssClass>
+          </div>
+          <RevealCssClass as="ul" className="vs-status" delay={3} data-story-reveal>
             {VISION_STATUS.map((s) => (
               <li key={s.k} className={s.live ? 'is-live' : undefined}>
                 <span className="vs-status-k"><Icon icon={s.live ? Check : FlaskConical} size={13} /> {s.k}</span>
@@ -631,27 +697,27 @@ export default function LandingPage() {
           </RevealCssClass>
         </section>
 
-        {/* ═══ الخاتمة ═══ */}
-        <section data-cam="cta" className="fo-cta" aria-label="ابدأ رحلتك — أنشئ حسابك">
+        {/* ═══ الخاتمة — the resolve (copper emissive peaks behind) ═══ */}
+        <section data-cam="cta" data-story-chapter="cta" className="fo-cta" aria-label="ابدأ رحلتك — أنشئ حسابك">
           <span className="fo-cta-star" aria-hidden>
             <StarMark size={48} withHalo />
           </span>
-          <div className="fo-cta-inner">
-            <RevealCssClass as="h2" className="fo-cta-title" delay={1}>
+          <div className="fo-cta-inner" data-story-focus>
+            <RevealCssClass as="h2" className="fo-cta-title" delay={1} data-story-reveal>
               جاهزٌ لبدء <em>رحلتك</em>؟
             </RevealCssClass>
-            <RevealCssClass as="p" className="fo-cta-lede" delay={2}>
+            <RevealCssClass as="p" className="fo-cta-lede" delay={2} data-story-reveal>
               أنشئ حسابك الجامعي في دقائق — بالبريد الجامعي أو رقم قيدك —
               وتابع تقدّمك من أوّل محاضرة.
             </RevealCssClass>
-            <RevealCssClass as="div" className="fo-cta-actions" delay={3}>
+            <RevealCssClass as="div" className="fo-cta-actions" delay={3} data-story-reveal>
               <Link to="/auth/register" className="btn accent lg">
                 أنشئ حسابك الجامعي
                 <Icon icon={ArrowLeft} size={16} />
               </Link>
               <Link to="/auth" className="btn ghost lg">تسجيل الدخول</Link>
             </RevealCssClass>
-            <RevealCssClass as="p" className="fo-cta-meta" delay={4}>
+            <RevealCssClass as="p" className="fo-cta-meta" delay={4} data-story-reveal>
               <Icon icon={Check} size={13} />
               مدارك · {year} · منصّة تعليمية مستقلّة
             </RevealCssClass>
@@ -660,13 +726,16 @@ export default function LandingPage() {
       </main>
 
       {/* ── COLOPHON FOOTER — slide-up with the giant wordmark rush ── */}
-      <footer data-cam="footer" className="fo-footer" ref={footerRef}>
+      <footer data-cam="footer" data-story-chapter="footer" className="fo-footer" ref={footerRef}>
         <div className="fo-footer-inner">
           <div className="fo-footer-grid">
             <div className="fo-footer-col">
               <Link to="/" className="fo-brand" aria-label="مدارك">
                 <StarMark size={30} className="fo-brand-mark" />
-                <span className="fo-brand-name">مدارك</span>
+                <span className="fo-brand-stack">
+                  <span className="fo-brand-name">مدارك</span>
+                  <span className="fo-brand-sub">منصّة التعليم الذكي</span>
+                </span>
               </Link>
               <p className="fo-footer-about">
                 {/* r188 honesty pin: «اصطناعية بالكامل» must stay contiguous
