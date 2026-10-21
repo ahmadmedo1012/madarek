@@ -311,17 +311,10 @@
     pointer-events: none;
   }
 
-  /* ── Empty state CTA: centered, friendly ────────────────────── */
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--sp-4);
-    padding: var(--sp-10) var(--sp-6);
-    text-align: center;
-    min-block-size: 240px;
-  }
+  /* ── Empty state CTA: centered, friendly ──────────────────────
+     r296: consolidated into components.css STATE — the v10 overrides
+     values beat this pages-layer copy (gap/padding/color); the
+     min-block floor from here is carried over. */
   /* (Wave 9-b dead-selector sweep: the .empty-state-icon / -title /
      -desc child rules deleted — zero TSX consumers; pages render the
      bare .empty-state container (kept above) with Icon/text utilities,
@@ -924,79 +917,18 @@
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   ▶ Section: polish-v10.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
-   POLISH v10 — coverage for under-styled pages
-   AI Assistant chat, Matrix grid, gap rows, thumb cards, filter bars,
-   tracks, post composer.
-   ════════════════════════════════════════════════════════════════════ */
-
-@layer overrides {
-
-  /* ═══════════════════════════════════════════════════════════════
-     (r151i — m1 of the ownership migration, R5-A2): the v10 page
-     systems moved to their home sheet. The AI-assistant chat family,
-     the knowledge-map matrix family, the social-feed post family and
-     the university-info faculty chips were PRIMARY ownership living
-     in @layer overrides — nothing overrode them, and their only
-     consumers are student surfaces (AiAssistantPage, MatrixPage,
-     QualityPages, MorePages). They now live in student.css (@layer
-     pages, appended after its own refinements so they keep their
-     authority there). What STAYS here by design: v22's
-     .chat-input:focus-visible (the one true override), v8's .post
-     mockup-lift pair (border-radius/transition/hover — same r-lg
-     value, prop-disjoint from v10's base), and the v10 remainder
-     (thumb/filter/tracks/misc — m2 candidates). Cascade-verified
-     zero computed-style change.
-     ═══════════════════════════════════════════════════════════════ */
-
-
-
-  /* (r152h: the v10 gap-rows tombstone folded into the v10 section
-     header — the .gap-row family was deleted in wave 9-b (zero TSX
-     consumers; the matrix gaps render student.css's
-     .matrix-gap-in / .ai-gap-card families).) */
-
-  /* ═══════════════════════════════════════════════════════════════
-     Thumb cards (Library, AR/VR, Labs grid)
-     ═══════════════════════════════════════════════════════════════ */
-  /* (r152h: the v10 thumb-card pair — transition + accent hover glow —
-     deleted as cascade-dead: the v19 thumb-card family below (same
-     overrides layer, later source, same specificity) re-sets both the
-     transition and the hover box-shadow, so these two rules never
-     computed. The v19 family stays as the single owner.) */
-
-  /* ═══════════════════════════════════════════════════════════════
-     Filter bar (campus map, matrix legend, etc.)
-     ═══════════════════════════════════════════════════════════════ */
-  /* (r152h: the v10 twin retired — its only live declaration was the
-     6px gap (the rest duplicated components.css verbatim); the 6px
-     now lives in the canonical .filter-bar as var(--sp-1-5), so the
-     computed value is unchanged and the override is gone.) */
-  /* ═══════════════════════════════════════════════════════════════
-     Misc — small surfaces that were inheriting browser defaults
-     ═══════════════════════════════════════════════════════════════ */
-  .empty-state {
-    text-align: center;
-    padding: var(--sp-6) var(--sp-4);
-    color: var(--text-muted);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--sp-3);
-  }
-
-  /* Make any iframe / video inside cards rounded so they don't break the
-     premium frame */
-  .card iframe,
-  .card video {
-    border-radius: var(--r-md);
-    max-inline-size: 100%;
-  }
-
-}
-
+   ▶ Section: polish-v10.css — RETIRED r296 (polish dismantle, wave 3)
+   ═══════════════════════════════════════════════════════════════════
+   The student-surface wave. Everything live folded home:
+   - .empty-state centered container → components.css STATE — the v10
+     overrides-layer values merged with v6's min-block floor (both
+     polish copies deleted; v6/v11 gap-widening comment pointers
+     updated in situ).
+   - .card iframe/video frame-clipping radius → components.css CARD.
+   Pre-r296 deletions already recorded in situ: university-info
+     faculty chips (→ student.css, cascade-verified), thumb-card
+     pair (cascade-dead vs v19), filter-bar twin (6px gap →
+     components.css), gap-rows family (zero consumers). */
 
 /* ═══════════════════════════════════════════════════════════════════
    ▶ Section: polish-v11.css
@@ -1093,7 +1025,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (max-width: 920px) {
     .page {
-      padding-block-end: calc(64px + env(safe-area-inset-bottom) + var(--sp-4)); /* spacing-gate: allow — sticky topbar height constant 64px + safe-area + rung — page chrome clearance */
+      padding-block-end: calc(64px + env(safe-area-inset-bottom) + var(--sp-4)); /* spacing-gate: allow — fixed bottom-nav clearance (measured dock 78px at 390px; 64px + rung clears it) + safe-area + rung — NOT the topbar (r299 comment fix: the old comment misattributed this to the topbar, whose real height is --topbar-h 60px) */
     }
   }
 
@@ -1221,59 +1153,22 @@
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   ▶ Section: polish-v12.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
-   MADAREK — polish v12 · vitality
-   ─────────────────────────────────────────────────────────────────────
-   Motion + atmosphere for the landing page. CSS-only — no extra JS,
-   no extra hooks. Falls back gracefully under prefers-reduced-motion.
-
-   NOTE: The hero orb pseudo-elements that previously lived here were
-   shadowing the cursor-tracking spotlight from polish-v7 (which uses
-   the same `.landing-hero::before` selector with --hero-mx/--hero-my).
-   That broke the magnetic cursor effect on the banner. Removed in
-   favor of the original behavior — see polish-v7.css for the spotlight
-   and landing.css for the drifting color blobs. The remaining v12
-   effects (CTA breathe, eyebrow shimmer, mockup tilt, feature card
-   spotlight) all use distinct selectors and stay untouched.
-   ════════════════════════════════════════════════════════════════════ */
-
-@layer overrides {
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  CTA BREATHE                                                   ║
-     ║  Primary CTA in the hero gets a slow ambient glow halo.        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (Wave 9-b dead-selector sweep: the .landing-cta-stack entries
-     removed — zero TSX consumers; the hero CTA row is .landing-cta-row
-  @keyframes madarek-breathe {
-    0%, 100% { opacity: 0; transform: scale(0.9); }
-    50%      { opacity: 0.55; transform: scale(1.04); }
-  } */
-
-
-  /* (r157 dead-keyframe sweep: @keyframes madarek-sweep + its EYEBROW
-     CHIP banner deleted — rg across frontend/src: zero `animation`
-     consumers reference the name.) */
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  MOCKUP HOVER LIFT                                             ║
-     ║  LandingPage already writes --mx/--my on cards. Add a soft     ║
-     ║  3D tilt that follows the cursor.                              ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (r151c: the FEATURE CARDS magnetic-glow block deleted — all four
-     selectors (.landing-feature-card family + .landing-bento-card)
-     have had zero TSX consumers since the landing redesign.) */
-
-
-  /  /* STICKER ICONS + landing reduced-motion list — RETIRED (premium-polish
-     dead-code sweep): the .sticker family never rendered (zero TSX
-     consumers); its bobbing rule and the reduced-motion kill list (which
-     referenced the removed .landing-hero family) went with it. */
-}
-
+   ▶ Section: polish-v12.css — RETIRED r296 (polish dismantle, wave 3)
+   ═══════════════════════════════════════════════════════════════════
+   The landing-motion wave — every rule was already dead:
+   - CTA breathe: the .landing-cta-stack consumers were swept in wave
+     9-b (zero TSX consumers since the «سماء مدارك» rebuild); the
+     @keyframes madarek-breathe had zero animation references and
+     sat inside an unterminated Wave-9-b comment.
+   - MOCKUP HOVER LIFT / feature magnetic glow: zero consumers since
+     the landing redesign (r151c).
+   - STICKER family: never rendered (zero TSX consumers).
+   ALSO FIXED here: a stray `/` token before the STICKER comment —
+   a genuine syntax hazard that made CSS parsers skip the section's
+   closing `}` (browsers recovered by nesting every subsequent
+   @layer into v12's overrides block; harmless by CSS layer-merge
+   semantics, but a landmine for any future parse). The whole
+   section's dead weight is gone; the hazard with it. */
 
 /* ═══════════════════════════════════════════════════════════════════
    ▶ Section: polish-v13.css
@@ -1308,6 +1203,21 @@
   html {
     scroll-behavior: smooth;
     scrollbar-gutter: stable;
+  }
+  /* r299 (final-shell, measured): the v13 gutter reservation is PHANTOM
+     on shell pages — .has-shell bounds html to 100dvh and .content is
+     the app's only scroller, so html's scrollbar never exists, yet
+     `stable` still reserves ~10px of the initial containing block on
+     classic-scrollbar desktops. Every position:fixed surface measured
+     10px short of the real viewport edge: the mobile drawer stopped
+     10px from the edge and its backdrop left an undimmed strip (RTL
+     390px band; doc scrollWidth 1430 vs clientWidth 1440), and 100vw
+     caps (toast-stack, wake-pill) over-permitted by the same 10px.
+     Scope the reservation OFF exactly where the shell is mounted;
+     public scrolling surfaces (landing/auth/404) keep the v13
+     anti-shift behavior unchanged. */
+  html:has(.has-shell) {
+    scrollbar-gutter: auto;
   }
 
 
@@ -2467,125 +2377,23 @@
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   ▶ Section: polish-v18.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
-   MADAREK — polish v18 · overlays
-   ─────────────────────────────────────────────────────────────────────
-   Phase 5: lift every overlay surface — notification dropdown, global
-   search results, competition modals, sidebar drawer (mobile), and
-   the bottom-sheet pattern for filters.
-   ════════════════════════════════════════════════════════════════════ */
-
-@layer overrides {
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  NOTIFICATION DROPDOWN — items stagger + unread pulse          ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (WS-D2 orphan sweep: the .notification-dropdown container + li/
-     .notif-item stagger rules and the madarek-notif-in keyframes were dead
-     (the NotificationPanel primitive renders its own items).) */
-  /* (Wave 1-a dead-code sweep: the unread pulse deleted. Both selectors
-     were dead — `.notif-item.unread::before` lost its 3px stripe to the
-     craft-floor sweep above, and `.notif-unread-dot` has zero TSX
-     consumers (the rendered class is .notif-item-dot, which keeps its
-     static accent halo). See 0-a mission items G + I.) */
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  GLOBAL SEARCH RESULTS — slide in + keyboard highlight glide   ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (WS-D2 orphan sweep: .global-search-results rules were dead — the
-     Topbar renders .search-dropdown rows instead; v21 styles those.) */
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  COMPETITION / GENERIC MODALS — backdrop blur ramp + spring    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (WS-D2 orphan sweep: .comp-modal-backdrop / .comp-modal and the
-     madarek-modal-in keyframes were dead — the <Modal> primitive owns the
-     overlay. Only .comp-modal-close below is still referenced.) */
-  .comp-modal-close {
-    transition:
-      background var(--motion-duration-short) var(--ease),
-      color var(--motion-duration-short) var(--ease),
-      transform var(--motion-duration-short) var(--ease);
-  }
-  .comp-modal-close:hover {
-    transform: rotate(90deg);
-  }
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TOAST / NOTIFICATION TOAST PATTERN                            ║
-     ║  Forward-compatible: matches future `.toast` class so nothing  ║
-     ║  needs wiring up beyond markup that uses these classes.        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .toast,
-  [role="status"][data-toast] {
-    box-shadow: var(--elev-3);
-    border-radius: var(--r-md);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    /* (4-A11 P2-13: the entrance animation override + madarek-toast-in
-       keyframes were deleted — they fought the DESIGNED entrance in
-       notifications.css (.toast-stack .toast: madarek-toast-in 240ms
-       --motion-ease-decelerate) and, living here in the overrides
-       layer, won by cascade: every toast bounced in on a spring curve
-       meant for playful confirmations, not passive notifications.
-       Visual refinements above stay; the choreography is owned by
-       notifications.css. Exit stays 160ms accelerate — exit faster
-       than entrance holds: 240/160.) */
-  }
-
-
-  /* (r152e: the v18 megamino item stagger moved home to landing.css
-     (pages layer) — it rides the .open/.transition toggle grammar there.
-     The RM belt entries for .landing-megamenu stay here on purpose.) */
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SHEET / BOTTOM-SHEET (forward-compatible)                     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (Wave 9-b dead-selector sweep: the `.sheet` / `.bottom-sheet`
-     entrance + madarek-sheet-in keyframes deleted — zero TSX
-     consumers; the Sheet primitive renders `.sheet-overlay` /
-     `.sheet-panel`, whose entrances (madarek-sheet-slide-*) live in
-     components.css.) */
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  COMPETITION CARD HEAD ICON BUTTONS — rotation on press        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .comp-icon-btn {
-    transition:
-      background var(--motion-duration-short) var(--ease),
-      border-color var(--motion-duration-short) var(--ease),
-      transform var(--motion-duration-short) var(--ease-spring-soft);
-  }
-  .comp-icon-btn:hover {
-    transform: scale(1.1);
-  }
-  .comp-icon-btn.on {
-    transform: scale(1.06);
-  }
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  REDUCED MOTION                                                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (prefers-reduced-motion: reduce) {
-    .toast,
-    .landing-megamenu .landing-megamenu-item {
-      animation: none !important;
-    }
-    .comp-modal-close:hover {
-      animation: none !important;
-      transform: none !important;
-    }
-  }
-}
-
+   ▶ Section: polish-v18.css — RETIRED r297 (polish dismantle, wave 4)
+   ═══════════════════════════════════════════════════════════════════
+   The overlays wave. Everything live folded to owners:
+   - .comp-modal-close rotate-hover + .comp-icon-btn trio + the RM
+     entry → colleges.css (the competitions/community sheet owns the
+     comp-* families).
+   - .toast visual pair (elev-3 + r-md) → components.css TOAST — the
+     r-md radius was the overrides winner over the base r-lg; the
+     [role="status"][data-toast] twin always paired .toast on the
+     same markup, so one selector suffices.
+   Pre-r297 deletions recorded in situ: notification-dropdown
+     stagger + unread pulse (WS-D2/Wave-1-a — the NotificationPanel
+     primitive owns items), global-search results (WS-D2 — .search-
+     dropdown in layout.css), comp-modal backdrop/entrance (WS-D2 —
+     the <Modal> primitive), .sheet entrance (zero consumers),
+     toast entrance override (4-A11 P2-13 — notifications.css owns
+     the choreography). */
 
 /* ═══════════════════════════════════════════════════════════════════
    ▶ Section: polish-v19.css
@@ -2678,20 +2486,12 @@
 
 
 
-  /  .landing-footer::before {
-    content: '';
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline: 0;
-    block-size: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      color-mix(in srgb, var(--accent) 50%, transparent) 30%,
-      color-mix(in srgb, var(--accent) 50%, transparent) 70%,
-      transparent 100%
-    );
-  }
+  /* r297 hazard fix: a stray `/` preceded this selector — esbuild
+     preserved it verbatim and browsers dropped the rule as invalid.
+     Beyond the hazard it was DOUBLY dead: .landing-footer has zero
+     TSX consumers since the «سماء مدارك» rebuild (the rendered footer
+     is .fo-footer — its top hairline is landing.css's own border-block
+     recipe). Deleted, not moved. */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2841,212 +2641,36 @@
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   ▶ Section: polish-v20.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
-   MADAREK — polish v20 · accessibility + final pass
-   ─────────────────────────────────────────────────────────────────────
-   Phase 7: a11y polish that doesn't fight the visual layer.
-   · prefers-contrast support
-   · forced-colors (Windows high contrast) overrides
-   · sr-only utility (screen-reader-only)
-   · skip-to-content link styling (forward-compatible)
-   · stronger focus rings under prefers-contrast
-   · scroll-margin so anchor jumps don't hide under sticky topbar
-   ════════════════════════════════════════════════════════════════════ */
-
-@layer overrides {
-
-  /* (r152f: .sr-only moved home to base.css utilities.) */
-
-
-  /* (r152f: the .skip-link pill + focus reveal moved home to base.css
-     utilities — its physical left:50% RTL coupling documented there.
-     The v19 underline family's :not(.skip-link) guards below keep
-     excluding it by name.) */
-
-
-  /* (r152f: the :target scroll-margin moved home to base.css.) */
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PREFERS-CONTRAST — bolder borders + stronger focus            ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (prefers-contrast: more) {
-    .card,
-    .metric,
-    .input,
-    input, textarea, select,
-    .btn:not(.primary):not(.accent) {
-      border-width: 2px;
-    }
-    :focus-visible {
-      outline: 3px solid var(--accent-ink, var(--accent)) !important;
-      outline-offset: 3px;
-      box-shadow: none !important;
-    }
-  }
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  FORCED-COLORS (Windows High Contrast)                         ║
-     ║  Let the OS color tokens take over so users get their chosen   ║
-     ║  scheme. Border + outline replaces our custom shadows.         ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (forced-colors: active) {
-    .card,
-    .metric {
-      border: 1px solid CanvasText;
-    }
-    .btn,
-    .pill,
-    .nav-item.on {
-      forced-color-adjust: auto;
-    }
-    :focus-visible {
-      outline: 3px solid Highlight !important;
-      outline-offset: 2px;
-    }
-  }
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  REDUCED TRANSPARENCY                                          ║
-     ║  Some users disable backdrop-filter. Replace glass with solid. ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (prefers-reduced-transparency: reduce) {
-    .topbar,
-    .bottom-nav,
-    .sidebar-backdrop.show {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-    }
-    .topbar { background: var(--surface); }
-    .bottom-nav { background: var(--surface); }
-  }
-
-
-  /* (r152f: the global tap-highlight kill moved home to base.css.) */
-
-
-  /* (r152f: the img[loading=lazy] fade moved home to base.css.) */
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PRINT — strip motion, keep layout legible                     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (Wave 1-a print consolidation: this blanket print block merged with
-     the richer v8 one into a single student-document-aware block in v22.
-     See audits/0-a-foundation.md P1-10.) */
-}
-
+   ▶ Section: polish-v20.css — RETIRED r297 (polish dismantle, wave 4)
+   ═══════════════════════════════════════════════════════════════════
+   The a11y wave. The three user-preference media blocks
+   (prefers-contrast bolder borders + stronger focus, forced-colors
+   OS scheme handover, reduced-transparency solid grounds) moved to
+   components.css as the A11Y ADAPTATIONS section — end-of-file at
+   the components layer keeps every needed win (source order over
+   the families, layer over layout/base). Pre-r297 deletions
+   recorded in situ: .sr-only + skip-link + :target scroll-margin +
+   tap-highlight + lazy-img fade (r152f → base.css), the blanket
+   print block (Wave 1-a → the v22 print consolidation). */
 
 /* ═══════════════════════════════════════════════════════════════════
-   ▶ Section: polish-v21.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
-   MADAREK — polish v21 · regression fixes + search polish
-   ─────────────────────────────────────────────────────────────────────
-   Fixes three concrete regressions visible in user screenshots:
-
-   1. Mega-menu stuck open
-      polish-v14 added `animation: madarek-megamenu-in ... both` to
-      .landing-megamenu. The `both` fill-mode pins the keyframes' final
-      state (opacity: 1; transform: none) after the run, overriding the
-      original CSS-hover toggle that hides it via opacity: 0. Result:
-      the menu opens on first hover and never closes again.
-      Fix: undo the v14 animation specifically for .landing-megamenu so
-      the original hover-driven show/hide works as intended.
-
-   2. Pilot stat numbers invisible
-      polish-v17 set .landing-pilot-value to color: transparent +
-      background-clip: text so the value would render in a brand
-      gradient. That works for plain-text values like "1988", but
-      <CountUp /> wraps the number in a child <span>. The child
-      inherits color: transparent but has no background-image of its
-      own — so the number is invisible. Fix: drop the gradient hack
-      entirely; use a solid accent color.
-
-   3. Landing footer too faint in dark mode
-      Existing landing-footer-* rules use --text-muted which crushes
-      against the dark surface. Lift them to --text-secondary in dark
-      mode so links remain readable.
-
-   Plus polish: richer global search dropdown, skeleton fallback for
-   LoadingState that's wrapped in cards.
-   ════════════════════════════════════════════════════════════════════ */
-
-@layer overrides {
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  FIX 1 — MEGAMENU never gets pinned open                       ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (r151g: this FIX-1 block deleted — the war is over at the root.
-  v14's animation-both entrance (the stuck-open cause) was deleted
-  at its source, so the `animation: none !important` kills and the
-  hover re-assert bang below had nothing left to fight. The item
-  stagger now lives hover/focus-scoped in the v17 section, un-banged.
-  Show/hide is landing.css's transition toggle alone, as designed.) */
-
-
-  /* (r151c: FIX 2 block deleted — .landing-pilot-value > * had zero
-     TSX consumers; the CountUp-in-gradient fix it described died with
-     the pre-redesign pilot section. LandingPage renders .ln-pilot-*.) */
-
-
-  /  [data-theme="dark"] .landing-footer-link {
-    color: color-mix(in srgb, var(--text) 78%, transparent);
-  }
-  [data-theme="dark"] .landing-footer-link:hover { color: var(--text); }
-  [data-theme="dark"] .landing-footer-heading {
-    color: var(--text);
-    opacity: 0.92;
-  }
-  [data-theme="dark"] .landing-footer-bottom { color: var(--text-secondary); }
-  [data-theme="dark"] .landing-footer-bottom a { color: var(--accent); }
-
-
-  /* (r152d: the v21 SEARCH DROPDOWN family — .search-dropdown chrome
-     + pop keyframes, .search-section(-label), the full .search-row
-     grammar with RTL companions, .search-loading/.search-shimmer, the
-     .search-empty family and .search-footer — moved home to layout.css
-     as a pure move, riding the r151c survivor base. The RM belt entries
-     (v21), the v22 craft-floor ::before 2px sweep and the v6 :active
-     press group stay here on purpose: they must keep beating the
-     layout-layer family by layer order, exactly as before.) */
-
-  /* (r152f: the v21 LOADINGSTATE pair — .card > .state skeletons
-     + page-level fallback — moved home to components.css §STATE with
-     the whole .state family (v8 + v11 + v21 together, closing the
-     layer-trap pair). The RM belt entries stay here.) */
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  GLOBAL FADE-IN FOR LATE-LOADED CONTENT                        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (Wave 9-b dead-selector sweep: the [data-loaded] fade rules
-     deleted — the attribute has zero TSX consumers (late-content
-     fades ride the Reveal primitive's data-reveal / data-revealed
-     attributes instead); the print reveal entry was trimmed to
-     match. Re-add verbatim if a consumer ever adopts the attribute.) */
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  REDUCED MOTION                                                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (prefers-reduced-motion: reduce) {
-    .landing-nav-group:hover .landing-megamenu .landing-megamenu-item,
-    .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item,
-    .search-dropdown,
-    .search-shimmer,
-    .card > .state.state-loading::before,
-    .card > .state.state-inline::before {
-      animation: none !important;
-    }
-  }
-}
-
-
+   ▶ Section: polish-v21.css — RETIRED r297 (polish dismantle, wave 4)
+   ═══════════════════════════════════════════════════════════════════
+   The regression-fix wave. Everything live folded home:
+   - the DARK LANDING FOOTER readability family → landing.css — and
+     WITH A REAL BUG FIXED: v21 shipped a stray `/` before the
+     base-link selector; esbuild preserved it verbatim and browsers
+     dropped the rule as invalid, so the 78% text lift never
+     rendered — only the :hover did. Home in landing.css the lift
+     finally applies (the intended FIX-3, restored).
+   - the RM belt entries split to their families: megamenu items →
+     landing.css, .search-dropdown/.search-shimmer → layout.css,
+     card>state shimmers → components.css.
+   Pre-r297 deletions recorded in situ: FIX-1 megamenu un-bang
+     (r151g — the v14 cause deleted at source), FIX-2 pilot gradient
+     (r151c — zero consumers), the search-dropdown family (r152d →
+     layout.css), the LoadingState pair (r152f → components.css),
+     [data-loaded] fades (Wave 9-b — zero consumers). */
 
 /* ═══════════════════════════════════════════════════════════════════
    ▶ Section: polish-v22.css — foundation consolidation (wave 1-a)
@@ -3721,9 +3345,11 @@
     border-color: color-mix(in srgb, var(--glass-border) 60%, var(--border-strong));
   }
 
-  /  @media (prefers-reduced-motion: reduce) {
-    .card.glass-premium::before { animation: none; }
-  }
+  /* r297 hazard fix: a stray `/` preceded this media block — the
+     RM kill for the glass-premium shimmer never parsed. Behaviorally
+     redundant anyway: base.css's universal RM (!important
+     animation-duration 0.01ms + iteration-count 1) already freezes
+     the shimmer, so nothing is re-homed. The hazard is gone. */
 
 
   /* ── Scroll progress indicator ────────────────────────────────── */

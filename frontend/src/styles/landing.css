@@ -1349,3 +1349,14 @@
 @media (prefers-reduced-motion: reduce) {
   .reveal-up { opacity: 1; transform: none; }
 }
+
+/* ── (r297 correction) The v21 "dark landing footer" family and the   ─
+   .landing-megamenu RM belt are DEAD ARCHAEOLOGY, not live rules:
+   the «سماء مدارك» rebuild (r198) retired the whole .landing-footer
+   and .landing-megamenu families — the rendered footer is .fo-footer
+   and the rendered nav has no megamenu (rg: zero TSX consumers for
+   either). v21's stray-`/` bug was real but doubly moot: the rule it
+   ate targeted markup that no longer exists. Nothing was folded for
+   these families; the real footer (.fo-footer-link) reads
+   --text-secondary, already lifted over AA in dark by the r282
+   secondary-ink fix. Sweep-verified before this note was written. */

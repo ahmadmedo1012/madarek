@@ -1254,3 +1254,12 @@
     transform: translateY(0);
   }
 }
+
+/* r297 (polish v21 fold): the search-family RM belt — the shimmers
+   die under reduced motion (the family lives in this sheet). */
+@media (prefers-reduced-motion: reduce) {
+  .search-dropdown,
+  .search-shimmer {
+    animation: none !important;
+  }
+}

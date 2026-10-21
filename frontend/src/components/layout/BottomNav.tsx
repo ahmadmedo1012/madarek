@@ -14,9 +14,11 @@ import {
   Home,
   BookOpen,
   Bell,
-  User,
-  Sparkles,
-  ClipboardList,
+  Bot,
+  UserCircle,
+  School,
+  ListChecks,
+  Radio,
   Users,
   Calendar,
   GraduationCap,
@@ -36,13 +38,21 @@ import { useHideOnScroll } from '../../hooks/useHideOnScroll';
 type BottomItem = { to: string; label: string; icon: LucideIcon };
 
 /* STUDENT — 5 most-used:
-   Home, Courses, AI, Alerts, Profile */
+   Home, Courses, AI, Alerts, Profile
+   r299 (final-shell): destination icons mirror nav.ts — the single
+   source the sidebar/drawer renders — so the same route never shows
+   two glyphs on one screen (drawer + bottom-nav coexist ≤920px).
+   Semantics fixed: Activity belonged to «سجل النشاط», Radio to the
+   live monitor; School/FileText/ListChecks/UserCircle/Bot are the
+   nav.ts glyphs for those routes. The HOME slot deliberately keeps
+   the universal house + «الرئيسية» convention, uniform across all
+   five roles (a bottom-bar convention, not a sidebar label copy). */
 const STUDENT: BottomItem[] = [
   { to: '/student/dashboard', label: 'الرئيسية',  icon: Home       },
   { to: '/student/courses',   label: 'مقرراتي',   icon: BookOpen   },
-  { to: '/student/ai',        label: 'المساعد',   icon: Sparkles   },
+  { to: '/student/ai',        label: 'المساعد',   icon: Bot        },
   { to: '/student/alerts',    label: 'الإشعارات', icon: Bell       },
-  { to: '/student/profile',   label: 'حسابي',     icon: User       },
+  { to: '/student/profile',   label: 'حسابي',     icon: UserCircle },
 ];
 
 /* TEACHER — 5 most-used: Home, Schedule, Students, Intelligence, Profile.
@@ -56,7 +66,7 @@ const TEACHER: BottomItem[] = [
   { to: '/teacher/schedule',     label: 'الجدول',     icon: Calendar   },
   { to: '/teacher/students',     label: 'الطلاب',     icon: Users      },
   { to: '/teacher/intelligence', label: 'الذكاء',     icon: Brain      },
-  { to: '/teacher/profile',      label: 'حسابي',      icon: User       },
+  { to: '/teacher/profile',      label: 'حسابي',      icon: UserCircle },
 ];
 
 /* ADMIN — 5 most-used: Home, Faculties, Students, Teachers, Reports.
@@ -66,8 +76,8 @@ const ADMIN: BottomItem[] = [
   { to: '/admin/dashboard',  label: 'الرئيسية',     icon: Home          },
   { to: '/admin/faculties',  label: 'الكلّيّات',      icon: Building2     },
   { to: '/admin/students',   label: 'الطلاب',       icon: GraduationCap },
-  { to: '/admin/teachers',   label: 'الأساتذة',     icon: Users         },
-  { to: '/admin/reports',    label: 'التقارير',     icon: ClipboardList },
+  { to: '/admin/teachers',   label: 'الأساتذة',     icon: School        },
+  { to: '/admin/reports',    label: 'التقارير',     icon: FileText      },
 ];
 
 /* QUALITY — 5 most-used: Home, Courses, Curriculum, Engagement, Reports.
@@ -76,7 +86,7 @@ const ADMIN: BottomItem[] = [
 const QUALITY: BottomItem[] = [
   { to: '/quality/dashboard',  label: 'الرئيسية', icon: Home          },
   { to: '/quality/courses',    label: 'المقررات', icon: BookOpen      },
-  { to: '/quality/curriculum', label: 'المناهج',  icon: ShieldCheck   },
+  { to: '/quality/curriculum', label: 'المناهج',  icon: ListChecks    },
   { to: '/quality/engagement', label: 'الانخراط', icon: Activity      },
   { to: '/quality/reports',    label: 'التقارير', icon: FileText      },
 ];
@@ -94,7 +104,7 @@ const QUALITY: BottomItem[] = [
 const OWNER: BottomItem[] = [
   { to: '/owner/dashboard',     label: 'الرئيسية',  icon: Home        },
   { to: '/owner/users',         label: 'المستخدمون', icon: Users      },
-  { to: '/owner/realtime',      label: 'المراقبة',  icon: Activity    },
+  { to: '/owner/realtime',      label: 'المراقبة',  icon: Radio       },
   { to: '/owner/notifications', label: 'الإشعارات', icon: Bell        },
   { to: '/owner/governance',    label: 'الحوكمة',   icon: ShieldCheck },
 ];
