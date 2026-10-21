@@ -443,49 +443,47 @@
   flex-shrink: 0;
 }
 
-/* The jacket at ROW scale — an identity chip, not a poster: the book's
-   tinted field, its category mark centered, the category band docked at
-   the leading edge. The .lib-book-cover anatomy (and its --book-tint
-   contract) is the shared recipe; these overrides only re-scale it for
-   the row unit (the field/spine/ink recipes in student.css keep working
-   through the same custom property). */
+/* The jacket at ROW scale — a true identity chip (final-research D):
+   the shipped r232 geometry rode --sp-13/--sp-14 (128×160px), which is
+   poster scale — every book row measured 192px tall, contradicting the
+   chip's own contract and burying the list rhythm. The chip is now a
+   48×72 jacket (the ladder's exact 2:3 book ratio, --sp-9/--sp-11):
+   the book's tinted field, the shared spine strip on the leading edge
+   (student.css ::before keeps working through --book-tint), and the
+   category glyph centered in the field. The r186/r232 category BAND is
+   retired at row scale — its text was a second read of the category
+   that already lives in the row meta (the single-read contract), and
+   no honest text size fits a 48px field. */
 .rs-book-cover {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  inline-size: var(--sp-13);
-  block-size: var(--sp-14);
-  border-radius: var(--r-md);
+  inline-size: var(--sp-9);
+  block-size: var(--sp-11);
+  border-radius: var(--r-sm);
   border: 1px solid var(--border);
   overflow: hidden;
 }
-.rs-book-cover .lib-cover-mark { color: var(--book-tint, var(--accent)); }
-.rs-book-cover .lib-cover-band {
+.rs-book-cover .lib-cover-mark {
+  /* Centered glyph — the chip's whole identity. The mix deepens the
+     book's tint toward the ink so pale tints stay perceptible on the
+     12% field in both themes (decorative, but perceivable). */
   position: absolute;
-  inset-block-end: 0;
-  inset-inline: 0;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--sp-1);
-  padding-block: var(--sp-1);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  color: var(--text-secondary);
-  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: color-mix(in srgb, var(--book-tint, var(--accent)) 72%, var(--text));
 }
 @media (max-width: 640px) {
   /* Book-row mobile geometry: chip + body share the first line, the
-     borrow tail takes a full row under them. The chip drops to a
-     pocket size and its band keeps the icon only (the category text
-     lives in the row meta above). */
+     borrow tail takes a full row under them (the chip keeps its single
+     48×72 scale at every width — no separate pocket geometry). */
   .pf-row-line { flex-wrap: wrap; row-gap: var(--sp-2); }
   .pf-row-main { flex: 1 1 0; }
   .pf-row-trailing { flex-basis: 100%; }
-  .rs-book-cover { inline-size: var(--sp-10); block-size: var(--sp-11); }
-  .rs-book-cover .lib-cover-band span { display: none; }
   .rs-book-tail { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--sp-2); }
   .rs-book-tail .btn { flex: 1 1 auto; justify-content: center; min-height: 44px; }
 }
@@ -508,7 +506,18 @@
   flex: 1;
   min-height: 0;
 }
-.doc-reader-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.doc-reader-main {
+  flex: 1;
+  min-width: 0;
+  /* final-research D: the automatic minimum (min-height:auto) sized the
+     stacked (≤920) reader to the RENDERED A4 content — the main column
+     overflowed its definite parent by ~150px and the page scrolled
+     under the FAB. min-block-size:0 lets the flex chain bound the
+     canvas area (the viewer's own 600px floor still keeps it sane). */
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+}
 .doc-reader-side { flex-shrink: 0; display: flex; }
 
 /* Floating annotations trigger — mobile only. Bottom-end, above the

@@ -51,16 +51,16 @@ describe('D-02 — the document viewer back fallback is role-aware', () => {
     );
   }
 
-  it('STUDENT keeps the library research-tab fallback', () => {
+  it('STUDENT keeps the library research-tab fallback (final-research D: the exit names it)', () => {
     useAuthStore.setState({ user: STUDENT });
     renderViewerAt('/document/notes.txt');
-    expect(screen.getByRole('link', { name: 'العودة إلى الصفحة السابقة' })).toHaveAttribute('href', '/student/library?tab=research');
+    expect(screen.getByRole('link', { name: 'العودة إلى المكتبة' })).toHaveAttribute('href', '/student/library?tab=research');
   });
 
   it('TEACHER falls back to THEIR library research tab (was: a silent guard-bounce)', () => {
     useAuthStore.setState({ user: { ...STUDENT, role: 'TEACHER', id: 't1' } });
     renderViewerAt('/document/notes.txt');
-    expect(screen.getByRole('link', { name: 'العودة إلى الصفحة السابقة' })).toHaveAttribute('href', '/teacher/library?tab=research');
+    expect(screen.getByRole('link', { name: 'العودة إلى المكتبة' })).toHaveAttribute('href', '/teacher/library?tab=research');
   });
 
   it('ADMIN falls back to their dashboard home (oversight roles have no library tab)', () => {

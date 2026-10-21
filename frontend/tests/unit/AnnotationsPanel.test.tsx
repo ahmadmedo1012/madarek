@@ -217,3 +217,20 @@ describe('AnnotationsPanel — mutation failure surfacing (audit 11-f P1-1)', ()
     expect(screen.getByText('راجع الفقرة الأخيرة')).toBeInTheDocument();
   });
 });
+
+describe('final-research D — the panel is a labelled section, not a nested aside', () => {
+  // axe (landmark-complementary-is-top-level) flagged the old
+  // <aside class="annotations-panel"> on every reader visit: a
+  // complementary landmark nested inside the reader's landmark tree.
+  // A labelled <section> carries the same semantics without the
+  // nesting rule — pinned here so the element never regresses.
+  it('renders as <section aria-label="ملاحظات البحث"> (no complementary landmark)', () => {
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+    renderPanel();
+
+    const el = document.querySelector('.annotations-panel');
+    expect(el?.tagName).toBe('SECTION');
+    expect(el?.getAttribute('aria-label')).toBe('ملاحظات البحث');
+    expect(document.querySelector('aside.annotations-panel')).toBeNull();
+  });
+});

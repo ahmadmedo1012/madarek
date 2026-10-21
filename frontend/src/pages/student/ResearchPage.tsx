@@ -278,11 +278,11 @@ function PaperRow({
       meta={
         <>
           {paper.offering && (
-            <span>
-              {paper.offering.course.name} · <span className="font-mono"><bdi>{paper.offering.course.code}</bdi></span>
-            </span>
+            <>
+              <span>{paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)</span>
+              <span aria-hidden="true">·</span>
+            </>
           )}
-          <span>·</span>
           <span>رُفع: {formatDateWithYearAr(paper.uploadedAt)}</span>
         </>
       }

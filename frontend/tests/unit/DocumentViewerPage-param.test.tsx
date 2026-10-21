@@ -18,7 +18,7 @@ import { Suspense } from 'react';
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import { render, screen, cleanup, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import DocumentViewerPage from '../../src/pages/DocumentViewerPage';
+import DocumentViewerPage, { backDestinationLabel } from '../../src/pages/DocumentViewerPage';
 
 /** src values the mocked viewer received, in order. */
 const viewerSrcLog = vi.hoisted(() => [] as string[]);
@@ -69,17 +69,20 @@ describe('DocumentViewerPage — the filename param gate (r164f)', () => {
     expect(screen.queryByTestId('pdf-viewer-stub')).toBeNull();
   });
 
-  it('the back link survives on the refusal state (the way back to context)', () => {
+  it('the back link survives on the refusal state and NAMES its destination (final-research D)', () => {
     renderAt('/document/notes.txt?back=%2Fstudent%2Fresearch');
 
-    const back = screen.getByRole('link', { name: 'العودة إلى الصفحة السابقة' });
+    // The exit names where it leads («بحوثي»), not the generic
+    // «الصفحة السابقة» — the reader is a dead-end surface, the link is
+    // the only context trail.
+    const back = screen.getByRole('link', { name: 'العودة إلى بحوثي' });
     expect(back).toHaveAttribute('href', '/student/research');
   });
 
   it('the back link falls back to the library research tab when ?back= is absent/foreign', () => {
     renderAt('/document/notes.txt');
 
-    expect(screen.getByRole('link', { name: 'العودة إلى الصفحة السابقة' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'العودة إلى المكتبة' })).toHaveAttribute(
       'href',
       '/student/library?tab=research',
     );
@@ -96,7 +99,28 @@ describe('DocumentViewerPage — the filename param gate (r164f)', () => {
 
     expect(screen.getByText('المستند غير محدّد')).toBeInTheDocument();
     expect(screen.getByText(/الرابط لا يحمل اسم ملف/)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'العودة إلى الصفحة السابقة' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'العودة إلى المكتبة' })).toBeInTheDocument();
+  });
+});
+
+describe('backDestinationLabel — the reader exit names its destination (final-research D)', () => {
+  // The reader is viewport-locked with no nav: the back link is the
+  // only context trail out, and a generic «الصفحة السابقة» names
+  // nothing. Pure-function pins — every research/library/course exit
+  // is named; unknown destinations keep the generic label (never guess
+  // a place we cannot name).
+  it('names each known destination family', () => {
+    expect(backDestinationLabel('/student/research')).toBe('بحوثي');
+    expect(backDestinationLabel('/student/library?tab=research')).toBe('المكتبة');
+    expect(backDestinationLabel('/student/library')).toBe('المكتبة');
+    expect(backDestinationLabel('/teacher/research')).toBe('مراجعة البحوث');
+    expect(backDestinationLabel('/teacher/library')).toBe('المكتبة');
+    expect(backDestinationLabel('/student/courses/cs301')).toBe('المقرر');
+  });
+
+  it('unknown destinations keep the honest generic label', () => {
+    expect(backDestinationLabel('/owner/institutions/x')).toBe('الصفحة السابقة');
+    expect(backDestinationLabel('/')).toBe('الصفحة السابقة');
   });
 });
 
