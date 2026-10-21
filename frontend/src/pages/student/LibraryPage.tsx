@@ -9,7 +9,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Pill, Badge, UserAvatar } from '../../components/primitives';
-import { ErrorState, EmptyState } from '../../components/primitives/States';
+import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Sheet } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
 import {
@@ -96,9 +96,17 @@ const LIB_TABS: Array<{ key: Tab; label: string; icon: LucideIcon }> = [
   { key: 'research', label: 'بحوث الطلاب', icon: FileText },
 ];
 
-/* r199: صفّ كتاب — RowItem داخل RowList: رقاقة هوية الكتاب (الفئة على
- * حقل بلون الكتاب — aria-hidden) | العنوان/المؤلف/الفئة | الحالة + زر
- * الاستعارة. الاسم والمؤلف والفئة تُقرأ من جسم الصف مرة واحدة. */
+/** The borrower's path to the document viewer for a paper — the same
+ * deep link every research surface mints (title + back context). */
+function paperReaderPath(fileUrl: string, title: string, back: string, paperId: string): string {
+  return `/document/${encodeURIComponent(fileUrl.split('/').pop() ?? '')}` +
+    `?title=${encodeURIComponent(title)}&back=${encodeURIComponent(back)}&paper=${encodeURIComponent(paperId)}`;
+}
+
+/* r199/r304: صفّ كتاب — RowItem داخل RowList: رقاقة هوية الكتاب (الفئة
+ * على حقل بلون الكتاب — aria-hidden) | العنوان/المؤلف/الفئة | الحالة +
+ * زر الاستعارة. الاسم والمؤلف والفئة تُقرأ من جسم الصف مرة واحدة،
+ * وشارة النسخ تحمل العدد الحقيقي في عنوانها (r304: الوصف لا يكذب). */
 function BookRow({ book }: { book: Book }) {
   const borrow = useBorrowBook();
   const unavailable = book.availableCopies === 0;
@@ -119,6 +127,10 @@ function BookRow({ book }: { book: Book }) {
     }
   };
 
+  const availabilityHint = unavailable
+    ? 'لا توجد نسخ متاحة للاستعارة حالياً'
+    : countAr(book.availableCopies, ['نسخة متاحة واحدة', 'نسختان متاحتان', 'نسخ متاحة', 'نسخة متاحة']);
+
   return (
     <RowItem
       leading={
@@ -127,8 +139,7 @@ function BookRow({ book }: { book: Book }) {
          * on the book's tint, spine strip on the leading edge).
          * Decorative by contract: aria-hidden keeps the accessible
          * title/author/category in the row body — the category name
-         * reads ONCE, in the row meta (the retired r232 band text was
-         * a second, cramped read). */
+         * reads ONCE, in the row meta. */
         <span
           className="lib-book-cover rs-book-cover"
           aria-hidden="true"
@@ -146,7 +157,7 @@ function BookRow({ book }: { book: Book }) {
       meta={
         <>
           <span>{book.author}</span>
-          <span>·</span>
+          <span aria-hidden="true">·</span>
           <span>{categoryLabel(book.category)}</span>
           {book.rating != null && (
             <span className="flex items-center gap-1 font-mono">
@@ -158,9 +169,11 @@ function BookRow({ book }: { book: Book }) {
       }
       trailing={
         <span className="rs-book-tail">
-          <Badge color={book.availableCopies > 0 ? 'green' : undefined}>
-            {book.availableCopies > 0 ? 'متاح' : 'مستعار'}
-          </Badge>
+          <span title={book.totalCopies > 0 ? `${availabilityHint} من ${formatInt(book.totalCopies)}` : undefined}>
+            <Badge color={book.availableCopies > 0 ? 'green' : undefined}>
+              {book.availableCopies > 0 ? 'متاح' : 'مستعار'}
+            </Badge>
+          </span>
           <button
             type="button"
             className="btn primary sm"
@@ -181,8 +194,38 @@ function BookRow({ book }: { book: Book }) {
   );
 }
 
-/* صفّ استعارة نشطة — الطفرة (الإرجاع) خاصة بالصف، وحالة الاستحقاق
- * تعيد استعمال منطق dueSoon نفسه (≤3 أيام) وتضيف المتأخر. */
+/* ─── استعاراتي — سطح «واصل القراءة» ────────────────────────────────
+   r304: الاستعارات النشطة ليست صفوفاً عادية — هي عملٌ غير منتهٍ: كل
+   استعارة تحمل عدّاد الوقت المتبقي (نافذة الإرجاع 14 يوماً هي المقياس
+   الصادق: التعبئة = ما تبقّى، وأحمر بعد الصفر)، وزر الإرجاع يبقى في
+   نهاية الصف. الحالة تُقرأ مرة: الشارة (متأخرة/قريبة/نشطة) + التاريخ. */
+
+/** Due-window meter — remaining time of the 14-day loan as a calm bar.
+ *  Overdue renders an empty red track: nothing left, honestly. */
+function LoanDue({ loan }: { loan: MyLoan }) {
+  const LOAN_WINDOW_DAYS = 14;
+  const daysLeft = (new Date(loan.dueAt).getTime() - Date.now()) / 86_400_000;
+  const overdue = daysLeft < 0 || loan.status === 'OVERDUE';
+  const dueSoon = !overdue && daysLeft <= 3;
+  const remainingPct = overdue ? 0 : Math.max(0, Math.min(100, (daysLeft / LOAN_WINDOW_DAYS) * 100));
+  const tier = overdue ? 'is-bad' : dueSoon ? 'is-warn' : '';
+  const days = Math.abs(Math.round(daysLeft));
+  const text = overdue
+    ? `استحقّ منذ ${countAr(days, ['يوم واحد', 'يومين', 'أيام', 'يوماً'])}`
+    : dueSoon
+      ? `ينتهي بعد ${countAr(days, ['يوم واحد', 'يومين', 'أيام', 'يوماً'])}`
+      : `متبقٍ ${countAr(days, ['يوم واحد', 'يومين', 'أيام', 'يوماً'])}`;
+  return (
+    <span className="rs-loan-due">
+      <span className="rs-loan-due-track" role="img"
+        aria-label={`الوقت المتبقي للاستعارة: ${text} من أصل ${LOAN_WINDOW_DAYS} يوماً`}>
+        <span className={`rs-loan-due-fill ${tier}`} style={{ inlineSize: `${remainingPct}%` }} />
+      </span>
+      <span className="rs-loan-due-text font-mono"><bdi>{text}</bdi></span>
+    </span>
+  );
+}
+
 function LoanRow({ loan }: { loan: MyLoan }) {
   const returnLoan = useReturnLoan();
   const daysLeft = (new Date(loan.dueAt).getTime() - Date.now()) / 86_400_000;
@@ -208,10 +251,15 @@ function LoanRow({ loan }: { loan: MyLoan }) {
       title={loan.book.title}
       meta={
         <>
+          <span>{loan.book.author}</span>
+          <span aria-hidden="true">·</span>
+          {loan.book.category && (
+            <>
+              <span>{categoryLabel(loan.book.category)}</span>
+              <span aria-hidden="true">·</span>
+            </>
+          )}
           <Badge color={state.color}>{state.label}</Badge>
-          <span>موعد الإرجاع: <bdi className="font-mono">{formatDateAr(loan.dueAt)}</bdi></span>
-          <span>·</span>
-          <span>استُعير: {formatDateAr(loan.borrowedAt)}</span>
         </>
       }
       trailing={
@@ -226,7 +274,35 @@ function LoanRow({ loan }: { loan: MyLoan }) {
           {returnLoan.isPending ? 'جارٍ الإرجاع…' : 'إرجاع'}
         </button>
       }
-    />
+      defaultExpanded
+    >
+      {/* The due surface: meter + the two real dates — the body owns
+          the time story so the row line stays one calm read. Open by
+          default: unfinished work shows its clock without a click. */}
+      <div className="flex-col gap-2" style={{ width: '100%' }}>
+        <LoanDue loan={loan} />
+        <span className="rs-row-meta">
+          <span>موعد الإرجاع: <bdi className="font-mono">{formatDateAr(loan.dueAt)}</bdi></span>
+          <span aria-hidden="true">·</span>
+          <span>استُعير: {formatDateAr(loan.borrowedAt)}</span>
+        </span>
+      </div>
+    </RowItem>
+  );
+}
+
+/** Shape-matched loans placeholder — mirrors a loan row (title bar +
+ * meter line), the loading-closure craft floor. */
+function LoansSkeleton() {
+  return (
+    <div className="rs-loans" aria-busy="true" aria-live="polite">
+      {[0, 1].map((i) => (
+        <div key={i} className="flex-col gap-2" aria-hidden>
+          <Skeleton width="45%" height={14} />
+          <Skeleton width="70%" height={8} />
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -326,6 +402,30 @@ export default function LibraryPage() {
     ? search.data!.data
     : research.data ?? [];
 
+  // r304 — sensible grouping: the archive reads by course when browsing
+  // (two or more distinct courses present); search results stay flat so
+  // the match order (title → abstract → body) is never scattered.
+  const researchGroups = (() => {
+    if (researchInUse || visibleResearch.length === 0) return null;
+    const byCourse = new Map<string, { label: string; code: string | null; papers: typeof visibleResearch }>();
+    for (const p of visibleResearch) {
+      const course = p.offering?.course;
+      const key = course ? course.code : '—';
+      const entry = byCourse.get(key);
+      if (entry) {
+        entry.papers.push(p);
+      } else {
+        byCourse.set(key, {
+          label: course ? course.name : 'بحوث عامة',
+          code: course ? course.code : null,
+          papers: [p],
+        });
+      }
+    }
+    if (byCourse.size < 2) return null;
+    return [...byCourse.values()];
+  })();
+
   // Research-tab facts — one StatLine, no card wall.
   const researchCells: StatLineItem[] = [
     {
@@ -390,6 +490,42 @@ export default function LibraryPage() {
     </div>
   );
 
+  /* The toolbar's trailing count — each tab names its own scope
+     honestly (the pill never lies about what it covers). */
+  const toolbarCount = isResearchTab
+    ? (researchInUse
+      ? <><bdi>{visibleResearch.length}</bdi> نتيجة لـ «<bdi>{debouncedQ}</bdi>»</>
+      : <><bdi>{visibleResearch.length}</bdi> بحث منشور</>)
+    : (books.isPending
+      ? '…'
+      : totalBooks !== null
+        ? countAr(totalBooks, booksFiltered ? ['نتيجة واحدة', 'نتيجتان', 'نتائج', 'نتيجة'] : BOOK_UNIT)
+        : '—');
+
+  /* The active filter chip — books tab only; the collapsed filter
+     state names itself (matches the Sheet trigger's text). */
+  const filterChip = !isResearchTab && cat !== 'all' && (
+    <button
+      type="button"
+      className="rs-filter-chip"
+      onClick={() => setCat('all')}
+      aria-label={`إزالة تصفية ${categoryLabel(cat)}`}
+    >
+      <Icon icon={SlidersHorizontal} size={12} />
+      {categoryLabel(cat)}
+      <Icon icon={X} size={12} />
+    </button>
+  );
+
+  const researchEmpty = (
+    <EmptyState
+      icon={FileText}
+      illustration={q ? 'empty-search' : 'empty-research'}
+      title={q ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
+      description={q ? `لم نجد بحثاً يطابق "${q}" — جرّب كلمات أخرى.` : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
+    />
+  );
+
   return (
     <PageFrame width="default">
       <PageHeader
@@ -402,39 +538,47 @@ export default function LibraryPage() {
       />
 
       {/* Search-first: the page opens with the field, not a KPI wall.
-          Both tabs share one debounced query; the placeholder names the
-          searched scope so the pill never lies about what it covers. */}
-      <div className="rs-search" role="search">
-        <span className="rs-search-icon"><Icon icon={Search} size={18} /></span>
-        <input
-          type="text"
-          placeholder={isResearchTab
-            ? 'ابحث في عنوان البحث، الملخص، أو محتوى البحث الكامل…'
-            : 'ابحث عن كتاب أو مؤلف…'}
-          aria-label={isResearchTab ? 'ابحث في البحوث المنشورة' : 'ابحث في الكتب'}
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-        />
-        {q && (
-          <button
-            type="button"
-            className="rs-search-clear"
-            onClick={() => setQ('')}
-            aria-label="مسح البحث"
-          >
-            <Icon icon={X} size={14} />
-          </button>
-        )}
+          Both tabs share one debounced query; the count at the bar's
+          trailing edge names the searched scope so it never lies about
+          what it covers. */}
+      <div className="rs-toolbar" role="search">
+        <div className="rs-search">
+          <span className="rs-search-icon"><Icon icon={Search} size={18} /></span>
+          <input
+            type="text"
+            placeholder={isResearchTab
+              ? 'ابحث في عنوان البحث، الملخص، أو محتوى البحث الكامل…'
+              : 'ابحث عن كتاب أو مؤلف…'}
+            aria-label={isResearchTab ? 'ابحث في البحوث المنشورة' : 'ابحث في الكتب'}
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+          />
+          {q && (
+            <button
+              type="button"
+              className="rs-search-clear"
+              onClick={() => setQ('')}
+              aria-label="مسح البحث"
+            >
+              <Icon icon={X} size={14} />
+            </button>
+          )}
+        </div>
+        <div className="rs-toolbar-side">
+          {filterChip}
+          <span className="rs-count">{toolbarCount}</span>
+        </div>
       </div>
 
       {!isResearchTab ? (
         <div role="tabpanel" id="lib-panel-books" aria-labelledby="lib-tab-books" className="flex-col gap-4">
-          {/* استعاراتي النشطة — rows when open loans exist, one honest
-              line when they don't (no empty-state wall on every visit). */}
+          {/* استعاراتي — the continue surface: rows when open loans
+              exist, one honest line when they don't (no empty-state
+              wall on every visit). */}
           <section className="flex-col gap-2" aria-label="استعاراتي النشطة">
             <div className="flex items-baseline gap-2 flex-wrap">
-              <SectionHeader title="استعاراتي النشطة" as="h2" />
-              {!loans.isPending && !loans.isError && (
+              <SectionHeader title="استعاراتي" as="h2" />
+              {!loans.isPending && !loans.isError && openLoans.length > 0 && (
                 <span className="rs-row-meta">
                   {countAr(openLoans.length, ['استعارة واحدة', 'استعارتان', 'استعارات', 'استعارة'])}
                   {dueSoon > 0 ? ` · ${formatInt(dueSoon)} تنتهي قريباً` : ''}
@@ -442,7 +586,7 @@ export default function LibraryPage() {
               )}
             </div>
             {loans.isPending ? (
-              <RowList aria-label="استعاراتي" loading density="compact" />
+              <LoansSkeleton />
             ) : loans.isError ? (
               <ErrorState error={loans.error} onRetry={() => loans.refetch()} />
             ) : openLoans.length === 0 ? (
@@ -450,11 +594,11 @@ export default function LibraryPage() {
                 <strong>لا استعارات نشطة</strong> — اضغط «استعارة» على أي كتاب متاح ليظهر هنا مع موعد إرجاعه خلال 14 يوماً.
               </p>
             ) : (
-              <RowList aria-label="استعاراتي" density="compact">
+              <div className="rs-loans">
                 {openLoans.map((l) => (
                   <LoanRow key={l.id} loan={l} />
                 ))}
-              </RowList>
+              </div>
             )}
           </section>
 
@@ -487,15 +631,6 @@ export default function LibraryPage() {
                 ))}
               </>
             )}
-            trailing={
-              <span className="rs-count">
-                {books.isPending
-                  ? '…'
-                  : totalBooks !== null
-                    ? countAr(totalBooks, booksFiltered ? ['نتيجة واحدة', 'نتيجتان', 'نتائج', 'نتيجة'] : BOOK_UNIT)
-                    : '—'}
-              </span>
-            }
           />
 
           {/* Rendered unconditionally so a viewport resize while open
@@ -592,31 +727,38 @@ export default function LibraryPage() {
         <div role="tabpanel" id="lib-panel-research" aria-labelledby="lib-tab-research" className="flex-col gap-4">
           <StatLine items={researchCells} />
 
-          <p className="rs-count" style={{ margin: 0 }}>
-            {researchInUse
-              ? <><bdi>{visibleResearch.length}</bdi> نتيجة لـ «<bdi>{debouncedQ}</bdi>»</>
-              : <><bdi>{visibleResearch.length}</bdi> بحث منشور</>}
-          </p>
-
-          <RowList
-            aria-label="قائمة البحوث المنشورة"
-            loading={researchInUse ? search.isPending : research.isPending}
-            empty={
-              <EmptyState
-                icon={FileText}
-                illustration={q ? 'empty-search' : 'empty-research'}
-                title={q ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
-                description={q ? `لم نجد بحثاً يطابق "${q}" — جرّب كلمات أخرى.` : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
-              />
-            }
-          >
-            {!(researchInUse ? search.isError : research.isError) && visibleResearch.map((p) => {
-              const hit = researchInUse ? (p as ResearchSearchHit) : null;
-              return (
-                <ResearchHitRow key={p.id} paper={p} hit={hit} />
-              );
-            })}
-          </RowList>
+          {/* Grouped when browsing ≥2 courses; flat while searching or
+              when everything lives in one course (no decorative group
+              headers around a single entry). */}
+          {(!researchInUse && !research.isPending && !research.isError && researchGroups) ? (
+            researchGroups.map((g) => (
+              <section key={g.code ?? 'general'} className="rs-group" aria-label={`${g.code ? g.code + ' — ' : ''}${g.label}`}>
+                <div className="rs-group-head">
+                  <h3 className="rs-group-title">
+                    {g.code && <bdi className="font-mono">{g.code}</bdi>}
+                    {g.code ? ' — ' : ''}{g.label}
+                  </h3>
+                  <span className="rs-group-count">{countAr(g.papers.length, ['بحث واحد', 'بحثان', 'بحوث', 'بحوثاً'])}</span>
+                </div>
+                <RowList aria-label={`بحوث ${g.label}`}>
+                  {g.papers.map((p) => <ResearchHitRow key={p.id} paper={p} hit={null} />)}
+                </RowList>
+              </section>
+            ))
+          ) : (
+            <RowList
+              aria-label="قائمة البحوث المنشورة"
+              loading={researchInUse ? search.isPending : research.isPending}
+              empty={researchEmpty}
+            >
+              {!(researchInUse ? search.isError : research.isError) && visibleResearch.map((p) => {
+                const hit = researchInUse ? (p as ResearchSearchHit) : null;
+                return (
+                  <ResearchHitRow key={p.id} paper={p} hit={hit} />
+                );
+              })}
+            </RowList>
+          )}
           {(researchInUse ? search.isError : research.isError) && (
             <ErrorState
               error={researchInUse ? search.error : research.error}
@@ -630,7 +772,9 @@ export default function LibraryPage() {
 }
 
 /* صف نتيجة بحث — المقتطف مع إبراز المطابقة هو جسم الصف (مفتوح
- * افتراضياً؛ القابلة للطيّ لمن يريد قائمة أهدأ). */
+ * افتراضياً؛ القابلة للطيّ لمن يريد قائمة أهدأ). r304: العنوان نفسه
+ * هو الطريق إلى المستند (وصلة حقيقية بوصلة رجوع صحيحة) — «افتح»
+ * واضحة قبل أي توسيع. */
 function ResearchHitRow({ paper, hit }: {
   paper: {
     id: string;
@@ -646,6 +790,7 @@ function ResearchHitRow({ paper, hit }: {
   };
   hit: ResearchSearchHit | null;
 }) {
+  const titleInner = paper.title;
   return (
     <RowItem
       leading={
@@ -655,7 +800,17 @@ function ResearchHitRow({ paper, hit }: {
           size={40}
         />
       }
-      title={paper.title}
+      title={
+        paper.fileUrl ? (
+          <Link
+            to={paperReaderPath(paper.fileUrl, paper.title, '/student/library?tab=research', paper.id)}
+            className="rs-doc-link"
+            aria-label={`اقرأ البحث: ${paper.title}`}
+          >
+            {titleInner}
+          </Link>
+        ) : titleInner
+      }
       meta={
         <>
           <span>{paper.student.firstName} {paper.student.lastName}</span>
@@ -720,7 +875,7 @@ function ResearchHitRow({ paper, hit }: {
         {paper.fileUrl && (
           <div className="rs-row-actions">
             <Link
-              to={`/document/${encodeURIComponent(paper.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(paper.title)}&back=${encodeURIComponent('/student/library?tab=research')}&paper=${encodeURIComponent(paper.id)}`}
+              to={paperReaderPath(paper.fileUrl, paper.title, '/student/library?tab=research', paper.id)}
               className="btn primary sm"
             >
               <Icon icon={FileText} size={13} />

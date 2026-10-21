@@ -1,4 +1,5 @@
-import { lazy, Suspense, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useRef, useState } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ChevronRight, FileQuestion, MessageSquare } from 'lucide-react';
@@ -7,6 +8,7 @@ import { EmptyState } from '../components/primitives/States';
 import { Sheet } from '../components/overlays';
 import { useIsNarrowLayout } from '../hooks/useIsNarrowLayout';
 import { apiBaseURL } from '../lib/api';
+import { countAr } from '../lib/format';
 import { ROLE_HOME } from '../lib/nav';
 import { useAuthStore, type AppRole } from '../stores/auth.store';
 import { isViewerFilenameParam } from '../components/pdf/loadError';
@@ -79,6 +81,82 @@ function fileNamespace(raw: string | null): FileNamespace {
   return raw === 'materials' ? 'materials' : 'papers';
 }
 
+/* ─── The resizable review column (r304) ────────────────────────────
+   The annotations panel is a WORKSPACE, not a fixed sidebar: the drag
+   strip between document and panel adjusts its width (280–560px),
+   persists in localStorage, and is keyboard-operable (the separator
+   carries role/valuenow + arrow keys). RTL-aware: the handle tracks
+   the inline-end panel, so the drag sign flips with the direction. */
+const SIDE_W_MIN = 280;
+const SIDE_W_MAX = 560;
+const SIDE_W_DEFAULT = 320;
+const SIDE_W_KEY = 'mdrk-doc-side-w';
+
+function readStoredSideWidth(): number {
+  try {
+    const raw = window.localStorage.getItem(SIDE_W_KEY);
+    const n = raw ? Number(raw) : NaN;
+    if (Number.isFinite(n)) return Math.max(SIDE_W_MIN, Math.min(SIDE_W_MAX, n));
+  } catch { /* private mode / storage off — the default stands */ }
+  return SIDE_W_DEFAULT;
+}
+
+function useSideColumnWidth(enabled: boolean) {
+  const [width, setWidth] = useState<number>(readStoredSideWidth);
+  const [dragging, setDragging] = useState(false);
+  const handleRef = useRef<HTMLDivElement>(null);
+
+  const commit = useCallback((w: number) => {
+    const next = Math.max(SIDE_W_MIN, Math.min(SIDE_W_MAX, Math.round(w)));
+    setWidth(next);
+    try { window.localStorage.setItem(SIDE_W_KEY, String(next)); } catch { /* ignore */ }
+  }, []);
+
+  const onPointerDown = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!enabled) return;
+    e.preventDefault();
+    const handle = handleRef.current;
+    if (!handle) return;
+    handle.setPointerCapture(e.pointerId);
+    setDragging(true);
+    const rtl = document.documentElement.dir === 'rtl';
+    const startX = e.clientX;
+    const startW = width;
+    const onMove = (ev: PointerEvent) => {
+      const delta = ev.clientX - startX;
+      // LTR: panel on the inline-end (right) — dragging left grows it.
+      // RTL: panel on the inline-end (left) — dragging right grows it.
+      commit(startW + (rtl ? delta : -delta));
+    };
+    const onUp = () => {
+      handle.releasePointerCapture(e.pointerId);
+      handle.removeEventListener('pointermove', onMove);
+      handle.removeEventListener('pointerup', onUp);
+      setDragging(false);
+    };
+    handle.addEventListener('pointermove', onMove);
+    handle.addEventListener('pointerup', onUp);
+  }, [enabled, width, commit]);
+
+  const onKeyDown = useCallback((e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (!enabled) return;
+    const rtl = document.documentElement.dir === 'rtl';
+    const step = e.shiftKey ? 48 : 16;
+    if (e.key === (rtl ? 'ArrowLeft' : 'ArrowRight')) {
+      e.preventDefault();
+      commit(width - step);
+    } else if (e.key === (rtl ? 'ArrowRight' : 'ArrowLeft')) {
+      e.preventDefault();
+      commit(width + step);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      commit(SIDE_W_DEFAULT);
+    }
+  }, [enabled, width, commit]);
+
+  return { width, dragging, handleRef, onPointerDown, onKeyDown };
+}
+
 export default function DocumentViewerPage() {
   const params = useParams<{ filename: string }>();
   const [search] = useSearchParams();
@@ -101,6 +179,10 @@ export default function DocumentViewerPage() {
    * viewport for the paper itself. */
   const isNarrow = useIsNarrowLayout(920);
   const [notesOpen, setNotesOpen] = useState(false);
+
+  /* r304: the resizable annotations column — desktop only (the Sheet
+   * recomposition owns ≤920). */
+  const sideColumn = useSideColumnWidth(!isNarrow);
 
   const jumpAndClose = (n: number) => {
     controlRef.current?.jumpToPage(n);
@@ -166,16 +248,25 @@ export default function DocumentViewerPage() {
       <PageFrame width="full">
       {/* Reader head — quiet chrome: one back affordance (it names
           its destination) + the paper's title; the reading surface owns
-          the rest of the viewport. */}
+          the rest of the viewport. The page count rides the head once
+          the document resolves — context, not chrome. */}
       <header className="doc-reader-head">
         <Link to={back} className="back-link document-viewer-back">
           <Icon icon={ChevronRight} size={14} />
           {backLabel}
         </Link>
         <h1 className="doc-reader-title">{title ?? 'مستند'}</h1>
+        {numPages > 1 && (
+          <span className="rs-count doc-reader-meta">
+            {countAr(numPages, ['صفحة واحدة', 'صفحتان', 'صفحات', 'صفحة'])}
+          </span>
+        )}
       </header>
 
-      <div className="doc-reader">
+      <div
+        className="doc-reader"
+        style={{ ['--doc-side-w' as never]: `${sideColumn.width}px` }}
+      >
         <div className="doc-reader-main">
           <Suspense fallback={<ViewerFallback />}>
             <PdfViewer
@@ -189,10 +280,26 @@ export default function DocumentViewerPage() {
           </Suspense>
         </div>
 
-        {/* Desktop split: annotations ride beside the document (the
-            panel owns its own scroll). */}
+        {/* Desktop split: the drag strip + annotations ride beside the
+            document (the panel owns its own scroll). */}
         {!isNarrow && (
-          <div className="doc-reader-side">{annotationsPanel}</div>
+          <>
+            <div
+              ref={sideColumn.handleRef}
+              role="separator"
+              aria-orientation="vertical"
+              aria-label="تغيير عرض لوحة الملاحظات"
+              aria-valuenow={sideColumn.width}
+              aria-valuemin={280}
+              aria-valuemax={560}
+              tabIndex={0}
+              className="doc-side-resize"
+              data-dragging={sideColumn.dragging ? 'true' : undefined}
+              onPointerDown={sideColumn.onPointerDown}
+              onKeyDown={sideColumn.onKeyDown}
+            />
+            <div className="doc-reader-side">{annotationsPanel}</div>
+          </>
         )}
       </div>
 

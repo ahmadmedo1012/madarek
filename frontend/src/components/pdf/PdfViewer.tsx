@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo, memo } from 'react';
 import {
   ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2, Minimize2,
-  Download, Search, X,
+  Download, Search, X, LayoutGrid,
 } from 'lucide-react';
 import { Icon } from '../Icon';
 import { ErrorState } from '../primitives/States';
@@ -106,6 +106,143 @@ function PdfPageSkeleton({ label = 'جارٍ تحميل المستند…' }: { 
   return <div className="pdf-page-skeleton" role="status" aria-label={label} />;
 }
 
+/* ─── Thumbnail rail — the page-level navigator ─────────────────────
+   r304 (the serious workspace): the page canvas stays primary; the
+   rail is a secondary navigator that only exists when summoned from
+   the toolbar. Each thumbnail is a real page render at rail scale,
+   painted LAZILY as the button scrolls near the rail's viewport
+   (IntersectionObserver) — a 300-page document never renders 300
+   canvases. Rendered pages cache as data URLs (keyed by document), so
+   re-scrolling is free and the canvas elements themselves unmount.
+   All pdf.js work is guarded by the generation counter semantics of
+   the viewer: the rail reads the CURRENT doc through props and every
+   async hop re-checks that the document did not change under it. */
+
+const THUMB_RENDER_WIDTH = 128;
+
+/** One thumbnail button. `pageKey` namespaces the cache per document. */
+const PdfThumb = memo(function PdfThumb({
+  page, doc, pageKey, active, cache, onJump,
+}: {
+  page: number;
+  doc: PDFDocumentProxy;
+  pageKey: string;
+  active: boolean;
+  cache: Map<string, string>;
+  onJump: (n: number) => void;
+}) {
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const cached = cache.get(`${pageKey}:${page}`);
+  const [dataUrl, setDataUrl] = useState<string | null>(cached ?? null);
+
+  // Active thumb follows the page — smooth, only when it appears.
+  useEffect(() => {
+    if (active) {
+      btnRef.current?.scrollIntoView({ block: 'nearest' });
+    }
+  }, [active]);
+
+  useEffect(() => {
+    const btn = btnRef.current;
+    if (!btn || dataUrl) return;
+    let cancelled = false;
+
+    const paint = async () => {
+      try {
+        const pageObj = await doc.getPage(page);
+        if (cancelled) return;
+        const base = pageObj.getViewport({ scale: 1 });
+        const scale = THUMB_RENDER_WIDTH / base.width;
+        const viewport = pageObj.getViewport({ scale });
+        const canvas = document.createElement('canvas');
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        canvas.width = Math.floor(viewport.width * dpr);
+        canvas.height = Math.floor(viewport.height * dpr);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        await pageObj.render({ canvasContext: ctx, viewport }).promise;
+        if (cancelled) return;
+        const url = canvas.toDataURL('image/png');
+        cache.set(`${pageKey}:${page}`, url);
+        setDataUrl(url);
+      } catch {
+        // A destroyed document or a failed page — the ghost placeholder
+        // stays; nothing here is worth an error surface.
+      }
+    };
+
+    // IntersectionObserver root = the rail's scroll box (the closest
+    // scrolling ancestor). Fallback: paint immediately.
+    if (typeof IntersectionObserver === 'undefined') {
+      void paint();
+      return () => { cancelled = true; };
+    }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        io.disconnect();
+        void paint();
+      }
+    }, { rootMargin: '320px 0px' });
+    io.observe(btn);
+    return () => {
+      cancelled = true;
+      io.disconnect();
+    };
+  }, [doc, page, pageKey, cache, dataUrl]);
+
+  return (
+    <button
+      ref={btnRef}
+      type="button"
+      className={`pdf-thumb${active ? ' on' : ''}`}
+      onClick={() => onJump(page)}
+      aria-label={`الانتقال إلى الصفحة ${page}`}
+      aria-current={active ? 'true' : undefined}
+    >
+      <span className="pdf-thumb-canvas" aria-hidden="true">
+        {dataUrl
+          ? <img src={dataUrl} alt="" width={THUMB_RENDER_WIDTH} loading="lazy" />
+          : <span className="pdf-thumb-ghost" style={{ display: 'block', inlineSize: '100%' }} />}
+      </span>
+      <span className="pdf-thumb-num font-mono">{page}</span>
+    </button>
+  );
+});
+
+function PdfThumbnails({
+  doc, page, onJump,
+}: {
+  doc: PDFDocumentProxy;
+  page: number;
+  onJump: (n: number) => void;
+}) {
+  // Per-document cache namespace — the src changes with the document,
+  // so the fingerprints pair (stable per PDF) plus page is unique.
+  const cacheRef = useRef<Map<string, string>>(new Map());
+  const pageKey = doc.fingerprints?.[0] ?? 'doc';
+  const pages = useMemo(
+    () => Array.from({ length: doc.numPages }, (_, i) => i + 1),
+    [doc.numPages],
+  );
+  return (
+    <nav className="pdf-thumbs" aria-label="مصغّرات الصفحات">
+      {pages.map((n) => (
+        <PdfThumb
+          key={n}
+          page={n}
+          doc={doc}
+          pageKey={pageKey}
+          active={n === page}
+          cache={cacheRef.current}
+          onJump={onJump}
+        />
+      ))
+      }
+    </nav>
+  );
+}
+
 export default function PdfViewer({ src, title, fill = true, controlRef, onPageChange, onDocumentLoaded }: PdfViewerProps) {
   const [doc, setDoc] = useState<DocState | null>(null);
   const [page, setPage] = useState(1);
@@ -118,6 +255,9 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const [searchHits, setSearchHits] = useState<{ page: number; text: string }[]>([]);
   const [searchIdx, setSearchIdx] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  /** r304: the thumbnail rail — summoned from the toolbar, never
+   *  default-on (the paper owns the first impression). */
+  const [thumbsOpen, setThumbsOpen] = useState(false);
   /** Bumped by the error-state retry button — re-runs the load effect. */
   const [retryToken, setRetryToken] = useState(0);
   /** True while a search walk is visiting pages — without it, a
@@ -662,6 +802,17 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
       <div className="pdf-toolbar">
         {title && <div className="pdf-title" title={title}>{title}</div>}
         <div className="pdf-toolbar-group" role="group" aria-label="التنقل بين الصفحات">
+          <button
+            type="button"
+            className={`pdf-btn${thumbsOpen ? ' on' : ''}`}
+            onClick={() => setThumbsOpen((v) => !v)}
+            aria-pressed={thumbsOpen}
+            title="مصغّرات الصفحات"
+            aria-label="مصغّرات الصفحات"
+            disabled={!doc}
+          >
+            <Icon icon={LayoutGrid} size={16} />
+          </button>
           <button type="button" className="pdf-btn" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} title="الصفحة السابقة" aria-label="الصفحة السابقة">
             <Icon icon={ChevronRight} size={16} />
           </button>
@@ -780,8 +931,16 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         </div>
       )}
 
-      {/* Document area */}
-      <div className="pdf-canvas-wrap" ref={containerRef}>
+      {/* Document area — the workspace composition: the thumbnail
+          rail (when summoned) rides the inline-start edge; the canvas
+          keeps the rest. The rail is a sibling, never an overlay of
+          the paper at desktop widths; ≤920 it becomes an in-viewer
+          drawer (pdf.css). */}
+      <div className="pdf-body">
+        {thumbsOpen && doc && !loading && !error && (
+          <PdfThumbnails doc={doc.pdf} page={page} onJump={setPage} />
+        )}
+        <div className="pdf-canvas-wrap" ref={containerRef}>
         {loading && <PdfPageSkeleton />}
         {/* !loading gate: a superseded render of the previous document can
             plant a page error right as the next load starts — the skeleton
@@ -822,6 +981,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
           <Icon icon={ZoomIn} size={12} />
           قرّب بإصبعين لعرض التفاصيل
         </p>
+        </div>
       </div>
     </div>
   );
