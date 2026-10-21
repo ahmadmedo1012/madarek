@@ -127,10 +127,28 @@ describe('MatrixPage — heatmap cells link gaps to lectures (r164d)', () => {
     ];
     renderMatrix();
 
-    const weak = screen.getByRole('link', { name: /التحكم بالازدحام/ });
-    expect(weak).toHaveAttribute('href', '/student/lectures/lec-weak');
-    const poor = screen.getByRole('link', { name: /توجيه المسار/ });
-    expect(poor).toHaveAttribute('href', '/student/lectures/lec-poor');
+    /* r299 (final C): the concept now rides TWO links that must agree —
+       the gaps ROW (the whole row is the link, RowItem to) and the
+       heatmap CELL. Every link the concept names targets the SAME
+       recommended lecture. */
+    const weakLinks = screen.getAllByRole('link', { name: /التحكم بالازدحام/ });
+    expect(weakLinks.length).toBe(2);
+    for (const link of weakLinks) {
+      expect(link).toHaveAttribute('href', '/student/lectures/lec-weak');
+    }
+    // …and one of them is the heatmap cell itself.
+    expect(document.querySelector('a.matrix-cell.lvl-weak')).toHaveAttribute(
+      'href', '/student/lectures/lec-weak',
+    );
+
+    const poorLinks = screen.getAllByRole('link', { name: /توجيه المسار/ });
+    expect(poorLinks.length).toBe(2);
+    for (const link of poorLinks) {
+      expect(link).toHaveAttribute('href', '/student/lectures/lec-poor');
+    }
+    expect(document.querySelector('a.matrix-cell.lvl-poor')).toHaveAttribute(
+      'href', '/student/lectures/lec-poor',
+    );
   });
 
   it('strong / good / untouched cells stay informational — NOT links (no target exists)', () => {

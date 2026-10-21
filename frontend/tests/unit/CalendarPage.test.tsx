@@ -157,10 +157,17 @@ describe('StudentCalendarPage — loading / error shells', () => {
     mocks.dashboardPending = true;
     mocks.examsPending = true;
     const { container } = renderPage();
-    expect(container.querySelector('.page[aria-busy="true"]')).toBeTruthy();
+    /* r299 (final C): the shells ride the pattern anatomy — the h1
+       stays (pf-page-title), the busy announcement lives on the
+       skeleton band, and the month's footprint holds via the
+       .cal-grid-skel mirror (never the interactive .cal-grid). */
+    expect(container.querySelector('.pf-page .pf-page-title')).toBeTruthy();
     expect(screen.getByText('جارٍ جمع مواعيدك…')).toBeTruthy();
-    // No grid while loading.
+    expect(container.querySelector('[aria-busy="true"]')).toBeTruthy();
+    expect(container.querySelectorAll('.cal-grid-skel .cal-cell-skel')).toHaveLength(42);
+    // No interactive grid while loading.
     expect(container.querySelector('.cal-grid')).toBeNull();
+    expect(container.querySelector('button.cal-cell')).toBeNull();
   });
 
   it('renders the Arabic error state with a retry when a source fails', () => {
