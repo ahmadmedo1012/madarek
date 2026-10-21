@@ -81,7 +81,13 @@
 .pf-page-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--fs-h1);
+  /* r304: the product header register — 24px, not the landing-scale
+     30px. A framed page shares its column with rows, stats and
+     filters; the title must lead the hierarchy without dominating
+     the canvas (Superlist: page titles are compact, metadata does
+     the talking). The topbar's 18px chrome voice still reads as the
+     step below it. */
+  font-size: var(--fs-h2);
   line-height: var(--lh-snug);
   font-weight: 700;
   color: var(--text);
@@ -127,12 +133,15 @@
 .pf-section-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--fs-h2);
+  /* r304: sections step DOWN from the 24px page title — 18px keeps the
+     scan ladder legible (page 24 → section 18 → body 16) instead of
+     two equal-weight 24px voices competing inside one column. */
+  font-size: var(--fs-h3);
   line-height: var(--lh-snug);
   font-weight: 600;
   color: var(--text);
 }
-h3.pf-section-title { font-size: var(--fs-h3); }
+h3.pf-section-title { font-size: var(--fs-body); }
 .pf-section-desc {
   margin: 0;
   font-size: var(--fs-body);
@@ -174,7 +183,11 @@ a.pf-row-link {
   color: inherit;
   text-decoration: none;
 }
+/* r304: a link row is a map entry — hover lifts the whole line onto
+   the quiet well so the hover target is unmistakable, not just the
+   title's text box. Touch devices keep the calm rest state. */
 @media (hover: hover) and (pointer: fine) {
+  a.pf-row-link:hover { background: var(--surface-2); }
   a.pf-row-link:hover .pf-row-title { color: var(--accent-strong); }
 }
 .pf-rowlist.compact .pf-row-line { padding-block: var(--sp-2-5); }
@@ -324,7 +337,14 @@ a.pf-row-link {
   position: sticky;
   top: 0;
   z-index: 3;
-  background: var(--bg);
+  /* r304: the pinned bar frosts over the scroll instead of painting a
+     hard band — translucent paper + blur + a hairline that appears
+     only in the pinned state, so filters stay readable while rows
+     slide beneath them (the same register as the topbar glass). */
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  border-block-end: 1px solid var(--border-faint);
   padding-block: var(--sp-3);
   margin-block: calc(-1 * var(--sp-3));
 }

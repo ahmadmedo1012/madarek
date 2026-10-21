@@ -36,9 +36,13 @@ import './styles/auth.css';
 import './styles/notifications.css';
 import './styles/student.css';
 import './styles/polish.css';
-// Final product-wide visual language: quiet workspace surfaces, controls,
-// navigation and loading states. Kept last so it can normalize page families.
-import './styles/final-visual-system.css';
+// r304: the r301/r302 «final-visual-system.css» bolt-on is DELETED —
+// its declarations were folded back into their canonical layer homes
+// (layout.css for the sidebar/nav chrome, components.css for buttons/
+// tables/states/skeletons). An unlayered sheet parked last in main.tsx
+// silently masked the overrides layer (polish's collapsed-rail topbar
+// tint) and regressed the mobile table scroll rung; the cascade now
+// ends at polish.css, and every recipe lives in exactly one home.
 import App from './App';
 
 // axe-core: surface a11y violations in the dev console only. No prod cost.

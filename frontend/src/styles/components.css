@@ -383,8 +383,12 @@
     --_btn-bd: var(--border);
     --_btn-bg-hover: var(--surface-3);
     --_btn-bd-hover: var(--border-strong);
-    /* 012 elevation language — button resting/hover shadows. */
-    --_btn-shadow: var(--elev-1);
+    /* 012 elevation language — button resting/hover shadows.
+       r304 fold (ex «final-visual-system»): resting buttons are FLAT —
+       the unlayered bolt-on's `box-shadow: none` is now the canonical
+       value here. Depth on the chrome comes from surface steps and
+       hairlines; elevation stays reserved for overlays and hover. */
+    --_btn-shadow: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -426,7 +430,10 @@
      from these groups — zero TSX consumers (pages render the compound
      `btn primary` form; Form.tsx VARIANT_CLASS maps variants the same
      way). The compound selectors stay. */
-  .btn.primary:hover, .btn.accent:hover { box-shadow: var(--elev-2); }
+  /* r304 fold (ex «final-visual-system»): hover deepens the CTA's own
+     accent pool (18%) instead of swapping to a gray elevation step —
+     the lift still reads, but the color story never changes. */
+  .btn.primary:hover, .btn.accent:hover { box-shadow: 0 var(--sp-2) var(--sp-4) color-mix(in srgb, var(--accent) 18%, transparent); }
   /* 5-C1 (A2 P2-8): the −1px button lift rides the hover-capable gate
      (ungated, iOS sticky-hover pinned the lift on the first tap);
      the bg/border/shadow hover stays ungated like .btn:hover above. */
@@ -458,15 +465,16 @@
     --_btn-bd: var(--neutral-900);
     --_btn-bg-hover: var(--neutral-700);
     --_btn-bd-hover: var(--neutral-700);
-    --_btn-shadow: var(--elev-1);
+    /* r304: flat at rest like every button — the resting pool below is
+       the CTA's own accent tint, not an elevation step. */
+    --_btn-shadow: none;
     position: relative;
     overflow: hidden;
-    /* r294 (polish v8 fold): chrome bevel (hairline + inner top
-       light), not elevation — the polish pages-layer trio was the
-       rendered truth. Off-token by design. */
-    box-shadow:
-      0 1px 0 color-mix(in srgb, var(--black) 5%, transparent),
-      inset 0 1px 0 color-mix(in srgb, var(--white) 6%, transparent);
+    /* r304 fold (ex «final-visual-system»): the primary CTA rests on a
+       soft accent-tinted pool — the bolt-on's value, now canonical. The
+       r294 hover glow below stays the hover register (deeper, crafted);
+       the old chrome bevel it replaced is retired with the bolt-on. */
+    box-shadow: 0 var(--sp-1) var(--sp-3) color-mix(in srgb, var(--accent) 16%, transparent);
     /* r149 (R3-A3 §4): حُذف إعلان transition من هنا — كان ميتًا في
        الترتيب الطبقي (طبقة overrides في polish v15 تملك transition
        الخاص بـ.btn وتتقدم طبقة components مهما علت الخصوصية)، فعلّق
@@ -552,6 +560,11 @@
     --_btn-bd-hover: var(--accent-hover);
     position: relative;
     overflow: hidden;
+    /* r304 fold (ex «final-visual-system»): the filled accent CTA rests
+       on the same soft accent pool the primary carries — one register
+       for every filled action. Dark's metal recipe below keeps its own
+       ring+glow (it already spoke this language). */
+    box-shadow: 0 var(--sp-1) var(--sp-3) color-mix(in srgb, var(--accent) 16%, transparent);
   }
   .btn.accent::before,
   .btn.gold::before {
@@ -1192,7 +1205,13 @@
      ╚════════════════════════════════════════════════════════════════╝ */
   .table-wrap {
     border: 1px solid var(--rule);
-    border-radius: var(--r-xl);
+    /* r304 fold (ex «final-visual-system»): the r-lg workspace corner —
+       one step calmer than the old r-xl hero-frame, matching the
+       RowList/pf-rowlist containers. The bolt-on's `overflow: clip` is
+       NOT folded: it silently killed the ≤640 horizontal scroll rung
+       (wide tables clipped their trailing columns on phones — the
+       craft floor is «scroll or stack», never clip). */
+    border-radius: var(--r-lg);
     /* wave 2-b: overflow-x auto (was clip) — wide tables scroll on
        narrow viewports instead of losing columns to a clip (craft
        floor: mobile tables scroll or stack). overflow-y stays clipped
@@ -1217,11 +1236,14 @@
        it labels; DESIGN.md's table canon line matches. */
     font-size: var(--fs-xs);
     font-weight: var(--fw-semibold);
-    color: var(--text-muted);
     text-transform: uppercase;
     /* wave 9-a (ruling #2, 4-b flag): Latin tracking removed — table
        headers are Arabic. (text-transform stays: no-op for Arabic.) */
     background: var(--surface-2);
+    /* r304 fold (ex «final-visual-system»): header labels ride the
+       secondary ink — one step darker than muted, so a scanned column
+       header never dissolves into its own hairline. */
+    color: var(--text-secondary);
     border-block-end: 1px solid var(--rule);
     white-space: nowrap;
   }
@@ -1283,6 +1305,9 @@
      ║  only when min-content truly exceeds the viewport.)            ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (max-width: 640px) {
+    /* r304 fold (ex «final-visual-system»): phones get the tighter
+       r-md container corner on the same box the desktop gives r-lg. */
+    .table-wrap { border-radius: var(--r-md); }
     .tbl-stack { display: block; }
     .tbl-stack thead { display: none; }
     .tbl-stack tbody, .tbl-stack tr { display: block; }
@@ -1695,6 +1720,10 @@
   /* ── Empty states — softer + breathing ──────────────────────── */
   .state {
     padding-block: var(--sp-7);
+    /* r304 fold (ex «final-visual-system»): boxed states (the banner
+       variants and any well-backed instance) take the r-lg container
+       corner — same geometry family as tables and RowLists. */
+    border-radius: var(--r-lg);
   }
   .state-icon {
     transition: transform var(--motion-duration-reveal) var(--ease-out);
@@ -1723,6 +1752,15 @@
   .state.state-empty .state-icon {
     background: var(--surface-2);
     color: var(--text-muted);
+  }
+
+  /* r304 fold (ex «final-visual-system»): every loading placeholder
+     carries the r-sm micro corner — the shimmer grammar's own geometry,
+     canonized here so the bolt-on's radius sweep can be deleted. */
+  .skeleton,
+  .skeleton-bar,
+  [class*="skeleton"] {
+    border-radius: var(--r-sm);
   }
 
   /* Spinner size variants (wave 9-b: .spinner-lg deleted — zero TSX
