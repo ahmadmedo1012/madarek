@@ -296,6 +296,14 @@
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   box-shadow: var(--elev-3);
+  /* r309 (§3.2): the panel owns its own scroll — longer navigation
+     content scrolls INTERNALLY (never grows past the viewport, never
+     chains a wheel past its ends back to the locked page behind).
+     100% = the sticky header's height (the containing block). */
+  max-block-size: calc(100dvh - 100% - var(--sp-4));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .fo-mobile-theme {
@@ -2434,10 +2442,19 @@
   }
 }
 
-/* ── hi — the hero's local inspection instrument ──────────────────── */
+/* ── hi — the hero's local inspection instrument (R309: ONE physical
+   frame). The layer is JS-sized to the SVG's own box and every child
+   anchors with PHYSICAL left/top against it — the R308 logical
+   `inset-inline-start` mirrored every element against its left-based
+   coordinate math inside the RTL document (cards clipped the viewport,
+   the vertical guide crossed into the hero copy). Physical anchoring
+   keeps the visible instrument and the logical geometry in one frame
+   at every size and direction. ──────────────────────────────────── */
+
+/* the interaction layer — the drawing frame itself (JS-sized; 0×0
+   until the mapping runs, so unpositioned children park off-canvas). */
 .hi-layer {
   position: absolute;
-  inset: 0;
   pointer-events: none;
   z-index: 3;
 }
@@ -2461,15 +2478,19 @@
   transition: opacity var(--t-base) var(--ease);
 }
 
+/* physical anchors — the guides span the frame exactly and translate
+   only along their own axis, so they can never leave the drawing. */
 .hi-guide-x {
-  inset-block-start: 0;
-  inset-inline: 0;
+  left: 0;
+  right: 0;
+  top: 0;
   block-size: 1px;
 }
 
 .hi-guide-y {
-  inset-inline-start: 0;
-  inset-block: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
   inline-size: 1px;
 }
 
@@ -2479,11 +2500,15 @@
 
 .hi-plus {
   position: absolute;
-  inset-block-start: 0;
-  inset-inline-start: 0;
+  left: 0;
+  top: 0;
   inline-size: 8px;
   block-size: 8px;
   margin: -4px 0 0 -4px; /* spacing-gate: allow — negative half-plus centering */
+  /* off-canvas UNTIL the first frame write (the JS transform centers
+     the plus on the pointer; the raw left:0+margin would poke 4px
+     past the frame's corner for the first frame) */
+  transform: translate(-100px, -100px);
   opacity: 0;
   transition: opacity var(--t-base) var(--ease);
 }
@@ -2499,21 +2524,23 @@
 }
 
 .hi-plus-h {
-  inset-block-start: 3px;
-  inset-inline: 0;
+  top: 3px;
+  left: 0;
+  right: 0;
   block-size: 2px;
 }
 
 .hi-plus-v {
-  inset-inline-start: 3px;
-  inset-block: 0;
+  left: 3px;
+  top: 0;
+  bottom: 0;
   inline-size: 2px;
 }
 
 .hi-readout {
   position: absolute;
-  inset-block-start: 0;
-  inset-inline-start: 0;
+  left: 0;
+  top: 0;
   padding: var(--sp-0-5) var(--sp-1-5);
   background: color-mix(in srgb, var(--surface) 88%, transparent);
   border: 1px solid var(--rule);
@@ -2530,13 +2557,19 @@
   opacity: 1;
 }
 
-/* the drag selection box — driven imperatively through CSS vars */
+/* the drag selection box — driven imperatively through CSS vars.
+   R309: the size/position vars are finally CONSUMED (R308 wrote them
+   but no rule read them — the box rendered 2×2 at the frame's corner;
+   the drag was invisible). */
 .hi-box {
   position: absolute;
-  inset-block-start: 0;
-  inset-inline-start: 0;
+  left: 0;
+  top: 0;
   display: none;
   z-index: 4;
+  inline-size: var(--bw, 0px);
+  block-size: var(--bh, 0px);
+  transform: translate(var(--bx, 0px), var(--by, 0px));
   border: 1px solid var(--c-coral-ink);
   background: linear-gradient(
     var(--ba, 315deg),
@@ -2556,20 +2589,24 @@
 }
 
 /* the inspection stations — real buttons (the universal path: tap,
-   click, Enter/Space); the drag box reveals them on fine pointers. */
+   click, Enter/Space); 44px dot targets glued to the artwork through
+   the letterbox transform (PHYSICAL left/top — see the frame note).
+   Focus rings ride the universal :focus-visible language (base.css /
+   motion.css) — landing.css carries zero private focus rules (r190). */
 .hi-marker {
   position: absolute;
-  inset-block-start: var(--mk-y);
-  inset-inline-start: var(--mk-x);
-  inline-size: var(--mk-w);
-  block-size: var(--mk-h);
+  left: var(--mk-x, -100px);
+  top: var(--mk-y, -100px);
+  inline-size: var(--mk-w, 44px);
+  block-size: var(--mk-h, 44px);
   transform: translate(-50%, -50%);
   pointer-events: auto;
   background: none;
   border: 0;
   padding: 0;
   cursor: pointer;
-  z-index: 3;
+  z-index: 5;
+  border-radius: var(--r-full);
 }
 
 .hi-marker-dot {
@@ -2601,9 +2638,17 @@
   }
 }
 
-.hi-marker-box {
+/* ── the revealed cards — OVERLAY presentation (>760px) ──────────────
+   Pure presentation laid out by the collision-aware pass (see
+   sheetGeometry.layoutAnnotationCards): anchored to the dot, clamped
+   inside the frame, never overlapping. Never interactive — the dots
+   and the reset control own the control path. */
+.hi-card {
   position: absolute;
-  inset: 0;
+  left: var(--c-x, -999px);
+  top: var(--c-y, -999px);
+  inline-size: var(--c-w, 204px);
+  block-size: var(--c-h, 88px);
   display: grid;
   align-content: center;
   gap: var(--sp-0-5);
@@ -2612,14 +2657,16 @@
   border: 1px solid var(--accent-strong);
   border-radius: var(--r-xs);
   text-align: start;
+  pointer-events: none;
   opacity: 0;
   scale: 0.12;
+  z-index: 4;
   transition:
     opacity var(--t-base) var(--ease),
     scale var(--t-base) var(--ease);
 }
 
-.hi-marker[data-open='on'] .hi-marker-box {
+.hi-card[data-open='on'] {
   opacity: 1;
   scale: 1;
 }
@@ -2643,7 +2690,69 @@
   opacity: 0.92;
 }
 
-/* the affordance row */
+/* ── the flow rail — the affordance row + the mobile cards ──────
+   >760px: a transparent overlay (the hint chip keeps its stage-bottom
+   position WITHOUT growing the stage — the percentage-positioned
+   hotspot pins never drift). ≤760px — the same breakpoint where the
+   pins already flow — the rail enters the document flow and carries
+   the revealed cards as readable blocks. ── */
+.hi-flow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.hi-flow-card {
+  display: none;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: var(--sp-1) var(--sp-2);
+  padding: var(--sp-3);
+  background: var(--accent);
+  border: 1px solid var(--accent-strong);
+  border-radius: var(--r-xs);
+  text-align: start;
+}
+
+.hi-flow-card .hi-marker-label {
+  font-size: var(--fs-body);
+}
+
+.hi-flow-card .hi-marker-body {
+  grid-column: 1 / -1;
+  font-size: var(--fs-sm);
+}
+
+@media (max-width: 760px) {
+  .hi-card {
+    display: none; /* the overlay presentation yields to the flow */
+  }
+
+  .hi-flow {
+    position: static;
+    pointer-events: auto;
+    display: grid;
+    gap: var(--sp-2);
+    padding-block-start: var(--sp-3);
+  }
+
+  .hi-flow .hi-hint {
+    position: static;
+    padding: 0 var(--sp-0-5);
+  }
+
+  .hi-flow[data-any-open='off'] .hi-flow-card {
+    display: none;
+  }
+
+  .hi-flow-card[data-open='on'] {
+    display: grid;
+  }
+}
+
+/* the affordance row (overlaid at the stage's bottom corner above
+   760px — the R308 position; static inside the flow rail below) */
 .hi-hint {
   position: absolute;
   inset-block-end: var(--sp-2);
@@ -2651,7 +2760,6 @@
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  z-index: 3;
   pointer-events: auto;
 }
 
@@ -3041,23 +3149,9 @@
   white-space: nowrap;
 }
 
-/* ── R308 responsive re-composition ───────────────────────────────── */
-@media (max-width: 991px) {
-  /* the stations become compact chips on the flow sheet: the boxes
-     clamp, the hint rides below the drawing (no pointer instrument). */
-  .hi-marker {
-    inline-size: min(var(--mk-w), 78vw);
-  }
-
-  .hi-marker-body {
-    display: none; /* the label carries the meaning on small boxes */
-  }
-
-  .hi-hint {
-    position: static;
-    padding: 0 var(--sp-2);
-  }
-}
+/* ── R308/R309 responsive re-composition ──────────────────────────── */
+/* (The pointer instrument is JS-gated below 992px; the dots stay as
+   the touch path and the hint text swaps to the tap affordance.) */
 
 @media (max-width: 767px) {
   .sl-draw-wrap {

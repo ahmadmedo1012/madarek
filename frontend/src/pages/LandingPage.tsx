@@ -29,6 +29,7 @@ import { shouldPlayIntro } from '../lib/motion/introGate';
 import { useSheetScroll } from '../lib/motion/useSheetScroll';
 import { installSheetExit } from '../lib/motion/sheetExit';
 import { clamp } from '../lib/motion/sheetConductor';
+import { acquireScrollLock, releaseScrollLock } from '../lib/scrollLock';
 // landing.css — «لوحة مدارك r306 → r307» — the Heron-only drawing sheet,
 // evolved with documentary university media + real product captures.
 // One visual canon (docs/redesign/r306-heron-exclusivity-spec.md §r307):
@@ -72,6 +73,10 @@ import '../styles/landing.css';
  * product truth (see backend feature flags / routes). Every number
  * below is computed from this table or hard product truth —
  * no invented adoption, no marketing metrics. */
+/* r309 (§3): the mobile menu's scroll-lock holder key — the open menu
+ * owns the viewport via the ref-counted body lock (lib/scrollLock). */
+const MENU_SCROLL_LOCK_KEY = 'landing-mobile-menu';
+
 const LIVE_CAPABILITIES = [
   'المحاضرات التفاعلية بنقاط الفحص والحضور التلقائي',
   'الاختبارات بأربعة أنواع أسئلة وتصحيح تلقائي للموضوعي',
@@ -396,6 +401,36 @@ export default function LandingPage() {
   // r307 (1-C M-5): the mobile menu closes on an outside tap — touch
   // taps on the page behind the card never blur the menu, so an
   // explicit pointerdown guard fences the open state.
+  //
+  // r309 (§3): the open menu OWNS the viewport — the ref-counted body
+  // scroll lock (lib/scrollLock, the app's own overlay contract) stops
+  // the background document from scrolling behind the fixed panel
+  // (the production audit measured scrollY 0→500 through an open
+  // menu). Idempotent per holder: repeated open/close cycles and
+  // StrictMode's mount→cleanup→mount cycle net out cleanly, and the
+  // class-based lock never touches anyone's inline overflow style.
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    acquireScrollLock(MENU_SCROLL_LOCK_KEY);
+    return () => releaseScrollLock(MENU_SCROLL_LOCK_KEY);
+  }, [menuOpen]);
+  // r309 (§3.3): Escape closes the open menu FROM ANYWHERE — the old
+  // handler sat on the nav's own onKeyDown and only fired while focus
+  // was inside the menu; with focus still on the trigger (the common
+  // open-by-tap state) Escape did nothing. The document-level guard
+  // is installed only while the menu is open and refocuses the
+  // trigger on close (the F2-5 contract).
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setMenuOpen(false);
+      burgerRef.current?.focus();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
+
   useEffect(() => {
     if (!menuOpen) return undefined;
     const onPointerDown = (e: PointerEvent) => {
@@ -450,7 +485,7 @@ export default function LandingPage() {
         <span className="sheet-mark sheet-mark-bl">+</span>
         <span className="sheet-mark sheet-mark-br">+</span>
         <span className="sheet-coord sheet-coord-ts fo-mono" dir="ltr">MADAREK · LEARNING SHEET</span>
-        <span className="sheet-coord sheet-coord-be fo-mono" dir="ltr">[R307] · SHEET 01/01</span>
+        <span className="sheet-coord sheet-coord-be fo-mono" dir="ltr">[MDRK-01] · SHEET 01/01</span>
       </div>
 
       {/* Top scroll-progress bar — driven imperatively via --p */}

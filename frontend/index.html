@@ -82,11 +82,14 @@
              painted light and flipped to dark ~1–2s later once `me`
              resolved). A cached 'SYSTEM' means the profile made no
              explicit choice — the local mode governs. */
-          var mode = 'dark', modeUpdatedAt = 0; /* r148 (AUDIT-5 M1): كان 'system' —
-             زائر جديد بلا localStorage وOS فاتح يُرسم فاتحًا ثم ينقلب داكنًا
-             بعد إقلاع React (المخزن الافتراضي 'dark' — theme.store.ts:38
-             «night is the flagship») = وميض مرئي على الشبكات البطيئة.
-             محاذاة افتراضي السكربت مع افتراضي المخزن تُلغي الانقلاب. */
+          /* r309 (§4.2): the default is 'light' — ALIGNED with the theme
+             store's actual default (r302). The r148 script default
+             ('dark') went stale when the store flipped: a first-visit
+             pre-React paint was a dark empty viewport that flashed to
+             light once React mounted — the production audit's
+             «initially dark blank interval». One default on both
+             sides = the correct background from the first frame. */
+          var mode = 'light', modeUpdatedAt = 0;
           try {
             var stored = JSON.parse(localStorage.getItem('madarek-theme'));
             if (stored && stored.state) {
@@ -110,7 +113,7 @@
             : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           document.documentElement.setAttribute('data-theme', resolved);
         } catch (_) {
-          document.documentElement.setAttribute('data-theme', 'dark'); /* r148 (AUDIT-5 M1): كان 'light' — نفس محاذاة الافتراضي */
+          document.documentElement.setAttribute('data-theme', 'light'); /* r309 (§4.2): the store's actual default */
         }
         /* r172a — the r162 (R1) landing-boot heuristic (pathname `/` +
            no persisted session → html[data-landing-boot]) is RETIRED:
@@ -150,7 +153,35 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- r309 (§4.2): the boot plate — a meaningful static first frame
+           inside #root for the window between first paint and the React
+           mount (production loads the bundle over the network; the old
+           empty shell painted as an unexplained blank viewport). The
+           plate is opaque, fixed (zero CLS), follows the resolved
+           data-theme, and is REPLACED by React's first commit. No CSP
+           impact: style-src already allows inline styles. -->
+      <div class="mdrk-boot-plate" aria-hidden="true"><span>مدارك</span></div>
+    </div>
+    <style>
+      .mdrk-boot-plate {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483000;
+        display: grid;
+        place-items: center;
+        background: #F6F8FA;
+        color: #282828;
+        font-family: system-ui, sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      html[data-theme="dark"] .mdrk-boot-plate {
+        background: #282828;
+        color: #F6F8FA;
+      }
+    </style>
     <!-- r176f (E-09): JS-off visitors previously got a themed, forever-
          empty canvas (base.css paints var(--bg) pre-paint). One honest
          Arabic line explains the requirement instead. No CSP impact:

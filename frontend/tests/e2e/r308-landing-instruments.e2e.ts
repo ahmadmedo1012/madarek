@@ -16,15 +16,22 @@ test.describe('R308 — لوحة البدء (the entrance)', () => {
   test('plays on a fresh session, exits by itself, and never replays', async ({ page }) => {
     await page.addInitScript(() => {
       try {
-        sessionStorage.removeItem('madarek-intro-seen');
+        /* clear the seen-flag ONCE (init scripts re-run on reload —
+         * the reload at the end of this spec must boot straight in) */
+        if (!sessionStorage.getItem('r308-fresh-once')) {
+          sessionStorage.removeItem('madarek-intro-seen');
+          sessionStorage.setItem('r308-fresh-once', '1');
+        }
       } catch {
         /* ignore */
       }
     });
     await page.goto('/');
     await expect(page.locator('.sl')).toBeVisible();
-    /* it must exit by itself (honest progress + hard cap) */
-    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 10000 });
+    /* it must exit by itself (r309 entrance clock: 5s progression +
+     * 3.6s hold + 0.65s exit ≈ 9.3s from mount — the budget carries
+     * the dev server's cold transform) */
+    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
     await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
     /* the session flag means the next visit boots straight in */
     await page.reload();
@@ -55,8 +62,9 @@ test.describe('R308 — محطات الفحص (the inspection stations)', () => 
     await expect(station).toHaveAttribute('aria-pressed', 'false');
     await station.click();
     await expect(station).toHaveAttribute('aria-pressed', 'true');
-    /* the label is real content, not a tooltip */
-    await expect(page.locator('.hi-marker[data-marker="cp"] .hi-marker-label')).toContainText('نقطة فحص');
+    /* the label is real content, not a tooltip (r309: the card is a
+     * sibling of the button — .hi-card carries the visible copy) */
+    await expect(page.locator('.hi-card[data-marker="cp"] .hi-marker-label')).toContainText('نقطة فحص');
     /* the reset control appears once a station is open */
     const reset = page.locator('.hi-reset');
     await expect(reset).toBeVisible();

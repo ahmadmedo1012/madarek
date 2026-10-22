@@ -94,7 +94,11 @@ const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
  * r305: pin refreshed — syncThemeColor paints the Heron foundation
  * grounds (dark #282828 / light #F6F8FA, r305-heron-reference-spec);
  * the metas moved with it. */
-const THEME_BOOTSTRAP_SHA256 = '60gEpgshWC4IRnueel4CyAqJBdGFOsLbLF/ETBcwETI=';
+/* r309 (§4.2): pin refreshed — the bootstrap DEFAULT flipped 'dark' → 'light',
+ * aligning with the theme store's actual default (r302): the stale 'dark'
+ * default painted a first-visit dark blank viewport that flashed to light
+ * once React mounted (the production audit's «initially dark blank interval»). */
+const THEME_BOOTSTRAP_SHA256 = 'dWUlIuWk9i1/4FIObdmzMb7krfCFVvA0prJnuo/dSYY=';
 /* r188: pin refreshed — the JSON-LD block now describes the INDEPENDENT
  * Madarek platform alone (WebSite node; the retired University-of-Zawia
  * `about` node is gone — the only demo-data story is the explicitly

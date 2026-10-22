@@ -117,3 +117,127 @@ export function dragGradientAngle(x0: number, y0: number, x1: number, y1: number
 export function rectContains(r: Rect, x: number, y: number): boolean {
   return x >= r.left && x <= r.left + r.width && y >= r.top && y <= r.top + r.height;
 }
+
+/* ═══ R309 — the annotation-card layout ═════════════════════════════════
+ *
+ * The drag-reveal cards must never clip the frame or collide with each
+ * other (the R308 production audit found both). This is the pure
+ * placement pass: each card anchors to its marker dot — centered above
+ * it when there is room, below otherwise — clamps inside the drawing
+ * frame, and then a deterministic collision resolution nudges
+ * overlapping cards apart.
+ *
+ * The layout is a PURE function of (frame, anchors, sizes). It never
+ * looks at which cards are currently open, so positions are stable as
+ * cards appear and disappear (R309 §2.4: "The layout must remain
+ * stable as cards appear"). */
+
+export interface CardAnchor {
+  id: string;
+  /** the marker dot's position in frame coordinates */
+  x: number;
+  y: number;
+  /** the card's display size */
+  w: number;
+  h: number;
+}
+
+export interface CardPlacement {
+  id: string;
+  left: number;
+  top: number;
+}
+
+/** Default insets/gaps of the annotation-card layout (px). */
+export const CARD_LAYOUT_DEFAULTS = {
+  /** min distance between the frame edge and a card */
+  pad: 6,
+  /** min distance between the dot and the card it annotates */
+  anchorGap: 14,
+  /** min distance between two colliding cards */
+  gap: 10,
+  /** collision-resolution iteration bound (3 cards → 2 max rounds) */
+  maxRounds: 8,
+};
+
+/**
+ * Lay out annotation cards inside a drawing frame. Deterministic:
+ * cards are processed in x-order and overlaps resolve by moving the
+ * right-hand card fully below (or above) the earlier one; if neither
+ * side has room the card is placed below and clamped.
+ */
+export function layoutAnnotationCards(
+  frame: { width: number; height: number },
+  anchors: Array<CardAnchor>,
+  overrides?: Partial<typeof CARD_LAYOUT_DEFAULTS>,
+): Map<string, CardPlacement> {
+  const { pad, anchorGap, gap, maxRounds } = {
+    ...CARD_LAYOUT_DEFAULTS,
+    ...overrides,
+  };
+  const W = frame.width;
+  const H = frame.height;
+
+  /* pass 1 — anchor each card to its dot, clamped to the frame on
+   * BOTH axes (containment is guaranteed before any collision work). */
+  const rects = new Map<string, Rect>();
+  const ordered = [...anchors].sort((a, b) => a.x - b.x || a.y - b.y);
+  for (const a of ordered) {
+    const w = Math.min(a.w, Math.max(0, W - 2 * pad));
+    const h = Math.min(a.h, Math.max(0, H - 2 * pad));
+    const left = clampNum(a.x - w / 2, pad, Math.max(pad, W - pad - w));
+    let top = a.y - h - anchorGap;
+    if (top < pad) top = a.y + anchorGap;
+    top = clampNum(top, pad, Math.max(pad, H - pad - h));
+    rects.set(a.id, { left, top, width: w, height: h });
+  }
+
+  /* pass 2 — resolve pairwise overlaps deterministically (x-order;
+   * the right-hand card yields). A per-pair attempt budget keeps
+   * over-constrained frames (cards that physically cannot all fit)
+   * from oscillating: after two tries the pair keeps its best seat.
+   * Repeat to a fixed point. */
+  const attempts = new Map<string, number>();
+  const pairKey = (i: number, j: number) => `${i}:${j}`;
+  for (let round = 0; round < maxRounds; round += 1) {
+    let moved = false;
+    for (let i = 0; i < ordered.length; i += 1) {
+      for (let j = i + 1; j < ordered.length; j += 1) {
+        const a = ordered[i];
+        const b = ordered[j];
+        if (!a || !b) continue;
+        const key = pairKey(i, j);
+        if ((attempts.get(key) ?? 0) >= 2) continue;
+        const A = rects.get(a.id);
+        const B = rects.get(b.id);
+        if (!A || !B) continue;
+        if (!rectsIntersect(A, B)) continue;
+        attempts.set(key, (attempts.get(key) ?? 0) + 1);
+        /* try to seat B fully below A … */
+        let top = A.top + A.height + gap;
+        if (top + B.height > H - pad) {
+          /* … else fully above A … */
+          const above = A.top - gap - B.height;
+          if (above >= pad) {
+            top = above;
+          }
+          /* … else below-and-clamped (readability over perfection) */
+        }
+        const clamped = clampNum(top, pad, Math.max(pad, H - pad - B.height));
+        if (clamped !== B.top) {
+          B.top = clamped;
+          moved = true;
+        }
+      }
+    }
+    if (!moved) break;
+  }
+
+  const out = new Map<string, CardPlacement>();
+  for (const [id, r] of rects) out.set(id, { id, left: r.left, top: r.top });
+  return out;
+}
+
+function clampNum(v: number, lo: number, hi: number): number {
+  return Math.min(Math.max(v, lo), Math.max(lo, hi));
+}

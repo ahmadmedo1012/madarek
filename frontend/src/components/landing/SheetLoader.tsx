@@ -7,10 +7,13 @@
  * system log, and a center-out horizontal clip-path exit. This is
  * Madarek's original entrance in that grammar:
  *
- *  · HONEST progress: the percentage tracks real work (fonts ready,
- *    window load — which covers the eager hero media), eased for the
- *    instrument feel but never faked; a hard 6.5s cap guarantees the
- *    visitor is never trapped, and a visible «تخطّي» (Esc/Enter/Space)
+ *  · R309 entrance clock (§4.1, re-measured against the live
+ *    reference): a choreographed ~5s progression to the completed
+ *    visual state, a measured hold in that state, then the geometric
+ *    exit — the sheet hides ≈9.3s after first navigation. The
+ *    percentage is the entrance sequence (the reference's own
+ *    behavior); nothing waits on a resource, so a stalled asset can
+ *    never trap the visitor, and a visible «تخطّي» (Esc/Enter/Space)
  *    always ends it.
  *  · The DRAWING is the platform's own original educational linework
  *    (the «مخطط مدارك» geometry, composed for the loader window) —
@@ -25,9 +28,18 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { shouldPlayIntro, markIntroSeen, INTRO_SEEN_KEY } from '../../lib/motion/introGate';
 import { sheetEase } from '../../lib/motion/sheetConductor';
 
-/* Measured reference values (§2), adapted. */
-const MIN_DISPLAY_MS = 2400;
-const HARD_CAP_MS = 6500;
+/* ── R309 entrance timing (§4.1, re-measured against the live
+ * reference): the percentage is the CHOREOGRAPHED entrance clock —
+ * a deliberate ~5s progression to the completed visual state (the
+ * reference's own sequence; our re-measurement hit 100% at ≈6.3s on
+ * a slower network), a measured HOLD in the completed state, then
+ * the geometric exit — hidden ≈9.3s after first navigation. The
+ * init log beside it stays HONEST: every line describes real work
+ * the page is doing in parallel (fonts, eager media, feature state);
+ * nothing waits on a resource, so a stalled asset can never trap the
+ * visitor, and the skip (Esc/Enter/Space) always ends it. */
+const PROGRESS_MS = 5000;
+const HOLD_MS = 3600;
 const EXIT_MS = 650;
 const PROGRESS_EASE = 0.085;
 
@@ -170,9 +182,6 @@ export function SheetLoader({ onDone }: SheetLoaderProps) {
     if (!root) return undefined;
 
     const startedAt = performance.now();
-    let fontsReady = false;
-    let windowLoaded = false;
-    let target = 4;
     let displayed = 0;
     let raf = 0;
     let finished = false;
@@ -185,27 +194,10 @@ export function SheetLoader({ onDone }: SheetLoaderProps) {
       root.classList.add('sl-mounted');
     });
 
-    const readLoadState = () => {
-      if (document.readyState === 'complete') {
-        windowLoaded = true;
-      }
-    };
-    readLoadState();
-
-    const onFonts = () => {
-      fontsReady = true;
-    };
-    const onLoad = () => {
-      windowLoaded = true;
-    };
-    document.fonts?.ready?.then?.(onFonts).catch(() => undefined);
-    window.addEventListener('load', onLoad);
-
     const finish = () => {
       if (finished) return;
       finished = true;
       cancelAnimationFrame(raf);
-      window.removeEventListener('load', onLoad);
       markIntroSeen();
       setExiting(true);
     };
@@ -213,22 +205,16 @@ export function SheetLoader({ onDone }: SheetLoaderProps) {
     const tick = () => {
       const elapsed = performance.now() - startedAt;
 
-      /* the honest target: real signals, weighted like the reference
-       * (4 base + 26 fonts + 70 window-load — the load event covers
-       * the eager hero media) — sums to 100 only when the page is
-       * genuinely ready. */
-      readLoadState();
-      target = 4;
-      if (fontsReady) target += 26;
-      if (windowLoaded) target += 70;
-      if (elapsed > HARD_CAP_MS) target = 100;
-      /* the draw choreography needs its stage time — progress holds
-       * the last checkpoint until the real signals arrive (the
-       * reference's non-linear plateau behaviour). */
-      if (target >= 100 && elapsed < MIN_DISPLAY_MS) target = 96;
+      /* the choreographed entrance clock: the target rides a linear
+       * ramp to 100% at PROGRESS_MS (the eased `displayed` gives the
+       * instrument feel underneath). Real init work (fonts, media,
+       * features) runs in parallel and is reported by the log — the
+       * percentage never waits on it (a stalled resource can not
+       * trap the visitor; R309 §4.2). */
+      const target = elapsed >= PROGRESS_MS ? 100 : (elapsed / PROGRESS_MS) * 100;
 
       displayed += (target - displayed) * PROGRESS_EASE;
-      if (target >= 100 && displayed > 99.4) displayed = 100;
+      if (elapsed >= PROGRESS_MS) displayed = 100;
 
       const pct = Math.floor(displayed);
       if (bandRef.current) {
@@ -260,7 +246,7 @@ export function SheetLoader({ onDone }: SheetLoaderProps) {
           displayed >= 100 ? 'اكتمل التحميل' : displayed >= 50 ? 'جارٍ تحضير الصفحة — أكثر من النصف' : 'جارٍ تحضير الصفحة';
       }
 
-      if (displayed >= 100) {
+      if (displayed >= 100 && elapsed >= PROGRESS_MS + HOLD_MS) {
         finish();
         return;
       }
@@ -285,7 +271,6 @@ export function SheetLoader({ onDone }: SheetLoaderProps) {
     return () => {
       cancelAnimationFrame(raf);
       cancelAnimationFrame(mountRaf);
-      window.removeEventListener('load', onLoad);
       window.removeEventListener('keydown', skip);
       skipBtn?.removeEventListener('click', skip);
       doc.style.overflow = prevOverflow;
@@ -293,7 +278,10 @@ export function SheetLoader({ onDone }: SheetLoaderProps) {
   }, [play]);
 
   /* ── The exit: center-out horizontal clip split (one element, a
-   *     two-band polygon whose slit widens to the edges). ────────── */
+   *     two-band polygon whose slit widens to the edges). A wall-clock
+   *     fallback ends the sequence even if the animation's finish
+   *     event never fires (hidden tab, engine hiccup) — the page can
+   *     never stay covered (R309 §4.3). ────────────────────────── */
   useEffect(() => {
     if (!exiting || !mainRef.current) return undefined;
     const el = mainRef.current;
@@ -304,6 +292,12 @@ export function SheetLoader({ onDone }: SheetLoaderProps) {
       const t = window.setTimeout(onDone, 30);
       return () => window.clearTimeout(t);
     }
+    let done = false;
+    const settle = () => {
+      if (done) return;
+      done = true;
+      onDone();
+    };
     const anim = el.animate(
       [
         { clipPath: 'polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%, 0% 50%, 100% 50%, 100% 100%, 0% 100%)' },
@@ -311,9 +305,11 @@ export function SheetLoader({ onDone }: SheetLoaderProps) {
       ],
       { duration: EXIT_MS, easing: sheetEase(), fill: 'forwards' },
     );
-    anim.onfinish = () => onDone();
-    anim.oncancel = () => onDone();
+    anim.onfinish = settle;
+    anim.oncancel = settle;
+    const fallback = window.setTimeout(settle, EXIT_MS + 600);
     return () => {
+      window.clearTimeout(fallback);
       anim.onfinish = null;
       anim.oncancel = null;
       anim.cancel();
@@ -380,11 +376,12 @@ export function SheetLoader({ onDone }: SheetLoaderProps) {
           ))}
         </ul>
 
-        {/* the title block — the sheet's identity */}
+        {/* the title block — the sheet's identity (R309 §8: stable
+            Madarek metadata — no release-number label) */}
         <div className="sl-meta" aria-hidden="true">
           <span className="sl-meta-title">مدارك — منصّة التعليم الذكي</span>
           <span className="sl-meta-row fo-mono" dir="ltr">
-            MADAREK · LEARNING SHEET · [R308]
+            MADAREK · LEARNING SHEET
           </span>
         </div>
 
