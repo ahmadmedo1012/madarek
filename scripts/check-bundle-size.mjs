@@ -22,13 +22,15 @@
    PINNED CEILINGS (KB, gz — A11's measurements + ~8-10% headroom;
    A11 measured 599KB total / 71KB entry / 98KB pdf. Raise a ceiling
    ONLY with a documented reason in this block, never silently):
-     · total gz of all chunks  ≤ 700 KB   (r306: 900 → 700 — the r304
-       raise's reason is VOID: the 3D landing world (three.module
+     · total gz of all chunks  ≤ 700 KB   (r306 PLANNED 900 → 700, r307
+       APPLIED it — the constant had been left at 900 by mistake. The
+       r304 raise's reason is VOID: the 3D landing world (three.module
        171.9 KB gz + gsap + the scroll-conductor/story runtime) retired
-       with the Heron-only drawing-sheet rebuild, and the measured
-       integrated tree drops to 664.3 KB gz / 139 chunks. ~5% headroom
-       keeps the gate tight for route-level growth. Entry (73.7 ≤ 80)
-       and pdf (95.7 ≤ 110) ceilings unchanged.)
+       with the Heron-only drawing-sheet rebuild. The r307 media layer
+       (MediaFrame/VideoCard/ProductFrame + the registry) measures the
+       integrated tree at 668.5 KB gz / 140 chunks — 4.7% headroom keeps
+       the gate tight for route-level growth. Entry (73.7 ≤ 80) and pdf
+       (95.7 ≤ 110) ceilings unchanged.)
      · entry   index-*.js      ≤  80 KB
      · pdf     pdf-*.js        ≤ 110 KB
 
@@ -47,7 +49,7 @@ const DIST = join(ROOT, 'frontend', 'dist');
 const ASSETS = join(DIST, 'assets');
 
 /* Pinned ceilings — see the header block before touching these. */
-const LIMIT_TOTAL_KB = 900; // r304 FINAL: 650→900, documented reason above
+const LIMIT_TOTAL_KB = 700; // r306 planned 900→700, r307 applied (measured 668.5); see the block above
 const LIMIT_ENTRY_KB = 80;
 const LIMIT_PDF_KB = 110;
 

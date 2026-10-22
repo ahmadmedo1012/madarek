@@ -126,11 +126,18 @@ export interface BudgetTable {
 }
 
 export const DEFAULT_BUDGET: BudgetTable = {
-  /* '/' carries the r303/r304 WebGL world (three.module chunk) — the
-     same documented cost that raised the CI bundle ceiling 650→900 KB
-     gz (1ef0307). The surface budget syncs to that rationale; every
-     other route stays on the default 800 KB. */
-  routes: { '/': 900_000 },
+  /* '/' carries the r307 media layer: the documentary university
+     photography (Commons-licensed WebP derivatives, ~500 KB transferred
+     at 1440/DPR1) on top of the r306 sheet's ~831 KB. The raise
+     900 KB → 2 MB is the R307 performance charter's own ceiling
+     («initial critical media and transfers around or below 2 MB» —
+     mission Phase 8.1), applied as a DOCUMENTED, intentional redesign
+     cost with the committed baseline re-captured in the same change
+     (never a silent regression). Every other route stays on the
+     default 800 KB. Historical: the r303/r304 WebGL world raised the
+     CI bundle ceiling 650→900 KB gz (1ef0307) — that chunk is long
+     retired; the sheet's JS weight rides far below the bundle gate. */
+  routes: { '/': 2_000_000 },
   defaultBytes: 800_000,
   fcpRegressionRatio: 1.05,
   textContrastMin: 4.5,

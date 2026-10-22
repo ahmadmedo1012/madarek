@@ -92,7 +92,7 @@ jobs:
       # shipping silently. Dependency-free (node:fs/path/url/zlib — the
       # verify-parity-export.mjs pattern), so no extra install step: it
       # walks the dist the step above just produced and fails this job
-      # when a pinned ceiling breaks (total gz ≤ 650KB · entry
+      # when a pinned ceiling breaks (total gz ≤ 700KB · entry
       # index-*.js ≤ 80KB · pdf-*.js ≤ 110KB — A11's LAB measurements
       # plus ~8-10% headroom, pinned in the script header).
       - run: node scripts/check-bundle-size.mjs

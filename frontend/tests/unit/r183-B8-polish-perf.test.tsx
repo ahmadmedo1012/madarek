@@ -188,10 +188,12 @@ describe('r183-B8 — CI bundle-size gate (A11 finding 1)', () => {
 
   it('the script pins the three A11 ceilings — total / entry / pdf worker', () => {
     const script = read('../scripts/check-bundle-size.mjs');
-    // r304 FINAL: total 650→900 — the nine integrated workstreams grow the
-    // product legitimately; the raise is documented in the gate's header
-    // block (the gate's own sanctioned mechanism), entry/pdf unchanged.
-    expect(script).toContain('LIMIT_TOTAL_KB = 900');
+    // r307: total 900→700 — the r306 header planned this and the constant
+    // had been left at 900 by mistake; r307 applied the planned tighten
+    // (measured 668.5 KB gz, ~4.7% headroom). The change is documented in
+    // the gate's header block (the gate's own sanctioned mechanism),
+    // entry/pdf unchanged.
+    expect(script).toContain('LIMIT_TOTAL_KB = 700');
     expect(script).toContain('LIMIT_ENTRY_KB = 80');
     expect(script).toContain('LIMIT_PDF_KB = 110');
     // Fail-closed scanner errors are a distinct exit code, so a missing

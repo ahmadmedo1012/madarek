@@ -132,6 +132,19 @@ export function createApp() {
           'worker-src': ["'self'", 'blob:'],
           'object-src': ["'none'"],
           'base-uri': ["'self'"],
+          /* r307: the landing's official-university documentaries embed
+             via the privacy-enhanced youtube-nocookie mechanism, mounted
+             ONLY after an explicit user click (the facade contract — see
+             frontend/src/components/landing/VideoCard.tsx). frame-src
+             admits exactly the two embed hosts; media-src stays unset
+             (falls back to 'self' — all landing video bytes stay local
+             until the visitor opts in), and img-src stays self-only: no
+             third-party thumbnail hosts, posters are composed in CSS. */
+          'frame-src': [
+            "'self'",
+            'https://www.youtube-nocookie.com',
+            'https://www.youtube.com',
+          ],
         },
       },
       crossOriginResourcePolicy: { policy: 'cross-origin' },
