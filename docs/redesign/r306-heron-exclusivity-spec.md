@@ -1,5 +1,17 @@
 # R306 — Heron Exclusivity Specification · مواصفة «هيرون فقط» — المخطّط التنفيذي
 
+> **⚠ Status banner (r307):** this is a **completed historical deliverable**, not a live
+> instruction sheet. §2 below describes the **pre-R306 state** (the R304 poster era) as
+> the audit found it on `d9f74004` — that description was true THEN and is kept verbatim
+> as the audit record; it does **not** describe the current page. What shipped in R306
+> (the «لوحة مدارك» drawing sheet) and what R307 added on top of it (the sanctioned media
+> layer: Commons-licensed university photography, official-channel documentaries behind
+> click-to-load facades, and real product captures — the §6a-6c patterns in
+> [`DESIGN.md`](../../DESIGN.md)) are documented in DESIGN.md, the single active authority.
+> The exclusivity CANON itself (one signal, hairlines, mono indices, near-square corners,
+> zero elevation on flat fragments) carries into r307 unchanged — the media layer is a
+> sanctioned raster seat inside that canon, never a second visual system.
+
 > **R306 deliverable** — the implementation-grade specification for purifying Madarek to a
 > single Heron-inspired design language and the prioritized repair matrix derived from the
 > live audit. This document supersedes nothing measured — it **consumes**

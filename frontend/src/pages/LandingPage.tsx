@@ -8,39 +8,53 @@ import { StarMark } from '../components/StarMark';
 import { ThemeToggle, useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { colleges } from '../data/colleges.config';
+import {
+  HERO_PHOTOS, RAIL_PHOTOS, PRODUCT_CAPTURES, ROLE_CAPTURES, ROLE_SHOWCASES,
+  UNIVERSITY_VIDEOS, type RoleKey,
+} from '../data/university-media';
 import { formatInt, formatPct1 } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
 import { BlueprintSvg } from '../components/landing/BlueprintSvg';
-// landing.css — «لوحة مدارك r306» — the Heron-only drawing sheet.
-// One visual canon (docs/redesign/r306-heron-exclusivity-spec.md): the
-// architect's-sheet grammar — paper ground, graphite hairlines, ONE
-// orange signal, mono bracketed indices, near-square corners, flat
-// framed fragments. The r304 editorial poster (the 3D knowledge
-// world, the copper climax, the --poster-* namespace, the giant
-// wordmark) is retired with this sheet; every funnel/a11y/truth
-// contract carries forward (landing-funnel, r168b, r170d, r177,
+import { MediaFrame } from '../components/landing/MediaFrame';
+import { ProductFrame } from '../components/landing/ProductFrame';
+import { VideoCard } from '../components/landing/VideoCard';
+// landing.css — «لوحة مدارك r306 → r307» — the Heron-only drawing sheet,
+// evolved with documentary university media + real product captures.
+// One visual canon (docs/redesign/r306-heron-exclusivity-spec.md §r307):
+// the architect's-sheet grammar — paper ground, graphite hairlines, ONE
+// orange signal, mono bracketed indices, near-square corners, flat framed
+// fragments. The r307 media layer (DESIGN.md §6a-6c) adds sanctioned
+// raster seats: Commons-licensed university photography, official-channel
+// documentaries (click-to-load), and authentic product captures — every
+// frame flat, hairline-bordered, honestly labelled. Every funnel/a11y/
+// truth contract carries forward (landing-funnel, r168b, r170d, r177,
 // r188 — see the tests pinned beside each surface).
 import '../styles/landing.css';
 
 /**
- * Landing — «لوحة مدارك» (r306, the drawing sheet).
+ * Landing — «لوحة مدارك» (r306 sheet, r307 media evolution).
  *
  * Composition (the sheet, reading RTL):
  *   sheet frame (fixed corner registration marks + mono coordinates,
  *   desktop only) → header (56px hairline bar) → hero (the blueprint
  *   illustration + the title-block band: eyebrow / display headline /
- *   sub / ONE primary CTA + ghost / metadata block) → statement →
- *   chapters 01–06 (the honest capability ledger rows with flat
- *   interface fragments) → live (the capability matrix — a hairline
- *   TABLE, not a slab) → roles (index rows) → colleges (the
- *   interactive registry + title-block metadata) → vision (honest
- *   status pairs with state tags) → cta (coordinates row + resolve)
- *   → footer (hairline colophon grid).
+ *   sub / ONE primary CTA + ghost / metadata block / the documentary
+ *   media band) → statement → campus-life (the university media rail,
+ *   Commons-licensed) → chapters 01–06 (the honest capability ledger
+ *   rows with flat interface fragments) → product (real captures from
+ *   the running platform) → videos (official-channel documentaries,
+ *   click-to-load) → live (the capability matrix — a hairline TABLE,
+ *   not a slab) → roles (the interactive role selector over real
+ *   dashboards) → colleges (the interactive registry + title-block
+ *   metadata) → vision (honest status pairs with state tags) → cta
+ *   (coordinates row + resolve) → footer (hairline colophon grid).
  *
  * Motion: RevealCssClass block reveals only (the shared IO belt) +
  * the imperative scroll chrome (the .scrolled header class + the --p
- * progress ribbon, both rAF-coalesced, zero setState per tick). No
- * WebGL, no canvas, no scroll conductor — the sheet is DOM + SVG.
+ * progress ribbon, both rAF-coalesced, zero setState per tick — r307:
+ * load/resize/fonts reconciliation added so the ribbon never drifts
+ * under late media). No WebGL, no canvas, no scroll conductor — the
+ * sheet is DOM + SVG + sanctioned raster seats.
  */
 
 /* ── Honest capability ledger (ما يعمل اليوم) — every line is a real
@@ -65,6 +79,12 @@ const TRAINING_TRACKS = 11;   // verified in pages/student/TrainingPages.tsx
 const QUALITY_BOARDS = 6;     // verified in backend quality.routes
 const INSTITUTIONS = 2;       // verified in OwnerInstitutionsPage isolation
 
+/* ── The r307 media truth: distinct Libyan universities documented on
+ * this sheet — Benghazi, Tripoli, Omar Al-Mukhtar (photos) + Misurata,
+ * Sebha (official-channel videos). Computed here, not invented: each
+ * institution has verified identity evidence in manifest.json. */
+const MEDIA_UNIVERSITY_COUNT = 5;
+
 /* ── Honest status pairs (إلى أين) — natural wording for the ledger's
  * local/sim/soon rows; no operational jargon, no invented claims. */
 const VISION_STATUS = [
@@ -74,14 +94,8 @@ const VISION_STATUS = [
   { k: 'مزامنة بيانات المؤسّسات', v: 'وضع محدود — قيد التوسعة', live: false },
 ];
 
-/* ── Roles strip: the five verified roles, one line each. */
-const ROLES = [
-  { role: 'للطالب', line: 'رحلة تعلّم شخصية — من المحاضرة الأولى إلى الإتقان' },
-  { role: 'للأستاذ', line: 'بناء المحاضرات والاختبارات، وتصحيح بملاحظات، ومتابعة الطلاب' },
-  { role: 'للإدارة', line: 'الكليات والأقسام والمقرَّرات والصلاحيات، وتقارير حيّة' },
-  { role: 'لضمان الجودة', line: 'مجالس الجودة والمعايرة وتقارير الالتزام' },
-  { role: 'لمالك المنصّة', line: 'الحاكمية والمؤسّسات وسجلّ التدقيق' },
-];
+/* ── Roles strip data: the five verified roles. r307 renders them as
+ * an interactive selector over their REAL dashboards (demo data). */
 
 /* ── The blueprint stages — the five hotspots on the hero's technical
  * drawing. Each describes a REAL live capability (LIVE_CAPABILITIES
@@ -308,7 +322,7 @@ export default function LandingPage() {
   const redirectHome =
     isHydrated && user
       ? user.role === 'TEACHER' ? '/teacher/dashboard'
-    : user.role === 'ADMIN' ? '/admin/dashboard'
+      : user.role === 'ADMIN' ? '/admin/dashboard'
           : user.role === 'QUALITY' ? '/quality/dashboard'
             : user.role === 'OWNER' ? '/owner/dashboard'
               : '/student/dashboard'
@@ -316,8 +330,11 @@ export default function LandingPage() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   // F2-5 (r157): mobile-menu contract — Escape closes + refocuses the
-  // burger (its aria-label flips with the state).
+  // burger (its aria-label flips with the state). r307: an open menu
+  // also closes on an outside tap (touch users get no blur event from
+  // a tap on the page behind the card).
   const burgerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLElement>(null);
   // Scroll chrome on refs, written imperatively — no React re-render
   // per scroll event (the r172 pattern, kept).
   const headerRef = useRef<HTMLElement>(null);
@@ -333,6 +350,14 @@ export default function LandingPage() {
   // The colleges registry: which college the chip row selected.
   const [selectedCollege, setSelectedCollege] = useState<string | null>(colleges[0]?.slug ?? null);
   const selected = colleges.find((c) => c.slug === selectedCollege) ?? null;
+
+  // The roles registry (r307): which role the selector picked. Starts
+  // on the student so the panel is informative with zero interaction;
+  // the chips carry aria-pressed and the panel is a polite live region
+  // — the same contract as the college chips beside it.
+  const [selectedRole, setSelectedRole] = useState<RoleKey>('STUDENT');
+  const roleShowcase = ROLE_SHOWCASES.find((r) => r.key === selectedRole) ?? ROLE_SHOWCASES[0];
+  const roleCapture = ROLE_CAPTURES.find((c) => c.id === roleShowcase.captureId);
 
   /* r162 (R2) → r164b: warm the AUTH BOUNDARIES while the visitor reads
    * the hero (prod only — dev has no chunk splitting to warm). */
@@ -356,7 +381,10 @@ export default function LandingPage() {
 
   // Scroll-driven chrome with ZERO setState: coalesced to one rAF per
   // frame, written straight to the DOM (the .scrolled class on the
-  // header and the --p var on the top ribbon).
+  // header and the --p var on the top ribbon). r307 (1-C H-2): the
+  // apply() is ALSO reconciled on load / resize / fonts-ready — late
+  // media (photos) reflows document height and the ribbon must not
+  // drift while the visitor sits still.
   useEffect(() => {
     const header = headerRef.current;
     const bar = progressBarRef.current;
@@ -378,11 +406,34 @@ export default function LandingPage() {
 
     apply();
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    window.addEventListener('load', onScroll);
+    document.fonts?.ready?.then?.(onScroll).catch(() => undefined);
     return () => {
       window.removeEventListener('scroll', onScroll);
-      if (raf) cancelAnimationFrame(apply as unknown as number);
+      window.removeEventListener('resize', onScroll);
+      window.removeEventListener('load', onScroll);
+      // r307 (1-C M-1): cancel the pending frame by its id — the old
+      // form passed the handler (coerced to NaN) and one stray frame
+      // fired after unmount.
+      if (raf) cancelAnimationFrame(raf);
     };
   }, []);
+
+  // r307 (1-C M-5): the mobile menu closes on an outside tap — touch
+  // taps on the page behind the card never blur the menu, so an
+  // explicit pointerdown guard fences the open state.
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onPointerDown = (e: PointerEvent) => {
+      const menu = menuRef.current;
+      if (menu && !menu.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [menuOpen]);
 
   if (redirectHome) return <Navigate to={redirectHome} replace />;
 
@@ -405,7 +456,7 @@ export default function LandingPage() {
         <span className="sheet-mark sheet-mark-bl">+</span>
         <span className="sheet-mark sheet-mark-br">+</span>
         <span className="sheet-coord sheet-coord-ts fo-mono" dir="ltr">MADAREK · LEARNING SHEET</span>
-        <span className="sheet-coord sheet-coord-be fo-mono" dir="ltr">[R306] · SHEET 01/01</span>
+        <span className="sheet-coord sheet-coord-be fo-mono" dir="ltr">[R307] · SHEET 01/01</span>
       </div>
 
       {/* Top scroll-progress bar — driven imperatively via --p */}
@@ -426,7 +477,9 @@ export default function LandingPage() {
           </Link>
 
           <nav className="fo-nav" aria-label="التنقل الرئيسي">
+            <a href="#campus-life" className="fo-nav-link">الجامعات</a>
             <a href="#chapters" className="fo-nav-link">الفصول</a>
+            <a href="#product" className="fo-nav-link">المنصّة</a>
             <a href="#live" className="fo-nav-link">ما يعمل اليوم</a>
             <a href="#colleges" className="fo-nav-link">الكليات</a>
           </nav>
@@ -455,8 +508,13 @@ export default function LandingPage() {
         {menuOpen && (
           <nav
             className="fo-mobile-menu"
+            ref={menuRef}
             aria-label="قائمة الجوال"
-            onClick={() => setMenuOpen(false)}
+            onClick={(e) => {
+              // Link taps close the menu; taps on non-link chrome must
+              // not (the theme row stops propagation for its toggle).
+              if ((e.target as HTMLElement).closest('a')) setMenuOpen(false);
+            }}
             onBlur={(e) => {
               if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
                 setMenuOpen(false);
@@ -469,7 +527,9 @@ export default function LandingPage() {
               }
             }}
           >
+            <a href="#campus-life" className="btn ghost">الجامعات</a>
             <a href="#chapters" className="btn ghost">الفصول</a>
+            <a href="#product" className="btn ghost">المنصّة</a>
             <a href="#live" className="btn ghost">ما يعمل اليوم</a>
             <a href="#roles" className="btn ghost">الأدوار</a>
             <a href="#colleges" className="btn ghost">الكليات</a>
@@ -492,10 +552,11 @@ export default function LandingPage() {
       <main id="main" tabIndex={-1}>
 
         {/* ═══ HERO — «لوحة مدارك»: the blueprint over the title-block
-            band. Desktop: the drawing owns the upper sheet, the band
-            below splits headline (reading start) from the metadata
-            block (reading end). Mobile: text first, then the drawing,
-            then the metadata — LCP is the headline. ═══ */}
+            band, then the documentary media band. Desktop: the drawing
+            owns the upper sheet, the band below splits headline (reading
+            start) from the metadata block (reading end). Mobile: text
+            first, then the drawing, then the media band, then the
+            metadata — LCP is the headline; the media band is lazy. ═══ */}
         <section className="fo-hero" aria-label="مدارك — منصّة التعليم الذكي">
           <div className="fo-hero-copy">
             <RevealCssClass as="p" className="fo-eyebrow">
@@ -554,6 +615,18 @@ export default function LandingPage() {
             </div>
           </RevealCssClass>
 
+          {/* r307 — the documentary media band: authentic university
+              photography composed into the sheet. Flat hairline frames,
+              flat captions; the lead is the LCP media candidate (eager +
+              high fetch priority), the rest ride in lazy. Baseline-
+              aligned: the panorama reads as a letterbox strip, the
+              portrait anchors the band’s reading end. */}
+          <RevealCssClass as="div" className="fo-hero-media" delay={4}>
+            <MediaFrame photo={HERO_PHOTOS[0]} variant="hero-lead" eager />
+            <MediaFrame photo={HERO_PHOTOS[1]} variant="hero-mid" />
+            <MediaFrame photo={HERO_PHOTOS[2]} variant="hero-tall" />
+          </RevealCssClass>
+
           {/* the title block — the drawing sheet's metadata grid */}
           <RevealCssClass as="dl" className="fo-hero-meta" delay={5}>
             <div className="fo-meta-row">
@@ -575,6 +648,12 @@ export default function LandingPage() {
               <dt className="fo-meta-k">القدرات</dt>
               <dd className="fo-meta-v">
                 <span className="fo-mono" dir="ltr">[{String(LIVE_COUNT).padStart(2, '0')}]</span> تعمل اليوم
+              </dd>
+            </div>
+            <div className="fo-meta-row">
+              <dt className="fo-meta-k">الجامعات الموثّقة</dt>
+              <dd className="fo-meta-v">
+                <span className="fo-mono" dir="ltr">{formatInt(MEDIA_UNIVERSITY_COUNT)}</span> في الصور والفيديو
               </dd>
             </div>
             <div className="fo-meta-row">
@@ -603,10 +682,45 @@ export default function LandingPage() {
               </RevealCssClass>
               <RevealCssClass as="p" className="st-line" delay={2}>
                 <strong>للإدارة</strong>
-                <span>تدير الكليات والمقرَّرات والصلاحيات، وترى مؤسّستك حيّة على مستوى كل قسم.</span>
+                <span>تدير الكليات والمقرّرات والصلاحيات، وترى مؤسّستك حيّة على مستوى كل قسم.</span>
               </RevealCssClass>
             </div>
           </div>
+        </section>
+
+        {/* ═══ r307 — الحياة الجامعية: the documentary university media
+            rail. Authentic photography of real Libyan campuses under
+            free licences (PD / CC BY / CC BY-SA) with per-image
+            attribution; the panorama band leads, the mosaic carries the
+            rest. Honesty pins: the source line + the non-endorsement
+            note ride with the section, never in a tooltip. ═══ */}
+        <section id="campus-life" className="um-section" aria-labelledby="um-title">
+          <div className="um-head">
+            <span className="fo-label"><span className="fo-mono" dir="ltr">[03]</span> الحياة الجامعية</span>
+            <RevealCssClass as="h2" className="um-title" delay={1} id="um-title">
+              من داخل الجامعات الليبية
+            </RevealCssClass>
+            <RevealCssClass as="p" className="um-lede" delay={2}>
+              صور حقيقية لحرم جامعات ليبية عامة، بتراخيص مفتوحة من ويكيميديا كومنز —
+              توثيقٌ للحياة الجامعية، لا زخرفة: كل إطار يحمل اسم جامعته ونسب مصوّره.
+            </RevealCssClass>
+          </div>
+
+          <RevealCssClass as="div" className="um-rail" delay={2}>
+            <MediaFrame photo={RAIL_PHOTOS[0]} variant="panorama" />
+            <div className="um-mosaic">
+              <MediaFrame photo={RAIL_PHOTOS[1]} variant="large" />
+              <MediaFrame photo={RAIL_PHOTOS[2]} variant="std" />
+              <MediaFrame photo={RAIL_PHOTOS[3]} variant="std" />
+              <MediaFrame photo={RAIL_PHOTOS[4]} variant="std" />
+              <MediaFrame photo={RAIL_PHOTOS[5]} variant="std" />
+            </div>
+          </RevealCssClass>
+
+          <RevealCssClass as="p" className="um-note" delay={3}>
+            المصدر: ويكيميديا كومنز — تراخيص PD / CC BY / CC BY-SA، ونسب كل مصوّر مرفقة بإطاره.
+            أعيد تحجيم الصور وقصّها للعرض. ظهور جامعة هنا توثيقٌ لحقيقتها، لا تبنّيًا ولا شراكة — مدارك مستقلّة.
+          </RevealCssClass>
         </section>
 
         {/* ═══ الفصول 01–06 — the capability ledger: numbered hairline
@@ -614,7 +728,7 @@ export default function LandingPage() {
         <section id="chapters" className="chapters" aria-labelledby="chapters-title">
           <header className="chapters-head">
             <div className="chapters-head-copy">
-              <span className="fo-label"><span className="fo-mono" dir="ltr">[03]</span> الفصول</span>
+              <span className="fo-label"><span className="fo-mono" dir="ltr">[04]</span> الفصول</span>
               <RevealCssClass as="h2" className="chapters-title" delay={1} id="chapters-title">
                 ستُّ فصول — كلُّ فصلٍ قدرةٌ تعمل اليوم
               </RevealCssClass>
@@ -640,12 +754,70 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ═══ r307 — المنصّة فعليًا: real captures from the running
+            platform. The frames are authentic UI from the seeded demo
+            environment (fully synthetic «جامعة مدارك التجريبية» data) —
+            labelled «لقطة حقيقية» with the demo disclosure on every
+            frame; the CTA scrolls to the conversion row (the funnel
+            counts stay exact — no extra auth links on the sheet). ═══ */}
+        <section id="product" className="pr-section" aria-labelledby="pr-title">
+          <div className="pr-head">
+            <span className="fo-label"><span className="fo-mono" dir="ltr">[05]</span> المنصّة فعليًا</span>
+            <RevealCssClass as="h2" className="pr-title" delay={1} id="pr-title">
+              لا وعود — هذه <em>الواجهة نفسها</em>
+            </RevealCssClass>
+            <RevealCssClass as="p" className="pr-lede" delay={2}>
+              لقطات حقيقية من بيئة العرض: بيانات تجريبية اصطناعية بالكامل داخل «جامعة مدارك التجريبية» —
+              ما تراه هنا هو ما يعمل اليوم داخل المنصّة.
+            </RevealCssClass>
+          </div>
+
+          <RevealCssClass as="div" className="pr-grid" delay={2}>
+            <ProductFrame capture={PRODUCT_CAPTURES[0]} variant="lead" ctaAr="أنشئ حسابك لتجربتها حيّة" ctaTo="#cta" ctaAnchor />
+            <ProductFrame capture={PRODUCT_CAPTURES[1]} />
+            <ProductFrame capture={PRODUCT_CAPTURES[2]} />
+            <ProductFrame capture={PRODUCT_CAPTURES[3]} />
+          </RevealCssClass>
+
+          <RevealCssClass as="p" className="pr-note" delay={3}>
+            كل إطار مأخوذ من التطبيق نفسه في وضع الضيافة — بلا معالجة ولا تجميل.
+          </RevealCssClass>
+        </section>
+
+        {/* ═══ r307 — مشاهد جامعية: official-channel documentaries.
+            The cards are designed facades (no third-party bytes until
+            the visitor clicks); the embed rides youtube-nocookie and
+            the kind label tells the truth: a university documentary is
+            never presented as a product demo. ═══ */}
+        <section id="videos" className="vd-section" aria-labelledby="vd-title">
+          <div className="vd-head">
+            <span className="fo-label"><span className="fo-mono" dir="ltr">[06]</span> مشاهد جامعية</span>
+            <RevealCssClass as="h2" className="vd-title" delay={1} id="vd-title">
+              الحياة الجامعية <em>بالفيديو</em>
+            </RevealCssClass>
+            <RevealCssClass as="p" className="vd-lede" delay={2}>
+              تسجيلات توثيقية من القنوات الرسمية للجامعات — تُحمَّل عند الطلب فقط،
+              وبلا أي بايتات خارجية قبل نقرك.
+            </RevealCssClass>
+          </div>
+
+          <RevealCssClass as="div" className="vd-grid" delay={2}>
+            <VideoCard video={UNIVERSITY_VIDEOS[0]} variant="primary" />
+            <VideoCard video={UNIVERSITY_VIDEOS[1]} variant="secondary" />
+          </RevealCssClass>
+
+          <RevealCssClass as="p" className="vd-note" delay={3}>
+            الفيديوهات من القنوات الرسمية لجامعتي مصراتة وسبها، عبر آلية التضمين المسموحة —
+            والمشغّل لا يُحمَّل إلا بعد نقر «شاهد الفيديو».
+          </RevealCssClass>
+        </section>
+
         {/* ═══ ما يعمل اليوم — the capability matrix: a hairline
             TABLE (the reference's pricing grammar), numbered rows +
             checks + the bracketed count. No slab, no inversion. ═══ */}
         <section id="live" className="lv-section" aria-labelledby="live-title">
           <div className="lv-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[04]</span> ما يعمل اليوم</span>
+            <span className="fo-label"><span className="fo-mono" dir="ltr">[07]</span> ما يعمل اليوم</span>
             <RevealCssClass as="h2" className="lv-title" delay={1} id="live-title">
               قدرات <em>موثَّقة</em>، لا ادّعاءات
             </RevealCssClass>
@@ -665,24 +837,50 @@ export default function LandingPage() {
           <p className="lv-foot fo-mono" dir="ltr">[06] live capabilities · source: system feature state</p>
         </section>
 
-        {/* ═══ الأدوار — the index rows: one hairline row per role,
-            the role label over its line, arrow at the reading end ═══ */}
-        <section id="roles" className="rl-section" aria-labelledby="roles-title">
+        {/* ═══ r307 — الأدوار: the interactive role selector over REAL
+            dashboards. The chips carry aria-pressed and swap the panel
+            (a polite live region) — the same accessible contract as the
+            college chips. No role implies a feature it does not have:
+            the line under each capture is the honest current state. ═══ */}
+        <section id="roles" className="rl-section" aria-labelledby="rl-title">
           <div className="rl-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[05]</span> الأدوار</span>
-            <RevealCssClass as="h2" className="rl-title" delay={1} id="roles-title">
+            <span className="fo-label"><span className="fo-mono" dir="ltr">[08]</span> الأدوار</span>
+            <RevealCssClass as="h2" className="rl-title" delay={1} id="rl-title">
               منصّة واحدة، <em>خمسة مسارات</em>
             </RevealCssClass>
+            <RevealCssClass as="p" className="rl-lede" delay={2}>
+              اختر دورًا لترى لوحته الحقيقية — لقطة من التطبيق نفسه في بيئة العرض، ببيانات تجريبية.
+            </RevealCssClass>
           </div>
-          <ul className="rl-strip">
-            {ROLES.map((r, i) => (
-              <RevealCssClass as="li" key={r.role} className="rl-item" delay={((i % 3) + 1) as 1 | 2 | 3}>
-                <span className="rl-item-role">{r.role}</span>
-                <span className="rl-item-line">{r.line}</span>
-                <span className="rl-item-arrow" aria-hidden><Icon icon={ArrowLeft} size={15} /></span>
-              </RevealCssClass>
-            ))}
-          </ul>
+
+          <div className="rl-stage">
+            <ul className="rl-chips" aria-label="اختر دورًا لاستعراض لوحته">
+              {ROLE_SHOWCASES.map((r) => (
+                <li key={r.key}>
+                  <button
+                    type="button"
+                    className="rl-chip"
+                    aria-pressed={selectedRole === r.key}
+                    onClick={() => setSelectedRole(r.key)}
+                  >
+                    {r.roleAr}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            <div className="rl-panel" role="status" aria-live="polite">
+              <p className="rl-panel-role">{roleShowcase.roleAr}</p>
+              <p className="rl-panel-line">{roleShowcase.lineAr}</p>
+              {roleCapture && (
+                <ProductFrame
+                  capture={{ ...roleCapture, sizes: '(min-width: 992px) 44rem, 100vw' }}
+                  variant="role"
+                />
+              )}
+            </div>
+          </div>
+
           <RevealCssClass as="p" className="rl-more" delay={3}>
             بيانات كل مؤسّسة معزولة تمامًا — والصلاحيات منفصلة دورًا بدور.
           </RevealCssClass>
@@ -695,7 +893,7 @@ export default function LandingPage() {
             44px targets, a details panel instead of a popover. ═══ */}
         <section id="colleges" className="cg-section" aria-labelledby="cg-title">
           <div className="cg-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[06]</span> الجامعة التجريبية</span>
+            <span className="fo-label"><span className="fo-mono" dir="ltr">[09]</span> الجامعة التجريبية</span>
             <RevealCssClass as="h2" className="cg-title" delay={1} id="cg-title">
               {formatInt(colleges.length)} كلية في {formatInt(CAMPUS_COUNT)} أحرُم
             </RevealCssClass>
@@ -762,7 +960,7 @@ export default function LandingPage() {
             live / simulated / in-development, mono-tagged ═══ */}
         <section id="vision" className="vs-section" aria-labelledby="vs-title">
           <div className="vs-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[07]</span> إلى أين</span>
+            <span className="fo-label"><span className="fo-mono" dir="ltr">[10]</span> إلى أين</span>
             <RevealCssClass as="h2" className="vs-title" delay={1} id="vs-title">
               نحو تعليمٍ <em>يعرف كلَّ طالب</em>
             </RevealCssClass>
@@ -786,9 +984,9 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ الخاتمة — the coordinates row + the resolve ═══ */}
-        <section className="fo-cta" aria-label="ابدأ رحلتك — أنشئ حسابك">
+        <section className="fo-cta" id="cta" aria-label="ابدأ رحلتك — أنشئ حسابك">
           <p className="fo-cta-coords fo-mono" dir="ltr" aria-hidden="true">
-            [R306] — MADAREK · {year} · INDEPENDENT
+            [R307] — MADAREK · {year} · INDEPENDENT
           </p>
           <div className="fo-cta-inner">
             <RevealCssClass as="h2" className="fo-cta-title" delay={1}>
@@ -830,12 +1028,14 @@ export default function LandingPage() {
               <p className="fo-footer-about">
                 {/* r188 honesty pin: «اصطناعية بالكامل» must stay contiguous
                     on one source line (the r188-brand-integrity gate). */}
-                منصّة تعليمية تقنية مستقلّة، عربية أولًا. لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها؛ وبيانات العرض داخلها تخصّ «جامعة مدارك التجريبية» — مؤسّسة اصطناعية بالكامل لأغراض العرض.
+                منصّة تعليمية تقنية مستقلّة، عربية أولًا. لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها؛ وبيانات العرض داخلها تخصّ «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل لأغراض العرض.
               </p>
             </div>
             <nav className="fo-footer-col" aria-label="روابط المنصّة">
               <div className="fo-footer-heading">المنصّة</div>
+              <a href="#campus-life" className="fo-footer-link">الحياة الجامعية</a>
               <a href="#chapters" className="fo-footer-link">الفصول</a>
+              <a href="#product" className="fo-footer-link">المنصّة فعليًا</a>
               <a href="#live" className="fo-footer-link">ما يعمل اليوم</a>
               <a href="#roles" className="fo-footer-link">الأدوار</a>
               <Link to="/colleges" className="fo-footer-link">الجامعة التجريبية</Link>

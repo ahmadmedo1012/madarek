@@ -81,23 +81,32 @@ Imperative scroll chrome writes CSS vars/`classList` on rAF — zero React re-re
 tick. `prefers-reduced-motion` collapses every duration to 0 (motion.css + base.css belts)
 and the content stands complete static. No preloaders, no scrolljacking, no canvas motion.
 
-## 5. The landing sheet — «لوحة مدارك» (r306)
+## 5. The landing sheet — «لوحة مدارك» (r306 → r307)
 
 `LandingPage.tsx` + `landing.css` compose the drawing sheet: the fixed corner registration
 marks (desktop, decorative) → the 56px hairline header (nav cells wash to charcoal on
 hover) → the hero (the original **SVG blueprint** of the learning system with five
-keyboard-operable hotspots + a polite live-region panel, over the title-block metadata
-band) → the statement → the six capability **ledger rows** (flat honest interface
-fragments — hairline frames, no elevation, no browser chrome) → the capability matrix
-(a ruled hairline table) → the role index rows → the interactive college registry →
-the honest status pairs → the coordinates-row CTA → the hairline colophon footer.
-The funnel (5 register CTAs / 5 login affordances), the honest numbers, the integrity
-strings, and the a11y contracts are pinned by `landing-funnel` / `r306-landing-sheet` /
-`guest-landing.e2e` / the r188-brand gates.
+keyboard-operable hotspots + a polite live-region panel, beside the copy column; below
+them the **documentary media band** — three Commons-licensed university photographs,
+baseline-aligned — then the title-block metadata grid) → the statement → **الحياة
+الجامعية** (the documentary rail: a full-width panorama band + an asymmetric mosaic,
+every frame carrying institution + author + licence deed) → the six capability **ledger
+rows** (flat honest interface fragments — hairline frames, no elevation, no browser
+chrome) → **المنصّة فعليًا** (real captures from the running platform, demo data
+disclosed on every frame) → **مشاهد جامعية** (official-channel documentaries behind
+click-to-load facades — zero third-party bytes until intent) → the capability matrix
+(a ruled hairline table) → the interactive **role selector** (aria-pressed chips over
+the five roles' REAL dashboards, a polite live-region panel) → the interactive college
+registry → the honest status pairs → the coordinates-row CTA → the hairline colophon
+footer. The funnel (5 register CTAs / 5 login affordances — exact counts, pinned), the
+honest numbers, the integrity strings, and the a11y contracts are pinned by
+`landing-funnel` / `r306-landing-sheet` / `landing-scrollspy-grain` / `guest-landing.e2e`
+/ the r188-brand gates.
 
 ## 6. Components & patterns
 
-Buttons: `.btn.primary` charcoal slab (the default primary), `.btn.accent` the signal
+Buttons: `.btn.primary` charcoal slab (the default primary — the auth submit joined it in
+r307), `.btn.accent` the signal
 fill with `--warm-ink` labels, ghosts hairline; 44px landing floor; loading states never
 double-submit. Inputs/tables/dialogs/overlays: the shared primitives
 (`components/primitives/`) + `patterns.css` (`PageFrame · PageHeader · RowList ·
@@ -105,6 +114,37 @@ SplitView · FilterBar…` — the normative signatures in `components/patterns/
 Empty/loading/error states use the **mk-ill illustration kit** (original two-tone SVG,
 gold in achievement pieces only). Data tables rule with hairlines, sticky headers where
 needed, scoped horizontal scroll on phones. `--gold` = achievements ONLY.
+
+### 6a. MediaFrame — the documentary photo seat (r307)
+
+`components/landing/MediaFrame.tsx` + `.mf-*` in `landing.css`: a flat hairline frame
+(radius 0→2, zero elevation) around a Commons-licensed university photograph. The
+caption bar carries the Arabic institution + name, the mono credit row (author ·
+licence deed link). Engineering: explicit intrinsic dimensions (CLS 0 by construction),
+responsive srcset from the manifest derivative widths, deliberate `object-position`
+per photo, lazy by default — the hero lead is the ONE eager seat (fetchpriority high).
+Provenance: `frontend/public/media/manifest.json` (machine-readable rights + verification
+per asset); the display registry mirrors it in `src/data/university-media.ts`; the
+derivative pipeline: `scripts/media/build-media-derivatives.mjs` (ffmpeg + libwebp,
+zero repo dependencies).
+
+### 6b. VideoCard — the official-channel documentary seat (r307)
+
+`components/landing/VideoCard.tsx` + `.vc-*`: a designed 16:9 facade (drafting marks,
+pure CSS — no thumbnails, no third-party bytes) that mounts the youtube-nocookie iframe
+ONLY after an explicit click; Escape/close returns focus to the trigger. The kind label
+(«فيديو توثيقي من القناة الرسمية للجامعة») tells the truth: a university documentary is
+never presented as a product demo. CSP: `frame-src` admits exactly the two embed hosts
+(`backend/src/app.ts`); `img-src` stays self-only (no i.ytimg.com hotlinks).
+
+### 6c. ProductFrame — the real-capture seat (r307)
+
+`components/landing/ProductFrame.tsx` + `.prf-*`: a flat frame around an authentic
+capture of the running application (seeded demo environment — fully synthetic «جامعة
+مدارك التجريبية» data). Every frame carries the mono `real-ui` tag + the demo-data
+disclosure; the CTA scrolls to the conversion row (never an extra funnel link — the
+5+5 counts stay exact). Captures are re-derivable from the committed
+`.r307-capture-archive/` via the pipeline script — never re-fabricated.
 
 **Verified facts ledger** (doc-accuracy pins, r177):
 
@@ -134,7 +174,11 @@ contract is enforced by `r170*`/`r305a7-a11y` test belts + axe in dev.
    (`scripts/check-csp-hash.sh` + `backend/src/app.ts`).
 5. **Token contract changes** → re-pin `verify-parity-export.mjs` in the SAME change.
 6. **The illustration voice**: original flat SVG line work on the token system — no
-   raster heroes, no 3D dependencies, no reference assets.
+   3D dependencies, no reference assets. **r307 amendment:** exactly three sanctioned
+   raster seats exist (the §6a documentary photo, the §6b facade poster composed in CSS,
+   the §6c real product capture) — every one of them flat, hairline-framed, honestly
+   labelled, and rights-verified in the media manifest. Generic stock imagery, unlicensed
+   rehosts, and decorative raster remain banned.
 7. Honest copy is permanent («جامعة مدارك التجريبية» synthetic-data disclosure, banned
    marketing wording — r168b/r177/r188 gates).
 

@@ -227,9 +227,19 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options?: {
       settled: false,
       reveal: () => {
         if (entry.settled) return;
-        entry.settled = true;
-        el.classList.add('in-view');
-        unregister(entry); // one-shot ⇒ leaves the observer + belt
+        if (entry.once) {
+          // r307 (audit 1-C M-2): one-shot semantics — settle, leave
+          // the observer + belt. Non-once entries NEVER settle here:
+          // the IO callback toggles the class both ways, so a scrub /
+          // continuous reveal stays observable for its whole life
+          // (the old form permanently pinned non-once entries in-view
+          // after the first settle — a trap for scroll-linked scenes).
+          entry.settled = true;
+          el.classList.add('in-view');
+          unregister(entry);
+        } else {
+          el.classList.add('in-view');
+        }
       },
     };
 

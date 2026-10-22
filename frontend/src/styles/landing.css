@@ -84,9 +84,13 @@
 .fo-header-inner,
 .fo-hero-copy,
 .fo-hero-fig,
+.fo-hero-media,
 .fo-hero-meta,
 .st-section,
+.um-section,
 .chapters,
+.pr-section,
+.vd-section,
 .lv-section,
 .rl-section,
 .cg-section,
@@ -343,7 +347,10 @@
   font-family: var(--font-display);
   font-size: var(--fs-display-xl);
   font-weight: 700;
-  line-height: 1.05;
+  /* r307 (audit 1-B #1): the display line-height joins the canon's
+     type-role floor (tokens.css --type-display-line-height) — the old
+     1.05 sat under the proven-safe Arabic display floor. */
+  line-height: var(--type-display-line-height);
   color: var(--text);
 }
 
@@ -595,7 +602,7 @@
   font-family: var(--font-display);
   font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: var(--type-display-line-height);
   color: var(--text);
 }
 
@@ -653,7 +660,7 @@
   font-family: var(--font-display);
   font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: var(--type-display-line-height);
   color: var(--text);
 }
 
@@ -1094,7 +1101,7 @@
   font-family: var(--font-display);
   font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: var(--type-display-line-height);
   color: var(--text);
 }
 
@@ -1168,48 +1175,76 @@
   font-family: var(--font-display);
   font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: var(--type-display-line-height);
   color: var(--text);
 }
 
-.rl-strip {
-  display: grid;
-  border: 1px solid var(--rule);
-  border-radius: var(--r-xs);
-  background: color-mix(in srgb, var(--surface) 45%, transparent);
-  overflow: clip;
+/* r307 — the role selector over REAL dashboards replaces the static
+   index rows: chips (aria-pressed) + a polite live-region panel, the
+   same accessible contract as the college chips. */
+.rl-lede {
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-inline-size: 64ch;
 }
 
-.rl-item {
+.rl-stage {
   display: grid;
-  grid-template-columns: minmax(120px, 200px) 1fr auto;
-  align-items: center;
   gap: var(--sp-5);
-  padding: var(--sp-4) var(--sp-5);
-  border-block-end: 1px solid var(--rule);
 }
 
-.rl-item:last-child {
-  border-block-end: 0;
+.rl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
 }
 
-.rl-item-role {
+.rl-chip {
+  min-block-size: 44px;
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--t-base) var(--ease),
+    border-color var(--t-base) var(--ease),
+    color var(--t-base) var(--ease);
+}
+
+.rl-chip[aria-pressed='true'] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.rl-panel {
+  display: grid;
+  gap: var(--sp-4);
+  justify-items: start;
+  padding: var(--sp-5);
+  border: 1px solid var(--rule);
+  border-inline-start: 2px solid var(--accent);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  max-inline-size: 52rem;
+}
+
+.rl-panel-role {
   font-family: var(--font-display);
-  font-size: var(--fs-body-lg);
+  font-size: var(--fs-h2);
   font-weight: 700;
   color: var(--text);
 }
 
-.rl-item-line {
+.rl-panel-line {
   font-size: var(--fs-body);
   line-height: 1.7;
   color: var(--text-secondary);
-}
-
-.rl-item-arrow {
-  display: inline-grid;
-  place-items: center;
-  color: var(--text-faint);
 }
 
 .rl-more {
@@ -1234,7 +1269,7 @@
   font-family: var(--font-display);
   font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: var(--type-display-line-height);
   color: var(--text);
 }
 
@@ -1345,7 +1380,7 @@
   font-family: var(--font-display);
   font-size: var(--fs-display-lg);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: var(--type-display-line-height);
   color: var(--text);
 }
 
@@ -1782,4 +1817,553 @@
 .reveal-d-5.in-view { transition-delay: 400ms; }
 @media (prefers-reduced-motion: reduce) {
   .reveal-up { opacity: 1; transform: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   r307 — THE MEDIA LAYER (DESIGN.md §6a-6c)
+   Documentary university photography + real product captures + the
+   click-to-load video facades. Every seat is FLAT: hairline frames,
+   radius 0→2, zero elevation, zero chrome — the drawing-sheet grammar
+   applied to raster. Colors ride the canonical tokens (no raw values);
+   spacing rides --sp-*; motion rides the token ladder (transitions
+   only — zero keyframes holds).
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── Section anchors clear the 56px hairline header + breathing room.
+   The landing owns its offset (r307, audit 1-C L-2): the app shell's
+   :target rule stays for authenticated surfaces; the sheet's anchors
+   resolve against the landing header, not the shell topbar. ── */
+#statement,
+#campus-life,
+#chapters,
+#product,
+#videos,
+#live,
+#roles,
+#colleges,
+#vision,
+#cta {
+  scroll-margin-block-start: calc(56px + var(--sp-4)); /* spacing-gate: allow — the 56px literal is the landing header's own height (.fo-header-inner min-block-size), not a spacing rung; coupling it to --sp-10 would drift silently if the bar changes height while the token stays 56px */
+}
+
+/* ── mf — MediaFrame: the documentary photo figure ──────────────────
+   Flat frame, hairline border, the caption bar carries the Arabic
+   name + institution + the mono credit row (author · license deed).
+   The photo box reserves exact space (aspect from the source), so
+   late bytes never shift the sheet (CLS 0 by construction). ── */
+.mf {
+  display: grid;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+}
+
+.mf-photo {
+  display: block;
+  overflow: clip;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xs);
+  background: var(--surface);
+}
+
+.mf-photo img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.mf-caption {
+  display: grid;
+  gap: var(--sp-0-5);
+  padding-inline: var(--sp-0-5);
+}
+
+.mf-caption-name {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.mf-caption-institution {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.mf-caption-credit {
+  font-size: var(--fs-xxs);
+  color: var(--text-faint);
+}
+
+.mf-caption-credit a {
+  color: var(--accent-ink);
+  text-decoration: none;
+  border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* ── The hero media band — the documentary layer of «لوحة مدارك» ────
+   Desktop: the copy column and the blueprint sit side by side (the
+   reading start and the drawing), the media band grounds them below
+   as a baseline-aligned skyline: the panorama reads as a letterbox
+   strip, the portrait anchors the reading end. Mobile: the band
+   re-composes (lead full-width, mid + tall pair) — never a naive
+   scale-down. ── */
+@media (min-width: 1025px) {
+  .fo-hero {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: var(--sp-10);
+    align-items: center;
+  }
+
+  .fo-hero-copy {
+    grid-area: 1 / 1;
+  }
+
+  .fo-hero-fig {
+    grid-area: 1 / 2;
+  }
+
+  .fo-hero-media {
+    grid-area: 2 / 1 / 3 / -1;
+    margin-block-start: var(--sp-8);
+    display: grid;
+    grid-template-columns: minmax(0, 46fr) minmax(0, 30fr) minmax(0, 24fr);
+    gap: var(--sp-4);
+    align-items: end;
+  }
+
+  .fo-hero-meta {
+    grid-area: 3 / 1 / 4 / -1;
+    margin-block-start: var(--sp-7);
+  }
+}
+
+.fo-hero-media {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+/* ── um — الحياة الجامعية: the documentary rail ─────────────────────
+   The panorama band leads (a full-width letterbox), then the mosaic:
+   the large aerial over 2 columns, the std frames flowing around it.
+   Every frame lazy — the rail never competes with the hero band for
+   the first paint. ── */
+.um-section {
+  padding-block: var(--sp-12);
+  border-block-start: 1px solid var(--rule-strong);
+}
+
+.um-head {
+  display: grid;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-8);
+}
+
+.um-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-display-lg);
+  font-weight: 700;
+  line-height: var(--type-display-line-height);
+  color: var(--text);
+}
+
+.um-title em {
+  color: var(--accent-ink);
+  font-style: normal;
+}
+
+.um-lede {
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-inline-size: 64ch;
+}
+
+.um-rail {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.um-mosaic {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.um-mosaic .mf--large {
+  grid-column: 1 / 3;
+}
+
+.um-note {
+  margin-block-start: var(--sp-6);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  color: var(--text-muted);
+  max-inline-size: 78ch;
+}
+
+/* ── pr — المنصّة فعليًا: the real-capture grid ─────────────────────
+   Crisscross asymmetry: the lead (the student dashboard) opens the
+   row pair at 7fr, library answers at 5fr; player and matrix swap
+   the ratio below. Frames are honest ratio boxes — UI shots are
+   never cropped. ── */
+.pr-section {
+  padding-block: var(--sp-12);
+  border-block-start: 1px solid var(--rule-strong);
+}
+
+.pr-head {
+  display: grid;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-8);
+}
+
+.pr-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-display-lg);
+  font-weight: 700;
+  line-height: var(--type-display-line-height);
+  color: var(--text);
+}
+
+.pr-lede {
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-inline-size: 64ch;
+}
+
+.pr-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--sp-5);
+  /* capped measure: the captures read as framed exhibits, not as a
+     wall — keeps row heights in the section rhythm. */
+  max-inline-size: 62rem;
+}
+
+/* the role seat inside the selector panel reads at a compact measure */
+.prf--role {
+  max-inline-size: 40rem;
+}
+
+.pr-note {
+  margin-block-start: var(--sp-6);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* ── prf — ProductFrame: the real-capture figure ────────────────────
+   Flat frame + the three-part caption: the mono «real-ui» tag, the
+   title/line body, the demo disclosure. The CTA is a text link — it
+   scrolls to the conversion row (never an extra funnel link). ── */
+.prf {
+  display: grid;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+}
+
+.prf-photo {
+  overflow: clip;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xs);
+  background: var(--surface);
+}
+
+.prf-photo img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.prf-caption {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding-inline: var(--sp-0-5);
+}
+
+.prf-caption-tag {
+  font-size: var(--fs-xxs);
+  color: var(--accent-ink);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: var(--r-xs);
+  padding: var(--sp-0-5) var(--sp-1-5);
+}
+
+.prf-caption-body {
+  display: grid;
+  gap: var(--sp-0-5);
+  min-inline-size: 0;
+}
+
+.prf-caption-title {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.prf-caption-line {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.prf-caption-demo {
+  font-size: var(--fs-xxs);
+  color: var(--text-faint);
+}
+
+.prf-cta {
+  white-space: nowrap;
+}
+
+/* ── vd — مشاهد جامعية: the documentary video facades ───────────────
+   Primary at 7fr, secondary answers at 5fr. The facade poster is a
+   designed drafting card — no third-party bytes, no thumbnail
+   hotlink; the iframe mounts only on explicit intent. ── */
+.vd-section {
+  padding-block: var(--sp-12);
+  border-block-start: 1px solid var(--rule-strong);
+}
+
+.vd-head {
+  display: grid;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-8);
+}
+
+.vd-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-display-lg);
+  font-weight: 700;
+  line-height: var(--type-display-line-height);
+  color: var(--text);
+}
+
+.vd-lede {
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-inline-size: 64ch;
+}
+
+.vd-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--sp-5);
+  align-items: start;
+}
+
+.vd-note {
+  margin-block-start: var(--sp-6);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* ── vc — VideoCard: the click-to-load facade ───────────────────────
+   The frame is a flat 16:9 box; the poster composes drafting marks
+   over hairlines (pure CSS), the body carries the kind + title +
+   meta, the actions row carries the play control + the direct
+   channel link. Playing state swaps the facade for the iframe and a
+   close control that returns focus to the trigger. ── */
+.vc {
+  display: grid;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+}
+
+.vc-frame {
+  position: relative;
+  overflow: clip;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xs);
+  background: var(--surface);
+  /* the 16:9 box reserves exact space whether facade or iframe */
+  aspect-ratio: 16 / 9;
+}
+
+.vc-poster {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    repeating-linear-gradient(
+      to inline-end,
+      transparent 0 calc(25% - 1px),
+      var(--grid-line) calc(25% - 1px) 25%
+    ),
+    color-mix(in srgb, var(--surface) 88%, var(--bg));
+}
+
+.vc-poster-mark {
+  color: var(--accent-ink);
+  font-size: var(--fs-h2);
+}
+
+.vc-poster-lines {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline: var(--sp-6);
+  border-block-start: 1px solid var(--grid-line);
+}
+
+.vc-body {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  padding: var(--sp-5) var(--sp-6) var(--sp-16) var(--sp-6);
+  display: grid;
+  align-content: start;
+  gap: var(--sp-1-5);
+  text-align: start;
+}
+
+.vc-kind {
+  font-size: var(--fs-xxs);
+  color: var(--accent-ink);
+}
+
+.vc-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-body-lg);
+  font-weight: 700;
+  line-height: var(--type-display-line-height);
+  color: var(--text);
+}
+
+.vc-meta {
+  display: flex;
+  gap: var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.vc-actions {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  padding: var(--sp-4) var(--sp-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-4);
+  background: linear-gradient(to block-start, var(--surface) 70%, transparent);
+}
+
+.vc-play {
+  min-block-size: 44px;
+}
+
+.vc-direct {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.vc-direct:hover {
+  color: var(--accent-ink);
+}
+
+.vc-iframe {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  border: 0;
+}
+
+.vc-close {
+  position: absolute;
+  inset-block-start: var(--sp-2);
+  inset-inline-start: var(--sp-2);
+  z-index: 2;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-full);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.vc-caption {
+  display: grid;
+  gap: var(--sp-0-5);
+  padding-inline: var(--sp-0-5);
+}
+
+.vc-caption-kind {
+  font-size: var(--fs-xxs);
+  color: var(--text-faint);
+}
+
+.vc-caption-title {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+/* the facade's affordances are guarded to real pointers (r283) */
+@media (hover: hover) and (pointer: fine) {
+  .vc-play:hover,
+  .mf-photo:hover,
+  .rl-chip:hover {
+    /* washes live here — see the header nav block for the convention */
+  }
+}
+
+/* ── Responsive re-composition (never a naive scale-down) ─────────── */
+@media (max-width: 1024px) {
+  .fo-hero-media {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .fo-hero-media .mf--hero-lead {
+    grid-column: 1 / -1;
+  }
+
+  .um-mosaic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .um-mosaic .mf--large {
+    grid-column: 1 / -1;
+  }
+
+  .pr-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .vd-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .um-section,
+  .pr-section,
+  .vd-section {
+    padding-block: var(--sp-10);
+  }
+
+  .um-mosaic {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .um-mosaic .mf--large {
+    grid-column: auto;
+  }
+
+  .fo-hero-media {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .vc-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }

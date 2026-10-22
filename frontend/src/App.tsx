@@ -1,6 +1,6 @@
-import { BrowserRouter, Link, Navigate, Outlet, Route, Routes, useParams } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, Outlet, Route, Routes, useLocation, useNavigationType, useParams } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { queryClient } from './lib/queryClient';
 import { AppShell, ProtectedRoute } from './components/layout/AppShell';
@@ -508,10 +508,29 @@ export function AppRoutes() {
   );
 }
 
+/* r307 (audit 1-C H-1): window-scrolled routes (the public surfaces —
+ * landing /, colleges, auth, 404) had NO scroll reset on SPA PUSH
+ * navigation: a deep-scrolled landing pushed into /colleges or /auth
+ * carried the old window offset (clamped to the new doc height), so
+ * the funnel opened mid-page. POP keeps the browser's native restore
+ * (and the authenticated shell scrolls .content, unaffected here —
+ * window.scrollTo is a no-op while the shell owns the scroller). */
+function ScrollResetOnPush() {
+  const action = useNavigationType();
+  const { pathname, search } = useLocation();
+  useEffect(() => {
+    if (action === 'PUSH') {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, [action, pathname, search]);
+  return null;
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <ScrollResetOnPush />
         {/* r141: one router-aware boundary around the route tree — a
          * render error now lands on the tested fallback (retry / home)
          * instead of a white screen, and clears itself on navigation.
