@@ -1,0 +1,647 @@
+{
+ "version": 1,
+ "generatedFor": "R307 — Madarek complete experience upgrade",
+ "generatedAt": "2026-10-22",
+ "policy": {
+  "ar": "كل صورة الجامعات مرخّصة من ويكيميديا كومنز (PD / CC BY / CC BY-SA) مع نسب المصوّر والمصدر؛ الفيديوهات تُضمَّن من القناة الرسمية للجامعة عبر آلية التضمين المسموحة (youtube-nocookie) وتُحمَّل فقط بعد نقر المستخدم؛ لقطات المنتج من بيئة عرض محليّة ببيانات تجريبية اصطناعية بالكامل — لا بيانات شخصية حقيقية. ظهور جامعة في الوسائط لا يعني تبنّيًا أو شراكة رسمية.",
+  "en": "University photos are Commons-licensed (PD / CC BY / CC BY-SA) with per-image attribution; videos embed from official university channels via the permitted youtube-nocookie mechanism, click-to-load only; product captures come from a local seeded demo environment (fully synthetic data). Media presence does not imply institutional endorsement."
+ },
+ "derivativePipeline": "scripts/media/build-media-derivatives.mjs (ffmpeg + libwebp, zero repo dependencies)",
+ "photos": [
+  {
+   "id": "uob-wide",
+   "type": "photo",
+   "slot": "hero-lead",
+   "institution": "جامعة بنغازي",
+   "nameAr": "مقر إدارة جامعة بنغازي",
+   "captionAr": "واجهة الإدارة المركزية بالقبّة — تصوير بانورامي",
+   "altAr": "مقر إدارة جامعة بنغازي — واجهة الإدارة المركزية بالقبّة — تصوير بانورامي",
+   "objectPosition": "50% 45%",
+   "sizesAttr": "(min-width: 992px) 46rem, 100vw",
+   "assets": {
+    "1600": "/media/universities/uob-wide-1600.webp",
+    "1200": "/media/universities/uob-wide-1200.webp",
+    "800": "/media/universities/uob-wide-800.webp",
+    "480": "/media/universities/uob-wide-480.webp"
+   },
+   "intrinsic": [
+    2689,
+    827
+   ],
+   "derivativeWidths": [
+    1600,
+    1200,
+    800,
+    480
+   ],
+   "source": {
+    "institution": "جامعة بنغازي",
+    "page": "https://commons.wikimedia.org/wiki/File:University_of_Benghazi_(cropped).jpg",
+    "file": "https://upload.wikimedia.org/wikipedia/commons/e/e9/University_of_Benghazi_%28cropped%29.jpg",
+    "author": "WisiW",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "description": "بانوراما لمقر إدارة جامعة بنغازي",
+    "commonsCategories": "Garyounis University|Self-published work|Extracted images"
+   },
+   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22",
+   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUniversity%20of%20Benghazi%20(cropped).jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+  },
+  {
+   "id": "uob-science",
+   "type": "photo",
+   "slot": "hero-mid",
+   "institution": "جامعة بنغازي",
+   "nameAr": "كلية العلوم — جامعة بنغازي",
+   "captionAr": "واجهة كلية العلوم بهندسة متكرّرة",
+   "altAr": "كلية العلوم — جامعة بنغازي — واجهة كلية العلوم بهندسة متكرّرة",
+   "objectPosition": "50% 50%",
+   "sizesAttr": "(min-width: 992px) 24rem, 100vw",
+   "assets": {
+    "1200": "/media/universities/uob-science-1200.webp",
+    "800": "/media/universities/uob-science-800.webp",
+    "480": "/media/universities/uob-science-480.webp"
+   },
+   "intrinsic": [
+    4000,
+    3000
+   ],
+   "derivativeWidths": [
+    1200,
+    800,
+    480
+   ],
+   "source": {
+    "institution": "جامعة بنغازي",
+    "page": "https://commons.wikimedia.org/wiki/File:UoB_1.jpg",
+    "file": "https://upload.wikimedia.org/wikipedia/commons/7/7e/UoB_1.jpg",
+    "author": "WisiW",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "description": "مبنى كلية العلوم",
+    "commonsCategories": "Garyounis University|Self-published work"
+   },
+   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22",
+   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUoB%201.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+  },
+  {
+   "id": "tripoli-science",
+   "type": "photo",
+   "slot": "hero-portrait",
+   "institution": "جامعة طرابلس",
+   "nameAr": "كلية العلوم — جامعة طرابلس",
+   "captionAr": "مبنى كلية العلوم من داخل الحرم",
+   "altAr": "كلية العلوم — جامعة طرابلس — مبنى كلية العلوم من داخل الحرم",
+   "objectPosition": "50% 40%",
+   "sizesAttr": "(min-width: 992px) 18rem, 60vw",
+   "assets": {
+    "1000": "/media/universities/tripoli-science-1000.webp",
+    "800": "/media/universities/tripoli-science-800.webp",
+    "480": "/media/universities/tripoli-science-480.webp"
+   },
+   "intrinsic": [
+    3024,
+    4032
+   ],
+   "derivativeWidths": [
+    1000,
+    800,
+    480
+   ],
+   "source": {
+    "institution": "جامعة طرابلس",
+    "page": "https://commons.wikimedia.org/wiki/File:مبنى_في_جامعة_طرابلس.jpg",
+    "file": "https://upload.wikimedia.org/wikipedia/commons/c/cf/%D9%85%D8%A8%D9%86%D9%89_%D9%81%D9%8A_%D8%AC%D8%A7%D9%85%D8%B9%D8%A9_%D8%B7%D8%B1%D8%A7%D8%A8%D9%84%D8%B3.jpg",
+    "author": "Atoo77",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "description": "من داخل جامعة طرابلس كلية العلوم",
+    "commonsCategories": "Creative Commons Attribution-Share Alike missing SDC copyright status|Self-published work|Creative Commons Attribution-S"
+   },
+   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22",
+   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3Aمبنى%20في%20جامعة%20طرابلس.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+  },
+  {
+   "id": "uob-garden",
+   "type": "photo",
+   "slot": "rail-panorama",
+   "institution": "جامعة بنغازي",
+   "nameAr": "حديقة الجامعة — جامعة بنغازي",
+   "captionAr": "جادة الحديقة بخطّ النخيل",
+   "altAr": "حديقة الجامعة — جامعة بنغازي — جادة الحديقة بخطّ النخيل",
+   "objectPosition": "50% 50%",
+   "sizesAttr": "(min-width: 992px) 72rem, 100vw",
+   "assets": {
+    "1600": "/media/universities/uob-garden-1600.webp",
+    "1200": "/media/universities/uob-garden-1200.webp",
+    "800": "/media/universities/uob-garden-800.webp"
+   },
+   "intrinsic": [
+    4912,
+    1080
+   ],
+   "derivativeWidths": [
+    1600,
+    1200,
+    800
+   ],
+   "source": {
+    "institution": "جامعة بنغازي",
+    "page": "https://commons.wikimedia.org/wiki/File:University_of_Benghazi_2.jpg",
+    "file": "https://upload.wikimedia.org/wikipedia/commons/a/a3/University_of_Benghazi_2.jpg",
+    "author": "WisiW",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "description": "صورة بانورامية لحديقة الجامعة",
+    "commonsCategories": "Garyounis University|Self-published work"
+   },
+   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22",
+   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUniversity%20of%20Benghazi%202.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+  },
+  {
+   "id": "garyounis-classic",
+   "type": "photo",
+   "slot": "rail-large",
+   "institution": "جامعة بنغازي (قاريونس)",
+   "nameAr": "حرم جامعة بنغازي — قاريونس",
+   "captionAr": "منظر جوّي للحرم الجامعي",
+   "altAr": "حرم جامعة بنغازي — قاريونس — منظر جوّي للحرم الجامعي",
+   "objectPosition": "50% 40%",
+   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+   "assets": {
+    "1200": "/media/universities/garyounis-classic-1200.webp",
+    "800": "/media/universities/garyounis-classic-800.webp",
+    "480": "/media/universities/garyounis-classic-480.webp"
+   },
+   "intrinsic": [
+    1509,
+    1275
+   ],
+   "derivativeWidths": [
+    1200,
+    800,
+    480
+   ],
+   "source": {
+    "institution": "جامعة بنغازي (قاريونس)",
+    "page": "https://commons.wikimedia.org/wiki/File:Garyounis_University.jpg",
+    "file": "https://upload.wikimedia.org/wikipedia/commons/5/55/Garyounis_University.jpg",
+    "author": "Munsha'at al Akhdar lil Alwan, Benghazi.",
+    "license": "Public domain",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "description": "Garyounis University, Benghazi, Libya.",
+    "commonsCategories": "Garyounis University|PD-Libya|PD-old missing SDC copyright status"
+   },
+   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22",
+   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AGaryounis%20University.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+  },
+  {
+   "id": "garyounis-1",
+   "type": "photo",
+   "slot": "rail-std",
+   "institution": "جامعة بنغازي (قاريونس)",
+   "nameAr": "بوابة الحرم — قاريونس",
+   "captionAr": "مدخل الحرم الجامعي",
+   "altAr": "بوابة الحرم — قاريونس — مدخل الحرم الجامعي",
+   "objectPosition": "50% 45%",
+   "sizesAttr": "(min-width: 992px) 26rem, 100vw",
+   "assets": {
+    "1200": "/media/universities/garyounis-1-1200.webp",
+    "800": "/media/universities/garyounis-1-800.webp",
+    "480": "/media/universities/garyounis-1-480.webp"
+   },
+   "intrinsic": [
+    3648,
+    2736
+   ],
+   "derivativeWidths": [
+    1200,
+    800,
+    480
+   ],
+   "source": {
+    "institution": "جامعة بنغازي (قاريونس)",
+    "page": "https://commons.wikimedia.org/wiki/File:Garyounis_university1.JPG",
+    "file": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Garyounis_university1.JPG",
+    "author": "Maher A. A. Abdussalam",
+    "license": "Public domain",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "description": "Garyounis University in Benghazi, Libya.",
+    "commonsCategories": "Taken with Sony DSC-S2000|Garyounis University|Self-published work|PD-self|2010 in Benghazi"
+   },
+   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22",
+   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AGaryounis%20university1.JPG&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+  },
+  {
+   "id": "omu-agri",
+   "type": "photo",
+   "slot": "rail-std",
+   "institution": "جامعة عمر المختار",
+   "nameAr": "كلية الزراعة — جامعة عمر المختار (البيضاء)",
+   "captionAr": "مجمّع الكلية بطرازه المعماري",
+   "altAr": "كلية الزراعة — جامعة عمر المختار (البيضاء) — مجمّع الكلية بطرازه المعماري",
+   "objectPosition": "50% 45%",
+   "sizesAttr": "(min-width: 992px) 26rem, 100vw",
+   "assets": {
+    "1200": "/media/universities/omu-agri-1200.webp",
+    "800": "/media/universities/omu-agri-800.webp",
+    "480": "/media/universities/omu-agri-480.webp"
+   },
+   "intrinsic": [
+    1310,
+    908
+   ],
+   "derivativeWidths": [
+    1200,
+    800,
+    480
+   ],
+   "source": {
+    "institution": "جامعة عمر المختار",
+    "page": "https://commons.wikimedia.org/wiki/File:Faculty_of_Agriculture,_Al_Bayda.jpg",
+    "file": "https://upload.wikimedia.org/wikipedia/commons/1/12/Faculty_of_Agriculture%2C_Al_Bayda.jpg",
+    "author": "Munsha'at al Akhdar lil Alwan, Benghazi.",
+    "license": "Public domain",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "description": "Faculty of Agriculture, Al Bayda.",
+    "commonsCategories": "Omar Al-Mukhtar University|PD-Libya|PD-old missing SDC copyright status"
+   },
+   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22",
+   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AFaculty%20of%20Agriculture,%20Al%20Bayda.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+  },
+  {
+   "id": "fateh-science",
+   "type": "photo",
+   "slot": "rail-std",
+   "institution": "جامعة طرابلس",
+   "nameAr": "ممرّ كلية العلوم — جامعة طرابلس",
+   "captionAr": "ممرّ داخلي في كلية العلوم",
+   "altAr": "ممرّ كلية العلوم — جامعة طرابلس — ممرّ داخلي في كلية العلوم",
+   "objectPosition": "50% 40%",
+   "sizesAttr": "(min-width: 992px) 26rem, 100vw",
+   "assets": {
+    "1200": "/media/universities/fateh-science-1200.webp",
+    "800": "/media/universities/fateh-science-800.webp",
+    "480": "/media/universities/fateh-science-480.webp"
+   },
+   "intrinsic": [
+    1280,
+    960
+   ],
+   "derivativeWidths": [
+    1200,
+    800,
+    480
+   ],
+   "source": {
+    "institution": "جامعة طرابلس",
+    "page": "https://commons.wikimedia.org/wiki/File:Al_Fateh_University_Faculty_of_Science.jpg",
+    "file": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Al_Fateh_University_Faculty_of_Science.jpg",
+    "author": "Tarek Siala from Tripoli, Libya",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "description": "El Fateh Univirsity - Faculty of Science, near Computer Department, Tripoli.",
+    "commonsCategories": "Flickr images reviewed by FlickreviewR|Taken with Nokia N70|Photographs by Tarek Siala|Higher education institutions in "
+   },
+   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22",
+   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AAl%20Fateh%20University%20Faculty%20of%20Science.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+  },
+  {
+   "id": "uob",
+   "type": "photo",
+   "slot": "rail-detail",
+   "institution": "جامعة بنغازي",
+   "nameAr": "مبنى الإدارة — جامعة بنغازي",
+   "captionAr": "تفصيلة معمارية من مبنى الإدارة",
+   "altAr": "مبنى الإدارة — جامعة بنغازي — تفصيلة معمارية من مبنى الإدارة",
+   "objectPosition": "50% 35%",
+   "sizesAttr": "(min-width: 992px) 26rem, 100vw",
+   "assets": {
+    "1600": "/media/universities/uob-1600.webp",
+    "1200": "/media/universities/uob-1200.webp",
+    "800": "/media/universities/uob-800.webp",
+    "480": "/media/universities/uob-480.webp"
+   },
+   "intrinsic": [
+    4000,
+    3000
+   ],
+   "derivativeWidths": [
+    1600,
+    1200,
+    800,
+    480
+   ],
+   "source": {
+    "institution": "جامعة بنغازي",
+    "page": "https://commons.wikimedia.org/wiki/File:UoB.jpg",
+    "file": "https://upload.wikimedia.org/wikipedia/commons/5/59/UoB.jpg",
+    "author": "WisiW",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "description": "صورة جانبية لمبنى إدارة الجامعة",
+    "commonsCategories": "Garyounis University|Self-published work"
+   },
+   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22",
+   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUoB.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+  }
+ ],
+ "products": [
+  {
+   "id": "student-dashboard",
+   "type": "product-capture",
+   "slot": "product",
+   "titleAr": "لوحة الطالب",
+   "captionAr": "نظرة الطالب على يومه: جدول اليوم، المهام، والتقدّم",
+   "altAr": "لوحة الطالب — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+   "assets": {
+    "1280": "/media/product/student-dashboard-1280.webp",
+    "720": "/media/product/student-dashboard-720.webp"
+   },
+   "intrinsic": [
+    1280,
+    800
+   ],
+   "derivativeWidths": [
+    1280,
+    720
+   ],
+   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+   "source": {
+    "environment": "local seeded demo (Madarek demo university)",
+    "capturedAt": "2026-10-22",
+    "tool": "agent-browser (Chromium) at 1280x800, light theme"
+   },
+   "changes": "cropped to viewport, re-encoded to WebP; contains seeded demo data only — no real personal data",
+   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22"
+  },
+  {
+   "id": "student-library",
+   "type": "product-capture",
+   "slot": "product",
+   "titleAr": "المكتبة الإلكترونية",
+   "captionAr": "بحث عربي وفهرس وتصفح الكتب والبحوث",
+   "altAr": "المكتبة الإلكترونية — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+   "assets": {
+    "1280": "/media/product/student-library-1280.webp",
+    "720": "/media/product/student-library-720.webp"
+   },
+   "intrinsic": [
+    1280,
+    800
+   ],
+   "derivativeWidths": [
+    1280,
+    720
+   ],
+   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+   "source": {
+    "environment": "local seeded demo (Madarek demo university)",
+    "capturedAt": "2026-10-22",
+    "tool": "agent-browser (Chromium) at 1280x800, light theme"
+   },
+   "changes": "cropped to viewport, re-encoded to WebP; contains seeded demo data only — no real personal data",
+   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22"
+  },
+  {
+   "id": "student-lecture-player",
+   "type": "product-capture",
+   "slot": "product",
+   "titleAr": "المحاضرة التفاعلية",
+   "captionAr": "مشغّل المحاضرة مع نقطة فحص تُصحَّب فورًا",
+   "altAr": "المحاضرة التفاعلية — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+   "assets": {
+    "1280": "/media/product/student-lecture-player-1280.webp",
+    "720": "/media/product/student-lecture-player-720.webp"
+   },
+   "intrinsic": [
+    1280,
+    800
+   ],
+   "derivativeWidths": [
+    1280,
+    720
+   ],
+   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+   "source": {
+    "environment": "local seeded demo (Madarek demo university)",
+    "capturedAt": "2026-10-22",
+    "tool": "agent-browser (Chromium) at 1280x800, light theme"
+   },
+   "changes": "cropped to viewport, re-encoded to WebP; contains seeded demo data only — no real personal data",
+   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22"
+  },
+  {
+   "id": "student-matrix",
+   "type": "product-capture",
+   "slot": "product",
+   "titleAr": "مصفوفة الإتقان",
+   "captionAr": "درجة إتقان لكل مفهوم وربطها بالدرس المناسب",
+   "altAr": "مصفوفة الإتقان — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+   "assets": {
+    "1280": "/media/product/student-matrix-1280.webp",
+    "720": "/media/product/student-matrix-720.webp"
+   },
+   "intrinsic": [
+    1280,
+    800
+   ],
+   "derivativeWidths": [
+    1280,
+    720
+   ],
+   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+   "source": {
+    "environment": "local seeded demo (Madarek demo university)",
+    "capturedAt": "2026-10-22",
+    "tool": "agent-browser (Chromium) at 1280x800, light theme"
+   },
+   "changes": "cropped to viewport, re-encoded to WebP; contains seeded demo data only — no real personal data",
+   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22"
+  },
+  {
+   "id": "teacher-dashboard",
+   "type": "product-capture",
+   "slot": "role",
+   "titleAr": "لوحة الأستاذ",
+   "captionAr": "متابعة الأقسام والطلاب والمقرّرات",
+   "altAr": "لوحة الأستاذ — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+   "assets": {
+    "1280": "/media/product/teacher-dashboard-1280.webp",
+    "720": "/media/product/teacher-dashboard-720.webp"
+   },
+   "intrinsic": [
+    1280,
+    800
+   ],
+   "derivativeWidths": [
+    1280,
+    720
+   ],
+   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+   "source": {
+    "environment": "local seeded demo (Madarek demo university)",
+    "capturedAt": "2026-10-22",
+    "tool": "agent-browser (Chromium) at 1280x800, light theme"
+   },
+   "changes": "cropped to viewport, re-encoded to WebP; contains seeded demo data only — no real personal data",
+   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22"
+  },
+  {
+   "id": "admin-dashboard",
+   "type": "product-capture",
+   "slot": "role",
+   "titleAr": "لوحة الإدارة",
+   "captionAr": "مؤشرات الكليات والطلاب والأساتذة",
+   "altAr": "لوحة الإدارة — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+   "assets": {
+    "1280": "/media/product/admin-dashboard-1280.webp",
+    "720": "/media/product/admin-dashboard-720.webp"
+   },
+   "intrinsic": [
+    1280,
+    800
+   ],
+   "derivativeWidths": [
+    1280,
+    720
+   ],
+   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+   "source": {
+    "environment": "local seeded demo (Madarek demo university)",
+    "capturedAt": "2026-10-22",
+    "tool": "agent-browser (Chromium) at 1280x800, light theme"
+   },
+   "changes": "cropped to viewport, re-encoded to WebP; contains seeded demo data only — no real personal data",
+   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22"
+  },
+  {
+   "id": "quality-dashboard",
+   "type": "product-capture",
+   "slot": "role",
+   "titleAr": "لوحة ضمان الجودة",
+   "captionAr": "مجالس الجودة ومؤشرات الالتزام",
+   "altAr": "لوحة ضمان الجودة — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+   "assets": {
+    "1280": "/media/product/quality-dashboard-1280.webp",
+    "720": "/media/product/quality-dashboard-720.webp"
+   },
+   "intrinsic": [
+    1280,
+    800
+   ],
+   "derivativeWidths": [
+    1280,
+    720
+   ],
+   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+   "source": {
+    "environment": "local seeded demo (Madarek demo university)",
+    "capturedAt": "2026-10-22",
+    "tool": "agent-browser (Chromium) at 1280x800, light theme"
+   },
+   "changes": "cropped to viewport, re-encoded to WebP; contains seeded demo data only — no real personal data",
+   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22"
+  },
+  {
+   "id": "owner-dashboard",
+   "type": "product-capture",
+   "slot": "role",
+   "titleAr": "لوحة المالك",
+   "captionAr": "الحاكمية والمؤسّسات وسجلّ التدقيق",
+   "altAr": "لوحة المالك — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+   "assets": {
+    "1280": "/media/product/owner-dashboard-1280.webp",
+    "720": "/media/product/owner-dashboard-720.webp"
+   },
+   "intrinsic": [
+    1280,
+    800
+   ],
+   "derivativeWidths": [
+    1280,
+    720
+   ],
+   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+   "source": {
+    "environment": "local seeded demo (Madarek demo university)",
+    "capturedAt": "2026-10-22",
+    "tool": "agent-browser (Chromium) at 1280x800, light theme"
+   },
+   "changes": "cropped to viewport, re-encoded to WebP; contains seeded demo data only — no real personal data",
+   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22"
+  }
+ ],
+ "videos": [
+  {
+   "id": "misurata-exams",
+   "type": "video",
+   "slot": "video-primary",
+   "institution": "جامعة مصراتة",
+   "titleAr": "أجواء امتحانات نهاية الفصل بكليات جامعة مصراتة",
+   "duration": "5:11",
+   "videoId": "qM67yDknM0U",
+   "embedUrl": "https://www.youtube-nocookie.com/embed/qM67yDknM0U",
+   "channel": "@MisurataUni",
+   "channelUrl": "https://www.youtube.com/@MisurataUni",
+   "identityEvidence": "القناة مرتبطة من الموقع الرسمي misuratau.edu.ly (أيقونة يوتيوب في التذييل)؛ oembed author_name = Misurata University",
+   "kindAr": "فيديو توثيقي من القناة الرسمية للجامعة",
+   "loadPolicy": "click-to-load (facade; iframe mounts only after user intent)",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22",
+   "verificationCommand": "curl 'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=qM67yDknM0U&format=json' && curl -s -o /dev/null -w '%{http_code}' https://www.youtube-nocookie.com/embed/qM67yDknM0U"
+  },
+  {
+   "id": "sebha-graduation",
+   "type": "video",
+   "slot": "video-secondary",
+   "institution": "جامعة سبها",
+   "titleAr": "حفل خريجي جامعة سبها — الدفعة 40",
+   "duration": "3:13",
+   "videoId": "dz_t7yOOZMc",
+   "embedUrl": "https://www.youtube-nocookie.com/embed/dz_t7yOOZMc",
+   "channel": "@sabhauniversity498",
+   "channelUrl": "https://www.youtube.com/channel/UCjEGH--aN7rRas_lAdqF35Q",
+   "identityEvidence": "القناة مرتبطة من صفحة الفيديو الرسمية sebhau.edu.ly/video-gallery/ («قناة جامعة سبها على اليوتيوب»)؛ والفيديو نفسه مضمَّن في موقع الجامعة؛ oembed author_name = جامعة سبها Sabha University",
+   "kindAr": "فيديو توثيقي من القناة الرسمية للجامعة",
+   "loadPolicy": "click-to-load (facade; iframe mounts only after user intent)",
+   "verifiedByPrincipal": true,
+   "verifiedAt": "2026-10-22",
+   "verificationCommand": "curl 'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=dz_t7yOOZMc&format=json' && curl -sL 'https://sebhau.edu.ly/video-gallery/' | grep -c 'UCjEGH--aN7rRas_lAdqF35Q'"
+  }
+ ]
+}
