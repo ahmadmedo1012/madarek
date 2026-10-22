@@ -100,14 +100,19 @@ describe('r306 — the drawing sheet ships', () => {
   });
 });
 
-describe('r306 — the blueprint illustration (the honest interactive)', () => {
+describe('r306 → r310 — the elevation illustration (the honest interactive)', () => {
   // The artwork lives in its own module (components/landing/ — the
-  // icon-gate's illustrative-diagram authoring zone).
-  const art = read('src/components/landing/BlueprintSvg.tsx');
+  // icon-gate's illustrative-diagram authoring zone). R310 promotes
+  // the r306 five-pictogram blueprint to the drafted university
+  // ELEVATION — same narrative, real architectural drawing.
+  const art = read('src/components/landing/ElevationDrawing.tsx');
 
   it('the SVG artwork is original line work on the token system (no raster, no canvas)', () => {
-    expect(liveTsx).toContain('BlueprintSvg');
-    expect(art).toContain('viewBox="0 0 760 460"');
+    expect(liveTsx).toContain('ElevationDrawing');
+    // the frame is the exported constant — ONE source shared by the
+    // pins, the stations and the geometry (R310 §6)
+    expect(art).toContain('export const ELEVATION_VB = { w: 1440, h: 640 } as const;');
+    expect(art).toMatch(/viewBox=\{`0 0 \$\{ELEVATION_VB\.w\} \$\{ELEVATION_VB\.h\}`\}/);
     expect(art).not.toContain('<picture>');
     expect(art).not.toContain('<canvas');
     // the ink classes ride the canonical tokens — the artwork follows both themes
@@ -116,6 +121,18 @@ describe('r306 — the blueprint illustration (the honest interactive)', () => {
     }
     expect(live).toMatch(/\.bp-hair\s*\{[^}]*stroke:\s*var\(--grid-line\)/);
     expect(live).toMatch(/\.bp-signal\s*\{[^}]*stroke:\s*var\(--accent\)/);
+    // R310: every drawn element carries the .bp-drawable class — the
+    // ink-in selectors NEVER use [pathLength] (Chromium's style
+    // invalidation for class changes does not reach SVG elements
+    // matched via that attribute selector — documented + reproduced
+    // in audits/evidence/r310/repro/; the R308/R309 ink-in was
+    // silently stuck hidden by it)
+    const pathCount = (art.match(/pathLength=\{1\}/g) ?? []).length;
+    const drawableCount = (art.match(/bp-drawable/g) ?? []).length;
+    expect(pathCount).toBeGreaterThan(90);
+    expect(drawableCount).toBeGreaterThanOrEqual(pathCount);
+    expect(live).not.toMatch(/\[pathLength\]/);
+    expect(live).not.toMatch(/\.bp-stage \[pathLength\]/);
   });
 
   it('the hotspots are real buttons with pressed-state semantics over the drawing', () => {
@@ -138,16 +155,38 @@ describe('r306 — the blueprint illustration (the honest interactive)', () => {
     const mq = live.match(/@media \(max-width: 760px\)\s*\{([\s\S]*?)\n\}\s*\n@media/)?.[1] ?? '';
     expect(mq).toMatch(/\.bp-hotspots\s*\{[^}]*position:\s*static/s);
     // the SVG micro-labels drop in the flow — nothing renders tiny
-    // (grouped selector: .bp-name, .bp-tag → display: none; the [NN]
-    // indices live on the HTML markers, never in the SVG)
+    // (grouped selector: .bp-name, .bp-tag, .bp-micro → display:
+    // none; the [NN] indices live on the HTML markers, never in the
+    // SVG; R310 also drops the mono micro voice at flow widths)
     expect(mq).toContain('.bp-name');
-    expect(mq).toMatch(/\.bp-tag\s*\{[^}]*display:\s*none/s);
+    expect(mq).toContain('.bp-tag');
+    expect(mq).toContain('.bp-micro');
+    expect(mq).toMatch(/\.bp-micro[\s,\S]*?\{[\s\S]*?display:\s*none/s);
     expect(live).not.toContain('.bp-num');
   });
 
   it('the SVG carries a full Arabic description (the drawing is informative, not decorative clutter)', () => {
     expect(art).toMatch(/role="img"/);
-    expect(art).toContain('aria-label="مخطط تقني لمسار التعلّم');
+    expect(art).toContain('aria-label="واجهة معمارية لمبنى التعلّم');
+  });
+
+  it('R310 — the elevation is richly drawn: five layered volumes + the drafting furniture', () => {
+    // the purpose layers exist (the ink-in schedule consumes data-ink)
+    for (const layer of ['bp-l-frame', 'bp-l-grid', 'bp-l-ground', 'bp-l-dims', 'bp-l-journey', 'bp-l-labels']) {
+      expect(art).toContain(layer);
+    }
+    // the five stage volumes exist and carry the active-stage classes
+    for (const vol of ['bp-vol-0', 'bp-vol-1', 'bp-vol-2', 'bp-vol-3', 'bp-vol-4']) {
+      expect(art).toContain(vol);
+    }
+    // the drafting furniture: dimension ticks, windows, trees, the clock
+    for (const detail of ['DimTick', 'Window', 'bp-stipple', 'bp-hatch', 'bp-micro']) {
+      expect(art).toContain(detail);
+    }
+    // the drawing shares ONE frame with the pins + stations (the
+    // exported viewBox constant is the single source)
+    expect(art).toContain('export const ELEVATION_VB');
+    expect(liveTsx).toContain('data-vx={s.vx}');
   });
 });
 
@@ -241,7 +280,8 @@ describe('r306 hygiene — the sheet stays clean', () => {
       '.hi-marker-dot', // hi-pulse
       '.fo-ticker-track', // fo-ticker-rtl
       '.sl-scan', // sl-scan
-      '.jt-ov-ring', // jt-ring-crawl
+      '.jt-plan .bp-drawable', // R310: the plan's staged build collapses to the complete plan
+      '.pl-zone', // R310: the zone wash highlight
       '.vs-status-tag', // vs-tag-snap
     ];
     for (const sel of RM_COLLAPSED) {

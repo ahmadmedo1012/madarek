@@ -146,9 +146,12 @@ export function FooterLens() {
     <div
       className="fl"
       ref={stripRef}
-      data-cursor={lensOn ? 'hidden' : undefined}
       aria-label="شريط الفحص — خلاصة مسار التعلّم"
     >
+      {/* R310 §1 (cursor ownership): NO data-cursor suppression here — the
+          reference keeps its global cursor live over the footer strip while
+          the lens follows as a lagging inspection instrument (one pointer +
+          one instrument), and so do we. */}
       <svg
         className="fl-svg"
         viewBox={`0 0 ${VB_W} ${VB_H}`}

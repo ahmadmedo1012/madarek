@@ -1,50 +1,49 @@
 /**
- * JourneyScene — R308 «رحلة التعلّم» — the pinned walkthrough.
+ * JourneyScene — R308 «رحلة التعلّم» · R310 the plan scene.
  *
  * The reference's narrative center of gravity is a pinned scene that
- * owns ~51% of the page: a full-viewport CSS-sticky drawing window
- * where the SAME model persists while overlay layers cross-fade with
- * the scroll, number stations ride past the fixed drawing, and a
- * checklist column expands at the pin's end (§6–§7). This is the
- * Madarek walkthrough in that grammar:
+ * owns ~51% of the page. The R310 translation (spec §2.2/§4.3): the
+ * walkthrough draws an original detailed FLOOR PLAN — «مسطح التعلّم»
+ * (LearningPlanDrawing) — and the plan's geometry GENUINELY BUILDS as
+ * the scroll advances:
  *
- *  · The base drawing IS «مخطط مدارك» (BlueprintSvg) — the same
- *    artwork from the hero persists through the whole scene; only the
- *    overlay layer changes (stage ring + callouts cross-fade).
+ *  · stage 0 (شاهد) — the envelope, column grid and the lecture hall
+ *    (raked seating + stage) draw in;
+ *  · stage 1 (تحقّق) — the checkpoint kiosk joins;
+ *  · stage 2 (اختبر) — the exam hall + the library wing join;
+ *  · stage 3 (أتقن) — the mastery room, the entry and every
+ *    annotation resolve — the completed plan.
+ * The active stage's zone carries the signal WASH on the plan itself
+ * (the architectural highlight — no floating rings over the busy
+ * geometry; the station markers at the doors warm with the stage).
+ *
  *  · The pin is CSS `position: sticky` (the reference's own choice —
  *    GSAP never pins), measured per viewport height; it dies ≤991px
  *    into a stacked readable sequence (no pin on touch/narrow).
  *  · Scroll IS the timeline: --jt-p drives everything from ONE frame
  *    on the shared clock (no React renders per scroll; the driver
  *    sleeps shortly after scrolling stops — useSheetScroll).
- *  · The stage texts use the Arabic-safe WordReveal; the station in
- *    play carries the signal number (the reference's active-role
- *    grammar); the capability checklist column expands at pin end
- *    (the width transition, once).
+ *  · The stage texts use the Arabic-safe WordReveal; the capability
+ *    checklist column expands at pin end (the width transition, once).
  *  · Content is the honest capability ledger — every line a real,
  *    live capability (LIVE_CAPABILITIES lineage); no invented claims.
  */
 import { useRef } from 'react';
 import { Check } from 'lucide-react';
 import { Icon } from '../../Icon';
-import { BlueprintSvg } from '../BlueprintSvg';
+import { LearningPlanDrawing } from '../LearningPlanDrawing';
 import { WordReveal } from './WordReveal';
 import { useSheetScroll } from '../../../lib/motion/useSheetScroll';
-import { clamp } from '../../../lib/motion/sheetConductor';
 
 /* ── The four walkthrough stages — reading order (RTL) through the
- * SAME drawing as the hero. Coordinates are viewBox-space (760×460),
- * mapped by the same letterbox math the whole sheet uses. ────────── */
+ * PLAN. The zone + station references mirror LearningPlanDrawing's
+ * own layer names (the wash + marker wiring lives in landing.css). */
 interface JourneyStage {
   num: string;
   verbAr: string;
   titleAr: string;
   textAr: string;
   meta: string;
-  /** the highlight ring (viewBox coords + radius) */
-  ring: { x: number; y: number; r: number };
-  /** the callout label (viewBox coords) */
-  call: { x: number; y: number; code: string; textAr: string };
 }
 
 const STAGES_J: JourneyStage[] = [
@@ -54,8 +53,6 @@ const STAGES_J: JourneyStage[] = [
     titleAr: 'المحاضرة التفاعلية',
     textAr: 'محاضرة مسجَّلة بنقاط فحص تُثبِّت الفهم، وحضورٌ يُحتسب تلقائيًا عند الإكمال.',
     meta: 'live · lectures',
-    ring: { x: 662, y: 330, r: 84 },
-    call: { x: 662, y: 236, code: 'L01', textAr: 'الحضور يُحتسب عند الإكمال' },
   },
   {
     num: '02',
@@ -63,8 +60,6 @@ const STAGES_J: JourneyStage[] = [
     titleAr: 'نقاط الفحص',
     textAr: 'سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.',
     meta: 'live · checkpoints',
-    ring: { x: 520, y: 350, r: 72 },
-    call: { x: 520, y: 262, code: 'CP', textAr: 'تصحيح فوري قبل المتابعة' },
   },
   {
     num: '03',
@@ -72,8 +67,6 @@ const STAGES_J: JourneyStage[] = [
     titleAr: 'الاختبارات الإلكترونية',
     textAr: 'بنك أسئلة بأربعة أنواع وقوالب جاهزة، وتصحيح تلقائي للأسئلة الموضوعية.',
     meta: 'live · exams',
-    ring: { x: 400, y: 345, r: 76 },
-    call: { x: 400, y: 254, code: 'EX', textAr: 'أربعة أنواع أسئلة' },
   },
   {
     num: '04',
@@ -81,8 +74,6 @@ const STAGES_J: JourneyStage[] = [
     titleAr: 'مصفوفة الإتقان',
     textAr: 'درجة إتقان لكل مفهوم تكشف الفجوة وتربطها بالدرس المناسب.',
     meta: 'live · mastery',
-    ring: { x: 98, y: 300, r: 84 },
-    call: { x: 98, y: 208, code: 'MG', textAr: 'خطوتك التالية مقترحة من أدائك' },
   },
 ];
 
@@ -103,32 +94,18 @@ const ASSISTANT_NOTE =
 export function JourneyScene() {
   const trackRef = useRef<HTMLDivElement>(null);
   const sideRef = useRef<HTMLDivElement>(null);
-  const overlayRefs = useRef<Array<SVGGElement | null>>([]);
 
-  /* ── The ONE scroll driver: --jt-p, data-stage, overlay cross-fades,
-   *     the expanding column — all imperative, all from one frame. ── */
+  /* ── The ONE scroll driver: --jt-p, data-stage (the plan's staged
+   *     build + the zone wash + the station warming all read it from
+   *     CSS — imperative, zero React renders per scroll tick). ──── */
   useSheetScroll(trackRef, ({ pin }) => {
     const track = trackRef.current;
     if (!track) return;
     track.style.setProperty('--jt-p', pin.toFixed(4));
-    /* the active stage = the station nearest the window's centre
-     * (band centres at (i+0.5)/4 — the overlay cross-fade centres). */
+    /* the active stage = the station nearest the pin's centre band */
     const stage = Math.max(0, Math.min(STAGES_J.length - 1, Math.floor(pin * STAGES_J.length + 0.5) - 0));
     if (track.dataset.stage !== String(stage)) {
       track.dataset.stage = String(stage);
-    }
-    /* overlay cross-fade: triangle windows around each stage center */
-    for (let i = 0; i < STAGES_J.length; i += 1) {
-      const el = overlayRefs.current[i];
-      if (!el) continue;
-      const center = (i + 0.5) / STAGES_J.length;
-      const d = Math.abs(pin - center);
-      const op = clamp((0.22 - d) / 0.13, 0, 1);
-      const next = op.toFixed(3);
-      if (el.dataset.op !== next) {
-        el.dataset.op = next;
-        el.style.opacity = next;
-      }
     }
     /* the expanding column at the pin's end */
     const side = sideRef.current;
@@ -142,39 +119,10 @@ export function JourneyScene() {
     <div className="jt" ref={trackRef} data-stage="0">
       <div className="jt-pin">
         <div className="jt-window">
-          {/* the persistent base drawing — the same artwork as the hero */}
-          <BlueprintSvg active={-1} />
-
-          {/* the stage overlays — cross-fading highlight + callouts in
-              the drawing's own viewBox space */}
-          <svg className="jt-overlay-svg" viewBox="0 0 760 460" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            {STAGES_J.map((s, i) => (
-              <g
-                key={s.num}
-                ref={(el) => {
-                  overlayRefs.current[i] = el;
-                }}
-                className="jt-ov"
-                style={{ opacity: 0 }}
-              >
-                <circle className="jt-ov-ring" cx={s.ring.x} cy={s.ring.y} r={s.ring.r} pathLength={1} />
-                <line
-                  className="jt-ov-line"
-                  x1={s.call.x}
-                  y1={s.call.y + 10}
-                  x2={s.call.x}
-                  y2={s.ring.y - s.ring.r + 6}
-                />
-                <circle className="jt-ov-dot" cx={s.call.x} cy={s.call.y + 12} r="3" />
-                <text className="jt-ov-code" x={s.call.x} y={s.call.y - 14} textAnchor="middle">
-                  [{s.call.code}]
-                </text>
-                <text className="jt-ov-text" x={s.call.x} y={s.call.y} textAnchor="middle">
-                  {s.call.textAr}
-                </text>
-              </g>
-            ))}
-          </svg>
+          {/* the learning floor — the plan that BUILDS with the scroll
+              (staged geometry via .jt[data-stage]; the active zone
+              carries the signal wash) */}
+          <LearningPlanDrawing />
 
           {/* the status strip — the current station, stacked + faded */}
           <div className="jt-status" aria-hidden="true">

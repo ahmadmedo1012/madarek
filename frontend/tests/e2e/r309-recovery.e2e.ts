@@ -54,10 +54,16 @@ test.describe('R309 hero — drag-reveal geometry (the audit failures)', () => {
     const sb = await stage.boundingBox();
     expect(sb).not.toBeNull();
 
-    /* the reproduced failing gesture: a wide drag across the drawing */
-    await page.mouse.move(sb!.x + sb!.width * 0.9, sb!.y + sb!.height * 0.55);
+    /* the reproduced failing gesture: a wide drag across the drawing
+     * (R310: re-anchored to the elevation — the stations sit lower in
+     * the full-width frame; fractions verified against the live boxes).
+     * A settle pause before release guarantees the conductor frame
+     * processed the final stretch (the box grows monotonically, so
+     * every marker the path covered opens before the release clears it). */
+    await page.mouse.move(sb!.x + sb!.width * 0.85, sb!.y + sb!.height * 0.72);
     await page.mouse.down();
-    await page.mouse.move(sb!.x + sb!.width * 0.08, sb!.y + sb!.height * 0.45, { steps: 12 });
+    await page.mouse.move(sb!.x + sb!.width * 0.1, sb!.y + sb!.height * 0.6, { steps: 12 });
+    await page.waitForTimeout(250);
     await page.mouse.up();
     await page.waitForTimeout(700);
 
@@ -103,6 +109,15 @@ test.describe('R309 hero — drag-reveal geometry (the audit failures)', () => {
     await page.mouse.move(sb!.x + sb!.width * 0.8, sb!.y + sb!.height * 0.5);
     await page.mouse.down();
     await page.mouse.move(sb!.x + sb!.width * 0.2, sb!.y + sb!.height * 0.6, { steps: 8 });
+    /* the box state lands on the NEXT conductor frame — wait for it
+     * (the shared clock wakes on move; under suite load the frame can
+     * arrive a tick after the last pointer event) */
+    await page
+      .waitForFunction(() => {
+        const el = document.querySelector('.hi-box') as HTMLElement | null;
+        return !!el && el.dataset.on === 'on';
+      }, { timeout: 2000 })
+      .catch(() => undefined);
     const box = await page.evaluate(() => {
       const el = document.querySelector('.hi-box') as HTMLElement | null;
       if (!el || el.dataset.on !== 'on') return null;
@@ -273,9 +288,9 @@ test.describe('R309 hero — the reveal-state lifecycle (§6)', () => {
     await page.goto('/');
     const sb = await page.locator('div.bp-stage').boundingBox();
     expect(sb).not.toBeNull();
-    await page.mouse.move(sb!.x + sb!.width * 0.75, sb!.y + sb!.height * 0.5);
+    await page.mouse.move(sb!.x + sb!.width * 0.75, sb!.y + sb!.height * 0.66);
     await page.mouse.down();
-    await page.mouse.move(sb!.x + sb!.width * 0.45, sb!.y + sb!.height * 0.5, { steps: 8 });
+    await page.mouse.move(sb!.x + sb!.width * 0.45, sb!.y + sb!.height * 0.66, { steps: 8 });
     await page.mouse.up();
     await page.waitForTimeout(600);
     const open = await page.locator('.hi-card[data-open="on"]').count();

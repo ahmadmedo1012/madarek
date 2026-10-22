@@ -121,3 +121,6 @@ backend/storage-dev/
 
 # vitest blob reports (local artifact)
 .vitest-reports/
+
+# R310: reference-site captures stay local (r308 convention — never committed)
+audits/evidence/r310/reference/

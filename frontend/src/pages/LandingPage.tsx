@@ -14,7 +14,7 @@ import {
 } from '../data/university-media';
 import { formatInt } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
-import { BlueprintSvg } from '../components/landing/BlueprintSvg';
+import { ElevationDrawing } from '../components/landing/ElevationDrawing';
 import { MediaFrame } from '../components/landing/MediaFrame';
 import { ProductFrame } from '../components/landing/ProductFrame';
 import { VideoCard } from '../components/landing/VideoCard';
@@ -113,37 +113,39 @@ const VISION_STATUS = [
 /* ── Roles strip data: the five verified roles. r307 renders them as
  * an interactive selector over their REAL dashboards (demo data). */
 
-/* ── The blueprint stages — the five hotspots on the hero's technical
- * drawing. Each describes a REAL live capability (LIVE_CAPABILITIES
- * above); positions are percentages over the illustration box, mapped
- * to the clear annotation zone above each drawn structure (the
+/* ── The elevation stages — the five hotspots on the hero's drafted
+ * elevation (R310). Each describes a REAL live capability
+ * (LIVE_CAPABILITIES above); vx/vy are the drawing's OWN viewBox
+ * coordinates (1440×640) at each volume's annotation spot — the
  * drafting convention: the compact [NN] pins mark, never mask, the
- * artwork — the label spot, not the structure face). */
+ * artwork. The runtime mapping (HeroInspect) remaps them through the
+ * real letterbox transform, so the pins stay glued to the volumes at
+ * every size (ONE geometric frame for pins, stations, and guides). */
 const STAGES = [
   {
     num: '01', short: 'المحاضرات', title: 'المحاضرات التفاعلية',
     desc: 'محاضرة مسجَّلة بنقاط فحص تُثبِّت الفهم، وحضورٌ يُحتسب تلقائيًا عند الإكمال.',
-    meta: 'live · lectures', x: 87.1, y: 47.8,
+    meta: 'live · lectures', vx: 1145, vy: 196,
   },
   {
     num: '02', short: 'نقطة الفحص', title: 'نقاط الفحص',
     desc: 'سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.',
-    meta: 'live · checkpoints', x: 68.4, y: 63.5,
+    meta: 'live · checkpoints', vx: 970, vy: 300,
   },
   {
     num: '03', short: 'الاختبار', title: 'الاختبارات الإلكترونية',
     desc: 'بنك أسئلة بأربعة أنواع وقوالب جاهزة، وتصحيح تلقائي للأسئلة الموضوعية.',
-    meta: 'live · exams', x: 52.6, y: 56.9,
+    meta: 'live · exams', vx: 835, vy: 250,
   },
   {
     num: '04', short: 'المكتبة والبحوث', title: 'دورة البحوث والمكتبة',
     desc: 'رفع PDF وفحص نزاهة معلَن وملاحظات مشروحة من الأستاذ، فتُفهرَس في مكتبة تبحث بالعربية.',
-    meta: 'live · research', x: 32.1, y: 59.6,
+    meta: 'live · research', vx: 585, vy: 292,
   },
   {
     num: '05', short: 'الإتقان', title: 'مصفوفة الإتقان',
     desc: 'درجة إتقان لكل مفهوم تكشف الفجوة وتربطها بالدرس المناسب — خطوتك التالية مقترحة من أدائك.',
-    meta: 'live · mastery', x: 12.9, y: 31.3,
+    meta: 'live · mastery', vx: 355, vy: 64,
   },
 ] as const;
 
@@ -457,9 +459,14 @@ export default function LandingPage() {
     >
 
       {/* R308 — the entrance sequence (once per session; the loader
-          gates itself again on the pure decision and calls onDone). */}
+          gates itself again on the pure decision and calls onDone).
+          R310: onExitStart flips the sheet to intro-done the moment
+          the exit slit opens — the hero's ink-in draws WHILE the
+          loader reveals it (a seamless entrance→page transition, per
+          the R310 spec §3.1). */}
       {introPlaying && (
         <SheetLoader
+          onExitStart={() => setIntroDone(true)}
           onDone={() => {
             setIntroDone(true);
             setIntroPlaying(false);
@@ -580,12 +587,13 @@ export default function LandingPage() {
 
       <main id="main" tabIndex={-1}>
 
-        {/* ═══ HERO — «لوحة مدارك»: the blueprint over the title-block
-            band, then the documentary media band. Desktop: the drawing
-            owns the upper sheet, the band below splits headline (reading
-            start) from the metadata block (reading end). Mobile: text
-            first, then the drawing, then the media band, then the
-            metadata — LCP is the headline; the media band is lazy. ═══ */}
+        {/* ═══ HERO — «لوحة مدارك» (R310): the FULL-WIDTH drafted elevation
+            as the sheet's dominant composition — the copy band above it
+            (display + statement side by side, then the value row), the
+            drawing with its inspection instruments, then the documentary
+            media band, the title-block metadata, and the ticker. Mobile:
+            text first (LCP is the headline), then the drawing, then the
+            media band, then the metadata — the media band stays lazy. ═══ */}
         <section className="fo-hero" aria-label="مدارك — منصّة التعليم الذكي">
           <div className="fo-hero-copy">
             <RevealCssClass as="p" className="fo-eyebrow">
@@ -593,18 +601,22 @@ export default function LandingPage() {
               منصّة تعليم ذكية · عربية أولًا · مستقلّة
             </RevealCssClass>
 
-            <RevealCssClass as="h1" className="fo-hero-title" delay={1}>
-              مدارك
-            </RevealCssClass>
+            <div className="fo-hero-heading">
+              <RevealCssClass as="h1" className="fo-hero-title" delay={1}>
+                مدارك
+              </RevealCssClass>
 
-            <RevealCssClass as="p" className="fo-hero-statement" delay={2}>
-              من المحاضرة الأولى إلى الإتقان — <em>رحلة تعلّم واحدة</em>، موثَّقة ومقيسة.
-            </RevealCssClass>
+              <div className="fo-hero-lead">
+                <RevealCssClass as="p" className="fo-hero-statement" delay={2}>
+                  من المحاضرة الأولى إلى الإتقان — <em>رحلة تعلّم واحدة</em>، موثَّقة ومقيسة.
+                </RevealCssClass>
 
-            <RevealCssClass as="p" className="fo-hero-sub" delay={3}>
-              محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —
-              في تجربة عربية واحدة لخمسة أدوار أكاديمية.
-            </RevealCssClass>
+                <RevealCssClass as="p" className="fo-hero-sub" delay={3}>
+                  محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —
+                  في تجربة عربية واحدة لخمسة أدوار أكاديمية.
+                </RevealCssClass>
+              </div>
+            </div>
 
             <RevealCssClass as="div" className="fo-hero-actions" delay={4}>
               <Link to="/auth/register" className="btn accent lg fo-hero-cta">
@@ -615,13 +627,15 @@ export default function LandingPage() {
             </RevealCssClass>
           </div>
 
-          {/* the blueprint — the interactive technical drawing. R308:
-              the drawing is now an inspection surface — the local
-              pointer instrument (guides + coordinates + drag-to-
-              inspect) takes over this zone (data-cursor="hidden"). */}
+          {/* the elevation — R310: the hero's DOMINANT composition. The
+              drafted learning building is an inspection surface — the
+              local pointer instrument (guides + coordinates +
+              drag-to-inspect) owns this zone (data-cursor="hidden").
+              The [NN] pins and the stations share ONE coordinate frame
+              (viewBox 1440×640) remapped by HeroInspect at runtime. */}
           <RevealCssClass as="div" className="fo-hero-fig" delay={3}>
             <div className="bp-stage" data-cursor="hidden">
-              <BlueprintSvg active={activeStage} />
+              <ElevationDrawing active={activeStage} />
               <HeroInspect />
               <div className="bp-hotspots" role="group" aria-label="استكشف مراحل مسار التعلّم">
                 {STAGES.map((s, i) => (
@@ -629,7 +643,8 @@ export default function LandingPage() {
                     key={s.num}
                     type="button"
                     className="bp-hotspot"
-                    style={{ ['--hot-x' as string]: `${s.x}%`, ['--hot-y' as string]: `${s.y}%` }}
+                    data-vx={s.vx}
+                    data-vy={s.vy}
                     aria-label={`${s.num} ${s.short} — ${s.title}`}
                     aria-pressed={activeStage === i}
                     onClick={() => setActiveStage(i)}

@@ -67,10 +67,12 @@ import {
   layoutAnnotationCards,
   type Rect,
 } from '../../../lib/motion/sheetGeometry';
+import { ELEVATION_VB } from '../ElevationDrawing';
 
-/* The hero drawing's viewBox — must match BlueprintSvg. */
-const VB_W = 760;
-const VB_H = 460;
+/* The hero drawing's viewBox — the SINGLE shared frame (R310 §6):
+ * pins, stations, guides, and drag math all remap through it. */
+const VB_W = ELEVATION_VB.w;
+const VB_H = ELEVATION_VB.h;
 
 /* Drag semantics (measured reference constants). */
 const DRAG_THRESHOLD_PX = 2;
@@ -81,9 +83,11 @@ const GUIDE_LERP = 0.12;
 const DOT_TARGET_PX = 44;
 
 /* ── The inspection stations — REAL capabilities, placed in the
- * artwork's own coordinate space at each structure's annotation spot
- * (the drafting convention: mark, never mask). Codes ride the mono
- * voice; copy is the honest current capability. */
+ * ARTWORK's own coordinate space at each drawn feature's annotation
+ * spot (R310: anchored to the elevation's real geometry — the
+ * checkpoint pulse square on the bridge glass, the library's
+ * reading-room glazing, the tower's rising mastery line). Codes
+ * ride the mono voice; copy is the honest current capability. */
 interface MarkerDef {
   id: string;
   code: string;
@@ -101,8 +105,8 @@ const MARKERS: MarkerDef[] = [
   {
     id: 'cp',
     code: 'CP',
-    vx: 520,
-    vy: 258,
+    vx: 970,
+    vy: 452,
     w: 204,
     h: 88,
     labelAr: 'نقطة فحص',
@@ -111,8 +115,8 @@ const MARKERS: MarkerDef[] = [
   {
     id: 'rr',
     code: 'RR',
-    vx: 244,
-    vy: 252,
+    vx: 585,
+    vy: 440,
     w: 212,
     h: 88,
     labelAr: 'مراجعة بحث',
@@ -121,8 +125,8 @@ const MARKERS: MarkerDef[] = [
   {
     id: 'mg',
     code: 'MG',
-    vx: 98,
-    vy: 250,
+    vx: 340,
+    vy: 360,
     w: 204,
     h: 88,
     labelAr: 'فجوة إتقان',
@@ -202,6 +206,28 @@ export function HeroInspect() {
       if (el) {
         el.style.setProperty('--mk-x', `${c.x}px`);
         el.style.setProperty('--mk-y', `${c.y}px`);
+      }
+    }
+
+    /* R310 §6 — the [NN] pins join the SAME frame: the hotspots
+     * container is sized to the SVG box (like the layer), and each
+     * pin's data-vx/data-vy remaps through the same letterbox
+     * transform. Pins, stations, guides, and drag math now share one
+     * measured mapping at every size. (≤760px the flow-mode CSS
+     * resets the container to the document flow — the vars go inert.) */
+    const pins = stage.querySelector<HTMLElement>('.bp-hotspots');
+    if (pins) {
+      pins.style.left = `${svgRect.left - stageRect.left}px`;
+      pins.style.top = `${svgRect.top - stageRect.top}px`;
+      pins.style.width = `${svgRect.width}px`;
+      pins.style.height = `${svgRect.height}px`;
+      for (const pin of Array.from(pins.querySelectorAll<HTMLElement>('.bp-hotspot'))) {
+        const vx = Number(pin.dataset.vx);
+        const vy = Number(pin.dataset.vy);
+        if (!Number.isFinite(vx) || !Number.isFinite(vy)) continue;
+        const c = viewBoxPointToContainer(fit, vx, vy);
+        pin.style.setProperty('--hot-x', `${c.x}px`);
+        pin.style.setProperty('--hot-y', `${c.y}px`);
       }
     }
 

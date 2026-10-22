@@ -27,6 +27,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { shouldPlayIntro, markIntroSeen, INTRO_SEEN_KEY } from '../../lib/motion/introGate';
 import { sheetEase } from '../../lib/motion/sheetConductor';
+import { ElevationDrawing } from './ElevationDrawing';
 
 /* ── R309 entrance timing (§4.1, re-measured against the live
  * reference): the percentage is the CHOREOGRAPHED entrance clock —
@@ -45,90 +46,27 @@ const PROGRESS_EASE = 0.085;
 
 export interface SheetLoaderProps {
   onDone: () => void;
+  /** R310 — fires when the geometric EXIT BEGINS (the slit opens):
+   *  the page behind the loader starts its own ink-in then, so the
+   *  reveal resolves into a living page instead of a blank one
+   *  (spec §3.1 — a seamless transition, never blank mid-animation). */
+  onExitStart?: () => void;
 }
 
-/* ── The staged drawing groups (pathLength-normalized; CSS in
- * landing.css drives dashoffset per group with ordered delays). ── */
+/* ── R310 — the entrance draws THE ELEVATION ITSELF: the same drafted
+ * building the hero presents, in the reduced constructive variant
+ * (major lines only — no texture fills, no micro metadata), staged by
+ * the [data-ink] layer groups against the ~5s progress ramp (the
+ * schedule lives in landing.css under .sl). The scan datum sweeps once
+ * after the masses resolve. The loader drawing and the hero drawing
+ * are ONE artwork — the entrance resolves into the page it reveals. */
 function SlDraw() {
   return (
-    <svg
-      className="sl-draw"
-      viewBox="0 0 760 300"
-      role="img"
-      aria-label="رسم خطّي لمسار التعلّم في مدارك: قاعة المحاضرة، نقطة الفحص، بوابة الاختبار، جناح المكتبة، وبرج الإتقان"
-      preserveAspectRatio="xMidYMid meet"
-    >
-      {/* g1 — the ground + ruler ticks */}
-      <g className="sl-g sl-g-1">
-        <line className="sl-ink" x1="28" y1="258" x2="732" y2="258" pathLength={1} />
-        <g className="sl-hair">
-          {Array.from({ length: 24 }, (_, i) => 40 + i * 29).map((x) => (
-            <line key={x} x1={x} y1="258" x2={x} y2={x % 2 === 0 ? 264 : 261} pathLength={1} />
-          ))}
-        </g>
-      </g>
-      {/* g2 — primary structures: the lecture hall (reading start, RTL) */}
-      <g className="sl-g sl-g-2">
-        <rect className="sl-fill" x="606" y="150" width="112" height="108" pathLength={1} />
-        <polygon className="sl-ink" points="606,150 662,116 718,150" pathLength={1} />
-        <circle className="sl-fill" cx="672" cy="196" r="12" pathLength={1} />
-        <polygon className="sl-signal" points="668,190 668,203 679,196" pathLength={1} />
-      </g>
-      {/* g3 — the checkpoint signal (the ONE orange flag) */}
-      <g className="sl-g sl-g-3">
-        <line className="sl-ink" x1="520" y1="258" x2="520" y2="182" pathLength={1} />
-        <polygon className="sl-signal" points="520,182 550,190 520,198" pathLength={1} />
-        <rect className="sl-fill" x="488" y="208" width="64" height="40" pathLength={1} />
-      </g>
-      {/* g4 — the exam gate */}
-      <g className="sl-g sl-g-4">
-        <rect className="sl-fill" x="366" y="164" width="12" height="94" pathLength={1} />
-        <rect className="sl-fill" x="422" y="164" width="12" height="94" pathLength={1} />
-        <rect className="sl-ink" x="356" y="152" width="88" height="12" pathLength={1} />
-        <circle className="sl-fill" cx="400" cy="204" r="15" pathLength={1} />
-      </g>
-      {/* g5 — the research library wing */}
-      <g className="sl-g sl-g-5">
-        <rect className="sl-fill" x="188" y="164" width="110" height="94" pathLength={1} />
-        <line className="sl-hair2" x1="188" y1="164" x2="298" y2="164" pathLength={1} />
-        <g className="sl-hair2">
-          <line x1="200" y1="180" x2="286" y2="180" pathLength={1} />
-          <line x1="200" y1="194" x2="270" y2="194" pathLength={1} />
-          <line x1="200" y1="208" x2="280" y2="208" pathLength={1} />
-        </g>
-        <polygon className="sl-signal" points="230,216 230,238 238,230 246,238 246,216" pathLength={1} />
-      </g>
-      {/* g6 — the mastery tower (reading end) + the rising line */}
-      <g className="sl-g sl-g-6">
-        <rect className="sl-fill" x="66" y="84" width="64" height="174" pathLength={1} />
-        <g className="sl-hair2">
-          <line x1="74" y1="124" x2="122" y2="124" pathLength={1} />
-          <line x1="74" y1="164" x2="122" y2="164" pathLength={1} />
-          <line x1="74" y1="204" x2="122" y2="204" pathLength={1} />
-        </g>
-        <polyline className="sl-ink" points="76,222 90,186 102,154 114,120 122,96" pathLength={1} />
-      </g>
-      {/* g7 — registration marks */}
-      <g className="sl-g sl-g-7">
-        <g className="sl-hair">
-          <path d="M28 40 h14 M35 33 v14" pathLength={1} />
-          <path d="M718 40 h14 M725 33 v14" pathLength={1} />
-          <path d="M28 244 h14 M35 237 v14" pathLength={1} />
-          <path d="M718 244 h14 M725 237 v14" pathLength={1} />
-        </g>
-        <line className="sl-dashline" x1="640" y1="286" x2="120" y2="286" pathLength={1} />
-      </g>
-      {/* g8 — labels */}
-      <g className="sl-g sl-g-8">
-        <text className="sl-name" x="662" y="286" textAnchor="middle">المحاضرة</text>
-        <text className="sl-name" x="520" y="286" textAnchor="middle">نقطة الفحص</text>
-        <text className="sl-name" x="400" y="286" textAnchor="middle">الاختبار</text>
-        <text className="sl-name" x="243" y="286" textAnchor="middle">المكتبة</text>
-        <text className="sl-name" x="98" y="286" textAnchor="middle">الإتقان</text>
-      </g>
-      {/* the scan line — one sweep after the draw (CSS keyframes) */}
-      <line className="sl-scan" x1="28" y1="40" x2="732" y2="40" aria-hidden="true" />
-    </svg>
+    <div className="sl-draw-wrap">
+      <ElevationDrawing variant="entrance" active={-1} />
+      {/* the scan line — one sweep after the structures resolve */}
+      <span className="sl-scan" aria-hidden="true" />
+    </div>
   );
 }
 
@@ -142,7 +80,7 @@ const LOG_LINES: Array<{ at: number; code: string; text: string }> = [
   { at: 100, code: '005', text: 'جاهز — مدارك' },
 ];
 
-export function SheetLoader({ onDone }: SheetLoaderProps) {
+export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
   const [play, setPlay] = useState<boolean | null>(null);
   const [exiting, setExiting] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -194,11 +132,20 @@ export function SheetLoader({ onDone }: SheetLoaderProps) {
       root.classList.add('sl-mounted');
     });
 
+    let exitStarted = false;
+    const startExit = () => {
+      if (exitStarted) return;
+      exitStarted = true;
+      onExitStart?.(); /* the page behind begins its ink-in NOW — the
+                            slit reveals a living sheet, never a blank */
+    };
+
     const finish = () => {
       if (finished) return;
       finished = true;
       cancelAnimationFrame(raf);
       markIntroSeen();
+      startExit();
       setExiting(true);
     };
 
@@ -275,7 +222,7 @@ export function SheetLoader({ onDone }: SheetLoaderProps) {
       skipBtn?.removeEventListener('click', skip);
       doc.style.overflow = prevOverflow;
     };
-  }, [play]);
+  }, [play, onExitStart]);
 
   /* ── The exit: center-out horizontal clip split (one element, a
    *     two-band polygon whose slit widens to the edges). A wall-clock
@@ -353,10 +300,8 @@ export function SheetLoader({ onDone }: SheetLoaderProps) {
           X:0 Y:0
         </span>
 
-        {/* the drawing — the platform's own linework, staged draw */}
-        <div className="sl-draw-wrap">
-          <SlDraw />
-        </div>
+        {/* the drawing — the elevation's staged construction */}
+        <SlDraw />
 
         {/* the progress instrument: band + counter */}
         <div className="sl-progress" aria-hidden="true">

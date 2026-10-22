@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root { --ease: cubic-bezier(.23,1,.32,1); --text: #282828; --surface: #fff; --grid-line: #B3B3AF; }
+  .bp-svg { display: block; width: 600px; height: auto; }
+  .bp-ink { stroke: var(--text); stroke-width: 1.5; fill: none; }
+  .bp-fill { fill: var(--surface); stroke: var(--text); stroke-width: 1.5; }
+  .bp-hair { stroke: var(--grid-line); stroke-width: 1; fill: none; }
+
+  .landing.intro-draw .bp-svg [pathLength] {
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: 1;
+    fill-opacity: 0;
+  }
+  .landing.intro-draw .bp-svg text { opacity: 0; }
+  .landing.intro-done .bp-svg [pathLength] {
+    transition: stroke-dashoffset 650ms var(--ease), fill-opacity 500ms var(--ease);
+  }
+  .landing.intro-done .bp-svg [data-ink='1'] [pathLength],
+  .landing.intro-done .bp-svg [data-ink='1'] text { transition-delay: 0ms; }
+  .landing.intro-done .bp-svg [data-ink='2'] [pathLength],
+  .landing.intro-done .bp-svg [data-ink='2'] text { transition-delay: 90ms; }
+  .landing.intro-done .bp-svg [pathLength] {
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+  }
+  .landing.intro-done .bp-svg text { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="landing intro-draw" id="root">
+  <svg class="bp-svg" viewBox="0 0 600 200" role="img">
+    <g className="bp-l-frame" data-ink="1">
+      <rect class="bp-fill" x="20" y="20" width="200" height="150" pathLength="1"></rect>
+      <line class="bp-ink" x1="20" y1="180" x2="580" y2="180" pathLength="1"></line>
+    </g>
+    <g className="bp-l-grid" data-ink="2">
+      <circle class="bp-hair" cx="300" cy="100" r="40" pathLength="1"></circle>
+    </g>
+  </svg>
+</div>
+<script>
+  setTimeout(() => {
+    document.getElementById('root').className = 'landing intro-done';
+  }, 1000);
+  setTimeout(() => {
+    const rect = document.querySelector('.bp-fill');
+    const cs = getComputedStyle(rect);
+    window.__result = {
+      cls: document.getElementById('root').className,
+      dashoffset: cs.strokeDashoffset,
+      dasharray: cs.strokeDasharray,
+      fillOpacity: cs.fillOpacity,
+    };
+    document.title = JSON.stringify(window.__result);
+  }, 3000);
+</script>
+</body>
+</html>
