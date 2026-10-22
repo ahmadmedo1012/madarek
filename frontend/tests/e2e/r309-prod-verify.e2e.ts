@@ -5,8 +5,21 @@
  * is static-data driven) via MADAREK_E2E_BASE_URL.
  */
 import { test, expect } from '@playwright/test';
+import path from 'node:path';
+import { mkdirSync } from 'node:fs';
+
+/* Deployment verification — NOT part of the hermetic CI belt: these
+ * specs run against the LIVE production deployment. They are skipped
+ * unless explicitly enabled (MADAREK_PROD_VERIFY=1 with
+ * MADAREK_E2E_BASE_URL pointing at the deployment to verify). */
+const ENABLED = !!process.env.MADAREK_PROD_VERIFY;
+test.skip(!ENABLED, 'deployment verification — set MADAREK_PROD_VERIFY=1 to run');
 
 const BASE = process.env.MADAREK_E2E_BASE_URL ?? 'https://madarek.onrender.com';
+/* cwd = the frontend workspace → ../audits is the repo's evidence tree */
+const SHOTS = process.env.R309_SHOTS
+  ?? path.resolve(process.cwd(), '../audits/evidence/r309-recovery/production');
+if (ENABLED) mkdirSync(SHOTS, { recursive: true });
 
 test('prod · the deployed build is the R309 code', async ({ page }) => {
   await page.goto(BASE + '/');
@@ -36,7 +49,7 @@ test('prod · desktop drag reveals [CP] unclipped, no RR/MG overlap, guides conf
   await page.mouse.up();
   await page.waitForTimeout(800);
   await expect(page.locator('.hi-marker[data-open="on"]')).toHaveCount(3);
-  await page.screenshot({ path: '/home/z/madarek/audits/evidence/r309-recovery/production/prod-drag-1440.png' });
+  await page.screenshot({ path: `${SHOTS}/prod-drag-1440.png` });
 
   const m = await page.evaluate(() => {
     const cards: Record<string, { l: number; r: number; t: number; b: number }> = {};
@@ -107,7 +120,7 @@ test('prod · mobile 390 — flow cards inside the viewport; menu owns the scrol
     await expect(btn).toHaveAttribute('aria-pressed', 'true');
   }
   await page.waitForTimeout(600);
-  await page.screenshot({ path: '/home/z/madarek/audits/evidence/r309-recovery/production/prod-flow-390.png' });
+  await page.screenshot({ path: `${SHOTS}/prod-flow-390.png` });
   const flow = await page.evaluate(() => {
     const out: Record<string, { l: number; r: number }> = {};
     document.querySelectorAll('.hi-flow-card[data-open="on"]').forEach((el) => {
@@ -125,7 +138,7 @@ test('prod · mobile 390 — flow cards inside the viewport; menu owns the scrol
   /* the menu scroll-lock — the audit's exact wheel gesture */
   await page.locator('.fo-burger').click();
   await expect(page.locator('.fo-mobile-menu')).toBeVisible();
-  await page.screenshot({ path: '/home/z/madarek/audits/evidence/r309-recovery/production/prod-menu-open-390.png' });
+  await page.screenshot({ path: `${SHOTS}/prod-menu-open-390.png` });
   const before = await page.evaluate(() => window.scrollY);
   await page.mouse.wheel(0, 600);
   await page.waitForTimeout(400);
@@ -145,12 +158,12 @@ test('prod · the entrance — composed first frame, ≈9–10s sequence, scroll
   const tMount = Date.now();
   const early = await page.evaluate(() => ({
     theme: document.documentElement.dataset.theme,
-    bg: getComputedStyle(document.querySelector('.sl-main')).backgroundColor,
+    bg: getComputedStyle(document.querySelector('.sl-main') as Element).backgroundColor,
     chrome: !!document.querySelector('.sl-progress') && !!document.querySelector('.sl-meta'),
   }));
   expect(early.chrome).toBe(true);
   expect(early.bg).not.toBe('rgb(0, 0, 0)');
-  await page.screenshot({ path: '/home/z/madarek/audits/evidence/r309-recovery/production/prod-loader-early.png' });
+  await page.screenshot({ path: `${SHOTS}/prod-loader-early.png` });
   await expect(page.locator('.sl-pct')).toHaveText('100%', { timeout: 8000 });
   const doneAt = Date.now() - tMount;
   expect(doneAt).toBeGreaterThanOrEqual(3500);
@@ -179,7 +192,7 @@ test('prod · return-to-top resets the stations', async ({ page }) => {
   await page.locator('.fo-footer a[href="#main"]').click();
   await page.waitForTimeout(2800);
   await expect(page.locator('.hi-marker[data-open="on"]')).toHaveCount(0);
-  await page.screenshot({ path: '/home/z/madarek/audits/evidence/r309-recovery/production/prod-after-return-top.png' });
+  await page.screenshot({ path: `${SHOTS}/prod-after-return-top.png` });
 });
 
 test('prod · non-regression — scenes, /colleges, browser back', async ({ page }) => {
@@ -191,7 +204,7 @@ test('prod · non-regression — scenes, /colleges, browser back', async ({ page
   /* forward + reverse scene traversal */
   await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight * 0.5, behavior: 'instant' }));
   await page.waitForTimeout(500);
-  await page.screenshot({ path: '/home/z/madarek/audits/evidence/r309-recovery/production/prod-mid-scroll.png' });
+  await page.screenshot({ path: `${SHOTS}/prod-mid-scroll.png` });
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
   await page.waitForTimeout(500);
   /* /colleges + back */
