@@ -1,0 +1,169 @@
+{
+  "mission": "R311 Phase 1 — before evidence",
+  "served": "vite dev :5173 (working tree)",
+  "commit": "b303f2b99ae2c7910ba10da416aaf3e8b58829e2",
+  "dirty": "?? audits/evidence/r311/",
+  "viewport": "1440x900",
+  "captured": [
+    "a1-rest-1440.png",
+    "a2-link-hover-1440.png",
+    "a3-hero-plus-1440.png",
+    "a4-moving-1440.png",
+    "a5-loader-early-1440.png"
+  ],
+  "rest": {
+    "cursorLayer": {
+      "present": true,
+      "state": "default",
+      "active": "true"
+    },
+    "dotCore": {
+      "present": true,
+      "opacity": "1"
+    },
+    "dotRing": {
+      "present": true,
+      "opacity": "1",
+      "transform": "matrix(0, 0, 0, 0, -14, -14)"
+    },
+    "sheetCanvas": {
+      "present": true
+    },
+    "sheetRing": {
+      "present": true,
+      "on": "off",
+      "pressed": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "hidden",
+      "nativeCursor": "none",
+      "point": "off"
+    },
+    "hiddenVocabulary": 1,
+    "noneVocabulary": 0
+  },
+  "linkHover": {
+    "cursorLayer": {
+      "present": true,
+      "state": "link",
+      "active": "true"
+    },
+    "dotCore": {
+      "present": true,
+      "opacity": "1"
+    },
+    "dotRing": {
+      "present": true,
+      "opacity": "1",
+      "transform": "matrix(1, 0, 0, 1, -14, -14)"
+    },
+    "sheetCanvas": {
+      "present": true
+    },
+    "sheetRing": {
+      "present": true,
+      "on": "on",
+      "pressed": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "hidden",
+      "nativeCursor": "none",
+      "point": "off"
+    },
+    "hiddenVocabulary": 1,
+    "noneVocabulary": 0
+  },
+  "heroEntry": {
+    "cursorLayer": {
+      "present": true,
+      "state": "default",
+      "active": "true"
+    },
+    "dotCore": {
+      "present": true,
+      "opacity": "1"
+    },
+    "dotRing": {
+      "present": true,
+      "opacity": "1",
+      "transform": "matrix(0, 0, 0, 0, -14, -14)"
+    },
+    "sheetCanvas": {
+      "present": true
+    },
+    "sheetRing": {
+      "present": true,
+      "on": "off",
+      "pressed": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "hidden",
+      "nativeCursor": "none",
+      "point": "on"
+    },
+    "hiddenVocabulary": 1,
+    "noneVocabulary": 0
+  },
+  "afterMove": {
+    "cursorLayer": {
+      "present": true,
+      "state": "default",
+      "active": "true"
+    },
+    "dotCore": {
+      "present": true,
+      "opacity": "1"
+    },
+    "dotRing": {
+      "present": true,
+      "opacity": "1",
+      "transform": "matrix(0, 0, 0, 0, -14, -14)"
+    },
+    "sheetCanvas": {
+      "present": true
+    },
+    "sheetRing": {
+      "present": true,
+      "on": "off",
+      "pressed": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "hidden",
+      "nativeCursor": "none",
+      "point": "on"
+    },
+    "hiddenVocabulary": 1,
+    "noneVocabulary": 0
+  },
+  "loaderEarly": {
+    "cursorLayer": {
+      "present": true,
+      "state": "default",
+      "active": "true"
+    },
+    "dotCore": {
+      "present": true,
+      "opacity": "1"
+    },
+    "dotRing": {
+      "present": true,
+      "opacity": "1",
+      "transform": "matrix(0, 0, 0, 0, -14, -14)"
+    },
+    "sheetCanvas": {
+      "present": true
+    },
+    "sheetRing": {
+      "present": true,
+      "on": "off",
+      "pressed": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "hidden",
+      "nativeCursor": "none",
+      "point": "off"
+    },
+    "hiddenVocabulary": 2,
+    "noneVocabulary": 0
+  }
+}

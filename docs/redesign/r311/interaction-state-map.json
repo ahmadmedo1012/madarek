@@ -1,0 +1,46 @@
+{
+  "$schema": "https://madarek.example/schemas/interaction-state-map.json",
+  "mission": "R311",
+  "baseline": "main @ b303f2b9 (R310)",
+  "scope": "pointer ownership grammar across the landing and the authenticated application",
+  "vocabulary": {
+    "suppression": "data-cursor=\"none\" (the ONE token, R311 §1.5)",
+    "suppression-consumers": ["SheetCursor (landing)", "CursorManager resolver (app routes)"],
+    "native-hiding": "html[data-sheet-cursor='live'] gates cursor:none on .landing; ladder restores crosshair below 992px where no local instrument is initialized"
+  },
+  "routes": {
+    "/": {
+      "owner": "SheetCursor (square instrument) — the app-level CursorManager is suspended for the whole route (RoutedCursorManager, App.tsx)",
+      "glyph": "9px filled orange square + velocity trail (movement-dependent, vanishes on first still frame)",
+      "interactive": "24px square outline reticle over a/button/[role=button]/input/select/textarea/label/summary; contracts to scale .56 / opacity .68 while pressed",
+      "suppressed-zones": {
+        ".bp-stage": "hero inspection — the local 8x8 plus with bounded guides + scene-relative coordinates owns the pointer at >=992px; below 992px the native crosshair returns (no dead zone)",
+        ".sl": "entrance loader — its own cross + X/Y readout own the pointer at every width while it plays"
+      },
+      "footer": "the square global pointer remains authoritative; the lens is a separate image-reveal effect, never a second cursor"
+    },
+    "other routes (auth, shell, public /colleges, 404)": {
+      "owner": "CursorManager (R305-A2 additive layer) — unchanged by R311",
+      "glyph": "circular dot/ring decoration over the untouched native cursor (the app layer never hides the OS pointer)"
+    }
+  },
+  "fallbacks": {
+    "touch-or-coarse": "both custom systems gate down; the native pointer is the only glyph",
+    "reduced-motion": "both custom systems gate down (single RM source in each); the native pointer is the only glyph; the landing stands complete without the loader",
+    "instrument-failure": "native-hiding is gated on data-sheet-cursor='live' (present only while the square instrument is actually live) — any failure degrades to the native cursor; the app layer never mounts if JS dies"
+  },
+  "lifecycle-guarantees": {
+    "initial-entry": "the move handler owns the reticle state (R311 D2 fix) — a pointer entering straight onto a link shows the reticle immediately",
+    "route-transitions": "suspension flips with the router; the pipeline tears down (no stale glyph) and re-subscribes on return",
+    "native-link-drag": "documented browser landmine (R311 D3): during a native drag the pointer stream is swallowed — no custom system can track; not an app defect",
+    "idle": "the square system unsubscribes ~8 frames after settle; the trail vanishes on the first still frame"
+  },
+  "evidence": {
+    "before": "audits/evidence/r311/before/ (DOM audit + 5 captures + 4x crops)",
+    "after-gate-a": "audits/evidence/r311/after/ (DOM audit: cursorLayerCount 0 in every state)",
+    "integration-tests": [
+      "frontend/tests/motion/r311-cursor-ownership.test.tsx (7 specs, jsdom + real router + real landing)",
+      "frontend/tests/e2e/r311-cursor-ownership.e2e.ts (7 specs, browser truth)"
+    ]
+  }
+}

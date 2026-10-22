@@ -1,0 +1,107 @@
+{
+  "mission": "R311 Phase 1 — after (Gate A) evidence",
+  "served": "vite dev :5173 (working tree)",
+  "commit": "b303f2b99ae2c7910ba10da416aaf3e8b58829e2",
+  "viewport": "1440x900",
+  "captured": [
+    "a1-rest-1440.png",
+    "a2-link-hover-1440.png",
+    "a3-hero-plus-1440.png",
+    "a4-moving-1440.png",
+    "a2-crop-link-hover-1440.png",
+    "a3-crop-hero-plus-1440.png",
+    "a5-loader-early-1440.png"
+  ],
+  "rest": {
+    "cursorLayerCount": 0,
+    "dotCoreCount": 0,
+    "sheetCanvas": true,
+    "sheetRing": {
+      "on": "off",
+      "pressed": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "none",
+      "nativeCursor": "none",
+      "point": "off",
+      "plusOpacity": "0"
+    },
+    "loader": null,
+    "hiddenVocabulary": 0,
+    "noneVocabulary": 1
+  },
+  "linkHover": {
+    "cursorLayerCount": 0,
+    "dotCoreCount": 0,
+    "sheetCanvas": true,
+    "sheetRing": {
+      "on": "on",
+      "pressed": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "none",
+      "nativeCursor": "none",
+      "point": "off",
+      "plusOpacity": "0"
+    },
+    "loader": null,
+    "hiddenVocabulary": 0,
+    "noneVocabulary": 1
+  },
+  "heroEntry": {
+    "cursorLayerCount": 0,
+    "dotCoreCount": 0,
+    "sheetCanvas": true,
+    "sheetRing": {
+      "on": "off",
+      "pressed": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "none",
+      "nativeCursor": "none",
+      "point": "on",
+      "plusOpacity": "1"
+    },
+    "loader": null,
+    "hiddenVocabulary": 0,
+    "noneVocabulary": 1
+  },
+  "afterMove": {
+    "cursorLayerCount": 0,
+    "dotCoreCount": 0,
+    "sheetCanvas": true,
+    "sheetRing": {
+      "on": "off",
+      "pressed": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "none",
+      "nativeCursor": "none",
+      "point": "on",
+      "plusOpacity": "1"
+    },
+    "loader": null,
+    "hiddenVocabulary": 0,
+    "noneVocabulary": 1
+  },
+  "loaderEarly": {
+    "cursorLayerCount": 0,
+    "dotCoreCount": 0,
+    "sheetCanvas": true,
+    "sheetRing": {
+      "on": "off",
+      "pressed": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "none",
+      "nativeCursor": "none",
+      "point": "off",
+      "plusOpacity": "0"
+    },
+    "loader": {
+      "attr": "none"
+    },
+    "hiddenVocabulary": 0,
+    "noneVocabulary": 2
+  }
+}

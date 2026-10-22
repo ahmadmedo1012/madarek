@@ -23,6 +23,11 @@ import './cursor.css';
      AND NOT reduced-motion (useReducedMotion is the single RM source).
      Re-evaluated on resize + fine-pointer media changes; the pointer
      pipeline re-subscribes whenever the gate flips.
+   · R311 §1.3 — `suspended` prop: while true the layer is FULLY down
+     (render null + pipeline teardown, never a hidden div): the landing
+     route mounts its own measured square instrument (SheetCursor) and
+     this app-level layer must not paint a second, circular glyph over
+     it. App.tsx drives the prop from the router (pathname === '/').
    · Native cursor is NEVER hidden — the layer is pure decoration
      (pointer-events: none); if JS dies it never mounts.
 
@@ -30,7 +35,9 @@ import './cursor.css';
    React state — pointer traffic must not re-render the tree):
    · data-state on the layer: default | link | text | drag | hidden,
      plus "down" while pressed. resolveCursorState() is the pure
-     mapping (exported for tests):
+     mapping (exported for tests). R311 §1.5: `data-cursor="none"` is
+     THE ONE suppression vocabulary across the app — the landing's
+     zones (hero stage, entrance loader) migrated to it in R311:
        [data-cursor="none"]            → hidden (dot suppressed)
        [data-cursor="drag"]            → drag (crosshair)
        input/textarea/select/
@@ -68,6 +75,13 @@ import './cursor.css';
 
 export type CursorState = 'default' | 'link' | 'text' | 'drag' | 'hidden';
 
+export type CursorManagerProps = {
+  /** R311 §1.3 — while true the layer renders null and its pointer
+   * pipeline is fully torn down (the landing route owns the pointer
+   * with its square instrument; no circular glyph may compete). */
+  suspended?: boolean;
+};
+
 const INTERACTIVE_SELECTOR =
   'a, button, [role="button"], [role="link"], .btn, .nav-item, summary, label';
 
@@ -88,7 +102,7 @@ export function resolveCursorState(target: Element | null): CursorState {
 
 type LinesAxis = 'cross' | 'x' | 'y';
 
-export function CursorManager(): JSX.Element | null {
+export function CursorManager({ suspended = false }: CursorManagerProps): JSX.Element | null {
   const reduced = useReducedMotion();
   const [gateOpen, setGateOpen] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
@@ -96,7 +110,7 @@ export function CursorManager(): JSX.Element | null {
   });
   const layerRef = useRef<HTMLDivElement | null>(null);
 
-  const active = gateOpen && !reduced;
+  const active = gateOpen && !reduced && !suspended;
 
   /* Gate watch: re-evaluate on resize and fine-pointer media changes
    * (passive, rAF-throttled). Skipped entirely under reduced motion —

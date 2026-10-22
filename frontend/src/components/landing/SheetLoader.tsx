@@ -284,7 +284,7 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
     <div
       ref={rootRef}
       className="sl"
-      data-cursor="hidden"
+      data-cursor="none"
       role="status"
       aria-label="تحضير صفحة مدارك"
       onPointerMove={onPointerMove}

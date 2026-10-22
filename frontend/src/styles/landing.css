@@ -2500,21 +2500,23 @@
   [data-sheet-cursor='live'] .landing * {
     cursor: none !important;
   }
-  /* R310 §1 — the ownership ladder. Zones whose LOCAL instrument is
-     NOT initialized (the hero's drafting layer is gated ≥992px) give
-     the native cursor back — a dead zone with no glyph at all is the
-     one failure worse than a duplicated one. Where the local layer IS
-     active, the rule below re-hides the native cursor so exactly ONE
-     pointer glyph renders (the local instrument). */
-  [data-sheet-cursor='live'] .landing [data-cursor='hidden'] {
+  /* R310 §1 — the ownership ladder (R311 §1.5 vocabulary: "none").
+     Zones whose LOCAL instrument is NOT initialized (the hero's
+     drafting layer is gated ≥992px) give the native cursor back —
+     a dead zone with no glyph at all is the one failure worse than
+     a duplicated one. Where the local layer IS active, the rule
+     below re-hides the native cursor so exactly ONE pointer glyph
+     renders (the local instrument). */
+  [data-sheet-cursor='live'] .landing [data-cursor='none'] {
     cursor: crosshair !important;
   }
 }
 
 @media (hover: hover) and (min-width: 992px) {
   /* the hero's local drafting instrument owns the pointer here — the
-     native crosshair must not draw a second glyph over the plus */
-  [data-sheet-cursor='live'] .landing [data-cursor='hidden'] {
+     native crosshair must not draw a second glyph over the plus
+     (R311 §1.5: unified "none" vocabulary) */
+  [data-sheet-cursor='live'] .landing [data-cursor='none'] {
     cursor: none !important;
   }
 }

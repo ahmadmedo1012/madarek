@@ -526,6 +526,21 @@ function ScrollResetOnPush() {
   return null;
 }
 
+/* R311 §1.3 — ONE pointer owner per route. The landing ('/') mounts
+ * its own measured square instrument (SheetCursor: 9px square +
+ * velocity trail + square reticle, suppressed inside data-cursor="none"
+ * zones where the hero/loader instruments own the pointer). This
+ * app-level additive layer (R305-A2, circular dot/ring) yields for the
+ * WHOLE route — render null + full pipeline teardown, never a hidden
+ * div — so no circular glyph can ever compete with the square. Every
+ * other route (auth, shell, public /colleges, 404) keeps the r305-A2
+ * behavior unchanged. Exported for the r311 ownership integration
+ * test (tests/motion/r311-cursor-ownership.test.tsx). */
+export function RoutedCursorManager() {
+  const { pathname } = useLocation();
+  return <CursorManager suspended={pathname === '/'} />;
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -541,7 +556,10 @@ export default function App() {
           <AppRoutes />
         </RouteErrorBoundary>
         <ToastStack />
-        <CursorManager />
+        {/* R311 §1.3 — router-aware: yields on '/' (the landing's square
+         * instrument owns the pointer there); active on every other
+         * route exactly as in r305-A2. */}
+        <RoutedCursorManager />
       </BrowserRouter>
     </QueryClientProvider>
   );

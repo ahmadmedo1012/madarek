@@ -17,9 +17,11 @@
  *  · Interactive-state layer: a 24px square outline that appears over
  *    real interactive elements and CONTRACTS into a targeting
  *    reticle (scale .56 / opacity .68) while pressed.
- *  · `data-cursor="hidden"` suppression zones: where a local system
- *    takes over (the hero instrument, the loader, the footer lens),
- *    both layers step aside. The native cursor returns there.
+ *  · `data-cursor="none"` suppression zones (R311 §1.5 — the ONE
+ *    unified vocabulary, the same token the app-level resolver
+ *    honours): where a local system takes over (the hero instrument,
+ *    the loader), both layers step aside. The native cursor returns
+ *    there.
  *  · Wake/sleep: the whole system rides the ONE shared clock
  *    (sheetConductor) and UNSUBSCRIBES ~8 frames after the pointer
  *    settles — an idle page costs zero animation frames.
@@ -46,7 +48,7 @@ const DPR_CAP = 2;
 
 const INTERACTIVE_SELECTOR =
   'a, button, [role="button"], input, select, textarea, label, summary, [data-cursor="link"]';
-const SUPPRESSED_SELECTOR = '[data-cursor="hidden"]';
+const SUPPRESSED_SELECTOR = '[data-cursor="none"]';
 
 export function SheetCursor() {
   const [live, setLive] = useState(false);
@@ -219,11 +221,23 @@ export function SheetCursor() {
     };
 
     /* ── listeners ────────────────────────────────────────────────── */
+    /* R311 §1.6 (initial pointer entry): the boundary events can fire
+     * BEFORE the first pointermove (a pointer entering the viewport
+     * straight onto a link), so setRingState() saw hasMoved=false and
+     * the reticle missed its transition until the next crossing. The
+     * move handler now owns the state as well — every move re-derives
+     * interactive/suppressed from its own target and re-evaluates. */
     const onPointerMove = (e: PointerEvent) => {
       target.x = e.clientX;
       target.y = e.clientY;
       lastMoveAt = performance.now();
       hasMoved = true;
+      const el = e.target instanceof Element ? e.target : null;
+      if (el && typeof el.closest === 'function') {
+        overInteractive = !!el.closest(INTERACTIVE_SELECTOR);
+        suppressed = !!el.closest(SUPPRESSED_SELECTOR);
+      }
+      setRingState();
       idleFrames = 0;
       wake();
     };

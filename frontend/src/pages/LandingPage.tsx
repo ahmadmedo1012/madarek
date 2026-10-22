@@ -630,11 +630,12 @@ export default function LandingPage() {
           {/* the elevation — R310: the hero's DOMINANT composition. The
               drafted learning building is an inspection surface — the
               local pointer instrument (guides + coordinates +
-              drag-to-inspect) owns this zone (data-cursor="hidden").
+              drag-to-inspect) owns this zone (data-cursor="none" — the
+              R311 §1.5 unified suppression vocabulary).
               The [NN] pins and the stations share ONE coordinate frame
               (viewBox 1440×640) remapped by HeroInspect at runtime. */}
           <RevealCssClass as="div" className="fo-hero-fig" delay={3}>
-            <div className="bp-stage" data-cursor="hidden">
+            <div className="bp-stage" data-cursor="none">
               <ElevationDrawing active={activeStage} />
               <HeroInspect />
               <div className="bp-hotspots" role="group" aria-label="استكشف مراحل مسار التعلّم">
