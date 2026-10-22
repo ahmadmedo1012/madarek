@@ -89,8 +89,10 @@ describe('motion barrel inventory (r157)', () => {
     // module type no longer exports it (compile-time guaranteed too).
     // r305-A2: CursorManager joins the live inventory (the global cursor
     // layer, mounted once in App.tsx) — SkeletonGroup stays absent.
+    // R312 (§R D7): GuestReveal joins — the guest surfaces' route
+    // transition (the keyed remount on the three guest boundaries).
     expect(Object.keys(motionInventory).sort()).toEqual(
-      ['CursorManager', 'PageTransition', 'Reveal', 'RevealGroup', 'Skeleton', 'useReducedMotion'].sort(),
+      ['CursorManager', 'GuestReveal', 'PageTransition', 'Reveal', 'RevealGroup', 'Skeleton', 'useReducedMotion'].sort(),
     );
   });
 });

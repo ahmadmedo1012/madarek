@@ -3412,6 +3412,28 @@
   min-block-size: 0;
 }
 
+/* ── R312 — the mobile camera twin (§R R1, the art-direction pass) ──
+   At ≤991px the window renders a second instance (`.jt-cam`), inside
+   a `.jt-flow` wrapper with the station cards: a STICKY CAMERA whose
+   containing block ends exactly at the stations' end — so it holds
+   the frame over the cards while they are read and releases before
+   the side column (outside the flow) enters, never covering it. Its
+   sheet is cropped to the active stage's zone by JourneyScene's
+   driver (viewBox + slice cover) — instead of squeezing the full
+   1200×760 sheet into the column. The frame is ≤ 360px tall so the
+   reading band (below its bottom edge) always holds the active card
+   in the open region. ≥992px `.jt-flow` is display:contents and the
+   twin is display:none — the pin's own window (above) is the one;
+   the stations stay absolute against the track. The two never
+   display at once and share the same .jt[data-stage] contract. */
+.jt-flow {
+  display: contents;
+}
+
+.jt-cam {
+  display: none;
+}
+
 /* ── pl — the journey's plan drawing (R310 Artwork B) ──────────────
    The learning-floor plan builds its geometry through the scroll
    stages (.jt[data-stage]): envelope+grid at 0, +checkpoint at 1,
@@ -3456,10 +3478,15 @@
   fill: var(--accent-ink);
 }
 
+/* the door markers warm with the stage: [01] lecture · [02]
+   checkpoint · [03] exam · [05] mastery. R312 off-by-one fix: stage 3
+   (mastery) used to warm [04] — the LIBRARY door; it now warms [05],
+   the mastery door, matching the mastery wash. [04] stays quiet: the
+   library wing builds at stage 2 but owns no stage in the story. */
 .jt[data-stage='0'] .pl-station[data-station='0'],
 .jt[data-stage='1'] .pl-station[data-station='1'],
 .jt[data-stage='2'] .pl-station[data-station='2'],
-.jt[data-stage='3'] .pl-station[data-station='3'] {
+.jt[data-stage='3'] .pl-station[data-station='4'] {
   fill: var(--accent);
   font-weight: 700;
 }
@@ -3812,10 +3839,14 @@
 }
 
 /* the journey scene's responsive ladder: the pin dies ≤991px into a
-   stacked readable sequence (the reference's own ladder). */
+   stacked readable sequence (the reference's own ladder) — R312: the
+   sequence is now CARRIED by the camera (the .jt-flow block): frame →
+   the station cards, then the side column closes outside the flow. */
 @media (max-width: 991px) {
   .jt {
     block-size: auto;
+    display: flex;
+    flex-direction: column;
   }
 
   .jt-pin {
@@ -3824,12 +3855,65 @@
     flex-direction: column;
     align-items: stretch;
     padding-inline: 0;
+    order: 3; /* the side column closes the stacked flow */
+  }
+
+  /* the flow: a real block at ≤991px — the camera's sticky container.
+     It ends at the stations' end so the cam releases before the side
+     column (a sibling, order 3) ever scrolls into its region. */
+  .jt-flow {
+    display: block;
+    order: 1;
+    margin-block-end: var(--sp-5);
+  }
+
+  /* the pin's window yields to the camera twin at ≤991px */
+  .jt-pin .jt-window {
+    display: none;
+  }
+
+  /* the camera: sticky within the flow; the sheet fills the frame
+     edge-to-edge (slice cover — the driver owns the viewBox crop);
+     the frame rides below the sticky header (57px = its 56px inner
+     + 1px hairline) and stays ≤ 360px tall so the reading band below
+     its bottom edge always holds the active card in the open region. */
+  .jt-cam {
+    display: block;
+    position: sticky;
+    inset-block-start: calc(57px + var(--sp-3) + env(safe-area-inset-top, 0px));
+    block-size: clamp(280px, 40svh, 360px);
+    z-index: 2;
+    margin-block-end: var(--sp-4);
+    padding: var(--sp-3);
+  }
+
+  .jt-cam .bp-svg {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  /* the mono status strip rides the frame's edge — a bottom-start
+     HUD chip over the camera (was a static line under the shrunken
+     sheet in R310). */
+  .jt-status {
+    inset-block-end: 10px;
+    inset-inline-start: 10px;
+    translate: none;
+    margin: 0;
   }
 
   .jt-side {
     inline-size: 100%;
     visibility: visible;
     border-width: 1px 0;
+  }
+
+  /* the side column is in-flow at ≤991px (never a pin-end reveal):
+     force the open state inert so the desktop clamp can never narrow
+     it mid-flow. */
+  .jt-side[data-open='on'] {
+    inline-size: 100%;
+    border-inline-start-width: 0;
   }
 
   .jt-side[data-open='off'] {
@@ -3840,19 +3924,12 @@
     position: static;
     display: grid;
     gap: var(--sp-4);
-    margin-block-start: var(--sp-4);
+    margin-block-start: 0;
   }
 
   .jt-station {
     position: static;
     inline-size: auto;
-  }
-
-  .jt-status {
-    position: static;
-    translate: 0 0;
-    justify-self: start;
-    margin-block-start: var(--sp-3);
   }
 }
 

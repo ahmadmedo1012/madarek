@@ -1,0 +1,138 @@
+{
+  "375": {
+    "midState": {
+      "layout": "camera",
+      "stage": "2",
+      "cam": {
+        "viewBox": "281.86679983656427 25.5 560 420",
+        "par": "xMidYMid slice",
+        "display": "block",
+        "top": 69,
+        "h": 325
+      },
+      "camSvgOnPin": "none",
+      "pinSvg": {
+        "viewBox": "0 0 1200 760",
+        "par": "xMidYMid meet"
+      },
+      "stationsPos": "static"
+    },
+    "invariant": {
+      "violations": 0,
+      "detail": []
+    },
+    "reveal": {
+      "hasInner": true,
+      "sweepRegistered": false,
+      "collegesInside": true,
+      "settled": "inset(0px 0px 0%)"
+    }
+  },
+  "768": {
+    "midState": {
+      "layout": "camera",
+      "stage": "2",
+      "cam": {
+        "viewBox": "305.77966442278705 25.5 560 420",
+        "par": "xMidYMid slice",
+        "display": "block",
+        "top": 69,
+        "h": 360
+      },
+      "camSvgOnPin": "none",
+      "pinSvg": {
+        "viewBox": "0 0 1200 760",
+        "par": "xMidYMid meet"
+      },
+      "stationsPos": "static"
+    },
+    "invariant": {
+      "violations": 0,
+      "detail": []
+    },
+    "reveal": {
+      "hasInner": true,
+      "sweepRegistered": false,
+      "collegesInside": true,
+      "settled": "inset(0px 0px 0%)"
+    }
+  },
+  "1024": {
+    "midState": {
+      "layout": "pin",
+      "stage": "2",
+      "cam": {
+        "viewBox": "0 0 1200 760",
+        "par": "xMidYMid meet",
+        "display": "none",
+        "top": 0,
+        "h": 0
+      },
+      "camSvgOnPin": "block",
+      "pinSvg": {
+        "viewBox": "0 0 1200 760",
+        "par": "xMidYMid meet"
+      },
+      "stationsPos": "absolute"
+    },
+    "invariant": null,
+    "reveal": {
+      "hasInner": true,
+      "sweepRegistered": false,
+      "collegesInside": true,
+      "settled": "inset(0px 0px 0%)"
+    }
+  },
+  "1440": {
+    "midState": {
+      "layout": "pin",
+      "stage": "2",
+      "cam": {
+        "viewBox": "0 0 1200 760",
+        "par": "xMidYMid meet",
+        "display": "none",
+        "top": 0,
+        "h": 0
+      },
+      "camSvgOnPin": "block",
+      "pinSvg": {
+        "viewBox": "0 0 1200 760",
+        "par": "xMidYMid meet"
+      },
+      "stationsPos": "absolute"
+    },
+    "invariant": null,
+    "reveal": {
+      "hasInner": true,
+      "sweepRegistered": false,
+      "collegesInside": true,
+      "settled": "inset(0px 0px 0%)"
+    }
+  },
+  "1920": {
+    "midState": {
+      "layout": "pin",
+      "stage": "2",
+      "cam": {
+        "viewBox": "0 0 1200 760",
+        "par": "xMidYMid meet",
+        "display": "none",
+        "top": 0,
+        "h": 0
+      },
+      "camSvgOnPin": "block",
+      "pinSvg": {
+        "viewBox": "0 0 1200 760",
+        "par": "xMidYMid meet"
+      },
+      "stationsPos": "absolute"
+    },
+    "invariant": null,
+    "reveal": {
+      "hasInner": true,
+      "sweepRegistered": false,
+      "collegesInside": true,
+      "settled": "inset(0px 0px 0%)"
+    }
+  }
+}

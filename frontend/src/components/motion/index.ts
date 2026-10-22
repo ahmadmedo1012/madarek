@@ -33,3 +33,6 @@ export { Reveal, RevealGroup } from './Reveal';
  * here so the motion kit stays the single import surface. Contract:
  * docs/r305-heron-interactions.md */
 export { CursorManager } from './CursorManager';
+/* R312 (§R D7): the guest surface's route transition — see the
+ * component header (GuestReveal.tsx). */
+export { GuestReveal } from './GuestReveal';

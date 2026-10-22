@@ -4,6 +4,7 @@ import { lazy, Suspense, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { queryClient } from './lib/queryClient';
 import { AppShell, ProtectedRoute } from './components/layout/AppShell';
+import { GuestReveal } from './components/motion';
 import { useAuthStore } from './stores/auth.store';
 import { ROLE_HOME } from './lib/nav';
 import { HydrationSplash } from './components/HydrationSplash';
@@ -165,7 +166,12 @@ function HomeRedirect() {
   const user = useAuthStore((s) => s.user);
   const isHydrated = useAuthStore((s) => s.isHydrated);
   if (!isHydrated) return <HydrationSplash />;
-  if (!user) return <LandingPage />;
+  if (!user)
+    return (
+      <GuestReveal>
+        <LandingPage />
+      </GuestReveal>
+    );
   return <Navigate to={ROLE_HOME[user.role]} replace />;
 }
 
@@ -195,7 +201,11 @@ function GuestRoute() {
   const user = useAuthStore((s) => s.user);
   if (!isHydrated) return <HydrationSplash />;
   if (user) return <Navigate to={ROLE_HOME[user.role]} replace />;
-  return <Outlet />;
+  return (
+    <GuestReveal>
+      <Outlet />
+    </GuestReveal>
+  );
 }
 
 /** Public colleges layout (audit 4-A14 P1-2, restored r154a).
@@ -237,7 +247,9 @@ function CollegesLayout() {
             العودة إلى الصفحة الرئيسية
           </Link>
         </div>
-        <Outlet />
+        <GuestReveal>
+          <Outlet />
+        </GuestReveal>
       </main>
     </>
   );

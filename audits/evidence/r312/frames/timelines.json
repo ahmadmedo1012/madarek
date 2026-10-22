@@ -1,0 +1,591 @@
+{
+  "mdrk-loader-desktop": [
+    {
+      "t": 51,
+      "state": "pre"
+    },
+    {
+      "t": 1677,
+      "state": "hero:drawables=273"
+    },
+    {
+      "t": 1985,
+      "state": "sl:1"
+    },
+    {
+      "t": 10899,
+      "state": "hero:drawables=273"
+    }
+  ],
+  "mdrk-loader-mobile": [
+    {
+      "t": 35,
+      "state": "pre"
+    },
+    {
+      "t": 1106,
+      "state": "hero:drawables=273"
+    },
+    {
+      "t": 1205,
+      "state": "sl:1"
+    },
+    {
+      "t": 9906,
+      "state": "hero:drawables=273"
+    }
+  ],
+  "mdrk-route": [
+    {
+      "t": 267,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 397,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 495,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 582,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 670,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 774,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 869,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 970,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 1053,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 1137,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 1220,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 1309,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 1396,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 1487,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 1570,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 1654,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 1743,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 1825,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 1909,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 1992,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 2076,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 2159,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 2243,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 2326,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 2409,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 2492,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 2575,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 2659,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 2742,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 2825,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 2908,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 2991,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 3073,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 3156,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 3239,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 3323,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 3406,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 3489,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 3572,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 3655,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 3738,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 3820,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 3903,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 3987,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 4070,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 4154,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 4237,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 4320,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 4403,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 4486,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 4569,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 4652,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 4735,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 4818,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 4901,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 4984,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 5067,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 5155,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 5238,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 5321,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 5404,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 5487,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 5570,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 5653,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 5735,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 5818,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 5901,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 5984,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 6067,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 6152,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 6235,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 6318,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 6401,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 6485,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 6568,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 6651,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 6734,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 6817,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 6900,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 6984,
+      "path": "/colleges",
+      "mask": false,
+      "colleges": false
+    },
+    {
+      "t": 108,
+      "path": "/",
+      "hero": true
+    },
+    {
+      "t": 276,
+      "path": "/",
+      "hero": true
+    },
+    {
+      "t": 379,
+      "path": "/",
+      "hero": true
+    },
+    {
+      "t": 483,
+      "path": "/",
+      "hero": true
+    },
+    {
+      "t": 659,
+      "path": "/",
+      "hero": true
+    },
+    {
+      "t": 766,
+      "path": "/",
+      "hero": true
+    },
+    {
+      "t": 876,
+      "path": "/",
+      "hero": true
+    }
+  ],
+  "mdrk-camera-mobile": [
+    {
+      "card": 0,
+      "stage": "0",
+      "viewBox": "640 126.386348499062 560 420"
+    },
+    {
+      "card": 1,
+      "stage": "1",
+      "viewBox": "640 245.48183395872428 560 420"
+    },
+    {
+      "card": 2,
+      "stage": "2",
+      "viewBox": "296.26519699812366 25.5 560 420"
+    },
+    {
+      "card": 3,
+      "stage": "3",
+      "viewBox": "0 25.5 560 420"
+    }
+  ],
+  "ref-loader": [
+    {
+      "t": 417,
+      "state": "main"
+    },
+    {
+      "t": 698,
+      "state": "loading:flex:bar"
+    },
+    {
+      "t": 8641,
+      "state": "loading:none:bar"
+    }
+  ]
+}

@@ -913,6 +913,71 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  /* ══ R312 (§R D7) — the guest surface's route transition ════════
+     Found by the frame-by-frame pass: the guest surfaces (landing /
+     public colleges / auth) changed routes as a hard cut — reproduced
+     on video vs the reference's measured 1.6s two-phase mask sweep
+     (reference-observations §14). The AppShell keyed remount only
+     ever covered authenticated routes. The declarative translation
+     (the PageTransition precedent; Barba stays rejected per §H).
+
+     The sweep is VIEWPORT-ANCHORED (a plain 100%→0 bottom inset would
+     cross the fold in 500ms×vh/pageH — a flash on tall pages): 0→70%
+     brings the reveal edge from the sheet top down to the fold (the
+     perceptible sweep), 70→100% opens the below-fold in the paint
+     tail (offscreen). The traveling 1px rule (their --size-line
+     midpoint spike, translated) rides the SAME curve via transform
+     (never layout). ~500ms by design (the R308 funnel lesson: faster
+     than the reference); clip-path is paint-only — CLS 0; RM
+     collapses to the standing page. */
+  @keyframes guest-reveal-sweep {
+    0%   { clip-path: inset(0 0 100% 0); }
+    70%  { clip-path: inset(0 0 calc(100% - 100svh) 0); }
+    100% { clip-path: inset(0 0 0% 0); }
+  }
+  @keyframes guest-reveal-line {
+    0%   { transform: translateY(0); opacity: 0; }
+    10%  { opacity: 1; }
+    70%  { transform: translateY(100svh); opacity: 1; }
+    100% { transform: translateY(100svh); opacity: 0; }
+  }
+
+  .guest-reveal {
+    position: relative;
+  }
+
+  .guest-reveal-inner {
+    animation: guest-reveal-sweep var(--motion-duration-long) var(--motion-ease-decelerate) both;
+  }
+
+  /* the traveling hairline at the reveal edge — viewport-fixed (the
+     sweep is a viewport phenomenon), transform-only (the motion gate
+     forbids layout animation in keyframes). */
+  .guest-reveal::after {
+    content: '';
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    block-size: 1px;
+    background: var(--rule);
+    animation: guest-reveal-line var(--motion-duration-long) var(--motion-ease-decelerate) both;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .guest-reveal-inner,
+    .guest-reveal::after {
+      animation: none;
+    }
+    .guest-reveal-inner {
+      clip-path: none;
+    }
+    .guest-reveal::after {
+      display: none;
+    }
+  }
+
 }
 
 

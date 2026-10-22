@@ -50,19 +50,36 @@ test.describe('R309 hero — drag-reveal geometry (the audit failures)', () => {
     await page.setViewportSize(VW.desktop);
     await page.goto('/');
     const stage = page.locator('div.bp-stage');
-    await expect(stage).toBeVisible();
+    /* R312 belt hardening (D4): the mount-time flake — under local
+     * parallel load the dev-server transform of the landing chunk can
+     * outrun the 5s default (CI runs a built app and is unaffected);
+     * the drag geometry itself was never the failure — only the mount. */
+    await expect(stage).toBeVisible({ timeout: 30_000 });
     const sb = await stage.boundingBox();
     expect(sb).not.toBeNull();
 
-    /* the reproduced failing gesture: a wide drag across the drawing
-     * (R310: re-anchored to the elevation — the stations sit lower in
-     * the full-width frame; fractions verified against the live boxes).
-     * A settle pause before release guarantees the conductor frame
-     * processed the final stretch (the box grows monotonically, so
-     * every marker the path covered opens before the release clears it). */
-    await page.mouse.move(sb!.x + sb!.width * 0.85, sb!.y + sb!.height * 0.72);
+    /* the reproduced failing gesture: a wide drag across the drawing.
+     * R312 belt hardening (D4's sibling flake): the three station
+     * markers on the elevation are NOT collinear (cp 903,751 · rr
+     * 615,742 · mg 432,682 — measured) — a single-segment line at a
+     * fixed height passes mg by ~10px and opens only 2/3 stations
+     * under pointermove coalescing. The gesture now walks a WAYPOINT
+     * PER MARKER CENTRE (each crossing guaranteed by construction,
+     * ±22px of box margin on either side), still one continuous wide
+     * left sweep; the settle pause before release guarantees the
+     * conductor frame processed the final stretch. */
+    const wp = (fx: number, fy: number) => ({ x: sb!.x + sb!.width * fx, y: sb!.y + sb!.height * fy });
+    await page.mouse.move(wp(0.85, 0.72).x, wp(0.85, 0.72).y);
     await page.mouse.down();
-    await page.mouse.move(sb!.x + sb!.width * 0.1, sb!.y + sb!.height * 0.6, { steps: 12 });
+    for (const [fx, fy, steps] of [
+      [0.649, 0.696, 8], // through [CP]'s centre
+      [0.410, 0.678, 8], // through [RR]'s centre
+      [0.230, 0.561, 8], // through [MG]'s centre
+      [0.100, 0.520, 6], // the far end of the sweep
+    ] as const) {
+      const p = wp(fx, fy);
+      await page.mouse.move(p.x, p.y, { steps });
+    }
     await page.waitForTimeout(250);
     await page.mouse.up();
     await page.waitForTimeout(700);
@@ -332,7 +349,7 @@ test.describe('R309 menu — the scroll lock', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     await page.locator('.fo-burger').click();
-    await expect(page.locator('.fo-mobile-menu')).toBeVisible();
+    await expect(page.locator('.fo-mobile-menu')).toBeVisible({ timeout: 30_000 }); /* R312 (D4): mount-latency hardening */
 
     /* scroll position before the wheel attempts */
     const before = await page.evaluate(() => window.scrollY);
@@ -363,7 +380,7 @@ test.describe('R309 menu — the scroll lock', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     await page.locator('.fo-burger').click();
-    await expect(page.locator('.fo-mobile-menu')).toBeVisible();
+    await expect(page.locator('.fo-mobile-menu')).toBeVisible({ timeout: 30_000 }); /* R312 (D4): mount-latency hardening */
     await page.keyboard.press('Escape');
     await expect(page.locator('.fo-mobile-menu')).toHaveCount(0);
     await expect(page.locator('.fo-burger')).toBeFocused();
@@ -374,7 +391,7 @@ test.describe('R309 menu — the scroll lock', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     await page.locator('.fo-burger').click();
-    await expect(page.locator('.fo-mobile-menu')).toBeVisible();
+    await expect(page.locator('.fo-mobile-menu')).toBeVisible({ timeout: 30_000 }); /* R312 (D4): mount-latency hardening */
     await page.locator('.fo-mobile-menu a[href="#chapters"]').click();
     await expect(page.locator('.fo-mobile-menu')).toHaveCount(0);
     await expect(page.locator('body')).not.toHaveClass(/mdrk-scroll-locked/);
@@ -386,7 +403,7 @@ test.describe('R309 menu — the scroll lock', () => {
     await page.goto('/');
     for (let i = 0; i < 3; i += 1) {
       await page.locator('.fo-burger').click();
-      await expect(page.locator('.fo-mobile-menu')).toBeVisible();
+      await expect(page.locator('.fo-mobile-menu')).toBeVisible({ timeout: 30_000 }); /* R312 (D4): mount-latency hardening */
       await expect(page.locator('body')).toHaveClass(/mdrk-scroll-locked/);
       await page.locator('.fo-burger').click();
       await expect(page.locator('.fo-mobile-menu')).toHaveCount(0);

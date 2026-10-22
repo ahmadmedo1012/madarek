@@ -1,0 +1,233 @@
+{
+  "entry": {
+    "stage": "1",
+    "cam": {
+      "viewBox": "640 226.60003283302075 560 420",
+      "par": "xMidYMid slice",
+      "flagged": "cropped",
+      "display": "block",
+      "position": "sticky",
+      "top": 69,
+      "height": 338
+    },
+    "pinWindow": {
+      "display": "none"
+    },
+    "pinSvg": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet"
+    },
+    "stationsHeight": 666,
+    "statusPosition": "absolute"
+  },
+  "stage0": {
+    "stage": "0",
+    "cam": {
+      "viewBox": "640 126.386348499062 560 420",
+      "par": "xMidYMid slice",
+      "flagged": "cropped",
+      "display": "block",
+      "position": "sticky",
+      "top": 167,
+      "height": 338
+    },
+    "pinWindow": {
+      "display": "none"
+    },
+    "pinSvg": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet"
+    },
+    "stationsHeight": 666,
+    "statusPosition": "absolute"
+  },
+  "stage1": {
+    "stage": "1",
+    "cam": {
+      "viewBox": "640 245.48183395872428 560 420",
+      "par": "xMidYMid slice",
+      "flagged": "cropped",
+      "display": "block",
+      "position": "sticky",
+      "top": 69,
+      "height": 338
+    },
+    "pinWindow": {
+      "display": "none"
+    },
+    "pinSvg": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet"
+    },
+    "stationsHeight": 666,
+    "statusPosition": "absolute"
+  },
+  "stage2": {
+    "stage": "2",
+    "cam": {
+      "viewBox": "296.26519699812366 25.5 560 420",
+      "par": "xMidYMid slice",
+      "flagged": "cropped",
+      "display": "block",
+      "position": "sticky",
+      "top": 69,
+      "height": 338
+    },
+    "pinWindow": {
+      "display": "none"
+    },
+    "pinSvg": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet"
+    },
+    "stationsHeight": 666,
+    "statusPosition": "absolute"
+  },
+  "stage3": {
+    "stage": "3",
+    "cam": {
+      "viewBox": "0 25.5 560 420",
+      "par": "xMidYMid slice",
+      "flagged": "cropped",
+      "display": "block",
+      "position": "sticky",
+      "top": 69,
+      "height": 338
+    },
+    "pinWindow": {
+      "display": "none"
+    },
+    "pinSvg": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet"
+    },
+    "stationsHeight": 666,
+    "statusPosition": "absolute"
+  },
+  "sideEnd": {
+    "stage": "3",
+    "cam": {
+      "viewBox": "0 25.5 560 420",
+      "par": "xMidYMid slice",
+      "flagged": "cropped",
+      "display": "block",
+      "position": "sticky",
+      "top": -294,
+      "height": 338
+    },
+    "pinWindow": {
+      "display": "none"
+    },
+    "pinSvg": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet"
+    },
+    "stationsHeight": 666,
+    "statusPosition": "absolute"
+  },
+  "crossingToDesktop": {
+    "stage": "3",
+    "cam": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet",
+      "flagged": null,
+      "display": "none",
+      "position": "relative",
+      "top": 0,
+      "height": 0
+    },
+    "pinWindow": {
+      "display": "block"
+    },
+    "pinSvg": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet"
+    },
+    "stationsHeight": 3840,
+    "statusPosition": "absolute"
+  },
+  "crossingBackMobile": {
+    "stage": "2",
+    "cam": {
+      "viewBox": "295.2182926829268 25.5 560 420",
+      "par": "xMidYMid slice",
+      "flagged": "cropped",
+      "display": "block",
+      "position": "sticky",
+      "top": 69,
+      "height": 338
+    },
+    "pinWindow": {
+      "display": "none"
+    },
+    "pinSvg": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet"
+    },
+    "stationsHeight": 666,
+    "statusPosition": "absolute"
+  },
+  "spot430": {
+    "stage": "2",
+    "cam": {
+      "viewBox": "303.80809806088604 25.5 560 420",
+      "par": "xMidYMid slice",
+      "flagged": "cropped",
+      "display": "block",
+      "position": "sticky",
+      "top": 69,
+      "height": 338
+    },
+    "pinWindow": {
+      "display": "none"
+    },
+    "pinSvg": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet"
+    },
+    "stationsHeight": 622,
+    "statusPosition": "absolute"
+  },
+  "spot360": {
+    "stage": "2",
+    "cam": {
+      "viewBox": "306.4055599542534 25.5 560 420",
+      "par": "xMidYMid slice",
+      "flagged": "cropped",
+      "display": "block",
+      "position": "sticky",
+      "top": 69,
+      "height": 338
+    },
+    "pinWindow": {
+      "display": "none"
+    },
+    "pinSvg": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet"
+    },
+    "stationsHeight": 710,
+    "statusPosition": "absolute"
+  },
+  "desktop1440": {
+    "stage": "3",
+    "cam": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet",
+      "flagged": null,
+      "display": "none",
+      "position": "relative",
+      "top": 0,
+      "height": 0
+    },
+    "pinWindow": {
+      "display": "block"
+    },
+    "pinSvg": {
+      "viewBox": "0 0 1200 760",
+      "par": "xMidYMid meet"
+    },
+    "stationsHeight": 4320,
+    "statusPosition": "absolute"
+  }
+}
