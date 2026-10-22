@@ -1,0 +1,118 @@
+{
+  "mission": "R311 Phase 11 — production verification",
+  "base": "https://madarek.onrender.com",
+  "captured": [
+    "p1-rest-1440.png",
+    "p2-link-hover-1440.png",
+    "p3-hero-plus-1440.png",
+    "p5-loader-early-1440.png"
+  ],
+  "health": {
+    "ok": true,
+    "dbLatencyMs": 64,
+    "env": "production",
+    "buildId": "b8b63aed21b8"
+  },
+  "rest": {
+    "cursorLayerCount": 0,
+    "dotCoreCount": 0,
+    "sheetCanvas": true,
+    "sheetRing": {
+      "on": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "none",
+      "nativeCursor": "none",
+      "point": "off",
+      "plusOpacity": "0"
+    },
+    "loader": null,
+    "hiddenVocabulary": 0,
+    "noneVocabulary": 1,
+    "assetSample": [
+      "index-C7P5ui9j.js"
+    ]
+  },
+  "linkHover": {
+    "cursorLayerCount": 0,
+    "dotCoreCount": 0,
+    "sheetCanvas": true,
+    "sheetRing": {
+      "on": "on"
+    },
+    "heroStage": {
+      "cursorAttr": "none",
+      "nativeCursor": "none",
+      "point": "off",
+      "plusOpacity": "0"
+    },
+    "loader": null,
+    "hiddenVocabulary": 0,
+    "noneVocabulary": 1,
+    "assetSample": [
+      "index-C7P5ui9j.js"
+    ]
+  },
+  "heroEntry": {
+    "cursorLayerCount": 0,
+    "dotCoreCount": 0,
+    "sheetCanvas": true,
+    "sheetRing": {
+      "on": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "none",
+      "nativeCursor": "none",
+      "point": "on",
+      "plusOpacity": "1"
+    },
+    "loader": null,
+    "hiddenVocabulary": 0,
+    "noneVocabulary": 1,
+    "assetSample": [
+      "index-C7P5ui9j.js"
+    ]
+  },
+  "loaderEarly": {
+    "cursorLayerCount": 0,
+    "dotCoreCount": 0,
+    "sheetCanvas": true,
+    "sheetRing": {
+      "on": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "none",
+      "nativeCursor": "none",
+      "point": "off",
+      "plusOpacity": "0"
+    },
+    "loader": {
+      "attr": "none"
+    },
+    "hiddenVocabulary": 0,
+    "noneVocabulary": 2,
+    "assetSample": [
+      "index-C7P5ui9j.js"
+    ]
+  },
+  "postLoader": {
+    "cursorLayerCount": 0,
+    "dotCoreCount": 0,
+    "sheetCanvas": true,
+    "sheetRing": {
+      "on": "off"
+    },
+    "heroStage": {
+      "cursorAttr": "none",
+      "nativeCursor": "none",
+      "point": "off",
+      "plusOpacity": "0"
+    },
+    "loader": null,
+    "hiddenVocabulary": 0,
+    "noneVocabulary": 1,
+    "assetSample": [
+      "index-C7P5ui9j.js"
+    ]
+  }
+}

@@ -8,7 +8,7 @@ This register follows the R311 §12 delta discipline: every entry carries observ
 
 ## D1 — The duplicate cursor (the mission's named root cause)
 
-**Status: FIXED LOCALLY (Gate A proven; production verification pending the push).**
+**Status: VERIFIED IN PRODUCTION (b8b63aed · buildId b8b63aed21b8 · asset hash `index-C7P5ui9j.js` matches the build; Gate A re-captured live on madarek.onrender.com — `audits/evidence/r311/production/`).**
 
 **Observation.** At ≥992px with a fine pointer, the landing rendered TWO independent pointer systems simultaneously:
 
@@ -38,12 +38,13 @@ This register follows the R311 §12 delta discipline: every entry carries observ
 - `after-dom-audit.json` — `cursorLayerCount: 0` and `dotCoreCount: 0` in **every** state; `linkHover.sheetRing.on: "on"` with no ring element in the DOM; `heroEntry`: `point: "on"`, `plusOpacity: "1"`; `loaderEarly`: `loader.attr: "none"`; `hiddenVocabulary: 0` everywhere.
 - `a2-crop-link-hover-1440.png` — independent VLM: square outline + centered filled orange square, **no circular ring**.
 - `a3-crop-hero-plus-1440.png` — independent VLM: plus with guides, no second cursor (the circular shapes nearby are the elevation's own artwork — grid bubbles/clock — allowed by §1.2).
+- `production/production-dom-audit.json` — the SAME states re-captured live on madarek.onrender.com (fresh contexts; build identifier + hashed asset recorded first): layer 0 / core 0 in every state, square reticle on at link hover, plus solo in the hero, loader `none` at every width, clean post-loader handoff.
 
 ---
 
 ## D2 — Reticle misses the initial pointer entry (§1.6 edge)
 
-**Status: FIXED LOCALLY (surfaced by the new §1.7 belt; fix + regression spec landed together).**
+**Status: VERIFIED IN PRODUCTION (the live linkHover state shows `sheetRing.on: "on"` from a single-jump entry — production-dom-audit.json).**
 
 **Observation.** A pointer entering the viewport directly onto an interactive element (single jump) never showed the square reticle until it crossed another element boundary.
 
