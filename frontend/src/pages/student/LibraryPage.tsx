@@ -207,7 +207,45 @@ function BookRow({ book }: { book: Book }) {
           </button>
         </span>
       }
-    />
+      /* r307 (audit 1-D #1): the row detail — a student can inspect a
+         book BEFORE borrowing. Honest data only (the model has no
+         description field): the full availability math, the category's
+         Arabic name, the rating, and the borrow term (14 days — the
+         backend's own loan rule, catalog.routes.ts:173). Nothing
+         invented, nothing decorated. */
+      expandLabel={`تفاصيل ${book.title}`}
+    >
+      <div className="lib-book-detail">
+        <div className="lib-book-detail-row">
+          <span className="lib-book-detail-k">النسخ</span>
+          <span className="lib-book-detail-v">
+            <bdi>{formatInt(book.availableCopies)}</bdi> متاحة من <bdi>{formatInt(book.totalCopies)}</bdi>
+            {' — '}
+            {availabilityHint}
+          </span>
+        </div>
+        <div className="lib-book-detail-row">
+          <span className="lib-book-detail-k">الفئة</span>
+          <span className="lib-book-detail-v">{categoryLabel(book.category)}</span>
+        </div>
+        {book.rating != null && (
+          <div className="lib-book-detail-row">
+            <span className="lib-book-detail-k">التقييم</span>
+            <span className="lib-book-detail-v"><bdi>{book.rating}</bdi> من 5</span>
+          </div>
+        )}
+        <div className="lib-book-detail-row">
+          <span className="lib-book-detail-k">مدة الاستعارة</span>
+          <span className="lib-book-detail-v">14 يوماً من موعد الاستعارة، ويصلك موعد الإرجاع في إشعار التأكيد.</span>
+        </div>
+        {unavailable && (
+          <div className="lib-book-detail-row">
+            <span className="lib-book-detail-k">الحالة</span>
+            <span className="lib-book-detail-v">جميع النسخ مستعارة حالياً — جرّب لاحقاً أو استعرض البحوث في هذه الفئة.</span>
+          </div>
+        )}
+      </div>
+    </RowItem>
   );
 }
 
@@ -418,9 +456,16 @@ export default function LibraryPage() {
   // When the research tab is active and the user has typed >=2 chars, show
   // server-side search results (with snippets). Otherwise show the full archive.
   const researchInUse = isResearchTab && debouncedQ.length >= 2 && search.data;
+  // r307 (audit 1-D #9): a ONE-character research query silently listed the
+  // full archive — the server floor is 2 chars (its meta says too_short).
+  // Now the honest floor state: the list stays empty and the empty-state
+  // explains the rule instead of pretending the query ran.
+  const researchFloorShort = isResearchTab && !researchInUse && debouncedQ.length === 1;
   const visibleResearch = researchInUse
     ? search.data!.data
-    : research.data ?? [];
+    : researchFloorShort
+      ? []
+      : research.data ?? [];
 
   // r304 — sensible grouping: the archive reads by course when browsing
   // (two or more distinct courses present); search results stay flat so
@@ -516,7 +561,9 @@ export default function LibraryPage() {
   const toolbarCount = isResearchTab
     ? (researchInUse
       ? <><bdi>{visibleResearch.length}</bdi> نتيجة لـ «<bdi>{debouncedQ}</bdi>»</>
-      : <><bdi>{visibleResearch.length}</bdi> بحث منشور</>)
+      : researchFloorShort
+        ? <>حرف واحد — البحث يبدأ من حرفين</>
+        : <><bdi>{visibleResearch.length}</bdi> بحث منشور</>)
     : (books.isPending
       ? '…'
       : totalBooks !== null
@@ -548,10 +595,14 @@ export default function LibraryPage() {
     <EmptyState
       icon={FileText}
       illustration={researchSearchActive ? 'empty-search' : 'empty-research'}
-      title={researchSearchActive ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
-      description={researchSearchActive
-        ? `لم نجد بحثاً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
-        : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
+      title={researchFloorShort
+        ? 'أكمل البحث'
+        : researchSearchActive ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
+      description={researchFloorShort
+        ? 'البحث في البحوث يبدأ من حرفين على الأقل — أضف حرفًا ثانيًا وسيبدأ البحث فورًا.'
+        : researchSearchActive
+          ? `لم نجد بحثاً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
+          : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
     />
   );
 

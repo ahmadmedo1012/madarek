@@ -770,7 +770,12 @@ export default function StudentDashboardPage() {
               title: nodeText(item.title),
               meta: item.meta,
               to: item.to,
-              urgency: 'now' as const,
+              /* r307 (audit 1-D #7): urgency triage — an exam whose window
+                 has NOT opened yet reads `soon` (the calm dot + «قريبًا»),
+                 not the urgent `now`. Only an already-open window keeps
+                 `now`. The meta line stays honest either way («يفتح باب
+                 الاختبار…»), but the dot no longer overstates it. */
+              urgency: (item.whenMs > Date.now() ? 'soon' : 'now') as 'now' | 'soon',
             })),
           ]}
           emptyState={

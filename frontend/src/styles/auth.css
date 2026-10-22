@@ -544,10 +544,15 @@
   .auth-submit {
     inline-size: 100%; /* full-width at every breakpoint; ≥44px */
     block-size: 48px;
-    background: var(--accent);
-    color: var(--accent-fg);
+    /* r307 (audit 1-B #11): the funnel's most important action joins the
+       button canon — the charcoal PRIMARY slab (DESIGN.md §6: .btn.primary
+       is the default primary). The old signal-fill pill bypassed the
+       system; the signal stays for the landing CTA where ONE primary per
+       viewport is already governed by the funnel pins. */
+    background: var(--primary);
+    color: var(--primary-fg);
     border: 0;
-    border-radius: var(--r-full); /* pill — the primary-CTA rung */
+    border-radius: var(--r-sm); /* near-square — the canon's corner rung */
     font-size: var(--fs-body);
     font-weight: var(--fw-bold);
     cursor: pointer;
@@ -555,7 +560,7 @@
     transition: background var(--t-fast) var(--ease);
     margin-block-start: var(--sp-2);
   }
-  .auth-submit:hover { background: var(--accent-hover); }
+  .auth-submit:hover { background: color-mix(in srgb, var(--primary) 84%, var(--bg)); }
   /* The platform's single press register — buttons scale (0.97). */
   .auth-submit:active { transform: scale(var(--press-scale)); }
   .auth-submit:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; transform: none; }

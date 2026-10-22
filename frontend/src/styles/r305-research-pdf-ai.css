@@ -1414,3 +1414,34 @@
     .r305rp-kicker::after { transition: none; }
   }
 }
+
+/* ═══ r307 — the book row detail (audit 1-D #1) ═════════════════════
+   The expandable body under a library row: a quiet definition grid.
+   Keys ride the muted tier; values the secondary tier; bdi isolates
+   the numerals. Scoped to the library sheet (.r305rp root). */
+.r305rp .lib-book-detail {
+  display: grid;
+  gap: var(--sp-1-5);
+  padding-block-start: var(--sp-1-5);
+  border-block-start: 1px dashed var(--border);
+  margin-block-start: var(--sp-1-5);
+}
+
+.r305rp .lib-book-detail-row {
+  display: grid;
+  grid-template-columns: minmax(96px, auto) 1fr;
+  gap: var(--sp-3);
+  align-items: baseline;
+}
+
+.r305rp .lib-book-detail-k {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.r305rp .lib-book-detail-v {
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
