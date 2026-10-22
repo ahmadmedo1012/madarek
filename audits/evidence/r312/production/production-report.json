@@ -1,0 +1,67 @@
+{
+  "identity": {
+    "buildId": "7d3326439e69",
+    "ok": true,
+    "dbLatency": 64
+  },
+  "camera": {
+    "stage2": {
+      "label": "card2-band",
+      "stage": "2",
+      "cam": {
+        "viewBox": "294.4040337711068 25.5 560 420",
+        "par": "xMidYMid slice",
+        "flag": "cropped",
+        "display": "block",
+        "position": "sticky",
+        "top": 69,
+        "h": 338
+      },
+      "pinWindow": "none",
+      "pinSvg": "0 0 1200 760"
+    },
+    "crossed": {
+      "label": "crossed-desktop",
+      "stage": "3",
+      "cam": {
+        "viewBox": "0 0 1200 760",
+        "par": "xMidYMid meet",
+        "flag": null,
+        "display": "none",
+        "position": "relative",
+        "top": 0,
+        "h": 0
+      },
+      "pinWindow": "block",
+      "pinSvg": "0 0 1200 760"
+    },
+    "back": {
+      "label": "crossed-back",
+      "stage": "2",
+      "cam": {
+        "viewBox": "295.2182926829268 25.5 560 420",
+        "par": "xMidYMid slice",
+        "flag": "cropped",
+        "display": "block",
+        "position": "sticky",
+        "top": 69,
+        "h": 338
+      },
+      "pinWindow": "none",
+      "pinSvg": "0 0 1200 760"
+    },
+    "invariant": []
+  },
+  "reveal": {
+    "distinctStates": 11,
+    "settled": "inset(0px 0px 0%)",
+    "samples": [
+      "inset(0px 0px 0%)",
+      "inset(0px 0px 100%)",
+      "inset(0px 0px calc(100% - 401.853px))",
+      "inset(0px 0px calc(100% - 577.711px))",
+      "inset(0px 0px calc(100% - 618.193px))",
+      "inset(0px 0px calc(100% - 633.545px))"
+    ]
+  }
+}
