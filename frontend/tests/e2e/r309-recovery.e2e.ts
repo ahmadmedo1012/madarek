@@ -23,7 +23,7 @@ async function openAllStations(page: import('@playwright/test').Page) {
  *  before the mapping land on the -100px fallback, off-canvas). */
 async function waitForMapping(page: import('@playwright/test').Page) {
   await page.waitForFunction(() => {
-    const el = document.querySelector('.hi-marker[data-marker="mg"]');
+    const el = document.querySelector('.hi-marker[data-marker="mg"]') as HTMLElement | null;
     return !!el && el.style.getPropertyValue('--mk-x') !== '';
   });
 }
