@@ -2367,3 +2367,1375 @@
     align-items: stretch;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   R308 — THE INTERACTION LAYER (docs/redesign/r308/parity-matrix.md)
+   The reference's connected instrument system, rebuilt on the token
+   canon: the entrance loader, the custom pointer (canvas + ring), the
+   hero's local inspection instrument (guides/plus/readout + drag box
+   + stations), the capabilities ticker, and the hero's staged ink-in
+   after the intro. landing.css stays the authored-choreography file
+   (check-motion-tokens wholesale allowlist): hand-tuned cascade by
+   design; every COLOR still rides tokens; every effect collapses
+   under prefers-reduced-motion.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── sc — the custom pointer instrument (canvas + interactive ring).
+   The canvas carries the 9px signal square + velocity trail; the ring
+   is the hover/press layer (a 24px outline that contracts into a
+   targeting reticle while pressed). Native cursor hiding is GATED on
+   the instrument actually running (data-sheet-cursor on <html>) — any
+   failure degrades to the native cursor. ─────────────────────────── */
+.sc-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  pointer-events: none;
+}
+
+.sc-ring {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 24px;
+  block-size: 24px;
+  margin: -12px 0 0 -12px; /* spacing-gate: allow — negative half-ring centering (no negative token exists) */
+  border: 2px solid var(--accent);
+  z-index: 251;
+  pointer-events: none;
+  opacity: 0;
+  scale: 1;
+  transition:
+    opacity var(--t-fast) var(--ease),
+    scale var(--t-fast) var(--ease);
+}
+
+.sc-ring[data-on='on'] {
+  opacity: 1;
+}
+
+.sc-ring[data-pressed='on'] {
+  scale: 0.56;
+}
+
+.sc-ring[data-on='on'][data-pressed='on'] {
+  opacity: 0.68;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-sheet-cursor='live'] .landing,
+  [data-sheet-cursor='live'] .landing * {
+    cursor: none !important;
+  }
+  /* the suppression zones give the native cursor back (the local
+     instruments there provide their own feedback). */
+  [data-sheet-cursor='live'] .landing [data-cursor='hidden'] {
+    cursor: crosshair !important;
+  }
+}
+
+/* ── hi — the hero's local inspection instrument ──────────────────── */
+.hi-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.hi-instrument {
+  position: absolute;
+  inset: 0;
+  display: none;
+}
+
+@media (hover: hover) and (min-width: 992px) {
+  .hi-instrument {
+    display: block;
+  }
+}
+
+.hi-guide {
+  position: absolute;
+  background: var(--border);
+  opacity: 0;
+  transition: opacity var(--t-base) var(--ease);
+}
+
+.hi-guide-x {
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 1px;
+}
+
+.hi-guide-y {
+  inset-inline-start: 0;
+  inset-block: 0;
+  inline-size: 1px;
+}
+
+.hi-layer[data-point='on'] .hi-guide {
+  opacity: 1;
+}
+
+.hi-plus {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 8px;
+  block-size: 8px;
+  margin: -4px 0 0 -4px; /* spacing-gate: allow — negative half-plus centering */
+  opacity: 0;
+  transition: opacity var(--t-base) var(--ease);
+}
+
+.hi-layer[data-point='on'] .hi-plus {
+  opacity: 1;
+}
+
+.hi-plus-h,
+.hi-plus-v {
+  position: absolute;
+  background: var(--accent);
+}
+
+.hi-plus-h {
+  inset-block-start: 3px;
+  inset-inline: 0;
+  block-size: 2px;
+}
+
+.hi-plus-v {
+  inset-inline-start: 3px;
+  inset-block: 0;
+  inline-size: 2px;
+}
+
+.hi-readout {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  padding: var(--sp-0-5) var(--sp-1-5);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  color: var(--text-muted);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity var(--t-base) var(--ease);
+}
+
+.hi-layer[data-point='on'] .hi-readout {
+  opacity: 1;
+}
+
+/* the drag selection box — driven imperatively through CSS vars */
+.hi-box {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: none;
+  z-index: 4;
+  border: 1px solid var(--c-coral-ink);
+  background: linear-gradient(
+    var(--ba, 315deg),
+    color-mix(in srgb, var(--c-coral-ink) 64%, transparent) 0%,
+    transparent 67%
+  );
+  pointer-events: none;
+}
+
+.hi-box[data-on='on'] {
+  display: block;
+}
+
+.bp-stage[data-dragging] {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* the inspection stations — real buttons (the universal path: tap,
+   click, Enter/Space); the drag box reveals them on fine pointers. */
+.hi-marker {
+  position: absolute;
+  inset-block-start: var(--mk-y);
+  inset-inline-start: var(--mk-x);
+  inline-size: var(--mk-w);
+  block-size: var(--mk-h);
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.hi-marker-dot {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: 12px;
+  block-size: 12px;
+  margin: -6px 0 0 -6px; /* spacing-gate: allow — negative half-dot centering */
+  border-radius: var(--r-full);
+  background: var(--accent);
+  animation: hi-pulse 2.2s var(--ease) infinite;
+  transition: scale var(--t-base) var(--ease);
+}
+
+.hi-marker[data-open='on'] .hi-marker-dot {
+  animation: none;
+  scale: 0.55;
+  opacity: 0.85;
+}
+
+@keyframes hi-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 0.99;
+  }
+}
+
+.hi-marker-box {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  gap: var(--sp-0-5);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--accent);
+  border: 1px solid var(--accent-strong);
+  border-radius: var(--r-xs);
+  text-align: start;
+  opacity: 0;
+  scale: 0.12;
+  transition:
+    opacity var(--t-base) var(--ease),
+    scale var(--t-base) var(--ease);
+}
+
+.hi-marker[data-open='on'] .hi-marker-box {
+  opacity: 1;
+  scale: 1;
+}
+
+.hi-marker-code {
+  color: var(--text-on-accent);
+  font-size: var(--fs-xxs);
+  opacity: 0.82;
+}
+
+.hi-marker-label {
+  color: var(--text-on-accent);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.hi-marker-body {
+  color: var(--text-on-accent);
+  font-size: var(--fs-xs);
+  line-height: 1.55;
+  opacity: 0.92;
+}
+
+/* the affordance row */
+.hi-hint {
+  position: absolute;
+  inset-block-end: var(--sp-2);
+  inset-inline-start: var(--sp-3);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  z-index: 3;
+  pointer-events: auto;
+}
+
+.hi-hint-text {
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+}
+
+.hi-reset {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  color: var(--text-secondary);
+  font-size: var(--fs-xxs);
+  padding: var(--sp-0-5) var(--sp-2);
+  cursor: pointer;
+  transition:
+    color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
+}
+
+.hi-reset:hover {
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+/* ── The hero's staged ink-in (intro-draw → intro-done) ─────────────
+   pathLength-normalized strokes draw themselves in the authored
+   order (ground → marks → structures RTL → journey); fills and
+   labels resolve after their structure's stroke. The draw NEVER
+   hides content from reduced-motion visitors: the RM belt below
+   collapses it to the complete drawing. ── */
+.landing.intro-draw .bp-svg [pathLength] {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  fill-opacity: 0;
+}
+
+.landing.intro-draw .bp-svg text {
+  opacity: 0;
+}
+
+.landing.intro-done .bp-svg [pathLength] {
+  transition:
+    stroke-dashoffset 650ms var(--ease),
+    fill-opacity 500ms var(--ease);
+}
+
+.landing.intro-done .bp-svg text {
+  transition: opacity 500ms var(--ease);
+}
+
+.landing.intro-done .bp-svg > line {
+  transition-delay: 0ms;
+}
+
+.landing.intro-done .bp-svg > g:nth-of-type(1) [pathLength] { transition-delay: 80ms; }
+.landing.intro-done .bp-svg > g:nth-of-type(2) [pathLength] { transition-delay: 160ms; }
+.landing.intro-done .bp-svg > g:nth-of-type(3) [pathLength] { transition-delay: 300ms; }
+.landing.intro-done .bp-svg > g:nth-of-type(4) [pathLength] { transition-delay: 480ms; }
+.landing.intro-done .bp-svg > g:nth-of-type(5) [pathLength] { transition-delay: 660ms; }
+.landing.intro-done .bp-svg > g:nth-of-type(6) [pathLength] { transition-delay: 840ms; }
+.landing.intro-done .bp-svg > g:nth-of-type(7) [pathLength] { transition-delay: 1020ms; }
+.landing.intro-done .bp-svg > g:nth-of-type(8) [pathLength] { transition-delay: 1260ms; }
+
+.landing.intro-done .bp-svg > line,
+.landing.intro-done .bp-svg > g [pathLength] {
+  stroke-dashoffset: 0;
+  fill-opacity: 1;
+}
+
+.landing.intro-done .bp-svg text {
+  opacity: 1;
+  transition-delay: 1500ms;
+}
+
+/* ── fo-ticker — the capabilities crawl (the hero's continuous
+   instrument). RTL loop: the pair of tracks slides toward the
+   reading direction — new items continuously enter from the edge
+   the eye is reading toward. ─────────────────────────────────────── */
+.fo-ticker {
+  grid-column: 1 / -1;
+  display: flex;
+  overflow: hidden;
+  border-block: 1px solid var(--rule);
+  margin-block-start: var(--sp-8);
+  gap: var(--sp-8);
+}
+
+.fo-ticker-track {
+  display: flex;
+  flex: 0 0 auto;
+  min-inline-size: 100%;
+  align-items: center;
+  gap: var(--sp-8);
+  padding-block: var(--sp-2-5);
+  animation: fo-ticker-rtl 36s linear infinite;
+}
+
+.fo-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2-5);
+  white-space: nowrap;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.fo-ticker-item .fo-mono {
+  color: var(--accent-ink);
+  font-size: var(--fs-xxs);
+}
+
+@keyframes fo-ticker-rtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* ── sl — the entrance loader («لوحة البدء») ──────────────────────── */
+.sl {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  direction: ltr; /* the instrument chrome is Latin-mono; Arabic text
+                     inside keeps its own dir on the relevant spans */
+}
+
+.sl-main {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  padding: 7px; /* spacing-gate: allow — the loader's measured 7px sheet inset (reference §2) */
+}
+
+.sl-frame {
+  position: absolute;
+  inset: 7px;
+  border: 1px solid var(--rule);
+  pointer-events: none;
+}
+
+.sl-cross {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.sl-cross-h,
+.sl-cross-v {
+  position: absolute;
+  background: var(--grid-line);
+}
+
+.sl-cross-h {
+  inset-block-start: -1px;
+  inset-inline: -28px;
+  block-size: 1px;
+}
+
+.sl-cross-v {
+  inset-inline-start: -1px;
+  inset-block: -28px;
+  inline-size: 1px;
+}
+
+.sl-coord {
+  position: absolute;
+  inset-block-start: 14px;
+  inset-inline-end: 16px;
+  color: var(--text-muted);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.04em;
+}
+
+.sl-draw-wrap {
+  grid-row: 1;
+  align-self: end;
+  justify-self: center;
+  inline-size: min(680px, 82vw);
+  padding-block-end: var(--sp-4);
+}
+
+.sl-draw {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.sl-ink { stroke: var(--text); stroke-width: 1.5; fill: none; }
+.sl-fill { fill: var(--surface); stroke: var(--text); stroke-width: 1.5; }
+.sl-hair line, .sl-hair path { stroke: var(--grid-line); stroke-width: 1; fill: none; }
+.sl-hair2 line { stroke: var(--grid-line); stroke-width: 1; fill: none; }
+.sl-signal { fill: var(--accent); stroke: none; }
+.sl-dashline { stroke: var(--rule-strong); stroke-width: 1; fill: none; stroke-dasharray: 5 5; }
+.sl-name {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--text-secondary);
+}
+
+/* the staged draw — ordered groups, pathLength-normalized */
+.sl-g [pathLength] {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  fill-opacity: 0;
+  transition:
+    stroke-dashoffset 700ms var(--ease),
+    fill-opacity 450ms var(--ease);
+}
+
+.sl-g-1 [pathLength] { transition-delay: 60ms; }
+.sl-g-2 [pathLength] { transition-delay: 260ms; }
+.sl-g-3 [pathLength] { transition-delay: 460ms; }
+.sl-g-4 [pathLength] { transition-delay: 660ms; }
+.sl-g-5 [pathLength] { transition-delay: 860ms; }
+.sl-g-6 [pathLength] { transition-delay: 1060ms; }
+.sl-g-7 [pathLength] { transition-delay: 1300ms; }
+.sl-g-8 text { transition: opacity 450ms var(--ease) 1550ms; opacity: 0; }
+
+/* the mounted state (the group draws itself in) */
+.sl-mounted .sl-g [pathLength] {
+  stroke-dashoffset: 0;
+  fill-opacity: 1;
+}
+
+.sl-mounted .sl-g-8 text {
+  opacity: 1;
+}
+
+/* the scan line — one sweep after the structures resolve */
+.sl-scan {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  opacity: 0;
+}
+
+.sl-mounted .sl-scan {
+  animation: sl-scan 900ms var(--ease) 1500ms 1 both;
+}
+
+@keyframes sl-scan {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  12% {
+    opacity: 0.9;
+  }
+  88% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(216px);
+  }
+}
+
+/* the progress instrument */
+.sl-progress {
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-block: var(--sp-3);
+}
+
+.sl-pct {
+  color: var(--accent);
+  font-size: var(--fs-xs);
+  min-inline-size: 4ch;
+  text-align: end;
+}
+
+.sl-band-track {
+  flex: 1;
+  block-size: 7px;
+  background: color-mix(in srgb, var(--grid-line) 30%, transparent);
+  overflow: hidden;
+}
+
+.sl-band {
+  display: block;
+  block-size: 100%;
+  inline-size: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+}
+
+/* the honest init log */
+.sl-log {
+  grid-row: 3;
+  align-self: start;
+  justify-self: start;
+  display: grid;
+  gap: 3px; /* spacing-gate: allow — instrument-tuned log row hairline (r308 loader) */
+  margin: 0;
+  padding: var(--sp-4) var(--sp-5);
+  list-style: none;
+}
+
+.sl-log li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  direction: rtl;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+
+.sl-log li[data-on='on'] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.sl-log li .fo-mono {
+  color: var(--accent-ink);
+  font-size: var(--fs-xxs);
+}
+
+/* the title block + skip */
+.sl-meta {
+  position: absolute;
+  inset-block-end: 18px;
+  inset-inline-end: 20px;
+  display: grid;
+  gap: var(--sp-0-5);
+  justify-items: end;
+  direction: rtl;
+  text-align: end;
+}
+
+.sl-meta-title {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sl-meta-row {
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.05em;
+}
+
+.sl-skip {
+  position: absolute;
+  inset-block-end: 18px;
+  inset-inline-start: 20px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  color: var(--text-secondary);
+  font-size: var(--fs-xxs);
+  padding: var(--sp-1-5) var(--sp-3);
+  cursor: pointer;
+  transition:
+    color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
+}
+
+.sl-skip:hover {
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.sl-sr {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── R308 responsive re-composition ───────────────────────────────── */
+@media (max-width: 991px) {
+  /* the stations become compact chips on the flow sheet: the boxes
+     clamp, the hint rides below the drawing (no pointer instrument). */
+  .hi-marker {
+    inline-size: min(var(--mk-w), 78vw);
+  }
+
+  .hi-marker-body {
+    display: none; /* the label carries the meaning on small boxes */
+  }
+
+  .hi-hint {
+    position: static;
+    padding: 0 var(--sp-2);
+  }
+}
+
+@media (max-width: 767px) {
+  .sl-draw-wrap {
+    inline-size: 88vw;
+  }
+
+  .sl-log {
+    display: none; /* the log is an instrument flourish — the paper
+                      breathes on small viewports */
+  }
+
+  .sl-meta {
+    inset-block-end: 14px;
+    inset-inline-end: 14px;
+  }
+
+  .sl-skip {
+    inset-block-end: 14px;
+    inset-inline-start: 14px;
+  }
+}
+
+/* ── R308 reduced motion: the complete static sheet ─────────────────
+   Every continuous instrument settles to its resolved state; nothing
+   hides content. The pointer instrument + loader already refuse to
+   run under RM (JS gates) — this belt covers the CSS-side effects. */
+@media (prefers-reduced-motion: reduce) {
+  .fo-ticker-track {
+    animation: none;
+    flex-wrap: wrap;
+  }
+
+  .hi-marker-dot {
+    animation: none;
+    opacity: 0.9;
+  }
+
+  .sl-g [pathLength],
+  .sl-g-8 text {
+    transition: none;
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+    opacity: 1;
+  }
+
+  .sl-mounted .sl-scan {
+    animation: none;
+    opacity: 0;
+  }
+
+  .sl-log li {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .sc-ring {
+    transition: none;
+  }
+
+  .landing.intro-draw .bp-svg [pathLength],
+  .landing.intro-done .bp-svg [pathLength] {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+    transition: none;
+  }
+
+  .landing.intro-draw .bp-svg text,
+  .landing.intro-done .bp-svg text {
+    opacity: 1;
+    transition: none;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   R308 — THE SCROLL STORY (jt / inkm / wr)
+   The pinned «رحلة التعلّم» walkthrough, the ink-mask photo reveal,
+   and the Arabic-safe word reveals.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── jt — the journey walkthrough ────────────────────────────────────
+   The track is ~380vh; the pin is CSS sticky full-viewport (the
+   reference's own mechanism — no JS pin); the window keeps the same
+   drawing while overlay layers cross-fade; stations ride the track;
+   the capability column expands at pin end (width, once, 400ms). */
+.jt {
+  position: relative;
+  /* the scroll timeline: the track is 480dvh tall; the sticky pin
+     (first flow child, 100dvh) sticks for (480 − 100)dvh of scroll —
+     ~855px per stage, the reference's proportionate walkthrough. */
+  block-size: 480dvh;
+  margin-block-start: var(--sp-6);
+}
+
+.jt-pin {
+  position: sticky;
+  top: 0;
+  block-size: 100dvh;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+  padding-inline: var(--page-gutter);
+  z-index: 1;
+}
+
+.jt-window {
+  position: relative;
+  flex: 1 1 auto;
+  max-inline-size: min(1240px, 100%);
+  margin-inline: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  background: var(--surface);
+  padding: clamp(var(--sp-3), 2.2vw, var(--sp-6));
+}
+
+/* the corner plus marks — the drawing-frame grammar */
+.jt-window::before,
+.jt-window::after {
+  content: '+';
+  position: absolute;
+  color: var(--grid-line);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1;
+  z-index: 1;
+}
+
+.jt-window::before {
+  inset-block-start: 4px;
+  inset-inline-start: 6px;
+}
+
+.jt-window::after {
+  inset-block-end: 4px;
+  inset-inline-end: 6px;
+}
+
+.jt-window .bp-svg {
+  min-block-size: 0;
+}
+
+.jt-overlay-svg {
+  position: absolute;
+  inset: clamp(var(--sp-3), 2.2vw, var(--sp-6));
+  inline-size: calc(100% - 2 * clamp(var(--sp-3), 2.2vw, var(--sp-6)));
+  block-size: calc(100% - 2 * clamp(var(--sp-3), 2.2vw, var(--sp-6)));
+  pointer-events: none;
+}
+
+.jt-ov {
+  transition: none; /* opacity is written imperatively per frame */
+}
+
+.jt-ov-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 5;
+  animation: jt-ring-crawl 14s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.jt-ov-line {
+  stroke: var(--grid-line);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+}
+
+.jt-ov-dot {
+  fill: var(--accent);
+}
+
+.jt-ov-code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  fill: var(--text-faint);
+  letter-spacing: 0.06em;
+}
+
+.jt-ov-text {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  fill: var(--text-secondary);
+}
+
+@keyframes jt-ring-crawl {
+  to {
+    stroke-dashoffset: -90;
+  }
+}
+
+/* the status strip — the current station, stacked + faded by stage */
+.jt-status {
+  position: absolute;
+  inset-block-end: 14px;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  padding: 3px 10px; /* spacing-gate: allow — instrument-tuned status strip (r308 walkthrough) */
+  z-index: 2;
+}
+
+.jt-status-line {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
+}
+
+.jt[data-stage='0'] .jt-status-line:nth-child(1),
+.jt[data-stage='1'] .jt-status-line:nth-child(2),
+.jt[data-stage='2'] .jt-status-line:nth-child(3),
+.jt[data-stage='3'] .jt-status-line:nth-child(4) {
+  opacity: 1;
+}
+
+/* the expanding capability column — opens at pin end (once) */
+.jt-side {
+  flex: 0 0 auto;
+  inline-size: 0;
+  overflow: hidden;
+  block-size: min-content;
+  align-self: center;
+  border: 0 solid var(--rule);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  transition: inline-size var(--t-slow) var(--ease);
+  visibility: hidden;
+}
+
+.jt-side[data-open='on'] {
+  inline-size: clamp(280px, 32vw, 460px);
+  border-inline-start-width: 1px;
+  border-block-width: 1px;
+  visibility: visible;
+}
+
+.jt-side-label {
+  display: block;
+  padding: var(--sp-2) var(--sp-3);
+  color: var(--accent-ink);
+  font-size: var(--fs-xxs);
+  border-block-end: 1px solid var(--rule);
+}
+
+.jt-checklist {
+  display: grid;
+  gap: var(--sp-2-5);
+  margin: 0;
+  padding: var(--sp-3);
+  list-style: none;
+}
+
+.jt-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.jt-checklist li svg {
+  color: var(--accent-ink);
+  flex: none;
+  margin-block-start: var(--sp-1);
+}
+
+/* the number stations — riding the track past the fixed drawing:
+   absolute against the FULL track so each station's band percentage
+   resolves against the track height (they scroll by the pinned
+   window as the visitor advances). */
+.jt-stations {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.jt-station {
+  position: absolute;
+  inset-inline-start: var(--page-gutter);
+  inline-size: min(360px, 38vw);
+  display: grid;
+  gap: var(--sp-1);
+  padding: var(--sp-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+/* station bands: each stage's station sits at its scroll band */
+.jt-station:nth-child(1) { inset-block-start: calc(12.5% - 90px); }
+.jt-station:nth-child(2) { inset-block-start: calc(37.5% - 90px); }
+.jt-station:nth-child(3) { inset-block-start: calc(62.5% - 90px); }
+.jt-station:nth-child(4) { inset-block-start: calc(87.5% - 90px); }
+
+.jt-station-num {
+  color: var(--text-faint);
+  font-size: var(--fs-xs);
+  transition: color var(--t-fast) var(--ease);
+}
+
+.jt-station-verb {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.jt-station-title {
+  margin: 0;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.jt-station-text {
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* the active station: the signal number (the reference's active-role
+   grammar) + the border warms */
+.jt[data-stage='0'] .jt-station:nth-child(1),
+.jt[data-stage='1'] .jt-station:nth-child(2),
+.jt[data-stage='2'] .jt-station:nth-child(3),
+.jt[data-stage='3'] .jt-station:nth-child(4) {
+  border-color: var(--accent);
+}
+
+.jt[data-stage='0'] .jt-station:nth-child(1) .jt-station-num,
+.jt[data-stage='1'] .jt-station:nth-child(2) .jt-station-num,
+.jt[data-stage='2'] .jt-station:nth-child(3) .jt-station-num,
+.jt[data-stage='3'] .jt-station:nth-child(4) .jt-station-num {
+  color: var(--accent-ink);
+}
+
+/* ── inkm — the ink-mask photo reveal ──────────────────────────────── */
+.mf-photo {
+  position: relative;
+}
+
+.inkm {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.inkm-defs {
+  position: absolute;
+  inline-size: 0;
+  block-size: 0;
+  overflow: hidden;
+}
+
+.inkm-sketch {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: var(--bg);
+  /* the ink-bleed edge filter is applied via the per-instance id from
+     JS (unique per mount); the ≤767px belt below drops it for paint
+     cost and reduced motion drops the whole layer. */
+}
+.inkm-sketch-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to left, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.55;
+}
+
+.inkm-sketch-mark {
+  position: absolute;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1;
+}
+
+.inkm-sketch-mark-tl { inset-block-start: 6px; inset-inline-start: 8px; }
+.inkm-sketch-mark-tr { inset-block-start: 6px; inset-inline-end: 8px; }
+.inkm-sketch-bl { inset-block-end: 6px; inset-inline-start: 8px; }
+.inkm-sketch-br { inset-block-end: 6px; inset-inline-end: 8px; }
+
+.inkm-sketch-coord {
+  position: absolute;
+  inset-block-end: 8px;
+  inset-inline-start: 10px;
+  color: var(--text-muted);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.05em;
+}
+
+/* ── wr — the Arabic-safe word reveals ───────────────────────────────
+   Words split on spaces only (joining is intra-word — shaping is
+   intact; the DESIGN.md §4 amendment). Two modes: the IO-belt reveal
+   (once-only, staggered, capped) and the scrub variant (progress var
+   --wr-p maps onto the words; reversible). */
+.wr {
+  display: inline;
+}
+
+.wr-w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.wr-i {
+  display: inline-block;
+  transform: translateY(115%);
+  transition: transform 480ms var(--ease);
+  transition-delay: calc(var(--wr-i, 0) * 40ms);
+}
+
+.wr.in-view .wr-i,
+.wr.is-in .wr-i {
+  transform: translateY(0);
+}
+
+.wr-scrub .wr-w {
+  overflow: hidden;
+}
+
+.wr-scrub .wr-i {
+  --wr-k: clamp(0, (var(--wr-p, 0) * var(--wr-n, 1)) - var(--wr-i, 0), 1);
+  transform: translateY(calc((1 - var(--wr-k)) * 115%));
+  transition: none;
+}
+
+/* the journey scene's responsive ladder: the pin dies ≤991px into a
+   stacked readable sequence (the reference's own ladder). */
+@media (max-width: 991px) {
+  .jt {
+    block-size: auto;
+  }
+
+  .jt-pin {
+    position: static;
+    block-size: auto;
+    flex-direction: column;
+    align-items: stretch;
+    padding-inline: 0;
+  }
+
+  .jt-side {
+    inline-size: 100%;
+    visibility: visible;
+    border-width: 1px 0;
+  }
+
+  .jt-side[data-open='off'] {
+    visibility: visible;
+  }
+
+  .jt-stations {
+    position: static;
+    display: grid;
+    gap: var(--sp-4);
+    margin-block-start: var(--sp-4);
+  }
+
+  .jt-station {
+    position: static;
+    inline-size: auto;
+  }
+
+  .jt-overlay-svg {
+    display: none;
+  }
+
+  .jt-status {
+    position: static;
+    translate: 0 0;
+    justify-self: start;
+    margin-block-start: var(--sp-3);
+  }
+}
+
+/* the ink sketch is a pointerless scroll instrument; narrow viewports
+   drop the turbulence filter for paint cost, RM drops the layer. */
+@media (max-width: 767px) {
+  .inkm-sketch {
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inkm {
+    display: none;
+  }
+
+  .wr-i,
+  .wr-scrub .wr-i {
+    transform: none;
+    transition: none;
+  }
+
+  .jt-ov-ring {
+    animation: none;
+  }
+
+  .jt-side {
+    transition: none;
+  }
+
+  .jt-status-line {
+    transition: none;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   R308 — THE CLOSING INSTRUMENTS (fl / sx / cta corners / vs snap)
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── fl — the footer inspection strip ────────────────────────────────
+   A hairline band above the colophon: the journey drawing in its
+   sketch state; a fine-pointer lens reveals the resolved state (full
+   ink + signals + labels) inside a lerped circle. Touch + reduced
+   motion stand on the resolved strip statically. */
+.fl {
+  position: relative;
+  border-block-end: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
+  overflow: hidden;
+}
+
+.fl-svg {
+  display: block;
+  inline-size: 100%;
+  block-size: clamp(120px, 16vw, 190px);
+}
+
+.fl-sketch line,
+.fl-sketch rect,
+.fl-sketch polygon {
+  fill: none;
+  stroke: var(--grid-line);
+  stroke-width: 1;
+}
+
+.fl-resolved {
+  transform-box: fill-box;
+}
+
+.fl-ink line,
+.fl-ink rect,
+.fl-ink polygon,
+.fl-ink circle,
+.fl-ink polyline {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.6;
+}
+
+.fl-signal polygon,
+.fl-signal circle {
+  fill: var(--accent);
+  stroke: none;
+}
+
+.fl-labels text {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  fill: var(--text-secondary);
+}
+
+.fl-pulse {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0.2;
+}
+
+.fl-coord {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-start: 12px;
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.05em;
+}
+
+/* the resolved layer is masked by the lens only when the instrument
+   runs; without it (touch/RM) the strip is the resolved drawing. */
+.fl:not(:has(.fl-pulse)) .fl-resolved {
+  mask: none;
+}
+
+/* ── sx — the landing-exit sweep (appended to body) ────────────────── */
+.sx {
+  position: fixed;
+  inset: 0;
+  z-index: 280;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sx-bands {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+}
+
+.sx-line {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline: 0;
+  block-size: 1px;
+  background: var(--accent);
+  transform-origin: 50% 50%;
+  transform: scaleX(0);
+}
+
+/* ── the CTA corner coordinates ────────────────────────────────────── */
+.fo-cta-corners {
+  margin-block-start: var(--sp-2);
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.05em;
+}
+
+/* ── the vision rows' state-machine snap (the hold-plateau grammar) ── */
+.vs-status.in-view .vs-status-tag {
+  animation: vs-tag-snap 900ms var(--ease) both;
+}
+
+.vs-status.in-view .vs-status-row,
+.vs-status.in-view li {
+  /* the rows themselves keep the block reveal; only the tag snaps */
+}
+
+@keyframes vs-tag-snap {
+  0%,
+  74% {
+    opacity: 0.45;
+    scale: 0.85;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vs-status.in-view .vs-status-tag {
+    animation: none;
+  }
+
+  .fl-pulse {
+    display: none;
+  }
+}
+
+/* the journey side column's assistant note — the r191 scope contract */
+.jt-side-note {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  border-block-start: 1px solid var(--rule);
+  font-size: var(--fs-xs);
+  line-height: 1.7;
+  color: var(--text-muted);
+}

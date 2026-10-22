@@ -679,6 +679,13 @@ test('sweep AUDIT_ROUTES × viewports × themes × dirs → surface-inventory.js
             JSON.stringify({ state: { mode: themeMode, modeUpdatedAt: Date.now() }, version: 2 }),
           );
         } catch { /* storage unavailable — the sweep asserts the theme below */ }
+        // r308: the landing's entrance loader plays once per session —
+        // the sweep captures SETTLED product surfaces, so seed the
+        // seen-flag exactly like the e2e fixture does (the entrance
+        // itself has dedicated coverage in r308-landing-instruments).
+        try {
+          sessionStorage.setItem('madarek-intro-seen', '1');
+        } catch { /* ditto */ }
         if (session) {
           try {
             localStorage.setItem(

@@ -76,10 +76,25 @@ transfers through Alexandria weights + the size ladder.
 `--t-micro 80 · --t-fast 200 · --t-base 400 · --t-slow 500 · --t-slower 650 (720 cinema)
 on --ease cubic-bezier(.23,1,.32,1)` (the reference's own census: 0.4s ×174) and the roll/
 exit curve `--ease-in (.625,.05,0,1)`. Semantic page 400 / reveal 480/520. **Block-level
-reveals only** (RevealCssClass / the shared IO belt — per-line splits break Arabic shaping).
+reveals only** (RevealCssClass / the shared IO belt — per-line splits break Arabic shaping)
+with ONE r308 amendment: **word-boundary reveals** (`WordReveal`) split on spaces only —
+joining is intra-word in Arabic, so per-WORD masks are shaping-safe where per-LINE masks
+are not (the pinned split-integrity contract lives in `tests/unit/r308-interaction.test.ts`).
 Imperative scroll chrome writes CSS vars/`classList` on rAF — zero React re-renders per
 tick. `prefers-reduced-motion` collapses every duration to 0 (motion.css + base.css belts)
-and the content stands complete static. No preloaders, no scrolljacking, no canvas motion.
+and the content stands complete static. No scrolljacking.
+**R308 amendment — the interaction layer** (`docs/redesign/r308/parity-matrix.md`): the
+landing sheet carries the reference's connected instrument system — the once-per-session
+entrance loader (honest progress, session-gated, skipped under RM), the canvas pointer
+instrument (9px signal square, velocity trail, press reticle — fine pointers only, never
+under RM), the hero's local inspection instrument (guides + scene-relative readout +
+drag-to-inspect with viewBox-remapped stations), the pinned walkthrough (CSS sticky —
+still no JS pinning), the ink-mask drawing→photo reveal, the capabilities ticker, the
+footer inspection lens, and the landing-exit sweep. All of it rides ONE shared clock
+(`lib/motion/sheetConductor.ts`) that unsubscribes when idle — an idle page holds zero
+awake frames — and every continuous instrument is a whitelisted `@keyframes` that the
+RM belt collapses (`tests/unit/r306-landing-sheet.test.ts` pins the whitelist). The
+authenticated app keeps the native cursor and no transitions on task routes.
 
 ## 5. The landing sheet — «لوحة مدارك» (r306 → r307)
 
@@ -144,7 +159,10 @@ capture of the running application (seeded demo environment — fully synthetic 
 مدارك التجريبية» data). Every frame carries the mono `real-ui` tag + the demo-data
 disclosure; the CTA scrolls to the conversion row (never an extra funnel link — the
 5+5 counts stay exact). Captures are re-derivable from the committed
-`.r307-capture-archive/` via the pipeline script — never re-fabricated.
+`.r308-capture-archive/` via the pipeline script — never re-fabricated.
+**R308 re-capture** (§1.1 defect A): every capture was re-taken with the onboarding
+completed through its real supported flow before the shot (method recorded per asset in
+`manifest.json` `source.method`) — no welcome modal, no blur, ever.
 
 **Verified facts ledger** (doc-accuracy pins, r177):
 

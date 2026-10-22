@@ -216,8 +216,36 @@ describe('r306 hygiene — the sheet stays clean', () => {
     );
   });
 
-  it('zero animation keyframes — the sheet moves only through transitions', () => {
-    const keyframes = (live.match(/@keyframes/g) ?? []).length;
-    expect(keyframes).toBe(0);
+  it('r308 — continuous instruments are SCOPED keyframes, every one collapsed under reduced motion', () => {
+    /* The r306 «zero keyframes» policy is superseded by R308's
+     * continuous-instrument grammar (the reference's marquee, pulsing
+     * markers, scan line, ring crawl, tag snap — parity-matrix §D/E).
+     * The contract that survives: every @keyframes is one of the
+     * whitelisted instruments, and the reduced-motion belt collapses
+     * each of them to its resolved static state. */
+    const names = [...live.matchAll(/@keyframes\s+([a-z0-9-]+)/g)].map((m) => m[1]);
+    const ALLOWED = new Set([
+      'hi-pulse', // the inspection stations' idle pulse
+      'fo-ticker-rtl', // the capabilities crawl
+      'sl-scan', // the loader's scan sweep
+      'jt-ring-crawl', // the walkthrough ring's dash crawl
+      'vs-tag-snap', // the vision rows' hold-plateau snap
+    ]);
+    for (const n of names) {
+      expect(ALLOWED.has(n ?? ''), `unexpected @keyframes ${n}`).toBe(true);
+    }
+    /* every instrument's ANIMATED SELECTOR is collapsed by the RM belt
+     * (animation: none → the resolved static state stands) */
+    const rmBelt = live.slice(live.indexOf('@media (prefers-reduced-motion: reduce)'));
+    const RM_COLLAPSED = [
+      '.hi-marker-dot', // hi-pulse
+      '.fo-ticker-track', // fo-ticker-rtl
+      '.sl-scan', // sl-scan
+      '.jt-ov-ring', // jt-ring-crawl
+      '.vs-status-tag', // vs-tag-snap
+    ];
+    for (const sel of RM_COLLAPSED) {
+      expect(rmBelt, `RM belt must collapse ${sel}`).toContain(sel);
+    }
   });
 });

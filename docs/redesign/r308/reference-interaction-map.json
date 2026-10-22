@@ -1,0 +1,234 @@
+{
+  "$schema": "r308/reference-interaction-map",
+  "meta": {
+    "source": "heronaiapp.com",
+    "measuredAt": "2026-10 (headless Chromium, Playwright; live DOM + computed styles + canvas instrumentation)",
+    "baseViewport": "1440x900",
+    "pageScrollHeight": 12355,
+    "clientHeight": 887,
+    "scrollContainer": ".main-inner (Lenis 1.1.5; documentElement never scrolls)",
+    "stack": ["Webflow", "GSAP + ScrollTrigger (41 triggers, pin:false everywhere)", "Lenis 1.1.5", "Barba (sync)", "custom Canvas-2D cursor", "CSS sticky pins", "SVG mask ink transitions"],
+    "notes": "All values measured live unless marked notVerified. GSAP/Lenis/cursor/masks resolve from one gsap.ticker clock (case study)."
+  },
+  "sections": [
+    {
+      "name": "hero",
+      "dom": "home-hero-wrap > .home-hero",
+      "scrollRange": [0, 887],
+      "height": 887,
+      "pct": 7.2,
+      "pins": [],
+      "interactions": [
+        { "type": "pointer-move", "target": ".home-hero-img-interact-wrap (1427x700 @(7,60))", "effect": "guide lines H/V (#E0E0DA 1px, full-span, lerp-follow, idle opacity 0.16 no fade) + 8x8 #FA3600 plus + mono coordinate readout in scene coords (pointer − (7,60))" },
+        { "type": "drag", "target": "drawing window", "effect": "selection box + violation markers (see drag.stages)", "hint": ".home-hero-interact-txt 'Click and drag your mouse to see violations' (130x35 chip, #282828 bg, white mono text)" },
+        { "type": "hover", "target": "ruler zones near window edges", "effect": "ruler ticks opacity 0→1 (proximity)" },
+        { "type": "hover", "target": ".home-hero-btn 'Discover more'", "effect": "CTA label roll + fill sweep 408px #FA3600 (~600ms)" },
+        { "type": "marquee", "target": ".home-hero-work (601x36 @(832,857))", "effect": "marqueeLeft 10s linear infinite ≈40px/s leftward; items: Faster iterations / Fewer mistakes / Less busywork" }
+      ],
+      "layout": { "pageFrame": 7, "drawingFrame": [1407, 680, [17, 70]], "imageWindow": [1373, 647, [33, 87]], "h1Strip": "h1 772x93 left + paragraph + link right, 133px tall" }
+    },
+    {
+      "name": "intro",
+      "dom": "home-intro-wrap > .home-intro",
+      "scrollRange": [893, 1616],
+      "height": 723,
+      "pct": 5.9,
+      "pins": [],
+      "interactions": [
+        { "type": "scroll-scrub", "target": ".home-intro-content-title", "trigger": { "start": 98, "end": 718, "scrub": true }, "effect": "title reveal 1:1 with scroll, reversible" },
+        { "type": "ink-mask", "target": ".home-intro-img (713x723)", "effect": "quadratic-curve mask sweep top→bottom with scroll (Y 228→1014 in 1000x981.76 viewBox), turbulence-displaced edge" },
+        { "type": "hover", "target": ".home-intro-partner-ctrls", "effect": "cursor suppressed (data-cursor=hidden)" }
+      ]
+    },
+    {
+      "name": "problem",
+      "dom": "home-problem-wrap > .home-problem",
+      "scrollRange": [1616, 2358],
+      "height": 743,
+      "pct": 6.0,
+      "pins": [],
+      "interactions": [
+        { "type": "svg-draw", "target": "4 cards (Manual / Disjointed / BLIND / SLOW)", "effect": "homeProblemDraw 1s cubic-bezier(0.22,1,0.36,1) dashoffset var(--path-length)→0; homeProblemDashAppear 0.35s; homeProblemDashFlow 1s infinite (flowing dashes)" },
+        { "type": "hover", "target": ".home-problem-item", "effect": "img tint → #282828, plus scales to 1, drawing grid bg (--bg-grid 6.4rem cells) fades in 0.4s, title translateX(2rem), dot opacity 1" }
+      ]
+    },
+    {
+      "name": "map (pinned walkthrough)",
+      "dom": "home-map-wrap > .home-map",
+      "scrollRange": [2358, 8658],
+      "height": 6300,
+      "pct": 51.0,
+      "pins": [{ "element": ".home-map-inner", "mode": "css-sticky", "h": 887, "from": 2358, "release": 7600, "behavior": "drawing window fixed; 4 stacked 1427x853 images cross-fade in sequence (layer2 op 0→1 across scroll 4458–5158, layer3 by 5508); overlay annotations + home-intel status lines fixed; home-map-intro fades in 4100–5150; 3 SVG number stations scroll past" }],
+      "interactions": [
+        { "type": "scroll-scrub", "target": "image layers + intro fade", "effect": "cross-fade sequence while pinned" },
+        { "type": "expand", "target": ".home-map.expanded .home-map-content-wrap", "at": "scroll ≈7600", "effect": "width 0 → 463.7px, transition width 0.4s — right checklist column opens, then scene scrolls away" },
+        { "type": "click", "target": ".home-map-number (cursor:pointer)", "effect": "notVerified (not clicked)" }
+      ]
+    },
+    {
+      "name": "platform",
+      "dom": "home-platform-wrap > .home-platform",
+      "scrollRange": [8658, 9368],
+      "height": 710,
+      "pct": 5.7,
+      "pins": [{ "element": ".home-platform-content-inner", "mode": "css-sticky", "h": 145, "from": 8658, "behavior": "slim module label strip ([01] Heron Chat widget …) sticks while images scroll" }],
+      "interactions": [
+        { "type": "ink-mask", "target": ".home-platform-img-item-wrap x2 (599x353 Before/After)", "effect": "top→bottom quadratic mask sweep scroll-scrubbed (Y 1→590)" }
+      ]
+    },
+    {
+      "name": "why",
+      "dom": "home-why-wrap > .home-why",
+      "scrollRange": [9368, 10066],
+      "height": 698,
+      "pct": 5.7,
+      "pins": [],
+      "interactions": [
+        { "type": "sequenced-reveal", "target": "img boxes / icons / dots", "effect": "keyframe state machine with hold plateaus (0/11%/68%/74% hold points): homeWhyBoxReveal, IconReveal, IconBorderPulse, pointReveal, Spin, DashMove, loadingActive/checkActive" },
+        { "type": "word-mask", "target": "bp-mask-line-mask lines", "effect": "line-by-line masked reveals" }
+      ]
+    },
+    {
+      "name": "usecase",
+      "dom": "home-usecase-wrap > .home-usecase",
+      "scrollRange": [10067, 10953],
+      "height": 887,
+      "pct": 7.2,
+      "pins": [],
+      "interactions": [
+        { "type": "accordion", "target": ".home-usecase-faq-item rows (7 roles: Architects*, Interior Designers, Landscape Architects, Engineers, BIM Managers, Drafters, Design Leads)", "effect": "click → .active moves, description swaps (+1179 chars measured), number → #FA3600, vertical path scales to 0, title re-reveals via per-word mask" },
+        { "type": "hover", "target": "row", "effect": "number → orange, icon → black, hover line in" }
+      ]
+    },
+    {
+      "name": "cta",
+      "dom": "home-cta-wrap > .cta",
+      "scrollRange": [10953, 11651],
+      "height": 698,
+      "pct": 5.7,
+      "pins": [],
+      "interactions": [
+        { "type": "ink-mask", "target": ".cta-deco-item-img (deco strip)", "effect": "scroll-scrubbed sweep" },
+        { "type": "hover", "target": "Contact us / Book a demo button", "effect": "label roll + fill sweep (measured on hero twin: fill 408px #FA3600, labelTop/labelBot matrices swap, ~600ms)" }
+      ],
+      "labels": ["[0,246]", "[831,0]", "[2303,0]", "[0,544]"]
+    },
+    {
+      "name": "footer",
+      "dom": "footer-wrap > .footer",
+      "scrollRange": [11651, 12362],
+      "height": 711,
+      "pct": 5.8,
+      "pins": [],
+      "interactions": [
+        { "type": "pointer-lens", "target": ".footer-img-wrap ink-mask (1427x314)", "effect": "circular SVG mask follows pointer: main r 0→99.09 (≈0.55s enter), pulse ring r 104.04 (1.05x); leave r→0 ≈0.8s (pulse ≈1s); cx/cy lerped behind pointer; reveals turbulence-edged sub layer" },
+        { "type": "scroll-reveal", "target": ".footer-logo-inner.full (215x215)", "effect": "logo fades in with scroll (measured 0.61 mid-entry → 1)" },
+        { "type": "form", "target": "input[type=email] 'Enter your email'", "effect": "never submitted (lab rule)" }
+      ],
+      "zones": { "main": 355, "imgStrip": 314, "copyright": 42 }
+    }
+  ],
+  "cursor": {
+    "enable": "(hover:hover) and (pointer:fine); canvas present even at 768w desktop ctx",
+    "layers": {
+      "canvas": { "size": "viewport (1440x900), fixed, z 2147483600, dpr capped", "dot": "fillRect 9x9 #FA3600" },
+      "interactiveStateEl": { "size": "2.8rem (23.3px)", "style": "2px solid #FC724D border square", "zIndex": "2147483601", "tween": "GSAP" },
+      "domFallback": { "size": "5px circle", "color": "#DD6013", "note": "opacity 0 while canvas system runs" }
+    },
+    "states": {
+      "idle": "dot only, drawn after wake; loop sleeps once settled (~8 settle frames, then no draw calls)",
+      "moving": "dot lerps toward pointer (lerp 0.18 per case study; measured trailing ~4.6px, converges 0.4–0.6s)",
+      "fast": "trail polyline added — one segment per frame, lineWidth 1.4, #FA3600, per-segment globalAlpha quadratic ramp ≈0→0.99 (oldest→newest); appears only above speed threshold (case: speed>1.5); vanishes on first still frame (no fade-out tail)",
+      "hoverInteractive": "element square scales up (links)",
+      "pressed": "contracting reticle: scale 0.56, opacity 0.68 (targeting reticle)",
+      "suppressed": "data-cursor=hidden zones: .loading-inner, .home-hero-img-wrap, hero ruler wraps, .home-intro-partner-ctrls → cursor-main gets .hidden"
+    },
+    "timings": { "lerp": 0.18, "speedSmoothing": 0.2, "wakeThresholdMovement": 0.05, "trailSpeedThreshold": 1.5, "settle": "0.4–0.6s" },
+    "colorAdaptationOverDark": "notVerified (no dark DOM surfaces on homepage)"
+  },
+  "drag": {
+    "target": "hero drawing window",
+    "threshold": 2,
+    "stages": [
+      { "stage": "hover", "state": "hint chip visible ('Click and drag…'), guides + plus + readout follow pointer" },
+      { "stage": "down", "state": "reticle contracts (pressed state)" },
+      { "stage": "move > threshold", "state": "selection box appears: normalize(start,current) rect, border 1px #F15534, fill linear-gradient(direction-tinted, rgba(241,85,52,.64) → transparent 67%), z 100" },
+      { "stage": "box ∩ marker", "state": "violation marker .active: 12x12 pulsing dot (#FA3600, opacity oscillation 0.70–0.99) expands to fill 200x80/96 box; label text fades in (IBC 1011.11 Handrails required. / IBC 1015.3 Guardrail required for fall protection)" },
+      { "stage": "release", "state": "selection box removed instantly; markers REMAIN revealed permanently (still active 1200ms later; second drag does not deactivate)" }
+    ],
+    "markers": [
+      { "id": "item1", "rect": [263, 484, 200, 80], "label": "IBC 1011.11 — Handrails required." },
+      { "id": "item2", "rect": [726, 494, 200, 96], "label": "IBC 1015.3 — Guardrail required for fall protection" }
+    ],
+    "coordinateSystem": "viewport px for box math (getBoundingClientRect), scene-relative (origin .home-hero-img-interact-wrap (7,60)) for the readout; markers remapped against displayed object-fit box"
+  },
+  "loader": {
+    "duration": "progress 0→100% non-linear (asset-gated): 7%@439ms, 33%@848ms, 57%@2.06s, plateau 59–60% 2.5–2.9s, 85%@3.7s, 98%@4.5s, 100%@≈4.9–5.6s (two runs)",
+    "exit": "≈5.2–5.7s: clip-path center-out horizontal split (two panels shrink top/bottom, widening horizontal slit), then display:none",
+    "content": { "progressBar": "full-width band at vertical center, left→right, #FA3600, counter 'N%' mono txt-12 #FA3600", "drawing": "centered architectural line drawing", "credit": "bottom-left 'DESIGNED BY BEARPLUS…' h4", "meta": "bottom-right 'WELCOME TO HERON AI' + TYPE/FOUNDED/FOCUS/LOCATION + system log 001–005", "ruler": "loading-ruler with crosshair + X/Y readout (mono txt-10)" },
+    "subpages": "no loader on direct subpage loads",
+    "logoStrokeDraw": "notVerified (--loading-logo-dasharray stays 0)"
+  },
+  "routeTransition": {
+    "engine": "Barba sync mode",
+    "leave": { "vars": ["--trans-percent 0→50%", "--mask-percent 0→50%", "--size-line 0→~1rem"], "duration": 0.8, "ease": "power1.in" },
+    "enter": { "vars": ["--trans-percent 50→100%", "--mask-percent 50→0%", "--size-line →0"], "duration": 0.8, "ease": "power1.out" },
+    "measured": "full cycle ≈1.6s; --size-line spikes to 1 (rem) at the 50% midpoint then decays 1→0.25→0.14→0.01→0",
+    "character": "geometric mask sweep, no fade, no loader"
+  },
+  "colors": {
+    "brand": "#FA3600",
+    "primary": "#282828",
+    "secondary": "#414140",
+    "tertiary": "#282828b8 (72% alpha)",
+    "surface": "#72726f",
+    "graniteGray": "#626260",
+    "border": "#B3B3AF",
+    "disable": "#B4B4B0",
+    "white": "#FFFFFF",
+    "paperBackground": "#F6F6EE",
+    "paperCorners": "#F8F8F1",
+    "guideLines": "#E0E0DA",
+    "interactiveStateBorder": "#FC724D",
+    "dragSelectionBorder": "#F15534",
+    "dragGradient": "linear-gradient(315deg, rgba(241,85,52,.64) 0%, rgba(245,245,239,0) 67.05%)",
+    "cursorDot": "rgb(250,54,0)",
+    "domFallbackDot": "#DD6013",
+    "hypothesesCheck": { "#282828": "confirmed", "#FA3600": "confirmed", "#B3B3AF": "confirmed", "warmPaper": "confirmed #F6F6EE" }
+  },
+  "typography": {
+    "rootFontSize": { "1440": "8.3333px", "1280": "7.40741px", "768": "9.20863px", "390": "9.92366px", "360": "9.16031px", "rule": "scales with viewport width (Webflow fluid rem)" },
+    "display": "BT Grotesk, Arial, sans-serif",
+    "mono": "Geistmono, Arial, sans-serif (.txt-font-mono only)",
+    "scale": {
+      "h1": { "size": "46.67px", "weight": 700, "lineHeight": "46.67px", "letterSpacing": "-0.93px", "case": "uppercase" },
+      "h2": { "size": "40px", "weight": 600, "lineHeight": "40px", "letterSpacing": "-0.8px", "case": "uppercase" },
+      "h3": { "size": "33.33px", "weight": 600, "lineHeight": "33.33px", "letterSpacing": "-0.67px", "case": "uppercase", "note": "intro title in #B4B4B0" },
+      "h4": { "size": "26.67px", "weight": 600, "lineHeight": "26.67px", "letterSpacing": "-0.53px", "case": "uppercase" },
+      "h5": { "size": "23.33px", "weight": 600, "lineHeight": "23.33px", "letterSpacing": "-0.47px", "case": "uppercase" },
+      "h6": { "size": "20px", "weight": 700, "lineHeight": "22px", "letterSpacing": "-0.4px", "case": "uppercase" },
+      "txt16": { "size": "13.33px", "weight": "400-500", "lineHeight": "17.33px", "letterSpacing": "-0.27px", "color": "rgba(40,40,40,.72)" },
+      "txt14": { "size": "11.67px", "weight": 500, "lineHeight": "16.33px", "letterSpacing": "-0.23px" },
+      "txt12mono": { "size": "10px", "family": "Geistmono", "color": "#FA3600" },
+      "txt10mono": { "size": "8.33px", "family": "Geistmono", "color": "rgba(40,40,40,.72)" }
+    }
+  },
+  "frame": { "inset": "7px @1440 (scales with root font)", "hairline": "1px #B3B3AF, fixed .main-deco layer", "contentWidth": 1427, "plusMarks": "10x10 at drawing-frame corners", "gridCells": "6.4rem (--bg-grid, appears on problem hover)" },
+  "viewports": {
+    "1440x900": { "scrollH": 12355, "clientH": 887, "rootFont": "8.333px", "canvasCursor": true, "heroInteract": true, "mapSticky": true, "menu": "desktop" },
+    "1440x700": { "scrollH": 10555, "clientH": 687, "rootFont": "8.333px", "canvasCursor": true, "heroInteract": true, "mapSticky": true, "mapH": 4900, "menu": "desktop" },
+    "1280x800": { "scrollH": 10983, "clientH": 788, "rootFont": "7.407px", "canvasCursor": true, "heroInteract": true, "mapSticky": true, "mapH": 5600, "menu": "desktop" },
+    "768x1024": { "scrollH": 12577, "clientH": 1009, "rootFont": "9.209px", "canvasCursor": true, "heroInteract": false, "mapSticky": false, "mapH": 5473, "menu": "hamburger" },
+    "390x844": { "scrollH": 11441, "clientH": 828, "rootFont": "9.924px", "canvasCursor": false, "heroInteract": false, "mapSticky": false, "mapH": 4819, "menu": "hamburger", "touch": true },
+    "360x800": { "scrollH": 10684, "clientH": 785, "rootFont": "9.160px", "canvasCursor": false, "heroInteract": false, "mapSticky": false, "mapH": 4553, "menu": "hamburger", "touch": true },
+    "notes": "hero pointer system gated by (hover:hover) and (min-width:992px); map pin (CSS sticky) disabled <=991px; footer image strip swaps to mobile variant <=767px; scroll height varies strongly with viewport HEIGHT (scenes re-fit)"
+  },
+  "notVerified": [
+    "loader logo stroke-draw (--loading-logo-dasharray stays 0)",
+    "cursor color adaptation over dark surfaces (no dark DOM region on homepage)",
+    "map number station click behavior",
+    "reveal re-conceal on backward scroll (beyond scrubbed intro title)",
+    "About-page floor-plan→logo transition",
+    "cookie banner Accept click behavior"
+  ]
+}

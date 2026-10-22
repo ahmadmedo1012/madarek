@@ -46,7 +46,11 @@ describe('r168b — Oasis chips are engine-gated in source', () => {
 
 describe('r168b — landing copy claims only what ships', () => {
   it('r191 — station-03: no chapter-summaries/quiz promise; the AI card claims only the local engine', () => {
-    const page = stripJsx(read('src/pages/LandingPage.tsx'));
+    /* r308: the mastery chapter moved into the pinned walkthrough
+     * (JourneyScene) — the honesty contract reads the whole sheet. */
+    const page =
+      stripJsx(read('src/pages/LandingPage.tsx')) +
+      stripJsx(read('src/components/landing/journey/JourneyScene.tsx'));
     expect(page).not.toContain('تلخيصات للفصول الطويلة');
     // r191 copy: the الذكاء الأكاديمي product card — honest local-composer
     // scope, carried over verbatim from the r190/r168b wording contract.

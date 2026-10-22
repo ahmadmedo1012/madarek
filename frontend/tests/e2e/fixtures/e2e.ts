@@ -115,6 +115,18 @@ export const test = base.extend<E2eOptions>({
       timezoneId: 'UTC',
     });
 
+    // r308: the entrance loader plays ONCE per session — seed the
+    // seen-flag BEFORE any app script so task-focused journeys boot
+    // straight into the page. The entrance itself has its own spec
+    // (r308-landing-instruments.e2e.ts) that clears the flag.
+    await context.addInitScript(() => {
+      try {
+        sessionStorage.setItem('madarek-intro-seen', '1');
+      } catch {
+        /* storage denied — the page stands complete anyway */
+      }
+    });
+
     // Seed localStorage BEFORE any app script; user null = guest
     // (optionally with a persisted theme, e.g. the toggle spec).
     const user = userForRole(e2eRole);

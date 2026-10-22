@@ -97,10 +97,12 @@ async function main() {
   }
 
   // ── product tier ───────────────────────────────────────────────
-  // Product captures re-encode from the R307 archive recorded in the
-  // manifest (source.environment). When the archive is absent the
-  // tier is skipped loudly — never re-fabricated.
-  const archive = join(ROOT, '.r307-capture-archive');
+  // Product captures re-encode from the R308 archive recorded in the
+  // manifest (source.environment) — the r307 archive was superseded
+  // by the r308 re-capture (onboarding completed through its real
+  // flow before every shot; R308 §1.1 defect A). When the archive is
+  // absent the tier is skipped loudly — never re-fabricated.
+  const archive = join(ROOT, '.r308-capture-archive');
   for (const prod of MANIFEST.products) {
     const target = join(MEDIA, 'product');
     if (!existsSync(target)) mkdirSync(target, { recursive: true });

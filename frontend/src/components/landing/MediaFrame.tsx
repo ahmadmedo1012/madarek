@@ -24,9 +24,12 @@ export interface MediaFrameProps {
   eager?: boolean;
   /** aspect-ratio fallback box (uses the source intrinsic ratio) */
   className?: string;
+  /** R308 — an optional overlay riding INSIDE the photo box (the ink
+   *  sketch): covers the photograph only, never the caption row. */
+  overlay?: React.ReactNode;
 }
 
-export function MediaFrame({ photo, variant, eager = false, className }: MediaFrameProps) {
+export function MediaFrame({ photo, variant, eager = false, className, overlay }: MediaFrameProps) {
   const widths = photo.widths;
   const w = widths[widths.length - 1] ?? widths[0] ?? 480;
   // Intrinsic box at the LARGEST derivative width; aspect ratio from the
@@ -59,6 +62,7 @@ export function MediaFrame({ photo, variant, eager = false, className }: MediaFr
           decoding={eager ? 'sync' : 'async'}
           style={{ objectPosition: photo.objectPosition }}
         />
+        {overlay}
       </a>
       <figcaption className="mf-caption">
         <span className="mf-caption-name">{photo.nameAr}</span>

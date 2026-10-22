@@ -1,7 +1,7 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowLeft, Menu, X, Check, FlaskConical, PlayCircle, PenLine, Timer, Users,
+  ArrowLeft, Menu, X, Check, FlaskConical, Users,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { StarMark } from '../components/StarMark';
@@ -12,12 +12,23 @@ import {
   HERO_PHOTOS, RAIL_PHOTOS, PRODUCT_CAPTURES, ROLE_CAPTURES, ROLE_SHOWCASES,
   UNIVERSITY_VIDEOS, type RoleKey,
 } from '../data/university-media';
-import { formatInt, formatPct1 } from '../utils/numbers';
+import { formatInt } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
 import { BlueprintSvg } from '../components/landing/BlueprintSvg';
 import { MediaFrame } from '../components/landing/MediaFrame';
 import { ProductFrame } from '../components/landing/ProductFrame';
 import { VideoCard } from '../components/landing/VideoCard';
+import { SheetLoader } from '../components/landing/SheetLoader';
+import { SheetCursor } from '../components/landing/cursor/SheetCursor';
+import { HeroInspect } from '../components/landing/cursor/HeroInspect';
+import { JourneyScene } from '../components/landing/journey/JourneyScene';
+import { InkSketch } from '../components/landing/journey/InkSketch';
+import { ScrubReveal } from '../components/landing/journey/WordReveal';
+import { FooterLens } from '../components/landing/footer/FooterLens';
+import { shouldPlayIntro } from '../lib/motion/introGate';
+import { useSheetScroll } from '../lib/motion/useSheetScroll';
+import { installSheetExit } from '../lib/motion/sheetExit';
+import { clamp } from '../lib/motion/sheetConductor';
 // landing.css — «لوحة مدارك r306 → r307» — the Heron-only drawing sheet,
 // evolved with documentary university media + real product captures.
 // One visual canon (docs/redesign/r306-heron-exclusivity-spec.md §r307):
@@ -152,90 +163,6 @@ function Mini({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 
-function MiniPlayer() {
-  return (
-    <Mini label="المحاضرة التفاعلية">
-      <div className="mini-title-row">
-        <span className="mini-course">أحياء · الوحدة الثانية</span>
-        <span className="mini-lecture">المحاضرة 04</span>
-      </div>
-      <div className="mini-video">
-        <span className="mini-video-play" aria-hidden><Icon icon={PlayCircle} size={28} /></span>
-        <span className="mini-video-time" dir="ltr">12:36</span>
-        <span className="mini-video-bar" aria-hidden><span style={{ inlineSize: '65%' }} /></span>
-      </div>
-      <div className="mini-quiz">
-        <p className="mini-quiz-q">نقطة فحص: أيُّ عضية تنتج طاقة الخلية؟</p>
-        <div className="mini-quiz-opts">
-          <span className="mini-opt is-right"><Icon icon={Check} size={12} /> الميتوكوندريا</span>
-          <span className="mini-opt">الرايبوسوم</span>
-        </div>
-      </div>
-      <p className="mini-foot">الحضور يُحتسب تلقائيًا عند الإكمال — والتقدُّم {formatPct1(65)}%</p>
-    </Mini>
-  );
-}
-
-function MiniMatrix() {
-  const rows = [
-    { name: 'النهايات', v: 82, state: 'متقن' },
-    { name: 'الاشتقاق', v: 54, state: 'قيد التحسين' },
-    { name: 'التكامل', v: 31, state: 'فجوة' },
-  ];
-  return (
-    <Mini label="مصفوفة الإتقان">
-      {rows.map((r) => (
-        <div key={r.name} className="mini-mx-row">
-          <span className="mini-mx-name">{r.name}</span>
-          <span className="mini-mx-bar" aria-hidden><span style={{ inlineSize: `${r.v}%` }} /></span>
-          <span className="mini-mx-val" dir="ltr">{formatPct1(r.v)}%</span>
-          <span className={`mini-chip${r.v >= 75 ? ' is-ok' : r.v < 40 ? ' is-gap' : ''}`}>{r.state}</span>
-        </div>
-      ))}
-      <p className="mini-foot">الخطوة التالية: محاضرة «التكامل الأساسية» — مقترحة حسب فجوتك.</p>
-    </Mini>
-  );
-}
-
-function MiniResearch() {
-  return (
-    <Mini label="دورة البحوث">
-      <div className="mini-doc">
-        <p className="mini-doc-title">بحث: معالجة المياه بالتناضح العكسي</p>
-        <span className="mini-doc-line" style={{ inlineSize: '92%' }} aria-hidden />
-        <span className="mini-doc-line" style={{ inlineSize: '78%' }} aria-hidden />
-        <span className="mini-doc-line" style={{ inlineSize: '85%' }} aria-hidden />
-        <span className="mini-doc-pin"><Icon icon={PenLine} size={11} /> ملاحظة المشرف</span>
-      </div>
-      <ol className="mini-steps" dir="rtl">
-        <li className="is-done"><span className="fo-mono" dir="ltr">01</span> تقديم PDF</li>
-        <li className="is-done"><span className="fo-mono" dir="ltr">02</span> فحص محاكاة معلَن</li>
-        <li className="is-now"><span className="fo-mono" dir="ltr">03</span> تحقيق مشروح</li>
-        <li><span className="fo-mono" dir="ltr">04</span> المكتبة</li>
-      </ol>
-    </Mini>
-  );
-}
-
-function MiniExam() {
-  return (
-    <Mini label="الاختبارات الإلكترونية">
-      <div className="mini-title-row">
-        <span className="mini-course">اختبار الوحدة الثانية</span>
-        <span className="mini-lecture"><Icon icon={Timer} size={12} /> 45 دقيقة</span>
-      </div>
-      <p className="mini-quiz-q">سؤال 6 من 20 — اختر الإجابة الصحيحة:</p>
-      <div className="mini-quiz-opts">
-        <span className="mini-opt">خيار أ</span>
-        <span className="mini-opt is-right"><Icon icon={Check} size={12} /> خيار ب</span>
-        <span className="mini-opt">خيار ج</span>
-        <span className="mini-opt">خيار د</span>
-      </div>
-      <p className="mini-foot">أربعة أنواع أسئلة · مطابقة صارمة للإجابات · تصحيح تلقائي للموضوعي</p>
-    </Mini>
-  );
-}
-
 function MiniCommunity() {
   return (
     <Mini label="المجتمع والتدريب">
@@ -278,29 +205,12 @@ function MiniGovernance() {
   );
 }
 
-/* ── Chapters 01–06 — the capability ledger rows. */
+/* ── Chapters 05–06 — the capability ledger rows. r308: chapters
+ * 01–04 moved into the pinned «رحلة التعلّم» walkthrough above
+ * (JourneyScene) — the scroll is their timeline now; these two
+ * complete the honest capability ledger as flat rows. */
 const CHAPTERS: { num: string; title: string; lede: React.ReactNode; mini: React.ReactNode }[] = [
-  {
-    num: '01', mini: <MiniPlayer />,
-    title: 'الفصول المقلوبة',
-    lede: 'محاضرة مسجَّلة بنقاط فحص تُثبِّت الفهم، واختبار قصير يُصحَّح تلقائيًا، وحضورٌ يُحتسب عند الإكمال.',
-  },
-  {
-    num: '02', mini: <MiniMatrix />,
-    title: 'مصفوفة الإتقان',
-    lede: 'لكل مفهوم درجة إتقان؛ المصفوفة تكشف الفجوة وتربطها بالدرس — والمساعد يقترح شروحات مخصَّصة وخطط مراجعة حسب أدائك الفعلي.',
-  },
-  {
-    num: '03', mini: <MiniResearch />,
-    title: 'دورة البحوث',
-    lede: 'قدِّم بحثك PDF، ويُفحص بفحص نزاهة محاكاة معلَن، ثم يصل أستاذك بملاحظات مشروحة، فتُفهرَس في مكتبة تبحث بالعربية.',
-  },
-  {
-    num: '04', mini: <MiniExam />,
-    title: 'الاختبارات الإلكترونية',
-    lede: 'بنك أسئلة بأربعة أنواع، وقوالب اختبارات جاهزة، ومحاولات بمطابقة صارمة للإجابات.',
-  },
-  {
+{
     num: '05', mini: <MiniCommunity />,
     title: 'المجتمع والتدريب',
     lede: <>منشورات بوسوم وإعلانات مشتركة، ومسابقات وفعاليات، و{formatInt(TRAINING_TRACKS)} مسارًا تدريبيًا بنقاط وشارات ولوحة صدارة.</>,
@@ -328,7 +238,70 @@ export default function LandingPage() {
               : '/student/dashboard'
       : null;
 
+  /* R308 — the entrance gate: the loader plays ONCE per session, only
+   * when motion is allowed (the same pure decision the loader holds;
+   * the class pair drives the hero's staged ink-in after the exit). */
+  const [introPlaying, setIntroPlaying] = useState(() => {
+    try {
+      const reduced =
+        typeof window !== 'undefined' &&
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      return shouldPlayIntro(
+        typeof sessionStorage !== 'undefined' ? sessionStorage : null,
+        reduced,
+      );
+    } catch {
+      return false;
+    }
+  });
+  const [introDone, setIntroDone] = useState(!introPlaying);
+
   const [menuOpen, setMenuOpen] = useState(false);
+
+  /* R308 — the statement title's scrub driver: --wr-p (0..1) rides
+   * the section's traversal; the word masks resolve + reverse with
+   * it (imperative, zero renders — the useSheetScroll contract). */
+  const statementRef = useRef<HTMLElement>(null);
+  useSheetScroll(statementRef, ({ rect, vh }) => {
+    const el = statementRef.current;
+    if (!el) return;
+    const p = clamp((vh * 0.9 - rect.top) / (vh * 0.8), 0, 1);
+    el.style.setProperty('--wr-p', p.toFixed(4));
+  });
+
+  /* R308 — the landing-exit sweep: internal link clicks play the
+   * geometric transition while React Router navigates underneath
+   * (navigation itself is never delayed — funnel safety). */
+  const landingRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const root = landingRef.current;
+    if (!root) return undefined;
+    return installSheetExit(root);
+  }, []);
+
+  /* R308 — the CTA's corner coordinates: real document-space values
+   * of the section's corners, written once the layout settles. */
+  const ctaRef = useRef<HTMLElement>(null);
+  const ctaCoordsRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    const write = () => {
+      const cta = ctaRef.current;
+      const out = ctaCoordsRef.current;
+      if (!cta || !out) return;
+      const r = cta.getBoundingClientRect();
+      const top = Math.round(window.scrollY + r.top);
+      const left = Math.round(window.scrollX + r.left);
+      out.textContent = `[0,${top}] [${left},0] [${Math.round(left + r.width)},0] [0,${Math.round(top + r.height)}]`;
+    };
+    write();
+    const t = window.setTimeout(write, 600);
+    window.addEventListener('resize', write, { passive: true });
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener('resize', write);
+    };
+  }, []);
   // F2-5 (r157): mobile-menu contract — Escape closes + refocuses the
   // burger (its aria-label flips with the state). r307: an open menu
   // also closes on an outside tap (touch users get no blur event from
@@ -440,7 +413,28 @@ export default function LandingPage() {
   const year = new Date().getFullYear();
 
   return (
-    <div className="landing">
+    <div
+      ref={landingRef}
+      className={[
+        'landing',
+        introDone ? 'intro-done' : 'intro-draw',
+      ].join(' ')}
+    >
+
+      {/* R308 — the entrance sequence (once per session; the loader
+          gates itself again on the pure decision and calls onDone). */}
+      {introPlaying && (
+        <SheetLoader
+          onDone={() => {
+            setIntroDone(true);
+            setIntroPlaying(false);
+          }}
+        />
+      )}
+
+      {/* R308 — the custom pointer instrument (fine pointers only;
+          reduced motion and touch keep the native cursor). */}
+      <SheetCursor />
 
       {/* P3-24: skip-to-content — first Tab stop, hidden until focused. */}
       <a href="#main" className="fo-skip-link">تخطَّ إلى المحتوى</a>
@@ -586,10 +580,14 @@ export default function LandingPage() {
             </RevealCssClass>
           </div>
 
-          {/* the blueprint — the interactive technical drawing */}
+          {/* the blueprint — the interactive technical drawing. R308:
+              the drawing is now an inspection surface — the local
+              pointer instrument (guides + coordinates + drag-to-
+              inspect) takes over this zone (data-cursor="hidden"). */}
           <RevealCssClass as="div" className="fo-hero-fig" delay={3}>
-            <div className="bp-stage">
+            <div className="bp-stage" data-cursor="hidden">
               <BlueprintSvg active={activeStage} />
+              <HeroInspect />
               <div className="bp-hotspots" role="group" aria-label="استكشف مراحل مسار التعلّم">
                 {STAGES.map((s, i) => (
                   <button
@@ -661,15 +659,43 @@ export default function LandingPage() {
               <dd className="fo-meta-v">جامعة مدارك التجريبية — توضيحية</dd>
             </div>
           </RevealCssClass>
+
+          {/* R308 — the capabilities ticker: the sheet's continuous
+              instrument (the reference's hero marquee grammar). The
+              items are the honest live-capability ledger; the loop is
+              a hand-tuned crawl in the authored-choreography file,
+              duplicated track aria-hidden, collapsed under reduced
+              motion to a static row. */}
+          <div className="fo-ticker" aria-label="قدرات تعمل اليوم">
+            <div className="fo-ticker-track" aria-hidden="false">
+              {LIVE_CAPABILITIES.map((cap, i) => (
+                <span key={cap} className="fo-ticker-item">
+                  <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
+                  {cap}
+                </span>
+              ))}
+            </div>
+            <div className="fo-ticker-track" aria-hidden="true">
+              {LIVE_CAPABILITIES.map((cap, i) => (
+                <span key={cap} className="fo-ticker-item">
+                  <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
+                  {cap}
+                </span>
+              ))}
+            </div>
+          </div>
         </section>
 
-        {/* ═══ البيان — the statement: a framed declaration with the
-            three role lines, hairline-separated ═══ */}
-        <section id="statement" className="st-section" aria-labelledby="statement-title">
+        {/* ═══ البيان — the statement: a framed declaration. r308: the
+            title unmasks word-by-word, scrub-linked + reversible to the
+            scroll (the reference's intro-title grammar). ═══ */}
+        <section id="statement" className="st-section" ref={statementRef} aria-labelledby="statement-title">
           <div className="st-spread">
             <div className="st-copy">
               <span className="fo-label"><span className="fo-mono" dir="ltr">[02]</span> البيان</span>
-              <h2 id="statement-title" className="st-title">منصّة واحدة تخدم الرحلة كلّها</h2>
+              <h2 id="statement-title" className="st-title">
+                <ScrubReveal text="منصّة واحدة تخدم الرحلة كلّها" />
+              </h2>
             </div>
             <div className="st-lines">
               <RevealCssClass as="p" className="st-line">
@@ -709,11 +735,14 @@ export default function LandingPage() {
           <RevealCssClass as="div" className="um-rail" delay={2}>
             <MediaFrame photo={RAIL_PHOTOS[0]} variant="panorama" />
             <div className="um-mosaic">
-              <MediaFrame photo={RAIL_PHOTOS[1]} variant="large" />
-              <MediaFrame photo={RAIL_PHOTOS[2]} variant="std" />
-              <MediaFrame photo={RAIL_PHOTOS[3]} variant="std" />
-              <MediaFrame photo={RAIL_PHOTOS[4]} variant="std" />
-              <MediaFrame photo={RAIL_PHOTOS[5]} variant="std" />
+              {/* r308: the mosaic frames resolve out of their drawing —
+                  the ink-mask reveal (photo-only overlay; captions and
+                  licences stay visible at all times). */}
+              <MediaFrame photo={RAIL_PHOTOS[1]} variant="large" overlay={<InkSketch />} />
+              <MediaFrame photo={RAIL_PHOTOS[2]} variant="std" overlay={<InkSketch />} />
+              <MediaFrame photo={RAIL_PHOTOS[3]} variant="std" overlay={<InkSketch />} />
+              <MediaFrame photo={RAIL_PHOTOS[4]} variant="std" overlay={<InkSketch />} />
+              <MediaFrame photo={RAIL_PHOTOS[5]} variant="std" overlay={<InkSketch />} />
             </div>
           </RevealCssClass>
 
@@ -723,8 +752,9 @@ export default function LandingPage() {
           </RevealCssClass>
         </section>
 
-        {/* ═══ الفصول 01–06 — the capability ledger: numbered hairline
-            rows, each pairing the copy with a flat honest fragment ═══ */}
+        {/* ═══ الفصول — the capability ledger. r308: chapters 01–04
+            live in the pinned «رحلة التعلّم» walkthrough; 05–06 stay
+            as numbered hairline ledger rows with flat fragments ═══ */}
         <section id="chapters" className="chapters" aria-labelledby="chapters-title">
           <header className="chapters-head">
             <div className="chapters-head-copy">
@@ -734,9 +764,15 @@ export default function LandingPage() {
               </RevealCssClass>
             </div>
             <RevealCssClass as="p" className="chapters-lede" delay={2}>
-              لا لقطات شاشة ولا وعود: كل فصل يعرض واجهة مبنية من مكوّنات المنصّة نفسها ببيانات توضيحية.
+              مرّر لترى الرحلة تُبنى: أربعة فصول تتحرّك أمامك في مشهدٍ واحد — ثم فصلان يعرضان واجهةً حقيقيّة. لا لقطات مُجمّلة ولا وعود.
             </RevealCssClass>
           </header>
+
+          {/* r308 — «رحلة التعلّم»: the pinned walkthrough. Chapters
+              01–04 play out across one persistent drawing while the
+              scroll is the timeline (CSS sticky pin; stacked readable
+              sequence ≤991px). The ledger rows below complete it. */}
+          <JourneyScene />
 
           <div className="ch-rows">
             {CHAPTERS.map((ch) => (
@@ -984,9 +1020,15 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ الخاتمة — the coordinates row + the resolve ═══ */}
-        <section className="fo-cta" id="cta" aria-label="ابدأ رحلتك — أنشئ حسابك">
+        <section className="fo-cta" id="cta" ref={ctaRef} aria-label="ابدأ رحلتك — أنشئ حسابك">
           <p className="fo-cta-coords fo-mono" dir="ltr" aria-hidden="true">
-            [R307] — MADAREK · {year} · INDEPENDENT
+            [R308] — MADAREK · {year} · INDEPENDENT
+          </p>
+          {/* r308 — the corner coordinate labels: real document-space
+              values of this section's corners (the reference's CTA
+              corner grammar), written once the layout settles. */}
+          <p className="fo-cta-corners fo-mono" ref={ctaCoordsRef} dir="ltr" aria-hidden="true">
+            [0,0] [0,0] [0,0] [0,0]
           </p>
           <div className="fo-cta-inner">
             <RevealCssClass as="h2" className="fo-cta-title" delay={1}>
@@ -1011,10 +1053,11 @@ export default function LandingPage() {
         </section>
       </main>
 
-      {/* ── COLOPHON FOOTER — the hairline grid: brand + about, the
-          three link columns, the mono bottom row. The giant wordmark
-          is retired with the poster; the sheet closes quietly. ── */}
+      {/* ── COLOPHON FOOTER — the hairline grid: the inspection strip
+          (r308 — the pointer lens resolving the journey drawing), the
+          brand + about columns, the link columns, the mono bottom row. ── */}
       <footer className="fo-footer">
+        <FooterLens />
         <div className="fo-footer-inner">
           <div className="fo-footer-grid">
             <div className="fo-footer-col">
