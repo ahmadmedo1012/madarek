@@ -701,8 +701,10 @@
   font-size: var(--fs-xxs);
 }
 
-.fo-hero-disclosure:hover,
-.fo-hero-disclosure:focus-visible {
+.fo-hero-disclosure:hover {
+  /* R313: :focus-visible dropped from this pair — landing.css carries zero
+     private focus sub-language by contract (r172a §3); the universal
+     base.css ring signals focus, hover recolours. */
   color: var(--text);
   border-color: var(--accent-ink);
 }

@@ -726,7 +726,7 @@
 
     /* sidebar / topbar */
     --sidebar-bg:        var(--neutral-50);
-    --sidebar-rule:      var(--neutral-200);
+    --sidebar-rule:      var(--border-strong); /* R313 (5-f deferral): structural seam rides the strong hairline #B3B3AF (Heron grammar) */
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
     --sidebar-item-active-bg:   var(--neutral-150);
@@ -925,7 +925,7 @@
     --overlay-veil-max:  rgb(0 0 0 / 0.66);
 
     --sidebar-bg:        var(--neutral-50);
-    --sidebar-rule:      var(--neutral-200);
+    --sidebar-rule:      var(--border-strong); /* R313 (5-f deferral): structural seam rides the strong hairline #B3B3AF (Heron grammar) */
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
     --sidebar-item-active-bg:   rgb(255 90 31 / 0.16);  /* night ember wash — the traveller's current orbit */

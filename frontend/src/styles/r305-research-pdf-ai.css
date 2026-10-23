@@ -945,9 +945,8 @@
     gap: var(--sp-2);
     padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
     background: var(--surface-1);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
     border-radius: var(--r-md);
-    box-shadow: var(--elev-2);
     z-index: var(--z-popover, 200);
   }
   .r305pdf-selbar-quote {
@@ -1272,8 +1271,9 @@
     padding: var(--sp-2);
   }
   .r305rp .ai-composer .r305ai-input-rail:focus-within {
-    border-color: var(--accent);
-    box-shadow: var(--state-input-focus-halo);
+    border-color: var(--state-input-focus-border);
+    /* R313 override (D16): focus halo retired — Heron inputs signal focus
+       with the 1px #ED4C1F border alone (owner decision) */
   }
   .r305rp .chat-input {
     flex: 1;

@@ -239,17 +239,12 @@
      position, insets, z-index, background, glass, border, padding,
      align/justify — is owned wholesale by polish v22's overrides-layer
      .bottom-nav (grid, topbar-bg, rule border). What survives here is
-     exactly what polish never sets: the grid gap and the upward-anchored
-     dock shadow.) */
+     exactly what polish never sets: the grid gap and the top hairline.) */
   gap: var(--sp-1); /* r157: 4px → --sp-1 */
-  /* A subtle gradient line accent across the very top of the bar — looks
-     like a hairline of light. Removes the hard slab feel of a flat top
-     border. */
-  /* Off-token by design: upward-anchored dock — directional hairline +
-     upward lift; the --elev-* scale only describes downward shadows. */
-  box-shadow:
-    0 -1px 0 color-mix(in srgb, var(--black) 2%, transparent),
-    0 -10px 24px -10px color-mix(in srgb, var(--black) 8%, transparent);  /* r150a: navy tint -> canonical black basis (≤2/255 composite drift) */
+  /* R313 override (D3/D16): dock lift shadow retired — depth comes from
+     the rule hairline alone (owner decision — Heron grammar, no
+     decorative shadows anywhere). The polish layer's 1px rule border
+     carries the separation. */
 }
 
 .bottom-nav-item {

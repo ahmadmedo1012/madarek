@@ -1108,12 +1108,12 @@
     color: var(--text-secondary);
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
-    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+    /* R313 override (D3): badge elevation retired — flat badge on hairline
+       grammar (owner decision — Heron parity, zero decorative shadows) */
+    transition: color var(--t-base) var(--ease);
   }
   .badge:hover {
-    box-shadow: 0 2px 8px -2px rgb(0 0 0 / 0.12);
-    transform: translateY(-1px);
+    color: var(--text);
   }
   .badge.green  { background: var(--c-mint-bg);     color: var(--c-mint-deep); }
   .badge.amber  { background: var(--c-yellow-bg);   color: var(--c-yellow-deep); }
