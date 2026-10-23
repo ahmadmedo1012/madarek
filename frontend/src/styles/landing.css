@@ -793,13 +793,13 @@ html[data-theme='dark'] .fo-grain {
   z-index: -1;
 }
 
-.fo-hero-discover:hover,
-.fo-hero-discover:focus-visible {
+/* r172a contract: ZERO :focus-visible rules in landing.css — the
+ * universal base.css ring owns focus; the wipe is hover-only. */
+.fo-hero-discover:hover {
   color: var(--accent-fg);
 }
 
-.fo-hero-discover:hover::before,
-.fo-hero-discover:focus-visible::before {
+.fo-hero-discover:hover::before {
   transform: scaleX(1);
 }
 

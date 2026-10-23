@@ -15,6 +15,7 @@ import { LIVE_CAPABILITIES, LIVE_COUNT } from '../data/landing-ledger';
 import { formatInt } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
 import { ProductFrame } from '../components/landing/ProductFrame';
+import { HeroInkWindow } from '../components/landing/HeroInkWindow';
 import { WhyScene } from '../components/landing/WhyScene';
 import { PainArt } from '../components/landing/PainArt';
 import { SheetLoader } from '../components/landing/SheetLoader';
@@ -849,24 +850,7 @@ export default function LandingPage() {
               {/* The ink rendering rides the SAME 1440×640 viewBox frame
                   (.bp-svg) so the HeroInspect instrument, its guides and
                   its honest station markers keep ONE coordinate system. */}
-              <svg
-                className="bp-svg"
-                viewBox="0 0 1440 720"
-                preserveAspectRatio="xMidYMid meet"
-                role="img"
-                aria-label="رسم حبري معماري لمقر إدارة جامعة بنغازي — مشتق من صورة مرخّصة"
-              >
-                {/* SVG <image> has no srcSet — the 2200px render serves
-                    the ≈1400px window at 1x and stays sharp at 2x DPR. */}
-                <image
-                  href="/media/renders/hero-ink-2200.webp"
-                  x="0"
-                  y="0"
-                  width="1440"
-                  height="720"
-                  preserveAspectRatio="xMidYMid slice"
-                />
-              </svg>
+              <HeroInkWindow />
               <HeroInspect />
               <div className="bp-rulers" aria-hidden="true">
                 <span className="bp-ruler bp-ruler-t" />
@@ -898,12 +882,20 @@ export default function LandingPage() {
                 محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —
                 في تجربة عربية واحدة لخمسة أدوار أكاديمية.
               </RevealCssClass>
-              <RevealCssClass as="div" className="fo-hero-side-foot" delay={4}>
+              <RevealCssClass as="div" className="fo-hero-side-foot fo-hero-actions" delay={4}>
                 {/* the honesty-ledger disclosure — the reference's own
                     mono micro-label grammar (r191 contract kept). */}
                 <Link to="/capabilities" className="fo-hero-disclosure">
                   <span className="fo-mono" dir="ltr">[LIVE]</span>
                   <span>ما يعمل اليوم</span>
+                </Link>
+                {/* the funnel contract (r164b → r188, kept by the R314
+                    owner order): the hero carries the register + login
+                    pair — compact canonical seats beside the discover
+                    link, never a second primary per viewport. */}
+                <Link to="/auth/register" className="btn accent lg fo-hero-cta">
+                  أنشئ حسابك الجامعي
+                  <Icon icon={ArrowLeft} size={16} />
                 </Link>
                 <a href="#statement" className="fo-hero-discover">
                   <span className="fo-hero-discover-label">اكتشف المزيد</span>

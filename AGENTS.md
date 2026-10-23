@@ -202,3 +202,26 @@ node scripts/verify-parity-export.mjs && bash scripts/check-csp-hash.sh
 | ترحيل/نموذج Prisma | `docs/07-database.md` + `docs/DATABASE-REFERENCE.md` |
 | نشر/بيئة/أسرار | `docs/12-deployment.md` + `docs/06-configuration.md` + `docs/SECRETS-REFERENCE.md` |
 | مواصفات ميزة قائمة | `docs/SPECS-REFERENCE.md` ثم `specs/README.md` |
+
+
+---
+
+## R314 «الحقيقة البصرية» — قانون التجاوزات (cycle 1)
+
+أمر المالك يعلو: التطابق البصري مع المرجع (الشكل/الإحساس/التركيب/الحركة)
+يتجاوز قواعد r306/r308/r313 أدناه في هذه المقاعد فقط:
+
+1. **البطل**: مقعد raster واحد (رسم حبري مشتق من صورة مرخّصة —
+   `manifest.json → renders[]`، ShareAlike محفوظ). مسار إعادة الإنتاج:
+   `scripts/r314/ink-render.mjs`.
+2. **لافتة الموافقة**: مبنية (عكس تعطيل r313) — بوابة تخزين محلي
+   صادقة، `window.MadarekConsent`.
+3. **min-block-size للأقسام**: مُقاعد على ≤760px (الأقسام محتوى-القياس
+   كالمرجع).
+4. **STAGES/bp-panel**: أُقعدا مع الرسم الخطّي؛ النسخة الصادقة في
+   محطات `HeroInspect`.
+5. **اختبارات r306/assets/funnel**: أُعيد تثبيتها بملاحظات
+   `R314 override` في نفس الـ commits (45f8c32…ae70a16).
+
+القضاة (`scripts/r314/*` + `audits/evidence/r314/`) هم وحدهم من يغلق
+الصفوف — لا إغلاق ذاتيًا. النتيجة الجارية: `PARITY.md`.

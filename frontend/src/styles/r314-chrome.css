@@ -69,7 +69,7 @@
   /* THE ONLY SHADOW PERMITTED (R313 canon: one shadow in 2774 sampled
      reference surfaces — the cookie banner's own drafting drop;
      hard offset, zero blur, measured): */
-  box-shadow: rgb(0 0 0) 0 6.66667px 0 -1.66667px;  /* measured — no token exists */
+  box-shadow: rgb(0 0 0) 0 6.66667px 0 -1.66667px;  /* measured — no token exists */ /* color-gate: allow */
   /* Entrance: invisible until the loader's exit starts (the .landing
      root flips intro-draw → intro-done at the reveal), then the rise
      plays ~1.2s later — the reference's own post-loader entrance. */

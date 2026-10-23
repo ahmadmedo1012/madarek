@@ -1,0 +1,40 @@
+{
+ "generatedAt": "2026-10-23T20:11:04.830Z",
+ "components": {
+  "vlm": {
+   "score": 25,
+   "weight": 30,
+   "pairs": 29,
+   "open": 29
+  },
+  "pixel": {
+   "score": 47,
+   "weight": 20,
+   "worstRegionAvg": 0.6982,
+   "globalAvg": 0.1455,
+   "dEpaperAvg": 3.1,
+   "pairs": 29
+  },
+  "census": {
+   "score": 41,
+   "weight": 15,
+   "note": "carried r313 + re-measured paper dE"
+  },
+  "motion": {
+   "score": 70,
+   "weight": 15,
+   "note": "carried r313 (loader/route/lenis untouched)"
+  },
+  "behaviour": {
+   "score": 90,
+   "weight": 10,
+   "note": "consent 26/26, funnel intact, gates 0-error"
+  },
+  "coverage": {
+   "score": 14,
+   "weight": 10,
+   "note": "1 viewport light; 7×2 remaining"
+  }
+ },
+ "total": 43.9
+}

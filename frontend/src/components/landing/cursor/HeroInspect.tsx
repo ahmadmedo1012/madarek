@@ -67,12 +67,15 @@ import {
   layoutAnnotationCards,
   type Rect,
 } from '../../../lib/motion/sheetGeometry';
-import { ELEVATION_VB } from '../ElevationDrawing';
 
-/* The hero drawing's viewBox — the SINGLE shared frame (R310 §6):
- * pins, stations, guides, and drag math all remap through it. */
-const VB_W = ELEVATION_VB.w;
-const VB_H = ELEVATION_VB.h;
+
+/* The hero window's viewBox — the SINGLE shared frame (R310 §6 →
+ * R314): the ink render widened the window to 1440×720 (2.0 ratio,
+ * the measured reference composition); pins, stations, guides, and
+ * drag math all remap through THIS frame. ELEVATION_VB (1440×640)
+ * remains the SheetLoader drawing's own frame. */
+const VB_W = 1440;
+const VB_H = 720;
 
 /* Drag semantics (measured reference constants). */
 const DRAG_THRESHOLD_PX = 2;

@@ -82,20 +82,20 @@ describe('r188 brand reset — campus photography retired (no real-university im
     }
   });
 
-  it('r306 — the drawing-sheet landing ships NO raster hero art (original SVG blueprint)', () => {
+  it('R314 override — the hero seat is the licensed ink render (raster sanctioned by the owner order)', () => {
     const src = read('src/pages/LandingPage.tsx');
     expect(src).not.toContain('<picture>');
     expect(src).not.toContain('main_photo');
-    // r306 (the Heron-only rebuild) → R310: the hero's ONE graphic
-    // object is the original flat SVG ELEVATION — ElevationDrawing,
-    // the drafted university learning building (line work on the
-    // token system, no WebGL, no canvas) — full-width over the
-    // title-block metadata composed from the real 25-college
-    // registry. The r304 3D world is long retired.
-    // No hero raster, no orbit ring, no vision backdrop, no AI scenes,
-    // no text inside images (the r188 intent, kept and tightened).
-    expect(src).toContain('ElevationDrawing');
-    expect(src).toContain("from '../data/colleges.config'");
+    // R314 «VISUAL TRUTH» §4.1 (owner order, supersedes r306/r308/r313
+    // «no raster» on the hero seat): the hero's ONE graphic object is
+    // the ink-rendered campus building — a derivative of Madarek's own
+    // Commons-licensed photo (manifest.json renders[], adapted:true,
+    // ShareAlike kept) — inside the shared bp-svg frame. The r188
+    // intent is kept: no real-university BRANDING, no orbit ring, no
+    // vision backdrop, no AI scenes, no text inside images. The loader
+    // keeps its original line drawing.
+    expect(src).toContain('<HeroInkWindow />');
+    expect(read('src/components/landing/HeroInkWindow.tsx')).toContain('/media/renders/hero-ink-2200.webp');
     // …and the r188 provenance strings survive (brand gates below
     // still pin جامعة مدارك التجريبية as synthetic data).
   });

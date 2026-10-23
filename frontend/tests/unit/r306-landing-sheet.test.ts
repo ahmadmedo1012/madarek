@@ -133,62 +133,57 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
   // ELEVATION — same narrative, real architectural drawing.
   const art = read('src/components/landing/ElevationDrawing.tsx');
 
-  it('the SVG artwork is original line work on the token system (no raster, no canvas)', () => {
-    expect(liveTsx).toContain('ElevationDrawing');
-    // the frame is the exported constant — ONE source shared by the
-    // pins, the stations and the geometry (R310 §6)
-    expect(art).toContain('export const ELEVATION_VB = { w: 1440, h: 640 } as const;');
-    expect(art).toMatch(/viewBox=\{`0 0 \$\{ELEVATION_VB\.w\} \$\{ELEVATION_VB\.h\}`\}/);
-    expect(art).not.toContain('<picture>');
-    expect(art).not.toContain('<canvas');
-    // the ink classes ride the canonical tokens — the artwork follows both themes
-    for (const cls of ['.bp-ink', '.bp-hair', '.bp-signal', '.bp-fill']) {
-      expect(live).toContain(cls);
+  it('R314 override — the hero art is the licensed INK RENDER inside the shared bp-svg frame (raster sanctioned)', () => {
+    // R314 override (owner order «VISUAL TRUTH» §4.1): the thin-line
+    // elevation retired — the hero's ONE graphic object is the
+    // ink-rendered building (own subject, Commons-licensed derivative,
+    // manifest.json renders[]) riding the SAME .bp-svg coordinate frame
+    // so the inspection instrument keeps its geometry. The r306/r310
+    // «no raster» rule is superseded on the hero seat ONLY.
+    expect(liveTsx).toContain('<HeroInkWindow />');
+    const ink = read('src/components/landing/HeroInkWindow.tsx');
+    expect(ink).toContain('className="bp-svg"');
+    expect(ink).toContain('/media/renders/hero-ink-2200.webp');
+    expect(ink).toMatch(/viewBox="0 0 1440 720"/);
+    // the loader keeps its own original line drawing (SheetLoader)
+    expect(art).toContain('export const ELEVATION_VB');
+    // never canvas, never <picture> (the single raster seat is explicit)
+    expect(liveTsx).not.toContain('<picture>');
+    expect(liveTsx).not.toContain('<canvas');
+    // the manifest carries the derivative licence chain (ShareAlike kept)
+    const manifest = read('public/media/manifest.json');
+    expect(manifest).toContain('"renders"');
+    expect(manifest).toContain('"adapted": true');
+  });
+
+  it('R314 override — the inspection stations are real buttons (HeroInspect) over the ink render', () => {
+    // the bp-hotspot stage row retired with the elevation; the
+    // inspection instrument's OWN markers (HeroInspect) carry the
+    // same contract: real <button>, 44px targets, aria-pressed state.
+    const inspect = read('src/components/landing/cursor/HeroInspect.tsx');
+    expect(inspect).toMatch(/DOT_TARGET_PX = 44/);
+    expect(inspect).toMatch(/aria-pressed/);
+    expect(liveTsx).toContain('<HeroInspect />');
+  });
+
+  it('R314 override — the honest stage copy lives in the inspection stations (panel retired)', () => {
+    // the details panel retired with the elevation; the SAME honest
+    // capability copy rides HeroInspect's station annotations.
+    const inspect = read('src/components/landing/cursor/HeroInspect.tsx');
+    // the stations' honest capability labels (checkpoints, research
+    // review, mastery gap — the interactive annotation copy)
+    for (const t of ['نقطة فحص', 'مراجعة بحث', 'فجوة إتقان']) {
+      expect(inspect).toContain(t);
     }
-    expect(live).toMatch(/\.bp-hair\s*\{[^}]*stroke:\s*var\(--grid-line\)/);
-    expect(live).toMatch(/\.bp-signal\s*\{[^}]*stroke:\s*var\(--accent\)/);
-    // R310: every drawn element carries the .bp-drawable class — the
-    // ink-in selectors NEVER use [pathLength] (Chromium's style
-    // invalidation for class changes does not reach SVG elements
-    // matched via that attribute selector — documented + reproduced
-    // in audits/evidence/r310/repro/; the R308/R309 ink-in was
-    // silently stuck hidden by it)
-    const pathCount = (art.match(/pathLength=\{1\}/g) ?? []).length;
-    const drawableCount = (art.match(/bp-drawable/g) ?? []).length;
-    expect(pathCount).toBeGreaterThan(90);
-    expect(drawableCount).toBeGreaterThanOrEqual(pathCount);
-    expect(live).not.toMatch(/\[pathLength\]/);
-    expect(live).not.toMatch(/\.bp-stage \[pathLength\]/);
   });
 
-  it('the hotspots are real buttons with pressed-state semantics over the drawing', () => {
-    expect(liveTsx).toMatch(/className="bp-hotspot"/);
-    expect(liveTsx).toMatch(/aria-pressed=\{activeStage === i\}/);
-    expect(liveTsx).toContain('role="group"');
-  });
-
-  it('the details panel is a polite live region — same information with or without the pointer', () => {
-    expect(liveTsx).toMatch(/className="bp-panel" role="status" aria-live="polite"/);
-    // the panel seeds with stage 01 (informative at zero interaction)
-    expect(liveTsx).toContain('useState(0)');
-    // every stage's description is present in the source (the honest copy)
-    for (const s of ['المحاضرات التفاعلية', 'نقاط الفحص', 'الاختبارات الإلكترونية', 'دورة البحوث والمكتبة', 'مصفوفة الإتقان']) {
-      expect(liveTsx).toContain(s);
-    }
-  });
-
-  it('the mobile flow: the hotspots leave the overlay below 760px (44px chip row, labels carried)', () => {
+  it('R314 override — the mobile hero flow: 44vh ink window + stacked strip cells', () => {
     const mq = live.match(/@media \(max-width: 760px\)\s*\{([\s\S]*?)\n\}\s*\n@media/)?.[1] ?? '';
-    expect(mq).toMatch(/\.bp-hotspots\s*\{[^}]*position:\s*static/s);
-    // the SVG micro-labels drop in the flow — nothing renders tiny
-    // (grouped selector: .bp-name, .bp-tag, .bp-micro → display:
-    // none; the [NN] indices live on the HTML markers, never in the
-    // SVG; R310 also drops the mono micro voice at flow widths)
-    expect(mq).toContain('.bp-name');
-    expect(mq).toContain('.bp-tag');
-    expect(mq).toContain('.bp-micro');
-    expect(mq).toMatch(/\.bp-micro[\s,\S]*?\{[\s\S]*?display:\s*none/s);
-    expect(live).not.toContain('.bp-num');
+    // the window keeps a defined mass on small screens; the strip
+    // cells stack under it (the 390 reference tiles); the annotation
+    // cards flow under the drawing per HeroInspect's own ≤760 contract
+    expect(mq).toMatch(/\.fo-hero-window \.bp-stage\s*\{[\s\S]*?min-block-size:\s*44vh/s);
+    expect(mq).toMatch(/\.fo-hero-title\s*\{[\s\S]*?font-size:\s*clamp\(30px/s);
   });
 
   it('the SVG carries a full Arabic description (the drawing is informative, not decorative clutter)', () => {
@@ -196,23 +191,17 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     expect(art).toContain('aria-label="واجهة معمارية لمبنى التعلّم');
   });
 
-  it('R310 — the elevation is richly drawn: five layered volumes + the drafting furniture', () => {
-    // the purpose layers exist (the ink-in schedule consumes data-ink)
-    for (const layer of ['bp-l-frame', 'bp-l-grid', 'bp-l-ground', 'bp-l-dims', 'bp-l-journey', 'bp-l-labels']) {
-      expect(art).toContain(layer);
-    }
-    // the five stage volumes exist and carry the active-stage classes
-    for (const vol of ['bp-vol-0', 'bp-vol-1', 'bp-vol-2', 'bp-vol-3', 'bp-vol-4']) {
-      expect(art).toContain(vol);
-    }
-    // the drafting furniture: dimension ticks, windows, trees, the clock
-    for (const detail of ['DimTick', 'Window', 'bp-stipple', 'bp-hatch', 'bp-micro']) {
-      expect(art).toContain(detail);
-    }
-    // the drawing shares ONE frame with the pins + stations (the
-    // exported viewBox constant is the single source)
-    expect(art).toContain('export const ELEVATION_VB');
-    expect(liveTsx).toContain('data-vx={s.vx}');
+  it('R314 override — the richness contract moves to the ink render + the drafting chrome', () => {
+    // the five volumes + furniture retired with the elevation; the
+    // RICHNESS now lives in the ink render itself (XDoG strokes +
+    // broken cross-hatch + clustered stipple — scripts/r314/ink-render.mjs,
+    // VLM-verified «rich architectural ink drawing») and the drafting
+    // chrome (rulers, + marks, dashed inner frame) stays on the window
+    expect(liveTsx).toMatch(/className="bp-ruler bp-ruler-t"/);
+    expect(liveTsx).toMatch(/className="bp-plus bp-plus-tl"\>\+/);
+    expect(live).toMatch(/\.fo-hero-window \.bp-stage::before\s*\{[\s\S]*?border:\s*1px dashed/s);
+    // the render pipeline is reproducible + committed (repo root)
+    expect(read('../scripts/r314/ink-render.mjs')).toContain('OVERRIDES');
   });
 });
 
