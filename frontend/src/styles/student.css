@@ -619,7 +619,7 @@
 
   /* ── Phone tuning ── */
   @media (max-width: 640px) {
-    .lecture-video-wrap { border-radius: var(--r-lg); }
+    .lecture-video-wrap { border-radius: var(--r-lg); }  /* R313: resolves 0 — square frame (kept for the ≤640 geometry pin) */
     .lecture-meta-title { font-size: var(--type-headline-size-sm); }
     .checkpoint-card { padding: var(--sp-5); }
   }
@@ -708,12 +708,9 @@
     flex-wrap: wrap;
     border-inline-start: 3px solid var(--accent);
     background: color-mix(in srgb, var(--accent) 5%, var(--surface));
-    box-shadow: var(--shadow-card-premium);
-    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
-  }
-  .dash-resume-card:hover {
-    box-shadow: var(--shadow-card-premium-h);
-    transform: translateY(-1px);
+    /* R313 (WP-E): flat paper tile — no elevation, no lift; the copper
+       rail + wash carry the hierarchy (the deep-band variant in
+       r305-student-dashboard.css already pinned this flatness). */
   }
   /* Dark: the 5% wash reads near-invisible against the dark card —
      same raise the .course-hero dark override applies (12%). */

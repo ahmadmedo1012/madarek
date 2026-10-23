@@ -128,7 +128,9 @@
     align-items: center;
     gap: var(--sp-1-5);
     padding: var(--sp-1) var(--sp-2-5);
-    border-radius: var(--r-full);
+    /* R313 (WP-E · D16): chips go SQUARE — hairline frame + 0 radius
+       (the reference's only rounded primitives are dots/avatars). */
+    border-radius: var(--r-sm);
     background: var(--surface-2);
     border: 1px solid var(--surface-border);
     font-size: var(--fs-sm);
