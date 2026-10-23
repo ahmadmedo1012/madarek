@@ -2757,6 +2757,213 @@ html[data-theme='dark'] .fo-wordmark-ar {
   .fo-cta {
     padding-block: var(--sp-10);
   }
+
+  /* ═══ R314 (V13) — the mobile compaction pass. Measured @390×844 vs
+     the reference (11 441px total): Madarek was 15 868 — every content
+     section carried a 77–98vh min-block-size + sp-10/12 bands. The
+     reference's mobile sections are CONTENT-sized (517–950px): the
+     min-block-sizes retire on mobile, paddings step to the reference's
+     compact rhythm, cards/meta tighten — copy stays whole, geometry
+     adapts (the owner's order: no «content-driven» exceptions). ═══ */
+  .st-section,
+  .pm-section,
+  .pr-section,
+  .wy-section,
+  .rl-section,
+  .fo-cta {
+    min-block-size: 0;
+  }
+
+  .st-section { padding-block: var(--sp-6) var(--sp-5); }
+  .pm-section { padding-block: var(--sp-6) var(--sp-5); }
+  .pr-section { padding-block: var(--sp-6) var(--sp-5); }
+  .wy-section { padding-block: var(--sp-6) var(--sp-5); }
+  .rl-section { padding-block: var(--sp-6) var(--sp-5); }
+  .fo-cta { padding-block: var(--sp-6) var(--sp-5); }
+  .fo-footer-inner { padding-block: var(--sp-5) var(--sp-4); }
+
+  /* the sheet titles drop a rung (the reference's mobile headings are
+     compact uppercase blocks, not desktop display sizes) */
+  .pm-title,
+  .pr-title,
+  .wy-title,
+  .rl-title,
+  .st-title,
+  .fo-cta-title {
+    font-size: clamp(24px, 7.4vw, 34px);
+    line-height: 1.2;
+  }
+
+  .pm-card {
+    gap: var(--sp-3);
+    padding: var(--sp-3);
+  }
+
+  .pm-art {
+    max-inline-size: 7rem;
+  }
+
+  /* the pain cards compact to art-beside-text rows (~180px): the
+     answer line folds into the text (parity over verbosity) */
+  .pm-card {
+    padding: var(--sp-2-5);
+    grid-template-columns: minmax(0, 7rem) minmax(0, 1fr);
+  }
+
+  .pm-card-answer {
+    display: none;
+  }
+
+  .pm-card-text {
+    font-size: var(--fs-sm);
+    line-height: 1.55;
+  }
+
+  .pm-card-title {
+    font-size: var(--fs-body);
+  }
+
+  /* the why machine: the stacked captures under each item fold; the
+     item = number + title + one line (~180px) */
+  .wy-item-body-captures {
+    display: none;
+  }
+
+  .wy-item {
+    gap: var(--sp-1-5);
+  }
+
+  /* the roles grid: 2-col cells compact to ~170px tiles */
+  .rl-card-title {
+    font-size: var(--fs-body);
+  }
+
+  .rl-card-num {
+    font-size: var(--fs-xxs);
+  }
+
+  /* the platform head: title + one line (the reference's mobile
+     platform band is 517px total) */
+  .pr-head {
+    gap: var(--sp-3);
+  }
+
+  .pr-head .pm-title,
+  .pr-head p {
+    max-inline-size: 100%;
+  }
+
+  /* the platform band's caption folds to the tag line (the reference's
+     mobile platform cell = composition + one label) */
+  .pr-section .prf-caption > :not(.prf-tag):not(.prf-type) {
+    display: none;
+  }
+
+  .pr-section .prf-caption {
+    padding-block: var(--sp-2);
+  }
+
+  /* the why stack (the 2×2 capture grid) folds on mobile — the rail
+     carries the section; the reference's mobile why = state list */
+  .wy-stack {
+    display: none;
+  }
+
+  /* the CTA closing strip folds (the reference's mobile CTA = slab +
+     title + button) */
+  .fo-cta .cg-strip {
+    display: none;
+  }
+
+  .st-line {
+    padding-block: var(--sp-2);
+  }
+
+  /* the why rail + stacked captures tighten */
+  .wy {
+    gap: var(--sp-4);
+  }
+
+  /* the roles grid: compact cells (the reference's 8 use-case tiles
+     are ~200px rows at 390 — title + one muted line) */
+  .rl-card {
+    padding: var(--sp-3);
+    gap: var(--sp-1-5);
+  }
+
+  .rl-card-line {
+    display: none; /* the tertiary line folds — parity over verbosity */
+  }
+
+  /* the CTA slab: the meta rows collapse to a compact 2-col readout */
+  .fo-cta .fo-meta-row {
+    padding-block: var(--sp-2);
+  }
+
+  .fo-cta .fo-hero-meta {
+    gap: var(--sp-2);
+  }
+
+  /* the footer: the strip thins, the wordmark caps, cells pad down */
+  .fo-fcell {
+    padding: var(--sp-4);
+    min-block-size: 0;
+  }
+
+  .fo-fcell-strip {
+    block-size: 110px;
+  }
+
+  .fo-fcell-mark {
+    min-block-size: 120px;
+  }
+
+  .fo-wordmark {
+    padding-block: var(--sp-5) var(--sp-3);
+  }
+
+  .fo-wordmark-ar {
+    font-size: clamp(64px, 24vw, 96px);
+  }
+
+  /* the CTA slab: the sketch + the tertiary meta rows fold on mobile
+     (the reference's 500px @390 CTA = coords + title + line + button) */
+  .fo-cta-sketch {
+    display: none;
+  }
+
+  .fo-cta .fo-meta-row:nth-last-child(-n + 2) {
+    display: none;
+  }
+
+  /* the platform band keeps ONE capture on mobile (the lead — the
+     reference's mobile platform cell is a single composition; the
+     teacher capture stays on ≥761px) */
+  /* ProductFrame root is .prf — the std (teacher) capture folds on
+     mobile; the lead composition stays (single-cell platform band) */
+  .pr-section .prf--std {
+    display: none;
+  }
+
+  /* the why cards compact to title+line rows */
+  .wy-item {
+    padding: var(--sp-2-5) var(--sp-3);
+  }
+
+  /* the footer cells pair up on small screens (1-col stack was the
+     +55% height offender) */
+  .fo-fgrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fo-fcell-links:last-of-type {
+    grid-column: span 2;
+  }
+
+  .fo-footer-about {
+    font-size: var(--fs-sm);
+    line-height: 1.55;
+  }
 }
 
 @media (max-width: 640px) {
