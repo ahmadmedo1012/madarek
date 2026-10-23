@@ -19,10 +19,10 @@
       "objectPosition": "50% 45%",
       "sizesAttr": "(min-width: 992px) 46rem, 100vw",
       "assets": {
-        "1600": "/media/universities/uob-wide-1600.webp",
-        "1200": "/media/universities/uob-wide-1200.webp",
+        "480": "/media/universities/uob-wide-480.webp",
         "800": "/media/universities/uob-wide-800.webp",
-        "480": "/media/universities/uob-wide-480.webp"
+        "1200": "/media/universities/uob-wide-1200.webp",
+        "1600": "/media/universities/uob-wide-1600.webp"
       },
       "intrinsic": [
         2689,
@@ -60,9 +60,9 @@
       "objectPosition": "50% 50%",
       "sizesAttr": "(min-width: 992px) 24rem, 100vw",
       "assets": {
-        "1200": "/media/universities/uob-science-1200.webp",
+        "480": "/media/universities/uob-science-480.webp",
         "800": "/media/universities/uob-science-800.webp",
-        "480": "/media/universities/uob-science-480.webp"
+        "1200": "/media/universities/uob-science-1200.webp"
       },
       "intrinsic": [
         4000,
@@ -99,9 +99,9 @@
       "objectPosition": "50% 40%",
       "sizesAttr": "(min-width: 992px) 18rem, 60vw",
       "assets": {
-        "1000": "/media/universities/tripoli-science-1000.webp",
+        "480": "/media/universities/tripoli-science-480.webp",
         "800": "/media/universities/tripoli-science-800.webp",
-        "480": "/media/universities/tripoli-science-480.webp"
+        "1000": "/media/universities/tripoli-science-1000.webp"
       },
       "intrinsic": [
         3024,
@@ -138,9 +138,9 @@
       "objectPosition": "50% 50%",
       "sizesAttr": "(min-width: 992px) 72rem, 100vw",
       "assets": {
-        "1600": "/media/universities/uob-garden-1600.webp",
+        "800": "/media/universities/uob-garden-800.webp",
         "1200": "/media/universities/uob-garden-1200.webp",
-        "800": "/media/universities/uob-garden-800.webp"
+        "1600": "/media/universities/uob-garden-1600.webp"
       },
       "intrinsic": [
         4912,
@@ -177,9 +177,9 @@
       "objectPosition": "50% 40%",
       "sizesAttr": "(min-width: 992px) 44rem, 100vw",
       "assets": {
-        "1200": "/media/universities/garyounis-classic-1200.webp",
+        "480": "/media/universities/garyounis-classic-480.webp",
         "800": "/media/universities/garyounis-classic-800.webp",
-        "480": "/media/universities/garyounis-classic-480.webp"
+        "1200": "/media/universities/garyounis-classic-1200.webp"
       },
       "intrinsic": [
         1509,
@@ -216,9 +216,9 @@
       "objectPosition": "50% 45%",
       "sizesAttr": "(min-width: 992px) 26rem, 100vw",
       "assets": {
-        "1200": "/media/universities/garyounis-1-1200.webp",
+        "480": "/media/universities/garyounis-1-480.webp",
         "800": "/media/universities/garyounis-1-800.webp",
-        "480": "/media/universities/garyounis-1-480.webp"
+        "1200": "/media/universities/garyounis-1-1200.webp"
       },
       "intrinsic": [
         3648,
@@ -255,9 +255,9 @@
       "objectPosition": "50% 45%",
       "sizesAttr": "(min-width: 992px) 26rem, 100vw",
       "assets": {
-        "1200": "/media/universities/omu-agri-1200.webp",
+        "480": "/media/universities/omu-agri-480.webp",
         "800": "/media/universities/omu-agri-800.webp",
-        "480": "/media/universities/omu-agri-480.webp"
+        "1200": "/media/universities/omu-agri-1200.webp"
       },
       "intrinsic": [
         1310,
@@ -294,9 +294,9 @@
       "objectPosition": "50% 40%",
       "sizesAttr": "(min-width: 992px) 26rem, 100vw",
       "assets": {
-        "1200": "/media/universities/fateh-science-1200.webp",
+        "480": "/media/universities/fateh-science-480.webp",
         "800": "/media/universities/fateh-science-800.webp",
-        "480": "/media/universities/fateh-science-480.webp"
+        "1200": "/media/universities/fateh-science-1200.webp"
       },
       "intrinsic": [
         1280,
@@ -333,10 +333,10 @@
       "objectPosition": "50% 35%",
       "sizesAttr": "(min-width: 992px) 26rem, 100vw",
       "assets": {
-        "1600": "/media/universities/uob-1600.webp",
-        "1200": "/media/universities/uob-1200.webp",
+        "480": "/media/universities/uob-480.webp",
         "800": "/media/universities/uob-800.webp",
-        "480": "/media/universities/uob-480.webp"
+        "1200": "/media/universities/uob-1200.webp",
+        "1600": "/media/universities/uob-1600.webp"
       },
       "intrinsic": [
         4000,
@@ -373,8 +373,8 @@
       "captionAr": "نظرة الطالب على يومه: جدول اليوم، المهام، والتقدّم",
       "altAr": "لوحة الطالب — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
       "assets": {
-        "1280": "/media/product/student-dashboard-1280.webp",
-        "720": "/media/product/student-dashboard-720.webp"
+        "720": "/media/product/student-dashboard-720.webp",
+        "1280": "/media/product/student-dashboard-1280.webp"
       },
       "intrinsic": [
         1280,
@@ -404,8 +404,8 @@
       "captionAr": "بحث عربي وفهرس وتصفح الكتب والبحوث",
       "altAr": "المكتبة الإلكترونية — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
       "assets": {
-        "1280": "/media/product/student-library-1280.webp",
-        "720": "/media/product/student-library-720.webp"
+        "720": "/media/product/student-library-720.webp",
+        "1280": "/media/product/student-library-1280.webp"
       },
       "intrinsic": [
         1280,
@@ -435,8 +435,8 @@
       "captionAr": "مشغّل المحاضرة مع نقطة فحص تُصحَّب فورًا",
       "altAr": "المحاضرة التفاعلية — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
       "assets": {
-        "1280": "/media/product/student-lecture-player-1280.webp",
-        "720": "/media/product/student-lecture-player-720.webp"
+        "720": "/media/product/student-lecture-player-720.webp",
+        "1280": "/media/product/student-lecture-player-1280.webp"
       },
       "intrinsic": [
         1280,
@@ -466,8 +466,8 @@
       "captionAr": "درجة إتقان لكل مفهوم وربطها بالدرس المناسب",
       "altAr": "مصفوفة الإتقان — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
       "assets": {
-        "1280": "/media/product/student-matrix-1280.webp",
-        "720": "/media/product/student-matrix-720.webp"
+        "720": "/media/product/student-matrix-720.webp",
+        "1280": "/media/product/student-matrix-1280.webp"
       },
       "intrinsic": [
         1280,
@@ -497,8 +497,8 @@
       "captionAr": "متابعة الأقسام والطلاب والمقرّرات",
       "altAr": "لوحة الأستاذ — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
       "assets": {
-        "1280": "/media/product/teacher-dashboard-1280.webp",
-        "720": "/media/product/teacher-dashboard-720.webp"
+        "720": "/media/product/teacher-dashboard-720.webp",
+        "1280": "/media/product/teacher-dashboard-1280.webp"
       },
       "intrinsic": [
         1280,
@@ -528,8 +528,8 @@
       "captionAr": "مؤشرات الكليات والطلاب والأساتذة",
       "altAr": "لوحة الإدارة — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
       "assets": {
-        "1280": "/media/product/admin-dashboard-1280.webp",
-        "720": "/media/product/admin-dashboard-720.webp"
+        "720": "/media/product/admin-dashboard-720.webp",
+        "1280": "/media/product/admin-dashboard-1280.webp"
       },
       "intrinsic": [
         1280,
@@ -559,8 +559,8 @@
       "captionAr": "مجالس الجودة ومؤشرات الالتزام",
       "altAr": "لوحة ضمان الجودة — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
       "assets": {
-        "1280": "/media/product/quality-dashboard-1280.webp",
-        "720": "/media/product/quality-dashboard-720.webp"
+        "720": "/media/product/quality-dashboard-720.webp",
+        "1280": "/media/product/quality-dashboard-1280.webp"
       },
       "intrinsic": [
         1280,
@@ -590,8 +590,8 @@
       "captionAr": "الحاكمية والمؤسّسات وسجلّ التدقيق",
       "altAr": "لوحة المالك — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
       "assets": {
-        "1280": "/media/product/owner-dashboard-1280.webp",
-        "720": "/media/product/owner-dashboard-720.webp"
+        "720": "/media/product/owner-dashboard-720.webp",
+        "1280": "/media/product/owner-dashboard-1280.webp"
       },
       "intrinsic": [
         1280,
@@ -651,5 +651,83 @@
       "verifiedAt": "2026-10-22",
       "verificationCommand": "curl 'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=dz_t7yOOZMc&format=json' && curl -sL 'https://sebhau.edu.ly/video-gallery/' | grep -c 'UCjEGH--aN7rRas_lAdqF35Q'"
     }
-  ]
+  ],
+  "renders": [
+    {
+      "id": "hero-ink",
+      "type": "render",
+      "sourcePhotoId": "uob-wide",
+      "adapted": true,
+      "pipeline": "scripts/r314/ink-render.mjs (XDoG ink strokes + broken cross-hatch + clustered stipple + graphite wash; deterministic seed)",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attribution": "adapted from «مقر إدارة جامعة بنغازي» by WisiW (Wikimedia Commons, CC BY-SA 4.0) — derivative marked ADAPTED, same licence kept (ShareAlike)",
+      "source": {
+        "page": "https://commons.wikimedia.org/wiki/File:University_of_Benghazi_(cropped).jpg",
+        "file": "https://upload.wikimedia.org/wikipedia/commons/e/e9/University_of_Benghazi_%28cropped%29.jpg"
+      },
+      "note": "Hero architectural ink rendering — R314 V2"
+    },
+    {
+      "id": "crop-garyounis-1",
+      "type": "render",
+      "sourcePhotoId": "garyounis-1",
+      "adapted": true,
+      "pipeline": "scripts/r314/ink-render.mjs (XDoG ink strokes + broken cross-hatch + clustered stipple + graphite wash; deterministic seed)",
+      "licence": "Public domain",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "adapted from «بوابة الحرم — قاريونس» by Maher A. A. Abdussalam (Wikimedia Commons, Public domain) — derivative marked ADAPTED, same licence kept (ShareAlike)",
+      "source": {
+        "page": "https://commons.wikimedia.org/wiki/File:Garyounis_university1.JPG",
+        "file": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Garyounis_university1.JPG"
+      },
+      "note": "Use-case card crop"
+    },
+    {
+      "id": "crop-garyounis-classic",
+      "type": "render",
+      "sourcePhotoId": "garyounis-classic",
+      "adapted": true,
+      "pipeline": "scripts/r314/ink-render.mjs (XDoG ink strokes + broken cross-hatch + clustered stipple + graphite wash; deterministic seed)",
+      "licence": "Public domain",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "adapted from «حرم جامعة بنغازي — قاريونس» by Munsha'at al Akhdar lil Alwan, Benghazi. (Wikimedia Commons, Public domain) — derivative marked ADAPTED, same licence kept (ShareAlike)",
+      "source": {
+        "page": "https://commons.wikimedia.org/wiki/File:Garyounis_University.jpg",
+        "file": "https://upload.wikimedia.org/wikipedia/commons/5/55/Garyounis_University.jpg"
+      },
+      "note": "Use-case card crop"
+    },
+    {
+      "id": "crop-fateh-science",
+      "type": "render",
+      "sourcePhotoId": "uob-science",
+      "adapted": true,
+      "pipeline": "scripts/r314/ink-render.mjs (XDoG ink strokes + broken cross-hatch + clustered stipple + graphite wash; deterministic seed)",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attribution": "adapted from «كلية العلوم — جامعة بنغازي» by WisiW (Wikimedia Commons, CC BY-SA 4.0) — derivative marked ADAPTED, same licence kept (ShareAlike)",
+      "source": {
+        "page": "https://commons.wikimedia.org/wiki/File:UoB_1.jpg",
+        "file": "https://upload.wikimedia.org/wikipedia/commons/7/7e/UoB_1.jpg"
+      },
+      "note": "Use-case card crop — source swapped from fateh-science (interior, rendered flat) to uob-science exterior; licence/attribution follows uob-science"
+    },
+    {
+      "id": "crop-omu-agri",
+      "type": "render",
+      "sourcePhotoId": "omu-agri",
+      "adapted": true,
+      "pipeline": "scripts/r314/ink-render.mjs (XDoG ink strokes + broken cross-hatch + clustered stipple + graphite wash; deterministic seed)",
+      "licence": "Public domain",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "adapted from «كلية الزراعة — جامعة عمر المختار (البيضاء)» by Munsha'at al Akhdar lil Alwan, Benghazi. (Wikimedia Commons, Public domain) — derivative marked ADAPTED, same licence kept (ShareAlike)",
+      "source": {
+        "page": "https://commons.wikimedia.org/wiki/File:Faculty_of_Agriculture,_Al_Bayda.jpg",
+        "file": "https://upload.wikimedia.org/wikipedia/commons/1/12/Faculty_of_Agriculture%2C_Al_Bayda.jpg"
+      },
+      "note": "Use-case card crop"
+    }
+  ],
+  "rendersGeneratedFor": "R314 — VISUAL TRUTH (ink-render illustration programme §4.1)"
 }

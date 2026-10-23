@@ -1,0 +1,229 @@
+{
+ "task": "R314 3-b — paper grain tiles measured against Heron reference",
+ "generatedAt": "2026-10-23T18:06:32.936Z",
+ "generator": "scripts/r314/make-grain.mjs",
+ "reference": {
+  "source": "audits/evidence/r314/_local/captures/heron/1440x900/light/ (Playwright PNG, DPR 1, srgb, 1440x900)",
+  "method": "three VLM-verified bare-paper 200x200 crops; the paper is a fixed .bg-global layer (pixel-identical across scroll frames), so any bare window samples the same paper",
+  "regions": [
+   {
+    "frame": "p00-0.png",
+    "x": 40,
+    "y": 80,
+    "name": "top-left-margin",
+    "note": "task suggested (20,60) — that spot carries the hero ruler chrome/crosshair (std 5.6); (40,80) is the nearest verified-bare paper",
+    "meanLuminance": 244.48,
+    "std": 1.753,
+    "meanAbsLaplacian": 0.813,
+    "hpStd3x3": 1.116,
+    "autocorr1px": 0.069
+   },
+   {
+    "frame": "p04-20.png",
+    "x": 1150,
+    "y": 300,
+    "name": "centre-right",
+    "note": "as suggested; VLM-verified pure paper; pixel-identical across p04/p05 (fixed bg layer)",
+    "meanLuminance": 244.48,
+    "std": 1.737,
+    "meanAbsLaplacian": 0.816,
+    "hpStd3x3": 1.12,
+    "autocorr1px": 0.073
+   },
+   {
+    "frame": "p05-25.png",
+    "x": 460,
+    "y": 650,
+    "name": "bottom-margin",
+    "note": "suggested (200,860) cannot fit a 200px crop in the 900px viewport and (200,700) contains a hairline (std 5.2); (460,650) is the cleanest bottom paper",
+    "meanLuminance": 244.49,
+    "std": 1.729,
+    "meanAbsLaplacian": 0.809,
+    "hpStd3x3": 1.108,
+    "autocorr1px": 0.07
+   }
+  ],
+  "aggregate": {
+   "meanLuminance": 244.49,
+   "paperNote": "#f4f4f4 (grayscale ≈ Heron paper #F4F4EE, r313 telemetry/paper.json)",
+   "std": 1.74,
+   "meanAbsLaplacian": 0.813,
+   "hpStd3x3": 1.115,
+   "autocorr1px": 0.071
+  },
+  "spectrum": {
+   "model": "generation profile = measured radial amplitude rings 5..128 (log-log interpolated), rings 2..4 held at ring-5 level (below 200px-window resolution; measured low rings are taper-leakage-inflated), f<2 zero",
+   "plateauPowerLawSummary": {
+    "f0": 48,
+    "beta": 1.474,
+    "A0": 264.6
+   }
+  }
+ },
+ "tiles": {
+  "grain-tile-light.webp": {
+   "path": "frontend/public/media/textures/grain-tile-light.webp",
+   "workingCopy": "scripts/r314/out/grain-light.webp",
+   "bytes": 16632,
+   "sha256_16": "70247cc191645774",
+   "encoding": "webp lossless (pixel-exact roundtrip)",
+   "meanLuminance": 253.83,
+   "std": 1.739,
+   "meanAbsLaplacian": 0.813,
+   "hpStd3x3": 1.171,
+   "autocorr1px": -0.049,
+   "generation": {
+    "highFreqTiltGamma": 0.219,
+    "stdGainK": 2.9621,
+    "note": "gamma pre-compensates the high-frequency distortion introduced by white-anchored clipping at 255, so the decoded mean |laplacian| matches the reference"
+   },
+   "anchor": "white-anchored dark-only grain (multiply-safe): decoded mean 253.83 -> multiply darkens #F4F4EE paper by 1.12/255 at opacity 1 (inside Heron's ±2/255 sampling variance)",
+   "tileability": {
+    "interiorAdjMeanAbs": 1.106,
+    "interiorAdjMax": 11,
+    "wrapSeamAdjMeanAbs": 0.988,
+    "wrapSeamAdjMax": 6,
+    "seamAdjRatio": 0.894,
+    "seamAdjMaxRatio": 0.545,
+    "interiorColRowMeanStepMax": 0.523,
+    "seamColMeanStep": 0.035,
+    "seamRowMeanStep": 0.145,
+    "maxSeamColRowMeanDiscontinuity": 0.145
+   }
+  },
+  "grain-tile-dark.webp": {
+   "path": "frontend/public/media/textures/grain-tile-dark.webp",
+   "workingCopy": "scripts/r314/out/grain-dark.webp",
+   "bytes": 19970,
+   "sha256_16": "478360eaf78ba550",
+   "encoding": "webp lossless (pixel-exact roundtrip)",
+   "meanLuminance": 40,
+   "std": 1.392,
+   "meanAbsLaplacian": 0.679,
+   "hpStd3x3": 0.901,
+   "autocorr1px": 0.024,
+   "anchor": "#282828 (40,40,40) = Madarek dark paper --neutral-50; symmetric grain (both polarities)",
+   "targetStd": 1.392,
+   "targetRationale": "no dark Heron captures exist (r314 light-only; r313 reference light-only) -> task fallback: amplitude x0.8 of light reference, neutral #282828",
+   "tileability": {
+    "interiorAdjMeanAbs": 1.045,
+    "interiorAdjMax": 6,
+    "wrapSeamAdjMeanAbs": 1.063,
+    "wrapSeamAdjMax": 4,
+    "seamAdjRatio": 1.017,
+    "seamAdjMaxRatio": 0.667,
+    "interiorColRowMeanStepMax": 0.391,
+    "seamColMeanStep": 0.078,
+    "seamRowMeanStep": 0.023,
+    "maxSeamColRowMeanDiscontinuity": 0.078
+   }
+  }
+ },
+ "deltas": {
+  "light.std vs reference.std": {
+   "tile": 1.739,
+   "reference": 1.74,
+   "deltaPct": -0.03,
+   "gate": "|delta| <= 5%",
+   "pass": true
+  },
+  "dark.std vs 0.8*reference.std": {
+   "tile": 1.392,
+   "target": 1.392,
+   "deltaPct": -0.01,
+   "gate": "|delta| <= 5%",
+   "pass": true
+  },
+  "light.meanAbsLaplacian vs reference": {
+   "tile": 0.813,
+   "reference": 0.813,
+   "deltaPct": 0.01,
+   "gate": "|delta| <= 5% (self-imposed: the task's high-frequency-energy metric)",
+   "pass": true
+  },
+  "light.hpStd3x3 vs reference": {
+   "tile": 1.171,
+   "reference": 1.115,
+   "deltaPct": 5.1,
+   "note": "informational (recorded, not gated)"
+  },
+  "light.autocorr1px vs reference": {
+   "tile": -0.049,
+   "reference": 0.071,
+   "note": "informational grain character; one-sided (dark-only) multiply grain cannot keep the symmetric reference's small positive lag-1 correlation while also matching std + mean|lap| — the residual is imperceptible at 0.7% amplitude"
+  }
+ },
+ "tileabilityVerdict": {
+  "method": "wrap-seam adjacent-pixel |Δ| stats vs interior baseline (a real seam = systematic step/larger deltas at the wrap); plus col/row-mean steps; plus 2x2 composite col/row-mean discontinuity (<1.5 gate)",
+  "light": true,
+  "dark": true
+ },
+ "cssRecipe": {
+  "light": {
+   "css": "background-image: url(/media/textures/grain-tile-light.webp); background-size: 256px; mix-blend-mode: multiply; opacity: 1.000;",
+   "appliedAmplitudeTaskModel": 1.74,
+   "appliedAmplitudeFullMultiplyModel": 1.665,
+   "referenceStd": 1.74,
+   "deltaTaskModelPct": 0,
+   "deltaFullMultiplyModelPct": -4.31
+  },
+  "dark": {
+   "css": "background-image: url(/media/textures/grain-tile-dark.webp); background-size: 256px; opacity: 1.000;",
+   "note": "dark tile mean = #282828 = Madarek charcoal paper -> use plain alpha compositing (NO blend mode): zero colour shift, full amplitude transfer; applied sigma = tile_std * opacity",
+   "appliedAmplitude": 1.392,
+   "target": 1.392
+  }
+ },
+ "gates": {
+  "lightStdWithin5pct": true,
+  "darkStdWithin5pct": true,
+  "lightLapWithin5pct": true,
+  "lightSeamOk": true,
+  "darkSeamOk": true,
+  "compositeDiscontinuityLt1_5": true,
+  "sizesOk": true
+ },
+ "allGatesPass": true,
+ "vlmVerification": {
+  "model": "glm-5v-turbo via z-ai CLI",
+  "mandatedPrompt": "Describe this texture tile: fine film-grain paper noise? Subtle? Any visible patterns, stripes, or seams?",
+  "reRunNote": "re-verified fresh by I3 (task 3-b restart) after a byte-identical regeneration of the tiles; sections below are appended post-run by the operator (VLM calls are external to the deterministic script)",
+  "grainTileLight": {
+   "verdict": "PASS",
+   "excerpt": "It is best described as fine film-grain or paper noise... extremely subtle... There are no visible patterns, stripes, or seams. The noise appears to be random and stochastic (evenly distributed), making it a seamless tile suitable for repeating across a surface without obvious breaks."
+  },
+  "grainTileDark": {
+   "verdict": "PASS",
+   "excerpt": "It exhibits a fine, film-grain or paper noise quality... very subtle... no visible patterns, stripes, or seams. The noise appears to be randomly distributed and consistent across the entire image."
+  },
+  "referenceRegionsBarePaper": {
+   "verdict": "PASS",
+   "method": "the three measured 200x200 crops shown to the VLM together",
+   "excerpt": "Image 1: EMPTY PAPER / Image 2: EMPTY PAPER / Image 3: EMPTY PAPER"
+  },
+  "grainLight2x2Composite": {
+   "verdict": "PASS",
+   "prompt": "2x2 tiling ... any visible seams at x=256 / y=256?",
+   "excerpt": "No Visible Seams: there are no visible seams, hard edges, or discontinuities at the internal boundaries... The noise pattern flows continuously across these lines... very subtle... effectively patternless."
+  },
+  "microGridTiledPreview": {
+   "verdict": "PASS",
+   "excerpt": "uniform dot spacing... exactly 8 dots [per 192px row]... no missing or misplaced dots, no drift... tile boundaries show no seams, doubling of dots, or other artifacts."
+  }
+ },
+ "assets": {
+  "frontend/public/media/textures/grain-tile-light.webp": {
+   "bytes": 16632,
+   "sha256_16": "70247cc191645774"
+  },
+  "frontend/public/media/textures/grain-tile-dark.webp": {
+   "bytes": 19970,
+   "sha256_16": "478360eaf78ba550"
+  },
+  "frontend/public/media/textures/micro-grid.svg": {
+   "bytes": 452,
+   "note": "1x1 rect dot #B3B3AF @40% at (12,12) of a 24x24 cell — integer-aligned => crisp 1px dot at any DPR; dot centred in cell, nothing crosses tile edges; VLM-verified on 8x8 tiling (uniform, 8 dots/192px row, no boundary artifacts)"
+  }
+ },
+ "reproducibility": "I3 re-ran scripts/r314/make-grain.mjs fresh: all gates pass and both shipped webp assets are byte-identical (sha256 70247cc1.../478360ea... unchanged); sharp pinned in scripts/r314/tools/package-lock.json; independent cross-check script (outside repo) reproduced reference std 1.753/1.737/1.729 and tile std 1.739/1.392"
+}

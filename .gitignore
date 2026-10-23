@@ -124,3 +124,8 @@ backend/storage-dev/
 
 # R310: reference-site captures stay local (r308 convention — never committed)
 audits/evidence/r310/reference/
+
+# R314 — judge harness: local captures/artifacts stay out of git (CI artifact only)
+audits/evidence/r314/_local/
+scripts/r314/tools/node_modules/
+scripts/r314/out/

@@ -24,6 +24,8 @@ import { HeroInspect } from '../components/landing/cursor/HeroInspect';
 import { JourneyScene } from '../components/landing/journey/JourneyScene';
 import { ScrubReveal } from '../components/landing/journey/WordReveal';
 import { FooterLens } from '../components/landing/footer/FooterLens';
+import { ConsentBanner } from '../components/landing/chrome/ConsentBanner';
+import { EdgeTab } from '../components/landing/chrome/EdgeTab';
 import { shouldPlayIntro } from '../lib/motion/introGate';
 import { useSheetScroll } from '../lib/motion/useSheetScroll';
 import { clamp } from '../lib/motion/sheetConductor';
@@ -39,6 +41,10 @@ import { acquireScrollLock, releaseScrollLock } from '../lib/scrollLock';
 // (landing-funnel 5+5, r168b, r170d, r177, r188, r306 — see the tests
 // pinned beside each surface).
 import '../styles/landing.css';
+// r314-chrome.css — R314 B10 — the consent banner (V11) + the right-edge
+// vertical tab (V12): the landing chrome pair, Heron geometry with
+// Madarek's own honest content.
+import '../styles/r314-chrome.css';
 
 /**
  * Landing — «لوحة مدارك» (r306 sheet → R313 Heron structure).
@@ -1421,6 +1427,12 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* R314 B10 — the landing chrome pair: the local-storage consent
+          gate (V11) + the right-edge vertical tab (V12). Public surface
+          only — these never mount on auth pages. */}
+      <ConsentBanner />
+      <EdgeTab />
     </div>
   );
 }

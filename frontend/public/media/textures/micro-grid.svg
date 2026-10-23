@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <!-- R314 3-b micro-grid: 1px dot #B3B3AF @40%, 24x24px cell, seamless tile.
+       Integer-aligned 1x1 rect = crisp 1px dot at any DPR (Heron's own micro-dot
+       vocabulary is 1x1/2x2px elements, r313 D2); dot centred in the cell so
+       nothing crosses the tile edges. -->
+  <rect x="12" y="12" width="1" height="1" fill="#B3B3AF" fill-opacity="0.4"/>
+</svg>

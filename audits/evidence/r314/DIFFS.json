@@ -1,0 +1,1412 @@
+{
+ "generatedAt": "2026-10-23T17:40:46.925Z",
+ "items": [
+  {
+   "id": "1440x900-light-p00-0",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p00-0.png",
+   "verdict": "DIFFERENT",
+   "score": 25,
+   "differences": [
+    {
+     "area": "Header / Navigation",
+     "what_reference_has": "Left-aligned logo 'HERON AI' with a 3D box icon. Navigation links (PRODUCT, PRICING, etc.) are centered/offset to the right. Minimalist, clean sans-serif typography.",
+     "what_candidate_has": "Right-aligned logo 'محلل' (Arabic) with a gear icon. Navigation is fully right-aligned with different link text. Includes a prominent red 'Back' button (إلى الخلف) not present in reference.",
+     "severity": "major",
+     "fix_hint": "Revert header layout to left-aligned English branding and original navigation structure."
+    },
+    {
+     "area": "Hero Section Layout",
+     "what_reference_has": "Large, central architectural illustration (building elevation) dominating the viewport. Text is pushed to the bottom-left footer area.",
+     "what_candidate_has": "Text-heavy hero section at the top (Headline + Subhead). Illustration is pushed down into the lower half of the screen and is significantly smaller in scale relative to the container.",
+     "severity": "critical",
+     "fix_hint": "Restore the illustration as the primary focal point occupying the center. Move text block to the bottom or match the reference's spatial hierarchy."
+    },
+    {
+     "area": "Typography Scale & Weight",
+     "what_reference_has": "Massive, ultra-bold, all-caps sans-serif headline ('AN AI AGENT...') at the bottom. High contrast between headline and body text.",
+     "what_candidate_has": "Headline is at the top. While bold, the visual weight and size proportion differ due to RTL layout constraints and line breaking. The font family appears slightly different (less geometric than reference).",
+     "severity": "major",
+     "fix_hint": "Match the specific font weight, size, and case (all caps) of the reference headline."
+    },
+    {
+     "area": "Illustration Style & Content",
+     "what_reference_has": "Stylized 3D architectural rendering of a modern concrete building. Features heavy stippling/grain texture for shading, solid black tree silhouettes, and distinct red square markers.",
+     "what_candidate_has": "Technical 2D CAD-style line drawing (elevation) of a different building complex. Uses thin uniform lines, dimension lines, and grid backgrounds. Lacks the heavy grain/stipple texture of the reference. Trees are simple outline circles.",
+     "severity": "critical",
+     "fix_hint": "Replace the technical drawing with the textured 3D architectural render. Match the artistic style (stippling, line weight)."
+    },
+    {
+     "area": "UI Chrome / Overlay Elements",
+     "what_reference_has": "Vertical red tab on the right edge labeled 'W. Site of the Day'. Ruler marks (+) on the top/left edges of the canvas area. Cookie banner at the very bottom.",
+     "what_candidate_has": "No vertical side tab. Ruler marks are present but surrounding a specific 'sheet' area for the drawing, rather than the full canvas edge. No cookie banner visible.",
+     "severity": "minor",
+     "fix_hint": "Add the 'Site of the Day' vertical tab. Adjust rulers to match reference placement."
+    },
+    {
+     "area": "Color Palette & Accents",
+     "what_reference_has": "Background is an off-white/beige paper tone. Accent color is a specific vibrant red used for the 'CONTACT US' link, tab, and markers.",
+     "what_candidate_has": "Background is white/paper-white. Red accent is used for the 'Back' button and drawing highlights, but the tonal value of the background differs.",
+     "severity": "minor",
+     "fix_hint": "Adjust background color to match the warm beige tone of the reference."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p01-5",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p01-5.png",
+   "verdict": "DIFFERENT",
+   "score": 25,
+   "differences": [
+    {
+     "area": "Overall Layout & Grid",
+     "what_reference_has": "A 2-column layout with a large, bold headline on the left and a descriptive text block on the right. The content is left-aligned (LTR).",
+     "what_candidate_has": "A single-column or right-aligned layout (RTL) where the primary headline is on the right. The structural grid is mirrored/flipped relative to the reference.",
+     "severity": "critical",
+     "fix_hint": "Mirror the layout back to LTR or restructure to match the reference's spatial distribution of elements."
+    },
+    {
+     "area": "Header / Top Section",
+     "what_reference_has": "A wide, panoramic architectural line drawing/section spanning the full width of the header area.",
+     "what_candidate_has": "A technical architectural floor plan or elevation within a framed box, labeled 'MADAREK - LEARNING SHEET'. The drawing style and framing are completely different.",
+     "severity": "major",
+     "fix_hint": "Replace the technical plan with a wide architectural section drawing matching the reference's aspect ratio and style."
+    },
+    {
+     "area": "Primary Headline (Type)",
+     "what_reference_has": "Large, bold, sans-serif English text: 'AN AI AGENT THAT WORKS INSIDE YOUR DESIGN TOOLS'. All caps, heavy weight.",
+     "what_candidate_has": "Large, bold Arabic text: 'مصمم ولأعمار' (and sub-text). Different character set, different visual weight distribution due to RTL script.",
+     "severity": "critical",
+     "fix_hint": "Use the exact English string and font metrics from the reference."
+    },
+    {
+     "area": "Sub-headline / Description Block",
+     "what_reference_has": "A text block starting with 'Heron reviews your model...' followed by a 'DISCOVER MORE' link in red. Below that, a row of small tags: 'FEWER MISTAKES', 'LESS BUSYWORK', etc.",
+     "what_candidate_has": "Arabic text describing lectures and a list of numbered items in red (e.g., '[01] المصمم المنشئ'). The content structure and tag style differ.",
+     "severity": "major",
+     "fix_hint": "Match the reference's specific copy, link placement, and tag formatting."
+    },
+    {
+     "area": "Main Body Typography",
+     "what_reference_has": "Very large, bold, all-caps sans-serif body copy: 'THE REPETITIVE PARTS OF MODELLING SHOULDN'T EAT YOUR DAY...'. Includes a greyed-out phrase 'NOT THE SOFTWARE'.",
+     "what_candidate_has": "Arabic body text of a different scale and weight. The typographic hierarchy and the specific 'greyed out' emphasis style are missing or altered.",
+     "severity": "critical",
+     "fix_hint": "Replicate the exact type scale, weight, and color (black vs grey) of the reference text."
+    },
+    {
+     "area": "Imagery / Illustration Style",
+     "what_reference_has": "A tall, vertical line-art illustration of a modern building facade (curtain wall) on the left side. High-contrast black lines on white.",
+     "what_candidate_has": "No building illustration in this area. The space is occupied by text or is empty.",
+     "severity": "critical",
+     "fix_hint": "Add the vertical building line-drawing to the left side of the content area."
+    },
+    {
+     "area": "Call to Action (Button)",
+     "what_reference_has": "A rectangular button with a thin border containing 'LEARN MORE' and an arrow icon.",
+     "what_candidate_has": "No visible button in the corresponding position. Instead, there are pagination dots or icons at the bottom right.",
+     "severity": "major",
+     "fix_hint": "Implement the 'LEARN MORE' bordered button in the exact position shown in the reference."
+    },
+    {
+     "area": "Side Tab / Chrome",
+     "what_reference_has": "A vertical red tab on the far right edge labeled 'W. Site of the Day'.",
+     "what_candidate_has": "No side tab visible.",
+     "severity": "minor",
+     "fix_hint": "Add the red vertical side tab with the correct label."
+    },
+    {
+     "area": "Footer / Cookie Banner",
+     "what_reference_has": "A cookie consent banner at the bottom: 'This website uses cookies. LEARN MORE [ACCEPT] [REJECT]'. Accept button is solid red.",
+     "what_candidate_has": "A footer bar with sheet info '[MDRK-01] • SHEET 01/01' and a different set of links/tags below the main content. No cookie banner.",
+     "severity": "major",
+     "fix_hint": "Add the cookie banner at the bottom with the specific red 'ACCEPT' button."
+    },
+    {
+     "area": "Background / Texture",
+     "what_reference_has": "Clean white/off-white background with subtle technical grid lines/rulers at the very top edge.",
+     "what_candidate_has": "Similar light background but with different technical markings (dimension lines, 'LIVE • LECTURES' text) that don't match the reference's ruler/grid pattern.",
+     "severity": "minor",
+     "fix_hint": "Align the background technical markings (rulers, crosshairs) to match the reference exactly."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p02-10",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p02-10.png",
+   "verdict": "DIFFERENT",
+   "score": 35,
+   "differences": [
+    {
+     "area": "Overall Layout & Grid Structure",
+     "what_reference_has": "Split-screen layout (approx 40/60) with a large architectural illustration on the left and a dense text/UI column on the right. Includes a 'CLIENTS' carousel section, a 'PROBLEMS' section with a two-column text block, and a grid of empty placeholder boxes at the bottom.",
+     "what_candidate_has": "Single-column, right-aligned RTL layout. The left half is almost entirely empty whitespace. The content is stacked vertically without the complex multi-section grid structure of the reference.",
+     "severity": "critical",
+     "fix_hint": "Reconstruct the split-screen grid layout. Add the left-side imagery block and the bottom grid placeholders."
+    },
+    {
+     "area": "Header / Hero Section",
+     "what_reference_has": "Large, bold, all-caps sans-serif headline ('THE DESIGN, NOT THE SOFTWARE.') positioned top-right of the text column. Below it is a 'LEARN MORE' button with an arrow icon inside a thin bordered box.",
+     "what_candidate_has": "Large Arabic headline ('البرمجيات ليست') positioned at the top right. No 'LEARN MORE' button or CTA is present below the headline.",
+     "severity": "major",
+     "fix_hint": "Add the missing 'LEARN MORE' call-to-action button with its specific border and arrow icon."
+    },
+    {
+     "area": "Navigation / Meta Data",
+     "what_reference_has": "No visible top-level navigation bar or meta-tags (like 'MADAREK : LEARNING SHEET') in the main view.",
+     "what_candidate_has": "Contains a top navigation/meta bar with 'MADAREK : LEARNING SHEET' and 'الورقة' text, plus a row of tagged links ([U04], [U05], etc.) that do not exist in the reference.",
+     "severity": "major",
+     "fix_hint": "Remove the top meta-navigation bar and the row of bracketed tags to match the reference's cleaner header."
+    },
+    {
+     "area": "Clients Section (Carousel)",
+     "what_reference_has": "A distinct 'CLIENTS' section with a header, left/right navigation arrows, and a horizontal row of grayscale logos (AECOM, SKYLINE, TERRANOVA, PINECREST) inside a bordered container.",
+     "what_candidate_has": "The 'CLIENTS' section, logo carousel, and navigation arrows are completely absent.",
+     "severity": "critical",
+     "fix_hint": "Implement the Clients carousel with the correct logos, container borders, and arrow controls."
+    },
+    {
+     "area": "Sidebar / Edge Tab",
+     "what_reference_has": "A vertical red tab on the far right edge labeled 'Site of the Day' with a 'W.' logo.",
+     "what_candidate_has": "No edge tab or sidebar element is present on either side.",
+     "severity": "minor",
+     "fix_hint": "Add the red 'Site of the Day' vertical tab to the right edge."
+    },
+    {
+     "area": "Content Section: Problems",
+     "what_reference_has": "A section labeled 'PROBLEMS' containing a large bold headline on the left ('YOUR DESIGN TOOLS...') and a paragraph of body text on the right.",
+     "what_candidate_has": "A section labeled 'المشاكل [03]' with a large bold headline on the right ('أدوات التصميم...') and body text below it. The layout is vertically stacked rather than side-by-side.",
+     "severity": "major",
+     "fix_hint": "Adjust the 'Problems' section to use a side-by-side two-column layout for the headline and body copy."
+    },
+    {
+     "area": "Bottom Grid / Placeholders",
+     "what_reference_has": "A structured grid of empty rectangular boxes with thin gray borders at the bottom of the page.",
+     "what_candidate_has": "A single row of narrow, empty rectangular boxes at the very bottom, which are much smaller and differently proportioned than the reference's grid.",
+     "severity": "major",
+     "fix_hint": "Resize and restructure the bottom placeholders to match the larger grid cells seen in the reference."
+    },
+    {
+     "area": "Cookie Consent Banner",
+     "what_reference_has": "A floating cookie banner at the bottom center with 'This website uses cookies.', 'LEARN MORE' link, and 'ACCEPT' (orange) / 'REJECT' buttons.",
+     "what_candidate_has": "No cookie consent banner is visible.",
+     "severity": "minor",
+     "fix_hint": "Add the cookie consent banner with the specified text and button styling."
+    },
+    {
+     "area": "Footer / Page Counter",
+     "what_reference_has": "No visible page counter or footer text in this view.",
+     "what_candidate_has": "A footer line at the bottom right reading '[MDRK-01] · SHEET 01/01'.",
+     "severity": "minor",
+     "fix_hint": "Remove the page counter/footer text if it's not in the reference."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p03-15",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p03-15.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Grid System",
+     "what_reference_has": "A 4-column horizontal grid layout with a large, prominent header spanning the full width. Content is organized into wide, open cells separated by thin vertical lines.",
+     "what_candidate_has": "A 4-column vertical card-based layout (stacked). The header is significantly smaller and positioned in the top-right corner. Content is enclosed in individual bordered boxes.",
+     "severity": "critical",
+     "fix_hint": "Revert to the original 4-column horizontal grid structure. Expand the header to full width and increase its scale dramatically."
+    },
+    {
+     "area": "Header / Title Block",
+     "what_reference_has": "Massive, bold, all-caps sans-serif title ('YOU TELL THEM...') occupying the top ~10% of the viewport height.",
+     "what_candidate_has": "Smaller Arabic title positioned at the top right, taking up much less vertical space. Includes a subtitle/description not present (or differently placed) in reference.",
+     "severity": "major",
+     "fix_hint": "Scale up the primary header to match the visual weight and position of the reference."
+    },
+    {
+     "area": "Content Containers (Cards vs Cells)",
+     "what_reference_has": "Open cells defined by vertical dividers only. No borders around individual content blocks (icons/text float freely within columns).",
+     "what_candidate_has": "Each of the 4 items is wrapped in a distinct rectangular box with a visible border (card UI pattern).",
+     "severity": "major",
+     "fix_hint": "Remove the border boxes around the 4 content items. Use the column grid lines as the only separators."
+    },
+    {
+     "area": "Reading Order / Direction",
+     "what_reference_has": "Left-to-Right (LTR) layout. Item [01] is on the far left, Item [04] is on the far right.",
+     "what_candidate_has": "Right-to-Left (RTL) layout. Item [01] is on the far right, Item [04] is on the far left. (Note: RTL is correct for Arabic, but structurally differs from the LTR reference image provided for matching).",
+     "severity": "major",
+     "fix_hint": "If strictly matching the reference pixel-position, reverse the order or acknowledge the directional flip."
+    },
+    {
+     "area": "Imagery Style & Subject",
+     "what_reference_has": "Large, faint, isometric technical line drawings (cylinder, cube, sphere/circle, stacked planes). High line weight uniformity, 'blueprint' aesthetic.",
+     "what_candidate_has": "Smaller, flatter, 2D iconography (document, grid, clock, node-map). Higher contrast line weights. Completely different visual metaphors.",
+     "severity": "critical",
+     "fix_hint": "Replace the 2D icons with the specific isometric wireframe illustrations seen in the reference."
+    },
+    {
+     "area": "Typography Scale & Hierarchy",
+     "what_reference_has": "Headings are large, bold, uppercase sans-serif. Body text is small and light. Numbering ([01], etc.) is small and subtle in the header row.",
+     "what_candidate_has": "Headings are bold but proportionally smaller relative to the container. The numbering ([01]) is larger, colored red/orange, and placed inside the card rather than a separate header strip.",
+     "severity": "major",
+     "fix_hint": "Adjust type scale. Move numbering back to a top-aligned label row outside the main content area. Remove color from numbering if reference is monochrome/grey."
+    },
+    {
+     "area": "Footer / Cookie Banner",
+     "what_reference_has": "A prominent, high-contrast cookie consent banner fixed at the bottom center with 'ACCEPT' (orange) and 'REJECT' buttons.",
+     "what_candidate_has": "No cookie banner. Instead, has a minimal footer line with sheet number '[MDRK-01] . SHEET 01/01'.",
+     "severity": "minor",
+     "fix_hint": "Add the cookie consent banner to match the reference state."
+    },
+    {
+     "area": "Side Tab / Chrome",
+     "what_reference_has": "A vertical red tab labeled 'W. Site of the Day' protruding from the right edge.",
+     "what_candidate_has": "No side tab present.",
+     "severity": "minor",
+     "fix_hint": "Add the 'Site of the Day' side tab element."
+    },
+    {
+     "area": "Ruler / Axis Markers",
+     "what_reference_has": "A horizontal axis/ruler with '+' markers at the bottom of the grid area.",
+     "what_candidate_has": "No ruler or axis markers visible.",
+     "severity": "minor",
+     "fix_hint": "Implement the horizontal ruler/axis line with plus-sign terminators."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p04-20",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p04-20.png",
+   "verdict": "DIFFERENT",
+   "score": 45,
+   "differences": [
+    {
+     "area": "Header / Top Bar",
+     "what_reference_has": "A multi-column text header with four distinct blocks of small, dark grey body copy spanning the full width of the canvas.",
+     "what_candidate_has": "A minimal header with a left-aligned label 'MADAREK : LEARNING SHEET' and a right-aligned red link. The multi-column text block is entirely missing.",
+     "severity": "major",
+     "fix_hint": "Restore the four-column header text layout to match the reference structure."
+    },
+    {
+     "area": "Main Typography (Headline)",
+     "what_reference_has": "Large, bold, black, all-caps sans-serif text ('RIGHT THERE WITH YOU') centered horizontally in the upper-middle area.",
+     "what_candidate_has": "Large Arabic text ('البريدية — أرنبة') split into two lines, right-aligned. The first line is black, the second line is orange/red. The font is a different weight/style.",
+     "severity": "critical",
+     "fix_hint": "Match the reference's single-line, centered, all-black, all-caps headline style."
+    },
+    {
+     "area": "Sub-headline / Body Text",
+     "what_reference_has": "No visible sub-headline or body text below the main headline in the upper section.",
+     "what_candidate_has": "A visible block of smaller Arabic body text positioned below the main headline and above the bottom graphic.",
+     "severity": "major",
+     "fix_hint": "Remove the additional body text block or verify if it should be hidden/absent as per reference."
+    },
+    {
+     "area": "Sidebar / Chrome Tab",
+     "what_reference_has": "A vertical red tab on the right edge labeled 'W. Site of the Day' with white text.",
+     "what_candidate_has": "No vertical sidebar tab present on either edge.",
+     "severity": "major",
+     "fix_hint": "Add the vertical 'Site of the Day' chrome tab to the right edge."
+    },
+    {
+     "area": "Rulers / Grid Guides",
+     "what_reference_has": "Visible horizontal ruler markings at the very top edge and vertical ruler markings along the left edge.",
+     "what_candidate_has": "No visible rulers or grid tick marks along the top or left edges.",
+     "severity": "minor",
+     "fix_hint": "Enable or overlay the design software rulers to match the reference view."
+    },
+    {
+     "area": "Footer / Cookie Banner",
+     "what_reference_has": "A prominent footer banner at the bottom center: 'This website uses cookies. LEARN MORE' with 'ACCEPT' (orange) and 'REJECT' buttons.",
+     "what_candidate_has": "No cookie banner or footer UI element at the bottom of the viewport.",
+     "severity": "major",
+     "fix_hint": "Implement the cookie consent banner at the bottom of the screen."
+    },
+    {
+     "area": "Bottom Graphic / Diagram",
+     "what_reference_has": "The bottom area is mostly empty/off-white; no complex diagram is visible in this viewport crop.",
+     "what_candidate_has": "A large, detailed technical diagram/table is visible at the bottom, featuring columns (A-H), rows (1-2), grid lines, and a pink highlighted cell with Arabic text ('قاعدة البيانات').",
+     "severity": "critical",
+     "fix_hint": "Hide or remove the bottom diagram to match the reference's empty lower state, or adjust the viewport/crop to exclude it."
+    },
+    {
+     "area": "Layout / Composition Balance",
+     "what_reference_has": "Heavy negative space in the center and bottom. Content is concentrated at the top (text) and center (headline).",
+     "what_candidate_has": "Content is distributed across the top (header), middle (headline + subtext), and bottom (diagram). Much less negative space.",
+     "severity": "major",
+     "fix_hint": "Adjust the vertical distribution of elements to restore the reference's specific spacing and whitespace ratios."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p05-25",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p05-25.png",
+   "verdict": "DIFFERENT",
+   "score": 5,
+   "differences": [
+    {
+     "area": "Main Content / Layout",
+     "what_reference_has": "A large, bold, centered typographic statement ('RIGHT THERE WITH YOU') occupying the central viewport.",
+     "what_candidate_has": "A technical architectural floor plan diagram centered in the viewport, enclosed in a white sheet with a drop shadow.",
+     "severity": "critical",
+     "fix_hint": "Replace the architectural diagram with the centered hero text layout."
+    },
+    {
+     "area": "Header / Top Bar",
+     "what_reference_has": "Empty header area with only ruler tick marks at the very top edge.",
+     "what_candidate_has": "Text header 'MADAREK · LEARNING SHEET' aligned to the top left, plus a solid red block in the top right corner.",
+     "severity": "major",
+     "fix_hint": "Remove the 'MADAREK' text and the red top-right block to match the empty reference header."
+    },
+    {
+     "area": "Right Edge Tab (Chrome)",
+     "what_reference_has": "A vertical red tab on the right edge containing a white 'W.' logo and vertical text 'Site of the Day'.",
+     "what_candidate_has": "No right-edge tab or 'Site of the Day' branding visible.",
+     "severity": "major",
+     "fix_hint": "Add the red vertical 'Site of the Day' tab to the right edge of the viewport."
+    },
+    {
+     "area": "Footer / Cookie Banner",
+     "what_reference_has": "A cookie consent banner at the bottom center with text 'This website uses cookies. LEARN MORE' and two buttons: a solid orange 'ACCEPT' and an outlined 'REJECT'.",
+     "what_candidate_has": "A minimal technical footer with text '[MDRK-01] · SHEET 01/01' on the right. No cookie banner.",
+     "severity": "major",
+     "fix_hint": "Replace the technical sheet footer with the cookie consent banner and buttons."
+    },
+    {
+     "area": "Bottom Center UI Element",
+     "what_reference_has": "No element in the bottom center (space is occupied by the cookie banner).",
+     "what_candidate_has": "A small outlined box containing the text '01 · live · lectures'.",
+     "severity": "minor",
+     "fix_hint": "Remove the '01 · live · lectures' tag."
+    },
+    {
+     "area": "Background / Canvas",
+     "what_reference_has": "A plain, solid light beige/off-white background filling the entire screen.",
+     "what_candidate_has": "A darker grey-beige background with a distinct white 'paper' rectangle in the center where the drawing sits.",
+     "severity": "major",
+     "fix_hint": "Remove the white paper background layer and adjust the canvas color to match the reference's lighter beige."
+    },
+    {
+     "area": "Rulers / Grid",
+     "what_reference_has": "Fine pixel-ruler tick marks along the top and left axes only.",
+     "what_candidate_has": "Architectural grid axes with circular bubbles containing letters (A-H) and numbers (1-4) surrounding the central diagram.",
+     "severity": "major",
+     "fix_hint": "Remove the architectural grid bubbles and axis lines; restore the simple pixel rulers if present in the design system, or remove grid entirely."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p06-30",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p06-30.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Content",
+     "what_reference_has": "A minimalist, mostly empty canvas with a large centered watermark text ('FOR THE WHOLE DESIGN'), a vertical 'Site of the Day' tab on the right edge, and a cookie consent bar at the bottom.",
+     "what_candidate_has": "A complex technical architectural floor plan (grid, rooms, labels, dimensions) contained within a central sheet, with a header ('MADAREK - LEARNING SHEET') and a footer status bar. No watermark or side tab visible in the same manner.",
+     "severity": "critical",
+     "fix_hint": "The candidate is showing a completely different view/state (a specific document/sheet) compared to the reference (which appears to be an empty workspace or landing state)."
+    },
+    {
+     "area": "Background / Canvas",
+     "what_reference_has": "Solid, uniform light beige/cream color filling the entire viewport.",
+     "what_candidate_has": "Darker beige background with a distinct white 'paper' rectangle centered on it, representing a sheet.",
+     "severity": "critical",
+     "fix_hint": "Match the background color and remove the centered paper container to match the reference's full-bleed aesthetic."
+    },
+    {
+     "area": "Central Visual Element",
+     "what_reference_has": "Large, faint, sans-serif uppercase text watermark: 'FOR THE WHOLE DESIGN'.",
+     "what_candidate_has": "Technical line drawing of a floor plan with grid lines (A-H, 1-4), room outlines, door swings, and dimension lines.",
+     "severity": "critical",
+     "fix_hint": "Replace the technical drawing with the large centered text watermark."
+    },
+    {
+     "area": "Right Edge Chrome (Tab)",
+     "what_reference_has": "Vertical red tab labeled 'W.' and 'Site of the Day' attached to the right edge.",
+     "what_candidate_has": "No vertical tab. Instead, there are faint curved annotation lines on the right side of the drawing.",
+     "severity": "major",
+     "fix_hint": "Add the red 'Site of the Day' vertical tab to the right edge."
+    },
+    {
+     "area": "Bottom Chrome (Cookie Bar)",
+     "what_reference_has": "Standard cookie consent banner: 'This website uses cookies. LEARN MORE [ACCEPT] [REJECT]'. Buttons are solid orange/red and white.",
+     "what_candidate_has": "Technical footer bar containing '[MDRK-01] • SHEET 01/01'. No cookie banner.",
+     "severity": "major",
+     "fix_hint": "Replace the technical sheet info footer with the cookie consent bar."
+    },
+    {
+     "area": "Top Header",
+     "what_reference_has": "Ruler/marks along the top edge (+ signs at corners). No text header.",
+     "what_candidate_has": "Text header 'MADAREK - LEARNING SHEET' aligned left within the sheet area. Rulers are around the inner sheet, not the viewport edge.",
+     "severity": "major",
+     "fix_hint": "Remove the text header and restore the viewport-edge rulers."
+    },
+    {
+     "area": "Typography (Content)",
+     "what_reference_has": "English text ('FOR THE WHOLE DESIGN', 'Site of the Day', Cookie text).",
+     "what_candidate_has": "Arabic text ('قاعة المحاضرات', 'نقطة التحكم') and English technical annotations ('M2 240', '02 . live . checkpoints').",
+     "severity": "minor",
+     "fix_hint": "Ignore language per instructions, but note that the text content and placement are structurally different."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p07-35",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p07-35.png",
+   "verdict": "DIFFERENT",
+   "score": 5,
+   "differences": [
+    {
+     "area": "Overall Layout & Content",
+     "what_reference_has": "A minimalist, text-centric layout with a large centered headline, a small sub-headline, a cookie consent banner at the bottom, and a vertical 'Site of the Day' tab on the right edge.",
+     "what_candidate_has": "A complex technical architectural drawing (floor plan) contained within a central canvas, featuring grid lines, room labels, dimension markers, and a header bar. No cookie banner or side tab is present.",
+     "severity": "critical",
+     "fix_hint": "Replace the technical drawing with the centered 'FOR THE WHOLE DESIGN' typography layout. Restore the cookie banner and side tab."
+    },
+    {
+     "area": "Background / Canvas",
+     "what_reference_has": "A solid, uniform light beige/off-white background filling the entire viewport.",
+     "what_candidate_has": "A darker beige background with a distinct white rectangular 'paper' or canvas area in the center where the drawing sits.",
+     "severity": "critical",
+     "fix_hint": "Remove the inner white canvas and match the reference's solid background color."
+    },
+    {
+     "area": "Header Chrome",
+     "what_reference_has": "No top header bar; only faint ruler marks at the very top edge.",
+     "what_candidate_has": "A distinct header bar containing the text 'MADAREK · LEARNING SHEET' and a solid red block on the far right.",
+     "severity": "major",
+     "fix_hint": "Remove the header bar and red block to match the reference's clean top edge."
+    },
+    {
+     "area": "Footer Chrome",
+     "what_reference_has": "A prominent cookie consent banner ('This website uses cookies...') with red 'ACCEPT' and white 'REJECT' buttons at the bottom center.",
+     "what_candidate_has": "No cookie banner. Instead, technical sheet info ('[MDRK-01] · SHEET 01/01') is positioned in the bottom right corner.",
+     "severity": "major",
+     "fix_hint": "Add the cookie consent banner at the bottom and remove the technical sheet footer."
+    },
+    {
+     "area": "Side Chrome (Edge Tab)",
+     "what_reference_has": "A vertical red/white tab labeled 'W. Site of the Day' attached to the right edge of the screen.",
+     "what_candidate_has": "No side tab present.",
+     "severity": "major",
+     "fix_hint": "Add the 'Site of the Day' vertical tab to the right edge."
+    },
+    {
+     "area": "Central Content (Imagery/Text)",
+     "what_reference_has": "Large, bold, black sans-serif text reading 'FOR THE WHOLE DESIGN' in the center, with smaller Arabic text below it.",
+     "what_candidate_has": "A black-and-white line-art floor plan with grid lines (A-H, 1-4), room outlines, and architectural symbols. One room has a light red fill.",
+     "severity": "critical",
+     "fix_hint": "Remove the floor plan and restore the specific typographic layout."
+    },
+    {
+     "area": "Bottom Center Element",
+     "what_reference_has": "Small Arabic text ('نقطة التحكم') and a code ('M2 36').",
+     "what_candidate_has": "A small bordered box containing the text '02 · live · checkpoints'.",
+     "severity": "minor",
+     "fix_hint": "Replace the 'checkpoints' box with the original Arabic sub-text."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p08-40",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p08-40.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Content",
+     "what_reference_has": "A minimalist, centered typographic layout with the text 'FOR THE WHOLE DESIGN' in large bold grey sans-serif font on a light beige background. Includes a faint architectural line drawing in the upper left corner.",
+     "what_candidate_has": "A complex technical architectural floor plan (Learning Sheet) with a grid system, room labels (Arabic), dimensions, and furniture layouts. Contains a header bar, footer bar, and various UI chrome elements not present in the reference.",
+     "severity": "critical",
+     "fix_hint": "Replace the technical drawing with the centered 'FOR THE WHOLE DESIGN' typography and match the sparse layout of the reference."
+    },
+    {
+     "area": "Background / Canvas",
+     "what_reference_has": "Solid light beige/off-white color (#F5F5F0 approx) with no grid or texture visible in the main area.",
+     "what_candidate_has": "White background with a prominent light grey coordinate grid (A-H, 1-4) and border lines defining the sheet area.",
+     "severity": "major",
+     "fix_hint": "Remove the grid lines and change background color to match the warm beige of the reference."
+    },
+    {
+     "area": "Header / Top Chrome",
+     "what_reference_has": "No top header bar. Only faint crosshairs (+) at the top left and right corners of the viewport.",
+     "what_candidate_has": "A distinct header bar containing 'MADAREK · LEARNING SHEET' on the left and Arabic navigation text on the right, with an orange accent line at the very top edge.",
+     "severity": "major",
+     "fix_hint": "Remove the header bar and orange top border."
+    },
+    {
+     "area": "Footer / Bottom Chrome",
+     "what_reference_has": "A cookie consent banner at the bottom center: 'This website uses cookies LEARN MORE [ACCEPT] [REJECT]'. An 'INTRODUCTION' text box is pinned to the bottom-left corner.",
+     "what_candidate_has": "A footer bar at the bottom right containing '[MDRK-01] · SHEET 01/01'. A central pill-shaped tag reads '03 · live · exams'. No cookie banner is visible in this view (or it is positioned differently).",
+     "severity": "major",
+     "fix_hint": "Implement the cookie consent banner and bottom-left intro box. Remove the sheet version footer."
+    },
+    {
+     "area": "Side Tab / Floating Element",
+     "what_reference_has": "A vertical red tab on the right edge labeled 'W.' and 'Site of the Day' rotated 90 degrees counter-clockwise.",
+     "what_candidate_has": "No side tab present.",
+     "severity": "minor",
+     "fix_hint": "Add the red 'W.' Site of the Day tab to the right edge."
+    },
+    {
+     "area": "Typography / Text Content",
+     "what_reference_has": "Large, bold, uppercase sans-serif text reading 'FOR THE WHOLE DESIGN'. Small serif text in the bottom-left box.",
+     "what_candidate_has": "Small sans-serif labels for rooms (e.g., 'قاعة المحاضرات'), dimensions (e.g., 'M2 150'), and UI elements. Text is mixed case and much smaller scale relative to the container.",
+     "severity": "critical",
+     "fix_hint": "Replace all text with the specific 'FOR THE WHOLE DESIGN' string and styling."
+    },
+    {
+     "area": "Imagery / Graphics Style",
+     "what_reference_has": "Faint, low-contrast, incomplete architectural line sketch (looks like a plan view fragment) in the upper left.",
+     "what_candidate_has": "High-contrast, complete, detailed CAD-style architectural floor plan with solid fills (pink for one room), furniture symbols, and dimension lines.",
+     "severity": "critical",
+     "fix_hint": "Replace the detailed floor plan with the faint, artistic line sketch seen in the reference."
+    },
+    {
+     "area": "Rulers / Margins",
+     "what_reference_has": "Faint tick marks along the top and left edges resembling ruler markings.",
+     "what_candidate_has": "Alphanumeric grid headers (Circles A-H, 1-4) acting as coordinates, plus crosshair marks at corners.",
+     "severity": "minor",
+     "fix_hint": "Switch from alphanumeric grid headers to simple linear ruler tick marks."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p09-45",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p09-45.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Content",
+     "what_reference_has": "A minimalist, abstract architectural floor plan with thick, solid grey walls on a plain off-white background. No grid, no labels, no header, and a prominent 'Site of the Day' vertical tab.",
+     "what_candidate_has": "A detailed technical architectural drawing (Learning Sheet) contained within a bordered frame, featuring a coordinate grid (A-H, 1-4), room labels in Arabic/English, furniture layouts, and a header ('MADAREK - LEARNING SHEET').",
+     "severity": "critical",
+     "fix_hint": "Replace the technical drawing with the abstract wall plan layout. Remove all grids, headers, and room labels."
+    },
+    {
+     "area": "Imagery Style / Line Weight",
+     "what_reference_has": "Heavy, solid geometric shapes representing walls. High contrast between the dark grey walls and the light background. No internal detail or furniture.",
+     "what_candidate_has": "Fine-line technical drafting style. Thin lines for walls, furniture (desks/chairs), doors (arcs), and dimension markers. Low contrast, monochromatic line art.",
+     "severity": "critical",
+     "fix_hint": "Change rendering style to solid filled blocks with heavy stroke weights. Remove all fine detailing like door swings and furniture."
+    },
+    {
+     "area": "Chrome / UI Elements (Right Side)",
+     "what_reference_has": "A bright red vertical tab labeled 'W. Site of the Day' attached to the right edge of the viewport.",
+     "what_candidate_has": "No vertical tab. Instead, there are faint curved 'wind' or flow lines on the far right outside the drawing border.",
+     "severity": "major",
+     "fix_hint": "Remove the wind lines and implement the red 'W.' vertical tab."
+    },
+    {
+     "area": "Chrome / UI Elements (Bottom)",
+     "what_reference_has": "A black 'INTRODUCTION' box in the bottom-left corner with text and a '[SCROLL TO CONTINUE]' link. A cookie consent banner at the very bottom center ('This website uses cookies...').",
+     "what_candidate_has": "No introduction box. A small centered footer tag '03 . live . exams'. A sheet info tag '[MDRK-01] + SHEET 01/01' in the bottom-right corner. No cookie banner.",
+     "severity": "major",
+     "fix_hint": "Add the Introduction panel and Cookie banner. Remove the 'live exams' tag and sheet metadata."
+    },
+    {
+     "area": "Fills / Colors",
+     "what_reference_has": "Solid medium-grey (#808080 approx) fills for walls. Plain off-white background.",
+     "what_candidate_has": "Mostly white/transparent fills with black outlines. One room has a light pink/salmon fill. Small red square markers present.",
+     "severity": "major",
+     "fix_hint": "Remove the pink fill and red markers. Change wall style to solid grey fills without outlines."
+    },
+    {
+     "area": "Typography / Labels",
+     "what_reference_has": "No text labels within the drawing area.",
+     "what_candidate_has": "Multiple text labels: 'MADAREK - LEARNING SHEET' (header), Room names (e.g., 'قاعة المحاضرات'), Room IDs (e.g., 'M2 150'), Grid coordinates (A-H, 1-4).",
+     "severity": "major",
+     "fix_hint": "Remove all text labels, headers, and grid coordinates from the canvas."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p10-50",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p10-50.png",
+   "verdict": "DIFFERENT",
+   "score": 5,
+   "differences": [
+    {
+     "area": "Overall Layout & Subject Matter",
+     "what_reference_has": "A minimalist, high-contrast architectural floor plan with thick black walls on a light grey background. The layout is centered and fills most of the viewport.",
+     "what_candidate_has": "A complex technical architectural drawing (learning sheet) with thin lines, grid systems, dimension lines, and multiple room labels. The drawing is contained within a specific bordered frame with extensive surrounding chrome (headers, footers).",
+     "severity": "critical",
+     "fix_hint": "Replace the technical drawing with the simplified floor plan graphic and remove the surrounding 'Learning Sheet' UI chrome."
+    },
+    {
+     "area": "Line Weights & Borders",
+     "what_reference_has": "Very thick, solid black strokes for walls (approx 15-20px). No visible grid or dimension lines.",
+     "what_candidate_has": "Very thin, uniform line weights (approx 1-2px) for all structural elements. Includes fine dimension lines, grid ticks, and extension lines.",
+     "severity": "critical",
+     "fix_hint": "Increase wall stroke weight significantly to match the heavy, bold aesthetic of the reference."
+    },
+    {
+     "area": "Background / Canvas",
+     "what_reference_has": "Solid, flat light-grey/off-white background (#F0F0F0 approx) filling the entire view.",
+     "what_candidate_has": "White background for the drawing area, surrounded by a darker grey border area containing UI elements.",
+     "severity": "major",
+     "fix_hint": "Change background to a uniform light grey and remove the distinct drawing container box."
+    },
+    {
+     "area": "Chrome / UI Overlays",
+     "what_reference_has": "A bottom-left 'INTRODUCTION' text box and a bottom-center cookie consent banner ('This website uses cookies'). A vertical red tab labeled 'W. Site of the Day' on the right edge.",
+     "what_candidate_has": "A top header bar with logo and title ('MADAREK - LEARNING SHEET'), a bottom footer with sheet info ('[MDRK-01] SHEET 01/01'), and status tags at the bottom center of the drawing ('04 . live . mastery'). No cookie banner or red side tab.",
+     "severity": "major",
+     "fix_hint": "Remove the technical drawing header/footer and restore the specific cookie banner and 'Site of the Day' side tab."
+    },
+    {
+     "area": "Imagery Style / Detail Level",
+     "what_reference_has": "Abstract, schematic representation. Only walls and basic door openings are shown. No furniture, no dimensions, no room labels.",
+     "what_candidate_has": "Highly detailed technical illustration including furniture layouts (beds, desks), room labels in Arabic, dimension strings (11.8M, etc.), and section markers.",
+     "severity": "critical",
+     "fix_hint": "Strip all furniture, labels, and dimensions to revert to the pure wall-geometry style of the reference."
+    },
+    {
+     "area": "Color Palette / Fills",
+     "what_reference_has": "Monochromatic: Black lines, Grey background, White text box background, Red accent (side tab/button).",
+     "what_candidate_has": "Polychromatic: Black/Grey lines, Red accents (labels/squares), Pink/Salmon fill color in one room ('غرفة نوم رئيسية').",
+     "severity": "major",
+     "fix_hint": "Remove the pink room fill and limit the palette to black, white, grey, and the specific red used in the reference UI."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p11-55",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p11-55.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Subject",
+     "what_reference_has": "A centered, dark-line architectural floor plan (thick walls, thin furniture) on a plain background with a cookie banner and intro sidebar.",
+     "what_candidate_has": "A technical architectural drawing sheet with a light-line plan, grid system, dimension lines, title block, and annotation boxes. Completely different layout structure and subject matter (floor plan vs. construction drawing).",
+     "severity": "critical",
+     "fix_hint": "Rebuild the entire canvas to match the reference's centered floor plan composition, removing all grid, dimension, and title block elements."
+    },
+    {
+     "area": "Line Weights & Borders",
+     "what_reference_has": "Very heavy, solid black strokes for structural walls; medium weight for furniture outlines; no visible grid or dimension lines.",
+     "what_candidate_has": "Uniform, very fine line weights for all elements including walls and furniture; extensive use of thin dimension lines, grid ticks, and extension lines.",
+     "severity": "critical",
+     "fix_hint": "Increase wall stroke width significantly to match the bold 'poche' style of the reference. Remove all dimension and grid linework."
+    },
+    {
+     "area": "Chrome / UI Overlays",
+     "what_reference_has": "A bottom-aligned cookie consent banner ('This website uses cookies...') with orange ACCEPT button; a left-aligned 'INTRODUCTION' dark sidebar; a vertical red 'W. Site of the Day' tab on the right edge.",
+     "what_candidate_has": "A top header bar ('MADAREK - LEARNING SHEET'); a bottom-right metadata tag ('[MDRK-01] • SHEET 01/01'); a bottom-right red-outlined text box; a central bottom status bar ('04 • live • mastery'). No cookie banner or sidebars.",
+     "severity": "critical",
+     "fix_hint": "Replace the technical sheet chrome with the exact cookie banner, introduction box, and vertical award tab from the reference."
+    },
+    {
+     "area": "Background / Paper Texture",
+     "what_reference_has": "Solid, flat off-white/beige background with no texture or grain.",
+     "what_candidate_has": "Visible subtle paper texture/grain across the entire canvas, giving it a scanned document appearance.",
+     "severity": "major",
+     "fix_hint": "Remove paper texture to achieve the clean digital background of the reference."
+    },
+    {
+     "area": "Fills / Tonal Range",
+     "what_reference_has": "No colored fills; purely monochromatic black/gray lines on white.",
+     "what_candidate_has": "A prominent light pink/salmon fill in the top-left room area; red text for room tags ([06], [03], etc.).",
+     "severity": "major",
+     "fix_hint": "Remove all color fills and red typography; revert to strictly monochromatic styling."
+    },
+    {
+     "area": "Typography & Annotations",
+     "what_reference_has": "Minimal text, mostly inside UI overlays; standard Latin characters.",
+     "what_candidate_has": "Dense Arabic RTL text annotations for room names and areas; numerical room tags in brackets; dimension values (11.6M, 20.6M); column grid headers (A-H).",
+     "severity": "major",
+     "fix_hint": "Remove all Arabic text, dimensions, and grid labels. Match the sparse text density of the reference."
+    },
+    {
+     "area": "Imagery Style / Rendering",
+     "what_reference_has": "Schematic interior design plan focusing on furniture layout and circulation with thick wall boundaries.",
+     "what_candidate_has": "Technical construction drawing focusing on spatial allocation, areas (M2), and structural grid alignment with precise geometry.",
+     "severity": "critical",
+     "fix_hint": "Adopt the looser, thicker-lined schematic style of the reference rather than the precise CAD-style drafting of the candidate."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p12-60",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p12-60.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Composition",
+     "what_reference_has": "Full-bleed, centered architectural floor plan with heavy, solid black structural walls dominating the canvas. Minimalist UI chrome (cookie banner at bottom, intro box at bottom-left).",
+     "what_candidate_has": "Complex dashboard-style layout with a header bar, a right-aligned info card, a central content column with text list and a smaller architectural diagram, and a large footer area. The layout is fragmented rather than singular.",
+     "severity": "critical",
+     "fix_hint": "Revert to the single-centered-floor-plan composition. Remove the header, sidebar cards, and footer branding."
+    },
+    {
+     "area": "Architectural Drawing Style (Line Weight)",
+     "what_reference_has": "High-contrast technical drawing. Structural walls are extremely thick, solid black blocks (approx. 10-15px weight). Interior lines are thin and precise. Dimension lines are light grey.",
+     "what_candidate_has": "Low-contrast wireframe style. All lines are uniform, thin, and light grey. There are no thick structural wall fills; walls are represented by double-lines or single thin strokes.",
+     "severity": "critical",
+     "fix_hint": "Increase structural wall line weight to match the reference's heavy black fills. Restore high contrast between structure and interior details."
+    },
+    {
+     "area": "Dimensioning & Annotations",
+     "what_reference_has": "Exterior dimension strings surrounding the entire plan on all four sides (Top, Bottom, Left, Right) with numerical values (e.g., 5598, 6688) and tick marks.",
+     "what_candidate_has": "Dimensions are minimal, appearing only on the top and bottom of the smaller plan snippet. The font size and style of numbers differ.",
+     "severity": "major",
+     "fix_hint": "Add full perimeter dimension strings matching the reference's placement and typography."
+    },
+    {
+     "area": "UI Chrome: Header",
+     "what_reference_has": "No visible header bar. Content starts near the top edge with only a faint ruler/grid line.",
+     "what_candidate_has": "Prominent grey header bar spanning the width containing 'MADAREK - LEARNING SHEET'.",
+     "severity": "major",
+     "fix_hint": "Remove the header bar entirely."
+    },
+    {
+     "area": "UI Chrome: Sidebar / Info Card",
+     "what_reference_has": "No sidebar or floating info card. The 'Introduction' box is anchored to the bottom-left corner.",
+     "what_candidate_has": "Large white card in the top-right corner with red accent border, containing '04', Arabic title, and subtitle text.",
+     "severity": "major",
+     "fix_hint": "Remove the top-right info card."
+    },
+    {
+     "area": "UI Chrome: Footer / Branding",
+     "what_reference_has": "Simple cookie consent banner ('This website uses cookies...') fixed at the bottom center. Small 'INTRODUCTION' box at bottom left.",
+     "what_candidate_has": "Large footer area with 'demo' button, navigation text ('...'), and massive branding logo ('...') on the right side with a page counter ('05'). No cookie banner visible.",
+     "severity": "major",
+     "fix_hint": "Replace footer branding with the cookie consent banner and small intro box from the reference."
+    },
+    {
+     "area": "Central Content Area",
+     "what_reference_has": "The main content is purely the geometric architectural plan.",
+     "what_candidate_has": "The main content is a text-based checklist (with checkmarks) on the left and a small plan view on the right within a container.",
+     "severity": "critical",
+     "fix_hint": "Replace the text list and small plan with the full-scale reference floor plan."
+    },
+    {
+     "area": "Color Palette & Fills",
+     "what_reference_has": "Monochromatic/Grayscale. Background is off-white/paper. Plan is Black/Grey. Accent is Red (only on the vertical 'W.' tab).",
+     "what_candidate_has": "Uses Red for the card border, numbers ('04', '05'), and checkmarks. Includes a pink/salmon fill color inside a room in the small plan view.",
+     "severity": "major",
+     "fix_hint": "Remove pink room fills. Restrict red usage to match the reference (only the side tab). Ensure plan is grayscale."
+    },
+    {
+     "area": "Side Tab ('W.')",
+     "what_reference_has": "Vertical red tab on the right edge labeled 'W.' and 'Site of the Day'.",
+     "what_candidate_has": "Absent. No vertical tab exists.",
+     "severity": "minor",
+     "fix_hint": "Add the vertical red 'W.' tab to the right edge."
+    },
+    {
+     "area": "Background Texture",
+     "what_reference_has": "Subtle paper grain/noise texture visible in the background.",
+     "what_candidate_has": "Clean, flat digital grey/white background without visible grain.",
+     "severity": "minor",
+     "fix_hint": "Apply a subtle noise/grain overlay to the background to simulate paper texture."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p13-65",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p13-65.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Content",
+     "what_reference_has": "A technical architectural floor plan with thick black wall lines, thin dimension lines, and furniture outlines. Includes a red 'Site of the Day' vertical tab on the right edge, a black 'INTRODUCTION' footer tab on the bottom left, and a cookie consent banner at the very bottom center.",
+     "what_candidate_has": "A text-heavy learning sheet or dashboard containing two distinct card-like sections with Arabic text, large orange numbers (05, 06, 25, 2, 6), and small UI elements (badges, colored dots). No floor plan, no dimension lines, no technical drawing style.",
+     "severity": "critical",
+     "fix_hint": "Replace the text cards with the architectural floor plan vector graphic. Restore all technical line work."
+    },
+    {
+     "area": "Header / Top Chrome",
+     "what_reference_has": "A horizontal ruler/bar with fine tick marks spanning the full width at the very top edge.",
+     "what_candidate_has": "A text header reading 'MADAREK - LEARNING SHEET' aligned to the top left, followed by a solid thick red/orange line extending to the right edge.",
+     "severity": "critical",
+     "fix_hint": "Remove the text header and replace it with the technical dimension ruler bar."
+    },
+    {
+     "area": "Right Edge Tab",
+     "what_reference_has": "A vertical red tab labeled 'W. Site of the Day' protruding from the right edge, centered vertically.",
+     "what_candidate_has": "No vertical tab present on the right edge.",
+     "severity": "major",
+     "fix_hint": "Add the 'W. Site of the Day' vertical tab to the right edge."
+    },
+    {
+     "area": "Bottom Left Footer Tab",
+     "what_reference_has": "A black rectangular block in the bottom left corner with white text 'INTRODUCTION' and smaller grey text '[CLICK ON VIOLATION]' below it.",
+     "what_candidate_has": "No footer tab in the bottom left corner.",
+     "severity": "major",
+     "fix_hint": "Add the black 'INTRODUCTION' footer tab to the bottom left."
+    },
+    {
+     "area": "Bottom Center Cookie Banner",
+     "what_reference_has": "A floating banner at the bottom center: 'This website uses cookies. LEARN MORE' with orange 'ACCEPT' and white 'REJECT' buttons.",
+     "what_candidate_has": "No cookie banner visible at the bottom center.",
+     "severity": "major",
+     "fix_hint": "Restore the cookie consent banner at the bottom center."
+    },
+    {
+     "area": "Bottom Right Metadata",
+     "what_reference_has": "Empty space or standard sheet border marks in the bottom right.",
+     "what_candidate_has": "Text metadata '[MDRK-01] • SHEET 01/01' in the bottom right corner.",
+     "severity": "minor",
+     "fix_hint": "Remove the sheet metadata text or replace it with the reference's border markings."
+    },
+    {
+     "area": "Imagery Style / Line Weight",
+     "what_reference_has": "Technical CAD style: Very thick black lines for walls, hairline/thin grey lines for dimensions and guides, geometric precision.",
+     "what_candidate_has": "UI/Card style: Rectangular containers with light grey borders, large sans-serif typography, soft UI elements (rounded rectangles for badges).",
+     "severity": "critical",
+     "fix_hint": "Change the entire visual style from UI Dashboard to Technical Architectural Drawing."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p14-70",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p14-70.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Grid",
+     "what_reference_has": "Complex, multi-column technical grid with a large architectural floor plan on the left (approx. 60% width) and a text-heavy feature panel on the right.",
+     "what_candidate_has": "Single-column, centered layout with no architectural drawing or complex grid structure. Content is stacked vertically in the center of the canvas.",
+     "severity": "critical",
+     "fix_hint": "Reconstruct the two-column layout with the architectural plan occupying the left half and the text panel on the right."
+    },
+    {
+     "area": "Imagery / Visual Subject",
+     "what_reference_has": "Detailed 2D CAD-style architectural floor plan with thick black walls, thin dimension lines, and furniture symbols (tables/chairs). Includes red '01', '03', '02' tags.",
+     "what_candidate_has": "Two UI screenshots of a web dashboard/interface showing data tables and dark mode elements. No architectural drawings present.",
+     "severity": "critical",
+     "fix_hint": "Replace the UI screenshots with the specific architectural floor plan shown in the reference."
+    },
+    {
+     "area": "Header / Top Navigation",
+     "what_reference_has": "No visible top header bar or navigation menu within the main content area (only a cookie banner at the bottom).",
+     "what_candidate_has": "A distinct header bar at the top containing breadcrumb-like text ('MADAREK - LEARNING SHEET') and a status alert box ('خطأ فني...').",
+     "severity": "major",
+     "fix_hint": "Remove the top header bar and status alert to match the reference's cleaner top edge."
+    },
+    {
+     "area": "Typography - Headline Scale & Position",
+     "what_reference_has": "Large, bold, all-caps sans-serif headline ('RUN AN AGENT...') positioned in the upper-middle area of the right-hand column.",
+     "what_candidate_has": "Very large Arabic headline ('للعمل وعرض الواجهات') centered horizontally in the upper-middle of the entire page. Scale is significantly larger relative to the page than the reference.",
+     "severity": "major",
+     "fix_hint": "Reduce headline scale and reposition it to align with the reference's right-column layout."
+    },
+    {
+     "area": "Typography - Body Text Layout",
+     "what_reference_has": "Body text is left-aligned in a narrow column, followed by a bulleted list of features ('Works with Revit...', 'Understands your geometry...', etc.).",
+     "what_candidate_has": "Body text is a single paragraph centered below the headline. No bulleted list is present; instead, there are captions under images.",
+     "severity": "major",
+     "fix_hint": "Implement the left-aligned body copy and the specific 4-line bulleted feature list."
+    },
+    {
+     "area": "UI Components - Feature List",
+     "what_reference_has": "Vertical list of text items separated by light horizontal rules. Includes icons on the far right (hexagon, question mark).",
+     "what_candidate_has": "No feature list. This space is occupied by the UI screenshots.",
+     "severity": "critical",
+     "fix_hint": "Add the vertical feature list with horizontal dividers and side icons."
+    },
+    {
+     "area": "UI Components - Call to Action (CTA)",
+     "what_reference_has": "'LEARN MORE' button with an arrow icon, located at the bottom of the text panel, full width of the column.",
+     "what_candidate_has": "No 'LEARN MORE' button in this position. The bottom area contains image captions and tags.",
+     "severity": "major",
+     "fix_hint": "Add the 'LEARN MORE' CTA button at the bottom of the text section."
+    },
+    {
+     "area": "UI Components - Sidebar / Chrome",
+     "what_reference_has": "A vertical tab/label 'W. Site of the Day' in orange/red attached to the right edge of the text panel. A black 'INTRODUCTION' box in the bottom left corner.",
+     "what_candidate_has": "No sidebar tabs. No 'INTRODUCTION' box. Instead, there are red outlined tags (e.g., 'real-ui') under the images.",
+     "severity": "major",
+     "fix_hint": "Add the 'Site of the Day' vertical tab and the 'INTRODUCTION' footer box."
+    },
+    {
+     "area": "UI Components - Cookie Banner",
+     "what_reference_has": "Cookie consent banner fixed at the very bottom: 'This website uses cookies...' with 'ACCEPT' (orange) and 'REJECT' buttons.",
+     "what_candidate_has": "No cookie banner at the bottom. The bottom contains footer metadata ('SHEET 01/01').",
+     "severity": "minor",
+     "fix_hint": "Add the cookie consent banner at the bottom of the viewport."
+    },
+    {
+     "area": "Footer / Metadata",
+     "what_reference_has": "Minimal footer content visible besides the cookie banner and intro box.",
+     "what_candidate_has": "Distinct footer line with '[MDRK-01] • SHEET 01/01' aligned to the right.",
+     "severity": "minor",
+     "fix_hint": "Adjust footer metadata to match reference or remove if not part of the core design matching."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p15-75",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p15-75.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Structure",
+     "what_reference_has": "Complex, multi-panel dashboard UI with a distinct left sidebar (containing 'HERON DASHBOARD' and '[02]'), a central canvas area with architectural floor plans and data tables, and a right sidebar containing 'Site of the Day' and cookie consent banner. High information density.",
+     "what_candidate_has": "Simple, single-column document layout resembling a learning sheet or form. No sidebars. Content flows vertically from header to footer.",
+     "severity": "critical",
+     "fix_hint": "Reconstruct the entire grid system to match the reference's 3-column dashboard layout."
+    },
+    {
+     "area": "Header / Top Bar",
+     "what_reference_has": "Minimalist top bar with a text input field labeled '[CLICK ON VIOLATION]' on the left, and tab-like controls ('+', 'Edits automatically...') on the right.",
+     "what_candidate_has": "Full-width header bar containing the title 'MADAREK - LEARNING SHEET', user profile info, and navigation links. Completely different component structure.",
+     "severity": "critical",
+     "fix_hint": "Replace the document header with the dashboard top-bar input field and approval status indicator."
+    },
+    {
+     "area": "Left Sidebar",
+     "what_reference_has": "Dedicated left column with large bold typography 'HERON DASHBOARD' and a small index '[02]'. Background is light grey/off-white.",
+     "what_candidate_has": "No left sidebar exists. The space is merged into the main content area.",
+     "severity": "critical",
+     "fix_hint": "Add the left vertical rail with the specific branding and index number."
+    },
+    {
+     "area": "Main Canvas - Imagery",
+     "what_reference_has": "Architectural floor plan drawing with thick black lines, dimension markers (e.g., '14000'), and a solid red rectangular highlight overlay. Includes a floating dark tooltip/modal window.",
+     "what_candidate_has": "No architectural drawings. Contains text fields, labels (e.g., 'real-u1'), and descriptive Arabic text blocks instead of geometry.",
+     "severity": "critical",
+     "fix_hint": "Replace text content with the vector floor plan graphic and red highlight box."
+    },
+    {
+     "area": "Main Canvas - Data Tables",
+     "what_reference_has": "UI mockups showing data tables/lists below the floor plan. Includes column headers (ACTIVE, PLACED, etc.) and row placeholders. A secondary modal window is overlaid.",
+     "what_candidate_has": "Large typographic headline section ('الريادة في مجال مراجعة ملفات...') and a video player embed. No table structures visible in this region.",
+     "severity": "major",
+     "fix_hint": "Replace the hero text and video with the wireframe table components shown in the reference."
+    },
+    {
+     "area": "Right Sidebar - 'Site of the Day'",
+     "what_reference_has": "Vertical card with a red square 'W.' logo, title 'Site of the Day', body text, and a 'LEARN MORE' link. Distinct border/background separation.",
+     "what_candidate_has": "This entire component is missing from the layout.",
+     "severity": "major",
+     "fix_hint": "Insert the 'Site of the Day' widget into the right-hand column."
+    },
+    {
+     "area": "Footer / Cookie Banner",
+     "what_reference_has": "A fixed or bottom-aligned banner: 'This website uses cookies. LEARN MORE [ACCEPT] [REJECT]'. The ACCEPT button is orange/red.",
+     "what_candidate_has": "A standard page footer with pagination 'SHEET 01/01' and a logo 'تقني'. No cookie banner visible.",
+     "severity": "minor",
+     "fix_hint": "Add the cookie consent strip at the bottom of the viewport."
+    },
+    {
+     "area": "Color Palette / Fills",
+     "what_reference_has": "Dominant colors are Off-White/Beige background, Black lines/text, and a vibrant Red (for the floor plan highlight and Accept button).",
+     "what_candidate_has": "Uses similar beige background but introduces Orange/Red for the main headline text, which is not present as a fill color in the reference's primary elements (only used for accents).",
+     "severity": "minor",
+     "fix_hint": "Adjust color usage to match the reference's specific application of red (highlights/buttons) vs black (text)."
+    },
+    {
+     "area": "Typography Scale & Weight",
+     "what_reference_has": "Mixed weights: Heavy Bold for 'HERON DASHBOARD', Standard/Light for UI labels. Sans-serif font family consistent with technical software.",
+     "what_candidate_has": "Very heavy, display-sized Arabic typography for the main heading. Font family appears to be a standard Arabic typeface (e.g., Cairo/Tajawal), differing from the likely Latin/Grotesque font of the reference.",
+     "severity": "major",
+     "fix_hint": "Match the font stack and weight hierarchy to the reference's dashboard style."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p16-80",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p16-80.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Grid System",
+     "what_reference_has": "Asymmetric, multi-column editorial layout with a distinct left-aligned hero block, a central dashboard UI mockup, and a right-aligned text column. Features a large, dominant architectural illustration in the lower-left quadrant.",
+     "what_candidate_has": "Symmetric, single-column vertical list layout (timeline/stepper style). Content is stacked sequentially from top to bottom with no complex grid or overlapping elements.",
+     "severity": "critical",
+     "fix_hint": "Reconstruct the multi-column grid. Place the 'Heron Dashboard' title on the left, the UI mockup in the upper-center, and the descriptive text blocks to the right of the mockup."
+    },
+    {
+     "area": "Header / Navigation Chrome",
+     "what_reference_has": "Full-width horizontal navigation bar at the very top with links (PRODUCT, PRICING, etc.) and a logo on the far left.",
+     "what_candidate_has": "No top navigation bar. Instead, has a thin secondary header bar below the main content area (or top of a sub-section) labeled 'MADAREK - LEARNING SHEET'.",
+     "severity": "critical",
+     "fix_hint": "Implement the global header navigation bar at the top of the viewport."
+    },
+    {
+     "area": "Hero Typography (Title)",
+     "what_reference_has": "Large, bold, all-caps sans-serif text 'HERON DASHBOARD' positioned in the upper-left content area.",
+     "what_candidate_has": "No equivalent large title in the upper left. The main titles are Arabic ('شاهد', 'أنظر', etc.) positioned on the right side of individual list items.",
+     "severity": "critical",
+     "fix_hint": "Add the 'HERON DASHBOARD' (or localized equivalent) large type block to the upper left."
+    },
+    {
+     "area": "Hero Typography (Subtitle)",
+     "what_reference_has": "Large display type 'BUILT TO WORK THE WAY YOU DO' in all-caps, heavy weight, located mid-left.",
+     "what_candidate_has": "Missing this specific typographic block entirely. Text is distributed as descriptions within list items.",
+     "severity": "major",
+     "fix_hint": "Insert the large subtitle block below the main title."
+    },
+    {
+     "area": "UI Mockup / Imagery",
+     "what_reference_has": "A detailed software interface mockup (Dashboard) showing lists, progress bars, and red 'REVIEW' buttons, floating in the upper-center.",
+     "what_candidate_has": "A screenshot of a different interface (appears to be a learning management system or AI tool) centered in the upper area. It lacks the specific red buttons and list structure of the reference.",
+     "severity": "major",
+     "fix_hint": "Replace the candidate image with the specific Dashboard UI mockup shown in the reference."
+    },
+    {
+     "area": "Architectural Illustration",
+     "what_reference_has": "A large, technical line-drawing of a building section/cutaway in the bottom-left, featuring red annotation boxes (e.g., 'IBC 1015.3').",
+     "what_candidate_has": "Completely missing. The bottom area is empty or contains only footer elements.",
+     "severity": "critical",
+     "fix_hint": "Add the architectural technical drawing to the bottom-left quadrant."
+    },
+    {
+     "area": "Content Structure (Right Column)",
+     "what_reference_has": "Two text blocks on the right: one starting with 'Ask code questions...' and another 'LEARN MORE' with an arrow.",
+     "what_candidate_has": "A vertical list of 4 numbered items (01-04) on the right side, each with a title and description.",
+     "severity": "major",
+     "fix_hint": "Replace the numbered list with the two distinct text paragraphs/layout blocks seen in the reference."
+    },
+    {
+     "area": "Footer / Cookie Banner",
+     "what_reference_has": "A floating cookie consent banner at the bottom center: 'This website uses cookies... [ACCEPT] [REJECT]'.",
+     "what_candidate_has": "A static footer bar at the bottom containing sheet info '[07] الأنماط ... SHEET 01 / 01' and pagination dots.",
+     "severity": "minor",
+     "fix_hint": "Replace the static footer with the cookie banner component."
+    },
+    {
+     "area": "Side Tab / Widget",
+     "what_reference_has": "A vertical red tab on the right edge labeled 'Site of the Day' with a 'W.' logo.",
+     "what_candidate_has": "No side tab widget present.",
+     "severity": "minor",
+     "fix_hint": "Add the 'Site of the Day' vertical tab to the right edge."
+    },
+    {
+     "area": "Background / Canvas",
+     "what_reference_has": "Subtle grid lines visible in the background (especially around the architectural drawing), suggesting a drafting paper or design canvas aesthetic.",
+     "what_candidate_has": "Plain off-white/beige background with no visible grid lines.",
+     "severity": "minor",
+     "fix_hint": "Apply the subtle background grid pattern."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p17-85",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p17-85.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Content",
+     "what_reference_has": "A complex architectural diagram/illustration with multiple red error callout boxes, a floor plan overlay, and a cookie consent banner at the bottom.",
+     "what_candidate_has": "A text-heavy 'Learning Sheet' or dashboard view with a grid of 8 cards, a large header title, and no architectural imagery.",
+     "severity": "critical",
+     "fix_hint": "The candidate page is a completely different UI state or template. It must be replaced with the architectural review interface shown in the reference."
+    },
+    {
+     "area": "Header / Top Bar",
+     "what_reference_has": "No visible top header bar or navigation text.",
+     "what_candidate_has": "A top header containing 'MADAREK - LEARNING SHEET' and Arabic instructional text.",
+     "severity": "major",
+     "fix_hint": "Remove the top header bar to match the reference's full-bleed canvas layout."
+    },
+    {
+     "area": "Main Visual Content (Left/Center)",
+     "what_reference_has": "Large isometric building illustration with red annotation boxes (e.g., 'IBC 1015.3 LOW WINDOW SILL HEIGHT') and a detailed 'OFFICE FLOOR PLAN'.",
+     "what_candidate_has": "No illustrations or floor plans. Replaced by white space and text cards.",
+     "severity": "critical",
+     "fix_hint": "Restore the architectural artwork and red violation callouts."
+    },
+    {
+     "area": "Main Text Content (Right/Center)",
+     "what_reference_has": "No large central headline or body text in this area.",
+     "what_candidate_has": "Large bold Arabic headline ('منشأة وحجز، ضمانة أصول ونظام شرياني') and subtext.",
+     "severity": "critical",
+     "fix_hint": "Remove the central text block to reveal the underlying layout."
+    },
+    {
+     "area": "Card Grid / Modules",
+     "what_reference_has": "No grid of cards. Features a floating vertical tab labeled 'W. Site of the Day'.",
+     "what_candidate_has": "A 2x4 grid of content cards with titles like 'اطلاع', 'إشكالية', etc., and 'عرض مزيد' buttons.",
+     "severity": "critical",
+     "fix_hint": "Remove the card grid and restore the 'Site of the Day' vertical tab on the right edge."
+    },
+    {
+     "area": "Footer / Bottom Chrome",
+     "what_reference_has": "A prominent 'This website uses cookies' banner with 'ACCEPT' and 'REJECT' buttons spanning the width.",
+     "what_candidate_has": "No cookie banner. Instead, a thin footer line with 'SHEET 01/01' and small legal text.",
+     "severity": "major",
+     "fix_hint": "Add the cookie consent banner at the bottom center."
+    },
+    {
+     "area": "Background / Canvas",
+     "what_reference_has": "Subtle light grey grid pattern visible across the entire background.",
+     "what_candidate_has": "Plain off-white/grey solid background with no visible grid.",
+     "severity": "minor",
+     "fix_hint": "Apply the subtle background grid pattern."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p18-90",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p18-90.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Content",
+     "what_reference_has": "A technical CAD/BIM interface displaying architectural floor plans, a 'HERON AI' violation tooltip, and a cookie consent banner at the bottom.",
+     "what_candidate_has": "A marketing/landing page layout featuring a grid of feature cards, a large CTA section with a heading and button, and a detailed footer.",
+     "severity": "critical",
+     "fix_hint": "Rebuild the page to match the technical drawing interface, floor plan placements, and specific UI components of the reference."
+    },
+    {
+     "area": "Header / Top Section",
+     "what_reference_has": "Empty light gray header space with a faint vertical margin line on the far left.",
+     "what_candidate_has": "A structured header containing 'MADAREK - LEARNING SHEET' and four distinct content cards (Learning, Templates, Library, Magazine).",
+     "severity": "critical",
+     "fix_hint": "Remove the header cards and text; restore the empty canvas-like header area seen in the reference."
+    },
+    {
+     "area": "Main Visual - Center Top",
+     "what_reference_has": "A large architectural floor plan (Commercial) with a black 'HERON AI' tooltip overlay indicating a 'CORRIDOR WIDTH VIOLATION'.",
+     "what_candidate_has": "Empty white space with a faint horizontal divider line.",
+     "severity": "critical",
+     "fix_hint": "Implement the central floor plan drawing and the specific error tooltip overlay."
+    },
+    {
+     "area": "Main Visual - Center Left",
+     "what_reference_has": "A stack of floor plan thumbnails ('TOWER FLOOR PLAN', 'RESIDENTIAL FLOOR PLAN') with the bottom one highlighted by a thick red border.",
+     "what_candidate_has": "Empty white space.",
+     "severity": "critical",
+     "fix_hint": "Add the floor plan thumbnail stack and the red selection border."
+    },
+    {
+     "area": "Right Sidebar Tab",
+     "what_reference_has": "A vertical red tab on the right edge labeled 'W. Site of the Day'.",
+     "what_candidate_has": "No sidebar tab present.",
+     "severity": "major",
+     "fix_hint": "Add the vertical red promotional tab to the right edge of the viewport."
+    },
+    {
+     "area": "Middle Section Content",
+     "what_reference_has": "Faint technical grid lines and crosshairs (+) indicating a coordinate system or canvas.",
+     "what_candidate_has": "Text metadata '[R313] - MADAREK · 2026 · INDEPENDENT' and coordinate data '[0,11830]...'.",
+     "severity": "major",
+     "fix_hint": "Replace text metadata with the visual drafting grid and crosshair markers."
+    },
+    {
+     "area": "Lower Main Content",
+     "what_reference_has": "Another partial floor plan drawing at the bottom left.",
+     "what_candidate_has": "A large UI component resembling a spreadsheet or data grid with '+' icons in corners, followed by a large RTL heading 'طريق لبدء رحلتك؟'.",
+     "severity": "critical",
+     "fix_hint": "Remove the CTA heading and data grid; restore the bottom floor plan drawing."
+    },
+    {
+     "area": "Call to Action (CTA)",
+     "what_reference_has": "No prominent CTA in this area; focus is on drawings.",
+     "what_candidate_has": "Large red button 'ابدأ مسارك التعليمي ←' and supporting text.",
+     "severity": "major",
+     "fix_hint": "Remove the marketing CTA block."
+    },
+    {
+     "area": "Footer",
+     "what_reference_has": "A simple, thin cookie consent banner: 'This website uses cookies. LEARN MORE [ACCEPT] [REJECT]'.",
+     "what_candidate_has": "A complex, multi-row sitemap footer with links for 'الموارد', 'الشركة', etc., and sheet info 'SHEET 01/01'.",
+     "severity": "major",
+     "fix_hint": "Replace the sitemap footer with the simple cookie banner shown in the reference."
+    },
+    {
+     "area": "Typography & Language",
+     "what_reference_has": "English text (e.g., 'TOWER FLOOR PLAN', 'HERON AI'), LTR orientation.",
+     "what_candidate_has": "Arabic text (e.g., 'ورقة تعلم', 'مجلة المعرفة'), RTL orientation.",
+     "severity": "minor",
+     "fix_hint": "Per instructions, ignore language/content, but note that the visual density and directionality of text blocks differ significantly."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p19-95",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p19-95.png",
+   "verdict": "DIFFERENT",
+   "score": 25,
+   "differences": [
+    {
+     "area": "Overall Layout & Grid",
+     "what_reference_has": "A 2-column layout. Left column contains a complex architectural drawing (floor plan) with multiple UI overlays (title block, 'CHECKING' window, 'LEARNED PATTERN' tooltip). Right column is largely empty off-white space with a vertical red tab.",
+     "what_candidate_has": "A single-column, top-down stacked layout containing data tables, text blocks, and a simplified iconographic diagram. No architectural drawing or complex UI overlays present.",
+     "severity": "critical",
+     "fix_hint": "Reconstruct the layout to match the reference's spatial arrangement: large drawing area on the left, sparse area on the right."
+    },
+    {
+     "area": "Primary Imagery / Subject Matter",
+     "what_reference_has": "Detailed technical line-art of a residential floor plan with thin wall lines, door swings, and room divisions.",
+     "what_candidate_has": "A row of 5 simple geometric icons representing building types (Apartment, Villa, etc.) on a baseline.",
+     "severity": "critical",
+     "fix_hint": "Replace the icon row with the detailed residential floor plan vector art shown in the reference."
+    },
+    {
+     "area": "UI Overlays / Chrome",
+     "what_reference_has": "Specific software-like UI elements: A dark grey 'CHECKING' floating window over the plan; a small 'LEARNED PATTERN' black tooltip at the bottom of the plan; a 'RESIDENTIAL FLOOR PLAN' title block with table cells.",
+     "what_candidate_has": "Standard web form elements: Data tables for project info, a 'REGISTRY' section, and an 'INSPECTION STRIP' label. No floating tooltips or checking windows.",
+     "severity": "critical",
+     "fix_hint": "Implement the specific 'CHECKING' and 'LEARNED PATTERN' UI overlays positioned exactly as in the reference."
+    },
+    {
+     "area": "Vertical Navigation Tab",
+     "what_reference_has": "A vertical red tab on the right edge labeled 'W. Site of the Day' in white text, rotated 90 degrees.",
+     "what_candidate_has": "No vertical tab exists on the right edge.",
+     "severity": "major",
+     "fix_hint": "Add the vertical red 'Site of the Day' tab to the right margin."
+    },
+    {
+     "area": "Header / Top Bar",
+     "what_reference_has": "No visible header bar or top navigation; the top area starts directly with the drawing canvas.",
+     "what_candidate_has": "A distinct header area with 'MADAREK - LEARNING SHEET', a search/input field '[CTA - RESOLVE]', and a red 'Back to previous page' button.",
+     "severity": "major",
+     "fix_hint": "Remove the header bar, back button, and search field to match the reference's clean top edge."
+    },
+    {
+     "area": "Footer / Cookie Banner",
+     "what_reference_has": "A standard cookie consent banner at the bottom center: 'This website uses cookies. LEARN MORE' with 'ACCEPT' (red) and 'REJECT' buttons.",
+     "what_candidate_has": "No cookie banner. Instead, it has a footer with a logo ('Madrak'), version number, and footer links.",
+     "severity": "major",
+     "fix_hint": "Replace the footer logo/links with the cookie consent banner shown in the reference."
+    },
+    {
+     "area": "Data Tables / Text Blocks",
+     "what_reference_has": "Minimal text, mostly inside the drawing title block. No large data tables visible in the main view.",
+     "what_candidate_has": "Prominent data tables displaying Project Name, Area, Type, Status, etc., taking up significant vertical space in the upper half.",
+     "severity": "major",
+     "fix_hint": "Remove the project data tables; the reference does not show this level of textual data density."
+    },
+    {
+     "area": "Background / Canvas",
+     "what_reference_has": "A subtle grid pattern visible in the background of the right column and around the floor plan.",
+     "what_candidate_has": "Solid light grey/off-white background with no visible grid pattern behind the content.",
+     "severity": "minor",
+     "fix_hint": "Apply a faint background grid to the canvas area."
+    }
+   ],
+   "status": "open"
+  },
+  {
+   "id": "1440x900-light-p20-100",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p20-100.png",
+   "verdict": "DIFFERENT",
+   "score": 15,
+   "differences": [
+    {
+     "area": "Overall Layout & Grid",
+     "what_reference_has": "Asymmetric 2-column layout with a large left graphic area (circle/rect) and a right text area. Heavy use of negative space and off-center alignment.",
+     "what_candidate_has": "Symmetric, centered single-column layout with a top navigation bar and centered content blocks. Standard web page structure.",
+     "severity": "critical",
+     "fix_hint": "Reconstruct the asymmetric grid. The candidate looks like a generic template; the reference is an editorial/artistic layout."
+    },
+    {
+     "area": "Header / Navigation",
+     "what_reference_has": "No visible header or navigation bar in the main viewport. Content starts with abstract graphics or a 'Learned Pattern' overlay.",
+     "what_candidate_has": "Prominent horizontal navigation bar at the top with icons (pencil, square, target, flag, circle) and Arabic labels.",
+     "severity": "critical",
+     "fix_hint": "Remove the top navigation bar entirely to match the reference's clean canvas approach."
+    },
+    {
+     "area": "Hero Graphic / Imagery Style",
+     "what_reference_has": "Large, flat, geometric vector shapes: A solid salmon-colored circle and a salmon-colored rectangle on a white background. Minimalist, Swiss-style graphic design.",
+     "what_candidate_has": "A complex, intricate red geometric logo (resembling a flower or star) with a small brown dot. The style is detailed and ornamental compared to the reference's simple primitives.",
+     "severity": "critical",
+     "fix_hint": "Replace the complex logo with the simple Circle + Rectangle composition. Match the Salmon/Coral color exactly."
+    },
+    {
+     "area": "Typography - Headline",
+     "what_reference_has": "Large, bold, sans-serif English text ('MADE FOR THE PEOPLE IN THE MODEL'). Left-aligned or center-left within its column.",
+     "what_candidate_has": "Arabic text ('مكاتب') which is smaller relative to the container, bold, but positioned as a sidebar/header element rather than a hero headline.",
+     "severity": "major",
+     "fix_hint": "Scale up the primary headline to match the visual weight of 'MADE FOR...'. Ignore language, match scale and weight."
+    },
+    {
+     "area": "Typography - Body / Sidebar",
+     "what_reference_has": "Small UI text 'USE CASES' above headline. A vertical tab 'Site of the Day' on the right edge. A tooltip 'LEARNED PATTERN'.",
+     "what_candidate_has": "A long list of links/text on the right side acting as a sidebar menu. A search bar is present.",
+     "severity": "major",
+     "fix_hint": "Remove the link list and search bar. Implement the vertical 'Site of the Day' tab if matching chrome, or remove all sidebar elements to match the cleaner reference state."
+    },
+    {
+     "area": "UI Elements / Chrome",
+     "what_reference_has": "Cookie banner at the bottom ('This website uses cookies'). A small '+' icon on the left margin. A specific 'LEARNED PATTERN' black box tooltip.",
+     "what_candidate_has": "Footer with copyright/github info. No cookie banner visible in the same style. No '+' icon on the margin.",
+     "severity": "minor",
+     "fix_hint": "Add the bottom cookie banner and the marginal '+' icon to match the exact UI state."
+    },
+    {
+     "area": "Color Palette",
+     "what_reference_has": "Background: Off-white/Paper texture. Accents: Salmon/Red-Orange (#F08070 approx). Text: Black/Dark Grey.",
+     "what_candidate_has": "Background: White. Accents: Bright Red (#E63946 approx). Text: Dark Grey.",
+     "severity": "major",
+     "fix_hint": "Adjust background to warm off-white. Shift accent red to the softer salmon tone of the reference."
+    }
+   ],
+   "status": "open"
+  }
+ ]
+}

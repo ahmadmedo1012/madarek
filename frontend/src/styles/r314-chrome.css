@@ -1,0 +1,358 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R314 «VISUAL TRUTH» chrome layer (Task 6-a / B10)
+   ─────────────────────────────────────────────────────────────────────
+   Two NEW landing chrome components in the reference's measured
+   geometry, carrying Madarek's OWN honest content (never the
+   reference's text, logo, or awards):
+
+   · cb — ConsentBanner (V11): the local-storage consent gate, fixed
+     bottom-right on desktop (paper ground, four separate 1px ink
+     rules like a drafting frame, the ONE hard-offset shadow the
+     reference ships), full-width bottom panel ≤479px with 44px touch
+     targets. Real functionality: «موافق»/«أرفض» persist
+     `madarek.consent` (+ JSON record with timestamp under
+     `madarek.consent.record`); reject removes the gated UI-pref keys;
+     window.MadarekConsent exposes the live state. See
+     components/landing/chrome/ConsentBanner.tsx.
+
+   · et — EdgeTab (V12): the right-edge vertical tab (paper ground,
+     outer hairline, orange square + tiny white 4-pointed star at the
+     top, rotated vertical mono label «منصّة مستقلّة · مدارك ٢٠٢٦» —
+     Madarek's own mark and line, NO award claims). Click scrolls to
+     the colophon footer. Hidden below 768px.
+
+   CASCADE CONTRACT: imported by LandingPage.tsx right after
+   landing.css (same module graph position). Unlayered like the
+   r305 chrome sheets — a normal declaration outranks every @layer
+   rule without !important. Every colour rides the theme tokens
+   (--bg/--text/--text-muted/--rule/--accent/--accent-ink/--accent-fg)
+   so BOTH themes resolve with zero theme forks here; the only raw
+   values are the measured reference geometry (sizes, the one
+   permitted shadow, the entrance delay) — each carries its own
+   allow-comment, the landing.css precedent for hand-tuned chrome.
+
+   Z-LADDER (the repo's actual scale — the spec's Heron numbers
+   100008/900 are mapped onto it, intent preserved):
+     content/header ≤100  <  et-tab 55*  <  sheet-frame 50*
+     (*et sits above the frame's right hairline, below the 60 masthead)
+     et-tab 55 < header 60 < skip-link 100 < cb-banner 240
+     < pointer canvas 250/251 < exit sweep 280 < loader 300
+   — the banner rides BELOW the pointer instrument (the custom cursor
+   must stay visible over it — the reference's banner never eats the
+   cursor), below the loader (it never competes with the entrance),
+   and ABOVE every content surface.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   §1 — cb · the consent banner (V11)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* The gate element. PHYSICAL bottom-right (the reference's measured
+   corner — the RTL document mirrors content, not this chrome seat);
+   width 72.12rem = 601px @1440 (measured), clamped so narrow desktops
+   never clip it. Paper ground = --bg (#F6F6EE light · #282828 dark).
+   Radius 0 everywhere — the canon. */
+.cb-banner {
+  position: fixed;
+  inset-block-end: 0;
+  right: 0;                       /* physical — see note above */
+  z-index: 240;                   /* the ladder mapped in the header */
+  inline-size: min(72.12rem, calc(100vw - 2.4rem));  /* 601px @1440 — measured */
+  min-block-size: 4.56rem;        /* 38px @1440 — measured outer strip */
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-block: var(--sp-1-5);   /* the honest Arabic sentence wraps —  */
+  padding-inline: var(--sp-4);    /* height grows with content, geometry */
+                                  /* (width/seat/rules) stays measured   */
+  background: var(--bg);
+  /* THE ONLY SHADOW PERMITTED (R313 canon: one shadow in 2774 sampled
+     reference surfaces — the cookie banner's own drafting drop;
+     hard offset, zero blur, measured): */
+  box-shadow: rgb(0 0 0) 0 6.66667px 0 -1.66667px;  /* measured — no token exists */
+  /* Entrance: invisible until the loader's exit starts (the .landing
+     root flips intro-draw → intro-done at the reveal), then the rise
+     plays ~1.2s later — the reference's own post-loader entrance. */
+  opacity: 0;
+}
+
+.landing.intro-done .cb-banner {
+  /* 1.2s delay — the measured post-loader entrance beat (landing.css
+     hand-tuned-chrome precedent: raw delays allowed, motion curves
+     still ride tokens). */
+  animation: cb-rise var(--t-slow) var(--ease-out) 1.2s both;
+}
+
+@keyframes cb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.96rem);   /* 8px @1440 — a clip-up, not a bounce */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* The four separate 1px ink rules — the drafting frame, painted as
+   four lines (the reference's construction, not a border box), inset
+   3px like the sheet frame's own rules. var(--text) = #282828 light /
+   #F6F8FA dark — the ink, theme-reactive. */
+.cb-rule {
+  position: absolute;
+  background: var(--text);
+  pointer-events: none;
+}
+.cb-rule-t { inset-block-start: 3px; inset-inline: 3px; block-size: 1px; }
+.cb-rule-b { inset-block-end: 3px; inset-inline: 3px; block-size: 1px; }
+.cb-rule-r { inset-inline-end: 3px; inset-block: 3px; inline-size: 1px; }
+.cb-rule-l { inset-inline-start: 3px; inset-block: 3px; inline-size: 1px; }
+
+/* The honest sentence — 13.33px @1440 (--fs-body, the Heron txt-16
+   rung), muted ink: --text-muted IS the solid twin of the reference's
+   rgba(40,40,40,.72) (tokens.css light block, measured). */
+.cb-text {
+  margin: 0;                      /* reset the UA <p> margins */
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-snug);
+  color: var(--text-muted);
+}
+
+/* «تعرّف أكثر» — the mono-seat link: 11.67px @1440 (--fs-mono-md,
+   Heron txt-14). Text rides --accent-ink (#C72E00 light · the ember
+   dark) — the token contract's TEXT-safe accent (raw #FA3600 is the
+   UI-large tone; the reference's own recipe routes link text through
+   the darkened ink). Underline appears on hover (measured). */
+.cb-more {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-md);
+  font-weight: var(--fw-medium);
+  color: var(--accent-ink);
+  white-space: nowrap;
+  text-decoration-line: none;
+  text-underline-offset: 0.3rem;
+  transition: color var(--t-fast) var(--ease);
+}
+.cb-more:hover,
+.cb-more:focus-visible {
+  text-decoration-line: underline;
+  color: var(--accent-hover);
+}
+
+/* The actions row. */
+.cb-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: 0 0 auto;
+}
+
+/* «موافق» — 120×30 @1440, transparent ground, accent-ink label +
+   1px accent border; the FILL-WIPE hover: an orange ::before scales
+   in from the INLINE-START edge (physical right in the RTL document)
+   and the label flips to --accent-fg (white). Radius 0. */
+.cb-accept {
+  position: relative;
+  z-index: 0;                     /* clips the ::before's -1 inside */
+  overflow: hidden;               /* the wipe never bleeds the frame */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 14.4rem;           /* 120px @1440 — measured */
+  min-block-size: 3.6rem;         /* 30px @1440 — measured */
+  padding-inline: var(--sp-2);
+  background: transparent;
+  border: 1px solid var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-md);   /* Heron txt-14 — the button-label rung */
+  font-weight: var(--fw-medium);
+  color: var(--accent-ink);
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease);
+}
+.cb-accept::before {
+  content: '';
+  position: absolute;
+  z-index: -1;                    /* behind the label, inside the button */
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;        /* inline-start in the RTL document */
+  transition: transform var(--t-base) var(--ease);
+}
+.cb-accept:hover,
+.cb-accept:focus-visible {
+  color: var(--accent-fg);
+}
+.cb-accept:hover::before,
+.cb-accept:focus-visible::before {
+  transform: scaleX(1);
+}
+
+/* «أرفض» — 144×36 @1440, outlined ink (var(--text) = #282828 light /
+   #F6F8FA dark), hover steps the ground only (the chrome control
+   recipe). Radius 0. */
+.cb-reject {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 17.28rem;          /* 144px @1440 — measured */
+  min-block-size: 4.32rem;        /* 36px @1440 — measured */
+  padding-inline: var(--sp-2);
+  background: transparent;
+  border: 1px solid var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-md);
+  font-weight: var(--fw-medium);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    background var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease);
+}
+.cb-reject:hover,
+.cb-reject:focus-visible {
+  background: var(--surface-2);
+}
+
+/* ── Mobile ≤479px — the reference's own collapse: the full-width
+   bottom panel, min(92vw, 374px) centred, stacked rows, 44px touch
+   targets on both actions. ───────────────────────────────────────── */
+@media only screen and (max-width: 479px) {
+  .cb-banner {
+    inset-inline: 0;
+    margin-inline: auto;
+    inline-size: min(92vw, 374px);  /* measured reference cap — no token */
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-2);
+    padding-block: var(--sp-3);
+    padding-inline: var(--sp-3);
+  }
+  .cb-text {
+    line-height: var(--lh-base);
+  }
+  .cb-actions {
+    gap: var(--sp-2);
+  }
+  .cb-accept,
+  .cb-reject {
+    flex: 1 1 auto;
+    min-block-size: 44px;           /* the touch-target floor — an a11y
+                                       minimum, not a design value */
+    inline-size: auto;
+  }
+}
+
+/* ── Reduced motion — NEVER animate: the rise collapses to an instant
+   appearance (no slide, no fade — the raw-ladder kill already zeroes
+   every --t-* rung; this belt pins the entrance itself). ─────────── */
+@media (prefers-reduced-motion: reduce) {
+  .cb-banner,
+  .landing.intro-done .cb-banner {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .cb-accept,
+  .cb-accept::before,
+  .cb-reject,
+  .cb-more {
+    transition: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   §2 — et · the right-edge vertical tab (V12)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* PHYSICAL right viewport edge, vertically centred, ~26×140 @1440,
+   paper ground (--bg), a single 1px --rule hairline on the OUTER
+   (physical right) edge. z 55: above the sheet frame's hairline (50),
+   below the masthead (60) — the spec's "below the header" intent on
+   the repo ladder. Hidden below 768px (the reference hides its tab on
+   mobile — see the media query at the section's tail). */
+.et-tab {
+  position: fixed;
+  inset-block-start: 50%;
+  right: 0;                       /* physical — the reference's seat */
+  z-index: 55;
+  transform: translateY(-50%);
+  inline-size: 3.12rem;           /* 26px @1440 — measured band */
+  min-block-size: 16.8rem;        /* 140px @1440 — measured */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--sp-2-5);
+  padding-block: var(--sp-2);
+  padding-inline: 0;
+  background: var(--bg);
+  border: 0;
+  border-right: 1px solid var(--rule);  /* the OUTER edge hairline —
+                                           #B3B3AF light · #4A4A48 dark */
+  cursor: pointer;
+  /* Hover nudge: -4px toward the content (240ms measured → --t-fast,
+     the nearest motion rung — no raw durations outside tokens). */
+  transition: transform var(--t-fast) var(--ease);
+}
+
+/* Hover/focus: the tab nudges left; the translateY(-50%) centring is
+   preserved inside the same transform. */
+.et-tab:hover,
+.et-tab:focus-visible {
+  transform: translateY(-50%) translateX(-4px);
+}
+
+/* The small orange square (~14×14 @1440) at the tab's TOP —
+   var(--accent) ground with the tiny white 4-pointed star stroked in
+   --accent-fg (#FFFFFF light · warm ink dark — the label-on-accent
+   seat). Madarek's own mark; no award badge, ever. */
+.et-mark {
+  flex: 0 0 auto;
+  inline-size: 1.68rem;           /* 14px @1440 — measured */
+  block-size: 1.68rem;
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+}
+
+/* The rotated vertical mono label — Madarek's own honest line:
+   «منصّة مستقلّة · مدارك ٢٠٢٦». writing-mode vertical-rl + the 180°
+   rotate gives the RTL bottom-to-top reading; mono 10px @1440
+   (--fs-mono-sm — the stack's Arabic fallback carries the script);
+   muted ink — the solid twin of rgba(40,40,40,.72). NOTE: the 0.14em
+   tracking measured on the reference's LATIN mono label is DELIBERATELY
+   NOT applied — tracking on Arabic cursive breaks the letter joining
+   (verified live: the label read as isolated glyphs); the repo's own
+   typographic canon bans it ("tracking/weight are banned on Arabic
+   cursive", tokens.css dark block). */
+.et-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}
+
+/* The reference hides its tab below 768px — mobile gets no edge tab. */
+@media only screen and (max-width: 767.98px) {
+  .et-tab {
+    display: none;
+  }
+}
+
+/* ── Reduced motion — no nudge (the raw-ladder kill already zeroes
+   --t-fast; pinned here as the belt). ─────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .et-tab,
+  .et-tab:hover,
+  .et-tab:focus-visible {
+    transition: none;
+    transform: translateY(-50%);
+  }
+}
