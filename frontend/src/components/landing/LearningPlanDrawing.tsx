@@ -1,5 +1,6 @@
 /**
- * LearningPlanDrawing — R310 «مسطح التعلّم» — Artwork B.
+ * LearningPlanDrawing — R310 «مسطح التعلّم» — Artwork B · R314 §4.2 the
+ * poché pass.
  *
  * The journey scene's original architectural PLAN VIEW — an entirely
  * different drawing from the hero's elevation (spec §2.2): one
@@ -7,11 +8,26 @@
  * reading), with six zones — the lecture hall (raked seating + stage,
  * reading start), the exam hall (desk grid), the mastery room
  * (stepped seminar), the checkpoint kiosk, the library wing
- * (shelves + reading table), and the entry reception — built as real
- * plan geometry: double-line walls with door swing arcs, window
- * runs, a column grid with lettered bubbles, dimension chains, room
- * labels with areas, numbered station markers at each zone door, and
- * the journey path running the corridor with branch arrows.
+ * (shelves + reading table), and the entry reception.
+ *
+ * R314 §4.2 — the RENDERING WEIGHT is the reference's own: the plan
+ * reads as a real poché drawing, not a hairline diagram. The walls
+ * are SOLID CHARCOAL MASSES (#282828 — the exterior band 18 units
+ * and the corridor bands 16 units = 14.1px / 12.6px at the plan's
+ * measured 942px desktop render; the interior partitions 11 units
+ * = 8.6px), the openings break the mass with thin door-swing arcs
+ * (1.9 units = 1.5px rendered), the glazing breaks it with the
+ * triple-line symbol, the service strip carries a 45° hatch (1px
+ * ink at 55%, 8px rendered pitch ≈10.2 units), the furniture is
+ * thin 1.6-unit guide-grey (#B3B3AF ≈1.25px rendered) outline work,
+ * and the active stage's zone is the FINDING ROOM — a solid #FA3600
+ * fill whose label, area and door marker flip to white. The plan is
+ * a PAPER artifact in BOTH themes (the reference's plan stays
+ * dark-ink-on-paper when the app goes dark), so the drawing's
+ * pigment is pinned in the sheet-scoped style block below instead of
+ * riding the theme tokens — allow-comment: the raw hexes ARE the
+ * spec (ink #282828 · paper #F6F6EE · guide #B3B3AF · signal
+ * #FA3600, all measured from the reference's plan).
  *
  * The scene's stage contract (CSS, driven by .jt[data-stage]):
  *  · stage 0 (شاهد) — the envelope + grid + corridor + LECTURE zone
@@ -20,23 +36,72 @@
  *  · stage 3 (أتقن) — + the MASTERY room + every annotation — resolved
  * The build is monotonic within a stage and REVERSIBLE with scroll
  * (scrub semantics — the same contract as the overlay cross-fades).
- * The active stage's zone carries the signal wash + warm outline.
+ * The active stage's zone carries the solid finding-room fill; its
+ * label warms to white on the red.
  *
  * Engineering contracts:
  *  · Every drawn element carries `bp-drawable` — the R310 lesson:
  *    Chromium's style invalidation for class/attr changes does not
  *    reach SVG elements matched via [pathLength] attribute
  *    selectors; the class-based selectors are the reliable path.
- *  · Zero raw colors — the pl-* classes ride the tokens (landing.css).
+ *  · The stage machine, the draw-in and the wash all stay in
+ *    landing.css (the .jt .jt-plan scope) — the style block here
+ *    rides AFTER it in the cascade and only re-pigments the plan;
+ *    every class name landing.css matches is unchanged.
  *  · `role="img"` + a full Arabic description — the plan is
  *    informative without any pointer interaction.
+ *  · PLAN_VB + the zone/station ids are the JourneyScene contract
+ *    (the mobile camera crops anchor to this geometry) — untouchable.
  */
 
 /* The plan's own frame — the single coordinate space for the journey
  * overlays (rings/callouts re-anchored here by JourneyScene). */
 export const PLAN_VB = { w: 1200, h: 760 } as const;
 
-/* A door opening + its quarter-circle swing arc (the plan grammar). */
+/* ── The poché pigment sheet ──────────────────────────────────────────
+ * Scoped to `.jt .jt-plan` (this drawing only — the hero elevation's
+ * own bp-* classes are untouched) and loaded after landing.css, so
+ * the plan's palette is pinned to the measured drafting primaries in
+ * BOTH themes while the stage machine / draw-in / wash opacity in
+ * landing.css keep driving every element. The finding-room rules
+ * mirror the landing.css stage selectors (+.jt-plan specificity) so
+ * the ACTIVE zone's label, area and door marker read white on the
+ * solid #FA3600 fill. */
+const PLAN_INK_CSS = `
+  .jt .jt-plan .pl-sheet  { fill: #F6F6EE; }
+  .jt .jt-plan .pl-wall   { fill: #282828; }
+  .jt .jt-plan .pl-paper  { fill: #F6F6EE; }
+  .jt .jt-plan .pl-strip  { stroke: #282828; stroke-width: 1.27; }
+  .jt .jt-plan .pl-hatch  { stroke: #282828; stroke-width: 1.27; stroke-opacity: 0.55; }
+  .jt .jt-plan .pl-door-g path { stroke: #282828; stroke-width: 1.9; fill: none; }
+  .jt .jt-plan .pl-win-g line  { stroke: #282828; stroke-width: 1.27; }
+  .jt .jt-plan .bp-ink    { stroke: #282828; stroke-width: 1.6; fill: none; }
+  .jt .jt-plan .bp-ink-2  { stroke-width: 1.9; }
+  .jt .jt-plan .bp-hair   { stroke: #B3B3AF; stroke-width: 1.6; fill: none; }
+  .jt .jt-plan .bp-fill   { fill: none; stroke: #B3B3AF; stroke-width: 1.6; }
+  .jt .jt-plan .bp-gridline { stroke: #B3B3AF; stroke-width: 1; opacity: 0.5; }
+  .jt .jt-plan .bp-dash   { stroke: #282828; stroke-width: 1.9; fill: none; }
+  .jt .jt-plan .bp-micro  { fill: #62625F; }
+  .jt .jt-plan .pl-name   { fill: #414140; }
+  .jt .jt-plan .pl-station { fill: #C72E00; }
+  .jt .jt-plan .pl-zone   { fill: #FA3600; }
+  .jt .jt-plan .bp-signal-fill { fill: #FA3600; stroke: #FFFFFF; stroke-width: 1; }
+  .jt[data-stage='0'] .jt-plan .pl-l-lecture .pl-name,
+  .jt[data-stage='1'] .jt-plan .pl-l-checkpoint .pl-name,
+  .jt[data-stage='2'] .jt-plan .pl-l-exam .pl-name,
+  .jt[data-stage='3'] .jt-plan .pl-l-mastery .pl-name { fill: #FFFFFF; }
+  .jt[data-stage='0'] .jt-plan .pl-l-lecture .bp-micro,
+  .jt[data-stage='1'] .jt-plan .pl-l-checkpoint .bp-micro,
+  .jt[data-stage='2'] .jt-plan .pl-l-exam .bp-micro,
+  .jt[data-stage='3'] .jt-plan .pl-l-mastery .bp-micro { fill: #FFFFFF; }
+  .jt[data-stage='0'] .jt-plan .pl-station[data-station='0'],
+  .jt[data-stage='1'] .jt-plan .pl-station[data-station='1'],
+  .jt[data-stage='2'] .jt-plan .pl-station[data-station='2'],
+  .jt[data-stage='3'] .jt-plan .pl-station[data-station='4'] { fill: #FFFFFF; font-weight: 700; }
+`;
+
+/* A door opening + its quarter-circle swing arc (the plan grammar):
+ * a thin 1.5px-rendered ink leaf + arc, radius = the door width. */
 function Door({
   x,
   y,
@@ -69,18 +134,22 @@ function Door({
   }
   return (
     <g className="pl-door-g" aria-hidden="true">
-      <path className="bp-hair bp-drawable" d={leaf} pathLength={1} />
-      <path className="bp-hair bp-drawable" d={arc} pathLength={1} />
+      <path className="bp-drawable" d={leaf} pathLength={1} />
+      <path className="bp-drawable" d={arc} pathLength={1} />
     </g>
   );
 }
 
-/* A window run — the triple-line drafting symbol inside a wall gap. */
+/* A window run — the poché opens for the glazing (a paper break
+ * through the wall mass) and the triple-line drafting symbol redraws
+ * the frame + the centred glazing line. */
 function Win({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
-  const mid = h > w ? x + w / 2 : y + h / 2;
+  const vertical = h > w;
+  const mid = vertical ? x + w / 2 : y + h / 2;
   return (
-    <g className="bp-hair" aria-hidden="true">
-      {h > w ? (
+    <g className="pl-win-g" aria-hidden="true">
+      <rect className="pl-paper bp-drawable" x={x} y={y} width={w} height={h} pathLength={1} />
+      {vertical ? (
         <>
           <line className="bp-drawable" x1={x} y1={y} x2={x} y2={y + h} pathLength={1} />
           <line className="bp-drawable" x1={mid} y1={y} x2={mid} y2={y + h} pathLength={1} />
@@ -102,7 +171,62 @@ function Seat({ x, y, w = 22, h = 10 }: { x: number; y: number; w?: number; h?: 
   return <rect className="bp-hair bp-drawable" x={x} y={y} width={w} height={h} pathLength={1} />;
 }
 
+/* 45° hatch strokes inside a band — the shaft/void texture (R314
+ * §4.2: 1px ink at 55% opacity, 8px RENDERED pitch ≈10.2 units at
+ * the plan's measured 942px desktop render). Returns line
+ * segments of the (x − y = c) family clipped to the band. */
+function hatchRun(
+  x0: number,
+  x1: number,
+  y0: number,
+  y1: number,
+  gap = 10.2,
+): Array<[number, number, number, number]> {
+  const segs: Array<[number, number, number, number]> = [];
+  for (let c = x0 - y1; c <= x1 - y0; c += gap) {
+    const xa = Math.max(x0, c + y0);
+    const xb = Math.min(x1, c + y1);
+    if (xb - xa > 0.5) segs.push([xa, xa - c, xb, xb - c]);
+  }
+  return segs;
+}
+
+/* the corridor wall runs — [from, to] x-extents of the solid bands
+ * (the door openings are the breaks between the runs). */
+const NORTH_WALL: Array<[number, number]> = [
+  [78, 250],
+  [290, 500],
+  [540, 640],
+  [680, 830],
+  [870, 960],
+  [1000, 1122],
+];
+const SOUTH_WALL: Array<[number, number]> = [
+  [78, 150],
+  [190, 500],
+  [540, 830],
+  [870, 1122],
+];
+/* the service strip's hatch segments — between the partitions. */
+const STRIP_SEGS: Array<[number, number]> = [
+  [78, 293],
+  [304, 753],
+  [764, 1122],
+];
+
 export function LearningPlanDrawing() {
+  /* the raked seating — four arcs concentric on the stage platform,
+   * each spanning the room's height (the sweep was the R314 fix: the
+   * rows now wrap the stage instead of bulging off the sheet). */
+  const stageCx = 1082;
+  const stageCy = 250;
+  const seatRows = [290, 240, 190, 140].map((r) => {
+    const a = Math.min((55 * Math.PI) / 180, Math.asin(135 / r));
+    const xe = stageCx - r * Math.cos(a);
+    const dy = r * Math.sin(a);
+    return { r, d: `M ${xe.toFixed(1)} ${(stageCy - dy).toFixed(1)} A ${r} ${r} 0 0 0 ${xe.toFixed(1)} ${(stageCy + dy).toFixed(1)}` };
+  });
+
   return (
     <svg
       className="bp-svg jt-plan"
@@ -111,69 +235,74 @@ export function LearningPlanDrawing() {
       aria-label="مسطح معماري لطابق التعلّم في مدارك: قاعة محاضرات بصفوف مدرّجة ومنصة، قاعة اختبارات بمصافّ منظمة، غرفة إتقان مدرّجة، كشك نقطة فحص، مكتبة بأرفف وطاولة قراءة، واستقبال — حول ممر مركزي يمتد من المدخل يمينًا إلى غرفة الإتقان يسارًا، مع شبكة أعمدة وسلاسل أبعاد ومسار متقطّع بأسهم عند كل باب"
       preserveAspectRatio="xMidYMid meet"
     >
-      {/* ═══ the envelope — double-line walls + the corridor spine ═══ */}
+      {/* the poché pigment sheet — scoped .jt .jt-plan, after landing.css */}
+      <style dangerouslySetInnerHTML={{ __html: PLAN_INK_CSS }} />
+
+      {/* ═══ the envelope — poché wall masses + the corridor spine ═══ */}
       <g className="pl-l-envelope" aria-hidden="true">
-        {/* outer + inner wall lines */}
-        <rect className="bp-ink bp-drawable" x="70" y="70" width="1060" height="620" pathLength={1} />
-        <rect className="bp-ink bp-drawable" x="78" y="78" width="1044" height="604" pathLength={1} />
-        {/* the corridor walls (double-line) with door gaps drawn as segments */}
-        {/* north corridor wall — gaps at lecture/exam/mastery doors */}
-        <line className="bp-ink bp-drawable" x1="78" y1="392" x2="250" y2="392" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="290" y1="392" x2="500" y2="392" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="540" y1="392" x2="640" y2="392" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="680" y1="392" x2="830" y2="392" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="870" y1="392" x2="960" y2="392" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="1000" y1="392" x2="1122" y2="392" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="78" y1="400" x2="250" y2="400" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="290" y1="400" x2="500" y2="400" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="540" y1="400" x2="640" y2="400" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="680" y1="400" x2="830" y2="400" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="870" y1="400" x2="960" y2="400" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="1000" y1="400" x2="1122" y2="400" pathLength={1} />
-        {/* south corridor wall — gaps at checkpoint/library/reception doors */}
-        <line className="bp-ink bp-drawable" x1="78" y1="460" x2="150" y2="460" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="190" y1="460" x2="500" y2="460" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="540" y1="460" x2="830" y2="460" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="870" y1="460" x2="1122" y2="460" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="78" y1="468" x2="150" y2="468" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="190" y1="468" x2="500" y2="468" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="540" y1="468" x2="830" y2="468" pathLength={1} />
-        <line className="bp-ink bp-drawable" x1="870" y1="468" x2="1122" y2="468" pathLength={1} />
-        {/* zone partition walls (north) */}
-        <rect className="bp-ink bp-drawable" x="416" y="78" width="8" height="314" pathLength={1} />
-        <rect className="bp-ink bp-drawable" x="756" y="78" width="8" height="314" pathLength={1} />
-        {/* zone partition walls (south) */}
-        <rect className="bp-ink bp-drawable" x="296" y="468" width="8" height="192" pathLength={1} />
-        <rect className="bp-ink bp-drawable" x="756" y="468" width="8" height="192" pathLength={1} />
+        {/* the sheet — the plan is a paper artifact in both themes */}
+        <rect className="pl-sheet bp-drawable" x="0" y="0" width="1200" height="760" pathLength={1} />
+        {/* the exterior poché — a solid charcoal mass, then the interior
+            paper ground it encloses (the band ≈14px at render scale) */}
+        <rect className="pl-wall bp-drawable" x="60" y="60" width="1080" height="640" pathLength={1} />
+        <rect className="pl-paper bp-drawable" x="78" y="78" width="1044" height="604" pathLength={1} />
+        {/* the column grid — the faint dashed layer beneath the walls */}
+        {[180, 300, 420, 540, 660, 780, 900, 1020].map((x) => (
+          <line key={`gx${x}`} className="bp-gridline bp-drawable" x1={x} y1="78" x2={x} y2="682" pathLength={1} />
+        ))}
+        {[180, 300, 540, 660].map((y) => (
+          <line key={`gy${y}`} className="bp-gridline bp-drawable" x1="78" y1={y} x2="1122" y2={y} pathLength={1} />
+        ))}
+        {/* window runs — the poché opens for the glazing (top + sides + bottom) */}
+        <Win x={200} y={60} w={90} h={18} />
+        <Win x={440} y={60} w={90} h={18} />
+        <Win x={680} y={60} w={90} h={18} />
+        <Win x={920} y={60} w={90} h={18} />
+        <Win x={60} y={200} w={18} h={80} />
+        <Win x={60} y={480} w={18} h={80} />
+        <Win x={200} y={682} w={90} h={18} />
+        <Win x={440} y={682} w={90} h={18} />
+        <Win x={680} y={682} w={90} h={18} />
+        <Win x={1122} y={200} w={18} h={80} />
+        {/* the corridor walls — solid structural bands (16 units =
+            12.6px rendered) with the door openings left as true
+            breaks in the mass */}
+        {NORTH_WALL.map(([x1, x2]) => (
+          <rect key={`nc${x1}`} className="pl-wall bp-drawable" x={x1} y="385" width={x2 - x1} height="16" pathLength={1} />
+        ))}
+        {SOUTH_WALL.map(([x1, x2]) => (
+          <rect key={`sc${x1}`} className="pl-wall bp-drawable" x={x1} y="459" width={x2 - x1} height="16" pathLength={1} />
+        ))}
+        {/* zone partition walls — the interior partitions (11 units
+            = 8.6px rendered) */}
+        <rect className="pl-wall bp-drawable" x="413" y="78" width="11" height="307" pathLength={1} />
+        <rect className="pl-wall bp-drawable" x="753" y="78" width="11" height="307" pathLength={1} />
+        <rect className="pl-wall bp-drawable" x="293" y="475" width="11" height="185" pathLength={1} />
+        <rect className="pl-wall bp-drawable" x="753" y="475" width="11" height="185" pathLength={1} />
+        {/* the service strip along the south wall — the shaft/void band:
+            a thin boundary + the 45° hatch texture */}
+        <line className="pl-strip bp-drawable" x1="78" y1="660" x2="1122" y2="660" pathLength={1} />
+        {STRIP_SEGS.flatMap(([x1, x2]) =>
+          hatchRun(x1, x2, 661, 681).map(([xa, ya, xb, yb], i) => (
+            <line key={`h${x1}-${i}`} className="pl-hatch bp-drawable" x1={xa} y1={ya} x2={xb} y2={yb} pathLength={1} />
+          )),
+        )}
         {/* the main entry — an opening in the right wall + door */}
-        <line className="bp-hair bp-drawable" x1="1114" y1="404" x2="1114" y2="456" pathLength={1} />
-        <Door x={1114} y={404} w={50} h={52} hinge="bl" />
-        {/* window runs — the triple-line symbols on the outer walls */}
-        <Win x={200} y={70} w={90} h={8} />
-        <Win x={440} y={70} w={90} h={8} />
-        <Win x={680} y={70} w={90} h={8} />
-        <Win x={920} y={70} w={90} h={8} />
-        <Win x={70} y={200} w={8} h={80} />
-        <Win x={70} y={480} w={8} h={80} />
-        <Win x={200} y={682} w={90} h={8} />
-        <Win x={440} y={682} w={90} h={8} />
-        <Win x={680} y={682} w={90} h={8} />
-        <Win x={1130} y={200} w={8} h={80} />
-        {/* the column grid — dashed lines + lettered bubbles */}
+        <rect className="pl-paper bp-drawable" x="1122" y="404" width="18" height="52" pathLength={1} />
+        <Door x={1074} y={404} w={48} h={52} hinge="br" />
+        {/* the column grid bubbles — lettered (top) + numbered (left) */}
         {[180, 300, 420, 540, 660, 780, 900, 1020].map((x, i) => (
-          <g key={x} className="bp-hair">
-            <line className="bp-gridline bp-drawable" x1={x} y1="78" x2={x} y2="682" pathLength={1} />
-            <circle className="bp-drawable" cx={x} cy="56" r="9" pathLength={1} />
-            <text className="bp-micro" x={x} y="59.5" textAnchor="middle">
+          <g key={`bx${x}`} className="bp-hair">
+            <circle className="bp-drawable" cx={x} cy="48" r="9" pathLength={1} />
+            <text className="bp-micro" x={x} y="51.5" textAnchor="middle">
               {String.fromCharCode(65 + i)}
             </text>
           </g>
         ))}
         {[180, 300, 540, 660].map((y, i) => (
-          <g key={y} className="bp-hair">
-            <line className="bp-gridline bp-drawable" x1="78" y1={y} x2="1122" y2={y} pathLength={1} />
-            <circle className="bp-drawable" cx="52" cy={y} r="9" pathLength={1} />
-            <text className="bp-micro" x="52" y={y + 3.5} textAnchor="middle">
+          <g key={`by${y}`} className="bp-hair">
+            <circle className="bp-drawable" cx="50" cy={y} r="9" pathLength={1} />
+            <text className="bp-micro" x="50" y={y + 3.5} textAnchor="middle">
               {i + 1}
             </text>
           </g>
@@ -182,30 +311,25 @@ export function LearningPlanDrawing() {
 
       {/* ═══ zone: قاعة المحاضرات — raked seating + stage (stage 0) ═══ */}
       <g className="pl-l-lecture" aria-hidden="true">
-        <rect className="pl-zone" data-zone="lecture" x="764" y="79" width="350" height="313" />
+        <rect className="pl-zone" data-zone="lecture" x="764" y="78" width="358" height="307" />
         {/* the stage platform + screen wall (reading start, RTL) */}
         <rect className="bp-fill bp-drawable" x="1058" y="180" width="48" height="140" pathLength={1} />
         <line className="bp-ink bp-ink-2 bp-drawable" x1="1110" y1="180" x2="1110" y2="320" pathLength={1} />
         <line className="bp-hair bp-drawable" x1="1064" y1="250" x2="1100" y2="250" pathLength={1} />
-        {/* raked seating — four concentric arcs facing the stage */}
-        {[300, 262, 224, 186].map((r) => (
-          <path
-            key={r}
-            className="bp-hair bp-drawable"
-            d={`M 1110 ${250 - r} A ${r} ${r} 0 0 1 1110 ${250 + r}`}
-            pathLength={1}
-          />
+        {/* raked seating — four concentric arcs wrapping the stage */}
+        {seatRows.map((row) => (
+          <path key={row.r} className="bp-hair bp-drawable" d={row.d} pathLength={1} />
         ))}
         {/* seat ticks on the front row */}
         {[0, 1, 2, 3, 4, 5, 6].map((i) => {
           const a = -0.45 + i * 0.15;
-          const cx = 1110 - 186 * Math.cos(a);
-          const cy = 250 + 186 * Math.sin(a);
+          const cx = stageCx - 140 * Math.cos(a);
+          const cy = stageCy + 140 * Math.sin(a);
           return <Seat key={i} x={cx - 11} y={cy - 5} />;
         })}
         {/* zone doors from the corridor */}
-        <Door x={830} y={392} w={40} h={48} hinge="tl" />
-        <Door x={960} y={392} w={40} h={48} hinge="tr" />
+        <Door x={830} y={401} w={40} h={48} hinge="tl" />
+        <Door x={960} y={401} w={40} h={48} hinge="tr" />
         {/* the AV niche + the attendance sensor mark */}
         <rect className="bp-hair bp-drawable" x="790" y="100" width="26" height="16" pathLength={1} />
         <rect className="bp-signal-fill bp-drawable" x={824} y={104} width="8" height="8" pathLength={1} />
@@ -216,7 +340,7 @@ export function LearningPlanDrawing() {
 
       {/* ═══ zone: كشك نقطة الفحص — counter + queue (stage 1) ═══ */}
       <g className="pl-l-checkpoint" aria-hidden="true">
-        <rect className="pl-zone" data-zone="checkpoint" x="764" y="469" width="350" height="191" />
+        <rect className="pl-zone" data-zone="checkpoint" x="764" y="475" width="358" height="185" />
         {/* the counter */}
         <rect className="bp-fill bp-drawable" x="880" y="530" width="170" height="16" pathLength={1} />
         {/* queue dots */}
@@ -228,14 +352,14 @@ export function LearningPlanDrawing() {
         <line className="bp-hair bp-drawable" x1="1040" y1="514" x2="1080" y2="490" pathLength={1} />
         {/* the checkpoint signal — the ONE orange mark in this zone */}
         <rect className="bp-signal-fill bp-drawable" x="918" y="534" width="8" height="8" pathLength={1} />
-        <Door x={830} y={410} w={40} h={50} hinge="bl" />
+        <Door x={830} y={409} w={40} h={50} hinge="bl" />
         <text className="pl-name" x="930" y="622" textAnchor="middle">نقطة الفحص</text>
         <text className="bp-micro" x="930" y="638" textAnchor="middle">36 M2</text>
       </g>
 
       {/* ═══ zone: قاعة الاختبار — the desk grid (stage 2) ═══ */}
       <g className="pl-l-exam" aria-hidden="true">
-        <rect className="pl-zone" data-zone="exam" x="424" y="79" width="332" height="313" />
+        <rect className="pl-zone" data-zone="exam" x="424" y="78" width="329" height="307" />
         {/* the desk grid — 5 columns × 4 rows */}
         {[0, 1, 2, 3].map((row) =>
           [0, 1, 2, 3, 4].map((col) => (
@@ -248,15 +372,15 @@ export function LearningPlanDrawing() {
         <circle className="bp-fill bp-drawable" cx="446" cy="98" r="10" pathLength={1} />
         <line className="bp-ink bp-drawable" x1="446" y1="98" x2="446" y2="91" pathLength={1} />
         <line className="bp-ink bp-drawable" x1="446" y1="98" x2="451" y2="101" pathLength={1} />
-        <Door x={500} y={392} w={40} h={48} hinge="tl" />
-        <Door x={640} y={392} w={40} h={48} hinge="tr" />
+        <Door x={500} y={401} w={40} h={48} hinge="tl" />
+        <Door x={640} y={401} w={40} h={48} hinge="tr" />
         <text className="pl-name" x="590" y="126" textAnchor="middle">قاعة الاختبار</text>
         <text className="bp-micro" x="590" y="142" textAnchor="middle">150 M2</text>
       </g>
 
       {/* ═══ zone: المكتبة — shelves + reading table (stage 2) ═══ */}
       <g className="pl-l-library" aria-hidden="true">
-        <rect className="pl-zone" data-zone="library" x="304" y="469" width="452" height="191" />
+        <rect className="pl-zone" data-zone="library" x="304" y="475" width="449" height="185" />
         {/* shelf runs with book ticks */}
         <rect className="bp-fill bp-drawable" x="360" y="506" width="330" height="12" pathLength={1} />
         <rect className="bp-fill bp-drawable" x="360" y="542" width="330" height="12" pathLength={1} />
@@ -285,14 +409,14 @@ export function LearningPlanDrawing() {
         })}
         {/* the service counter */}
         <rect className="bp-fill bp-drawable" x="700" y="500" width="14" height="70" pathLength={1} />
-        <Door x={500} y={410} w={40} h={50} hinge="tl" />
+        <Door x={500} y={409} w={40} h={50} hinge="tl" />
         <text className="pl-name" x="530" y="648" textAnchor="middle">المكتبة والبحوث</text>
-        <text className="bp-micro" x="530" y="662" textAnchor="middle">96 M2</text>
+        <text className="bp-micro" x="530" y="654" textAnchor="middle">96 M2</text>
       </g>
 
       {/* ═══ zone: غرفة الإتقان — the stepped seminar (stage 3) ═══ */}
       <g className="pl-l-mastery" aria-hidden="true">
-        <rect className="pl-zone" data-zone="mastery" x="79" y="79" width="337" height="313" />
+        <rect className="pl-zone" data-zone="mastery" x="78" y="78" width="335" height="307" />
         {/* the stepped rows facing the west focus wall */}
         {[0, 1, 2].map((i) => (
           <rect
@@ -312,7 +436,7 @@ export function LearningPlanDrawing() {
         {[0, 1, 2, 3, 4].map((i) => (
           <rect key={i} className="bp-hair bp-drawable" x={110 + i * 34} y={100 + (4 - i) * 7} width="30" height={8 + (4 - i) * 7} pathLength={1} />
         ))}
-        <Door x={250} y={392} w={40} h={48} hinge="tl" />
+        <Door x={250} y={401} w={40} h={48} hinge="tl" />
         <text className="pl-name" x="248" y="126" textAnchor="middle">غرفة الإتقان</text>
         <text className="bp-micro" x="248" y="142" textAnchor="middle">84 M2</text>
       </g>
@@ -327,7 +451,7 @@ export function LearningPlanDrawing() {
         {/* planters */}
         <circle className="bp-hair bp-drawable" cx="260" cy="620" r="12" pathLength={1} />
         <circle className="bp-hair bp-drawable" cx="260" cy="650" r="9" pathLength={1} />
-        <Door x={150} y={410} w={40} h={50} hinge="tl" />
+        <Door x={150} y={409} w={40} h={50} hinge="tl" />
         <text className="pl-name" x="196" y="516" textAnchor="middle">الاستقبال</text>
       </g>
 
@@ -338,11 +462,11 @@ export function LearningPlanDrawing() {
         <polyline className="bp-ink bp-drawable" points="130,424 118,430 130,436" pathLength={1} />
         {/* branch arrows at each zone door */}
         {[
-          [850, 392, 850, 416],
-          [850, 468, 850, 448],
-          [520, 392, 520, 416],
-          [520, 468, 520, 448],
-          [270, 392, 270, 416],
+          [850, 401, 850, 416],
+          [850, 459, 850, 448],
+          [520, 401, 520, 416],
+          [520, 459, 520, 448],
+          [270, 401, 270, 416],
         ].map(([x1, y1, x2, y2]) => (
           <line key={`${x1}-${y1}`} className="bp-hair bp-drawable" x1={x1} y1={y1} x2={x2} y2={y2} pathLength={1} />
         ))}
@@ -354,28 +478,27 @@ export function LearningPlanDrawing() {
         <text className="bp-micro pl-station" data-station="4" x="270" y="384" textAnchor="middle">[05]</text>
         {/* the dimension chains — overall width + height */}
         <g className="bp-hair">
-          <line className="bp-drawable" x1="70" y1="712" x2="1130" y2="712" pathLength={1} />
-          {[70, 420, 760, 1130].map((x) => (
-            <line key={x} className="bp-drawable" x1={x - 4} y1="716" x2={x + 4} y2="708" pathLength={1} />
+          <line className="bp-drawable" x1="64" y1="712" x2="1136" y2="712" pathLength={1} />
+          {[64, 420, 760, 1136].map((x) => (
+            <line key={`dt${x}`} className="bp-drawable" x1={x - 4} y1="716" x2={x + 4} y2="708" pathLength={1} />
           ))}
-          <line className="bp-drawable" x1="70" y1="682" x2="70" y2="720" pathLength={1} />
-          <line className="bp-drawable" x1="420" y1="682" x2="420" y2="716" pathLength={1} />
-          <line className="bp-drawable" x1="760" y1="682" x2="760" y2="716" pathLength={1} />
-          <line className="bp-drawable" x1="1130" y1="682" x2="1130" y2="720" pathLength={1} />
+          {[64, 420, 760, 1136].map((x) => (
+            <line key={`de${x}`} className="bp-drawable" x1={x} y1="700" x2={x} y2="716" pathLength={1} />
+          ))}
         </g>
-        <text className="bp-micro" x="245" y="730" textAnchor="middle">11.6M</text>
+        <text className="bp-micro" x="242" y="730" textAnchor="middle">11.6M</text>
         <text className="bp-micro" x="590" y="730" textAnchor="middle">11.3M</text>
-        <text className="bp-micro" x="945" y="730" textAnchor="middle">12.3M</text>
-        {/* the vertical overall dim */}
+        <text className="bp-micro" x="948" y="730" textAnchor="middle">12.3M</text>
+        {/* the vertical overall dim — the label rides the line, rotated */}
         <g className="bp-hair">
-          <line className="bp-drawable" x1="36" y1="70" x2="36" y2="690" pathLength={1} />
-          <line className="bp-drawable" x1="32" y1="70" x2="40" y2="70" pathLength={1} />
-          <line className="bp-drawable" x1="32" y1="690" x2="40" y2="690" pathLength={1} />
+          <line className="bp-drawable" x1="36" y1="60" x2="36" y2="700" pathLength={1} />
+          <line className="bp-drawable" x1="32" y1="60" x2="40" y2="60" pathLength={1} />
+          <line className="bp-drawable" x1="32" y1="700" x2="40" y2="700" pathLength={1} />
         </g>
-        <text className="bp-micro" x="28" y="384" textAnchor="end">20.6M</text>
+        <text className="bp-micro" x="30" y="380" textAnchor="middle" transform="rotate(-90 30 380)">20.6M</text>
         {/* the sheet title block */}
-        <text className="bp-micro" x="1130" y="48" textAnchor="end">MDRK · LEARNING FLOOR · PLAN</text>
-        <text className="bp-micro" x="70" y="48">SCALE 1:150 · UNITS M</text>
+        <text className="bp-micro" x="1140" y="36" textAnchor="end">MDRK · LEARNING FLOOR · PLAN</text>
+        <text className="bp-micro" x="60" y="36">SCALE 1:150 · UNITS M</text>
         {/* the plan's north arrow */}
         <g className="bp-hair">
           <circle className="bp-drawable" cx="1108" cy="730" r="12" pathLength={1} />

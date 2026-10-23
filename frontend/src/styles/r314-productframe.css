@@ -1,0 +1,416 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R314 «VISUAL TRUTH» (Task 8-b / B5)
+   r314-productframe.css — the mock-UI card collage over ProductFrame
+   ─────────────────────────────────────────────────────────────────────
+   The reference's platform section (pair-075 evidence) composes
+   OVERLAPPING mock-UI fragments over its floor-plan cell: chat-widget
+   cards, dashboard cards with tiny status dots, dark title bars — a
+   designer's collage of hairline-bordered FLAT cards (radius 0, zero
+   shadows) riding the capture's corners and the sheet's paper.
+
+   Madarek's translation (honest, never a fabricated product state):
+   · Card A «مساعد الفهم» — the REAL platform assistant
+     (/student/ai — «المساعد الأكاديمي · يعمل الآن» in the landing
+     ledger) as a generic chat fragment: two qualitative lines, an
+     input placeholder, NO fabricated dialogue specifics;
+   · Card B «مصفوفة الإتقان» — the real mastery-matrix surface
+     (capture student-matrix) reduced to three qualitative rows
+     (concept / skill / application) with 6px status dots and NEUTRAL
+     unlabeled bars — no numbers, no percentages anywhere;
+   · Card C «الحضور» — attendance is real (auto-counted in the
+     lecture player); the readout is an honest EMPTY-STATE placeholder
+     («--%»), never a fabricated metric.
+
+   EVERY card carries the demo disclosure («عرض توضيحي») in its title
+   bar — the same honesty grammar as the caption's «بيانات العرض
+   التجريبية»; the whole layer is aria-hidden + pointer-transparent
+   (decorative UI fragments, never covering the capture's CTA or the
+   caption row — they live in the .prf-stage ABOVE the photo box only).
+
+   GATE CONTRACT (this sheet is NOT wholesale-allowlisted — every
+   declaration is gate-clean by construction):
+   · colors → semantic tokens only (--surface/--rule/--text/
+     --text-muted/--text-faint/--accent/--bg) — the task's measured
+     hexes ARE the token values (#B3B3AF=--rule · #282828=--text light
+     /--bg dark · #FA3600=--accent light);
+   · type → the fluid ladder (--fs-sm 13px Arabic floor · --fs-mono-md
+     and --fs-mono-sm micro rungs); spacing → --sp-* rungs; radius → 0
+     (the R313 canon); motion → the --t-* and --ease tokens, raw
+     DELAYS only
+     (the choreography exemption); keyframes animate opacity/transform
+     only — never layout;
+   · raw px appear ONLY in un-gated axes: card geometry (sizes/offsets
+     — the measured collage seat, the r314-chrome.css precedent).
+
+   CASCADE: imported by ProductFrame.tsx (component-level import after
+   the app sheets load) — plain unlayered rules, equal-or-higher
+   specificity than landing.css's .prf family, which stays untouched.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ── The stage — photo + collage share one positioning box ──────────
+   The wrapper keeps .prf's grid children identical (stage + caption);
+   absolute cards inset against the PHOTO box (not the figure), so
+   "bottom corner" means the capture's corner. Overflow stays VISIBLE
+   — the cards must escape the frame onto the sheet's paper. */
+.prf-stage {
+  position: relative;
+}
+
+/* ── The collage layer — decorative, aria-hidden in the markup ────── */
+.prf-cards {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ── Card grammar — the reference's flat mock-UI fragment ───────────
+   Hairline 1px --rule border, clear product surface, radius 0, ZERO
+   shadow (R313: depth via hairlines only). The card is a grid; its
+   implicit column is CLAMPED (minmax(0,1fr)) so a wide row can never
+   inflate the track past the card's own box (grid auto tracks size to
+   max-content unbounded — the rows must ellipsize/shrink inside). */
+.prf-card {
+  position: absolute;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  background: var(--surface);
+  box-shadow: none;
+}
+
+/* The dark title bar (24px): light theme rides --text (#282828 — the
+   task's measured ink) with paper labels (--bg #F6F6EE); the square
+   signal dot is the ONE accent. */
+.prf-card-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  block-size: 24px;
+  padding-inline: var(--sp-2);
+  background: var(--text);
+  color: var(--bg);
+}
+
+.prf-card-dot {
+  flex: none;
+  inline-size: 6px;
+  block-size: 6px;
+  background: var(--accent);
+}
+
+.prf-card-title {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* The demo-disclosure note — every card confesses it is a display
+   fragment (micro mono rung; Arabic continues in the brand face via
+   the mono stack's per-script fallback). Shrinkable: flex nowrap text
+   needs min-inline-size 0 + ellipsis so a wide title can never push
+   the note past the card's hairline. */
+.prf-card-note {
+  margin-inline-start: auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-md);
+  line-height: 1;
+  opacity: 0.66;
+  white-space: nowrap;
+}
+
+/* ══ Card A — the chat widget (lead كبيرة، std/role مصغّرة) ════════ */
+.prf-card--chat {
+  inline-size: 200px;
+  inset-block-start: 22px;
+  inset-inline-end: -80px;   /* ~40% of the card rides the sheet's paper */
+}
+
+/* one qualitative line each — no fabricated dialogue specifics, and
+   short enough to stay single-line inside the 200px fragment */
+
+.prf-chat-body {
+  display: grid;
+  gap: var(--sp-1);
+  padding: var(--sp-1-5) var(--sp-2) var(--sp-2);
+}
+
+.prf-chat-line {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.prf-chat-input {
+  display: block;
+  margin-block-start: var(--sp-0-5);
+  padding-block: var(--sp-1);
+  padding-inline: var(--sp-1-5);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  font-size: var(--fs-sm);
+  line-height: 1;
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ══ Card B — the mastery-matrix dot card (lead فقط) ════════════════ */
+.prf-card--mastery {
+  inline-size: 172px;
+  inset-block-end: 16px;
+  inset-inline-start: -36px;
+}
+
+.prf-card--mastery .prf-card-bar {
+  block-size: 20px;
+  gap: var(--sp-1);
+}
+
+.prf-mastery-body {
+  display: grid;
+  gap: var(--sp-1-5);
+  padding: var(--sp-1-5) var(--sp-2);
+}
+
+/* One qualitative row: 6px status dot (accent / ink / hairline — the
+   task's measured triad) + label + a NEUTRAL bar. The bar is a
+   decorative fragment — unlabeled, metric-free by contract. */
+.prf-m-row {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+  gap: var(--sp-1-5);
+}
+
+.prf-m-dot {
+  inline-size: 6px;
+  block-size: 6px;
+  background: var(--rule);
+}
+.prf-m-dot--signal { background: var(--accent); }
+.prf-m-dot--ink { background: var(--text); }
+
+.prf-m-label {
+  font-size: var(--fs-sm);
+  line-height: 1.3;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.prf-m-bar {
+  display: block;
+  block-size: 1px;            /* the measured hairline track */
+  background: var(--rule);
+}
+
+.prf-m-fill {
+  display: block;
+  block-size: 1px;
+  background: var(--text);
+}
+.prf-m-fill--a { inline-size: 64%; }
+.prf-m-fill--b { inline-size: 34%; }
+.prf-m-fill--c { inline-size: 82%; }
+
+/* ══ Card C — the attendance chip (lead فقط، ≥1200px) ═══════════════
+   An honest EMPTY-STATE readout: the mono slot stays a placeholder
+   («--%») — attendance is real, the number is not fabricated. */
+.prf-card--attend {
+  inline-size: 124px;
+  inset-block-start: -14px;
+  inset-inline-start: -24px;
+}
+
+.prf-card--attend .prf-card-bar {
+  block-size: 14px;
+  gap: var(--sp-1);
+  padding-inline: var(--sp-1-5);
+}
+
+.prf-attend-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-1-5);
+  padding: var(--sp-1) var(--sp-1-5) var(--sp-1-5);
+}
+
+.prf-attend-label {
+  font-size: var(--fs-sm);
+  line-height: 1.3;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.prf-attend-read {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-md);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--text);
+}
+
+/* ══ std/role — the single smaller chat fragment at the inline-end
+   bottom corner (the teacher cockpit + the why-section stack) ══════ */
+.prf-cards--side .prf-card--chat {
+  inline-size: 168px;
+  inset-block-start: auto;
+  inset-block-end: 18px;
+  inset-inline-end: -56px;
+}
+
+.prf-cards--side .prf-chat-body {
+  padding-block-end: var(--sp-1-5);
+}
+
+/* ── The entrance — ONE opacity/translate rise, never scroll-linked ──
+   Outside a reveal wrapper the fragment rises once at mount; inside
+   the landing's .reveal-up choreography (the pr-grid) it waits for
+   the section's own .in-view beat — one CSS animation, staggered by
+   raw delays (the choreography exemption). */
+.prf-card {
+  animation: prf-card-in var(--t-slower) var(--ease-out) both;
+}
+
+.reveal-up .prf-card {
+  animation: none;   /* armed, not played — the reveal owns the beat */
+}
+
+.reveal-up.in-view .prf-card {
+  animation: prf-card-in var(--t-slower) var(--ease-out) both;
+}
+
+.prf-card--chat    { animation-delay: 80ms; }
+.prf-card--mastery { animation-delay: 160ms; }
+.prf-card--attend  { animation-delay: 240ms; }
+
+@keyframes prf-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reduced motion — the static sheet: fragments are simply THERE. */
+@media (prefers-reduced-motion: reduce) {
+  .prf-card,
+  .reveal-up .prf-card,
+  .reveal-up.in-view .prf-card {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Dark theme — the charcoal night twin ───────────────────────────
+   The card rides the night surface (--surface #2E2E2E) with the same
+   hairline grammar (--rule #4A4A48). The title bar stays DARK (the
+   composition's identity): the night ground #282828 (one step BELOW
+   the surface — depth via surface step, the R313 canon) with the
+   paper-white label. Everything else already rides semantic tokens. */
+[data-theme='dark'] .prf-card-bar {
+  background: var(--bg);
+  color: var(--text);
+  border-block-end: 1px solid var(--rule);
+}
+
+/* ── Narrow-desktop belt (≤1199px) — the collage breathes inward ────
+   The capture narrows and the page margin thins; the outside offsets
+   shrink so nothing passes the viewport's edge (the .landing
+   overflow-x clip stays a last resort, never the design). Card C is
+   a ≥1200px fragment only. */
+@media (max-width: 1199px) {
+  .prf-card--attend { display: none; }
+
+  .prf-card--chat {
+    inline-size: 184px;
+    inset-inline-end: -56px;
+  }
+
+  .prf-card--mastery {
+    inset-inline-start: -20px;
+  }
+
+  .prf-cards--side .prf-card--chat {
+    inset-inline-end: -32px;
+  }
+}
+
+/* The tablet band (≤991px) — the fluid root re-gears; the fragments
+   tighten one more step against the thinner capture. */
+@media (max-width: 991px) {
+  .prf-card--chat {
+    inline-size: 168px;
+    inset-block-start: 14px;
+    inset-inline-end: -40px;
+  }
+
+  .prf-card--mastery {
+    inline-size: 156px;
+    inset-block-end: 10px;
+  }
+
+  .prf-cards--side .prf-card--chat {
+    inline-size: 156px;
+    inset-block-end: 10px;
+    inset-inline-end: -24px;
+  }
+}
+
+/* ── Mobile (<768px) — the flat stacked tiles ───────────────────────
+   The reference's 390 tiles are FLAT captures: the overlap collage
+   retires; Card A alone stays as an IN-FLOW strip under the capture
+   (no overlap — the fragment reads as the platform's assistant row,
+   carrying the same title bar + disclosure). The strip is fully
+   shrinkable (ellipsis + wrap) and clamps .prf's implicit column —
+   landing.css leaves .prf's auto column unclamped, and the strip's
+   max-content would otherwise inflate it past the grid track (the
+   pre-existing narrow-grid mobile belt keeps the tracks thin). */
+@media (max-width: 767px) {
+  .prf {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prf-cards {
+    position: static;
+    inset: auto;
+    display: block;
+    margin-block-start: var(--sp-2);
+  }
+
+  .prf-card--mastery,
+  .prf-card--attend {
+    display: none;
+  }
+
+  .prf-card--chat {
+    position: static;
+    inset: auto;
+    inline-size: auto;
+    min-inline-size: 0;
+    display: block;
+  }
+
+  .prf-cards--side .prf-card--chat {
+    position: static;
+    inset: auto;
+    inline-size: auto;
+  }
+
+  .prf-card-bar {
+    min-inline-size: 0;
+  }
+}
