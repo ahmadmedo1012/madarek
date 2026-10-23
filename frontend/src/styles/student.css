@@ -2817,7 +2817,9 @@
     min-block-size: 64px;
     block-size: auto;
     padding: var(--sp-2) var(--sp-3);
-    background: var(--surface-2);
+    /* R313 (WP-E · D16): transparent ground — the paper IS the field
+       (the shared recipe; the old surface-2 well is retired). */
+    background: transparent;
     /* 21-c (A5 P2-X / A10 P1): was var(--type-label-size) 13px — iOS
        Safari zooms on any <16px control focus. 16px floor. */
     font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
