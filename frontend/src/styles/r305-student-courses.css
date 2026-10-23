@@ -34,7 +34,9 @@
   .courses-row-progress .progress-track {
     block-size: var(--sp-1-5);
     background: var(--surface-2);
-    box-shadow: inset 0 0 0 1px var(--surface-border);
+    /* R313 (WP-E): hairline frame via border (the inset box-shadow
+       ring reads as a shadow in the surface sweep). */
+    border: 1px solid var(--surface-border);
   }
   /* The row's % readout: the mono metric voice, one step stronger than
      the head label (the readout is the row's data; the label is chrome). */
@@ -148,9 +150,10 @@
 
   /* Chapter/interaction time chips — the technical register: hairline
      frame over the quiet well so the timestamps read as instruments,
-     not badges. */
+     not badges. R313 (WP-E): the frame is a border (the base well
+     carries no border, so nothing doubles). */
   .lecture-panel .chapter-time {
-    box-shadow: inset 0 0 0 1px var(--surface-border);
+    border: 1px solid var(--surface-border);
   }
   /* Interaction-point rows: the answered state goes fully quiet (its
      open siblings keep the amber state icon) — the answered/open split

@@ -41,11 +41,12 @@
      ONE emphasized cell, and meta-row discipline on the event rows. */
 
   /* The legend becomes the metadata register: one quiet chip per kind
-     (the kind dot keeps its data-kind tone from student.css). */
+     (the kind dot keeps its data-kind tone from student.css).
+     R313 (WP-E · D16): square chip — hairline frame, 0 radius. */
   .cal-legend-item {
     background: var(--surface-2);
     border: 1px solid var(--surface-border);
-    border-radius: var(--r-full);
+    border-radius: var(--r-sm);
     padding: var(--sp-0-5) var(--sp-2-5);
     font-weight: var(--fw-medium);
     color: var(--text-secondary);

@@ -1396,7 +1396,9 @@
     justify-content: center;
     background: color-mix(in srgb, var(--course-tint) 14%, var(--surface));
     color: var(--course-tint);
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--course-tint) 30%, transparent);
+    /* R313 (WP-E): the tinted hairline rides a real border (the old
+       inset box-shadow ring reads as a shadow in the surface sweep). */
+    border: 1.5px solid color-mix(in srgb, var(--course-tint) 30%, transparent);
   }
   .course-hero-main {
     flex: 1;
@@ -1500,7 +1502,8 @@
   }
   .course-lec-row.next .course-lec-well {
     background: color-mix(in srgb, var(--course-tint, var(--accent)) 14%, var(--surface));
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--course-tint, var(--accent)) 30%, transparent);
+    /* R313 (WP-E): tinted hairline as a border, not an inset shadow. */
+    border: 1px solid color-mix(in srgb, var(--course-tint, var(--accent)) 30%, transparent);
   }
   /* durations / counts in the curriculum rows stay digit-stable */
   .course-lectures .list-row-sub { font-variant-numeric: tabular-nums; }
@@ -1618,8 +1621,11 @@
     animation: mooc-cta-pulse var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
   }
   @keyframes mooc-cta-pulse {
-    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 50%, transparent); }
-    to { box-shadow: 0 0 0 10px transparent; }
+    /* R313 (WP-E): the confirmation pulse keeps its keyframe seat but
+       breathes OPACITY (glow rings are gone from the system — the
+       reference has zero box-shadows outside the cookie banner). */
+    from { opacity: 0.45; }
+    to { opacity: 1; }
   }
 
   /* ═══ WebinarsPage — live-vs-upcoming distinction ═══ */
