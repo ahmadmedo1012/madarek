@@ -1,6 +1,6 @@
 # R314 — PARITY (VISUAL TRUTH) · cycle 1
 
-**Score: 43.9 / 100** (baseline at cycle start: 0 — no judges existed)
+**Score: 43.9 / 100** (cycle-1 close: 90aa56a — mobile re-measured 11 147 px, in band) (baseline at cycle start: 0 — no judges existed)
 **DIFFS.json: 29 section-relative pairs, 29 open (0 closed)**
 
 > **Judge-calibration disclosure (honest):** the VLM pair-judge
@@ -24,7 +24,7 @@
 | V5 | Platform mock-UI collage: overlapping flat cards (chat w/ dark title bar, status dots, progress bars), radius 0, no shadows | VLM 8/10 «designer collage of overlapping flat UI cards» |
 | V9 | Footer cell grid + strip image + giant outlined wordmark | VLM: cell grid ✓, «massive outline-only wordmark spanning full width» ✓, legal row ✓ |
 | V11 | Consent banner: geometry + honest function | 26/26 functional checks (accept/reject/reload/persist, window.MadarekConsent, gated keys purged, essentials kept) |
-| V13 (total) | Mobile 390×844 docH **11 344 px** vs target 11 441 ±3% (**−0.8%, in band**); was 15 308 | capture meta + `/tmp` measurement logs |
+| V13 (total) | Mobile 390×844 docH **11 147 px** vs target 11 441 ±3% (**−2.6%, in band**); was 15 308 | capture meta + measurement logs (90aa56a) |
 
 ## Pixel judge (29 section-aligned frames, 1440×900, light)
 
