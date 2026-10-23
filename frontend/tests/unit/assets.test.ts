@@ -38,13 +38,13 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('every @font-face in fonts.css points to an existing woff2 file', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const urls = [...css.matchAll(/url\('?(\/fonts\/[^)']+\.woff2)'?\)/g)].map((m) => m[1]!);
-    // 14 faces — 10 IBM Plex (Sans Arabic 400-700 arabic+latin + Mono
-    // ×2) + 4 Alexandria (r191: the Arabic display family is 600/700
-    // only — the 500 rungs retired with the wire-weight diet; the two
-    // 500-weight landing consumers moved to 600). r190 added the
-    // family (500/600/700); Premium-polish PP-X1 deleted the dead Noto
+    // 16 faces — 10 IBM Plex (Sans Arabic 400-700 arabic+latin + Mono
+    // ×2) + 4 Alexandria (r191: 600/700 only) + 2 Geist Mono (R313:
+    // the reference's instrument voice, latin subset, 400/500 — both
+    // weights resolve from the variable-font woff2 Google Fonts serves).
+    // r190 added Alexandria; Premium-polish PP-X1 deleted the dead Noto
     // Kufi ×6 + Amiri + Rubik; r152j (A7) deleted the dead Serif ×2.
-    expect(urls.length).toBe(14);
+    expect(urls.length).toBe(16);
     for (const u of urls) {
       const file = path.join(root, 'public', u.replace(/^\//, ''));
       expect(existsSync(file), `${u} missing from public/fonts`).toBe(true);
@@ -54,7 +54,7 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('all font faces use font-display: swap', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const faces = css.match(/@font-face\s*\{/g)?.length ?? 0;
-    expect(faces).toBe(14);   // 10 Plex + 4 Alexandria (r191: 600/700 only)
+    expect(faces).toBe(16);   // 10 Plex + 4 Alexandria + 2 Geist Mono (R313)
     expect(css.match(/font-display:\s*swap/g)?.length).toBe(faces);
   });
 
@@ -186,13 +186,18 @@ describe('welcome-card background + dead brand assets (audit 11-g P2-3 / P1-4 �
 });
 
 describe('theme-color metas match the real canvas tokens', () => {
-  it('dark meta = #282828 (r305 Heron charcoal = dark --bg), light meta = #F6F8FA (r305 blueprint paper = light --bg)', () => {
+  it('dark meta = #282828 (charcoal night = dark --bg), light meta = #F6F6EE (R313 warm vintage paper = light --bg)', () => {
     const html = read('index.html');
     expect(html).toContain('<meta name="theme-color" content="#282828" media="(prefers-color-scheme: dark)"');
-    expect(html).toContain('<meta name="theme-color" content="#F6F8FA" media="(prefers-color-scheme: light)"');
-    // the runtime sync script must paint the same grounds (r305: the
-    // r197-era #16140F/#F3EEE4 pair died with the warm-paper palette)
+    expect(html).toContain('<meta name="theme-color" content="#F6F6EE" media="(prefers-color-scheme: light)"');
+    // the runtime sync script must paint the same grounds (R313: the
+    // r305-era #F6F8FA blue-grey paper died with the warm-paper re-key)
     expect(html.match(/['"]#282828['"]/g)?.length ?? 0).toBeGreaterThanOrEqual(2);
+    expect(html.match(/['"]#F6F6EE['"]/g)?.length ?? 0).toBeGreaterThanOrEqual(1);
+    // #F6F8FA survives in EXACTLY ONE seat: the dark boot-plate ink
+    // (mirrors dark --text / --neutral-900 — the R313 "one remaining
+    // use" ruling; the light ground seat is dead).
+    expect(html.match(/#F6F8FA/g)?.length ?? 0).toBe(1);
     expect(html).not.toContain('#070B16');
     expect(html).not.toContain('#16140F');
     expect(html).not.toContain('#F3EEE4');

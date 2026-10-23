@@ -98,7 +98,11 @@ const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
  * aligning with the theme store's actual default (r302): the stale 'dark'
  * default painted a first-visit dark blank viewport that flashed to light
  * once React mounted (the production audit's «initially dark blank interval»). */
-const THEME_BOOTSTRAP_SHA256 = 'dWUlIuWk9i1/4FIObdmzMb7krfCFVvA0prJnuo/dSYY=';
+/* R313: pin refreshed — syncThemeColor paints the FULL-parity grounds
+ * (dark #282828 / light #F6F6EE — the warm vintage paper, owner
+ * decision; audits/evidence/r313/reference/digest.json); the metas and
+ * the boot plate moved with it. */
+const THEME_BOOTSTRAP_SHA256 = 'jEZ9yPBzXBwMFxHwFlLFqiKKy+HtK9TOGA7FRviqIMc=';
 /* r188: pin refreshed — the JSON-LD block now describes the INDEPENDENT
  * Madarek platform alone (WebSite node; the retired University-of-Zawia
  * `about` node is gone — the only demo-data story is the explicitly

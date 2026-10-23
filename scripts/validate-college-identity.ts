@@ -21,8 +21,8 @@ const PUBLIC_DIR = resolve(REPO_ROOT, 'frontend/public');
 
 const ALLOWED_TOKEN_KEYS = new Set(['college-accent-soft', 'college-accent-fg']);
 
-// Reference platform background — mirrors tokens.css --bg (r305 blueprint paper).
-const SURFACE_LIGHT = '#F6F8FA';
+// Reference platform background — mirrors tokens.css --bg (R313 warm vintage paper).
+const SURFACE_LIGHT = '#F6F6EE';
 
 type CollegeIdentityProfile = {
   slug: string;

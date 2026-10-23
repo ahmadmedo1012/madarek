@@ -55,12 +55,12 @@ function contrastRatio(a: RGB, b: RGB): number {
  * this surface in the active theme.
  */
 const CHROME_BG: Record<ThemeSurface, RGB> = {
-  /* r305: mirrors tokens.css --bg (the Heron foundation) — light
-     blueprint paper #F6F8FA, dark charcoal night #282828. The
-     college-accent gate now measures against the real shipped canvas
-     in both themes. (r197 values #F3EEE4/#16140F retired with the
-     warm-paper era.) */
-  light: { r: 246, g: 248, b: 250 },
+  /* R313: mirrors tokens.css --bg (the Heron FULL-parity foundation) —
+     light warm vintage paper #F6F6EE, dark charcoal night #282828. The
+     college-accent gate measures against the real shipped canvas in
+     both themes. (r305 values #F6F8FA/#282828 retired with the
+     blue-grey paper; r197 values #F3EEE4/#16140F before them.) */
+  light: { r: 246, g: 246, b: 238 },
   /* r148 (AUDIT-5 M4): كان #191918 (حبر الفاتح القديم) بينما أرضية الليل
      الفعلية أفتح — تقديرات gateCollegeAccent في الداكن كانت تنحرف ضد
      سطح غير موجود. الاتجاه محافظ (يرفض ألوانًا قد تجتاز) لكن الثابت

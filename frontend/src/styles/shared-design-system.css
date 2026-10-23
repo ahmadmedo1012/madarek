@@ -7,14 +7,14 @@
    recipes (card / btn / badge / metric / stagger / reveal / skeleton).
 
    COLOR ALWAYS COMES FROM THE PARITY FILE — unified-parity.css
-   owns both theme blocks (r305 Heron foundation: light blueprint
-   paper + orange signal, dark charcoal night — see
-   docs/redesign/r305-heron-reference-spec.md), the status/accent
+   owns both theme blocks (R313 Heron FULL-parity foundation: warm
+   vintage paper #F6F6EE + orange signal, dark charcoal night — see
+   audits/evidence/r313/reference/digest.json), the status/accent
    families, the elevation recipes and the glass surfaces. Where the
    two files overlap (motion, z values, structural recipes) they are
-   value-identical by contract; the radius ladders are deliberately
-   per-product (this skeleton ships the fleet product scale — r305
-   syncs it to the squared ladder). Verify
+   value-identical by contract; the radius ladder is synced to the
+   canonical R313 zero ladder (Heron parity — the reference measures
+   radius 0 on 2770 of 2774 sampled surfaces). Verify
    with: node scripts/verify-parity-export.mjs
 
    Load order:  unified-parity.css         (color + motion + state source)
@@ -43,8 +43,9 @@
     /* (r136: --sp-*x legacy aliases deleted with the canon — see tokens.css) */
 
     /* ─── Radius — soft, Notion-inspired ───────────────────────────── */
-    --r-xs: 2px;    --r-sm: 4px;    --r-md: 6px;    --r-lg: 8px;
-    --r-xl: 12px;   --r-2xl: 16px;  --r-3xl: 20px;  --r-full: 9999px;
+    /* R313 override: radius ladder collapsed to 0 (owner decision — Heron parity) */
+    --r-xs: 0px;    --r-sm: 0px;    --r-md: 0px;    --r-lg: 0px;
+    --r-xl: 0px;    --r-2xl: 0px;   --r-3xl: 0px;   --r-full: 9999px;
 
     /* (r148-d: the --radius-sm…full alias pair deleted with the canon —
        zero consumers; the ladder speaks --r-* directly) */

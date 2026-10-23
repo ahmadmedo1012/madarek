@@ -1,22 +1,26 @@
 /* ═══════════════════════════════════════════════════════════════════
-   Self-hosted fonts — served from /public/fonts. (r305)
+   Self-hosted fonts — served from /public/fonts. (r305 → r313)
 
-   LICENSING (r305 audit — r305-heron-reference-spec.md §fonts): every
-   face below is SIL OFL 1.1 and legally self-hosted. The design
-   reference's display/body grotesk (BT Grotesk) is PROPRIETARY and is
-   NOT reused; its mono voice (Geist Mono) is OFL but adds no a11y or
-   coverage gain over the shipped Plex Mono, so the face set is
-   unchanged — the Heron voice is carried by Alexandria (display) +
-   IBM Plex Sans Arabic (body, Latin runs included) + IBM Plex Mono
-   (technical micro-labels). Archivo (OFL) is the documented future
-   addition if a distinct Latin display voice is ever required.
+   LICENSING (r305 audit — r305-heron-reference-spec.md §fonts; R313
+   re-ruling): every face below is SIL OFL 1.1 and legally self-hosted.
+   The design reference's display/body grotesk (BT Grotesk) remains
+   PROPRIETARY and is NOT reused — a PERMANENT exception (documented;
+   the Arabic-first OFL stack below carries the display/body voice).
+   R313 (owner decision, Heron parity): the reference's mono voice
+   Geist Mono (OFL, self-hosted below — the exact woff2 the Google
+   Fonts CSS2 API serves, latin subset) is ADOPTED as the first entry
+   of --font-mono; IBM Plex Mono stays as the self-hosted fallback.
+   The Heron voice is carried by Alexandria (display) + IBM Plex Sans
+   Arabic (body, Latin runs included) + Geist Mono / IBM Plex Mono
+   (technical micro-labels). Archivo (OFL) remains the documented
+   future addition if a distinct Latin display voice is ever required.
    Replaces the render-blocking fonts.googleapis.com request chain
    (preconnect ×2 → css2 stylesheet → gstatic files) that used to sit
    in <head>. This file must be imported FIRST in main.tsx so the
    @font-face rules exist before any stylesheet that uses the
    families (tokens.css --font-sans / -display / -mono).
    ─────────────────────────────────────────────────────────────────
-   The app's families (assets.test.ts pins this file at 14 faces and
+   The app's families (assets.test.ts pins this file at 16 faces and
    fails on any @font-face pointing at a missing file):
    · IBM Plex Sans Arabic 400/500/600/700 (arabic + latin subsets) —
      body text, chrome, chart.js labels, and the landing's Arabic mono
@@ -29,6 +33,12 @@
      woff2s deleted from disk. Arabic emphasis stays upright weight +
      accent ink. Do not re-add without re-shipping files.
    · IBM Plex Mono 400/500 (latin) — codes, IDs, numbers, emails.
+   · Geist Mono 400/500 (latin) — R313: the Heron instrument voice,
+     first entry of --font-mono (loader readouts, coordinates, Latin
+     micro-labels). Both weights resolve from the same variable-font
+     woff2 Google Fonts serves (wght axis 100–900, default 400); the
+     two names mirror the family's per-weight file convention so the
+     assets gate counts faces, not files.
    · Alexandria 600/700 (arabic + latin subsets) — the DISPLAY voice
      (r190 «مدار المعرفة»): geometric Kufi-flavored sans, true Arabic
      + Latin in one family. Display hierarchy: 700 hero/headline ·
@@ -135,6 +145,30 @@
   font-weight: 500;
   font-display: swap;
   src: url('/fonts/plex-mono-500-normal-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ── Geist Mono — latin subset (R313: the Heron instrument voice) ──
+   The reference's mono face (Geistmono 500 on heronaiapp.com —
+   loader %, X:Y readouts, button micro-labels). OFL, self-hosted:
+   the exact latin-subset woff2 the Google Fonts CSS2 API serves.
+   Latin-only voice — Arabic runs in mono contexts continue in IBM
+   Plex Sans Arabic via the --font-mono stack (per-script fallback,
+   auth.css recipe). */
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/geist-mono-400-normal-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/geist-mono-500-normal-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 

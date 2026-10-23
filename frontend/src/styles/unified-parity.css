@@ -1,6 +1,6 @@
 /* ═════════════════════════════════════════════════════════════════════
    Canonical Madarek parity export v2 — faithful distillation of
-   tokens.css @ r305 (the Heron foundation re-key).
+   tokens.css @ R313 (the Heron FULL-parity foundation).
 
    Reference artifact for the design canon — the verification surface
    the parity gate diffs against tokens.css. This file is NOT imported
@@ -18,10 +18,17 @@
    r305 RE-SYNC: the export had drifted through two eras (it still
    shipped the r197 ultramarine/warm-paper values while canonical had
    moved through r303/r304) — the parity gate ran red at the r305
-   baseline (76/190). This revision re-distills the Heron foundation:
-   blueprint-paper neutrals, the #FA3600 signal with its AA ink/label
-   registers, the technical greys, the squared radius ladder and the
-   measured 0.4s motion register. Every value mirrors tokens.css.
+   baseline (76/190). That revision re-distilled the Heron foundation.
+
+   R313 RE-SYNC (owner decision — FULL Heron parity; supersedes the
+   r305/r306/r308 divergence rulings): warm vintage paper #F6F6EE,
+   radius ladder collapsed to 0, decorative shadows removed (elev +
+   shadow aliases → none; the prefers-contrast a11y rings stay), the
+   fluid rem root (html 0.5787037037vw + the 991/767 bands) with the
+   rem type ladder + 13px Arabic floors, Geist Mono leading
+   --font-mono, white accent-fill labels (#FFFFFF — the superseded
+   r305 "never white" rule), and the reference hairlines (#E0E0DA
+   border · #B3B3AF rule/grid). Every value mirrors tokens.css.
 
    Verify with: node scripts/verify-parity-export.mjs
    (asserts 100+ key tokens against tokens.css :root + [data-theme="dark"]
@@ -73,14 +80,15 @@
     /* (r136: --sp-*x legacy aliases deleted with the canon — see tokens.css) */
 
     /* ─── Radius — Notion-soft, 7 rungs + full ────────────────────── */
-    --r-xs: 2px;
-    --r-sm: 4px;
-    --r-md: 6px;
-    --r-lg: 8px;
-    --r-xl: 12px;
-    --r-2xl: 16px;
-    --r-3xl: 20px;
-    --r-full: 9999px;
+    /* R313 override: radius ladder collapsed to 0 (owner decision — Heron parity) */
+    --r-xs: 0px;
+    --r-sm: 0px;
+    --r-md: 0px;
+    --r-lg: 0px;
+    --r-xl: 0px;
+    --r-2xl: 0px;
+    --r-3xl: 0px;
+    --r-full: 9999px;   /* circular primitives only: avatars, status dots */
 
     /* (r136: --st-r-* deleted with the canon — see tokens.css.
        r148-d: the --radius-sm…full alias pair deleted with it — same
@@ -91,7 +99,10 @@
                     'Segoe UI', Roboto, sans-serif;
     --font-display: 'IBM Plex Sans Arabic', system-ui, sans-serif;
     /* (--font-serif retired r148-d — zero consumers, see tokens.css) */
-    --font-mono:    'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, 'SFMono-Regular', monospace;
+    /* R313 — Geist Mono (the reference's OFL instrument voice,
+       self-hosted latin subset) leads; Plex Mono is the fallback;
+       Arabic runs continue in the brand face. */
+    --font-mono:    'Geist Mono', 'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, 'SFMono-Regular', monospace;
 
     /* weights — the self-hosted Plex set ships 400/500/600/700 only.
        (r132-F5: --fw-cine/-heavy 800/900 + the cine/eyebrow/mega display
@@ -103,23 +114,32 @@
     --fw-bold: 700;
     --fw-black: var(--fw-bold); /* → 700: Plex has no true 800 */
 
-    /* fluid display — r197 Arabic-tuned ladder (§4): tops at 64px */
-    --fs-display-xl: clamp(40px, 6.5vw, 64px);
-    --fs-display-lg: clamp(32px, 5.0vw, 48px);
-    --fs-display-md: clamp(24px, 3.2vw, 38px);
+    /* R313 — the FLUID-REM type ladder (root: html 0.5787037037vw +
+       the 991/767 Webflow bands — see the html rule below). rem rungs
+       scale with the viewport like the reference; Arabic reading sizes
+       keep the 13px floor via max(); mono micro-sizes are Latin-only,
+       no floor. */
+    --fs-display-xl: 8rem;
+    --fs-display-lg: 7.2rem;
+    --fs-display-md: 6.4rem;
 
-    --fs-h1: 30px;
-    --fs-h2: 24px;
-    --fs-h3: 18px;
+    --fs-h1: 5.6rem;          /* 46.67px @1440 — the measured Heron h1 */
+    --fs-h2: 4.8rem;          /* 40px    @1440 — Heron h2 */
+    --fs-h3: 4rem;            /* 33.33px @1440 — Heron h3 */
 
-    --fs-body-lg: 18px;
-    --fs-body:    16px;
-    /* r140 — the fleet chrome step (r133 fleet accord, canonized):
-       14px for UI chrome runs; body copy stays 15px. */
-    --fs-chrome:  0.875rem;
+    --fs-body-lg: max(13px, 1.8rem);
+    --fs-body:    max(13px, 1.6rem);
+    /* r140 → R313 — the chrome step joins the reference's uniform
+       13.33px body run, floor-gated for Arabic. */
+    --fs-chrome:  max(13px, 1.6rem);
     --fs-sm:      13px;
     --fs-xs:      13px;
     --fs-xxs:     13px;
+
+    /* R313 — mono micro-label sizes (Latin-only, no floor) */
+    --fs-mono-md: 1.4rem;   /* 11.67px @1440 — Heron txt-14 */
+    --fs-mono-sm: 1.2rem;   /* 10px    @1440 — Heron txt-12 */
+    --fs-mono-xs: 1rem;     /* 8.33px  @1440 — Heron txt-10 */
 
     /* legacy aliases (r148-d: --fs-base/-4xl + headline/label pairs
        deleted with the canon — zero consumers) */
@@ -143,6 +163,9 @@
     --ls-tight:  0;
     --ls-snug:   0;
     --ls-normal: 0;
+    /* R313 — the reference's −0.02em display tracking. LATIN display
+       runs only — never Arabic (cursive joins). */
+    --ls-display-tight: -0.02em;
 
     /* ─── Motion — raw ladder 80/160/240/380/520/720 ──────────────── */
     --t-micro: 80ms;
@@ -323,6 +346,22 @@
        --poster-* aliases remain on either side). */
   }
 
+  /* ─── R313 — the FLUID REM ROOT (mirrors tokens.css; the exact ────
+     rules read from the live reference's inline CSS). Print re-pins
+     a fixed 16px root so rem rungs keep absolute sizes on paper. */
+  html {
+    font-size: 0.5787037037vw;
+  }
+  @media only screen and (max-width: 991px) {
+    html { font-size: 1.1990407674vw; }
+  }
+  @media only screen and (max-width: 767px) {
+    html { font-size: 2.5445292621vw; }
+  }
+  @media print {
+    html { font-size: 16px; }
+  }
+
   /* RTL flips the direction multiplier so logical motion expressions
      work without per-component RTL forks. */
   [dir="rtl"] {
@@ -334,18 +373,20 @@
      ══════════════════════════════════════════════════════════════════ */
   :root,
   [data-theme="light"] {
-    /* canonical neutrals — r195 egn cool-gray ramp */
+    /* R313 — the warm vintage-paper neutral ramp (the blue-grey r305
+       ground + band rungs are retired; #B3B3AF is the reference's
+       construction hairline). */
     --neutral-0:   #FFFFFF;          /* ground — cards/inputs */
-    --neutral-50:  #F6F8FA;          /* paper — page ground (blueprint paper) */
-    --neutral-100: #F0F2F5;          /* card hover, subtle band */
-    --neutral-150: #E9ECEF;          /* inset wells */
-    --neutral-200: #E0E0DA;          /* hairline */
-    --neutral-300: #C8C8C8;          /* divider */
-    --neutral-400: #B4B4B0;   /* grid-line rung — the reference's technical grey */
+    --neutral-50:  #F6F6EE;          /* paper — the warm vintage page ground (R313) */
+    --neutral-100: #F0F0E6;          /* card hover, subtle band — warm step */
+    --neutral-150: #EFEFE4;          /* inset wells — warm step */
+    --neutral-200: #E0E0DA;          /* hairline — the reference's guide grey */
+    --neutral-300: #B3B3AF;          /* divider / rule / grid — the reference's --content--border */
+    --neutral-400: #B4B4B0;   /* disable rung — the reference's technical grey */
     --neutral-500: #72726F;
     --neutral-700: #414140;          /* ink-secondary (the reference's own) */
     --neutral-800: #333330;
-    --neutral-900: #282828;          /* ink — the charcoal, 13.85:1 on paper (AAA) */
+    --neutral-900: #282828;          /* ink — the charcoal, 13.57:1 on paper (AAA) */
 
     /* the 9 section-color families — near-neutral grounds + teal-family
        inks (r195 egn re-key; --c-mint-ink IS the brand teal, so the
@@ -375,9 +416,9 @@
 
     --text:        var(--neutral-900);
     --text-secondary: var(--neutral-700);
-    --text-muted:  #626260;   /* r305: the granite grey — 5.74:1 ground · 6.11:1 surface */
-    --text-faint:  #72726F;   /* r305: one step under muted — 4.53:1 ground, under AA on soft/wells (deliberate) */
-    --text-on-accent: var(--warm-ink);
+    --text-muted:  #62625F;   /* R313: rgba(40,40,40,.72) on #F6F6EE, solid — 5.63:1 ground · 6.12:1 surface */
+    --text-faint:  #70706A;   /* R313: warm faint — 4.59:1 ground, under AA on soft/wells (deliberate) */
+    --text-on-accent: #FFFFFF;   /* R313: the reference's white-on-#FA3600 labels (AA-large + the weight exception) */
     --text-on-dark:   var(--neutral-50);
 
     --border:        var(--neutral-200);
@@ -385,18 +426,21 @@
     --border-faint:  rgba(40,40,40,0.07);
     --rule:          var(--neutral-300);
     --rule-strong:   var(--border-strong);
-    --grid-line:     var(--neutral-400);
+    --grid-line:     var(--neutral-300);
     --surface-border:  rgba(40,40,40,0.07);
     --surface-divider: rgba(40,40,40,0.05);
 
     /* the orange signal family — r305 (the ONE accent; raw orange is
-       UI/large tier; body-size text routes through --accent-ink) */
-    --accent:        #FA3600;              /* 3.53:1 paper / 3.76:1 surface — UI/large (AA-large) */
+       UI/large tier; body-size text routes through --accent-ink).
+       R313: accent-fg is WHITE — the reference's own labels on the
+       #FA3600 fill (3.76:1, AA-large; superseded "never white" rule;
+       small Arabic accent labels get weight ≥600 + size ≥14px). */
+    --accent:        #FA3600;              /* 3.46:1 paper / 3.76:1 surface — UI/large (AA-large) */
     --accent-hover:  #D92F00;
     --accent-soft:   #FCE3D9;
     --accent-strong: #A32400;               /* 7.02:1 on paper — deep tier */
-    --accent-fg:     var(--warm-ink);       /* 4.69:1 on the vivid fill — never white (3.76) */
-    --accent-ink:    #C72E00;  /* text-safe signal ink — 5.16:1 ground / 5.50:1 surface */
+    --accent-fg:     #FFFFFF;               /* R313: white labels on the vivid fill — the reference's recipe */
+    --accent-ink:    #C72E00;  /* text-safe signal ink — 5.06:1 ground / 5.50:1 surface */
 
     /* the focus ring clears >=3:1 on every adjacent light surface —
        #C72E00 (5.16:1 paper); dark resolves the cascade to #FF6B33. */
@@ -429,30 +473,33 @@
     --primary:       var(--neutral-900);   /* charcoal slab CTA — white label 14.74:1 */
     --primary-fg:    #FFFFFF;
 
-    /* shadows — r197 quiet elevation: one shadow per level */
-    --shadow-card:    var(--elev-1);
-    --shadow-card-h:  var(--elev-2);
-    --shadow-pop:     var(--elev-3);
-    --shadow-modal:   var(--elev-4);
+    /* shadows — R313: the decorative ladder is RETIRED (depth via
+       hairlines only; the prefers-contrast rings below stay) */
+    /* R313 override: decorative shadows removed — depth via hairlines only */
+    --shadow-card:    none;
+    --shadow-card-h:  none;
+    --shadow-pop:     none;
+    --shadow-modal:   none;
     /* (r148-d: --shadow-mockup retired with the canon) */
-    --shadow-card-premium:  var(--elev-2);
-    --shadow-card-premium-h: var(--elev-3);
-    --shadow-card-glow:     0 0 0 1px var(--accent-soft), var(--elev-2);
+    --shadow-card-premium:  none;
+    --shadow-card-premium-h: none;
+    --shadow-card-glow:     0 0 0 1px var(--accent-soft); /* ring kept — the elev tail retired */
 
-    /* elevation language — light (also the no-JS plain-:root defaults) */
-    --elev-1: 0 1px 2px rgba(28,28,28,0.05);
-    --elev-2: 0 1px 2px rgba(28,28,28,0.05), 0 6px 16px rgba(28,28,28,0.06);
-    --elev-3: 0 1px 2px rgba(28,28,28,0.06), 0 8px 24px rgba(28,28,28,0.08);
-    --elev-4: 0 12px 36px rgba(28,28,28,0.10), 0 32px 80px rgba(28,28,28,0.13);
-    --elev-5: 0 16px 44px rgba(28,28,28,0.12), 0 40px 96px rgba(28,28,28,0.16);
+    /* elevation language — light (also the no-JS plain-:root defaults).
+       R313: retired — all rungs none. */
+    --elev-1: none;
+    --elev-2: none;
+    --elev-3: none;
+    --elev-4: none;
+    --elev-5: none;
 
-    --glass-bg:    rgba(246,248,250,0.78);   /* r305: paper glass */
+    --glass-bg:    rgba(246,246,238,0.78);   /* R313: warm paper glass */
     --glass-blur:  16px;
     --glass-border: rgba(40,40,40,0.08);
     /* r140 — strong tier canonized: the fleet's three divergent
        opacities unify on 0.92; the blur stays the canonical 16px
        (r140 ruling: nothing stronger than 16). */
-    --glass-bg-strong:   rgba(246,248,250,0.92);
+    --glass-bg-strong:   rgba(246,246,238,0.92);
     --glass-blur-strong: 16px;
     --scrim-blur:  4px;
 
@@ -465,7 +512,7 @@
     --sidebar-item-active-text: var(--neutral-900);
     /* (r148-d: --sidebar-active-bar retired with the canon) */
 
-    --topbar-bg:    rgba(246,248,250,0.86);   /* r305: paper chrome glass */
+    --topbar-bg:    rgba(246,246,238,0.86);   /* R313: warm paper chrome glass */
     --topbar-border: var(--neutral-200);
 
     --scrollbar-thumb: rgba(40,40,40,0.16);
@@ -474,12 +521,12 @@
     /* live legacy aliases */
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
-    --shadow-sm: var(--shadow-card);
-    --shadow-md: var(--elev-3);
-    --shadow-lg: var(--elev-3);
-    --shadow-xl: var(--elev-4);
-    --shadow-2xl: var(--elev-5);
-    --shadow-mockup: 0 1px 2px rgba(28,28,28,0.05), 0 12px 32px rgba(28,28,28,0.08), 0 32px 80px rgba(28,28,28,0.06);
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+    --shadow-2xl: none;
+    --shadow-mockup: none;
 
     --chart-text: var(--text-muted);  /* r305: 5.74:1 on paper — AA */
     --chart-grid: rgba(40,40,40,0.08);
@@ -597,23 +644,23 @@
     --primary:       #FFFFFF;           /* the night CTA — white slab */
     --primary-fg:    var(--warm-ink);
 
-    /* shadows — r197: quiet elevation, shadows de-emphasized on dark;
-       surface step + hairline carry depth */
-    --shadow-card:    var(--elev-1);
-    --shadow-card-h:  var(--elev-2);
-    --shadow-pop:     var(--elev-3);
-    --shadow-modal:   var(--elev-4);
+    /* shadows — R313: retired with the light set (depth via hairlines) */
+    /* R313 override: decorative shadows removed — depth via hairlines only */
+    --shadow-card:    none;
+    --shadow-card-h:  none;
+    --shadow-pop:     none;
+    --shadow-modal:   none;
     /* (r148-d: --shadow-mockup retired with the canon) */
-    --shadow-card-premium:  var(--elev-2);
-    --shadow-card-premium-h: var(--elev-3);
-    --shadow-card-glow:     0 0 0 1px var(--accent-soft), var(--elev-2);
+    --shadow-card-premium:  none;
+    --shadow-card-premium-h: none;
+    --shadow-card-glow:     0 0 0 1px var(--accent-soft); /* ring kept — the elev tail retired */
 
-    /* elevation language — dark (fill-led, shadow muted, paper inset) */
-    --elev-1: 0 1px 2px rgba(0,0,0,0.30), inset 0 1px 0 rgba(246,248,250,0.04);
-    --elev-2: 0 1px 2px rgba(0,0,0,0.30), 0 6px 16px rgba(0,0,0,0.32), inset 0 1px 0 rgba(246,248,250,0.05);
-    --elev-3: 0 8px 24px rgba(0,0,0,0.40), inset 0 1px 0 rgba(246,248,250,0.06);
-    --elev-4: 0 12px 32px rgba(0,0,0,0.48), 0 32px 80px rgba(0,0,0,0.52), inset 0 1px 0 rgba(246,248,250,0.07);
-    --elev-5: 0 16px 44px rgba(0,0,0,0.52), 0 40px 96px rgba(0,0,0,0.58), inset 0 1px 0 rgba(246,248,250,0.08);
+    /* elevation language — dark (R313: retired — all rungs none) */
+    --elev-1: none;
+    --elev-2: none;
+    --elev-3: none;
+    --elev-4: none;
+    --elev-5: none;
 
     --glass-bg:    rgba(30,30,30,0.78);   /* r305: charcoal night glass */
     --glass-blur:  16px;
@@ -640,7 +687,7 @@
 
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
-    --shadow-sm: var(--shadow-card);
+    --shadow-sm: none;
     /* (r148-d: --shadow-md/lg/xl/2xl retired with the canon) */
 
     --chart-text: var(--neutral-500);

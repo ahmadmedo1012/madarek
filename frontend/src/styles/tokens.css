@@ -7,45 +7,61 @@
    docs/redesign/r305-heron-reference-spec.md). This SUPERSEDES the
    OPTIKKA / Superlist / Notion directions (kept below as history).
 
-   The Heron system, as measured and semantically mapped:
+   The Heron system, as measured and semantically mapped (R313 —
+   FULL parity re-key; the r305/r306/r308 divergence rulings are
+   SUPERSEDED by the owner decision):
 
-   · Blueprint-paper neutrals — cool near-white ground #F6F8FA over
-     white surfaces; charcoal ink #282828 (the reference's own
-     --content--primary, verified live). Dark is the deliberate
-     counterpart: the charcoal itself as ground, surfaces one cool step
-     up, near-white ink — the reference's dark fills promoted to a full
-     theme, never a cold blue-black.
+   · Warm vintage-paper neutrals — the near-white ground #F6F6EE over
+     white surfaces (the reference's own paper, live-sampled
+     #F4F4EE–#F5F5EF, r308 #F6F6EE — R313 canon); charcoal ink #282828
+     (the reference's own --content--primary, verified live). Dark is
+     the deliberate counterpart: the charcoal itself as ground
+     (#282828), surfaces one step up (#2E2E2E), warm hairlines
+     #4A4A48/#5C5C5A, near-white ink — the reference's dark fills
+     promoted to a full theme, never a cold blue-black.
    · ONE vivid signal: orange #FA3600 (the reference's
      --content--brand, used for the scanline, contact accents, error
      chips and hover overlays). Raw orange is a LARGE-TEXT/UI tone
-     (3.53:1 on the ground — same class as the reference's own use);
-     TEXT routes through the darkened AA ink #C72E00 (5.16:1), and
-     labels ON orange fills stay --warm-ink (4.69:1) — never white
-     (3.76:1, measured). Coral #F15534 is the warm secondary (danger
-     rhymes with it; a --c-coral-* alias namespace exists).
+     (3.46:1 on the R313 ground — same class as the reference's own
+     use); TEXT routes through the darkened AA ink #C72E00 (5.06:1).
+     R313 SUPERSEDES the r305 "never white on orange" rule: the
+     reference ships WHITE labels on #FA3600 fills (measured, every
+     button recipe) — --accent-fg is #FFFFFF on light with the AA
+     exception noted at its seat (small Arabic accent labels get
+     weight ≥600 + size ≥14px where feasible; dark keeps the warmer
+     5.64:1 ink on its luminous ember). Coral #F15534 is the warm
+     secondary (danger rhymes with it; a --c-coral-* alias namespace
+     exists).
    · Technical greys straight from the reference bundle: #B4B4B0
      (disable/mid), #B3B3AF (the hairline/grid grey — every construction
      line on the reference), #72726F / #626260 / #414140 mid steps.
      The grid grey is decorative on light (1.95:1 — the reference uses
      it exactly that way) and a legitimate TEXT tone on dark (7.09:1 —
      the redeemed dark muted).
-   · Deliberately squared corners: the radius ladder tightens to
-     2/4/6/8/12/16/20 + pill (the reference renders radius 0 on every
-     marketing surface; Madarek keeps hairline-crisp near-square rungs
-     so chips/inputs stay legible, and the pill survives for the
-     primary CTA + search per the standing component contract).
+   · Radius 0 (R313): the reference measures 4 rounded surfaces of
+     2774 sampled — near-absolute square corners. The whole ladder
+     collapses to 0; ONLY genuinely circular primitives (avatars,
+     status dots) keep --r-full: 9999px.
    · The measured Heron motion register: 0.4s-dominant transitions
      (174×.4s in the bundle) on cubic-bezier(.23,1,.32,1) with the
      .48s roll/exit curve cubic-bezier(.625,.05,0,1) — adopted into the
      raw ladder (80/200/400/500/650/900) and the semantic page/reveal
-     durations. Springs and the press register are untouched.
+     durations. Springs and the press register are untouched. R313
+     adds the FLUID REM ROOT (html font-size 0.5787037037vw + the
+     991/767 Webflow bands — exact rules read from the live site) so
+     the rem type ladder scales with the viewport exactly like the
+     reference; decorative shadows are REMOVED (depth via hairlines
+     only — the reference's own policy, 1 shadow in 2774 sampled).
    · Arabic-first holds unchanged: Alexandria 600/700 display, IBM Plex
-     Sans Arabic 400–700 body, Plex Mono technical voice, zero
-     letter-spacing on Arabic, Western digits, logical properties. The
-     reference's proprietary BT Grotesk is NOT licensed for reuse — the
-     Latin grotesk roles stay on the shipped OFL faces (licensing
-     audit in the spec; Archivo is the documented future addition if a
-     distinct Latin display voice is ever needed).
+     Sans Arabic 400–700 body, zero letter-spacing on Arabic, Western
+     digits, logical properties. The reference's proprietary BT
+     Grotesk is NOT licensed for reuse — a PERMANENT documented
+     exception; its Latin grotesk roles stay on the shipped OFL faces
+     (licensing audit in the spec; Archivo is the documented future
+     addition if a distinct Latin display voice is ever needed). R313
+     ADOPTS the reference's OFL mono voice: Geist Mono (self-hosted,
+     latin subset) now leads --font-mono with IBM Plex Mono as the
+     self-hosted fallback.
    · Role names are the contract: page ground (--bg), card ground
      (--surface), subtle surface (--surface-2/-3 / --bg-soft), elevated
      surface (--surface-elevated), primary/secondary/muted/faint text,
@@ -74,10 +90,12 @@
    Alexandria display; r197 rebuilt the ladder system (§4 BLUEPRINT);
    r303 recovered the historical Notion-style palette; r304 restored
    the historical radii/elevation register and the fleet alias layer;
-   r305 (this file) re-keys the canon to the Heron system — blueprint
-   neutrals, the orange signal with its AA ink/fill/label registers,
-   the reference's technical greys, squared radii and the measured
-   0.4s motion register — while preserving every role name and alias. */
+   r305 re-keyed the canon to the Heron system; R313 (this round,
+   owner decision — FULL Heron parity) re-keys the paper to the warm
+   vintage #F6F6EE, collapses the radius ladder to 0, removes every
+   decorative shadow, lands the fluid rem root + the rem type ladder
+   + Geist Mono, and re-seats the accent label/hairline tokens —
+   while preserving every role name and alias. */
 
 @layer tokens, base, layout, components, pages, overrides;
 
@@ -108,25 +126,24 @@
        every consumer reads the canonical roles below. The parity
        gate's FORBIDDEN needle list guards the spelling. */
 
-    /* ─── Radius — the SQUARED ladder (r305: Heron-informed) ─────────
-       The reference renders radius 0 on every marketing surface (mea-
-       sured: buttons, cards, tags, inputs, chat bubbles). Madarek
-       tightens to hairline-crisp near-square rungs — chips 2, small
-       controls 4, buttons/inputs 6, cards 8, media/hero frames 12,
-       modals/sheets 16, hero-scale surfaces 20 — and keeps the pill
-       (--r-full) for the primary CTA + search per the standing
-       component contract. */
-    --r-xs: 2px;
-    --r-sm: 4px;
-    --r-md: 6px;
-    --r-lg: 8px;
-    --r-xl: 12px;
-    --r-2xl: 16px;
-    --r-3xl: 20px;
-    --r-full: 9999px;
+    /* ─── Radius — R313: the ladder collapses to 0 ───────────────────
+       The reference measures 4 rounded surfaces of 2774 sampled
+       (cursor dot + three why-card dots — both cursor-layer trivia);
+       every marketing/product surface is square. The whole ladder
+       rides 0; ONLY genuinely circular primitives (avatars, status
+       dots) consume --r-full. */
+    /* R313 override: radius ladder collapsed to 0 (owner decision — Heron parity) */
+    --r-xs: 0px;
+    --r-sm: 0px;
+    --r-md: 0px;
+    --r-lg: 0px;
+    --r-xl: 0px;
+    --r-2xl: 0px;
+    --r-3xl: 0px;
+    --r-full: 9999px;   /* circular primitives only: avatars, status dots */
     /* r304 — radius aliases restored (historical names → rungs). The
-       rung VALUES re-key to the r305 squared ladder; the alias wires
-       are verbatim r304. */
+       rungs are the R313 zero ladder; the alias wires are verbatim
+       r304. */
     --radius-sm: var(--r-sm);   --radius-md: var(--r-md);
     --radius-lg: var(--r-lg);   --radius-xl: var(--r-xl);
     --radius-2xl: var(--r-2xl); --radius-full: var(--r-full);
@@ -145,31 +162,50 @@
        lighter display accents — real woff2 files ship); body stays
        Plex Sans Arabic. */
     --font-display: 'Alexandria', 'IBM Plex Sans Arabic', system-ui, sans-serif;
-    /* The mono stack falls back per-script: Latin/digits mono, Arabic
-       continues in the brand face (auth.css documents the recipe). */
-    --font-mono:    'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, 'SFMono-Regular', monospace;
+    /* The mono stack falls back per-script: Latin/digits mono (Geist
+       Mono — the reference's own instrument voice, R313; IBM Plex Mono
+       the self-hosted fallback), Arabic continues in the brand face
+       (auth.css documents the recipe). */
+    --font-mono:    'Geist Mono', 'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, 'SFMono-Regular', monospace;
 
-    /* fluid display — the §4 Arabic-tuned ladder tops out at 64px
-       (13/14/16/18/20/24/30/38/48/64). */
-    --fs-display-xl: clamp(40px, 6.5vw, 64px);
-    --fs-display-lg: clamp(32px, 5.0vw, 48px);
-    --fs-display-md: clamp(24px, 3.2vw, 38px);
+    /* R313 — the FLUID-REM type ladder. The root itself is fluid (the
+       html rule below: 0.5787037037vw base, Webflow bands ≤991/≤767)
+       so every rung is rem ON that root and scales with the viewport
+       exactly like the reference. At 1440 (root 8.333px): h1 renders
+       46.67px, h2 40, h3 33.33 — the measured Heron heading ladder
+       (h4 26.67 continues the +0.8rem steps); body 13.33px (Heron
+       txt-16). Arabic READING sizes keep the r197 13px legibility
+       floor via max(); the mono micro-label sizes below them are
+       Latin-only (uppercase Geist Mono) and take NO floor — the
+       reference runs them down to 8.33px by design. Metric sizes stay
+       px: KPI numerals are data displays, not fluid marketing type. */
+    --fs-display-xl: 8rem;    /* 66.67px @1440 — the ladder top (h-run +0.8rem steps) */
+    --fs-display-lg: 7.2rem;  /* 60px    @1440 */
+    --fs-display-md: 6.4rem;  /* 53.33px @1440 */
 
-    --fs-h1: 30px;
-    --fs-h2: 24px;
-    --fs-h3: 18px;
+    --fs-h1: 5.6rem;          /* 46.67px @1440 — Heron h1 (700 · lh 1.0 · ls −0.02em · UPPER for Latin) */
+    --fs-h2: 4.8rem;          /* 40px    @1440 — Heron h2 */
+    --fs-h3: 4rem;            /* 33.33px @1440 — Heron h3 */
 
-    --fs-body-lg: 18px;
-    --fs-body:    16px;
-    /* r140 — the chrome step: 14px raw for UI chrome segments (nav
-       links, footer columns, form labels, status boxes, timestamps). */
-    --fs-chrome:  0.875rem;   /* = 14px */
+    --fs-body-lg: max(13px, 1.8rem);   /* 15px @1440 — the lead step, floor-gated */
+    --fs-body:    max(13px, 1.6rem);   /* 13.33px @1440 — Heron txt-16, floor-gated */
+    /* r140 → R313 — the chrome step joins the reference's uniform
+       body run (nav/footer/labels all ride 13.33px there), floor-gated
+       for Arabic. */
+    --fs-chrome:  max(13px, 1.6rem);
     /* r197 — the 13px Arabic floor: sub-13px Arabic micro-text is below
        the legible floor for the script at body weights. --fs-xs/--fs-xxs
        resolve to the floor. */
     --fs-sm:      13px;
     --fs-xs:      13px;
     --fs-xxs:     13px;
+
+    /* R313 — mono micro-label sizes (Latin-only runs: loader readouts,
+       coordinates, button micro-labels — uppercase, Geist Mono). NO
+       Arabic floor: the reference measures 8.33px by design. */
+    --fs-mono-md: 1.4rem;     /* 11.67px @1440 — Heron txt-14 (button labels) */
+    --fs-mono-sm: 1.2rem;     /* 10px    @1440 — Heron txt-12 (loader %) */
+    --fs-mono-xs: 1rem;       /* 8.33px  @1440 — Heron txt-10 (coords) */
 
     /* type aliases — the live steps plus the r304 restorations
        (--fs-base, --fs-4xl, headline/label pairs — historical mapping). */
@@ -197,10 +233,16 @@
 
     /* r190 discipline: NO letter-spacing on Arabic (cursive joins
        break). The reference's −0.02em display tracking is a Latin-only
-       device and stays banned platform-wide; roles pin 0. */
+       device and stays banned for Arabic platform-wide; roles pin 0.
+       R313 adds --ls-display-tight for LATIN display runs (landing)
+       only — see its seat. */
     --ls-tight:  0;
     --ls-snug:   0;
     --ls-normal: 0;
+    /* R313 — the reference's measured display tracking (−0.93px on a
+       46.67px h1 = −0.02em). LATIN DISPLAY RUNS ONLY — never Arabic
+       (cursive joins); the Arabic 0 pins above are untouched. */
+    --ls-display-tight: -0.02em;
 
     /* ─── Motion — the measured Heron register (r305) ─────────────────
        The reference's transition census: .4s ×174 (dominant), .2/.3/.5s
@@ -388,12 +430,43 @@
        through: --black (veil/shadow/matte basis), --white (sheens, text
        on luminous fills), --warm-ink (the #191918 that must NOT flip
        with the theme — terminal grounds, labels on the orange/coral
-       fills: 4.69:1 on #FA3600 and 5.10:1 on #F15534, both AA — r305
-       re-verified; white labels on the vivid fill are 3.76:1 and stay
-       banned). */
+       fills: 4.69:1 on #FA3600 and 5.10:1 on #F15534, both AA). R313:
+       the LIGHT accent label seat moves to --white (the reference's
+       own white-on-#FA3600 labels, 3.76:1 — AA-large; see --accent-fg);
+       --warm-ink keeps the danger-fill + dark-theme seats where it
+       measures stronger. */
     --black:     #000000;
     --white:     #FFFFFF;
     --warm-ink:  #191918;
+  }
+
+  /* ─── R313 — the FLUID REM ROOT (the Heron D5 foundation) ──────────
+     Measured live on heronaiapp.com (reference/digest.json →
+     rootFontSize; the EXACT rules read from the site's inline CSS):
+       html { font-size: 0.5787037037vw }  desktop/base  (1440 → 8.333px · 1024 → 5.926px)
+       ≤991px → 1.1990407674vw               tablet band  (768 → 9.209px)
+       ≤767px → 2.5445292621vw               mobile band  (390 → 9.924px · 360 → 9.160px)
+     The root is the type ladder's gear-box: every rem rung above (and
+     every rem consumer) scales with the viewport exactly like the
+     reference; the 1024 dip (5.926px — the pure vw formula) is
+     intentional reference behaviour, and the mobile bands RAISE the
+     root so micro text stays legible on small screens. Print re-pins
+     a fixed 16px root so printed documents keep absolute sizes. */
+  html {
+    font-size: 0.5787037037vw;
+  }
+  @media only screen and (max-width: 991px) {
+    html { font-size: 1.1990407674vw; }
+  }
+  @media only screen and (max-width: 767px) {
+    html { font-size: 2.5445292621vw; }
+  }
+  @media print {
+    /* the fluid root is a screen device — printed grades/schedules
+       ride a fixed 16px root so rem rungs keep their absolute size on
+       paper (the vw formula would resolve against the sheet width and
+       shrink everything ~45%). */
+    html { font-size: 16px; }
   }
 
   /* RTL flips the direction multiplier so logical motion expressions
@@ -420,22 +493,25 @@
   :root,
   [data-theme="light"] {
 
-    /* r305 — the blueprint-paper neutral ramp, re-keyed from the live
-       reference bundle: --neutral-900 is the charcoal INK #282828 (the
-       reference's --content--primary; 13.85:1 on the ground, AAA);
-       --neutral-50 is the cool near-white PAGE GROUND #F6F8FA (the
-       briefed light surface; the reference paints #FAFAFA/#fff — same
-       family, all ratios re-verified on both); --neutral-0 is the clear
-       card/input ground. The mid rungs are the reference's own
-       technical greys: #E0E0DA hairline, #C8C8C8 divider, #B4B4B0
-       grid-line/disable, #72726F granite, #414140 secondary ink. */
+    /* R313 — the warm vintage-paper neutral ramp, re-keyed from the
+       live reference: --neutral-900 is the charcoal INK #282828 (the
+       reference's --content--primary; 13.57:1 on the R313 ground,
+       AAA); --neutral-50 is the warm PAGE GROUND #F6F6EE (the R313
+       canon — live-sampled #F4F4EE–#F5F5EF family; the r305/r308
+       blue-grey #F6F8FA ground is retired); the band rungs shift warm
+       with it (#F0F0E6 / #EFEFE4 — the same paper family, no blue-grey
+       tints); --neutral-0 is the clear card/input ground; --neutral-200
+       keeps the reference's guide grey #E0E0DA; --neutral-300 re-keys
+       to the reference's construction hairline #B3B3AF
+       (--content--border — the border-strong/rule/grid-line seat); the
+       mid rungs stay the reference's own technical greys. */
     --neutral-0:   #FFFFFF;          /* clear product surface */
-    --neutral-50:  #F6F8FA;          /* page ground — blueprint paper */
-    --neutral-100: #F0F2F5;          /* hover / subtle band */
-    --neutral-150: #E9ECEF;          /* inset well */
-    --neutral-200: #E0E0DA;          /* hairline (the reference's warm edge) */
-    --neutral-300: #C8C8C8;          /* divider / strong border */
-    --neutral-400: #B4B4B0;          /* grid-line / non-text rung (technical grey) */
+    --neutral-50:  #F6F6EE;          /* page ground — the warm vintage paper (R313) */
+    --neutral-100: #F0F0E6;          /* hover / subtle band — warm paper step */
+    --neutral-150: #EFEFE4;          /* inset well — warm paper step */
+    --neutral-200: #E0E0DA;          /* hairline (the reference's guide grey) */
+    --neutral-300: #B3B3AF;          /* strong border / rule / grid-line (the reference's --content--border) */
+    --neutral-400: #B4B4B0;          /* disable / non-text rung (technical grey) */
     --neutral-500: #72726F;          /* mid gray (granite) */
     --neutral-700: #414140;          /* secondary ink (the reference's own) */
     --neutral-800: #333330;
@@ -486,40 +562,48 @@
 
     --text:        var(--neutral-900);
     --text-strong: var(--neutral-900);   /* r304: primary-text emphasis alias */
-    --text-secondary: var(--neutral-700);   /* #414140 — 9.60:1 bg · 10.22:1 surface (AAA) */
-    /* r305 — muted is the AA-safe secondary tier: #626260 (the
-       reference's granite grey) = 5.74:1 bg · 6.11:1 surface · 5.16:1
-       surface-3 — clears 4.5 on every light text ground. */
-    --text-muted:  #626260;
-    /* r305 — faint is one step FAINTER than muted: #72726F (the
-       reference's own tertiary) = 4.53:1 bg · 4.83:1 surface — AA where
-       it carries text; deliberately under AA on --accent-soft (3.94)
-       and inset wells (4.07 on surface-3) — faint never carries text
-       there (contract unchanged from r304). */
-    --text-faint:  #72726F;
-    /* Labels on the orange fill read warm ink (4.69:1); white on the
-       vivid fill is 3.76:1 and stays banned (r305, measured). Same
-       register as the night theme. */
-    --text-on-accent: var(--warm-ink);
+    --text-secondary: var(--neutral-700);   /* #414140 — 9.41:1 bg · 10.04:1 surface (AAA) */
+    /* R313 — muted is the solid equivalent of the reference's own
+       rgba(40,40,40,.72) tertiary ink, derived on the NEW paper:
+       #62625F = the exact alpha blend on #F6F6EE = 5.63:1 bg ·
+       6.12:1 surface · 5.34:1 surface-2 · 5.29:1 surface-3 — clears
+       4.5 on every light text ground (warm, unlike the retired cool
+       #626260 granite). */
+    --text-muted:  #62625F;
+    /* R313 — faint is one step FAINTER than muted, re-derived warm on
+       the new paper: #70706A = 4.59:1 bg · 4.98:1 surface — AA where
+       it carries text; deliberately under AA on --accent-soft and
+       inset wells — faint never carries text there (contract unchanged
+       from r304/r305; the retired cool #72726F measured 4.44 on the
+       new ground and dipped under the floor). */
+    --text-faint:  #70706A;
+    /* R313 — labels on the orange fill read WHITE (the reference's own
+       recipe, measured on every button; 3.76:1 = AA-large). The r305
+       warm-ink-only rule is SUPERSEDED. AA EXCEPTION: small Arabic
+       labels on the accent fill get font-weight ≥600 (the .btn
+       semibold default) and size ≥14px where feasible; body-size
+       accent TEXT still routes through --accent-ink (5.06:1). */
+    --text-on-accent: #FFFFFF;
     --text-on-dark:   var(--neutral-50);
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
     --border-faint:  rgba(40,40,40,0.07);
-    /* r305 — the rule tier steps up one rung (#C8C8C8) so the
-       construction-line grammar reads on the cooler paper; the raw
-       reference hairline grey lives one rung below as --grid-line. */
+    /* R313 — the rule tier re-keys to the reference's construction
+       hairline #B3B3AF (--content--border — every 1px line on the
+       reference: frame, inputs, loader bar items); the guide grey
+       #E0E0DA stays the soft border tier above. */
     --rule:          var(--neutral-300);
     /* One step stronger than --rule on the hairline→divider ramp —
        referencing the token keeps the prefers-contrast + dark remaps
        working for free. */
     --rule-strong:   var(--border-strong);
-    /* r305 — the reference's own grid/hairline grey (#B4B4B0 / #B3B3AF
-       family): DECORATIVE construction lines only on light (1.95:1 —
-       the reference uses it exactly so); on dark the same rung is a
-       legitimate text tone (7.09:1). Never the only carrier of
+    /* R313 — the grid/rule grey is the reference's own #B3B3AF
+       (via --neutral-300): DECORATIVE construction lines only on light
+       (1.94:1 — the reference uses it exactly so); on dark the same
+       rung family is a legitimate text tone. Never the only carrier of
        meaning on light. */
-    --grid-line:     var(--neutral-400);
+    --grid-line:     var(--neutral-300);
     /* 012 theme-tokens contract §1 — formalised surface edge tokens. */
     --surface-border:  rgba(40,40,40,0.07);
     --surface-divider: rgba(40,40,40,0.05);
@@ -536,8 +620,14 @@
     --accent-hover:  #D92F00;
     --accent-soft:   var(--c-copper-bg);
     --accent-strong: var(--c-copper-deep);
-    /* r305 — label ink on the accent fill: warm ink, not white. */
-    --accent-fg:     var(--warm-ink);
+    /* r305 — label ink on the accent fill → R313: WHITE (the reference
+       ships white-on-#FA3600 labels on every measured button recipe;
+       3.76:1 = AA-large). The r305 warm-ink-only rule is superseded by
+       the owner decision. AA EXCEPTION: small Arabic labels on the
+       accent fill get weight ≥600 + size ≥14px where feasible (the
+       .btn semibold default already satisfies the weight); body-size
+       accent TEXT keeps routing through --accent-ink (5.06:1 AA). */
+    --accent-fg:     #FFFFFF;
     /* r305 — the TEXT-safe accent: #C72E00 = 5.16:1 bg · 5.50:1 surface
        · 5.27:1 #FAFAFA (AA as link/label text; the binary-searched
        floor was #D92F00 at 4.53 — one step darker for margin). The raw
@@ -585,33 +675,34 @@
     --primary:       var(--neutral-900);   /* charcoal slab CTA — white label 14.74:1 */
     --primary-fg:    #FFFFFF;
 
-    /* ─── Elevation — the Notion-soft register on charcoal ink (r305
-       re-tint: the shadow base follows the new ink) ─────────────────
-       Subtle, layered; ONE hairline kiss at rest, one soft lift on
-       hover, quiet pops for overlays. --elev-* (012 layer below) is the
-       canonical ladder; --shadow-* are the semantic aliases components
-       consume. */
-    --shadow-card:    var(--elev-1);
-    --shadow-card-h:  var(--elev-2);
-    --shadow-pop:     var(--elev-3);
-    --shadow-modal:   var(--elev-4);
-    --shadow-card-premium:  var(--elev-2);
-    --shadow-card-premium-h: var(--elev-3);
-    --shadow-card-glow:     0 0 0 1px var(--accent-soft), var(--elev-2); /* selection ring, not a glow */
+    /* ─── Elevation — R313: the decorative ladder is RETIRED ─────────
+       The reference measures 1 shadow in 2774 sampled surfaces (a
+       cookie-banner drafting drop). Depth comes from hairlines and
+       surface steps; every --elev-* rung and --shadow-* alias resolves
+       none. The prefers-contrast outline-ring fallbacks below STAY
+       (a11y), and the focus ring tokens are untouched. */
+    /* R313 override: decorative shadows removed — depth via hairlines only */
+    --shadow-card:    none;
+    --shadow-card-h:  none;
+    --shadow-pop:     none;
+    --shadow-modal:   none;
+    --shadow-card-premium:  none;
+    --shadow-card-premium-h: none;
+    --shadow-card-glow:     0 0 0 1px var(--accent-soft); /* selection ring kept — the elev tail retired */
     /* r304 — the utility shadow aliases (historical names) restored: */
-    --shadow-sm: var(--shadow-card);
-    --shadow-md: var(--elev-3);
-    --shadow-lg: var(--elev-3);
-    --shadow-xl: var(--elev-4);
-    --shadow-2xl: var(--elev-5);
-    --shadow-mockup: 0 1px 2px rgba(28,28,28,0.05), 0 12px 32px rgba(28,28,28,0.08), 0 32px 80px rgba(28,28,28,0.06);
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+    --shadow-2xl: none;
+    --shadow-mockup: none;
 
-    --glass-bg:    rgba(246,248,250,0.78);   /* paper glass */
+    --glass-bg:    rgba(246,246,238,0.78);   /* warm paper glass (R313) */
     --glass-blur:  16px;
     --glass-border: rgba(40,40,40,0.08);
     /* The strong glass tier = more opaque ground, blur stays 16px
        (r140: nothing stronger than 16). */
-    --glass-bg-strong:   rgba(246,248,250,0.92);
+    --glass-bg-strong:   rgba(246,246,238,0.92);
     --glass-blur-strong: 16px;
     /* Scrim blur for dimming overlays (modal/sheet/dialog backdrops). */
     --scrim-blur:  4px;
@@ -631,7 +722,7 @@
     --sidebar-item-active-bg:   var(--neutral-150);
     --sidebar-item-active-text: var(--neutral-900);
 
-    --topbar-bg:    rgba(246,248,250,0.86);   /* paper chrome glass */
+    --topbar-bg:    rgba(246,246,238,0.86);   /* warm paper chrome glass (R313) */
     --topbar-border:var(--neutral-200);
 
     --scrollbar-thumb: rgba(40,40,40,0.16);
@@ -791,22 +882,24 @@
     --primary:       #FFFFFF;               /* the night CTA — white slab, ink label */
     --primary-fg:    var(--warm-ink);
 
-    /* Night shadows mirror the light ladder's layering but sit lower:
-       dark depth = surface step + hairline, shadows de-emphasized; the
-       inset highlight re-keys to the paper tint. */
-    --shadow-card:    var(--elev-1);
-    --shadow-card-h:  var(--elev-2);
-    --shadow-pop:     var(--elev-3);
-    --shadow-modal:   var(--elev-4);
-    --shadow-card-premium:  var(--elev-2);
-    --shadow-card-premium-h: var(--elev-3);
-    --shadow-card-glow:     0 0 0 1px var(--accent-soft), var(--elev-2);
-    --shadow-sm: var(--shadow-card);
-    --shadow-md: var(--elev-3);
-    --shadow-lg: var(--elev-3);
-    --shadow-xl: var(--elev-4);
-    --shadow-2xl: var(--elev-5);
-    --shadow-mockup: 0 1px 2px rgba(0,0,0,0.30), 0 12px 32px rgba(0,0,0,0.38), 0 32px 80px rgba(0,0,0,0.42);
+    /* Night shadows — R313: the decorative ladder is retired here too
+       (the shadow-removal policy is theme-wide); dark depth = surface
+       step + hairline, exactly as before but with zero shadow
+       contribution. */
+    /* R313 override: decorative shadows removed — depth via hairlines only */
+    --shadow-card:    none;
+    --shadow-card-h:  none;
+    --shadow-pop:     none;
+    --shadow-modal:   none;
+    --shadow-card-premium:  none;
+    --shadow-card-premium-h: none;
+    --shadow-card-glow:     0 0 0 1px var(--accent-soft); /* selection ring kept — the elev tail retired */
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+    --shadow-2xl: none;
+    --shadow-mockup: none;
 
     --glass-bg:    rgba(30,30,30,0.78);   /* charcoal night glass */
     --glass-blur:  16px;
@@ -873,9 +966,9 @@
 
   /* ─── 1. Role-accent (Light) — seven slots, each ≥3.0 vs the paper
      (computed against the live --bg by tests/unit/token-snapshot.test.ts;
-     role-accents tint chrome only, never body text). r305 re-verified
-     against #F6F8FA: student 5.16 · faculty 3.22 · department-head
-     3.17 · dean 3.63 · admin 3.14 · quality 3.38 · owner 5.35. */
+     role-accents tint chrome only, never body text). R313 re-verified
+     against #F6F6EE: student 5.06 · faculty 3.15 · department-head
+     3.11 · dean 3.56 · admin 3.08 · quality 3.31 · owner 5.24. */
   :root[data-theme="light"] body[data-role="student"]         { --role-accent: #C72E00; }
   /* r305: faculty + department-head + quality retuned one step against
      the cooler paper — the r304 values measured 3.05/3.17/3.00, with
@@ -926,27 +1019,27 @@
     --z-lightbox: 600;
   }
 
-  /* ─── 3. Elevation language — Light (r305: charcoal-tinted register)
-     Layered, low-alpha, ink-based; one hairline kiss at rest, soft
-     lifts above. The layered values keep the historical shadow
-     grammar; the tint follows the new ink. */
+  /* ─── 3. Elevation language — R313: RETIRED (decorative shadows ────
+     removed; depth via hairlines only). The rungs resolve none in both
+     themes; the prefers-contrast outline-ring ports below remain the
+     a11y fallback and are the ONLY non-none elev values left. */
   :root[data-theme="light"] {
-    --elev-1: 0 1px 2px rgba(28,28,28,0.05);
-    --elev-2: 0 1px 2px rgba(28,28,28,0.05), 0 6px 16px rgba(28,28,28,0.06);
-    --elev-3: 0 1px 2px rgba(28,28,28,0.06), 0 8px 24px rgba(28,28,28,0.08);
-    --elev-4: 0 12px 36px rgba(28,28,28,0.10), 0 32px 80px rgba(28,28,28,0.13);
-    --elev-5: 0 16px 44px rgba(28,28,28,0.12), 0 40px 96px rgba(28,28,28,0.16);
+    /* R313 override: decorative shadows removed — depth via hairlines only */
+    --elev-1: none;
+    --elev-2: none;
+    --elev-3: none;
+    --elev-4: none;
+    --elev-5: none;
   }
 
-  /* ─── Elevation language — Dark (fill-led, shadow muted) ────────────
-     Dark de-emphasizes shadows (surface step + hairline carry depth);
-     the inset highlight re-keys to the paper tint. */
+  /* ─── Elevation language — Dark (R313: retired with the light set) ── */
   :root[data-theme="dark"] {
-    --elev-1: 0 1px 2px rgba(0,0,0,0.30), inset 0 1px 0 rgba(246,248,250,0.04);
-    --elev-2: 0 1px 2px rgba(0,0,0,0.30), 0 6px 16px rgba(0,0,0,0.32), inset 0 1px 0 rgba(246,248,250,0.05);
-    --elev-3: 0 8px 24px rgba(0,0,0,0.40), inset 0 1px 0 rgba(246,248,250,0.06);
-    --elev-4: 0 12px 32px rgba(0,0,0,0.48), 0 32px 80px rgba(0,0,0,0.52), inset 0 1px 0 rgba(246,248,250,0.07);
-    --elev-5: 0 16px 44px rgba(0,0,0,0.52), 0 40px 96px rgba(0,0,0,0.58), inset 0 1px 0 rgba(246,248,250,0.08);
+    /* R313 override: decorative shadows removed — depth via hairlines only */
+    --elev-1: none;
+    --elev-2: none;
+    --elev-3: none;
+    --elev-4: none;
+    --elev-5: none;
   }
 
   /* ─── 4. Illustration palette — Light ─────────────────────────────── */
@@ -1060,17 +1153,17 @@
 
   /* no-JS elevation defaults: --elev-1..5 are defined under the
      :root[data-theme] blocks, so with JS disabled (data-theme never set)
-     every --elev-* consumer silently lost its shadow. These plain-:root
-     defaults carry the light values; the [data-theme] blocks are more
-     specific and win in both themes once the runtime sets the attribute.
-     Same values as the light block (duplicated on purpose — a default,
-     not a fork). r305: synced to the charcoal-tinted register. */
+     every --elev-* consumer needs a plain-:root default. R313: the
+     default IS none — the decorative ladder is retired everywhere;
+     the [data-theme] blocks repeat the same value (a default, not a
+     fork). */
   :root {
-    --elev-1: 0 1px 2px rgba(28,28,28,0.05);
-    --elev-2: 0 1px 2px rgba(28,28,28,0.05), 0 6px 16px rgba(28,28,28,0.06);
-    --elev-3: 0 1px 2px rgba(28,28,28,0.06), 0 8px 24px rgba(28,28,28,0.08);
-    --elev-4: 0 12px 36px rgba(28,28,28,0.10), 0 32px 80px rgba(28,28,28,0.13);
-    --elev-5: 0 16px 44px rgba(28,28,28,0.12), 0 40px 96px rgba(28,28,28,0.16);
+    /* R313 override: decorative shadows removed — depth via hairlines only */
+    --elev-1: none;
+    --elev-2: none;
+    --elev-3: none;
+    --elev-4: none;
+    --elev-5: none;
   }
 
   /* ══════════════════════════════════════════════════════════════
@@ -1082,17 +1175,17 @@
      var() would resolve dark. Placed AFTER the dark block inside this
      layer so source order wins during print. The color-scheme: light
      lock itself stays in polish.css. r305: synced to the Heron
-     blueprint palette (AA muted/faint, orange text inks, warm-ink fill
-     labels). ═════ */
+     palette; R313: synced to the warm vintage paper (AA muted/faint,
+     orange text inks, white accent-fill labels). ═════ */
   @media print {
     :root[data-theme="dark"] {
-      /* light neutral ramp (the blueprint paper) */
+      /* light neutral ramp (the warm vintage paper, R313) */
       --neutral-0:   #FFFFFF;
-      --neutral-50:  #F6F8FA;
-      --neutral-100: #F0F2F5;
-      --neutral-150: #E9ECEF;
+      --neutral-50:  #F6F6EE;
+      --neutral-100: #F0F0E6;
+      --neutral-150: #EFEFE4;
       --neutral-200: #E0E0DA;
-      --neutral-300: #C8C8C8;
+      --neutral-300: #B3B3AF;
       --neutral-400: #B4B4B0;
       --neutral-500: #72726F;
       --neutral-700: #414140;
@@ -1109,11 +1202,11 @@
       --c-grey-bg:      #ECEDEB;  --c-grey-ink:     #626260;  --c-grey-deep:     #282828;
       --c-copper-bg:    #FCE3D9;  --c-copper-ink:   #FA3600;  --c-copper-deep:   #A32400;
       /* literals the dark block hardcodes (not chained to neutrals) */
-      --text-muted:     #626260;
-      --text-faint:     #72726F;
-      --text-on-accent: var(--warm-ink);
+      --text-muted:     #62625F;
+      --text-faint:     #70706A;
+      --text-on-accent: #FFFFFF;
       --accent-hover:   #D92F00;
-      --accent-fg:      var(--warm-ink);
+      --accent-fg:      #FFFFFF;
       /* print rides the orange seat */
       --accent:          #FA3600;
       --accent-strong:   #A32400;
@@ -1121,7 +1214,7 @@
       --border-faint:   rgba(40,40,40,0.06);
       --surface-border: rgba(40,40,40,0.06);
       --surface-divider: rgba(40,40,40,0.05);
-      --chart-text:     #626260;
+      --chart-text:     #62625F;
       --gold:           #B57438;
       /* text-safe inks: dark maps them to the -ink shades; light uses
          the deeper -deep shades so status text stays ≥4.5:1 on paper */
