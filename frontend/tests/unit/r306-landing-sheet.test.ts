@@ -89,12 +89,28 @@ describe('r306 — the drawing sheet ships', () => {
   });
 
   it('the header is the 56px hairline bar with the guarded charcoal-cell nav wash', () => {
+    /* R313 override (WP-B2 · D8): the bar keeps the 56px height + the
+     * bottom hairline, but now rides the reference's own seat — FIXED
+     * at the 7px frame inset, transparent at rest (the old blurred
+     * glass is gone — Heron has no backdrop-filter). The nav hover is
+     * the reference's fill-WIPE recipe: the charcoal slab is the
+     * ::before layer (never a background swap on the cell), the label
+     * rolls one row (the dual-label track), and the 5×5 mark pair
+     * swaps chevron→signal square. */
     expect(live).toMatch(/\.fo-header-inner\s*\{[^}]*min-block-size:\s*56px/);
     expect(live).toMatch(/\.fo-header\s*\{[^}]*border-block-end:\s*1px solid var\(--grid-line\)/);
+    expect(live).toMatch(/\.fo-header\s*\{[^}]*position:\s*fixed/);
+    expect(live).not.toMatch(/\.fo-header\s*\{[^}]*backdrop-filter/);
     const hoverBlock = live.match(
-      /@media \(hover: hover\) and \(pointer: fine\)\s*\{([\s\S]*?)\n\}\s*\n@media/,
+      /@media \(hover: hover\) and \(pointer: fine\)\s*\{([\s\S]*?)\n\}\s*\n(?=@media|\/\*|\.)/,
     )?.[1] ?? '';
-    expect(hoverBlock).toMatch(/\.fo-nav-link:hover\s*\{[^}]*background:\s*var\(--text\)/);
+    expect(hoverBlock).toMatch(/\.fo-nav-link:hover\s*\{[^}]*color:\s*var\(--bg\)/);
+    expect(hoverBlock).toMatch(/\.fo-nav-link:hover::before\s*\{[^}]*transform:\s*translateY\(0\)/);
+    // the wipe slab itself is the charcoal token
+    expect(live).toMatch(/\.fo-nav-link::before\s*\{[^}]*background:\s*var\(--text\)/);
+    // the dropdown panel: the reference's fold — grid-rows + opacity, no shadow
+    expect(live).toMatch(/\.fo-drop\s*\{[^}]*grid-template-rows:\s*0fr/s);
+    expect(live).toMatch(/\.fo-nav-item\[data-open='true'\]\s*\.fo-drop\s*\{[^}]*grid-template-rows:\s*1fr/s);
   });
 
   it('the mono bracketed indices carry the drafting voice (Latin, dir=ltr, tabular)', () => {

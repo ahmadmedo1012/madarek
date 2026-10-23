@@ -1,7 +1,7 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowLeft, Menu, X, Check, Users,
+  ArrowLeft, Check, Users,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { StarMark } from '../components/StarMark';
@@ -160,6 +160,139 @@ const PERSONAS = [
     live: false,
   },
 ] as const;
+
+/* ── R313 (D8 · the header nav) — the reference's four-seat register:
+ * two plain links + two dropdown parents (Heron: PRODUCT ▾ / PRICING /
+ * RESOURCES ▾ / ABOUT), mapped onto the sheet's own sections. The
+ * children mirror the desktop dropdowns and flatten into the mobile
+ * menu's sub-index — every pinned anchor (#statement #chapters #live
+ * #roles #colleges #vision) stays reachable from the bar. */
+type NavSeat = { label: string; href: string; children?: readonly { label: string; href: string }[] };
+
+const NAV_SEATS: readonly NavSeat[] = [
+  {
+    label: 'الرحلة', href: '#chapters',
+    children: [
+      { label: 'البيان', href: '#statement' },
+      { label: 'الفصول', href: '#chapters' },
+      { label: 'المبدأ والرؤية', href: '#vision' },
+    ],
+  },
+  { label: 'المنصّة', href: '#product' },
+  {
+    label: 'المجتمع', href: '#roles',
+    children: [
+      { label: 'التحديات المباشرة', href: '#live' },
+      { label: 'الأدوار الثمانية', href: '#roles' },
+      { label: 'الكلّيات التجريبية', href: '#colleges' },
+    ],
+  },
+  { label: 'الجامعات', href: '/campus' },
+] as const;
+
+/* The dual-label roll (the reference's .btn-fill-label label-top/bot
+ * pair — WP-D's .btn-motion-label grammar, retold for nav cells): the
+ * live row in flow + an aria-hidden duplicate parked one row below;
+ * the track's -100% slide travels exactly one row. The dup is out of
+ * flow, so wrapping (≤420px) never desynchronises the two rows. */
+function RollLabel({ text }: { text: string }) {
+  return (
+    <span className="fo-roll">
+      <span className="fo-roll-track">
+        <span className="fo-roll-txt">{text}</span>
+        <span className="fo-roll-txt fo-roll-dup" aria-hidden="true">{text}</span>
+      </span>
+    </span>
+  );
+}
+
+/* The 5×5 mark pair on dropdown parents (the reference's
+ * .header-menu-item-ic top/bot): a hairline chevron at rest, rolling
+ * to the solid signal square on hover — transform-only, on the
+ * reference's own register (0.5s · cb(.23,1,.32,1)). CSS-drawn (the
+ * reference uses divs too) — no icon-gate surface. In RTL the chevron
+ * points inline-forward (left), mirroring Heron's `>`. */
+function NavMark() {
+  return (
+    <span className="fo-nav-ic" aria-hidden="true">
+      <span className="fo-nav-ic-layer"><span className="fo-nav-ic-chev" /></span>
+      <span className="fo-nav-ic-layer fo-nav-ic-b"><span className="fo-nav-ic-sq" /></span>
+    </span>
+  );
+}
+
+/* One dropdown parent: a real button (aria-expanded) whose panel is
+ * the reference's grid-rows + opacity fold (transition "opacity .4s,
+ * grid-template-rows .4s" — measured). One state drives hover, focus
+ * and click: pointerenter opens only for real mice (touch taps go to
+ * the click toggle), focus walking into the cell opens the panel, and
+ * Escape closes + refocuses the trigger. */
+function HeaderNavDropdown({ seat }: { seat: (typeof NAV_SEATS)[number] }) {
+  const [open, setOpen] = useState(false);
+  const cellRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <div
+      className="fo-nav-item"
+      ref={cellRef}
+      data-open={open ? 'true' : undefined}
+      onPointerEnter={(e) => { if (e.pointerType === 'mouse') setOpen(true); }}
+      onPointerLeave={(e) => { if (e.pointerType === 'mouse') setOpen(false); }}
+      onFocus={() => setOpen(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(false);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          setOpen(false);
+          cellRef.current?.querySelector('button')?.focus();
+        }
+      }}
+    >
+      <button
+        type="button"
+        className="fo-nav-link"
+        aria-expanded={open}
+        aria-haspopup="true"
+        onClick={() => setOpen((v) => !v)}
+      >
+        <RollLabel text={seat.label} />
+        <NavMark />
+      </button>
+      <div className="fo-drop">
+        <div className="fo-drop-inner">
+          {(seat.children ?? []).map((c) => (
+            <a key={c.href} href={c.href} className="fo-drop-link" onClick={() => setOpen(false)}>
+              <RollLabel text={c.label} />
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* The desktop nav — four seats over the bar's full height. Plain
+ * seats are plain links (router-internal for routes, anchors for the
+ * sheet's sections). */
+function HeaderNav() {
+  return (
+    <nav className="fo-nav" aria-label="التنقل الرئيسي">
+      {NAV_SEATS.map((seat) => {
+        if (seat.children) return <HeaderNavDropdown key={seat.label} seat={seat} />;
+        return seat.href.startsWith('#') ? (
+          <a key={seat.href} href={seat.href} className="fo-nav-link">
+            <RollLabel text={seat.label} />
+          </a>
+        ) : (
+          <Link key={seat.href} to={seat.href} className="fo-nav-link">
+            <RollLabel text={seat.label} />
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
 
 /* ── The elevation stages — the five hotspots on the hero's drafted
  * elevation (R310). Each describes a REAL live capability
@@ -396,20 +529,57 @@ export default function LandingPage() {
   }, [redirectHome]);
 
   // Scroll-driven chrome with ZERO setState: coalesced to one rAF per
-  // frame, written straight to the DOM (the .scrolled class on the
-  // header and the --p var on the top ribbon). r307 (1-C H-2): the
-  // apply() is ALSO reconciled on load / resize / fonts-ready — late
-  // media (photos) reflows document height and the ribbon must not
-  // drift while the visitor sits still.
+  // frame, written straight to the DOM. r307 (1-C H-2): the apply()
+  // is ALSO reconciled on load / resize / fonts-ready — late media
+  // (photos) reflows document height and the ribbon must not drift
+  // while the visitor sits still.
+  //
+  // R313 (D8) — the header rides the REFERENCE's class vocabulary
+  // (telemetry/header-states.json, direct scrollTop sets):
+  //   top           → `header`            (clean)
+  //   scrolled      → `header on-scroll on-hide`
+  //   back to top   → `header on-hide`    (on-scroll drops, on-hide
+  //                                       LATCHES — never removed)
+  // `on-scroll` (the old `.scrolled`) flips at y>6 and also takes the
+  // solid-paper background. `on-hide` latches on the first
+  // scroll-down past the floor. The VISUAL hide/show itself is an
+  // imperative transform written from this same rAF (the reference
+  // drives its bar from GSAP; a style write is our equivalent — the
+  // class list stays exactly the measured vocabulary): down past the
+  // floor lifts the bar clear of the frame, up — or near the top —
+  // seats it back. An open dropdown holds the bar; reduced motion
+  // keeps it pinned (the classes still flip — state, not motion).
   useEffect(() => {
     const header = headerRef.current;
     const bar = progressBarRef.current;
+    const reduced =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    let lastY = window.scrollY;
+    let lifted = false;
     let raf = 0;
     const apply = () => {
       raf = 0;
       const y = window.scrollY;
-      if (header) header.classList.toggle('scrolled', y > 6);
+      if (header) {
+        header.classList.toggle('on-scroll', y > 6);
+        const delta = y - lastY;
+        lastY = y;
+        const holds = header.querySelector('[aria-expanded="true"]') !== null;
+        if (!holds) {
+          if (y < 40) lifted = false;
+          else if (delta > 8) {
+            lifted = true;
+            header.classList.add('on-hide');
+          } else if (delta < -8) {
+            lifted = false;
+          }
+        }
+        header.style.transform = lifted && !reduced
+          ? 'translateY(calc(-100% - 8px))'
+          : '';
+      }
       if (bar) {
         const max = document.documentElement.scrollHeight - window.innerHeight;
         const p = max > 0 ? Math.min(1, y / max) : 0;
@@ -542,8 +712,14 @@ export default function LandingPage() {
         <div className="fo-progress-bar" ref={progressBarRef} style={{ ['--p' as string]: 0 }} />
       </div>
 
-      {/* ── Masthead header — the 56px hairline bar; the .scrolled
-          state class is imperative ── */}
+      {/* ── Masthead (R313 · D8) — the reference's fixed 56px bar at
+          the 7px frame inset: transparent at rest (the frame's top
+          rule shows through), solid paper when scrolled (.on-scroll),
+          lifting away on scroll-down via the imperative transform
+          (the .on-hide class latches — the measured vocabulary).
+          RTL-mirrored seating: brand inline-start (right), the
+          four-seat nav, the actions at the far end behind a vertical
+          hairline (the reference's line before its CTA). ── */}
       <header className="fo-header" ref={headerRef}>
         <div className="fo-header-inner">
           <Link to="/" className="fo-brand" aria-label="مدارك — الصفحة الرئيسية">
@@ -554,13 +730,7 @@ export default function LandingPage() {
             </span>
           </Link>
 
-          <nav className="fo-nav" aria-label="التنقل الرئيسي">
-            <a href="#chapters" className="fo-nav-link">الرحلة</a>
-            <a href="#live" className="fo-nav-link">التحديات</a>
-            <a href="#roles" className="fo-nav-link">الأدوار</a>
-            <a href="#colleges" className="fo-nav-link">الكليات</a>
-            <Link to="/campus" className="fo-nav-link">الجامعات</Link>
-          </nav>
+          <HeaderNav />
 
           <div className="fo-header-actions">
             <ThemeToggle />
@@ -571,6 +741,9 @@ export default function LandingPage() {
             </Link>
           </div>
 
+          {/* <992px (the reference's own breakpoint): the bar collapses
+              to the wide MENU button — 187×50 @390 — label + a 2-line
+              mark that folds to one line while the overlay is open. */}
           <button
             type="button"
             className="fo-burger"
@@ -579,7 +752,11 @@ export default function LandingPage() {
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
           >
-            <Icon icon={menuOpen ? X : Menu} size={20} />
+            <span className="fo-burger-label">القائمة</span>
+            <span className="fo-burger-ic" aria-hidden="true">
+              <span />
+              <span />
+            </span>
           </button>
         </div>
 
@@ -608,15 +785,44 @@ export default function LandingPage() {
               if (e.key === 'Escape') {
                 setMenuOpen(false);
                 burgerRef.current?.focus();
+                return;
+              }
+              /* the open overlay is a focus trap: Tab cycles inside it
+                 (the burger re-takes focus itself on close). */
+              if (e.key === 'Tab') {
+                const items = menuRef.current?.querySelectorAll<HTMLElement>(
+                  'a[href], button:not([disabled])',
+                );
+                if (!items || items.length === 0) return;
+                const first: HTMLElement | undefined = items[0];
+                const last: HTMLElement | undefined = items[items.length - 1];
+                if (!first || !last) return;
+                if (e.shiftKey && document.activeElement === first) {
+                  e.preventDefault();
+                  last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                  e.preventDefault();
+                  first.focus();
+                }
               }
             }}
           >
-            <a href="#chapters" className="btn ghost">الرحلة</a>
-            <a href="#live" className="btn ghost">التحديات</a>
-            <a href="#roles" className="btn ghost">الأدوار</a>
-            <a href="#colleges" className="btn ghost">الكليات</a>
-            <Link to="/campus" className="btn ghost">الحياة الجامعية</Link>
-            <Link to="/capabilities" className="btn ghost">ما يعمل اليوم</Link>
+            {/* the four seats as flat 40px rows (the reference's own
+                mobile register), then the dropdown children as the
+                mono sub-index — every section reachable without an
+                expand/collapse dance, every row a real link. */}
+            {NAV_SEATS.map((seat) => (
+              seat.href.startsWith('#') ? (
+                <a key={seat.href} href={seat.href} className="fo-mb-row">{seat.label}</a>
+              ) : (
+                <Link key={seat.href} to={seat.href} className="fo-mb-row">{seat.label}</Link>
+              )
+            ))}
+            <div className="fo-mb-sub" aria-label="أقسام الصفحة">
+              {NAV_SEATS.flatMap((seat) => seat.children ?? []).map((c) => (
+                <a key={c.href} href={c.href} className="fo-mb-row fo-mb-sub-row">{c.label}</a>
+              ))}
+            </div>
             <div
               className="fo-mobile-theme"
               onClick={(e) => e.stopPropagation()}
@@ -625,7 +831,9 @@ export default function LandingPage() {
               <ThemeToggle />
             </div>
             <Link to="/auth" className="btn ghost">تسجيل الدخول</Link>
-            <Link to="/auth/register" className="btn primary full">
+            {/* the reference's .header-cta.only-mb — the 51px register
+                seat INSIDE the overlay (the desktop CTA is hidden). */}
+            <Link to="/auth/register" className="btn primary fo-mb-cta">
               ابدأ الآن
               <Icon icon={ArrowLeft} size={14} />
             </Link>

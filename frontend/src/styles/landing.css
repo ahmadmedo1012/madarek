@@ -91,8 +91,10 @@
 .sheet-coord-ts { inset-block-start: var(--sp-1-5); inset-inline-start: var(--sp-9); }
 .sheet-coord-be { inset-block-end: var(--sp-1-5); inset-inline-end: var(--sp-9); }
 
-/* ── The sheet measure — every top-level band shares it ──────────── */
-.fo-header-inner,
+/* ── The sheet measure — every top-level band shares it ────────────
+   (R313 D8/D14: the header + footer LEFT the 1160 measure — the
+   reference spans both to the FULL frame width, edge to edge of the
+   7px inset, with their own ~26px seat padding.) */
 .fo-hero-copy,
 .fo-hero-fig,
 .fo-hero-meta,
@@ -102,8 +104,7 @@
 .pr-section,
 .wy-section,
 .rl-section,
-.fo-cta,
-.fo-footer-inner {
+.fo-cta {
   max-inline-size: 1160px;
   margin-inline: auto;
   padding-inline: var(--sp-6);
@@ -120,9 +121,11 @@
   inline-size: 100%;
 }
 
-/* Sections + header stack over the plain paper (no world layer —
- * the sheet IS the ground). */
-.fo-header { position: sticky; }
+/* Sections stack over the plain paper (no world layer — the sheet IS
+ * the ground). R313 (D8): the masthead is FIXED at the frame inset
+ * (the reference's own seat — 56px @7px, z 1e7 there; our frame
+ * chrome keeps its own rung). */
+.fo-header { position: fixed; }
 .fo-progress { position: fixed; }
 
 /* ── Section labels — the drafting eyebrow: the mono bracketed index
@@ -197,25 +200,51 @@
   background: var(--accent);
 }
 
-/* ── Masthead — the 56px hairline bar ─────────────────────────────── */
+/* ── Masthead (R313 · D8) — the reference's fixed 56px bar ───────────
+ * Measured (digest.header + primary/styles.json): fixed @ (7,7),
+ * 1427×56 @1440 (= 100% − 2×7), z 10000000 there, TRANSPARENT
+ * background (no backdrop-filter, no blur — the paper scrolls under
+ * the bare bar), and the frame's own rules carry the edges. Class
+ * states (telemetry/header-states.json): `header` → `on-scroll
+ * on-hide` (scrolled) → `on-hide` (back to top — the latch never
+ * drops). The visual lift is the imperative transform the page's
+ * rAF writes (the reference drives its bar from GSAP; the classes
+ * alone carry no transform — measured transform:none in all three
+ * states). */
 .fo-header {
-  inset-block-start: 0;
+  inset-block-start: 7px;   /* the frame inset (D9) — the bar's top edge rides the frame's top rule */
+  inset-inline: 7px;
+  block-size: 56px;         /* the measured bar height (56.3 @1440) */
   z-index: 60;
-  background: color-mix(in srgb, var(--bg) 82%, transparent);
-  backdrop-filter: blur(10px);
+  background: transparent;
   border-block-end: 1px solid var(--grid-line);
-  transition: background var(--t-slow) var(--ease);
+  transition:
+    background var(--t-base) var(--ease),
+    transform var(--t-base) var(--ease);
 }
 
-.fo-header.scrolled {
-  background: color-mix(in srgb, var(--bg) 95%, transparent);
+/* on-scroll — the scrolled state (the old `.scrolled`): the bar
+   takes the solid paper so the sheet scrolls under ink, not through
+   it. */
+.fo-header.on-scroll {
+  background: var(--bg);
 }
+
+/* on-hide — the LATCH (measured: back-to-top keeps it): a state
+   marker only. The paint lives in the imperative transform; this
+   selector deliberately carries no geometry so nothing can fight
+   the rAF write. */
 
 .fo-header-inner {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: var(--sp-5);
   min-block-size: 56px;
+  /* the reference's seat padding: logo at x=33 = 26px inside the
+     frame edge; the far end rides the frame edge itself. */
+  padding-inline: 26px; /* spacing-gate: allow — the measured reference seat (33px − 7px inset), not a ladder rung */
+  padding-inline-end: 0;
+  max-inline-size: none;
 }
 
 .fo-brand {
@@ -247,81 +276,306 @@
   color: var(--text-muted);
 }
 
+/* ── The nav — four full-height seats (the reference's 137×56 cells;
+ * in RTL the row sits left-of-center: margin-inline-start:auto pushes
+ * toward the far (left) end, mirroring Heron's right-aligned row). */
 .fo-nav {
   display: flex;
   align-items: stretch;
-  gap: var(--sp-2);
+  gap: var(--sp-1);
   margin-inline-start: auto;
 }
 
-/* the nav cell — the reference's grammar: a mono-grade link that
- * washes to a solid charcoal cell with paper text on hover. The
- * resting ink is the SOLID secondary tier (never an alpha wash —
- * alpha over the backdrop-filtered, semi-transparent header bar
- * composites unpredictably behind content and measured 4.36:1 in
- * axe's dev scan; the solid tier holds ≥7:1 on every composite).
- * The wash lives behind the guarded media query below (coarse
- * pointers get the plain link). */
+.fo-nav-item {
+  position: relative;
+  display: inline-flex;
+}
+
+/* the nav cell — the reference's recipe: a full-height link whose
+ * hover is the CHARCOAL FILL-WIPE + dual-label roll (a #282828 slab
+ * drops from the block-start edge; the label rolls one row and
+ * flips to paper ink). The wipe layer parks one translation unit
+ * above and is clipped by the cell (the parked slab never paints
+ * over the frame). The resting ink is the SOLID secondary tier
+ * (never an alpha wash — alpha over a transparent bar composites
+ * unpredictably; the solid tier holds ≥7:1). Buttons (dropdown
+ * parents) get the UA reset; the wash itself lives behind the
+ * guarded media query below (coarse pointers get the plain link). */
 .fo-nav-link {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
+  gap: var(--sp-1-5);
   padding-inline: var(--sp-3);
   min-block-size: 44px;
+  block-size: 100%;
+  font: inherit;
   font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--text-secondary);
   text-decoration: none;
-  border-radius: var(--r-xs);
-  transition:
-    color var(--t-base) var(--ease),
-    background-color var(--t-base) var(--ease);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  overflow: clip;
+  transition: color var(--t-base) var(--ease);
 }
 
+.fo-nav-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--text);
+  transform: translateY(-101%);
+  transition: transform var(--t-base) var(--ease);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* the dual-label roll (WP-D's .btn-motion-label grammar): the track
+   slides exactly one row; the dup is out of flow so the window
+   height IS the live row. */
+.fo-roll {
+  display: inline-flex;
+  overflow: hidden;
+  max-inline-size: 100%;
+}
+
+.fo-roll-track {
+  position: relative;
+  display: block;
+  transition: transform var(--t-slow) var(--ease-in);
+}
+
+.fo-roll-txt {
+  display: block;
+  white-space: nowrap;
+}
+
+.fo-roll-dup {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 100%;
+}
+
+/* the 5×5 mark pair on dropdown parents: the chevron at rest rolls
+   to the solid signal square (the reference's .header-menu-item-ic
+   top/bot swap — 0.5s on the decel curve). */
+.fo-nav-ic {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  inline-size: 0.6rem;
+  block-size: 0.6rem;
+  flex: none;
+}
+
+.fo-nav-ic-layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: transform var(--t-slow) var(--ease);
+}
+
+.fo-nav-ic-b {
+  transform: translateY(100%);
+}
+
+.fo-nav-ic-chev {
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-block-start: 1px solid currentColor;
+  border-inline-start: 1px solid currentColor;
+  transform: rotate(-45deg); /* chevron pointing inline-forward (LEFT in RTL — Heron's `>` mirrored) */
+}
+
+.fo-nav-ic-sq {
+  inline-size: 0.45rem;
+  block-size: 0.45rem;
+  background: var(--accent);
+}
+
+/* ── The dropdown panel — the reference's measured fold: absolute
+ * under the parent (its top rule merges with the bar's bottom
+ * hairline), paper ground, hairline border, NO shadow, and the
+ * transition is literally `opacity .4s, grid-template-rows .4s`
+ * (styles.json). Closed, it is visibility:hidden — no tab stops, no
+ * AT exposure. RTL: the panel's inline-start edge tracks the parent
+ * (mirrors Heron's left-edge alignment). */
+.fo-drop {
+  position: absolute;
+  inset-block-start: calc(100% - 1px);
+  inset-inline-start: 0;
+  min-inline-size: 100%;
+  inline-size: max-content;
+  max-inline-size: 18rem;
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-block-start: 0;
+  transition:
+    grid-template-rows var(--t-base) var(--ease),
+    opacity var(--t-base) var(--ease),
+    visibility var(--t-base);
+}
+
+.fo-nav-item[data-open='true'] .fo-drop {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+}
+
+.fo-drop-inner {
+  overflow: hidden;
+  min-block-size: 0;
+}
+
+/* the dropdown items — the reference's mono register (Geist Mono
+ * 11.67px; Arabic rides the 13px floor), roll-ONLY hover: no fill,
+ * no colour change (buttons.json header-dropdown-item: "no fill, no
+ * colour — label roll only"). */
+.fo-drop-link {
+  display: flex;
+  align-items: center;
+  min-block-size: 44px; /* a11y floor — the reference's 37px rows stay under our 44px target bar */
+  padding-inline: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: max(13px, var(--fs-mono-md));
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-block-end: 1px solid var(--border-strong);
+  transition: color var(--t-base) var(--ease);
+}
+
+.fo-drop-link:last-child {
+  border-block-end: 0;
+}
+
+/* ── The far-end actions — behind the reference's vertical hairline
+ * (the 1px #B3B3AF line at the CTA's inline-start edge; measured in
+ * the header-cta recipe). */
 .fo-header-actions {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
+  padding-inline-start: var(--sp-6);
+  border-inline-start: 1px solid var(--grid-line);
+}
+
+/* the header's own CTA seats run the FULL bar height (the reference
+ * CTA is 167×56, flush to the frame edge) — geometry only, the .btn
+ * recipes own every colour. */
+.fo-header-actions .btn {
+  align-self: stretch;
+  block-size: auto;
 }
 
 /* The .btn recipes ship 32/40/48px — the sheet lifts every landing
- * control to the 44px floor (.lg CTAs stay 48). */
+ * control to the 44px floor (.lg CTAs stay 48; the header pair is
+ * stretched full-bar above). */
 .landing .btn:not(.lg) {
   block-size: 44px;
 }
 
+/* ── <992px: the wide MENU button (187×50 @390 measured) ─────────── */
 .fo-burger {
   display: none;
-  place-items: center;
-  inline-size: 44px;
-  block-size: 44px;
-  border: 1px solid var(--border);
-  border-radius: var(--r-xs);
-  background: transparent;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  min-inline-size: 18.8rem; /* the measured 187px @390 (root 9.92px) */
+  block-size: 100%;
+  background: none;
+  border: 0;
+  border-inline-start: 1px solid var(--grid-line);
+  padding-inline-start: var(--sp-4);
   color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
   cursor: pointer;
-  margin-inline-start: auto;
 }
 
+.fo-burger-ic {
+  display: grid;
+  gap: 0.2rem;
+  inline-size: 0.75rem;
+}
+
+.fo-burger-ic span {
+  block-size: 1px;
+  background: currentColor;
+  transition: transform var(--t-base) var(--ease), opacity var(--t-base) var(--ease);
+}
+
+/* open: the two lines fold to one (the reference's active mark) */
+.fo-burger[aria-expanded='true'] .fo-burger-ic span:last-child {
+  transform: scaleX(0.35);
+  transform-origin: inline-start;
+  opacity: 0;
+}
+
+/* ── The mobile overlay — the reference's full-bleed paper panel
+ * under the bar: hairline-ruled rows (40px measured; our 44px
+ * target floor), the register CTA row 51px, its own scroll (r309
+ * §3.2 — never chains a wheel past its ends back to the locked
+ * page). 100% = the fixed header's height (the containing block). */
 .fo-mobile-menu {
   position: absolute;
-  inset-inline: var(--sp-4);
-  inset-block-start: calc(100% + var(--sp-2));
+  inset-inline: 0;
+  inset-block-start: 100%;
   z-index: 70;
   display: grid;
-  gap: var(--sp-2);
-  padding: var(--sp-5);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  box-shadow: var(--elev-3);
-  /* r309 (§3.2): the panel owns its own scroll — longer navigation
-     content scrolls INTERNALLY (never grows past the viewport, never
-     chains a wheel past its ends back to the locked page behind).
-     100% = the sticky header's height (the containing block). */
-  max-block-size: calc(100dvh - 100% - var(--sp-4));
+  align-content: start;
+  background: var(--bg);
+  border-block-end: 1px solid var(--border-strong);
+  max-block-size: calc(100dvh - 100%);
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+}
+
+.fo-mb-row {
+  display: flex;
+  align-items: center;
+  min-block-size: max(44px, 4rem); /* the reference's 40px rows, lifted to the 44px target floor */
+  padding-inline: 26px; /* spacing-gate: allow — the header's own seat measure (33px − 7px inset), shared with .fo-header-inner */
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  border-block-end: 1px solid var(--rule);
+}
+
+.fo-mb-sub {
+  border-block-end: 1px solid var(--rule);
+}
+
+.fo-mb-sub-row {
+  min-block-size: max(44px, 3.4rem);
+  padding-inline-start: calc(26px + var(--sp-5)); /* spacing-gate: allow — the sub-index indents one seat from the row padding */
+  font-family: var(--font-mono);
+  font-size: max(13px, var(--fs-mono-md));
+  font-weight: 400;
+  color: var(--text-secondary);
+  border-block-end: 0;
+}
+
+.fo-mb-sub .fo-mb-sub-row + .fo-mb-sub-row {
+  border-block-start: 1px solid var(--rule);
+}
+
+/* the register seat inside the overlay (the reference's
+   .header-cta.only-mb — 51px measured @390) */
+.fo-mb-cta {
+  min-block-size: max(44px, 5.15rem);
+  margin-block-start: var(--sp-2);
 }
 
 .fo-mobile-theme {
@@ -329,7 +583,8 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-4);
-  padding-block: var(--sp-2);
+  padding: var(--sp-2) 26px; /* spacing-gate: allow — the shared 26px header seat padding */
+  border-block-end: 1px solid var(--rule);
 }
 
 .fo-mobile-theme-label {
@@ -1850,11 +2105,31 @@
   color: var(--text-faint);
 }
 
-/* ── Hover washes — guarded to real pointers (the r283 convention) ── */
+/* ── Hover washes — guarded to real pointers (the r283 convention) ──
+   R313 (D8): the nav cell's hover is the reference's fill-wipe +
+   roll — the ::before slab drops in (no background swap on the
+   element itself), the label rolls one row and flips to paper ink,
+   and the 5×5 mark pair swaps chevron→signal square. */
 @media (hover: hover) and (pointer: fine) {
   .fo-nav-link:hover {
-    background: var(--text);
     color: var(--bg);
+  }
+
+  .fo-nav-link:hover::before {
+    transform: translateY(0);
+  }
+
+  .fo-nav-link:hover .fo-roll-track,
+  .fo-drop-link:hover .fo-roll-track {
+    transform: translateY(-100%);
+  }
+
+  .fo-nav-link:hover .fo-nav-ic-layer:first-child {
+    transform: translateY(-100%);
+  }
+
+  .fo-nav-link:hover .fo-nav-ic-b {
+    transform: translateY(0);
   }
 
   .fo-text-link:hover {
@@ -1883,11 +2158,36 @@
   }
 }
 
+/* ── Keyboard path (r172a §3 — ONE focus language): the nav's
+   keyboard affordance is the universal base.css focus ring, NOT a
+   private :focus-visible sub-language (landing.css carries zero
+   :focus-visible rules by contract). Operability is complete
+   without it: the dropdown parents are real buttons whose React
+   focus handler opens the panel (aria-expanded rides the same
+   state), and the ring marks the seat. ── */
+
 /* ═══ Responsive — flow mode (the sheet stacks, nothing pins) ═══════ */
-@media (max-width: 1080px) {
+/* R313 (D8): the reference's own breakpoint — the bar collapses to
+   the MENU button under 992px (measured hamburger @390; the old
+   1080 gate drifted from the reference by one rung). */
+@media (max-width: 991px) {
   .fo-nav { display: none; }
   .fo-header-actions { display: none; }
-  .fo-burger { display: grid; }
+  .fo-burger {
+    display: flex;
+    margin-inline-start: auto;
+  }
+
+  /* the reference's mobile bar: 5rem tall (49.6px @390) */
+  .fo-header {
+    block-size: 5rem;
+  }
+
+  .fo-header-inner {
+    min-block-size: 5rem;
+    padding-inline: 26px;
+    padding-inline-end: 0;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -2991,10 +3291,13 @@
 }
 
 /* the staged construction — the elevation's [data-ink] layer groups
-   draw in DRAFTING ORDER against the ~5s progress ramp: frame →
-   grid → ground → masses → secondary → openings → detail → dims →
-   journey → labels. pathLength-normalized; every layer resolves
-   before the scan datum sweeps. */
+   draw in DRAFTING ORDER against the R313 asset-gated counter (the
+   whole run finishes ≤ ~4.9s; the earliest accelerated finish is
+   ~3.25s — the layers resolve by ~3.9s so both runs show the complete
+   drawing before the exit): frame → grid → ground → masses →
+   secondary → openings → detail → dims → journey → labels.
+   pathLength-normalized; every layer resolves before the scan datum
+   sweeps. */
 .sl-draw-wrap .bp-svg .bp-drawable {
   stroke-dasharray: 1 1;
   stroke-dashoffset: 1;
@@ -3009,17 +3312,20 @@
   transition: opacity 450ms var(--ease);
 }
 
-.sl-draw-wrap .bp-svg [data-ink='1'] .bp-drawable { transition-delay: 150ms; }
-.sl-draw-wrap .bp-svg [data-ink='2'] .bp-drawable { transition-delay: 420ms; }
-.sl-draw-wrap .bp-svg [data-ink='3'] .bp-drawable { transition-delay: 760ms; }
-.sl-draw-wrap .bp-svg [data-ink='4'] .bp-drawable { transition-delay: 1250ms; }
-.sl-draw-wrap .bp-svg [data-ink='5'] .bp-drawable { transition-delay: 1850ms; }
-.sl-draw-wrap .bp-svg [data-ink='6'] .bp-drawable { transition-delay: 2450ms; }
-.sl-draw-wrap .bp-svg [data-ink='7'] .bp-drawable { transition-delay: 3050ms; }
-.sl-draw-wrap .bp-svg [data-ink='8'] .bp-drawable { transition-delay: 3600ms; }
-.sl-draw-wrap .bp-svg [data-ink='9'] .bp-drawable { transition-delay: 4100ms; }
-.sl-draw-wrap .bp-svg [data-ink='10'] .bp-drawable { transition-delay: 4500ms; }
-.sl-draw-wrap .bp-svg [data-ink='10'] text { transition-delay: 4700ms; }
+/* R313 retune — the R309 5s schedule compressed to the ~3.9s complete
+   state (the counter is asset-gated now; the drawing must not still
+   be mid-stroke when the slit opens on an early finish). */
+.sl-draw-wrap .bp-svg [data-ink='1'] .bp-drawable { transition-delay: 110ms; }
+.sl-draw-wrap .bp-svg [data-ink='2'] .bp-drawable { transition-delay: 300ms; }
+.sl-draw-wrap .bp-svg [data-ink='3'] .bp-drawable { transition-delay: 550ms; }
+.sl-draw-wrap .bp-svg [data-ink='4'] .bp-drawable { transition-delay: 900ms; }
+.sl-draw-wrap .bp-svg [data-ink='5'] .bp-drawable { transition-delay: 1330ms; }
+.sl-draw-wrap .bp-svg [data-ink='6'] .bp-drawable { transition-delay: 1760ms; }
+.sl-draw-wrap .bp-svg [data-ink='7'] .bp-drawable { transition-delay: 2200ms; }
+.sl-draw-wrap .bp-svg [data-ink='8'] .bp-drawable { transition-delay: 2590ms; }
+.sl-draw-wrap .bp-svg [data-ink='9'] .bp-drawable { transition-delay: 2950ms; }
+.sl-draw-wrap .bp-svg [data-ink='10'] .bp-drawable { transition-delay: 3240ms; }
+.sl-draw-wrap .bp-svg [data-ink='10'] text { transition-delay: 3380ms; }
 
 /* the mounted state (the layers draw themselves in) */
 .sl-mounted .sl-draw-wrap .bp-svg .bp-drawable {
@@ -3031,8 +3337,9 @@
   opacity: 1;
 }
 
-/* the scan datum — one horizontal sweep after the masses resolve
-   (a positioned span over the drawing window now) */
+/* the scan datum — one horizontal sweep after the structures resolve
+   (a positioned span over the drawing window now; R313 retune — the
+   draw completes by ~3.4s, the sweep runs 3.1–4.2s) */
 .sl-scan {
   position: absolute;
   inset-block-start: var(--sp-4);
@@ -3044,7 +3351,7 @@
 }
 
 .sl-mounted .sl-scan {
-  animation: sl-scan 1100ms var(--ease) 4350ms 1 both;
+  animation: sl-scan 1100ms var(--ease) 3100ms 1 both;
 }
 
 @keyframes sl-scan {
@@ -3064,36 +3371,59 @@
   }
 }
 
-/* the progress instrument */
+/* the progress instrument — R313 (D10): the reference's 1px rail
+   grammar (loading-progress): the NN% counter (Geist Mono 10px
+   #FA3600 — --fs-mono-sm/--accent) sits ON the orange centre band,
+   which wipes LEFT→RIGHT across the full sheet width; two 1px
+   #B3B3AF rails (the loading-progress-item pair) translate in
+   opposite directions with the counter. All motion is JS-driven
+   transform (the tick writes scaleX / translate3d). */
 .sl-progress {
   grid-row: 2;
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding-block: var(--sp-3);
+  position: relative;
+  block-size: 13px;
+  margin-block: var(--sp-7);
 }
 
-.sl-pct {
-  color: var(--accent);
-  font-size: var(--fs-xs);
-  min-inline-size: 4ch;
-  text-align: end;
-}
-
-.sl-band-track {
-  flex: 1;
-  block-size: 7px;
-  background: color-mix(in srgb, var(--grid-line) 30%, transparent);
-  overflow: hidden;
-}
-
+/* the orange centre band — the counter's own rule, full width */
 .sl-band {
-  display: block;
-  block-size: 100%;
-  inline-size: 100%;
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 6px;
+  block-size: 1px;
   background: var(--accent);
   transform: scaleX(0);
-  transform-origin: 100% 50%;
+  transform-origin: 0 50%;
+  will-change: transform;
+}
+
+/* the two translating #B3B3AF rails above/below the band */
+.sl-rail {
+  position: absolute;
+  inset-inline: 0;
+  block-size: 1px;
+  background: var(--grid-line);
+  will-change: transform;
+}
+
+.sl-rail-top {
+  inset-block-start: 0;
+}
+
+.sl-rail-bot {
+  inset-block-start: 12px;
+}
+
+/* the counter — ON the band at the sheet's leading edge (the band
+   passes behind the glyphs, exactly like the reference's txt) */
+.sl-pct {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  color: var(--accent);
+  font-size: var(--fs-mono-sm);
+  line-height: 13px;
+  letter-spacing: 0.04em;
 }
 
 /* the honest init log */
@@ -3186,6 +3516,16 @@
   white-space: nowrap;
 }
 
+/* ── R313 (D10) — the exit state: the instrument's content dissolves
+   as the two-band split opens (the reference's .loading.loaded keeps
+   the element with inner opacity 0 while the clip plays). The clip
+   itself is WAAPI (SheetLoader owns it); this fade rides the same
+   moment via the .is-exiting root class. */
+.sl.is-exiting .sl-main > * {
+  opacity: 0;
+  transition: opacity 300ms var(--ease);
+}
+
 /* ── R308/R309 responsive re-composition ──────────────────────────── */
 /* (The pointer instrument is JS-gated below 992px; the dots stay as
    the touch path and the hint text swaps to the tap affordance.) */
@@ -3239,7 +3579,9 @@
     opacity: 0;
   }
 
-  .sl-log li {
+  .sl-log li,
+  .sl-band,
+  .sl-rail {
     transition: none;
     opacity: 1;
     transform: none;
