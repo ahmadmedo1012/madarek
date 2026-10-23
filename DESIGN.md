@@ -14,6 +14,70 @@
 
 ---
 
+## 0. R313 — Heron parity canon (owner override)
+
+**The authority statement.** In round R313 the owner ordered **full visual and
+behavioural identity with heronaiapp.com**. That order supersedes every prior
+adaptation decision — the r306 «adapted, not copied» stance, the r308 §G/§H
+non-adoptions, and any earlier canon text that contradicts the parity system below.
+It does **not** supersede the hard contracts: accessibility, honest copy, CSP, the
+funnel pins, and the no-proprietary-assets rule stand exactly as before. Measured
+basis: `audits/evidence/r313/` (live Heron census + production baseline; 3 match /
+55 mismatch at base). The complete per-item ledger with commits and evidence:
+[`docs/redesign/r313/OVERRIDE-LEDGER.md`](docs/redesign/r313/OVERRIDE-LEDGER.md).
+
+**The override ledger** (old → new, one line per item):
+
+- **D1** paper `#F6F8FA` → `#F6F6EE` (re-pinned at every seat: tokens, metas, boot
+  plate, theme.ts, tests, parity gate).
+- **D2** radius ladder 2–20px + pill → **0** (`--r-full` kept for circles/dots).
+- **D3** elevation shadows (elev-1..5) → **none** (focus rings + forced-colors
+  fallbacks kept; zero exceptions).
+- **D4** button grammar (oklab brighten + lift + glow) → **fill-wipe + dual-label
+  roll** (white-on-accent is a documented AA exception: Arabic labels ride weight
+  ≥600); inputs 1px `#B3B3AF` → focus `#ED4C1F` → filled `#FA3600`.
+- **D5** fixed px type ladder (root 16px) → **fluid rem root** (`html
+  0.5787037037vw` + ≤991/≤767 bands; the 13px Arabic floor kept as a minimum) +
+  the **Geist Mono** voice (self-hosted OFL).
+- **D6** native scroll → **Lenis 1.1.5, guest pages only** (lerp 0.1,
+  conductor-driven, scrollbar hidden while live, `.content` stays native; RM never
+  inits).
+- **D7** landing 12 sections → **9 Heron sections** (the map/journey pin ≈51% of
+  the page; the documentary media band + capability ledger moved to `/campus` +
+  `/capabilities`).
+- **D8** header 57px sticky no-hide → **56px fixed at the 7px inset** with the
+  measured `on-scroll`/`on-hide` states + MENU button <992px.
+- **D9** partial sheet-frame marks → the **full fixed page frame** (1px `#B3B3AF`
+  at the 7px inset, plus marks + rulers; scales 6/7 by viewport).
+- **D10** loader session-gated with a cut-short exit → **asset-gated curve + 10
+  log lines + a real 835ms two-band exit, on every full load**.
+- **D11** route transition 721ms sweep + 500ms reveal → **1.6s four-edge inset
+  wipe**.
+- **D12** cursor — already at parity since R310/R311; kept (only the paper fallback
+  re-pinned).
+- **D13** scrub/plateau choreography re-based onto the new 9-section set.
+- **D14** footer → **3 columns + inspection lens** (r 99.09 / pulse 104.04).
+- **D15** cookie banner — **intentionally omitted** (Madarek sets no tracking
+  cookies; a consent banner would be dishonest copy — see
+  [`docs/redesign/r313/NOTES-D15.md`](docs/redesign/r313/NOTES-D15.md)).
+- **D16** all authenticated app surfaces re-skinned to the Heron grammar (square
+  chips/controls, hairline row rules `#E0E0DA`, structural seams `#B3B3AF`, flat
+  tiles, mono headers).
+- **D17** dark theme re-derived from the new canon (the shadow-removal policy is
+  theme-wide; dark depth = surface step + hairline).
+
+**The permanent exceptions** (owner-ratified — never «fixed» for parity):
+
+1. **BT Grotesk is proprietary** — Alexandria + IBM Plex Sans Arabic stay (OFL,
+   Arabic-correct); Geist Mono (OFL) is adopted.
+2. **Arabic glyph metrics** — there is no uppercase; hierarchy transfers through
+   weight + size, never letter-spacing (joins).
+3. **Honest-copy rules unchanged** — «جامعة مدارك التجريبية» disclosure, banned
+   marketing wording, real numbers only.
+4. **Funnel pins unchanged** — 5 register CTAs + 5 login affordances + the pinned
+   section ids (`statement/chapters/live/roles/colleges/vision`), exactly as r306
+   froze them.
+
 ## 1. The system in one paragraph
 
 An architect's drawing sheet: warm-neutral **paper** grounds, graphite **ink**, fine

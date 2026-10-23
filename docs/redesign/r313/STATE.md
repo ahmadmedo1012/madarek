@@ -34,11 +34,20 @@
 
 ## Round progress
 - [x] Phase 0: census + parity table (commit 31e43057, 560109a5)
-- [ ] Phase 1a (4-a): foundation tokens D1–D5 — IN FLIGHT
-- [ ] Phase 1b (4-b): Lenis D6
-- [ ] Phase 2: WP-A (landing structure D7/D9/D13), WP-B (loader/header/footer/transition/cookie D8/D10/D11/D14/D15), WP-C (cursor D12), WP-D (primitives D4/D16), WP-E (student), WP-F (teacher/quality/admin/owner), WP-G (misc pages + illustrations), WP-H (gates/tests)
-- [ ] Phase 3: WP-I independent QA + parity re-run + visual pairs + surface sweep + Lighthouse/axe
-- [ ] Phase 4: docs (DESIGN.md, parity-matrix, AGENTS.md §5.4, release-report) + push + Render verify + smoke
+- [x] Phase 1a (4-a): foundation tokens D1–D5 — commit 02a9f1f5
+- [x] Phase 1b (4-b): Lenis D6 — commit fe528f3a
+- [x] Phase 2 — waves 1–2 complete, integrated, pushed (HEAD c3e0430d):
+  - WP-A landing D7/D9/D13 — 5d30e9c4 + f93a2fea + 3af33d01 (choreography fine-tune rides 4366b542 "stage sizing")
+  - WP-B loader/header/footer/transition/cookie D8/D10/D11/D14/D15 — b5f8250b (D8) + 9616dfb6 (D10/D11) + 18fd8a23 (D14); D15 = permanent omission (NOTES-D15.md)
+  - WP-C cursor D12 — no-op by design: already at parity since R310/R311 (only the paper fallback re-pinned in 02a9f1f5)
+  - WP-D primitives D4/D16 — 64d8f21a + bd73a6b0 + f71bf198 + 72d6d081 + 83bcd9f3
+  - WP-E student D16 — 686c261b + 2b996c2c + 2c334a4b + 23602ebf + 7d8974bd + 4cae9d31
+  - WP-F staff+shell D16 — 52f2c1b8 + 1030c59e + 775f4f2f + 65524e66 + ba8f3f44
+  - WP-G misc+illustrations D16 — 813acc97 + 9034d7a0 + c8054808 + 2e526f01 + 7c2ae6d0 + 31bde737 + 5b056933 + 3399b005 (docs) + 11cc316d (test re-pin)
+  - WP-H gates/tests — continuous per-wave; reconciliation 11cc316d + 4366b542 (8 e2e fixes) + c3e0430d (wave-2 polish)
+  - Wave-2 integration — 4366b542 + c3e0430d (see OVERRIDE-LEDGER.md "Wave-2 integration")
+- [ ] Phase 3: WP-I independent QA + parity re-run + visual pairs + surface sweep + Lighthouse/axe — IN FLIGHT
+- [ ] Phase 4: docs + push + Render verify + smoke — IN FLIGHT (canon docs wave 6-h landed in-repo: DESIGN.md §0, AGENTS.md §5.4, r308 parity-matrix §G/§H annotations, r313 OVERRIDE-LEDGER.md + NOTES-D15.md, CHANGELOG r313 entry, this STATE update; remaining: push, Render verify, smoke)
 
 ## Known constraints & incidents
 - GitHub PAT pasted in chat by owner (6+ times) → MUST be revoked after this round

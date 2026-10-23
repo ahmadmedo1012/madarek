@@ -69,6 +69,13 @@ translation column records the adaptation — never a silent copy, never a silen
 
 ## G. Ladders (adapted, not copied)
 
+> **R313 override (annotation — the rows below are round-r308 history, not current
+> policy).** The owner's R313 parity order supersedes this section: the fluid rem root
+> (html `0.5787037037vw` + ≤991/≤767 bands, 13px Arabic floor kept as a minimum), Geist
+> Mono, paper `#F6F6EE`, and radius 0 (no shadows) are now **adopted**. BT Grotesk stays
+> a **permanent exception** (proprietary — Alexandria/IBM Plex Sans Arabic remain).
+> Full ledger with commits + evidence: [`docs/redesign/r313/OVERRIDE-LEDGER.md`](../r313/OVERRIDE-LEDGER.md).
+
 | Ref | Madarek translation |
 |---|---|
 | Fluid rem type (root 8.33px@1440 → 9.92px@390) | NOT adopted — Madarek's own `--fs-*` ladder + 13px Arabic floor is the canon; the mono micro voice transfers via IBM Plex Mono |
@@ -78,6 +85,16 @@ translation column records the adaptation — never a silent copy, never a silen
 | `hover:hover` + `min-width:992px` gating; touch → static drawing + hamburger | Same ladder: full instrument system at `(hover:hover) and (min-width:992px)`; canvas cursor on fine pointers at any width; touch → tap-to-inspect markers, no drag; reduced-motion → complete static sheet (content never hidden) |
 
 ## H. Not translated (recorded, with reason)
+
+> **R313 override (annotation — the rows below are round-r308 history, not current
+> policy).** Lenis 1.1.5 is now **adopted** (guest pages only, conductor-driven, lerp
+> 0.1, scrollbar hidden, `.content` native); the loader was rebuilt to the Heron
+> asset-gated timeline (10 log lines, a real 835ms two-band exit, every full load);
+> and the route transition is now the 1.6s four-edge inset wipe (still no Barba —
+> React Router reproduces the observable). GSAP / Webflow / web-components stay
+> rejected (original implementation on the existing token system). Permanent
+> exceptions unchanged: BT Grotesk, Arabic glyph metrics, honest copy. Full ledger:
+> [`docs/redesign/r313/OVERRIDE-LEDGER.md`](../r313/OVERRIDE-LEDGER.md).
 
 - Lenis smooth-scroll wrapper: rejected — the canon's «no scrolljacking» + e2e/hermetic-test compatibility; native scroll + the shared conductor rAF reaches the same sync guarantee without hijacking.
 - Barba full-page transitions: rejected — conflicts with React Router lifecycle (mission §9); the landing-exit overlay reproduces the observable sweep safely.
