@@ -33,14 +33,17 @@
    ═══════════════════════════════════════════════════════════════════
    Rail | workspace meet on ONE hairline: base.css paints
    `.has-shell > .sidebar { border-inline-end: 1px solid
-   var(--sidebar-rule) }` and --sidebar-rule ≡ --rule ≡ --neutral-200
+   var(--sidebar-rule) }` and --sidebar-rule ≡ --border ≡ --neutral-200
+   (the row-rule grey #E0E0DA; the structural --rule rung is #B3B3AF)
    in BOTH themes (tokens.css) — one token family, one seam, theme-
    reactive without a single theme fork here. The topbar's bottom
    hairline is always on (polish v9's overrides-layer border-block-end;
    base.css re-colors it through .topbar.scrolled). Nav-group
-   separators stay quiet (--border-faint, layout.css). The mobile
-   drawer carries the same hairline on its content-facing edge
-   (border-inline-end, layout.css). Restating any of it here would be
+   separators ride the structural --rule hairline (R313 WP-F · D16,
+   layout.css). The mobile drawer carries the same hairline on its
+   content-facing edge (border-inline-end, layout.css) and paints NO
+   shadow (R313: flat drawer — the hairline carries the depth).
+   Restating any of it here would be
    drift, so this section documents and defers.
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -129,11 +132,12 @@
 /* ═══════════════════════════════════════════════════════════════════
    §3 — ONE ACTIVE MARKER (A4: «كل مسار له علامة جانبية واحدة»)
    ═══════════════════════════════════════════════════════════════════
-   The active nav row is exactly three signals: ONE bar (::before,
-   role-aware --role-accent), ONE surface step
-   (--sidebar-item-active-bg), ONE icon tint. polish v16's ::after
-   rail dot was a FOURTH signal — painted raw var(--accent) against
-   the bar's role-aware tint and wearing a focus-halo glow (a
+   The active nav row is exactly ONE signal (R313 WP-F · D16): the
+   square 2px accent side rule on the rail seam (layout.css ::before)
+   + the ink label. The surface-step pill and the icon tint retired
+   with the R313 marker grammar. polish v16's ::after rail dot stays
+   retired — it was a SECOND signal, painted raw var(--accent) against
+   the bar and wearing a focus-halo glow (a
    decoration borrowing the focus language). It also leaked: v6's
    collapsed-rail hover tooltip paints attr(title) onto this same
    pseudo-element, the markup no longer ships title attributes on nav
@@ -150,9 +154,10 @@
    §4 — HOVER NEVER PREVIEWS THE SIGNAL
    ═══════════════════════════════════════════════════════════════════
    polish v13 faded the accent rail in at half opacity on plain hover
-   (.nav-item:hover::before — 0.5 opacity, 0.7 scaleY). Copper is
-   reserved for the committed marker; hover earns the row's surface
-   step (--sidebar-item-hover-bg, layout.css) and nothing else. This
+   (.nav-item:hover::before — 0.5 opacity, 0.7 scaleY). R313 (WP-F):
+   hover is the landing nav wash — the row fills charcoal (var(--text))
+   with the paper ground as the label (var(--bg)), authored in
+   layout.css. This
    re-asserts v13's own :not(.on) resting state over its hover half;
    the .on state keeps the full bar.
    */
