@@ -19,6 +19,10 @@ import { Icon } from './components/Icon';
  * (pointer-events: none, aria-hidden) by construction. Mount contract:
  * docs/r305-heron-interactions.md. */
 import { CursorManager } from './components/motion/CursorManager';
+/* R313 (4-b · D6): the guest smooth-scroll engine — Lenis 1.1.5 on the
+ * window, driven by the shared motion conductor, live ONLY on the
+ * public window-scrolled surfaces. See the GuestLenisMount block below. */
+import { destroyGuestLenis, getLenis, initGuestLenis } from './lib/motion/sheetLenis';
 
 /* ───────────────────────────────────────────────────────────
    Lazy-load every route component. Each `lazy(...)` boundary
@@ -526,13 +530,23 @@ export function AppRoutes() {
  * carried the old window offset (clamped to the new doc height), so
  * the funnel opened mid-page. POP keeps the browser's native restore
  * (and the authenticated shell scrolls .content, unaffected here —
- * window.scrollTo is a no-op while the shell owns the scroller). */
+ * window.scrollTo is a no-op while the shell owns the scroller).
+ *
+ * R313 (4-b): while the Lenis engine is live on a guest route the reset
+ * goes THROUGH it — lenis.scrollTo(0, { immediate: true }) — because
+ * Lenis 1.1.5 ignores an external window.scrollTo while a glide is in
+ * flight (onNativeScroll only resyncs when it is not smooth-animating;
+ * the in-flight glide would win the next frame and drag the new page
+ * back down). Engine off (authenticated shell, reduced motion) → the
+ * plain native reset, exactly as before. */
 function ScrollResetOnPush() {
   const action = useNavigationType();
   const { pathname, search } = useLocation();
   useEffect(() => {
     if (action === 'PUSH') {
-      window.scrollTo({ top: 0, behavior: 'auto' });
+      const engine = getLenis();
+      if (engine) engine.scrollTo(0, { immediate: true });
+      else window.scrollTo({ top: 0, behavior: 'auto' });
     }
   }, [action, pathname, search]);
   return null;
@@ -553,11 +567,77 @@ export function RoutedCursorManager() {
   return <CursorManager suspended={pathname === '/'} />;
 }
 
+/* ──────────────────────────────────────────────────────────────────
+   R313 (4-b · D6) — the guest smooth-scroll engine mount.
+
+   Heron runs Lenis 1.1.5 on every public page; Madarek runs it on the
+   PUBLIC window-scrolled surfaces only — the authenticated app keeps
+   its native .content scroller untouched (owner decision). The active
+   set follows the REAL route tree in this file:
+
+     · always guest/window-scrolled: '/', '/auth', '/auth/register',
+       the '/login' alias, '/404', and the catch-all '*' (NotFoundPage);
+     · '/colleges*' only for GUESTS — a signed-in visitor gets AppShell
+       (CollegesLayout), whose .content scroller must stay native;
+     · never: the authenticated '/student|/teacher|/admin|/quality|
+       /owner' trees plus '/vision', '/document', '/competitions',
+       '/community', '/training', '/achievements' — all AppShell
+       surfaces. (The task brief's "/vision*, /campus*, /capabilities*"
+       row was written against a stale route map: /campus and
+       /capabilities do not exist, and /vision is behind ProtectedRoute
+       + AppShell — so it is excluded here by design.)
+
+   Hydration gates the mount: the engine never spins during the splash
+   (guards render HydrationSplash while the store rehydrates), and the
+   effect is idempotent so StrictMode's double-invoke nets out. Exported
+   for the r313-lenis unit belt.
+   ────────────────────────────────────────────────────────────────── */
+const SHELL_SURFACE_PREFIXES = [
+  '/student', '/teacher', '/admin', '/quality', '/owner',
+  '/vision', '/document', '/competitions', '/community', '/training', '/achievements',
+] as const;
+
+function isShellSurface(pathname: string): boolean {
+  return SHELL_SURFACE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
+function isGuestWindowSurface(pathname: string, hasUser: boolean): boolean {
+  if (isShellSurface(pathname)) return false;
+  /* signed-in visitors never see the guest surfaces: '/' and '/auth*'
+     bounce to the role home, '/colleges*' renders inside AppShell. */
+  if (
+    hasUser &&
+    (pathname === '/' ||
+      pathname === '/auth' ||
+      pathname === '/auth/register' ||
+      pathname === '/login' ||
+      pathname.startsWith('/colleges'))
+  ) {
+    return false;
+  }
+  return true;
+}
+
+export function GuestLenisMount() {
+  const { pathname } = useLocation();
+  const user = useAuthStore((s) => s.user);
+  const isHydrated = useAuthStore((s) => s.isHydrated);
+  const active = isHydrated && isGuestWindowSurface(pathname, Boolean(user));
+  useEffect(() => {
+    if (active) initGuestLenis();
+    else destroyGuestLenis();
+  }, [active]);
+  return null;
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ScrollResetOnPush />
+        {/* R313 4-b — route-aware guest engine mount (must sit INSIDE
+            the router: it reads the location, like ScrollResetOnPush). */}
+        <GuestLenisMount />
         {/* r141: one router-aware boundary around the route tree — a
          * render error now lands on the tested fallback (retry / home)
          * instead of a white screen, and clears itself on navigation.

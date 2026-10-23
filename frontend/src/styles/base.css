@@ -32,7 +32,10 @@
     background: var(--bg);
     color: var(--text);
     color-scheme: light;
-    scroll-behavior: smooth;
+    /* R313 (4-b · D6): scroll-behavior:smooth RETIRED — the guest scroll
+       is Lenis-driven now (lib/motion/sheetLenis.ts); CSS smooth on html
+       would fight the engine's programmatic resets (ScrollResetOnPush)
+       and double-smooth anchor jumps. The RM `auto` belt below stays. */
   }
   html[data-theme="dark"] { color-scheme: dark; }
 
@@ -126,6 +129,20 @@
      single live definition (and finally consumes the
      --scrollbar-thumb/-hover tokens); this identical copy was dead
      under the overrides layer (0-a P1-2). */
+
+  /* ═══ R313 (4-b · D6) — the guest Lenis engine chrome ══════════
+     While the smooth engine is live on a public/window-scrolled route,
+     lib/motion/sheetLenis.ts sets html[data-lenis-on] and the native
+     scrollbar disappears — Heron shows none (its content lives in an
+     overflow:hidden wrapper; on our window-Lenis the equivalent is
+     this rule). Scoped to the engine's LIFETIME: authenticated routes
+     destroy the engine, the attribute drops, and the app shell keeps
+     its scrollbar (usability).
+     !important is deliberate: polish v22's overrides-layer `*` scrollbar
+     block would otherwise win the cascade against any base-layer rule
+     (layers beat specificity — importance is the one lever left). */
+  html[data-lenis-on] { scrollbar-width: none !important; }
+  html[data-lenis-on]::-webkit-scrollbar { display: none !important; }
 
   /* ─── browser surfaces (wave 2-a) ───────────────────────────── */
   /* ─── a11y utilities — home since r152f (was polish v20) ──────── */

@@ -544,6 +544,12 @@ export default function LandingPage() {
         {menuOpen && (
           <nav
             className="fo-mobile-menu"
+            /* R313 (4-b · D6): while the Lenis engine is live on '/', a
+               wheel/touch inside this panel must scroll the PANEL (its
+               own overflow-y), never the page behind it — the engine's
+               own vocabulary for exactly this (checked in composedPath
+               before any preventDefault). */
+            data-lenis-prevent=""
             ref={menuRef}
             aria-label="قائمة الجوال"
             onClick={(e) => {

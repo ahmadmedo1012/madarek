@@ -1266,7 +1266,11 @@
      ║  GLOBAL SCROLL — calmer feel                                   ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   html {
-    scroll-behavior: smooth;
+    /* R313 (4-b · D6): scroll-behavior:smooth RETIRED app-wide — the
+       guest scroll is Lenis-driven now (lib/motion/sheetLenis.ts) and
+       CSS smooth on html fights the engine's programmatic resets; the
+       authenticated app never needed it (.content is its own scroller
+       and ScrollResetOnPush writes behavior:'auto'). */
     scrollbar-gutter: stable;
   }
   /* r299 (final-shell, measured): the v13 gutter reservation is PHANTOM
