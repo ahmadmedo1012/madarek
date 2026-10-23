@@ -138,10 +138,12 @@
 .owner-toggle-track::before {
   content: '';
   position: absolute;
-  /* painted track: 44−2×11 = 22 tall, 44−2×2 = 40 wide */
+  /* painted track: 44−2×11 = 22 tall, 44−2×2 = 40 wide
+     R313 (WP-F · D16): square track on the hairline well — the thumb
+     keeps its circle (circular primitive). */
   inset-block: 11px;
   inset-inline: 2px;
-  border-radius: var(--r-full);
+  border-radius: var(--r-xs);
   background: var(--surface-3);
   /* r149 (R3-A3 M5): 240ms → 160ms — قلب المفتاح كان يقرأ كسولًا
      (3× أبطأ من سجل الضغط 80ms في بقية المنصة). */

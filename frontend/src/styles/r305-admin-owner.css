@@ -298,13 +298,15 @@
 .r305ao .filter-bar { gap: var(--sp-2); }
 .r305ao .filter-bar > .input { background: var(--surface); }
 
-/* Filter pills (owner consoles) — outline-first chips. */
+/* Filter pills (owner consoles) — outline-first chips.
+   R313 (WP-F · D16): square chips on the structural hairline (no pill
+   radius — the data-dense chip grammar). */
 .r305ao .owner-filter-pills { gap: var(--sp-2); }
 .r305ao .pill {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--rule);
   color: var(--text-secondary);
-  border-radius: var(--r-full);
+  border-radius: var(--r-xs);
 }
 @media (hover: hover) and (pointer: fine) {
   .r305ao .pill:hover {
