@@ -1,65 +1,80 @@
 /**
- * SheetLoader — R308 «لوحة البدء» — the entrance sequence.
+ * SheetLoader — R313 «لوحة البدء» — the entrance sequence, rebuilt to
+ * the reference's loader semantics (D10).
  *
- * The reference's loader (reference-observations.md §2) is a drafting
- * instrument coming alive: an asset-gated non-linear percentage, an
- * orange center band, a line drawing, a ruler with an X/Y readout, a
- * system log, and a center-out horizontal clip-path exit. This is
- * Madarek's original entrance in that grammar:
+ * The reference's loader is an ASSET-GATED instrument, not a fixed
+ * clock (audits/evidence/r313/reference/digest.json → loader): a
+ * curve-shaped counter whose ~59–60% plateau EMERGES from waiting on
+ * real assets, a mono percentage (Geist Mono 10px #FA3600), an orange
+ * centre band wiping left→right, two 1px #B3B3AF translating rails,
+ * a line-drawn logo, a 10-line system log (001–010), a metadata
+ * block, an X/Y ruler readout tracking the mouse — and an 835ms
+ * CENTER-OUT TWO-BAND CLIP SPLIT exit (a horizontal slit opens at the
+ * vertical centre and widens to the edges; the counter's 100% holds
+ * ~700ms first). Gating: replays on EVERY full page load (reloads
+ * included — the reference's session flag does not suppress), never
+ * on client-side navigations, never under reduced motion / in
+ * non-visual environments (lib/motion/introGate owns the decision).
  *
- *  · R309 entrance clock (§4.1, re-measured against the live
- *    reference): a choreographed ~5s progression to the completed
- *    visual state, a measured hold in that state, then the geometric
- *    exit — the sheet hides ≈9.3s after first navigation. The
- *    percentage is the entrance sequence (the reference's own
- *    behavior); nothing waits on a resource, so a stalled asset can
- *    never trap the visitor, and a visible «تخطّي» (Esc/Enter/Space)
- *    always ends it.
- *  · The DRAWING is the platform's own original educational linework
- *    (the «مخطط مدارك» geometry, composed for the loader window) —
- *    staged `pathLength` draw-in in a deliberate order: ground →
- *    primary structures → secondary lines → registration marks →
- *    details → scan line → signal markers → labels.
- *  · Once per session (sessionStorage), never on internal navigation,
- *    never under `prefers-reduced-motion`, never in non-visual test
- *    environments without matchMedia — the page stands complete.
+ * Madarek keeps the honest layer the reference cannot have: every log
+ * line describes work the page is actually doing, the counter never
+ * waits past the fallback curve's 100% at ~4.9s (Promise.race timeout
+ * on the asset gate), and a visible «تخطّي» (Esc/Enter/Space) always
+ * ends it. The R309 fixed 5s+3.6s clock and the R309 exit race (the
+ * 650ms split cancelled at ~21ms by an onDone-prop remount) are both
+ * retired: the sequence owns its clock through refs, the exit plays
+ * its full 835ms, and the parent only unmounts the sheet on the
+ * exit's own finish event (wall-clock backed).
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { shouldPlayIntro, markIntroSeen, INTRO_SEEN_KEY } from '../../lib/motion/introGate';
+import {
+  shouldPlayIntro,
+  markIntroSeen,
+  markIntroPlayed,
+  INTRO_SEEN_KEY,
+  loaderTargetAt,
+  loaderDoneAtMs,
+  LOADER_GATE_TIMEOUT_MS,
+  LOADER_HOLD_MS,
+} from '../../lib/motion/introGate';
 import { sheetEase } from '../../lib/motion/sheetConductor';
 import { ElevationDrawing } from './ElevationDrawing';
 
-/* ── R309 entrance timing (§4.1, re-measured against the live
- * reference): the percentage is the CHOREOGRAPHED entrance clock —
- * a deliberate ~5s progression to the completed visual state (the
- * reference's own sequence; our re-measurement hit 100% at ≈6.3s on
- * a slower network), a measured HOLD in the completed state, then
- * the geometric exit — hidden ≈9.3s after first navigation. The
- * init log beside it stays HONEST: every line describes real work
- * the page is doing in parallel (fonts, eager media, feature state);
- * nothing waits on a resource, so a stalled asset can never trap the
- * visitor, and the skip (Esc/Enter/Space) always ends it. */
-const PROGRESS_MS = 5000;
-const HOLD_MS = 3600;
-const EXIT_MS = 650;
-const PROGRESS_EASE = 0.085;
+/* ── The R313 instrument constants (the shape lives in introGate's
+ * pure model; these are the chrome-side numbers). ───────────────────
+ * EXIT_MS resolves the --t-sheet-exit token (835ms, the measured
+ * split) at runtime; the wall-clock fallback adds grace for hidden
+ * tabs / engine hiccups — the page can never stay covered. */
+const EXIT_TOKEN = '--t-sheet-exit';
+const EXIT_FALLBACK_MS = 835;
+/* the two #B3B3AF rails translate with the counter — a slow drafting
+ * slide (±RAIL_SLIDE_PX at 100%), opposite directions. */
+const RAIL_SLIDE_PX = 24;
+
+function motionDurationMs(name: string, fallback: number): number {
+  if (typeof window === 'undefined' || typeof getComputedStyle !== 'function') {
+    return fallback;
+  }
+  try {
+    const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    const parsed = v ? Number.parseFloat(v) : NaN;
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 export interface SheetLoaderProps {
   onDone: () => void;
-  /** R310 — fires when the geometric EXIT BEGINS (the slit opens):
-   *  the page behind the loader starts its own ink-in then, so the
-   *  reveal resolves into a living page instead of a blank one
-   *  (spec §3.1 — a seamless transition, never blank mid-animation). */
+  /** fires when the geometric EXIT BEGINS (the slit opens): the page
+   *  behind the loader starts its own ink-in then, so the reveal
+   *  resolves into a living page instead of a blank one (R310 §3.1). */
   onExitStart?: () => void;
 }
 
-/* ── R310 — the entrance draws THE ELEVATION ITSELF: the same drafted
- * building the hero presents, in the reduced constructive variant
- * (major lines only — no texture fills, no micro metadata), staged by
- * the [data-ink] layer groups against the ~5s progress ramp (the
- * schedule lives in landing.css under .sl). The scan datum sweeps once
- * after the masses resolve. The loader drawing and the hero drawing
- * are ONE artwork — the entrance resolves into the page it reveals. */
+/* ── The drawing — the platform's own educational linework (the
+ * «مخطط مدارك» geometry, composed for the loader window), staged by
+ * the [data-ink] groups against the counter's ramp (landing.css .sl). */
 function SlDraw() {
   return (
     <div className="sl-draw-wrap">
@@ -70,28 +85,92 @@ function SlDraw() {
   );
 }
 
-/* The honest init log — each line is a thing the page is actually
- * doing while the loader runs; thresholds are progress checkpoints. */
+/* ── The honest init log — 10 lines (the reference's 001–010 count),
+ * each a thing the page is actually doing while the loader runs;
+ * `at` is the counter checkpoint that reveals the line. */
 const LOG_LINES: Array<{ at: number; code: string; text: string }> = [
-  { at: 0, code: '001', text: 'تهيئة لوحة الرسم' },
-  { at: 25, code: '002', text: 'تحميل الخطوط' },
-  { at: 50, code: '003', text: 'تحضير وسائط الجامعات' },
-  { at: 75, code: '004', text: 'فهرسة قدرات المنصّة' },
-  { at: 100, code: '005', text: 'جاهز — مدارك' },
+  { at: 0, code: '001', text: 'تهيئة لوحة البدء' },
+  { at: 7, code: '002', text: 'تحميل عائلات الخطوط' },
+  { at: 20, code: '003', text: 'تجهيز المخطط المرسوم' },
+  { at: 33, code: '004', text: 'بناء شبكة الإطار والمسطرة' },
+  { at: 45, code: '005', text: 'تجهيز أقسام الرحلة' },
+  { at: 57, code: '006', text: 'تهيئة محرك التمرير' },
+  { at: 59, code: '007', text: 'مزامنة الوسائط الأساسية' },
+  { at: 75, code: '008', text: 'معايرة أدوات المؤشر' },
+  { at: 90, code: '009', text: 'فحص جاهزية الصفحة' },
+  { at: 100, code: '010', text: 'بدء التنفيذ' },
 ];
+
+/* ── The asset gate (R313: asset-gated, NOT a fixed clock) ────────────
+ * The critical assets the counter's plateau waits on: the sheet's
+ * font families (document.fonts.ready — the counter itself is mono)
+ * and every EAGER image in the document (the LCP candidates; lazy
+ * media is deliberately NOT waited on — it loads as the visitor
+ * scrolls, after the entrance). Each gate resolves on success OR
+ * failure (a broken asset never traps the visitor) and the whole gate
+ * races LOADER_GATE_TIMEOUT_MS — the counter always continues. */
+function criticalAssetGate(): Promise<void> {
+  const gates: Array<Promise<unknown>> = [];
+  try {
+    if (typeof document !== 'undefined' && document.fonts?.ready) {
+      gates.push(Promise.resolve(document.fonts.ready));
+    }
+  } catch {
+    /* fonts API unavailable — the timeout owns the gate */
+  }
+  try {
+    if (typeof document !== 'undefined') {
+      const eager = Array.from(document.querySelectorAll('img'))
+        .filter((img) => img.getAttribute('loading') !== 'lazy')
+        .slice(0, 4);
+      for (const img of eager) {
+        gates.push(
+          img.complete
+            ? Promise.resolve(null)
+            : new Promise<void>((resolve) => {
+                img.addEventListener('load', () => resolve(), { once: true });
+                img.addEventListener('error', () => resolve(), { once: true });
+              }),
+        );
+      }
+    }
+  } catch {
+    /* DOM unavailable — the timeout owns the gate */
+  }
+  if (gates.length === 0) return Promise.resolve();
+  const timeout = new Promise<void>((resolve) => {
+    setTimeout(resolve, LOADER_GATE_TIMEOUT_MS);
+  });
+  return Promise.race([Promise.allSettled(gates).then(() => undefined), timeout]);
+}
 
 export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
   const [play, setPlay] = useState<boolean | null>(null);
   const [exiting, setExiting] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const bandRef = useRef<HTMLDivElement>(null);
+  const bandRef = useRef<HTMLSpanElement>(null);
+  const railTopRef = useRef<HTMLSpanElement>(null);
+  const railBotRef = useRef<HTMLSpanElement>(null);
   const pctRef = useRef<HTMLSpanElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
   const crossRef = useRef<HTMLSpanElement>(null);
   const coordRef = useRef<HTMLSpanElement>(null);
 
-  /* ── Gate: once per session, motion allowed, real browser. ────── */
+  /* R313 — the exit-race fix, part 1: the parent's callbacks live in
+   * refs. The R309 clock re-ran its effects whenever the parent
+   * re-rendered (fresh inline-callback identities), cancelling the
+   * split ~21ms in; the sequence below depends on NOTHING that
+   * changes identity, so re-renders can no longer cancel it. */
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
+  const onExitStartRef = useRef(onExitStart);
+  onExitStartRef.current = onExitStart;
+
+  /* ── Gate: motion allowed, real browser, fresh document. ───────── */
+  const decidedRef = useRef(false);
   useEffect(() => {
+    if (decidedRef.current) return; /* StrictMode re-run: the decision stands */
+    decidedRef.current = true;
     let reduced = false;
     try {
       reduced =
@@ -99,7 +178,7 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
         typeof window.matchMedia === 'function' &&
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     } catch {
-      /* storage/matchMedia unavailable — the page stands complete */
+      /* matchMedia unavailable — the page stands complete */
     }
     const should = shouldPlayIntro(
       typeof sessionStorage !== 'undefined' ? sessionStorage : null,
@@ -107,37 +186,50 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
     );
     if (!should) {
       markIntroSeen();
-      onDone();
+      onDoneRef.current();
       return;
     }
+    /* the document-lifetime mark: client-side navigations back to the
+     * landing never replay (the reference's Barba behaviour) */
+    markIntroPlayed();
     setPlay(true);
-  }, [onDone]);
+  }, []);
 
-  /* ── The sequence: honest progress → staged exit. ─────────────── */
+  /* ── The sequence: asset-gated counter → hold → staged exit. ───── */
   useEffect(() => {
     if (!play) return undefined;
     const root = rootRef.current;
     if (!root) return undefined;
 
     const startedAt = performance.now();
-    let displayed = 0;
+    let releasedAt: number | null = null;
+    let counterDoneAt = loaderDoneAtMs(null);
     let raf = 0;
     let finished = false;
     let lastAnnounced = -1;
     const srRef = root.querySelector<HTMLElement>('.sl-sr');
 
-    /* the staged draw-in starts one frame after mount (the
-     * transition needs a style change from the initial state). */
+    /* the staged draw-in starts one frame after mount (the transition
+     * needs a style change from the initial state). */
     const mountRaf = requestAnimationFrame(() => {
       root.classList.add('sl-mounted');
+    });
+
+    /* the asset gate releases the counter's plateau */
+    let alive = true;
+    void criticalAssetGate().then(() => {
+      if (!alive || releasedAt !== null) return;
+      releasedAt = Math.max(0, performance.now() - startedAt);
+      counterDoneAt = loaderDoneAtMs(releasedAt);
     });
 
     let exitStarted = false;
     const startExit = () => {
       if (exitStarted) return;
       exitStarted = true;
-      onExitStart?.(); /* the page behind begins its ink-in NOW — the
-                            slit reveals a living sheet, never a blank */
+      /* the page behind begins its ink-in NOW — the slit reveals a
+       * living sheet, never a blank (R310 §3.1) */
+      onExitStartRef.current?.();
     };
 
     const finish = () => {
@@ -146,34 +238,40 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
       cancelAnimationFrame(raf);
       markIntroSeen();
       startExit();
+      root.classList.add('is-exiting');
       setExiting(true);
     };
 
     const tick = () => {
       const elapsed = performance.now() - startedAt;
 
-      /* the choreographed entrance clock: the target rides a linear
-       * ramp to 100% at PROGRESS_MS (the eased `displayed` gives the
-       * instrument feel underneath). Real init work (fonts, media,
-       * features) runs in parallel and is reported by the log — the
-       * percentage never waits on it (a stalled resource can not
-       * trap the visitor; R309 §4.2). */
-      const target = elapsed >= PROGRESS_MS ? 100 : (elapsed / PROGRESS_MS) * 100;
+      /* the counter: the curve target, gated on the real assets — the
+       * plateau EMERGES from waiting; an early release accelerates
+       * the tail; the fallback curve's 100% at ~4.9s is the slowest
+       * possible run (the gate's timeout guarantees it). */
+      const target = loaderTargetAt(elapsed, releasedAt);
+      const pct = Math.min(100, Math.floor(target));
 
-      displayed += (target - displayed) * PROGRESS_EASE;
-      if (elapsed >= PROGRESS_MS) displayed = 100;
-
-      const pct = Math.floor(displayed);
       if (bandRef.current) {
-        bandRef.current.style.transform = `scaleX(${displayed / 100})`;
+        bandRef.current.style.transform = `scaleX(${target / 100})`;
+      }
+      /* the two #B3B3AF rails slide in opposite directions with the
+       * counter (the reference's translating progress items) */
+      const slide = (target / 100) * RAIL_SLIDE_PX;
+      if (railTopRef.current) {
+        railTopRef.current.style.transform = `translate3d(${slide}px, 0, 0)`;
+      }
+      if (railBotRef.current) {
+        railBotRef.current.style.transform = `translate3d(${-slide}px, 0, 0)`;
       }
       if (pctRef.current && pctRef.current.dataset.pct !== String(pct)) {
         pctRef.current.dataset.pct = String(pct);
         pctRef.current.textContent = `${pct}%`;
       }
+
       /* the log advances with the checkpoints */
       const lineIdx = LOG_LINES.reduce(
-        (acc, l, i) => (displayed >= l.at ? i : acc),
+        (acc, l, i) => (target >= l.at ? i : acc),
         -1,
       );
       const log = root.querySelector<HTMLElement>('.sl-log');
@@ -185,15 +283,21 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
           if (el.dataset.on !== (on ? 'on' : 'off')) el.dataset.on = on ? 'on' : 'off';
         }
       }
+
       /* coarse live announcements (0/50/100) — not per-frame spam */
-      const announce = displayed >= 100 ? 3 : displayed >= 50 ? 2 : displayed > 0 ? 1 : 0;
+      const announce = target >= 100 ? 3 : target >= 50 ? 2 : target > 0 ? 1 : 0;
       if (srRef && announce !== lastAnnounced) {
         lastAnnounced = announce;
         srRef.textContent =
-          displayed >= 100 ? 'اكتمل التحميل' : displayed >= 50 ? 'جارٍ تحضير الصفحة — أكثر من النصف' : 'جارٍ تحضير الصفحة';
+          target >= 100
+            ? 'اكتمل التحميل'
+            : target >= 50
+              ? 'جارٍ تحضير الصفحة — أكثر من النصف'
+              : 'جارٍ تحضير الصفحة';
       }
 
-      if (displayed >= 100 && elapsed >= PROGRESS_MS + HOLD_MS) {
+      /* the measured hold at 100%, then the geometric exit */
+      if (pct >= 100 && elapsed >= counterDoneAt + LOADER_HOLD_MS) {
         finish();
         return;
       }
@@ -216,54 +320,70 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
     doc.style.overflow = 'hidden';
 
     return () => {
+      alive = false;
       cancelAnimationFrame(raf);
       cancelAnimationFrame(mountRaf);
       window.removeEventListener('keydown', skip);
       skipBtn?.removeEventListener('click', skip);
       doc.style.overflow = prevOverflow;
     };
-  }, [play, onExitStart]);
+  }, [play]);
 
-  /* ── The exit: center-out horizontal clip split (one element, a
-   *     two-band polygon whose slit widens to the edges). A wall-clock
-   *     fallback ends the sequence even if the animation's finish
-   *     event never fires (hidden tab, engine hiccup) — the page can
-   *     never stay covered (R309 §4.3). ────────────────────────── */
+  /* ── The exit: the measured 835ms CENTER-OUT TWO-BAND CLIP SPLIT —
+   *     a horizontal slit at the vertical centre (49.94/50.06%)
+   *     widening symmetrically to 0/100% (the top and bottom halves
+   *     part at the centre line). R313 race fix, part 2: the effect
+   *     depends only on `exiting` (the callbacks ride refs), the
+   *     animation is never restarted by a parent re-render, and a
+   *     wall-clock fallback ends the sequence even if the finish
+   *     event never fires (hidden tab, engine hiccup). ──────────── */
   useEffect(() => {
     if (!exiting || !mainRef.current) return undefined;
     const el = mainRef.current;
+    const exitMs = Math.max(120, motionDurationMs(EXIT_TOKEN, EXIT_FALLBACK_MS));
     const reduce =
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce || typeof el.animate !== 'function') {
-      const t = window.setTimeout(onDone, 30);
+      const t = window.setTimeout(() => onDoneRef.current(), 30);
       return () => window.clearTimeout(t);
     }
     let done = false;
     const settle = () => {
       if (done) return;
       done = true;
-      onDone();
+      onDoneRef.current();
     };
     const anim = el.animate(
       [
-        { clipPath: 'polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%, 0% 50%, 100% 50%, 100% 100%, 0% 100%)' },
-        { clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%, 0% 100%, 100% 100%, 100% 100%, 0% 100%)' },
+        {
+          clipPath:
+            'polygon(0% 0%, 100% 0%, 100% 49.94%, 0% 49.94%, 0% 50.06%, 100% 50.06%, 100% 100%, 0% 100%)',
+        },
+        {
+          clipPath:
+            'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%, 0% 100%, 100% 100%, 100% 100%, 0% 100%)',
+        },
       ],
-      { duration: EXIT_MS, easing: sheetEase(), fill: 'forwards' },
+      {
+        duration: exitMs,
+        easing: sheetEase(),
+        fill: 'forwards',
+      },
     );
     anim.onfinish = settle;
     anim.oncancel = settle;
-    const fallback = window.setTimeout(settle, EXIT_MS + 600);
+    const fallback = window.setTimeout(settle, exitMs + 600);
     return () => {
       window.clearTimeout(fallback);
       anim.onfinish = null;
       anim.oncancel = null;
       anim.cancel();
     };
-  }, [exiting, onDone]);
+  }, [exiting]);
 
-  /* the loader's own ruler readout — scene-relative X/Y */
+  /* the loader's own ruler readout — scene-relative X/Y (the
+   * reference's X:1131PX mono format) */
   const onPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     const root = rootRef.current;
     if (!root) return;
@@ -274,7 +394,7 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
       crossRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
     }
     if (coordRef.current) {
-      coordRef.current.textContent = `X:${x} Y:${y}`;
+      coordRef.current.textContent = `X:${x}PX Y:${y}PX`;
     }
   }, []);
 
@@ -286,6 +406,7 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
       className="sl"
       data-cursor="none"
       role="status"
+      aria-busy={!exiting}
       aria-label="تحضير صفحة مدارك"
       onPointerMove={onPointerMove}
     >
@@ -297,21 +418,22 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
           <span className="sl-cross-v" />
         </span>
         <span className="sl-coord fo-mono" ref={coordRef} dir="ltr" aria-hidden="true">
-          X:0 Y:0
+          X:0PX Y:0PX
         </span>
 
         {/* the drawing — the elevation's staged construction */}
         <SlDraw />
 
-        {/* the progress instrument: band + counter */}
+        {/* the progress instrument: the mono counter ON the orange
+            band, the two 1px #B3B3AF rails translating above/below */}
         <div className="sl-progress" aria-hidden="true">
+          <span className="sl-rail sl-rail-top" ref={railTopRef} />
+          <span className="sl-rail sl-rail-bot" ref={railBotRef} />
+          <span className="sl-band" ref={bandRef} />
           <span className="sl-pct fo-mono" ref={pctRef} dir="ltr">0%</span>
-          <span className="sl-band-track">
-            <span className="sl-band" ref={bandRef} />
-          </span>
         </div>
 
-        {/* the honest init log */}
+        {/* the honest init log — 001…010 */}
         <ul className="sl-log" aria-hidden="true">
           {LOG_LINES.map((l) => (
             <li key={l.code} data-on="off">
@@ -321,12 +443,18 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
           ))}
         </ul>
 
-        {/* the title block — the sheet's identity (R309 §8: stable
-            Madarek metadata — no release-number label) */}
+        {/* the title block — the sheet's identity (stable metadata,
+            no release-number label per R309 §8) */}
         <div className="sl-meta" aria-hidden="true">
           <span className="sl-meta-title">مدارك — منصّة التعليم الذكي</span>
           <span className="sl-meta-row fo-mono" dir="ltr">
             MADAREK · LEARNING SHEET
+          </span>
+          <span className="sl-meta-row fo-mono" dir="ltr">
+            TYPE : LEARNING PLATFORM
+          </span>
+          <span className="sl-meta-row fo-mono" dir="ltr">
+            FOCUS : THE FULL LEARNING JOURNEY
           </span>
         </div>
 

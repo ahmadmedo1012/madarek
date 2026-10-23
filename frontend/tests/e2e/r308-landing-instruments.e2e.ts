@@ -1,25 +1,27 @@
 /**
  * r308-landing-instruments.e2e.ts — the R308 interaction-grammar
  * journeys on the real SPA (hermetic: mock transport + Vite dev
- * server; the shared fixture pre-seeds the intro-seen flag — these
+ * server; the shared fixture pre-seeds the intro-skip key — these
  * specs clear it when they need the entrance to play).
  *
  * Covers the parity-matrix §Verification browser rows that the unit
- * belt cannot: the entrance (plays once, exits by itself, does not
- * replay), the hero inspection stations as the universal control
- * path, the walkthrough's readable ladder on a narrow viewport, and
- * the continuous instruments collapsing under reduced motion.
+ * belt cannot: the entrance (asset-gated, exits by itself, REPLAYS on
+ * reload per the R313 Heron-parity gate), the hero inspection
+ * stations as the universal control path, the walkthrough's readable
+ * ladder on a narrow viewport, and the continuous instruments
+ * collapsing under reduced motion.
  */
 import { test, expect } from './fixtures/e2e';
 
 test.describe('R308 — لوحة البدء (the entrance)', () => {
-  test('plays on a fresh session, exits by itself, and never replays', async ({ page }) => {
+  test('plays on a fresh load, exits by itself, and REPLAYS on reload (R313: every full page load)', async ({ page }) => {
     await page.addInitScript(() => {
       try {
-        /* clear the seen-flag ONCE (init scripts re-run on reload —
-         * the reload at the end of this spec must boot straight in) */
+        /* clear the hermetic skip key ONCE (init scripts re-run on
+         * reload — the replay at the end of this spec must play the
+         * entrance again, per the R313 gating rule) */
         if (!sessionStorage.getItem('r308-fresh-once')) {
-          sessionStorage.removeItem('madarek-intro-seen');
+          sessionStorage.removeItem('madarek-intro-skip');
           sessionStorage.setItem('r308-fresh-once', '1');
         }
       } catch {
@@ -28,27 +30,33 @@ test.describe('R308 — لوحة البدء (the entrance)', () => {
     });
     await page.goto('/');
     await expect(page.locator('.sl')).toBeVisible();
-    /* it must exit by itself (r309 entrance clock: 5s progression +
-     * 3.6s hold + 0.65s exit ≈ 9.3s from mount — the budget carries
-     * the dev server's cold transform) */
+    /* it must exit by itself (R313 asset-gated clock: the counter
+     * finishes between ~3.25s (assets early) and 4.9s (the fallback
+     * curve), + 0.7s hold + 0.835s split — the budget carries the dev
+     * server's cold transform) */
     await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
     await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
-    /* the session flag means the next visit boots straight in */
+    /* R313 override: the loader REPLAYS on a same-tab reload (the
+     * reference's own measured reloadGate; the session flag is
+     * inert) — and exits by itself again */
     await page.reload();
+    await expect(page.locator('.sl')).toBeVisible();
+    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
     await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
-    await expect(page.locator('.sl')).toHaveCount(0);
   });
 
   test('the skip control ends the entrance immediately', async ({ page }) => {
     await page.addInitScript(() => {
       try {
-        sessionStorage.removeItem('madarek-intro-seen');
+        sessionStorage.removeItem('madarek-intro-skip');
       } catch {
         /* ignore */
       }
     });
     await page.goto('/');
     await page.locator('.sl-skip').click();
+    /* R313 override: the skip runs the 835ms split (the exit must
+     * PLAY, not cut) — gone by ~1s */
     await expect(page.locator('.sl')).toHaveCount(0, { timeout: 3000 });
     await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
   });
@@ -93,7 +101,7 @@ test.describe('R308 — the static belt', () => {
   test('reduced motion: the complete sheet stands — no loader, no cursor, stations readable', async ({ page }) => {
     await page.addInitScript(() => {
       try {
-        sessionStorage.removeItem('madarek-intro-seen');
+        sessionStorage.removeItem('madarek-intro-skip');
       } catch {
         /* ignore */
       }

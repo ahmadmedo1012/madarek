@@ -25,6 +25,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App, { RoutedCursorManager } from '../../src/App';
 import { CursorManager } from '../../src/components/motion/CursorManager';
 import LandingPage from '../../src/pages/LandingPage';
+/* R313 (D10): the loader's document-lifetime guard is module state —
+ * each jsdom case simulates a FRESH document, so reset it per case
+ * (in a real browser a fresh module graph only exists per full load). */
+import { resetIntroDocumentGateForTests } from '../../src/lib/motion/introGate';
 
 /* ── jsdom plumbing (per landing-funnel.test.tsx + CursorManager.test) ── */
 
@@ -68,6 +72,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   installMatchMedia();
+  resetIntroDocumentGateForTests();
   try { sessionStorage.clear(); } catch { /* storage can be locked */ }
 });
 

@@ -130,7 +130,9 @@ test.describe('R311 — the entrance loader', () => {
   test('the loader instrument owns the pointer at every width; handoff on exit is clean', async ({ page }) => {
     await page.addInitScript(() => {
       try {
-        sessionStorage.removeItem('madarek-intro-seen');
+        /* R313: the fixture seeds the skip key — clear THAT (the
+         * seen-flag is inert under the replay-on-every-load rule) */
+        sessionStorage.removeItem('madarek-intro-skip');
       } catch { /* ignore */ }
     });
     await page.setViewportSize(VW.desktop);

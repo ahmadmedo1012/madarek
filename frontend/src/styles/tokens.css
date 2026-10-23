@@ -257,6 +257,10 @@
     --t-slow:  500ms;
     --t-slower:650ms;
     --t-cinema:900ms;
+    /* R313 (D10) — the loader's measured center-out two-band clip
+       split (the reference's exit: 835ms, slit 49.94/50.06% → 0/100%;
+       was the R309 fixed 650ms whose animation raced to ~21ms). */
+    --t-sheet-exit: 835ms;
 
     /* r305 — --ease re-keys to the reference's decel standard
        (.23,1,.32,1); --ease-in adopts its roll/exit curve (.625,.05,0,1).
@@ -305,6 +309,9 @@
     --motion-duration-stat:     700ms;
     --motion-duration-skeleton: 1200ms;
     --motion-duration-scene-reveal: 2200ms;
+    /* R313 (D10) — the loader's center-out split on its measured rung
+       (canonical seat for the entrance sheet's exit). */
+    --motion-duration-sheet-exit: var(--t-sheet-exit);
 
     /* Ambient loop durations — the dedicated scale for INFINITE
        decorative loops (breathe / sway / float / pulse / drift). These
@@ -483,6 +490,9 @@
     :root {
       --t-fast: 0ms; --t-base: 0ms; --t-slow: 0ms;
       --t-slower: 0ms; --t-cinema: 0ms;
+      /* R313 — the sheet instruments' rungs join the kill (the JS
+         gates already skip both; this is the CSS-side belt). */
+      --t-sheet-exit: 0ms;
     }
   }
 

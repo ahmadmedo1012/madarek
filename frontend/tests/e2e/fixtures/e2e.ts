@@ -115,13 +115,14 @@ export const test = base.extend<E2eOptions>({
       timezoneId: 'UTC',
     });
 
-    // r308: the entrance loader plays ONCE per session — seed the
-    // seen-flag BEFORE any app script so task-focused journeys boot
-    // straight into the page. The entrance itself has its own spec
-    // (r308-landing-instruments.e2e.ts) that clears the flag.
+    // r308 → R313: the entrance loader REPLAYS ON EVERY FULL PAGE LOAD
+    // (Heron parity — the seen-flag no longer suppresses; the loader's
+    // own spec clears the skip key when it needs the entrance to
+    // play). Seed the dedicated skip key BEFORE any app script so
+    // task-focused journeys boot straight into the page.
     await context.addInitScript(() => {
       try {
-        sessionStorage.setItem('madarek-intro-seen', '1');
+        sessionStorage.setItem('madarek-intro-skip', '1');
       } catch {
         /* storage denied — the page stands complete anyway */
       }

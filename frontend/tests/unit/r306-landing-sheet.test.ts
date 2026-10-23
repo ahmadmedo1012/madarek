@@ -59,7 +59,11 @@ describe('r306 — the poster world is retired', () => {
     expect(liveTsx).not.toContain("from 'three'");
     expect(live).not.toContain('.world-layer');
     expect(live).not.toContain('.lv-slab');
-    expect(live).not.toContain('.fo-footer-mark');
+    /* R313 override (WP-B2 · D14): `.fo-footer-mark` returns — the
+     * measured reference footer carries a giant 215×215 line-logo
+     * block (digest.footer), so the r306 giant-WORDMARK retirement
+     * is superseded for the MARK (the brand symbol, not the poster
+     * wordmark). The rest of the poster vocabulary stays dead. */
   });
 
   it('the OPTIKKA editorial devices stay retired (dotted grid, paper veil, copper climax)', () => {

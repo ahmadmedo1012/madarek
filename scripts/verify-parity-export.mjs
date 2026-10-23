@@ -294,6 +294,9 @@ const CHECKS = [
   ['root', '--t-slow', '500ms', 'motion rung 4 (r305; was 380)'],
   ['root', '--t-slower', '650ms', 'motion rung 5 (r305; was 520)'],
   ['root', '--t-cinema', '900ms', 'motion rung 6 (r305; was 720)'],
+  // R313 (D10) — the measured sheet instruments (loader exit; the
+  // route sweep pair joins below in the D11 rows)
+  ['root', '--t-sheet-exit', '835ms', 'R313: the loader center-out two-band split (measured on the reference — slit 49.94/50.06% → 0/100%; was the R309 fixed 650ms whose animation raced to ~21ms)'],
   // ── :root primitives — easings (r305: the reference curves) ──
   ['root', '--ease', 'cubic-bezier(0.23,1,0.32,1)', "the reference's decel standard (x11 in bundle)"],
   ['root', '--ease-out', 'cubic-bezier(0.16,1,0.3,1)', 'canonical settle (unchanged)'],
@@ -312,6 +315,7 @@ const CHECKS = [
   ['root', '--motion-duration-reveal', '480ms', 'reveal (r305; was 360)'],
   ['root', '--motion-duration-stat', '700ms', 'stat counter + sheen (unchanged)'],
   ['root', '--motion-duration-skeleton', '1200ms', 'shimmer loop (unchanged)'],
+  ['root', '--motion-duration-sheet-exit', '835ms', 'R313 (D10): canonical seat for the entrance sheet\'s exit (raw rung --t-sheet-exit)'],
   ['root', '--press-scale', '0.97', 'control press'],
   ['root', '--motion-stagger-step', '60ms', 'stagger step'],
   ['root', '--motion-stagger-cap', '6', 'stagger cap'],

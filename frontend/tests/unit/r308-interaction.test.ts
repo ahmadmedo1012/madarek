@@ -156,11 +156,28 @@ describe('r308 — sheetGeometry (the letterbox remap)', () => {
 });
 
 /* ── the entrance gate ─────────────────────────────────────────────── */
-import { shouldPlayIntro, markIntroSeen, INTRO_SEEN_KEY } from '../../src/lib/motion/introGate';
+import {
+  shouldPlayIntro,
+  markIntroSeen,
+  markIntroPlayed,
+  resetIntroDocumentGateForTests,
+  introPlayedInDocument,
+  INTRO_SEEN_KEY,
+  INTRO_SKIP_KEY,
+  loaderCurveAt,
+  loaderTargetAt,
+  loaderDoneAtMs,
+  LOADER_CURVE,
+  LOADER_GATE_PCT,
+  LOADER_DONE_MS,
+  LOADER_GATE_TIMEOUT_MS,
+} from '../../src/lib/motion/introGate';
 
 describe('r308 — introGate (the entrance decision)', () => {
-  const mkStore = (seen: boolean) => {
-    const bag: Record<string, string> = seen ? { [INTRO_SEEN_KEY]: '1' } : {};
+  const mkStore = (seen: boolean, skip = false) => {
+    const bag: Record<string, string> = {};
+    if (seen) bag[INTRO_SEEN_KEY] = '1';
+    if (skip) bag[INTRO_SKIP_KEY] = '1';
     return {
       getItem: (k: string) => bag[k] ?? null,
       setItem: (k: string, v: string) => {
@@ -169,18 +186,43 @@ describe('r308 — introGate (the entrance decision)', () => {
     };
   };
 
-  it('plays only once per session, never under reduced motion, never without storage', () => {
+  afterEach(() => {
+    /* R313: the document-lifetime guard is module state — reset it so
+     * the cases stay order-independent. */
+    resetIntroDocumentGateForTests();
+  });
+
+  it('R313 override: replays on EVERY fresh document (the seen-flag no longer suppresses), never under RM, never without storage', () => {
+    /* R313 override: the reference's loader replays on same-tab reload
+     * (measured reloadGate) — the session flag is inert (the reference
+     * writes isLoaded and replays anyway). The guards: RM, non-visual
+     * env, the document lifetime, and the hermetic skip key. */
     expect(shouldPlayIntro(mkStore(false), false)).toBe(true);
-    expect(shouldPlayIntro(mkStore(true), false)).toBe(false); // returning visitor
+    expect(shouldPlayIntro(mkStore(true), false)).toBe(true); // R313: seen-flag is inert (was false in R308)
     expect(shouldPlayIntro(mkStore(false), true)).toBe(false); // reduced motion
     expect(shouldPlayIntro(null, false)).toBe(false); // non-visual environments
   });
 
-  it('markIntroSeen flips the decision for the rest of the session', () => {
+  it('R313: the hermetic skip key suppresses (the e2e fixture\'s opt-out)', () => {
+    expect(shouldPlayIntro(mkStore(false, true), false)).toBe(false);
+  });
+
+  it('R313: a same-document (client-side) navigation never replays — the document-lifetime guard', () => {
+    expect(shouldPlayIntro(mkStore(false), false, false)).toBe(true); // fresh document
+    expect(shouldPlayIntro(mkStore(false), false, true)).toBe(false); // SPA remount in the same document
+    /* the flag is module state: mark → the default arg picks it up */
+    expect(introPlayedInDocument()).toBe(false);
+    markIntroPlayed();
+    expect(introPlayedInDocument()).toBe(true);
+    expect(shouldPlayIntro(mkStore(false), false)).toBe(false);
+  });
+
+  it('markIntroSeen still writes the inert flag (the reference\'s own isLoaded twin)', () => {
     const store = mkStore(false);
     markIntroSeen(store);
     expect(store.getItem(INTRO_SEEN_KEY)).toBe('1');
-    expect(shouldPlayIntro(store, false)).toBe(false);
+    /* …and the decision ignores it (R313) */
+    expect(shouldPlayIntro(store, false)).toBe(true);
   });
 
   it('storage failures degrade to the complete page (no intro)', () => {
@@ -194,6 +236,75 @@ describe('r308 — introGate (the entrance decision)', () => {
     };
     expect(shouldPlayIntro(throwing, false)).toBe(false);
     expect(() => markIntroSeen(throwing)).not.toThrow();
+  });
+});
+
+describe('r313 — the loader progress model (asset-gated, not a clock)', () => {
+  it('the warm fallback curve: the measured checkpoints, 100% at ~4.9s', () => {
+    // R313 override: the R309 linear 5s ramp is retired — the counter
+    // rides the reference's warm timeline shape.
+    expect(LOADER_CURVE[0]).toEqual([0, 0]);
+    expect(loaderCurveAt(440)).toBeCloseTo(7, 5);
+    expect(loaderCurveAt(850)).toBeCloseTo(33, 5);
+    expect(loaderCurveAt(2060)).toBeCloseTo(57, 5);
+    expect(loaderCurveAt(3700)).toBeCloseTo(85, 5);
+    expect(loaderCurveAt(4500)).toBeCloseTo(98, 5);
+    expect(loaderCurveAt(LOADER_DONE_MS)).toBe(100);
+    expect(LOADER_DONE_MS).toBe(4900);
+  });
+
+  it('gated: the counter waits at the plateau ceiling while assets pend (the wait emerges, it is not authored)', () => {
+    expect(loaderTargetAt(2500, null)).toBe(LOADER_GATE_PCT);
+    expect(loaderTargetAt(3200, null)).toBe(LOADER_GATE_PCT); // the plateau extends while the gate holds
+    expect(loaderTargetAt(LOADER_DONE_MS, null)).toBe(LOADER_GATE_PCT); // still 59 if never released
+    expect(LOADER_GATE_PCT).toBe(59);
+  });
+
+  it('the gate\'s timeout can never trap the visitor (≤ 3400ms)', () => {
+    expect(LOADER_GATE_TIMEOUT_MS).toBeLessThanOrEqual(3400);
+  });
+
+  it('released at the natural plateau end: exactly the fallback timeline (100% at 4.9s)', () => {
+    expect(loaderTargetAt(2900, 2900)).toBe(LOADER_GATE_PCT);
+    expect(loaderTargetAt(3700, 2900)).toBeCloseTo(85, 0);
+    expect(loaderTargetAt(4500, 2900)).toBeCloseTo(98, 0);
+    expect(loaderTargetAt(4900, 2900)).toBe(100);
+    expect(loaderDoneAtMs(2900)).toBe(LOADER_DONE_MS);
+  });
+
+  it('released late (the timeout): the tail compresses — 100% still by 4.9s (never slower than the fallback)', () => {
+    const late = LOADER_GATE_TIMEOUT_MS;
+    expect(loaderDoneAtMs(late)).toBeLessThanOrEqual(LOADER_DONE_MS);
+    expect(loaderTargetAt(LOADER_DONE_MS, late)).toBe(100);
+    /* every legal release time finishes by LOADER_DONE_MS */
+    for (let t = 0; t <= LOADER_GATE_TIMEOUT_MS; t += 100) {
+      expect(loaderDoneAtMs(t), `release at ${t}ms`).toBeLessThanOrEqual(LOADER_DONE_MS);
+      expect(loaderTargetAt(LOADER_DONE_MS, t), `release at ${t}ms`).toBe(100);
+    }
+  });
+
+  it('released early: the counter accelerates to 100 — bounded, monotonic, never a flash', () => {
+    /* an early release must finish EARLIER than the fallback… */
+    const early = 800;
+    expect(loaderDoneAtMs(early)).toBeLessThan(LOADER_DONE_MS);
+    /* …but never faster than the acceleration cap (the earliest legal
+     * finish is ~3.25s — an instant resolve still reads as a load) */
+    expect(loaderDoneAtMs(0)).toBeGreaterThanOrEqual(3200);
+    /* the run is monotonic from the release value to 100 */
+    let prev = -1;
+    for (let t = early; t <= loaderDoneAtMs(early); t += 50) {
+      const v = loaderTargetAt(t, early);
+      expect(v).toBeGreaterThanOrEqual(prev);
+      prev = v;
+    }
+    expect(loaderTargetAt(loaderDoneAtMs(early), early)).toBe(100);
+  });
+
+  it('the target is continuous across the release (no counter jump)', () => {
+    const at = 2600;
+    const before = loaderTargetAt(at, null);
+    const after = loaderTargetAt(at, at);
+    expect(Math.abs(before - after)).toBeLessThanOrEqual(0.5);
   });
 });
 

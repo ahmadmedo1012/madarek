@@ -684,7 +684,8 @@ test('sweep AUDIT_ROUTES × viewports × themes × dirs → surface-inventory.js
         // seen-flag exactly like the e2e fixture does (the entrance
         // itself has dedicated coverage in r308-landing-instruments).
         try {
-          sessionStorage.setItem('madarek-intro-seen', '1');
+          /* R313: the skip key is the hermetic opt-out (the seen-flag is inert) */
+          sessionStorage.setItem('madarek-intro-skip', '1');
         } catch { /* ditto */ }
         if (session) {
           try {

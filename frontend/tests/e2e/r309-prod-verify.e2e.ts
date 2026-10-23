@@ -32,7 +32,7 @@ test('prod · the deployed build is the R309 code', async ({ page }) => {
 test('prod · desktop drag reveals [CP] unclipped, no RR/MG overlap, guides confined', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.addInitScript(() => {
-    try { sessionStorage.setItem('madarek-intro-seen', '1'); } catch { /* */ }
+    try { sessionStorage.setItem('madarek-intro-skip', '1'); } catch { /* */ } /* R313: the skip key is the hermetic opt-out (the seen-flag is inert) */
   });
   await page.goto(BASE + '/');
   await page.waitForFunction(() => {
@@ -103,7 +103,7 @@ test('prod · desktop drag reveals [CP] unclipped, no RR/MG overlap, guides conf
 test('prod · mobile 390 — flow cards inside the viewport; menu owns the scroll', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.addInitScript(() => {
-    try { sessionStorage.setItem('madarek-intro-seen', '1'); } catch { /* */ }
+    try { sessionStorage.setItem('madarek-intro-skip', '1'); } catch { /* */ } /* R313: the skip key is the hermetic opt-out (the seen-flag is inert) */
   });
   await page.goto(BASE + '/');
   await page.waitForFunction(() => {
@@ -182,7 +182,7 @@ test('prod · the entrance — composed first frame, ≈9–10s sequence, scroll
 test('prod · return-to-top resets the stations', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.addInitScript(() => {
-    try { sessionStorage.setItem('madarek-intro-seen', '1'); } catch { /* */ }
+    try { sessionStorage.setItem('madarek-intro-skip', '1'); } catch { /* */ } /* R313: the skip key is the hermetic opt-out (the seen-flag is inert) */
   });
   await page.goto(BASE + '/');
   await page.locator('.hi-marker[data-marker="cp"]').click();
@@ -198,7 +198,7 @@ test('prod · return-to-top resets the stations', async ({ page }) => {
 test('prod · non-regression — scenes, /colleges, browser back', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.addInitScript(() => {
-    try { sessionStorage.setItem('madarek-intro-seen', '1'); } catch { /* */ }
+    try { sessionStorage.setItem('madarek-intro-skip', '1'); } catch { /* */ } /* R313: the skip key is the hermetic opt-out (the seen-flag is inert) */
   });
   await page.goto(BASE + '/');
   /* forward + reverse scene traversal */

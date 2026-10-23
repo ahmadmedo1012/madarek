@@ -419,15 +419,15 @@ test.describe('R309 menu — the scroll lock', () => {
 
 /* ═══ §4 — the entrance sequence ════════════════════════════════════ */
 
-test.describe('R309 loader — the entrance clock and the lock cleanup', () => {
-  test('fresh entry: composed first frame, ~5s to 100%, hidden ≈9–10s, scroll restored', async ({ page }) => {
+test.describe('R309/R313 loader — the asset-gated entrance clock and the lock cleanup', () => {
+  test('fresh entry: composed first frame, counter to 100% ≤4.9s, the 835ms split plays, scroll restored', async ({ page }) => {
     await page.setViewportSize(VW.desktop);
     await page.addInitScript(() => {
       try {
-        /* clear the seen-flag ONCE (init scripts re-run on reload —
-         * the reload at the end of this spec must boot straight in) */
+        /* clear the hermetic skip key ONCE — the reload at the end of
+         * this spec must REPLAY the entrance (R313: every full load) */
         if (!sessionStorage.getItem('r309-fresh-once')) {
-          sessionStorage.removeItem('madarek-intro-seen');
+          sessionStorage.removeItem('madarek-intro-skip');
           sessionStorage.setItem('r309-fresh-once', '1');
         }
       } catch {
@@ -454,18 +454,21 @@ test.describe('R309 loader — the entrance clock and the lock cleanup', () => {
     expect(early.hasChrome).toBe(true);
     expect(early.bg).not.toBe('rgb(0, 0, 0)');
 
-    /* 100% shows ≈5s after the loader mounts (choreographed clock) */
+    /* R313 override: the counter is ASSET-GATED — 100% lands between
+     * ~3.25s (assets resolved early) and 4.9s (the fallback curve);
+     * never the R309 fixed 5s+3.6s hold */
     await expect(page.locator('.sl-pct')).toHaveText('100%', { timeout: 8000 });
     const doneAt = Date.now() - tMount;
-    expect(doneAt).toBeGreaterThanOrEqual(3500);
+    expect(doneAt).toBeGreaterThanOrEqual(2500);
     expect(doneAt).toBeLessThanOrEqual(7000);
 
-    /* the completed state holds, then the geometric exit hides the
-     * sheet ≈9.3s after mount (hold 3.6s + exit 0.65s + budget) */
-    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 8000 });
+    /* the completed state holds ~0.7s, then the geometric 835ms
+     * center-out split hides the sheet — R313: the split PLAYS (the
+     * R309 race cut it at ~21ms); total ≈ counter + 0.7 + 0.835s */
+    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 6000 });
     const goneAt = Date.now() - tMount;
-    expect(goneAt).toBeGreaterThanOrEqual(8000);
-    expect(goneAt).toBeLessThanOrEqual(11000);
+    expect(goneAt).toBeGreaterThanOrEqual(3200);
+    expect(goneAt).toBeLessThanOrEqual(9000);
 
     /* §4.3 — the scroll lock is cleaned up on the timed path */
     expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe('');
@@ -475,17 +478,19 @@ test.describe('R309 loader — the entrance clock and the lock cleanup', () => {
     await page.waitForTimeout(350);
     expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(y0);
 
-    /* the session flag means a reload boots straight in */
+    /* R313 override: the loader REPLAYS on a same-tab reload (the
+     * reference's measured reloadGate — the session flag is inert) */
     await page.reload();
+    await expect(page.locator('.sl')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
     await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
-    await expect(page.locator('.sl')).toHaveCount(0);
   });
 
   test('the skip path restores the scroll lock too', async ({ page }) => {
     await page.setViewportSize(VW.desktop);
     await page.addInitScript(() => {
       try {
-        sessionStorage.removeItem('madarek-intro-seen');
+        sessionStorage.removeItem('madarek-intro-skip');
       } catch {
         /* ignore */
       }
@@ -501,7 +506,7 @@ test.describe('R309 loader — the entrance clock and the lock cleanup', () => {
     test('no loader at all; the page stands complete and scrollable', async ({ page }) => {
       await page.addInitScript(() => {
         try {
-          sessionStorage.removeItem('madarek-intro-seen');
+          sessionStorage.removeItem('madarek-intro-skip');
         } catch {
           /* ignore */
         }

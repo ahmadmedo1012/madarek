@@ -174,6 +174,8 @@
     --t-slow:  500ms;
     --t-slower: 650ms;
     --t-cinema: 900ms;
+    /* R313 (D10) — the loader's measured center-out two-band split. */
+    --t-sheet-exit: 835ms;
 
     /* easings — ease-out settles at (0.16,1,0.3,1); the spring family
        overshoots 1.18/1.36/1.56 (soft/spring/bounce) + snappy rebound */
@@ -208,6 +210,8 @@
     --motion-duration-reveal:   480ms;
     --motion-duration-stat:     700ms;
     --motion-duration-skeleton: 1200ms;
+    /* R313 (D10) — canonical seat for the entrance sheet's exit. */
+    --motion-duration-sheet-exit: var(--t-sheet-exit);
 
     /* ambient loop ladder — perceptual rhythm, never for UI transitions */
     --motion-duration-ambient-pulse:  1.6s;
@@ -713,6 +717,7 @@
     :root {
       --t-micro: 0ms;  --t-fast: 0ms;  --t-base: 0ms;
       --t-slow: 0ms;   --t-slower: 0ms; --t-cinema: 0ms;
+      --t-sheet-exit: 0ms;   /* R313 (D10) — the loader split joins the kill */
 
       --motion-duration-micro:    0ms;
       --motion-duration-short:    0ms;
@@ -722,6 +727,7 @@
       --motion-duration-reveal:   80ms;
       --motion-duration-stat:     0ms;    /* counters snap to value */
       --motion-duration-skeleton: 0ms;    /* static block, no shimmer */
+      --motion-duration-sheet-exit: 0ms;  /* R313 (D10) */
 
       --motion-duration-ambient-pulse:  0ms;
       --motion-duration-ambient:        0ms;
