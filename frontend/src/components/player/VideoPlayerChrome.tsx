@@ -544,7 +544,9 @@ export function VideoPlayerChrome({
                 title="نقطة فحص"
               />
             ))}
-            <span className="vpc-head" style={{ insetInlineStart: `calc(${playedPct}% - 6px)` }} />
+            {/* R313 (WP-E): the head is the 8×8 square handle — center
+                offset is half its box (was −6px on the old 12px knob). */}
+            <span className="vpc-head" style={{ insetInlineStart: `calc(${playedPct}% - 4px)` }} />
           </span>
         </div>
 

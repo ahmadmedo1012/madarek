@@ -44,7 +44,7 @@
     background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: var(--r-lg);
-    box-shadow: var(--elev-1);
+    /* R313 (WP-E): flat paper panel — hairline carries the surface. */
     max-block-size: calc(100vh - var(--sp-12));
     overflow-y: auto;
     scrollbar-width: thin;
@@ -144,7 +144,8 @@
     background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: var(--r-xl);
-    box-shadow: var(--shadow-card);
+    /* R313 (WP-E): hairline frame, no elevation (the .vpc re-skin in
+       player.css owns the night chrome on top of this geometry). */
     overflow: clip;
   }
   .lecture-video {
@@ -284,8 +285,11 @@
     inline-size: 8px;
     border-radius: var(--r-full);
     background: var(--accent);
-    /* 1px inset cutout separates the notch from the fill under it */
-    box-shadow: inset 0 0 0 1px var(--surface);
+    /* R313 (WP-E): the 1px cutout that separates the notch from the
+       fill under it rides an inset outline (zero box-shadows on the
+       surface sweep). */
+    outline: 1px solid var(--surface);
+    outline-offset: -1px;
   }
   .lecture-progress-mark.done { background: var(--success); }
   .lecture-progress-note {
@@ -308,15 +312,14 @@
     gap: var(--sp-3);
     flex-wrap: wrap;
   }
-  /* End-of-lecture pulse — ONE iteration of the state-ring language
-     (0 0 0 spread, the .exam-grade-ring recipe — never elevation):
-     the moment playback ends, the next action announces itself. */
+  /* End-of-lecture pulse — ONE iteration announcing the next action.
+     R313 (WP-E): opacity breath — glow rings are retired system-wide. */
   .lecture-nav-next.pulse {
     animation: lecture-next-pulse var(--motion-duration-stat) var(--motion-ease-decelerate);
   }
   @keyframes lecture-next-pulse {
-    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
-    to { box-shadow: 0 0 0 12px transparent; }
+    from { opacity: 0.55; }
+    to { opacity: 1; }
   }
 
   /* ── Chapter sidebar rows (the .list-row language, button edition) ── */
@@ -596,8 +599,9 @@
     to { opacity: 1; transform: none; }
   }
   @keyframes lecture-correct-pulse {
-    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 50%, transparent); }
-    to { box-shadow: 0 0 0 10px transparent; }
+    /* R313 (WP-E): opacity breath — glow rings are retired. */
+    from { opacity: 0.55; }
+    to { opacity: 1; }
   }
   @keyframes lecture-pop {
     from { opacity: 0; transform: scale(0.5); }

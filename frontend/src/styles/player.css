@@ -31,20 +31,22 @@
 @layer pages {
 
   /* ── Host + night tokens ─────────────────────────────────────────
-     The v3 family values (landing's ln- tokens): void #05070F /
-     ink #F2EFE6 / mist #8E97B8 / gold #E9B44C. The player is a night
-     surface in BOTH themes — a video stage is a physical matte (the
-     documented #000 rationale on .lecture-video), never a theme card. */
+     The stage is a NIGHT surface in BOTH themes — a video stage is a
+     physical matte (the documented #000 rationale on .lecture-video),
+     never a theme card. The sealed neutrals (void/navy/ink/mist) are
+     the island's own; the SIGNAL follows the system accent token so
+     the chrome speaks the reference's #FA3600 grammar (R313 WP-E:
+     the old v3 gold family is retired — progress + play ride the
+     accent, per the lead's player brief). */
   .vpc {
-    --vpc-void: #05070F;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
-    --vpc-navy: #0B1020;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
-    --vpc-ink: #F2EFE6;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
-    --vpc-mist: #8E97B8;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
-    --vpc-gold: #E9B44C;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
-    --vpc-gold-soft: #F5D48A;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
-    --vpc-glow: color-mix(in srgb, var(--vpc-gold) 24%, transparent);
+    --vpc-void: #05070F;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-navy: #0B1020;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-ink: #F2EFE6;   /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-mist: #8E97B8;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-accent: var(--accent);
+    --vpc-accent-bright: var(--accent-hover);
     --vpc-hairline: color-mix(in srgb, var(--vpc-mist) 16%, transparent);
-    --vpc-danger: #F0938F;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-danger: #F0938F;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
 
     position: relative;
     user-select: none;
@@ -159,7 +161,9 @@
   }
 
   /* ── Progress track ──────────────────────────────────────────────
-     4px rail + generous block padding = an ~24px hit area. Full-bleed
+     R313 (WP-E): the Heron scrubber — a 2px square rail, ACCENT
+     progress, an 8×8 SQUARE handle (no rounded knobs, no glow); the
+     generous block padding keeps the ~24px hit area. Full-bleed
      (negates the bar's inline padding) so the rail spans the frame. */
   .vpc-track {
     position: relative;
@@ -174,8 +178,8 @@
   .vpc-rail {
     position: relative;
     display: block;
-    block-size: 4px;
-    border-radius: var(--r-full);
+    block-size: 2px;
+    border-radius: var(--r-sm);
     background: color-mix(in srgb, var(--vpc-mist) 20%, transparent);          /* mist 20% */
   }
   .vpc-buffered {
@@ -190,19 +194,18 @@
     inset-block: 0;
     inset-inline-start: 0;
     border-radius: inherit;
-    background: var(--vpc-gold);
+    background: var(--vpc-accent);
   }
-  /* Playhead — gold dot with the family glow; grows on hover/drag.
-     `inset-inline-start` is set inline (RTL: measured from the RIGHT
-     edge — the reading start). */
+  /* Playhead — the 8×8 square handle (R313: no rounded knobs, no
+     glow). `inset-inline-start` is set inline (RTL: measured from the
+     RIGHT edge — the reading start). */
   .vpc-head {
     position: absolute;
     inset-block-start: 50%;
-    inline-size: 12px;
-    block-size: 12px;
-    border-radius: var(--r-full);
-    background: var(--vpc-gold);
-    box-shadow: 0 0 10px 1px var(--vpc-glow);
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: var(--r-sm);
+    background: var(--vpc-accent);
     transform: translateY(-50%);
     transition: transform var(--motion-duration-short) var(--motion-ease-standard);
   }
@@ -213,7 +216,7 @@
   .vpc[data-scrubbing="true"] .vpc-head {
     transform: translateY(-50%) scale(1.3);
   }
-  /* Checkpoint markers — 8px gold-outlined dots on the rail
+  /* Checkpoint markers — 8px accent-outlined SQUARES on the rail
      (decorative: the sidebar note + the quiz itself carry the info
      accessibly, mirroring .lecture-progress-mark). */
   .vpc-mark {
@@ -221,9 +224,9 @@
     inset-block-start: 50%;
     inline-size: 8px;
     block-size: 8px;
-    border-radius: var(--r-full);
+    border-radius: var(--r-sm);
     background: var(--vpc-navy);
-    border: 1.5px solid var(--vpc-gold);
+    border: 1px solid var(--vpc-accent);
     box-sizing: border-box;
     transform: translateY(-50%);
     pointer-events: none;
@@ -244,7 +247,8 @@
     block-size: 40px;
     padding: 0;
     border: 0;
-    border-radius: var(--r-full);
+    /* R313 (WP-E): square controls — the reference's radius-0 canon. */
+    border-radius: var(--r-sm);
     background: transparent;
     color: var(--vpc-ink);
     cursor: pointer;
@@ -252,10 +256,10 @@
   }
   .vpc-btn:hover { background: color-mix(in srgb, var(--vpc-mist) 16%, transparent); }
   .vpc-btn:active { background: color-mix(in srgb, var(--vpc-mist) 26%, transparent); }
-  /* The one gold action — play/pause (the accent is reserved for
+  /* The one accent action — play/pause (the signal is reserved for
      progress + the primary action). */
-  .vpc-btn-play { color: var(--vpc-gold); }
-  .vpc-btn-play:hover { background: color-mix(in srgb, var(--vpc-gold) 14%, transparent); }
+  .vpc-btn-play { color: var(--vpc-accent); }
+  .vpc-btn-play:hover { background: color-mix(in srgb, var(--vpc-accent) 14%, transparent); }
 
   /* Time — mono, LTR run, current ink / total mist. */
   .vpc-time {
@@ -291,10 +295,10 @@
     gap: var(--sp-0-5);
     padding: var(--sp-1);
     border: 1px solid var(--vpc-hairline);
-    border-radius: var(--r-lg);
-    background: color-mix(in srgb, var(--vpc-navy) 92%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    /* R313 (WP-E): solid night surface — square corners, zero
+       backdrop-filter (the system's no-glass rule). */
+    border-radius: var(--r-sm);
+    background: var(--vpc-navy);
     animation: vpc-menu-in var(--motion-duration-short) var(--motion-ease-standard);
   }
   @keyframes vpc-menu-in {
@@ -324,9 +328,9 @@
       transform var(--t-fast) var(--ease);
   }
   .vpc-menu-item:hover { background: color-mix(in srgb, var(--vpc-mist) 14%, transparent); }
-  .vpc-menu-item[aria-checked="true"] { color: var(--vpc-gold); }
+  .vpc-menu-item[aria-checked="true"] { color: var(--vpc-accent); }
 
-  /* ── Poster / ended gates — the 64px gold play ─────────────────── */
+  /* ── Poster / ended gates — the 64px accent play ────────────── */
   .vpc-overlay {
     position: absolute;
     inset: 0;
@@ -342,16 +346,18 @@
     block-size: 64px;
     padding: 0;
     border: 0;
-    border-radius: var(--r-full);
-    background: var(--vpc-gold);
-    color: var(--vpc-void);                       /* dark icon on gold */
+    /* R313 (WP-E): square control — the accent slab (the reference
+       puts white labels on #FA3600 fills). */
+    border-radius: var(--r-sm);
+    background: var(--vpc-accent);
+    color: var(--vpc-void);
     cursor: pointer;
     transition: transform var(--motion-duration-short) var(--motion-ease-standard);
   }
   .vpc-play-big:hover { transform: scale(1.06); }
   .vpc-play-big:active { transform: scale(var(--press-scale)); }
   .vpc-play-big:focus-visible {
-    outline: 2px solid var(--vpc-gold-soft);
+    outline: 2px solid var(--vpc-accent-bright);
     outline-offset: 4px;
   }
 
@@ -368,9 +374,11 @@
   .vpc-spinner {
     inline-size: 34px;
     block-size: 34px;
+    /* The spinner ring is a circle primitive (the one sanctioned
+     round element — it reads as an instrument dial). */
     border-radius: var(--r-full);
     border: 2px solid color-mix(in srgb, var(--vpc-mist) 25%, transparent);
-    border-top-color: var(--vpc-gold);
+    border-top-color: var(--vpc-accent);
     animation: vpc-spin var(--t-cinema) var(--ease-linear) infinite; /* 720ms — the nearest duration token (premium-polish: gate-clean) */
   }
   @keyframes vpc-spin { to { transform: rotate(360deg); } }
@@ -402,15 +410,16 @@
     block-size: 40px;
     padding-inline: var(--sp-6);
     border: 0;
-    border-radius: var(--r-full);
-    background: var(--vpc-gold);
+    /* R313 (WP-E): square control — accent slab. */
+    border-radius: var(--r-sm);
+    background: var(--vpc-accent);
     color: var(--vpc-void);
     font-size: var(--type-label-size);
     font-weight: var(--fw-semibold);
     cursor: pointer;
     transition: background var(--motion-duration-micro) var(--motion-ease-standard);
   }
-  .vpc-retry:hover { background: var(--vpc-gold-soft); }
+  .vpc-retry:hover { background: var(--vpc-accent-bright); }
 
   /* ── Phone tuning ────────────────────────────────────────────────
      The meta line under the player already carries the clock; drop
