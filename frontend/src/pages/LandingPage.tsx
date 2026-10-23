@@ -174,7 +174,6 @@ const NAV_SEATS: readonly NavSeat[] = [
     label: 'الرحلة', href: '#chapters',
     children: [
       { label: 'البيان', href: '#statement' },
-      { label: 'الفصول', href: '#chapters' },
       { label: 'المبدأ والرؤية', href: '#vision' },
     ],
   },
@@ -185,11 +184,21 @@ const NAV_SEATS: readonly NavSeat[] = [
       { label: 'التحديات المباشرة', href: '#live' },
       { label: 'الأدوار الثمانية', href: '#roles' },
       { label: 'الكليات التجريبية', href: '#colleges' },
-      { label: 'ما يعمل اليوم', href: '/capabilities' },
     ],
   },
   { label: 'الجامعات', href: '/campus' },
 ] as const;
+
+/* R313-int (5-int · failure 7): «الفصول» dropped — it duplicated its
+ * own seat's #chapters target (two menu links to one anchor → the
+ * strict-mode pin in r309 'navigates-and-closes-the-menu'). «ما يعمل
+ * اليوم» moved out of the DROPDOWN (its always-rendered hidden text
+ * was the first DOM-order match for the honesty-ledger locator, so
+ * the visible-at-top contract in guest-landing could never resolve);
+ * the ledger link now lives in the hero value row (the disclosure
+ * chip), in the footer, in the #live foot — and in the MOBILE menu's
+ * sub-index below (r170d pins it there). */
+const MOBILE_LEDGER_ROW = { label: 'ما يعمل اليوم', href: '/capabilities' } as const;
 
 /* The dual-label roll (the reference's .btn-fill-label label-top/bot
  * pair — WP-D's .btn-motion-label grammar, retold for nav cells): the
@@ -644,9 +653,19 @@ export default function LandingPage() {
     if (!menuOpen) return undefined;
     const onPointerDown = (e: PointerEvent) => {
       const menu = menuRef.current;
-      if (menu && !menu.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
+      const t = e.target as Node | null;
+      if (!t) return;
+      /* inside the panel — the panel owns the tap (link rows close on
+       * their own click; the theme row stops propagation). */
+      if (menu?.contains(t)) return;
+      /* R313-int (5-int · failure 4 — REAL BUG): an outside tap on the
+       * BURGER itself must be left to the burger's own toggle. The old
+       * guard closed the menu on pointerdown, then the burger's click
+       * toggled false→true and the menu re-mounted within the same
+       * interaction — the overlay could never be closed by its own
+       * trigger (the r309 'closing-restores-the-position' pin). */
+      if (burgerRef.current?.contains(t)) return;
+      setMenuOpen(false);
     };
     document.addEventListener('pointerdown', onPointerDown);
     return () => document.removeEventListener('pointerdown', onPointerDown);
@@ -823,6 +842,12 @@ export default function LandingPage() {
               {NAV_SEATS.flatMap((seat) => seat.children ?? []).map((c) => (
                 <a key={c.href} href={c.href} className="fo-mb-row fo-mb-sub-row">{c.label}</a>
               ))}
+              {/* R313-int (5-int · failure 1): the honest-ledger row keeps
+                  «ما يعمل اليوم» reachable from the mobile bar (the r170d
+                  pin) after it left the desktop dropdown. */}
+              <Link to={MOBILE_LEDGER_ROW.href} className="fo-mb-row fo-mb-sub-row">
+                {MOBILE_LEDGER_ROW.label}
+              </Link>
             </div>
             <div
               className="fo-mobile-theme"
@@ -881,6 +906,16 @@ export default function LandingPage() {
                 <Icon icon={ArrowLeft} size={16} />
               </Link>
               <a href="#chapters" className="btn ghost lg">كيف تعمل</a>
+              {/* R313-int (5-int · failure 1): the honesty-ledger disclosure
+                  chip — the hero's value row names the live-capability ledger
+                  (Heron's hero carries mono micro-labels). The 9-section
+                  restructure had moved the «ما يعمل اليوم» link ~1600px down
+                  into #live; the honesty contract (r191: the sheet names the
+                  source of its numbers) pins its presence at the top. */}
+              <Link to="/capabilities" className="fo-hero-disclosure">
+                <span className="fo-mono" dir="ltr">[LIVE]</span>
+                <span>ما يعمل اليوم</span>
+              </Link>
             </RevealCssClass>
           </div>
 

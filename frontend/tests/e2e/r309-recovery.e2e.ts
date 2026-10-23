@@ -424,12 +424,11 @@ test.describe('R309/R313 loader — the asset-gated entrance clock and the lock 
     await page.setViewportSize(VW.desktop);
     await page.addInitScript(() => {
       try {
-        /* clear the hermetic skip key ONCE — the reload at the end of
-         * this spec must REPLAY the entrance (R313: every full load) */
-        if (!sessionStorage.getItem('r309-fresh-once')) {
-          sessionStorage.removeItem('madarek-intro-skip');
-          sessionStorage.setItem('r309-fresh-once', '1');
-        }
+        /* R313 override: the entrance replays on EVERY full page load —
+         * the skip key must be cleared on EVERY init run (the shared
+         * fixture re-seeds it per load; the once-guard starved the
+         * reload replay this spec ends with). */
+        sessionStorage.removeItem('madarek-intro-skip');
       } catch {
         /* ignore */
       }

@@ -17,19 +17,21 @@ test.describe('R308 — لوحة البدء (the entrance)', () => {
   test('plays on a fresh load, exits by itself, and REPLAYS on reload (R313: every full page load)', async ({ page }) => {
     await page.addInitScript(() => {
       try {
-        /* clear the hermetic skip key ONCE (init scripts re-run on
-         * reload — the replay at the end of this spec must play the
-         * entrance again, per the R313 gating rule) */
-        if (!sessionStorage.getItem('r308-fresh-once')) {
-          sessionStorage.removeItem('madarek-intro-skip');
-          sessionStorage.setItem('r308-fresh-once', '1');
-        }
+        /* R313 override: the entrance replays on EVERY full page load —
+         * so the skip key must be cleared on EVERY init run. The shared
+         * fixture re-seeds it per load (context-level scripts run before
+         * page-level ones); the old once-guard starved the reload at
+         * the end of this spec (the replay could never play). */
+        sessionStorage.removeItem('madarek-intro-skip');
       } catch {
         /* ignore */
       }
     });
     await page.goto('/');
-    await expect(page.locator('.sl')).toBeVisible();
+    /* R312 (D4) hardening: the first mount rides the dev server's cold
+     * transform of the landing chunk — under parallel-suite load it can
+     * outrun the 5s default (CI runs a built app and is unaffected). */
+    await expect(page.locator('.sl')).toBeVisible({ timeout: 30_000 });
     /* it must exit by itself (R313 asset-gated clock: the counter
      * finishes between ~3.25s (assets early) and 4.9s (the fallback
      * curve), + 0.7s hold + 0.835s split — the budget carries the dev
@@ -40,7 +42,7 @@ test.describe('R308 — لوحة البدء (the entrance)', () => {
      * reference's own measured reloadGate; the session flag is
      * inert) — and exits by itself again */
     await page.reload();
-    await expect(page.locator('.sl')).toBeVisible();
+    await expect(page.locator('.sl')).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
     await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
   });

@@ -679,6 +679,34 @@
   gap: var(--sp-3);
 }
 
+/* R313-int (5-int · failure 1): the honesty-ledger disclosure chip —
+ * a mono micro-label in the hero's value row (the reference's own
+ * hero grammar): quiet hairline square, [LIVE] code in the mono
+ * voice, the label names the live-capability ledger it links to. */
+.fo-hero-disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--rule);
+  color: var(--text-muted);
+  font-size: var(--fs-xxs);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
+}
+
+.fo-hero-disclosure .fo-mono {
+  color: var(--accent-ink);
+  font-size: var(--fs-xxs);
+}
+
+.fo-hero-disclosure:hover,
+.fo-hero-disclosure:focus-visible {
+  color: var(--text);
+  border-color: var(--accent-ink);
+}
+
 /* ══ The blueprint — the interactive technical drawing ═══════════════
  * The stage is a relative box: the SVG draws the structures, the
  * hotspot buttons overlay at percentage positions (desktop/tablet),
@@ -701,8 +729,14 @@
   /* R313 (D7 §1): the window caps at the drawing's own proportion —
      the hero band holds ~100vh-frame; the 108rem cap keeps the
      elevation centered and legible (≈900px @1440, scaling with the
-     fluid root exactly like the reference's rem-authored window). */
-  max-inline-size: min(100%, 108rem);
+     fluid root exactly like the reference's rem-authored window).
+     R313-int (5-int · failures 5+6): inline-size, NOT max-inline-size
+     — with auto margins a max- cap left the box shrink-to-fit at the
+     SVG's 300px intrinsic width (a 300×133 drawing inside a 1160px
+     track), so the annotation cards could not seat without overlap
+     and the drag box fell under its own visibility floor. An explicit
+     inline-size makes the window actually reach min(track, 108rem). */
+  inline-size: min(100%, 108rem);
   margin-inline: auto;
 }
 
@@ -904,7 +938,9 @@
   border: 1px solid var(--rule);
   border-inline-start: 2px solid var(--accent);
   background: color-mix(in srgb, var(--surface) 60%, transparent);
-  max-inline-size: min(100%, 108rem);
+  /* R313-int (5-int): same fix as .bp-stage — the reading strip shares
+     the drawing window's width instead of riding its own max-content. */
+  inline-size: min(100%, 108rem);
   margin-inline: auto;
 }
 
