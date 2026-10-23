@@ -1,0 +1,1 @@
+note: all 5 role logins failed on capture night — external brute-force actor locked the demo accounts (ACCOUNT_LOCKED, 429). Only /auth-page captures existed; images removed, JSON metadata kept. Re-capture when locks expire. See worklog 3-b-resume.
