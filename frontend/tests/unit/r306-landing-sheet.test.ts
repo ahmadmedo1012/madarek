@@ -71,15 +71,21 @@ describe('r306 — the poster world is retired', () => {
 });
 
 describe('r306 — the drawing sheet ships', () => {
-  it('the sheet frame: fixed corner registration marks + mono coordinates, decorative + desktop-only', () => {
+  it('the sheet frame: fixed corner registration marks + mono coordinates, decorative + visible at every breakpoint', () => {
+    /* R313 override (WP-A1 · D9): the reference keeps its full-page
+     * drafting frame at EVERY viewport (measured 7px inset @1440/768/390
+     * — the 390×844 census shows it); the old desktop-only gate
+     * (display:none base + the ≥992 block) is superseded. The frame is
+     * now a fixed 1px --border-strong rectangle at the 7px inset, with
+     * 10×10 corner plus marks + the mono coordinates. */
     expect(liveTsx).toContain('sheet-frame');
     expect(liveTsx).toContain('aria-hidden="true"'); // the frame never floods the a11y tree
     expect(live).toMatch(/\.sheet-frame\s*\{[^}]*position:\s*fixed/);
     expect(live).toMatch(/\.sheet-frame\s*\{[^}]*pointer-events:\s*none/);
-    // desktop-only: the frame appears ≥992 and never below
-    const mq = live.match(/@media \(min-width: 992px\)\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
-    expect(mq).toMatch(/\.sheet-frame\s*\{[^}]*display:\s*block/);
-    expect(live).toMatch(/\.sheet-frame\s*\{[^}]*display:\s*none/);
+    expect(live).toMatch(/\.sheet-frame\s*\{[^}]*border:\s*1px solid var\(--border-strong\)/);
+    // all-breakpoint: the old display:none / ≥992 display:block gates are GONE
+    expect(live).not.toMatch(/\.sheet-frame\s*\{[^}]*display:\s*none/);
+    expect(live).not.toMatch(/@media \(min-width: 992px\)\s*\{\s*\.sheet-frame/);
   });
 
   it('the header is the 56px hairline bar with the guarded charcoal-cell nav wash', () => {
@@ -192,10 +198,19 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
 
 describe('r306 — the honest ledger is a hairline table', () => {
   it('the capability matrix reads as ruled rows — no inverted slab, no window device', () => {
-    expect(live).toMatch(/\.lv-list\s*\{[^}]*border:\s*1px solid var\(--rule\)/);
-    expect(live).toMatch(/\.lv-row\s*\{[^}]*border-block-end:\s*1px solid var\(--rule\)/);
+    /* R313 override (WP-A1 · D7): the capability matrix moved OFF the
+     * landing onto /capabilities (the 9-section re-composition); the
+     * hairline-table contract is unchanged and now pinned against
+     * campus.css (the sub-pages' sheet). The landing's problem cards
+     * (.pm-*) carry the same ruled-row grammar. */
+    const campusCss = stripComments(read('src/styles/campus.css'));
+    expect(campusCss).toMatch(/\.lv-list\s*\{[^}]*border:\s*1px solid var\(--rule\)/);
+    expect(campusCss).toMatch(/\.lv-row\s*\{[^}]*border-block-end:\s*1px solid var\(--rule\)/);
     expect(live).not.toContain('.lv-window');
     expect(liveTsx).not.toContain('lv-window');
+    // the landing's own ruled family: the four pain cards
+    expect(live).toMatch(/\.pm-card\s*\{[^}]*border:\s*1px solid var\(--rule\)/);
+    expect(liveTsx).toContain('className="pm-card"');
   });
 
   it('the chapter rows are one consistent ledger grammar (no alternating poster layouts)', () => {
@@ -226,10 +241,19 @@ describe('r306 — the funnel/a11y contracts carried forward', () => {
     expect(liveTsx).toContain('ch-${ch.num}-title');
   });
 
-  it('the colleges registry keeps the accessible chip contract (buttons + pressed + live panel)', () => {
-    expect(liveTsx).toMatch(/className="cg-chip"/);
-    expect(liveTsx).toMatch(/aria-pressed=\{selectedCollege === c\.slug\}/);
-    expect(liveTsx).toMatch(/className="cg-panel" role="status" aria-live="polite"/);
+  it('the colleges registry keeps the accessible strip contract (the #colleges anchor + the public link + the disclosure)', () => {
+    /* R313 override (WP-A1 · D7): the interactive chip registry moved
+     * off the landing — the registry itself lives on /colleges and the
+     * capability/status ledgers on /capabilities. The #colleges anchor
+     * survives as the ruled registry strip at the sheet's close: the
+     * 25-college count + the demo-data disclosure + the public
+     * /colleges link + the login affordance (the funnel's 5th). */
+    expect(liveTsx).toMatch(/className="cg-strip"/);
+    expect(liveTsx).toContain('id="colleges"');
+    expect(liveTsx).toContain('to="/colleges"');
+    expect(liveTsx).toContain('formatInt(colleges.length)');
+    // the demo-data disclosure rides the strip (never a tooltip)
+    expect(liveTsx).toContain('اصطناعية بالكامل');
   });
 
   it('the honest numbers still compute from the registry (no invented adoption)', () => {
@@ -267,8 +291,7 @@ describe('r306 hygiene — the sheet stays clean', () => {
       'hi-pulse', // the inspection stations' idle pulse
       'fo-ticker-rtl', // the capabilities crawl
       'sl-scan', // the loader's scan sweep
-      'jt-ring-crawl', // the walkthrough ring's dash crawl
-      'vs-tag-snap', // the vision rows' hold-plateau snap
+      'wy-snap', // R313: the why-stage verb snap (the 74%-hold plateau — supersedes vs-tag-snap, which moved to campus.css with the status rows)
     ]);
     for (const n of names) {
       expect(ALLOWED.has(n ?? ''), `unexpected @keyframes ${n}`).toBe(true);
@@ -282,7 +305,9 @@ describe('r306 hygiene — the sheet stays clean', () => {
       '.sl-scan', // sl-scan
       '.jt-plan .bp-drawable', // R310: the plan's staged build collapses to the complete plan
       '.pl-zone', // R310: the zone wash highlight
-      '.vs-status-tag', // vs-tag-snap
+      '.pm-art .pm-draw', // R313: the pain cards' draw-in collapses to the complete drawing
+      '.wy-capture', // R313: the why cross-fade collapses to the fully readable stack
+      '.wy[data-wy-stage=\'0\'] .wy-rail .wy-stage:nth-child(1) .wy-stage-verb', // R313: the wy-snap
     ];
     for (const sel of RM_COLLAPSED) {
       expect(rmBelt, `RM belt must collapse ${sel}`).toContain(sel);

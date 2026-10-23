@@ -699,3 +699,10 @@
     display: none;
   }
 }
+
+/* ── the deep-link anchors (the landing's pre-R313 section ids resolve
+   here now): clear the thin chrome bar + breathing room. ── */
+#campus-life,
+#videos {
+  scroll-margin-block-start: calc(56px + var(--sp-4)); /* spacing-gate: allow — the 56px chrome bar's own height (.cu-header-inner min-block-size), not a spacing rung */
+}

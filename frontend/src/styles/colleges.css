@@ -1014,6 +1014,13 @@ a.comp-card:focus-visible .comp-go {
   color: var(--text-muted);
   margin-block-start: var(--sp-0-5);
 }
+/* r313: the embedded score run (‎<bdi>{score}/100</bdi>‎) is a mono
+   micro-label — Latin digits, Geist Mono, tabular (the reference's
+   instrument voice; the surrounding Arabic meta keeps the sans). */
+.comp-entry-meta bdi {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
 .comp-entry-text {
   font-size: var(--fs-sm);
   color: var(--text);

@@ -67,7 +67,10 @@ describe('r168b — landing copy claims only what ships', () => {
     expect(page).not.toContain('نتائج تجربة فعلية');
     expect(page).not.toContain('CountUp');
     expect(page).not.toContain('أرقام توضيحيّة');
-    expect(page).toContain('كل رقم يُحسب من حالة الميزات في النظام');
+    /* R313 override (WP-A1 · D7): the capability-matrix proof copy
+     * moved OFF the landing onto /capabilities (the 9-section
+     * re-composition) — the same sentence, pinned on its new home. */
+    expect(read('src/pages/capabilities/CapabilityPages.tsx')).toContain('كل رقم يُحسب من حالة الميزات في النظام');
     // r191 operator gate: the rejected wording must never resurface on
     // user-facing surfaces (صُنعت في ليبيا + ما يُشحن اليوم).
     expect(page).not.toContain('صُنعت في ليبيا');

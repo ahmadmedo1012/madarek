@@ -55,8 +55,10 @@ export function CampusLifePage() {
       </header>
 
       <main id="main" tabIndex={-1} className="cu-main">
-        {/* ── الحياة الجامعية — the documentary photography rail ── */}
-        <section aria-labelledby="cu-photos-title">
+        {/* ── الحياة الجامعية — the documentary photography rail. The
+            section keeps the landing's old #campus-life anchor: deep
+            links from the pre-R313 sheet resolve here now. ── */}
+        <section id="campus-life" aria-labelledby="cu-photos-title">
           <div className="cu-head">
             <span className="fo-label"><span className="fo-mono" dir="ltr">[01]</span> الحياة الجامعية</span>
             <RevealCssClass as="h1" className="cu-title" delay={1} id="cu-photos-title">
@@ -93,8 +95,9 @@ export function CampusLifePage() {
           </RevealCssClass>
         </section>
 
-        {/* ── مشاهد جامعية — the official-channel documentaries ── */}
-        <section aria-labelledby="cu-videos-title">
+        {/* ── مشاهد جامعية — the official-channel documentaries (the
+            landing's old #videos anchor resolves here). ── */}
+        <section id="videos" aria-labelledby="cu-videos-title">
           <div className="cu-head">
             <span className="fo-label"><span className="fo-mono" dir="ltr">[02]</span> مشاهد جامعية</span>
             <RevealCssClass as="h2" className="cu-title" delay={1} id="cu-videos-title">

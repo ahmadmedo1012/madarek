@@ -151,12 +151,21 @@ describe('r307 — the media layer added ZERO new funnel links', () => {
   });
 
   it('the new sections route to anchors and app routes only', () => {
-    for (const id of ['campus-life', 'product', 'videos', 'cta']) {
+    /* R313 override (WP-A1 · D7): the media rail (#campus-life) and the
+     * video facades (#videos) moved OFF the landing onto /campus; their
+     * ids + licence captions moved WITH the media (checked on the
+     * sub-page below). The landing keeps #product + #cta anchors. */
+    const campusSrc = read('src/pages/campus/CampusPages.tsx');
+    for (const id of ['campus-life', 'videos']) {
+      expect(campusSrc, `${id} must live on /campus now`).toContain(id);
+    }
+    for (const id of ['product', 'cta']) {
       expect(liveTsx).toContain(`id="${id}"`);
     }
     // the product CTA scrolls to the conversion row — never an auth link
+    // (R313: the section ends at the why-section now, not #videos)
     const productAt = tsx.indexOf('id="product"');
-    const productBlock = stripComments(tsx.slice(productAt, tsx.indexOf('id="videos"')));
+    const productBlock = stripComments(tsx.slice(productAt, tsx.indexOf('className="wy-section"')));
     expect(productBlock).toContain('ctaTo="#cta"');
     expect(productBlock).not.toMatch(/to="\/auth/);
   });

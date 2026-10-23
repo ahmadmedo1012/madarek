@@ -180,9 +180,10 @@ describe('r170d → r188 — landing burger keyboard contract (Escape + aria-exp
     expect(menu).not.toBeNull();
     const items = within(menu).getAllByRole('link');
     expect(items.length).toBeGreaterThanOrEqual(6);
-    // r198: the poster's chapter anchors (the desktop nav shows three of
-    // them; the mobile menu adds الأدوار) — same keyboard contract.
-    for (const name of ['الفصول', 'ما يعمل اليوم', 'الأدوار', 'الكليات']) {
+    // R313 override (WP-A1 · D7): the nav re-composed with the 9-section
+    // structure — «الفصول» is now «الرحلة» (the pinned map section), and
+    // «ما يعمل اليوم» routes to /capabilities (the ledger sub-page).
+    for (const name of ['الرحلة', 'ما يعمل اليوم', 'الأدوار', 'الكليات']) {
       expect(items.some((a) => (a.textContent || '').includes(name))).toBe(true);
     }
 
