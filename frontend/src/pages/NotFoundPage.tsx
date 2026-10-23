@@ -1,8 +1,10 @@
 /**
  * NotFoundPage — the designed 404 surface for routes that don't match.
  *
- * r313: the Heron error plate — full-bleed warm paper, a hairline
- * drafting frame with corner plus marks, the mono `ERR [404]`
+ * r313: the Heron guest-sheet grammar — full-bleed warm paper carrying
+ * the LANDING FRAME SYSTEM (a fixed 1px #B3B3AF hairline at the 7px
+ * viewport inset with 10×10 mono plus marks centered on its corners —
+ * the .sheet-frame/.sheet-mark recipe, D9), the mono `ERR [404]`
  * micro-label (Latin, LTR, Geist Mono uppercase) over the Arabic
  * explanation, and the line-drawn mk-ill `not-found` scene (r280; the
  * r313 two-tone recolour — square corners, paper-step tints). One
@@ -26,45 +28,45 @@ export default function NotFoundPage() {
   usePageTitle('الصفحة غير موجودة');
   return (
     <main className="nf-shell">
+      {/* r313: the page frame — the landing's full-page drafting frame
+          (fixed 1px #B3B3AF at the 7px inset + 10×10 mono corner plus
+          marks, the .sheet-frame grammar). Everything decorative is
+          aria-hidden and pointer-transparent; the sr-only span below
+          carries the code for assistive tech. */}
+      <div className="nf-frame" aria-hidden="true">
+        <span className="nf-mark nf-mark-tl">+</span>
+        <span className="nf-mark nf-mark-tr">+</span>
+        <span className="nf-mark nf-mark-bl">+</span>
+        <span className="nf-mark nf-mark-br">+</span>
+      </div>
+
       <div className="nf-scene">
-        {/* r313: the error plate — a hairline drafting frame (1px
-            #B3B3AF) with mono corner plus marks, the reference's
-            instrument grammar (frame.md: 7px inset frame + 10×10
-            plus). Everything decorative is aria-hidden; the sr-only
-            span below carries the code for assistive tech. */}
-        <div className="nf-plate">
-          <span className="nf-mark nf-mark-tl" aria-hidden>+</span>
-          <span className="nf-mark nf-mark-tr" aria-hidden>+</span>
-          <span className="nf-mark nf-mark-bl" aria-hidden>+</span>
-          <span className="nf-mark nf-mark-br" aria-hidden>+</span>
-
-          <div className="nf-illustration" aria-hidden>
-            <Illustration name="not-found" />
-          </div>
-
-          {/* The error code for assistive tech — the plate carries it
-              visually (mono ERR [404]), the title carries the meaning. */}
-          <span className="sr-only">خطأ 404.</span>
-
-          {/* r313: the visible code marker — the reference's mono
-              micro-label voice (Geist Mono, uppercase, LTR). The AT
-              carrier is the sr-only span above, so the visible run is
-              aria-hidden (the bento code-badge precedent) and never
-              announced twice. */}
-          <span className="nf-eyebrow" aria-hidden="true" dir="ltr">ERR [404]</span>
-
-          <h1 className="nf-title">هذه الصفحة تغيّبت عن الحضور</h1>
-          <p className="nf-sub">
-            الرابط الذي فتحته لا يطابق أيّ صفحة في مدارك — ربّما تغيّر عنوانها أو وُرِد
-            بشكل غير دقيق.
-          </p>
-
-          {/* r313: the plate's coordinate line — the reference's edge
-              coordinate labels (mono, faint, LTR). Decorative. */}
-          <span className="nf-coords" aria-hidden="true" dir="ltr">
-            [0,0] &middot; ROUTE NOT MAPPED &middot; MADAREK
-          </span>
+        <div className="nf-illustration">
+          <Illustration name="not-found" />
         </div>
+
+        {/* The error code for assistive tech — the scene carries it
+            visually (mono ERR [404]), the title carries the meaning. */}
+        <span className="sr-only">خطأ 404.</span>
+
+        {/* r313: the visible code marker — the reference's mono
+            micro-label voice (Geist Mono, uppercase, LTR). The AT
+            carrier is the sr-only span above, so the visible run is
+            aria-hidden (the bento code-badge precedent) and never
+            announced twice. */}
+        <span className="nf-eyebrow" aria-hidden="true" dir="ltr">ERR [404]</span>
+
+        <h1 className="nf-title">هذه الصفحة تغيّبت عن الحضور</h1>
+        <p className="nf-sub">
+          الرابط الذي فتحته لا يطابق أيّ صفحة في مدارك — ربّما تغيّر عنوانها أو وُرِد
+          بشكل غير دقيق.
+        </p>
+
+        {/* r313: the coordinate line — the reference's edge coordinate
+            labels (mono, faint, LTR). Decorative. */}
+        <span className="nf-coords" aria-hidden="true" dir="ltr">
+          [0,0] &middot; ROUTE NOT MAPPED &middot; MADAREK
+        </span>
 
         <div className="nf-actions">
           <Link to="/" className="btn primary lg">

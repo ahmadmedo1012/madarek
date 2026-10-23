@@ -781,7 +781,7 @@
     color: var(--text-muted);
   }
 
-  /* ══ 7 · 404 — the Heron error plate (r313) ════════════════════════ */
+  /* ══ 7 · 404 — the Heron guest sheet (r313) ════════════════════════ */
 
   .nf-shell {
     min-block-size: 100dvh;
@@ -792,6 +792,38 @@
     background: var(--bg); /* full-bleed warm paper */
   }
 
+  /* r313 (D9): the PAGE FRAME — the landing .sheet-frame grammar on
+     the error surface: a fixed 1px #B3B3AF hairline at the 7px
+     viewport inset (the reference-measured frame constant — the same
+     7px the landing pins) with the 10×10 mono plus marks centered on
+     its corner points. Decorative only: the whole layer is
+     aria-hidden + pointer-transparent in the markup. */
+  .nf-frame {
+    position: fixed;
+    inset: 7px; /* the reference's frame constant (digest → frame) — not a spacing rung */
+    z-index: 50;
+    pointer-events: none;
+    border: 1px solid var(--border-strong);
+  }
+  /* The corner plus marks — the reference's 10×10 drafting crosses in
+     the mono voice, centered ON the frame's corner points (the
+     registration-mark convention; frame evidence, r313 digest). */
+  .nf-mark {
+    position: absolute;
+    inline-size: 10px;
+    block-size: 10px;
+    display: grid;
+    place-items: center;
+    color: var(--border-strong);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    line-height: 1;
+  }
+  .nf-mark-tl { inset-block-start: 0; inset-inline-start: 0; translate: -50% -50%; }
+  .nf-mark-tr { inset-block-start: 0; inset-inline-end: 0; translate: 50% -50%; }
+  .nf-mark-bl { inset-block-end: 0; inset-inline-start: 0; translate: -50% 50%; }
+  .nf-mark-br { inset-block-end: 0; inset-inline-end: 0; translate: 50% 50%; }
+
   .nf-scene {
     inline-size: 100%;
     max-inline-size: 460px;
@@ -801,41 +833,14 @@
     /* ONE authored moment — the whole scene rises in as one piece. */
     animation: nf-scene-in var(--motion-duration-long) var(--ease-out) both;
   }
-  /* (r313 tint sweep: the signal wash under the scene — the same
-     --journey-glow radial retired from .auth-center — is gone. The
-     plate's 1px #B3B3AF frame is the scene's whole composition on the
-     flat warm paper.) */
+  /* (r313: the composition floats on the bare paper INSIDE the fixed
+     frame — the landing sections' own seat. The retired r305 plate box
+     and the --journey-glow wash are both gone; the frame carries all
+     the structure.) */
   @keyframes nf-scene-in {
     from { opacity: 0; transform: translateY(var(--motion-distance-medium)); }
     to   { opacity: 1; transform: none; }
   }
-
-  /* r313: the plate — the reference's drafting frame (a hairline
-     #B3B3AF box with corner plus marks) holding the whole error
-     composition: illustration → mono code → Arabic title → sub →
-     coordinates. Flat: no shadow, square corners (the ladder is 0). */
-  .nf-plate {
-    position: relative;
-    inline-size: 100%;
-    display: flex; flex-direction: column; align-items: center;
-    gap: var(--sp-2);
-    padding: var(--sp-7) var(--sp-5) var(--sp-5);
-    border: 1px solid var(--border-strong);
-    background: var(--surface);
-  }
-  /* The corner plus marks — the reference's 10×10 drafting crosses in
-     the mono voice (frame evidence, r313 digest → frame). */
-  .nf-mark {
-    position: absolute;
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    line-height: 1;
-    color: var(--grid-line);
-  }
-  .nf-mark-tl { inset-block-start: var(--sp-1); inset-inline-start: var(--sp-2); }
-  .nf-mark-tr { inset-block-start: var(--sp-1); inset-inline-end: var(--sp-2); }
-  .nf-mark-bl { inset-block-end: var(--sp-1); inset-inline-start: var(--sp-2); }
-  .nf-mark-br { inset-block-end: var(--sp-1); inset-inline-end: var(--sp-2); }
 
   .nf-illustration { inline-size: clamp(180px, 42vw, 264px); }
   .nf-illustration .illustration > svg {
@@ -858,8 +863,8 @@
     margin-block-start: var(--sp-1);
   }
 
-  /* r313: the plate's coordinate line — the reference's edge
-     coordinate labels (mono, faint, LTR). Decorative. */
+  /* r313: the coordinate line — the reference's edge coordinate
+     labels (mono, faint, LTR). Decorative. */
   .nf-coords {
     font-family: var(--font-mono);
     font-size: var(--fs-xxs);
