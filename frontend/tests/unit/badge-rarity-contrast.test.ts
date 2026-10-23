@@ -22,8 +22,9 @@
  *   · locked rarity chips  (surface-3 + --text-muted)
  *   · locked descriptions  (--text-muted on the tile surface — was
  *     --text-faint, the 12px fs-xs case that measured marginal)
- *   · leaderboard rank chips (base surface-3 + --text-muted; the
- *     top-3 medals use the -deep inks on the -bg pastels)
+ *   · leaderboard rank chips (r313: transparent square hairline tiles
+ *     on the card surface; the podium keeps one tiered ink — gold on
+ *     rank 1, neutral ink on 2/3)
  */
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -192,32 +193,39 @@ describe('locked chip + locked description — WCAG 1.4.3 (r171c sweep)', () => 
   });
 });
 
-describe('leaderboard rank chips — WCAG 1.4.3 (r171c sweep)', () => {
-  it('the base rank chip (surface-3 + --text-muted) clears 4.5:1 in both themes', () => {
+describe('leaderboard rank chips — WCAG 1.4.3 (r171c sweep → r313 re-pin)', () => {
+  /* R313 (wpG): the rank chips became SQUARE hairline index tiles on a
+   * TRANSPARENT ground (the reference's map-number grammar) — the
+   * surface-3 well and the pastel medal fills are retired. The chips
+   * sit on the leaderboard rows' Card surface, so every ink is
+   * measured against --surface (the locked-descriptions precedent).
+   * The podium keeps exactly ONE tiered ink: gold on rank 1 (the r197
+   * gold discipline — achievements only). */
+  it('the base rank chip (transparent + --text-muted on the card surface) clears 4.5:1 in both themes', () => {
     const rule = trainingRule(String.raw`\.leaderboard-rank\b`);
-    expect(rule).toContain('background: var(--surface-3);');
+    expect(rule).toContain('background: transparent;');
     expect(rule).toContain('color: var(--text-muted);');
+    expect(rule).toContain('border: 1px solid var(--rule);');
     for (const themeMap of [light, dark]) {
-      expect(ratio(hex('--text-muted', themeMap), hex('--surface-3', themeMap))).toBeGreaterThanOrEqual(4.5);
+      expect(ratio(hex('--text-muted', themeMap), hex('--surface', themeMap))).toBeGreaterThanOrEqual(4.5);
     }
   });
 
   it.each([
-    ['rank-1', '--c-yellow-bg', '--c-yellow-deep'],
-    ['rank-2', '--c-grey-bg', '--c-grey-deep'],
-    ['rank-3', '--c-peach-bg', '--c-peach-deep'],
-  ] as const)('%s: the medal ink on its pastel clears 4.5:1 in both themes', (cls, bgToken, inkToken) => {
+    ['rank-1', '--gold-ink'],
+    ['rank-2', '--text'],
+    ['rank-3', '--text-secondary'],
+  ] as const)('%s: the podium ink on the card surface clears 4.5:1 in both themes', (cls, inkToken) => {
     const rule = trainingRule(
       String.raw`\.leaderboard-rank\.${cls}\b`,
-      `background: var(${bgToken})`,
+      `color: var(${inkToken})`,
     );
-    expect(rule).toContain(`background: var(${bgToken});`);
     expect(rule).toContain(`color: var(${inkToken});`);
+    // No pastel fill survives the r313 tint sweep.
+    expect(rule).not.toMatch(/background:\s*var\(--c-(yellow|grey|peach)-bg\)/);
     for (const themeMap of [light, dark]) {
-      const value = ratio(hex(inkToken, themeMap), hex(bgToken, themeMap));
-      // -deep inks on -bg pastels: light pastel-on-pale (e.g. #6B4C0B
-      // on #FCF1CD) and dark pastel-on-night — both comfortably AA.
-      expect(value, `${cls} medal pair`).toBeGreaterThanOrEqual(4.5);
+      const value = ratio(hex(inkToken, themeMap), hex('--surface', themeMap));
+      expect(value, `${cls} podium pair`).toBeGreaterThanOrEqual(4.5);
     }
   });
 });
