@@ -161,6 +161,14 @@ const CollegesLeaderboardPage = lazy(() => import('./pages/colleges/CollegePages
 const CompetitionsIndexPage = lazy(() => import('./pages/competitions/CompetitionsPages').then((m) => ({ default: m.CompetitionsIndexPage })));
 const CompetitionDetailPage = lazy(() => import('./pages/competitions/CompetitionsPages').then((m) => ({ default: m.CompetitionDetailPage })));
 
+/* R313 (WP-A1 · D7): the landing re-composition moved the documentary
+ * media rail + video facades and the capability/status ledgers onto two
+ * guest sub-pages — chrome-less public surfaces in the /colleges
+ * pattern (window-scrolled for everyone, so the guest Lenis engine
+ * covers them exactly like '/' and the colleges gallery). */
+const CampusLifePage = lazy(() => import('./pages/campus/CampusPages').then((m) => ({ default: m.CampusLifePage })));
+const CapabilitiesPage = lazy(() => import('./pages/capabilities/CapabilityPages').then((m) => ({ default: m.CapabilitiesPage })));
+
 /** Resolves the home path for an authenticated user, or `/` for guests.
  *
  *  r157 (6A4-7): the local HOME map folded onto the exported
@@ -501,6 +509,28 @@ export function AppRoutes() {
           <Route path="/colleges/leaderboard" element={<CollegesLeaderboardPage />} />
           <Route path="/colleges/:id" element={<CollegeDetailPage />} />
         </Route>
+
+        {/* R313 (WP-A1 · D7) — the landing's two guest sub-pages: public,
+            chrome-less, window-scrolled (the /colleges pattern, minus the
+            AppShell branch — these are marketing sheets, so signed-in
+            visitors get the same chrome-less reading experience and the
+            guest Lenis engine stays the scroller for everyone). */}
+        <Route
+          path="/campus"
+          element={(
+            <GuestReveal>
+              <CampusLifePage />
+            </GuestReveal>
+          )}
+        />
+        <Route
+          path="/capabilities"
+          element={(
+            <GuestReveal>
+              <CapabilitiesPage />
+            </GuestReveal>
+          )}
+        />
 
         {/* Vision (any authenticated role) */}
         <Route element={<ProtectedRoute />}>
