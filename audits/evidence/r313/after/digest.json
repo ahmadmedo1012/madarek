@@ -1,0 +1,171 @@
+{
+ "site": "madarek-after",
+ "capturedAt": "2026-10-23T07:04:41.250Z",
+ "paper": {
+  "bodyBg": "rgb(246, 246, 238)",
+  "htmlBg": "rgb(246, 246, 238)",
+  "themeColor": "#F6F6EE"
+ },
+ "pageHeight": {
+  "1440x900": 13666,
+  "1440x700": 12304,
+  "1280x800": 12667,
+  "1024x768": 13494,
+  "768x1024": 11629,
+  "390x844": 15308,
+  "360x800": 15083
+ },
+ "rootFontSize": {
+  "360": "9.16031px",
+  "390": "9.92366px",
+  "768": "9.20863px",
+  "1024": "5.92593px",
+  "1280": "7.40741px",
+  "1440": "8.33333px"
+ },
+ "scroller": {
+  "type": "window",
+  "cls": ""
+ },
+ "sections": [
+  {
+   "n": 1,
+   "cls": "fo-hero",
+   "id": null,
+   "height": 961,
+   "pct": 7
+  },
+  {
+   "n": 2,
+   "cls": "sc-canvas",
+   "id": null,
+   "height": 900,
+   "pct": 6.6
+  },
+  {
+   "n": 3,
+   "cls": "",
+   "id": "main",
+   "height": 12607,
+   "pct": 92.3
+  },
+  {
+   "n": 4,
+   "cls": "sheet-frame",
+   "id": null,
+   "height": 886,
+   "pct": 6.5
+  },
+  {
+   "n": 5,
+   "cls": "st-section",
+   "id": "statement",
+   "height": 720,
+   "pct": 5.3
+  },
+  {
+   "n": 6,
+   "cls": "pm-section",
+   "id": "live",
+   "height": 1032,
+   "pct": 7.6
+  },
+  {
+   "n": 7,
+   "cls": "chapters",
+   "id": "chapters",
+   "height": 6439,
+   "pct": 47.1
+  },
+  {
+   "n": 8,
+   "cls": "pr-section",
+   "id": "product",
+   "height": 760,
+   "pct": 5.6
+  },
+  {
+   "n": 9,
+   "cls": "wy-section",
+   "id": null,
+   "height": 1059,
+   "pct": 7.7
+  },
+  {
+   "n": 10,
+   "cls": "rl-section",
+   "id": "roles",
+   "height": 882,
+   "pct": 6.5
+  },
+  {
+   "n": 11,
+   "cls": "fo-cta",
+   "id": "vision",
+   "height": 755,
+   "pct": 5.5
+  },
+  {
+   "n": 12,
+   "cls": "fo-footer",
+   "id": null,
+   "height": 1059,
+   "pct": 7.7
+  }
+ ],
+ "header": {
+  "height": 56,
+  "position": "fixed",
+  "hideShow": true
+ },
+ "typography": {
+  "h1": {},
+  "body": {},
+  "microMono": {}
+ },
+ "buttons": [
+  {
+   "name": "shared .btn grammar (wpD)",
+   "default": {
+    "background-color": "primary #FA3600 fill / secondary #282828 + #B3B3AF border",
+    "border-radius": "0 (tokens)"
+   },
+   "hover": "fill-wipe + dual-label roll 0.4s cb(.23,1,.32,1)"
+  }
+ ],
+ "radius": {
+  "policy": "0 via tokens",
+  "violationsCount": 8
+ },
+ "shadows": {
+  "policy": "none via tokens",
+  "violationsCount": 1
+ },
+ "loader": {
+  "visibleMs": 4868,
+  "logLines": 10,
+  "exitMs": 884,
+  "gating": "every full load (R313 D10)"
+ },
+ "routeTransition": {
+  "durationMs": 1600,
+  "geometry": "cover ~900ms (sheetExit bands) + reveal ~700ms 4-edge inset open (guest-reveal-sweep, --gr-delay sequenced)"
+ },
+ "scroll": {
+  "engine": "lenis 1.1.5 window (guest only)",
+  "probeTailMs": 1540
+ },
+ "surfaceSweep": {
+  "sampled": 1858,
+  "radiusNonZero": 8,
+  "shadowNonNone": 1
+ },
+ "fonts": [
+  "IBM Plex Sans Arabic 400 normal",
+  "IBM Plex Sans Arabic 500 normal",
+  "IBM Plex Sans Arabic 600 normal",
+  "IBM Plex Sans Arabic 700 normal",
+  "IBM Plex Mono 400 normal",
+  "IBM Plex Mono 500 normal"
+ ]
+}
