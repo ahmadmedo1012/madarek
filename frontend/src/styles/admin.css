@@ -123,12 +123,16 @@
   padding: 0 var(--sp-3);
   border-radius: var(--r-md);
   background: var(--surface-2);
-  border: 1px solid var(--border);
+  /* R313 (WP-F · D16): the field's resting hairline is the strong
+     #B3B3AF rung — the reference's own input thread. */
+  border: 1px solid var(--rule);
   color: var(--text-muted);
 }
 .admin-students-search:focus-within {
-  border-color: var(--accent);
-  box-shadow: var(--state-input-focus-halo);
+  /* R313 (WP-F · D16): focus = the reference's #ED4C1F signal border,
+     no halo (mirrors components.css's input focus; no token seat
+     exists yet). */
+  border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (live digest inputs.focus; no token seat exists yet) */
 }
 .admin-students-search input {
   /* r294 (polish v8 fold): the bare-input reset comes home — the
@@ -158,7 +162,9 @@
   padding: 0 var(--sp-3);
   border-radius: var(--r-md);
   background: var(--surface-2);
-  border: 1px solid var(--border);
+  /* R313 (WP-F · D16): the field's resting hairline is the strong
+     #B3B3AF rung. */
+  border: 1px solid var(--rule);
   color: var(--text);
   /* 21-c (A10 P1 cross-ref): 13px → 16px iOS-zoom floor. */
   font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
@@ -166,8 +172,10 @@
 }
 .admin-students-input:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: var(--state-input-focus-halo);
+  /* R313 (WP-F · D16): focus = the reference's #ED4C1F signal border,
+     no halo (mirrors components.css's input focus; no token seat
+     exists yet). */
+  border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (live digest inputs.focus; no token seat exists yet) */
 }
 
 /* r299: the -name content class stays (the papers register's cell
@@ -257,7 +265,9 @@
   gap: var(--sp-3);
   flex-wrap: wrap;
   padding-block-end: var(--sp-2);
-  border-block-end: 1px solid var(--border);
+  /* R313 (WP-F · D16): header dividers ride the structural #B3B3AF
+     rung (WP-D's table grammar: فاصل ترويسة #B3B3AF). */
+  border-block-end: 1px solid var(--rule);
 }
 .govx-group-title {
   margin: 0;
@@ -326,7 +336,9 @@
   justify-content: space-between;
   gap: var(--sp-3);
   padding: var(--sp-3) 0;
-  border-block-end: 1px dashed var(--border);
+  /* R313 (WP-F · D16): solid hairline row rule (#E0E0DA) — the dashed
+     settings idiom retired (the reference draws solid 1px lines only). */
+  border-block-end: 1px solid var(--border);
 }
 .settings-row:last-child { border-block-end: 0; }
 .settings-label {
