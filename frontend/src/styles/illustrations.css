@@ -56,48 +56,71 @@
   }
 
   /* ── BrandLoader ──────────────────────────────────────────────────
-     A calm mark: one signal arc orbiting a quiet track, one ink dot
-     breathing at the centre. role="status" lives on the wrapper
+     r313 — the Heron-loader grammar, reduced to an indeterminate mark
+     (BrandLoader.tsx): a 1px guide track (#B3B3AF via --grid-line)
+     carrying TWO 1px signal segments gliding in opposite directions
+     (the reference's loading-progress item-top/item-bot pair), with a
+     Geist Mono elapsed counter beneath (MM:SS, tabular, the reference
+     counter's #FA3600 ink). The band spans --mk-loader-size × 3; the
+     counter measures REAL elapsed time — honest indeterminacy, never
+     a fabricated percent. role="status" lives on the wrapper
      (BrandLoader.tsx); everything inside is aria-hidden decoration. */
   .mk-loader {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: var(--mk-loader-size, 32px);
-    block-size: var(--mk-loader-size, 32px);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-1);
+    inline-size: calc(var(--mk-loader-size, 32px) * 3);
   }
 
-  .mk-loader > svg {
+  .mk-loader-frame {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
     inline-size: 100%;
-    block-size: 100%;
   }
 
-  @keyframes mk-loader-orbit {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
+  .mk-loader-frame > svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 4px;
   }
 
-  @keyframes mk-loader-breathe {
-    0%, 100% { transform: scale(1);    opacity: 1; }
-    50%      { transform: scale(1.2);  opacity: 0.7; }
+  @keyframes mk-loader-glide-forward {
+    from { transform: translateX(0); }
+    to   { transform: translateX(126px); }   /* 96 (band) + 30 (item) */
+  }
+  @keyframes mk-loader-glide-back {
+    from { transform: translateX(126px); }
+    to   { transform: translateX(0); }
   }
 
-  .mk-loader-arc {
-    transform-box: view-box;
-    transform-origin: 50% 50%;
-    animation: mk-loader-orbit var(--t-cinema) var(--ease-linear) infinite;
+  .mk-loader-item--lead {
+    animation: mk-loader-glide-forward var(--t-cinema) var(--ease-linear) infinite;
+  }
+  .mk-loader-item--trail {
+    /* half a phase behind, against the flow — the reference's
+       dual-direction marquee pair on one 1px band. */
+    animation: mk-loader-glide-back var(--t-cinema) var(--ease-linear) infinite;
+    animation-delay: calc(var(--t-cinema) / -2);
   }
 
-  .mk-loader-dot {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: mk-loader-breathe var(--t-slower) var(--ease-soft) infinite;
+  .mk-loader-count {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-snug);
+    letter-spacing: 0.08em; /* Latin mono micro-label — the instrument track */
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
   }
 
-  /* Static frame = full mark (track + arc + dot), not a blank box. */
+  /* Static frame = track + items at rest + the still-honest counter;
+     only the glide freezes (the elapsed measurement is content). */
   @media (prefers-reduced-motion: reduce) {
-    .mk-loader-arc,
-    .mk-loader-dot {
+    .mk-loader-item--lead,
+    .mk-loader-item--trail {
       animation: none;
     }
   }
