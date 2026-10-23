@@ -97,10 +97,10 @@
   .card > * { position: relative; z-index: 1; }
   .card.bordered { border-color: var(--rule); }
   .card.glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border-color: var(--glass-border);
+    /* R313 (D16): the glass card goes solid — surface + hairline, no
+       backdrop-filter (the reference has none anywhere). */
+    background: var(--surface);
+    border-color: var(--glass-border, var(--border-strong));
   }
   /* r296 (polish v10 fold): any iframe/video inside a card clips to
      the premium frame instead of breaking its radius. */
@@ -2013,8 +2013,9 @@
   .modal-overlay {
     position: fixed; inset: 0;
     background: var(--overlay-veil);
-    backdrop-filter: blur(var(--scrim-blur));
-    -webkit-backdrop-filter: blur(var(--scrim-blur));
+    /* R313 (D16): NO backdrop-filter — the reference has none; the
+       solid veil + the card's solid surface + hairline separate the
+       layers (blur is a Madarek-era affordance, retired). */
     display: flex; align-items: center; justify-content: center;
     /* 012-design-graphics-uplift T060 — z-order language. */
     z-index: var(--z-modal, 400);
@@ -2039,17 +2040,9 @@
        columns (see the grid-4 band above). */
     container: grid4 / inline-size;
   }
-  .modal-card::before {
-    content: '';
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline: 30%;
-    block-size: 3px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    border-radius: 0 0 3px 3px; /* radius-gate: allow — modal hairline bar, block-axis, micro */
-    z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
-    pointer-events: none;
-  }
+  /* (R313 D16: the .modal-card::before accent-gradient hairline bar is
+     RETIRED — no gradients on overlays; the header's own hairline
+     (border-block-end --rule) is the section rule.) */
   @keyframes madarek-pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
   .modal-header { padding: var(--sp-5) var(--sp-6); border-block-end: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); }
   .modal-title  { font-family: var(--font-display); font-size: var(--type-headline-size-md); font-weight: var(--type-headline-weight); color: var(--text); letter-spacing: var(--type-headline-letter-spacing); }
@@ -2064,8 +2057,7 @@
   .sheet-overlay {
     position: fixed; inset: 0;
     background: var(--overlay-veil);
-    backdrop-filter: blur(var(--scrim-blur));
-    -webkit-backdrop-filter: blur(var(--scrim-blur));
+    /* R313 (D16): no backdrop-filter — solid veil + solid panel. */
     display: flex;
     z-index: var(--z-sheet, 300);
     animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
@@ -2252,10 +2244,12 @@
     box-shadow: var(--elev-3, var(--shadow-card-h));
     pointer-events: auto;
   }
-  .toast-info     { border-inline-start-color: var(--info, var(--accent)); }
-  .toast-success  { border-inline-start-color: var(--success); }
-  .toast-warning  { border-inline-start-color: var(--warning); }
-  .toast-error    { border-inline-start-color: var(--danger); }
+  /* R313 (D16): the toast signal rules step up to the 2px accent
+     leading rule (was 1px) — the reference's overlay signal grammar. */
+  .toast-info     { border-inline-start: 2px solid var(--info, var(--accent)); }
+  .toast-success  { border-inline-start: 2px solid var(--success); }
+  .toast-warning  { border-inline-start: 2px solid var(--warning); }
+  .toast-error    { border-inline-start: 2px solid var(--danger); }
   .toast-body {
     flex: 1;
     min-inline-size: 0;
@@ -2307,17 +2301,12 @@
     overflow: clip;
     animation: madarek-popover-in var(--motion-duration-short) var(--motion-ease-decelerate) both;
   }
-  @supports (backdrop-filter: blur(0)) {
-    .popover {
-      background: color-mix(in srgb, var(--surface) 92%, transparent);
-      backdrop-filter: blur(var(--glass-blur));
-      -webkit-backdrop-filter: blur(var(--glass-blur));
-    }
-  }
   @keyframes madarek-popover-in {
     from { opacity: 0; transform: translateY(-4px); }
     to   { opacity: 1; transform: none; }
   }
+  /* (R313 D16: the popover @supports glass block is RETIRED — solid
+     --surface + 1px --rule hairline, no backdrop-filter.) */
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  DROPDOWN — 012-design-graphics-uplift T063.                   ║
@@ -2626,8 +2615,7 @@
   .cmd-palette-overlay {
     position: fixed; inset: 0;
     background: var(--overlay-veil-max);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
+    /* R313 (D16): no backdrop-filter — solid veil. */
     display: flex; align-items: flex-start; justify-content: center;
     padding-block-start: 12vh;
     z-index: var(--z-modal, 400);
@@ -2665,13 +2653,8 @@
     display: flex; flex-direction: column;
     animation: madarek-popover-in var(--motion-duration-short) var(--motion-ease-decelerate) both;
   }
-  @supports (backdrop-filter: blur(0)) {
-    .notification-panel {
-      background: color-mix(in srgb, var(--surface) 92%, transparent);
-      backdrop-filter: blur(var(--glass-blur));
-      -webkit-backdrop-filter: blur(var(--glass-blur));
-    }
-  }
+  /* (R313 D16: the notification-panel @supports glass block is
+     RETIRED — solid --surface + hairline, no backdrop-filter.) */
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  ILLUSTRATION — 012-design-graphics-uplift T080.               ║

@@ -161,7 +161,8 @@
 
     /* Bottom nav safe-area padding (already handled in base.css for
        .content-inner; this guards against double scrollbars). */
-    .topbar { backdrop-filter: saturate(140%) blur(var(--glass-blur)); }
+    /* (R313 D16: the band's topbar backdrop-filter line is retired —
+       the topbar is a solid surface band + hairline now.) */
 
     /* Cards lose some inner padding on phones so 1-column grids
        don't feel like cards-inside-a-card. */
@@ -530,17 +531,16 @@
        The user reported page titles appearing cut by the topbar — that
        was caused by the previous 86% mix being too transparent against
        the cream surface in light mode. */
-    background: color-mix(in srgb, var(--surface) 96%, transparent);
-    /* T3-F4 — glass + z tokens (was blur(14px) + z-index: 30 raw). */
-    -webkit-backdrop-filter: saturate(160%) blur(var(--glass-blur));
-            backdrop-filter: saturate(160%) blur(var(--glass-blur));
+    /* R313 (D16): the topbar is a SOLID surface band — the 96%
+       translucent mix + backdrop blur are retired (the reference has
+       no glass anywhere; the hairline alone separates chrome). */
+    background: var(--surface);
     border-block-end: 1px solid var(--rule);
     z-index: var(--z-dropdown);
   }
   [data-theme="dark"] .topbar {
-    /* In dark mode the surface is already opaque enough; bump to 94% so
-       there's still a hint of the blur effect without bleed. */
-    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    /* R313 (D16): solid surface, both themes. */
+    background: var(--surface);
   }
   /* (r155d dead-twin sweep: `.topbar.scrolled { box-shadow: var(--elev-2) }`
      deleted here — byte-identical to layout.css's rule (T3-F4's
@@ -1716,11 +1716,9 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  GLASS SURFACES — backdrop blur tuning                         ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .topbar,
-  .bottom-nav {
-    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
-  }
+  /* (R313 D16: the topbar/bottom-nav backdrop blur+saturate pair is
+     deleted — solid surfaces + hairlines only, matching the
+     reference's zero backdrop-filter census.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2063,13 +2061,12 @@
      ║  SIDEBAR BACKDROP — blur ramp with fade                        ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .sidebar-backdrop {
-    transition:
-      opacity var(--motion-duration-medium) var(--ease),
-      backdrop-filter var(--motion-duration-medium) var(--ease);
+    /* R313 (D16): the blur ramp is retired — the backdrop is a solid
+       veil; only opacity animates. */
+    transition: opacity var(--motion-duration-medium) var(--ease);
   }
   .sidebar-backdrop.show {
-    backdrop-filter: blur(var(--scrim-blur)) saturate(85%);
-    -webkit-backdrop-filter: blur(var(--scrim-blur)) saturate(85%);
+    /* R313 (D16): no blur — the solid veil only. */
   }
 
 
@@ -3001,8 +2998,7 @@
     inset-block-end: 0;
     inset-inline: 0;
     background: var(--topbar-bg);
-    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    /* R313 (D16): solid band, no backdrop-filter. */
     border-block-start: 1px solid var(--rule);
     z-index: var(--z-dropdown);
     /* r153h: 6px → --sp-1-5 (both slots) */
@@ -3345,11 +3341,11 @@
      بصنف TSX الفعلي وأصلح الحد الخام أيضًا ( AUDIT-5 K2 عائلة). */
   .card.glass-premium,
   .card-glass-premium {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    /* R313 (D16): the premium glass card goes solid — surface +
+       hairline, no backdrop-filter, no shadow (the token ladder is
+       none; the raw 20px blur is retired with it). */
+    background: var(--surface);
     border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-card-premium);
     position: relative;
     overflow: hidden;
   }
