@@ -102,7 +102,11 @@ function readTokenNumber(name: string, fallback: number): number {
 }
 
 const FONT_SANS_FALLBACK = "'IBM Plex Sans Arabic', 'Tajawal', system-ui, sans-serif";
-const FONT_MONO_FALLBACK = "'IBM Plex Mono', ui-monospace, monospace";
+/* R313 (WP-D · charts): Geist Mono leads the mono fallback — the
+   reference's axis/value voice (tokens.css --font-mono does the same
+   live; this covers JSDOM tests + pre-style mounts). Arabic glyphs
+   fall through to the sans inside the live token stack. */
+const FONT_MONO_FALLBACK = "'Geist Mono', 'IBM Plex Mono', ui-monospace, monospace";
 
 /** Live font stacks — re-resolved per call so remounts pick up the
  *  current computed token values (Arabic + Latin glyphs share the stack). */
@@ -250,16 +254,19 @@ trackMedia('(prefers-contrast: more)', (m) => {
  * reference — the same scope ruling the color gate grants palette
  * content — not styling drift. */
 const FALLBACK = {
-  chartText:   '#8694AC',
-  chartGrid:   'rgba(127,127,127,0.12)',
-  accent:      '#a3c9ff',
+  /* R313 (WP-D · charts): the canvas-layer fallbacks re-tint to the
+     Heron paper/signal family — warm neutrals, no blue-grey; series 1
+     IS the #FA3600 signal (mirrors tokens.css --chart-1). */
+  chartText:   '#414140',
+  chartGrid:   '#E0E0DA',
+  accent:      '#FA3600',
   surface1:    '#111113',
-  surface3:    '#EDEDF0',
+  surface3:    '#EFEFE4',
   success:     '#3DD68C',
   chart6Warm:  '#F5A623',
   danger:      '#F55353',
   chart6Gold:  '#e9c349',
-  chart1:      '#B57438',
+  chart1:      '#FA3600',
   chart2:      '#4FA66D',
   chart3:      '#5C8FCE',
   chart4:      '#DD6E78',
@@ -314,40 +321,19 @@ export function chartPalette(): string[] {
 }
 
 /* ─── Gradient fill helpers ────────────────────────────────────────── */
-
-/** Contract §madarekGradientFillPlugin — accent at 35% alpha at the top
- *  fading to fully transparent at the baseline. */
-function areaGradientStops(color: string): readonly (readonly [number, string])[] {
-  return [
-    [0, withAlpha(color, 0.35)],
-    [0.55, withAlpha(color, 0.12)],
-    [1, withAlpha(color, 0)],
-  ];
-}
+/* (R313: areaGradientStops deleted with the gradient sweep — line
+   fills are flat now; withAlpha + safeLinearGradient stay, the fading
+   axis grid still consumes the latter.) */
 
 /**
- * Build a vertical canvas gradient that fades a color from solid at the
- * top to transparent at the bottom. Use it as a line chart's `backgroundColor`
- * to get a Notion-style fill under the curve.
- *
- * Returns a Chart.js scriptable function so the gradient is built per-chart
- * once the canvas is sized.
+ * R313 (WP-D · charts): FLAT fills only — the reference carries no
+ * chart gradients. The historical gradient sweep (35% accent at the
+ * curve fading to 0 at the baseline) is retired; the scriptable keeps
+ * its shape for API compatibility and resolves to the flat colour so
+ * existing consumers keep a solid area fill.
  */
 export function lineFillGradient(color: string) {
-  return (ctx: ScriptableContext<'line'>): string | CanvasGradient => {
-    const { chart } = ctx;
-    const { chartArea, ctx: c } = chart;
-    if (!chartArea) return color;
-    return safeLinearGradient(
-      c,
-      0,
-      chartArea.top,
-      0,
-      chartArea.bottom,
-      areaGradientStops(color),
-      withAlpha(color, 0.12),
-    );
-  };
+  return (_ctx: ScriptableContext<'line'>): string => color;
 }
 
 /* ─── Motion profile ───────────────────────────────────────────────── */
@@ -439,9 +425,11 @@ function ensureTooltipEl(): HTMLDivElement | null {
   el.style.pointerEvents = 'none';
   el.style.background = 'var(--surface)';
   el.style.color = 'var(--text)';
-  el.style.border = '1px solid var(--surface-border)';
+  /* R313 (WP-D · charts): the overlay recipe — #B3B3AF hairline, no
+     shadow (the ladder is none), radius 0 via the token. */
+  el.style.border = '1px solid var(--border-strong)';
   el.style.borderRadius = 'var(--r-sm)';
-  el.style.boxShadow = 'var(--shadow-pop)';
+  el.style.boxShadow = 'none';
   // chart-treatment.md §madarekTooltipPlugin pins 12px 14px padding.
   el.style.padding = '12px 14px';
   el.style.fontFamily = 'var(--font-sans)';
@@ -496,7 +484,7 @@ function buildTooltipContent(el: HTMLDivElement, tooltip: TooltipModel<ChartType
       dot.style.inlineSize = '8px';
       dot.style.blockSize = '8px';
       dot.style.flexShrink = '0';
-      dot.style.borderRadius = 'var(--r-full)';
+      /* R313: the square swatch — the same rect-marker grammar. */
       dot.style.background = swatch.backgroundColor;
       row.append(dot);
     }
@@ -622,8 +610,15 @@ export function cartesianOptions(opts?: {
       // Numeric axes use the mono stack — tabular numerals keep tick
       // columns optically aligned; category axes keep the Arabic sans
       // stack (day names, course names).
-      font: { family: numeric ? fontMono() : fontSans(), size: 11 },
+      // R313 (WP-D · charts): 10px Geist Mono axis voice; pure-Latin
+      // labels render UPPERCASE (the reference's micro-index register);
+      // Arabic + numeric labels pass through untouched.
+      font: { family: numeric ? fontMono() : fontSans(), size: 10 },
       padding: 6,
+      callback(this: { getLabelForValue(value: number): string }, value: number): string {
+        const label = this.getLabelForValue(value);
+        return /^[A-Za-z][A-Za-z0-9\s-]*$/.test(label) ? label.toUpperCase() : label;
+      },
     },
     border: { display: false },
     display: true,
@@ -645,10 +640,15 @@ export function cartesianOptions(opts?: {
         borderJoinStyle: 'round',
       },
       point: {
-        radius: 0,
-        hoverRadius: 4,
-        hoverBorderWidth: 2,
-        hoverBackgroundColor: c.surface,
+        /* R313 (WP-D · charts): SQUARE markers on the wire — 6x6px
+           rects (radius 3) at rest, 10x10 on hover, matching the
+           reference's square-node telemetry register. */
+        radius: 3,
+        rotation: 0,
+        borderWidth: 0,
+        hoverRadius: 5,
+        hoverBorderWidth: 0,
+        hoverBackgroundColor: c.accent,
         // r190 «مدار المعرفة»: data points read as telemetry — square
         // markers, the same 7px-square grammar the stat labels carry
         // (the reference's square-node orbits; hover points included).
@@ -656,7 +656,7 @@ export function cartesianOptions(opts?: {
         hoverPointStyle: 'rect',
       },
       bar: {
-        borderRadius: 2,   /* r190: the near-square bar edge */
+        borderRadius: 0,   /* R313: square bar edge — radius 0 app-wide */
         borderSkipped: false,
       },
     },
@@ -724,8 +724,10 @@ export function radialOptions(opts?: {
          * restrained, and applies uniformly to every radial chart that
          * consumes this shared theme (student progress, owner
          * distribution, quality attendance). Clamped by Chart.js to the
-         * arc's own thickness so small multi-segment rings stay safe. */
-        borderRadius: 6,
+         * arc's own thickness so small multi-segment rings stay safe.
+         * R313 (WP-D · charts): butt caps — borderRadius 0 (the radius
+         * ladder is 0 app-wide; the soft-cap experiment is retired). */
+        borderRadius: 0,
       } as ChartOptions<'doughnut'>['elements'] extends { arc?: infer A } ? A : never,
     },
     plugins: {
@@ -856,6 +858,10 @@ export const madarekFadingAxisPlugin: Plugin = {
 export const madarekGradientFillPlugin: Plugin = {
   id: 'madarekGradientFill',
   defaults: { enabled: false },
+  /* R313 (WP-D · charts): no chart gradients — opted-in line datasets
+     get the FLAT 12% alpha band instead of the retired gradient sweep
+     (the plugin stays registered so legacy `gradientFill: true`
+     options, e.g. AdminPages, resolve harmlessly). */
   beforeDatasetsDraw(chart: Chart, _args: unknown, options: Partial<MadarekGradientFillOptions>) {
     if (!options.enabled) return;
     const area = chart.chartArea;
@@ -873,15 +879,9 @@ export const madarekGradientFillPlugin: Plugin = {
         typeof line.options.borderColor === 'string'
           ? line.options.borderColor
           : chartColors().accent;
-      line.options.backgroundColor = safeLinearGradient(
-        chart.ctx,
-        0,
-        area.top,
-        0,
-        area.bottom,
-        areaGradientStops(stroke),
-        withAlpha(stroke, 0.12),
-      );
+      /* R313: flat fill at the gradient ladder's resting band (12%
+         alpha), without the gradient. */
+      line.options.backgroundColor = withAlpha(stroke, 0.12);
     });
   },
 };

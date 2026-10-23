@@ -127,8 +127,12 @@ describe('chartColors / chartPalette', () => {
 
   it('falls back to documented defaults when the token is missing', () => {
     const c = chartColors();
-    expect(c.surfaceMuted).toBe('#EDEDF0');
-    expect(c.accent).toBe('#a3c9ff');
+    // R313 override (WP-D · charts): the fallback family re-tinted to
+    // the Heron paper/signal palette — surfaceMuted is the warm paper
+    // step #EFEFE4 (was cool #EDEDF0), accent is the #FA3600 signal
+    // (was the pre-R313 night default #a3c9ff).
+    expect(c.surfaceMuted).toBe('#EFEFE4');
+    expect(c.accent).toBe('#FA3600');
   });
 
   it('exposes an 8-color categorical palette driven by --chart-N tokens', () => {
@@ -235,10 +239,12 @@ describe('external tooltip rendering — token-styled DOM surface', () => {
     expect(el).not.toBeNull();
     // Decorative mirror of data already exposed via ChartFrame — hidden from AT.
     expect(el?.getAttribute('aria-hidden')).toBe('true');
-    // Brand surface: token ground, hairline border, pop shadow, small radius.
+    // Brand surface: token ground, hairline border, no shadow (R313
+    // override: --surface-border → --border-strong #B3B3AF; the shadow
+    // is retired — the ladder is none), radius token (0 live).
     expect(el?.style.background).toBe('var(--surface)');
-    expect(el?.style.border).toBe('1px solid var(--surface-border)');
-    expect(el?.style.boxShadow).toBe('var(--shadow-pop)');
+    expect(el?.style.border).toBe('1px solid var(--border-strong)');
+    expect(el?.style.boxShadow).toBe('none');
     expect(el?.style.borderRadius).toBe('var(--r-sm)');
     expect(el?.style.fontFamily).toBe('var(--font-sans)');
     expect(el?.style.opacity).toBe('1');
@@ -295,8 +301,12 @@ describe('external tooltip rendering — token-styled DOM surface', () => {
 
 /* ═══ Task 2-c — gradient fills (canvas-safe stops) ═════════════════ */
 
-describe('gradient fills — rgba stops straight from palette hex', () => {
-  it('builds rgba stops without color-mix for hex colors (audit 0-f P3-24)', () => {
+describe('gradient fills — FLAT fills only (R313 override)', () => {
+  it('resolves to the flat colour on every context — no gradient stops (R313: no chart gradients)', () => {
+    // R313 override (WP-D · charts): lineFillGradient retired its
+    // canvas gradient (35%→0 alpha sweep) — the reference carries no
+    // chart gradients. The scriptable now returns the flat colour in
+    // every context, laid-out or not; no addColorStop is ever called.
     const stops: [number, string][] = [];
     const gradient = { addColorStop: (offset: number, color: string) => stops.push([offset, color]) };
     const chart = fakeChart({
@@ -305,12 +315,8 @@ describe('gradient fills — rgba stops straight from palette hex', () => {
     });
 
     const scriptable = lineFillGradient('#B57438');
-    scriptable({ chart } as unknown as ScriptableContext<'line'>);
-
-    // Contract §madarekGradientFillPlugin: 35% alpha at the curve → 0 at baseline.
-    expect(stops[0]).toEqual([0, 'rgba(181, 116, 56, 0.35)']);
-    expect(stops[2]).toEqual([1, 'rgba(181, 116, 56, 0)']);
-    expect(stops.every(([, color]) => !color.includes('color-mix'))).toBe(true);
+    expect(scriptable({ chart } as unknown as ScriptableContext<'line'>)).toBe('#B57438');
+    expect(stops).toEqual([]);
   });
 
   it('returns the flat color before the chart area is laid out', () => {
@@ -396,12 +402,16 @@ describe('opt-in plugin flags + numeric tick typography', () => {
     expect(without.madarekCenterLabel).toBeUndefined();
   });
 
-  it('gives numeric axes the mono stack and category axes the Arabic sans stack', () => {
+  it('gives numeric axes the Geist-Mono-led mono stack and category axes the Arabic sans stack', () => {
     const scales = cartesianOptions().scales as {
       x: { ticks: { font: { family: string } } };
       y: { ticks: { font: { family: string } } };
     };
     // Vertical chart: y carries the numbers, x carries the day names.
+    // R313 override (WP-D · charts): the mono fallback leads with
+    // 'Geist Mono' (the reference's axis voice; IBM Plex Mono stays
+    // the second face in the stack).
+    expect(scales.y.ticks.font.family).toContain('Geist Mono');
     expect(scales.y.ticks.font.family).toContain('IBM Plex Mono');
     expect(scales.x.ticks.font.family).toContain('IBM Plex Sans Arabic');
     // Horizontal bar chart swaps the roles.
@@ -409,7 +419,7 @@ describe('opt-in plugin flags + numeric tick typography', () => {
       x: { ticks: { font: { family: string } } };
       y: { ticks: { font: { family: string } } };
     };
-    expect(horizontal.x.ticks.font.family).toContain('IBM Plex Mono');
+    expect(horizontal.x.ticks.font.family).toContain('Geist Mono');
     expect(horizontal.y.ticks.font.family).toContain('IBM Plex Sans Arabic');
   });
 
