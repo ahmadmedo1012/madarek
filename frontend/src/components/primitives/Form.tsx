@@ -28,8 +28,9 @@ import type {
  *   - Disables clicks via `aria-disabled` + native `disabled` so
  *     submission is blocked during the request.
  *
- * r305-A2 (lane 2-b) — opt-in control microinteractions (default OFF,
- * so every existing call site renders pixel-identical markup):
+ * r305-A2 (lane 2-b) — control microinteractions; R313 (WP-D · D4)
+ * makes the label roll the DEFAULT grammar (the reference's Heron
+ * dual-label roll), guarded to plain-text labels:
  *
  *   labelMotion?: boolean
  *     Wraps the children in a duplicate-label vertical slide structure
@@ -42,6 +43,14 @@ import type {
  *     (r305 section): hover rides the hover-capable media gate, the
  *     :focus-visible slide is ungated for keyboard parity; reduced
  *     motion snaps via the global token belt.
+ *
+ *     R313 (WP-D · D4): the roll is now the DEFAULT grammar — the
+ *     reference's dual-label roll plays on every Heron button. The
+ *     wrapper renders only for PLAIN TEXT labels (string/number
+ *     children): rich children (icons, badges, JSX) render exactly as
+ *     before (no duplicate risk) and simply skip the roll — the
+ *     fill-wipe hover still lands on them via the pure-CSS .btn::before
+ *     layer. Pass labelMotion={false} to opt a text button out.
  *
  *   iconRight?: ReactNode
  *     Renders a decorative trailing icon AFTER the label inside a
@@ -77,9 +86,12 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
   /** Optional leading icon, rendered before children. */
   leadingIcon?: ReactNode;
-  /** r305 (lane 2-b): opt-in duplicate-label vertical slide on
-   *  hover/focus-visible. Default off — zero change for callers. The
-   *  loading branch always wins over the motion wrapper. */
+  /** r305 (lane 2-b) → R313 (WP-D · D4) default ON: duplicate-label
+   *  vertical slide on hover/focus-visible — the Heron roll grammar.
+   *  Only plain-text labels wrap (string/number children); rich
+   *  children skip the roll (the fill-wipe hover still lands via the
+   *  pure-CSS .btn::before layer). The loading branch always wins
+   *  over the motion wrapper; labelMotion={false} opts out. */
   labelMotion?: boolean;
   /** r305 (lane 2-b): decorative trailing icon (single Lucide icon)
    *  that swaps with an aria-hidden duplicate on hover/focus-visible
@@ -114,7 +126,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     loading = false,
     disabled,
     leadingIcon,
-    labelMotion = false,
+    labelMotion = true,
     iconRight,
     children,
     className,
@@ -133,6 +145,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     .filter(Boolean)
     .join(' ');
 
+  // R313 (D4): the roll wraps PLAIN TEXT labels only — a rich child
+  // (icon, badge, JSX) must never be duplicated wholesale (IDs, nested
+  // semantics). Such buttons keep the fill-wipe hover (pure CSS) and
+  // simply skip the label roll.
+  const rollLabel =
+    labelMotion && (typeof children === 'string' || typeof children === 'number');
+
   // While loading, the spinner replaces the visible content and the
   // real children move into a visually-hidden span: the accessible
   // name survives (the hidden span still names the button) while
@@ -150,7 +169,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       aria-disabled={isDisabled || undefined}
       aria-busy={isBusy || undefined}
       data-loading={loading || undefined}
-      data-motion-label={labelMotion || undefined}
+      data-motion-label={rollLabel || undefined}
       data-motion-icon={iconRight != null || undefined}
       {...rest}
     >
@@ -165,7 +184,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ) : (
         <>
           {leadingIcon}
-          {labelMotion ? (
+          {rollLabel ? (
             /* r305 (lane 2-b): duplicate-label slide. The dup row is
                aria-hidden so the accessible name stays one copy of the
                label; testing-library's name computation skips it. */

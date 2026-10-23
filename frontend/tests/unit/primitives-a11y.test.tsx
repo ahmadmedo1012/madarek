@@ -126,7 +126,15 @@ describe('Button[loading]', () => {
     );
     const btn = screen.getByRole('button', { name: 'حفظ' });
     expect(btn.querySelector('.motion-spinner')).toBeNull();
-    expect(btn.textContent).toBe('حفظ');
+    // R313 override (WP-D · D4): the label roll is default ON for text
+    // labels — textContent now carries the live row + the aria-hidden
+    // duplicate; the ACCESSIBLE name stays one copy (getByRole above
+    // would throw on a duplicated name).
+    expect(btn.textContent).toBe('حفظحفظ');
+    expect(btn.querySelector('.btn-motion-label-dup')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    );
     expect(btn).not.toBeDisabled();
   });
 

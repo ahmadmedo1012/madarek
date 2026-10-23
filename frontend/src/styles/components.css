@@ -375,20 +375,42 @@
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  BUTTONS — Notion-pill style. Black solid primary, soft ghost. ║
+     ║  BUTTONS — R313 (WP-D · D4): the Heron fill-wipe grammar.      ║
+     ║  Every variant is a FLAT slab: radius 0 (token ladder), no     ║
+     ║  shadow, transparent-or-solid rest fill. Hover = COLOUR-SWAP   ║
+     ║  FILL-WIPE: a solid layer (var(--_btn-wipe)) slides down over  ║
+     ║  the resting fill from the block-start edge on the reference's  ║
+     ║  dominant register (.4s cubic-bezier(.23,1,.32,1) = --t-base   ║
+     ║  --ease) while the label colour swaps to --_btn-wipe-fg and    ║
+     ║  the dual-label ROLL plays where the data-motion-label markup   ║
+     ║  exists (Button primitive — Form.tsx). Variant seats (all       ║
+     ║  token-pure, both themes resolve):                              ║
+     ║    default/ghost  transparent + hairline → INK wipe (the        ║
+     ║                    reference's nav-item recipe: #282828 fill +  ║
+     ║                    white label)                                  ║
+     ║    primary/accent/  accent rest (#FA3600 + white label — the    ║
+     ║    gold             documented AA exception; small Arabic       ║
+     ║                      labels ride weight ≥600) → INK wipe        ║
+     ║    outline         the SECONDARY seat: --primary ink slab +    ║
+     ║                    white label + 1px #B3B3AF hairline → ACCENT  ║
+     ║                    wipe (the header-cta swap)                    ║
+     ║  Arabic labels carry hierarchy via weight/size — NO uppercase  ║
+     ║  (cursive joins; Latin runs opt into the mono voice at page    ║
+     ║  level). Disabled = opacity only, no fill. Focus = the         ║
+     ║  universal :focus-visible ring + the same wipe (keyboard       ║
+     ║  parity). RM: tokens zero the durations → colour swap only.    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .btn {
-    --_btn-bg: var(--surface);
+    --_btn-bg: transparent;
     --_btn-fg: var(--text);
-    --_btn-bd: var(--border);
-    --_btn-bg-hover: var(--surface-3);
-    --_btn-bd-hover: var(--border-strong);
-    /* 012 elevation language — button resting/hover shadows.
-       r304 fold (ex «final-visual-system»): resting buttons are FLAT —
-       the unlayered bolt-on's `box-shadow: none` is now the canonical
-       value here. Depth on the chrome comes from surface steps and
-       hairlines; elevation stays reserved for overlays and hover. */
+    --_btn-bd: var(--border-strong);
+    /* R313: the wipe pair replaces the old bg-hover ladder. */
+    --_btn-wipe: var(--primary);
+    --_btn-wipe-fg: var(--primary-fg);
     --_btn-shadow: none;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate; /* the wipe paints above the slab bg, below the label */
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -396,6 +418,8 @@
     block-size: 40px;
     padding-inline: var(--sp-5);
     font-size: var(--type-label-size);
+    /* Arabic hierarchy rides weight (600) — the reference's uppercase
+       mono device is Latin-only and stays out of the shared recipe. */
     font-weight: var(--fw-semibold);
     color: var(--_btn-fg);
     background: var(--_btn-bg);
@@ -405,10 +429,10 @@
     user-select: none;
     white-space: nowrap;
     text-decoration: none;
-    transition: background var(--t-fast) var(--ease),
-                border-color var(--t-fast) var(--ease),
-                color var(--t-fast) var(--ease),
-                box-shadow var(--t-fast) var(--ease),
+    transition: background var(--t-base) var(--ease),
+                border-color var(--t-base) var(--ease),
+                color var(--t-base) var(--ease),
+                box-shadow var(--t-base) var(--ease),
                 transform var(--t-fast) var(--ease);
     /* 5-C2 (A3 P1-3 / ruling #2): the old -0.005em tracking rendered
        -0.06px on every Arabic button label (all 15 surfaces). Sub-pixel
@@ -424,209 +448,111 @@
 @media (max-width: 420px) {
   .btn:not(.icon-btn) { white-space: normal; }
 }
-  .btn:hover { background: var(--_btn-bg-hover); border-color: var(--_btn-bd-hover); color: var(--_btn-fg); }
-  /* 13-17 dead-selector sweep (11-g P2-7, fresh-rg verified): the
-     dashed .btn-primary/-accent/-ghost/-outline ALIASES were removed
-     from these groups — zero TSX consumers (pages render the compound
-     `btn primary` form; Form.tsx VARIANT_CLASS maps variants the same
-     way). The compound selectors stay. */
-  /* r304 fold (ex «final-visual-system»): hover deepens the CTA's own
-     accent pool (18%) instead of swapping to a gray elevation step —
-     the lift still reads, but the color story never changes. */
-  .btn.primary:hover, .btn.accent:hover { box-shadow: 0 var(--sp-2) var(--sp-4) color-mix(in srgb, var(--accent) 18%, transparent); }
-  /* 5-C1 (A2 P2-8): the −1px button lift rides the hover-capable gate
-     (ungated, iOS sticky-hover pinned the lift on the first tap);
-     the bg/border/shadow hover stays ungated like .btn:hover above. */
+  /* ── R313 (D4): the fill-wipe layer ────────────────────────────
+     A solid slab of --_btn-wipe parks one translation unit above the
+     button (block-start edge, matching the reference's .btn-fill-bg
+     translateY slide) and drops in on hover/focus-visible. z-index:-1
+     + the root's isolation keeps it ABOVE the resting background and
+     BELOW the in-flow label (the r305 outline-sweep paint trick).
+     transform-only, no layout, direction-neutral (vertical). */
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--_btn-wipe);
+    transform: translateY(-101%);
+    transition: transform var(--t-base) var(--ease);
+    pointer-events: none;
+    z-index: -1;
+  }
+  /* Hover = the colour-swap wipe: label + border adopt the wipe pair
+     in lockstep with the layer so ink never sits on ink mid-flight.
+     Gated on hover-capable pointers (5-C1 — no iOS sticky-hover
+     pinning) + :not(:disabled)/:not([data-loading]) (r157 freeze). */
   @media (hover: hover) and (pointer: fine) {
-    .btn.primary:hover, .btn.accent:hover { transform: translateY(-1px); }
+    .btn:hover:not(:disabled):not([data-loading="true"]) {
+      color: var(--_btn-wipe-fg);
+      border-color: var(--_btn-wipe);
+    }
+    .btn:hover:not(:disabled):not([data-loading="true"])::before {
+      transform: translateY(0);
+    }
+  }
+  /* Keyboard parity: the wipe + swap fire on :focus-visible too — the
+     reference drives the identical fill on focus — while the universal
+     v22 ring keeps drawing on top. Ungated (focus-visible is keyboard
+     by definition). */
+  .btn:focus-visible:not(:disabled):not([data-loading="true"]) {
+    color: var(--_btn-wipe-fg);
+    border-color: var(--_btn-wipe);
+  }
+  .btn:focus-visible:not(:disabled):not([data-loading="true"])::before {
+    transform: translateY(0);
+  }
+  /* R313: RM — the wipe/roll collapse to plain colour swaps (the token
+     belt already zeroes --t-*; this makes the intent explicit). */
+  @media (prefers-reduced-motion: reduce) {
+    .btn::before,
+    .btn-motion-label-track,
+    .btn-motion-icon > :not(.btn-motion-icon-dup),
+    .btn-motion-icon-dup {
+      transition: none;
+    }
   }
   .btn:active { transform: scale(var(--press-scale)); }
-  /* r148 (AUDIT-2 H3): pointer-events:none كان يُلغي عمليًا مؤشر not-allowed
-     (العنصر يخرج من hit-test فلا يُعرض المؤشر أصلًا) — مئات الأزرار
-     المعطلة كانت تُظهر عتامة فقط بلا إشارة سبب التعطيل. المؤشر يُعرض
-     الآن، مع تثبيت حالة hover كي لا تُضاء وهي معطلة. aria-disabled
-     البديلة تبقى inert تمامًا (مسار ARIA لا native disabled). */
+  /* r148 (AUDIT-2 H3): pointer-events:auto keeps the not-allowed cursor
+     reachable; the hover/focus rules above are :not(:disabled)-gated so
+     a disabled button never wipes. aria-disabled stays fully inert. */
   .btn:disabled {
     opacity: var(--state-btn-disabled-opacity);
     pointer-events: auto;
     cursor: not-allowed;
   }
   .btn:disabled:hover {
-    background: var(--_btn-bg, var(--surface));
-    border-color: var(--_btn-bd, var(--border));
-    box-shadow: var(--_btn-shadow, none);
+    background: var(--_btn-bg);
+    border-color: var(--_btn-bd);
+    color: var(--_btn-fg);
+    box-shadow: var(--_btn-shadow);
     transform: none;
   }
   .btn[aria-disabled="true"]:not(:disabled) { opacity: var(--state-btn-disabled-opacity); pointer-events: none; }
 
+  /* ── PRIMARY — the accent signal slab (R313: the ink slab is      ──
+     retired; #FA3600 + white label is the reference's CTA seat —
+     documented AA exception, small Arabic labels ride weight ≥600).
+     Hover swaps to the INK wipe (--primary/--primary-fg, both themes
+     resolve: light #282828+white · dark white slab + warm ink). */
   .btn.primary {
-    --_btn-bg: var(--neutral-900);
-    --_btn-fg: var(--neutral-50);
-    --_btn-bd: var(--neutral-900);
-    --_btn-bg-hover: var(--neutral-700);
-    --_btn-bd-hover: var(--neutral-700);
-    /* r304: flat at rest like every button — the resting pool below is
-       the CTA's own accent tint, not an elevation step. */
+    --_btn-bg: var(--accent);
+    --_btn-fg: var(--accent-fg);
+    --_btn-bd: var(--accent);
+    --_btn-wipe: var(--primary);
+    --_btn-wipe-fg: var(--primary-fg);
     --_btn-shadow: none;
-    position: relative;
-    overflow: hidden;
-    /* r304 fold (ex «final-visual-system»): the primary CTA rests on a
-       soft accent-tinted pool — the bolt-on's value, now canonical. The
-       r294 hover glow below stays the hover register (deeper, crafted);
-       the old chrome bevel it replaced is retired with the bolt-on. */
-    box-shadow: 0 var(--sp-1) var(--sp-3) color-mix(in srgb, var(--accent) 16%, transparent);
-    /* r149 (R3-A3 §4): حُذف إعلان transition من هنا — كان ميتًا في
-       الترتيب الطبقي (طبقة overrides في polish v15 تملك transition
-       الخاص بـ.btn وتتقدم طبقة components مهما علت الخصوصية)، فعلّق
-       r148 (H2) كان يوهم بأن السجل موحّد من هنا. نُفِّذ العقد فعليًا
-       هناك: كل خصائص hover على --t-fast. */
-  }
-  /* r157 (audit 6A11 #3): the hover choreography is now :not(:disabled)-
-     gated (premium-h shadow, the −2px lift, the sheen below) — a busy
-     or disabled button must not lift/glow under the cursor. The polish
-     layer's .btn.primary:hover:not(:disabled) gates complete the pair
-     on the overrides layer; this is the components-layer half. */
-  .btn.primary:hover:not(:disabled) {
-    /* r294 (polish v15 fold): the OVERRIDES-layer hover was the
-       rendered truth (beat v8's pages-layer glow) — consolidated
-       here, the polish copy deleted. Off-token by design: strong
-       accent glow + contact layer, not elevation. (r157 gate:
-       no glow on disabled primary buttons.) */
-    box-shadow:
-      0 6px 16px -6px color-mix(in srgb, var(--accent) 55%, transparent),
-      0 2px 4px color-mix(in srgb, var(--black) 6%, transparent);
-  }
-  .btn.primary:active:not(:disabled) {
-    /* inset pressed well — interaction state, not elevation
-       (r294 polish v8 fold). */
-    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--black) 10%, transparent);
-  }
-  /* N1 (r133-F7): the primary −2px lift rides the same 5-C1 hover-capable
-     gate as the −1px above — ungated (this rule originally sat at equal
-     specificity after the gate, so it won everywhere and iOS sticky-hover
-     pinned the lift on first tap); shadow stays ungated like .btn:hover.
-     r157: gated on :not(:disabled) — the .btn:disabled:hover freeze
-     above was defeated layer-order-wise by this later
-     equal-specificity rule. */
-  @media (hover: hover) and (pointer: fine) {
-    .btn.primary:hover:not(:disabled) { transform: translateY(-2px); }
-  }
-  .btn.primary::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    /* 5-C1 (A2 §7, C4 follow-up): the sheen rides background-position,
-       not a translateX-ed pseudo — backgrounds never contribute to
-       scrollable overflow, so .btn.scrollWidth stays == clientWidth at
-       rest AND mid-sweep (the old translateX(-110%) parking hung the
-       pseudo outside the padding box: measured scrollWidth 187 vs
-       clientWidth 89). The 300%-wide image re-stops the band to the
-       same ~30% of the button the 100%-wide gradient painted
-       (peak 60% into the band: 48% → 51% of the image); positions
-       160% / −60% park it fully off the left / right edge (offset =
-       (100% − 300%) × P), sweeping the same physical left→right
-       direction the transform did — sheen stays physical, unchanged
-       under [dir=rtl]. */
-    background-image: linear-gradient(105deg,
-      transparent 45%,
-      color-mix(in oklab, var(--neutral-50) 30%, transparent) 51%,
-      transparent 55%);
-    background-size: 300% 100%;
-    background-repeat: no-repeat;
-    background-position: 160% 0;
-    transition: background-position var(--motion-duration-stat) var(--motion-ease-decelerate);
-    pointer-events: none;
-  }
-  .btn.primary:hover:not(:disabled)::before { background-position: -60% 0; }
-  [data-theme="dark"] .btn.primary {
-    /* مدارك night: the old ink-slab (#F2EFE6 cream on charcoal) reads
-       as a glaring white highlighter on the night ground. Primary
-       becomes the quiet elevated action — sky-2 ground, ink text,
-       hairline border — so the GOLD accent stays the single loud CTA
-       (same hierarchy the landing keeps: gold = the one call). */
-    --_btn-bg: var(--neutral-150);
-    --_btn-fg: var(--text);
-    --_btn-bd: var(--border-strong);
-    --_btn-bg-hover: var(--neutral-200);
-    --_btn-bd-hover: var(--border-strong);
   }
 
+  /* (R313 D4: the .btn.primary sheen ::before + the dark ink-slab
+     override are RETIRED — the universal .btn::before wipe layer owns
+     the pseudo on every variant, and the accent seat is theme-pure
+     through tokens in both themes.) */
+
+  /* ── ACCENT / GOLD — the same signal slab as primary (R313: the
+     sheen, the light hover-brighten mix and the dark metal gradient
+     are retired — no gradients, no shadows; the ink wipe owns hover). */
   .btn.accent,
   .btn.gold {
     --_btn-bg: var(--accent);
     --_btn-fg: var(--accent-fg);
     --_btn-bd: var(--accent);
-    --_btn-bg-hover: var(--accent-hover);
-    --_btn-bd-hover: var(--accent-hover);
-    position: relative;
-    overflow: hidden;
-    /* r304 fold (ex «final-visual-system»): the filled accent CTA rests
-       on the same soft accent pool the primary carries — one register
-       for every filled action. Dark's metal recipe below keeps its own
-       ring+glow (it already spoke this language). */
-    box-shadow: 0 var(--sp-1) var(--sp-3) color-mix(in srgb, var(--accent) 16%, transparent);
-  }
-  .btn.accent::before,
-  .btn.gold::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    /* 5-C1 (A2 §7): same background-position sheen as .btn.primary
-       (scrollable-overflow-free sweep; see the primary block's note). */
-    background-image: linear-gradient(105deg,
-      transparent 45%,
-      color-mix(in oklab, var(--accent-fg) 25%, transparent) 51%,
-      transparent 55%);
-    background-size: 300% 100%;
-    background-repeat: no-repeat;
-    background-position: 160% 0;
-    transition: background-position var(--motion-duration-stat) var(--motion-ease-decelerate);
-    pointer-events: none;
-  }
-  .btn.accent:hover:not(:disabled)::before,
-  .btn.gold:hover:not(:disabled)::before { background-position: -60% 0; }
-
-  /* مدارك night — the gold CTA becomes metal: the landing's exact CTA
-     treatment (145° gold → deep-gold gradient + soft outer glow), so
-     the one loud call-to-action reads identically from the landing's
-     «ابدأ رحلتك» to the app's primary actions. Paint-only, rides the
-     same hover/press states. */
-  [data-theme="dark"] .btn.accent,
-  [data-theme="dark"] .btn.gold {
-    /* r150a: the night accent family IS this metal gold (--accent
-       #E9B44C / --accent-hover #F5D48A / --accent-strong #C9962F in
-       the dark block) — the literals below were the tokens, spelled
-       raw. Same values, now retunable from one place. */
-    --_btn-bg: linear-gradient(145deg, var(--accent) 0%, var(--accent-strong) 100%);
-    --_btn-bg-hover: linear-gradient(145deg, var(--accent-hover) 0%, var(--accent) 100%);
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 6px 20px -8px color-mix(in srgb, var(--accent) 35%, transparent);
-  }
-  [data-theme="dark"] .btn.accent:hover:not(:disabled),
-  [data-theme="dark"] .btn.gold:hover:not(:disabled) {
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent), 0 8px 26px -8px color-mix(in srgb, var(--accent) 45%, transparent);
+    --_btn-wipe: var(--primary);
+    --_btn-wipe-fg: var(--primary-fg);
+    --_btn-shadow: none;
   }
 
-  /* T3-F4 WCAG — in LIGHT theme the accent pair is copper + deep
-     espresso ink (--accent-fg #1A0F06 = 4.95:1 on --accent). The legacy
-     hover fill #9A5F25 drops that pair to 3.47:1, so the light hover
-     BRIGHTENS the copper instead — matching Dark's brighten-on-hover
-     semantics (#E0A067 → #F2B782). Brightened mix clears 6.1:1. */
-  :root:not([data-theme="dark"]) .btn.accent,
-  :root:not([data-theme="dark"]) .btn.gold {
-    --_btn-bg-hover: color-mix(in oklab, var(--accent) 86%, var(--neutral-0));
-    --_btn-bd-hover: color-mix(in oklab, var(--accent) 86%, var(--neutral-0));
-  }
-
-  /* r157 (audit 6A11 #3): the in-flight freeze, LOCALLY. motion.css owns
-     the contract (.btn[data-loading="true"]:hover in @layer components)
-     but loads BEFORE this sheet — every equal-specificity hover rule
-     above (the elev-2 glow, the lifts, the halo) defeated it
-     layer-wise, so a busy button still lifted/glowed under the cursor.
-     Re-asserted at the end of the button family so the freeze wins
-     inside this layer too; the polish.css :not(:disabled) gates
-     complete the pair on the overrides layer. transform+shadow only —
-     the bg/border hover tint may keep painting (it is the busy state's
-     own affordance). */
+  /* r157 (audit 6A11 #3): the in-flight freeze — a busy button never
+     wipes/lifts under the cursor (the hover rules above are
+     :not([data-loading])-gated; this re-assertion keeps motion.css's
+     earlier contract winning inside this layer too). */
   .btn[data-loading="true"]:hover {
     transform: none;
     box-shadow: var(--_btn-shadow);
@@ -635,49 +561,47 @@
   .btn.ghost {
     --_btn-bg: transparent;
     --_btn-bd: transparent;
-    --_btn-bg-hover: var(--surface-3);
-    --_btn-bd-hover: transparent;
+    --_btn-wipe: var(--primary);
+    --_btn-wipe-fg: var(--primary-fg);
     --_btn-shadow: none;
   }
 
+  /* R313 (D4): outline becomes the SECONDARY seat — the reference's
+     #282828 slab + white label + 1px #B3B3AF hairline (--primary /
+     --primary-fg / --border-strong; dark resolves to the white slab +
+     warm ink + dark hairline). Hover = the ACCENT wipe (header-cta). */
   .btn.outline {
-    --_btn-bg: transparent;
+    --_btn-bg: var(--primary);
+    --_btn-fg: var(--primary-fg);
     --_btn-bd: var(--border-strong);
-    --_btn-bg-hover: var(--surface-2);
+    --_btn-wipe: var(--accent);
+    --_btn-wipe-fg: var(--accent-fg);
     --_btn-shadow: none;
   }
 
   .btn.danger {
     --_btn-bg: var(--danger);
-    /* A12 (21-b): white ink failed contrast on the rose --danger in
-       BOTH themes — 3.19:1 on light #DD6E78, ~1.9:1 on dark #F09BA3.
-       Same near-black ink as the owner badge counter (owner.css:608):
-       #191918 passes both at 5.51:1 / 8.31:1 (measured live, 21-b).
-       The hover follows the solid-button family convention
-       (.btn.success / .btn.accent: BRIGHTEN toward white) because the
-       old darken-toward-black hover — tuned for white ink — drops the
-       near-black ink to 3.24:1 in light; the brightened mix clears
-       6.6:1 / 9.3:1. The Button primitive's `danger` variant inherits
-       this via the class map. */
-    --_btn-fg: var(--danger-fg);  /* r150a: the documented 21-c one-line swap */
+    /* A12 (21-b): --danger-fg keeps the AA-safe ink on the rose fill
+       in BOTH themes (#191918-class ink: 5.51:1 light / 8.31:1 dark). */
+    --_btn-fg: var(--danger-fg);
     --_btn-bd: var(--danger);
-    --_btn-bg-hover: color-mix(in oklab, var(--danger) 86%, var(--neutral-0));
-    --_btn-bd-hover: color-mix(in oklab, var(--danger) 86%, var(--neutral-0));
+    /* R313 (D4): the wipe keeps the documented BRIGHTEN hover (the
+       family's colour-swap register, tuned for the near-black ink —
+       6.6:1 light / 9.3:1 dark). */
+    --_btn-wipe: color-mix(in oklab, var(--danger) 86%, var(--neutral-0));
+    --_btn-wipe-fg: var(--danger-fg);
   }
   [data-theme='dark'] .btn.danger {
-    --_btn-bg-hover: color-mix(in oklab, var(--danger) 86%, var(--white));
-    --_btn-bd-hover: color-mix(in oklab, var(--danger) 86%, var(--white));
+    --_btn-wipe: color-mix(in oklab, var(--danger) 86%, var(--white));
   }
-  /* r168a: destructive GHOST — table-row actions. The delete row-action
-     was the LEAST visible control on the page (text-subtle muted ink)
-     while being the only irreversible one. Reuses the semantic rose
-     tokens (both themes measured: light #6B2128 10.75:1, dark
-     #F0938F on the dark surface) with the --danger-soft hover wash —
-     quieter than .btn.danger's fill, louder than text-subtle. */
+  /* r168a: destructive GHOST — table-row actions. Keeps the quiet
+     danger-ink recipe; hover rides the ink wipe like every ghost
+     (R313: --_btn-bg-hover retired), with the soft rose wash as the
+     wipe so the destructive identity survives the swap. */
   .btn.ghost.danger {
     --_btn-fg: var(--danger-ink);
-    --_btn-bg-hover: var(--danger-soft);
-    --_btn-bd-hover: transparent;
+    --_btn-wipe: var(--danger-soft);
+    --_btn-wipe-fg: var(--danger-ink);
   }
 
   .btn.sm  { block-size: 32px; padding-inline: var(--sp-3); font-size: var(--type-label-size-sm); border-radius: var(--r-sm); }
@@ -702,7 +626,13 @@
     position: relative;
     transition: var(--t-clean);
   }
-  .icon-btn:hover { background: var(--surface-3); color: var(--text); border-color: var(--rule); }
+  .icon-btn:hover {
+    /* R313 (D4): the icon seat joins the ink-wipe grammar — a plain
+       colour swap (no label to roll, no layer needed). */
+    background: var(--primary);
+    color: var(--primary-fg);
+    border-color: var(--primary);
+  }
   /* 13-17 dead-selector sweep (11-g P2-7): .icon-btn.has-badge::after
      (danger dot on a notification bell) deleted — zero TSX consumers
      render the has-badge modifier. */
@@ -738,7 +668,8 @@
     color: var(--text-secondary);
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
-    box-shadow: 0 1px 2px color-mix(in srgb, var(--black) 6%, transparent);
+    /* R313: the badge's 1px contact shadow is retired — paper +
+       hairlines only (the shadow ladder is none). */
     transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
   }
   /* r148 (AUDIT-2 L2): .badge:hover كان يرفع span غير تفاعلي (عرض خالص —
@@ -3601,19 +3532,19 @@
      BOTH themes stay AA with the same declaration: light resolves it
      to --c-mint-deep #1F4F30 (9.46:1 with #fff), dark brightens it to
      --c-mint-ink #82CB99 so the foreground flips to ink #191918
-     (9.10:1) — same brighten-on-hover semantics as .btn.accent
-     (T3-F4 WCAG math). The two raw literals mirror .btn.danger's. ── */
+     (9.10:1). R313 (D4): the brighten pair moves onto the wipe vars
+     (same mixes, colour-swap grammar). ── */
   .btn.success {
     --_btn-bg: var(--success-ink);
     --_btn-fg: var(--white);
     --_btn-bd: var(--success-ink);
-    --_btn-bg-hover: color-mix(in oklab, var(--success-ink) 86%, var(--neutral-0));
-    --_btn-bd-hover: color-mix(in oklab, var(--success-ink) 86%, var(--neutral-0));
+    --_btn-wipe: color-mix(in oklab, var(--success-ink) 86%, var(--neutral-0));
+    --_btn-wipe-fg: var(--white);
   }
   [data-theme='dark'] .btn.success {
     --_btn-fg: var(--warm-ink);
-    --_btn-bg-hover: color-mix(in oklab, var(--success-ink) 86%, var(--white));
-    --_btn-bd-hover: color-mix(in oklab, var(--success-ink) 86%, var(--white));
+    --_btn-wipe: color-mix(in oklab, var(--success-ink) 86%, var(--white));
+    --_btn-wipe-fg: var(--warm-ink);
   }
 
   /* ── Exam taker details (OnlineExamsPages; the chrome bases live in
@@ -5504,7 +5435,10 @@
   .btn-motion-label-track {
     position: relative;
     display: block;
-    transition: transform var(--t-slow) var(--ease-out);
+    /* R313 (D4): the roll rides the reference's dual-label register —
+       ~.48s on the roll/exit curve (tokens: --t-slow --ease-in, the
+       curve tokens.css documents as "its roll/exit curve"). */
+    transition: transform var(--t-slow) var(--ease-in);
   }
   .btn-motion-label-dup {
     position: absolute;
@@ -5546,7 +5480,8 @@
     inset: 0;
     display: grid;
     place-items: center;
-    transition: transform var(--t-slow) var(--ease-out);
+    /* R313 (D4): same roll register as the label track. */
+    transition: transform var(--t-slow) var(--ease-in);
   }
   .btn-motion-icon svg,
   .btn-motion-icon-dup svg {
@@ -5573,49 +5508,14 @@
   }
 
   /* ────────────────────────────────────────────────────────────────
-     3 · OUTLINE FILL SWEEP — additive on .btn.outline
+     3 · OUTLINE FILL SWEEP — RETIRED (R313 WP-D · D4)
      ────────────────────────────────────────────────────────────────
-     A 12% accent tint rises from the block-end edge on
-     hover/focus-visible. Two cascade-driven choices (r305 lane):
-     · ::BEFORE, not ::after — the overrides layer owns .btn::after
-       (the press ripple) for every button; a components-layer ::after
-       here could never win those declarations.
-     · The .btn root already carries position: relative +
-       overflow: hidden from the overrides layer — reused, never
-       re-declared. isolation: isolate (added ONLY here) gives the
-       outline button its own stacking context so the z-index: -1
-       layer paints ABOVE the button's own background (including the
-       opaque hover surface step) and BELOW the label — correct
-       painting in every state, no z-index juggling on the label.
-     · The :not(.primary)/:not(.accent)/:not(.gold) guards keep this
-       pseudo from ever interfering with the sheen ::before those
-       filled variants own in this same layer, even if a consumer
-       ever hand-compounds the classes.
-     Dark theme: color-mix over var(--accent) resolves to the night
-     gold automatically — no theme fork needed. Text color stays; the
-     tint is a contrast-safe wash below the ink. */
-  .btn.outline:not(.primary):not(.accent):not(.gold) {
-    isolation: isolate;
-  }
-  .btn.outline:not(.primary):not(.accent):not(.gold)::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-    transform: scaleY(0);
-    transform-origin: bottom;
-    transition: transform var(--t-slow) var(--ease-out);
-    pointer-events: none;
-    z-index: -1;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .btn.outline:not(.primary):not(.accent):not(.gold):hover:not(:disabled):not([data-loading="true"])::before {
-      transform: scaleY(1);
-    }
-  }
-  .btn.outline:not(.primary):not(.accent):not(.gold):focus-visible:not(:disabled):not([data-loading="true"])::before {
-    transform: scaleY(1);
-  }
+     The 12% accent tint sweep is superseded by the UNIVERSAL .btn::before
+     fill-wipe in the BUTTONS section above: outline now rests on the
+     --primary ink slab and wipes to the accent exactly like the
+     reference's header-cta. The higher-specificity pseudo here would
+     have shadowed the universal wipe layer, so it is deleted (with its
+     isolation helper — the base .btn now carries isolation itself). */
 
   /* ────────────────────────────────────────────────────────────────
      4 · NAV-ITEM LEADING INDICATOR — additive on .nav-item (non-active)

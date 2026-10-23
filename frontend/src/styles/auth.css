@@ -1,28 +1,25 @@
 /* ═════════════════════════════════════════════════════════════════════
-   MADAREK — Auth + Register + 404 pages (Superlist re-skin, S-1a)
-   Calm surfaces · ONE signal accent · soft geometry · bordered rows
+   MADAREK — Auth + Register + 404 pages (S-1a → r313 Heron re-key)
+   Warm paper · hairline rules · square corners · accent fill-wipe
    ─────────────────────────────────────────────────────────────────────
-   Direction (BLUEPRINT §3 → §7, r196/r197 tokens live):
-   · Hierarchy via SURFACE STEPS, not border stacks: the page ground is
-     --bg, the card is the one elevated --surface moment with a single
-     --elev-2 shadow and a --border-faint hairline. No glass, no copper
-     ambient, no premium/glow shadow variants — the card never moves on
-     hover (calm = static surfaces).
-   · ONE signal accent: the ultramarine --accent family owns every
-     active/primary moment (submit pill, current step dot, role-row icon
-     wells, links). The retired copper chrome is gone.
-   · Primary CTA = PILL (--r-full), the Superlist button geometry, on
-     the signal fill in BOTH themes (fills stay --accent, labels
-     --accent-fg — BLUEPRINT §4).
-   · Role chooser = LIST-FIRST bordered rows (the Superlist help-center
-     row grammar), not a card wall: icon well in --accent-soft, title +
-     meta, inline-end chevron, hover = surface step + border step.
-   · Focus language is NOT declared here: polish v15 owns the input
-     accent border + halo, v22 owns the single AA-safe :focus-visible
-     ring (ruling #13 — the overrides layer has the final word).
+   r313 direction (the Heron grammar — audits/evidence/r313/reference):
+   · Radius 0 (the --r-* ladder resolves 0; --r-full/50% stays for
+     genuinely round primitives like the step dots/spinner only).
+   · NO decorative shadows — depth via hairlines; the card is a flat
+     --surface sheet on the paper ground with its 1px --border-faint
+     rule (--elev-2 resolves none and stays only for the
+     prefers-contrast outline-ring fallbacks).
+   · Inputs adopt the reference recipe: transparent ground, 1px
+     #B3B3AF hairline (var(--border-strong)), radius 0; the focus
+     language stays with the shared polish v15/v22 system (ruling #13
+     — the overrides layer has the final word).
+   · The role picker («من أنت؟») is a ruled hairline grid; hover is
+     the accent fill-wipe (the reference's header-cta recipe).
+   · Mono micro-labels (Geist Mono, tabular) for indices and Latin
+     runs; Arabic prose keeps the sans ladder (13px floor, joins
+     never tracked).
    · Tap targets: the 44px floor is UNCONDITIONAL on every interactive
-     element in the chrome (BLUEPRINT §7 hard floor — the old 40px
-     desktop / 44px-mobile split is retired).
+     element in the chrome (BLUEPRINT §7 hard floor — unchanged).
    Wave 8-b contracts kept (consumed outside these pages):
    · .auth-input is a THIN MODIFIER on the shared .input system
      (components.css) — community/curriculum/student forms borrow it.
@@ -352,12 +349,20 @@
      real controls grow — textareas that borrow .auth-input keep their
      native auto height (min 96px from the shared base).
      21-c (A10 P1): the shared .input system floors controls at 16px —
-     iOS Safari zooms the viewport on any <16px control focus. */
+     iOS Safari zooms the viewport on any <16px control focus.
+     r313 — the reference input recipe (digest → inputs): TRANSPARENT
+     ground (the paper/surface shows through), 1px #B3B3AF hairline
+     (--border-strong), radius 0, no shadow; focus stays with the
+     shared polish system (accent border + halo + ring). Selects and
+     textareas that borrow the class inherit the same hairline. */
   .auth-input,
   input.auth-input,
   select.auth-input,
   textarea.auth-input {
     font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
   }
   input.auth-input,
   select.auth-input { block-size: 48px; }
@@ -378,8 +383,8 @@
   }
 
   /* Invalid control state — errors are not text-only. --danger is the
-     fill/stroke token (3.19:1 ≥ the 3:1 non-text floor in light;
-     remapped under dark theme). Focus keeps the shared accent
+     fill/stroke token (≥ the 3:1 non-text floor in light; remapped
+     under dark theme). Focus keeps the shared accent
      language (focus > validity). */
   .auth-input[aria-invalid="true"] { border-color: var(--danger); }
 
@@ -538,21 +543,20 @@
     margin-block-start: var(--sp-2);
   }
 
-  /* THE primary action — the Superlist pill on the signal fill, the
-     same geometry and color in BOTH themes (BLUEPRINT §4: fills stay
-     --accent, labels --accent-fg). */
+  /* THE primary action — r313: the reference's own button grammar
+     (radius 0, no shadow, flat fill): the signal fill with the white
+     label every reference button recipe ships (digest → buttons;
+     header-cta/hero-discover). Hover brightens the fill one step
+     toward white (the .btn.accent light-theme convention), press
+     keeps the platform's single 0.97 register. The r307 charcoal
+     slab retires with the R313 parity override. */
   .auth-submit {
     inline-size: 100%; /* full-width at every breakpoint; ≥44px */
     block-size: 48px;
-    /* r307 (audit 1-B #11): the funnel's most important action joins the
-       button canon — the charcoal PRIMARY slab (DESIGN.md §6: .btn.primary
-       is the default primary). The old signal-fill pill bypassed the
-       system; the signal stays for the landing CTA where ONE primary per
-       viewport is already governed by the funnel pins. */
-    background: var(--primary);
-    color: var(--primary-fg);
+    background: var(--accent);
+    color: var(--accent-fg);
     border: 0;
-    border-radius: var(--r-sm); /* near-square — the canon's corner rung */
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
     font-size: var(--fs-body);
     font-weight: var(--fw-bold);
     cursor: pointer;
@@ -560,7 +564,7 @@
     transition: background var(--t-fast) var(--ease);
     margin-block-start: var(--sp-2);
   }
-  .auth-submit:hover { background: color-mix(in srgb, var(--primary) 84%, var(--bg)); }
+  .auth-submit:hover { background: color-mix(in oklab, var(--accent) 86%, var(--neutral-0)); }
   /* The platform's single press register — buttons scale (0.97). */
   .auth-submit:active { transform: scale(var(--press-scale)); }
   .auth-submit:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; transform: none; }
@@ -673,9 +677,11 @@
     gap: var(--sp-3);
   }
 
-  /* The chooser is a LIST of bordered rows (Superlist row grammar),
-     not a card wall: flat surface, one hairline, hover = surface step
-     + border step. No lift/dance on hover — calm surfaces. */
+  /* The chooser is a ruled hairline grid — the r313 drafting grammar:
+     flat surface, one #B3B3AF hairline, square corners. Hover = the
+     accent FILL-WIPE (the reference header-cta recipe: the fill
+     slides in, the label inverts) — no lift, no shadow. The 44px+
+     floor and the full-row hit area stay. */
   .role-card {
     display: flex;
     align-items: center;
@@ -683,34 +689,52 @@
     inline-size: 100%;
     padding: var(--sp-4);
     min-block-size: 64px;
-    border-radius: var(--r-lg);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
     background: var(--surface);
-    border: 1px solid var(--border-faint);
+    border: 1px solid var(--rule);
     color: var(--text);
     cursor: pointer;
     text-align: start;
-    transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+    transition:
+      background var(--t-base) var(--ease),
+      border-color var(--t-base) var(--ease),
+      color var(--t-base) var(--ease);
   }
   .role-card:hover {
-    border-color: var(--border);
-    background: var(--surface-2);
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-fg);
   }
   .role-card:active { transform: scale(var(--press-scale)); }
-  /* Border cue only — the v22 :focus-visible ring owns the focus
-     indicator (no second halo). */
-  .role-card:focus-visible { border-color: var(--accent); }
+  /* r313: focus-visible drives the hover recipe (the reference's
+     button contract — focusVisibleMatched 13/14) ON TOP of the v22
+     AA ring, which stays the platform's focus indicator. */
+  .role-card:focus-visible {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-fg);
+  }
 
+  /* The icon well — a square hairline box (the soft tint well
+     retired with the r313 two-tone sweep); the glyph keeps the
+     signal ink and inverts with the card on the fill-wipe. */
   .role-card-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     inline-size: 44px;
     block-size: 44px;
-    border-radius: var(--r-md);
-    background: var(--accent-soft);
-    /* the soft signal tier carries the icon — the ONE accent family */
+    border-radius: var(--r-sm); /* 0 */
+    background: transparent;
+    border: 1px solid var(--rule);
     color: var(--accent-ink);
     flex: 0 0 auto;
+    transition: border-color var(--t-base) var(--ease), color var(--t-base) var(--ease);
+  }
+  .role-card:hover .role-card-icon,
+  .role-card:focus-visible .role-card-icon {
+    border-color: color-mix(in srgb, var(--accent-fg) 55%, transparent);
+    color: inherit;
   }
   .role-card-body {
     display: flex;
@@ -729,12 +753,16 @@
     line-height: var(--lh-snug);
     color: var(--text-muted);
   }
+  .role-card:hover .role-card-sub,
+  .role-card:focus-visible .role-card-sub {
+    color: color-mix(in srgb, var(--accent-fg) 82%, transparent);
+  }
   .role-card-arrow {
     color: var(--text-faint);
     flex: 0 0 auto;
-    transition: color var(--t-fast) var(--ease);
+    transition: color var(--t-base) var(--ease);
   }
-  .role-card:hover .role-card-arrow { color: var(--accent-ink); }
+  .role-card:hover .role-card-arrow { color: inherit; }
 
   .role-invitation-note {
     display: flex;
@@ -749,7 +777,7 @@
     color: var(--text-muted);
   }
 
-  /* ══ 7 · 404 — the designed not-found scene ════════════════════════ */
+  /* ══ 7 · 404 — the Heron error plate (r313) ════════════════════════ */
 
   .nf-shell {
     min-block-size: 100dvh;
@@ -757,12 +785,8 @@
     align-items: center;
     justify-content: center;
     padding: var(--sp-6) var(--page-gutter-mobile);
-    background: var(--bg);
+    background: var(--bg); /* full-bleed warm paper */
   }
-  /* (S-1a: the copper ambient pseudo on the shell is retired with the
-     copper chrome — the 404 scene now floats on the SAME pinned signal
-     wash as the auth card, painted by .nf-scene::after below: one
-     public-surface family, one accent.) */
 
   .nf-scene {
     position: relative; z-index: 1; /* traps the ::after wash (z -1) */
@@ -793,27 +817,66 @@
     to   { opacity: 1; transform: none; }
   }
 
+  /* r313: the plate — the reference's drafting frame (a hairline
+     #B3B3AF box with corner plus marks) holding the whole error
+     composition: illustration → mono code → Arabic title → sub →
+     coordinates. Flat: no shadow, square corners (the ladder is 0). */
+  .nf-plate {
+    position: relative;
+    inline-size: 100%;
+    display: flex; flex-direction: column; align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-7) var(--sp-5) var(--sp-5);
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+  }
+  /* The corner plus marks — the reference's 10×10 drafting crosses in
+     the mono voice (frame evidence, r313 digest → frame). */
+  .nf-mark {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    line-height: 1;
+    color: var(--grid-line);
+  }
+  .nf-mark-tl { inset-block-start: var(--sp-1); inset-inline-start: var(--sp-2); }
+  .nf-mark-tr { inset-block-start: var(--sp-1); inset-inline-end: var(--sp-2); }
+  .nf-mark-bl { inset-block-end: var(--sp-1); inset-inline-start: var(--sp-2); }
+  .nf-mark-br { inset-block-end: var(--sp-1); inset-inline-end: var(--sp-2); }
+
   .nf-illustration { inline-size: clamp(180px, 42vw, 264px); }
   .nf-illustration .illustration > svg {
     inline-size: 100%;
     block-size: auto;
   }
 
-  /* r305 (2-a): the error scene's typographic eyebrow — the visible
-     «خطأ 404» code marker over the title (code → title → explanation →
-     actions). Same quiet-sans eyebrow recipe as the auth-meta rule: one
-     guest-surface eyebrow grammar, muted ink, zero tracking. The AT
-     carrier stays the sr-only span in NotFoundPage.tsx — this run is
-     aria-hidden there (the bento decorative code-badge precedent).
-     No motion, no color beyond the muted ink — the ::after wash above
-     is the scene's whole ambience. */
+  /* r313: the visible code marker — the reference's mono micro-label
+     (Geist Mono, uppercase, LTR, Latin). Arabic keeps the sans ladder
+     everywhere else on the page; this one run is the instrument
+     voice. The AT carrier stays the sr-only span in NotFoundPage.tsx. */
   .nf-eyebrow {
-    font-family: var(--font-sans);
-    font-size: var(--type-label-size-sm);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
     line-height: var(--lh-snug);
-    letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
-    color: var(--text-muted);
+    letter-spacing: 0.08em; /* Latin mono micro-label — the instrument track */
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin-block-start: var(--sp-1);
+  }
+
+  /* r313: the plate's coordinate line — the reference's edge
+     coordinate labels (mono, faint, LTR). Decorative. */
+  .nf-coords {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-snug);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-faint);
+    margin-block-start: var(--sp-1);
   }
 
   .nf-title {

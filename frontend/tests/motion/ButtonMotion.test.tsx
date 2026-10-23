@@ -9,7 +9,12 @@ import { Button } from '../../src/components/primitives/Form';
  * CSS behavior (transforms, slides, sweeps) is verified by the QA agent
  * in a real browser; this suite pins the DOM contracts the CSS hangs
  * off of:
- *   · default Button markup is untouched (opt-in props default OFF)
+ *   · default Button markup carries the ROLL by default (R313 WP-D
+ *     override: the Heron dual-label roll is the default grammar —
+ *     plain-text labels wrap, so data-motion-label + the duplicate
+ *     row render; the accessible name stays a single copy)
+ *   · rich (non-text) children skip the roll — markup unchanged
+ *   · labelMotion={false} opts a text button out
  *   · labelMotion: ONE accessible name (aria-hidden dup respected by
  *     the name computation) + data-motion-label hook
  *   · iconRight: decorative aria-hidden container + duplicate, name
@@ -17,15 +22,39 @@ import { Button } from '../../src/components/primitives/Form';
  *   · loading branch precedence: spinner path, no motion wrapper
  */
 
-describe('Button (r305 lane 2-b) — default props unchanged', () => {
-  it('renders plain .btn content with no motion wrappers or hooks', () => {
+describe('Button (R313 D4 default) — the roll is the default grammar', () => {
+  it('wraps a plain-text label in the roll structure by default', () => {
     const { container } = render(<Button>حفظ التغييرات</Button>);
     const btn = screen.getByRole('button', { name: 'حفظ التغييرات' });
     expect(btn.className).toBe('btn');
-    expect(container.querySelector('.btn-motion-label')).toBeNull();
-    expect(container.querySelector('.btn-motion-icon')).toBeNull();
+    // R313 override: default ON — the wrapper + hook render for text labels.
+    expect(btn).toHaveAttribute('data-motion-label', 'true');
+    expect(container.querySelector('.btn-motion-label .btn-motion-label-track')).not.toBeNull();
+    const dup = container.querySelector('.btn-motion-label-dup');
+    expect(dup).not.toBeNull();
+    expect(dup).toHaveAttribute('aria-hidden', 'true');
+    expect(dup?.textContent).toBe('حفظ التغييرات');
+    // The accessible name is still ONE copy (getByRole throws on dupes).
+    expect(screen.getAllByRole('button', { name: 'حفظ التغييرات' })).toHaveLength(1);
+  });
+
+  it('skips the roll for rich children (icons/JSX render exactly once)', () => {
+    const { container } = render(
+      <Button>
+        <ArrowLeft size={16} aria-hidden="true" />
+      </Button>,
+    );
+    const btn = screen.getByRole('button');
     expect(btn.hasAttribute('data-motion-label')).toBe(false);
-    expect(btn.hasAttribute('data-motion-icon')).toBe(false);
+    expect(container.querySelector('.btn-motion-label')).toBeNull();
+    expect(btn.querySelectorAll('svg')).toHaveLength(1);
+  });
+
+  it('opts out with labelMotion={false}', () => {
+    const { container } = render(<Button labelMotion={false}>حفظ</Button>);
+    const btn = screen.getByRole('button', { name: 'حفظ' });
+    expect(btn.hasAttribute('data-motion-label')).toBe(false);
+    expect(container.querySelector('.btn-motion-label')).toBeNull();
   });
 });
 

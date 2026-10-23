@@ -90,10 +90,13 @@
 
   /* ── Buttons — focus ring + active feedback ────────────────────── */
   .btn {
+    /* R313 (WP-D · D4): the colour-swap register — border + color ride
+       the wipe's --t-base so the label flip lands in lockstep with the
+       fill layer (components.css .btn::before). */
     transition:
-      background var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease),
+      background var(--t-base) var(--ease),
+      border-color var(--t-base) var(--ease),
+      color var(--t-base) var(--ease),
       transform var(--motion-duration-micro) var(--ease);
   }
   /* (Wave 1-a focus consolidation: .btn outline suppression + weak halo
@@ -1350,12 +1353,13 @@
      ║  BUTTON PRESS — light compression on click                     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .btn {
+    /* R313 (D4): colour properties join the wipe register (--t-base);
+     transform keeps the micro press snap. */
     transition:
-      background var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease),
-      transform var(--motion-duration-micro) var(--ease),
-      box-shadow var(--t-fast) var(--ease);
+      background var(--t-base) var(--ease),
+      border-color var(--t-base) var(--ease),
+      color var(--t-base) var(--ease),
+      transform var(--motion-duration-micro) var(--ease);
   }
   .btn:active:not(:disabled) {
     transform: scale(var(--press-scale));
@@ -1483,7 +1487,13 @@
   .btn svg {
     /* r149 (R3-A3 §4): 240ms → 160ms — مزامنة مع خلفية الزر (كانت
      الأيقونة تتأخر عن الزر في كل .btn يحمل svg). */
-    transition: transform var(--t-fast) var(--ease);
+    /* R313 (D4): the glyph nudge joins the wipe register — --t-base
+       --ease, the reference's dominant .4s transition — so the arrow
+       slides in lockstep with the fill; the r305 iconRight swap keeps
+       its own roll register on [data-motion-icon] buttons.
+       (r149 note: 240ms → 160ms sync with the button bg, retimed
+       again by R313 to the .4s wipe register.) */
+    transition: transform var(--t-base) var(--ease);
   }
   .btn:hover .icon,
   .btn:hover svg {
@@ -1790,69 +1800,30 @@
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  BUTTON — refined hover sheen + ripple-on-press                ║
+     ║  BUTTON — R313 (WP-D · D4): the fill-wipe owns hover           ║
      ╚═══════════════════════════════════════════════════════════════╝ */
+  /* (R313: the v15 hover SHEEN + press RIPPLE are RETIRED — the
+     reference button has neither; the components-layer .btn::before
+     fill-wipe layer owns the hover choreography and needs the root's
+     relative + overflow + isolation, re-asserted here so the last
+     layer keeps owning the root geometry.) */
   .btn {
     position: relative;
     overflow: hidden;
-    /* r149 (R3-A3 §4): إيماءة واحدة للـhover — box-shadow تنضم إلى
-       bg/border/color على --t-fast (كانت 240ms: التوهج يتأخر عن اللون).
-       transform يبقى على سجل الضغط micro؛ ‎.btn:active يثبّت مدته بنفسه. */
+    isolation: isolate;
     transition:
-      background var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease),
-      transform var(--motion-duration-micro) var(--ease),
-      box-shadow var(--t-fast) var(--ease);
+      background var(--t-base) var(--ease),
+      border-color var(--t-base) var(--ease),
+      color var(--t-base) var(--ease),
+      transform var(--motion-duration-micro) var(--ease);
   }
   /* (Wave 9-b dead-selector sweep: .btn-primary and .btn.accent
      removed — zero TSX consumers; only the .btn.primary variant is
      rendered.) */
   /* (r294: the primary hover glow consolidated into components.css
-     BTN — this overrides-layer winner beat v8's pages-layer glow;
-     single owner now, computed identical.) */
-  /* Ghost button gains accent border on hover */
-  .btn.ghost:hover {
-    border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
-  }
-  /* Press ripple — rewritten again (5-C1, A2 §7 P2-6 / C4 follow-up).
-     4-A11 P2-6 made the ripple transform-only (a fixed 240% pseudo
-     scaled 0→1), but that 240% border box still hung outside the
-     padding box: live-measured .btn scrollWidth 343 vs clientWidth 89
-     during the press — document-contained, yet poisoning any
-     scrollWidth-based measurement on every primary/accent press (the
-     at-rest 187 inflation came from the hover sheen ::before, fixed
-     as a background-position sweep in components.css). Now: an
-     inset:0 pseudo (border-radius 50% → the button's inscribed
-     ellipse) scaling 0→1 — the transformed border box never exceeds
-     the padding box, so scrollWidth stays == clientWidth for the
-     whole press. Still compositor-only (transform + opacity), still
-     tinted from the button's own ink via color-mix, origin still the
-     geometric center (a true click-origin ripple needs pointer
-     coordinates from JS — deferred with the Button primitive). */
-  .btn::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: color-mix(in srgb, currentColor 20%, transparent);
-    transform: scale(0);
-    pointer-events: none;
-    opacity: 0;
-  }
-  .btn:active:not(:disabled)::after {
-    animation: madarek-ripple var(--t-slower) var(--ease-out) both;
-  }
-  @keyframes madarek-ripple {
-    from { transform: scale(0); opacity: 0.6; }
-    to   { transform: scale(1); opacity: 0; }
-  }
-  /* The ripple is decorative feedback — no animation under reduced
-     motion (base.css's global belt would already collapse it to a
-     sub-millisecond flash; this makes the intent explicit). */
-  @media (prefers-reduced-motion: reduce) {
-    .btn:active:not(:disabled)::after { animation: none; }
-  }
+     BTN — retired there by R313: no shadows on buttons.) */
+  /* (R313 D4: the ghost accent-border hover is retired — every ghost
+     wipes to the ink fill like the reference's nav items.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗

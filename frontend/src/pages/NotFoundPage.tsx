@@ -1,15 +1,18 @@
 /**
  * NotFoundPage — the designed 404 surface for routes that don't match.
  *
- * Renders the mk-ill kit's `not-found` piece (r280 — replaces the
- * retired legacy error-404 telescope scene; same "look elsewhere"
- * read, the two-colour kit family grammar) with one witty-but-dignified line,
- * a prominent way home, and two secondary ways back for the two kinds
- * of lost visitor: the public browser (the colleges directory — ruling
- * #9, guests land here without the app shell and therefore without
- * GlobalSearch) and the returning student whose stale deep-link 404'd
- * (r164b: login — previously a returning user had to reach the landing
- * to find any /auth door). Reachable via:
+ * r313: the Heron error plate — full-bleed warm paper, a hairline
+ * drafting frame with corner plus marks, the mono `ERR [404]`
+ * micro-label (Latin, LTR, Geist Mono uppercase) over the Arabic
+ * explanation, and the line-drawn mk-ill `not-found` scene (r280; the
+ * r313 two-tone recolour — square corners, paper-step tints). One
+ * witty-but-dignified line, a prominent way home, and two secondary
+ * ways back for the two kinds of lost visitor: the public browser (the
+ * colleges directory — ruling #9, guests land here without the app
+ * shell and therefore without GlobalSearch) and the returning student
+ * whose stale deep-link 404'd (r164b: login — previously a returning
+ * user had to reach the landing to find any /auth door).
+ * Reachable via:
  *   - the explicit /404 route (used by the audit harness)
  *   - the catch-all *  route at the end of App.tsx
  */
@@ -24,24 +27,45 @@ export default function NotFoundPage() {
   return (
     <main className="nf-shell">
       <div className="nf-scene">
-        <div className="nf-illustration" aria-hidden>
-          <Illustration name="not-found" />
+        {/* r313: the error plate — a hairline drafting frame (1px
+            #B3B3AF) with mono corner plus marks, the reference's
+            instrument grammar (frame.md: 7px inset frame + 10×10
+            plus). Everything decorative is aria-hidden; the sr-only
+            span below carries the code for assistive tech. */}
+        <div className="nf-plate">
+          <span className="nf-mark nf-mark-tl" aria-hidden>+</span>
+          <span className="nf-mark nf-mark-tr" aria-hidden>+</span>
+          <span className="nf-mark nf-mark-bl" aria-hidden>+</span>
+          <span className="nf-mark nf-mark-br" aria-hidden>+</span>
+
+          <div className="nf-illustration" aria-hidden>
+            <Illustration name="not-found" />
+          </div>
+
+          {/* The error code for assistive tech — the plate carries it
+              visually (mono ERR [404]), the title carries the meaning. */}
+          <span className="sr-only">خطأ 404.</span>
+
+          {/* r313: the visible code marker — the reference's mono
+              micro-label voice (Geist Mono, uppercase, LTR). The AT
+              carrier is the sr-only span above, so the visible run is
+              aria-hidden (the bento code-badge precedent) and never
+              announced twice. */}
+          <span className="nf-eyebrow" aria-hidden="true" dir="ltr">ERR [404]</span>
+
+          <h1 className="nf-title">هذه الصفحة تغيّبت عن الحضور</h1>
+          <p className="nf-sub">
+            الرابط الذي فتحته لا يطابق أيّ صفحة في مدارك — ربّما تغيّر عنوانها أو وُرِد
+            بشكل غير دقيق.
+          </p>
+
+          {/* r313: the plate's coordinate line — the reference's edge
+              coordinate labels (mono, faint, LTR). Decorative. */}
+          <span className="nf-coords" aria-hidden="true" dir="ltr">
+            [0,0] &middot; ROUTE NOT MAPPED &middot; MADAREK
+          </span>
         </div>
-        {/* The error code for assistive tech — the illustration carries
-            it visually, the title carries the meaning. */}
-        <span className="sr-only">خطأ 404.</span>
-        {/* r305 (2-a): the visible code marker — the error scene's
-            typographic eyebrow (code → title → explanation → actions,
-            the .auth-meta guest-surface grammar). Purely decorative in
-            the a11y sense: the sr-only span above is the AT carrier,
-            so the visible run is aria-hidden (the bento code-badge
-            precedent) and never announced twice. */}
-        <span className="nf-eyebrow" aria-hidden="true">خطأ 404</span>
-        <h1 className="nf-title">هذه الصفحة تغيّبت عن الحضور</h1>
-        <p className="nf-sub">
-          الرابط الذي فتحته لا يطابق أيّ صفحة في مدارك — ربّما تغيّر عنوانها أو وُرِد
-          بشكل غير دقيق.
-        </p>
+
         <div className="nf-actions">
           <Link to="/" className="btn primary lg">
             <Icon icon={Home} size={16} />
