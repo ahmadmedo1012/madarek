@@ -1,7 +1,7 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowLeft, Menu, X, Check, FlaskConical, Users,
+  ArrowLeft, Menu, X, Check, Users,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { StarMark } from '../components/StarMark';
@@ -9,20 +9,18 @@ import { ThemeToggle, useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { colleges } from '../data/colleges.config';
 import {
-  HERO_PHOTOS, RAIL_PHOTOS, PRODUCT_CAPTURES, ROLE_CAPTURES, ROLE_SHOWCASES,
-  UNIVERSITY_VIDEOS, type RoleKey,
+  PRODUCT_CAPTURES, ROLE_CAPTURES, ROLE_SHOWCASES,
 } from '../data/university-media';
+import { LIVE_CAPABILITIES, LIVE_COUNT } from '../data/landing-ledger';
 import { formatInt } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
 import { ElevationDrawing } from '../components/landing/ElevationDrawing';
-import { MediaFrame } from '../components/landing/MediaFrame';
 import { ProductFrame } from '../components/landing/ProductFrame';
-import { VideoCard } from '../components/landing/VideoCard';
+import { WhyScene } from '../components/landing/WhyScene';
 import { SheetLoader } from '../components/landing/SheetLoader';
 import { SheetCursor } from '../components/landing/cursor/SheetCursor';
 import { HeroInspect } from '../components/landing/cursor/HeroInspect';
 import { JourneyScene } from '../components/landing/journey/JourneyScene';
-import { InkSketch } from '../components/landing/journey/InkSketch';
 import { ScrubReveal } from '../components/landing/journey/WordReveal';
 import { FooterLens } from '../components/landing/footer/FooterLens';
 import { shouldPlayIntro } from '../lib/motion/introGate';
@@ -30,62 +28,53 @@ import { useSheetScroll } from '../lib/motion/useSheetScroll';
 import { installSheetExit } from '../lib/motion/sheetExit';
 import { clamp } from '../lib/motion/sheetConductor';
 import { acquireScrollLock, releaseScrollLock } from '../lib/scrollLock';
-// landing.css — «لوحة مدارك r306 → r307» — the Heron-only drawing sheet,
-// evolved with documentary university media + real product captures.
-// One visual canon (docs/redesign/r306-heron-exclusivity-spec.md §r307):
-// the architect's-sheet grammar — paper ground, graphite hairlines, ONE
-// orange signal, mono bracketed indices, near-square corners, flat framed
-// fragments. The r307 media layer (DESIGN.md §6a-6c) adds sanctioned
-// raster seats: Commons-licensed university photography, official-channel
-// documentaries (click-to-load), and authentic product captures — every
-// frame flat, hairline-bordered, honestly labelled. Every funnel/a11y/
-// truth contract carries forward (landing-funnel, r168b, r170d, r177,
-// r188 — see the tests pinned beside each surface).
+// landing.css — «لوحة مدارك r306 → r313» — the Heron-parity drawing
+// sheet, re-composed to the reference's 9-section structure (D7):
+// hero → statement → live (the pains) → chapters (the pinned map) →
+// product → why → roles → vision/cta → footer, inside the full-page
+// drafting frame (D9). The documentary media rail + video facades moved
+// to /campus; the capability matrix + status pairs moved to
+// /capabilities — every licence/attribution and honesty caption moved
+// WITH its content. Every funnel/a11y/truth contract carries forward
+// (landing-funnel 5+5, r168b, r170d, r177, r188, r306 — see the tests
+// pinned beside each surface).
 import '../styles/landing.css';
 
 /**
- * Landing — «لوحة مدارك» (r306 sheet, r307 media evolution).
+ * Landing — «لوحة مدارك» (r306 sheet → R313 Heron structure).
  *
- * Composition (the sheet, reading RTL):
- *   sheet frame (fixed corner registration marks + mono coordinates,
- *   desktop only) → header (56px hairline bar) → hero (the blueprint
- *   illustration + the title-block band: eyebrow / display headline /
- *   sub / ONE primary CTA + ghost / metadata block / the documentary
- *   media band) → statement → campus-life (the university media rail,
- *   Commons-licensed) → chapters 01–06 (the honest capability ledger
- *   rows with flat interface fragments) → product (real captures from
- *   the running platform) → videos (official-channel documentaries,
- *   click-to-load) → live (the capability matrix — a hairline TABLE,
- *   not a slab) → roles (the interactive role selector over real
- *   dashboards) → colleges (the interactive registry + title-block
- *   metadata) → vision (honest status pairs with state tags) → cta
- *   (coordinates row + resolve) → footer (hairline colophon grid).
+ * Composition (the 9 sections, reading RTL — Heron measured @1440×900,
+ * total 12355px):
+ *   [1] hero (~887px · 7.2%): the copy band + the drafted elevation
+ *       with its inspection instruments + the capabilities ticker —
+ *       tightened to ~100vh-frame (was 1807px);
+ *   [2] statement (~723px · 5.9%): the scrub-revealed declaration +
+ *       the documented-universities ticker;
+ *   [3] live (~743px · 6.0%): the four pains of Libyan higher-ed as
+ *       numbered cards with draw-in line art (each answered by a live
+ *       capability — the full matrix lives on /capabilities);
+ *   [4] chapters (~6300px · 51.0%): the pinned «رحلة التعلّم»
+ *       walkthrough (the learning-floor plan + its inspection
+ *       stations) + the chapters 05–06 ledger rows — the map is HALF
+ *       the page, the reference's proportion;
+ *   [5] product (~710px · 5.7%): two real-capture blocks;
+ *   [6] why (~698px · 5.6%): the شاهد/تحقّق/اختبر/أتقن stage strip
+ *       with the four student-surface captures cross-fading;
+ *   [7] roles (~887px · 7.2%): the ruled hairline grid — the five
+ *       platform roles + three honest personas;
+ *   [8] vision/cta (~698px · 5.6%): corner coordinates + the title
+ *       block + the resolve + the colleges registry strip;
+ *   [9] footer: the inspection strip (FooterLens) + the colophon.
  *
- * Motion: RevealCssClass block reveals only (the shared IO belt) +
- * the imperative scroll chrome (the .scrolled header class + the --p
- * progress ribbon, both rAF-coalesced, zero setState per tick — r307:
- * load/resize/fonts reconciliation added so the ribbon never drifts
- * under late media). No WebGL, no canvas, no scroll conductor — the
- * sheet is DOM + SVG + sanctioned raster seats.
+ * Motion: RevealCssClass block reveals + the imperative scroll chrome
+ * (the .scrolled header + the --p progress ribbon) + the scroll-scrubbed
+ * instruments (statement words, journey plan, why cross-fade) — all on
+ * the shared sheet clock, all collapsed under reduced motion.
  */
 
-/* ── Honest capability ledger (ما يعمل اليوم) — every line is a real
- * product truth (see backend feature flags / routes). Every number
- * below is computed from this table or hard product truth —
- * no invented adoption, no marketing metrics. */
-/* r309 (§3): the mobile menu's scroll-lock holder key — the open menu
+/* ── r309 (§3): the mobile menu's scroll-lock holder key — the open menu
  * owns the viewport via the ref-counted body lock (lib/scrollLock). */
 const MENU_SCROLL_LOCK_KEY = 'landing-mobile-menu';
-
-const LIVE_CAPABILITIES = [
-  'المحاضرات التفاعلية بنقاط الفحص والحضور التلقائي',
-  'الاختبارات بأربعة أنواع أسئلة وتصحيح تلقائي للموضوعي',
-  'المصفوفة المعرفية وتتبّع الإتقان لكل مقرّر',
-  'مكتبة البحوث برفع PDF ومراجعة معلَّمة للأستاذ',
-  'الرسائل المباشرة والإشعارات داخل المنصّة',
-  'الجدول الأسبوعي ومذكّرات التسليمات',
-] as const;
-const LIVE_COUNT = LIVE_CAPABILITIES.length;
 
 /* ── Computed truths (BLUEPRINT §6 sources): 25 colleges in 3 campuses
  * from the real registry; 11 training tracks (TrainingPages); 6 quality
@@ -95,27 +84,85 @@ const TRAINING_TRACKS = 11;   // verified in pages/student/TrainingPages.tsx
 const QUALITY_BOARDS = 6;     // verified in backend quality.routes
 const INSTITUTIONS = 2;       // verified in OwnerInstitutionsPage isolation
 
-/* ── The r307 media truth: distinct Libyan universities documented on
- * this sheet — Benghazi, Tripoli, Omar Al-Mukhtar (photos) + Misurata,
- * Sebha (official-channel videos). Computed here, not invented: each
- * institution has verified identity evidence in manifest.json. */
+/* ── The r307 media truth: distinct Libyan universities documented —
+ * Benghazi, Tripoli, Omar Al-Mukhtar (photos) + Misurata, Sebha
+ * (official-channel videos). Computed here, not invented: each
+ * institution has verified identity evidence in manifest.json. The
+ * documentary media itself lives on /campus (R313); this count feeds
+ * the title block + the universities ticker below. */
 const MEDIA_UNIVERSITY_COUNT = 5;
+const DOCUMENTED_UNIVERSITIES = [
+  'جامعة بنغازي',
+  'جامعة طرابلس',
+  'جامعة عمر المختار',
+  'جامعة مصراتة',
+  'جامعة سبها',
+] as const;
 
-/* ── Honest status pairs (إلى أين) — natural wording for the ledger's
- * local/sim/soon rows; no operational jargon, no invented claims. */
-const VISION_STATUS = [
-  { k: 'المساعد الأكاديمي', v: 'يعمل الآن — داخل المنصّة بلا خدمات خارجية', live: true },
-  { k: 'فحص نزاهة البحوث', v: 'محاكاة — النتائج معلَّمة بوضوح', live: false },
-  { k: 'المعامل الافتراضية', v: 'قيد التطوير — فهرس للاستعراض دون تشغيل بعد', live: false },
-  { k: 'مزامنة بيانات المؤسّسات', v: 'وضع محدود — قيد التوسعة', live: false },
-];
+/* ── The four pains (R313 · D7 §3) — the honest inverse of the live
+ * ledger: each pain names a real gap in Libyan higher-ed today and is
+ * answered by a capability that WORKS in the system (the full matrix
+ * lives on /capabilities). No invented statistics — only the pains the
+ * product itself was built to solve, framed from the ledger's truth. */
+const PAINS = [
+  {
+    num: '01',
+    title: 'محاضرة بلا أثر مقيس',
+    text: 'تُلقى المحاضرة ثم ينتهي أثرها: لا نقطة فحص تُثبِّت الفهم، ولا حضور يُحتسب تلقائيًا.',
+    answer: 'تُجيبها: المحاضرات التفاعلية بنقاط الفحص',
+  },
+  {
+    num: '02',
+    title: 'تصحيح يأتي متأخرًا',
+    text: 'الاختبار الورقي يمرّ أسابيع قبل أن يعرف الطالب خطأه — وفرصة المراجعة تكون قد فاتت.',
+    answer: 'تُجيبها: التصحيح التلقائي للموضوعي',
+  },
+  {
+    num: '03',
+    title: 'غياب خريطة الإتقان',
+    text: 'الطالب يعرف درجته النهائية، لا مفاهيمه الناقصة ولا خطوته التالية.',
+    answer: 'تُجيبها: مصفوفة الإتقان لكل مفهوم',
+  },
+  {
+    num: '04',
+    title: 'بحوث تُسلَّم وتُنسى',
+    text: 'البحث يُقدَّم ورقيًا ثم يختفي: لا فهرسة ولا بحث عربي ولا مراجعة معلَّمة تبقى.',
+    answer: 'تُجيبها: مكتبة البحوث بالفهرسة العربية',
+  },
+] as const;
 
-/* ── Roles strip data: the five verified roles. r307 renders them as
- * an interactive selector over their REAL dashboards (demo data). */
+/* ── The three personas (R313 · D7 §7) — honest segments the platform
+ * serves or is building for. No invented features: the researcher rides
+ * the LIVE research library; the lab supervisor states the ACTUAL
+ * in-development status; the guardian states the ACTUAL absence of a
+ * separate account today. */
+const PERSONAS = [
+  {
+    num: '06',
+    title: 'الباحث',
+    line: 'طالب أو أستاذ يكتب بحثه: رفع PDF، وفحص نزاهة معلَن، وملاحظات معلَّمة من الأستاذ.',
+    state: 'تعمل اليوم' as const,
+    live: true,
+  },
+  {
+    num: '07',
+    title: 'مشرف المعمل',
+    line: 'المعامل الافتراضية قيد التطوير — فهرس للاستعراض دون تشغيل بعد.',
+    state: 'قيد التطوير' as const,
+    live: false,
+  },
+  {
+    num: '08',
+    title: 'وليّ الأمر',
+    line: 'لا حساب منفصل لوليّ الأمر اليوم — المتابعة تمرّ عبر تقرير الطالب نفسه.',
+    state: 'غير متاح بعد' as const,
+    live: false,
+  },
+] as const;
 
 /* ── The elevation stages — the five hotspots on the hero's drafted
  * elevation (R310). Each describes a REAL live capability
- * (LIVE_CAPABILITIES above); vx/vy are the drawing's OWN viewBox
+ * (LIVE_CAPABILITIES lineage); vx/vy are the drawing's OWN viewBox
  * coordinates (1440×640) at each volume's annotation spot — the
  * drafting convention: the compact [NN] pins mark, never mask, the
  * artwork. The runtime mapping (HeroInspect) remaps them through the
@@ -229,6 +276,85 @@ const CHAPTERS: { num: string; title: string; lede: React.ReactNode; mini: React
   },
 ];
 
+/* ── The pains' draw-in line art (R313 · D7 §3) — four original
+ * pictograms in the sheet's own ink classes (bp-ink / bp-hair /
+ * bp-dash / bp-signal), pathLength-normalized so the draw-in resolves
+ * from the reveal belt (.pm-card.in-view → stroke-dashoffset 0; RM
+ * collapses to the complete drawing). Decorative: the card's text
+ * carries the meaning (aria-hidden). */
+function PainArt({ kind }: { kind: '01' | '02' | '03' | '04' }) {
+  return (
+    <svg
+      className="pm-art"
+      viewBox="0 0 140 100"
+      role="presentation"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {kind === '01' && (
+        <>
+          {/* the lecture: a lectern, a speaker, a trail that fades */}
+          <rect className="bp-hair pm-draw" pathLength={1} x="14" y="46" width="34" height="30" />
+          <line className="bp-hair pm-draw" pathLength={1} x1="31" y1="46" x2="31" y2="34" />
+          <circle className="bp-ink pm-draw" pathLength={1} cx="31" cy="28" r="5" />
+          <line className="bp-ink pm-draw" pathLength={1} x1="31" y1="33" x2="31" y2="42" />
+          <line className="bp-dash pm-draw" pathLength={1} x1="56" y1="60" x2="76" y2="60" />
+          <line className="bp-dash pm-draw" pathLength={1} x1="86" y1="60" x2="98" y2="60" />
+          <circle className="bp-signal pm-draw" pathLength={1} cx="112" cy="60" r="8" />
+          <line className="bp-hair pm-draw" pathLength={1} x1="108" y1="60" x2="116" y2="60" />
+          <line className="bp-hair pm-draw" pathLength={1} x1="112" y1="56" x2="112" y2="64" />
+        </>
+      )}
+      {kind === '02' && (
+        <>
+          {/* late grading: a stack of papers + a clock */}
+          <rect className="bp-ink pm-draw" pathLength={1} x="16" y="26" width="42" height="54" />
+          <rect className="bp-hair pm-draw" pathLength={1} x="24" y="34" width="42" height="54" />
+          <line className="bp-hair pm-draw" pathLength={1} x1="32" y1="46" x2="58" y2="46" />
+          <line className="bp-hair pm-draw" pathLength={1} x1="32" y1="56" x2="58" y2="56" />
+          <line className="bp-hair pm-draw" pathLength={1} x1="32" y1="66" x2="50" y2="66" />
+          <circle className="bp-ink pm-draw" pathLength={1} cx="100" cy="58" r="20" />
+          <line className="bp-signal pm-draw" pathLength={1} x1="100" y1="58" x2="100" y2="46" />
+          <line className="bp-ink pm-draw" pathLength={1} x1="100" y1="58" x2="110" y2="62" />
+        </>
+      )}
+      {kind === '03' && (
+        <>
+          {/* the missing mastery map: a concept grid with a gap */}
+          {[
+            [16, 20], [40, 20], [64, 20],
+            [16, 44], [64, 44],
+            [16, 68], [40, 68], [64, 68],
+          ].map(([x, y]) => (
+            <rect key={`${x}-${y}`} className="bp-hair pm-draw" pathLength={1} x={x} y={y} width="18" height="18" />
+          ))}
+          {/* the gap cell — dashed, unfilled */}
+          <rect className="bp-dash pm-draw" pathLength={1} x="40" y="44" width="18" height="18" />
+          {/* the journey path bending around the gap */}
+          <path className="bp-signal pm-draw" pathLength={1} d="M 16 29 H 34 Q 40 29 40 38 V 68 H 88" />
+          <circle className="bp-signal-fill" cx="92" cy="68" r="3" />
+          <circle className="bp-signal-fill" cx="16" cy="29" r="3" />
+        </>
+      )}
+      {kind === '04' && (
+        <>
+          {/* lost research: the archive drawer + a fading trail */}
+          <rect className="bp-ink pm-draw" pathLength={1} x="70" y="30" width="50" height="44" />
+          <line className="bp-hair pm-draw" pathLength={1} x1="88" y1="52" x2="102" y2="52" />
+          <rect className="bp-hair pm-draw" pathLength={1} x="20" y="22" width="26" height="18" />
+          <line className="bp-hair pm-draw" pathLength={1} x1="24" y1="28" x2="42" y2="28" />
+          <line className="bp-hair pm-draw" pathLength={1} x1="24" y1="33" x2="42" y2="33" />
+          <line className="bp-dash pm-draw" pathLength={1} x1="46" y1="31" x2="60" y2="31" />
+          <line className="bp-dash pm-draw" pathLength={1} x1="66" y1="31" x2="72" y2="31" />
+          <line className="bp-hair pm-draw" pathLength={1} x1="20" y1="58" x2="46" y2="58" />
+          <line className="bp-hair pm-draw" pathLength={1} x1="52" y1="58" x2="58" y2="58" />
+          <line className="bp-hair pm-draw" pathLength={1} x1="64" y1="58" x2="66" y2="58" />
+        </>
+      )}
+    </svg>
+  );
+}
+
 export default function LandingPage() {
   useThemeSync();
   const user = useAuthStore((s) => s.user);
@@ -326,18 +452,6 @@ export default function LandingPage() {
   // live region (the drawing never hides information behind a hover).
   const [activeStage, setActiveStage] = useState(0);
   const stage = STAGES[activeStage] ?? STAGES[0];
-
-  // The colleges registry: which college the chip row selected.
-  const [selectedCollege, setSelectedCollege] = useState<string | null>(colleges[0]?.slug ?? null);
-  const selected = colleges.find((c) => c.slug === selectedCollege) ?? null;
-
-  // The roles registry (r307): which role the selector picked. Starts
-  // on the student so the panel is informative with zero interaction;
-  // the chips carry aria-pressed and the panel is a polite live region
-  // — the same contract as the college chips beside it.
-  const [selectedRole, setSelectedRole] = useState<RoleKey>('STUDENT');
-  const roleShowcase = ROLE_SHOWCASES.find((r) => r.key === selectedRole) ?? ROLE_SHOWCASES[0];
-  const roleCapture = ROLE_CAPTURES.find((c) => c.id === roleShowcase.captureId);
 
   /* r162 (R2) → r164b: warm the AUTH BOUNDARIES while the visitor reads
    * the hero (prod only — dev has no chunk splitting to warm). */
@@ -449,6 +563,10 @@ export default function LandingPage() {
 
   const year = new Date().getFullYear();
 
+  /* the platform's two product blocks: the student surface + the
+   * teacher cockpit (the honest pair a visitor must see first). */
+  const teacherCapture = ROLE_CAPTURES.find((c) => c.id === 'teacher-dashboard');
+
   return (
     <div
       ref={landingRef}
@@ -481,11 +599,13 @@ export default function LandingPage() {
       {/* P3-24: skip-to-content — first Tab stop, hidden until focused. */}
       <a href="#main" className="fo-skip-link">تخطَّ إلى المحتوى</a>
 
-      {/* ═══ THE SHEET FRAME — fixed corner registration marks + mono
-          coordinates, the drawing-sheet identity. Decorative only:
-          aria-hidden, pointer-transparent, desktop-only (the reference
-          drops its ruler ≤991 — small screens get the content, not the
-          drafting chrome). */}
+      {/* ═══ THE SHEET FRAME (R313 · D9) — the full-page drafting frame:
+          a 1px hairline at the 7px inset (the reference's .main-deco),
+          10×10 corner plus marks centered on the frame corners + the
+          mono coordinates. Decorative only: aria-hidden,
+          pointer-transparent — and visible at EVERY breakpoint the
+          reference shows it (the reference keeps its frame at 390 —
+          small screens get the drafting chrome too). */}
       <div className="sheet-frame" aria-hidden="true">
         <span className="sheet-mark sheet-mark-tl">+</span>
         <span className="sheet-mark sheet-mark-tr">+</span>
@@ -513,11 +633,11 @@ export default function LandingPage() {
           </Link>
 
           <nav className="fo-nav" aria-label="التنقل الرئيسي">
-            <a href="#campus-life" className="fo-nav-link">الجامعات</a>
-            <a href="#chapters" className="fo-nav-link">الفصول</a>
-            <a href="#product" className="fo-nav-link">المنصّة</a>
-            <a href="#live" className="fo-nav-link">ما يعمل اليوم</a>
+            <a href="#chapters" className="fo-nav-link">الرحلة</a>
+            <a href="#live" className="fo-nav-link">التحديات</a>
+            <a href="#roles" className="fo-nav-link">الأدوار</a>
             <a href="#colleges" className="fo-nav-link">الكليات</a>
+            <Link to="/campus" className="fo-nav-link">الجامعات</Link>
           </nav>
 
           <div className="fo-header-actions">
@@ -569,12 +689,12 @@ export default function LandingPage() {
               }
             }}
           >
-            <a href="#campus-life" className="btn ghost">الجامعات</a>
-            <a href="#chapters" className="btn ghost">الفصول</a>
-            <a href="#product" className="btn ghost">المنصّة</a>
-            <a href="#live" className="btn ghost">ما يعمل اليوم</a>
+            <a href="#chapters" className="btn ghost">الرحلة</a>
+            <a href="#live" className="btn ghost">التحديات</a>
             <a href="#roles" className="btn ghost">الأدوار</a>
             <a href="#colleges" className="btn ghost">الكليات</a>
+            <Link to="/campus" className="btn ghost">الحياة الجامعية</Link>
+            <Link to="/capabilities" className="btn ghost">ما يعمل اليوم</Link>
             <div
               className="fo-mobile-theme"
               onClick={(e) => e.stopPropagation()}
@@ -593,13 +713,13 @@ export default function LandingPage() {
 
       <main id="main" tabIndex={-1}>
 
-        {/* ═══ HERO — «لوحة مدارك» (R310): the FULL-WIDTH drafted elevation
-            as the sheet's dominant composition — the copy band above it
+        {/* ═══ [1] HERO — «لوحة مدارك» (R310 → R313 D7): the copy band
             (display + statement side by side, then the value row), the
-            drawing with its inspection instruments, then the documentary
-            media band, the title-block metadata, and the ticker. Mobile:
-            text first (LCP is the headline), then the drawing, then the
-            media band, then the metadata — the media band stays lazy. ═══ */}
+            drafted elevation with its inspection instruments + ruler
+            ticks (D9), the details panel, and the capabilities ticker —
+            the whole band ≈100vh-frame (the reference's 887px hero).
+            The documentary media band moved to /campus; the title block
+            moved to the closing section. ═══ */}
         <section className="fo-hero" aria-label="مدارك — منصّة التعليم الذكي">
           <div className="fo-hero-copy">
             <RevealCssClass as="p" className="fo-eyebrow">
@@ -639,11 +759,23 @@ export default function LandingPage() {
               drag-to-inspect) owns this zone (data-cursor="none" — the
               R311 §1.5 unified suppression vocabulary).
               The [NN] pins and the stations share ONE coordinate frame
-              (viewBox 1440×640) remapped by HeroInspect at runtime. */}
+              (viewBox 1440×640) remapped by HeroInspect at runtime.
+              R313 (D9): the ruler tick strips ride all four edges of
+              the drawing window (the reference's proximity rulers). */}
           <RevealCssClass as="div" className="fo-hero-fig" delay={3}>
             <div className="bp-stage" data-cursor="none">
               <ElevationDrawing active={activeStage} />
               <HeroInspect />
+              <div className="bp-rulers" aria-hidden="true">
+                <span className="bp-ruler bp-ruler-t" />
+                <span className="bp-ruler bp-ruler-b" />
+                <span className="bp-ruler bp-ruler-s" />
+                <span className="bp-ruler bp-ruler-e" />
+                <span className="bp-plus bp-plus-tl">+</span>
+                <span className="bp-plus bp-plus-tr">+</span>
+                <span className="bp-plus bp-plus-bl">+</span>
+                <span className="bp-plus bp-plus-br">+</span>
+              </div>
               <div className="bp-hotspots" role="group" aria-label="استكشف مراحل مسار التعلّم">
                 {STAGES.map((s, i) => (
                   <button
@@ -670,20 +802,310 @@ export default function LandingPage() {
             </div>
           </RevealCssClass>
 
-          {/* r307 — the documentary media band: authentic university
-              photography composed into the sheet. Flat hairline frames,
-              flat captions; the lead is the LCP media candidate (eager +
-              high fetch priority), the rest ride in lazy. Baseline-
-              aligned: the panorama reads as a letterbox strip, the
-              portrait anchors the band’s reading end. */}
-          <RevealCssClass as="div" className="fo-hero-media" delay={4}>
-            <MediaFrame photo={HERO_PHOTOS[0]} variant="hero-lead" eager />
-            <MediaFrame photo={HERO_PHOTOS[1]} variant="hero-mid" />
-            <MediaFrame photo={HERO_PHOTOS[2]} variant="hero-tall" />
+          {/* R308 — the capabilities ticker: the sheet's continuous
+              instrument (the reference's hero marquee grammar). The
+              items are the honest live-capability ledger (the full
+              matrix lives on /capabilities); the loop is a hand-tuned
+              crawl in the authored-choreography file, duplicated track
+              aria-hidden, collapsed under reduced motion to a static
+              row. */}
+          <div className="fo-ticker" aria-label="قدرات تعمل اليوم">
+            <div className="fo-ticker-track" aria-hidden="false">
+              {LIVE_CAPABILITIES.map((cap, i) => (
+                <span key={cap} className="fo-ticker-item">
+                  <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
+                  {cap}
+                </span>
+              ))}
+            </div>
+            <div className="fo-ticker-track" aria-hidden="true">
+              {LIVE_CAPABILITIES.map((cap, i) => (
+                <span key={cap} className="fo-ticker-item">
+                  <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
+                  {cap}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ [2] البيان — the statement (the reference's intro): the
+            scrub-revealed declaration + the documented-universities
+            ticker. r308: the title unmasks word-by-word, scrub-linked +
+            reversible to the scroll. ═══ */}
+        <section id="statement" className="st-section" ref={statementRef} aria-labelledby="statement-title">
+          <div className="st-spread">
+            <div className="st-copy">
+              <span className="fo-label"><span className="fo-mono" dir="ltr">[02]</span> البيان</span>
+              <h2 id="statement-title" className="st-title">
+                <ScrubReveal text="منصّة واحدة تخدم الرحلة كلّها" />
+              </h2>
+            </div>
+            <div className="st-lines">
+              <RevealCssClass as="p" className="st-line">
+                <strong>للطالب</strong>
+                <span>تشاهد محاضرة تفاعلية، فتُقاس فهمك لحظة بلحظة، فتعرف خطوتك التالية.</span>
+              </RevealCssClass>
+              <RevealCssClass as="p" className="st-line" delay={1}>
+                <strong>للأستاذ</strong>
+                <span>تبني المحاضرة والاختبار، وتصحّح المقالات بملاحظات مكتوبة، وترى من يحتاجك الآن.</span>
+              </RevealCssClass>
+              <RevealCssClass as="p" className="st-line" delay={2}>
+                <strong>للإدارة</strong>
+                <span>تدير الكليات والمقرّرات والصلاحيات، وترى مؤسّستك حيّة على مستوى كل قسم.</span>
+              </RevealCssClass>
+            </div>
+          </div>
+
+          {/* the universities ticker — the documented institutions
+              (photos + official-channel videos live on /campus). The
+              same crawl grammar as the hero band, honest content. */}
+          <div className="fo-ticker fo-ticker--universities" aria-label="جامعات ليبية موثّقة في الوسائط">
+            <div className="fo-ticker-track" aria-hidden="false">
+              {DOCUMENTED_UNIVERSITIES.map((u, i) => (
+                <span key={u} className="fo-ticker-item">
+                  <span className="fo-mono" dir="ltr">[U{String(i + 1).padStart(2, '0')}]</span>
+                  {u}
+                </span>
+              ))}
+            </div>
+            <div className="fo-ticker-track" aria-hidden="true">
+              {DOCUMENTED_UNIVERSITIES.map((u, i) => (
+                <span key={u} className="fo-ticker-item">
+                  <span className="fo-mono" dir="ltr">[U{String(i + 1).padStart(2, '0')}]</span>
+                  {u}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ [3] التحديات — the four pains (the reference's problem
+            section): numbered cards with draw-in line art, each pain
+            answered by a live capability. The full capability matrix
+            lives on /capabilities (linked from the section foot). ═══ */}
+        <section id="live" className="pm-section" aria-labelledby="pm-title">
+          <div className="pm-head">
+            <span className="fo-label"><span className="fo-mono" dir="ltr">[03]</span> التحديات</span>
+            <RevealCssClass as="h2" className="pm-title" delay={1} id="pm-title">
+              أربعة أوجاع من <em>التعليم العالي الليبي</em>
+            </RevealCssClass>
+            <RevealCssClass as="p" className="pm-lede" delay={2}>
+              ليست أحكامًا على أحد — بل المشكلات التي بُنيت مدارك لحلّها.
+              تحت كل وجعٍ بندٌ يعمل اليوم داخل المنصّة، والسجلّ الكامل في صفحة القدرات.
+            </RevealCssClass>
+          </div>
+
+          <ol className="pm-cards">
+            {PAINS.map((p, i) => (
+              <RevealCssClass
+                as="li"
+                key={p.num}
+                className="pm-card"
+                delay={((i % 3) + 1) as 1 | 2 | 3}
+              >
+                <span className="pm-card-num fo-mono" dir="ltr">[{p.num}]</span>
+                <PainArt kind={p.num} />
+                <h3 className="pm-card-title">{p.title}</h3>
+                <p className="pm-card-text">{p.text}</p>
+                <p className="pm-card-answer"><Icon icon={Check} size={13} /> {p.answer}</p>
+              </RevealCssClass>
+            ))}
+          </ol>
+
+          <RevealCssClass as="p" className="pm-foot" delay={3}>
+            <Link to="/capabilities" className="fo-text-link">السجلّ الكامل — ما يعمل اليوم وإلى أين</Link>
+          </RevealCssClass>
+        </section>
+
+        {/* ═══ [4] الفصول — the pinned map (the reference's 51%
+            walkthrough). r308: chapters 01–04 live in the pinned
+            «رحلة التعلّم» walkthrough; 05–06 stay as numbered hairline
+            ledger rows with flat fragments ═══ */}
+        <section id="chapters" className="chapters" aria-labelledby="chapters-title">
+          <header className="chapters-head">
+            <div className="chapters-head-copy">
+              <span className="fo-label"><span className="fo-mono" dir="ltr">[04]</span> الفصول</span>
+              <RevealCssClass as="h2" className="chapters-title" delay={1} id="chapters-title">
+                الرحلة — <em>أربعة فصول تتحرّك أمامك</em>
+              </RevealCssClass>
+            </div>
+            <RevealCssClass as="p" className="chapters-lede" delay={2}>
+              مرّر لترى الرحلة تُبنى: أربعة فصول تتحرّك في مشهدٍ واحد — ثم فصلان يعرضان واجهةً حقيقيّة. لا لقطات مُجمّلة ولا وعود.
+            </RevealCssClass>
+          </header>
+
+          {/* r308 — «رحلة التعلّم»: the pinned walkthrough. Chapters
+              01–04 play out across one persistent drawing while the
+              scroll is the timeline (CSS sticky pin; stacked readable
+              sequence ≤991px). The ledger rows below complete it.
+              R313 (D7): the map owns ≈51% of the page — the
+              reference's proportion. */}
+          <JourneyScene />
+
+          <div className="ch-rows">
+            {CHAPTERS.map((ch) => (
+              <article key={ch.num} className="ch" aria-labelledby={`ch-${ch.num}-title`}>
+                <span className="ch-num fo-mono" dir="ltr" aria-hidden>{ch.num}</span>
+                <div className="ch-head">
+                  <RevealCssClass as="h3" className="ch-title" id={`ch-${ch.num}-title`} delay={1}>
+                    {ch.title}
+                  </RevealCssClass>
+                  <RevealCssClass as="p" className="ch-lede" delay={2}>{ch.lede}</RevealCssClass>
+                </div>
+                <RevealCssClass as="div" className="ch-mini" delay={2}>{ch.mini}</RevealCssClass>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* ═══ [5] المنصّة فعليًا — two product blocks (the reference's
+            platform section): the student surface + the teacher
+            cockpit. The frames are authentic UI from the seeded demo
+            environment (fully synthetic «جامعة مدارك التجريبية» data) —
+            labelled «لقطة حقيقية» with the demo disclosure on every
+            frame; the CTA scrolls to the conversion row (the funnel
+            counts stay exact — no extra auth links on the sheet). ═══ */}
+        <section id="product" className="pr-section" aria-labelledby="pr-title">
+          <div className="pr-head">
+            <span className="fo-label"><span className="fo-mono" dir="ltr">[05]</span> المنصّة فعليًا</span>
+            <RevealCssClass as="h2" className="pr-title" delay={1} id="pr-title">
+              لا وعود — هذه <em>الواجهة نفسها</em>
+            </RevealCssClass>
+            <RevealCssClass as="p" className="pr-lede" delay={2}>
+              لقطات حقيقية من بيئة العرض: بيانات تجريبية اصطناعية بالكامل داخل «جامعة مدارك التجريبية» —
+              ما تراه هنا هو ما يعمل اليوم داخل المنصّة.
+            </RevealCssClass>
+          </div>
+
+          <RevealCssClass as="div" className="pr-grid" delay={2}>
+            <ProductFrame capture={PRODUCT_CAPTURES[0]} variant="lead" ctaAr="أنشئ حسابك لتجربتها حيّة" ctaTo="#cta" ctaAnchor />
+            {teacherCapture && <ProductFrame capture={teacherCapture} />}
           </RevealCssClass>
 
-          {/* the title block — the drawing sheet's metadata grid */}
-          <RevealCssClass as="dl" className="fo-hero-meta" delay={5}>
+          <RevealCssClass as="p" className="pr-note" delay={3}>
+            كل إطار مأخوذ من التطبيق نفسه في وضع الضيافة — بلا معالجة ولا تجميل.
+            المزيد من الأسطح الحقيقية في <Link to="/capabilities" className="fo-text-link">صفحة القدرات</Link>.
+          </RevealCssClass>
+        </section>
+
+        {/* ═══ [6] لماذا مدارك — the Watch/Check/Test/Master stage
+            strip (the reference's why): the four journey verbs beside
+            the four real student-surface captures, cross-fading on the
+            scroll (the 74%-hold plateau grammar); static + fully
+            readable under reduced motion and ≤991px. ═══ */}
+        <section className="wy-section" aria-labelledby="wy-title">
+          <div className="wy-head">
+            <span className="fo-label"><span className="fo-mono" dir="ltr">[06]</span> لماذا مدارك</span>
+            <RevealCssClass as="h2" className="wy-title" delay={1} id="wy-title">
+              الرحلة في <em>أربع مراحل</em>
+            </RevealCssClass>
+            <RevealCssClass as="p" className="wy-lede" delay={2}>
+              شاهد، تحقّق، اختبر، أتقن — المراحل الأربع التي تعبرها في كل مقرّر،
+              ولكلٍّ منها سطحٌ حقيقي داخل المنصّة.
+            </RevealCssClass>
+          </div>
+
+          <WhyScene />
+
+          <RevealCssClass as="p" className="wy-note" delay={3}>
+            اللقطات من بيئة العرض — بيانات تجريبية اصطناعية بالكامل، وموثَّقة على كل إطار.
+          </RevealCssClass>
+        </section>
+
+        {/* ═══ [7] الأدوار — the ruled hairline grid (the reference's
+            usecase): the five verified platform roles + three honest
+            personas. No role implies a feature it does not have — the
+            line under each card is the honest current state. ═══ */}
+        <section id="roles" className="rl-section" aria-labelledby="rl-title">
+          <div className="rl-head">
+            <span className="fo-label"><span className="fo-mono" dir="ltr">[07]</span> الأدوار</span>
+            <RevealCssClass as="h2" className="rl-title" delay={1} id="rl-title">
+              منصّة واحدة، <em>خمسة أدوار وثلاث شرائح</em>
+            </RevealCssClass>
+            <RevealCssClass as="p" className="rl-lede" delay={2}>
+              خمسة أدوار مثبَّتة داخل المنصّة، وثلاث شرائح يخدمها المنتج اليوم أو يبني لها —
+              كل بطاقة تقول الحقيقة كما هي.
+            </RevealCssClass>
+          </div>
+
+          <ul className="rl-cards">
+            {ROLE_SHOWCASES.map((r, i) => (
+              <RevealCssClass as="li" key={r.key} className="rl-card" delay={((i % 3) + 1) as 1 | 2 | 3}>
+                <span className="rl-card-num fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
+                <h3 className="rl-card-title">{r.roleAr.replace(/^ل/, '')}</h3>
+                <p className="rl-card-line">{r.lineAr}</p>
+                <span className="rl-card-tag">دور منصّة</span>
+              </RevealCssClass>
+            ))}
+            {PERSONAS.map((p, i) => (
+              <RevealCssClass as="li" key={p.title} className="rl-card" delay={((i % 3) + 1) as 1 | 2 | 3}>
+                <span className="rl-card-num fo-mono" dir="ltr">[{p.num}]</span>
+                <h3 className="rl-card-title">{p.title}</h3>
+                <p className="rl-card-line">{p.line}</p>
+                <span className={`rl-card-tag${p.live ? ' is-live' : ''}`}>{p.state}</span>
+              </RevealCssClass>
+            ))}
+          </ul>
+
+          <RevealCssClass as="p" className="rl-more" delay={3}>
+            بيانات كل مؤسّسة معزولة تمامًا — والصلاحيات منفصلة دورًا بدور.
+          </RevealCssClass>
+        </section>
+
+        {/* ═══ [8] الخاتمة (the reference's cta) — the coordinates row,
+            the title block (the sheet's metadata grid, moved from the
+            hero), the sketch panel, and the resolve. The colleges
+            registry strip carries the #colleges anchor. ═══ */}
+        <section className="fo-cta" id="vision" ref={ctaRef} aria-label="ابدأ رحلتك — أنشئ حسابك">
+          <p className="fo-cta-coords fo-mono" dir="ltr" aria-hidden="true">
+            [R313] — MADAREK · {year} · INDEPENDENT
+          </p>
+          {/* r308 — the corner coordinate labels: real document-space
+              values of this section's corners (the reference's CTA
+              corner grammar), written once the layout settles. */}
+          <p className="fo-cta-corners fo-mono" ref={ctaCoordsRef} dir="ltr" aria-hidden="true">
+            [0,0] [0,0] [0,0] [0,0]
+          </p>
+          <div className="fo-cta-grid">
+            <div className="fo-cta-inner">
+              <RevealCssClass as="h2" className="fo-cta-title" delay={1}>
+                جاهزٌ لبدء <em>رحلتك</em>؟
+              </RevealCssClass>
+              <RevealCssClass as="p" className="fo-cta-lede" delay={2}>
+                أنشئ حسابك الجامعي في دقائق — بالبريد الجامعي أو رقم قيدك —
+                وتابع تقدّمك من أوّل محاضرة.
+              </RevealCssClass>
+              <RevealCssClass as="div" className="fo-cta-actions" delay={3} id="cta">
+                <Link to="/auth/register" className="btn accent lg">
+                  أنشئ حسابك الجامعي
+                  <Icon icon={ArrowLeft} size={16} />
+                </Link>
+                <Link to="/auth" className="btn ghost lg">تسجيل الدخول</Link>
+              </RevealCssClass>
+              <RevealCssClass as="p" className="fo-cta-meta" delay={4}>
+                <Icon icon={Check} size={13} />
+                مدارك · {year} · منصّة تعليمية مستقلّة
+              </RevealCssClass>
+            </div>
+
+            {/* the sketch panel — the drafting-sheet sketch (the
+                reference's cta sketch image): the grid + registration
+                marks + coordinates, pure line work, decorative. */}
+            <div className="fo-cta-sketch" aria-hidden="true">
+              <span className="fo-cta-sketch-grid" />
+              <span className="fo-cta-sketch-mark fo-cta-sketch-tl">+</span>
+              <span className="fo-cta-sketch-mark fo-cta-sketch-tr">+</span>
+              <span className="fo-cta-sketch-mark fo-cta-sketch-bl">+</span>
+              <span className="fo-cta-sketch-mark fo-cta-sketch-br">+</span>
+              <span className="fo-cta-sketch-coord fo-mono" dir="ltr">[CTA · RESOLVE]</span>
+            </div>
+          </div>
+
+          {/* the title block — the sheet's metadata grid (moved from
+              the hero in R313; the drawing-sheet identity closes the
+              page the way it opened it). */}
+          <RevealCssClass as="dl" className="fo-hero-meta" delay={2}>
             <div className="fo-meta-row">
               <dt className="fo-meta-k">المشروع</dt>
               <dd className="fo-meta-v">منصّة تعليمية تقنية مستقلّة</dd>
@@ -717,395 +1139,21 @@ export default function LandingPage() {
             </div>
           </RevealCssClass>
 
-          {/* R308 — the capabilities ticker: the sheet's continuous
-              instrument (the reference's hero marquee grammar). The
-              items are the honest live-capability ledger; the loop is
-              a hand-tuned crawl in the authored-choreography file,
-              duplicated track aria-hidden, collapsed under reduced
-              motion to a static row. */}
-          <div className="fo-ticker" aria-label="قدرات تعمل اليوم">
-            <div className="fo-ticker-track" aria-hidden="false">
-              {LIVE_CAPABILITIES.map((cap, i) => (
-                <span key={cap} className="fo-ticker-item">
-                  <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
-                  {cap}
-                </span>
-              ))}
+          {/* [9] the colleges registry strip — the ruled hairline row
+              linking the public registry (the funnel's 5th login
+              affordance lives here; the demo-data disclosure rides the
+              row, never a tooltip). */}
+          <div className="cg-strip" id="colleges">
+            <span className="cg-strip-label fo-mono" dir="ltr">[09] · REGISTRY</span>
+            <p className="cg-strip-text">
+              <strong><span className="fo-mono" dir="ltr">{formatInt(colleges.length)}</span> كلية</strong> في{' '}
+              <span className="fo-mono" dir="ltr">{formatInt(CAMPUS_COUNT)}</span> أحرُم —
+              بيانات «جامعة مدارك التجريبية»: اصطناعية بالكامل لأغراض العرض.
+            </p>
+            <div className="cg-strip-links">
+              <Link to="/colleges" className="btn ghost sm">تصفّح الكلّيّات التجريبية</Link>
+              <Link to="/auth" className="fo-text-link">سجِّل الدخول لاستعراض كليّتك داخل المنصّة</Link>
             </div>
-            <div className="fo-ticker-track" aria-hidden="true">
-              {LIVE_CAPABILITIES.map((cap, i) => (
-                <span key={cap} className="fo-ticker-item">
-                  <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
-                  {cap}
-                </span>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ═══ البيان — the statement: a framed declaration. r308: the
-            title unmasks word-by-word, scrub-linked + reversible to the
-            scroll (the reference's intro-title grammar). ═══ */}
-        <section id="statement" className="st-section" ref={statementRef} aria-labelledby="statement-title">
-          <div className="st-spread">
-            <div className="st-copy">
-              <span className="fo-label"><span className="fo-mono" dir="ltr">[02]</span> البيان</span>
-              <h2 id="statement-title" className="st-title">
-                <ScrubReveal text="منصّة واحدة تخدم الرحلة كلّها" />
-              </h2>
-            </div>
-            <div className="st-lines">
-              <RevealCssClass as="p" className="st-line">
-                <strong>للطالب</strong>
-                <span>تشاهد محاضرة تفاعلية، فتُقاس فهمك لحظة بلحظة، فتعرف خطوتك التالية.</span>
-              </RevealCssClass>
-              <RevealCssClass as="p" className="st-line" delay={1}>
-                <strong>للأستاذ</strong>
-                <span>تبني المحاضرة والاختبار، وتصحّح المقالات بملاحظات مكتوبة، وترى من يحتاجك الآن.</span>
-              </RevealCssClass>
-              <RevealCssClass as="p" className="st-line" delay={2}>
-                <strong>للإدارة</strong>
-                <span>تدير الكليات والمقرّرات والصلاحيات، وترى مؤسّستك حيّة على مستوى كل قسم.</span>
-              </RevealCssClass>
-            </div>
-          </div>
-        </section>
-
-        {/* ═══ r307 — الحياة الجامعية: the documentary university media
-            rail. Authentic photography of real Libyan campuses under
-            free licences (PD / CC BY / CC BY-SA) with per-image
-            attribution; the panorama band leads, the mosaic carries the
-            rest. Honesty pins: the source line + the non-endorsement
-            note ride with the section, never in a tooltip. ═══ */}
-        <section id="campus-life" className="um-section" aria-labelledby="um-title">
-          <div className="um-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[03]</span> الحياة الجامعية</span>
-            <RevealCssClass as="h2" className="um-title" delay={1} id="um-title">
-              من داخل الجامعات الليبية
-            </RevealCssClass>
-            <RevealCssClass as="p" className="um-lede" delay={2}>
-              صور حقيقية لحرم جامعات ليبية عامة، بتراخيص مفتوحة من ويكيميديا كومنز —
-              توثيقٌ للحياة الجامعية، لا زخرفة: كل إطار يحمل اسم جامعته ونسب مصوّره.
-            </RevealCssClass>
-          </div>
-
-          <RevealCssClass as="div" className="um-rail" delay={2}>
-            <MediaFrame photo={RAIL_PHOTOS[0]} variant="panorama" />
-            <div className="um-mosaic">
-              {/* r308: the mosaic frames resolve out of their drawing —
-                  the ink-mask reveal (photo-only overlay; captions and
-                  licences stay visible at all times). */}
-              <MediaFrame photo={RAIL_PHOTOS[1]} variant="large" overlay={<InkSketch />} />
-              <MediaFrame photo={RAIL_PHOTOS[2]} variant="std" overlay={<InkSketch />} />
-              <MediaFrame photo={RAIL_PHOTOS[3]} variant="std" overlay={<InkSketch />} />
-              <MediaFrame photo={RAIL_PHOTOS[4]} variant="std" overlay={<InkSketch />} />
-              <MediaFrame photo={RAIL_PHOTOS[5]} variant="std" overlay={<InkSketch />} />
-            </div>
-          </RevealCssClass>
-
-          <RevealCssClass as="p" className="um-note" delay={3}>
-            المصدر: ويكيميديا كومنز — تراخيص PD / CC BY / CC BY-SA، ونسب كل مصوّر مرفقة بإطاره.
-            أعيد تحجيم الصور وقصّها للعرض. ظهور جامعة هنا توثيقٌ لحقيقتها، لا تبنّيًا ولا شراكة — مدارك مستقلّة.
-          </RevealCssClass>
-        </section>
-
-        {/* ═══ الفصول — the capability ledger. r308: chapters 01–04
-            live in the pinned «رحلة التعلّم» walkthrough; 05–06 stay
-            as numbered hairline ledger rows with flat fragments ═══ */}
-        <section id="chapters" className="chapters" aria-labelledby="chapters-title">
-          <header className="chapters-head">
-            <div className="chapters-head-copy">
-              <span className="fo-label"><span className="fo-mono" dir="ltr">[04]</span> الفصول</span>
-              <RevealCssClass as="h2" className="chapters-title" delay={1} id="chapters-title">
-                ستُّ فصول — كلُّ فصلٍ قدرةٌ تعمل اليوم
-              </RevealCssClass>
-            </div>
-            <RevealCssClass as="p" className="chapters-lede" delay={2}>
-              مرّر لترى الرحلة تُبنى: أربعة فصول تتحرّك أمامك في مشهدٍ واحد — ثم فصلان يعرضان واجهةً حقيقيّة. لا لقطات مُجمّلة ولا وعود.
-            </RevealCssClass>
-          </header>
-
-          {/* r308 — «رحلة التعلّم»: the pinned walkthrough. Chapters
-              01–04 play out across one persistent drawing while the
-              scroll is the timeline (CSS sticky pin; stacked readable
-              sequence ≤991px). The ledger rows below complete it. */}
-          <JourneyScene />
-
-          <div className="ch-rows">
-            {CHAPTERS.map((ch) => (
-              <article key={ch.num} className="ch" aria-labelledby={`ch-${ch.num}-title`}>
-                <span className="ch-num fo-mono" dir="ltr" aria-hidden>{ch.num}</span>
-                <div className="ch-head">
-                  <RevealCssClass as="h3" className="ch-title" id={`ch-${ch.num}-title`} delay={1}>
-                    {ch.title}
-                  </RevealCssClass>
-                  <RevealCssClass as="p" className="ch-lede" delay={2}>{ch.lede}</RevealCssClass>
-                </div>
-                <RevealCssClass as="div" className="ch-mini" delay={2}>{ch.mini}</RevealCssClass>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* ═══ r307 — المنصّة فعليًا: real captures from the running
-            platform. The frames are authentic UI from the seeded demo
-            environment (fully synthetic «جامعة مدارك التجريبية» data) —
-            labelled «لقطة حقيقية» with the demo disclosure on every
-            frame; the CTA scrolls to the conversion row (the funnel
-            counts stay exact — no extra auth links on the sheet). ═══ */}
-        <section id="product" className="pr-section" aria-labelledby="pr-title">
-          <div className="pr-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[05]</span> المنصّة فعليًا</span>
-            <RevealCssClass as="h2" className="pr-title" delay={1} id="pr-title">
-              لا وعود — هذه <em>الواجهة نفسها</em>
-            </RevealCssClass>
-            <RevealCssClass as="p" className="pr-lede" delay={2}>
-              لقطات حقيقية من بيئة العرض: بيانات تجريبية اصطناعية بالكامل داخل «جامعة مدارك التجريبية» —
-              ما تراه هنا هو ما يعمل اليوم داخل المنصّة.
-            </RevealCssClass>
-          </div>
-
-          <RevealCssClass as="div" className="pr-grid" delay={2}>
-            <ProductFrame capture={PRODUCT_CAPTURES[0]} variant="lead" ctaAr="أنشئ حسابك لتجربتها حيّة" ctaTo="#cta" ctaAnchor />
-            <ProductFrame capture={PRODUCT_CAPTURES[1]} />
-            <ProductFrame capture={PRODUCT_CAPTURES[2]} />
-            <ProductFrame capture={PRODUCT_CAPTURES[3]} />
-          </RevealCssClass>
-
-          <RevealCssClass as="p" className="pr-note" delay={3}>
-            كل إطار مأخوذ من التطبيق نفسه في وضع الضيافة — بلا معالجة ولا تجميل.
-          </RevealCssClass>
-        </section>
-
-        {/* ═══ r307 — مشاهد جامعية: official-channel documentaries.
-            The cards are designed facades (no third-party bytes until
-            the visitor clicks); the embed rides youtube-nocookie and
-            the kind label tells the truth: a university documentary is
-            never presented as a product demo. ═══ */}
-        <section id="videos" className="vd-section" aria-labelledby="vd-title">
-          <div className="vd-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[06]</span> مشاهد جامعية</span>
-            <RevealCssClass as="h2" className="vd-title" delay={1} id="vd-title">
-              الحياة الجامعية <em>بالفيديو</em>
-            </RevealCssClass>
-            <RevealCssClass as="p" className="vd-lede" delay={2}>
-              تسجيلات توثيقية من القنوات الرسمية للجامعات — تُحمَّل عند الطلب فقط،
-              وبلا أي بايتات خارجية قبل نقرك.
-            </RevealCssClass>
-          </div>
-
-          <RevealCssClass as="div" className="vd-grid" delay={2}>
-            <VideoCard video={UNIVERSITY_VIDEOS[0]} variant="primary" />
-            <VideoCard video={UNIVERSITY_VIDEOS[1]} variant="secondary" />
-          </RevealCssClass>
-
-          <RevealCssClass as="p" className="vd-note" delay={3}>
-            الفيديوهات من القنوات الرسمية لجامعتي مصراتة وسبها، عبر آلية التضمين المسموحة —
-            والمشغّل لا يُحمَّل إلا بعد نقر «شاهد الفيديو».
-          </RevealCssClass>
-        </section>
-
-        {/* ═══ ما يعمل اليوم — the capability matrix: a hairline
-            TABLE (the reference's pricing grammar), numbered rows +
-            checks + the bracketed count. No slab, no inversion. ═══ */}
-        <section id="live" className="lv-section" aria-labelledby="live-title">
-          <div className="lv-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[07]</span> ما يعمل اليوم</span>
-            <RevealCssClass as="h2" className="lv-title" delay={1} id="live-title">
-              قدرات <em>موثَّقة</em>، لا ادّعاءات
-            </RevealCssClass>
-            <RevealCssClass as="p" className="lv-lede" delay={2}>
-              كل رقم يُحسب من حالة الميزات في النظام — يتغيّر مع التحديثات، لا مع الحملات.
-            </RevealCssClass>
-          </div>
-          <ol className="lv-list">
-            {LIVE_CAPABILITIES.map((cap, i) => (
-              <RevealCssClass as="li" key={cap} className="lv-row" delay={((i % 3) + 1) as 1 | 2 | 3}>
-                <span className="lv-num fo-mono" dir="ltr" aria-hidden>{String(i + 1).padStart(2, '0')}</span>
-                <span className="lv-text">{cap}</span>
-                <span className="lv-check" aria-hidden><Icon icon={Check} size={14} /></span>
-              </RevealCssClass>
-            ))}
-          </ol>
-          <p className="lv-foot fo-mono" dir="ltr">[06] live capabilities · source: system feature state</p>
-        </section>
-
-        {/* ═══ r307 — الأدوار: the interactive role selector over REAL
-            dashboards. The chips carry aria-pressed and swap the panel
-            (a polite live region) — the same accessible contract as the
-            college chips. No role implies a feature it does not have:
-            the line under each capture is the honest current state. ═══ */}
-        <section id="roles" className="rl-section" aria-labelledby="rl-title">
-          <div className="rl-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[08]</span> الأدوار</span>
-            <RevealCssClass as="h2" className="rl-title" delay={1} id="rl-title">
-              منصّة واحدة، <em>خمسة مسارات</em>
-            </RevealCssClass>
-            <RevealCssClass as="p" className="rl-lede" delay={2}>
-              اختر دورًا لترى لوحته الحقيقية — لقطة من التطبيق نفسه في بيئة العرض، ببيانات تجريبية.
-            </RevealCssClass>
-          </div>
-
-          <div className="rl-stage">
-            <ul className="rl-chips" aria-label="اختر دورًا لاستعراض لوحته">
-              {ROLE_SHOWCASES.map((r) => (
-                <li key={r.key}>
-                  <button
-                    type="button"
-                    className="rl-chip"
-                    aria-pressed={selectedRole === r.key}
-                    onClick={() => setSelectedRole(r.key)}
-                  >
-                    {r.roleAr}
-                  </button>
-                </li>
-              ))}
-            </ul>
-
-            <div className="rl-panel" role="status" aria-live="polite">
-              <p className="rl-panel-role">{roleShowcase.roleAr}</p>
-              <p className="rl-panel-line">{roleShowcase.lineAr}</p>
-              {roleCapture && (
-                <ProductFrame
-                  capture={{ ...roleCapture, sizes: '(min-width: 992px) 44rem, 100vw' }}
-                  variant="role"
-                />
-              )}
-            </div>
-          </div>
-
-          <RevealCssClass as="p" className="rl-more" delay={3}>
-            بيانات كل مؤسّسة معزولة تمامًا — والصلاحيات منفصلة دورًا بدور.
-          </RevealCssClass>
-        </section>
-
-        {/* ═══ الكليات — the interactive registry: hairline chips +
-            the details panel + the title-block metadata (the ghost
-            numeral is retired with the poster). The chips are the
-            accessible surface: 25 real colleges, keyboard-operable,
-            44px targets, a details panel instead of a popover. ═══ */}
-        <section id="colleges" className="cg-section" aria-labelledby="cg-title">
-          <div className="cg-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[09]</span> الجامعة التجريبية</span>
-            <RevealCssClass as="h2" className="cg-title" delay={1} id="cg-title">
-              {formatInt(colleges.length)} كلية في {formatInt(CAMPUS_COUNT)} أحرُم
-            </RevealCssClass>
-            <RevealCssClass as="p" className="cg-lede" delay={2}>
-              بيانات العرض تخصّ «جامعة مدارك التجريبية» — مؤسّسة اصطناعية بالكامل،
-              وبنية الكليات كاملة معروضة داخل المنصّة.
-            </RevealCssClass>
-          </div>
-
-          <div className="cg-stage">
-            <div className="cg-panel-wrap">
-              <ul className="cg-chips" aria-label="اختر كلية لاستعراضها">
-                {colleges.map((c) => (
-                  <li key={c.slug}>
-                    <button
-                      type="button"
-                      className="cg-chip"
-                      aria-pressed={selectedCollege === c.slug}
-                      onClick={() => setSelectedCollege(c.slug)}
-                    >
-                      {c.nameAr}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-
-              {selected && (
-                /* r282: a live region, not a landmark — axe's
-                   landmark-complementary rule flagged the <aside>
-                   nested inside the chapter <section>; the panel's
-                   real contract is the polite announcement, which
-                   role="status" carries on a plain div. */
-                <div className="cg-panel" role="status" aria-live="polite">
-                  <p className="cg-panel-name">{selected.nameAr}</p>
-                  <p className="cg-panel-campus">{selected.cityAr} · {selected.nameEn}</p>
-                  <Link to="/colleges" className="btn ghost sm">استعراض في صفحة الكلّيّات</Link>
-                </div>
-              )}
-            </div>
-
-            <dl className="cg-meta" aria-label="بيانات السجلّ">
-              <div className="fo-meta-row">
-                <dt className="fo-meta-k">السجلّ</dt>
-                <dd className="fo-meta-v">جامعة مدارك التجريبية</dd>
-              </div>
-              <div className="fo-meta-row">
-                <dt className="fo-meta-k">الكليات</dt>
-                <dd className="fo-meta-v"><span className="fo-mono" dir="ltr">{formatInt(colleges.length)}</span> في <span className="fo-mono" dir="ltr">{formatInt(CAMPUS_COUNT)}</span> أحرُم</dd>
-              </div>
-              <div className="fo-meta-row">
-                <dt className="fo-meta-k">الحالة</dt>
-                <dd className="fo-meta-v">بيانات اصطناعية للعرض</dd>
-              </div>
-            </dl>
-          </div>
-
-          <div className="cg-cta-row">
-            <Link to="/colleges" className="btn ghost">تصفّح الكلّيّات التجريبية</Link>
-            <Link to="/auth" className="fo-text-link">سجِّل الدخول لاستعراض كليّتك داخل المنصّة</Link>
-          </div>
-        </section>
-
-        {/* ═══ إلى أين — the honest status pairs with state tags:
-            live / simulated / in-development, mono-tagged ═══ */}
-        <section id="vision" className="vs-section" aria-labelledby="vs-title">
-          <div className="vs-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[10]</span> إلى أين</span>
-            <RevealCssClass as="h2" className="vs-title" delay={1} id="vs-title">
-              نحو تعليمٍ <em>يعرف كلَّ طالب</em>
-            </RevealCssClass>
-            <RevealCssClass as="p" className="vs-lede" delay={2}>
-              نبني منظومة تتذكّر ما شاهد الطالب وما أخطأ وما ينقصه —
-              ثم تقترح الخطوة التالية. بلا أرقام مختلقة ولا وعود بلا تنفيذ:
-              كل حالة أدناه كما هي في النظام اليوم.
-            </RevealCssClass>
-          </div>
-          <RevealCssClass as="ul" className="vs-status" delay={3}>
-            {VISION_STATUS.map((s) => (
-              <li key={s.k} className={s.live ? 'is-live' : undefined}>
-                <span className="vs-status-k"><Icon icon={s.live ? Check : FlaskConical} size={13} /> {s.k}</span>
-                <span className="vs-status-v">{s.v}</span>
-                <span className={`vs-status-tag${s.live ? ' is-live' : ''}`}>
-                  {s.live ? 'يعمل الآن' : 'محاكاة/قيد التطوير'}
-                </span>
-              </li>
-            ))}
-          </RevealCssClass>
-        </section>
-
-        {/* ═══ الخاتمة — the coordinates row + the resolve ═══ */}
-        <section className="fo-cta" id="cta" ref={ctaRef} aria-label="ابدأ رحلتك — أنشئ حسابك">
-          <p className="fo-cta-coords fo-mono" dir="ltr" aria-hidden="true">
-            [R308] — MADAREK · {year} · INDEPENDENT
-          </p>
-          {/* r308 — the corner coordinate labels: real document-space
-              values of this section's corners (the reference's CTA
-              corner grammar), written once the layout settles. */}
-          <p className="fo-cta-corners fo-mono" ref={ctaCoordsRef} dir="ltr" aria-hidden="true">
-            [0,0] [0,0] [0,0] [0,0]
-          </p>
-          <div className="fo-cta-inner">
-            <RevealCssClass as="h2" className="fo-cta-title" delay={1}>
-              جاهزٌ لبدء <em>رحلتك</em>؟
-            </RevealCssClass>
-            <RevealCssClass as="p" className="fo-cta-lede" delay={2}>
-              أنشئ حسابك الجامعي في دقائق — بالبريد الجامعي أو رقم قيدك —
-              وتابع تقدّمك من أوّل محاضرة.
-            </RevealCssClass>
-            <RevealCssClass as="div" className="fo-cta-actions" delay={3}>
-              <Link to="/auth/register" className="btn accent lg">
-                أنشئ حسابك الجامعي
-                <Icon icon={ArrowLeft} size={16} />
-              </Link>
-              <Link to="/auth" className="btn ghost lg">تسجيل الدخول</Link>
-            </RevealCssClass>
-            <RevealCssClass as="p" className="fo-cta-meta" delay={4}>
-              <Icon icon={Check} size={13} />
-              مدارك · {year} · منصّة تعليمية مستقلّة
-            </RevealCssClass>
           </div>
         </section>
       </main>
@@ -1133,10 +1181,10 @@ export default function LandingPage() {
             </div>
             <nav className="fo-footer-col" aria-label="روابط المنصّة">
               <div className="fo-footer-heading">المنصّة</div>
-              <a href="#campus-life" className="fo-footer-link">الحياة الجامعية</a>
+              <Link to="/campus" className="fo-footer-link">الحياة الجامعية</Link>
               <a href="#chapters" className="fo-footer-link">الفصول</a>
               <a href="#product" className="fo-footer-link">المنصّة فعليًا</a>
-              <a href="#live" className="fo-footer-link">ما يعمل اليوم</a>
+              <Link to="/capabilities" className="fo-footer-link">ما يعمل اليوم</Link>
               <a href="#roles" className="fo-footer-link">الأدوار</a>
               <Link to="/colleges" className="fo-footer-link">الجامعة التجريبية</Link>
             </nav>
