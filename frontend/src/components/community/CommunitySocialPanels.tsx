@@ -414,7 +414,10 @@ export function PostsFeedPanel() {
               <div className="flex items-center justify-between">
                 <span className="text-xxs text-subtle" style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-1-5)' }}>
                   {draft.trim() !== '' && <span>مسودة محفوظة تلقائيّاً</span>}
-                  <span><bdi>{formatNum(draft.length)}</bdi> / <bdi>2000</bdi></span>
+                  {/* r313: the N / 2000 counter is a mono micro-label —
+                      Latin digits, tabular instrument voice (the same
+                      grammar as the trend counts and exam char counters). */}
+                  <span className="font-mono"><bdi>{formatNum(draft.length)}</bdi> / <bdi>2000</bdi></span>
                 </span>
                 <button
                   type="submit"

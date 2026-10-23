@@ -627,6 +627,17 @@
   gap: var(--sp-2);
   align-items: center;
 }
+/* r313: bidi-isolated digit runs inside these meta lines (the events
+   capacity «N / M», the announce/live counts) read as mono
+   micro-labels — Latin numerals in the instrument voice, tabular; the
+   surrounding Arabic meta keeps the sans ladder. Same grammar as
+   .comp-entry-meta bdi below. */
+.announce-meta bdi,
+.event-meta bdi,
+.live-meta bdi {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
 
 /* ── Competitions grid ─────────────────────────────────────── */
 .comp-grid {
@@ -1130,38 +1141,12 @@ a.comp-card:focus-visible .comp-go {
   transition: var(--t-fast) var(--ease);
 }
 .comp-icon-btn:hover { border-color: var(--accent); }
-/* r297 (polish v18 fold): the overlay micro-interactions — the close
-   glyph rotates on hover, the head icon buttons breathe. r305: both
-   transforms are hover-capable-gated (r283 belt parity) — on touch
-   the rotate/scale used to stick after the first tap. */
-.comp-modal-close {
-  transition:
-    background var(--motion-duration-short) var(--ease),
-    color var(--motion-duration-short) var(--ease),
-    transform var(--motion-duration-short) var(--ease);
-}
-@media (hover: hover) and (pointer: fine) {
-  .comp-modal-close:hover {
-    transform: rotate(90deg);
-  }
-}
-.comp-icon-btn {
-  transition:
-    background var(--motion-duration-short) var(--ease),
-    border-color var(--motion-duration-short) var(--ease),
-    transform var(--motion-duration-short) var(--ease-spring-soft);
-}
-@media (hover: hover) and (pointer: fine) {
-  .comp-icon-btn:hover {
-    transform: scale(1.1);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .comp-modal-close:hover {
-    animation: none !important;
-    transform: none !important;
-  }
-}
+/* (r313: the r297 overlay micro-interactions — the close glyph's
+   rotate(90deg) and the icon button's scale(1.1) hover breath — are
+   RETIRED with the Heron re-key. The reference's hovers are colour /
+   fill steps only; nothing under the cursor rotates or grows. The
+   close keeps its quiet surface wash, the picker keeps the accent
+   border step.) */
 .comp-icon-btn.on {
   /* r313: the picked emoji tile is the ink fill held (the reference's
      active grammar) — the accent-soft tint retired. */

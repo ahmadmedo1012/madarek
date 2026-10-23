@@ -1455,7 +1455,9 @@ export function ExamTakerPage() {
                       maxLength={4000}
                     />
                     {(answers[q.id]?.answerText ?? '').length > 3600 && (
-                      <p className="text-xxs text-subtle oex-char-count">
+                      /* r313: the N/4000 run is a mono counter — Latin
+                         digits, tabular instrument voice (dir-neutral). */
+                      <p className="text-xxs text-subtle oex-char-count font-mono">
                         {(answers[q.id]?.answerText ?? '').length}/4000
                       </p>
                     )}

@@ -637,15 +637,22 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--r-full);
-    background: var(--surface-3);
+    /* r313: a SQUARE index tile — hairline frame, transparent ground,
+       mono numeral (the reference's map-number grammar; the pastel
+       medal discs and the --surface-3 well are retired with the tint
+       sweep). */
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    background: transparent;
     color: var(--text-muted);
     font-family: var(--font-mono);
     font-size: var(--fs-xs);
     font-weight: var(--fw-semibold);
     font-variant-numeric: tabular-nums;
   }
-  /* medal treatment — top 3 */
+  /* Podium — top 3: same square tile one step larger; the ONLY tiered
+     ink is gold on rank 1 (the r197 gold discipline — achievements
+     and nothing else); 2 and 3 stay neutral ink on the hairline. */
   .leaderboard-rank.rank-1,
   .leaderboard-rank.rank-2,
   .leaderboard-rank.rank-3 {
@@ -654,20 +661,14 @@
     font-weight: var(--fw-bold);
   }
   .leaderboard-rank.rank-1 {
-    background: var(--c-yellow-bg);
-    color: var(--c-yellow-deep);
-    /* r313: hairline border, not an inset shadow ring. */
-    border: 1.5px solid color-mix(in srgb, var(--gold) 45%, transparent);
+    border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+    color: var(--gold-ink);
   }
   .leaderboard-rank.rank-2 {
-    background: var(--c-grey-bg);
-    color: var(--c-grey-deep);
-    border: 1.5px solid color-mix(in srgb, var(--c-grey-ink) 45%, transparent);
+    color: var(--text);
   }
   .leaderboard-rank.rank-3 {
-    background: var(--c-peach-bg);
-    color: var(--c-peach-deep);
-    border: 1.5px solid color-mix(in srgb, var(--c-peach-ink) 45%, transparent);
+    color: var(--text-secondary);
   }
 
   .leaderboard-name {
