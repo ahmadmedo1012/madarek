@@ -1189,28 +1189,31 @@
        muted/600 de-emphasis while never reading smaller than the data
        it labels; DESIGN.md's table canon line matches. */
     font-size: var(--fs-xs);
+    /* R313 (D16): the header row rides the MONO voice — Latin labels
+       render Geist Mono uppercase (the reference's micro-index
+       register); Arabic labels fall to the sans inside --font-mono and
+       carry the hierarchy via weight 600 instead. */
+    font-family: var(--font-mono);
     font-weight: var(--fw-semibold);
-    text-transform: uppercase;
-    /* wave 9-a (ruling #2, 4-b flag): Latin tracking removed — table
-       headers are Arabic. (text-transform stays: no-op for Arabic.) */
-    background: var(--surface-2);
-    /* r304 fold (ex «final-visual-system»): header labels ride the
-       secondary ink — one step darker than muted, so a scanned column
-       header never dissolves into its own hairline. */
+    text-transform: uppercase; /* no-op for Arabic — Latin-only device */
+    /* R313 (D16): NO header fill — paper + hairlines only. */
+    background: transparent;
     color: var(--text-secondary);
-    border-block-end: 1px solid var(--rule);
+    /* R313 (D16): the section rule — #B3B3AF strong hairline under the
+       header block (row hairlines below stay --border #E0E0DA). */
+    border-block-end: 1px solid var(--border-strong);
     white-space: nowrap;
   }
   .table tbody td {
     padding: var(--sp-3) var(--sp-4);
     color: var(--text);
-    border-block-end: 1px solid var(--rule);
+    /* R313 (D16): the ruled hairline grid — 1px #E0E0DA row borders. */
+    border-block-end: 1px solid var(--border);
     vertical-align: middle;
   }
   .table tbody tr:last-child td { border-block-end: 0; }
-  /* Zebra-on-hover — a quiet background shift only. Elevation on rows
-     is background OR border, never border + shadow (craft floor). */
-  .table tbody tr:hover { background: var(--surface-2); }
+  /* R313 (D16): the zebra-on-hover wash is RETIRED — paper + hairlines
+     only; hover affordance stays with the row-action reveal below. */
 
   /* Emphasized cell — the leading name/title column of the tables
      (9 live usages; was referenced but undefined → silent no-op). */

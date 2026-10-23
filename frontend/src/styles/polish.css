@@ -1465,19 +1465,11 @@
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TABLE ROWS — quiet zebra-on-hover                             ║
+     ║  TABLE ROWS — R313 (D16): paper + hairlines only              ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .table tbody tr,
-  .leaderboard-table tbody tr {
-    /* r149 (R3-A3 §3): .table tbody tr ينضم — خلفيته hover موجودة
-       (components.css) لكنها كانت تقفز بالتوقيت الافتراضي (snap). */
-    transition: background var(--t-fast) var(--ease);
-  }
-  @media (hover: hover) {
-    .leaderboard-table tbody tr:hover {
-      background: var(--surface-2);
-    }
-  }
+  /* (R313: the zebra-on-hover wash — .table AND .leaderboard-table —
+     is RETIRED: the reference table is a ruled hairline grid with no
+     fills; the row-action reveal keeps the hover affordance.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
