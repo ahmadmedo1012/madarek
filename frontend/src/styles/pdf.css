@@ -51,7 +51,9 @@
 }
 .pdf-thumb.on {
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
+  /* r313: the active thumb is the accent HAIRLINE itself — the old
+     double ring (border + 1px accent box-shadow) retired with the
+     shadow sweep (the reference's only shadow is the cookie banner). */
 }
 .pdf-thumb-canvas {
   inline-size: 100%;
@@ -71,6 +73,9 @@
 .pdf-thumb-num {
   font-size: var(--fs-xxs);
   color: var(--text-muted);
+  /* r313: page indices are mono micro-labels (Geist Mono, tabular
+     Latin digits — the reference's instrument voice). */
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 .pdf-thumb.on .pdf-thumb-num { color: var(--accent-ink); font-weight: var(--fw-semibold); }
@@ -100,8 +105,7 @@
     inset-block: 0;
     inset-inline-start: 0;
     inline-size: min(200px, 72vw);
-    border-inline-end: 1px solid var(--border);
-    box-shadow: var(--elev-3);
+    border-inline-end: 1px solid var(--border-strong);
     background: var(--surface-1);
   }
 }
@@ -245,7 +249,10 @@
 }
 .pdf-btn:hover:not(:disabled):not(:has(*[disabled])) { background: var(--surface-2); color: var(--text); }
 .pdf-btn:active:not(:disabled) { background: var(--surface-3); }
-.pdf-btn.on { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
+/* r313: the pressed-in toggle (thumbs/search ON) is the ink fill held
+   — the reference's active-state grammar (dark rect + light glyph),
+   not a soft tint chip. */
+.pdf-btn.on { background: var(--primary); color: var(--primary-fg); }
 .pdf-btn:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
 .pdf-btn.sm { width: 28px; height: 28px; }
 
@@ -272,6 +279,12 @@
   gap: var(--sp-1);
   font-size: var(--fs-xs);
   color: var(--text-muted);
+  /* r313: the page indicator is a mono micro-label (Geist Mono,
+     tabular) — the zoom pill and search counter already ride the
+     same voice; the Arabic words (صفحة/من) resolve to the Arabic
+     face inside the mono stack. */
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 .pdf-pageinfo-word,
 .pdf-pageinfo-total { white-space: nowrap; }
@@ -326,6 +339,10 @@
   font-size: var(--fs-xxs);
   color: var(--text-subtle);
   padding: 0 var(--sp-2);
+  /* r313: hit counters are mono micro-labels (matches the TSX
+     .font-mono belt — kept in CSS so the grammar survives markup
+     churn). */
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
@@ -345,10 +362,11 @@
   position: relative;
   display: inline-block;
   /* The paper is a physical object: white in BOTH themes (the PDF
-     paints its own ground); the elevation is the designed sheet
-     shadow, not the card shadow. */
+     paints its own ground). r313: the sheet sits FLAT on the reader
+     ground — the retired --elev-3 shadow is gone and the white-on-
+     paper-step contrast draws the edge (the reference ships no
+     decorative shadows at all). */
   background: white;
-  box-shadow: var(--elev-3);
   border-radius: var(--r-sm);
   overflow: hidden;
 }
@@ -409,7 +427,6 @@
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: var(--r-full);
-  box-shadow: var(--elev-2);
   color: var(--text-muted);
 }
 
@@ -432,7 +449,6 @@
   border-radius: var(--r-full);
   color: var(--text-muted);
   font-size: var(--fs-xxs);
-  box-shadow: var(--elev-2);
   pointer-events: none;
 }
 
@@ -515,7 +531,10 @@
 }
 .annotation-composer {
   padding: var(--sp-3);
-  background: var(--accent-soft);
+  /* r313: the composer is a hairline band on the panel surface — the
+     accent-soft tint retired with the two-tone sweep; the block-end
+     rule is the separator (the reference separates with hairlines). */
+  background: transparent;
   border-bottom: 1px solid var(--border);
 }
 .annotation-composer-meta { flex-wrap: wrap; }
@@ -632,19 +651,22 @@
   align-items: center;
   gap: 3px; /* spacing-gate: allow — annotation jump-link arrow-to-label hairline gap */
   padding: var(--sp-1-5) var(--sp-2-5); /* r153h: 6px → --sp-1-5 (الـ10px خارج السلم — دين منفصل) */
-  background: var(--accent-soft);
+  /* r313: the jump chip is a hairline mono micro-label (square, 1px
+     #B3B3AF, accent ink) — the accent-soft pill retired with the
+     two-tone sweep; hover/active keep the reference's fill grammar. */
+  background: transparent;
   color: var(--accent-ink, var(--accent));
-  border: 0;
-  border-radius: var(--r-full);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
   font-size: var(--fs-xxs);
   font-weight: var(--fw-semibold);
   cursor: pointer;
   font-family: inherit;
   font-variant-numeric: tabular-nums;
-  transition: background var(--t-fast) var(--ease);
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
-.annotation-jump:hover { background: var(--accent); color: var(--accent-fg); }
-.annotation-jump:active { background: var(--accent-strong); color: var(--accent-fg); }
+.annotation-jump:hover { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.annotation-jump:active { background: var(--accent-strong); color: var(--accent-fg); border-color: var(--accent-strong); }
 .annotation-comment {
   font-size: var(--fs-sm);
   color: var(--text);
