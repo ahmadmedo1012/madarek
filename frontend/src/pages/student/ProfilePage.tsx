@@ -439,7 +439,7 @@ export default function ProfilePage() {
                     <div className="achievement-name">{a.achievement.name}</div>
                     <div className="achievement-desc">{a.achievement.description}</div>
                   </div>
-                  <Badge color="gold"><bdi>+{a.achievement.xp}</bdi></Badge>
+                  <Badge color="gold"><bdi className="font-mono" dir="ltr">+{a.achievement.xp}</bdi></Badge>
                 </div>
               ))}
             </div>

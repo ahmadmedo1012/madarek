@@ -268,7 +268,7 @@ export function GamificationPage() {
                   <span className={`leaderboard-rank rank-${i + 1}`} role="img" aria-label={`المركز ${i + 1}`}>
                     {i < 3
                       ? <Icon icon={i === 0 ? Crown : i === 1 ? Star : Medal} size={16} />
-                      : <bdi>#{i + 1}</bdi>}
+                      : <bdi className="font-mono">#{i + 1}</bdi>}
                   </span>
                   <UserAvatar
                     initials={l.avatarInitials ?? `${l.firstName[0] ?? ''}${l.lastName[0] ?? ''}`}
@@ -982,7 +982,7 @@ export function ResultsPage() {
                 meta={
                   <span className="flex-col gap-1" style={{ display: 'flex' }}>
                     <span title={formatDateTimeAr(p.submittedAt)}>
-                      {p.courseName} · <bdi>{p.courseCode}</bdi> · سلّمته {timeAgoAr(p.submittedAt)}
+                      {p.courseName} · <bdi className="font-mono" dir="ltr">{p.courseCode}</bdi> · سلّمته {timeAgoAr(p.submittedAt)}
                     </span>
                     <span>{st.hint}</span>
                   </span>
@@ -1139,7 +1139,7 @@ export function ArVrPage() {
                   {e.description && <span className="r305v-desc">{e.description}</span>}
                 </>
               }
-              trailing={<Badge color={e.type === 'VR' ? 'purple' : 'brand'}><bdi>{e.type}</bdi></Badge>}
+              trailing={<Badge color={e.type === 'VR' ? 'purple' : 'brand'}><bdi className="font-mono" dir="ltr">{e.type}</bdi></Badge>}
             />
           ))}
         </RowList>

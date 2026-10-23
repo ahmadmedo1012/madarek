@@ -430,7 +430,8 @@
     gap: var(--sp-1);
     align-self: flex-start;
     padding: var(--sp-1) var(--sp-3);
-    border-radius: var(--r-full);
+    /* R313 (WP-E · D16): square chip — hairline frame, 0 radius. */
+    border-radius: var(--r-sm);
     background: var(--accent-soft);
     color: var(--accent-strong);
     font-size: var(--type-label-size-sm);
@@ -884,7 +885,11 @@
     min-block-size: 28px;
     display: grid;
     place-items: center;
-    border-radius: var(--r-full, 999px);
+    /* R313 (WP-E): square numeral tile — the mono index register (the
+     tabular digits are centered in a 28px square, today's fill reads
+     as the reference's filled square numerals). */
+    border-radius: var(--r-sm);
+    font-variant-numeric: tabular-nums;
   }
   /* Today: the classic filled numeral — accent fill + accent-fg ink. */
   .cal-cell[data-today='true'] .cal-day-num {
@@ -967,7 +972,8 @@
     font-size: var(--fs-xs);
     color: var(--danger-ink);
     background: var(--danger-soft);
-    border-radius: var(--r-full, 999px);
+    /* R313 (WP-E · D16): square chip — 0 radius. */
+    border-radius: var(--r-sm);
     padding: 1px var(--sp-2); /* spacing-gate: allow — calendar phase chip hairline vertical inset */
   }
   .cal-event-chevron { flex-shrink: 0; color: var(--text-muted); }
@@ -1107,8 +1113,8 @@
     /* r149 (R3-A2 R8): نفس حشو فقاعة الدردشة 10/14 (كانت 12/14 درجة أعلى) */
     padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat bubble compact grade 10/14 — r149 R3-A2 R8 message density */
     border-radius: var(--r-xl);
-    /* bot-bubble tail corner — the polish chat language */
-    border-start-start-radius: 4px; /* radius-gate: allow — chat-bubble tail corner, asymmetric shape detail */
+    /* R313 (WP-E): square bubbles — the 4px tail-corner detail is
+       retired with the radius-0 canon. */
     background: var(--surface-2);
     border: 1px solid var(--border-faint);
   }
@@ -1135,7 +1141,6 @@
     max-inline-size: min(640px, 78%);
     padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat error bubble compact grade 10/14 — r149 R3-A2 R8 message density */
     border-radius: var(--r-xl);
-    border-start-start-radius: 4px; /* radius-gate: allow — chat-bubble tail corner, asymmetric shape detail */
     background: var(--danger-soft);
     border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
     color: var(--danger-ink);
@@ -1150,7 +1155,8 @@
     min-block-size: 36px;
     padding-inline: var(--sp-3);
     border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
-    border-radius: var(--r-full);
+    /* R313 (WP-E): square control. */
+    border-radius: var(--r-sm);
     background: transparent;
     color: var(--danger-ink);
     font-size: var(--type-label-size-sm);
@@ -1561,8 +1567,9 @@
     to { opacity: 1; transform: none; }
   }
   @keyframes exam-grade-ring {
-    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
-    to { box-shadow: 0 0 0 12px transparent; }
+    /* R313 (WP-E): opacity breath — glow rings are retired. */
+    from { opacity: 0.55; }
+    to { opacity: 1; }
   }
 
   /* ═══ MoocPage ═══ */
@@ -1642,20 +1649,18 @@
     border-radius: var(--r-md);
     background: var(--surface);
     border: 1px solid transparent;
-    box-shadow: var(--shadow-card);
+    /* R313 (WP-E): flat row — hairline hover only, no elevation. */
     transition:
       background var(--motion-duration-short) var(--motion-ease-standard),
-      border-color var(--t-base) var(--ease),
-      box-shadow var(--t-base) var(--ease);
+      border-color var(--t-base) var(--ease);
   }
-  /* r157 (F8): the premium hover belongs to rows that DO something —
+  /* r157 (F8): the hover belongs to rows that DO something —
      LIVE rows carry the join action (WebinarsPage.tsx); passive
-     upcoming rows keep their quiet rest state (a lift that promises
-     interactivity the row cannot deliver is a dead affordance). */
+     upcoming rows keep their quiet rest state (an affordance the row
+     cannot deliver is a dead promise). */
   .webinar-row.live:hover {
     background: var(--surface-2);
     border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-premium-h);
   }
   .webinar-row.live {
     /* quiet broadcast-red wash — the same family as the LIVE badge */
@@ -1698,8 +1703,9 @@
     font-variant-numeric: tabular-nums;
   }
   @keyframes webinar-live-pulse {
-    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 45%, transparent); }
-    70%, 100% { box-shadow: 0 0 0 8px transparent; }
+    /* R313 (WP-E): opacity breath — glow rings are retired. */
+    0% { opacity: 1; }
+    70%, 100% { opacity: 0.4; }
   }
   /* destination tiles (was inline-styled) */
   .webinar-dest-grid {
@@ -1756,10 +1762,10 @@
      JobsPage-local class; the radius declaration (byte-identical to the
      components.css base) and the contract-breaking `overflow: hidden`
      were dropped — the base .table-wrap keeps owning scroll + radius +
-     border, and this pages-layer rule adds only the card elevation. */
-  .jobs-table-wrap {
-    box-shadow: var(--shadow-card);
-  }
+     border. R313 (WP-E): the local elevation add-on retired with the
+     flat system — the rule body is gone; the .jobs-table-wrap class
+     survives in JobsPage.tsx as the page's scoping hook (zero CSS
+     needed on top of the shared base). */
   .job-title-cell {
     display: flex;
     align-items: center;
@@ -2265,7 +2271,8 @@
     align-items: center;
     gap: 5px; /* spacing-gate: allow — live-chip dot-to-label micro gap */
     padding: 3px var(--sp-2); /* spacing-gate: allow — live-chip hairline vertical inset */
-    border-radius: var(--r-full);
+    /* R313 (WP-E · D16): square chip — 0 radius. */
+    border-radius: var(--r-sm);
     background: var(--danger-soft);
     color: var(--danger-ink);
     font-size: var(--type-label-size-sm);
@@ -2697,7 +2704,7 @@
     background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    box-shadow: var(--shadow-card);
+    /* R313 (WP-E): flat paper panel — no elevation. */
   }
   .payment-checklist {
     display: flex;
@@ -2904,7 +2911,8 @@
     font-variant-numeric: tabular-nums;
     background: var(--surface-2);
     padding: var(--sp-0-5) var(--sp-2);
-    border-radius: var(--r-full);
+    /* R313 (WP-E · D16): square count chip — 0 radius. */
+    border-radius: var(--r-sm);
   }
   /* alerts-page skeleton rows (dot + two lines) */
   .alert-skel {
@@ -2976,16 +2984,11 @@
     background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: var(--r-xl);
-    box-shadow: var(--shadow-card);
-    transition:
-      border-color var(--t-base) var(--ease),
-      box-shadow var(--t-base) var(--ease),
-      transform var(--t-base) var(--ease);
+    /* R313 (WP-E): flat paper tile — hairline hover only. */
+    transition: border-color var(--t-base) var(--ease);
   }
   .announcement-card:hover {
     border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-premium-h);
-    transform: translateY(-2px);
   }
   /* Pinned — the platform's "on" grammar (tinted ground + accent-mixed
      border), scannable without the craft-floor-banned >1px side stripe. */
@@ -3049,7 +3052,8 @@
     flex-shrink: 0;
     margin-inline-start: auto;
     padding: 3px var(--sp-3); /* spacing-gate: allow — announcement pin chip hairline vertical inset */
-    border-radius: var(--r-full);
+    /* R313 (WP-E · D16): square chip — 0 radius. */
+    border-radius: var(--r-sm);
     background: var(--accent-soft);
     color: var(--accent-strong);
     font-size: var(--type-label-size-sm);
@@ -3277,7 +3281,7 @@
       background: var(--surface);
       border: 1px solid var(--rule);
       border-radius: var(--r-lg);
-      box-shadow: var(--shadow-card);
+      /* R313 (WP-E): flat sticky bar — the hairline is the surface. */
     }
   }
   /* ≤640px: notifications.css reserves the nav clearance as the
@@ -3528,18 +3532,15 @@
     .chat-bubble { animation: none; }
   }
 
-  .chat-msg.bot .chat-bubble {
-    /* bubble tail corner — asymmetric shape detail, off-scale */
-    border-start-start-radius: 4px; /* radius-gate: allow — bot bubble tail corner (asymmetric shape detail) */
-  }
+  /* R313 (WP-E): both bubbles are SQUARE — the 4px tail-corner details
+     are retired with the radius-0 canon (the bot bubble needs no
+     override at all now). */
   .chat-msg.user .chat-bubble {
-    background: linear-gradient(135deg,
-      var(--accent) 0%,
-      color-mix(in srgb, var(--accent) 96%, var(--accent-strong)) 100%);
+    /* R313 (WP-E): FLAT accent fill — the reference's white-on-#FA3600
+       slab (gradients are retired system-wide); square corners. */
+    background: var(--accent);
     color: var(--accent-fg);
     border-color: transparent;
-    /* bubble tail corner — asymmetric shape detail, off-scale */
-    border-end-end-radius: 4px; /* radius-gate: allow — user bubble tail corner (asymmetric shape detail) */
   }
 
   .chat-bubble p { margin: 0; }
@@ -3555,7 +3556,8 @@
   }
   .ai-quick-chip {
     padding: var(--sp-1-5) var(--sp-3); /* r153h: 6px → --sp-1-5 */
-    border-radius: var(--r-full);
+    /* R313 (WP-E · D16): square chip — hairline frame, 0 radius. */
+    border-radius: var(--r-sm);
     border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text-muted);
@@ -3581,9 +3583,12 @@
     min-inline-size: 0;
     block-size: 40px;
     padding-inline: var(--sp-3);
-    border-radius: var(--r-full);
-    border: 1px solid var(--border);
-    background: var(--surface-2);
+    /* R313 (WP-E · D16): the Heron input recipe — transparent ground,
+       1px #B3B3AF hairline, square corners (the old surface-2 well +
+       pill radius are retired). */
+    border-radius: var(--r-md);
+    border: 1px solid var(--border-strong);
+    background: transparent;
     color: var(--text);
     font-family: inherit;
     /* 21-c (A5 P2-X / A10 P1): was var(--fs-sm) 13px — iOS Safari
@@ -3594,15 +3599,16 @@
   }
   .chat-input:focus {
     outline: none;
-    background: var(--surface);
-    border-color: var(--accent);
-    /* soft accent focus halo — interaction ring, not elevation */
-    box-shadow: 0 0 0 3px var(--accent-soft);
+    background: transparent;
+    /* R313 (WP-E · D16): focus = the reference's #ED4C1F signal border
+       (the shared input recipe's measured literal — no halo). */
+    border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (matches the shared input recipe in components.css) */
   }
   .chat-send {
     inline-size: 40px;
     block-size: 40px;
-    border-radius: 50%;
+    /* R313 (WP-E): square control — the accent slab. */
+    border-radius: var(--r-sm);
     border: 0;
     display: inline-flex;
     align-items: center;
@@ -3614,9 +3620,9 @@
     flex-shrink: 0;
   }
   .chat-send:hover:not(:disabled) {
-    transform: scale(1.05);
-    /* accent-tinted send glow — not elevation */
-    box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--accent) 50%, transparent);
+    /* R313 (WP-E): flat hover — the brightened accent tier, no scale,
+       no glow. */
+    background: var(--accent-hover);
   }
   .chat-send:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
 

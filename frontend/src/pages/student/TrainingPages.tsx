@@ -954,11 +954,11 @@ export function AchievementsPage() {
                     <span className={`leaderboard-rank rank-${r.rank}`} role="img" aria-label={`المركز ${r.rank}`}>
                       {r.rank <= 3
                         ? <Icon icon={r.rank === 1 ? Crown : r.rank === 2 ? Star : Medal} size={16} />
-                        : <bdi>#{r.rank}</bdi>}
+                        : <bdi className="font-mono">#{r.rank}</bdi>}
                     </span>
                     <UserAvatar initials={r.avatarInitials ?? r.name.slice(0, 2)} color={r.avatarColor ?? undefined} size={32} />
                     <span className="leaderboard-name" title={r.name}>{r.name}</span>
-                    <span className="leaderboard-tier"><bdi>L{r.level.level}</bdi> · {TIER_LABEL[r.level.tier]}</span>
+                    <span className="leaderboard-tier"><bdi className="font-mono" dir="ltr">L{r.level.level}</bdi> · {TIER_LABEL[r.level.tier]}</span>
                     <span className="leaderboard-points">
                       <Icon icon={Sparkles} size={12} /> <bdi>{formatNum(r.points)}</bdi>
                     </span>
