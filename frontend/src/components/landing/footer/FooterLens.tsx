@@ -22,11 +22,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { subscribeSheetFrame, wakeSheet, lerp, clamp } from '../../../lib/motion/sheetConductor';
 
-/* Measured reference values (§13 / case study). */
-const LENS_R = 99; /* main radius in strip viewBox units */
-const PULSE_SCALE = 1.05;
+/* Measured reference values (digest.json footer.lens — r308 §13
+ * re-confirmed): main r 99.09 · pulse 1.05× = 104.04 · position
+ * lerp 0.09 / 0.15 · open ≈0.55s · close ≈0.8s · pulse decay ≈1s
+ * (60fps per-frame factors: .09 ≈ 3τ 555ms · .06 ≈ 3τ 833ms ·
+ * .05 ≈ 3τ 1000ms). */
+const LENS_R = 99.09; /* main radius in strip viewBox units */
+const PULSE_SCALE = 1.05; /* 99.09 × 1.05 = 104.04 (the measured pulse ring) */
 const LERP_MAIN = 0.09;
 const LERP_PULSE = 0.15;
+const R_LERP_IN = 0.09;  /* radius easing while opening — ≈0.55s to settle */
+const R_LERP_OUT = 0.06; /* radius easing while closing — ≈0.8s to settle */
+const PULSE_LERP_OUT = 0.05; /* the pulse ring's own decay — ≈1s */
 const VB_W = 1000;
 const VB_H = 210;
 
@@ -87,8 +94,15 @@ export function FooterLens() {
       posMain.y = lerp(posMain.y, target.y, LERP_MAIN);
       posPulse.x = lerp(posPulse.x, target.x, LERP_PULSE);
       posPulse.y = lerp(posPulse.y, target.y, LERP_PULSE);
-      rMain = lerp(rMain, target.r, 0.16);
-      rPulse = lerp(rPulse, pulseTarget, 0.13);
+      /* R313 (D14): the radius easing is DIRECTION-aware — the lens
+         opens on the .55s curve and closes on the .8s curve; the
+         pulse ring decays on its own ~1s curve (the old single
+         0.16/0.13 factors settled both ways in ~0.3s — 40% too
+         fast against the measured in/out times). */
+      const rEase = inside ? R_LERP_IN : R_LERP_OUT;
+      const pEase = inside ? R_LERP_IN : PULSE_LERP_OUT;
+      rMain = lerp(rMain, target.r, rEase);
+      rPulse = lerp(rPulse, pulseTarget, pEase);
       apply();
       /* sleep when everything has settled */
       const settled =

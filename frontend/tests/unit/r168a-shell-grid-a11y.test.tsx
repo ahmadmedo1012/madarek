@@ -134,8 +134,12 @@ describe('r168a — lecture player owns a heading outline', () => {
 describe('r168a — destructive row actions are danger-tinted ghosts', () => {
   it('the .btn.ghost.danger variant rides the semantic rose tokens', () => {
     const comps = stripComments(read('src/styles/components.css'));
+    /* R313 override (WP-D · D4): --_btn-bg-hover retired with the Heron
+     * fill-wipe recipe — the destructive ghost's rose identity now rides
+     * the wipe pair: --_btn-wipe: var(--danger-soft) + ink label swap.
+     * (owner decision — full Heron button grammar) */
     expect(comps).toMatch(
-      /\.btn\.ghost\.danger\s*{[^}]*--_btn-fg:\s*var\(--danger-ink\)[^}]*--_btn-bg-hover:\s*var\(--danger-soft\)/,
+      /\.btn\.ghost\.danger\s*{[^}]*--_btn-fg:\s*var\(--danger-ink\)[^}]*--_btn-wipe:\s*var\(--danger-soft\)/,
     );
   });
 

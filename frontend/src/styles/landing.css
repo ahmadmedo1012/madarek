@@ -2036,30 +2036,38 @@
   color: var(--text-muted);
 }
 
-/* ═══ Footer — the colophon grid ════════════════════════════════════
- * The hairline grid: brand + about, three link columns, the mono
- * bottom row. The giant wordmark is retired with the poster — the
- * sheet closes quietly. */
+/* ═══ Footer (R313 · D14) — the reference's colophon ════════════════
+ * Measured 711px = the inspection strip (314) + the THREE-column
+ * grid (355) + the legal row (42). The grid spans the FULL frame
+ * width (357 + 715 + 357 measured): (1) the identity + the honest
+ * disabled subscribe seat, (2) the wide index + the address, (3) the
+ * giant 215×215 line-art mark fading in with the scroll. The giant
+ * wordmark retirement (r306) is superseded by this measured
+ * reference composition — the mark is the brand SYMBOL, not the old
+ * poster wordmark. */
 .fo-footer {
   border-block-start: 1px solid var(--rule-strong);
   background: color-mix(in srgb, var(--surface) 35%, transparent);
 }
 
 .fo-footer-inner {
-  padding-block: var(--sp-10);
+  padding-block: var(--sp-7) var(--sp-4);
+  padding-inline: 26px; /* spacing-gate: allow — the header/footer seat measure (33px − 7px inset), shared with .fo-header-inner */
   display: grid;
-  gap: var(--sp-8);
+  gap: var(--sp-6);
 }
 
+/* the measured 357 / 715 / 357 rhythm (1 : 2 : 1) */
 .fo-footer-grid {
   display: grid;
-  grid-template-columns: minmax(0, 5fr) repeat(3, minmax(0, 3fr));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
   gap: var(--sp-8);
+  align-items: start;
 }
 
 .fo-footer-col {
   display: grid;
-  gap: var(--sp-2-5);
+  gap: var(--sp-2);
   align-content: start;
 }
 
@@ -2070,10 +2078,14 @@
   max-inline-size: 48ch;
 }
 
+/* the column headers — the mono micro voice: weight-600 Arabic (the
+   reference's Geist-Mono-uppercase register, retold for Arabic —
+   Geist Mono carries no Arabic glyphs, so the tier rides weight +
+   size + the hairline rule instead of a script swap). */
 .fo-footer-heading {
-  font-size: var(--fs-sm);
-  font-weight: 700;
-  color: var(--text);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
   padding-block-end: var(--sp-1-5);
   border-block-end: 1px solid var(--rule);
   margin-block-end: var(--sp-1);
@@ -2089,13 +2101,117 @@
   transition: color var(--t-fast) var(--ease);
 }
 
+/* ── The subscribe seat — the reference's geometry (input 358×40,
+ * hairline #B3B3AF + the 40×40 arrow cell), in its HONEST disabled
+ * state: no endpoint exists, so the seat explains itself and collects
+ * nothing (NO fake submission, NO success theatre). */
+.fo-subscribe {
+  display: grid;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-2);
+}
+
+.fo-subscribe-row {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--border-strong);
+}
+
+.fo-subscribe-input {
+  flex: 1;
+  min-inline-size: 0;
+  block-size: 40px;
+  padding-inline: var(--sp-3);
+  background: transparent;
+  border: 0;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-body);
+  transition: border-color var(--t-slow) var(--ease);
+}
+
+.fo-subscribe-input::placeholder {
+  color: var(--text-faint);
+}
+
+.fo-subscribe-input:disabled {
+  color: var(--text-faint);
+  cursor: not-allowed;
+}
+
+.fo-subscribe-btn {
+  inline-size: 40px;
+  block-size: 40px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  border-inline-start: 1px solid var(--border-strong);
+  color: var(--text-faint);
+  cursor: not-allowed;
+}
+
+.fo-subscribe-btn:disabled {
+  cursor: not-allowed;
+}
+
+.fo-subscribe-note {
+  font-size: var(--fs-xs);
+  line-height: 1.7;
+  color: var(--text-faint);
+}
+
+/* ── The address block — the honest demo-institution seat ── */
+.fo-footer-addr {
+  display: grid;
+  gap: var(--sp-1-5);
+  margin-block-start: var(--sp-4);
+  padding-block-start: var(--sp-4);
+  border-block-start: 1px solid var(--rule);
+}
+
+.fo-footer-addr-line {
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.fo-footer-repo {
+  min-block-size: 0;
+  font-family: var(--font-mono);
+  font-size: max(13px, var(--fs-mono-md));
+  direction: ltr;
+}
+
+/* ── The giant mark — 215×215, the reference's scroll fade-in
+ * (0.61→1): the reveal is OPACITY-ONLY (the reference fades, never
+ * lifts), so the .reveal-up translate is neutralised here. */
+.fo-footer-col-mark {
+  justify-items: center;
+}
+
+.fo-footer-mark {
+  display: grid;
+  place-items: center;
+  transform: none; /* the reference's fade has no lift */
+}
+
+.fo-footer-mark.reveal-up {
+  transform: none;
+}
+
+.fo-footer-mark-svg {
+  inline-size: 215px;
+  block-size: 215px;
+}
+
 .fo-footer-bottom {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-3);
-  padding-block-start: var(--sp-5);
+  padding-block-start: var(--sp-4);
   border-block-start: 1px solid var(--rule);
   color: var(--text-muted);
   font-size: var(--fs-sm);
@@ -2185,7 +2301,7 @@
 
   .fo-header-inner {
     min-block-size: 5rem;
-    padding-inline: 26px;
+    padding-inline: 26px; /* spacing-gate: allow — the header's own seat measure (33px − 7px inset, the .fo-header-inner seat), not a ladder rung */
     padding-inline-end: 0;
   }
 }
@@ -2227,8 +2343,19 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* R313 (D14): the mark column drops under the pair — the two text
+     columns share the row, the giant mark spans below them */
   .fo-footer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fo-footer-col-mark {
+    grid-column: 1 / -1;
+  }
+
+  .fo-footer-mark-svg {
+    inline-size: 140px;
+    block-size: 140px;
   }
 }
 
@@ -2419,6 +2546,15 @@
   .fo-footer-grid {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--sp-6);
+  }
+
+  .fo-footer-col-mark {
+    grid-column: auto;
+  }
+
+  .fo-footer-mark-svg {
+    inline-size: 120px;
+    block-size: 120px;
   }
 
   .fo-cta-actions .btn {
@@ -4215,7 +4351,19 @@
 .fl-svg {
   display: block;
   inline-size: 100%;
-  block-size: clamp(120px, 16vw, 190px);
+  /* R313 (D14): the measured strip proportion — 1427×314 @1440
+     (r308 §13; identical at 1440×700/1280×800; hidden ≤767px below).
+     The aspect keeps the band's height fluid with the frame width. */
+  block-size: auto;
+  aspect-ratio: 1427 / 314;
+}
+
+/* the reference hides the image strip ≤767px (its mobile footer
+   swaps to a compact variant); the resolved drawing stands above. */
+@media (max-width: 767px) {
+  .fl {
+    display: none;
+  }
 }
 
 .fl-sketch line,
