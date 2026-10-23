@@ -1890,24 +1890,22 @@
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  INPUT / SELECT / TEXTAREA — accent halo on focus              ║
+     ║  INPUT / SELECT / TEXTAREA — R313 (WP-D · D16)                 ║
+     ║  Heron focus recipe: the #ED4C1F signal border, hairline-only  ║
+     ║  (the accent HALO is retired — no box-shadows on fields).      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .input,
   input[type="text"], input[type="search"], input[type="email"],
   input[type="password"], input[type="number"], input[type="url"],
   input[type="tel"], input[type="date"], input[type="time"],
   textarea, select {
-    transition:
-      border-color var(--motion-duration-short) var(--ease),
-      box-shadow var(--motion-duration-medium) var(--ease),
-      background var(--motion-duration-short) var(--ease);
+    /* R313 (D16): the reference's .45s border-color transition — the
+       nearest motion rung (--t-slow, 500ms). */
+    transition: border-color var(--t-slow) var(--ease);
   }
   .input:focus,
   input:focus, textarea:focus, select:focus {
-    border-color: var(--accent);
-    /* soft accent focus halo — interaction ring, not elevation
-       (premium-polish: now the shared --state-input-focus-halo token) */
-    box-shadow: var(--state-input-focus-halo);
+    border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (live digest inputs.focus; token seat pending — worklog note) */
   }
 
 
@@ -2145,9 +2143,9 @@
       transform var(--motion-duration-medium) var(--ease);
   }
   .topbar .global-search:focus-within {
-    box-shadow: var(--state-input-focus-halo), var(--elev-1);
-    border-color: var(--accent);
-    transform: scale(1.005);
+    /* R313 (D16): the search shell joins the hairline-only focus
+       recipe — #ED4C1F border, no halo, no elevation, no scale. */
+    border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (same seat as the .input focus rule) */
   }
 
 

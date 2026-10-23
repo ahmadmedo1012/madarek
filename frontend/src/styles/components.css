@@ -953,27 +953,36 @@
        pdf.css's page-number/search inputs are handed off with it. */
     font-size: max(16px, var(--type-body-size));
     color: var(--text);
-    background: var(--surface);
-    border: 1px solid var(--border);
+    /* R313 (WP-D · D16): the Heron input recipe — TRANSPARENT ground
+       (the paper IS the field), 1px #B3B3AF hairline (--border-strong),
+       radius 0 (token ladder). No fills, no wells. */
+    background: transparent;
+    border: 1px solid var(--border-strong);
     border-radius: var(--r-md);
-    transition: border-color var(--t-fast) var(--ease),
-                box-shadow var(--t-fast) var(--ease);
+    /* R313 (D16): the reference's border-color .45s transition — the
+       nearest motion rung is --t-slow (500ms). */
+    transition: border-color var(--t-slow) var(--ease);
     font-family: inherit;
   }
   textarea { padding-block: var(--sp-3); block-size: auto; min-block-size: 96px; resize: vertical; line-height: var(--lh-base); }
   .input:hover,
   input:hover, textarea:hover, select:hover { border-color: var(--border-strong); }
+  /* R313 (D16): focus = the reference's #ED4C1F signal border (measured
+     live on the footer-subscribe input; the token source is off-limits
+     this round, so this is the one sanctioned literal — see the worklog
+     note for the lead). No halo, no box-shadow — hairline only. */
   .input:focus,
   input:focus, textarea:focus, select:focus {
-    /* wave 2-b (0-a P2-8): the off-token light whisper
-       rgba(25,25,24,0.08) and the duplicated dark block are gone.
-       The RENDERED focus language is owned by polish v15 (overrides
-       layer): accent border + soft accent halo, plus the single
-       AA-safe :focus-visible ring from v22. This components-layer
-       recipe now states the same accent border via the state token
-       so no layer disagrees. */
-    border-color: var(--state-input-focus-border);
+    border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (live digest inputs.focus; no token seat exists yet) */
     outline: none;
+  }
+  /* R313 (D16): the FILLED state — autofilled fields carry the accent
+     hairline (the reference's filled → #FA3600). */
+  .input:autofill,
+  input:autofill,
+  .input:-webkit-autofill,
+  input:-webkit-autofill {
+    border-color: var(--accent);
   }
   .input::placeholder, input::placeholder, textarea::placeholder { color: var(--text-faint); }
 
@@ -1017,9 +1026,12 @@
     /* Same iOS 16px focus-zoom floor as the shared recipe (A10 P1-2):
        this pill resolved to --type-label-size (13px). */
     font-size: max(16px, var(--type-label-size));
-    background: var(--surface-1);
-    border: 1px solid var(--border);
-    border-radius: var(--r-full);
+    /* R313 (D16): the search field joins the Heron input recipe —
+       transparent ground, #B3B3AF hairline, square corners (the old
+       surface-1 well + pill radius are retired). */
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
   }
   /* End padding reserves the overlay zone. Bare (LibraryPage) keeps a
      tight end; the clear button and the ⌘K/Ctrl+K hint — mutually
@@ -1070,7 +1082,7 @@
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  CHECKBOXES + RADIOS — branded, accessible, RTL-aware          ║
+     ║  CHECKBOXES + RADIOS — R313 (D16): square, hairline, accent   ║
      ║  (r294 polish v8 fold: the whole family lived only in the     ║
      ║  polish bundle — sole definition, clean move)                 ║
      ╚═══════════════════════════════════════════════════════════════╝ */
@@ -1082,8 +1094,11 @@
     block-size: 18px;
     margin: 0;
     padding: 0;
-    background: var(--surface);
-    border: 1.5px solid var(--rule-strong, var(--rule));
+    background: transparent;
+    /* R313 (D16): 1px hairline (--rule-strong = #B3B3AF), transparent
+       ground — square checkbox (radius rung is 0), circle radio (the
+       one sanctioned 50% primitive). */
+    border: 1px solid var(--rule-strong, var(--rule));
     cursor: pointer;
     flex-shrink: 0;
     display: inline-flex;

@@ -367,9 +367,12 @@ a.pf-row-link {
   inline-size: 100%;
   block-size: 44px;
   padding-inline: var(--sp-9) var(--sp-4);
-  border: 1px solid var(--border);
-  border-radius: var(--r-full);
-  background: var(--surface);
+  /* R313 (WP-D · D16): the Heron input recipe — transparent ground,
+     #B3B3AF hairline, square corners (the old surface well + pill
+     radius are retired). */
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  background: transparent;
   color: var(--text);
   font: inherit;
   font-size: var(--fs-body);
