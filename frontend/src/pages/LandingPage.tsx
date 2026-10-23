@@ -14,7 +14,6 @@ import {
 import { LIVE_CAPABILITIES, LIVE_COUNT } from '../data/landing-ledger';
 import { formatInt } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
-import { ElevationDrawing } from '../components/landing/ElevationDrawing';
 import { ProductFrame } from '../components/landing/ProductFrame';
 import { WhyScene } from '../components/landing/WhyScene';
 import { PainArt } from '../components/landing/PainArt';
@@ -309,41 +308,10 @@ function HeaderNav() {
   );
 }
 
-/* ── The elevation stages — the five hotspots on the hero's drafted
- * elevation (R310). Each describes a REAL live capability
- * (LIVE_CAPABILITIES lineage); vx/vy are the drawing's OWN viewBox
- * coordinates (1440×640) at each volume's annotation spot — the
- * drafting convention: the compact [NN] pins mark, never mask, the
- * artwork. The runtime mapping (HeroInspect) remaps them through the
- * real letterbox transform, so the pins stay glued to the volumes at
- * every size (ONE geometric frame for pins, stations, and guides). */
-const STAGES = [
-  {
-    num: '01', short: 'المحاضرات', title: 'المحاضرات التفاعلية',
-    desc: 'محاضرة مسجَّلة بنقاط فحص تُثبِّت الفهم، وحضورٌ يُحتسب تلقائيًا عند الإكمال.',
-    meta: 'live · lectures', vx: 1145, vy: 196,
-  },
-  {
-    num: '02', short: 'نقطة الفحص', title: 'نقاط الفحص',
-    desc: 'سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.',
-    meta: 'live · checkpoints', vx: 970, vy: 300,
-  },
-  {
-    num: '03', short: 'الاختبار', title: 'الاختبارات الإلكترونية',
-    desc: 'بنك أسئلة بأربعة أنواع وقوالب جاهزة، وتصحيح تلقائي للأسئلة الموضوعية.',
-    meta: 'live · exams', vx: 835, vy: 250,
-  },
-  {
-    num: '04', short: 'المكتبة والبحوث', title: 'دورة البحوث والمكتبة',
-    desc: 'رفع PDF وفحص نزاهة معلَن وملاحظات مشروحة من الأستاذ، فتُفهرَس في مكتبة تبحث بالعربية.',
-    meta: 'live · research', vx: 585, vy: 292,
-  },
-  {
-    num: '05', short: 'الإتقان', title: 'مصفوفة الإتقان',
-    desc: 'درجة إتقان لكل مفهوم تكشف الفجوة وتربطها بالدرس المناسب — خطوتك التالية مقترحة من أدائك.',
-    meta: 'live · mastery', vx: 355, vy: 64,
-  },
-] as const;
+/* ── R314 (V1/V2): the STAGES hotspot row + details panel retired with
+ * the thin-line elevation — the reference hero carries the ink rendering
+ * + the inspection instrument's own markers, no stage panel. The stage
+ * COPY lives on in HeroInspect's honest station annotations. */
 
 /* ── Miniature — the honest demo frame each chapter pairs with (r306:
  * composed as a FLAT interface fragment — the reference's product
@@ -508,13 +476,6 @@ export default function LandingPage() {
   // per scroll event (the r172 pattern, kept).
   const headerRef = useRef<HTMLElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
-
-  // The blueprint's active stage — the hotspot selection. Starts on
-  // [01] so the panel is informative with zero interaction; the
-  // buttons carry the aria-pressed state and the panel is a polite
-  // live region (the drawing never hides information behind a hover).
-  const [activeStage, setActiveStage] = useState(0);
-  const stage = STAGES[activeStage] ?? STAGES[0];
 
   /* r162 (R2) → r164b: warm the AUTH BOUNDARIES while the visitor reads
    * the hero (prod only — dev has no chunk splitting to warm). */
@@ -724,6 +685,11 @@ export default function LandingPage() {
         <span className="sheet-coord sheet-coord-be fo-mono" dir="ltr">[MDRK-01] · SHEET 01/01</span>
       </div>
 
+      {/* R314 (V3) — the measured paper grain + dotted micro-grid film
+          (scripts/r314/grain-measure.json): under the content, under the
+          fixed chrome, pointer-transparent. */}
+      <div className="fo-grain" aria-hidden="true" />
+
       {/* Top scroll-progress bar — driven imperatively via --p */}
       <div className="fo-progress" aria-hidden>
         <div className="fo-progress-bar" ref={progressBarRef} style={{ ['--p' as string]: 0 }} />
@@ -866,68 +832,41 @@ export default function LandingPage() {
 
       <main id="main" tabIndex={-1}>
 
-        {/* ═══ [1] HERO — «لوحة مدارك» (R310 → R313 D7): the copy band
-            (display + statement side by side, then the value row), the
-            drafted elevation with its inspection instruments + ruler
-            ticks (D9), the details panel, and the capabilities ticker —
-            the whole band ≈100vh-frame (the reference's 887px hero).
-            The documentary media band moved to /campus; the title block
-            moved to the closing section. ═══ */}
+        {/* ═══ [1] HERO — R314 «الحقيقة البصرية» (V1/V2/V10): the
+            reference's exact composition — ONE framed ink window (the
+            building ≈65% of the viewport height, centred, own subject +
+            own licence — never Heron's artwork) with the corner +
+            marks, ruler ticks and the local inspection instrument; then
+            a 133px bottom strip of cells: the GIANT tight H1 at the
+            inline-start edge (3 lines, 46.67px/1.0 measured), the intro
+            paragraph + honest [LIVE] disclosure, and the DISCOVER MORE
+            link with the orange arrow. The thin-line elevation, the
+            stage panel and the in-hero ticker retire (the ticker rides
+            the intro band per the reference's 9-section structure). ═══ */}
         <section className="fo-hero" aria-label="مدارك — منصّة التعليم الذكي">
-          <div className="fo-hero-copy">
-            <RevealCssClass as="p" className="fo-eyebrow">
-              <span className="fo-mono" dir="ltr">[01]</span>
-              منصّة تعليم ذكية · عربية أولًا · مستقلّة
-            </RevealCssClass>
-
-            <div className="fo-hero-heading">
-              <RevealCssClass as="h1" className="fo-hero-title" delay={1}>
-                مدارك
-              </RevealCssClass>
-
-              <div className="fo-hero-lead">
-                <RevealCssClass as="p" className="fo-hero-statement" delay={2}>
-                  من المحاضرة الأولى إلى الإتقان — <em>رحلة تعلّم واحدة</em>، موثَّقة ومقيسة.
-                </RevealCssClass>
-
-                <RevealCssClass as="p" className="fo-hero-sub" delay={3}>
-                  محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —
-                  في تجربة عربية واحدة لخمسة أدوار أكاديمية.
-                </RevealCssClass>
-              </div>
-            </div>
-
-            <RevealCssClass as="div" className="fo-hero-actions" delay={4}>
-              <Link to="/auth/register" className="btn accent lg fo-hero-cta">
-                أنشئ حسابك الجامعي
-                <Icon icon={ArrowLeft} size={16} />
-              </Link>
-              <a href="#chapters" className="btn ghost lg">كيف تعمل</a>
-              {/* R313-int (5-int · failure 1): the honesty-ledger disclosure
-                  chip — the hero's value row names the live-capability ledger
-                  (Heron's hero carries mono micro-labels). The 9-section
-                  restructure had moved the «ما يعمل اليوم» link ~1600px down
-                  into #live; the honesty contract (r191: the sheet names the
-                  source of its numbers) pins its presence at the top. */}
-              <Link to="/capabilities" className="fo-hero-disclosure">
-                <span className="fo-mono" dir="ltr">[LIVE]</span>
-                <span>ما يعمل اليوم</span>
-              </Link>
-            </RevealCssClass>
-          </div>
-
-          {/* the elevation — R310: the hero's DOMINANT composition. The
-              drafted learning building is an inspection surface — the
-              local pointer instrument (guides + coordinates +
-              drag-to-inspect) owns this zone (data-cursor="none" — the
-              R311 §1.5 unified suppression vocabulary).
-              The [NN] pins and the stations share ONE coordinate frame
-              (viewBox 1440×640) remapped by HeroInspect at runtime.
-              R313 (D9): the ruler tick strips ride all four edges of
-              the drawing window (the reference's proximity rulers). */}
-          <RevealCssClass as="div" className="fo-hero-fig" delay={3}>
+          <RevealCssClass as="div" className="fo-hero-window" delay={2}>
             <div className="bp-stage" data-cursor="none">
-              <ElevationDrawing active={activeStage} />
+              {/* The ink rendering rides the SAME 1440×640 viewBox frame
+                  (.bp-svg) so the HeroInspect instrument, its guides and
+                  its honest station markers keep ONE coordinate system. */}
+              <svg
+                className="bp-svg"
+                viewBox="0 0 1440 720"
+                preserveAspectRatio="xMidYMid meet"
+                role="img"
+                aria-label="رسم حبري معماري لمقر إدارة جامعة بنغازي — مشتق من صورة مرخّصة"
+              >
+                {/* SVG <image> has no srcSet — the 2200px render serves
+                    the ≈1400px window at 1x and stays sharp at 2x DPR. */}
+                <image
+                  href="/media/renders/hero-ink-2200.webp"
+                  x="0"
+                  y="0"
+                  width="1440"
+                  height="720"
+                  preserveAspectRatio="xMidYMid slice"
+                />
+              </svg>
               <HeroInspect />
               <div className="bp-rulers" aria-hidden="true">
                 <span className="bp-ruler bp-ruler-t" />
@@ -939,39 +878,52 @@ export default function LandingPage() {
                 <span className="bp-plus bp-plus-bl">+</span>
                 <span className="bp-plus bp-plus-br">+</span>
               </div>
-              <div className="bp-hotspots" role="group" aria-label="استكشف مراحل مسار التعلّم">
-                {STAGES.map((s, i) => (
-                  <button
-                    key={s.num}
-                    type="button"
-                    className="bp-hotspot"
-                    data-vx={s.vx}
-                    data-vy={s.vy}
-                    aria-label={`${s.num} ${s.short} — ${s.title}`}
-                    aria-pressed={activeStage === i}
-                    onClick={() => setActiveStage(i)}
-                  >
-                    <span className="bp-hotspot-num fo-mono" dir="ltr">{s.num}</span>
-                    <span className="bp-hotspot-label">{s.short}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="bp-panel" role="status" aria-live="polite">
-              <span className="bp-panel-num fo-mono" dir="ltr">[{stage.num}]</span>
-              <span className="bp-panel-title">{stage.title}</span>
-              <span className="bp-panel-desc">{stage.desc}</span>
-              <span className="bp-panel-meta fo-mono" dir="ltr">{stage.meta}</span>
             </div>
           </RevealCssClass>
 
-          {/* R308 — the capabilities ticker: the sheet's continuous
-              instrument (the reference's hero marquee grammar). The
-              items are the honest live-capability ledger (the full
-              matrix lives on /capabilities); the loop is a hand-tuned
-              crawl in the authored-choreography file, duplicated track
-              aria-hidden, collapsed under reduced motion to a static
-              row. */}
+          {/* the bottom strip — 133px of cells (the measured reference
+              band): H1 cell ≈45% at the inline-start edge · paragraph cell ·
+              discover cell with the orange arrow. */}
+          <div className="fo-hero-strip">
+            <RevealCssClass as="h1" className="fo-hero-title" delay={1}>
+              رحلةُ تعلُّمٍ واحدة
+              <br />
+              من أوّلِ محاضرةٍ
+              <br />
+              حتى الإتقان
+            </RevealCssClass>
+
+            <div className="fo-hero-side">
+              <RevealCssClass as="p" className="fo-hero-lead" delay={3}>
+                محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —
+                في تجربة عربية واحدة لخمسة أدوار أكاديمية.
+              </RevealCssClass>
+              <RevealCssClass as="div" className="fo-hero-side-foot" delay={4}>
+                {/* the honesty-ledger disclosure — the reference's own
+                    mono micro-label grammar (r191 contract kept). */}
+                <Link to="/capabilities" className="fo-hero-disclosure">
+                  <span className="fo-mono" dir="ltr">[LIVE]</span>
+                  <span>ما يعمل اليوم</span>
+                </Link>
+                <a href="#statement" className="fo-hero-discover">
+                  <span className="fo-hero-discover-label">اكتشف المزيد</span>
+                  <Icon icon={ArrowLeft} size={14} className="fo-hero-discover-arrow" aria-hidden />
+                </a>
+              </RevealCssClass>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ [2] البيان — the statement (the reference's intro): the
+            scrub-revealed declaration + the documented-universities
+            ticker. r308: the title unmasks word-by-word, scrub-linked +
+            reversible to the scroll. ═══ */}
+        <section id="statement" className="st-section" ref={statementRef} aria-labelledby="statement-title">
+          {/* R314: the capabilities ticker rides the intro band's top
+              hairline cell (the reference's intro-cell marquee — moved out
+              of the hero). The loop grammar (authored choreography,
+              duplicated aria-hidden track, reduced-motion static row) is
+              unchanged. */}
           <div className="fo-ticker" aria-label="قدرات تعمل اليوم">
             <div className="fo-ticker-track" aria-hidden="false">
               {LIVE_CAPABILITIES.map((cap, i) => (
@@ -990,13 +942,6 @@ export default function LandingPage() {
               ))}
             </div>
           </div>
-        </section>
-
-        {/* ═══ [2] البيان — the statement (the reference's intro): the
-            scrub-revealed declaration + the documented-universities
-            ticker. r308: the title unmasks word-by-word, scrub-linked +
-            reversible to the scroll. ═══ */}
-        <section id="statement" className="st-section" ref={statementRef} aria-labelledby="statement-title">
           <div className="st-spread">
             <div className="st-copy">
               <span className="fo-label"><span className="fo-mono" dir="ltr">[02]</span> البيان</span>

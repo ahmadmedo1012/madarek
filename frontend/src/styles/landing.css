@@ -62,6 +62,40 @@
   border: 1px solid var(--border-strong);
 }
 
+/* ═══ R314 (V3) — the paper grain + dotted micro-grid. Measured against
+ * the reference's bare-paper regions (scripts/r314/grain-measure.json):
+ * tile std-dev matched to ±0.03% (light) — a multiply film-grain over
+ * the paper ground, exactly the reference's film-grain amplitude. The
+ * dark twin rides plain alpha (its mean IS the charcoal paper). The
+ * faint dotted micro-grid tiles under it (24px cell, 1px dots at 40%).
+ * Layer sits UNDER the flowing content (z 0, first paint) and under the
+ * fixed chrome (z 50+); pointer-transparent. ═══ */
+.fo-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    url('/media/textures/grain-tile-light.webp'),
+    url('/media/textures/micro-grid.svg');
+  background-size: 256px, 24px;
+  background-repeat: repeat, repeat;
+  mix-blend-mode: multiply;
+  opacity: 1;
+}
+
+html[data-theme='dark'] .fo-grain {
+  background-image:
+    url('/media/textures/grain-tile-dark.webp'),
+    url('/media/textures/micro-grid.svg');
+  mix-blend-mode: normal;
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* the grain is static texture — no motion to reduce */
+}
+
 .sheet-mark {
   position: absolute;
   inline-size: 10px;
@@ -476,6 +510,23 @@
   block-size: auto;
 }
 
+/* R314 (V10) — the reference's header CTA grammar: quiet transparent
+ * cells at rest (hairline-separated seats), the accent cell carries
+ * the orange READ (not a solid slab) and wipes orange on hover — the
+ * solid-orange block the owner flagged at pair-000 retires. */
+.fo-header-actions .btn.primary {
+  --_btn-bg: transparent;
+  --_btn-fg: var(--accent-ink);
+  --_btn-bd: transparent;
+  --_btn-wipe: var(--accent);
+  --_btn-wipe-fg: var(--accent-fg);
+}
+
+.fo-header-actions .btn.ghost {
+  --_btn-bg: transparent;
+  --_btn-bd: transparent;
+}
+
 /* The .btn recipes ship 32/40/48px — the sheet lifts every landing
  * control to the 44px floor (.lg CTAs stay 48; the header pair is
  * stretched full-bar above). */
@@ -602,60 +653,164 @@
  * the title block moved to the closing section. Mobile (flow mode):
  * the copy leads (LCP = the headline), then the drawing, then the
  * ticker. */
+/* R314 (V1) — the reference hero: ONE ink window + a 133px bottom strip.
+ * The measured band = 887px @1440×900 (100vh − 13px): the fixed 56px
+ * header + 7px frame own the top, the window takes the remainder, the
+ * strip of cells closes the band (hairline-topped). */
 .fo-hero {
   display: grid;
-  padding-block-start: var(--sp-4);
-  padding-block-end: var(--sp-5);
-  /* the frame math: the 57px in-flow header + the 2×7px page frame —
-     the band holds one viewport (the reference's hero = 100vh − frame) */
-  min-block-size: calc(100vh - 71px); /* spacing-gate: allow — the 57px landing header height + the 14px D9 frame inset, both external constants (not spacing rungs) */
-  align-content: start;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-block-size: calc(100vh - 13px); /* spacing-gate: allow — the measured reference band (887 = 900 − 13), an external constant */
+  align-content: stretch;
+  padding-block: 0;
 }
 
-.fo-hero-copy {
+/* the framed ink window — the ink rendering (own subject/licence)
+ * rides the shared .bp-svg viewBox frame so the inspection instrument
+ * keeps ONE coordinate system (V2). Dashed inner frame per §5.0. */
+.fo-hero-window {
   display: grid;
-  gap: var(--sp-4);
-  align-content: center;
+  padding-block-start: 63px; /* 56px header + 7px frame */
+  padding-inline: 7px;
+  align-items: stretch;
 }
 
-.fo-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2-5);
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  color: var(--text-muted);
+.fo-hero-window .bp-stage {
+  inline-size: 100%;
+  /* the window ≈1406×~690 @1440: the artwork seats with a hairline
+     mat + the dashed drafting inner frame */
+  padding: 12px;
+  border: 1px solid var(--rule);
+  position: relative;
+  background:
+    linear-gradient(var(--bg), var(--bg)),
+    var(--surface);
 }
 
-.fo-eyebrow .fo-mono {
-  color: var(--accent-ink);
-  font-size: var(--fs-xxs);
+.fo-hero-window .bp-stage::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px dashed var(--grid-line);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* the artwork mass ≈65% of the viewport height (the measured
+ * reference composition): the SVG canvas caps at ~76vh (the building
+ * fills ~85% of its canvas), centred, whitespace around — never
+ * stretched to the window edges. */
+.fo-hero-window .bp-svg {
+  display: block;
+  inline-size: auto;
+  max-inline-size: 100%;
+  block-size: min(76vh, 100%);
+  margin-inline: auto;
+}
+
+/* ── the bottom strip — 133px of cells: the GIANT H1 at the
+ * inline-start edge (46.67px/1.0 measured, 3 lines) · the intro
+ * paragraph cell · the DISCOVER MORE link cell. ── */
+.fo-hero-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 47%) minmax(0, 1fr);
+  gap: var(--sp-8);
+  align-items: end;
+  padding-block-start: var(--sp-4);
+  padding-block-end: 26px; /* the 7px frame + the reference's lower mat */
+  padding-inline: 7px;
+  min-block-size: 133px;
+  border-block-start: 1px solid var(--rule);
+  margin-block-start: var(--sp-4);
 }
 
 .fo-hero-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-xl);
+  /* the measured reference H1: 46.67px @1440 (3.24vw), w700,
+     line-height 1.0, tracking −0.93px — Arabic has no uppercase and
+     no negative tracking (cursive joins), so the size/lh/weight carry
+     the parity (R314 exception ledger: script differences only). */
+  font-size: clamp(34px, 3.24vw, 52px);
   font-weight: 700;
-  /* r307 (audit 1-B #1): the display line-height joins the canon's
-     type-role floor (tokens.css --type-display-line-height) — the old
-     1.05 sat under the proven-safe Arabic display floor. */
-  line-height: var(--type-display-line-height);
+  line-height: 1.12;
+  letter-spacing: 0;
   color: var(--text);
+  margin: 0;
+  /* the Arabic display floor still breathes: diacritics may lift a
+     hair above the em box without clipping */
+  overflow-block: visible;
 }
 
-.fo-hero-statement {
-  font-family: var(--font-display);
-  /* R313 (D7 §1): the statement steps down a rung so the whole copy
-     band fits the ~100vh-frame hero (the reference's hero title row
-     is one compact band above the drawing). */
-  font-size: var(--fs-h1);
+.fo-hero-side {
+  display: grid;
+  gap: var(--sp-4);
+  align-content: end;
+  justify-items: start;
+  padding-inline-start: var(--sp-6);
+  border-inline-start: 1px solid var(--rule);
+}
+
+.fo-hero-lead {
+  font-size: var(--fs-body-lg);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-inline-size: 44ch;
+  margin: 0;
+}
+
+.fo-hero-side-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-5);
+}
+
+/* the DISCOVER MORE cell — the reference's accent link: orange at
+ * rest, an orange fill wipe on hover (text flips to the fill's ink),
+ * the arrow rides inline-end. */
+.fo-hero-discover {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1-5) var(--sp-3);
+  color: var(--accent-ink);
   font-weight: 600;
-  line-height: 1.35;
-  color: var(--text);
-  max-inline-size: 30ch;
+  font-size: var(--fs-body-lg);
+  text-decoration: none;
+  isolation: isolate;
+  min-block-size: 44px; /* touch floor */
 }
 
-.fo-hero-statement em,
+.fo-hero-discover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: inline-start;
+  transition: transform var(--t-base) var(--ease);
+  z-index: -1;
+}
+
+.fo-hero-discover:hover,
+.fo-hero-discover:focus-visible {
+  color: var(--accent-fg);
+}
+
+.fo-hero-discover:hover::before,
+.fo-hero-discover:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.fo-hero-discover-arrow {
+  transition: translate var(--t-base) var(--ease);
+}
+
+.fo-hero-discover:hover .fo-hero-discover-arrow {
+  translate: -4px 0; /* RTL inline-forward */
+}
+
 .st-title em,
 .chapters-title em,
 .pm-title em,
@@ -663,20 +818,6 @@
 .fo-cta-title em {
   font-style: normal;
   color: var(--accent-ink);
-}
-
-.fo-hero-sub {
-  font-size: var(--fs-body-lg);
-  line-height: 1.7;
-  color: var(--text-secondary);
-  max-inline-size: 52ch;
-}
-
-.fo-hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-3);
 }
 
 /* R313-int (5-int · failure 1): the honesty-ledger disclosure chip —
@@ -756,7 +897,7 @@
   transition: opacity var(--t-slow) var(--ease);
 }
 
-.fo-hero-fig.in-view .bp-rulers {
+.fo-hero-window.in-view .bp-rulers {
   opacity: 1;
 }
 
@@ -2345,9 +2486,28 @@
 }
 
 @media (max-width: 1024px) {
-  /* the hero becomes the flow: copy → drawing → ticker */
+  /* R314: the hero flows — window first (the ink render is the LCP),
+     then the strip's cells stack under it */
   .fo-hero {
+    grid-template-rows: auto auto;
+    min-block-size: 0;
+  }
+
+  .fo-hero-window {
+    padding-block-start: 63px;
+  }
+
+  .fo-hero-strip {
     grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-4);
+    min-block-size: 0;
+    align-items: start;
+  }
+
+  .fo-hero-side {
+    border-inline-start: 0;
+    padding-inline-start: 0;
+    border-inline-start: 0;
   }
 
   .st-spread {
@@ -2398,57 +2558,30 @@
 }
 
 @media (max-width: 760px) {
-  /* the hotspots leave the overlay and flow as a chip row under the
-   * drawing — 44px targets on touch, no crowding over the artwork;
-   * the chips carry the Arabic labels visibly again. The !important
-   * width/height reset defeats the JS overlay sizing (which only
-   * applies to the absolute overlay presentation). */
-  .bp-hotspots {
-    position: static;
-    inline-size: auto !important;
-    block-size: auto !important;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    padding-block-start: var(--sp-3);
-    border-block-start: 1px solid var(--rule);
+  /* R314: the elevation's inner micro-labels are retired with the
+   * drawing itself; the mobile hero = window (ink render, 48vh) +
+   * stacked strip cells (the 390 reference tiles: giant heading
+   * blocks, muted body, full-width discover). */
+  .fo-hero-window {
+    padding-block-start: 63px;
   }
 
-  .bp-hotspot {
-    position: static;
-    transform: none;
-    inline-size: auto;
-    min-inline-size: 44px;
-    gap: var(--sp-1-5);
-    padding: var(--sp-1) var(--sp-2-5);
+  .fo-hero-window .bp-stage {
+    min-block-size: 44vh;
   }
 
-  .bp-hotspot-label {
-    display: inline;
+  .fo-hero-strip {
+    padding-block-end: var(--sp-5);
   }
 
-  .bp-panel {
-    grid-template-columns: auto 1fr;
+  .fo-hero-title {
+    font-size: clamp(30px, 8.4vw, 40px);
+    line-height: 1.15;
   }
 
-  .bp-panel-desc {
-    grid-column: 1 / -1;
-  }
-
-  .bp-panel-meta {
-    display: none;
-  }
-
-  /* the SVG's inner micro-labels drop under the flow widths (the
-   * hotspot chips carry the same labels at full size) — nothing
-   * renders below the 13px floor. R310: the mono micro voice
-   * (dimension measures, axis bubbles, scale notes) drops too — the
-   * wide elevation compresses to ~0.26× here; the massing, windows
-   * and tower stay legible, the micro-annotations would not. */
-  .bp-name,
-  .bp-tag,
-  .bp-micro {
-    display: none;
+  .fo-hero-side-foot {
+    justify-content: space-between;
+    inline-size: 100%;
   }
 
   .ch {

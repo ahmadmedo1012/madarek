@@ -95,7 +95,18 @@ const P = {
 // per-job overrides (hero source is upscaled ~2.15× → needs stronger smoothing
 // and a slightly larger XDoG σ so strokes follow structure, not upscale mush)
 const OVERRIDES = {
-  hero: { denoise: 2.8, xdog: { sigma1: 1.25, dilate: 1 } },
+  /* R314 foreman tune (VLM round 2): the reference hero reads CRISP —
+   * deep ink blacks, controlled stipple — not a soft pencil sketch.
+   * Lower γ keeps the shadow mass DEEP (γ>1 lifts shadows), a stronger
+   * tone curve snaps the range, and the wash floor drops so mid-tones
+   * sit darker against paper. Source swapped to uob-1600 (the single
+   * admin-building mass — the panorama read as a wide landscape). */
+  hero: {
+    denoise: 2.8,
+    xdog: { sigma1: 1.25, dilate: 1 },
+    tone: { gamma: 1.45, contrast: 1.3, loPct: 0.02, hiPct: 0.98, smooth: 2.0, skyCut: 240 },
+    wash: { top: 240, floorT: 90, floorV: 150 },
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -732,13 +743,13 @@ const w1 = P.hatch.wobble1 * kTex, w2 = P.hatch.wobble2 * kTex;
 const JOBS = [
   {
     id: 'hero',
-    src: 'frontend/public/media/universities/uob-wide-1600.webp',
-    focal: [0.5, 0.45],
+    src: 'frontend/public/media/universities/uob-1600.webp',
+    focal: [0.5, 0.42],
     seed: 31400,
     groundY: 0.75,
     outputs: [
-      { file: 'hero-ink-2200.webp', w: 2200, h: 1060 },
-      { file: 'hero-ink-1100.webp', w: 1100, h: 530 },
+      { file: 'hero-ink-2200.webp', w: 2200, h: 1100 },
+      { file: 'hero-ink-1100.webp', w: 1100, h: 550 },
     ],
   },
   {

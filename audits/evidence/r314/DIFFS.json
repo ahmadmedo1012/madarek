@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-23T17:40:46.925Z",
+ "generatedAt": "2026-10-23T18:52:32.286Z",
  "items": [
   {
    "id": "1440x900-light-p00-0",
@@ -7,49 +7,63 @@
    "theme": "light",
    "frame": "p00-0.png",
    "verdict": "DIFFERENT",
-   "score": 25,
+   "score": 15,
    "differences": [
     {
      "area": "Header / Navigation",
-     "what_reference_has": "Left-aligned logo 'HERON AI' with a 3D box icon. Navigation links (PRODUCT, PRICING, etc.) are centered/offset to the right. Minimalist, clean sans-serif typography.",
-     "what_candidate_has": "Right-aligned logo 'محلل' (Arabic) with a gear icon. Navigation is fully right-aligned with different link text. Includes a prominent red 'Back' button (إلى الخلف) not present in reference.",
-     "severity": "major",
-     "fix_hint": "Revert header layout to left-aligned English branding and original navigation structure."
-    },
-    {
-     "area": "Hero Section Layout",
-     "what_reference_has": "Large, central architectural illustration (building elevation) dominating the viewport. Text is pushed to the bottom-left footer area.",
-     "what_candidate_has": "Text-heavy hero section at the top (Headline + Subhead). Illustration is pushed down into the lower half of the screen and is significantly smaller in scale relative to the container.",
+     "what_reference_has": "Left-aligned logo (HERON AI) with LTR navigation links (PRODUCT, PRICING, etc.) and a right-aligned 'CONTACT US' link. Clean, minimal header.",
+     "what_candidate_has": "Right-aligned logo (محلّاك) with RTL navigation links (الرئيسية, المنتجات, etc.) and a left-aligned back button. Header contains additional UI icons (monitor, moon, sun) not present in reference.",
      "severity": "critical",
-     "fix_hint": "Restore the illustration as the primary focal point occupying the center. Move text block to the bottom or match the reference's spatial hierarchy."
+     "fix_hint": "Revert header layout to LTR structure. Remove extraneous icons. Match navigation item count and positioning."
     },
     {
-     "area": "Typography Scale & Weight",
-     "what_reference_has": "Massive, ultra-bold, all-caps sans-serif headline ('AN AI AGENT...') at the bottom. High contrast between headline and body text.",
-     "what_candidate_has": "Headline is at the top. While bold, the visual weight and size proportion differ due to RTL layout constraints and line breaking. The font family appears slightly different (less geometric than reference).",
-     "severity": "major",
-     "fix_hint": "Match the specific font weight, size, and case (all caps) of the reference headline."
-    },
-    {
-     "area": "Illustration Style & Content",
-     "what_reference_has": "Stylized 3D architectural rendering of a modern concrete building. Features heavy stippling/grain texture for shading, solid black tree silhouettes, and distinct red square markers.",
-     "what_candidate_has": "Technical 2D CAD-style line drawing (elevation) of a different building complex. Uses thin uniform lines, dimension lines, and grid backgrounds. Lacks the heavy grain/stipple texture of the reference. Trees are simple outline circles.",
+     "area": "Main Imagery (Canvas)",
+     "what_reference_has": "Architectural elevation drawing of a modern building. Features precise line work, stippled concrete textures, and bare deciduous trees. Centered composition with significant whitespace.",
+     "what_candidate_has": "Abstract, high-contrast graphic illustration featuring organic cloud-like shapes (top-left) and geometric wood-grain/textured diagonal stripes (right). Composition is off-center and fills more of the frame.",
      "severity": "critical",
-     "fix_hint": "Replace the technical drawing with the textured 3D architectural render. Match the artistic style (stippling, line weight)."
+     "fix_hint": "Replace candidate imagery with the architectural building drawing. Match the central framing and subject matter exactly."
     },
     {
-     "area": "UI Chrome / Overlay Elements",
-     "what_reference_has": "Vertical red tab on the right edge labeled 'W. Site of the Day'. Ruler marks (+) on the top/left edges of the canvas area. Cookie banner at the very bottom.",
-     "what_candidate_has": "No vertical side tab. Ruler marks are present but surrounding a specific 'sheet' area for the drawing, rather than the full canvas edge. No cookie banner visible.",
-     "severity": "minor",
-     "fix_hint": "Add the 'Site of the Day' vertical tab. Adjust rulers to match reference placement."
+     "area": "Imagery Style / Rendering Technique",
+     "what_reference_has": "Technical architectural illustration style: clean vector lines, consistent line weights, fine stippling for shading, and realistic tree silhouettes.",
+     "what_candidate_has": "Expressive mixed-media style: heavy grain/noise textures, bold brush-stroke-like shapes, and high-contrast tonal ranges. Includes red '+' crosshairs indicative of a different software/tool state.",
+     "severity": "critical",
+     "fix_hint": "Adopt the technical architectural rendering style. Remove artistic grain and brush strokes."
     },
     {
-     "area": "Color Palette & Accents",
-     "what_reference_has": "Background is an off-white/beige paper tone. Accent color is a specific vibrant red used for the 'CONTACT US' link, tab, and markers.",
-     "what_candidate_has": "Background is white/paper-white. Red accent is used for the 'Back' button and drawing highlights, but the tonal value of the background differs.",
+     "area": "Floating Tab / Badge",
+     "what_reference_has": "Vertical red tab on the right edge labeled 'W. Site of the Day' with white text.",
+     "what_candidate_has": "Small red square badge on the far right edge containing the number '2'.",
+     "severity": "major",
+     "fix_hint": "Replace the numeric badge with the vertical 'Site of the Day' tab."
+    },
+    {
+     "area": "Hero Text Block (Bottom Left)",
+     "what_reference_has": "Large, bold, all-caps sans-serif headline: 'AN AI AGENT THAT WORKS INSIDE YOUR DESIGN TOOLS'.",
+     "what_candidate_has": "Absent. This entire text block is missing from the candidate layout.",
+     "severity": "critical",
+     "fix_hint": "Add the large headline text block to the bottom-left area of the canvas."
+    },
+    {
+     "area": "Descriptive Text Block (Bottom Center-Left)",
+     "what_reference_has": "Two lines of body copy describing Heron's functionality, followed by a 'DISCOVER MORE' link in orange/red.",
+     "what_candidate_has": "A single line of Arabic text at the very bottom center describing cookie usage or legal terms, styled differently (smaller, different color).",
+     "severity": "major",
+     "fix_hint": "Restore the descriptive text block and 'DISCOVER MORE' link in the original position."
+    },
+    {
+     "area": "Cookie Consent Banner (Footer)",
+     "what_reference_has": "Full-width banner at the very bottom with text 'This website uses cookies.', 'LEARN MORE' link, and 'ACCEPT' (orange)/'REJECT' buttons.",
+     "what_candidate_has": "A floating modal-style box in the bottom-right corner containing Arabic text about terms/privacy and two buttons ('أوافق', 'موالفة').",
+     "severity": "major",
+     "fix_hint": "Convert the floating modal back to a full-width footer banner matching the reference's layout and button styles."
+    },
+    {
+     "area": "Rulers / Grid",
+     "what_reference_has": "Standard horizontal and vertical rulers with crosshairs (+) at the origin and ends of the axes.",
+     "what_candidate_has": "Rulers present but with a different scale/density. Red '+' crosshairs are scattered arbitrarily across the canvas image rather than just at the ruler origins.",
      "severity": "minor",
-     "fix_hint": "Adjust background color to match the warm beige tone of the reference."
+     "fix_hint": "Remove internal crosshairs from the image area. Ensure ruler tick marks match reference density."
     }
    ],
    "status": "open"
