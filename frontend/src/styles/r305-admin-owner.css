@@ -345,12 +345,11 @@
   align-items: center;
   gap: var(--sp-3);
   padding: var(--sp-2-5) var(--sp-4);
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  /* R313 (WP-F · D16): solid paper on the hairline — the glass blur
+     + the --shadow-sm tail retired (flat overlay grammar). */
+  background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: var(--r-md);
-  box-shadow: var(--shadow-sm);
 }
 .r305ao .r305ao-bulkbar-count {
   font-size: var(--fs-xxs);
@@ -575,11 +574,11 @@
 /* The overlay veil: components.css already rides --overlay-veil +
    --scrim-blur — no restatement.
 
-   The card — r-lg corner (restrained), hairline edge, modal shadow. */
+   The card — hairline edge, flat sheet (R313 WP-F · D16: the modal
+   shadow retired; the border IS the outline). */
 body:has(.r305ao) .modal-card {
   border-radius: var(--r-lg);
   border-color: var(--rule);
-  box-shadow: var(--shadow-modal);
 }
 /* The decorative top bar: flat accent tick instead of the gradient. */
 body:has(.r305ao) .modal-card::before {
@@ -646,29 +645,33 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger:hover:not(:disabled) {
 .r305ao .badge.brand,
 .r305ao .badge.gold   { background: var(--accent-soft);  color: var(--accent-strong); }
 
-/* Alert rows — one change: the flat card + faint outline (the dot
-   anatomy, title/desc/time voices and the unread bar are canonical
-   components.css — no restatement). */
+/* Alert rows — one change: the flat card on the row hairline
+   (R313 WP-F · D16: --border ≡ #E0E0DA, the reference's row rule;
+   the dot anatomy, title/desc/time voices and the unread bar are
+   canonical components.css — no restatement). */
 .r305ao .alert {
   background: var(--surface);
-  border: 1px solid var(--border-faint);
+  border: 1px solid var(--border);
   border-radius: var(--r-md);
   gap: var(--sp-3);
 }
 
-/* Owner live status band — honest ops readout: faint hairline + the
-   restrained corner. Text tiers (live/alerts/degraded/pending) keep
-   owner.css wave 6-a's -ink pairing verbatim. */
+/* Owner live status band — honest ops readout: the row hairline
+   (R313 WP-F · D16: --border ≡ #E0E0DA) + the restrained corner.
+   Text tiers (live/alerts/degraded/pending) keep owner.css wave 6-a's
+   -ink pairing verbatim. */
 .r305ao .owner-live-status {
-  border-color: var(--border-faint);
+  border-color: var(--border);
   border-radius: var(--r-md);
 }
 
 /* Severity alert cards — hairline + soft wash; severity on the
-   leading edge. Critical pair keeps the danger wash. */
+   leading edge (R313 WP-F · D16: the row-rule #E0E0DA carries the
+   frame; the 2px severity rules stay on the leading edge). Critical
+   pair keeps the danger wash. */
 .r305ao .owner-alert-card {
   background: var(--surface);
-  border-color: var(--border-faint);
+  border-color: var(--border);
   border-radius: var(--r-md);
   box-shadow: none;
 }

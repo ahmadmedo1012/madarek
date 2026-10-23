@@ -24,8 +24,8 @@
      tinted accent hairline (28% copper into the strong border) reads
      as structure in BOTH themes without shouting. */
   background: color-mix(in srgb, var(--accent) 28%, var(--border-strong));
-  /* hairline spine — micro-radius below the --r-xs floor, kept raw */
-  border-radius: 1px; /* radius-gate: allow — 2px timeline spine, sub-pixel rounding on a hairline */
+  /* R313 (WP-F · D16): square hairline — radius 0, the sub-pixel
+     rounding allow retired. */
 }
 
 .owner-timeline-item {
@@ -51,7 +51,9 @@
 .owner-event-icon {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  /* R313 (WP-F · D16): circular primitive — the one radius the system
+     keeps (var(--r-full)). */
+  border-radius: var(--r-full);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,7 +173,8 @@
 .owner-toggle-thumb {
   inline-size: 16px;
   block-size: 16px;
-  border-radius: 50%;
+  /* R313 (WP-F · D16): circular primitive — var(--r-full). */
+  border-radius: var(--r-full);
   /* WS-D2 — was #fff in both themes. Routed through the always-light
      ink token so the thumb stays visible in Dark too: Light resolves to
      --neutral-50 #FBFAF9 (≈#fff, imperceptible), Dark to the warm sand
@@ -194,9 +197,8 @@
   /* r149 (R3-A3 M5): spring-soft على 160ms — إحساس مفتاح حقيقي
      بدل انزلاق محايد (كان 240ms standard). */
   transition: transform var(--motion-duration-short) var(--ease-spring-soft);
-  /* small-control thumb shadow — needs more local pop than --elev-1
-     (alpha 0.2 vs 0.04/0.06); off-token by design */
-  box-shadow: 0 1px 3px color-mix(in srgb, var(--black) 20%, transparent);
+  /* R313 (WP-F · D16): the thumb's local pop shadow retired — flat
+     system, the surface step carries the thumb (no shadow paint). */
 }
 
 .owner-toggle-track.on .owner-toggle-thumb {
@@ -551,7 +553,8 @@
 .owner-health-dot {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  /* R313 (WP-F · D16): circular primitive — var(--r-full). */
+  border-radius: var(--r-full);
   flex-shrink: 0;
 }
 
@@ -643,7 +646,8 @@
   position: relative;
   width: 10px;
   height: 10px;
-  border-radius: 50%;
+  /* R313 (WP-F · D16): circular primitive — var(--r-full). */
+  border-radius: var(--r-full);
   background: var(--success);
   /* 5-C1: the ambient base band (2.4s) — the gate debt entry is
      gone; polish.css's overrides-layer RM belt (v18 owner list) still
@@ -708,13 +712,13 @@
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   margin-bottom: var(--sp-3);
-  box-shadow: var(--shadow-card);
-  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-base) var(--ease);
+  /* R313 (WP-F · D16): flat card — the hairline carries the depth;
+     the shadow pair + its transition track retired. */
+  transition: border-color var(--t-fast) var(--ease);
 }
 
 .owner-alert-card:hover {
   border-color: var(--border-strong);
-  box-shadow: var(--shadow-card-premium-h);
 }
 
 .owner-alert-card.critical {
@@ -895,22 +899,12 @@
   background: var(--warning);
 }
 
-/* (r153e: the v17 warning glow moved home from polish.css's
-   overrides layer, beside its border/background siblings above —
-   declarations verbatim. Off-token by design: warning glow ring
-   composited over the (local) --elevation-1 island — status
-   attention, not pure elevation.) */
+/* R313 (WP-F · D16): the v17 warning glow ring retired — flat
+   system, no glow paint. The has-alerts state keeps its wash (the
+   dark rebase below) and the honest frozen states; the pulse dot's
+   own animation stays the truth carrier. */
 .owner-live-status.has-alerts {
-  box-shadow:
-    0 0 0 4px color-mix(in srgb, var(--warning) 18%, transparent),
-    var(--elev-1);
-  animation: madarek-alert-glow var(--motion-duration-ambient-slow) var(--motion-ease-standard) infinite;
-}
-
-/* Keyframe states of the warning glow above — off-token by design. */
-@keyframes madarek-alert-glow {
-  0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--warning) 18%, transparent), var(--elev-1); }
-  50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--warning) 28%, transparent), var(--elev-2); }
+  animation: none;
 }
 
 /* Trailing tools (retry chip + "آخر تحديث" stamp) pinned to the
@@ -1579,29 +1573,14 @@
    ═════════════════════════════════════════════════════════════ */
 @layer pages {
 
-/* ── 1 · The live pulse — the ring glows VIOLET ─────────────────
-   The R190 reference grammar: orbital glow + luminous violet
-   nodes. The pulse's expanding ::after ring becomes the violet
-   ORBIT while the core dot keeps its honest status color (green
-   healthy / amber alerts / red degraded), and the dot gains a
-   violet aura. The frozen states (pending/degraded) restore the
-   status-colored frozen ring below — a neutral or danger dot must
-   never carry a violet orbit. */
-.owner-live-pulse {
-  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent);
-}
-
+/* ── 1 · The live pulse — the honest status dot ─────────────────
+   R313 (WP-F · D16): the violet orbit + aura glow retired — the
+   pulse dot keeps its honest status color (green healthy / amber
+   alerts / red degraded) and the dot gains NO aura. The frozen
+   states (pending/degraded) keep the status-colored frozen ring
+   below — a neutral or danger dot must never fake life. */
 .owner-live-pulse::after {
   background: var(--accent);
-}
-
-.owner-live-status.has-alerts .owner-live-pulse {
-  box-shadow: 0 0 10px color-mix(in srgb, var(--warning) 55%, transparent);
-}
-
-.owner-live-status.is-degraded .owner-live-pulse,
-.owner-live-status.is-pending .owner-live-pulse {
-  box-shadow: none;
 }
 
 /* r153e's freeze contract, extended to the ring's new color: the
@@ -1625,16 +1604,12 @@
   background: var(--accent);
 }
 
-/* ── 3 · The status band — glass on the void ────────────────────
-   §R190 gives .card/.ledger/.stat-strip the translucent luminosity
-   step on the dark theme; the mission-control band joins its
-   family instead of a flat surface-1 slab. Light keeps the inked
-   hairline (the cream editorial grammar). */
+/* ── 3 · The status band — flat paper on the hairline ──────────
+   R313 (WP-F · D16): the dark glass gradient retired — the band is
+   a flat --surface slab on the --surface-border hairline in both
+   themes (no gradient paint, no glass step). */
 [data-theme="dark"] .owner-live-status {
-  background:
-    linear-gradient(180deg,
-      color-mix(in srgb, var(--text) 4%, var(--surface)),
-      color-mix(in srgb, var(--text) 1.5%, var(--surface)));
+  background: var(--surface);
   border-color: var(--surface-border);
 }
 
