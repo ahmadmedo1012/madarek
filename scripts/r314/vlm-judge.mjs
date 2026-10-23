@@ -62,7 +62,7 @@ for (const vp of fs.readdirSync(CAP + '/heron')) {
     const hDir = path.join(CAP, 'heron', vp, theme);
     const mDir = path.join(CAP, 'madarek', vp, theme);
     if (!fs.existsSync(mDir)) continue;
-    const frames = fs.readdirSync(hDir).filter((f) => /^p\d+/.test(f)).sort();
+    const frames = fs.readdirSync(hDir).filter((f) => f.startsWith('p-')).sort();
     for (const f of frames) {
       if (onlyFrame && f !== onlyFrame) continue;
       const label = `${vp}-${theme}-${f.replace('.png', '')}`;

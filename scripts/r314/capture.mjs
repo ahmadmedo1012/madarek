@@ -99,15 +99,49 @@ const scrollTo = async (y) => {
   }, { mode: scrollInfo.mode, y });
 };
 
-// viewport frames at document progress
-for (let f = 0; f < frames; f++) {
-  const p = frames === 1 ? 0 : f / (frames - 1);
-  const y = Math.round(maxScroll * p);
-  await scrollTo(y);
+// R314 §3.1 — SECTION-RELATIVE alignment (the ruling fix): page shares
+// differ between the two sites, so document-progress frames compare the
+// WRONG scenes. Each site exposes 9 sections in DOM order; we capture
+// every section at its own traversal progress p ∈ {0, .5, 1} (pinned
+// sections get denser sampling below). Frame ids: s<NN>-<p> (section
+// index + intra-section progress).
+const sectionInfo = await page.evaluate((mode) => {
+  const secs = [];
+  for (const el of document.querySelectorAll('section, footer')) {
+    const r = el.getBoundingClientRect();
+    if (r.height > 300 && el.offsetParent !== null) {
+      // top within the scroll content:
+      let top = r.top;
+      if (mode === 'element') {
+        const wrap = document.querySelector('.lenis, [data-lenis-wrapper]');
+        top = r.top - wrap.getBoundingClientRect().top + wrap.scrollTop;
+      } else {
+        top = r.top + window.scrollY;
+      }
+      secs.push({ cls: String(el.className).split(' ')[0], top: Math.round(top), h: Math.round(r.height) });
+    }
+  }
+  return secs;
+}, scrollInfo.mode);
+meta.sections = sectionInfo;
+
+const sectFrames = [];
+sectionInfo.forEach((sec, i) => {
+  // pinned/long sections (map) get 5 samples; standard sections 3
+  const steps = sec.h > maxScroll * 0.25 ? 5 : 3;
+  for (let k = 0; k < steps; k++) {
+    const p = steps === 1 ? 0 : k / (steps - 1);
+    const y = Math.max(0, Math.min(maxScroll, Math.round(sec.top - h * 0.15 + (sec.h - h * 0.7) * p)));
+    sectFrames.push({ id: `s${String(i).padStart(2, '0')}-${Math.round(p * 100)}`, y });
+  }
+});
+for (const sf of sectFrames) {
+  await scrollTo(sf.y);
   await page.waitForTimeout(settle);
-  await page.screenshot({ path: path.join(outRoot, `p${String(f).padStart(2, '0')}-${Math.round(p * 100)}.png`) });
+  await page.screenshot({ path: path.join(outRoot, `p-${sf.id}.png`) });
 }
-console.log(`  ${frames} progress frames @ docH=${scrollInfo.docHeight} maxScroll=${maxScroll} (${scrollInfo.mode})`);
+console.log(`  ${sectFrames.length} section-relative frames @ docH=${scrollInfo.docHeight} maxScroll=${maxScroll} (${scrollInfo.mode})`);
+console.log('  sections: ' + sectionInfo.map((x) => `${x.cls}:${x.h}`).join(' · '));
 
 // scroll-stitch fullpage (handles pin/fixed correctly, fullPage API does not)
 if (flag('--stitch')) {

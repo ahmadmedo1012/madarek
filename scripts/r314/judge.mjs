@@ -88,7 +88,7 @@ for (const vp of viewports) {
     const heronDir = path.join(CAP, 'heron', vp, theme);
     const madDir = path.join(CAP, 'madarek', vp, theme);
     if (!fs.existsSync(madDir)) continue;
-    const files = fs.readdirSync(heronDir).filter((f) => /^p\d+/.test(f)).sort();
+    const files = fs.readdirSync(heronDir).filter((f) => f.startsWith('p-')).sort();
     for (const f of files) {
       if (!fs.existsSync(path.join(madDir, f))) continue;
       const a = fs.readFileSync(path.join(heronDir, f));

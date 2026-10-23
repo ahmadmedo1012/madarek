@@ -704,7 +704,7 @@ html[data-theme='dark'] .fo-grain {
   display: block;
   inline-size: auto;
   max-inline-size: 100%;
-  block-size: min(76vh, 100%);
+  block-size: min(68vh, 100%);
   margin-inline: auto;
 }
 
@@ -716,12 +716,12 @@ html[data-theme='dark'] .fo-grain {
   grid-template-columns: minmax(0, 47%) minmax(0, 1fr);
   gap: var(--sp-8);
   align-items: end;
-  padding-block-start: var(--sp-4);
-  padding-block-end: 26px; /* the 7px frame + the reference's lower mat */
+  padding-block-start: var(--sp-2);
+  padding-block-end: 20px; /* the 7px frame + the reference's lower mat */
   padding-inline: 7px;
   min-block-size: 133px;
   border-block-start: 1px solid var(--rule);
-  margin-block-start: var(--sp-4);
+  margin-block-start: var(--sp-2);
 }
 
 .fo-hero-title {
@@ -732,7 +732,7 @@ html[data-theme='dark'] .fo-grain {
      the parity (R314 exception ledger: script differences only). */
   font-size: clamp(34px, 3.24vw, 52px);
   font-weight: 700;
-  line-height: 1.12;
+  line-height: 1.06;
   letter-spacing: 0;
   color: var(--text);
   margin: 0;
@@ -1157,7 +1157,7 @@ html[data-theme='dark'] .fo-grain {
             to the scroll. R313 (D7 §2): the band holds ~80vh (the
             reference's 723px / 5.9%). ═══ */
 .st-section {
-  padding-block: var(--sp-12);
+  padding-block: var(--sp-7);
   min-block-size: 80vh;
 }
 
@@ -1664,7 +1664,7 @@ html[data-theme='dark'] .fo-grain {
    pain is answered by a live capability; the full matrix lives on
    /capabilities. The band holds ~82vh (the reference's 743px). ═══ */
 .pm-section {
-  padding-block: var(--sp-12);
+  padding-block: var(--sp-7);
   border-block-start: 1px solid var(--rule-strong);
   min-block-size: 82vh;
 }
@@ -1798,7 +1798,7 @@ html[data-theme='dark'] .fo-grain {
    (the reference's home-usecase). The band holds ~98vh (the
    reference's 887px / 7.2%). ═══ */
 .rl-section {
-  padding-block: var(--sp-12);
+  padding-block: var(--sp-7);
   border-block-start: 1px solid var(--rule-strong);
   min-block-size: 98vh;
 }
@@ -2064,7 +2064,7 @@ html[data-theme='dark'] .fo-grain {
    capture stack (the four real student surfaces, cross-fading on the
    scroll). The band holds ~77vh (the reference's 698px / 5.6%). ═══ */
 .wy-section {
-  padding-block: var(--sp-10);
+  padding-block: var(--sp-7);
   border-block-start: 1px solid var(--rule-strong);
   min-block-size: 77vh;
 }
@@ -2108,7 +2108,28 @@ html[data-theme='dark'] .fo-grain {
    the reference's hold-plateau shape) */
 .wy-rail {
   display: grid;
-  gap: var(--sp-3);
+  gap: var(--sp-1-5);
+}
+
+/* R314 desktop: the section heads share the reference's compact head
+ * band (label + title + one intro line ≈ 160px, not 220–320) */
+@media (min-width: 992px) {
+  .pm-head,
+  .wy-head,
+  .pr-head,
+  .rl-head {
+    gap: var(--sp-3);
+  }
+
+  .pm-head p,
+  .wy-head p,
+  .pr-head p,
+  .rl-head p {
+    max-inline-size: 44ch;
+    font-size: var(--fs-body);
+    line-height: 1.55;
+  }
+
   margin: 0;
   padding: 0;
   list-style: none;
@@ -2117,7 +2138,7 @@ html[data-theme='dark'] .fo-grain {
 .wy-stage {
   display: grid;
   gap: var(--sp-0-5);
-  padding: var(--sp-2-5) var(--sp-3);
+  padding: var(--sp-1-5) var(--sp-3);
   border: 1px solid var(--rule);
   border-inline-start: 2px solid transparent;
   background: color-mix(in srgb, var(--surface) 45%, transparent);
@@ -2230,7 +2251,7 @@ html[data-theme='dark'] .fo-grain {
 }
 
 .fo-footer-inner {
-  padding-block: var(--sp-7) var(--sp-4);
+  padding-block: var(--sp-4) var(--sp-3);
   padding-inline: 26px; /* spacing-gate: allow — the header/footer seat measure (33px − 7px inset), shared with .fo-header-inner */
   display: grid;
   gap: var(--sp-6);
@@ -2246,27 +2267,33 @@ html[data-theme='dark'] .fo-grain {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   border: 1px solid var(--rule);
   background: var(--bg);
+  grid-template-areas:
+    'strip strip strip strip'
+    'tagline tagline links-a links-b'
+    'tagline tagline links-c mark'
+    'addr-a addr-b addr-b addr-b';
 }
 
 .fo-fcell {
-  padding: var(--sp-5);
+  padding: var(--sp-4);
   display: grid;
-  gap: var(--sp-2);
+  gap: var(--sp-1-5);
   align-content: start;
   border-inline-start: 1px solid var(--rule);
   border-block-start: 1px solid var(--rule);
   margin-block-start: -1px; /* collapse double rules */
   margin-inline-start: -1px;
-  min-block-size: 120px;
+  min-block-size: 96px;
 }
 
 .fo-fcell-strip {
+  grid-area: strip;
   grid-column: 1 / -1;
   position: relative;
   padding: 0;
   border-inline-start: 0;
   margin-inline-start: 0;
-  block-size: 200px;
+  block-size: 132px;
   overflow: hidden;
   border-block-start: 0;
   margin-block-start: 0;
@@ -2293,8 +2320,19 @@ html[data-theme='dark'] .fo-grain {
 }
 
 .fo-fcell-tagline {
+  grid-area: tagline;
   grid-column: span 2;
 }
+
+/* markup order (children of .fo-fgrid): 1 strip · 2 tagline ·
+   3–5 link navs · 6–7 addr cells · 8 mark — :nth-child, not
+   :nth-of-type (the cells mix div/nav tags) */
+.fo-fcell:nth-child(3) { grid-area: links-a; }
+.fo-fcell:nth-child(4) { grid-area: links-b; }
+.fo-fcell:nth-child(5) { grid-area: links-c; }
+.fo-fcell:nth-child(6) { grid-area: addr-a; }
+.fo-fcell:nth-child(7) { grid-area: addr-b; }
+.fo-fcell-mark { grid-area: mark; }
 
 .fo-fcell-links {
   border-block-start: 1px solid var(--rule);
@@ -2304,7 +2342,7 @@ html[data-theme='dark'] .fo-grain {
   display: grid;
   place-items: center;
   align-content: center;
-  min-block-size: 260px;
+  min-block-size: 180px;
 }
 
 /* the GIANT outlined construction-line wordmark — spans the full sheet
@@ -2314,15 +2352,15 @@ html[data-theme='dark'] .fo-grain {
   position: relative;
   display: grid;
   justify-items: center;
-  gap: var(--sp-3);
-  padding-block: var(--sp-8) var(--sp-5);
-  margin-block-start: var(--sp-5);
+  gap: var(--sp-1-5);
+  padding-block: var(--sp-3) var(--sp-2);
+  margin-block-start: var(--sp-2);
 }
 
 .fo-wordmark-ar {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(96px, 13.5vw, 220px);
+  font-size: clamp(72px, 9vw, 136px);
   line-height: 1;
   letter-spacing: 0;
   color: transparent;
@@ -3177,7 +3215,7 @@ html[data-theme='dark'] .fo-wordmark-ar {
    are honest ratio boxes — UI shots are never cropped. The band
    holds ~79vh (the reference's 710px / 5.7%). ── */
 .pr-section {
-  padding-block: var(--sp-10);
+  padding-block: var(--sp-7);
   border-block-start: 1px solid var(--rule-strong);
   min-block-size: 79vh;
 }
