@@ -1272,11 +1272,34 @@ export default function LandingPage() {
           (1) the identity + the subscribe seat, (2) the wide index +
           the honest address, (3) the giant line-art mark fading in
           with the scroll — closed by the legal row. ── */}
+      {/* ═══ [9] FOOTER — R314 V9: the reference's cell grid (pair-100):
+          strip-image cell · tagline cell · link columns · subscribe cell ·
+          address/contact cells · drawn-mark cell — every cell hairline-
+          ruled — closed by the GIANT outlined construction-line wordmark
+          (Madarek's own: مدارك + MADAREK) and the legal row. Honest copy
+          throughout (demo-data disclosure, no fake subscribe, no
+          invented contacts). ═══ */}
       <footer className="fo-footer">
         <FooterLens />
         <div className="fo-footer-inner">
-          <div className="fo-footer-grid">
-            <div className="fo-footer-col fo-footer-col-main">
+          <div className="fo-fgrid">
+
+            {/* [01] the strip-image cell — the ink-rendered architecture
+                (own subject/licence; the reference's rendered stairs seat) */}
+            <div className="fo-fcell fo-fcell-strip">
+              <img
+                className="fo-fstrip-img"
+                src="/media/renders/crop-garyounis-classic-960.webp"
+                alt="رسم حبري لعمارة حرم جامعي ليبي — مشتق من صورة مرخّصة"
+                loading="lazy"
+                width={960}
+                height={960}
+              />
+              <span className="fo-fcell-tag fo-mono" dir="ltr">[01] CAMPUS · INK RENDER</span>
+            </div>
+
+            {/* [02] the tagline cell — the honest identity paragraph */}
+            <div className="fo-fcell fo-fcell-tagline">
               <Link to="/" className="fo-brand" aria-label="مدارك">
                 <StarMark size={30} className="fo-brand-mark" />
                 <span className="fo-brand-stack">
@@ -1289,14 +1312,38 @@ export default function LandingPage() {
                     on one source line (the r188-brand-integrity gate). */}
                 منصّة تعليمية تقنية مستقلّة، عربية أولًا. لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها؛ وبيانات العرض داخلها تخصّ «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل لأغراض العرض.
               </p>
-              {/* The subscribe seat — HONEST disabled state: no
+            </div>
+
+            {/* [03–05] the three link columns (the reference's
+                COMPANY/PRODUCT/RESOURCES seats, Madarek's own index) */}
+            <nav className="fo-fcell fo-fcell-links" aria-label="فهرس المنصّة">
+              <div className="fo-footer-heading">المنصّة</div>
+              <Link to="/capabilities" className="fo-footer-link">ما يعمل اليوم</Link>
+              <a href="#product" className="fo-footer-link">المنصّة فعليًا</a>
+              <a href="#chapters" className="fo-footer-link">الفصول</a>
+              <a href="#roles" className="fo-footer-link">الأدوار الثمانية</a>
+              <Link to="/colleges" className="fo-footer-link">الكلّيات التجريبية</Link>
+            </nav>
+            <nav className="fo-fcell fo-fcell-links" aria-label="المحتوى والرحلة">
+              <div className="fo-footer-heading">الرحلة</div>
+              <a href="#statement" className="fo-footer-link">البيان</a>
+              <a href="#live" className="fo-footer-link">التحديات المباشرة</a>
+              <Link to="/campus" className="fo-footer-link">الحياة الجامعية</Link>
+              <a href="#vision" className="fo-footer-link">الرؤية والمبدأ</a>
+              <a href="#main" className="fo-footer-link">أعلى الصفحة</a>
+            </nav>
+            <nav className="fo-fcell fo-fcell-links" aria-label="الحساب">
+              <div className="fo-footer-heading">الحساب</div>
+              <Link to="/auth/register" className="fo-footer-link">إنشاء حساب جامعي</Link>
+              <Link to="/auth" className="fo-footer-link">تسجيل الدخول</Link>
+              {/* the honest subscribe seat — HONEST disabled state: no
                   subscribe endpoint exists anywhere in the backend
                   (verified — modules: auth/institution/milestones/
                   onboarding/search/theme only), so there is no
                   submission to make and no success to theatrically
                   announce. The seat ships in the reference's own
-                  geometry (358×40 hairline input + 40×40 arrow) with
-                  a plain «قريبًا» explanation. No fake opt-ins. */}
+                  geometry (hairline input + 40×40 arrow) with a plain
+                  «قريبًا» explanation. No fake opt-ins. */}
               <div className="fo-subscribe">
                 <label className="fo-footer-heading" htmlFor="fo-subscribe-email">النشرة البريدية</label>
                 <div className="fo-subscribe-row">
@@ -1322,50 +1369,53 @@ export default function LandingPage() {
                   قريبًا — لا توجد قائمة بريدية فعلية بعد؛ لا يُجمَع أيّ بريد ولا يُرسَل شيء.
                 </p>
               </div>
-            </div>
-            <nav className="fo-footer-col fo-footer-col-links" aria-label="فهرس المنصّة">
-              <div className="fo-footer-heading">الفهرس</div>
-              <Link to="/campus" className="fo-footer-link">الحياة الجامعية</Link>
-              <a href="#chapters" className="fo-footer-link">الفصول</a>
-              <a href="#product" className="fo-footer-link">المنصّة فعليًا</a>
-              <Link to="/capabilities" className="fo-footer-link">ما يعمل اليوم</Link>
-              <a href="#live" className="fo-footer-link">التحديات المباشرة</a>
-              <a href="#roles" className="fo-footer-link">الأدوار الثمانية</a>
-              <Link to="/colleges" className="fo-footer-link">الكلّيات التجريبية</Link>
-              <a href="#vision" className="fo-footer-link">الرؤية والمبدأ</a>
-              <Link to="/auth/register" className="fo-footer-link">إنشاء حساب جامعي</Link>
-              <Link to="/auth" className="fo-footer-link">تسجيل الدخول</Link>
-              <a href="#main" className="fo-footer-link">أعلى الصفحة</a>
-              {/* the honest address block — the reference's Sydney
-                  seat becomes the demo institution's own identity:
-                  an explicitly fictional place, the platform's
-                  real country, and the real repo as the only real
-                  contact channel (no invented emails). */}
-              <div className="fo-footer-addr">
-                <div className="fo-footer-heading">العنوان</div>
-                <p className="fo-footer-addr-line">جامعة مدارك التجريبية — مؤسسة عرض اصطناعية</p>
-                <p className="fo-footer-addr-line">طرابلس، ليبيا</p>
-                <a
-                  className="fo-footer-link fo-footer-repo"
-                  href="https://github.com/ahmadmedo1012/madarek"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  github.com/ahmadmedo1012/madarek
-                </a>
-              </div>
             </nav>
-            {/* the giant mark — the reference's 215×215 line logo,
-                fading in with the scroll (0.61→1 measured; the
-                permanently-invisible .sketch twin is deliberately
-                not shipped — an opacity-0 element is dead weight,
-                the fade of the full mark is the visible behavior). */}
-            <div className="fo-footer-col fo-footer-col-mark">
+
+            {/* [06] the address cell — the reference's Sydney seat becomes
+                the demo institution's own identity: an explicitly fictional
+                place, the platform's real country, and the real repo as the
+                only real contact channel (no invented emails). */}
+            <div className="fo-fcell fo-fcell-addr">
+              <div className="fo-footer-heading">العنوان</div>
+              <p className="fo-footer-addr-line">جامعة مدارك التجريبية — مؤسسة عرض اصطناعية</p>
+              <p className="fo-footer-addr-line">طرابلس، ليبيا</p>
+            </div>
+
+            {/* [07] the contact cell — the repo is the only real channel */}
+            <div className="fo-fcell fo-fcell-addr">
+              <div className="fo-footer-heading">التواصل</div>
+              <a
+                className="fo-footer-link fo-footer-repo"
+                href="https://github.com/ahmadmedo1012/madarek"
+                target="_blank"
+                rel="noreferrer"
+              >
+                github.com/ahmadmedo1012/madarek
+              </a>
+              <p className="fo-footer-addr-line">لا بريد عام — المستودع هو القناة الوحيدة.</p>
+            </div>
+
+            {/* [08] the drawn-mark cell — the reference's isometric cube
+                seat, Madarek's own star mark at full weight */}
+            <div className="fo-fcell fo-fcell-mark">
               <RevealCssClass as="div" className="fo-footer-mark" delay={1} aria-hidden="true">
-                <StarMark size={215} className="fo-footer-mark-svg" />
+                <StarMark size={160} className="fo-footer-mark-svg" />
               </RevealCssClass>
             </div>
           </div>
+
+          {/* the GIANT outlined construction-line wordmark — Madarek's own
+              (مدارك + MADAREK), registration marks at the corners, spanning
+              the full sheet width (the reference's closing statement). */}
+          <div className="fo-wordmark" aria-hidden="true">
+            <span className="fo-wordmark-reg fo-wordmark-reg-tl">+</span>
+            <span className="fo-wordmark-reg fo-wordmark-reg-tr">+</span>
+            <span className="fo-wordmark-reg fo-wordmark-reg-bl">+</span>
+            <span className="fo-wordmark-reg fo-wordmark-reg-br">+</span>
+            <span className="fo-wordmark-ar">مدارك</span>
+            <span className="fo-wordmark-en fo-mono" dir="ltr">MADAREK — ARABIC-FIRST LEARNING SHEET</span>
+          </div>
+
           <div className="fo-footer-bottom">
             <span className="fo-mono">© {year} مدارك</span>
             <span className="fo-footer-cluster">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل</span>

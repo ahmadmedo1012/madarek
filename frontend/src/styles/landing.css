@@ -2236,12 +2236,124 @@ html[data-theme='dark'] .fo-grain {
   gap: var(--sp-6);
 }
 
-/* the measured 357 / 715 / 357 rhythm (1 : 2 : 1) */
-.fo-footer-grid {
+/* ═══ R314 (V9) — the reference's cell-grid footer (pair-100): every
+ * seat is a hairline-ruled CELL (the drafting sheet's own grammar),
+ * closed by the giant outlined wordmark. Grid areas: strip spans the
+ * full width; then tagline | 3 link columns | mark; then the address
+ * pair; subscribe lives in its column cell. ═══ */
+.fo-fgrid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
-  gap: var(--sp-8);
-  align-items: start;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--rule);
+  background: var(--bg);
+}
+
+.fo-fcell {
+  padding: var(--sp-5);
+  display: grid;
+  gap: var(--sp-2);
+  align-content: start;
+  border-inline-start: 1px solid var(--rule);
+  border-block-start: 1px solid var(--rule);
+  margin-block-start: -1px; /* collapse double rules */
+  margin-inline-start: -1px;
+  min-block-size: 120px;
+}
+
+.fo-fcell-strip {
+  grid-column: 1 / -1;
+  position: relative;
+  padding: 0;
+  border-inline-start: 0;
+  margin-inline-start: 0;
+  block-size: 200px;
+  overflow: hidden;
+  border-block-start: 0;
+  margin-block-start: 0;
+}
+
+.fo-fstrip-img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: 50% 38%;
+  display: block;
+  filter: contrast(1.06);
+}
+
+.fo-fcell-tag {
+  position: absolute;
+  inset-block-end: 10px;
+  inset-inline-start: 12px;
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+  background: var(--bg);
+  padding: 2px 6px;
+  border: 1px solid var(--rule);
+}
+
+.fo-fcell-tagline {
+  grid-column: span 2;
+}
+
+.fo-fcell-links {
+  border-block-start: 1px solid var(--rule);
+}
+
+.fo-fcell-mark {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-block-size: 260px;
+}
+
+/* the GIANT outlined construction-line wordmark — spans the full sheet
+ * width (the reference's closing statement). Outlined via text-stroke
+ * (paper-transparent fill), registration marks at the four corners. */
+.fo-wordmark {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-3);
+  padding-block: var(--sp-8) var(--sp-5);
+  margin-block-start: var(--sp-5);
+}
+
+.fo-wordmark-ar {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(96px, 13.5vw, 220px);
+  line-height: 1;
+  letter-spacing: 0;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--text);
+  paint-order: stroke fill;
+  /* Firefox text-stroke twin */
+  text-shadow: none;
+}
+
+.fo-wordmark-en {
+  font-size: var(--fs-sm);
+  letter-spacing: 0.32em; /* Latin mono — tracking allowed */
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.fo-wordmark-reg {
+  position: absolute;
+  color: var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1;
+}
+
+.fo-wordmark-reg-tl { inset-block-start: 0; inset-inline-start: 0; }
+.fo-wordmark-reg-tr { inset-block-start: 0; inset-inline-end: 0; }
+.fo-wordmark-reg-bl { inset-block-end: 0; inset-inline-start: 0; }
+.fo-wordmark-reg-br { inset-block-end: 0; inset-inline-end: 0; }
+
+html[data-theme='dark'] .fo-wordmark-ar {
+  -webkit-text-stroke-color: var(--text);
 }
 
 .fo-footer-col {
@@ -2541,19 +2653,13 @@ html[data-theme='dark'] .fo-grain {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* R313 (D14): the mark column drops under the pair — the two text
-     columns share the row, the giant mark spans below them */
-  .fo-footer-grid {
+  /* R314 (V9): the footer cell grid pairs up on tablet */
+  .fo-fgrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .fo-footer-col-mark {
-    grid-column: 1 / -1;
-  }
-
-  .fo-footer-mark-svg {
-    inline-size: 140px;
-    block-size: 140px;
+  .fo-fcell-strip {
+    block-size: 160px;
   }
 }
 
@@ -2714,13 +2820,22 @@ html[data-theme='dark'] .fo-grain {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .fo-footer-grid {
+  /* R314 (V9): the cell grid stacks single-column; the wordmark
+     scales with the clamp; the strip stays a horizon band */
+  .fo-fgrid {
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--sp-6);
   }
 
-  .fo-footer-col-mark {
+  .fo-fcell-tagline {
     grid-column: auto;
+  }
+
+  .fo-fcell-strip {
+    block-size: 130px;
+  }
+
+  .fo-fcell-mark {
+    min-block-size: 180px;
   }
 
   .fo-footer-mark-svg {
