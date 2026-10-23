@@ -6,18 +6,23 @@
    · Radius 0 (the --r-* ladder resolves 0; --r-full/50% stays for
      genuinely round primitives like the step dots/spinner only).
    · NO decorative shadows — depth via hairlines; the card is a flat
-     --surface sheet on the paper ground with its 1px --border-faint
-     rule (--elev-2 resolves none and stays only for the
-     prefers-contrast outline-ring fallbacks).
+     --surface sheet on the paper ground framed by its 1px #B3B3AF
+     hairline (var(--border-strong)) — the drafting-plate recipe the
+     404 plate shares. The r197 --elev-2 shadow line is retired with
+     the r313 sweep.
+   · NO ambients: the ember --journey-glow radial washes (card + 404
+     scene) are retired — the reference ground is flat paper.
    · Inputs adopt the reference recipe: transparent ground, 1px
      #B3B3AF hairline (var(--border-strong)), radius 0; the focus
      language stays with the shared polish v15/v22 system (ruling #13
      — the overrides layer has the final word).
    · The role picker («من أنت؟») is a ruled hairline grid; hover is
-     the accent fill-wipe (the reference's header-cta recipe).
+     the accent fill-wipe (the reference's header-cta recipe). The
+     chrome links (.auth-back-home/.auth-context) ride the reference's
+     NAV recipe instead: charcoal fill + inverted label.
    · Mono micro-labels (Geist Mono, tabular) for indices and Latin
-     runs; Arabic prose keeps the sans ladder (13px floor, joins
-     never tracked).
+     runs — the register step indices, the 404 ERR/coords runs; Arabic
+     prose keeps the sans ladder (13px floor, joins never tracked).
    · Tap targets: the 44px floor is UNCONDITIONAL on every interactive
      element in the chrome (BLUEPRINT §7 hard floor — unchanged).
    Wave 8-b contracts kept (consumed outside these pages):
@@ -64,8 +69,10 @@
     .auth-top { padding: var(--sp-4) var(--page-gutter-mobile); }
   }
 
-  /* Quiet chrome link — no border, no resting fill: hierarchy via the
-     hover surface step only. 44px floor is unconditional. */
+  /* Quiet chrome link — no border, no resting fill. r313: the
+     hover is the reference's NAV recipe — the #282828 ink fill wipes
+     in and the label inverts (digest → buttons, nav items); radius 0,
+     no surface step. 44px floor is unconditional. */
   .auth-back-home {
     display: inline-flex; align-items: center; gap: var(--sp-2);
     font-size: var(--fs-sm);
@@ -73,61 +80,54 @@
     color: var(--text-secondary);
     padding: var(--sp-2) var(--sp-4);
     min-block-size: 44px; /* touch floor — unconditional (S-1a) */
-    border-radius: var(--r-full);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
     background: transparent;
-    transition: background var(--t-fast) var(--ease);
+    transition:
+      background var(--t-base) var(--ease),
+      color var(--t-base) var(--ease);
     text-decoration: none;
     cursor: pointer;
   }
   .auth-back-home:hover {
-    color: var(--text);
-    background: var(--surface-2);
+    background: var(--primary);   /* the charcoal ink fill */
+    color: var(--primary-fg);     /* inverted label */
   }
 
   /* Muted context chip in the top bar. When it is a Link (register's
      step-2 «تسجيل الدخول») it is a real 44px control with the same
-     quiet hover; as a plain <span> the hover never applies. */
+     ink-fill hover as .auth-back-home (r313 nav recipe); as a plain
+     <span> the hover never applies. */
   .auth-context {
     display: inline-flex; align-items: center; gap: var(--sp-2);
     min-block-size: 44px;
     padding-inline: var(--sp-2);
-    border-radius: var(--r-full);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
     font-size: var(--fs-sm);
     color: var(--text-muted);
     text-decoration: none;
+    transition:
+      background var(--t-base) var(--ease),
+      color var(--t-base) var(--ease);
   }
-  a.auth-context:hover { color: var(--text); background: var(--surface-2); }
+  a.auth-context:hover {
+    background: var(--primary);
+    color: var(--primary-fg);
+  }
 
   .auth-center {
     flex: 1;
     display: flex;
     justify-content: center;
     padding: var(--sp-5) var(--page-gutter) var(--sp-9);
-    position: relative; z-index: 1; /* traps the ::after wash (z -1) */
   }
   @media (max-width: 920px) {
     .auth-center { padding: var(--sp-4) var(--page-gutter-mobile) var(--sp-9); }
   }
-
-  /* The card's ONE ambient: the signal wash behind the card
-     (--journey-glow — theme-calibrated ultramarine 10% light / 12%
-     dark). Decorative by construction: a pseudo element never enters
-     the accessibility tree and pointer-events is none. z-index: -1
-     keeps it inside .auth-center's stacking context and UNDER the
-     card's opaque --surface. Static paint — no motion, so no
-     reduced-motion clause is owed. */
-  .auth-center::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: radial-gradient(
-      ellipse 55% 45% at 50% 46%,
-      var(--journey-glow),
-      transparent 72%
-    );
-    pointer-events: none;
-  }
+  /* (r313 tint sweep: the ember radial wash behind the card —
+     --journey-glow 10% — is RETIRED with the Heron re-key. The
+     reference ground is flat paper everywhere; depth on this surface
+     is the card's 1px #B3B3AF hairline, nothing else. The token
+     itself stays in tokens.css for its other consumers.) */
 
   .auth-bottom {
     padding: var(--sp-5) var(--page-gutter);
@@ -138,27 +138,28 @@
   }
   .auth-bottom strong { color: var(--text-secondary); font-weight: var(--fw-semibold); }
 
-  /* ══ 2 · CARD — the one elevated surface moment ═══════════════════ */
+  /* ══ 2 · CARD — the flat drafting plate (r313) ═══════════════════ */
 
   .auth-card {
     inline-size: 100%;
     max-inline-size: 440px;
     display: flex; flex-direction: column; gap: var(--sp-6);
     background: var(--surface);
-    border: 1px solid var(--border-faint);
-    border-radius: var(--r-2xl); /* modals/sheets rung — the auth card is the page's modal-tier surface */
+    /* r313: the 1px #B3B3AF hairline IS the card's whole elevation
+       story (the reference's frame grammar — the same plate recipe as
+       .nf-plate); --border-faint retired from this edge. */
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
     padding: clamp(var(--sp-7), 4vw, var(--sp-9));
-    /* ONE shadow per level (r197): --elev-2 is the card's whole
-       elevation story — no premium variant, no hover glow. */
-    box-shadow: var(--elev-2);
     position: relative;
     /* Safe vertical centering: with free space the auto margins center
        the card; once the form outgrows the viewport they collapse and
        the card scrolls from the top (flex align-center would clip it). */
     margin-block: auto;
   }
-  /* (S-1a: the .glass variant, its ::after sheen and the copper top
-     hairline are retired — a calm opaque surface with one shadow.) */
+  /* (S-1a → r313: the .glass variant, its ::after sheen, the copper
+     top hairline AND the --elev-2 shadow line are all retired — a flat
+     opaque sheet with one strong hairline, no shadow anywhere.) */
 
   /* Register keeps one card width across BOTH steps so stepping never
      reflows the layout (was inline maxWidth 520 vs 560). */
@@ -243,13 +244,16 @@
   }
   .auth-step-dot {
     inline-size: 20px; block-size: 20px;
-    border-radius: var(--r-full);
+    border-radius: var(--r-full); /* genuinely circular primitive — the step dot */
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text-muted);
+    /* r313: the step index is a mono micro-label — Latin digits in the
+       instrument voice (Geist Mono, tabular). */
+    font-family: var(--font-mono);
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
     font-variant-numeric: tabular-nums;
@@ -789,7 +793,6 @@
   }
 
   .nf-scene {
-    position: relative; z-index: 1; /* traps the ::after wash (z -1) */
     inline-size: 100%;
     max-inline-size: 460px;
     display: flex; flex-direction: column; align-items: center;
@@ -798,20 +801,10 @@
     /* ONE authored moment — the whole scene rises in as one piece. */
     animation: nf-scene-in var(--motion-duration-long) var(--ease-out) both;
   }
-  /* The one ambient (same recipe as the auth card's wash): the signal
-     glow under the scene — decorative pseudo, static paint. */
-  .nf-scene::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: radial-gradient(
-      ellipse 55% 45% at 50% 46%,
-      var(--journey-glow),
-      transparent 72%
-    );
-    pointer-events: none;
-  }
+  /* (r313 tint sweep: the signal wash under the scene — the same
+     --journey-glow radial retired from .auth-center — is gone. The
+     plate's 1px #B3B3AF frame is the scene's whole composition on the
+     flat warm paper.) */
   @keyframes nf-scene-in {
     from { opacity: 0; transform: translateY(var(--motion-distance-medium)); }
     to   { opacity: 1; transform: none; }

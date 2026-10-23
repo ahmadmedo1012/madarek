@@ -6,8 +6,9 @@
  *   - a quiet mono metric-role eyebrow over the title (journey-meta /
  *     bento-meta register) — a REAL Arabic phrase, so it is exposed to
  *     the accessibility tree, not aria-hidden;
- *   - a decorative --journey-glow wash behind the card that is PURE
- *     CSS (.auth-center::after pseudo) — no TSX chrome, no motion;
+ *   - r313 (Heron parity): the ground is FLAT PAPER — the decorative
+ *     --journey-glow wash behind the card is retired; depth is the
+ *     card's 1px #B3B3AF hairline alone (no ambient DOM, no gradient);
  *   - the form contract itself is untouched (focus order, labels,
  *     bidi, validation alerts, demo fill buttons) — these tests pin it
  *     so the alignment pass can never regress the form people must
@@ -92,24 +93,28 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     expect(follows(meta, title)).toBe(true);
   });
 
-  it('the ambient wash is CSS-only — no decorative DOM, and auth.css paints it from the journey token', () => {
+  it('r313: the ground is flat paper — no ambient DOM, no glow pseudo, the card carries the #B3B3AF drafting hairline', () => {
     const { container } = renderPage();
 
-    // No glow/scene/ambient node in the page — the cue lives entirely
-    // in the stylesheet, so it can never enter the a11y tree or steal
-    // a click (pointer-events: none in CSS).
+    // No glow/scene/ambient node in the page — and none is needed:
+    // the r313 sweep retired the CSS wash too, so the cue can never
+    // enter the a11y tree or steal a click.
     expect(
       container.querySelector('[class*="glow"], [class*="scene"], [class*="ambient"]'),
     ).toBeNull();
 
     const css = read('src/styles/auth.css');
-    const washAt = css.indexOf('.auth-center::after');
-    expect(washAt).toBeGreaterThanOrEqual(0);
-    const wash = css.slice(washAt, css.indexOf('}', washAt));
-    expect(wash).toContain('var(--journey-glow)');
-    expect(wash).toContain('pointer-events: none');
-    // Decorative = static paint: no motion authored for the wash.
-    expect(wash).not.toMatch(/transition|animation/);
+    // The ambient pseudo is RETIRED (flat paper — the reference has no
+    // wash anywhere; depth is hairlines only).
+    expect(css).not.toContain('.auth-center::after');
+    expect(css).not.toContain('.nf-scene::after');
+    // No gradient ambients survive in the sheet (comments aside).
+    const declarations = css.replace(/\/\*[\s\S]*?\*\//g, '');
+    expect(declarations).not.toMatch(/radial-gradient|linear-gradient/);
+    // The card's whole elevation story is the strong hairline.
+    const cardAt = declarations.indexOf('.auth-card');
+    const cardRule = declarations.slice(cardAt, declarations.indexOf('}', cardAt));
+    expect(cardRule).toContain('var(--border-strong)');
 
     // r212 re-pin (Agent S, merged r253): the eyebrow's mono voice is
     // RETIRED — Plex Mono is for IDs/code/tabular metrics only (r197),
