@@ -124,8 +124,10 @@
   font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
   background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--r-full);
+  /* R313 (WP-F · D16): square count chip on the structural hairline
+     (--rule ≡ #B3B3AF) — the data-dense chip grammar, no pill radius. */
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
   padding-inline: var(--sp-2-5);
   padding-block: var(--sp-0-5);
   min-block-size: 24px;         /* chip, not a tap target */
@@ -159,8 +161,9 @@
   line-height: 1.2;
   color: var(--text-secondary);
   background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--r-full);
+  /* R313 (WP-F · D16): square chip on the structural hairline. */
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xs);
   padding-inline: var(--sp-2-5);
   padding-block: var(--sp-1);
   min-block-size: 26px;
@@ -211,7 +214,7 @@
 /* ─── Data table: dense-but-readable, hairline rows, tabular digits ── */
 
 .hr-table-wrap {
-  border: 1px solid var(--border);
+  border: 1px solid var(--rule);
   border-radius: var(--r-lg);
   background: var(--surface);
   overflow-x: auto;
@@ -301,7 +304,8 @@
   gap: var(--sp-2);
   flex-wrap: wrap;
   padding: var(--sp-3);
-  border: 1px solid var(--border);
+  /* R313 (WP-F · D16): structural frame on the strong hairline. */
+  border: 1px solid var(--rule);
   border-radius: var(--r-lg);
   background: color-mix(in srgb, var(--surface-2) 42%, transparent);
 }
@@ -404,7 +408,8 @@
   font-size: var(--fs-xs);
   color: var(--text-secondary);
   background: var(--surface-2);
-  border: 1px solid var(--border);
+  /* R313 (WP-F · D16): square note chip on the structural hairline. */
+  border: 1px solid var(--rule);
   border-radius: var(--r-md);
   padding-inline: var(--sp-3);
   padding-block: var(--sp-2-5);
@@ -734,9 +739,10 @@
 
 /* The moderation review panel: one hairline frame over the R304
    surface-2 step — the region is announced by its aria-label and now
-   visibly bounded against the row above it. */
+   visibly bounded against the row above it.
+   R313 (WP-F · D16): structural frame on the strong hairline. */
 .hr-scope .oex-mod-panel {
-  border: 1px solid var(--border);
+  border: 1px solid var(--rule);
 }
 
 /* [§C-END] */

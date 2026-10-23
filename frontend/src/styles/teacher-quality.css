@@ -65,7 +65,7 @@
    but the first carries an inset rule so the hover surface reads as
    one continuous plane. */
 .tq-row + .tq-row {
-  border-block-start: 1px solid var(--rule);
+  border-block-start: 1px solid var(--border);
 }
 
 a.tq-row,
@@ -166,7 +166,7 @@ button.tq-row:focus-visible {
 }
 
 .tq-fact + .tq-fact {
-  border-block-start: 1px solid var(--rule);
+  border-block-start: 1px solid var(--border);
 }
 
 .tq-fact-label {
@@ -314,7 +314,7 @@ button.tq-row:focus-visible {
     align-items: flex-start;
     gap: var(--sp-3);
     padding: var(--sp-3) var(--sp-4);
-    border-block-end: 1px solid var(--rule);
+    border-block-end: 1px solid var(--border);
     min-block-size: 44px;
     box-sizing: border-box;
   }
@@ -435,7 +435,7 @@ button.tq-row:focus-visible {
     align-items: center;
     gap: var(--sp-3);
     padding: var(--sp-3) var(--sp-1);
-    border-block-end: 1px solid var(--rule);
+    border-block-end: 1px solid var(--border);
     min-block-size: 56px;
     box-sizing: border-box;
   }
@@ -622,7 +622,7 @@ button.tq-row:focus-visible {
      inline-end, thin 4px rails (--sp-1). */
   .qlt-kpi-ledger { display: flex; flex-direction: column; }
   .qlt-kpi-ledger .progress { padding-block: var(--sp-3); }
-  .qlt-kpi-ledger .progress + .progress { border-block-start: 1px solid var(--rule); }
+  .qlt-kpi-ledger .progress + .progress { border-block-start: 1px solid var(--border); }
   .qlt-kpi-ledger .progress:first-child { padding-block-start: 0; }
   .qlt-kpi-ledger .progress:last-child { padding-block-end: 0; }
   .qlt-kpi-ledger .progress-head { font-size: var(--fs-sm); }
@@ -633,7 +633,7 @@ button.tq-row:focus-visible {
      without the KPI weight — separators + breathing rows. */
   .qlt-progress-list { display: flex; flex-direction: column; }
   .qlt-progress-list .progress { padding-block: var(--sp-3); }
-  .qlt-progress-list .progress + .progress { border-block-start: 1px solid var(--rule); }
+  .qlt-progress-list .progress + .progress { border-block-start: 1px solid var(--border); }
   .qlt-progress-list .progress:first-child { padding-block-start: 0; }
   .qlt-progress-list .progress:last-child { padding-block-end: 0; }
 
@@ -648,7 +648,7 @@ button.tq-row:focus-visible {
     background: transparent;
     padding: var(--sp-3) 0;
   }
-  .qlt-alert-list .alert + .alert { border-block-start: 1px solid var(--rule); }
+  .qlt-alert-list .alert + .alert { border-block-start: 1px solid var(--border); }
 
   /* Full alerts page — oversight rows with a leading severity edge
      (2px inline-start: danger / warning / brand tints per severity)
@@ -663,7 +663,7 @@ button.tq-row:focus-visible {
     padding-inline-start: var(--sp-3);
     transition: background var(--t-fast) var(--ease);
   }
-  .qlt-alert-row + .qlt-alert-row { border-block-start: 1px solid var(--rule); }
+  .qlt-alert-row + .qlt-alert-row { border-block-start: 1px solid var(--border); }
   .qlt-alert-row.qlt-sev-critical {
     border-inline-start-color: var(--danger);
     background: color-mix(in srgb, var(--danger) 5%, var(--surface));
@@ -775,7 +775,7 @@ button.tq-row:focus-visible {
     padding-block: var(--sp-3);
     transition: opacity var(--t-fast) var(--ease);
   }
-  .qlt-course-row + .qlt-course-row { border-block-start: 1px solid var(--rule); }
+  .qlt-course-row + .qlt-course-row { border-block-start: 1px solid var(--border); }
   .qlt-course-row > .progress { grid-column: 1 / -1; }
   .qlt-course-row > .progress .progress-track { block-size: var(--sp-1); }
   .qlt-course-row.is-dim { opacity: 0.38; }
@@ -834,7 +834,7 @@ button.tq-row:focus-visible {
     text-decoration: none;
     transition: background var(--t-fast) var(--ease);
   }
-  .qlt-link-row + .qlt-link-row { border-block-start: 1px solid var(--rule); }
+  .qlt-link-row + .qlt-link-row { border-block-start: 1px solid var(--border); }
   @media (hover: hover) and (pointer: fine) {
   .qlt-link-row:hover { background: var(--surface-2); }
   }
@@ -935,7 +935,7 @@ button.tq-row:focus-visible {
     background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: var(--r-xl);
-    box-shadow: var(--shadow-card);
+    /* R313 (WP-F · D16): flat sheet — hairline frame, no shadow tail. */
     min-inline-size: 0;
   }
   /* Square rows inside a rounded sheet — round only the sheet's ends
@@ -948,7 +948,7 @@ button.tq-row:focus-visible {
     border-end-start-radius: var(--r-xl);
     border-end-end-radius: var(--r-xl);
   }
-  .exa-rows > * + * { border-block-start: 1px solid var(--rule); }
+  .exa-rows > * + * { border-block-start: 1px solid var(--border); }
 
   .exa-row {
     display: flex;
@@ -1313,7 +1313,7 @@ button.tq-row:focus-visible {
     background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: var(--r-xl);
-    box-shadow: var(--shadow-card);
+    /* R313 (WP-F · D16): flat sheet — hairline frame, no shadow tail. */
     min-inline-size: 0;
   }
   .exa-panel-title {
@@ -1398,7 +1398,7 @@ button.tq-row:focus-visible {
     flex-wrap: wrap;
     gap: var(--sp-3) var(--sp-4);
     padding-block: var(--sp-4);
-    border-block-end: 1px solid var(--rule);
+    border-block-end: 1px solid var(--border);
     color: inherit;
   }
 
@@ -1514,7 +1514,7 @@ button.tq-row:focus-visible {
     align-items: flex-start;
     gap: var(--sp-3);
     padding-block: var(--sp-3);
-    border-block-end: 1px solid var(--rule);
+    border-block-end: 1px solid var(--border);
   }
 
   .oex-skel:last-child { border-block-end: 0; }
@@ -1551,7 +1551,7 @@ button.tq-row:focus-visible {
     background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: var(--r-lg);
-    box-shadow: var(--shadow-card);
+    /* R313 (WP-F · D16): flat sheet — hairline frame, no shadow tail. */
   }
 
   .oex-bar-main {
@@ -1789,7 +1789,9 @@ button.tq-row:focus-visible {
     block-size: 22px;
     margin-block-start: var(--sp-0-5);
     border: 1px solid var(--border-strong);
-    border-radius: 50%;
+    /* R313 (WP-F · D16): circular primitive — the one radius the system
+       keeps (var(--r-full), avatars/dots/checkbox circles). */
+    border-radius: var(--r-full);
     color: transparent;
     transition: background var(--t-fast) var(--motion-ease-standard),
                 border-color var(--t-fast) var(--motion-ease-standard),
@@ -1910,7 +1912,7 @@ button.tq-row:focus-visible {
       background: var(--surface);
       border: 1px solid var(--rule);
       border-radius: var(--r-lg);
-      box-shadow: var(--shadow-card);
+      /* R313 (WP-F · D16): flat docked bar — hairline frame, no shadow. */
     }
   }
 
@@ -1982,9 +1984,7 @@ button.tq-row:focus-visible {
     padding: var(--sp-3) var(--sp-5);
     border-radius: var(--r-lg);
     background: var(--accent-soft);
-    animation:
-      oex-grade-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards,
-      oex-grade-ring var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
+    animation: oex-grade-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
   }
 
   .oex-grade-value {
@@ -2003,10 +2003,9 @@ button.tq-row:focus-visible {
     to { opacity: 1; transform: none; }
   }
 
-  @keyframes oex-grade-ring {
-    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
-    to { box-shadow: 0 0 0 12px transparent; }
-  }
+  /* R313 (WP-F · D16): the grade-reveal ring keyframe (an expanding
+     accent glow) retired — flat system, no shadow/glow paint. The
+     entrance keeps its fade+rise (oex-grade-in above). */
 
   /* ═══ 4 · Post-grading review ══════════════════════════════════════
      Collapsed behind one toggle; the list re-asserts start alignment
@@ -2113,7 +2112,7 @@ button.tq-row:focus-visible {
     flex-wrap: wrap;
     gap: var(--sp-3) var(--sp-4);
     padding-block: var(--sp-4);
-    border-block-end: 1px solid var(--rule);
+    border-block-end: 1px solid var(--border);
   }
 
   .oex-mod-row:first-child { padding-block-start: 0; }
@@ -2363,7 +2362,8 @@ button.tq-row:focus-visible {
 }
 .exa-step.is-current .exa-step-dot {
   background: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  /* R313 (WP-F · D16): the current dot IS the signal — the 3px halo
+     ring retired (flat system; no glow paint). */
 }
 .exa-step.is-rejected { color: var(--danger-ink); font-weight: var(--fw-semibold); }
 .exa-step.is-rejected .exa-step-dot { background: var(--danger); }
