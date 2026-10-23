@@ -4,9 +4,10 @@
  * A 2×2 module grid with three real tiles and one dotted ghost tile —
  * the course that hasn't been added — marked by a signal sparkle.
  *
- * Family: ink + signal (one filled tile + sparkle) + one tint
- * (--accent-soft tile) on --ill-paper. No text. RTL: a grid has no
- * reading order here — direction-neutral by design.
+ * Family: r313 two-tone — ink (--ill-stroke) + paper + signal
+ * (--accent, one tile + sparkle); the third tile rides the paper step
+ * (--neutral-100). Square corners throughout. No text. RTL: a grid
+ * has no reading order here — direction-neutral by design.
  */
 export default function EmptyCourses() {
   return (
@@ -18,14 +19,13 @@ export default function EmptyCourses() {
       aria-hidden="true"
       focusable="false"
     >
-      {/* tile 1 — tint */}
+      {/* tile 1 — paper step */}
       <rect
         x="58"
         y="58"
         width="40"
         height="40"
-        rx="10"
-        fill="var(--accent-soft)"
+        fill="var(--neutral-100)"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
       />
@@ -35,7 +35,6 @@ export default function EmptyCourses() {
         y="58"
         width="40"
         height="40"
-        rx="10"
         fill="var(--ill-paper)"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
@@ -46,7 +45,6 @@ export default function EmptyCourses() {
         y="102"
         width="40"
         height="40"
-        rx="10"
         fill="var(--accent)"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
@@ -57,7 +55,6 @@ export default function EmptyCourses() {
         y="102"
         width="40"
         height="40"
-        rx="10"
         fill="none"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"

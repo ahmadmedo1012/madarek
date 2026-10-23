@@ -4,8 +4,9 @@
  * A rounded octagon with a signal bar — the oldest "stop" geometry,
  * redrawn soft. A quiet dotted echo ring keeps it from feeling harsh.
  *
- * Family: ink + signal (the bar) + one tint (--accent-soft octagon
- * fill). No text. RTL: mirror-symmetric — direction-neutral.
+ * r313 two-tone: ink + paper + signal (the bar); the octagon fill
+ * rides the paper step (--neutral-100). Square corners. No text.
+ * RTL: mirror-symmetric — direction-neutral.
  */
 export default function Forbidden() {
   return (
@@ -29,16 +30,16 @@ export default function Forbidden() {
         strokeDasharray="0.1 7"
         strokeOpacity="0.35"
       />
-      {/* the soft octagon */}
+      {/* the octagon — paper step */}
       <path
         d="M 148 119.9 L 119.9 148 L 80.1 148 L 52 119.9 L 52 80.1 L 80.1 52 L 119.9 52 L 148 80.1 Z"
-        fill="var(--accent-soft)"
+        fill="var(--neutral-100)"
         stroke="var(--ill-stroke)"
         strokeWidth="2"
         strokeLinejoin="round"
       />
       {/* the bar */}
-      <rect x="76" y="92" width="48" height="16" rx="8" fill="var(--accent)" />
+      <rect x="76" y="92" width="48" height="16" fill="var(--accent)" />
     </svg>
   );
 }

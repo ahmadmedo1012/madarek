@@ -6,8 +6,9 @@
  * its sibling sleeps as a dotted ring, and a dotted wave rising from
  * the stack with a signal ping at its crest.
  *
- * Family: ink + signal (LED, ping) + one tint (--accent-soft slots)
- * on --ill-paper. No text. RTL: mirror-symmetric — direction-neutral.
+ * Family: r313 two-tone — ink + paper + signal (the LED + ping); the
+ * sleeping slots ride the paper step (--neutral-100), corners square.
+ * No text. RTL: mirror-symmetric — direction-neutral.
  */
 export default function ServerWaking() {
   return (
@@ -23,7 +24,7 @@ export default function ServerWaking() {
       <path
         d="M 76 76 Q 100 56 124 76"
         fill="none"
-        stroke="var(--accent-ink)"
+        stroke="var(--accent)"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeDasharray="0.1 7"
@@ -36,7 +37,6 @@ export default function ServerWaking() {
         y="92"
         width="80"
         height="26"
-        rx="9"
         fill="var(--ill-paper)"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
@@ -46,14 +46,13 @@ export default function ServerWaking() {
         y="124"
         width="80"
         height="26"
-        rx="9"
         fill="var(--ill-paper)"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
       />
       {/* tier 1: the LED that is on */}
       <circle cx="74" cy="105" r="4" fill="var(--accent)" />
-      <rect x="88" y="101" width="24" height="8" rx="4" fill="var(--accent-soft)" />
+      <rect x="88" y="101" width="24" height="8" fill="var(--neutral-100)" />
       {/* tier 2: still asleep */}
       <circle
         cx="74"
@@ -66,7 +65,7 @@ export default function ServerWaking() {
         strokeDasharray="0.1 5"
         strokeOpacity="0.5"
       />
-      <rect x="88" y="133" width="24" height="8" rx="4" fill="var(--accent-soft)" />
+      <rect x="88" y="133" width="24" height="8" fill="var(--neutral-100)" />
       {/* the ground */}
       <line
         x1="52"

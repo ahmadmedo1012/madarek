@@ -5,8 +5,9 @@
  * between and slightly behind them — the conversation that is waiting
  * for its third voice. Faceless geometric figures.
  *
- * Family: ink + signal (one figure) on --ill-paper; the ghost needs
- * no tint. No text. RTL: mirror-symmetric — direction-neutral.
+ * Family: r313 two-tone — ink + paper + signal (one figure) on paper;
+ * the ghost needs no tint. No text. RTL: mirror-symmetric —
+ * direction-neutral.
  */
 export default function EmptyCommunity() {
   return (

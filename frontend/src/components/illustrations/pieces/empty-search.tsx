@@ -5,8 +5,9 @@
  — nothing found. The handle drops straight down and every mark is
  * centred, so the piece reads identically in RTL and LTR.
  *
- * Family: ink + signal + one tint (--accent-soft halo) on --ill-paper.
- * No text. RTL: direction-neutral by design (no mirroring).
+ * Family: r313 two-tone — ink + paper + signal (--accent is unused
+ * here; the halo rides the paper step --neutral-100). No text.
+ * RTL: direction-neutral by design (no mirroring).
  */
 export default function EmptySearch() {
   return (
@@ -18,8 +19,8 @@ export default function EmptySearch() {
       aria-hidden="true"
       focusable="false"
     >
-      {/* the soft halo */}
-      <circle cx="100" cy="100" r="64" fill="var(--accent-soft)" />
+      {/* the halo — the paper step, one rung off the ground */}
+      <circle cx="100" cy="100" r="64" fill="var(--neutral-100)" />
       {/* the lens */}
       <circle
         cx="100"

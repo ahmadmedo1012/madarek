@@ -4,9 +4,9 @@
  * A manuscript sheet with a curled corner and centred ghost lines,
  * waiting; a small signal sparkle marks the place insight will take.
  *
- * Family: ink + signal (sparkle) + one tint (--accent-soft curl and
- * ghost lines) on --ill-paper. No text. RTL: centred composition —
- * direction-neutral by design.
+ * r313 two-tone: ink + paper + signal (--accent, the sparkle only);
+ * ghost lines sit on the paper step (--neutral-100), corners square.
+ * No text. RTL: centred composition — direction-neutral by design.
  */
 export default function EmptyResearch() {
   return (
@@ -24,7 +24,6 @@ export default function EmptyResearch() {
         y="64"
         width="80"
         height="96"
-        rx="10"
         fill="var(--ill-paper)"
         stroke="var(--ill-stroke)"
         strokeWidth="2"
@@ -34,14 +33,14 @@ export default function EmptyResearch() {
         cx="136"
         cy="68"
         r="9"
-        fill="var(--accent-soft)"
+        fill="var(--neutral-100)"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
       />
       {/* ghost lines, centred */}
-      <rect x="76" y="88" width="48" height="8" rx="4" fill="var(--accent-soft)" />
-      <rect x="76" y="104" width="48" height="8" rx="4" fill="var(--accent-soft)" />
-      <rect x="84" y="120" width="32" height="8" rx="4" fill="var(--accent-soft)" />
+      <rect x="76" y="88" width="48" height="8" fill="var(--neutral-100)" />
+      <rect x="76" y="104" width="48" height="8" fill="var(--neutral-100)" />
+      <rect x="84" y="120" width="32" height="8" fill="var(--neutral-100)" />
       {/* the insight-to-be: a small signal sparkle at the corner */}
       <path
         d="M 56 44 Q 56 52 64 52 Q 56 52 56 60 Q 56 52 48 52 Q 56 52 56 44 Z"

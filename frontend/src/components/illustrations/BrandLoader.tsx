@@ -22,9 +22,10 @@
  *     var(--t-slower)/var(--ease-soft). Under prefers-reduced-motion
  *     both animations stop and the mark rests as its complete static
  *     frame (track + arc + dot) — see styles/illustrations.css.
- *   - Two colours, same family grammar as the pieces: signal via
- *     var(--accent-ink) (luminous on dark), soft track via
- *     var(--accent-soft), ink dot via var(--ill-stroke). No text.
+ *   - r313 two-tone: the arc is the raw signal var(--accent) (the
+ *     reference's own small-mark tone), the quiet track rides the
+ *     guide grey var(--grid-line) — the retired --accent-soft tint
+ *     family is gone. Ink dot via var(--ill-stroke). No text.
  *   - `size` is the square edge in px (default 32); the mark stays
  *     legible 20–64.
  */
@@ -68,13 +69,13 @@ export function BrandLoader({ label, size = 32, decorative = false, className }:
         focusable="false"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* quiet track */}
+        {/* quiet track — the guide grey (r313 two-tone) */}
         <circle
           cx="18"
           cy="18"
           r="15"
           fill="none"
-          stroke="var(--accent-soft)"
+          stroke="var(--grid-line)"
           strokeWidth="2.5"
         />
         {/* the orbiting signal arc (≈ quarter turn, round caps) */}
@@ -84,7 +85,7 @@ export function BrandLoader({ label, size = 32, decorative = false, className }:
           cy="18"
           r="15"
           fill="none"
-          stroke="var(--accent-ink)"
+          stroke="var(--accent)"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeDasharray="23.5 70.7"

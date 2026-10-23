@@ -5,8 +5,9 @@
  * in it, with a dotted trail falling in and one signal sparkle where
  * the thing slipped away.
  *
- * Family: ink + signal (sparkle) + one tint (--accent-soft rim) on
- * --ill-paper. No text. RTL: centred composition — direction-neutral.
+ * r313 two-tone: ink + paper + signal (the sparkle); the flat drafting
+ * rim replaces the tinted ellipse, corners square. No text.
+ * RTL: centred composition — direction-neutral.
  */
 export default function NotFound() {
   return (
@@ -24,7 +25,6 @@ export default function NotFound() {
         y="44"
         width="28"
         height="28"
-        rx="8"
         fill="none"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
@@ -41,26 +41,25 @@ export default function NotFound() {
       {/* the dotted trail into the box */}
       <circle cx="100" cy="82" r="2" fill="var(--ill-stroke)" fillOpacity="0.4" />
       <circle cx="100" cy="90" r="1.6" fill="var(--ill-stroke)" fillOpacity="0.3" />
-      {/* the open box */}
+      {/* the open box — flat drafting volume, square corners */}
       <rect
         x="56"
         y="104"
         width="88"
         height="48"
-        rx="10"
         fill="var(--ill-paper)"
         stroke="var(--ill-stroke)"
         strokeWidth="2"
       />
-      {/* the rim / opening */}
-      <ellipse
-        cx="100"
-        cy="104"
-        rx="44"
-        ry="10"
-        fill="var(--accent-soft)"
+      {/* the rim / opening — the lifted lid, a flat line wider than the
+          box (the r313 drafting rim; the tinted ellipse is retired) */}
+      <line
+        x1="48"
+        y1="94"
+        x2="152"
+        y2="94"
         stroke="var(--ill-stroke)"
-        strokeWidth="1.5"
+        strokeWidth="2"
       />
     </svg>
   );

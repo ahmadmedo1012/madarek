@@ -5,9 +5,10 @@
  * book that hasn't arrived. Varied heights give the shelf a quiet
  * rhythm; the empty slot is the subject.
  *
- * Family: ink + signal (one filled spine, one binding dot) + one tint
- * (--accent-soft spine) on --ill-paper. No text. RTL: the row reads
- * as a shelf in either direction — no mirroring needed.
+ * r313 two-tone: ink (--ill-stroke) + paper + signal (--accent, one
+ * spine + the binding dot) — square spines, the Heron drafting
+ * grammar. No text. RTL: the row reads as a shelf in either
+ * direction — no mirroring needed.
  */
 export default function EmptyLibrary() {
   return (
@@ -19,14 +20,13 @@ export default function EmptyLibrary() {
       aria-hidden="true"
       focusable="false"
     >
-      {/* spine 1 — tint */}
+      {/* spine 1 — paper step */}
       <rect
         x="50"
         y="76"
         width="22"
         height="64"
-        rx="6"
-        fill="var(--accent-soft)"
+        fill="var(--neutral-100)"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
       />
@@ -36,7 +36,6 @@ export default function EmptyLibrary() {
         y="66"
         width="22"
         height="74"
-        rx="6"
         fill="var(--ill-paper)"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
@@ -48,7 +47,6 @@ export default function EmptyLibrary() {
         y="72"
         width="22"
         height="68"
-        rx="6"
         fill="none"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
@@ -62,7 +60,6 @@ export default function EmptyLibrary() {
         y="80"
         width="22"
         height="60"
-        rx="6"
         fill="var(--accent)"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"

@@ -37,8 +37,8 @@ export default function EmptyNotifications() {
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
       />
-      {/* the resting clapper — the one signal fill */}
-      <rect x="94" y="138" width="12" height="8" rx="4" fill="var(--accent)" />
+      {/* the resting clapper — the one signal fill (square, r313) */}
+      <rect x="94" y="138" width="12" height="8" fill="var(--accent)" />
     </svg>
   );
 }

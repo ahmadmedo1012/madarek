@@ -5,8 +5,9 @@
  * end short of each other, and one small dot never made it across.
  * No slash, no crossed symbols — the interruption itself tells it.
  *
- * Family: ink + signal (status orb inside the cloud) + one tint
- * (--accent-soft orb) on --ill-paper. No text. RTL: mirror-symmetric.
+ * Family: r313 two-tone — ink + paper; the cloud's status orb reads
+ * as quiet ink (the tinted orb retired with the soft-tint family).
+ * No text. RTL: mirror-symmetric.
  */
 export default function Offline() {
   return (
@@ -27,7 +28,7 @@ export default function Offline() {
         strokeLinejoin="round"
       />
       {/* the resting status orb, in the cloud's body */}
-      <circle cx="100" cy="104" r="7" fill="var(--accent-soft)" />
+      <circle cx="100" cy="104" r="7" fill="var(--ill-stroke)" fillOpacity="0.3" />
       {/* the interrupted path */}
       <line
         x1="70"

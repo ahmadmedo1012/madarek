@@ -5,7 +5,9 @@
  * and nothing else). A rosette medal: gold disc with a dotted
  * embossed ring and a four-point star, two symmetric ribbon tails
  * peeking from behind at five and seven o'clock, over one soft gold
- * halo.
+ * halo. r313: the ribbon tails square their corners (drafting
+ * grammar); the gold family stays — the canon's one sanctioned
+ * multi-tone piece.
  *
  * Family: gold only — --gold fill, --gold-ink strokes, --gold-soft
  * halo; NO signal, NO ink strokes. No text. RTL: mirror-symmetric.
@@ -28,7 +30,6 @@ export default function Achievement() {
         y="112"
         width="14"
         height="30"
-        rx="7"
         fill="var(--gold-soft)"
         stroke="var(--gold-ink)"
         strokeWidth="1.5"
@@ -39,7 +40,6 @@ export default function Achievement() {
         y="112"
         width="14"
         height="30"
-        rx="7"
         fill="var(--gold-soft)"
         stroke="var(--gold-ink)"
         strokeWidth="1.5"

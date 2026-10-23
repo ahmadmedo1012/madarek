@@ -5,8 +5,9 @@
  * halo, with three symmetric rays. A first morning, not a fireworks
  * show.
  *
- * Family: ink + signal (sun, rays) + one tint (--accent-soft halo)
- * on --ill-paper. No text. RTL: mirror-symmetric — direction-neutral.
+ * Family: r313 two-tone — ink + paper + signal (sun, rays); the halo
+ * rides the paper step (--neutral-100), corners square. No text.
+ * RTL: mirror-symmetric — direction-neutral.
  */
 export default function WelcomeFirstRun() {
   return (
@@ -18,12 +19,12 @@ export default function WelcomeFirstRun() {
       aria-hidden="true"
       focusable="false"
     >
-      {/* the halo, rising with the sun (half-disc) */}
-      <path d="M 56 118 A 44 44 0 0 1 144 118 Z" fill="var(--accent-soft)" />
+      {/* the halo, rising with the sun (half-disc, paper step) */}
+      <path d="M 56 118 A 44 44 0 0 1 144 118 Z" fill="var(--neutral-100)" />
       {/* the rays */}
-      <line x1="100" y1="86" x2="100" y2="78" stroke="var(--accent-ink)" strokeWidth="2" strokeLinecap="round" />
-      <line x1="77.4" y1="95.4" x2="71.7" y2="89.7" stroke="var(--accent-ink)" strokeWidth="2" strokeLinecap="round" />
-      <line x1="122.6" y1="95.4" x2="128.3" y2="89.7" stroke="var(--accent-ink)" strokeWidth="2" strokeLinecap="round" />
+      <line x1="100" y1="86" x2="100" y2="78" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" />
+      <line x1="77.4" y1="95.4" x2="71.7" y2="89.7" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" />
+      <line x1="122.6" y1="95.4" x2="128.3" y2="89.7" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" />
       {/* the sun (half-disc; its base sits on the horizon line) */}
       <path
         d="M 74 118 A 26 26 0 0 1 126 118 Z"
@@ -38,7 +39,6 @@ export default function WelcomeFirstRun() {
         y="118"
         width="112"
         height="14"
-        rx="7"
         fill="var(--ill-paper)"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"

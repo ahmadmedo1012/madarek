@@ -5,8 +5,9 @@
  * the middle, one signal sparkle at the break. No skull, no warning
  * triangle, no drama — the calm fact of a broken connection.
  *
- * Family: ink + signal (sparkle) on --ill-paper; no tint needed.
- * No text. RTL: mirror-symmetric — direction-neutral.
+ * Family: r313 two-tone — ink + signal (sparkle) on paper; no tint
+ * needed. Square ports. No text. RTL: mirror-symmetric —
+ * direction-neutral.
  */
 export default function ErrorGeneric() {
   return (
@@ -24,7 +25,6 @@ export default function ErrorGeneric() {
         y="88"
         width="28"
         height="24"
-        rx="8"
         fill="var(--ill-paper)"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
@@ -34,7 +34,6 @@ export default function ErrorGeneric() {
         y="88"
         width="28"
         height="24"
-        rx="8"
         fill="var(--ill-paper)"
         stroke="var(--ill-stroke)"
         strokeWidth="1.5"
