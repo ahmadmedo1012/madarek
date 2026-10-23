@@ -114,24 +114,27 @@
 }
 .gallery-chip.gallery-chip-on,
 .gallery-chip[aria-selected="true"] {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-  color: var(--accent-strong);
+  /* r313: the ACTIVE chip is the ink fill held (the reference's
+     nav-current grammar — dark rect, light label), not a soft tint. */
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-fg);
   font-weight: var(--fw-semibold);
 }
 .gallery-chip-count {
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
+  /* r313: chip counts are mono micro-labels (Latin digits, Geist
+     Mono, tabular — the reference's instrument voice). */
+  font-family: var(--font-mono);
   font-size: var(--type-label-size-sm);
 }
-/* 21-c (A8 P1-2): on the ACTIVE chip the ground flips to --accent-soft
-   and the muted count failed AA in the gallery's DEFAULT state (4.22
-   light / 4.47 dark — axe flags it on every /colleges load). The label
-   already takes --accent-strong (:491); the count joins it on the
-   WCAG-pinned pair: 8.62:1 light / 10.10:1 dark. */
+/* 21-c (A8 P1-2) → r313 re-key: the ON ground is the ink fill now, so
+   the count joins the light-on-dark pair (color-mix on --primary-fg
+   ≈9:1 both themes — the axe fix survives the re-key). */
 .gallery-chip.gallery-chip-on .gallery-chip-count,
 .gallery-chip[aria-selected="true"] .gallery-chip-count {
-  color: var(--accent-strong);
+  color: color-mix(in srgb, var(--primary-fg) 85%, transparent);
 }
 
 .gallery-clear {
@@ -184,7 +187,10 @@
   text-align: center;
   padding: var(--sp-8) var(--sp-5);
   border-radius: var(--r-xl);
-  background: var(--accent-soft);
+  /* r313: flat paper-step band on a hairline — the accent-soft tint
+     retired with the two-tone sweep. */
+  background: var(--surface-2);
+  border-block-start: 1px solid var(--border-strong);
   margin-block-start: var(--sp-4);
 }
 .guest-cta-title {
@@ -351,7 +357,9 @@
   gap: var(--sp-4);
   padding: var(--sp-5);
   border-radius: var(--r-lg);
-  background: linear-gradient(135deg, var(--surface-1), var(--surface-2));
+  /* r313: flat sheet (the surface-1→2 gradient retired) on the
+     hairline grammar. */
+  background: var(--surface);
   border: 1px solid var(--border);
   border-block-start: 3px solid var(--college-accent, var(--rule));
 }
@@ -374,9 +382,11 @@
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
-  inline-size: 4px;
-  background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 35%, transparent));
-  border-radius: var(--r-full);
+  /* r313: the marker is a 1px accent HAIRLINE that draws in (the 4px
+     gradient stripe retired with the gradient sweep; the scaleY draw
+     survives on the line). */
+  inline-size: 1px;
+  background: var(--accent);
   transform: scaleY(0);
   transform-origin: top;
   animation: madarek-hero-bar-draw var(--t-slower) var(--ease-spring-soft) 240ms both;
@@ -386,7 +396,7 @@
   to   { transform: scaleY(1); }
 }
 .college-hero-emoji {
-  font-size: 48px;
+  font-size: var(--fs-metric-xl); /* 48px — the r313 token seat */
   width: 72px;
   height: 72px;
   display: inline-flex;
@@ -531,8 +541,12 @@
   border-radius: var(--r-full);
   background: var(--surface-2);
   color: var(--text-muted);
+  /* r313: rank indices are mono micro-labels (Latin digits, Geist
+     Mono, tabular — the reference's instrument voice). */
+  font-family: var(--font-mono);
   font-size: var(--fs-xxs);
   font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
 }
 .student-rank-row:nth-child(1) .student-rank-num {
   /* T3-F4 — gold-as-text fix: --gold #D6A330 on --surface-2 was 2.2:1.
@@ -665,18 +679,15 @@
 a.comp-card {
   text-decoration: none;
   color: inherit;
-  transition:
-    border-color var(--motion-duration-short) var(--motion-ease-standard),
-    box-shadow var(--motion-duration-short) var(--motion-ease-standard),
-    transform var(--motion-duration-short) var(--motion-ease-standard);
+  /* r313: hover is the border step only — no shadow, no lift (the
+     reference's cards never move under the cursor). */
+  transition: border-color var(--motion-duration-short) var(--motion-ease-standard);
 }
 /* G (r283–285 hover belt): التحويم خلف حارس المؤشر الدقيق فقط —
    اللمس لا يعلق البطاقة مرفوعة. */
 @media (hover: hover) and (pointer: fine) {
   a.comp-card:hover {
     border-color: var(--border-strong);
-    box-shadow: var(--elev-2, var(--shadow-card-h));
-    transform: translateY(-1px);
   }
 }
 .comp-go {
@@ -809,7 +820,7 @@ a.comp-card:focus-visible .comp-go {
   .leaderboard-college-link:hover .leaderboard-college-name { color: var(--accent-ink, var(--accent)); }
 }
 .leaderboard-emoji {
-  font-size: 24px;
+  font-size: var(--fs-metric-md); /* 24px — the r313 token seat */
   width: 36px;
   height: 36px;
   display: inline-flex;
@@ -897,7 +908,8 @@ a.comp-card:focus-visible .comp-go {
   gap: var(--sp-5);
   padding: var(--sp-6);
   border-radius: var(--r-lg);
-  background: linear-gradient(135deg, var(--surface-1), var(--surface-2));
+  /* r313: flat sheet — the surface-1→2 gradient retired. */
+  background: var(--surface);
   border: 1px solid var(--border);
 }
 .comp-hero-emoji {
@@ -1144,8 +1156,11 @@ a.comp-card:focus-visible .comp-go {
   }
 }
 .comp-icon-btn.on {
-  background: var(--accent-soft, var(--surface-2));
-  border-color: var(--accent);
+  /* r313: the picked emoji tile is the ink fill held (the reference's
+     active grammar) — the accent-soft tint retired. */
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-fg);
 }
 .comp-modal-actions {
   display: flex;

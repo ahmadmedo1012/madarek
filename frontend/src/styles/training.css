@@ -181,7 +181,9 @@
     justify-content: center;
     background: color-mix(in srgb, var(--track-accent) 14%, var(--surface));
     color: var(--track-accent);
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--track-accent) 30%, transparent);
+    /* r313: the icon well's edge is a real hairline border — the inset
+       box-shadow ring retired with the shadow sweep. */
+    border: 1px solid color-mix(in srgb, var(--track-accent) 30%, transparent);
   }
   .track-hero-main {
     flex: 1;
@@ -305,7 +307,8 @@
   .lesson-row.next .lesson-row-num {
     background: color-mix(in srgb, var(--track-accent, var(--accent)) 14%, var(--surface));
     color: color-mix(in srgb, var(--track-accent, var(--accent)) 60%, var(--text));
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--track-accent, var(--accent)) 30%, transparent);
+    /* r313: hairline border, not an inset shadow ring. */
+    border: 1px solid color-mix(in srgb, var(--track-accent, var(--accent)) 30%, transparent);
   }
   .lesson-row.locked .lesson-row-num {
     background: transparent;
@@ -463,15 +466,15 @@
     55% {
       transform: scale(1.1);
       opacity: 1;
-      /* expanding gold ring — a feedback ping, not a resting halo */
-      box-shadow: 0 0 0 6px color-mix(in srgb, var(--gold) 24%, transparent);
     }
     100% {
       transform: scale(1);
       opacity: 1;
-      box-shadow: 0 0 0 0 transparent;
     }
   }
+  /* (r313: the mid-flight gold ring box-shadow frames retired with
+     the decorative-shadow sweep — the scale/opacity ping carries the
+     earned feedback alone, per the reference's shadow-free motion.) */
 
   @keyframes madarek-reward-in {
     from {
@@ -544,7 +547,8 @@
     /* mix the rarity hue toward the theme ink so both light pastels
        and dark grounds keep ≥3:1 for the glyph */
     color: color-mix(in srgb, var(--rarity) 60%, var(--text));
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--rarity) 30%, transparent);
+    /* r313: hairline border, not an inset shadow ring. */
+    border: 1.5px solid color-mix(in srgb, var(--rarity) 30%, transparent);
   }
   .badge-tile.locked .badge-tile-icon {
     background: transparent;
@@ -652,17 +656,18 @@
   .leaderboard-rank.rank-1 {
     background: var(--c-yellow-bg);
     color: var(--c-yellow-deep);
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--gold) 45%, transparent);
+    /* r313: hairline border, not an inset shadow ring. */
+    border: 1.5px solid color-mix(in srgb, var(--gold) 45%, transparent);
   }
   .leaderboard-rank.rank-2 {
     background: var(--c-grey-bg);
     color: var(--c-grey-deep);
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--c-grey-ink) 45%, transparent);
+    border: 1.5px solid color-mix(in srgb, var(--c-grey-ink) 45%, transparent);
   }
   .leaderboard-rank.rank-3 {
     background: var(--c-peach-bg);
     color: var(--c-peach-deep);
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--c-peach-ink) 45%, transparent);
+    border: 1.5px solid color-mix(in srgb, var(--c-peach-ink) 45%, transparent);
   }
 
   .leaderboard-name {
@@ -679,6 +684,8 @@
     flex-shrink: 0;
     font-size: var(--fs-xxs);
     color: var(--text-muted);
+    /* r313: tier codes are mono micro-labels (Latin digits). */
+    font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
   }
   .leaderboard-points {
@@ -689,6 +696,8 @@
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
     color: var(--gold-ink);
+    /* r313: scores are mono micro-labels (Latin digits, tabular). */
+    font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
   }
   @media (max-width: 640px) {
@@ -765,16 +774,12 @@
     background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: var(--r-md);
-    box-shadow: var(--shadow-card);
-    transition:
-      border-color var(--t-fast) var(--ease),
-      box-shadow var(--t-base) var(--ease),
-      transform var(--t-base) var(--ease);
+    /* r313: flat — no card shadow, no hover lift (the reference's
+       cards sit on hairlines; depth is the border step). */
+    transition: border-color var(--t-fast) var(--ease);
   }
   .achievement:hover {
     border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-premium-h);
-    transform: translateY(-2px);
   }
   .achievement-icon {
     inline-size: 40px;
@@ -809,7 +814,8 @@
     justify-content: center;
     background: color-mix(in srgb, var(--cert-accent, var(--accent)) 12%, var(--surface));
     color: color-mix(in srgb, var(--cert-accent, var(--accent)) 60%, var(--text));
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cert-accent, var(--accent)) 22%, transparent);
+    /* r313: hairline border, not an inset shadow ring. */
+    border: 1px solid color-mix(in srgb, var(--cert-accent, var(--accent)) 22%, transparent);
   }
 
   /* ── Reduced-motion off-switches (guardrail #6 — the global token

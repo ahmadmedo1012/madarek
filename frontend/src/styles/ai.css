@@ -84,7 +84,9 @@
   background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: var(--r-2xl);
-  box-shadow: var(--shadow-card);
+  /* r313: no decorative shadow — the hairline is the surface's whole
+     depth (var(--shadow-card) resolves none; the declaration retired
+     with the sweep). */
   /* الارتفاع مقيد بإطار العرض (وليس الشاشة كاملة): الرأس وفوقه من
      صفحة العنوان والفجوات يأكلان ~36-40dvh — يبقى السطح هو الكتلة
      الغالبة والمرسِل قريبًا من الطيّة الأولى. */
