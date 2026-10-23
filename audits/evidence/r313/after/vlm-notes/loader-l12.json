@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "C) PAGE. Top bar: Orange. Heading: \"مجالس القروء – رحلة تعلم ولحظة، من المخططات الأولى الى\".",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792734485,
+  "id": "20261023134803ce5e6936fb4f49d7",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20261023134803ce5e6936fb4f49d7",
+  "usage": {
+    "completion_tokens": 40,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1768,
+    "prompt_tokens_details": {
+      "cached_tokens": 2
+    },
+    "total_tokens": 1808
+  }
+}

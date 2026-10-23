@@ -3088,7 +3088,8 @@
   padding: 0;
   cursor: pointer;
   z-index: 5;
-  border-radius: var(--r-full);
+  /* R313 (D2/D12): square station (the reference's inspection stations
+     are square plus-marks, never circles) — the 44×44 target stays. */
 }
 
 .hi-marker-dot {
@@ -3097,11 +3098,30 @@
   inset-inline-start: 50%;
   inline-size: 12px;
   block-size: 12px;
-  margin: -6px 0 0 -6px; /* spacing-gate: allow — negative half-dot centering */
-  border-radius: var(--r-full);
-  background: var(--accent);
+  margin: -6px 0 0 -6px; /* spacing-gate: allow — negative half-mark centering */
+  /* R313 (D12): the reference's 8×8 plus-mark, drawn as two accent
+     bars (a plus glyph) — square, no fill. */
+  background: transparent;
   animation: hi-pulse 2.2s var(--ease) infinite;
   transition: scale var(--t-base) var(--ease);
+}
+.hi-marker-dot::before,
+.hi-marker-dot::after {
+  content: '';
+  position: absolute;
+  background: var(--accent);
+}
+.hi-marker-dot::before {
+  inset-block-start: 5px;
+  inset-inline-start: 0;
+  inline-size: 12px;
+  block-size: 2px;
+}
+.hi-marker-dot::after {
+  inset-block-start: 0;
+  inset-inline-start: 5px;
+  inline-size: 2px;
+  block-size: 12px;
 }
 
 .hi-marker[data-open='on'] .hi-marker-dot {

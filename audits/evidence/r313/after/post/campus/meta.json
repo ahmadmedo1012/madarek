@@ -1,0 +1,105 @@
+{
+ "url": "http://localhost:4173/campus",
+ "title": "مدارك · منصّة التعليم الذكي",
+ "totalHeight": 3191,
+ "maxScroll": 2291,
+ "scroller": {
+  "type": "window"
+ },
+ "viewport": {
+  "w": 1440,
+  "h": 900
+ },
+ "rootFontSize": "8.33333px",
+ "htmlLang": "ar",
+ "dir": "rtl",
+ "themeColor": "#F6F6EE",
+ "sections": [
+  {
+   "kind": "child",
+   "tag": "div",
+   "id": null,
+   "cls": "guest-reveal",
+   "top": 0,
+   "height": 3191
+  },
+  {
+   "kind": "child",
+   "tag": "div",
+   "id": null,
+   "cls": "cursor-layer",
+   "top": 0,
+   "height": 900
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "campus-life",
+   "cls": "",
+   "top": 113,
+   "height": 2128
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "videos",
+   "cls": "",
+   "top": 2337,
+   "height": 694
+  }
+ ],
+ "headerInfo": {
+  "cls": "cu-header",
+  "height": 57,
+  "top": 0,
+  "position": "sticky",
+  "transform": "none",
+  "transition": "all",
+  "zIndex": "60"
+ },
+ "lenis": {
+  "hasLenisGlobal": false,
+  "lenisInstances": null,
+  "lenisAttr": null,
+  "lenisEls": 1,
+  "gsap": false,
+  "barba": false,
+  "swiper": false
+ },
+ "canvases": [],
+ "bodyBg": "rgb(246, 246, 238)",
+ "htmlBg": "rgb(246, 246, 238)",
+ "scrollBehavior": "auto",
+ "imgCount": 9,
+ "cookieBanner": null,
+ "headerStates": {
+  "top": {
+   "cls": "cu-header",
+   "y": 0,
+   "transform": "none",
+   "opacity": "1",
+   "visibility": "visible"
+  },
+  "scrolled": {
+   "cls": "cu-header",
+   "y": 0,
+   "transform": "none",
+   "opacity": "1",
+   "visibility": "visible"
+  },
+  "scrolledMore": {
+   "cls": "cu-header",
+   "y": 0,
+   "transform": "none",
+   "opacity": "1",
+   "visibility": "visible"
+  },
+  "scrolledBack": {
+   "cls": "cu-header",
+   "y": 0,
+   "transform": "none",
+   "opacity": "1",
+   "visibility": "visible"
+  }
+ }
+}

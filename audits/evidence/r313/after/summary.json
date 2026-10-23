@@ -1,0 +1,80 @@
+{
+ "name": "madarek-after",
+ "url": "http://localhost:4173/",
+ "deep": "1440x900",
+ "primary": {
+  "url": "http://localhost:4173/",
+  "totalHeight": 13666,
+  "scroller": {
+   "type": "window"
+  },
+  "sections": 12,
+  "surfaceSweepOk": true
+ },
+ "viewports": [
+  {
+   "viewport": "1440x900",
+   "totalHeight": 13666,
+   "rootFontSize": "8.33333px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 12
+  },
+  {
+   "viewport": "1440x700",
+   "totalHeight": 12304,
+   "rootFontSize": "8.33333px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 12
+  },
+  {
+   "viewport": "1280x800",
+   "totalHeight": 12667,
+   "rootFontSize": "7.40741px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 12
+  },
+  {
+   "viewport": "1024x768",
+   "totalHeight": 13494,
+   "rootFontSize": "5.92593px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 12
+  },
+  {
+   "viewport": "768x1024",
+   "totalHeight": 11629,
+   "rootFontSize": "9.20863px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 12
+  },
+  {
+   "viewport": "390x844",
+   "totalHeight": 15308,
+   "rootFontSize": "9.92366px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 12
+  },
+  {
+   "viewport": "360x800",
+   "totalHeight": 15083,
+   "rootFontSize": "9.16031px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 12
+  }
+ ],
+ "posts": []
+}

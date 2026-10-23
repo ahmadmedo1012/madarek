@@ -26,7 +26,6 @@ import { ScrubReveal } from '../components/landing/journey/WordReveal';
 import { FooterLens } from '../components/landing/footer/FooterLens';
 import { shouldPlayIntro } from '../lib/motion/introGate';
 import { useSheetScroll } from '../lib/motion/useSheetScroll';
-import { installSheetExit } from '../lib/motion/sheetExit';
 import { clamp } from '../lib/motion/sheetConductor';
 import { acquireScrollLock, releaseScrollLock } from '../lib/scrollLock';
 // landing.css — «لوحة مدارك r306 → r313» — the Heron-parity drawing
@@ -468,16 +467,9 @@ export default function LandingPage() {
     el.style.setProperty('--wr-p', p.toFixed(4));
   });
 
-  /* R308 — the landing-exit sweep: internal link clicks play the
-   * geometric transition while React Router navigates underneath
-   * (navigation itself is never delayed — funnel safety). */
-  const landingRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const root = landingRef.current;
-    if (!root) return undefined;
-    return installSheetExit(root);
-  }, []);
-
+  /* R313 (D11): the exit sweep is installed at the GUEST boundary
+   * (GuestReveal — every public-page navigation), no longer scoped to
+   * the landing root. */
   /* R308 — the CTA's corner coordinates: real document-space values
    * of the section's corners, written once the layout settles. */
   const ctaRef = useRef<HTMLElement>(null);
@@ -681,7 +673,6 @@ export default function LandingPage() {
 
   return (
     <div
-      ref={landingRef}
       className={[
         'landing',
         introDone ? 'intro-done' : 'intro-draw',

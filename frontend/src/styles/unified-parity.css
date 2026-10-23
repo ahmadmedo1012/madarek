@@ -176,6 +176,7 @@
     --t-cinema: 900ms;
     /* R313 (D10) — the loader's measured center-out two-band split. */
     --t-sheet-exit: 835ms;
+    --t-guest-reveal: 700ms;
 
     /* easings — ease-out settles at (0.16,1,0.3,1); the spring family
        overshoots 1.18/1.36/1.56 (soft/spring/bounce) + snappy rebound */

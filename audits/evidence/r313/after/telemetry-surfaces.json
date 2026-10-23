@@ -1,0 +1,144 @@
+{
+ "sampled": 1858,
+ "radius": [
+  {
+   "tag": "button",
+   "cls": "hi-marker",
+   "id": null,
+   "radius": "9999px",
+   "w": 44,
+   "h": 44
+  },
+  {
+   "tag": "span",
+   "cls": "hi-marker-dot",
+   "id": null,
+   "radius": "9999px",
+   "w": 12,
+   "h": 12
+  },
+  {
+   "tag": "button",
+   "cls": "hi-marker",
+   "id": null,
+   "radius": "9999px",
+   "w": 44,
+   "h": 44
+  },
+  {
+   "tag": "span",
+   "cls": "hi-marker-dot",
+   "id": null,
+   "radius": "9999px",
+   "w": 12,
+   "h": 12
+  },
+  {
+   "tag": "button",
+   "cls": "hi-marker",
+   "id": null,
+   "radius": "9999px",
+   "w": 44,
+   "h": 44
+  },
+  {
+   "tag": "span",
+   "cls": "hi-marker-dot",
+   "id": null,
+   "radius": "9999px",
+   "w": 12,
+   "h": 12
+  },
+  {
+   "tag": "span",
+   "cls": "mini-avatar",
+   "id": null,
+   "radius": "50%",
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "span",
+   "cls": "mini-avatar is-accent",
+   "id": null,
+   "radius": "50%",
+   "w": 32,
+   "h": 32
+  }
+ ],
+ "shadows": [
+  {
+   "tag": "button",
+   "cls": "theme-toggle-option is-active",
+   "shadow": "rgb(179, 179, 175) 0px 0px 0px 1px inset"
+  }
+ ],
+ "cookieBanner": null,
+ "navInventory": [
+  {
+   "text": "مداركمنصّة التعليم الذكي",
+   "href": "/"
+  },
+  {
+   "text": "الرحلةالرحلة",
+   "href": null
+  },
+  {
+   "text": "البيانالبيان",
+   "href": "#statement"
+  },
+  {
+   "text": "المبدأ والرؤيةالمبدأ والرؤية",
+   "href": "#vision"
+  },
+  {
+   "text": "المنصّةالمنصّة",
+   "href": "#product"
+  },
+  {
+   "text": "المجتمعالمجتمع",
+   "href": null
+  },
+  {
+   "text": "التحديات المباشرةالتحديات المباشرة",
+   "href": "#live"
+  },
+  {
+   "text": "الأدوار الثمانيةالأدوار الثمانية",
+   "href": "#roles"
+  },
+  {
+   "text": "الكليات التجريبيةالكليات التجريبية",
+   "href": "#colleges"
+  },
+  {
+   "text": "الجامعاتالجامعات",
+   "href": "/campus"
+  },
+  {
+   "text": "",
+   "href": null
+  },
+  {
+   "text": "",
+   "href": null
+  },
+  {
+   "text": "",
+   "href": null
+  },
+  {
+   "text": "تسجيل الدخول",
+   "href": "/auth"
+  },
+  {
+   "text": "ابدأ الآن",
+   "href": "/auth/register"
+  },
+  {
+   "text": "القائمة",
+   "href": null
+  }
+ ],
+ "focusRingProbes": []
+}

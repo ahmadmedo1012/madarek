@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "A) Yes\nB) SPLIT 50% (The horizontal red line marks the center, with the loading UI visible below and the architectural drawing above.)",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792734481,
+  "id": "20261023134758cb5e83bda481460b",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20261023134758cb5e83bda481460b",
+  "usage": {
+    "completion_tokens": 33,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1768,
+    "prompt_tokens_details": {
+      "cached_tokens": 5
+    },
+    "total_tokens": 1801
+  }
+}

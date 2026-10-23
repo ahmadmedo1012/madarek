@@ -189,6 +189,33 @@ export function isGuestLenisOn(): boolean {
  * reduced-motion is on (native scroll under RM) or there is no window;
  * call sites treat both as "stay native".
  */
+/* R313-int: the shared scroll lock (lib/scrollLock.ts — menus, drawers,
+ * dialogs) must PAUSE the engine: Lenis writes window.scrollTo
+ * programmatically, which no overflow rule can stop. The lock toggles
+ * `mdrk-scroll-locked` on <html>; this observer mirrors it onto the
+ * engine. One observer per engine lifetime, cleaned up on destroy. */
+let lockObserver: MutationObserver | null = null;
+
+function watchScrollLock(): void {
+  if (lockObserver || typeof MutationObserver === 'undefined') return;
+  const sync = () => {
+    if (!lenis) return;
+    if (document.documentElement.classList.contains('mdrk-scroll-locked')) {
+      lenis.stop();
+    } else {
+      lenis.start();
+    }
+  };
+  lockObserver = new MutationObserver(sync);
+  lockObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  sync();
+}
+
+function unwatchScrollLock(): void {
+  lockObserver?.disconnect();
+  lockObserver = null;
+}
+
 export function initGuestLenis(): boolean {
   if (typeof window === 'undefined' || typeof document === 'undefined') {
     return false;
@@ -198,6 +225,7 @@ export function initGuestLenis(): boolean {
 
   lenis = new Lenis({ ...HERON_LENIS_PARAMS });
   document.documentElement.setAttribute('data-lenis-on', '');
+  watchScrollLock();
   offLenisScroll = lenis.on('scroll', onLenisScroll) || null;
   window.addEventListener('wheel', onInput, { passive: true, capture: true });
   window.addEventListener('touchstart', onInput, { passive: true, capture: true });
@@ -212,6 +240,7 @@ export function initGuestLenis(): boolean {
  * Lenis's own root classes all go).
  */
 export function destroyGuestLenis(): void {
+  unwatchScrollLock();
   detachFrame();
   if (idleTimer) {
     if (typeof window !== 'undefined') window.clearTimeout(idleTimer);

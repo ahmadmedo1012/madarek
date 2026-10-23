@@ -1,0 +1,1014 @@
+{
+ "transitions": [
+  {
+   "sel": ".section-accent-scene-paint",
+   "t": "opacity var(--motion-duration-reveal) var(--motion-ease-decelerate),transform var(--motion-duration-reveal) var(--motion-ease-decelerate)"
+  },
+  {
+   "sel": "body",
+   "t": "background-color var(--t-base) var(--ease),color var(--t-base) var(--ease)"
+  },
+  {
+   "sel": "a",
+   "t": "color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".skip-link",
+   "t": "transform var(--motion-duration-medium) var(--ease-spring)"
+  },
+  {
+   "sel": "input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, textarea:-webkit-autofill, textarea:-webkit-autofill:hover, textarea:-webkit-autofill:focus",
+   "t": "background-color 9999s ease-out"
+  },
+  {
+   "sel": ".has-shell",
+   "t": "grid-template-columns var(--motion-duration-medium) var(--motion-ease-decelerate)"
+  },
+  {
+   "sel": ".has-shell > .sidebar",
+   "t": "inline-size var(--motion-duration-medium) var(--motion-ease-decelerate)"
+  },
+  {
+   "sel": ".topbar",
+   "t": "border-color var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".card",
+   "t": "border-color var(--t-base) var(--ease),box-shadow var(--t-base) var(--ease),transform var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".card:not(.flush)::before",
+   "t": "opacity var(--motion-duration-medium) var(--ease-out)"
+  },
+  {
+   "sel": ".metric",
+   "t": "border-color var(--t-base) var(--ease),box-shadow var(--t-base) var(--ease),transform var(--t-base) var(--ease-out)"
+  },
+  {
+   "sel": ".btn",
+   "t": "background var(--t-base) var(--ease),border-color var(--t-base) var(--ease),color var(--t-base) var(--ease),box-shadow var(--t-base) var(--ease),transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".btn::before",
+   "t": "transform var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".icon-btn",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".badge",
+   "t": "box-shadow var(--t-base) var(--ease),transform var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".pill",
+   "t": "background var(--motion-duration-short) var(--ease),color var(--motion-duration-short) var(--ease),border-color var(--motion-duration-short) var(--ease),transform var(--motion-duration-short) var(--ease),box-shadow var(--motion-duration-medium) var(--ease)"
+  },
+  {
+   "sel": ".tab",
+   "t": "background var(--t-fast) var(--ease),color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".tab::after",
+   "t": "transform var(--t-base) var(--ease-out)"
+  },
+  {
+   "sel": ".progress-fill",
+   "t": "transform var(--t-slow) var(--ease-out)"
+  },
+  {
+   "sel": ".alert",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".input, input[type=\"text\"], input[type=\"search\"], input[type=\"email\"], input[type=\"password\"], input[type=\"number\"], input[type=\"url\"], input[type=\"tel\"], input[type=\"date\"], input[type=\"time\"], textarea, select",
+   "t": "border-color var(--t-slow) var(--ease)"
+  },
+  {
+   "sel": "input[type=\"checkbox\"], input[type=\"radio\"]",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".table-row-actions",
+   "t": "opacity var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".table-pagination-actions button",
+   "t": "background var(--t-fast) var(--ease),color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".list-row",
+   "t": "background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".state-icon",
+   "t": "transform var(--motion-duration-reveal) var(--ease-out)"
+  },
+  {
+   "sel": ".text-link",
+   "t": "text-decoration-color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".sheet-panel[data-dragging][data-drag-phase=\"release\"]",
+   "t": "transform var(--motion-duration-short) var(--ease-spring-soft)"
+  },
+  {
+   "sel": ".toast-close",
+   "t": "color var(--t-fast) var(--ease),transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".dropdown-item",
+   "t": "background var(--t-fast) var(--ease),transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".lightbox-close",
+   "t": "color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".onboarding-flow-skip",
+   "t": "color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".onboarding-flow-dot::before",
+   "t": "background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".onboarding-flow-dot::after",
+   "t": "transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".sidebar-tour-trigger",
+   "t": "background var(--t-fast) var(--ease),color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".thumb-card",
+   "t": "border-color var(--t-base) var(--ease),box-shadow var(--t-base) var(--ease),transform var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".run-row",
+   "t": "border-color var(--t-base) var(--ease),box-shadow var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".teacher-row",
+   "t": "background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".category-row-head",
+   "t": "background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".trend-bar",
+   "t": "clip-path var(--t-slow) var(--ease-out)"
+  },
+  {
+   "sel": ".exam-timer",
+   "t": "background var(--t-base) var(--ease),border-color var(--t-base) var(--ease),color var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".exam-choice",
+   "t": "background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),box-shadow var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".admin-faculty-card",
+   "t": "transform var(--t-base) var(--ease),border-color var(--t-base) var(--ease),box-shadow var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".gov-scope-card",
+   "t": "box-shadow var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".risk-row",
+   "t": "opacity var(--motion-duration-medium) var(--motion-ease-standard),filter var(--motion-duration-medium) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".att-toggle",
+   "t": "background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".momentum-ring .ring-fill",
+   "t": "stroke-dasharray var(--t-slow) var(--ease-decelerate)"
+  },
+  {
+   "sel": ".week-item-title",
+   "t": "color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".ledger-row-link::before",
+   "t": "opacity var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".btn-motion-label-track",
+   "t": "transform var(--t-slow) var(--ease-in)"
+  },
+  {
+   "sel": ".btn-motion-icon > :not(.btn-motion-icon-dup), .btn-motion-icon-dup",
+   "t": "transform var(--t-slow) var(--ease-in)"
+  },
+  {
+   "sel": ".nav-item:not(.on)::after",
+   "t": "transform var(--t-fast) var(--ease),opacity var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".link-underline-motion:not(a)::before",
+   "t": "transform var(--t-base) var(--ease-out)"
+  },
+  {
+   "sel": ".sidebar-collapse-btn",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".nav-item",
+   "t": "background var(--t-fast) var(--ease),color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".sidebar-user",
+   "t": "background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".sidebar-mobile-close",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".sidebar-logout",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".sidebar-backdrop",
+   "t": "opacity var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".sidebar",
+   "t": "transform var(--t-base) var(--ease-out)"
+  },
+  {
+   "sel": ".topbar-mobile-toggle",
+   "t": "background var(--t-fast) var(--ease),color var(--t-fast) var(--ease),transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".topbar-search-toggle",
+   "t": "background var(--t-fast) var(--ease),color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".topbar-user-trigger",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".topbar-search-clear",
+   "t": "color var(--t-fast) var(--ease),background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".search-row",
+   "t": "background var(--motion-duration-short) var(--ease),transform var(--motion-duration-short) var(--ease)"
+  },
+  {
+   "sel": ".search-row::before",
+   "t": "transform var(--motion-duration-short) var(--ease-spring-soft)"
+  },
+  {
+   "sel": ".search-row-icon",
+   "t": "transform var(--motion-duration-short) var(--ease)"
+  },
+  {
+   "sel": ".search-row-arrow",
+   "t": "transform var(--motion-duration-short) var(--ease),opacity var(--motion-duration-short) var(--ease)"
+  },
+  {
+   "sel": ".search-tip-pill",
+   "t": "background var(--motion-duration-short) var(--ease),color var(--motion-duration-short) var(--ease),border-color var(--motion-duration-short) var(--ease),transform var(--motion-duration-short) var(--ease-spring-soft)"
+  },
+  {
+   "sel": ".theme-toggle-option",
+   "t": "background var(--t-fast) var(--ease),color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".pf-row-toggle svg",
+   "t": "transform var(--motion-duration-short) var(--ease-out)"
+  },
+  {
+   "sel": ".auth-back-home",
+   "t": "background var(--t-base) var(--ease),color var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".auth-context",
+   "t": "background var(--t-base) var(--ease),color var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".auth-input-toggle",
+   "t": "color var(--t-fast) var(--ease),background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".auth-retry-link",
+   "t": "opacity var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".auth-error-link",
+   "t": "opacity var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".auth-forgot",
+   "t": "color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".auth-submit",
+   "t": "background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".auth-demo-hint-close",
+   "t": "color var(--t-fast) var(--ease),background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".auth-demo-hint-reopen",
+   "t": "color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".role-card",
+   "t": "background var(--t-base) var(--ease),border-color var(--t-base) var(--ease),color var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".role-card-icon",
+   "t": "border-color var(--t-base) var(--ease),color var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".role-card-arrow",
+   "t": "color var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".notif-panel-action",
+   "t": "background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".notif-panel-close",
+   "t": "background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".notif-panel-viewall",
+   "t": "background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".bottom-nav-item",
+   "t": "color var(--motion-duration-short) var(--ease),background var(--motion-duration-short) var(--ease),transform var(--motion-duration-micro) var(--ease)"
+  },
+  {
+   "sel": ".bottom-nav-icon",
+   "t": "background var(--motion-duration-medium) var(--ease),transform var(--motion-duration-medium) var(--ease),box-shadow var(--motion-duration-medium) var(--ease)"
+  },
+  {
+   "sel": ".toast-stack .toast[data-dragging][data-drag-phase=\"release\"]",
+   "t": "transform var(--motion-duration-short) var(--ease-spring-soft)"
+  },
+  {
+   "sel": ".cp-row",
+   "t": "background var(--motion-duration-short) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".lecture-progress-fill",
+   "t": "transform var(--motion-duration-stat) var(--motion-ease-decelerate)"
+  },
+  {
+   "sel": ".chapter-row",
+   "t": "background var(--motion-duration-short) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".checkpoint-option",
+   "t": "background var(--motion-duration-short) var(--motion-ease-standard),border-color var(--motion-duration-short) var(--motion-ease-standard),opacity var(--motion-duration-short) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".checkpoint-mark",
+   "t": "background var(--motion-duration-short) var(--motion-ease-standard),border-color var(--motion-duration-short) var(--motion-ease-standard),color var(--motion-duration-short) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".agenda-row-chevron",
+   "t": "color var(--motion-duration-short) var(--motion-ease-standard),transform var(--motion-duration-short) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".cal-cell",
+   "t": "background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".cal-event-row",
+   "t": "background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".ai-gap-card",
+   "t": "background var(--motion-duration-short) var(--motion-ease-standard),border-color var(--motion-duration-short) var(--motion-ease-standard),transform var(--motion-duration-micro) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".chat-retry",
+   "t": "background var(--motion-duration-short) var(--motion-ease-standard),border-color var(--motion-duration-short) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".webinar-row",
+   "t": "background var(--motion-duration-short) var(--motion-ease-standard),border-color var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".process-step",
+   "t": "border-color var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".research-card",
+   "t": "border-color var(--motion-duration-short) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".campus-city-row",
+   "t": "background var(--motion-duration-short) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".profile-link-icon",
+   "t": "background var(--motion-duration-short) var(--motion-ease-standard),color var(--motion-duration-short) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".announcement-card",
+   "t": "border-color var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".exam-qmap-dot",
+   "t": "background var(--t-fast) var(--ease),color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".exam-review-chevron",
+   "t": "rotate var(--motion-duration-micro) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".ai-quick-chip",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".chat-input",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".chat-send",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".matrix-course",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".matrix-cell",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".post-action",
+   "t": "var(--t-clean)"
+  },
+  {
+   "sel": ".faculty-chip-row",
+   "t": "var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": "a > .card, button.card",
+   "t": "border-color var(--t-fast) var(--ease),box-shadow var(--t-fast) var(--ease),transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".topbar-notif",
+   "t": "background var(--t-fast) var(--ease),color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".notif-item",
+   "t": "background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".notif-item-icon",
+   "t": "transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".notif-panel-viewall svg",
+   "t": "transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".post, .announcement-card",
+   "t": "transform var(--t-fast) var(--ease),box-shadow var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".nav-item::before",
+   "t": "transform var(--t-base) var(--ease-out),opacity var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".nav-icon",
+   "t": "transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".list-row, .feed-item, .owner-timeline-item",
+   "t": "background var(--t-fast) var(--ease),transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".btn .icon, .btn svg",
+   "t": "transform var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".card:not(.flush)::after",
+   "t": "opacity var(--motion-duration-page) var(--ease)"
+  },
+  {
+   "sel": ".metric::before",
+   "t": "transform var(--motion-duration-page) var(--ease-spring-soft)"
+  },
+  {
+   "sel": ".avatar",
+   "t": "transform var(--motion-duration-short) var(--ease),box-shadow var(--motion-duration-medium) var(--ease)"
+  },
+  {
+   "sel": ".nav-section-label",
+   "t": "color var(--motion-duration-short) var(--ease)"
+  },
+  {
+   "sel": ".topbar .global-search",
+   "t": "box-shadow var(--motion-duration-medium) var(--ease),border-color var(--motion-duration-medium) var(--ease),transform var(--motion-duration-medium) var(--ease)"
+  },
+  {
+   "sel": ".list-row::before",
+   "t": "transform var(--motion-duration-medium) var(--ease-spring-soft)"
+  },
+  {
+   "sel": ".thumb-card-image > *",
+   "t": "transform var(--t-slower) var(--ease-out)"
+  },
+  {
+   "sel": ".vision-card, .vision-detail-hero",
+   "t": "transform var(--motion-duration-page) var(--ease-spring-soft),box-shadow var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".announce-emoji, .event-emoji, .announcement-icon",
+   "t": "transform var(--motion-duration-medium) var(--ease-spring-bounce)"
+  },
+  {
+   "sel": "a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link)",
+   "t": "color var(--motion-duration-short) var(--ease)"
+  },
+  {
+   "sel": "a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):not(.back-link):not(.track-card)::after",
+   "t": "transform var(--motion-duration-medium) var(--ease-spring-soft)"
+  },
+  {
+   "sel": ".bottom-nav",
+   "t": "transform var(--t-base) var(--ease)"
+  },
+  {
+   "sel": ".scroll-progress",
+   "t": "transform var(--t-fast) var(--ease-linear)"
+  },
+  {
+   "sel": ".sidebar-collapse-btn, .sidebar-mobile-close, .sidebar-tour-trigger, .topbar-search-toggle, .topbar-mobile-toggle, .topbar-notif, .topbar-user-trigger, .theme-toggle-option",
+   "t": "background var(--t-fast) var(--ease),color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),transform var(--motion-duration-micro) var(--ease)"
+  },
+  {
+   "sel": ".has-shell .onboarding-flow-skip",
+   "t": "background var(--t-fast) var(--ease),color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": "[data-collapsible=\"true\"] .nav-group-toggle",
+   "t": "transform var(--motion-duration-micro) var(--ease)"
+  },
+  {
+   "sel": ".cursor-dot-core",
+   "t": "opacity var(--t-fast) var(--ease),transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".cursor-dot-ring",
+   "t": "opacity var(--t-fast) var(--ease),transform var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".cursor-dot::before, .cursor-dot::after",
+   "t": "opacity var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".cursor-line-h, .cursor-line-v",
+   "t": "opacity var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".cursor-readout",
+   "t": "opacity var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".college-card-arrow",
+   "t": "transform var(--t-fast) var(--ease),color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".gallery-chip",
+   "t": "background var(--motion-duration-short) var(--motion-ease-standard),border-color var(--motion-duration-short) var(--motion-ease-standard),color var(--motion-duration-short) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".gallery-clear",
+   "t": "color var(--motion-duration-short) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".student-rank-row",
+   "t": "background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": "a.comp-card",
+   "t": "border-color var(--motion-duration-short) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".comp-go",
+   "t": "opacity var(--motion-duration-short) var(--motion-ease-standard),transform var(--motion-duration-short) var(--motion-ease-decelerate)"
+  },
+  {
+   "sel": ".leaderboard-sort",
+   "t": "color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".leaderboard-college-link",
+   "t": "color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".leaderboard-college-name",
+   "t": "color var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".comp-modal-close",
+   "t": "background var(--t-fast) var(--ease)"
+  },
+  {
+   "sel": ".comp-icon-btn",
+   "t": "var(--t-fast) var(--ease)"
+  }
+ ],
+ "animations": [
+  {
+   "sel": ".skeleton",
+   "a": "skeleton-shimmer-rtl var(--motion-duration-skeleton) var(--ease-linear) infinite"
+  },
+  {
+   "sel": ".motion-spinner",
+   "a": "motion-spin var(--motion-duration-stat) var(--ease-linear) infinite"
+  },
+  {
+   "sel": "img[loading=\"lazy\"]",
+   "a": "madarek-img-in var(--motion-duration-long) var(--ease-out) both"
+  },
+  {
+   "sel": ".card > .state.state-loading::before, .card > .state.state-inline::before",
+   "a": "madarek-loadingstate-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite"
+  },
+  {
+   "sel": ".spinner",
+   "a": "madarek-spin var(--motion-duration-stat) var(--ease-linear) infinite"
+  },
+  {
+   "sel": ".hydration-splash",
+   "a": "polish-hydration-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite"
+  },
+  {
+   "sel": ".modal-overlay",
+   "a": "madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".modal-card",
+   "a": "madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".sheet-overlay",
+   "a": "madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".sheet-panel-end",
+   "a": "madarek-sheet-slide-end var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".sheet-panel-start",
+   "a": "madarek-sheet-slide-start var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".sheet-panel-bottom",
+   "a": "madarek-sheet-slide-bottom var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".sheet-panel[data-dragging]",
+   "a": "auto ease 0s 1 normal none running none"
+  },
+  {
+   "sel": ".popover",
+   "a": "madarek-popover-in var(--motion-duration-short) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".dropdown",
+   "a": "madarek-popover-in var(--motion-duration-short) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".tooltip",
+   "a": "madarek-tooltip-in var(--motion-duration-short) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".lightbox-overlay",
+   "a": "madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".lightbox-content",
+   "a": "madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".cmd-palette-overlay",
+   "a": "madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".cmd-palette-card",
+   "a": "madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".notification-panel",
+   "a": "madarek-popover-in var(--motion-duration-short) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".moderation-pulse",
+   "a": "madarek-moderation-pulse var(--motion-duration-stat) var(--motion-ease-decelerate)"
+  },
+  {
+   "sel": ".leaderboard-row.rank-pulse",
+   "a": "madarek-rank-pulse var(--motion-duration-stat) var(--motion-ease-decelerate)"
+  },
+  {
+   "sel": ".perm-row.confirm-pulse",
+   "a": "madarek-perm-confirm var(--motion-duration-stat) var(--motion-ease-decelerate)"
+  },
+  {
+   "sel": ".compact-kpi-delta",
+   "a": "madarek-kpi-delta var(--motion-duration-stat) var(--motion-ease-decelerate) backwards"
+  },
+  {
+   "sel": ".annotation-row.is-newest",
+   "a": "madarek-annotation-hl var(--motion-duration-skeleton) var(--motion-ease-decelerate) backwards"
+  },
+  {
+   "sel": ".dropdown[data-closing=\"true\"], .popover[data-closing=\"true\"], .notification-panel[data-closing=\"true\"]",
+   "a": "madarek-popover-out var(--motion-duration-short) var(--motion-ease-accelerate) both"
+  },
+  {
+   "sel": ".modal-overlay[data-closing=\"true\"]",
+   "a": "madarek-overlay-out var(--motion-duration-short) var(--motion-ease-accelerate) both"
+  },
+  {
+   "sel": ".modal-overlay[data-closing=\"true\"] .modal-card",
+   "a": "madarek-modal-out var(--motion-duration-short) var(--motion-ease-accelerate) both"
+  },
+  {
+   "sel": ".sheet-overlay[data-closing=\"true\"]",
+   "a": "madarek-overlay-out var(--motion-duration-short) var(--motion-ease-accelerate) both"
+  },
+  {
+   "sel": ".sheet-overlay[data-closing=\"true\"] .sheet-panel-end",
+   "a": "madarek-sheet-out-end var(--motion-duration-short) var(--motion-ease-accelerate) both"
+  },
+  {
+   "sel": ".sheet-overlay[data-closing=\"true\"] .sheet-panel-start",
+   "a": "madarek-sheet-out-start var(--motion-duration-short) var(--motion-ease-accelerate) both"
+  },
+  {
+   "sel": ".sheet-overlay[data-closing=\"true\"] .sheet-panel-bottom",
+   "a": "madarek-sheet-out-bottom var(--motion-duration-short) var(--motion-ease-accelerate) both"
+  },
+  {
+   "sel": ".lightbox-overlay[data-closing=\"true\"]",
+   "a": "madarek-lightbox-out var(--motion-duration-short) var(--motion-ease-accelerate) both"
+  },
+  {
+   "sel": ".lightbox-overlay[data-closing=\"true\"] .lightbox-content",
+   "a": "madarek-lightbox-content-out var(--motion-duration-short) var(--motion-ease-accelerate) both"
+  },
+  {
+   "sel": ".onboarding-flow-frame",
+   "a": "onboarding-frame-in var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".onboarding-flow-frame > .onboarding-flow-illustration",
+   "a": "onboarding-beat-settle var(--motion-duration-long) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".onboarding-flow-frame > .onboarding-flow-copy, .onboarding-flow-frame > .onboarding-flow-actions",
+   "a": "onboarding-beat-rise var(--motion-duration-short) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".onboarding-flow--milestone .onboarding-flow-illustration",
+   "a": "milestone-pop var(--motion-duration-long) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".cmd-palette-overlay[data-closing=\"true\"]",
+   "a": "madarek-overlay-out var(--motion-duration-short) var(--motion-ease-accelerate) both"
+  },
+  {
+   "sel": ".cmd-palette-overlay[data-closing=\"true\"] .cmd-palette-card",
+   "a": "madarek-modal-out var(--motion-duration-short) var(--motion-ease-accelerate) both"
+  },
+  {
+   "sel": ".nav-item.on::before",
+   "a": "madarek-nav-pop var(--motion-duration-medium) var(--motion-ease-decelerate)"
+  },
+  {
+   "sel": ".search-dropdown",
+   "a": "madarek-search-pop var(--motion-duration-medium) var(--ease-spring-soft) both"
+  },
+  {
+   "sel": ".search-shimmer",
+   "a": "skeleton-shimmer-rtl var(--motion-duration-skeleton) var(--ease-linear) infinite"
+  },
+  {
+   "sel": ".wake-pill",
+   "a": "wake-pill-in var(--motion-duration-medium) var(--ease)"
+  },
+  {
+   "sel": ".auth-step-panel[data-dir=\"forward\"]",
+   "a": "auth-step-forward-in var(--t-base) var(--ease-out) both"
+  },
+  {
+   "sel": ".auth-step-panel[data-dir=\"back\"]",
+   "a": "auth-step-back-in var(--t-base) var(--ease-out) both"
+  },
+  {
+   "sel": ".auth-submit-spinner",
+   "a": "madarek-spin var(--motion-duration-stat) var(--ease-linear) infinite"
+  },
+  {
+   "sel": ".nf-scene",
+   "a": "nf-scene-in var(--motion-duration-long) var(--ease-out) both"
+  },
+  {
+   "sel": ".auth-card",
+   "a": "madarek-auth-card-in var(--t-slow) var(--ease-out) both"
+  },
+  {
+   "sel": ".bottom-nav-item.active .bottom-nav-icon",
+   "a": "polish-bottomnav-pop var(--motion-duration-page) var(--ease-out)"
+  },
+  {
+   "sel": ".toast-stack .toast",
+   "a": "madarek-toast-in var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".toast-stack .toast[data-dragging]",
+   "a": "auto ease 0s 1 normal none running none"
+  },
+  {
+   "sel": ".toast-stack .toast[data-closing=\"true\"]",
+   "a": "madarek-toast-out var(--motion-duration-short) var(--motion-ease-accelerate) both"
+  },
+  {
+   "sel": ".lecture-nav-next.pulse",
+   "a": "lecture-next-pulse var(--motion-duration-stat) var(--motion-ease-decelerate)"
+  },
+  {
+   "sel": ".checkpoint-option.correct",
+   "a": "lecture-correct-pulse var(--motion-duration-stat) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".checkpoint-option.correct .checkpoint-option-icon, .checkpoint-option.incorrect .checkpoint-option-icon",
+   "a": "lecture-pop var(--motion-duration-medium) var(--ease-spring) both"
+  },
+  {
+   "sel": ".checkpoint-result, .checkpoint-error",
+   "a": "lecture-result-in var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".chat-typing-dot",
+   "a": "ai-typing-bob var(--motion-duration-stat) var(--motion-ease-standard) infinite"
+  },
+  {
+   "sel": ".chat-error",
+   "a": "ai-row-in var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".courses-grid > .thumb-card",
+   "a": "auto ease 0s 1 normal none running none"
+  },
+  {
+   "sel": ".exam-grade",
+   "a": "exam-grade-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards,exam-grade-ring var(--motion-duration-stat) var(--motion-ease-decelerate) backwards"
+  },
+  {
+   "sel": ".mooc-cta.confirmed",
+   "a": "mooc-cta-pulse var(--motion-duration-stat) var(--motion-ease-decelerate) backwards"
+  },
+  {
+   "sel": ".webinar-live-dot",
+   "a": "webinar-live-pulse var(--motion-duration-skeleton) var(--motion-ease-standard) infinite"
+  },
+  {
+   "sel": ".scan-pulse-dot",
+   "a": "scan-dot-ping var(--motion-duration-skeleton) var(--motion-ease-decelerate) infinite"
+  },
+  {
+   "sel": ".scan-cell-run::after",
+   "a": "scan-sweep var(--motion-duration-skeleton) var(--motion-ease-standard) infinite"
+  },
+  {
+   "sel": ".live-dot",
+   "a": "live-ping var(--motion-duration-skeleton) var(--motion-ease-decelerate) infinite"
+  },
+  {
+   "sel": ".terminal-line",
+   "a": "terminal-line-in var(--motion-duration-short) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".terminal-cursor",
+   "a": "terminal-blink var(--motion-duration-skeleton) var(--motion-ease-standard) infinite"
+  },
+  {
+   "sel": ".profile-link-saved",
+   "a": "profile-save-in var(--motion-duration-medium) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".post-count.pop",
+   "a": "social-count-pop var(--motion-duration-stat) var(--ease-spring) both"
+  },
+  {
+   "sel": ".exam-q-state",
+   "a": "exam-save-in var(--motion-duration-micro) var(--motion-ease-standard)"
+  },
+  {
+   "sel": ".chat-bubble",
+   "a": "chat-in var(--motion-duration-medium) var(--ease-out) both"
+  },
+  {
+   "sel": ".sidebar-backdrop.show",
+   "a": "polish-backdrop-enter var(--motion-duration-short) var(--ease-out) both"
+  },
+  {
+   "sel": ".sidebar.collapsed .nav-item:hover::after",
+   "a": "polish-tooltip-in var(--motion-duration-micro) var(--ease-out) .24s forwards"
+  },
+  {
+   "sel": ".topbar-notif-badge",
+   "a": "notif-bell-pulse var(--motion-duration-ambient) var(--ease-out) infinite"
+  },
+  {
+   "sel": ".guest-reveal-inner",
+   "a": "guest-reveal-sweep var(--motion-duration-long) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".guest-reveal::after",
+   "a": "guest-reveal-line var(--motion-duration-long) var(--motion-ease-decelerate) both"
+  },
+  {
+   "sel": ".page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260):not(.courses-grid):not(.mooc-grid) > *",
+   "a": "madarek-stagger-up var(--motion-duration-medium) var(--ease-out) backwards"
+  },
+  {
+   "sel": ".metric-value",
+   "a": "madarek-pop-in var(--t-slower) var(--ease-spring) both"
+  },
+  {
+   "sel": ".topbar",
+   "a": "madarek-topbar-in var(--motion-duration-long) var(--ease-out) both"
+  },
+  {
+   "sel": ".bottom-nav-item.active::after",
+   "a": "madarek-dot-in var(--motion-duration-page) var(--ease-spring-bounce) both"
+  },
+  {
+   "sel": ".badge",
+   "a": "madarek-badge-in var(--motion-duration-medium) var(--ease-spring-bounce) both"
+  },
+  {
+   "sel": ".nav-item.on::after",
+   "a": "madarek-rail-dot-in var(--motion-duration-page) var(--ease-spring-bounce) both 80ms"
+  },
+  {
+   "sel": ".sidebar.open .nav-item",
+   "a": "madarek-drawer-item-in var(--motion-duration-long) var(--ease-out) both"
+  },
+  {
+   "sel": ".feed .feed-item",
+   "a": "madarek-feed-in var(--motion-duration-long) var(--ease-out) both"
+  },
+  {
+   "sel": ".leaderboard-table tbody tr:hover td:first-child::before",
+   "a": "madarek-row-bar-in var(--motion-duration-medium) var(--ease-spring-bounce) both"
+  },
+  {
+   "sel": ".state.state-empty .state-icon",
+   "a": "madarek-empty-wiggle var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite"
+  },
+  {
+   "sel": ".state.state-error .state-icon",
+   "a": "madarek-error-throb var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite"
+  },
+  {
+   "sel": ".state.state-error .btn",
+   "a": "madarek-retry-pop var(--motion-duration-reveal) var(--ease-spring-bounce) both .2s"
+  },
+  {
+   "sel": "*, ::before, ::after",
+   "a": "auto ease 0s 1 normal none running none"
+  },
+  {
+   "sel": ".content-inner > *",
+   "a": "page-enter var(--motion-duration-short) var(--ease-out) both"
+  },
+  {
+   "sel": ".nav-group[data-collapsible=\"true\"][data-group-open=\"true\"] > .nav-item",
+   "a": "madarek-group-reveal var(--motion-duration-medium) var(--motion-ease-decelerate) backwards"
+  },
+  {
+   "sel": ".mk-loader-item--lead",
+   "a": "mk-loader-glide-forward var(--t-cinema) var(--ease-linear) infinite"
+  },
+  {
+   "sel": ".college-hero::before, .comp-hero::before",
+   "a": "madarek-hero-bar-draw var(--t-slower) var(--ease-spring-soft) .24s both"
+  }
+ ],
+ "keyframes": [
+  "wake-pill-in",
+  "madarek-group-reveal"
+ ]
+}

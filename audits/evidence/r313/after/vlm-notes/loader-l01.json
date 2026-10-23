@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "Based on the provided screenshot, here is a precise description of the loading screen:\n\n1.  **Percentage Counter:** Yes, there is a percentage counter visible in the bottom-left corner of the main display area. It reads **42%**.\n2.  **Log/System Lines:** There are **two** visible log/system lines located just below the progress bar:\n    *   Line 001: \"تحميل واجهة المستخدم\" (Loading User Interface)\n    *   Line 002: \"تحميل بيانات الموقع\" (Loading Site Data)\n3.  **Progress Band/Bar:** Yes, there is a thin horizontal **red** progress bar positioned at the bottom edge of the upper section, aligned with the 42% counter.\n4.  **Frame/Border & Readouts:**\n    *   **Border:** The entire interface is contained within a thin grey rectangular frame/border.\n    *   **Coordinates:** A coordinate readout is visible in the top-right corner showing \"**X: 0PX Y: 0PX**\".\n    *   **Crosshairs:** Faint plus-sign (+) crosshairs are visible in the center of each quadrant of the main viewing area.\n5.  **SKIP Button:** Yes, there is a button labeled \"**SKIP - تخطي**\" located in the bottom-left corner within the footer area.\n6.  **Overall Composition:**\n    *   The screen has a minimalist, technical aesthetic with an off-white/beige background.\n    *   **Top Section:** Features a large central canvas displaying simple architectural wireframes (rectangles with a roofline) and letters (A-G) along a top axis.\n    *   **Middle Section:** Contains the loading status, including the red progress bar and the two lines of Arabic system text.\n    *   **Bottom Section (Footer):** Contains branding information (\"MADAREK · LEARNING SHEET\", \"TYPE LEARNING PLATFORM\", \"FULL LEARNING JOURNEY\") on the left/center, and the SKIP button on the far left.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792734441,
+  "id": "2026102313471494509e4f87384874",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "2026102313471494509e4f87384874",
+  "usage": {
+    "completion_tokens": 424,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1745,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 2169
+  }
+}

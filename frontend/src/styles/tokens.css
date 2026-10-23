@@ -261,6 +261,7 @@
        split (the reference's exit: 835ms, slit 49.94/50.06% → 0/100%;
        was the R309 fixed 650ms whose animation raced to ~21ms). */
     --t-sheet-exit: 835ms;
+    --t-guest-reveal: 700ms;   /* R313 (D11): reveal phase — cover 900ms + reveal 700ms ≈ reference 1.6s */
 
     /* r305 — --ease re-keys to the reference's decel standard
        (.23,1,.32,1); --ease-in adopts its roll/exit curve (.625,.05,0,1).
@@ -312,6 +313,7 @@
     /* R313 (D10) — the loader's center-out split on its measured rung
        (canonical seat for the entrance sheet's exit). */
     --motion-duration-sheet-exit: var(--t-sheet-exit);
+    --motion-duration-guest-reveal: var(--t-guest-reveal);
 
     /* Ambient loop durations — the dedicated scale for INFINITE
        decorative loops (breathe / sway / float / pulse / drift). These

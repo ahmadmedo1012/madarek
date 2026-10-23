@@ -42,8 +42,12 @@ describe('scrollLock', () => {
     hold('modal-b');
     const rules = document.querySelectorAll(`#${RULE_ID}`);
     expect(rules).toHaveLength(1);
+    /* R313 override (D11-int): the rule now locks html TOO (body-only
+     * overflow does not propagate when html owns an overflow value) and
+     * sheetLenis pauses the engine off the html class (owner decision —
+     * the menu/drawer lock must hold against the smooth engine). */
     expect(rules[0]!.textContent).toBe(
-      `body.${SCROLL_LOCK_BODY_CLASS}{overflow:hidden;}`,
+      `body.${SCROLL_LOCK_BODY_CLASS}{overflow:hidden;}html.${SCROLL_LOCK_BODY_CLASS}{overflow:hidden;}`,
     );
   });
 

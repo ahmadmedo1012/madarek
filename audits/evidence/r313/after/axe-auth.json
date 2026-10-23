@@ -1,0 +1,10 @@
+{
+ "url": "/auth",
+ "inapplicable": 41,
+ "incomplete": 0,
+ "passes": 20,
+ "violationsAll": 0,
+ "violationsSeriousCritical": 0,
+ "seriousList": [],
+ "otherViolations": []
+}

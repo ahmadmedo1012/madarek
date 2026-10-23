@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "C) PAGE. Top bar: White. Heading: \"مجلة المعمار\" (or \"من المحاضرة الأولى إلى الآن\").",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792734483,
+  "id": "202610231348013b6e2d9a81624223",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202610231348013b6e2d9a81624223",
+  "usage": {
+    "completion_tokens": 31,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1768,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1799
+  }
+}

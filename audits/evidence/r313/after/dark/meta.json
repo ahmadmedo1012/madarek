@@ -1,0 +1,17 @@
+{
+ "url": "/",
+ "themeAttr": "dark",
+ "bgs": {
+  "body": "rgb(40, 40, 40)",
+  "html": "rgb(40, 40, 40)"
+ },
+ "themeColor": "#282828",
+ "totalHeight": 13675,
+ "inputBorder": "rgb(162, 162, 157)",
+ "frameBorder": "rgb(92, 92, 90)",
+ "sweep": {
+  "sampled": 2252,
+  "radiusNonZero": 8,
+  "shadowNonNone": 1
+ }
+}

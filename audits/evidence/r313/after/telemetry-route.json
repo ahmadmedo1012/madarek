@@ -1,0 +1,41 @@
+{
+ "clickedHref": "/campus",
+ "finalUrl": "http://localhost:4173/campus",
+ "urlChangeAtMs": 65,
+ "sxSeenMs": 65,
+ "sxGoneMs": 800,
+ "sxDurationMs": 735,
+ "loaderReplay": false,
+ "guestReveal": [
+  {
+   "t": 26,
+   "name": "guest-reveal-sweep",
+   "dur": "0.5s"
+  },
+  {
+   "t": 65,
+   "name": "guest-reveal-sweep",
+   "dur": "0.5s"
+  },
+  {
+   "t": 98,
+   "name": "guest-reveal-sweep",
+   "dur": "0.5s"
+  },
+  {
+   "t": 116,
+   "name": "guest-reveal-sweep",
+   "dur": "0.5s"
+  },
+  {
+   "t": 130,
+   "name": "guest-reveal-sweep",
+   "dur": "0.5s"
+  },
+  {
+   "t": 150,
+   "name": "guest-reveal-sweep",
+   "dur": "0.5s"
+  }
+ ]
+}

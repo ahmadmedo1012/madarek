@@ -1,28 +1,41 @@
 /**
- * sheetExit — R308 «مغادرة اللوحة» — the landing-exit sweep.
+ * sheetExit — R308 «مغادرة اللوحة» → R313 (D11) — the guest exit sweep.
  *
  * The reference changes routes through a geometric mask sweep (Barba
- * in sync mode: --trans-percent 0→50→100% against an inverse
- * --mask-percent, an architectural line-width spike at the midpoint,
- * ≈0.8s + 0.8s, never a fade — reference-observations.md §14). Barba
- * itself is rejected for Madarek (it fights the React Router
- * lifecycle); this reproduces the observable sweep as a landing-ONLY
- * exit flourish with hard safety rules:
+ * in sync mode: --trans-percent 0→50% over ≈755ms, then the inverse
+ * --mask-percent opens 50→100% by ≈1.6s total, an architectural
+ * line-width spike at the midpoint, never a fade — reference digest
+ * `routeTransition`, re-measured live in R313). Barba itself is
+ * rejected for Madarek (it fights the React Router lifecycle); this
+ * reproduces the observable COVER phase of the sweep with hard safety
+ * rules:
  *
  *  · Navigation is NEVER delayed — the overlay is appended to
  *    document.body (it survives the route swap) and removes itself.
- *  · It plays only on INTERNAL link clicks leaving the landing, only
- *    for fine pointers without reduced motion (the funnel stays fast
- *    for everyone else — task speed over decoration).
- *  · ~700ms total (350 cover + 350 reveal), one animation, then the
- *    node is gone. No state, no leaks, no listener left behind.
+ *    The arrival phase (GuestReveal) starts when this cover ends,
+ *    reproducing the reference's sequential 0.9s + 0.7s = 1.6s.
+ *  · R313 override (D11): the old ~700ms “funnel-first” shortcut is
+ *    superseded — the owner ordered the reference's 1.6s sequence.
+ *    The funnel stays safe: navigation runs underneath, the overlay
+ *    is pointer-events:none, popstate/RM skip it entirely.
+ *  · Fine pointers without reduced motion only.
  */
 
 import { sheetEase } from './sheetConductor';
 
-const SWEEP_MS = 700;
+/* R313 (D11): cover phase ≈0.9s (reference: --trans-percent reaches
+ * 50% at ~897ms from click) + GuestReveal reveal ≈0.7s = ~1.6s total. */
+const SWEEP_MS = 900;
 
 let installed = false;
+let coverEndsAt = 0;
+
+/** Monotonic timestamp at which the in-flight cover phase ends (0 = none).
+ * GuestReveal reads this to sequence its reveal AFTER the cover — the
+ * reference's two-phase 1.6s sequence. */
+export function sheetExitUntil(): number {
+  return coverEndsAt;
+}
 
 function playSweep(): void {
   if (typeof document === 'undefined') return;
@@ -46,8 +59,10 @@ function playSweep(): void {
   document.body.append(el);
 
   const cleanup = () => {
+    if (coverEndsAt && performance.now() >= coverEndsAt) coverEndsAt = 0;
     el.remove();
   };
+  coverEndsAt = performance.now() + SWEEP_MS;
 
   /* the two-band polygon sweep: cover from the centre out, then
    * continue to the edges — one continuous clip-path animation. */
@@ -83,10 +98,12 @@ function playSweep(): void {
 }
 
 /**
- * Install the landing-exit sweep on a landing root element. Returns
- * the uninstall function. Internal anchors (`#/…`, `mailto:`, external
- * URLs and modified clicks are ignored) leaving the page trigger one
- * sweep while React Router navigates underneath.
+ * Install the guest-exit sweep on a root element (the guest boundary —
+ * R313 D11: ALL public-page navigations, not just the landing). Returns
+ * the uninstall function. Internal link clicks (`/…`, `mailto:`,
+ * external URLs and modified clicks are ignored) trigger one cover
+ * sweep while React Router navigates underneath. Idempotent (module
+ * singleton) — multiple guest mounts share one listener.
  */
 export function installSheetExit(root: HTMLElement): () => void {
   if (installed || typeof document === 'undefined') return () => undefined;
@@ -103,9 +120,15 @@ export function installSheetExit(root: HTMLElement): () => void {
     playSweep();
   };
 
-  root.addEventListener('click', onClick);
+  /* R313-int: CAPTURE phase — React Router's <Link> preventDefaults
+   * during the bubble phase at the React root, which sits BETWEEN the
+   * anchor and document.body; a bubble-phase document listener would
+   * always see defaultPrevented=true and never play. Capture on the
+   * body fires BEFORE any target handler (the R308 landing-root
+   * placement achieved the same by living inside the React tree). */
+  root.addEventListener('click', onClick, { capture: true });
   return () => {
-    root.removeEventListener('click', onClick);
+    root.removeEventListener('click', onClick, { capture: true });
     installed = false;
   };
 }

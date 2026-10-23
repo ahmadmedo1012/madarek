@@ -45,16 +45,18 @@ test.describe('R312 — the guest route reveal (§R D7)', () => {
       { timeout: 8000 },
     );
 
-    /* the clip-path trajectory: sample at 60ms — the bottom inset must
-     * move (the sweep is live), then settle open */
+    /* R313 override (D11): the reveal is SEQUENCED — ~900ms cover
+     * (sheetExit .sx) holds the clip at inset(50% 50% 50% 50%), then
+     * the ~700ms reveal opens it (the reference's 1.6s two-phase
+     * sequence). Sample long enough to span both phases. */
     const seen: string[] = [];
-    for (let i = 0; i < 14; i += 1) {
+    for (let i = 0; i < 24; i += 1) {
       const clip = await page.evaluate(() => {
         const inner = document.querySelector('.guest-reveal-inner');
         return inner ? getComputedStyle(inner).clipPath : 'none';
       });
       seen.push(clip);
-      await page.waitForTimeout(60);
+      await page.waitForTimeout(110);
     }
     /* at least 4 DISTINCT computed states across the window (motion),
      * ending settled open (never stuck clipped) */

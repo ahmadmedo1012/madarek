@@ -1,0 +1,152 @@
+{
+ "url": "http://localhost:4173/",
+ "title": "مدارك · منصّة التعليم الذكي",
+ "totalHeight": 12667,
+ "maxScroll": 11867,
+ "scroller": {
+  "type": "window"
+ },
+ "viewport": {
+  "w": 1280,
+  "h": 800
+ },
+ "rootFontSize": "7.40741px",
+ "htmlLang": "ar",
+ "dir": "rtl",
+ "themeColor": "#F6F6EE",
+ "sections": [
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "fo-hero",
+   "top": 0,
+   "height": 889
+  },
+  {
+   "kind": "child",
+   "tag": "canvas",
+   "id": null,
+   "cls": "sc-canvas",
+   "top": 0,
+   "height": 800
+  },
+  {
+   "kind": "child",
+   "tag": "main",
+   "id": "main",
+   "cls": "",
+   "top": 0,
+   "height": 11644
+  },
+  {
+   "kind": "child",
+   "tag": "div",
+   "id": null,
+   "cls": "sheet-frame",
+   "top": 7,
+   "height": 786
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "statement",
+   "cls": "st-section",
+   "top": 889,
+   "height": 640
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "live",
+   "cls": "pm-section",
+   "top": 1529,
+   "height": 994
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "chapters",
+   "cls": "chapters",
+   "top": 2523,
+   "height": 5813
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "product",
+   "cls": "pr-section",
+   "top": 8336,
+   "height": 741
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "wy-section",
+   "top": 9077,
+   "height": 1024
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "roles",
+   "cls": "rl-section",
+   "top": 10100,
+   "height": 802
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "vision",
+   "cls": "fo-cta",
+   "top": 10902,
+   "height": 742
+  },
+  {
+   "kind": "semantic",
+   "tag": "footer",
+   "id": null,
+   "cls": "fo-footer",
+   "top": 11644,
+   "height": 1024
+  }
+ ],
+ "headerInfo": {
+  "cls": "fo-header",
+  "height": 56,
+  "top": 7,
+  "position": "fixed",
+  "transform": "none",
+  "transition": "background 0.4s cubic-bezier(0.23, 1, 0.32, 1), transform 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
+  "zIndex": "60"
+ },
+ "lenis": {
+  "hasLenisGlobal": false,
+  "lenisInstances": null,
+  "lenisAttr": null,
+  "lenisEls": 1,
+  "gsap": false,
+  "barba": false,
+  "swiper": false
+ },
+ "canvases": [
+  {
+   "cls": "sc-canvas",
+   "w": 1280,
+   "h": 800,
+   "cssW": "1280px",
+   "cssH": "800px",
+   "pos": "fixed",
+   "z": "250",
+   "top": "0px",
+   "left": "0px",
+   "cursor": "none"
+  }
+ ],
+ "bodyBg": "rgb(246, 246, 238)",
+ "htmlBg": "rgb(246, 246, 238)",
+ "scrollBehavior": "auto",
+ "imgCount": 6,
+ "cookieBanner": null
+}

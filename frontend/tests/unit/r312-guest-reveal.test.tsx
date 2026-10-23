@@ -70,10 +70,13 @@ afterEach(() => {
 
 describe('R312 guest reveal — the source contracts', () => {
   it('polish.css: the sweep is viewport-anchored, 3-point, transform-only for the line', () => {
-    /* the sweep: 0% fully clipped → 70% at the fold (100svh) → 100% open */
-    expect(POLISH).toMatch(/@keyframes guest-reveal-sweep \{\s*0%\s*\{ clip-path: inset\(0 0 100% 0\); \}/);
-    expect(POLISH).toMatch(/70%\s*\{ clip-path: inset\(0 0 calc\(100% - 100svh\) 0\); \}/);
-    expect(POLISH).toMatch(/100%\s*\{ clip-path: inset\(0 0 0% 0\); \}/);
+    /* R313 override (D11): 2-point center-out inset open (50%→0%) — the 70% fold checkpoint died with the old top-down sweep */
+    /* R313 override (D11): the reveal is now the reference's 4-edge
+     * center-out inset OPEN (its --mask-percent 50%→0%), ~700ms,
+     * sequenced after the ~900ms cover (sheetExit) via --gr-delay —
+     * the reference's 1.6s two-phase sequence (owner decision). */
+    expect(POLISH).toMatch(/@keyframes guest-reveal-sweep \{\s*0%\s*\{ clip-path: inset\(50% 50% 50% 50%\); \}/);
+    expect(POLISH).toMatch(/100%\s*\{ clip-path: inset\(0 0 0 0\); \}/);
     /* the traveling rule rides the same curve via TRANSFORM (never layout) */
     expect(POLISH).toMatch(/@keyframes guest-reveal-line \{\s*0%\s*\{ transform: translateY\(0\); opacity: 0; \}/);
     expect(POLISH).toMatch(/70%\s*\{ transform: translateY\(100svh\); opacity: 1; \}/);
@@ -82,7 +85,8 @@ describe('R312 guest reveal — the source contracts', () => {
     expect(POLISH).toMatch(/\.guest-reveal::after \{[^}]*block-size: 1px;/s);
     expect(POLISH).toMatch(/\.guest-reveal::after \{[^}]*background: var\(--rule\);/s);
     /* durations ride the motion tokens (the gate's own contract) */
-    expect(POLISH).toMatch(/animation: guest-reveal-sweep var\(--motion-duration-long\) var\(--motion-ease-decelerate\) both;/);
+    expect(POLISH).toMatch(/animation: guest-reveal-sweep var\(--motion-duration-guest-reveal\) var\(--motion-ease-decelerate\) both;/);
+    expect(POLISH).toMatch(/animation-delay: var\(--gr-delay, 0ms\);/);
     /* the RM belt collapses to the standing page */
     const rm = POLISH.slice(POLISH.indexOf('@media (prefers-reduced-motion: reduce)', POLISH.indexOf('guest-reveal-sweep')));
     expect(rm).toMatch(/\.guest-reveal-inner \{\s*clip-path: none;/);

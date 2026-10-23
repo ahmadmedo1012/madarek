@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "C) PAGE. Top bar color: White. Heading: \"مجالات القوائم التأهيلية للشّباب – رحلة تعلم ولحظة، مواقف وقصص.\"",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792734492,
+  "id": "20261023134805ee573cf6fdab494c",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20261023134805ee573cf6fdab494c",
+  "usage": {
+    "completion_tokens": 47,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1768,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1815
+  }
+}

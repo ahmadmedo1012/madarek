@@ -50,13 +50,21 @@ function ensureLockRule(): void {
   const style = document.createElement('style');
   style.id = STYLE_RULE_ID;
   // The lock's entire CSS surface — one rule, one class.
-  style.textContent = `body.${SCROLL_LOCK_BODY_CLASS}{overflow:hidden;}`;
+  /* R313-int: the lock must hold the WINDOW scroller — body-only
+     overflow does not propagate when html owns an overflow value, and
+     Lenis writes window.scrollTo programmatically (immune to both).
+     The class is toggled on html AND body; sheetLenis watches it. */
+  style.textContent = `body.${SCROLL_LOCK_BODY_CLASS}{overflow:hidden;}html.${SCROLL_LOCK_BODY_CLASS}{overflow:hidden;}`;
   document.head?.appendChild(style);
 }
 
 function syncBodyClass(): void {
   if (typeof document === 'undefined') return;
-  document.body.classList.toggle(SCROLL_LOCK_BODY_CLASS, holders.size > 0);
+  const locked = holders.size > 0;
+  document.body.classList.toggle(SCROLL_LOCK_BODY_CLASS, locked);
+  /* R313-int: html carries the class too — sheetLenis observes it to
+     pause the smooth engine (programmatic scrolls bypass overflow). */
+  document.documentElement.classList.toggle(SCROLL_LOCK_BODY_CLASS, locked);
 }
 
 /** Registers `holder` as keeping the body scroll locked. Idempotent per

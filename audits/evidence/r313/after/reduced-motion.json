@@ -1,0 +1,88 @@
+{
+ "loaderPresent": false,
+ "rmMatch": true,
+ "sections": [
+  {
+   "sel": ".fo-hero",
+   "present": true,
+   "textChars": 1603,
+   "textSample": "[01]منصّة تعليم ذكية · عربية أولًا · مست",
+   "headingOpacity": "1",
+   "headingVisible": true,
+   "childCount": 502
+  },
+  {
+   "sel": "#statement",
+   "present": true,
+   "textChars": 447,
+   "textSample": "[02] البيانمنصّةواحدةتخدمالرحلةكلّهاللطا",
+   "headingOpacity": "1",
+   "headingVisible": true,
+   "childCount": 49
+  },
+  {
+   "sel": "#live",
+   "present": true,
+   "textChars": 766,
+   "textSample": "[03] التحدياتأربعة أوجاع من التعليم العا",
+   "headingOpacity": "1",
+   "headingVisible": true,
+   "childCount": 80
+  },
+  {
+   "sel": "#chapters",
+   "present": true,
+   "textChars": 1851,
+   "textSample": "[04] الفصولالرحلة — أربعة فصول تتحرّك أم",
+   "headingOpacity": "1",
+   "headingVisible": true,
+   "childCount": 784
+  },
+  {
+   "sel": "#product",
+   "present": true,
+   "textChars": 479,
+   "textSample": "[05] المنصّة فعليًالا وعود — هذه الواجهة",
+   "headingOpacity": "1",
+   "headingVisible": true,
+   "childCount": 31
+  },
+  {
+   "sel": ".wy-section",
+   "present": true,
+   "textChars": 982,
+   "textSample": "[06] لماذا مداركالرحلة في أربع مراحلشاهد",
+   "headingOpacity": "1",
+   "headingVisible": true,
+   "childCount": 74
+  },
+  {
+   "sel": "#roles",
+   "present": true,
+   "textChars": 838,
+   "textSample": "[07] الأدوارمنصّة واحدة، خمسة أدوار وثلا",
+   "headingOpacity": "1",
+   "headingVisible": true,
+   "childCount": 48
+  },
+  {
+   "sel": ".fo-cta",
+   "present": true,
+   "textChars": 607,
+   "textSample": "[R313] — MADAREK · 2026 · INDEPENDENT[0,",
+   "headingOpacity": "1",
+   "headingVisible": true,
+   "childCount": 55
+  },
+  {
+   "sel": ".fo-footer",
+   "present": true,
+   "textChars": 677,
+   "textSample": "المحاضرةنقطة الفحصالاختبارالمكتبةالإتقان",
+   "headingOpacity": null,
+   "headingVisible": null,
+   "childCount": 94
+  }
+ ],
+ "liveAnimationCount": 6
+}

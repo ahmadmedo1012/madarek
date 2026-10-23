@@ -1,0 +1,92 @@
+{
+ "info": {
+  "canvasPresent": true,
+  "canvasW": 1440,
+  "canvasH": 900,
+  "canvasPos": "fixed",
+  "canvasZ": "250",
+  "ringPresent": true,
+  "live": "live",
+  "bpStageRect": {
+   "x": 270.015625,
+   "y": 385.4375,
+   "width": 899.984375,
+   "height": 418.875,
+   "top": 385.4375,
+   "right": 1170,
+   "bottom": 804.3125,
+   "left": 270.015625
+  },
+  "bpStageCursorNone": "none"
+ },
+ "rest": {
+  "opaque": 169,
+  "orange": 81,
+  "bbox": {
+   "w": 13,
+   "h": 13
+  },
+  "topColors": [
+   [
+    "246,246,238",
+    88
+   ],
+   [
+    "250,54,0",
+    81
+   ]
+  ],
+  "over": "div.st-copy"
+ },
+ "hover": {
+  "dataOn": "on",
+  "dataPressed": "off",
+  "w": 24,
+  "h": 24,
+  "border": "2px rgb(250, 54, 0)",
+  "opacity": "1",
+  "scale": "1"
+ },
+ "hoverSquare": {
+  "opaque": 169,
+  "orange": 81,
+  "bbox": {
+   "w": 13,
+   "h": 13
+  },
+  "topColors": [
+   [
+    "246,246,238",
+    88
+   ],
+   [
+    "250,54,0",
+    81
+   ]
+  ],
+  "over": "a.btn primary sm"
+ },
+ "press": {
+  "dataOn": "on",
+  "dataPressed": "on",
+  "w": 13.43994140625,
+  "h": 13.440000534057617,
+  "opacity": "0.68",
+  "scale": "0.56"
+ },
+ "heroZone": {
+  "opaque": 0,
+  "orange": 0,
+  "bbox": null,
+  "topColors": [],
+  "over": "rect.[object SVGAnimatedString]"
+ },
+ "heroPt": {
+  "x": 720,
+  "y": 595
+ },
+ "ref": {
+  "square": "10x10px bbox (~9x9 core) #FA3600",
+  "reticle": "2px #FC724D ~23.3px opacity .68; press contract scale .56"
+ }
+}

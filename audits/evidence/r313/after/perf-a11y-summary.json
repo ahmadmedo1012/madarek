@@ -1,0 +1,148 @@
+{
+ "perf": {
+  "fcp": 136,
+  "lcp": 544,
+  "lcpElement": "P.reveal-up fo-eyebrow in-view",
+  "cls": 0.007,
+  "longTasks": 1,
+  "tbtMs": 27,
+  "domContentLoaded": 143,
+  "loadEvent": 143,
+  "transferBytes": 4722
+ },
+ "axeLanding": {
+  "url": "/",
+  "inapplicable": 32,
+  "incomplete": 2,
+  "passes": 29,
+  "violationsAll": 0,
+  "violationsSeriousCritical": 0,
+  "seriousList": [],
+  "otherViolations": []
+ },
+ "axeColleges": {
+  "url": "/colleges",
+  "inapplicable": 41,
+  "incomplete": 1,
+  "passes": 19,
+  "violationsAll": 0,
+  "violationsSeriousCritical": 0,
+  "seriousList": [],
+  "otherViolations": []
+ },
+ "axeAuth": {
+  "url": "/auth",
+  "inapplicable": 41,
+  "incomplete": 0,
+  "passes": 20,
+  "violationsAll": 0,
+  "violationsSeriousCritical": 0,
+  "seriousList": [],
+  "otherViolations": []
+ },
+ "reducedMotion": {
+  "loaderPresent": false,
+  "rmMatch": true,
+  "sections": [
+   {
+    "sel": ".fo-hero",
+    "present": true,
+    "textChars": 1603,
+    "textSample": "[01]منصّة تعليم ذكية · عربية أولًا · مست",
+    "headingOpacity": "1",
+    "headingVisible": true,
+    "childCount": 502
+   },
+   {
+    "sel": "#statement",
+    "present": true,
+    "textChars": 447,
+    "textSample": "[02] البيانمنصّةواحدةتخدمالرحلةكلّهاللطا",
+    "headingOpacity": "1",
+    "headingVisible": true,
+    "childCount": 49
+   },
+   {
+    "sel": "#live",
+    "present": true,
+    "textChars": 766,
+    "textSample": "[03] التحدياتأربعة أوجاع من التعليم العا",
+    "headingOpacity": "1",
+    "headingVisible": true,
+    "childCount": 80
+   },
+   {
+    "sel": "#chapters",
+    "present": true,
+    "textChars": 1851,
+    "textSample": "[04] الفصولالرحلة — أربعة فصول تتحرّك أم",
+    "headingOpacity": "1",
+    "headingVisible": true,
+    "childCount": 784
+   },
+   {
+    "sel": "#product",
+    "present": true,
+    "textChars": 479,
+    "textSample": "[05] المنصّة فعليًالا وعود — هذه الواجهة",
+    "headingOpacity": "1",
+    "headingVisible": true,
+    "childCount": 31
+   },
+   {
+    "sel": ".wy-section",
+    "present": true,
+    "textChars": 982,
+    "textSample": "[06] لماذا مداركالرحلة في أربع مراحلشاهد",
+    "headingOpacity": "1",
+    "headingVisible": true,
+    "childCount": 74
+   },
+   {
+    "sel": "#roles",
+    "present": true,
+    "textChars": 838,
+    "textSample": "[07] الأدوارمنصّة واحدة، خمسة أدوار وثلا",
+    "headingOpacity": "1",
+    "headingVisible": true,
+    "childCount": 48
+   },
+   {
+    "sel": ".fo-cta",
+    "present": true,
+    "textChars": 607,
+    "textSample": "[R313] — MADAREK · 2026 · INDEPENDENT[0,",
+    "headingOpacity": "1",
+    "headingVisible": true,
+    "childCount": 55
+   },
+   {
+    "sel": ".fo-footer",
+    "present": true,
+    "textChars": 677,
+    "textSample": "المحاضرةنقطة الفحصالاختبارالمكتبةالإتقان",
+    "headingOpacity": null,
+    "headingVisible": null,
+    "childCount": 94
+   }
+  ],
+  "liveAnimationCount": 6
+ },
+ "dark": {
+  "url": "/",
+  "themeAttr": "dark",
+  "bgs": {
+   "body": "rgb(40, 40, 40)",
+   "html": "rgb(40, 40, 40)"
+  },
+  "themeColor": "#282828",
+  "totalHeight": 13675,
+  "inputBorder": "rgb(162, 162, 157)",
+  "frameBorder": "rgb(92, 92, 90)",
+  "sweep": {
+   "sampled": 2252,
+   "radiusNonZero": 8,
+   "shadowNonNone": 1
+  }
+ }
+}

@@ -933,10 +933,12 @@
      (never layout). ~500ms by design (the R308 funnel lesson: faster
      than the reference); clip-path is paint-only — CLS 0; RM
      collapses to the standing page. */
+  /* R313 (D11): the reference's 4-edge inset OPEN (its --mask-percent
+     50%→0%) — a center-out reveal over ~0.7s, sequenced after the
+     ~0.9s cover phase (sheetExit) via --gr-delay = ~1.6s total. */
   @keyframes guest-reveal-sweep {
-    0%   { clip-path: inset(0 0 100% 0); }
-    70%  { clip-path: inset(0 0 calc(100% - 100svh) 0); }
-    100% { clip-path: inset(0 0 0% 0); }
+    0%   { clip-path: inset(50% 50% 50% 50%); }
+    100% { clip-path: inset(0 0 0 0); }
   }
   @keyframes guest-reveal-line {
     0%   { transform: translateY(0); opacity: 0; }
@@ -950,7 +952,9 @@
   }
 
   .guest-reveal-inner {
-    animation: guest-reveal-sweep var(--motion-duration-long) var(--motion-ease-decelerate) both;
+    /* R313 (D11): reveal phase ~700ms, delayed until the cover ends */
+    animation: guest-reveal-sweep var(--motion-duration-guest-reveal) var(--motion-ease-decelerate) both;
+    animation-delay: var(--gr-delay, 0ms);
   }
 
   /* the traveling hairline at the reveal edge — viewport-fixed (the
@@ -963,7 +967,8 @@
     inset-inline: 0;
     block-size: 1px;
     background: var(--rule);
-    animation: guest-reveal-line var(--motion-duration-long) var(--motion-ease-decelerate) both;
+    animation: guest-reveal-line var(--motion-duration-guest-reveal) var(--motion-ease-decelerate) both;
+    animation-delay: var(--gr-delay, 0ms);
     pointer-events: none;
     z-index: 1;
   }
