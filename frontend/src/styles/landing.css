@@ -2812,12 +2812,12 @@ html[data-theme='dark'] .fo-wordmark-ar {
     min-block-size: 0;
   }
 
-  .st-section { padding-block: var(--sp-6) var(--sp-5); }
-  .pm-section { padding-block: var(--sp-6) var(--sp-5); }
+  .st-section { padding-block: var(--sp-8) var(--sp-7); }
+  .pm-section { padding-block: var(--sp-8) var(--sp-7); }
   .pr-section { padding-block: var(--sp-6) var(--sp-5); }
   .wy-section { padding-block: var(--sp-6) var(--sp-5); }
   .rl-section { padding-block: var(--sp-6) var(--sp-5); }
-  .fo-cta { padding-block: var(--sp-6) var(--sp-5); }
+  .fo-cta { padding-block: var(--sp-8) var(--sp-7); }
   .fo-footer-inner { padding-block: var(--sp-5) var(--sp-4); }
 
   /* the sheet titles drop a rung (the reference's mobile headings are
@@ -2961,7 +2961,11 @@ html[data-theme='dark'] .fo-wordmark-ar {
   }
 
   .fo-wordmark-ar {
-    font-size: clamp(64px, 24vw, 96px);
+    font-size: clamp(72px, 26vw, 104px);
+  }
+
+  .fo-wordmark {
+    padding-block: var(--sp-6) var(--sp-4);
   }
 
   /* the CTA slab: the sketch + the tertiary meta rows fold on mobile
@@ -3017,6 +3021,13 @@ html[data-theme='dark'] .fo-wordmark-ar {
   .rl-section {
     padding-block: var(--sp-10);
     min-block-size: 0;
+  }
+
+  /* R314 (V13): the statement band breathes at the reference's own
+     share (837/11441 @390) — the extra block padding seats the ticker
+     + declaration as a full mobile band, not a squeezed row */
+  .st-section {
+    padding-block: var(--sp-12) var(--sp-11);
   }
 
   .pr-section,
