@@ -382,7 +382,7 @@
     content: '';
     inline-size: 4px;
     block-size: 4px;
-    border-radius: 50%;
+    border-radius: var(--r-full);
     background: currentColor;
     flex-shrink: 0;
   }
@@ -1111,7 +1111,7 @@
   .chat-typing-dot {
     inline-size: 6px;
     block-size: 6px;
-    border-radius: 50%;
+    border-radius: var(--r-full);
     background: var(--text-subtle);
     animation: ai-typing-bob var(--motion-duration-stat) var(--motion-ease-standard) infinite;
   }
@@ -1661,7 +1661,7 @@
     inline-size: 10px;
     block-size: 10px;
     flex-shrink: 0;
-    border-radius: 50%;
+    border-radius: var(--r-full);
     background: var(--danger);
     /* THE page's single pulse — LIVE rows only, never scattered */
     animation: webinar-live-pulse var(--motion-duration-skeleton) var(--motion-ease-standard) infinite;
@@ -1959,13 +1959,14 @@
     inline-size: 8px;
     block-size: 8px;
     flex-shrink: 0;
-    border-radius: 50%;
+    border-radius: var(--r-full);
     background: var(--accent);
     animation: scan-dot-ping var(--motion-duration-skeleton) var(--motion-ease-decelerate) infinite;
   }
   @keyframes scan-dot-ping {
-    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
-    to   { box-shadow: 0 0 0 9px transparent; }
+    /* R313 (WP-E): opacity breath — glow rings are retired system-wide. */
+    from { opacity: 1; }
+    to   { opacity: 0.35; }
   }
   /* indeterminate sweep inside a scanning cell — THE authored moment
      of the research page. Direction flips with --motion-direction so
@@ -2055,16 +2056,12 @@
     background: var(--surface-2);
     border: 1px solid var(--rule);
     border-radius: var(--r-md);
-    box-shadow: var(--shadow-card);
-    transition:
-      border-color var(--t-base) var(--ease),
-      box-shadow var(--t-base) var(--ease),
-      transform var(--t-base) var(--ease);
+    /* R313 (WP-E): flat paper tile — no elevation, no lift; hover is a
+       hairline step only. */
+    transition: border-color var(--t-base) var(--ease);
   }
   .process-step:hover {
     border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-premium-h);
-    transform: translateY(-2px);
   }
   .process-step-head {
     display: flex;
@@ -2078,7 +2075,9 @@
     inline-size: 28px;
     block-size: 28px;
     flex-shrink: 0;
-    border-radius: 50%;
+    /* R313 (WP-E): number tiles are SQUARE (the reference's
+       map-number grammar) — mono index, hairline, 0 radius. */
+    border-radius: var(--r-sm);
     background: var(--accent-soft);
     color: var(--accent-strong);
     font-family: var(--font-mono);
@@ -2187,8 +2186,8 @@
     background: var(--surface-1);
     border: 1px solid var(--rule);
     border-radius: var(--r-lg);
-    box-shadow: var(--shadow-card);
-    transition: border-color var(--motion-duration-short) var(--motion-ease-standard), box-shadow var(--t-base) var(--ease);
+    /* R313 (WP-E): flat paper tile — hairline hover only, no shadow. */
+    transition: border-color var(--motion-duration-short) var(--motion-ease-standard);
     animation: research-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
     animation-delay: calc(
       var(--motion-stagger-step) * min(var(--rs-i, 0), var(--motion-stagger-cap))
@@ -2196,7 +2195,6 @@
   }
   .research-card:hover {
     border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-premium-h);
   }
   .research-card-head {
     display: flex;
@@ -2274,13 +2272,14 @@
     inline-size: 7px;
     block-size: 7px;
     flex-shrink: 0;
-    border-radius: 50%;
+    border-radius: var(--r-full);
     background: var(--danger);
     animation: live-ping var(--motion-duration-skeleton) var(--motion-ease-decelerate) infinite;
   }
   @keyframes live-ping {
-    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 50%, transparent); }
-    to   { box-shadow: 0 0 0 8px transparent; }
+    /* R313 (WP-E): opacity breath — glow rings are retired system-wide. */
+    from { opacity: 1; }
+    to   { opacity: 0.4; }
   }
   /* tinted course well — replaces the old 3px inline-start stripe
      (ruling #4): hierarchy rides on the leading icon tint, not a bar */
@@ -2291,7 +2290,9 @@
     inline-size: 40px;
     block-size: 40px;
     flex-shrink: 0;
-    border-radius: var(--r-full);
+    /* R313 (WP-E): square icon well — matches the shared metric-icon
+       grammar (r-* ladder at 0). */
+    border-radius: var(--r-md);
     background: color-mix(in srgb, var(--row-accent, var(--accent)) 14%, var(--surface));
     border: 1px solid color-mix(in srgb, var(--row-accent, var(--accent)) 25%, var(--border));
   }
@@ -2380,7 +2381,7 @@
     border-block-end: 1px solid color-mix(in srgb, var(--text-on-dark) 10%, transparent);
   }
   .terminal-dots { display: flex; gap: var(--sp-1-5); } /* r153h: 6px → --sp-1-5 */
-  .terminal-dot { inline-size: 10px; block-size: 10px; border-radius: 50%; }
+  .terminal-dot { inline-size: 10px; block-size: 10px; border-radius: var(--r-full); }
   .terminal-dot.r { background: var(--danger); }
   .terminal-dot.y { background: var(--warning); }
   .terminal-dot.g { background: var(--success); }
@@ -2461,10 +2462,7 @@
     inset-block-start: 38px;
     inset-block-end: -16px;
     inline-size: 2px;
-    border-radius: 1px; /* radius-gate: allow — hairline bar micro-radius */
-    /* 22-c (A4 P3-6): plain --surface-3 measured ≈1.1:1 against the
-       card ground — the spine was invisible. Border-strong mixed toward
-       the old value keeps it quiet but visible in both themes. */
+    /* R313 (WP-E): square spine end — radius 0 canon. */
     background: color-mix(in srgb, var(--border-strong) 60%, var(--surface-3));
   }
   .step.done:not(:last-child)::before {
@@ -2477,7 +2475,9 @@
     inline-size: 32px;
     block-size: 32px;
     flex-shrink: 0;
-    border-radius: 50%;
+    /* R313 (WP-E): number tiles are SQUARE — the mono index register
+       (the reference's map-number grammar). */
+    border-radius: var(--r-sm);
     border: 1px solid var(--border-strong);
     background: var(--surface-2);
     color: var(--text-muted);
@@ -3495,7 +3495,7 @@
   .chat-avatar {
     inline-size: 28px;
     block-size: 28px;
-    border-radius: 50%;
+    border-radius: var(--r-full);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -3680,9 +3680,11 @@
   .matrix-legend-dot {
     inline-size: 10px;
     block-size: 10px;
-    border-radius: 50%;
+    border-radius: var(--r-full);
     flex-shrink: 0;
   }
+  /* (R313 WP-E: the legend dot stays a circle — dots/avatars are the
+     reference's only rounded primitives.) */
 
   /* r299 (final C): the level filter joins the FilterBar + .pill
      grammar — the CoursesPage toolbar contract (the training.css
@@ -3721,10 +3723,10 @@
     transition: var(--t-clean);
   }
   .matrix-course:hover {
+    /* R313 (WP-E): data maps do not bounce — hairline step only (the
+     r305-student-schedule.css override already pinned this; the base
+     follows). */
     border-color: var(--border-strong);
-    transform: translateY(-1px);
-    /* Off-token by design: accent-tinted hover glow, not elevation. */
-    box-shadow: 0 4px 16px -4px color-mix(in srgb, var(--accent) 12%, color-mix(in srgb, var(--black) 5%, transparent));
   }
   .matrix-course-head {
     display: flex;
@@ -3817,10 +3819,9 @@
   .matrix-cell.lvl-poor     { background: color-mix(in srgb, var(--danger) 12%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 24%, transparent); color: var(--c-rose-deep); }
   .matrix-cell.lvl-untouched { color: var(--text-subtle); border-style: dashed; }
   .matrix-cell:hover {
-    transform: translateY(-1px);
-    /* 012 elevation-language: tile hover → --elev-2 (was 0 2px 6px -2px .08;
-     within the ≤2px blur / ±.05 alpha equivalence band). */
-    box-shadow: var(--elev-2);
+    /* R313 (WP-E): flat tile — the hover reads through the level wash
+     itself; no lift, no elevation. */
+    border-color: var(--border-strong);
   }
 
   /* ═══════════════════════════════════════════════════════════════

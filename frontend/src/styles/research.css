@@ -221,9 +221,11 @@
   flex-shrink: 0;
   width: var(--sp-6);
   height: var(--sp-6);
-  border-radius: var(--r-full);
+  /* R313 (WP-E): square mono index tile (map-number grammar). */
+  border-radius: var(--r-sm);
   background: var(--accent-soft);
   color: var(--accent-ink);
+  font-family: var(--font-mono);
   font-size: var(--fs-sm);
   font-weight: var(--fw-bold);
   font-variant-numeric: tabular-nums;
@@ -315,12 +317,13 @@
   color: var(--text-muted);
 }
 /* The honesty tag — a small chip so «محاكاة» reads as a label, not
-   prose; same grammar as the badge family (soft ground + ink tier). */
+   prose; same grammar as the badge family (soft ground + ink tier).
+   R313 (WP-E · D16): square chip — hairline frame, 0 radius. */
 .rs-scan-sim-tag {
   display: inline-flex;
   align-items: center;
   padding: 0 var(--sp-1-5);
-  border-radius: var(--r-full);
+  border-radius: var(--r-sm);
   background: var(--c-yellow-bg);
   color: var(--c-yellow-ink);
   font-size: var(--fs-sm);
@@ -397,20 +400,19 @@
   width: 100%;
   height: var(--sp-10);
   padding-inline: var(--sp-10) var(--sp-9);
-  border: 1px solid var(--border);
-  border-radius: var(--r-full);
-  background: var(--surface);
+  /* R313 (WP-E · D16): the Heron input recipe — transparent ground,
+     1px #B3B3AF hairline (--border-strong), square corners; focus
+     rides the shared recipe (#ED4C1F border + the universal ring). */
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  background: transparent;
   color: var(--text);
   font-family: inherit;
   font-size: max(var(--fs-body), 16px);
 }
 .rs-search input::placeholder { color: var(--text-faint); }
 @media (hover: hover) and (pointer: fine) {
-  .rs-search input:hover { border-color: var(--border-strong); }
-}
-.rs-search input:focus-visible {
-  outline: var(--sp-0-5) solid var(--state-focus-ring-color);
-  outline-offset: var(--sp-0-5);
+  .rs-search input:hover { border-color: var(--accent-border); }
 }
 .rs-search .rs-search-clear {
   position: absolute;
@@ -421,7 +423,8 @@
   width: var(--sp-8);
   height: var(--sp-8);
   border: 0;
-  border-radius: var(--r-full);
+  /* R313 (WP-E): square control. */
+  border-radius: var(--r-sm);
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
@@ -519,14 +522,15 @@
 }
 
 /* Active-filter summary chip — the collapsed filter state names itself
-   (the mobile Sheet trigger shows the same text, so the two agree). */
+   (the mobile Sheet trigger shows the same text, so the two agree).
+   R313 (WP-E · D16): square chip — hairline frame, 0 radius. */
 .rs-filter-chip {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1-5);
   padding: var(--sp-1) var(--sp-2-5);
   border: 1px solid var(--border);
-  border-radius: var(--r-full);
+  border-radius: var(--r-sm);
   background: var(--surface-2);
   color: var(--text-secondary);
   font-size: var(--fs-sm);
@@ -545,7 +549,7 @@
   background: var(--surface);
   border: 1px solid var(--border-faint);
   border-radius: var(--r-lg);
-  box-shadow: var(--elev-1);
+  /* R313 (WP-E): flat paper panel — hairline carries the surface. */
 }
 .rs-loans-head {
   display: flex;
@@ -638,7 +642,7 @@
   background: var(--surface);
   border: 1px solid var(--border-faint);
   border-radius: var(--r-lg);
-  box-shadow: var(--elev-1);
+  /* R313 (WP-E): flat paper panel — no elevation. */
 }
 .rs-upload-cta-icon {
   display: inline-flex;
@@ -647,7 +651,8 @@
   flex-shrink: 0;
   width: var(--sp-9);
   height: var(--sp-9);
-  border-radius: var(--r-full);
+  /* R313 (WP-E): square icon well (the r-* ladder at 0). */
+  border-radius: var(--r-md);
   background: var(--accent-soft);
   color: var(--accent-ink);
 }
@@ -738,8 +743,8 @@
   background: var(--surface);
   border: 1px solid var(--border-faint);
   border-radius: var(--r-lg);
-  box-shadow: var(--elev-1);
-  /* Room for the scrollbar so content never rides the rounded edge. */
+  /* R313 (WP-E): flat paper workspace — the hairline is the surface. */
+  /* Room for the scrollbar so content never rides the edge. */
   scrollbar-gutter: stable;
 }
 .rs-review-work-head {
@@ -891,14 +896,15 @@
   gap: var(--sp-1-5);
   padding: var(--sp-3) var(--sp-4);
   border: 0;
-  border-radius: var(--r-full);
+  /* R313 (WP-E): square floating control — the accent slab reads on
+     its own (no elevation). */
+  border-radius: var(--r-sm);
   background: var(--accent);
   color: var(--accent-fg);
   font-family: inherit;
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   cursor: pointer;
-  box-shadow: var(--elev-3);
   min-height: 44px;
 }
 .doc-notes-fab:active { transform: scale(var(--press-scale)); }
