@@ -1,0 +1,96 @@
+{
+ "name": "heron-landing",
+ "url": "https://heronaiapp.com/",
+ "deep": "1440x900",
+ "primary": {
+  "url": "https://heronaiapp.com/",
+  "totalHeight": 12355,
+  "scroller": {
+   "type": "element",
+   "tag": "DIV",
+   "cls": "main-inner lenis"
+  },
+  "sections": 9,
+  "surfaceSweepOk": true
+ },
+ "viewports": [
+  {
+   "viewport": "1440x900",
+   "totalHeight": 12355,
+   "rootFontSize": "8.33333px",
+   "scroller": {
+    "type": "element",
+    "tag": "DIV",
+    "cls": "main-inner lenis"
+   },
+   "sections": 9
+  },
+  {
+   "viewport": "1440x700",
+   "totalHeight": 10555,
+   "rootFontSize": "8.33333px",
+   "scroller": {
+    "type": "element",
+    "tag": "DIV",
+    "cls": "main-inner lenis"
+   },
+   "sections": 9
+  },
+  {
+   "viewport": "1280x800",
+   "totalHeight": 10983,
+   "rootFontSize": "7.40741px",
+   "scroller": {
+    "type": "element",
+    "tag": "DIV",
+    "cls": "main-inner lenis"
+   },
+   "sections": 9
+  },
+  {
+   "viewport": "1024x768",
+   "totalHeight": 9938,
+   "rootFontSize": "5.92593px",
+   "scroller": {
+    "type": "element",
+    "tag": "DIV",
+    "cls": "main-inner lenis"
+   },
+   "sections": 9
+  },
+  {
+   "viewport": "768x1024",
+   "totalHeight": 12577,
+   "rootFontSize": "9.20863px",
+   "scroller": {
+    "type": "element",
+    "tag": "DIV",
+    "cls": "main-inner lenis"
+   },
+   "sections": 9
+  },
+  {
+   "viewport": "390x844",
+   "totalHeight": 11441,
+   "rootFontSize": "9.92366px",
+   "scroller": {
+    "type": "element",
+    "tag": "DIV",
+    "cls": "main-inner lenis"
+   },
+   "sections": 9
+  },
+  {
+   "viewport": "360x800",
+   "totalHeight": 10684,
+   "rootFontSize": "9.16031px",
+   "scroller": {
+    "type": "element",
+    "tag": "DIV",
+    "cls": "main-inner lenis"
+   },
+   "sections": 9
+  }
+ ],
+ "posts": []
+}

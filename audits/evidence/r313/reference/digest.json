@@ -1,0 +1,317 @@
+{
+  "site": "heron",
+  "capturedAt": "2026-10-23T00:40:00.000Z",
+  "paper": {
+    "bodyBg": "#F4F4EE (live PNG-sampled @1440x900; computed body bg rgba(0,0,0,0) — paper is painted by bg layers, not body)",
+    "htmlBg": "transparent (html uses background-color: var(--cl-bg); computed resolves rgba(0,0,0,0))",
+    "corners": "TL #F4F4EE, TR #F5F5EF, BL #F5F5EF, BR #F4F4EE (sampled at 3,3/1436,3/3,896/1436,896 of telemetry/paper-1440.png; r308 read #F6F6EE/#F8F8F1 — same warm vintage paper, ±2/255 per channel)"
+  },
+  "palette": {
+    "accent": "#FA3600 (--content--brand; loader % text, cursor square, fills, marquee index, footer-link hover)",
+    "secondary": "#414140 (--content--secondary)",
+    "reticle": "#FC724D (cursor interactive-state border, 2px; r308/r310) — DOM fallback dot #DD6013",
+    "ink": "#282828 (--content--primary; headings, dark fills, cookie 'Reject')",
+    "muted": "rgba(40,40,40,0.72) (#282828b8, --content--terriary; nav items, body txt, mono coordinates)",
+    "hairline": "#B3B3AF (--content--border; frame, input borders, loader bar items, disabled #B4B4B0 cousin)",
+    "hairlineStrong": "#282828 (1px cl-black lines: cookie banner border, map markers)",
+    "guides": "#E0E0DA (hero instrument guide lines, 1px)"
+  },
+  "pageHeight": {
+    "1440x900": 12355,
+    "1440x700": 10555,
+    "1280x800": 10983,
+    "1024x768": 9938,
+    "768x1024": 12577,
+    "390x844": 11441,
+    "360x800": 10684
+  },
+  "rootFontSize": {
+    "1440": "8.33333px (html font-size: 0.578704vw — same at 900 and 700 height)",
+    "1280": "7.40741px",
+    "1024": "5.92593px (= 0.578704vw of 1024 — the fluid formula dips before the mobile clamps take over)",
+    "768": "9.20863px (mobile clamp raises it)",
+    "390": "9.92366px",
+    "360": "9.16031px"
+  },
+  "scroller": {
+    "type": "element (wrapper)",
+    "cls": "DIV.main-inner.lenis",
+    "overflow": "hidden on wrapper; documentElement never scrolls (window scrollY stays 0); programmatic wrapper scrollTop drives everything"
+  },
+  "sections": [
+    { "n": 1, "cls": "home-hero", "height": 887, "pct": 7.2 },
+    { "n": 2, "cls": "home-intro", "height": 723, "pct": 5.9 },
+    { "n": 3, "cls": "home-problem", "height": 743, "pct": 6.0 },
+    { "n": 4, "cls": "home-map", "height": 6300, "pct": 51.0 },
+    { "n": 5, "cls": "home-platform", "height": 710, "pct": 5.7 },
+    { "n": 6, "cls": "home-why", "height": 698, "pct": 5.6 },
+    { "n": 7, "cls": "home-usecase", "height": 887, "pct": 7.2 },
+    { "n": 8, "cls": "cta", "height": 698, "pct": 5.6 },
+    { "n": 9, "cls": "footer", "height": 711, "pct": 5.8 }
+  ],
+  "header": {
+    "height": 56,
+    "insetTop": 7,
+    "position": "fixed",
+    "hideShow": true,
+    "classes": {
+      "top": "header",
+      "scrolled": "header on-scroll on-hide"
+    },
+    "navItems": 4,
+    "dropdowns": true,
+    "ctaLabel": "contact us",
+    "mobileBreakpoint": 992
+  },
+  "typography": {
+    "h1": { "px": 46.67, "family": "BT Grotesk (heading h1 tb-h3 mb-h2)", "weight": 700, "lh": 46.67, "ls": "-0.93px", "transform": "uppercase", "color": "#282828" },
+    "h2": { "px": 40, "family": "BT Grotesk (heading h2)", "weight": 600, "lh": 40, "ls": "-0.8px", "transform": "uppercase", "color": "#282828" },
+    "h3": { "px": 33.33, "family": "BT Grotesk (heading h3 tb-h6 mb-h3 — intro title)", "weight": 600, "lh": 33.33, "ls": "-0.67px", "transform": "uppercase", "color": "#B4B4B0 (disabled gray)" },
+    "body": { "px": 13.33, "family": "BT Grotesk (txt-16 / p)", "weight": 500, "lh": 17.33, "ls": "-0.27px", "transform": "none", "color": "rgba(40,40,40,0.72) (#282828 for strong)" },
+    "microMono": { "px": 8.33, "family": "Geistmono (txt-font-mono txt-10)", "ls": "normal", "weight": 500, "transform": "uppercase", "variants": "txt-12 10px #FA3600 (loader %), txt-14 11.67px (button labels, cookie Accept), lh 10.83/13/16.33" }
+  },
+  "buttons": [
+    {
+      "name": "header-cta",
+      "sel": ".header-cta-new (a, /contact-us, 167x56.3)",
+      "default": { "color": "#FFFFFF", "bg": "transparent", "radius": "0px", "shadow": "none", "pad": "0 0 0 0", "border": "0 none", "font": "BT Grotesk 500 13.33px / ls -0.267px (labels are Geistmono txt-14 11.67px)", "transition": "all (JS/GSAP driven)" },
+      "hover": { "color": "#FFFFFF", "bg": "#FA3600 (via .btn-fill.is-f — .btn-fill-bg rect slides translateY -30px → 0)", "radius": "0px", "shadow": "none", "pad": "0", "extra": "dual-label roll: label-top exits -16.33px, label-bot enters +16.33px→0; arrow icon slides +16.66px; all inner text white" },
+      "active": { "color": "#FFFFFF", "bg": "#FA3600 (.btn-fill bg solid, fill held)", "radius": "0px", "shadow": "none", "pad": "0", "extra": "rolled label state held" },
+      "focus": { "color": "#FFFFFF", "bg": "#FA3600 fill (same as hover)", "radius": "0px", "shadow": "none", "pad": "0", "extra": ":focus-visible drives the identical fill+roll (no outline ring)" },
+      "hoverSwap": "dual stacked labels (label-top/label-bot) roll vertically ±16.33px + orange fill wipe (.btn-fill-bg slide); arrow svg swaps by horizontal slide ±16.66px"
+    },
+    {
+      "name": "header-logo",
+      "sel": ".header-logo-item.bg-global (a, 32x36 + wordmark 102x15)",
+      "default": { "color": "UA default #0000EE (unstyled)", "bg": "url(bg.svg) image", "radius": "0px", "shadow": "none", "pad": "0", "border": "0 none", "font": "n/a (svg mark)", "transition": "all (wordmark item: transform 0.4s)" },
+      "hover": { "color": "n/a", "bg": "same", "radius": "0px", "shadow": "none", "extra": "mark svg width 31→32px (subtle 1px grow); wordmark translate" },
+      "active": { "color": "#FF0000 (browser default a:active — NOT designed)", "bg": "same", "radius": "0px", "shadow": "none", "extra": "no designed active state" },
+      "focus": { "color": "n/a", "bg": "same", "radius": "0px", "shadow": "none", "extra": "same 1px svg grow as hover" },
+      "hoverSwap": "none beyond the 1px svg size shift"
+    },
+    {
+      "name": "nav-product-dropdown",
+      "sel": "button.header-menu-item.has-submenu (137x56.3)",
+      "default": { "color": "rgba(40,40,40,0.72)", "bg": "transparent", "radius": "0px", "shadow": "none", "pad": "0", "border": "0 none", "font": "BT Grotesk 500 13.33px ls -0.267px (mono txt-14 labels)", "transition": "color 0.4s" },
+      "hover": { "color": "#FFFFFF", "bg": "#282828 (.btn-fill-bg dark rect slides in)", "radius": "0px", "shadow": "none", "extra": "label roll ±16.33px; chevron pair rolls: top icon (15,-15)→(0,0), bottom none→(15,15)" },
+      "active": { "color": "rgba(40,40,40,0.72)", "bg": "#282828 fill held", "radius": "0px", "shadow": "none", "extra": "rolled labels held" },
+      "focus": { "color": "#FFFFFF", "bg": "#282828 fill (same as hover)", "radius": "0px", "shadow": "none", "extra": "focus-visible = hover recipe" },
+      "hoverSwap": "dark #282828 fill wipe + dual-label roll + dual-chevron roll"
+    },
+    {
+      "name": "nav-pricing",
+      "sel": "a.header-menu-item[href*=\"pricing\"] (137x56.3)",
+      "default": { "color": "rgba(40,40,40,0.72)", "bg": "transparent", "radius": "0px", "shadow": "none", "pad": "0", "border": "0 none", "font": "BT Grotesk 500 13.33px", "transition": "color 0.4s" },
+      "hover": { "color": "#FFFFFF", "bg": "#282828 fill wipe", "radius": "0px", "shadow": "none", "extra": "label roll ±16.33px" },
+      "active": { "color": "rgba(40,40,40,0.72)", "bg": "#282828 fill held", "radius": "0px", "shadow": "none", "extra": "rolled label held" },
+      "focus": { "color": "#FFFFFF", "bg": "#282828 fill", "radius": "0px", "shadow": "none", "extra": "= hover" },
+      "hoverSwap": "dark fill wipe + dual-label roll (no chevron)"
+    },
+    {
+      "name": "nav-resources (measured on the dropdown item 'Insights')",
+      "sel": "a.header-menu-dropdown-item[href*=\"resource\"] (218x37.3)",
+      "default": { "color": "rgba(40,40,40,0.72)", "bg": "transparent", "radius": "0px", "shadow": "none", "pad": "0", "border": "0 none", "font": "mono txt-14 11.67px Geistmono 500", "transition": "color 0.4s" },
+      "hover": { "color": "rgba(40,40,40,0.72) (unchanged)", "bg": "transparent (no fill)", "radius": "0px", "shadow": "none", "extra": "label roll only: y 26→10 (16px vertical roll), no colour/fill change" },
+      "active": { "color": "same", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "same roll" },
+      "focus": { "color": "same", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "same roll" },
+      "hoverSwap": "pure dual-label vertical roll (16px), no fill — the dropdown-item grammar"
+    },
+    {
+      "name": "nav-about",
+      "sel": "a.header-menu-item[href*=\"about\"] (137x56.3)",
+      "default": { "color": "rgba(40,40,40,0.72)", "bg": "transparent", "radius": "0px", "shadow": "none", "pad": "0", "border": "0 none", "font": "BT Grotesk 500 13.33px", "transition": "color 0.4s" },
+      "hover": { "color": "#FFFFFF", "bg": "#282828 fill wipe", "radius": "0px", "shadow": "none", "extra": "label roll ±16.31px" },
+      "active": { "color": "rgba(40,40,40,0.72)", "bg": "#282828 fill held", "radius": "0px", "shadow": "none", "extra": "rolled labels held" },
+      "focus": { "color": "#FFFFFF", "bg": "#282828 fill", "radius": "0px", "shadow": "none", "extra": "= hover" },
+      "hoverSwap": "dark fill wipe + dual-label roll"
+    },
+    {
+      "name": "header-menu-btn (hamburger)",
+      "sel": ".header-menu-btn",
+      "default": { "notVisible": "display:none at >=992px (desktop); at 390x844 it is 187x50 flex, label 'MENU'" },
+      "hover": {},
+      "active": {},
+      "focus": {},
+      "hoverSwap": "toggles .active on itself + .active on .header-menu (mobile menu overlay)"
+    },
+    {
+      "name": "hero-discover",
+      "sel": ".home-hero-btn (a, /heron-dashboard, 143x97)",
+      "default": { "color": "#FA3600", "bg": "transparent", "radius": "0px", "shadow": "none", "pad": "0", "border": "0 none (+1px #B3B3AF corner line child)", "font": "BT Grotesk 500 13.33px", "transition": "color 0.4s" },
+      "hover": { "color": "#FFFFFF", "bg": "#FA3600 (.btn-fill-bg translateY -51px → 0)", "radius": "0px", "shadow": "none", "extra": "label roll ±16.33px; arrow slides +16.66px" },
+      "active": { "color": "#FFFFFF", "bg": "#FA3600 fill held", "radius": "0px", "shadow": "none", "extra": "rolled state held" },
+      "focus": { "color": "#FB653B rgb(251,101,59) — focus-visible BRIGHTENS the text to lighter orange instead of filling", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "label roll mid-flight (-1.7px), no fill" },
+      "hoverSwap": "orange fill wipe + dual-label roll; focus-visible = lighter-orange text (unique among buttons)"
+    },
+    {
+      "name": "cta-contact",
+      "sel": ".cta-main-item-btn-inner.btn-fill-hover (134x39.6)",
+      "default": { "color": "#FFFFFF", "bg": "transparent (sits on orange slab)", "radius": "0px", "shadow": "none", "pad": "0", "border": "0 none", "font": "BT Grotesk 500 13.33px", "transition": "all" },
+      "hover": { "color": "#FFFFFF", "bg": ".btn-fill is-fill-active appears (fill)", "radius": "0px", "shadow": "none", "extra": "label roll ±16.16px; dual arrow icons slide horizontally ±37.4px (icon-top +37.08, icon-bot -37.47→-0.39)" },
+      "active": { "color": "#FFFFFF", "bg": "is-fill-active is-fill-entered", "radius": "0px", "shadow": "none", "extra": "fully rolled/entered state" },
+      "focus": { "color": "#FFFFFF", "bg": "partial", "radius": "0px", "shadow": "none", "extra": "roll mid-flight (label-top -2.2px), icons partially slid" },
+      "hoverSwap": "fill + dual-label roll + horizontal dual-arrow slide (±37px)"
+    },
+    {
+      "name": "footer-subscribe-btn",
+      "sel": "button.footer-form-input-submit (40x40)",
+      "default": { "color": "#B3B3AF", "bg": "transparent", "radius": "0px", "shadow": "none", "pad": "8.33px 8.33px 8.33px 8.33px", "border": "0 none", "font": "BT Grotesk 500 13.33px", "transition": "border-color 0.2s, background-color 0.4s, color 0.4s" },
+      "hover": { "color": "#B3B3AF", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "arrow svg grows 13x8 → 17x17 (the only change)" },
+      "active": { "color": "#B3B3AF", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "arrow grown state" },
+      "focus": { "color": "#B3B3AF", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "arrow grown state" },
+      "hoverSwap": "icon-scale only (13→17px arrow)"
+    },
+    {
+      "name": "footer-link-about",
+      "sel": ".footer-menu-item-link[href*=\"about\"] (66x25.6)",
+      "default": { "color": "#282828", "bg": "transparent", "radius": "0px", "shadow": "none", "pad": "4.17px 4.17px 4.17px 4.17px", "border": "0 none", "font": "BT Grotesk 500 13.33px (txt-16)", "transition": "color 0.2s" },
+      "hover": { "color": "#FA3600", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "plain colour swap, no roll" },
+      "active": { "color": "#282828 (no change)", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "no active state ({} diff)" },
+      "focus": { "color": "#FA3600", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "= hover" },
+      "hoverSwap": "colour-only (#282828 → #FA3600)"
+    },
+    {
+      "name": "footer-link-home-current",
+      "sel": ".footer-menu-item-link.w--current (47x25.6)",
+      "default": { "color": "#FA3600 (current-page state)", "bg": "transparent", "radius": "0px", "shadow": "none", "pad": "4.17px", "border": "0 none", "font": "BT Grotesk 500 13.33px", "transition": "color 0.2s" },
+      "hover": { "color": "#FA3600 (no change)", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "no hover state ({} diff)" },
+      "active": { "color": "#FA3600", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "no change" },
+      "focus": { "color": "#FA3600", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "no change" },
+      "hoverSwap": "none — current page is latched orange"
+    },
+    {
+      "name": "map-number-1",
+      "sel": ".home-map-number (32x32)",
+      "default": { "color": "rgba(40,40,40,0.72)", "bg": "transparent", "radius": "0px", "shadow": "none", "pad": "0", "border": "0 none", "font": "BT Grotesk 500 13.33px", "transition": "opacity 0.4s" },
+      "hover": { "color": "same", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "number svg scales 11x7 → 32x32" },
+      "active": { "color": "same", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "scaled state" },
+      "focus": { "color": "same", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "scaled (focus-visible NOT matched)" },
+      "hoverSwap": "icon scale-up 11x7 → 32x32"
+    },
+    {
+      "name": "header-dropdown-item",
+      "sel": ".header-menu-dropdown-item (218x37.3)",
+      "default": { "color": "rgba(40,40,40,0.72)", "bg": "transparent", "radius": "0px", "shadow": "none", "pad": "0", "border": "0 none", "font": "Geistmono 500 11.67px (txt-font-mono txt-14)", "transition": "color 0.4s" },
+      "hover": { "color": "rgba(40,40,40,0.72) (unchanged)", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "label roll only: y 26→10 (16px), no fill/no colour" },
+      "active": { "color": "same", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "same roll" },
+      "focus": { "color": "same", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "same roll" },
+      "hoverSwap": "pure dual-label vertical roll (16px), no fill"
+    },
+    {
+      "name": "cookie-accept",
+      "sel": "button.cookie-banner-accept (data-cookie-accept-all, ~79x28)",
+      "default": { "color": "#FFFFFF", "bg": "#EFEFEF (rgb(239,239,239))", "radius": "0px", "shadow": "none", "pad": "0", "border": "0 none", "font": "Geistmono 500 11.67px (btn-fill variant fill-small, .btn-fill-bg 120x30)", "transition": "all" },
+      "hover": { "color": "#FFFFFF", "bg": "fill slides (btn-fill grammar) — see buttons/cookie-accept-hover.jpg", "radius": "0px", "shadow": "none", "extra": "same dual-label roll grammar" },
+      "active": {},
+      "focus": {},
+      "hoverSwap": "btn-fill fill-small variant roll"
+    },
+    {
+      "name": "cookie-reject",
+      "sel": "button.cookie-banner-reject (data-cookie-reject-all, ~81x28)",
+      "default": { "color": "#282828", "bg": "transparent", "radius": "0px", "shadow": "none", "pad": "0", "border": "0 none", "font": "BT Grotesk 500 13.33px (variant no-ic-small, .btn-fill-bg 144x36)", "transition": "all" },
+      "hover": { "color": "#282828", "bg": "transparent", "radius": "0px", "shadow": "none", "extra": "label roll (btn-fill grammar, no icon)" },
+      "active": {},
+      "focus": {},
+      "hoverSwap": "dual-label roll, no fill"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "footer-subscribe-input",
+      "sel": "input.footer-form-input (email, 358x40)",
+      "default": { "color": "#282828", "bg": "transparent", "border": "1px solid #B3B3AF (all sides)", "radius": "0px", "shadow": "none", "pad": "6.67px 6.67px 6.67px 13.33px", "font": "BT Grotesk 500 13.33px / lh 19.05px", "transition": "border-color 0.45s" },
+      "focus": { "border": "1px solid #ED4C1F (rgb(237,76,31))", "extra": "filled+focus: border → #FA3600 (filledChanges)" }
+    }
+  ],
+  "radius": {
+    "policy": 0,
+    "exceptions": [
+      { "cls": ".cursor-inner", "value": "50%", "what": "DOM fallback cursor dot, 5x5px #DD6013, opacity 0 — almost never visible (canvas cursor does the work)" },
+      { "cls": ".home-why-item-card-dot (x3)", "value": "99%", "what": "2x2 / 1x1 px dots #F2F2F1 in the why-card 'loading dots' sequence (homeWhyCardDotLoading keyframes)" }
+    ]
+  },
+  "shadows": {
+    "policy": "none",
+    "exceptions": [
+      { "cls": ".cookie-banner.bg-global.is-visible", "value": "rgb(0,0,0) 0px 6.66667px 0px -1.66667px", "what": "hard-edged black offset bar under the fixed cookie banner (z 100009) — zero blur, drafting-style drop shadow" }
+    ]
+  },
+  "loader": {
+    "visibleMs": 7200,
+    "counterTimeline": [
+      [383, 0], [943, 0], [1131, 16], [1202, 20], [1358, 26], [1445, 30], [1565, 34], [1800, 41], [2040, 47], [2165, 50], [2400, 53], [2640, 56], [3000, 59], [3366, 60], [3840, 60], [3965, 67], [4097, 73], [4200, 78], [4440, 86], [4688, 92], [4920, 96], [5181, 98], [5280, 99], [5649, 100]
+    ],
+    "logLines": 10,
+    "logLineTexts": [
+      "001 INITIALIZE CORE SYSTEM", "002 LOAD AI MODELS", "003 CONFIGURE DATA PIPELINES", "004 SYNC DISTRIBUTED NODES", "005 VALIDATE INPUT STREAMS", "006 OPTIMIZE INFERENCE ENGINE", "007 DEPLOY TEST ENVIRONMENT", "008 ENABLE REAL-TIME PROCESSING", "009 RUN DIAGNOSTICS", "010 START EXECUTION"
+    ],
+    "exitMs": 835,
+    "exitGeometry": "clip-path polygon two-band CENTER-OUT SPLIT on .loading-main: a horizontal slit opens at the vertical centre (band 49.94–50.06% at t=6366) and widens symmetrically to 0%/100% at t=7201 (38.38/59.30 @6480 → 28.63/67.11 @6600 → 14.01/78.82 @6841 → 0/100 @7201); counter hits 100% at 5649, ~717ms hold, then exit; element survives as .loading.loaded with inner opacity 0",
+    "gating": "none on full loads — REPLAYS on same-tab reload (measured: reloadGate 15% @258ms → 100% @4680ms); NOT replayed on Barba subpage transitions (loaderDisplay 'none' throughout route.json); sessionStorage 'isLoaded' flag exists in the loader class code (heronai-bp main.js) but does not suppress the reload replay"
+  },
+  "routeTransition": {
+    "durationMs": 1616,
+    "geometry": "Barba sync swap (path/URL changes at click+~142ms); .main gets clip-path: inset(var(--mask-percent)) !important — a 4-EDGE INSET WIPE: --trans-percent runs 0→50% by 897ms (r308: power1.in), the four .main-deco frame lines converge to the centre, --size--line spikes to 1 (≈8.33px) exactly at the 50% midpoint then decays 1→0; then --mask-percent opens 50%→0% by ~1616ms (r308: power1.out) revealing the new page; no fade, no loader replay",
+    "loaderReplay": false
+  },
+  "scroll": {
+    "engine": "lenis 1.1.5 (unpkg) + GSAP 3.12.5 ticker + ScrollTrigger 3.12.5 (ScrollTrigger.update on every lenis scroll)",
+    "params": {
+      "wrapper": ".main-inner (fallback document.querySelector; barba next container on transitions)",
+      "content": "barba next container || document.querySelector(<content sel>)",
+      "syncTouch": true,
+      "smoothWheel": true,
+      "smoothTouch": false,
+      "infinite": false,
+      "lerp": "0.1 (constructor default — no override found in heronai-bp.netlify.app/main.js 'new Lenis({...})')",
+      "duration": "undefined → lerp mode",
+      "easing": "default t => Math.min(1, 1.001 - Math.pow(2, -10*t))",
+      "wheelMultiplier": 1,
+      "touchMultiplier": 1,
+      "note": "exact instantiation read from heronai-bp.netlify.app/main.js: new Lenis({wrapper, content, syncTouch:!0, smoothWheel:!0, smoothTouch:!1, infinite:!1}); idle class added after 150ms scroll-quiet via setTimeout"
+    },
+    "probeTailMs": 1540,
+    "probeShape": "exponential ease-out glide: 720px wheel target — first motion +156ms, 456px (63%) by 637ms, 710px (98.6%) by 1181ms, settled 720px at 1695ms, flat for 1.3s+ after (classic lerp damping, no fixed duration)"
+  },
+  "cursor": {
+    "present": true,
+    "canvasSize": "1440x900 css px, fixed @(0,0), z-index 2147483600, pointer-events none (body-level canvas)",
+    "square": "10x10px bbox incl. antialias (≈9x9 core), 100 opaque pixels, solid #FA3600 — verified by canvas getImageData at rest over links (telemetry/cursor.json)",
+    "lerp": 0.18,
+    "reticle": "interactive state: 2px #FC724D border, scale .56, opacity .68 (r308/r310 deep audit); DOM fallback .cursor-inner = 5px 50% circle #DD6013 opacity 0; .cursor root 1440x900 fixed z999; .cursor-main gets class 'hidden' over header nav",
+    "notes": "canvas paints NOTHING inside the hero interact zone (data-cursor=\"hidden\" on .loading-inner, .home-hero-img-wrap, ruler wraps — measured 0 drawn px at (700,450)) where the hero instrument replaces it (guides #E0E0DA + 8x8 #FA3600 plus + Geistmono X:Y readout); NO canvas element at all in 390x844 touch context"
+  },
+  "motion": {
+    "easings": [
+      "ease (CSS default — majority)", "cubic-bezier(0.23,1,0.32,1)", "cubic-bezier(0.625,0.05,0,1)", "cubic-bezier(0.5,0.5,1,1)", "ease-in (dash appears)", "linear (marquees, draw loops)", "steps(1) (rotate-icon)", "steps(4) (spin 0.6s)", "gsap power1.in / power1.out (route sweep, r308)", "var(--draw-ease) (SVG stroke draws)"
+    ],
+    "dominantTransitionMs": [400, 300, 500, 200, 450],
+    "keyframesCount": 24,
+    "marquee": "hero 'work' strip: marqueeLeft + marqueeRight, 30s linear infinite (dual direction); other loops: spin 0.8s linear, fadeLoop 1.5s ease-out, homeWhy cycle var(--why-cycle, 5s), homeProblemDraw 0.3–0.9s var(--draw-ease) staggered 0–1.15s, homeProblemDashFlow linear infinite"
+  },
+  "footer": {
+    "height": 711,
+    "columns": [
+      "left (357px): display title + email subscribe form (input.footer-form-input 358x40 + 40x40 arrow submit)",
+      "middle (715px): content items + links (Home, About us, Contact us, Heron Chat Widget, Heron Dashboard, Pricing, Insights, AI Practices, Design Workflows) + address '60 Martin Pl, Sydney, NSW 2000' + business@bear.plus / hello@heronaiapp.com",
+      "right (357px): .footer-logo-inner.full 215x215 SVG line logo (scroll fade-in 0.61→1) + .sketch variant (opacity 0)"
+    ],
+    "lens": { "present": true, "lensR": 99.09, "pulseR": 104.04, "lerp": "0.09 lens / 0.15 pulse", "enterMs": 550, "leaveMs": 800, "pulseDecayMs": 1000, "zone": ".footer-img-wrap .ink-mask, strip 1427x314 @1440 (r308; identical at 1440x700/1280x800; hidden <=767)" },
+    "subscribeForm": true
+  },
+  "cookieBanner": {
+    "present": true,
+    "structure": "#heron-cookie-root[aria-live=polite] > .cookie-banner.bg-global.is-visible — fixed, z 100009, 601x38 @(832,855) @1440, four 1px cl-black border lines, text 'This website uses cookies. Learn more' (p 13.33px #282828; link Geistmono 11.67px #FA3600 uppercase) + Accept + Reject; hard black offset shadow; Accept hides banner instantly (measured); consent persisted as JSON cookie (revision+categories+consentDate, SameSite=Lax, name obfuscated in heronai-bp main.js) and window.HeronConsent exposed; banner root re-renders on reload",
+    "buttons": ["Accept (fill-small variant: bg #EFEFEF, white text, .btn-fill-bg 120x30)", "Reject (no-ic-small: transparent, #282828, .btn-fill-bg 144x36)", "Learn more (a /cookie-policy, Geistmono 11.67px #FA3600)"]
+  },
+  "fonts": [
+    "BT Grotesk 400 normal", "BT Grotesk 500 normal", "BT Grotesk 600 normal", "BT Grotesk 700 normal", "BT Grotesk 400/500/600/700 italic", "Geistmono 500", "webflow-icons 400"
+  ],
+  "frame": {
+    "insetPx": 7,
+    "plusMarks": true,
+    "rulers": true,
+    "notes": "fixed 1px #B3B3AF frame at the 7px inset (.main-deco never scrolls; scales 6px @1280/360, 7px @768/390); content width 1427 @1440; hero drawing frame .bg-border 1407x680 with 7px bars + 10x10 plus marks at 4 corners; hero ruler tick strips on all 4 edges of the drawing window (dash lines, 64% opacity, proximity reveal 0→1); loader chrome: thin frame + .loading-ruler with 8x8 plus + X/Y mono readout (X:1131PX style); 6.4rem drawing-sheet grid appears on problem-card hover (0.4s); coordinate labels at strip edges (hero readout + CTA '[0,246][831,0][2303,0][0,544]')"
+  }
+}

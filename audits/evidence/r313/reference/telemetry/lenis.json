@@ -1,0 +1,246 @@
+{
+ "dom": {
+  "globals": {},
+  "hasLenisCtor": true,
+  "lenisVersion": null,
+  "gsap": {
+   "version": "3.12.5",
+   "ticker": true
+  },
+  "barba": false,
+  "dataBarba": true,
+  "wrapCls": "main-inner lenis",
+  "wrapOverflow": "hidden",
+  "htmlDataLenis": null,
+  "wrapperDetect": 1,
+  "scrollerProbe": {
+   "docScrollH": 900,
+   "innerH": 900,
+   "wrapScrollH": 12355,
+   "wrapClientH": 887,
+   "windowScrollY": 0
+  }
+ },
+ "instanceProbe": [],
+ "scriptCount": 16,
+ "bundleFindings": [
+  {
+   "src": "https://scripts.clarity.ms/0.8.72-beta/clarity.js",
+   "bytes": 75469,
+   "version": null,
+   "hits": null
+  },
+  {
+   "src": "https://www.clarity.ms/tag/xxzxds4q6a",
+   "bytes": 772,
+   "version": null,
+   "hits": null
+  },
+  {
+   "src": "https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js",
+   "bytes": 103263,
+   "version": "2.84.0",
+   "hits": null
+  },
+  {
+   "src": "https://www.googletagmanager.com/gtag/js?id=G-N1KKXK6ZR5",
+   "bytes": 540588,
+   "version": "2",
+   "hits": null
+  },
+  {
+   "src": "https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=6a4b5161f0d11f1602cc3bbf",
+   "bytes": 89476,
+   "version": null,
+   "hits": null
+  },
+  {
+   "src": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/js/webflow.a0aa6ca1.b7683852b8a60d8e.js",
+   "bytes": 45758,
+   "version": null,
+   "hits": null
+  },
+  {
+   "src": "https://unpkg.com/lenis@1.1.5/dist/lenis.min.js",
+   "bytes": 12729,
+   "version": "1.1.5",
+   "hits": [
+    {
+     "needle": "wheelMultiplier",
+     "at": 2721,
+     "ctx": "push(e)||(this.events[t]=[e]),()=>{this.events[t]=this.events[t]?.filter((t=>e!==t))}}off(t,e){this.events[t]=this.events[t]?.filter((t=>e!==t))}destroy(){this.events={}}}const t=100/6;class VirtualScroll{constructor(t,{wheelMultiplier:e=1,touchMultiplier:i=1}){this.element=t,this.wheelMultiplier=e,this.touchMultiplier=i,this.touchStart={x:null,y:null},this.emitter=new Emitter,window.addEventListener(\"resize\",this.onWindowResize,!1),this.onWindowResize(),this.element.addEventListener(\"wheel\",this.onWheel,{passive:!"
+    },
+    {
+     "needle": "wheelMultiplier",
+     "at": 2783,
+     "ctx": "t]?.filter((t=>e!==t))}}off(t,e){this.events[t]=this.events[t]?.filter((t=>e!==t))}destroy(){this.events={}}}const t=100/6;class VirtualScroll{constructor(t,{wheelMultiplier:e=1,touchMultiplier:i=1}){this.element=t,this.wheelMultiplier=e,this.touchMultiplier=i,this.touchStart={x:null,y:null},this.emitter=new Emitter,window.addEventListener(\"resize\",this.onWindowResize,!1),this.onWindowResize(),this.element.addEventListener(\"wheel\",this.onWheel,{passive:!1}),this.element.addEventListener(\"touchstart\",this.onTouchSta"
+    },
+    {
+     "needle": "wheelMultiplier",
+     "at": 4398,
+     "ctx": "=>{this.emitter.emit(\"scroll\",{deltaX:this.lastDelta.x,deltaY:this.lastDelta.y,event:t})};onWheel=e=>{let{deltaX:i,deltaY:s,deltaMode:o}=e;i*=1===o?t:2===o?this.windowWidth:1,s*=1===o?t:2===o?this.windowHeight:1,i*=this.wheelMultiplier,s*=this.wheelMultiplier,this.emitter.emit(\"scroll\",{deltaX:i,deltaY:s,event:e})};onWindowResize=()=>{this.windowWidth=window.innerWidth,this.windowHeight=window.innerHeight}}return class Lenis{constructor({wrapper:t=window,content:e=document.documentElement,wheelEventsTarget:i=t,even"
+    },
+    {
+     "needle": "wheelMultiplier",
+     "at": 4422,
+     "ctx": "roll\",{deltaX:this.lastDelta.x,deltaY:this.lastDelta.y,event:t})};onWheel=e=>{let{deltaX:i,deltaY:s,deltaMode:o}=e;i*=1===o?t:2===o?this.windowWidth:1,s*=1===o?t:2===o?this.windowHeight:1,i*=this.wheelMultiplier,s*=this.wheelMultiplier,this.emitter.emit(\"scroll\",{deltaX:i,deltaY:s,event:e})};onWindowResize=()=>{this.windowWidth=window.innerWidth,this.windowHeight=window.innerHeight}}return class Lenis{constructor({wrapper:t=window,content:e=document.documentElement,wheelEventsTarget:i=t,eventsTarget:s=i,smoothWheel"
+    },
+    {
+     "needle": "wheelMultiplier",
+     "at": 4954,
+     "ctx": "uch:n=!1,syncTouchLerp:r=.075,touchInertiaMultiplier:l=35,duration:h,easing:a=(t=>Math.min(1,1.001-Math.pow(2,-10*t))),lerp:c=.1,infinite:d=!1,orientation:p=\"vertical\",gestureOrientation:u=\"vertical\",touchMultiplier:m=1,wheelMultiplier:v=1,autoResize:g=!0,prevent:w=!1,__experimental__naiveDimensions:S=!1}={}){this.__isScrolling=!1,this.__isStopped=!1,this.__isLocked=!1,this.direction=0,this.onPointerDown=t=>{1===t.button&&this.reset()},this.onVirtualScroll=({deltaX:t,deltaY:e,event:i})=>{if(i.ctrlKey)return;const s"
+    },
+    {
+     "needle": "wheelMultiplier",
+     "at": 7837,
+     "ctx": "tions={wrapper:t,content:e,wheelEventsTarget:i,eventsTarget:s,smoothWheel:o,syncTouch:n,syncTouchLerp:r,touchInertiaMultiplier:l,duration:h,easing:a,lerp:c,infinite:d,gestureOrientation:u,orientation:p,touchMultiplier:m,wheelMultiplier:v,autoResize:g,prevent:w,__experimental__naiveDimensions:S},this.animate=new Animate,this.emitter=new Emitter,this.dimensions=new Dimensions({wrapper:t,content:e,autoResize:g}),this.updateClassName(),this.userData={},this.time=0,this.velocity=this.lastVelocity=0,this.isLocked=!1,this"
+    },
+    {
+     "needle": "wheelMultiplier",
+     "at": 8431,
+     "ctx": "is.actualScroll,this.options.wrapper.addEventListener(\"scroll\",this.onNativeScroll,!1),this.options.wrapper.addEventListener(\"pointerdown\",this.onPointerDown,!1),this.virtualScroll=new VirtualScroll(s,{touchMultiplier:m,wheelMultiplier:v}),this.virtualScroll.on(\"scroll\",this.onVirtualScroll)}destroy(){this.emitter.destroy(),this.options.wrapper.removeEventListener(\"scroll\",this.onNativeScroll,!1),this.options.wrapper.removeEventListener(\"pointerdown\",this.onPointerDown,!1),this.virtualScroll.destroy(),this.dimensio"
+    },
+    {
+     "needle": "smoothWheel",
+     "at": 4711,
+     "ctx": "})};onWindowResize=()=>{this.windowWidth=window.innerWidth,this.windowHeight=window.innerHeight}}return class Lenis{constructor({wrapper:t=window,content:e=document.documentElement,wheelEventsTarget:i=t,eventsTarget:s=i,smoothWheel:o=!0,syncTouch:n=!1,syncTouchLerp:r=.075,touchInertiaMultiplier:l=35,duration:h,easing:a=(t=>Math.min(1,1.001-Math.pow(2,-10*t))),lerp:c=.1,infinite:d=!1,orientation:p=\"vertical\",gestureOrientation:u=\"vertical\",touchMultiplier:m=1,wheelMultiplier:v=1,autoResize:g=!0,prevent:w=!1,__experi"
+    },
+    {
+     "needle": "smoothWheel",
+     "at": 6333,
+     "ctx": "id 0:r.contains(\"lenis\"))&&!(null===(l=t.classList)||void 0===l?void 0:l.contains(\"lenis-stopped\")))})))return;if(this.isStopped||this.isLocked)return void i.preventDefault();if(!(this.options.syncTouch&&s||this.options.smoothWheel&&o))return this.isScrolling=\"native\",void this.animate.stop();i.preventDefault();let a=e;\"both\"===this.options.gestureOrientation?a=Math.abs(e)>Math.abs(t)?e:t:\"horizontal\"===this.options.gestureOrientation&&(a=t);const c=s&&this.options.syncTouch,d=s&&\"touchend\"===i.type&&Math.abs(a)>5;"
+    },
+    {
+     "needle": "smoothWheel",
+     "at": 7679,
+     "ctx": "y,this.velocity=0,this.isScrolling=!1,this.emit()}),400))}},window.lenisVersion=\"1.1.5\",t&&t!==document.documentElement&&t!==document.body||(t=window),this.options={wrapper:t,content:e,wheelEventsTarget:i,eventsTarget:s,smoothWheel:o,syncTouch:n,syncTouchLerp:r,touchInertiaMultiplier:l,duration:h,easing:a,lerp:c,infinite:d,gestureOrientation:u,orientation:p,touchMultiplier:m,wheelMultiplier:v,autoResize:g,prevent:w,__experimental__naiveDimensions:S},this.animate=new Animate,this.emitter=new Emitter,this.dimensions="
+    },
+    {
+     "needle": "syncTouch",
+     "at": 4728,
+     "ctx": "e=()=>{this.windowWidth=window.innerWidth,this.windowHeight=window.innerHeight}}return class Lenis{constructor({wrapper:t=window,content:e=document.documentElement,wheelEventsTarget:i=t,eventsTarget:s=i,smoothWheel:o=!0,syncTouch:n=!1,syncTouchLerp:r=.075,touchInertiaMultiplier:l=35,duration:h,easing:a=(t=>Math.min(1,1.001-Math.pow(2,-10*t))),lerp:c=.1,infinite:d=!1,orientation:p=\"vertical\",gestureOrientation:u=\"vertical\",touchMultiplier:m=1,wheelMultiplier:v=1,autoResize:g=!0,prevent:w=!1,__experimental__naiveDime"
+    },
+    {
+     "needle": "syncTouch",
+     "at": 4743,
+     "ctx": "dowWidth=window.innerWidth,this.windowHeight=window.innerHeight}}return class Lenis{constructor({wrapper:t=window,content:e=document.documentElement,wheelEventsTarget:i=t,eventsTarget:s=i,smoothWheel:o=!0,syncTouch:n=!1,syncTouchLerp:r=.075,touchInertiaMultiplier:l=35,duration:h,easing:a=(t=>Math.min(1,1.001-Math.pow(2,-10*t))),lerp:c=.1,infinite:d=!1,orientation:p=\"vertical\",gestureOrientation:u=\"vertical\",touchMultiplier:m=1,wheelMultiplier:v=1,autoResize:g=!0,prevent:w=!1,__experimental__naiveDimensions:S=!1}={}"
+    },
+    {
+     "needle": "syncTouch",
+     "at": 5383,
+     "ctx": "s.reset()},this.onVirtualScroll=({deltaX:t,deltaY:e,event:i})=>{if(i.ctrlKey)return;const s=i.type.includes(\"touch\"),o=i.type.includes(\"wheel\");this.isTouching=\"touchstart\"===i.type||\"touchmove\"===i.type;if(this.options.syncTouch&&s&&\"touchstart\"===i.type&&!this.isStopped&&!this.isLocked)return void this.reset();const n=0===t&&0===e,r=\"vertical\"===this.options.gestureOrientation&&0===e||\"horizontal\"===this.options.gestureOrientation&&0===t;if(n||r)return;let l=i.composedPath();l=l.slice(0,l.indexOf(this.rootElement"
+    },
+    {
+     "needle": "syncTouch",
+     "at": 6306,
+     "ctx": "t.classList)||void 0===r?void 0:r.contains(\"lenis\"))&&!(null===(l=t.classList)||void 0===l?void 0:l.contains(\"lenis-stopped\")))})))return;if(this.isStopped||this.isLocked)return void i.preventDefault();if(!(this.options.syncTouch&&s||this.options.smoothWheel&&o))return this.isScrolling=\"native\",void this.animate.stop();i.preventDefault();let a=e;\"both\"===this.options.gestureOrientation?a=Math.abs(e)>Math.abs(t)?e:t:\"horizontal\"===this.options.gestureOrientation&&(a=t);const c=s&&this.options.syncTouch,d=s&&\"touchen"
+    },
+    {
+     "needle": "syncTouch",
+     "at": 6583,
+     "ctx": "Scrolling=\"native\",void this.animate.stop();i.preventDefault();let a=e;\"both\"===this.options.gestureOrientation?a=Math.abs(e)>Math.abs(t)?e:t:\"horizontal\"===this.options.gestureOrientation&&(a=t);const c=s&&this.options.syncTouch,d=s&&\"touchend\"===i.type&&Math.abs(a)>5;d&&(a=this.velocity*this.options.touchInertiaMultiplier),this.scrollTo(this.targetScroll+a,Object.assign({programmatic:!1},c?{lerp:d?this.options.syncTouchLerp:1}:{lerp:this.options.lerp,duration:this.options.duration,easing:this.options.easing}))},t"
+    },
+    {
+     "needle": "syncTouch",
+     "at": 6779,
+     "ctx": "const c=s&&this.options.syncTouch,d=s&&\"touchend\"===i.type&&Math.abs(a)>5;d&&(a=this.velocity*this.options.touchInertiaMultiplier),this.scrollTo(this.targetScroll+a,Object.assign({programmatic:!1},c?{lerp:d?this.options.syncTouchLerp:1}:{lerp:this.options.lerp,duration:this.options.duration,easing:this.options.easing}))},this.onNativeScroll=()=>{if(clearTimeout(this.__resetVelocityTimeout),delete this.__resetVelocityTimeout,this.__preventNextNativeScrollEvent)delete this.__preventNextNativeScrollEvent;else if(!1==="
+    },
+    {
+     "needle": "syncTouch",
+     "at": 7693,
+     "ctx": "y=0,this.isScrolling=!1,this.emit()}),400))}},window.lenisVersion=\"1.1.5\",t&&t!==document.documentElement&&t!==document.body||(t=window),this.options={wrapper:t,content:e,wheelEventsTarget:i,eventsTarget:s,smoothWheel:o,syncTouch:n,syncTouchLerp:r,touchInertiaMultiplier:l,duration:h,easing:a,lerp:c,infinite:d,gestureOrientation:u,orientation:p,touchMultiplier:m,wheelMultiplier:v,autoResize:g,prevent:w,__experimental__naiveDimensions:S},this.animate=new Animate,this.emitter=new Emitter,this.dimensions=new Dimensions"
+    },
+    {
+     "needle": "syncTouch",
+     "at": 7705,
+     "ctx": "crolling=!1,this.emit()}),400))}},window.lenisVersion=\"1.1.5\",t&&t!==document.documentElement&&t!==document.body||(t=window),this.options={wrapper:t,content:e,wheelEventsTarget:i,eventsTarget:s,smoothWheel:o,syncTouch:n,syncTouchLerp:r,touchInertiaMultiplier:l,duration:h,easing:a,lerp:c,infinite:d,gestureOrientation:u,orientation:p,touchMultiplier:m,wheelMultiplier:v,autoResize:g,prevent:w,__experimental__naiveDimensions:S},this.animate=new Animate,this.emitter=new Emitter,this.dimensions=new Dimensions({wrapper:t,"
+    },
+    {
+     "needle": "gestureOrientation",
+     "at": 4902,
+     "ctx": "sTarget:i=t,eventsTarget:s=i,smoothWheel:o=!0,syncTouch:n=!1,syncTouchLerp:r=.075,touchInertiaMultiplier:l=35,duration:h,easing:a=(t=>Math.min(1,1.001-Math.pow(2,-10*t))),lerp:c=.1,infinite:d=!1,orientation:p=\"vertical\",gestureOrientation:u=\"vertical\",touchMultiplier:m=1,wheelMultiplier:v=1,autoResize:g=!0,prevent:w=!1,__experimental__naiveDimensions:S=!1}={}){this.__isScrolling=!1,this.__isStopped=!1,this.__isLocked=!1,this.direction=0,this.onPointerDown=t=>{1===t.button&&this.reset()},this.onVirtualScroll=({delta"
+    },
+    {
+     "needle": "gestureOrientation",
+     "at": 5526,
+     "ctx": ";this.isTouching=\"touchstart\"===i.type||\"touchmove\"===i.type;if(this.options.syncTouch&&s&&\"touchstart\"===i.type&&!this.isStopped&&!this.isLocked)return void this.reset();const n=0===t&&0===e,r=\"vertical\"===this.options.gestureOrientation&&0===e||\"horizontal\"===this.options.gestureOrientation&&0===t;if(n||r)return;let l=i.composedPath();l=l.slice(0,l.indexOf(this.rootElement));const h=this.options.prevent;if(l.find((t=>{var e,i,n,r,l;return t instanceof Element&&((\"function\"==typeof h?null==h?void 0:h(t):h)||(null="
+    },
+    {
+     "needle": "gestureOrientation",
+     "at": 5581,
+     "ctx": ".type;if(this.options.syncTouch&&s&&\"touchstart\"===i.type&&!this.isStopped&&!this.isLocked)return void this.reset();const n=0===t&&0===e,r=\"vertical\"===this.options.gestureOrientation&&0===e||\"horizontal\"===this.options.gestureOrientation&&0===t;if(n||r)return;let l=i.composedPath();l=l.slice(0,l.indexOf(this.rootElement));const h=this.options.prevent;if(l.find((t=>{var e,i,n,r,l;return t instanceof Element&&((\"function\"==typeof h?null==h?void 0:h(t):h)||(null===(e=t.hasAttribute)||void 0===e?void 0:e.call(t,\"data-"
+    },
+    {
+     "needle": "gestureOrientation",
+     "at": 6456,
+     "ctx": "opped||this.isLocked)return void i.preventDefault();if(!(this.options.syncTouch&&s||this.options.smoothWheel&&o))return this.isScrolling=\"native\",void this.animate.stop();i.preventDefault();let a=e;\"both\"===this.options.gestureOrientation?a=Math.abs(e)>Math.abs(t)?e:t:\"horizontal\"===this.options.gestureOrientation&&(a=t);const c=s&&this.options.syncTouch,d=s&&\"touchend\"===i.type&&Math.abs(a)>5;d&&(a=this.velocity*this.options.touchInertiaMultiplier),this.scrollTo(this.targetScroll+a,Object.assign({programmatic:!1},"
+    },
+    {
+     "needle": "gestureOrientation",
+     "at": 6533,
+     "ctx": "ch&&s||this.options.smoothWheel&&o))return this.isScrolling=\"native\",void this.animate.stop();i.preventDefault();let a=e;\"both\"===this.options.gestureOrientation?a=Math.abs(e)>Math.abs(t)?e:t:\"horizontal\"===this.options.gestureOrientation&&(a=t);const c=s&&this.options.syncTouch,d=s&&\"touchend\"===i.type&&Math.abs(a)>5;d&&(a=this.velocity*this.options.touchInertiaMultiplier),this.scrollTo(this.targetScroll+a,Object.assign({programmatic:!1},c?{lerp:d?this.options.syncTouchLerp:1}:{lerp:this.options.lerp,duration:this"
+    },
+    {
+     "needle": "gestureOrientation",
+     "at": 7784,
+     "ctx": "ocumentElement&&t!==document.body||(t=window),this.options={wrapper:t,content:e,wheelEventsTarget:i,eventsTarget:s,smoothWheel:o,syncTouch:n,syncTouchLerp:r,touchInertiaMultiplier:l,duration:h,easing:a,lerp:c,infinite:d,gestureOrientation:u,orientation:p,touchMultiplier:m,wheelMultiplier:v,autoResize:g,prevent:w,__experimental__naiveDimensions:S},this.animate=new Animate,this.emitter=new Emitter,this.dimensions=new Dimensions({wrapper:t,content:e,autoResize:g}),this.updateClassName(),this.userData={},this.time=0,th"
+    }
+   ]
+  },
+  {
+   "src": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js",
+   "bytes": 72214,
+   "version": "3.12.5",
+   "hits": null
+  },
+  {
+   "src": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js",
+   "bytes": 43380,
+   "version": "3.12.5",
+   "hits": null
+  },
+  {
+   "src": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js",
+   "bytes": 7247,
+   "version": "3.13.0",
+   "hits": null
+  },
+  {
+   "src": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/TextPlugin.min.js",
+   "bytes": 10570,
+   "version": "3.13.0",
+   "hits": null
+  },
+  {
+   "src": "https://cdn.jsdelivr.net/npm/@barba/core",
+   "bytes": 32095,
+   "version": "2.10.3",
+   "hits": null
+  },
+  {
+   "src": "https://cdn.jsdelivr.net/npm/@barba/prefetch",
+   "bytes": 2276,
+   "version": "2.2.0",
+   "hits": null
+  },
+  {
+   "src": "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js",
+   "bytes": 154597,
+   "version": null,
+   "hits": null
+  },
+  {
+   "src": "https://heronai-bp.netlify.app/config.js",
+   "bytes": 1332,
+   "version": null,
+   "hits": null
+  },
+  {
+   "src": "https://heronaiapp.com/.netlify/scripts/rum",
+   "bytes": 11141,
+   "version": null,
+   "hits": null
+  }
+ ],
+ "note": "needle contexts trimmed ±220/300 chars"
+}

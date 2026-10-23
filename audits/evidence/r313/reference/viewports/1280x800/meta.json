@@ -1,0 +1,133 @@
+{
+ "url": "https://heronaiapp.com/",
+ "title": "Heron AI | Works inside your design tools",
+ "totalHeight": 10983,
+ "maxScroll": 10195,
+ "scroller": {
+  "type": "element",
+  "tag": "DIV",
+  "cls": "main-inner lenis"
+ },
+ "viewport": {
+  "w": 1280,
+  "h": 800
+ },
+ "rootFontSize": "7.40741px",
+ "htmlLang": "en",
+ "dir": "ltr",
+ "themeColor": null,
+ "sections": [
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-hero",
+   "top": 6,
+   "height": 788
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-intro",
+   "top": 794,
+   "height": 642
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-problem",
+   "top": 1436,
+   "height": 660
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-map",
+   "top": 2096,
+   "height": 5600
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-platform",
+   "top": 7696,
+   "height": 631
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-why",
+   "top": 8327,
+   "height": 621
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-usecase",
+   "top": 8948,
+   "height": 788
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "cta",
+   "top": 9736,
+   "height": 621
+  },
+  {
+   "kind": "semantic",
+   "tag": "footer",
+   "id": null,
+   "cls": "footer",
+   "top": 10357,
+   "height": 632
+  }
+ ],
+ "headerInfo": {
+  "cls": "header",
+  "height": 50,
+  "top": 6,
+  "position": "fixed",
+  "transform": "none",
+  "transition": "all",
+  "zIndex": "10000000"
+ },
+ "lenis": {
+  "hasLenisGlobal": true,
+  "lenisInstances": null,
+  "lenisAttr": null,
+  "lenisEls": 1,
+  "gsap": true,
+  "barba": true,
+  "swiper": true
+ },
+ "canvases": [
+  {
+   "cls": "",
+   "w": 1280,
+   "h": 800,
+   "cssW": "1280px",
+   "cssH": "800px",
+   "pos": "fixed",
+   "z": "2147483600",
+   "top": "0px",
+   "left": "0px",
+   "cursor": "auto"
+  }
+ ],
+ "bodyBg": "rgba(0, 0, 0, 0)",
+ "htmlBg": "rgba(0, 0, 0, 0)",
+ "scrollBehavior": "auto",
+ "imgCount": 45,
+ "cookieBanner": {
+  "cls": "cookie",
+  "visible": false
+ }
+}

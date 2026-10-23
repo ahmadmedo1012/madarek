@@ -1,0 +1,98 @@
+{
+ "banner": {
+  "present": true,
+  "cls": "cookie",
+  "html": "<div id=\"heron-cookie-root\" aria-live=\"polite\" class=\"cookie\"><div data-cookie-banner=\"\" class=\"cookie-banner bg-global is-visible\"><div class=\"line line-vertical left top cl-black\"></div><div class=\"line line-vertical right top cl-black\"></div><div class=\"line line-horizital top left right cl-black\"></div><div class=\"line line-horizital bot left right cl-black\"></div><div class=\"cookie-banner-content\"><div class=\"cookie-banner-description\"><div class=\"cookie-banner-description-text w-richtext\"><p>This website uses cookies. <a href=\"/cookie-policy\" aria-current=\"\">Learn more</a></p></div></div><div class=\"cookie-banner-action\"><button data-cookie-accept-all=\"\" type=\"button\" class=\"cookie-banner-accept\"><div data-wf--button--variant=\"fill-small\" class=\"btn-fill\" style=\"\"><div class=\"btn-fill-bg\" style=\"width: 120px; height: 30px; mask-position: 0% 0px;\"></div><div class=\"btn-fill-label w-variant-31b530d6-d9cb-9146-f6a9-e1e5c8e08844\"><div id=\"w-node-e4008f8f-3a67-5da4-cf42-372f27004be5-27004be2\" class=\"btn-fill-label-inner label-top\"><div class=\"txt txt-font-mono txt-14\">Accept</div></div><div id=\"w-node-e4008f8f-3a67-5da4-cf42-372f27004be8-27004be2\" class=\"btn-fill-label-inner label-bot\"><div class=\"txt txt-font-mono txt-14\">Accept</div></div></div><div class=\"btn-fill-icon w-variant-31b530d6-d9cb-9146-f6a9-e1e5c8e08844\"><div id=\"w-node-e4008f8f-3a67-5da4-cf42-372f27004bec-27004be2\" class=\"btn-fill-icon-inner icon-top\"><div class=\"btn-fill-icon-svg\"><div class=\"embed-ic w-embed\"><svg width=\"100%\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"> <path d=\"M11.875 14.375L16.25 9.93818L11.875 5.625M16.25 9.93818H2.5\" stroke=\"currentColor\" stroke-width=\"1.5\"></path> </svg> </div></div></div><div id=\"w-node-e4008f8f-3a67-5da4-cf42-372f27004bef-27004be2\" class=\"btn-fill-icon-inner icon-bot\"><div class=\"btn-fill-icon-svg\"><div class=\"embed-ic w-embed\"><svg width=\"100%\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"> <path d=\"M11.875 14.375L16.25 9.93818L11.875 5.625M16.25 9.93818H2.5\" stroke=\"currentColor\" stroke-width=\"1.5\"></path> </svg> </div></div></div></div></div></button><button data-cookie-reject-all=\"\" type=\"button\" class=\"cookie-banner-reject\"><div data-wf--button--variant=\"no-ic-small\" class=\"btn-fill w-variant-ed1d4352-1760-8630-fd8d-0cb2735fa0de\" style=\"\"><div class=\"btn-fill-bg\" style=\"width: 144px; height: 36px; mask-position: 0% 0px;\"></div><div class=\"btn-fill-label w-variant-ed1d4352-1760-8630-fd8d-0cb2735fa0de\"><div id=\"w-node-e4008f8f-3a67-5da4-cf42-372f27004be5-27004be2\" class=\"btn-fill-label-inner label",
+  "styles": {
+   "position": "static",
+   "bottom": "auto",
+   "top": "auto",
+   "left": "auto",
+   "right": "auto",
+   "w": 1427,
+   "h": 0,
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "font": "\"BT Grotesk\", Arial, sans-serif",
+   "size": "13.3333px",
+   "z": "auto",
+   "transform": "none",
+   "transition": "all"
+  },
+  "text": "This website uses cookies. Learn moreAcceptAccept RejectReject",
+  "btns": [
+   {
+    "tag": "a",
+    "txt": "Learn more",
+    "cls": "",
+    "font": "Geistmono, Arial, sans-serif",
+    "size": "11.6667px",
+    "weight": "500",
+    "color": "rgb(250, 54, 0)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px none rgb(250, 54, 0)",
+    "padding": "0px",
+    "radius": "0px"
+   },
+   {
+    "tag": "button",
+    "txt": "AcceptAccept",
+    "cls": "cookie-banner-accept",
+    "font": "\"BT Grotesk\", Arial, sans-serif",
+    "size": "13.3333px",
+    "weight": "500",
+    "color": "rgb(255, 255, 255)",
+    "bg": "rgb(239, 239, 239)",
+    "border": "0px none rgb(255, 255, 255)",
+    "padding": "0px",
+    "radius": "0px"
+   },
+   {
+    "tag": "button",
+    "txt": "RejectReject",
+    "cls": "cookie-banner-reject",
+    "font": "\"BT Grotesk\", Arial, sans-serif",
+    "size": "13.3333px",
+    "weight": "500",
+    "color": "rgb(40, 40, 40)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px none rgb(40, 40, 40)",
+    "padding": "0px",
+    "radius": "0px"
+   }
+  ],
+  "awwwards": {
+   "cls": "awwwards",
+   "html": "<div class=\"awwwards\"><a href=\"https://www.awwwards.com/sites/heron-ai\" target=\"_blank\" class=\"awwwards-link bg-global w-inline-block\" aria-current=\"\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%\" viewBox=\"0 0 54 172\" fill=\"none\" class=\"svg\"><path d=\"M29.6446 152.569C29.4 153.048 29.0521 153.466 28.6264 153.791C28.2007 154.116 27.7082 154.34 27.1852 154.447L26.2297 152.912C26.8466 152.757 27.3446 152.511 27.7208 152.175C28.0971 151.838 28.2852 151.407 28.2852 150.882C28.2852 150.482 28.18",
+   "rect": {
+    "x": 1389,
+    "y": 380,
+    "w": 44,
+    "h": 139
+   },
+   "href": null
+  },
+  "acceptHover": {
+   "color": "rgb(250, 54, 0)",
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "rgb(250, 54, 0)",
+   "transform": "none"
+  }
+ },
+ "behaviour": {
+  "before": {
+   "cookieStr": "_ga=GA1.1.1217680373.1792713699; _ga_N1KKXK6ZR5=GS2.1.s1792713699$o1$g0$t1792713699$j60$l0$h0; _clck=19sxfjp%5E2%5Egaj%5E0%5E2487; _clsk=1ycyarx%5E1792713700746%5E1%5E1%5Eb.clarity.ms%2Fcollect",
+   "banner": true
+  },
+  "afterClick": {
+   "cookieStr": "_ga=GA1.1.1217680373.1792713699; _ga_N1KKXK6ZR5=GS2.1.s1792713699$o1$g0$t1792713699$j60$l0$h0; _clck=19sxfjp%5E2%5Egaj%5E0%5E2487; _clsk=1ycyarx%5E1792713720969%5E2%5E1%5Eb.clarity.ms%2Fcollect",
+   "banner": true,
+   "bannerVisible": false
+  },
+  "onReload": {
+   "cookieStr": "_ga=GA1.1.1217680373.1792713699; _clck=19sxfjp%5E2%5Egaj%5E0%5E2487; _ga_N1KKXK6ZR5=GS2.1.s1792713699$o1$g1$t1792713721$j38$l0$h0; _clsk=1ycyarx%5E1792713722270%5E3%5E1%5Eb.clarity.ms%2Fcollect",
+   "banner": true
+  },
+  "clickedText": null
+ }
+}

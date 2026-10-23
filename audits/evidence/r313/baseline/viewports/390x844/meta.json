@@ -1,0 +1,168 @@
+{
+ "url": "https://madarek.onrender.com/",
+ "title": "مدارك · منصّة التعليم الذكي",
+ "totalHeight": 16724,
+ "maxScroll": 15880,
+ "scroller": {
+  "type": "window"
+ },
+ "viewport": {
+  "w": 390,
+  "h": 844
+ },
+ "rootFontSize": "16px",
+ "htmlLang": "ar",
+ "dir": "rtl",
+ "themeColor": "#F6F8FA",
+ "sections": [
+  {
+   "kind": "child",
+   "tag": "canvas",
+   "id": null,
+   "cls": "sc-canvas",
+   "top": 0,
+   "height": 844
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "fo-hero",
+   "top": 57,
+   "height": 2276
+  },
+  {
+   "kind": "child",
+   "tag": "main",
+   "id": "main",
+   "cls": "",
+   "top": 57,
+   "height": 15595
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "statement",
+   "cls": "st-section",
+   "top": 2333,
+   "height": 637
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "campus-life",
+   "cls": "um-section",
+   "top": 2970,
+   "height": 2368
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "chapters",
+   "cls": "chapters",
+   "top": 5338,
+   "height": 2613
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "product",
+   "cls": "pr-section",
+   "top": 7951,
+   "height": 1788
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "videos",
+   "cls": "vd-section",
+   "top": 9739,
+   "height": 922
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "live",
+   "cls": "lv-section",
+   "top": 10661,
+   "height": 1144
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "roles",
+   "cls": "rl-section",
+   "top": 11805,
+   "height": 958
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "colleges",
+   "cls": "cg-section",
+   "top": 12763,
+   "height": 1385
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "vision",
+   "cls": "vs-section",
+   "top": 14147,
+   "height": 910
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": "cta",
+   "cls": "fo-cta",
+   "top": 15058,
+   "height": 595
+  },
+  {
+   "kind": "semantic",
+   "tag": "footer",
+   "id": null,
+   "cls": "fo-footer",
+   "top": 15652,
+   "height": 1072
+  }
+ ],
+ "headerInfo": {
+  "cls": "fo-header",
+  "height": 57,
+  "top": 0,
+  "position": "sticky",
+  "transform": "none",
+  "transition": "background 0.5s cubic-bezier(0.23, 1, 0.32, 1)",
+  "zIndex": "60"
+ },
+ "lenis": {
+  "hasLenisGlobal": false,
+  "lenisInstances": null,
+  "lenisAttr": null,
+  "lenisEls": 0,
+  "gsap": false,
+  "barba": false,
+  "swiper": false
+ },
+ "canvases": [
+  {
+   "cls": "sc-canvas",
+   "w": 390,
+   "h": 844,
+   "cssW": "390px",
+   "cssH": "844px",
+   "pos": "fixed",
+   "z": "250",
+   "top": "0px",
+   "left": "0px",
+   "cursor": "none"
+  }
+ ],
+ "bodyBg": "rgb(246, 248, 250)",
+ "htmlBg": "rgb(246, 248, 250)",
+ "scrollBehavior": "smooth",
+ "imgCount": 14,
+ "cookieBanner": null
+}

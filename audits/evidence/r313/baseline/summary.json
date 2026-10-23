@@ -1,0 +1,108 @@
+{
+ "name": "madarek-landing",
+ "url": "https://madarek.onrender.com/",
+ "deep": "1440x900",
+ "primary": {
+  "url": "https://madarek.onrender.com/",
+  "totalHeight": 16280,
+  "scroller": {
+   "type": "window"
+  },
+  "sections": 14,
+  "surfaceSweepOk": true
+ },
+ "viewports": [
+  {
+   "viewport": "1440x900",
+   "totalHeight": 16280,
+   "rootFontSize": "16px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 14
+  },
+  {
+   "viewport": "1440x700",
+   "totalHeight": 15428,
+   "rootFontSize": "16px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 14
+  },
+  {
+   "viewport": "1280x800",
+   "totalHeight": 15908,
+   "rootFontSize": "16px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 14
+  },
+  {
+   "viewport": "1024x768",
+   "totalHeight": 20121,
+   "rootFontSize": "16px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 14
+  },
+  {
+   "viewport": "768x1024",
+   "totalHeight": 15887,
+   "rootFontSize": "16px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 14
+  },
+  {
+   "viewport": "390x844",
+   "totalHeight": 16724,
+   "rootFontSize": "16px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 14
+  },
+  {
+   "viewport": "360x800",
+   "totalHeight": 17110,
+   "rootFontSize": "16px",
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 14
+  }
+ ],
+ "posts": [
+  {
+   "url": "https://madarek.onrender.com/colleges",
+   "totalHeight": 2689,
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 5,
+   "surfaceSweepOk": true
+  },
+  {
+   "url": "https://madarek.onrender.com/auth",
+   "totalHeight": 900,
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 2,
+   "surfaceSweepOk": true
+  },
+  {
+   "url": "https://madarek.onrender.com/auth/register",
+   "totalHeight": 900,
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 2,
+   "surfaceSweepOk": true
+  }
+ ]
+}

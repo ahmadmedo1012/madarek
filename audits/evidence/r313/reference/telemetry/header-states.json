@@ -1,0 +1,47 @@
+{
+ "meta": {
+  "capturedAt": "2026-10-23T00:33:04.705Z",
+  "viewport": "1440x900",
+  "method": "direct wrapper scrollTop sets (Lenis-synced)"
+ },
+ "top": {
+  "cls": "header",
+  "y": 7,
+  "transform": "none",
+  "opacity": "1",
+  "visibility": "visible",
+  "scrollTop": 0
+ },
+ "scrollDown900": {
+  "cls": "header on-hide on-scroll",
+  "y": 7,
+  "transform": "none",
+  "opacity": "1",
+  "visibility": "visible",
+  "scrollTop": 900
+ },
+ "scrollDown2400": {
+  "cls": "header on-hide on-scroll",
+  "y": 7,
+  "transform": "none",
+  "opacity": "1",
+  "visibility": "visible",
+  "scrollTop": 2400
+ },
+ "scrollUp1500": {
+  "cls": "header on-scroll on-hide",
+  "y": 7,
+  "transform": "none",
+  "opacity": "1",
+  "visibility": "visible",
+  "scrollTop": 1500
+ },
+ "backToTop": {
+  "cls": "header on-hide",
+  "y": 7,
+  "transform": "none",
+  "opacity": "1",
+  "visibility": "visible",
+  "scrollTop": 0
+ }
+}

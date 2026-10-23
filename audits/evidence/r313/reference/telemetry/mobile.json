@@ -1,0 +1,194 @@
+{
+ "meta": {
+  "capturedAt": "2026-10-23T00:31:38.300Z",
+  "viewport": "390x844",
+  "touch": true,
+  "dsf": 2
+ },
+ "closed": {
+  "state": "closed",
+  "header": {
+   "cls": "header",
+   "h": 49.609375,
+   "y": 7.9375,
+   "pos": "fixed",
+   "w": 374.125
+  },
+  "menuBtn": {
+   "cls": "header-menu-btn w-inline-block",
+   "display": "flex",
+   "w": 187.0625,
+   "h": 49.609375,
+   "txt": "MENU"
+  },
+  "heroInteractWrap": {
+   "display": "none",
+   "visibility": "visible"
+  },
+  "guides": null,
+  "plus": {
+   "display": "flex"
+  },
+  "readout": {
+   "display": "block"
+  },
+  "canvas": null,
+  "headerCta": {
+   "display": "none",
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "top": 0,
+    "right": 0,
+    "bottom": 0,
+    "left": 0
+   }
+  },
+  "headerMenu": {
+   "cls": "header-menu bg-global",
+   "display": "flex"
+  },
+  "rootFontSize": "9.92366px",
+  "mediaHoverAndMinWidth992": false
+ },
+ "open": {
+  "state": "open",
+  "header": {
+   "cls": "header",
+   "h": 49.609375,
+   "y": 7.9375,
+   "pos": "fixed",
+   "w": 374.125
+  },
+  "menuBtn": {
+   "cls": "header-menu-btn w-inline-block active",
+   "display": "flex",
+   "w": 187.0625,
+   "h": 49.609375,
+   "txt": "MENU"
+  },
+  "heroInteractWrap": {
+   "display": "none",
+   "visibility": "visible"
+  },
+  "guides": null,
+  "plus": {
+   "display": "flex"
+  },
+  "readout": {
+   "display": "block"
+  },
+  "canvas": null,
+  "headerCta": {
+   "display": "none",
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "top": 0,
+    "right": 0,
+    "bottom": 0,
+    "left": 0
+   }
+  },
+  "headerMenu": {
+   "cls": "header-menu bg-global active",
+   "display": "flex"
+  },
+  "rootFontSize": "9.92366px",
+  "mediaHoverAndMinWidth992": false
+ },
+ "menuDetail": {
+  "visibleItems": [
+   {
+    "txt": "PRODUCT PRODUCT",
+    "cls": "header-menu-item has-submenu",
+    "y": 58,
+    "h": 40
+   },
+   {
+    "txt": "PRICING PRICING",
+    "cls": "header-menu-item w-inline-block",
+    "y": 98,
+    "h": 40
+   },
+   {
+    "txt": "RESOURCES RESOURCES",
+    "cls": "header-menu-item has-submenu",
+    "y": 138,
+    "h": 40
+   },
+   {
+    "txt": "ABOUT ABOUT",
+    "cls": "header-menu-item w-inline-block",
+    "y": 178,
+    "h": 40
+   },
+   {
+    "txt": "CONTACT US CONTACT US",
+    "cls": "header-cta only-mb w-inline-block",
+    "y": 218,
+    "h": 51
+   }
+  ],
+  "menuWrap": {
+   "cls": "header-menu-wrap",
+   "display": "flex"
+  }
+ },
+ "reopened": {
+  "state": "closed-again",
+  "header": {
+   "cls": "header",
+   "h": 49.609375,
+   "y": 7.9375,
+   "pos": "fixed",
+   "w": 374.125
+  },
+  "menuBtn": {
+   "cls": "header-menu-btn w-inline-block",
+   "display": "flex",
+   "w": 187.0625,
+   "h": 49.609375,
+   "txt": "MENU"
+  },
+  "heroInteractWrap": {
+   "display": "none",
+   "visibility": "visible"
+  },
+  "guides": null,
+  "plus": {
+   "display": "flex"
+  },
+  "readout": {
+   "display": "block"
+  },
+  "canvas": null,
+  "headerCta": {
+   "display": "none",
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "top": 0,
+    "right": 0,
+    "bottom": 0,
+    "left": 0
+   }
+  },
+  "headerMenu": {
+   "cls": "header-menu bg-global",
+   "display": "flex"
+  },
+  "rootFontSize": "9.92366px",
+  "mediaHoverAndMinWidth992": false
+ },
+ "crops": [
+  "telemetry/mobile-menu-closed-390.jpg",
+  "telemetry/mobile-menu-open-390.jpg"
+ ]
+}

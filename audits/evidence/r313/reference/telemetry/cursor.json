@@ -1,0 +1,149 @@
+{
+ "meta": {
+  "capturedAt": "2026-10-23T00:31:26.058Z",
+  "viewport": "1440x900",
+  "pointer": "fine (desktop context)"
+ },
+ "dom": {
+  "canvas": {
+   "cls": "(none)",
+   "cssW": "1440px",
+   "cssH": "900px",
+   "pos": "fixed",
+   "top": "0px",
+   "left": "0px",
+   "zIndex": "2147483600",
+   "pointerEvents": "none",
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "w": 1440,
+    "h": 900
+   }
+  },
+  "cursorRoot": {
+   "cls": "cursor",
+   "pos": "fixed",
+   "z": "999",
+   "w": "1440px",
+   "h": "900px"
+  },
+  "cursorMain": {
+   "cls": "cursor-main",
+   "display": "flex",
+   "w": "0px",
+   "h": "0px"
+  },
+  "cursorInner": {
+   "cls": "cursor-inner",
+   "radius": "50%",
+   "w": "5px",
+   "h": "5px",
+   "bg": "rgb(221, 96, 19)",
+   "opacity": "0",
+   "transition": "0.4s"
+  },
+  "dataCursorHidden": [
+   "loading-inner",
+   "home-hero-img-wrap",
+   "home-hero-ruler-item-wrap",
+   "home-hero-ruler-item-wrap",
+   "home-hero-ruler-item-wrap",
+   "home-hero-ruler-item-wrap"
+  ]
+ },
+ "neutral": {
+  "mouse": [
+   700,
+   450
+  ],
+  "canvas": {
+   "drawnPixels": 0,
+   "note": "no opaque pixels in window (cursor may be lerping away or suppressed)"
+  }
+ },
+ "hoverNavPricing": {
+  "mouse": [
+   925,
+   35
+  ],
+  "cursorMainCls": "cursor-main hidden",
+  "hoverLink": "a.header-menu-item[href*=\"pricing\"]",
+  "canvas": {
+   "drawnPixels": 100,
+   "bbox": {
+    "x": 920,
+    "y": 29,
+    "w": 10,
+    "h": 10
+   },
+   "dominantColors": [
+    {
+     "rgb": "rgb(250,54,0)",
+     "hex": "#fa3600",
+     "px": 64
+    },
+    {
+     "rgb": "rgb(249,54,0)",
+     "hex": "#f93600",
+     "px": 32
+    },
+    {
+     "rgb": "rgb(251,52,0)",
+     "hex": "#fb3400",
+     "px": 4
+    }
+   ],
+   "window": {
+    "x": 895,
+    "y": 5,
+    "w": 60,
+    "h": 60
+   }
+  }
+ },
+ "hoverHeaderCta": {
+  "mouse": [
+   1350,
+   35
+  ],
+  "canvas": {
+   "drawnPixels": 100,
+   "bbox": {
+    "x": 1345,
+    "y": 29,
+    "w": 10,
+    "h": 10
+   },
+   "dominantColors": [
+    {
+     "rgb": "rgb(250,54,0)",
+     "hex": "#fa3600",
+     "px": 64
+    },
+    {
+     "rgb": "rgb(249,54,0)",
+     "hex": "#f93600",
+     "px": 32
+    },
+    {
+     "rgb": "rgb(251,52,0)",
+     "hex": "#fb3400",
+     "px": 4
+    }
+   ],
+   "window": {
+    "x": 1320,
+    "y": 5,
+    "w": 60,
+    "h": 60
+   }
+  }
+ },
+ "crops": [
+  "telemetry/cursor-neutral-1440.jpg",
+  "telemetry/cursor-hover.jpg",
+  "telemetry/cursor-hover-cta.jpg"
+ ],
+ "note": "canvas sample = opaque (alpha>40) pixel bbox + dominant colour in a 60x60 window centred on the pointer (post-settle); bbox approximates the square cursor / reticle footprint"
+}

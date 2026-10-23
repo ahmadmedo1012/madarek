@@ -1,0 +1,416 @@
+{
+ "site": "madarek-baseline",
+ "capturedAt": "2026-10-23T00:22:33.822Z",
+ "paper": {
+  "bodyBg": "rgb(246, 248, 250)",
+  "htmlBg": "rgb(246, 248, 250)",
+  "themeColor": "#F6F8FA"
+ },
+ "pageHeight": {
+  "1440x900": 16280,
+  "1440x700": 15428,
+  "1280x800": 15908,
+  "1024x768": 20121,
+  "768x1024": 15887,
+  "390x844": 16724,
+  "360x800": 17110
+ },
+ "rootFontSize": {
+  "1440x900": "16px",
+  "1440x700": "16px",
+  "1280x800": "16px",
+  "1024x768": "16px",
+  "768x1024": "16px",
+  "390x844": "16px",
+  "360x800": "16px"
+ },
+ "scroller": {
+  "type": "window",
+  "cls": ""
+ },
+ "sections": [
+  {
+   "n": 1,
+   "cls": "sc-canvas",
+   "id": "",
+   "height": 900,
+   "pct": 5.5
+  },
+  {
+   "n": 2,
+   "cls": "fo-hero",
+   "id": "",
+   "height": 1807,
+   "pct": 11.1
+  },
+  {
+   "n": 3,
+   "cls": "",
+   "id": "main",
+   "height": 15552,
+   "pct": 95.5
+  },
+  {
+   "n": 4,
+   "cls": "st-section",
+   "id": "statement",
+   "height": 512,
+   "pct": 3.1
+  },
+  {
+   "n": 5,
+   "cls": "um-section",
+   "id": "campus-life",
+   "height": 1864,
+   "pct": 11.4
+  },
+  {
+   "n": 6,
+   "cls": "chapters",
+   "id": "chapters",
+   "height": 5318,
+   "pct": 32.7
+  },
+  {
+   "n": 7,
+   "cls": "pr-section",
+   "id": "product",
+   "height": 1331,
+   "pct": 8.2
+  },
+  {
+   "n": 8,
+   "cls": "vd-section",
+   "id": "videos",
+   "height": 824,
+   "pct": 5.1
+  },
+  {
+   "n": 9,
+   "cls": "lv-section",
+   "id": "live",
+   "height": 758,
+   "pct": 4.7
+  },
+  {
+   "n": 10,
+   "cls": "rl-section",
+   "id": "roles",
+   "height": 958,
+   "pct": 5.9
+  },
+  {
+   "n": 11,
+   "cls": "cg-section",
+   "id": "colleges",
+   "height": 893,
+   "pct": 5.5
+  },
+  {
+   "n": 12,
+   "cls": "vs-section",
+   "id": "vision",
+   "height": 637,
+   "pct": 3.9
+  },
+  {
+   "n": 13,
+   "cls": "fo-cta",
+   "id": "cta",
+   "height": 651,
+   "pct": 4
+  },
+  {
+   "n": 14,
+   "cls": "fo-footer",
+   "id": "",
+   "height": 671,
+   "pct": 4.1
+  }
+ ],
+ "header": {
+  "height": 57,
+  "position": "sticky",
+  "hideShow": null,
+  "classes": {
+   "top": "fo-header",
+   "scrolled": "fo-header scrolled"
+  }
+ },
+ "typography": {
+  "h1": {
+   "selector": ".fo-hero-title h1",
+   "styles": {
+    "font-family": "Alexandria, \"IBM Plex Sans Arabic\", system-ui, sans-serif",
+    "font-size": "64px",
+    "font-weight": "700",
+    "line-height": "81.92px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "color": "rgb(40, 40, 40)",
+    "background-color": "rgba(0, 0, 0, 0)",
+    "background-image": "none",
+    "border-top-width": "0px",
+    "border-top-style": "none",
+    "border-top-color": "rgb(40, 40, 40)",
+    "border-radius": "0px",
+    "box-shadow": "none",
+    "padding-top": "0px",
+    "padding-right": "0px",
+    "padding-bottom": "0px",
+    "padding-left": "0px",
+    "margin-top": "0px",
+    "gap": "normal",
+    "width": "440px",
+    "height": "81.9062px",
+    "transition": "opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.08s, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.08s",
+    "animation": "none",
+    "text-align": "start",
+    "opacity": "1",
+    "z-index": "auto",
+    "position": "static",
+    "backdrop-filter": "none"
+   }
+  },
+  "body": {
+   "selector": "p (IBM Plex 16/400)",
+   "styles": {
+    "font-family": "\"IBM Plex Sans Arabic\", Tajawal, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+    "font-size": "16px",
+    "font-weight": "400",
+    "line-height": "26.4px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "color": "rgb(65, 65, 64)",
+    "background-color": "rgba(0, 0, 0, 0)",
+    "background-image": "none",
+    "border-top-width": "0px",
+    "border-top-style": "none",
+    "border-top-color": "rgb(65, 65, 64)",
+    "border-radius": "0px",
+    "box-shadow": "none",
+    "padding-top": "12px",
+    "padding-right": "0px",
+    "padding-bottom": "12px",
+    "padding-left": "0px",
+    "margin-top": "0px",
+    "gap": "4px",
+    "width": "616px",
+    "height": "82.5781px",
+    "transition": "opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1)",
+    "animation": "none",
+    "text-align": "start",
+    "opacity": "0",
+    "z-index": "auto",
+    "position": "static",
+    "backdrop-filter": "none"
+   }
+  },
+  "microMono": {
+   "selector": ".fo-mono",
+   "styles": {
+    "font-family": "\"IBM Plex Mono\", \"IBM Plex Sans Arabic\", ui-monospace, SFMono-Regular, monospace",
+    "font-size": "13px",
+    "font-weight": "400",
+    "line-height": "21.45px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "color": "rgb(114, 114, 111)",
+    "background-color": "rgba(0, 0, 0, 0)",
+    "background-image": "none",
+    "border-top-width": "0px",
+    "border-top-style": "none",
+    "border-top-color": "rgb(114, 114, 111)",
+    "border-radius": "0px",
+    "box-shadow": "none",
+    "padding-top": "0px",
+    "padding-right": "0px",
+    "padding-bottom": "0px",
+    "padding-left": "0px",
+    "margin-top": "12px",
+    "gap": "normal",
+    "width": "1112px",
+    "height": "21.4375px",
+    "transition": "all",
+    "animation": "none",
+    "text-align": "start",
+    "opacity": "1",
+    "z-index": "auto",
+    "position": "static",
+    "backdrop-filter": "none"
+   }
+  }
+ },
+ "buttons": [
+  {
+   "name": "landing-primary-cta",
+   "default": {
+    "selector": "a.fo-hero-cta",
+    "tag": "a",
+    "className": "btn accent lg fo-hero-cta",
+    "text": "أنشئ حسابك الجامعي",
+    "styles": {
+     "font-family": "\"IBM Plex Sans Arabic\", Tajawal, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+     "font-size": "16px",
+     "font-weight": "600",
+     "line-height": "26.4px",
+     "letter-spacing": "normal",
+     "color": "rgb(25, 25, 24)",
+     "background-color": "rgb(250, 54, 0)",
+     "background-image": "none",
+     "border-top-width": "1px",
+     "border-top-style": "solid",
+     "border-top-color": "rgb(250, 54, 0)",
+     "border-bottom-width": "1px",
+     "border-bottom-color": "rgb(250, 54, 0)",
+     "border-radius": "6px",
+     "box-shadow": "color(srgb 0.980392 0.211765 0 / 0.16) 0px 4px 12px 0px",
+     "padding-top": "0px",
+     "padding-right": "24px",
+     "padding-bottom": "0px",
+     "padding-left": "24px",
+     "width": "212px",
+     "height": "48px",
+     "transition": "background 0.2s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.2s cubic-bezier(0.23, 1, 0.32, 1), color 0.2s cubic-bezier(0.23, 1, 0.32, 1), transform 0.08s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s cubic-bezier(0.23, 1, 0.32, 1)",
+     "transform": "none",
+     "text-transform": "none",
+     "gap": "8px"
+    },
+    "rect": {
+     "x": 1059,
+     "y": 322,
+     "w": 212,
+     "h": 48
+    }
+   },
+   "hover": {
+    "selector": "a.fo-hero-cta",
+    "tag": "a",
+    "className": "btn accent lg fo-hero-cta",
+    "text": "أنشئ حسابك الجامعي",
+    "styles": {
+     "font-family": "\"IBM Plex Sans Arabic\", Tajawal, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+     "font-size": "16px",
+     "font-weight": "600",
+     "line-height": "26.4px",
+     "letter-spacing": "normal",
+     "color": "rgb(25, 25, 24)",
+     "background-color": "oklab(0.69005 0.169042 0.110563)",
+     "background-image": "none",
+     "border-top-width": "1px",
+     "border-top-style": "solid",
+     "border-top-color": "oklab(0.69005 0.169042 0.110563)",
+     "border-bottom-width": "1px",
+     "border-bottom-color": "oklab(0.69005 0.169042 0.110563)",
+     "border-radius": "6px",
+     "box-shadow": "color(srgb 0.980392 0.211765 0 / 0.18) 0px 8px 16px 0px",
+     "padding-top": "0px",
+     "padding-right": "24px",
+     "padding-bottom": "0px",
+     "padding-left": "24px",
+     "width": "212px",
+     "height": "48px",
+     "transition": "background 0.2s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.2s cubic-bezier(0.23, 1, 0.32, 1), color 0.2s cubic-bezier(0.23, 1, 0.32, 1), transform 0.08s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s cubic-bezier(0.23, 1, 0.32, 1)",
+     "transform": "matrix(1, 0, 0, 1, 0, -1)",
+     "text-transform": "none",
+     "gap": "8px"
+    },
+    "rect": {
+     "x": 1059,
+     "y": 321,
+     "w": 212,
+     "h": 48
+    }
+   }
+  }
+ ],
+ "radius": {
+  "policy": "ladder 2-20px",
+  "violationsCount": 126
+ },
+ "shadows": {
+  "policy": "elev-1..5",
+  "violationsCount": 6
+ },
+ "loader": {
+  "visibleMs": 8621,
+  "logLines": 5,
+  "exitMs": 21,
+  "exitNote": "exit CUT SHORT — .sl detaches ~21ms after exit start (designed 650ms center-out split never visibly plays; SheetLoader onDone remount race — NOTES D5)",
+  "gating": "session"
+ },
+ "routeTransition": {
+  "durationMs": 721,
+  "geometry": "landing-exit .sx center-out two-band polygon clip (designed 700ms) running CONCURRENTLY with GuestReveal top-down inset() sweep 0.5s (--t-slow); 1px line spike at midpoint",
+  "totalPerceivedMs": 927,
+  "clickToUrlChangeMs": 206
+ },
+ "scroll": {
+  "engine": "native",
+  "probeTailMs": 0
+ },
+ "surfaceSweepPerRole": {
+  "student": {
+   "sampled": 71,
+   "radiusNonZero": 11,
+   "shadowNonNone": 2
+  },
+  "teacher": {
+   "sampled": 71,
+   "radiusNonZero": 11,
+   "shadowNonNone": 2
+  },
+  "quality": {
+   "sampled": 71,
+   "radiusNonZero": 11,
+   "shadowNonNone": 2
+  },
+  "admin": {
+   "sampled": 71,
+   "radiusNonZero": 11,
+   "shadowNonNone": 2
+  },
+  "owner": {
+   "sampled": 71,
+   "radiusNonZero": 11,
+   "shadowNonNone": 2
+  }
+ },
+ "loginOutcomes": {
+  "student": {
+   "login": "failed",
+   "capturedUrl": "/auth",
+   "note": "census login redirected to /auth — same per-user lockout signature (all 5 demo accounts locked by an external brute-force actor; see NOTES Role census results)"
+  },
+  "teacher": {
+   "login": "failed",
+   "capturedUrl": "/auth",
+   "note": "confirmed ACCOUNT_LOCKED (429 «الحساب مقفل مؤقتاً» via direct POST /api/v1/auth/login probe 00:14 UTC)"
+  },
+  "quality": {
+   "login": "failed",
+   "capturedUrl": "/auth",
+   "note": "census login redirected to /auth — same per-user lockout signature (all 5 demo accounts locked by an external brute-force actor; see NOTES Role census results)"
+  },
+  "admin": {
+   "login": "failed",
+   "capturedUrl": "/auth",
+   "note": "census login redirected to /auth — same per-user lockout signature (all 5 demo accounts locked by an external brute-force actor; see NOTES Role census results)"
+  },
+  "owner": {
+   "login": "failed",
+   "capturedUrl": "/auth",
+   "note": "census login redirected to /auth — same per-user lockout signature (all 5 demo accounts locked by an external brute-force actor; see NOTES Role census results)"
+  }
+ },
+ "fonts": [
+  "IBM Plex Sans Arabic 400 normal",
+  "IBM Plex Sans Arabic 500 normal",
+  "IBM Plex Sans Arabic 600 normal",
+  "IBM Plex Sans Arabic 700 normal",
+  "IBM Plex Mono 400 normal",
+  "IBM Plex Mono 500 normal",
+  "Alexandria 600 normal",
+  "Alexandria 700 normal"
+ ]
+}

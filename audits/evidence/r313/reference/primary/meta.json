@@ -1,0 +1,163 @@
+{
+ "url": "https://heronaiapp.com/",
+ "title": "Heron AI | Works inside your design tools",
+ "totalHeight": 12355,
+ "maxScroll": 11468,
+ "scroller": {
+  "type": "element",
+  "tag": "DIV",
+  "cls": "main-inner lenis"
+ },
+ "viewport": {
+  "w": 1440,
+  "h": 900
+ },
+ "rootFontSize": "8.33333px",
+ "htmlLang": "en",
+ "dir": "ltr",
+ "themeColor": null,
+ "sections": [
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-hero",
+   "top": 7,
+   "height": 887
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-intro",
+   "top": 893,
+   "height": 723
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-problem",
+   "top": 1616,
+   "height": 743
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-map",
+   "top": 2358,
+   "height": 6300
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-platform",
+   "top": 8658,
+   "height": 710
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-why",
+   "top": 9368,
+   "height": 698
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "home-usecase",
+   "top": 10067,
+   "height": 887
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "cta",
+   "top": 10953,
+   "height": 698
+  },
+  {
+   "kind": "semantic",
+   "tag": "footer",
+   "id": null,
+   "cls": "footer",
+   "top": 11651,
+   "height": 711
+  }
+ ],
+ "headerInfo": {
+  "cls": "header",
+  "height": 56,
+  "top": 7,
+  "position": "fixed",
+  "transform": "none",
+  "transition": "all",
+  "zIndex": "10000000"
+ },
+ "lenis": {
+  "hasLenisGlobal": true,
+  "lenisInstances": null,
+  "lenisAttr": null,
+  "lenisEls": 1,
+  "gsap": true,
+  "barba": true,
+  "swiper": true
+ },
+ "canvases": [
+  {
+   "cls": "",
+   "w": 1440,
+   "h": 900,
+   "cssW": "1440px",
+   "cssH": "900px",
+   "pos": "fixed",
+   "z": "2147483600",
+   "top": "0px",
+   "left": "0px",
+   "cursor": "auto"
+  }
+ ],
+ "bodyBg": "rgba(0, 0, 0, 0)",
+ "htmlBg": "rgba(0, 0, 0, 0)",
+ "scrollBehavior": "auto",
+ "imgCount": 45,
+ "cookieBanner": {
+  "cls": "cookie",
+  "visible": false
+ },
+ "headerStates": {
+  "top": {
+   "cls": "header on-scroll on-hide",
+   "y": 7,
+   "transform": "none",
+   "opacity": "1",
+   "visibility": "visible"
+  },
+  "scrolled": {
+   "cls": "header on-scroll on-hide",
+   "y": 7,
+   "transform": "none",
+   "opacity": "1",
+   "visibility": "visible"
+  },
+  "scrolledMore": {
+   "cls": "header on-scroll on-hide",
+   "y": 7,
+   "transform": "none",
+   "opacity": "1",
+   "visibility": "visible"
+  },
+  "scrolledBack": {
+   "cls": "header on-scroll on-hide",
+   "y": 7,
+   "transform": "none",
+   "opacity": "1",
+   "visibility": "visible"
+  }
+ }
+}

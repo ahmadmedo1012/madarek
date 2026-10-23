@@ -1,0 +1,976 @@
+{
+ "transitions": [
+  {
+   "sel": "pre.w-code-block code",
+   "t": "inherit"
+  },
+  {
+   "sel": ".w-webflow-badge, .w-webflow-badge > img",
+   "t": "unset"
+  },
+  {
+   "sel": ".w-slider-dot",
+   "t": "background-color 0.1s, color 0.1s"
+  },
+  {
+   "sel": ".w-lightbox-control",
+   "t": "0.3s"
+  },
+  {
+   "sel": ".cursor-inner",
+   "t": "0.4s"
+  },
+  {
+   "sel": ".header-inner",
+   "t": "transform 0.4s"
+  },
+  {
+   "sel": ".embed-ic.is-check",
+   "t": "opacity 0.3s"
+  },
+  {
+   "sel": ".embed-ic.is-loading",
+   "t": "opacity 0.3s"
+  },
+  {
+   "sel": ".line.line-dash.line-horizital.bot.left.right.home-usecase-faq-item-line-hover, .line.line-dash.line-horizital.bot.left.right.product-faq-item-line-hover, .line.line-dash.line-horizital.bot.left.right.tp-resource-hero-table-item-line-hover, .line.line-dash.line-horizital.bot.left.right.tp-resource-hero-table-item-line-hover, .line.line-dash.line-horizital.bot.left.right.policy-hero-table-item-line-hover",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".header-cta",
+   "t": "color 0.4s, background-color 0.4s"
+  },
+  {
+   "sel": ".txt.txt-font-mono.txt-14.footer-link",
+   "t": "color 0.3s"
+  },
+  {
+   "sel": ".txt.txt-font-mono.txt-12.policy-hero-table-item-number",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".header-menu-item",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".loading",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".header-menu-item-ic",
+   "t": "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)"
+  },
+  {
+   "sel": ".header-menu-dropdown-item",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".home-hero-btn",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".line-anim",
+   "t": "background-color 0.4s"
+  },
+  {
+   "sel": ".home-problem-item",
+   "t": "opacity 0.2s"
+  },
+  {
+   "sel": ".home-platform-content-btn-wrap",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".home-problem-item-head-title",
+   "t": "transform 0.4s"
+  },
+  {
+   "sel": ".home-usecase-faq-item-numb",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".home-usecase-faq-item-ic",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".btn.btn-outline.pricing-hero-package-btn",
+   "t": "border-color 0.4s cubic-bezier(0.23, 1, 0.32, 1), color 0.4s cubic-bezier(0.23, 1, 0.32, 1)"
+  },
+  {
+   "sel": ".btn.btn-outline.notfound-hero-noti-btn",
+   "t": "color 0.4s, border-color 0.4s"
+  },
+  {
+   "sel": ".btn.resource-hero-load",
+   "t": "border-color 0.4s, color 0.4s"
+  },
+  {
+   "sel": ".btn-ic",
+   "t": "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)"
+  },
+  {
+   "sel": ".footer-logo-inner",
+   "t": "opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1)"
+  },
+  {
+   "sel": ".footer-menu-item-link",
+   "t": "color 0.2s"
+  },
+  {
+   "sel": ".input",
+   "t": "border-color 0.45s"
+  },
+  {
+   "sel": ".input-submit.footer-form-input-submit",
+   "t": "border-color 0.2s, background-color 0.4s, color 0.4s"
+  },
+  {
+   "sel": ".footer-info-item-title",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".footer-policy-item",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".home-problem-pagi-item",
+   "t": "background-color 0.4s"
+  },
+  {
+   "sel": ".home-why-pagi-item",
+   "t": "background-color 0.4s"
+  },
+  {
+   "sel": ".home-hero-ruler-item",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".home-hero-img-deco-ic",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".home-hero-img-deco-bg",
+   "t": "top 0.4s, right 0.4s, height 0.4s, width 0.4s"
+  },
+  {
+   "sel": ".home-map-content",
+   "t": "width 0.4s"
+  },
+  {
+   "sel": ".home-map-main-img-sub-hover",
+   "t": "width 0.4s, transform 0.4s, opacity 0.4s"
+  },
+  {
+   "sel": ".home-map-intro",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".home-map-intro-content",
+   "t": "height 0.4s"
+  },
+  {
+   "sel": ".home-map-content-wrap",
+   "t": "width 0.4s"
+  },
+  {
+   "sel": ".home-hero-intro",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".product-hero-btn",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".product-key-tab-wrap",
+   "t": "top 0.4s"
+  },
+  {
+   "sel": ".product-key-tab-item",
+   "t": "background-color 0.4s"
+  },
+  {
+   "sel": ".product-key-tab-item-label",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".product-key-tab-item-title",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".product-key-main-title",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".product-key-main-sub",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".product-how-item-label",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".product-faq-item",
+   "t": "0.4s"
+  },
+  {
+   "sel": ".product-faq-item-ic",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".pricing-hero-tab-item",
+   "t": "background-color 0.4s, color 0.4s"
+  },
+  {
+   "sel": ".pricing-hero-package-item-title",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".pricing-hero-package-item-ic",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".pricing-hero-package-wrap.bg-global",
+   "t": "top 0.4s"
+  },
+  {
+   "sel": ".pricing-hero-pagi-item",
+   "t": "background-color 0.4s"
+  },
+  {
+   "sel": ".contact-hero-info-item-title",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".contact-hero-form-label.item-transition",
+   "t": "transform 0.2s, top 0.4s, color 0.4s"
+  },
+  {
+   "sel": ".contact-hero-form-input-submit.btn-bg-hover",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".contact-hero-form-error",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".about-intro-wrap",
+   "t": "opacity 0.2s"
+  },
+  {
+   "sel": ".about-team-item-plus",
+   "t": "transform 0.4s"
+  },
+  {
+   "sel": ".about-team-item-info-title",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".about-team-item-info-sub",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".about-team-item-info-ic",
+   "t": "background-color 0.4s, color 0.4s"
+  },
+  {
+   "sel": ".about-team-popup",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".about-team-popup-content.bg-global",
+   "t": "transform 0.4s"
+  },
+  {
+   "sel": ".about-team-popup-linkin",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".about-team-popup-close",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".about-job-navi-item",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".about-job-item-info-wrap",
+   "t": "margin-bottom 0.4s"
+  },
+  {
+   "sel": ".about-job-pagi-line-item",
+   "t": "background-color 0.4s"
+  },
+  {
+   "sel": ".about-hero-block",
+   "t": "height 0.4s"
+  },
+  {
+   "sel": ".schedule-hero-email-title.hover-un",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".policy-hero-table-item",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".policy-hero-table-item.active",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".policy-hero-table-item-ic",
+   "t": "transform 0.4s, opacity 0.4s"
+  },
+  {
+   "sel": ".policy-hero-table-inner",
+   "t": "height 0.4s, top 0.4s"
+  },
+  {
+   "sel": ".resource-hero-search-ic",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".resource-hero-item-date",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".resource-hero-item-img",
+   "t": "padding 0.4s"
+  },
+  {
+   "sel": ".resource-hero-item-title",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".resource-hero-item-sub",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".resource-hero-load",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".resource-hero-item-img-overlay",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".tp-resource-hero-table-inner",
+   "t": "top 0.4s"
+  },
+  {
+   "sel": ".tp-resource-hero-table-item-ic",
+   "t": "transform 0.4s, opacity 0.4s"
+  },
+  {
+   "sel": ".tp-resource-hero-table-item",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".tp-resource-hero-table-item.active",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".tp-resource-hero-form-submit",
+   "t": "0.4s"
+  },
+  {
+   "sel": ".tp-resource-hero-form-desc",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".tp-resource-other-btn.btn-bg-hover",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".tp-resource-other-item-date",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".tp-resource-other-item-img",
+   "t": "padding 0.4s"
+  },
+  {
+   "sel": ".tp-resource-other-item-img-overlay",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".tp-resource-other-item-title",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".tp-resource-other-item-sub",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".tp-resource-hero-share-item",
+   "t": "color 0.2s, background-color 0.4s, border-color 0.4s"
+  },
+  {
+   "sel": ".tp-resource-other-pagi-item",
+   "t": "background-color 0.4s"
+  },
+  {
+   "sel": ".contact-hero-form-success-btn.btn-bg-hover",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".home-hero-img-deco-numb",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".home-problem-item-dot",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".home-usecase-faq-item-ic-wrap",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".product-hero-logo-control",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".product-faq-item-num",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".pricing-hero-package-btn",
+   "t": "color 0.4s, border-color 0.4s"
+  },
+  {
+   "sel": ".pricing-hero-package-btn-ic",
+   "t": "border-color 0.4s"
+  },
+  {
+   "sel": ".product-hero-chat-footer-txt",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".product-hero-chat-footer-ic-wrap",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".typing-indicator-item",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".loading-ruler",
+   "t": "opacity 0.3s"
+  },
+  {
+   "sel": ".resource-hero-item-img-plus",
+   "t": "transform 0.4s"
+  },
+  {
+   "sel": ".resource-hero-item-img-plus-item",
+   "t": "transform 0.4s"
+  },
+  {
+   "sel": ".tp-resource-hero-form-success-txt",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".header-logo-item.item-txt",
+   "t": "transform 0.4s"
+  },
+  {
+   "sel": ".tp-resource-hero-table-item-tooltip",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".policy-hero-table-item-tooltip",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".home-intro-partner-ctrl",
+   "t": "color 0.3s"
+  },
+  {
+   "sel": ".home-intro-control",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".home-why-item-img-deco-ic",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".home-why-item-img-deco-bg",
+   "t": "top 0.4s, right 0.4s, height 0.4s, width 0.4s"
+  },
+  {
+   "sel": ".home-why-item-img-box-ic",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".resource-hero-filter-item",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".resource-hero-filter-item-val",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".btn-fill-label-inner",
+   "t": "transform 0.48s cubic-bezier(0.625, 0.05, 0, 1)"
+  },
+  {
+   "sel": ".btn-fill",
+   "t": "border-color 0.3s, color 0.3s cubic-bezier(0.625, 0.05, 0, 1)"
+  },
+  {
+   "sel": ".btn-fill:where(.w-variant-ca0053c9-fb13-e711-67d0-9a6538635190)",
+   "t": "border-color 0.3s"
+  },
+  {
+   "sel": ".btn-fill-icon-inner",
+   "t": "transform 0.48s cubic-bezier(0.625, 0.05, 0, 1)"
+  },
+  {
+   "sel": ".home-why-item-img-box-ic-bg",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".cookie-banner-reject",
+   "t": "border-color 0.4s"
+  },
+  {
+   "sel": ".footer-copyright-txt-block a",
+   "t": "color 0.3s"
+  },
+  {
+   "sel": ".policy-hero-table",
+   "t": "top 0.4s"
+  },
+  {
+   "sel": ".tp-resource-hero-table",
+   "t": "top 0.4s"
+  },
+  {
+   "sel": ".tp-resource-other-control-item",
+   "t": "color 0.4s"
+  },
+  {
+   "sel": ".pricing-hero-tab-wrap.pricing-hero-grid",
+   "t": "top 0.4s"
+  },
+  {
+   "sel": ".hover-un .line-anim-inner-hover",
+   "t": "transform 0.6s"
+  },
+  {
+   "sel": ".path-vertical, .path-horizital",
+   "t": "transform 0.4s"
+  },
+  {
+   "sel": ".btn-bg-hover::after, .btn-fill-hover .btn-fill-txt::after, .btn-fill-hover .btn-fill-ic::after",
+   "t": "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.7s cubic-bezier(0.5, 0.5, 1, 1)"
+  },
+  {
+   "sel": ".btn-control-hover::after",
+   "t": "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.7s cubic-bezier(0.5, 0.5, 1, 1)"
+  },
+  {
+   "sel": ".header-menu-dropdown",
+   "t": "opacity 0.4s, grid-template-rows 0.4s"
+  },
+  {
+   "sel": ".footer-logo-path",
+   "t": "opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1)"
+  },
+  {
+   "sel": ".footer-logo-stroke",
+   "t": "0.5s cubic-bezier(0.23, 1, 0.32, 1)"
+  },
+  {
+   "sel": ".btn-fill-icon::before",
+   "t": "color 0.48s cubic-bezier(0.625, 0.05, 0, 1)"
+  },
+  {
+   "sel": ".btn-fill.is-fill-resetting .btn-fill-icon::before",
+   "t": "color 0.25s cubic-bezier(0.625, 0.05, 0, 1)"
+  },
+  {
+   "sel": ".home-problem-item-title-wrap",
+   "t": "grid-template-rows 0.4s"
+  },
+  {
+   "sel": ".home-problem-item-main::after",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".home-map-number",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".home-map-number-box",
+   "t": "opacity 0.4s"
+  },
+  {
+   "sel": ".home-map-img-svg path",
+   "t": "filter 0.4s"
+  }
+ ],
+ "animations": [
+  {
+   "sel": "pre.w-code-block code",
+   "a": "inherit"
+  },
+  {
+   "sel": ".w-lightbox-spinner",
+   "a": "0.8s linear 0s infinite normal none running spin"
+  },
+  {
+   "sel": ".marquee-left.anim",
+   "a": "30s linear 0s infinite normal none running marqueeLeft"
+  },
+  {
+   "sel": ".marquee-right.anim",
+   "a": "30s linear 0s infinite normal none running marqueeRight"
+  },
+  {
+   "sel": "[data-anim=\"fade-loop\"]",
+   "a": "1.5s ease-out 0s infinite normal none running fadeLoop"
+  },
+  {
+   "sel": ".loading-more::after",
+   "a": "0.6s steps(4) 0s infinite normal none running spin"
+  },
+  {
+   "sel": "[data-anim=\"plus\"]",
+   "a": "0.8s steps(1) 0s infinite normal none running rotate-icon"
+  },
+  {
+   "sel": ".home-why-item-img-deco.active .home-why-item-img-deco-bg, .home-hero-img-deco.active .home-hero-img-deco-bg",
+   "a": "unset"
+  },
+  {
+   "sel": ".home-map-number-wrap:hover, .home-map-number-wrap.active",
+   "a": "unset"
+  },
+  {
+   "sel": ".home-problem-item .manual-draw, .home-problem-item .automation-draw, .home-problem-item .blind-draw, .home-problem-item .slow-draw",
+   "a": "auto ease 0s 1 normal none running none"
+  },
+  {
+   "sel": ".home-problem-item .manual-dash, .home-problem-item .automation-dash, .home-problem-item .blind-dash, .home-problem-item .slow-dash",
+   "a": "auto ease 0s 1 normal none running none"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"] .manual-mask-draw",
+   "a": "auto ease 0s 1 normal none running none"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-database-top",
+   "a": "homeProblemDraw 0.8s var(--draw-ease) 0s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-database-inner",
+   "a": "homeProblemDraw 0.65s var(--draw-ease) 0.12s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-column-upper-left, .home-problem-item[data-problem=\"manual\"]:hover .manual-column-upper-right",
+   "a": "homeProblemDraw 0.45s var(--draw-ease) 0.25s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-package-top-left, .home-problem-item[data-problem=\"manual\"]:hover .manual-package-top-right",
+   "a": "homeProblemDraw 0.75s var(--draw-ease) 0.2s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-package-upper-left, .home-problem-item[data-problem=\"manual\"]:hover .manual-package-upper-right",
+   "a": "homeProblemDraw 0.7s var(--draw-ease) 0.4s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-package-left-side, .home-problem-item[data-problem=\"manual\"]:hover .manual-package-right-side",
+   "a": "homeProblemDraw 0.9s var(--draw-ease) 0.55s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-package-center",
+   "a": "homeProblemDraw 0.4s var(--draw-ease) 0.9s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-column-lower-left, .home-problem-item[data-problem=\"manual\"]:hover .manual-column-lower-right",
+   "a": "homeProblemDraw 0.4s var(--draw-ease) 0.95s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-database-bottom",
+   "a": "homeProblemDraw 0.45s var(--draw-ease) 1.15s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-dash",
+   "a": "homeProblemDashAppear 0.35s ease-in var(--dash-delay) forwards,\n        homeProblemDashFlow var(--dash-duration) linear var(--dash-delay) infinite"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-database-top",
+   "a": "homeProblemDraw 0.8s var(--draw-ease) 0s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-database-inner",
+   "a": "homeProblemDraw 0.65s var(--draw-ease) 0.12s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-column-upper-left, .home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-column-upper-right",
+   "a": "homeProblemDraw 0.45s var(--draw-ease) 0.25s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-package-top-left, .home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-package-top-right",
+   "a": "homeProblemDraw 0.75s var(--draw-ease) 0.2s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-package-upper-left, .home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-package-upper-right",
+   "a": "homeProblemDraw 0.7s var(--draw-ease) 0.4s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-package-left-side, .home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-package-right-side",
+   "a": "homeProblemDraw 0.9s var(--draw-ease) 0.55s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-package-center",
+   "a": "homeProblemDraw 0.4s var(--draw-ease) 0.9s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-column-lower-left, .home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-column-lower-right",
+   "a": "homeProblemDraw 0.4s var(--draw-ease) 0.95s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-database-bottom",
+   "a": "homeProblemDraw 0.45s var(--draw-ease) 1.15s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-dash",
+   "a": "homeProblemDashAppear 0.35s ease-in var(--dash-delay) forwards,\n        homeProblemDashFlow var(--dash-duration) linear var(--dash-delay) infinite"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"] .automation-mask-draw",
+   "a": "auto ease 0s 1 normal none running none"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-circle",
+   "a": "homeProblemDraw 0.8s var(--draw-ease) 0s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-left-top, .home-problem-item[data-problem=\"disjointed\"]:hover .automation-right-top",
+   "a": "homeProblemDraw 0.35s var(--draw-ease) 0.2s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-left-side, .home-problem-item[data-problem=\"disjointed\"]:hover .automation-right-side",
+   "a": "homeProblemDraw 0.4s var(--draw-ease) 0.35s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-left-bottom, .home-problem-item[data-problem=\"disjointed\"]:hover .automation-right-bottom",
+   "a": "homeProblemDraw 0.6s var(--draw-ease) 0.45s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-box-top-left, .home-problem-item[data-problem=\"disjointed\"]:hover .automation-box-top-right",
+   "a": "homeProblemDraw 0.35s var(--draw-ease) 0.42s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-center-line",
+   "a": "homeProblemDraw 0.4s var(--draw-ease) 0.48s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-dash",
+   "a": "homeProblemDashAppear 0.35s ease-in 0.65s forwards,\n        homeProblemDashFlow var(--dash-duration) linear 0.65s infinite"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-circle",
+   "a": "homeProblemDraw 0.8s var(--draw-ease) 0s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-left-top, .home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-right-top",
+   "a": "homeProblemDraw 0.35s var(--draw-ease) 0.2s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-left-side, .home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-right-side",
+   "a": "homeProblemDraw 0.4s var(--draw-ease) 0.35s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-left-bottom, .home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-right-bottom",
+   "a": "homeProblemDraw 0.6s var(--draw-ease) 0.45s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-box-top-left, .home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-box-top-right",
+   "a": "homeProblemDraw 0.35s var(--draw-ease) 0.42s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-center-line",
+   "a": "homeProblemDraw 0.4s var(--draw-ease) 0.48s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-dash",
+   "a": "homeProblemDashAppear 0.35s ease-in 0.65s forwards,\n        homeProblemDashFlow var(--dash-duration) linear 0.65s infinite"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"blind\"]:hover .blind-circle",
+   "a": "homeProblemDraw var(--blind-circle-duration) var(--draw-ease) 0s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"blind\"]:hover .blind-dash",
+   "a": "homeProblemDashAppear 0.35s ease var(--dash-delay) forwards,\n        homeProblemDashFlow var(--dash-duration) linear var(--dash-delay) infinite"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"blind\"].swiper-slide-active .blind-circle",
+   "a": "homeProblemDraw var(--blind-circle-duration) var(--draw-ease) 0s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"blind\"].swiper-slide-active .blind-dash",
+   "a": "homeProblemDashAppear 0.35s ease var(--dash-delay) forwards,\n        homeProblemDashFlow var(--dash-duration) linear var(--dash-delay) infinite"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-upper-left, .home-problem-item[data-problem=\"slow\"]:hover .slow-upper-right",
+   "a": "homeProblemDraw 0.6s var(--draw-ease) 0s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-upper-left-side, .home-problem-item[data-problem=\"slow\"]:hover .slow-upper-right-side",
+   "a": "homeProblemDraw 0.3s var(--draw-ease) 0.3s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-upper-left-bottom, .home-problem-item[data-problem=\"slow\"]:hover .slow-upper-right-bottom",
+   "a": "homeProblemDraw 0.45s var(--draw-ease) 0.25s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-upper-center-left, .home-problem-item[data-problem=\"slow\"]:hover .slow-upper-center-right",
+   "a": "homeProblemDraw 0.45s var(--draw-ease) 0.5s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-upper-center-line",
+   "a": "homeProblemDraw 0.4s var(--draw-ease) 0.45s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-lower-left-top, .home-problem-item[data-problem=\"slow\"]:hover .slow-lower-right-top",
+   "a": "homeProblemDraw 0.45s var(--draw-ease) 0.5s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-lower-left-side, .home-problem-item[data-problem=\"slow\"]:hover .slow-lower-right-side",
+   "a": "homeProblemDraw 0.35s var(--draw-ease) 0.6s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-lower-left-diagonal, .home-problem-item[data-problem=\"slow\"]:hover .slow-lower-right-diagonal",
+   "a": "homeProblemDraw 0.45s var(--draw-ease) 0.65s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-lower-center-line",
+   "a": "homeProblemDraw 0.425s var(--draw-ease) 0.9s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-dash",
+   "a": "homeProblemDashAppear 0.5s ease 1s forwards,\n        homeProblemDashFlow var(--dash-duration) linear 1s infinite"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-left, .home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-right",
+   "a": "homeProblemDraw 0.6s var(--draw-ease) 0s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-left-side, .home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-right-side",
+   "a": "homeProblemDraw 0.3s var(--draw-ease) 0.3s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-left-bottom, .home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-right-bottom",
+   "a": "homeProblemDraw 0.45s var(--draw-ease) 0.25s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-center-left, .home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-center-right",
+   "a": "homeProblemDraw 0.45s var(--draw-ease) 0.5s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-center-line",
+   "a": "homeProblemDraw 0.4s var(--draw-ease) 0.45s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-lower-left-top, .home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-lower-right-top",
+   "a": "homeProblemDraw 0.45s var(--draw-ease) 0.5s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-lower-left-side, .home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-lower-right-side",
+   "a": "homeProblemDraw 0.35s var(--draw-ease) 0.6s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-lower-left-diagonal, .home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-lower-right-diagonal",
+   "a": "homeProblemDraw 0.45s var(--draw-ease) 0.65s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-lower-center-line",
+   "a": "homeProblemDraw 0.425s var(--draw-ease) 0.9s both"
+  },
+  {
+   "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-dash",
+   "a": "homeProblemDashAppear 0.5s ease 1s forwards,\n        homeProblemDashFlow var(--dash-duration) linear 1s infinite"
+  },
+  {
+   "sel": ".home-why-item-img-box-bg, .home-why-item-img-box-content",
+   "a": "homeWhyBoxReveal var(--animation-duration) linear var(--box-delay, 0s) infinite both"
+  },
+  {
+   "sel": ".home-why-item-img-box-ic-bg",
+   "a": "homeWhyIconBgSwap var(--animation-duration) linear var(--box-delay, 0s) infinite both"
+  },
+  {
+   "sel": ".home-why-item-img-box-ic",
+   "a": "homeWhyIconReveal var(--animation-duration) linear var(--box-delay, 0s) infinite both"
+  },
+  {
+   "sel": ".home-why-item-img-box-ic-boder",
+   "a": "homeWhyIconBorderPulse var(--animation-duration) linear var(--box-delay, 0s) infinite both"
+  },
+  {
+   "sel": ".home-why-item-img-point",
+   "a": "pointReveal var(--why-cycle, 5s) linear var(--delay, 0s) infinite"
+  },
+  {
+   "sel": ".home-why-item-img-line .line",
+   "a": "homeWhyLineVisibility var(--why-cycle, 5s) linear var(--line-delay, 0s) infinite,\n      homeWhyDashMove 0.8s linear infinite"
+  },
+  {
+   "sel": ".is-loading svg",
+   "a": "1s linear 0s infinite normal none running homeWhySpin"
+  },
+  {
+   "sel": ".home-why-item-img-child.active .is-loading",
+   "a": "loadingActive var(--why-cycle, 5s) linear infinite"
+  },
+  {
+   "sel": ".home-why-item-img-child.active .is-check",
+   "a": "checkActive var(--why-cycle, 5s) linear infinite"
+  },
+  {
+   "sel": ".home-why-item-card.card-2",
+   "a": "homeWhyCard2Reveal var(--why-cycle, 5s) linear infinite"
+  },
+  {
+   "sel": ".home-why-item-card.card-2 .home-why-item-card-dot",
+   "a": "homeWhyCardDotLoading 1.2s ease-in-out var(--dot-delay) infinite"
+  },
+  {
+   "sel": ".home-why-item-card.card-2 .home-why-item-card-dots",
+   "a": "homeWhyCardDotsVisibility var(--why-cycle, 5s) linear infinite"
+  },
+  {
+   "sel": ".home-why-item-img-child.active::before",
+   "a": "homeWhyBorderActive var(--why-cycle, 5s) linear infinite"
+  }
+ ],
+ "keyframes": [
+  "spin",
+  "marqueeLeft",
+  "marqueeRight",
+  "rotate",
+  "fadeLoop",
+  "rotate-icon",
+  "homeProblemDraw",
+  "homeProblemDashAppear",
+  "homeProblemDashFlow",
+  "homeProblemMaskDraw",
+  "homeWhyBoxReveal",
+  "homeWhyIconBgSwap",
+  "homeWhyIconReveal",
+  "homeWhyIconBorderPulse",
+  "pointReveal",
+  "homeWhyLineVisibility",
+  "homeWhyDashMove",
+  "homeWhySpin",
+  "loadingActive",
+  "checkActive",
+  "homeWhyCard2Reveal",
+  "homeWhyCardDotLoading",
+  "homeWhyCardDotsVisibility",
+  "homeWhyBorderActive"
+ ]
+}

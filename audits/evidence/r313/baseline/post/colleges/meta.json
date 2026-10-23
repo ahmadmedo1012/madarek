@@ -1,0 +1,113 @@
+{
+ "url": "https://madarek.onrender.com/colleges",
+ "title": "كلّيّات الجامعة · مدارك",
+ "totalHeight": 2689,
+ "maxScroll": 1789,
+ "scroller": {
+  "type": "window"
+ },
+ "viewport": {
+  "w": 1440,
+  "h": 900
+ },
+ "rootFontSize": "16px",
+ "htmlLang": "ar",
+ "dir": "rtl",
+ "themeColor": "#F6F8FA",
+ "sections": [
+  {
+   "kind": "child",
+   "tag": "main",
+   "id": "main",
+   "cls": "content-inner",
+   "top": 0,
+   "height": 2689
+  },
+  {
+   "kind": "child",
+   "tag": "div",
+   "id": null,
+   "cls": "cursor-layer",
+   "top": 0,
+   "height": 900
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "college-city-section",
+   "top": 268,
+   "height": 1085
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "college-city-section",
+   "top": 1465,
+   "height": 659
+  },
+  {
+   "kind": "semantic",
+   "tag": "section",
+   "id": null,
+   "cls": "college-city-section",
+   "top": 2221,
+   "height": 357
+  }
+ ],
+ "headerInfo": {
+  "cls": "pf-page-header",
+  "height": 59,
+  "top": 96,
+  "position": "static",
+  "transform": "none",
+  "transition": "all",
+  "zIndex": "auto"
+ },
+ "lenis": {
+  "hasLenisGlobal": false,
+  "lenisInstances": null,
+  "lenisAttr": null,
+  "lenisEls": 0,
+  "gsap": false,
+  "barba": false,
+  "swiper": false
+ },
+ "canvases": [],
+ "bodyBg": "rgb(246, 248, 250)",
+ "htmlBg": "rgb(246, 248, 250)",
+ "scrollBehavior": "smooth",
+ "imgCount": 0,
+ "cookieBanner": null,
+ "headerStates": {
+  "top": {
+   "cls": "pf-page-header",
+   "y": 96,
+   "transform": "none",
+   "opacity": "1",
+   "visibility": "visible"
+  },
+  "scrolled": {
+   "cls": "pf-page-header",
+   "y": -47,
+   "transform": "none",
+   "opacity": "1",
+   "visibility": "visible"
+  },
+  "scrolledMore": {
+   "cls": "pf-page-header",
+   "y": -190,
+   "transform": "none",
+   "opacity": "1",
+   "visibility": "visible"
+  },
+  "scrolledBack": {
+   "cls": "pf-page-header",
+   "y": -83,
+   "transform": "none",
+   "opacity": "1",
+   "visibility": "visible"
+  }
+ }
+}

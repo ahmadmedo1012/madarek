@@ -1,0 +1,35 @@
+{
+ "name": "https://madarek.onrender.com/admin/dashboard",
+ "url": "https://madarek.onrender.com/admin/dashboard",
+ "deep": "1440x900",
+ "primary": {
+  "url": "https://madarek.onrender.com/admin/dashboard",
+  "totalHeight": 900,
+  "scroller": {
+   "type": "window"
+  },
+  "sections": 2,
+  "surfaceSweepOk": true
+ },
+ "viewports": [],
+ "posts": [
+  {
+   "url": "https://madarek.onrender.com/admin/students",
+   "totalHeight": 900,
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 2,
+   "surfaceSweepOk": true
+  },
+  {
+   "url": "https://madarek.onrender.com/admin/faculties",
+   "totalHeight": 900,
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 2,
+   "surfaceSweepOk": true
+  }
+ ]
+}

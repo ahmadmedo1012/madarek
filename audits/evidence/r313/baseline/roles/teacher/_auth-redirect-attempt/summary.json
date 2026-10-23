@@ -1,0 +1,35 @@
+{
+ "name": "https://madarek.onrender.com/teacher/dashboard",
+ "url": "https://madarek.onrender.com/teacher/dashboard",
+ "deep": "1440x900",
+ "primary": {
+  "url": "https://madarek.onrender.com/teacher/dashboard",
+  "totalHeight": 900,
+  "scroller": {
+   "type": "window"
+  },
+  "sections": 2,
+  "surfaceSweepOk": true
+ },
+ "viewports": [],
+ "posts": [
+  {
+   "url": "https://madarek.onrender.com/teacher/schedule",
+   "totalHeight": 900,
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 2,
+   "surfaceSweepOk": true
+  },
+  {
+   "url": "https://madarek.onrender.com/teacher/students",
+   "totalHeight": 900,
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 2,
+   "surfaceSweepOk": true
+  }
+ ]
+}

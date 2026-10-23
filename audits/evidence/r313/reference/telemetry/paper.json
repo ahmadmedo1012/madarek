@@ -1,0 +1,25 @@
+{
+ "meta": {
+  "capturedAt": "2026-10-23T00:33:04.704Z",
+  "viewport": "1440x900"
+ },
+ "computed": {
+  "bodyBg": "rgba(0, 0, 0, 0)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "clBg": "",
+  "bgGlobal": "rgba(0, 0, 0, 0)",
+  "htmlStyleBg": null
+ },
+ "screenshotCorners": {
+  "size": "1440x900",
+  "colorType": 2,
+  "TL": "#f4f4ee",
+  "TR": "#f5f5ef",
+  "BL": "#f5f5ef",
+  "BR": "#f5f5ee",
+  "centre": "#a0a197",
+  "heroSheet": "#b2b2a9",
+  "footerArea": "#f3f3ed"
+ },
+ "note": "corners sampled from telemetry/paper-1440.png (TL/TR/BL/BR; centre + hero sheet point). NB computed body/html bg = transparent — paper is painted by bg layers (.loading-bg / .bg-global images), so screenshot sampling is the ground truth."
+}

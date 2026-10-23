@@ -1,0 +1,1640 @@
+{
+ "startUrl": "/",
+ "urlChangedAt": 206,
+ "endedAt": 0,
+ "n": 301,
+ "recThin": [
+  {
+   "t": 1,
+   "url": "/",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 77,
+   "url": "/",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 160,
+   "url": "/",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 206,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%, 0% 50%, 100% 50%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0, 0, 0, 1, 0, 0)",
+    "opacity": "0"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 229,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 44.9288%, 0% 44.9288%, 0% 55.0712%, 100% 55.0712%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.202847, 0, 0, 1, 0, 0)",
+    "opacity": "0.202847"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 245,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 39.9781%, 0% 39.9781%, 0% 60.0219%, 100% 60.0219%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.400875, 0, 0, 1, 0, 0)",
+    "opacity": "0.400875"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 260,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 35.3238%, 0% 35.3238%, 0% 64.6762%, 100% 64.6762%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.58705, 0, 0, 1, 0, 0)",
+    "opacity": "0.58705"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 277,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 30.9298%, 0% 30.9298%, 0% 69.0702%, 100% 69.0702%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.762808, 0, 0, 1, 0, 0)",
+    "opacity": "0.762808"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 294,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 26.8697%, 0% 26.8697%, 0% 73.1303%, 100% 73.1303%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.925212, 0, 0, 1, 0, 0)",
+    "opacity": "0.925212"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 310,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 23.1767%, 0% 23.1767%, 0% 76.8233%, 100% 76.8233%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.927069, 0, 0, 1, 0, 0)",
+    "opacity": "0.927069"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 327,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 19.9059%, 0% 19.9059%, 0% 80.0941%, 100% 80.0941%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.796238, 0, 0, 1, 0, 0)",
+    "opacity": "0.796238"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 344,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 16.9626%, 0% 16.9626%, 0% 83.0374%, 100% 83.0374%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.678502, 0, 0, 1, 0, 0)",
+    "opacity": "0.678502"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 360,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 14.4234%, 0% 14.4234%, 0% 85.5766%, 100% 85.5766%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.576936, 0, 0, 1, 0, 0)",
+    "opacity": "0.576936"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 377,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 12.2135%, 0% 12.2135%, 0% 87.7865%, 100% 87.7865%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.488539, 0, 0, 1, 0, 0)",
+    "opacity": "0.488539"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 394,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 10.3162%, 0% 10.3162%, 0% 89.6838%, 100% 89.6838%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.412648, 0, 0, 1, 0, 0)",
+    "opacity": "0.412648"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 410,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 8.70479%, 0% 8.70479%, 0% 91.2952%, 100% 91.2952%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.348192, 0, 0, 1, 0, 0)",
+    "opacity": "0.348192"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 429,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 7.33206%, 0% 7.33206%, 0% 92.6679%, 100% 92.6679%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.293282, 0, 0, 1, 0, 0)",
+    "opacity": "0.293282"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "default"
+  },
+  {
+   "t": 445,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 6.15236%, 0% 6.15236%, 0% 93.8476%, 100% 93.8476%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.246094, 0, 0, 1, 0, 0)",
+    "opacity": "0.246094"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 460,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 5.164%, 0% 5.164%, 0% 94.836%, 100% 94.836%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.20656, 0, 0, 1, 0, 0)",
+    "opacity": "0.20656"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 100%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 478,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 4.32119%, 0% 4.32119%, 0% 95.6788%, 100% 95.6788%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.172848, 0, 0, 1, 0, 0)",
+    "opacity": "0.172848"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 242.521px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 494,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 3.61153%, 0% 3.61153%, 0% 96.3885%, 100% 96.3885%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.144461, 0, 0, 1, 0, 0)",
+    "opacity": "0.144461"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 428.775px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 511,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 3.00373%, 0% 3.00373%, 0% 96.9963%, 100% 96.9963%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.120149, 0, 0, 1, 0, 0)",
+    "opacity": "0.120149"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 565.693px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 527,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 2.49866%, 0% 2.49866%, 0% 97.5013%, 100% 97.5013%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.0999465, 0, 0, 1, 0, 0)",
+    "opacity": "0.0999465"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 660.979px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 544,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 2.0639%, 0% 2.0639%, 0% 97.9361%, 100% 97.9361%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.0825559, 0, 0, 1, 0, 0)",
+    "opacity": "0.0825559"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 729.572px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 560,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 1.70135%, 0% 1.70135%, 0% 98.2986%, 100% 98.2986%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.0680541, 0, 0, 1, 0, 0)",
+    "opacity": "0.0680541"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 777.772px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 577,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 1.39388%, 0% 1.39388%, 0% 98.6061%, 100% 98.6061%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.0557551, 0, 0, 1, 0, 0)",
+    "opacity": "0.0557551"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 812.617px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 594,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 1.13536%, 0% 1.13536%, 0% 98.8646%, 100% 98.8646%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.0454144, 0, 0, 1, 0, 0)",
+    "opacity": "0.0454144"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 837.823px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 611,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.919786%, 0% 0.919786%, 0% 99.0802%, 100% 99.0802%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.0367915, 0, 0, 1, 0, 0)",
+    "opacity": "0.0367915"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 856.046px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 627,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.738469%, 0% 0.738469%, 0% 99.2615%, 100% 99.2615%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.0295388, 0, 0, 1, 0, 0)",
+    "opacity": "0.0295388"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 869.392px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 644,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.587603%, 0% 0.587603%, 0% 99.4124%, 100% 99.4124%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.0235041, 0, 0, 1, 0, 0)",
+    "opacity": "0.0235041"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 879.068px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 661,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.4634%, 0% 0.4634%, 0% 99.5366%, 100% 99.5366%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.018536, 0, 0, 1, 0, 0)",
+    "opacity": "0.018536"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 885.993px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 677,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.360552%, 0% 0.360552%, 0% 99.6395%, 100% 99.6395%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.0144221, 0, 0, 1, 0, 0)",
+    "opacity": "0.0144221"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 890.944px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 694,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.27704%, 0% 0.27704%, 0% 99.723%, 100% 99.723%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.0110816, 0, 0, 1, 0, 0)",
+    "opacity": "0.0110816"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 894.374px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 710,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.209027%, 0% 0.209027%, 0% 99.791%, 100% 99.791%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.00836106, 0, 0, 1, 0, 0)",
+    "opacity": "0.00836106"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 896.71px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 727,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.154609%, 0% 0.154609%, 0% 99.8454%, 100% 99.8454%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.00618436, 0, 0, 1, 0, 0)",
+    "opacity": "0.00618436"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 898.226px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 744,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.111881%, 0% 0.111881%, 0% 99.8881%, 100% 99.8881%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.00447523, 0, 0, 1, 0, 0)",
+    "opacity": "0.00447523"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 899.147px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 760,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.0784809%, 0% 0.0784809%, 0% 99.9215%, 100% 99.9215%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.00313924, 0, 0, 1, 0, 0)",
+    "opacity": "0.00313924"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 899.663px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 777,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.0530817%, 0% 0.0530817%, 0% 99.9469%, 100% 99.9469%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.00212327, 0, 0, 1, 0, 0)",
+    "opacity": "0.00212327"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 899.906px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 794,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.034366%, 0% 0.034366%, 0% 99.9656%, 100% 99.9656%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.00137464, 0, 0, 1, 0, 0)",
+    "opacity": "0.00137464"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 899.989px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 811,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.0208772%, 0% 0.0208772%, 0% 99.9791%, 100% 99.9791%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.000835088, 0, 0, 1, 0, 0)",
+    "opacity": "0.000835088"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(100% - 900px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 827,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.0116611%, 0% 0.0116611%, 0% 99.9883%, 100% 99.9883%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.000466446, 0, 0, 1, 0, 0)",
+    "opacity": "0.000466446"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(46.6581% - 419.923px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 844,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.00576419%, 0% 0.00576419%, 0% 99.9942%, 100% 99.9942%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(0.000230568, 0, 0, 1, 0, 0)",
+    "opacity": "0.000230568"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(21.1409% - 190.268px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 860,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.00236162%, 0% 0.00236162%, 0% 99.9976%, 100% 99.9976%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(9.44646e-05, 0, 0, 1, 0, 0)",
+    "opacity": "9.44646e-05"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(9.71938% - 87.4744px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 893,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 0.000676083%, 0% 0.000676083%, 0% 99.9993%, 100% 99.9993%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(2.70433e-05, 0, 0, 1, 0, 0)",
+    "opacity": "2.70433e-05"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(4.33162% - 38.9846px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 897,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 8.28295e-05%, 0% 8.28295e-05%, 0% 99.9999%, 100% 99.9999%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(3.31318e-06, 0, 0, 1, 0, 0)",
+    "opacity": "3.31318e-06"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(1.79004% - 16.1104px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 910,
+   "url": "/colleges",
+   "sx": true,
+   "sxClip": "polygon(0% 0%, 100% 0%, 100% 2.41585e-13%, 0% 2.41585e-13%, 0% 100%, 100% 100%, 100% 100%, 0% 100%)",
+   "sxLine": {
+    "transform": "matrix(9.54792e-15, 0, 0, 1, 0, 0)",
+    "opacity": "9.54792e-15"
+   },
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(0.624875% - 5.62388px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 927,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(0.156542% - 1.40888px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 947,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(0.0170724% - 0.153652px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 961,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px calc(8.75966e-12% - 7.88369e-11px))",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 977,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 994,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 1077,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 1160,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 1243,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 1327,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 1410,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 1493,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 1577,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 1660,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 1744,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 1827,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 1910,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 1993,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 2077,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 2160,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 2243,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 2327,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 2410,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 2493,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 2577,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 2660,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 2744,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 2827,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 2910,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 2993,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 3077,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 3160,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 3243,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 3327,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 3410,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 3493,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 3577,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 3660,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 3743,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 3827,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 3910,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 3993,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 4077,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 4160,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 4243,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 4327,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 4410,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 4493,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 4577,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 4660,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 4743,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 4827,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 4910,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  },
+  {
+   "t": 4993,
+   "url": "/colleges",
+   "sx": false,
+   "sxClip": null,
+   "sxLine": null,
+   "gri": true,
+   "griAnim": {
+    "clipPath": "inset(0px 0px 0%)",
+    "animationName": "guest-reveal-sweep",
+    "animationDuration": "0.5s",
+    "animationPlayState": "running"
+   },
+   "grKey": "6unu3hlr"
+  }
+ ],
+ "summary": {
+  "clickToUrlChange": 206,
+  "sxSweep": {
+   "start": 206,
+   "removed": 927,
+   "durationObserved": 721,
+   "designed": 700
+  },
+  "guestReveal": {
+   "start": 206,
+   "foldCrossing": 811,
+   "fullyOpen": 977,
+   "durationToken": "0.5s (--motion-duration-long/--t-slow)",
+   "animationName": "guest-reveal-sweep"
+  },
+  "overlap": "concurrent \u2014 both start at route commit",
+  "totalPerceived": 927
+ }
+}

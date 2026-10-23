@@ -1,0 +1,16 @@
+{
+ "email": "student@demo.madarek.ly",
+ "log": [
+  "[23:46:43.607] goto /auth done",
+  "[23:46:45.479] form hydrated + submit enabled",
+  "[23:46:46.304] credentials filled",
+  "[23:46:46.451] submit clicked",
+  "[23:47:16.306] NO /api/auth/login response observed within 30s",
+  "[23:47:31.392] TIMEOUT outcome: {\"url\":\"/auth\",\"title\":\"تسجيل الدخول · مدارك\",\"token\":true}"
+ ],
+ "outcome": {
+  "url": "/auth",
+  "title": "تسجيل الدخول · مدارك",
+  "token": true
+ }
+}

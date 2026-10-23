@@ -1,0 +1,35 @@
+{
+ "name": "https://madarek.onrender.com/owner/dashboard",
+ "url": "https://madarek.onrender.com/owner/dashboard",
+ "deep": "1440x900",
+ "primary": {
+  "url": "https://madarek.onrender.com/owner/dashboard",
+  "totalHeight": 900,
+  "scroller": {
+   "type": "window"
+  },
+  "sections": 2,
+  "surfaceSweepOk": true
+ },
+ "viewports": [],
+ "posts": [
+  {
+   "url": "https://madarek.onrender.com/owner/users",
+   "totalHeight": 900,
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 2,
+   "surfaceSweepOk": true
+  },
+  {
+   "url": "https://madarek.onrender.com/owner/system",
+   "totalHeight": 900,
+   "scroller": {
+    "type": "window"
+   },
+   "sections": 2,
+   "surfaceSweepOk": true
+  }
+ ]
+}
