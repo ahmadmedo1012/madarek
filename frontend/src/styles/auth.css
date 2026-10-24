@@ -1,49 +1,54 @@
 /* ═════════════════════════════════════════════════════════════════════
-   MADAREK — Auth + Register + 404 pages (S-1a → r313 Heron re-key)
-   Warm paper · hairline rules · square corners · accent fill-wipe
+   MADAREK — Auth + Register + 404 pages (S-1a → r313 → R315 · K-I)
+   The Heron DRAWING SHEET — framed paper, ruled cells, mono indices
    ─────────────────────────────────────────────────────────────────────
-   r313 direction (the Heron grammar — audits/evidence/r313/reference):
-   · Radius 0 (the --r-* ladder resolves 0; --r-full/50% stays for
-     genuinely round primitives like the step dots/spinner only).
-   · NO decorative shadows — depth via hairlines; the card is a flat
-     --surface sheet on the paper ground framed by its 1px #B3B3AF
-     hairline (var(--border-strong)) — the drafting-plate recipe the
-     404 plate shares. The r197 --elev-2 shadow line is retired with
-     the r313 sweep.
-   · NO ambients: the ember --journey-glow radial washes (card + 404
-     scene) are retired — the reference ground is flat paper.
-   · Inputs adopt the reference recipe: transparent ground, 1px
-     #B3B3AF hairline (var(--border-strong)), radius 0; the focus
-     language stays with the shared polish v15/v22 system (ruling #13
-     — the overrides layer has the final word).
-   · The role picker («من أنت؟») is a ruled hairline grid; hover is
-     the accent fill-wipe (the reference's header-cta recipe). The
-     chrome links (.auth-back-home/.auth-context) ride the reference's
-     NAV recipe instead: charcoal fill + inverted label.
-   · Mono micro-labels (Geist Mono, tabular) for indices and Latin
-     runs — the register step indices, the 404 ERR/coords runs; Arabic
-     prose keeps the sans ladder (13px floor, joins never tracked).
-   · Tap targets: the 44px floor is UNCONDITIONAL on every interactive
-     element in the chrome (BLUEPRINT §7 hard floor — unchanged).
-   Wave 8-b contracts kept (consumed outside these pages):
-   · .auth-input is a THIN MODIFIER on the shared .input system
-     (components.css) — community/curriculum/student forms borrow it.
-   · .auth-field / .auth-error / .auth-field-error / .auth-row /
-     .auth-form-summary / .auth-select-skeleton keep their contracts.
-   · The card rise-in entrance (madarek-auth-card-in) stays local.
-   r305 (2-a) additions — honest-state completion, no contract churn:
-   · the ambiguity lookup's failure state reuses .auth-error /
-     .auth-retry-link (the register institution field's exact grammar);
-   · .auth-dept-empty is now the auth family's honest-EMPTY recipe for
-     both lookups (departments r157 F5 + institutions r305) — same
-     class, same visual language, name kept for the pinned contract;
-   · .nf-eyebrow joins §7 — the error scene's visible code marker,
-     sharing the auth-meta guest-surface eyebrow recipe.
+   R315 (K-I — owner §I): /auth + /auth/register are FULL-PAGE SHEETS,
+   not centred cards on flat paper. The chrome re-joins the landing's
+   sheet grammar (LandingPage.tsx + landing.css, the same reference
+   measurements — audits/evidence/r313/reference/digest.json):
+   · The whole viewport is the sheet: paper ground (--bg) under a
+     FIXED 1px var(--border-strong) frame at the 7px inset (.auth-frame
+     — the landing's .sheet-frame / the 404's .nf-frame constants) +
+     10×10 mono '+' registration marks centered on the frame corners
+     (.auth-mark) + the measured paper-grain film (.auth-grain — the
+     landing's .fo-grain recipe verbatim, own class, dark twin).
+   · The form is a RULED CELL COMPOSITION on that paper (the Heron
+     contact-sheet grammar): a mono micro-label row ([MDRK-AUTH] ·
+     SHEET 01/01, dir=ltr, aria-hidden) over a heavy tight Arabic
+     display heading (no tashkeel, no tracking, lh ~1), then every
+     field a hairline-separated row — a mono [NN] index cell + the
+     Arabic label + the control filling the row. The white centred
+     --surface card (r313's drafting plate) is dissolved; what keeps
+     is its ONE structural seam, the strong opening hairline.
+   · The INPUT LADDER rides the shared system: 1px var(--border-strong)
+     (#B3B3AF) at rest → :focus #ED4C1F (polish v22's measured recipe,
+     .45s ≈ --t-slow) → filled+focus the raw signal var(--accent)
+     (#FA3600) — the third rung lives in the @layer overrides block at
+     the file's end (cascade reasoning there). Transparent grounds,
+     radius 0, no icons inside inputs, no rings, no glow.
+   · THE SUBMIT is the reference's fill-wipe: transparent ground, 1px
+     hairline, mono-voice label; hover/focus wipes the accent fill in
+     from the inline-start edge and flips the label to --accent-fg.
+
+   r313 decisions that STAND (radius 0, no shadows, mono technical
+   labels dir=ltr, no ambients, 44px unconditional touch floor).
+   r305 (2-a) contracts that STAND: the ambiguity lookup states
+   (.auth-error / .auth-retry-link), .auth-dept-empty as the family's
+   honest-empty recipe, .nf-eyebrow in §7.
+
+   Documented cross-page borrows (keep their contracts — main.tsx
+   notes auth.css stays global for exactly these):
+   · .auth-input (transparent + 1px hairline + radius 0 + the 16px
+     iOS floor) — community/curriculum/authoring inputs borrow it;
+   · .auth-error / .auth-field-error / .auth-select-skeleton /
+     .auth-row / .auth-row-2 (OwnerInstitutionsPage) — same grammar.
+   (.auth-field / .auth-input-wrap / .auth-brand-mini were consumers
+   of the two auth pages only and retired with the R315 cell rebuild.)
    ════════════════════════════════════════════════════════════════════ */
 
 @layer pages {
 
-  /* ══ 1 · SHELL — login / register share the calm ground ═══════════ */
+  /* ══ 1 · SHELL — login / register share the framed sheet ground ══ */
 
   .auth-shell {
     min-block-size: 100dvh;
@@ -51,10 +56,6 @@
     flex-direction: column;
     background: var(--bg);
   }
-  /* (S-1a: the r191 copper radial wash on the shell's top pseudo is
-     retired with the copper chrome — the calm --bg paper is the whole
-     ground; the ONE ambient is the pinned ultramarine wash under the
-     card, painted by the center's ::after below.) */
 
   .auth-top {
     padding: var(--sp-4) var(--page-gutter);
@@ -64,6 +65,10 @@
     max-inline-size: var(--marketing-max-w);
     margin-inline: auto;
     inline-size: 100%;
+    /* the frame chrome is fixed; the sheet's own content keeps clear
+       of the 7px inset at every width (the landing's seat measure). */
+    position: relative;
+    z-index: 1;
   }
   @media (max-width: 920px) {
     .auth-top { padding: var(--sp-4) var(--page-gutter-mobile); }
@@ -118,16 +123,13 @@
     flex: 1;
     display: flex;
     justify-content: center;
-    padding: var(--sp-5) var(--page-gutter) var(--sp-9);
+    padding: var(--sp-6) var(--page-gutter) var(--sp-9);
+    position: relative;
+    z-index: 1;
   }
   @media (max-width: 920px) {
-    .auth-center { padding: var(--sp-4) var(--page-gutter-mobile) var(--sp-9); }
+    .auth-center { padding: var(--sp-5) var(--page-gutter-mobile) var(--sp-9); }
   }
-  /* (r313 tint sweep: the ember radial wash behind the card —
-     --journey-glow 10% — is RETIRED with the Heron re-key. The
-     reference ground is flat paper everywhere; depth on this surface
-     is the card's 1px #B3B3AF hairline, nothing else. The token
-     itself stays in tokens.css for its other consumers.) */
 
   .auth-bottom {
     padding: var(--sp-5) var(--page-gutter);
@@ -135,56 +137,136 @@
     font-size: var(--fs-sm);
     color: var(--text-muted);
     border-block-start: 1px solid var(--border-faint);
+    position: relative;
+    z-index: 1;
   }
   .auth-bottom strong { color: var(--text-secondary); font-weight: var(--fw-semibold); }
 
-  /* ══ 2 · CARD — the flat drafting plate (r313) ═══════════════════ */
+  /* ══ 1b · THE SHEET FRAME (R315 · K-I) — the landing's .sheet-frame
+     grammar on the auth surfaces: a fixed 1px hairline at the 7px
+     viewport inset (the reference-measured frame constant, identical
+     at 1440/768/390) with the 10×10 mono plus marks centered on its
+     corner points. Decorative only: aria-hidden + pointer-transparent
+     in the markup, visible at EVERY breakpoint (the 390×844 census
+     keeps the reference's frame — small screens get the drafting
+     chrome too). */
+  .auth-frame {
+    position: fixed;
+    inset: 7px; /* the reference's frame constant (digest → frame) — not a spacing rung */
+    z-index: 50;
+    pointer-events: none;
+    border: 1px solid var(--border-strong);
+  }
 
+  /* the corner plus marks — the reference's 10×10 drafting crosses in
+     the mono voice, centered ON the frame's corner points (the
+     registration-mark convention; the .nf-mark twin in §7).
+     R315 (K-I) engineering note: the anchors are PHYSICAL (top/left/
+     right/bottom), not logical — a corner is a physical seat, and the
+     logical-inline recipe the landing's .sheet-mark uses drifts the
+     mark one width (10px) inside the corner under RTL (the inline
+     anchor mirrors but the physical translate does not). Physical
+     anchors keep the plus ON the intersection in every direction —
+     the reference's own LTR geometry, mirrored correctly. */
+  .auth-mark {
+    position: absolute;
+    inline-size: 10px;
+    block-size: 10px;
+    display: grid;
+    place-items: center;
+    color: var(--border-strong);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    line-height: 1;
+  }
+  .auth-mark-tl { top: 0; left: 0; translate: -50% -50%; }
+  .auth-mark-tr { top: 0; right: 0; translate: 50% -50%; }
+  .auth-mark-bl { bottom: 0; left: 0; translate: -50% 50%; }
+  .auth-mark-br { bottom: 0; right: 0; translate: 50% 50%; }
+
+  /* ══ 1c · THE PAPER GRAIN (R315 · K-I) — the landing's .fo-grain
+     recipe verbatim (scripts/r314/grain-measure.json: tile std-dev
+     matched to ±0.03% light; the dark twin rides plain alpha). A
+     multiply film-grain + the faint dotted micro-grid (24px cell)
+     over the paper ground, UNDER the flowing content, under the
+     fixed chrome, pointer-transparent. Static texture — nothing
+     here moves, reduced-motion has nothing to collapse. */
+  .auth-grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      url('/media/textures/grain-tile-light.webp'),
+      url('/media/textures/micro-grid.svg');
+    background-size: 256px, 24px;
+    background-repeat: repeat, repeat;
+    mix-blend-mode: multiply;
+    opacity: 1;
+  }
+
+  html[data-theme='dark'] .auth-grain {
+    background-image:
+      url('/media/textures/grain-tile-dark.webp'),
+      url('/media/textures/micro-grid.svg');
+    mix-blend-mode: normal;
+    opacity: 0.9;
+  }
+
+  /* ══ 2 · THE SHEET COLUMN — the card is dissolved (R315 · K-I) ═══
+     The composition sits DIRECTLY on the paper inside the frame —
+     no white --surface box, no side borders, no shadow. What remains
+     of the r313 drafting plate is its one structural seam: the
+     strong hairline that OPENS the sheet's title block, above the
+     mono micro-label row (the masthead rule). Safe vertical seating
+     is unchanged: with free space the auto margins center the
+     column; once the form outgrows the viewport they collapse and
+     the sheet scrolls from the top. */
   .auth-card {
     inline-size: 100%;
-    max-inline-size: 440px;
+    max-inline-size: 620px;
     display: flex; flex-direction: column; gap: var(--sp-6);
-    background: var(--surface);
-    /* r313: the 1px #B3B3AF hairline IS the card's whole elevation
-       story (the reference's frame grammar — the same plate recipe as
-       .nf-plate); --border-faint retired from this edge. */
-    border: 1px solid var(--border-strong);
+    border-block-start: 1px solid var(--border-strong);
+    background: transparent;
     border-radius: var(--r-sm); /* 0 — the r313 ladder */
-    padding: clamp(var(--sp-7), 4vw, var(--sp-9));
+    padding: 0;
     position: relative;
-    /* Safe vertical centering: with free space the auto margins center
-       the card; once the form outgrows the viewport they collapse and
-       the card scrolls from the top (flex align-center would clip it). */
     margin-block: auto;
   }
-  /* (S-1a → r313: the .glass variant, its ::after sheen, the copper
-     top hairline AND the --elev-2 shadow line are all retired — a flat
-     opaque sheet with one strong hairline, no shadow anywhere.) */
 
-  /* Register keeps one card width across BOTH steps so stepping never
-     reflows the layout (was inline maxWidth 520 vs 560). */
-  .auth-card--wide { max-inline-size: 560px; }
+  /* Register keeps one column width across BOTH steps so stepping
+     never reflows the layout (was inline maxWidth 520 vs 560). The
+     multi-row register sheet needs the wider measure for the cell
+     rows (index + label + control on one line). */
+  .auth-card--wide { max-inline-size: 720px; }
 
-  .auth-brand-mini {
-    display: inline-flex; align-items: center; gap: var(--sp-2);
-    align-self: flex-start;
-    margin-block-end: var(--sp-1);
-  }
-  .auth-brand-mini-mark {
-    inline-size: 32px; block-size: 32px;
-    display: inline-flex; align-items: center; justify-content: center;
-    background: transparent;
-    color: inherit;
-  }
-  .auth-brand-mini-text {
-    font-family: var(--font-display);
-    font-size: var(--fs-h3);
-    font-weight: var(--fw-bold);
-    letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
-    color: var(--text);
-  }
+  /* ══ 3 · THE TITLE BLOCK — sheet label + display heading ════════ */
 
-  /* ══ 3 · HEADER + REGISTER STEP INDICATOR ══════════════════════════ */
+  /* The mono micro-label row (R315 · K-I): [MDRK-AUTH] · SHEET 01/01 —
+     the drawing sheet's identity line. Latin/technical chrome: the
+     RUN is dir=ltr + uppercase Geist-mono in the markup, aria-hidden
+     (pure decoration, the landing's .sheet-coord precedent); the row
+     itself rides the page's RTL flow so the ::before tick seats at
+     the inline-start edge, mirroring the landing's .fo-label. */
+  .auth-sheet-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2-5);
+    padding-block-start: var(--sp-4);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.08em; /* Latin mono micro-label — the instrument track */
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-faint);
+  }
+  .auth-sheet-label::before {
+    content: '';
+    inline-size: var(--sp-5);
+    block-size: 1px;
+    background: var(--rule-strong);
+  }
 
   /* Quiet metadata eyebrow over the form title (imm-5). 13px label
      floor, muted ink, zero tracking. */
@@ -207,11 +289,14 @@
   }
   .auth-form-title {
     font-family: var(--font-display);
-    font-size: var(--fs-display-md);
+    font-size: var(--fs-display-lg);
     font-weight: var(--fw-bold);
     color: var(--text);
     letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
-    line-height: var(--lh-snug);
+    /* R315 (K-I): the reference's display register — heavy and TIGHT
+       (line-height ~1, two lines max, no tashkeel in the markup —
+       «مرحبا بعودتك», the tanween dropped per the owner sheet rule). */
+    line-height: var(--lh-tight);
   }
   .auth-form-sub {
     font-size: var(--fs-body);
@@ -307,9 +392,70 @@
     to { opacity: 1; transform: none; }
   }
 
-  /* ══ 4 · FIELDS — thin modifiers over the shared .input base ═══════ */
+  /* ══ 4 · THE RULED CELL COMPOSITION (R315 · K-I) ═════════════════
+     The Heron contact-sheet grammar: the form is a ruled block of
+     hairline-separated rows. Each row = a mono [NN] index cell
+     (dir=ltr, Latin, tabular) + the Arabic label + the control
+     filling the row. 1px var(--rule) separators BETWEEN rows; the
+     block opens and closes with its own rule; radius 0 everywhere. */
 
   .auth-form { display: flex; flex-direction: column; gap: var(--sp-5); }
+
+  /* the ruled block: opens + closes with a 1px rule */
+  .auth-cells { border-block: 1px solid var(--rule); }
+
+  .auth-cell {
+    display: grid;
+    grid-template-columns: var(--sp-9) minmax(11rem, 15rem) minmax(0, 1fr);
+    gap: var(--sp-2) var(--sp-3);
+    padding-block: var(--sp-3);
+    align-items: start;
+  }
+  /* the separator between rows — BETWEEN, never around */
+  .auth-cell + .auth-cell { border-block-start: 1px solid var(--rule); }
+
+  /* the [NN] index cell — the drafting voice (Latin run, dir=ltr in
+     the markup, aria-hidden: the label + control carry the a11y). */
+  .auth-cell-index {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    font-variant-numeric: tabular-nums;
+    line-height: var(--lh-snug);
+    color: var(--text-faint);
+  }
+
+  /* the row's Arabic label — rides the shared .form-label element
+     class; the cell owns the rhythm (no margin of its own). */
+  .auth-cell .form-label {
+    margin-block-end: 0;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-snug);
+    letter-spacing: 0;
+    color: var(--text);
+  }
+
+  /* the control column: the input fills the row; errors/forgot stack
+     under it, inside the row they belong to. */
+  .auth-cell-control {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1-5);
+    min-inline-size: 0;
+  }
+
+  /* narrow sheets: the row stacks — index + label on the first line,
+     the control spanning the full row under it (the 390 census keeps
+     the frame; the cells keep reading at every width). */
+  @media (max-width: 639px) {
+    .auth-cell {
+      grid-template-columns: var(--sp-9) minmax(0, 1fr);
+    }
+    .auth-cell-control {
+      grid-column: 1 / -1;
+    }
+  }
 
   /* Legacy two-column row (also consumed by the curriculum authoring
    *  panels — keep the contract). */
@@ -319,35 +465,12 @@
   .auth-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
   @media (max-width: 480px) { .auth-row-2 { grid-template-columns: 1fr; } }
 
-  .auth-field {
-    display: flex; flex-direction: column; gap: var(--sp-2);
-    min-inline-size: 0;
-  }
-  /* The field's gap owns the label→control rhythm (.form-label's own
-     margin would double it). Weight/color come from the polish layer's
-     .form-label rule (semibold --text) — declared here only as the
-     pages-layer intent. */
-  .auth-field .form-label {
-    margin-block-end: 0;
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    line-height: var(--lh-snug);
-    letter-spacing: 0;
-    color: var(--text);
-  }
+  /* ══ 4b · CONTROLS — the transparent hairline family ════════════ */
 
-  /* Block (not flex) so the faculties skeleton / error banner swap in
-     at full width; the icon + toggle are absolutely positioned. */
+  /* Block wrapper (positioning seat for the password toggle — the
+     only in-row control overlay; the leading icons are retired with
+     the R315 sheet: NO icons inside inputs). */
   .auth-input-wrap { position: relative; display: block; }
-  .auth-input-icon {
-    position: absolute;
-    inset-inline-start: var(--sp-3);
-    /* 16px glyph centered in the 48px auth input */
-    inset-block-start: calc(50% - var(--sp-2));
-    color: var(--text-muted);
-    pointer-events: none;
-    display: inline-flex;
-  }
 
   /* The auth large-field scale on top of the shared 44px base. Only
      real controls grow — textareas that borrow .auth-input keep their
@@ -355,10 +478,13 @@
      21-c (A10 P1): the shared .input system floors controls at 16px —
      iOS Safari zooms the viewport on any <16px control focus.
      r313 — the reference input recipe (digest → inputs): TRANSPARENT
-     ground (the paper/surface shows through), 1px #B3B3AF hairline
-     (--border-strong), radius 0, no shadow; focus stays with the
-     shared polish system (accent border + halo + ring). Selects and
-     textareas that borrow the class inherit the same hairline. */
+     ground (the paper shows through), 1px #B3B3AF hairline
+     (--border-strong), radius 0, no shadow.
+     R315 (K-I) — the ladder: :focus → #ED4C1F and the .45s
+     border-color transition are the shared polish v22 recipe (the
+     reference's measured pair); filled+focus → var(--accent) is the
+     auth rung in the overrides block at the end of this file. Selects
+     and textareas that borrow the class inherit the same hairline. */
   .auth-input,
   input.auth-input,
   select.auth-input,
@@ -371,28 +497,15 @@
   input.auth-input,
   select.auth-input { block-size: 48px; }
 
-  /* Icon gutter — ONLY when a leading icon actually exists. Selects
-     and the app forms that borrow .auth-input get the clean shared
-     padding (this finishes audit 0-b P1-11: the phantom 40px dent). */
-  .auth-input-wrap:has(> .auth-input-icon) .auth-input {
-    padding-inline-start: var(--sp-8);
-  }
-  /* LTR inputs (email / university ID) inside the RTL wrap: the icon
-     sits on the physical right = the input's inline END, so the gutter
-     mirrors (audit 0-b P1-7). Scoped to icon wraps for the same
-     reason as above. */
-  .auth-input-wrap:has(> .auth-input-icon) .auth-input[dir="ltr"] {
-    padding-inline-start: var(--sp-4);
-    padding-inline-end: var(--sp-8);
-  }
-
   /* Invalid control state — errors are not text-only. --danger is the
      fill/stroke token (≥ the 3:1 non-text floor in light; remapped
-     under dark theme). Focus keeps the shared accent
-     language (focus > validity). */
+     under dark theme). Focus keeps the shared ladder
+     (focus > validity). */
   .auth-input[aria-invalid="true"] { border-color: var(--danger); }
 
-  /* Password visibility toggle — 44px hit area per the craft floor. */
+  /* Password visibility toggle — 44px hit area per the craft floor.
+     R315: transparent grammar — the hover is an ink swap only (no
+     surface step on the paper). */
   .auth-input-toggle {
     position: absolute;
     inset-inline-end: var(--sp-1);
@@ -408,12 +521,12 @@
     background: transparent;
     color: var(--text-muted);
     cursor: pointer;
-    transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+    transition: color var(--t-fast) var(--ease);
   }
-  .auth-input-toggle:hover { color: var(--text); background: var(--surface-2); }
+  .auth-input-toggle:hover { color: var(--text); }
   /* The controls register token (0.97) owns every control press. */
   .auth-input-toggle:active { transform: scale(var(--press-scale)); }
-  /* Clears the toggle (4px inset + 44px wide + 4px breathing) so text
+  /* Clears the toggle (4px inset + 44px wide + breathing) so text
      never runs under the glyph. */
   .auth-input-wrap.has-toggle .auth-input {
     padding-inline-end: calc(var(--sp-8) + var(--sp-3));
@@ -448,7 +561,13 @@
     line-height: var(--lh-base);
   }
 
+  /* R315 (K-I): the field error is a MONO RED MICRO-LABEL beside its
+     row — the drafting error voice (the Arabic sentence resolves to
+     the Arabic face inside the mono stack; 13px floor; --danger-ink
+     is AA in both themes). Describedby-only contract unchanged
+     (r157 F5): announced on focus, never shouted. */
   .auth-field-error {
+    font-family: var(--font-mono);
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
     line-height: var(--lh-snug);
@@ -457,8 +576,8 @@
 
   /* r157 F5 (finding 5 — alert storm): the ONE polite validation
      summary (role=status, countAr «N مشاكل») that replaces the per-field
-     role="alert" choir. Quiet muted ink — the per-field errors above
-     carry the detail via aria-describedby. */
+     role="alert" choir. Quiet muted reading copy — the per-field
+     errors beside their rows carry the detail via aria-describedby. */
   .auth-form-summary {
     font-size: var(--fs-sm);
     line-height: var(--lh-base);
@@ -467,14 +586,17 @@
     margin-block-start: var(--sp-1);
   }
 
-  /* Submit-level banner: danger-ink on danger-soft (status text
-     consumes the -ink tokens — theme-aware without overrides). */
+  /* R315 (K-I): the submit-level banner joins the sheet grammar —
+     flat paper, a 1px --danger hairline, the mono error voice, no
+     tint wells. Honest server copy rides it verbatim (D17-3). */
   .auth-error {
     display: flex; align-items: center; gap: var(--sp-2);
     padding: var(--sp-3) var(--sp-4);
-    border-radius: var(--r-md);
-    background: var(--danger-soft);
+    border: 1px solid var(--danger);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    background: transparent;
     color: var(--danger-ink);
+    font-family: var(--font-mono);
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
     line-height: var(--lh-base);
@@ -517,12 +639,14 @@
 
   /* ══ 5 · LOGIN EXTRAS ══════════════════════════════════════════════ */
 
+  /* the forgot-password action belongs to the password row: it seats
+     at the inline-end of the row's control column (R315 — the old
+     negative-margin pull died with .auth-field). */
   .auth-forgot-row {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     font-size: var(--fs-sm);
-    /* the row belongs to the password field — pulled out of the form gap */
-    margin-block-start: calc(-1 * var(--sp-2));
   }
   .auth-forgot {
     margin-inline-start: auto;
@@ -540,35 +664,72 @@
   .auth-forgot-notice {
     font-size: var(--fs-sm);
     line-height: var(--lh-base);
-    background: var(--warning-soft);
+    background: transparent;
+    border: 1px solid var(--warning-ink);
     color: var(--warning-ink);
     padding: var(--sp-3) var(--sp-4);
-    border-radius: var(--r-md);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
     margin-block-start: var(--sp-2);
   }
 
-  /* THE primary action — r313: the reference's own button grammar
-     (radius 0, no shadow, flat fill): the signal fill with the white
-     label every reference button recipe ships (digest → buttons;
-     header-cta/hero-discover). Hover brightens the fill one step
-     toward white (the .btn.accent light-theme convention), press
-     keeps the platform's single 0.97 register. The r307 charcoal
-     slab retires with the R313 parity override. */
+  /* ══ 5b · THE SUBMIT — the reference's fill-wipe (R315 · K-I) ════
+     Transparent ground + 1px hairline + the mono-voice label; on
+     hover/focus the accent fill WIPES IN FROM THE INLINE-START EDGE
+     (the slab anchors inline-start and grows by inline-size — the
+     logical wipe, correct in RTL without physical hacks) and the
+     label flips to the accent foreground. Radius 0, no shadow, ≥ the
+     44px touch floor at every breakpoint. The slab lives at z -1
+     under the isolated label (the landing's .fo-nav-link recipe). */
   .auth-submit {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
     inline-size: 100%; /* full-width at every breakpoint; ≥44px */
     block-size: 48px;
-    background: var(--accent);
-    color: var(--accent-fg);
-    border: 0;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border-strong);
     border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    /* the drafting voice: the mono stack carries Latin runs; the
+       Arabic label resolves to the Arabic face inside it (no upper,
+       no tracking — joins). */
+    font-family: var(--font-mono);
     font-size: var(--fs-body);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0;
+    overflow: clip;
     cursor: pointer;
-    display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
-    transition: background var(--t-fast) var(--ease);
+    transition:
+      color var(--t-base) var(--ease),
+      border-color var(--t-base) var(--ease);
     margin-block-start: var(--sp-2);
   }
-  .auth-submit:hover { background: color-mix(in oklab, var(--accent) 86%, var(--neutral-0)); }
+  .auth-submit::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 100%;
+    background: var(--accent);
+    /* parked one width beyond the INLINE-START edge — --motion-direction
+       mirrors the sign under [dir="rtl"] so the wipe always enters from
+       the reading edge (the step-panel keyframes' own token contract;
+       transform, never an animated layout property). */
+    transform: translateX(calc(var(--motion-direction) * -101%));
+    transition: transform var(--t-base) var(--ease);
+    pointer-events: none;
+    z-index: -1;
+  }
+  .auth-submit:not(:disabled):hover,
+  .auth-submit:not(:disabled):focus-visible {
+    color: var(--accent-fg);
+    border-color: var(--accent);
+  }
+  .auth-submit:not(:disabled):hover::before,
+  .auth-submit:not(:disabled):focus-visible::before {
+    transform: translateX(0); /* the wipe — in from the inline-start edge */
+  }
   /* The platform's single press register — buttons scale (0.97). */
   .auth-submit:active { transform: scale(var(--press-scale)); }
   .auth-submit:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; transform: none; }
@@ -581,15 +742,15 @@
     animation: madarek-spin var(--motion-duration-stat) var(--ease-linear) infinite;
   }
 
-  /* Demo-account hint (dev-only): a quiet, dismissible panel — one
-     surface step off the card, hairline rule, muted text. No pastels,
-     no shouting; the chips FILL the form, the visitor submits it. */
+  /* Demo-account hint (dev-only): a quiet, dismissible ruled block —
+     hairline rule on the bare paper, muted text. No pastels, no
+     shouting; the chips FILL the form, the visitor submits it. */
   .auth-demo-hint {
     display: flex; flex-direction: column; gap: var(--sp-2);
     padding: var(--sp-3);
-    border: 1px solid var(--border-faint);
-    border-radius: var(--r-md);
-    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    background: transparent;
   }
   .auth-demo-hint-head {
     display: flex; align-items: center; gap: var(--sp-2);
@@ -606,9 +767,9 @@
     background: transparent;
     color: var(--text-muted);
     cursor: pointer;
-    transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+    transition: color var(--t-fast) var(--ease);
   }
-  .auth-demo-hint-close:hover { color: var(--text); background: var(--surface); }
+  .auth-demo-hint-close:hover { color: var(--text); }
   .auth-demo-hint-body {
     font-size: var(--fs-sm);
     line-height: var(--lh-base);
@@ -621,7 +782,7 @@
      canonical .btn/.btn.sm recipe via the `btn sm auth-demo-btn` class
      chain in AuthPage.tsx. Height, radius, padding, label type size,
      press scale, focus ring, and disabled opacity flow from
-     components.css; ONLY the intentional quiet-surface deltas live
+     components.css; ONLY the intentional quiet-ink deltas live
      here — plus the unconditional 44px touch floor (S-1a). */
   .auth-demo-btn {
     color: var(--text-secondary);
@@ -674,72 +835,80 @@
   }
   .auth-register-prompt a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
 
-  /* ══ 6 · REGISTER — role rows (list-first) + appointment note ═════ */
+  /* ══ 6 · REGISTER — the ruled role rows + appointment note ═══════ */
 
+  /* The chooser is a RULED BLOCK (R315 · K-I): one hairline grid, the
+     rows separated by 1px var(--rule), the block opening + closing
+     with its own rule — the same cell grammar as the fields above. */
   .role-card-grid {
     display: grid;
-    gap: var(--sp-3);
+    gap: 0;
+    border-block: 1px solid var(--rule);
   }
 
-  /* The chooser is a ruled hairline grid — the r313 drafting grammar:
-     flat surface, one #B3B3AF hairline, square corners. Hover = the
-     accent FILL-WIPE (the reference header-cta recipe: the fill
-     slides in, the label inverts) — no lift, no shadow. The 44px+
-     floor and the full-row hit area stay. */
+  /* The ruled row: flat on the paper (no surface step), square, the
+     mono [NN] index cell at the inline-start, the title + sub, the
+     arrow at the far end. Hover = the reference's fill-wipe (the nav
+     recipe: the ::before accent slab drops from the block-start edge,
+     the label inverts) — no lift, no shadow. The 44px+ floor and the
+     full-row hit area stay. */
   .role-card {
+    position: relative;
+    isolation: isolate;
     display: flex;
     align-items: center;
     gap: var(--sp-3);
     inline-size: 100%;
     padding: var(--sp-4);
     min-block-size: 64px;
+    border: 0;
     border-radius: var(--r-sm); /* 0 — the r313 ladder */
-    background: var(--surface);
-    border: 1px solid var(--rule);
+    background: transparent;
     color: var(--text);
     cursor: pointer;
     text-align: start;
-    transition:
-      background var(--t-base) var(--ease),
-      border-color var(--t-base) var(--ease),
-      color var(--t-base) var(--ease);
+    overflow: clip;
+    transition: color var(--t-base) var(--ease);
   }
-  .role-card:hover {
-    border-color: var(--accent);
+  .role-card + .role-card { border-block-start: 1px solid var(--rule); }
+  .role-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
     background: var(--accent);
+    transform: translateY(-101%);
+    transition: transform var(--t-base) var(--ease);
+    pointer-events: none;
+    z-index: -1;
+  }
+  .role-card:hover,
+  .role-card:focus-visible {
     color: var(--accent-fg);
+  }
+  .role-card:hover::before,
+  .role-card:focus-visible::before {
+    transform: translateY(0);
   }
   .role-card:active { transform: scale(var(--press-scale)); }
   /* r313: focus-visible drives the hover recipe (the reference's
      button contract — focusVisibleMatched 13/14) ON TOP of the v22
      AA ring, which stays the platform's focus indicator. */
-  .role-card:focus-visible {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: var(--accent-fg);
-  }
 
-  /* The icon well — a square hairline box (the soft tint well
-     retired with the r313 two-tone sweep); the glyph keeps the
-     signal ink and inverts with the card on the fill-wipe. */
-  .role-card-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 44px;
-    block-size: 44px;
-    border-radius: var(--r-sm); /* 0 */
-    background: transparent;
-    border: 1px solid var(--rule);
-    color: var(--accent-ink);
+  /* the [NN] index cell — the drafting voice, inline-start seat */
+  .role-card-index {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-faint);
     flex: 0 0 auto;
-    transition: border-color var(--t-base) var(--ease), color var(--t-base) var(--ease);
+    transition: color var(--t-base) var(--ease);
   }
-  .role-card:hover .role-card-icon,
-  .role-card:focus-visible .role-card-icon {
-    border-color: color-mix(in srgb, var(--accent-fg) 55%, transparent);
+  .role-card:hover .role-card-index,
+  .role-card:focus-visible .role-card-index {
     color: inherit;
   }
+
   .role-card-body {
     display: flex;
     flex-direction: column;
@@ -768,14 +937,15 @@
   }
   .role-card:hover .role-card-arrow { color: inherit; }
 
+  /* the appointment note — a quiet ruled aside on the bare paper */
   .role-invitation-note {
     display: flex;
     align-items: flex-start;
     gap: var(--sp-2);
     padding: var(--sp-3) var(--sp-4); /* extra inline breathing room at 320–390px */
-    border-radius: var(--r-md);
-    background: var(--surface-2);
-    border: 1px solid var(--border-faint);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    background: transparent;
     font-size: var(--fs-sm);
     line-height: var(--lh-base);
     color: var(--text-muted);
@@ -807,7 +977,9 @@
   }
   /* The corner plus marks — the reference's 10×10 drafting crosses in
      the mono voice, centered ON the frame's corner points (the
-     registration-mark convention; frame evidence, r313 digest). */
+     registration-mark convention; frame evidence, r313 digest).
+     R315 (K-I): PHYSICAL anchors — see the .auth-mark note above (the
+     logical-inline recipe drifts 10px inside the corner under RTL). */
   .nf-mark {
     position: absolute;
     inline-size: 10px;
@@ -819,10 +991,10 @@
     font-size: var(--fs-sm);
     line-height: 1;
   }
-  .nf-mark-tl { inset-block-start: 0; inset-inline-start: 0; translate: -50% -50%; }
-  .nf-mark-tr { inset-block-start: 0; inset-inline-end: 0; translate: 50% -50%; }
-  .nf-mark-bl { inset-block-end: 0; inset-inline-start: 0; translate: -50% 50%; }
-  .nf-mark-br { inset-block-end: 0; inset-inline-end: 0; translate: 50% 50%; }
+  .nf-mark-tl { top: 0; left: 0; translate: -50% -50%; }
+  .nf-mark-tr { top: 0; right: 0; translate: 50% -50%; }
+  .nf-mark-bl { bottom: 0; left: 0; translate: -50% 50%; }
+  .nf-mark-br { bottom: 0; right: 0; translate: 50% 50%; }
 
   .nf-scene {
     inline-size: 100%;
@@ -903,7 +1075,8 @@
   }
 
   /* ══ Card entrance — home since r152e (was polish v19) ════════════ */
-  /* ONE authored moment: the card rises in (calm distance, no bounce). */
+  /* ONE authored moment: the sheet column rises in (calm distance, no
+     bounce). R315: same keyframe, new seat — the dissolved card. */
   .auth-card {
     animation: madarek-auth-card-in var(--t-slow) var(--ease-out) both;
   }
@@ -911,21 +1084,22 @@
     from { opacity: 0; transform: translateY(var(--motion-distance-small)); }
     to   { opacity: 1; transform: none; }
   }
-  /* (r157 F5 — قاعدة ميتة حُذفت: ‎.auth-card .btn.primary‎ — لا يوجد أي
-     عنصر ‎.btn‎ داخل ‎.auth-card‎ في صفحتي الدخول والتسجيل؛ زرّ الإرسال
-     ‎.auth-submit‎ خاصٌّ بهذه الورقة وبطاقات الأدوار ليست ‎.btn‎. القواعد
-     العامة لـ‎.btn‎ في components.css هي المرجع الوحيد.) */
 
+  /* ══ Reduced motion — the R315 belt (every mover collapses) ═══════ */
   @media (prefers-reduced-motion: reduce) {
     .auth-step-panel,
     .nf-scene,
     .auth-card { animation: none; }
     .role-card,
+    .role-card::before,
+    .role-card-index,
     .role-card-arrow,
     .auth-back-home,
+    .auth-context,
     .auth-forgot,
     .auth-input-toggle,
     .auth-submit,
+    .auth-submit::before,
     .auth-demo-btn,
     .auth-demo-hint-close,
     .auth-demo-hint-reopen,
@@ -934,5 +1108,28 @@
     .role-card:active,
     .auth-input-toggle:active,
     .auth-submit:active { transform: none; }
+  }
+}
+
+/* ═══ R315 (K-I) — the input ladder's THIRD rung ═════════════════════
+   filled+focus → the raw signal #FA3600 (= var(--accent)). The default
+   (var(--border-strong)) and :focus (#ED4C1F, .45s ≈ --t-slow) rungs
+   live in their canonical homes (this file's pages layer + the shared
+   polish v22 recipe). This one rung must BEAT polish's
+   `.input:focus { border-color: #ED4C1F }` — and polish.css lives in
+   @layer overrides, which outranks @layer pages regardless of
+   specificity (tokens.css pins the order: tokens, base, layout,
+   components, pages, overrides). So the rung joins the SAME overrides
+   layer — the established precedent for a non-polish sheet needing
+   the last word (motion.css's overrides blocks) — and wins on
+   specificity: input.auth-input[placeholder]:not(:placeholder-shown)
+   :focus = (0,4,1) vs polish's .input:focus = (0,2,0). The
+   [placeholder] guard keeps the rung honest: "filled" is only
+   knowable in CSS where a placeholder exists (the reference's own
+   footer-subscribe-input measurement); selects never match. */
+@layer overrides {
+  input.auth-input[placeholder]:not(:placeholder-shown):focus,
+  textarea.auth-input[placeholder]:not(:placeholder-shown):focus {
+    border-color: var(--accent);
   }
 }

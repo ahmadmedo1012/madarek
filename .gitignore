@@ -130,3 +130,6 @@ audits/evidence/r314/_local/
 scripts/r314/tools/node_modules/
 scripts/r314/out/
 scripts/r314/tools/
+
+# R315 — agent working captures (fresh per cycle, never committed)
+_local/

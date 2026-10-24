@@ -2,9 +2,13 @@
  * ConsentBanner — R314 (V11) — the landing's local-storage consent gate.
  *
  * An ORIGINAL component in the reference's measured chrome geometry
- * (desktop: fixed bottom-right, ~601×38, paper ground, four separate
- * 1px ink rules like a drafting frame, the ONE hard-offset shadow the
- * reference ships) carrying Madarek's OWN honest text — never the
+ * (R315 K-C — E-crawl ground truth: desktop 601.25×38.33 bottom-right
+ * on the LTR reference → mirrored bottom-LEFT on our RTL sheet; four
+ * separate 1px ink rules like a drafting frame, the ONE hard-offset
+ * shadow the reference ships; Accept 78.63×27.98 on the #EFEFEF
+ * ground, Reject 80.63×28.33 outlined; mobile 374×~100 with the two
+ * actions side-by-side — our 44px a11y touch floor over the measured
+ * 93.45) carrying Madarek's OWN honest ONE-LINE sentence — never the
  * reference's copy, logo, or awards.
  *
  * This is a REAL gate, not decoration:
@@ -220,18 +224,19 @@ export function ConsentBanner() {
       <span className="cb-rule cb-rule-l" aria-hidden="true" />
 
       <p className="cb-text">
-        {/* Madarek's OWN honest sentence — no tracking, no analytics,
-            no third-party cookies exist anywhere in the app. */}
-        يستخدم هذا الموقع التخزين المحلي في متصفحك فقط لتذكُّر تفضيلاتك — السمة، ومشهد البداية، وبعض إعدادات الواجهة. لا تتبُّع ولا تحليلات ولا ملفات تعريف ارتباط خارجية.{' '}
-        {/* No #privacy anchor exists on /capabilities (verified — its
-            sections are live/vision/colleges); the honest destination
-            is the live-capabilities surface itself. */}
-        <Link to="/capabilities" className="cb-more">تعرّف أكثر</Link>
+        {/* R315 (K-C): ONE honest line — the reference's banner is a
+            single sentence + a LEARN MORE link (601×38, no paragraph
+            stack). The long disclosure sentence the owner flagged
+            (4-line Arabic wrap · 175px mobile) is retired; the honest
+            substance lives on /capabilities beside the live ledger. */}
+        يستخدم هذا الموقع التخزين المحلي.
+        <Link to="/capabilities" className="cb-more">اعرف أكثر</Link>
       </p>
 
       <div className="cb-actions">
-        {/* the fill-wipe hover is painted by .cb-accept::before
-            (scaleX from the inline-start edge — see r314-chrome.css) */}
+        {/* R315 (K-C): the measured seats — «موافق» on the pale
+            #EFEFEF ground, «أرفض» outlined ink (r314-chrome.css);
+            both side-by-side at every width. */}
         <button type="button" className="cb-accept" onClick={() => answer('accepted')}>
           موافق
         </button>

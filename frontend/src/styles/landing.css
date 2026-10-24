@@ -96,34 +96,11 @@ html[data-theme='dark'] .fo-grain {
   /* the grain is static texture — no motion to reduce */
 }
 
-.sheet-mark {
-  position: absolute;
-  inline-size: 10px;
-  block-size: 10px;
-  display: grid;
-  place-items: center;
-  color: var(--border-strong);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  line-height: 1;
-}
-
-/* centered ON the frame's corner points (the registration-mark
-   convention: the plus sits at the intersection, not beside it) */
-.sheet-mark-tl { inset-block-start: 0; inset-inline-start: 0; translate: -50% -50%; }
-.sheet-mark-tr { inset-block-start: 0; inset-inline-end: 0; translate: 50% -50%; }
-.sheet-mark-bl { inset-block-end: 0; inset-inline-start: 0; translate: -50% 50%; }
-.sheet-mark-br { inset-block-end: 0; inset-inline-end: 0; translate: 50% 50%; }
-
-.sheet-coord {
-  position: absolute;
-  color: var(--text-faint);
-  font-size: var(--fs-xxs);
-  letter-spacing: 0;
-}
-
-.sheet-coord-ts { inset-block-start: var(--sp-1-5); inset-inline-start: var(--sp-9); }
-.sheet-coord-be { inset-block-end: var(--sp-1-5); inset-inline-end: var(--sp-9); }
+/* ── R315 (K-A4): the page frame is EXACTLY the four hairlines above
+   (E-crawl ground truth: the reference's .main-deco carries NO plus
+   marks and NO mono coordinates). The old .sheet-mark / .sheet-coord
+   chrome — whose fixed top label collided with the masthead at every
+   width — is retired. ── */
 
 /* ── The sheet measure — every top-level band shares it ────────────
    (R313 D8/D14: the header + footer LEFT the 1160 measure — the
@@ -160,7 +137,10 @@ html[data-theme='dark'] .fo-grain {
  * (the reference's own seat — 56px @7px, z 1e7 there; our frame
  * chrome keeps its own rung). */
 .fo-header { position: fixed; }
-.fo-progress { position: fixed; }
+
+/* ── R315 (K-A5): the top orange progress ribbon is RETIRED — the
+   reference has no element above the header band (E-crawl ground
+   truth). The .fo-progress rules are deleted with it. ── */
 
 /* ── Section labels — the drafting eyebrow: the mono bracketed index
  * beside the Arabic label. The index is Latin/technical (dir=ltr,
@@ -218,21 +198,8 @@ html[data-theme='dark'] .fo-grain {
 /* ── Scroll-progress ribbon (r172 zero-setState: --p written imperatively)
  * The bar consumes --p via transform (GPU-composited) and paints the
  * canonical signal. */
-.fo-progress {
-  inset-block-start: 0;
-  inset-inline: 0;
-  z-index: 80;
-  block-size: 2px;
-  pointer-events: none;
-}
-
-.fo-progress-bar {
-  inline-size: 100%;
-  block-size: 100%;
-  transform: scaleX(var(--p, 0));
-  transform-origin: inline-start;
-  background: var(--accent);
-}
+/* ── R315 (K-A5): the top orange progress ribbon is RETIRED (see the
+   note above — the reference has nothing at the frame's top edge). ── */
 
 /* ── Masthead (R313 · D8) — the reference's fixed 56px bar ───────────
  * Measured (digest.header + primary/styles.json): fixed @ (7,7),
@@ -269,10 +236,16 @@ html[data-theme='dark'] .fo-grain {
    selector deliberately carries no geometry so nothing can fight
    the rAF write. */
 
+/* R315 (K-B) — the measured CELL GRAMMAR (E-crawl heron-dom
+   @1440×900): [logo cell 705 | nav cells 4×136.67 | actions cells |
+   CTA cell 166.66], every boundary a 1×56.3 #B3B3AF rule, a bottom
+   hairline at y=55.3. RTL-mirrored: logo cell inline-start (right),
+   CTA ends the row (left). Cells butt flush — NO gaps; the separators
+   ARE the gaps. */
 .fo-header-inner {
   display: flex;
   align-items: stretch;
-  gap: var(--sp-5);
+  gap: 0;
   min-block-size: 56px;
   /* the reference's seat padding: logo at x=33 = 26px inside the
      frame edge; the far end rides the frame edge itself. */
@@ -281,7 +254,11 @@ html[data-theme='dark'] .fo-grain {
   max-inline-size: none;
 }
 
+/* the LOGO CELL — grows to fill (~705px @1440 = the measured logo
+   cell): mark + compact wordmark, NO tagline stack (the reference's
+   logo cell carries exactly mark + wordmark). */
 .fo-brand {
+  flex: 1 1 auto;
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2-5);
@@ -290,18 +267,15 @@ html[data-theme='dark'] .fo-grain {
   color: var(--text);
 }
 
-/* the wordmark stack: name over descriptor — the brand block the
- * r177 neutrality pin reads (exactly two «منصّة التعليم الذكي»). */
-.fo-brand-stack {
-  display: grid;
-  gap: 0;
-  line-height: 1.25;
-}
-
+/* the compact logotype beside the mark (the reference wordmark is
+   102×15 beside its 32×36 mark; «مدارك» holds the same seat at the
+   Arabic display weight — the measured cell proportion, not the old
+   oversized h3 block). */
 .fo-brand-name {
   font-family: var(--font-display);
-  font-size: var(--fs-h3);
+  font-size: 2.4rem;   /* ≈20px @1440 — the measured logo-cell scale */
   font-weight: 700;
+  line-height: 1;
 }
 
 .fo-brand-sub {
@@ -310,38 +284,39 @@ html[data-theme='dark'] .fo-grain {
   color: var(--text-muted);
 }
 
-/* ── The nav — four full-height seats (the reference's 137×56 cells;
- * in RTL the row sits left-of-center: margin-inline-start:auto pushes
- * toward the far (left) end, mirroring Heron's right-aligned row). */
+/* ── The nav — four fixed 136.67px cells (16.4rem on the shared fluid
+ * root = the measured width at every viewport), the row opened by its
+ * own 1px separator (the rule after the logo cell, x=713 @1440). */
 .fo-nav {
   display: flex;
   align-items: stretch;
-  gap: var(--sp-1);
   margin-inline-start: auto;
+  border-inline-start: 1px solid var(--grid-line);
 }
 
 .fo-nav-item {
   position: relative;
   display: inline-flex;
+  border-inline-start: 1px solid var(--grid-line);
 }
 
-/* the nav cell — the reference's recipe: a full-height link whose
- * hover is the CHARCOAL FILL-WIPE + dual-label roll (a #282828 slab
- * drops from the block-start edge; the label rolls one row and
- * flips to paper ink). The wipe layer parks one translation unit
- * above and is clipped by the cell (the parked slab never paints
- * over the frame). The resting ink is the SOLID secondary tier
- * (never an alpha wash — alpha over a transparent bar composites
- * unpredictably; the solid tier holds ≥7:1). Buttons (dropdown
- * parents) get the UA reset; the wash itself lives behind the
- * guarded media query below (coarse pointers get the plain link). */
+.fo-nav-item:first-child {
+  border-inline-start: 0; /* the row's own rule already drew it */
+}
+
+/* the nav cell — a fixed 16.4rem seat (the reference's 136.67px cell),
+ * label centred, hairline-separated; hover = the CHARCOAL FILL-WIPE +
+ * dual-label roll (a #282828 slab drops from the block-start edge;
+ * the label rolls one row and flips to paper ink). */
 .fo-nav-link {
   position: relative;
   isolation: isolate;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--sp-1-5);
-  padding-inline: var(--sp-3);
+  inline-size: 16.4rem;   /* 136.67px @1440 — the measured cell */
+  padding-inline: var(--sp-2);
   min-block-size: 44px;
   block-size: 100%;
   font: inherit;
@@ -354,6 +329,17 @@ html[data-theme='dark'] .fo-grain {
   cursor: pointer;
   overflow: clip;
   transition: color var(--t-base) var(--ease);
+}
+
+/* a plain (non-dropdown) nav seat wears the same cell separator as
+   the dropdown rows — the row reads as one ruled band of cells. */
+.fo-nav > .fo-nav-link,
+.fo-nav > a,
+.fo-nav > span {
+  border-inline-start: 1px solid var(--grid-line);
+}
+.fo-nav > :first-child {
+  border-inline-start: 0;
 }
 
 .fo-nav-link::before {
@@ -491,40 +477,108 @@ html[data-theme='dark'] .fo-grain {
   border-block-end: 0;
 }
 
-/* ── The far-end actions — behind the reference's vertical hairline
- * (the 1px #B3B3AF line at the CTA's inline-start edge; measured in
- * the header-cta recipe). */
+/* ── The far-end ACTION CELLS (R315 K-B) — the row's own 1px rule
+ * opens the zone (the separator before the CTA seats, x=1260 @1440):
+ * the theme seats + «تسجيل الدخول» + the CTA cell, every boundary
+ * ruled, no boxes, no gaps — the same cell language as the nav. */
 .fo-header-actions {
   display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding-inline-start: var(--sp-6);
+  align-items: stretch;
   border-inline-start: 1px solid var(--grid-line);
 }
 
-/* the header's own CTA seats run the FULL bar height (the reference
- * CTA is 167×56, flush to the frame edge) — geometry only, the .btn
- * recipes own every colour. */
-.fo-header-actions .btn {
+/* the theme seats — UNBOXED in the header (the old boxed cluster the
+   owner flagged is gone): bare icon cells at the 44px a11y floor,
+   the seat boundaries painted by hairlines. */
+.fo-header-actions .theme-toggle {
+  border: 0;
+  background: none;
+  gap: 0;
+  padding: 0;
   align-self: stretch;
-  block-size: auto;
 }
 
-/* R314 (V10) — the reference's header CTA grammar: quiet transparent
- * cells at rest (hairline-separated seats), the accent cell carries
- * the orange READ (not a solid slab) and wipes orange on hover — the
- * solid-orange block the owner flagged at pair-000 retires. */
-.fo-header-actions .btn.primary {
-  --_btn-bg: transparent;
-  --_btn-fg: var(--accent-ink);
-  --_btn-bd: transparent;
-  --_btn-wipe: var(--accent);
-  --_btn-wipe-fg: var(--accent-fg);
+.fo-header-actions .theme-toggle-option {
+  min-inline-size: 3.5rem;  /* 29px @1440 — a compact icon seat */
+  min-block-size: 44px;
+  border-inline-end: 1px solid var(--grid-line);
+  border-radius: 0;
 }
 
-.fo-header-actions .btn.ghost {
-  --_btn-bg: transparent;
-  --_btn-bd: transparent;
+.fo-header-actions .theme-toggle-option:last-child {
+  border-inline-end: 0;
+}
+
+/* «تسجيل الدخول» — a plain ruled cell in the row's register (the
+   funnel stays reachable on desktop; the reference has no second
+   seat, our honest function rides the same grammar). */
+.fo-actions-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--sp-4);
+  min-block-size: 44px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-inline-start: 1px solid var(--grid-line);
+  transition: color var(--t-base) var(--ease);
+}
+
+.fo-actions-login:hover {
+  color: var(--text);
+}
+
+/* the CTA CELL — the reference's 166.66px (20rem) seat closing the
+ * row: TRANSPARENT at rest with the ORANGE read (the measured label
+ * ink; --accent-ink holds the a11y contrast floor), dual-label roll +
+ * the orange FILL-WIPE on hover/focus (the .btn-fill grammar), flush
+ * to the frame edge. */
+.fo-actions-cta {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1-5);
+  inline-size: 20rem;       /* 166.66px @1440 — the measured CTA cell */
+  min-block-size: 44px;
+  block-size: 100%;
+  padding-inline: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: max(13px, var(--fs-mono-md));
+  font-weight: var(--fw-medium);
+  color: var(--accent-ink);
+  text-decoration: none;
+  overflow: clip;
+  transition: color var(--t-base) var(--ease);
+}
+
+.fo-actions-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: translateY(-101%);
+  transition: transform var(--t-base) var(--ease);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* focus rides the universal base.css ring (the r190 one-language
+   canon: landing.css carries ZERO :focus-visible rules — the wipe is
+   a hover paint, the ring is the focus signal). */
+.fo-actions-cta:hover {
+  color: var(--accent-fg);
+}
+
+.fo-actions-cta:hover::before {
+  transform: translateY(0);
+}
+
+.fo-actions-cta:hover .fo-roll-track {
+  transform: translateY(-100%);
 }
 
 /* The .btn recipes ship 32/40/48px — the sheet lifts every landing
@@ -565,8 +619,9 @@ html[data-theme='dark'] .fo-grain {
   transition: transform var(--t-base) var(--ease), opacity var(--t-base) var(--ease);
 }
 
-/* open: the two lines fold to one (the reference's active mark) */
-.fo-burger[aria-expanded='true'] .fo-burger-ic span:last-child {
+/* open: the three bars fold — the middle retracts (the reference's
+   active mark): an open/close state without inventing a new glyph. */
+.fo-burger[aria-expanded='true'] .fo-burger-ic span:nth-child(2) {
   transform: scaleX(0.35);
   transform-origin: inline-start;
   opacity: 0;
@@ -660,14 +715,20 @@ html[data-theme='dark'] .fo-grain {
 .fo-hero {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
-  min-block-size: calc(100vh - 13px); /* spacing-gate: allow — the measured reference band (887 = 900 − 13), an external constant */
+  /* R315 (B1 · A.2): svh — the band holds the DYNAMIC viewport (mobile
+   * URL bars) at the same 100vh−13 measure the reference pins @1440. */
+  min-block-size: calc(100svh - 13px); /* spacing-gate: allow — the measured reference band (887 = 900 − 13), an external constant */
   align-content: stretch;
   padding-block: 0;
 }
 
-/* the framed ink window — the ink rendering (own subject/licence)
- * rides the shared .bp-svg viewBox frame so the inspection instrument
- * keeps ONE coordinate system (V2). Dashed inner frame per §5.0. */
+/* the framed ink window — R315 (B1 · A.1): the elevation rides the
+ * shared .bp-svg viewBox frame so the inspection instrument keeps ONE
+ * coordinate system. The window itself is TRANSPARENT — the page's
+ * paper shows through (no white inset box; the owner's §0-A.1 kill),
+ * carrying only the hairline + the drafting chrome: ruler ticks on
+ * the four inner edges, the dashed inner frame at 16px with ± corner
+ * marks, and the corner plus marks. */
 .fo-hero-window {
   display: grid;
   padding-block-start: 63px; /* 56px header + 7px frame */
@@ -677,29 +738,45 @@ html[data-theme='dark'] .fo-grain {
 
 .fo-hero-window .bp-stage {
   inline-size: 100%;
-  /* the window ≈1406×~690 @1440: the artwork seats with a hairline
-     mat + the dashed drafting inner frame */
+  /* the window ≈1406×~683 @1440: the artwork seats on transparent
+     paper with the drafting chrome (ticks, dashed frame, marks) */
   padding: 12px;
   border: 1px solid var(--rule);
   position: relative;
-  background:
-    linear-gradient(var(--bg), var(--bg)),
-    var(--surface);
+  background: transparent; /* R315 A.1 — the paper shows through, never a white box */
+}
+
+/* R315 (A.1 — the white-box kill): the elevation is LINE ART on the
+   paper — the reference's own art region samples pure paper
+   (246,246,238 · r313 telemetry/frame-hero-corner-1440); facade
+   masses read through ink strokes + hatch/stipple textures, NEVER
+   through solid fills. Scoped to the hero window ONLY — the map plan
+   (LearningPlanDrawing) keeps its intentional poché fills. */
+.fo-hero-window .bp-fill {
+  fill: none;
+}
+
+[data-theme='dark'] .fo-hero-window .bp-fill {
+  fill: none;
 }
 
 .fo-hero-window .bp-stage::before {
   content: '';
+  /* R315 (B1 · A.3): the faint dashed inner frame 15–20px inside the
+     window edge (the reference's inner drafting chrome) — visible but
+     faint: one --rule step below the solid window hairline. */
   position: absolute;
-  inset: 6px;
-  border: 1px dashed var(--grid-line);
+  inset: 16px;
+  border: 1px dashed var(--rule);
+  opacity: 0.75;
   pointer-events: none;
   z-index: 2;
 }
 
-/* the artwork mass ≈65% of the viewport height (the measured
- * reference composition): the SVG canvas caps at ~76vh (the building
- * fills ~85% of its canvas), centred, whitespace around — never
- * stretched to the window edges. */
+/* the artwork mass (R315 A.1): the WHOLE elevation seats in the frame
+ * at ~67% of the window width with generous empty paper around it
+ * (the HERO_SEAT transform inside HeroInkWindow) — never cropped,
+ * never stretched to the window edges. */
 .fo-hero-window .bp-svg {
   display: block;
   inline-size: auto;
@@ -718,25 +795,30 @@ html[data-theme='dark'] .fo-grain {
  * own min-block-size (100vh − 13) becomes the binding constraint. The
  * stage centers its artwork when the stretched row is taller than the
  * drawing (tall viewports) — the rulers/lens/instrument all anchor to
- * the stage/svg boxes and follow. Desktop-scoped: the ≤991px flow
- * (the V13 mobile band) keeps its own rules below. */
-@media (min-width: 992px) {
+ * the stage/svg boxes and follow.
+ * R315 (B1): the desktop gate moves 992 → 1025 (the ≤1024 tablet band
+ * re-composes per ticket K-H below) and the definite height gains a
+ * short-viewport guard — calc(100svh − 280px) keeps the window inside
+ * the band when the strip + header + frame eat more than 32% of a
+ * short screen (1280×700 measured in the reference matrix). */
+@media (min-width: 1025px) {
   .fo-hero-window .bp-stage {
     display: grid;
     place-items: center;
   }
 
   .fo-hero-window .bp-svg {
-    block-size: 68vh;
+    block-size: min(68vh, calc(100svh - 280px));
   }
 }
 
-/* ── the bottom strip — 133px of cells: the GIANT H1 at the
- * inline-start edge (46.67px/1.0 measured, 3 lines) · the intro
- * paragraph cell · the DISCOVER MORE link cell. ── */
+/* ── the bottom strip — 133px of cells (R315 A.2: the measured 3-cell
+ * band, RTL-mirrored): the H1 cell ≈47% at the inline-start edge · the
+ * paragraph cell (lead + [LIVE] disclosure + the register CTA) · the
+ * DISCOVER MORE link cell at the far end. ── */
 .fo-hero-strip {
   display: grid;
-  grid-template-columns: minmax(0, 47%) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 47%) minmax(0, 1fr) max-content;
   gap: var(--sp-8);
   align-items: end;
   padding-block-start: var(--sp-2);
@@ -749,19 +831,37 @@ html[data-theme='dark'] .fo-grain {
 
 .fo-hero-title {
   font-family: var(--font-display);
-  /* the measured reference H1: 46.67px @1440 (3.24vw), w700,
-     line-height 1.0, tracking −0.93px — Arabic has no uppercase and
-     no negative tracking (cursive joins), so the size/lh/weight carry
-     the parity (R314 exception ledger: script differences only). */
-  font-size: clamp(34px, 3.24vw, 52px);
+  /* R315 (B1 · A.2): the display canon — the --fs-h1 ladder rung
+     (5.6rem = 46.67px @1440, the measured reference h1), w700,
+     line-height 1.0. The 2-line split «رحلة تعلم واحدة / من
+     المحاضرة إلى الإتقان» holds exactly 2 lines at 1440 AND 390 on
+     this rung (measured, _local/b1-preview) — the largest ladder size
+     that does; the tablet band re-clamps for the narrower measure.
+     Arabic stays UNVOCALISED (zero tashkeel — the display canon; the
+     diacritics collided with the line above), no tracking (cursive
+     joins). lh 1.0 is the canonical measure; the +0.05 below is the
+     minimum Alexandria's ascender/descender metrics need to keep the
+     two unvocalised lines clear of each other (measured — without it
+     «ق»'s descender rides «م»'s shoulder). */
+  font-size: var(--fs-h1);
   font-weight: 700;
-  line-height: 1.06;
+  line-height: 1.05;
   letter-spacing: 0;
   color: var(--text);
   margin: 0;
-  /* the Arabic display floor still breathes: diacritics may lift a
+  /* the Arabic display floor still breathes: glyphs may lift a
      hair above the em box without clipping */
   overflow-block: visible;
+}
+
+/* the far-end link cell — the reference's 143×97 discover seat:
+ * «اكتشف المزيد» + the orange arrow, bottom-aligned at the measure's
+ * end (R315 A.2 — its own grid cell, no longer inside the actions
+ * row). */
+.fo-hero-link-cell {
+  display: grid;
+  align-content: end;
+  justify-items: start;
 }
 
 .fo-hero-side {
@@ -906,10 +1006,12 @@ html[data-theme='dark'] .fo-grain {
   margin-inline: auto;
 }
 
-/* ── R313 (D9) — the ruler ticks + corner plus marks on the drawing
-   window. The strips are pure repeating hairlines (64% opacity, the
-   reference's measured value); the whole chrome reveals with the
-   hero's reveal belt (proximity 0 → 1) and stays put under reduced
+/* ── R313 (D9) → R315 (B1 · A.3) — the ruler ticks + corner plus marks
+   on the drawing window. The strips are pure repeating hairlines on
+   the four INNER edges — var(--rule) at drafting-chrome emphasis
+   (raised from the old 0.64 × --grid-line wash the owner read as
+   invisible), 1px marks on an 8px pitch, 7px long. The whole chrome
+   reveals with the hero's reveal belt and stays put under reduced
    motion (opacity only — no motion to collapse). ── */
 .bp-rulers {
   position: absolute;
@@ -926,41 +1028,61 @@ html[data-theme='dark'] .fo-grain {
 
 .bp-ruler {
   position: absolute;
-  opacity: 0.64;
+  opacity: 0.9;
 }
 
 .bp-ruler-t,
 .bp-ruler-b {
-  inset-inline: 3px;
-  block-size: 5px;
-  background-image: repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px 8px);
+  inset-inline: 2px;
+  block-size: 7px;
+  background-image: repeating-linear-gradient(to right, var(--rule) 0 1px, transparent 1px 8px);
 }
 
-.bp-ruler-t { inset-block-start: 3px; }
-.bp-ruler-b { inset-block-end: 3px; }
+.bp-ruler-t { inset-block-start: 2px; }
+.bp-ruler-b { inset-block-end: 2px; }
 
 .bp-ruler-s,
 .bp-ruler-e {
-  inset-block: 3px;
-  inline-size: 5px;
-  background-image: repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px 8px);
+  inset-block: 2px;
+  inline-size: 7px;
+  background-image: repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px 8px);
 }
 
-.bp-ruler-s { inset-inline-start: 3px; }
-.bp-ruler-e { inset-inline-end: 3px; }
+.bp-ruler-s { inset-inline-start: 2px; }
+.bp-ruler-e { inset-inline-end: 2px; }
 
+/* the corner plus marks — the reference's 10×10 registration marks a
+   few px inside the window corners (measured ≈5px in from the sides,
+   ≈10px from the top/bottom bar, r313 frame-hero-corner crop). */
 .bp-plus {
   position: absolute;
-  color: var(--grid-line);
+  color: var(--rule);
   font-family: var(--font-mono);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-mono-md);
   line-height: 1;
 }
 
-.bp-plus-tl { inset-block-start: 2px; inset-inline-start: 3px; }
-.bp-plus-tr { inset-block-start: 2px; inset-inline-end: 3px; }
-.bp-plus-bl { inset-block-end: 2px; inset-inline-start: 3px; }
-.bp-plus-br { inset-block-end: 2px; inset-inline-end: 3px; }
+.bp-plus-tl { inset-block-start: 6px; inset-inline-start: 3px; }
+.bp-plus-tr { inset-block-start: 6px; inset-inline-end: 3px; }
+.bp-plus-bl { inset-block-end: 6px; inset-inline-start: 3px; }
+.bp-plus-br { inset-block-end: 6px; inset-inline-end: 3px; }
+
+/* R315 (B1 · A.3): the small ± registration marks at the dashed inner
+   frame's corners — centred on the frame's corner (inset 16px − half
+   the glyph), one step fainter than the window's own plus marks. */
+.bp-dmark {
+  position: absolute;
+  color: var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-xs);
+  line-height: 1;
+  opacity: 0.9;
+}
+
+.bp-dmark-tl { inset-block-start: 11px; inset-inline-start: 11px; }
+.bp-dmark-tr { inset-block-start: 11px; inset-inline-end: 11px; }
+.bp-dmark-bl { inset-block-end: 11px; inset-inline-start: 11px; }
+.bp-dmark-br { inset-block-end: 11px; inset-inline-end: 11px; }
 
 .bp-svg {
   display: block;
@@ -2914,28 +3036,53 @@ html[data-theme='dark'] .fo-wordmark-ar {
 }
 
 @media (max-width: 1024px) {
-  /* R314: the hero flows — window first (the ink render is the LCP),
-     then the strip's cells stack under it */
+  /* R315 (B1 · K-H): the TABLET hero holds the reference composition —
+   * the band fills the first viewport (100svh − the 14px frame pair,
+   * measured 1009px @768×1024 on the reference) so the copy strip
+   * seats at the BOTTOM, far under the fixed edge tab's centred band
+   * (the tab ate the H1's first glyphs when the strip floated up at
+   * the old content-sized auto band). The window row stretches; the
+   * elevation floats centred on the paper; the strip keeps its
+   * side-by-side cells (H1 · paragraph · link under the paragraph,
+   * two tracks) inside the measure at every band. */
   .fo-hero {
-    grid-template-rows: auto auto;
-    min-block-size: 0;
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-block-size: calc(100svh - 14px);
   }
 
   .fo-hero-window {
     padding-block-start: 63px;
   }
 
-  .fo-hero-strip {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--sp-4);
-    min-block-size: 0;
-    align-items: start;
+  /* DEFINITE height (the R314 cycle-2 lesson): a % twin against the
+   * 1fr row re-inflates the band through the svg's aspect contribution
+   * (the 974px trap). The 60svh + svh−380 guard keeps the window inside
+   * the band when the tablet strip runs tall (the paragraph wraps 4–5
+   * lines in the ~300px cell @768 → strip ≈300px; window ≤ 100svh −
+   * strip − overhead — measured arithmetic in the worklog). */
+  .fo-hero-window .bp-svg {
+    block-size: min(60svh, calc(100svh - 380px));
   }
 
-  .fo-hero-side {
-    border-inline-start: 0;
-    padding-inline-start: 0;
-    border-inline-start: 0;
+  .fo-hero-strip {
+    grid-template-columns: minmax(0, 56%) minmax(0, 1fr);
+    gap: var(--sp-4) var(--sp-6);
+    min-block-size: 0;
+  }
+
+  /* the discover link seats under the paragraph cell (track 2) — the
+   * 56% H1 cell keeps its 2-line measure, the link stays inside the
+   * frame, never under the edge tab. */
+  .fo-hero-link-cell {
+    grid-column: 2;
+    margin-block-start: var(--sp-3);
+  }
+
+  /* the largest size that holds EXACTLY 2 lines in the 56% tablet
+   * cell (the --fs-h1 token's 51.6px @768 would need 3 — the 2-line
+   * canon wins; measured, documented per the R315 H1 rule). */
+  .fo-hero-title {
+    font-size: clamp(30px, 4.55vw, 40px);
   }
 
   .st-spread {
@@ -2980,24 +3127,47 @@ html[data-theme='dark'] .fo-wordmark-ar {
 }
 
 @media (max-width: 760px) {
-  /* R314: the elevation's inner micro-labels are retired with the
-   * drawing itself; the mobile hero = window (ink render, 48vh) +
-   * stacked strip cells (the 390 reference tiles: giant heading
-   * blocks, muted body, full-width discover). */
+  /* R315 (B1): the MOBILE hero keeps the R314 flow contract — window
+   * (the LCP mass) then the stacked strip cells — at the pinned 826px
+   * band @390×844. The 2-line H1 frees the old third line (~38px) and
+   * the discover link becomes its own row; the svg is WIDTH-driven
+   * (auto height — the whole elevation always fits, the fixed 38vh
+   * window floor letterboxes it on paper), so the window floor KEEPS
+   * the R314 38vh measure and .fo-hero holds the pin (measured 822px
+   * @390×844, −0.5% of the 826 pin). */
+  .fo-hero {
+    grid-template-rows: auto auto;
+  }
+
   .fo-hero-window {
     padding-block-start: 63px;
   }
 
   .fo-hero-window .bp-stage {
-    /* R314 cycle 2 (3-e): 44vh → 38vh — the fresh Heron mobile capture
-     * puts the hero's image mass at ~287–320px @390×844 (p-s00 bands);
-     * 38vh (321px) rides that mass and returns .fo-hero to the
-     * reference's 828px (was 901). */
+    /* the R314 measure holds: 38vh window floor + the width-driven
+     * elevation + the 2-line H1 strip = the pinned band (worklog). */
     min-block-size: 38vh;
   }
 
+  .fo-hero-window .bp-svg {
+    inline-size: 100%;
+    block-size: auto;
+  }
+
   .fo-hero-strip {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
     padding-block-end: var(--sp-5);
+  }
+
+  .fo-hero-side {
+    border-inline-start: 0;
+    padding-inline-start: 0;
+  }
+
+  .fo-hero-link-cell {
+    grid-column: auto;
+    margin-block-start: 0;
   }
 
   .fo-hero-title {

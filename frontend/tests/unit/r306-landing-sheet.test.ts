@@ -133,21 +133,29 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
   // ELEVATION — same narrative, real architectural drawing.
   const art = read('src/components/landing/ElevationDrawing.tsx');
 
-  it('R314 override — the hero art is the licensed INK RENDER inside the shared bp-svg frame (raster sanctioned)', () => {
-    // R314 override (owner order «VISUAL TRUTH» §4.1): the thin-line
-    // elevation retired — the hero's ONE graphic object is the
-    // ink-rendered building (own subject, Commons-licensed derivative,
-    // manifest.json renders[]) riding the SAME .bp-svg coordinate frame
-    // so the inspection instrument keeps its geometry. The r306/r310
-    // «no raster» rule is superseded on the hero seat ONLY.
+  it('R315 override — the hero art is the WHOLE elevation SVG on transparent paper (A.1)', () => {
+    // R315 override (owner §0-A.1, supersedes the R314 raster seat): the
+    // hero's ONE graphic object is Madarek's own drafted ELEVATION —
+    // the whole frontal building + trees + ground line + the two orange
+    // pin squares — seated in the shared 1440×720 .bp-svg frame at ≈67%
+    // of the window, centred, on TRANSPARENT paper (no <image>, no
+    // cover-crop, no white box). The R314 raster stays in the manifest
+    // (licence chain intact) but leaves the hero seat. The r306/r310
+    // «no raster» canon is restored on the hero.
     expect(liveTsx).toContain('<HeroInkWindow />');
     const ink = read('src/components/landing/HeroInkWindow.tsx');
     expect(ink).toContain('className="bp-svg"');
-    expect(ink).toContain('/media/renders/hero-ink-2200.webp');
     expect(ink).toMatch(/viewBox="0 0 1440 720"/);
+    // the elevation seats through the exported HERO_SEAT transform (one
+    // artwork, one coordinate story — HeroInspect remaps through it)
+    expect(ink).toContain('HERO_SEAT');
+    expect(ink).toContain('ElevationArt');
+    expect(ink).toContain('variant="hero"');
+    // transparent paper: no raster <image> in the hero window
+    expect(ink).not.toContain('<image');
     // the loader keeps its own original line drawing (SheetLoader)
     expect(art).toContain('export const ELEVATION_VB');
-    // never canvas, never <picture> (the single raster seat is explicit)
+    // never canvas, never <picture>
     expect(liveTsx).not.toContain('<picture>');
     expect(liveTsx).not.toContain('<canvas');
     // the manifest carries the derivative licence chain (ShareAlike kept)
@@ -177,15 +185,18 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     }
   });
 
-  it('R314 override — the mobile hero flow: 38vh ink window + stacked strip cells', () => {
+  it('R315 override — the mobile hero flow: 38vh window (width-driven elevation) + stacked strip cells', () => {
     const mq = live.match(/@media \(max-width: 760px\)\s*\{([\s\S]*?)\n\}\s*\n@media/)?.[1] ?? '';
     // the window keeps a defined mass on small screens; the strip
     // cells stack under it (the 390 reference tiles); the annotation
     // cards flow under the drawing per HeroInspect's own ≤760 contract.
-    // R314 cycle 2 (3-e) override: 44vh → 38vh — the fresh Heron mobile
-    // capture puts the hero image mass at ~287–320px @390×844; 38vh
-    // (321px) returns .fo-hero to the reference's 828px band.
+    // R315 (B1 · A.1/A.2) override: the seat changes, the measure
+    // holds — the elevation is WIDTH-driven (inline-size: 100%,
+    // block-size: auto — the whole drawing always fits, letterboxed on
+    // paper inside the 38vh floor) and the 2-line H1 strip keeps the
+    // pinned band (measured ≈822px @390×844, −0.5% of the R314 826 pin).
     expect(mq).toMatch(/\.fo-hero-window \.bp-stage\s*\{[\s\S]*?min-block-size:\s*38vh/s);
+    expect(mq).toMatch(/\.fo-hero-window \.bp-svg\s*\{[\s\S]*?block-size:\s*auto/s);
     expect(mq).toMatch(/\.fo-hero-title\s*\{[\s\S]*?font-size:\s*clamp\(30px/s);
   });
 
@@ -194,14 +205,14 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     expect(art).toContain('aria-label="واجهة معمارية لمبنى التعلّم');
   });
 
-  it('R314 override — the richness contract moves to the ink render + the drafting chrome', () => {
-    // the five volumes + furniture retired with the elevation; the
-    // RICHNESS now lives in the ink render itself (XDoG strokes +
-    // broken cross-hatch + clustered stipple — scripts/r314/ink-render.mjs,
-    // VLM-verified «rich architectural ink drawing») and the drafting
-    // chrome (rulers, + marks, dashed inner frame) stays on the window
+  it('R315 override — the richness contract lives in the elevation + the drafting chrome', () => {
+    // the five volumes + furniture ride the drafted elevation (R315
+    // A.1: whole building, trees, ground line, two orange pin squares)
+    // and the drafting chrome (rulers, + marks, dashed inner frame,
+    // ± marks) stays on the window
     expect(liveTsx).toMatch(/className="bp-ruler bp-ruler-t"/);
     expect(liveTsx).toMatch(/className="bp-plus bp-plus-tl"\>\+/);
+    expect(liveTsx).toMatch(/className="bp-dmark bp-dmark-tl"\>\+/);
     expect(live).toMatch(/\.fo-hero-window \.bp-stage::before\s*\{[\s\S]*?border:\s*1px dashed/s);
     // the render pipeline is reproducible + committed (repo root)
     expect(read('../scripts/r314/ink-render.mjs')).toContain('OVERRIDES');

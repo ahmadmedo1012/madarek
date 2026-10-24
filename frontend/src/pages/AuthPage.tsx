@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  Mail, Lock, Home, GraduationCap, School,
+  Home, GraduationCap, School,
   Building2, AlertCircle, ShieldCheck, ArrowLeft, Crown, Eye, EyeOff,
   FlaskConical, X,
 } from 'lucide-react';
@@ -207,6 +207,19 @@ export default function AuthPage() {
   return (
     <div className="auth-shell">
 
+      {/* ═══ THE SHEET CHROME (R315 · K-I — the landing's frame grammar):
+          the full-page drafting frame (fixed 1px hairline at the 7px
+          inset + the 10×10 mono corner marks) and the measured paper
+          grain film. Decorative only: aria-hidden, pointer-transparent,
+          visible at every breakpoint the reference shows its frame. */}
+      <div className="auth-frame" aria-hidden="true">
+        <span className="auth-mark auth-mark-tl">+</span>
+        <span className="auth-mark auth-mark-tr">+</span>
+        <span className="auth-mark auth-mark-bl">+</span>
+        <span className="auth-mark auth-mark-br">+</span>
+      </div>
+      <div className="auth-grain" aria-hidden="true" />
+
       {/* imm-5 a11y fix (axe "all content in landmarks" — was a bare
           div): the page-level chrome reads as banner / contentinfo
           landmarks; <main> above already carried the form. RegisterPage
@@ -224,15 +237,16 @@ export default function AuthPage() {
       </header>
 
       <main className="auth-center">
-        {/* S-1a re-skin: the calm opaque surface card (the glass
-            variant retired with the copper chrome — one elevated
-            --surface moment, one --elev-2 shadow). */}
+        {/* R315 (K-I): the centred CARD is dissolved — the sheet column
+            sits directly on the framed paper; the ruled cell composition
+            carries all the structure (auth.css §2/§4). */}
         <div className="auth-card">
 
-          <div className="auth-brand-mini">
-            <StarMark size={28} className="auth-brand-mini-mark" />
-            <span className="auth-brand-mini-text">مدارك</span>
-          </div>
+          {/* the mono micro-label row — the drawing sheet's identity
+              line (Latin/technical chrome, dir=ltr run, decorative). */}
+          <p className="auth-sheet-label" aria-hidden="true">
+            <span dir="ltr">[MDRK-AUTH] · SHEET 01/01</span>
+          </p>
 
           {pendingSelection ? (
             <>
@@ -240,8 +254,8 @@ export default function AuthPage() {
                   the login succeeded but the account holds MORE THAN ONE
                   active membership and no auto-selected context. The
                   visitor commits to one institution for this session
-                  (same card, same chrome; the role-card grammar the
-                  register page's chooser already owns — no new styles). */}
+                  (same sheet, same chrome; the ruled role-row grammar the
+                  register page's chooser owns — no new styles). */}
               <div className="auth-form-header">
                 <span className="auth-meta">(اختيار المؤسسة)</span>
                 <h1 className="auth-form-title">اختر مؤسستك</h1>
@@ -251,7 +265,7 @@ export default function AuthPage() {
               </div>
 
               <div className="role-card-grid" role="group" aria-label="اختيار المؤسسة">
-                {pendingSelection.map((membership) => (
+                {pendingSelection.map((membership, i) => (
                   <button
                     key={membership.institutionId}
                     type="button"
@@ -259,7 +273,9 @@ export default function AuthPage() {
                     onClick={() => void onChooseInstitution(membership)}
                     disabled={selectInstitution.isPending}
                   >
-                    <span className="role-card-icon"><Icon icon={Building2} size={22} /></span>
+                    <span className="role-card-index" dir="ltr" aria-hidden="true">
+                      [{String(i + 1).padStart(2, '0')}]
+                    </span>
                     <span className="role-card-body">
                       <span className="role-card-title">{membership.name}</span>
                       <span className="role-card-sub">
@@ -302,7 +318,10 @@ export default function AuthPage() {
                 journey-meta precedent — so it stays in the accessibility
                 tree, unlike the bento's purely decorative code badges. */}
             <span className="auth-meta">(بوابة المنصّة)</span>
-            <h1 className="auth-form-title">مرحباً بعودتك</h1>
+            {/* R315 (K-I): the heavy tight display heading — NO tashkeel
+                (the tanween on «مرحباً» is dropped per the owner sheet
+                rule), lh ~1, two lines max, joins never tracked. */}
+            <h1 className="auth-form-title">مرحبا بعودتك</h1>
             <p className="auth-form-sub">
               {/* r183-B8 (A5 finding 2): journey-aware wall copy — a
                   visitor bounced here by a protected route (or a public
@@ -317,73 +336,130 @@ export default function AuthPage() {
             </p>
           </div>
 
+          {/* R315 (K-I): the ruled cell composition — every field a
+              hairline-separated row: mono [NN] index + Arabic label +
+              the control filling the row. Transparent inputs, no icons
+              inside them; errors are mono red micro-labels beside
+              their row (describedby-only, r157 F5). */}
           <form onSubmit={onLogin} noValidate className="auth-form">
-            <div className="auth-field">
-              <label htmlFor="auth-email" className="form-label">البريد الإلكتروني أو رقم القيد</label>
-              <div className="auth-input-wrap">
-                <span className="auth-input-icon" aria-hidden><Icon icon={Mail} size={16} /></span>
-                {/* dir="ltr": accepts university IDs like 2024-CS-1234 —
-                    Latin/digit runs must not be bidi-scrambled by the RTL page. */}
-                <input
-                  id="auth-email"
-                  type="text"
-                  dir="ltr"
-                  className="input auth-input"
-                  placeholder="example@email.com"
-                  autoComplete="username"
-                  aria-invalid={!!loginForm.formState.errors.email}
-                  aria-describedby={loginForm.formState.errors.email ? 'auth-email-error' : undefined}
-                  {...loginForm.register('email')}
-                />
+            <div className="auth-cells">
+              <div className="auth-cell">
+                <span className="auth-cell-index" dir="ltr" aria-hidden="true">[01]</span>
+                <label htmlFor="auth-email" className="form-label">البريد الإلكتروني أو رقم القيد</label>
+                <div className="auth-cell-control">
+                  {/* dir="ltr": accepts university IDs like 2024-CS-1234 —
+                      Latin/digit runs must not be bidi-scrambled by the RTL page. */}
+                  <input
+                    id="auth-email"
+                    type="text"
+                    dir="ltr"
+                    className="input auth-input"
+                    placeholder="example@email.com"
+                    autoComplete="username"
+                    aria-invalid={!!loginForm.formState.errors.email}
+                    aria-describedby={loginForm.formState.errors.email ? 'auth-email-error' : undefined}
+                    {...loginForm.register('email')}
+                  />
+                  {/* describedby-only (r157 F5): the span keeps its id/contract
+                      for aria-describedby wiring, but no longer role="alert" —
+                      the ONE summary line below is the announcement. */}
+                  {loginForm.formState.errors.email && (
+                    <span id="auth-email-error" className="auth-field-error">
+                      {loginForm.formState.errors.email.message}
+                    </span>
+                  )}
+                </div>
               </div>
-              {/* describedby-only (r157 F5): the span keeps its id/contract
-                  for aria-describedby wiring, but no longer role="alert" —
-                  the ONE summary line below is the announcement. */}
-              {loginForm.formState.errors.email && (
-                <span id="auth-email-error" className="auth-field-error">
-                  {loginForm.formState.errors.email.message}
-                </span>
-              )}
-            </div>
 
-            <div className="auth-field">
-              <label htmlFor="auth-password" className="form-label">كلمة المرور</label>
-              <div className="auth-input-wrap has-toggle">
-                <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
-                {/* dir="ltr": passwords are overwhelmingly Latin runs; the
-                    caret and masked glyphs must not bidi-flip in RTL. */}
-                <input
-                  id="auth-password"
-                  type={showPassword ? 'text' : 'password'}
-                  dir="ltr"
-                  className="input auth-input"
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                  aria-invalid={!!loginForm.formState.errors.password}
-                  aria-describedby={loginForm.formState.errors.password ? 'auth-password-error' : undefined}
-                  {...loginForm.register('password')}
-                />
-                <button
-                  type="button"
-                  className="auth-input-toggle"
-                  onClick={() => setShowPassword((v) => !v)}
-                  aria-pressed={showPassword}
-                  aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
-                >
-                  <Icon icon={showPassword ? EyeOff : Eye} size={16} />
-                </button>
+              <div className="auth-cell">
+                <span className="auth-cell-index" dir="ltr" aria-hidden="true">[02]</span>
+                <label htmlFor="auth-password" className="form-label">كلمة المرور</label>
+                <div className="auth-cell-control">
+                  <div className="auth-input-wrap has-toggle">
+                    {/* dir="ltr": passwords are overwhelmingly Latin runs; the
+                        caret and masked glyphs must not bidi-flip in RTL. */}
+                    <input
+                      id="auth-password"
+                      type={showPassword ? 'text' : 'password'}
+                      dir="ltr"
+                      className="input auth-input"
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                      aria-invalid={!!loginForm.formState.errors.password}
+                      aria-describedby={loginForm.formState.errors.password ? 'auth-password-error' : undefined}
+                      {...loginForm.register('password')}
+                    />
+                    <button
+                      type="button"
+                      className="auth-input-toggle"
+                      onClick={() => setShowPassword((v) => !v)}
+                      aria-pressed={showPassword}
+                      aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+                    >
+                      <Icon icon={showPassword ? EyeOff : Eye} size={16} />
+                    </button>
+                  </div>
+                  {loginForm.formState.errors.password && (
+                    <span id="auth-password-error" className="auth-field-error">
+                      {loginForm.formState.errors.password.message}
+                    </span>
+                  )}
+                  {/* the forgot-password action belongs to the password row
+                      (R315 seat; the DOM order keeps the pinned
+                      toggle → forgot keyboard sequence). */}
+                  <div className="auth-forgot-row">
+                    <button type="button" className="auth-forgot" onClick={() => setForgotNotice(true)}>
+                      نسيت كلمة المرور؟
+                    </button>
+                  </div>
+                </div>
               </div>
-              {loginForm.formState.errors.password && (
-                <span id="auth-password-error" className="auth-field-error">
-                  {loginForm.formState.errors.password.message}
-                </span>
-              )}
-            </div>
 
-            <div className="auth-forgot-row">
-              <button type="button" className="auth-forgot" onClick={() => setForgotNotice(true)}>
-                نسيت كلمة المرور؟
-              </button>
+              {/* r180: the ambiguity recovery select — mounted only while
+                  the last submit answered REG_NUMBER_AMBIGUOUS; choosing an
+                  institution and resubmitting sends the slug hint.
+                  r305 (2-a): the lookup gets the SAME first-class load
+                  contract as the register page's institution field
+                  (audit 0-b P0-4 — never a silently empty select): the
+                  failed query shows the honest Arabic alert with a retry
+                  (the same .auth-error/.auth-retry-link grammar), while
+                  the loading state stays the select's own placeholder
+                  option. No API semantic changes — the choice still
+                  rides the next submit as institutionSlug. */}
+              {ambiguity && (
+                <div className="auth-cell">
+                  <span className="auth-cell-index" dir="ltr" aria-hidden="true">[03]</span>
+                  <label htmlFor="auth-ambiguity-institution" className="form-label">مؤسستك</label>
+                  <div className="auth-cell-control">
+                    {institutions.isError ? (
+                      <div className="auth-error" role="alert">
+                        <Icon icon={AlertCircle} size={14} />
+                        <span>تعذّر تحميل المؤسسات — تحقّق من اتصالك بالشبكة.</span>
+                        <button
+                          type="button"
+                          className="auth-retry-link"
+                          onClick={() => void institutions.refetch()}
+                        >
+                          إعادة المحاولة
+                        </button>
+                      </div>
+                    ) : (
+                      <select
+                        id="auth-ambiguity-institution"
+                        className="auth-input"
+                        value={ambiguitySlug}
+                        onChange={(e) => setAmbiguitySlug(e.target.value)}
+                        disabled={institutions.isLoading}
+                      >
+                        <option value="">{institutions.isLoading ? 'جارٍ تحميل المؤسسات…' : 'اختر المؤسسة…'}</option>
+                        {(institutions.data ?? []).map((i) => (
+                          <option key={i.id} value={i.slug}>{i.name}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {forgotNotice && (
@@ -403,49 +479,6 @@ export default function AuthPage() {
                     ? rateLimitMessage(login.error)
                     : (authFailure.serverMessage ?? GENERIC_LOGIN_ERROR)}
                 </span>
-              </div>
-            )}
-
-            {/* r180: the ambiguity recovery select — mounted only while
-                the last submit answered REG_NUMBER_AMBIGUOUS; choosing an
-                institution and resubmitting sends the slug hint.
-                r305 (2-a): the lookup gets the SAME first-class load
-                contract as the register page's institution field
-                (audit 0-b P0-4 — never a silently empty select): the
-                failed query shows the honest Arabic alert with a retry
-                (the same .auth-error/.auth-retry-link grammar), while
-                the loading state stays the select's own placeholder
-                option. No API semantic changes — the choice still
-                rides the next submit as institutionSlug. */}
-            {ambiguity && (
-              <div className="auth-field">
-                <label htmlFor="auth-ambiguity-institution" className="form-label">مؤسستك</label>
-                {institutions.isError ? (
-                  <div className="auth-error" role="alert">
-                    <Icon icon={AlertCircle} size={14} />
-                    <span>تعذّر تحميل المؤسسات — تحقّق من اتصالك بالشبكة.</span>
-                    <button
-                      type="button"
-                      className="auth-retry-link"
-                      onClick={() => void institutions.refetch()}
-                    >
-                      إعادة المحاولة
-                    </button>
-                  </div>
-                ) : (
-                  <select
-                    id="auth-ambiguity-institution"
-                    className="auth-input"
-                    value={ambiguitySlug}
-                    onChange={(e) => setAmbiguitySlug(e.target.value)}
-                    disabled={institutions.isLoading}
-                  >
-                    <option value="">{institutions.isLoading ? 'جارٍ تحميل المؤسسات…' : 'اختر المؤسسة…'}</option>
-                    {(institutions.data ?? []).map((i) => (
-                      <option key={i.id} value={i.slug}>{i.name}</option>
-                    ))}
-                  </select>
-                )}
               </div>
             )}
 
@@ -544,8 +577,8 @@ export default function AuthPage() {
             {/* r183-B3 (A5 P1-1): the register prompt forwards the LIVE
                 location.state — a visitor who landed here from a public
                 college CTA (state.from) keeps the deep link through the
-                login→register hop, instead of silently dropping it at
-                the door. */}
+                login→register hop, instead of silently dropping it at the
+                door. */}
             <p className="auth-register-prompt">
               ليس لديك حساب؟ <Link to="/auth/register" state={location.state} className="auth-register-link">أنشئ حسابك الآن</Link>
             </p>

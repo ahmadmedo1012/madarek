@@ -89,7 +89,10 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     // assistive tech, unlike the bento's purely decorative code badges.
     expect(meta).not.toHaveAttribute('aria-hidden');
     // Eyebrow reads BEFORE the title.
-    const title = screen.getByRole('heading', { level: 1, name: 'مرحباً بعودتك' });
+    /* R315 override (K-I): the heading copy lost its tanween — the
+     * owner sheet rule bans tashkeel on the heavy display heading
+     * («مرحباً» → «مرحبا»); the re-pin keeps the same seat + level. */
+    const title = screen.getByRole('heading', { level: 1, name: 'مرحبا بعودتك' });
     expect(follows(meta, title)).toBe(true);
   });
 

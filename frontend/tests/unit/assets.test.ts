@@ -82,20 +82,24 @@ describe('r188 brand reset — campus photography retired (no real-university im
     }
   });
 
-  it('R314 override — the hero seat is the licensed ink render (raster sanctioned by the owner order)', () => {
+  it('R315 override — the hero seat is the whole drafted ELEVATION on transparent paper (A.1)', () => {
     const src = read('src/pages/LandingPage.tsx');
     expect(src).not.toContain('<picture>');
     expect(src).not.toContain('main_photo');
-    // R314 «VISUAL TRUTH» §4.1 (owner order, supersedes r306/r308/r313
-    // «no raster» on the hero seat): the hero's ONE graphic object is
-    // the ink-rendered campus building — a derivative of Madarek's own
-    // Commons-licensed photo (manifest.json renders[], adapted:true,
-    // ShareAlike kept) — inside the shared bp-svg frame. The r188
-    // intent is kept: no real-university BRANDING, no orbit ring, no
-    // vision backdrop, no AI scenes, no text inside images. The loader
-    // keeps its original line drawing.
+    // R315 (owner §0-A.1, supersedes the R314 raster sanction): the
+    // hero's ONE graphic object is Madarek's own drafted ELEVATION SVG
+    // — whole frontal building, centred, transparent paper, no crop.
+    // The R314 ink render (the Commons-licensed derivative in
+    // manifest.json renders[], adapted:true, ShareAlike kept) leaves
+    // the hero seat; the r188 intent is kept: no real-university
+    // BRANDING, no orbit ring, no vision backdrop, no AI scenes, no
+    // text inside images. The loader keeps its original line drawing.
     expect(src).toContain('<HeroInkWindow />');
-    expect(read('src/components/landing/HeroInkWindow.tsx')).toContain('/media/renders/hero-ink-2200.webp');
+    const ink = read('src/components/landing/HeroInkWindow.tsx');
+    expect(ink).toContain('ElevationArt');
+    expect(ink).toContain('variant="hero"');
+    // transparent paper — the raster <image> is gone from the window
+    expect(ink).not.toContain('<image');
     // …and the r188 provenance strings survive (brand gates below
     // still pin جامعة مدارك التجريبية as synthetic data).
   });

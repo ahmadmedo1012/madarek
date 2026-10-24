@@ -306,7 +306,12 @@ describe('r172a §2 → r188 — the landing CTA rides the canonical accent pair
   it('the landing CTA markup consumes the canonical classes (no private CTA class)', () => {
     const tsx = read('src/pages/LandingPage.tsx');
     expect(tsx).toContain('btn accent lg fo-hero-cta');
-    expect(tsx).toContain('btn primary sm');
+    // R315 override (K-B): the HEADER CTA is the reference's measured
+    // ruled cell (.fo-actions-cta — 166.66px, the reference's own
+    // header-cta seat), not a .btn recipe; the hero/finale CTAs keep
+    // the canonical classes. No private color sheet exists either way.
+    expect(tsx).toContain('fo-actions-cta');
+    expect(tsx).not.toContain('btn primary sm');
     expect(tsx).not.toContain('ln-btn-gold');
   });
 });

@@ -21,12 +21,16 @@ const SHOTS = process.env.R309_SHOTS
   ?? path.resolve(process.cwd(), '../audits/evidence/r309-recovery/production');
 if (ENABLED) mkdirSync(SHOTS, { recursive: true });
 
-test('prod · the deployed build is the R309 code', async ({ page }) => {
+test('prod · the deployed build carries the sheet markers', async ({ page }) => {
   await page.goto(BASE + '/');
-  /* the boot plate + the stable sheet label are R309 markers */
+  /* the boot plate is the R309 marker. R315 override (K-A4): the
+   * fixed mono sheet-coords are RETIRED — the reference's page frame
+   * is four hairlines only (nothing may overlap the masthead); the
+   * pin flips to assert their absence. */
   const html = await page.content();
   expect(html).toContain('mdrk-boot-plate');
-  await expect(page.locator('.sheet-coord-be')).toHaveText('[MDRK-01] · SHEET 01/01');
+  await expect(page.locator('.sheet-coord-be')).toHaveCount(0);
+  await expect(page.locator('.sheet-coord-ts')).toHaveCount(0);
 });
 
 test('prod · desktop drag reveals [CP] unclipped, no RR/MG overlap, guides confined', async ({ page }) => {

@@ -519,8 +519,12 @@ test.describe('R309/R313 loader — the asset-gated entrance clock and the lock 
 
   test('no stale release labels ride the customer-facing sheet (§8)', async ({ page }) => {
     await page.goto('/');
+    /* R315 override (K-A4): .sheet-coord is retired entirely (the
+     * reference's frame carries no mono coordinates); the sweep keeps
+     * .sl-meta-row + any resurgent coordinate seat under the same
+     * no-release-labels law. */
     const labels = await page.evaluate(() =>
-      Array.from(document.querySelectorAll('.sheet-coord, .sl-meta-row')).map((el) => el.textContent?.trim() ?? ''),
+      Array.from(document.querySelectorAll('.sl-meta-row, [class*="sheet-coord"]')).map((el) => el.textContent?.trim() ?? ''),
     );
     for (const l of labels) {
       expect(l, `stale release label: ${l}`).not.toMatch(/R3\d\d/i);

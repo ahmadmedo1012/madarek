@@ -4,12 +4,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Mail, Lock, GraduationCap, School,
-  AlertCircle, ArrowLeft, ArrowRight, User, Hash, Building2, BookOpen, Lock as LockIcon,
+  AlertCircle, ArrowLeft, ArrowRight, Building2, Lock as LockIcon,
   Eye, EyeOff, Check,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
-import { StarMark } from '../components/StarMark';
 import { useRegister } from '../hooks/useAuth';
 import { useFaculties } from '../hooks/useResources';
 import { useInstitutions } from '../hooks/useInstitutions';
@@ -297,6 +295,17 @@ export default function RegisterPage() {
 
   return (
     <div className="auth-shell">
+      {/* ═══ THE SHEET CHROME (R315 · K-I — the landing's frame grammar,
+          shared with the login sheet): the full-page drafting frame +
+          the measured paper grain film. Decorative only. */}
+      <div className="auth-frame" aria-hidden="true">
+        <span className="auth-mark auth-mark-tl">+</span>
+        <span className="auth-mark auth-mark-tr">+</span>
+        <span className="auth-mark auth-mark-bl">+</span>
+        <span className="auth-mark auth-mark-br">+</span>
+      </div>
+      <div className="auth-grain" aria-hidden="true" />
+
       {/* a11y: page-level chrome as a banner landmark (matches AuthPage's
           imm-5 fix — axe "all content in landmarks"). */}
       <header className="auth-top">
@@ -322,13 +331,16 @@ export default function RegisterPage() {
       </header>
 
       <main className="auth-center">
-        {/* One card for BOTH steps (same width, same chrome) — stepping
-            never reflows the layout; only the keyed panel slides. */}
+        {/* R315 (K-I): the centred CARD is dissolved — one sheet column
+            for BOTH steps (same width, same chrome) so stepping never
+            reflows the layout; only the keyed panel slides. */}
         <div className="auth-card auth-card--wide">
-          <div className="auth-brand-mini">
-            <StarMark size={28} className="auth-brand-mini-mark" />
-            <span className="auth-brand-mini-text">مدارك</span>
-          </div>
+          {/* the mono micro-label row — the drawing sheet's identity
+              line; the sheet number tells the two-step truth (01/02 at
+              the role chooser, 02/02 on the data step). Decorative. */}
+          <p className="auth-sheet-label" aria-hidden="true">
+            <span dir="ltr">[MDRK-REG] · SHEET {role ? '02' : '01'}/02</span>
+          </p>
 
           <ol className="auth-steps" aria-label="مراحل إنشاء الحساب">
             <li
@@ -407,10 +419,12 @@ export default function RegisterPage() {
                 {/* r168a: the chooser is a named group — each card is a
                     commit-action button (tap = choose + advance), so
                     radio state semantics don't apply; the group label
-                    gives SR users the question context in one place. */}
+                    gives SR users the question context in one place.
+                    R315 (K-I): the ruled role rows — mono index cell at
+                    the inline-start, fill-wipe hover, no icon wells. */}
                 <div className="role-card-grid" role="group" aria-label="نوع الحساب">
                   <button type="button" className="role-card" onClick={() => chooseRole('STUDENT')}>
-                    <span className="role-card-icon"><Icon icon={GraduationCap} size={22} /></span>
+                    <span className="role-card-index" dir="ltr" aria-hidden="true">[01]</span>
                     <span className="role-card-body">
                       <span className="role-card-title">طالب</span>
                       <span className="role-card-sub">مقيَّد في إحدى كليّات الجامعة</span>
@@ -419,7 +433,7 @@ export default function RegisterPage() {
                   </button>
 
                   <button type="button" className="role-card" onClick={() => chooseRole('TEACHER')}>
-                    <span className="role-card-icon"><Icon icon={School} size={22} /></span>
+                    <span className="role-card-index" dir="ltr" aria-hidden="true">[02]</span>
                     <span className="role-card-body">
                       <span className="role-card-title">عضو هيئة تدريس</span>
                       <span className="role-card-sub">أستاذ في إحدى الأقسام الأكاديمية</span>
@@ -526,27 +540,28 @@ function StudentForm({ form, error, isPending, faculties, institutions, institut
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="auth-form">
-      <div className="auth-row-2">
-        <Field label="الاسم الأول" error={form.formState.errors.firstName?.message}>
-          <span className="auth-input-icon" aria-hidden><Icon icon={User} size={16} /></span>
-          <input className="input auth-input" type="text" autoComplete="given-name" {...form.register('firstName')} />
-        </Field>
-        <Field label="اللقب" error={form.formState.errors.lastName?.message}>
-          <span className="auth-input-icon" aria-hidden><Icon icon={User} size={16} /></span>
-          <input className="input auth-input" type="text" autoComplete="family-name" {...form.register('lastName')} />
-        </Field>
-      </div>
-
-      <Field label="البريد الإلكتروني" error={form.formState.errors.email?.message}>
-        <span className="auth-input-icon" aria-hidden><Icon icon={Mail} size={16} /></span>
-        <input className="input auth-input" type="email" dir="ltr" autoComplete="email" {...form.register('email')} />
+      {/* R315 (K-I): the ruled cell composition — one field per row,
+          monotonic [01]..[09] indices (the old two-column pairs stack
+          into the same ruled block; the label/control contracts are
+          unchanged). */}
+      <div className="auth-cells">
+      <Field index="[01]" label="الاسم الأول" error={form.formState.errors.firstName?.message}>
+        <input className="input auth-input" type="text" autoComplete="given-name" {...form.register('firstName')} />
+      </Field>
+      <Field index="[02]" label="اللقب" error={form.formState.errors.lastName?.message}>
+        <input className="input auth-input" type="text" autoComplete="family-name" {...form.register('lastName')} />
       </Field>
 
-      <Field label="كلمة المرور (12 حرفًا على الأقل)" error={form.formState.errors.password?.message}>
-        <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
+      <Field index="[03]" label="البريد الإلكتروني" error={form.formState.errors.email?.message}>
+        <input className="input auth-input" type="email" dir="ltr" placeholder="example@email.com" autoComplete="email" {...form.register('email')} />
+      </Field>
+
+      <Field index="[04]" label="كلمة المرور (12 حرفًا على الأقل)" error={form.formState.errors.password?.message}>
         {/* dir="ltr": passwords are overwhelmingly Latin runs; the caret
-            and masked glyphs must not bidi-flip in RTL. */}
-        <input className="input auth-input" type={showPassword ? 'text' : 'password'} dir="ltr" autoComplete="new-password" {...form.register('password')} />
+            and masked glyphs must not bidi-flip in RTL. The 12-dot
+            placeholder carries the length floor (and marks the field
+            "filled" for the input border ladder once the visitor types). */}
+        <input className="input auth-input" type={showPassword ? 'text' : 'password'} dir="ltr" placeholder="••••••••••••" autoComplete="new-password" {...form.register('password')} />
         <button
           type="button"
           className="auth-input-toggle"
@@ -557,13 +572,14 @@ function StudentForm({ form, error, isPending, faculties, institutions, institut
           <Icon icon={showPassword ? EyeOff : Eye} size={16} />
         </button>
       </Field>
+      </div>
 
       {/* r170-e (ASVS 2.1.8): advisory live-region strength hint under the
           password input — polite, dependency-free, never blocks submit. */}
       <PasswordStrengthHint password={passwordValue} />
 
-      <Field label="رقم القيد الجامعي" error={form.formState.errors.universityId?.message}>
-        <span className="auth-input-icon" aria-hidden><Icon icon={Hash} size={16} /></span>
+      <div className="auth-cells">
+      <Field index="[05]" label="رقم القيد الجامعي" error={form.formState.errors.universityId?.message}>
         {/* dir="ltr": university IDs are Latin/digit runs (2024-CS-1234)
             that bidi-scramble inside an RTL input. */}
         <input className="input auth-input" type="text" placeholder="مثلاً 2024-CS-1234" dir="ltr" {...form.register('universityId')} />
@@ -572,60 +588,61 @@ function StudentForm({ form, error, isPending, faculties, institutions, institut
       {/* r178: institution step — BEFORE the faculty select (the
           faculties listing is scoped to this selection server-side). */}
       <InstitutionField
+        index="[06]"
         institutions={institutions}
         institutionId={institutionId}
         onInstitutionChange={onInstitutionChange}
         error={form.formState.errors.institutionId?.message}
       />
 
-      <div className="auth-row-2">
-        <Field label="الكلّيّة" error={form.formState.errors.facultyId?.message}>
-          {/* r157 F5 (6A11 #5 opt-in): the faculties skeleton announces
-              itself — role=status + aria-busy via the Wave-1 Skeleton
-              aria-label contract. */}
-          {faculties.status === 'loading' && (
-            <Skeleton className="auth-select-skeleton" aria-label="جارٍ تحميل الكليات" />
-          )}
-          {faculties.status === 'error' && (
-            <div className="auth-error" role="alert">
-              <Icon icon={AlertCircle} size={14} />
-              <span>تعذّر تحميل الكلّيّات — تحقّق من اتصالك بالشبكة.</span>
-              <button type="button" className="auth-retry-link" onClick={faculties.retry}>
-                إعادة المحاولة
-              </button>
-            </div>
-          )}
-          {faculties.status === 'ready' && (
-          <select className="auth-input" disabled={!institutionId} {...form.register('facultyId')}>
+      <Field index="[07]" label="الكلّيّة" error={form.formState.errors.facultyId?.message}>
+        {/* r157 F5 (6A11 #5 opt-in): the faculties skeleton announces
+            itself — role=status + aria-busy via the Wave-1 Skeleton
+            aria-label contract. */}
+        {faculties.status === 'loading' && (
+          <Skeleton className="auth-select-skeleton" aria-label="جارٍ تحميل الكليات" />
+        )}
+        {faculties.status === 'error' && (
+          <div className="auth-error" role="alert">
+            <Icon icon={AlertCircle} size={14} />
+            <span>تعذّر تحميل الكلّيّات — تحقّق من اتصالك بالشبكة.</span>
+            <button type="button" className="auth-retry-link" onClick={faculties.retry}>
+              إعادة المحاولة
+            </button>
+          </div>
+        )}
+        {faculties.status === 'ready' && (
+        <select className="auth-input" disabled={!institutionId} {...form.register('facultyId')}>
+          <option value="">اختر…</option>
+          {faculties.items.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+        </select>
+        )}
+      </Field>
+      <Field
+        index="[08]"
+        label="القسم"
+        /* r157 F5: while the honest empty state is showing, the
+           «اختر القسم» error would name a control that doesn't exist —
+           the empty box IS the explanation, so the field error is
+           suppressed (the summary still counts the blocked field). */
+        error={deptEmpty ? undefined : form.formState.errors.departmentId?.message}
+      >
+        {deptEmpty ? (
+          <div className="auth-dept-empty">{NO_DEPARTMENTS_TEXT}</div>
+        ) : (
+          <select className="auth-input" disabled={!facultyId} {...form.register('departmentId')}>
             <option value="">اختر…</option>
-            {faculties.items.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+            {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
           </select>
-          )}
-        </Field>
-        <Field
-          label="القسم"
-          /* r157 F5: while the honest empty state is showing, the
-             «اختر القسم» error would name a control that doesn't exist —
-             the empty box IS the explanation, so the field error is
-             suppressed (the summary still counts the blocked field). */
-          error={deptEmpty ? undefined : form.formState.errors.departmentId?.message}
-        >
-          {deptEmpty ? (
-            <div className="auth-dept-empty">{NO_DEPARTMENTS_TEXT}</div>
-          ) : (
-            <select className="auth-input" disabled={!facultyId} {...form.register('departmentId')}>
-              <option value="">اختر…</option>
-              {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-            </select>
-          )}
-        </Field>
-      </div>
+        )}
+      </Field>
 
-      <Field label="السنة الدراسية" error={form.formState.errors.year?.message}>
+      <Field index="[09]" label="السنة الدراسية" error={form.formState.errors.year?.message}>
         <select className="auth-input" {...form.register('year')}>
           {[1, 2, 3, 4, 5, 6, 7, 8].map((y) => <option key={y} value={y}>السنة {y}</option>)}
         </select>
       </Field>
+      </div>
 
       {error != null && <RegisterErrorBanner error={error} />}
 
@@ -682,27 +699,27 @@ function TeacherForm({ form, error, isPending, faculties, institutions, institut
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="auth-form">
-      <div className="auth-row-2">
-        <Field label="الاسم الأول" error={form.formState.errors.firstName?.message}>
-          <span className="auth-input-icon" aria-hidden><Icon icon={User} size={16} /></span>
-          <input className="input auth-input" type="text" autoComplete="given-name" {...form.register('firstName')} />
-        </Field>
-        <Field label="اللقب" error={form.formState.errors.lastName?.message}>
-          <span className="auth-input-icon" aria-hidden><Icon icon={User} size={16} /></span>
-          <input className="input auth-input" type="text" autoComplete="family-name" {...form.register('lastName')} />
-        </Field>
-      </div>
-
-      <Field label="البريد الجامعي" error={form.formState.errors.email?.message}>
-        <span className="auth-input-icon" aria-hidden><Icon icon={Mail} size={16} /></span>
-        <input className="input auth-input" type="email" dir="ltr" autoComplete="email" placeholder="example@email.com" {...form.register('email')} />
+      {/* R315 (K-I): the ruled cell composition — the teacher sheet's
+          monotonic [01]..[08] indices (same grammar as the student
+          sheet; the label/control contracts are unchanged). */}
+      <div className="auth-cells">
+      <Field index="[01]" label="الاسم الأول" error={form.formState.errors.firstName?.message}>
+        <input className="input auth-input" type="text" autoComplete="given-name" {...form.register('firstName')} />
+      </Field>
+      <Field index="[02]" label="اللقب" error={form.formState.errors.lastName?.message}>
+        <input className="input auth-input" type="text" autoComplete="family-name" {...form.register('lastName')} />
       </Field>
 
-      <Field label="كلمة المرور (12 حرفًا على الأقل)" error={form.formState.errors.password?.message}>
-        <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
+      <Field index="[03]" label="البريد الجامعي" error={form.formState.errors.email?.message}>
+        <input className="input auth-input" type="email" dir="ltr" placeholder="example@email.com" autoComplete="email" {...form.register('email')} />
+      </Field>
+
+      <Field index="[04]" label="كلمة المرور (12 حرفًا على الأقل)" error={form.formState.errors.password?.message}>
         {/* dir="ltr": passwords are overwhelmingly Latin runs; the caret
-            and masked glyphs must not bidi-flip in RTL. */}
-        <input className="input auth-input" type={showPassword ? 'text' : 'password'} dir="ltr" autoComplete="new-password" {...form.register('password')} />
+            and masked glyphs must not bidi-flip in RTL. The 12-dot
+            placeholder carries the length floor (and marks the field
+            "filled" for the input border ladder once the visitor types). */}
+        <input className="input auth-input" type={showPassword ? 'text' : 'password'} dir="ltr" placeholder="•••••••••••" autoComplete="new-password" {...form.register('password')} />
         <button
           type="button"
           className="auth-input-toggle"
@@ -713,63 +730,65 @@ function TeacherForm({ form, error, isPending, faculties, institutions, institut
           <Icon icon={showPassword ? EyeOff : Eye} size={16} />
         </button>
       </Field>
+      </div>
 
       {/* r170-e (ASVS 2.1.8): advisory live-region strength hint under the
           password input — same contract as the student form. */}
       <PasswordStrengthHint password={passwordValue} />
 
+      <div className="auth-cells">
       {/* r178: institution step — BEFORE the faculty select (same
           contract as the student form). */}
       <InstitutionField
+        index="[05]"
         institutions={institutions}
         institutionId={institutionId}
         onInstitutionChange={onInstitutionChange}
         error={form.formState.errors.institutionId?.message}
       />
 
-      <div className="auth-row-2">
-        <Field label="الكلّيّة" error={form.formState.errors.facultyId?.message}>
-          {/* r157 F5 (6A11 #5 opt-in): the faculties skeleton announces
-              itself — role=status + aria-busy via the Wave-1 Skeleton
-              aria-label contract. */}
-          {faculties.status === 'loading' && (
-            <Skeleton className="auth-select-skeleton" aria-label="جارٍ تحميل الكليات" />
-          )}
-          {faculties.status === 'error' && (
-            <div className="auth-error" role="alert">
-              <Icon icon={AlertCircle} size={14} />
-              <span>تعذّر تحميل الكلّيّات — تحقّق من اتصالك بالشبكة.</span>
-              <button type="button" className="auth-retry-link" onClick={faculties.retry}>
-                إعادة المحاولة
-              </button>
-            </div>
-          )}
-          {faculties.status === 'ready' && (
-          <select className="auth-input" disabled={!institutionId} {...form.register('facultyId')}>
+      <Field index="[06]" label="الكلّيّة" error={form.formState.errors.facultyId?.message}>
+        {/* r157 F5 (6A11 #5 opt-in): the faculties skeleton announces
+            itself — role=status + aria-busy via the Wave-1 Skeleton
+            aria-label contract. */}
+        {faculties.status === 'loading' && (
+          <Skeleton className="auth-select-skeleton" aria-label="جارٍ تحميل الكليات" />
+        )}
+        {faculties.status === 'error' && (
+          <div className="auth-error" role="alert">
+            <Icon icon={AlertCircle} size={14} />
+            <span>تعذّر تحميل الكلّيّات — تحقّق من اتصالك بالشبكة.</span>
+            <button type="button" className="auth-retry-link" onClick={faculties.retry}>
+              إعادة المحاولة
+            </button>
+          </div>
+        )}
+        {faculties.status === 'ready' && (
+        <select className="auth-input" disabled={!institutionId} {...form.register('facultyId')}>
+          <option value="">اختر…</option>
+          {faculties.items.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+        </select>
+        )}
+      </Field>
+      <Field
+        index="[07]"
+        label="القسم"
+        error={deptEmpty ? undefined : form.formState.errors.departmentId?.message}
+      >
+        {deptEmpty ? (
+          <div className="auth-dept-empty">{NO_DEPARTMENTS_TEXT}</div>
+        ) : (
+          <select className="auth-input" disabled={!facultyId} {...form.register('departmentId')}>
             <option value="">اختر…</option>
-            {faculties.items.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+            {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
           </select>
-          )}
-        </Field>
-        <Field
-          label="القسم"
-          error={deptEmpty ? undefined : form.formState.errors.departmentId?.message}
-        >
-          {deptEmpty ? (
-            <div className="auth-dept-empty">{NO_DEPARTMENTS_TEXT}</div>
-          ) : (
-            <select className="auth-input" disabled={!facultyId} {...form.register('departmentId')}>
-              <option value="">اختر…</option>
-              {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-            </select>
-          )}
-        </Field>
-      </div>
+        )}
+      </Field>
 
-      <Field label="التخصص العلمي" error={form.formState.errors.specialty?.message}>
-        <span className="auth-input-icon" aria-hidden><Icon icon={BookOpen} size={16} /></span>
+      <Field index="[08]" label="التخصص العلمي" error={form.formState.errors.specialty?.message}>
         <input className="input auth-input" type="text" placeholder="مثلاً: الذكاء الاصطناعي" {...form.register('specialty')} />
       </Field>
+      </div>
 
       <div className="role-invitation-note" role="note">
         <Icon icon={Building2} size={13} />
@@ -802,6 +821,9 @@ function TeacherForm({ form, error, isPending, faculties, institutions, institut
 }
 
 interface FieldProps {
+  /** R315 (K-I): the row's mono drafting index ([01]…) — decorative
+   *  chrome (aria-hidden); the label keeps the a11y contract. */
+  index: string;
   label: string;
   error?: string;
   children: React.ReactNode;
@@ -820,8 +842,11 @@ interface FieldProps {
  *  (useId + htmlFor + aria-invalid + aria-describedby) minus the
  *  per-field role="alert"; the ONE polite countAr summary carries the
  *  announcement instead. Migrate only after FormField grows a quiet
- *  error variant (wave-3 hand-off). */
-function Field({ label, error, children }: FieldProps) {
+ *  error variant (wave-3 hand-off).
+ *
+ *  R315 (K-I): the field renders as a ruled CELL row (index + label +
+ *  control) — same ARIA contract, new seat. */
+function Field({ index, label, error, children }: FieldProps) {
   const id = useId();
   const errorId = `${id}-error`;
   const wired = Children.map(children, (child) => {
@@ -835,10 +860,13 @@ function Field({ label, error, children }: FieldProps) {
     });
   });
   return (
-    <div className="auth-field">
+    <div className="auth-cell">
+      <span className="auth-cell-index" dir="ltr" aria-hidden="true">{index}</span>
       <label htmlFor={id} className="form-label">{label}</label>
-      <div className="auth-input-wrap">{wired}</div>
-      {error && <span id={errorId} className="auth-field-error">{error}</span>}
+      <div className="auth-cell-control">
+        <div className="auth-input-wrap">{wired}</div>
+        {error && <span id={errorId} className="auth-field-error">{error}</span>}
+      </div>
     </div>
   );
 }
@@ -853,6 +881,9 @@ function Field({ label, error, children }: FieldProps) {
  *  honest empty box (same grammar as NO_DEPARTMENTS) instead of a
  *  dead select. */
 interface InstitutionFieldProps {
+  /** R315 (K-I): the row's mono drafting index — passed through to the
+   *  Field cell. */
+  index: string;
   institutions: InstitutionsState;
   institutionId: string;
   onInstitutionChange: (id: string) => void;
@@ -860,13 +891,14 @@ interface InstitutionFieldProps {
 }
 
 function InstitutionField({
+  index,
   institutions,
   institutionId,
   onInstitutionChange,
   error,
 }: InstitutionFieldProps) {
   return (
-    <Field label="المؤسسة التعليمية" error={error}>
+    <Field index={index} label="المؤسسة التعليمية" error={error}>
       {institutions.status === 'loading' && (
         <Skeleton className="auth-select-skeleton" aria-label="جارٍ تحميل المؤسسات" />
       )}

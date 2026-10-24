@@ -52,6 +52,7 @@
  *    zero React renders per pointermove (the r172 pattern).
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { HERO_SEAT } from '../HeroInkWindow';
 import {
   subscribeSheetFrame,
   wakeSheet,
@@ -69,11 +70,13 @@ import {
 } from '../../../lib/motion/sheetGeometry';
 
 
-/* The hero window's viewBox — the SINGLE shared frame (R310 §6 →
- * R314): the ink render widened the window to 1440×720 (2.0 ratio,
- * the measured reference composition); pins, stations, guides, and
- * drag math all remap through THIS frame. ELEVATION_VB (1440×640)
- * remains the SheetLoader drawing's own frame. */
+/* The hero window's viewBox — the SINGLE shared frame (R310 §6 → R314
+ * → R315): the 1440×720 bp-svg frame the ink window renders. The
+ * elevation artwork is SEATED inside it through HeroInkWindow's
+ * HERO_SEAT transform (scale 0.882, offset 58/114), so every station
+ * authored in the ARTWORK's 1440×640 space remaps through that seat
+ * before the letterbox transform — the dots stay glued to the drawn
+ * features at every size (R315 A.1 re-seat). */
 const VB_W = 1440;
 const VB_H = 720;
 
@@ -94,22 +97,26 @@ const DOT_TARGET_PX = 44;
 interface MarkerDef {
   id: string;
   code: string;
-  /** viewBox-space anchor (the dot position) */
-  vx: number;
-  vy: number;
+  /** the feature's anchor in the ARTWORK's own 1440×640 space */
+  ex: number;
+  ey: number;
   /** display box size, px (the reference's fixed 200×80 grammar) */
   w: number;
   h: number;
   labelAr: string;
   bodyAr: string;
+  /** the same anchor remapped into the 1440×720 window frame through
+   *  HERO_SEAT (computed once — applyMapping consumes vx/vy) */
+  vx: number;
+  vy: number;
 }
 
 const MARKERS: MarkerDef[] = [
   {
     id: 'cp',
     code: 'CP',
-    vx: 970,
-    vy: 452,
+    ex: 970,
+    ey: 452,
     w: 204,
     h: 88,
     labelAr: 'نقطة فحص',
@@ -118,8 +125,8 @@ const MARKERS: MarkerDef[] = [
   {
     id: 'rr',
     code: 'RR',
-    vx: 585,
-    vy: 440,
+    ex: 585,
+    ey: 440,
     w: 212,
     h: 88,
     labelAr: 'مراجعة بحث',
@@ -128,14 +135,18 @@ const MARKERS: MarkerDef[] = [
   {
     id: 'mg',
     code: 'MG',
-    vx: 340,
-    vy: 360,
+    ex: 340,
+    ey: 360,
     w: 204,
     h: 88,
     labelAr: 'فجوة إتقان',
     bodyAr: 'المصفوفة تكشف الفجوة وتربطها بالدرس المناسب لك.',
   },
-];
+].map((m) => ({
+  ...m,
+  vx: HERO_SEAT.x + m.ex * HERO_SEAT.s,
+  vy: HERO_SEAT.y + m.ey * HERO_SEAT.s,
+}));
 
 /* The return-to-top reset contract (R309 §6): once the visitor has
  * left the hero (scrolled past half a viewport), returning to the top

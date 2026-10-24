@@ -5,15 +5,17 @@
    geometry, carrying Madarek's OWN honest content (never the
    reference's text, logo, or awards):
 
-   · cb — ConsentBanner (V11): the local-storage consent gate, fixed
-     bottom-right on desktop (paper ground, four separate 1px ink
-     rules like a drafting frame, the ONE hard-offset shadow the
-     reference ships), full-width bottom panel ≤479px with 44px touch
-     targets. Real functionality: «موافق»/«أرفض» persist
-     `madarek.consent` (+ JSON record with timestamp under
-     `madarek.consent.record`); reject removes the gated UI-pref keys;
-     window.MadarekConsent exposes the live state. See
-     components/landing/chrome/ConsentBanner.tsx.
+   · cb — ConsentBanner (V11 → R315 K-C): the local-storage consent
+     gate, fixed bottom-LEFT on desktop (the MIRRORED seat of the
+     reference's measured bottom-right; paper ground, four separate
+     1px ink rules like a drafting frame, the ONE hard-offset shadow
+     the reference ships; ONE line + «اعرف أكثر»; Accept on the
+     measured #EFEFEF ground, Reject outlined), full-width bottom
+     panel ≤479px with 44px touch targets. Real functionality:
+     «موافق»/«أرفض» persist `madarek.consent` (+ JSON record with
+     timestamp under `madarek.consent.record`); reject removes the
+     gated UI-pref keys; window.MadarekConsent exposes the live
+     state. See components/landing/chrome/ConsentBanner.tsx.
 
    · et — EdgeTab (V12): the right-edge vertical tab (paper ground,
      outer hairline, orange square + tiny white 4-pointed star at the
@@ -47,24 +49,27 @@
    §1 — cb · the consent banner (V11)
    ═══════════════════════════════════════════════════════════════════ */
 
-/* The gate element. PHYSICAL bottom-right (the reference's measured
-   corner — the RTL document mirrors content, not this chrome seat);
-   width 72.12rem = 601px @1440 (measured), clamped so narrow desktops
+/* The gate element. R315 (K-C): PHYSICAL bottom-LEFT — the MIRRORED
+   seat of the reference's measured bottom-right (E-crawl @1440×900:
+   601.25×38.33 at x=825 → mirrored x≈13.6): the RTL layout flow
+   mirrors, so the banner overlays the paragraph/link cell end of the
+   hero strip exactly where the reference overlays its own link end —
+   NEVER the H1 cell (the reference's banner never touches its H1).
+   Width 72.12rem = 601px @1440 (measured), clamped so narrow desktops
    never clip it. Paper ground = --bg (#F6F6EE light · #282828 dark).
    Radius 0 everywhere — the canon. */
 .cb-banner {
   position: fixed;
   inset-block-end: 0;
-  right: 0;                       /* physical — see note above */
+  left: 0;                        /* physical — the mirrored seat */
   z-index: 240;                   /* the ladder mapped in the header */
   inline-size: min(72.12rem, calc(100vw - 2.4rem));  /* 601px @1440 — measured */
   min-block-size: 4.56rem;        /* 38px @1440 — measured outer strip */
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding-block: var(--sp-1-5);   /* the honest Arabic sentence wraps —  */
-  padding-inline: var(--sp-4);    /* height grows with content, geometry */
-                                  /* (width/seat/rules) stays measured   */
+  padding-block: var(--sp-1);     /* one line — the measured 38px band */
+  padding-inline: var(--sp-4);
   background: var(--bg);
   /* THE ONLY SHADOW PERMITTED (R313 canon: one shadow in 2774 sampled
      reference surfaces — the cookie banner's own drafting drop;
@@ -108,9 +113,10 @@
 .cb-rule-r { inset-inline-end: 3px; inset-block: 3px; inline-size: 1px; }
 .cb-rule-l { inset-inline-start: 3px; inset-block: 3px; inline-size: 1px; }
 
-/* The honest sentence — 13.33px @1440 (--fs-body, the Heron txt-16
-   rung), muted ink: --text-muted IS the solid twin of the reference's
-   rgba(40,40,40,.72) (tokens.css light block, measured). */
+/* The ONE honest line — 13.33px @1440 (--fs-body, the reference's
+   txt-16 rung), muted ink, NEVER wrapping on desktop (the measured
+   band is a single line: sentence + LEARN MORE + the two compact
+   actions inside 601px). */
 .cb-text {
   margin: 0;                      /* reset the UA <p> margins */
   flex: 1 1 auto;
@@ -118,19 +124,19 @@
   font-size: var(--fs-body);
   line-height: var(--lh-snug);
   color: var(--text-muted);
+  white-space: nowrap;            /* the measured one-line band */
 }
 
-/* «تعرّف أكثر» — the mono-seat link: 11.67px @1440 (--fs-mono-md,
-   Heron txt-14). Text rides --accent-ink (#C72E00 light · the ember
-   dark) — the token contract's TEXT-safe accent (raw #FA3600 is the
-   UI-large tone; the reference's own recipe routes link text through
-   the darkened ink). Underline appears on hover (measured). */
+/* «اعرف أكثر» — the mono-seat link: 11.67px @1440 (--fs-mono-md,
+   the reference's LEARN MORE rung). Text rides --accent-ink
+   (#C72E00 light) — the token contract's TEXT-safe accent. */
 .cb-more {
   font-family: var(--font-mono);
   font-size: var(--fs-mono-md);
   font-weight: var(--fw-medium);
   color: var(--accent-ink);
   white-space: nowrap;
+  margin-inline-start: var(--sp-1-5);
   text-decoration-line: none;
   text-underline-offset: 0.3rem;
   transition: color var(--t-fast) var(--ease);
@@ -149,57 +155,51 @@
   flex: 0 0 auto;
 }
 
-/* «موافق» — 120×30 @1440, transparent ground, accent-ink label +
-   1px accent border; the FILL-WIPE hover: an orange ::before scales
-   in from the INLINE-START edge (physical right in the RTL document)
-   and the label flips to --accent-fg (white). Radius 0. */
+/* «موافق» — R315 (K-C): the measured Accept seat — 78.63×27.98 on
+   the #EFEFEF ground (E-crawl: the reference's Accept is a flat pale
+   button, NOT an outlined wipe seat), ink label, no border, radius 0.
+   The 44px floor is a touch-context concern — the desktop banner's
+   measured 28px buttons ride a pointer context (the ≤479 block below
+   lifts every action to 44px). */
 .cb-accept {
-  position: relative;
-  z-index: 0;                     /* clips the ::before's -1 inside */
-  overflow: hidden;               /* the wipe never bleeds the frame */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  inline-size: 14.4rem;           /* 120px @1440 — measured */
-  min-block-size: 3.6rem;         /* 30px @1440 — measured */
+  inline-size: 9.44rem;            /* 78.67px @1440 — measured */
+  min-block-size: 3.36rem;         /* 28px @1440 — measured */
   padding-inline: var(--sp-2);
-  background: transparent;
-  border: 1px solid var(--accent);
+  background: var(--surface-2);
+  border: 0;
   font-family: var(--font-mono);
-  font-size: var(--fs-mono-md);   /* Heron txt-14 — the button-label rung */
+  font-size: var(--fs-mono-md);   /* the reference's cookie-Accept rung */
   font-weight: var(--fw-medium);
-  color: var(--accent-ink);
+  color: var(--text);
   cursor: pointer;
-  transition: color var(--t-fast) var(--ease);
-}
-.cb-accept::before {
-  content: '';
-  position: absolute;
-  z-index: -1;                    /* behind the label, inside the button */
-  inset: 0;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: right;        /* inline-start in the RTL document */
-  transition: transform var(--t-base) var(--ease);
-}
-.cb-accept:hover,
-.cb-accept:focus-visible {
-  color: var(--accent-fg);
-}
-.cb-accept:hover::before,
-.cb-accept:focus-visible::before {
-  transform: scaleX(1);
+  transition: background var(--t-fast) var(--ease);
 }
 
-/* «أرفض» — 144×36 @1440, outlined ink (var(--text) = #282828 light /
-   #F6F8FA dark), hover steps the ground only (the chrome control
-   recipe). Radius 0. */
+/* the measured pale ground — #EFEFEF on the reference's cool paper;
+   our warm-paper token sits a step off, so the light theme pins the
+   measured value (the dark twin keeps the token — the reference has
+   no dark mode). */
+html[data-theme='light'] .cb-accept {
+  background: #EFEFEF;  /* measured — color-gate: allow */
+}
+
+.cb-accept:hover,
+.cb-accept:focus-visible {
+  background: var(--surface-3);
+}
+
+/* «أرفض» — R315 (K-C): the measured Reject seat — 80.63×28.33,
+   transparent ground, 1px ink outline (var(--text) = #282828 light /
+   #F6F8FA dark), label in the same ink. Radius 0. */
 .cb-reject {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  inline-size: 17.28rem;          /* 144px @1440 — measured */
-  min-block-size: 4.32rem;        /* 36px @1440 — measured */
+  inline-size: 9.68rem;            /* 80.67px @1440 — measured */
+  min-block-size: 3.4rem;          /* 28.33px @1440 — measured */
   padding-inline: var(--sp-2);
   background: transparent;
   border: 1px solid var(--text);
@@ -212,14 +212,17 @@
     background var(--t-fast) var(--ease),
     color var(--t-fast) var(--ease);
 }
+
 .cb-reject:hover,
 .cb-reject:focus-visible {
   background: var(--surface-2);
 }
 
 /* ── Mobile ≤479px — the reference's own collapse: the full-width
-   bottom panel, min(92vw, 374px) centred, stacked rows, 44px touch
-   targets on both actions. ───────────────────────────────────────── */
+   bottom panel, min(92vw, 374px) centred, the ONE line wrapping to at
+   most two short rows, the two actions SIDE-BY-SIDE (E-crawl:
+   374.13×93.45 measured — our 44px touch floor is the owner-mandated
+   a11y minimum over the measured seat, ≈100px total). ────────────── */
 @media only screen and (max-width: 479px) {
   .cb-banner {
     inset-inline: 0;
@@ -228,11 +231,15 @@
     flex-direction: column;
     align-items: stretch;
     gap: var(--sp-2);
-    padding-block: var(--sp-3);
+    padding-block: var(--sp-2);
     padding-inline: var(--sp-3);
   }
   .cb-text {
     line-height: var(--lh-base);
+    white-space: normal;           /* the narrow panel wraps to 2 rows */
+  }
+  .cb-more {
+    margin-inline-start: var(--sp-1-5);
   }
   .cb-actions {
     gap: var(--sp-2);
@@ -257,7 +264,6 @@
     transform: none;
   }
   .cb-accept,
-  .cb-accept::before,
   .cb-reject,
   .cb-more {
     transition: none;
@@ -265,23 +271,27 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   §2 — et · the right-edge vertical tab (V12)
+   §2 — et · the edge vertical tab (V12 → R315 mirrored seat)
    ═══════════════════════════════════════════════════════════════════ */
 
-/* PHYSICAL right viewport edge, vertically centred, ~26×140 @1440,
-   paper ground (--bg), a single 1px --rule hairline on the OUTER
-   (physical right) edge. z 55: above the sheet frame's hairline (50),
-   below the masthead (60) — the spec's "below the header" intent on
-   the repo ladder. Hidden below 768px (the reference hides its tab on
-   mobile — see the media query at the section's tail). */
+/* R315 (K-B/§6) — the MIRRORED edge tab: the reference's .awwwards
+   badge seats the PHYSICAL right edge (44.16×139.45 @1440, right
+   0.8rem, top 50%, z999, NO breakpoint — visible at every width);
+   the RTL layout flow mirrors, so Madarek's own tab seats the
+   PHYSICAL LEFT edge at the same measured geometry — away from the
+   RTL H1's inline-start edge (the owner's §0-H heading-clip defect).
+   z 55 stays on the repo ladder (above the frame hairline 50, below
+   the masthead 60 — the R314 mapping, intent preserved). Paper ground
+   (--bg), a single 1px --rule hairline on the OUTER (physical left)
+   edge. */
 .et-tab {
   position: fixed;
   inset-block-start: 50%;
-  right: 0;                       /* physical — the reference's seat */
+  left: 0.8rem;                   /* measured 0.8rem offset — mirrored seat */
   z-index: 55;
   transform: translateY(-50%);
-  inline-size: 3.12rem;           /* 26px @1440 — measured band */
-  min-block-size: 16.8rem;        /* 140px @1440 — measured */
+  inline-size: 5.3rem;            /* 44.16px @1440 — the measured band */
+  min-block-size: 16.72rem;       /* 139.45px @1440 — measured */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -291,19 +301,20 @@
   padding-inline: 0;
   background: var(--bg);
   border: 0;
-  border-right: 1px solid var(--rule);  /* the OUTER edge hairline —
+  border-left: 1px solid var(--rule);   /* the OUTER edge hairline —
                                            #B3B3AF light · #4A4A48 dark */
   cursor: pointer;
-  /* Hover nudge: -4px toward the content (240ms measured → --t-fast,
-     the nearest motion rung — no raw durations outside tokens). */
+  /* Hover nudge: +4px toward the content (the mirrored direction;
+     240ms measured → --t-fast, the nearest motion rung). */
   transition: transform var(--t-fast) var(--ease);
 }
 
-/* Hover/focus: the tab nudges left; the translateY(-50%) centring is
-   preserved inside the same transform. */
+/* Hover/focus: the tab nudges RIGHT (toward the content — the
+   mirrored direction); the translateY(-50%) centring is preserved
+   inside the same transform. */
 .et-tab:hover,
 .et-tab:focus-visible {
-  transform: translateY(-50%) translateX(-4px);
+  transform: translateY(-50%) translateX(4px);
 }
 
 /* The small orange square (~14×14 @1440) at the tab's TOP —
@@ -339,10 +350,14 @@
   white-space: nowrap;
 }
 
-/* The reference hides its tab below 768px — mobile gets no edge tab. */
-@media only screen and (max-width: 767.98px) {
+/* R315: the reference carries its edge badge at EVERY width (E-crawl:
+   no breakpoint) — the ≤767 hide is retired. On touch bands the tab
+   rides BELOW the content z-ladder so it can never eat a heading or a
+   control (the owner's §0-H tablet defect belt). */
+@media only screen and (max-width: 991px) {
   .et-tab {
-    display: none;
+    z-index: 40;                  /* under the flowing content (50-ladder
+                                     seats), over the frame hairline only */
   }
 }
 

@@ -92,9 +92,13 @@ describe('r177 — landing/auth copy is affiliation-free', () => {
     expect(landing).toContain('اصطناعية بالكامل');
     expect(landing).not.toContain('جامعة الزاوية');
     // brand subtitle is a product descriptor, not a university
-    expect(landing.match(/fo-brand-sub">\s*([^<\s])/g)?.length ?? 0).toBe(2);
+    // R315 override (K-B): the desktop header's logo cell is the
+    // reference's measured mark+wordmark seat — the tagline stack is
+    // retired from the masthead; the descriptor lives on in the footer
+    // brand block (exactly one seat on the sheet) + <title>/meta.
+    expect(landing.match(/fo-brand-sub">\s*([^<\s])/g)?.length ?? 0).toBe(1);
     expect(landing).not.toMatch(/fo-brand-sub">\s*جامعة الزاوية/);
-    expect(landing.match(/fo-brand-sub">\s*منصّة التعليم الذكي/g)?.length).toBe(2);
+    expect(landing.match(/fo-brand-sub">\s*منصّة التعليم الذكي/g)?.length).toBe(1);
     // the copyright is the platform's alone
     // r193: the year renders in WESTERN digits — the platform's one
     // numeral convention (formatNum ar-LY→latn); the r191 Arabic-Indic

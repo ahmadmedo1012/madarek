@@ -1,15 +1,22 @@
 #!/usr/bin/env node
 /**
  * R314 §3.1 — Aligned capture harness (deterministic).
- * Captures a site at a viewport: settled viewport frames at document-progress
- * steps (pinned sections resolved by settling + scrub), a scroll-stitch
+ * Captures a site at a viewport: settled viewport frames at section-relative
+ * progress steps (pinned sections resolved by settling + scrub), a scroll-stitch
  * fullpage, and optional loader frames. Progress-relative alignment is the
  * R314 ruling: page heights differ, sections are compared by relative
  * traversal, not absolute pixels.
  *
+ * R315 upgrade (J1, backward-compatible): `--url <url>` and `--out <dir>` now
+ * cleanly override the SITES entry (any page of any site, any output dir);
+ * `--wait <ms>` overrides the per-site settle; meta.json additionally records
+ * finalUrl/title/mainStatus so redirected or 404 routes are documented.
+ * Loader-gate + theme-gate logic untouched.
+ *
  * Usage:
  *   node scripts/r314/capture.mjs --site heron|madarek --viewport 1440x900 \
- *        [--frames 21] [--settle 900] [--stitch] [--loader-frames] [--theme light|dark]
+ *        [--url <url>] [--out <dir>] [--frames 21] [--settle 900] [--wait <ms>]
+ *        [--stitch] [--loader-frames] [--theme light|dark] [--chrome]
  */
 import { chromium } from 'playwright-core';
 import fs from 'node:fs';
@@ -18,19 +25,24 @@ import path from 'node:path';
 const EXE = process.env.HOME + '/.cache/ms-playwright/chromium-1200/chrome-linux64/chrome';
 const SITES = {
   heron: { url: 'https://heronaiapp.com/', wait: 11000 },
-  madarek: { url: 'http://localhost:3000/', wait: 9000 },
+  // R315: vite dev server moved 3000 → 5173 (r314 default was stale/dead).
+  madarek: { url: 'http://localhost:5173/', wait: 9000 },
 };
 
 const args = process.argv.slice(2);
 const get = (k, d) => { const i = args.indexOf('--' + k); return i >= 0 ? args[i + 1] : d; };
-const flag = (k) => args.includes('--' + k);
+// R315 fix (J1): flag() used to be called as flag('--stitch') producing '----stitch'
+// — --stitch/--loader-frames/--chrome silently NEVER fired in r314. Normalize so
+// both flag('stitch') and flag('--stitch') resolve to '--stitch'.
+const flag = (k) => args.includes('--' + k.replace(/^--/, ''));
 const site = get('site', 'madarek');
 const [w, h] = get('viewport', '1440x900').split('x').map(Number);
 const frames = Number(get('frames', 21));
 const settle = Number(get('settle', 900));
 const theme = get('theme', 'light');
-const outRoot = get("out", `audits/evidence/r314/_local/captures/${site}/${w}x${h}/${theme}`);
-const url = flag('--url') ? get('url', SITES[site].url) : SITES[site].url;
+const outRoot = get('out', `audits/evidence/r314/_local/captures/${site}/${w}x${h}/${theme}`);
+const url = get('url', SITES[site].url);          // --url overrides the SITES entry
+const wait = Number(get('wait', SITES[site].wait)); // --wait overrides the per-site settle
 
 fs.mkdirSync(outRoot, { recursive: true });
 
@@ -45,17 +57,30 @@ const page = await ctx.newPage();
 page.on('pageerror', (e) => console.error('  [pageerror]', String(e).slice(0, 160)));
 
 console.log(`▸ ${site} ${w}x${h} ${theme} → ${outRoot}`);
-await page.goto(url, { waitUntil: 'load', timeout: 60000 });
+console.log(`  url: ${url}`);
+const mainResp = await page.goto(url, { waitUntil: 'load', timeout: 60000 });
 try { await page.evaluate(() => document.fonts.ready); } catch {}
 if (theme === 'dark' && site === 'madarek') {
-  // Madarek theme is a localStorage/class toggle; force dark palette.
+  // Madarek theme = zustand persist store, localStorage key 'madarek-theme'
+  // ({state:{mode,modeUpdatedAt},version:2}), resolved BEFORE first paint by
+  // the index.html bootstrap into <html data-theme="…">. R315 fix (J1): the
+  // old 'madarek.theme'/'theme' keys + html.dark class were no-ops — dark
+  // captures silently came out LIGHT. Legacy keys kept for compatibility.
   await page.evaluate(() => {
+    try { localStorage.setItem('madarek-theme', JSON.stringify({ state: { mode: 'dark', modeUpdatedAt: Date.now() }, version: 2 })); } catch {}
+    try { localStorage.removeItem('mdrk-theme-profile'); } catch {} // cached profile pref must not override
     try { localStorage.setItem('madarek.theme', 'dark'); } catch {}
     try { localStorage.setItem('theme', 'dark'); } catch {}
-    document.documentElement.classList.add('dark');
+    document.documentElement.setAttribute('data-theme', 'dark');
   });
   await page.reload({ waitUntil: 'load' });
   try { await page.evaluate(() => document.fonts.ready); } catch {}
+  const themeState = await page.evaluate(() => ({
+    dataTheme: document.documentElement.getAttribute('data-theme'),
+    bodyBg: getComputedStyle(document.body).backgroundColor,
+  }));
+  console.log(`  dark gate: data-theme=${themeState.dataTheme} bodyBg=${themeState.bodyBg}`);
+  if (themeState.dataTheme !== 'dark') console.error('  ⚠ dark gate FAILED — capturing anyway');
 }
 
 // loader frames (first pass only, before banner/state capture)
@@ -73,11 +98,15 @@ if (flag('--loader-frames')) {
 }
 
 // settle: loader + entrance animations. Heron ~7.2s + exit; Madarek gated.
-await page.waitForTimeout(SITES[site].wait);
+await page.waitForTimeout(wait);
 // dismiss heron cookie banner? NO — the banner is part of the chrome we judge.
 // (Madarek banner is being added in R314; both stay as-is.)
 
 const meta = { site, url, viewport: `${w}x${h}`, theme, frames, capturedAt: new Date().toISOString() };
+// R315: record what ACTUALLY loaded (redirects, soft-404s, titles).
+meta.finalUrl = page.url();
+meta.mainStatus = mainResp ? mainResp.status() : null;
+try { meta.title = await page.title(); } catch { meta.title = null; }
 // R314: detect the real scroll container (Heron scrolls .main-inner via Lenis,
 // overflow hidden; Madarek scrolls the window). Progress is container-relative.
 const scrollInfo = await page.evaluate(() => {
@@ -135,6 +164,16 @@ sectionInfo.forEach((sec, i) => {
     sectFrames.push({ id: `s${String(i).padStart(2, '0')}-${Math.round(p * 100)}`, y });
   }
 });
+// R315 fallback (J1): inner pages with no >300px section band would otherwise
+// yield ZERO frames — fall back to 7 document-progress frames so every page
+// capture still has frames + stitch. Landings are unaffected (9 bands found).
+if (sectFrames.length === 0 && maxScroll > 0) {
+  for (let k = 0; k < 7; k++) {
+    const p = k / 6;
+    sectFrames.push({ id: `f-${String(Math.round(p * 100)).padStart(3, '0')}`, y: Math.round(maxScroll * p) });
+  }
+  console.log('  no section bands >300px — using 7 document-progress fallback frames');
+}
 for (const sf of sectFrames) {
   await scrollTo(sf.y);
   await page.waitForTimeout(settle);

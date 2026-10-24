@@ -137,11 +137,16 @@ describe('landing funnel — rendered guest DOM (r164b → r188)', () => {
   it('a guest sees the split immediately: header login → /auth, header primary → /auth/register', () => {
     const { container } = renderLanding();
 
+    /* R315 override (K-B): the header seats ride the measured cell
+     * grammar — .fo-actions-login / .fo-actions-cta (the reference's
+     * ruled cells) replace the old .btn pair; the funnel contract
+     * itself (login → /auth, primary → /auth/register, both visible
+     * in the desktop bar) is unchanged. */
     const login = container.querySelector<HTMLAnchorElement>(
-      '.fo-header-actions .btn.ghost',
+      '.fo-header-actions .fo-actions-login',
     );
     const primary = container.querySelector<HTMLAnchorElement>(
-      '.fo-header-actions .btn.primary',
+      '.fo-header-actions .fo-actions-cta',
     );
     expect(login?.getAttribute('href')).toBe('/auth');
     expect(primary?.getAttribute('href')).toBe('/auth/register');

@@ -1,6 +1,23 @@
 /**
  * ElevationDrawing — R310 «واجهة التعلّم» — Artwork A.
  *
+ * R315 (B1 · A.1): the hero window re-seats this, Madarek's own ink
+ * elevation, as the hero art — the WHOLE frontal building on
+ * transparent paper (the R314 raster fragment retires from the seat).
+ * Variants:
+ *   · 'sheet'     — the complete drawing sheet (frame, grid, ground,
+ *     masses, dims, journey, labels) — the standalone full drawing.
+ *   · 'entrance'  — the loader's staged construction (no texture fills,
+ *     no micro metadata) — UNCHANGED behaviour.
+ *   · 'hero'      — the hero seat: the elevation itself (structural
+ *     grid, ground line + hatch, the five volumes, trees, stipple)
+ *     WITHOUT the sheet furniture (own frame/ruler, dimension chain,
+ *     journey path, name labels) — the hero window carries its own
+ *     drafting chrome (ticks, dashed inner frame, ± marks) and the
+ *     Arabic name labels would fall under the 13px script floor at
+ *     the 0.88 seat scale. The narrative lives in the copy + the
+ *     inspection stations.
+ *
  * The hero's original architectural ELEVATION: one composed university
  * learning building, drafted as a real drawing sheet — five connected
  * volumes that carry the learning journey (RTL reading): the lecture
@@ -31,14 +48,16 @@
  *  · `role="img"` + a full Arabic description — the drawing is
  *    informative without any pointer interaction (the hotspots and
  *    inspection stations live OUTSIDE the artwork).
- *  · One coordinate frame: the viewBox 1440×640 is the SINGLE frame
- *    the hotspot pins and the inspection stations are authored in
- *    (LandingPage STAGES / HeroInspect MARKERS) — remapped through
- *    the same letterbox transform at runtime.
+ *  · One coordinate frame: the artwork's own 1440×640 space is the
+ *    frame the hotspot pins and the inspection stations are authored
+ *    in (LandingPage STAGES / HeroInspect MARKERS) — the hero remaps
+ *    it through the HERO_SEAT transform in HeroInkWindow.
  */
 
 /* The drawing's own frame — shared with HeroInspect + LandingPage. */
 export const ELEVATION_VB = { w: 1440, h: 640 } as const;
+
+export type ElevationVariant = 'sheet' | 'entrance' | 'hero';
 
 /* Repeated-window helper — a library/auditorium window with its
  * center mullion (the drafting shorthand for glazing). */
@@ -66,31 +85,30 @@ function DimTick({ x, y }: { x: number; y: number }) {
   return <line className="bp-hair bp-drawable" x1={x - 4} y1={y + 4} x2={x + 4} y2={y - 4} pathLength={1} />;
 }
 
-export function ElevationDrawing({
+/*
+ * ElevationArt — the drawing's layers (defs + groups), no <svg>
+ * wrapper: the hero seats this fragment inside its own 1440×720 frame
+ * through the HERO_SEAT transform (one artwork, two frames, one
+ * coordinate story).
+ */
+export function ElevationArt({
   active,
   variant = 'sheet',
 }: {
   active: number;
-  /** 'entrance' — the loader's staged construction: the same building,
-   *  reduced to its constructive lines (no micro metadata, no texture
-   *  fills) so the draw-in reads clearly at the loader's window size.
-   *  'sheet' — the hero's complete drawing. */
-  variant?: 'sheet' | 'entrance';
+  variant?: ElevationVariant;
 }) {
   const on = (i: number) => (active === i ? ' bp-on' : '');
   const entrance = variant === 'entrance';
+  /* the sheet furniture rides the sheet + entrance variants only —
+   * the hero window owns its chrome (R315 A.1/A.3). */
+  const furniture = variant !== 'hero';
   const uid = entrance ? 'elv-in' : 'elv';
   const stippleId = `bp-stipple-${uid}`;
   const hatchId = `bp-hatch-${uid}`;
 
   return (
-    <svg
-      className="bp-svg"
-      viewBox={`0 0 ${ELEVATION_VB.w} ${ELEVATION_VB.h}`}
-      role="img"
-      aria-label="واجهة معمارية لمبنى التعلّم في مدارك: قاعة المحاضرات بمدخلها ودرجها، جسر نقطة الفحص بصاريته، جناح الاختبار بأعمدته وساعته، جناح المكتبة بنوافذه العالية، وبرج الإتقان المتدرّج — على خط أرض واحد مع شبكة إنشائية وسلسلة أبعاد ومسار تعلّم متقطّع يُقرأ من اليمين إلى اليسار"
-      preserveAspectRatio="xMidYMid meet"
-    >
+    <>
       <defs>
         {/* the wall stipple — the reference's texture, as line work:
             two offset dot rows per 8×8 cell, token-colored. (The
@@ -110,6 +128,7 @@ export function ElevationDrawing({
       </defs>
 
       {/* ═══ 01 · the sheet frame — registration corners + edge ruler ═══ */}
+      {furniture && (
       <g className="bp-l-frame" data-ink="1" aria-hidden="true">
         <g className="bp-hair">
           <path d="M36 50 h16 M44 42 v16" className="bp-drawable" pathLength={1} />
@@ -137,6 +156,7 @@ export function ElevationDrawing({
           </>
         )}
       </g>
+      )}
 
       {/* ═══ 02 · the structural grid — column axes A…G ═══════════════ */}
       <g className="bp-l-grid" data-ink="2" aria-hidden="true">
@@ -232,10 +252,12 @@ export function ElevationDrawing({
           ))}
         </g>
         <g className="bp-l-detail" data-ink="7">
-          {/* the signal mast + THE checkpoint pennant (orange #1) */}
+          {/* the signal mast + THE checkpoint square (orange marker #1 —
+              R315 A.1: the pin-square grammar, 18×18 → ≈16px on the
+              hero seat; the reference parity marker shape) */}
           <line className="bp-drawable bp-ink" x1="970" y1="356" x2="970" y2="300" pathLength={1} />
           <line className="bp-drawable bp-hair" x1="962" y1="312" x2="978" y2="312" pathLength={1} />
-          <polygon className="bp-drawable bp-signal-fill" points="970,300 1002,310 970,320" pathLength={1} />
+          <rect className="bp-drawable bp-signal-fill" x="972" y="300" width="18" height="18" pathLength={1} />
           {/* the pulse square on the glass — the live checkpoint */}
           <rect className="bp-drawable bp-signal-fill" x="966" y="452" width="8" height="8" pathLength={1} />
         </g>
@@ -337,9 +359,10 @@ export function ElevationDrawing({
             points="292,486 322,428 318,364 352,304 348,240 380,182 376,122"
             pathLength={1}
           />
-          {/* the pinnacle mast + THE mastery pennant (orange #2) */}
+          {/* the pinnacle mast + THE mastery square (orange marker #2 —
+              R315 A.1: the pin-square grammar, matching marker #1) */}
           <line className="bp-drawable bp-ink" x1="355" y1="100" x2="355" y2="64" pathLength={1} />
-          <polygon className="bp-drawable bp-signal-fill" points="355,64 383,72 355,80" pathLength={1} />
+          <rect className="bp-drawable bp-signal-fill" x="357" y="64" width="18" height="18" pathLength={1} />
           {/* the tower's vertical dimension */}
           <line className="bp-drawable bp-hair" x1="262" y1="100" x2="262" y2="500" pathLength={1} />
           <line className="bp-drawable bp-hair" x1="256" y1="100" x2="268" y2="100" pathLength={1} />
@@ -373,6 +396,7 @@ export function ElevationDrawing({
       </g>
 
       {/* ═══ 08 · the dimension chain — the sheet's measure line ══════ */}
+      {furniture && (
       <g className="bp-l-dims" data-ink="8" aria-hidden="true">
         <line className="bp-drawable bp-hair" x1="36" y1="568" x2="1404" y2="568" pathLength={1} />
         <line className="bp-drawable bp-hair" x1="36" y1="568" x2="46" y2="568" pathLength={1} />
@@ -397,8 +421,10 @@ export function ElevationDrawing({
           </>
         )}
       </g>
+      )}
 
       {/* ═══ 09 · the journey — the dashed path, RTL ══════════════════ */}
+      {furniture && (
       <g className="bp-l-journey" data-ink="9" aria-hidden="true">
         <line className="bp-drawable bp-dash bp-dash-2" x1="1240" y1="532" x2="306" y2="532" pathLength={1} />
         <polyline className="bp-drawable bp-ink" points="316,526 304,532 316,538" pathLength={1} />
@@ -408,8 +434,10 @@ export function ElevationDrawing({
         ))}
         <text className="bp-tag" x="773" y="524" textAnchor="middle">مسار التعلّم — من المحاضرة إلى الإتقان</text>
       </g>
+      )}
 
       {/* ═══ 10 · the labels — each volume, named + indexed ═══════════ */}
+      {furniture && (
       <g className="bp-l-labels" data-ink="10" aria-hidden="true">
         <text className="bp-name" x="1145" y="602" textAnchor="middle">المحاضرات</text>
         <text className="bp-micro" x="1204" y="601" textAnchor="middle">[01]</text>
@@ -422,6 +450,32 @@ export function ElevationDrawing({
         <text className="bp-name" x="355" y="602" textAnchor="middle">الإتقان</text>
         <text className="bp-micro" x="396" y="601" textAnchor="middle">[05]</text>
       </g>
+      )}
+    </>
+  );
+}
+
+/*
+ * ElevationDrawing — the standalone sheet: the artwork wrapped in its
+ * own 1440×640 bp-svg frame (the SheetLoader seat; the full drawing
+ * as a self-contained image).
+ */
+export function ElevationDrawing({
+  active,
+  variant = 'sheet',
+}: {
+  active: number;
+  variant?: ElevationVariant;
+}) {
+  return (
+    <svg
+      className="bp-svg"
+      viewBox={`0 0 ${ELEVATION_VB.w} ${ELEVATION_VB.h}`}
+      role="img"
+      aria-label="واجهة معمارية لمبنى التعلّم في مدارك: قاعة المحاضرات بمدخلها ودرجها، جسر نقطة الفحص بصاريته، جناح الاختبار بأعمدته وساعته، جناح المكتبة بنوافذه العالية، وبرج الإتقان المتدرّج — على خط أرض واحد مع شبكة إنشائية وسلسلة أبعاد ومسار تعلّم متقطّع يُقرأ من اليمين إلى اليسار"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <ElevationArt active={active} variant={variant} />
     </svg>
   );
 }

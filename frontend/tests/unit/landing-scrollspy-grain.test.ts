@@ -71,15 +71,14 @@ describe('r188 — the folio chrome that ships', () => {
   const live = stripComments(css);
   const tsx = read('src/pages/LandingPage.tsx');
 
-  it('the scroll-progress ribbon: --p driven, accent-painted', () => {
-    // markup: the bar ref + the imperative --p write (r172 pattern).
-    expect(tsx).toContain('fo-progress-bar');
-    expect(tsx).toMatch(/style\.setProperty\('--p'/);
-    // CSS (r190): the bar consumes --p via transform (GPU-composited —
-    // no per-scroll layout paint; the width-based recipe retired) and
-    // the paint is the canonical accent token (routed to its stage
-    // expression on the fixed-dark chrome — see landing.css).
-    expect(live).toContain('transform: scaleX(var(--p, 0))');
+  it('R315 override: the top progress ribbon is RETIRED (the reference has nothing at the frame top edge)', () => {
+    // R315 override (K-A5): the owner's §0-A.5 verdict + E-crawl ground
+    // truth (nothing above the header band) retire the ribbon. The pin
+    // flips from "the bar exists and is driven" to "the bar is gone
+    // from the markup, the CSS and the imperative loop".
+    expect(tsx).not.toContain('fo-progress-bar');
+    expect(tsx).not.toMatch(/style\.setProperty\('--p'/);
+    expect(live).not.toContain('transform: scaleX(var(--p, 0))');
     expect(live).toContain('background: var(--accent)');
   });
 

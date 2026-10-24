@@ -476,7 +476,6 @@ export default function LandingPage() {
   // Scroll chrome on refs, written imperatively — no React re-render
   // per scroll event (the r172 pattern, kept).
   const headerRef = useRef<HTMLElement>(null);
-  const progressBarRef = useRef<HTMLDivElement>(null);
 
   /* r162 (R2) → r164b: warm the AUTH BOUNDARIES while the visitor reads
    * the hero (prod only — dev has no chunk splitting to warm). */
@@ -521,7 +520,6 @@ export default function LandingPage() {
   // keeps it pinned (the classes still flip — state, not motion).
   useEffect(() => {
     const header = headerRef.current;
-    const bar = progressBarRef.current;
     const reduced =
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -549,11 +547,6 @@ export default function LandingPage() {
         header.style.transform = lifted && !reduced
           ? 'translateY(calc(-100% - 8px))'
           : '';
-      }
-      if (bar) {
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        const p = max > 0 ? Math.min(1, y / max) : 0;
-        bar.style.setProperty('--p', p.toFixed(4));
       }
     };
     const onScroll = () => {
@@ -670,31 +663,26 @@ export default function LandingPage() {
       {/* P3-24: skip-to-content — first Tab stop, hidden until focused. */}
       <a href="#main" className="fo-skip-link">تخطَّ إلى المحتوى</a>
 
-      {/* ═══ THE SHEET FRAME (R313 · D9) — the full-page drafting frame:
-          a 1px hairline at the 7px inset (the reference's .main-deco),
-          10×10 corner plus marks centered on the frame corners + the
-          mono coordinates. Decorative only: aria-hidden,
-          pointer-transparent — and visible at EVERY breakpoint the
-          reference shows it (the reference keeps its frame at 390 —
-          small screens get the drafting chrome too). */}
-      <div className="sheet-frame" aria-hidden="true">
-        <span className="sheet-mark sheet-mark-tl">+</span>
-        <span className="sheet-mark sheet-mark-tr">+</span>
-        <span className="sheet-mark sheet-mark-bl">+</span>
-        <span className="sheet-mark sheet-mark-br">+</span>
-        <span className="sheet-coord sheet-coord-ts fo-mono" dir="ltr">MADAREK · LEARNING SHEET</span>
-        <span className="sheet-coord sheet-coord-be fo-mono" dir="ltr">[MDRK-01] · SHEET 01/01</span>
-      </div>
+      {/* ═══ THE SHEET FRAME (R313 · D9 → R315 K-A4) — the reference's
+          page frame is EXACTLY four 1px hairlines at the 7px inset
+          (E-crawl ground truth: .main-deco = 4 lines, NO plus marks, NO
+          mono coordinates at the frame edges — nothing that can ever
+          collide with the masthead at any width). The drafting ± marks
+          live on the hero window's own corners (.bp-plus/.bp-dmark),
+          where the reference carries them. ═══ */}
+      <div className="sheet-frame" aria-hidden="true" />
 
       {/* R314 (V3) — the measured paper grain + dotted micro-grid film
           (scripts/r314/grain-measure.json): under the content, under the
           fixed chrome, pointer-transparent. */}
       <div className="fo-grain" aria-hidden="true" />
 
-      {/* Top scroll-progress bar — driven imperatively via --p */}
-      <div className="fo-progress" aria-hidden>
-        <div className="fo-progress-bar" ref={progressBarRef} style={{ ['--p' as string]: 0 }} />
-      </div>
+      {/* R315 (K-A5): the top orange scroll-progress bar is RETIRED —
+          the reference has nothing at the frame's top edge (E-crawl
+          ground truth: no element above the header band, no progress
+          ribbon). Progress stays legible through the sheet's own
+          landmarks; the imperative scroll rAF keeps only the header
+          hide/show latch. */}
 
       {/* ── Masthead (R313 · D8) — the reference's fixed 56px bar at
           the 7px frame inset: transparent at rest (the frame's top
@@ -705,23 +693,30 @@ export default function LandingPage() {
           four-seat nav, the actions at the far end behind a vertical
           hairline (the reference's line before its CTA). ── */}
       <header className="fo-header" ref={headerRef}>
+        {/* R315 (K-B) — the reference's measured cell grammar (E-crawl
+            heron-dom @1440×900): one 56.3px row of CELLS separated by
+            1px #B3B3AF rules — [logo cell 705 | nav cells 4×136.67 |
+            actions cells | CTA cell 166.66] with a bottom hairline,
+            nothing else. RTL-mirrored: the logo cell seats inline-start
+            (right), the CTA cell ends the row (left). The tagline stack
+            is retired (the reference's logo cell = mark + wordmark);
+            «تسجيل الدخول» + the theme seats ride as their own cells —
+            honest function the reference doesn't need, in the same
+            cell language. */}
         <div className="fo-header-inner">
-          <Link to="/" className="fo-brand" aria-label="مدارك — الصفحة الرئيسية">
+          <Link to="/" className="fo-brand" aria-label="مدارك — منصّة التعليم الذكي">
             <StarMark size={30} className="fo-brand-mark" />
-            <span className="fo-brand-stack">
-              <span className="fo-brand-name">مدارك</span>
-              <span className="fo-brand-sub">منصّة التعليم الذكي</span>
-            </span>
+            <span className="fo-brand-name">مدارك</span>
           </Link>
 
           <HeaderNav />
 
           <div className="fo-header-actions">
             <ThemeToggle />
-            <Link to="/auth" className="btn ghost sm">تسجيل الدخول</Link>
-            <Link to="/auth/register" className="btn primary sm">
-              ابدأ الآن
-              <Icon icon={ArrowLeft} size={14} />
+            <Link to="/auth" className="fo-actions-login">تسجيل الدخول</Link>
+            <Link to="/auth/register" className="fo-actions-cta">
+              <RollLabel text="ابدأ الآن" />
+              <Icon icon={ArrowLeft} size={14} className="fo-actions-cta-arrow" aria-hidden />
             </Link>
           </div>
 
@@ -738,6 +733,7 @@ export default function LandingPage() {
           >
             <span className="fo-burger-label">القائمة</span>
             <span className="fo-burger-ic" aria-hidden="true">
+              <span />
               <span />
               <span />
             </span>
@@ -861,20 +857,35 @@ export default function LandingPage() {
                 <span className="bp-plus bp-plus-tr">+</span>
                 <span className="bp-plus bp-plus-bl">+</span>
                 <span className="bp-plus bp-plus-br">+</span>
+                {/* R315 (B1 · A.3): the small ± registration marks at the
+                    dashed inner frame's corners (the reference's inner
+                    drafting chrome, 15–20px inside the window edge). */}
+                <span className="bp-dmark bp-dmark-tl">+</span>
+                <span className="bp-dmark bp-dmark-tr">+</span>
+                <span className="bp-dmark bp-dmark-bl">+</span>
+                <span className="bp-dmark bp-dmark-br">+</span>
               </div>
             </div>
           </RevealCssClass>
 
           {/* the bottom strip — 133px of cells (the measured reference
-              band): H1 cell ≈45% at the inline-start edge · paragraph cell ·
-              discover cell with the orange arrow. */}
+              band): H1 cell ≈47% at the inline-start edge · paragraph cell
+              (lead + honest [LIVE] disclosure + the register CTA) · the
+              DISCOVER MORE link cell at the far end (R315 A.2: 3 cells,
+              RTL-mirrored). */}
           <div className="fo-hero-strip">
             <RevealCssClass as="h1" className="fo-hero-title" delay={1}>
-              رحلةُ تعلُّمٍ واحدة
+              {/* R315 (B1 · A.2): the display canon — UNVOCALISED Arabic
+                (zero tashkeel: the reference's display type is clean;
+                diacritics collided with the line above), 2 lines max,
+                lh 1.0, w700 on the --fs-h1 ladder rung (46.67px @1440).
+                The 2-line split «رحلة تعلم واحدة / من المحاضرة إلى
+                الإتقان» is the largest ladder size that holds exactly 2
+                lines at 1440 AND 390 (measured in _local/b1-preview);
+                the tablet band re-clamps for the narrower measure. */}
+              رحلة تعلم واحدة
               <br />
-              من أوّلِ محاضرةٍ
-              <br />
-              حتى الإتقان
+              من المحاضرة إلى الإتقان
             </RevealCssClass>
 
             <div className="fo-hero-side">
@@ -897,12 +908,19 @@ export default function LandingPage() {
                   أنشئ حسابك الجامعي
                   <Icon icon={ArrowLeft} size={16} />
                 </Link>
-                <a href="#statement" className="fo-hero-discover">
-                  <span className="fo-hero-discover-label">اكتشف المزيد</span>
-                  <Icon icon={ArrowLeft} size={14} className="fo-hero-discover-arrow" aria-hidden />
-                </a>
               </RevealCssClass>
             </div>
+
+            {/* the third cell — the reference's far-end discover link
+                (143×97 seat): «اكتشف المزيد» + the orange arrow, its own
+                strip cell (R315 A.2 — it was buried inside the actions
+                row; the 3-cell band is the measured composition). */}
+            <RevealCssClass as="div" className="fo-hero-link-cell" delay={4}>
+              <a href="#statement" className="fo-hero-discover">
+                <span className="fo-hero-discover-label">اكتشف المزيد</span>
+                <Icon icon={ArrowLeft} size={14} className="fo-hero-discover-arrow" aria-hidden />
+              </a>
+            </RevealCssClass>
           </div>
         </section>
 
