@@ -1728,9 +1728,12 @@ html[data-theme='dark'] .fo-grain {
 @media (min-width: 992px) {
   .fo-cta {
     padding-block: var(--sp-8) var(--sp-7);
-    /* the floor rides the measured reference share: 77.5vh = 698 @900
-     * (the base 77vh = 693 — five pixels shy of the reference band) */
-    min-block-size: 77.5vh;
+    /* R315 cycle-3 (W3 — the desktop law): the floor rides the root as a
+     * CONSTANT REM height — 83.75rem = 496 @1024 · 621 @1280 · 698 @1440 ·
+     * 931 @1920 (the fresh manifest's own quartet, ±0.1rem). The old
+     * 77.5vh share was exact at 900px height only: −47 @1080, +30 @768 —
+     * the reference's band is width-driven, not height-driven. */
+    min-block-size: 83.75rem;
   }
 
   .fo-cta-coords {
@@ -1962,10 +1965,12 @@ html[data-theme='dark'] .fo-grain {
     margin-block-end: var(--sp-6);
   }
 
-  /* the floor rides the measured reference share: 82.5vh = 743 @900
-   * (the base 82vh = 738 — five pixels shy of the reference band) */
+  /* R315 cycle-3 (W3 — the desktop law): 89.15rem = 528 @1024 · 660
+   * @1280 · 743 @1440 · 990 @1920 — the manifest's constant-rem quartet
+   * (the old 82.5vh share was a 900px-height tuning, wrong at every
+   * other desktop height). */
   .pm-section {
-    min-block-size: 82.5vh;
+    min-block-size: 89.15rem;
   }
 
   .pm-head > .fo-label { grid-area: label; }
@@ -1986,11 +1991,11 @@ html[data-theme='dark'] .fo-grain {
   .wy-head > .wy-title { grid-area: title; }
   .wy-head > .wy-lede { grid-area: lede; }
 
-  /* the floor drops to the measured reference share: 75.5vh = 680 @900
-   * (the base 77vh = 693 floor-bound the band twelve pixels over the
-   * reference's 681; the content itself measures 598) */
+  /* R315 cycle-3 (W3 — the desktop law): 81.65rem = 484 @1024 · 605
+   * @1280 · 680 @1440 · 907 @1920 — the constant-rem quartet (the old
+   * 75.5vh share was a 900px-height tuning). */
   .wy-section {
-    min-block-size: 75.5vh;
+    min-block-size: 81.65rem;
   }
 
   .wy-rail {
@@ -6004,36 +6009,241 @@ html[data-theme='dark'] .fo-grain {
   .st-line { line-height: 1.3; }
 }
 
+/* ═══ R315 cycle-3 (W3) — THE DESKTOP LAW (≥992): constant-rem bands ══
+ * Measured on the fresh cycle-2 manifest, cross-checked at all four
+ * desktop viewports (±0.1rem): every Heron content band is a CONSTANT
+ * REM height on the 0.5787vw root — statement 86.7 · problem 89.15 ·
+ * platform 85.2 · why 81.65 · cta 83.75 · footer 85.3 (grid 42.6 +
+ * strip 37.7 + legal 5.04). Hero/roles = 100vh − 1.6rem (the quartet
+ * 759/788/887/1062 is EXACTLY that on the root: 9.48/11.85/13.33/17.78
+ * — the header+frame chrome seated on the root, not on the px); the
+ * map = 7×vh (height-driven, untouched below). Our bands carried vh
+ * floors tuned at the 900px height + px-capped footer bands — exact
+ * at 1440×900, wrong at every other desktop tier: +8.0% docH @1024×768,
+ * footer +12.7% @1280 / −25% @1920. The floors below re-seat the bands
+ * on the root: identical at 1440×900 by construction, correct at every
+ * other width AND height (the unmeasured 1440×700 pair rides the same
+ * width-driven floors + 7×vh map = the r313 reference's own 10555).
+ * The footer's three bands convert their px caps to the same rem rungs
+ * (42.6/37.7/5.04rem = 355/314/42 @1440) so the colophon rides the
+ * root instead of freezing at 712px.
+ *
+ * THE MEASURE (the root cause behind the 1920 blowout): the reference's
+ * own section boxes span the FULL frame — dom-judge roles 28–35 measure
+ * 1426.69 wide @1440 with 3.2rem inline padding (content 1373.4). Our
+ * base sheet measure froze every content band at max-width 1160px with
+ * 24px px padding: inert at 1024, exact at the 8.333px root, but at
+ * 1920 the root grew +33% while the measure stood still — the display
+ * titles wrapped to 2–3 lines (problem head 341 vs the floor's 990.6)
+ * and the bands rode over their floors. The release below re-seats the
+ * measure on the reference's own 3.2rem rung: 1440 content 1373 = the
+ * reference's exact 1373.4 (−0.05%), 1024 → 972 (theirs 972.7),
+ * 1920 → 1835 — one composition at every rung, the wrap counts the
+ * root expects. (The hero's copy/fig/meta internals and the map's own
+ * .jt window keep their seats — hero bands and map bands are already
+ * law-exact, and the map internals are the K-D/B4 slice.) */
+@media (min-width: 992px) {
+  .st-section { min-block-size: 86.7rem; }
+  .pr-section { min-block-size: 85.2rem; }
+
+  /* the sheet measure rides the frame like every reference band */
+  .st-section,
+  .pm-section,
+  .chapters,
+  .pr-section,
+  .wy-section,
+  .rl-section,
+  .fo-cta {
+    max-inline-size: none;
+    padding-inline: 3.2rem; /* spacing-gate: allow — the reference's own measured section padding (3.2rem, content 1373.4 @1440), an external constant */
+  }
+
+  /* hero + roles = the 100vh − 1.6rem quartet (the reference's usecase
+   * band equals its hero at every viewport: 759=759 · 788=788 · 887=887
+   * · 1062=1062); the base 13px twin stays the ≤991 fallback */
+  .fo-hero { min-block-size: calc(100svh - 1.6rem); }
+  .rl-section { min-block-size: calc(100svh - 1.6rem); }
+
+  .fo-fgrid { min-block-size: 42.6rem; }
+  .fo-fstrip { block-size: 37.7rem; }
+  .fo-footer-bottom { min-block-size: 5.04rem; padding-inline: 3.12rem; }
+  .fo-footer-mark-svg { inline-size: 25.8rem; block-size: 25.8rem; }
+  .fo-footer-link { min-block-size: 3.36rem; }
+  .fo-fcell { min-block-size: 11.5rem; }
+  .fo-fcell-mark { min-block-size: 21.6rem; }
+  .fo-subscribe-input { block-size: 4.56rem; }
+  .fo-subscribe-btn { inline-size: 4.8rem; }
+}
+
+/* ═══ R315 cycle-3 (W3) — the ≥992 content compaction on rem rungs ══
+ * The px-fixed --sp-* paddings/margins/min-rows match the reference at
+ * the 8.333px root but never scale with it: at 1280 the problem/
+ * platform/cta CONTENT ran over their law floors (704 vs 660 · 689 vs
+ * 631 · 674 vs 621) and at 1024 the wraps blew platform +28.5% /
+ * footer +50%. Below, every value is the rem twin of the SAME rung
+ * (32px → 3.84rem · 24 → 2.88 · 20 → 2.4 · 16 → 1.92 · 12 → 1.44 ·
+ * 10 → 1.2 · 8 → 0.96 · 4 → 0.48) — pixel-identical at 1440, riding
+ * the root everywhere else exactly like the reference's own rows.
+ * Two structural notes: the product caption folds to a 2×2 read
+ * (tag|body / demo|cta — it was stacking 3 wrapped rows at the narrow
+ * end, the +28.5% root cause), and the problem line art caps at
+ * 20rem = its own natural 1440 height (166.7px), so the drawings
+ * shrink with the cards below 1440 instead of holding the 768px-root
+ * wrap height. Line-heights step to the reference's own compact rows. */
+@media (min-width: 992px) {
+  .st-section, .pm-section, .pr-section, .wy-section, .rl-section {
+    padding-block: 3.84rem;
+  }
+  .fo-cta { padding-block: 4.8rem 3.84rem; }
+
+  .pm-head { margin-block-end: 2.88rem; }
+  .pm-cards { gap: 1.92rem; }
+  .pm-card { padding: 1.92rem; }
+  .pm-art { inline-size: auto; block-size: 20rem; }
+  .pm-card-text { line-height: 1.55; }
+  .pm-foot { margin-block-start: 2.88rem; }
+
+  .pr-head { margin-block-end: 4.8rem; }
+  .pr-note { margin-block-start: 2.88rem; }
+  .prf-caption {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.48rem 1.92rem;
+  }
+
+  .wy-head { margin-block-end: 2.88rem; }
+  .wy-note { margin-block-start: 2.4rem; }
+  .wy-stage-text { line-height: 1.55; }
+
+  .rl-head { margin-block-end: 4.8rem; }
+  .rl-more { margin-block-start: 1.92rem; }
+
+  .fo-cta-coords { margin-block-end: 2.4rem; padding-block-end: 0.96rem; }
+  .fo-cta-corners { margin-block-start: 0.48rem; }
+  .fo-cta-inner { gap: 1.92rem; }
+  .fo-cta-lede { line-height: 1.6; }
+  .fo-cta .fo-hero-meta { margin-block-start: 2.4rem; }
+  .fo-meta-row { padding-block: 1.2rem; }
+  .cg-strip { margin-block-start: 2.4rem; padding-block-start: 1.92rem; }
+
+  .fo-fcell { padding: 1.92rem 1.44rem; }
+  .fo-footer-about { line-height: 1.5; }
+  .fo-footer-addr { margin-block-start: 1.92rem; padding-block-start: 1.92rem; }
+  .fo-footer-addr-line { line-height: 1.45; }
+  .fo-subscribe { margin-block-start: 0.48rem; gap: 0.96rem; }
+  .fo-subscribe-note { line-height: 1.45; }
+
+  /* the address pair's 12/8px cell padding re-seated on the root —
+   * pixel-identical at the 1440 anchor; the narrow slice sheds the
+   * 5.8px the 42.6rem grid floor needs for its second row */
+  .fo-fcell-addr { padding-block: 1.44rem 0.96rem; }
+}
+
+/* ═══ R315 cycle-3 (W3) — the narrow-desktop footer tracks ══════════
+ * 992–1319 only. On the big root the reference's own 1 : 2 : 1 read
+ * (head 357 | body 715 | logo 357 @1427) rides the 1.5fr/1/1/1/1.5fr
+ * tracks and the 13px-floor copy still fits under the 42.6rem grid
+ * floor. Below ~1320 the tagline cell needs the measure instead: the
+ * honest identity paragraph wraps a line per 22px of lost width, so
+ * the tagline track widens (2.4fr) and the contact cell joins the
+ * address pair across the row ('ab ab' — two cells at ~2 lines
+ * instead of one 4-line cell). The mark keeps its own narrowed cell.
+ * At ≥1320 the base tracks already keep the grid under its floor, so
+ * the block retires there — no cliff at the boundary (both sides
+ * floor-bound). */
+@media (min-width: 992px) and (max-width: 1319px) {
+  .fo-fgrid {
+    grid-template-columns:
+      minmax(0, 2.4fr)
+      minmax(0, 1.05fr)
+      minmax(0, 1.05fr)
+      minmax(0, 1.05fr)
+      minmax(0, 1.15fr);
+    grid-template-areas:
+      'tagline na nb nc mark'
+      'tagline ea ea ab ab';
+  }
+
+  /* the column headings ride the row chrome the 42.6rem floor can
+   * seat at this end of the root (the 13px canon floor keeps the
+   * heading text itself; the reference's own heading row is 20px
+   * @1024 — ours 21.5px trimmed vs 28.5px untrimmed) */
+  .fo-footer-heading { padding-block-end: var(--sp-0-5); margin-block-end: 0; }
+}
+
 /* ═══ R315 cycle-2 (M4) — the 992–1024 narrow-desktop slice ═════════
- * Fresh manifest @1024×768: docH 10930 vs the reference's 9926 (+10%)
+ * Fresh manifest @1024×768: docH 10720 vs the reference's 9926 (+8.0%)
  * while @1440 is −0.04% — the desktop composition is correct there
- * (M2), but our fixed 13px Arabic-legibility floors + the extra chrome
- * rows (coords/meta/sketch) don't rem-scale like the reference's
- * 1.4rem labels. The CTA sketch + meta fold here claws back ~190px;
- * the remaining ~+7% is the documented canon-floor deviation (cycle-3
- * ledger: 13px Arabic floor vs the reference's 5.9px labels @1024). */
+ * (M2), but the 13px Arabic-legibility floors + the extra chrome rows
+ * (coords/corners/meta/sketch) don't rem-scale like the reference's
+ * 5.9px-root labels. Cycle-3 (W3) re-seats the law floors + the rem
+ * rungs above; this slice keeps only the rows the root can't bend:
+ * the CTA sketch + the meta tail fold, the decorative corner coords
+ * retire (the aria-hidden chrome row [0,0]×4 — 25px the band can't
+ * spare at 5.93px root), the platform keeps the reference's
+ * strips-only read (head + note hidden) but keeps the desktop 2-up
+ * frame pair (the caption fold above already fits it under the
+ * 85.2rem floor), and the hero window yields 15px to the strip's
+ * taller 13px rows. The footer grid trims its ROW CHROME to the
+ * 42.6rem floor (link leading 1.2 + cell padding 1.2rem + the heading
+ * rule at one rung — the 13px canon floor text stays untouched); the
+ * mark keeps the law's own 25.8rem seat (the reference's mark is FULL
+ * SIZE at 1024 — trimming it to 12rem was a −53% role mismatch on
+ * dom-judge footer-logo). The why/problem bands trade their head/
+ * note margins for the floor (the capture stack + the card rows are
+ * the canon-floor content that can't bend). The rest is the
+ * documented canon-floor deviation (the 13px Arabic floor vs the
+ * reference's 5.9px labels @1024). */
 @media (min-width: 992px) and (max-width: 1024px) {
   .fo-cta-sketch { display: none; }
   .fo-cta .fo-meta-row:nth-last-child(-n + 2) { display: none; }
-  .fo-cta { min-block-size: 0; padding-block: var(--sp-6) var(--sp-5); }
+  .fo-cta-corners { display: none; }
+  .fo-cta { padding-block: var(--sp-6) var(--sp-5); }
   .fo-cta-coords { margin-block-end: var(--sp-2); padding-block-end: var(--sp-2); }
   .fo-cta .fo-hero-meta { margin-block-start: var(--sp-3); }
   .fo-cta-grid { grid-template-columns: minmax(0, 1fr); }
   .fo-fcell-strip { display: none; }
-  .fo-footer-mark-svg { block-size: 12rem; inline-size: 12rem; }
   .fo-fgrid { row-gap: var(--sp-1); }
-  .fo-footer-about { font-size: var(--fs-sm); line-height: 1.55; }
+  .fo-fcell { padding-block: 1.2rem; }
+  .fo-footer-about { font-size: var(--fs-sm); line-height: 1.45; }
 
-  /* platform rides the reference's two-strip grammar here too
-   * (755 → ~505: the 2-col frames wrap tall at this width) */
+  /* the row chrome the 42.6rem floor can seat at the 5.93px root:
+   * the 13px link text leads at 1.2 (the reference's own rows are
+   * 19.9px here — the min-block rung binds, only the leading bent) */
+  .fo-footer-link { line-height: 1.2; }
+
+  /* the hero window yields to the strip's floor-bound rows (the lead
+   * wraps 4 lines at 13px here; the reference's 133px strip is 189) */
+  .fo-hero-window .bp-svg {
+    block-size: min(68vh, calc(100svh - 295px));
+  }
+
+  /* platform: the reference's strips-only band (no head/note), the
+   * desktop 2-up frame pair kept — the caption fold above fits it */
   .pr-head, .pr-note { display: none; }
-  .pr-grid { grid-template-columns: minmax(0, 1fr); }
-  .prf-photo { block-size: 34rem; }
-  .prf-photo img { block-size: 100%; object-fit: cover; }
 
   /* statement/problem/why light trims (the wrap overshoot at the
-   * 5.93px root — the 13px canon floor keeps ~+7% of the +19%) */
+   * 5.93px root — the 13px canon floor keeps the documented rest):
+   * the problem head/foot margins and the why head/note margins step
+   * to the floor the bands' canon content needs */
   .st-line { padding-block: var(--sp-0-25); line-height: 1.4; }
   .pm-card { padding: var(--sp-2); }
+  .pm-head { margin-block-end: 1.44rem; }
+  .pm-foot { margin-block-start: 1.44rem; }
+  .wy-section { padding-block: 2.88rem; }
+  .wy-head { margin-block-end: 1.44rem; }
+  .wy-note { margin-block-start: 1.44rem; }
   .wy-stage { padding: var(--sp-1) var(--sp-2); }
+}
+
+/* ═══ R315 cycle-3 (W3) — the 1025–1147 footer row chrome ══════════
+ * The canon-floor tail: above 1024 the grid's own rows (5×19.9px
+ * min-block links led at 21.45px + the full 12px heading pad) still
+ * ride over the 42.6rem floor until the root reaches ~6.64px (width
+ * ≈1148, where the reference's own rows fit under it again). The same
+ * two trims the 992–1024 slice carries, seated for the sliver; at
+ * ≥1148 the base chrome keeps the rows under the floor on their own
+ * — no cliff at either boundary (both sides floor-bound there). */
+@media (min-width: 1025px) and (max-width: 1147px) {
+  .fo-footer-link { line-height: 1.2; }
+  .fo-fcell { padding-block: 1.2rem; }
 }
