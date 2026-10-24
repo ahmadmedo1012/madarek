@@ -126,3 +126,21 @@ Cycle-4 queue: the re-verdicted judge's own words (PARITY.md cycle-4 section)
 — map/platform artwork re-composition (s03-25 score 8, s04 tool-canvas,
 s06/s07 floor-plan interfaces), hero tonal density, the alignment-harness
 family, carried flags (EdgeTab year, أحرُم, accent-ink token, authed sweep).
+
+## Cycle 4 — the artwork/composition round (OPEN · five-agent fleet)
+
+Dispatched from the cycle-3 close's queue (the re-verdicted judge's own
+worst-first list) + the CI-debt ticket found at the cycle-3 push (E2E +
+Design gates have been red on every push since r314 — required checks all
+green; the debt is now ticketed):
+
+| WP | Ticket | Frames / items |
+|---|---|---|
+| c4/a (w2) | map journey re-composition — ink floor-plan states | s03-25 (score 8, worst) · s03-50/75 · s06 · s07 |
+| c4/b (w3) | platform tool-canvas re-composition | s04-0/50/100 (45/40/45→30/25/30, still critical) |
+| c4/c (w4) | hero tonal density + statement illustration | s00 (stipple/hatch) · s01 (sun + pixel-rows absent) |
+| c4/d (w5) | carried flags + alignment harness | EdgeTab year · أحرُم ×2 · 404 tashkeel · dark --accent-ink · section-relative frame mode |
+| c4/e (w6) | CI repair: e2e suite + design-gates job | 22 e2e failures (r308 loader pins, guest-landing r188, r305 shell) · raw-css gating |
+
+Hard constraint on a/b/c: the cycle-3 geometry ladder is CLOSED — zero band
+drift tolerated (re-measured before/after at 1440/390/844L).
