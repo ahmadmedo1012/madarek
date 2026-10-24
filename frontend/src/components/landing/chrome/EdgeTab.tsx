@@ -40,7 +40,7 @@ export function EdgeTab() {
       type="button"
       className="et-tab"
       onClick={scrollToFooter}
-      aria-label="الانتقال إلى ذيل الصفحة — هوية المنصّة ومعلوماتها"
+      aria-label="الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها"
     >
       {/* the small orange square (~14×14) with a tiny white 4-pointed
           star — Madarek's own mark, drawn bespoke (the StarMark
