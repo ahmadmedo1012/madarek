@@ -5342,10 +5342,12 @@ html[data-theme='dark'] .fo-grain {
    map heights minus the band's measured fixed parts):
      · phones (≤991px base)   91svh → .chapters ≈4813px @390×844
      · tablets portrait       97svh → .chapters ≈5454px @768×1024
-     · short landscape (≤500px viewport height) 48svh — the traversal
-       collapses toward the reference's 2317px landscape map band
-       instead of paying four full viewport heights (the M-fleet owns
-       the rest of the landscape docH gap).
+     · short landscape (≤500px viewport height) 57svh — R315 cycle-3
+       (W4): the traversal lands on the reference's OWN landscape map
+       band (2317px @844×390, fresh manifest r315-manifest-c2-heron):
+       the band's measured fixed parts ≈1431px + 4 × 57svh rows ⇒
+       ≈2320 measured (2317 target, +0.13%; the 48svh rung of cycle-2
+       parked it at 2180, −5.9% short).
    The last matching rung wins; the reading-band geometry is height-
    independent (equal bands ⇒ the card centre meets the band at the
    CAM_BANDS node whatever the row height). */
@@ -5363,7 +5365,7 @@ html[data-theme='dark'] .fo-grain {
 
 @media (max-width: 991px) and (max-height: 500px) {
   .jt-stations {
-    --jt-row-h: 48svh;
+    --jt-row-h: 57svh;
   }
 }
 
@@ -6036,4 +6038,157 @@ html[data-theme='dark'] .fo-grain {
   .st-line { padding-block: var(--sp-0-25); line-height: 1.4; }
   .pm-card { padding: var(--sp-2); }
   .wy-stage { padding: var(--sp-1) var(--sp-2); }
+}
+
+/* ═══ R315 cycle-3 (W4 · c3-W4) — the 844×390 landscape pocket: the ═
+ * hero window-seat + the statement's own top rhythm. KEYED to the
+ * tablet-landscape family ONLY (768–991 wide ∧ ≤500 tall — the
+ * 844×390 target's own tier): the mid-band's landscape rungs
+ * (480–767, the W2 rem-root family) are explicitly OUT — their big
+ * streaming root inflates the rem-based strip anatomy (the CTA/disclosure
+ * paddings) past this pocket's 118px statement-top paper, and the
+ * mid-band composition is W2's slice, not this ticket's. Portrait
+ * heights never match, so the phone/tablet tiers below 991 are untouched.
+ *
+ * THE MEASURED LAW (fresh cycle-2 manifest, both sites): the
+ * reference's hero band at 844×390 is 374px = 100svh − 16 — the same
+ * law as every other ≤991 viewport (828 @390×844, 1009 @768×1024 —
+ * each 100svh − 15…17). But at landscape the WINDOW is the whole
+ * band: header ≈51.6 + the ink window ≈322 — the H1/sub/actions
+ * strip that rides inside the hero at portrait heights CANNOT fit
+ * (its ink alone is ~310px on the 10.12px root) and the reference
+ * reserves NO flow space for it anywhere: the fresh manifest's nine
+ * landscape bands abut exactly (374+579+1465+2317+559+964+1469+595+
+ * 1043 = 9364 = docH — zero slack). The HONESTY note (the cycle-3
+ * ticket's ambiguity): the manifest proves the strip is outside the
+ * band, but not whether the reference paints it as overflow or hides
+ * it — painting ours over the statement would collide with the
+ * statement's own ticker ink 118px into its band (78px top padding
+ * + the ticker's own 40px margin), so per the ticket's tiebreak the
+ * strip re-seats BELOW THE FOLD as a compact hairline
+ * band inside the statement's own top paper: every cell (H1 · lead ·
+ * [LIVE] disclosure · register CTA · discover link) stays rendered
+ * and reachable; nothing is deleted from the DOM.
+ */
+@media (min-width: 768px) and (max-width: 991px) and (max-height: 500px) {
+  /* 1 — the band pins to the reference's own law: 100svh − 16. The
+   * cycle-2 ≤991 floor (100svh − 14) is retired here only; content
+   * (the window) is well under it, so the min never fights the pin. */
+  .fo-hero {
+    position: relative; /* the below-the-fold strip's anchor */
+    min-block-size: calc(100svh - 16px); /* spacing-gate: allow — the measured reference band (374 @844×390), an external constant */
+  }
+
+  /* 2 — the window seats flush under the fixed bar like the
+   * reference's .container: its box = the reference's window band
+   * (.home-hero-img 322.4 @844×390 = 100svh − 16 − 5.1rem), the
+   * 1.2rem padding mirrors the reference's own 1.2rem bg-border
+   * inset. The row pins the stage to the window's content box —
+   * WITHOUT it the svg's aspect-height re-inflates the stage past
+   * the band (the 974px trap, one viewport short) and the artwork
+   * paints over the below-the-fold strip. */
+  .fo-hero-window {
+    align-self: end;
+    block-size: calc(100svh - 16px - 5.1rem);
+    grid-template-rows: minmax(0, 1fr);
+    padding: 1.2rem;
+  }
+
+  /* 3 — the elevation rides its ONE seat (HERO_SEAT) into the window
+   * box, contain-fitted by the .bp-svg's own xMidYMid meet — the same
+   * mechanics as the reference's object-fit:contain img: the window
+   * fills the band, the artwork centres on the paper. The interrupted
+   * WIP draft scaled the art ×1.5929 to fill the frame's height; that
+   * seat is retired — honest geometry: (a) the reference's own
+   * landscape ink (≈958×402 image ink, contain-fitted by height into
+   * the 844×322 window) occupies ≈45%×50% of the band, while the
+   * ×1.5929 seat painted ours at ≈91%×84% — 1.7× the reference's
+   * density, a DIFFERENT verdict, not a match; (b) the fill-height
+   * transform CLIPS the ink at every pocket rung whose stage box is
+   * narrower than the art's own 2.83 aspect (736×414, 667×375,
+   * 568×320 — 15–25% of the trees cut). The HERO_SEAT + meet seat
+   * never clips at any ≤991 rung and lands ours at ≈50%×47% of the
+   * band — the reference's own family, the same seat the portrait
+   * phone/tablet viewports already verified. The pointer-gated
+   * HeroInspect + the ruler graticule are ≥992-only — nothing remaps
+   * through the seat in this pocket. */
+  .fo-hero-window .bp-svg {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  /* 4 — the strip: the compact below-the-fold band (the ticket's
+   * content-preserving tiebreak). Absolute ⇒ it never contributes to
+   * the hero's measured band (374 exact like the reference); it
+   * paints as a hairline-topped two-track row stack in the 118px of
+   * statement-top paper the block below re-seats: row1 the two-line
+   * H1 (the canon split, compact 24px rung) + the discover cell
+   * (the reference's own far-end seat), row2 the lead beside the
+   * disclosure + register pair. The ≤991 base keeps the H1 clamp
+   * for portrait; this pocket re-clamps it to the measured compact
+   * rung (the 2-line canon holds — the br split is untouched). */
+  .fo-hero-strip {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline: 7px;
+    margin-block-start: 0;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-areas:
+      'title disc'
+      'side  side';
+    gap: var(--sp-1) var(--sp-4);
+    align-items: center;
+    min-block-size: 0;
+    padding: var(--sp-1) var(--sp-2-5);
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .fo-hero-title {
+    grid-area: title;
+    /* the measured compact rung: 2 lines at 24px @844 keep the strip
+     * inside its statement-top paper (the 2-line canon holds — the
+     * br split is untouched); the 24px cap holds the same compact
+     * measure across the whole pocket (915×412 measured: strip 111px,
+     * 7px of paper over the ticker hairline) */
+    font-size: clamp(22px, 2.85vw, 24px);
+    line-height: 1.05;
+  }
+
+  .fo-hero-link-cell {
+    grid-area: disc;
+    margin-block-start: 0;
+  }
+
+  .fo-hero-side {
+    grid-area: side;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    align-content: start;
+    gap: var(--sp-4);
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+
+  /* the lead rides the row's measure one rung down (the 13px script
+   * floor) so the full sentence holds TWO lines inside the ~419px
+   * cell without pushing the strip's foot past the statement's
+   * ticker hairline */
+  .fo-hero-lead {
+    font-size: var(--fs-sm);
+  }
+
+  .fo-hero-side-foot {
+    align-items: center;
+  }
+
+  /* 5 — the statement's own top rhythm gives the below-the-fold strip
+   * its paper: the top padding steps to the strip's measured compact
+   * band (111px tall at 844×390) and the bottom padding retires — the
+   * ticker's hairline lands at 78 + 39.7 = 118px into the band, 7px
+   * under the strip's foot (the collision the interrupted WIP draft
+   * left: strip ink to 505 vs ticker at 484); the 57.2rem floor keeps
+   * the band at 579 EXACT — the section's ink simply re-rhythms
+   * inside it (measured last-ink slack 20px, verified below). */
+  .st-section {
+    padding-block: 78px var(--sp-1); /* spacing-gate: allow — the below-the-fold strip's paper (the statement band keeps its 57.2rem floor), an external constant */
+  }
 }
