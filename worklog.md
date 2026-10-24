@@ -151,3 +151,18 @@ Stage Summary:
 - Cycle-2 top ticket CLOSED with a measured law (constant-rem band heights), not per-viewport forks: the tablet/landscape band went from +11–23% to ±1% with most bands pixel-exact; zero regressions at 1440/390/412.
 - Remaining (cycle-3 queue, with numbers): 992–1024 +8.0% (13px Arabic canon floor ledger + wraps), 480–767 mid-band −16.2% @600 (mobile-family rem purification), 360 +5.5%, 1920 −3.2% (footer px caps), landscape hero seat, VLM re-verdict pass on anchored frames.
 - Personal data: no repo URL/owner identity in any UI or doc (grep-verified); PAT used only as an ephemeral git credential helper, never in any file.
+
+---
+Task ID: r315-c3-open
+Agent: foreman (main session)
+Task: Open R315 cycle 3 — the fleet round (owner order: strongest/most comprehensive yet; many agents; every page; finest details; until perfection)
+
+Work Log:
+- Verified remote main == local HEAD 4b218adb via ephemeral credential ls-remote (PAT never in any file; remote not re-added).
+- Personal-data scrub re-verified: no repo URL/owner identity in any UI/doc/evidence; only the documented LICENSE/SECURITY legal instruments + third-party research URLs remain.
+- Fleet round dispatched: 7 agents in worktrees ../r315-w1..w7 (branches r315/w1..w7; node_modules symlinked; deterministic build+preview per worktree on ports 4181–4184/4186/4187):
+  W1 phone ≤479 (360 why +17.7%, 412 statement −7.9%) · W2 mid 480–767 (600 docH −16.2%, rem-law verification 480/540/600/660/720) · W3 desktop ≥992 (1024 slice +8.0%, 1280 footer +12.7%, 1920 uncap) · W4 landscape (hero seat 374, chapters 2317) · W5 landing copy pass · W6 inner pages audit @768/390 light+dark · W7 VLM re-verdict of the 27 stale DIFFERENT pairs.
+- BOARD.md carries the cycle-3 fleet table + merge order.
+
+Stage Summary:
+- Cycle 3 open with a 7-agent parallel fleet on disjoint file domains; foreman will merge W1→W4 (landing.css tier hunks) → W5 → W6 → W7, re-measure ×11, re-run the three judges, hold the PARITY ratchet (>58.5), run the full gates, then push to main.

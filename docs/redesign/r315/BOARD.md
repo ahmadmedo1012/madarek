@@ -69,7 +69,7 @@ platform 55.2 · why 95.2 · usecase 145.2 · cta 58.8 · footer 103.1.
 | **PARITY** | **56.6 → 58.5 (ratchet held)** — vlm 43.5 · pixel 42.9 · coverage 100 (the wiped _local smoke artifact honestly rebuilt) |
 | Gates | eslint 0 · tsc 0 · 2530+1783 green · check:* OK · parity-export 200/200 |
 
-## Cycle 3 queue (worst-first)
+## Cycle 3 queue (worst-first) — EXECUTING as the 7-agent fleet round
 
 1. 992–1024 slice +8.0% (wraps + the canon-floor ledger entry)
 2. 480–767 mid-band −16.2% @600×1024 (mobile-family rem purification + 390/360 re-pins)
@@ -77,3 +77,26 @@ platform 55.2 · why 95.2 · usecase 145.2 · cta 58.8 · footer 103.1.
 4. Landscape hero window-seat + map landscape (chapters −5.9%)
 5. VLM re-verdict pass on anchored frames (27 stale r314 DIFFERENT verdicts predate the re-compositions)
 6. Authed-surface sweep (P3–P8) + dark pair judging @768
+
+## Cycle 3 — the fleet round (OPEN · owner order: strongest/most comprehensive yet)
+
+Remote verified current (`ls-remote` main == 4b218adb, fast-forward push ready);
+personal-data scrub re-verified clean (only the documented LICENSE/SECURITY
+legal-instrument exceptions + third-party research URLs). Fleet = 7 parallel
+agents in worktrees `../r315-w1..w7` (branches r315/w1..w7, node_modules
+symlinked, deterministic build+preview per worktree, disjoint file domains):
+
+| WP | Domain | Ticket (targets = fresh c2 Heron manifest, live) |
+|---|---|---|
+| W1 | phone tier ≤479 | 360 docH +5.5% (why +17.7% → 744) · 412 statement −7.9% (→ 911) · 390 hold ±1% |
+| W2 | mid band 480–767 | 600×1024 docH −16.2% → ±3%; verify the phone-family rem law at 480/540/600/660/720, then pin rem-pure band floors |
+| W3 | desktop ≥992 | 1024 slice +8.0% (statement/problem/why +19–20% canon-floor, platform wraps +28.5%) · 1280 footer +12.7% (→632) · 1920 uncap scaling (intro −10.3% why −8.8% cta −10.1% footer −24.9%) |
+| W4 | landscape 844×390 | hero +11.2% → window-only seat 374 · chapters −5.9% → 2317 · docH ±3% |
+| W5 | landing copy | Arabic copy/terminology fine pass (honest-copy invariant, zero tashkeel on display, term consistency) |
+| W6 | inner pages | 10 public routes deep audit @768×1024+390×844 light+dark (frame grammar, fail-graceful states) + authed-structure ticket list |
+| W7 | VLM judge | re-verdict the 27 stale DIFFERENT masked pairs on fresh cycle-2-close captures (cache-respecting, 429 backoff) |
+
+Merge order: W1→W2→W3→W4 (landing.css tier hunks) → W5 (landing TSX) → W6
+(inner pages) → W7 (evidence). Foreman closes: fresh re-measure ×11 →
+dom-judge → pixel judge → score ratchet (>58.5) → full gates → push to main
+(fast-forward, ephemeral credential helper, remote removed after).
