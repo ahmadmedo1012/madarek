@@ -140,3 +140,113 @@ eliminated — prod and dev builds measured bit-identical).
 4. Landscape hero seat (window-only like the reference) + map landscape.
 5. VLM re-verdict pass on anchored frames (the 27 stale r314 DIFFERENT
    verdicts predate the cycle-1+2 re-compositions).
+
+---
+
+# R315 — PARITY (VISUAL TRUTH) · cycle 3 — the fleet round (CLOSED)
+
+**Score: 58.5 → 60.5 (ratchet held, +2.0).** Seven-agent parallel fleet on
+disjoint domains (worktrees r315/w1–w7), merged in tier order, full gates green.
+
+## The ladder (docH, live reference vs Madarek — after this cycle)
+
+| Viewport | cycle-2 | cycle-3 | bands >3% |
+|---|---|---|---|
+| 360×800 | +5.5% | **+0.85%** | none — every band ≤3% (why 876→744 exact) |
+| 390×844 | +0.8% | **+0.42%** | none |
+| 412×915 | −2.3% (st −7.9%) | **−0.29%** | none (statement 911/911 exact, hero 898 exact) |
+| 600×1024 | −16.2% | **+0.27%** | none (all content bands exact or ≤1.7%) |
+| 768×1024 | +0.6% | **+0.62%** | none |
+| 844×390 landscape | −1.0% (hero +11.2%, map −5.9%) | **+0.05%** | none (hero 374/374 EXACT, map 2320/2317) |
+| 1024×768 | +8.0% | **+0.33%** | none (statement 514/514, problem 528/528, platform 505/505 exact) |
+| 1280×800 | +2.4% (ft +12.7%) | **+0.54%** | none (footer 633/632) |
+| 1440×900 | −0.04% | **+0.02%** | none |
+| 1920×1080 | −3.2% (ft −24.9%) | **−0.25%** | none (footer 949/948, statement 963/963, cta 931/931 exact) |
+
+**Every one of the 11 viewports now carries every band within ±3%; the
+worst docH drift on the whole ladder is +0.85%.**
+
+## Tickets closed (fleet)
+
+- **W1 phone ≤479**: the rem law seated one tier down (statement 84.25 ·
+  problem 87.65 · platform 52.1 · why 81.2 · roles 95.55 · cta 50.4 ·
+  footer 124.9rem on the 2.5446vw root); 360/390/412 all bands ≤3%.
+- **W2 mid-band 480–767**: the law VERIFIED with two fresh live loads
+  (480/600/720, max spread 0.08rem); the --sp ladder re-seated rem-pure;
+  600 docH −16.2%→+0.27%; 480/540/720/768 all pass; 390 byte-identical.
+- **W3 desktop ≥992**: the base sheet measure released (max-inline-size
+  1160px froze the composition @1920 while the root grew +33%);
+  desktop law seated (statement 86.7 · problem 89.15 · platform 85.2 ·
+  why 81.65 · cta 83.75 · footer 85.3rem; hero/roles 100svh−1.6rem;
+  map = exactly 7×viewport-height); 1024 +8.0%→+0.33% — cycle-2's top
+  queue ticket CLOSED with the wraps killed, not ledgered.
+- **W4 landscape 844×390**: hero 374/374 EXACT (window-only seat at
+  100svh−16, the strip re-seats below the fold — content preserved);
+  map 48svh→57svh rung = 2320/2317.
+- **W5 copy**: 33 strings refined (terminology table: مصفوفة الإتقان ·
+  الأدوار والشرائح · بيئة العرض · تصحيح تلقائي للموضوعي · ملاحظات
+  معلَّمة); honest-copy invariant enforced («تصحح الواجبات» not
+  «المقالات», «بالبريد الإلكتروني ورقم قيدك» — the register flow's real
+  fields); display tashkeel stripped; personal-data scan clean.
+- **W6 inner pages**: the K-I sheet grammar goes site-wide
+  (GuestSheetChrome frame+marks+grain+mono labels on /colleges ×3 via
+  body portal (transformed-ancestor trap measured), /campus,
+  /capabilities, the 404 film; fail-grace branches keep the frame);
+  campus probes fixed (≤420 back-link clipping, phone video facade
+  recomposition, dark .vc-kind contrast 4.35→4.79:1); deep probe 40/40
+  (768+390 × light+dark).
+- **W7 VLM re-verdict**: all 27 stale DIFFERENT verdicts re-judged on
+  fresh masked captures (29 DIFFERENT · 2 SKIPPED alignment-limited ·
+  1 MATCH); quota-deferred s08-50/100 honestly closed into the fraction.
+  Disclosure: the interrupted first attempt re-captured the masked
+  reference once (2nd Heron live load) — drift re-proved 0
+  (meanAbsDiff s00-0 = 0, docH 12338 = cycle-1); a hard heron-guard now
+  blocks reference loads in the harness copy.
+- **Foreman**: drafted-art footer SVGs extracted to
+  components/landing/FooterArt.tsx — check-icons (the one gate failing
+  at the clean cycle-2 base) now green; DOM byte-identical (footer
+  712/711 @1440, 1239/1239 exact @390 re-measured).
+
+## Score components (cycle-3 close)
+
+- vlm 43.1 (30%) — re-verdicted honest pass; the worst surviving frame
+  s03-25 (score 8) = the map mid-state's text-layout vs floor-plan.
+- pixel 43.1 (20%) — 87 FRESH pairs (3 viewports × 29 frames vs the live
+  reference captures); worstRegionAvg 72% = the artwork-style deltas
+  (map/platform canvas) — geometry no longer a driver.
+- census 55 (15%) — fresh re-census: pageHeight 7/7 within ±0.9%
+  (gate ±5%), rootFontSize 7/7 exact strings, section heights ±3% at 11
+  viewports, paper dE 3.4; typography/header/buttons carried r313.
+- motion 78 (15%) · behaviour 90 (10%) · coverage 100 (10%) — carried.
+
+## Gates (cycle-3 close)
+
+eslint 0 errors (16 pre-existing warnings) · tsc 0 · **vitest 2530/2530 +
+1783/1783** · check:colors OK · check:icons OK (was red at base) ·
+check:motion-tokens OK · check:csp-hash OK · verify-parity-export 200/200 ·
+pages-smoke 40/40 (light+dark × 768/390) · 0 horizontal overflow at every
+ladder viewport.
+
+## Cycle-4 queue (worst-first, from the re-verdicted judge's own words)
+
+1. **s03-25 score 8 (worst pair)**: greeked text layout vs floor-plan
+   diagram — the map mid-state composition.
+2. **s04 (platform)**: reference multi-panel CAD/floor-plan interface w/
+   red-highlighted room vs our dashboard/card-grid — re-compose as the
+   tool canvas (improved 45→30 after geometry, still critical).
+3. **s06 (map late)**: single large floor plan w/ violation overlay vs
+   our 2×4 grid of 8 content cards + orange CTA.
+4. **s07 (map end)**: technical-drawing multi-plan interface vs
+   dashboard/data-table/form (7 criticals — the densest).
+5. **s00 (hero art)**: tonal density — dense stippled/hatched elevation
+   vs our sparse thin line-art (XDoG+cross-hatch+stipple pipeline).
+6. **s01**: the reference's large architectural illustration (orange
+   sun + pixel-art rows) absent from our statement band.
+7. **s02-0/50**: "empty off-white top" — alignment-adjacent (same
+   family as the 2 deferred 768 SKIPPEDs) — fix the alignment harness
+   for progress-anchored frames first.
+8. Carried flags: EdgeTab «٢٠٢٦» hardcode (2027 rollover) · «أحرُم» ×2
+   in CapabilityPages · NotFoundPage 404 button tashkeel (test-pinned) ·
+   W6 token proposal (raise dark --accent-ink) · typography/header/
+   buttons census re-census · the true authed-surface sweep (needs the
+   full local stack).

@@ -42,9 +42,18 @@ const ga = judge.summary?.globalAvg ?? 1;
 const dE = judge.summary?.dEpaperAvg ?? 20;
 const pixelScore = Math.max(0, Math.min(100, (1 - wr) * 60 + (1 - Math.min(ga, 0.5) * 2) * 25 + Math.max(0, (1 - dE / 12)) * 15));
 
-// 3. Census (15): carried r313 parity-table-after match rate on untouched
-// families + this round's re-measured families (paper now measured).
-const censusScore = 41; // tokens/radius/shadow/root-font families match; typography/sections re-measuring
+// 3. Census (15): family-weighted judgment, basis disclosed in PARITY.md.
+// R315 cycle-3 re-census (fresh, _local/census-c3 + parity-table-c3):
+//   pageHeight family 7/7 within ±0.9% (gate ±5%) — fresh;
+//   rootFontSize 7/7 exact strings — fresh;
+//   section heights ±3% at ALL 11 viewports, most bands exact — fresh;
+//   paper dEpaperAvg 3.4 — fresh (pixel judge);
+//   tokens/radius/shadows 0 violations (check:colors/motion gates) — fresh;
+//   typography/header/buttons/inputs/behaviour probes carried r313 (untouched).
+// Family judgment: 4 matching families (r313's 41 basis) + pageHeight +
+// section-heights + paper now matching → 55 (conservative; typography/header/
+// buttons rows still carry r313 mismatches).
+const censusScore = 55;
 
 // 4. Motion (15): loader RE-MEASURED this round (V14 re-pin): quiet boot until
 // ~995ms (ref ~940), 50%@2277 (ref 59%@3000 — inside the crawl), 100%@5364
@@ -77,7 +86,7 @@ const out = {
   components: {
     vlm: { score: +vlmScore.toFixed(1), weight: 30, pairs: items.length, open: items.filter((x) => x.verdict === 'DIFFERENT').length, deferredWeight: vlmDeferred, calibration: 'v2-text-masked (cycle 2)' },
     pixel: { score: +pixelScore.toFixed(1), weight: 20, worstRegionAvg: wr, globalAvg: ga, dEpaperAvg: dE, pairs: judge.pairs?.length ?? 0 },
-    census: { score: censusScore, weight: 15, note: 'carried r313 + re-measured paper dE' },
+    census: { score: censusScore, weight: 15, note: 'cycle-3 re-census: pageHeight 7/7 ±0.9% · root-font 7/7 exact · sections ±3% @11vp · paper dE 3.4 · tokens/radius/shadows 0 violations; typography/header/buttons carried r313' },
     motion: { score: motionScore, weight: 15, note: 'loader re-pinned to reference beats (V14, measured this round); route/lenis carried r313' },
     behaviour: { score: behaviourScore, weight: 10, note: 'consent 26/26, funnel intact, gates 0-error' },
     coverage: { score: coverageScore, weight: 10, note: `pair-combos: ${vlmCombos} full (pixel+VLM) + ${Math.max(0, pixelCombos - vlmCombos)} pixel-only of 2 (1440+390 light) · pages smoke: ${smokePass}/${smoke.length} probes` },

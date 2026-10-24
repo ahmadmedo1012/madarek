@@ -100,3 +100,29 @@ Merge order: W1→W2→W3→W4 (landing.css tier hunks) → W5 (landing TSX) →
 (inner pages) → W7 (evidence). Foreman closes: fresh re-measure ×11 →
 dom-judge → pixel judge → score ratchet (>58.5) → full gates → push to main
 (fast-forward, ephemeral credential helper, remote removed after).
+
+## Cycle 3 — CLOSED (the fleet round)
+
+**PARITY 58.5 → 60.5 (ratchet held).** All 7 fleet tickets landed + foreman
+close: the FULL 11-viewport ladder now carries every band within ±3% and
+every docH within ±0.85% (was: +8.0% @1024 · −16.2% @600 · +5.5% @360 ·
+landscape hero +11.2%). Full evidence in audits/evidence/r315/PARITY.md
+(cycle-3 section). check-icons — the one gate red at the cycle-2 base —
+is green (footer drafted-art extracted to components/landing/FooterArt.tsx,
+DOM byte-identical).
+
+| Ticket | Result |
+|---|---|
+| W1 phone ≤479 | 360 +0.85% · 390 +0.42% · 412 −0.29% — all bands ≤3% (the rem law seated; why 876→744 exact) |
+| W2 mid 480–767 | law verified @480/600/720 (spread 0.08rem) · 600 −16.2%→+0.27% · 390 byte-identical |
+| W3 desktop ≥992 | 1024 +8.0%→+0.33% (sheet measure released; wraps killed) · 1280 +0.54% · 1920 −3.2%→−0.25% · 1440 +0.02% |
+| W4 landscape | hero 374/374 EXACT (window-only seat; strip below the fold, content preserved) · map 2320/2317 |
+| W5 copy | 33 strings (term table + honest-copy + tashkeel + personal-data clean) |
+| W6 inner pages | sheet grammar site-wide (portal lesson measured) · 40/40 deep probe · campus clip/contrast fixes |
+| W7 VLM | 27 stale verdicts re-judged fresh · quota-deferred closed · verbatim cycle-4 tickets |
+| Foreman | FooterArt extraction (icons gate green) · census re-measured (pageHeight 7/7 ±0.9%) |
+
+Cycle-4 queue: the re-verdicted judge's own words (PARITY.md cycle-4 section)
+— map/platform artwork re-composition (s03-25 score 8, s04 tool-canvas,
+s06/s07 floor-plan interfaces), hero tonal density, the alignment-harness
+family, carried flags (EdgeTab year, أحرُم, accent-ink token, authed sweep).

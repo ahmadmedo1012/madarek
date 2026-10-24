@@ -166,3 +166,20 @@ Work Log:
 
 Stage Summary:
 - Cycle 3 open with a 7-agent parallel fleet on disjoint file domains; foreman will merge W1→W4 (landing.css tier hunks) → W5 → W6 → W7, re-measure ×11, re-run the three judges, hold the PARITY ratchet (>58.5), run the full gates, then push to main.
+
+---
+Task ID: r315-c3-close
+Agent: foreman (main session)
+Task: Close R315 cycle 3 — the fleet round: merge all 7 tickets, re-measure the ladder, re-run the judges, hold the PARITY ratchet, full gates, push to main
+
+Work Log:
+- Fleet closed: W1 (5a338771) · W2 (83e97543) · W3 (102e0b1e) · W4 (a63a9839 — foreman-completed after the agent's context death: diff reviewed, rebuilt, measured 844×390 all bands ≤0.13% + 768 portrait unregressed, gated) · W5 (7ce9388c) · W6 (e133b94b — foreman-completed likewise: 40/40 deep probe re-run on the fresh build) · W7 (0f511804).
+- Merge surgery: the three geometry branches all append at landing.css EOF (W1 +315 / W2 +194 / W3 +235−25) — resolved by reconstruction (each branch's own balanced file + the siblings' self-contained tier blocks appended; brace balance verified 0 each step), NOT by marker-splicing (git's diff aligned the blocks' shared comment scaffolding and marker-splicing interleaved them — lesson recorded).
+- Post-merge ladder (fresh, deterministic preview): 11/11 viewports every band ≤3%, docH drifts +0.02%…+0.85% worst. The cycle-2 queue's four geometry tickets all closed.
+- Foreman ticket: the drafted-art footer SVGs extracted to components/landing/FooterArt.tsx — check-icons (the one gate red at the clean cycle-2 base) now green; DOM byte-identical (footer 712/711 @1440 · 1239/1239 exact @390 re-measured).
+- Judges: 87 fresh pixel pairs re-captured (3 viewports × 29 frames) — worstRegionAvg 0.72 (geometry no longer a driver; the worst regions = artwork style); VLM re-verdicts (W7) consumed; score recompute: vlm 43.1 · pixel 43.1 · census re-measured 55 (fresh parity-table: pageHeight family 7/7 within ±0.9% of the live reference, root-font 7/7 exact) · motion 78 · behaviour 90 · coverage 100 → **PARITY 58.5 → 60.5, ratchet held**.
+- Gates on the final tree: eslint 0 · tsc 0 · vitest 2530/2530 + 1783/1783 · check:colors/icons/motion-tokens/csp-hash OK · verify-parity-export 200/200 · pages-smoke 40/40.
+- Docs: PARITY.md cycle-3 section + cycle-4 queue (the judge's verbatim worst-first list) · BOARD.md cycle-3 close table · CHANGELOG entry · this worklog.
+
+Stage Summary:
+- The fleet round closed the ENTIRE remaining geometry ladder: every band at every one of the 11 viewports is now within ±3% (most exact), worst docH drift +0.85%. Cycle-4's queue is artwork/composition (the map/platform canvases + hero tonal density), the alignment-harness family, and the carried flags — no geometry tickets remain.

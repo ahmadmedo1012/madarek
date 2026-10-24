@@ -1,26 +1,26 @@
 {
- "generatedAt": "2026-10-24T18:02:38.624Z",
+ "generatedAt": "2026-10-24T21:19:17.995Z",
  "components": {
   "vlm": {
-   "score": 43.5,
+   "score": 43.1,
    "weight": 30,
    "pairs": 32,
-   "open": 27,
-   "deferredWeight": 4,
+   "open": 29,
+   "deferredWeight": 2,
    "calibration": "v2-text-masked (cycle 2)"
   },
   "pixel": {
-   "score": 42.9,
+   "score": 43.1,
    "weight": 20,
-   "worstRegionAvg": 0.725,
-   "globalAvg": 0.1877,
+   "worstRegionAvg": 0.7209,
+   "globalAvg": 0.1885,
    "dEpaperAvg": 3.4,
    "pairs": 87
   },
   "census": {
-   "score": 41,
+   "score": 55,
    "weight": 15,
-   "note": "carried r313 + re-measured paper dE"
+   "note": "cycle-3 re-census: pageHeight 7/7 ±0.9% · root-font 7/7 exact · sections ±3% @11vp · paper dE 3.4 · tokens/radius/shadows 0 violations; typography/header/buttons carried r313"
   },
   "motion": {
    "score": 78,
@@ -38,5 +38,5 @@
    "note": "pair-combos: 1 full (pixel+VLM) + 2 pixel-only of 2 (1440+390 light) · pages smoke: 40/40 probes"
   }
  },
- "total": 58.5
+ "total": 60.5
 }
