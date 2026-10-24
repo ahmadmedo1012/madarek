@@ -6037,3 +6037,318 @@ html[data-theme='dark'] .fo-grain {
   .pm-card { padding: var(--sp-2); }
   .wy-stage { padding: var(--sp-1) var(--sp-2); }
 }
+
+/* ═══ R315 cycle-3 (W1) — the ≤479 phone tier rides the measured REM LAW
+ * ══════════════════════════════════════════════════════════════════════
+ * Fresh cycle-2 manifest (360/390/412): every reference content band is a
+ * CONSTANT-rem height on the 2.5446vw phone root (9.160px @360 · 9.924 @390
+ * · 10.484 @412) — statement 84.25rem · problem 87.65 · platform 52.1 ·
+ * why 81.2 · roles 95.55 · cta 50.4 · footer 124.9 (px tables: 360
+ * 772/803/477/744/875/462/1144 · 390 837/869/517/806/948/500/1239 · 412
+ * 911/919/546/851/1001/528/1309). The one exception: the reference's own
+ * statement steps to ≈86.9rem at 412 (measured 911 — a content step inside
+ * the 391–412 slice; seated below at 400px, the slice's midpoint).
+ *
+ * OUR failure mode (the before manifest): every mobile rung under 480 is
+ * PX-SEATED (the sp-* ladder is a fixed 4px scale, the Arabic 13px floors
+ * and the 119px/45.6px/96px constants don't move), so bands held their
+ * 390-tuned height at 360 (why +17.7% · roles +9.8% · cta +14.1%) and
+ * refused to grow at 412 (statement −7.9% · problem −5.2% · footer −5.6%).
+ *
+ * THE FIX = the cycle-2 tablet method, verbatim, one tier down:
+ *   1. rem-pure spacing — every px rung that governs a band's block
+ *      height is re-declared in rem ON THE STREAMING ROOT, calibrated at
+ *      the 390 root (9.924px) so 390 keeps its measured seat while the
+ *      bands shrink −7.7% @360 and grow +5.6% @412 exactly like the
+ *      reference (2px→0.2rem · 4→0.4 · 8→0.81 · 10→1.01 · 12→1.21 ·
+ *      16→1.61 · 20→2.02 · 24→2.42 · 40→4.03 · 119→12 · 45.6→4.59).
+ *   2. THE LAW floors — min-block-size pins each band to the constant
+ *      rem height; the compacted content rides under the floor and the
+ *      reference's own air fills the rest (no per-viewport forks).
+ *   3. content compaction where the 390-tuned content still sat over its
+ *      floor at 360 — the reference's own phone grammar seats each fold:
+ *      no platform note row, no CTA meta rows 3–6, no in-grid ink strip
+ *      cell (the wordmark strip below carries the band's ink role; the
+ *      ≤640 strip rule itself documents «the reference has no
+ *      strip-image cell @390»), mono numeral rows at the mono ladder's
+ *      own rem rung (Latin-only, no Arabic floor — tokens.css canon).
+ *
+ * SEAT: file END (the cycle-2 cascade lesson — same-specificity rules
+ * resolve by document order; every base family and every earlier mobile
+ * block sits above). 480–767 keeps its current sheet (W2's tier);
+ * ≥480 nothing here applies. The 13px Arabic legibility floor (fs-sm/xs/
+ * xxs) and the 44px touch targets are CANON and stay px — the reference
+ * runs its English labels below them; ours cannot (documented
+ * deviation, the r197 ledger entry).
+ * ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 479px) {
+  /* ── THE LAW — every band pins the reference's constant-rem height ── */
+  .st-section { min-block-size: 84.25rem; }
+  .pm-section { min-block-size: 87.65rem; }
+  .pr-section { min-block-size: 52.1rem; }
+  .wy-section { min-block-size: 81.2rem; }
+  .rl-section { min-block-size: 95.55rem; }
+  .fo-cta { min-block-size: 50.4rem; }
+  .fo-footer { min-block-size: 124.9rem; }
+
+  /* ── hero — the reference's phone band is 100svh − 1.62rem (measured
+   * 785 = 800−15 @360 · 828 = 844−16 @390 · 898 = 915−17 @412 — the
+   * subtrahend is the constant 1.62rem on the streaming root), not the
+   * ≤640 px pin. The window + strip paddings ride rem with it. ── */
+  .fo-hero {
+    min-block-size: calc(100svh - 1.62rem);
+    padding-block: 2.02rem 2.42rem;
+  }
+
+  .fo-hero-window {
+    padding-block-start: 6.35rem; /* the 63px header+frame seat, rem-pure */
+  }
+
+  .fo-hero-window .bp-stage {
+    padding: 1.21rem; /* the 12px drafting inset, rem-pure */
+  }
+
+  .fo-hero-strip {
+    padding-block-end: 1.21rem;
+  }
+
+  /* ── statement — rem-pure rhythm under the 84.25rem floor. The band's
+   * content (two tickers + the three-line spread) rides well under the
+   * floor; the leftover air distributes BETWEEN the rows (the reference's
+   * own intro carries its art beside/under the statement — a bottom-dump
+   * would read as a dead seam before the problem band's top rule). ── */
+  .st-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-block: 4.03rem 3.22rem;
+  }
+
+  .fo-ticker {
+    margin-block-start: 4.03rem;
+  }
+
+  /* the statement band's own tickers drop their crawl margin — the flex
+   * distribution owns the gaps (the hero's boot ticker keeps its seat) */
+  .st-section > .fo-ticker {
+    margin-block-start: 0;
+  }
+
+  .fo-ticker-track {
+    padding-block: 1.01rem;
+  }
+
+  .st-spread {
+    padding-block-start: 2.42rem;
+    row-gap: 2.42rem;
+  }
+
+  .st-copy { gap: 1.21rem; }
+  .st-lines { gap: 1.61rem; }
+  .st-line { padding-block: 0.81rem; }
+
+  /* ── problem — the cards ride the rem rhythm; the numeral row joins
+   * the mono rem ladder (Latin-only) at the reference's row height ── */
+  .pm-section { padding-block: 4.03rem 3.22rem; }
+
+  .pm-head {
+    gap: 1.21rem;
+    margin-block-end: 3.22rem;
+  }
+
+  .pm-lede { line-height: 1.5; }
+
+  .pm-cards { gap: 1.61rem; }
+
+  .pm-card {
+    padding: 1.01rem;
+    row-gap: 1.21rem;
+  }
+
+  .pm-card-num {
+    font-size: 1.31rem; /* mono numeral — the Latin ladder, no Arabic floor */
+    line-height: 1.2;
+  }
+
+  .pm-card-text { line-height: 1.4; }
+
+  /* ── platform — the reference's phone cell is the head + the one
+   * composition (517 @390); the note link row folds here like the
+   * tablet band's own fold ── */
+  .pr-section { padding-block: 2.02rem 1.61rem; }
+
+  .pr-head {
+    gap: 0.81rem;
+    margin-block-end: 1.21rem;
+  }
+
+  .pr-lede { line-height: 1.5; }
+
+  .pr-note { display: none; }
+
+  .pr-section .prf { gap: 0.4rem; }
+  .pr-section .prf-caption { padding-block: 0.4rem; }
+
+  /* ── why — the stage rows ride the reference's compact phone rhythm;
+   * the verb drops its 28px px cap for the root (2.82rem = 28 @390,
+   * 25.8 @360, 29.6 @412) ── */
+  .wy-section { padding-block: 2.42rem 2.02rem; }
+
+  .wy-head {
+    gap: 0.81rem;
+    margin-block-end: 1.61rem;
+  }
+
+  .wy-lede { line-height: 1.5; }
+
+  .wy-stage {
+    padding-block: 0.4rem;
+    row-gap: 0.2rem;
+  }
+
+  .wy-stage-verb {
+    font-size: 2.82rem;
+    line-height: 1.2;
+  }
+
+  .wy-stage-num,
+  .wy-stage-meta {
+    font-size: 1.31rem; /* mono rows — the Latin ladder */
+    line-height: 1.2;
+  }
+
+  .wy-stage-title { line-height: 1.2; }
+  .wy-stage-text { line-height: 1.35; }
+
+  .wy-rail { gap: 0.4rem; }
+  .wy-note { margin-block-start: 1.21rem; }
+
+  /* ── roles — the ledger rows tighten to the reference's tile rhythm;
+   * the numeral row joins the mono rem ladder ── */
+  .rl-section { padding-block: 1.61rem; }
+
+  .rl-head {
+    gap: 0.81rem;
+    margin-block-end: 1.21rem;
+  }
+
+  .rl-lede { line-height: 1.5; }
+
+  .rl-cards { gap: 0.6rem; }
+
+  .rl-card {
+    padding: 1.01rem 1.21rem;
+    gap: 0.4rem;
+  }
+
+  .rl-card-num {
+    font-size: 1.31rem; /* mono numeral — the Latin ladder */
+    line-height: 1.2;
+  }
+
+  .rl-more { margin-block-start: 0.81rem; }
+
+  /* ── cta — the reference's phone band is coords + title + line +
+   * button (500 @390): the meta readout keeps its first two honest
+   * rows, rows 3–6 fold (the tablet band folds 5–6) ── */
+  .fo-cta { padding-block: 2.02rem 1.61rem; }
+
+  .fo-cta-coords {
+    font-size: 1.31rem; /* mono coords — the Latin ladder */
+    line-height: 1.2;
+    padding-block-end: 0.81rem;
+    margin-block-end: 1.21rem;
+  }
+
+  .fo-cta-corners {
+    font-size: 1.31rem; /* mono corners — the Latin ladder */
+    line-height: 1.2;
+  }
+
+  .fo-cta-inner { gap: 1.21rem; }
+  .fo-cta-lede { line-height: 1.5; }
+  .fo-cta-actions { gap: 0.81rem; }
+
+  .fo-cta .fo-hero-meta {
+    margin-block-start: 1.21rem;
+    gap: 0.81rem;
+  }
+  .fo-cta .fo-meta-row { padding-block: 0.4rem; }
+  .fo-cta .fo-meta-row:nth-last-child(-n + 4) { display: none; }
+
+  /* ── footer — the in-grid ink strip cell folds (the wordmark strip
+   * below carries the band's ink role; the reference has no strip cell
+   * on the phone grid — its 136.94 band IS the strip below); every
+   * fixed px seat rides rem: the 119px line-logo (12rem), the 45.6px
+   * subscribe pair (4.59rem), the 26px link rows, the 15px legal rows ── */
+  .fo-fcell-strip { display: none; }
+
+  .fo-fcell {
+    padding: 0.81rem 1.21rem;
+  }
+
+  .fo-fcell-addr {
+    padding-block: 0.81rem;
+  }
+
+  .fo-fcell-mark {
+    padding-block: 1.21rem;
+  }
+
+  .fo-footer-mark-svg {
+    inline-size: 12rem; /* the 119.08px phone line-logo @390, rem-pure */
+    block-size: 12rem;
+  }
+
+  .fo-footer-heading {
+    padding-block-end: 0.6rem;
+    margin-block-end: 0.4rem;
+  }
+
+  .fo-footer-link {
+    min-block-size: 2.62rem; /* the 26px phone link row @390, rem-pure */
+  }
+
+  .fo-subscribe {
+    gap: 0.81rem;
+    margin-block-start: 0.81rem;
+  }
+
+  .fo-subscribe-row {
+    margin-inline: calc(-1 * 1.21rem); /* rides the cell's rem inset — never outbleeds it */
+  }
+
+  .fo-subscribe-input {
+    block-size: 4.59rem; /* the 47.63px phone row − the border pair, rem-pure */
+  }
+
+  .fo-subscribe-btn {
+    inline-size: 4.59rem; /* the 47.63px phone arrow − the border pair */
+  }
+
+  .fo-wordmark {
+    padding-block: 0.81rem 0.6rem;
+    margin-block-start: 0.81rem;
+  }
+
+  .fo-footer-bottom {
+    padding-inline: 1.21rem;
+  }
+
+  .fo-footer-bottom > * {
+    padding-block: 1.51rem; /* the 15px legal rows @390, rem-pure */
+  }
+
+  /* ── the shared label row rides the mono rhythm at the phone root ── */
+  .fo-label {
+    line-height: 1.2;
+  }
+}
+
+/* the reference's own statement step inside the 391–412 slice: 84.25rem
+ * at 360/390, ≈86.9rem at 412 (911 measured). The step's exact seat is
+ * unmeasured (no manifest row between 390 and 412); 400px is the slice's
+ * midpoint — never a fork below 400, exact at the three canonical rows. */
+@media (min-width: 400px) and (max-width: 479px) {
+  .st-section { min-block-size: 86.9rem; }
+}
