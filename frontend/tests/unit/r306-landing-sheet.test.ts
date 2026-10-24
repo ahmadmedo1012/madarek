@@ -177,12 +177,15 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     }
   });
 
-  it('R314 override — the mobile hero flow: 44vh ink window + stacked strip cells', () => {
+  it('R314 override — the mobile hero flow: 38vh ink window + stacked strip cells', () => {
     const mq = live.match(/@media \(max-width: 760px\)\s*\{([\s\S]*?)\n\}\s*\n@media/)?.[1] ?? '';
     // the window keeps a defined mass on small screens; the strip
     // cells stack under it (the 390 reference tiles); the annotation
-    // cards flow under the drawing per HeroInspect's own ≤760 contract
-    expect(mq).toMatch(/\.fo-hero-window \.bp-stage\s*\{[\s\S]*?min-block-size:\s*44vh/s);
+    // cards flow under the drawing per HeroInspect's own ≤760 contract.
+    // R314 cycle 2 (3-e) override: 44vh → 38vh — the fresh Heron mobile
+    // capture puts the hero image mass at ~287–320px @390×844; 38vh
+    // (321px) returns .fo-hero to the reference's 828px band.
+    expect(mq).toMatch(/\.fo-hero-window \.bp-stage\s*\{[\s\S]*?min-block-size:\s*38vh/s);
     expect(mq).toMatch(/\.fo-hero-title\s*\{[\s\S]*?font-size:\s*clamp\(30px/s);
   });
 

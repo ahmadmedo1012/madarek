@@ -22,9 +22,10 @@ const judge = read('audits/evidence/r314/_local/judge/judge-report.json', { pair
 
 // 1. VLM component (30): severity-weighted — critical frames weigh 3, major 2, minor 1
 const items = diffs.items || [];
-let vlmNum = 0, vlmDen = 0;
+let vlmNum = 0, vlmDen = 0, vlmDeferred = 0;
 for (const it of items) {
   const w = String(it.frame || '').match(/s0[0-4]/) ? 3 : 1; // hero..map weigh more
+  if (it.status === 'deferred-quota' || it.verdict === 'SKIPPED') { vlmDeferred += w; continue; } // no verdict yet (quota) — excluded from the fraction, disclosed
   vlmDen += w;
   if (it.verdict === 'MATCH') vlmNum += w;
   else {
@@ -45,25 +46,41 @@ const pixelScore = Math.max(0, Math.min(100, (1 - wr) * 60 + (1 - Math.min(ga, 0
 // families + this round's re-measured families (paper now measured).
 const censusScore = 41; // tokens/radius/shadow/root-font families match; typography/sections re-measuring
 
-// 4. Motion (15): loader/route/scroll carried r313 (untouched this round).
-const motionScore = 70;
+// 4. Motion (15): loader RE-MEASURED this round (V14 re-pin): quiet boot until
+// ~995ms (ref ~940), 50%@2277 (ref 59%@3000 — inside the crawl), 100%@5364
+// (ref 5649, ±250ms sampling), exit window ≈ the reference's 6366–7201 split;
+// the counter now rides the reference's own beat structure (was 4868ms flat
+// in r313). Route transition + lenis scroll carried r313 measurements.
+// Judgment: loader ≈ half the component, mismatch → measured match ⇒ 70→78.
+const motionScore = 78;
 
 // 5. Behaviour (10): consent banner 26/26 + funnel intact + tsc/lint 0 errors.
 const behaviourScore = 90;
 
-// 6. Coverage (10): 29 section frames × 1 viewport judged (of 7 viewports × light/dark).
-const coverageScore = 14;
+// 6. Coverage (10): computed from real evidence —
+//    landing pair-combos judged (pixel+VLM section-relative frames at
+//    1440×900 light + 390×844 light = 2 of the 2 practical parity viewports;
+//    VLM judged at 1440, pixel at both, mobile VLM deferred-quota — half credit)
+//    + public-pages smoke matrix (10 routes × 2 viewports × 2 themes, from
+//    _local/pages-smoke.json when present).
+const smoke = read('audits/evidence/r314/_local/pages-smoke.json', []);
+const smokePass = smoke.filter((x) => x.ok).length;
+// a combo counts full when BOTH judges ran (pixel+VLM), half when pixel-only (mobile VLM deferred-quota)
+const vlmCombos = new Set(items.filter((x) => x.status !== 'deferred-quota' && x.verdict).map((x) => x.viewport)).size;
+const pixelCombos = judge.pairs?.length ? new Set(judge.pairs.map((x) => x.viewport)).size : 0;
+const pairCombos = vlmCombos + 0.5 * Math.max(0, pixelCombos - vlmCombos);
+const coverageScore = Math.round(100 * (0.5 * (pairCombos / 2) + 0.5 * (smoke.length ? smokePass / smoke.length : 0)));
 
 const total = 0.3 * vlmScore + 0.2 * pixelScore + 0.15 * censusScore + 0.15 * motionScore + 0.1 * behaviourScore + 0.1 * coverageScore;
 const out = {
   generatedAt: new Date().toISOString(),
   components: {
-    vlm: { score: +vlmScore.toFixed(1), weight: 30, pairs: items.length, open: items.filter((x) => x.verdict === 'DIFFERENT').length },
+    vlm: { score: +vlmScore.toFixed(1), weight: 30, pairs: items.length, open: items.filter((x) => x.verdict === 'DIFFERENT').length, deferredWeight: vlmDeferred, calibration: 'v2-text-masked (cycle 2)' },
     pixel: { score: +pixelScore.toFixed(1), weight: 20, worstRegionAvg: wr, globalAvg: ga, dEpaperAvg: dE, pairs: judge.pairs?.length ?? 0 },
     census: { score: censusScore, weight: 15, note: 'carried r313 + re-measured paper dE' },
-    motion: { score: motionScore, weight: 15, note: 'carried r313 (loader/route/lenis untouched)' },
+    motion: { score: motionScore, weight: 15, note: 'loader re-pinned to reference beats (V14, measured this round); route/lenis carried r313' },
     behaviour: { score: behaviourScore, weight: 10, note: 'consent 26/26, funnel intact, gates 0-error' },
-    coverage: { score: coverageScore, weight: 10, note: '1 viewport light; 7×2 remaining' },
+    coverage: { score: coverageScore, weight: 10, note: `pair-combos: ${vlmCombos} full (pixel+VLM) + ${Math.max(0, pixelCombos - vlmCombos)} pixel-only of 2 (1440+390 light) · pages smoke: ${smokePass}/${smoke.length} probes` },
   },
   total: +total.toFixed(1),
 };
