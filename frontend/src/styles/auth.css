@@ -429,11 +429,16 @@
      class; the cell owns the rhythm (no margin of its own). */
   .auth-cell .form-label {
     margin-block-end: 0;
-    font-size: var(--fs-sm);
+    font-size: 1.66rem;             /* ≈20px @1200-capped sheet — the
+                                       reference's in-row 20px/700 label */
     font-weight: var(--fw-semibold);
     line-height: var(--lh-snug);
     letter-spacing: 0;
-    color: var(--text);
+    /* R315 (dom-judge auth-label-1): the reference's in-row form label
+       is the MUTED seat — rgb(180,180,176) #B4B4B0 (the digest's
+       disabled-gray rung), never full ink; --text-faint is the token
+       twin in both themes. */
+    color: var(--text-faint);
   }
 
   /* the control column: the input fills the row; errors/forgot stack

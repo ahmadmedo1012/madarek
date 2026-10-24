@@ -40,6 +40,9 @@ r314 harness.
 
 ## Cycle log
 
+- **cycle-1 CLOSED (3 pushes: 73dd2382 · 03a5ebbf · final)**: K-A1..A5, K-B, K-C, K-D,
+  K-E, K-F, K-H, K-I all closed with measured evidence (PARITY.md); DOM judge built+run
+  (729 mismatches ranked, tablet band = top root cause); gates 2530/2530 green.
 - **cycle-1 push 1 (landed)**: K-A4/A5/C/B + hero A1/A2/A3/H (B1 + foreman) + auth K-I (P1).
   Gates: eslint 0 errors · tsc 0 · **vitest 2531/2531** · check:colors/icons/motion-tokens/raw-css OK.
   Measured @1440×900: hero 887/887 ✓ · docH 12470 vs 12338 (+1.1%) · consent 601×38 mirrored ✓ ·

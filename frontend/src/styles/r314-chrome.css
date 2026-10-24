@@ -162,6 +162,9 @@
    measured 28px buttons ride a pointer context (the ≤479 block below
    lifts every action to 44px). */
 .cb-accept {
+  position: relative;
+  z-index: 0;
+  overflow: hidden;                /* the fill wipe stays inside the seat */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -173,27 +176,48 @@
   font-family: var(--font-mono);
   font-size: var(--fs-mono-md);   /* the reference's cookie-Accept rung */
   font-weight: var(--fw-medium);
-  color: var(--text);
+  color: var(--accent-fg);        /* the measured WHITE ghost label */
   cursor: pointer;
-  transition: background var(--t-fast) var(--ease);
+  transition: color var(--t-fast) var(--ease);
 }
 
-/* the measured pale ground — #EFEFEF on the reference's cool paper;
-   our warm-paper token sits a step off, so the light theme pins the
-   measured value (the dark twin keeps the token — the reference has
-   no dark mode). */
+/* the measured ghost — #EFEFEF ground + WHITE label (r313 digest
+   cookie-accept: color #FFFFFF on bg #EFEFEF, the reference's quiet
+   primary); the light theme pins both measured values (the dark twin
+   keeps the token pair — the reference has no dark mode). */
 html[data-theme='light'] .cb-accept {
   background: #EFEFEF;  /* measured — color-gate: allow */
+  color: #FFFFFF;       /* measured — color-gate: allow */
 }
 
-.cb-accept:hover,
-.cb-accept:focus-visible {
-  background: var(--surface-3);
+/* the btn-fill slide (the reference's cookie-accept hover): the accent
+   slab rises from the block-start edge; the label stays white. */
+.cb-accept::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: var(--accent);
+  transform: translateY(-101%);
+  transition: transform var(--t-base) var(--ease);
+}
+
+.cb-accept:hover {
+  color: var(--accent-fg);
+}
+
+.cb-accept:hover::before {
+  transform: translateY(0);
 }
 
 /* «أرفض» — R315 (K-C): the measured Reject seat — 80.63×28.33,
    transparent ground, 1px ink outline (var(--text) = #282828 light /
    #F6F8FA dark), label in the same ink. Radius 0. */
+/* «أرفض» — the measured Reject seat: 80.63×28.33, TRANSPARENT ground,
+   NO border (r313 digest cookie-reject: border 0 none), INK label in
+   the BODY family at the 13.33px rung (the reference's reject is BT
+   Grotesk txt-16, not mono), label-roll-only hover (no fill, no
+   ground change — the reference's quiet secondary). */
 .cb-reject {
   display: inline-flex;
   align-items: center;
@@ -202,20 +226,17 @@ html[data-theme='light'] .cb-accept {
   min-block-size: 3.4rem;          /* 28.33px @1440 — measured */
   padding-inline: var(--sp-2);
   background: transparent;
-  border: 1px solid var(--text);
-  font-family: var(--font-mono);
-  font-size: var(--fs-mono-md);
+  border: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
   font-weight: var(--fw-medium);
   color: var(--text);
   cursor: pointer;
-  transition:
-    background var(--t-fast) var(--ease),
-    color var(--t-fast) var(--ease);
+  transition: color var(--t-fast) var(--ease);
 }
 
-.cb-reject:hover,
-.cb-reject:focus-visible {
-  background: var(--surface-2);
+.cb-reject:hover {
+  color: var(--text-strong, var(--text));
 }
 
 /* ── Mobile ≤479px — the reference's own collapse: the full-width
@@ -264,6 +285,7 @@ html[data-theme='light'] .cb-accept {
     transform: none;
   }
   .cb-accept,
+  .cb-accept::before,
   .cb-reject,
   .cb-more {
     transition: none;

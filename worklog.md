@@ -111,3 +111,19 @@ Work Log:
 
 Stage Summary:
 - Push 1 of cycle 1 ready: chrome + hero + auth + capture/grammar instruments (J1/E-crawl scripts + docs/research/pages/*) + BOARD/worklog. Score recompute (PARITY ratchet ≥56.6) lands at cycle close after J2/J3 judges + B4/B9.
+
+---
+Task ID: 1-d
+Agent: foreman (main session)
+Task: Cycle-1 close — B4/B9 completion, judge-driven fixes, PARITY, push 2+3
+
+Work Log:
+- Finished the partial runs the dead agents left: B4 map (6 states verified, band 6301/6300 @1440, 5383/5376 @1024), B9 footer (wordmark full-width 1398px, 0 overlaps), J2 DOM judge (already run: 6 viewports, 729 mismatches ranked in _local/dom-judge/report.json).
+- Re-pinned r306 to the K-E retirement (3 pins) — suite 2530/2530 green.
+- Judge-driven fixes: consent Accept = the measured GHOST (#EFEFEF ground + WHITE label + btn-fill slide hover, r313 digest cookie-accept), Reject = borderless ink body-font quiet seat; auth in-row labels muted to the #B4B4B0-family token (--text-faint).
+- Wrote audits/evidence/r315/PARITY.md (cycle-1 evidence table + geometry + gates + cycle-2 queue); BOARD + worklog updated.
+- Pushes: 73dd2382 (chrome+hero+auth+instruments), 03a5ebbf (map+footer+K-E), final consent/label judge fixes.
+
+Stage Summary:
+- Cycle 1 closed with 10 of the owner's §0 tickets measured-closed; docH @1440 −0.04% vs the live reference.
+- Cycle-2 top ticket (exact numbers in the manifest): the ≤1024 tablet band re-composition (Heron keeps the desktop composition on the 5.93px root; ours restacks → +22.7% @1024).
