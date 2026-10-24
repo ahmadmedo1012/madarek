@@ -5,7 +5,7 @@
  * A flat hairline frame around an authentic capture of the running
  * application (seeded demo environment — fully synthetic «جامعة مدارك
  * التجريبية» data). Every frame carries:
- *   · the mono type tag «لقطة حقيقية» + the demo-data disclosure —
+ *   · the mono «real-ui» tag + the demo-data disclosure —
  *     a real interface, honestly labelled, never a fabricated mockup;
  *   · explicit intrinsic dimensions (CLS-safe by construction);
  *   · lazy loading (the landing never ships these bytes eagerly).

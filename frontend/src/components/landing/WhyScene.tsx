@@ -63,7 +63,7 @@ export const WHY_STAGES: WhyStage[] = [
     num: '03',
     verbAr: 'اختبر',
     titleAr: 'الاختبارات والبحوث',
-    textAr: 'اختبارات بأربعة أنواع تُصحَّح تلقائيًا، وبحوث تُرفع وتُفهرَس في مكتبة تُبحث بالعربية.',
+    textAr: 'اختبارات بأربعة أنواع، وتصحيح تلقائي للموضوعي، وبحوث تُفهرَس في مكتبة تُبحث بالعربية.',
     meta: 'live · exams + research',
     captureId: 'student-library',
   },

@@ -99,7 +99,7 @@ function SlDraw() {
  * each a thing the page is actually doing while the loader runs;
  * `at` is the counter checkpoint that reveals the line. */
 const LOG_LINES: Array<{ at: number; code: string; text: string }> = [
-  { at: 0, code: '001', text: 'تهيئة لوحة البدء' },
+  { at: 0, code: '001', text: 'تهيئة لوحة مدارك' },
   { at: 7, code: '002', text: 'تحميل عائلات الخطوط' },
   { at: 20, code: '003', text: 'تجهيز المخطط المرسوم' },
   { at: 33, code: '004', text: 'بناء شبكة الإطار والمسطرة' },

@@ -115,25 +115,25 @@ const PAINS = [
     num: '01',
     title: 'محاضرة بلا أثر مقيس',
     text: 'تُلقى المحاضرة ثم ينتهي أثرها: لا نقطة فحص تُثبِّت الفهم، ولا حضور يُحتسب تلقائيًا.',
-    answer: 'تُجيبها: المحاضرات التفاعلية بنقاط الفحص',
+    answer: 'الجواب: المحاضرات التفاعلية بنقاط الفحص',
   },
   {
     num: '02',
     title: 'تصحيح يأتي متأخرًا',
     text: 'تمرّ أسابيع قبل أن يعرف الطالب خطأه — وفرصة المراجعة تكون قد فاتت.',
-    answer: 'تُجيبها: التصحيح التلقائي للموضوعي',
+    answer: 'الجواب: التصحيح التلقائي للموضوعي',
   },
   {
     num: '03',
     title: 'غياب خريطة الإتقان',
     text: 'الطالب يعرف درجته النهائية، لا مفاهيمه الناقصة ولا خطوته التالية.',
-    answer: 'تُجيبها: مصفوفة الإتقان لكل مفهوم',
+    answer: 'الجواب: مصفوفة الإتقان لكل مفهوم',
   },
   {
     num: '04',
     title: 'بحوث تُسلَّم وتُنسى',
     text: 'البحث يُقدَّم ورقيًا ثم يختفي: لا فهرسة ولا بحث عربي ولا مراجعة معلَّمة تبقى.',
-    answer: 'تُجيبها: مكتبة البحوث بالفهرسة العربية',
+    answer: 'الجواب: مكتبة البحوث بالفهرسة العربية',
   },
 ] as const;
 
@@ -186,7 +186,7 @@ const NAV_SEATS: readonly NavSeat[] = [
   {
     label: 'المجتمع', href: '#roles',
     children: [
-      { label: 'التحديات المباشرة', href: '#live' },
+      { label: 'التحديات', href: '#live' },
       { label: 'الأدوار والشرائح', href: '#roles' },
       { label: 'الكليات التجريبية', href: '#colleges' },
     ],
@@ -819,7 +819,7 @@ export default function LandingPage() {
             <div className="fo-hero-side">
               <RevealCssClass as="p" className="fo-hero-lead" delay={3}>
                 محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —
-                في تجربة عربية واحدة لخمسة أدوار أكاديمية.
+                تجربة عربية واحدة لخمسة أدوار وثلاث شرائح.
               </RevealCssClass>
               <RevealCssClass as="div" className="fo-hero-side-foot fo-hero-actions" delay={4}>
                 {/* the honesty-ledger disclosure — the reference's own
@@ -884,7 +884,7 @@ export default function LandingPage() {
             <div className="st-copy">
               <span className="fo-label"><span className="fo-mono" dir="ltr">[02]</span> البيان</span>
               <h2 id="statement-title" className="st-title">
-                <ScrubReveal text="منصّة واحدة تخدم الرحلة كلّها" />
+                <ScrubReveal text="منصّة واحدة تخدم الرحلة كلها" />
               </h2>
             </div>
             <div className="st-lines">
@@ -894,7 +894,7 @@ export default function LandingPage() {
               </RevealCssClass>
               <RevealCssClass as="p" className="st-line" delay={1}>
                 <strong>للأستاذ</strong>
-                <span>تبني المحاضرة والاختبار، وتصحّح المقالات بملاحظات مكتوبة، وترى من يحتاجك الآن.</span>
+                <span>تبني المحاضرة والاختبار، وتصحّح الواجبات بملاحظات مكتوبة، وترى من يحتاجك الآن.</span>
               </RevealCssClass>
               <RevealCssClass as="p" className="st-line" delay={2}>
                 <strong>للإدارة</strong>
@@ -937,8 +937,8 @@ export default function LandingPage() {
               أربعة أوجاع من <em>التعليم العالي الليبي</em>
             </RevealCssClass>
             <RevealCssClass as="p" className="pm-lede" delay={2}>
-              ليست أحكامًا على أحد — بل المشكلات التي بُنيت مدارك لحلّها.
-              تحت كل وجعٍ بندٌ يعمل اليوم داخل المنصّة، والسجلّ الكامل في صفحة القدرات.
+              ليست أحكامًا على أحد — بل هي المشكلات التي بُنيت مدارك لحلّها.
+              تحت كل وجع بند يعمل اليوم داخل المنصّة، والسجل الكامل في صفحة القدرات.
             </RevealCssClass>
           </div>
 
@@ -960,7 +960,7 @@ export default function LandingPage() {
           </ol>
 
           <RevealCssClass as="p" className="pm-foot" delay={3}>
-            <Link to="/capabilities" className="fo-text-link">السجلّ الكامل — ما يعمل اليوم وإلى أين</Link>
+            <Link to="/capabilities" className="fo-text-link">السجل الكامل — ما يعمل اليوم وإلى أين</Link>
           </RevealCssClass>
         </section>
 
@@ -975,11 +975,11 @@ export default function LandingPage() {
             <div className="chapters-head-copy">
               <span className="fo-label"><span className="fo-mono" dir="ltr">[04]</span> الفصول</span>
               <RevealCssClass as="h2" className="chapters-title" delay={1} id="chapters-title">
-                الرحلة — <em>أربعة فصول تتحرّك أمامك</em>
+                الرحلة — <em>أربعة فصول تتحرك أمامك</em>
               </RevealCssClass>
             </div>
             <RevealCssClass as="p" className="chapters-lede" delay={2}>
-              مرّر لترى الرحلة تُبنى: أربعة فصول تتحرّك في مشهدٍ واحد. لا لقطات مُجمّلة ولا وعود.
+              مرّر لترى الرحلة تُبنى: أربعة فصول تتحرك في مشهد واحد. لا لقطات مُجمّلة ولا وعود.
             </RevealCssClass>
           </header>
 
@@ -999,9 +999,10 @@ export default function LandingPage() {
             platform section): the student surface + the teacher
             cockpit. The frames are authentic UI from the seeded demo
             environment (fully synthetic «جامعة مدارك التجريبية» data) —
-            labelled «لقطة حقيقية» with the demo disclosure on every
-            frame; the CTA scrolls to the conversion row (the funnel
-            counts stay exact — no extra auth links on the sheet). ═══ */}
+            labelled with the mono «real-ui» tag + the demo-data
+            disclosure on every frame; the CTA scrolls to the conversion
+            row (the funnel counts stay exact — no extra auth links
+            on the sheet). ═══ */}
         <section id="product" className="pr-section" aria-labelledby="pr-title">
           <div className="pr-head">
             <span className="fo-label"><span className="fo-mono" dir="ltr">[05]</span> المنصّة فعليًا</span>
@@ -1020,7 +1021,7 @@ export default function LandingPage() {
           </RevealCssClass>
 
           <RevealCssClass as="p" className="pr-note" delay={3}>
-            كل إطار مأخوذ من التطبيق نفسه في وضع الضيافة — بلا معالجة ولا تجميل.
+            كل إطار مأخوذ من التطبيق نفسه داخل بيئة العرض — بلا معالجة ولا تجميل.
             المزيد من الأسطح الحقيقية في <Link to="/capabilities" className="fo-text-link">صفحة القدرات</Link>.
           </RevealCssClass>
         </section>
@@ -1038,7 +1039,7 @@ export default function LandingPage() {
             </RevealCssClass>
             <RevealCssClass as="p" className="wy-lede" delay={2}>
               شاهد، تحقّق، اختبر، أتقن — المراحل الأربع التي تعبرها في كل مقرّر،
-              ولكلٍّ منها سطحٌ حقيقي داخل المنصّة.
+              ولكل منها سطح حقيقي داخل المنصّة.
             </RevealCssClass>
           </div>
 
@@ -1106,11 +1107,11 @@ export default function LandingPage() {
           <div className="fo-cta-grid">
             <div className="fo-cta-inner">
               <RevealCssClass as="h2" className="fo-cta-title" delay={1}>
-                جاهزٌ لبدء <em>رحلتك</em>؟
+                جاهز لبدء <em>رحلتك</em>؟
               </RevealCssClass>
               <RevealCssClass as="p" className="fo-cta-lede" delay={2}>
-                أنشئ حسابك الجامعي في دقائق — بالبريد الجامعي أو رقم قيدك،
-                وتابع تقدّمك من أوّل محاضرة.
+                أنشئ حسابك الجامعي في دقائق — ببريدك الإلكتروني ورقم قيدك،
+                وتابع تقدّمك من أول محاضرة.
               </RevealCssClass>
               <RevealCssClass as="div" className="fo-cta-actions" delay={3} id="cta">
                 <Link to="/auth/register" className="btn accent lg">
@@ -1154,7 +1155,7 @@ export default function LandingPage() {
               <dt className="fo-meta-k">البنية</dt>
               <dd className="fo-meta-v">
                 <span className="fo-mono" dir="ltr">{formatInt(colleges.length)}</span> كلية ·
-                <span className="fo-mono" dir="ltr"> {formatInt(CAMPUS_COUNT)}</span> أحرُم
+                <span className="fo-mono" dir="ltr"> {formatInt(CAMPUS_COUNT)}</span> أحرام
               </dd>
             </div>
             <div className="fo-meta-row">
@@ -1164,7 +1165,7 @@ export default function LandingPage() {
               </dd>
             </div>
             <div className="fo-meta-row">
-              <dt className="fo-meta-k">الجامعات الموثّقة</dt>
+              <dt className="fo-meta-k">الجامعات الموثقة</dt>
               <dd className="fo-meta-v">
                 <span className="fo-mono" dir="ltr">{formatInt(MEDIA_UNIVERSITY_COUNT)}</span> في الصور والفيديو
               </dd>
@@ -1183,12 +1184,12 @@ export default function LandingPage() {
             <span className="cg-strip-label fo-mono" dir="ltr">[09] · REGISTRY</span>
             <p className="cg-strip-text">
               <strong><span className="fo-mono" dir="ltr">{formatInt(colleges.length)}</span> كلية</strong> في{' '}
-              <span className="fo-mono" dir="ltr">{formatInt(CAMPUS_COUNT)}</span> أحرُم —
+              <span className="fo-mono" dir="ltr">{formatInt(CAMPUS_COUNT)}</span> أحرام —
               بيانات «جامعة مدارك التجريبية»: اصطناعية بالكامل لأغراض العرض.
             </p>
             <div className="cg-strip-links">
-              <Link to="/colleges" className="btn ghost sm">تصفّح الكلّيّات التجريبية</Link>
-              <Link to="/auth" className="fo-text-link">سجِّل الدخول لاستعراض كليّتك داخل المنصّة</Link>
+              <Link to="/colleges" className="btn ghost sm">تصفح الكليات التجريبية</Link>
+              <Link to="/auth" className="fo-text-link">سجل الدخول لاستعراض كليتك داخل المنصّة</Link>
             </div>
           </div>
         </section>
@@ -1236,7 +1237,7 @@ export default function LandingPage() {
                 column — the reference's footer-head = title-wrap +
                 form-wrap in ONE column) */}
             <div className="fo-fcell fo-fcell-tagline">
-              <Link to="/" className="fo-brand" aria-label="مدارك">
+              <Link to="/" className="fo-brand" aria-label="مدارك — منصّة التعليم الذكي">
                 <StarMark size={30} className="fo-brand-mark" />
                 <span className="fo-brand-stack">
                   <span className="fo-brand-name">مدارك</span>
@@ -1291,14 +1292,14 @@ export default function LandingPage() {
               <a href="#product" className="fo-footer-link">المنصّة فعليًا</a>
               <a href="#chapters" className="fo-footer-link">الفصول</a>
               <a href="#roles" className="fo-footer-link">الأدوار والشرائح</a>
-              <Link to="/colleges" className="fo-footer-link">الكلّيات التجريبية</Link>
+              <Link to="/colleges" className="fo-footer-link">الكليات التجريبية</Link>
             </nav>
             <nav className="fo-fcell fo-fcell-links" aria-label="المحتوى والرحلة">
               <div className="fo-footer-heading">الرحلة</div>
               <a href="#statement" className="fo-footer-link">البيان</a>
-              <a href="#live" className="fo-footer-link">التحديات المباشرة</a>
+              <a href="#live" className="fo-footer-link">التحديات</a>
               <Link to="/campus" className="fo-footer-link">الحياة الجامعية</Link>
-              <a href="#vision" className="fo-footer-link">الرؤية والمبدأ</a>
+              <a href="#vision" className="fo-footer-link">المبدأ والرؤية</a>
               <a href="#main" className="fo-footer-link">أعلى الصفحة</a>
             </nav>
             <nav className="fo-fcell fo-fcell-links" aria-label="الحساب">
@@ -1323,7 +1324,7 @@ export default function LandingPage() {
                 form is the one real channel today — stated plainly. */}
             <div className="fo-fcell fo-fcell-addr">
               <div className="fo-footer-heading">التواصل</div>
-              <p className="fo-footer-addr-line">التسجيل المبكر في هذه الصفحة هو قناة التواصل المتاحة حاليًا.</p>
+              <p className="fo-footer-addr-line">التسجيل المبكر من هذه الصفحة هو قناة التواصل المتاحة حاليًا.</p>
               <p className="fo-footer-addr-line">لا بريد عام في مرحلة الإطلاق التجريبي.</p>
             </div>
 

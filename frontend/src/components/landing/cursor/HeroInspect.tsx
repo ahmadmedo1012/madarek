@@ -130,7 +130,7 @@ const MARKERS: MarkerDef[] = [
     w: 212,
     h: 88,
     labelAr: 'مراجعة بحث',
-    bodyAr: 'بحث PDF بملاحظات مشروحة من الأستاذ ثم فهرسة في المكتبة.',
+    bodyAr: 'بحث PDF بملاحظات معلَّمة من الأستاذ ثم فهرسة في المكتبة.',
   },
   {
     id: 'mg',
@@ -587,7 +587,7 @@ export function HeroInspect() {
               aria-label={
                 open
                   ? `محطة فحص مفتوحة — ${m.labelAr}: ${m.bodyAr}`
-                  : `محطة فحص — ${m.labelAr}. افتحها لقراءة التفصيل`
+                  : `محطة فحص — ${m.labelAr}. افتحها لقراءة تفاصيلها`
               }
               onClick={() => toggleMarker(m.id)}
             >
