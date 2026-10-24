@@ -3654,8 +3654,9 @@ html[data-theme='dark'] .fo-wordmark-ar {
    ════════════════════════════════════════════════════════════════════ */
 
 /* ── sc — the custom pointer instrument (canvas + interactive ring).
-   The canvas carries the 9px signal square + velocity trail; the ring
-   is the hover/press layer (a 24px outline that contracts into a
+   The canvas carries the 10px signal square (V15: the reference's
+   measured 10×10 bbox / 100 opaque pixels) + velocity trail; the ring
+   is the hover/press layer (a 2.8rem outline that contracts into a
    targeting reticle while pressed). Native cursor hiding is GATED on
    the instrument actually running (data-sheet-cursor on <html>) — any
    failure degrades to the native cursor. ─────────────────────────── */
@@ -3670,10 +3671,15 @@ html[data-theme='dark'] .fo-wordmark-ar {
   position: fixed;
   inset-block-start: 0;
   inset-inline-start: 0;
-  inline-size: 24px;
-  block-size: 24px;
-  margin: -12px 0 0 -12px; /* spacing-gate: allow — negative half-ring centering (no negative token exists) */
-  border: 2px solid var(--accent);
+  /* V15 · R314 cycle-2: the reference's measured #canvas-cursor-hover —
+     width/height 2.8rem (23.3px @1440 root 8.333px); retunes the R308
+     24px approximation onto the reference's own rem geometry. */
+  inline-size: 2.8rem;
+  block-size: 2.8rem;
+  margin: -1.4rem 0 0 -1.4rem; /* spacing-gate: allow — negative half-ring centering (no negative token exists) */
+  /* V15: #FC724D is the reference's measured reticle border rgb(252,114,77)
+     (r308 reference-observations §2, live DOM read) — no token exists. */
+  border: 2px solid #FC724D; /* color-gate: allow — measured reference reticle border, no token exists */
   z-index: 251;
   pointer-events: none;
   opacity: 0;
@@ -4291,10 +4297,10 @@ html[data-theme='dark'] .fo-wordmark-ar {
 }
 
 /* the staged construction — the elevation's [data-ink] layer groups
-   draw in DRAFTING ORDER against the R313 asset-gated counter (the
-   whole run finishes ≤ ~4.9s; the earliest accelerated finish is
-   ~3.25s — the layers resolve by ~3.9s so both runs show the complete
-   drawing before the exit): frame → grid → ground → masses →
+   draw in DRAFTING ORDER against the R314 asset-gated counter (the
+   fallback run reaches 100% at ~5.65s; the earliest released finish
+   is ~4.5s — the layers resolve by ~4.8s so every legal run shows the
+   complete drawing before the exit): frame → grid → ground → masses →
    secondary → openings → detail → dims → journey → labels.
    pathLength-normalized; every layer resolves before the scan datum
    sweeps. */
@@ -4312,20 +4318,23 @@ html[data-theme='dark'] .fo-wordmark-ar {
   transition: opacity 450ms var(--ease);
 }
 
-/* R313 retune — the R309 5s schedule compressed to the ~3.9s complete
-   state (the counter is asset-gated now; the drawing must not still
-   be mid-stroke when the slit opens on an early finish). */
+/* R314 cycle-2 (V14) retune — the drawing now spreads across the
+   WHOLE run, the reference's own frame-sequence beat (its line-drawn
+   wordmark constructs itself until ≈5.0s of the 5.65s counter — 88%
+   of the run; the R313 schedule finished ours at 77%). The last layer
+   resolves at 4.8s: ~0.85s of standing-complete before the fallback
+   100%, and still ahead of the earliest released exit (~5.2s). */
 .sl-draw-wrap .bp-svg [data-ink='1'] .bp-drawable { transition-delay: 110ms; }
-.sl-draw-wrap .bp-svg [data-ink='2'] .bp-drawable { transition-delay: 300ms; }
-.sl-draw-wrap .bp-svg [data-ink='3'] .bp-drawable { transition-delay: 550ms; }
-.sl-draw-wrap .bp-svg [data-ink='4'] .bp-drawable { transition-delay: 900ms; }
-.sl-draw-wrap .bp-svg [data-ink='5'] .bp-drawable { transition-delay: 1330ms; }
-.sl-draw-wrap .bp-svg [data-ink='6'] .bp-drawable { transition-delay: 1760ms; }
-.sl-draw-wrap .bp-svg [data-ink='7'] .bp-drawable { transition-delay: 2200ms; }
-.sl-draw-wrap .bp-svg [data-ink='8'] .bp-drawable { transition-delay: 2590ms; }
-.sl-draw-wrap .bp-svg [data-ink='9'] .bp-drawable { transition-delay: 2950ms; }
-.sl-draw-wrap .bp-svg [data-ink='10'] .bp-drawable { transition-delay: 3240ms; }
-.sl-draw-wrap .bp-svg [data-ink='10'] text { transition-delay: 3380ms; }
+.sl-draw-wrap .bp-svg [data-ink='2'] .bp-drawable { transition-delay: 420ms; }
+.sl-draw-wrap .bp-svg [data-ink='3'] .bp-drawable { transition-delay: 820ms; }
+.sl-draw-wrap .bp-svg [data-ink='4'] .bp-drawable { transition-delay: 1300ms; }
+.sl-draw-wrap .bp-svg [data-ink='5'] .bp-drawable { transition-delay: 1850ms; }
+.sl-draw-wrap .bp-svg [data-ink='6'] .bp-drawable { transition-delay: 2400ms; }
+.sl-draw-wrap .bp-svg [data-ink='7'] .bp-drawable { transition-delay: 2950ms; }
+.sl-draw-wrap .bp-svg [data-ink='8'] .bp-drawable { transition-delay: 3450ms; }
+.sl-draw-wrap .bp-svg [data-ink='9'] .bp-drawable { transition-delay: 3850ms; }
+.sl-draw-wrap .bp-svg [data-ink='10'] .bp-drawable { transition-delay: 4100ms; }
+.sl-draw-wrap .bp-svg [data-ink='10'] text { transition-delay: 4250ms; }
 
 /* the mounted state (the layers draw themselves in) */
 .sl-mounted .sl-draw-wrap .bp-svg .bp-drawable {
@@ -4338,8 +4347,9 @@ html[data-theme='dark'] .fo-wordmark-ar {
 }
 
 /* the scan datum — one horizontal sweep after the structures resolve
-   (a positioned span over the drawing window now; R313 retune — the
-   draw completes by ~3.4s, the sweep runs 3.1–4.2s) */
+   (a positioned span over the drawing window now; R314 cycle-2 retune
+   — the draw completes by ~4.8s, the sweep runs 4.2–5.3s, the tail's
+   own beat before the 100% hold) */
 .sl-scan {
   position: absolute;
   inset-block-start: var(--sp-4);
@@ -4351,7 +4361,7 @@ html[data-theme='dark'] .fo-wordmark-ar {
 }
 
 .sl-mounted .sl-scan {
-  animation: sl-scan 1100ms var(--ease) 3100ms 1 both;
+  animation: sl-scan 1100ms var(--ease) 4200ms 1 both;
 }
 
 @keyframes sl-scan {

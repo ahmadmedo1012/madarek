@@ -5,18 +5,23 @@
  * grammar (docs/redesign/r308/reference-observations.md §4), on the
  * Madarek token system:
  *
- *  · Canvas 2D layer (fixed, viewport-sized, DPR-capped at 2): a 9px
+ *  · Canvas 2D layer (fixed, viewport-sized, DPR-capped at 2): a 10px
  *    square in the ONE signal color, eased toward the pointer
  *    (lerp 0.18), with a velocity trail that appears ONLY above a
  *    speed threshold and vanishes on the first still frame — per-
  *    segment alpha ramps quadratically from 0 (oldest) to ≈1 (newest).
- *    A ground-color plate rides under the square so the dot stays
- *    readable over photography and the dark theme (the reference's
- *    colour-adaptation claim could not be reproduced on their DOM —
- *    this is the honest, always-readable equivalent).
- *  · Interactive-state layer: a 24px square outline that appears over
- *    real interactive elements and CONTRACTS into a targeting
- *    reticle (scale .56 / opacity .68) while pressed.
+ *    (V15 · R314 cycle-2: the square is the reference's measured
+ *    geometry — a true 10×10px bbox with exactly 100 opaque pixels,
+ *    solid #FA3600, read by canvas getImageData at rest over links
+ *    (r313 telemetry D14). The R308 ground-colour PLATE is retired:
+ *    its 13px alpha footprint read as a 13px cursor — the geometry
+ *    contract here wins, and the reference ships the naked square
+ *    over photography too (its colour-adaptation claim never
+ *    reproduced on its own DOM).)
+ *  · Interactive-state layer: a 2.8rem (23.3px @1440) square outline
+ *    with the reference's measured reticle border (#FC724D, 2px) that
+ *    appears over real interactive elements and CONTRACTS into a
+ *    targeting reticle (scale .56 / opacity .68) while pressed.
  *  · `data-cursor="none"` suppression zones (R311 §1.5 — the ONE
  *    unified vocabulary, the same token the app-level resolver
  *    honours): where a local system takes over (the hero instrument,
@@ -34,9 +39,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { subscribeSheetFrame, wakeSheet, lerp } from '../../../lib/motion/sheetConductor';
 
-/* Measured reference constants (see reference-observations.md §4/§5). */
-const DOT_SIZE = 9;
-const PLATE_SIZE = 13; /* the ground-colour plate under the dot */
+/* Measured reference constants (see reference-observations.md §4/§5;
+ * V15 · R314 cycle-2: the square re-pinned to the r313 pixel-read
+ * measurement — 10×10 bbox, 100 opaque pixels — superseding the
+ * r308 case-study "9px" figure). */
+const DOT_SIZE = 10;
 const LERP_K = 0.18;
 const SPEED_SMOOTHING = 0.2;
 const TRAIL_SPEED_THRESHOLD = 1.5; /* px/frame — trail only when fast */
@@ -89,12 +96,10 @@ export function SheetCursor() {
     /* colours re-read on every wake — theme flips mid-session stay
      * correct because the next pointer movement re-wakes the system. */
     let ink = '#FA3600';
-    let plate = '#F6F6EE';
 
     const readColors = () => {
       const styles = getComputedStyle(document.documentElement);
       ink = styles.getPropertyValue('--accent').trim() || ink;
-      plate = styles.getPropertyValue('--bg').trim() || plate;
     };
 
     const resize = () => {
@@ -179,16 +184,10 @@ export function SheetCursor() {
           }
           ctx.globalAlpha = 1;
         }
-        /* the ground plate keeps the dot readable over photos + dark */
-        ctx.globalAlpha = 0.9;
-        ctx.fillStyle = plate;
-        ctx.fillRect(
-          Math.round(pos.x - PLATE_SIZE / 2),
-          Math.round(pos.y - PLATE_SIZE / 2),
-          PLATE_SIZE,
-          PLATE_SIZE,
-        );
-        ctx.globalAlpha = 1;
+        /* V15: the naked 10×10 signal square — the reference's measured
+         * resting glyph (no plate: a 13px alpha footprint reads as a
+         * 13px cursor; over dark photography the square keeps its own
+         * contrast, exactly as the reference ships it). */
         ctx.fillStyle = ink;
         ctx.fillRect(
           Math.round(pos.x - DOT_SIZE / 2),

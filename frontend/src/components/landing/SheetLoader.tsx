@@ -18,13 +18,23 @@
  *
  * Madarek keeps the honest layer the reference cannot have: every log
  * line describes work the page is actually doing, the counter never
- * waits past the fallback curve's 100% at ~4.9s (Promise.race timeout
+ * waits past the fallback curve's 100% at ~5.65s (Promise.race timeout
  * on the asset gate), and a visible «تخطّي» (Esc/Enter/Space) always
  * ends it. The R309 fixed 5s+3.6s clock and the R309 exit race (the
  * 650ms split cancelled at ~21ms by an onDone-prop remount) are both
  * retired: the sequence owns its clock through refs, the exit plays
  * its full 835ms, and the parent only unmounts the sheet on the
  * exit's own finish event (wall-clock backed).
+ *
+ * R314 cycle-2 (V14 — the loader's FRAME SEQUENCE): the counter model
+ * in introGate was re-pinned to the reference's frame-captured beats
+ * (quiet boot → crawl → 60% plateau → accelerating tail → 100%@5.65s →
+ * 717ms hold → the 835ms split; total ≈ 7.2s, the reference's own
+ * window), and the staged draw-in below now spreads across the whole
+ * run — the drawing resolves ~0.85s before the fallback 100%, the
+ * same lead the reference's line-drawn wordmark keeps (draw complete
+ * ≈5.0s of its 5.65s counter) — instead of finishing at 77% of the
+ * run. See landing.css `.sl-draw-wrap` for the retuned layer ladder.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -246,9 +256,10 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
       const elapsed = performance.now() - startedAt;
 
       /* the counter: the curve target, gated on the real assets — the
-       * plateau EMERGES from waiting; an early release accelerates
-       * the tail; the fallback curve's 100% at ~4.9s is the slowest
-       * possible run (the gate's timeout guarantees it). */
+       * plateau EMERGES from waiting; an early release shortens the
+       * tail (bounded at the natural rate — the reference's own
+       * warm-cache behaviour); the fallback curve's 100% at ~5.65s is
+       * the slowest possible run (the gate's timeout guarantees it). */
       const target = loaderTargetAt(elapsed, releasedAt);
       const pct = Math.min(100, Math.floor(target));
 

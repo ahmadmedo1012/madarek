@@ -22,15 +22,22 @@
  *    opt-out the e2e fixture seeds before app boot so task-focused
  *    journeys boot straight into the page. Real visitors never set it.
  *
- * The module also carries the R313 PROGRESS MODEL (the counter's pure
- * math): the warm-timeline curve shape, the asset-gate plateau, and
- * the accelerated tail. The reference's counter is asset-gated, not a
- * fixed clock (its 60% plateau is a network wait; total 4.9–5.6s
- * depending on the run). The Madarek translation: the counter rides
- * the warm curve below the gate, WAITS at the plateau ceiling while
- * the critical assets (fonts + eager media) pend, then runs the
- * measured tail shape — accelerated when the assets resolved early,
- * never slower than the fallback curve's 100% at ~4.9s.
+ * The module also carries the R313 PROGRESS MODEL + the R314 cycle-2
+ * retune (V14 — the loader's FRAME SEQUENCE): the reference's counter
+ * was re-captured frame-by-frame in R314 (one fresh pass, 13 frames @
+ * 500ms — audits notes in the 3-c worklog) and its beat structure is
+ * now pinned exactly: a QUIET BOOT (the counter sits at 0 until
+ * ~940ms while the chrome + the line-drawn mark arrive), a slow CRAWL
+ * (16%@1131ms → 59%@3000ms), the PLATEAU at 60% (3366–3840ms — the
+ * asset wait), the accelerating TAIL (67%@3965 → 100%@5649ms), the
+ * ~717ms HOLD at 100%, then the 835ms split (exit 6366→7201ms — the
+ * counter model's DONE/TAIL/HOLD constants now reproduce the measured
+ * exit window to the millisecond). The asset gate keeps Madarek's own
+ * honest semantics: an early release still shortens the run, but the
+ * R313 1.5× acceleration is retired (measured: the reference's own
+ * warm-cache reload finishes 100% at 4680ms — only ~17% faster than
+ * its cold 5649ms; a 1.5× cap would compress an instant resolve to
+ * ~60%, so the cap is now 1.0× the natural tail rate).
  */
 
 export const INTRO_SEEN_KEY = 'madarek-intro-seen';
@@ -101,49 +108,65 @@ export function markIntroSeen(session: SessionLike | null = null): void {
 }
 
 /* ════════════════════════════════════════════════════════════════════
- * R313 — the loader PROGRESS MODEL (pure math, unit-pinned)
+ * R313 → R314 — the loader PROGRESS MODEL (pure math, unit-pinned)
  * ════════════════════════════════════════════════════════════════════
  *
- * The reference's warm counter timeline (r308 measurement, the task's
- * fallback shape): 0 → 7%@440ms → 33%@850ms → 57%@2060ms → a ~59%
- * plateau 2500–2900ms (the asset wait) → 85%@3700ms → 98%@4500ms →
- * 100%@4900ms. Cold runs stretch the plateau (60% for ~0.5s, 100% at
- * 5649ms) — the plateau EMERGES from waiting, it is not authored. */
+ * The reference's counter timeline (R313 digest telemetry, re-confirmed
+ * by the R314 frame capture — V14): the counter sits at 0 through the
+ * boot (~940ms), crawls 16%@1131 → 59%@3000, plateaus at 60%
+ * 3366–3840 (the asset wait — "AI MODELS" in the reference's own log),
+ * then the tail 67%@3965 → 100%@5649, holds ~717ms, exits 6366→7201.
+ * Warm-cache reloads measured 15%@258ms → 100%@4680ms (the plateau
+ * shortens; the beats survive). */
 
-/** The warm-timeline checkpoints: [ms, percent]. */
+/** The fallback timeline checkpoints: [ms, percent]. */
 export const LOADER_CURVE: ReadonlyArray<readonly [number, number]> = [
   [0, 0],
-  [440, 7],
-  [850, 33],
-  [2060, 57],
-  [2500, 59],
-  [2900, 59],
-  [3700, 85],
-  [4500, 98],
-  [4900, 100],
+  [943, 0],
+  [1131, 16],
+  [1358, 26],
+  [1565, 34],
+  [1800, 41],
+  [2040, 47],
+  [2400, 53],
+  [3000, 59],
+  [3366, 60],
+  [3840, 60],
+  [3965, 67],
+  [4200, 78],
+  [4440, 86],
+  [4688, 92],
+  [4920, 96],
+  [5280, 99],
+  [5649, 100],
 ];
 
 /** The plateau ceiling — the counter waits at this value while the
- * critical assets pend (the curve reaches it at 2500ms naturally). */
-export const LOADER_GATE_PCT = 59;
-/** The fallback curve's 100% mark — the counter is NEVER slower. */
-export const LOADER_DONE_MS = 4900;
-/** The natural plateau→100 tail (2900→4900ms on the warm curve). */
-export const LOADER_TAIL_MS = 2000;
-/** How much faster than the natural tail rate the accelerated tail may
- * run (keeps an early asset resolve from flashing the counter). */
-export const LOADER_ACCEL_MAX = 1.5;
+ * critical assets pend (the curve reaches it at 3366ms naturally). */
+export const LOADER_GATE_PCT = 60;
+/** The fallback curve's 100% mark — the counter is NEVER slower
+ * (the reference's measured cold-run 100%; exit window 6366→7201). */
+export const LOADER_DONE_MS = 5649;
+/** The natural plateau→100 tail (3840→5649ms on the fallback curve). */
+export const LOADER_TAIL_MS = 1809;
+/** How much faster than the natural tail rate the released tail may
+ * run. R314 cycle-2 (V14): 1.0 — the reference's own warm-cache reload
+ * keeps ~83% of the cold tail duration (100%@4680 vs 5649); the R313
+ * 1.5× cap compressed instant resolves to ~60% of that, erasing the
+ * crawl beat. At 1.0 an instant resolve still finishes ~20% early
+ * (100% ≈ 4.5–4.8s) — the measured warm behaviour. */
+export const LOADER_ACCEL_MAX = 1.0;
 /** The asset gate's hard timeout — a stalled asset can never trap the
- * visitor; the counter continues to the fallback 100% at LOADER_DONE_MS. */
-export const LOADER_GATE_TIMEOUT_MS = 3400;
+ * visitor; the release lands at the authored plateau's end so the
+ * fallback 100% at LOADER_DONE_MS is exactly the slowest run. */
+export const LOADER_GATE_TIMEOUT_MS = 3840;
 /** The measured hold at 100% before the exit split (reference: 717ms
- * between the counter's 100% and the first clip frame). */
-export const LOADER_HOLD_MS = 700;
+ * between the counter's 100% and the first clip frame — 5649→6366). */
+export const LOADER_HOLD_MS = 717;
 
-/** The tail's internal shape — the natural tail's proportions
- * (59→85 is 63.4% of the distance at 40% of the time, 59→98 is 95.1%
- * at 80%), reused for every release so the accelerated run keeps the
- * same instrument feel. */
+/** The tail's internal shape — the accelerating tail's proportions
+ * (63.4% of the distance at 40% of the time, 95.1% at 80%), reused
+ * for every release so an early run keeps the same instrument feel. */
 const TAIL_SHAPE: ReadonlyArray<readonly [number, number]> = [
   [0, 0],
   [0.4, 0.634],
@@ -183,12 +206,12 @@ export function loaderCurveAt(ms: number): number {
  * at `releasedAtMs` (null while the critical assets still pend).
  *
  *  · gated: the curve, clamped at the plateau ceiling — the wait at
- *    ~59% emerges from the assets actually pending;
+ *    ~60% emerges from the assets actually pending;
  *  · released: from the release value, the measured tail shape over a
  *    duration that is never slower than the fallback curve (100% by
  *    LOADER_DONE_MS) and never faster than LOADER_ACCEL_MAX × the
  *    natural tail rate (so an instant resolve still reads as a load,
- *    not a flash). */
+ *    not a flash — the reference's own warm reload keeps ~83%). */
 export function loaderTargetAt(
   elapsedMs: number,
   releasedAtMs: number | null,

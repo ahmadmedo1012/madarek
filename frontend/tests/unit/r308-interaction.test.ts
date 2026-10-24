@@ -240,39 +240,44 @@ describe('r308 — introGate (the entrance decision)', () => {
 });
 
 describe('r313 — the loader progress model (asset-gated, not a clock)', () => {
-  it('the warm fallback curve: the measured checkpoints, 100% at ~4.9s', () => {
-    // R313 override: the R309 linear 5s ramp is retired — the counter
-    // rides the reference's warm timeline shape.
+  it('the fallback curve: the measured checkpoints, 100% at ~5.65s', () => {
+    /* R314 cycle-2 override (V14 — the loader's FRAME SEQUENCE): the
+     * reference's counter was re-captured frame-by-frame and its beat
+     * structure is now pinned exactly — a QUIET BOOT (0 until ~940ms;
+     * the R313 curve moved at 7%@440ms), the crawl 16%@1131 →
+     * 59%@3000, the 60% plateau 3366–3840, the tail 67%@3965 →
+     * 100%@5649 (was 100%@4900), so the exit window lands at the
+     * reference's own 5649+717 → split 6366–7201. */
     expect(LOADER_CURVE[0]).toEqual([0, 0]);
-    expect(loaderCurveAt(440)).toBeCloseTo(7, 5);
-    expect(loaderCurveAt(850)).toBeCloseTo(33, 5);
-    expect(loaderCurveAt(2060)).toBeCloseTo(57, 5);
-    expect(loaderCurveAt(3700)).toBeCloseTo(85, 5);
-    expect(loaderCurveAt(4500)).toBeCloseTo(98, 5);
+    expect(loaderCurveAt(440)).toBe(0); // the quiet boot — the counter sits still while the chrome arrives
+    expect(loaderCurveAt(943)).toBe(0);
+    expect(loaderCurveAt(1131)).toBeCloseTo(16, 5);
+    expect(loaderCurveAt(3000)).toBeCloseTo(59, 5);
+    expect(loaderCurveAt(3840)).toBe(60); // the plateau end
     expect(loaderCurveAt(LOADER_DONE_MS)).toBe(100);
-    expect(LOADER_DONE_MS).toBe(4900);
+    expect(LOADER_DONE_MS).toBe(5649);
   });
 
   it('gated: the counter waits at the plateau ceiling while assets pend (the wait emerges, it is not authored)', () => {
-    expect(loaderTargetAt(2500, null)).toBe(LOADER_GATE_PCT);
-    expect(loaderTargetAt(3200, null)).toBe(LOADER_GATE_PCT); // the plateau extends while the gate holds
-    expect(loaderTargetAt(LOADER_DONE_MS, null)).toBe(LOADER_GATE_PCT); // still 59 if never released
-    expect(LOADER_GATE_PCT).toBe(59);
+    expect(loaderTargetAt(3400, null)).toBe(LOADER_GATE_PCT);
+    expect(loaderTargetAt(4500, null)).toBe(LOADER_GATE_PCT); // the plateau extends while the gate holds
+    expect(loaderTargetAt(LOADER_DONE_MS, null)).toBe(LOADER_GATE_PCT); // still 60 if never released
+    expect(LOADER_GATE_PCT).toBe(60); // R314 cycle-2: 59 → 60 (the frame-captured plateau value)
   });
 
-  it('the gate\'s timeout can never trap the visitor (≤ 3400ms)', () => {
-    expect(LOADER_GATE_TIMEOUT_MS).toBeLessThanOrEqual(3400);
+  it('the gate\'s timeout can never trap the visitor (≤ 3840ms — the authored plateau\'s end)', () => {
+    expect(LOADER_GATE_TIMEOUT_MS).toBeLessThanOrEqual(3840); // R314 cycle-2: 3400 → 3840
   });
 
-  it('released at the natural plateau end: exactly the fallback timeline (100% at 4.9s)', () => {
-    expect(loaderTargetAt(2900, 2900)).toBe(LOADER_GATE_PCT);
-    expect(loaderTargetAt(3700, 2900)).toBeCloseTo(85, 0);
-    expect(loaderTargetAt(4500, 2900)).toBeCloseTo(98, 0);
-    expect(loaderTargetAt(4900, 2900)).toBe(100);
-    expect(loaderDoneAtMs(2900)).toBe(LOADER_DONE_MS);
+  it('released at the natural plateau end: exactly the fallback timeline (100% at 5.65s)', () => {
+    expect(loaderTargetAt(3840, 3840)).toBe(LOADER_GATE_PCT);
+    expect(loaderTargetAt(4564, 3840)).toBeCloseTo(85, 0); // 40% into the tail — the old 85%@+800ms beat
+    expect(loaderTargetAt(5287, 3840)).toBeCloseTo(98, 0); // 80% into the tail
+    expect(loaderTargetAt(5649, 3840)).toBe(100);
+    expect(loaderDoneAtMs(3840)).toBe(LOADER_DONE_MS);
   });
 
-  it('released late (the timeout): the tail compresses — 100% still by 4.9s (never slower than the fallback)', () => {
+  it('released late (the timeout): the tail compresses — 100% still by 5.65s (never slower than the fallback)', () => {
     const late = LOADER_GATE_TIMEOUT_MS;
     expect(loaderDoneAtMs(late)).toBeLessThanOrEqual(LOADER_DONE_MS);
     expect(loaderTargetAt(LOADER_DONE_MS, late)).toBe(100);
@@ -283,13 +288,17 @@ describe('r313 — the loader progress model (asset-gated, not a clock)', () => 
     }
   });
 
-  it('released early: the counter accelerates to 100 — bounded, monotonic, never a flash', () => {
-    /* an early release must finish EARLIER than the fallback… */
+  it('released early: the counter runs its tail to 100 — bounded, monotonic, never a flash', () => {
+    /* R314 cycle-2 override (V14): the R313 1.5× acceleration is
+     * retired (the reference's own warm-cache reload keeps ~83% of the
+     * cold tail: 100%@4680 vs 5649) — an early release now finishes
+     * ~20% early (the earliest legal finish is ~4.5s) instead of
+     * compressing the crawl beat away. */
     const early = 800;
     expect(loaderDoneAtMs(early)).toBeLessThan(LOADER_DONE_MS);
-    /* …but never faster than the acceleration cap (the earliest legal
-     * finish is ~3.25s — an instant resolve still reads as a load) */
-    expect(loaderDoneAtMs(0)).toBeGreaterThanOrEqual(3200);
+    /* …but never faster than the natural tail rate (the earliest legal
+     * finish is ~4.5s — an instant resolve still reads as a load) */
+    expect(loaderDoneAtMs(0)).toBeGreaterThanOrEqual(4400);
     /* the run is monotonic from the release value to 100 */
     let prev = -1;
     for (let t = early; t <= loaderDoneAtMs(early); t += 50) {
