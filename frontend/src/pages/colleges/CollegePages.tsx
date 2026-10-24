@@ -32,6 +32,11 @@ import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { filterColleges, CAMPUS_ORDER, type CityName } from './filter-colleges';
 import { useUrlQueryState } from '../../hooks/useUrlQueryState';
 import { useAuthStore, type AcademicPosition } from '../../stores/auth.store';
+/* c3-W6 (K-I extension): the guest drawing-sheet chrome (fixed frame +
+ * corner marks + grain film) and the mono sheet-label — the /auth pages'
+ * grammar carried to the chrome-less guest colleges surfaces, mounted
+ * ONLY in the guest branch (authed visitors get the AppShell). */
+import { GuestSheetChrome, GuestSheetLabel } from '../../components/layout/GuestSheetChrome';
 // D14 CSS split (13-17): this sheet also styles the .comp-* competitions
 // grid rendered by the page below and is shared with two other lazy
 // consumers (CompetitionsPages + CommunityPages — rg-verified, r157;
@@ -295,6 +300,13 @@ export function CollegesIndexPage() {
 
   return (
     <PageFrame>
+      {/* c3-W6 (K-I): the guest branch joins the sheet grammar — the
+          frame + marks + film ride a body PORTAL here (the funnel's
+          transition stack traps fixed descendants — GuestSheetChrome
+          header note) + the registry's mono identity line over the
+          header. Authed visitors keep the shell untouched. */}
+      {isGuest && <GuestSheetChrome portal />}
+      {isGuest && <GuestSheetLabel>[MDRK-COLLEGES] · REGISTRY 01/03</GuestSheetLabel>}
       {/* r264: ترويسة patterns هادئة — «المسرح الملوّن» (SectionAccent
           scene-paint) يتقاعد مع اتجاه Superlist: الهرمية عبر السطوح
           لا عبر الطلاء. ضيف الزائر يبقى فوق الترويسة كإجراء صفحة. */}
@@ -488,6 +500,11 @@ export function CollegeDetailPage() {
   // P0-1). Every hook must run unconditionally above the gates.
   const themeMode = useThemeStore((s) => s.mode);
   const user = useAuthStore((s) => s.user);
+  /* c3-W6: hoisted above the loading/error gates — the guest sheet chrome
+   * (frame + grain) mounts in EVERY branch of this page, including the
+   * skeleton and the fail-grace error state (the frame belongs to the
+   * page, not to the data). */
+  const isGuest = !user;
   const inst = useInstitutionScope(); // r180: scoped key
   const q = useQuery({
     queryKey: withInstitutionScope(['colleges', id], inst),
@@ -500,10 +517,17 @@ export function CollegeDetailPage() {
   useDocTitle(q.data?.name ?? null);
 
   if (q.isLoading) {
-    return <div className="page"><DetailSkeleton /></div>;
+    return <div className="page">{isGuest && <GuestSheetChrome portal />}<DetailSkeleton /></div>;
   }
   if (q.isError || !q.data) {
-    return <div className="page"><ErrorState error={q.error} onRetry={() => q.refetch()} /></div>;
+    /* the guest fail-grace branch keeps the sheet grammar too — the frame
+     * is part of the page, not of the data (c3-W6). */
+    return (
+      <div className="page">
+        {isGuest && <GuestSheetChrome portal />}
+        <ErrorState error={q.error} onRetry={() => q.refetch()} />
+      </div>
+    );
   }
 
   const c = q.data;
@@ -520,7 +544,6 @@ export function CollegeDetailPage() {
    * R190-D3: the strip is the app-wide typographic StatStrip now —
    * auto-fit columns absorb ANY surviving count (the old grid-2/3/4 +
    * solo-span gymnastics existed only to patch empty grid cells). */
-  const isGuest = !user;
   const statCells = (isGuest
     ? [
         { label: 'عدد الأقسام', value: c.stats.departmentCount },
@@ -573,6 +596,8 @@ export function CollegeDetailPage() {
       data-college={identity?.slug || undefined}
       style={collegeStyle}
     >
+      {isGuest && <GuestSheetChrome portal />}
+      {isGuest && <GuestSheetLabel>[MDRK-COLLEGES] · REGISTRY 03/03</GuestSheetLabel>}
       {/* Back to the gallery (A14 P2-3): the one detail page in the app
           without a back affordance — copies the CourseDetail idiom
           (ghost button, ChevronRight = the RTL back direction). */}
@@ -976,6 +1001,8 @@ export function CollegesLeaderboardPage() {
 
   return (
     <div className="page colleges-leaderboard">
+      {isGuest && <GuestSheetChrome portal />}
+      {isGuest && <GuestSheetLabel>[MDRK-COLLEGES] · REGISTRY 02/03</GuestSheetLabel>}
       {/* Gallery back-link (A12 P1-2): leaderboard ↔ gallery used to be
           one-way — the gallery CTA brought you here and the ONLY link
           out was the landing. Same ghost idiom as the detail page. */}
