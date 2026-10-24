@@ -1,7 +1,7 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowLeft, Check, Users,
+  ArrowLeft, Check,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { StarMark } from '../components/StarMark';
@@ -60,9 +60,11 @@ import '../styles/r314-chrome.css';
  *       numbered cards with draw-in line art (each answered by a live
  *       capability — the full matrix lives on /capabilities);
  *   [4] chapters (~6300px · 51.0%): the pinned «رحلة التعلّم»
- *       walkthrough (the learning-floor plan + its inspection
- *       stations) + the chapters 05–06 ledger rows — the map is HALF
- *       the page, the reference's proportion;
+ *       walkthrough — the learning-floor plan, the opening statement,
+ *       the INTRODUCTION card, the four findings stations and the
+ *       closing column; the map is HALF the page, the reference's
+ *       proportion (R315 K-E: the chapters 05–06 demo rows are gone —
+ *       their honest content lives on /capabilities);
  *   [5] product (~710px · 5.7%): two real-capture blocks;
  *   [6] why (~698px · 5.6%): the شاهد/تحقّق/اختبر/أتقن stage strip
  *       with the four student-surface captures cross-fading;
@@ -83,12 +85,10 @@ import '../styles/r314-chrome.css';
 const MENU_SCROLL_LOCK_KEY = 'landing-mobile-menu';
 
 /* ── Computed truths (BLUEPRINT §6 sources): 25 colleges in 3 campuses
- * from the real registry; 11 training tracks (TrainingPages); 6 quality
- * boards (quality.routes); 2 isolated institutions (OwnerInstitutionsPage). */
+ * from the real registry. R315 (K-E): the training-track, quality-board
+ * and institution-isolation counts moved to /capabilities with their
+ * ledger rows — the landing keeps painting only the campus count. */
 const CAMPUS_COUNT = new Set(colleges.map((c) => c.cityAr ?? '')).size;
-const TRAINING_TRACKS = 11;   // verified in pages/student/TrainingPages.tsx
-const QUALITY_BOARDS = 6;     // verified in backend quality.routes
-const INSTITUTIONS = 2;       // verified in OwnerInstitutionsPage isolation
 
 /* ── The r307 media truth: distinct Libyan universities documented —
  * Benghazi, Tripoli, Omar Al-Mukhtar (photos) + Misurata, Sebha
@@ -314,85 +314,13 @@ function HeaderNav() {
  * + the inspection instrument's own markers, no stage panel. The stage
  * COPY lives on in HeroInspect's honest station annotations. */
 
-/* ── Miniature — the honest demo frame each chapter pairs with (r306:
- * composed as a FLAT interface fragment — the reference's product
- * mockup grammar: 1px frame, radius 0→2, no browser chrome, no
- * elevation; the app's own surface recipe and demo data, never
- * screenshots). */
-function Mini({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <figure className="mini" aria-label={`عرض توضيحي — ${label}`}>
-      <div className="mini-chrome" aria-hidden="true">
-        <span className="mini-chrome-label">مدارك — {label}</span>
-        <span className="mini-chrome-tag fo-mono" dir="ltr">demo</span>
-      </div>
-      <div className="mini-body">{children}</div>
-      <figcaption className="mini-caption">
-        <span className="mini-caption-tag">عرض توضيحي</span>
-        <span className="mini-caption-label">{label}</span>
-      </figcaption>
-    </figure>
-  );
-}
-
-function MiniCommunity() {
-  return (
-    <Mini label="المجتمع والتدريب">
-      <div className="mini-post">
-        <span className="mini-avatar" aria-hidden />
-        <div>
-          <p className="mini-post-title"><Icon icon={Users} size={12} /> نقاش: كيف تراجع قبل الاختبار؟</p>
-          <p className="mini-post-meta">وسوم: مراجعة · اختبارات — 12 ردًّا</p>
-        </div>
-      </div>
-      <div className="mini-post">
-        <span className="mini-avatar is-accent" aria-hidden />
-        <div>
-          <p className="mini-post-title">مسار الإحصاء التطبيقي</p>
-          <p className="mini-post-meta">{formatInt(TRAINING_TRACKS)} مسارًا تدريبيًا · {formatInt(240)} نقطة · شارة برونزية</p>
-        </div>
-      </div>
-    </Mini>
-  );
-}
-
-function MiniGovernance() {
-  const stats = [
-    { n: formatInt(QUALITY_BOARDS), t: 'مجالس جودة' },
-    { n: formatInt(INSTITUTIONS), t: 'مؤسّستَان معزولتان' },
-    { n: formatInt(colleges.length), t: 'كلية معروضة' },
-  ];
-  return (
-    <Mini label="الجودة والحاكمية">
-      <div className="mini-stats">
-        {stats.map((s) => (
-          <div key={s.t} className="mini-stat">
-            <span className="mini-stat-n fo-mono" dir="ltr">{s.n}</span>
-            <span className="mini-stat-t">{s.t}</span>
-          </div>
-        ))}
-      </div>
-      <p className="mini-foot">قفل حاكمية يوثّق آخر تعديل من المالك · سجل تدقيق كامل</p>
-    </Mini>
-  );
-}
-
-/* ── Chapters 05–06 — the capability ledger rows. r308: chapters
- * 01–04 moved into the pinned «رحلة التعلّم» walkthrough above
- * (JourneyScene) — the scroll is their timeline now; these two
- * complete the honest capability ledger as flat rows. */
-const CHAPTERS: { num: string; title: string; lede: React.ReactNode; mini: React.ReactNode }[] = [
-{
-    num: '05', mini: <MiniCommunity />,
-    title: 'المجتمع والتدريب',
-    lede: <>منشورات بوسوم وإعلانات مشتركة، ومسابقات وفعاليات، و{formatInt(TRAINING_TRACKS)} مسارًا تدريبيًا بنقاط وشارات ولوحة صدارة.</>,
-  },
-  {
-    num: '06', mini: <MiniGovernance />,
-    title: 'الجودة والحاكمية',
-    lede: <>{formatInt(QUALITY_BOARDS)} مجالسَ للجودة، وقفل حاكمية يوثّق آخر تعديل من مالك المنصّة، وعزل تامّ لبيانات كل مؤسّسة.</>,
-  },
-];
+/* ── R315 (K-E): the Mini demo frames + the chapters 05–06 ledger rows
+ * are RETIRED. They were R310-era leftovers (demo-tagged fragments
+ * with big orange numerals) that do not exist in the reference's
+ * grammar — the reference's map band is the pinned walkthrough alone.
+ * The honest content (community/training, quality/governance) lives on
+ * /capabilities; the ledger link stays in the mobile menu, the footer
+ * and the #live section foot. */
 
 export default function LandingPage() {
   useThemeSync();
@@ -1038,8 +966,10 @@ export default function LandingPage() {
 
         {/* ═══ [4] الفصول — the pinned map (the reference's 51%
             walkthrough). r308: chapters 01–04 live in the pinned
-            «رحلة التعلّم» walkthrough; 05–06 stay as numbered hairline
-            ledger rows with flat fragments ═══ */}
+            «رحلة التعلّم» walkthrough. R315 (K-E): the 05–06 demo
+            rows are retired — the reference's map band is the
+            walkthrough alone; the honest ledger lives on
+                       /capabilities ═══ */}
         <section id="chapters" className="chapters" aria-labelledby="chapters-title">
           <header className="chapters-head">
             <div className="chapters-head-copy">
@@ -1049,32 +979,20 @@ export default function LandingPage() {
               </RevealCssClass>
             </div>
             <RevealCssClass as="p" className="chapters-lede" delay={2}>
-              مرّر لترى الرحلة تُبنى: أربعة فصول تتحرّك في مشهدٍ واحد — ثم فصلان يعرضان واجهةً حقيقيّة. لا لقطات مُجمّلة ولا وعود.
+              مرّر لترى الرحلة تُبنى: أربعة فصول تتحرّك في مشهدٍ واحد. لا لقطات مُجمّلة ولا وعود.
             </RevealCssClass>
           </header>
 
           {/* r308 — «رحلة التعلّم»: the pinned walkthrough. Chapters
               01–04 play out across one persistent drawing while the
               scroll is the timeline (CSS sticky pin; stacked readable
-              sequence ≤991px). The ledger rows below complete it.
-              R313 (D7): the map owns ≈51% of the page — the
-              reference's proportion. */}
+              sequence ≤991px). R313 (D7): the map owns ≈51% of the
+              page — the reference's proportion. R315 (K-D): the
+              walkthrough reproduces the reference's map states —
+              statement → plan on the paper → INTRODUCTION card →
+              findings stations with the progress hairline → the red
+              room reveal → the closing column. */}
           <JourneyScene />
-
-          <div className="ch-rows">
-            {CHAPTERS.map((ch) => (
-              <article key={ch.num} className="ch" aria-labelledby={`ch-${ch.num}-title`}>
-                <span className="ch-num fo-mono" dir="ltr" aria-hidden>{ch.num}</span>
-                <div className="ch-head">
-                  <RevealCssClass as="h3" className="ch-title" id={`ch-${ch.num}-title`} delay={1}>
-                    {ch.title}
-                  </RevealCssClass>
-                  <RevealCssClass as="p" className="ch-lede" delay={2}>{ch.lede}</RevealCssClass>
-                </div>
-                <RevealCssClass as="div" className="ch-mini" delay={2}>{ch.mini}</RevealCssClass>
-              </article>
-            ))}
-          </div>
         </section>
 
         {/* ═══ [5] المنصّة فعليًا — two product blocks (the reference's
@@ -1413,24 +1331,62 @@ export default function LandingPage() {
               <p className="fo-footer-addr-line">لا بريد عام — المستودع هو القناة الوحيدة.</p>
             </div>
 
-            {/* [08] the drawn-mark cell — the reference's isometric cube
-                seat, Madarek's own star mark at full weight */}
+            {/* [08] the drawn-mark cell — the reference's line-logo seat:
+                Madarek's own khatam star drafted as a construction
+                drawing (R315 K-F: the floating filled diamond is
+                retired) — hairline construction circles + crosshairs
+                behind (1px screen hairlines, var(--rule)), the two
+                rotated squares stroked in INK var(--text), one small
+                accent square seated on the outer construction circle
+                (the registration beacon, the نقطة seat). Ink-on-paper,
+                token-driven for both themes. */}
             <div className="fo-fcell fo-fcell-mark">
               <RevealCssClass as="div" className="fo-footer-mark" delay={1} aria-hidden="true">
-                <StarMark size={160} className="fo-footer-mark-svg" />
+                <svg
+                  className="fo-footer-mark-svg"
+                  viewBox="0 0 230 230"
+                  focusable="false"
+                  style={{ display: 'block' }}
+                >
+                  {/* hairline construction circles — non-scaling 1px at
+                      every rendered size (215 @1440, 96 on phones) */}
+                  <circle cx="115" cy="115" r="112" fill="none" stroke="var(--rule)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+                  <circle cx="115" cy="115" r="84" fill="none" stroke="var(--rule)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+                  {/* crosshair rules at the four edges + the four 45°
+                      diagonal ticks (the rotated square's corner axes) */}
+                  <g stroke="var(--rule)" strokeWidth="1" vectorEffect="non-scaling-stroke">
+                    <line x1="115" y1="0" x2="115" y2="16" />
+                    <line x1="115" y1="214" x2="115" y2="230" />
+                    <line x1="0" y1="115" x2="16" y2="115" />
+                    <line x1="214" y1="115" x2="230" y2="115" />
+                    <line x1="35.8" y1="35.8" x2="55.6" y2="55.6" />
+                    <line x1="194.2" y1="35.8" x2="174.4" y2="55.6" />
+                    <line x1="35.8" y1="194.2" x2="55.6" y2="174.4" />
+                    <line x1="194.2" y1="194.2" x2="174.4" y2="174.4" />
+                  </g>
+                  {/* the khatam star — two rotated squares in ink (the
+                      geometric mark, one clean stroke each, no fill) */}
+                  <rect x="63" y="63" width="104" height="104" fill="none" stroke="var(--text)" strokeWidth="5" strokeLinejoin="miter" />
+                  <rect x="63" y="63" width="104" height="104" fill="none" stroke="var(--text)" strokeWidth="5" strokeLinejoin="miter" transform="rotate(45 115 115)" />
+                  {/* the accent registration square on the NE point of
+                      the outer construction circle (115+112·cos45,
+                      115−112·sin45 ≈ 194.2, 35.8) */}
+                  <rect x="188" y="30" width="12" height="12" fill="var(--accent)" />
+                </svg>
               </RevealCssClass>
             </div>
           </div>
 
           {/* the image-strip band (the reference's footer-img-wrap): the
               inspection lens over the journey drawing rides BELOW the
-              grid, above the legal row (the measured order) + the
-              GIANT outlined construction-line wordmark — Madarek's own
-              (مدارك + MADAREK), registration marks at the corners — as
-              the band's typographic cell (the reference's strip carries
-              its graphic on one side and THE MODEL on the other). The
-              lens strip hides ≤767px (the reference hides its strip
-              there too); the wordmark flows as its own band on mobile. */}
+              grid, above the legal row (the measured order), and the
+              GIANT drafted wordmark — Madarek's own «مدارك», one clean
+              single-contour stroke path per letter — spans the footer's
+              FULL inner measure at every ≥992px viewport (R315 K-F: the
+              ~380px CSS-text-stroke wordmark and its self-intersecting
+              contours at ك/د are retired). The lens strip hides ≤767px
+              (the reference hides its strip there too); the wordmark
+              flows as its own band on mobile, in its compact cut. */}
           <div className="fo-fstrip">
             <FooterLens />
             <div className="fo-wordmark" aria-hidden="true">
@@ -1438,7 +1394,87 @@ export default function LandingPage() {
               <span className="fo-wordmark-reg fo-wordmark-reg-tr">+</span>
               <span className="fo-wordmark-reg fo-wordmark-reg-bl">+</span>
               <span className="fo-wordmark-reg fo-wordmark-reg-br">+</span>
-              <span className="fo-wordmark-ar">مدارك</span>
+
+              {/* ── the WIDE cut — the ≥992px construction sheet, viewBox
+                  1200×92 (the ink band y 10..89 trimmed to a 6/7-unit
+                  margin — the 108-tall sheet spent 18px of the measured
+                  314 strip band on empty paper; the ink scale is set by
+                  the viewBox WIDTH alone, so the letters render at the
+                  same 88px @1398-wide cut). All five letters drafted on
+                  ONE shared baseline, stroke 6 units, square caps,
+                  miter joins, fill none — painted by currentColor:
+                  · baseline y=86 · dal shoulder y=46 · tall tops y=16
+                  · RTL letter order (right → left):
+                    م [1000..1160] · د [742..930] · ا @645 ·
+                    ر [400..560] · ك [40..330]
+                  · م INITIAL FORM (it connects to د): the round head
+                    r=23 centered (1137,63) — tangent to the baseline —
+                    plus the baseline exit stroke running left
+                    (1000,86 → 1137,86) + four quarter-arcs (sweep 0,
+                    counter-clockwise), NO close command (closing would
+                    retrace the exit stroke → a doubled contour).
+                  · د FINAL FORM (connected from م): the connector entry
+                    edge rises from the baseline (930,86 → 924,46), the
+                    shoulder runs left (→ 776,46), the left diagonal
+                    falls to the baseline (→ 742,86), the hook turns
+                    back right (→ 786,86).
+                  · ا ISOLATED: one straight riser (645,16 → 645,86).
+                  · ر ISOLATED: the head stroke (560,52 → 512,52)
+                    dropping into the long concave tail
+                    (Q 436,62 → tip 402,84).
+                  · ك ISOLATED: the hammer zigzag at the stem top
+                    (330,32 → 288,20 → 312,34), the stem leaning down
+                    (→ 286,86), the long foot running left (→ 66,86),
+                    the rising hook (→ 48,60). */}
+              <svg
+                className="fo-wordmark-svg"
+                viewBox="0 4 1200 92"
+                preserveAspectRatio="xMidYMid meet"
+                focusable="false"
+              >
+                <g className="fo-wordmark-ink">
+                  {/* ك */}
+                  <path d="M 330 32 L 288 20 L 312 34 L 286 86 L 66 86 L 48 60" />
+                  {/* ر */}
+                  <path d="M 560 52 H 512 Q 436 62 402 84" />
+                  {/* ا */}
+                  <path d="M 645 16 V 86" />
+                  {/* د */}
+                  <path d="M 930 86 L 924 46 H 776 L 742 86 H 786" />
+                  {/* م */}
+                  <path d="M 1000 86 H 1137 A 23 23 0 0 0 1160 63 A 23 23 0 0 0 1137 40 A 23 23 0 0 0 1114 63 A 23 23 0 0 0 1137 86" />
+                </g>
+              </svg>
+
+              {/* ── the COMPACT cut — viewBox 640×180: the same word at
+                  natural proportions for the <768px band (the wide cut
+                  would letterbox to ~30px of ink on a phone). Coordinate
+                  plan: baseline y=142 · shoulder y=76 · tall tops y=18 ·
+                  stroke 8 units · RTL:
+                    م [527..615] · د [390..505] · ا @365 ·
+                    ر [229..343] · ك [32..207] · gaps ≈ 22 units.
+                  Same letter skeletons, ~1.7× scale, tight construction
+                  spacing. */}
+              <svg
+                className="fo-wordmark-svg fo-wordmark-svg--compact"
+                viewBox="0 0 640 180"
+                preserveAspectRatio="xMidYMid meet"
+                focusable="false"
+              >
+                <g className="fo-wordmark-ink">
+                  {/* ك */}
+                  <path d="M 207 50 L 176 34 L 192 56 L 168 142 L 52 142 L 32 112" />
+                  {/* ر */}
+                  <path d="M 343 84 H 300 Q 262 92 229 138" />
+                  {/* ا */}
+                  <path d="M 365 18 V 142" />
+                  {/* د */}
+                  <path d="M 505 142 L 498 76 H 424 L 390 142 H 434" />
+                  {/* م */}
+                  <path d="M 527 142 H 581 A 34 34 0 0 0 615 108 A 34 34 0 0 0 581 74 A 34 34 0 0 0 547 108 A 34 34 0 0 0 581 142" />
+                </g>
+              </svg>
+
               <span className="fo-wordmark-en fo-mono" dir="ltr">MADAREK — ARABIC-FIRST LEARNING SHEET</span>
             </div>
           </div>

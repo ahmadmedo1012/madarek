@@ -1356,9 +1356,14 @@ html[data-theme='dark'] .fo-grain {
   color: var(--text-secondary);
 }
 
-/* ═══ الفصول 01–06 — the capability ledger rows ═════════════════════
- * One grammar for every chapter (the defect was six competing poster
- * layouts): a numbered hairline row — index / copy / flat fragment. */
+/* ═══ الفصول — the pinned map band (R315 K-E: the 05–06 ledger rows
+   and their Mini demo frames are RETIRED — the reference's map band
+   is the pinned walkthrough alone; the honest capability ledger lives
+   on /capabilities). The band's height arithmetic: head + the 649dvh
+   track + the section rhythm ≈ the reference's 6300px @1440×900 and
+   5376px @1024×768 (the track alone carries the traversal — the R314
+   PROPORTIONAL ruling holds: the station bands + stage flips are pin
+   units, untouched). ═══ */
 .chapters {
   padding-block: var(--sp-12);
 }
@@ -1390,417 +1395,6 @@ html[data-theme='dark'] .fo-grain {
   font-size: var(--fs-body);
   line-height: 1.7;
   color: var(--text-secondary);
-}
-
-.ch-rows {
-  display: grid;
-  border: 1px solid var(--rule);
-  border-radius: var(--r-xs);
-  background: color-mix(in srgb, var(--surface) 45%, transparent);
-  overflow: clip;
-}
-
-.ch {
-  display: grid;
-  grid-template-columns: minmax(56px, auto) minmax(0, 7fr) minmax(0, 6fr);
-  gap: var(--sp-5);
-  padding: var(--sp-6);
-  border-block-end: 1px solid var(--rule);
-  align-items: start;
-}
-
-.ch:last-child {
-  border-block-end: 0;
-}
-
-.ch-num {
-  font-size: var(--fs-h3);
-  font-weight: 500;
-  color: var(--accent-ink);
-  line-height: 1;
-  padding-block-start: var(--sp-1);
-}
-
-.ch-head {
-  display: grid;
-  gap: var(--sp-2);
-  align-content: start;
-}
-
-.ch-title {
-  font-family: var(--font-display);
-  font-size: var(--fs-h2);
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--text);
-}
-
-.ch-lede {
-  font-size: var(--fs-body);
-  line-height: 1.7;
-  color: var(--text-secondary);
-}
-
-.ch-mini {
-  min-inline-size: 0;
-}
-
-/* ── The interface fragment — the honest demo frame (r306, flat) ──
- * The reference's product-mockup grammar: a 1px frame, radius 0→2,
- * NO browser chrome, NO elevation — the fragment is a flat drawing
- * on the sheet, not a floating window. The chrome is a quiet header
- * row (fragment name + the honest demo tag); the caption carries the
- * «عرض توضيحي» marker beside the fragment's name. */
-.mini {
-  display: grid;
-  background: var(--surface);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-xs);
-  overflow: clip;
-}
-
-.mini-chrome {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-2) var(--sp-3);
-  background: color-mix(in srgb, var(--text) 4%, transparent);
-  border-block-end: 1px solid var(--border);
-}
-
-.mini-chrome-label {
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  color: var(--text-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.mini-chrome-tag {
-  margin-inline-start: auto;
-  padding: 0 var(--sp-2);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-xs);
-  font-size: var(--fs-xxs);
-  line-height: 1.6;
-  color: var(--text-muted);
-}
-
-.mini-body {
-  display: grid;
-  gap: var(--sp-3);
-  padding: var(--sp-4);
-}
-
-.mini-caption {
-  display: flex;
-  align-items: baseline;
-  gap: var(--sp-2);
-  padding: var(--sp-2-5) var(--sp-3);
-  border-block-start: 1px solid var(--border);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-
-.mini-caption-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1-5);
-  font-weight: 600;
-  color: var(--accent-ink);
-}
-
-.mini-caption-tag::before {
-  content: '';
-  inline-size: var(--sp-1-5);
-  block-size: var(--sp-1-5);
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.mini-caption-label {
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-/* ── Fragment internals — demo data on the app's own recipes ──────── */
-.mini-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-4);
-}
-
-.mini-course {
-  font-weight: 700;
-  font-size: var(--fs-body);
-}
-
-.mini-lecture {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-
-.mini-video {
-  position: relative;
-  display: grid;
-  place-items: center;
-  min-block-size: 128px;
-  border: 1px solid var(--border);
-  border-radius: var(--r-xs);
-  background: var(--neutral-900);
-  color: var(--neutral-50);
-}
-
-.mini-video-play {
-  display: inline-grid;
-  place-items: center;
-}
-
-.mini-video-time {
-  position: absolute;
-  inset-block-start: var(--sp-2);
-  inset-inline-start: var(--sp-2);
-  padding: var(--sp-0-5) var(--sp-2);
-  border-radius: var(--r-xs);
-  background: var(--neutral-800);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  font-variant-numeric: tabular-nums;
-}
-
-.mini-video-bar {
-  position: absolute;
-  inset-inline: var(--sp-3);
-  inset-block-end: var(--sp-2);
-  block-size: var(--sp-0-5);
-  border-radius: var(--r-full);
-  background: var(--neutral-800);
-}
-
-.mini-video-bar > span {
-  display: block;
-  block-size: 100%;
-  border-radius: inherit;
-  background: var(--accent);
-}
-
-.mini-quiz-q {
-  font-size: var(--fs-body);
-  font-weight: 600;
-}
-
-.mini-quiz-opts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
-}
-
-.mini-opt {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  padding: var(--sp-1-5) var(--sp-3);
-  border: 1px solid var(--border);
-  border-radius: var(--r-xs);
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-}
-
-.mini-opt.is-right {
-  border-color: var(--accent);
-  color: var(--accent-ink);
-  background: color-mix(in srgb, var(--accent) 8%, transparent);
-  font-weight: 600;
-}
-
-.mini-foot {
-  font-size: var(--fs-sm);
-  line-height: 1.6;
-  color: var(--text-muted);
-}
-
-.mini-mx-row {
-  display: grid;
-  grid-template-columns: minmax(64px, auto) 1fr auto auto;
-  align-items: center;
-  gap: var(--sp-3);
-}
-
-.mini-mx-name {
-  font-size: var(--fs-sm);
-  font-weight: 600;
-}
-
-.mini-mx-bar {
-  block-size: var(--sp-2);
-  border-radius: var(--r-full);
-  background: color-mix(in srgb, var(--text) 8%, transparent);
-}
-
-.mini-mx-bar > span {
-  display: block;
-  block-size: 100%;
-  border-radius: inherit;
-  background: var(--accent);
-}
-
-.mini-mx-val {
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  font-variant-numeric: tabular-nums;
-  color: var(--text-secondary);
-}
-
-.mini-chip {
-  padding: var(--sp-0-5) var(--sp-2);
-  border-radius: var(--r-xs);
-  background: color-mix(in srgb, var(--text) 6%, transparent);
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-}
-
-.mini-chip.is-ok {
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  color: var(--accent-ink);
-  font-weight: 600;
-}
-
-.mini-chip.is-gap {
-  background: color-mix(in srgb, var(--gold) 14%, transparent);
-  color: var(--gold-ink);
-  font-weight: 600;
-}
-
-.mini-doc {
-  position: relative;
-  display: grid;
-  gap: var(--sp-2);
-  padding: var(--sp-4);
-  border: 1px solid var(--border);
-  border-radius: var(--r-xs);
-  background: var(--bg);
-}
-
-.mini-doc-title {
-  font-size: var(--fs-body);
-  font-weight: 700;
-}
-
-.mini-doc-line {
-  block-size: var(--sp-1-5);
-  border-radius: var(--r-full);
-  background: color-mix(in srgb, var(--text) 10%, transparent);
-}
-
-.mini-doc-pin {
-  /* Flow as the sheet's first row at the inline-end corner — the old
-   * absolute corner placement overlapped the title's first line whenever
-   * the Arabic title wrapped (verified live at 390px, chapter 03). */
-  position: static;
-  order: -1;
-  justify-self: end;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  padding: var(--sp-0-5) var(--sp-2);
-  border-radius: var(--r-xs);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-  color: var(--accent-ink);
-  font-size: var(--fs-sm);
-  font-weight: 600;
-}
-
-.mini-steps {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-2) var(--sp-4);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-
-.mini-steps li {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-}
-
-.mini-steps .fo-mono {
-  color: var(--text-muted);
-}
-
-.mini-steps li.is-done {
-  color: var(--text-secondary);
-}
-
-.mini-steps li.is-now {
-  color: var(--accent-ink);
-  font-weight: 600;
-}
-
-.mini-steps li.is-now .fo-mono {
-  color: var(--accent-ink);
-}
-
-.mini-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--sp-4);
-}
-
-.mini-stat {
-  display: grid;
-  gap: var(--sp-1);
-  padding: var(--sp-3);
-  border: 1px solid var(--border);
-  border-radius: var(--r-xs);
-}
-
-.mini-stat-n {
-  font-size: var(--fs-display-md);
-  font-weight: 700;
-  line-height: 1.1;
-  color: var(--accent-ink);
-}
-
-.mini-stat-t {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-
-.mini-post {
-  display: flex;
-  gap: var(--sp-3);
-  align-items: flex-start;
-}
-
-.mini-avatar {
-  flex: none;
-  inline-size: var(--sp-7);
-  block-size: var(--sp-7);
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--text) 14%, transparent);
-}
-
-.mini-avatar.is-accent {
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
-}
-
-.mini-post-title {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  font-size: var(--fs-body);
-  font-weight: 600;
-}
-
-.mini-post-meta {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
 }
 
 /* ═══ التحديات (R313 · D7 §3) — the four pains: numbered cards with
@@ -2484,11 +2078,19 @@ html[data-theme='dark'] .fo-grain {
 .fo-footer {
   border-block-start: 1px solid var(--rule-strong);
   background: color-mix(in srgb, var(--surface) 35%, transparent);
+  /* R315 (K-F · B9): the colophon rides the page's own frame measure —
+   * the reference's footer spans the frame's INNER width (1426.69
+   * @1440, 374.13 @390 — never the full viewport), and its top rule
+   * stops at the frame lines too. */
+  margin-inline: 7px; /* spacing-gate: allow — the sheet frame's own inset (6.66px measured @1440), the page's seat constant */
 }
 
 .fo-footer-inner {
   padding-block: var(--sp-4) var(--sp-3);
-  padding-inline: 26px; /* spacing-gate: allow — the header/footer seat measure (33px − 7px inset), shared with .fo-header-inner */
+  /* R315 (K-F · B9): padding-inline 0 — the three bands (grid · strip
+   * · legal row) span the footer's full frame measure like the
+   * reference's; the CELLS carry their own inline inset. */
+  padding-inline: 0;
   display: grid;
   gap: var(--sp-6);
 }
@@ -2501,6 +2103,32 @@ html[data-theme='dark'] .fo-grain {
   .fo-footer-inner {
     padding-block: 0;
     gap: 0;
+  }
+}
+
+/* R315 (K-F · B9): the ≤991 flow — the bands keep the frame-wide
+ * measure (padding-inline 0 above) on a slimmer block rhythm; the
+ * ≤640 phone block butts them exactly like the reference's mobile
+ * footer (grid + strip + copyright, no band gaps). The mark and the
+ * subscribe seat step to the reference's own tablet ladder: 166px
+ * line-logo (165.75 measured @768) and the 44px input row (44.19). */
+@media (max-width: 991px) {
+  .fo-footer-inner {
+    padding-block: var(--sp-3);
+    gap: var(--sp-2);
+  }
+
+  .fo-footer-mark-svg {
+    inline-size: 166px; /* spacing-gate: allow — the reference's tablet line-logo measure (165.75 @768), an external constant */
+    block-size: 166px;
+  }
+
+  .fo-subscribe-input {
+    block-size: 42px; /* spacing-gate: allow — the measured tablet input row 44.19 − the border pair, an external constant */
+  }
+
+  .fo-subscribe-btn {
+    inline-size: 42px; /* spacing-gate: allow — the measured tablet arrow 44.19 − the border pair, an external constant */
   }
 }
 
@@ -2522,7 +2150,7 @@ html[data-theme='dark'] .fo-grain {
 }
 
 .fo-fcell {
-  padding: var(--sp-4);
+  padding: var(--sp-4) var(--sp-3); /* 16 block / 12 inline — the reference's own cell inset (13.33px measured) */
   display: grid;
   gap: var(--sp-1-5);
   align-content: start;
@@ -2615,17 +2243,27 @@ html[data-theme='dark'] .fo-grain {
  * rules and auto-place the cells into implicit tracks. ── */
 @media (min-width: 992px) {
   .fo-fgrid {
+    /* R315 (K-F · B9): the frame-measure grid (1426 @1440 — the footer
+     * spans the frame, not the viewport) splits into the reference's
+     * own 357 | 715 | 357 three-column read: tagline 1.5fr · three
+     * link columns 1fr each (238.19 measured per cell) · mark 1.5fr.
+     * The old 25/19/19/18/19 split squeezed the mark column to 263px
+     * (the reference's logo cell is 357.09) and stretched the links'
+     * union to 775 vs the measured 714.58. */
     grid-template-columns:
-      minmax(0, 25fr)
-      minmax(0, 19fr)
-      minmax(0, 19fr)
-      minmax(0, 18fr)
-      minmax(0, 19fr);
+      minmax(0, 1.5fr)
+      minmax(0, 1fr)
+      minmax(0, 1fr)
+      minmax(0, 1fr)
+      minmax(0, 1.5fr);
     grid-template-areas:
       'tagline na nb nc mark'
       'tagline ea ea ab mark';
     /* the grid band rides the measured reference height: the two auto
-     * rows stretch to 355 (244 + 105 content → 355) */
+     * rows stretch to 355 (the link row ~217 + the address row ~125
+     * content — align-content's normal/stretch distributes the slack
+     * to the auto rows so the cells' rules land on the band's own
+     * bottom border) */
     min-block-size: 355px; /* spacing-gate: allow — the measured reference grid band (355 @1427), an external constant */
   }
 
@@ -2642,14 +2280,15 @@ html[data-theme='dark'] .fo-grain {
   }
 
   /* the reference's link rows are compact (its menu band = 203px for
-   * five links): 28px targets, tighter gaps, leaner headings */
+   * five links): 28px targets, tighter gaps, leaner headings.
+   * R315 (K-F · B9): the BASE .fo-footer-link rule below (min-block
+   * 28px) now carries this rung — the old base 32px sat AFTER this
+   * block in the cascade and silently overrode it (equal specificity,
+   * later wins), painting every desktop link 32px and pushing the
+   * grid band to 372. */
   .fo-fcell {
     gap: var(--sp-1);
     padding: var(--sp-4) var(--sp-3);
-  }
-
-  .fo-footer-link {
-    min-block-size: 28px;
   }
 
   .fo-footer-heading {
@@ -2681,53 +2320,65 @@ html[data-theme='dark'] .fo-grain {
   }
 }
 
-/* ── R314 (cycle-2 §7 heights) — the image-strip band: the reference's
- * footer-img-wrap (314px, BELOW the grid, above the legal row). The
- * band splits graphic|typography exactly like the reference's own
- * strip (its architecture render on one side, THE MODEL on the
- * other): the inspection lens strip at inline-start + the closing
- * wordmark cell at inline-end. ≥768px only — ≤767px the lens hides
- * (the reference hides its strip there) and the wordmark flows as
- * its own band. ── */
+/* ── R315 (K-F · B9) — the image-strip band: the reference's
+ * footer-img-wrap (314px, BELOW the grid, above the legal row) split
+ * VERTICALLY: the inspection lens strip over the closing WORDMARK
+ * row — «مدارك» drafted as one clean single-contour stroke path per
+ * letter, spanning the footer's full inner measure at every ≥992px
+ * viewport (the old 34%-column seat painted a ~380px CSS-text-stroke
+ * wordmark whose contours self-intersected at ك/د — and the first B9
+ * pass let the lens run full-bleed-width, 302px tall, blowing the
+ * measured 314px band to 461 and the whole footer to 875). The two
+ * rows now SHARE the 314px band: the lens letterboxes inside its row,
+ * the wordmark row keeps its full-width cut. ≥768px only — ≤767px
+ * the lens hides (the reference hides its strip there) and the
+ * wordmark flows as its own band in its compact cut. ── */
 .fo-fstrip {
   display: grid;
+  /* the lens's cqi cap below reads the strip's own inline measure */
+  container-type: inline-size;
 }
 
 @media (min-width: 768px) {
   .fo-fstrip {
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 34%);
-    margin-inline: -26px; /* spacing-gate: allow — full-bleed past the footer seat padding, the strip's own measured horizon band (the .fl convention) */
+    grid-template-columns: minmax(0, 1fr);
+    /* the tablet band: both rows content-sized — the lens sheet runs
+     * full-bleed WIDTH-driven (1000:210 of the strip measure), the
+     * wordmark row follows; the ≥992 block below pins the measured
+     * 314px band with the lens letterboxed. */
+    grid-template-rows: auto auto;
     border-block-start: 1px solid var(--rule);
-    min-block-size: 314px; /* spacing-gate: allow — the measured reference strip band (314 @1427), an external constant */
   }
 
-  /* the lens cell: the drawing letterboxes (aspect-meet) inside the
-   * band — the pointer math is viewBox-relative against the strip box
-   * and keeps working (y clamps at the letterbox) */
+  /* the lens row: the drawing rides the strip at its own 1000:210
+   * measure, width-driven on the tablet band (the pointer math stays
+   * viewBox-relative against the strip box and keeps working — the
+   * clamp guards already exist) */
   .fo-fstrip .fl {
     display: flex;
     align-items: center;
+    justify-content: center;
     border-block: 0;
+    border-block-end: 1px solid var(--rule); /* the rule between the two rows */
     background: none;
   }
 
   .fo-fstrip .fl-svg {
     inline-size: 100%;
     block-size: auto;
+    aspect-ratio: 1000 / 210;
   }
 
-  /* the wordmark cell — the band's typographic seat */
+  /* the wordmark row — the band's typographic seat: the drawn word
+   * spans the strip's full measure edge-to-edge inside the reg-mark
+   * gutters (14px — the '+' marks own the corners) */
   .fo-fstrip .fo-wordmark {
     margin-block-start: 0;
-    padding: var(--sp-3) var(--sp-6);
-    border-inline-start: 1px solid var(--rule);
+    padding-inline: 14px;
+    padding-block: var(--sp-1-5) var(--sp-1);
     align-content: center;
     justify-items: center;
-    gap: var(--sp-2);
-  }
-
-  .fo-fstrip .fo-wordmark-ar {
-    font-size: clamp(64px, 7vw, 104px);
+    gap: var(--sp-0-5);
   }
 
   .fo-fstrip .fo-wordmark-en {
@@ -2737,29 +2388,91 @@ html[data-theme='dark'] .fo-grain {
   }
 }
 
-/* the GIANT outlined construction-line wordmark (the mobile flow:
- * its own band under the grid). Outlined via text-stroke
- * (paper-transparent fill), registration marks at the four corners. */
+@media (min-width: 992px) {
+  /* the measured 314px strip band — a DEFINITE block-size, not a
+   * min-block-size floor: with an indefinite height the 1fr lens
+   * track sizes from its item's max-clamped contribution (the
+   * 21%-of-strip cap, 299px @1440) and the band blows to 440; the
+   * definite 314 makes the free space real — the wordmark row (auto)
+   * takes its measure and the lens row gets the remainder, its sheet
+   * letterboxing inside (block-size 100% of the row, the aspect gives
+   * the width, the cqi cap keeps the sheet inside the strip on the
+   * 992–1080 band where the wordmark row runs short). */
+  .fo-fstrip {
+    grid-template-rows: minmax(0, 1fr) auto;
+    block-size: 314px; /* spacing-gate: allow — the measured reference strip band (314 @1427), an external constant */
+  }
+
+  .fo-fstrip .fl-svg {
+    block-size: 100%;
+    min-block-size: 0;
+    /* the guard: on the 992–1080 band the wordmark row is short, the
+     * lens row grows past 21% of the strip's own width and a pure
+     * aspect-derived width would push the sheet out of the band — the
+     * cqi cap pins the lens to the strip's real measure (the drawing
+     * goes full-bleed width-driven exactly like the tablet band
+     * instead of cropping or spilling). */
+    max-block-size: calc(100cqi * 210 / 1000);
+    inline-size: auto;
+  }
+}
+
+/* the GIANT drafted construction-line wordmark (R315 K-F: the
+ * CSS-text-stroke seat is retired — its 2px stroke painted both sides
+ * of every glyph outline and self-intersected at ك/د — for a
+ * hand-built SVG: one clean stroke path per letter, uniform width,
+ * square drafting caps/joins, inked by var(--text) through
+ * currentColor, filling the footer's inner measure at every ≥992px
+ * viewport). Two cuts of the same word share the band: the WIDE
+ * construction sheet (≥768) and the COMPACT natural word (<768, where
+ * the wide cut would letterbox to ~30px of ink). Registration '+'
+ * marks keep the four corners; the Latin mono line keeps the
+ * bilingual drafting voice. Decorative — aria-hidden, static (no
+ * reveal), clean under reduced motion by construction. */
 .fo-wordmark {
   position: relative;
   display: grid;
   justify-items: center;
-  gap: var(--sp-1-5);
-  padding-block: var(--sp-3) var(--sp-2);
+  gap: var(--sp-1);
+  padding-block: var(--sp-2) var(--sp-1-5);
+  padding-inline: 14px; /* the reg-mark gutters keep the mono line clear of the corner marks */
   margin-block-start: var(--sp-2);
 }
 
-.fo-wordmark-ar {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(72px, 9vw, 136px);
-  line-height: 1;
-  letter-spacing: 0;
-  color: transparent;
-  -webkit-text-stroke: 2px var(--text);
-  paint-order: stroke fill;
-  /* Firefox text-stroke twin */
-  text-shadow: none;
+.fo-wordmark-svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  color: var(--text); /* the ink — every letter strokes currentColor */
+}
+
+.fo-wordmark-ink path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 6; /* uniform drafting ink — 6 viewBox units on the wide sheet */
+  stroke-linecap: square; /* drafting caps */
+  stroke-linejoin: miter; /* ruler corners */
+}
+
+/* the compact cut: the same drafting ink at the phone band's own
+ * scale — hidden wherever the wide sheet shows (and vice versa) */
+.fo-wordmark-svg--compact {
+  display: none;
+  max-inline-size: 480px; /* the tall phone/small-tablet band keeps a word, not a wall */
+}
+
+.fo-wordmark-svg--compact path {
+  stroke-width: 8; /* the compact sheet's own ink weight (viewBox 640×180) */
+}
+
+@media (max-width: 767px) {
+  .fo-wordmark-svg:not(.fo-wordmark-svg--compact) {
+    display: none;
+  }
+
+  .fo-wordmark-svg--compact {
+    display: block;
+  }
 }
 
 .fo-wordmark-en {
@@ -2767,6 +2480,7 @@ html[data-theme='dark'] .fo-grain {
   letter-spacing: 0.32em; /* Latin mono — tracking allowed */
   color: var(--text-muted);
   text-transform: uppercase;
+  text-align: center;
 }
 
 .fo-wordmark-reg {
@@ -2781,10 +2495,6 @@ html[data-theme='dark'] .fo-grain {
 .fo-wordmark-reg-tr { inset-block-start: 0; inset-inline-end: 0; }
 .fo-wordmark-reg-bl { inset-block-end: 0; inset-inline-start: 0; }
 .fo-wordmark-reg-br { inset-block-end: 0; inset-inline-end: 0; }
-
-html[data-theme='dark'] .fo-wordmark-ar {
-  -webkit-text-stroke-color: var(--text);
-}
 
 .fo-footer-col {
   display: grid;
@@ -2816,7 +2526,13 @@ html[data-theme='dark'] .fo-wordmark-ar {
   font-size: var(--fs-sm);
   color: var(--text-secondary);
   text-decoration: none;
-  min-block-size: 32px;
+  /* R315 (K-F · B9): the compact rung now lives on the BASE rule —
+   * the ≥992 block's old 28px twin sat BEFORE this rule in the file
+   * and lost the same-specificity cascade to this 32px, painting the
+   * desktop links 4px too tall (row 244 vs the reference's 203 and
+   * the grid band 372 vs 355). ≤760 steps to 26; the ≥992 block
+   * keeps its note. */
+  min-block-size: 28px;
   display: inline-flex;
   align-items: center;
   transition: color var(--t-fast) var(--ease);
@@ -2825,7 +2541,15 @@ html[data-theme='dark'] .fo-wordmark-ar {
 /* ── The subscribe seat — the reference's geometry (input 358×40,
  * hairline #B3B3AF + the 40×40 arrow cell), in its HONEST disabled
  * state: no endpoint exists, so the seat explains itself and collects
- * nothing (NO fake submission, NO success theatre). */
+ * nothing (NO fake submission, NO success theatre).
+ * R315 (K-F · B9): the reference's INPUT element spans its whole
+ * column (358.08 of the 357.08 column — its 1px border kisses the
+ * frame line) with the 40×40 arrow seated ON the input's inline-end
+ * edge; the row bleeds past the tagline cell's own padding to the
+ * cell box so the input carries the reference's measure (the old
+ * inset row measured 281px @1440 — 77px short of the role).
+ * ≤640: the reference's mobile full-bleed — 374.13×47.63 with the
+ * 47.63 arrow (all measured @390). */
 .fo-subscribe {
   display: grid;
   gap: var(--sp-2);
@@ -2833,16 +2557,20 @@ html[data-theme='dark'] .fo-wordmark-ar {
 }
 
 .fo-subscribe-row {
+  position: relative;
   display: flex;
   align-items: stretch;
   border: 1px solid var(--border-strong);
+  /* bleed to the tagline cell's own box — the cell IS the reference's
+   * column (356.5 @1440, 376 @390) */
+  margin-inline: calc(-1 * var(--sp-3));
 }
 
 .fo-subscribe-input {
   flex: 1;
   min-inline-size: 0;
-  block-size: 40px;
-  padding-inline: var(--sp-3);
+  block-size: 38px; /* the row (38 + the 1px pair) = the measured 40 */
+  padding-inline: var(--sp-3) 52px; /* the inline-end run keeps the arrow cell clear */
   background: transparent;
   border: 0;
   color: var(--text);
@@ -2861,8 +2589,10 @@ html[data-theme='dark'] .fo-wordmark-ar {
 }
 
 .fo-subscribe-btn {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
   inline-size: 40px;
-  block-size: 40px;
   display: grid;
   place-items: center;
   background: none;
@@ -2902,11 +2632,17 @@ html[data-theme='dark'] .fo-wordmark-ar {
   font-family: var(--font-mono);
   font-size: max(13px, var(--fs-mono-md));
   direction: ltr;
+  overflow-wrap: anywhere; /* the 31-char URL breaks cleanly instead of overflowing the track */
 }
 
 /* ── The giant mark — 215×215, the reference's scroll fade-in
  * (0.61→1): the reveal is OPACITY-ONLY (the reference fades, never
- * lifts), so the .reveal-up translate is neutralised here. */
+ * lifts), so the .reveal-up translate is neutralised here.
+ * R315 (K-F · B9): the mark itself is the CONSTRUCTION-LINE khatam —
+ * hairline circles/crosshairs behind (non-scaling 1px var(--rule)),
+ * the two rotated squares in ink var(--text), one small accent
+ * registration square on the outer circle — the floating filled
+ * diamond is retired. ── */
 .fo-footer-col-mark {
   justify-items: center;
 }
@@ -2926,7 +2662,33 @@ html[data-theme='dark'] .fo-wordmark-ar {
   block-size: 215px;
 }
 
-/* the legal row — the reference's copyright band (42px measured). */
+/* ── R315 (K-F · B9) — the footer's brand block reads as a real
+ * two-line column: the name + the descriptor rode as INLINE spans
+ * inside one anonymous block and, once a narrow cell pressed them,
+ * wrapped into each other's boxes (the «مدارك» name overlapped its
+ * own «منصّة التعليم الذكي» descriptor — the bbox census hit). Block
+ * flow: one grid row per line, the mark never collapses, the cell's
+ * real width carries the pair. Header twin untouched (scoped). ── */
+.fo-footer .fo-brand {
+  inline-size: 100%;
+}
+
+.fo-footer .fo-brand-mark {
+  flex: 0 0 auto;
+}
+
+.fo-footer .fo-brand-stack {
+  display: grid;
+  gap: var(--sp-0-5);
+  justify-items: start;
+  min-inline-size: 0;
+}
+
+/* the legal row — the reference's copyright band (42px measured
+ * @1440; its mobile band stacks 95.81 tall @390 with hairline rows).
+ * R315 (K-F · B9): with the footer riding the frame measure the row
+ * carries its own 26px inline inset (the reference's copyright text
+ * sits at 26.66) instead of inheriting the retired 26px inner pad. */
 .fo-footer-bottom {
   display: flex;
   flex-wrap: wrap;
@@ -2934,6 +2696,7 @@ html[data-theme='dark'] .fo-wordmark-ar {
   justify-content: space-between;
   gap: var(--sp-3);
   padding-block-start: var(--sp-4);
+  padding-inline: var(--sp-3);
   border-block-start: 1px solid var(--rule);
   color: var(--text-muted);
   font-size: var(--fs-sm);
@@ -2942,6 +2705,7 @@ html[data-theme='dark'] .fo-wordmark-ar {
 @media (min-width: 992px) {
   .fo-footer-bottom {
     padding-block: var(--sp-2) 0;
+    padding-inline: 26px; /* spacing-gate: allow — the reference's own copyright-text inset (26.66 measured), an external constant */
     min-block-size: 42px; /* spacing-gate: allow — the measured reference legal row (42), an external constant */
   }
 }
@@ -3096,14 +2860,6 @@ html[data-theme='dark'] .fo-wordmark-ar {
     align-items: start;
   }
 
-  .ch {
-    grid-template-columns: minmax(48px, auto) minmax(0, 1fr);
-  }
-
-  .ch-mini {
-    grid-column: 2;
-  }
-
   .pm-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -3116,9 +2872,31 @@ html[data-theme='dark'] .fo-wordmark-ar {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* R314 (V9): the footer cell grid pairs up on tablet */
+  /* R315 (B9 · K-F) — the sub-992 cell grid, recut coherently: the
+   old cascade (a two-track template with NO area map at 769–1024,
+   a max-760 area map, a max-640 single-column map, plus a
+   grid-column:span-2 longhand fighting the named areas) left the
+   tablet band placing cells into two IMPLICIT tracks and the phone
+   grid squeezing the tagline to a ~112px sliver while the account
+   column overlapped the address cell. The areas now resolve inside
+   the two-column band at every sub-992 width — one map for the
+   tablet band (addr pair, the measured V13 pairing), one for the
+   phone band below (full-width address rows: the honest address
+   lines + the repo URL wrap on real width, headings on their own
+   row, block flow, no overlaps). */
   .fo-fgrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'strip strip'
+      'tagline tagline'
+      'links-a links-b'
+      'links-c links-c'
+      'addr-a addr-b'
+      'mark mark';
+  }
+
+  .fo-fcell {
+    min-inline-size: 0; /* grid items wrap instead of overflowing the track */
   }
 
   .fo-fcell-strip {
@@ -3178,16 +2956,6 @@ html[data-theme='dark'] .fo-wordmark-ar {
   .fo-hero-side-foot {
     justify-content: space-between;
     inline-size: 100%;
-  }
-
-  .ch {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--sp-3);
-    padding: var(--sp-5);
-  }
-
-  .ch-mini {
-    grid-column: auto;
   }
 
   /* R313 (D7): the new families' flow rules — the pains stack, the
@@ -3398,9 +3166,13 @@ html[data-theme='dark'] .fo-wordmark-ar {
     gap: var(--sp-2);
   }
 
-  /* the footer: the strip thins, the wordmark caps, cells pad down */
+  /* the footer: the strip thins, the wordmark caps, cells pad down.
+   * R315 (K-F · B9): the tablet mark rides the reference's own
+   * proportional ladder — 166px (Heron 165.75 @768, seated in the
+   * ≤991 block above) with the cell's breathing room, not the
+   * desktop's 215. */
   .fo-fcell {
-    padding: var(--sp-4);
+    padding: var(--sp-3);
     min-block-size: 0;
   }
 
@@ -3409,19 +3181,12 @@ html[data-theme='dark'] .fo-wordmark-ar {
   }
 
   .fo-fcell-mark {
-    min-block-size: 120px;
+    min-block-size: 0;
+    padding-block: var(--sp-3);
   }
 
   .fo-wordmark {
-    padding-block: var(--sp-5) var(--sp-3);
-  }
-
-  .fo-wordmark-ar {
-    font-size: clamp(72px, 26vw, 104px);
-  }
-
-  .fo-wordmark {
-    padding-block: var(--sp-6) var(--sp-4);
+    padding-block: var(--sp-4) var(--sp-3);
   }
 
   /* the CTA slab: the sketch + the tertiary meta rows fold on mobile
@@ -3449,11 +3214,14 @@ html[data-theme='dark'] .fo-wordmark-ar {
   }
 
   /* the footer cells pair up on small screens (1-col stack was the
-     +55% height offender). R314 cycle-2: the areas re-declare at TWO
-     columns — the V9 four-token strings against a two-track template
-     left the un-listed tracks auto-sized and squeezed the tagline
-     into a ~33px sliver column (VLM-confirmed breakage); every named
-     placement now resolves inside the two-column band. */
+     +55% height offender). R315 (B9 · K-F): the area map below 760
+     is the SAME two-column map as the tablet band (no second
+     template to drift against); the phone band's own map (the
+     full-width address rows) lives in the ≤640 block with the last
+     word in the cascade. The old grid-column:span-2 longhand on the
+     account column is RETIRED — it fought the named area and was
+     the overlap source (the account cell spanned into the address
+     column, «العنوان» under the account links). */
   .fo-fgrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
@@ -3463,10 +3231,6 @@ html[data-theme='dark'] .fo-wordmark-ar {
       'links-c links-c'
       'addr-a addr-b'
       'mark mark';
-  }
-
-  .fo-fcell-links:last-of-type {
-    grid-column: span 2;
   }
 
   .fo-footer-about {
@@ -3543,40 +3307,41 @@ html[data-theme='dark'] .fo-wordmark-ar {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* R314 (V9): the cell grid stacks single-column; the wordmark
-     scales with the clamp; the strip stays a horizon band. R314
-     cycle-2: the areas re-declare at ONE column (same sliver fix as
-     the two-column band above — every named placement resolves). */
+  /* R314 (V9): the cell grid keeps TWO columns on phones. R315
+     (B9 · K-F): the address + contact cells take FULL rows — the
+     honest address line and the repo URL wrap on the full band width
+     (the paired 112px tracks broke their wrapping and collided);
+     every named placement resolves inside the two-column band, no
+     span/auto longhands fighting the map. */
   .fo-fgrid {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
-      'strip'
-      'tagline'
-      'links-a'
-      'links-b'
-      'links-c'
-      'addr-a'
-      'addr-b'
-      'mark';
-  }
-
-  .fo-fcell-tagline {
-    grid-column: auto;
+      'strip strip'
+      'tagline tagline'
+      'links-a links-b'
+      'links-c links-c'
+      'addr-a addr-a'
+      'addr-b addr-b'
+      'mark mark';
   }
 
   .fo-fcell-strip {
-    block-size: 130px;
+    block-size: 74px; /* spacing-gate: allow — the phone band's own horizon sliver (the reference has no strip-image cell @390; its grid budget is 1006.36 measured) */
   }
 
   .fo-fcell-mark {
-    /* V13's compact 120 floor (the ≤760 band's own rule) — the V9-era
-       180 floor here overrode it on phones for no measured reason */
-    min-block-size: 120px;
+    /* R315 (K-F · B9): the reference's mobile logo ROW breathes — its
+       wrapper is 182.58 tall around the 119.08 mark @390; the mark
+       cell centres the same 119 drawing in the same breathing room
+       (the old 96px twin sat in a 120px floor, 62px short of the
+       measured row). */
+    min-block-size: 0;
+    padding-block: 32px; /* spacing-gate: allow — the measured breathing room (182.58 − 119.08)/2 @390, an external constant */
   }
 
   .fo-footer-mark-svg {
-    inline-size: 120px;
-    block-size: 120px;
+    inline-size: 119px; /* spacing-gate: allow — the reference's phone line-logo measure (119.08 @390), an external constant */
+    block-size: 119px;
   }
 
   .fo-cta-actions .btn {
@@ -4802,18 +4567,26 @@ html[data-theme='dark'] .fo-wordmark-ar {
    ════════════════════════════════════════════════════════════════════ */
 
 /* ── jt — the journey walkthrough ────────────────────────────────────
-   The track is ~380vh; the pin is CSS sticky full-viewport (the
-   reference's own mechanism — no JS pin); the window keeps the same
-   drawing while overlay layers cross-fade; stations ride the track;
-   the capability column expands at pin end (width, once, 400ms). */
+   The pin is CSS sticky full-viewport (the reference's own mechanism
+   — no JS pin); the window keeps the same drawing while overlay
+   layers cross-fade; stations ride the track; the capability column
+   expands at pin end (width, once, 400ms). R315 (K-D): the walkthrough
+   carries the reference's six map states — statement → plan on the
+   paper → INTRODUCTION card → findings stations → the red-room reveal
+   → the closing column — on the ONE --jt-p clock. */
 .jt {
   position: relative;
-  /* the scroll timeline (R313 · D7 §4): the track is 600dvh tall —
-     the map owns ≈51% of the sheet (the reference's 6300px band:
-     600dvh ≈ 5400px + the section head + the chapters 05–06 rows at
-     1440×900); the sticky pin (first flow child, 100dvh) sticks for
-     (600 − 100)dvh of scroll — ~1350px per stage. */
-  block-size: 600dvh;
+  /* the scroll timeline (R315 · K-D/K-E geometry): the track is
+     649dvh tall — with the section head (≈228px) + the band rhythm
+     (≈232px) it lands the chapters band at ≈6301px @1440×900 and
+     ≈5383px @1024×768 — the reference's own map heights (6300/5376,
+     both = 700vh on Heron; the residual is the head Madarek seats
+     outside the pin). The 05–06 rows are gone (K-E) so the track
+     alone carries the traversal. The sticky pin (first flow child,
+     100dvh) sticks for (649 − 100)dvh of scroll — the station bands
+     + the stage flips stay PROPORTIONAL (the R314 ruling): they are
+     pin units, so the re-proportion never moves them. */
+  block-size: 649dvh;
   margin-block-start: var(--sp-6);
 }
 
@@ -4828,15 +4601,39 @@ html[data-theme='dark'] .fo-wordmark-ar {
   z-index: 1;
 }
 
+/* R315 (K-D) — paper-direct seating: the plan sits directly on the
+   SHEET — no white inset box, no boxed caption (the plan's own
+   pl-sheet ground IS the page paper #F6F6EE, so the poché reads as
+   drawn on the page itself, the reference's own look; in dark theme
+   the plan stays a paper artifact by the R314 §4.2 ruling). The
+   corner plus marks stay — the drawing-frame registration grammar. */
 .jt-window {
   position: relative;
   flex: 1 1 auto;
   max-inline-size: min(1240px, 100%);
   margin-inline: auto;
-  border: 1px solid var(--rule);
-  border-radius: var(--r-xs);
-  background: var(--surface);
-  padding: clamp(var(--sp-3), 2.2vw, var(--sp-6));
+}
+
+/* the findings' progress hairline — the plan-width rule riding under
+   the sheet (both window instances carry it); the fill grows from the
+   inline-start edge (the reading direction) with the walkthrough's
+   reading progress --jt-r (the mobile reading parameter / the desktop
+   pin — JourneyScene writes it). */
+.jt-progress {
+  position: absolute;
+  inset-block-end: -14px;
+  inset-inline: 0;
+  block-size: 1px;
+  background: var(--rule);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.jt-progress > span {
+  display: block;
+  block-size: 100%;
+  inline-size: calc(var(--jt-r, 0) * 100%);
+  background: var(--accent);
 }
 
 /* the corner plus marks — the drawing-frame grammar */
@@ -5040,17 +4837,18 @@ html[data-theme='dark'] .fo-wordmark-ar {
 }
 
 
+/* R315 (K-D) — the status caption UNBOXED: no border, no ground, no
+   chip — a bare mono line on the paper under the sheet's foot, beside
+   the progress hairline (the reference's map carries its readouts as
+   plain mono marks on the plan, never boxed HUDs). The stacked
+   crossfade mechanism (grid-area 1/1 + overflow clip) is unchanged. */
 .jt-status {
   position: absolute;
-  inset-block-end: 14px;
-  inset-inline-start: 50%;
-  translate: -50% 0;
+  inset-block-end: -36px;
+  inset-inline-start: 0;
+  translate: none;
   display: grid;
   overflow: hidden;
-  border: 1px solid var(--rule);
-  border-radius: var(--r-xs);
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  padding: 3px 10px; /* spacing-gate: allow — instrument-tuned status strip (r308 walkthrough) */
   z-index: 2;
 }
 
@@ -5069,6 +4867,112 @@ html[data-theme='dark'] .fo-wordmark-ar {
 .jt[data-stage='2'] .jt-status-line:nth-child(3),
 .jt[data-stage='3'] .jt-status-line:nth-child(4) {
   opacity: 1;
+}
+
+/* ── R315 (K-D) — the opening statement ──────────────────────────────
+   One line centered over the paper (the reference's home-intel
+   headline state): the opacity scrubs out through the first station
+   band's opening; the driver flips visibility at the same edge so the
+   faded copy leaves the a11y tree. Bare text over the drawing — the
+   reference's own statement-over-window composition. */
+.jt-statement {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding-inline: var(--page-gutter);
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.4vw, 52px);
+  font-weight: 700;
+  line-height: 1.12;
+  color: var(--text);
+  pointer-events: none;
+  z-index: 3;
+  opacity: clamp(0, (0.13 - var(--jt-p, 0)) / 0.07, 1);
+  visibility: hidden;
+}
+
+.jt-statement[data-on='on'] {
+  visibility: visible;
+}
+
+/* ── R315 (K-D) — the INTRODUCTION card ──────────────────────────────
+   The reference's corner card (home-map-intro, 233×156 over the
+   window's bottom corner): a dark var(--text) ground, the title bar,
+   four lines that scrub-reveal line by line, and the mono continue
+   affordance at the foot. It seats at the pin's bottom inline-END so
+   the stations' inline-start column never crosses it, fades in with
+   the first station band and hands off to the closing column before
+   the side opens (pin .93) — the reference's card holds the same
+   bottom corner through the whole plan walk. */
+.jt-intro {
+  position: absolute;
+  inset-block-end: var(--sp-6);
+  inset-inline-end: var(--page-gutter);
+  inline-size: min(300px, 34vw);
+  margin: 0;
+  background: var(--text);
+  color: var(--bg);
+  pointer-events: none;
+  z-index: 3;
+  opacity:
+    clamp(0, (var(--jt-p, 0) - 0.09) / 0.05, 1) *
+    clamp(0, (0.9 - var(--jt-p, 1)) / 0.06, 1);
+  visibility: hidden;
+}
+
+.jt-intro[data-on='on'] {
+  visibility: visible;
+}
+
+.jt-intro-title {
+  margin: 0;
+  padding: var(--sp-2-5) var(--sp-3);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-block-end: 1px solid color-mix(in srgb, var(--bg) 22%, transparent);
+}
+
+.jt-intro-lines {
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+}
+
+.jt-intro-line {
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--bg) 86%, transparent);
+}
+
+/* the per-line scrub windows — line i unmasks across its own slice of
+   the mid-traversal (the card's dwell: --jt-p .14 → .50, each line
+   ~.09 wide; the words inside a line unmask in sequence — ScrubReveal
+   maps --wr-p onto --wr-n). */
+.jt-intro .jt-intro-line:nth-child(1) { --wr-p: clamp(0, (var(--jt-p, 0) - 0.14) / 0.09, 1); }
+.jt-intro .jt-intro-line:nth-child(2) { --wr-p: clamp(0, (var(--jt-p, 0) - 0.23) / 0.09, 1); }
+.jt-intro .jt-intro-line:nth-child(3) { --wr-p: clamp(0, (var(--jt-p, 0) - 0.32) / 0.09, 1); }
+.jt-intro .jt-intro-line:nth-child(4) { --wr-p: clamp(0, (var(--jt-p, 0) - 0.41) / 0.09, 1); }
+
+.jt-intro-more {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3) var(--sp-2-5);
+  border-block-start: 1px solid color-mix(in srgb, var(--bg) 22%, transparent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.04em;
+  opacity: clamp(0, (var(--jt-p, 0) - 0.44) / 0.06, 1);
+}
+
+/* the ≤991px readable twins never display at ≥992px — the pin's
+   overlay instances carry the states there (the PlanWindow twin
+   discipline: never both in the tree at once). */
+.jt-statement-m,
+.jt-intro-m {
+  display: none;
 }
 
 /* the expanding capability column — opens at pin end (once) */
@@ -5233,8 +5137,14 @@ html[data-theme='dark'] .fo-wordmark-ar {
 
 /* the journey scene's responsive ladder: the pin dies ≤991px into a
    stacked readable sequence (the reference's own ladder) — R312: the
-   sequence is now CARRIED by the camera (the .jt-flow block): frame →
-   the station cards, then the side column closes outside the flow. */
+   sequence is now CARRIED by the camera (the .jt-flow block): the
+   statement + INTRODUCTION twins → the frame → the station cards, then
+   the side column closes outside the flow. R315 (K-D): the mobile
+   band re-proportions to the reference's own map heights — the equal
+   station bands carry the traversal (64svh → the --jt-row-h ladder:
+   89svh phones / 97svh tablets portrait / 48svh short-landscape, the
+   rungs below) so .chapters lands ≈4813px @390×844 and ≈5454px
+   @768×1024 (the manifest's per-section targets). */
 @media (max-width: 991px) {
   .jt {
     block-size: auto;
@@ -5249,6 +5159,43 @@ html[data-theme='dark'] .fo-wordmark-ar {
     align-items: stretch;
     padding-inline: 0;
     order: 3; /* the side column closes the stacked flow */
+  }
+
+  /* R315 (K-D) — the PIN's overlay instances never display at ≤991px;
+   * the readable twins (below — their OWN -m classes, so the pin
+   * instance's overlay/scrub styles never leak into them) carry the
+   * content in flow. */
+  .jt-pin .jt-statement,
+  .jt-pin .jt-intro {
+    display: none;
+  }
+
+  /* the readable twins — the statement opens the flow, the card sits
+     under it with its lines standing complete (the stacked-readable
+     contract; the pin instance's scrub windows never apply here). */
+  .jt-statement-m {
+    display: block;
+    margin: 0 0 var(--sp-4);
+    font-family: var(--font-display);
+    font-size: clamp(26px, 7vw, 34px);
+    font-weight: 700;
+    line-height: 1.18;
+    color: var(--text);
+  }
+
+  .jt-intro-m {
+    display: block;
+    margin-block-end: var(--sp-5);
+    background: var(--text);
+    color: var(--bg);
+  }
+
+  .jt-intro-m .jt-intro-line {
+    --wr-p: 1;
+  }
+
+  .jt-intro-m .jt-intro-more {
+    opacity: 1;
   }
 
   /* the flow: a real block at ≤991px — the camera's sticky container.
@@ -5290,14 +5237,17 @@ html[data-theme='dark'] .fo-wordmark-ar {
     block-size: 100%;
   }
 
-  /* the mono status strip rides the frame's edge — a bottom-start
-     HUD chip over the camera (was a static line under the shrunken
-     sheet in R310). */
+  /* the mono status readout over the camera sheet — the reference's
+     own chip grammar: a PAPER ground (bg-global), no border, no box
+     (R315: the boxed caption is gone; the ground keeps the line
+     legible over the drawing). */
   .jt-status {
     inset-block-end: 10px;
     inset-inline-start: 10px;
     translate: none;
     margin: 0;
+    background: var(--bg);
+    padding: 3px 10px; /* spacing-gate: allow — the reference's own chip seat */
   }
 
   .jt-side {
@@ -5318,25 +5268,26 @@ html[data-theme='dark'] .fo-wordmark-ar {
     visibility: visible;
   }
 
-  /* R314 cycle 2 (§7 map share): each station owns an EQUAL 64svh
-     band with the card centred in it — the stage track the camera
-     travels. The bands make the reading parameter's quarters map
-     1:1 onto the cards (the card centre meets the reading band at
-     the CAM_BANDS node — the camera is AT the zone crop exactly then)
-     and they lengthen the pinned traversal 774 → 2209px (≈2.85×) so
-     the map owns a reference-like share of the mobile page (the
-     reference's home-map is 4819px = 42% of its 11363px mobile docH
-     — measured live @390×844; .chapters lands ≈4813px ≈ the
-     reference's own absolute map height; the residual share gap is
-     the taller non-map base — see the 3-b worklog). The
-     dwell either side of a card is the camera's glide between zone
-     crops — the scrub IS the content, never empty scroll. The ≥992px
-     ladder keeps the absolute-band R310 geometry (this block is
-     ≤991px only). */
+  /* R315 (K-D — the manifest re-proportion): each station owns an
+     EQUAL band with the card centred in it — the stage track the
+     camera travels. The bands make the reading parameter's quarters
+     map 1:1 onto the cards (the card centre meets the reading band at
+     the CAM_BANDS node — the camera is AT the zone crop exactly then —
+     independent of the band height). R314 cycle 2 grew the traversal
+     774 → 2209px (64svh); R315 re-proportions it to the reference's
+     own map heights now that the 05–06 rows are gone (K-E): the
+     --jt-row-h ladder (91svh phones / 97svh tablets portrait / 48svh
+     short-landscape — the rungs after this block) lands .chapters at
+     ≈4813px @390×844 and ≈5454px @768×1024 — the reference's own
+     absolute map heights (Heron 4819/5454, both ≈42–43.5% shares).
+     The dwell either side of a card is the camera's glide between
+     zone crops — the scrub IS the content, never empty scroll. The
+     ≥992px ladder keeps the absolute-band R310 geometry (this block
+     is ≤991px only). */
   .jt-stations {
     position: static;
     display: grid;
-    grid-template-rows: repeat(4, minmax(64svh, auto));
+    grid-template-rows: repeat(4, minmax(var(--jt-row-h, 64svh), auto));
     align-items: center;
     gap: var(--sp-4);
     margin-block-start: 0;
@@ -5345,6 +5296,36 @@ html[data-theme='dark'] .fo-wordmark-ar {
   .jt-station {
     position: static;
     inline-size: auto;
+  }
+}
+
+/* R315 (K-D) — the mobile band's rungs: the station-band height per
+   reading environment, solved from the fresh manifest (Heron's own
+   map heights minus the band's measured fixed parts):
+     · phones (≤991px base)   91svh → .chapters ≈4813px @390×844
+     · tablets portrait       97svh → .chapters ≈5454px @768×1024
+     · short landscape (≤500px viewport height) 48svh — the traversal
+       collapses toward the reference's 2317px landscape map band
+       instead of paying four full viewport heights (the M-fleet owns
+       the rest of the landscape docH gap).
+   The last matching rung wins; the reading-band geometry is height-
+   independent (equal bands ⇒ the card centre meets the band at the
+   CAM_BANDS node whatever the row height). */
+@media (max-width: 991px) {
+  .jt-stations {
+    --jt-row-h: 91svh;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 991px) {
+  .jt-stations {
+    --jt-row-h: 97svh;
+  }
+}
+
+@media (max-width: 991px) and (max-height: 500px) {
+  .jt-stations {
+    --jt-row-h: 48svh;
   }
 }
 
@@ -5427,11 +5408,12 @@ html[data-theme='dark'] .fo-wordmark-ar {
 .fl-svg {
   display: block;
   inline-size: 100%;
-  /* R313 (D14): the measured strip proportion — 1427×314 @1440
-     (r308 §13; identical at 1440×700/1280×800; hidden ≤767px below).
-     The aspect keeps the band's height fluid with the frame width. */
+  /* R315 (K-F · B9): the sheet's OWN 1000:210 viewBox proportion — the
+   * old 1427/314 band-ratio ran the box shorter than the drawing and
+   * the svg's xMidYMid slice cropped the label band; the exact aspect
+   * keeps slice inert (hidden ≤767px below). */
   block-size: auto;
-  aspect-ratio: 1427 / 314;
+  aspect-ratio: 1000 / 210;
 }
 
 /* the reference hides the image strip ≤767px (its mobile footer
@@ -5753,23 +5735,26 @@ html[data-theme='dark'] .fo-wordmark-ar {
     padding-block: var(--sp-1);
   }
 
-  /* ── footer: 1843 → 1256 (target 1239) — the cell grid pairs up on
-     phones too (the V13 ≤640 one-column stack was the +604 offender):
-     links beside links, the account column beside the address, the
-     repo channel beside the mark. Every cell, link and disclosure
-     stays. ── */
+  /* ── footer: the phone band's own two-column map — the address +
+     contact cells take FULL rows (R315 B9: the paired 112px tracks
+     broke the address line's wrapping; «العنوان»/«التواصل» now own
+     their rows, the repo URL wraps on the full band). Links pair
+     with links; the account column keeps a full row; the
+     construction mark keeps its own row. ── */
   .fo-fgrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
       'strip strip'
       'tagline tagline'
       'links-a links-b'
-      'links-c addr-a'
-      'addr-b mark';
+      'links-c links-c'
+      'addr-a addr-a'
+      'addr-b addr-b'
+      'mark mark';
   }
 
   .fo-fcell {
-    padding: var(--sp-2);
+    padding: var(--sp-2) var(--sp-3); /* block 8 / inline 12 — the reference's mobile text inset (14.88 from the frame line) */
   }
 
   .fo-footer-heading {
@@ -5777,22 +5762,9 @@ html[data-theme='dark'] .fo-wordmark-ar {
     margin-block-end: var(--sp-0-5);
   }
 
-  .fo-fcell-strip {
-    block-size: 110px;
-  }
-
   .fo-fcell-addr {
     margin-block-start: 0;
     padding-block: var(--sp-2);
-  }
-
-  .fo-fcell-mark {
-    min-block-size: 96px;
-  }
-
-  .fo-footer-mark-svg {
-    inline-size: 96px;
-    block-size: 96px;
   }
 
   .fo-footer-about {
@@ -5803,15 +5775,23 @@ html[data-theme='dark'] .fo-wordmark-ar {
     line-height: 1.5;
   }
 
-  /* the closing wordmark band: the outline scales to the phone's own
-   * mass and the Latin micro line drops to the mono-sm rung so it
-   * reads on ONE line (decorative, aria-hidden) */
-  .fo-wordmark {
-    padding-block: var(--sp-3) var(--sp-2);
+  /* the reference's mobile subscribe seat: full-bleed 374.13×47.63
+   * with the 47.63 arrow (all measured @390 — the row bleeds past the
+   * cell's inline padding to the frame-aligned cell box). */
+  .fo-subscribe-input {
+    block-size: 45.6px; /* spacing-gate: allow — the measured mobile input 47.63 − the row's 1px border pair, an external constant */
   }
 
-  .fo-wordmark-ar {
-    font-size: clamp(56px, 20vw, 84px);
+  .fo-subscribe-btn {
+    inline-size: 45.6px; /* spacing-gate: allow — the measured mobile arrow 47.63 − the border pair, an external constant */
+  }
+
+  /* the closing wordmark band: the COMPACT cut rides the phone's own
+   * measure (max 480px — a word, not a wall) and the Latin micro line
+   * drops to the mono-sm rung so it reads on ONE line (decorative,
+   * aria-hidden) */
+  .fo-wordmark {
+    padding-block: var(--sp-2) var(--sp-1-5);
   }
 
   .fo-wordmark-en {
@@ -5819,8 +5799,29 @@ html[data-theme='dark'] .fo-wordmark-ar {
     letter-spacing: 0.15em; /* Latin mono — tracking allowed */
   }
 
+  /* R315 (K-F · B9): the reference's mobile copyright band is a
+   * 95.81-tall stack of hairline rows (measured @390) — the © line
+   * and the licence/cluster line each own a row with the rule
+   * between, instead of the desktop's single flex line. The bands
+   * butt (the ≤640 inner rhythm is 0): grid + strip + copyright =
+   * the reference's own 1239.11 phone measure. */
+  .fo-footer-inner {
+    padding-block: 0;
+    gap: 0;
+  }
+
   .fo-footer-bottom {
-    padding-block-start: var(--sp-2);
-    gap: var(--sp-1-5);
+    display: grid;
+    gap: 0;
+    padding-block: 0;
+    padding-inline: var(--sp-3);
+  }
+
+  .fo-footer-bottom > * {
+    padding-block: 15px; /* spacing-gate: allow — the measured mobile copyright rows (95.81 total @390 for two rows + rule), an external constant */
+  }
+
+  .fo-footer-cluster {
+    border-block-start: 1px solid var(--rule);
   }
 }

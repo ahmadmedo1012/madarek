@@ -1,7 +1,9 @@
 import { chromium } from 'playwright-core';
+/* R315 B9: viewport arg — node scripts/r315/b9-measure.mjs [WxH] */
+const [W, H] = (process.argv[2] ?? '1440x900').split('x').map(Number);
 const EXE = process.env.HOME + '/.cache/ms-playwright/chromium-1200/chrome-linux64/chrome';
 const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox'] });
-const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'ar-LY' });
+const ctx = await browser.newContext({ viewport: { width: W, height: H }, locale: 'ar-LY' });
 const page = await ctx.newPage();
 await page.goto('http://localhost:5173/', { waitUntil: 'load' });
 try { await page.evaluate(() => document.fonts.ready); } catch {}

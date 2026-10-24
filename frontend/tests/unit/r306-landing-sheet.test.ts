@@ -236,21 +236,20 @@ describe('r306 — the honest ledger is a hairline table', () => {
     expect(liveTsx).toContain('className="pm-card"');
   });
 
-  it('the chapter rows are one consistent ledger grammar (no alternating poster layouts)', () => {
-    expect(live).toMatch(/\.ch\s*\{[^}]*grid-template-columns:/s);
-    expect(liveTsx).not.toContain('ch--split');
-    expect(liveTsx).not.toContain('ch--bleed');
-    expect(liveTsx).not.toContain('ch--offset');
-  });
-
-  it('the interface fragments are FLAT — hairline frame, no elevation, no browser chrome', () => {
-    expect(live).toMatch(/\.mini\s*\{[^}]*border:\s*1px solid var\(--border-strong\)/);
-    expect(live).toMatch(/\.mini\s*\{[^}]*border-radius:\s*var\(--r-xs\)/);
-    const miniBlock = live.match(/\.mini\s*\{[^}]*\}/)?.[0] ?? '';
-    expect(miniBlock).not.toContain('box-shadow');
-    expect(liveTsx).not.toContain('mini-dots');
-    expect(liveTsx).toContain('mini-chrome-tag');
-    expect(liveTsx).toContain('عرض توضيحي');
+  /* R315 override (K-E): the chapters 05–06 demo ledger rows + their
+   * Mini fragments are RETIRED from the landing (owner §0-E — R310-era
+   * content outside the reference's grammar; the honest capability
+   * ledger lives on /capabilities). The two pins below flip from
+   * "the rows follow the ledger grammar" to "the rows + fragments are
+   * GONE from the markup and the sheet". */
+  it('R315 override: the chapters 05–06 demo rows + Mini fragments are RETIRED from the landing', () => {
+    expect(liveTsx).not.toContain('MiniCommunity');
+    expect(liveTsx).not.toContain('MiniGovernance');
+    expect(liveTsx).not.toContain('ch-rows');
+    expect(liveTsx).not.toContain('mini-chrome-tag');
+    expect(liveTsx).not.toContain('عرض توضيحي');
+    expect(live).not.toMatch(/\.ch-rows\s*\{/);
+    expect(live).not.toMatch(/\.mini-chrome\s*\{/);
   });
 });
 
@@ -259,9 +258,11 @@ describe('r306 — the funnel/a11y contracts carried forward', () => {
     for (const id of ['statement', 'chapters', 'live', 'roles', 'colleges', 'vision']) {
       expect(liveTsx).toContain(`id="${id}"`);
     }
-    // the chapter headings compose their ids from the registry
-    // (ch-${ch.num}-title) — pin the template, not six literals
-    expect(liveTsx).toContain('ch-${ch.num}-title');
+    // R315 override (K-E): the numbered-ledger template (ch-${ch.num}-title)
+    // retired with the 05–06 demo rows; the walkthrough's own stations
+    // carry the numbered anchors now (JourneyScene: the four findings
+    // stations + the honest chapter annotations).
+    expect(liveTsx).not.toContain('ch-${ch.num}-title');
   });
 
   it('the colleges registry keeps the accessible strip contract (the #colleges anchor + the public link + the disclosure)', () => {

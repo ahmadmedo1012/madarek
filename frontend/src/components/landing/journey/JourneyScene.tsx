@@ -1,6 +1,6 @@
 /**
  * JourneyScene — R308 «رحلة التعلّم» · R310 the plan scene · R312 the
- * mobile camera.
+ * mobile camera · R315 the reference's map states.
  *
  * The reference's narrative center of gravity is a pinned scene that
  * owns ~51% of the page. The R310 translation (spec §2.2/§4.3): the
@@ -21,6 +21,29 @@
  * the R312 off-by-one fix; [04] the library door stays quiet: the
  * wing builds at stage 2 but owns no stage in the story).
  *
+ *  · R315 (K-D — owner §4.4): the walkthrough reproduces the
+ *    reference's map-band states (landing-chrome.md §7 + the live
+ *    walk: statement → plan → INTRODUCTION card → findings → reveal
+ *    → closing) on top of the unchanged R310 station machine:
+ *      1. the opening STATEMENT — one line centered over the paper,
+ *         fading through the first band's opening (--jt-p 0→.13);
+ *      2. the PLAN drawn directly on the paper — the window's white
+ *         inset box + boxed caption are gone (landing.css);
+ *      3. the INTRODUCTION card — the reference's corner card: a dark
+ *         var(--text) title bar + four lines that scrub-reveal line
+ *         by line (--jt-p .14→.50) + the [تابع التمرير] mono
+ *         affordance; it hands off to the closing column at the last
+ *         band (fades .84→.90, before the side opens at .93);
+ *      4. the FINDINGS — the four stations with the progress hairline
+ *         under the sheet (the --jt-r fill);
+ *      5. the REVEAL — the solid red rooms (the zone wash, per stage);
+ *      6. the CLOSING — the expanding capability column at pin end.
+ *    Six states, the reference's dwell shape (statement front-loaded,
+ *    card across the middle, closing at the release), and the pin
+ *    start/end stay PROPORTIONAL (the R314 ruling): the station bands
+ *    + the stage flip formula are untouched — the new states ride the
+ *    SAME --jt-p clock inside those bands.
+ *
  *  · The pin is CSS `position: sticky` (the reference's own choice —
  *    GSAP never pins), measured per viewport height; it dies ≤991px
  *    into a stacked readable sequence (no pin on touch/narrow).
@@ -36,7 +59,9 @@
  *    centres; reduced motion holds the discrete crop (no mid-scroll
  *    drift). ≥992px the twin is display:none and the pin's own
  *    window shows the full sheet — the driver restores it on the
- *    crossing.
+ *    crossing. R315: the statement + card ride the flow as readable
+ *    twins BEFORE the camera (the ≤991px ladder keeps its stacked
+ *    readable contract — the card's lines stand complete, static).
  *  · Scroll IS the timeline: --jt-p drives everything from ONE frame
  *    on the shared clock (no React renders per scroll; the driver
  *    sleeps shortly after scrolling stops — useSheetScroll).
@@ -49,7 +74,7 @@ import { useRef } from 'react';
 import { Check } from 'lucide-react';
 import { Icon } from '../../Icon';
 import { LearningPlanDrawing, PLAN_VB } from '../LearningPlanDrawing';
-import { WordReveal } from './WordReveal';
+import { ScrubReveal, WordReveal } from './WordReveal';
 import { useSheetScroll } from '../../../lib/motion/useSheetScroll';
 
 /* ── The four walkthrough stages — reading order (RTL) through the
@@ -107,6 +132,59 @@ const CHECKLIST = [
 
 const ASSISTANT_NOTE =
   'والمساعد الأكاديمي — يعمل الآن داخل المنصّة — يقترح شروحات مخصَّصة وخطط مراجعة حسب أدائك الفعلي.';
+
+/* ── R315 (K-D) — the reference's map states, translated ────────────
+ * The statement + the INTRODUCTION card's copy. Honest, no invented
+ * claims: the card says exactly what the scene does (a real plan of
+ * one learning floor; the red wash marks the active room; every room
+ * is a live capability — the same ledger the stations carry). */
+const STATEMENT_AR = 'الرحلة مرسومة على مسطح واحد';
+const INTRO_TITLE_AR = 'مقدمة';
+const INTRO_LINES_AR = [
+  'هذا مسطح لطابق تعلّم واحد في مدارك.',
+  'أربع قاعات حول ممر واحد، ولكل قاعة بابها.',
+  'القاعة النشطة تتوهّج بالأحمر مع تقدّم التمرير.',
+  'وكل قاعة ميزة تعمل اليوم — لا وعدًا قادمًا.',
+] as const;
+const INTRO_MORE_AR = '[تابع التمرير]';
+
+/* the opening statement — the pin instance fades through the first
+ * band's opening (the driver flips visibility; landing.css scrubs the
+ * opacity from --jt-p); the flow instance is the ≤991px readable
+ * twin (static — the same display:none discipline as the PlanWindow
+ * twin: never both in the a11y tree at once). */
+function JtStatement({ flow = false }: { flow?: boolean }) {
+  return (
+    <p className={flow ? 'jt-statement-m' : 'jt-statement'}>
+      {STATEMENT_AR}
+    </p>
+  );
+}
+
+/* the INTRODUCTION card — the reference's corner card: the dark
+ * var(--text) title bar, the four lines (each scrub-reveals inside
+ * its own --jt-p window — landing.css), and the mono continue
+ * affordance at the foot. The flow twin is the ≤991px static read; the
+ * pin instance carries the driver's visibility-ref. */
+function JtIntro({
+  flow = false,
+  innerRef,
+}: {
+  flow?: boolean;
+  innerRef?: React.Ref<HTMLElement>;
+}) {
+  return (
+    <aside ref={innerRef} className={flow ? 'jt-intro-m' : 'jt-intro'} data-on="off">
+      <p className="jt-intro-title">{INTRO_TITLE_AR}</p>
+      <div className="jt-intro-lines">
+        {INTRO_LINES_AR.map((line) => (
+          <ScrubReveal key={line} className="jt-intro-line" text={line} />
+        ))}
+      </div>
+      <p className="jt-intro-more">{INTRO_MORE_AR}</p>
+    </aside>
+  );
+}
 
 /* ── R312 — the mobile camera crop table (§R R1) ────────────────────
  * Crop windows over the sheet, each centred on its stage's WASHED
@@ -221,6 +299,12 @@ function PlanWindow({ cam = false }: { cam?: boolean }) {
   return (
     <div className={cam ? 'jt-window jt-cam' : 'jt-window'}>
       <LearningPlanDrawing />
+      {/* the findings' progress hairline — the plan-width rule under
+          the sheet (R315 K-D); the fill scrubs with the walkthrough's
+          reading progress (--jt-r — landing.css) */}
+      <div className="jt-progress" aria-hidden="true">
+        <span />
+      </div>
       {/* the status strip — the current station, stacked + faded */}
       <div className="jt-status" aria-hidden="true">
         {STAGES_J.map((s) => (
@@ -236,6 +320,11 @@ function PlanWindow({ cam = false }: { cam?: boolean }) {
 export function JourneyScene() {
   const trackRef = useRef<HTMLDivElement>(null);
   const sideRef = useRef<HTMLDivElement>(null);
+  /* R315 (K-D) — the pin's statement + card seats (the visibility
+   * flips are the same discrete idempotent writes as the side column's
+   * open; the opacity itself scrubs from --jt-p in CSS). */
+  const statementRef = useRef<HTMLParagraphElement | null>(null);
+  const introRef = useRef<HTMLElement>(null);
   /* the mobile reading geometry cache — resolved once per mount:
    * the stations stack (the parameter's source) and the camera frame
    * (the reading band sits BELOW its live bottom edge, so the card at
@@ -260,13 +349,13 @@ export function JourneyScene() {
      *    bottom). The card being read is the zone on the sheet, and
      *    the camera crops to it (R312). */
     const { mobile, reduced } = viewportState();
+    let reading = pin;
     let stage: number;
     if (mobile) {
       /* the reading parameter: where the stations stack sits against
        * the READING BAND — the open region below the camera frame's
          live bottom edge (the card at the band is never behind the
          frame). Falls back to the pin metric before the stack exists. */
-      let reading = pin;
       const stations =
         stationsRef.current ??
         (stationsRef.current = track.querySelector<HTMLElement>('.jt-stations'));
@@ -306,13 +395,39 @@ export function JourneyScene() {
       const open = pin >= 0.93 ? 'on' : 'off';
       if (side.dataset.open !== open) side.dataset.open = open;
     }
+    /* R315 (K-D) — the statement + card visibility windows: the
+     * statement owns the opening (through the first band's start at
+     * .125), the card the mid-traversal (it hands off to the closing
+     * column before the side opens at .93). Discrete idempotent
+     * writes — the opacity itself scrubs from --jt-p in CSS. */
+    const statement = statementRef.current;
+    if (statement) {
+      const on = pin <= 0.13 ? 'on' : 'off';
+      if (statement.dataset.on !== on) statement.dataset.on = on;
+    }
+    const intro = introRef.current;
+    if (intro) {
+      const on = pin >= 0.09 && pin <= 0.9 ? 'on' : 'off';
+      if (intro.dataset.on !== on) intro.dataset.on = on;
+    }
     track.style.setProperty('--jt-p', pin.toFixed(4));
+    /* the progress hairline's clock: the reading parameter at ≤991px
+     * (the stations stack IS the timeline there), the pin ≥992px. */
+    track.style.setProperty('--jt-r', (mobile ? reading : pin).toFixed(4));
   });
 
   return (
     <div className="jt" ref={trackRef} data-stage="0">
       <div className="jt-pin">
         <PlanWindow />
+
+        {/* R315 (K-D) — the opening statement over the paper */}
+        <p className="jt-statement" ref={statementRef} data-on="on">
+          {STATEMENT_AR}
+        </p>
+
+        {/* the reference's INTRODUCTION card — the bottom corner */}
+        <JtIntro innerRef={introRef} />
 
         {/* the expanding capability column (pin end) */}
         <div className="jt-side" ref={sideRef} data-open="off">
@@ -333,10 +448,14 @@ export function JourneyScene() {
           real block (the camera's sticky container) holding the frame
           + the station cards — so the cam releases exactly when the
           stations end and the side column (outside the flow) is never
-          covered. ≥992px `.jt-flow` is display:contents — the cam is
-          display:none and the stations absolute against the track,
-          exactly the R310 desktop contract. */}
+          covered. R315 (K-D): the statement + card ride the flow as
+          readable twins BEFORE the camera. ≥992px `.jt-flow` is
+          display:contents — the cam + the twins are display:none and
+          the stations absolute against the track, exactly the R310
+          desktop contract. */}
       <div className="jt-flow">
+        <JtStatement flow />
+        <JtIntro flow />
         <PlanWindow cam />
 
         {/* the number stations — riding the track past the fixed drawing */}

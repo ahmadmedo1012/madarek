@@ -41,6 +41,12 @@ if (theme === 'dark') {
   await page.reload({ waitUntil: 'load' });
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
 }
+/* R315 B9: the loader gate — never measure or shoot before the intro
+ * resolves (.landing.intro-done + no .sl loader left). */
+await page.waitForFunction(
+  () => document.querySelector('.landing')?.classList.contains('intro-done') && !document.querySelector('.sl'),
+  { timeout: 20000 },
+);
 try { await page.evaluate(() => document.fonts.ready); } catch {}
 await page.evaluate(() => {
   try { localStorage.setItem('madarek.consent', JSON.stringify({ v: 1, t: Date.now() })); } catch {}
@@ -90,6 +96,19 @@ const metrics = await page.evaluate(() => {
 const overlaps = await page.evaluate(() => {
   const footer = document.querySelector('.fo-footer');
   if (!footer) return [];
+  /* R315 B9: the reference's OWN seated overlays are the designed
+   * exception, not collisions — Heron's 40×40 arrow submit rides
+   * INSIDE its 358.08-wide input's inline end (measured x 317.08),
+   * and the mono coord tag rides the strip sheet's corner margin.
+   * Everything else must clear. */
+  const intentional = (a, b) => {
+    const pair = (x, y) =>
+      (a.matches(x) && b.matches(y)) || (a.matches(y) && b.matches(x));
+    return (
+      pair('.fo-subscribe-input', '.fo-subscribe-btn') ||
+      pair('.fl-coord', '.fl-svg')
+    );
+  };
   const els = [...footer.querySelectorAll('*')].filter((el) => {
     if (!(el instanceof HTMLElement)) return false;
     const st = getComputedStyle(el);
@@ -108,6 +127,7 @@ const overlaps = await page.evaluate(() => {
       const a = els[i];
       const b = els[j];
       if (a.contains(b) || b.contains(a)) continue;
+      if (intentional(a, b)) continue;
       const ra = a.getBoundingClientRect();
       const rb = b.getBoundingClientRect();
       const ix = Math.max(0, Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left));
