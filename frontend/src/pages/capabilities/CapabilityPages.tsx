@@ -111,7 +111,7 @@ export function CapabilitiesPage() {
           <div className="cu-head">
             <span className="fo-label"><span className="fo-mono" dir="ltr">[03]</span> الجامعة التجريبية</span>
             <RevealCssClass as="h2" className="cu-title" delay={1} id="cap-colleges-title">
-              {formatInt(colleges.length)} كلية في {formatInt(campusCount)} أحرُم
+              {formatInt(colleges.length)} كلية في {formatInt(campusCount)} أحرام
             </RevealCssClass>
             <RevealCssClass as="p" className="cu-lede" delay={2}>
               بنية الكليات كاملة معروضة داخل المنصّة — والسجلّ التفاعلي في صفحة الكلّيّات.
@@ -128,7 +128,7 @@ export function CapabilitiesPage() {
                 <dt className="fo-meta-k">الكليات</dt>
                 <dd className="fo-meta-v">
                   <span className="fo-mono" dir="ltr">{formatInt(colleges.length)}</span> في{' '}
-                  <span className="fo-mono" dir="ltr">{formatInt(campusCount)}</span> أحرُم
+                  <span className="fo-mono" dir="ltr">{formatInt(campusCount)}</span> أحرام
                 </dd>
               </div>
               <div className="fo-meta-row">
@@ -137,7 +137,7 @@ export function CapabilitiesPage() {
               </div>
             </dl>
             <div className="cu-registry-row">
-              <Link to="/colleges" className="btn ghost">تصفّح الكلّيّات التجريبية</Link>
+              <Link to="/colleges" className="btn ghost">تصفح الكليات التجريبية</Link>
               <Link to="/campus" className="cu-text-link">الحياة الجامعية — الصور والفيديو</Link>
             </div>
           </RevealCssClass>

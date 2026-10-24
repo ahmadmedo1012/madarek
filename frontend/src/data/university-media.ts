@@ -322,7 +322,7 @@ export const ROLE_SHOWCASES: [
   {
     key: 'STUDENT',
     roleAr: 'للطالب',
-    lineAr: 'رحلة تعلّم شخصية — من المحاضرة الأولى إلى الإتقان',
+    lineAr: 'رحلة تعلم شخصية — من المحاضرة الأولى إلى الإتقان',
     captureId: 'student-dashboard',
   },
   {

@@ -50,6 +50,20 @@
  * prior live-load pass (drift-proven identical to the existing captures;
  * no further Heron loads). The pixel judge's numbers in PARITY remain the
  * cycle-1 measurements (pre-compaction) — disclosed in PARITY.md.
+ *
+ * R315 C4-D — PAIRING-BASIS GUARD: vlm-mask.mjs records each capture's
+ *   framesMode in its meta.json. Replay and live are the SAME §3.1 basis in
+ *   different vintages (absolute-y convention; equal when drift = 0), so
+ *   they pair freely with each other and with the unrecorded legacy
+ *   captures. 'section' (anchor-resolved section-relative frames — the fix
+ *   for the deferred 768 mid/late alignment-limited family, see vlm-mask.mjs
+ *   --frames-mode section) is its OWN basis: a section-mode capture pairs
+ *   ONLY with a section-mode capture of the same viewport. Judging across
+ *   bases is exactly how cycle-2's 768×1024 mid/late attempts burned quota
+ *   on misaligned pairs (recorded SKIPPED as alignment-limited post-hoc) —
+ *   so a basis-mismatched pair is now SKIPPED BEFORE any VLM call and
+ *   recorded as deferred-basis with the mismatched modes named in the
+ *   entry. Each judged entry also records its framesMode provenance.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -69,6 +83,23 @@ fs.mkdirSync(PAIRS, { recursive: true });
 fs.mkdirSync(CACHE, { recursive: true });
 
 const sha = (s) => crypto.createHash('sha256').update(s).digest('hex');
+
+/* R315 C4-D — pairing-basis helpers (see header). 'replay' and 'live' are
+ * the same §3.1 absolute basis; 'section' is its own basis; a missing meta
+ * or a pre-framesMode meta counts as legacy-absolute (never a false skip of
+ * the existing 1440 basis). */
+const basisOf = (mode) => (mode === 'section' ? 'section' : 'absolute');
+function pairBasis(vp, theme) {
+  const readMode = (site) => {
+    try {
+      const meta = JSON.parse(fs.readFileSync(path.join(CAP, site, vp, theme, 'meta.json'), 'utf8'));
+      return meta.framesMode ?? 'legacy-unrecorded';
+    } catch {
+      return 'legacy-unrecorded';
+    }
+  };
+  return { heron: readMode('heron'), madarek: readMode('madarek') };
+}
 
 const NEUTRAL = `NEUTRALIZED CATEGORIES — permitted differences. NEVER report, mention or count them:
 1. TEXT: both screenshots had their DOM text replaced by solid greeked bars (deliberate masking). Some text may still be readable — in fixed chrome widgets (cookie/consent banners, award badges), in brand wordmarks, or baked into artwork imagery (including numbers and dimension labels inside artwork). In ALL cases never judge text content, script, language, wording or reading direction. The only text-derived signal you may judge is the visual MASS of a text block (placement, size and weight of its bars).
@@ -236,8 +267,17 @@ if (process.argv.includes('--audit-cache')) {
   const calibLive = live;
   // the full run (29 pairs × framings)
   const frames = fs.readdirSync(hDir).filter((f) => f.startsWith('p-') && f.endsWith('.png')).sort();
-  for (const f of frames) await plan(`${'1440x900'}-light-${f.replace('.png', '')}`, path.join(hDir, f), path.join(mDir, f));
-  console.log(`audit-cache: calibration ${8 - calibLive}/8 cached (${calibLive} live) · full run ${58 - (live - calibLive)}/58 cached (${live - calibLive} live) · TOTAL cached=${cached} live=${live}`);
+  // R315 C4-D — plan with the SAME basis guard as the real run: mismatched
+  // pairs will be SKIPPED live-side, so they are not counted as live calls.
+  const basis = pairBasis('1440x900', 'light');
+  const basisMismatch = basisOf(basis.heron) !== basisOf(basis.madarek);
+  let basisSkipped = 0;
+  for (const f of frames) {
+    if (basisMismatch) { basisSkipped++; continue; }
+    await plan(`${'1440x900'}-light-${f.replace('.png', '')}`, path.join(hDir, f), path.join(mDir, f));
+  }
+  console.log(`audit-cache: calibration ${8 - calibLive}/8 cached (${calibLive} live) · full run ${58 - (live - calibLive)}/58 cached (${live - calibLive} live) · TOTAL cached=${cached} live=${live}` +
+    (basisMismatch ? ` · ⚠ basis-mismatch (heron ${basis.heron} vs madarek ${basis.madarek}) — ${basisSkipped} pairs would be SKIPPED, not judged` : ''));
   const missList = Object.entries(liveByLabel).filter(([l]) => !l.startsWith('self-') && !l.startsWith('trap-'));
   if (missList.length) console.log('  pairs still needing live calls:', missList.map(([l, n]) => `${l}(${n})`).join(' '));
   process.exit(0);
@@ -278,12 +318,27 @@ for (const vp of fs.readdirSync(path.join(CAP, 'heron'))) {
     for (const f of frames) {
       if (onlyFrame && !onlyFrame.includes(f)) continue;
       const label = `${vp}-${theme}-${f.replace('.png', '')}`;
+      // R315 C4-D — basis guard: a section-mode capture pairs only with a
+      // section-mode capture (see header). SKIPPED before any VLM call.
+      const basis = pairBasis(vp, theme);
+      if (basisOf(basis.heron) !== basisOf(basis.madarek)) {
+        results.push({
+          id: label, viewport: vp, theme, frame: f,
+          verdict: 'SKIPPED', score: null, differences: [], framings: [],
+          skipped: true, basisMismatch: true,
+          reason: `basis-mismatch (heron ${basis.heron} vs madarek ${basis.madarek}) — re-capture BOTH sides with the same --frames-mode (vlm-mask.mjs) before judging`,
+          pairBasis: `${basis.heron}/${basis.madarek}`,
+        });
+        console.log(` SKIP  ${label} — basis-mismatch (heron ${basis.heron} vs madarek ${basis.madarek})`);
+        continue;
+      }
       const r = await judgePair(label, path.join(hDir, f), path.join(mDir, f), { framings: FRAMINGS });
       const crit = r.differences.filter((d) => d.severity === 'critical').length;
       const maj = r.differences.filter((d) => d.severity === 'major').length;
       results.push({
         id: label, viewport: vp, theme, frame: f,
         verdict: r.verdict, score: r.score, differences: r.differences, framings: r.framings,
+        pairBasis: `${basis.heron}/${basis.madarek}`,
       });
       console.log(`${r.verdict === 'MATCH' ? '·MATCH·' : ' DIFFR '} ${label} score=${r.score} diffs=${r.differences.length} [${crit}c/${maj}m] (${r.framings.join('/')})`);
     }
@@ -293,7 +348,7 @@ for (const vp of fs.readdirSync(path.join(CAP, 'heron'))) {
 for (const r of results) {
   const i = diffs.items.findIndex((x) => x.id === r.id);
   const prior = i >= 0 ? { verdict: diffs.items[i].verdict, score: diffs.items[i].score } : null;
-  const entry = { ...r, status: (r.skipped || r.verdict === 'SKIPPED') ? 'deferred-quota' : (r.verdict === 'MATCH' ? 'closed' : 'open'), calibration: 'v2-text-masked' };
+  const entry = { ...r, status: (r.skipped || r.verdict === 'SKIPPED') ? (r.basisMismatch ? 'deferred-basis' : 'deferred-quota') : (r.verdict === 'MATCH' ? 'closed' : 'open'), calibration: 'v2-text-masked' };
   if (prior) entry.prior = prior;
   if (i >= 0) diffs.items[i] = entry;
   else diffs.items.push(entry);
@@ -308,8 +363,9 @@ diffs.calibration = {
 fs.writeFileSync(OUTJSON, JSON.stringify(diffs, null, 1));
 const open = diffs.items.filter((x) => x.verdict === 'DIFFERENT').length;
 const deferred = diffs.items.filter((x) => x.status === 'deferred-quota').length;
+const deferredBasis = diffs.items.filter((x) => x.status === 'deferred-basis').length;
 const closed = diffs.items.filter((x) => x.verdict === 'MATCH').length;
-console.log(`\nDIFFS.json: ${diffs.items.length} pairs · ${closed} closed (MATCH) · ${open} open (DIFFERENT) · ${deferred} deferred (quota)`);
+console.log(`\nDIFFS.json: ${diffs.items.length} pairs · ${closed} closed (MATCH) · ${open} open (DIFFERENT) · ${deferred} deferred (quota) · ${deferredBasis} deferred (basis-mismatch)`);
 
 // ---------- honesty guard: the judge must NOT have become lenient ----------
 // A judge that closes everything after a neutralization preamble is broken the

@@ -864,11 +864,17 @@
        the ≥3:1 ring rule). */
     --state-focus-ring-color: var(--accent-hover);
 
-    /* Night theme passes as-is: the -ink family clears AA on the night
-       ground (mint 7.69, yellow 7.87, rose 6.97, sky 6.87 on --bg), so
-       -ink maps to the same values the base tokens resolve to. The
-       icon-well pin (dark --x-ink ≡ --x) holds via these aliases. */
-    --accent-ink:   var(--accent);
+    /* Night -ink family: the status inks clear AA on the night ground
+       (mint 7.69, yellow 7.87, rose 6.97, sky 6.87 on --bg), so -ink maps
+       to the same values the base tokens resolve to — the icon-well pin
+       (dark --x-ink ≡ --x) holds via those aliases. r315 C4-D EXCEPTS the
+       accent: the luminous ember fill #FF5A1F read 4.35:1 on --surface —
+       under the 4.5 AA floor for 13px labels (the W6 .vc-kind probe) — so
+       the text seat rides the family's OWN lighter hover rung #FF6B33
+       (measured 4.79:1 surface · 5.20:1 bg · 5.08:1 accent-soft; ==
+       --accent-hover, the exact value of W6's page-scoped fix, now carried
+       by the token itself — the campus override retired). */
+    --accent-ink:   #FF6B33;
     --success-ink:  var(--c-mint-ink);
     --warning-ink:  var(--c-yellow-ink);
     --danger-ink:   var(--c-rose-ink);

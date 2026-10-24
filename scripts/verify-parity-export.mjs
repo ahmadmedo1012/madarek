@@ -465,7 +465,7 @@ const CHECKS = [
   ['dark', '--accent-soft', '#432015', 'ember soft ground on dark (r305)'],
   ['dark', '--accent-strong', '#ffc5ae', 'light ember tier — 9.72:1 text tier (r305)'],
   ['dark', '--accent-fg', '#191918', 'warm-ink on the ember fill — 5.64:1 (r305)'],
-  ['dark', '--accent-ink', '#ff5a1f', 'text-safe signal ink on dark — 4.73:1 bg (r305)'],
+  ['dark', '--accent-ink', '#ff6b33', 'text-safe signal ink on dark — 4.79:1 surface / 5.20:1 bg (r315 C4-D: raised off the #FF5A1F fill, 4.35:1 surface < the 4.5 AA floor for 13px labels; rides the accent hover rung)'],
   ['dark', '--primary', '#ffffff', 'dark primary = white slab'],
   ['dark', '--primary-fg', '#191918', 'warm-ink on the white slab (r305)'],
   ['dark', '--danger-fg', '#191918', 'warm-ink on the night coral fill — 7.81:1 (r305)'],
