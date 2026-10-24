@@ -6352,3 +6352,198 @@ html[data-theme='dark'] .fo-grain {
 @media (min-width: 400px) and (max-width: 479px) {
   .st-section { min-block-size: 86.9rem; }
 }
+
+
+/* ═══ R315 cycle-3 (W2) — the 480–767 mid-band rem law ════════════════
+ * THE LAW (two fresh live loads 480×800 + 720×1024, cross-checked
+ * against the cycle-2 manifest @390/412/600 — max spread 0.08rem
+ * across the 480/600/720 rungs):
+ * every reference content band is a CONSTANT rem height on the
+ * 2.5445292621vw root — statement 84.25rem · problem 87.65 · platform
+ * 52.1 · why 81.2 · roles 95.55 · cta 50.4 · footer 124.9. The hero band
+ * is viewport-driven at a constant-rem deduction — 100svh − 1.6rem
+ * (measured 780 @480×800 · 1000 @600×1024 · 995 @720×1024 · 828
+ * @390×844; the reference's header is 5rem fixed and OVERLAPS the band,
+ * so the 1.6rem is the band's own measure, not the bar). The reference
+ * fills those heights because every inner value rides the root —
+ * measured rungs: the pm/wy/rl titles 3.2rem lh 1.0 · the statement/cta
+ * h2s 2.4rem lh 1.1 · H1 3.2rem lh 1.0 fw600 · hero top pad 4.4rem.
+ *
+ * Ours ran the ≤479 phone composition with px-floored rungs into this
+ * tier — the sp ladder is px, the titles clamp-capped at 34px, the
+ * small-text floor is a fixed 13px, the footer's measures are 390 px
+ * constants — so at the 15.267px root @600 the bands grew ~+10% where
+ * the reference grew +54% (docH −16.2%, every content band −24…−34%).
+ *
+ * The purification re-seats the ladder itself (M3 precedent, file END —
+ * the cascade lesson): every px rung becomes its own verified 390
+ * measure / 9.92366px (the phone root), so the composition that matched
+ * the reference @390 scales with the root EXACTLY like the law, the
+ * type takes the reference's own measured rungs, and the floors pin
+ * the law. Scoped to the reference's own 479/767 rungs: the ≤479 phone
+ * tier (W1) and the 768–991 tablet tier never hear a rule below. */
+@media (min-width: 480px) and (max-width: 767px) {
+  /* 1 — the law floors (the guarantee; content compacts under them and
+   * the reference's own air fills the difference — the M3 pattern) */
+  .fo-hero { min-block-size: calc(100svh - 1.6rem); }
+  .st-section { min-block-size: 84.25rem; }
+  .pm-section { min-block-size: 87.65rem; }
+  .pr-section { min-block-size: 52.1rem; }
+  .wy-section { min-block-size: 81.2rem; }
+  .rl-section { min-block-size: 95.55rem; }
+  .fo-cta { min-block-size: 50.4rem; }
+  .fo-footer { min-block-size: 124.9rem; }
+
+  /* 2 — the ladder rides the root: each rung re-seats as its own 390
+   * measure ÷ 9.92366. Raw-px seats are untouched by this (the 44px
+   * touch floors keep the a11y contract; the header keeps its 5rem bar
+   * + 26px seat). The aliases (--sp-2x…) re-resolve automatically. */
+  .landing {
+    --sp-0-5: 0.2015rem;
+    --sp-1: 0.4031rem;   --sp-1-5: 0.6046rem;
+    --sp-2: 0.8061rem;   --sp-2-5: 1.0076rem;
+    --sp-3: 1.2092rem;   --sp-4: 1.6122rem;
+    --sp-5: 2.0153rem;   --sp-6: 2.4183rem;
+    --sp-7: 3.2245rem;   --sp-8: 4.0306rem;
+    --sp-9: 4.8368rem;   --sp-10: 5.6429rem;
+    --sp-11: 7.2543rem;  --sp-12: 9.6723rem;
+    --sp-13: 12.8964rem; --sp-14: 16.1204rem;
+    --sp-15: 19.3445rem; --sp-16: 24.1806rem;
+    /* the 13px Arabic-legibility floor rides the root too (a floor,
+     * never a cap — @600 it reads 20px like the reference's own rem
+     * labels; the ≤479 phone tier keeps the honest 13px seat) */
+    --fs-sm: 1.3101rem;
+    --fs-xs: 1.3101rem;
+    --fs-xxs: 1.3101rem;
+  }
+
+  /* 3 — the type rungs: the reference's own measured seats (its
+   * titles are NOT clamps — 39.08px @480 / 58.63 @720 measured).
+   * The H1 keeps the +0.05 Alexandria leading (the measured glyph
+   * floor — «ق»'s descender rides «م»'s shoulder at 1.0) */
+  .fo-hero-title { font-size: 3.2rem; line-height: 1.05; }
+  .pm-title, .pr-title, .wy-title, .rl-title {
+    font-size: 3.2rem;
+    line-height: 1;
+  }
+  .st-title, .fo-cta-title { font-size: 2.4rem; line-height: 1.1; }
+  .wy-stage-verb { font-size: 3.2rem; line-height: 1; }
+
+  /* 4 — the hero seat: the reference's own 4.4rem top measure (the
+   * 63px window pad + the band's 20px pad fold into it — measured
+   * 53.7px @480 · 80.6px @720 on the reference); the band rides
+   * 100svh − 1.6rem like the law */
+  .fo-hero { padding-block-start: 4.4rem; padding-block-end: 0; }
+  .fo-hero-window { padding-block-start: 0; }
+
+  /* 5 — the map band is dvh-keyframed (the target px set: 4738 @480 ·
+   * 6042 @600 · 6227 @720 — measured): the ladder re-seat must not move
+   * the pinned traversal, so the whole .chapters subtree keeps the
+   * phone px rungs (its inner seats are the tuned instrument, not the
+   * scaling family) and the band paddings sit at the phone measure */
+  .chapters {
+    padding-block: 56px;
+    --sp-0-5: 2px; --sp-1: 4px; --sp-1-5: 6px;
+    --sp-2: 8px; --sp-2-5: 10px; --sp-3: 12px; --sp-4: 16px;
+    --sp-5: 20px; --sp-6: 24px; --sp-7: 32px; --sp-8: 40px;
+    --sp-9: 48px; --sp-10: 56px; --sp-11: 72px; --sp-12: 96px;
+    --sp-13: 128px; --sp-14: 160px; --sp-15: 192px; --sp-16: 240px;
+    --fs-sm: 13px; --fs-xs: 13px; --fs-xxs: 13px;
+  }
+
+  /* 6 — the footer's 390-measured constants ride the root (each is
+   * its own verified mobile measure ÷ 9.92366 — the reference's own
+   * mobile footer scales the same seats with its root) */
+  .fo-footer-link { min-block-size: 2.6201rem; }
+  .fo-fcell-strip { block-size: 7.4583rem; }
+  .fo-fcell-mark { padding-block: 3.2245rem; }
+  .fo-footer-mark-svg { inline-size: 11.9872rem; block-size: 11.9872rem; }
+  .fo-subscribe-input { block-size: 4.5936rem; }
+  .fo-subscribe-btn { inline-size: 4.5936rem; }
+  .fo-footer-bottom > * { padding-block: 1.5116rem; }
+
+  /* 7 — the footer's own air law: the reference's mobile footer is
+   * grid + image strip + legal row (the strip band carries ~23% of the
+   * height); ours absorbs the floor's air inside the wordmark row so
+   * the legal row stays pinned to the band's bottom edge like theirs */
+  .fo-footer { display: grid; grid-template-rows: minmax(0, 1fr); }
+  .fo-footer-inner { grid-template-rows: auto minmax(0, 1fr) auto; }
+  .fo-wordmark { display: grid; place-content: center; }
+
+  /* 8 — ONE composition across the tier (the reference has no 640 rung
+   * — its live boundaries are 991/767/479 only; the constant-rem law
+   * itself proves one family 480→720). The 641–767 sliver was running
+   * the tall 767-block anatomy (art-beside-text pains, the collage,
+   * paired address rows) on top of the re-seat — the bands blew their
+   * floors there (platform +23% · cta +15% · problem +10% @720). The
+   * seats below extend the ≤640 verified phone forms across the whole
+   * tier; the sp references re-resolve to §2's rem rungs, so 641–767
+   * renders the scaled phone composition exactly like 480–640. */
+  .pm-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-2);
+  }
+  .pm-card-num, .pm-card-title, .pm-card-text, .pm-card-answer {
+    grid-column: auto;
+  }
+  .pm-art { display: none; }
+  .pm-section { padding-block: var(--sp-8) var(--sp-6); }
+
+  .pr-section .prf-cards { display: none; }
+  /* the head + note margins step one ladder rung tighter (the phone
+   * composition's own +4% platform overshoot rides the re-seat — the
+   * trim keeps the band inside its 52.1rem floor's ±3% with margin
+   * at every rung: 646/636 @480 · 806/795 @600 · 967/955 @720) */
+  .pr-head { margin-block-end: var(--sp-2); }
+  .pr-note { margin-block-start: var(--sp-2); }
+
+  .wy-section { padding-block: var(--sp-6) var(--sp-5); }
+  .wy-head { gap: var(--sp-2); margin-block-end: var(--sp-4); }
+  .wy-stage { padding-block: var(--sp-1); }
+  .wy-rail { gap: var(--sp-1); }
+  .wy-note { margin-block-start: var(--sp-3); }
+
+  .rl-section { padding-block: var(--sp-4); }
+  .rl-head { gap: var(--sp-2); margin-block-end: var(--sp-3); }
+  .rl-card { padding: var(--sp-2-5) var(--sp-3); gap: var(--sp-1); }
+  .rl-cards { gap: var(--sp-1-5); }
+  .rl-card-tag { padding-block: 0; line-height: 1.2; }
+  .rl-more { margin-block-start: var(--sp-2); }
+
+  .fo-cta { padding-block: var(--sp-5) var(--sp-4); }
+  .fo-cta-coords { padding-block-end: var(--sp-2); margin-block-end: var(--sp-3); }
+  .fo-cta-corners { margin-block-start: 0; }
+  .fo-cta-inner { gap: var(--sp-3); }
+  .fo-cta-lede { line-height: 1.55; }
+  .fo-cta-actions { gap: var(--sp-2); }
+  .fo-cta .fo-hero-meta { margin-block-start: var(--sp-3); }
+  .fo-cta .fo-meta-row { padding-block: var(--sp-1); }
+
+  .fo-fgrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'strip strip'
+      'tagline tagline'
+      'links-a links-b'
+      'links-c links-c'
+      'addr-a addr-a'
+      'addr-b addr-b'
+      'mark mark';
+  }
+  .fo-fcell { padding: var(--sp-2) var(--sp-3); }
+  .fo-footer-heading { padding-block-end: var(--sp-1); margin-block-end: var(--sp-0-5); }
+  .fo-fcell-addr { margin-block-start: 0; padding-block: var(--sp-2); }
+  .fo-footer-about { line-height: 1.45; }
+  .fo-subscribe-note { line-height: 1.5; }
+  .fo-wordmark { padding-block: var(--sp-2) var(--sp-1-5); }
+  .fo-wordmark-en { font-size: var(--fs-mono-sm); }
+  .fo-footer-inner { padding-block: 0; gap: 0; }
+  .fo-footer-bottom { display: grid; gap: 0; padding-block: 0; padding-inline: var(--sp-3); }
+  .fo-footer-cluster { border-block-start: 1px solid var(--rule); }
+
+  /* 9 — the hero's actions row rides one line across the tier (the
+   * ≤640 stack put a second full-width button row into the strip — the
+   * +4.1% content overshoot @480; the band's own law is 100svh −
+   * 1.6rem and the floor takes the rest) */
+  .fo-hero-actions .btn { inline-size: auto; }
+}
