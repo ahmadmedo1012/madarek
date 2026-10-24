@@ -10,14 +10,21 @@
  *
  *  · The strip is authored SVG linework — a condensed wide elevation
  *    of «مخطط مدارك» (the five structures along the ground line). The
- *    SKETCH state (hairlines only) is the strip's ground; the lens
- *    reveals the RESOLVED state (full ink + the orange signals +
- *    labels) inside the circle. No photographs are involved.
+ *    SKETCH state (hairlines only) is the strip's ground.
+ *  · R314 cycle-2 §7: the RESOLVED state — what the lens opens onto —
+ *    is now the licensed campus INK RENDER (manifest.json renders[] —
+ *    «crop-garyounis-classic», public-domain source, ADAPTED ShareAlike
+ *    kept), the same asset the retired strip-image cell carried: the
+ *    sketch resolves into the real rendered architecture (the
+ *    reference's own sketch→render reveal). The labels + orange
+ *    signals annotate it. The render is a PAPER artifact in both
+ *    themes (the hero + plan precedent).
  *  · The lens rides the shared conductor clock; the radius eases to
  *    its target (open/closed) and the whole instrument sleeps when
  *    settled — zero frames on an idle footer.
  *  · Touch / reduced motion: the RESOLVED strip stands statically
- *    (nothing hides content); the lens is a fine-pointer instrument.
+ *    (render + signals + labels — nothing hides content); the lens is
+ *    a fine-pointer instrument.
  */
 import { useEffect, useRef, useState } from 'react';
 import { subscribeSheetFrame, wakeSheet, lerp, clamp } from '../../../lib/motion/sheetConductor';
@@ -171,7 +178,7 @@ export function FooterLens() {
         viewBox={`0 0 ${VB_W} ${VB_H}`}
         preserveAspectRatio="xMidYMid slice"
         role="img"
-        aria-label="رسم خطّي لخلاصة مسار التعلّم: المحاضرة، نقطة الفحص، الاختبار، المكتبة، والإتقان"
+        aria-label="شريط الفحص — رسم حبري لعمارة حرم جامعي ليبي (مشتق من صورة مرخّصة) وخلاصة مسار التعلّم: المحاضرة، نقطة الفحص، الاختبار، المكتبة، والإتقان"
       >
         <defs>
           <mask id="fl-lens-mask" maskUnits="userSpaceOnUse">
@@ -198,25 +205,25 @@ export function FooterLens() {
         </g>
 
         {/* the RESOLVED layer — revealed inside the lens (or statically
-            when the lens is off: touch / reduced motion). */}
+            when the lens is off: touch / reduced motion). R314 cycle-2:
+            the licensed ink render carries the resolved ink state
+            (y 0..178 — the labels keep their clean paper band below),
+            annotated by the orange signals + the Arabic stage labels. */}
         <g
           className="fl-resolved"
           ref={revealRef}
           aria-hidden="true"
           {...(lensOn ? { mask: 'url(#fl-lens-mask)' } : {})}
         >
-          <g className="fl-ink">
-            <line x1="30" y1="180" x2="970" y2="180" strokeWidth="2" />
-            <rect x="700" y="96" width="110" height="84" strokeWidth="2" />
-            <polygon points="700,96 755,64 810,96" strokeWidth="2" />
-            <circle cx="755" cy="130" r="12" strokeWidth="2" />
-            <rect x="380" y="120" width="76" height="60" strokeWidth="2" />
-            <circle cx="418" cy="146" r="15" strokeWidth="2" />
-            <rect x="200" y="112" width="120" height="68" strokeWidth="2" />
-            <line x1="196" y1="104" x2="324" y2="104" strokeWidth="2" />
-            <rect x="80" y="48" width="64" height="132" strokeWidth="2" />
-            <polyline points="90,168 104,132 116,100 128,66" strokeWidth="2" />
-          </g>
+          <image
+            className="fl-render"
+            href="/media/renders/crop-garyounis-classic-960.webp"
+            x="0"
+            y="0"
+            width={VB_W}
+            height="178"
+            preserveAspectRatio="xMidYMid slice"
+          />
           <g className="fl-signal">
             <polygon points="545,112 573,120 545,128" />
             <circle cx="755" cy="130" r="4" />
@@ -239,7 +246,7 @@ export function FooterLens() {
       </svg>
 
       <span className="fl-coord fo-mono" dir="ltr" aria-hidden="true">
-        [INSPECTION STRIP · R308]
+        [01] CAMPUS · INK RENDER — INSPECTION STRIP
       </span>
     </div>
   );

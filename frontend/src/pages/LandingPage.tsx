@@ -1272,7 +1272,12 @@ export default function LandingPage() {
           throughout (demo-data disclosure, no fake subscribe, no
           invented contacts). ═══ */}
       <footer className="fo-footer">
-        <FooterLens />
+        {/* R314 (cycle-2 §7 heights): the colophon re-orders to the
+            measured reference composition (711px = cell grid 355 +
+            image strip 314 + legal row 42) — the grid FIRST, then the
+            strip band (the inspection lens + the closing wordmark
+            riding the same full-bleed band — the reference's own
+            graphic|text strip split), then the legal row. */}
         <div className="fo-footer-inner">
           <div className="fo-fgrid">
 
@@ -1290,7 +1295,10 @@ export default function LandingPage() {
               <span className="fo-fcell-tag fo-mono" dir="ltr">[01] CAMPUS · INK RENDER</span>
             </div>
 
-            {/* [02] the tagline cell — the honest identity paragraph */}
+            {/* [02] the tagline cell — the honest identity paragraph +
+                the subscribe seat (R314 cycle-2: moved from the account
+                column — the reference's footer-head = title-wrap +
+                form-wrap in ONE column) */}
             <div className="fo-fcell fo-fcell-tagline">
               <Link to="/" className="fo-brand" aria-label="مدارك">
                 <StarMark size={30} className="fo-brand-mark" />
@@ -1304,30 +1312,6 @@ export default function LandingPage() {
                     on one source line (the r188-brand-integrity gate). */}
                 منصّة تعليمية تقنية مستقلّة، عربية أولًا. لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها؛ وبيانات العرض داخلها تخصّ «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل لأغراض العرض.
               </p>
-            </div>
-
-            {/* [03–05] the three link columns (the reference's
-                COMPANY/PRODUCT/RESOURCES seats, Madarek's own index) */}
-            <nav className="fo-fcell fo-fcell-links" aria-label="فهرس المنصّة">
-              <div className="fo-footer-heading">المنصّة</div>
-              <Link to="/capabilities" className="fo-footer-link">ما يعمل اليوم</Link>
-              <a href="#product" className="fo-footer-link">المنصّة فعليًا</a>
-              <a href="#chapters" className="fo-footer-link">الفصول</a>
-              <a href="#roles" className="fo-footer-link">الأدوار الثمانية</a>
-              <Link to="/colleges" className="fo-footer-link">الكلّيات التجريبية</Link>
-            </nav>
-            <nav className="fo-fcell fo-fcell-links" aria-label="المحتوى والرحلة">
-              <div className="fo-footer-heading">الرحلة</div>
-              <a href="#statement" className="fo-footer-link">البيان</a>
-              <a href="#live" className="fo-footer-link">التحديات المباشرة</a>
-              <Link to="/campus" className="fo-footer-link">الحياة الجامعية</Link>
-              <a href="#vision" className="fo-footer-link">الرؤية والمبدأ</a>
-              <a href="#main" className="fo-footer-link">أعلى الصفحة</a>
-            </nav>
-            <nav className="fo-fcell fo-fcell-links" aria-label="الحساب">
-              <div className="fo-footer-heading">الحساب</div>
-              <Link to="/auth/register" className="fo-footer-link">إنشاء حساب جامعي</Link>
-              <Link to="/auth" className="fo-footer-link">تسجيل الدخول</Link>
               {/* the honest subscribe seat — HONEST disabled state: no
                   subscribe endpoint exists anywhere in the backend
                   (verified — modules: auth/institution/milestones/
@@ -1361,6 +1345,30 @@ export default function LandingPage() {
                   قريبًا — لا توجد قائمة بريدية فعلية بعد؛ لا يُجمَع أيّ بريد ولا يُرسَل شيء.
                 </p>
               </div>
+            </div>
+
+            {/* [03–05] the three link columns (the reference's
+                COMPANY/PRODUCT/RESOURCES seats, Madarek's own index) */}
+            <nav className="fo-fcell fo-fcell-links" aria-label="فهرس المنصّة">
+              <div className="fo-footer-heading">المنصّة</div>
+              <Link to="/capabilities" className="fo-footer-link">ما يعمل اليوم</Link>
+              <a href="#product" className="fo-footer-link">المنصّة فعليًا</a>
+              <a href="#chapters" className="fo-footer-link">الفصول</a>
+              <a href="#roles" className="fo-footer-link">الأدوار الثمانية</a>
+              <Link to="/colleges" className="fo-footer-link">الكلّيات التجريبية</Link>
+            </nav>
+            <nav className="fo-fcell fo-fcell-links" aria-label="المحتوى والرحلة">
+              <div className="fo-footer-heading">الرحلة</div>
+              <a href="#statement" className="fo-footer-link">البيان</a>
+              <a href="#live" className="fo-footer-link">التحديات المباشرة</a>
+              <Link to="/campus" className="fo-footer-link">الحياة الجامعية</Link>
+              <a href="#vision" className="fo-footer-link">الرؤية والمبدأ</a>
+              <a href="#main" className="fo-footer-link">أعلى الصفحة</a>
+            </nav>
+            <nav className="fo-fcell fo-fcell-links" aria-label="الحساب">
+              <div className="fo-footer-heading">الحساب</div>
+              <Link to="/auth/register" className="fo-footer-link">إنشاء حساب جامعي</Link>
+              <Link to="/auth" className="fo-footer-link">تسجيل الدخول</Link>
             </nav>
 
             {/* [06] the address cell — the reference's Sydney seat becomes
@@ -1396,16 +1404,25 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* the GIANT outlined construction-line wordmark — Madarek's own
-              (مدارك + MADAREK), registration marks at the corners, spanning
-              the full sheet width (the reference's closing statement). */}
-          <div className="fo-wordmark" aria-hidden="true">
-            <span className="fo-wordmark-reg fo-wordmark-reg-tl">+</span>
-            <span className="fo-wordmark-reg fo-wordmark-reg-tr">+</span>
-            <span className="fo-wordmark-reg fo-wordmark-reg-bl">+</span>
-            <span className="fo-wordmark-reg fo-wordmark-reg-br">+</span>
-            <span className="fo-wordmark-ar">مدارك</span>
-            <span className="fo-wordmark-en fo-mono" dir="ltr">MADAREK — ARABIC-FIRST LEARNING SHEET</span>
+          {/* the image-strip band (the reference's footer-img-wrap): the
+              inspection lens over the journey drawing rides BELOW the
+              grid, above the legal row (the measured order) + the
+              GIANT outlined construction-line wordmark — Madarek's own
+              (مدارك + MADAREK), registration marks at the corners — as
+              the band's typographic cell (the reference's strip carries
+              its graphic on one side and THE MODEL on the other). The
+              lens strip hides ≤767px (the reference hides its strip
+              there too); the wordmark flows as its own band on mobile. */}
+          <div className="fo-fstrip">
+            <FooterLens />
+            <div className="fo-wordmark" aria-hidden="true">
+              <span className="fo-wordmark-reg fo-wordmark-reg-tl">+</span>
+              <span className="fo-wordmark-reg fo-wordmark-reg-tr">+</span>
+              <span className="fo-wordmark-reg fo-wordmark-reg-bl">+</span>
+              <span className="fo-wordmark-reg fo-wordmark-reg-br">+</span>
+              <span className="fo-wordmark-ar">مدارك</span>
+              <span className="fo-wordmark-en fo-mono" dir="ltr">MADAREK — ARABIC-FIRST LEARNING SHEET</span>
+            </div>
           </div>
 
           <div className="fo-footer-bottom">

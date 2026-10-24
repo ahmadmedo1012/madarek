@@ -708,6 +708,29 @@ html[data-theme='dark'] .fo-grain {
   margin-inline: auto;
 }
 
+/* R314 (cycle-2 §7 heights): the hero band returns to the measured
+ * reference height (887 = 100vh − 13 @1440×900). The old
+ * min(68vh, 100%) height was CYCLIC against the auto-sized stage — in
+ * the hero grid's content-based row sizing the svg's contribution fell
+ * back to the artwork's aspect height (700px), inflating the band to
+ * 974px while the layout itself painted 612px. A DEFINITE vh height
+ * (no percentage twin) makes the contribution honest, so the section's
+ * own min-block-size (100vh − 13) becomes the binding constraint. The
+ * stage centers its artwork when the stretched row is taller than the
+ * drawing (tall viewports) — the rulers/lens/instrument all anchor to
+ * the stage/svg boxes and follow. Desktop-scoped: the ≤991px flow
+ * (the V13 mobile band) keeps its own rules below. */
+@media (min-width: 992px) {
+  .fo-hero-window .bp-stage {
+    display: grid;
+    place-items: center;
+  }
+
+  .fo-hero-window .bp-svg {
+    block-size: 68vh;
+  }
+}
+
 /* ── the bottom strip — 133px of cells: the GIANT H1 at the
  * inline-start edge (46.67px/1.0 measured, 3 lines) · the intro
  * paragraph cell · the DISCOVER MORE link cell. ── */
@@ -1949,6 +1972,37 @@ html[data-theme='dark'] .fo-grain {
   min-block-size: 77vh;
 }
 
+/* R314 (cycle-2 §7 heights): the cta band tightens to the reference's
+ * 698px (from 755) — the coords row, the title block's margins and the
+ * registry strip give back the ~57px. The floor rides the same share
+ * (77.5vh = 698 @900); desktop-scoped. */
+@media (min-width: 992px) {
+  .fo-cta {
+    padding-block: var(--sp-8) var(--sp-7);
+    /* the floor rides the measured reference share: 77.5vh = 698 @900
+     * (the base 77vh = 693 — five pixels shy of the reference band) */
+    min-block-size: 77.5vh;
+  }
+
+  .fo-cta-coords {
+    padding-block-end: var(--sp-2);
+    margin-block-end: var(--sp-5);
+  }
+
+  .fo-cta-corners {
+    margin-block-start: var(--sp-1);
+  }
+
+  .fo-cta .fo-hero-meta {
+    margin-block-start: var(--sp-5);
+  }
+
+  .cg-strip {
+    margin-block-start: var(--sp-5);
+    padding-block-start: var(--sp-4);
+  }
+}
+
 .fo-cta-coords {
   color: var(--text-faint);
   font-size: var(--fs-xxs);
@@ -2105,10 +2159,16 @@ html[data-theme='dark'] .fo-grain {
 
 /* the stage rail — four verb cards, always readable (the non-active
    states stay visible; the ACTIVE stage warms + its verb snaps with
-   the reference's hold-plateau shape) */
+   the reference's hold-plateau shape). R314 cycle-2: the ae70a16
+   compaction accidentally orphaned this list's margin/padding/
+   list-style resets inside the ≥992 media block below (declarations
+   at media-block level are invalid and silently dropped); restored. */
 .wy-rail {
   display: grid;
   gap: var(--sp-1-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 /* R314 desktop: the section heads share the reference's compact head
@@ -2129,10 +2189,64 @@ html[data-theme='dark'] .fo-grain {
     font-size: var(--fs-body);
     line-height: 1.55;
   }
+}
 
-  margin: 0;
-  padding: 0;
-  list-style: none;
+/* ── R314 (cycle-2 §7 heights) — the exact section-height compaction.
+ * Measured deltas vs the Heron reference @1440×900 (capture.mjs
+ * meta.json): pm 878→743 · wy 980→681 · cta 755→698. The lede rides
+ * BESIDE the display title (the reference's head band: title-wrap +
+ * sub-wrap side by side, VLM-confirmed on p-s02-0), not under it —
+ * the stacked head was the single tallest offender. Named areas pin
+ * every child (bare auto-placement put the TITLE in the narrow lede
+ * track and wrapped it to 460px — the 1087px regression). The why
+ * rail folds to 2×2 (four cards beside the capture stack).
+ * Desktop-scoped: the V13 mobile bands keep their own rules below. ── */
+@media (min-width: 992px) {
+  .pm-head {
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 26rem);
+    grid-template-areas:
+      'label lede'
+      'title lede';
+    align-items: end;
+    column-gap: var(--sp-8);
+    max-inline-size: none;
+    margin-block-end: var(--sp-6);
+  }
+
+  /* the floor rides the measured reference share: 82.5vh = 743 @900
+   * (the base 82vh = 738 — five pixels shy of the reference band) */
+  .pm-section {
+    min-block-size: 82.5vh;
+  }
+
+  .pm-head > .fo-label { grid-area: label; }
+  .pm-head > .pm-title { grid-area: title; }
+  .pm-head > .pm-lede { grid-area: lede; }
+
+  .wy-head {
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 26rem);
+    grid-template-areas:
+      'label lede'
+      'title lede';
+    align-items: end;
+    column-gap: var(--sp-8);
+    max-inline-size: none;
+  }
+
+  .wy-head > .fo-label { grid-area: label; }
+  .wy-head > .wy-title { grid-area: title; }
+  .wy-head > .wy-lede { grid-area: lede; }
+
+  /* the floor drops to the measured reference share: 75.5vh = 680 @900
+   * (the base 77vh = 693 floor-bound the band twelve pixels over the
+   * reference's 681; the content itself measures 598) */
+  .wy-section {
+    min-block-size: 75.5vh;
+  }
+
+  .wy-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .wy-stage {
@@ -2257,6 +2371,17 @@ html[data-theme='dark'] .fo-grain {
   gap: var(--sp-6);
 }
 
+/* R314 (cycle-2 §7 heights) — the desktop colophon stack: the three
+ * bands butt hairline-to-hairline (grid → strip band → legal row),
+ * the measured reference composition (355 + 314 + 42 = 711). The
+ * ≤991px flow keeps its own paddings (the V13 mobile band). */
+@media (min-width: 992px) {
+  .fo-footer-inner {
+    padding-block: 0;
+    gap: 0;
+  }
+}
+
 /* ═══ R314 (V9) — the reference's cell-grid footer (pair-100): every
  * seat is a hairline-ruled CELL (the drafting sheet's own grammar),
  * closed by the giant outlined wordmark. Grid areas: strip spans the
@@ -2345,8 +2470,153 @@ html[data-theme='dark'] .fo-grain {
   min-block-size: 180px;
 }
 
-/* the GIANT outlined construction-line wordmark — spans the full sheet
- * width (the reference's closing statement). Outlined via text-stroke
+/* R314 (cycle-2 §7 heights) — the ≥768 strip-image cell retires: its
+ * licensed render duty moves into the inspection strip band below
+ * (the lens reveals the render). ≤767px the cell keeps today's mobile
+ * horizon band. Sits AFTER the base .fo-fcell/.fo-fcell-strip rules
+ * on purpose: same-specificity declarations resolve by document
+ * order, and this display:none must win over .fo-fcell's grid. */
+@media (min-width: 768px) {
+  .fo-fcell-strip {
+    display: none;
+  }
+}
+
+/* ── R314 (cycle-2 §7 heights) — the desktop grid takes the reference's
+ * measured three-column band (357 | 715 | 357 @1427): the tagline +
+ * subscribe seat | the three link columns over the address pair | the
+ * 215 mark spanning both rows — ONE ~355px band instead of four
+ * stacked rows (the V9 grid was 798px tall). The whole block sits
+ * AFTER the V9 base placements on purpose: same-specificity
+ * declarations resolve by document order, so an earlier override of
+ * grid-area/area-names would silently lose to the base links-a/…/b
+ * rules and auto-place the cells into implicit tracks. ── */
+@media (min-width: 992px) {
+  .fo-fgrid {
+    grid-template-columns:
+      minmax(0, 25fr)
+      minmax(0, 19fr)
+      minmax(0, 19fr)
+      minmax(0, 18fr)
+      minmax(0, 19fr);
+    grid-template-areas:
+      'tagline na nb nc mark'
+      'tagline ea ea ab mark';
+    /* the grid band rides the measured reference height: the two auto
+     * rows stretch to 355 (244 + 105 content → 355) */
+    min-block-size: 355px; /* spacing-gate: allow — the measured reference grid band (355 @1427), an external constant */
+  }
+
+  .fo-fcell:nth-child(3) { grid-area: na; }
+  .fo-fcell:nth-child(4) { grid-area: nb; }
+  .fo-fcell:nth-child(5) { grid-area: nc; }
+  .fo-fcell:nth-child(6) { grid-area: ea; }
+  .fo-fcell:nth-child(7) { grid-area: ab; }
+
+  /* the base tagline rule's `grid-column: span 2` (the V9 ≤991 pair
+   * seat) must not fight the area placement in the five-track band */
+  .fo-fcell-tagline {
+    grid-column: 1;
+  }
+
+  /* the reference's link rows are compact (its menu band = 203px for
+   * five links): 28px targets, tighter gaps, leaner headings */
+  .fo-fcell {
+    gap: var(--sp-1);
+    padding: var(--sp-4) var(--sp-3);
+  }
+
+  .fo-footer-link {
+    min-block-size: 28px;
+  }
+
+  .fo-footer-heading {
+    padding-block-end: var(--sp-1);
+    margin-block-end: var(--sp-0-5);
+  }
+
+  .fo-footer-about {
+    line-height: 1.65;
+  }
+
+  .fo-subscribe {
+    margin-block-start: var(--sp-1);
+  }
+
+  .fo-fcell-addr {
+    padding-block: var(--sp-3) var(--sp-2);
+  }
+
+  /* the repo URL rides the narrow 18% track — the reference's own
+   * mono micro size (txt-14 measured) keeps it on one line */
+  .fo-footer-repo {
+    font-size: var(--fs-mono-md);
+  }
+
+  .fo-fcell-mark {
+    place-items: center;
+    padding: var(--sp-3);
+  }
+}
+
+/* ── R314 (cycle-2 §7 heights) — the image-strip band: the reference's
+ * footer-img-wrap (314px, BELOW the grid, above the legal row). The
+ * band splits graphic|typography exactly like the reference's own
+ * strip (its architecture render on one side, THE MODEL on the
+ * other): the inspection lens strip at inline-start + the closing
+ * wordmark cell at inline-end. ≥768px only — ≤767px the lens hides
+ * (the reference hides its strip there) and the wordmark flows as
+ * its own band. ── */
+.fo-fstrip {
+  display: grid;
+}
+
+@media (min-width: 768px) {
+  .fo-fstrip {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 34%);
+    margin-inline: -26px; /* spacing-gate: allow — full-bleed past the footer seat padding, the strip's own measured horizon band (the .fl convention) */
+    border-block-start: 1px solid var(--rule);
+    min-block-size: 314px; /* spacing-gate: allow — the measured reference strip band (314 @1427), an external constant */
+  }
+
+  /* the lens cell: the drawing letterboxes (aspect-meet) inside the
+   * band — the pointer math is viewBox-relative against the strip box
+   * and keeps working (y clamps at the letterbox) */
+  .fo-fstrip .fl {
+    display: flex;
+    align-items: center;
+    border-block: 0;
+    background: none;
+  }
+
+  .fo-fstrip .fl-svg {
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  /* the wordmark cell — the band's typographic seat */
+  .fo-fstrip .fo-wordmark {
+    margin-block-start: 0;
+    padding: var(--sp-3) var(--sp-6);
+    border-inline-start: 1px solid var(--rule);
+    align-content: center;
+    justify-items: center;
+    gap: var(--sp-2);
+  }
+
+  .fo-fstrip .fo-wordmark-ar {
+    font-size: clamp(64px, 7vw, 104px);
+  }
+
+  .fo-fstrip .fo-wordmark-en {
+    font-size: var(--fs-mono-md);
+    letter-spacing: 0.2em; /* Latin mono — tracking allowed */
+    white-space: nowrap;
+  }
+}
+
+/* the GIANT outlined construction-line wordmark (the mobile flow:
+ * its own band under the grid). Outlined via text-stroke
  * (paper-transparent fill), registration marks at the four corners. */
 .fo-wordmark {
   position: relative;
@@ -2534,6 +2804,7 @@ html[data-theme='dark'] .fo-wordmark-ar {
   block-size: 215px;
 }
 
+/* the legal row — the reference's copyright band (42px measured). */
 .fo-footer-bottom {
   display: flex;
   flex-wrap: wrap;
@@ -2544,6 +2815,13 @@ html[data-theme='dark'] .fo-wordmark-ar {
   border-block-start: 1px solid var(--rule);
   color: var(--text-muted);
   font-size: var(--fs-sm);
+}
+
+@media (min-width: 992px) {
+  .fo-footer-bottom {
+    padding-block: var(--sp-2) 0;
+    min-block-size: 42px; /* spacing-gate: allow — the measured reference legal row (42), an external constant */
+  }
 }
 
 .fo-footer-cluster {
@@ -2993,9 +3271,20 @@ html[data-theme='dark'] .fo-wordmark-ar {
   }
 
   /* the footer cells pair up on small screens (1-col stack was the
-     +55% height offender) */
+     +55% height offender). R314 cycle-2: the areas re-declare at TWO
+     columns — the V9 four-token strings against a two-track template
+     left the un-listed tracks auto-sized and squeezed the tagline
+     into a ~33px sliver column (VLM-confirmed breakage); every named
+     placement now resolves inside the two-column band. */
   .fo-fgrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'strip strip'
+      'tagline tagline'
+      'links-a links-b'
+      'links-c links-c'
+      'addr-a addr-b'
+      'mark mark';
   }
 
   .fo-fcell-links:last-of-type {
@@ -3077,9 +3366,20 @@ html[data-theme='dark'] .fo-wordmark-ar {
   }
 
   /* R314 (V9): the cell grid stacks single-column; the wordmark
-     scales with the clamp; the strip stays a horizon band */
+     scales with the clamp; the strip stays a horizon band. R314
+     cycle-2: the areas re-declare at ONE column (same sliver fix as
+     the two-column band above — every named placement resolves). */
   .fo-fgrid {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'strip'
+      'tagline'
+      'links-a'
+      'links-b'
+      'links-c'
+      'addr-a'
+      'addr-b'
+      'mark';
   }
 
   .fo-fcell-tagline {
@@ -3091,7 +3391,9 @@ html[data-theme='dark'] .fo-wordmark-ar {
   }
 
   .fo-fcell-mark {
-    min-block-size: 180px;
+    /* V13's compact 120 floor (the ≤760 band's own rule) — the V9-era
+       180 floor here overrode it on phones for no measured reason */
+    min-block-size: 120px;
   }
 
   .fo-footer-mark-svg {
@@ -4899,10 +5201,12 @@ html[data-theme='dark'] .fo-wordmark-ar {
    ════════════════════════════════════════════════════════════════════ */
 
 /* ── fl — the footer inspection strip ────────────────────────────────
-   A hairline band above the colophon: the journey drawing in its
-   sketch state; a fine-pointer lens reveals the resolved state (full
-   ink + signals + labels) inside a lerped circle. Touch + reduced
-   motion stand on the resolved strip statically. */
+   R314 cycle-2 §7: the band under the cell grid (the reference's
+   footer-img-wrap order). The journey drawing in its sketch state is
+   the ground; a fine-pointer lens reveals the resolved state — the
+   licensed campus ink RENDER + signals + labels — inside a lerped
+   circle. Touch + reduced motion stand on the resolved strip
+   statically. */
 .fl {
   position: relative;
   border-block-end: 1px solid var(--rule);
@@ -4938,6 +5242,14 @@ html[data-theme='dark'] .fo-wordmark-ar {
 
 .fl-resolved {
   transform-box: fill-box;
+}
+
+/* R314 cycle-2: the resolved layer's render — the licensed ink render
+   (same asset + licence the strip-image cell carried; the old cell's
+   contrast lift keeps the ink crisp over the thin band). A paper
+   artifact in both themes (the hero + plan precedent). */
+.fl-render {
+  filter: contrast(1.06);
 }
 
 .fl-ink line,
