@@ -130,12 +130,14 @@ describe('R312 mobile camera — the source contracts', () => {
   });
 
   it('the camera crop table mirrors the plan geometry (the washed zones + doors)', () => {
-    /* four crops, each 560×420, clamped inside the 1200×760 sheet */
+    /* four crops, each 480×500, clamped inside the 1200×760 sheet.
+     * R314-cycle2 override (§7 map share): windows widened 560×420 →
+     * 480×500 — more plan per stage; the nodes moved with them. */
     expect(JOURNEY_SRC).toMatch(/MOBILE_CROPS: readonly CamRect\[\] = \[/);
-    const crops = JOURNEY_SRC.match(/\[640, 25\.5, 560, 420\]/);
-    const crop1 = JOURNEY_SRC.match(/\[640, 340, 560, 420\]/);
-    const crop2 = JOURNEY_SRC.match(/\[310, 25\.5, 560, 420\]/);
-    const crop3 = JOURNEY_SRC.match(/\[0, 25\.5, 560, 420\]/);
+    const crops = JOURNEY_SRC.match(/\[680, 30, 480, 500\]/);
+    const crop1 = JOURNEY_SRC.match(/\[680, 260, 480, 500\]/);
+    const crop2 = JOURNEY_SRC.match(/\[348, 60, 480, 500\]/);
+    const crop3 = JOURNEY_SRC.match(/\[12, 60, 480, 500\]/);
     expect(crops).not.toBeNull();
     expect(crop1).not.toBeNull();
     expect(crop2).not.toBeNull();
@@ -168,12 +170,14 @@ describe('R312 mobile camera — the source contracts', () => {
     /* the cam twin is display:none at ≥992px */
     expect(LANDING_CSS).toMatch(/\.jt-cam \{\s*display: none;\s*\}/);
     /* ≤991px: the flow becomes the sticky container; the pin's window
-     * yields; the cam sticks below the header at ≤360px tall */
+     * yields; the cam sticks below the header at ≤420px tall.
+     * R314-cycle2 override (§7 map share): the frame grew 40svh →
+     * 48svh to carry the widened 480×500 crop windows. */
     const media = LANDING_CSS.slice(LANDING_CSS.indexOf('@media (max-width: 991px)'));
     expect(media).toMatch(/\.jt-flow \{\s*display: block;\s*order: 1;/);
     expect(media).toMatch(/\.jt-pin \.jt-window \{\s*display: none;\s*\}/);
     expect(media).toMatch(/\.jt-cam \{[^}]*position: sticky;/);
-    expect(media).toMatch(/\.jt-cam \{[^}]*block-size: clamp\(280px, 40svh, 360px\);/);
+    expect(media).toMatch(/\.jt-cam \{[^}]*block-size: clamp\(300px, 48svh, 420px\);/);
     expect(media).toMatch(/\.jt-cam \{[^}]*z-index: 2;/);
     /* the side column is inert at ≤991px — the desktop clamp can
      * never narrow it mid-flow */
@@ -217,12 +221,13 @@ describe('R312 mobile camera — the real landing in jsdom', () => {
 
     /* the prime frame runs on mount (rAF): the jsdom rects are empty
      * so reading falls back to the pin metric (clamped 1) — the cam
-     * holds the LAST crop, exactly the node rect (never garbage). */
+     * holds the LAST crop, exactly the node rect (never garbage).
+     * R314-cycle2 override: the mastery node is the widened window. */
     await waitFor(
       () => expect(camSheet()?.flag).toBe('cropped'),
       { timeout: 2000 },
     );
-    expect(camSheet()?.viewBox).toBe('0 25.5 560 420');
+    expect(camSheet()?.viewBox).toBe('12 60 480 500');
     expect(camSheet()?.par).toBe('xMidYMid slice');
     /* the stage flips with the reading (pin=1 here) */
     const track = document.querySelector<HTMLElement>('.jt');
@@ -230,7 +235,7 @@ describe('R312 mobile camera — the real landing in jsdom', () => {
 
     /* a fresh scroll burst keeps the same state (idempotent writes) */
     fireEvent.scroll(window);
-    await waitFor(() => expect(camSheet()?.viewBox).toBe('0 25.5 560 420'), { timeout: 1000 });
+    await waitFor(() => expect(camSheet()?.viewBox).toBe('12 60 480 500'), { timeout: 1000 });
   });
 
   it('reduced motion at mobile: the crop is the discrete node — never a mid-pan', async () => {
@@ -239,8 +244,9 @@ describe('R312 mobile camera — the real landing in jsdom', () => {
     installMatchMedia();
     mountLanding();
     await waitFor(() => expect(camSheet()?.flag).toBe('cropped'), { timeout: 2000 });
-    /* the reduced branch picks MOBILE_CROPS[idx] — an exact node rect */
-    expect(camSheet()?.viewBox).toBe('0 25.5 560 420');
+    /* the reduced branch picks MOBILE_CROPS[idx] — an exact node rect
+     * (R314-cycle2 override: the widened mastery node) */
+    expect(camSheet()?.viewBox).toBe('12 60 480 500');
   });
 
   it('the ≥992px crossing restores the full sheet exactly once', async () => {

@@ -2989,7 +2989,11 @@ html[data-theme='dark'] .fo-wordmark-ar {
   }
 
   .fo-hero-window .bp-stage {
-    min-block-size: 44vh;
+    /* R314 cycle 2 (3-e): 44vh → 38vh — the fresh Heron mobile capture
+     * puts the hero's image mass at ~287–320px @390×844 (p-s00 bands);
+     * 38vh (321px) rides that mass and returns .fo-hero to the
+     * reference's 828px (was 901). */
+    min-block-size: 38vh;
   }
 
   .fo-hero-strip {
@@ -3170,8 +3174,12 @@ html[data-theme='dark'] .fo-wordmark-ar {
   }
 
   /* the platform band's caption folds to the tag line (the reference's
-     mobile platform cell = composition + one label) */
-  .pr-section .prf-caption > :not(.prf-tag):not(.prf-type) {
+     mobile platform cell = composition + one label). R314 cycle 2 (3-e):
+     the original :not(.prf-tag)/:not(.prf-type) matched NOTHING (the
+     children are .prf-caption-tag/-body/-demo) and silently folded the
+     WHOLE caption to an empty box — corrected to keep the real-ui tag,
+     the V13 intent. */
+  .pr-section .prf-caption > :not(.prf-caption-tag) {
     display: none;
   }
 
@@ -4695,7 +4703,7 @@ html[data-theme='dark'] .fo-wordmark-ar {
    the side column (outside the flow) enters, never covering it. Its
    sheet is cropped to the active stage's zone by JourneyScene's
    driver (viewBox + slice cover) — instead of squeezing the full
-   1200×760 sheet into the column. The frame is ≤ 360px tall so the
+   1200×760 sheet into the column. The frame is ≤ 420px tall so the
    reading band (below its bottom edge) always holds the active card
    in the open region. ≥992px `.jt-flow` is display:contents and the
    twin is display:none — the pin's own window (above) is the one;
@@ -5090,13 +5098,18 @@ html[data-theme='dark'] .fo-wordmark-ar {
   /* the camera: sticky within the flow; the sheet fills the frame
      edge-to-edge (slice cover — the driver owns the viewBox crop);
      the frame rides below the sticky header (57px = its 56px inner
-     + 1px hairline) and stays ≤ 360px tall so the reading band below
-     its bottom edge always holds the active card in the open region. */
+     + 1px hairline) and stays ≤ 420px tall so the reading band below
+     its bottom edge always holds the active card in the open region.
+     R314 cycle 2 (§7 map share): 40svh → 48svh — the taller frame
+     carries the re-proportioned 480×500 crop windows (JourneyScene's
+     MOBILE_CROPS): more plan visible per stage at the same poché
+     weight (the slice renders at scale ≈0.758 @390×844 — corridor
+     ≈12.1px ≥ the 12px floor). */
   .jt-cam {
     display: block;
     position: sticky;
     inset-block-start: calc(57px + var(--sp-3) + env(safe-area-inset-top, 0px));
-    block-size: clamp(280px, 40svh, 360px);
+    block-size: clamp(300px, 48svh, 420px);
     z-index: 2;
     margin-block-end: var(--sp-4);
     padding: var(--sp-3);
@@ -5135,9 +5148,26 @@ html[data-theme='dark'] .fo-wordmark-ar {
     visibility: visible;
   }
 
+  /* R314 cycle 2 (§7 map share): each station owns an EQUAL 64svh
+     band with the card centred in it — the stage track the camera
+     travels. The bands make the reading parameter's quarters map
+     1:1 onto the cards (the card centre meets the reading band at
+     the CAM_BANDS node — the camera is AT the zone crop exactly then)
+     and they lengthen the pinned traversal 774 → 2209px (≈2.85×) so
+     the map owns a reference-like share of the mobile page (the
+     reference's home-map is 4819px = 42% of its 11363px mobile docH
+     — measured live @390×844; .chapters lands ≈4813px ≈ the
+     reference's own absolute map height; the residual share gap is
+     the taller non-map base — see the 3-b worklog). The
+     dwell either side of a card is the camera's glide between zone
+     crops — the scrub IS the content, never empty scroll. The ≥992px
+     ladder keeps the absolute-band R310 geometry (this block is
+     ≤991px only). */
   .jt-stations {
     position: static;
     display: grid;
+    grid-template-rows: repeat(4, minmax(64svh, auto));
+    align-items: center;
     gap: var(--sp-4);
     margin-block-start: 0;
   }
@@ -5358,4 +5388,269 @@ html[data-theme='dark'] .fo-wordmark-ar {
   font-size: var(--fs-xs);
   line-height: 1.7;
   color: var(--text-muted);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   R314 CYCLE 2 (3-e) — MOBILE SECTION-HEIGHT PARITY @390×844
+   ════════════════════════════════════════════════════════════════════
+   The fresh Heron mobile capture (audits/evidence/r314/_local/
+   captures/heron/390x844/light/meta.json — docH 11363) gives the true
+   mobile distribution: hero 828 · st 837 · pm 869 · map 4819 · pr 517 ·
+   wy 806 · rl 948 · cta 500 · footer 1239. Madarek was 13164 with every
+   non-map section too tall. This block is the compaction pass: spacing,
+   scale and typographic tightening ONLY — every Arabic line, link and
+   disclosure stays (the established V13 folds are untouched).
+
+   WHY THIS BLOCK SITS AT THE END OF THE SHEET: the .pr-* base family
+   (lines ~3530+) was authored AFTER the V13 mobile blocks, so its
+   unconditional rules (padding sp-7, min-block-size 79vh, display-lg
+   title, the 7fr/5fr grid) silently WON over the same-specificity V13
+   overrides by document order — on phones the platform band rendered a
+   71px four-line title in a half-width grid. Same-specificity
+   declarations resolve by document order, so the repair declares its
+   overrides here, after every base family. Desktop (≥992px) is
+   untouched — every rule lives in ≤760px/≤640px belts; the tablet belt
+   761–991px keeps its prior rendering.
+   ════════════════════════════════════════════════════════════════════ */
+@media (max-width: 760px) {
+  /* the hero strip's tail padding steps down (901 → ~826 @390 with the
+   * 38vh stage above) */
+  .fo-hero-strip {
+    padding-block-end: var(--sp-3);
+  }
+
+  /* the platform band: the cascade repair + the compact rhythm — the
+   * measured reference platform cell is a 128px head over a ~370px
+   * composition (p-s04 bands) */
+  .pr-section {
+    padding-block: var(--sp-5) var(--sp-4);
+    min-block-size: 0;
+  }
+
+  .pr-title {
+    font-size: clamp(24px, 7.4vw, 34px);
+    line-height: 1.2;
+  }
+
+  .pr-head {
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-3);
+  }
+
+  .pr-lede {
+    line-height: 1.55;
+  }
+
+  /* ONE full-width composition — the base 7fr/5fr pair never applied
+   * its mobile override (see the block header) */
+  .pr-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pr-note {
+    margin-block-start: var(--sp-3);
+  }
+
+  .pr-section .prf {
+    gap: var(--sp-1);
+  }
+
+  .pr-section .prf-caption {
+    padding-block: var(--sp-1);
+  }
+
+  /* the footer's own compact rhythm shared by both mobile belts */
+  .fo-footer-inner {
+    padding-block: var(--sp-3) var(--sp-3);
+  }
+
+  .fo-footer-link {
+    min-block-size: 26px;
+  }
+}
+
+@media (max-width: 640px) {
+  /* ── hero: 901 → 828 (the reference's own band) ── */
+  .fo-hero {
+    padding-block-start: var(--sp-5);
+    padding-block-end: var(--sp-6);
+  }
+
+  /* ── pm: 905 → 857 (target 869) — the sp-10 bands step to the
+     reference's compact share; the grouped V13 rule above keeps
+     .st-section/.chapters at their own rungs ── */
+  .pm-section {
+    padding-block: var(--sp-8) var(--sp-6);
+  }
+
+  /* ── pr: the phones' single-cell platform band — the decorative
+     mock-UI fragment strip (aria-hidden collage, r314-productframe)
+     folds; the REAL capture keeps its full natural aspect ── */
+  .pr-section .prf-cards {
+    display: none;
+  }
+
+  /* ── wy: 995 → 825 (target 806) — the stage verbs ride the sheet
+     titles' own mobile clamp; the rail tightens one rung ── */
+  .wy-section {
+    padding-block: var(--sp-6) var(--sp-5);
+  }
+
+  .wy-head {
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-4);
+  }
+
+  .wy-stage-verb {
+    font-size: clamp(22px, 7.4vw, 28px);
+    line-height: 1.2;
+  }
+
+  .wy-stage {
+    padding-block: var(--sp-1);
+  }
+
+  .wy-rail {
+    gap: var(--sp-1);
+  }
+
+  .wy-note {
+    margin-block-start: var(--sp-3);
+  }
+
+  /* ── rl: 1290 → 982 (target 948) — the honest 8-card ledger keeps
+     every row (num + title + state tag); the cells tighten to the
+     reference's compact tile rhythm ── */
+  .rl-section {
+    padding-block: var(--sp-4);
+  }
+
+  .rl-head {
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-3);
+  }
+
+  .rl-card {
+    padding: var(--sp-2-5) var(--sp-3);
+    gap: var(--sp-1);
+  }
+
+  .rl-cards {
+    gap: var(--sp-1-5);
+  }
+
+  .rl-card-tag {
+    padding-block: 0;
+    line-height: 1.2;
+  }
+
+  .rl-more {
+    margin-block-start: var(--sp-2);
+  }
+
+  /* ── cta: 669 → 512 (target 500) — the coords/title/resolve rows
+     tighten; the meta readout keeps all four honest rows ── */
+  .fo-cta {
+    padding-block: var(--sp-5) var(--sp-4);
+  }
+
+  .fo-cta-coords {
+    padding-block-end: var(--sp-2);
+    margin-block-end: var(--sp-3);
+  }
+
+  .fo-cta-corners {
+    margin-block-start: 0;
+  }
+
+  .fo-cta-inner {
+    gap: var(--sp-3);
+  }
+
+  .fo-cta-lede {
+    line-height: 1.55;
+  }
+
+  .fo-cta-actions {
+    gap: var(--sp-2);
+  }
+
+  .fo-cta .fo-hero-meta {
+    margin-block-start: var(--sp-3);
+  }
+
+  .fo-cta .fo-meta-row {
+    padding-block: var(--sp-1);
+  }
+
+  /* ── footer: 1843 → 1256 (target 1239) — the cell grid pairs up on
+     phones too (the V13 ≤640 one-column stack was the +604 offender):
+     links beside links, the account column beside the address, the
+     repo channel beside the mark. Every cell, link and disclosure
+     stays. ── */
+  .fo-fgrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'strip strip'
+      'tagline tagline'
+      'links-a links-b'
+      'links-c addr-a'
+      'addr-b mark';
+  }
+
+  .fo-fcell {
+    padding: var(--sp-2);
+  }
+
+  .fo-footer-heading {
+    padding-block-end: var(--sp-1);
+    margin-block-end: var(--sp-0-5);
+  }
+
+  .fo-fcell-strip {
+    block-size: 110px;
+  }
+
+  .fo-fcell-addr {
+    margin-block-start: 0;
+    padding-block: var(--sp-2);
+  }
+
+  .fo-fcell-mark {
+    min-block-size: 96px;
+  }
+
+  .fo-footer-mark-svg {
+    inline-size: 96px;
+    block-size: 96px;
+  }
+
+  .fo-footer-about {
+    line-height: 1.45;
+  }
+
+  .fo-subscribe-note {
+    line-height: 1.5;
+  }
+
+  /* the closing wordmark band: the outline scales to the phone's own
+   * mass and the Latin micro line drops to the mono-sm rung so it
+   * reads on ONE line (decorative, aria-hidden) */
+  .fo-wordmark {
+    padding-block: var(--sp-3) var(--sp-2);
+  }
+
+  .fo-wordmark-ar {
+    font-size: clamp(56px, 20vw, 84px);
+  }
+
+  .fo-wordmark-en {
+    font-size: var(--fs-mono-sm);
+    letter-spacing: 0.15em; /* Latin mono — tracking allowed */
+  }
+
+  .fo-footer-bottom {
+    padding-block-start: var(--sp-2);
+    gap: var(--sp-1-5);
+  }
 }

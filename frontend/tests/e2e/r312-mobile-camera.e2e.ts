@@ -13,6 +13,14 @@ import type { Page } from '@playwright/test';
 
 const VW = { mobile: { width: 390, height: 844 }, desktop: { width: 1440, height: 900 } };
 
+/* R314-cycle2 override: the page-ready sentinel — the V1 hero rebuild
+ * (cycle 1, 45f8c32) replaced the H1 copy; the old 'مدارك' sentinel
+ * has been stale since (the brand name lives in the header/footer,
+ * not the H1). The sentinel now waits on the current H1's first line.
+ * Not a camera pin — the camera expectations below carry their own
+ * R314-cycle2 override notes. */
+const HERO_READY = 'رحلةُ تعلُّمٍ واحدة';
+
 test.use({ e2eRole: 'guest', reducedMotion: 'no-preference' });
 
 /** engage the camera deterministically (its flow slot's document top
@@ -75,7 +83,7 @@ test.describe('R312 — the mobile camera (§R R1)', () => {
   test('390px: the twin discipline — cam sticky + cropped, pin window hidden, full sheet on the pin', async ({ page }) => {
     await page.setViewportSize(VW.mobile);
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
 
     /* the driver's prime frame (rAF on mount) — wait for it, then
      * assert the twin discipline */
@@ -90,7 +98,8 @@ test.describe('R312 — the mobile camera (§R R1)', () => {
     expect(s.cam?.position).toBe('sticky');
     expect(s.cam?.flag).toBe('cropped');
     expect(s.cam?.par).toBe('xMidYMid slice');
-    /* the crop is inside the sheet and zoomed (≤ 600×420 of 1200×760) */
+    /* the crop is inside the sheet and zoomed (≤ 600×420 of 1200×760;
+     * R314-cycle2 override: the windows are 480×500) */
     const vb = (s.cam?.viewBox ?? '').split(' ').map(Number);
     expect(vb.length).toBe(4);
     expect(vb[0]!).toBeGreaterThanOrEqual(0);
@@ -107,7 +116,7 @@ test.describe('R312 — the mobile camera (§R R1)', () => {
   test('390px: the reading band — the card at the band matches the zone on the sheet', async ({ page }) => {
     await page.setViewportSize(VW.mobile);
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
     await page.waitForFunction(
       () => (document.querySelector('.jt-cam .bp-svg') as SVGSVGElement | null)?.dataset.cam === 'cropped',
       undefined,
@@ -115,34 +124,38 @@ test.describe('R312 — the mobile camera (§R R1)', () => {
     );
 
     /* card 2 at the band → stage 2 (the exam hall), the camera at the
-     * exam crop node (interpolated around it — never the full sheet) */
+     * exam crop node (interpolated around it — never the full sheet).
+     * R314-cycle2 override (§7 map share): the nodes are the widened
+     * 480×500 windows — exam (348, 60); the equal 64svh centred
+     * station bands put the card centre at the band exactly at the
+     * CAM_BANDS node. */
     await readAtBand(page, 2);
     const s2 = await camSheet(page);
     expect(s2.stage).toBe('2');
     const vb2 = (s2.cam?.viewBox ?? '').split(' ').map(Number);
-    /* the exam node is (310, 25.5) — the interpolation is within a
+    /* the exam node is (348, 60) — the interpolation is within a
      * half-segment of it on either side */
-    expect(Math.abs(vb2[0]! - 310)).toBeLessThanOrEqual(160);
-    expect(vb2[2]!).toBe(560);
+    expect(Math.abs(vb2[0]! - 348)).toBeLessThanOrEqual(160);
+    expect(vb2[2]!).toBe(480);
 
     /* card 3 at the band → stage 3, the exact mastery node */
     await readAtBand(page, 3);
     const s3 = await camSheet(page);
     expect(s3.stage).toBe('3');
-    expect(s3.cam?.viewBox).toBe('0 25.5 560 420');
+    expect(s3.cam?.viewBox).toBe('12 60 480 500');
 
     /* card 0 at the band → stage 0, around the lecture node */
     await readAtBand(page, 0);
     const s0 = await camSheet(page);
     expect(s0.stage).toBe('0');
     const vb0 = (s0.cam?.viewBox ?? '').split(' ').map(Number);
-    expect(Math.abs(vb0[0]! - 640)).toBeLessThanOrEqual(160);
+    expect(Math.abs(vb0[0]! - 680)).toBeLessThanOrEqual(160);
   });
 
   test('390px: the invariant — the card being read is never behind the frame; the side is never covered', async ({ page }) => {
     await page.setViewportSize(VW.mobile);
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
 
     const violations = await page.evaluate(async () => {
       const jt = document.querySelector('.jt') as HTMLElement;
@@ -187,7 +200,7 @@ test.describe('R312 — the mobile camera (§R R1)', () => {
   test('the ≥992px crossing restores the full sheet; crossing back re-crops', async ({ page }) => {
     await page.setViewportSize(VW.mobile);
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
     await readAtBand(page, 2);
     expect((await camSheet(page)).cam?.flag).toBe('cropped');
 
@@ -221,13 +234,14 @@ test.describe('R312 — reduced motion at mobile: the discrete node crop', () =>
   test('the camera holds the exact node rect — never a mid-pan', async ({ page }) => {
     await page.setViewportSize(VW.mobile);
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
     await readAtBand(page, 1);
     const s = await camSheet(page);
-    /* the exact node rect for stage 1 (the checkpoint crop) */
-    expect(s.cam?.viewBox).toBe('640 340 560 420');
+    /* the exact node rect for stage 1 (the checkpoint crop —
+     * R314-cycle2 override: the widened window) */
+    expect(s.cam?.viewBox).toBe('680 260 480 500');
     await readAtBand(page, 3);
-    expect((await camSheet(page)).cam?.viewBox).toBe('0 25.5 560 420');
+    expect((await camSheet(page)).cam?.viewBox).toBe('12 60 480 500');
   });
 });
 
@@ -235,7 +249,7 @@ test.describe('R312 — the desktop contract is intact (the R310 pin)', () => {
   test('1440px: the pin window shows the FULL sheet; the stations ride absolute; the stage advances with the pin', async ({ page }) => {
     await page.setViewportSize(VW.desktop);
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
 
     /* the R310 desktop geometry: stations absolute against the track */
     const geo = await page.evaluate(() => {

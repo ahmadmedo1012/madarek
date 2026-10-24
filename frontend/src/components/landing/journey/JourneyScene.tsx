@@ -111,19 +111,33 @@ const ASSISTANT_NOTE =
 /* ── R312 — the mobile camera crop table (§R R1) ────────────────────
  * Crop windows over the sheet, each centred on its stage's WASHED
  * zone (the zone rect + its door station from LearningPlanDrawing's
- * geometry), clamped to the sheet. Sized 560×420 so the washed zone
- * rides fully inside the slice-visible band with corridor context.
- *  · 0 — the lecture hall   (zone 764,79 + door [01] at 850,384)
- *  · 1 — the checkpoint kiosk (zone 764,469 + door [02] at 850,492)
- *  · 2 — the exam hall        (zone 424,79  + door [03] at 520,384)
- *  · 3 — the mastery room     (zone 79,79   + door [05] at 270,384)
+ * geometry), clamped to the sheet. R314 cycle 2 (§7 map share): the
+ * windows were re-proportioned 560×420 → 480×500 so each stage shows
+ * its zone + the corridor + a preview slice of the NEXT zone in the
+ * reading order — more plan visible per stage (≈17% more sheet area
+ * per view), a slower, more meaningful scrub (the frame grew with
+ * them: 48svh — see the .jt-cam rule in landing.css). At 390×844 the
+ * frame's inner box is ≈316×379 (page gutter + frame chrome), so the
+ * slice renders at scale ≈0.758 and shows ≈417×500 of each window —
+ * every washed zone + its door verified inside that visible band
+ * (lecture 764–1122 · checkpoint 764–1122 · exam 424–753 · mastery
+ * 78–413, doors [01]–[05]) — keeping the corridor poché ≈12.1px ≥
+ * the 12px floor. The stage machine itself is untouched.
+ *  · 0 — the lecture hall  (zone 764,78 + door [01] at 850,384) +
+ *    the sheet title block + a checkpoint preview at the bottom
+ *  · 1 — the checkpoint kiosk (zone 764,475 + door [02] at 850,492)
+ *    + the full service strip to the sheet edge
+ *  · 2 — the exam hall     (zone 424,79  + doors [03]/[04]) + a
+ *    library preview
+ *  · 3 — the mastery room  (zone 79,79   + door [05] at 270,384) +
+ *    the reception preview + the west wall
  */
 type CamRect = readonly [number, number, number, number];
 const MOBILE_CROPS: readonly CamRect[] = [
-  [640, 25.5, 560, 420],
-  [640, 340, 560, 420],
-  [310, 25.5, 560, 420],
-  [0, 25.5, 560, 420],
+  [680, 30, 480, 500],
+  [680, 260, 480, 500],
+  [348, 60, 480, 500],
+  [12, 60, 480, 500],
 ];
 
 /* the stage band centres — where the discrete stage flips; the camera
