@@ -49,3 +49,31 @@ r314 harness.
   CTA cell 166.66 ✓ · H1 2-line clean inside viewport ✓ · 0 white px in hero art ✓ · no overflowX at any band ✓.
   Known open (cycle-1 push 2): K-E R310 ledger rows + K-D map states (B4), K-F footer wordmark (B9),
   1024×768 docH +23% / landscape +19% / 768 +5.7% (M-agents), instruments J2/J3 + PARITY recompute.
+
+## Cycle 2 — the rem law + the tablet/landscape re-composition (CLOSED)
+
+**The measured law:** every Heron ≤991 content band = a CONSTANT rem height
+(fresh manifest, 3 widths ±0.2rem): statement 57.2 · problem 144.8 ·
+platform 55.2 · why 95.2 · usecase 145.2 · cta 58.8 · footer 103.1.
+
+| Ticket | Result (measured, docH vs live reference) |
+|---|---|
+| M2 ≤1024 boundary | max-1024→991 + min-1025→992 ×2: the desktop composition holds at 992–1024 like the reference — 1024×768 **+22.7%→+8.0%** (rest = the 13px Arabic canon floor, documented) |
+| M3 tablet band 768–991 | V13 grammar extended, seated at file END (batch-1 cascade lesson); rem floors pin the law — 768 **+14.5%→+0.6%** (cta 541/541 · problem/product/why 0.0% exact) · 820 **+11.4%→−0.9%** · 844×390 **+13.4%→−1.0%** (usecase 1469/1469 · footer 1043/1043 exact) |
+| Phone boundary | 760→**767** (the reference's live tier — census 991/767/479; the 761–767 sliver was orphaned) |
+| J2 chrome verdicts | hero rulers + dashed frame: hidden at rest like the reference (proximity reveal, display:none <992) — were always-on |
+| Owner data | repo link RETIRED from the footer UI + all docs/logs/evidence (LICENSE/SECURITY kept — functional legal instruments, documented) |
+| Copy | «الأدوار الثمانية»→«الأدوار والشرائح» (honest 5+3 split) + problem/cta polish |
+| Instruments | band-structure-probe.mjs + shot-at.mjs + pages-smoke.mjs (score.mjs array shape) · deterministic vite-preview measurement · pixelmatch-6 interop fix |
+| Judges | DOM 729→623 instances · pixel 87 fresh pairs · VLM hero@1440 MATCH (scene-graph convergence) · smoke 40/40 (dark verified per-probe) |
+| **PARITY** | **56.6 → 58.5 (ratchet held)** — vlm 43.5 · pixel 42.9 · coverage 100 (the wiped _local smoke artifact honestly rebuilt) |
+| Gates | eslint 0 · tsc 0 · 2530+1783 green · check:* OK · parity-export 200/200 |
+
+## Cycle 3 queue (worst-first)
+
+1. 992–1024 slice +8.0% (wraps + the canon-floor ledger entry)
+2. 480–767 mid-band −16.2% @600×1024 (mobile-family rem purification + 390/360 re-pins)
+3. 360×800 +5.5% (why +18%) · 1920×1080 −3.2% (footer px caps) · 1280 footer +13%
+4. Landscape hero window-seat + map landscape (chapters −5.9%)
+5. VLM re-verdict pass on anchored frames (27 stale r314 DIFFERENT verdicts predate the re-compositions)
+6. Authed-surface sweep (P3–P8) + dark pair judging @768

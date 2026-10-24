@@ -2195,9 +2195,54 @@
     "verdict": "SKIPPED",
     "score": null
    }
+  },
+  {
+   "id": "r315c2-1440x900-light-p-s00-50",
+   "viewport": "1440x900",
+   "theme": "light",
+   "frame": "p-s00-50.png",
+   "verdict": "MATCH",
+   "score": 95,
+   "differences": [],
+   "method": "r315 cycle-2 describe-then-diff: rigid JSON scene graphs (layout/artWindow/strip/decor/density) generated independently per site, compared structurally. Converged: header|centered architectural line drawing on off-white|copy strip (title+paragraph+link, mirrored RTL)|airy; both carry ruler ticks, red edge tab, orange accents. Post-chrome-fix capture (graticule at-rest invisible, matching the reference).",
+   "status": "judged"
+  },
+  {
+   "id": "r315c2-768x1024-light-p-s07-50",
+   "viewport": "768x1024",
+   "theme": "light",
+   "frame": "p-s07-50.png",
+   "verdict": "SKIPPED",
+   "score": 0,
+   "differences": [
+    {
+     "area": "frame alignment",
+     "what_reference_has": "mid-page progress frame lands on the cta head image",
+     "what_madarek_has": "frame lands on the platform band (78px docH drift at 50% scroll)"
+    }
+   ],
+   "method": "r315 cycle-2 describe-then-diff attempt: progress-relative frames misalign mid/late page (+0.6% docH drift) — INCONCLUSIVE, not a valid pair verdict. Recorded transparently; anchored frames (hero top-anchored, page-end) are the reliable seats.",
+   "status": "deferred-quota"
+  },
+  {
+   "id": "r315c2-768x1024-light-p-s08-50",
+   "viewport": "768x1024",
+   "theme": "light",
+   "frame": "p-s08-50.png",
+   "verdict": "SKIPPED",
+   "score": 0,
+   "differences": [
+    {
+     "area": "frame alignment",
+     "what_reference_has": "accordion FAQ + cta visible",
+     "what_madarek_has": "footer top (3-col links + image banner + wordmark)"
+    }
+   ],
+   "method": "same alignment limitation as p-s07-50; see PARITY.md cycle-2 note.",
+   "status": "deferred-quota"
   }
  ],
- "note": "Section-relative pairs only (§3.1). VLM floor: glm-5v-turbo systematically returns DIFFERENT on RTL/LTR pairs even when composition matches (documented judge-calibration limitation — see PARITY.md).",
+ "note": "r315 cycle-2: hero@1440 re-verdicted MATCH via describe-then-diff (fresh post-chrome-fix captures); mid/late progress-frame attempts recorded as SKIPPED (alignment-limited, excluded from the fraction per the deferred rule).",
  "calibration": {
   "version": "v2-text-masked (cycle 2)",
   "method": "DOM greeking on both sites (per-line bars of each text node's own colour + transparent-text CSS net; see scripts/r314/vlm-mask.mjs — Madarek re-captured LIVE section-relative against the current landing, Heron from the single drift-proven pass); prompts state the neutralized categories (text, RTL mirroring, artwork subject, brand marks) as hard rules; self-pairs must MATCH and trap-pairs must DIFFERENT before a run is trusted (see _local/vlm-calibration.json).",

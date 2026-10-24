@@ -48,3 +48,95 @@ check:colors OK · check:icons OK · check:motion-tokens OK · check:raw-css rep
 3. VLM describe-then-diff (quota permitting) + PARITY component re-score.
 4. Consent dual-label roll (fine detail), loader-art white fills question (V14 judge),
    360×800 fine-tune, dark-theme pair judging, authed-surface sweep (P3–P8), red team.
+
+---
+
+# R315 — PARITY (VISUAL TRUTH) · cycle 2
+
+**Score: 56.6 → 58.5 (ratchet held, +1.9).** Cycle-2 closed the cycle-1
+queue's top ticket — the ≤1024 band re-composition — on a measured LAW,
+plus the J2 chrome verdicts and the owner-ordered personal-data scrub.
+
+## The law (fresh manifest, both sites, 11 viewports)
+
+Every Heron ≤991 content band is a **constant rem height** on the 1.199vw
+root — statement 57.2 · problem 144.8 · platform 55.2 · why 95.2 ·
+usecase 145.2 · cta 58.8 · footer 103.1 (each ±0.2rem across
+768/820/844-landscape). Our bands now pin the same floors (rem-pure),
+content compacts under them, the reference's own air fills the rest.
+
+## Geometry (docH, live Heron vs Madarek — before → after this cycle)
+
+| Viewport | cycle-1 | cycle-2 | bands >3% remaining |
+|---|---|---|---|
+| 1024×768 | +22.7% | **+8.0%** | statement/problem/why +19-20% (13px Arabic canon floor vs the reference's 5.9px labels — documented deviation), platform +28.5% (wraps) |
+| 768×1024 | +14.5% | **+0.6%** | none (cta 541/541 exact · problem/product/why 0.0%) |
+| 820×1180 | +11.4% | **−0.9%** | none |
+| 844×390 (landscape) | +13.4% | **−1.0%** | hero +11.2% (reference shows window-only; strip below the fold — cycle-3 seat), chapters −5.9% |
+| 1440×900 | −0.04% | −0.04% | none |
+| 390×844 | +0.9% | +0.8% | none |
+| 412×915 | −3.5% | −2.3% | statement −8% (mid-band family) |
+| 1280×800 | +2.6% | +2.4% | footer +13% (px caps) |
+| 1920×1080 | −2.6% | −3.2% | footer −25% (px caps at wide end) |
+| 360×800 | +5.6% | +5.5% | why +18% (cycle-3 mobile fine-tune) |
+| 600×1024 (new probe) | — | −16.2% | the 480–767 mid-band: the reference's big mobile root inflates every band; ours is px-floored — cycle-3 top ticket |
+
+## Judge state (cycle 2)
+
+- **DOM-geometry judge** re-run on the fresh tree: 729 → **623** mismatch
+  instances (211 distinct). Top remaining = footer-y drifts at 1024/360 —
+  symptoms of the docH deltas above them (already ticketed). Three real
+  role fixes landed: hero-ruler/hero-dashed **hidden at rest** like the
+  reference (proximity reveal on fine pointers, display:none <992) —
+  were always-on.
+- **Masked-pixel judge** re-run on fresh captures (87 pairs: 1440/390/768
+  × light): worstRegionAvg 0.725, globalAvg 0.188, ΔEpaper 3.4 — the
+  map's transitional scrub frames dominate worst-region (progress-
+  relative phase offset, same instrument family as r314's 43.7).
+- **VLM describe-then-diff (§3, glm-5v-turbo scene graphs):** hero @1440
+  **MATCH** (95) — layout/artWindow/strip/decor/density converge; our
+  honest elevation reads as the reference's family, mirrored RTL.
+  Mid/late progress-frame attempts @768 recorded SKIPPED (alignment-
+  limited: +0.6% docH drift misframes band boundaries) — anchored seats
+  (top/page-end) are the reliable red-team seats; full re-verdict pass
+  = cycle-3.
+- **Public-pages smoke matrix REBUILT** (the _local artifact was wiped in
+  the sandbox reset and had silently halved coverage): 40/40 PASS —
+  10 routes × 1440/390 × light/dark, dark theme verified per-probe this
+  time (the real zustand persist shape; the first sweep silently ran
+  light — caught and fixed).
+
+## Gates (cycle-2 close)
+
+eslint 0 errors (16 pre-existing warnings) · tsc -b 0 (incl. tests) ·
+**vitest frontend 2530/2530 + backend 1783/1783** (r306 re-pins: the 767
+boundary + content-anchored block extractors — documented in-test) ·
+check:colors OK (27 allow lines) · check:icons OK · check:motion-tokens OK ·
+check:csp-hash OK · verify-parity-export **200/200** · measurement protocol
+upgraded to deterministic `vite preview` (dev-server reflow variance
+eliminated — prod and dev builds measured bit-identical).
+
+## Owner orders executed this cycle (non-geometry)
+
+- **Personal-data scrub:** the repo link is GONE from the footer UI
+  (contact cell = the honest early-access-form channel note) and from
+  README/docs/logs/scripts/evidence (placeholder redactions; LICENSE +
+  SECURITY.md kept as functional legal instruments — documented decision).
+- **Copy quality:** «الأدوار الثمانية» → «الأدوار والشرائح» everywhere
+  (terminology consistency with the honest 5-roles + 3-segments split) ·
+  problem-card copy tightened · CTA punctuation.
+- **UX fluidity:** the hero graticule now carries the reference's own
+  proximity reveal (quiet at rest — less visual noise on first paint).
+
+## Cycle-3 queue (worst-first, with numbers)
+
+1. **992–1024 slice** (+8.0% @1024): the 13px Arabic floor is ~+7% of it
+   (canon deviation, needs an owner-visible ledger entry) — the wraps are
+   the fixable rest.
+2. **480–767 mid-band** (600×1024: −16.2%): the reference's mobile family
+   inflates with the big root; our px floors/clamps don't. The mobile
+   clamps need rem-purification with 390/360 re-pins.
+3. 360×800 +5.5% (why +18%, roles +10%) · 1920×1080 −3.2% (footer px caps).
+4. Landscape hero seat (window-only like the reference) + map landscape.
+5. VLM re-verdict pass on anchored frames (the 27 stale r314 DIFFERENT
+   verdicts predate the cycle-1+2 re-compositions).

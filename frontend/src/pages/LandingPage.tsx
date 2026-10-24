@@ -120,7 +120,7 @@ const PAINS = [
   {
     num: '02',
     title: 'تصحيح يأتي متأخرًا',
-    text: 'الاختبار الورقي يمرّ أسابيع قبل أن يعرف الطالب خطأه — وفرصة المراجعة تكون قد فاتت.',
+    text: 'تمرّ أسابيع قبل أن يعرف الطالب خطأه — وفرصة المراجعة تكون قد فاتت.',
     answer: 'تُجيبها: التصحيح التلقائي للموضوعي',
   },
   {
@@ -187,7 +187,7 @@ const NAV_SEATS: readonly NavSeat[] = [
     label: 'المجتمع', href: '#roles',
     children: [
       { label: 'التحديات المباشرة', href: '#live' },
-      { label: 'الأدوار الثمانية', href: '#roles' },
+      { label: 'الأدوار والشرائح', href: '#roles' },
       { label: 'الكليات التجريبية', href: '#colleges' },
     ],
   },
@@ -1109,7 +1109,7 @@ export default function LandingPage() {
                 جاهزٌ لبدء <em>رحلتك</em>؟
               </RevealCssClass>
               <RevealCssClass as="p" className="fo-cta-lede" delay={2}>
-                أنشئ حسابك الجامعي في دقائق — بالبريد الجامعي أو رقم قيدك —
+                أنشئ حسابك الجامعي في دقائق — بالبريد الجامعي أو رقم قيدك،
                 وتابع تقدّمك من أوّل محاضرة.
               </RevealCssClass>
               <RevealCssClass as="div" className="fo-cta-actions" delay={3} id="cta">
@@ -1290,7 +1290,7 @@ export default function LandingPage() {
               <Link to="/capabilities" className="fo-footer-link">ما يعمل اليوم</Link>
               <a href="#product" className="fo-footer-link">المنصّة فعليًا</a>
               <a href="#chapters" className="fo-footer-link">الفصول</a>
-              <a href="#roles" className="fo-footer-link">الأدوار الثمانية</a>
+              <a href="#roles" className="fo-footer-link">الأدوار والشرائح</a>
               <Link to="/colleges" className="fo-footer-link">الكلّيات التجريبية</Link>
             </nav>
             <nav className="fo-fcell fo-fcell-links" aria-label="المحتوى والرحلة">
@@ -1309,26 +1309,22 @@ export default function LandingPage() {
 
             {/* [06] the address cell — the reference's Sydney seat becomes
                 the demo institution's own identity: an explicitly fictional
-                place, the platform's real country, and the real repo as the
-                only real contact channel (no invented emails). */}
+                place and the platform's real country (honest-copy rule:
+                nothing invented, no real-institution affiliation). */}
             <div className="fo-fcell fo-fcell-addr">
               <div className="fo-footer-heading">العنوان</div>
               <p className="fo-footer-addr-line">جامعة مدارك التجريبية — مؤسسة عرض اصطناعية</p>
               <p className="fo-footer-addr-line">طرابلس، ليبيا</p>
             </div>
 
-            {/* [07] the contact cell — the repo is the only real channel */}
+            {/* [07] the contact cell — honest and personal-data-free (owner
+                order R315: the repo link and every owner-identity trace are
+                retired from all surfaces). The page's own early-access
+                form is the one real channel today — stated plainly. */}
             <div className="fo-fcell fo-fcell-addr">
               <div className="fo-footer-heading">التواصل</div>
-              <a
-                className="fo-footer-link fo-footer-repo"
-                href="https://github.com/ahmadmedo1012/madarek"
-                target="_blank"
-                rel="noreferrer"
-              >
-                github.com/ahmadmedo1012/madarek
-              </a>
-              <p className="fo-footer-addr-line">لا بريد عام — المستودع هو القناة الوحيدة.</p>
+              <p className="fo-footer-addr-line">التسجيل المبكر في هذه الصفحة هو قناة التواصل المتاحة حاليًا.</p>
+              <p className="fo-footer-addr-line">لا بريد عام في مرحلة الإطلاق التجريبي.</p>
             </div>
 
             {/* [08] the drawn-mark cell — the reference's line-logo seat:

@@ -51,7 +51,7 @@ Prereqs: **Node `>=20 <25`**, **npm**, a PostgreSQL (free Neon works).
 Full guide: `docs/05-setup.md`.
 
 ```bash
-git clone https://github.com/ahmadmedo1012/madarek.git && cd madarek
+git clone <repository-url> && cd madarek
 cp .env.example backend/.env       # fill DATABASE_URL + both JWT secrets
 npm install
 npm run db:migrate                 # apply schema

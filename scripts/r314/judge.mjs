@@ -15,7 +15,10 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const TOOLS = path.resolve(import.meta.dirname, 'tools/node_modules');
 const req = (m) => createRequire(path.join(TOOLS, 'noop.js'))(m);
-const pixelmatch = req('pixelmatch');
+/* R315 cycle-2: pixelmatch 6 is ESM (module) — the CJS require returns the
+ * namespace; normalise both shapes. */
+const _pm = req('pixelmatch');
+const pixelmatch = typeof _pm === 'function' ? _pm : (_pm.default ?? _pm.pixelmatch);
 const sharp = req('sharp');
 
 const ROOT = path.resolve(import.meta.dirname, '../..');

@@ -1,6 +1,6 @@
 # Worklog — R315 «ALL SCREENS, EVERY DETAIL»
 
-Repo: /home/z/madarek (clone of https://github.com/ahmadmedo1012/madarek.git, branch main).
+Repo: /home/z/madarek (clone of <repository-url>, branch main).
 Baseline at session start: f1c44f73 (R314 cycle 2, PARITY 56.6).
 Shared board: docs/redesign/r315/BOARD.md — every agent updates it with ticket status.
 
@@ -127,3 +127,27 @@ Work Log:
 Stage Summary:
 - Cycle 1 closed with 10 of the owner's §0 tickets measured-closed; docH @1440 −0.04% vs the live reference.
 - Cycle-2 top ticket (exact numbers in the manifest): the ≤1024 tablet band re-composition (Heron keeps the desktop composition on the 5.93px root; ours restacks → +22.7% @1024).
+
+---
+Task ID: r315-c2
+Agent: foreman (main session — continuation after sandbox reset)
+Task: R315 cycle 2 — push to main + the next round: the ≤1024 band re-composition (cycle-1's top queue ticket), deepest/strongest matching, finest details, owner orders (personal-data scrub, copy quality), judges re-run, PARITY ratchet.
+
+Work Log:
+- Re-cloned the repo at c117c98d (cycle-1 close). Fresh baseline: PARITY 56.6, cycle-2 queue = M2/M3 tablet band + judges re-run.
+- Measured BOTH sites × 11 viewports fresh (scripts/r315/measure-sections.mjs; deterministic vite-preview protocol after catching the dev server serving stale CSS with zero HMR lines — prod/dev builds then measured bit-identical).
+- M2: our old max-1024 tablet block restacked at 992–1024 while the live reference keeps the desktop composition on the 5.93px root → boundary moved to the reference's own rungs (max-991 + min-992 ×2). 1024×768: +22.7%→+8.0%.
+- Built scripts/r315/band-structure-probe.mjs (computed skeleton dump per band) + probed the reference @768/1024 — derived THE LAW: every ≤991 band is a constant-rem height (57.2/144.8/55.2/95.2/145.2/58.8/103.1 ±0.2rem across 768/820/844L).
+- M3 batches 1–3: V13 mobile-grade grammar extended to 768–991 (floors retired, K-H title rung, CTA folds, platform two full-width strips, footer row grammar, rem floors). Batch-1 lost the cascade to later base rules (pr/why/cta/footer) — re-seated at file END; batch-2/3 landed the law. 768 +14.5%→+0.6% · 820 +11.4%→−0.9% · 844L +13.4%→−1.0%; most bands pixel-exact (cta 541/541, why 877/877, usecase 1469/1469, footer 1043/1043).
+- Phone boundary 760→767 (live stylesheet census: the reference carries exactly 991/767/479); r306 test re-pins documented in-test (content-anchored extractors, not order-anchored).
+- J2 judge fixes: hero graticule (rulers + dashed frame) retired to the reference's at-rest invisibility (proximity reveal on fine pointers, display:none <992).
+- Owner orders: repo link scrubbed from the footer UI (honest early-access-form contact note) + README/docs/logs/scripts/evidence redacted (LICENSE/SECURITY kept as functional legal instruments); copy pass («الأدوار والشرائح» consistency, problem/cta polish).
+- Judges: DOM judge 729→623 instances; masked-pixel judge re-run (87 fresh pairs — pixelmatch-6 ESM interop fixed in judge.mjs); VLM describe-then-diff: hero @1440 MATCH 95 (scene-graph convergence), mid/late progress frames SKIPPED as alignment-limited (recorded transparently); public-pages smoke matrix REBUILT 40/40 (dark verified per-probe with the real zustand persist shape — first sweep silently ran light, caught + fixed; artifact written in score.mjs's bare-array shape).
+- Score: PARITY 56.6 → 58.5 (vlm 43.5 · pixel 42.9 · census 41 · motion 78 · behaviour 90 · coverage 100). Ratchet held.
+- Gates: eslint 0 · tsc 0 (incl. tests) · vitest 2530/2530 + 1783/1783 · check:colors/icons/motion-tokens/csp-hash OK · verify-parity-export 200/200.
+- Docs: CHANGELOG r315-cycle-2 section · PARITY.md cycle-2 · BOARD.md cycle-2 + cycle-3 queue.
+
+Stage Summary:
+- Cycle-2 top ticket CLOSED with a measured law (constant-rem band heights), not per-viewport forks: the tablet/landscape band went from +11–23% to ±1% with most bands pixel-exact; zero regressions at 1440/390/412.
+- Remaining (cycle-3 queue, with numbers): 992–1024 +8.0% (13px Arabic canon floor ledger + wraps), 480–767 mid-band −16.2% @600 (mobile-family rem purification), 360 +5.5%, 1920 −3.2% (footer px caps), landscape hero seat, VLM re-verdict pass on anchored frames.
+- Personal data: no repo URL/owner identity in any UI or doc (grep-verified); PAT used only as an ephemeral git credential helper, never in any file.

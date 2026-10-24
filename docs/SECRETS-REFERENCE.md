@@ -80,7 +80,7 @@ To rotate again: `npm run db:rotate-password -- --email <account> --new-password
 
 - **App:** https://madarek.onrender.com
 - **Health:** https://madarek.onrender.com/api/v1/health
-- **GitHub:** https://github.com/ahmadmedo1012/madarek
+- **GitHub:** <repository-url>
 
 ## Database Connection (Neon)
 

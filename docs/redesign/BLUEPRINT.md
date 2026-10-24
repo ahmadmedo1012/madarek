@@ -18,7 +18,7 @@
 
 | Fact | Value |
 |---|---|
-| Repo / branch | `ahmadmedo1012/madarek` @ `redesign/superlist-optikka` (base: main `956155b` = r195) |
+| Repo / branch | `<repository>` @ `redesign/superlist-optikka` (base: main `956155b` = r195) |
 | Live | `https://madarek.onrender.com` · Local run used for walkthrough: `tools/boot-pg.sh` (:5433) + migrate + seed + `dev`(:4000)/`dev:web`(:5173) |
 | Locked direction | Homepage = OPTIKKA **principles**; every other page = Superlist (current) **principles**. Turion Space / Evergreen Nexus / egn-teal «stage void» retired. Translate principles — never copy reference assets, wording or colours. |
 | Non-negotiables | No backend/API/schema/semantics changes. Arabic RTL first. Western digits 0-9. Honest copy (no «صُنعت في ليبيا», no «ما يُشحن اليوم», plagiarism = declared simulation, assistant = local deterministic engine by default). Commit format `type(rNNN): subject` (next: r197). |

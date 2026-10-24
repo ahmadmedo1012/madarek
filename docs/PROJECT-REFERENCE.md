@@ -8,7 +8,7 @@
 | Aspect | Value |
 |--------|-------|
 | **Production** | https://madarek.onrender.com |
-| **Repo** | https://github.com/ahmadmedo1012/madarek |
+| **Repo** | <repository-url> |
 | **Branch** | `main` |
 | **Stack** | React 18 + Vite + Express + Prisma + PostgreSQL (Neon) |
 | **Auth** | JWT (15min access + 7d refresh, http-only cookie) + Argon2id |

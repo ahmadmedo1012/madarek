@@ -92,7 +92,7 @@
 يكفي). التفصيل الكامل: [`docs/05-setup.md`](docs/05-setup.md).
 
 ```bash
-git clone https://github.com/ahmadmedo1012/madarek.git && cd madarek
+git clone <repository-url> && cd madarek
 cp .env.example backend/.env       # املأ DATABASE_URL + سريّي JWT (بدون أي قيم حقيقية هنا)
 npm install
 

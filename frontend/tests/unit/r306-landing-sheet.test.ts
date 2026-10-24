@@ -105,9 +105,14 @@ describe('r306 — the drawing sheet ships', () => {
     expect(live).toMatch(/\.fo-header\s*\{[^}]*border-block-end:\s*1px solid var\(--grid-line\)/);
     expect(live).toMatch(/\.fo-header\s*\{[^}]*position:\s*fixed/);
     expect(live).not.toMatch(/\.fo-header\s*\{[^}]*backdrop-filter/);
-    const hoverBlock = live.match(
-      /@media \(hover: hover\) and \(pointer: fine\)\s*\{([\s\S]*?)\n\}\s*\n(?=@media|\/\*|\.)/,
-    )?.[1] ?? '';
+    // R315 cycle-2 re-anchor: two NEW (hover:hover) blocks (the hero
+    // graticule proximity reveal) now precede the nav block — the
+    // extractor collects every hover block and picks the one that
+    // actually contains the nav wipe rules.
+    const hoverBlock =
+      [...live.matchAll(/@media \(hover: hover\) and \(pointer: fine\)\s*\{([\s\S]*?)\n\}\s*\n(?=@media|\/\*|\.)/g)]
+        .map((m) => m[1] as string)
+        .find((b) => /\.fo-nav-link:hover/.test(b)) ?? '';
     expect(hoverBlock).toMatch(/\.fo-nav-link:hover\s*\{[^}]*color:\s*var\(--bg\)/);
     expect(hoverBlock).toMatch(/\.fo-nav-link:hover::before\s*\{[^}]*transform:\s*translateY\(0\)/);
     // the wipe slab itself is the charcoal token
@@ -186,7 +191,17 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
   });
 
   it('R315 override — the mobile hero flow: 38vh window (width-driven elevation) + stacked strip cells', () => {
-    const mq = live.match(/@media \(max-width: 760px\)\s*\{([\s\S]*?)\n\}\s*\n@media/)?.[1] ?? '';
+    // R315 cycle-2 re-pin: the phone band's boundary moved 760 → 767
+    // (the reference's own live inline CSS tier — verified on the fresh
+    // stylesheet census; the old 760 was a private rung that left the
+    // 761–767 sliver outside both families). Re-anchored on content,
+    // not order: pre-existing 767 blocks now precede the V13 block,
+    // so the extractor collects every 767 block and picks the one
+    // that carries the mobile hero flow rules.
+    const mq =
+      [...live.matchAll(/@media \(max-width: 767px\)\s*\{([\s\S]*?)\n\}\s*\n/g)]
+        .map((m) => m[1] as string)
+        .find((b) => /\.fo-hero-window \.bp-stage/.test(b)) ?? '';
     // the window keeps a defined mass on small screens; the strip
     // cells stack under it (the 390 reference tiles); the annotation
     // cards flow under the drawing per HeroInspect's own ≤760 contract.

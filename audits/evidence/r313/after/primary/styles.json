@@ -2455,7 +2455,7 @@
    "selector": "a",
    "tag": "a",
    "className": "fo-footer-link fo-footer-repo",
-   "text": "github.com/ahmadmedo1012/madarek",
+   "text": "<repository-url>",
    "styles": {
     "font-family": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex Sans Arabic\", ui-monospace, SFMono-Regular, monospace",
     "font-size": "13px",
@@ -3143,7 +3143,7 @@
    "selector": "nav a",
    "tag": "a",
    "className": "fo-footer-link fo-footer-repo",
-   "text": "github.com/ahmadmedo1012/madarek",
+   "text": "<repository-url>",
    "styles": {
     "font-family": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex Sans Arabic\", ui-monospace, SFMono-Regular, monospace",
     "font-size": "13px",
@@ -3659,7 +3659,7 @@
    "selector": "footer a",
    "tag": "a",
    "className": "fo-footer-link fo-footer-repo",
-   "text": "github.com/ahmadmedo1012/madarek",
+   "text": "<repository-url>",
    "styles": {
     "font-family": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex Sans Arabic\", ui-monospace, SFMono-Regular, monospace",
     "font-size": "13px",

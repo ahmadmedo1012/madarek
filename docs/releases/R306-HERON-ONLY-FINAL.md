@@ -7,7 +7,7 @@
 | نطاق الإصدار | R306 — تنقية التصميم لهيرون-only + إعادة بناء صفحة الهبوط + إصلاحات الجودة |
 | SHA البداية (قاعدة r305) | `d9f74004c8ebf6ea6c4d2780709e2987c7868ce3` |
 | SHA النهائي لـ`main` | `0752d42f7ca6e1ba58c2aa7bc5853837ace889ab` |
-| طلب الدمج | [#41 — R306: Heron-only design purification and platform-wide quality reconstruction](https://github.com/ahmadmedo1012/madarek/pull/41) — **مُدمج** |
+| طلب الدمج | [#41 — R306: Heron-only design purification and platform-wide quality reconstruction](<repo-pr-41 redacted r315>) — **مُدمج** |
 | commit الإصدار | `01c40227982500d3f65eb1d484ad2e999e955042` (دمج: `0752d42f`) |
 | الإنتاج | `https://madarek.onrender.com/` — health: `{"ok":true,"buildId":"0752d42f7ca6"}` ✓ |
 | تاريخ التنفيذ | 2026-10-21/22 UTC |
@@ -130,7 +130,7 @@
 
 ## ح) روابط الأدلة
 
-- طلب الدمج المُدمج: https://github.com/ahmadmedo1012/madarek/pull/41
+- طلب الدمج المُدمج: <repo-pr-41 redacted r315>
 - commit الإصدار: `01c40227` (دمج `0752d42f` على `main`)
 - المواصفة: `docs/redesign/r306-heron-exclusivity-spec.md` · مرجع القياس: `docs/redesign/r305-heron-reference-spec.md`
 - طقم الأدلة (مرجع/قبل/بعد/عرضات/تفاعل): `docs/redesign/assets/r306/` + `MANIFEST.md`

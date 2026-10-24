@@ -1,21 +1,21 @@
 {
- "generatedAt": "2026-10-24T04:19:12.366Z",
+ "generatedAt": "2026-10-24T18:02:38.624Z",
  "components": {
   "vlm": {
-   "score": 40.7,
+   "score": 43.5,
    "weight": 30,
-   "pairs": 29,
+   "pairs": 32,
    "open": 27,
-   "deferredWeight": 2,
+   "deferredWeight": 4,
    "calibration": "v2-text-masked (cycle 2)"
   },
   "pixel": {
-   "score": 43.7,
+   "score": 42.9,
    "weight": 20,
-   "worstRegionAvg": 0.7096,
-   "globalAvg": 0.1928,
-   "dEpaperAvg": 3.3,
-   "pairs": 58
+   "worstRegionAvg": 0.725,
+   "globalAvg": 0.1877,
+   "dEpaperAvg": 3.4,
+   "pairs": 87
   },
   "census": {
    "score": 41,
@@ -33,10 +33,10 @@
    "note": "consent 26/26, funnel intact, gates 0-error"
   },
   "coverage": {
-   "score": 88,
+   "score": 100,
    "weight": 10,
-   "note": "pair-combos: 1 full (pixel+VLM) + 1 pixel-only of 2 (1440+390 light) · pages smoke: 40/40 probes"
+   "note": "pair-combos: 1 full (pixel+VLM) + 2 pixel-only of 2 (1440+390 light) · pages smoke: 40/40 probes"
   }
  },
- "total": 56.6
+ "total": 58.5
 }

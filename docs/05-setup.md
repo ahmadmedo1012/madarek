@@ -17,7 +17,7 @@
 ### 1) الاستنساخ والتثبيت
 
 ```bash
-git clone https://github.com/ahmadmedo1012/madarek.git && cd madarek
+git clone <repository-url> && cd madarek
 npm install        # workspaces: يثبت backend + frontend معًا، وينفّذ prisma generate
 ```
 

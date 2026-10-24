@@ -50,7 +50,7 @@ function log(msg) { process.stdout.write(`${msg}\n`); }
 
 function fetchToFile(url, dest) {
   return new Promise((res, rej) => {
-    httpsGet(url, { headers: { 'User-Agent': 'Madarek-media-pipeline/1.0 (scripts/media/build-media-derivatives.mjs; contact via GitHub ahmadmedo1012)' } }, (r) => {
+    httpsGet(url, { headers: { 'User-Agent': 'Madarek-media-pipeline/1.0 (scripts/media/build-media-derivatives.mjs; contact via the repository owner)' } }, (r) => {
       if (r.statusCode !== 200) { r.resume(); return rej(new Error(`HTTP ${r.statusCode} for ${url}`)); }
       const ws = createWriteStream(dest);
       r.pipe(ws);
