@@ -7,6 +7,9 @@ import { colleges } from '../../data/colleges.config';
 import { LIVE_CAPABILITIES, LIVE_COUNT, VISION_STATUS } from '../../data/landing-ledger';
 import { formatInt } from '../../utils/numbers';
 import { RevealCssClass } from '../../hooks/useReveal';
+/* c3-W6 (K-I extension): the guest sheet chrome — same grammar as
+ * /auth + /campus (fixed frame + corner marks + grain film). */
+import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
 // campus.css — R313 (WP-A1): the /capabilities guest sub-page shares
 // the sub-pages' sheet (the landing grammar carried by campus.css): the
 // honest capability matrix (ما يعمل اليوم) + the status pairs (إلى أين)
@@ -35,6 +38,7 @@ export function CapabilitiesPage() {
   return (
     <div className="cu">
       <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
+      <GuestSheetChrome />
 
       <header className="cu-header">
         <div className="cu-header-inner">

@@ -10,6 +10,10 @@ import { MediaFrame } from '../../components/landing/MediaFrame';
 import { VideoCard } from '../../components/landing/VideoCard';
 import { InkSketch } from '../../components/landing/journey/InkSketch';
 import { RevealCssClass } from '../../hooks/useReveal';
+/* c3-W6 (K-I extension): the guest sheet chrome (fixed frame + corner
+ * marks + grain film) — the /auth pages' drawing-sheet grammar on this
+ * chrome-less guest surface. */
+import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
 // campus.css — R313 (WP-A1): the /campus guest sub-page. The landing's
 // documentary media rail (الحياة الجامعية) + the video facades (مشاهد
 // جامعية) moved here VERBATIM — every Commons licence, author credit
@@ -39,6 +43,7 @@ export function CampusLifePage() {
   return (
     <div className="cu">
       <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
+      <GuestSheetChrome />
 
       <header className="cu-header">
         <div className="cu-header-inner">

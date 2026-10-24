@@ -41,7 +41,21 @@
    · .auth-input (transparent + 1px hairline + radius 0 + the 16px
      iOS floor) — community/curriculum/authoring inputs borrow it;
    · .auth-error / .auth-field-error / .auth-select-skeleton /
-     .auth-row / .auth-row-2 (OwnerInstitutionsPage) — same grammar.
+     .auth-row / .auth-row-2 (OwnerInstitutionsPage) — same grammar;
+   · .auth-frame / .auth-mark / .auth-grain / .auth-sheet-label
+     (c3-W6 — the K-I grammar goes site-wide on the guest sheets):
+     GuestSheetChrome (components/layout) mounts the frame + marks +
+     grain on /colleges·/leaderboard·/detail + /campus + /capabilities,
+     and the 404's <div class="auth-grain"/> reuses the film — every
+     chrome-less guest route composes on the SAME sheet grammar as
+     the auth pages. TWO mount seats (the containment lesson, §8):
+     /campus + /capabilities keep the in-page mount (their .cu root
+     paints its own ground, and no transformed ancestor exists); the
+     /colleges funnel's pages ride a BODY PORTAL (its transition
+     stack traps fixed descendants — §8) with the film at z -1 under
+     the flowing sheets. The in-page consumers own the z-lifts that
+     keep their flowing content above the film (z 0) in their own
+     sheets (campus.css / the .nf-scene rule in §7).
    (.auth-field / .auth-input-wrap / .auth-brand-mini were consumers
    of the two auth pages only and retired with the R315 cell rebuild.)
    ════════════════════════════════════════════════════════════════════ */
@@ -1007,6 +1021,11 @@
     display: flex; flex-direction: column; align-items: center;
     text-align: center;
     gap: var(--sp-3);
+    /* c3-W6: the grain film (.auth-grain, fixed z 0) joined this page —
+       the scene rides z 1 above it, the same seat the auth sheet's
+       content blocks hold. */
+    position: relative;
+    z-index: 1;
     /* ONE authored moment — the whole scene rises in as one piece. */
     animation: nf-scene-in var(--motion-duration-long) var(--ease-out) both;
   }
@@ -1136,5 +1155,28 @@
   input.auth-input[placeholder]:not(:placeholder-shown):focus,
   textarea.auth-input[placeholder]:not(:placeholder-shown):focus {
     border-color: var(--accent);
+  }
+}
+
+/* ═══ 8 · c3-W6 — the PORTAL seat of the sheet chrome (colleges funnel) ═══
+   The three guest colleges surfaces render inside the funnel's route
+   transition stack, where polish.css's page-enter keeps a fill-both
+   `transform: translateY(0)` on the .content-inner child — a containing
+   block that TRAPS fixed descendants at the 20px-gutter seat (the frame
+   measured 27px inset and scrolled away with the sheet), and the
+   reveal sweep's fill-both clip-path boxes them to the transition
+   wrapper's own height. GuestSheetChrome therefore mounts the SAME
+   frame + film via createPortal(document.body) on those pages. Seats:
+   · the frame keeps its .auth-frame contract verbatim — fixed, 7px,
+     z 50 (over the flowing sheet, under the toast stack);
+   · the film rides z -1 — UNDER every flowing sheet, safe on the
+     funnel pages because .page/.pf-page paint no ground of their own
+     (only the canvas does), so the paper grain multiplies against the
+     page ground exactly like the in-page mounts do above it.
+   The body-scoped selector can never reach the in-page mounts (the
+   auth sheets, /campus, /capabilities, the 404's film). */
+@layer pages {
+  body > .auth-grain {
+    z-index: -1;
   }
 }

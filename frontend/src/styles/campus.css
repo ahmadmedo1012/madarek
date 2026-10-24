@@ -48,6 +48,24 @@
   max-inline-size: 1160px;
   margin-inline: auto;
   padding-inline: var(--sp-6);
+  flex-wrap: wrap; /* c3-W6: at ≤420 the r176f label-wrap flip + the fixed
+     .btn height CLIPPED the back link's second line inside the pill
+     (overflow: hidden) — the ROW wraps instead and every label keeps
+     its full one-line measure. */
+}
+
+/* c3-W6: the back link never shrinks below its label's natural width —
+   shrinking is what pushed the label to wrap inside a fixed-height box. */
+.cu-header-inner .btn { flex-shrink: 0; }
+
+@media (max-width: 420px) {
+  /* override the r176f ≤420 wrap flip INSIDE this bar only: the row has
+     room to wrap, the pill does not (fixed .btn block-size). */
+  .cu-header-inner .btn { white-space: nowrap; }
+  .cu-header-inner {
+    padding-inline: var(--sp-4);
+    row-gap: var(--sp-1-5);
+  }
 }
 
 .cu-header-brand {
@@ -75,6 +93,11 @@
   padding-block: var(--sp-10) var(--sp-14);
   display: grid;
   gap: var(--sp-12);
+  /* c3-W6 (K-I): the grain film (.auth-grain via GuestSheetChrome) is a
+     fixed z-0 layer — the flowing sheet rides z 1 above it, the same
+     seat the auth page's content blocks hold. */
+  position: relative;
+  z-index: 1;
 }
 
 .cu-head {
@@ -327,6 +350,18 @@
 .vc-kind {
   font-size: var(--fs-xxs);
   color: var(--accent-ink);
+}
+
+/* c3-W6 (contrast probe, dark): the kind micro-label sits on the facade
+   poster (surface + bg mix) where the dark --accent-ink #FF5A1F reads
+   4.35:1 — under the 4.5 AA floor at the 13px label size. The dark
+   hover rung of the SAME accent family (#FF6B33) clears 4.79:1 on
+   --surface (4.95 on --bg); light keeps the canonical --accent-ink
+   (5.16). Token-seat note: the systemic fix belongs to tokens.css
+   (raise dark --accent-ink) — filed as the W6 token proposal, this is
+   the page-scoped seat fix. */
+[data-theme="dark"] .vc-kind {
+  color: var(--accent-hover);
 }
 
 .vc-title {
@@ -654,6 +689,41 @@
   .cu-main {
     padding-block: var(--sp-8) var(--sp-10);
     gap: var(--sp-10);
+  }
+
+  /* c3-W6 (clip probe @390): the 16:9 facade box (≈342×193) cannot
+     hold the absolute .vc-body composition (kind + title + meta
+     measured ~361px and clipped mid-title inside overflow: clip).
+     On phones the facade recomposes the way the photo family (mf)
+     already composes — the 16:9 reservation moves to the POSTER
+     ground (grid + play mark + the kind label rides in the caption
+     rows), and the TITLE + ACTIONS flow as caption rows UNDER it
+     inside the same ruled frame. The frame's own aspect-ratio
+     retires (its height = poster + rows), which also un-traps the
+     grid track: an aspect-ratio box with definite content height
+     exports a min-content WIDTH (208px content ⇒ 369.8px track ⇒
+     the card overflowed the 342px column by 28px). Nothing clips,
+     the iframe still fills the frame on click-to-load. */
+  .vc-frame {
+    aspect-ratio: auto; /* was 16 / 9 — `none` is not a valid value; auto
+       retires the reservation (it moved to the poster below) */
+  }
+  .vc-poster {
+    position: relative; /* was absolute inset 0 — it IS the 16:9 box now */
+    inset: auto;
+    aspect-ratio: 16 / 9;
+  }
+  .vc-body {
+    position: static;
+    padding: var(--sp-3) var(--sp-1) 0;
+  }
+  .vc-actions {
+    position: static;
+    padding: var(--sp-3) var(--sp-1) 0;
+    background: none; /* the desktop gradient wash is a poster floor */
+  }
+  .vc-poster-lines {
+    inset-inline: var(--sp-4);
   }
 
   .cu-band,

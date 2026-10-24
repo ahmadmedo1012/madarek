@@ -39,6 +39,11 @@ export default function NotFoundPage() {
         <span className="nf-mark nf-mark-bl">+</span>
         <span className="nf-mark nf-mark-br">+</span>
       </div>
+      {/* c3-W6 (K-I completeness): the measured paper-grain film — the
+          auth sheet's .auth-grain layer (documented cross-page borrow,
+          auth.css is global). Same texture as /auth + the guest sheets;
+          .nf-scene rides z 1 above it (auth.css §7). */}
+      <div className="auth-grain" aria-hidden="true" />
 
       <div className="nf-scene">
         <div className="nf-illustration">
