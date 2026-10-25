@@ -8,48 +8,62 @@
  * inside the circle (reference-observations.md §13; the case study's
  * lens code). This is Madarek's original translation:
  *
- *  · The strip is authored SVG linework — a condensed wide elevation
- *    of «مخطط مدارك» (the five structures along the ground line). The
- *    SKETCH state (hairlines only) is the strip's ground.
- *  · R314 cycle-2 §7: the RESOLVED state — what the lens opens onto —
- *    is now the licensed campus INK RENDER (manifest.json renders[] —
- *    «crop-garyounis-classic», public-domain source, ADAPTED ShareAlike
- *    kept), the same asset the retired strip-image cell carried: the
- *    sketch resolves into the real rendered architecture (the
- *    reference's own sketch→render reveal). The labels + orange
- *    signals annotate it. The render is a PAPER artifact in both
- *    themes (the hero + plan precedent).
- *  · R318 §A7 (C3-FOOT): the render is re-seated ASPECT-TRUE — the
- *    960×960 square asset letterboxes inside the strip's drawing band
- *    (178×178 viewBox units, centered) instead of being SLICED to a
- *    5.6:1 band that cut the subject mid-building; the [01] seat
- *    label is shortened to stay clear of the image at every ≥768
- *    width (the reference carries NO DOM label on its strip — this
- *    one keeps the honest index voice without crossing the art).
+ *  · R319 §D2: the strip is now FIVE EQUAL COLUMNS — one per journey
+ *    stage (المحاضرة · نقطة الفحص · الاختبار · المكتبة · الإتقان) —
+ *    each an EQUAL-HEIGHT ink drawing: the licensed campus ink renders
+ *    (manifest.json renders[] — public-domain / CC BY-SA sources, ADAPTED
+ *    ShareAlike kept), seated ASPECT-TRUE (54×54 square windows — the
+ *    R318 §A7 lesson: never slice the subject) with the five captions
+ *    on ONE shared baseline, centered under their columns. The retired
+ *    composition sat one 148px photo thumbnail among four empty outline
+ *    placeholders at uneven seats — incoherent in both states.
+ *  · The SKETCH state (hairline squares only — five equal empty cells)
+ *    is the strip's ground; the lens opens onto the RESOLVED state (the
+ *    five ink renders + the orange stage beacons + the aligned
+ *    captions). Touch / reduced motion: the RESOLVED strip stands
+ *    statically — nothing hides content.
  *  · The lens rides the shared conductor clock; the radius eases to
  *    its target (open/closed) and the whole instrument sleeps when
  *    settled — zero frames on an idle footer.
- *  · Touch / reduced motion: the RESOLVED strip stands statically
- *    (render + signals + labels — nothing hides content); the lens is
- *    a fine-pointer instrument.
  */
 import { useEffect, useRef, useState } from 'react';
 import { subscribeSheetFrame, wakeSheet, lerp, clamp } from '../../../lib/motion/sheetConductor';
 
 /* Measured reference values (digest.json footer.lens — r308 §13
- * re-confirmed): main r 99.09 · pulse 1.05× = 104.04 · position
- * lerp 0.09 / 0.15 · open ≈0.55s · close ≈0.8s · pulse decay ≈1s
- * (60fps per-frame factors: .09 ≈ 3τ 555ms · .06 ≈ 3τ 833ms ·
- * .05 ≈ 3τ 1000ms). */
-const LENS_R = 99.09; /* main radius in strip viewBox units */
-const PULSE_SCALE = 1.05; /* 99.09 × 1.05 = 104.04 (the measured pulse ring) */
+ * re-confirmed): main r 99.09 of a 210-tall strip = 47.2% of the strip
+ * height · pulse 1.05× · position lerp 0.09 / 0.15 · open ≈0.55s ·
+ * close ≈0.8s · pulse decay ≈1s. R319 §D2 re-seats the lens on the
+ * five-column strip (viewBox 1000×80) keeping the reference's own
+ * proportion: 0.472 × 80 = 37.7 units. */
+const LENS_R = 37.7;
+const PULSE_SCALE = 1.05;
 const LERP_MAIN = 0.09;
 const LERP_PULSE = 0.15;
 const R_LERP_IN = 0.09;  /* radius easing while opening — ≈0.55s to settle */
 const R_LERP_OUT = 0.06; /* radius easing while closing — ≈0.8s to settle */
 const PULSE_LERP_OUT = 0.05; /* the pulse ring's own decay — ≈1s */
 const VB_W = 1000;
-const VB_H = 210;
+const VB_H = 80;
+
+/* the five journey stages, RTL reading order — svg x grows LTR, so the
+ * FIRST stage (المحاضرة, read first in Arabic) owns the RIGHTMOST
+ * column. Each column is exactly VB_W/5 wide; the ink drawing is a
+ * square window centered in its column (aspect-true, no crop); the
+ * caption sits on the shared baseline under its column. */
+const COL_W = VB_W / 5;
+const IMG = 54;    /* the equal-height square ink window (units) */
+const IMG_Y = 10;  /* y 10..64 — the drawing band (the 0..10 band keeps the [01] seat label clear) */
+const CAP_Y = 77;  /* ONE shared caption baseline — aligned by construction */
+const STAGES = [
+  { label: 'المحاضرة', render: '/media/renders/hero-ink-1100.webp' },
+  { label: 'نقطة الفحص', render: '/media/renders/crop-garyounis-1-960.webp' },
+  { label: 'الاختبار', render: '/media/renders/crop-fateh-science-960.webp' },
+  { label: 'المكتبة', render: '/media/renders/crop-garyounis-classic-960.webp' },
+  { label: 'الإتقان', render: '/media/renders/crop-omu-agri-960.webp' },
+] as const;
+/* column x per stage: stage[0] (المحاضرة) at the RIGHTMOST column */
+const colX = (i: number) => VB_W - (i + 1) * COL_W;
+const imgX = (i: number) => colX(i) + (COL_W - IMG) / 2;
 
 export function FooterLens() {
   const stripRef = useRef<HTMLDivElement>(null);
@@ -183,9 +197,9 @@ export function FooterLens() {
       <svg
         className="fl-svg"
         viewBox={`0 0 ${VB_W} ${VB_H}`}
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="xMidYMid meet"
         role="img"
-        aria-label="شريط الفحص — رسم حبري لعمارة حرم جامعي ليبي (مشتق من صورة مرخّصة) وخلاصة مسار التعلّم: المحاضرة، نقطة الفحص، الاختبار، المكتبة، والإتقان"
+        aria-label="شريط الفحص — خمسة رسوم حبرية لعمارة حرم جامعي ليبي (مشتقّة من صور مرخّصة): المحاضرة، نقطة الفحص، الاختبار، المكتبة، والإتقان — خلاصة مسار التعلّم"
       >
         <defs>
           <mask id="fl-lens-mask" maskUnits="userSpaceOnUse">
@@ -194,59 +208,49 @@ export function FooterLens() {
           </mask>
         </defs>
 
-        {/* the SKETCH ground — hairline geometry only */}
+        {/* the SKETCH ground — five EQUAL hairline cells (the empty
+            outline state the lens resolves; R319 §D2: the retired
+            ground was four unequal structure outlines) */}
         <g className="fl-sketch" aria-hidden="true">
-          <line x1="30" y1="180" x2="970" y2="180" />
-          <rect x="700" y="96" width="110" height="84" />
-          <polygon points="700,96 755,64 810,96" />
-          <line x1="545" y1="180" x2="545" y2="112" />
-          <polygon points="545,112 573,120 545,128" />
-          <rect x="380" y="120" width="76" height="60" />
-          <line x1="386" y1="112" x2="450" y2="112" />
-          <rect x="200" y="112" width="120" height="68" />
-          <line x1="200" y1="104" x2="320" y2="104" />
-          <rect x="80" y="48" width="64" height="132" />
-          <line x1="88" y1="84" x2="136" y2="84" />
-          <line x1="88" y1="120" x2="136" y2="120" />
-          <line x1="88" y1="156" x2="136" y2="156" />
+          {STAGES.map((_, i) => (
+            <rect key={i} x={imgX(i)} y={IMG_Y} width={IMG} height={IMG} />
+          ))}
+          <line x1="0" y1={IMG_Y + IMG + 2} x2={VB_W} y2={IMG_Y + IMG + 2} />
         </g>
 
         {/* the RESOLVED layer — revealed inside the lens (or statically
-            when the lens is off: touch / reduced motion). R314 cycle-2:
-            the licensed ink render carries the resolved ink state
-            (y 0..178 — the labels keep their clean paper band below),
-            annotated by the orange signals + the Arabic stage labels.
-            R318 §A7: the square 960×960 render is seated ASPECT-TRUE
-            (meet — 178×178 units, centered at x 411..589): no mid-
-            subject crop (the retired 1000×178 slice cut the building
-            to a 5.6:1 band); the same licensed asset, re-seated. */}
+            when the lens is off: touch / reduced motion). R319 §D2: the
+            FIVE licensed ink renders at EQUAL height (54×54 square,
+            aspect-true — no mid-subject crop), one per journey stage,
+            each with its orange stage beacon; the five captions ride
+            ONE shared baseline, centered under their columns. */}
         <g
           className="fl-resolved"
           ref={revealRef}
           aria-hidden="true"
           {...(lensOn ? { mask: 'url(#fl-lens-mask)' } : {})}
         >
-          <image
-            className="fl-render"
-            href="/media/renders/crop-garyounis-classic-960.webp"
-            x={411}
-            y={0}
-            width={178}
-            height={178}
-            preserveAspectRatio="xMidYMid meet"
-          />
+          {STAGES.map((stage, i) => (
+            <image
+              key={stage.label}
+              className="fl-render"
+              href={stage.render}
+              x={imgX(i)}
+              y={IMG_Y}
+              width={IMG}
+              height={IMG}
+              preserveAspectRatio="xMidYMid meet"
+            />
+          ))}
           <g className="fl-signal">
-            <polygon points="545,112 573,120 545,128" />
-            <circle cx="755" cy="130" r="4" />
-            <circle cx="418" cy="146" r="4" />
-            <polygon points="86,48 108,54 86,60" />
+            {STAGES.map((_, i) => (
+              <rect key={i} x={imgX(i) + IMG - 4} y={IMG_Y} width={4} height={4} />
+            ))}
           </g>
           <g className="fl-labels">
-            <text x="755" y="200" textAnchor="middle">المحاضرة</text>
-            <text x="545" y="200" textAnchor="middle">نقطة الفحص</text>
-            <text x="418" y="200" textAnchor="middle">الاختبار</text>
-            <text x="260" y="200" textAnchor="middle">المكتبة</text>
-            <text x="112" y="200" textAnchor="middle">الإتقان</text>
+            {STAGES.map((stage, i) => (
+              <text key={stage.label} x={colX(i) + COL_W / 2} y={CAP_Y} textAnchor="middle">{stage.label}</text>
+            ))}
           </g>
         </g>
 
@@ -257,10 +261,9 @@ export function FooterLens() {
       </svg>
 
       <span className="fl-coord fo-mono" dir="ltr" aria-hidden="true">
-        {/* R318 §A7: the seat label stays clear of the aspect-true render
-            at every ≥768 width (the retired 372px-wide «— INSPECTION
-            STRIP» tail crossed the image band; measured clearances
-            after the re-seat: 80px @768 · 224px @1024 · 409px @1440). */}
+        {/* R319 §D2: the seat label rides the strip's own 0..10u top band
+            (the drawings start at y=10) — clear of the five columns at
+            every ≥768 width. */}
         [01] CAMPUS · INK RENDER
       </span>
     </div>

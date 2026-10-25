@@ -26,7 +26,7 @@ import { HeroInspect } from '../components/landing/cursor/HeroInspect';
 import { JourneyScene } from '../components/landing/journey/JourneyScene';
 import { ScrubReveal } from '../components/landing/journey/WordReveal';
 import { FooterLens } from '../components/landing/footer/FooterLens';
-import { FooterMarkArt, WordmarkArt, WordmarkCompactArt } from '../components/landing/FooterArt';
+import { FooterMarkArt, WordmarkArt } from '../components/landing/FooterArt';
 import { ConsentBanner } from '../components/landing/chrome/ConsentBanner';
 import { EdgeTab } from '../components/landing/chrome/EdgeTab';
 import { shouldPlayIntro, introEnvironment } from '../lib/motion/introGate';
@@ -1444,54 +1444,44 @@ export default function LandingPage() {
           </div>
 
           {/* the image-strip band (the reference's footer-img-wrap): the
-              inspection lens over the journey drawing rides BELOW the
-              grid, above the legal row (the measured order), and the
-              GIANT wordmark — Madarek's own «مدارك», REAL letterforms
-              shaped from the site's Alexandria 700 display font
-              (R318 §A6: scripts/r318/wordmark-build.mjs → the committed
-              wordmark-art.generated.ts; the five hand-drafted
-              disconnected geometric strokes are retired) — spans the
-              footer's FULL inner measure at every ≥768px viewport on
-              the ladder-pinned 1200:92 sheet (docH EXACT). The lens
-              strip hides ≤767px (the reference hides its strip there
-              too); the wordmark flows as its own band on mobile, in
-              its compact cut. */}
+              five-column inspection strip (FooterLens — R319 §D2) rides
+              BELOW the grid, above the legal row (the measured order),
+              and the GIANT wordmark — Madarek's own «مدارك», REAL
+              letterforms shaped from the site's Alexandria 700 display
+              font (R318 §A6 → R319 §D1: scripts/r318/wordmark-build.mjs
+              → the committed wordmark-art.generated.ts) — spans the
+              footer's FULL inner measure at EVERY viewport
+              (width:100% + viewBox scaling): CONNECTED shaping (no
+              construction track — the owner read the tracked word as
+              letter-spaced disconnected letters), STROKE-ONLY ink
+              (fill:none; stroke:currentColor; ~1.7px non-scaling),
+              the svg's own aria-label + <title> carrying the reading.
+              The strip hides ≤767px (the reference hides its strip
+              there too); the wordmark flows as its own band on mobile
+              in the SAME full-width cut. */}
           <div className="fo-fstrip">
             <FooterLens />
-            <div className="fo-wordmark" aria-hidden="true">
+            <div className="fo-wordmark">
               <span className="fo-wordmark-reg fo-wordmark-reg-tl" aria-hidden="true">+</span>
               <span className="fo-wordmark-reg fo-wordmark-reg-tr" aria-hidden="true">+</span>
               <span className="fo-wordmark-reg fo-wordmark-reg-bl" aria-hidden="true">+</span>
               <span className="fo-wordmark-reg fo-wordmark-reg-br" aria-hidden="true">+</span>
 
-              {/* ── the WIDE cut — the ≥768px construction sheet: REAL
-                  Alexandria 700 letterforms of «مدارك» shaped by
-                  harfbuzz (م initial CONNECTED into د final; ا/ر/ك
-                  isolated) and composed by scripts/r318/wordmark-
-                  build.mjs into ONE filled path per cut — the committed
-                  wordmark-art.generated.ts. The sheet keeps the
-                  ladder-pinned 1200:92 viewBox aspect (box
-                  1398×107.2 @1440 · 982×75.3 @1024 · 726×55.7 @768 —
-                  docH 12,340/9,959/12,627 EXACT) spanning the wordmark
-                  row's full cell; the ink letterboxes inside
-                  (339.4×101.9px @1440 = 73.6% of the 138.4px row, the
-                  manifest's glyph-height ratio on the row the
-                  wordmark owns in the split 314px band) with
-                  construction tracking only at the three non-joining
-                  boundaries (د→ا · ا→ر · ر→ك) — the م→د join never
-                  gaps. Filled currentColor ink (the stroke-only
-                  hollow technique fails the OCR gate at every
-                  measured weight — see the generator's header). */}
+              {/* ── the ONE full-cell-width cut — REAL Alexandria 700
+                  letterforms of «مدارك» shaped by harfbuzz (م initial
+                  CONNECTED into د final; ا/ر/ك isolated) and composed by
+                  scripts/r318/wordmark-build.mjs into ONE path — the
+                  committed wordmark-art.generated.ts. The sheet hugs
+                  the ink + construction margins (viewBox 3108×1189 →
+                  svg 1398×535 @1440 · 982×376 @1024 · 726×278 @768 ·
+                  348×133 @390 · 318×122 @360 — ink 94.2% of the cell,
+                  the reference's own ink spans 86% of its strip); the
+                  drawn word is STROKE-ONLY currentColor (the reference's
+                  drafting verdict) and the reading rides the svg's
+                  role="img" + aria-label + <title> «مدارك». */}
               <WordmarkArt />
 
-              {/* ── the COMPACT cut — the FIXED 640×180 phone sheet: the
-                  same REAL letterforms, the same 300u construction
-                  track, letterboxed with ≥10/20u margins (ink
-                  466×140). Its aspect is pinned by the protected
-                  docH ladder (390 = 11,411 · 360 = 10,735 EXACT). */}
-              <WordmarkCompactArt />
-
-              <span className="fo-wordmark-en fo-mono" dir="ltr">MADAREK — ARABIC-FIRST LEARNING SHEET</span>
+              <span className="fo-wordmark-en fo-mono" dir="ltr" aria-hidden="true">MADAREK — ARABIC-FIRST LEARNING SHEET</span>
             </div>
           </div>
 

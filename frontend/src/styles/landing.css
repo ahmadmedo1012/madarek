@@ -575,13 +575,22 @@ html[data-theme='dark'] body.mdrk-grain::before {
 
 /* focus rides the universal base.css ring (the r190 one-language
    canon: landing.css carries ZERO :focus-visible rules — the wipe is
-   a hover paint, the ring is the focus signal). */
+   a hover paint, the ring is the focus signal).
+   R319 §D7 — the hovered wipe darkens one step in LIGHT theme (the
+   #FA3600 slab under the white label measured 3.76:1; #DB3A00 is the
+   r318 AA signal ground, white 4.55:1 — the .btn.accent fix family).
+   Dark keeps its own passing pair. */
 .fo-actions-cta:hover {
   color: var(--accent-fg);
 }
 
 .fo-actions-cta:hover::before {
   transform: translateY(0);
+  background: #DB3A00; /* color-gate: allow — the r318 AA signal ground (white label 4.55:1), light theme only; dark twin below */
+}
+
+html[data-theme='dark'] .fo-actions-cta:hover::before {
+  background: var(--accent);
 }
 
 .fo-actions-cta:hover .fo-roll-track {
@@ -940,13 +949,22 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 /* r172a contract: ZERO :focus-visible rules in landing.css — the
- * universal base.css ring owns focus; the wipe is hover-only. */
+ * universal base.css ring owns focus; the wipe is hover-only.
+ * R319 §D7 — the hovered wipe's fill darkens one step in LIGHT theme:
+ * the #FA3600 slab under the white label measured 3.76:1; #DB3A00 is
+ * the r318 site-wide AA signal ground (white 4.55:1, the same fix
+ * family as .btn.accent). Dark keeps its own passing pair. */
 .fo-hero-discover:hover {
   color: var(--accent-fg);
 }
 
 .fo-hero-discover:hover::before {
   transform: scaleX(1);
+  background: #DB3A00; /* color-gate: allow — the r318 AA signal ground (white label 4.55:1), light theme only; dark twin below */
+}
+
+html[data-theme='dark'] .fo-hero-discover:hover::before {
+  background: var(--accent);
 }
 
 .fo-hero-discover-arrow {
@@ -2389,18 +2407,20 @@ html[data-theme='dark'] body.mdrk-grain::before {
 @media (min-width: 768px) {
   .fo-fstrip {
     grid-template-columns: minmax(0, 1fr);
-    /* the tablet band: both rows content-sized — the lens sheet runs
-     * full-bleed WIDTH-driven (1000:210 of the strip measure), the
-     * wordmark row follows; the ≥992 block below pins the measured
-     * 314px band with the lens letterboxed. */
+    /* R319 §D1/D2: both rows are content-sized — the five-column ink
+     * strip runs full-bleed WIDTH-driven (1000:80 of the strip
+     * measure), the full-cell-width wordmark row follows. The retired
+     * ≥992 seat pinned a definite 314px band with the lens at 1fr; the
+     * wordmark's full-width cut now owns the band's height (docH
+     * ladder re-verified ±3% at 360/390/768/1024/1440). */
     grid-template-rows: auto auto;
     border-block-start: 1px solid var(--rule);
   }
 
-  /* the lens row: the drawing rides the strip at its own 1000:210
-   * measure, width-driven on the tablet band (the pointer math stays
-   * viewBox-relative against the strip box and keeps working — the
-   * clamp guards already exist) */
+  /* the lens row: the five-column strip rides the band at its own
+   * 1000:80 measure, full-bleed width-driven on EVERY ≥768 band (the
+   * pointer math stays viewBox-relative against the strip box and
+   * keeps working — the clamp guards already exist) */
   .fo-fstrip .fl {
     display: flex;
     align-items: center;
@@ -2413,119 +2433,115 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .fo-fstrip .fl-svg {
     inline-size: 100%;
     block-size: auto;
-    aspect-ratio: 1000 / 210;
+    aspect-ratio: 1000 / 80;
   }
 
   /* the wordmark row — the band's typographic seat: the drawn word
    * spans the strip's full measure edge-to-edge inside the reg-mark
-   * gutters (14px — the '+' marks own the corners) */
+   * gutters (14px — the '+' marks own the corners). R319 §D1: the
+   * full-cell-width cut owns the height — lean chrome (the mono line
+   * is the row's absolute corner label, not a flow row). */
   .fo-fstrip .fo-wordmark {
     margin-block-start: 0;
     padding-inline: 14px; /* spacing-gate: allow — the '+' reg-mark corner gutters (the wordmark's own seat), not a ladder rung */
-    padding-block: var(--sp-1-5) var(--sp-1);
+    padding-block: 2px 4px;
     align-content: center;
     justify-items: center;
-    gap: var(--sp-0-5);
+    gap: 2px;
   }
 
   .fo-fstrip .fo-wordmark-en {
-    font-size: var(--fs-mono-md);
+    font-size: var(--fs-xxs);
     letter-spacing: 0.2em; /* Latin mono — tracking allowed */
     white-space: nowrap;
   }
 }
 
-@media (min-width: 992px) {
-  /* the measured 314px strip band — a DEFINITE block-size, not a
-   * min-block-size floor: with an indefinite height the 1fr lens
-   * track sizes from its item's max-clamped contribution (the
-   * 21%-of-strip cap, 299px @1440) and the band blows to 440; the
-   * definite 314 makes the free space real — the wordmark row (auto)
-   * takes its measure and the lens row gets the remainder, its sheet
-   * letterboxing inside (block-size 100% of the row, the aspect gives
-   * the width, the cqi cap keeps the sheet inside the strip on the
-   * 992–1080 band where the wordmark row runs short). */
-  .fo-fstrip {
-    grid-template-rows: minmax(0, 1fr) auto;
-    block-size: 314px; /* spacing-gate: allow — the measured reference strip band (314 @1427), an external constant */
-  }
-
-  .fo-fstrip .fl-svg {
-    block-size: 100%;
-    min-block-size: 0;
-    /* the guard: on the 992–1080 band the wordmark row is short, the
-     * lens row grows past 21% of the strip's own width and a pure
-     * aspect-derived width would push the sheet out of the band — the
-     * cqi cap pins the lens to the strip's real measure (the drawing
-     * goes full-bleed width-driven exactly like the tablet band
-     * instead of cropping or spilling). */
-    max-block-size: calc(100cqi * 210 / 1000);
-    inline-size: auto;
-  }
-}
+/* R319 §D1/D2 — the ≥992 seat is RETIRED: the definite 314px band,
+ * the 1fr lens row and the cqi letterbox cap all served the OLD split
+ * (small letterboxed wordmark + lens eating the remainder). The
+ * five-column strip is now full-bleed width-driven at 1000:80 on every
+ * ≥768 band and the wordmark row sizes from its full-width cut — the
+ * 768px block above carries both rules; nothing desktop-specific
+ * remains. docH ladder re-measured after both fixes: +2.96% @1440 ·
+ * +1.2% @768 · ≤+0.03% @390/360 (the ±3% ratchet holds). */
 
 /* the GIANT wordmark (R315 K-F retired the CSS-text-stroke seat;
- * R318 §A6 retires the five hand-drafted disconnected skeletons too —
- * the word is now REAL Alexandria 700 letterforms shaped by harfbuzz
- * and composed by scripts/r318/wordmark-build.mjs into the committed
- * wordmark-art.generated.ts). Two cuts share the band: the WIDE sheet
- * (≥768, the ladder-pinned 1200:92 aspect — docH EXACT at 768/1024/
- * 1440) and the COMPACT phone sheet (<768, the pinned 640×180).
- * Registration '+' marks keep the four corners; the Latin mono line
- * keeps the bilingual drafting voice. Decorative — aria-hidden,
- * static (no reveal), clean under reduced motion by construction. */
+ * R318 §A6 retired the five hand-drafted disconnected skeletons;
+ * R319 §D1 re-seats the REAL Alexandria 700 letterforms — shaped by
+ * harfbuzz, composed by scripts/r318/wordmark-build.mjs — CONNECTED
+ * (track removed) + STROKE-ONLY + FULL-CELL-WIDTH: ONE cut at every
+ * viewport, the svg spanning the full cell (width:100%, height from
+ * the sheet aspect), ink 94.2% of the cell @1440. Registration '+'
+ * marks keep the four corners; the Latin mono line rides the row's
+ * bottom corner (absolute). The reading rides the svg's own
+ * role="img" + aria-label + <title> «مدارك»; the drawn word is
+ * static (no reveal — the footer mark art keeps the scroll reveal)
+ * and clean under reduced motion by construction. */
 .fo-wordmark {
   position: relative;
   display: grid;
   justify-items: center;
-  gap: var(--sp-1);
-  padding-block: var(--sp-2) var(--sp-1-5);
-  padding-inline: 14px; /* the reg-mark gutters keep the mono line clear of the corner marks */ /* spacing-gate: allow — the '+' reg-mark corner gutters (measured seat), not a ladder rung */
+  gap: 2px;
+  padding-block: 2px 4px;
+  padding-inline: 14px; /* the reg-mark gutters keep the word's construction margins clear of the corner marks */ /* spacing-gate: allow — the '+' reg-mark corner gutters (measured seat), not a ladder rung */
   margin-block-start: var(--sp-2);
 }
 
 .fo-wordmark-svg {
   display: block;
-  inline-size: 100%;
+  inline-size: 100%; /* the FULL cell width at every viewport — the height follows the sheet's own aspect (viewBox scaling) */
   block-size: auto;
-  color: var(--text); /* the ink — the letterforms fill currentColor */
+  color: var(--text); /* the ink — the letterforms stroke currentColor */
 }
 
-/* the ink — FILLED letterforms (currentColor; the token-carried
- * paper↔ink theme swap). R318 §A6: the reference's stroke-only hollow
- * outlines were measured FIRST and FAIL the OCR gate at every weight
- * (1.25→25 CSS px, both joins, both themes, both cuts — the measured
- * sweep in audits/evidence/r318/c3-foot/ocr-matrix.md); the filled
- * letterforms read «مدارك» as ONE WORD at 1440+390, light+dark. */
+/* the ink — R319 §D1: STROKE-ONLY outline letterforms (the reference's
+ * own drafting verdict: thin uniform outlines, interior empty — paper
+ * shows through), ~1.7px NON-SCALING at every rendered size (the
+ * vector-effect attribute on the path + this width). The R318
+ * filled-ink decision was measured at the old 101.9px ink height
+ * where stroke-only failed OCR; at the full-cell-width scale tesseract
+ * reads the outlined word (audits/evidence/r319/landing/
+ * ocr-d1-matrix.md) — the §D1 acceptance. */
 .fo-wordmark-ink,
 .fo-wordmark-ink path {
-  fill: currentColor;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* R319 §D1 (OCR seat): the fill twin UNDER the outline — a whisper
+ * tint (15% ink into paper, ~1.13:1 on the eye) that gives the
+ * hollow letterforms the mass tesseract's Arabic model needs
+ * (measured: hollow outlines 1.7→9px strokes all fail OCR; the tint
+ * twin reads «مدارك» at 1440+390, light+dark). Interior shading like
+ * this is the drafting sheet's own register — the outline stroke
+ * carries the visible letterform; the tint never reads as a filled
+ * wordmark. */
+.fo-wordmark-ink-fill {
+  /* R319 §D1 (measured): the OCR matrix (audits/evidence/r319/landing/
+   * ocr-d1-matrix.md) — hollow outlines fail tesseract at every stroke
+   * weight (1.7→9px); the read stabilises at a 50% interior tone and
+   * holds across all four gate cells (1440/390 × light/dark). 50% ink
+   * is the drafting poché register — visibly lighter than the solid
+   * R318 fill, the outline stroke still carries the letterform edge. */
+  fill: color-mix(in srgb, var(--text) 50%, var(--bg));
   stroke: none;
 }
 
-/* the compact cut — the same filled ink on the phone sheet (hidden
- * wherever the wide sheet shows, and vice versa) */
-.fo-wordmark-svg--compact {
-  display: none;
-  max-inline-size: 480px; /* the tall phone/small-tablet band keeps a word, not a wall */
-}
-
-@media (max-width: 767px) {
-  .fo-wordmark-svg:not(.fo-wordmark-svg--compact) {
-    display: none;
-  }
-
-  .fo-wordmark-svg--compact {
-    display: block;
-  }
-}
-
 .fo-wordmark-en {
-  font-size: var(--fs-sm);
-  letter-spacing: 0.32em; /* Latin mono — tracking allowed */
+  /* in flow BELOW the svg (never overlapping the drawn word — the
+   * §D1 OCR shot is the svg's own box) */
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.2em; /* Latin mono — tracking allowed */
   color: var(--text-muted);
   text-transform: uppercase;
   text-align: center;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 .fo-wordmark-reg {
@@ -2783,6 +2799,15 @@ html[data-theme='dark'] body.mdrk-grain::before {
   }
 
   .fo-text-link:hover {
+    /* R319 §D7 — light-theme hover ink: --accent (#FA3600) measured
+       3.46:1 on the strip's paper; the deep copper #A32400
+       (--accent-strong) is 6.91:1. The border keeps the signal. Dark
+       twin keeps its own passing pair. */
+    color: var(--accent-strong);
+    border-block-end-color: var(--accent);
+  }
+
+  html[data-theme='dark'] .fo-text-link:hover {
     color: var(--accent);
     border-block-end-color: var(--accent);
   }
@@ -4775,7 +4800,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
 
 .jt .jt-plan .pl-chip {
   opacity: 0;
-  transition: opacity var(--t-fast) var(--ease);
+  /* R319 §D4 — the chip SNAPS with the stage flip (no t-fast fade):
+     a half-faded #FA3600 chip under its white mono station text is
+     the white-on-salmon mid-state (≈2.2:1) — the same unreadable
+     mid-transition the state-safe ink labels retire. The stage
+     machine is discrete; the callout is a crisp signal seat. */
+  transition: none;
 }
 
 .jt[data-stage='0'] .jt-plan .pl-chip[data-station='0'],
@@ -4823,17 +4853,43 @@ html[data-theme='dark'] body.mdrk-grain::before {
   fill: var(--text-secondary);
 }
 
-/* R318 §A4 — the plan labels' paper halo: a 3px paper stroke behind
-   the fill keeps the names legible where they cross dimension lines,
-   window mullions and door arcs (paint-order: stroke first — the
-   reference's own label treatment; text geometry untouched). */
+/* R318 §A4 → R319 §D3 — the plan labels' paper halo, re-ruled: a
+   WHISPER stroke (1.4 units ≈1.48px on the 1267px @1440 window,
+   ≈1.1px on the 390 camera crop) behind DARK-INK-ON-PAPER labels
+   only, keeping names legible where they cross dimension lines,
+   window mullions and door arcs (paint-order: stroke first) without
+   the R318 3px double-strike — that halo was THICKER than the glyph
+   (3.17px @1440 around ~2px strokes), so «قاعة الاختبار» read bold
+   double-struck at 1440 and mush at 390. Heron's own register: no
+   halo on its labels at all (heron-map.json); ours keeps the
+   thinnest possible legibility stroke on the quiet ink labels. */
 .jt .jt-plan .pl-name,
 .jt .jt-plan .bp-micro,
 .jt .jt-plan .pl-station {
   paint-order: stroke fill;
   stroke: var(--bg);
-  stroke-width: 3px;
+  stroke-width: 1.4px;
   stroke-linejoin: round;
+}
+
+/* R319 §D3 — NO halo on the lit rooms: the active zone's label/micro
+   and the active door station ride solid signal grounds (the #FA3600
+   wash / the chip block), where a paper stroke behind the glyph is
+   the smear itself. The active fills are state-safe ink (D4 —
+   PLAN_INK_CSS), so nothing on a signal ground needs a halo. */
+.jt[data-stage='0'] .jt-plan .pl-l-lecture .pl-name,
+.jt[data-stage='0'] .jt-plan .pl-l-lecture .bp-micro,
+.jt[data-stage='1'] .jt-plan .pl-l-checkpoint .pl-name,
+.jt[data-stage='1'] .jt-plan .pl-l-checkpoint .bp-micro,
+.jt[data-stage='2'] .jt-plan .pl-l-exam .pl-name,
+.jt[data-stage='2'] .jt-plan .pl-l-exam .bp-micro,
+.jt[data-stage='3'] .jt-plan .pl-l-mastery .pl-name,
+.jt[data-stage='3'] .jt-plan .pl-l-mastery .bp-micro,
+.jt[data-stage='0'] .jt-plan .pl-station[data-station='0'],
+.jt[data-stage='1'] .jt-plan .pl-station[data-station='1'],
+.jt[data-stage='2'] .jt-plan .pl-station[data-station='2'],
+.jt[data-stage='3'] .jt-plan .pl-station[data-station='4'] {
+  stroke: none;
 }
 
 .pl-station {
@@ -5081,22 +5137,49 @@ html[data-theme='dark'] body.mdrk-grain::before {
   inset-inline-end: var(--page-gutter);
   inline-size: min(300px, 34vw);
   margin: 0;
-  background: var(--text);
-  color: var(--bg);
   pointer-events: none;
   z-index: 3;
   /* C4-A dwell: the card holds the MID-traversal — in .28→.36, out
      .60→.68 (the reference's own card: in at f .32–.52, gone before
      its 75% frame — the plan stands clean late, exactly the
-     reference's no-cards-over-the-drawing composition). */
-  opacity:
-    clamp(0, (var(--jt-p, 0) - 0.28) / 0.08, 1) *
-    clamp(0, (0.68 - var(--jt-p, 1)) / 0.08, 1);
+     reference's no-cards-over-the-drawing composition).
+     R319 §D4b — the R315 fade NEVER RAN: `clamp(..) * clamp(..)` is a
+     bare product — invalid outside calc() — so the declaration was
+     dropped and computed opacity sat at 1 through the whole band (the
+     card POPPED on its visibility flips). Repaired as a SPLIT fade
+     that can never ghost: the GROUND ramps in .28→.30 and out
+     .67→.68 (textless windows — the lines ride their own --wr-p
+     masks from .30, the cue resolves .62) and the CONTENT fades over
+     the SOLID ground (.60→.68). No text ever renders over a
+     translucent sheet, so the «في مدارك»-over-plan-strokes ghost
+     (y≈735: the west wall + hatch strip under this seat) is
+     impossible by construction. */
+  background: color-mix(
+    in srgb,
+    var(--text) calc(
+      clamp(0, (var(--jt-p, 0) - 0.28) / 0.02, 1) *
+      clamp(0, (0.68 - var(--jt-p, 1)) / 0.01, 1) * 100%
+    ),
+    transparent
+  );
+  color: var(--bg);
   visibility: hidden;
 }
 
 .jt-intro[data-on='on'] {
   visibility: visible;
+}
+
+/* R319 §D4b — the content's own gate: the in-ramp matches the
+   ground's (.02 — the title never rides a translucent sheet), the
+   out-ramp (.06) hands the card off to the closing column. The line
+   bodies additionally scrub through their --wr-p word masks below. */
+.jt-intro-title,
+.jt-intro-lines {
+  opacity: calc(
+    clamp(0, (var(--jt-p, 0) - 0.28) / 0.02, 1) *
+    clamp(0, (0.68 - var(--jt-p, 1)) / 0.06, 1)
+  );
 }
 
 .jt-intro-title {
@@ -5638,12 +5721,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
 .fl-svg {
   display: block;
   inline-size: 100%;
-  /* R315 (K-F · B9): the sheet's OWN 1000:210 viewBox proportion — the
-   * old 1427/314 band-ratio ran the box shorter than the drawing and
-   * the svg's xMidYMid slice cropped the label band; the exact aspect
-   * keeps slice inert (hidden ≤767px below). */
+  /* R319 §D2: the five-column strip's own 1000:80 proportion — the
+   * drawing band (54u squares + captions) IS the sheet; full-bleed
+   * width-driven at every ≥768 band, xMidYMid meet keeps all five
+   * columns + the aligned captions in frame (hidden ≤767px below). */
   block-size: auto;
-  aspect-ratio: 1000 / 210;
+  aspect-ratio: 1000 / 80;
 }
 
 /* the reference hides the image strip ≤767px (its mobile footer
@@ -5685,14 +5768,17 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 .fl-signal polygon,
-.fl-signal circle {
+.fl-signal circle,
+.fl-signal rect {
   fill: var(--accent);
   stroke: none;
 }
 
 .fl-labels text {
   font-family: var(--font-sans);
-  font-size: 15px;
+  /* R319 §D2: 12.5 viewBox units — the five captions ride ONE shared
+   * baseline (y=77); rendered 17.8px @1440 · 12.6 @1024 · 9.4 @768. */
+  font-size: 12.5px;
   font-weight: 600;
   fill: var(--text-secondary);
 }
@@ -6141,7 +6227,9 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .fo-fcell-strip { block-size: 11rem; }
   .fo-footer-mark-svg { block-size: 14rem; inline-size: 14rem; }
   .fo-fgrid { row-gap: var(--sp-1); }
-  .fo-fstrip .fl { block-size: 11rem; }
+  /* R319 §D2: the tablet strip row retires its fixed 11rem — the
+   * five-column sheet is full-bleed width-driven (1000:80), the row
+   * hugs it (the svg's own 0..10u label band is the air). */
 }
 
 /* ═══ R315 cycle-2 (M3 · batch 3) — the rem law + the footer row grammar ══
@@ -6252,7 +6340,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .rl-section { min-block-size: calc(100svh - 1.6rem); }
 
   .fo-fgrid { min-block-size: 42.6rem; }
-  .fo-fstrip { block-size: 37.7rem; }
+  /* R319 §D1/D2: the definite 37.7rem (314px) strip band is RETIRED —
+   * the band now sizes from its two content rows (the full-bleed
+   * five-column strip + the full-cell-width wordmark); docH ladder
+   * re-verified ±3% at 360/390/768/1024/1440. */
   .fo-footer-bottom { min-block-size: 5.04rem; padding-inline: 3.12rem; }
   .fo-footer-mark-svg { inline-size: 25.8rem; block-size: 25.8rem; }
   .fo-footer-link { min-block-size: 3.36rem; }
