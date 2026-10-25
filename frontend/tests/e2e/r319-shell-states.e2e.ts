@@ -316,7 +316,7 @@ for (const theme of THEMES) {
             const s = getComputedStyle(close);
             return { w: s.width, h: s.height, radius: s.borderRadius, border: s.borderTopWidth };
           })(),
-          tourLabel: tour.textContent.trim(),
+          tourLabel: (tour.textContent ?? '').trim(),
           scrimBg: getComputedStyle(scrim).backgroundColor,
           avatar: (() => {
             const s = getComputedStyle(avatar);
@@ -332,7 +332,7 @@ for (const theme of THEMES) {
             boxBrandVsRow: Math.abs(brandRowR - rowR),
             markVsIcon: Math.abs(markR - iconR),
           },
-          lastGroupLabel: labels[labels.length - 1]!.textContent.trim(),
+          lastGroupLabel: (labels[labels.length - 1]!.textContent ?? '').trim(),
           lastGroupBottom: lr.bottom,
           drawerBottom: dr.bottom,
         };
