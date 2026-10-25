@@ -63,7 +63,7 @@ test.describe('الحركة المقلّصة — الاستعلام الوسائ
 
   test('توكنات الحركة تنهار إلى الصفر والحزام العام يجمّد الانتقالات', async ({ page }) => {
     await page.goto('/auth');
-    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحباً بعودتك');
+    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحبا بعودتك');
 
     const probe = await page.evaluate(() => {
       const root = getComputedStyle(document.documentElement);
@@ -108,7 +108,7 @@ test.describe('الحركة المقلّصة — الاستعلام الوسائ
 test.describe('الحركة الكاملة — الخط الأساسي (بدون تفضيل تقليل)', () => {
   test('التوكنات على قيمها الكاملة وزر الدخول ينتقل بمدة حقيقية', async ({ page }) => {
     await page.goto('/auth');
-    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحباً بعودتك');
+    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحبا بعودتك');
 
     const probe = await page.evaluate(() => {
       const root = getComputedStyle(document.documentElement);
@@ -120,8 +120,11 @@ test.describe('الحركة الكاملة — الخط الأساسي (بدون
       };
     });
 
-    // The r305 Heron ladder (foundation): --t-base = 400ms.
-    expect(probe.durationMedium).toBe('400ms');
+    // The r305 Heron ladder (foundation): --t-base = 400ms. r315 C4-E re-pin
+    // (same value): the computed read may serialize 400ms as .4s/0.4s after the
+    // CSS pipeline's token re-serialization — the pin keeps asserting the SAME
+    // duration (400ms), never zero (the reduced-motion belt owns that side).
+    expect(['400ms', '.4s', '0.4s']).toContain(probe.durationMedium);
     // The CTA's own background transition rides --t-fast (200ms on r305).
     expect(probe.submitTransitionDuration).toBe('0.2s');
   });

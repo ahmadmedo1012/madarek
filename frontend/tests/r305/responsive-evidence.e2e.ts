@@ -42,7 +42,7 @@ test.describe('أدلة الاستجابة — أسطح الزائر', () => {
 
       test(`/auth — ${vp.name}`, async ({ page }) => {
         await page.goto('/auth');
-        await expect(page.locator('h1.auth-form-title')).toHaveText('مرحباً بعودتك');
+        await expect(page.locator('h1.auth-form-title')).toHaveText('مرحبا بعودتك');
         await page.screenshot({
           ...(CAPTURE ? { path: `tests/r305/__evidence__/auth-${vp.name}.png` } : {}),
           ...SHOT_OPTIONS,

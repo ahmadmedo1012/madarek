@@ -27,7 +27,7 @@ import { test, expect } from './fixtures/qa';
 test.describe('الزائر — الأسطح العامة', () => {
   test('بوابة الدخول /auth: بطاقة تسجيل الدخول بمحتواها العربي', async ({ page }) => {
     await page.goto('/auth');
-    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحباً بعودتك');
+    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحبا بعودتك');
     await expect(page.locator('.auth-form-sub')).toContainText('سجِّل دخولك للوصول إلى مقرَّراتك');
     await expect(page.locator('label[for="auth-email"]')).toHaveText('البريد الإلكتروني أو رقم القيد');
     await expect(page.locator('label[for="auth-password"]')).toHaveText('كلمة المرور');
@@ -124,7 +124,7 @@ test.describe('حواجز المسارات (السلوك الحالي)', () => {
   test('زائر على /training يُعاد إلى بوابة الدخول', async ({ page }) => {
     await page.goto('/training');
     await expect(page).toHaveURL(/\/auth$/);
-    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحباً بعودتك');
+    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحبا بعودتك');
   });
 
   test('زائر على /competitions و /vision يُعاد إلى بوابة الدخول (محميّة — ليست عامة)', async ({ page }) => {

@@ -13,11 +13,18 @@ import { test, expect } from './fixtures/e2e';
 
 test.use({ e2eRole: 'guest', reducedMotion: 'no-preference' });
 
+/* R315 (c4-E) re-pin: the landing H1 is «رحلة تعلم واحدة / من
+ * المحاضرة إلى الإتقان» (cycle-1 V1 hero, then the cycle-3 copy pass
+ * de-tashkeeled the display line — «رحلةُ تعلُّمٍ واحدة» is gone too).
+ * The brand «مدارك» lives in the header/footer brand cells, not the H1;
+ * this sentinel is the page-ready proof, not a copy pin. */
+const HERO_READY = 'رحلة تعلم واحدة';
+
 test.describe('R312 — the guest route reveal (§R D7)', () => {
   test('landing → /colleges: the sweep plays on the colleges mount and settles', async ({ page }) => {
     await page.setViewportSize({ width: 1024, height: 640 });
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
 
     /* warm the /colleges chunk first (the D4 latency class must not
      * swallow the measurement), then measure the SECOND crossing */
@@ -26,7 +33,7 @@ test.describe('R312 — the guest route reveal (§R D7)', () => {
     await expect(page.locator('.guest-reveal-inner')).toHaveCount(1);
     await page.waitForTimeout(1000);
     await page.goBack();
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
     await page.waitForTimeout(1000);
 
     /* the measured crossing */
@@ -71,7 +78,7 @@ test.describe('R312 — the guest route reveal (§R D7)', () => {
   test('browser back → the landing: the same reveal on the landing mount', async ({ page }) => {
     await page.setViewportSize({ width: 1024, height: 640 });
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
     await page.locator('a[href="/colleges"]').first().scrollIntoViewIfNeeded();
     await page.locator('a[href="/colleges"]').first().click();
     await page.waitForTimeout(1200);
@@ -86,7 +93,7 @@ test.describe('R312 — the guest route reveal (§R D7)', () => {
       undefined,
       { timeout: 8000 },
     );
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
     /* the landing tree is inside the reveal stage */
     const inside = await page.evaluate(() => {
       const inner = document.querySelector('.guest-reveal-inner');
@@ -101,7 +108,7 @@ test.describe('R312 — the guest route reveal (§R D7)', () => {
   test('the traveling rule: fixed, 1px, on the rule token', async ({ page }) => {
     await page.setViewportSize({ width: 1024, height: 640 });
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
     const line = await page.evaluate(() => {
       const wrap = document.querySelector('.guest-reveal');
       const cs = getComputedStyle(wrap as Element, '::after');
@@ -125,7 +132,7 @@ test.describe('R312 — reduced motion: the standing page', () => {
   test('no sweep, no line, no clip — the page stands', async ({ page }) => {
     await page.setViewportSize({ width: 1024, height: 640 });
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
     await page.locator('a[href="/colleges"]').first().scrollIntoViewIfNeeded();
     await page.locator('a[href="/colleges"]').first().click();
     await page.waitForTimeout(1200);

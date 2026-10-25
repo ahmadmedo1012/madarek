@@ -15,6 +15,13 @@
  */
 import { test, expect } from './fixtures/e2e';
 
+/* R315 (c4-E) re-pin: the landing H1 is «رحلة تعلم واحدة / من
+ * المحاضرة إلى الإتقان» (cycle-1 V1 hero, then the cycle-3 copy pass
+ * de-tashkeeled the display line — «رحلةُ تعلُّمٍ واحدة» is gone too).
+ * The brand «مدارك» lives in the header/footer brand cells, not the H1;
+ * this sentinel is the page-ready proof, not a copy pin. */
+const HERO_READY = 'رحلة تعلم واحدة';
+
 const VW = {
   desktop: { width: 1440, height: 900 },
   narrow: { width: 800, height: 900 },
@@ -29,7 +36,7 @@ test.describe('R311 — the landing owns its pointer', () => {
   test('exactly one pointer system renders: the square sheet instrument, no circular layer', async ({ page }) => {
     await page.setViewportSize(VW.desktop);
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
 
     /* the app-level circular layer is FULLY down on this route */
     await expect(page.locator('.cursor-layer')).toHaveCount(0);
@@ -159,7 +166,7 @@ test.describe('R311 — the entrance loader', () => {
     await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
     await expect(page.locator('.cursor-layer')).toHaveCount(0);
     await expect(page.locator('.sc-canvas')).toHaveCount(1);
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
   });
 });
 
@@ -203,7 +210,7 @@ test.describe('R311 — native fallback', () => {
   test('reduced motion: no custom layers, the native cursor stays', async ({ page }) => {
     await page.setViewportSize(VW.desktop);
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
     await expect(page.locator('.sc-canvas')).toHaveCount(0);
     await expect(page.locator('.cursor-layer')).toHaveCount(0);
     const stageCursor = await page.evaluate(() => getComputedStyle(document.querySelector('.bp-stage') as Element).cursor);
@@ -213,7 +220,7 @@ test.describe('R311 — native fallback', () => {
   test('touch viewport: no custom layers, the native pointer stays', async ({ page }) => {
     await page.setViewportSize(VW.mobile);
     await page.goto('/');
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
     await expect(page.locator('.sc-canvas')).toHaveCount(0);
     await expect(page.locator('.cursor-layer')).toHaveCount(0);
     await expect(page.locator('.hi-instrument')).toBeHidden();

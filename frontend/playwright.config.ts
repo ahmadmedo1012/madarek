@@ -39,6 +39,15 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    // c4-E: sandbox worktrees run against a PRE-INSTALLED Chrome-for-
+    // Testing build (Chromium 143 — the exact major @playwright/test
+    // 1.60 ships) instead of `playwright install` (forbidden here —
+    // CI installs its own browsers via `npx playwright install
+    // chromium --with-deps` and never sets this variable, so the
+    // default path stays the bundled revision in both worlds).
+    launchOptions: process.env.MADAREK_E2E_EXECUTABLE
+      ? { executablePath: process.env.MADAREK_E2E_EXECUTABLE }
+      : {},
   },
   projects: [
     {

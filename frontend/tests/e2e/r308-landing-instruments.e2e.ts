@@ -37,14 +37,16 @@ test.describe('R308 — لوحة البدء (the entrance)', () => {
      * curve), + 0.7s hold + 0.835s split — the budget carries the dev
      * server's cold transform) */
     await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    /* R315 (B1·A.2) re-pin: the display H1 is «رحلة تعلم واحدة / من
+     * المحاضرة إلى الإتقان» — the sheet-stands proof now anchors on it */
+    await expect(page.locator('.fo-hero-title')).toContainText('رحلة تعلم واحدة');
     /* R313 override: the loader REPLAYS on a same-tab reload (the
      * reference's own measured reloadGate; the session flag is
      * inert) — and exits by itself again */
     await page.reload();
     await expect(page.locator('.sl')).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText('رحلة تعلم واحدة');
   });
 
   test('the skip control ends the entrance immediately', async ({ page }) => {
@@ -60,7 +62,9 @@ test.describe('R308 — لوحة البدء (the entrance)', () => {
     /* R313 override: the skip runs the 835ms split (the exit must
      * PLAY, not cut) — gone by ~1s */
     await expect(page.locator('.sl')).toHaveCount(0, { timeout: 3000 });
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    /* R315 (B1·A.2) re-pin: the sheet-stands proof anchors on the
+     * current display H1 (was the pre-r306 «مدارك» title) */
+    await expect(page.locator('.fo-hero-title')).toContainText('رحلة تعلم واحدة');
   });
 });
 
@@ -111,7 +115,9 @@ test.describe('R308 — the static belt', () => {
     await page.goto('/');
     await expect(page.locator('.sl')).toHaveCount(0);
     await expect(page.locator('.sc-canvas')).toHaveCount(0);
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    /* R315 (B1·A.2) re-pin: the static belt's complete-sheet proof
+     * anchors on the current display H1 (was «مدارك») */
+    await expect(page.locator('.fo-hero-title')).toContainText('رحلة تعلم واحدة');
     /* the drawing is complete, not dash-hidden */
     await expect(page.locator('.hi-marker')).toHaveCount(3);
   });
