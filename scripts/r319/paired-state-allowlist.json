@@ -413,7 +413,7 @@
       "reason": "COOKIE BANNER action — ink-only on a constant outlined ground; no background is declared in any state of this control"
     },
     {
-      "key": "r314-chrome.css :: .cb-more:hover,\n.cb-more:focus-visible",
+      "key": "r314-chrome.css :: html[data-theme='dark'] .cb-more:hover,\nhtml[data-theme='dark'] .cb-more:focus-visible",
       "reason": "COOKIE BANNER link — ink-only on a constant ground; no background exists in any state"
     },
     {
@@ -543,6 +543,34 @@
     {
       "key": "unified-parity.css :: .badge:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing.css :: .fo-hero-discover:hover::before",
+      "reason": "WIPE-LAYER fill — the ::before carries no text (the label's own hover rule pairs color+background on the element); this is the r318 AA signal ground #DB3A00 light / --accent dark (c2-L2 D7: white label 4.55:1), the layered-button pattern"
+    },
+    {
+      "key": "landing.css :: html[data-theme='dark'] .fo-hero-discover:hover::before",
+      "reason": "WIPE-LAYER fill — dark twin of .fo-hero-discover:hover::before; no text in the layer, the element's own hover rule carries the paired label"
+    },
+    {
+      "key": "landing.css :: html[data-theme='dark'] .fo-text-link:hover",
+      "reason": "INK-ONLY link emphasis — no background in any state of this selector: the ground is the inherited paper and never moves; --accent on the dark paper is the passing night pair (c2-L2 D7)"
+    },
+    {
+      "key": "r314-chrome.css :: html[data-theme='dark'] .cb-more:hover,\nhtml[data-theme='dark'] .cb-more:focus-visible",
+      "reason": "INK-ONLY link emphasis — no background in any state; the dark twin of the light .cb-more hover whose --accent-strong pair was measured 6.91:1 (c2-L2 D7)"
+    },
+    {
+      "key": "landing.css :: .fo-actions-cta:hover::before",
+      "reason": "WIPE-LAYER fill — same layered-button pattern as .fo-hero-discover:hover::before: the ::before carries no text, the element's own hover rule pairs the label; #DB3A00 = the r318 AA signal ground (c2-L2 D7)"
+    },
+    {
+      "key": "landing.css :: html[data-theme='dark'] .fo-actions-cta:hover::before",
+      "reason": "WIPE-LAYER fill — dark twin of .fo-actions-cta:hover::before; no text in the layer"
+    },
+    {
+      "key": "r314-chrome.css :: .cb-more:hover,\n.cb-more:focus-visible",
+      "reason": "INK-ONLY link emphasis — no background in any state of this selector; --accent-strong on paper measured 6.91:1 (c2-L2 D7)"
     }
   ]
 }

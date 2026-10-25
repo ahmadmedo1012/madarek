@@ -58,6 +58,28 @@ Cycle 3: student pages sweep. Cycle 4: teacher+admin+owner. Cycle 5: landing §D
 
 ## Cycle log
 
+### Cycle 2 — CLOSED (shell grammar + dashboard §B2 + iOS harness + ALL §D landing defects; merged through b0ad264f)
+
+| # | State | Evidence (command → number) |
+|---|---|---|
+| B2 dashboard (the owner's 2nd screenshot) | **FIXED-with-test** | G1: SectionBar title bars (mono [nn] gutter + hairline rule — the giant 60-70px headings re-seated) + RulerGauge (weekly ticks, orange fill, mono W09/15) + CourseBar (hairline + end-tick) + StatusChip ([LIVE]/[DUE nD]/[DONE] square mono) + WeekStrip (7-cell, current day inked) + EmptyCell (hatched). Gate: material/mono-index FAIL→PASS (26 labels), material/indicator FAIL→PASS (14). e2e r319-dashboard-material **13/13**; units 40/40. |
+| §C3 shared shell | **FIXED-with-test** | G2: SheetFrame (7px + ± marks) + grain layer + PageHeader additive grammar (index/sheetCode props + SheetCodeContext — every authed page shows S-01·STUDENT… O-01·OWNER free, 40+ consumers untouched) + hairline primitives (cards radius 0, mono badges, tab underline, EmptyState hatch variant). Gate: material/frame+grain+chrome-radius FAIL→PASS **20/20 cells**; full unit suite **2585/2585**; e2e r319-shell-chrome 10/10. |
+| §C6 iOS/WebKit | **FIXED (CI-routed)** | G3: webkit-iphone Playwright project + ios-webkit CI job (sandbox lacks root for WebKit system libs — BLOCKED locally by construction, runs in CI on push); chromium-iphone local truth **8/8 contracts** (drawer both themes tap-ghost-free, bar α1 + no jump, safe-area rule, 100dvh, tap-highlight, ≥16px inputs); owner screenshots re-shot → audits/evidence/r319/ios/. |
+| D1 wordmark | **FIXED-with-test** | Connected kashida shaping (10 tatweels, aspect 4.545 = the reference strip's own) + clipper UNION (the R318 filled render hid a doubled-outline seam at م→د — stroke-only exposed it) + full-cell width (94.5% ink) + OCR seat: «مدارك» in **ALL 4 gate cells** (hollow fails at every stroke 1.7→9px — measured matrix; 50% interior tone = lightest STABLE). VLM: one connected word, outline-style. docH ladder all ±3%. |
+| D2 ink strip | **FIXED** | 5 equal-height ink renders, captions one baseline, full-bleed width-driven (VLM-verified). |
+| D3 halo smear | **FIXED** | Whisper 1.4px halo on dark-ink-on-paper labels ONLY, none on lit rooms (was 3.17px thicker-than-glyph); VLM clean single-strike 1440+390. |
+| D4 mid-state label + intro ghost | **FIXED** | State-safe ink labels (13.4:1 paper / 6.6:1 salmon / 3.85:1 orange — chip snaps); INTRO fade repaired (the R315 fade never ran — invalid CSS; split fade, content ≤ ground at every instant — ghost-over-strokes impossible by construction). |
+| D5 platform | **FIXED-with-test** | VIEW-A/B tag dir=ltr axis-flip → inset-inline-end on the stage's reading-start corner + max-inline-size; **0 overlaps/escapes/clips** at 360–1920; gate collisions 8/8. |
+| D6 mobile map | **FIXED-with-test** | Plan 95.9% width breakout (342→374px @390), [01-05/05] index chip, 34svh frame clears «شاهد» (12px clear); docH 11,418→11,300 (−1.03%); r312-camera re-pinned 9/9. |
+| D7 link contrast | **FIXED-with-test** | a.cb-more 4.44→6.91 · fo-hero-discover 3.76→4.55 · fo-text-link 3.46→6.91 (light); gate state-contrast **0 fails** (144/144 @1440 + 96/96 @390). |
+| Paired-lint regression (gate-found at close) | **FIXED** | The D7 dark-theme link/wipe rules introduced 5 XOR state rules → allowlisted with reasons (layered wipe-layers + ink-only link emphasis — the documented safe patterns) → lint PASS (416 rules / 143 allowlisted / 0 fresh). |
+
+**Suites after C2 close:** vitest front **2599/2599** · tsc front+back 0 · eslint 0 errors · paired lint PASS · gate:r319 quick **0 regressions** (1 baseline ratchet row in quick; full-mode baseline FAILs = the Cycle-3/4 page-conversion ratchet: material on non-dashboard pages, owner indicator seats).
+
+**docH ladder (protected, after §D):** 12,471 (+1.06%) · 10,056 (+0.97%) · 12,679 (+0.41%) · 11,300 (−1.03%) · 10,722 (−0.16%) — all ±3%.
+
+**Cycle 3 dispatch (next):** student pages sweep (schedule, calendar, courses, course detail, results, messages, notifications, assistant, settings → sheet grammar + indicators per §B2 pattern; the G1 components + G2 context are the kit) · §E-13 desktop perf (1440 wheel 66/245 frames >33ms, CLS 0.28 → ≤2% >20ms, CLS ≤0.05 — suspects: map SVG repaint, 1440-wide patterns, sticky header transform, gBCR storms) · WebKit CI results watch.
+
 ### Cycle 1 — CLOSED (all five work packages merged at `1a67b9ee` + foreman close)
 
 **Every §B1/§B1b ticket's state (rule 2 — FIXED-with-test or BLOCKED-with-reason):**
