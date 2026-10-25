@@ -1,0 +1,96 @@
+{
+ "generated": "2026-10-25T21:09:40.545Z",
+ "baseUrl": "http://localhost:4228",
+ "routes": [
+  "landing"
+ ],
+ "viewports": [
+  390
+ ],
+ "quick": false,
+ "maxElements": 400,
+ "cells": [
+  {
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "authed": false,
+   "checks": {
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 96,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "authed": false,
+   "checks": {
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 96,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  }
+ ],
+ "paired": null,
+ "rows": [
+  {
+   "key": "landing|390|light|state-contrast",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "landing|390|dark|state-contrast",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  }
+ ],
+ "summary": {
+  "fails": 0,
+  "warns": 0,
+  "regressions": 0,
+  "errorCells": 0,
+  "exit": 0
+ }
+}

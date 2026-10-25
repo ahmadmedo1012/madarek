@@ -145,6 +145,16 @@
 .cb-more:hover,
 .cb-more:focus-visible {
   text-decoration-line: underline;
+  /* R319 §D7 — the light-theme hover ink must clear AA on the banner
+     paper: --accent-hover (#D92F00) measured 4.44:1. The deep copper
+     --accent-strong (#A32400) is 6.91:1 on #F6F6EE; the dark twin
+     below keeps the night sheet's own hover unchanged (it already
+     passes). */
+  color: var(--accent-strong);
+}
+
+html[data-theme='dark'] .cb-more:hover,
+html[data-theme='dark'] .cb-more:focus-visible {
   color: var(--accent-hover);
 }
 
