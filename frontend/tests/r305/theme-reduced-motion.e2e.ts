@@ -124,7 +124,13 @@ test.describe('الحركة الكاملة — الخط الأساسي (بدون
     // (same value): the computed read may serialize 400ms as .4s/0.4s after the
     // CSS pipeline's token re-serialization — the pin keeps asserting the SAME
     // duration (400ms), never zero (the reduced-motion belt owns that side).
-    expect(['400ms', '.4s', '0.4s']).toContain(probe.durationMedium);
+    // r315 C4-E hardening: assert the PARSED duration (400ms) so any CSS
+    // pipeline serialization passes (400ms/.4s/0.4s) while zero/other
+    // values still fail — the protective intent is the VALUE, not the string.
+    const ms = probe.durationMedium.endsWith('ms')
+      ? parseFloat(probe.durationMedium)
+      : parseFloat(probe.durationMedium) * 1000;
+    expect(ms).toBe(400);
     // The CTA's own background transition rides --t-fast (200ms on r305).
     expect(probe.submitTransitionDuration).toBe('0.2s');
   });
