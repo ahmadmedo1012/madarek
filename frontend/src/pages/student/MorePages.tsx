@@ -27,6 +27,11 @@ import { api, unwrap } from '../../lib/api';
 import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
 import { gradeBand, type GradeBandKey } from '../../lib/courseMeta';
 import { PageFrame, PageHeader as PatternPageHeader, SectionHeader, RowList, RowItem, StatLine } from '../../components/patterns';
+/* R319 (c3-S2) — the §B2 kit: the mono-indexed section title bar, the
+ * BarCount meta, the mono status chip, the hatched empty cell + the
+ * today week strip (the pages-B sweep's shared barrel for this file's
+ * pages). */
+import { SectionBar, BarCount, StatusChip, EmptyCell, WeekStrip } from '../../components/student';
 import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
 import { formatDate } from '../../utils/numbers';
 /* ── r305-c (schedule family) + r305-d (supplemental family) imports —
@@ -35,6 +40,11 @@ import { formatDate } from '../../utils/numbers';
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-schedule.css';
 import '../../styles/r305-student-supplemental.css';
+/* R319 (c3-S2): the sheet system — the §B2 component anatomy + the
+ * academic family's harmonics (the same pair every converted student
+ * page rides; this file's pages opt in per-page via .r319s-page). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
 
@@ -640,10 +650,14 @@ export function SchedulePage() {
 
   if (q.isPending) {
     return (
+      <div className="r319s-page">
       <PageFrame width="default">
         <PatternPageHeader title="الجدول الدراسي" description="جارٍ جمع جدولك…" />
+        {/* R319 (c3-S2): the week strip — the page's genuine today/week
+            context (the day rotation below anchors on it). */}
+        <WeekStrip />
         {/* 5-C3 (A9 P2-2): bare spinner → day-section skeletons. The
-            settled page is a stack of day sections (SectionHeader +
+            settled page is a stack of day sections (SectionBar +
             RowList rows); two day skeletons hold the visible band so
             the data-land swap doesn't jump (A9 V1). r299: the mirror
             recomposed for the pattern anatomy. */}
@@ -656,14 +670,17 @@ export function SchedulePage() {
           </section>
         ))}
       </PageFrame>
+      </div>
     );
   }
   if (q.isError) {
     return (
+      <div className="r319s-page">
       <PageFrame width="default">
         <PatternPageHeader title="الجدول الدراسي" />
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       </PageFrame>
+      </div>
     );
   }
 
@@ -705,6 +722,7 @@ export function SchedulePage() {
   ];
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader
         title="الجدول الدراسي"
@@ -714,27 +732,39 @@ export function SchedulePage() {
           : undefined}
       />
 
+      {/* R319 (c3-S2): the week strip — the page's genuine today/week
+          context: the current week as one hairline row of 7 cells with
+          today inked (the day rotation below anchors on it). */}
+      <WeekStrip />
+
       {daysWithItems.length === 0 ? (
-        <EmptyState
-          illustration="empty-list"
-          title="لا يوجد جدول مسجّل"
-          description="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول مقرّراتك."
+        /* R319 (c3-S2): the empty week is the sheet's reserved-but-empty
+           region — the hatched EmptyCell (the old EmptyState's copy,
+           kept honest and verbatim). */
+        <EmptyCell
+          label="لا يوجد جدول مسجّل"
+          note="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول مقرّراتك."
         />
       ) : (
         /* r299 (final C): day sections on the pattern anatomy —
-           SectionHeader + RowList rows (the manual first/last-row
-           borderRadius patch inside a Card flush is retired; the
-           row surface and its separators are the RowList's own). */
+           R319 (c3-S2): each day's heading joins the §B2 title-bar
+           register ([01]… by the rendered rotation order), the day's
+           honest slot count as the bar's mono meta (countAr for AT),
+           and today's marker rides the mono chip register. RowList
+           rows + separators stay the RowList's own. */
         <div className="flex-col gap-5">
-          {orderedDays.map((d) => (
+          {orderedDays.map((d, di) => (
             <section key={d.dow} className="schedule-day" aria-label={`جدول ${WEEKDAY_NAMES_AR[d.dow]}`}>
-              <SectionHeader
-                title={
-                  <>
-                    {WEEKDAY_NAMES_AR[d.dow]}
-                    {d.dow === todayDow && <Badge color="brand">اليوم</Badge>}
-                  </>
-                }
+              <SectionBar
+                index={String(di + 1).padStart(2, '0')}
+                title={WEEKDAY_NAMES_AR[d.dow] ?? ''}
+                meta={(
+                  <BarCount
+                    n={d.items.length}
+                    srLabel={countAr(d.items.length, ['حصة واحدة', 'حصتان', 'حصص', 'حصة'])}
+                  />
+                )}
+                action={d.dow === todayDow ? <StatusChip label="TODAY" tone="due" /> : undefined}
               />
               <RowList aria-label={`حصص يوم ${WEEKDAY_NAMES_AR[d.dow]}`}>
                 {d.items.map((it, i) => (
@@ -751,6 +781,7 @@ export function SchedulePage() {
         </div>
       )}
     </PageFrame>
+    </div>
   );
 }
 
