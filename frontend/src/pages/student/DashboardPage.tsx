@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Play, Eye, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Badge, ProgressBar } from '../../components/primitives';
@@ -20,6 +20,12 @@ import {
 import { EXAM_KIND_LABEL, courseIcon, courseTint } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
 import { formatInt, formatNum, formatDate, formatTime } from '../../utils/numbers';
+/* R319 C1-C — the visible-text hygiene layer (§B2 seed leaks + §E-10):
+   no raw revision codes, no placeholder test names, ONE numeral system
+   (Latin), real ar-LY dates, <bdi> on every mixed run. */
+import {
+  arDate, oneNumeralSystem, sanitizeInstitutionName, sanitizeVisibleText,
+} from '../../utils/display-text';
 /* R305 Heron — the shared student vocabulary + this page's family sheet.
  * Page-chunk CSS loads after main.tsx's global sheets, so the family
  * refinements win same-specificity ties over the frozen student.css
@@ -288,6 +294,21 @@ function nodeText(n: ReactNode): string {
   return '';
 }
 
+/* R319 C1-C — listwise join of visible identity segments: empties drop
+   out BEFORE joining, so a sanitized-to-'' segment can never leave a
+   dangling « · » (the photographed header ended «… · السنة 8 · r180»). */
+function joinSegments(segments: Array<string | ReactNode | null | undefined>): ReactNode[] {
+  const kept = segments.filter(
+    (s): s is string | ReactNode => s !== null && s !== undefined && s !== '',
+  );
+  return kept.map((seg, i) => (
+    <Fragment key={i}>
+      {i > 0 ? ' · ' : null}
+      {seg}
+    </Fragment>
+  ));
+}
+
 /* R304 — the next-learning-action decision (the r164-c contract kept:
    the lecture arm answers first, the training arm only when the
    lecture half is empty). Returns null when both arms are empty — the
@@ -406,7 +427,7 @@ function DashResumeHero({ focus }: { focus: ResumeFocus }) {
         <div className="dash-resume-main">
           <span className="dash-resume-eyebrow r305s-eyebrow">{focus.started ? 'أكمل من حيث توقفت' : 'الخطوة التالية'}</span>
           <span className="dash-resume-course-name">{focus.title}</span>
-          <span className="dash-resume-lecture">مسار التطوير الذاتي · {focus.started ? `أنجزت ${formatInt(focus.progressPct)}% من دروسه` : 'سجّلت فيه ولم تبدأه بعد'}</span>
+          <span className="dash-resume-lecture">مسار التطوير الذاتي · {focus.started ? <>أنجزت <bdi>{formatInt(focus.progressPct)}%</bdi> من دروسه</> : 'سجّلت فيه ولم تبدأه بعد'}</span>
           {focus.started && (
             <div className="dash-resume-progress">
               <ProgressBar value={focus.progressPct} showValue={false}
@@ -586,7 +607,7 @@ export default function StudentDashboardPage() {
       kind: 'class', id: `c-${c.id}`,
       whenMs: classWhenMs(c),
       to: `/student/courses/${c.offeringId}`,
-      title: <>{c.courseName}{c.room ? ` — ${c.room}` : ''}</>,
+      title: <>{c.courseName}{c.room ? <> — <bdi>{c.room}</bdi></> : ''}</>,
       meta: <>{DAY_LABEL[c.when]} · <bdi>{c.startTime}–{c.endTime}</bdi></>,
       tone: c.when === 'today' ? 'accent' : 'gold',
     })),
@@ -595,7 +616,7 @@ export default function StudentDashboardPage() {
       whenMs: safeMs(a.dueAt),
       to: `/student/courses/${a.offeringId}`,
       title: <>{a.title} (<bdi>{a.courseCode}</bdi>)</>,
-      meta: <>تسليم {formatDue(a.dueAt)}</>,
+      meta: <>تسليم <bdi>{formatDue(a.dueAt)}</bdi></>,
       tone: 'gold',
     })),
     ...d.agenda.live.slice(0, 2).map<AgendaItem>((l) => ({
@@ -606,7 +627,7 @@ export default function StudentDashboardPage() {
          top of the stream: its whenMs (scheduledAt) has already passed,
          so ascending sort puts it there naturally. */
       title: <>بثّ مباشر: {l.title}</>,
-      meta: <><bdi>{l.offering.course.code}</bdi> · {formatDue(l.scheduledAt)}</>,
+      meta: <><bdi>{l.offering.course.code}</bdi> · <bdi>{formatDue(l.scheduledAt)}</bdi></>,
       tone: 'red',
     })),
     // r164-c — the fourth bucket: still-actable exams.
@@ -622,7 +643,7 @@ export default function StudentDashboardPage() {
             {e.courseCode ? <> (<bdi>{e.courseCode}</bdi>)</> : null}
           </>
         ),
-        meta: <>{row.metaLabel} {formatDue(e.whenAt)}</>,
+        meta: <>{row.metaLabel} <bdi>{formatDue(e.whenAt)}</bdi></>,
         tone: 'red' as const,
       };
     }),
@@ -717,6 +738,27 @@ export default function StudentDashboardPage() {
     },
   ];
 
+  /* R319 C1-C — the identity line, leak-proofed (§B2): institution
+     names pass sanitizeInstitutionName (revision codes + placeholder
+     test names like «قسم اختبار» drop to ''), segments join LISTWISE
+     so an empty one never leaves a dangling «·», the year renders only
+     as a finite 1..8 integer (medicine/pharmacy legitimately reach 8 —
+     no lower hard cap, just data sanity), and the digit runs inside
+     the Arabic sentence are bdi-isolated. */
+  const studentName = sanitizeVisibleText(user?.firstName ?? '');
+  const identitySegments = joinSegments([
+    sanitizeInstitutionName(d.profile.facultyName),
+    sanitizeInstitutionName(d.profile.departmentName),
+    Number.isInteger(d.profile.year) && d.profile.year >= 1 && d.profile.year <= 8
+      ? <>السنة <bdi>{formatInt(d.profile.year)}</bdi></>
+      : null,
+  ]);
+  /* R319 C1-C — the meta line: REAL ar-LY term dates (Arabic month
+     names + Latin digits — the «01/15 وينتهي 09/10» numeric shape and
+     its invisible RLM are gone), the percentage through the one-numeral
+     util, every mixed run bdi-isolated. */
+  const termPctText = oneNumeralSystem(`${termPct}%`);
+
   return (
     <PageFrame width="default">
       <PageHeader
@@ -724,14 +766,12 @@ export default function StudentDashboardPage() {
         eyebrow="مساحة الطالب"
         description={
           <>
-            {greeting}، {user?.firstName ?? ''} — {d.profile.facultyName
-              ? `${d.profile.facultyName}${d.profile.departmentName ? ` · ${d.profile.departmentName}` : ''} · السنة ${d.profile.year}`
-              : 'لوحة متابعة تقدّمك الأكاديمي.'}
+            {greeting}{studentName ? <>، <bdi>{studentName}</bdi></> : null} — {identitySegments.length > 0 ? identitySegments : 'لوحة متابعة تقدّمك الأكاديمي.'}
           </>
         }
         meta={
           <>
-            {dateLine} · {termPct}% من الفصل مضى · يبدأ {formatDate(d.term.startsAt, { day: '2-digit', month: '2-digit' })} وينتهي {formatDate(d.term.endsAt, { day: '2-digit', month: '2-digit' })}
+            <bdi>{dateLine}</bdi> · <bdi>{termPctText}</bdi> من الفصل مضى · يبدأ <bdi>{arDate(d.term.startsAt, { day: 'numeric', month: 'long' })}</bdi> وينتهي <bdi>{arDate(d.term.endsAt, { day: 'numeric', month: 'long' })}</bdi>
           </>
         }
       />
