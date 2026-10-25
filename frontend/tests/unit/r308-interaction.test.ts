@@ -193,14 +193,19 @@ describe('r308 — introGate (the entrance decision)', () => {
   });
 
   it('R313 override: replays on EVERY fresh document (the seen-flag no longer suppresses), never under RM, never without storage', () => {
-    /* R313 override: the reference's loader replays on same-tab reload
-     * (measured reloadGate) — the session flag is inert (the reference
-     * writes isLoaded and replays anyway). The guards: RM, non-visual
-     * env, the document lifetime, and the hermetic skip key. */
+    /* R318 override (§C): the loader is a FIRST-VISIT sequence — the
+     * session seen-flag suppresses repeat visits (it was inert under
+     * the R313 replay-always pin); saveData/≤2g/≤2-core visitors skip
+     * too. The guards: RM, non-visual env, the document lifetime, and
+     * the hermetic skip key stay exactly as they were. */
     expect(shouldPlayIntro(mkStore(false), false)).toBe(true);
-    expect(shouldPlayIntro(mkStore(true), false)).toBe(true); // R313: seen-flag is inert (was false in R308)
+    expect(shouldPlayIntro(mkStore(true), false)).toBe(false); // R318 re-pin: the seen-flag suppresses (was true in R313)
     expect(shouldPlayIntro(mkStore(false), true)).toBe(false); // reduced motion
     expect(shouldPlayIntro(null, false)).toBe(false); // non-visual environments
+    // R318 §C: the environment guards
+    expect(shouldPlayIntro(mkStore(false), false, { saveData: true })).toBe(false);
+    expect(shouldPlayIntro(mkStore(false), false, { slowNetwork: true })).toBe(false);
+    expect(shouldPlayIntro(mkStore(false), false, { lowCores: true })).toBe(false);
   });
 
   it('R313: the hermetic skip key suppresses (the e2e fixture\'s opt-out)', () => {
@@ -208,8 +213,8 @@ describe('r308 — introGate (the entrance decision)', () => {
   });
 
   it('R313: a same-document (client-side) navigation never replays — the document-lifetime guard', () => {
-    expect(shouldPlayIntro(mkStore(false), false, false)).toBe(true); // fresh document
-    expect(shouldPlayIntro(mkStore(false), false, true)).toBe(false); // SPA remount in the same document
+    expect(shouldPlayIntro(mkStore(false), false, {}, false)).toBe(true); // fresh document (R318: env arg added)
+    expect(shouldPlayIntro(mkStore(false), false, {}, true)).toBe(false); // SPA remount in the same document
     /* the flag is module state: mark → the default arg picks it up */
     expect(introPlayedInDocument()).toBe(false);
     markIntroPlayed();
@@ -217,12 +222,12 @@ describe('r308 — introGate (the entrance decision)', () => {
     expect(shouldPlayIntro(mkStore(false), false)).toBe(false);
   });
 
-  it('markIntroSeen still writes the inert flag (the reference\'s own isLoaded twin)', () => {
+  it('markIntroSeen writes the flag the R318 first-visit decision reads', () => {
     const store = mkStore(false);
     markIntroSeen(store);
     expect(store.getItem(INTRO_SEEN_KEY)).toBe('1');
-    /* …and the decision ignores it (R313) */
-    expect(shouldPlayIntro(store, false)).toBe(true);
+    /* R318 re-pin: the decision READS it again — repeat visits skip */
+    expect(shouldPlayIntro(store, false)).toBe(false);
   });
 
   it('storage failures degrade to the complete page (no intro)', () => {

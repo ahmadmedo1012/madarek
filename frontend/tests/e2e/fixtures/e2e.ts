@@ -123,6 +123,20 @@ export const test = base.extend<E2eOptions>({
     await context.addInitScript(() => {
       try {
         sessionStorage.setItem('madarek-intro-skip', '1');
+        /* R318 (§C): the entrance now respects the navigator
+         * environment (saveData/≤2g/≤2-core visitors skip). CI hosts
+         * can be 2-core — stub the reported core count UP so the
+         * loader's own specs (r309-recovery) exercise the FULL
+         * sequence deterministically on any host; the stub lives
+         * here with the skip seed so both knobs sit together. */
+        try {
+          Object.defineProperty(Navigator.prototype, 'hardwareConcurrency', {
+            configurable: true,
+            get: () => 8,
+          });
+        } catch {
+          /* non-configurable engine — the env guard degrades to the host's truth */
+        }
       } catch {
         /* storage denied — the page stands complete anyway */
       }

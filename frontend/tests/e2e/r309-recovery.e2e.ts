@@ -484,11 +484,12 @@ test.describe('R309/R313 loader — the asset-gated entrance clock and the lock 
     await page.waitForTimeout(350);
     expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(y0);
 
-    /* R313 override: the loader REPLAYS on a same-tab reload (the
-     * reference's measured reloadGate — the session flag is inert) */
+    /* R318 override (§C): the loader is a FIRST-VISIT sequence — a
+     * same-tab reload now SKIPS (the session seen-flag suppresses;
+     * saveData/≤2g/≤2-core visitors skip too). The R313 replay-always
+     * pin is retired per the round brief's owner order. */
     await page.reload();
-    await expect(page.locator('.sl')).toBeVisible({ timeout: 15000 });
-    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
+    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 4000 });
     await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
   });
 

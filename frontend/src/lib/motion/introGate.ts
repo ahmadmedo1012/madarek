@@ -72,25 +72,60 @@ export function resetIntroDocumentGateForTests(): void {
   playedInDocument = false;
 }
 
+/** R318 — the visitor/connection environment the entrance respects.
+ * §C of the round brief: the FULL sequence plays on the FIRST visit
+ * only; repeat visits (the session seen-flag), saveData, ≤2g
+ * networks and ≤2-core devices get the page straight away (the
+ * previous R313 replay-always pin is re-pinned per the R318 owner
+ * order — an honest override, documented here and in the e2e). */
+export interface IntroEnvironment {
+  /** navigator.connection.saveData — the visitor asked for restraint. */
+  saveData?: boolean;
+  /** effectiveType is slow-2g or 2g. */
+  slowNetwork?: boolean;
+  /** navigator.hardwareConcurrency ≤ 2. */
+  lowCores?: boolean;
+}
+
+/** Read the live navigator environment (test-safe: absent APIs read
+ * as permissive — the entrance plays). */
+export function introEnvironment(): IntroEnvironment {
+  if (typeof navigator === 'undefined') return {};
+  const conn = (navigator as Navigator & {
+    connection?: { saveData?: boolean; effectiveType?: string };
+  }).connection;
+  return {
+    saveData: !!conn?.saveData,
+    slowNetwork: conn?.effectiveType === 'slow-2g' || conn?.effectiveType === '2g',
+    lowCores: (navigator.hardwareConcurrency || 8) <= 2,
+  };
+}
+
 /** Should the entrance sequence play for this visitor?
  *
- * R313 override: the session seen-flag no longer suppresses (the
- * reference replays on every full load). */
+ * R313: the session seen-flag no longer suppresses.
+ * R318 override (§C): it DOES again — the full sequence is a
+ * first-visit experience; repeat visits in the same session skip
+ * (the ≤600ms-fade/skip allowance), as do saveData, ≤2g and ≤2-core
+ * visitors. The e2e pins re-pinned accordingly. */
 export function shouldPlayIntro(
   session: SessionLike | null,
   prefersReducedMotion: boolean,
+  env: IntroEnvironment = {},
   alreadyPlayedInDocument: boolean = playedInDocument,
 ): boolean {
   if (prefersReducedMotion) return false;
   if (!session) return false; /* non-visual environments get the page */
   if (alreadyPlayedInDocument) return false; /* same-document (SPA) navigations never replay */
+  if (env.saveData || env.slowNetwork || env.lowCores) return false; /* R318 §C */
   try {
     if (session.getItem(INTRO_SKIP_KEY) === '1') return false;
+    if (session.getItem(INTRO_SEEN_KEY) === '1') return false; /* R318 §C: repeat visits skip */
   } catch {
     /* storage can throw (privacy modes) — degrade to no intro */
     return false;
   }
-  return true; /* every fresh document (full load / reload) replays */
+  return true; /* first visit in this session: the full sequence plays */
 }
 
 /** Record that this session has seen the entrance.

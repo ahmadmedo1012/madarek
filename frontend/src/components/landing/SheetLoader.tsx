@@ -39,6 +39,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   shouldPlayIntro,
+  introEnvironment,
   markIntroSeen,
   markIntroPlayed,
   INTRO_SEEN_KEY,
@@ -193,6 +194,7 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
     const should = shouldPlayIntro(
       typeof sessionStorage !== 'undefined' ? sessionStorage : null,
       reduced,
+      introEnvironment(), /* R318 §C: saveData/≤2g/≤2-core visitors skip */
     );
     if (!should) {
       markIntroSeen();

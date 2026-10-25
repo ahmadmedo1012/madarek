@@ -29,7 +29,7 @@ import { FooterLens } from '../components/landing/footer/FooterLens';
 import { FooterMarkArt, WordmarkArt, WordmarkCompactArt } from '../components/landing/FooterArt';
 import { ConsentBanner } from '../components/landing/chrome/ConsentBanner';
 import { EdgeTab } from '../components/landing/chrome/EdgeTab';
-import { shouldPlayIntro } from '../lib/motion/introGate';
+import { shouldPlayIntro, introEnvironment } from '../lib/motion/introGate';
 import { useSheetScroll } from '../lib/motion/useSheetScroll';
 import { clamp } from '../lib/motion/sheetConductor';
 import { acquireScrollLock, releaseScrollLock } from '../lib/scrollLock';
@@ -353,6 +353,7 @@ export default function LandingPage() {
       return shouldPlayIntro(
         typeof sessionStorage !== 'undefined' ? sessionStorage : null,
         reduced,
+        introEnvironment(), /* R318 §C: saveData/≤2g/≤2-core visitors skip */
       );
     } catch {
       return false;
