@@ -96,6 +96,10 @@ frontend/tests/audit/screenshots/
 test-results/
 .gstack/
 
+# r319-c2-g3: iOS suite runtime screenshots (unpinned artifacts — the
+# committed evidence copies live in audits/evidence/r319/ios/)
+frontend/tests/e2e/__screenshots__/
+
 # portable dev PG runtime artifacts (tools/boot-pg.sh)
 # NOTE: tools/package.json is intentionally TRACKED (boot-pg.sh needs it to
 # install @embedded-postgres on a fresh clone); only its generated lockfile

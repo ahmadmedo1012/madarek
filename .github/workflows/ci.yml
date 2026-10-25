@@ -225,6 +225,51 @@ jobs:
           path: frontend/test-results/
           retention-days: 7
 
+  # r319-c2-g3 (§C6 / §H-3 "WebKit-iPhone run included"): REAL-WebKit
+  # iPhone verification. The dev sandbox worktrees cannot launch
+  # Playwright WebKit (missing system libs — libgtk/libgraphene/
+  # gstreamer; no root to install), so the webkit-iphone Playwright
+  # project skips there (MADAREK_IOS_SKIP_UNSUPPORTED=1 or launch
+  # failure → test.skip) and runs HERE instead — ubuntu runners install
+  # WebKit with --with-deps exactly like the e2e job's chromium.
+  # Same hermetic model as the e2e job: MADAREK_E2E_BASE_URL stays
+  # unset so Playwright's webServer boots the Vite dev server and every
+  # /api/ call rides the fixture transport (page.route mocks) — no
+  # backend, no database, no network. The specs (tests/e2e/
+  # r319-ios-contracts.ios.e2e.ts) drive the light/dark theme matrix
+  # themselves at 390 on the iPhone 13 device descriptor.
+  # Push-only: the WebKit download is the heaviest browser install in
+  # the pipeline, so PRs ride the lighter lanes (the chromium-iphone
+  # project covers the shared contracts on every push and PR via the
+  # e2e job's `npm run test:e2e` collection).
+  ios-webkit:
+    name: E2E iOS (real WebKit, iPhone 13)
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - name: Install Playwright webkit
+        working-directory: frontend
+        run: npx playwright install webkit --with-deps
+      - name: Run the iOS contracts suite (webkit-iphone project)
+        working-directory: frontend
+        run: npx playwright test --project=webkit-iphone
+      # Same retention policy as the e2e job: traces / screenshots /
+      # videos are retained-on-failure; publish for post-mortem then.
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-ios-webkit-failures
+          path: frontend/test-results/
+          retention-days: 7
+
   design-gates:
     name: Design gates (icons + motion + colors + raw-css type/radius/spacing + parity + CSP)
     runs-on: ubuntu-latest
