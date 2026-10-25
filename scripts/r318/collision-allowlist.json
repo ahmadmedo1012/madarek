@@ -1,0 +1,20 @@
+{
+  "pairs": [
+    {
+      "a": "span.pr-bar-label",
+      "b": "span.fo-label",
+      "reason": "Intentional drafting furniture (§B3, seeded by C1-G 2026-10-25, measured @1440×900 light): the plan band's ruler label «SHEET 05 · SCALE 1:100» (aria-hidden mono, 8.3px, x280..390 y8689) crosses the [05] section-head row whose .fo-label box is stretched full content width by its grid cell (.pm-head > .fo-label { grid-area: label } → x26.7 w1386.7). The label's glyphs + ::before hairline sit at the RTL inline-START edge (right, ~x1240..1413) — measured distance between the two text clusters ≈850px; ZERO glyph pixels overlap, only the stretched grid-cell box intersects. This mirrors the reference's ruler furniture crossing the section head. PRUNE when C3 re-seats the plan band (r318 §A4/A5) if the ruler label moves onto ink."
+    }
+  ],
+  "_schema": {
+    "purpose": "R318 defect gate — collision allowlist. The gate fails on any two text-bearing leaf rects intersecting > 2px² (or crossing the viewport edge). A pair listed here is REPORTED but does not fail the gate.",
+    "how": "Run `npm run gate:r318` and copy the violating pair signatures (the `a` and `b` fields, e.g. `.jt-statement` × `.jt-statement-num`) into `pairs`. Signatures are tag + sorted class list, order-insensitive.",
+    "rules": [
+      "Every entry MUST carry a written `reason` — who measured it, against what reference, and why the overlap is intentional or a measured seat (no bare suppressions).",
+      "An allowlist entry without a reason is ignored by the gate.",
+      "Viewport-edge crossings can NOT be allowlisted — they always fail.",
+      "Prune entries at every cycle close: anything fixed should leave this file."
+    ],
+    "shape": { "a": "<selector signature of element A>", "b": "<selector signature of element B>", "reason": "<written justification — measured seat, reference behavior, owner>" }
+  }
+}

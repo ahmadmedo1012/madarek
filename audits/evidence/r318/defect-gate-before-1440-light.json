@@ -1,0 +1,207 @@
+{
+ "generated": "2026-10-25T01:56:20.840Z",
+ "baseUrl": "http://localhost:4180",
+ "viewports": [
+  1440
+ ],
+ "themes": [
+  "light"
+ ],
+ "skipped": [],
+ "cells": [
+  {
+   "viewport": 1440,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "FAIL",
+     "wrTotal": 13,
+     "ariaMissing": 13,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 107,
+     "gapFails": 65,
+     "textVsAriaMismatch": 13,
+     "samples": [
+      "«منصّة واحدة» gap 0.00px < 0.15em (9.00px) [rtl] span.wr.wr-scrub",
+      "«تخدم الرحلة» gap 0.00px < 0.15em (9.00px) [rtl] span.wr.wr-scrub",
+      "«الرحلة كلها» gap 0.00px < 0.15em (9.00px) [rtl] span.wr.wr-scrub",
+      "«هذا مسطح» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«مسطح لطابق» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«لطابق تعلم» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«تعلم واحد» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«واحد في» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«في مدارك.» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«أربع قاعات» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«قاعات حول» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«حول ممر» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line"
+     ]
+    },
+    "contrast": {
+     "status": "FAIL",
+     "states": [
+      {
+       "state": 0,
+       "total": 181,
+       "fails": 13,
+       "unknownSkipped": 0,
+       "gradientWarn": 9
+      },
+      {
+       "state": 0.5,
+       "total": 199,
+       "fails": 13,
+       "unknownSkipped": 0,
+       "gradientWarn": 9
+      },
+      {
+       "state": 1,
+       "total": 212,
+       "fails": 14,
+       "unknownSkipped": 0,
+       "gradientWarn": 9
+      }
+     ],
+     "samples": [
+      {
+       "ratio": 1.15,
+       "need": 4.5,
+       "fs": 11.6667,
+       "text": "موافق",
+       "sig": "button.cb-accept",
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(239, 239, 239)",
+       "grad": false,
+       "state": 0
+      },
+      {
+       "ratio": 1.15,
+       "need": 4.5,
+       "fs": 11.6667,
+       "text": "موافق",
+       "sig": "button.cb-accept",
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(239, 239, 239)",
+       "grad": false,
+       "state": 0.5
+      },
+      {
+       "ratio": 1.15,
+       "need": 4.5,
+       "fs": 11.6667,
+       "text": "موافق",
+       "sig": "button.cb-accept",
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(239, 239, 239)",
+       "grad": false,
+       "state": 1
+      },
+      {
+       "ratio": 1.44,
+       "need": 4.5,
+       "fs": 13,
+       "text": "مقدمة",
+       "sig": "p.jt-intro-title",
+       "fg": "rgb(65, 65, 64)",
+       "bg": "rgba(0, 0, 0, 0)",
+       "grad": false,
+       "state": 0
+      },
+      {
+       "ratio": 1.44,
+       "need": 4.5,
+       "fs": 13,
+       "text": "مقدمة",
+       "sig": "p.jt-intro-title",
+       "fg": "rgb(65, 65, 64)",
+       "bg": "rgba(0, 0, 0, 0)",
+       "grad": false,
+       "state": 0.5
+      },
+      {
+       "ratio": 1.44,
+       "need": 4.5,
+       "fs": 13,
+       "text": "مقدمة",
+       "sig": "p.jt-intro-title",
+       "fg": "rgb(65, 65, 64)",
+       "bg": "rgba(0, 0, 0, 0)",
+       "grad": false,
+       "state": 1
+      },
+      {
+       "ratio": 1.44,
+       "need": 4.5,
+       "fs": 13,
+       "text": "[تابع التمرير]",
+       "sig": "p.jt-intro-more",
+       "fg": "rgb(65, 65, 64)",
+       "bg": "rgba(0, 0, 0, 0)",
+       "grad": false,
+       "state": 1
+      },
+      {
+       "ratio": 1.94,
+       "need": 4.5,
+       "fs": 11.6667,
+       "text": "+",
+       "sig": "span.pr-panel-mark.pr-panel-mark--tl",
+       "fg": "rgb(179, 179, 175)",
+       "bg": "rgba(0, 0, 0, 0)",
+       "grad": true,
+       "state": 0
+      }
+     ]
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 172,
+     "overlapFails": 0,
+     "allowlisted": 1,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "FAIL",
+     "matches": [
+      {
+       "match": "--%",
+       "context": "ضيحي الحضور --% مساعد الفه"
+      }
+     ]
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1440,
+     "htmlCW": 1440,
+     "bodySW": 1440,
+     "bodyCW": 1440
+    },
+    "ocr": {
+     "status": "FAIL",
+     "viewport": 1440,
+     "theme": "light",
+     "shot": "audits/evidence/r318/ocr/wordmark-1440-light.jpg",
+     "ocrSample": "‎ee re 6‏ لل",
+     "normalizedContainsWordmark": false,
+     "error": null
+    },
+    "perf": {
+     "status": "FAIL",
+     "frames": 151,
+     "pctFramesLe20": 26.5,
+     "over20": 111,
+     "over33": 111,
+     "maxFrameMs": 267,
+     "longTasksOver50ms": 77,
+     "longestTaskMs": 631,
+     "cls": 0.2352,
+     "thresholds": "≥98% frames ≤20ms · 0 longtasks >50ms · CLS ≤0.05"
+    }
+   }
+  }
+ ],
+ "summary": {
+  "fails": 5,
+  "exit": 1
+ }
+}

@@ -1,0 +1,199 @@
+{
+ "generated": "2026-10-25T01:58:29.988Z",
+ "baseUrl": "http://localhost:4180",
+ "viewports": [
+  390
+ ],
+ "themes": [
+  "light"
+ ],
+ "skipped": [
+  "perf"
+ ],
+ "cells": [
+  {
+   "viewport": 390,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "FAIL",
+     "wrTotal": 13,
+     "ariaMissing": 13,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 107,
+     "gapFails": 64,
+     "textVsAriaMismatch": 13,
+     "samples": [
+      "«منصّة واحدة» gap 0.00px < 0.15em (4.33px) [rtl] span.wr.wr-scrub",
+      "«تخدم الرحلة» gap 0.00px < 0.15em (4.33px) [rtl] span.wr.wr-scrub",
+      "«الرحلة كلها» gap 0.00px < 0.15em (4.33px) [rtl] span.wr.wr-scrub",
+      "«هذا مسطح» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«مسطح لطابق» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«لطابق تعلم» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«تعلم واحد» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«واحد في» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«في مدارك.» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«أربع قاعات» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«قاعات حول» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line",
+      "«حول ممر» gap 0.00px < 0.15em (1.95px) [rtl] span.wr.wr-scrub.jt-intro-line"
+     ]
+    },
+    "contrast": {
+     "status": "FAIL",
+     "states": [
+      {
+       "state": 0,
+       "total": 155,
+       "fails": 8,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 155,
+       "fails": 8,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 155,
+       "fails": 8,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": [
+      {
+       "ratio": 1.15,
+       "need": 4.5,
+       "fs": 13.8931,
+       "text": "موافق",
+       "sig": "button.cb-accept",
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(239, 239, 239)",
+       "grad": false,
+       "state": 0
+      },
+      {
+       "ratio": 1.15,
+       "need": 4.5,
+       "fs": 13.8931,
+       "text": "موافق",
+       "sig": "button.cb-accept",
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(239, 239, 239)",
+       "grad": false,
+       "state": 0.5
+      },
+      {
+       "ratio": 1.15,
+       "need": 4.5,
+       "fs": 13.8931,
+       "text": "موافق",
+       "sig": "button.cb-accept",
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(239, 239, 239)",
+       "grad": false,
+       "state": 1
+      },
+      {
+       "ratio": 1.44,
+       "need": 4.5,
+       "fs": 13,
+       "text": "مقدمة",
+       "sig": "p.jt-intro-title",
+       "fg": "rgb(65, 65, 64)",
+       "bg": "rgba(0, 0, 0, 0)",
+       "grad": false,
+       "state": 0
+      },
+      {
+       "ratio": 1.44,
+       "need": 4.5,
+       "fs": 13,
+       "text": "[تابع التمرير]",
+       "sig": "p.jt-intro-more",
+       "fg": "rgb(65, 65, 64)",
+       "bg": "rgba(0, 0, 0, 0)",
+       "grad": false,
+       "state": 0
+      },
+      {
+       "ratio": 1.44,
+       "need": 4.5,
+       "fs": 13,
+       "text": "مقدمة",
+       "sig": "p.jt-intro-title",
+       "fg": "rgb(65, 65, 64)",
+       "bg": "rgba(0, 0, 0, 0)",
+       "grad": false,
+       "state": 0.5
+      },
+      {
+       "ratio": 1.44,
+       "need": 4.5,
+       "fs": 13,
+       "text": "[تابع التمرير]",
+       "sig": "p.jt-intro-more",
+       "fg": "rgb(65, 65, 64)",
+       "bg": "rgba(0, 0, 0, 0)",
+       "grad": false,
+       "state": 0.5
+      },
+      {
+       "ratio": 1.44,
+       "need": 4.5,
+       "fs": 13,
+       "text": "مقدمة",
+       "sig": "p.jt-intro-title",
+       "fg": "rgb(65, 65, 64)",
+       "bg": "rgba(0, 0, 0, 0)",
+       "grad": false,
+       "state": 1
+      }
+     ]
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 138,
+     "overlapFails": 2,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2360.9px² @(271,758)",
+      "h1.reveal-up.reveal-d-1.fo-hero-title.in-view «رحلة تعلم واحدةمن المحاضرة» ✕ span.et-label «منصّة مستقلّة · مدارك ٢٠٢٦» 1671px² @(25,424)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 390,
+     "htmlCW": 390,
+     "bodySW": 390,
+     "bodyCW": 390
+    },
+    "ocr": {
+     "status": "FAIL",
+     "viewport": 390,
+     "theme": "light",
+     "shot": "audits/evidence/r318/ocr/wordmark-390-light.jpg",
+     "ocrSample": "مداع",
+     "normalizedContainsWordmark": false,
+     "error": null
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  }
+ ],
+ "summary": {
+  "fails": 4,
+  "exit": 1
+ }
+}

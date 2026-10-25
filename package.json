@@ -35,6 +35,7 @@
     "check:colors": "bash scripts/check-colors.sh",
     "check:raw-css": "bash scripts/check-raw-css.sh",
     "check:csp-hash": "bash scripts/check-csp-hash.sh",
+    "gate:r318": "node scripts/r318/defect-gate.mjs",
     "db:verify": "node scripts/db-verify.mjs"
   },
   "devDependencies": {
