@@ -1,0 +1,2182 @@
+{
+ "generated": "2026-10-25T15:36:20.776Z",
+ "baseUrl": "http://127.0.0.1:4215",
+ "routes": [
+  "landing",
+  "student-dashboard"
+ ],
+ "viewports": [
+  390,
+  1440
+ ],
+ "quick": true,
+ "maxElements": 60,
+ "cells": [
+  {
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "authed": false,
+   "checks": {
+    "leaks/hard": {
+     "status": "NA",
+     "reason": "public route — the authenticated leak scan is scoped to role dashboards",
+     "metric": 0
+    },
+    "leaks/numerals": {
+     "status": "NA",
+     "reason": "public route",
+     "metric": 0
+    },
+    "leaks/bidi": {
+     "status": "NA",
+     "reason": "public route",
+     "metric": 0
+    },
+    "material/frame": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/grain": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/mono-index": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/indicator": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/avatar-square": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/chrome-radius": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "FAIL",
+     "failCount": 2,
+     "metric": 2,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "FAIL",
+       "failCount": 2,
+       "measured": 96,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [
+      "[shell] hover «a.cb-more» 4.44:1 < 4.5:1",
+      "[shell] focus-visible «a.cb-more» 4.44:1 < 4.5:1"
+     ],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "authed": false,
+   "checks": {
+    "leaks/hard": {
+     "status": "NA",
+     "reason": "public route — the authenticated leak scan is scoped to role dashboards",
+     "metric": 0
+    },
+    "leaks/numerals": {
+     "status": "NA",
+     "reason": "public route",
+     "metric": 0
+    },
+    "leaks/bidi": {
+     "status": "NA",
+     "reason": "public route",
+     "metric": 0
+    },
+    "material/frame": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/grain": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/mono-index": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/indicator": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/avatar-square": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/chrome-radius": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "FAIL",
+     "failCount": 6,
+     "metric": 6,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "FAIL",
+       "failCount": 6,
+       "measured": 144,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [
+      "[shell] hover «a.fo-text-link» 3.46:1 < 4.5:1",
+      "[shell] hover «a.prf-cta.fo-text-link» 3.46:1 < 4.5:1",
+      "[shell] hover «a.fo-actions-cta» 3.76:1 < 4.5:1",
+      "[shell] hover «a.fo-hero-discover» 3.76:1 < 4.5:1",
+      "[shell] hover «a.cb-more» 4.44:1 < 4.5:1",
+      "[shell] focus-visible «a.cb-more» 4.44:1 < 4.5:1"
+     ],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "authed": false,
+   "checks": {
+    "leaks/hard": {
+     "status": "NA",
+     "reason": "public route — the authenticated leak scan is scoped to role dashboards",
+     "metric": 0
+    },
+    "leaks/numerals": {
+     "status": "NA",
+     "reason": "public route",
+     "metric": 0
+    },
+    "leaks/bidi": {
+     "status": "NA",
+     "reason": "public route",
+     "metric": 0
+    },
+    "material/frame": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/grain": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/mono-index": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/indicator": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/avatar-square": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/chrome-radius": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 96,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "authed": false,
+   "checks": {
+    "leaks/hard": {
+     "status": "NA",
+     "reason": "public route — the authenticated leak scan is scoped to role dashboards",
+     "metric": 0
+    },
+    "leaks/numerals": {
+     "status": "NA",
+     "reason": "public route",
+     "metric": 0
+    },
+    "leaks/bidi": {
+     "status": "NA",
+     "reason": "public route",
+     "metric": 0
+    },
+    "material/frame": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/grain": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/mono-index": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/indicator": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/avatar-square": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "material/chrome-radius": {
+     "status": "NA",
+     "reason": "public route — material presence is an authenticated-surface contract",
+     "metric": 0
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "public route — no app shell",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 144,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 65,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "FAIL",
+     "metric": 1,
+     "count": 0,
+     "sample": "no .sheet-frame/.auth-frame on this route"
+    },
+    "material/grain": {
+     "status": "FAIL",
+     "metric": 1,
+     "count": 0,
+     "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 4,
+     "metric": 0,
+     "sample": "4 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "PASS",
+     "count": 16,
+     "metric": 0,
+     "sample": "dash-resume-progress | progress | progress-track"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 1,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "FAIL",
+     "offenders": 2,
+     "swept": 14,
+     "metric": 2,
+     "sample": "2 rounded chrome sigs (e.g. button.topbar-search-toggle, button.topbar-notif)"
+    },
+    "shell/bar-opaque": {
+     "status": "PASS",
+     "alpha": 1,
+     "bg": "rgb(246, 246, 238)",
+     "barHeight": 77.9,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-bleed": {
+     "status": "PASS",
+     "behindBarCount": 4,
+     "barAlpha": 1,
+     "metric": 0,
+     "sample": "4 behind bar, bar opaque — nothing visible through"
+    },
+    "shell/padding-reserve": {
+     "status": "PASS",
+     "padBottom": 128,
+     "pads": {
+      "content": 80,
+      "content-inner": 128
+     },
+     "need": 85.9,
+     "bottomClear": true,
+     "bottomBehind": 0,
+     "metric": 0,
+     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll clear"
+    },
+    "shell/drawer-clip": {
+     "status": "PASS",
+     "scrollFits": "1054≤546",
+     "overflowY": "auto",
+     "lastLabel": "خدمات الجامعة",
+     "lastLabelInside": true,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/scrim-palette": {
+     "status": "PASS",
+     "bg": "rgba(40, 40, 40, 0.58)",
+     "alpha": 0.58,
+     "oldGrey": false,
+     "metric": 0,
+     "sample": ""
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 54,
+       "unknown": 0
+      },
+      {
+       "pass": "drawer-open",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 42,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 68,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "FAIL",
+     "metric": 1,
+     "count": 0,
+     "sample": "no .sheet-frame/.auth-frame on this route"
+    },
+    "material/grain": {
+     "status": "FAIL",
+     "metric": 1,
+     "count": 0,
+     "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 4,
+     "metric": 0,
+     "sample": "4 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "PASS",
+     "count": 16,
+     "metric": 0,
+     "sample": "dash-resume-progress | progress | progress-track"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 2,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "FAIL",
+     "offenders": 1,
+     "swept": 48,
+     "metric": 1,
+     "sample": "1 rounded chrome sigs (e.g. button.topbar-notif)"
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "FAIL",
+     "failCount": 4,
+     "metric": 4,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "FAIL",
+       "failCount": 4,
+       "measured": 96,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [
+      "[shell] rest «a.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] active «a.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus «a.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus-within «a.btn.primary.sm» 3.76:1 < 4.5:1"
+     ],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 65,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "FAIL",
+     "metric": 1,
+     "count": 0,
+     "sample": "no .sheet-frame/.auth-frame on this route"
+    },
+    "material/grain": {
+     "status": "FAIL",
+     "metric": 1,
+     "count": 0,
+     "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 4,
+     "metric": 0,
+     "sample": "4 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "PASS",
+     "count": 16,
+     "metric": 0,
+     "sample": "dash-resume-progress | progress | progress-track"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 1,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "FAIL",
+     "offenders": 2,
+     "swept": 14,
+     "metric": 2,
+     "sample": "2 rounded chrome sigs (e.g. button.topbar-search-toggle, button.topbar-notif)"
+    },
+    "shell/bar-opaque": {
+     "status": "PASS",
+     "alpha": 1,
+     "bg": "rgb(40, 40, 40)",
+     "barHeight": 77.9,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-bleed": {
+     "status": "PASS",
+     "behindBarCount": 4,
+     "barAlpha": 1,
+     "metric": 0,
+     "sample": "4 behind bar, bar opaque — nothing visible through"
+    },
+    "shell/padding-reserve": {
+     "status": "PASS",
+     "padBottom": 128,
+     "pads": {
+      "content": 80,
+      "content-inner": 128
+     },
+     "need": 85.9,
+     "bottomClear": true,
+     "bottomBehind": 0,
+     "metric": 0,
+     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll clear"
+    },
+    "shell/drawer-clip": {
+     "status": "PASS",
+     "scrollFits": "1054≤546",
+     "overflowY": "auto",
+     "lastLabel": "خدمات الجامعة",
+     "lastLabelInside": true,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/scrim-palette": {
+     "status": "PASS",
+     "bg": "rgba(246, 248, 250, 0.92)",
+     "alpha": 0.92,
+     "oldGrey": false,
+     "metric": 0,
+     "sample": ""
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 54,
+       "unknown": 0
+      },
+      {
+       "pass": "drawer-open",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 42,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 68,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "FAIL",
+     "metric": 1,
+     "count": 0,
+     "sample": "no .sheet-frame/.auth-frame on this route"
+    },
+    "material/grain": {
+     "status": "FAIL",
+     "metric": 1,
+     "count": 0,
+     "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 4,
+     "metric": 0,
+     "sample": "4 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "PASS",
+     "count": 16,
+     "metric": 0,
+     "sample": "dash-resume-progress | progress | progress-track"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 2,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "FAIL",
+     "offenders": 1,
+     "swept": 48,
+     "metric": 1,
+     "sample": "1 rounded chrome sigs (e.g. button.topbar-notif)"
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 96,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  }
+ ],
+ "paired": {
+  "status": "PASS",
+  "exitCode": 0,
+  "tail": "✓ paired-state lint PASS — 412 state rules scanned across 37 sheets; 139 XOR rule(s), all allowlisted with reasons; 0 fresh violations.",
+  "metric": 0
+ },
+ "rows": [
+  {
+   "key": "landing|390|light|leaks/hard",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/hard",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — the authenticated leak scan is scoped to role dashboards"
+  },
+  {
+   "key": "landing|390|light|leaks/numerals",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/numerals",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route"
+  },
+  {
+   "key": "landing|390|light|leaks/bidi",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/bidi",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route"
+  },
+  {
+   "key": "landing|390|light|material/frame",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/frame",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|390|light|material/grain",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/grain",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|390|light|material/mono-index",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/mono-index",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|390|light|material/indicator",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/indicator",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|390|light|material/avatar-square",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/avatar-square",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|390|light|material/chrome-radius",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/chrome-radius",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|390|light|shell/bar-opaque",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|390|light|shell/bar-bleed",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|390|light|shell/padding-reserve",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|390|light|shell/drawer-clip",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|390|light|shell/scrim-palette",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|390|light|state-contrast",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "FAIL",
+   "metric": 2,
+   "sample": "[shell] hover «a.cb-more» 4.44:1 < 4.5:1"
+  },
+  {
+   "key": "landing|1440|light|leaks/hard",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/hard",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — the authenticated leak scan is scoped to role dashboards"
+  },
+  {
+   "key": "landing|1440|light|leaks/numerals",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/numerals",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route"
+  },
+  {
+   "key": "landing|1440|light|leaks/bidi",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/bidi",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route"
+  },
+  {
+   "key": "landing|1440|light|material/frame",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/frame",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|1440|light|material/grain",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/grain",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|1440|light|material/mono-index",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/mono-index",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|1440|light|material/indicator",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/indicator",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|1440|light|material/avatar-square",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/avatar-square",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|1440|light|material/chrome-radius",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/chrome-radius",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|1440|light|shell/bar-opaque",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|1440|light|shell/bar-bleed",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|1440|light|shell/padding-reserve",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|1440|light|shell/drawer-clip",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|1440|light|shell/scrim-palette",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|1440|light|state-contrast",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "FAIL",
+   "metric": 6,
+   "sample": "[shell] hover «a.fo-text-link» 3.46:1 < 4.5:1"
+  },
+  {
+   "key": "landing|390|dark|leaks/hard",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/hard",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — the authenticated leak scan is scoped to role dashboards"
+  },
+  {
+   "key": "landing|390|dark|leaks/numerals",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/numerals",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route"
+  },
+  {
+   "key": "landing|390|dark|leaks/bidi",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/bidi",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route"
+  },
+  {
+   "key": "landing|390|dark|material/frame",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/frame",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|390|dark|material/grain",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/grain",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|390|dark|material/mono-index",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/mono-index",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|390|dark|material/indicator",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/indicator",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|390|dark|material/avatar-square",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/avatar-square",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|390|dark|material/chrome-radius",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/chrome-radius",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|390|dark|shell/bar-opaque",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|390|dark|shell/bar-bleed",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|390|dark|shell/padding-reserve",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|390|dark|shell/drawer-clip",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|390|dark|shell/scrim-palette",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|390|dark|state-contrast",
+   "route": "landing",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "landing|1440|dark|leaks/hard",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/hard",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — the authenticated leak scan is scoped to role dashboards"
+  },
+  {
+   "key": "landing|1440|dark|leaks/numerals",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/numerals",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route"
+  },
+  {
+   "key": "landing|1440|dark|leaks/bidi",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/bidi",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route"
+  },
+  {
+   "key": "landing|1440|dark|material/frame",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/frame",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|1440|dark|material/grain",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/grain",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|1440|dark|material/mono-index",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/mono-index",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|1440|dark|material/indicator",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/indicator",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|1440|dark|material/avatar-square",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/avatar-square",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|1440|dark|material/chrome-radius",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/chrome-radius",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — material presence is an authenticated-surface contract"
+  },
+  {
+   "key": "landing|1440|dark|shell/bar-opaque",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|1440|dark|shell/bar-bleed",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|1440|dark|shell/padding-reserve",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|1440|dark|shell/drawer-clip",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|1440|dark|shell/scrim-palette",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "public route — no app shell"
+  },
+  {
+   "key": "landing|1440|dark|state-contrast",
+   "route": "landing",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|light|leaks/hard",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|light|leaks/numerals",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|light|leaks/bidi",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|light|material/frame",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/frame",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no .sheet-frame/.auth-frame on this route"
+  },
+  {
+   "key": "student-dashboard|390|light|material/grain",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/grain",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+  },
+  {
+   "key": "student-dashboard|390|light|material/mono-index",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "4 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "student-dashboard|390|light|material/indicator",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/indicator",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "dash-resume-progress | progress | progress-track"
+  },
+  {
+   "key": "student-dashboard|390|light|material/avatar-square",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|light|material/chrome-radius",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/chrome-radius",
+   "status": "FAIL",
+   "metric": 2,
+   "sample": "2 rounded chrome sigs (e.g. button.topbar-search-toggle, button.topbar-notif)"
+  },
+  {
+   "key": "student-dashboard|390|light|shell/bar-opaque",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/bar-opaque",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|light|shell/bar-bleed",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/bar-bleed",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "4 behind bar, bar opaque — nothing visible through"
+  },
+  {
+   "key": "student-dashboard|390|light|shell/padding-reserve",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/padding-reserve",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll clear"
+  },
+  {
+   "key": "student-dashboard|390|light|shell/drawer-clip",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/drawer-clip",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|light|shell/scrim-palette",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/scrim-palette",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|light|state-contrast",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|1440|light|leaks/hard",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|1440|light|leaks/numerals",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|1440|light|leaks/bidi",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|1440|light|material/frame",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/frame",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no .sheet-frame/.auth-frame on this route"
+  },
+  {
+   "key": "student-dashboard|1440|light|material/grain",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/grain",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+  },
+  {
+   "key": "student-dashboard|1440|light|material/mono-index",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "4 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "student-dashboard|1440|light|material/indicator",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/indicator",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "dash-resume-progress | progress | progress-track"
+  },
+  {
+   "key": "student-dashboard|1440|light|material/avatar-square",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|1440|light|material/chrome-radius",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/chrome-radius",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "1 rounded chrome sigs (e.g. button.topbar-notif)"
+  },
+  {
+   "key": "student-dashboard|1440|light|shell/bar-opaque",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "student-dashboard|1440|light|shell/bar-bleed",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "student-dashboard|1440|light|shell/padding-reserve",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "student-dashboard|1440|light|shell/drawer-clip",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "student-dashboard|1440|light|shell/scrim-palette",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "student-dashboard|1440|light|state-contrast",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "FAIL",
+   "metric": 4,
+   "sample": "[shell] rest «a.btn.primary.sm» 3.76:1 < 4.5:1"
+  },
+  {
+   "key": "student-dashboard|390|dark|leaks/hard",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|dark|leaks/numerals",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|dark|leaks/bidi",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|dark|material/frame",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/frame",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no .sheet-frame/.auth-frame on this route"
+  },
+  {
+   "key": "student-dashboard|390|dark|material/grain",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/grain",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+  },
+  {
+   "key": "student-dashboard|390|dark|material/mono-index",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "4 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "student-dashboard|390|dark|material/indicator",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/indicator",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "dash-resume-progress | progress | progress-track"
+  },
+  {
+   "key": "student-dashboard|390|dark|material/avatar-square",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|dark|material/chrome-radius",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/chrome-radius",
+   "status": "FAIL",
+   "metric": 2,
+   "sample": "2 rounded chrome sigs (e.g. button.topbar-search-toggle, button.topbar-notif)"
+  },
+  {
+   "key": "student-dashboard|390|dark|shell/bar-opaque",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/bar-opaque",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|dark|shell/bar-bleed",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/bar-bleed",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "4 behind bar, bar opaque — nothing visible through"
+  },
+  {
+   "key": "student-dashboard|390|dark|shell/padding-reserve",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/padding-reserve",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll clear"
+  },
+  {
+   "key": "student-dashboard|390|dark|shell/drawer-clip",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/drawer-clip",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|dark|shell/scrim-palette",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/scrim-palette",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|390|dark|state-contrast",
+   "route": "student-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|1440|dark|leaks/hard",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|1440|dark|leaks/numerals",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|1440|dark|leaks/bidi",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|1440|dark|material/frame",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/frame",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no .sheet-frame/.auth-frame on this route"
+  },
+  {
+   "key": "student-dashboard|1440|dark|material/grain",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/grain",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+  },
+  {
+   "key": "student-dashboard|1440|dark|material/mono-index",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "4 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "student-dashboard|1440|dark|material/indicator",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/indicator",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "dash-resume-progress | progress | progress-track"
+  },
+  {
+   "key": "student-dashboard|1440|dark|material/avatar-square",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "student-dashboard|1440|dark|material/chrome-radius",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/chrome-radius",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "1 rounded chrome sigs (e.g. button.topbar-notif)"
+  },
+  {
+   "key": "student-dashboard|1440|dark|shell/bar-opaque",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "student-dashboard|1440|dark|shell/bar-bleed",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "student-dashboard|1440|dark|shell/padding-reserve",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "student-dashboard|1440|dark|shell/drawer-clip",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "student-dashboard|1440|dark|shell/scrim-palette",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "student-dashboard|1440|dark|state-contrast",
+   "route": "student-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "|—|—|paired",
+   "route": "—",
+   "viewport": "—",
+   "theme": "—",
+   "check": "paired",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "✓ paired-state lint PASS — 412 state rules scanned across 37 sheets; 139 XOR rule(s), all allowlisted with reasons; 0 fresh violations."
+  }
+ ],
+ "summary": {
+  "fails": 15,
+  "warns": 0,
+  "regressions": 0,
+  "errorCells": 0,
+  "exit": 0
+ }
+}

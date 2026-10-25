@@ -38,8 +38,10 @@
     "check:raw-css": "bash scripts/check-raw-css.sh",
     "check:csp-hash": "bash scripts/check-csp-hash.sh",
     "gate:r318": "node scripts/r318/defect-gate.mjs",
+    "gate:r319": "node scripts/r319/gate.mjs",
     "db:verify": "node scripts/db-verify.mjs"
   },
+  "prepare": "git config core.hooksPath .githooks",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "embedded-postgres": "^16.14.0-beta.17",

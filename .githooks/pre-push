@@ -1,0 +1,36 @@
+#!/bin/sh
+# .githooks/pre-push — R319 fast pre-push gate (~10s).
+#
+# Runs ONLY the fast static checks; the full browser gate
+# (npm run gate:r319) is the foreman's pre-merge ratchet and takes
+# minutes — it is deliberately NOT in the push path.
+#
+# Wiring: root package.json "prepare": "git config core.hooksPath .githooks"
+# (idempotent — runs on every npm install/ci).
+set -u
+
+echo "[pre-push] r319 fast checks…"
+
+# E9 — paired-state lint (Agent A, c1-A; landed on main). If a
+# checkout somehow lacks the script (stale worktree), the hook
+# degrades to a loud SKIP instead of hard-crashing the push.
+if [ -f scripts/r319/paired-state-lint.mjs ]; then
+  echo "[pre-push] paired-state-lint…"
+  if ! node scripts/r319/paired-state-lint.mjs; then
+    echo "[pre-push] BLOCKED: paired-state-lint failed (unpaired --_bg/--_fg state tokens)"
+    exit 1
+  fi
+else
+  echo "[pre-push] paired-state-lint: SKIP (scripts/r319/paired-state-lint.mjs missing from this checkout — stale worktree?)"
+fi
+
+# Static color gate — default mode is the fast report; a nonzero exit
+# (harness failure) blocks.
+echo "[pre-push] check-colors…"
+if ! bash scripts/check-colors.sh; then
+  echo "[pre-push] BLOCKED: scripts/check-colors.sh exited nonzero"
+  exit 1
+fi
+
+echo "[pre-push] fast checks green"
+exit 0

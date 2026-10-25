@@ -1,0 +1,10 @@
+{
+  "_comment": "R319 §E-12(f) radius allowlist — sanctioned rounds in an otherwise radius-0 chrome system (Heron grammar). Written reasons REQUIRED. Entries match by class-substring or tag prefix. Everything else with computed borderRadius > 0 counts as rounded chrome; >50 offending sigs demote the row to WARN (the sweep is Cycle-2+ work).",
+  "allow": [
+    { "classContains": "checkbox", "reason": "native checkbox affordance — the sanctioned round" },
+    { "classContains": "switch", "reason": "toggle affordance — the sanctioned round" },
+    { "classContains": "radio", "reason": "native radio affordance — the sanctioned round" },
+    { "tag": "input", "reason": "native form controls keep their UA affordance radii" },
+    { "tag": "img", "reason": "imagery may carry intentional radii" }
+  ]
+}

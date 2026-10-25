@@ -1,0 +1,8 @@
+{
+  "_comment": "R319 §E-10 leak allowlist — written reasons REQUIRED (the R318 collision-allowlist discipline). An innerText line matching a leak pattern is excused when it CONTAINS one of these phrases. Policy from the R319 brief: «اختبار» alone in exam contexts IS allowed (a real word — only the seed artifacts «قسم اختبار»/«كلية اختبار» fail); «قاعة الاختبار» is a real room name. Raw r\\d{2,3} codes are NEVER allowlisted — they must not ship.",
+  "allow": [
+    { "contains": "قاعة الاختبار", "reason": "real room name (R319 brief §E-10) — not a seed artifact" },
+    { "contains": "اختبار إلكتروني", "reason": "real nav/page title (App.tsx DYNAMIC_TITLES) — exam context, the word «اختبار» alone is allowed" },
+    { "contains": "بنك الأسئلة والاختبارات", "reason": "real teacher-exams page title (App.tsx DYNAMIC_TITLES) — plural «اختبارات», not the seed phrase" }
+  ]
+}

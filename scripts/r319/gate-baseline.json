@@ -1,0 +1,2170 @@
+{
+ "generated": "2026-10-25T15:27:45.450Z",
+ "note": "R319 gate ratchet baseline — FAIL rows here are the ACCEPTED ratchet (open board tickets); re-seat with --update-baseline. Keys are route|viewport|theme|check; --quick and full runs share this key space — re-seat after widening scope.",
+ "rows": {
+  "landing|390|light|leaks/hard": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|leaks/numerals": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|leaks/bidi": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|material/frame": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|material/grain": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|material/mono-index": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|material/indicator": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|material/avatar-square": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|material/chrome-radius": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "landing|768|light|leaks/hard": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|leaks/numerals": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|leaks/bidi": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|material/frame": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|material/grain": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|material/mono-index": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|material/indicator": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|material/avatar-square": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|material/chrome-radius": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 3
+  },
+  "landing|1440|light|leaks/hard": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|leaks/numerals": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|leaks/bidi": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|material/frame": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|material/grain": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|material/mono-index": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|material/indicator": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|material/avatar-square": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|material/chrome-radius": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 6
+  },
+  "landing|390|dark|leaks/hard": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|leaks/numerals": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|leaks/bidi": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|material/frame": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|material/grain": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|material/mono-index": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|material/indicator": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|material/avatar-square": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|material/chrome-radius": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "landing|768|dark|leaks/hard": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|leaks/numerals": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|leaks/bidi": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|material/frame": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|material/grain": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|material/mono-index": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|material/indicator": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|material/avatar-square": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|material/chrome-radius": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|768|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "landing|1440|dark|leaks/hard": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|leaks/numerals": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|leaks/bidi": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|material/frame": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|material/grain": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|material/mono-index": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|material/indicator": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|material/avatar-square": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|material/chrome-radius": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|390|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|390|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|material/indicator": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "student-dashboard|390|light|shell/bar-opaque": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|shell/bar-bleed": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|shell/padding-reserve": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|shell/drawer-clip": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|shell/scrim-palette": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|768|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|768|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|light|material/indicator": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "student-dashboard|768|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|768|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|768|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|768|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|768|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|768|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 5
+  },
+  "student-dashboard|1440|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|1440|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|1440|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|material/indicator": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|1440|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 4
+  },
+  "student-dashboard|390|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|390|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|390|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|material/indicator": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "student-dashboard|390|dark|shell/bar-opaque": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|shell/bar-bleed": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|shell/padding-reserve": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|shell/drawer-clip": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|shell/scrim-palette": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|768|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|768|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|dark|material/indicator": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|768|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "student-dashboard|768|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|768|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|768|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|768|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|768|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|768|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|1440|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|1440|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|material/indicator": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|1440|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|390|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|390|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|light|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|390|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "teacher-dashboard|390|light|shell/bar-opaque": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|light|shell/bar-bleed": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|light|shell/padding-reserve": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|light|shell/drawer-clip": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|light|shell/scrim-palette": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 5
+  },
+  "teacher-dashboard|768|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|768|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|768|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|768|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|768|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|768|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|768|light|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|768|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|768|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "teacher-dashboard|768|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|768|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|768|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|768|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|768|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|768|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 10
+  },
+  "teacher-dashboard|1440|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|1440|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|1440|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|light|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|1440|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|1440|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 8
+  },
+  "teacher-dashboard|390|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|390|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|390|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|dark|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|390|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "teacher-dashboard|390|dark|shell/bar-opaque": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|dark|shell/bar-bleed": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|dark|shell/padding-reserve": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|dark|shell/drawer-clip": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|dark|shell/scrim-palette": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|390|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|768|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|768|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|768|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|768|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|768|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|768|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|768|dark|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|768|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|768|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "teacher-dashboard|768|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|768|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|768|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|768|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|768|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|768|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|1440|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|1440|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|dark|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|1440|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "teacher-dashboard|1440|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "teacher-dashboard|1440|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|390|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|390|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|light|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|390|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "admin-dashboard|390|light|shell/bar-opaque": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|light|shell/bar-bleed": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|light|shell/padding-reserve": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|light|shell/drawer-clip": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|light|shell/scrim-palette": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 5
+  },
+  "admin-dashboard|768|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|768|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|768|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|768|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|768|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|768|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|768|light|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|768|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|768|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "admin-dashboard|768|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|768|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|768|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|768|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|768|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|768|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 5
+  },
+  "admin-dashboard|1440|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|1440|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|1440|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|1440|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|1440|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|1440|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|1440|light|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|1440|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|1440|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|1440|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|1440|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|1440|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|1440|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|1440|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|1440|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 4
+  },
+  "admin-dashboard|390|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|390|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|390|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|dark|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|390|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "admin-dashboard|390|dark|shell/bar-opaque": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|dark|shell/bar-bleed": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|dark|shell/padding-reserve": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|dark|shell/drawer-clip": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|dark|shell/scrim-palette": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|390|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|768|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|768|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|768|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|768|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|768|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|768|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|768|dark|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|768|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|768|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "admin-dashboard|768|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|768|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|768|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|768|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|768|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|768|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|1440|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|1440|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|1440|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|1440|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|1440|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|1440|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|1440|dark|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|1440|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "admin-dashboard|1440|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|1440|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|1440|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|1440|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|1440|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|1440|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|1440|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|390|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|390|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|light|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|390|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "quality-dashboard|390|light|shell/bar-opaque": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|light|shell/bar-bleed": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|light|shell/padding-reserve": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|light|shell/drawer-clip": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|light|shell/scrim-palette": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 5
+  },
+  "quality-dashboard|768|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|768|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|768|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|768|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|768|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|768|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|768|light|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|768|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|768|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "quality-dashboard|768|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|768|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|768|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|768|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|768|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|768|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 5
+  },
+  "quality-dashboard|1440|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|1440|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|1440|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|1440|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|1440|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|1440|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|1440|light|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|1440|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|1440|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|1440|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|1440|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|1440|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|1440|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|1440|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|1440|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 4
+  },
+  "quality-dashboard|390|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|390|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|390|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|dark|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|390|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "quality-dashboard|390|dark|shell/bar-opaque": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|dark|shell/bar-bleed": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|dark|shell/padding-reserve": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|dark|shell/drawer-clip": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|dark|shell/scrim-palette": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|390|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|768|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|768|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|768|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|768|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|768|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|768|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|768|dark|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|768|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|768|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "quality-dashboard|768|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|768|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|768|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|768|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|768|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|768|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|1440|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|1440|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|1440|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|1440|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|1440|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|1440|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|1440|dark|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|1440|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "quality-dashboard|1440|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "quality-dashboard|1440|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|1440|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|1440|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|1440|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|1440|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "quality-dashboard|1440|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|390|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|390|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|light|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|390|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "owner-dashboard|390|light|shell/bar-opaque": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|light|shell/bar-bleed": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|light|shell/padding-reserve": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|light|shell/drawer-clip": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|light|shell/scrim-palette": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 5
+  },
+  "owner-dashboard|768|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|768|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|768|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|768|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|768|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|768|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|768|light|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|768|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|768|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "owner-dashboard|768|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|768|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|768|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|768|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|768|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|768|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 10
+  },
+  "owner-dashboard|1440|light|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|1440|light|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|1440|light|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|1440|light|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|1440|light|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|1440|light|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|1440|light|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|1440|light|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|1440|light|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|1440|light|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|1440|light|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|1440|light|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|1440|light|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|1440|light|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|1440|light|state-contrast": {
+   "status": "FAIL",
+   "metric": 8
+  },
+  "owner-dashboard|390|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|390|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|390|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|dark|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|390|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "owner-dashboard|390|dark|shell/bar-opaque": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|dark|shell/bar-bleed": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|dark|shell/padding-reserve": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|dark|shell/drawer-clip": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|dark|shell/scrim-palette": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|390|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|768|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|768|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|768|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|768|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|768|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|768|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|768|dark|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|768|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|768|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "owner-dashboard|768|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|768|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|768|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|768|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|768|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|768|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|1440|dark|leaks/hard": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|1440|dark|leaks/numerals": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|1440|dark|leaks/bidi": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|1440|dark|material/frame": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|1440|dark|material/grain": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|1440|dark|material/mono-index": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|1440|dark|material/indicator": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|1440|dark|material/avatar-square": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "owner-dashboard|1440|dark|material/chrome-radius": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "owner-dashboard|1440|dark|shell/bar-opaque": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|1440|dark|shell/bar-bleed": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|1440|dark|shell/padding-reserve": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|1440|dark|shell/drawer-clip": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|1440|dark|shell/scrim-palette": {
+   "status": "NA",
+   "metric": 0
+  },
+  "owner-dashboard|1440|dark|state-contrast": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "|—|—|paired": {
+   "status": "PASS",
+   "metric": 0
+  }
+ }
+}
