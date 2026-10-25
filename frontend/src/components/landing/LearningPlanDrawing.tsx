@@ -1,6 +1,6 @@
 /**
  * LearningPlanDrawing — R310 «مسطح التعلّم» — Artwork B · R314 §4.2 the
- * poché pass.
+ * poché pass · R315 C4-A the map-journey re-composition.
  *
  * The journey scene's original architectural PLAN VIEW — an entirely
  * different drawing from the hero's elevation (spec §2.2): one
@@ -39,6 +39,25 @@
  * The active stage's zone carries the solid finding-room fill; its
  * label warms to white on the red.
  *
+ * C4-A (the cycle-4 map ticket): the plan's ink re-weights to the
+ * reference's own drafting weights AT THE NEW FULL-STAGE RENDER
+ * (the window now fills the pin ≈1320px wide @1440 — landing.css):
+ * the exterior poché 18→9 units (≈10px), the corridor bands 16→10
+ * (≈11px), the partitions 11→6 (≈6.6px), the furniture hairlines
+ * 1.6→2.3 units (≈2.5px — confident strokes, the R310 hairline
+ * diagram read too sparse against the reference), the service strip
+ * gains a second cross-hatch family, the entry apron a stipple
+ * ground, and the STATION markers grow VIOLATION-CALLOUT chips —
+ * the reference's own overlay grammar (its s06 frames: solid
+ * #FA3600 blocks with white mono text at the reviewed rooms):
+ * the active stage's door marker flips to a solid accent chip with
+ * a dashed accent leader, the quiet ones stay bare mono. The FRAME
+ * (sheet + column grid + bubbles + the title block) splits into its
+ * own `pl-l-frame` layer — the journey's opening state holds the
+ * reference's EMPTY-WINDOW composition (statement over quiet paper;
+ * the ink scrubs in from --jt-p .30 — landing.css), so the sheet's
+ * own chrome must draw before the walls do.
+ *
  * Engineering contracts:
  *  · Every drawn element carries `bp-drawable` — the R310 lesson:
  *    Chromium's style invalidation for class/attr changes does not
@@ -71,20 +90,33 @@ const PLAN_INK_CSS = `
   .jt .jt-plan .pl-sheet  { fill: #F6F6EE; }
   .jt .jt-plan .pl-wall   { fill: #282828; }
   .jt .jt-plan .pl-paper  { fill: #F6F6EE; }
-  .jt .jt-plan .pl-strip  { stroke: #282828; stroke-width: 1.27; }
-  .jt .jt-plan .pl-hatch  { stroke: #282828; stroke-width: 1.27; stroke-opacity: 0.55; }
+  .jt .jt-plan .pl-strip  { stroke: #282828; stroke-width: 1.8; }
+  .jt .jt-plan .pl-hatch  { stroke: #282828; stroke-width: 1.6; stroke-opacity: 0.55; }
   .jt .jt-plan .pl-door-g path { stroke: #282828; stroke-width: 1.9; fill: none; }
   .jt .jt-plan .pl-win-g line  { stroke: #282828; stroke-width: 1.27; }
-  .jt .jt-plan .bp-ink    { stroke: #282828; stroke-width: 1.6; fill: none; }
-  .jt .jt-plan .bp-ink-2  { stroke-width: 1.9; }
-  .jt .jt-plan .bp-hair   { stroke: #B3B3AF; stroke-width: 1.6; fill: none; }
-  .jt .jt-plan .bp-fill   { fill: none; stroke: #B3B3AF; stroke-width: 1.6; }
+  .jt .jt-plan .bp-ink    { stroke: #282828; stroke-width: 2.2; fill: none; }
+  .jt .jt-plan .bp-ink-2  { stroke-width: 3.4; }
+  .jt .jt-plan .bp-hair   { stroke: #B3B3AF; stroke-width: 2.3; fill: none; }
+  .jt .jt-plan .bp-fill   { fill: none; stroke: #B3B3AF; stroke-width: 2.3; }
   .jt .jt-plan .bp-gridline { stroke: #B3B3AF; stroke-width: 1; opacity: 0.5; }
-  .jt .jt-plan .bp-dash   { stroke: #282828; stroke-width: 1.9; fill: none; }
+  .jt .jt-plan .bp-dash   { stroke: #282828; stroke-width: 2.6; fill: none; }
+  /* C4-A — the violation-callout system: the active door station's
+     chip = the reference's solid-block-with-white-mono grammar; the
+     dashed leader warms with it. Quiet by default (landing.css owns
+     the stage flips; the pigment stays pinned here). */
+  .jt .jt-plan .pl-chip   { fill: #FA3600; stroke: #FFFFFF; stroke-width: 1; }
+  .jt .jt-plan .pl-leader { stroke: #B3B3AF; stroke-width: 2.3; fill: none; }
+  .jt[data-stage='0'] .jt-plan .pl-leader[data-station='0'],
+  .jt[data-stage='1'] .jt-plan .pl-leader[data-station='1'],
+  .jt[data-stage='2'] .jt-plan .pl-leader[data-station='2'],
+  .jt[data-stage='3'] .jt-plan .pl-leader[data-station='4'] {
+    stroke: #FA3600; stroke-dasharray: 4 3;
+  }
   .jt .jt-plan .bp-micro  { fill: #62625F; }
   .jt .jt-plan .pl-name   { fill: #414140; }
   .jt .jt-plan .pl-station { fill: #C72E00; }
   .jt .jt-plan .pl-zone   { fill: #FA3600; }
+  .jt .jt-plan .pl-dot    { fill: #282828; }
   .jt .jt-plan .bp-signal-fill { fill: #FA3600; stroke: #FFFFFF; stroke-width: 1; }
   .jt[data-stage='0'] .jt-plan .pl-l-lecture .pl-name,
   .jt[data-stage='1'] .jt-plan .pl-l-checkpoint .pl-name,
@@ -98,6 +130,25 @@ const PLAN_INK_CSS = `
   .jt[data-stage='1'] .jt-plan .pl-station[data-station='1'],
   .jt[data-stage='2'] .jt-plan .pl-station[data-station='2'],
   .jt[data-stage='3'] .jt-plan .pl-station[data-station='4'] { fill: #FFFFFF; font-weight: 700; }
+`;
+
+/* the section drawing's own pigment sheet — the SAME paper-artifact
+ * ruling as the plan (pinned drafting primaries in both themes);
+ * scoped to the side column's `.jt-section` twin (SectionDrawing.tsx). */
+export const SECTION_INK_CSS = `
+  .jt .jt-section .bp-ink   { stroke: #282828; stroke-width: 2.4; fill: none; }
+  .jt .jt-section .bp-ink-2 { stroke-width: 3.8; }
+  .jt .jt-section .bp-hair  { stroke: #B3B3AF; stroke-width: 2; fill: none; }
+  .jt .jt-section .bp-fill  { fill: none; stroke: #B3B3AF; stroke-width: 2; }
+  .jt .jt-section .bp-dash  { stroke: #282828; stroke-width: 2; fill: none; }
+  .jt .jt-section .bp-micro { fill: #62625F; }
+  .jt .jt-section .pl-name   { fill: #414140; }
+  .jt .jt-section .pl-dot    { fill: #282828; }
+  .jt .jt-section .pl-wall   { fill: #282828; }
+  .jt .jt-section .sc-zone   { fill: #FA3600; fill-opacity: 0; }
+  .jt[data-stage='0'] .jt-section .sc-zone[data-room='lecture'],
+  .jt[data-stage='2'] .jt-section .sc-zone[data-room='exam'],
+  .jt[data-stage='3'] .jt-section .sc-zone[data-room='mastery'] { fill-opacity: 1; }
 `;
 
 /* A door opening + its quarter-circle swing arc (the plan grammar):
@@ -172,23 +223,54 @@ function Seat({ x, y, w = 22, h = 10 }: { x: number; y: number; w?: number; h?: 
 }
 
 /* 45° hatch strokes inside a band — the shaft/void texture (R314
- * §4.2: 1px ink at 55% opacity, 8px RENDERED pitch ≈10.2 units at
- * the plan's measured 942px desktop render). Returns line
- * segments of the (x − y = c) family clipped to the band. */
+ * §4.2, re-keyed by C4-A to the full-stage render: 1.6-unit ink at
+ * 55% opacity, 8.5-unit pitch). Returns line segments of the
+ * (x − y = c) family clipped to the band. `cross` adds the second
+ * (x + y = c) family — the reference's dense cross-hatch poché. */
 function hatchRun(
   x0: number,
   x1: number,
   y0: number,
   y1: number,
-  gap = 10.2,
+  gap = 8.5,
+  cross = false,
 ): Array<[number, number, number, number]> {
   const segs: Array<[number, number, number, number]> = [];
-  for (let c = x0 - y1; c <= x1 - y0; c += gap) {
-    const xa = Math.max(x0, c + y0);
-    const xb = Math.min(x1, c + y1);
-    if (xb - xa > 0.5) segs.push([xa, xa - c, xb, xb - c]);
+  if (!cross) {
+    for (let c = x0 - y1; c <= x1 - y0; c += gap) {
+      const xa = Math.max(x0, c + y0);
+      const xb = Math.min(x1, c + y1);
+      if (xb - xa > 0.5) segs.push([xa, xa - c, xb, xb - c]);
+    }
+  } else {
+    for (let c = x0 + y0; c <= x1 + y1; c += gap) {
+      const xa = Math.max(x0, c - y1);
+      const xb = Math.min(x1, c - y0);
+      if (xb - xa > 0.5) segs.push([xa, c - xa, xb, c - xb]);
+    }
   }
   return segs;
+}
+
+/* a stipple field — the C4-A grounds texture: ink dots on a loose
+ * diagonal grid, clipped to the band (the section's earth cut + the
+ * plan's entry apron). */
+function stippleRun(
+  x0: number,
+  x1: number,
+  y0: number,
+  y1: number,
+  gap = 9,
+): Array<[number, number]> {
+  const dots: Array<[number, number]> = []
+  let row = 0;
+  for (let y = y0; y <= y1; y += gap * 0.87, row += 1) {
+    const off = row % 2 === 0 ? 0 : gap / 2;
+    for (let x = x0 + off; x <= x1; x += gap) {
+      dots.push([x, y]);
+    }
+  }
+  return dots;
 }
 
 /* the corridor wall runs — [from, to] x-extents of the solid bands
@@ -238,14 +320,14 @@ export function LearningPlanDrawing() {
       {/* the poché pigment sheet — scoped .jt .jt-plan, after landing.css */}
       <style dangerouslySetInnerHTML={{ __html: PLAN_INK_CSS }} />
 
-      {/* ═══ the envelope — poché wall masses + the corridor spine ═══ */}
-      <g className="pl-l-envelope" aria-hidden="true">
+      {/* ═══ the frame — the sheet's own quiet chrome: paper, the column
+          grid, the bubbles, the title block. C4-A: split from the
+          envelope so the journey's OPENING state holds the reference's
+          empty-window composition (the frame draws at stage 0 and
+          stays; the walls scrub in later — landing.css). ═══ */}
+      <g className="pl-l-frame" aria-hidden="true">
         {/* the sheet — the plan is a paper artifact in both themes */}
         <rect className="pl-sheet bp-drawable" x="0" y="0" width="1200" height="760" pathLength={1} />
-        {/* the exterior poché — a solid charcoal mass, then the interior
-            paper ground it encloses (the band ≈14px at render scale) */}
-        <rect className="pl-wall bp-drawable" x="60" y="60" width="1080" height="640" pathLength={1} />
-        <rect className="pl-paper bp-drawable" x="78" y="78" width="1044" height="604" pathLength={1} />
         {/* the column grid — the faint dashed layer beneath the walls */}
         {[180, 300, 420, 540, 660, 780, 900, 1020].map((x) => (
           <line key={`gx${x}`} className="bp-gridline bp-drawable" x1={x} y1="78" x2={x} y2="682" pathLength={1} />
@@ -253,43 +335,6 @@ export function LearningPlanDrawing() {
         {[180, 300, 540, 660].map((y) => (
           <line key={`gy${y}`} className="bp-gridline bp-drawable" x1="78" y1={y} x2="1122" y2={y} pathLength={1} />
         ))}
-        {/* window runs — the poché opens for the glazing (top + sides + bottom) */}
-        <Win x={200} y={60} w={90} h={18} />
-        <Win x={440} y={60} w={90} h={18} />
-        <Win x={680} y={60} w={90} h={18} />
-        <Win x={920} y={60} w={90} h={18} />
-        <Win x={60} y={200} w={18} h={80} />
-        <Win x={60} y={480} w={18} h={80} />
-        <Win x={200} y={682} w={90} h={18} />
-        <Win x={440} y={682} w={90} h={18} />
-        <Win x={680} y={682} w={90} h={18} />
-        <Win x={1122} y={200} w={18} h={80} />
-        {/* the corridor walls — solid structural bands (16 units =
-            12.6px rendered) with the door openings left as true
-            breaks in the mass */}
-        {NORTH_WALL.map(([x1, x2]) => (
-          <rect key={`nc${x1}`} className="pl-wall bp-drawable" x={x1} y="385" width={x2 - x1} height="16" pathLength={1} />
-        ))}
-        {SOUTH_WALL.map(([x1, x2]) => (
-          <rect key={`sc${x1}`} className="pl-wall bp-drawable" x={x1} y="459" width={x2 - x1} height="16" pathLength={1} />
-        ))}
-        {/* zone partition walls — the interior partitions (11 units
-            = 8.6px rendered) */}
-        <rect className="pl-wall bp-drawable" x="413" y="78" width="11" height="307" pathLength={1} />
-        <rect className="pl-wall bp-drawable" x="753" y="78" width="11" height="307" pathLength={1} />
-        <rect className="pl-wall bp-drawable" x="293" y="475" width="11" height="185" pathLength={1} />
-        <rect className="pl-wall bp-drawable" x="753" y="475" width="11" height="185" pathLength={1} />
-        {/* the service strip along the south wall — the shaft/void band:
-            a thin boundary + the 45° hatch texture */}
-        <line className="pl-strip bp-drawable" x1="78" y1="660" x2="1122" y2="660" pathLength={1} />
-        {STRIP_SEGS.flatMap(([x1, x2]) =>
-          hatchRun(x1, x2, 661, 681).map(([xa, ya, xb, yb], i) => (
-            <line key={`h${x1}-${i}`} className="pl-hatch bp-drawable" x1={xa} y1={ya} x2={xb} y2={yb} pathLength={1} />
-          )),
-        )}
-        {/* the main entry — an opening in the right wall + door */}
-        <rect className="pl-paper bp-drawable" x="1122" y="404" width="18" height="52" pathLength={1} />
-        <Door x={1074} y={404} w={48} h={52} hinge="br" />
         {/* the column grid bubbles — lettered (top) + numbered (left) */}
         {[180, 300, 420, 540, 660, 780, 900, 1020].map((x, i) => (
           <g key={`bx${x}`} className="bp-hair">
@@ -306,6 +351,70 @@ export function LearningPlanDrawing() {
               {i + 1}
             </text>
           </g>
+        ))}
+        {/* the sheet title block — mono chrome, rides the frame */}
+        <text className="bp-micro" x="1140" y="36" textAnchor="end">MDRK · LEARNING FLOOR · PLAN</text>
+        <text className="bp-micro" x="60" y="36">SCALE 1:150 · UNITS M</text>
+      </g>
+
+      {/* ═══ the envelope — poché wall masses + the corridor spine ═══ */}
+      <g className="pl-l-envelope" aria-hidden="true">
+        {/* the exterior poché — a solid charcoal mass, then the interior
+            paper ground it encloses. C4-A re-weight: the band 18→9
+            units (≈10px at the full-stage render) — the reference's
+            own exterior weight, not a 20px slab. */}
+        <rect className="pl-wall bp-drawable" x="69" y="69" width="1062" height="622" pathLength={1} />
+        <rect className="pl-paper bp-drawable" x="78" y="78" width="1044" height="604" pathLength={1} />
+        {/* window runs — the poché opens for the glazing (top + sides + bottom):
+            the runs ride the slimmed 9-unit exterior band (69→78) */}
+        <Win x={200} y={69} w={90} h={9} />
+        <Win x={440} y={69} w={90} h={9} />
+        <Win x={680} y={69} w={90} h={9} />
+        <Win x={920} y={69} w={90} h={9} />
+        <Win x={69} y={200} w={9} h={80} />
+        <Win x={69} y={480} w={9} h={80} />
+        <Win x={200} y={691} w={90} h={9} />
+        <Win x={440} y={691} w={90} h={9} />
+        <Win x={680} y={691} w={90} h={9} />
+        <Win x={1122} y={200} w={9} h={80} />
+        {/* the corridor walls — solid structural bands (C4-A: 16→10
+            units ≈11px, hugging the corridor faces at 394/460 so the
+            journey path stays centred) with the door openings left
+            as true breaks in the mass */}
+        {NORTH_WALL.map(([x1, x2]) => (
+          <rect key={`nc${x1}`} className="pl-wall bp-drawable" x={x1} y="384" width={x2 - x1} height="10" pathLength={1} />
+        ))}
+        {SOUTH_WALL.map(([x1, x2]) => (
+          <rect key={`sc${x1}`} className="pl-wall bp-drawable" x={x1} y="460" width={x2 - x1} height="10" pathLength={1} />
+        ))}
+        {/* zone partition walls — the interior partitions (C4-A:
+            11→6 units ≈6.6px, hugging the zone edges) */}
+        <rect className="pl-wall bp-drawable" x="418" y="78" width="6" height="307" pathLength={1} />
+        <rect className="pl-wall bp-drawable" x="758" y="78" width="6" height="307" pathLength={1} />
+        <rect className="pl-wall bp-drawable" x="298" y="475" width="6" height="185" pathLength={1} />
+        <rect className="pl-wall bp-drawable" x="758" y="475" width="6" height="185" pathLength={1} />
+        {/* the service strip along the south wall — the shaft/void band:
+            a thin boundary + the DENSE CROSS-HATCH texture (C4-A: both
+            45° families at 8.5-unit pitch — the reference's poché
+            texture, reading as inked void rather than a grey wash) */}
+        <line className="pl-strip bp-drawable" x1="78" y1="660" x2="1122" y2="660" pathLength={1} />
+        {STRIP_SEGS.flatMap(([x1, x2]) =>
+          hatchRun(x1, x2, 661, 681).map(([xa, ya, xb, yb], i) => (
+            <line key={`h${x1}-${i}`} className="pl-hatch bp-drawable" x1={xa} y1={ya} x2={xb} y2={yb} pathLength={1} />
+          )),
+        )}
+        {STRIP_SEGS.flatMap(([x1, x2]) =>
+          hatchRun(x1, x2, 661, 681, 8.5, true).map(([xa, ya, xb, yb], i) => (
+            <line key={`hx${x1}-${i}`} className="pl-hatch bp-drawable" x1={xa} y1={ya} x2={xb} y2={yb} pathLength={1} />
+          )),
+        )}
+        {/* the main entry — an opening in the right wall + door */}
+        <rect className="pl-paper bp-drawable" x="1122" y="404" width="9" height="52" pathLength={1} />
+        <Door x={1074} y={404} w={48} h={52} hinge="br" />
+        {/* the entry apron — a stipple ground outside the door (C4-A:
+            the grounds texture — the paved approach on the sheet) */}
+        {stippleRun(1135, 1188, 396, 464, 9).map(([x, y], i) => (
+          <circle key={`st${i}`} className="pl-dot bp-drawable" cx={x} cy={y} r={0.9} pathLength={1} />
         ))}
       </g>
 
@@ -328,8 +437,8 @@ export function LearningPlanDrawing() {
           return <Seat key={i} x={cx - 11} y={cy - 5} />;
         })}
         {/* zone doors from the corridor */}
-        <Door x={830} y={401} w={40} h={48} hinge="tl" />
-        <Door x={960} y={401} w={40} h={48} hinge="tr" />
+        <Door x={830} y={394} w={40} h={48} hinge="tl" />
+        <Door x={960} y={394} w={40} h={48} hinge="tr" />
         {/* the AV niche + the attendance sensor mark */}
         <rect className="bp-hair bp-drawable" x="790" y="100" width="26" height="16" pathLength={1} />
         <rect className="bp-signal-fill bp-drawable" x={824} y={104} width="8" height="8" pathLength={1} />
@@ -352,7 +461,7 @@ export function LearningPlanDrawing() {
         <line className="bp-hair bp-drawable" x1="1040" y1="514" x2="1080" y2="490" pathLength={1} />
         {/* the checkpoint signal — the ONE orange mark in this zone */}
         <rect className="bp-signal-fill bp-drawable" x="918" y="534" width="8" height="8" pathLength={1} />
-        <Door x={830} y={409} w={40} h={50} hinge="bl" />
+        <Door x={830} y={410} w={40} h={50} hinge="bl" />
         <text className="pl-name" x="930" y="622" textAnchor="middle">نقطة الفحص</text>
         <text className="bp-micro" x="930" y="638" textAnchor="middle">36 M2</text>
       </g>
@@ -372,8 +481,8 @@ export function LearningPlanDrawing() {
         <circle className="bp-fill bp-drawable" cx="446" cy="98" r="10" pathLength={1} />
         <line className="bp-ink bp-drawable" x1="446" y1="98" x2="446" y2="91" pathLength={1} />
         <line className="bp-ink bp-drawable" x1="446" y1="98" x2="451" y2="101" pathLength={1} />
-        <Door x={500} y={401} w={40} h={48} hinge="tl" />
-        <Door x={640} y={401} w={40} h={48} hinge="tr" />
+        <Door x={500} y={394} w={40} h={48} hinge="tl" />
+        <Door x={640} y={394} w={40} h={48} hinge="tr" />
         <text className="pl-name" x="590" y="126" textAnchor="middle">قاعة الاختبار</text>
         <text className="bp-micro" x="590" y="142" textAnchor="middle">150 M2</text>
       </g>
@@ -409,7 +518,7 @@ export function LearningPlanDrawing() {
         })}
         {/* the service counter */}
         <rect className="bp-fill bp-drawable" x="700" y="500" width="14" height="70" pathLength={1} />
-        <Door x={500} y={409} w={40} h={50} hinge="tl" />
+        <Door x={500} y={410} w={40} h={50} hinge="tl" />
         <text className="pl-name" x="530" y="648" textAnchor="middle">المكتبة والبحوث</text>
         <text className="bp-micro" x="530" y="654" textAnchor="middle">96 M2</text>
       </g>
@@ -436,7 +545,7 @@ export function LearningPlanDrawing() {
         {[0, 1, 2, 3, 4].map((i) => (
           <rect key={i} className="bp-hair bp-drawable" x={110 + i * 34} y={100 + (4 - i) * 7} width="30" height={8 + (4 - i) * 7} pathLength={1} />
         ))}
-        <Door x={250} y={401} w={40} h={48} hinge="tl" />
+        <Door x={250} y={394} w={40} h={48} hinge="tl" />
         <text className="pl-name" x="248" y="126" textAnchor="middle">غرفة الإتقان</text>
         <text className="bp-micro" x="248" y="142" textAnchor="middle">84 M2</text>
       </g>
@@ -451,26 +560,56 @@ export function LearningPlanDrawing() {
         {/* planters */}
         <circle className="bp-hair bp-drawable" cx="260" cy="620" r="12" pathLength={1} />
         <circle className="bp-hair bp-drawable" cx="260" cy="650" r="9" pathLength={1} />
-        <Door x={150} y={409} w={40} h={50} hinge="tl" />
+        <Door x={150} y={410} w={40} h={50} hinge="tl" />
         <text className="pl-name" x="196" y="516" textAnchor="middle">الاستقبال</text>
       </g>
 
       {/* ═══ the annotations — journey path + stations + dims (stage 3) ═══ */}
       <g className="pl-l-annot" aria-hidden="true">
-        {/* the journey path — the corridor spine, RTL */}
+        {/* the journey path — the corridor spine, RTL: the section cut
+            line A-A rides its ends (the flags tie the sheet to the
+            closing column's section view — the C4-A multi-view sheet) */}
         <line className="bp-dash bp-dash-2 bp-drawable" x1="1118" y1="430" x2="120" y2="430" pathLength={1} />
         <polyline className="bp-ink bp-drawable" points="130,424 118,430 130,436" pathLength={1} />
-        {/* branch arrows at each zone door */}
-        {[
-          [850, 401, 850, 416],
-          [850, 459, 850, 448],
-          [520, 401, 520, 416],
-          [520, 459, 520, 448],
-          [270, 401, 270, 416],
-        ].map(([x1, y1, x2, y2]) => (
-          <line key={`${x1}-${y1}`} className="bp-hair bp-drawable" x1={x1} y1={y1} x2={x2} y2={y2} pathLength={1} />
+        {[1118, 120].map((x) => (
+          <g key={`cut${x}`} className="bp-hair">
+            <line className="bp-drawable" x1={x} y1="422" x2={x} y2="438" pathLength={1} />
+            <text className="bp-micro" x={x} y="416" textAnchor="middle">A</text>
+          </g>
         ))}
-        {/* station markers at the doors — [NN] in mono */}
+        {/* branch leaders at each zone door — the violation-overlay
+            callout system (C4-A): the ACTIVE stage's leader flips to a
+            dashed accent run (PLAN_INK_CSS); the quiet doors keep the
+            guide-grey hair. Order = stations [01]..[05]. */}
+        {[
+          [850, 394, 850, 409, 0],
+          [850, 460, 850, 449, 1],
+          [520, 394, 520, 409, 2],
+          [520, 460, 520, 449, 3],
+          [270, 394, 270, 409, 4],
+        ].map(([x1, y1, x2, y2, st]) => (
+          <line
+            key={`ld${x1}-${y1}`}
+            className="bp-hair pl-leader bp-drawable"
+            data-station={st}
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            pathLength={1}
+          />
+        ))}
+        {/* station markers at the doors — [NN] in mono, each riding
+            its VIOLATION CHIP: quiet by default; the active stage's
+            chip lights as the solid-block callout (landing.css owns
+            the flip, PLAN_INK_CSS the pigment) */}
+        <g className="pl-chips">
+          <rect className="pl-chip" data-station="0" x="827" y="370" width="46" height="19" rx="0" />
+          <rect className="pl-chip" data-station="1" x="827" y="478" width="46" height="19" rx="0" />
+          <rect className="pl-chip" data-station="2" x="497" y="370" width="46" height="19" rx="0" />
+          <rect className="pl-chip" data-station="3" x="497" y="478" width="46" height="19" rx="0" />
+          <rect className="pl-chip" data-station="4" x="247" y="370" width="46" height="19" rx="0" />
+        </g>
         <text className="bp-micro pl-station" data-station="0" x="850" y="384" textAnchor="middle">[01]</text>
         <text className="bp-micro pl-station" data-station="1" x="850" y="492" textAnchor="middle">[02]</text>
         <text className="bp-micro pl-station" data-station="2" x="520" y="384" textAnchor="middle">[03]</text>
@@ -496,9 +635,6 @@ export function LearningPlanDrawing() {
           <line className="bp-drawable" x1="32" y1="700" x2="40" y2="700" pathLength={1} />
         </g>
         <text className="bp-micro" x="30" y="380" textAnchor="middle" transform="rotate(-90 30 380)">20.6M</text>
-        {/* the sheet title block */}
-        <text className="bp-micro" x="1140" y="36" textAnchor="end">MDRK · LEARNING FLOOR · PLAN</text>
-        <text className="bp-micro" x="60" y="36">SCALE 1:150 · UNITS M</text>
         {/* the plan's north arrow */}
         <g className="bp-hair">
           <circle className="bp-drawable" cx="1108" cy="730" r="12" pathLength={1} />

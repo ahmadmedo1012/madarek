@@ -4649,11 +4649,16 @@ html[data-theme='dark'] .fo-grain {
    pl-sheet ground IS the page paper #F6F6EE, so the poché reads as
    drawn on the page itself, the reference's own look; in dark theme
    the plan stays a paper artifact by the R314 §4.2 ruling). The
-   corner plus marks stay — the drawing-frame registration grammar. */
+   corner plus marks stay — the drawing-frame registration grammar.
+   C4-A — the plan IS the scene: the window fills the stage like
+   the reference's own 1427×853 drawing window (the 1240px cap is
+   retired); the inline-size guard keeps the sheet inside the pin
+   at every desktop width (1440 → ≈1320×836 inside the 100dvh pin;
+   1920×1080 → ≈1660×1052). */
 .jt-window {
   position: relative;
   flex: 1 1 auto;
-  max-inline-size: min(1240px, 100%);
+  max-inline-size: min(100%, calc((100dvh - 32px) * 1.5789));
   margin-inline: auto;
 }
 
@@ -4703,6 +4708,69 @@ html[data-theme='dark'] .fo-grain {
 
 .jt-window .bp-svg {
   min-block-size: 0;
+}
+
+/* ═══ C4-A — the plan's ink scrub (the reference's own map phasing) ═══
+   The reference's map opens with the statement over an EMPTY window:
+   its first plan image cross-fades in at f≈.39–.52 of the 5412px pin
+   (r308 §7 pins: layer-2 opacity 0→1 across scroll 4458–5158; the
+   live statement still stands at 25% of the band). The pin's plan
+   now holds that composition: the sheet's own chrome (pl-l-frame —
+   paper, column grid, bubbles, title block) stands from the start,
+   and the walls → rooms → annotations scrub in across the
+   reference's own window, staggered like the drawing resolving on
+   the paper. The scrub rides the SAME --jt-p clock — the station
+   bands, the stage flips and the pin proportions are untouched —
+   and is scoped to the PIN's window only: the ≤991px camera keeps
+   the fully-drawn readable contract. Reduced motion resolves the
+   complete sheet (the RM belt below). */
+.jt-pin .jt-plan .pl-l-envelope {
+  opacity: clamp(0, (var(--jt-p, 0) - 0.3) / 0.12, 1);
+}
+
+.jt-pin .jt-plan .pl-l-lecture,
+.jt-pin .jt-plan .pl-l-checkpoint,
+.jt-pin .jt-plan .pl-l-exam,
+.jt-pin .jt-plan .pl-l-library,
+.jt-pin .jt-plan .pl-l-mastery,
+.jt-pin .jt-plan .pl-l-entry {
+  opacity: clamp(0, (var(--jt-p, 0) - 0.34) / 0.12, 1);
+}
+
+.jt-pin .jt-plan .pl-l-annot {
+  opacity: clamp(0, (var(--jt-p, 0) - 0.4) / 0.12, 1);
+}
+
+/* the frame — the quiet window's own chrome: drawn from the start
+ * (unconditional — the frame precedes the stage machine) */
+.jt .jt-plan .pl-l-frame .bp-drawable {
+  stroke-dashoffset: 0;
+  fill-opacity: 1;
+}
+
+.jt .jt-plan .pl-l-frame text {
+  opacity: 1;
+}
+
+/* C4-A — the door markers + their violation chips resolve with the
+ * annotation layer and STAY (the station text was stage-3-only
+ * before — the findings overlay now reads at every stage, the
+ * active door carrying the solid-block callout; the [04] library
+ * door stays quiet — it owns no stage in the story). */
+.jt .jt-plan .pl-l-annot .pl-station {
+  opacity: 1;
+}
+
+.jt .jt-plan .pl-chip {
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
+}
+
+.jt[data-stage='0'] .jt-plan .pl-chip[data-station='0'],
+.jt[data-stage='1'] .jt-plan .pl-chip[data-station='1'],
+.jt[data-stage='2'] .jt-plan .pl-chip[data-station='2'],
+.jt[data-stage='3'] .jt-plan .pl-chip[data-station='4'] {
+  opacity: 1;
 }
 
 /* ── R312 — the mobile camera twin (§R R1, the art-direction pass) ──
@@ -4877,6 +4945,22 @@ html[data-theme='dark'] .fo-grain {
   .pl-zone {
     transition: none;
   }
+  /* C4-A — the ink scrub + the callout chips collapse to the resolved
+     sheet: the complete drawing stands from the first frame (nothing
+     hides content under reduced motion). */
+  .jt-pin .jt-plan .pl-l-envelope,
+  .jt-pin .jt-plan .pl-l-lecture,
+  .jt-pin .jt-plan .pl-l-checkpoint,
+  .jt-pin .jt-plan .pl-l-exam,
+  .jt-pin .jt-plan .pl-l-library,
+  .jt-pin .jt-plan .pl-l-mastery,
+  .jt-pin .jt-plan .pl-l-entry,
+  .jt-pin .jt-plan .pl-l-annot {
+    opacity: 1;
+  }
+  .jt .jt-plan .pl-chip {
+    transition: none;
+  }
 }
 
 
@@ -4884,14 +4968,21 @@ html[data-theme='dark'] .fo-grain {
    chip — a bare mono line on the paper under the sheet's foot, beside
    the progress hairline (the reference's map carries its readouts as
    plain mono marks on the plan, never boxed HUDs). The stacked
-   crossfade mechanism (grid-area 1/1 + overflow clip) is unchanged. */
+   crossfade mechanism (grid-area 1/1 + overflow clip) is unchanged.
+   C4-A — the window now fills the stage, so the readout rides INSIDE
+   the sheet's foot corner (the reference's own fixed-annotation
+   seat; a paper ground keeps the line legible over the drawing's
+   dimension chain — the same chip grammar the ≤991px camera
+   already carries below). */
 .jt-status {
   position: absolute;
-  inset-block-end: -36px;
-  inset-inline-start: 0;
+  inset-block-end: 12px;
+  inset-inline-start: 12px;
   translate: none;
   display: grid;
   overflow: hidden;
+  background: var(--bg);
+  padding: 3px 10px; /* spacing-gate: allow — the reference's own chip seat */
   z-index: 2;
 }
 
@@ -4933,7 +5024,10 @@ html[data-theme='dark'] .fo-grain {
   color: var(--text);
   pointer-events: none;
   z-index: 3;
-  opacity: clamp(0, (0.13 - var(--jt-p, 0)) / 0.07, 1);
+  /* C4-A dwell: the statement holds the opening like the reference
+     (its live statement still stands at 25% of the band) — full
+     until --jt-p .28, gone by .36 (the ink resolves from .30). */
+  opacity: clamp(0, (0.36 - var(--jt-p, 0)) / 0.08, 1);
   visibility: hidden;
 }
 
@@ -4960,9 +5054,13 @@ html[data-theme='dark'] .fo-grain {
   color: var(--bg);
   pointer-events: none;
   z-index: 3;
+  /* C4-A dwell: the card holds the MID-traversal — in .28→.36, out
+     .60→.68 (the reference's own card: in at f .32–.52, gone before
+     its 75% frame — the plan stands clean late, exactly the
+     reference's no-cards-over-the-drawing composition). */
   opacity:
-    clamp(0, (var(--jt-p, 0) - 0.09) / 0.05, 1) *
-    clamp(0, (0.9 - var(--jt-p, 1)) / 0.06, 1);
+    clamp(0, (var(--jt-p, 0) - 0.28) / 0.08, 1) *
+    clamp(0, (0.68 - var(--jt-p, 1)) / 0.08, 1);
   visibility: hidden;
 }
 
@@ -4992,13 +5090,14 @@ html[data-theme='dark'] .fo-grain {
 }
 
 /* the per-line scrub windows — line i unmasks across its own slice of
-   the mid-traversal (the card's dwell: --jt-p .14 → .50, each line
-   ~.09 wide; the words inside a line unmask in sequence — ScrubReveal
+   the card's mid-traversal dwell (C4-A: the card window .28→.68; the
+   reference's own four lines resolve while its card fades in,
+   f .32–.52 — the words inside a line unmask in sequence, ScrubReveal
    maps --wr-p onto --wr-n). */
-.jt-intro .jt-intro-line:nth-child(1) { --wr-p: clamp(0, (var(--jt-p, 0) - 0.14) / 0.09, 1); }
-.jt-intro .jt-intro-line:nth-child(2) { --wr-p: clamp(0, (var(--jt-p, 0) - 0.23) / 0.09, 1); }
-.jt-intro .jt-intro-line:nth-child(3) { --wr-p: clamp(0, (var(--jt-p, 0) - 0.32) / 0.09, 1); }
-.jt-intro .jt-intro-line:nth-child(4) { --wr-p: clamp(0, (var(--jt-p, 0) - 0.41) / 0.09, 1); }
+.jt-intro .jt-intro-line:nth-child(1) { --wr-p: clamp(0, (var(--jt-p, 0) - 0.3) / 0.08, 1); }
+.jt-intro .jt-intro-line:nth-child(2) { --wr-p: clamp(0, (var(--jt-p, 0) - 0.38) / 0.08, 1); }
+.jt-intro .jt-intro-line:nth-child(3) { --wr-p: clamp(0, (var(--jt-p, 0) - 0.46) / 0.08, 1); }
+.jt-intro .jt-intro-line:nth-child(4) { --wr-p: clamp(0, (var(--jt-p, 0) - 0.54) / 0.08, 1); }
 
 .jt-intro-more {
   margin: 0;
@@ -5007,7 +5106,7 @@ html[data-theme='dark'] .fo-grain {
   font-family: var(--font-mono);
   font-size: var(--fs-xxs);
   letter-spacing: 0.04em;
-  opacity: clamp(0, (var(--jt-p, 0) - 0.44) / 0.06, 1);
+  opacity: clamp(0, (var(--jt-p, 0) - 0.62) / 0.06, 1);
 }
 
 /* the ≤991px readable twins never display at ≥992px — the pin's
@@ -5029,6 +5128,42 @@ html[data-theme='dark'] .fo-grain {
   background: color-mix(in srgb, var(--surface) 72%, transparent);
   transition: inline-size var(--t-slow) var(--ease);
   visibility: hidden;
+}
+
+/* ═══ C4-A — the closing sheet's second view (the section panel) ═══
+   The side column opens at pin end as the sheet's DETAIL panel: the
+   section A-A drawing rides above the honest checklist, so the
+   release reads as ONE multi-view drawing sheet — the reference's
+   own late-map grammar (its s07 frames: the plan beside stacked
+   detail views + title blocks). Desktop-only chrome: the ≤991px
+   stacked ladder keeps its measured band heights (the panel is
+   display:none there — the readable checklist stands complete). */
+.jt-side-section {
+  margin: 0;
+  padding: var(--sp-3);
+  border-block-end: 1px solid var(--rule);
+}
+
+.jt-side-section figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-2);
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+}
+
+.jt-side-section figcaption .fo-mono {
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 991px) {
+  .jt-side-section {
+    display: none;
+  }
 }
 
 .jt-side[data-open='on'] {
