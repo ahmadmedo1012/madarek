@@ -130,14 +130,19 @@ describe('R312 mobile camera — the source contracts', () => {
   });
 
   it('the camera crop table mirrors the plan geometry (the washed zones + doors)', () => {
-    /* four crops, each 480×500, clamped inside the 1200×760 sheet.
+    /* four crops, each 460×500, clamped inside the 1200×760 sheet.
      * R314-cycle2 override (§7 map share): windows widened 560×420 →
-     * 480×500 — more plan per stage; the nodes moved with them. */
+     * 480×500 — more plan per stage; the nodes moved with them.
+     * R319 override (§D6 c2-L3): windows narrowed 480→460 and
+     * re-centred (y0 30/60→0) — the phone frame is one rung shorter
+     * (34svh ≤640px) so a centred station card clears the pinned
+     * plan, and the 95.9%-width breakout keeps the slice scale ≥0.76
+     * (corridor poché ≥ the 12px floor). */
     expect(JOURNEY_SRC).toMatch(/MOBILE_CROPS: readonly CamRect\[\] = \[/);
-    const crops = JOURNEY_SRC.match(/\[680, 30, 480, 500\]/);
-    const crop1 = JOURNEY_SRC.match(/\[680, 260, 480, 500\]/);
-    const crop2 = JOURNEY_SRC.match(/\[348, 60, 480, 500\]/);
-    const crop3 = JOURNEY_SRC.match(/\[12, 60, 480, 500\]/);
+    const crops = JOURNEY_SRC.match(/\[690, 0, 460, 500\]/);
+    const crop1 = JOURNEY_SRC.match(/\[690, 260, 460, 500\]/);
+    const crop2 = JOURNEY_SRC.match(/\[358, 0, 460, 500\]/);
+    const crop3 = JOURNEY_SRC.match(/\[12, 0, 460, 500\]/);
     expect(crops).not.toBeNull();
     expect(crop1).not.toBeNull();
     expect(crop2).not.toBeNull();
@@ -227,7 +232,7 @@ describe('R312 mobile camera — the real landing in jsdom', () => {
       () => expect(camSheet()?.flag).toBe('cropped'),
       { timeout: 2000 },
     );
-    expect(camSheet()?.viewBox).toBe('12 60 480 500');
+    expect(camSheet()?.viewBox).toBe('12 0 460 500'); // R319 override (§D6)
     expect(camSheet()?.par).toBe('xMidYMid slice');
     /* the stage flips with the reading (pin=1 here) */
     const track = document.querySelector<HTMLElement>('.jt');
@@ -235,7 +240,7 @@ describe('R312 mobile camera — the real landing in jsdom', () => {
 
     /* a fresh scroll burst keeps the same state (idempotent writes) */
     fireEvent.scroll(window);
-    await waitFor(() => expect(camSheet()?.viewBox).toBe('12 60 480 500'), { timeout: 1000 });
+    await waitFor(() => expect(camSheet()?.viewBox).toBe('12 0 460 500'), { timeout: 1000 }); // R319 override (§D6)
   });
 
   it('reduced motion at mobile: the crop is the discrete node — never a mid-pan', async () => {
@@ -246,7 +251,7 @@ describe('R312 mobile camera — the real landing in jsdom', () => {
     await waitFor(() => expect(camSheet()?.flag).toBe('cropped'), { timeout: 2000 });
     /* the reduced branch picks MOBILE_CROPS[idx] — an exact node rect
      * (R314-cycle2 override: the widened mastery node) */
-    expect(camSheet()?.viewBox).toBe('12 60 480 500');
+    expect(camSheet()?.viewBox).toBe('12 0 460 500'); // R319 override (§D6)
   });
 
   it('the ≥992px crossing restores the full sheet exactly once', async () => {

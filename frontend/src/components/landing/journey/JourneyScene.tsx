@@ -211,20 +211,32 @@ function JtIntro({
  * 78–413, doors [01]–[05]) — keeping the corridor poché ≈12.1px ≥
  * the 12px floor. The stage machine itself is untouched.
  *  · 0 — the lecture hall  (zone 764,78 + door [01] at 850,384) +
- *    the sheet title block + a checkpoint preview at the bottom
+ *    the sheet's top edge + the corridor's near edge
  *  · 1 — the checkpoint kiosk (zone 764,475 + door [02] at 850,492)
  *    + the full service strip to the sheet edge
- *  · 2 — the exam hall     (zone 424,79  + doors [03]/[04]) + a
- *    library preview
+ *  · 2 — the exam hall     (zone 424,79  + doors [03]/[04]) + the
+ *    corridor
  *  · 3 — the mastery room  (zone 79,79   + door [05] at 270,384) +
- *    the reception preview + the west wall
- */
+ *    the reception strip + the west wall
+ *
+ * R319 D6 (c2-L3) — the windows narrowed 480→460 and re-centred on
+ * their zones (y0 30/60→0): the phone frame is one rung shorter
+ * (34svh, ≤640px — landing.css) so a station card CENTRED in the
+ * viewport clears the pinned plan (the owner's «شاهد» heading was
+ * eaten by the 48svh frame's bottom edge), and the 460-wide window
+ * keeps the slice's governing scale ≥0.76 @390 (the 95.9%-width
+ * breakout: svg 350px wide → 350/460 = 0.761 — the corridor poché
+ * ≈12.1px ≥ the 12px floor, UP from 0.758). Each zone (358×307 /
+ * 358×185) + its door verified inside the 460×345 visible band; the
+ * 500-tall windows still carry the corridor + the neighbour preview
+ * on the taller tablet frame (≥641px keeps 48svh). The stage machine
+ * itself is untouched. */
 type CamRect = readonly [number, number, number, number];
 const MOBILE_CROPS: readonly CamRect[] = [
-  [680, 30, 480, 500],
-  [680, 260, 480, 500],
-  [348, 60, 480, 500],
-  [12, 60, 480, 500],
+  [690, 0, 460, 500],
+  [690, 260, 460, 500],
+  [358, 0, 460, 500],
+  [12, 0, 460, 500],
 ];
 
 /* the stage band centres — where the discrete stage flips; the camera
@@ -376,11 +388,28 @@ function restoreCam(track: HTMLElement): void {
  * twin is the ≤991px sticky camera (never displayed at once — the
  * hidden instance is display:none, out of the a11y tree). Both share
  * the same .jt[data-stage] build/wash contract, so the twin is always
- * in sync with the pin's instance. */
+ * in sync with the pin's instance.
+ *
+ * R319 D6 (c2-L3) — the cam carries the journey's own mono index chip
+ * ([01/05] · [02/05] · [03/05] · [05/05]): the landing's bracket-index
+ * grammar seated on the plan's frame, counting the plan's OWN five
+ * door stations ([01] lecture · [02] checkpoint · [03] exam · [04]
+ * library — quiet, owns no stage · [05] mastery; the R310 off-by-one
+ * story). The active chip rides .jt[data-stage] — the same pure-CSS
+ * flip as the status strip; decorative chrome, aria-hidden. */
+const CAM_IDX = ['[01/05]', '[02/05]', '[03/05]', '[05/05]'] as const;
+
 function PlanWindow({ cam = false }: { cam?: boolean }) {
   return (
     <div className={cam ? 'jt-window jt-cam' : 'jt-window'}>
       <LearningPlanDrawing />
+      {cam && (
+        <div className="jt-idx" aria-hidden="true">
+          {CAM_IDX.map((t) => (
+            <span key={t} className="fo-mono" dir="ltr">{t}</span>
+          ))}
+        </div>
+      )}
       {/* the findings' progress hairline — the plan-width rule under
           the sheet (R315 K-D); the fill scrubs with the walkthrough's
           reading progress (--jt-r — landing.css) */}
@@ -599,15 +628,21 @@ export function JourneyScene() {
           real block (the camera's sticky container) holding the frame
           + the station cards — so the cam releases exactly when the
           stations end and the side column (outside the flow) is never
-          covered. R315 (K-D): the statement + card ride the flow as
-          readable twins BEFORE the camera. ≥992px `.jt-flow` is
-          display:contents — the cam + the twins are display:none and
-          the stations absolute against the track, exactly the R310
-          desktop contract. */}
+          covered. R315 (K-D): the statement rides the flow as a
+          readable twin BEFORE the camera. R319 D6 (c2-L3): the
+          INTRODUCTION card moved BELOW the plan — the r318 A8
+          extraction's own mobile seat (the reference's plan container
+          28..717 with the card 732..805 under it): the plan is the
+          first thing under the statement, the card reads directly
+          under the pinned frame, and it fills the band's entry (no
+          dead air between the cam sticking and the first station).
+          ≥992px `.jt-flow` is display:contents — the cam + the twins
+          are display:none and the stations absolute against the
+          track, exactly the R310 desktop contract. */}
       <div className="jt-flow">
         <JtStatement flow />
-        <JtIntro flow />
         <PlanWindow cam />
+        <JtIntro flow />
 
         {/* the number stations — riding the track past the fixed drawing */}
         <div className="jt-stations">

@@ -5090,6 +5090,47 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   opacity: 1;
 }
 
+/* ── R319 D6 (c2-L3) — the journey's mono INDEX chip ──────────────
+   The owner's «no [02/05] index» on the mobile map: the cam now
+   carries the landing's own bracket-index grammar, counting the
+   plan's FIVE door stations — [01/05] lecture · [02/05] checkpoint ·
+   [03/05] exam · [05/05] mastery (the library door [04] stays quiet:
+   the wing builds at stage 2 but owns no stage — the R310 off-by-one
+   story, the same pairing the station warming uses). One chip per
+   stage, flipped by the same pure-CSS .jt[data-stage] contract as
+   the status strip; the paper-ground chip seat mirrors it exactly at
+   the frame's opposite (top) corner. Chrome only: aria-hidden in the
+   markup, and the cam twin itself is display:none at ≥992px so the
+   desktop pin (its own door markers + the [01–04] · LIVE side label)
+   never sees it. */
+.jt-idx {
+  position: absolute;
+  inset-block-start: 12px;
+  inset-inline-start: 12px;
+  display: grid;
+  overflow: hidden;
+  background: var(--bg);
+  padding: 3px 10px; /* spacing-gate: allow — the .jt-status chip seat */
+  z-index: 2;
+}
+
+.jt-idx > span {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
+}
+
+.jt[data-stage='0'] .jt-idx > span:nth-child(1),
+.jt[data-stage='1'] .jt-idx > span:nth-child(2),
+.jt[data-stage='2'] .jt-idx > span:nth-child(3),
+.jt[data-stage='3'] .jt-idx > span:nth-child(4) {
+  opacity: 1;
+}
+
 /* ── R315 (K-D) — the opening statement ──────────────────────────────
    One line centered over the paper (the reference's home-intel
    headline state): the opacity scrubs out through the first station
@@ -5532,7 +5573,16 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
      carries the re-proportioned 480×500 crop windows (JourneyScene's
      MOBILE_CROPS): more plan visible per stage at the same poché
      weight (the slice renders at scale ≈0.758 @390×844 — corridor
-     ≈12.1px ≥ the 12px floor). */
+     ≈12.1px ≥ the 12px floor).
+     R319 D6 (c2-L3) — the plan FITS THE VIEWPORT'S WIDTH, the r318
+     A8 extraction's own mobile seat: the reference's plan container
+     is the full content width at the 8px frame inset (374px = 95.9%
+     of 390; the tablet rung shows the full plan at 98.09%). The cam
+     breaks the 24px page gutter out to the sheet frame's own 8px
+     inset — never PAST the frame (the 7px hairline stays clear), no
+     viewport-edge clipping; the slice cover re-crops to the wider
+     stage, so the camera geometry (the reading band, the crop nodes)
+     is untouched — only more plan shows per stage. */
   .jt-cam {
     display: block;
     position: sticky;
@@ -5540,6 +5590,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     block-size: clamp(300px, 48svh, 420px);
     z-index: 2;
     margin-block-end: var(--sp-4);
+    margin-inline: calc(var(--sp-6) * -1 + 8px); /* spacing-gate: allow — the A8 frame-inset seat (out to the sheet frame, never past it) */
+    max-inline-size: none; /* the pin-window's min(100%, …) cap would re-clamp the breakout to the gutter box */
     padding: var(--sp-3);
   }
 
@@ -5627,6 +5679,23 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 @media (max-width: 991px) {
   .jt-stations {
     --jt-row-h: 91svh;
+  }
+}
+
+/* R319 D6 (c2-L3) — the phone camera is one rung shorter: a station
+   card CENTRED in the viewport (the natural read position) clears the
+   pinned plan's bottom edge — at 390×844 the «شاهد» heading's top is
+   y≈368 while the 48svh frame's bottom sat at y≈474 (the heading was
+   eaten mid-read, the owner's screenshot). 34svh lands the frame's
+   bottom at y≈356 (12px clear) and WIDENS the open region — the card
+   is fully readable for ≈339px of scroll (was ≈178px). The tablet
+   frame (≥641px) keeps its measured 48svh composition; the crop
+   windows narrowed to 460 so the slice's governing scale ≥0.76 holds
+   the corridor poché ≥ the 12px floor (JourneyScene's MOBILE_CROPS
+   note). docH @390 −118px (−1.0%, inside the ±3% ladder). */
+@media (max-width: 640px) {
+  .jt-cam {
+    block-size: clamp(240px, 34svh, 420px);
   }
 }
 
