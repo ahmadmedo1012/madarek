@@ -459,8 +459,12 @@ describe('R305 messages — the shell rides the pinned shared inbox', () => {
     useAuthStore.setState({ user: STUDENT });
     renderPage(<StudentMessagesPage />);
 
+    /* R319 override (c3-S2): the shared inbox's log heading joined the
+       §B2 title-bar register; the zero case's honest «لا رسائل» line is
+       now the hatched EmptyCell (no count meta renders without a
+       count — the same honesty, the sheet's reserved-but-empty shape). */
     expect(screen.getByText('لا توجد رسائل بعد')).toBeInTheDocument();
-    expect(screen.getByText('لا رسائل')).toBeInTheDocument();
+    expect(screen.queryByText('0 رسالة')).toBeNull();
     // No pager for an empty box.
     expect(screen.queryByText(/الصفحة/)).toBeNull();
   });
