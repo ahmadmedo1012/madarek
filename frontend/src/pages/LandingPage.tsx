@@ -17,6 +17,7 @@ import { RevealCssClass } from '../hooks/useReveal';
 import { ProductFrame } from '../components/landing/ProductFrame';
 import { PlatformCanvas } from '../components/landing/PlatformCanvas';
 import { HeroInkWindow } from '../components/landing/HeroInkWindow';
+import { StatementArt } from '../components/landing/StatementArt';
 import { WhyScene } from '../components/landing/WhyScene';
 import { PainArt } from '../components/landing/PainArt';
 import { SheetLoader } from '../components/landing/SheetLoader';
@@ -925,6 +926,19 @@ export default function LandingPage() {
                 </span>
               ))}
             </div>
+          </div>
+
+          {/* R315 cycle-4 (c4-C · the s01 verdict): the band's LARGE
+              drafted architectural illustration — an original campus
+              massing study (the tower's solid poché mass, the orange
+              sun, the row-band of small drafted blocks + figures) in
+              the reference's family. Seated in the band's OWN measured
+              air under the 86.7rem desktop floor (.st-art — hidden
+              below 992 where every statement band is content-bound,
+              zero drift by construction); the honest statement copy
+              above is untouched. */}
+          <div className="st-art">
+            <StatementArt />
           </div>
         </section>
 
