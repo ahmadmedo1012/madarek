@@ -5,11 +5,12 @@
  * (R315 K-C — E-crawl ground truth: desktop 601.25×38.33 bottom-right
  * on the LTR reference → mirrored bottom-LEFT on our RTL sheet; four
  * separate 1px ink rules like a drafting frame, the ONE hard-offset
- * shadow the reference ships; Accept 78.63×27.98 on the #EFEFEF
- * ground, Reject 80.63×28.33 outlined; mobile 374×~100 with the two
- * actions side-by-side — our 44px a11y touch floor over the measured
- * 93.45) carrying Madarek's OWN honest ONE-LINE sentence — never the
- * reference's copy, logo, or awards.
+ * shadow the reference ships; Accept 78.63×27.98 the REAL primary —
+ * ink slab + paper label, ≥4.5:1 both themes (R318 §A9 — the pale
+ * ghost seat was 1.15:1), Reject 80.63×28.33 ink-labelled; mobile
+ * 374×~100 with the two actions side-by-side — our 44px a11y touch
+ * floor over the measured 93.45) carrying Madarek's OWN honest
+ * ONE-LINE sentence — never the reference's copy, logo, or awards.
  *
  * This is a REAL gate, not decoration:
  *  · «موافق»  → localStorage `madarek.consent = "accepted"` (+ a JSON
@@ -234,8 +235,9 @@ export function ConsentBanner() {
       </p>
 
       <div className="cb-actions">
-        {/* R315 (K-C): the measured seats — «موافق» on the pale
-            #EFEFEF ground, «أرفض» outlined ink (r314-chrome.css);
+        {/* R318 §A9 (R315 K-C geometry kept): the measured seats —
+            «موافق» the real primary (ink slab + paper label,
+            r314-chrome.css — both themes ≥4.5:1), «أرفض» ink-labelled;
             both side-by-side at every width. */}
         <button type="button" className="cb-accept" onClick={() => answer('accepted')}>
           موافق

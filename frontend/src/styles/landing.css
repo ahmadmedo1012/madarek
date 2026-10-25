@@ -5075,6 +5075,14 @@ html[data-theme='dark'] .fo-grain {
   font-weight: 600;
   letter-spacing: 0.04em;
   border-block-end: 1px solid color-mix(in srgb, var(--bg) 22%, transparent);
+  /* R318 §A2 — the colour is pinned LOCALLY: base.css paints every <p>
+     with var(--text-secondary) (the generic paragraph ink), which on
+     this card's DARK var(--text) ground sits at ~1.4:1 — near-black on
+     charcoal. The title is PAPER on the dark bar (the reference's own
+     corner-card grammar), so the local rule must own the seat: the
+     token pair swaps with the theme and keeps ≥4.5:1 on both grounds
+     (light 12.44:1 · dark 13.37:1). */
+  color: var(--bg);
 }
 
 .jt-intro-lines {
@@ -5107,6 +5115,10 @@ html[data-theme='dark'] .fo-grain {
   font-size: var(--fs-xxs);
   letter-spacing: 0.04em;
   opacity: clamp(0, (var(--jt-p, 0) - 0.62) / 0.06, 1);
+  /* R318 §A2 — same local pin as the title: the generic <p> ink from
+     base.css is invisible on this card's dark ground; the mono line is
+     PAPER like the title (≥4.5:1 both themes, verified). */
+  color: var(--bg);
 }
 
 /* the ≤991px readable twins never display at ≥992px — the pin's

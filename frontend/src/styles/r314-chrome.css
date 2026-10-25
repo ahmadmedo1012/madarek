@@ -5,17 +5,18 @@
    geometry, carrying Madarek's OWN honest content (never the
    reference's text, logo, or awards):
 
-   · cb — ConsentBanner (V11 → R315 K-C): the local-storage consent
-     gate, fixed bottom-LEFT on desktop (the MIRRORED seat of the
-     reference's measured bottom-right; paper ground, four separate
+   · cb — ConsentBanner (V11 → R315 K-C → R318 §A9): the local-storage
+     consent gate, fixed bottom-LEFT on desktop (the MIRRORED seat of
+     the reference's measured bottom-right; paper ground, four separate
      1px ink rules like a drafting frame, the ONE hard-offset shadow
-     the reference ships; ONE line + «اعرف أكثر»; Accept on the
-     measured #EFEFEF ground, Reject outlined), full-width bottom
-     panel ≤479px with 44px touch targets. Real functionality:
-     «موافق»/«أرفض» persist `madarek.consent` (+ JSON record with
-     timestamp under `madarek.consent.record`); reject removes the
-     gated UI-pref keys; window.MadarekConsent exposes the live
-     state. See components/landing/chrome/ConsentBanner.tsx.
+     the reference ships; ONE line + «اعرف أكثر»; Accept the REAL
+     primary — INK slab + paper label, ≥4.5:1 both themes; Reject
+     ink-labelled), full-width bottom panel ≤479px with 44px touch
+     targets. Real functionality: «موافق»/«أرفض» persist
+     `madarek.consent` (+ JSON record with timestamp under
+     `madarek.consent.record`); reject removes the gated UI-pref keys;
+     window.MadarekConsent exposes the live state. See
+     components/landing/chrome/ConsentBanner.tsx.
 
    · et — EdgeTab (V12): the right-edge vertical tab (paper ground,
      outer hairline, orange square + tiny white 4-pointed star at the
@@ -155,10 +156,17 @@
   flex: 0 0 auto;
 }
 
-/* «موافق» — R315 (K-C): the measured Accept seat — 78.63×27.98 on
-   the #EFEFEF ground (E-crawl: the reference's Accept is a flat pale
-   button, NOT an outlined wipe seat), ink label, no border, radius 0.
-   The 44px floor is a touch-context concern — the desktop banner's
+/* «موافق» — R318 (§A9): the REAL primary. The r315 ghost seat (the
+   measured #EFEFEF ground + WHITE label — 1.15:1, read as disabled)
+   is retired: an INK slab with a PAPER label — the site's own primary
+   grammar (unified-parity --primary: charcoal slab CTA, 14.74:1) —
+   carried on the theme tokens so both sheets resolve with zero forks
+   (light #282828+#F6F6EE 12.44:1 · dark #F6F8FA+#282828 13.37:1).
+   The measured SEAT is kept: 78.63×27.98 @1440, radius 0, the 1px
+   ink border riding INSIDE the border-box so the outer geometry is
+   exact. Hover keeps the reference's accent fill-wipe (the .btn
+   grammar's wipe pair); :active inverts to the paper/ink pair. The
+   44px floor stays a touch-context concern — the desktop banner's
    measured 28px buttons ride a pointer context (the ≤479 block below
    lifts every action to 44px). */
 .cb-accept {
@@ -168,46 +176,62 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  inline-size: 9.44rem;            /* 78.67px @1440 — measured */
-  min-block-size: 3.36rem;         /* 28px @1440 — measured */
+  inline-size: 9.44rem;            /* 78.67px @1440 — measured (kept) */
+  min-block-size: 3.36rem;         /* 28px @1440 — measured (kept) */
   padding-inline: var(--sp-2);
-  background: var(--surface-2);
-  border: 0;
+  background: var(--text);         /* ink fill — the real primary slab */
+  border: 1px solid var(--text);   /* the 1px ink rule, inside the box */
   font-family: var(--font-mono);
-  font-size: var(--fs-mono-md);   /* the reference's cookie-Accept rung */
+  font-size: var(--fs-mono-md);    /* the reference's cookie-Accept rung */
   font-weight: var(--fw-medium);
-  color: var(--accent-fg);        /* the measured WHITE ghost label */
+  color: var(--bg);                /* paper label on ink — ≥4.5:1 both themes */
   cursor: pointer;
-  transition: color var(--t-fast) var(--ease);
+  transition:
+    color var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
 }
 
-/* the measured ghost — #EFEFEF ground + WHITE label (r313 digest
-   cookie-accept: color #FFFFFF on bg #EFEFEF, the reference's quiet
-   primary); the light theme pins both measured values (the dark twin
-   keeps the token pair — the reference has no dark mode). */
-html[data-theme='light'] .cb-accept {
-  background: #EFEFEF;  /* measured — color-gate: allow */
-  color: #FFFFFF;       /* measured — color-gate: allow */
-}
-
-/* the btn-fill slide (the reference's cookie-accept hover): the accent
-   slab rises from the block-start edge; the label stays white. */
+/* the fill-wipe slide (the site's .btn wipe grammar: label + border
+   adopt the wipe pair in lockstep; the slab rises from the
+   block-start edge). R318 §A9: the wipe ground is the TEXT-safe
+   accent rung — --accent-ink, the token contract's own
+   label-on-accent-safe seat — so the hovered pair also holds
+   ≥4.5:1 in BOTH themes (light #C72E00+#FFFFFF 5.48:1 ·
+   dark #FF6B33+warm-ink 6.20:1), unlike the raw --accent slab
+   (3.76:1 on the light sheet). */
 .cb-accept::before {
   content: '';
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: var(--accent);
+  background: var(--accent-ink);
   transform: translateY(-101%);
   transition: transform var(--t-base) var(--ease);
 }
 
-.cb-accept:hover {
+.cb-accept:hover,
+.cb-accept:focus-visible {
   color: var(--accent-fg);
+  border-color: var(--accent-ink);
 }
 
-.cb-accept:hover::before {
+.cb-accept:hover::before,
+.cb-accept:focus-visible::before {
   transform: translateY(0);
+}
+
+/* :active — the press INVERTS the pair (paper fill + ink label,
+   ≥4.5:1 both themes); the wipe parks so the pressed seat stands
+   flat (never a half-fill under the press). */
+.cb-accept:active {
+  background: var(--bg);
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.cb-accept:active::before {
+  transform: translateY(-101%);
 }
 
 /* «أرفض» — R315 (K-C): the measured Reject seat — 80.63×28.33,
@@ -372,14 +396,60 @@ html[data-theme='light'] .cb-accept {
   white-space: nowrap;
 }
 
-/* R315: the reference carries its edge badge at EVERY width (E-crawl:
-   no breakpoint) — the ≤767 hide is retired. On touch bands the tab
-   rides BELOW the content z-ladder so it can never eat a heading or a
-   control (the owner's §0-H tablet defect belt). */
+/* R318 (§A10) — the ≤991 GUTTER MARKER. The desktop strip (44×163 with
+   the rotated label) OVERLAPS the flowing map/copy at every phone and
+   tablet width (measured: the orange square crossed .bp-stage at
+   360–820) — the reference keeps its badge VISIBLE but TINY at every
+   width, so the tab collapses to a square marker LIVING IN THE SHEET
+   FRAME GUTTER at the mirrored (physical left) edge:
+   · the button keeps the ≥44px touch floor as a TRANSPARENT hit area
+     (flush to the edge, vertically centred — the same 44px-band
+     pointer grammar the desktop tab already rides);
+   · the VISIBLE body is the 14px orange square + its 1px outer
+     hairline — 15×14px total, ≤16px, INSIDE the page-gutter-mobile
+     band (20px) so it can never cross body copy or a card at any
+     ≤991 width (verified 360/390/430/480/600/768/820);
+   · z stays on the desktop rung (55 — above the frame hairline, below
+     the 60 masthead): the R315 z:40 drop was belt for the full-size
+     overlapping tab; the marker never reaches content, and the
+     desktop tab has always ridden above the frame line.
+   The rotated label is display:none (the aria-label carries the
+   name); EdgeTab.tsx is untouched. */
 @media only screen and (max-width: 991px) {
   .et-tab {
-    z-index: 40;                  /* under the flowing content (50-ladder
-                                     seats), over the frame hairline only */
+    left: 0;                       /* flush — the marker lives in the gutter */
+    inline-size: 44px;              /* the touch floor — transparent hit area */
+    min-block-size: 44px;
+    padding: 0;
+    gap: 0;
+    background: transparent;
+    border: 0;
+  }
+
+  /* no desktop nudge — the marker never leans into the content band. */
+  .et-tab:hover,
+  .et-tab:focus-visible {
+    transform: translateY(-50%);
+  }
+
+  /* the visible body: the square, centred in the hit area, flush to
+     the mirrored edge; its 1px outer hairline rides the same edge
+     grammar as the desktop tab (the OUTER edge rule). 15px incl. the
+     rule — the ≤16px ceiling is an a11y/brief constant, not a design
+     value (the landing.css hand-tuned-chrome precedent). */
+  .et-mark {
+    position: absolute;
+    left: 0;
+    inset-block-start: 50%;
+    translate: 0 -50%;
+    inline-size: 15px;              /* 14px square + 1px hairline — ≤16px ceiling */
+    block-size: 14px;
+    border-left: 1px solid var(--rule);
+    background: var(--accent);
+  }
+
+  .et-label {
+    display: none;                  /* the aria-label carries the name */
   }
 }
 

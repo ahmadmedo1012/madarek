@@ -1,0 +1,811 @@
+{
+ "phase": "before",
+ "base": "http://localhost:4182",
+ "views": {
+  "1440-light": {
+   "scrub": {
+    "p0": {
+     "p": 0,
+     "cardBg": "rgb(40, 40, 40)",
+     "title": {
+      "raw": "rgb(65, 65, 64)",
+      "ratio": 1.44
+     },
+     "more": {
+      "raw": "rgb(65, 65, 64)",
+      "ratio": 1.44
+     },
+     "line1word0": {
+      "colorRaw": "color(srgb 0.964706 0.964706 0.933333 / 0.86)",
+      "colorRatio": 10.41,
+      "transform": "matrix(1, 0, 0, 1, 0, 23.1617)",
+      "leakPx": 0,
+      "hidden": true
+     },
+     "lastLineLastWord": {
+      "transform": "matrix(1, 0, 0, 1, 0, 23.1617)",
+      "leakPx": 0,
+      "hidden": true
+     }
+    },
+    "p0.5": {
+     "p": 0.5,
+     "cardBg": "rgb(40, 40, 40)",
+     "title": {
+      "raw": "rgb(65, 65, 64)",
+      "ratio": 1.44
+     },
+     "more": {
+      "raw": "rgb(65, 65, 64)",
+      "ratio": 1.44
+     },
+     "line1word0": {
+      "colorRaw": "color(srgb 0.964706 0.964706 0.933333 / 0.86)",
+      "colorRatio": 10.41,
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "leakPx": 20.14,
+      "hidden": false
+     },
+     "lastLineLastWord": {
+      "transform": "matrix(1, 0, 0, 1, 0, 23.1617)",
+      "leakPx": 0,
+      "hidden": true
+     }
+    },
+    "p1": {
+     "p": 1,
+     "cardBg": "rgb(40, 40, 40)",
+     "title": {
+      "raw": "rgb(65, 65, 64)",
+      "ratio": 1.44
+     },
+     "more": {
+      "raw": "rgb(65, 65, 64)",
+      "ratio": 1.44
+     },
+     "line1word0": {
+      "colorRaw": "color(srgb 0.964706 0.964706 0.933333 / 0.86)",
+      "colorRatio": 10.41,
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "leakPx": 20.14,
+      "hidden": false
+     },
+     "lastLineLastWord": {
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "leakPx": 20.14,
+      "hidden": false
+     }
+    }
+   },
+   "consent": {
+    "accept": {
+     "bg": "rgb(239, 239, 239)",
+     "color": "rgb(255, 255, 255)",
+     "border": "0px none rgb(255, 255, 255)",
+     "labelOnFill": 1.15,
+     "rect": {
+      "w": 78.7,
+      "h": 28
+     }
+    },
+    "reject": {
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(40, 40, 40)",
+     "labelOnBanner": 13.57,
+     "rect": {
+      "w": 80.7,
+      "h": 28.3
+     }
+    },
+    "banner": {
+     "w": 601,
+     "h": 38,
+     "x": 0,
+     "y": 862
+    }
+   },
+   "consentHover": {
+    "bg": "rgb(239, 239, 239)",
+    "color": "rgb(255, 255, 255)",
+    "borderColor": "rgb(255, 255, 255)",
+    "labelOnFill": 1.15
+   },
+   "consentActive": {
+    "bg": "rgb(239, 239, 239)",
+    "color": "rgb(255, 255, 255)",
+    "borderColor": "rgb(255, 255, 255)",
+    "labelOnFill": 1.15
+   },
+   "edgeTab": {
+    "tag": "BUTTON",
+    "ariaLabel": "الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها",
+    "hit": {
+     "x": 6.7,
+     "y": 368.5,
+     "w": 44.2,
+     "h": 163
+    },
+    "mark": {
+     "x": 22.3,
+     "y": 376.5,
+     "w": 14,
+     "h": 14
+    },
+    "labelDisplay": "block"
+   }
+  },
+  "1440-dark": {
+   "scrub": {
+    "p0": {
+     "p": 0,
+     "cardBg": "rgb(246, 248, 250)",
+     "title": {
+      "raw": "rgb(201, 201, 197)",
+      "ratio": 1.56
+     },
+     "more": {
+      "raw": "rgb(201, 201, 197)",
+      "ratio": 1.56
+     },
+     "line1word0": {
+      "colorRaw": "color(srgb 0.156863 0.156863 0.156863 / 0.86)",
+      "colorRatio": 8.99,
+      "transform": "matrix(1, 0, 0, 1, 0, 23.1617)",
+      "leakPx": 0,
+      "hidden": true
+     },
+     "lastLineLastWord": {
+      "transform": "matrix(1, 0, 0, 1, 0, 23.1617)",
+      "leakPx": 0,
+      "hidden": true
+     }
+    },
+    "p0.5": {
+     "p": 0.5,
+     "cardBg": "rgb(246, 248, 250)",
+     "title": {
+      "raw": "rgb(201, 201, 197)",
+      "ratio": 1.56
+     },
+     "more": {
+      "raw": "rgb(201, 201, 197)",
+      "ratio": 1.56
+     },
+     "line1word0": {
+      "colorRaw": "color(srgb 0.156863 0.156863 0.156863 / 0.86)",
+      "colorRatio": 8.99,
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "leakPx": 20.14,
+      "hidden": false
+     },
+     "lastLineLastWord": {
+      "transform": "matrix(1, 0, 0, 1, 0, 23.1617)",
+      "leakPx": 0,
+      "hidden": true
+     }
+    },
+    "p1": {
+     "p": 1,
+     "cardBg": "rgb(246, 248, 250)",
+     "title": {
+      "raw": "rgb(201, 201, 197)",
+      "ratio": 1.56
+     },
+     "more": {
+      "raw": "rgb(201, 201, 197)",
+      "ratio": 1.56
+     },
+     "line1word0": {
+      "colorRaw": "color(srgb 0.156863 0.156863 0.156863 / 0.86)",
+      "colorRatio": 8.99,
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "leakPx": 20.14,
+      "hidden": false
+     },
+     "lastLineLastWord": {
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "leakPx": 20.14,
+      "hidden": false
+     }
+    }
+   },
+   "consent": {
+    "accept": {
+     "bg": "rgb(53, 53, 53)",
+     "color": "rgb(25, 25, 24)",
+     "border": "0px none rgb(25, 25, 24)",
+     "labelOnFill": 1.43,
+     "rect": {
+      "w": 78.7,
+      "h": 28
+     }
+    },
+    "reject": {
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 248, 250)",
+     "labelOnBanner": 13.85,
+     "rect": {
+      "w": 80.7,
+      "h": 28.3
+     }
+    },
+    "banner": {
+     "w": 601,
+     "h": 38,
+     "x": 0,
+     "y": 862
+    }
+   },
+   "consentHover": {
+    "bg": "rgb(53, 53, 53)",
+    "color": "rgb(25, 25, 24)",
+    "borderColor": "rgb(25, 25, 24)",
+    "labelOnFill": 1.43
+   },
+   "consentActive": {
+    "bg": "rgb(53, 53, 53)",
+    "color": "rgb(25, 25, 24)",
+    "borderColor": "rgb(25, 25, 24)",
+    "labelOnFill": 1.43
+   },
+   "edgeTab": {
+    "tag": "BUTTON",
+    "ariaLabel": "الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها",
+    "hit": {
+     "x": 6.7,
+     "y": 368.5,
+     "w": 44.2,
+     "h": 163
+    },
+    "mark": {
+     "x": 22.3,
+     "y": 376.5,
+     "w": 14,
+     "h": 14
+    },
+    "labelDisplay": "block"
+   }
+  },
+  "390-light": {
+   "twin": {
+    "title": 1.44,
+    "more": 1.44
+   },
+   "consent": {
+    "accept": {
+     "bg": "rgb(239, 239, 239)",
+     "color": "rgb(255, 255, 255)",
+     "border": "0px none rgb(255, 255, 255)",
+     "labelOnFill": 1.15,
+     "rect": {
+      "w": 162.4,
+      "h": 44
+     }
+    },
+    "reject": {
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(40, 40, 40)",
+     "labelOnBanner": 13.57,
+     "rect": {
+      "w": 164.4,
+      "h": 44
+     }
+    },
+    "banner": {
+     "w": 358.8,
+     "h": 94.2,
+     "x": 15.6,
+     "y": 749.8
+    }
+   },
+   "edgeTab": {
+    "tag": "BUTTON",
+    "ariaLabel": "الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها",
+    "hit": {
+     "x": 7.9,
+     "y": 327.2,
+     "w": 52.6,
+     "h": 189.7
+    },
+    "mark": {
+     "x": 26.4,
+     "y": 335.2,
+     "w": 16.7,
+     "h": 16.7
+    },
+    "labelDisplay": "block"
+   }
+  },
+  "390-dark": {
+   "twin": {
+    "title": 1.56,
+    "more": 1.56
+   },
+   "consent": {
+    "accept": {
+     "bg": "rgb(53, 53, 53)",
+     "color": "rgb(25, 25, 24)",
+     "border": "0px none rgb(25, 25, 24)",
+     "labelOnFill": 1.43,
+     "rect": {
+      "w": 162.4,
+      "h": 44
+     }
+    },
+    "reject": {
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 248, 250)",
+     "labelOnBanner": 13.85,
+     "rect": {
+      "w": 164.4,
+      "h": 44
+     }
+    },
+    "banner": {
+     "w": 358.8,
+     "h": 94.2,
+     "x": 15.6,
+     "y": 749.8
+    }
+   },
+   "edgeTab": {
+    "tag": "BUTTON",
+    "ariaLabel": "الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها",
+    "hit": {
+     "x": 7.9,
+     "y": 327.2,
+     "w": 52.6,
+     "h": 189.7
+    },
+    "mark": {
+     "x": 26.4,
+     "y": 335.2,
+     "w": 16.7,
+     "h": 16.7
+    },
+    "labelDisplay": "block"
+   }
+  },
+  "768-light": {
+   "twin": {
+    "title": 1.44,
+    "more": 1.44
+   },
+   "consent": {
+    "accept": {
+     "bg": "rgb(239, 239, 239)",
+     "color": "rgb(255, 255, 255)",
+     "border": "0px none rgb(255, 255, 255)",
+     "labelOnFill": 1.15,
+     "rect": {
+      "w": 86.9,
+      "h": 30.9
+     }
+    },
+    "reject": {
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(40, 40, 40)",
+     "labelOnBanner": 13.57,
+     "rect": {
+      "w": 89.1,
+      "h": 31.3
+     }
+    },
+    "banner": {
+     "w": 664.1,
+     "h": 42,
+     "x": 0,
+     "y": 982
+    }
+   },
+   "edgeTab": {
+    "tag": "BUTTON",
+    "ariaLabel": "الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها",
+    "hit": {
+     "x": 7.4,
+     "y": 423.8,
+     "w": 48.8,
+     "h": 176.5
+    },
+    "mark": {
+     "x": 24.5,
+     "y": 431.8,
+     "w": 15.5,
+     "h": 15.5
+    },
+    "labelDisplay": "block"
+   }
+  },
+  "768-dark": {
+   "twin": {
+    "title": 1.56,
+    "more": 1.56
+   },
+   "consent": {
+    "accept": {
+     "bg": "rgb(53, 53, 53)",
+     "color": "rgb(25, 25, 24)",
+     "border": "0px none rgb(25, 25, 24)",
+     "labelOnFill": 1.43,
+     "rect": {
+      "w": 86.9,
+      "h": 30.9
+     }
+    },
+    "reject": {
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 248, 250)",
+     "labelOnBanner": 13.85,
+     "rect": {
+      "w": 89.1,
+      "h": 31.3
+     }
+    },
+    "banner": {
+     "w": 664.1,
+     "h": 42,
+     "x": 0,
+     "y": 982
+    }
+   },
+   "edgeTab": {
+    "tag": "BUTTON",
+    "ariaLabel": "الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها",
+    "hit": {
+     "x": 7.4,
+     "y": 423.8,
+     "w": 48.8,
+     "h": 176.5
+    },
+    "mark": {
+     "x": 24.5,
+     "y": 431.8,
+     "w": 15.5,
+     "h": 15.5
+    },
+    "labelDisplay": "block"
+   }
+  }
+ },
+ "a10Scan": [
+  {
+   "w": 360,
+   "scan": {
+    "mark": {
+     "x": 24.4,
+     "y": 341.8,
+     "w": 15.4,
+     "h": 15.4
+    },
+    "rawCount": 4,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "bp-stage",
+      "text": "ABCDEFGL144M[CP]نقطة فحص"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "reveal-up reveal-d-2 fo-hero-window in-view"
+     },
+     {
+      "tag": "DIV",
+      "cls": "bp-stage"
+     }
+    ]
+   }
+  },
+  {
+   "w": 390,
+   "scan": {
+    "mark": {
+     "x": 26.4,
+     "y": 335.2,
+     "w": 16.7,
+     "h": 16.7
+    },
+    "rawCount": 4,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "bp-stage",
+      "text": "ABCDEFGL144M[CP]نقطة فحص"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "reveal-up reveal-d-2 fo-hero-window in-view"
+     },
+     {
+      "tag": "DIV",
+      "cls": "bp-stage"
+     }
+    ]
+   }
+  },
+  {
+   "w": 430,
+   "scan": {
+    "mark": {
+     "x": 29.1,
+     "y": 328.8,
+     "w": 18.4,
+     "h": 18.4
+    },
+    "rawCount": 6,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "bp-stage",
+      "text": "ABCDEFGL144M[CP]نقطة فحص"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "reveal-up reveal-d-2 fo-hero-window in-view"
+     },
+     {
+      "tag": "DIV",
+      "cls": "bp-stage"
+     },
+     {
+      "tag": "DIV",
+      "cls": "hi-flow"
+     },
+     {
+      "tag": "DIV",
+      "cls": "hi-hint"
+     }
+    ]
+   }
+  },
+  {
+   "w": 480,
+   "scan": {
+    "mark": {
+     "x": 32.4,
+     "y": 315.1,
+     "w": 20.5,
+     "h": 20.5
+    },
+    "rawCount": 6,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "bp-stage",
+      "text": "ABCDEFGL144M[CP]نقطة فحص"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "reveal-up reveal-d-2 fo-hero-window in-view"
+     },
+     {
+      "tag": "DIV",
+      "cls": "bp-stage"
+     },
+     {
+      "tag": "DIV",
+      "cls": "hi-flow"
+     },
+     {
+      "tag": "DIV",
+      "cls": "hi-hint"
+     }
+    ]
+   }
+  },
+  {
+   "w": 600,
+   "scan": {
+    "mark": {
+     "x": 40.3,
+     "y": 290.5,
+     "w": 25.6,
+     "h": 25.6
+    },
+    "rawCount": 10,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "bp-stage",
+      "text": "ABCDEFGL144M[CP]نقطة فحص"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "reveal-up reveal-d-2 fo-hero-window in-view"
+     },
+     {
+      "tag": "DIV",
+      "cls": "bp-stage"
+     },
+     {
+      "tag": "svg",
+      "cls": "[object SVGAnimatedString]"
+     },
+     {
+      "tag": "g",
+      "cls": "[object SVGAnimatedString]"
+     },
+     {
+      "tag": "g",
+      "cls": "[object SVGAnimatedString]"
+     },
+     {
+      "tag": "rect",
+      "cls": "[object SVGAnimatedString]"
+     },
+     {
+      "tag": "polygon",
+      "cls": "[object SVGAnimatedString]"
+     },
+     {
+      "tag": "DIV",
+      "cls": "hi-layer"
+     }
+    ]
+   }
+  },
+  {
+   "w": 768,
+   "scan": {
+    "mark": {
+     "x": 24.5,
+     "y": 431.8,
+     "w": 15.5,
+     "h": 15.5
+    },
+    "rawCount": 7,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "bp-stage",
+      "text": "ABCDEFGL144M[CP]نقطة فحص"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "reveal-up reveal-d-2 fo-hero-window in-view"
+     },
+     {
+      "tag": "DIV",
+      "cls": "bp-stage"
+     },
+     {
+      "tag": "svg",
+      "cls": "[object SVGAnimatedString]"
+     },
+     {
+      "tag": "DIV",
+      "cls": "hi-layer"
+     },
+     {
+      "tag": "DIV",
+      "cls": "hi-flow"
+     }
+    ]
+   }
+  },
+  {
+   "w": 820,
+   "scan": {
+    "mark": {
+     "x": 26.2,
+     "y": 425.2,
+     "w": 16.5,
+     "h": 16.5
+    },
+    "rawCount": 7,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "bp-stage",
+      "text": "ABCDEFGL144M[CP]نقطة فحص"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "reveal-up reveal-d-2 fo-hero-window in-view"
+     },
+     {
+      "tag": "DIV",
+      "cls": "bp-stage"
+     },
+     {
+      "tag": "svg",
+      "cls": "[object SVGAnimatedString]"
+     },
+     {
+      "tag": "DIV",
+      "cls": "hi-layer"
+     },
+     {
+      "tag": "DIV",
+      "cls": "hi-flow"
+     }
+    ]
+   }
+  }
+ ],
+ "crops": [
+  "/home/z/foreman/c1c-before/crop-intro-1440-light-before.jpg",
+  "/home/z/foreman/c1c-before/crop-intro-1440-dark-before.jpg",
+  "/home/z/foreman/c1c-before/crop-consent-390-light-before.jpg",
+  "/home/z/foreman/c1c-before/crop-consent-390-dark-before.jpg",
+  "/home/z/foreman/c1c-before/crop-consent-768-light-before.jpg",
+  "/home/z/foreman/c1c-before/crop-consent-768-dark-before.jpg",
+  "/home/z/foreman/c1c-before/crop-etab-360-before.jpg",
+  "/home/z/foreman/c1c-before/crop-etab-390-before.jpg",
+  "/home/z/foreman/c1c-before/crop-etab-430-before.jpg",
+  "/home/z/foreman/c1c-before/crop-etab-480-before.jpg",
+  "/home/z/foreman/c1c-before/crop-etab-600-before.jpg",
+  "/home/z/foreman/c1c-before/crop-etab-768-before.jpg",
+  "/home/z/foreman/c1c-before/crop-etab-820-before.jpg"
+ ],
+ "docH1440": 12340
+}

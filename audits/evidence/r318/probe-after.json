@@ -1,0 +1,751 @@
+{
+ "phase": "after",
+ "base": "http://localhost:4182",
+ "views": {
+  "1440-light": {
+   "scrub": {
+    "p0": {
+     "p": 0,
+     "cardBg": "rgb(40, 40, 40)",
+     "title": {
+      "raw": "rgb(246, 246, 238)",
+      "ratio": 13.57
+     },
+     "more": {
+      "raw": "rgb(246, 246, 238)",
+      "ratio": 13.57
+     },
+     "line1word0": {
+      "colorRaw": "color(srgb 0.964706 0.964706 0.933333 / 0.86)",
+      "colorRatio": 10.41,
+      "transform": "matrix(1, 0, 0, 1, 0, 23.1617)",
+      "leakPx": 0,
+      "hidden": true
+     },
+     "lastLineLastWord": {
+      "transform": "matrix(1, 0, 0, 1, 0, 23.1617)",
+      "leakPx": 0,
+      "hidden": true
+     }
+    },
+    "p0.5": {
+     "p": 0.5,
+     "cardBg": "rgb(40, 40, 40)",
+     "title": {
+      "raw": "rgb(246, 246, 238)",
+      "ratio": 13.57
+     },
+     "more": {
+      "raw": "rgb(246, 246, 238)",
+      "ratio": 13.57
+     },
+     "line1word0": {
+      "colorRaw": "color(srgb 0.964706 0.964706 0.933333 / 0.86)",
+      "colorRatio": 10.41,
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "leakPx": 20.14,
+      "hidden": false
+     },
+     "lastLineLastWord": {
+      "transform": "matrix(1, 0, 0, 1, 0, 23.1617)",
+      "leakPx": 0,
+      "hidden": true
+     }
+    },
+    "p1": {
+     "p": 1,
+     "cardBg": "rgb(40, 40, 40)",
+     "title": {
+      "raw": "rgb(246, 246, 238)",
+      "ratio": 13.57
+     },
+     "more": {
+      "raw": "rgb(246, 246, 238)",
+      "ratio": 13.57
+     },
+     "line1word0": {
+      "colorRaw": "color(srgb 0.964706 0.964706 0.933333 / 0.86)",
+      "colorRatio": 10.41,
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "leakPx": 20.14,
+      "hidden": false
+     },
+     "lastLineLastWord": {
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "leakPx": 20.14,
+      "hidden": false
+     }
+    }
+   },
+   "consent": {
+    "accept": {
+     "bg": "rgb(40, 40, 40)",
+     "color": "rgb(246, 246, 238)",
+     "border": "1px solid rgb(40, 40, 40)",
+     "labelOnFill": 13.57,
+     "rect": {
+      "w": 78.7,
+      "h": 28
+     }
+    },
+    "reject": {
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(40, 40, 40)",
+     "labelOnBanner": 13.57,
+     "rect": {
+      "w": 80.7,
+      "h": 28.3
+     }
+    },
+    "banner": {
+     "w": 601,
+     "h": 38,
+     "x": 0,
+     "y": 862
+    }
+   },
+   "consentHover": {
+    "bg": "rgb(40, 40, 40)",
+    "color": "rgb(255, 255, 255)",
+    "borderColor": "rgb(199, 46, 0)",
+    "labelOnFill": 5.5,
+    "wipeGround": "rgb(199, 46, 0)",
+    "wipeDown": true
+   },
+   "consentActive": {
+    "bg": "rgb(246, 246, 238)",
+    "color": "rgb(40, 40, 40)",
+    "borderColor": "rgb(40, 40, 40)",
+    "labelOnFill": 13.57
+   },
+   "edgeTab": {
+    "tag": "BUTTON",
+    "ariaLabel": "الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها",
+    "hit": {
+     "x": 6.7,
+     "y": 368.5,
+     "w": 44.2,
+     "h": 163
+    },
+    "mark": {
+     "x": 22.3,
+     "y": 376.5,
+     "w": 14,
+     "h": 14
+    },
+    "labelDisplay": "block"
+   }
+  },
+  "1440-dark": {
+   "scrub": {
+    "p0": {
+     "p": 0,
+     "cardBg": "rgb(246, 248, 250)",
+     "title": {
+      "raw": "rgb(40, 40, 40)",
+      "ratio": 13.85
+     },
+     "more": {
+      "raw": "rgb(40, 40, 40)",
+      "ratio": 13.85
+     },
+     "line1word0": {
+      "colorRaw": "color(srgb 0.156863 0.156863 0.156863 / 0.86)",
+      "colorRatio": 8.99,
+      "transform": "matrix(1, 0, 0, 1, 0, 23.1617)",
+      "leakPx": 0,
+      "hidden": true
+     },
+     "lastLineLastWord": {
+      "transform": "matrix(1, 0, 0, 1, 0, 23.1617)",
+      "leakPx": 0,
+      "hidden": true
+     }
+    },
+    "p0.5": {
+     "p": 0.5,
+     "cardBg": "rgb(246, 248, 250)",
+     "title": {
+      "raw": "rgb(40, 40, 40)",
+      "ratio": 13.85
+     },
+     "more": {
+      "raw": "rgb(40, 40, 40)",
+      "ratio": 13.85
+     },
+     "line1word0": {
+      "colorRaw": "color(srgb 0.156863 0.156863 0.156863 / 0.86)",
+      "colorRatio": 8.99,
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "leakPx": 20.14,
+      "hidden": false
+     },
+     "lastLineLastWord": {
+      "transform": "matrix(1, 0, 0, 1, 0, 23.1617)",
+      "leakPx": 0,
+      "hidden": true
+     }
+    },
+    "p1": {
+     "p": 1,
+     "cardBg": "rgb(246, 248, 250)",
+     "title": {
+      "raw": "rgb(40, 40, 40)",
+      "ratio": 13.85
+     },
+     "more": {
+      "raw": "rgb(40, 40, 40)",
+      "ratio": 13.85
+     },
+     "line1word0": {
+      "colorRaw": "color(srgb 0.156863 0.156863 0.156863 / 0.86)",
+      "colorRatio": 8.99,
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "leakPx": 20.14,
+      "hidden": false
+     },
+     "lastLineLastWord": {
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "leakPx": 20.14,
+      "hidden": false
+     }
+    }
+   },
+   "consent": {
+    "accept": {
+     "bg": "rgb(246, 248, 250)",
+     "color": "rgb(40, 40, 40)",
+     "border": "1px solid rgb(246, 248, 250)",
+     "labelOnFill": 13.85,
+     "rect": {
+      "w": 78.7,
+      "h": 28
+     }
+    },
+    "reject": {
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 248, 250)",
+     "labelOnBanner": 13.85,
+     "rect": {
+      "w": 80.7,
+      "h": 28.3
+     }
+    },
+    "banner": {
+     "w": 601,
+     "h": 38,
+     "x": 0,
+     "y": 862
+    }
+   },
+   "consentHover": {
+    "bg": "rgb(246, 248, 250)",
+    "color": "rgb(25, 25, 24)",
+    "borderColor": "rgb(255, 107, 51)",
+    "labelOnFill": 6.2,
+    "wipeGround": "rgb(255, 107, 51)",
+    "wipeDown": true
+   },
+   "consentActive": {
+    "bg": "rgb(40, 40, 40)",
+    "color": "rgb(246, 248, 250)",
+    "borderColor": "rgb(246, 248, 250)",
+    "labelOnFill": 13.85
+   },
+   "edgeTab": {
+    "tag": "BUTTON",
+    "ariaLabel": "الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها",
+    "hit": {
+     "x": 6.7,
+     "y": 368.5,
+     "w": 44.2,
+     "h": 163
+    },
+    "mark": {
+     "x": 22.3,
+     "y": 376.5,
+     "w": 14,
+     "h": 14
+    },
+    "labelDisplay": "block"
+   }
+  },
+  "390-light": {
+   "twin": {
+    "title": 13.57,
+    "more": 13.57
+   },
+   "consent": {
+    "accept": {
+     "bg": "rgb(40, 40, 40)",
+     "color": "rgb(246, 246, 238)",
+     "border": "1px solid rgb(40, 40, 40)",
+     "labelOnFill": 13.57,
+     "rect": {
+      "w": 163.4,
+      "h": 44
+     }
+    },
+    "reject": {
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(40, 40, 40)",
+     "labelOnBanner": 13.57,
+     "rect": {
+      "w": 163.4,
+      "h": 44
+     }
+    },
+    "banner": {
+     "w": 358.8,
+     "h": 94.2,
+     "x": 15.6,
+     "y": 749.8
+    }
+   },
+   "edgeTab": {
+    "tag": "BUTTON",
+    "ariaLabel": "الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها",
+    "hit": {
+     "x": 0,
+     "y": 400,
+     "w": 44,
+     "h": 44
+    },
+    "mark": {
+     "x": 0,
+     "y": 415,
+     "w": 15,
+     "h": 14
+    },
+    "labelDisplay": "none"
+   }
+  },
+  "390-dark": {
+   "twin": {
+    "title": 13.85,
+    "more": 13.85
+   },
+   "consent": {
+    "accept": {
+     "bg": "rgb(246, 248, 250)",
+     "color": "rgb(40, 40, 40)",
+     "border": "1px solid rgb(246, 248, 250)",
+     "labelOnFill": 13.85,
+     "rect": {
+      "w": 163.4,
+      "h": 44
+     }
+    },
+    "reject": {
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 248, 250)",
+     "labelOnBanner": 13.85,
+     "rect": {
+      "w": 163.4,
+      "h": 44
+     }
+    },
+    "banner": {
+     "w": 358.8,
+     "h": 94.2,
+     "x": 15.6,
+     "y": 749.8
+    }
+   },
+   "edgeTab": {
+    "tag": "BUTTON",
+    "ariaLabel": "الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها",
+    "hit": {
+     "x": 0,
+     "y": 400,
+     "w": 44,
+     "h": 44
+    },
+    "mark": {
+     "x": 0,
+     "y": 415,
+     "w": 15,
+     "h": 14
+    },
+    "labelDisplay": "none"
+   }
+  },
+  "768-light": {
+   "twin": {
+    "title": 13.57,
+    "more": 13.57
+   },
+   "consent": {
+    "accept": {
+     "bg": "rgb(40, 40, 40)",
+     "color": "rgb(246, 246, 238)",
+     "border": "1px solid rgb(40, 40, 40)",
+     "labelOnFill": 13.57,
+     "rect": {
+      "w": 86.9,
+      "h": 30.9
+     }
+    },
+    "reject": {
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(40, 40, 40)",
+     "labelOnBanner": 13.57,
+     "rect": {
+      "w": 89.1,
+      "h": 31.3
+     }
+    },
+    "banner": {
+     "w": 664.1,
+     "h": 42,
+     "x": 0,
+     "y": 982
+    }
+   },
+   "edgeTab": {
+    "tag": "BUTTON",
+    "ariaLabel": "الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها",
+    "hit": {
+     "x": 0,
+     "y": 490,
+     "w": 44,
+     "h": 44
+    },
+    "mark": {
+     "x": 0,
+     "y": 505,
+     "w": 15,
+     "h": 14
+    },
+    "labelDisplay": "none"
+   }
+  },
+  "768-dark": {
+   "twin": {
+    "title": 13.85,
+    "more": 13.85
+   },
+   "consent": {
+    "accept": {
+     "bg": "rgb(246, 248, 250)",
+     "color": "rgb(40, 40, 40)",
+     "border": "1px solid rgb(246, 248, 250)",
+     "labelOnFill": 13.85,
+     "rect": {
+      "w": 86.9,
+      "h": 30.9
+     }
+    },
+    "reject": {
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 248, 250)",
+     "labelOnBanner": 13.85,
+     "rect": {
+      "w": 89.1,
+      "h": 31.3
+     }
+    },
+    "banner": {
+     "w": 664.1,
+     "h": 42,
+     "x": 0,
+     "y": 982
+    }
+   },
+   "edgeTab": {
+    "tag": "BUTTON",
+    "ariaLabel": "الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها",
+    "hit": {
+     "x": 0,
+     "y": 490,
+     "w": 44,
+     "h": 44
+    },
+    "mark": {
+     "x": 0,
+     "y": 505,
+     "w": 15,
+     "h": 14
+    },
+    "labelDisplay": "none"
+   }
+  }
+ },
+ "a10Scan": [
+  {
+   "w": 360,
+   "scan": {
+    "mark": {
+     "x": 0,
+     "y": 415,
+     "w": 15,
+     "h": 14
+    },
+    "rawCount": 3,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "fo-hero-strip",
+      "text": "رحلة تعلم واحدةمن المحاض"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "fo-hero-strip"
+     }
+    ]
+   }
+  },
+  {
+   "w": 390,
+   "scan": {
+    "mark": {
+     "x": 0,
+     "y": 415,
+     "w": 15,
+     "h": 14
+    },
+    "rawCount": 4,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "fo-hero-strip",
+      "text": "رحلة تعلم واحدةمن المحاض"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "fo-hero-strip"
+     },
+     {
+      "tag": "H1",
+      "cls": "reveal-up reveal-d-1 fo-hero-title in-view"
+     }
+    ]
+   }
+  },
+  {
+   "w": 430,
+   "scan": {
+    "mark": {
+     "x": 0,
+     "y": 415,
+     "w": 15,
+     "h": 14
+    },
+    "rawCount": 3,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "fo-hero-strip",
+      "text": "رحلة تعلم واحدةمن المحاض"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "fo-hero-strip"
+     }
+    ]
+   }
+  },
+  {
+   "w": 480,
+   "scan": {
+    "mark": {
+     "x": 0,
+     "y": 415,
+     "w": 15,
+     "h": 14
+    },
+    "rawCount": 4,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "fo-hero-strip",
+      "text": "رحلة تعلم واحدةمن المحاض"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "fo-hero-strip"
+     },
+     {
+      "tag": "H1",
+      "cls": "reveal-up reveal-d-1 fo-hero-title in-view"
+     }
+    ]
+   }
+  },
+  {
+   "w": 600,
+   "scan": {
+    "mark": {
+     "x": 0,
+     "y": 415,
+     "w": 15,
+     "h": 14
+    },
+    "rawCount": 4,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "bp-stage",
+      "text": "ABCDEFGL144M[CP]نقطة فحص"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "reveal-up reveal-d-2 fo-hero-window in-view"
+     },
+     {
+      "tag": "DIV",
+      "cls": "bp-stage"
+     }
+    ]
+   }
+  },
+  {
+   "w": 768,
+   "scan": {
+    "mark": {
+     "x": 0,
+     "y": 505,
+     "w": 15,
+     "h": 14
+    },
+    "rawCount": 5,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "bp-stage",
+      "text": "ABCDEFGL144M[CP]نقطة فحص"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "reveal-up reveal-d-2 fo-hero-window in-view"
+     },
+     {
+      "tag": "DIV",
+      "cls": "bp-stage"
+     },
+     {
+      "tag": "DIV",
+      "cls": "hi-flow"
+     }
+    ]
+   }
+  },
+  {
+   "w": 820,
+   "scan": {
+    "mark": {
+     "x": 0,
+     "y": 505,
+     "w": 15,
+     "h": 14
+    },
+    "rawCount": 5,
+    "textOrCard": [
+     {
+      "tag": "DIV",
+      "cls": "bp-stage",
+      "text": "ABCDEFGL144M[CP]نقطة فحص"
+     }
+    ],
+    "raw": [
+     {
+      "tag": "MAIN",
+      "cls": ""
+     },
+     {
+      "tag": "SECTION",
+      "cls": "fo-hero"
+     },
+     {
+      "tag": "DIV",
+      "cls": "reveal-up reveal-d-2 fo-hero-window in-view"
+     },
+     {
+      "tag": "DIV",
+      "cls": "bp-stage"
+     },
+     {
+      "tag": "DIV",
+      "cls": "hi-flow"
+     }
+    ]
+   }
+  }
+ ],
+ "crops": [
+  "/home/z/foreman/c1c-after/crop-intro-1440-light-after.jpg",
+  "/home/z/foreman/c1c-after/crop-intro-1440-dark-after.jpg",
+  "/home/z/foreman/c1c-after/crop-consent-390-light-after.jpg",
+  "/home/z/foreman/c1c-after/crop-consent-390-dark-after.jpg",
+  "/home/z/foreman/c1c-after/crop-consent-768-light-after.jpg",
+  "/home/z/foreman/c1c-after/crop-consent-768-dark-after.jpg",
+  "/home/z/foreman/c1c-after/crop-etab-360-after.jpg",
+  "/home/z/foreman/c1c-after/crop-etab-390-after.jpg",
+  "/home/z/foreman/c1c-after/crop-etab-430-after.jpg",
+  "/home/z/foreman/c1c-after/crop-etab-480-after.jpg",
+  "/home/z/foreman/c1c-after/crop-etab-600-after.jpg",
+  "/home/z/foreman/c1c-after/crop-etab-768-after.jpg",
+  "/home/z/foreman/c1c-after/crop-etab-820-after.jpg"
+ ],
+ "docH1440": 12340
+}
