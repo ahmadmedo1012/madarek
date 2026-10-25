@@ -250,3 +250,55 @@ ladder viewport.
    W6 token proposal (raise dark --accent-ink) · typography/header/
    buttons census re-census · the true authed-surface sweep (needs the
    full local stack).
+
+---
+
+# R315 — PARITY (VISUAL TRUTH) · cycle 4 — the artwork/composition round (CLOSED)
+
+**Score: 60.5 → 60.5 (ratchet held).** Five-agent fleet; the artwork
+re-compositions landed with ZERO geometry drift (the ladder re-verified
+after merge: 11/11 viewports, every band ≤3%, worst docH +0.85%).
+
+## Closed (fleet + foreman completions after agent context-deaths)
+- **c4/a map journey**: the mid/late states re-composed as ink drawings
+  (thick strokes, cross-hatch poché, solid accent room, one-large-plan
+  with violation overlays, multi-view technical sheet); the cycle's
+  worst frame s03-25 dropped worstRegion 100%→20% in the fresh pixel
+  judge; vision verdict: floor-plan dominant, density 7/10.
+- **c4/b platform**: the tool-canvas re-composition (hairline panels +
+  plan-view canvases + one large solid accent region); vision verdict:
+  multi-panel drawing tool, density 8/10.
+- **c4/c hero + statement**: ink ladder lifted (bp-ink 1.5→4, bp-ink-2
+  2→5.5 + stipple/xhatch) — vision density thin(1-3)→moderate(4-6), the
+  full reference tonal mass stays a guided tuning target; the statement
+  band's drafted illustration (campus massing + orange sun + row-band)
+  landed, vision-verified.
+- **c4/d carried flags**: EdgeTab year computed (Arabic-Indic), أحرام,
+  404 tashkeel, dark --accent-ink raised #FF6B33 (4.79:1, token-carried,
+  override retired), --frames-mode section harness.
+- **c4/e CI debt**: the two jobs red on EVERY push since r314 now green —
+  e2e 102/102 (chromium-1223 + stale pins re-pinned: r308 loader belt to
+  the V14 beats, guest-landing r188 to the R315 H1, r183-B6 title
+  contracts) · r305 belt 73→0 failed (12 tashkeel pins swept + the
+  motion-ladder same-value pin) · check-raw-css --strict PASS.
+
+## Score note (honest)
+The pixel component (~43) is now floored by the artwork-SUBJECT
+difference (our own original drawings vs the reference's different
+drawings — the standing no-copy rule); the style/composition convergence
+lives in the VLM domain, where the changed frames' re-verdict is queued
+as cycle-5's first item. vlm 43.1 · pixel 43.1 · census 55 · motion 78 ·
+behaviour 90 · coverage 100.
+
+## Gates (cycle-4 close)
+eslint 0 · tsc 0 · vitest 2533/2533 + 1783/1783 · **e2e 102/102 · r305
+belt 0 failed** · check-raw-css --strict PASS · icons/motion/colors/csp
+OK · parity-export 200/200 · full ladder zero drift.
+
+## Cycle-5 queue
+1. VLM re-verdict of the 20 changed frames (masked, fresh captures).
+2. Hero tonal density to the reference's full mass (pixel-judge-guided).
+3. The remaining s02-0/50 "empty top" alignment family + the 768
+   deferred pair (section-relative mode now in the harness — run it).
+4. typography/header/buttons census re-census · the true authed-surface
+   sweep (full local stack).

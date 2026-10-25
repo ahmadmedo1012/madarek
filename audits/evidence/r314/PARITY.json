@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-24T21:19:17.995Z",
+ "generatedAt": "2026-10-25T00:31:49.231Z",
  "components": {
   "vlm": {
    "score": 43.1,
@@ -12,9 +12,9 @@
   "pixel": {
    "score": 43.1,
    "weight": 20,
-   "worstRegionAvg": 0.7209,
-   "globalAvg": 0.1885,
-   "dEpaperAvg": 3.4,
+   "worstRegionAvg": 0.7199,
+   "globalAvg": 0.192,
+   "dEpaperAvg": 3.3,
    "pairs": 87
   },
   "census": {
