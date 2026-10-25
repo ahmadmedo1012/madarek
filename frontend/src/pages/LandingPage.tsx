@@ -15,6 +15,7 @@ import { LIVE_CAPABILITIES, LIVE_COUNT } from '../data/landing-ledger';
 import { formatInt } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
 import { ProductFrame } from '../components/landing/ProductFrame';
+import { PlatformCanvas } from '../components/landing/PlatformCanvas';
 import { HeroInkWindow } from '../components/landing/HeroInkWindow';
 import { WhyScene } from '../components/landing/WhyScene';
 import { PainArt } from '../components/landing/PainArt';
@@ -1003,8 +1004,14 @@ export default function LandingPage() {
             labelled with the mono «real-ui» tag + the demo-data
             disclosure on every frame; the CTA scrolls to the conversion
             row (the funnel counts stay exact — no extra auth links
-            on the sheet). ═══ */}
+            on the sheet).
+            R315 cycle-4 (c4-B): the band re-composed as the reference's
+            TOOL CANVAS — the wide inline-end paper becomes the drafting
+            panel (plan view + toolbar + ledger, aria-hidden chrome) the
+            viewports ride on. The flow (head · frames · note) is
+            byte-identical — the measured band heights cannot move. ═══ */}
         <section id="product" className="pr-section" aria-labelledby="pr-title">
+          <PlatformCanvas />
           <div className="pr-head">
             <span className="fo-label"><span className="fo-mono" dir="ltr">[05]</span> المنصّة فعليًا</span>
             <RevealCssClass as="h2" className="pr-title" delay={1} id="pr-title">
@@ -1017,8 +1024,17 @@ export default function LandingPage() {
           </div>
 
           <RevealCssClass as="div" className="pr-grid" delay={2}>
-            <ProductFrame capture={PRODUCT_CAPTURES[0]} variant="lead" ctaAr="أنشئ حسابك لتجربتها حيّة" ctaTo="#cta" ctaAnchor />
-            {teacherCapture && <ProductFrame capture={teacherCapture} />}
+            <ProductFrame
+              capture={PRODUCT_CAPTURES[0]}
+              variant="lead"
+              ctaAr="أنشئ حسابك لتجربتها حيّة"
+              ctaTo="#cta"
+              ctaAnchor
+              viewTag="VIEW-A · 1280×800"
+            />
+            {teacherCapture && (
+              <ProductFrame capture={teacherCapture} viewTag="VIEW-B · 1280×800" />
+            )}
           </RevealCssClass>
 
           <RevealCssClass as="p" className="pr-note" delay={3}>

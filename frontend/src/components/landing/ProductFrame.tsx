@@ -26,6 +26,15 @@ export interface ProductFrameProps {
   ctaAr?: string;
   ctaTo?: string;
   ctaAnchor?: boolean;
+  /**
+   * R315 cycle-4 (c4-B): the drafting VIEWPORT TAG — mono chrome on
+   * the capture's top inline-start corner (e.g. «VIEW-A · 1280×800»),
+   * the reference's CAD viewport label. Desktop platform band only
+   * (scoped .pr-section ≥992 in landing.css; hidden elsewhere). Pure
+   * chrome: decorative, aria-hidden — the honest title/caption stay
+   * in the figcaption.
+   */
+  viewTag?: string;
 }
 
 function productSrcset(id: string, widths: number[]): string {
@@ -124,6 +133,7 @@ export function ProductFrame({
   ctaAr,
   ctaTo,
   ctaAnchor = false,
+  viewTag,
 }: ProductFrameProps) {
   const widths = capture.widths;
   const w = widths[widths.length - 1] ?? widths[0] ?? 720;
@@ -145,6 +155,11 @@ export function ProductFrame({
           />
         </div>
         <ProductMockCards variant={variant} />
+        {viewTag && (
+          <span className="prf-viewtag" dir="ltr" aria-hidden="true">
+            {viewTag}
+          </span>
+        )}
       </div>
       <figcaption className="prf-caption">
         <span className="prf-caption-tag fo-mono" dir="ltr">
