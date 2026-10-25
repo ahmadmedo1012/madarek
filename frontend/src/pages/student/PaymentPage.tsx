@@ -11,6 +11,10 @@ import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useMyProfile } from '../../hooks/useResources';
 import { toast } from '../../lib/toast';
+/* R319 C1-C — visible-text hygiene on the identity row's data value
+   (§B2): placeholder test names / revision codes never render as the
+   student's faculty. */
+import { sanitizeInstitutionName } from '../../utils/display-text';
 /* R305 Heron: the shared student vocabulary + this family's refinements. */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-supplemental.css';
@@ -31,7 +35,7 @@ export default function PaymentPage() {
   const profile = useMyProfile();
   const fullName = user ? `${user.firstName} ${user.lastName}` : '—';
   const universityId = profile.data?.student?.universityId ?? null;
-  const facultyName = profile.data?.student?.faculty?.name ?? null;
+  const facultyName = sanitizeInstitutionName(profile.data?.student?.faculty?.name) || null;
 
   // There is deliberately no checkout flow to confirm (see docblock) —
   // the page's one action needing success feedback is a retry that

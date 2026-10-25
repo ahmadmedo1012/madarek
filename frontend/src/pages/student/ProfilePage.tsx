@@ -22,6 +22,10 @@ import '../../styles/training.css'; // .achievement-* family (D11 css split, 12-
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-supplemental.css';
 import { formatNum } from '../../utils/numbers';
+/* R319 C1-C — visible-text hygiene on data-field values (§B2): the
+   same sanitizer the dashboard header rides — placeholder test names
+   and revision codes never render as a student's faculty/department. */
+import { sanitizeInstitutionName } from '../../utils/display-text';
 
 type LinkKind = 'research-gate' | 'google-scholar' | 'orcid';
 
@@ -261,12 +265,12 @@ export default function ProfilePage() {
             <ProfileField label="البريد الجامعي" value={user.email} icon={Mail} mono />
             <ProfileField
               label="الكلّيّة"
-              value={profile.data?.student?.faculty?.name ?? '—'}
+              value={sanitizeInstitutionName(profile.data?.student?.faculty?.name) || '—'}
               icon={GraduationCap}
             />
             <ProfileField
               label="القسم"
-              value={profile.data?.student?.department?.name ?? '—'}
+              value={sanitizeInstitutionName(profile.data?.student?.department?.name) || '—'}
               icon={BookOpen}
             />
             <ProfileField
@@ -277,11 +281,14 @@ export default function ProfilePage() {
             />
             <ProfileField
               label="السنة الدراسية"
-              value={
-                profile.data?.student?.year
-                  ? ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة'][profile.data.student.year - 1] ?? `السنة ${profile.data.student.year}`
-                  : '—'
-              }
+              value={(() => {
+                /* R319 C1-C: finite 1..8 integer sanity (medicine/pharmacy
+                   legitimately reach 8) — junk years render «—», never
+                   «السنة undefined». */
+                const y = profile.data?.student?.year;
+                if (typeof y !== 'number' || !Number.isInteger(y) || y < 1 || y > 8) return '—';
+                return ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة'][y - 1] ?? `السنة ${y}`;
+              })()}
               icon={Award}
             />
           </div>
