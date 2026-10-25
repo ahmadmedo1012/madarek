@@ -616,7 +616,7 @@
     --accent-soft:   #432015;
     --accent-strong: #FFC5AE;            /* 9.72:1 bg — text/ring tier */
     --accent-fg:     var(--warm-ink);
-    --accent-ink:    var(--accent);      /* night text tier — 4.73:1 bg */
+    --accent-ink:    #FF6B33;           /* night text tier — 4.79:1 surface / 5.20:1 bg (r315 C4-D: raised off the #FF5A1F fill, 4.35:1 surface < 4.5 AA at 13px; == --accent-hover) */
     /* r305 — the night ring re-keys to the luminous ember hover tier
        (5.20:1 on the night ground). The grouped light block's #C72E00
        would inherit here at 3.2:1-class — under the ring rule. */

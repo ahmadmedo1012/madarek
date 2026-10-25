@@ -5,7 +5,9 @@
  * right viewport edge, vertically centred, ~26×140, paper ground, a
  * 1px hairline on the outer edge, a small orange square with a tiny
  * mark at the top, rotated vertical mono label) — carrying Madarek's
- * OWN honest label «منصّة مستقلّة · مدارك ٢٠٢٦». NEVER the reference's
+ * OWN honest label «منصّة مستقلّة · مدارك <year>» (the year COMPUTED at
+ * render in Arabic-Indic digits — r315 C4-D: the ٢٠٢٦ hardcode went
+ * stale at the 2027 rollover). NEVER the reference's
  * "Site of the Day"/awwwards badge or any award claim — Madarek claims
  * no awards.
  *
@@ -20,6 +22,16 @@ import { useCallback } from 'react';
 
 /** The colophon footer selector — the tab's scroll target. */
 const FOOTER_SELECTOR = '.fo-footer';
+
+/** The tab's year, COMPUTED (never hardcoded — the r315 C4-D rollover
+ * fix): Arabic-Indic digits via the codepoint math toWestern() mirrors
+ * (٠ = U+0660 = 1632, the run is consecutive) — the tab's vertical mono
+ * label keeps the drafting-script numeral family, so today it still
+ * renders exactly «مدارك ٢٠٢٦» and rolls to ٢٠٢٧ on its own. */
+const yearAr = () =>
+  String(new Date().getFullYear()).replace(/[0-9]/g, (d) =>
+    String.fromCharCode(d.charCodeAt(0) - 48 + 1632),
+  );
 
 export function EdgeTab() {
   const scrollToFooter = useCallback(() => {
@@ -65,8 +77,8 @@ export function EdgeTab() {
         </svg>
       </span>
       {/* the rotated vertical mono label — Madarek's own honest line
-          (no award claims): «منصّة مستقلّة · مدارك ٢٠٢٦» */}
-      <span className="et-label" aria-hidden="true">منصّة مستقلّة · مدارك ٢٠٢٦</span>
+          (no award claims): «منصّة مستقلّة · مدارك <computed year>» */}
+      <span className="et-label" aria-hidden="true">{`منصّة مستقلّة · مدارك ${yearAr()}`}</span>
     </button>
   );
 }

@@ -352,17 +352,11 @@
   color: var(--accent-ink);
 }
 
-/* c3-W6 (contrast probe, dark): the kind micro-label sits on the facade
-   poster (surface + bg mix) where the dark --accent-ink #FF5A1F reads
-   4.35:1 — under the 4.5 AA floor at the 13px label size. The dark
-   hover rung of the SAME accent family (#FF6B33) clears 4.79:1 on
-   --surface (4.95 on --bg); light keeps the canonical --accent-ink
-   (5.16). Token-seat note: the systemic fix belongs to tokens.css
-   (raise dark --accent-ink) — filed as the W6 token proposal, this is
-   the page-scoped seat fix. */
-[data-theme="dark"] .vc-kind {
-  color: var(--accent-hover);
-}
+/* r315 C4-D: the dark page-scoped override is RETIRED — the W6 token
+   proposal landed (tokens.css dark --accent-ink = #FF6B33, 4.79:1 on
+   --surface at the 13px label size), so the base rule above now carries
+   the same value the override used to inject via --accent-hover.
+   Light keeps the canonical --accent-ink (5.16:1) untouched. */
 
 .vc-title {
   font-family: var(--font-display);
