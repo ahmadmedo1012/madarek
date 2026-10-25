@@ -1,0 +1,185 @@
+{
+ "count": 20,
+ "list": [
+  {
+   "i": 0,
+   "trigger": "home-intro-wrap",
+   "start": 0,
+   "end": 2089,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 1,
+   "trigger": "home-intro-content-title",
+   "start": 420,
+   "end": 1000,
+   "prog": 0,
+   "pin": null,
+   "scrub": true
+  },
+  {
+   "i": 2,
+   "trigger": "home-intro-body",
+   "start": 519,
+   "end": 1524,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 3,
+   "trigger": "home-intro-partner-wrap",
+   "start": 779,
+   "end": 1675,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 4,
+   "trigger": "home-problem-wrap",
+   "start": 433,
+   "end": 2959,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 5,
+   "trigger": "home-problem-head",
+   "start": 1076,
+   "end": 2027,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 6,
+   "trigger": "home-problem-content",
+   "start": 1484,
+   "end": 2545,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 7,
+   "trigger": "home-map-wrap",
+   "start": 1303,
+   "end": 7778,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 8,
+   "trigger": "home-platform-wrap",
+   "start": 6122,
+   "end": 8747,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 9,
+   "trigger": "home-why-wrap",
+   "start": 7091,
+   "end": 9554,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 10,
+   "trigger": "home-usecase-wrap",
+   "start": 7898,
+   "end": 10615,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 11,
+   "trigger": "footer-form-wrap",
+   "start": 10084,
+   "end": 10988,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 12,
+   "trigger": "footer-menu",
+   "start": 10310,
+   "end": 11262,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 13,
+   "trigger": "footer-info-wrap",
+   "start": 10593,
+   "end": 11551,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 14,
+   "trigger": "footer-logo",
+   "start": 10823,
+   "end": 11734,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 15,
+   "trigger": "footer-img-wrap",
+   "start": 10981,
+   "end": 11871,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 16,
+   "trigger": "footer-copyright-wrap grid",
+   "start": 11076,
+   "end": 11966,
+   "prog": 0,
+   "pin": null,
+   "scrub": null
+  },
+  {
+   "i": 17,
+   "trigger": "home-map-wrap",
+   "start": 1717,
+   "end": 2545,
+   "prog": 0,
+   "pin": null,
+   "scrub": true
+  },
+  {
+   "i": 18,
+   "trigger": "home-map-wrap",
+   "start": 2131,
+   "end": 5845,
+   "prog": 0,
+   "pin": null,
+   "scrub": true
+  },
+  {
+   "i": 19,
+   "trigger": "home-platform-content",
+   "start": 6536,
+   "end": 8333,
+   "prog": 0,
+   "pin": null,
+   "scrub": true
+  }
+ ]
+}

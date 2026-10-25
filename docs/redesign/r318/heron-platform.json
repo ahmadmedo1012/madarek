@@ -1,0 +1,202 @@
+{
+ "_readme": "R318 C3-H numbers-only extraction — PLATFORM section from المرجع. 1440x900. vw = px/14.4.",
+ "meta": {
+  "site": "المرجع (Heron)",
+  "capturedAt": "2026-10-25",
+  "section": "home-platform",
+  "top": 8658,
+  "box": [
+   7,
+   0,
+   1427,
+   710
+  ],
+  "viewportBoxAtTop": [
+   7,
+   0,
+   1427,
+   710
+  ]
+ },
+ "columns": {
+  "count": 3,
+  "left": {
+   "cls": "home-platform-content-left",
+   "box": [
+    7,
+    384,
+    361,
+    145
+   ],
+   "note": "the left SHEET column, 361px = 25.07vw"
+  },
+  "center": {
+   "cls": "home-platform-img-wrap bg-global",
+   "box": [
+    368,
+    0,
+    601,
+    710
+   ],
+   "note": "tool-interface canvas, 601px = 41.74vw; runs FULL section height"
+  },
+  "right": {
+   "cls": "home-platform-content-right",
+   "box": [
+    969,
+    384,
+    464,
+    145
+   ],
+   "note": "inspector/text column, 464px = 32.22vw"
+  },
+  "hairlines": [
+   {
+    "cls": "home-platform-img-line-right",
+    "box": [
+     968,
+     0,
+     1,
+     710
+    ],
+    "bg": "#B3B3AF",
+    "z": 2
+   }
+  ],
+  "gaps": "left|center boundary at x368 (1px line at 367 implicit grid), center|right hairline x968"
+ },
+ "h1": {
+  "present": false,
+  "verdict": "NO h1 inside the platform section; its left sheet carries the [01]/[02] + h4 title grammar. The nearest large heading is the map band's right-sheet h2 'RUN AN AGENT NATIVELY IN YOUR MODEL' (40px) directly above, and home-why's h2 below.",
+  "leftSheetRows": {
+   "number": {
+    "box": [
+     33,
+     411,
+     299,
+     16
+    ],
+    "text": "[01]/[02]",
+    "style": "Geistmono 11.67px 500 upper #B4B4B0"
+   },
+   "title": {
+    "box": [
+     33,
+     486,
+     299,
+     27
+    ],
+    "text": "HERON CHAT WIDGET / HERON DASHBOARD",
+    "style": "h4 BT Grotesk 26.67px 600 ls -0.533px upper #282828 lh 26.67"
+   },
+   "gap": "number row top 411 → title top 486 = 75px; sheet row height 145; sticky row engaged at viewport y384 when section top hits 0"
+  }
+ },
+ "states": {
+  "trigger": "ST#35 home-platform-content scrub 7765→9362 (range 1597)",
+  "state01": {
+   "scrollY": 7765,
+   "left": "[01] HERON CHAT WIDGET",
+   "rightSub": "A chat that floats over your design tool. Ask it about your model… (411x52, BT Grotesk 13.33 muted)",
+   "centerImg": "Before-1.avif natural 1440x870 → rendered 599x354"
+  },
+  "state02": {
+   "scrollY": 9362,
+   "left": "[02] HERON DASHBOARD",
+   "rightSub": "Ask code questions about your building…",
+   "centerImg": "Before.avif natural 2880x1740 → rendered 599x354"
+  },
+  "crossfade": "two .home-platform-content-inner grids crossfade (o 0.295/0.705 at y8658 = 56% of trigger)",
+  "btn": {
+   "cls": "home-platform-content-btn",
+   "box": [
+    969,
+    490,
+    464,
+    40
+   ],
+   "label": "LEARN MORE Geistmono 11.67px upper #282828 dual-label at (996,501) 374x16",
+   "note": "464x40 full-bleed row button, z0"
+  }
+ },
+ "toolInterface": {
+  "canvas": {
+   "box": [
+    368,
+    0,
+    601,
+    710
+   ],
+   "items": [
+    {
+     "box": [
+      368,
+      0,
+      601,
+      355
+     ]
+    },
+    {
+     "box": [
+      368,
+      355,
+      601,
+      355
+     ]
+    }
+   ],
+   "itemWrap": [
+    369,
+    1,
+    599,
+    353
+   ],
+   "note": "two stacked 601x355 tool captures (plan-with-violations on top, dashboard UI below in s02 state)"
+  },
+  "toolRailInspector": "NOT DOM — the tool rail / canvas / inspector columns are drawn INSIDE the raster captures (599x354)",
+  "tooltipCards": {
+   "verdict": "INSIDE the frames (drawn in the raster), NOT DOM overlays",
+   "s02Example": "red notification box bottom-left INSIDE the drawing frame: solid red fill (#FF3300-family) + white text 'IBC 1011.5.2 / RISER HEIGHT / EXCEEDS CODE', mono key/value rows",
+   "s01Example": "red square room-tag with number '62' + dimension texts (5686, 3120, 7948, 1808) and door labels D9/D18 drawn in the raster"
+  },
+  "accentRoom": "red #FA3600-family square tag (room number) + red error box — the accent treatment lives in the tool raster, echoed by the site's #FA3600 system",
+  "monoLabels": [
+   {
+    "text": "[01]/[02]",
+    "box": [
+     33,
+     411
+    ],
+    "style": "Geistmono 11.67 #B4B4B0"
+   },
+   {
+    "text": "LEARN MORE",
+    "box": [
+     996,
+     501
+    ],
+    "style": "Geistmono 11.67 #282828"
+   },
+   {
+    "text": "WHY US",
+    "box": [
+     33,
+     843
+    ],
+    "style": "Geistmono 11.67 upper rgba(40,40,40,.72)",
+    "note": "next section's label marks the platform bottom edge"
+   }
+  ]
+ },
+ "evidence": {
+  "sheets": [
+   "platform-1440.jpg (s01|s02, 62KB)"
+  ],
+  "captures": [
+   "platform-1440-top.jpg (y8658)",
+   "platform-1440-s01.jpg (y7765)",
+   "platform-1440-s02.jpg (y9362)",
+   "inv-platform-1440-{top,s01,s02}.json"
+  ]
+ }
+}

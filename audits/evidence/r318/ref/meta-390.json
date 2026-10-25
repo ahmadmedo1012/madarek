@@ -1,0 +1,44 @@
+{
+ "capturedAt": "2026-10-25T01:39:44.414Z",
+ "viewport": {
+  "w": 390,
+  "h": 844
+ },
+ "mode": "mobile",
+ "loaderMs": 10158,
+ "globals": {
+  "gsap": true,
+  "ST": true,
+  "lenisWin": false,
+  "LenisCtor": true,
+  "wrapper": true,
+  "wrapperLenis": false,
+  "scrollMax": 10613
+ },
+ "band": {
+  "start": 2552.765625,
+  "end": 6527.765625,
+  "via": "section geometry (no pin found)",
+  "pinClass": null
+ },
+ "mapPin": null,
+ "tops": {
+  "intro": 836,
+  "problem": 1683,
+  "platform": 7372,
+  "mapTop": 2553,
+  "footer": 10709,
+  "scrollMax": 11138
+ },
+ "progressPoints": [
+  0,
+  0.125,
+  0.25,
+  0.375,
+  0.5,
+  0.625,
+  0.75,
+  0.875,
+  1
+ ]
+}

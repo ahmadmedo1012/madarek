@@ -1,0 +1,3096 @@
+{
+ ".home-map-inner": [
+  {
+   "sel": ".home-map-inner",
+   "cls": "home-map-inner",
+   "box": [
+    6.7,
+    6.7,
+    1426.7,
+    886.7
+   ],
+   "display": "flex",
+   "position": "sticky",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Right there with youFor the whole design .home-map-img-svg { overflow: visible !important; } .home-map-img-svg"
+  }
+ ],
+ ".home-map-main-stick": [
+  {
+   "sel": ".home-map-main-stick",
+   "cls": "home-map-main-stick",
+   "box": [
+    6.7,
+    6.7,
+    1152.4,
+    886.7
+   ],
+   "display": "block",
+   "position": "relative",
+   "overflow": "hidden",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Right there with youFor the whole design .home-map-img-svg { overflow: visible !important; } .home-map-img-svg"
+  }
+ ],
+ ".home-map-main-stick-inner": [
+  {
+   "sel": ".home-map-main-stick-inner",
+   "cls": "home-map-main-stick-inner",
+   "box": [
+    6.7,
+    6.7,
+    1152.4,
+    886.7
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "16.6667px",
+    "0px",
+    "16.6667px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Right there with youFor the whole design .home-map-img-svg { overflow: visible !important; } .home-map-img-svg"
+  }
+ ],
+ ".home-map-main-inner": [
+  {
+   "sel": ".home-map-main-inner",
+   "cls": "home-map-main-inner",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "grid",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "matrix(1, 0, 0, 1, 0, 0)",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Right there with youFor the whole design .home-map-img-svg { overflow: visible !important; } .home-map-img-svg"
+  }
+ ],
+ ".home-map-main-img": [
+  {
+   "sel": ".home-map-main-img",
+   "cls": "home-map-main-img",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ".home-map-img-svg { overflow: visible !important; } .home-map-img-svg path{ transition: filter ease .4s; &:nth"
+  },
+  {
+   "sel": ".home-map-main-img",
+   "cls": "home-map-main-img",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  },
+  {
+   "sel": ".home-map-main-img",
+   "cls": "home-map-main-img",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  },
+  {
+   "sel": ".home-map-main-img",
+   "cls": "home-map-main-img",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  },
+  {
+   "sel": ".home-map-main-img",
+   "cls": "home-map-main-img",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  },
+  {
+   "sel": ".home-map-main-img",
+   "cls": "home-map-main-img active",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "IBC 1017.2Exit Access Travel DistanceAssembly occupancies without sprinklers are limited to 75 ft of exit trav"
+  }
+ ],
+ ".home-map-main-img-inner": [
+  {
+   "sel": ".home-map-main-img-inner",
+   "cls": "home-map-main-img-inner",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ".home-map-img-svg { overflow: visible !important; } .home-map-img-svg path{ transition: filter ease .4s; &:nth"
+  },
+  {
+   "sel": ".home-map-main-img-inner",
+   "cls": "home-map-main-img-inner",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0.3349",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  },
+  {
+   "sel": ".home-map-main-img-inner",
+   "cls": "home-map-main-img-inner",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  },
+  {
+   "sel": ".home-map-main-img-inner",
+   "cls": "home-map-main-img-inner",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  },
+  {
+   "sel": ".home-map-main-img-inner",
+   "cls": "home-map-main-img-inner",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  },
+  {
+   "sel": ".home-map-main-img-inner",
+   "cls": "home-map-main-img-inner",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  }
+ ],
+ ".home-map-main-img-main": [
+  {
+   "sel": ".home-map-main-img-main",
+   "cls": "home-map-main-img-main",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "block",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "IBC 1017.2Exit Access Travel DistanceAssembly occupancies without sprinklers are limited to 75 ft of exit trav"
+  }
+ ],
+ ".home-map-img-svg": [
+  {
+   "sel": ".home-map-img-svg",
+   "cls": "[object SVGAnimatedString]",
+   "box": [
+    6.7,
+    23.3,
+    1152.4,
+    853.3
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  }
+ ],
+ ".home-map-intro": [
+  {
+   "sel": ".home-map-intro",
+   "cls": "home-map-intro",
+   "box": [
+    33.3,
+    763.2,
+    233.3,
+    103.5
+   ],
+   "display": "block",
+   "position": "absolute",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "1px rgb(179, 179, 175)",
+    "1px rgb(179, 179, 175)",
+    "1px rgb(179, 179, 175)",
+    "1px rgb(179, 179, 175)"
+   ],
+   "opacity": "0",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "756.531px",
+   "left": "26.6667px",
+   "bottom": "26.6667px",
+   "right": "892.375px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "IntroductionArchitects spend hours on manual modelling, coordination, and cleanup, work that pulls focus away "
+  }
+ ],
+ ".home-map-intro-head": [
+  {
+   "sel": ".home-map-intro-head",
+   "cls": "home-map-intro-head",
+   "box": [
+    34.3,
+    764.2,
+    231.3,
+    26.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "6.66667px",
+    "6.66667px",
+    "6.66667px",
+    "10px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgb(40, 40, 40)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Introduction"
+  }
+ ],
+ ".home-map-intro-title": [
+  {
+   "sel": ".home-map-intro-title",
+   "cls": "home-map-intro-title",
+   "box": [
+    44.3,
+    770.8,
+    72,
+    13
+   ],
+   "display": "block",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(255, 255, 255)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(255, 255, 255)",
+    "0px rgb(255, 255, 255)",
+    "0px rgb(255, 255, 255)",
+    "0px rgb(255, 255, 255)"
+   ],
+   "opacity": "1",
+   "zIndex": "2",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Introduction"
+  }
+ ],
+ ".home-map-intro-content": [
+  {
+   "sel": ".home-map-intro-content",
+   "cls": "home-map-intro-content",
+   "box": [
+    34.3,
+    790.5,
+    231.3,
+    75.2
+   ],
+   "display": "grid",
+   "position": "static",
+   "overflow": "hidden",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Architects spend hours on manual modelling, coordination, and cleanup, work that pulls focus away from the act"
+  }
+ ],
+ ".home-map-intro-content-item": [
+  {
+   "sel": ".home-map-intro-content-item",
+   "cls": "home-map-intro-content-item active",
+   "box": [
+    34.3,
+    790.5,
+    231.3,
+    136.2
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0.408455",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Architects spend hours on manual modelling, coordination, and cleanup, work that pulls focus away from the act"
+  },
+  {
+   "sel": ".home-map-intro-content-item",
+   "cls": "home-map-intro-content-item",
+   "box": [
+    34.3,
+    790.5,
+    231.3,
+    115
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Most of it is repetitive and rule-based, the kind of task that shouldn't need a person doing it by hand every "
+  },
+  {
+   "sel": ".home-map-intro-content-item",
+   "cls": "home-map-intro-content-item",
+   "box": [
+    34.3,
+    790.5,
+    231.3,
+    128
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Heron works inside your design tool as an agent that sees your model, flags issues, and makes edits on your ap"
+  },
+  {
+   "sel": ".home-map-intro-content-item",
+   "cls": "home-map-intro-content-item",
+   "box": [
+    34.3,
+    790.5,
+    231.3,
+    128
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Heron works inside your design tool as an agent that sees your model, flags issues, and makes edits on your ap"
+  },
+  {
+   "sel": ".home-map-intro-content-item",
+   "cls": "home-map-intro-content-item",
+   "box": [
+    34.3,
+    790.5,
+    231.3,
+    33
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "[Click on violation]"
+  }
+ ],
+ ".home-map-intro-sub": [
+  {
+   "sel": ".home-map-intro-sub",
+   "cls": "home-map-intro-sub",
+   "box": [
+    44.3,
+    800.5,
+    211.3,
+    86.6
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "13.3333px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Architects spend hours on manual modelling, coordination, and cleanup, work that pulls focus away from the act"
+  },
+  {
+   "sel": ".home-map-intro-sub",
+   "cls": "home-map-intro-sub",
+   "box": [
+    44.3,
+    800.5,
+    211.3,
+    65.3
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "13.3333px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Most of it is repetitive and rule-based, the kind of task that shouldn't need a person doing it by hand every "
+  },
+  {
+   "sel": ".home-map-intro-sub",
+   "cls": "home-map-intro-sub",
+   "box": [
+    44.3,
+    800.5,
+    211.3,
+    81.6
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "13.3333px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Heron works inside your design tool as an agent that sees your model, flags issues, and makes edits on your ap"
+  },
+  {
+   "sel": ".home-map-intro-sub",
+   "cls": "home-map-intro-sub",
+   "box": [
+    44.3,
+    800.5,
+    211.3,
+    81.6
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "13.3333px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Heron works inside your design tool as an agent that sees your model, flags issues, and makes edits on your ap"
+  }
+ ],
+ ".home-map-intro-scroll": [
+  {
+   "sel": ".home-map-intro-scroll",
+   "cls": "home-map-intro-scroll",
+   "box": [
+    44.3,
+    900.4,
+    211.3,
+    16.3
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(180, 180, 176)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "[Scroll to continue]"
+  },
+  {
+   "sel": ".home-map-intro-scroll",
+   "cls": "home-map-intro-scroll",
+   "box": [
+    44.3,
+    879.1,
+    211.3,
+    16.3
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(180, 180, 176)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "[Scroll to continue]"
+  },
+  {
+   "sel": ".home-map-intro-scroll",
+   "cls": "home-map-intro-scroll",
+   "box": [
+    44.3,
+    895.5,
+    211.3,
+    13
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(180, 180, 176)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "[Scroll to continue]"
+  },
+  {
+   "sel": ".home-map-intro-scroll",
+   "cls": "home-map-intro-scroll",
+   "box": [
+    44.3,
+    895.5,
+    211.3,
+    13
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(180, 180, 176)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "[Scroll to continue]"
+  },
+  {
+   "sel": ".home-map-intro-scroll",
+   "cls": "home-map-intro-scroll",
+   "box": [
+    44.3,
+    800.5,
+    211.3,
+    13
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(180, 180, 176)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)",
+    "0px rgb(180, 180, 176)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "[Click on violation]"
+  }
+ ],
+ ".home-map-content-wrap": [
+  {
+   "sel": ".home-map-content-wrap",
+   "cls": "home-map-content-wrap",
+   "box": [
+    1159,
+    6.7,
+    274.3,
+    886.7
+   ],
+   "display": "flex",
+   "position": "static",
+   "overflow": "hidden",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Your model. Your tools. Connected.RUN AN AGENT NATIVELY IN YOUR MODELHeron runs inside the design software you"
+  }
+ ],
+ ".home-map-content": [
+  {
+   "sel": ".home-map-content",
+   "cls": "home-map-content",
+   "box": [
+    1159,
+    6.7,
+    463.7,
+    886.7
+   ],
+   "display": "flex",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Your model. Your tools. Connected.RUN AN AGENT NATIVELY IN YOUR MODELHeron runs inside the design software you"
+  }
+ ],
+ ".home-map-content-label": [
+  {
+   "sel": ".home-map-content-label",
+   "cls": "home-map-content-label",
+   "box": [
+    1185.7,
+    20,
+    108.3,
+    35
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Your model. Your tools. Connected."
+  }
+ ],
+ ".home-map-content-title": [
+  {
+   "sel": ".home-map-content-title",
+   "cls": "home-map-content-title",
+   "box": [
+    1185.7,
+    426.8,
+    410.4,
+    120
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "331.859px",
+    "0px",
+    "20px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(40, 40, 40)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "RUN AN AGENT NATIVELY IN YOUR MODEL"
+  }
+ ],
+ ".home-map-content-sub": [
+  {
+   "sel": ".home-map-content-sub",
+   "cls": "home-map-content-sub",
+   "box": [
+    1185.7,
+    566.8,
+    359.2,
+    86.6
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Heron runs inside the design software you already use. It reads your model, understands what you're working on"
+  }
+ ],
+ ".home-map-content-cms": [
+  {
+   "sel": ".home-map-content-cms",
+   "cls": "home-map-content-cms",
+   "box": [
+    1159,
+    680.1,
+    463.7,
+    213.3
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Works with Revit, Rhino, ArchiCAD, SketchUp. Understands your geometry and intent. Suggests fixes while you wo"
+  }
+ ],
+ ".home-map-content-item": [
+  {
+   "sel": ".home-map-content-item",
+   "cls": "home-map-content-item",
+   "box": [
+    1159,
+    680.1,
+    463.7,
+    53.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Works with Revit, Rhino, ArchiCAD, SketchUp."
+  },
+  {
+   "sel": ".home-map-content-item",
+   "cls": "home-map-content-item",
+   "box": [
+    1159,
+    733.4,
+    463.7,
+    53.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Understands your geometry and intent."
+  },
+  {
+   "sel": ".home-map-content-item",
+   "cls": "home-map-content-item",
+   "box": [
+    1159,
+    786.7,
+    463.7,
+    53.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Suggests fixes while you work."
+  },
+  {
+   "sel": ".home-map-content-item",
+   "cls": "home-map-content-item",
+   "box": [
+    1159,
+    840,
+    463.7,
+    53.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Edits automatically after your approval."
+  }
+ ],
+ ".home-map-content-item-title": [
+  {
+   "sel": ".home-map-content-item-title",
+   "cls": "home-map-content-item-title",
+   "box": [
+    1159,
+    680.1,
+    410.4,
+    53.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "26.6667px",
+    "0px",
+    "26.6667px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(40, 40, 40)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Works with Revit, Rhino, ArchiCAD, SketchUp."
+  },
+  {
+   "sel": ".home-map-content-item-title",
+   "cls": "home-map-content-item-title",
+   "box": [
+    1159,
+    733.4,
+    410.4,
+    53.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "26.6667px",
+    "0px",
+    "26.6667px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(40, 40, 40)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Understands your geometry and intent."
+  },
+  {
+   "sel": ".home-map-content-item-title",
+   "cls": "home-map-content-item-title",
+   "box": [
+    1159,
+    786.7,
+    410.4,
+    53.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "26.6667px",
+    "0px",
+    "26.6667px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(40, 40, 40)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Suggests fixes while you work."
+  },
+  {
+   "sel": ".home-map-content-item-title",
+   "cls": "home-map-content-item-title",
+   "box": [
+    1159,
+    840,
+    410.4,
+    53.3
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "26.6667px",
+    "0px",
+    "26.6667px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(40, 40, 40)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Edits automatically after your approval."
+  }
+ ],
+ ".home-map-content-item-ic": [
+  {
+   "sel": ".home-map-content-item-ic",
+   "cls": "home-map-content-item-ic",
+   "box": [
+    1568.6,
+    679.3,
+    54.9,
+    54.9
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "13.3333px",
+    "13.3333px",
+    "13.3333px",
+    "13.3333px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0.8798",
+   "zIndex": "auto",
+   "transform": "matrix(1.0301, 0, 0, 1.0301, 0, 0)",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  },
+  {
+   "sel": ".home-map-content-item-ic",
+   "cls": "home-map-content-item-ic",
+   "box": [
+    1568.2,
+    732.1,
+    55.8,
+    55.8
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "13.3333px",
+    "13.3333px",
+    "13.3333px",
+    "13.3333px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0.8146",
+   "zIndex": "auto",
+   "transform": "matrix(1.0464, 0, 0, 1.0464, 0, 0)",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  },
+  {
+   "sel": ".home-map-content-item-ic",
+   "cls": "home-map-content-item-ic",
+   "box": [
+    1567.5,
+    784.8,
+    57.1,
+    57.1
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "13.3333px",
+    "13.3333px",
+    "13.3333px",
+    "13.3333px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0.7141",
+   "zIndex": "auto",
+   "transform": "matrix(1.0715, 0, 0, 1.0715, 0, 0)",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  },
+  {
+   "sel": ".home-map-content-item-ic",
+   "cls": "home-map-content-item-ic",
+   "box": [
+    1566.5,
+    837.1,
+    59.2,
+    59.2
+   ],
+   "display": "flex",
+   "position": "relative",
+   "overflow": "visible",
+   "pad": [
+    "13.3333px",
+    "13.3333px",
+    "13.3333px",
+    "13.3333px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "0.559",
+   "zIndex": "auto",
+   "transform": "matrix(1.1102, 0, 0, 1.1102, 0, 0)",
+   "top": "0px",
+   "left": "0px",
+   "bottom": "0px",
+   "right": "0px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": ""
+  }
+ ],
+ ".home-map-main-img-sub-hover": [
+  {
+   "sel": ".home-map-main-img-sub-hover",
+   "cls": "home-map-main-img-sub-hover bg-global",
+   "box": [
+    265.1,
+    319.7,
+    195.8,
+    73
+   ],
+   "display": "grid",
+   "position": "absolute",
+   "overflow": "hidden",
+   "pad": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(40, 40, 40)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "1px rgb(250, 54, 0)",
+    "1px rgb(250, 54, 0)",
+    "1px rgb(250, 54, 0)",
+    "1px rgb(250, 54, 0)"
+   ],
+   "opacity": "0",
+   "zIndex": "2",
+   "transform": "none",
+   "top": "296.417px",
+   "left": "258.469px",
+   "bottom": "483.984px",
+   "right": "698.078px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "IBC 1017.2Exit Access Travel DistanceAssembly occupancies without sprinklers are limited to 75 ft of exit trav"
+  },
+  {
+   "sel": ".home-map-main-img-sub-hover",
+   "cls": "home-map-main-img-sub-hover bg-global",
+   "box": [
+    395.8,
+    603.9,
+    195.8,
+    55.6
+   ],
+   "display": "grid",
+   "position": "absolute",
+   "overflow": "hidden",
+   "pad": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(40, 40, 40)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "1px rgb(250, 54, 0)",
+    "1px rgb(250, 54, 0)",
+    "1px rgb(250, 54, 0)",
+    "1px rgb(250, 54, 0)"
+   ],
+   "opacity": "0",
+   "zIndex": "2",
+   "transform": "none",
+   "top": "580.61px",
+   "left": "389.106px",
+   "bottom": "217.094px",
+   "right": "567.438px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "IBC 1010.1.2.1Door Swing Direction Assembly occupancies without sprinklers are limited to 75 ft of exit travel"
+  },
+  {
+   "sel": ".home-map-main-img-sub-hover",
+   "cls": "home-map-main-img-sub-hover bg-global",
+   "box": [
+    310.2,
+    526.8,
+    195.8,
+    73
+   ],
+   "display": "grid",
+   "position": "absolute",
+   "overflow": "hidden",
+   "pad": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(40, 40, 40)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "1px rgb(250, 54, 0)",
+    "1px rgb(250, 54, 0)",
+    "1px rgb(250, 54, 0)",
+    "1px rgb(250, 54, 0)"
+   ],
+   "opacity": "0",
+   "zIndex": "2",
+   "transform": "none",
+   "top": "503.45px",
+   "left": "303.542px",
+   "bottom": "276.953px",
+   "right": "653px",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "ICC A117.1 §604.3.1Accessible Toilet Clearance Accessible restrooms require a 60” turning radius. This layout "
+  }
+ ],
+ ".home-map-main-img-sub-label": [
+  {
+   "sel": ".home-map-main-img-sub-label",
+   "cls": "home-map-main-img-sub-label",
+   "box": [
+    276.1,
+    330.7,
+    173.8,
+    13
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "hidden",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "3.33333px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(250, 54, 0)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(250, 54, 0)",
+    "0px rgb(250, 54, 0)",
+    "0px rgb(250, 54, 0)",
+    "0px rgb(250, 54, 0)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "IBC 1017.2"
+  },
+  {
+   "sel": ".home-map-main-img-sub-label",
+   "cls": "home-map-main-img-sub-label",
+   "box": [
+    406.8,
+    614.9,
+    173.8,
+    13
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "hidden",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "3.33333px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(250, 54, 0)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(250, 54, 0)",
+    "0px rgb(250, 54, 0)",
+    "0px rgb(250, 54, 0)",
+    "0px rgb(250, 54, 0)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "IBC 1010.1.2.1"
+  },
+  {
+   "sel": ".home-map-main-img-sub-label",
+   "cls": "home-map-main-img-sub-label",
+   "box": [
+    321.2,
+    537.8,
+    173.8,
+    13
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "hidden",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "3.33333px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(250, 54, 0)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(250, 54, 0)",
+    "0px rgb(250, 54, 0)",
+    "0px rgb(250, 54, 0)",
+    "0px rgb(250, 54, 0)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "ICC A117.1 §604.3.1"
+  }
+ ],
+ ".home-map-main-img-sub-title": [
+  {
+   "sel": ".home-map-main-img-sub-title",
+   "cls": "home-map-main-img-sub-title",
+   "box": [
+    276.1,
+    347,
+    173.8,
+    34.6
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(40, 40, 40)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Exit Access Travel Distance"
+  },
+  {
+   "sel": ".home-map-main-img-sub-title",
+   "cls": "home-map-main-img-sub-title",
+   "box": [
+    406.8,
+    631.3,
+    173.8,
+    17.3
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(40, 40, 40)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Door Swing Direction"
+  },
+  {
+   "sel": ".home-map-main-img-sub-title",
+   "cls": "home-map-main-img-sub-title",
+   "box": [
+    321.2,
+    554.1,
+    173.8,
+    34.6
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgb(40, 40, 40)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)",
+    "0px rgb(40, 40, 40)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Accessible Toilet Clearance"
+  }
+ ],
+ ".home-map-main-img-sub-desc": [
+  {
+   "sel": ".home-map-main-img-sub-desc",
+   "cls": "home-map-main-img-sub-desc",
+   "box": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "13.3333px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Assembly occupancies without sprinklers are limited to 75 ft of exit travel distance. This layout exceeds the "
+  },
+  {
+   "sel": ".home-map-main-img-sub-desc",
+   "cls": "home-map-main-img-sub-desc",
+   "box": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "13.3333px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Assembly occupancies without sprinklers are limited to 75 ft of exit travel distance. This layout exceeds the "
+  },
+  {
+   "sel": ".home-map-main-img-sub-desc",
+   "cls": "home-map-main-img-sub-desc",
+   "box": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "display": "block",
+   "position": "static",
+   "overflow": "visible",
+   "pad": [
+    "13.3333px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Accessible restrooms require a 60” turning radius. This layout does not provide sufficient maneuvering space."
+  }
+ ],
+ ".home-map-main-img-sub-desc-wrap": [
+  {
+   "sel": ".home-map-main-img-sub-desc-wrap",
+   "cls": "home-map-main-img-sub-desc-wrap",
+   "box": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "display": "none",
+   "position": "static",
+   "overflow": "hidden",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Assembly occupancies without sprinklers are limited to 75 ft of exit travel distance. This layout exceeds the "
+  },
+  {
+   "sel": ".home-map-main-img-sub-desc-wrap",
+   "cls": "home-map-main-img-sub-desc-wrap",
+   "box": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "display": "none",
+   "position": "static",
+   "overflow": "hidden",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Assembly occupancies without sprinklers are limited to 75 ft of exit travel distance. This layout exceeds the "
+  },
+  {
+   "sel": ".home-map-main-img-sub-desc-wrap",
+   "cls": "home-map-main-img-sub-desc-wrap",
+   "box": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "display": "none",
+   "position": "static",
+   "overflow": "hidden",
+   "pad": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "mar": [
+    "0px",
+    "0px",
+    "0px",
+    "0px"
+   ],
+   "bg": "rgba(0, 0, 0, 0)",
+   "color": "rgba(40, 40, 40, 0.72)",
+   "radius": "0px",
+   "shadow": "none",
+   "border": [
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)",
+    "0px rgba(40, 40, 40, 0.72)"
+   ],
+   "opacity": "1",
+   "zIndex": "auto",
+   "transform": "none",
+   "top": "auto",
+   "left": "auto",
+   "bottom": "auto",
+   "right": "auto",
+   "font": "13.3333px 500 \"BT Grotesk\" lh 17.3333px ls -0.266667px none",
+   "text": "Accessible restrooms require a 60” turning radius. This layout does not provide sufficient maneuvering space."
+  }
+ ]
+}

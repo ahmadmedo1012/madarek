@@ -1,0 +1,1159 @@
+{
+ "p000": {
+  "scroll": 2876,
+  "rasters": [
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": null
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": "1f0d11f1602cc3c77_kk.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": "1f0d11f1602cc3c29_ll.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": "f0d11f1602cc3c84_fff.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": "602cc3c5e_Dimensions.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": null
+   }
+  ],
+  "intro": {
+   "cls": "home-map-intro",
+   "box": [
+    36.8,
+    814.7,
+    257.8,
+    172.5
+   ],
+   "computedO": "0",
+   "inlineO": "",
+   "display": "block",
+   "vis": "visible"
+  },
+  "h1s": [
+   {
+    "cls": "heading h1 tb-h3 mb-h2",
+    "box": [
+     29.5,
+     -2054,
+     332.5,
+     147.3
+    ],
+    "o": "1",
+    "fs": "36.8345px",
+    "fw": "600",
+    "col": "rgb(40, 40, 40)",
+    "tx": "An AI agent that works inside your design to"
+   }
+  ],
+  "cues": [
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     966.3,
+     233.7,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     942.7,
+     233.7,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     960.8,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     960.8,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Click on violation]",
+    "box": [
+     48.9,
+     855.8,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   }
+  ]
+ },
+ "p250": {
+  "scroll": 3988,
+  "rasters": [
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": null
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": "1f0d11f1602cc3c77_kk.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": "1f0d11f1602cc3c29_ll.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": "f0d11f1602cc3c84_fff.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": "602cc3c5e_Dimensions.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": null
+   }
+  ],
+  "intro": {
+   "cls": "home-map-intro",
+   "box": [
+    36.8,
+    814.7,
+    257.8,
+    172.5
+   ],
+   "computedO": "0",
+   "inlineO": "",
+   "display": "block",
+   "vis": "visible"
+  },
+  "h1s": [
+   {
+    "cls": "heading h1 tb-h3 mb-h2",
+    "box": [
+     29.5,
+     -3166,
+     332.5,
+     147.3
+    ],
+    "o": "1",
+    "fs": "36.8345px",
+    "fw": "600",
+    "col": "rgb(40, 40, 40)",
+    "tx": "An AI agent that works inside your design to"
+   }
+  ],
+  "cues": [
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     966.3,
+     233.7,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     942.7,
+     233.7,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     960.8,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     960.8,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Click on violation]",
+    "box": [
+     48.9,
+     855.8,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   }
+  ]
+ },
+ "p500": {
+  "scroll": 5101,
+  "rasters": [
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": null
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0.687,
+    "src": "1f0d11f1602cc3c77_kk.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": "1f0d11f1602cc3c29_ll.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": "f0d11f1602cc3c84_fff.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": "602cc3c5e_Dimensions.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": null
+   }
+  ],
+  "intro": {
+   "cls": "home-map-intro",
+   "box": [
+    36.8,
+    805.9,
+    257.8,
+    181.3
+   ],
+   "computedO": "0",
+   "inlineO": "",
+   "display": "block",
+   "vis": "visible"
+  },
+  "h1s": [
+   {
+    "cls": "heading h1 tb-h3 mb-h2",
+    "box": [
+     29.5,
+     -4279,
+     332.5,
+     147.3
+    ],
+    "o": "1",
+    "fs": "36.8345px",
+    "fw": "600",
+    "col": "rgb(40, 40, 40)",
+    "tx": "An AI agent that works inside your design to"
+   }
+  ],
+  "cues": [
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     957.5,
+     233.7,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     933.9,
+     233.7,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     952,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     952,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Click on violation]",
+    "box": [
+     48.9,
+     847,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   }
+  ]
+ },
+ "p750": {
+  "scroll": 6213,
+  "rasters": [
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": null
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": "1f0d11f1602cc3c77_kk.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": "1f0d11f1602cc3c29_ll.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": "f0d11f1602cc3c84_fff.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0.143,
+    "src": "602cc3c5e_Dimensions.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     25.8,
+     753.3,
+     972.5
+    ],
+    "innerO": 0,
+    "src": null
+   }
+  ],
+  "intro": {
+   "cls": "home-map-intro",
+   "box": [
+    36.8,
+    814.2,
+    257.8,
+    173
+   ],
+   "computedO": "0",
+   "inlineO": "",
+   "display": "block",
+   "vis": "visible"
+  },
+  "h1s": [
+   {
+    "cls": "heading h1 tb-h3 mb-h2",
+    "box": [
+     29.5,
+     -5391,
+     332.5,
+     147.3
+    ],
+    "o": "1",
+    "fs": "36.8345px",
+    "fw": "600",
+    "col": "rgb(40, 40, 40)",
+    "tx": "An AI agent that works inside your design to"
+   }
+  ],
+  "cues": [
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     965.8,
+     233.7,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     942.3,
+     233.7,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     960.3,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     960.3,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Click on violation]",
+    "box": [
+     48.9,
+     855.3,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   }
+  ]
+ },
+ "p1000": {
+  "scroll": 7325,
+  "rasters": [
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     -319.5,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": null
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     -319.5,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": "1f0d11f1602cc3c77_kk.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     -319.5,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": "1f0d11f1602cc3c29_ll.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     -319.5,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": "f0d11f1602cc3c84_fff.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     -319.5,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": "602cc3c5e_Dimensions.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     -319.5,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": null
+   }
+  ],
+  "intro": {
+   "cls": "home-map-intro",
+   "box": [
+    36.8,
+    469.5,
+    257.8,
+    172.5
+   ],
+   "computedO": "0",
+   "inlineO": "",
+   "display": "block",
+   "vis": "visible"
+  },
+  "h1s": [
+   {
+    "cls": "heading h1 tb-h3 mb-h2",
+    "box": [
+     29.5,
+     -6503,
+     332.5,
+     147.3
+    ],
+    "o": "1",
+    "fs": "36.8345px",
+    "fw": "600",
+    "col": "rgb(40, 40, 40)",
+    "tx": "An AI agent that works inside your design to"
+   }
+  ],
+  "cues": [
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     621,
+     233.7,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     597.5,
+     233.7,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     615.5,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     615.5,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Click on violation]",
+    "box": [
+     48.9,
+     510.6,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   }
+  ]
+ },
+ "post1": {
+  "scroll": 7625,
+  "rasters": [
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     -619.5,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": null
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     -619.5,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": "1f0d11f1602cc3c77_kk.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     -619.5,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": "1f0d11f1602cc3c29_ll.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     -619.5,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": "f0d11f1602cc3c84_fff.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     -619.5,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": "602cc3c5e_Dimensions.png"
+   },
+   {
+    "cls": "home-map-main-img",
+    "box": [
+     7.4,
+     -619.5,
+     753.3,
+     972.5
+    ],
+    "innerO": 1,
+    "src": null
+   }
+  ],
+  "intro": {
+   "cls": "home-map-intro",
+   "box": [
+    36.8,
+    169.5,
+    257.8,
+    172.5
+   ],
+   "computedO": "0",
+   "inlineO": "",
+   "display": "block",
+   "vis": "visible"
+  },
+  "h1s": [
+   {
+    "cls": "heading h1 tb-h3 mb-h2",
+    "box": [
+     29.5,
+     -6803,
+     332.5,
+     147.3
+    ],
+    "o": "1",
+    "fs": "36.8345px",
+    "fw": "600",
+    "col": "rgb(40, 40, 40)",
+    "tx": "An AI agent that works inside your design to"
+   }
+  ],
+  "cues": [
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     321,
+     233.7,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     297.5,
+     233.7,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     315.5,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Scroll to continue]",
+    "box": [
+     48.9,
+     315.5,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[Click on violation]",
+    "box": [
+     48.9,
+     210.6,
+     233.7,
+     14.4
+    ],
+    "fs": "11.0504px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[01]",
+    "box": [
+     406.1,
+     746.8,
+     32,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   },
+   {
+    "tx": "[02]",
+    "box": [
+     406.1,
+     1000.9,
+     32,
+     18
+    ],
+    "fs": "12.8921px",
+    "col": "rgb(180, 180, 176)",
+    "ff": "Geistmono",
+    "o": 1
+   }
+  ]
+ },
+ "sheetMetrics": {
+  "box": [
+   7.4,
+   371.4,
+   753.3,
+   353.3
+  ],
+  "pos": "static",
+  "grid": "grid",
+  "home-map-content-label": {
+   "box": [
+    29.5,
+    371.4,
+    92.1,
+    83.8
+   ],
+   "fs": "14.7338px",
+   "fw": "500",
+   "col": "rgba(40, 40, 40, 0.72)",
+   "ff": "\"BT Grotesk\"",
+   "ls": "-0.294676px",
+   "o": 1,
+   "tx": "Your model. Your tools. Connected."
+  },
+  "home-map-content-title": {
+   "box": [
+    29.5,
+    484.6,
+    332.5,
+    88.4
+   ],
+   "fs": "14.7338px",
+   "fw": "500",
+   "col": "rgb(40, 40, 40)",
+   "ff": "\"BT Grotesk\"",
+   "ls": "-0.294676px",
+   "o": 1,
+   "tx": "RUN AN AGENT NATIVELY IN YOUR MODEL"
+  },
+  "home-map-content-sub": {
+   "box": [
+    29.5,
+    587.8,
+    332.5,
+    114.8
+   ],
+   "fs": "14.7338px",
+   "fw": "500",
+   "col": "rgba(40, 40, 40, 0.72)",
+   "ff": "\"BT Grotesk\"",
+   "ls": "-0.294676px",
+   "o": 1,
+   "tx": "Heron runs inside the design software you already "
+  },
+  "itemsSample": [
+   {
+    "cls": "home-map-content-item",
+    "box": [
+     383.1,
+     371.4,
+     377.5,
+     88.3
+    ]
+   },
+   {
+    "cls": "home-map-content-item-title",
+    "box": [
+     383.1,
+     371.4,
+     289.2,
+     88.3
+    ]
+   },
+   {
+    "cls": "home-map-content-item-ic",
+    "box": [
+     672.1,
+     371.2,
+     88.8,
+     88.8
+    ]
+   },
+   {
+    "cls": "home-map-content-item-ic-inner",
+    "box": [
+     701.7,
+     400.7,
+     29.6,
+     29.6
+    ]
+   },
+   {
+    "cls": "home-map-content-item",
+    "box": [
+     383.1,
+     459.7,
+     377.5,
+     88.3
+    ]
+   },
+   {
+    "cls": "home-map-content-item-title",
+    "box": [
+     383.1,
+     459.7,
+     289.2,
+     88.3
+    ]
+   },
+   {
+    "cls": "home-map-content-item-ic",
+    "box": [
+     672,
+     459.4,
+     89,
+     89
+    ]
+   },
+   {
+    "cls": "home-map-content-item-ic-inner",
+    "box": [
+     701.6,
+     489,
+     29.7,
+     29.7
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,452 @@
+[
+ {
+  "cls": "img-basic img-fill",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6b2e33f9a255a16702aabb_load.svg",
+  "natural": "3000x1845",
+  "box": "0,0,0,0",
+  "section": null,
+  "loading": "eager",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-abs",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a703ca7b25c47076637c631_4f993b1a199968429382e85294f3e6d1_Full.webp",
+  "natural": "2060x1037",
+  "box": "33,-4971,1373,647",
+  "section": "home-hero",
+  "loading": "eager",
+  "fit": "contain",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-abs",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a69a23dcc24456128e2afe3_image%20345.avif",
+  "natural": "1766x1766",
+  "box": "7,-4165,713,723",
+  "section": "home-intro",
+  "loading": "auto",
+  "fit": "contain",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6350857d1202ebd68239df_Logo%20partner-17.png",
+  "natural": "214x107",
+  "box": "457,-3539,93,47",
+  "section": "home-intro",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6350b8134d3cc5f515c4db_Logo%20partner-18.png",
+  "natural": "214x107",
+  "box": "601,-3539,93,47",
+  "section": "home-intro",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a634f5e18b19cdfe5aaf7e7_Logo%20partner-11.png",
+  "natural": "214x107",
+  "box": "744,-3539,93,47",
+  "section": "home-intro",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a634f8490f683f582b7c815_Logo%20partner-12.png",
+  "natural": "215x107",
+  "box": "887,-3539,93,46",
+  "section": "home-intro",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a634fa421f5ab60c373150c_Logo%20partner-13.png",
+  "natural": "214x107",
+  "box": "1031,-3539,93,47",
+  "section": "home-intro",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a634fb5d19a05a393885a50_Logo%20partner-14.png",
+  "natural": "214x107",
+  "box": "1174,-3539,93,47",
+  "section": "home-intro",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a63503b2a4d020430c23b00_Logo%20partner-15.png",
+  "natural": "214x107",
+  "box": "1317,-3539,93,47",
+  "section": "home-intro",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a63504c77c27729e0ddbb11_Logo%20partner-16.png",
+  "natural": "214x107",
+  "box": "1461,-3539,93,47",
+  "section": "home-intro",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-abs",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c77_kk.png",
+  "natural": "1734x1676",
+  "box": "7,23,1152,853",
+  "section": "home-map",
+  "loading": "lazy",
+  "fit": "contain",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-abs",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c29_ll.png",
+  "natural": "2312x2234",
+  "box": "7,23,1152,853",
+  "section": "home-map",
+  "loading": "lazy",
+  "fit": "contain",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-abs",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c84_fff.png",
+  "natural": "2312x2234",
+  "box": "7,23,1152,853",
+  "section": "home-map",
+  "loading": "lazy",
+  "fit": "contain",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-abs",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c5e_Dimensions.png",
+  "natural": "2312x2234",
+  "box": "7,23,1152,853",
+  "section": "home-map",
+  "loading": "lazy",
+  "fit": "contain",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a66fd66235c9b3dc9658cce_b7a2ba681bb6f203cb6b6f354b9db94f_solution1.jpg",
+  "natural": "0x0",
+  "box": "0,0,0,0",
+  "section": "home-platform",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a66fd6676c8ee4725207aaa_c250d7593ed0b070d3eb6aa486953f89_solution2.avif",
+  "natural": "0x0",
+  "box": "0,0,0,0",
+  "section": "home-platform",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-abs",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a69a34e15d1eb4aadac9ae6_b03ba3ff201b6aa651aadafe895f2928_Before-1.avif",
+  "natural": "1440x870",
+  "box": "368,3601,599,354",
+  "section": "home-platform",
+  "loading": "auto",
+  "fit": "contain",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-abs",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a69a34ee521ff1cc6d69306_95fbf6e81134860c2ab2e4e9f5b9c723_Before.avif",
+  "natural": "2880x1740",
+  "box": "368,3956,599,354",
+  "section": "home-platform",
+  "loading": "auto",
+  "fit": "contain",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a670fa1cfadff37a55ba10b_8b74c365290a3a568eb43a2526db7de5_Illust%20why%20us%20section%20(1).jpg",
+  "natural": "1116x1116",
+  "box": "125,4678,468,468",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6875a79d14cd95a2ee4f14_box-1.png",
+  "natural": "328x190",
+  "box": "365,4814,0,0",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6875a7aadcc2ec708b1cfe_box-2.png",
+  "natural": "432x240",
+  "box": "345,4942,180,100",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6715f67b405f421aeee3d4_1d0ff022380f5c6528ed6d4cd29accf8_Illust%20why%20us%20section.jpg",
+  "natural": "1116x1116",
+  "box": "847,5195,468,468",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a687b0f1d1ada1f534fc126_box-3.png",
+  "natural": "320x320",
+  "box": "993,5301,133,133",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a857d63d8e9eceab3a8a191_f4cd8364f148923074b6f17ed50f6efc_fff%20(1).png",
+  "natural": "510x432",
+  "box": "1076,5455,212,180",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a672441c43e84bf175b8fc9_f0abac54ab792d099695bd11ba88c3a0_Illust%20why%20us%20section%20(1).jpg",
+  "natural": "1116x1116",
+  "box": "125,5713,468,468",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a672d855c5776ffd13a0b9b_660f6807d3ea3c427c195ecf4c16359d_Frame%202087327319%20(1).jpg",
+  "natural": "1440x887",
+  "box": "198,5628,323,199",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a672d855c5776ffd13a0b9f_61fddc00f08323cea212d4479c223bf4_Frame%202087327318%20(1).jpg",
+  "natural": "1440x885",
+  "box": "181,5838,356,219",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a672d85516d2cebabe5ae10_8c825758515cc7b9420562a48360bf3a_Frame%201707479505%20(1).jpg",
+  "natural": "1440x887",
+  "box": "198,6067,323,199",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/6a4b5161f0d11f1602cc3bbf/6a857fd09f73ba800be8cc97_img%20(1).png",
+  "natural": "326x210",
+  "box": "179,6070,136,87",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6731092c23e6c739091db5_43da788ecab201c1c711273e28d8f0b4_Illust%20why%20us%20section.jpg",
+  "natural": "1116x1116",
+  "box": "847,6231,468,468",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a68855841a36e195bf762fd_c8a3e64c6db5d262e6b0b63a70464e28_box-6.jpg",
+  "natural": "274x218",
+  "box": "879,6571,114,91",
+  "section": "home-why",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-abs img-cover",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0ceefb143418aa79a36c_Architects.jpg",
+  "natural": "1284x1676",
+  "box": "-34,6747,795,987",
+  "section": "home-usecase",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 100%"
+ },
+ {
+  "cls": "img-basic img-abs img-cover",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0cff693690449c2a54b9_INTERIOR%20DESIGNERS.jpg",
+  "natural": "1284x1676",
+  "box": "-41,6738,809,1004",
+  "section": "home-usecase",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 100%"
+ },
+ {
+  "cls": "img-basic img-abs img-cover",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0d3fdae4423c35ceaaf0_LANDSCAPE%20ARCHITECTS.jpg",
+  "natural": "1284x1676",
+  "box": "-41,6738,809,1004",
+  "section": "home-usecase",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 100%"
+ },
+ {
+  "cls": "img-basic img-abs img-cover",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0d16d3c763bf20214c62_ENGINEERS.jpg",
+  "natural": "1284x1676",
+  "box": "-41,6738,809,1004",
+  "section": "home-usecase",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 100%"
+ },
+ {
+  "cls": "img-basic img-abs img-cover",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0d3219ade09c800cc210_BIM%20MANAGERS.jpg",
+  "natural": "1284x1676",
+  "box": "-41,6738,809,1004",
+  "section": "home-usecase",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 100%"
+ },
+ {
+  "cls": "img-basic img-abs img-cover",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0d0a19ade09c800cb98e_DRAFTERS.jpg",
+  "natural": "1284x1676",
+  "box": "-41,6738,809,1004",
+  "section": "home-usecase",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 100%"
+ },
+ {
+  "cls": "img-basic img-abs img-cover",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0d1f7a4f92b6351bc4e0_DESIGN%20LEADS.jpg",
+  "natural": "1284x1676",
+  "box": "-41,6738,809,1004",
+  "section": "home-usecase",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 100%"
+ },
+ {
+  "cls": "img-basic img-abs img-cover",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0d2ae7585ba74aa3b09f_MALL%20FIRMS.jpg",
+  "natural": "1284x1676",
+  "box": "-41,6738,809,1004",
+  "section": "home-usecase",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 100%"
+ },
+ {
+  "cls": "img-basic img-abs",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6ad84d47e6be3956e3a35a_cta-sketch.webp",
+  "natural": "1704x952",
+  "box": "345,7985,751,407",
+  "section": "cta",
+  "loading": "auto",
+  "fit": "contain",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-fill",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a67432f15ab968d9acb8af4_cta-mb.webp",
+  "natural": "0x0",
+  "box": "0,0,0,0",
+  "section": "cta",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-fill",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a685b5a07a3038b09d2a9d4_7eae2a6d059ebb6121966d2839ba80ee_logo-sketch.svg",
+  "natural": "0x0",
+  "box": "1147,8560,215,0",
+  "section": "footer",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-fill",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c0a_7a1f4c59a32ecf47588f364258cddcaf_footer1.avif",
+  "natural": "2571x566",
+  "box": "0,0,0,0",
+  "section": "footer",
+  "loading": "lazy",
+  "fit": "cover",
+  "pos": "50% 50%"
+ },
+ {
+  "cls": "img-basic img-abs",
+  "src": "/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a698acae521ff1cc6cba1f2_3a9b60f8f07a704746b20978dd8d73d1_Frame%20484%20(1).png",
+  "natural": "3428x754",
+  "box": "7,8737,1427,314",
+  "section": "footer",
+  "loading": "auto",
+  "fit": "contain",
+  "pos": "50% 50%"
+ }
+]

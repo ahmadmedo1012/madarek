@@ -1,0 +1,59 @@
+{
+ "maxScroll": 12603,
+ "docH": 13612,
+ "rootFont": "9.20863px",
+ "sections": [
+  {
+   "cls": "home-hero",
+   "top": 7,
+   "h": 1009
+  },
+  {
+   "cls": "home-intro",
+   "top": 1017,
+   "h": 527
+  },
+  {
+   "cls": "home-problem",
+   "top": 1544,
+   "h": 1333
+  },
+  {
+   "cls": "home-map expanded",
+   "top": 2876,
+   "h": 5473
+  },
+  {
+   "cls": "home-platform",
+   "top": 8350,
+   "h": 512
+  },
+  {
+   "cls": "home-why",
+   "top": 8862,
+   "h": 1882
+  },
+  {
+   "cls": "home-usecase",
+   "top": 10743,
+   "h": 1367
+  }
+ ],
+ "band": {
+  "top": 2876,
+  "height": 5473
+ },
+ "stickyEls": [
+  {
+   "cls": "home-map-main-stick-inner",
+   "box": [
+    7.4,
+    2876.4,
+    753.3,
+    1009.3
+   ],
+   "stickyTop": "0px"
+  }
+ ],
+ "monoMarkersNN05": 0
+}

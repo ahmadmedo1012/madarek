@@ -1,0 +1,74 @@
+[
+ {
+  "cls": "home-map-main-img",
+  "box": [
+   6.7,
+   23.3,
+   1419,
+   853.3
+  ],
+  "kids": [
+   "div.home-map-main-img-inner@1419x853 o=1"
+  ]
+ },
+ {
+  "cls": "home-map-main-img",
+  "box": [
+   6.7,
+   23.3,
+   1419,
+   853.3
+  ],
+  "kids": [
+   "div.home-map-main-img-inner@1419x853 o=0.3349"
+  ]
+ },
+ {
+  "cls": "home-map-main-img",
+  "box": [
+   6.7,
+   23.3,
+   1419,
+   853.3
+  ],
+  "kids": [
+   "div.home-map-main-img-inner@1419x853 o=0"
+  ]
+ },
+ {
+  "cls": "home-map-main-img",
+  "box": [
+   6.7,
+   23.3,
+   1419,
+   853.3
+  ],
+  "kids": [
+   "div.home-map-main-img-inner@1419x853 o=0"
+  ]
+ },
+ {
+  "cls": "home-map-main-img",
+  "box": [
+   6.7,
+   23.3,
+   1419,
+   853.3
+  ],
+  "kids": [
+   "div.home-map-main-img-inner@1419x853 o=0"
+  ]
+ },
+ {
+  "cls": "home-map-main-img",
+  "box": [
+   6.7,
+   23.3,
+   1419,
+   853.3
+  ],
+  "kids": [
+   "div.home-map-main-img-main@1419x853 o=1"
+  ]
+ }
+]
