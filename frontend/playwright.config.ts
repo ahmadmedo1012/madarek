@@ -23,6 +23,32 @@ import { defineConfig, devices } from '@playwright/test';
  * The 4-project a11y matrix that was once scaffolded here never
  * shipped and was removed (15-k P2-5) — do not re-add projects
  * without landing their specs.
+ *
+ * r319-c2-g3 adds TWO iPhone-13 projects (§C6 iOS verification / §H-3
+ * "WebKit-iPhone run included"), both additive — every pre-existing
+ * project above is byte-identical:
+ *
+ *   3. `webkit-iphone`   — REAL WebKit at 390 (iPhone 13 descriptor,
+ *                          Safari UA). This sandbox cannot launch
+ *                          Playwright WebKit (missing libgtk/libgraphene/
+ *                          gstreamer, no root to install), so the specs
+ *                          skip cleanly here and GitHub CI runs them for
+ *                          real (job `ios-webkit`: `npx playwright
+ *                          install webkit --with-deps`). See
+ *                          docs/redesign/r319/ios-verification.md.
+ *
+ *   4. `chromium-iphone` — the same specs on Chromium with the SAME
+ *                          iPhone-13 device context: the local-truth
+ *                          layer (and a CI-side bonus — it also rides
+ *                          `npm run test:e2e`, which collects it under
+ *                          tests/e2e).
+ *
+ * Both match ONLY `*.ios.e2e.ts` files. The specs drive the light/dark
+ * theme matrix themselves (contexts seeded per theme), so the project
+ * `use` stays at the light default; they self-skip on any non-iphone
+ * project (the `e2e` project's `/\.e2e\.ts$/` pattern also matches
+ * `*.ios.e2e.ts` — the guard keeps that run a no-op instead of a
+ * duplicate).
  */
 export default defineConfig({
   // 45s: the first navigation of each page pays the Vite dev-server
@@ -96,6 +122,45 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         colorScheme: 'light',
         locale: 'ar',
+      },
+    },
+    {
+      // r319-c2-g3 — REAL WebKit at 390 (§C6 iOS verification, §H-3
+      // "WebKit-iPhone run included"). The iPhone 13 descriptor (390×844
+      // screen / 390×664 viewport, touch, isMobile, Safari UA) carries
+      // `defaultBrowserType: 'webkit'` in playwright-core, but
+      // `browserName` is pinned explicitly so the engine can never drift
+      // with a descriptor refresh. Runs in GitHub CI (job `ios-webkit` —
+      // ubuntu runners CAN `playwright install webkit --with-deps`); in
+      // the dev sandbox the specs skip cleanly when WebKit cannot launch
+      // (MADAREK_IOS_SKIP_UNSUPPORTED=1 or a failed launch — see
+      // r319-ios-contracts.ios.e2e.ts). Specs: tests/e2e/*.ios.e2e.ts.
+      name: 'webkit-iphone',
+      testDir: './tests/e2e',
+      testMatch: /\.ios\.e2e\.ts$/,
+      use: {
+        ...devices['iPhone 13'],
+        browserName: 'webkit',
+        locale: 'ar',
+        colorScheme: 'light',
+      },
+    },
+    {
+      // r319-c2-g3 — Chromium with the SAME iPhone-13 device context:
+      // the local-truth layer for every contract the two engines share
+      // (tap sticky-hover, contrast, geometry, stylesheet scans) while
+      // real WebKit runs in CI. Local recipe:
+      //   cd frontend && MADAREK_IOS_SKIP_UNSUPPORTED=1 \
+      //     MADAREK_E2E_BASE_URL=http://localhost:<port> \
+      //     npx playwright test --project=chromium-iphone
+      name: 'chromium-iphone',
+      testDir: './tests/e2e',
+      testMatch: /\.ios\.e2e\.ts$/,
+      use: {
+        ...devices['iPhone 13'],
+        browserName: 'chromium',
+        locale: 'ar',
+        colorScheme: 'light',
       },
     },
   ],
