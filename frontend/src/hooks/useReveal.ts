@@ -38,6 +38,24 @@
  *     3. scroll-settle belt — on `scrollend` (rAF-coalesced `scroll`
  *        where scrollend is unsupported) reconcile anything the IO
  *        never saw. Content must never stay hidden behind a one-shot.
+ *
+ * ── R318 C2-S1 — the settle pass no longer re-reads the registry ──
+ * The old reconcile called `getBoundingClientRect()` on EVERY unsettled
+ * entry at EVERY settle event (~35 reads × ~13 settles per scroll run
+ * — 30–45% of the page's total layout reads). Geometry is now carried
+ * per entry as DOCUMENT-space top (`docTop`, stable across pure
+ * scroll — the viewport position derives from `window.scrollY`, which
+ * costs nothing) stamped with a layout epoch. A settle only re-reads
+ * entries whose stamp is STALE — i.e. after a real layout change,
+ * batched in one read-then-write pass. The epoch is bumped by every
+ * path that can change document layout (resize, fonts.ready, the
+ * window `load` + capture-phase resource `load`s for late media, and
+ * transition/animation ends of geometry-affecting properties) plus a
+ * last-net document-height watch per settle. Pure scrolling costs
+ * ZERO layout reads. The reveal CONTRACTS are unchanged: r308
+ * once-only, the fling hardening (mount check + IO fully-above clause
+ * + the settle belt — a flung-past entry still reconciles from its
+ * cached docTop), and the reduced-motion immediate reveal.
  */
 import { useReducedMotion } from '../components/motion/useReducedMotion';
 import { createElement, useEffect, useRef, type ReactNode, type ElementType } from 'react';
@@ -54,6 +72,14 @@ interface RevealEntry {
   once: boolean;
   settled: boolean;
   reveal: () => void;
+  /**
+   * R318 C2-S1 — the entry's DOCUMENT-space top (viewport top +
+   * scrollY at measure time). Stable across pure scroll; the settle
+   * reconcile checks `docTop - scrollY < innerHeight` and only
+   * re-measures when `gen` is a layout epoch from the past.
+   */
+  docTop: number;
+  gen: number;
 }
 
 /**
@@ -74,19 +100,65 @@ let beltAttached = false;
 let beltRaf = 0;
 let fontsHooked = false;
 
+/* ── R318 C2-S1 — the layout epoch ─────────────────────────────
+ * A monotone counter bumped whenever document geometry may have
+ * changed. Entries carry the epoch their `docTop` was measured in;
+ * `gen === layoutEpoch` means the cached docTop is still
+ * trustworthy (pure scroll never bumps it); anything older is
+ * re-measured — in one batched read pass — at the next settle. */
+let layoutEpoch = 0;
+
+const bumpLayoutEpoch = () => {
+  layoutEpoch += 1;
+};
+
+/* the last document height the belt saw — the per-settle last net
+ * for layout changes that fire no event the hooks below catch. */
+let lastDocH = -1;
+
+/* only animation/transition ends that can CHANGE geometry bump the
+ * epoch — opacity/transform/clip reveals (this belt's own
+ * animations) must not, or every reveal would re-read everything. */
+const GEOM_ANIM_PROPS =
+  /(size|width|height|margin|padding|inset|top|right|bottom|left|font|line-height|gap|flex|grid|spacing|columns|aspect)/;
+
 /**
- * Read-phase → write-phase: every registered element's rect is read
- * BEFORE any reveal class is written (adding `.in-view` only flips
- * opacity/transform, so it cannot invalidate layout) — one forced
- * layout for the whole belt per settle frame, not one per element.
+ * Read-phase → write-phase: the belt's reconcile. Fresh-stamped
+ * entries are checked from their cached DOCUMENT geometry (no layout
+ * read at all); stale ones — a layout change invalidated them — are
+ * re-measured in ONE batched read pass BEFORE any reveal class is
+ * written (adding `.in-view` only flips opacity/transform, so it
+ * cannot invalidate layout).
  */
 const reconcileAll = () => {
   if (registry.size === 0) return;
+  /* the document-height watch: ONE scrollHeight read per settle —
+   * pure scroll never changes it, so steady scrolling costs zero
+   * layout reads; a real change (late media reflowing the page)
+   * invalidates every cached docTop for the batched pass below. */
+  const docH = document.documentElement.scrollHeight;
+  if (docH !== lastDocH) {
+    lastDocH = docH;
+    bumpLayoutEpoch();
+  }
+  const scrollY = window.scrollY;
+  const vh = window.innerHeight;
   const due: RevealEntry[] = [];
+  const stale: RevealEntry[] = [];
   for (const entry of registry) {
-    if (!entry.settled && entry.el.getBoundingClientRect().top < window.innerHeight) {
-      due.push(entry);
+    if (entry.settled) continue;
+    if (entry.gen === layoutEpoch) {
+      if (entry.docTop - scrollY < vh) due.push(entry);
+    } else {
+      stale.push(entry);
     }
+  }
+  /* the dirty pass — only entries the epoch invalidated; reads
+   * batched before the first write. */
+  for (const entry of stale) {
+    entry.docTop = entry.el.getBoundingClientRect().top + window.scrollY;
+    entry.gen = layoutEpoch;
+    if (entry.docTop - scrollY < vh) due.push(entry);
   }
   for (const entry of due) entry.reveal();
 };
@@ -101,9 +173,32 @@ const scheduleReconcile = () => {
 };
 
 const onScrollSettle = () => scheduleReconcile();
-const onResize = () => scheduleReconcile();
-const onLoadSettle = () => scheduleReconcile();
-const onFontsSettled = () => scheduleReconcile();
+/* resize IS a layout change — bump the epoch, then reconcile. */
+const onResize = () => {
+  bumpLayoutEpoch();
+  scheduleReconcile();
+};
+/* the window `load` settles the last late layout (media + fonts). */
+const onLoadSettle = () => {
+  bumpLayoutEpoch();
+  scheduleReconcile();
+};
+const onFontsSettled = () => {
+  bumpLayoutEpoch();
+  scheduleReconcile();
+};
+/* capture-phase resource loads — lazy <img>/late media reflow the
+ * document as they decode. `load` never bubbles, but it PASSES
+ * through window on the capture path, so one listener sees them all. */
+const onAssetLoad = () => {
+  bumpLayoutEpoch();
+};
+/* a size-affecting transition/animation just ended — seats may have
+ * moved (filtered: opacity/transform reveals must not bump). */
+const onAnimGeom = (ev: Event) => {
+  const name = (ev as TransitionEvent).propertyName ?? '';
+  if (name && GEOM_ANIM_PROPS.test(name)) bumpLayoutEpoch();
+};
 
 const attachBelt = () => {
   if (beltAttached) return;
@@ -126,6 +221,11 @@ const attachBelt = () => {
   if (document.readyState !== 'complete') {
     window.addEventListener('load', onLoadSettle, { once: true, passive: true });
   }
+  /* R318 C2-S1 — the rest of the layout-epoch watch: late/lazy
+   * resource loads (capture) and geometry-affecting animation ends. */
+  window.addEventListener('load', onAssetLoad, { capture: true, passive: true });
+  window.addEventListener('transitionend', onAnimGeom, { capture: true, passive: true });
+  window.addEventListener('animationend', onAnimGeom, { capture: true, passive: true });
   if (!fontsHooked) {
     fontsHooked = true;
     document.fonts?.ready?.then(onFontsSettled).catch(() => {
@@ -143,6 +243,9 @@ const detachBelt = () => {
   window.removeEventListener('scroll', onScrollSettle);
   window.removeEventListener('resize', onResize);
   window.removeEventListener('load', onLoadSettle);
+  window.removeEventListener('load', onAssetLoad, { capture: true });
+  window.removeEventListener('transitionend', onAnimGeom, { capture: true });
+  window.removeEventListener('animationend', onAnimGeom, { capture: true });
   if (beltRaf) {
     cancelAnimationFrame(beltRaf);
     beltRaf = 0;
@@ -159,6 +262,11 @@ const getBucket = (threshold: number, rootMargin: string): ObserverBucket => {
       for (const e of list) {
         for (const entry of entries) {
           if (entry.el !== e.target || entry.settled) continue;
+          /* R318 C2-S1 — the IO already measured the geometry: refresh
+           * the entry's cached docTop for free (against the live
+           * scrollY inside the callback's own frame). */
+          entry.docTop = e.boundingClientRect.top + window.scrollY;
+          entry.gen = layoutEpoch;
           if (e.isIntersecting) {
             if (entry.once) {
               entry.reveal(); // also unregisters + reaps the belt when last
@@ -225,6 +333,8 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options?: {
       el,
       once,
       settled: false,
+      docTop: 0,
+      gen: layoutEpoch,
       reveal: () => {
         if (entry.settled) return;
         if (entry.once) {
@@ -245,8 +355,12 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options?: {
 
     // (a) Mount check — already visible at the fold, or scrolled past
     // (scroll-restoration / anchor deep-link): reveal now. Mirrors the
-    // platform <Reveal> component's above-the-fold clause.
-    if (el.getBoundingClientRect().top < window.innerHeight) {
+    // platform <Reveal> component's above-the-fold clause. The one read
+    // doubles as the entry's first cached docTop (R318 C2-S1).
+    const mountTop = el.getBoundingClientRect().top;
+    entry.docTop = mountTop + window.scrollY;
+    entry.gen = layoutEpoch;
+    if (mountTop < window.innerHeight) {
       entry.reveal();
       return;
     }

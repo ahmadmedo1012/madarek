@@ -19,6 +19,20 @@
  *    read per frame, no layout thrash — reads happen before writes
  *    in each consumer by convention).
  *
+ * R318 C2-S1 — the frame-scoped geometry batch + idempotent writes:
+ *  · `sheetRect(el)` — ONE `getBoundingClientRect` per element per
+ *    rAF tick: the first consumer that reads an element in a tick
+ *    caches its rect (+ `innerHeight`) for every later consumer in
+ *    the SAME tick. The cache is generation-stamped; the generation
+ *    bumps on every `frameLoop` tick and on every out-of-loop read
+ *    (`freshSheetRects()`), so a cached rect never crosses a frame
+ *    boundary. This is what makes the useSheetScroll contract real:
+ *    "one gBCR pass per frame, never re-read within the same frame".
+ *  · `setSheetVar(style, name, value)` — idempotent CSS-var write:
+ *    the last written value per (style, name) is cached and an
+ *    unchanged value string is SKIPPED (clamped pin dwells, idle
+ *    settle frames and quantized values stop dirtying style).
+ *
  * jsdom/SSR-safe: nothing here touches `window` at import time; the
  * loop guards non-browser environments. Consumers must still guard
  * their own listeners (the React effects own their lifecycle).
@@ -37,6 +51,9 @@ function frameLoop(now: number): void {
     running = false;
     return;
   }
+  /* R318 C2-S1 — a new frame invalidates every cached rect: geometry
+   * read this tick must be re-read next tick (scroll moved the page). */
+  nextRectGen();
   // Copy-on-iterate: a subscriber may unsubscribe (sleep) mid-frame.
   for (const fn of [...subscribers]) {
     fn(now);
@@ -59,6 +76,79 @@ export function subscribeSheetFrame(fn: SheetFrameFn): () => void {
   return () => {
     subscribers.delete(fn);
   };
+}
+
+/* ── R318 C2-S1 — the frame-scoped geometry batch ────────────────────
+ *
+ * One gBCR pass per rAF tick, shared by every scroll consumer on the
+ * clock. The generation is the cache key: `frameLoop` bumps it at the
+ * start of every tick (geometry read this frame is stale next frame);
+ * `freshSheetRects()` bumps it for reads that run OUTSIDE the loop
+ * (the settle frame, the mount prime) so they can never be served a
+ * cross-frame cached rect. Within one tick the reads stay batched:
+ * all subscribers read before any of them re-reads the same element,
+ * and a cached hit costs no layout at all. */
+
+interface RectSnapshot {
+  gen: number;
+  rect: DOMRect;
+  vh: number;
+}
+
+let rectGen = 0;
+const rectCache = new WeakMap<Element, RectSnapshot>();
+
+function nextRectGen(): void {
+  rectGen += 1;
+}
+
+/** The element's viewport rect + `innerHeight`, cached for the
+ *  current generation (one batched read per element per tick). */
+export function sheetRect(el: Element): { rect: DOMRect; vh: number } {
+  const hit = rectCache.get(el);
+  if (hit && hit.gen === rectGen) return hit;
+  const snap: RectSnapshot = {
+    gen: rectGen,
+    rect: el.getBoundingClientRect(),
+    vh: window.innerHeight,
+  };
+  rectCache.set(el, snap);
+  return snap;
+}
+
+/** Invalidate every cached rect (settle frames / mount primes —
+ *  anything that reads geometry outside the rAF loop). */
+export function freshSheetRects(): void {
+  nextRectGen();
+}
+
+/* ── R318 C2-S1 — idempotent scroll-frame writes ─────────────────────
+ *
+ * The scroll driver writes the same CSS var every tick even while the
+ * value is pinned (clamped dwells at 0/1, quantized 4-decimal values,
+ * idle settle frames). `setProperty` always dirties style, so the
+ * writer caches the last written value per (style, name) and skips
+ * the call when the value string is unchanged. Keyed weakly on the
+ * style object: a remount gets a fresh object (fresh cache), and an
+ * element removed from the DOM releases its entry. */
+const writtenVars = new WeakMap<CSSStyleDeclaration, Map<string, string>>();
+
+/** Write a custom property, skipping unchanged values. Returns
+ *  whether the DOM was touched. */
+export function setSheetVar(
+  style: CSSStyleDeclaration,
+  name: string,
+  value: string,
+): boolean {
+  let last = writtenVars.get(style);
+  if (!last) {
+    last = new Map<string, string>();
+    writtenVars.set(style, last);
+  }
+  if (last.get(name) === value) return false;
+  last.set(name, value);
+  style.setProperty(name, value);
+  return true;
 }
 
 /**

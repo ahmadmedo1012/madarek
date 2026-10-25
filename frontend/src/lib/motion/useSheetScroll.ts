@@ -14,9 +14,30 @@
  *
  * The callback receives measured metrics so consumers never repeat the
  * geometry math (and never read layout twice per frame).
+ *
+ * R318 C2-S1 — the batch is now REAL and frame-scoped:
+ *  · `run(false)` (the rAF tick) reads through the conductor's
+ *    generation cache — the first read of an element in a tick serves
+ *    every consumer of that same tick; nothing re-reads layout within
+ *    the same frame.
+ *  · `run(true)` (the settle frame + the mount prime) runs OUTSIDE the
+ *    rAF loop, so it bumps the generation first — it is never served a
+ *    rect cached by a previous frame, and the one rect it reads serves
+ *    any same-tick consumer that follows.
+ *  · `options.onRefresh` runs BEFORE the settle frame and on resize —
+ *    the hook for consumer-side document-geometry caches (JourneyScene's
+ *    stations stack): viewport positions still derive per frame from
+ *    `window.scrollY` (free), but the cached document offsets are only
+ *    re-measured when layout may actually have changed.
  */
 import { useEffect, useRef } from 'react';
-import { subscribeSheetFrame, wakeSheet, clamp } from './sheetConductor';
+import {
+  subscribeSheetFrame,
+  wakeSheet,
+  clamp,
+  sheetRect,
+  freshSheetRects,
+} from './sheetConductor';
 
 export interface ScrollMetrics {
   /** the target's live viewport rect (one read per frame) */
@@ -41,6 +62,13 @@ export interface SheetScrollOptions {
   settleMs?: number;
   /** run the frame once on mount/resize (initial paint correctness) */
   primeOnMount?: boolean;
+  /**
+   * R318 C2-S1 — runs BEFORE the settle frame and on resize: the
+   * consumer's hook to drop its own document-geometry caches (the
+   * settle frame that follows re-measures them lazily). Pure scroll
+   * never calls it — only the two moments layout can change.
+   */
+  onRefresh?: () => void;
 }
 
 export function useSheetScroll(
@@ -51,6 +79,8 @@ export function useSheetScroll(
   const settleMs = options.settleMs ?? 180;
   const frameRef = useRef(frame);
   frameRef.current = frame;
+  const refreshRef = useRef(options.onRefresh);
+  refreshRef.current = options.onRefresh;
 
   useEffect(() => {
     const el = ref.current;
@@ -59,9 +89,12 @@ export function useSheetScroll(
     let unsub: (() => void) | null = null;
     let settleTimer = 0;
 
-    const run = () => {
-      const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight;
+    /* `fresh` — reading outside the rAF loop (settle/prime): bump the
+     * conductor generation first so this run never consumes a rect
+     * cached by a previous frame, then read through the same batch. */
+    const run = (fresh: boolean) => {
+      if (fresh) freshSheetRects();
+      const { rect, vh } = sheetRect(el);
       const traversalRaw = (vh - rect.top) / (vh + rect.height);
       const pinRaw =
         rect.height > vh ? -rect.top / (rect.height - vh) : traversalRaw;
@@ -73,7 +106,7 @@ export function useSheetScroll(
       });
     };
 
-    const tick = () => run();
+    const tick = () => run(false);
 
     const kick = () => {
       if (!unsub) {
@@ -83,8 +116,11 @@ export function useSheetScroll(
       }
       window.clearTimeout(settleTimer);
       settleTimer = window.setTimeout(() => {
-        /* one final frame after quiet, then sleep */
-        run();
+        /* layout may have drifted while we were scrolling (fonts,
+         * late media) — let the consumer drop its caches, then one
+         * final fresh frame, then sleep. */
+        refreshRef.current?.();
+        run(true);
         if (unsub) {
           unsub();
           unsub = null;
@@ -92,15 +128,20 @@ export function useSheetScroll(
       }, settleMs);
     };
 
-    const onResize = () => kick();
+    const onResize = () => {
+      refreshRef.current?.();
+      kick();
+    };
 
     window.addEventListener('scroll', kick, { passive: true });
     window.addEventListener('resize', onResize, { passive: true });
 
     if (options.primeOnMount !== false) {
-      /* prime the initial state without holding the clock (one frame) */
+      /* prime the initial state without holding the clock (one frame —
+       * fresh: the batch may hold nothing yet, but the bump keeps the
+       * prime honest if a tick ran first) */
       requestAnimationFrame(() => {
-        run();
+        run(true);
       });
     }
 
@@ -110,6 +151,7 @@ export function useSheetScroll(
       window.removeEventListener('scroll', kick);
       window.removeEventListener('resize', onResize);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- options are read once by design
+    /* options are read once by design (the frame + refresh callbacks
+     * ride refs; only the settle/prime scalars belong to the deps). */
   }, [ref, settleMs, options.primeOnMount]);
 }

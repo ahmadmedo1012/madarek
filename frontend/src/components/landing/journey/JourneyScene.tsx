@@ -84,6 +84,7 @@ import { LearningPlanDrawing, PLAN_VB } from '../LearningPlanDrawing';
 import { ScrubReveal, WordReveal } from './WordReveal';
 import { SectionDrawing } from './SectionDrawing';
 import { useSheetScroll } from '../../../lib/motion/useSheetScroll';
+import { setSheetVar, sheetRect } from '../../../lib/motion/sheetConductor';
 
 /* ── The four walkthrough stages — reading order (RTL) through the
  * PLAN. The zone + station references mirror LearningPlanDrawing's
@@ -264,9 +265,28 @@ function camRectAt(reading: number): CamRect {
 /* apply the camera to the `.jt-cam` twin's sheet: slice cover keeps
  * the crop edge-to-edge in the frame. Flags the sheet (dataset + the
  * caller's dirty ref) so the ≥992px crossing can restore it exactly
- * once — never a per-frame desktop query. */
-function applyCam(track: HTMLElement, reading: number, reduced: boolean, dirty: { current: boolean }): void {
+ * once — never a per-frame desktop query.
+ *
+ * R318 C2-S1 — the per-frame rewrite is GONE: the interpolated rect is
+ * quantized to whole viewBox units (1px on a 480-wide window —
+ * invisible) and the write is skipped unless the composed string
+ * CHANGES (the guarded `preserveAspectRatio` sibling's discipline).
+ * The interpolated values used to re-set the attribute EVERY tick —
+ * re-invalidating the full 1200×760 plan raster inside `.jt-cam` each
+ * frame on phones (the 390 cell's worst paint cost). Clamped dwells at
+ * the CAM_BANDS ends and sub-unit steps now write nothing. */
+const camSvgByTrack = new WeakMap<HTMLElement, SVGSVGElement>();
+
+function camSvgFor(track: HTMLElement): SVGSVGElement | null {
+  const hit = camSvgByTrack.get(track);
+  if (hit) return hit;
   const svg = track.querySelector<SVGSVGElement>('.jt-cam .bp-svg');
+  if (svg) camSvgByTrack.set(track, svg);
+  return svg;
+}
+
+function applyCam(track: HTMLElement, reading: number, reduced: boolean, dirty: { current: boolean }): void {
+  const svg = camSvgFor(track);
   if (!svg) return;
   let r: CamRect;
   if (reduced) {
@@ -278,18 +298,23 @@ function applyCam(track: HTMLElement, reading: number, reduced: boolean, dirty: 
   } else {
     r = camRectAt(reading);
   }
-  svg.setAttribute('viewBox', `${r[0]} ${r[1]} ${r[2]} ${r[3]}`);
+  const vb = `${Math.round(r[0])} ${Math.round(r[1])} ${Math.round(r[2])} ${Math.round(r[3])}`;
+  if (svg.getAttribute('viewBox') !== vb) {
+    svg.setAttribute('viewBox', vb);
+  }
   if (svg.getAttribute('preserveAspectRatio') !== 'xMidYMid slice') {
     svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
   }
-  svg.dataset.cam = 'cropped';
+  if (svg.dataset.cam !== 'cropped') {
+    svg.dataset.cam = 'cropped';
+  }
   dirty.current = true;
 }
 
 /* restore the twin's sheet to the full plan (the ≥992px crossing);
  * called only when a previous mobile pass cropped it. */
 function restoreCam(track: HTMLElement): void {
-  const svg = track.querySelector<SVGSVGElement>('.jt-cam .bp-svg');
+  const svg = camSvgFor(track);
   if (!svg) return;
   if (svg.dataset.cam !== 'cropped') return;
   svg.setAttribute('viewBox', `0 0 ${PLAN_VB.w} ${PLAN_VB.h}`);
@@ -339,6 +364,18 @@ export function JourneyScene() {
    * the band is always in the open region, never behind the frame). */
   const stationsRef = useRef<HTMLElement | null>(null);
   const camElRef = useRef<HTMLElement | null>(null);
+  /* R318 C2-S1 — the stations stack's DOCUMENT geometry (doc-space
+   * top + height), measured once per layout epoch instead of every
+   * frame: the stack is plain in-flow content, so its viewport top
+   * derives exactly from `window.scrollY` per frame (free — no layout
+   * read), and the cache only needs a re-measure when the layout
+   * itself changes (useSheetScroll calls `onRefresh` on resize and on
+   * scroll-settle, then the frame re-measures lazily). The camera
+   * frame stays a live batched read — it is `position: sticky`, whose
+   * NATURAL flow position is unmeasurable while stuck, so deriving
+   * its viewport rect from cached doc offsets would drift; one read
+   * per tick through the shared sheetRect batch is the honest cost. */
+  const stationsDocRef = useRef<{ top: number; height: number } | null>(null);
   /* the cam-cropped flag — set by applyCam, consumed by the ≥992px
    * crossing so restoreCam never runs per frame on desktop. */
   const camDirtyRef = useRef(false);
@@ -363,18 +400,31 @@ export function JourneyScene() {
       /* the reading parameter: where the stations stack sits against
        * the READING BAND — the open region below the camera frame's
          live bottom edge (the card at the band is never behind the
-         frame). Falls back to the pin metric before the stack exists. */
+         frame). Falls back to the pin metric before the stack exists.
+       *
+       * R318 C2-S1 — the two per-frame stations/cam gBCR reads are
+       * gone: the stack's position derives from its cached DOCUMENT
+       * geometry + `window.scrollY` (it is in-flow, never sticky),
+       * and the sticky cam rect rides the shared once-per-tick batch. */
       const stations =
         stationsRef.current ??
         (stationsRef.current = track.querySelector<HTMLElement>('.jt-stations'));
       const camEl =
         camElRef.current ?? (camElRef.current = track.querySelector<HTMLElement>('.jt-cam'));
       if (stations && camEl) {
-        const sRect = stations.getBoundingClientRect();
-        const cRect = camEl.getBoundingClientRect();
-        if (sRect.height > 0) {
+        let doc = stationsDocRef.current;
+        if (!doc) {
+          const sRect = sheetRect(stations).rect;
+          if (sRect.height > 0) {
+            doc = { top: sRect.top + window.scrollY, height: sRect.height };
+            stationsDocRef.current = doc;
+          }
+        }
+        if (doc && doc.height > 0) {
+          const cRect = sheetRect(camEl).rect;
+          const sTop = doc.top - window.scrollY;
           const band = cRect.bottom + (vh - cRect.bottom) * 0.45;
-          reading = (band - sRect.top) / sRect.height;
+          reading = (band - sTop) / doc.height;
         }
       }
       const r = Math.max(0, Math.min(1, reading));
@@ -421,10 +471,20 @@ export function JourneyScene() {
       const on = pin >= 0.27 && pin <= 0.68 ? 'on' : 'off';
       if (intro.dataset.on !== on) intro.dataset.on = on;
     }
-    track.style.setProperty('--jt-p', pin.toFixed(4));
+    /* R318 C2-S1 — idempotent clock writes: the conductor's last-value
+     * cache skips unchanged value strings (pinned dwells and
+     * 4-decimal quantized steps stop dirtying style every tick). */
+    setSheetVar(track.style, '--jt-p', pin.toFixed(4));
     /* the progress hairline's clock: the reading parameter at ≤991px
      * (the stations stack IS the timeline there), the pin ≥992px. */
-    track.style.setProperty('--jt-r', (mobile ? reading : pin).toFixed(4));
+    setSheetVar(track.style, '--jt-r', (mobile ? reading : pin).toFixed(4));
+  }, {
+    /* drop the stations doc-geometry cache when the layout may have
+     * changed (resize + scroll settle) — the next frame re-measures it
+     * once; pure scroll keeps the cache hot (no layout read at all). */
+    onRefresh: () => {
+      stationsDocRef.current = null;
+    },
   });
 
   return (
