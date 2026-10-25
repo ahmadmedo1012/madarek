@@ -93,3 +93,17 @@ Merge order: G first, then W, then C (foreman rebases + runs gate quick suite be
 4. Every public + authenticated route verified 5 viewports × light/dark (local full stack, embedded Postgres) — coverage reported as done/total.
 5. Red team finds nothing open; this board has no open P0/P1.
 Component targets: DOM ≥95 · VLM ≥80 (from 43) · masked worst-region ≤35% (from 72) · motion ≥90 · smoothness ≥90 · collisions 100 · overall ≥90.
+
+## Cycle 2 — CLOSED (composition + smoothness + the phone seats)
+
+**§A register after C2:** A1 FIXED · A2 FIXED (contrast; free-margin seat → C3-MAP) · A3 FIXED (solid ink mid-states, probe @p=.40: walls opacity 1, wash #FA3600 solid, t-fast) · A4 PARTIAL (halos 3px + status strip retired @992-1024 — gate green; label coordinate nudges → C3-MAP) · A5 FIXED («--%»→«تلقائي»; title 47,362px² overlap→0 inside the sheet; paper ground 37.3%→0.1% black; all cards inside frames, 0 pairwise/viewport collisions; 361/601/464 grid) · A6 FIXED (connected «مدارك» letterforms; OCR «مدارك» @1440+390) · A7 FIXED (label +419px clear; aspect-true image; captions +14px) · A8 → C3-MAP · A9 FIXED (incl. all phone seats) · A10 FIXED.
+
+**Gate state** (`--viewports 320,360,390,430,480,600,720,768,1024,1440 --skip ocr,perf`, evidence `audits/evidence/r318/gate-cycle2.md`): **20 cells → 18 GREEN / 2 red** (the 720×900 2px×137px CTA sliver × light/dark — documented BLOCKED: the exotic 720×900 pairing; canonical 720×1024 green; the fix needs the art-cap escalation to ~40% at that pocket or a banner redesign — ticketed). Word-integrity, contrast, placeholders, overflow: GREEN everywhere. OCR: GREEN («مدارك» read @1440+390).
+
+**Perf after C2-S1 + foreman pass** (harness `scripts/r316/perf.mjs`, CPU 4×, loader skipped): @390 frames>33ms 96.6%→**26.8–29.8%**, longtasks 69→**9**, LoAF FrameRequestCallback 2530ms→conductor chunk **≤147ms**, gBCR/s 466→**200**; @1440 71.1→**68.9%** (paint-domain remainder). Cold LCP: element was the decorative `.fo-grain` layer @4.05s → now the real H1 (62,185px²) — the grain seats on `body::before` (pseudo-elements are not LCP candidates); same-frame on/off diff verified the visual coverage identical (blends bare paper only). Header rAF scrollY read moved to event-time (639ms post-write flush killed); auth-warm moved to pointerdown/focusin intent + 15s idle (mid-scroll MessagePort 306-756ms killed); --wr-p/--wy-p idempotent.
+
+**docH ladder** (protected, verified after every merge): 1440=12,340 EXACT · 390=11,418 (+0.06%) · 360=10,739 (+0.04%) · 430=12,548 · 480=12,716 EXACT · 600=15,876 EXACT · 720=17,819 (−0.04%) · 768=12,627 EXACT · 1024=9,959 EXACT.
+
+**Suites:** vitest front **2559/2559** · back 1783/1783 · tsc 0 · eslint 0 errors · colors/raw-css reports OK.
+
+**Cycle 3 queue:** C3-MAP (card free-margin seat per the ref manifest 233×164-on-blank-paper verdict; mobile 390 plan-fit 95.9% + card below + [02/05] index; tablet 768 full-plan 98.09% + intro card hidden + no dead band; label coordinate nudges) · C2-S2 (loader first-visit policy + «تخطّي» + bundle 703.3→<600KB gz) · C2-S3 (cold CLS 0.033-0.037 @390: fo-hero-strip/statement shifters + metric-matched font fallbacks) · paint-domain perf (below-fold ink art pre-rasterised AVIF/WebP + per-band `contain` audit) · VLM/pixel judges on fresh anchored frames · red team + authenticated sweep (embedded Postgres) · the two documented sliver tickets (720×900 art-cap, 320 compact-hero).
