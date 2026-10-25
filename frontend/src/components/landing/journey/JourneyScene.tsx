@@ -26,18 +26,25 @@
  *    walk: statement → plan → INTRODUCTION card → findings → reveal
  *    → closing) on top of the unchanged R310 station machine:
  *      1. the opening STATEMENT — one line centered over the paper,
- *         fading through the first band's opening (--jt-p 0→.13);
+ *         holding the reference's own long opening dwell (the live
+ *         walk's statement still stands at 25% of the band; the ink
+ *         below resolves from --jt-p .30);
  *      2. the PLAN drawn directly on the paper — the window's white
- *         inset box + boxed caption are gone (landing.css);
+ *         inset box + boxed caption are gone (landing.css); C4-A:
+ *         the window FILLS the stage and the ink scrubs in across
+ *         the reference's own kk cross-fade window (f ≈.39–.52);
  *      3. the INTRODUCTION card — the reference's corner card: a dark
  *         var(--text) title bar + four lines that scrub-reveal line
- *         by line (--jt-p .14→.50) + the [تابع التمرير] mono
- *         affordance; it hands off to the closing column at the last
- *         band (fades .84→.90, before the side opens at .93);
+ *         by line (C4-A dwell .28→.68, the reference's measured
+ *         card window: in at f .32–.52, gone before the 75% frame)
+ *         + the [تابع التمرير] mono affordance;
  *      4. the FINDINGS — the four stations with the progress hairline
- *         under the sheet (the --jt-r fill);
+ *         under the sheet (the --jt-r fill) + the plan's own
+ *         violation-callout chips at the doors (C4-A);
  *      5. the REVEAL — the solid red rooms (the zone wash, per stage);
- *      6. the CLOSING — the expanding capability column at pin end.
+ *      6. the CLOSING — the expanding capability column at pin end,
+ *         now the sheet's SECOND VIEW (the section A-A panel beside
+ *         the plan — the reference's multi-view technical sheet).
  *    Six states, the reference's dwell shape (statement front-loaded,
  *    card across the middle, closing at the release), and the pin
  *    start/end stay PROPORTIONAL (the R314 ruling): the station bands
@@ -75,6 +82,7 @@ import { Check } from 'lucide-react';
 import { Icon } from '../../Icon';
 import { LearningPlanDrawing, PLAN_VB } from '../LearningPlanDrawing';
 import { ScrubReveal, WordReveal } from './WordReveal';
+import { SectionDrawing } from './SectionDrawing';
 import { useSheetScroll } from '../../../lib/motion/useSheetScroll';
 
 /* ── The four walkthrough stages — reading order (RTL) through the
@@ -395,19 +403,22 @@ export function JourneyScene() {
       const open = pin >= 0.93 ? 'on' : 'off';
       if (side.dataset.open !== open) side.dataset.open = open;
     }
-    /* R315 (K-D) — the statement + card visibility windows: the
-     * statement owns the opening (through the first band's start at
-     * .125), the card the mid-traversal (it hands off to the closing
-     * column before the side opens at .93). Discrete idempotent
-     * writes — the opacity itself scrubs from --jt-p in CSS. */
+    /* R315 (K-D · C4-A dwell) — the statement + card visibility
+     * windows, re-seated to the reference's measured state machine:
+     * the statement owns the opening THROUGH the first station band
+     * (the live walk's statement still stands at 25% of the band —
+     * the ink resolves from .30), and the card holds the MID-
+     * traversal only (the reference's own card: in at f .32–.52,
+     * gone before the 75% frame). Discrete idempotent writes — the
+     * opacity itself scrubs from --jt-p in CSS. */
     const statement = statementRef.current;
     if (statement) {
-      const on = pin <= 0.13 ? 'on' : 'off';
+      const on = pin <= 0.36 ? 'on' : 'off';
       if (statement.dataset.on !== on) statement.dataset.on = on;
     }
     const intro = introRef.current;
     if (intro) {
-      const on = pin >= 0.09 && pin <= 0.9 ? 'on' : 'off';
+      const on = pin >= 0.27 && pin <= 0.68 ? 'on' : 'off';
       if (intro.dataset.on !== on) intro.dataset.on = on;
     }
     track.style.setProperty('--jt-p', pin.toFixed(4));
@@ -429,9 +440,21 @@ export function JourneyScene() {
         {/* the reference's INTRODUCTION card — the bottom corner */}
         <JtIntro innerRef={introRef} />
 
-        {/* the expanding capability column (pin end) */}
+        {/* the expanding capability column (pin end) — C4-A: the
+            sheet's SECOND VIEW: the section A-A panel rides above the
+            honest checklist, so the release reads as one multi-view
+            drawing sheet (the reference's s07 grammar). Desktop-only
+            chrome (landing.css hides the panel ≤991px — the stacked
+            readable ladder keeps its measured band heights). */}
         <div className="jt-side" ref={sideRef} data-open="off">
           <span className="jt-side-label fo-mono" dir="ltr">[01–04] · LIVE</span>
+          <figure className="jt-side-section">
+            <SectionDrawing />
+            <figcaption>
+              قطاع A-A · مسطح التعلّم
+              <span className="fo-mono" dir="ltr">[SECTION A-A · 1:200]</span>
+            </figcaption>
+          </figure>
           <ul className="jt-checklist">
             {CHECKLIST.map((c) => (
               <li key={c}>
