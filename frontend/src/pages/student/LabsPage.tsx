@@ -9,6 +9,9 @@ import {
 import { Card, ProgressBar } from '../../components/primitives';
 import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { PageFrame, PageHeader, StatLine } from '../../components/patterns';
+/* R319 (c3-S1) — the §B2 kit: the mono-indexed section title bar + the
+ * hatched empty cell (the DashboardPage conversion's components). */
+import { SectionBar, BarCount, EmptyCell } from '../../components/student';
 import { Icon } from '../../components/Icon';
 import { useReducedMotion } from '../../components/motion/useReducedMotion';
 import { useLabs, useMyLabSessions, useCompleteLabSession, type VirtualLab } from '../../hooks/useResources';
@@ -21,6 +24,10 @@ import { formatNum } from '../../utils/numbers';
    no page-scoped rules for this page. */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-supplemental.css';
+/* R319 (c3-S1): the sheet system — the §B2 component anatomy + the
+ * academic family's harmonics (the lab thumb-cards' hairline re-seat). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 interface LabExperiment {
   title: string;
@@ -153,6 +160,7 @@ export default function LabsPage() {
   const [activeLab, setActiveLab] = useState<VirtualLab | null>(null);
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       {!activeLab ? (
         <>
@@ -201,14 +209,24 @@ export default function LabsPage() {
             />
           )}
 
-          {/* R305 Heron: the catalog is ONE editorial section — the kicker
-              heading + hairline carry the rhythm instead of another boxed
-              card, and EVERY honest state (loading/error/empty/resolved)
-              lives inside it. */}
+          {/* R305 Heron: the catalog is ONE editorial section — every
+              honest state (loading/error/empty/resolved) lives inside it.
+              R319 (c3-S1): the section heading joins the §B2 title-bar
+              register — [01] + the resolved labs count as quiet mono meta
+              (countAr for assistive tech). */}
           <section aria-label="دليل المعامل">
-            <div className="r305s-kicker">
-              <h2 className="r305s-kicker-title">دليل المعامل</h2>
-            </div>
+            <SectionBar
+              index="01"
+              title="دليل المعامل"
+              meta={
+                !labs.isPending && !labs.isError && (labs.data?.length ?? 0) > 0 ? (
+                  <BarCount
+                    n={labs.data!.length}
+                    srLabel={countAr(labs.data!.length, ['معمل واحد متاح', 'معملان متاحان', 'معامل متاحة', 'معملاً متاحاً'])}
+                  />
+                ) : undefined
+              }
+            />
 
           {labs.isPending ? (
             <div className="grid-3" aria-busy="true" aria-live="polite">
@@ -224,7 +242,14 @@ export default function LabsPage() {
             </div>
           ) :
            labs.isError ? <Card><ErrorState error={labs.error} onRetry={() => labs.refetch()} /></Card> :
-           !labs.data?.length ? <Card><EmptyState icon={FlaskConical} illustration="empty-list" title="لا معامل متاحة" /></Card> : (
+           !labs.data?.length ? (
+             /* R319 (c3-S1): the empty catalog is the hatched EmptyCell —
+                the sheet's reserved-but-empty region. */
+             <EmptyCell
+               label="لا معامل متاحة"
+               note="لم تُسجّل معامل في دليل المنصّة بعد — ستظهر هنا فور إضافتها."
+             />
+           ) : (
             <div className="grid-3">
               {labs.data.map((l) => {
                 const cat = inferCategory(l);
@@ -274,6 +299,7 @@ export default function LabsPage() {
         <LabRunner lab={activeLab} onExit={() => setActiveLab(null)} />
       )}
     </PageFrame>
+    </div>
   );
 }
 

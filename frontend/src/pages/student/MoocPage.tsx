@@ -1,13 +1,16 @@
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import {
-  GraduationCap, Award, Users2, Clock, Star, Search,
+  GraduationCap, Award, Users2, Clock, Star,
   Code, Database, Palette, Languages, Briefcase,
   type LucideIcon,
 } from 'lucide-react';
 import { Badge } from '../../components/primitives';
-import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
+import { ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { PageFrame, PageHeader, FilterBar } from '../../components/patterns';
+/* R319 (c3-S1) — the §B2 kit: the mono-indexed section title bar + the
+ * hatched empty cell (the DashboardPage conversion's components). */
+import { SectionBar, BarCount, EmptyCell } from '../../components/student';
 import { useMoocs, type MoocCourse } from '../../hooks/useResources';
 import { formatInt, formatNum } from '../../utils/numbers';
 import { matchesNormalizedQuery } from '../../lib/search';
@@ -15,6 +18,10 @@ import { countAr } from '../../lib/format';
 /* R305 Heron: the shared student vocabulary + this family's refinements. */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-supplemental.css';
+/* R319 (c3-S1): the sheet system — the §B2 component anatomy + the
+ * academic family's harmonics (the mooc thumb-cards' hairline re-seat). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 const moocIcon = (cat: string): LucideIcon => {
   if (cat === 'prog') return Code;
@@ -132,6 +139,7 @@ export default function MoocPage() {
   const searching = query.trim().length > 0;
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
         title="دورات خارجية"
@@ -143,14 +151,27 @@ export default function MoocPage() {
       ) : isError ? (
         <ErrorState error={error} onRetry={() => refetch()} />
       ) : !data?.length ? (
-        <EmptyState
-          icon={GraduationCap}
-          title="لا توجد دورات خارجية مرتبطة"
-          illustration="empty-list"
-          description="تربط إدارة الكلّيّة دورات Coursera ودورات edX المعتمدة بمقرّراتك؛ راجع المرشد الأكاديمي لمعرفة المعتمد هذا الفصل."
+        /* R319 (c3-S1): the empty catalog is the hatched EmptyCell —
+           the sheet's reserved-but-empty region. */
+        <EmptyCell
+          label="لا توجد دورات خارجية مرتبطة"
+          note="تربط إدارة الكلّيّة دورات Coursera ودورات edX المعتمدة بمقرّراتك؛ راجع المرشد الأكاديمي لمعرفة المعتمد هذا الفصل."
         />
       ) : (
         <>
+          {/* R319 (c3-S1): the catalog region opens with the §B2
+              mono-indexed title bar — [01] + the honest course count as
+              quiet mono meta (countAr for assistive tech). */}
+          <SectionBar
+            index="01"
+            title="الدورات المتاحة"
+            meta={
+              <BarCount
+                n={data.length}
+                srLabel={countAr(data.length, ['دورة خارجية واحدة', 'دورتان خارجيتان', 'دورات خارجية', 'دورة خارجية'])}
+              />
+            }
+          />
           <FilterBar
             search={{
               value: query,
@@ -175,11 +196,11 @@ export default function MoocPage() {
           </p>
 
           {searching && filtered.length === 0 ? (
-            <EmptyState
-              icon={Search}
-              title="لا نتائج مطابقة للبحث"
-              illustration="empty-search"
-              description="جرّب كلمة أقصر، أو ابحث باسم الجهة التي تقدّم الدورة."
+            /* R319 (c3-S1): the no-hits search answer is the hatched
+               EmptyCell — the sheet's reserved-but-empty region. */
+            <EmptyCell
+              label="لا نتائج مطابقة للبحث"
+              note="جرّب كلمة أقصر، أو ابحث باسم الجهة التي تقدّم الدورة."
             />
           ) : (
             <div className="grid-3 mooc-grid">
@@ -189,5 +210,6 @@ export default function MoocPage() {
         </>
       )}
     </PageFrame>
+    </div>
   );
 }

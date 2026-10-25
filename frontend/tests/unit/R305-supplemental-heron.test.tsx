@@ -395,10 +395,18 @@ describe('R305 labs — the catalog is ONE editorial section with honest states'
     ];
     const { container } = renderPage(<LabsPage />);
 
-    // The section exists with the kicker h2 (a real heading, not a card title).
+    // The section exists with the §B2 title-bar h2 (a real heading, not a
+    // card title).
     const section = container.querySelector('section[aria-label="دليل المعامل"]');
     expect(section).not.toBeNull();
-    expect(section!.querySelector('.r305s-kicker h2.r305s-kicker-title')!.textContent).toBe('دليل المعامل');
+    /* R319 override (c3-S1): the section heading joins the §B2
+       title-bar register — the mono-indexed SectionBar (h2 +
+       [01] gutter + hairline rule) instead of the r305 kicker. Same
+       heading, same section contract; the labs count rides the bar's
+       quiet mono meta (countAr for assistive tech). */
+    expect(section!.querySelector('.r319s-bar h2.r319s-bar-title')!.textContent).toBe('دليل المعامل');
+    expect(section!.querySelector('.r319s-bar-index')!.textContent).toBe('[01]');
+    expect(section!.querySelector('.r319s-count')!.textContent).toBe('02');
 
     // Card metadata: platform + counted noun ride .r305s-meta-row with the
     // technical separator — the D17-2 counted plural (3 → تجارب), never a
