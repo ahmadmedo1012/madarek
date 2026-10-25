@@ -4821,17 +4821,43 @@ html[data-theme='dark'] body.mdrk-grain::before {
   fill: var(--text-secondary);
 }
 
-/* R318 §A4 — the plan labels' paper halo: a 3px paper stroke behind
-   the fill keeps the names legible where they cross dimension lines,
-   window mullions and door arcs (paint-order: stroke first — the
-   reference's own label treatment; text geometry untouched). */
+/* R318 §A4 → R319 §D3 — the plan labels' paper halo, re-ruled: a
+   WHISPER stroke (1.4 units ≈1.48px on the 1267px @1440 window,
+   ≈1.1px on the 390 camera crop) behind DARK-INK-ON-PAPER labels
+   only, keeping names legible where they cross dimension lines,
+   window mullions and door arcs (paint-order: stroke first) without
+   the R318 3px double-strike — that halo was THICKER than the glyph
+   (3.17px @1440 around ~2px strokes), so «قاعة الاختبار» read bold
+   double-struck at 1440 and mush at 390. Heron's own register: no
+   halo on its labels at all (heron-map.json); ours keeps the
+   thinnest possible legibility stroke on the quiet ink labels. */
 .jt .jt-plan .pl-name,
 .jt .jt-plan .bp-micro,
 .jt .jt-plan .pl-station {
   paint-order: stroke fill;
   stroke: var(--bg);
-  stroke-width: 3px;
+  stroke-width: 1.4px;
   stroke-linejoin: round;
+}
+
+/* R319 §D3 — NO halo on the lit rooms: the active zone's label/micro
+   and the active door station ride solid signal grounds (the #FA3600
+   wash / the chip block), where a paper stroke behind the glyph is
+   the smear itself. The active fills are state-safe ink (D4 —
+   PLAN_INK_CSS), so nothing on a signal ground needs a halo. */
+.jt[data-stage='0'] .jt-plan .pl-l-lecture .pl-name,
+.jt[data-stage='0'] .jt-plan .pl-l-lecture .bp-micro,
+.jt[data-stage='1'] .jt-plan .pl-l-checkpoint .pl-name,
+.jt[data-stage='1'] .jt-plan .pl-l-checkpoint .bp-micro,
+.jt[data-stage='2'] .jt-plan .pl-l-exam .pl-name,
+.jt[data-stage='2'] .jt-plan .pl-l-exam .bp-micro,
+.jt[data-stage='3'] .jt-plan .pl-l-mastery .pl-name,
+.jt[data-stage='3'] .jt-plan .pl-l-mastery .bp-micro,
+.jt[data-stage='0'] .jt-plan .pl-station[data-station='0'],
+.jt[data-stage='1'] .jt-plan .pl-station[data-station='1'],
+.jt[data-stage='2'] .jt-plan .pl-station[data-station='2'],
+.jt[data-stage='3'] .jt-plan .pl-station[data-station='4'] {
+  stroke: none;
 }
 
 .pl-station {
