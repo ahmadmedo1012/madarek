@@ -25,7 +25,7 @@ import { readFocusRing } from './fixtures/qa-checks';
 test.describe('لوحة الدخول — لوحة المفاتيح', () => {
   test('أول Tab يصل إلى أول عنصر تفاعلي (رابط الصفحة الرئيسية)', async ({ page }) => {
     await page.goto('/auth');
-    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحباً بعودتك');
+    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحبا بعودتك');
 
     await page.keyboard.press('Tab');
     const active = await page.evaluate(() => ({
@@ -39,7 +39,7 @@ test.describe('لوحة الدخول — لوحة المفاتيح', () => {
 
   test('النموذج قابل للتشغيل بالكامل بلوحة المفاتيح (تعبئة + Enter يرسل)', async ({ page }) => {
     await page.goto('/auth');
-    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحباً بعودتك');
+    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحبا بعودتك');
 
     // Keyboard-only path: focus the first field via Tab navigation is
     // slow to reason about — page.focus() is the keyboard-equivalent
@@ -57,7 +57,7 @@ test.describe('لوحة الدخول — لوحة المفاتيح', () => {
 
   test('حلقة التركيز الظاهرة: لوحة المفاتيح ترسم الحلقة، والفأرة لا ترسمها', async ({ page }) => {
     await page.goto('/auth');
-    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحباً بعودتك');
+    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحبا بعودتك');
 
     // Keyboard focus (Shift+Tab walks back to the submit button from
     // the demo chip / register prompt — the button is the LAST control

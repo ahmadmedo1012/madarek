@@ -10,8 +10,13 @@ test.describe('الصفحة العامة للزوار', () => {
   test('الهبوط يعرض مشهد مدارك: العنوان الجوهري وهوية المنصّة المستقلّة (r188)', async ({ page }) => {
     await page.goto('/');
 
-    // العنوان الرئيسي — «كلُّ معرفةٍ تبدأ نقطة، وتنمو في مدارك.»
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    // العنوان الرئيسي — إعادة تثبيت R315 (B1·A.2): الهيرو صار عنوان
+    // العرض ذا السطرين «رحلة تعلم واحدة / من المحاضرة إلى الإتقان»
+    // (بلا تشكيل على سلّم --fs-h1)؛ التثبيت القديم «كلُّ معرفةٍ…» كان
+    // لعنوان جُهّز قبل r306. وهوية «مدارك» نفسها في خلية العلامة بالترويسة.
+    await expect(page.locator('.fo-hero-title')).toContainText('رحلة تعلم واحدة');
+    await expect(page.locator('.fo-hero-title')).toContainText('من المحاضرة إلى الإتقان');
+    await expect(page.getByRole('banner').locator('.fo-brand-name')).toContainText('مدارك');
     // هوية المنصّة في الترويسة (r188: لا جامعة حقيقية — الاستقلالية؛ r191: العبارة المحذوفة صُنعت في ليبيا لم تعد اسم المنتج)
     await expect(page.locator('.fo-header-actions')).toBeVisible();
     await expect(page.getByText('منصّة التعليم الذكي').first()).toBeVisible();
@@ -36,6 +41,8 @@ test.describe('الصفحة العامة للزوار', () => {
     // والعائد بصحبة حسابٍ يجد باب الدخول من صفحة التسجيل (القمع بالاتجاهين).
     await page.getByRole('link', { name: /تسجيل الدخول/ }).first().click();
     await expect(page).toHaveURL(/\/auth$/);
-    await expect(page.getByRole('heading', { name: 'مرحباً بعودتك' })).toBeVisible();
+    // R315 (K-I): عنوان بوابة الدخول صار «مرحبا بعودتك» — بلا تشكيل
+    // (قانون العرض الخالي من الحركات؛ كان «مرحباً بعودتك»).
+    await expect(page.getByRole('heading', { name: 'مرحبا بعودتك' })).toBeVisible();
   });
 });

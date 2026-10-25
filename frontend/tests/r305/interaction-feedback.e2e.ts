@@ -32,7 +32,7 @@ test.describe('زر الدخول أثناء الإرسال', () => {
     });
 
     await page.goto('/auth');
-    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحباً بعودتك');
+    await expect(page.locator('h1.auth-form-title')).toHaveText('مرحبا بعودتك');
 
     await page.locator('#auth-email').fill('student@zu.edu.ly');
     await page.locator('#auth-password').fill('Madarek2026!');

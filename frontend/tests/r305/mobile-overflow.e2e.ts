@@ -40,7 +40,7 @@ test.describe('الزائر — فيض أفقي صفري', () => {
 
       test('/auth بلا فيض ولا عنصر يتجاوز الحافة اليمنى (RTL)', async ({ page }) => {
         await page.goto('/auth');
-        await expect(page.locator('h1.auth-form-title')).toHaveText('مرحباً بعودتك');
+        await expect(page.locator('h1.auth-form-title')).toHaveText('مرحبا بعودتك');
         await expectNoHorizontalOverflow(page, AUTH_LANDMARKS);
       });
 

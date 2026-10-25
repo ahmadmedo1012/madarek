@@ -39,7 +39,7 @@ const GUEST_ROUTES: HealthRoute[] = [
   {
     path: '/auth',
     ready: async (page) => {
-      await expect(page.locator('h1.auth-form-title')).toHaveText('مرحباً بعودتك');
+      await expect(page.locator('h1.auth-form-title')).toHaveText('مرحبا بعودتك');
     },
   },
   {

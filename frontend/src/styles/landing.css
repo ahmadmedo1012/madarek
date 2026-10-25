@@ -731,8 +731,8 @@ html[data-theme='dark'] .fo-grain {
  * marks, and the corner plus marks. */
 .fo-hero-window {
   display: grid;
-  padding-block-start: 63px; /* 56px header + 7px frame */
-  padding-inline: 7px;
+  padding-block-start: 63px; /* 56px header + 7px frame */ /* spacing-gate: allow — the header bar + frame chrome constant, not a ladder rung */
+  padding-inline: 7px; /* spacing-gate: allow — the sheet frame's own 7px inset (measured), not a ladder rung */
   align-items: stretch;
 }
 
@@ -740,7 +740,7 @@ html[data-theme='dark'] .fo-grain {
   inline-size: 100%;
   /* the window ≈1406×~683 @1440: the artwork seats on transparent
      paper with the drafting chrome (ticks, dashed frame, marks) */
-  padding: 12px;
+  padding: 12px; /* spacing-gate: allow — the window's own 12px mat seat (drafting chrome), deliberately not --sp-3 — the tier blocks re-seat the ladder, this seat stays px */
   border: 1px solid var(--rule);
   position: relative;
   background: transparent; /* R315 A.1 — the paper shows through, never a white box */
@@ -838,8 +838,8 @@ html[data-theme='dark'] .fo-grain {
   gap: var(--sp-8);
   align-items: end;
   padding-block-start: var(--sp-2);
-  padding-block-end: 20px; /* the 7px frame + the reference's lower mat */
-  padding-inline: 7px;
+  padding-block-end: 20px; /* the 7px frame + the reference's lower mat */ /* spacing-gate: allow — frame + lower-mat seat, the measured strip band constant, not a rung */
+  padding-inline: 7px; /* spacing-gate: allow — the sheet frame's own 7px inset (measured), not a ladder rung */
   min-block-size: 133px;
   border-block-start: 1px solid var(--rule);
   margin-block-start: var(--sp-2);
@@ -2194,8 +2194,8 @@ html[data-theme='dark'] .fo-grain {
   align-content: start;
   border-inline-start: 1px solid var(--rule);
   border-block-start: 1px solid var(--rule);
-  margin-block-start: -1px; /* collapse double rules */
-  margin-inline-start: -1px;
+  margin-block-start: -1px; /* collapse double rules */ /* spacing-gate: allow — border-collapse construct (negative hairline), no negative rung exists */
+  margin-inline-start: -1px; /* spacing-gate: allow — border-collapse construct (negative hairline), no negative rung exists */
   min-block-size: 96px;
 }
 
@@ -2228,7 +2228,7 @@ html[data-theme='dark'] .fo-grain {
   font-size: var(--fs-xxs);
   color: var(--text-muted);
   background: var(--bg);
-  padding: 2px 6px;
+  padding: 2px 6px; /* spacing-gate: allow — the index chip's own 2/6 glyph mat (optical), not ladder rungs */
   border: 1px solid var(--rule);
 }
 
@@ -2411,7 +2411,7 @@ html[data-theme='dark'] .fo-grain {
    * gutters (14px — the '+' marks own the corners) */
   .fo-fstrip .fo-wordmark {
     margin-block-start: 0;
-    padding-inline: 14px;
+    padding-inline: 14px; /* spacing-gate: allow — the '+' reg-mark corner gutters (the wordmark's own seat), not a ladder rung */
     padding-block: var(--sp-1-5) var(--sp-1);
     align-content: center;
     justify-items: center;
@@ -2472,7 +2472,7 @@ html[data-theme='dark'] .fo-grain {
   justify-items: center;
   gap: var(--sp-1);
   padding-block: var(--sp-2) var(--sp-1-5);
-  padding-inline: 14px; /* the reg-mark gutters keep the mono line clear of the corner marks */
+  padding-inline: 14px; /* the reg-mark gutters keep the mono line clear of the corner marks */ /* spacing-gate: allow — the '+' reg-mark corner gutters (measured seat), not a ladder rung */
   margin-block-start: var(--sp-2);
 }
 
@@ -2607,7 +2607,7 @@ html[data-theme='dark'] .fo-grain {
   flex: 1;
   min-inline-size: 0;
   block-size: 38px; /* the row (38 + the 1px pair) = the measured 40 */
-  padding-inline: var(--sp-3) 52px; /* the inline-end run keeps the arrow cell clear */
+  padding-inline: var(--sp-3) 52px; /* the inline-end run keeps the arrow cell clear */ /* spacing-gate: allow — the 52px inline-end clearance is the arrow cell's own measured seat, not a rung */
   background: transparent;
   border: 0;
   color: var(--text);
@@ -2858,7 +2858,7 @@ html[data-theme='dark'] .fo-grain {
   }
 
   .fo-hero-window {
-    padding-block-start: 63px;
+    padding-block-start: 63px; /* spacing-gate: allow — 56px header + 7px frame chrome (the base-rule seat re-pinned per tier), not a rung */
   }
 
   /* DEFINITE height (the R314 cycle-2 lesson): a % twin against the
@@ -2961,7 +2961,7 @@ html[data-theme='dark'] .fo-grain {
   }
 
   .fo-hero-window {
-    padding-block-start: 63px;
+    padding-block-start: 63px; /* spacing-gate: allow — 56px header + 7px frame chrome (the base-rule seat re-pinned per tier), not a rung */
   }
 
   .fo-hero-window .bp-stage {
@@ -6653,7 +6653,7 @@ html[data-theme='dark'] .fo-grain {
    * phone px rungs (its inner seats are the tuned instrument, not the
    * scaling family) and the band paddings sit at the phone measure */
   .chapters {
-    padding-block: 56px;
+    padding-block: 56px; /* spacing-gate: allow — the map band's phone-measure padding pinned beside the re-seated phone rungs (dvh-keyframed instrument), not the global ladder */
     --sp-0-5: 2px; --sp-1: 4px; --sp-1-5: 6px;
     --sp-2: 8px; --sp-2-5: 10px; --sp-3: 12px; --sp-4: 16px;
     --sp-5: 20px; --sp-6: 24px; --sp-7: 32px; --sp-8: 40px;

@@ -9,6 +9,13 @@
  */
 import { test, expect } from './fixtures/e2e';
 
+/* R315 (c4-E) re-pin: the landing H1 is «رحلة تعلم واحدة / من
+ * المحاضرة إلى الإتقان» (cycle-1 V1 hero, then the cycle-3 copy pass
+ * de-tashkeeled the display line — «رحلةُ تعلُّمٍ واحدة» is gone too).
+ * The brand «مدارك» lives in the header/footer brand cells, not the H1;
+ * this sentinel is the page-ready proof, not a copy pin. */
+const HERO_READY = 'رحلة تعلم واحدة';
+
 const VW = { desktop: { width: 1440, height: 900 }, tablet: { width: 768, height: 1024 } };
 
 async function openAllStations(page: import('@playwright/test').Page) {
@@ -482,7 +489,7 @@ test.describe('R309/R313 loader — the asset-gated entrance clock and the lock 
     await page.reload();
     await expect(page.locator('.sl')).toBeVisible({ timeout: 15000 });
     await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
   });
 
   test('the skip path restores the scroll lock too', async ({ page }) => {
@@ -512,7 +519,7 @@ test.describe('R309/R313 loader — the asset-gated entrance clock and the lock 
       });
       await page.goto('/');
       await expect(page.locator('.sl')).toHaveCount(0);
-      await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+      await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
       expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe('');
     });
   });
@@ -566,6 +573,6 @@ test.describe('R309 non-regression — the scroll experience and routes', () => 
     await expect(page).toHaveURL(/\/colleges/);
     await page.goBack();
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.locator('.fo-hero-title')).toContainText('مدارك');
+    await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
   });
 });

@@ -13,13 +13,15 @@ import type { Page } from '@playwright/test';
 
 const VW = { mobile: { width: 390, height: 844 }, desktop: { width: 1440, height: 900 } };
 
-/* R314-cycle2 override: the page-ready sentinel — the V1 hero rebuild
- * (cycle 1, 45f8c32) replaced the H1 copy; the old 'مدارك' sentinel
- * has been stale since (the brand name lives in the header/footer,
- * not the H1). The sentinel now waits on the current H1's first line.
- * Not a camera pin — the camera expectations below carry their own
- * R314-cycle2 override notes. */
-const HERO_READY = 'رحلةُ تعلُّمٍ واحدة';
+/* R315 (c4-E) re-pin: the page-ready sentinel — the cycle-1 V1 hero
+ * (45f8c32) replaced the H1 copy; the old 'مدارك' sentinel has been
+ * stale since (the brand name lives in the header/footer, not the
+ * H1). The cycle-3 copy pass then de-tashkeeled the display line, so
+ * the cycle-2 sentinel «رحلةُ تعلُّمٍ واحدة» is stale too. The sentinel
+ * now waits on the current H1's first line. Not a camera pin — the
+ * camera expectations below carry their own R314-cycle2 override
+ * notes. */
+const HERO_READY = 'رحلة تعلم واحدة';
 
 test.use({ e2eRole: 'guest', reducedMotion: 'no-preference' });
 
@@ -138,11 +140,21 @@ test.describe('R312 — the mobile camera (§R R1)', () => {
     expect(Math.abs(vb2[0]! - 348)).toBeLessThanOrEqual(160);
     expect(vb2[2]!).toBe(480);
 
-    /* card 3 at the band → stage 3, the exact mastery node */
+    /* card 3 at the band → stage 3, into the mastery half of the
+     * exam→mastery interpolation. R315 (c4-E) re-pin: the cycle-3 tier
+     * re-seats (W1 phone rungs) moved the reading the card centre
+     * lands on (≈0.83), so the settled camera sits ~81% of the way
+     * from the exam node to the mastery node — the mastery room
+     * (78–413 on the sheet) is fully inside the window — instead of
+     * exactly ON the node; the stage + window size stay exact. */
     await readAtBand(page, 3);
     const s3 = await camSheet(page);
     expect(s3.stage).toBe('3');
-    expect(s3.cam?.viewBox).toBe('12 60 480 500');
+    const vb3 = (s3.cam?.viewBox ?? '').split(' ').map(Number);
+    expect(vb3[0]!).toBeGreaterThanOrEqual(12);
+    expect(vb3[0]!).toBeLessThanOrEqual(180);
+    expect(vb3[2]!).toBe(480);
+    expect(vb3[3]!).toBe(500);
 
     /* card 0 at the band → stage 0, around the lecture node */
     await readAtBand(page, 0);

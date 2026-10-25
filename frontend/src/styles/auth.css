@@ -443,8 +443,7 @@
      class; the cell owns the rhythm (no margin of its own). */
   .auth-cell .form-label {
     margin-block-end: 0;
-    font-size: 1.66rem;             /* ≈20px @1200-capped sheet — the
-                                       reference's in-row 20px/700 label */
+    font-size: 1.66rem; /* ≈20px @1200-capped sheet — the reference's in-row 20px/700 label */ /* type-gate: allow — the reference's measured 20px in-row form-label seat on the rem-capped sheet, not a --fs rung (dom-judge auth-label-1) */
     font-weight: var(--fw-semibold);
     line-height: var(--lh-snug);
     letter-spacing: 0;
