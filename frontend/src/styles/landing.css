@@ -2389,18 +2389,20 @@ html[data-theme='dark'] body.mdrk-grain::before {
 @media (min-width: 768px) {
   .fo-fstrip {
     grid-template-columns: minmax(0, 1fr);
-    /* the tablet band: both rows content-sized — the lens sheet runs
-     * full-bleed WIDTH-driven (1000:210 of the strip measure), the
-     * wordmark row follows; the ≥992 block below pins the measured
-     * 314px band with the lens letterboxed. */
+    /* R319 §D1/D2: both rows are content-sized — the five-column ink
+     * strip runs full-bleed WIDTH-driven (1000:80 of the strip
+     * measure), the full-cell-width wordmark row follows. The retired
+     * ≥992 seat pinned a definite 314px band with the lens at 1fr; the
+     * wordmark's full-width cut now owns the band's height (docH
+     * ladder re-verified ±3% at 360/390/768/1024/1440). */
     grid-template-rows: auto auto;
     border-block-start: 1px solid var(--rule);
   }
 
-  /* the lens row: the drawing rides the strip at its own 1000:210
-   * measure, width-driven on the tablet band (the pointer math stays
-   * viewBox-relative against the strip box and keeps working — the
-   * clamp guards already exist) */
+  /* the lens row: the five-column strip rides the band at its own
+   * 1000:80 measure, full-bleed width-driven on EVERY ≥768 band (the
+   * pointer math stays viewBox-relative against the strip box and
+   * keeps working — the clamp guards already exist) */
   .fo-fstrip .fl {
     display: flex;
     align-items: center;
@@ -2413,7 +2415,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .fo-fstrip .fl-svg {
     inline-size: 100%;
     block-size: auto;
-    aspect-ratio: 1000 / 210;
+    aspect-ratio: 1000 / 80;
   }
 
   /* the wordmark row — the band's typographic seat: the drawn word
@@ -2435,34 +2437,14 @@ html[data-theme='dark'] body.mdrk-grain::before {
   }
 }
 
-@media (min-width: 992px) {
-  /* the measured 314px strip band — a DEFINITE block-size, not a
-   * min-block-size floor: with an indefinite height the 1fr lens
-   * track sizes from its item's max-clamped contribution (the
-   * 21%-of-strip cap, 299px @1440) and the band blows to 440; the
-   * definite 314 makes the free space real — the wordmark row (auto)
-   * takes its measure and the lens row gets the remainder, its sheet
-   * letterboxing inside (block-size 100% of the row, the aspect gives
-   * the width, the cqi cap keeps the sheet inside the strip on the
-   * 992–1080 band where the wordmark row runs short). */
-  .fo-fstrip {
-    grid-template-rows: minmax(0, 1fr) auto;
-    block-size: 314px; /* spacing-gate: allow — the measured reference strip band (314 @1427), an external constant */
-  }
-
-  .fo-fstrip .fl-svg {
-    block-size: 100%;
-    min-block-size: 0;
-    /* the guard: on the 992–1080 band the wordmark row is short, the
-     * lens row grows past 21% of the strip's own width and a pure
-     * aspect-derived width would push the sheet out of the band — the
-     * cqi cap pins the lens to the strip's real measure (the drawing
-     * goes full-bleed width-driven exactly like the tablet band
-     * instead of cropping or spilling). */
-    max-block-size: calc(100cqi * 210 / 1000);
-    inline-size: auto;
-  }
-}
+/* R319 §D1/D2 — the ≥992 seat is RETIRED: the definite 314px band,
+ * the 1fr lens row and the cqi letterbox cap all served the OLD split
+ * (small letterboxed wordmark + lens eating the remainder). The
+ * five-column strip is now full-bleed width-driven at 1000:80 on every
+ * ≥768 band and the wordmark row sizes from its full-width cut — the
+ * 768px block above carries both rules; nothing desktop-specific
+ * remains. docH ladder re-measured after both fixes: +2.96% @1440 ·
+ * +1.2% @768 · ≤+0.03% @390/360 (the ±3% ratchet holds). */
 
 /* the GIANT wordmark (R315 K-F retired the CSS-text-stroke seat;
  * R318 §A6 retires the five hand-drafted disconnected skeletons too —
@@ -5638,12 +5620,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
 .fl-svg {
   display: block;
   inline-size: 100%;
-  /* R315 (K-F · B9): the sheet's OWN 1000:210 viewBox proportion — the
-   * old 1427/314 band-ratio ran the box shorter than the drawing and
-   * the svg's xMidYMid slice cropped the label band; the exact aspect
-   * keeps slice inert (hidden ≤767px below). */
+  /* R319 §D2: the five-column strip's own 1000:80 proportion — the
+   * drawing band (54u squares + captions) IS the sheet; full-bleed
+   * width-driven at every ≥768 band, xMidYMid meet keeps all five
+   * columns + the aligned captions in frame (hidden ≤767px below). */
   block-size: auto;
-  aspect-ratio: 1000 / 210;
+  aspect-ratio: 1000 / 80;
 }
 
 /* the reference hides the image strip ≤767px (its mobile footer
@@ -5685,14 +5667,17 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 .fl-signal polygon,
-.fl-signal circle {
+.fl-signal circle,
+.fl-signal rect {
   fill: var(--accent);
   stroke: none;
 }
 
 .fl-labels text {
   font-family: var(--font-sans);
-  font-size: 15px;
+  /* R319 §D2: 12.5 viewBox units — the five captions ride ONE shared
+   * baseline (y=77); rendered 17.8px @1440 · 12.6 @1024 · 9.4 @768. */
+  font-size: 12.5px;
   font-weight: 600;
   fill: var(--text-secondary);
 }
@@ -6141,7 +6126,9 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .fo-fcell-strip { block-size: 11rem; }
   .fo-footer-mark-svg { block-size: 14rem; inline-size: 14rem; }
   .fo-fgrid { row-gap: var(--sp-1); }
-  .fo-fstrip .fl { block-size: 11rem; }
+  /* R319 §D2: the tablet strip row retires its fixed 11rem — the
+   * five-column sheet is full-bleed width-driven (1000:80), the row
+   * hugs it (the svg's own 0..10u label band is the air). */
 }
 
 /* ═══ R315 cycle-2 (M3 · batch 3) — the rem law + the footer row grammar ══
@@ -6252,7 +6239,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .rl-section { min-block-size: calc(100svh - 1.6rem); }
 
   .fo-fgrid { min-block-size: 42.6rem; }
-  .fo-fstrip { block-size: 37.7rem; }
+  /* R319 §D1/D2: the definite 37.7rem (314px) strip band is RETIRED —
+   * the band now sizes from its two content rows (the full-bleed
+   * five-column strip + the full-cell-width wordmark); docH ladder
+   * re-verified ±3% at 360/390/768/1024/1440. */
   .fo-footer-bottom { min-block-size: 5.04rem; padding-inline: 3.12rem; }
   .fo-footer-mark-svg { inline-size: 25.8rem; block-size: 25.8rem; }
   .fo-footer-link { min-block-size: 3.36rem; }
