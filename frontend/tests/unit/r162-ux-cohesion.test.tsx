@@ -231,10 +231,15 @@ describe('r162 R2 — the landing warms the AuthPage chunk (PROD, idle)', () => 
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    // The effect's fallback timer is 2500ms; the idle timeout budget
-    // is 4000ms. Firing the timeout path deterministically:
+    // R318 override (C2): the warm moved OFF the early idle path —
+    // requestIdleCallback(timeout 4000) fired the two-chunk import
+    // MID-SCROLL (react MessagePort 306–756ms LoAF, CDP-profiled) and
+    // is now INTENT-gated (pointerdown/focusin on an auth link) with a
+    // 15s idle fallback. The exact-once + exact-imports contract is
+    // unchanged: the fallback timer path fires deterministically at
+    // the new 15s budget.
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(2600);
+      await vi.advanceTimersByTimeAsync(15100);
     });
     expect(authModuleRequested.count).toBe(1);
   });

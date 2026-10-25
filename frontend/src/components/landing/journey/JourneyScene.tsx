@@ -272,13 +272,25 @@ const R_SEAT_SEL = '.jt-progress';
  * r312 camera contract and the r311 RM contract are unchanged. */
 let mobileQuery: MediaQueryList | null = null;
 let reducedQuery: MediaQueryList | null = null;
+let mmSource: typeof window.matchMedia | null = null;
 function viewportState(): { mobile: boolean; reduced: boolean } {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
     return { mobile: false, reduced: false };
   }
-  mobileQuery ??= window.matchMedia('(max-width: 991px)');
-  reducedQuery ??= window.matchMedia('(prefers-reduced-motion: reduce)');
-  return { mobile: mobileQuery.matches, reduced: reducedQuery.matches };
+  /* R318 C2-S1 follow-up (foreman): the cached lists refresh when the
+   * matchMedia IMPLEMENTATION changes identity — test harnesses
+   * re-stub window.matchMedia per case and the old first-stub cache
+   * pinned the driver to the first test's viewport forever (the
+   * r312 camera suite's 'cropped' waits timed out). Production is
+   * untouched: the native matchMedia is a stable identity, the lists
+   * stay cached, and a mid-session flip still lands in the same
+   * frame (the lists are live). */
+  if (mmSource !== window.matchMedia) {
+    mmSource = window.matchMedia;
+    mobileQuery = window.matchMedia('(max-width: 991px)');
+    reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  }
+  return { mobile: !!mobileQuery?.matches, reduced: !!reducedQuery?.matches };
 }
 
 /* the crop rect at a continuous reading position — piecewise-linear

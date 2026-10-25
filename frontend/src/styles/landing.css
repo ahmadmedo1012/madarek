@@ -4732,7 +4732,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
    the fully-drawn readable contract. Reduced motion resolves the
    complete sheet (the RM belt below). */
 .jt-pin .jt-plan .pl-l-envelope {
-  opacity: clamp(0, (var(--jt-p, 0) - 0.3) / 0.12, 1);
+  /* R318 §A3 — the walls resolve in half the window: a drawn layer
+     must not linger translucent (the 40% frame read as a faded
+     screenshot — walls #777-ish at 0.83 opacity). Solid ink by p=.36. */
+  opacity: clamp(0, (var(--jt-p, 0) - 0.3) / 0.06, 1);
 }
 
 .jt-pin .jt-plan .pl-l-lecture,
@@ -4741,11 +4744,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
 .jt-pin .jt-plan .pl-l-library,
 .jt-pin .jt-plan .pl-l-mastery,
 .jt-pin .jt-plan .pl-l-entry {
-  opacity: clamp(0, (var(--jt-p, 0) - 0.34) / 0.12, 1);
+  /* R318 §A3 — same seat: solid by p=.40 (was /0.12 → lingered to .46). */
+  opacity: clamp(0, (var(--jt-p, 0) - 0.34) / 0.06, 1);
 }
 
 .jt-pin .jt-plan .pl-l-annot {
-  opacity: clamp(0, (var(--jt-p, 0) - 0.4) / 0.12, 1);
+  opacity: clamp(0, (var(--jt-p, 0) - 0.4) / 0.06, 1);
 }
 
 /* the frame — the quiet window's own chrome: drawn from the start
@@ -4818,17 +4822,36 @@ html[data-theme='dark'] body.mdrk-grain::before {
   fill: var(--text-secondary);
 }
 
+/* R318 §A4 — the plan labels' paper halo: a 3px paper stroke behind
+   the fill keeps the names legible where they cross dimension lines,
+   window mullions and door arcs (paint-order: stroke first — the
+   reference's own label treatment; text geometry untouched). */
+.jt .jt-plan .pl-name,
+.jt .jt-plan .bp-micro,
+.jt .jt-plan .pl-station {
+  paint-order: stroke fill;
+  stroke: var(--bg);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
 .pl-station {
   fill: var(--accent-ink);
   font-weight: 500;
 }
 
-/* the zone wash — the active-stage highlight (accent-soft, quiet) */
+/* the zone wash — the active-stage highlight (R318 §A3: SOLID signal —
+ * the reference's active treatment is a solid #F15534-family room, not
+ * a pale tint; the old --accent-soft wash rendered #F8B8A5-ish at
+ * mid-state and read as a faded screenshot). */
 .pl-zone {
-  fill: var(--accent-soft);
+  fill: var(--accent);
   fill-opacity: 0;
   stroke: none;
-  transition: fill-opacity var(--t-slow) var(--ease);
+  /* R318 §A3 — the wash lands at t-fast: a t-slow dissolve held a
+     half-faded pink room through the mid-band captures (the washed
+     look). The stage flip is discrete — a crisp signal seat. */
+  transition: fill-opacity var(--t-fast) var(--ease);
 }
 
 .jt[data-stage='0'] .pl-zone[data-zone='lecture'],
@@ -6396,6 +6419,14 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .wy-head { margin-block-end: 1.44rem; }
   .wy-note { margin-block-start: 1.44rem; }
   .wy-stage { padding: var(--sp-1) var(--sp-2); }
+
+  /* R318 §A4 — the map's status strip retires at this tier: the
+     reference's own tablet map shows the plan ALONE (its caption
+     chrome hidden at 768–1024), and our strip struck station 4's
+     title (gate: .jt-status × .jt-station-title 1669.6px² @1024,
+     both themes). The stations' own [01–04] · meta mono labels carry
+     the index; ≥1025 keeps the strip (1440 measured green). */
+  .jt-status { display: none; }
 }
 
 /* ═══ R315 cycle-3 (W3) — the 1025–1147 footer row chrome ══════════

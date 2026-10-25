@@ -1,0 +1,727 @@
+{
+ "generated": "2026-10-25T07:15:52.430Z",
+ "baseUrl": "http://localhost:4173",
+ "viewports": [
+  360,
+  390,
+  768,
+  1024,
+  1440
+ ],
+ "themes": [
+  "light",
+  "dark"
+ ],
+ "skipped": [
+  "ocr",
+  "perf"
+ ],
+ "cells": [
+  {
+   "viewport": 360,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 137,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 1941.8px² @(253,716)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 360,
+     "htmlCW": 360,
+     "bodySW": 360,
+     "bodyCW": 360
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 390,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 137,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2360.9px² @(271,758)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 390,
+     "htmlCW": 390,
+     "bodySW": 390,
+     "bodyCW": 390
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 768,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 176,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 157,
+     "overlapFails": 0,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 768,
+     "htmlCW": 768,
+     "bodySW": 768,
+     "bodyCW": 768
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1024,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 156,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 0.5,
+       "total": 174,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 1,
+       "total": 186,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 164,
+     "overlapFails": 0,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1024,
+     "htmlCW": 1024,
+     "bodySW": 1024,
+     "bodyCW": 1024
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1440,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 166,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 0.5,
+       "total": 184,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 1,
+       "total": 196,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 171,
+     "overlapFails": 0,
+     "allowlisted": 1,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1440,
+     "htmlCW": 1440,
+     "bodySW": 1440,
+     "bodyCW": 1440
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 360,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 137,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 1941.8px² @(253,716)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 360,
+     "htmlCW": 360,
+     "bodySW": 360,
+     "bodyCW": 360
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 390,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 137,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2360.9px² @(271,758)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 390,
+     "htmlCW": 390,
+     "bodySW": 390,
+     "bodyCW": 390
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 768,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 158,
+     "overlapFails": 0,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 768,
+     "htmlCW": 768,
+     "bodySW": 768,
+     "bodyCW": 768
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1024,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 156,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 0.5,
+       "total": 174,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 1,
+       "total": 186,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 164,
+     "overlapFails": 0,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1024,
+     "htmlCW": 1024,
+     "bodySW": 1024,
+     "bodyCW": 1024
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1440,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 166,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 0.5,
+       "total": 184,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 1,
+       "total": 196,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 171,
+     "overlapFails": 0,
+     "allowlisted": 1,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1440,
+     "htmlCW": 1440,
+     "bodySW": 1440,
+     "bodyCW": 1440
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  }
+ ],
+ "summary": {
+  "fails": 4,
+  "exit": 1
+ }
+}

@@ -222,8 +222,10 @@
 .prf-m-fill--c { inline-size: 82%; }
 
 /* ══ Card C — the attendance chip (lead فقط، ≥1200px) ═══════════════
-   An honest EMPTY-STATE readout: the mono slot stays a placeholder
-   («--%») — attendance is real, the number is not fabricated. */
+   An honest MECHANISM readout (R318 §A5): the mono slot states the
+   real behavior («تلقائي» — attendance counts automatically on
+   completion); a fabricated percentage was never an option and the
+   retired «--%» empty-state read as a placeholder. */
 .prf-card--attend {
   inline-size: 124px;
   inset-block-start: -14px;

@@ -50,10 +50,13 @@ function productSrcset(id: string, widths: number[]): string {
  * zero shadows). These are honest GENERIC states of REAL surfaces
  * («مساعد الفهم» = the live /student/ai assistant · «مصفوفة الإتقان»
  * = the real mastery matrix · «الحضور» = the player's auto-counted
- * attendance): qualitative labels only, NEUTRAL unlabeled bars, an
- * EMPTY-STATE «--%» readout — never a fabricated metric — and the
- * demo disclosure («عرض توضيحي») in every title bar, the same honesty
- * grammar as the caption's «بيانات العرض التجريبية».
+ * attendance): qualitative labels only, NEUTRAL unlabeled bars, and
+ * the attendance readout states the real MECHANISM («تلقائي» — the
+ * player counts attendance automatically on completion) — R318 §A5:
+ * the old «--%» empty-state read as a placeholder and is retired; a
+ * fabricated number was never an option — and the demo disclosure
+ * («عرض توضيحي») stays in every title bar, the same honesty grammar
+ * as the caption's «بيانات العرض التجريبية».
  *
  * Decorative by contract: aria-hidden + pointer-transparent, laid
  * out inside .prf-stage (the photo box) so the overlap never reaches
@@ -76,8 +79,11 @@ function ProductMockCards({ variant }: { variant: 'lead' | 'std' | 'role' }) {
           </div>
           <div className="prf-attend-row">
             <span className="prf-attend-label">الحضور</span>
-            {/* the honest empty-state slot — no fabricated percentage */}
-            <span className="prf-attend-read" dir="ltr">--%</span>
+            {/* R318 §A5 — the honest mechanism, not a placeholder: the
+                player counts attendance automatically on completion
+                (the real live capability). «--%» read as a literal
+                placeholder and is retired. */}
+            <span className="prf-attend-read">تلقائي</span>
           </div>
         </div>
       )}
