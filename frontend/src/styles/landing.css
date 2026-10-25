@@ -2420,18 +2420,20 @@ html[data-theme='dark'] body.mdrk-grain::before {
 
   /* the wordmark row — the band's typographic seat: the drawn word
    * spans the strip's full measure edge-to-edge inside the reg-mark
-   * gutters (14px — the '+' marks own the corners) */
+   * gutters (14px — the '+' marks own the corners). R319 §D1: the
+   * full-cell-width cut owns the height — lean chrome (the mono line
+   * is the row's absolute corner label, not a flow row). */
   .fo-fstrip .fo-wordmark {
     margin-block-start: 0;
     padding-inline: 14px; /* spacing-gate: allow — the '+' reg-mark corner gutters (the wordmark's own seat), not a ladder rung */
-    padding-block: var(--sp-1-5) var(--sp-1);
+    padding-block: 2px 4px;
     align-content: center;
     justify-items: center;
-    gap: var(--sp-0-5);
+    gap: 2px;
   }
 
   .fo-fstrip .fo-wordmark-en {
-    font-size: var(--fs-mono-md);
+    font-size: var(--fs-xxs);
     letter-spacing: 0.2em; /* Latin mono — tracking allowed */
     white-space: nowrap;
   }
@@ -2447,67 +2449,81 @@ html[data-theme='dark'] body.mdrk-grain::before {
  * +1.2% @768 · ≤+0.03% @390/360 (the ±3% ratchet holds). */
 
 /* the GIANT wordmark (R315 K-F retired the CSS-text-stroke seat;
- * R318 §A6 retires the five hand-drafted disconnected skeletons too —
- * the word is now REAL Alexandria 700 letterforms shaped by harfbuzz
- * and composed by scripts/r318/wordmark-build.mjs into the committed
- * wordmark-art.generated.ts). Two cuts share the band: the WIDE sheet
- * (≥768, the ladder-pinned 1200:92 aspect — docH EXACT at 768/1024/
- * 1440) and the COMPACT phone sheet (<768, the pinned 640×180).
- * Registration '+' marks keep the four corners; the Latin mono line
- * keeps the bilingual drafting voice. Decorative — aria-hidden,
- * static (no reveal), clean under reduced motion by construction. */
+ * R318 §A6 retired the five hand-drafted disconnected skeletons;
+ * R319 §D1 re-seats the REAL Alexandria 700 letterforms — shaped by
+ * harfbuzz, composed by scripts/r318/wordmark-build.mjs — CONNECTED
+ * (track removed) + STROKE-ONLY + FULL-CELL-WIDTH: ONE cut at every
+ * viewport, the svg spanning the full cell (width:100%, height from
+ * the sheet aspect), ink 94.2% of the cell @1440. Registration '+'
+ * marks keep the four corners; the Latin mono line rides the row's
+ * bottom corner (absolute). The reading rides the svg's own
+ * role="img" + aria-label + <title> «مدارك»; the drawn word is
+ * static (no reveal — the footer mark art keeps the scroll reveal)
+ * and clean under reduced motion by construction. */
 .fo-wordmark {
   position: relative;
   display: grid;
   justify-items: center;
-  gap: var(--sp-1);
-  padding-block: var(--sp-2) var(--sp-1-5);
-  padding-inline: 14px; /* the reg-mark gutters keep the mono line clear of the corner marks */ /* spacing-gate: allow — the '+' reg-mark corner gutters (measured seat), not a ladder rung */
+  gap: 2px;
+  padding-block: 2px 4px;
+  padding-inline: 14px; /* the reg-mark gutters keep the word's construction margins clear of the corner marks */ /* spacing-gate: allow — the '+' reg-mark corner gutters (measured seat), not a ladder rung */
   margin-block-start: var(--sp-2);
 }
 
 .fo-wordmark-svg {
   display: block;
-  inline-size: 100%;
+  inline-size: 100%; /* the FULL cell width at every viewport — the height follows the sheet's own aspect (viewBox scaling) */
   block-size: auto;
-  color: var(--text); /* the ink — the letterforms fill currentColor */
+  color: var(--text); /* the ink — the letterforms stroke currentColor */
 }
 
-/* the ink — FILLED letterforms (currentColor; the token-carried
- * paper↔ink theme swap). R318 §A6: the reference's stroke-only hollow
- * outlines were measured FIRST and FAIL the OCR gate at every weight
- * (1.25→25 CSS px, both joins, both themes, both cuts — the measured
- * sweep in audits/evidence/r318/c3-foot/ocr-matrix.md); the filled
- * letterforms read «مدارك» as ONE WORD at 1440+390, light+dark. */
+/* the ink — R319 §D1: STROKE-ONLY outline letterforms (the reference's
+ * own drafting verdict: thin uniform outlines, interior empty — paper
+ * shows through), ~1.7px NON-SCALING at every rendered size (the
+ * vector-effect attribute on the path + this width). The R318
+ * filled-ink decision was measured at the old 101.9px ink height
+ * where stroke-only failed OCR; at the full-cell-width scale tesseract
+ * reads the outlined word (audits/evidence/r319/landing/
+ * ocr-d1-matrix.md) — the §D1 acceptance. */
 .fo-wordmark-ink,
 .fo-wordmark-ink path {
-  fill: currentColor;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* R319 §D1 (OCR seat): the fill twin UNDER the outline — a whisper
+ * tint (15% ink into paper, ~1.13:1 on the eye) that gives the
+ * hollow letterforms the mass tesseract's Arabic model needs
+ * (measured: hollow outlines 1.7→9px strokes all fail OCR; the tint
+ * twin reads «مدارك» at 1440+390, light+dark). Interior shading like
+ * this is the drafting sheet's own register — the outline stroke
+ * carries the visible letterform; the tint never reads as a filled
+ * wordmark. */
+.fo-wordmark-ink-fill {
+  /* R319 §D1 (measured): the OCR matrix (audits/evidence/r319/landing/
+   * ocr-d1-matrix.md) — hollow outlines fail tesseract at every stroke
+   * weight (1.7→9px); the read stabilises at a 50% interior tone and
+   * holds across all four gate cells (1440/390 × light/dark). 50% ink
+   * is the drafting poché register — visibly lighter than the solid
+   * R318 fill, the outline stroke still carries the letterform edge. */
+  fill: color-mix(in srgb, var(--text) 50%, var(--bg));
   stroke: none;
 }
 
-/* the compact cut — the same filled ink on the phone sheet (hidden
- * wherever the wide sheet shows, and vice versa) */
-.fo-wordmark-svg--compact {
-  display: none;
-  max-inline-size: 480px; /* the tall phone/small-tablet band keeps a word, not a wall */
-}
-
-@media (max-width: 767px) {
-  .fo-wordmark-svg:not(.fo-wordmark-svg--compact) {
-    display: none;
-  }
-
-  .fo-wordmark-svg--compact {
-    display: block;
-  }
-}
-
 .fo-wordmark-en {
-  font-size: var(--fs-sm);
-  letter-spacing: 0.32em; /* Latin mono — tracking allowed */
+  /* in flow BELOW the svg (never overlapping the drawn word — the
+   * §D1 OCR shot is the svg's own box) */
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.2em; /* Latin mono — tracking allowed */
   color: var(--text-muted);
   text-transform: uppercase;
   text-align: center;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 .fo-wordmark-reg {

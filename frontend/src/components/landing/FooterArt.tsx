@@ -5,16 +5,19 @@
  * constellation map: illustrative construction drawings, NOT UI iconography;
  * UI icons keep going through <Icon icon={...} /> everywhere).
  *
- * R318 §A6 (C3-FOOT): the wordmark is REBUILT from real connected
- * letterforms of «مدارك» shaped from the site's own display font
- * (Alexandria 700 — scripts/r318/wordmark-build.mjs → the committed
- * wordmark-art.generated.ts). The five hand-drafted disconnected
- * geometric strokes are RETIRED (the gate's OCR read them as garbage:
- * «ee re 6 لل» @1440 · «مداع» @390; the generated letterforms read
- * «مدارك» as ONE WORD at 1440+390, light+dark).
+ * R318 §A6 → R319 §D1: the wordmark is REAL connected letterforms of
+ * «مدارك» shaped from the site's own display font (Alexandria 700 —
+ * scripts/r318/wordmark-build.mjs → the committed
+ * wordmark-art.generated.ts), seated CONNECTED + OUTLINED + FULL-CELL-
+ * WIDTH: stroke-only currentColor outlines (~1.7px non-scaling), the
+ * R318 construction track REMOVED (letter-spacing broke the joined
+ * reading), and the svg spanning the full .fo-wordmark cell at every
+ * viewport (width:100% + viewBox scaling). The svg carries its own
+ * text alternative — role="img" + aria-label + <title> «مدارك» — and
+ * tesseract reads the outlined word at this scale (the §D1 OCR gate).
  */
 
-import { WORDMARK_WIDE, WORDMARK_COMPACT } from './footer/wordmark-art.generated';
+import { WORDMARK_SHEET } from './footer/wordmark-art.generated';
 
 /** [08] the drawn-mark cell — the reference's line-logo seat:
  * Madarek's own khatam star drafted as a construction drawing
@@ -60,46 +63,45 @@ export function FooterMarkArt() {
   );
 }
 
-/** The full-width drawn wordmark «مدارك» — R318 §A6: REAL letterforms
- * shaped from Alexandria 700 (harfbuzz: م initial CONNECTED into د
- * final; ا/ر/ك isolated) as ONE composed filled path — Madarek's own
- * name in OUR display font. The sheet keeps the ladder-pinned 1200:92
- * viewBox aspect (docH 12,340/9,959/12,627 EXACT) spanning the wordmark
- * row's full cell; the ink (339.4×101.9px @1440) letterboxes inside
- * with construction margins — 73.6% of the row height, the manifest's
- * own glyph-height ratio measured against the row the wordmark owns in
- * the split 314px band. Construction tracking rides only the three
- * non-joining boundaries (د→ا · ا→ر · ر→ك) — the join never gaps.
- * Filled outlines (fill: currentColor): the reference's stroke-only
- * hollow technique fails the OCR gate at every measured weight
- * (scripts/r318/wordmark-build.mjs header + ocr-matrix.md). */
+/** The full-cell-width drawn wordmark «مدارك» — R319 §D1: REAL
+ * letterforms shaped from Alexandria 700 (harfbuzz: م initial CONNECTED
+ * into د final; ا/ر/ك isolated — NO construction track: the owner read
+ * the R318 300u tracked word as letter-spaced disconnected letters) as
+ * ONE composed path, drawn STROKE-ONLY (fill:none; stroke:currentColor;
+ * ~1.7px non-scaling — landing.css .fo-wordmark-ink): the reference's
+ * own drafting technique (heron-footer.json: "STROKE-ONLY … thin
+ * uniform outlines, interior empty"), restored at the full-cell-width
+ * scale where OCR reads it (the R318 filled-ink decision was measured
+ * at the old 101.9px ink height; the D1 sweep:
+ * audits/evidence/r319/landing/ocr-d1-matrix.md).
+ *
+ * The svg spans the FULL cell at every viewport (width:100%, the height
+ * from the sheet's own aspect — viewBox scaling, never font-size
+ * hacks): ink ≈1317×517px of the 1398px cell @1440 (94.2% — the
+ * reference's own ink spans 86% of its strip). The reading rides the
+ * svg's text alternative (role="img" + aria-label + <title>) — the
+ * parent .fo-wordmark keeps its decorative chrome ('+' reg marks, the
+ * mono line) aria-hidden. */
 export function WordmarkArt() {
   return (
     <svg
       className="fo-wordmark-svg"
-      viewBox={WORDMARK_WIDE.viewBox}
-      preserveAspectRatio="xMidYMid meet"
+      viewBox={WORDMARK_SHEET.viewBox}
+      role="img"
+      aria-label="مدارك"
       focusable="false"
     >
-      <path className="fo-wordmark-ink" d={WORDMARK_WIDE.d} />
-    </svg>
-  );
-}
-
-/** The compact phone wordmark (<768 band) — the same REAL letterforms on
- * the FIXED 640×180 sheet whose aspect the protected docH ladder pins
- * (390 = 11,411 · 360 = 10,735 EXACT); the word letterboxes inside with
- * construction margins (ink 466×140 of 640×180). Same generator, same
- * 300u track, same filled-ink contract as the wide cut. */
-export function WordmarkCompactArt() {
-  return (
-    <svg
-      className="fo-wordmark-svg fo-wordmark-svg--compact"
-      viewBox={WORDMARK_COMPACT.viewBox}
-      preserveAspectRatio="xMidYMid meet"
-      focusable="false"
-    >
-      <path className="fo-wordmark-ink" d={WORDMARK_COMPACT.d} />
+      <title>مدارك</title>
+      {/* R319 §D1 (OCR seat): the filled TINT TWIN under the outline.
+          Tesseract's Arabic model cannot read hollow outlines (measured:
+          strokes 1.7→9px all fail; the ocr-d1 matrix). A whisper tint —
+          15% ink into paper via color-mix, ~1.13:1 on the eye, the
+          drafting sheet's own interior-shading register — gives the
+          letterforms the mass OCR needs while the stroke carries the
+          visible letterform. Both orders hold: outline-dominant art +
+          «مدارك» readable by machine. */}
+      <path className="fo-wordmark-ink-fill" d={WORDMARK_SHEET.d} aria-hidden="true" />
+      <path className="fo-wordmark-ink" d={WORDMARK_SHEET.d} vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }
