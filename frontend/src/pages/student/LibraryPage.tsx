@@ -24,11 +24,20 @@ import { formatDate, formatInt, formatNum } from '../../utils/numbers';
 import {
   PageFrame, PageHeader, RowList, RowItem, FilterBar,
 } from '../../components/patterns';
+/* R319 (c3-S1) — the §B2 kit: the mono-indexed section title bars +
+ * the count meta (the DashboardPage conversion's components). */
+import { SectionBar, BarCount } from '../../components/student';
 import '../../styles/research.css';
 /* R305-A7 «Heron»: the scoped research/PDF/library sheet — loaded
  * DIRECTLY AFTER the family sheet so later source order inside
  * @layer pages wins the equal-specificity ties (§0 scoping contract). */
 import '../../styles/r305-research-pdf-ai.css';
+/* R319 (c3-S1): the sheet system — the §B2 component anatomy + the
+ * academic family's harmonics. The .r319s-page class on the same root
+ * as .r305rp opts this route into the masthead re-seat (one display
+ * voice per page — the h1). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'all', label: 'الكل', icon: LibraryIcon },
@@ -609,8 +618,10 @@ export default function LibraryPage() {
   return (
     /* R305-A7 marker root — every Heron rule in the scoped sheet hangs
      * off .r305rp; portals (the filter Sheet) reach through §9's
-     * body:has(.r305rp). The patterns PageFrame rides INSIDE. */
-    <div className="r305rp">
+     * body:has(.r305rp). The patterns PageFrame rides INSIDE.
+     * R319 (c3-S1): + .r319s-page — the sheet-system opt-in (the §B2
+     * component anatomy + the masthead re-seat). */
+    <div className="r305rp r319s-page">
     <PageFrame width="default">
       <PageHeader
         title="المكتبة الإلكترونية"
@@ -666,17 +677,28 @@ export default function LibraryPage() {
           {/* استعاراتي — the continue surface: rows when open loans
               exist, one honest technical empty line when they don't.
               R305-A7: a framed panel; the kicker carries the heading +
-              the honest count with the hairline filling the remainder. */}
+              the honest count with the hairline filling the remainder.
+              R319 (c3-S1): the heading joins the §B2 title-bar register
+              — [01] + the open-loans count as quiet mono meta (countAr
+              for assistive tech; the due-soon datum stays visible). */}
           <section className="r305rp-panel r305rp-lib-loans" aria-label="استعاراتي النشطة">
-            <div className="r305rp-kicker">
-              <h2 className="r305rp-kicker-title">استعاراتي</h2>
-              {!loans.isPending && !loans.isError && openLoans.length > 0 && (
-                <span className="r305rp-meta-row r305rp-lib-loanscount">
-                  {countAr(openLoans.length, ['استعارة واحدة', 'استعارتان', 'استعارات', 'استعارة'])}
-                  {dueSoon > 0 ? ` · ${formatInt(dueSoon)} تنتهي قريباً` : ''}
-                </span>
-              )}
-            </div>
+            <SectionBar
+              index="01"
+              title="استعاراتي"
+              meta={
+                !loans.isPending && !loans.isError && openLoans.length > 0 ? (
+                  <>
+                    <BarCount
+                      n={openLoans.length}
+                      srLabel={countAr(openLoans.length, ['استعارة واحدة', 'استعارتان', 'استعارات', 'استعارة'])}
+                    />
+                    {dueSoon > 0 && (
+                      <span>· {formatInt(dueSoon)} تنتهي قريباً</span>
+                    )}
+                  </>
+                ) : undefined
+              }
+            />
             {loans.isPending ? (
               <LoansSkeleton />
             ) : loans.isError ? (
@@ -763,6 +785,22 @@ export default function LibraryPage() {
             </div>
           </Sheet>
 
+          {/* R319 (c3-S1): the books region opens with the §B2
+              mono-indexed title bar — [02] + the server's honest total
+              (meta.total, never the page array) as quiet mono meta. The
+              filter pills + list below keep their own rhythm. */}
+          <SectionBar
+            index="02"
+            title="الكتب"
+            meta={
+              !books.isPending && !books.isError && totalBooks !== null ? (
+                <BarCount
+                  n={totalBooks}
+                  srLabel={countAr(totalBooks, booksFiltered ? ['نتيجة واحدة', 'نتيجتان', 'نتائج', 'نتيجة'] : BOOK_UNIT)}
+                />
+              ) : undefined
+            }
+          />
           <RowList
             aria-label="قائمة الكتب"
             loading={books.isPending}
@@ -836,7 +874,24 @@ export default function LibraryPage() {
 
           {/* Grouped when browsing ≥2 courses; flat while searching or
               when everything lives in one course (no decorative group
-              headers around a single entry). */}
+              headers around a single entry).
+              R319 (c3-S1): the research list region opens with the §B2
+              title bar — [01] (this view's first section; the summary
+              band above is the view's metadata band, unnumbered like
+              the dashboard's momentum strip) + the honest visible
+              count as mono meta. */}
+          <SectionBar
+            index="01"
+            title="البحوث المنشورة"
+            meta={
+              !researchInUse && !research.isPending && !research.isError && visibleResearch.length > 0 ? (
+                <BarCount
+                  n={visibleResearch.length}
+                  srLabel={countAr(visibleResearch.length, ['بحث واحد منشور', 'بحثان منشوران', 'بحوث منشورة', 'بحثاً منشوراً'])}
+                />
+              ) : undefined
+            }
+          />
           {(!researchInUse && !research.isPending && !research.isError && researchGroups) ? (
             researchGroups.map((g) => (
               <section key={g.code ?? 'general'} className="rs-group" aria-label={`${g.code ? g.code + ' — ' : ''}${g.label}`}>

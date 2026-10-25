@@ -14,13 +14,16 @@ import { PAPER_STATUS_TONE } from '../../lib/paperStatus';
 import { validatePdfFileDeep } from '../../lib/pdfUpload';
 import { Icon } from '../../components/Icon';
 import { toast } from '../../lib/toast';
-import { formatDateWithYearAr } from '../../lib/format';
+import { countAr, formatDateWithYearAr } from '../../lib/format';
 import {
   useMyResearch, useUploadPaper, useUploadPaperFile, useScanPaper,
   useMyEnrollments, apiErrorMessage,
   type ResearchPaper, type PaperStatus,
 } from '../../hooks/useResources';
 import { PageFrame, PageHeader, RowList, RowItem } from '../../components/patterns';
+/* R319 (c3-S1) — the §B2 kit: the mono-indexed section title bars +
+ * the count meta (the DashboardPage conversion's components). */
+import { SectionBar, BarCount } from '../../components/student';
 import { StatusPipeline } from '../../components/paper/StatusPipeline';
 import { ScanResults } from '../../components/paper/ScanResults';
 import { formatInt } from '../../utils/numbers';
@@ -29,6 +32,11 @@ import '../../styles/research.css';
  * DIRECTLY AFTER the family sheet so later source order inside
  * @layer pages wins the equal-specificity ties (§0 scoping contract). */
 import '../../styles/r305-research-pdf-ai.css';
+/* R319 (c3-S1): the sheet system — the §B2 component anatomy + the
+ * academic family's harmonics. The .r319s-page class on the same root
+ * as .r305rp opts this route into the masthead re-seat. */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 const STATUS_LABEL: Record<PaperStatus, string> = {
   UPLOADED: 'بانتظار الفحص',
@@ -170,8 +178,10 @@ export default function StudentResearchPage() {
   return (
     /* R305-A7 marker root — every Heron rule in the scoped sheet hangs
      * off .r305rp; the upload Modal (a portal) reaches through §9's
-     * body:has(.r305rp). The patterns PageFrame rides INSIDE. */
-    <div className="r305rp">
+     * body:has(.r305rp). The patterns PageFrame rides INSIDE.
+     * R319 (c3-S1): + .r319s-page — the sheet-system opt-in (the §B2
+     * component anatomy + the masthead re-seat). */
+    <div className="r305rp r319s-page">
     <PageFrame width="default">
       <PageHeader
         title="بحوثي العلمية"
@@ -236,7 +246,23 @@ export default function StudentResearchPage() {
           )}
 
           {/* The list IS the page: each row carries its journey, results
-              and actions attached — expandable so the list stays calm. */}
+              and actions attached — expandable so the list stays calm.
+              R319 (c3-S1): the list region opens with the §B2 title bar
+              — [01] بحوثي + the papers count as quiet mono meta (the
+              lifecycle band above is the view's metadata band,
+              unnumbered like the dashboard's momentum strip). */}
+          <SectionBar
+            index="01"
+            title="بحوثي"
+            meta={
+              papers.length > 0 ? (
+                <BarCount
+                  n={papers.length}
+                  srLabel={countAr(papers.length, ['بحث واحد', 'بحثان', 'بحوث', 'بحثاً'])}
+                />
+              ) : undefined
+            }
+          />
           <RowList
             aria-label="بحوثك"
             empty={
@@ -487,9 +513,13 @@ function ProcessExplainer() {
   ];
   return (
     <section aria-label="كيف يعمل النظام" className="r305rp-res-how">
-      <div className="r305rp-kicker">
-        <h2 className="r305rp-kicker-title">كيف يعمل النظام</h2>
-      </div>
+      {/* R319 (c3-S1): the explainer's heading joins the §B2 title-bar
+          register — [02] + the step count as mono meta. */}
+      <SectionBar
+        index="02"
+        title="كيف يعمل النظام"
+        meta={<BarCount n={STEPS.length} srLabel={countAr(STEPS.length, ['خطوة واحدة', 'خطوتان', 'خطوات', 'خطوة'])} />}
+      />
       <ol className="r305rp-res-steps">
         {STEPS.map((s) => (
           <li key={s.n} className="r305rp-res-step">
