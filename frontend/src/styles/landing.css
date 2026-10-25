@@ -7393,6 +7393,9 @@ html[data-theme='dark'] .fo-grain {
     inset-inline-end: -6px;
     border-block-end: 1px solid var(--rule-strong);
     border-inline-end: 1px solid var(--rule-strong);
+  }
+}
+
 /* ══════════════════════════════════════════════════════════════════════
  * R315 cycle-4 — C4-C (hero tonal density + the statement illustration)
  *
