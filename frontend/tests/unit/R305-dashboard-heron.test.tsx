@@ -229,8 +229,11 @@ describe('R305 — the hero band (the ONE next action)', () => {
     expect(accents).toHaveLength(1);
     expect(accents[0]?.getAttribute('href')).toBe('/student/lectures/l9');
     expect(accents[0]?.textContent).toContain('متابعة المشاهدة');
-    // The section actions stay quiet ghosts (kicker-action register).
-    const ghosts = container.querySelectorAll('.r305s-kicker-action .btn.ghost');
+    // The section actions stay quiet ghosts.
+    /* R319 override (c2-G1): the kicker-action seat became the §B2
+       SectionBar's action slot (.r319s-bar-action) — same ghost
+       buttons, same quiet register, new title-bar grammar. */
+    const ghosts = container.querySelectorAll('.r319s-bar-action .btn.ghost');
     expect(ghosts.length).toBeGreaterThanOrEqual(3);
   });
 
@@ -249,13 +252,24 @@ describe('R305 — the hero band (the ONE next action)', () => {
 /* ── 2 · Editorial sections: kicker register over every block ────── */
 
 describe('R305 — the section kicker register', () => {
-  it('اليوم / مقرّراتك / فجوات يُنصح بسدّها / أسبوعك القادم each open with a kicker h2', async () => {
+  /* R319 override (c2-G1): every titled section opens with the §B2
+     SectionBar — the mono-indexed title bar — instead of the R305
+     kicker. The h2 contract (one h1 per route, sections answer with
+     h2s) and the title strings are unchanged; the register is the
+     sheet's: [nn] gutter index + title + hairline rule. */
+  it('اليوم / مقرّراتك / فجوات يُنصح بسدّها / أسبوعك القادم each open with a SectionBar h2', async () => {
     const { container } = renderPage();
     await screen.findByText('أكمل من حيث توقفت');
     for (const title of ['اليوم', 'مقرّراتك', 'فجوات يُنصح بسدّها', 'أسبوعك القادم']) {
       const h = screen.getByRole('heading', { level: 2, name: title });
-      expect(h.className).toContain('r305s-kicker-title');
-      expect(h.closest('.r305s-kicker')).not.toBeNull();
+      expect(h.className).toContain('r319s-bar-title');
+      const bar = h.closest('.r319s-bar');
+      expect(bar).not.toBeNull();
+      // The mono gutter index rides every titled section (aria-hidden,
+      // LTR Latin).
+      const idx = bar?.querySelector('.r319s-bar-index');
+      expect(idx?.textContent).toMatch(/^\[\d{2}\]$/);
+      expect(idx?.getAttribute('aria-hidden')).toBe('true');
     }
     // The masthead stays the page's only h1 (the PageHeader contract).
     const h1s = container.querySelectorAll('h1');
@@ -263,10 +277,16 @@ describe('R305 — the section kicker register', () => {
     expect(h1s[0]?.textContent).toBe('لوحة التحكم');
   });
 
-  it('the اليوم kicker counts the actable rows from the real agenda (countAr)', async () => {
-    renderPage();
+  it('the اليوم bar counts the actable rows from the real agenda (mono datum + countAr)', async () => {
+    const { container } = renderPage();
     // 1 class + 1 live (noon today) + 1 actable exam = 3 → the 3–10 plural form.
+    /* R319 override (c2-G1): the count is now the SectionBar's quiet
+       mono meta — the sheet prints the tabular `03` for sighted
+       readers and keeps the countAr phrase for assistive tech. */
     await screen.findByText('3 التزامات اليوم');
+    const count = container.querySelector('.r319s-bar .r319s-count');
+    expect(count?.textContent).toBe('03');
+    expect(count?.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('the momentum strip rides the labeled rule (metadata band, not a boxed section)', async () => {
@@ -281,16 +301,25 @@ describe('R305 — the section kicker register', () => {
 /* ── 3 · Status chips computed from the real payloads ─────────────── */
 
 describe('R305 — the chip register on statuses', () => {
-  it('the week ledger rides tone-dotted chips (live→danger, deliverable→neutral)', async () => {
+  /* R319 override (c2-G1): the agenda's kind chips are the §B2 mono
+     StatusChip register now — [LIVE] (orange, the ONE signal state) /
+     the honest DUE label / [CLASS] quiet — square mono chips beside
+     each row's Arabic meta sentence. The tone discipline carries over:
+     LIVE is the only orange; deliverables stay neutral ink. */
+  it('the week ledger rides the mono status chips (live→[LIVE] orange, deliverable→DUE nD neutral)', async () => {
     const { container } = renderPage();
     await screen.findByText('أكمل من حيث توقفت');
-    // The +50h live broadcast lands in the week ledger → danger dot.
-    const liveChip = container.querySelector('.week-item .r305s-chip--danger');
-    expect(liveChip?.textContent).toBe('مباشر');
-    expect(liveChip?.querySelector('.r305s-chip-dot')).not.toBeNull();
-    // Tomorrow's assignment → the quiet neutral deliverable chip.
-    const deliverChip = container.querySelector('.week-item .r305s-chip:not([class*="--"])');
-    expect(deliverChip?.textContent).toBe('تسليم');
+    // The +50h live broadcast lands in the week ledger → [LIVE], the
+    // one orange (live-tone) state.
+    const liveChip = container.querySelector('.week-item .r319s-chip--live');
+    expect(liveChip?.textContent).toBe('LIVE');
+    expect(liveChip?.getAttribute('dir')).toBe('ltr');
+    // The +26h assignment lands in the week ledger → the honest
+    // deadline label (round(26/24) = 1 day out) in neutral ink.
+    const deliverChip = [...container.querySelectorAll('.week-item .r319s-chip--due')]
+      .find((c) => c.textContent?.startsWith('DUE'));
+    expect(deliverChip?.textContent).toBe('DUE 1D');
+    expect(deliverChip?.className).not.toContain('--live');
   });
 
   it('a gap with no recommendation renders the honest metadata chip', async () => {

@@ -24,7 +24,7 @@ import { formatInt, formatNum, formatDate, formatTime } from '../../utils/number
    no raw revision codes, no placeholder test names, ONE numeral system
    (Latin), real ar-LY dates, <bdi> on every mixed run. */
 import {
-  arDate, oneNumeralSystem, sanitizeInstitutionName, sanitizeVisibleText,
+  arDate, sanitizeInstitutionName, sanitizeVisibleText,
 } from '../../utils/display-text';
 /* R305 Heron — the shared student vocabulary + this page's family sheet.
  * Page-chunk CSS loads after main.tsx's global sheets, so the family
@@ -32,6 +32,18 @@ import {
  * recipes they restyle (the deep-band hero). */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-dashboard.css';
+/* R319 (c2-G1) — §B2: the dashboard joins the sheet system. The 7px
+ * frame + grain + the ambient `SHEET S-01 · STUDENT` title line are
+ * the shared shell's (C2-G2, live on every authenticated route); this
+ * page's material is the SECTION BARS ([01]…[05] mono-indexed title
+ * bars), the INDICATORS (RulerGauge semester ruler, per-course
+ * CourseBars, StatusChips, the WeekStrip) and the hatched EmptyCells
+ * (r319-student.css, the pdf.css page-chunk precedent). */
+import {
+  SectionBar, BarCount, RulerGauge, CourseBar, StatusChip, WeekStrip,
+  EmptyCell, dueChip, type StatusChipTone,
+} from '../../components/student';
+import '../../styles/r319-student.css';
 
 /* ═══════════════════════════════════════════════════════════════════
    R304 (student workspace) — the dashboard reads like a workspace, not
@@ -294,6 +306,19 @@ function nodeText(n: ReactNode): string {
   return '';
 }
 
+/* R319 (c2-G1) — the agenda row's mono status chip (§B2): LIVE for a
+ * live broadcast (the ONE orange state — orange is never decoration),
+ * the honest deadline label for assignments/exams (DUE TODAY / DUE nD /
+ * OVERDUE / DUE — the same whole-day arithmetic formatDue rides), CLASS
+ * for a scheduled session. Pure; feeds both the TodayList action slot
+ * and the week ledger's trailing chip group. */
+function agendaChip(item: AgendaItem, now: number): { label: string; tone: StatusChipTone } {
+  if (item.kind === 'live') return { label: 'LIVE', tone: 'live' };
+  if (item.kind === 'class') return { label: 'CLASS', tone: 'quiet' };
+  if (item.whenMs === Number.MAX_SAFE_INTEGER) return dueChip(Number.MAX_SAFE_INTEGER);
+  return dueChip(Math.round((item.whenMs - now) / 86_400_000));
+}
+
 /* R319 C1-C — listwise join of visible identity segments: empties drop
    out BEFORE joining, so a sanitized-to-'' segment can never leave a
    dangling « · » (the photographed header ended «… · السنة 8 · r180»). */
@@ -449,7 +474,13 @@ function DashResumeHero({ focus }: { focus: ResumeFocus }) {
 /* The «مقرّراتك» row — the live-learning list of the workspace. Same
    row grammar as the courses page (leading tinted well + trailing
    progress), minus the per-offering lecture fetch the dashboard does
-   not need: the row's truth is its progress + its teacher. */
+   not need: the row's truth is its progress + its teacher.
+   R319 (c2-G1): the trailing progress is the §B2 CourseBar — a
+   hairline track with an ink fill and a taller END-TICK at the exact
+   value, the course code in mono at the start and the percentage in
+   mono at the end (the drafting-machine register: the tick is the
+   reading, the fill is the glance). Neutral ink — orange stays the
+   semester/LIVE signal. */
 function DashCourseRow({ e }: { e: MyEnrollment }) {
   const c = e.offering.course;
   const Cmp = courseIcon(c.code ?? c.name);
@@ -473,9 +504,11 @@ function DashCourseRow({ e }: { e: MyEnrollment }) {
       meta={<><Badge><bdi className="font-mono">{c.code}</bdi></Badge>{' '}{teacher}</>}
       trailing={
         <span className="stu-course-progress">
-          <ProgressBar value={e.progressPct} color={tint} showValue={false}
-            ariaLabel={`تقدّم مقرّر ${c.name}: ${e.progressPct}%`} />
-          <bdi className="stu-course-pct">{formatInt(Math.round(e.progressPct))}%</bdi>
+          <CourseBar
+            code={c.code ?? undefined}
+            pct={e.progressPct}
+            ariaLabel={`تقدّم مقرّر ${c.name}: ${e.progressPct}%`}
+          />
           <span className="btn ghost sm courses-row-go">
             {e.progressPct > 0 ? 'تابع' : 'ابدأ'}
             <Icon icon={ArrowLeft} size={12} />
@@ -510,62 +543,66 @@ export default function StudentDashboardPage() {
        pending → resolved handoff moves nothing (the r172b
        loading-closure contract, re-mirrored for the pattern anatomy). */
     return (
-      <PageFrame width="default">
-        <header className="pf-page-header" aria-busy="true" aria-live="polite">
-          <div className="pf-page-header-main">
-            <div className="pf-page-header-text">
-              <h1 className="pf-page-title">لوحة التحكم</h1>
-              <p className="pf-page-desc">جارٍ تحضير لوحتك…</p>
-            </div>
-          </div>
-        </header>
-        {(resume.isPending || trainingCatalog.isPending) && (
-          /* The hero slot — reserved at the band's footprint so the
-             pending → resolved handoff moves nothing (the r172b
-             loading-closure contract, re-mirrored for the R304 hero).
-             It collapses honestly when BOTH arms settle to null.
-             R305: the mirror carries the DEEP band classes so the
-             skeleton reads as the same ink/paper surface the resolved
-             hero lands on (the Heron pending mirror anatomy). */
-          <div className="dash-resume-card stu-hero stu-hero-skel r305s-band--deep dash-hero-deep" aria-hidden="true">
-            <Skeleton width={64} height={64} rounded="var(--r-full)" />
-            <div className="dash-resume-main">
-              <Skeleton width={120} height={13} />
-              <Skeleton width="52%" height={24} />
-              <Skeleton width="38%" height={13} />
-            </div>
-            <Skeleton width={170} height={48} rounded="var(--r-full)" />
-          </div>
-        )}
-        <ListSkeleton rows={3} />
-        {/* R305: the momentum strip mirrors the resolved anatomy — the
-            labeled rule (the Heron annotated divider) above the stat
-            line. Same slots, same order, nothing moves at handoff. */}
-        <div className="dash-momentum" aria-busy="true">
-          <div className="r305s-rule-labeled" aria-hidden="true">زخم الفصل</div>
-          <div className="pf-statline" aria-busy="true">
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="pf-stat">
-                <Skeleton width={70} height={13} />
-                <Skeleton width={56} height={24} />
+      <div className="r319s-page">
+        <PageFrame width="default">
+          <header className="pf-page-header" aria-busy="true" aria-live="polite">
+            <div className="pf-page-header-main">
+              <div className="pf-page-header-text">
+                <h1 className="pf-page-title">لوحة التحكم</h1>
+                <p className="pf-page-desc">جارٍ تحضير لوحتك…</p>
               </div>
-            ))}
+            </div>
+          </header>
+          {(resume.isPending || trainingCatalog.isPending) && (
+            /* The hero slot — reserved at the band's footprint so the
+               pending → resolved handoff moves nothing (the r172b
+               loading-closure contract, re-mirrored for the R304 hero).
+               It collapses honestly when BOTH arms settle to null.
+               R305: the mirror carries the DEEP band classes so the
+               skeleton reads as the same ink/paper surface the resolved
+               hero lands on (the Heron pending mirror anatomy). */
+            <div className="dash-resume-card stu-hero stu-hero-skel r305s-band--deep dash-hero-deep" aria-hidden="true">
+              <Skeleton width={64} height={64} rounded="var(--r-full)" />
+              <div className="dash-resume-main">
+                <Skeleton width={120} height={13} />
+                <Skeleton width="52%" height={24} />
+                <Skeleton width="38%" height={13} />
+              </div>
+              <Skeleton width={170} height={48} rounded="var(--r-full)" />
+            </div>
+          )}
+          <ListSkeleton rows={3} />
+          {/* R305: the momentum strip mirrors the resolved anatomy — the
+              labeled rule (the Heron annotated divider) above the stat
+              line. Same slots, same order, nothing moves at handoff. */}
+          <div className="dash-momentum" aria-busy="true">
+            <div className="r305s-rule-labeled" aria-hidden="true">زخم الفصل</div>
+            <div className="pf-statline" aria-busy="true">
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className="pf-stat">
+                  <Skeleton width={70} height={13} />
+                  <Skeleton width={56} height={24} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <ListSkeleton rows={3} />
-      </PageFrame>
+          <ListSkeleton rows={3} />
+        </PageFrame>
+      </div>
     );
   }
   if (dash.isError || !dash.data) {
     return (
-      <PageFrame width="default">
-        <PageHeader title="لوحة التحكم" />
-        <ErrorState
-          message="تعذَّر تحميل لوحة التحكّم"
-          error={dash.error}
-          onRetry={() => dash.refetch()}
-        />
-      </PageFrame>
+      <div className="r319s-page">
+        <PageFrame width="default">
+          <PageHeader title="لوحة التحكم" />
+          <ErrorState
+            message="تعذَّر تحميل لوحة التحكّم"
+            error={dash.error}
+            onRetry={() => dash.refetch()}
+          />
+        </PageFrame>
+      </div>
     );
   }
 
@@ -575,21 +612,23 @@ export default function StudentDashboardPage() {
   // honest "preview" surface instead of crashing on d.profile.gpa.
   if (d.preview || !d.profile) {
     return (
-      <PageFrame width="default">
-        <PageHeader
-          title="لوحة التحكم"
-          description="معاينة لوحة الطالب — يحتاج هذا العرض إلى ملف طالب فعليّ."
-        />
-        <div className="card">
-          <EmptyState
-            icon={Eye}
-            title="عرض معاينة"
-            description={`لوحة التحكّم هذه مخصّصة للطلّاب. أنت مسجَّل دخول كحساب ${
-              user?.role === 'OWNER' ? 'مالك المنصّة' : 'إداريّ'
-            }، لذلك تظهر لك صفحة معاينة فارغة. للاطّلاع على لوحة طالب حقيقيّة، استخدم حساب طالب مسجَّل أو زر صفحة كلّيّة من قائمة الكلّيّات.`}
+      <div className="r319s-page">
+        <PageFrame width="default">
+          <PageHeader
+            title="لوحة التحكم"
+            description="معاينة لوحة الطالب — يحتاج هذا العرض إلى ملف طالب فعليّ."
           />
-        </div>
-      </PageFrame>
+          <div className="card">
+            <EmptyState
+              icon={Eye}
+              title="عرض معاينة"
+              description={`لوحة التحكّم هذه مخصّصة للطلّاب. أنت مسجَّل دخول كحساب ${
+                user?.role === 'OWNER' ? 'مالك المنصّة' : 'إداريّ'
+              }، لذلك تظهر لك صفحة معاينة فارغة. للاطّلاع على لوحة طالب حقيقيّة، استخدم حساب طالب مسجَّل أو زر صفحة كلّيّة من قائمة الكلّيّات.`}
+            />
+          </div>
+        </PageFrame>
+      </div>
     );
   }
 
@@ -755,76 +794,115 @@ export default function StudentDashboardPage() {
   ]);
   /* R319 C1-C — the meta line: REAL ar-LY term dates (Arabic month
      names + Latin digits — the «01/15 وينتهي 09/10» numeric shape and
-     its invisible RLM are gone), the percentage through the one-numeral
-     util, every mixed run bdi-isolated. */
-  const termPctText = oneNumeralSystem(`${termPct}%`);
+     its invisible RLM are gone), every mixed run bdi-isolated.
+     R319 (c2-G1): the semester's «X% من الفصل مضى» prose moved into the
+     [01] section's RulerGauge — the % now rides the instrument's quiet
+     mono meta (same datum, same Latin digits, one home). */
 
   return (
-    <PageFrame width="default">
-      <PageHeader
-        title="لوحة التحكم"
-        eyebrow="مساحة الطالب"
-        description={
-          <>
-            {greeting}{studentName ? <>، <bdi>{studentName}</bdi></> : null} — {identitySegments.length > 0 ? identitySegments : 'لوحة متابعة تقدّمك الأكاديمي.'}
-          </>
-        }
-        meta={
-          <>
-            <bdi>{dateLine}</bdi> · <bdi>{termPctText}</bdi> من الفصل مضى · يبدأ <bdi>{arDate(d.term.startsAt, { day: 'numeric', month: 'long' })}</bdi> وينتهي <bdi>{arDate(d.term.endsAt, { day: 'numeric', month: 'long' })}</bdi>
-          </>
-        }
-      />
+    <div className="r319s-page">
+      <PageFrame width="default">
+        <PageHeader
+          title="لوحة التحكم"
+          eyebrow="مساحة الطالب"
+          description={
+            <>
+              {greeting}{studentName ? <>، <bdi>{studentName}</bdi></> : null} — {identitySegments.length > 0 ? identitySegments : 'لوحة متابعة تقدّمك الأكاديمي.'}
+            </>
+          }
+          meta={
+            <>
+              <bdi>{dateLine}</bdi> · يبدأ <bdi>{arDate(d.term.startsAt, { day: 'numeric', month: 'long' })}</bdi> وينتهي <bdi>{arDate(d.term.endsAt, { day: 'numeric', month: 'long' })}</bdi>
+            </>
+          }
+        />
+
+        {/* [01] الفصل الدراسي — the semester as the sheet's first
+            section (§B2): the drafting RULER — one hairline tick per
+            week (taller every 4th), the orange fill to the term's own
+            progress, the mono W07/16 head computed from the term's
+            start/end dates, and the API's % as quiet mono meta. The
+            term code rides the SectionBar's meta seat (data, never
+            decoration). */}
+        <section aria-label="الفصل الدراسي" className="dash-section">
+          <SectionBar
+            index="01"
+            title="الفصل الدراسي"
+            meta={<bdi className="r319s-mono" dir="ltr">{d.term.code}</bdi>}
+          />
+          <div className="r319s-term">
+            <RulerGauge
+              startsAt={d.term.startsAt}
+              endsAt={d.term.endsAt}
+              progressPct={termPct}
+            />
+          </div>
+        </section>
 
       {/* الخطوة التالية — the hero band (R304): the ONE next learning
           action, its own surface above the lists (r164-c arms kept:
           lecture first, then the training track). */}
       {focus && <DashResumeHero focus={focus} />}
 
-      {/* اليوم — the ONE TodayList (r220): today's commitments first,
-          then every still-actable exam. R305: the section opens with the
-          Heron kicker register (title + hairline + an honest count of
-          the actable rows as quiet metadata) and the pattern list below
-          carries the urgency dots unchanged. */}
+      {/* [02] اليوم — the ONE TodayList (r220): today's commitments first,
+          then every still-actable exam. R319 (c2-G1): the section opens
+          with the §B2 mono-indexed title bar (the honest actable-row
+          count as its quiet mono meta — the digits the sheet prints as
+          data, countAr for assistive tech) and the WEEK STRIP — the
+          current week as 7 hairline cells, today INKED (the app's own
+          Sunday-first order flowing RTL). Every row carries its mono
+          StatusChip; the pattern list below keeps the urgency dots. */}
       <section aria-label="اليوم" className="dash-section">
-        <div className="r305s-kicker">
-          <h2 className="r305s-kicker-title">اليوم</h2>
-          {today.length + exams.length > 0 && (
-            <span className="r305s-kicker-action r305s-chip">
-              <span className="r305s-chip-dot" aria-hidden="true" />
-              {countAr(today.length + exams.length, ['التزام واحد اليوم', 'التزامان اليوم', 'التزامات اليوم', 'التزاماً اليوم'])}
-            </span>
-          )}
-        </div>
+        <SectionBar
+          index="02"
+          title="اليوم"
+          meta={
+            today.length + exams.length > 0 ? (
+              <BarCount
+                n={today.length + exams.length}
+                srLabel={countAr(today.length + exams.length, ['التزام واحد اليوم', 'التزامان اليوم', 'التزامات اليوم', 'التزاماً اليوم'])}
+              />
+            ) : undefined
+          }
+        />
+        <WeekStrip />
         <TodayList
           items={[
-            ...today.map((item) => ({
-              id: item.id,
-              title: nodeText(item.title),
-              meta: item.meta,
-              to: item.to,
-              urgency: (item.tone === 'red' ? 'now' : item.tone === 'accent' ? 'now' : 'soon') as 'now' | 'soon',
-            })),
-            ...exams.map((item) => ({
-              id: item.id,
-              title: nodeText(item.title),
-              meta: item.meta,
-              to: item.to,
-              /* r307 (audit 1-D #7): urgency triage — an exam whose window
-                 has NOT opened yet reads `soon` (the calm dot + «قريبًا»),
-                 not the urgent `now`. Only an already-open window keeps
-                 `now`. The meta line stays honest either way («يفتح باب
-                 الاختبار…»), but the dot no longer overstates it. */
-              urgency: (item.whenMs > Date.now() ? 'soon' : 'now') as 'now' | 'soon',
-            })),
+            ...today.map((item) => {
+              const chip = agendaChip(item, now.getTime());
+              return {
+                id: item.id,
+                title: nodeText(item.title),
+                meta: item.meta,
+                to: item.to,
+                urgency: (item.tone === 'red' ? 'now' : item.tone === 'accent' ? 'now' : 'soon') as 'now' | 'soon',
+                action: <StatusChip label={chip.label} tone={chip.tone} />,
+              };
+            }),
+            ...exams.map((item) => {
+              const chip = agendaChip(item, now.getTime());
+              return {
+                id: item.id,
+                title: nodeText(item.title),
+                meta: item.meta,
+                to: item.to,
+                /* r307 (audit 1-D #7): urgency triage — an exam whose window
+                   has NOT opened yet reads `soon` (the calm dot + «قريبًا»),
+                   not the urgent `now`. Only an already-open window keeps
+                   `now`. The meta line stays honest either way («يفتح باب
+                   الاختبار…»), but the dot no longer overstates it. */
+                urgency: (item.whenMs > Date.now() ? 'soon' : 'now') as 'now' | 'soon',
+                action: <StatusChip label={chip.label} tone={chip.tone} />,
+              };
+            }),
           ]}
           emptyState={
-            <div className="ledger-row ledger-row-flat">
-              <span className="ledger-lead"><b>اليوم</b>راحة</span>
-              <span className="ledger-what">
-                لا حصص أو مهام أو اختبارات اليوم — أسبوعك القادم أدناه، ومقرّراتك تنتظرك في الأسفل.
-              </span>
-            </div>
+            /* R319 (c2-G1): the bare «راحة» prose is now a HATCHED EMPTY
+               CELL — the sheet's reserved-but-empty region (§B2). */
+            <EmptyCell
+              label="راحة"
+              note="لا حصص أو مهام أو اختبارات اليوم — أسبوعك القادم أدناه، ومقرّراتك تنتظرك في الأسفل."
+            />
           }
         />
       </section>
@@ -832,18 +910,26 @@ export default function StudentDashboardPage() {
       {/* التعلّم — the workspace band (R304): مقرّراتك carries the main
           column (in-progress first), the gaps rail sits beside it.
           Honest states everywhere: pending → row skeletons; error →
-          quiet retry row; empty → one calm line (no celebration
-          banner). Every gap row with a recommendation is a WHOLE-ROW
+          quiet retry row; empty → the HATCHED EmptyCell (§B2 — a bare
+          «لا شيء بعد» is never the resting state of a sheet region).
+          Every gap row with a recommendation is a WHOLE-ROW
           link — the matrix page's سدّ الفجوة contract, now one voice
           across both surfaces. */}
       <div className="grid-2-1">
         <section aria-label="مقرّراتك الحالية">
-          <div className="r305s-kicker">
-            <h2 className="r305s-kicker-title">مقرّراتك</h2>
-            <span className="r305s-kicker-action">
-              <Link to="/student/courses" className="btn ghost sm">كل المقرّرات</Link>
-            </span>
-          </div>
+          <SectionBar
+            index="03"
+            title="مقرّراتك"
+            meta={
+              !enrollments.isPending && !enrollments.isError && sortedEnrollments.length > 0 ? (
+                <BarCount
+                  n={sortedEnrollments.length}
+                  srLabel={countAr(sortedEnrollments.length, ['مقرّر نشط واحد', 'مقرّران نشطان', 'مقرّرات نشطة', 'مقررًا نشطًا'])}
+                />
+              ) : undefined
+            }
+            action={<Link to="/student/courses" className="btn ghost sm">كل المقرّرات</Link>}
+          />
           {enrollments.isPending ? (
             <ListSkeleton rows={2} />
           ) : enrollments.isError ? (
@@ -855,12 +941,13 @@ export default function StudentDashboardPage() {
               </span>
             </div>
           ) : sortedEnrollments.length === 0 ? (
-            <div className="ledger-row ledger-row-flat">
-              <span className="ledger-lead"><b>مقرّراتك</b>لا شيء بعد</span>
-              <span className="ledger-what">
-                لم تُسجَّل في مقرّرات هذا الفصل بعد — <Link to="/student/catalog">دليل المقرّرات</Link> يعرض ما تقدّمه كلّيّتك.
-              </span>
-            </div>
+            /* R319 (c2-G1): the actionable empty — hatched cell + the
+               catalog link as its ONE action. */
+            <EmptyCell
+              label="لا مقرّرات بعد"
+              note="لم تُسجَّل في مقرّرات هذا الفصل بعد — دليل المقرّرات يعرض ما تقدّمه كلّيّتك."
+              action={<Link to="/student/catalog" className="btn ghost sm">دليل المقرّرات</Link>}
+            />
           ) : (
             <RowList aria-label="قائمة مقرّراتك">
               {sortedEnrollments.map((e) => <DashCourseRow key={e.id} e={e} />)}
@@ -869,12 +956,11 @@ export default function StudentDashboardPage() {
         </section>
 
         <section aria-label="فجوات الإتقان الموصى بها">
-          <div className="r305s-kicker">
-            <h2 className="r305s-kicker-title">فجوات يُنصح بسدّها</h2>
-            <span className="r305s-kicker-action">
-              <Link to="/student/matrix" className="btn ghost sm">المصفوفة الكاملة</Link>
-            </span>
-          </div>
+          <SectionBar
+            index="04"
+            title="فجوات يُنصح بسدّها"
+            action={<Link to="/student/matrix" className="btn ghost sm">المصفوفة الكاملة</Link>}
+          />
           {gaps.isPending ? (
             <ListSkeleton rows={2} />
           ) : gaps.isError ? (
@@ -886,12 +972,10 @@ export default function StudentDashboardPage() {
               </span>
             </div>
           ) : topGaps.length === 0 ? (
-            <div className="ledger-row ledger-row-flat">
-              <span className="ledger-lead"><b>فجوات</b>لا شيء</span>
-              <span className="ledger-what">
-                لا فجوات مكتشفة بعد — أجب عن نقاط التفاعل في محاضراتك لترسم خريطة إتقانك.
-              </span>
-            </div>
+            <EmptyCell
+              label="لا فجوات بعد"
+              note="لا فجوات مكتشفة بعد — أجب عن نقاط التفاعل في محاضراتك لترسم خريطة إتقانك."
+            />
           ) : (
             <RowList aria-label="أولوية سدّ الفجوات">
               {topGaps.map((g) => (
@@ -921,21 +1005,36 @@ export default function StudentDashboardPage() {
 
       {/* الحالة — the momentum strip (r220 facts, R305 register): the
           Heron labeled rule classifies the line as the page's metadata
-          band; the StatLine pattern below stays untouched. */}
+          band; the StatLine pattern below stays untouched. R319
+          (c2-G1): the KPI block's summary instrument — the AVG
+          CourseBar under the line (the same avgEnrollmentProgressPct
+          datum the «إنجاز المقرّرات» stat prints, as a hairline +
+          end-tick reading). */}
       <section aria-label="زخم الفصل" className="dash-momentum">
         <div className="r305s-rule-labeled" aria-hidden="true">زخم الفصل</div>
         <StatLine items={statLineItems} />
+        {d.kpi.courseCount > 0 && (
+          <CourseBar code="AVG" pct={courseProgressPct} ariaLabel="متوسط إنجاز مقرّراتك الحالية" />
+        )}
       </section>
 
-      {/* الأسبوع — the non-exam remainder grouped by real day. */}
+      {/* [05] الأسبوع — the non-exam remainder grouped by real day.
+          R319 (c2-G1): every row's kind chip is the §B2 mono register
+          ([LIVE] orange only / the honest DUE label / [CLASS] quiet)
+          beside the meta's Arabic sentence. */}
       {later.length > 0 && (
         <section aria-label="التزامات الأسبوع القادم" className="dash-section">
-          <div className="r305s-kicker">
-            <h2 className="r305s-kicker-title">أسبوعك القادم</h2>
-            <span className="r305s-kicker-action">
-              <Link to="/student/calendar" className="btn ghost sm">التقويم الكامل</Link>
-            </span>
-          </div>
+          <SectionBar
+            index="05"
+            title="أسبوعك القادم"
+            meta={
+              <BarCount
+                n={later.length}
+                srLabel={countAr(later.length, ['التزام واحد قادم', 'التزامان قادمان', 'التزامات قادمة', 'التزاماً قادماً'])}
+              />
+            }
+            action={<Link to="/student/calendar" className="btn ghost sm">التقويم الكامل</Link>}
+          />
           <RowList aria-label="التزامات الأسبوع القادم">
             {weekGroups.map((g) => (
               <div key={g.key} className="dash-week-group">
@@ -944,25 +1043,25 @@ export default function StudentDashboardPage() {
                   <span className="font-mono">{g.date}</span>
                 </div>
                 <div className="week-rows">
-                  {g.items.map((item) => (
-                    <Link key={item.id} to={item.to} className="week-item">
-                      <span className="week-item-title">{item.title}</span>
-                      <span className="week-item-meta">{item.meta}</span>
-                      {item.kind === 'live' ? (
-                        <span className="r305s-chip r305s-chip--danger"><span className="r305s-chip-dot" aria-hidden="true" />مباشر</span>
-                      ) : item.kind === 'exam' ? (
-                        <span className="r305s-chip r305s-chip--accent"><span className="r305s-chip-dot" aria-hidden="true" />اختبار</span>
-                      ) : (
-                        <span className="r305s-chip"><span className="r305s-chip-dot" aria-hidden="true" />تسليم</span>
-                      )}
-                    </Link>
-                  ))}
+                  {g.items.map((item) => {
+                    const chip = agendaChip(item, now.getTime());
+                    return (
+                      <Link key={item.id} to={item.to} className="week-item">
+                        <span className="week-item-title">{item.title}</span>
+                        <span className="week-item-meta">{item.meta}</span>
+                        <span className="r319s-rowchip">
+                          <StatusChip label={chip.label} tone={chip.tone} />
+                        </span>
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
             ))}
           </RowList>
         </section>
       )}
-    </PageFrame>
+      </PageFrame>
+    </div>
   );
 }

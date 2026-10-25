@@ -58,13 +58,19 @@ test.describe('R319 — سطر التسريب في لوحة الطالب (leak-p
     // 2026-05-24: real Intl.DateTimeFormat('ar-LY') day + long month.
     await expect(meta).toContainText('1 فبراير');
     await expect(meta).toContainText('24 مايو');
-    // progressPct 45 in the platform's ONE numeral system (Latin),
-    // isolated from the Arabic sentence around it.
-    await expect(meta).toContainText('45% من الفصل');
+    /* R319 override (c2-G1): the semester's «45% من الفصل» prose moved
+     * from the masthead meta into the [01] section's RulerGauge — the
+     * same datum as the instrument's quiet mono meta (§B2). The pin
+     * follows the datum to its new home. */
+    const rulerMeta = page.locator('.r319s-ruler-meta').first();
+    await expect(rulerMeta).toContainText('45%');
+    await expect(rulerMeta).toContainText('من الفصل مضى');
 
     const text = await meta.innerText();
+    const rulerText = await rulerMeta.innerText();
     // Never Arabic-Indic / Persian digits in visible text.
     expect(text, `meta must stay Latin-digit — got: ${text}`).not.toMatch(/[\u0660-\u0669\u06F0-\u06F9]/);
+    expect(rulerText, `ruler meta must stay Latin-digit — got: ${rulerText}`).not.toMatch(/[\u0660-\u0669\u06F0-\u06F9]/);
     // The numeric-slash date shape («01‏/02» with its invisible RLM)
     // is gone — real dates only.
     expect(text).not.toMatch(/\d\u200F\s*\/\s*\d/);
