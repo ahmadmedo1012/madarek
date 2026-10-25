@@ -232,16 +232,53 @@ const MOBILE_CROPS: readonly CamRect[] = [
  * reversible with scroll). */
 const CAM_BANDS = [0.125, 0.375, 0.625, 0.875];
 
+/* ── R318 C2-S1 — the PIN-ROOT publish (the measured seat) ─────────────
+ * `landing.css` reads `--jt-p` ONLY inside `.jt-pin` — the plan's 8 scrub
+ * LAYER GROUPS (`.jt-pin .jt-plan .pl-l-*`), the pin statement
+ * (`.jt-statement` — the flow twin is a different class, static) and the
+ * pin INTRODUCTION card + its `--wr-p` line mapping (`.jt-intro*`); no
+ * consumer exists outside `.jt-pin` (audited: landing.css is the only
+ * stylesheet that mentions the var). Publishing the clock THERE means
+ * the recalc walk per frame covers the pin sheet alone — measured at
+ * 4×CPU (one write + one forced flush per cycle, 12 cycles):
+ *   · track root `.jt` (the old seat)      ~39.7ms @1440 / 32.2ms @390
+ *   · 10-seat fan-out (layers+card+stmt)   ~25.8ms @1440 /  0.1ms @390
+ *   · PIN ROOT `.jt-pin` (this)             ~8.8ms @1440 /  0.6ms @390
+ * A custom-property write on an ancestor invalidates the whole
+ * descendant walk, so ONE seat beats re-dirtying ten separate roots
+ * (per-root walk overhead) and beats the track root (which also
+ * invalidates the visible stations/flow the var never touches).
+ * `--jt-r` stays on the two `.jt-progress` hairline seats — the cam
+ * window's copy lives OUTSIDE `.jt-pin`, and the fill's `inline-size`
+ * recalc is per-seat-cheap (~0.4ms @1440, ~3ms @390 per cycle).
+ * WIDTH-INDEPENDENT: the pin sheet is `display:none` at ≤991px and
+ * Blink SKIPS recalc of display:none subtrees — the mobile scrub rides
+ * the viewBox + `data-stage`, so the publish costs ~nothing on phones.
+ * Seats resolve once per layout epoch (mount + `onRefresh`) and fall
+ * back to the track root if `.jt-pin` is ever missing (slower, never
+ * wrong). */
+const PIN_SEAT_SEL = '.jt-pin';
+const R_SEAT_SEL = '.jt-progress';
+
 /* Reading-environment probes. Guarded the same way useReducedMotion
  * guards (jsdom without matchMedia must fall through to the desktop
- * path — the r311 integration class mounts this scene for real). */
+ * path — the r311 integration class mounts this scene for real).
+ *
+ * R318 C2-S1 — the two lists are constructed ONCE and reused, not
+ * re-parsed per scroll tick (a fresh `matchMedia(...)` pair per frame
+ * measured 4.6–5.0ms per scroll run at 4×CPU). The lists are LIVE:
+ * `.matches` is re-read on every call, so the viewport crossing and a
+ * mid-session reduced-motion flip still land in the same frame — the
+ * r312 camera contract and the r311 RM contract are unchanged. */
+let mobileQuery: MediaQueryList | null = null;
+let reducedQuery: MediaQueryList | null = null;
 function viewportState(): { mobile: boolean; reduced: boolean } {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
     return { mobile: false, reduced: false };
   }
-  const mobile = window.matchMedia('(max-width: 991px)').matches;
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  return { mobile, reduced };
+  mobileQuery ??= window.matchMedia('(max-width: 991px)');
+  reducedQuery ??= window.matchMedia('(prefers-reduced-motion: reduce)');
+  return { mobile: mobileQuery.matches, reduced: reducedQuery.matches };
 }
 
 /* the crop rect at a continuous reading position — piecewise-linear
@@ -376,6 +413,11 @@ export function JourneyScene() {
    * its viewport rect from cached doc offsets would drift; one read
    * per tick through the shared sheetRect batch is the honest cost. */
   const stationsDocRef = useRef<{ top: number; height: number } | null>(null);
+  /* R318 C2-S1 — the var publish seats (see the PIN-ROOT block);
+   * resolved lazily, dropped by `onRefresh` so a layout epoch
+   * re-resolves them once. */
+  const pinSeatRef = useRef<HTMLElement | null>(null);
+  const rSeatsRef = useRef<HTMLElement[]>([]);
   /* the cam-cropped flag — set by applyCam, consumed by the ≥992px
    * crossing so restoreCam never runs per frame on desktop. */
   const camDirtyRef = useRef(false);
@@ -471,19 +513,33 @@ export function JourneyScene() {
       const on = pin >= 0.27 && pin <= 0.68 ? 'on' : 'off';
       if (intro.dataset.on !== on) intro.dataset.on = on;
     }
-    /* R318 C2-S1 — idempotent clock writes: the conductor's last-value
-     * cache skips unchanged value strings (pinned dwells and
-     * 4-decimal quantized steps stop dirtying style every tick). */
-    setSheetVar(track.style, '--jt-p', pin.toFixed(4));
+    /* R318 C2-S1 — idempotent clock writes through the conductor's
+     * last-value cache, published on the PIN-ROOT seat (the measured
+     * cheapest publish — see the PIN-ROOT block above); the track root
+     * is the fallback when `.jt-pin` is missing. */
+    if (!pinSeatRef.current) {
+      pinSeatRef.current = track.querySelector<HTMLElement>(PIN_SEAT_SEL);
+    }
+    if (rSeatsRef.current.length === 0) {
+      rSeatsRef.current = Array.from(track.querySelectorAll<HTMLElement>(R_SEAT_SEL));
+    }
+    const pStr = pin.toFixed(4);
+    const rStr = (mobile ? reading : pin).toFixed(4);
+    setSheetVar((pinSeatRef.current ?? track).style, '--jt-p', pStr);
     /* the progress hairline's clock: the reading parameter at ≤991px
-     * (the stations stack IS the timeline there), the pin ≥992px. */
-    setSheetVar(track.style, '--jt-r', (mobile ? reading : pin).toFixed(4));
+     * (the stations stack IS the timeline there), the pin ≥992px —
+     * written on each window's own `.jt-progress` fill seat. */
+    for (const el of rSeatsRef.current) setSheetVar(el.style, '--jt-r', rStr);
   }, {
     /* drop the stations doc-geometry cache when the layout may have
      * changed (resize + scroll settle) — the next frame re-measures it
-     * once; pure scroll keeps the cache hot (no layout read at all). */
+     * once; pure scroll keeps the cache hot (no layout read at all).
+     * The var publish seats re-resolve on the same epoch (sheet edits
+     * get picked up honestly instead of pinning a stale seat). */
     onRefresh: () => {
       stationsDocRef.current = null;
+      pinSeatRef.current = null;
+      rSeatsRef.current = [];
     },
   });
 

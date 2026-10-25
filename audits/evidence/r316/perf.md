@@ -1,6 +1,6 @@
 # R318 C2-P — landing smoothness harness results
 
-- commit `55afbae6` · base `http://localhost:4183` · trace `false` · grbc `false` · `78` runs
+- commit `b91c6d82` · base `http://localhost:4190` · trace `false` · grbc `true` · `106` runs
 - frames (active window = first→last input): %frames>20ms / %frames>33ms · p95/max rAF delta (ms) — median across runs
 - longtasks: count>50ms / total ms (median) · CLS: total (load phase / interaction phase), standard (no-input) sum
 - top shifters: standard sum per node · under-input: shift sum INCLUDING input-adjacent entries (diagnostic)
@@ -9,9 +9,9 @@
 | viewport | cpu | scenario | frames | longtasks | CLS + top shifters | LCP | INP | runs |
 |---|---|---|---|---|---|---|---|---|
 | 1440×900 | 1× | scroll | 19.8% / 19.8% · p95 49.9ms · max 100ms | 4 / 315ms | 0.007 (load 0.007 / act 0) · div.hydration-splash (0.04) | 0.26s img | — | ×5 |
-| 1440×900 | 4× | scroll | 71.1% / 71.1% · p95 100ms · max 200ms | 63 / 5067ms | 0.007 (load 0.007 / act 0) · div.hydration-splash (0.04) | 1.84s p.reveal-up.reveal-d-3.fo-hero-lead | — | ×6 |
+| 1440×900 | 4× | scroll | 73.5% / 73.5% · p95 100ms · max 183.3ms | 57 / 4862ms | 0.007 (load 0.007 / act 0) · div.hydration-splash (0.14) | 1.94s p.reveal-up.reveal-d-3.fo-hero-lead | — | ×20 |
 | 390×844 | 1× | scroll | 2.8% / 2.8% · p95 16.8ms · max 50.1ms | 2 / 154ms | 0 (load 0 / act 0) · span (0) · under-input: span (0) | 0.16s img | — | ×4 |
-| 390×844 | 4× | scroll | 96.6% / 96.6% · p95 83.3ms · max 133.3ms | 69 / 5048ms | 0 (load 0 / act 0) · span (0) · under-input: span (0) | 0.50s img | — | ×7 |
+| 390×844 | 4× | scroll | 31.2% / 31.2% · p95 50ms · max 66.7ms | 11 / 1156ms | 0 (load 0 / act 0) · div.fo-hero-strip (0.01), section#statement.st-section (0.01), span (0) · under-input: span (0) | 1.60s div.fo-grain | — | ×21 |
 | 1440×900 | 1× | scroll ·grain-off | 22.6% / 22.6% · p95 49.9ms · max 150ms | 3 / 230ms | 0.007 (load 0.007 / act 0) · div.hydration-splash (0.01) | 0.18s img | — | ×2 |
 | 1440×900 | 4× | scroll ·grain-off | 76.7% / 76.7% · p95 100ms · max 183.3ms | 61 / 5032ms | 0.007 (load 0.007 / act 0) · div.hydration-splash (0.01) | 0.46s img | — | ×2 |
 | 390×844 | 1× | scroll ·grain-off | 2.7% / 2.7% · p95 16.8ms · max 66.6ms | 2 / 141ms | 0 (load 0 / act 0) · span (0) · under-input: span (0) | 0.16s img | — | ×2 |
@@ -125,3 +125,31 @@
 | 1440×900 | 4× | cold·loader #1 | 19.5%/529f p95 50 max 450 | 20 | 0.008 | 4.05s || d-mut 0 |  |
 | 390×844 | 1× | cold·loader #1 | 0.4%/695f p95 16.7 max 83.3 | 1 | 0.037 | 2.80s || d-mut 0 |  |
 | 390×844 | 4× | cold·loader #1 | 8.5%/637f p95 33.3 max 299.9 | 13 | 0.033 | 3.62s || d-mut 0 |  |
+| 1440×900 | 4× | scroll #1 | 62%/171f p95 83.3 max 133.2 · active 73.4%/128f p95 83.3 | 42 | 0.007 | 1.94s || d-mut 0 |  |
+| 1440×900 | 4× | scroll #2 | 61.8%/178f p95 83.3 max 133.3 · active 73.5%/136f p95 83.3 | 40 | 0.007 | 0.39s || d-mut 0 |  |
+| 390×844 | 4× | scroll #1 | 21.9%/242f p95 33.4 max 50.1 · active 25.5%/192f p95 49.9 | 5 | 0 | 0.38s || d-mut 0 |  |
+| 390×844 | 4× | scroll #2 | 19.4%/248f p95 49.9 max 66.8 · active 22.8%/197f p95 50 | 9 | 0 | 0.32s || d-mut 0 |  |
+| 1440×900 | 4× | scroll #1 | 64.6%/158f p95 83.4 max 133.3 · active 76.7%/120f p95 99.9 | 62 | 0.007 | 0.49s || d-mut 0 |  |
+| 1440×900 | 4× | scroll #2 | 62.4%/173f p95 100 max 133.4 · active 72.4%/134f p95 100 | 55 | 0.007 | 0.37s || d-mut 0 |  |
+| 390×844 | 4× | scroll #1 | 27.1%/236f p95 50 max 66.7 · active 28.8%/191f p95 50 | 7 | 0 | 0.40s || d-mut 0 |  |
+| 390×844 | 4× | scroll #2 | 28.9%/232f p95 33.4 max 66.7 · active 31.2%/186f p95 49.9 | 9 | 0 | 0.34s || d-mut 0 |  |
+| 1440×900 | 4× | scroll #1 | 61.3%/173f p95 99.9 max 166.7 · active 73.3%/131f p95 100 | 55 | 0.007 | 0.38s || d-mut 0 |  |
+| 390×844 | 4× | scroll #1 | 23%/248f p95 49.9 max 66.7 · active 26.3%/198f p95 49.9 | 7 | 0 | 0.38s || d-mut 0 |  |
+| 1440×900 | 4× | scroll #1 | 61.8%/157f p95 100 max 216.7 · active 74.6%/118f p95 100 | 67 | 0.007 | 0.44s || d-mut 0 |  |
+| 1440×900 | 4× | scroll #2 | 61.2%/178f p95 83.4 max 216.6 · active 73.5%/136f p95 100 | 57 | 0.007 | 0.41s || d-mut 0 |  |
+| 390×844 | 4× | scroll #1 | 32.6%/227f p95 66.7 max 83.4 · active 39.8%/176f p95 66.8 | 31 | 0 | 0.34s || d-mut 0 |  |
+| 390×844 | 4× | scroll #2 | 35.7%/230f p95 66.7 max 83.4 · active 40.2%/184f p95 66.7 | 34 | 0 | 0.37s || d-mut 0 |  |
+| 1440×900 | 4× | scroll #1 | 65.5%/165f p95 99.9 max 166.7 · active 76.2%/126f p95 100 | 57 | 0.007 | 0.52s | · grbc 585reads(77.2/s) 168attr 715vars| d-mut 0 |  |
+| 1440×900 | 4× | scroll #2 | 66%/159f p95 100 max 133.3 · active 75.2%/121f p95 100 | 57 | 0.007 | 0.34s | · grbc 570reads(81.5/s) 168attr 684vars| d-mut 0 |  |
+| 1440×900 | 4× | scroll #3 | 63.9%/169f p95 99.9 max 183.3 · active 73.6%/129f p95 100 | 54 | 0.007 | 0.33s | · grbc 597reads(78.3/s) 168attr 723vars| d-mut 0 |  |
+| 390×844 | 4× | scroll #1 | 26.6%/237f p95 50 max 66.7 · active 31%/187f p95 50 | 11 | 0 | 0.35s | · grbc 1035reads(190.2/s) 217attr 1156vars| d-mut 0 |  |
+| 390×844 | 4× | scroll #2 | 24.3%/247f p95 33.4 max 66.6 · active 26%/200f p95 49.9 | 11 | 0 | 0.43s | · grbc 1071reads(199.6/s) 218attr 1190vars| d-mut 0 |  |
+| 390×844 | 4× | scroll #3 | 26.6%/229f p95 50 max 66.7 · active 31.1%/180f p95 50 | 8 | 0 | 0.36s | · grbc 1003reads(192.1/s) 213attr 1122vars| d-mut 0 |  |
+| 1440×900 | 4× | scroll #1 | 63.3%/169f p95 83.4 max 249.8 · active 73.1%/130f p95 100 | 51 | 0.007 | 1.94s || d-mut 0 |  |
+| 1440×900 | 4× | scroll #2 | 64%/164f p95 100 max 183.3 · active 74.6%/126f p95 100 | 63 | 0.007 | 1.83s || d-mut 0 |  |
+| 1440×900 | 4× | scroll #3 | 61%/172f p95 99.9 max 216.7 · active 72.5%/131f p95 100 | 63 | 0.007 | 1.62s || d-mut 0 |  |
+| 390×844 | 4× | scroll #1 | 23.7%/241f p95 33.4 max 66.7 · active 27.4%/190f p95 49.9 | 7 | 0 | 0.38s || d-mut 0 |  |
+| 390×844 | 4× | scroll #2 | 28%/243f p95 50 max 66.7 · active 32%/194f p95 50 | 12 | 0 | 0.45s || d-mut 0 |  |
+| 390×844 | 4× | scroll #3 | 23.7%/249f p95 49.9 max 50.1 · active 25.9%/201f p95 50 | 10 | 0.014 | 1.60s || d-mut 0 |  |
+| 1440×900 | 4× | scroll #1 | 64%/172f p95 83.4 max 166.7 · active 74.4%/133f p95 100 | 55 | 0.007 | 0.46s | · grbc 606reads(80/s) 168attr 738vars| d-mut 0 |  |
+| 390×844 | 4× | scroll #1 | 23%/244f p95 49.9 max 66.7 · active 26.2%/195f p95 50 | 6 | 0 | 0.39s | · grbc 1059reads(199.9/s) 218attr 1180vars| d-mut 0 |  |

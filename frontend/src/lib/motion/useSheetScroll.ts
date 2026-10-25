@@ -15,15 +15,23 @@
  * The callback receives measured metrics so consumers never repeat the
  * geometry math (and never read layout twice per frame).
  *
- * R318 C2-S1 — the batch is now REAL and frame-scoped:
+ * R318 C2-S1 — the batch is now REAL and frame-scoped, and the tick is
+ *  TWO-PHASE (read → write):
  *  · `run(false)` (the rAF tick) reads through the conductor's
  *    generation cache — the first read of an element in a tick serves
  *    every consumer of that same tick; nothing re-reads layout within
  *    the same frame.
+ *  · the consumer's WRITE callback runs in a MICROTASK queued by the
+ *    tick: all subscribers' reads happen in phase 1 (inside the one
+ *    rAF task), all writes in phase 2 (when that task's stack empties,
+ *    still before this frame's style/layout/paint). No consumer's
+ *    geometry read can flush another consumer's var/dataset write —
+ *    that interleave measured 2+ forced UpdateLayoutTree passes per
+ *    scroll frame (~19ms each at 4×CPU); one flush per frame remains.
  *  · `run(true)` (the settle frame + the mount prime) runs OUTSIDE the
  *    rAF loop, so it bumps the generation first — it is never served a
- *    rect cached by a previous frame, and the one rect it reads serves
- *    any same-tick consumer that follows.
+ *    rect cached by a previous frame — and writes synchronously (it
+ *    runs alone; nothing follows it in the same frame).
  *  · `options.onRefresh` runs BEFORE the settle frame and on resize —
  *    the hook for consumer-side document-geometry caches (JourneyScene's
  *    stations stack): viewport positions still derive per frame from
@@ -91,22 +99,35 @@ export function useSheetScroll(
 
     /* `fresh` — reading outside the rAF loop (settle/prime): bump the
      * conductor generation first so this run never consumes a rect
-     * cached by a previous frame, then read through the same batch. */
-    const run = (fresh: boolean) => {
+     * cached by a previous frame, then read through the same batch.
+     * `deferred` — the rAF tick: the write callback moves to a
+     * microtask so every subscriber reads (phase 1) before any of them
+     * writes (phase 2). */
+    const run = (fresh: boolean, deferred: boolean) => {
       if (fresh) freshSheetRects();
       const { rect, vh } = sheetRect(el);
       const traversalRaw = (vh - rect.top) / (vh + rect.height);
       const pinRaw =
         rect.height > vh ? -rect.top / (rect.height - vh) : traversalRaw;
-      frameRef.current({
+      const m: ScrollMetrics = {
         rect,
         vh,
         traversal: clamp(traversalRaw, 0, 1),
         pin: clamp(pinRaw, 0, 1),
-      });
+      };
+      if (deferred) {
+        /* phase 2 — microtasks drain when the rAF task's stack empties:
+         * after every subscriber's tick (their reads), before the
+         * frame's style/layout/paint. Zero React renders, same frame. */
+        queueMicrotask(() => {
+          frameRef.current(m);
+        });
+      } else {
+        frameRef.current(m);
+      }
     };
 
-    const tick = () => run(false);
+    const tick = () => run(false, true);
 
     const kick = () => {
       if (!unsub) {
@@ -118,9 +139,9 @@ export function useSheetScroll(
       settleTimer = window.setTimeout(() => {
         /* layout may have drifted while we were scrolling (fonts,
          * late media) — let the consumer drop its caches, then one
-         * final fresh frame, then sleep. */
+         * final fresh frame (synchronous: it runs alone), then sleep. */
         refreshRef.current?.();
-        run(true);
+        run(true, false);
         if (unsub) {
           unsub();
           unsub = null;
@@ -139,9 +160,9 @@ export function useSheetScroll(
     if (options.primeOnMount !== false) {
       /* prime the initial state without holding the clock (one frame —
        * fresh: the batch may hold nothing yet, but the bump keeps the
-       * prime honest if a tick ran first) */
+       * prime honest if a tick ran first; synchronous: it runs alone) */
       requestAnimationFrame(() => {
-        run(true);
+        run(true, false);
       });
     }
 

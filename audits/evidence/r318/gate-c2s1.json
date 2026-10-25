@@ -1,0 +1,471 @@
+{
+ "generated": "2026-10-25T04:47:53.472Z",
+ "baseUrl": "http://localhost:4190",
+ "viewports": [
+  360,
+  390,
+  1440
+ ],
+ "themes": [
+  "light",
+  "dark"
+ ],
+ "skipped": [
+  "ocr",
+  "perf"
+ ],
+ "cells": [
+  {
+   "viewport": 360,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 136,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 1941.8px² @(253,716)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 360,
+     "htmlCW": 360,
+     "bodySW": 360,
+     "bodyCW": 360
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 390,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 137,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2360.9px² @(271,758)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 390,
+     "htmlCW": 390,
+     "bodySW": 390,
+     "bodyCW": 390
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1440,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 166,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 0.5,
+       "total": 166,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 1,
+       "total": 166,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 141,
+     "overlapFails": 5,
+     "allowlisted": 1,
+     "edgeCrossings": 0,
+     "samples": [
+      "p.jt-statement «الرحلة مرسومة على مسطح واح» ✕ h3.jt-station-verb «شاهد» 14996px² @(1022,3399)",
+      "p.jt-statement «الرحلة مرسومة على مسطح واح» ✕ p.jt-intro-title «مقدمة» 12731.3px² @(75,3381)",
+      "p.jt-statement «الرحلة مرسومة على مسطح واح» ✕ p.jt-station-title «المحاضرة التفاعلية» 7166.9px² @(1022,3449)",
+      "p.jt-statement «الرحلة مرسومة على مسطح واح» ✕ span.jt-station-num.fo-mono «01» 6988.6px² @(1022,3373)",
+      "span.fo-mono «01 · live · lectures» ✕ p.jt-statement «الرحلة مرسومة على مسطح واح» 2897.2px² @(1173,3533)"
+     ]
+    },
+    "placeholders": {
+     "status": "FAIL",
+     "matches": [
+      {
+       "match": "--%",
+       "context": "ضيحي الحضور --% مساعد الفه"
+      }
+     ]
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1440,
+     "htmlCW": 1440,
+     "bodySW": 1440,
+     "bodyCW": 1440
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 360,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 148,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 136,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 1941.8px² @(253,716)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 360,
+     "htmlCW": 360,
+     "bodySW": 360,
+     "bodyCW": 360
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 390,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 137,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2360.9px² @(271,758)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 390,
+     "htmlCW": 390,
+     "bodySW": 390,
+     "bodyCW": 390
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1440,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 166,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 0.5,
+       "total": 166,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 1,
+       "total": 166,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 141,
+     "overlapFails": 5,
+     "allowlisted": 1,
+     "edgeCrossings": 0,
+     "samples": [
+      "p.jt-statement «الرحلة مرسومة على مسطح واح» ✕ h3.jt-station-verb «شاهد» 14996px² @(1022,3401)",
+      "p.jt-statement «الرحلة مرسومة على مسطح واح» ✕ p.jt-intro-title «مقدمة» 12731.3px² @(75,3383)",
+      "p.jt-statement «الرحلة مرسومة على مسطح واح» ✕ p.jt-station-title «المحاضرة التفاعلية» 7166.9px² @(1022,3451)",
+      "p.jt-statement «الرحلة مرسومة على مسطح واح» ✕ span.jt-station-num.fo-mono «01» 6988.6px² @(1022,3376)",
+      "span.fo-mono «01 · live · lectures» ✕ p.jt-statement «الرحلة مرسومة على مسطح واح» 2897.2px² @(1173,3535)"
+     ]
+    },
+    "placeholders": {
+     "status": "FAIL",
+     "matches": [
+      {
+       "match": "--%",
+       "context": "ضيحي الحضور --% مساعد الفه"
+      }
+     ]
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1440,
+     "htmlCW": 1440,
+     "bodySW": 1440,
+     "bodyCW": 1440
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  }
+ ],
+ "summary": {
+  "fails": 8,
+  "exit": 1
+ }
+}
