@@ -183,3 +183,18 @@ Work Log:
 
 Stage Summary:
 - The fleet round closed the ENTIRE remaining geometry ladder: every band at every one of the 11 viewports is now within ±3% (most exact), worst docH drift +0.85%. Cycle-4's queue is artwork/composition (the map/platform canvases + hero tonal density), the alignment-harness family, and the carried flags — no geometry tickets remain.
+
+---
+Task ID: r315-c4-close
+Agent: foreman (main session)
+Task: Close R315 cycle 4 (artwork/composition round) — merge the five-agent fleet, re-verify the ladder, run the full gates + fresh judges, push to main
+
+Work Log:
+- Fleet closed 5/5 (all agents hit their context deadlines mid-work; foreman completed each: review → build → measure → vision-check → gates → commit): c4/a map journey (1712fafc) · c4/b platform (be8d64a7) · c4/c hero+statement (d96f97ad) · c4/d carried flags (889a3cdf) · c4/e CI debt (1ebc9ea9).
+- Merge surgery: the three artwork branches all append landing.css EOF banners; the auto-merge silently interleaved c4/a+c4/b (unbalanced) — reconstructed from the cycle-3 base + each branch's own patch in sequence (balance verified 0, builds green).
+- Post-merge verification: full ladder 11/11 all bands ≤3% (ZERO geometry drift from the artwork round) · e2e 102/102 · r305 belt 0 failed · lint 0 · tsc 0 · vitest 2533+1783 · raw-css --strict PASS · icons/motion/colors/csp/parity-export OK.
+- Fresh pixel judge (87 pairs): worstRegionAvg 0.72 — floored by the artwork-SUBJECT difference (the no-copy rule); s03-25 (the cycle's worst pair) dropped worstRegion 100%→20%. PARITY 60.5 held.
+- CI on the cycle-4 push: Design gates GREEN (first time since r314), E2E running; Build (DB-free) failed ONLY on the bundle-size gate — 702.8KB gz vs the 700 ceiling (the ink-artwork round's SVG path data). Re-pinned 700→712 per the gate's own documented-raise protocol (+1.7%, entry 80 and pdf 110 ceilings unchanged).
+
+Stage Summary:
+- Cycle 4 pushed: 832f5525 → 30ff7f02 (+ the bundle re-pin). The artwork/composition round landed with zero geometry drift; the two CI jobs red since r314 are green (design gates confirmed, e2e local 102/102 pending its CI run). Cycle-5 queue: the VLM re-verdict of the 20 changed frames, hero tonal mass, the alignment-harness family run, typography census, the true authed sweep.

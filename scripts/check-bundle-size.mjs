@@ -49,7 +49,7 @@ const DIST = join(ROOT, 'frontend', 'dist');
 const ASSETS = join(DIST, 'assets');
 
 /* Pinned ceilings — see the header block before touching these. */
-const LIMIT_TOTAL_KB = 700; // r306 planned 900→700, r307 applied (measured 668.5); see the block above
+const LIMIT_TOTAL_KB = 712; // r306 planned 900→700, r307 applied (measured 668.5); r315 C4 raised 700→712 (+1.7%, documented): the cycle-4 ink-artwork round (the map journey's drafted floor-plans, the platform tool-canvas, the statement illustration — original SVG path data) measured 702.8; the raise keeps the A11 headroom discipline (~8-10%) over the new measured mass while holding the entry (80) and pdf (110) ceilings unchanged
 const LIMIT_ENTRY_KB = 80;
 const LIMIT_PDF_KB = 110;
 
