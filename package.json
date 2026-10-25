@@ -16,6 +16,8 @@
     "start": "node backend/dist/index.js",
     "dev": "npm run dev -w backend",
     "dev:web": "npm run dev -w frontend",
+    "dev:full": "node scripts/r319/dev-full.mjs",
+    "db:local": "node scripts/r319/local-db.mjs",
     "test": "npm run test -w frontend && npm run test -w backend",
     "test:integration": "npm run test:integration -w backend",
     "lint": "eslint frontend/src backend/src",
@@ -40,6 +42,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "embedded-postgres": "^16.14.0-beta.17",
     "eslint": "^10.12.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "tsx": "^4.22.4",
@@ -50,6 +53,7 @@
     "@prisma/engines": true,
     "prisma": true,
     "argon2": true,
-    "esbuild": true
+    "esbuild": true,
+    "@embedded-postgres/linux-x64": true
   }
 }

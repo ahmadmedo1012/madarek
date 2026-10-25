@@ -133,3 +133,8 @@ scripts/r314/tools/
 
 # R315 — agent working captures (fresh per cycle, never committed)
 _local/
+
+# R319 — the local embedded-postgres runtime (scripts/r319/local-db.mjs):
+# data dir, server log. (backend/.env.local with the local-only JWT
+# secrets is already covered by `.env.*` + `*.local` above.)
+.local/
