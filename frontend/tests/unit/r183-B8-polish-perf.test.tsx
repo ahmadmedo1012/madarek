@@ -193,7 +193,12 @@ describe('r183-B8 — CI bundle-size gate (A11 finding 1)', () => {
     // (measured 668.5 KB gz, ~4.7% headroom). The change is documented in
     // the gate's header block (the gate's own sanctioned mechanism),
     // entry/pdf unchanged.
-    expect(script).toContain('LIMIT_TOTAL_KB = 700');
+    // R318: the r315 cycle-4 ink-artwork round raised the seat 700→712
+    // (measured 702.8, documented in the gate header — commit 1135a662);
+    // the test pin follows the documented ceiling. §E2 owns the R318
+    // ratchet: the total must go DOWN (<600) — re-pin this test down
+    // with it, never up.
+    expect(script).toContain('LIMIT_TOTAL_KB = 712');
     expect(script).toContain('LIMIT_ENTRY_KB = 80');
     expect(script).toContain('LIMIT_PDF_KB = 110');
     // Fail-closed scanner errors are a distinct exit code, so a missing

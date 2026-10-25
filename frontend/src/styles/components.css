@@ -549,6 +549,19 @@
     --_btn-shadow: none;
   }
 
+  /* R318 §B (defect-gate contrast) — the light-theme accent slab
+     deepens to the minimum AA seat: white on #FA3600 measures 3.755:1
+     (gate: «أنشئ حسابك الجامعي» 3.76:1 at every light cell); #DB3A00
+     is the least-shift ground that clears 4.5:1 (4.548:1, computed by
+     scripts/r318/gate-lib.mjs contrastRatio). Dark keeps its own token
+     seat (4.79:1 — passes) untouched. Applies site-wide so every
+     accent button reads the same. */
+  [data-theme='light'] .btn.accent,
+  [data-theme='light'] .btn.gold {
+    --_btn-bg: #DB3A00; /* spacing-gate/color-gate: allow — R318 AA seat, documented */
+    --_btn-bd: #DB3A00;
+  }
+
   /* r157 (audit 6A11 #3): the in-flight freeze — a busy button never
      wipes/lifts under the cursor (the hover rules above are
      :not([data-loading])-gated; this re-assertion keeps motion.css's

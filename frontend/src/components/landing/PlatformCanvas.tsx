@@ -50,10 +50,10 @@ export function PlatformCanvas() {
     <div className="pr-canvas" aria-hidden="true">
       <div className="pr-panel">
         {/* the four drafting corner ± marks (the sheet's registration) */}
-        <span className="pr-panel-mark pr-panel-mark--tl">+</span>
-        <span className="pr-panel-mark pr-panel-mark--tr">+</span>
-        <span className="pr-panel-mark pr-panel-mark--bl">+</span>
-        <span className="pr-panel-mark pr-panel-mark--br">+</span>
+        <span className="pr-panel-mark pr-panel-mark--tl" aria-hidden="true">+</span>
+        <span className="pr-panel-mark pr-panel-mark--tr" aria-hidden="true">+</span>
+        <span className="pr-panel-mark pr-panel-mark--bl" aria-hidden="true">+</span>
+        <span className="pr-panel-mark pr-panel-mark--br" aria-hidden="true">+</span>
 
         {/* the toolbar strip — the reference's top ruler */}
         <div className="pr-bar">

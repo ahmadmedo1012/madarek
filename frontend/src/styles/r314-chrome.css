@@ -298,6 +298,44 @@
   }
 }
 
+/* ── R318 §A9 — large phones 480–767: the banner keeps the same
+   stacked phone grammar here. At 480–767 the one-line desktop panel
+   (601px floor) cannot hold «يستخدم…اعرف أكثر» + both buttons in a
+   row — the gate measured the LEARN MORE link striking the REJECT
+   button (1150px² @480) and the discover cue under the panel
+   (2694px² @600). The measured reference collapse (374×~100,
+   column, side-by-side actions) is the honest seat for the whole
+   phone family; the desktop one-liner returns at ≥768 where the
+   601px measure actually fits. ──────────────────────────────────── */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+  .cb-banner {
+    inset-inline: 0;
+    margin-inline: auto;
+    inline-size: min(92vw, 374px);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-2);
+    padding-block: var(--sp-2);
+    padding-inline: var(--sp-3);
+  }
+  .cb-text {
+    line-height: var(--lh-base);
+    white-space: normal;
+  }
+  .cb-more {
+    margin-inline-start: var(--sp-1-5);
+  }
+  .cb-actions {
+    gap: var(--sp-2);
+  }
+  .cb-accept,
+  .cb-reject {
+    flex: 1 1 auto;
+    min-block-size: 44px;
+    inline-size: auto;
+  }
+}
+
 /* ── Reduced motion — NEVER animate: the rise collapses to an instant
    appearance (no slide, no fade — the raw-ladder kill already zeroes
    every --t-* rung; this belt pins the entrance itself). ─────────── */

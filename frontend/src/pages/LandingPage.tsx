@@ -1388,10 +1388,10 @@ export default function LandingPage() {
           <div className="fo-fstrip">
             <FooterLens />
             <div className="fo-wordmark" aria-hidden="true">
-              <span className="fo-wordmark-reg fo-wordmark-reg-tl">+</span>
-              <span className="fo-wordmark-reg fo-wordmark-reg-tr">+</span>
-              <span className="fo-wordmark-reg fo-wordmark-reg-bl">+</span>
-              <span className="fo-wordmark-reg fo-wordmark-reg-br">+</span>
+              <span className="fo-wordmark-reg fo-wordmark-reg-tl" aria-hidden="true">+</span>
+              <span className="fo-wordmark-reg fo-wordmark-reg-tr" aria-hidden="true">+</span>
+              <span className="fo-wordmark-reg fo-wordmark-reg-bl" aria-hidden="true">+</span>
+              <span className="fo-wordmark-reg fo-wordmark-reg-br" aria-hidden="true">+</span>
 
               {/* ── the WIDE cut — the ≥992px construction sheet, viewBox
                   1200×92 (the ink band y 10..89 trimmed to a 6/7-unit

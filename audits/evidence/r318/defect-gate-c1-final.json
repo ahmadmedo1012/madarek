@@ -1,0 +1,1327 @@
+{
+ "generated": "2026-10-25T02:48:11.334Z",
+ "baseUrl": "http://localhost:4173",
+ "viewports": [
+  360,
+  390,
+  430,
+  480,
+  600,
+  720,
+  768,
+  1024,
+  1440
+ ],
+ "themes": [
+  "light",
+  "dark"
+ ],
+ "skipped": [
+  "ocr",
+  "perf"
+ ],
+ "cells": [
+  {
+   "viewport": 360,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 136,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 1941.8px² @(253,716)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 360,
+     "htmlCW": 360,
+     "bodySW": 360,
+     "bodyCW": 360
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 390,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 137,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2360.9px² @(271,758)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 390,
+     "htmlCW": 390,
+     "bodySW": 390,
+     "bodyCW": 390
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 430,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 137,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2184px² @(299,811)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 430,
+     "htmlCW": 430,
+     "bodySW": 430,
+     "bodyCW": 430
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 480,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 152,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 152,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 152,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 138,
+     "overlapFails": 2,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2237.1px² @(337,806)",
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ a.cb-more «اعرف أكثر» 233.8px² @(337,809)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 480,
+     "htmlCW": 480,
+     "bodySW": 480,
+     "bodyCW": 480
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 600,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 152,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 152,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 152,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 138,
+     "overlapFails": 4,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "a.btn.accent.lg.fo-hero-cta «أنشئ حسابك الجامعي» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 8330.1px² @(131,751)",
+      "span «ما يعمل اليوم» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2644.6px² @(388,754)",
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ button.cb-accept «موافق» 1360.5px² @(424,844)",
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 126.6px² @(424,829)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 600,
+     "htmlCW": 600,
+     "bodySW": 600,
+     "bodyCW": 600
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 720,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 148,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 136,
+     "overlapFails": 4,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "p.reveal-up.reveal-d-3.fo-hero-lead.in-view «محاضرات تفاعلية، ومصفوفة إ» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 22771.2px² @(195,753)",
+      "p.reveal-up.reveal-d-3.fo-hero-lead.in-view «محاضرات تفاعلية، ومصفوفة إ» ✕ button.cb-reject «أرفض» 4470.5px² @(195,837)",
+      "p.reveal-up.reveal-d-3.fo-hero-lead.in-view «محاضرات تفاعلية، ومصفوفة إ» ✕ button.cb-accept «موافق» 4125.3px² @(368,839)",
+      "p.reveal-up.reveal-d-3.fo-hero-lead.in-view «محاضرات تفاعلية، ومصفوفة إ» ✕ a.cb-more «اعرف أكثر» 3434px² @(327,782)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 720,
+     "htmlCW": 720,
+     "bodySW": 720,
+     "bodyCW": 720
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 768,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 158,
+     "overlapFails": 0,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 768,
+     "htmlCW": 768,
+     "bodySW": 768,
+     "bodyCW": 768
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1024,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 158,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 0.5,
+       "total": 176,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 1,
+       "total": 188,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 165,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-mono «01 · live · lectures» ✕ p.jt-station-title «المحاضرة التفاعلية» 1669.6px² @(765,2744)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1024,
+     "htmlCW": 1024,
+     "bodySW": 1024,
+     "bodyCW": 1024
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1440,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 166,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 0.5,
+       "total": 184,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 1,
+       "total": 196,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 171,
+     "overlapFails": 0,
+     "allowlisted": 1,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "FAIL",
+     "matches": [
+      {
+       "match": "--%",
+       "context": "ضيحي الحضور --% مساعد الفه"
+      }
+     ]
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1440,
+     "htmlCW": 1440,
+     "bodySW": 1440,
+     "bodyCW": 1440
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 360,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 137,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 1941.8px² @(253,716)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 360,
+     "htmlCW": 360,
+     "bodySW": 360,
+     "bodyCW": 360
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 390,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 137,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2360.9px² @(271,758)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 390,
+     "htmlCW": 390,
+     "bodySW": 390,
+     "bodyCW": 390
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 430,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 137,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2184px² @(299,811)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 430,
+     "htmlCW": 430,
+     "bodySW": 430,
+     "bodyCW": 430
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 480,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 152,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 152,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 152,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 138,
+     "overlapFails": 2,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2237.1px² @(337,806)",
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ a.cb-more «اعرف أكثر» 233.8px² @(337,809)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 480,
+     "htmlCW": 480,
+     "bodySW": 480,
+     "bodyCW": 480
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 600,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 152,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 152,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 152,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 138,
+     "overlapFails": 4,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "a.btn.accent.lg.fo-hero-cta «أنشئ حسابك الجامعي» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 8330.1px² @(131,751)",
+      "span «ما يعمل اليوم» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 2644.6px² @(388,754)",
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ button.cb-accept «موافق» 1360.5px² @(424,844)",
+      "span.fo-hero-discover-label «اكتشف المزيد» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 126.6px² @(424,829)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 600,
+     "htmlCW": 600,
+     "bodySW": 600,
+     "bodyCW": 600
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 720,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 151,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 148,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 136,
+     "overlapFails": 4,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "p.reveal-up.reveal-d-3.fo-hero-lead.in-view «محاضرات تفاعلية، ومصفوفة إ» ✕ p.cb-text «يستخدم هذا الموقع التخزين » 22771.2px² @(195,753)",
+      "p.reveal-up.reveal-d-3.fo-hero-lead.in-view «محاضرات تفاعلية، ومصفوفة إ» ✕ button.cb-reject «أرفض» 4470.5px² @(195,837)",
+      "p.reveal-up.reveal-d-3.fo-hero-lead.in-view «محاضرات تفاعلية، ومصفوفة إ» ✕ button.cb-accept «موافق» 4125.3px² @(368,839)",
+      "p.reveal-up.reveal-d-3.fo-hero-lead.in-view «محاضرات تفاعلية، ومصفوفة إ» ✕ a.cb-more «اعرف أكثر» 3434px² @(327,782)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 720,
+     "htmlCW": 720,
+     "bodySW": 720,
+     "bodyCW": 720
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 768,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 158,
+     "overlapFails": 0,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 768,
+     "htmlCW": 768,
+     "bodySW": 768,
+     "bodyCW": 768
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1024,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 158,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 0.5,
+       "total": 176,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 1,
+       "total": 188,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "FAIL",
+     "leafCount": 165,
+     "overlapFails": 1,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": [
+      "span.fo-mono «01 · live · lectures» ✕ p.jt-station-title «المحاضرة التفاعلية» 1669.6px² @(765,2746)"
+     ]
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1024,
+     "htmlCW": 1024,
+     "bodySW": 1024,
+     "bodyCW": 1024
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1440,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 166,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 0.5,
+       "total": 184,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 1,
+       "total": 196,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 171,
+     "overlapFails": 0,
+     "allowlisted": 1,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "FAIL",
+     "matches": [
+      {
+       "match": "--%",
+       "context": "ضيحي الحضور --% مساعد الفه"
+      }
+     ]
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1440,
+     "htmlCW": 1440,
+     "bodySW": 1440,
+     "bodyCW": 1440
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  }
+ ],
+ "summary": {
+  "fails": 16,
+  "exit": 1
+ }
+}

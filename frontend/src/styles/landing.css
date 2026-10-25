@@ -6460,7 +6460,11 @@ html[data-theme='dark'] .fo-grain {
   /* ── hero — the reference's phone band is 100svh − 1.62rem (measured
    * 785 = 800−15 @360 · 828 = 844−16 @390 · 898 = 915−17 @412 — the
    * subtrahend is the constant 1.62rem on the streaming root), not the
-   * ≤640 px pin. The window + strip paddings ride rem with it. ── */
+   * ≤640 px pin. The window + strip paddings ride rem with it. ──
+   * R318 note — the ≤479 consent seat is NOT re-padded here: the phone
+   * strip (372–406px) + banner band overflow the viewport-bound band
+   * (gate c1b/c1c: CTA×banner 3437–8768px²) — the seat is owned by the
+   * C4 band ticket (strip compaction), not by band padding. ── */
   .fo-hero {
     min-block-size: calc(100svh - 1.62rem);
     padding-block: 2.02rem 2.42rem;
@@ -6798,6 +6802,8 @@ html[data-theme='dark'] .fo-grain {
    * 63px window pad + the band's 20px pad fold into it — measured
    * 53.7px @480 · 80.6px @720 on the reference); the band rides
    * 100svh − 1.6rem like the law */
+  /* R318 note — as at ≤479, the 480–767 consent seat is owned by the
+     C4 band ticket (strip compaction + measured reserve), not here. */
   .fo-hero { padding-block-start: 4.4rem; padding-block-end: 0; }
   .fo-hero-window { padding-block-start: 0; }
 

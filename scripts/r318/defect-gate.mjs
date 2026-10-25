@@ -144,6 +144,11 @@ const COLLECT_TEXT = () => {
   while ((n = walker.nextNode())) {
     const el = n.parentElement;
     if (!el || el.closest('svg') || /^(script|style|noscript)$/.test(el.tagName)) continue;
+    /* WCAG 1.4.3 exemption (R318 §B): PURE DECORATION — short glyph
+       runs ('+','·','|', rules) inside aria-hidden subtrees carry no
+       information (drafting registration marks). Same rule as the
+       collision check so the two can never disagree. */
+    if (/^[+\-–—|·•*.\s]{1,4}$/.test((n.nodeValue || '').trim()) && el.closest('[aria-hidden="true"]')) continue;
     if (!isShown(el)) continue;
     const base = el.getBoundingClientRect();
     if (base.width < 1 || base.height < 1) continue;
