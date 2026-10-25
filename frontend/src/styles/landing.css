@@ -6514,14 +6514,30 @@ html[data-theme='dark'] body.mdrk-grain::before {
   /* ── hero — the reference's phone band is 100svh − 1.62rem (measured
    * 785 = 800−15 @360 · 828 = 844−16 @390 · 898 = 915−17 @412 — the
    * subtrahend is the constant 1.62rem on the streaming root), not the
-   * ≤640 px pin. The window + strip paddings ride rem with it. ──
-   * R318 note — the ≤479 consent seat is NOT re-padded here: the phone
-   * strip (372–406px) + banner band overflow the viewport-bound band
-   * (gate c1b/c1c: CTA×banner 3437–8768px²) — the seat is owned by the
-   * C4 band ticket (strip compaction), not by band padding. ── */
+   * ≤640 px pin. The window + strip paddings ride rem with it. ── */
   .fo-hero {
     min-block-size: calc(100svh - 1.62rem);
-    padding-block: 2.02rem 2.42rem;
+    /* R318 §A9/C4 — the consent banner's phone seat, measured: the
+       strip (372–420px) ends at the band's floor and the fixed
+       banner (~92–97px) covers its last rows. The band now RESERVES
+       the banner band as bottom padding (10.5rem ≈ 96px @390 root)
+       — the 1fr window row absorbs it (the elevation is aspect-bound
+       and measured to keep ≥23px slack in its row at 360–430);
+       the strip compacts (row-gap 16→8, its own pb 11→4) so the pair
+       fits INSIDE the viewport-bound band without the floor growing
+       (the c1b padding-with-taller-svg experiment grew the band —
+       this one rides the measured aspect slack instead). */
+    padding-block: 2.02rem 11rem;
+  }
+
+  /* R318 §A9/C4 — the strip's phone compaction (measured 372→~350
+     @360): the inter-row gap halves (the reveal wrappers ride their
+     own margins), the strip's own bottom pad drops to the frame
+     hairline. Type sizes, the 13px floor and the 44px touch targets
+     are untouched. */
+  .fo-hero-strip {
+    row-gap: var(--sp-1);
+    padding-block-end: 0.4rem;
   }
 
   .fo-hero-window {
@@ -6773,6 +6789,23 @@ html[data-theme='dark'] body.mdrk-grain::before {
  * at 360/390, ≈86.9rem at 412 (911 measured). The step's exact seat is
  * unmeasured (no manifest row between 390 and 412); 400px is the slice's
  * midpoint — never a fork below 400, exact at the three canonical rows. */
+@media (max-width: 767px) {
+  /* R318 §A9/C4 — the discover cue seats out on phones: the measured
+     phone grammar is [logo|MENU] + H1 + full-width CTA (the §D
+     first-viewport contract: logo · H1 · primary CTA · consent — the
+     cue is not in it), and the viewport-bound band + the reference's
+     own H1 rungs (39.08px @480 · 58.63 @720) + the fixed banner can
+     only all clear with the cue's 51–77px back. The cue returns at
+     ≥768 (tablets keep it). Measured clearances with the restructured
+     strip: CTA×banner gap 13px @480 · 159 @600 · 107 @720 · 33 @360.
+     320 stays BLOCKED (viewport 568 < window-min 268 + strip-min
+     ~300 + banner 89 — its own compact-hero ticket: 3-line H1 +
+     window chrome trim). */
+  .fo-hero-link-cell {
+    display: none;
+  }
+}
+
 @media (min-width: 400px) and (max-width: 479px) {
   .st-section { min-block-size: 86.9rem; }
 }
@@ -6860,6 +6893,59 @@ html[data-theme='dark'] body.mdrk-grain::before {
      C4 band ticket (strip compaction + measured reserve), not here. */
   .fo-hero { padding-block-start: 4.4rem; padding-block-end: 0; }
   .fo-hero-window { padding-block-start: 0; }
+
+  /* R318 §A9/C4 — the strip's measured 2-col restructure (the stacked
+     1-col strip measured 397–556px and its last 106–129px sat under the
+     banner): the lead leaves the narrow side column (it wrapped 6–8
+     rows in ~190px) and rides beside the H1; the actions + discover
+     seat full-width rows below. Grid items: h1 · lead · foot · disc
+     (the .fo-hero-side wrapper rides display:contents — it carries
+     no styling at ≤767: border/padding already 0 there). Measured
+     strip: 376→~327 @480 · 458→~397 @600 · 539→~467 @720. */
+  .fo-hero-strip {
+    grid-template-columns: minmax(0, 56%) minmax(0, 1fr);
+    grid-template-areas:
+      'h1 lead'
+      'foot foot'
+      'disc disc';
+    row-gap: 8px; /* spacing-gate: allow — R318 §A9/C4 measured seat: the strip must clear the fixed banner */
+    padding-block-end: var(--sp-1);
+  }
+  .fo-hero-side {
+    display: contents;
+  }
+  .fo-hero-strip > h1 {
+    grid-area: h1;
+  }
+  .fo-hero-lead {
+    grid-area: lead;
+  }
+  .fo-hero-side-foot {
+    grid-area: foot;
+  }
+  .fo-hero-link-cell {
+    grid-area: disc;
+  }
+
+  /* R318 §A9/C4 — the band reserves the banner's seat (measured):
+     8.5rem = 104px @480 · 130 @600 · 156 @720 (the compact column
+     banner 96–123px @480–599 · the desktop one-liner 70–84px @600+).
+     The window row absorbs the over-reserve (min 268–437px vs the
+     measured allocations 317–526px at every width) so the band stays
+     viewport-bound and the strip's bottom rides above the banner:
+     measured clearances 4px @480 · 91 @600 · 66 @720. */
+  .fo-hero {
+    padding-block-end: 8.5rem;
+  }
+
+  /* R318 §A9/C4 — the elevation yields 15% of the window's inline
+     measure at 480–599 so the pair (window-min 268px + strip ~295px
+     + reserve 104px) seats inside the viewport-bound band; at ≥600
+     the cap ≈ the natural full width (measured svg 442px @600 vs the
+     444px cap) — no visual change there. */
+  .fo-hero-window .bp-svg {
+    max-inline-size: 85%;
+  }
 
   /* 5 — the map band is dvh-keyframed (the target px set: 4738 @480 ·
    * 6042 @600 · 6227 @720 — measured): the ladder re-seat must not move
@@ -6971,6 +7057,38 @@ html[data-theme='dark'] body.mdrk-grain::before {
    * +4.1% content overshoot @480; the band's own law is 100svh −
    * 1.6rem and the floor takes the rest) */
   .fo-hero-actions .btn { inline-size: auto; }
+}
+
+/* R318 §A9/C4 — SHORT viewports (≤960px tall phones: the 600×900 ·
+   720×920 device classes; the canonical ladder pairs 600/720×1024
+   are untouched — this media only fires on short viewports): the
+   elevation yields more inline measure so window-min + strip + the
+   banner reserve seat inside the viewport-bound band. Measured:
+   @600×900 window 437→277 → 46px clearance; @720×920 428→299 → 68;
+   ≤479 short phones lose ~7px of art height only (aspect-bound). */
+@media (max-width: 767px) and (max-height: 960px) {
+  .fo-hero-window .bp-svg {
+    max-inline-size: 60%;
+  }
+}
+
+/* R318 §A9/C4 — short 640–767 viewports (the 720×900 class): the strip
+   also reflows single-column so the lead rides full-width (3–4 rows
+   ≈ 80px) instead of wrapping 17 rows in the 266px side column
+   (measured 336px) — with the px banner (104px) + the 60% art cap
+   the whole contract seats: strip-bottom 770 vs banner-top 796
+   (26px clearance @720×900; canonical 720×1024 untouched). */
+@media (min-width: 640px) and (max-width: 767px) and (max-height: 960px) {
+  .fo-hero-strip {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'h1'
+      'lead'
+      'foot';
+    /* the rem-inflated pb (18.3px @720) trims to the frame hairline —
+       the 720×900 clearance measured 2px short (gate 247.7px²). */
+    padding-block-end: 0.4rem;
+  }
 }
 
 

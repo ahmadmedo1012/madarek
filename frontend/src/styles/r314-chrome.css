@@ -304,29 +304,38 @@
    row — the gate measured the LEARN MORE link striking the REJECT
    button (1150px² @480) and the discover cue under the panel
    (2694px² @600). The measured reference collapse (374×~100,
-   column, side-by-side actions) is the honest seat for the whole
-   phone family; the desktop one-liner returns at ≥768 where the
-   601px measure actually fits. ──────────────────────────────────── */
+   column, side-by-side actions) is the honest seat for the phone
+   band; the desktop one-liner returns at ≥600 (measured fit — R318
+   §A9/C4) and at ≥768 it keeps the full 601px measure. ─────────── */
 @media only screen and (min-width: 480px) and (max-width: 767px) {
+  /* R318 §A9/C4 — the banner is PX-PINNED like the reference's own
+     measured banner (601×38 desktop · 374×~100 mobile — px, not rem):
+     this band's 12.2–18.3px streaming root rem-inflated the chrome to
+     143–167px tall (measured @600×900 / 720×900) and swallowed the
+     first viewport. Pads 8/12 · gap 8 · 13px text (the legibility
+     floor) · 44px touch floors → ~96–104px tall across the band. */
   .cb-banner {
     inset-inline: 0;
     margin-inline: auto;
     inline-size: min(92vw, 374px);
     flex-direction: column;
     align-items: stretch;
-    gap: var(--sp-2);
-    padding-block: var(--sp-2);
-    padding-inline: var(--sp-3);
+    gap: 8px; /* spacing-gate: allow — the px-pinned measured banner seat */
+    padding: 8px 12px; /* spacing-gate: allow — ditto */
+  }
+  .cb-text,
+  .cb-more {
+    font-size: 13px; /* spacing-gate: allow — the 13px legibility floor, pinned like the reference's own px banner */
   }
   .cb-text {
-    line-height: var(--lh-base);
+    line-height: 1.45;
     white-space: normal;
   }
   .cb-more {
-    margin-inline-start: var(--sp-1-5);
+    margin-inline-start: 6px;
   }
   .cb-actions {
-    gap: var(--sp-2);
+    gap: 8px;
   }
   .cb-accept,
   .cb-reject {
