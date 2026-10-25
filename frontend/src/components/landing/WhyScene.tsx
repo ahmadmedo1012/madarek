@@ -81,7 +81,11 @@ export function WhyScene() {
   const trackRef = useRef<HTMLDivElement>(null);
 
   /* the ONE scroll driver: traversal → data-wy-stage + --wy-p
-   * (imperative, zero renders per tick — the useSheetScroll contract). */
+   * (imperative, zero renders per tick — the useSheetScroll contract).
+   * R318 (C2): the var write is idempotent (same-string setProperty
+   * still invalidates style every frame — 4-var flush cost measured
+   * 72ms @1440 in the CDP profile). */
+  let lastWyP = '';
   useSheetScroll(trackRef, ({ traversal }) => {
     const track = trackRef.current;
     if (!track) return;
@@ -89,7 +93,11 @@ export function WhyScene() {
     if (track.dataset.wyStage !== String(stage)) {
       track.dataset.wyStage = String(stage);
     }
-    track.style.setProperty('--wy-p', traversal.toFixed(4));
+    const p = traversal.toFixed(4);
+    if (p !== lastWyP) {
+      track.style.setProperty('--wy-p', p);
+      lastWyP = p;
+    }
   });
 
   return (

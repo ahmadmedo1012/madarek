@@ -362,15 +362,30 @@ export default function LandingPage() {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
+  /* R318 (C2) — the grain's body seat: mounted class in, unmounted out
+   * (the pseudo-element film is landing-only, exactly like the old
+   * .fo-grain div; idempotent both ways). */
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+    document.body.classList.add('mdrk-grain');
+    return () => document.body.classList.remove('mdrk-grain');
+  }, []);
+
   /* R308 — the statement title's scrub driver: --wr-p (0..1) rides
    * the section's traversal; the word masks resolve + reverse with
-   * it (imperative, zero renders — the useSheetScroll contract). */
+   * it (imperative, zero renders — the useSheetScroll contract).
+   * R318 (C2): idempotent write (same-string setProperty still
+   * invalidates style every frame). */
   const statementRef = useRef<HTMLElement>(null);
+  let lastWrP = '';
   useSheetScroll(statementRef, ({ rect, vh }) => {
     const el = statementRef.current;
     if (!el) return;
-    const p = clamp((vh * 0.9 - rect.top) / (vh * 0.8), 0, 1);
-    el.style.setProperty('--wr-p', p.toFixed(4));
+    const p = clamp((vh * 0.9 - rect.top) / (vh * 0.8), 0, 1).toFixed(4);
+    if (p !== lastWrP) {
+      el.style.setProperty('--wr-p', p);
+      lastWrP = p;
+    }
   });
 
   /* R313 (D11): the exit sweep is installed at the GUEST boundary
@@ -407,22 +422,46 @@ export default function LandingPage() {
   // Scroll chrome on refs, written imperatively — no React re-render
   // per scroll event (the r172 pattern, kept).
   const headerRef = useRef<HTMLElement>(null);
+  // R318 (C2) — the auth-warm intent listener's anchor (the root).
+  const rootRef = useRef<HTMLDivElement>(null);
 
   /* r162 (R2) → r164b: warm the AUTH BOUNDARIES while the visitor reads
-   * the hero (prod only — dev has no chunk splitting to warm). */
+   * the hero (prod only — dev has no chunk splitting to warm).
+   * R318 (C2): the old requestIdleCallback(timeout 4000) fired the
+   * two-chunk import MID-SCROLL (react MessagePort 306–756ms LoAF in
+   * the CDP profile — the #2 remaining @1440 jank). The warm now rides
+   * INTENT (pointerdown/focusin on an auth-boundary link) + a late
+   * idle fallback (15s — keyboard/scan readers still get the warm,
+   * but never inside the first scroll sweeps). */
   useEffect(() => {
     if (redirectHome) return;
     if (!import.meta.env.PROD) return;
+    let warmed = false;
+    const warm = () => {
+      if (warmed) return;
+      warmed = true;
+      void import('./AuthPage').catch(() => undefined);
+      void import('./RegisterPage').catch(() => undefined);
+    };
+    const onIntent = (e: Event) => {
+      const t = e.target as Element | null;
+      if (t?.closest?.('a[href*="/auth"]')) {
+        warm();
+        rootRef.current?.removeEventListener('pointerdown', onIntent);
+        rootRef.current?.removeEventListener('focusin', onIntent);
+      }
+    };
+    const root = rootRef.current;
+    root?.addEventListener('pointerdown', onIntent, { passive: true });
+    root?.addEventListener('focusin', onIntent, { passive: true });
     const ric =
       typeof window.requestIdleCallback === 'function'
         ? window.requestIdleCallback.bind(window)
         : undefined;
-    const warm = () => {
-      void import('./AuthPage').catch(() => undefined);
-      void import('./RegisterPage').catch(() => undefined);
-    };
-    const idleId = ric ? ric(warm, { timeout: 4000 }) : window.setTimeout(warm, 2500);
+    const idleId = ric ? ric(warm, { timeout: 15000 }) : window.setTimeout(warm, 15000);
     return () => {
+      root?.removeEventListener('pointerdown', onIntent);
+      root?.removeEventListener('focusin', onIntent);
       if (ric) window.cancelIdleCallback(idleId as number);
       else window.clearTimeout(idleId as number);
     };
@@ -455,12 +494,21 @@ export default function LandingPage() {
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    let lastY = window.scrollY;
+    /* R318 (C2) — the scroll read rides the EVENT, not the frame: a
+     * scrollY read inside rAF lands AFTER the sheet driver's style
+     * writes and forces a synchronous full-document layout every
+     * frame (639ms self @1440 in the CDP profile). The handler
+     * (passive, fires before rAF callbacks) snapshots the seat once
+     * per event; apply() only WRITES — and the transform write is
+     * idempotent (same-string assignments still invalidate style). */
+    let pendingY = window.scrollY;
+    let lastY = pendingY;
+    let lastTf: string | null = null;
     let lifted = false;
     let raf = 0;
     const apply = () => {
       raf = 0;
-      const y = window.scrollY;
+      const y = pendingY;
       if (header) {
         header.classList.toggle('on-scroll', y > 6);
         const delta = y - lastY;
@@ -475,12 +523,17 @@ export default function LandingPage() {
             lifted = false;
           }
         }
-        header.style.transform = lifted && !reduced
+        const tf = lifted && !reduced
           ? 'translateY(calc(-100% - 8px))'
           : '';
+        if (tf !== lastTf) {
+          header.style.transform = tf;
+          lastTf = tf;
+        }
       }
     };
     const onScroll = () => {
+      pendingY = window.scrollY;
       if (!raf) raf = requestAnimationFrame(apply);
     };
 
@@ -565,6 +618,7 @@ export default function LandingPage() {
 
   return (
     <div
+      ref={rootRef}
       className={[
         'landing',
         introDone ? 'intro-done' : 'intro-draw',
@@ -603,10 +657,13 @@ export default function LandingPage() {
           where the reference carries them. ═══ */}
       <div className="sheet-frame" aria-hidden="true" />
 
-      {/* R314 (V3) — the measured paper grain + dotted micro-grid film
-          (scripts/r314/grain-measure.json): under the content, under the
-          fixed chrome, pointer-transparent. */}
-      <div className="fo-grain" aria-hidden="true" />
+      {/* R314 (V3) → R318 (C2): the measured paper grain + dotted
+          micro-grid film (scripts/r314/grain-measure.json) now seats on
+          body::before while the landing is mounted (the effect below
+          toggles the body class) — pseudo-elements are not LCP
+          candidates, so the decorative film can never be the page's
+          LCP again. Visual coverage identical: fixed, full-viewport,
+          under content, pointer-transparent. */}
 
       {/* R315 (K-A5): the top orange scroll-progress bar is RETIRED —
           the reference has nothing at the frame's top edge (E-crawl

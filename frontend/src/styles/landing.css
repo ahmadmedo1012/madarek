@@ -69,8 +69,15 @@
  * dark twin rides plain alpha (its mean IS the charcoal paper). The
  * faint dotted micro-grid tiles under it (24px cell, 1px dots at 40%).
  * Layer sits UNDER the flowing content (z 0, first paint) and under the
- * fixed chrome (z 50+); pointer-transparent. ═══ */
-.fo-grain {
+ * fixed chrome (z 50+); pointer-transparent.
+ * R318 (C2): the grain seats on body::before while the landing is mounted
+ * (LandingPage toggles the body class) — a pseudo-element is NOT an
+ * LCP candidate, so the decorative full-viewport film can never
+ * again be the page's largest contentful paint (it measured as LCP
+ * at 4.05s cold Fast-3G, hiding the hero's real LCP time). Visual
+ * coverage is identical: fixed, full-viewport, under content. ═══ */
+body.mdrk-grain::before {
+  content: '';
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -84,7 +91,7 @@
   opacity: 1;
 }
 
-html[data-theme='dark'] .fo-grain {
+html[data-theme='dark'] body.mdrk-grain::before {
   background-image:
     url('/media/textures/grain-tile-dark.webp'),
     url('/media/textures/micro-grid.svg');
