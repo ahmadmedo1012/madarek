@@ -21,13 +21,25 @@
  * pointer-transparent (the honest surfaces stay the ProductFrames,
  * their captions and the section copy).
  *
- * Geometry: viewBox 640×520 ≈ the canvas panel's own aspect. The
+ * R318 §A5 (c3-plat): the drawing seats ON PAPER — the reference's
+ * own grammar (heron-platform.json: "drawings sit ON paper … ink
+ * strokes + ONE solid accent room, hairline cells"). The R315 code
+ * drew the exterior-wall band rect with the bare .bp-ink-2 class —
+ * a stroke-weight-only class with no fill, so the 596×464 rect fell
+ * to the SVG DEFAULT FILL and the whole plan read as a SOLID-BLACK
+ * slab (~31% of the sheet's pixels at 1440). The rect now carries
+ * .bp-ink (fill: none) — paper shows through the wall band and only
+ * the true ink masses render: the hatched poché, the solid corridor
+ * bands, the furniture guide work, the dimension chains, and the ONE
+ * solid var(--accent) room.
+ *
+ * Geometry: viewBox 640×520 ≈ the drawing cell's own aspect. The
  * walls are SOLID INK MASSES + 45° hatched poché (the map band's
  * measured rendering-weight grammar — r314 §4.2), the partitions
  * 8 units, the furniture 1.5-unit guide work. Room codes ride the
  * mono micro voice (Latin, LTR — the drafting convention); the ONE
  * Arabic annotation (the accent room's honest feature note) is HTML
- * in the canvas layer (PlatformCanvas), where the 13px Arabic floor
+ * in the drawing cell (PlatformCanvas), where the 13px Arabic floor
  * binds.
  */
 
@@ -146,7 +158,11 @@ export function PlatformPlanArt() {
       <rect className="prc-poch" x="562" y="484" width="54" height="12" />
       <rect className="prc-poch" x="32" y="44" width="12" height="440" />
       <rect className="prc-poch" x="604" y="44" width="12" height="440" />
-      <rect className="bp-ink-2" x="32" y="32" width="596" height="464" />
+      {/* the exterior wall band's outer face — R318 §A5: .bp-ink-2 is a
+          stroke-weight-only class; without .bp-ink the 596×464 rect
+          fell to the SVG default fill and rendered the whole plan as
+          one solid-black slab. fill:none + the 2px primary stroke. */}
+      <rect className="bp-ink bp-ink-2" x="32" y="32" width="596" height="464" />
       <rect className="bp-ink" x="44" y="44" width="572" height="440" />
 
       {/* the glazing runs open the poché on the north wall */}

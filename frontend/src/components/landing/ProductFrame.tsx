@@ -60,7 +60,10 @@ function productSrcset(id: string, widths: number[]): string {
  *
  * Decorative by contract: aria-hidden + pointer-transparent, laid
  * out inside .prf-stage (the photo box) so the overlap never reaches
- * the caption row or the funnel CTA. Layout/geometry lives in
+ * the caption row or the funnel CTA. R318 §A5 (c3-plat): the cards
+ * seat INSIDE their frame (the stage's own hairline box clips them —
+ * the viewport never does; ≥8px frame padding, no pairwise overlap,
+ * verified at 1440/1024/768). Layout/geometry lives in
  * styles/r314-productframe.css (the gate-clean composition sheet).
  */
 function ProductMockCards({ variant }: { variant: 'lead' | 'std' | 'role' }) {

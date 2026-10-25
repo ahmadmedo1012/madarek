@@ -48,12 +48,18 @@
    ═════════════════════════════════════════════════════════════════════ */
 
 /* ── The stage — photo + collage share one positioning box ──────────
-   The wrapper keeps .prf's grid children identical (stage + caption);
-   absolute cards inset against the PHOTO box (not the figure), so
-   "bottom corner" means the capture's corner. Overflow stays VISIBLE
-   — the cards must escape the frame onto the sheet's paper. */
+   The wrapper keeps .prf's grid children identical (stage + caption).
+   R318 §A5 (c3-plat): the reference's tooltips live INSIDE their
+   raster frames — never free-floating DOM that the viewport clips.
+   The stage is the frame's own hairline box: every mock card seats
+   INSIDE it with ≥8px frame padding and the frame's overflow CLIP
+   owns the boundary (the viewport never clips a card — at 1440 the
+   mastery card used to cross the right edge by 9.3px, at 768 the
+   chat card used to hang 16px past the left edge under the edge
+   tab, and the cards used to stack over each other's gutters). */
 .prf-stage {
   position: relative;
+  overflow: clip;
 }
 
 /* ── The collage layer — decorative, aria-hidden in the markup ────── */
@@ -125,11 +131,14 @@
   white-space: nowrap;
 }
 
-/* ══ Card A — the chat widget (lead كبيرة، std/role مصغّرة) ════════ */
+/* ══ Card A — the chat widget (lead كبيرة، std/role مصغّرة) ════════
+   R318 §A5: seated INSIDE the frame — the top inline-end corner
+   (the reading-end edge, clear of the VIEW tag), 8px off the
+   frame's own lines. */
 .prf-card--chat {
   inline-size: 200px;
-  inset-block-start: 22px;
-  inset-inline-end: -80px;   /* ~40% of the card rides the sheet's paper */
+  inset-block-start: 8px;
+  inset-inline-end: 8px;
 }
 
 /* one qualitative line each — no fabricated dialogue specifics, and
@@ -163,11 +172,14 @@
   text-overflow: ellipsis;
 }
 
-/* ══ Card B — the mastery-matrix dot card (lead فقط) ════════════════ */
+/* ══ Card B — the mastery-matrix dot card (lead فقط) ════════════════
+   Inside the frame's bottom inline-end corner — the reference's
+   own raster seats its notification box at the frame's inner
+   bottom corner. */
 .prf-card--mastery {
   inline-size: 172px;
-  inset-block-end: 16px;
-  inset-inline-start: -36px;
+  inset-block-end: 8px;
+  inset-inline-end: 8px;
 }
 
 .prf-card--mastery .prf-card-bar {
@@ -225,11 +237,12 @@
    An honest MECHANISM readout (R318 §A5): the mono slot states the
    real behavior («تلقائي» — attendance counts automatically on
    completion); a fabricated percentage was never an option and the
-   retired «--%» empty-state read as a placeholder. */
+   retired «--%» empty-state read as a placeholder. Inside the frame,
+   bottom inline-start corner (≥1200px only). */
 .prf-card--attend {
   inline-size: 124px;
-  inset-block-start: -14px;
-  inset-inline-start: -24px;
+  inset-block-end: 8px;
+  inset-inline-start: 8px;
 }
 
 .prf-card--attend .prf-card-bar {
@@ -265,9 +278,9 @@
    bottom corner (the teacher cockpit + the why-section stack) ══════ */
 .prf-cards--side .prf-card--chat {
   inline-size: 168px;
-  inset-block-start: auto;
-  inset-block-end: 18px;
-  inset-inline-end: -56px;
+  inset-block-start: auto;   /* cancel Card A's top seat — the side fragment owns the bottom corner only */
+  inset-block-end: 8px;
+  inset-inline-end: 8px;
 }
 
 .prf-cards--side .prf-chat-body {
@@ -330,45 +343,39 @@
 }
 
 /* ── Narrow-desktop belt (≤1199px) — the collage breathes inward ────
-   The capture narrows and the page margin thins; the outside offsets
-   shrink so nothing passes the viewport's edge (the .landing
-   overflow-x clip stays a last resort, never the design). Card C is
-   a ≥1200px fragment only. */
+   R318 §A5: the escapes are GONE (the cards live inside their
+   frames at every tier); only the widths tune to the narrower
+   capture. Card C stays a ≥1200px fragment only. */
 @media (max-width: 1199px) {
   .prf-card--attend { display: none; }
 
   .prf-card--chat {
     inline-size: 184px;
-    inset-inline-end: -56px;
-  }
-
-  .prf-card--mastery {
-    inset-inline-start: -20px;
-  }
-
-  .prf-cards--side .prf-card--chat {
-    inset-inline-end: -32px;
   }
 }
 
-/* The tablet band (≤991px) — the fluid root re-gears; the fragments
-   tighten one more step against the thinner capture. */
+/* The tablet band (≤991px) — the fluid root re-gears; the 15rem
+   cover strips are short, so the fragments tighten one width rung
+   (the 8px frame padding holds — every card still seats inside its
+   frame: the strips are 138px tall and the tallest card is 114px). */
 @media (max-width: 991px) {
   .prf-card--chat {
     inline-size: 168px;
-    inset-block-start: 14px;
-    inset-inline-end: -40px;
   }
 
+  /* the 15rem cover strips are short: the mastery card moves to the
+     frame's bottom inline-START corner so the two cards can never
+     overlap inside the 138px strip (the chat keeps the top corner) */
   .prf-card--mastery {
     inline-size: 156px;
-    inset-block-end: 10px;
+    inset-inline-end: auto;
+    inset-inline-start: 8px;
   }
 
+  /* 168 (not 156) keeps every chat line single-line — a wrapped line
+     would push the card's top inset under the 8px frame padding */
   .prf-cards--side .prf-card--chat {
-    inline-size: 156px;
-    inset-block-end: 10px;
-    inset-inline-end: -24px;
+    inline-size: 168px;
   }
 }
 

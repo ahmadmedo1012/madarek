@@ -1,0 +1,439 @@
+{
+ "generated": "2026-10-25T07:51:08.737Z",
+ "baseUrl": "http://localhost:4194",
+ "viewports": [
+  768,
+  1024,
+  1440
+ ],
+ "themes": [
+  "light",
+  "dark"
+ ],
+ "skipped": [
+  "ocr",
+  "perf"
+ ],
+ "cells": [
+  {
+   "viewport": 768,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 176,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 157,
+     "overlapFails": 0,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 768,
+     "htmlCW": 768,
+     "bodySW": 768,
+     "bodyCW": 768
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1024,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 150,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 168,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 180,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 158,
+     "overlapFails": 0,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1024,
+     "htmlCW": 1024,
+     "bodySW": 1024,
+     "bodyCW": 1024
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1440,
+   "theme": "light",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 163,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 0.5,
+       "total": 181,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 1,
+       "total": 193,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 168,
+     "overlapFails": 0,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1440,
+     "htmlCW": 1440,
+     "bodySW": 1440,
+     "bodyCW": 1440
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 768,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 179,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 157,
+     "overlapFails": 0,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 768,
+     "htmlCW": 768,
+     "bodySW": 768,
+     "bodyCW": 768
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1024,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 150,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 0.5,
+       "total": 168,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      },
+      {
+       "state": 1,
+       "total": 180,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 0
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 158,
+     "overlapFails": 0,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1024,
+     "htmlCW": 1024,
+     "bodySW": 1024,
+     "bodyCW": 1024
+    },
+    "ocr": {
+     "status": "NA"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  },
+  {
+   "viewport": 1440,
+   "theme": "dark",
+   "checks": {
+    "word-integrity": {
+     "status": "PASS",
+     "wrTotal": 13,
+     "ariaMissing": 0,
+     "ariaMismatch": 0,
+     "wordsNotAriaHidden": 0,
+     "gapFails": 0,
+     "textVsAriaMismatch": 0,
+     "samples": []
+    },
+    "contrast": {
+     "status": "PASS",
+     "states": [
+      {
+       "state": 0,
+       "total": 163,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 0.5,
+       "total": 181,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      },
+      {
+       "state": 1,
+       "total": 193,
+       "fails": 0,
+       "unknownSkipped": 0,
+       "gradientWarn": 3
+      }
+     ],
+     "samples": []
+    },
+    "collisions": {
+     "status": "PASS",
+     "leafCount": 168,
+     "overlapFails": 0,
+     "allowlisted": 0,
+     "edgeCrossings": 0,
+     "samples": []
+    },
+    "placeholders": {
+     "status": "PASS",
+     "matches": []
+    },
+    "overflow": {
+     "status": "PASS",
+     "htmlSW": 1440,
+     "htmlCW": 1440,
+     "bodySW": 1440,
+     "bodyCW": 1440
+    },
+    "ocr": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=ocr — §A6 wordmark rebuild owned by C3 (later cycle)"
+    },
+    "perf": {
+     "status": "BLOCKED",
+     "reason": "skipped via --skip=perf — deep perf harness owned by C2 (cycle 2)"
+    }
+   }
+  }
+ ],
+ "summary": {
+  "fails": 0,
+  "exit": 0
+ }
+}

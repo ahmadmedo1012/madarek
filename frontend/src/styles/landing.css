@@ -7112,76 +7112,167 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 /* ═════════════════════════════════════════════════════════════════════
-   R315 CYCLE-4 (c4-B) — THE PLATFORM BAND AS THE REFERENCE'S TOOL CANVAS
+   R318 §A5 (c3-plat) — THE PLATFORM BAND ON THE REFERENCE'S HAIRLINE GRID
    ═════════════════════════════════════════════════════════════════════
-   The re-verdicted judge (masked s04 pairs @1440×900) reads the
-   reference's platform band as a «multi-panel CAD/floor-plan interface
-   with a red-highlighted room» and ours as a «dashboard/card-grid
-   layout». This block re-composes the band's CHROME, never its flow:
+   The measured reference verdict (docs/redesign/r318/heron-platform.json,
+   1440×900): the platform section has NO h1 — its sheet column carries
+   the [01]/[02] mono labels (11.67px) + an h4-scale title (26.67px) and
+   a 13.33px muted sub; the columns are 361/601/464 with a full-height
+   1px hairline at x=968; the drawings sit ON PAPER (ink strokes + ONE
+   solid accent room, hairline cells); the tooltips live INSIDE their
+   raster frames. The R315 cycle-4 chrome put the plan on a wide
+   absolute panel under the band's left paper — the display-scale H1
+   ran under that panel's frame (§A5: 47,362px² of title×panel box
+   intersection at 1440, glyphs under the frame at x≈560) and the
+   wall-band rect's missing fill made the sheet read as a solid-black
+   slab (30.8% of the panel's pixels ≈ near-black).
 
-   · the band's wide inline-end paper (the constant strip left of the
-     90rem grid — measured 438–848px across the 992→1920 rungs) becomes
-     the CANVAS PANEL the two real-UI viewports ride on: hairline frame
-     + drafting corner ± marks + the toolbar ruler strip + the PLAN
-     VIEW (PlatformPlanArt — thick ink walls, hatched poché, the ONE
-     solid var(--accent) lecture hall, furniture guide-work, dimension
-     chains, door swings) + the ledger wireframe at the foot;
-   · each capture gains a mono VIEWPORT TAG over its top inline-start
-     corner (VIEW-A/B — the CAD viewport label) + registration ticks at
-     its stage corners.
+   This block re-composes the band onto the reference's own grammar,
+   RTL-mirrored, on a 12-column hairline grid (usable 1386.7 @1440 →
+   115.6px/col; the reference's 361/601/464 scaled to our measure =
+   351/584.5/451.2 → the 3/5/4 column split 346.7/577.8/462.2):
 
-   THE LAW (cycle-3, binding): every element here is ABSOLUTELY
-   positioned inside the section's own stacking context, and the whole
-   layer is display:none below 992px — ZERO contribution to any
-   measured band height at every tier, zero change to the ≤991
-   compositions (the tablet strips / phone cell keep their own
-   verified seats). The flow (head · pr-grid · note) is untouched.
-   Colors/motion/type ride the tokens (var(--rule/--text/--accent)/
-   --warm-ink/--grid-line + the bp-* drafting classes); the Arabic
-   floor (13px) binds the one annotation note; the mono micro voice
-   carries every Latin chrome label, LTR.
+     · cols 1–3 (reading start) — THE SHEET (.pr-head): the [05] mono
+       label row + the h4-scale sheet-title (3.2rem = 26.67px @1440,
+       weight 600 — the reference's own h4 rung) + the muted sub, then
+       the DRAWING CELL (.pr-drawing — the plan ON the sheet's paper:
+       toolbar strip + plan view + annotation pin) filling the sheet's
+       remaining height inside the SAME hairline frame. The title can
+       no longer run under any frame: it seats INSIDE the sheet's own
+       frame with 16px padding on every side.
+     · cols 4–8 (.pr-grid lead) — the primary real-UI capture ≈ the
+       reference's 601px tool canvas;
+     · cols 9–12 (.pr-grid std) — the secondary capture ≈ the 464px
+       inspector column, with the .pr-note (the honest inspector text)
+       seated under it in row 2;
+     · the full-height 1px hairline rides the canvas|inspector boundary
+       (.pr-section::before at the 4-col line, x=488.9 @1440 — the
+       reference's x=968 mirrored to 479 within the grid's quantized
+       columns), and the sheet's own border carries the sheet|canvas
+       line (the reference's implicit x=367 grid).
+
+   THE LAW (cycle-3, still binding): the tier floors are untouched
+   (85.2rem ≥992 · 55.2rem 768–991 · the phone rungs) and the ≤991
+   compositions are unchanged — the drawing cell is display:none
+   there (it rides inside .pr-head, which is itself hidden on the
+   tablet strips and the 992–1024 slice), so every measured band
+   height and the docH ladder hold by construction. Colors/motion/type
+   ride the tokens (var(--rule/--text/--accent)/--warm-ink/
+   --grid-line + the bp-* drafting classes); the Arabic 13px floor
+   binds the honest copy; the mono micro voice carries every Latin
+   chrome label, LTR. The drawing cell, the mock cards and the chrome
+   stay aria-hidden decorative — the honest surfaces (title, lede,
+   captions, note) remain the accessible flow.
    ═════════════════════════════════════════════════════════════════════ */
 
-/* the layer is desktop-only: below 992 it renders NOTHING (kept out of
-   the flow at every smaller tier — display, not visibility) */
-.pr-canvas,
+/* the drawing cell is desktop-only: below 992 it renders NOTHING
+   (it rides inside .pr-head, hidden with it at every smaller tier —
+   display, not visibility) */
+.pr-drawing,
 .prf-viewtag {
   display: none;
 }
 
 @media (min-width: 992px) {
-  /* the band becomes the drafting sheet: the canvas paints UNDER the
-   * in-flow content (head · frames · note) inside the section's own
-   * stacking context — the negative z never escapes past .landing's
-   * paper (the section itself is the context) */
+  /* the band becomes the 12-col hairline grid; the section keeps its
+   * own stacking context for the full-height hairline under the flow */
   .pr-section {
     position: relative;
     z-index: 0;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 
-  .pr-canvas {
-    display: block;
+  /* the full-height hairline at the canvas|inspector boundary — the
+   * reference's x=968 line (1px, #B3B3AF, full 710px band), mirrored
+   * to the physical-left 4-col line of our RTL grid. Decorative. */
+  .pr-section::before {
+    content: '';
     position: absolute;
-    inset: 0;
     z-index: -1;
+    inset-block: 0;
+    inset-inline-end: calc(3.2rem + (100% - 6.4rem) * 4 / 12);
+    inline-size: 1px;
+    background: var(--rule);
     pointer-events: none;
   }
 
-  /* ── the canvas panel — the measured inline-end paper ───────────────
-   * The grid keeps its 90rem cap against the inline-start edge, so the
-   * paper strip is calc(100% − 6.4rem − 90rem − the sp-5 gutter) at
-   * every ≥992 rung (measured 438–848px, 992→1920); the 90rem cap
-   * holds the wild wide end. Transparent paper + the faint drafting
-   * grid keeps the film grain under the panel (the panel reads through
-   * its hairline frame + chrome, like the reference's thin panel
-   * borders, not a filled card). */
-  .pr-panel {
-    position: absolute;
-    inset-block: 3.84rem;
-    inset-inline-end: 3.2rem;
-    inline-size: min(calc(100% - 6.4rem - 90rem - var(--sp-5)), 90rem);
+  /* ── THE SHEET — the reference's 361px content column, mirrored to
+   * the reading-start edge. The head keeps its accessible flow text
+   * (label · title · sub) and carries the drawing cell as its 1fr
+   * row: everything sits INSIDE the sheet's hairline frame — the
+   * title's own padding (16px) clears the frame lines on every
+   * side, and the faint drafting grid is the sheet's paper ground.
+   * (No display here: the base .pr-head grids it, and the 992–1024
+   * slice's display:none keeps its last word.) */
+  .pr-head {
+    grid-column: 1 / span 3;
+    grid-row: 1 / span 2;
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    gap: var(--sp-2);
+    margin-block-end: 0;
+    padding: 1.92rem;
+    border: 1px solid var(--rule);
+    background-image:
+      repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px 2.4rem),
+      repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px 2.4rem);
+    background-position: center;
+  }
+
+  /* the h4-scale sheet-title — the reference's own rung (BT Grotesk
+   * 26.67px / 600 / lh 1): OUR honest wording at the reference's
+   * scale, seated inside the sheet's frame. */
+  .pr-title {
+    font-family: var(--font-display);
+    font-size: 3.2rem;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--text);
+  }
+
+  /* the muted sub — the reference's 13.33px sheet sub-copy */
+  .pr-lede {
+    max-inline-size: none;
+    font-size: var(--fs-sm);
+    line-height: 1.55;
+    color: var(--text-secondary);
+  }
+
+  /* the frames ride the canvas + inspector columns (5fr/4fr inside
+   * the 9-col region): the columns touch and the 1px hairline IS the
+   * boundary — the std's inline-start border, with its content
+   * padded clear of the line. */
+  .pr-grid {
+    grid-column: 4 / -1;
+    grid-row: 1;
+    max-inline-size: none;
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
+    gap: 0;
+  }
+
+  .pr-section .prf--std {
+    border-inline-start: 1px solid var(--rule);
+    padding-inline-start: 1.92rem;
+  }
+
+  /* the honest inspector text — row 2 under the std column (the
+   * reference's inspector row seats its sub under the column) */
+  .pr-note {
+    grid-column: 9 / -1;
+    grid-row: 2;
+    margin-block-start: 1.92rem;
+  }
+
+  /* ── THE DRAWING CELL — the plan ON the sheet's paper ───────────
+   * A hairline cell on the sheet's own paper (the faint drafting
+   * grid + the registration marks): the toolbar strip, the plan
+   * view, the annotation pin. The reference's raster frames carry
+   * their tool chrome INSIDE the frame — ours does the same. */
+  .pr-drawing {
     display: flex;
     flex-direction: column;
+    min-block-size: 0;
     border: 1px solid var(--rule);
     background-image:
       repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px 2.4rem),
@@ -7190,7 +7281,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   }
 
   /* the drafting corner ± marks (the .bp-plus grammar, centered on the
-   * panel's own corners — the reference's canvas crosshairs) */
+   * drawing cell's own corners — the reference's canvas crosshairs) */
   .pr-panel-mark {
     position: absolute;
     z-index: 2;
@@ -7205,10 +7296,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .pr-panel-mark--bl { inset-block-end: 0.24rem; inset-inline-start: 0.24rem; }
   .pr-panel-mark--br { inset-block-end: 0.24rem; inset-inline-end: 0.24rem; }
 
-  /* ── the toolbar strip — the reference's top ruler ───────────────────
-   * Tick marks on the .bp-ruler recipe (1px var(--rule) on an 8px
-   * pitch), a mono ± mark at each end, the sheet/scale label between
-   * the two tick runs. */
+  /* the toolbar strip — the drawing cell's top ruler */
   .pr-bar {
     display: flex;
     align-items: center;
@@ -7239,14 +7327,13 @@ html[data-theme='dark'] body.mdrk-grain::before {
     white-space: nowrap;
   }
 
-  /* ── the plan canvas ─────────────────────────────────────────────────
-   * The SVG fills the wrap and centres (xMidYMid meet — the drawing is
-   * never stretched); the annotation pin floats over the accent room. */
+  /* the plan canvas — the SVG fills the cell and centres (never
+   * stretched); the annotation pin floats over the accent room. */
   .pr-planwrap {
     position: relative;
     flex: 1;
     min-block-size: 0;
-    padding: 0.96rem 1.2rem;
+    padding: 0.48rem 0.72rem;
   }
 
   .prc-svg {
@@ -7356,64 +7443,11 @@ html[data-theme='dark'] body.mdrk-grain::before {
     background: var(--accent);
   }
 
-  /* ── the ledger strip — the reference's data-view wireframe ──────────
-   * The VIEW tabs name the two real viewports (the honest real-ui
-   * surfaces) + the demo-data disclosure echo; the hairline rows with
-   * square action ends carry the wireframe read. */
-  .pr-ledger {
-    display: grid;
-    gap: 0.48rem;
-    padding: 0.48rem 0.96rem 0.6rem;
-    border-block-start: 1px solid var(--rule);
-  }
-
-  .pr-ledger-tabs {
-    display: flex;
-    gap: 0.48rem;
-  }
-
-  .pr-ledger-tab {
-    padding: 0.2rem 0.6rem;
-    border: 1px solid var(--rule);
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--fs-mono-sm);
-    line-height: 1;
-    white-space: nowrap;
-  }
-
-  .pr-ledger-tab--on {
-    background: var(--text);
-    border-color: var(--text);
-    color: var(--bg);
-  }
-
-  .pr-ledger-rows {
-    display: grid;
-    gap: 0.4rem;
-  }
-
-  .pr-ledger-row {
-    position: relative;
-    block-size: 5px;
-    border-block-start: 1px solid var(--rule);
-  }
-
-  .pr-ledger-row::after {
-    content: '';
-    position: absolute;
-    inset-inline-end: 0;
-    inset-block-start: -3px;
-    inline-size: 5px;
-    block-size: 5px;
-    background: var(--text);
-  }
-
-  /* ── the viewports' own chrome ───────────────────────────────────────
+  /* ── the viewports' own chrome ───────────────────────────────────
    * VIEW-A/B — the mono viewport label over the capture's top
-   * inline-start corner (the dark strip grammar of the mock-card
-   * bars); the registration ticks escape the stage's corners onto the
-   * sheet paper (the .bp-dmark grammar, one seat out). */
+   * inline-start corner (the reference's raster frames carry their
+   * viewport labels inside the frame edge). The mock cards seat at
+   * the cell's other corners, clear of the label. */
   .pr-section .prf-viewtag {
     display: block;
     position: absolute;
@@ -7433,29 +7467,6 @@ html[data-theme='dark'] body.mdrk-grain::before {
     background: var(--bg);
     color: var(--text);
     border-block-end: 1px solid var(--rule);
-  }
-
-  .pr-section .prf-stage::before,
-  .pr-section .prf-stage::after {
-    content: '';
-    position: absolute;
-    inline-size: 12px;
-    block-size: 12px;
-    pointer-events: none;
-  }
-
-  .pr-section .prf-stage::before {
-    inset-block-start: -6px;
-    inset-inline-start: -6px;
-    border-block-start: 1px solid var(--rule-strong);
-    border-inline-start: 1px solid var(--rule-strong);
-  }
-
-  .pr-section .prf-stage::after {
-    inset-block-end: -6px;
-    inset-inline-end: -6px;
-    border-block-end: 1px solid var(--rule-strong);
-    border-inline-end: 1px solid var(--rule-strong);
   }
 }
 

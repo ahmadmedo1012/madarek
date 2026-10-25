@@ -1076,13 +1076,19 @@ export default function LandingPage() {
             disclosure on every frame; the CTA scrolls to the conversion
             row (the funnel counts stay exact — no extra auth links
             on the sheet).
-            R315 cycle-4 (c4-B): the band re-composed as the reference's
-            TOOL CANVAS — the wide inline-end paper becomes the drafting
-            panel (plan view + toolbar + ledger, aria-hidden chrome) the
-            viewports ride on. The flow (head · frames · note) is
-            byte-identical — the measured band heights cannot move. ═══ */}
+            R318 §A5 (c3-plat): the band re-composed onto the reference's
+            measured 12-col hairline grammar (361/601/464, RTL-mirrored
+            flow): the SHEET (.pr-head — [05] mono label + h4-scale
+            sheet-title + the muted sub, the drawing ON the same paper
+            inside the sheet's hairline frame) at the reading-start
+            edge; the lead frame ≈ the 601 tool canvas; the std frame ≈
+            the 464 inspector column with the note under it; the
+            full-height hairline rides the canvas|inspector boundary
+            (the reference's x=968, mirrored). No h1-class text runs
+            under any frame — the title seats INSIDE the sheet's frame.
+            The flow (head · frames · note) keeps the tier floors: the
+            ≥992 min-block-size rungs are untouched. ═══ */}
         <section id="product" className="pr-section" aria-labelledby="pr-title">
-          <PlatformCanvas />
           <div className="pr-head">
             <span className="fo-label"><span className="fo-mono" dir="ltr">[05]</span> المنصّة فعليًا</span>
             <RevealCssClass as="h2" className="pr-title" delay={1} id="pr-title">
@@ -1092,6 +1098,10 @@ export default function LandingPage() {
               لقطات حقيقية من بيئة العرض: بيانات تجريبية اصطناعية بالكامل داخل «جامعة مدارك التجريبية» —
               ما تراه هنا هو ما يعمل اليوم داخل المنصّة.
             </RevealCssClass>
+            {/* the sheet's drawing cell — the plan ON the sheet's paper
+                (aria-hidden decorative; hidden with the head at ≤991/992–1024,
+                the measured band floors are flow-identical at every tier) */}
+            <PlatformCanvas />
           </div>
 
           <RevealCssClass as="div" className="pr-grid" delay={2}>

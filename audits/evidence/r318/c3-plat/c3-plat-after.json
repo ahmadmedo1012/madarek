@@ -1,0 +1,719 @@
+{
+ "tag": "after",
+ "base": "http://localhost:4194",
+ "cells": {
+  "768": {
+   "vw": 768,
+   "vh": 1024,
+   "docH": 12627,
+   "section": {
+    "x": 0,
+    "y": 8386.9,
+    "vx": 0,
+    "vy": 7.9,
+    "w": 768,
+    "h": 508.3
+   },
+   "sectionFloor": "508.317px / pad 20px 16px",
+   "title": {
+    "x": 0,
+    "y": 8379,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "titleFs": "34.944px",
+   "head": {
+    "x": 0,
+    "y": 8379,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "lede": {
+    "x": 0,
+    "y": 8379,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "label": {
+    "x": 0,
+    "y": 8379,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "drawing": {
+    "x": 0,
+    "y": 8379,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "planwrap": {
+    "x": 0,
+    "y": 8379,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "pin": {
+    "x": 0,
+    "y": 8379,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "bar": {
+    "x": 0,
+    "y": 8379,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "titlePadInSheet": {
+    "l": 0,
+    "r": 0,
+    "t": 0,
+    "b": 0
+   },
+   "titleInsideSheet": false,
+   "titleXsheetRing": 0,
+   "titleXdrawing": 0,
+   "ledeXdrawing": 0,
+   "drawingXviewport": false,
+   "pinInsideDrawing": true,
+   "frames": [
+    {
+     "stage": {
+      "x": 24,
+      "y": 8407.9,
+      "vx": 24,
+      "vy": 28.9,
+      "w": 720,
+      "h": 138.1
+     },
+     "overflow": "clip",
+     "cards": [
+      {
+       "cls": "prf-card.prf-card--chat",
+       "rect": {
+        "x": 32,
+        "y": 8415.9,
+        "vx": 32,
+        "vy": 36.9,
+        "w": 168,
+        "h": 112
+       },
+       "insideFrame": true,
+       "framePad": {
+        "l": 8,
+        "t": 8,
+        "r": 544,
+        "b": 18.1
+       },
+       "viewportCross": false,
+       "text": "مساعد الفهم عرض توضيحي أهلاً — اسألني عن"
+      },
+      {
+       "cls": "prf-card.prf-card--mastery",
+       "rect": {
+        "x": 580,
+        "y": 8441.3,
+        "vx": 580,
+        "vy": 62.3,
+        "w": 156,
+        "h": 96.7
+       },
+       "insideFrame": true,
+       "framePad": {
+        "l": 556,
+        "t": 33.4,
+        "r": 8,
+        "b": 8
+       },
+       "viewportCross": false,
+       "text": "مصفوفة الإتقان عرض توضيحي المفهوم المهار"
+      }
+     ],
+     "viewtag": {
+      "x": 0,
+      "y": 8379,
+      "vx": 0,
+      "vy": 0,
+      "w": 0,
+      "h": 0
+     },
+     "fig": {
+      "x": 24,
+      "y": 8407.9,
+      "vx": 24,
+      "vy": 28.9,
+      "w": 720,
+      "h": 243.4
+     }
+    },
+    {
+     "stage": {
+      "x": 24,
+      "y": 8671.3,
+      "vx": 24,
+      "vy": 292.3,
+      "w": 720,
+      "h": 138.1
+     },
+     "overflow": "clip",
+     "cards": [
+      {
+       "cls": "prf-card.prf-card--chat",
+       "rect": {
+        "x": 32,
+        "y": 8691.5,
+        "vx": 32,
+        "vy": 312.5,
+        "w": 168,
+        "h": 110
+       },
+       "insideFrame": true,
+       "framePad": {
+        "l": 8,
+        "t": 20.2,
+        "r": 544,
+        "b": 7.9
+       },
+       "viewportCross": false,
+       "text": "مساعد الفهم عرض توضيحي أهلاً — اسألني عن"
+      }
+     ],
+     "viewtag": {
+      "x": 0,
+      "y": 8379,
+      "vx": 0,
+      "vy": 0,
+      "w": 0,
+      "h": 0
+     },
+     "fig": {
+      "x": 24,
+      "y": 8671.3,
+      "vx": 24,
+      "vy": 292.3,
+      "w": 720,
+      "h": 194
+     }
+    }
+   ],
+   "pairwise": [],
+   "etab": null,
+   "grid": {
+    "x": 24,
+    "y": 8407.9,
+    "vx": 24,
+    "vy": 28.9,
+    "w": 720,
+    "h": 457.4
+   },
+   "note": {
+    "x": 0,
+    "y": 8379,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "shot": "/home/z/foreman/c3-plat-after-shots/platform-768-after.jpg",
+   "shotKB": 37.2
+  },
+  "1024": {
+   "vw": 1024,
+   "vh": 768,
+   "docH": 9959,
+   "section": {
+    "x": 0,
+    "y": 7200.6,
+    "vx": 0,
+    "vy": 7.6,
+    "w": 1024,
+    "h": 504.9
+   },
+   "sectionFloor": "504.889px / pad 22.7556px",
+   "title": {
+    "x": 0,
+    "y": 7193,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "titleFs": "18.963px",
+   "head": {
+    "x": 0,
+    "y": 7193,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "lede": {
+    "x": 0,
+    "y": 7193,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "label": {
+    "x": 0,
+    "y": 7193,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "drawing": {
+    "x": 0,
+    "y": 7193,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "planwrap": {
+    "x": 0,
+    "y": 7193,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "pin": {
+    "x": 0,
+    "y": 7193,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "bar": {
+    "x": 0,
+    "y": 7193,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "titlePadInSheet": {
+    "l": 0,
+    "r": 0,
+    "t": 0,
+    "b": 0
+   },
+   "titleInsideSheet": false,
+   "titleXsheetRing": 0,
+   "titleXdrawing": 0,
+   "ledeXdrawing": 0,
+   "drawingXviewport": false,
+   "pinInsideDrawing": true,
+   "frames": [
+    {
+     "stage": {
+      "x": 347.7,
+      "y": 7224.4,
+      "vx": 347.7,
+      "vy": 31.4,
+      "w": 410.9,
+      "h": 309.9
+     },
+     "overflow": "clip",
+     "cards": [
+      {
+       "cls": "prf-card.prf-card--chat",
+       "rect": {
+        "x": 355.7,
+        "y": 7232.4,
+        "vx": 355.7,
+        "vy": 39.4,
+        "w": 184,
+        "h": 112
+       },
+       "insideFrame": true,
+       "framePad": {
+        "l": 8,
+        "t": 8,
+        "r": 218.9,
+        "b": 189.9
+       },
+       "viewportCross": false,
+       "text": "مساعد الفهم عرض توضيحي أهلاً — اسألني عن"
+      },
+      {
+       "cls": "prf-card.prf-card--mastery",
+       "rect": {
+        "x": 355.7,
+        "y": 7429.6,
+        "vx": 355.7,
+        "vy": 236.6,
+        "w": 172,
+        "h": 96.7
+       },
+       "insideFrame": true,
+       "framePad": {
+        "l": 8,
+        "t": 205.2,
+        "r": 230.9,
+        "b": 8
+       },
+       "viewportCross": false,
+       "text": "مصفوفة الإتقان عرض توضيحي المفهوم المهار"
+      }
+     ],
+     "viewtag": {
+      "x": 347.7,
+      "y": 7224.4,
+      "vx": 347.7,
+      "vy": 31.4,
+      "w": 75.1,
+      "h": 10.6
+     },
+     "fig": {
+      "x": 347.7,
+      "y": 7224.4,
+      "vx": 347.7,
+      "vy": 31.4,
+      "w": 410.9,
+      "h": 458.4
+     }
+    },
+    {
+     "stage": {
+      "x": 19,
+      "y": 7224.4,
+      "vx": 19,
+      "vy": 31.4,
+      "w": 316.3,
+      "h": 288.3
+     },
+     "overflow": "clip",
+     "cards": [
+      {
+       "cls": "prf-card.prf-card--chat",
+       "rect": {
+        "x": 27,
+        "y": 7394.7,
+        "vx": 27,
+        "vy": 201.7,
+        "w": 168,
+        "h": 110
+       },
+       "insideFrame": true,
+       "framePad": {
+        "l": 8,
+        "t": 170.3,
+        "r": 140.3,
+        "b": 8
+       },
+       "viewportCross": false,
+       "text": "مساعد الفهم عرض توضيحي أهلاً — اسألني عن"
+      }
+     ],
+     "viewtag": {
+      "x": 19,
+      "y": 7224.4,
+      "vx": 19,
+      "vy": 31.4,
+      "w": 75.1,
+      "h": 10.6
+     },
+     "fig": {
+      "x": 19,
+      "y": 7224.4,
+      "vx": 19,
+      "vy": 31.4,
+      "w": 328.7,
+      "h": 458.4
+     }
+    }
+   ],
+   "pairwise": [],
+   "etab": null,
+   "grid": {
+    "x": 19,
+    "y": 7224.4,
+    "vx": 19,
+    "vy": 31.4,
+    "w": 739.6,
+    "h": 458.4
+   },
+   "note": {
+    "x": 0,
+    "y": 7193,
+    "vx": 0,
+    "vy": 0,
+    "w": 0,
+    "h": 0
+   },
+   "shot": "/home/z/foreman/c3-plat-after-shots/platform-1024-after.jpg",
+   "shotKB": 40
+  },
+  "1440": {
+   "vw": 1440,
+   "vh": 900,
+   "docH": 12340,
+   "section": {
+    "x": 0,
+    "y": 8653.1,
+    "vx": 0,
+    "vy": 8.1,
+    "w": 1440,
+    "h": 710
+   },
+   "sectionFloor": "710px / pad 32px",
+   "title": {
+    "x": 1083.7,
+    "y": 8732.5,
+    "vx": 1083.7,
+    "vy": 87.5,
+    "w": 312.7,
+    "h": 61.3
+   },
+   "titleFs": "26.6667px",
+   "head": {
+    "x": 1066.7,
+    "y": 8686.1,
+    "vx": 1066.7,
+    "vy": 41.1,
+    "w": 346.7,
+    "h": 645
+   },
+   "lede": {
+    "x": 1083.7,
+    "y": 8801.8,
+    "vx": 1083.7,
+    "vy": 156.8,
+    "w": 312.7,
+    "h": 62
+   },
+   "label": {
+    "x": 1083.7,
+    "y": 8703.1,
+    "vx": 1083.7,
+    "vy": 58.1,
+    "w": 312.7,
+    "h": 21.4
+   },
+   "drawing": {
+    "x": 1083.7,
+    "y": 8871.8,
+    "vx": 1083.7,
+    "vy": 226.8,
+    "w": 312.7,
+    "h": 442.3
+   },
+   "planwrap": {
+    "x": 1084.7,
+    "y": 8886.1,
+    "vx": 1084.7,
+    "vy": 241.1,
+    "w": 310.7,
+    "h": 427
+   },
+   "pin": {
+    "x": 1123.4,
+    "y": 9014.2,
+    "vx": 1123.4,
+    "vy": 369.2,
+    "w": 116.7,
+    "h": 84.4
+   },
+   "bar": {
+    "x": 1084.7,
+    "y": 8872.8,
+    "vx": 1084.7,
+    "vy": 227.8,
+    "w": 310.7,
+    "h": 13.3
+   },
+   "titlePadInSheet": {
+    "l": 17,
+    "r": 17,
+    "t": 46.4,
+    "b": 537.3
+   },
+   "titleInsideSheet": true,
+   "titleXsheetRing": 0,
+   "titleXdrawing": 0,
+   "ledeXdrawing": 0,
+   "drawingXviewport": false,
+   "pinInsideDrawing": true,
+   "frames": [
+    {
+     "stage": {
+      "x": 488.9,
+      "y": 8686.1,
+      "vx": 488.9,
+      "vy": 41.1,
+      "w": 577.8,
+      "h": 393.6
+     },
+     "overflow": "clip",
+     "cards": [
+      {
+       "cls": "prf-card.prf-card--attend",
+       "rect": {
+        "x": 934.7,
+        "y": 9028.8,
+        "vx": 934.7,
+        "vy": 383.8,
+        "w": 124,
+        "h": 42.9
+       },
+       "insideFrame": true,
+       "framePad": {
+        "l": 445.8,
+        "t": 342.7,
+        "r": 8,
+        "b": 8
+       },
+       "viewportCross": false,
+       "text": "عرض توضيحي الحضور تلقائي"
+      },
+      {
+       "cls": "prf-card.prf-card--chat",
+       "rect": {
+        "x": 496.9,
+        "y": 8694.1,
+        "vx": 496.9,
+        "vy": 49.1,
+        "w": 200,
+        "h": 112
+       },
+       "insideFrame": true,
+       "framePad": {
+        "l": 8,
+        "t": 8,
+        "r": 369.8,
+        "b": 273.6
+       },
+       "viewportCross": false,
+       "text": "مساعد الفهم عرض توضيحي أهلاً — اسألني عن"
+      },
+      {
+       "cls": "prf-card.prf-card--mastery",
+       "rect": {
+        "x": 496.9,
+        "y": 8975,
+        "vx": 496.9,
+        "vy": 330,
+        "w": 172,
+        "h": 96.7
+       },
+       "insideFrame": true,
+       "framePad": {
+        "l": 8,
+        "t": 288.9,
+        "r": 397.8,
+        "b": 8
+       },
+       "viewportCross": false,
+       "text": "مصفوفة الإتقان عرض توضيحي المفهوم المهار"
+      }
+     ],
+     "viewtag": {
+      "x": 488.9,
+      "y": 8686.1,
+      "vx": 488.9,
+      "vy": 41.1,
+      "w": 112,
+      "h": 15
+     },
+     "fig": {
+      "x": 488.9,
+      "y": 8686.1,
+      "vx": 488.9,
+      "vy": 41.1,
+      "w": 577.8,
+      "h": 522.7
+     }
+    },
+    {
+     "stage": {
+      "x": 26.7,
+      "y": 8686.1,
+      "vx": 26.7,
+      "vy": 41.1,
+      "w": 445.3,
+      "h": 360.2
+     },
+     "overflow": "clip",
+     "cards": [
+      {
+       "cls": "prf-card.prf-card--chat",
+       "rect": {
+        "x": 34.7,
+        "y": 8928.3,
+        "vx": 34.7,
+        "vy": 283.3,
+        "w": 168,
+        "h": 110
+       },
+       "insideFrame": true,
+       "framePad": {
+        "l": 8,
+        "t": 242.2,
+        "r": 269.3,
+        "b": 8
+       },
+       "viewportCross": false,
+       "text": "مساعد الفهم عرض توضيحي أهلاً — اسألني عن"
+      }
+     ],
+     "viewtag": {
+      "x": 26.7,
+      "y": 8686.1,
+      "vx": 26.7,
+      "vy": 41.1,
+      "w": 112,
+      "h": 15
+     },
+     "fig": {
+      "x": 26.7,
+      "y": 8686.1,
+      "vx": 26.7,
+      "vy": 41.1,
+      "w": 462.2,
+      "h": 522.7
+     }
+    }
+   ],
+   "pairwise": [],
+   "etab": null,
+   "grid": {
+    "x": 26.7,
+    "y": 8686.1,
+    "vx": 26.7,
+    "vy": 41.1,
+    "w": 1040,
+    "h": 522.7
+   },
+   "note": {
+    "x": 26.7,
+    "y": 9224.7,
+    "vx": 26.7,
+    "vy": 579.7,
+    "w": 462.2,
+    "h": 106.4
+   },
+   "shot": "/home/z/foreman/c3-plat-after-shots/platform-1440-after.jpg",
+   "shotKB": 100
+  }
+ }
+}
