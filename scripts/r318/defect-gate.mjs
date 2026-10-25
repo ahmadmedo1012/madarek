@@ -260,8 +260,14 @@ const COLLECT_MISC = () => ({
 });
 
 const SET_SCRUB = (p) => {
-  const jt = document.querySelector('.jt');
-  if (jt) jt.style.setProperty('--jt-p', String(p));
+  /* R318 c2-s1 follow-up: the driver publishes --jt-p on the pin root
+     (.jt-pin) — seed BOTH the track and the pin root so the seed always
+     wins the cascade (seeding only .jt left the statement box reading
+     the pin's own 0 and seeded box-model false hits @1440). */
+  for (const sel of ['.jt', '.jt-pin']) {
+    const el = document.querySelector(sel);
+    if (el) el.style.setProperty('--jt-p', String(p));
+  }
   for (const sel of ['.jt-intro', '.jt-intro-m']) {
     const el = document.querySelector(sel);
     if (el) el.dataset.on = 'on';
