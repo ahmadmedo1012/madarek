@@ -675,7 +675,16 @@
     font-size: var(--fs-xxs);
     font-weight: var(--fw-semibold);
     padding: var(--sp-1) var(--sp-3); /* r149 (R3-A2 R7): سلم الشارات 4/12 */
-    border-radius: var(--r-full);
+    /* R319 (C2-G2 · §C3): the shared badge joins the data-dense chip
+       grammar C1 landed for .nav-badge — square hairline cells in the
+       mono voice. radius 0 (was --r-full), 1px var(--rule) hairline,
+       --font-mono (Latin/digits ride Geist Mono; Arabic falls back to
+       the brand sans per the stack — the auth.css per-script recipe).
+       The soft family fills + deep inks are UNTOUCHED (contrast
+       ledger: badge-rarity-contrast pins hold). */
+    border-radius: 0; /* raw-css: permitted zero — the radius-0 chip ladder */
+    border: 1px solid var(--rule);
+    font-family: var(--font-mono);
     line-height: 1.4;
     background: var(--surface-3);
     color: var(--text-secondary);
@@ -746,10 +755,11 @@
       border-color var(--t-fast) var(--ease),
       transform var(--t-fast) var(--ease);
   }
-  .tab.on {
-    /* soft accent selection halo — interaction state, not elevation */
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent);
-  }
+  /* R319 (C2-G2 · §C3): the .tab.on soft accent selection halo is
+     RETIRED (the old `box-shadow: 0 0 0 4px accent 14%` wash) — the
+     active state is the 2px hairline underline alone (::after below:
+     ink on light, accent on dark — no pill, no wash, the Heron tab
+     grammar). */
   .tab:active {
     transform: scale(0.96);
   }
@@ -1827,6 +1837,39 @@
   }
   .state-title { font-family: var(--font-display); font-size: var(--type-headline-size-sm); color: var(--text); font-weight: var(--type-headline-weight); }
   .state-desc  { font-size: var(--type-label-size); color: var(--text-muted); max-inline-size: 42ch; }
+  /* R319 (C2-G2 · §C3): the HATCHED CELL — EmptyState's opt-in
+     variant="hatch" register. The drawing sheet marks an unfilled
+     region with a 45° hairline hatch inside a framed square (the
+     drafting placeholder — the reference's empty-cell convention) +
+     the mono `EMPTY CELL` micro-label (the instrument voice, Latin
+     chrome like the sheet code — aria-hidden in the markup; the
+     title/description keep the human Arabic copy). One gradient
+     tile, no motion: static texture, the RM belt has nothing to
+     collapse. Same 56px footprint as the default icon well (44px on
+     the ≤640 rung below). */
+  .state-hatch-cell {
+    inline-size: 56px;
+    block-size: 56px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 0; /* raw-css: permitted zero — the sheet-cell register */
+    background: repeating-linear-gradient(
+      45deg,
+      transparent 0 6px,        /* hatch pitch — the drafting-hatch rhythm, not a spacing rung */
+      var(--grid-line) 6px 7px
+    );
+    margin-block-end: var(--sp-2);
+  }
+  .state-hatch-label {
+    margin: 0;
+    margin-block-end: var(--sp-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.08em; /* Latin mono micro-label — the instrument track */
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-faint);
+  }
   /* r166b (E2 #6 — oversized empty states on phones): the desktop
      breathing (sp-9/sp-6 + sp-7 block + 56px well) measured 303px on
      /teacher/assignments at 390×844 (~36% of the viewport) and 375px
@@ -1838,6 +1881,7 @@
   @media (max-width: 640px) {
     .state { padding: var(--sp-6) var(--sp-4); }
     .state-icon { inline-size: 44px; block-size: 44px; }
+    .state-hatch-cell { inline-size: 44px; block-size: 44px; }
     .state-illustration { inline-size: 120px; block-size: 120px; }
     .state-illustration .illustration > svg { max-inline-size: 120px; max-block-size: 120px; }
   }

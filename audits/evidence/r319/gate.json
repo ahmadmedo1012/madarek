@@ -1,16 +1,20 @@
 {
- "generated": "2026-10-25T15:36:20.776Z",
- "baseUrl": "http://127.0.0.1:4215",
+ "generated": "2026-10-25T18:25:56.127Z",
+ "baseUrl": "http://127.0.0.1:4223",
  "routes": [
   "landing",
-  "student-dashboard"
+  "student-dashboard",
+  "teacher-dashboard",
+  "admin-dashboard",
+  "quality-dashboard",
+  "owner-dashboard"
  ],
  "viewports": [
   390,
   1440
  ],
- "quick": true,
- "maxElements": 60,
+ "quick": false,
+ "maxElements": 400,
  "cells": [
   {
    "route": "landing",
@@ -417,7 +421,7 @@
      "failCount": 0,
      "metric": 0,
      "allowlisted": 0,
-     "lines": 65,
+     "lines": 70,
      "rlmDateCount": 0,
      "samples": [],
      "numerals": {
@@ -446,16 +450,16 @@
      "samples": []
     },
     "material/frame": {
-     "status": "FAIL",
-     "metric": 1,
-     "count": 0,
-     "sample": "no .sheet-frame/.auth-frame on this route"
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
     },
     "material/grain": {
-     "status": "FAIL",
-     "metric": 1,
-     "count": 0,
-     "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
     },
     "material/mono-index": {
      "status": "PASS",
@@ -477,11 +481,11 @@
      "sample": ""
     },
     "material/chrome-radius": {
-     "status": "FAIL",
-     "offenders": 2,
+     "status": "PASS",
+     "offenders": 0,
      "swept": 14,
-     "metric": 2,
-     "sample": "2 rounded chrome sigs (e.g. button.topbar-search-toggle, button.topbar-notif)"
+     "metric": 0,
+     "sample": ""
     },
     "shell/bar-opaque": {
      "status": "PASS",
@@ -493,10 +497,10 @@
     },
     "shell/bar-bleed": {
      "status": "PASS",
-     "behindBarCount": 4,
+     "behindBarCount": 6,
      "barAlpha": 1,
      "metric": 0,
-     "sample": "4 behind bar, bar opaque — nothing visible through"
+     "sample": "6 behind bar, bar opaque — nothing visible through"
     },
     "shell/padding-reserve": {
      "status": "PASS",
@@ -506,10 +510,10 @@
       "content-inner": 128
      },
      "need": 85.9,
-     "bottomClear": true,
-     "bottomBehind": 0,
+     "bottomClear": false,
+     "bottomBehind": 2,
      "metric": 0,
-     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll clear"
+     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
     },
     "shell/drawer-clip": {
      "status": "PASS",
@@ -566,7 +570,7 @@
      "failCount": 0,
      "metric": 0,
      "allowlisted": 0,
-     "lines": 68,
+     "lines": 73,
      "rlmDateCount": 0,
      "samples": [],
      "numerals": {
@@ -595,16 +599,16 @@
      "samples": []
     },
     "material/frame": {
-     "status": "FAIL",
-     "metric": 1,
-     "count": 0,
-     "sample": "no .sheet-frame/.auth-frame on this route"
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
     },
     "material/grain": {
-     "status": "FAIL",
-     "metric": 1,
-     "count": 0,
-     "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
     },
     "material/mono-index": {
      "status": "PASS",
@@ -626,11 +630,11 @@
      "sample": ""
     },
     "material/chrome-radius": {
-     "status": "FAIL",
-     "offenders": 1,
+     "status": "PASS",
+     "offenders": 0,
      "swept": 48,
-     "metric": 1,
-     "sample": "1 rounded chrome sigs (e.g. button.topbar-notif)"
+     "metric": 0,
+     "sample": ""
     },
     "shell/bar-opaque": {
      "status": "NA",
@@ -693,7 +697,7 @@
      "failCount": 0,
      "metric": 0,
      "allowlisted": 0,
-     "lines": 65,
+     "lines": 70,
      "rlmDateCount": 0,
      "samples": [],
      "numerals": {
@@ -722,16 +726,16 @@
      "samples": []
     },
     "material/frame": {
-     "status": "FAIL",
-     "metric": 1,
-     "count": 0,
-     "sample": "no .sheet-frame/.auth-frame on this route"
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
     },
     "material/grain": {
-     "status": "FAIL",
-     "metric": 1,
-     "count": 0,
-     "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
     },
     "material/mono-index": {
      "status": "PASS",
@@ -753,11 +757,11 @@
      "sample": ""
     },
     "material/chrome-radius": {
-     "status": "FAIL",
-     "offenders": 2,
+     "status": "PASS",
+     "offenders": 0,
      "swept": 14,
-     "metric": 2,
-     "sample": "2 rounded chrome sigs (e.g. button.topbar-search-toggle, button.topbar-notif)"
+     "metric": 0,
+     "sample": ""
     },
     "shell/bar-opaque": {
      "status": "PASS",
@@ -769,10 +773,10 @@
     },
     "shell/bar-bleed": {
      "status": "PASS",
-     "behindBarCount": 4,
+     "behindBarCount": 6,
      "barAlpha": 1,
      "metric": 0,
-     "sample": "4 behind bar, bar opaque — nothing visible through"
+     "sample": "6 behind bar, bar opaque — nothing visible through"
     },
     "shell/padding-reserve": {
      "status": "PASS",
@@ -782,10 +786,10 @@
       "content-inner": 128
      },
      "need": 85.9,
-     "bottomClear": true,
-     "bottomBehind": 0,
+     "bottomClear": false,
+     "bottomBehind": 2,
      "metric": 0,
-     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll clear"
+     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
     },
     "shell/drawer-clip": {
      "status": "PASS",
@@ -842,7 +846,7 @@
      "failCount": 0,
      "metric": 0,
      "allowlisted": 0,
-     "lines": 68,
+     "lines": 73,
      "rlmDateCount": 0,
      "samples": [],
      "numerals": {
@@ -871,16 +875,16 @@
      "samples": []
     },
     "material/frame": {
-     "status": "FAIL",
-     "metric": 1,
-     "count": 0,
-     "sample": "no .sheet-frame/.auth-frame on this route"
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
     },
     "material/grain": {
-     "status": "FAIL",
-     "metric": 1,
-     "count": 0,
-     "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
     },
     "material/mono-index": {
      "status": "PASS",
@@ -902,11 +906,11 @@
      "sample": ""
     },
     "material/chrome-radius": {
-     "status": "FAIL",
-     "offenders": 1,
+     "status": "PASS",
+     "offenders": 0,
      "swept": 48,
-     "metric": 1,
-     "sample": "1 rounded chrome sigs (e.g. button.topbar-notif)"
+     "metric": 0,
+     "sample": ""
     },
     "shell/bar-opaque": {
      "status": "NA",
@@ -952,12 +956,2236 @@
      "budgetOverruns": 0
     }
    }
+  },
+  {
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 19,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 1,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 10,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "PASS",
+     "alpha": 1,
+     "bg": "rgb(246, 246, 238)",
+     "barHeight": 77.9,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-bleed": {
+     "status": "PASS",
+     "behindBarCount": 2,
+     "barAlpha": 1,
+     "metric": 0,
+     "sample": "2 behind bar, bar opaque — nothing visible through"
+    },
+    "shell/padding-reserve": {
+     "status": "PASS",
+     "padBottom": 128,
+     "pads": {
+      "content": 80,
+      "content-inner": 128
+     },
+     "need": 85.9,
+     "bottomClear": false,
+     "bottomBehind": 2,
+     "metric": 0,
+     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+    },
+    "shell/drawer-clip": {
+     "status": "PASS",
+     "scrollFits": "1213≤546",
+     "overflowY": "auto",
+     "lastLabel": "حسابي",
+     "lastLabelInside": true,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/scrim-palette": {
+     "status": "PASS",
+     "bg": "rgba(40, 40, 40, 0.58)",
+     "alpha": 0.58,
+     "oldGrey": false,
+     "metric": 0,
+     "sample": ""
+    },
+    "state-contrast": {
+     "status": "FAIL",
+     "failCount": 5,
+     "metric": 5,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "FAIL",
+       "failCount": 5,
+       "measured": 48,
+       "unknown": 0
+      },
+      {
+       "pass": "drawer-open",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 36,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [
+      "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] hover «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] active «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus-within «button.btn.primary.sm» 3.76:1 < 4.5:1"
+     ],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 19,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 2,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 31,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "FAIL",
+     "failCount": 8,
+     "metric": 8,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "FAIL",
+       "failCount": 8,
+       "measured": 72,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [
+      "[shell] rest «a.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] active «a.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] active «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus «a.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus-within «a.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus-within «button.btn.primary.sm» 3.76:1 < 4.5:1"
+     ],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 19,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 1,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 10,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "PASS",
+     "alpha": 1,
+     "bg": "rgb(40, 40, 40)",
+     "barHeight": 77.9,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-bleed": {
+     "status": "PASS",
+     "behindBarCount": 2,
+     "barAlpha": 1,
+     "metric": 0,
+     "sample": "2 behind bar, bar opaque — nothing visible through"
+    },
+    "shell/padding-reserve": {
+     "status": "PASS",
+     "padBottom": 128,
+     "pads": {
+      "content": 80,
+      "content-inner": 128
+     },
+     "need": 85.9,
+     "bottomClear": false,
+     "bottomBehind": 2,
+     "metric": 0,
+     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+    },
+    "shell/drawer-clip": {
+     "status": "PASS",
+     "scrollFits": "1213≤546",
+     "overflowY": "auto",
+     "lastLabel": "حسابي",
+     "lastLabelInside": true,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/scrim-palette": {
+     "status": "PASS",
+     "bg": "rgba(246, 248, 250, 0.92)",
+     "alpha": 0.92,
+     "oldGrey": false,
+     "metric": 0,
+     "sample": ""
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 48,
+       "unknown": 0
+      },
+      {
+       "pass": "drawer-open",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 36,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 19,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 2,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 31,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 72,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 20,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 1,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 11,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "PASS",
+     "alpha": 1,
+     "bg": "rgb(246, 246, 238)",
+     "barHeight": 77.9,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-bleed": {
+     "status": "PASS",
+     "behindBarCount": 2,
+     "barAlpha": 1,
+     "metric": 0,
+     "sample": "2 behind bar, bar opaque — nothing visible through"
+    },
+    "shell/padding-reserve": {
+     "status": "PASS",
+     "padBottom": 128,
+     "pads": {
+      "content": 80,
+      "content-inner": 128,
+      "page": 80
+     },
+     "need": 85.9,
+     "bottomClear": false,
+     "bottomBehind": 2,
+     "metric": 0,
+     "sample": "pad 128px (content:80/content-inner:128/page:80) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+    },
+    "shell/drawer-clip": {
+     "status": "PASS",
+     "scrollFits": "698≤546",
+     "overflowY": "auto",
+     "lastLabel": "النظام",
+     "lastLabelInside": true,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/scrim-palette": {
+     "status": "PASS",
+     "bg": "rgba(40, 40, 40, 0.58)",
+     "alpha": 0.58,
+     "oldGrey": false,
+     "metric": 0,
+     "sample": ""
+    },
+    "state-contrast": {
+     "status": "FAIL",
+     "failCount": 5,
+     "metric": 5,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "FAIL",
+       "failCount": 5,
+       "measured": 48,
+       "unknown": 0
+      },
+      {
+       "pass": "drawer-open",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 42,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [
+      "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] hover «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] active «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus-within «button.btn.primary.sm» 3.76:1 < 4.5:1"
+     ],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 19,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 2,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 22,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "FAIL",
+     "failCount": 4,
+     "metric": 4,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "FAIL",
+       "failCount": 4,
+       "measured": 66,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [
+      "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] active «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus-within «button.btn.primary.sm» 3.76:1 < 4.5:1"
+     ],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 20,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 1,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 11,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "PASS",
+     "alpha": 1,
+     "bg": "rgb(40, 40, 40)",
+     "barHeight": 77.9,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-bleed": {
+     "status": "PASS",
+     "behindBarCount": 2,
+     "barAlpha": 1,
+     "metric": 0,
+     "sample": "2 behind bar, bar opaque — nothing visible through"
+    },
+    "shell/padding-reserve": {
+     "status": "PASS",
+     "padBottom": 128,
+     "pads": {
+      "content": 80,
+      "content-inner": 128,
+      "page": 80
+     },
+     "need": 85.9,
+     "bottomClear": false,
+     "bottomBehind": 2,
+     "metric": 0,
+     "sample": "pad 128px (content:80/content-inner:128/page:80) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+    },
+    "shell/drawer-clip": {
+     "status": "PASS",
+     "scrollFits": "698≤546",
+     "overflowY": "auto",
+     "lastLabel": "النظام",
+     "lastLabelInside": true,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/scrim-palette": {
+     "status": "PASS",
+     "bg": "rgba(246, 248, 250, 0.92)",
+     "alpha": 0.92,
+     "oldGrey": false,
+     "metric": 0,
+     "sample": ""
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 48,
+       "unknown": 0
+      },
+      {
+       "pass": "drawer-open",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 42,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 19,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 2,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 22,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 66,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 22,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 1,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 10,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "PASS",
+     "alpha": 1,
+     "bg": "rgb(246, 246, 238)",
+     "barHeight": 77.9,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-bleed": {
+     "status": "PASS",
+     "behindBarCount": 2,
+     "barAlpha": 1,
+     "metric": 0,
+     "sample": "2 behind bar, bar opaque — nothing visible through"
+    },
+    "shell/padding-reserve": {
+     "status": "PASS",
+     "padBottom": 128,
+     "pads": {
+      "content": 80,
+      "content-inner": 128,
+      "page": 80
+     },
+     "need": 85.9,
+     "bottomClear": false,
+     "bottomBehind": 2,
+     "metric": 0,
+     "sample": "pad 128px (content:80/content-inner:128/page:80) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+    },
+    "shell/drawer-clip": {
+     "status": "PASS",
+     "scrollFits": "652≤546",
+     "overflowY": "auto",
+     "lastLabel": "المراجعة والتقارير",
+     "lastLabelInside": true,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/scrim-palette": {
+     "status": "PASS",
+     "bg": "rgba(40, 40, 40, 0.58)",
+     "alpha": 0.58,
+     "oldGrey": false,
+     "metric": 0,
+     "sample": ""
+    },
+    "state-contrast": {
+     "status": "FAIL",
+     "failCount": 5,
+     "metric": 5,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "FAIL",
+       "failCount": 5,
+       "measured": 48,
+       "unknown": 0
+      },
+      {
+       "pass": "drawer-open",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 42,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [
+      "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] hover «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] active «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus-within «button.btn.primary.sm» 3.76:1 < 4.5:1"
+     ],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 21,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 2,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 20,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "FAIL",
+     "failCount": 4,
+     "metric": 4,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "FAIL",
+       "failCount": 4,
+       "measured": 66,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [
+      "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] active «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus-within «button.btn.primary.sm» 3.76:1 < 4.5:1"
+     ],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 22,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 1,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 10,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "PASS",
+     "alpha": 1,
+     "bg": "rgb(40, 40, 40)",
+     "barHeight": 77.9,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-bleed": {
+     "status": "PASS",
+     "behindBarCount": 2,
+     "barAlpha": 1,
+     "metric": 0,
+     "sample": "2 behind bar, bar opaque — nothing visible through"
+    },
+    "shell/padding-reserve": {
+     "status": "PASS",
+     "padBottom": 128,
+     "pads": {
+      "content": 80,
+      "content-inner": 128,
+      "page": 80
+     },
+     "need": 85.9,
+     "bottomClear": false,
+     "bottomBehind": 2,
+     "metric": 0,
+     "sample": "pad 128px (content:80/content-inner:128/page:80) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+    },
+    "shell/drawer-clip": {
+     "status": "PASS",
+     "scrollFits": "652≤546",
+     "overflowY": "auto",
+     "lastLabel": "المراجعة والتقارير",
+     "lastLabelInside": true,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/scrim-palette": {
+     "status": "PASS",
+     "bg": "rgba(246, 248, 250, 0.92)",
+     "alpha": 0.92,
+     "oldGrey": false,
+     "metric": 0,
+     "sample": ""
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 48,
+       "unknown": 0
+      },
+      {
+       "pass": "drawer-open",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 42,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 21,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 2,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 20,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 66,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 19,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 1,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 10,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "PASS",
+     "alpha": 1,
+     "bg": "rgb(246, 246, 238)",
+     "barHeight": 77.9,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-bleed": {
+     "status": "PASS",
+     "behindBarCount": 2,
+     "barAlpha": 1,
+     "metric": 0,
+     "sample": "2 behind bar, bar opaque — nothing visible through"
+    },
+    "shell/padding-reserve": {
+     "status": "PASS",
+     "padBottom": 128,
+     "pads": {
+      "content": 80,
+      "content-inner": 128
+     },
+     "need": 85.9,
+     "bottomClear": false,
+     "bottomBehind": 2,
+     "metric": 0,
+     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+    },
+    "shell/drawer-clip": {
+     "status": "PASS",
+     "scrollFits": "794≤546",
+     "overflowY": "auto",
+     "lastLabel": "المراقبة والتحليل",
+     "lastLabelInside": true,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/scrim-palette": {
+     "status": "PASS",
+     "bg": "rgba(40, 40, 40, 0.58)",
+     "alpha": 0.58,
+     "oldGrey": false,
+     "metric": 0,
+     "sample": ""
+    },
+    "state-contrast": {
+     "status": "FAIL",
+     "failCount": 5,
+     "metric": 5,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "FAIL",
+       "failCount": 5,
+       "measured": 48,
+       "unknown": 0
+      },
+      {
+       "pass": "drawer-open",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 42,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [
+      "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] hover «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] active «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus-within «button.btn.primary.sm» 3.76:1 < 4.5:1"
+     ],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 19,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 2,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 23,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "FAIL",
+     "failCount": 8,
+     "metric": 8,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "FAIL",
+       "failCount": 8,
+       "measured": 72,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [
+      "[shell] rest «a.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] active «a.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] active «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus «a.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus «button.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus-within «a.btn.primary.sm» 3.76:1 < 4.5:1",
+      "[shell] focus-within «button.btn.primary.sm» 3.76:1 < 4.5:1"
+     ],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 19,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 1,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 10,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "PASS",
+     "alpha": 1,
+     "bg": "rgb(40, 40, 40)",
+     "barHeight": 77.9,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-bleed": {
+     "status": "PASS",
+     "behindBarCount": 2,
+     "barAlpha": 1,
+     "metric": 0,
+     "sample": "2 behind bar, bar opaque — nothing visible through"
+    },
+    "shell/padding-reserve": {
+     "status": "PASS",
+     "padBottom": 128,
+     "pads": {
+      "content": 80,
+      "content-inner": 128
+     },
+     "need": 85.9,
+     "bottomClear": false,
+     "bottomBehind": 2,
+     "metric": 0,
+     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+    },
+    "shell/drawer-clip": {
+     "status": "PASS",
+     "scrollFits": "794≤546",
+     "overflowY": "auto",
+     "lastLabel": "المراقبة والتحليل",
+     "lastLabelInside": true,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/scrim-palette": {
+     "status": "PASS",
+     "bg": "rgba(246, 248, 250, 0.92)",
+     "alpha": 0.92,
+     "oldGrey": false,
+     "metric": 0,
+     "sample": ""
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 48,
+       "unknown": 0
+      },
+      {
+       "pass": "drawer-open",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 42,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
+  },
+  {
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "authed": true,
+   "checks": {
+    "leaks/hard": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "allowlisted": 0,
+     "lines": 19,
+     "rlmDateCount": 0,
+     "samples": [],
+     "numerals": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     },
+     "bidi": {
+      "status": "PASS",
+      "count": 0,
+      "metric": 0,
+      "samples": []
+     }
+    },
+    "leaks/numerals": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "leaks/bidi": {
+     "status": "PASS",
+     "count": 0,
+     "metric": 0,
+     "samples": []
+    },
+    "material/frame": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+    },
+    "material/grain": {
+     "status": "PASS",
+     "metric": 0,
+     "count": 1,
+     "sample": "sheet-grain"
+    },
+    "material/mono-index": {
+     "status": "PASS",
+     "count": 1,
+     "metric": 0,
+     "sample": "1 mono labels (e.g. font-mono)"
+    },
+    "material/indicator": {
+     "status": "FAIL",
+     "count": 0,
+     "metric": 1,
+     "sample": "no progress/gauge/chip/meter element"
+    },
+    "material/avatar-square": {
+     "status": "PASS",
+     "avatars": 2,
+     "round": 0,
+     "metric": 0,
+     "sample": ""
+    },
+    "material/chrome-radius": {
+     "status": "PASS",
+     "offenders": 0,
+     "swept": 23,
+     "metric": 0,
+     "sample": ""
+    },
+    "shell/bar-opaque": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/bar-bleed": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/padding-reserve": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/drawer-clip": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "shell/scrim-palette": {
+     "status": "NA",
+     "reason": "shell geometry measured @390 touch context only (§E-11)",
+     "metric": 0
+    },
+    "state-contrast": {
+     "status": "PASS",
+     "failCount": 0,
+     "metric": 0,
+     "passes": [
+      {
+       "pass": "shell",
+       "status": "PASS",
+       "failCount": 0,
+       "measured": 72,
+       "unknown": 0
+      }
+     ],
+     "gradientWarn": 0,
+     "unknown": 0,
+     "samples": [],
+     "budgetOverruns": 0
+    }
+   }
   }
  ],
  "paired": {
   "status": "PASS",
   "exitCode": 0,
-  "tail": "✓ paired-state lint PASS — 412 state rules scanned across 37 sheets; 139 XOR rule(s), all allowlisted with reasons; 0 fresh violations.",
+  "tail": "✓ paired-state lint PASS — 412 state rules scanned across 38 sheets; 139 XOR rule(s), all allowlisted with reasons; 0 fresh violations.",
   "metric": 0
  },
  "rows": [
@@ -1597,9 +3825,9 @@
    "viewport": 390,
    "theme": "light",
    "check": "material/frame",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "no .sheet-frame/.auth-frame on this route"
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
   },
   {
    "key": "student-dashboard|390|light|material/grain",
@@ -1607,9 +3835,9 @@
    "viewport": 390,
    "theme": "light",
    "check": "material/grain",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
   },
   {
    "key": "student-dashboard|390|light|material/mono-index",
@@ -1647,9 +3875,9 @@
    "viewport": 390,
    "theme": "light",
    "check": "material/chrome-radius",
-   "status": "FAIL",
-   "metric": 2,
-   "sample": "2 rounded chrome sigs (e.g. button.topbar-search-toggle, button.topbar-notif)"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
   },
   {
    "key": "student-dashboard|390|light|shell/bar-opaque",
@@ -1669,7 +3897,7 @@
    "check": "shell/bar-bleed",
    "status": "PASS",
    "metric": 0,
-   "sample": "4 behind bar, bar opaque — nothing visible through"
+   "sample": "6 behind bar, bar opaque — nothing visible through"
   },
   {
    "key": "student-dashboard|390|light|shell/padding-reserve",
@@ -1679,7 +3907,7 @@
    "check": "shell/padding-reserve",
    "status": "PASS",
    "metric": 0,
-   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll clear"
+   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
   },
   {
    "key": "student-dashboard|390|light|shell/drawer-clip",
@@ -1747,9 +3975,9 @@
    "viewport": 1440,
    "theme": "light",
    "check": "material/frame",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "no .sheet-frame/.auth-frame on this route"
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
   },
   {
    "key": "student-dashboard|1440|light|material/grain",
@@ -1757,9 +3985,9 @@
    "viewport": 1440,
    "theme": "light",
    "check": "material/grain",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
   },
   {
    "key": "student-dashboard|1440|light|material/mono-index",
@@ -1797,9 +4025,9 @@
    "viewport": 1440,
    "theme": "light",
    "check": "material/chrome-radius",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "1 rounded chrome sigs (e.g. button.topbar-notif)"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
   },
   {
    "key": "student-dashboard|1440|light|shell/bar-opaque",
@@ -1897,9 +4125,9 @@
    "viewport": 390,
    "theme": "dark",
    "check": "material/frame",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "no .sheet-frame/.auth-frame on this route"
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
   },
   {
    "key": "student-dashboard|390|dark|material/grain",
@@ -1907,9 +4135,9 @@
    "viewport": 390,
    "theme": "dark",
    "check": "material/grain",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
   },
   {
    "key": "student-dashboard|390|dark|material/mono-index",
@@ -1947,9 +4175,9 @@
    "viewport": 390,
    "theme": "dark",
    "check": "material/chrome-radius",
-   "status": "FAIL",
-   "metric": 2,
-   "sample": "2 rounded chrome sigs (e.g. button.topbar-search-toggle, button.topbar-notif)"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
   },
   {
    "key": "student-dashboard|390|dark|shell/bar-opaque",
@@ -1969,7 +4197,7 @@
    "check": "shell/bar-bleed",
    "status": "PASS",
    "metric": 0,
-   "sample": "4 behind bar, bar opaque — nothing visible through"
+   "sample": "6 behind bar, bar opaque — nothing visible through"
   },
   {
    "key": "student-dashboard|390|dark|shell/padding-reserve",
@@ -1979,7 +4207,7 @@
    "check": "shell/padding-reserve",
    "status": "PASS",
    "metric": 0,
-   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll clear"
+   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
   },
   {
    "key": "student-dashboard|390|dark|shell/drawer-clip",
@@ -2047,9 +4275,9 @@
    "viewport": 1440,
    "theme": "dark",
    "check": "material/frame",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "no .sheet-frame/.auth-frame on this route"
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
   },
   {
    "key": "student-dashboard|1440|dark|material/grain",
@@ -2057,9 +4285,9 @@
    "viewport": 1440,
    "theme": "dark",
    "check": "material/grain",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "no grain layer (no body.mdrk-grain / [class*=grain])"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
   },
   {
    "key": "student-dashboard|1440|dark|material/mono-index",
@@ -2097,9 +4325,9 @@
    "viewport": 1440,
    "theme": "dark",
    "check": "material/chrome-radius",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "1 rounded chrome sigs (e.g. button.topbar-notif)"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
   },
   {
    "key": "student-dashboard|1440|dark|shell/bar-opaque",
@@ -2162,6 +4390,2406 @@
    "sample": "—"
   },
   {
+   "key": "teacher-dashboard|390|light|leaks/hard",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|light|leaks/numerals",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|light|leaks/bidi",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|light|material/frame",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "teacher-dashboard|390|light|material/grain",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "teacher-dashboard|390|light|material/mono-index",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "teacher-dashboard|390|light|material/indicator",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "teacher-dashboard|390|light|material/avatar-square",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|light|material/chrome-radius",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|light|shell/bar-opaque",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/bar-opaque",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|light|shell/bar-bleed",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/bar-bleed",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "2 behind bar, bar opaque — nothing visible through"
+  },
+  {
+   "key": "teacher-dashboard|390|light|shell/padding-reserve",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/padding-reserve",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+  },
+  {
+   "key": "teacher-dashboard|390|light|shell/drawer-clip",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/drawer-clip",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|light|shell/scrim-palette",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/scrim-palette",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|light|state-contrast",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "FAIL",
+   "metric": 5,
+   "sample": "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|leaks/hard",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|leaks/numerals",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|leaks/bidi",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|material/frame",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|material/grain",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|material/mono-index",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|material/indicator",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|material/avatar-square",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|material/chrome-radius",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|shell/bar-opaque",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|shell/bar-bleed",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|shell/padding-reserve",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|shell/drawer-clip",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|shell/scrim-palette",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "teacher-dashboard|1440|light|state-contrast",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "FAIL",
+   "metric": 8,
+   "sample": "[shell] rest «a.btn.primary.sm» 3.76:1 < 4.5:1"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|leaks/hard",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|leaks/numerals",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|leaks/bidi",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|material/frame",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|material/grain",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|material/mono-index",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|material/indicator",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|material/avatar-square",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|material/chrome-radius",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|shell/bar-opaque",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/bar-opaque",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|shell/bar-bleed",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/bar-bleed",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "2 behind bar, bar opaque — nothing visible through"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|shell/padding-reserve",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/padding-reserve",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|shell/drawer-clip",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/drawer-clip",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|shell/scrim-palette",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/scrim-palette",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|390|dark|state-contrast",
+   "route": "teacher-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|leaks/hard",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|leaks/numerals",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|leaks/bidi",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|material/frame",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|material/grain",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|material/mono-index",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|material/indicator",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|material/avatar-square",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|material/chrome-radius",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|shell/bar-opaque",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|shell/bar-bleed",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|shell/padding-reserve",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|shell/drawer-clip",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|shell/scrim-palette",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "teacher-dashboard|1440|dark|state-contrast",
+   "route": "teacher-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|light|leaks/hard",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|light|leaks/numerals",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|light|leaks/bidi",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|light|material/frame",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "admin-dashboard|390|light|material/grain",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "admin-dashboard|390|light|material/mono-index",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "admin-dashboard|390|light|material/indicator",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "admin-dashboard|390|light|material/avatar-square",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|light|material/chrome-radius",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|light|shell/bar-opaque",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/bar-opaque",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|light|shell/bar-bleed",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/bar-bleed",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "2 behind bar, bar opaque — nothing visible through"
+  },
+  {
+   "key": "admin-dashboard|390|light|shell/padding-reserve",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/padding-reserve",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "pad 128px (content:80/content-inner:128/page:80) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+  },
+  {
+   "key": "admin-dashboard|390|light|shell/drawer-clip",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/drawer-clip",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|light|shell/scrim-palette",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/scrim-palette",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|light|state-contrast",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "FAIL",
+   "metric": 5,
+   "sample": "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1"
+  },
+  {
+   "key": "admin-dashboard|1440|light|leaks/hard",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|1440|light|leaks/numerals",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|1440|light|leaks/bidi",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|1440|light|material/frame",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "admin-dashboard|1440|light|material/grain",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "admin-dashboard|1440|light|material/mono-index",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "admin-dashboard|1440|light|material/indicator",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "admin-dashboard|1440|light|material/avatar-square",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|1440|light|material/chrome-radius",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|1440|light|shell/bar-opaque",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "admin-dashboard|1440|light|shell/bar-bleed",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "admin-dashboard|1440|light|shell/padding-reserve",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "admin-dashboard|1440|light|shell/drawer-clip",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "admin-dashboard|1440|light|shell/scrim-palette",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "admin-dashboard|1440|light|state-contrast",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "FAIL",
+   "metric": 4,
+   "sample": "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1"
+  },
+  {
+   "key": "admin-dashboard|390|dark|leaks/hard",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|dark|leaks/numerals",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|dark|leaks/bidi",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|dark|material/frame",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "admin-dashboard|390|dark|material/grain",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "admin-dashboard|390|dark|material/mono-index",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "admin-dashboard|390|dark|material/indicator",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "admin-dashboard|390|dark|material/avatar-square",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|dark|material/chrome-radius",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|dark|shell/bar-opaque",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/bar-opaque",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|dark|shell/bar-bleed",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/bar-bleed",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "2 behind bar, bar opaque — nothing visible through"
+  },
+  {
+   "key": "admin-dashboard|390|dark|shell/padding-reserve",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/padding-reserve",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "pad 128px (content:80/content-inner:128/page:80) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+  },
+  {
+   "key": "admin-dashboard|390|dark|shell/drawer-clip",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/drawer-clip",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|dark|shell/scrim-palette",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/scrim-palette",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|390|dark|state-contrast",
+   "route": "admin-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|leaks/hard",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|leaks/numerals",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|leaks/bidi",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|material/frame",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|material/grain",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|material/mono-index",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|material/indicator",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|material/avatar-square",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|material/chrome-radius",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|shell/bar-opaque",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|shell/bar-bleed",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|shell/padding-reserve",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|shell/drawer-clip",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|shell/scrim-palette",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "admin-dashboard|1440|dark|state-contrast",
+   "route": "admin-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|light|leaks/hard",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|light|leaks/numerals",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|light|leaks/bidi",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|light|material/frame",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "quality-dashboard|390|light|material/grain",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "quality-dashboard|390|light|material/mono-index",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "quality-dashboard|390|light|material/indicator",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "quality-dashboard|390|light|material/avatar-square",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|light|material/chrome-radius",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|light|shell/bar-opaque",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/bar-opaque",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|light|shell/bar-bleed",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/bar-bleed",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "2 behind bar, bar opaque — nothing visible through"
+  },
+  {
+   "key": "quality-dashboard|390|light|shell/padding-reserve",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/padding-reserve",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "pad 128px (content:80/content-inner:128/page:80) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+  },
+  {
+   "key": "quality-dashboard|390|light|shell/drawer-clip",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/drawer-clip",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|light|shell/scrim-palette",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/scrim-palette",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|light|state-contrast",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "FAIL",
+   "metric": 5,
+   "sample": "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1"
+  },
+  {
+   "key": "quality-dashboard|1440|light|leaks/hard",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|1440|light|leaks/numerals",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|1440|light|leaks/bidi",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|1440|light|material/frame",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "quality-dashboard|1440|light|material/grain",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "quality-dashboard|1440|light|material/mono-index",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "quality-dashboard|1440|light|material/indicator",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "quality-dashboard|1440|light|material/avatar-square",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|1440|light|material/chrome-radius",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|1440|light|shell/bar-opaque",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "quality-dashboard|1440|light|shell/bar-bleed",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "quality-dashboard|1440|light|shell/padding-reserve",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "quality-dashboard|1440|light|shell/drawer-clip",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "quality-dashboard|1440|light|shell/scrim-palette",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "quality-dashboard|1440|light|state-contrast",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "FAIL",
+   "metric": 4,
+   "sample": "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1"
+  },
+  {
+   "key": "quality-dashboard|390|dark|leaks/hard",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|dark|leaks/numerals",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|dark|leaks/bidi",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|dark|material/frame",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "quality-dashboard|390|dark|material/grain",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "quality-dashboard|390|dark|material/mono-index",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "quality-dashboard|390|dark|material/indicator",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "quality-dashboard|390|dark|material/avatar-square",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|dark|material/chrome-radius",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|dark|shell/bar-opaque",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/bar-opaque",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|dark|shell/bar-bleed",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/bar-bleed",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "2 behind bar, bar opaque — nothing visible through"
+  },
+  {
+   "key": "quality-dashboard|390|dark|shell/padding-reserve",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/padding-reserve",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "pad 128px (content:80/content-inner:128/page:80) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+  },
+  {
+   "key": "quality-dashboard|390|dark|shell/drawer-clip",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/drawer-clip",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|dark|shell/scrim-palette",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/scrim-palette",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|390|dark|state-contrast",
+   "route": "quality-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|leaks/hard",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|leaks/numerals",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|leaks/bidi",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|material/frame",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|material/grain",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|material/mono-index",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|material/indicator",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|material/avatar-square",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|material/chrome-radius",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|shell/bar-opaque",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|shell/bar-bleed",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|shell/padding-reserve",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|shell/drawer-clip",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|shell/scrim-palette",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "quality-dashboard|1440|dark|state-contrast",
+   "route": "quality-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|light|leaks/hard",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|light|leaks/numerals",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|light|leaks/bidi",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|light|material/frame",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "owner-dashboard|390|light|material/grain",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "owner-dashboard|390|light|material/mono-index",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "owner-dashboard|390|light|material/indicator",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "owner-dashboard|390|light|material/avatar-square",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|light|material/chrome-radius",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|light|shell/bar-opaque",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/bar-opaque",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|light|shell/bar-bleed",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/bar-bleed",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "2 behind bar, bar opaque — nothing visible through"
+  },
+  {
+   "key": "owner-dashboard|390|light|shell/padding-reserve",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/padding-reserve",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+  },
+  {
+   "key": "owner-dashboard|390|light|shell/drawer-clip",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/drawer-clip",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|light|shell/scrim-palette",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "shell/scrim-palette",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|light|state-contrast",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "FAIL",
+   "metric": 5,
+   "sample": "[shell] rest «button.btn.primary.sm» 3.76:1 < 4.5:1"
+  },
+  {
+   "key": "owner-dashboard|1440|light|leaks/hard",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|1440|light|leaks/numerals",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|1440|light|leaks/bidi",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|1440|light|material/frame",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "owner-dashboard|1440|light|material/grain",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "owner-dashboard|1440|light|material/mono-index",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "owner-dashboard|1440|light|material/indicator",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "owner-dashboard|1440|light|material/avatar-square",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|1440|light|material/chrome-radius",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|1440|light|shell/bar-opaque",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "owner-dashboard|1440|light|shell/bar-bleed",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "owner-dashboard|1440|light|shell/padding-reserve",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "owner-dashboard|1440|light|shell/drawer-clip",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "owner-dashboard|1440|light|shell/scrim-palette",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "owner-dashboard|1440|light|state-contrast",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "light",
+   "check": "state-contrast",
+   "status": "FAIL",
+   "metric": 8,
+   "sample": "[shell] rest «a.btn.primary.sm» 3.76:1 < 4.5:1"
+  },
+  {
+   "key": "owner-dashboard|390|dark|leaks/hard",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|dark|leaks/numerals",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|dark|leaks/bidi",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|dark|material/frame",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "owner-dashboard|390|dark|material/grain",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "owner-dashboard|390|dark|material/mono-index",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "owner-dashboard|390|dark|material/indicator",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "owner-dashboard|390|dark|material/avatar-square",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|dark|material/chrome-radius",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|dark|shell/bar-opaque",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/bar-opaque",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|dark|shell/bar-bleed",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/bar-bleed",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "2 behind bar, bar opaque — nothing visible through"
+  },
+  {
+   "key": "owner-dashboard|390|dark|shell/padding-reserve",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/padding-reserve",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+  },
+  {
+   "key": "owner-dashboard|390|dark|shell/drawer-clip",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/drawer-clip",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|dark|shell/scrim-palette",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "shell/scrim-palette",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|390|dark|state-contrast",
+   "route": "owner-dashboard",
+   "viewport": 390,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|leaks/hard",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/hard",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|leaks/numerals",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/numerals",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|leaks/bidi",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "leaks/bidi",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|material/frame",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/frame",
+   "status": "PASS",
+   "metric": 0,
+   "sample": ".sheet-frame fixed inset [7,7,7,7] — need fixed 7px"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|material/grain",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/grain",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "sheet-grain"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|material/mono-index",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/mono-index",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "1 mono labels (e.g. font-mono)"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|material/indicator",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/indicator",
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "no progress/gauge/chip/meter element"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|material/avatar-square",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/avatar-square",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|material/chrome-radius",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "material/chrome-radius",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|shell/bar-opaque",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/bar-opaque",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|shell/bar-bleed",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/bar-bleed",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|shell/padding-reserve",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/padding-reserve",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|shell/drawer-clip",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/drawer-clip",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|shell/scrim-palette",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "shell/scrim-palette",
+   "status": "NA",
+   "metric": 0,
+   "sample": "shell geometry measured @390 touch context only (§E-11)"
+  },
+  {
+   "key": "owner-dashboard|1440|dark|state-contrast",
+   "route": "owner-dashboard",
+   "viewport": 1440,
+   "theme": "dark",
+   "check": "state-contrast",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
+  },
+  {
    "key": "|—|—|paired",
    "route": "—",
    "viewport": "—",
@@ -2169,11 +6797,11 @@
    "check": "paired",
    "status": "PASS",
    "metric": 0,
-   "sample": "✓ paired-state lint PASS — 412 state rules scanned across 37 sheets; 139 XOR rule(s), all allowlisted with reasons; 0 fresh violations."
+   "sample": "✓ paired-state lint PASS — 412 state rules scanned across 38 sheets; 139 XOR rule(s), all allowlisted with reasons; 0 fresh violations."
   }
  ],
  "summary": {
-  "fails": 15,
+  "fails": 27,
   "warns": 0,
   "regressions": 0,
   "errorCells": 0,

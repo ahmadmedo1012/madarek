@@ -1,0 +1,187 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R319 shell sheet layer (C2-G2 · §C3 "the shared shell
+   first — it fixes ~80% of screens at once")
+   ─────────────────────────────────────────────────────────────────────
+   The AUTHENTICATED app joins the drawing-sheet system. The landing
+   (landing.css .sheet-frame + body.mdrk-grain::before) and the guest
+   doors (auth.css .auth-frame/.auth-grain via GuestSheetChrome) already
+   seat every public face on the Heron sheet; this layer carries the
+   same grammar through AppShell so every authed route renders on the
+   one reference sheet:
+
+     · the 7px sheet frame — a fixed 1px var(--border-strong) hairline
+       at the 7px viewport inset (the reference-measured frame
+       constant, identical at 1440/768/390) with the 10×10 mono corner
+       plus-marks (.sheet-frame/.sheet-mark — the gate's §E-12
+       material/frame contract);
+     · the paper grain — ONE fixed full-viewport film, the measured
+       256px multiply grain tile + the 24px dotted micro-grid, under
+       the flowing content (.sheet-grain — the gate's material/grain
+       contract);
+     · the page title bar — PageHeader's mono identity line
+       (.page-sheet-code `SHEET S-01 · STUDENT`) and gutter index
+       (.page-index `[01]`), the auth door's .auth-sheet-label register;
+     · the last rounded chrome — the topbar's bell/search toggle cells
+       join the radius-0 grammar (gate §E-12 material/chrome-radius).
+
+   CASCADE CONTRACT — same house precedent as r305-shell.css: this
+   sheet is imported ONLY by AppShell.tsx (right after r305-shell.css)
+   and is deliberately UNLAYERED — a normal unlayered declaration
+   outranks every @layer rule regardless of specificity, so these
+   refinements get the last word over polish.css/layout.css without
+   !important. No raw colors (tokens + the theme vars only), radii via
+   the collapsed --r-* ladder (all 0) or literal 0, no @keyframes —
+   the grain and the frame are STATIC texture (the reduced-motion belt
+   has nothing to collapse here).
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ═══ 1 · THE PAPER GRAIN — one film, shared source ══════════════════
+   The measured recipe (scripts/r314/grain-measure.json: tile std-dev
+   matched to ±0.03% light): a multiply film-grain over the paper
+   ground + the faint dotted micro-grid (24px cell). The light twin
+   multiplies; the dark twin rides plain alpha (its mean IS the
+   charcoal paper) — the landing's body.mdrk-grain::before and the
+   auth door's .auth-grain carry the identical pair.
+   HOIST NOTE: the tile URLs sit in custom properties HERE so this
+   cycle adds ONE shared source for the shell; landing.css/auth.css
+   still inline their own copies (not this agent's files — the dedupe
+   is a one-line follow-up for their owners). Raster-cheap by
+   construction: two repeated tiles, one element, no blend of flowing
+   content (the film sits UNDER it — §3's z-lift). */
+:root {
+  --mdrk-grain-image-light:
+    url('/media/textures/grain-tile-light.webp'),
+    url('/media/textures/micro-grid.svg');
+  --mdrk-grain-image-dark:
+    url('/media/textures/grain-tile-dark.webp'),
+    url('/media/textures/micro-grid.svg');
+  --mdrk-grain-tile: 256px, 24px;
+}
+
+.sheet-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 0; /* under the flowing content (§3), over the paper ground */
+  pointer-events: none;
+  background-image: var(--mdrk-grain-image-light);
+  background-size: var(--mdrk-grain-tile);
+  background-repeat: repeat, repeat;
+  mix-blend-mode: multiply;
+  opacity: 1;
+}
+
+html[data-theme='dark'] .sheet-grain {
+  background-image: var(--mdrk-grain-image-dark);
+  mix-blend-mode: normal;
+  opacity: 0.9;
+}
+
+/* ═══ 2 · THE SHEET FRAME — the 7px drafting edge ════════════════════
+   The landing's .sheet-frame grammar (fixed hairline at the 7px
+   inset; landing.css §R313-D9) + the auth door's corner plus-marks
+   (.auth-mark, auth.css §1b — the register my e2e pins). The frame
+   rides ABOVE the workspace bands (topbar included — the reference
+   draws its fixed .main-deco frame above every surface too; a frame
+   hidden behind the opaque topbar would read as a broken edge) and
+   BELOW every portaled overlay: 150 sits between the topbar/sidebar
+   chrome rung (--z-dropdown 100) and the popover rung (200) — drawer
+   (--z-sheet 300), modals (400) and toasts (500) all draw over it. */
+.sheet-frame {
+  --frame-inset: 7px; /* the reference's measured frame constant — not a spacing rung */
+  position: fixed;
+  inset: var(--frame-inset);
+  z-index: 150;
+  pointer-events: none;
+  border: 1px solid var(--border-strong);
+}
+
+/* the corner plus marks — the 10×10 drafting crosses in the mono
+   voice, centered ON the frame's corner points. PHYSICAL anchors
+   (top/left/right/bottom), not logical: a corner is a physical seat —
+   the auth.css .auth-mark note documents why logical inline anchors
+   drift one mark-width under RTL. */
+.sheet-mark {
+  position: absolute;
+  inline-size: 10px; /* the reference's 10×10 registration mark — measured chrome, not a spacing rung */
+  block-size: 10px;
+  display: grid;
+  place-items: center;
+  color: var(--border-strong);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1;
+}
+.sheet-mark-tl { top: 0; left: 0; translate: -50% -50%; }
+.sheet-mark-tr { top: 0; right: 0; translate: 50% -50%; }
+.sheet-mark-bl { bottom: 0; left: 0; translate: -50% 50%; }
+.sheet-mark-br { bottom: 0; right: 0; translate: 50% 50%; }
+
+/* ═══ 3 · THE Z-LIFT — content above the film ════════════════════════
+   .has-shell paints the workspace ground (layout.css); the grain film
+   is its FIRST positioned child at z 0, so the flowing workspace must
+   explicitly sit above the film — the same documented z-lift contract
+   the auth (auth.css §2: .auth-center z 1) and campus sheets own for
+   their content. Sidebar (sticky z-dropdown) and the bottom dock
+   (fixed z-dropdown) are already positioned above z 0. position:
+   relative is paint-only: .main is not a scroll container (the
+   .content child scrolls), and relative never re-parents fixed
+   descendants — only transform/filter ancestors do (the
+   GuestSheetChrome containment lesson). */
+.has-shell > .main {
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══ 4 · THE PAGE TITLE BAR — the sheet's identity line ═════════════
+   PageHeader (both families — primitives .page-header and patterns
+   .pf-page-header) opens with the sheet's mono registration line:
+   `SHEET S-01 · STUDENT`, the auth door's .auth-sheet-label register
+   verbatim (Latin run, dir=ltr, aria-hidden in the markup, the 1px
+   rule tick at the inline-start edge). The optional `[01]` gutter
+   index rides INSIDE the h1 in the same mono micro voice (aria-hidden
+   — the accessible name stays the title alone), the drawer gutter
+   index register (layout.css §R319-c1-A). */
+.page-sheet-code {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2-5);
+  margin: 0;
+  margin-block-end: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.08em; /* Latin mono micro-label — the instrument track (the .auth-sheet-label register) */
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+.page-sheet-code::before {
+  content: '';
+  inline-size: var(--sp-5);
+  block-size: 1px;
+  background: var(--rule-strong);
+}
+
+.page-index {
+  margin-inline-end: var(--sp-2-5);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0; /* zero tracking — the mono voice carries no spacing */
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+
+/* ═══ 5 · THE LAST ROUNDED CHROME — topbar cells go square ══════════
+   The bell (.topbar-notif, polish.css) and the mobile search toggle
+   (.topbar-search-toggle, layout.css) were the last --r-full circles
+   in the authed chrome (gate §E-12 material/chrome-radius offenders
+   on every role dashboard). They join the radius-0 cell grammar C1
+   landed for the drawer rows, the bottom dock and the avatar —
+   square hairline cells, no pill affordance. 36/44px hit boxes,
+   focus rings and the paired --_bg/--_fg state tokens are untouched
+   (only the corner changes). */
+.topbar-notif,
+.topbar-search-toggle {
+  border-radius: 0; /* raw-css: permitted zero — the radius-0 chrome ladder */
+}

@@ -57,6 +57,7 @@ export function EmptyState({
    */
   description = 'تعال لاحقاً — أو حدّث الصفحة للتحقق من وجود محتوى جديد.',
   action,
+  variant = 'default',
 }: {
   icon?: LucideIcon;
   /**
@@ -68,7 +69,30 @@ export function EmptyState({
   title?: string;
   description?: string;
   action?: React.ReactNode;
+  /**
+   * R319 (C2-G2 · §C3): the hatched cell — the drawing sheet's empty-
+   * cell register (45° hairline hatch inside a framed square, the
+   * drafting placeholder for an unfilled region) + the mono `EMPTY
+   * CELL` micro-label. The title/description/action slots keep their
+   * human Arabic copy — the hatch devices are decorative chrome
+   * (aria-hidden). Additive: the default variant renders exactly as
+   * before; existing usages unchanged.
+   */
+  variant?: 'default' | 'hatch';
 }) {
+  if (variant === 'hatch') {
+    return (
+      <div className="state state-empty state-hatch" role="status">
+        <div className="state-hatch-cell" aria-hidden="true" />
+        <p className="state-hatch-label" aria-hidden="true">
+          <span dir="ltr">EMPTY CELL</span>
+        </p>
+        <div className="state-title">{title}</div>
+        {description && <div className="state-desc">{description}</div>}
+        {action && <div style={{ marginTop: 'var(--sp-3)' }}>{action}</div>}
+      </div>
+    );
+  }
   return (
     <div className="state state-empty" role="status">
       {illustration ? (

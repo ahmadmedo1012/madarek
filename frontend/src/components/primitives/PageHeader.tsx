@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useSheetCode } from '../../lib/sheet-code';
 
 /**
  * PageHeader — the ONE page-opening header of the app shell.
@@ -9,7 +10,7 @@ import type { ReactNode } from 'react';
  * promoted shared form of that markup — byte-identical DOM, so adoption
  * is a pure fold (no visual change, no CSS change):
  *
- *   <PageHeader title="…" subtitle="…" actions={<Badge …>} />
+ *   <PageHeader title="…" subtitle="…" actions={<Badge … />} />
  *   ─────────────────────────────────────────────────────────
  *   <header className="page-header">
  *     <div className="page-title-block">
@@ -31,12 +32,25 @@ import type { ReactNode } from 'react';
  *     several actions should arrive as ONE flex row node from the page.
  *   - RTL correctness is inherited: the CSS family uses logical
  *     properties only; no direction-aware code belongs here.
+ *
+ * R319 (C2-G2 · the Heron title bar, additive):
+ *   - `index` — the optional mono `[01]` gutter label rendered INSIDE
+ *     the h1 (aria-hidden; the accessible name stays the title alone).
+ *     Default: none. Sections opt in per G1/Cycle-3.
+ *   - `sheetCode` — the sheet's mono identity line (`SHEET S-01 ·
+ *     STUDENT`). When the prop is ABSENT the header consumes
+ *     SheetCodeContext (AppShell provides the role's code), so every
+ *     page carries it with zero page-file changes; an explicit '' opts
+ *     out. Both mono runs are decorative drafting chrome (aria-hidden,
+ *     dir=ltr — the auth door's .auth-sheet-label register).
  */
 export function PageHeader({
   title,
   subtitle,
   meta,
   actions,
+  index,
+  sheetCode,
 }: {
   /** Page title — rendered as the route's single semantic h1. */
   title: ReactNode;
@@ -48,11 +62,30 @@ export function PageHeader({
   meta?: ReactNode;
   /** Optional header actions — rendered as a direct flex child, as-is. */
   actions?: ReactNode;
+  /** R319: optional mono gutter index (`01` renders as `[01]` inside the
+   *  h1, aria-hidden). */
+  index?: string;
+  /** R319: optional sheet identity code — overrides the ambient
+   *  SheetCodeContext value (`S-01 · STUDENT`); '' opts the line out. */
+  sheetCode?: string;
 }) {
+  const ambientCode = useSheetCode();
+  const code = sheetCode ?? ambientCode;
+  const showCode = code !== undefined && code !== '';
   return (
     <header className="page-header">
       <div className="page-title-block">
-        <h1 className="page-title">{title}</h1>
+        {showCode && (
+          <p className="page-sheet-code" aria-hidden="true">
+            <span dir="ltr">{`SHEET ${code}`}</span>
+          </p>
+        )}
+        <h1 className="page-title">
+          {index !== undefined && index !== '' && (
+            <span className="page-index" aria-hidden="true" dir="ltr">{`[${index}]`}</span>
+          )}
+          {title}
+        </h1>
         {subtitle !== undefined && <p className="page-subtitle">{subtitle}</p>}
         {meta !== undefined && <p className="page-header-meta">{meta}</p>}
       </div>

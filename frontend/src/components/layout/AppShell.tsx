@@ -8,6 +8,13 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 // point — main.tsx imports App after its CSS block, so this sheet
 // lands after polish.css in the bundle).
 import '../../styles/r305-shell.css';
+// R319 (C2-G2 · §C3): the shared shell joins the sheet system — the
+// 7px drafting frame + the measured paper-grain film + the title-bar
+// mono registers + the last radius-0 chrome overrides. Same cascade
+// contract as r305-shell.css (unlayered, shell-imported, last word).
+import '../../styles/r319-shell.css';
+import { SheetFrame, SheetGrain } from './SheetFrame';
+import { SheetCodeContext, sheetCodeForRole } from '../../lib/sheet-code';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { BottomNav } from './BottomNav';
@@ -247,6 +254,12 @@ export function AppShell({ children }: { children?: ReactNode }) {
   }, [isRoleHome, onboardingShouldAutoStart, onboardingOpen, openOnboarding]);
 
   const title = resolveTitle(location.pathname);
+  /* R319 (C2-G2): the authed sheet's mono identity — every PageHeader
+     (both families) consumes this through SheetCodeContext when its
+     own sheetCode prop is absent, so the code lands on every page
+     without a single page file changing. Guest/no-role sessions
+     provide undefined (headers render no line). */
+  const sheetCode = role != null ? sheetCodeForRole(role) : undefined;
   const contentRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
 
@@ -390,58 +403,67 @@ export function AppShell({ children }: { children?: ReactNode }) {
   }, []);
 
   return (
-    <div className="has-shell">
-      {/* Skip-to-content link — WCAG 2.4.1. Visually hidden until focused
-          (styles in base.css + polish.css, class-based). tabIndex on the
-          target lets programmatic focus land after the skip. */}
-      <a href="#main" className="skip-link">
-        تخطَّ إلى المحتوى الرئيسي
-      </a>
-      <Sidebar />
-      <main className="main" id="main" tabIndex={-1}>
-        <ScrollProgress />
-        <Topbar title={title} scrolled={scrolled} onOpenCommandPalette={openPalette} />
-        {/* WCAG 2.1.1 / axe scrollable-region-focusable: `.content` is
-            the app's ONLY scroll container (body never scrolls — see
-            layout.css's note on the .content listeners), so keyboard
-            users had no way to arrow-scroll it. tabindex=0 puts the
-            region in the natural tab order (after the topbar, before
-            the page's own controls); the universal :focus-visible ring
-            in motion.css covers [tabindex]:not([tabindex="-1"]) — no
-            bespoke focus CSS needed. Mouse clicks focus the region
-            without a ring (:focus:not(:focus-visible) rule, base.css). */}
-        <div
-          className="content"
-          ref={contentRef}
-          tabIndex={0}
-          role="region"
-          aria-label="المحتوى الرئيسي"
-        >
-          <PageTransition>
-            <div className="content-inner">
-              {/* Inner Suspense boundary (11-e P1-1): the only boundary
-                  used to sit above <Routes>, so the first navigation to
-                  each lazy chunk unmounted the whole shell — sidebar,
-                  topbar, bottom-nav state died with it. A boundary here
-                  swaps a page-shaped skeleton into the content track
-                  while the chrome (and its scroll/dropdown state)
-                  persists. The root boundary in App.tsx still covers
-                  the shell chunk itself. */}
-              <Suspense fallback={<PageSkeleton />}>
-                {children ?? <Outlet />}
-              </Suspense>
-            </div>
-          </PageTransition>
-        </div>
-      </main>
-      <BottomNav />
-      <ServerWakePill />
-      <OnboardingFlow />
-      <MilestoneScene />
-      <CommandPalette open={paletteOpen} onClose={closePalette} ariaLabel="لوحة الأوامر والبحث">
-        <CommandPaletteBody key={paletteSeq} onClose={closePalette} />
-      </CommandPalette>
-    </div>
+    <SheetCodeContext.Provider value={sheetCode}>
+      <div className="has-shell">
+        {/* Skip-to-content link — WCAG 2.4.1. Visually hidden until focused
+            (styles in base.css + polish.css, class-based). tabIndex on the
+            target lets programmatic focus land after the skip. */}
+        <a href="#main" className="skip-link">
+          تخطَّ إلى المحتوى الرئيسي
+        </a>
+        {/* R319 (C2-G2 · §C3): the sheet chrome — the 7px drafting frame
+            (with its corner registration marks) and the paper-grain film.
+            Decorative only (aria-hidden + pointer-transparent, static
+            texture); mounted as DIRECT .has-shell children so no page
+            transition transform can ever trap the fixed layers. */}
+        <SheetFrame />
+        <SheetGrain />
+        <Sidebar />
+        <main className="main" id="main" tabIndex={-1}>
+          <ScrollProgress />
+          <Topbar title={title} scrolled={scrolled} onOpenCommandPalette={openPalette} />
+          {/* WCAG 2.1.1 / axe scrollable-region-focusable: `.content` is
+              the app's ONLY scroll container (body never scrolls — see
+              layout.css's note on the .content listeners), so keyboard
+              users had no way to arrow-scroll it. tabindex=0 puts the
+              region in the natural tab order (after the topbar, before
+              the page's own controls); the universal :focus-visible ring
+              in motion.css covers [tabindex]:not([tabindex="-1"]) — no
+              bespoke focus CSS needed. Mouse clicks focus the region
+              without a ring (:focus:not(:focus-visible) rule, base.css). */}
+          <div
+            className="content"
+            ref={contentRef}
+            tabIndex={0}
+            role="region"
+            aria-label="المحتوى الرئيسي"
+          >
+            <PageTransition>
+              <div className="content-inner">
+                {/* Inner Suspense boundary (11-e P1-1): the only boundary
+                    used to sit above <Routes>, so the first navigation to
+                    each lazy chunk unmounted the whole shell — sidebar,
+                    topbar, bottom-nav state died with it. A boundary here
+                    swaps a page-shaped skeleton into the content track
+                    while the chrome (and its scroll/dropdown state)
+                    persists. The root boundary in App.tsx still covers
+                    the shell chunk itself. */}
+                <Suspense fallback={<PageSkeleton />}>
+                  {children ?? <Outlet />}
+                </Suspense>
+              </div>
+            </PageTransition>
+          </div>
+        </main>
+        <BottomNav />
+        <ServerWakePill />
+        <OnboardingFlow />
+        <MilestoneScene />
+        <CommandPalette open={paletteOpen} onClose={closePalette} ariaLabel="لوحة الأوامر والبحث">
+          <CommandPaletteBody key={paletteSeq} onClose={closePalette} />
+        </CommandPalette>
+      </div>
+    </SheetCodeContext.Provider>
   );
 }
 

@@ -13,6 +13,7 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { PageHeader } from '../../src/components/primitives';
+import { SheetCodeContext, sheetCodeForRole } from '../../src/lib/sheet-code';
 
 describe('PageHeader — the page-opening header primitive (r164-a)', () => {
   it('renders the title as the route\'s single semantic h1', () => {
@@ -87,5 +88,57 @@ describe('PageHeader — the page-opening header primitive (r164-a)', () => {
     );
     expect(screen.getByRole('heading', { level: 1, name: 'جامعة الزاوية' })).toBeInTheDocument();
     expect(container.querySelector('.page-subtitle')?.textContent).toBe('مؤسّسة تعليميّة');
+  });
+});
+
+/* ═══ R319 (C2-G2) — the Heron title bar: index / sheetCode / ambient context ═══ */
+
+describe('PageHeader — the sheet identity devices (R319 C2-G2)', () => {
+  it('sheetCodeForRole maps every role to its sheet register code', () => {
+    expect(sheetCodeForRole('STUDENT')).toBe('S-01 · STUDENT');
+    expect(sheetCodeForRole('TEACHER')).toBe('T-01 · TEACHER');
+    expect(sheetCodeForRole('ADMIN')).toBe('A-01 · ADMIN');
+    expect(sheetCodeForRole('QUALITY')).toBe('Q-01 · QUALITY');
+    expect(sheetCodeForRole('OWNER')).toBe('O-01 · OWNER');
+  });
+
+  it('renders no code line and no index by default (zero-breaking additive props)', () => {
+    const { container } = render(<PageHeader title="الجدول" />);
+    expect(container.querySelector('.page-sheet-code')).toBeNull();
+    expect(container.querySelector('.page-index')).toBeNull();
+  });
+
+  it('renders the sheetCode prop as the SHEET identity line (dir=ltr, decorative)', () => {
+    const { container } = render(<PageHeader title="الجدول" sheetCode="S-01 · STUDENT" />);
+    const line = container.querySelector('.page-sheet-code');
+    expect(line?.textContent).toBe('SHEET S-01 · STUDENT');
+    expect(line?.getAttribute('aria-hidden')).toBe('true');
+    expect(line?.querySelector('span')?.getAttribute('dir')).toBe('ltr');
+  });
+
+  it("an explicit '' sheetCode opts the line out even under an ambient provider", () => {
+    const { container } = render(
+      <SheetCodeContext.Provider value="S-01 · STUDENT">
+        <PageHeader title="الجدول" sheetCode="" />
+      </SheetCodeContext.Provider>,
+    );
+    expect(container.querySelector('.page-sheet-code')).toBeNull();
+  });
+
+  it('consumes the AMBIENT SheetCodeContext when the prop is absent (AppShell wiring)', () => {
+    const { container } = render(
+      <SheetCodeContext.Provider value="T-01 · TEACHER">
+        <PageHeader title="بنك الأسئلة" />
+      </SheetCodeContext.Provider>,
+    );
+    expect(container.querySelector('.page-sheet-code')?.textContent).toBe('SHEET T-01 · TEACHER');
+  });
+
+  it('renders the index as the mono [01] gutter label INSIDE the h1, aria-hidden (the name stays the title)', () => {
+    render(<PageHeader title="المصفوفة التعليمية" index="01" />);
+    const h1 = screen.getByRole('heading', { level: 1, name: 'المصفوفة التعليمية' });
+    expect(h1.querySelector('.page-index')?.textContent).toBe('[01]');
+    expect(h1.querySelector('.page-index')?.getAttribute('aria-hidden')).toBe('true');
+    expect(h1.querySelector('.page-index')?.getAttribute('dir')).toBe('ltr');
   });
 });
