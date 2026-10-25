@@ -4773,7 +4773,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
 
 .jt .jt-plan .pl-chip {
   opacity: 0;
-  transition: opacity var(--t-fast) var(--ease);
+  /* R319 §D4 — the chip SNAPS with the stage flip (no t-fast fade):
+     a half-faded #FA3600 chip under its white mono station text is
+     the white-on-salmon mid-state (≈2.2:1) — the same unreadable
+     mid-transition the state-safe ink labels retire. The stage
+     machine is discrete; the callout is a crisp signal seat. */
+  transition: none;
 }
 
 .jt[data-stage='0'] .jt-plan .pl-chip[data-station='0'],
@@ -5105,22 +5110,49 @@ html[data-theme='dark'] body.mdrk-grain::before {
   inset-inline-end: var(--page-gutter);
   inline-size: min(300px, 34vw);
   margin: 0;
-  background: var(--text);
-  color: var(--bg);
   pointer-events: none;
   z-index: 3;
   /* C4-A dwell: the card holds the MID-traversal — in .28→.36, out
      .60→.68 (the reference's own card: in at f .32–.52, gone before
      its 75% frame — the plan stands clean late, exactly the
-     reference's no-cards-over-the-drawing composition). */
-  opacity:
-    clamp(0, (var(--jt-p, 0) - 0.28) / 0.08, 1) *
-    clamp(0, (0.68 - var(--jt-p, 1)) / 0.08, 1);
+     reference's no-cards-over-the-drawing composition).
+     R319 §D4b — the R315 fade NEVER RAN: `clamp(..) * clamp(..)` is a
+     bare product — invalid outside calc() — so the declaration was
+     dropped and computed opacity sat at 1 through the whole band (the
+     card POPPED on its visibility flips). Repaired as a SPLIT fade
+     that can never ghost: the GROUND ramps in .28→.30 and out
+     .67→.68 (textless windows — the lines ride their own --wr-p
+     masks from .30, the cue resolves .62) and the CONTENT fades over
+     the SOLID ground (.60→.68). No text ever renders over a
+     translucent sheet, so the «في مدارك»-over-plan-strokes ghost
+     (y≈735: the west wall + hatch strip under this seat) is
+     impossible by construction. */
+  background: color-mix(
+    in srgb,
+    var(--text) calc(
+      clamp(0, (var(--jt-p, 0) - 0.28) / 0.02, 1) *
+      clamp(0, (0.68 - var(--jt-p, 1)) / 0.01, 1) * 100%
+    ),
+    transparent
+  );
+  color: var(--bg);
   visibility: hidden;
 }
 
 .jt-intro[data-on='on'] {
   visibility: visible;
+}
+
+/* R319 §D4b — the content's own gate: the in-ramp matches the
+   ground's (.02 — the title never rides a translucent sheet), the
+   out-ramp (.06) hands the card off to the closing column. The line
+   bodies additionally scrub through their --wr-p word masks below. */
+.jt-intro-title,
+.jt-intro-lines {
+  opacity: calc(
+    clamp(0, (var(--jt-p, 0) - 0.28) / 0.02, 1) *
+    clamp(0, (0.68 - var(--jt-p, 1)) / 0.06, 1)
+  );
 }
 
 .jt-intro-title {

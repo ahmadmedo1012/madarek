@@ -118,14 +118,23 @@ const PLAN_INK_CSS = `
   .jt .jt-plan .pl-zone   { fill: #FA3600; }
   .jt .jt-plan .pl-dot    { fill: #282828; }
   .jt .jt-plan .bp-signal-fill { fill: #FA3600; stroke: #FFFFFF; stroke-width: 1; }
+  /* R319 §D4 — the ACTIVE zone's label + area are STATE-SAFE INK
+     (#282828), not white: the zone wash crossfades over t-fast, so a
+     white label rode the salmon mid-state (#FA3600 at ~50% over the
+     #F6F6EE sheet ≈ #F89677) at ~2.2:1 — unreadable mid-flip. Ink is
+     legible at EVERY instant of the transition: 13.4:1 on the paper
+     sheet, ≈6.6:1 on the salmon mid-wash, 3.85:1 on the settled
+     #FA3600 (≥3:1, the register's own bar for the decorative plan).
+     Heron's register has no scrub-lit rooms at all — the wash itself
+     is the active signal; the label stays the quiet ink annotation. */
   .jt[data-stage='0'] .jt-plan .pl-l-lecture .pl-name,
   .jt[data-stage='1'] .jt-plan .pl-l-checkpoint .pl-name,
   .jt[data-stage='2'] .jt-plan .pl-l-exam .pl-name,
-  .jt[data-stage='3'] .jt-plan .pl-l-mastery .pl-name { fill: #FFFFFF; }
+  .jt[data-stage='3'] .jt-plan .pl-l-mastery .pl-name { fill: #282828; }
   .jt[data-stage='0'] .jt-plan .pl-l-lecture .bp-micro,
   .jt[data-stage='1'] .jt-plan .pl-l-checkpoint .bp-micro,
   .jt[data-stage='2'] .jt-plan .pl-l-exam .bp-micro,
-  .jt[data-stage='3'] .jt-plan .pl-l-mastery .bp-micro { fill: #FFFFFF; }
+  .jt[data-stage='3'] .jt-plan .pl-l-mastery .bp-micro { fill: #282828; }
   .jt[data-stage='0'] .jt-plan .pl-station[data-station='0'],
   .jt[data-stage='1'] .jt-plan .pl-station[data-station='1'],
   .jt[data-stage='2'] .jt-plan .pl-station[data-station='2'],
