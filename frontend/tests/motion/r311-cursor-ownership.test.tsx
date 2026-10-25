@@ -74,6 +74,20 @@ beforeEach(() => {
   installMatchMedia();
   resetIntroDocumentGateForTests();
   try { sessionStorage.clear(); } catch { /* storage can be locked */ }
+  /* R319 (C1 foreman close): R318 §C made the entrance skip on
+   * ≤2-core visitors; this suite asserts the loader PLAYS, and CI
+   * hosts (like the R319 fleet sandbox) can genuinely be 2-core —
+   * the r311 assertions are about cursor ownership, not the core
+   * policy, so stub the reported count UP exactly like the e2e
+   * fixture's determinism knob (e2e.ts: hardwareConcurrency → 8). */
+  try {
+    Object.defineProperty(Navigator.prototype, 'hardwareConcurrency', {
+      configurable: true,
+      get: () => 8,
+    });
+  } catch {
+    /* non-configurable engine — degrades to the host's truth */
+  }
 });
 
 afterEach(() => {
