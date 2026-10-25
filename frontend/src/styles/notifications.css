@@ -238,16 +238,27 @@
   /* (r151c dead-twin sweep: the container's geometry — display,
      position, insets, z-index, background, glass, border, padding,
      align/justify — is owned wholesale by polish v22's overrides-layer
-     .bottom-nav (grid, topbar-bg, rule border). What survives here is
-     exactly what polish never sets: the grid gap and the top hairline.) */
-  gap: var(--sp-1); /* r157: 4px → --sp-1 */
+     .bottom-nav (grid, opaque paper since R319, rule border). What
+     survives here is exactly what polish never sets.) */
+  /* R319 (c1-A · B1b): the five cells sit FLUSH — the inter-cell
+     hairlines below ARE the separation (gap 4px read as broken
+     lines). Equal 1fr tracks + one row = five equal square-cornered
+     cells. */
+  gap: 0;
   /* R313 override (D3/D16): dock lift shadow retired — depth comes from
      the rule hairline alone (owner decision — Heron grammar, no
      decorative shadows anywhere). The polish layer's 1px rule border
      carries the separation. */
 }
 
+/* R319 (c1-A · B1b): the bottom bar joins the paired-state contract —
+   the wash/press states flip --_bg and --_fg TOGETHER and the base
+   routes both paints through them (same grammar as .nav-item in
+   layout.css; see the B1 root-cause note there). Square cells on the
+   hairline grid — radius 0, no pill chrome. */
 .bottom-nav-item {
+  --_bg: transparent;
+  --_fg: var(--text-subtle);
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -256,17 +267,16 @@
   gap: var(--sp-1); /* r157: 4px → --sp-1 */
   padding: var(--sp-1-5) var(--sp-0-5) var(--sp-1); /* r153h: 6px → --sp-1-5 */
   border: 0;
-  background: transparent;
-  color: var(--text-subtle);
+  background: var(--_bg);
+  color: var(--_fg);
   text-decoration: none;
   /* r211: the fifth slot is a <button> (المزيد → drawer) — inherit the
      app font so the UA button font never leaks into the label. */
   font: inherit;
-  /* 5-C2 (A3 P3-8): font-size 10.5px + letter-spacing 0.01em removed —
-     dead since the label re-declares both on itself (.bottom-nav-label
-     is the item's only text; BottomNav.tsx renders icon + label spans). */
   font-weight: var(--fw-semibold); /* r157: 600 → --fw-semibold */
-  border-radius: var(--r-lg);
+  /* R319 (c1-A · B1b): radius 0 — the dock is a hairline grid of
+     square cells, no pill. */
+  border-radius: 0;
   min-height: 52px;
   -webkit-tap-highlight-color: transparent;
   transition:
@@ -274,19 +284,50 @@
     background var(--motion-duration-short) var(--ease),
     transform var(--motion-duration-micro) var(--ease);
 }
-/* (r132-F5: `.bottom-nav-item:active { transform: scale(0.96) }` deleted
-   here — dead rule. The bottom nav renders only ≤640px, inside
-   polish.css's ≤920px overrides-layer block whose
-   `scale(var(--state-nav-pressed-scale))` (0.93) always won; the 0.96 was
-   misleading residue from before the r130-W2-7 press unification.) */
-.bottom-nav-item:hover { color: var(--text); }
+/* The inter-cell hairlines: 1px quiet row rules between the five
+   cells (the bar's own top edge is the structural --rule hairline
+   in polish.css). */
+.bottom-nav-item + .bottom-nav-item {
+  border-inline-start: 1px solid var(--border);
+}
+@media (hover: hover) and (pointer: fine) {
+  /* R319 (c1-A · B1): guarded fine-pointer wash — ink steps on the
+     constant transparent ground, pair whole. */
+  .bottom-nav-item:hover { --_fg: var(--text); --_bg: transparent; }
+}
+/* R319 (c1-A · B1): the press twin — same pair, always-on (the dock
+   is touch-first; the press must carry the acknowledgment), instant. */
+.bottom-nav-item:active {
+  --_fg: var(--text);
+  --_bg: transparent;
+  transition-duration: var(--motion-duration-micro);
+}
 
-/* Active item — branded chip with floating icon */
+/* Active item — R319 (c1-A · B1b): ONE grammar with the sidebar's
+   active row: the INK label + the 2px accent TOP rule on the cell.
+   The role-accent color twin, the 14% icon wash and the -8px ring
+   (polish.css) are deleted — no pill chrome. */
 .bottom-nav-item[aria-current="page"],
 .bottom-nav-item.active {
-  /* 012 FR-004 — role-accent tints the active icon chrome (pre-vetted
-     ≥3:1 non-text); the label below takes the AA-safe accent ink. */
-  color: var(--role-accent, var(--accent));
+  --_fg: var(--text);
+  --_bg: transparent;
+}
+.bottom-nav-item[aria-current="page"]::before,
+.bottom-nav-item.active::before {
+  content: '';
+  position: absolute;
+  /* the square 2px accent top rule — the dock's twin of the sidebar's
+     2px start rule (R313 WP-F · D16 marker grammar, now mirrored on
+     the bottom band). */
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 2px;
+  background: var(--accent);
+  animation: polish-bottomnav-rule var(--motion-duration-medium) var(--ease-out);
+}
+@keyframes polish-bottomnav-rule {
+  from { transform: scaleX(0.4); opacity: 0; }
+  to   { transform: scaleX(1);    opacity: 1; }
 }
 
 /* r294 (polish v8 fold): icon scale-up on activate — the single
@@ -301,6 +342,10 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .bottom-nav-item.active .bottom-nav-icon { animation: none; }
+  /* R319 (c1-A · B1b): the 2px accent top rule's entrance dies with
+     the rest of the dock motion (the rule simply IS there). */
+  .bottom-nav-item[aria-current="page"]::before,
+  .bottom-nav-item.active::before { animation: none; }
 }
 
 .bottom-nav-icon {
@@ -309,19 +354,13 @@
   justify-content: center;
   width: 36px;
   height: 28px;
-  border-radius: var(--r-full);
-  will-change: background;
+  /* R319 (c1-A · B1b): radius 0 + the wash ground gone — the icon is
+     the inked glyph itself ("filled" = the theme ink stroke), carried
+     by the item's --_fg pair. will-change: background died with the
+     wash (nothing paints a background here anymore). */
+  border-radius: 0;
   transition:
-    background var(--motion-duration-medium) var(--ease),
-    transform var(--motion-duration-medium) var(--ease),
-    box-shadow var(--motion-duration-medium) var(--ease);
-}
-
-.bottom-nav-item.active .bottom-nav-icon {
-  /* r211 (Superlist re-skin): the floating glow (36% accent box-shadow)
-     is retired — the active icon is a flat role-accent wash on the
-     surface, same calm grammar as the sidebar's active row. */
-  background: color-mix(in srgb, var(--role-accent, var(--accent)) 14%, var(--surface-1));
+    transform var(--motion-duration-medium) var(--ease);
 }
 
 .bottom-nav-label {
@@ -343,7 +382,11 @@
 }
 
 .bottom-nav-item.active .bottom-nav-label {
-  color: var(--accent-ink, var(--accent));
+  /* R319 (c1-A · B1b): the INK label — the active marker is the 2px
+     accent top rule; the label reads as ink like the sidebar's active
+     row (the accent-ink color twin retired with the role-accent
+     system on this surface). */
+  color: var(--text);
   font-weight: var(--fw-bold); /* r157: 700 → --fw-bold */
 }
 
@@ -355,8 +398,9 @@
    (5 items × 11px labels + 32px icons still fit the 320px viewport.) */
 @media (max-width: 360px) {
   /* (r151c: padding deleted — polish's overrides-layer container owns
-     it; the ≤360 gap tightening is the one live declaration.) */
-  .bottom-nav { gap: var(--sp-0-5); }
+     it. R319 c1-A · B1b: the ≤360 gap tightening retired — the five
+     cells sit FLUSH behind their inter-cell hairlines at every width;
+     only the icon shrinks.) */
   .bottom-nav-icon { width: 32px; height: 26px; }
 }
 

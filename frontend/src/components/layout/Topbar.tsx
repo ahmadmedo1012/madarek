@@ -334,9 +334,12 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
               {/* 21-c (A12 P1-2, spillover): was a hand-rolled .avatar
                   span — white initials on the un-gated DB avatarColor
                   (3.21:1 on #4F8EF7, the audit's measured topbar pair).
-                  The UserAvatar primitive luminance-gates the ink; the
-                  no-color fallback keeps the accent + --accent-fg pair. */}
-              <UserAvatar initials={initials} size={30} color={user.avatarColor ?? undefined} />
+                  R319 (c1-A · B1b): the shell never forwards the DB
+                  avatarColor anymore — the topbar wears the ONE square
+                  ink-cell grammar (mono initials on paper + hairline,
+                  radius 0), same as the sidebar. The prop stays on the
+                  primitive for callers that still pass one. */}
+              <UserAvatar initials={initials} size={30} />
               <span className="topbar-user-name hide-on-mobile">
                 {user.firstName}
               </span>

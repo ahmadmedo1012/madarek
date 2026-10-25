@@ -2611,10 +2611,21 @@
                 color var(--t-fast) var(--ease),
                 border-color var(--t-fast) var(--ease);
   }
-  .sidebar-tour-trigger:hover {
+  @media (hover: hover) and (pointer: fine) {
+    /* R319 (c1-A · B1): guarded fine-pointer wash — the pair (surface
+       step + ink + hairline) travels whole; hover sticks after a tap
+       on touch, where the :active twin below carries it. */
+    .sidebar-tour-trigger:hover {
+      background: var(--surface-2);
+      color: var(--text);
+      border-color: var(--rule);
+    }
+  }
+  .sidebar-tour-trigger:active {
     background: var(--surface-2);
     color: var(--text);
     border-color: var(--rule);
+    transition-duration: var(--motion-duration-micro);
   }
   .sidebar-tour-trigger:focus-visible {
     outline: var(--state-focus-ring);

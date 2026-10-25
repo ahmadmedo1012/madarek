@@ -158,10 +158,20 @@
        border/ink here spent the signal on an uncommitted state (grammar
        §3: copper only at the active marker / focus / primary CTA /
        unread urgency / ⌘K chip). The ink steps with the surface; FOCUS
-       keeps the accent (polish v22's :focus-visible border cue). */
+       keeps the accent (polish v22's :focus-visible border cue).
+       R319 (c1-A · B1): the wash is guarded to fine pointers (hover
+       sticks after a tap on touch) and the pair travels whole —
+       background + ink together (the paired-state lint's contract). */
     background: var(--surface-2);
     border-color: var(--border-strong);
     color: var(--text);
+  }
+  /* R319 (c1-A · B1): the press twin — same pair, always-on. */
+  .sidebar-collapse-btn:active {
+    background: var(--surface-3);
+    border-color: var(--border-strong);
+    color: var(--text);
+    transition-duration: var(--motion-duration-micro);
   }
   .sidebar.collapsed .sidebar-collapse-btn {
     /* When collapsed, the button is the only visible chrome in the
@@ -204,7 +214,8 @@
        (hover: none) band enforces on real touch devices.
        r304 fold (ex «final-visual-system»): the row radius is the
        workspace r-md — the same corner every clickable chrome control
-       carries, so hover/active pills read as one family. */
+       carries, so hover/active pills read as one family. (The ≤920px
+       drawer re-cuts the corner to 0 — R319, see the drawer band.) */
     padding: var(--sp-2) var(--sp-3);
     border-radius: var(--r-md);
     /* r157 (6A4-9): nav links are chrome surface — DESIGN.md §2 maps
@@ -213,7 +224,21 @@
        --fs-sm: the canon wording covers nav links / footer columns /
        form labels / status boxes / timestamps — not user names.) */
     font-size: var(--fs-chrome);
-    color: var(--sidebar-item);
+    /* R319 (c1-A · B1) — the PAIRED-STATE TOKEN CONTRACT: every state
+       of this row (hover / press / on) flips --_bg, --_fg and --_icon-fg
+       TOGETHER, and the base routes all three paints through them. The
+       B1 ghost was polish.css re-declaring the hover BACKGROUND only
+       (surface-2) beneath this sheet's full wash — the cascade composed
+       paper-label-on-light-grey ≈1.1:1, and on touch `:hover` sticks
+       after a tap, so the owner watched «مقرّراتي الدراسية» disappear.
+       One home per state (this sheet), tokens flipped in pairs, the
+       hover wash guarded to fine pointers, and an always-on :active
+       twin carrying the same wash on touch. */
+    --_bg: transparent;
+    --_fg: var(--sidebar-item);
+    --_icon-fg: var(--text-muted);
+    background: var(--_bg);
+    color: var(--_fg);
     font-weight: var(--fw-medium);
     transition: background var(--t-fast) var(--ease),
                 color var(--t-fast) var(--ease);
@@ -224,18 +249,27 @@
   }
   .nav-icon {
     display: inline-flex; align-items: center; justify-content: center;
-    color: var(--text-muted); flex-shrink: 0;
+    /* R319 (c1-A · B1): the icon rides the row's paired tokens — the
+       wash flips it WITH the label (the old `.nav-item:hover .nav-icon`
+       and `.nav-item.on .nav-icon` color companions are deleted; one
+       token, one flip, no half-state can strand the glyph). */
+    color: var(--_icon-fg);
+    flex-shrink: 0;
   }
   .nav-label { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .nav-item:hover {
-    /* R313 (WP-F · D16): the landing nav wash recipe — the row washes to
-       a solid charcoal cell (var(--text) ≡ #282828 in light, the paper
-       white in dark) with the paper ground as the label (var(--bg)).
-       Coarse pointers keep the plain link (the landing sheet's guard). */
-    background: var(--text);
-    color: var(--bg);
+  /* R319 (c1-A · B1): the landing wash is a FINE-POINTER contract —
+     `:hover` sticks after a tap on touch devices (the exact mechanism
+     behind the owner's pale-ghost screenshot), so the wash only loads
+     where a hover can actually END. The R313 recipe itself is
+     unchanged: the row fills the solid charcoal cell (var(--text))
+     with the paper ground as the label (var(--bg)). */
+  @media (hover: hover) and (pointer: fine) {
+    .nav-item:hover {
+      --_bg: var(--text);
+      --_fg: var(--bg);
+      --_icon-fg: var(--bg);
+    }
   }
-  .nav-item:hover .nav-icon { color: var(--bg); }
   /* r157 (6A4-5, F3 half): the .active twins are gone — Sidebar writes
      exactly one boolean, the `on` class. (.search-row.active below and
      BottomNav's bottom-nav-item active are separate live families;
@@ -248,10 +282,24 @@
   .nav-item.on {
     /* R313 (WP-F · D16): the active row is ONE signal — the 2px accent
        side rule below + the ink label. The surface-step pill retires
-       (the marker carries the state; the row stays on the paper). */
-    background: transparent;
-    color: var(--text);
+       (the marker carries the state; the row stays on the paper).
+       R319 (c1-A · B1b): routed through the paired tokens — the row
+       keeps its ink label on the paper ground, and the polish.css
+       accent-soft twin is deleted (ONE home for the state). */
+    --_bg: transparent;
+    --_fg: var(--text);
+    --_icon-fg: var(--text);
     font-weight: var(--fw-semibold);
+  }
+  /* R319 (c1-A · B1): the PRESS twin — the same paired wash, always-on
+     (fine pointers feel the press too), landing INSTANTLY on the press
+     (the micro duration; the snap-back keeps it). Sits after `.on` so
+     pressing the active row still reads as a press. */
+  .nav-item:active {
+    --_bg: var(--text);
+    --_fg: var(--bg);
+    --_icon-fg: var(--bg);
+    transition-duration: var(--motion-duration-micro);
   }
   /* r211: the dark-mode «orbit glow» halo is retired — R313 (WP-F):
      the active row is the 2px accent bar + the ink label, identically
@@ -274,8 +322,6 @@
     from { transform: scaleY(0.4); opacity: 0; }
     to   { transform: scaleY(1);    opacity: 1; }
   }
-  .nav-item.on .nav-icon { color: var(--text); }
-
   .nav-badge {
     /* wave 2-b: was the raw 10px sub-token floor — lifted to --fs-xxs
        (11px) per the craft-floor font sweep.
@@ -320,7 +366,13 @@
     border-radius: var(--r-sm);
     transition: background var(--t-fast) var(--ease);
   }
-  .sidebar-user:hover { background: var(--sidebar-item-hover-bg); }
+  /* R319 (c1-A · B1): the account row's wash — a fine-pointer
+     affordance only (the row is not a control; hover sticks after a
+     tap on touch, where the row stays flat — the press registers on
+     its buttons). The pair travels whole: surface step + ink together. */
+  @media (hover: hover) and (pointer: fine) {
+    .sidebar-user:hover { background: var(--sidebar-item-hover-bg); color: var(--text); }
+  }
   .sidebar-user-info { display: flex; flex-direction: column; gap: var(--sp-0-5); flex: 1; min-inline-size: 0; } /* r149 (R3-A2 R6): 1px → 2px */
   .sidebar-user-name {
     font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text);
@@ -330,23 +382,42 @@
 
   /* r294 (polish v8 fold): the mobile drawer's close button + the
      ≤920px sidebar overrides. The X button is drawer-only; the rail
-     collapse control dies on mobile (open vs closed, no rail). */
+     collapse control dies on mobile (open vs closed, no rail).
+     R319 (c1-A · B1b): Heron menu grammar — a square 44px cell on the
+     1px hairline, radius 0, paper ground (the tinted-surface chip
+     retires; the drawer IS the sheet). The state pair travels whole
+     (see the paired-state contract on .nav-item) and hover is guarded
+     to fine pointers. */
   .sidebar-mobile-close {
     display: none;
     align-items: center;
     justify-content: center;
-    inline-size: 36px;
-    block-size: 36px;
-    border: 0;
-    background: var(--surface-2);
+    inline-size: 44px;
+    block-size: 44px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
     color: var(--text);
-    border-radius: var(--r-md);
+    border-radius: 0;
     cursor: pointer;
     flex-shrink: 0;
-    transition: var(--t-clean);
+    transition: background var(--t-fast) var(--ease),
+                color var(--t-fast) var(--ease),
+                border-color var(--t-fast) var(--ease);
     -webkit-tap-highlight-color: transparent;
   }
-  .sidebar-mobile-close:hover { background: var(--surface-3); }
+  @media (hover: hover) and (pointer: fine) {
+    .sidebar-mobile-close:hover {
+      background: var(--surface-2);
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+  }
+  .sidebar-mobile-close:active {
+    background: var(--surface-3);
+    border-color: var(--border-strong);
+    color: var(--text);
+    transition-duration: var(--motion-duration-micro);
+  }
 
   @media (max-width: 920px) {
     /* X button visible only in the mobile drawer */
@@ -357,7 +428,10 @@
     .sidebar-brand {
       position: sticky;
       inset-block-start: 0;
-      background: var(--sidebar-bg);
+      /* R319 (c1-A · B1b): the header rides the sheet's own paper
+         (var(--bg)) — the drawer is ONE material; the sticky plate
+         must not read as a different surface. */
+      background: var(--bg);
       z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
       padding-block: var(--sp-3);
       /* R313 (WP-F · D16): structural hairline (--rule ≡ #B3B3AF). */
@@ -372,17 +446,34 @@
     border-radius: var(--r-xs);
     transition: var(--t-clean);
   }
-  .sidebar-logout:hover { background: var(--c-rose-bg); color: var(--c-rose-deep); }
+  /* R319 (c1-A · B1): the destructive ghost — the rose pair travels
+     whole (bg + ink), guarded to fine pointers; on touch the press
+     twin below carries it. */
+  @media (hover: hover) and (pointer: fine) {
+    .sidebar-logout:hover { background: var(--c-rose-bg); color: var(--c-rose-deep); }
+  }
+  .sidebar-logout:active { background: var(--c-rose-bg); color: var(--c-rose-deep); transition-duration: var(--motion-duration-micro); }
 
   .sidebar-backdrop {
     position: fixed; inset: 0;
-    /* R313 (WP-F · D16): the scrim is a flat translucent ink veil — the
-       blur retires with the glass family (zero backdrop-filter). */
-    background: var(--overlay-veil-deep);
+    /* R319 (c1-A · B1b): the scrim is INK over paper — the translucent
+       veil retires (it read as a flat grey wash on the phone). Light:
+       the ink #282828 (= --text light) at 58%; dark: the paper twin
+       #F6F8FA (= --text dark) at 92% — Heron's own menu veils. The
+       theme fork below keys off the existing [data-theme] mechanism;
+       the rgba literals are the precomputed rgb(from var(--text) …)
+       equivalents. */
+    background: rgba(40,40,40,0.58); /* color-gate: allow — R319 (c1-A · B1b): drawer scrim, light theme — ink #282828 (var(--text)) at 58% over paper, the precomputed rgb(from var(--text) r g b / 0.58) */
     opacity: 0; pointer-events: none;
     transition: opacity var(--t-base) var(--ease);
     /* Sits just under the mobile drawer (a --z-sheet surface). */
     z-index: calc(var(--z-sheet) - 1);
+  }
+  [data-theme="dark"] .sidebar-backdrop {
+    /* R319 (c1-A · B1b): dark scrim — the paper twin at 92% (the
+       reference's own night menu veil: the sheet reads as paper over
+       paper, not a black hole). */
+    background: rgba(246,248,250,0.92); /* color-gate: allow — R319 (c1-A · B1b): drawer scrim, dark theme — paper twin #F6F8FA (var(--text) dark) at 92%, Heron's night menu veil */
   }
 
   /* ═══ مدارك night shell (r211 Superlist re-skin) ═══
@@ -409,12 +500,20 @@
     [data-theme="dark"] .sidebar { position: relative; }
   }
 
-  /* mobile drawer */
+  /* mobile drawer — R319 (c1-A · B1b): rebuilt on Heron's menu grammar.
+     The drawer IS the sheet: full-bleed opaque paper, hairline rows,
+     mono gutter indexes, one accent rule per active row. See each
+     rule's comment for the grammar decision. */
   @media (max-width: 920px) {
     .sidebar {
       display: flex;
       position: fixed;
-      inset-block-start: 0; inset-block-end: 0;
+      /* R319 (c1-A · B1b): 100dvh — the DYNAMIC viewport, not the
+         inset pair / 100vh (which on iPhone Safari includes the area
+         under the browser toolbar): the drawer footer never slides
+         under the chrome and the last rows never clip. */
+      inset-block-start: 0;
+      block-size: 100dvh;
       /* 4-A2 P1-4: dock the drawer to the inline-START edge — physical
          RIGHT in RTL, the same side as the burger trigger and the
          desktop sidebar column. The old inset-inline-end anchored it
@@ -425,7 +524,11 @@
       inset-inline-start: 0;
       inline-size: min(86vw, 320px);
       max-inline-size: 320px;
-      background: var(--sidebar-bg);
+      /* R319 (c1-A · B1b): the drawer IS the sheet — full-bleed OPAQUE
+         paper (var(--bg), alpha 1; --sidebar-bg retired here). No
+         tinted boxes inside: the brand cell and rows sit on the same
+         paper, one material. */
+      background: var(--bg);
       /* Content sits on the drawer's inline-END side in both
          directions — that edge carries the structural hairline now
          (R313 WP-F · D16: --rule ≡ #B3B3AF, the frame grey). */
@@ -472,6 +575,53 @@
        language of the buttons is untouched — only the hit area grows. */
     .sidebar-mobile-close { min-inline-size: 44px; min-block-size: 44px; }
     .sidebar-logout { min-inline-size: 44px; min-block-size: 44px; }
+
+    /* ── R319 (c1-A · B1b): Heron's menu grammar, drawer band ────── */
+
+    /* Rows: square hairline-separated cells, 48px tall (inside the
+       48–56 band; the (hover:none) 44px floor below stays the legal
+       minimum). Radius 0 — no pill chrome on the menu. The wash/press
+       states come from the paired tokens on .nav-item (base block). */
+    .sidebar .nav-item {
+      border-radius: 0;
+      min-block-size: 48px;
+    }
+    .nav-group .nav-item + .nav-item {
+      /* quiet row hairline inside a group — the row-level --border
+         rung (R313: structural seams between groups stay --rule via
+         .nav-group + .nav-group above). */
+      border-block-start: 1px solid var(--border);
+    }
+
+    /* MONO GUTTER INDEX — each section wears its [01]… index in the
+       start gutter (Geist Mono micro-label, muted): the reference's
+       instrument voice, the same one the sheet frame uses. The LRI/PDI
+       isolates (\2066…\2069) keep the Latin bracket run from mirroring
+       inside the RTL line. */
+    .sidebar-nav { counter-reset: nav-section; }
+    .nav-group { counter-increment: nav-section; }
+    .nav-section-label::before {
+      content: "\2066[" counter(nav-section, decimal-leading-zero) "]\2069\00a0";
+      color: var(--text-faint);
+    }
+
+    /* The brand cell loses its tinted plate: plain paper + hairline
+       (one material — the drawer IS the sheet). */
+    .sidebar-brand-mark {
+      background: transparent;
+      border: 1px solid var(--rule);
+    }
+
+    /* Start-inset parity: the brand row, every section heading (plain
+       label AND accordion toggle) and every row share ONE inline-start
+       inset (--sp-3 inside the drawer's own --sp-3 padding) — the
+       «التعلم الذكي» misalignment the owner photographed was the
+       layers disagreeing about which gutter the heading sits in. */
+    .sidebar-brand,
+    .nav-section-label,
+    .sidebar .nav-item {
+      padding-inline: var(--sp-3);
+    }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -504,9 +654,17 @@
       color var(--t-fast) var(--ease),
       transform var(--t-fast) var(--ease);
   }
-  .topbar-mobile-toggle:hover { background: var(--surface-3); color: var(--text); }
+  @media (hover: hover) and (pointer: fine) {
+    /* R319 (c1-A · B1): guarded — hover sticks after a tap on touch;
+     the pair (surface step + ink) travels whole. */
+    .topbar-mobile-toggle:hover { background: var(--surface-3); color: var(--text); }
+  }
   .topbar-mobile-toggle:active {
-    /* r305: the raw 0.97 joins the one press register (--press-scale). */
+    /* r305: the raw 0.97 joins the one press register (--press-scale).
+       R319 (c1-A · B1): the press also carries the hover pair so touch
+       gets the same acknowledgment. */
+    background: var(--surface-3);
+    color: var(--text);
     transform: scale(var(--press-scale));
     transition-duration: var(--motion-duration-micro);
   }
@@ -530,7 +688,11 @@
     color: var(--text-secondary);
     transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
   }
-  .topbar-search-toggle:hover { background: var(--surface-3); color: var(--text); }
+  @media (hover: hover) and (pointer: fine) {
+    /* R319 (c1-A · B1): guarded fine-pointer wash, pair whole. */
+    .topbar-search-toggle:hover { background: var(--surface-3); color: var(--text); }
+  }
+  .topbar-search-toggle:active { background: var(--surface-3); color: var(--text); transition-duration: var(--motion-duration-micro); }
   @media (max-width: 920px) { .topbar-search-toggle { display: inline-flex; } }
 
   .topbar-title {
@@ -744,7 +906,11 @@
       color var(--t-fast) var(--ease),
       background var(--t-fast) var(--ease);
   }
-  .topbar-search-clear:hover { color: var(--text); background: var(--surface-3); }
+  @media (hover: hover) and (pointer: fine) {
+    /* R319 (c1-A · B1): guarded fine-pointer wash, pair whole. */
+    .topbar-search-clear:hover { color: var(--text); background: var(--surface-3); }
+  }
+  .topbar-search-clear:active { color: var(--text); background: var(--surface-3); transition-duration: var(--motion-duration-micro); }
   @media (max-width: 640px) {
     /* 44px touch target on phones — the transparent button fills the
        (44px) pill exactly there; the :focus-visible ring comes from
@@ -837,8 +1003,13 @@
     inline-size: 100%;
     padding: var(--sp-3) var(--sp-4);
     border: none;
-    background: transparent;
-    color: var(--text);
+    /* R319 (c1-A · B1): the row joins the paired-state contract —
+       hover/selected flip --_bg and --_fg together (base fg is the
+       theme ink; the surface step never strands it). */
+    --_bg: transparent;
+    --_fg: var(--text);
+    background: var(--_bg);
+    color: var(--_fg);
     text-align: start;
     cursor: pointer;
     /* (5-C1, 4-A11 P2-10 family: the hover affordance used to grow
@@ -851,6 +1022,7 @@
      v13) بدل القفز. */
     transition:
       background var(--motion-duration-short) var(--ease),
+      color var(--motion-duration-short) var(--ease),
       transform var(--motion-duration-short) var(--ease);
     position: relative;
   }
@@ -871,15 +1043,30 @@
      signal before the user committed. The bar + tinted step are the
      SELECTED grammar (.active / aria-selected — the list's one
      marker); hover earns --surface-2 only. LibraryPage reuses this
-     family, so both surfaces inherit the quieter hover. */
-  .search-row:hover {
-    background: var(--surface-2);
+     family, so both surfaces inherit the quieter hover.
+     R319 (c1-A · B1): the wash is guarded to fine pointers (hover
+     sticks after a tap on touch) and the pair travels whole. */
+  @media (hover: hover) and (pointer: fine) {
+    .search-row:hover {
+      --_bg: var(--surface-2);
+      --_fg: var(--text);
+    }
+  }
+  .search-row:active {
+    /* R319 (c1-A · B1): the press twin — same pair, always-on,
+     instant on the press. */
+    --_bg: var(--surface-2);
+    --_fg: var(--text);
+    transition-duration: var(--motion-duration-micro);
   }
   .search-row.active,
   .search-row[aria-selected="true"] {
     /* R313 (WP-F · D16): selected = the 2px rule + the paper step —
-       no accent wash (one signal, the marker carries it). */
-    background: var(--surface-2);
+       no accent wash (one signal, the marker carries it).
+       R319 (c1-A · B1): paired tokens (fg stays the theme ink on the
+       stepped ground — the pair can never half-flip). */
+    --_bg: var(--surface-2);
+    --_fg: var(--text);
   }
   .search-row:hover .search-row-icon,
   .search-row.active .search-row-icon,
@@ -1021,13 +1208,22 @@
       border-color var(--motion-duration-short) var(--ease),
       transform var(--motion-duration-short) var(--ease-spring-soft);
   }
-  .search-tip-pill:hover {
+  @media (hover: hover) and (pointer: fine) {
     /* r305 (Heron conservation): hover is a surface step + a stronger
        hairline — was an accent wash + accent border (copper spent on
-       hover). The pill's ink steps up to keep the affordance legible. */
+       hover). The pill's ink steps up to keep the affordance legible.
+       R319 (c1-A · B1): guarded fine-pointer wash, pair whole. */
+    .search-tip-pill:hover {
+      background: var(--surface-3);
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+  }
+  .search-tip-pill:active {
     background: var(--surface-3);
     border-color: var(--border-strong);
     color: var(--text);
+    transition-duration: var(--motion-duration-micro);
   }
   .search-empty-hint {
     margin-block-start: var(--sp-3);
@@ -1079,16 +1275,29 @@
   .theme-toggle-option {
     inline-size: 30px; block-size: 28px;
     display: inline-flex; align-items: center; justify-content: center;
-    color: var(--text-muted);
+    /* R319 (c1-A · B1): the option joins the paired-state contract —
+       the transparent track ground is the constant bg half; hover and
+       the is-active thumb flip both halves together. */
+    --_bg: transparent;
+    --_fg: var(--text-muted);
+    background: var(--_bg);
+    color: var(--_fg);
     /* R313 (WP-F · D16): square option on the square track. */
     border-radius: var(--r-xs);
     transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
     cursor: pointer;
   }
-  .theme-toggle-option:hover { color: var(--text); }
+  @media (hover: hover) and (pointer: fine) {
+    /* R319 (c1-A · B1): guarded fine-pointer wash — the ink steps on
+       the constant transparent ground, pair whole. */
+    .theme-toggle-option:hover { --_fg: var(--text); --_bg: transparent; }
+  }
+  .theme-toggle-option:active { --_fg: var(--text); --_bg: transparent; transition-duration: var(--motion-duration-micro); }
   .theme-toggle-option.is-active {
-    background: var(--surface);
-    color: var(--text);
+    --_bg: var(--surface);
+    --_fg: var(--text);
+    background: var(--_bg);
+    color: var(--_fg);
     /* r305 (Heron conservation): the thumb floats by SURFACE STEP + an
        inset hairline now (precise outlines) — the at-rest --shadow-card
        on a chrome control read as elevation the overlay ladder doesn't

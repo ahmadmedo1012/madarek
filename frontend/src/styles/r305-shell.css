@@ -255,8 +255,9 @@ html[dir="rtl"][data-theme="dark"][data-sidebar-collapsed] .topbar {
      safe-area inset (layout.css);
    · scroll progress — fixed 3px strip at the viewport top, --z-popover
      (polish v22), scaleX-driven, aria-hidden;
-   · bottom nav — fixed dock, safe-area-inset padding (polish v22 §F),
-     role-aware active ring;
+   · bottom nav — fixed dock, safe-area-inset padding (polish v22 §F);
+     R319 (c1-A · B1b): the active marker is the 2px accent top rule
+     (notifications.css), the role-accent ring retired with the pill;
    · toasts — notifications.css's mobile stack clears the dock;
    · the phantom gutter — html:has(.has-shell) releases v13's
      scrollbar-gutter reservation (polish r299), so fixed surfaces

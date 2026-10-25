@@ -430,8 +430,12 @@ export function AlertRow({
    · var()/other    → ink var(--text) — the only non-hex callers pass
                       neutral surface tokens (var(--surface-3), AI chat
                       user well), where the text role is the safe pair
-   · undefined      → no inline ink — the CSS default pair applies
-                      (accent ground + --accent-fg ink, polish.css) */
+   · undefined      → no inline paint — the CSS default applies (R319:
+                      the square ink cell — mono initials, var(--text)
+                      on var(--surface), 1px var(--rule) hairline,
+                      radius 0; polish.css). The shell surfaces never
+                      forward the DB avatarColor (Sidebar/Topbar), so
+                      authenticated chrome reads ONE avatar grammar. */
 const AVATAR_INKS = { light: '#FFFFFF', dark: '#191918' } as const;
 
 /* Pure WCAG escalation extremes (r171c step 3) — content-level color

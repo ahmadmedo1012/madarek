@@ -70,19 +70,24 @@
      shadow فاتح/داكن) مغلوبتان كليًا من .topbar.scrolled في overrides
      أدناه (var(--elev-2)) — حُذفتا كجثتين داخل الشلال. */
 
-  /* ── Sidebar nav items — refined hover & active state ─────────── */
+  /* ── Sidebar nav items ───────────────────────────────────────── */
+  /* R319 (c1-A · B1): the state twins are DELETED — one home per
+     state. layout.css owns the whole .nav-item family on the
+     paired-token contract (--_bg/--_fg/--_icon-fg flipped together,
+     hover guarded to fine pointers, :active twin on touch). The
+     background-only :hover twin here is THE B1 root cause: it
+     re-declared the wash's background half under layout.css's full
+     charcoal/paper pair — the composed paper-label-on-grey ≈1.1:1,
+     and on touch `:hover` sticks after the tap (the owner's
+     «مقرّراتي الدراسية» pale ghost). The accent-soft `.on` twin
+     loses to nothing anymore — the ink label + 2px accent rule
+     (layout.css, R313 grammar) is the single active truth. */
   .nav-item {
+    /* (transition-only survivor of the old trio — harmless, and the
+       one property family layout.css's base already authorizes) */
     transition:
       background var(--t-fast) var(--ease),
       color var(--t-fast) var(--ease);
-  }
-  .nav-item:hover { background: var(--surface-2); }
-  .nav-item.on {
-    background: var(--accent-soft, var(--surface-2));
-    /* Wave-2 orchestrator fix (audit 0-c P1-1): label on pastel must use the
-       deep ink — --accent #B57438 on --accent-soft #F4E4D2 = 3.06:1 ✗ AA.
-       --accent-ink = --c-copper-deep #5C3416 = 8.62:1 ✓. Rail/icon stay --accent. */
-    color: var(--accent-ink, var(--accent-strong));
   }
   /* (Wave 1-a focus consolidation: the inset-only nav-item ring deleted —
      it suppressed the universal outline. Nav items (anchors) now get the
@@ -794,22 +799,11 @@
     /* (r151e: bang retired — the pages layer already beats the
        components-layer .hide-on-mobile pair by layer order.) */
     .hide-on-mobile { display: none; }
-    .sidebar-mobile-close {
-      inline-size: 36px;
-      block-size: 36px;
-      border-radius: var(--r-md);
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-      background: var(--surface-2);
-      border: 1px solid var(--rule);
-      transition: var(--t-clean);
-    }
-    .sidebar-mobile-close:hover {
-      color: var(--text);
-      background: var(--surface);
-      border-color: var(--border-strong);
-    }
+    /* (R319 c1-A · B1b: the .sidebar-mobile-close geometry/hover twin
+       that lived here is DELETED — layout.css owns the whole control
+       now (square 44px hairline cell, radius 0, guarded paired states,
+       press twin). One home per control; this pages-layer copy used to
+       out-rank the layout-layer base on geometry.) */
   }
 
   /* ═══════════════════════════════════════════════════════════════
@@ -877,26 +871,27 @@
   /* r288: .page-title { overflow-wrap: break-word } folded into the
      base.css r288 anatomy block — deleted here. */
 
-  /* Avatars — never let one render as a flat coloured square.
-     21-c (A12 P1-2): the default ink is now the theme's accent-fg
-     pair, not white — the default ground IS --accent (copper), and
-     white on it measured 3.80:1 light / 2.24:1 dark at 11–16px
-     semibold. --accent-fg: 4.95:1 light / 7.87:1 dark. The ink on
-     DB-hex grounds is gated per-avatar in the UserAvatar primitive;
-     this CSS pair covers the no-color default + hand-rolled spans
-     (near-black ink passes on every seed avatarColor except the
-     owner grey #6B7280, which only flows through the primitive's
-     gate). The 10% black text-shadow was a white-ink legibility
-     crutch (and axe noise) — gone with the white ink. */
+  /* Avatars — R319 (c1-A · B1b): the square ink cell. Authenticated
+     chrome wears ONE avatar grammar: a square paper cell (radius 0)
+     on the 1px hairline with MONO initials in the theme ink — the
+     reference's own data-dense chip voice. The round + accent-fill
+     recipe (and with it the un-gated DB avatarColor grounds like
+     #5B8DEF-class blue) retires from the default; the `color` prop
+     keeps working for callers that still pass one (inline background
+     beats this sheet), but the shell surfaces (sidebar, topbar) no
+     longer forward it. */
   .avatar {
-    border-radius: var(--r-full);
+    border-radius: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    font-family: var(--font-mono);
     font-weight: var(--fw-semibold);
-    color: var(--accent-fg);
-    background: var(--accent);
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    font-variant-numeric: tabular-nums;
     line-height: 1;
   }
 
@@ -1662,34 +1657,15 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  BOTTOM NAV — active dot indicator                             ║
      ╚═══════════════════════════════════════════════════════════════╝ */
+  /* (R319 c1-A · B1b: the active-dot ::after, its keyframes and the
+     translateY(-2px) icon lift are DELETED — the active tab's marker
+     is the 2px accent TOP rule on the cell (notifications.css, the
+     same grammar as the sidebar's active row), not a floating dot on
+     pill chrome. The press scale stays — transform, not color.) */
   @media (max-width: 920px) {
-    .bottom-nav-item {
-      position: relative;
-    }
-    .bottom-nav-item.active::after {
-      content: '';
-      position: absolute;
-      inset-block-end: 4px;
-      inset-inline-start: 50%;
-      transform: translateX(-50%);
-      inline-size: 4px;
-      block-size: 4px;
-      border-radius: 50%;
-      /* 5-B5 (A4 P2-2): the dot joins the role-accent system with the
-         item color and the ::before ring (below, v23 section) — it was
-         the last bottom-nav surface still reading raw copper. */
-      background: var(--role-accent, var(--accent));
-      animation: madarek-dot-in var(--motion-duration-page) var(--ease-spring-bounce) both;
-    }
-    @keyframes madarek-dot-in {
-      from { transform: translateX(-50%) scale(0); }
-      to   { transform: translateX(-50%) scale(1); }
-    }
+    .bottom-nav-item { position: relative; }
     .bottom-nav-item:active { transform: scale(var(--state-nav-pressed-scale)); }
     .bottom-nav-icon { transition: transform var(--motion-duration-short) var(--ease); }
-    .bottom-nav-item.active .bottom-nav-icon {
-      transform: translateY(-2px);
-    }
   }
 
 
@@ -2015,19 +1991,14 @@
     position: relative;
     transition: color var(--motion-duration-short) var(--ease);
   }
-  .nav-section-label::before {
-    content: '';
-    position: absolute;
-    inset-block-end: -2px;
-    inset-inline-start: 0;
-    inset-inline-end: 0;
-    block-size: 1px;
-    background: linear-gradient(90deg, var(--rule), transparent);
-    opacity: 0.5;
-  }
-  [dir="rtl"] .nav-section-label::before {
-    background: linear-gradient(-90deg, var(--rule), transparent);
-  }
+/* (R319 c1-A · B1b): the v16 ::before underline — a 50%-opacity
+     directional gradient hairline under every section label — is
+     RETIRED: the ::before slot now belongs to the drawer's mono
+     gutter index (layout.css, [01]/[02]…, the reference's instrument
+     voice), and a decorative gradient underline is off the R313
+     flat-chrome grammar anyway (structural hairlines only, no
+     gradient paint). Deleting it here (overrides layer) frees the
+     pseudo for the layout-layer index at every band. */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2155,33 +2126,13 @@
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  BOTTOM NAV — accent ring on active                            ║
+     ║  BOTTOM NAV — active ring (R319 c1-A · B1b: RETIRED)           ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (max-width: 920px) {
-    .bottom-nav-item.active {
-      /* 5-B5 (A4 P2-2): role-accent, not the raw copper --accent. This
-         overrides-layer rule used to hard-code var(--accent) and beat
-         notifications.css's role-aware declaration (pages layer) — the
-         STUDENT bottom-nav read copper #B57438 while its sidebar icon
-         read the role accent #3B5BDB: two nav surfaces, two accent
-         systems. Role accents are pre-vetted ≥3:1 for non-text chrome;
-         the LABEL keeps the AA-safe --accent-ink from notifications.css
-         (text needs 4.5:1, which the role hexes are not vetted for). */
-      color: var(--role-accent, var(--accent));
-    }
-    .bottom-nav-item.active .bottom-nav-icon::before {
-      content: '';
-      position: absolute;
-      inset: -8px;
-      border-radius: var(--r-md);
-      background: color-mix(in srgb, var(--role-accent, var(--accent)) 10%, transparent);
-      z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
-    }
-    .bottom-nav-item .bottom-nav-icon {
-      position: relative;
-      z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
-    }
-  }
+  /* (R319 c1-A · B1b): the whole block is DELETED — the role-accent
+     color twin and the -8px ::before wash ring were the bottom bar's
+     pink-pill chrome. The active tab is now the ink label + the 2px
+     accent TOP rule + the filled ink icon (notifications.css),
+     radius 0, one grammar with the sidebar's active row. */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3002,11 +2953,15 @@
     position: fixed;
     inset-block-end: 0;
     inset-inline: 0;
-    background: var(--topbar-bg);
-    /* R313 (D16): solid band, no backdrop-filter. */
+    /* R319 (c1-A · B1b): OPAQUE paper — the translucent --topbar-bg
+       chrome glass let page text read through the dock (owner
+       screenshot). alpha 1, no backdrop-filter: the bar is a solid
+       paper band on the 1px structural hairline. */
+    background: var(--bg);
     border-block-start: 1px solid var(--rule);
     z-index: var(--z-dropdown);
-    /* r153h: 6px → --sp-1-5 (both slots) */
+    /* r153h: 6px → --sp-1-5 (both slots). The bottom slot carries the
+       home-indicator safe area (the dock's own footer reserve). */
     padding: var(--sp-1-5) max(var(--sp-2), env(safe-area-inset-left)) max(var(--sp-1-5), env(safe-area-inset-bottom));
     grid-template-columns: repeat(5, 1fr);
     transition: transform var(--t-base) var(--ease);

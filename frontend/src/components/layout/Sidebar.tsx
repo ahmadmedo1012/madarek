@@ -425,6 +425,12 @@ export function Sidebar() {
 
         <div className="sidebar-footer">
           <ThemeToggle />
+          {/* R319 (c1-A · B1b): the tour button's label is only hidden
+              on the COLLAPSED DESKTOP RAIL — in the mobile drawer it
+              must always read «عرض الجولة». `sidebarCollapsed` persists
+              across bands (zustand), so a user who collapsed the
+              desktop rail then opened the phone drawer used to get the
+              orphan compass icon with no label (owner screenshot). */}
           <button
             type="button"
             className="sidebar-tour-trigger"
@@ -433,12 +439,16 @@ export function Sidebar() {
             aria-label="إعادة عرض الجولة"
           >
             <Icon icon={Compass} size={14} />
-            {!sidebarCollapsed && <span>عرض الجولة</span>}
+            {(!sidebarCollapsed || drawerBand) && <span>عرض الجولة</span>}
           </button>
           <div className="sidebar-user" title={sidebarCollapsed ? `${user.firstName} ${user.lastName}` : undefined}>
+            {/* R319 (c1-A · B1b): the shell avatar never forwards the
+                un-gated DB avatarColor — the authenticated chrome wears
+                the ONE square ink-cell grammar (mono initials on paper
+                + hairline, radius 0). The `color` prop stays on the
+                primitive for callers that still pass one. */}
             <UserAvatar
               initials={initials}
-              color={user.avatarColor ?? undefined}
               size={32}
             />
             <div className="sidebar-user-info">
