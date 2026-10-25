@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Compass, Play, AlertCircle, Sparkles, ArrowLeft,
+  Play, AlertCircle, Sparkles, ArrowLeft,
 } from 'lucide-react';
 import { Badge } from '../../components/primitives';
-import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
+import { ErrorState, Skeleton } from '../../components/primitives/States';
 import {
-  PageFrame, PageHeader, SectionHeader, RowList, RowItem, FilterBar,
+  PageFrame, PageHeader, RowList, RowItem, FilterBar,
 } from '../../components/patterns';
+/* R319 (c3-S1) — the §B2 kit: the mono-indexed section title bar, the
+ * per-course mastery bar, the hatched empty cell. */
+import { SectionBar, BarCount, CourseBar, EmptyCell } from '../../components/student';
 import { Icon } from '../../components/Icon';
 import { useMatrix, useGaps } from '../../hooks/useResources';
 import { courseIcon, courseTint } from '../../lib/courseMeta';
@@ -16,6 +19,10 @@ import { formatInt } from '../../utils/numbers';
 /* ── r305-c (schedule family) imports — the only region agent 2-c edits above the components ── */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-schedule.css';
+/* R319 (c3-S1): the sheet system — the §B2 component anatomy + the
+ * academic family's harmonics (the matrix course-head mastery bar). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) live in
  * lib/courseMeta.ts (wave 9-a). */
@@ -156,6 +163,7 @@ export default function MatrixPage() {
   };
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
         title="المصفوفة التعليمية"
@@ -184,12 +192,24 @@ export default function MatrixPage() {
           الفجوة contract is the r164d pin: where a recommendation
           exists the WHOLE row is the link (RowItem to) and the chip
           rides the trailing slot; no recommendation stays an honest
-          non-link row. */}
+          non-link row. R319 (c3-S1): the heading joins the §B2
+          title-bar register — [01] + the actable gaps count as quiet
+          mono meta; the description survives as the note under the
+          bar (honest copy, unchanged). */}
       <section aria-label="فجوات الإتقان ذات الأولوية">
-        <SectionHeader
+        <SectionBar
+          index="01"
           title="فجواتك ذات الأولوية"
-          description="ابدأ بسدّ هذه الفجوات — حيث تتوفّر توصية، يأخذك الصفّ مباشرة إلى المحاضرة المناسبة"
+          meta={
+            !gaps.isPending && !gaps.isError && (gaps.data?.length ?? 0) > 0 ? (
+              <BarCount
+                n={gaps.data!.length}
+                srLabel={countAr(gaps.data!.length, ['فجوة واحدة', 'فجوتان', 'فجوات', 'فجوة'])}
+              />
+            ) : undefined
+          }
         />
+        <p className="r319sp-sec-note">ابدأ بسدّ هذه الفجوات — حيث تتوفّر توصية، يأخذك الصفّ مباشرة إلى المحاضرة المناسبة</p>
         {gaps.isPending ? (
           <RowList aria-label="قائمة الفجوات ذات الأولوية" loading />
         ) : gaps.isError ? (
@@ -199,7 +219,11 @@ export default function MatrixPage() {
             onRetry={() => gaps.refetch()}
           />
         ) : !gaps.data?.length ? (
-          <EmptyState icon={Sparkles} title="لا فجوات حالياً — أحسنت!" description="استمر بحضور المحاضرات والإجابة على نقاط التفاعل." />
+          /* R319 (c3-S1): the no-gaps state is the hatched EmptyCell. */
+          <EmptyCell
+            label="لا فجوات حالياً — أحسنت!"
+            note="استمر بحضور المحاضرات والإجابة على نقاط التفاعل."
+          />
         ) : (
           <RowList aria-label="قائمة الفجوات ذات الأولوية">
             {gaps.data.slice(0, 5).map((g) => (
@@ -231,13 +255,29 @@ export default function MatrixPage() {
           onRetry={() => matrix.refetch()}
         />
       ) : !matrix.data?.length ? (
-        <EmptyState illustration="empty-list"
-          icon={Compass}
-          title="لم تتشكّل مصفوفتك بعد"
-          description="شاهد أول محاضرة وأجب عن نقاط التفاعل فيها، وستبدأ المصفوفة برسم خريطة معرفتك تلقائياً."
+        /* R319 (c3-S1): the empty matrix is the hatched EmptyCell —
+           the sheet's reserved-but-empty region. */
+        <EmptyCell
+          label="لم تتشكّل مصفوفتك بعد"
+          note="شاهد أول محاضرة وأجب عن نقاط التفاعل فيها، وستبدأ المصفوفة برسم خريطة معرفتك تلقائياً."
         />
       ) : (
         <div className="flex-col gap-4">
+          {/* R319 (c3-S1): the heatmap region opens with the §B2
+              title-bar — [02] + the measured-concepts count as quiet
+              mono meta (the PageHeader's meta phrase, as data). */}
+          <SectionBar
+            index="02"
+            title="مصفوفتك حسب المقرّر"
+            meta={
+              totalConcepts > 0 ? (
+                <BarCount
+                  n={totalConcepts}
+                  srLabel={countAr(totalConcepts, ['مفهوم واحد مُقاس', 'مفهومان مُقاسان', 'مفاهيم مُقاسة', 'مفهوماً مُقاساً'])}
+                />
+              ) : undefined
+            }
+          />
           {/* Level filter — dimming non-matching cells animates the
               heatmap's shade transitions (the page's signature moment).
               r299: the FilterBar + shared .pill grammar (the CoursesPage
@@ -327,13 +367,24 @@ export default function MatrixPage() {
                     <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>{c.courseName}</div>
                     <div className="text-xs text-subtle">
                       {conceptCount(totalConceptsInCourse)} ·{' '}
-                      {masteredConcepts > 0 ? `أتقنت ${masteredConcepts}` : 'لم تتقن منها بعد'} · متوسط {formatInt(avgPct)}%
+                      {masteredConcepts > 0 ? `أتقنت ${masteredConcepts}` : 'لم تتقن منها بعد'}
                     </div>
                   </div>
                   <Link to={`/student/courses/${c.offeringId}`} className="btn ghost sm">
                     افتح المقرّر
                     <Icon icon={ArrowLeft} size={13} />
                   </Link>
+                </div>
+
+                {/* R319 (c3-S1): the block's real average-mastery datum
+                    as the §B2 CourseBar — hairline + end-tick + the mono
+                    % readout (the old «متوسط NN%» prose, as the sheet's
+                    instrument). Neutral ink; aria-labels the course. */}
+                <div className="r319sp-matrix-bar">
+                  <CourseBar
+                    pct={avgPct}
+                    ariaLabel={`متوسط إتقان مقرر ${c.courseName}: ${avgPct}%`}
+                  />
                 </div>
 
                 {/* The concept grid — a keyboard-legible list: every cell
@@ -411,5 +462,6 @@ export default function MatrixPage() {
         </div>
       )}
     </PageFrame>
+    </div>
   );
 }

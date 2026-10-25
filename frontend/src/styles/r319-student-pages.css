@@ -73,16 +73,29 @@
 
   /* ── 2 · The matrix course head — the mastery bar seat ───────────
      Every matrix course block carries its REAL average-mastery datum
-     («متوسط NN%» already prints in the head's meta line); the §B2
-     register seats it as a CourseBar — hairline + end-tick + the mono
-     pct readout — directly under the head, before the concept grid.
-     The bar rides the block's full width, one quiet line. */
+     (the old «متوسط NN%» prose); the §B2 register seats it as a
+     CourseBar — hairline + end-tick + the mono pct readout — directly
+     under the head, before the concept grid. The bar rides the
+     block's full width, one quiet line. */
   .r319sp-matrix-bar {
     display: block;
     margin-block: var(--sp-2) 0;
   }
   .r319sp-matrix-bar .r319s-coursebar {
     inline-size: 100%;
+  }
+
+  /* ── 2b · The section note ────────────────────────────────────────
+     The quiet line a §B2 section bar may carry beneath it when the
+     old heading owned a description (honest copy, preserved verbatim;
+     the r305c-sec-note register — this family's own copy, for pages
+     that don't load the courses family sheet). */
+  .r319sp-sec-note {
+    margin: 0 0 var(--sp-3);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+    max-inline-size: var(--type-body-max-measure);
   }
 
   /* ── 3 · The courses row progress seat ───────────────────────────

@@ -4,6 +4,10 @@ import {
 } from 'lucide-react';
 import { Card, Badge } from '../../components/primitives';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
+import { PageFrame, PageHeader } from '../../components/patterns';
+/* R319 (c3-S1) — the §B2 kit: the mono-indexed section title bar + the
+ * hatched empty cell (the DashboardPage conversion's components). */
+import { SectionBar, BarCount, EmptyCell } from '../../components/student';
 import { Icon } from '../../components/Icon';
 import { courseIcon, courseTint } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
@@ -12,6 +16,11 @@ import { useCoursesCatalog, type CatalogCourseRow } from '../../hooks/useResourc
 /* R305-A5 (Heron): the shared student vocabulary + this family's sheet. */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-courses.css';
+/* R319 (c3-S1): the sheet system — the §B2 component anatomy + the
+ * academic family's harmonics (the catalogue thumb-cards' hairline
+ * re-seat + the masthead re-seat via the .r319s-page wrapper). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 /**
  * r180-F4 — «دليل المقررات»: the student-facing catalogue of their
@@ -139,26 +148,22 @@ export default function CatalogPage() {
   const searching = debouncedQ.length > 0;
 
   return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          {/* R305 (Heron): the surface's classification rides the
-              foundation micro-label — this is the READ-ONLY reference
-              surface (enrollment is admin-mediated; the honest-door note
-              below names the real door). */}
-          <p className="r305s-eyebrow">مرجع للقراءة فقط</p>
-          <h1 className="page-title">دليل المقرّرات</h1>
-          <p className="page-subtitle">
-            {institutionName
-              ? `فهرس مقرّرات ${institutionName} — للبحث والاطّلاع على الخطة الدراسية.`
-              : 'فهرس مقرّرات مؤسستك — للبحث والاطّلاع على الخطة الدراسية.'}
-          </p>
-        </div>
-      </header>
-      {/* R305 (Heron): the thin technical rule that closes the header
-          register — the editorial divider carrying the page into its
-          filter/search row. */}
-      <hr className="r305s-rule r305s-rule--strong r305c-header-rule" />
+    <div className="r319s-page">
+    <PageFrame width="default">
+      {/* R319 (c3-S1): the header joins the patterns PageHeader (the
+          r288 anatomy fold — .page-title was already byte-identical to
+          .pf-page-title) so the route carries the ambient sheet code
+          + the ONE masthead display voice; the read-only classification
+          rides the eyebrow seat. */}
+      <PageHeader
+        title="دليل المقرّرات"
+        eyebrow="مرجع للقراءة فقط"
+        description={
+          institutionName
+            ? `فهرس مقرّرات ${institutionName} — للبحث والاطّلاع على الخطة الدراسية.`
+            : 'فهرس مقرّرات مؤسستك — للبحث والاطّلاع على الخطة الدراسية.'
+        }
+      />
 
       {/* The honest-door banner (the CoursesPage empty-state contract,
           now on the surface that invites the question): enrollment is
@@ -212,17 +217,31 @@ export default function CatalogPage() {
         <CatalogGridSkeleton />
       ) : !rows.length ? (
         <Card>
-          <EmptyState
-            icon={BookOpen}
-            illustration={searching ? 'empty-search' : 'empty-courses'}
-            title={searching ? 'لا توجد مقرّرات تطابق البحث' : 'لا توجد مقرّرات بعد'}
-            description={searching
+          {/* R319 (c3-S1): the empty catalogue is the hatched EmptyCell
+             inside the search Card's own slot — the sheet's
+             reserved-but-empty region. */}
+          <EmptyCell
+            label={searching ? 'لا توجد مقرّرات تطابق البحث' : 'لا توجد مقرّرات بعد'}
+            note={searching
               ? `لم نجد مقرّراً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
               : 'لم تُضف مقرّرات إلى دليل مؤسستك حتى الآن — ستظهر هنا فور إضافتها من الإدارة.'}
           />
         </Card>
       ) : (
         <>
+          {/* R319 (c3-S1): the catalogue region opens with the §B2
+              mono-indexed title bar — [01] + the server's honest total
+              as quiet mono meta (countAr for assistive tech). */}
+          <SectionBar
+            index="01"
+            title="مقرّرات المؤسسة"
+            meta={
+              <BarCount
+                n={meta?.total ?? rows.length}
+                srLabel={countAr(meta?.total ?? rows.length, COURSE_UNIT)}
+              />
+            }
+          />
           <p className="courses-summary">
             <bdi>{countAr(meta?.total ?? rows.length, COURSE_UNIT)}</bdi>
             {searching && <> · نتائج البحث عن «<bdi>{debouncedQ}</bdi>»</>}
@@ -267,6 +286,7 @@ export default function CatalogPage() {
           )}
         </>
       )}
+    </PageFrame>
     </div>
   );
 }
