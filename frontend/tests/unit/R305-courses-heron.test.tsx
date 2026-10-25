@@ -202,14 +202,16 @@ describe('R305 courses — the upcoming-assignments due chips', () => {
     };
     const { container } = render(<MemoryRouter><StudentCoursesPage /></MemoryRouter>);
 
-    const chips = Array.from(container.querySelectorAll('.pf-row-trailing .r305s-chip'));
+    /* R319 override (c3-S1): the due state rides the §B2 mono StatusChip
+       register now — .r319s-chip, square/hairline/Latin, one honest
+       deadline label per bucket derived from the same whole-day
+       arithmetic (OVERDUE / DUE nD); the Arabic prose sentence stays
+       in the row's meta («الموعد …»). The r305 dot-tone map is retired. */
+    const chips = Array.from(container.querySelectorAll('.pf-row-trailing .r319s-chip'));
     expect(chips).toHaveLength(3);
-    expect(chips[0]!.classList.contains('r305s-chip--danger')).toBe(true);   // فات الموعد
-    expect(chips[1]!.classList.contains('r305s-chip--warning')).toBe(true);  // يستحق قريباً
-    expect(chips[2]!.classList.contains('r305s-chip--success')).toBe(true);  // متبقّي وقت
-    // Each chip carries its tone dot + the honest label.
-    expect(chips.every((c) => c.querySelector('.r305s-chip-dot') !== null)).toBe(true);
-    expect(chips.map((c) => c.textContent)).toEqual(['فات الموعد', 'يستحق قريباً', 'متبقّي وقت']);
+    expect(chips.map((c) => c.textContent)).toEqual(['OVERDUE', 'DUE 1D', 'DUE 9D']);
+    // All three are the `due` tone (neutral ink — orange stays LIVE-only).
+    expect(chips.every((c) => c.classList.contains('r319s-chip--due'))).toBe(true);
     // The ONE clear action per row survives (the due chip is quiet chrome).
     expect(screen.getAllByRole('button', { name: /تسليم/ })).toHaveLength(3);
   });
@@ -277,12 +279,24 @@ describe('R305 course detail — the curriculum sections ride the kicker heading
     ];
     renderCourse();
 
-    const titles = Array.from(document.querySelectorAll('h2.r305s-kicker-title')).map((h) => h.textContent);
+    /* R319 override (c3-S1): the four curriculum section headings join
+       the §B2 title-bar register — the mono-indexed SectionBar
+       (h2.r319s-bar-title + the [nn] gutter index + hairline rule).
+       The SAME four titles, the SAME h2 contract; the register is the
+       change. The lectures bar's meta is the watched/total ratio in
+       mono (1/2 visible; the counted Arabic phrase «أكملت 1 من
+       محاضرتين» stays for assistive tech via sr-only). */
+    const titles = Array.from(document.querySelectorAll('h2.r319s-bar-title')).map((h) => h.textContent);
     expect(titles).toEqual(['المحاضرات', 'المواد المرفقة', 'الجدول الأسبوعي', 'الواجبات']);
-    // The lectures kicker carries the counted note (the counted Arabic
-    // plural — محاضرتين — never a bare numeral).
-    const lecKicker = document.querySelector('.course-lectures .r305s-kicker') as HTMLElement;
-    expect(lecKicker.querySelector('.r305s-metric-label')!.textContent).toContain('أكملت 1 من محاضرتين');
+    // The mono gutter indexes run [01]…[04], LTR, decorative.
+    const indexes = Array.from(document.querySelectorAll('.r319s-bar-index')).map((el) => el.textContent);
+    expect(indexes).toEqual(['[01]', '[02]', '[03]', '[04]']);
+    // The lectures bar carries the watched/total ratio as quiet mono meta
+    // + the counted Arabic phrase for assistive tech (never a bare numeral).
+    const lecBar = document.querySelector('.course-lectures .r319s-bar') as HTMLElement;
+    expect(lecBar.querySelector('.r319s-count')!.textContent).toBe('1/2');
+    expect(lecBar.querySelector('.sr-only')!.textContent).toContain('أكملت');
+    expect(lecBar.querySelector('.sr-only')!.textContent).toContain('محاضرتين');
   });
 });
 

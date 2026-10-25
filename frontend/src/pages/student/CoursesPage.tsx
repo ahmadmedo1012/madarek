@@ -1,14 +1,19 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  CheckCircle2, AlertTriangle, ClipboardList, Send, X,
+  CheckCircle2, AlertTriangle, Send, X,
   BookOpen, ArrowLeft,
 } from 'lucide-react';
 import { FormField } from '../../components/primitives';
-import { ProgressBar } from '../../components/primitives';
 import {
-  PageFrame, PageHeader, SectionHeader, RowList, RowItem, FilterBar,
+  PageFrame, PageHeader, RowList, RowItem, FilterBar,
 } from '../../components/patterns';
+/* R319 (c3-S1) — the §B2 kit: the mono-indexed section title bar, the
+ * per-course hairline bar, the mono status chips, the hatched empties
+ * (the DashboardPage conversion's own components, now this family's). */
+import {
+  SectionBar, BarCount, CourseBar, StatusChip, EmptyCell, dueChip, dueDays,
+} from '../../components/student';
 import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
@@ -32,6 +37,11 @@ import { formatDate } from '../../utils/numbers';
  * two carry the Heron primitives and the page-scoped refinements. */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-courses.css';
+/* R319 (c3-S1): the sheet system — the §B2 component anatomy (loaded
+ * by every student page that renders the kit) + this family's own
+ * harmonics (thumb-card hairline re-seat, the row progress seat). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) + the assignment-kind
  * labels live in lib/courseMeta.ts (waves 9-a / 13-15 — this page's former
@@ -77,25 +87,12 @@ function formatDue(iso: string): string {
   if (days <= 10) return `بعد ${days} أيام`;
   return formatDate(d, { dateStyle: 'medium' });
 }
-
-/** Honest status derived from the real due date — no fabricated urgency.
- *  R305 (Heron): the due state renders as a foundation status chip —
- *  the tone rides the dot only (semantic state tokens), the label stays
- *  quiet ink. Same three honest buckets as CourseDetailPage's copy. */
-function dueStatus(dueAt: string): { label: string; color: 'green' | 'amber' | 'red' } {
-  const days = (new Date(dueAt).getTime() - Date.now()) / 86_400_000;
-  if (days < 0) return { label: 'فات الموعد', color: 'red' };
-  if (days <= 2) return { label: 'يستحق قريباً', color: 'amber' };
-  return { label: 'متبقّي وقت', color: 'green' };
-}
-
-/* The due color → the foundation chip's dot tone (semantic state tokens
- * via .r305s-chip--*; the resting chip stays neutral). */
-const DUE_CHIP_TONE = {
-  green: 'r305s-chip--success',
-  amber: 'r305s-chip--warning',
-  red: 'r305s-chip--danger',
-} as const;
+/* R319 (c3-S1): the due state rides the §B2 mono StatusChip register
+ * now — dueChip(dueDays(iso)) derives the honest Latin label
+ * (OVERDUE / DUE TODAY / DUE nD / DUE) from the same whole-day
+ * arithmetic formatDue rides; the Arabic prose sentence stays in the
+ * row's meta («الموعد …»), the chip is the state. The r305 dot-chip
+ * map (dueStatus + DUE_CHIP_TONE) is retired with its label voice. */
 
 /** Shape-matched loading skeleton for the course row list (audit 0-d
  *  P2 — the page used a bare spinner where a list fits). */
@@ -175,11 +172,17 @@ function CourseRow({ e }: { e: MyEnrollment }) {
       }
       trailing={
         <span className="courses-row-progress">
-          {/* 21-c (A12 P1-3): `color` is the BAR FILL hue (decorative,
-              rides the track) — the primitive paints the % readout in
-              --text-secondary (8.44:1) after the raw themeColor text
-              measured 1.88–3.60:1 on the white cards. */}
-          <ProgressBar value={e.progressPct} color={tint} label="الإنجاز" />
+          {/* R319 (c3-S1): the row's progress rides the §B2 CourseBar —
+              the hairline + end-tick instrument with the mono code/pct
+              readout (the dashboard's DashCourseRow register). The %
+              readout stays the row's data in --text-secondary ink; the
+              old tinted fill is retired (neutral ink — orange stays the
+              semester/LIVE signal). */}
+          <CourseBar
+            code={c.code ?? undefined}
+            pct={e.progressPct}
+            ariaLabel={`تقدّم مقرّر ${c.name}: ${e.progressPct}%`}
+          />
           <span className="btn ghost sm courses-row-go">
             {e.progressPct > 0 ? 'تابع' : 'ابدأ'}
             <Icon icon={ArrowLeft} size={12} />
@@ -208,6 +211,7 @@ export default function StudentCoursesPage() {
   const filtered = (data ?? []).filter((e) => matchesFilter(e, filter));
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
         title="مقرّراتي الدراسية"
@@ -230,6 +234,21 @@ export default function StudentCoursesPage() {
         <EmptyState illustration="empty-courses" icon={BookOpen} title="لم تسجّل في أي مقرّر بعد" description="تواصل مع إدارة الكلّيّة لإكمال تسجيل مقرّرات الفصل — ستظهر هنا فور اعتمادها." />
       ) : (
         <>
+          {/* R319 (c3-S1): the courses region opens with the §B2
+              mono-indexed title bar — the sheet's [01] section, the
+              honest enrolled count as its quiet mono meta (countAr for
+              assistive tech). The summary line + filter + list below
+              keep their own rhythm. */}
+          <SectionBar
+            index="01"
+            title="مقرّراتك"
+            meta={
+              <BarCount
+                n={data.length}
+                srLabel={countAr(data.length, ['مقرّر مسجَّل واحد', 'مقرّران مسجّلان', 'مقرّرات مسجَّلة', 'مقرّراً مسجّلاً'])}
+              />
+            }
+          />
           {/* r173a (the r171 VLM «courses header weight» deferred note):
               the stats that used to wear four MetricCards now ride ONE
               light text-muted line. The SAME counts object; the FilterBar
@@ -275,10 +294,12 @@ export default function StudentCoursesPage() {
             {filtered.length ? filtered.map((e) => (
               <CourseRow key={e.id} e={e} />
             )) : (
-              <EmptyState illustration="empty-courses"
-                icon={BookOpen}
-                title="لا توجد مقرّرات في هذا التصنيف"
-                description="جرّب تصنيفاً آخر من الأزرار أعلاه لعرض مقرّراتك."
+              /* R319 (c3-S1): the empty filter bucket is the sheet's
+                 reserved-but-empty region — the hatched EmptyCell, never
+                 a bare «لا شيء» prose wall. */
+              <EmptyCell
+                label="لا توجد مقرّرات في هذا التصنيف"
+                note="جرّب تصنيفاً آخر من الأزرار أعلاه لعرض مقرّراتك."
               />
             )}
           </RowList>
@@ -286,24 +307,40 @@ export default function StudentCoursesPage() {
       )}
 
       <section aria-label="الواجبات القادمة">
-        <SectionHeader
+        {/* R319 (c3-S1): the section's heading joins the §B2 title-bar
+            register — [02] + the honest actable count as mono meta; the
+            old description line survives as the quiet note under the
+            bar (honest copy, unchanged). */}
+        <SectionBar
+          index="02"
           title="الواجبات القادمة"
-          description="واجباتك المستحقة فعلياً خلال الأسبوع القادم ولم تُسلّمها بعد"
+          meta={
+            !dashboard.isPending && !dashboard.isError && upcoming.length > 0 ? (
+              <BarCount
+                n={upcoming.length}
+                srLabel={countAr(upcoming.length, ['واجب واحد قادم', 'واجبان قادمان', 'واجبات قادمة', 'واجباً قادماً'])}
+              />
+            ) : undefined
+          }
         />
+        <p className="r305c-sec-note">واجباتك المستحقة فعلياً خلال الأسبوع القادم ولم تُسلّمها بعد</p>
         {dashboard.isPending ? (
           <CourseListSkeleton />
         ) : dashboard.isError ? (
           <ErrorState error={dashboard.error} onRetry={() => dashboard.refetch()} />
         ) : !upcoming.length ? (
-          <EmptyState illustration="empty-list"
-            icon={ClipboardList}
-            title="لا توجد واجبات قادمة"
-            description="ستظهر هنا الواجبات المستحقة فور إضافتها من أساتذة مقرّراتك."
+          /* R319 (c3-S1): the empty agenda is the hatched EmptyCell —
+             the sheet's reserved-but-empty region. */
+          <EmptyCell
+            label="لا توجد واجبات قادمة"
+            note="ستظهر هنا الواجبات المستحقة فور إضافتها من أساتذة مقرّراتك."
           />
         ) : (
           <RowList aria-label="قائمة الواجبات القادمة">
             {upcoming.map((a) => {
-              const due = dueStatus(a.dueAt);
+              /* R319 (c3-S1): dueChip + dueDays — the SAME honest
+                 whole-day arithmetic, now in the §B2 mono register. */
+              const due = dueChip(dueDays(a.dueAt));
               return (
                 <RowItem
                   key={a.id}
@@ -312,13 +349,10 @@ export default function StudentCoursesPage() {
                   meta={<>{a.courseName} · الموعد {formatDue(a.dueAt)}</>}
                   trailing={
                     <>
-                      {/* R305 (Heron): the due state as a quiet status chip
-                          (tone = the dot; the label never shouts) — the
-                          one emphasized control is the تسليم action. */}
-                      <span className={`r305s-chip ${DUE_CHIP_TONE[due.color]}`}>
-                        <span className="r305s-chip-dot" aria-hidden />
-                        {due.label}
-                      </span>
+                      {/* R319 (c3-S1): the due state as the §B2 mono chip
+                          (square, hairline, Latin) — the one emphasized
+                          control stays the تسليم action. */}
+                      <StatusChip label={due.label} tone={due.tone} />
                       {a.offeringId && (
                         <button
                           type="button"
@@ -347,6 +381,7 @@ export default function StudentCoursesPage() {
       )}
 
     </PageFrame>
+    </div>
   );
 }
 

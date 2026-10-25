@@ -1,8 +1,12 @@
 /* ═════════════════════════════════════════════════════════════════════
    MADAREK — R319 (c2-G1) — the student dashboard joins the SHEET SYSTEM
-   Scope: /student/dashboard ONLY (imported by DashboardPage.tsx, the
-   pdf.css/owner.css page-chunk precedent; load order after the r305
-   family sheets, so these rules win same-specificity ties).
+   Scope: the §B2 component anatomy (§1–§7 below) is shared by every
+   student page that renders the kit — /student/dashboard (DashboardPage,
+   the original owner) and, since c3-S1, the eight academic routes
+   (Courses/CourseDetail/Labs/Matrix/Catalog/Mooc/Library/Research via
+   r319-student-pages.css, which loads after this sheet and adds only the
+   academic family's own harmonics). The masthead re-seat (the unlayered
+   tail) keys off `.r319s-page` — the wrapper each of those pages mounts.
 
    THE SHEET CHROME ITSELF IS NOT HERE. C2-G2's shared shell owns the
    7px frame + grain + the ambient `SHEET S-01 · STUDENT` title line on

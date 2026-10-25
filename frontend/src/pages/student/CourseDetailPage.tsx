@@ -1,15 +1,21 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  Play, FileText, ClipboardList, Calendar,
+  Play, FileText,
   Clock, CheckCircle2, ChevronLeft, ChevronRight, Presentation, Video, FileArchive, Image,
   type LucideIcon,
 } from 'lucide-react';
 import { Badge, ProgressBar } from '../../components/primitives';
-import { ErrorState, EmptyState, Skeleton, ListSkeleton } from '../../components/primitives/States';
+import { ErrorState, Skeleton, ListSkeleton } from '../../components/primitives/States';
 import {
   PageFrame, PageHeader, StatLine, FilterBar, RowList, RowItem,
 } from '../../components/patterns';
+/* R319 (c3-S1) — the §B2 kit: mono-indexed section title bars, the
+ * per-lecture hairline bar, the mono status chips, the hatched
+ * empties (the DashboardPage conversion's own components). */
+import {
+  SectionBar, BarCount, CourseBar, StatusChip, EmptyCell, dueChip, dueDays,
+} from '../../components/student';
 import { Reveal, RevealGroup, useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useOfferingFull, selectNextLecture, pendingCheckpoints } from '../../hooks/useResources';
@@ -21,6 +27,10 @@ import { courseTint, ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, type Assignment
 /* R305-A5 (Heron): the shared student vocabulary + this family's sheet. */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-courses.css';
+/* R319 (c3-S1): the sheet system — the §B2 component anatomy + this
+ * family's own harmonics (r319-student-pages.css). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) + the assignment-kind
  * labels live in lib/courseMeta.ts; countAr, formatDateAr + WEEKDAY_NAMES_AR
@@ -33,15 +43,9 @@ function fmtDuration(sec: number) {
 }
 
 /* r173a (the courses page's bucket semantics) — the assignment row's
-   honest due state. Local copy: the courses page owns its own, and the
-   two stay one voice («فات الموعد» red / «يستحق قريباً» amber / «متبقّي
-   وقت» green) without a shared module neither family asked for. */
-function dueStatus(dueAt: string): { label: string; color: 'green' | 'amber' | 'red' } {
-  const days = (new Date(dueAt).getTime() - Date.now()) / 86_400_000;
-  if (days < 0) return { label: 'فات الموعد', color: 'red' };
-  if (days <= 2) return { label: 'يستحق قريباً', color: 'amber' };
-  return { label: 'متبقّي وقت', color: 'green' };
-}
+   honest due state. R319 (c3-S1): the label voice moved to the §B2 mono
+   StatusChip register (dueChip + dueDays — the same whole-day arithmetic
+   formatDue rides); the color map below is retired with the r305 badge. */
 
 /* R304 — the curriculum filter: the same pill language the courses and
    matrix pages speak, over the page's real lecture states. Pure
@@ -133,6 +137,7 @@ export default function CourseDetailPage() {
 
   if (isPending) {
     return (
+      <div className="r319s-page">
       <PageFrame width="default">
         <Skeleton width={200} height={32} rounded="var(--r-md)" />
         {/* R305: the pending mirror keeps the rail's exact box (the
@@ -144,12 +149,14 @@ export default function CourseDetailPage() {
         </div>
         <ListSkeleton rows={3} />
       </PageFrame>
+      </div>
     );
   }
   if (isError || !data) {
     // Page chrome + way back (audit 0-d P2 — the bare ErrorState had
     // no page wrapper and no route back to the courses list).
     return (
+      <div className="r319s-page">
       <PageFrame width="default">
         <Link to="/student/courses" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
           <Icon icon={ChevronRight} size={13} />
@@ -157,6 +164,7 @@ export default function CourseDetailPage() {
         </Link>
         <ErrorState error={error} onRetry={() => refetch()} />
       </PageFrame>
+      </div>
     );
   }
 
@@ -185,6 +193,7 @@ export default function CourseDetailPage() {
     : data.lectures.filter((l) => lectureBucket(l) === lecFilter);
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
         title={data.course.name}
@@ -271,22 +280,31 @@ export default function CourseDetailPage() {
           (Reveal/RevealGroup primitives, reduced-motion aware).
           heading="h2" (PP-X2 / audit P3-24): SR heading navigation can
           jump between the page's sections instead of meeting a single
-          H1 + anonymous card titles. R305 (Heron): the section heading
-          rides the foundation kicker — title + counted note + hairline
-          as ONE editorial object. */}
+          H1 + anonymous card titles. R319 (c3-S1): the section heading
+          joins the §B2 title-bar register — [01] + the watched/total
+          ratio as quiet mono meta (the counted Arabic phrase stays for
+          assistive tech; the visible voice is the tabular numeral). */}
       <section aria-label="محاضرات المقرر" className="course-lectures">
-        <div className="r305s-kicker r305c-kicker-wrap">
-          <h2 className="r305s-kicker-title">المحاضرات</h2>
-          <span className="r305s-metric-label">
-            أكملت {watchedCount} من {countAr(data.lectures.length, ['محاضرة واحدة', 'محاضرتين', 'محاضرات', 'محاضرة'])}
-          </span>
-        </div>
+        <SectionBar
+          index="01"
+          title="المحاضرات"
+          meta={
+            data.lectures.length > 0 ? (
+              <span className="r319s-bar-meta">
+                <bdi className="r319s-mono r319s-count" dir="ltr" aria-hidden="true">
+                  {formatInt(watchedCount)}/{formatInt(data.lectures.length)}
+                </bdi>
+                <span className="sr-only">
+                  أكملت {countAr(watchedCount, ['محاضرة واحدة', 'محاضرتين', 'محاضرات', 'محاضرة'])} من {countAr(data.lectures.length, ['محاضرة واحدة', 'محاضرتين', 'محاضرات', 'محاضرة'])}
+                </span>
+              </span>
+            ) : undefined
+          }
+        />
         {!data.lectures.length ? (
-          <EmptyState
-            icon={Play}
-            title="لم تُرفع محاضرات بعد"
-            illustration="empty-list"
-            description="سيقوم الأستاذ بإضافة المحاضرات تباعاً مع تقدّم الفصل."
+          <EmptyCell
+            label="لم تُرفع محاضرات بعد"
+            note="سيقوم الأستاذ بإضافة المحاضرات تباعاً مع تقدّم الفصل."
           />
         ) : (
           <>
@@ -314,10 +332,9 @@ export default function CourseDetailPage() {
               />
             )}
             {filteredLectures.length === 0 ? (
-              <EmptyState
-                icon={Play}
-                title="لا محاضرات في هذا التصنيف"
-                description={lecFilter === 'done'
+              <EmptyCell
+                label="لا محاضرات في هذا التصنيف"
+                note={lecFilter === 'done'
                   ? 'لم تُكمل محاضرة كاملة بعد — «تابع من هنا» يقودك إلى أول محاضرة غير منتهية.'
                   : 'كل محاضرات المقرر مكتملة عندك — أنجزت المنهج كاملاً.'}
               />
@@ -364,8 +381,15 @@ export default function CourseDetailPage() {
                           {/* r157 (W2-F7): named per-lecture bar — every
                               progressbar on the page needs its own accessible
                               name (the hero's has one; these rows had none,
-                              so a screen reader met N unnamed sliders). */}
-                          <ProgressBar value={watchedPct} color={tint} showValue={false} ariaLabel={`تقدّم المحاضرة ${lec.ordinal}`} />
+                              so a screen reader met N unnamed sliders).
+                              R319 (c3-S1): the row's progress rides the §B2
+                              CourseBar (hairline + end-tick + mono %) —
+                              same name, same honest datum, the sheet's
+                              instrument register. */}
+                          <CourseBar
+                            pct={watchedPct}
+                            ariaLabel={`تقدّم المحاضرة ${lec.ordinal}`}
+                          />
                         </div>
                       )}
                     </div>
@@ -395,14 +419,25 @@ export default function CourseDetailPage() {
       {/* Materials + Assignments + Schedule */}
       <div className="grid-2-1">
         <section aria-label="المواد المرفقة">
-        <div className="r305s-kicker"><h2 className="r305s-kicker-title">المواد المرفقة</h2></div>
+        {/* R319 (c3-S1): [02] — the materials count as quiet mono meta
+            (countAr for assistive tech); the empty is the hatched cell. */}
+        <SectionBar
+          index="02"
+          title="المواد المرفقة"
+          meta={
+            data.materials.length > 0 ? (
+              <BarCount
+                n={data.materials.length}
+                srLabel={countAr(data.materials.length, ['ملف واحد متاح', 'ملفان متاحان', 'ملفات متاحة', 'ملفاً متاحاً'])}
+              />
+            ) : undefined
+          }
+        />
         <div className="pf-rowlist">
           {!data.materials.length ? (
-            <EmptyState
-              icon={FileText}
-              title="الأستاذ لم يرفع مواد بعد"
-              illustration="empty-list"
-              description="ستظهر هنا الملفات والمراجع فور رفعها — العروض التقديمية، أوراق العمل، والقراءات."
+            <EmptyCell
+              label="الأستاذ لم يرفع مواد بعد"
+              note="ستظهر هنا الملفات والمراجع فور رفعها — العروض التقديمية، أوراق العمل، والقراءات."
             />
           ) : (
             <div className="flex-col gap-2">
@@ -454,13 +489,24 @@ export default function CourseDetailPage() {
         </section>
 
         <section aria-label="الجدول الأسبوعي">
-        <div className="r305s-kicker"><h2 className="r305s-kicker-title">الجدول الأسبوعي</h2></div>
+        {/* R319 (c3-S1): [03] — the weekly sessions count as mono meta. */}
+        <SectionBar
+          index="03"
+          title="الجدول الأسبوعي"
+          meta={
+            data.schedule.length > 0 ? (
+              <BarCount
+                n={data.schedule.length}
+                srLabel={countAr(data.schedule.length, ['حصة أسبوعية واحدة', 'حصتان أسبوعيتان', 'حصص أسبوعية', 'حصة أسبوعية'])}
+              />
+            ) : undefined
+          }
+        />
         <div className="pf-rowlist">
           {!data.schedule.length ? (
-            <EmptyState illustration="empty-list"
-              icon={Calendar}
-              title="لم يُنشَر جدول هذا المقرّر بعد"
-              description="سيظهر هنا فور تثبيت مواعيد المحاضرات الأسبوعيّة."
+            <EmptyCell
+              label="لم يُنشَر جدول هذا المقرّر بعد"
+              note="سيظهر هنا فور تثبيت مواعيد المحاضرات الأسبوعيّة."
             />
           ) : (
             <div className="flex-col gap-2">
@@ -480,26 +526,38 @@ export default function CourseDetailPage() {
       </div>
 
       <section aria-label="واجبات المقرر">
-      <div className="r305s-kicker"><h2 className="r305s-kicker-title">الواجبات</h2></div>
+      {/* R319 (c3-S1): [04] — the assignments count as mono meta; each
+          row's due state rides the §B2 mono chip (dueChip + dueDays). */}
+      <SectionBar
+        index="04"
+        title="الواجبات"
+        meta={
+          data.assignments.length > 0 ? (
+            <BarCount
+              n={data.assignments.length}
+              srLabel={countAr(data.assignments.length, ['واجب واحد', 'واجبان', 'واجبات', 'واجباً'])}
+            />
+          ) : undefined
+        }
+      />
       <p className="r305c-sec-note">مواعيد التسليم ووزن كل واجب في درجة المقرر — التسليم من صفحة مقرّراتك.</p>
       {!data.assignments.length ? (
-        <EmptyState illustration="empty-list"
-          icon={ClipboardList}
-          title="لا توجد واجبات نشطة"
-          description="حالياً لا شيء بانتظارك في هذا المقرر. وقت جيد لمراجعة المحاضرات السابقة."
+        <EmptyCell
+          label="لا توجد واجبات نشطة"
+          note="حالياً لا شيء بانتظارك في هذا المقرر. وقت جيد لمراجعة المحاضرات السابقة."
         />
       ) : (
         <RowList aria-label="قائمة واجبات المقرر" density="compact">
           {[...data.assignments]
             .sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime())
             .map((a) => {
-              const due = dueStatus(a.dueAt);
+              const due = dueChip(dueDays(a.dueAt));
               return (
                 <RowItem
                   key={a.id}
                   title={a.title}
                   meta={<>{ASSIGNMENT_KIND_LABEL[a.type as AssignmentKind] ?? a.type} · الوزن {formatInt(a.weight)}% · آخر موعد {formatDateAr(a.dueAt)}</>}
-                  trailing={<Badge color={due.color}>{due.label}</Badge>}
+                  trailing={<StatusChip label={due.label} tone={due.tone} />}
                 />
               );
             })}
@@ -507,5 +565,6 @@ export default function CourseDetailPage() {
       )}
       </section>
     </PageFrame>
+    </div>
   );
 }

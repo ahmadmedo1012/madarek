@@ -1,0 +1,117 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R319 (c3-S1) — the student ACADEMIC pages join the SHEET
+   SYSTEM (§B2 page sweep, the DashboardPage conversion's family twin).
+
+   Scope: the eight academic routes (each imports this sheet directly
+   after its own r305 family sheet — the pdf.css page-chunk precedent):
+     /student/courses             (CoursesPage)
+     /student/courses/:offeringId (CourseDetailPage)
+     /student/labs                (LabsPage)
+     /student/matrix              (MatrixPage)
+     /student/catalog             (CatalogPage)
+     /student/mooc                (MoocPage)
+     /student/library             (LibraryPage)
+     /student/research            (ResearchPage)
+
+   THE SHEET CHROME IS NOT HERE (and neither is the §B2 component
+   anatomy). C2-G2's shared shell owns the 7px frame + grain + the
+   ambient `SHEET S-01 · STUDENT` line on every authenticated route;
+   c2-G1's r319-student.css — imported by every page above — carries
+   the SectionBar / CourseBar / StatusChip / RulerGauge / WeekStrip /
+   EmptyCell component styles AND the `.r319s-page .pf-page-title`
+   masthead re-seat (one display voice per page: the h1). Each page
+   wraps its PageFrame in ONE `.r319s-page` root to opt into that
+   grammar. This sheet carries ONLY what is unique to the academic
+   family on top of both:
+
+     · §1 the thumb-card hairline re-seat — the catalogue/lab/mooc
+       card tiles still wore the components.css elevation chrome
+       (shadow-card + premium hover shadow + the −2px lift). On a
+       drafting sheet a card is a hairline REGION, not a floating
+       tile: shadow off at rest and under hover, lift off, on-palette
+       var(--surface) ground (already the case). Radius is already 0
+       by the R313 collapsed ladder — nothing to do there.
+     · §2 the per-course mastery bar seat on the matrix course head —
+       the course block's real average-mastery datum as a CourseBar
+       (the same hairline + end-tick register the dashboard's rows
+       read), under the head's meta line.
+     · §3 the courses row's progress seat — the §B2 CourseBar keeps
+       the row's trailing cluster height honest (bar + the ghost verb
+       chip on one baseline) while the old ProgressBar's taller track
+       is retired.
+
+   Gate contract (this tree): var()/color-mix() colors only · token
+   ladder for radius/spacing · zero :hover STATE rules of our own (the
+   re-seat only REMOVES elevation the shared system paints) · static
+   texture, nothing for the RM belt to collapse.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── 1 · The thumb-card hairline re-seat ──────────────────────────
+     Scoped to the pages' own `.r319s-page` root — the shared
+     .thumb-card recipe (components.css) keeps its shadow grammar on
+     every surface that has NOT opted into the sheet system. Here a
+     card is a hairline region on the page's paper: 1px var(--rule)
+     frame (already the recipe's own border), no shadow at rest, none
+     under hover, no lift. The hover border-darkening survives — it is
+     ink-state feedback, not elevation. */
+  .r319s-page .thumb-card {
+    box-shadow: none;
+  }
+  .r319s-page .thumb-card:hover {
+    box-shadow: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .r319s-page .thumb-card:hover {
+      transform: none; /* the sheet never floats its regions */
+    }
+  }
+  .r319s-page .thumb-card-image > * {
+    transform: none; /* the zoom-on-hover twin dies with the lift */
+  }
+
+  /* ── 2 · The matrix course head — the mastery bar seat ───────────
+     Every matrix course block carries its REAL average-mastery datum
+     («متوسط NN%» already prints in the head's meta line); the §B2
+     register seats it as a CourseBar — hairline + end-tick + the mono
+     pct readout — directly under the head, before the concept grid.
+     The bar rides the block's full width, one quiet line. */
+  .r319sp-matrix-bar {
+    display: block;
+    margin-block: var(--sp-2) 0;
+  }
+  .r319sp-matrix-bar .r319s-coursebar {
+    inline-size: 100%;
+  }
+
+  /* ── 3 · The courses row progress seat ───────────────────────────
+     The §B2 CourseBar is a hairline instrument, not a boxed track —
+     the row's trailing cluster keeps its baseline (bar + verb chip)
+     without the old track's block padding. */
+  .r319s-page .courses-row-progress {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-3);
+    flex: none;
+  }
+  .r319s-page .courses-row-progress .r319s-coursebar {
+    min-inline-size: 148px;
+  }
+  @media (max-width: 640px) {
+    .r319s-page .courses-row-progress .r319s-coursebar {
+      min-inline-size: 104px;
+    }
+  }
+
+  /* Reduced-motion belt: this sheet's material is static (hairlines,
+     fills, no animation of its own — the re-seat only removes the
+     shared hover elevation). Kept as the explicit contract, mirroring
+     the family sheets. */
+  @media (prefers-reduced-motion: reduce) {
+    .r319s-page .thumb-card,
+    .r319s-page .thumb-card-image > * {
+      transition: none;
+    }
+  }
+}

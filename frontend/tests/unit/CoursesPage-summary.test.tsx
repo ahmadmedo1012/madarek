@@ -186,15 +186,23 @@ describe('StudentCoursesPage — a 0% course shows the progress affordance (r173
     mocks.enrollments = [enrollment('zero', 0), enrollment('b', 62)];
     const { container } = renderPage();
 
-    const marks = container.querySelectorAll('.progress-zero-mark');
-    expect(marks).toHaveLength(1);
-    // The marker sits inside a progressbar at the honest zero.
-    const track = marks[0]!.closest('.progress-track') as HTMLElement;
-    expect(track.getAttribute('role')).toBe('progressbar');
-    expect(track.getAttribute('aria-valuenow')).toBe('0');
-    // The 62% card renders no marker — the fill owns the track.
-    const fills = container.querySelectorAll('.progress-fill');
-    expect(fills).toHaveLength(2);
+    /* R319 override (c3-S1): the row's progress rides the §B2 CourseBar —
+       the hairline track with an ink fill and a taller END-TICK at the
+       exact value (the r173a zero-mark affordance is now the tick AT 0:
+       an honest empty track + a `0%` mono readout). The role is meter
+       (the dashboard's instrument contract); the honest values pin the
+       same two rows as before. */
+    const bars = Array.from(container.querySelectorAll('.r319s-coursebar'));
+    expect(bars).toHaveLength(2);
+    expect(bars[0]!.getAttribute('role')).toBe('meter');
+    expect(bars[0]!.getAttribute('aria-valuenow')).toBe('0');
+    expect(bars[1]!.getAttribute('aria-valuenow')).toBe('62');
+    // The mono % readouts — the row's data voice (one per bar).
+    const pcts = bars.map((b) => b.querySelector('.r319s-coursebar-pct')?.textContent);
+    expect(pcts).toEqual(['0%', '62%']);
+    // The end-tick sits at the exact value on both rows (0% and 62%).
+    const ticks = bars.map((b) => b.querySelector<HTMLElement>('.r319s-coursebar-tick')?.style.insetInlineStart);
+    expect(ticks).toEqual(['0%', '62%']);
   });
 });
 
