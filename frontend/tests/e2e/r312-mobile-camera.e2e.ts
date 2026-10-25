@@ -128,17 +128,18 @@ test.describe('R312 — the mobile camera (§R R1)', () => {
     /* card 2 at the band → stage 2 (the exam hall), the camera at the
      * exam crop node (interpolated around it — never the full sheet).
      * R314-cycle2 override (§7 map share): the nodes are the widened
-     * 480×500 windows — exam (348, 60); the equal 64svh centred
+     * 460×500 windows (R319 §D6: narrowed 480→460, re-centred y0→0 —
+     * the 34svh phone frame) — exam (358, 0); the equal 64svh centred
      * station bands put the card centre at the band exactly at the
      * CAM_BANDS node. */
     await readAtBand(page, 2);
     const s2 = await camSheet(page);
     expect(s2.stage).toBe('2');
     const vb2 = (s2.cam?.viewBox ?? '').split(' ').map(Number);
-    /* the exam node is (348, 60) — the interpolation is within a
-     * half-segment of it on either side */
-    expect(Math.abs(vb2[0]! - 348)).toBeLessThanOrEqual(160);
-    expect(vb2[2]!).toBe(480);
+    /* the exam node is (358, 0) — R319 §D6 override — the
+     * interpolation is within a half-segment of it on either side */
+    expect(Math.abs(vb2[0]! - 358)).toBeLessThanOrEqual(160);
+    expect(vb2[2]!).toBe(460);
 
     /* card 3 at the band → stage 3, into the mastery half of the
      * exam→mastery interpolation. R315 (c4-E) re-pin: the cycle-3 tier
@@ -153,7 +154,7 @@ test.describe('R312 — the mobile camera (§R R1)', () => {
     const vb3 = (s3.cam?.viewBox ?? '').split(' ').map(Number);
     expect(vb3[0]!).toBeGreaterThanOrEqual(12);
     expect(vb3[0]!).toBeLessThanOrEqual(180);
-    expect(vb3[2]!).toBe(480);
+    expect(vb3[2]!).toBe(460); /* R319 §D6 override */
     expect(vb3[3]!).toBe(500);
 
     /* card 0 at the band → stage 0, around the lecture node */
@@ -250,10 +251,11 @@ test.describe('R312 — reduced motion at mobile: the discrete node crop', () =>
     await readAtBand(page, 1);
     const s = await camSheet(page);
     /* the exact node rect for stage 1 (the checkpoint crop —
-     * R314-cycle2 override: the widened window) */
-    expect(s.cam?.viewBox).toBe('680 260 480 500');
+     * R314-cycle2 override widened the window; R319 §D6 override:
+     * narrowed 480→460 + re-centred) */
+    expect(s.cam?.viewBox).toBe('690 260 460 500');
     await readAtBand(page, 3);
-    expect((await camSheet(page)).cam?.viewBox).toBe('12 60 480 500');
+    expect((await camSheet(page)).cam?.viewBox).toBe('12 0 460 500');
   });
 });
 

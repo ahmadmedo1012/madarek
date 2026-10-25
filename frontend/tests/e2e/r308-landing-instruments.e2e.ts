@@ -21,8 +21,13 @@ test.describe('R308 — لوحة البدء (the entrance)', () => {
          * so the skip key must be cleared on EVERY init run. The shared
          * fixture re-seeds it per load (context-level scripts run before
          * page-level ones); the old once-guard starved the reload at
-         * the end of this spec (the replay could never play). */
+         * the end of this spec (the replay could never play).
+         * R318 §C override (R319 re-pin): the first-visit policy ALSO
+         * writes the seen-flag (madarek-intro-seen) — this spec asserts
+         * the REPLAY contract, so BOTH keys clear on every init run
+         * (the spec plays the role of a fresh visitor each load). */
         sessionStorage.removeItem('madarek-intro-skip');
+        sessionStorage.removeItem('madarek-intro-seen');
       } catch {
         /* ignore */
       }
@@ -53,6 +58,7 @@ test.describe('R308 — لوحة البدء (the entrance)', () => {
     await page.addInitScript(() => {
       try {
         sessionStorage.removeItem('madarek-intro-skip');
+        sessionStorage.removeItem('madarek-intro-seen'); /* R318 §C re-pin: the seen-flag rides too */
       } catch {
         /* ignore */
       }
@@ -108,6 +114,7 @@ test.describe('R308 — the static belt', () => {
     await page.addInitScript(() => {
       try {
         sessionStorage.removeItem('madarek-intro-skip');
+        sessionStorage.removeItem('madarek-intro-seen'); /* R318 §C re-pin: the seen-flag rides too */
       } catch {
         /* ignore */
       }

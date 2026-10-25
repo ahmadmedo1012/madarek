@@ -559,7 +559,7 @@
   [data-theme='light'] .btn.accent,
   [data-theme='light'] .btn.gold {
     --_btn-bg: #DB3A00; /* spacing-gate/color-gate: allow — R318 AA seat, documented */
-    --_btn-bd: #DB3A00;
+    --_btn-bd: #DB3A00; /* color-gate: allow — R318 AA seat, same documented ground */
   }
 
   /* r157 (audit 6A11 #3): the in-flight freeze — a busy button never
