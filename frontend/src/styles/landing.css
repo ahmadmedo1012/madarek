@@ -6912,3 +6912,104 @@ html[data-theme='dark'] .fo-grain {
     padding-block: 78px var(--sp-1); /* spacing-gate: allow — the below-the-fold strip's paper (the statement band keeps its 57.2rem floor), an external constant */
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+ * R315 cycle-4 — C4-C (hero tonal density + the statement illustration)
+ *
+ * The re-verdicted VLM judge (fresh masked pairs, 1440×900):
+ *   · s00 — "reference = dense high-contrast stippled/hatched modernist
+ *     elevation; candidate = sparse low-contrast thin line-art (tonal
+ *     density, line weight)".
+ *   · s01 — "reference's large architectural illustration w/ orange sun +
+ *     pixel-art rows COMPLETELY ABSENT, replaced by list-based text bars".
+ *
+ * A. THE HERO INK DENSITY (scoped to .fo-hero-window ONLY — the loader's
+ *    entrance variant keeps its own thin-line staged construction, the
+ *    map's plan keeps its poché sheet, the sheet variants keep the base
+ *    ladder). The reference's elevation carries a real VALUE RANGE:
+ *    bold primary structure, ink-tone detail hairlines (not ghost grey),
+ *    and texture masses (stipple/hatch/fins) that accumulate ink — the
+ *    weights below are drawn-viewBox units (2-4px at 1440×640 ≈ the
+ *    reference's 2-3pt primaries rendered at its window scale).
+ * B. THE NEW TEXTURE CLASSES (bp-xhatch-* / bp-shade-* / bp-fins-* /
+ *    bp-stipple-outline) — token-colored, both themes ride the tokens.
+ * C. THE STATEMENT ILLUSTRATION (.st-art — components/landing/
+ *    StatementArt.tsx): an original drafted campus-massing panorama in
+ *    the reference's family (solid poché mass + orange sun + the
+ *    row-band of small drafted blocks), seated in the statement band's
+ *    OWN measured air under the 86.7rem desktop floor. It NEVER renders
+ *    below 992 (every ≤991 statement band is content-bound — zero drift
+ *    by construction) and its desktop block-sizes are measured against
+ *    the floor's slack at each rung (1024: 62px of a 94px zone · 1440:
+ *    129 of 199 · both re-verified by the c4-c band tables).
+ * ══════════════════════════════════════════════════════════════════════ */
+
+/* A — the hero window's ink ladder (c4-C: the s00 line-weight verdict) */
+.fo-hero-window .bp-ink { stroke-width: 4; } /* was 1.5 — the reference's bold primaries (c4-C foreman bump: the vision verdict read 1-3 at 2.75) */
+.fo-hero-window .bp-ink-2 { stroke-width: 5.5; } /* was 2 — the primary-structure weight */
+.fo-hero-window .bp-fill { stroke-width: 2.5; } /* was 1.5 — the volume envelopes */
+.fo-hero-window .bp-hair {
+  stroke: var(--text-secondary); /* was var(--grid-line) — ghost grey → ink-tone fine work */
+  stroke-width: 1.3;
+}
+.fo-hero-window .bp-stipple-dot { fill: var(--text-secondary); }
+.fo-hero-window .bp-stipple-fill { opacity: 0.9; }
+.fo-hero-window .bp-hatch-line { stroke: var(--text-secondary); }
+
+/* B — the added value-range textures (all token-colored; the pattern
+ *   defs live in ElevationDrawing/StatementArt with the -elv/-st ids) */
+.bp-xhatch-line { stroke: var(--text-secondary); stroke-width: 1.15; fill: none; }
+.bp-xhatch-fill { fill: url(#bp-xhatch-elv); stroke: none; }
+.bp-shade-dot { fill: var(--text-secondary); }
+.bp-shade-fill { fill: url(#bp-shade-elv); stroke: none; opacity: 0.92; }
+.bp-fins-line { stroke: var(--text-secondary); stroke-width: 1.1; fill: none; }
+.bp-fins-fill { fill: url(#bp-fins-elv); stroke: none; }
+.bp-stipple-outline { fill: url(#bp-stipple-elv); opacity: 0.8; }
+
+/* B-st — the statement art's own pattern classes (own -st id space so
+ *   the two artworks never share a defs cell) + the sun/poché masses */
+.st-xhatch-line { stroke: var(--text-secondary); stroke-width: 1.2; fill: none; }
+.st-xhatch-fill { fill: url(#st-xhatch-st); stroke: none; }
+.st-shade-dot { fill: var(--text-secondary); }
+.st-shade-fill { fill: url(#st-shade-st); stroke: none; opacity: 0.92; }
+.st-fins-line { stroke: var(--text-secondary); stroke-width: 1.15; fill: none; }
+.st-fins-fill { fill: url(#st-fins-st); stroke: none; }
+.st-stipple-fill { fill: url(#st-stipple-st); stroke: none; opacity: 0.9; }
+.st-stipple-outline { fill: url(#st-stipple-st); opacity: 0.8; }
+.st-poché { fill: var(--text); stroke: none; } /* the solid black polygonal mass */
+.st-sun { fill: var(--accent); stroke: none; } /* the one orange signal */
+
+/* B-st-ink — the statement art rides the hero's ink ladder (the same
+ *   token classes, the same weights — one drafted language site-wide;
+ *   the base bp-* sheet stays untouched for the loader + the map). */
+.st-art-svg .bp-ink { stroke-width: 2.5; }
+.st-art-svg .bp-ink-2 { stroke-width: 3.5; }
+.st-art-svg .bp-hair {
+  stroke: var(--text-secondary);
+  stroke-width: 1.2;
+}
+
+/* C — the statement band's drafted panorama (c4-C: the s01 verdict).
+ *   Hidden below 992 (content-bound bands — the pinned mobile/tablet
+ *   compositions never see it); at ≥992 it seats in the floor's slack. */
+.st-art { display: none; }
+
+.st-art-svg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+@media (min-width: 992px) {
+  .st-art {
+    display: block;
+    margin-block-start: 2.4rem; /* spacing-gate: allow — the measured air gap under the universities ticker, an external constant */
+    block-size: 10.5rem; /* 62px @1024 — inside the 86.7rem floor's 94px slack */
+  }
+}
+
+@media (min-width: 1280px) {
+  .st-art {
+    block-size: 15.5rem; /* 129px @1440 — inside the floor's 199px slack, 115px @1280 of 168 */
+  }
+}

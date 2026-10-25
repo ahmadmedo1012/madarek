@@ -29,6 +29,21 @@
  * trees, and sparse ORANGE signals that mean something (the checkpoint
  * pennant, the mastery pinnacle).
  *
+ * R315 cycle-4 (c4-C — the s00 tonal-density verdict): the reference's
+ *   elevation reads as a DENSE high-contrast stippled/hatched modernist
+ *   ink; ours read as sparse thin line-art. The hero variant now carries
+ *   the full drafted-ink VALUE RANGE (all gated `!entrance`, so the
+ *   loader's staged construction stays untouched): systematic cross-hatch
+ *   bands on the roof/shadow planes (the rake, the architrave, the
+ *   parapet), vertical-fin hatching on the shadow returns (the tower
+ *   tiers, the checkpoint glass), dense stipple shadow masses (under the
+ *   rake, the canopy, the colonnade's recessed wall), cast-shadow grounds
+ *   under every footprint, and stippled tree canopies. The stroke-weight
+ *   ladder itself is seated in landing.css scoped to .fo-hero-window
+ *   (bp-ink 2.75 / bp-ink-2 4 / bp-hair → ink-tone 1.3): the hero window
+ *   reads as a confident ink drawing from 1.5m, the sheet's own thin-line
+ *   grammar rides everywhere else.
+ *
  * Construction contracts:
  *
  *  · EVERY drawable carries the pathLength normalization AND the
@@ -106,22 +121,53 @@ export function ElevationArt({
   const uid = entrance ? 'elv-in' : 'elv';
   const stippleId = `bp-stipple-${uid}`;
   const hatchId = `bp-hatch-${uid}`;
+  /* c4-C: the three added value-range textures — cross-hatch (roof/shadow
+   * planes), dense shade stipple (cast shadows), vertical fins (the
+   * modernist shadow returns). */
+  const xhatchId = `bp-xhatch-${uid}`;
+  const shadeId = `bp-shade-${uid}`;
+  const finsId = `bp-fins-${uid}`;
 
   return (
     <>
       <defs>
-        {/* the wall stipple — the reference's texture, as line work:
-            two offset dot rows per 8×8 cell, token-colored. (The
-            entrance variant skips the texture fills.) */}
+        {/* the value-range textures — the reference's stipple/hatch/fins
+            language as line work, token-colored. (The entrance variant
+            skips every texture fill — the loader's construction stays
+            thin-line, unchanged.) */}
         {!entrance && (
           <>
+            {/* the wall stipple — c4-C: four offset dot rows per cell (the
+                mid-tone concrete value; was two — the tonal-density fix). */}
             <pattern id={stippleId} width="8" height="8" patternUnits="userSpaceOnUse">
-              <circle className="bp-stipple-dot" cx="2" cy="2" r="0.7" />
-              <circle className="bp-stipple-dot" cx="6" cy="6" r="0.7" />
+              <circle className="bp-stipple-dot" cx="1.5" cy="1.5" r="0.75" />
+              <circle className="bp-stipple-dot" cx="5.5" cy="3" r="0.75" />
+              <circle className="bp-stipple-dot" cx="2.5" cy="5.5" r="0.75" />
+              <circle className="bp-stipple-dot" cx="6.5" cy="6.5" r="0.75" />
             </pattern>
             {/* the ground hatch — 45° hairlines under the ground datum. */}
             <pattern id={hatchId} width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
               <line className="bp-drawable bp-hatch-line" x1="0" y1="0" x2="0" y2="7" pathLength={1} />
+            </pattern>
+            {/* c4-C — the cross-hatch lattice (both diagonal families in
+                one tile): the roof/shadow-plane value. */}
+            <pattern id={xhatchId} width="8" height="8" patternUnits="userSpaceOnUse">
+              <path className="bp-xhatch-line" d="M0,0 L8,8" />
+              <path className="bp-xhatch-line" d="M8,0 L0,8" />
+            </pattern>
+            {/* c4-C — the dense shade stipple: the cast-shadow value
+                (under overhangs, the colonnade's recessed wall, the
+                setback ledges, the building footprints on the ground). */}
+            <pattern id={shadeId} width="6" height="6" patternUnits="userSpaceOnUse">
+              <circle className="bp-shade-dot" cx="1" cy="1" r="0.85" />
+              <circle className="bp-shade-dot" cx="4" cy="2.5" r="0.85" />
+              <circle className="bp-shade-dot" cx="2" cy="5" r="0.85" />
+              <circle className="bp-shade-dot" cx="5.5" cy="5.5" r="0.85" />
+            </pattern>
+            {/* c4-C — the vertical fins: the modernist shadow-return
+                value (the tower tiers' shaded edges, the glass curtains). */}
+            <pattern id={finsId} width="5" height="5" patternUnits="userSpaceOnUse">
+              <line className="bp-fins-line" x1="0" y1="0" x2="0" y2="5" />
             </pattern>
           </>
         )}
@@ -183,7 +229,13 @@ export function ElevationArt({
       <g className="bp-l-ground" data-ink="3" aria-hidden="true">
         <line className="bp-drawable bp-ink bp-ink-2" x1="36" y1="500" x2="1404" y2="500" pathLength={1} />
         {!entrance && (
-          <rect className="bp-drawable bp-hatch-fill" x="36" y="501" width="1368" height="14" pathLength={1} />
+          <>
+            <rect className="bp-drawable bp-hatch-fill" x="36" y="501" width="1368" height="16" pathLength={1} />
+            {/* c4-C — the cast-shadow ground band under the whole
+                composition: the dense stipple anchors every volume to
+                the datum (the reference's deep ground shadows). */}
+            <rect className="bp-drawable bp-shade-fill" x="280" y="500" width="1006" height="12" pathLength={1} />
+          </>
         )}
         {/* paving joints above the datum (sheet variant only) */}
         {!entrance &&
@@ -203,6 +255,11 @@ export function ElevationArt({
         {/* the raked clerestory roof — rising toward the rear (RTL) */}
         <polyline className="bp-drawable bp-l-primary bp-ink bp-ink-2" data-ink="4" points="1010,230 1145,196 1280,230" pathLength={1} />
         <g className="bp-l-secondary" data-ink="5">
+          {/* c4-C — the raked roof plane: the cross-hatch band under the
+              clerestory rake (the reference's hatched roof masses). */}
+          {!entrance && (
+            <polygon className="bp-drawable bp-xhatch-fill" points="1010,230 1145,196 1280,230" pathLength={1} />
+          )}
           <line className="bp-drawable bp-hair" x1="1016" y1="242" x2="1274" y2="242" pathLength={1} />
           {/* the clerestory band — 11 mullions under the rake */}
           <rect className="bp-drawable bp-hair" x="1030" y="252" width="220" height="32" pathLength={1} />
@@ -211,7 +268,13 @@ export function ElevationArt({
           ))}
           {/* the spandrel texture + the floor band */}
           {!entrance && (
-            <rect className="bp-drawable bp-stipple-fill" x="1012" y="288" width="266" height="104" pathLength={1} />
+            <>
+              <rect className="bp-drawable bp-stipple-fill" x="1012" y="288" width="266" height="104" pathLength={1} />
+              {/* c4-C — the rake's cast shadow: the dense stipple band
+                  at the top of the spandrel (the reference's deep
+                  under-overhang shadows). */}
+              <rect className="bp-drawable bp-shade-fill" x="1012" y="288" width="266" height="22" pathLength={1} />
+            </>
           )}
           <line className="bp-drawable bp-hair" x1="1010" y1="392" x2="1280" y2="392" pathLength={1} />
           {/* the level marker — L1 at the floor band */}
@@ -219,6 +282,17 @@ export function ElevationArt({
           {!entrance && <text className="bp-micro" x="1296" y="395">L1</text>}
         </g>
         <g className="bp-l-openings" data-ink="6">
+          {/* c4-C — the entrance's shadow planes: the canopy's cast
+              shadow on the wall + the transom's reveal shadow + the base
+              strips below the slit windows. */}
+          {!entrance && (
+            <>
+              <rect className="bp-drawable bp-shade-fill" x="1080" y="402" width="120" height="18" pathLength={1} />
+              <rect className="bp-drawable bp-shade-fill" x="1092" y="412" width="96" height="16" pathLength={1} />
+              <rect className="bp-drawable bp-stipple-fill" x="1012" y="484" width="70" height="10" pathLength={1} />
+              <rect className="bp-drawable bp-stipple-fill" x="1198" y="484" width="78" height="10" pathLength={1} />
+            </>
+          )}
           {/* the entrance portal — double doors + transom + canopy */}
           <rect className="bp-drawable bp-fill" x="1090" y="410" width="100" height="90" pathLength={1} />
           <line className="bp-drawable bp-hair" x1="1140" y1="410" x2="1140" y2="500" pathLength={1} />
@@ -241,8 +315,17 @@ export function ElevationArt({
       {/* — 02 · جسر نقطة الفحص — the checkpoint link + signal mast — */}
       <g className={`bp-vol bp-vol-1${on(1)}`} aria-hidden="true">
         <rect className="bp-drawable bp-l-primary bp-fill" data-ink="4" x="930" y="356" width="80" height="144" pathLength={1} />
+        {/* c4-C — the link's shaded head band above the glass. */}
+        {!entrance && (
+          <rect className="bp-drawable bp-stipple-fill" x="932" y="358" width="76" height="14" pathLength={1} />
+        )}
         <g className="bp-l-openings" data-ink="6">
           {/* the glass curtain — 4×3 grid */}
+          {/* c4-C — the vertical-fins texture behind the mullions (the
+              reference's densely hatched glass bays). */}
+          {!entrance && (
+            <rect className="bp-drawable bp-fins-fill" x="938" y="376" width="64" height="96" pathLength={1} />
+          )}
           <rect className="bp-drawable bp-hair" x="938" y="376" width="64" height="96" pathLength={1} />
           {[954, 970, 986].map((x) => (
             <line key={x} className="bp-drawable bp-hair" x1={x} y1="376" x2={x} y2="472" pathLength={1} />
@@ -268,10 +351,25 @@ export function ElevationArt({
         <g className="bp-l-primary" data-ink="4">
           <rect className="bp-drawable bp-fill" x="740" y="320" width="190" height="180" pathLength={1} />
           <rect className="bp-drawable bp-fill" x="748" y="292" width="174" height="28" pathLength={1} />
+          {/* c4-C — the architrave's cross-hatch band (the shadow plane
+              under the pediment). */}
+          {!entrance && (
+            <rect className="bp-drawable bp-xhatch-fill" x="750" y="294" width="170" height="24" pathLength={1} />
+          )}
           {/* the pediment */}
           <polygon className="bp-drawable bp-ink bp-ink-2" points="740,292 835,250 930,292" pathLength={1} />
         </g>
         <g className="bp-l-openings" data-ink="6">
+          {/* c4-C — the recessed wall behind the colonnade: mid-tone
+              stipple + the entablature's deep shadow band at the top
+              (the colonnade reads as clean paper columns in front of a
+              shadowed wall — the reference's depth contrast). */}
+          {!entrance && (
+            <>
+              <rect className="bp-drawable bp-stipple-fill" x="744" y="344" width="182" height="148" pathLength={1} />
+              <rect className="bp-drawable bp-shade-fill" x="744" y="344" width="182" height="18" pathLength={1} />
+            </>
+          )}
           {/* the colonnade — four columns with capitals + bases */}
           {[766, 812, 858, 904].map((x) => (
             <g key={x}>
@@ -305,6 +403,14 @@ export function ElevationArt({
         <g className="bp-l-secondary" data-ink="5">
           {/* the parapet + its coping ticks */}
           <line className="bp-drawable bp-ink" x1="426" y1="292" x2="744" y2="292" pathLength={1} />
+          {/* c4-C — the parapet's cross-hatch band + its cast-shadow
+              strip on the wall below (the hatched roof planes). */}
+          {!entrance && (
+            <>
+              <rect className="bp-drawable bp-xhatch-fill" x="432" y="293" width="306" height="7" pathLength={1} />
+              <rect className="bp-drawable bp-shade-fill" x="432" y="302" width="306" height="14" pathLength={1} />
+            </>
+          )}
           {Array.from({ length: 10 }, (_, i) => 438 + i * 32).map((x) => (
             <line key={x} className="bp-drawable bp-hair" x1={x} y1="292" x2={x} y2="286" pathLength={1} />
           ))}
@@ -325,6 +431,11 @@ export function ElevationArt({
           {/* the wing entrance (reading end) */}
           <rect className="bp-drawable bp-hair" x="700" y="424" width="32" height="76" pathLength={1} />
           <line className="bp-drawable bp-hair" x1="716" y1="424" x2="716" y2="500" pathLength={1} />
+          {/* c4-C — the plinth strip below the tall windows (the base
+              shadow value on the reading wing's wall). */}
+          {!entrance && (
+            <rect className="bp-drawable bp-stipple-fill" x="432" y="488" width="306" height="10" pathLength={1} />
+          )}
         </g>
       </g>
 
@@ -336,6 +447,21 @@ export function ElevationArt({
           <rect className="bp-drawable bp-fill" x="310" y="100" width="90" height="70" pathLength={1} />
         </g>
         <g className="bp-l-openings" data-ink="6">
+          {/* c4-C — the tower's shadow returns: vertical-fin hatching on
+              each tier's shaded (western) edge + the setback ledges'
+              dense shadow strips — the reference's near-solid shadowed
+              tower mass, in our own setback geometry. */}
+          {!entrance && (
+            <>
+              <rect className="bp-drawable bp-fins-fill" x="282" y="244" width="16" height="252" pathLength={1} />
+              <rect className="bp-drawable bp-fins-fill" x="297" y="174" width="15" height="62" pathLength={1} />
+              <rect className="bp-drawable bp-fins-fill" x="312" y="104" width="14" height="62" pathLength={1} />
+              <rect className="bp-drawable bp-shade-fill" x="281" y="240" width="15" height="6" pathLength={1} />
+              <rect className="bp-drawable bp-shade-fill" x="415" y="240" width="15" height="6" pathLength={1} />
+              <rect className="bp-drawable bp-shade-fill" x="296" y="170" width="15" height="6" pathLength={1} />
+              <rect className="bp-drawable bp-shade-fill" x="400" y="170" width="15" height="6" pathLength={1} />
+            </>
+          )}
           {/* tier 1 — two window rows */}
           {[300, 356, 412].map((x) => (
             <g key={x}>
@@ -373,14 +499,20 @@ export function ElevationArt({
 
       {/* ═══ 07 · the detail layer — the two site trees ═══════════════ */}
       <g className="bp-l-detail" data-ink="7" aria-hidden="true">
-        {/* the right tree — beside the auditorium (reading start) */}
+        {/* the right tree — beside the auditorium (reading start).
+            c4-C: the canopies carry the stipple texture (the granular
+            ink mass the reference's trees read as). */}
         <g className="bp-hair">
           <path d="M1342,500 v-64" className="bp-drawable" pathLength={1} />
           <path d="M1342,446 c-10,-14 -22,-20 -34,-24" className="bp-drawable" pathLength={1} />
           <path d="M1342,440 c10,-16 22,-24 32,-30" className="bp-drawable" pathLength={1} />
-          <circle cx="1342" cy="394" r="30" className="bp-drawable" pathLength={1} />
-          <circle cx="1318" cy="412" r="22" className="bp-drawable" pathLength={1} />
-          <circle cx="1366" cy="410" r="24" className="bp-drawable" pathLength={1} />
+          {!entrance && (
+            <>
+              <circle cx="1342" cy="394" r="30" className="bp-drawable bp-stipple-outline" pathLength={1} />
+              <circle cx="1318" cy="412" r="22" className="bp-drawable bp-stipple-outline" pathLength={1} />
+              <circle cx="1366" cy="410" r="24" className="bp-drawable bp-stipple-outline" pathLength={1} />
+            </>
+          )}
           <path d="M1330,380 l-8,-10 M1352,384 l10,-8 M1322,404 l-10,-6 M1360,400 l10,-8" className="bp-drawable" pathLength={1} />
         </g>
         {/* the left tree — beside the tower (reading end) */}
@@ -388,9 +520,13 @@ export function ElevationArt({
           <path d="M158,500 v-64" className="bp-drawable" pathLength={1} />
           <path d="M158,446 c-10,-14 -22,-20 -34,-24" className="bp-drawable" pathLength={1} />
           <path d="M158,440 c10,-16 22,-24 32,-30" className="bp-drawable" pathLength={1} />
-          <circle cx="158" cy="394" r="30" className="bp-drawable" pathLength={1} />
-          <circle cx="134" cy="412" r="22" className="bp-drawable" pathLength={1} />
-          <circle cx="182" cy="410" r="24" className="bp-drawable" pathLength={1} />
+          {!entrance && (
+            <>
+              <circle cx="158" cy="394" r="30" className="bp-drawable bp-stipple-outline" pathLength={1} />
+              <circle cx="134" cy="412" r="22" className="bp-drawable bp-stipple-outline" pathLength={1} />
+              <circle cx="182" cy="410" r="24" className="bp-drawable bp-stipple-outline" pathLength={1} />
+            </>
+          )}
           <path d="M146,380 l-8,-10 M168,384 l10,-8 M138,404 l-10,-6 M176,400 l10,-8" className="bp-drawable" pathLength={1} />
         </g>
       </g>
