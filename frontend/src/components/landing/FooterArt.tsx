@@ -5,9 +5,16 @@
  * constellation map: illustrative construction drawings, NOT UI iconography;
  * UI icons keep going through <Icon icon={...} /> everywhere).
  *
- * The markup moved VERBATIM — the rendered DOM is byte-identical to the
- * inline version (same classes/attributes/subtree), so no geometry changes.
+ * R318 §A6 (C3-FOOT): the wordmark is REBUILT from real connected
+ * letterforms of «مدارك» shaped from the site's own display font
+ * (Alexandria 700 — scripts/r318/wordmark-build.mjs → the committed
+ * wordmark-art.generated.ts). The five hand-drafted disconnected
+ * geometric strokes are RETIRED (the gate's OCR read them as garbage:
+ * «ee re 6 لل» @1440 · «مداع» @390; the generated letterforms read
+ * «مدارك» as ONE WORD at 1440+390, light+dark).
  */
+
+import { WORDMARK_WIDE, WORDMARK_COMPACT } from './footer/wordmark-art.generated';
 
 /** [08] the drawn-mark cell — the reference's line-logo seat:
  * Madarek's own khatam star drafted as a construction drawing
@@ -53,61 +60,46 @@ export function FooterMarkArt() {
   );
 }
 
-/** The full-width drawn wordmark «مدارك» — hand-drafted single-stroke
- * letter skeletons (construction documented in LandingPage.tsx's footer
- * seat comments): baseline y=86 · shoulder y=52 · tall tops y=16 ·
- * stroke 6 units · RTL: م [1000..1160] · د [742..930] · ا @645 ·
- * ر [402..560] · ك [48..330] · gaps ≈ 22 units. */
+/** The full-width drawn wordmark «مدارك» — R318 §A6: REAL letterforms
+ * shaped from Alexandria 700 (harfbuzz: م initial CONNECTED into د
+ * final; ا/ر/ك isolated) as ONE composed filled path — Madarek's own
+ * name in OUR display font. The sheet keeps the ladder-pinned 1200:92
+ * viewBox aspect (docH 12,340/9,959/12,627 EXACT) spanning the wordmark
+ * row's full cell; the ink (339.4×101.9px @1440) letterboxes inside
+ * with construction margins — 73.6% of the row height, the manifest's
+ * own glyph-height ratio measured against the row the wordmark owns in
+ * the split 314px band. Construction tracking rides only the three
+ * non-joining boundaries (د→ا · ا→ر · ر→ك) — the join never gaps.
+ * Filled outlines (fill: currentColor): the reference's stroke-only
+ * hollow technique fails the OCR gate at every measured weight
+ * (scripts/r318/wordmark-build.mjs header + ocr-matrix.md). */
 export function WordmarkArt() {
   return (
     <svg
       className="fo-wordmark-svg"
-      viewBox="0 4 1200 92"
+      viewBox={WORDMARK_WIDE.viewBox}
       preserveAspectRatio="xMidYMid meet"
       focusable="false"
     >
-      <g className="fo-wordmark-ink">
-        {/* ك */}
-        <path d="M 330 32 L 288 20 L 312 34 L 286 86 L 66 86 L 48 60" />
-        {/* ر */}
-        <path d="M 560 52 H 512 Q 436 62 402 84" />
-        {/* ا */}
-        <path d="M 645 16 V 86" />
-        {/* د */}
-        <path d="M 930 86 L 924 46 H 776 L 742 86 H 786" />
-        {/* م */}
-        <path d="M 1000 86 H 1137 A 23 23 0 0 0 1160 63 A 23 23 0 0 0 1137 40 A 23 23 0 0 0 1114 63 A 23 23 0 0 0 1137 86" />
-      </g>
+      <path className="fo-wordmark-ink" d={WORDMARK_WIDE.d} />
     </svg>
   );
 }
 
-/** The compact phone wordmark — the same letter skeletons at ~1.7× scale
- * and tight construction spacing, natural proportions for the <768px band
- * (the wide cut would letterbox to ~30px of ink on a phone). Coordinate
- * plan: baseline y=142 · shoulder y=76 · tall tops y=18 · stroke 8 units ·
- * RTL: م [527..615] · د [390..505] · ا @365 · ر [229..343] · ك [32..207] ·
- * gaps ≈ 22 units. */
+/** The compact phone wordmark (<768 band) — the same REAL letterforms on
+ * the FIXED 640×180 sheet whose aspect the protected docH ladder pins
+ * (390 = 11,411 · 360 = 10,735 EXACT); the word letterboxes inside with
+ * construction margins (ink 466×140 of 640×180). Same generator, same
+ * 300u track, same filled-ink contract as the wide cut. */
 export function WordmarkCompactArt() {
   return (
     <svg
       className="fo-wordmark-svg fo-wordmark-svg--compact"
-      viewBox="0 0 640 180"
+      viewBox={WORDMARK_COMPACT.viewBox}
       preserveAspectRatio="xMidYMid meet"
       focusable="false"
     >
-      <g className="fo-wordmark-ink">
-        {/* ك */}
-        <path d="M 207 50 L 176 34 L 192 56 L 168 142 L 52 142 L 32 112" />
-        {/* ر */}
-        <path d="M 343 84 H 300 Q 262 92 229 138" />
-        {/* ا */}
-        <path d="M 365 18 V 142" />
-        {/* د */}
-        <path d="M 505 142 L 498 76 H 424 L 390 142 H 434" />
-        {/* م */}
-        <path d="M 527 142 H 581 A 34 34 0 0 0 615 108 A 34 34 0 0 0 581 74 A 34 34 0 0 0 547 108 A 34 34 0 0 0 581 142" />
-      </g>
+      <path className="fo-wordmark-ink" d={WORDMARK_COMPACT.d} />
     </svg>
   );
 }

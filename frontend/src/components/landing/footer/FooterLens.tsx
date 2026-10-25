@@ -19,6 +19,13 @@
  *    reference's own sketch→render reveal). The labels + orange
  *    signals annotate it. The render is a PAPER artifact in both
  *    themes (the hero + plan precedent).
+ *  · R318 §A7 (C3-FOOT): the render is re-seated ASPECT-TRUE — the
+ *    960×960 square asset letterboxes inside the strip's drawing band
+ *    (178×178 viewBox units, centered) instead of being SLICED to a
+ *    5.6:1 band that cut the subject mid-building; the [01] seat
+ *    label is shortened to stay clear of the image at every ≥768
+ *    width (the reference carries NO DOM label on its strip — this
+ *    one keeps the honest index voice without crossing the art).
  *  · The lens rides the shared conductor clock; the radius eases to
  *    its target (open/closed) and the whole instrument sleeps when
  *    settled — zero frames on an idle footer.
@@ -208,7 +215,11 @@ export function FooterLens() {
             when the lens is off: touch / reduced motion). R314 cycle-2:
             the licensed ink render carries the resolved ink state
             (y 0..178 — the labels keep their clean paper band below),
-            annotated by the orange signals + the Arabic stage labels. */}
+            annotated by the orange signals + the Arabic stage labels.
+            R318 §A7: the square 960×960 render is seated ASPECT-TRUE
+            (meet — 178×178 units, centered at x 411..589): no mid-
+            subject crop (the retired 1000×178 slice cut the building
+            to a 5.6:1 band); the same licensed asset, re-seated. */}
         <g
           className="fl-resolved"
           ref={revealRef}
@@ -218,11 +229,11 @@ export function FooterLens() {
           <image
             className="fl-render"
             href="/media/renders/crop-garyounis-classic-960.webp"
-            x="0"
-            y="0"
-            width={VB_W}
-            height="178"
-            preserveAspectRatio="xMidYMid slice"
+            x={411}
+            y={0}
+            width={178}
+            height={178}
+            preserveAspectRatio="xMidYMid meet"
           />
           <g className="fl-signal">
             <polygon points="545,112 573,120 545,128" />
@@ -246,7 +257,11 @@ export function FooterLens() {
       </svg>
 
       <span className="fl-coord fo-mono" dir="ltr" aria-hidden="true">
-        [01] CAMPUS · INK RENDER — INSPECTION STRIP
+        {/* R318 §A7: the seat label stays clear of the aspect-true render
+            at every ≥768 width (the retired 372px-wide «— INSPECTION
+            STRIP» tail crossed the image band; measured clearances
+            after the re-seat: 80px @768 · 224px @1024 · 409px @1440). */}
+        [01] CAMPUS · INK RENDER
       </span>
     </div>
   );

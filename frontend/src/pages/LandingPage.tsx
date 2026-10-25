@@ -1445,13 +1445,16 @@ export default function LandingPage() {
           {/* the image-strip band (the reference's footer-img-wrap): the
               inspection lens over the journey drawing rides BELOW the
               grid, above the legal row (the measured order), and the
-              GIANT drafted wordmark — Madarek's own «مدارك», one clean
-              single-contour stroke path per letter — spans the footer's
-              FULL inner measure at every ≥992px viewport (R315 K-F: the
-              ~380px CSS-text-stroke wordmark and its self-intersecting
-              contours at ك/د are retired). The lens strip hides ≤767px
-              (the reference hides its strip there too); the wordmark
-              flows as its own band on mobile, in its compact cut. */}
+              GIANT wordmark — Madarek's own «مدارك», REAL letterforms
+              shaped from the site's Alexandria 700 display font
+              (R318 §A6: scripts/r318/wordmark-build.mjs → the committed
+              wordmark-art.generated.ts; the five hand-drafted
+              disconnected geometric strokes are retired) — spans the
+              footer's FULL inner measure at every ≥768px viewport on
+              the ladder-pinned 1200:92 sheet (docH EXACT). The lens
+              strip hides ≤767px (the reference hides its strip there
+              too); the wordmark flows as its own band on mobile, in
+              its compact cut. */}
           <div className="fo-fstrip">
             <FooterLens />
             <div className="fo-wordmark" aria-hidden="true">
@@ -1460,48 +1463,31 @@ export default function LandingPage() {
               <span className="fo-wordmark-reg fo-wordmark-reg-bl" aria-hidden="true">+</span>
               <span className="fo-wordmark-reg fo-wordmark-reg-br" aria-hidden="true">+</span>
 
-              {/* ── the WIDE cut — the ≥992px construction sheet, viewBox
-                  1200×92 (the ink band y 10..89 trimmed to a 6/7-unit
-                  margin — the 108-tall sheet spent 18px of the measured
-                  314 strip band on empty paper; the ink scale is set by
-                  the viewBox WIDTH alone, so the letters render at the
-                  same 88px @1398-wide cut). All five letters drafted on
-                  ONE shared baseline, stroke 6 units, square caps,
-                  miter joins, fill none — painted by currentColor:
-                  · baseline y=86 · dal shoulder y=46 · tall tops y=16
-                  · RTL letter order (right → left):
-                    م [1000..1160] · د [742..930] · ا @645 ·
-                    ر [400..560] · ك [40..330]
-                  · م INITIAL FORM (it connects to د): the round head
-                    r=23 centered (1137,63) — tangent to the baseline —
-                    plus the baseline exit stroke running left
-                    (1000,86 → 1137,86) + four quarter-arcs (sweep 0,
-                    counter-clockwise), NO close command (closing would
-                    retrace the exit stroke → a doubled contour).
-                  · د FINAL FORM (connected from م): the connector entry
-                    edge rises from the baseline (930,86 → 924,46), the
-                    shoulder runs left (→ 776,46), the left diagonal
-                    falls to the baseline (→ 742,86), the hook turns
-                    back right (→ 786,86).
-                  · ا ISOLATED: one straight riser (645,16 → 645,86).
-                  · ر ISOLATED: the head stroke (560,52 → 512,52)
-                    dropping into the long concave tail
-                    (Q 436,62 → tip 402,84).
-                  · ك ISOLATED: the hammer zigzag at the stem top
-                    (330,32 → 288,20 → 312,34), the stem leaning down
-                    (→ 286,86), the long foot running left (→ 66,86),
-                    the rising hook (→ 48,60). */}
+              {/* ── the WIDE cut — the ≥768px construction sheet: REAL
+                  Alexandria 700 letterforms of «مدارك» shaped by
+                  harfbuzz (م initial CONNECTED into د final; ا/ر/ك
+                  isolated) and composed by scripts/r318/wordmark-
+                  build.mjs into ONE filled path per cut — the committed
+                  wordmark-art.generated.ts. The sheet keeps the
+                  ladder-pinned 1200:92 viewBox aspect (box
+                  1398×107.2 @1440 · 982×75.3 @1024 · 726×55.7 @768 —
+                  docH 12,340/9,959/12,627 EXACT) spanning the wordmark
+                  row's full cell; the ink letterboxes inside
+                  (339.4×101.9px @1440 = 73.6% of the 138.4px row, the
+                  manifest's glyph-height ratio on the row the
+                  wordmark owns in the split 314px band) with
+                  construction tracking only at the three non-joining
+                  boundaries (د→ا · ا→ر · ر→ك) — the م→د join never
+                  gaps. Filled currentColor ink (the stroke-only
+                  hollow technique fails the OCR gate at every
+                  measured weight — see the generator's header). */}
               <WordmarkArt />
 
-              {/* ── the COMPACT cut — viewBox 640×180: the same word at
-                  natural proportions for the <768px band (the wide cut
-                  would letterbox to ~30px of ink on a phone). Coordinate
-                  plan: baseline y=142 · shoulder y=76 · tall tops y=18 ·
-                  stroke 8 units · RTL:
-                    م [527..615] · د [390..505] · ا @365 ·
-                    ر [229..343] · ك [32..207] · gaps ≈ 22 units.
-                  Same letter skeletons, ~1.7× scale, tight construction
-                  spacing. */}
+              {/* ── the COMPACT cut — the FIXED 640×180 phone sheet: the
+                  same REAL letterforms, the same 300u construction
+                  track, letterboxed with ≥10/20u margins (ink
+                  466×140). Its aspect is pinned by the protected
+                  docH ladder (390 = 11,411 · 360 = 10,735 EXACT). */}
               <WordmarkCompactArt />
 
               <span className="fo-wordmark-en fo-mono" dir="ltr">MADAREK — ARABIC-FIRST LEARNING SHEET</span>

@@ -2222,8 +2222,11 @@ html[data-theme='dark'] body.mdrk-grain::before {
 .fo-fstrip-img {
   inline-size: 100%;
   block-size: 100%;
-  object-fit: cover;
-  object-position: 50% 38%;
+  /* R318 §A7: aspect-true (contain) — the square 960×960 ink render
+   * letterboxes inside the cell instead of being sliced mid-subject
+   * (object-fit:cover cropped the building to a 2.8:1 band); the box
+   * height is unchanged, so the tier ladders/docH are untouched. */
+  object-fit: contain;
   display: block;
   filter: contrast(1.06);
 }
@@ -2461,18 +2464,16 @@ html[data-theme='dark'] body.mdrk-grain::before {
   }
 }
 
-/* the GIANT drafted construction-line wordmark (R315 K-F: the
- * CSS-text-stroke seat is retired — its 2px stroke painted both sides
- * of every glyph outline and self-intersected at ك/د — for a
- * hand-built SVG: one clean stroke path per letter, uniform width,
- * square drafting caps/joins, inked by var(--text) through
- * currentColor, filling the footer's inner measure at every ≥992px
- * viewport). Two cuts of the same word share the band: the WIDE
- * construction sheet (≥768) and the COMPACT natural word (<768, where
- * the wide cut would letterbox to ~30px of ink). Registration '+'
- * marks keep the four corners; the Latin mono line keeps the
- * bilingual drafting voice. Decorative — aria-hidden, static (no
- * reveal), clean under reduced motion by construction. */
+/* the GIANT wordmark (R315 K-F retired the CSS-text-stroke seat;
+ * R318 §A6 retires the five hand-drafted disconnected skeletons too —
+ * the word is now REAL Alexandria 700 letterforms shaped by harfbuzz
+ * and composed by scripts/r318/wordmark-build.mjs into the committed
+ * wordmark-art.generated.ts). Two cuts share the band: the WIDE sheet
+ * (≥768, the ladder-pinned 1200:92 aspect — docH EXACT at 768/1024/
+ * 1440) and the COMPACT phone sheet (<768, the pinned 640×180).
+ * Registration '+' marks keep the four corners; the Latin mono line
+ * keeps the bilingual drafting voice. Decorative — aria-hidden,
+ * static (no reveal), clean under reduced motion by construction. */
 .fo-wordmark {
   position: relative;
   display: grid;
@@ -2487,26 +2488,26 @@ html[data-theme='dark'] body.mdrk-grain::before {
   display: block;
   inline-size: 100%;
   block-size: auto;
-  color: var(--text); /* the ink — every letter strokes currentColor */
+  color: var(--text); /* the ink — the letterforms fill currentColor */
 }
 
+/* the ink — FILLED letterforms (currentColor; the token-carried
+ * paper↔ink theme swap). R318 §A6: the reference's stroke-only hollow
+ * outlines were measured FIRST and FAIL the OCR gate at every weight
+ * (1.25→25 CSS px, both joins, both themes, both cuts — the measured
+ * sweep in audits/evidence/r318/c3-foot/ocr-matrix.md); the filled
+ * letterforms read «مدارك» as ONE WORD at 1440+390, light+dark. */
+.fo-wordmark-ink,
 .fo-wordmark-ink path {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 6; /* uniform drafting ink — 6 viewBox units on the wide sheet */
-  stroke-linecap: square; /* drafting caps */
-  stroke-linejoin: miter; /* ruler corners */
+  fill: currentColor;
+  stroke: none;
 }
 
-/* the compact cut: the same drafting ink at the phone band's own
- * scale — hidden wherever the wide sheet shows (and vice versa) */
+/* the compact cut — the same filled ink on the phone sheet (hidden
+ * wherever the wide sheet shows, and vice versa) */
 .fo-wordmark-svg--compact {
   display: none;
   max-inline-size: 480px; /* the tall phone/small-tablet band keeps a word, not a wall */
-}
-
-.fo-wordmark-svg--compact path {
-  stroke-width: 8; /* the compact sheet's own ink weight (viewBox 640×180) */
 }
 
 @media (max-width: 767px) {
@@ -6440,6 +6441,21 @@ html[data-theme='dark'] body.mdrk-grain::before {
 @media (min-width: 1025px) and (max-width: 1147px) {
   .fo-footer-link { line-height: 1.2; }
   .fo-fcell { padding-block: 1.2rem; }
+}
+
+/* ── R318 §A7 — the column captions' alignment rule: the reference
+ * seats every footer column caption +14px from its column edge
+ * (heron-footer.json: captionX 377/615/853 over columns 363/602/840 —
+ * the 14px inner gutter). Ours sat +13 (12px padding + the collapsed
+ * hairline). The ≥1025 desktop band takes the reference's own gutter:
+ * 13px padding + the 1px border = +14px from the column's reading-
+ * start edge. (The ≤1024 tiers keep their own rem-law paddings —
+ * 8.53px @1024 · 12px @768/390 — their bands are floor-pinned and
+ * the reference measure is the 1440 desktop one.) ── */
+@media (min-width: 1025px) {
+  .fo-fcell {
+    padding-inline: 13px; /* spacing-gate: allow — the reference's measured caption gutter (+14 with the 1px hairline), an external constant */
+  }
 }
 
 /* ═══ R315 cycle-3 (W1) — the ≤479 phone tier rides the measured REM LAW
