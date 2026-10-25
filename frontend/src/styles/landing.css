@@ -5292,7 +5292,14 @@ html[data-theme='dark'] .fo-grain {
    Words split on spaces only (joining is intra-word — shaping is
    intact; the DESIGN.md §4 amendment). Two modes: the IO-belt reveal
    (once-only, staggered, capped) and the scrub variant (progress var
-   --wr-p maps onto the words; reversible). */
+   --wr-p maps onto the words; reversible).
+   R318 §A1 — the inter-word gap is a REAL ' ' text node emitted by
+   WordReveal.tsx between the mask spans. It inherits this font, so it
+   renders at the words' own space advance (~0.25em) and keeps
+   textContent/copy/AT correct. .wr-w stays inline-block; NOTHING here
+   may collapse the node (no font-size:0 tricks, no negative margins,
+   no letter-spacing — Arabic display keeps its natural metrics, per
+   the site rule: no tracking on Arabic). */
 .wr {
   display: inline;
 }
