@@ -1,0 +1,849 @@
+{
+  "meta": {
+    "baseUrl": "http://localhost:4245",
+    "commit": "a27be4be",
+    "variant": "default",
+    "grbc": false,
+    "trace": false,
+    "started": "2026-10-26T00:28:36.153Z",
+    "chromium": "/home/z/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome",
+    "runs": 1
+  },
+  "results": [
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "scroll",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 1,
+      "notes": [],
+      "docHeight": 12471,
+      "scrollYSamples": [
+        176,
+        743,
+        1410,
+        1927,
+        2444,
+        2781,
+        3874,
+        4429,
+        4953,
+        5682,
+        6287,
+        6879,
+        6927,
+        6364,
+        5764,
+        5336,
+        4469,
+        3871,
+        3424,
+        2845,
+        2219,
+        1669,
+        1174,
+        615
+      ],
+      "interactWindowMs": 7236,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 160,
+        "pctGt20": 66.9,
+        "pctGt33": 66.9,
+        "p95": 100,
+        "max": 116.7,
+        "avg": 45
+      },
+      "framesActive": {
+        "count": 123,
+        "pctGt20": 78.9,
+        "pctGt33": 78.9,
+        "p95": 100,
+        "max": 116.7,
+        "avg": 51.08
+      },
+      "activeWindowMs": 6322,
+      "longtasks": {
+        "count": 49,
+        "gt50": 47,
+        "totalMs": 4022,
+        "worst": [
+          {
+            "start": 795,
+            "dur": 423,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1396,
+            "dur": 145,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1607,
+            "dur": 128,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 5793,
+            "dur": 108,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 220,
+            "dur": 104,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 1824,
+        "element": "p.reveal-up.reveal-d-3.fo-hero-lead",
+        "url": "",
+        "size": 18518
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 50,
+        "gt100": 7,
+        "totalMs": 4184,
+        "worst": [
+          {
+            "start": 750,
+            "dur": 548,
+            "scripts": [
+              {
+                "dur": 5,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 5,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 23,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 10,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 423,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 6,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-D6MxQj2q.js"
+              }
+            ]
+          },
+          {
+            "start": 1315,
+            "dur": 241,
+            "scripts": [
+              {
+                "dur": 35,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          },
+          {
+            "start": 1601,
+            "dur": 142,
+            "scripts": [
+              {
+                "dur": 128,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/useReveal-WQoDkSAf.js :: FrameRequestCallback",
+            "totalMs": 1574
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 740
+          },
+          {
+            "script": "/assets/LandingPage-BZSeusKO.js :: IdleRequestCallback",
+            "totalMs": 101
+          },
+          {
+            "script": "/assets/LandingPage-BZSeusKO.js :: DOMWindow.onscroll",
+            "totalMs": 65
+          },
+          {
+            "script": "/assets/index-BoVnMtI1.js :: http://localhost:4245/assets/index-BoVnMtI1.js",
+            "totalMs": 56
+          },
+          {
+            "script": "/assets/index-BoVnMtI1.js :: FrameRequestCallback",
+            "totalMs": 22
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 2,
+      "docHeightEnd": 12471,
+      "dom": {
+        "totalNodes": 3112,
+        "svg": 34,
+        "pattern": 10,
+        "filterEl": 0,
+        "clipPath": 0,
+        "symbol": 0,
+        "path": 99,
+        "probe": {
+          ".jt-window": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "relative",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1267,
+            "h": 802
+          },
+          ".bp-svg": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "static",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1224,
+            "h": 612
+          }
+        },
+        "layerCandidates": {
+          "willChange": 0,
+          "filter": 6,
+          "mixBlend": 0,
+          "fixed": 8,
+          "backdropFilter": 4,
+          "mask": 1,
+          "contain": 0,
+          "contentVisibilityAuto": 0
+        },
+        "layerCandidateList": [
+          "canvas.sc-canvas [fixed]",
+          "div.sc-ring [fixed]",
+          "a.fo-skip-link [fixed]",
+          "div.sheet-frame [fixed]",
+          "header.fo-header.on-hide [fixed]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "img.fo-fstrip-img [filter]",
+          "g [mask]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "div.cb-banner [fixed]",
+          "button.et-tab [fixed]",
+          "div.toast-stack [fixed]"
+        ]
+      }
+    },
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "scroll",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 2,
+      "notes": [],
+      "docHeight": 12471,
+      "scrollYSamples": [
+        264,
+        753,
+        1314,
+        1874,
+        2457,
+        3001,
+        3846,
+        4449,
+        5083,
+        5685,
+        6141,
+        6911,
+        6896,
+        6395,
+        5827,
+        5122,
+        4648,
+        4113,
+        3424,
+        2740,
+        2240,
+        1762,
+        1067,
+        621
+      ],
+      "interactWindowMs": 6909,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 142,
+        "pctGt20": 72.5,
+        "pctGt33": 72.5,
+        "p95": 100,
+        "max": 116.7,
+        "avg": 48.35
+      },
+      "framesActive": {
+        "count": 112,
+        "pctGt20": 77.7,
+        "pctGt33": 77.7,
+        "p95": 100,
+        "max": 116.7,
+        "avg": 53.12
+      },
+      "activeWindowMs": 5996,
+      "longtasks": {
+        "count": 50,
+        "gt50": 48,
+        "totalMs": 4291,
+        "worst": [
+          {
+            "start": 770,
+            "dur": 420,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1338,
+            "dur": 188,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1638,
+            "dur": 187,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 5898,
+            "dur": 117,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 4487,
+            "dur": 98,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 1908,
+        "element": "p.reveal-up.reveal-d-3.fo-hero-lead",
+        "url": "",
+        "size": 18518
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 49,
+        "gt100": 6,
+        "totalMs": 4320,
+        "worst": [
+          {
+            "start": 727,
+            "dur": 561,
+            "scripts": [
+              {
+                "dur": 5,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 9,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 27,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 420,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 5,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-D6MxQj2q.js"
+              },
+              {
+                "dur": 13,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-D6MxQj2q.js"
+              }
+            ]
+          },
+          {
+            "start": 1306,
+            "dur": 266,
+            "scripts": []
+          },
+          {
+            "start": 1636,
+            "dur": 194,
+            "scripts": [
+              {
+                "dur": 186,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/useReveal-WQoDkSAf.js :: FrameRequestCallback",
+            "totalMs": 1661
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 790
+          },
+          {
+            "script": "/assets/LandingPage-BZSeusKO.js :: IdleRequestCallback",
+            "totalMs": 82
+          },
+          {
+            "script": "/assets/index-BoVnMtI1.js :: FrameRequestCallback",
+            "totalMs": 27
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: DIV#root.ontransitionend",
+            "totalMs": 25
+          },
+          {
+            "script": "/assets/useSheetScroll-D6MxQj2q.js :: FrameRequestCallback",
+            "totalMs": 18
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 2,
+      "docHeightEnd": 12471,
+      "dom": {
+        "totalNodes": 3112,
+        "svg": 34,
+        "pattern": 10,
+        "filterEl": 0,
+        "clipPath": 0,
+        "symbol": 0,
+        "path": 99,
+        "probe": {
+          ".jt-window": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "relative",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1267,
+            "h": 802
+          },
+          ".bp-svg": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "static",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1224,
+            "h": 612
+          }
+        },
+        "layerCandidates": {
+          "willChange": 0,
+          "filter": 6,
+          "mixBlend": 0,
+          "fixed": 8,
+          "backdropFilter": 4,
+          "mask": 1,
+          "contain": 0,
+          "contentVisibilityAuto": 0
+        },
+        "layerCandidateList": [
+          "canvas.sc-canvas [fixed]",
+          "div.sc-ring [fixed]",
+          "a.fo-skip-link [fixed]",
+          "div.sheet-frame [fixed]",
+          "header.fo-header.on-hide [fixed]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "img.fo-fstrip-img [filter]",
+          "g [mask]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "div.cb-banner [fixed]",
+          "button.et-tab [fixed]",
+          "div.toast-stack [fixed]"
+        ]
+      }
+    },
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "scroll",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 3,
+      "notes": [],
+      "docHeight": 12471,
+      "scrollYSamples": [
+        263,
+        810,
+        1396,
+        2012,
+        2497,
+        2752,
+        3747,
+        4347,
+        5129,
+        5626,
+        6174,
+        6582,
+        6924,
+        6370,
+        5752,
+        5235,
+        4709,
+        4078,
+        3356,
+        2763,
+        2196,
+        1707,
+        1067,
+        561
+      ],
+      "interactWindowMs": 7002,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 157,
+        "pctGt20": 65,
+        "pctGt33": 65,
+        "p95": 100,
+        "max": 149.9,
+        "avg": 44.48
+      },
+      "framesActive": {
+        "count": 119,
+        "pctGt20": 76.5,
+        "pctGt33": 76.5,
+        "p95": 100,
+        "max": 149.9,
+        "avg": 50.7
+      },
+      "activeWindowMs": 6091,
+      "longtasks": {
+        "count": 50,
+        "gt50": 48,
+        "totalMs": 4182,
+        "worst": [
+          {
+            "start": 725,
+            "dur": 378,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1208,
+            "dur": 186,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1427,
+            "dur": 177,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 5557,
+            "dur": 147,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1988,
+            "dur": 105,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 1708,
+        "element": "p.reveal-up.reveal-d-3.fo-hero-lead",
+        "url": "",
+        "size": 18518
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 44,
+        "gt100": 7,
+        "totalMs": 3763,
+        "worst": [
+          {
+            "start": 701,
+            "dur": 475,
+            "scripts": [
+              {
+                "dur": 13,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 378,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 5,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-D6MxQj2q.js"
+              },
+              {
+                "dur": 7,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-D6MxQj2q.js"
+              },
+              {
+                "dur": 26,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-D6MxQj2q.js"
+              }
+            ]
+          },
+          {
+            "start": 1196,
+            "dur": 223,
+            "scripts": []
+          },
+          {
+            "start": 1426,
+            "dur": 189,
+            "scripts": [
+              {
+                "dur": 177,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/useReveal-WQoDkSAf.js :: FrameRequestCallback",
+            "totalMs": 1367
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 740
+          },
+          {
+            "script": "/assets/LandingPage-BZSeusKO.js :: IdleRequestCallback",
+            "totalMs": 104
+          },
+          {
+            "script": "/assets/LandingPage-BZSeusKO.js :: DOMWindow.onscroll",
+            "totalMs": 71
+          },
+          {
+            "script": "/assets/useSheetScroll-D6MxQj2q.js :: FrameRequestCallback",
+            "totalMs": 38
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: DIV#root.ontransitionend",
+            "totalMs": 36
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 1,
+      "docHeightEnd": 12471,
+      "dom": {
+        "totalNodes": 3112,
+        "svg": 34,
+        "pattern": 10,
+        "filterEl": 0,
+        "clipPath": 0,
+        "symbol": 0,
+        "path": 99,
+        "probe": {
+          ".jt-window": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "relative",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1267,
+            "h": 802
+          },
+          ".bp-svg": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "static",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1224,
+            "h": 612
+          }
+        },
+        "layerCandidates": {
+          "willChange": 0,
+          "filter": 6,
+          "mixBlend": 0,
+          "fixed": 8,
+          "backdropFilter": 4,
+          "mask": 1,
+          "contain": 0,
+          "contentVisibilityAuto": 0
+        },
+        "layerCandidateList": [
+          "canvas.sc-canvas [fixed]",
+          "div.sc-ring [fixed]",
+          "a.fo-skip-link [fixed]",
+          "div.sheet-frame [fixed]",
+          "header.fo-header.on-hide [fixed]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "img.fo-fstrip-img [filter]",
+          "g [mask]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "div.cb-banner [fixed]",
+          "button.et-tab [fixed]",
+          "div.toast-stack [fixed]"
+        ]
+      }
+    }
+  ]
+}

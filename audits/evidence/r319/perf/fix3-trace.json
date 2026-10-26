@@ -1,0 +1,484 @@
+{
+  "meta": {
+    "baseUrl": "http://localhost:4245",
+    "commit": "4a5be0fb",
+    "variant": "default",
+    "grbc": false,
+    "trace": true,
+    "started": "2026-10-26T00:39:02.619Z",
+    "chromium": "/home/z/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome",
+    "runs": 1
+  },
+  "results": [
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "scroll",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 1,
+      "notes": [],
+      "docHeight": 12471,
+      "scrollYSamples": [
+        249,
+        850,
+        1451,
+        1869,
+        2475,
+        3010,
+        3907,
+        4430,
+        4968,
+        5606,
+        6287,
+        6732,
+        6926,
+        6342,
+        5918,
+        5272,
+        4560,
+        4073,
+        3327,
+        2747,
+        2199,
+        1781,
+        1321,
+        688
+      ],
+      "interactWindowMs": 6895,
+      "trace": {
+        "top": [
+          {
+            "name": "UpdateLayoutTree",
+            "count": 253,
+            "totalMs": 2620.2
+          },
+          {
+            "name": "FunctionCall",
+            "count": 5459,
+            "totalMs": 660
+          },
+          {
+            "name": "EventDispatch",
+            "count": 945,
+            "totalMs": 557.7
+          },
+          {
+            "name": "Layerize",
+            "count": 156,
+            "totalMs": 511.5
+          },
+          {
+            "name": "Paint",
+            "count": 319,
+            "totalMs": 454.8
+          },
+          {
+            "name": "PrePaint",
+            "count": 180,
+            "totalMs": 153
+          },
+          {
+            "name": "FireAnimationFrame",
+            "count": 461,
+            "totalMs": 133
+          },
+          {
+            "name": "Layout",
+            "count": 75,
+            "totalMs": 82.6
+          },
+          {
+            "name": "HitTest",
+            "count": 36,
+            "totalMs": 49.8
+          },
+          {
+            "name": "IntersectionObserverController::computeIntersections",
+            "count": 312,
+            "totalMs": 27.2
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL_START",
+            "count": 3,
+            "totalMs": 23.9
+          },
+          {
+            "name": "V8.GC_MC_BACKGROUND_MARKING",
+            "count": 6,
+            "totalMs": 22.7
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL_EXTERNAL_PROLOGUE",
+            "count": 1,
+            "totalMs": 22.5
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL",
+            "count": 75,
+            "totalMs": 19.4
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL_EMBEDDER_TRACING",
+            "count": 25,
+            "totalMs": 16.6
+          },
+          {
+            "name": "MajorGC",
+            "count": 1,
+            "totalMs": 13.8
+          },
+          {
+            "name": "ScrollLayer",
+            "count": 150,
+            "totalMs": 13.7
+          },
+          {
+            "name": "V8.GC_MARK_COMPACTOR",
+            "count": 1,
+            "totalMs": 13.6
+          },
+          {
+            "name": "V8.GC_MC_BACKGROUND_SWEEPING",
+            "count": 2,
+            "totalMs": 4.6
+          },
+          {
+            "name": "V8.GC_MC_MARK",
+            "count": 1,
+            "totalMs": 2.3
+          },
+          {
+            "name": "V8.GC_MC_CLEAR",
+            "count": 1,
+            "totalMs": 2.2
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_JOIN_JOB",
+            "count": 1,
+            "totalMs": 2.2
+          },
+          {
+            "name": "V8.GC_MC_MARK_ROOTS",
+            "count": 3,
+            "totalMs": 1.5
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE",
+            "count": 2,
+            "totalMs": 1.3
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS",
+            "count": 1,
+            "totalMs": 0.7
+          },
+          {
+            "name": "V8.GC_MC_MARK_WEAK_CLOSURE_EPHEMERON_MARKING",
+            "count": 4,
+            "totalMs": 0.6
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_COPY",
+            "count": 1,
+            "totalMs": 0.6
+          },
+          {
+            "name": "V8.GC_MC_MARK_FULL_CLOSURE_SERIAL",
+            "count": 1,
+            "totalMs": 0.6
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_COPY_PARALLEL",
+            "count": 1,
+            "totalMs": 0.5
+          },
+          {
+            "name": "V8.GC_MC_MARK_EMBEDDER_PROLOGUE",
+            "count": 2,
+            "totalMs": 0.4
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_TO_NEW_ROOTS",
+            "count": 1,
+            "totalMs": 0.4
+          },
+          {
+            "name": "V8.GC_HEAP_EMBEDDER_TRACING_EPILOGUE",
+            "count": 1,
+            "totalMs": 0.3
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_STRING_TABLE",
+            "count": 8,
+            "totalMs": 0.2
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_POINTER_TABLES",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_SLOTS_MAIN",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_MARK_FULL_CLOSURE_PARALLEL",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_EXTERNAL_STRING_TABLE",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_PARALLEL",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_WEAK_REFERENCES_TRIVIAL",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_WEAK_GLOBAL_HANDLES",
+            "count": 1,
+            "totalMs": 0.1
+          }
+        ],
+        "eventsTotal": 23760,
+        "rawDump": "/tmp/mdrk-r316-traces/trace-1440x900-scroll-default.jsonl",
+        "eventsCaptured": 24390
+      },
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 155,
+        "pctGt20": 62.6,
+        "pctGt33": 62.6,
+        "p95": 83.4,
+        "max": 133.4,
+        "avg": 44.19
+      },
+      "framesActive": {
+        "count": 114,
+        "pctGt20": 75.4,
+        "pctGt33": 75.4,
+        "p95": 99.9,
+        "max": 133.4,
+        "avg": 52.05
+      },
+      "activeWindowMs": 5981,
+      "longtasks": {
+        "count": 49,
+        "gt50": 48,
+        "totalMs": 4293,
+        "worst": [
+          {
+            "start": 840,
+            "dur": 470,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1368,
+            "dur": 175,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1672,
+            "dur": 154,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 5770,
+            "dur": 129,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1552,
+            "dur": 117,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 416,
+        "element": "img",
+        "url": "http://localhost:4245/brand/madarek-mark.svg",
+        "size": 2304
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 45,
+        "gt100": 6,
+        "totalMs": 3984,
+        "worst": [
+          {
+            "start": 821,
+            "dur": 478,
+            "scripts": [
+              {
+                "dur": 15,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          },
+          {
+            "start": 1312,
+            "dur": 350,
+            "scripts": [
+              {
+                "dur": 27,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 63,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-B7rCmM1A.js"
+              },
+              {
+                "dur": 22,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-B7rCmM1A.js"
+              }
+            ]
+          },
+          {
+            "start": 25,
+            "dur": 195,
+            "scripts": []
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 401
+          },
+          {
+            "script": "/assets/LandingPage-PqLjhsVX.js :: IdleRequestCallback",
+            "totalMs": 101
+          },
+          {
+            "script": "/assets/useSheetScroll-B7rCmM1A.js :: FrameRequestCallback",
+            "totalMs": 85
+          },
+          {
+            "script": "/assets/LandingPage-PqLjhsVX.js :: DOMWindow.onscroll",
+            "totalMs": 59
+          },
+          {
+            "script": "/assets/useSheetScroll-B7rCmM1A.js :: DOMWindow.onscroll",
+            "totalMs": 17
+          },
+          {
+            "script": "(inline) :: PerformanceObserverCallback",
+            "totalMs": 14
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 0,
+      "docHeightEnd": 12471,
+      "dom": {
+        "totalNodes": 3112,
+        "svg": 34,
+        "pattern": 10,
+        "filterEl": 0,
+        "clipPath": 0,
+        "symbol": 0,
+        "path": 99,
+        "probe": {
+          ".jt-window": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "relative",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1267,
+            "h": 802
+          },
+          ".bp-svg": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "static",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1224,
+            "h": 612
+          }
+        },
+        "layerCandidates": {
+          "willChange": 0,
+          "filter": 6,
+          "mixBlend": 0,
+          "fixed": 8,
+          "backdropFilter": 4,
+          "mask": 1,
+          "contain": 0,
+          "contentVisibilityAuto": 0
+        },
+        "layerCandidateList": [
+          "canvas.sc-canvas [fixed]",
+          "div.sc-ring [fixed]",
+          "a.fo-skip-link [fixed]",
+          "div.sheet-frame [fixed]",
+          "header.fo-header.on-hide [fixed]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "img.fo-fstrip-img [filter]",
+          "g [mask]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "div.cb-banner [fixed]",
+          "button.et-tab [fixed]",
+          "div.toast-stack [fixed]"
+        ]
+      }
+    }
+  ]
+}

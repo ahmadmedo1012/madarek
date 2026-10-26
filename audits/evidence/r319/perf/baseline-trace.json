@@ -1,0 +1,484 @@
+{
+  "meta": {
+    "baseUrl": "http://localhost:4245",
+    "commit": "a27be4be",
+    "variant": "default",
+    "grbc": false,
+    "trace": true,
+    "started": "2026-10-26T00:17:28.508Z",
+    "chromium": "/home/z/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome",
+    "runs": 1
+  },
+  "results": [
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "scroll",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 1,
+      "notes": [],
+      "docHeight": 12471,
+      "scrollYSamples": [
+        264,
+        834,
+        1441,
+        1893,
+        2484,
+        3112,
+        3912,
+        4383,
+        5086,
+        5716,
+        6179,
+        6922,
+        6928,
+        6284,
+        5761,
+        5033,
+        4536,
+        3903,
+        3271,
+        2743,
+        2214,
+        1716,
+        1154,
+        547
+      ],
+      "interactWindowMs": 7800,
+      "trace": {
+        "top": [
+          {
+            "name": "FunctionCall",
+            "count": 5666,
+            "totalMs": 3608.4
+          },
+          {
+            "name": "FireAnimationFrame",
+            "count": 664,
+            "totalMs": 3101
+          },
+          {
+            "name": "UpdateLayoutTree",
+            "count": 280,
+            "totalMs": 3095.3
+          },
+          {
+            "name": "Paint",
+            "count": 343,
+            "totalMs": 636.6
+          },
+          {
+            "name": "EventDispatch",
+            "count": 970,
+            "totalMs": 604.8
+          },
+          {
+            "name": "Layerize",
+            "count": 172,
+            "totalMs": 540.5
+          },
+          {
+            "name": "PrePaint",
+            "count": 196,
+            "totalMs": 178.3
+          },
+          {
+            "name": "Layout",
+            "count": 82,
+            "totalMs": 137.8
+          },
+          {
+            "name": "IntersectionObserverController::computeIntersections",
+            "count": 344,
+            "totalMs": 68.2
+          },
+          {
+            "name": "HitTest",
+            "count": 39,
+            "totalMs": 55.8
+          },
+          {
+            "name": "MajorGC",
+            "count": 1,
+            "totalMs": 47.2
+          },
+          {
+            "name": "V8.GC_MARK_COMPACTOR",
+            "count": 1,
+            "totalMs": 47.1
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL",
+            "count": 135,
+            "totalMs": 26.6
+          },
+          {
+            "name": "V8.GC_MC_BACKGROUND_MARKING",
+            "count": 6,
+            "totalMs": 26.2
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL_EMBEDDER_TRACING",
+            "count": 45,
+            "totalMs": 25.1
+          },
+          {
+            "name": "V8.GC_MC_CLEAR",
+            "count": 1,
+            "totalMs": 22.5
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_JOIN_JOB",
+            "count": 1,
+            "totalMs": 22.5
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_WEAK_GLOBAL_HANDLES",
+            "count": 1,
+            "totalMs": 21.6
+          },
+          {
+            "name": "ScrollLayer",
+            "count": 161,
+            "totalMs": 18.8
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE",
+            "count": 2,
+            "totalMs": 5.7
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS",
+            "count": 1,
+            "totalMs": 2.7
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_COPY",
+            "count": 1,
+            "totalMs": 2.4
+          },
+          {
+            "name": "V8.GC_MC_BACKGROUND_SWEEPING",
+            "count": 4,
+            "totalMs": 2.1
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_COPY_PARALLEL",
+            "count": 1,
+            "totalMs": 1.9
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_TO_NEW_ROOTS",
+            "count": 1,
+            "totalMs": 1.5
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_WEAK",
+            "count": 1,
+            "totalMs": 0.6
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_REBALANCE",
+            "count": 1,
+            "totalMs": 0.6
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL_START",
+            "count": 3,
+            "totalMs": 0.5
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_SLOTS_MAIN",
+            "count": 1,
+            "totalMs": 0.4
+          },
+          {
+            "name": "V8.GC_MC_BACKGROUND_EVACUATE_COPY",
+            "count": 1,
+            "totalMs": 0.4
+          },
+          {
+            "name": "V8.GC_HEAP_EMBEDDER_TRACING_EPILOGUE",
+            "count": 1,
+            "totalMs": 0.2
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_STRING_TABLE",
+            "count": 8,
+            "totalMs": 0.2
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_PARALLEL",
+            "count": 1,
+            "totalMs": 0.2
+          },
+          {
+            "name": "V8.GC_MC_MARK",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_POINTER_TABLES",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_BACKGROUND_EVACUATE_UPDATE_POINTERS",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_EXTERNAL_STRING_TABLE",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_WEAK_REFERENCES_TRIVIAL",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_SWEEP",
+            "count": 7,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_MARK_EMBEDDER_PROLOGUE",
+            "count": 2,
+            "totalMs": 0.1
+          }
+        ],
+        "eventsTotal": 25810,
+        "rawDump": "/tmp/mdrk-r316-traces/trace-1440x900-scroll-default.jsonl",
+        "eventsCaptured": 26504
+      },
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 171,
+        "pctGt20": 65.5,
+        "pctGt33": 65.5,
+        "p95": 99.9,
+        "max": 100,
+        "avg": 45.32
+      },
+      "framesActive": {
+        "count": 131,
+        "pctGt20": 75.6,
+        "pctGt33": 75.6,
+        "p95": 100,
+        "max": 100,
+        "avg": 52.16
+      },
+      "activeWindowMs": 6857,
+      "longtasks": {
+        "count": 62,
+        "gt50": 60,
+        "totalMs": 5034,
+        "worst": [
+          {
+            "start": 902,
+            "dur": 509,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1723,
+            "dur": 158,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1583,
+            "dur": 108,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1462,
+            "dur": 103,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 5664,
+            "dur": 95,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 2016,
+        "element": "p.reveal-up.reveal-d-3.fo-hero-lead",
+        "url": "",
+        "size": 18518
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 56,
+        "gt100": 7,
+        "totalMs": 4754,
+        "worst": [
+          {
+            "start": 865,
+            "dur": 534,
+            "scripts": [
+              {
+                "dur": 5,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 7,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 11,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          },
+          {
+            "start": 14,
+            "dur": 175,
+            "scripts": []
+          },
+          {
+            "start": 1722,
+            "dur": 164,
+            "scripts": [
+              {
+                "dur": 158,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/useReveal-Dht_8Xe-.js :: FrameRequestCallback",
+            "totalMs": 1863
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 353
+          },
+          {
+            "script": "/assets/LandingPage-0Cy_Q-ng.js :: IdleRequestCallback",
+            "totalMs": 76
+          },
+          {
+            "script": "/assets/index-C8MtONcE.js :: http://localhost:4245/assets/index-C8MtONcE.js",
+            "totalMs": 61
+          },
+          {
+            "script": "/assets/useSheetScroll-BxFwZNIv.js :: FrameRequestCallback",
+            "totalMs": 50
+          },
+          {
+            "script": "/assets/LandingPage-0Cy_Q-ng.js :: DOMWindow.onscroll",
+            "totalMs": 48
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 0,
+      "docHeightEnd": 12471,
+      "dom": {
+        "totalNodes": 3112,
+        "svg": 34,
+        "pattern": 10,
+        "filterEl": 0,
+        "clipPath": 0,
+        "symbol": 0,
+        "path": 99,
+        "probe": {
+          ".jt-window": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "relative",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1267,
+            "h": 802
+          },
+          ".bp-svg": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "static",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1224,
+            "h": 612
+          }
+        },
+        "layerCandidates": {
+          "willChange": 0,
+          "filter": 6,
+          "mixBlend": 0,
+          "fixed": 8,
+          "backdropFilter": 4,
+          "mask": 1,
+          "contain": 0,
+          "contentVisibilityAuto": 0
+        },
+        "layerCandidateList": [
+          "canvas.sc-canvas [fixed]",
+          "div.sc-ring [fixed]",
+          "a.fo-skip-link [fixed]",
+          "div.sheet-frame [fixed]",
+          "header.fo-header.on-hide [fixed]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "img.fo-fstrip-img [filter]",
+          "g [mask]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "div.cb-banner [fixed]",
+          "button.et-tab [fixed]",
+          "div.toast-stack [fixed]"
+        ]
+      }
+    }
+  ]
+}

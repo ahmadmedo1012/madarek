@@ -1,0 +1,347 @@
+{
+  "meta": {
+    "baseUrl": "http://localhost:4245",
+    "commit": "a27be4be",
+    "variant": "default",
+    "grbc": true,
+    "trace": false,
+    "started": "2026-10-26T00:19:46.614Z",
+    "chromium": "/home/z/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome",
+    "runs": 1
+  },
+  "results": [
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "scroll",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 1,
+      "notes": [],
+      "docHeight": 12471,
+      "scrollYSamples": [
+        264,
+        747,
+        1429,
+        1948,
+        2504,
+        3100,
+        3848,
+        4418,
+        4921,
+        5726,
+        6195,
+        6948,
+        6927,
+        6284,
+        5722,
+        5080,
+        4465,
+        3843,
+        3369,
+        2720,
+        2235,
+        1759,
+        1181,
+        591
+      ],
+      "interactWindowMs": 8138,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 162,
+        "pctGt20": 69.8,
+        "pctGt33": 69.8,
+        "p95": 99.9,
+        "max": 283.4,
+        "avg": 50
+      },
+      "framesActive": {
+        "count": 125,
+        "pctGt20": 80.8,
+        "pctGt33": 80.8,
+        "p95": 100,
+        "max": 283.4,
+        "avg": 57.46
+      },
+      "activeWindowMs": 7220,
+      "longtasks": {
+        "count": 70,
+        "gt50": 66,
+        "totalMs": 5794,
+        "worst": [
+          {
+            "start": 902,
+            "dur": 470,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 5806,
+            "dur": 255,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1776,
+            "dur": 179,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1547,
+            "dur": 147,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 5547,
+            "dur": 115,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 2052,
+        "element": "p.reveal-up.reveal-d-3.fo-hero-lead",
+        "url": "",
+        "size": 18518
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 52,
+        "gt100": 5,
+        "totalMs": 4656,
+        "worst": [
+          {
+            "start": 891,
+            "dur": 573,
+            "scripts": [
+              {
+                "dur": 6,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 470,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 17,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-BxFwZNIv.js"
+              },
+              {
+                "dur": 28,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-BxFwZNIv.js"
+              }
+            ]
+          },
+          {
+            "start": 5768,
+            "dur": 276,
+            "scripts": [
+              {
+                "dur": 19,
+                "invoker": "DOMWindow.onscroll",
+                "src": "/assets/LandingPage-0Cy_Q-ng.js"
+              },
+              {
+                "dur": 16,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/index-C8MtONcE.js"
+              },
+              {
+                "dur": 152,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useReveal-Dht_8Xe-.js"
+              }
+            ]
+          },
+          {
+            "start": 1487,
+            "dur": 221,
+            "scripts": []
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/useReveal-Dht_8Xe-.js :: FrameRequestCallback",
+            "totalMs": 2076
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 823
+          },
+          {
+            "script": "/assets/useSheetScroll-BxFwZNIv.js :: FrameRequestCallback",
+            "totalMs": 45
+          },
+          {
+            "script": "/assets/index-C8MtONcE.js :: FrameRequestCallback",
+            "totalMs": 38
+          },
+          {
+            "script": "/assets/LandingPage-0Cy_Q-ng.js :: IdleRequestCallback",
+            "totalMs": 30
+          },
+          {
+            "script": "/assets/index-C8MtONcE.js :: DOMWindow.onscroll",
+            "totalMs": 27
+          }
+        ]
+      },
+      "grbc": {
+        "count": 579,
+        "dSets": 155,
+        "cssVars": 419,
+        "perSec": 71.1,
+        "top": [
+          {
+            "sel": "div.jt",
+            "reads": 162
+          },
+          {
+            "sel": "div.wy",
+            "reads": 162
+          },
+          {
+            "sel": "section#statement.st-section",
+            "reads": 162
+          },
+          {
+            "sel": "span.reveal-up.wr.jt-station-text",
+            "reads": 8
+          },
+          {
+            "sel": "li.reveal-up.reveal-d-1.rl-card",
+            "reads": 6
+          },
+          {
+            "sel": "li.reveal-up.reveal-d-2.rl-card",
+            "reads": 6
+          },
+          {
+            "sel": "li.reveal-up.reveal-d-1.pm-card",
+            "reads": 4
+          },
+          {
+            "sel": "li.reveal-up.reveal-d-3.rl-card",
+            "reads": 4
+          },
+          {
+            "sel": "div.bp-stage",
+            "reads": 3
+          },
+          {
+            "sel": "svg",
+            "reads": 3
+          },
+          {
+            "sel": "p.reveal-up.st-line",
+            "reads": 2
+          },
+          {
+            "sel": "p.reveal-up.reveal-d-1.st-line",
+            "reads": 2
+          }
+        ]
+      },
+      "finalScrollY": 2,
+      "docHeightEnd": 12471,
+      "dom": {
+        "totalNodes": 3112,
+        "svg": 34,
+        "pattern": 10,
+        "filterEl": 0,
+        "clipPath": 0,
+        "symbol": 0,
+        "path": 99,
+        "probe": {
+          ".jt-window": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "relative",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1267,
+            "h": 802
+          },
+          ".bp-svg": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "static",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1224,
+            "h": 612
+          }
+        },
+        "layerCandidates": {
+          "willChange": 0,
+          "filter": 6,
+          "mixBlend": 0,
+          "fixed": 8,
+          "backdropFilter": 4,
+          "mask": 1,
+          "contain": 0,
+          "contentVisibilityAuto": 0
+        },
+        "layerCandidateList": [
+          "canvas.sc-canvas [fixed]",
+          "div.sc-ring [fixed]",
+          "a.fo-skip-link [fixed]",
+          "div.sheet-frame [fixed]",
+          "header.fo-header.on-hide [fixed]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "img.fo-fstrip-img [filter]",
+          "g [mask]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "div.cb-banner [fixed]",
+          "button.et-tab [fixed]",
+          "div.toast-stack [fixed]"
+        ]
+      }
+    }
+  ]
+}
