@@ -48,8 +48,15 @@ import {
 } from './sheetConductor';
 
 export interface ScrollMetrics {
-  /** the target's live viewport rect (one read per frame) */
-  rect: DOMRect;
+  /**
+   * R319 §E-13 — the target's viewport rect, DERIVED per frame from a
+   * document-space cache + `window.scrollY` (both free) on steady
+   * ticks; only settle/prime/resize frames pay a real
+   * `getBoundingClientRect`. Structural subset of DOMRect — every
+   * field scrolls exactly (top/bottom shift by scrollY, the
+   * horizontal box never moves on a vertical scroll).
+   */
+  rect: SheetRect;
   /** viewport height */
   vh: number;
   /**
@@ -63,6 +70,16 @@ export interface ScrollMetrics {
    * bottom reaches the viewport bottom (the pin releases).
    */
   pin: number;
+}
+
+/** the rect shape `ScrollMetrics.rect` carries (DOMRect satisfies it). */
+export interface SheetRect {
+  readonly top: number;
+  readonly bottom: number;
+  readonly left: number;
+  readonly right: number;
+  readonly width: number;
+  readonly height: number;
 }
 
 export interface SheetScrollOptions {
@@ -89,6 +106,26 @@ export function useSheetScroll(
   frameRef.current = frame;
   const refreshRef = useRef(options.onRefresh);
   refreshRef.current = options.onRefresh;
+  /* R319 §E-13 — the target's DOCUMENT-space geometry. In-flow
+   * elements never move in document space on pure scroll, so steady
+   * ticks derive the viewport rect from this cache + scrollY with
+   * ZERO layout reads. Measured on the R319 build @1440 4×CPU: the
+   * old one-gBCR-per-consumer-per-frame (3 consumers: .jt/.wy/
+   * #statement ≈ 450 reads per wheel run) averaged **1.42ms/read**
+   * when style was dirty — the read FLUSHED the pending recalc of
+   * that frame's IntersectionObserver `.in-view` writes + the
+   * previous microtask's var writes inside the rAF task (a second
+   * full pass then ran at render — 2× UpdateLayoutTree per frame,
+   * the desktop's dominant remaining cost). The cache is dropped on
+   * every fresh pass (settle/prime) and on resize — the same epochs
+   * `onRefresh` covers; a mid-gesture layout change (late media)
+   * drifts at most until the 180ms settle re-measures it, exactly
+   * the trade JourneyScene's stationsDocRef already ships.
+   * CONSTRAINT: the target must be in-flow (not `position: sticky` —
+   * a stuck element's viewport rect drifts while its doc box does
+   * not; sticky seats like the ≤991 `.jt-cam` keep their own live
+   * `sheetRect` read). */
+  const docGeoRef = useRef<{ top: number; left: number; width: number; height: number } | null>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -104,8 +141,33 @@ export function useSheetScroll(
      * microtask so every subscriber reads (phase 1) before any of them
      * writes (phase 2). */
     const run = (fresh: boolean, deferred: boolean) => {
-      if (fresh) freshSheetRects();
-      const { rect, vh } = sheetRect(el);
+      if (fresh) {
+        freshSheetRects();
+        docGeoRef.current = null; // re-measure through the real batch
+      }
+      const vh = window.innerHeight;
+      const cached = docGeoRef.current;
+      let rect: SheetRect;
+      if (cached) {
+        const top = cached.top - window.scrollY;
+        rect = {
+          top,
+          bottom: top + cached.height,
+          left: cached.left,
+          right: cached.left + cached.width,
+          width: cached.width,
+          height: cached.height,
+        };
+      } else {
+        const live = sheetRect(el).rect;
+        docGeoRef.current = {
+          top: live.top + window.scrollY,
+          left: live.left + window.scrollX,
+          width: live.width,
+          height: live.height,
+        };
+        rect = live;
+      }
       const traversalRaw = (vh - rect.top) / (vh + rect.height);
       const pinRaw =
         rect.height > vh ? -rect.top / (rect.height - vh) : traversalRaw;
@@ -150,6 +212,9 @@ export function useSheetScroll(
     };
 
     const onResize = () => {
+      /* layout CHANGED — the doc-geometry cache is stale by
+       * construction (the whole point of the resize epoch). */
+      docGeoRef.current = null;
       refreshRef.current?.();
       kick();
     };
