@@ -131,7 +131,14 @@ test.describe('الحركة الكاملة — الخط الأساسي (بدون
       ? parseFloat(probe.durationMedium)
       : parseFloat(probe.durationMedium) * 1000;
     expect(ms).toBe(400);
-    // The CTA's own background transition rides --t-fast (200ms on r305).
-    expect(probe.submitTransitionDuration).toBe('0.2s');
+    // R319 re-pin: the CTA's transition contract evolved past r305 — the
+    // element transitions color+border at --t-base (the r157 button work →
+    // the R313 register; serialized "0.4s, 0.4s") and the background WIPE
+    // rides the ::before layer's own transition. The protective intent
+    // stays: in full-motion mode the durations are REAL --t-base values
+    // (never 0s — the reduced-motion belt below owns the zero side).
+    const submitDurs = probe.submitTransitionDuration.split(',').map((d: string) => parseFloat(d) * 1000);
+    expect(submitDurs.length).toBeGreaterThanOrEqual(2);
+    for (const d of submitDurs) expect(d).toBe(400);
   });
 });

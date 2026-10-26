@@ -56,10 +56,10 @@ const IMG_Y = 10;  /* y 10..64 — the drawing band (the 0..10 band keeps the [0
 const CAP_Y = 77;  /* ONE shared caption baseline — aligned by construction */
 const STAGES = [
   { label: 'المحاضرة', render: '/media/renders/hero-ink-1100.webp' },
-  { label: 'نقطة الفحص', render: '/media/renders/crop-garyounis-1-960.webp' },
-  { label: 'الاختبار', render: '/media/renders/crop-fateh-science-960.webp' },
-  { label: 'المكتبة', render: '/media/renders/crop-garyounis-classic-960.webp' },
-  { label: 'الإتقان', render: '/media/renders/crop-omu-agri-960.webp' },
+  { label: 'نقطة الفحص', render: '/media/renders/crop-garyounis-1-640.webp' },
+  { label: 'الاختبار', render: '/media/renders/crop-fateh-science-640.webp' },
+  { label: 'المكتبة', render: '/media/renders/crop-garyounis-classic-640.webp' },
+  { label: 'الإتقان', render: '/media/renders/crop-omu-agri-640.webp' },
 ] as const;
 /* column x per stage: stage[0] (المحاضرة) at the RIGHTMOST column */
 const colX = (i: number) => VB_W - (i + 1) * COL_W;

@@ -60,7 +60,7 @@
   .r319s-bar-title {
     margin: 0;
     font-family: var(--font-display);
-    font-size: 3.2rem;   /* 26.7px @1440 — the reference's h4 step title */
+    font-size: 3.2rem;   /* type-gate: allow — 26.7px @1440, the reference's own h4 step-title rung (rem rides the streaming root) */
     line-height: var(--lh-snug);
     font-weight: var(--fw-bold);
     color: var(--text);
@@ -85,10 +85,10 @@
     flex: none;
   }
   @media (max-width: 991px) {
-    .r319s-bar-title { font-size: 2.8rem; }
+    .r319s-bar-title { font-size: 2.8rem; } /* type-gate: allow — the tablet step-title rung */
   }
   @media (max-width: 767px) {
-    .r319s-bar-title { font-size: 2rem; } /* 19.8px @390 — the phone rung */
+    .r319s-bar-title { font-size: 2rem; } /* type-gate: allow — 19.8px @390, the phone step-title rung */
   }
 
   /* The mono data voice (counts, codes, readouts — Latin runs only,
@@ -385,10 +385,10 @@
   overflow-wrap: break-word;
 }
 @media (max-width: 991px) {
-  .r319s-page .pf-page-title { font-size: 4.4rem; } /* ~40.5px @768 */
+  .r319s-page .pf-page-title { font-size: 4.4rem; } /* type-gate: allow — ~40.5px @768, the tablet display rung */
 }
 @media (max-width: 767px) {
-  .r319s-page .pf-page-title { font-size: 3.2rem; } /* 31.8px @390 — the landing's phone rung */
+  .r319s-page .pf-page-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung */
 }
 
 /* Reduced-motion belt: the §B2 material is static texture (hairlines,

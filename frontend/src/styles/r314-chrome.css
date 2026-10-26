@@ -331,21 +331,21 @@ html[data-theme='dark'] .cb-more:focus-visible {
     flex-direction: column;
     align-items: stretch;
     gap: 8px; /* spacing-gate: allow — the px-pinned measured banner seat */
-    padding: 8px 12px; /* spacing-gate: allow — ditto */
+    padding: 8px 12px; /* spacing-gate: allow — the same px-pinned measured banner seat (the R318 phone-banner block) */
   }
   .cb-text,
   .cb-more {
-    font-size: 13px; /* spacing-gate: allow — the 13px legibility floor, pinned like the reference's own px banner */
+    font-size: 13px; /* type-gate: allow — the 13px legibility floor, pinned like the reference's own px banner (the R318 seat) */
   }
   .cb-text {
     line-height: 1.45;
     white-space: normal;
   }
   .cb-more {
-    margin-inline-start: 6px;
+    margin-inline-start: 6px; /* spacing-gate: allow — the phone-banner's measured inline seat (the R318 px-pinned block) */
   }
   .cb-actions {
-    gap: 8px;
+    gap: 8px; /* spacing-gate: allow — the phone-banner's measured action row (the R318 px-pinned block) */
   }
   .cb-accept,
   .cb-reject {

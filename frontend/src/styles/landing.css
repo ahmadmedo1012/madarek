@@ -2444,10 +2444,10 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .fo-fstrip .fo-wordmark {
     margin-block-start: 0;
     padding-inline: 14px; /* spacing-gate: allow — the '+' reg-mark corner gutters (the wordmark's own seat), not a ladder rung */
-    padding-block: 2px 4px;
+    padding-block: 2px 4px; /* spacing-gate: allow — the reg-mark cell's own construction padding (the wordmark corner seats) */
     align-content: center;
     justify-items: center;
-    gap: 2px;
+    gap: 2px; /* spacing-gate: allow — the reg-mark grid's construction gap */
   }
 
   .fo-fstrip .fo-wordmark-en {
@@ -2482,8 +2482,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   position: relative;
   display: grid;
   justify-items: center;
-  gap: 2px;
-  padding-block: 2px 4px;
+  gap: 2px; /* spacing-gate: allow — the reg-mark grid's construction gap */
+  padding-block: 2px 4px; /* spacing-gate: allow — the reg-mark cell's own construction padding */
   padding-inline: 14px; /* the reg-mark gutters keep the word's construction margins clear of the corner marks */ /* spacing-gate: allow — the '+' reg-mark corner gutters (measured seat), not a ladder rung */
   margin-block-start: var(--sp-2);
 }

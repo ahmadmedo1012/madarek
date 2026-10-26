@@ -20,7 +20,11 @@ test.describe('رحلة المقرّرات', () => {
     // r173a: شريط المؤشرات الأربعة (MetricCard) صار سطر ملخّص واحدًا
     // خفيفًا — نفس الأعداد (تسجيلتان في التثبيت الوهمي → «مقرّران
     // مسجّلان»)، re-pin صادق لواجهة الصفحة الجديدة.
-    await expect(page.getByText('مقرّران مسجّلان', { exact: false })).toBeVisible();
+    /* R319 re-pin (c3-S1 §B2 conversion): the count now renders TWICE —
+       the SectionBar's visible mono meta (<bdi>مقرّران مسجّلان</bdi>) +
+       the sr-only counted phrase for screen readers. Target the VISIBLE
+       one (getByText strict-mode would see both). */
+    await expect(page.locator('bdi', { hasText: 'مقرّران مسجّلان' }).first()).toBeVisible();
 
     /* R287 re-pin (r222 reskin): the course card is a RowItem — the
        title Link carries the name; the code badge + teacher ride the
