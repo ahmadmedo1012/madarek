@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
 import {
-  Briefcase, MapPin, CheckCircle2,
+  Briefcase, MapPin,
   Code, BarChart3, Palette, Network, Smartphone, Shield, type LucideIcon,
 } from 'lucide-react';
-import { Badge } from '../../components/primitives';
-import { EmptyState, ErrorState, TableSkeleton } from '../../components/primitives/States';
+/* R319 (c3-S2) — the §B2 kit: the mono-indexed section title bar + the
+ * hatched empty cell. */
+import { SectionBar, BarCount, StatusChip, EmptyCell } from '../../components/student';
+import { ErrorState, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { PageFrame, PageHeader, FilterBar } from '../../components/patterns';
 import { useJobs, useApplyJob, apiErrorMessage, type Job } from '../../hooks/useResources';
@@ -13,6 +15,10 @@ import { countAr } from '../../lib/format';
 /* R305 Heron: the shared student vocabulary + this family's refinements. */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-supplemental.css';
+/* R319 (c3-S2): the sheet system — the §B2 anatomy + the family's
+ * harmonics. */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 const TYPE_LABELS: Record<string, string> = {
   FULL_TIME: 'دوام كامل',
@@ -107,7 +113,9 @@ function JobRow({ job, applied }: { job: Job; applied: boolean }) {
         </td>
         <td data-label="الإجراء">
           {isApplied ? (
-            <Badge color="green" icon={CheckCircle2}>تمّ التقديم</Badge>
+            /* R319 (c3-S2): the applied state rides the §B2 mono chip
+               register — square hairline ink, never a color-only Badge. */
+            <StatusChip label="APPLIED" tone="done" />
           ) : (
             /* The authored moment: actions stay quiet until the row is
                hovered / focused (CSS .table-row-actions — persistent on
@@ -153,10 +161,27 @@ export default function JobsPage() {
   const filtered = isFiltering ? jobs.filter((j) => j.type === type) : jobs;
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
         title="فرص العمل"
         description="وظائف وفرص تدريب تجريبية مفتوحة لطلاب وخرّيجي الجامعة (بيانات عرض)."
+      />
+
+      {/* R319 (c3-S2): the board opens with the §B2 title-bar — [01]
+          فرص العمل, the honest open-jobs count as mono meta (countAr for
+          assistive tech). */}
+      <SectionBar
+        index="01"
+        title="فرص العمل"
+        meta={
+          !isPending && !isError && jobs.length > 0 ? (
+            <BarCount
+              n={jobs.length}
+              srLabel={countAr(jobs.length, ['فرصة واحدة مفتوحة', 'فرصتان مفتوحتان', 'فرص مفتوحة', 'فرصةً مفتوحة'])}
+            />
+          ) : undefined
+        }
       />
 
       {isPending ? (
@@ -164,11 +189,11 @@ export default function JobsPage() {
       ) : isError ? (
         <ErrorState error={error} onRetry={() => refetch()} />
       ) : jobs.length === 0 ? (
-        <EmptyState
-          icon={Briefcase}
-          title="لا توجد فرص نشطة هذا الأسبوع"
-          illustration="empty-list"
-          description="نضيف فرص التوظيف والتدريب من شركات وطنية وعربية بشكل دوري. ستصلك إشعارات الفرص الملائمة لتخصصك تلقائياً."
+        /* R319 (c3-S2): the empty board is the sheet's reserved-but-empty
+           region — the hatched EmptyCell (same honest copy). */
+        <EmptyCell
+          label="لا توجد فرص نشطة هذا الأسبوع"
+          note="نضيف فرص التوظيف والتدريب من شركات وطنية وعربية بشكل دوري. ستصلك إشعارات الفرص الملائمة لتخصصك تلقائياً."
         />
       ) : (
         <>
@@ -216,11 +241,11 @@ export default function JobsPage() {
           </p>
 
           {filtered.length === 0 ? (
-            <EmptyState
-              icon={Briefcase}
-              title="لا توجد فرص ضمن هذا النوع"
-              illustration="empty-search"
-              description="اختر نوعاً آخر من الأزرار أعلاه — كل الفرص المفتوحة تظهر تحت «الكل»."
+            /* R319 (c3-S2): the empty filter bucket — the hatched
+               EmptyCell (the CoursesPage filter-bucket precedent). */
+            <EmptyCell
+              label="لا توجد فرص ضمن هذا النوع"
+              note="اختر نوعاً آخر من الأزرار أعلاه — كل الفرص المفتوحة تظهر تحت «الكل»."
             />
           ) : (
             <div className="table-wrap jobs-table-wrap">
@@ -246,5 +271,6 @@ export default function JobsPage() {
         </>
       )}
     </PageFrame>
+    </div>
   );
 }

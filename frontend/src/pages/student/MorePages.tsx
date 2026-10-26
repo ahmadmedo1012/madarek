@@ -343,10 +343,26 @@ export function SkillsPage() {
     ? skills.data.reduce((a, b) => (b.progressPct > a.progressPct ? b : a))
     : undefined;
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader title="المهارات والشهادات" description="رصد مهاراتك التقنية وتطوّرها مع الوقت." />
 
-      <Card title="خريطة المهارات التقنية" icon={Target}>
+      {/* R319 (c3-S2): the map region opens with the §B2 title-bar —
+          [01] خريطة المهارات التقنية, the honest measured-skill count
+          as mono meta (countAr for assistive tech). */}
+      <SectionBar
+        index="01"
+        title="خريطة المهارات التقنية"
+        meta={
+          !skills.isPending && !skills.isError && (skills.data?.length ?? 0) > 0 ? (
+            <BarCount
+              n={skills.data!.length}
+              srLabel={countAr(skills.data!.length, ['مهارة واحدة مُسجَّلة', 'مهارتان مُسجَّلتان', 'مهارات مُسجَّلة', 'مهارةً مُسجَّلة'])}
+            />
+          ) : undefined
+        }
+      />
+      <Card>
         {skills.isPending ? (
           /* shape-matched skeleton: radar pane + progress rows */
           <div className="grid-1-2" style={{ alignItems: 'center' }} aria-busy="true">
@@ -365,10 +381,11 @@ export function SkillsPage() {
           </div>
         ) : skills.isError ? <ErrorState error={skills.error} onRetry={() => skills.refetch()} /> :
          !skills.data?.length ? (
-          <EmptyState illustration="empty-list"
-            icon={Target}
-            title="لم تُسجَّل أي مهارة بعد"
-            description="تُحتسب المهارات تلقائياً من إنجازاتك الأكاديمية ومسارات التطوير."
+          /* R319 (c3-S2): the empty map is the sheet's reserved-but-empty
+             region — the hatched EmptyCell (same honest copy). */
+          <EmptyCell
+            label="لم تُسجَّل أي مهارة بعد"
+            note="تُحتسب المهارات تلقائياً من إنجازاتك الأكاديمية ومسارات التطوير."
           />
         ) : (
           <div className="grid-1-2" style={{ alignItems: 'center' }}>
@@ -439,6 +456,7 @@ export function SkillsPage() {
         )}
       </Card>
     </PageFrame>
+    </div>
   );
 }
 

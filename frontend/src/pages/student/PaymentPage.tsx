@@ -1,12 +1,14 @@
 import {
-  Wallet, Receipt, Building2, Phone, Mail, Clock, ArrowLeft, Info, Megaphone,
+  Wallet, Building2, Phone, Mail, ArrowLeft, Info, Megaphone,
 } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from '../../components/primitives';
 import { Skeleton } from '../../components/primitives/States';
-import { PageFrame, PageHeader, SectionHeader, RowList, RowItem } from '../../components/patterns';
+import { PageFrame, PageHeader, RowList, RowItem } from '../../components/patterns';
 import { Reveal } from '../../components/motion';
+/* R319 (c3-S2) — the §B2 kit: the mono-indexed section title bar. */
+import { SectionBar } from '../../components/student';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useMyProfile } from '../../hooks/useResources';
@@ -18,6 +20,10 @@ import { sanitizeInstitutionName } from '../../utils/display-text';
 /* R305 Heron: the shared student vocabulary + this family's refinements. */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-supplemental.css';
+/* R319 (c3-S2): the sheet system — the §B2 anatomy + the family's
+ * harmonics (the copper disclosure rail keeps its r305s-next pin). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 /**
  * Honest financial-affairs landing.
@@ -50,13 +56,18 @@ export default function PaymentPage() {
   }, [profile.isError, profile.isSuccess]);
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
         title="الشؤون الماليّة"
         description="حالة رسومك الجامعيّة وكيفيّة سدادها."
       />
 
-      <Card title="بياناتك" icon={Wallet}>
+      {/* R319 (c3-S2): every region below the masthead opens with the
+          §B2 mono-indexed title bar — the sheet's table of contents
+          ([01]…[06]); the Cards keep their hairline regions. */}
+      <SectionBar index="01" title="بياناتك" />
+      <Card>
         <div className="grid-3" style={{ gap: 'var(--sp-3)' }}>
           <FactRow label="الاسم" value={fullName} />
           <FactRow label="الرقم الجامعيّ" value={universityId} mono pending={profile.isPending} />
@@ -76,7 +87,8 @@ export default function PaymentPage() {
       {/* The page's one authored moment: the fees-status card lifts in
           once (small distance) — money-path restraint, no confetti. */}
       <Reveal distance="small">
-        <Card title="حالة الرسوم" icon={Receipt}>
+        <SectionBar index="02" title="حالة الرسوم" />
+        <Card>
           {/* R305 Heron: the honest fees disclosure is the page's ONE
               emphasized region — the copper rail (.r305s-next) instead of
               the neutral panel well. */}
@@ -97,7 +109,7 @@ export default function PaymentPage() {
           below and your own wallet — no invented checkout, no fake
           deep links. */}
       <section aria-label="خطواتك اليوم">
-        <SectionHeader title="خطواتك اليوم" />
+        <SectionBar index="03" title="خطواتك اليوم" />
         <RowList aria-label="خطوات السداد اليوم">
           <RowItem
             leading={
@@ -131,7 +143,9 @@ export default function PaymentPage() {
       </section>
 
       <div className="grid-2">
-        <Card title="مكتب الشؤون الماليّة بالجامعة" icon={Building2}>
+        <div>
+        <SectionBar index="04" title="مكتب الشؤون الماليّة بالجامعة" />
+        <Card>
           <div className="flex-col gap-3">
             <ContactRow icon={Phone} label="الهاتف" value="+218 23 762659" mono />
             <ContactRow icon={Phone} label="هاتف بديل" value="+218 23 762882" mono />
@@ -139,8 +153,10 @@ export default function PaymentPage() {
             <ContactRow icon={Building2} label="العنوان" value="جامعة مدارك التجريبية — بيانات عرض" />
           </div>
         </Card>
-
-        <Card title="ساعات العمل" icon={Clock}>
+        </div>
+        <div>
+        <SectionBar index="05" title="ساعات العمل" />
+        <Card>
           <div className="flex-col gap-2">
             <div className="list-row">
               <div className="list-row-body">
@@ -159,9 +175,11 @@ export default function PaymentPage() {
             الساعات المعتمدة من الإدارة. قد تتغيّر خلال فترات الاختبارات والإجازات الرسميّة.
           </p>
         </Card>
+        </div>
       </div>
 
-      <Card title="إعلانات الإدارة الماليّة">
+      <SectionBar index="06" title="إعلانات الإدارة الماليّة" />
+      <Card>
         <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>
           الإعلانات الرسميّة الخاصّة بالرسوم والمواعيد تُنشر على لوحة المجتمع الجامعيّ.
         </p>
@@ -171,6 +189,7 @@ export default function PaymentPage() {
         </Link>
       </Card>
     </PageFrame>
+    </div>
   );
 }
 
