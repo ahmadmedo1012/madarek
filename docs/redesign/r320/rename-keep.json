@@ -44,6 +44,11 @@
       "file": "frontend/src/pages/student/PaymentPage.tsx",
       "phrase": "من الإدارة",
       "reason": "office hours accredited by the administration inside the finance-office working-hours card — not the role label"
+    },
+    {
+      "file": "frontend/src/pages/AuthPage.tsx",
+      "phrase": "التعليم / الإدارة / النظام",
+      "reason": "the R320 §C brief's mandated demo-panel GROUP buckets (التعليم/الإدارة/النظام) — category headers over the test-account table, not the ADMIN role label (that group's rows carry المسجل العام / مسجل كلية / أخصائي جودة)"
     }
   ],
   "documentationKeeps": {

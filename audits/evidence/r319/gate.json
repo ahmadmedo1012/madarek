@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-26T07:32:03.969Z",
+ "generated": "2026-10-26T08:07:04.279Z",
  "baseUrl": "http://127.0.0.1:4257",
  "routes": [
   "landing",
@@ -392,7 +392,7 @@
      "gradientWarn": 0,
      "unknown": 0,
      "samples": [],
-     "budgetOverruns": 0
+     "budgetOverruns": 1
     }
    }
   },
@@ -947,7 +947,7 @@
  "paired": {
   "status": "PASS",
   "exitCode": 0,
-  "tail": "✓ paired-state lint PASS — 418 state rules scanned across 40 sheets; 145 XOR rule(s), all allowlisted with reasons; 0 fresh violations.",
+  "tail": "✓ paired-state lint PASS — 420 state rules scanned across 40 sheets; 145 XOR rule(s), all allowlisted with reasons; 0 fresh violations.",
   "metric": 0
  },
  "rows": [
@@ -2159,7 +2159,7 @@
    "check": "paired",
    "status": "PASS",
    "metric": 0,
-   "sample": "✓ paired-state lint PASS — 418 state rules scanned across 40 sheets; 145 XOR rule(s), all allowlisted with reasons; 0 fresh violations."
+   "sample": "✓ paired-state lint PASS — 420 state rules scanned across 40 sheets; 145 XOR rule(s), all allowlisted with reasons; 0 fresh violations."
   }
  ],
  "summary": {

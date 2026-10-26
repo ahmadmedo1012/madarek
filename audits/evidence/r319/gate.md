@@ -1,4 +1,4 @@
-# R319 extended gate — 2026-10-26T07:30:51.581Z
+# R319 extended gate — 2026-10-26T08:05:51.844Z
 
 Base `http://127.0.0.1:4257` · Routes landing,student-dashboard · Viewports 390,1440 · Themes light,dark · Mode quick · Max elements 60 · Only state-contrast,leaks,shell,material,paired
 
@@ -126,7 +126,7 @@ E8 state-contrast (CDP-forced hover/active/focus/focus-visible/focus-within) · 
 | student-dashboard | 1440 | dark | shell/drawer-clip | NA | — | shell geometry measured @390 touch context only (§E-11) |
 | student-dashboard | 1440 | dark | shell/scrim-palette | NA | — | shell geometry measured @390 touch context only (§E-11) |
 | student-dashboard | 1440 | dark | state-contrast | PASS | 0 fails · shell:0/96 | — |
-| — | — | — | paired | PASS | exit 0 | ✓ paired-state lint PASS — 418 state rules scanned across 40 sheets; 145 XOR rule(s), all allowlisted with reasons; 0 fr |
+| — | — | — | paired | PASS | exit 0 | ✓ paired-state lint PASS — 420 state rules scanned across 40 sheets; 145 XOR rule(s), all allowlisted with reasons; 0 fr |
 
 ## Ratchet (baseline)
 

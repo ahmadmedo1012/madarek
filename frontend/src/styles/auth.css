@@ -873,8 +873,16 @@
     cursor: pointer;
     transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
   }
+  /* R320 §C — paired hover (the B1 discipline): color AND background
+     are declared together (the wash is ink-only — background stays
+     transparent — but it is now PAIRED, never a lone color flip that
+     could compose with a sibling rule's other half). */
   @media (hover: hover) and (pointer: fine) {
-    .auth-demo-fill:hover { border-color: var(--border-strong); color: var(--text); }
+    .auth-demo-fill:hover {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
   }
   .auth-demo-fill:focus-visible {
     outline: 2px solid var(--accent);

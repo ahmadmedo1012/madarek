@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-26T07:32:47.469Z",
+ "generated": "2026-10-26T08:07:47.494Z",
  "baseUrl": "http://127.0.0.1:4257",
  "routes": [
   "landing",
@@ -379,17 +379,14 @@
    "authed": true,
    "checks": {
     "rename-scan": {
-     "status": "FAIL",
-     "metric": 4,
-     "occurrences": 4,
-     "uniqueLabels": 2,
+     "status": "PASS",
+     "metric": 0,
+     "occurrences": 0,
+     "uniqueLabels": 0,
      "kept": 0,
-     "keepEntries": 1,
+     "keepEntries": 5,
      "drawerOpened": true,
-     "samples": [
-      "«الإدارة»",
-      "«لوحة الإدارة»"
-     ]
+     "samples": []
     },
     "svg-collisions": {
      "status": "NA",
@@ -428,17 +425,14 @@
    "authed": true,
    "checks": {
     "rename-scan": {
-     "status": "FAIL",
-     "metric": 3,
-     "occurrences": 3,
-     "uniqueLabels": 2,
+     "status": "PASS",
+     "metric": 0,
+     "occurrences": 0,
+     "uniqueLabels": 0,
      "kept": 0,
-     "keepEntries": 1,
+     "keepEntries": 5,
      "drawerOpened": false,
-     "samples": [
-      "«الإدارة»",
-      "«لوحة الإدارة»"
-     ]
+     "samples": []
     },
     "svg-collisions": {
      "status": "NA",
@@ -477,17 +471,14 @@
    "authed": true,
    "checks": {
     "rename-scan": {
-     "status": "FAIL",
-     "metric": 4,
-     "occurrences": 4,
-     "uniqueLabels": 2,
+     "status": "PASS",
+     "metric": 0,
+     "occurrences": 0,
+     "uniqueLabels": 0,
      "kept": 0,
-     "keepEntries": 1,
+     "keepEntries": 5,
      "drawerOpened": true,
-     "samples": [
-      "«الإدارة»",
-      "«لوحة الإدارة»"
-     ]
+     "samples": []
     },
     "svg-collisions": {
      "status": "NA",
@@ -526,17 +517,14 @@
    "authed": true,
    "checks": {
     "rename-scan": {
-     "status": "FAIL",
-     "metric": 3,
-     "occurrences": 3,
-     "uniqueLabels": 2,
+     "status": "PASS",
+     "metric": 0,
+     "occurrences": 0,
+     "uniqueLabels": 0,
      "kept": 0,
-     "keepEntries": 1,
+     "keepEntries": 5,
      "drawerOpened": false,
-     "samples": [
-      "«الإدارة»",
-      "«لوحة الإدارة»"
-     ]
+     "samples": []
     },
     "svg-collisions": {
      "status": "NA",
@@ -582,7 +570,7 @@
    "counts": {
     "lint": "duplicate-selector",
     "exit": 1,
-    "rules": 5552,
+    "rules": 5565,
     "sheets": 41,
     "conflictsApp": 65,
     "conflictsArtifact": 129,
@@ -597,7 +585,7 @@
     "stale": 0,
     "sample": [
      "styles/admin.css:402 ↔ styles/components.css:3862 .admin-faculty-card [box-shadow]",
-     "styles/auth.css:1115 ↔ styles/polish.css:2605 .auth-card [animation]",
+     "styles/auth.css:1198 ↔ styles/polish.css:2605 .auth-card [animation]",
      "styles/base.css:107 ↔ styles/components.css:965 select [color]"
     ]
    },
@@ -610,21 +598,21 @@
    "theme": "—",
    "check": "hover-guard",
    "status": "FAIL",
-   "metric": 185,
+   "metric": 184,
    "exitCode": 1,
    "counts": {
     "lint": "hover-guard",
     "exit": 1,
     "hoverRules": 290,
     "sheets": 41,
-    "unguarded": 186,
-    "fresh": 185,
+    "unguarded": 185,
+    "fresh": 184,
     "allowlisted": 1,
     "stale": 0,
     "sample": [
      "styles/admin.css:377 .settings-links a:hover @ (root)",
-     "styles/auth.css:110 .auth-back-home:hover @ (root)",
-     "styles/auth.css:131 a.auth-context:hover @ (root)"
+     "styles/auth.css:1009 .role-card:hover .role-card-index,\n  .role-card:focus-visible .role-ca @ (root)",
+     "styles/auth.css:1031 .role-card:hover .role-card-sub,\n  .role-card:focus-visible .role-card @ (root)"
     ]
    },
    "sample": "styles/admin.css:377 .settings-links a:hover @ (root)"
@@ -968,9 +956,9 @@
    "viewport": 390,
    "theme": "light",
    "check": "rename-scan",
-   "status": "FAIL",
-   "metric": 4,
-   "sample": "«الإدارة»"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
   },
   {
    "key": "admin-dashboard|390|light|svg-collisions",
@@ -1008,9 +996,9 @@
    "viewport": 1440,
    "theme": "light",
    "check": "rename-scan",
-   "status": "FAIL",
-   "metric": 3,
-   "sample": "«الإدارة»"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
   },
   {
    "key": "admin-dashboard|1440|light|svg-collisions",
@@ -1048,9 +1036,9 @@
    "viewport": 390,
    "theme": "dark",
    "check": "rename-scan",
-   "status": "FAIL",
-   "metric": 4,
-   "sample": "«الإدارة»"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
   },
   {
    "key": "admin-dashboard|390|dark|svg-collisions",
@@ -1088,9 +1076,9 @@
    "viewport": 1440,
    "theme": "dark",
    "check": "rename-scan",
-   "status": "FAIL",
-   "metric": 3,
-   "sample": "«الإدارة»"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
   },
   {
    "key": "admin-dashboard|1440|dark|svg-collisions",
@@ -1139,7 +1127,7 @@
    "theme": "—",
    "check": "hover-guard",
    "status": "FAIL",
-   "metric": 185,
+   "metric": 184,
    "sample": "styles/admin.css:377 .settings-links a:hover @ (root)"
   },
   {
@@ -1154,7 +1142,7 @@
   }
  ],
  "summary": {
-  "fails": 30,
+  "fails": 26,
   "warns": 0,
   "regressions": 0,
   "errorCells": 0,
