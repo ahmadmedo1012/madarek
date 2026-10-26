@@ -1,6 +1,13 @@
 // Agent S r212 — ⌘K palette honesty check, v2 (dev-only).
 import { chromium } from 'playwright';
 
+// R320 §C — credentials come from the shared test-account table
+// (the PHYSICAL module — this tsx harness doesn't need the @shared
+// vite alias; see shared/testAccounts.ts for the consumer map).
+import { TEST_PASSWORD, testAccountForJob } from '../../../backend/src/modules/auth/test-accounts.data';
+
+const STUDENT_EMAIL = testAccountForJob('طالب')!.email;
+
 const browser = await chromium.launch();
 const page = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
 const errs: string[] = [];
@@ -9,8 +16,8 @@ const reqs: string[] = [];
 page.on('request', (r) => { if (r.url().includes('/search/global')) reqs.push(r.url()); });
 
 await page.goto('http://localhost:5173/auth', { waitUntil: 'networkidle' });
-await page.getByRole('textbox', { name: 'كلمة المرور' }).fill('Madarek2026!');
-await page.getByLabel('البريد الإلكتروني أو رقم القيد').fill('student@demo.madarek.ly');
+await page.getByRole('textbox', { name: 'كلمة المرور' }).fill(TEST_PASSWORD);
+await page.getByLabel('البريد الإلكتروني أو رقم القيد').fill(STUDENT_EMAIL);
 await page.getByRole('button', { name: 'تسجيل الدخول' }).click();
 await page.waitForURL('**/student/dashboard', { timeout: 30000 });
 await page.waitForLoadState('networkidle');

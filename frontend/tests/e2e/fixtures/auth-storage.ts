@@ -22,10 +22,12 @@
  *     lives 15 minutes, which is ample for a spec, and cookie juggling
  *     would pin these states to one browser profile.
  *
- * Seeded demo accounts (backend/prisma/seed.ts — password documented
- * there; fresh environments all use it):
- *   student@demo.madarek.ly · teacher@demo.madarek.ly · admin@demo.madarek.ly
- *   quality@demo.madarek.ly · owner@demo.madarek.ly
+ * Seeded test accounts (R320 §C — the single source of truth is the
+ * repo-root shared/testAccounts.ts, physically
+ * backend/src/modules/auth/test-accounts.data.ts; one easy account per
+ * job on the @test.ly domain, password 12345678). This fixture derives
+ * the five STACK roles from that table by job label so it can never
+ * drift from the seeder.
  *
  * Env knobs:
  *   MADAREK_E2E_API_URL   API origin the login POSTs to
@@ -35,6 +37,14 @@
  *                         the page origin or the state won't apply)
  */
 import type { Browser } from '@playwright/test';
+
+// R320 §C — the shared test-account table. NOTE: Playwright's TS
+// loader cannot follow the repo-root shared/testAccounts.ts RE-EXPORT
+// chain (it transpiles the shim to CJS and named exports vanish —
+// verified empirically), so Playwright-consumed fixtures import the
+// PHYSICAL table module directly; vite/vitest consumers use the
+// @shared alias.
+import { TEST_PASSWORD, testAccountForJob } from '../../../../backend/src/modules/auth/test-accounts.data';
 
 /**
  * Playwright's `storageState` option shape (`{ cookies, origins }` —
@@ -49,16 +59,28 @@ export type StorageStateOption = NonNullable<
 
 export type StackRole = 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER';
 
-/** Demo credentials live in backend/prisma/seed.ts (documented there);
- * mirrored here for the local-stack fixtures. */
-export const DEMO_PASSWORD = 'Madarek2026!';
+/** The shared table's job labels for the five stack roles (R320 §C —
+ * the labels match frontend/src/lib/nav.ts ROLE_LABELS' established
+ * wording: أخصائي جودة / مالك المنصة). */
+const STACK_JOBS: Record<StackRole, string> = {
+  STUDENT: 'طالب',
+  TEACHER: 'أستاذ',
+  ADMIN: 'المسجل العام',
+  QUALITY: 'أخصائي جودة',
+  OWNER: 'مالك المنصة',
+};
+
+/** Demo credentials — derived from the shared test-account table
+ * (backend/prisma/seed.ts + ensureTestAccounts keep the DB in sync
+ * with exactly these rows). */
+export const DEMO_PASSWORD = TEST_PASSWORD;
 
 export const DEMO_ACCOUNTS: Record<StackRole, string> = {
-  STUDENT: 'student@demo.madarek.ly',
-  TEACHER: 'teacher@demo.madarek.ly',
-  ADMIN: 'admin@demo.madarek.ly',
-  QUALITY: 'quality@demo.madarek.ly',
-  OWNER: 'owner@demo.madarek.ly',
+  STUDENT: testAccountForJob(STACK_JOBS.STUDENT)!.email,
+  TEACHER: testAccountForJob(STACK_JOBS.TEACHER)!.email,
+  ADMIN: testAccountForJob(STACK_JOBS.ADMIN)!.email,
+  QUALITY: testAccountForJob(STACK_JOBS.QUALITY)!.email,
+  OWNER: testAccountForJob(STACK_JOBS.OWNER)!.email,
 };
 
 export const STACK_ROLES: readonly StackRole[] = [

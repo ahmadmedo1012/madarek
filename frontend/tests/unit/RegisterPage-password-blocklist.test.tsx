@@ -126,9 +126,12 @@ describe('RegisterPage — registerPasswordSchema blocklist mirror (r165f)', () 
     expect(registerPasswordSchema.safeParse('PaSsWoRd1234').success).toBe(false);
   });
 
-  it('accepts strong passwords (the D1 demo password and a passphrase)', () => {
-    expect(registerPasswordSchema.safeParse('Madarek2026!').success).toBe(true);
+  // R320 override: the old literal here was the retired demo password —
+  // the register floor is what this pins; the easy TEST account password
+  // (12345678, shared/testAccounts) is deliberately NOT register-grade.
+  it('accepts strong 12+ char passphrases', () => {
     expect(registerPasswordSchema.safeParse('Salam-Zawiya-2026').success).toBe(true);
+    expect(registerPasswordSchema.safeParse('A-Truly-Long-Passphrase-2026').success).toBe(true);
   });
 
   it('keeps the length rules and their messages (refine never masks them; r170g floor=12)', () => {
@@ -185,7 +188,7 @@ describe('RegisterPage — blocklist password surfaces as a field error (r165f)'
   it('a strong password still submits — the mirror adds no false blocks', async () => {
     renderPage();
     chooseStudent();
-    fillStudent('Madarek2026!');
+    fillStudent('Salam-Zawiya-2026');
 
     fireEvent.click(screen.getByRole('button', { name: 'إنشاء الحساب' }));
 

@@ -241,7 +241,15 @@ async function main() {
   log(`starting frontend on :${WEB_PORT} …`);
   const webArgs = ['run', 'dev', '-w', 'frontend'];
   if (process.env.MADAREK_WEB_PORT) webArgs.push('--', '--port', String(WEB_PORT));
-  const web = spawnPrefixed(`${PREFIX.web}`, 'npm', webArgs);
+  // R320 §C — a custom MADAREK_API_PORT must flow into the Vite /api
+  // proxy too: the dev proxy defaults to :4000, so a stack booted on
+  // (say) :4253 would 500 every browser API call. Pass the live API
+  // origin unless the operator explicitly pointed VITE_API_TARGET at a
+  // remote API (the documented remote-iteration override).
+  const webEnv = process.env.VITE_API_TARGET
+    ? process.env
+    : { ...process.env, VITE_API_TARGET: `http://localhost:${API_PORT}` };
+  const web = spawnPrefixed(`${PREFIX.web}`, 'npm', webArgs, { env: webEnv });
   children.push(web);
   web.on('close', (code) => {
     if (!shuttingDown && code !== null) {
@@ -266,9 +274,9 @@ async function main() {
   console.log('');
   log(paint('1', '✅ full local stack is up'));
   log(`   web  http://localhost:${WEB_PORT}   · api http://localhost:${API_PORT}/api/v1   · pg :${PG_PORT}`);
-  log('   demo logins (seeded locally, password in backend/prisma/seed.ts):');
-  log('   student@demo.madarek.ly · teacher@… · admin@… · quality@… · owner@demo.madarek.ly');
-  log('   Ctrl-C stops everything. Docs: docs/redesign/r319/STACK.md');
+  log('   test logins (seeded locally — one easy account per job, @test.ly / 12345678):');
+  log('   student@ · student2@ · teacher@ · head@ · dean@ · vicedean@ · registrar@ · faculty@ · quality@ · owner@test.ly');
+  log('   the full table: shared/testAccounts.ts · Ctrl-C stops everything. Docs: docs/redesign/r319/STACK.md');
   console.log('');
 }
 

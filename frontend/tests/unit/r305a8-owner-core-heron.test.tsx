@@ -122,7 +122,7 @@ const ALANDALUS = {
   admins: [
     {
       userId: 'u-admin2-0000000000',
-      email: 'admin2@demo.madarek.ly',
+      email: 'admin2@test.ly',
       firstName: 'مدير',
       lastName: 'الأندلس',
       membershipId: 'mem-admin-alandalus',

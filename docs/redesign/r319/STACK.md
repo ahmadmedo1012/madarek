@@ -30,22 +30,29 @@ Verified in this worktree: fresh boot → health 200 in ~6 s; custom
 `MADAREK_WEB_PORT=4311` works (the app talks to the API through the
 Vite `/api` proxy, so CORS never enters the picture on any web port).
 
-## Demo logins (seeded locally)
+## Test logins (seeded locally — R320 §C)
 
-All five roles exist after the first `dev:full` (see
-`backend/prisma/seed.ts` — the documented demo password is
-**`Madarek2026!`** for every account):
+One easy account per job, on the `@test.ly` domain (the single source
+of truth is `shared/testAccounts.ts`; the documented TEST password is
+**`12345678`** for every account, ensured by `db:seed` and — with
+`MADAREK_TEST_ACCOUNTS=1` — at every backend boot):
 
 | Role | Email | Dashboard | Smoke H1 |
 |------|-------|-----------|----------|
-| STUDENT | `student@demo.madarek.ly` | `/student/dashboard` | لوحة التحكم |
-| TEACHER | `teacher@demo.madarek.ly` | `/teacher/dashboard` | لوحة الأستاذ |
-| ADMIN | `admin@demo.madarek.ly` | `/admin/dashboard` | لوحة الإدارة |
-| QUALITY | `quality@demo.madarek.ly` | `/quality/dashboard` | لوحة الجودة |
-| OWNER | `owner@demo.madarek.ly` | `/owner/dashboard` | لوحة التحكم الرئيسية |
+| STUDENT | `student@test.ly` | `/student/dashboard` | لوحة التحكم |
+| TEACHER | `teacher@test.ly` | `/teacher/dashboard` | لوحة الأستاذ |
+| ADMIN (registrar) | `registrar@test.ly` | `/admin/dashboard` | لوحة الإدارة |
+| QUALITY | `quality@test.ly` | `/quality/dashboard` | لوحة الجودة |
+| OWNER | `owner@test.ly` | `/owner/dashboard` | لوحة التحكم الرئيسية |
 
-Also seeded: `student2@…`, `teacher2@…`, `admin2@…` (مؤسسة الأندلس
-التعليمية — the second-institution demo).
+Extra jobs (same table, same password): `head@test.ly` (رئيس قسم) ·
+`dean@test.ly` (عميد) · `vicedean@test.ly` (نائب عميد) — TEACHER +
+`TeacherProfile.position`; `faculty@test.ly` (مسجل كلية) — ADMIN with
+`scopeFacultyId`.
+
+Also seeded (corpus, second-institution demo — مؤسسة الأندلس
+التعليمية): `student2@test.ly` · `teacher2@test.ly` ·
+`admin2@test.ly`.
 
 ## How it works
 

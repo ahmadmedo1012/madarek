@@ -189,15 +189,20 @@ Run once with production DATABASE_URL:
 DATABASE_URL='...' JWT_ACCESS_SECRET='...' JWT_REFRESH_SECRET='...' npm run db:seed
 ```
 
-Demo accounts (the seed's dev-only shared password lives in `seed.ts` —
-a local-build fixture; production accounts carry per-account rotated
-secrets since r189, delivered privately — never reseed production to
-change credentials):
-- `student@demo.madarek.ly` → STUDENT (أحمد الزروق)
-- `teacher@demo.madarek.ly` → TEACHER (د. سالم البوسيفي)
-- `admin@demo.madarek.ly` → ADMIN (إدارة الجامعة)
-- `quality@demo.madarek.ly` → QUALITY (مكتب ضمان الجودة)
-- `owner@demo.madarek.ly` → OWNER (مالك المنصة)
+Test accounts (R320 §C — one easy account per job, password
+`12345678` for all; the single source of truth is
+`shared/testAccounts.ts`, re-exported from
+`backend/src/modules/auth/test-accounts.data.ts`. These are published
+TEST credentials for development; production credentials, when the
+platform is promoted, are per-account rotated secrets — never reseed
+production to change credentials):
+- `student@test.ly` → STUDENT (أحمد الزروق) · `student2@test.ly` → STUDENT (ليلى المهدي)
+- `teacher@test.ly` → TEACHER (د. سالم البوسيفي)
+- `head@test.ly` / `dean@test.ly` / `vicedean@test.ly` → TEACHER + position (رئيس قسم / عميد / نائب عميد)
+- `registrar@test.ly` → ADMIN university-wide · `faculty@test.ly` → ADMIN scoped to the demo faculty
+- `quality@test.ly` → QUALITY (مكتب ضمان الجودة)
+- `owner@test.ly` → OWNER (مالك المنصة)
+- corpus extras: `teacher2@test.ly` · `admin2@test.ly` (مؤسسة الأندلس)
 
 ## Deployment (Render)
 

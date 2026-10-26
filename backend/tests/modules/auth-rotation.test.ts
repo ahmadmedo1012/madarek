@@ -43,7 +43,13 @@ import {
 } from '../../src/lib/jwt.js';
 import { changePassword, logoutUser, refreshTokens } from '../../src/modules/auth/auth.service';
 import { decideRefresh, interpretRevocationBump } from '../../src/modules/auth/rotation';
-import { MAX_FAILED_LOGINS, shouldLock } from '../../src/modules/auth/lockout';
+import {
+  LOCK_DURATION_DEMO_MS,
+  LOCK_DURATION_MS,
+  lockDurationFor,
+  MAX_FAILED_LOGINS,
+  shouldLock,
+} from '../../src/modules/auth/lockout';
 import { isCommonPassword } from '../../src/modules/auth/password-policy';
 import {
   changePasswordSchema,
@@ -124,6 +130,24 @@ describe('shouldLock — lockout threshold', () => {
     expect(shouldLock(MAX_FAILED_LOGINS - 1)).toBe(false);
     expect(shouldLock(MAX_FAILED_LOGINS)).toBe(true);
     expect(shouldLock(MAX_FAILED_LOGINS + 3)).toBe(true);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────
+// lockDurationFor — R320 §C: the demo-account backoff (@test.ly gets a
+// 60 s lock; every real account keeps the full 15-minute policy).
+// ─────────────────────────────────────────────────────────────────────
+describe('lockDurationFor — R320 demo-account backoff', () => {
+  it('gives @test.ly accounts the 60 s backoff, case/whitespace-tolerant', () => {
+    expect(lockDurationFor('student@test.ly')).toBe(LOCK_DURATION_DEMO_MS);
+    expect(lockDurationFor('Faculty@Test.ly ')).toBe(LOCK_DURATION_DEMO_MS);
+  });
+
+  it('keeps the FULL policy for real accounts (the branch never widens)', () => {
+    expect(lockDurationFor('ahmed@zu.edu.ly')).toBe(LOCK_DURATION_MS);
+    expect(lockDurationFor('test.ly@example.com')).toBe(LOCK_DURATION_MS); // domain as local part — not a demo
+    expect(lockDurationFor('student@test.ly.evil.com')).toBe(LOCK_DURATION_MS); // demo-like infix, not a suffix
+    expect(lockDurationFor('student@testly')).toBe(LOCK_DURATION_MS); // missing the dot
   });
 });
 
@@ -293,13 +317,15 @@ describe('password policy', () => {
     expect(isCommonPassword('password123')).toBe(true);
     expect(isCommonPassword('12345678')).toBe(true);
     expect(isCommonPassword('Password12345')).toBe(false); // not in the list
-    expect(isCommonPassword('Madarek2026!')).toBe(false);
+    expect(isCommonPassword('Salam-Zawiya-2026')).toBe(false);
   });
 
-  it('passwordSchema accepts the D1 demo password and strong passphrases', () => {
-    // 'Madarek2026!' is exactly 12 chars — the new (r170g, ASVS 2.1.1)
-    // floor boundary, so the seed/rotation demo secret stays valid.
-    expect(passwordSchema.safeParse('Madarek2026!').success).toBe(true);
+  it('passwordSchema accepts a 12+ char passphrase (the register floor)', () => {
+    // R320 override: the old demo literal here was replaced by a neutral
+    // passphrase — the register schema's 12-char floor (r170g, ASVS 2.1.1)
+    // is what this pins; the easy TEST account password (12345678) lives
+    // in test-accounts.data.ts and is deliberately NOT register-grade.
+    expect(passwordSchema.safeParse('Salam-Zawiya-2026').success).toBe(true);
     expect(passwordSchema.safeParse('Mahabbah-Wataniya-2026').success).toBe(true);
   });
 
@@ -318,7 +344,7 @@ describe('password policy', () => {
     const registerPassword = registerSchema.shape.password;
     const changePasswordNew = changePasswordSchema.shape.newPassword;
     // Both must accept/reject identically — one policy, no drift.
-    for (const candidate of ['Madarek2026!', 'password', 'Ab1!xyz', 'password1234', 'x'.repeat(72)]) {
+    for (const candidate of ['Salam-Zawiya-2026', 'password', 'Ab1!xyz', 'password1234', 'x'.repeat(72)]) {
       expect(registerPassword.safeParse(candidate).success).toBe(
         changePasswordNew.safeParse(candidate).success,
       );
@@ -327,16 +353,16 @@ describe('password policy', () => {
 
   it('changePasswordSchema is strict and requires both fields', () => {
     expect(
-      changePasswordSchema.safeParse({ currentPassword: 'old', newPassword: 'Madarek2026!' })
+      changePasswordSchema.safeParse({ currentPassword: 'old', newPassword: 'Salam-Zawiya-2026' })
         .success,
     ).toBe(true);
     expect(
-      changePasswordSchema.safeParse({ currentPassword: '', newPassword: 'Madarek2026!' }).success,
+      changePasswordSchema.safeParse({ currentPassword: '', newPassword: 'Salam-Zawiya-2026' }).success,
     ).toBe(false);
     expect(
       changePasswordSchema.safeParse({
         currentPassword: 'old',
-        newPassword: 'Madarek2026!',
+        newPassword: 'Salam-Zawiya-2026',
         evil: 1,
       }).success,
     ).toBe(false);
@@ -355,7 +381,7 @@ describe('auth DTO sanitizer trims', () => {
   it('registerSchema trims + lowercases the email and trims names', () => {
     const parsed = registerSchema.parse({
       email: '  New.Student@ZU.edu.ly ',
-      password: 'Madarek2026!',
+      password: 'Salam-Zawiya-2026',
       firstName: '  أحمد ',
       lastName: 'المستخدم  ',
       role: 'STUDENT',

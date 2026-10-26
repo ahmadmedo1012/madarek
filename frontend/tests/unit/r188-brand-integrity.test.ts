@@ -37,7 +37,7 @@ const BANNED = [
   'جامعة الزاوية',
   'University of Zawia',
   'مؤسّسة العرض المرجعية', // the r177 showcase framing (superseded by the r188 fictional tenant)
-  'zu.edu.ly', // the real university's domain (demo emails moved to demo.madarek.ly)
+  'zu.edu.ly', // the real university's domain (demo emails live on the @test.ly domain, R320 §C)
   'main_photo', // the retired real-campus photography family
   'zu-mark', // the retired ZU crest asset
 ];

@@ -62,21 +62,28 @@ npm run dev                        # backend :4000
 npm run dev:web                    # frontend :5173 (proxies /api → :4000)
 ```
 
-**Demo accounts** after seeding — **the password is NOT published here**
-(r188: removed from public docs; delivered via the operator pilot guide and
-a private handoff), spanning the **two demo institutions**:
+**Test accounts** (R320 §C — one easy account per job; the single source
+of truth is `shared/testAccounts.ts`; `npm run db:seed` always ensures
+them). Password for all: **`12345678`** — published TEST credentials
+(development environment; never for production):
 
-- Madarek Demo University (the explicitly-fictional demo tenant, r188 —
-  25 faculties across three knowledge campuses):
-  `student@`, `teacher@`, `admin@`, `quality@demo.madarek.ly`
-- Al-Andalus Education Institute (the second demo institution proving
-  isolation): `student2@`, `teacher2@`, `admin2@demo.madarek.ly`
-- Platform owner (no membership — platform scope): `owner@demo.madarek.ly`
+| Job | Email | Group |
+|---|---|---|
+| Student · second student (messages/community) | `student@test.ly` · `student2@test.ly` | التعليم |
+| Teacher · department head · dean · vice dean | `teacher@test.ly` · `head@test.ly` · `dean@test.ly` · `vicedean@test.ly` | التعليم |
+| University registrar · faculty registrar (faculty scope) · quality | `registrar@test.ly` · `faculty@test.ly` · `quality@test.ly` | الإدارة |
+| Owner | `owner@test.ly` | النظام |
 
-Log in as `student@demo.madarek.ly` then `student2@demo.madarek.ly` — the two
+Plus two corpus accounts of the second demo institution (institution
+isolation): `teacher2@test.ly` · `admin2@test.ly` (same password).
+
+Log in as `student@test.ly` then `student2@test.ly` — the two
 students share reg-number `UZ-2024-00001` on purpose and each sees only
 their institution's courses (a foreign offering answers 403). Deploy-time
-seeding on Render runs after every deploy, non-destructively (r180).
+seeding on Render runs after every deploy, non-destructively (r180) —
+the one documented exception being these `@test.ly` accounts (R320 §C;
+on Render the boot-time ensure can be enabled with
+`MADAREK_TEST_ACCOUNTS=1`).
 
 ## Verify it yourself
 

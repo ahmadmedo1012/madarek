@@ -53,25 +53,43 @@ fallback automatically:
 The script never mutates `process.env` in the parent process — the
 override is applied only to the `prisma migrate deploy` child process.
 
-## Demo Accounts
+## Test Accounts (R320 §C — TEST credentials, development)
 
-**r189 credential policy — no shared password is published in any tracked file.**
-Every production demo account now carries its own strong random secret, rotated
-via the audited `db:rotate-password` path (r187 mechanism) and delivered to the
-operator through a private channel. The previously published shared password
-was rejected live at rotation time (401 on all five accounts). Local/dev
-environments seed their own demo passwords (see `backend/prisma/seed.ts` — a
-dev-only fixture, and re-seeding a dev DB resets it); production is never
-reseeded to change credentials (`MADAREK_SEED_FORCE` is the operator's explicit,
-isolated act — see [12-deployment](12-deployment.md)).
+One easy account per job on the `@test.ly` domain — password
+**`12345678`** for ALL of them (published TEST credentials: the project
+is in development; convenience wins. Never production secrets). The
+single source of truth is `shared/testAccounts.ts` (physically
+`backend/src/modules/auth/test-accounts.data.ts`); `npm run db:seed`
+ALWAYS ensures the rows (idempotent upserts — the one deliberate
+exception to the r183 established-DB zero-writes rule), and setting
+**`MADAREK_TEST_ACCOUNTS=1`** (Render → Environment) re-ensures them at
+every backend boot, non-fatal on error. The `@test.ly` email domain is
+the demo marker (no schema column — schema changes were frozen this
+cycle).
 
 | Email | Role | Arabic Name |
 |-------|------|-------------|
-| `student@demo.madarek.ly` | STUDENT | أحمد الزروق |
-| `teacher@demo.madarek.ly` | TEACHER | د. سالم البوسيفي |
-| `admin@demo.madarek.ly` | ADMIN | إدارة الجامعة |
-| `quality@demo.madarek.ly` | QUALITY | مكتب ضمان الجودة |
-| `owner@demo.madarek.ly` | OWNER | مالك المنصة |
+| `student@test.ly` | STUDENT | أحمد الزروق |
+| `student2@test.ly` | STUDENT | ليلى المهدي (مؤسسة الأندلس) |
+| `teacher@test.ly` | TEACHER | د. سالم البوسيفي |
+| `head@test.ly` | TEACHER · DEPARTMENT_HEAD | محمد الشريف |
+| `dean@test.ly` | TEACHER · DEAN | إبراهيم الفيتوري |
+| `vicedean@test.ly` | TEACHER · ASSOCIATE_DEAN | آمال بن عيسى |
+| `registrar@test.ly` | ADMIN (university-wide) | إدارة الجامعة |
+| `faculty@test.ly` | ADMIN (scopeFacultyId = the demo IT faculty) | خديجة المرابط |
+| `quality@test.ly` | QUALITY | مكتب ضمان الجودة |
+| `owner@test.ly` | OWNER (no membership) | مالك المنصة |
+
+Corpus extras (institution-isolation corpus, same password):
+`teacher2@test.ly` · `admin2@test.ly`.
+
+History (r189 credential policy — superseded for the demo set by the
+R320 §C TEST table above, still valid for production credentials): the
+pre-R320 demo accounts each carried a strong per-account secret rotated
+via the audited `db:rotate-password` path and delivered through a
+private channel. If the owner ever promotes the platform to production
+use, retire the `@test.ly` rows (or rotate them the same way) and
+unset `MADAREK_TEST_ACCOUNTS`.
 
 To rotate again: `npm run db:rotate-password -- --email <account> --new-password-env NEW_PASSWORD --yes`
 (the secret travels only via the env var; the script never logs it).

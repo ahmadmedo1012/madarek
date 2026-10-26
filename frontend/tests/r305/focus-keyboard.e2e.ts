@@ -20,6 +20,7 @@
  *      Enter lands programmatic focus on #main.
  */
 import { test, expect } from './fixtures/qa';
+import { VALID_LOGIN } from './fixtures/qa-transport';
 import { readFocusRing } from './fixtures/qa-checks';
 
 test.describe('لوحة الدخول — لوحة المفاتيح', () => {
@@ -46,9 +47,9 @@ test.describe('لوحة الدخول — لوحة المفاتيح', () => {
     // programmatic focus (same focus() call a Tab would trigger), then
     // every character is typed through the real key events.
     await page.locator('#auth-email').focus();
-    await page.keyboard.type('student@zu.edu.ly');
+    await page.keyboard.type(VALID_LOGIN.email);
     await page.locator('#auth-password').focus();
-    await page.keyboard.type('Madarek2026!');
+    await page.keyboard.type(VALID_LOGIN.password);
     // Enter inside a text input submits the owning <form> — no click.
     await page.keyboard.press('Enter');
 

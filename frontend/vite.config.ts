@@ -19,10 +19,14 @@ export default defineConfig({
   // The `@/` alias mirrors vitest.config.ts so the two runners agree:
   // `@/…` imports resolve identically in tests and in the build (the
   // doc-comments in lib/scrollLock.ts + lib/overlayStack.ts instruct
-  // contributors to use it).
+  // contributors to use it). The `@shared/` alias points at the
+  // REPO-ROOT shared/ directory (R320 §C — shared/testAccounts.ts is
+  // the consumer entry for the test-account table); it is mirrored in
+  // vitest.config.ts and the tsconfig paths — keep the three in sync.
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@shared': path.resolve(__dirname, '..', 'shared'),
     },
   },
   server: {

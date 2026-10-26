@@ -28,6 +28,22 @@ async function main() {
     process.exit(1);
   }
 
+  // R320 §C — test-account ensure at boot (opt-in): keeps the documented
+  // easy-login set (@test.ly / the shared table's password) present,
+  // unlocked and realistically profiled. Guarded and NON-FATAL — a
+  // failing ensure must never take the API down. The table's single
+  // source of truth is modules/auth/test-accounts.data.ts; the upserts
+  // touch ONLY these accounts (never real users' data).
+  if (process.env.MADAREK_TEST_ACCOUNTS === '1') {
+    try {
+      const { ensureTestAccounts } = await import('./modules/auth/test-accounts.js');
+      const ensured = await ensureTestAccounts(prisma);
+      logger.info(`🧪 Test accounts ensured (${ensured} jobs) — MADAREK_TEST_ACCOUNTS=1`);
+    } catch (err) {
+      logger.error({ err }, '❌ Test-account ensure failed (non-fatal) — continuing boot');
+    }
+  }
+
   const app = createApp();
   const server = app.listen(env.PORT, () => {
     logger.info(`🚀 Madarek Platform API listening on http://0.0.0.0:${env.PORT} (${env.NODE_ENV})`);

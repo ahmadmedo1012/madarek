@@ -57,7 +57,7 @@ const baseRow = (over: Record<string, unknown>) => ({
   id: 'u-teacher-00000000001',
   firstName: 'سالم',
   lastName: 'الفيتوري',
-  email: 'teacher2@demo.madarek.ly',
+  email: 'teacher2@test.ly',
   role: 'TEACHER',
   isActive: true,
   avatarInitials: 'سف',

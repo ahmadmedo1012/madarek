@@ -5,16 +5,20 @@
  * `db:seed` on EVERY Render deploy (r180), so the seed's deploy-time
  * contract is a production safety property, not a dev convenience.
  *
- * r183 contract (supersedes the r182 repeat-reset pin):
+ * r183 contract (supersedes the r182 repeat-reset pin; R320 §C
+ * amends clause 2 — see the table below):
  *   1. A FRESH install (no users) self-bootstraps: the seed runs the
- *      full create-only body — institutions, demo accounts (documented
+ *      full create-only body — institutions, test accounts (documented
  *      password), memberships, academic demo content.
  *   2. A NORMAL redeploy of an ESTABLISHED database (users exist)
- *      SKIPS the seed entirely — ZERO writes. A rotated demo password
- *      SURVIVES a redeploy (the r180 automatic reset is retired);
- *      user-managed data is not even read for update.
+ *      skips the corpus body — ZERO writes — with ONE deliberate,
+ *      documented exception (R320 §C): ensureTestAccounts() re-ensures
+ *      the @test.ly set (password/lock-state/scope reset on exactly
+ *      those rows). A rotated TEST-account password is reset to the
+ *      published value; a REAL user's rotated password still survives
+ *      and user-managed data is not even read for update.
  *   3. The deliberate demo reset — `MADAREK_SEED_FORCE=1` (npm run
- *      db:seed:force) — re-runs the create-only body: demo passwords
+ *      db:seed:force) — re-runs the create-only body: test passwords
  *      are reset to the published value, demo freshness refreshes,
  *      and ALL user-managed records (progress, grades, non-demo
  *      users) still survive.
@@ -24,29 +28,32 @@
  * DATABASE_URL — never an import (the deploy path is a child
  * process; importing would test a different code path).
  *
- *   what                 | fresh install  | normal redeploy | FORCE reset
- *   ---------------------+----------------+-----------------+-------------
- *   institutions         | created        | untouched       | SAME rows
- *   demo users           | created        | untouched       | SAME rows
- *   WatchEvent/Grade     | —              | PRESERVED       | PRESERVED
- *   (user-managed)       |                |                 |
- *   demo password        | Madarek2026!   | NOT reset (an   | RESET to
- *   (student@demo.madarek.ly) |             | operator-       | Madarek2026!
- *   real-user password   | —              |  rotated value  | (documented)
- *                        |                |  survives)      | UNCHANGED
+ *   what                  | fresh install  | normal redeploy   | FORCE reset
+ *   ----------------------+----------------+-------------------+------------
+ *   institutions          | created        | untouched         | SAME rows
+ *   test users (@test.ly) | created        | healed (§C only)  | SAME rows
+ *   WatchEvent/Grade      | —              | PRESERVED         | PRESERVED
+ *   (user-managed)        |                |                   |
+ *   test password         | 12345678       | RESET to 12345678 | RESET to
+ *   (student@test.ly)     |                | (the §C exception)| 12345678
+ *   real-user password    | —              | survives          | UNCHANGED
  */
 import { spawn } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { hashPassword, verifyPassword } from '../../src/lib/password.js';
+// R320 §C — the published TEST password comes from the single source of
+// truth (physically backend/src/modules/auth/test-accounts.data.ts,
+// re-exported at the repo root as shared/testAccounts.ts).
+import { TEST_PASSWORD } from '../../src/modules/auth/test-accounts.data.js';
 import { db, truncateAll } from './helpers.js';
 
 const backendRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const seedPath = resolve(backendRoot, 'prisma/seed.ts');
 
-/** The published demo password (seed.ts header + docs/12). */
-const DEMO_PASSWORD = 'Madarek2026!';
+/** The published TEST password (test-accounts.data.ts + SECRETS-REFERENCE). */
+const DEMO_PASSWORD = TEST_PASSWORD;
 
 /**
  * Run the seed as a real subprocess — the production deploy path
@@ -75,7 +82,7 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
   });
 
   it(
-    'a fresh deploy seeds the two demo institutions and the demo accounts verify with the documented password',
+    'a fresh deploy seeds the two demo institutions and the test accounts verify with the documented password',
     { timeout: 90_000 },
     async () => {
       await runSeed();
@@ -88,11 +95,12 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
       expect(slugs).toContain('alandalus-demo');
       expect(slugs).toContain('madarek-demo');
 
+      // R320 §C: the documented STUDENT account lives on @test.ly.
       const student = await prisma.user.findUniqueOrThrow({
-        where: { email: 'student@demo.madarek.ly' },
+        where: { email: 'student@test.ly' },
       });
       expect(student.role).toBe('STUDENT');
-      // The documented demo credential actually verifies.
+      // The documented test credential actually verifies.
       await expect(verifyPassword(student.passwordHash, DEMO_PASSWORD)).resolves.toBe(true);
 
       // Memberships: the multi-institution backbone (r178) — the demo
@@ -101,7 +109,7 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
       const memberships = await prisma.membership.count();
       expect(memberships).toBeGreaterThanOrEqual(7);
       const owner = await prisma.user.findUniqueOrThrow({
-        where: { email: 'owner@demo.madarek.ly' },
+        where: { email: 'owner@test.ly' },
       });
       const ownerMemberships = await prisma.membership.count({
         where: { userId: owner.id },
@@ -111,17 +119,17 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
   );
 
   it(
-    'a REPEAT deploy (r183) SKIPS the seed entirely — even a rotated demo password survives; zero writes',
+    'a REPEAT deploy (r183) writes NOTHING but the @test.ly exception — real users and their data survive untouched',
     { timeout: 180_000 },
     async () => {
       await runSeed(); // deploy #1
       const prisma = db();
 
       // ── Simulate live usage between deploys ────────────────────────
-      // (a) the operator rotated a demo account's password (r166c path
+      // (a) the operator rotated a TEST account's password (r166c path
       //     documents this as a real production occurrence);
       const demo = await prisma.user.findUniqueOrThrow({
-        where: { email: 'student@demo.madarek.ly' },
+        where: { email: 'student@test.ly' },
       });
       const operatorPassword = `OpRotated-${Date.now()}-pw`;
       await prisma.user.update({
@@ -194,14 +202,17 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
       await expect(verifyPassword(realAfter.passwordHash, realPassword)).resolves.toBe(true);
       await expect(verifyPassword(realAfter.passwordHash, DEMO_PASSWORD)).resolves.toBe(false);
 
-      // (3) r183: the DEMO account's password is NOT reset by a normal
-      //     redeploy — the operator's rotated value survives (the r180
-      //     automatic reset is retired; the reset is FORCE-only below).
+      // (3) R320 §C override of the r183 pin: the TEST account's
+      //     password IS reset by a normal redeploy — ensureTestAccounts()
+      //     is the ONE deliberate, documented exception to the
+      //     established-DB zero-writes rule, and it touches ONLY the
+      //     @test.ly rows (the operator's rotated value does not survive
+      //     for THIS account; a REAL user's does — see (2) above).
       const demoAfter = await prisma.user.findUniqueOrThrow({
-        where: { email: 'student@demo.madarek.ly' },
+        where: { email: 'student@test.ly' },
       });
-      await expect(verifyPassword(demoAfter.passwordHash, operatorPassword)).resolves.toBe(true);
-      await expect(verifyPassword(demoAfter.passwordHash, DEMO_PASSWORD)).resolves.toBe(false);
+      await expect(verifyPassword(demoAfter.passwordHash, DEMO_PASSWORD)).resolves.toBe(true);
+      await expect(verifyPassword(demoAfter.passwordHash, operatorPassword)).resolves.toBe(false);
 
       // (4) Repeat runs do not duplicate core entities (upserts).
       const facultyCountAfter = await prisma.faculty.count();
@@ -222,7 +233,7 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
 
       // Same live-usage simulation as the redeploy test.
       const demo = await prisma.user.findUniqueOrThrow({
-        where: { email: 'student@demo.madarek.ly' },
+        where: { email: 'student@test.ly' },
       });
       const operatorPassword = `OpRotated-${Date.now()}-pw`;
       await prisma.user.update({
@@ -264,10 +275,11 @@ describe('r182 — deploy-time seed repeat safety (stage 09-C)', () => {
       // The operator-invoked demo reset (npm run db:seed:force).
       await runSeed(true);
 
-      // (1) Demo credential reset to the documented value — the ONE
-      //     deliberate repeating write of the force path.
+      // (1) Test credential reset to the documented value — the ONE
+      //     deliberate repeating write of the force path (the §C ensure
+      //     pass resets the same rows on every path).
       const demoAfter = await prisma.user.findUniqueOrThrow({
-        where: { email: 'student@demo.madarek.ly' },
+        where: { email: 'student@test.ly' },
       });
       await expect(verifyPassword(demoAfter.passwordHash, DEMO_PASSWORD)).resolves.toBe(true);
       await expect(verifyPassword(demoAfter.passwordHash, operatorPassword)).resolves.toBe(false);

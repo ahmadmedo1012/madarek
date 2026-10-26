@@ -2,6 +2,13 @@
 // Dev-only verification aid (not part of any test suite or CI).
 import { chromium } from 'playwright';
 
+// R320 §C — credentials come from the shared test-account table
+// (the PHYSICAL module — this tsx harness doesn't need the @shared
+// vite alias; see shared/testAccounts.ts for the consumer map).
+import { TEST_PASSWORD, testAccountForJob } from '../../../backend/src/modules/auth/test-accounts.data';
+
+const STUDENT_EMAIL = testAccountForJob('طالب')!.email;
+
 const BASE = 'http://localhost:5173';
 const out = (n) => `/tmp/r211-pw-${n}.png`;
 
@@ -13,8 +20,8 @@ page.on('pageerror', (e) => errors.push(String(e)));
 page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
 
 await page.goto(`${BASE}/auth`, { waitUntil: 'networkidle' });
-await page.getByLabel('البريد الإلكتروني أو رقم القيد').fill('student@demo.madarek.ly');
-await page.getByRole('textbox', { name: 'كلمة المرور' }).fill('Madarek2026!');
+await page.getByLabel('البريد الإلكتروني أو رقم القيد').fill(STUDENT_EMAIL);
+await page.getByRole('textbox', { name: 'كلمة المرور' }).fill(TEST_PASSWORD);
 await page.getByRole('button', { name: 'تسجيل الدخول' }).click();
 await page.waitForURL('**/student/dashboard', { timeout: 30000 });
 await page.waitForLoadState('networkidle');

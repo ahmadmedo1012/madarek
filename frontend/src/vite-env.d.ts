@@ -2,6 +2,10 @@
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL?: string;
   readonly VITE_APP_NAME?: string;
+  // R320 §C — the test-account login panel's visibility gate:
+  // absent = SHOW (default on while the project is in development);
+  // '0' hides the panel everywhere (build with VITE_SHOW_TEST_ACCOUNTS=0).
+  readonly VITE_SHOW_TEST_ACCOUNTS?: string;
   // Vite built-ins
   readonly DEV: boolean;
   readonly PROD: boolean;

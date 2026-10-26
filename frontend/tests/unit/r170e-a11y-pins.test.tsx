@@ -233,7 +233,7 @@ describe('r170-e — RegisterPage live strength hint (polite, advisory only)', (
     fireEvent.change(screen.getByLabelText('الاسم الأول'), { target: { value: 'سالم' } });
     fireEvent.change(screen.getByLabelText('اللقب'), { target: { value: 'الفيتوري' } });
     fireEvent.change(screen.getByLabelText('البريد الإلكتروني'), { target: { value: 'salem@zu.edu.ly' } });
-    fireEvent.change(screen.getByLabelText(PW_LABEL), { target: { value: 'Madarek2026!' } });
+    fireEvent.change(screen.getByLabelText(PW_LABEL), { target: { value: 'Salam-Zawiya-2026' } });
     fireEvent.change(screen.getByLabelText('رقم القيد الجامعي'), { target: { value: '2024-CS-1234' } });
     fireEvent.change(screen.getByLabelText('الكلّيّة'), { target: { value: 'fac-1' } });
     fireEvent.change(screen.getByLabelText('القسم'), { target: { value: 'dep-1' } });

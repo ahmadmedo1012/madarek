@@ -19,6 +19,7 @@
  *      navigation to /auth/register.
  */
 import { test, expect } from './fixtures/qa';
+import { VALID_LOGIN } from './fixtures/qa-transport';
 
 test.describe('زر الدخول أثناء الإرسال', () => {
   test('أثناء التحقق: معطَّل + aria-busy + نصّ الانتظار، ثم نجاح يحوّل', async ({ page }) => {
@@ -34,8 +35,8 @@ test.describe('زر الدخول أثناء الإرسال', () => {
     await page.goto('/auth');
     await expect(page.locator('h1.auth-form-title')).toHaveText('مرحبا بعودتك');
 
-    await page.locator('#auth-email').fill('student@zu.edu.ly');
-    await page.locator('#auth-password').fill('Madarek2026!');
+    await page.locator('#auth-email').fill(VALID_LOGIN.email);
+    await page.locator('#auth-password').fill(VALID_LOGIN.password);
     await page.getByRole('button', { name: 'تسجيل الدخول' }).click();
 
     const submit = page.locator('.auth-submit');

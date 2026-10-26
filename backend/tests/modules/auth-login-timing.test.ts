@@ -32,7 +32,7 @@ vi.mock('../../src/db.js', () => ({
 import { prisma } from '../../src/db.js';
 import { verifyPassword } from '../../src/lib/password.js';
 import { loginUser } from '../../src/modules/auth/auth.service';
-import { MAX_FAILED_LOGINS } from '../../src/modules/auth/lockout';
+import { LOCK_DURATION_DEMO_MS, LOCK_DURATION_MS, MAX_FAILED_LOGINS } from '../../src/modules/auth/lockout';
 
 const makeUser = (overrides: Partial<User> = {}): User =>
   ({
@@ -215,5 +215,40 @@ describe('loginUser — lockout failure accounting (wave 12-3 race hardening)', 
     });
 
     expect(prisma.user.updateMany).toHaveBeenCalledTimes(1);
+  });
+
+  // R320 §C — the demo backoff: @test.ly accounts take the 60 s lock,
+  // real accounts keep the full 15-minute policy (lockout.ts
+  // lockDurationFor — the branch must never widen to real users).
+  it('R320 §C: locks @test.ly for the 60 s demo backoff and real accounts for the full policy', async () => {
+    vi.mocked(prisma.user.update).mockResolvedValue({ failedLoginCount: MAX_FAILED_LOGINS } as User);
+
+    // Demo account → the lock lands ~60 s out.
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(
+      makeUser({ failedLoginCount: MAX_FAILED_LOGINS - 1, email: 'student@test.ly' }),
+    );
+    await expect(loginUser('student@test.ly', 'pw')).rejects.toMatchObject({
+      code: 'INVALID_CREDENTIALS',
+    });
+    const demoCalls = vi.mocked(prisma.user.updateMany).mock.calls as unknown as Array<
+      [{ data: { lockedUntil: Date } }]
+    >;
+    const demoDelta = (demoCalls[0]?.[0].data.lockedUntil.getTime() ?? 0) - Date.now();
+    expect(demoDelta).toBeGreaterThan(LOCK_DURATION_DEMO_MS - 5_000);
+    expect(demoDelta).toBeLessThanOrEqual(LOCK_DURATION_DEMO_MS);
+
+    // Real account → the full 15-minute policy.
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(
+      makeUser({ failedLoginCount: MAX_FAILED_LOGINS - 1, email: 'ahmed@zu.edu.ly' }),
+    );
+    await expect(loginUser('ahmed@zu.edu.ly', 'pw')).rejects.toMatchObject({
+      code: 'INVALID_CREDENTIALS',
+    });
+    const realCalls = vi.mocked(prisma.user.updateMany).mock.calls as unknown as Array<
+      [{ data: { lockedUntil: Date } }]
+    >;
+    const realDelta = (realCalls[1]?.[0].data.lockedUntil.getTime() ?? 0) - Date.now();
+    expect(realDelta).toBeGreaterThan(LOCK_DURATION_MS - 5_000);
+    expect(realDelta).toBeLessThanOrEqual(LOCK_DURATION_MS);
   });
 });
