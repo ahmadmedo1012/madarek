@@ -206,7 +206,7 @@ Unified platform: every overlay registers in `lib/overlayStack` (topmost layer o
 Role-based navigation groups defined per role:
 - `STUDENT_NAV`: 4 groups (الرئيسية, التعلم الذكي, التطوير والمجتمع, حسابي والخدمات)
 - `TEACHER_NAV`: 3 groups (لوحة التدريس, البحث والمحاضرة, حسابي)
-- `ADMIN_NAV`: 2 groups (الإدارة, النظام)
+- `ADMIN_NAV`: 2 groups (المسجل العام, النظام)
 - `QUALITY_NAV`: 2 groups (مركز ضمان الجودة, المراجعة والتقارير)
 - `OWNER_NAV`: 3 groups (لوحة المالك, المنصة, المراقبة والتحليل)
 

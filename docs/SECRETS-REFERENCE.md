@@ -69,7 +69,7 @@ isolated act — see [12-deployment](12-deployment.md)).
 |-------|------|-------------|
 | `student@demo.madarek.ly` | STUDENT | أحمد الزروق |
 | `teacher@demo.madarek.ly` | TEACHER | د. سالم البوسيفي |
-| `admin@demo.madarek.ly` | ADMIN | إدارة الجامعة |
+| `admin@demo.madarek.ly` | ADMIN | المسجل العام |
 | `quality@demo.madarek.ly` | QUALITY | مكتب ضمان الجودة |
 | `owner@demo.madarek.ly` | OWNER | مالك المنصة |
 

@@ -37,6 +37,9 @@
  * no new npm dependencies, same shape as the S3 driver).
  */
 import { env } from '../env.js';
+// R320 §B (c1-RENAME): role names in the teacher-facing prompt share the
+// backend twin of the frontend's lib/roleLabels.ts (belt-locked equal).
+import { ROLE_LABEL_PLURAL_OBLIQUE } from './roleLabels.js';
 
 /** The two reply engines the platform can run (see header). */
 export type AiProviderMode = 'local' | 'openai';
@@ -310,7 +313,9 @@ export function buildGenericSystemPrompt(teachingLines: readonly string[] = []):
       ? `مقرّرات يُدرّسها المستخدم هذه الفترة:\n${teachingLines.join('\n')}`
       : '';
   return [
-    'أنت «مساعد مدارك» — مساعد تحليليّ لأعضاء هيئة التدريس والإدارة على منصّة مدارك.',
+    // R320 §B: the audience phrase names the ADMIN role's canonical
+    // plural (shared label source).
+    `أنت «مساعد مدارك» — مساعد تحليليّ لأعضاء هيئة التدريس و${ROLE_LABEL_PLURAL_OBLIQUE.ADMIN} على منصّة مدارك.`,
     'اكتب ردّك نصًّا عاديًا بلا تنسيق ماركداون (لا نجومًا ولا عناوين #).',
     'تحدّث بالعربية الفصحى المبسّطة افتراضًا؛ إذا طلب المستخدم صراحةً لغةً أخرى فأجبه بها.',
     'أجب بإيجاز ووضوح: الإجابة المباشرة أولًا ثم التفصيل إن لزم. أسئلتك غالبًا تدور حول التدريس والتقييم وتنظيم المقرّرات — أجِب عمليًا.',

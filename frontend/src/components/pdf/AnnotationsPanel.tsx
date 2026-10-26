@@ -7,6 +7,9 @@ import { UserAvatar, Badge } from '../primitives';
 import { EmptyState, ErrorState, Skeleton } from '../primitives/States';
 import { useAnnotations, useCreateAnnotation, useDeleteAnnotation } from '../../hooks/useResources';
 import { apiErrorMessage, timeAgoAr } from '../../lib/format';
+// R320 §B: the author role badge consumes the ONE shared role-label
+// source (lib/roleLabels.ts + backend twin).
+import { roleLabel } from '../../lib/roleLabels';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
 
 /* Relative time is lib/format.timeAgoAr (15-h P2-2 consolidation,
@@ -307,14 +310,10 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
 
 function RoleBadge({ role }: { role: AppRole }) {
   // OWNER added 16-E10 (PaperAnnotation.author.role widened to AppRole —
-  // 16-E2 hand-off); labels match nav.ts ROLE_LABELS so the same role
-  // reads identically in the sidebar and on an annotation author line
-  // (17-a2: ADMIN «إدارة» → «إداري», QUALITY person-noun per 15-j P1-8).
-  const label =
-    role === 'TEACHER' ? 'أستاذ' :
-    role === 'ADMIN' ? 'إداري' :
-    role === 'QUALITY' ? 'أخصائي جودة' :
-    role === 'OWNER' ? 'مالك المنصة' :
-    'طالب';
+  // 16-E2 hand-off); labels match the ONE shared role-label source
+  // (lib/roleLabels.ts, R320 §B: ADMIN is «المسجل العام») so the same
+  // role reads identically in the sidebar and on an annotation author
+  // line (17-a2 person-nouns, 15-j P1-8; QUALITY «أخصائي جودة»).
+  const label = roleLabel(role);
   return <span style={{ color: 'var(--accent-ink)', fontWeight: 600 }}>{label}</span>;
 }

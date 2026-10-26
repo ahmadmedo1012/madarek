@@ -26,7 +26,7 @@
 | لوحة/نتائج/مواد | `student-dashboard.routes.ts` | `GET /me/dashboard` (الأجندة: classes/assignments/live/**exams** — قرارات r164c النقية `selectAgendaExams`/`examAttemptFinished`)، `/me/results` (يشمل `pendingSubmissions` + ملاحظة الأستاذ في `recentAssignments` — r164-e)، `/me/materials`، `/me/lab-sessions` |
 | التعلم | `learning.routes.ts` | `GET /offerings/:id/full` (يُسقط لكل محاضرة `answeredCheckpoints` لطلاب فقط — r164d)، `POST /lectures/:id/watch`، إدماجيات (حدّ 20/د + سقف احتساب 4 محاولات/مفهوم r155a)، `GET/POST /me/research`، `POST /research/:id/scan` (10/د)، annotations، `/me/matrix`، `/me/gaps` |
 | التدريب | `training.routes.ts` | `catalog`، `tracks/:slug/enroll`، `lessons/:lessonId/complete`، `me/badges`، `certificates`، `leaderboard` |
-| اختبارات | نماذج `Question/ExamTemplate/ExamAttempt` | الطالب يتخذ فقط (البناء للإدارة/الأستاذ) |
+| اختبارات | نماذج `Question/ExamTemplate/ExamAttempt` | الطالب يتخذ فقط (البناء للمسجل العام/الأستاذ) |
 | إشعارات/رسائل | `me.routes.ts` | قراءة/قراءة الكل (رسائل بحد 30/د) |
 | ذكاء | `ai.routes.ts` | `POST /ai/chat` (مؤلف `gap-aware-composer` افتراضيًا؛ مزوّد LLM حقيقي اختياريًا بلا fallback صامت — r160)، `GET /ai/config` (سطح الصدق للمحرك)، `GET /ai/conversations`، `GET /ai/conversations/:id/messages`، `DELETE /ai/conversations/:id` (ملكية المتصل؛ حذف تتالي رسائله — r164g) |
 

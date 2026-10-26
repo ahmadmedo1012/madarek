@@ -447,7 +447,7 @@ export function AppRoutes() {
             القديمة (QUALITY+ADMIN) كانت تفتح صفحاتٍ ترتدّ بياناتها 403
             فور وصولها. الاستثناء الموثّق: ADMIN مُنح QUALITY_VIEW يدويًا
             من المالك يحصل على البيانات من الخلفية، لكنّ حارس الواجهة
-            يمثّل حقيقة الدور الافتراضية — الارتداد إلى لوحة الإدارة. */}
+            يمثّل حقيقة الدور الافتراضية — الارتداد إلى لوحة المسجل العام. */}
         <Route element={<ProtectedRoute allow={['QUALITY']} />}>
           <Route element={<AppShell />}>
             <Route path="/quality/dashboard" element={<QualityDashboardPage />} />

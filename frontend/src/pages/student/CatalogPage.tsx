@@ -30,7 +30,7 @@ import '../../styles/r319-student-pages.css';
  * enrollment in this product is ADMIN-MEDIATED — the cards render
  * catalogue info only (code, name, icon, department, credits) with NO
  * enroll button, and the banner above the grid names the real door
- * (إدارة الكلية). The grid reuses the enrolled-courses card grammar
+ * (مكتب المسجل العام). The grid reuses the enrolled-courses card grammar
  * (thumb-card + courseIcon tint well) so a course reads the same on
  * both surfaces; the search box is the LibraryPage GlobalSearch
  * grammar (aria-label + × clear) with its 250ms debounce, and the
@@ -172,7 +172,7 @@ export default function CatalogPage() {
           .r305c-note anatomy lives in the family sheet, tokens only). */}
       <div role="note" className="r305c-note">
         <span><Icon icon={Info} size={15} /></span>
-        <span>التسجيل في المقررات تتم إدارته عبر إدارة الكلية — تواصل مع إدارة مؤسستك.</span>
+        <span>التسجيل في المقرّرات يتم عبر مكتب المسجل العام — تواصل مع مؤسستك.</span>
       </div>
 
       {/* Search bar — the LibraryPage GlobalSearch grammar: aria-label,
@@ -224,7 +224,7 @@ export default function CatalogPage() {
             label={searching ? 'لا توجد مقرّرات تطابق البحث' : 'لا توجد مقرّرات بعد'}
             note={searching
               ? `لم نجد مقرّراً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
-              : 'لم تُضف مقرّرات إلى دليل مؤسستك حتى الآن — ستظهر هنا فور إضافتها من الإدارة.'}
+              : 'لم تُضف مقرّرات إلى دليل مؤسستك حتى الآن — ستظهر هنا فور إضافتها من المسجل العام.'}
           />
         </Card>
       ) : (

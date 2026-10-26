@@ -44,7 +44,7 @@
 |---|---|
 | [modules/student.md](modules/student.md) | قطاع الطالب: التعلم المعكوس، مصفوفة الإتقان، البحث العلمي، التدريب |
 | [modules/teacher.md](modules/teacher.md) | قطاع الأستاذ: التحليلات، تأليف المنهج، تصحيح البحوث، البث |
-| [modules/admin.md](modules/admin.md) | الإدارة: الكليات، المقررات، الصلاحيات، مزامنة الجامعة |
+| [modules/admin.md](modules/admin.md) | المسجل العام: الكليات، المقررات، الصلاحيات، مزامنة الجامعة |
 | [modules/quality.md](modules/quality.md) | ضمان الجودة: القطاع الرابع للرقابة القرائية |
 | [modules/owner.md](modules/owner.md) | المالك: المؤشرات، الحاكمية، السجل التدقيقي، النظام |
 | [modules/platform.md](modules/platform.md) | المشترك: المصادقة، السمات، الإشعارات، المجتمع، الكليات، نظام التصميم |

@@ -1,0 +1,65 @@
+{
+  "$comment": "R320 §B rename KEEP sidecar (task c1-RENAME) — the machine-readable allowlist companion of docs/redesign/r320/RENAME-LEDGER.md. Belt 1 (frontend/tests/unit/r320-rename-belt.test.ts) scans the role-label code paths listed in belt1ScannedFiles for definite-form «الإدارة/الادارة» role labels; every surviving occurrence MUST be covered by a keeps[].phrase entry for that file. Technical identifiers (Role.ADMIN, /admin/* URLs, ADMIN_NAV, CSS classes, test ids) are out of scope by construction — they never carry the Arabic label.",
+  "canonical": {
+    "role": "المسجل العام",
+    "dashboard": "لوحة المسجل العام",
+    "reports": "تقارير المسجل العام",
+    "scope": "نطاق المسجل العام",
+    "plural": "المسجلون العامّون",
+    "pluralOblique": "المسجلين العامّين",
+    "indefinite": "مسجل عام"
+  },
+  "belt1ScannedFiles": [
+    "frontend/src/lib/roleLabels.ts",
+    "backend/src/lib/roleLabels.ts",
+    "frontend/src/lib/nav.ts",
+    "frontend/src/pages/AuthPage.tsx",
+    "frontend/src/components/layout/Topbar.tsx",
+    "frontend/src/components/layout/Sidebar.tsx",
+    "frontend/src/pages/community/CommunityPages.tsx",
+    "frontend/src/pages/owner/OwnerUsersPage.tsx",
+    "frontend/src/pages/admin/AdminGovernancePages.tsx",
+    "frontend/src/components/pdf/AnnotationsPanel.tsx",
+    "frontend/src/components/onboarding/OnboardingFlow.tsx",
+    "frontend/src/data/university-media.ts",
+    "frontend/src/pages/student/PaymentPage.tsx"
+  ],
+  "keeps": [
+    {
+      "file": "frontend/src/data/university-media.ts",
+      "phrase": "الإدارة المركزية",
+      "reason": "the university BUILDING (Central Administration, Benghazi University) — Commons photo captions/alt text, not the role"
+    },
+    {
+      "file": "frontend/src/data/university-media.ts",
+      "phrase": "مبنى الإدارة",
+      "reason": "the university administration BUILDING's architectural detail photo (name + alt)"
+    },
+    {
+      "file": "frontend/src/pages/student/PaymentPage.tsx",
+      "phrase": "الإدارة الماليّة",
+      "reason": "the FINANCE OFFICE (mission KEEP example) — fees announcements + contact card"
+    },
+    {
+      "file": "frontend/src/pages/student/PaymentPage.tsx",
+      "phrase": "من الإدارة",
+      "reason": "office hours accredited by the administration inside the finance-office working-hours card — not the role label"
+    }
+  ],
+  "documentationKeeps": {
+    "$comment": "KEEP categories outside the belt's scanned set (humans + the c1-GATE rename-scan rule) — see the ledger for the full row-per-occurrence tables",
+    "categories": [
+      "management-function names: إدارة الأساتذة/الطلاب/المقرّرات/المنهج/المستخدمين/الصلاحيات/البث المباشر/المؤسسات/الإعلانات/البنية التحتية…",
+      "the finance office: الإدارة الماليّة (PaymentPage)",
+      "the university building: الإدارة المركزية + مبنى الإدارة (university-media.ts)",
+      "the r177 platform-administration voice: إدارة المنصّة (auth.service.ts ×2, RegisterPage, ExamAuthorPages, TeacherLabsPage — pinned by r177-brand-neutrality.test.ts)",
+      "the OWNER role wording: مدير المنصة / المدير الأعلى (OnboardingFlow, api-fixtures)",
+      "generic adjectives: إداريّ/إدارية (بالتعيين الإداريّ، الأدوات الإدارية، الأكاديمي والإداري)",
+      "content data: course topics, research abstracts, study-skill topics, MOOC names (seed.ts, teacher.routes.ts:599, tests)",
+      "test passthrough fixtures quoting backend messages verbatim (AuthPage-rate-limit.test.tsx)",
+      "linguistic test data (search normalize tests)",
+      "historical records: CHANGELOG.md, docs/archive/**, docs/releases/**, docs/redesign/** past-cycle docs",
+      "technical identifiers: Role.ADMIN, /admin/* URLs, DB values, JWT claims, CSS classes, test ids, ADMIN_NAV, sheet-code A-01 · ADMIN"
+    ]
+  }
+}

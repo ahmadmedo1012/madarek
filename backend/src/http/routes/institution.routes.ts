@@ -8,6 +8,9 @@ import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
+// R320 §B (c1-RENAME): backend role labels share the twin of the
+// frontend's lib/roleLabels.ts (belt-locked equal).
+import { ROLE_LABEL_INDEFINITE } from '../../lib/roleLabels.js';
 import { arabicInitials, sanitizeUser } from '../../modules/auth/auth.service.js';
 import {
   createInstitutionSchema,
@@ -246,7 +249,9 @@ router.post(
         // Defense-in-depth alongside the DTO superRefine (programmatic
         // callers must stay honest — the repo's service-guard idiom).
         if (!input.password || !input.firstName || !input.lastName) {
-          throw AppError.badRequest('كلمة المرور والاسمان مطلوبان عند إنشاء حساب مدير جديد');
+          // R320 §B: the provisioned account is Role.ADMIN — the
+          // institution's «مسجل عام» (was «مدير»). Shared label source.
+          throw AppError.badRequest(`كلمة المرور والاسمان مطلوبان عند إنشاء حساب ${ROLE_LABEL_INDEFINITE.ADMIN} جديد`);
         }
         const clash = await prisma.user.findUnique({ where: { email: input.email } });
         if (clash) throw AppError.conflict('البريد الإلكتروني مسجّل مسبقاً');
@@ -291,7 +296,7 @@ router.post(
       const user = await prisma.user.findUnique({ where: { email: input.email } });
       if (!user) throw AppError.notFound('المستخدم غير موجود');
       if (user.role === Role.OWNER) {
-        throw AppError.badRequest('مالك المنصة لا يُعيَّن مديراً لمؤسسة — الملكية دور منصّة مستقل');
+        throw AppError.badRequest('مالك المنصة لا يُعيَّن مسجلاً عاماً لمؤسسة — الملكية دور منصّة مستقل');
       }
 
       // Pre-read the current membership (if any) BEFORE the transaction:

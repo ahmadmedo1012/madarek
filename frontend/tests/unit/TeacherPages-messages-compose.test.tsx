@@ -202,11 +202,11 @@ describe('collectCorrespondents — the inbox-side recipient pool', () => {
     const pool = collectCorrespondents([
       message({ id: 'm1' }), // incoming from s1
       message({ id: 'm2', readAt: null }), // incoming from s1 again → dedup
-      message({ id: 'm3', fromUser: user('t1', 'سالم', 'الطاهر'), toUser: user('a1', 'إدارة', 'الجامعة') }), // sent → a1
+      message({ id: 'm3', fromUser: user('t1', 'سالم', 'الطاهر'), toUser: user('a1', 'المسجل', 'العام') }), // sent → a1 — R320 override: the ADMIN correspondent is «المسجل العام» (§B rename)
     ], 't1');
     expect(pool).toEqual([
       { id: 's1', name: 'آمنة العبيدي' },
-      { id: 'a1', name: 'إدارة الجامعة' },
+      { id: 'a1', name: 'المسجل العام' },
     ]);
   });
 

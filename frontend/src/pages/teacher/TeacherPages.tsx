@@ -181,7 +181,7 @@ export function TeacherSchedulePage() {
         <EmptyState
           title="لا يوجد جدول مسجَّل"
           illustration="empty-list"
-          description="ستظهر محاضراتك هنا فور تسجيل الجداول لمقرّراتك من قِبَل الإدارة."
+          description="ستظهر محاضراتك هنا فور تسجيل الجداول لمقرّراتك من قِبَل المسجل العام."
         />
       ) : (
         /* 4C-c Superlist recomposition: calm day sections in a grid —
@@ -1252,7 +1252,7 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
             </Pill>
           </div>
 
-          <FormField label="المقرّر" error={list.length === 0 ? 'لا توجد مقرّرات مرتبطة بحسابك — تواصل مع الإدارة.' : undefined}>
+          <FormField label="المقرّر" error={list.length === 0 ? 'لا توجد مقرّرات مرتبطة بحسابك — تواصل مع المسجل العام.' : undefined}>
             <select
               className="input"
               value={effectiveOfferingId}
@@ -1937,7 +1937,7 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
       <div className="hr-scope">
       <form onSubmit={(e) => { e.preventDefault(); void onSubmit(); }} noValidate>
         <div className="modal-body">
-          <FormField label="المقرّر" error={list.length === 0 ? 'لا توجد مقرّرات مرتبطة بحسابك — تواصل مع الإدارة.' : undefined}>
+          <FormField label="المقرّر" error={list.length === 0 ? 'لا توجد مقرّرات مرتبطة بحسابك — تواصل مع المسجل العام.' : undefined}>
             <select
               className="input"
               value={effectiveOfferingId}

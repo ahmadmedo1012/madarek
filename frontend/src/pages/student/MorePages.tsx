@@ -1211,7 +1211,7 @@ export function ArVrPage() {
       ) : !q.data || q.data.length === 0 ? (
         <EmptyState illustration="empty-list"
           title="لا توجد تجارب AR/VR بعد"
-          description="ستظهر هنا حين يقوم الإداريّون بإضافتها."
+          description="ستظهر هنا حين يضيفها المسجل العام."
         />
       ) : (
         <RowList aria-label="فهرس تجارب AR/VR">

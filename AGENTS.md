@@ -39,7 +39,7 @@
 | الخلفية — المصادقة والحاكمية | `backend/src/modules/auth/`، `http/routes/auth.routes.ts`، `owner.routes.ts`، `lib/permissions.ts`، `lib/governance.ts` | `docs/modules/platform.md` |
 | الخلفية — قطاع الطالب والتعلم | `http/routes/learning.routes.ts` (أكبر ملف)، `student-dashboard.routes.ts`، `training.routes.ts` | `docs/modules/student.md` |
 | الخلفية — قطاع الأستاذ | `http/routes/teacher*.routes.ts`، `curriculum.routes.ts`، `submissions.routes.ts`، `offerings.routes.ts` | `docs/modules/teacher.md` |
-| الخلفية — الإدارة والمزامنة | `http/routes/users.routes.ts`، `courses.routes.ts`، `catalog.routes.ts`، `admin-extras.routes.ts`، `sync.routes.ts` | `docs/modules/admin.md` |
+| الخلفية — المسجل العام والمزامنة | `http/routes/users.routes.ts`، `courses.routes.ts`، `catalog.routes.ts`، `admin-extras.routes.ts`، `sync.routes.ts` | `docs/modules/admin.md` |
 | الخلفية — قطاع الجودة | 6 مسارات `/quality/*` داخل `learning.routes.ts` | `docs/modules/quality.md` |
 | الواجهة — الهيكل والمخازن | `frontend/src/App.tsx`، `components/layout/AppShell.tsx`، `stores/`، `lib/api.ts`، `hooks/useResources.ts` | `docs/03-architecture.md` |
 | الواجهة — نظام التصميم | `frontend/src/styles/tokens.css`، `motion.css`، `fonts.css` | `docs/modules/platform.md` + `DESIGN.md` |

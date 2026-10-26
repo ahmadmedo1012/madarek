@@ -277,9 +277,9 @@ export const ROLE_CAPTURES: ProductCapture[] = [
   },
   {
     id: 'admin-dashboard',
-    titleAr: 'لوحة الإدارة',
+    titleAr: 'لوحة المسجل العام',
     captionAr: 'مؤشرات الكليات والطلاب والأساتذة',
-    altAr: 'لقطة حقيقية من لوحة الإدارة في مدارك — بيانات العرض التجريبية',
+    altAr: 'لقطة حقيقية من لوحة المسجل العام في مدارك — بيانات العرض التجريبية',
     route: '/admin/dashboard',
     widths: [720, 1280],
     sizes: '(min-width: 992px) 40rem, 100vw',
@@ -333,7 +333,13 @@ export const ROLE_SHOWCASES: [
   },
   {
     key: 'ADMIN',
-    roleAr: 'للإدارة',
+    /* R320 §B: the role showcase names the role — «المسجل العام». The
+       definite form (no leading ل) is deliberate: LandingPage renders
+       the card title as `roleAr.replace(/^ل/, '')`, so a «للمسجل العام»
+       entry would strip to the dangling «لمسجل العام»; this entry
+       renders the clean «المسجل العام» (same clean-noun shape as the
+       «ضمان الجودة» / «مالك المنصّة» entries). */
+    roleAr: 'المسجل العام',
     lineAr: 'الكليات والأقسام والمقرّرات والصلاحيات، وتقارير حيّة',
     captureId: 'admin-dashboard',
   },

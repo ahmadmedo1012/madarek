@@ -343,7 +343,7 @@ export function CollegesIndexPage() {
       )}
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && q.data.length === 0 && (
-        <EmptyState illustration="empty-list" title="لا توجد كلّيّات بعد" description="ستظهر الكلّيّات هنا حين يقوم الإداريّون بإضافتها." />
+        <EmptyState illustration="empty-list" title="لا توجد كلّيّات بعد" description="ستظهر الكلّيّات هنا حين يضيفها المسجل العام." />
       )}
 
       {q.data && q.data.length > 0 && (

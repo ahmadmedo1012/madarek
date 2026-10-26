@@ -958,7 +958,7 @@ export default function LandingPage() {
                 <span>تبني المحاضرة والاختبار، وتصحّح الواجبات بملاحظات مكتوبة، وترى من يحتاجك الآن.</span>
               </RevealCssClass>
               <RevealCssClass as="p" className="st-line" delay={2}>
-                <strong>للإدارة</strong>
+                <strong>للمسجل العام</strong>
                 <span>تدير الكليات والمقرّرات والصلاحيات، وترى مؤسّستك حيّة على مستوى كل قسم.</span>
               </RevealCssClass>
             </div>

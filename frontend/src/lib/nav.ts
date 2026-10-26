@@ -12,6 +12,12 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole, AcademicPosition } from '../stores/auth.store';
+// R320 §B (c1-RENAME): the role display-name map lives in lib/roleLabels.ts
+// (the one source of truth, with the backend twin) — re-exported here so
+// every existing ROLE_LABELS import keeps working.
+import { ROLE_LABELS } from './roleLabels';
+
+export { ROLE_LABELS };
 
 export interface NavItem {
   to: string;
@@ -232,9 +238,13 @@ export const TEACHER_NAV: NavGroup[] = [
 
 export const ADMIN_NAV: NavGroup[] = [
   {
-    label: 'الإدارة',
+    /* R320 §B: the ADMIN role's group label is its canonical name
+       «المسجل العام» (the registrar general — never a generalized
+       office construction); one name for the role everywhere (sidebar,
+       drawer, topbar kicker, titles). */
+    label: 'المسجل العام',
     items: [
-      { to: '/admin/dashboard', icon: LayoutDashboard, label: 'لوحة الإدارة' },
+      { to: '/admin/dashboard', icon: LayoutDashboard, label: 'لوحة المسجل العام' },
       { to: '/admin/teachers', icon: School, label: 'إدارة الأساتذة' },
       /* r305 (nav audit, task 2-a): Building2 ×2 dedupe — the A4 P3-4
          unique-icon-per-role rule the student/owner maps already honor
@@ -384,15 +394,12 @@ export const ROLE_HOME: Record<AppRole, string> = {
   OWNER:   '/owner/dashboard',
 };
 
-export const ROLE_LABELS: Record<AppRole, string> = {
-  STUDENT: 'طالب',
-  TEACHER: 'أستاذ',
-  ADMIN: 'إداري',
-  // A person, not the function — «جودة» read as a role chip under a
-  // user's name is not a person (15-j P1-8).
-  QUALITY: 'أخصائي جودة',
-  OWNER: 'مالك المنصة',
-};
+/* ───────────────────────────────────────────────────────────────────
+   ROLE_LABELS — moved to lib/roleLabels.ts (R320 §B, c1-RENAME): the
+   one source of truth shared with the backend twin; ADMIN is
+   «المسجل العام» there. Re-exported above for every consumer that
+   imported it from here.
+   ─────────────────────────────────────────────────────────────────── */
 
 const POSITION_LABELS: Record<AcademicPosition, string> = {
   DEAN: 'عميد',
@@ -406,8 +413,9 @@ const POSITION_LABELS: Record<AcademicPosition, string> = {
  *  - regular teacher → "أستاذ"
  *  - dept head       → "أستاذ · رئيس قسم"
  *  - dean            → "أستاذ · عميد كلّيّة الهندسة"  (when faculty name supplied)
- *  - admin university-wide → "إداري"
- *  - admin scoped to faculty → "إداري كلّيّة"  (faculty name shown separately as a chip)
+ *  - admin university-wide → "المسجل العام"
+ *  - admin scoped to faculty → "المسجل العام" (faculty name shown
+ *    separately as the scope chip «المسجل العام · كلية …")
  */
 export function displayRoleLabel(
   role: AppRole,

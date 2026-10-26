@@ -107,7 +107,8 @@ function axError(status: number, code?: string, message?: string): AxiosError<{ 
 }
 
 const NO_DEPARTMENTS_TEXT =
-  'لا توجد أقسام مسجّلة في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع إدارة الجامعة.';
+  // R320 override: «تواصل مع إدارة الجامعة» → «تواصل مع المسجل العام» (§B rename).
+  'لا توجد أقسام مسجّلة في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع المسجل العام.';
 
 function renderPage() {
   return render(

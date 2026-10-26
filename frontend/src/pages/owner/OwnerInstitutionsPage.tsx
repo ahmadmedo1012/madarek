@@ -110,7 +110,7 @@ function CreateInstitutionCard({
   return (
     <Card
       title="إنشاء مؤسسة جديدة"
-      subtitle="أضف مؤسسة تعليمية إلى المنصّة — تُنشأ نشطة ويمكن تعيين مديرها بعد ذلك."
+      subtitle="أضف مؤسسة تعليمية إلى المنصّة — تُنشأ نشطة ويمكن تعيين مسجلها العام بعد ذلك."
       icon={Plus}
     >
       <form
@@ -317,11 +317,13 @@ function ProvisionAdminModal({
   };
 
   return (
-    <Modal open={open} onClose={close} ariaLabel="تعيين مدير مؤسسة">
+    <Modal open={open} onClose={close} ariaLabel="تعيين مسجل عام للمؤسسة">
       <div className="modal-header">
         {/* r183-B5 (A9 P3): h3 — the owner modals' heading grammar (the
             four detail-page modals all use h3.modal-title). */}
-        <h3 className="modal-title">تعيين مدير مؤسسة</h3>
+        {/* R320 §B: the provisioned account is Role.ADMIN — the
+            institution's «مسجل عام» (registrar general). */}
+        <h3 className="modal-title">تعيين مسجل عام للمؤسسة</h3>
       </div>
       <form
         onSubmit={(e) => {
@@ -400,14 +402,14 @@ function ProvisionAdminModal({
           </button>
           <button type="submit" className="btn primary" disabled={!canSubmit} aria-busy={isPending}>
             <Icon icon={UserPlus} size={13} />
-            {isPending ? 'جارٍ التعيين…' : 'تعيين المدير'}
+            {isPending ? 'جارٍ التعيين…' : 'تعيين المسجل العام'}
           </button>
         </div>
         {error != null && (
           <AlertRow
             color="red"
             icon={AlertTriangle}
-            title="تعذّر تعيين المدير"
+            title="تعذّر تعيين المسجل العام"
             description={apiErrorMessage(error, 'لم يستجب الخادم للطلب. إعادة المحاولة.')}
           />
         )}
@@ -508,7 +510,7 @@ export function OwnerInstitutionsPage() {
     try {
       const { user } = await provisionM.mutateAsync({ institutionId: target.id, body });
       toast.success(
-        `تمّ تعيين ${user.firstName} ${user.lastName} مديرًا لـ«${target.name}».`,
+        `تمّ تعيين ${user.firstName} ${user.lastName} مسجلاً عاماً لـ«${target.name}».`,
         { title: 'تمّ التعيين' },
       );
       setProvisionTarget(null);
@@ -521,7 +523,7 @@ export function OwnerInstitutionsPage() {
   /* ── Membership revoke / restore ────────────────────────── */
   const onRevokeAdmin = (institution: OwnerInstitution, admin: InstitutionAdminRow) => {
     setConfirmConfig({
-      title: 'إلغاء عضوية مدير',
+      title: 'إلغاء عضوية المسجل العام',
       confirmLabel: 'إلغاء العضوية',
       message: `هل تريد إلغاء عضوية «${admin.firstName} ${admin.lastName}» في «${institution.name}»؟ سيفقد وصوله إلى سياق هذه المؤسسة فورًا.`,
       danger: true,
@@ -607,7 +609,7 @@ export function OwnerInstitutionsPage() {
                   <th scope="col">الحالة</th>
                   <th scope="col">الأعضاء النشطون</th>
                   <th scope="col">الكليات</th>
-                  <th scope="col">المديرون</th>
+                  <th scope="col">المسجلون العامّون</th>
                   <th scope="col">تاريخ الإنشاء</th>
                   <th scope="col">إجراءات</th>
                 </tr>
@@ -643,9 +645,9 @@ export function OwnerInstitutionsPage() {
                         {formatNum(institution.facultyCount)}
                       </span>
                     </td>
-                    <td data-label="المديرون">
+                    <td data-label="المسجلون العامّون">
                       {institution.admins.length === 0 ? (
-                        <span className="text-xs text-subtle">لا مديرين بعد</span>
+                        <span className="text-xs text-subtle">لا مسجلين عامّين بعد</span>
                       ) : (
                         <ul className="owner-inst-admins">
                           {institution.admins.map((admin) => (
@@ -702,10 +704,10 @@ export function OwnerInstitutionsPage() {
                           className="btn ghost sm"
                           onClick={() => setProvisionTarget(institution)}
                           disabled={mutationBusy}
-                          title={`تعيين مدير لـ«${institution.name}»`}
+                          title={`تعيين مسجل عام لـ«${institution.name}»`}
                         >
                           <Icon icon={ShieldCheck} size={13} />
-                          تعيين مدير
+                          تعيين مسجل عام
                         </button>
                         <button
                           type="button"

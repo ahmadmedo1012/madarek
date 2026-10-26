@@ -24,7 +24,7 @@
   `RolePermission` (كاش 30 ثانية مُتعاون) + منح/سحب `UserPermission`
   (`lib/permissions.ts`).
 - حراس القراءة التوأم للمقررات: `assertOfferingAccess`/`offeringVisibilityFilter`
-  — الأستاذ شعبه، الطالب تسجيله النشط، الجودة قراءة، الإدارة/المالك تجاوز.
+  — الأستاذ شعبه، الطالب تسجيله النشط، الجودة قراءة، المسجل العام/المالك تجاوز.
 - **حرس آخر مالك نشط**: قفل صفوف المالكين `SELECT … FOR UPDATE` قبل
   فحص العدّ — على كل أسطح تعديل الأدوار/الحالة (`lib/governance.ts`).
 - **نطاق الكليات**: `User.scopeFacultyId` يقيد ADMIN/QUALITY بكلياتهم

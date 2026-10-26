@@ -145,7 +145,7 @@ export function AdminStudentsPage() {
       <PatternsPageHeader
         title="إدارة الطلاب"
         description="قائمة الطلاب المسجَّلين في الجامعة، مع البحث والتصفية حسب الكلّيّة."
-        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'الطلاب' }]}
+        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الطلاب' }]}
         meta={studentsQ.data
           ? `${countAr(studentsQ.data.meta.total, ['طالب واحد مسجَّل', 'طالبان مسجَّلان', 'طلاب مسجَّلون', 'طالباً مسجَّلاً'])} · بحث الخادم`
           : 'قراءة سجلّ الطلاب…'}
@@ -467,7 +467,7 @@ export function AdminDigitalPage() {
       <PatternsPageHeader
         title="التحوّل الرقميّ"
         description="مؤشّرات تبنّي المنصّة الرقميّة عبر مكوّنات الجامعة."
-        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'التحوّل الرقميّ' }]}
+        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'التحوّل الرقميّ' }]}
       />
 
       {q.isPending && (
@@ -588,7 +588,7 @@ export function AdminSettingsPage() {
       <PatternsPageHeader
         title="إعدادات المنصّة"
         description="إعدادات تشغيليّة على مستوى الجامعة. تفعيل المعدِّلات الفرديّة قيد التطوير."
-        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'إعدادات المنصّة' }]}
+        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'إعدادات المنصّة' }]}
       />
 
       <div className="grid-2">
@@ -650,7 +650,7 @@ export function AdminSettingsPage() {
           <div className="settings-actions">
             {/* r155c: أُزيل زر «مزامنة بيانات الجامعة» المعطَّل — كانت
                 بطاقة «الموارد المرتبطة» أدناه تصل مباشرة إلى ‎/admin/sync
-                المتاح فعلياً للإدارة، فيكون الزر المعطَّل مع تعليته
+                المتاح فعلياً للمسجل العام، فيكون الزر المعطَّل مع تعليته
                 «لوحة المالك» تضليلاً. بقية الأزرار (التصدير/البثّ/فحص
                 الصحّة) ما تزال ملك لوحة المالك — التعليقة صادقة بشأنها. */}
             <button type="button" className="btn ghost sm" disabled>
@@ -672,7 +672,7 @@ export function AdminSettingsPage() {
           <ul className="settings-links">
             <li><Link to="/admin/sync">مزامنة الكلّيّات والأقسام</Link></li>
             <li><Link to="/admin/teachers">صلاحيات أعضاء هيئة التدريس</Link></li>
-            <li><Link to="/admin/reports">تقارير الإدارة</Link></li>
+            <li><Link to="/admin/reports">تقارير المسجل العام</Link></li>
             {/* 5-B5 hand-off (one-name-per-surface): the surface's own
                 title is «كلّيّات الجامعة» — the former «صفحات الكلّيّات»
                 label drifted from the folded reality (the public

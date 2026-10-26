@@ -103,7 +103,7 @@ const GENERIC_REGISTER_ERROR =
  *  empty — 21 of 25 live faculties ship zero departments; the old dead
  *  select promised a choice that does not exist. */
 const NO_DEPARTMENTS_TEXT =
-  'لا توجد أقسام مسجّلة في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع إدارة الجامعة.';
+  'لا توجد أقسام مسجّلة في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع المسجل العام.';
 
 /** r305 (2-a): the institution lookup gets the same honesty contract
  *  (audit 0-b P0-4 — never a silently empty select): a ready-but-empty
@@ -445,8 +445,8 @@ export default function RegisterPage() {
                 <div className="role-invitation-note" role="note">
                   <Icon icon={LockIcon} size={13} />
                   <span>
-                    المناصب القياديّة (عميد، رئيس قسم) والإدارة وضمان الجودة تُمنح بالتعيين، وليست
-                    متاحة للتسجيل الذاتيّ. تواصل مع إدارة جامعتك للحصول على الوصول.
+                    المناصب القياديّة (عميد، رئيس قسم) والمسجل العام وضمان الجودة تُمنح بالتعيين، وليست
+                    متاحة للتسجيل الذاتيّ. تواصل مع المسجل العام في جامعتك للحصول على الوصول.
                   </span>
                 </div>
               </>

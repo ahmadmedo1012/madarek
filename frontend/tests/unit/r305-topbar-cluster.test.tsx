@@ -191,7 +191,7 @@ describe('InstitutionChip — passive pill vs switcher', () => {
     expect(items[0]).toHaveAttribute('aria-disabled', 'true');
     expect(items[0]!.textContent).toContain('جامعة الزاوية');
     // The role label rides the trailing edge (topbar-inst-role).
-    expect(items[1]!.textContent).toContain('إداري');
+    expect(items[1]!.textContent).toContain('المسجل العام'); // R320 override: «إداري» → «المسجل العام» (§B rename)
   });
 
   it('choosing another membership fires the mutation and the success toast', () => {
@@ -360,9 +360,13 @@ describe('Topbar title block — group-context kicker + scope chips (r305)', () 
   });
 
   it.each([
-    ['ADMIN', 'إداري كلّيّة', '/admin/dashboard', 'الإدارة'],
-    ['QUALITY', 'أخصائي جودة كلّيّة', '/quality/dashboard', 'مركز ضمان الجودة'],
-  ] as const)('%s scoped to a faculty renders the governance scope chip + its kicker', (role, chipPrefix, path, kickerLabel) => {
+    // R320 override (§B rename): the ADMIN scope chip carries the role's
+    // canonical name «المسجل العام» (was «إداري كلّيّة»); the ADMIN kicker is
+    // the nav group label «المسجل العام» (was «الإدارة»). The title tooltip
+    // is role-aware now: «نطاق المسجل العام» / «نطاق أخصائي الجودة».
+    ['ADMIN', 'المسجل العام', '/admin/dashboard', 'المسجل العام', 'نطاق المسجل العام'],
+    ['QUALITY', 'أخصائي جودة كلّيّة', '/quality/dashboard', 'مركز ضمان الجودة', 'نطاق أخصائي الجودة'],
+  ] as const)('%s scoped to a faculty renders the governance scope chip + its kicker', (role, chipPrefix, path, kickerLabel, scopeTitle) => {
     state.me = { scopeFaculty: { name: 'كلية الهندسة' } };
     useAuthStore.setState({ user: userWithRole(role) });
     renderShell(<Topbar title="لوحة التحكم" />, { path });
@@ -371,7 +375,7 @@ describe('Topbar title block — group-context kicker + scope chips (r305)', () 
     expect(chip).not.toBeNull();
     expect(chip!.textContent).toContain(chipPrefix);
     expect(chip!.textContent).toContain('كلية الهندسة');
-    expect(chip).toHaveAttribute('title', 'نطاق الإدارة: كلية الهندسة');
+    expect(chip).toHaveAttribute('title', `${scopeTitle}: كلية الهندسة`);
     expect(document.querySelector('.topbar-kicker')!.textContent).toBe(kickerLabel);
   });
 });

@@ -161,7 +161,7 @@ export default function TeacherProfilePage() {
           <EmptyState illustration="empty-list"
             icon={AlertCircle}
             title="لا يوجد ملف أستاذ مرتبط بهذا الحساب"
-            description="تواصل مع إدارة شؤون أعضاء هيئة التدريس لربط ملفك الأكاديمي بهذا الحساب."
+            description="تواصل مع المسجل العام لربط ملفك الأكاديمي بهذا الحساب."
           />
         </Card>
       </div>
@@ -213,7 +213,7 @@ export default function TeacherProfilePage() {
           <span className="hr-brow">هيئة التدريس</span>
           <h1 className="page-title">الملف الأكاديمي</h1>
           <p className="page-subtitle">
-            ملفك الأكاديمي كما يظهر للإدارة، مكتب الجودة، والطلاب. حدّثه باستمرار ليعكس نشاطك العلمي.
+            ملفك الأكاديمي كما يظهر للمسجل العام، مكتب الجودة، والطلاب. حدّثه باستمرار ليعكس نشاطك العلمي.
           </p>
         </div>
         {!editing ? (
@@ -450,7 +450,7 @@ export default function TeacherProfilePage() {
           <EmptyState illustration="empty-research"
             icon={FileText}
             title="لم تُضف منشورات بعد"
-            description="تُدار منشوراتك من ملفك الأكاديمي لدى إدارة الجامعة."
+            description="تُدار منشوراتك من ملفك الأكاديمي لدى المسجل العام."
           />
         ) : (
           <div className="flex-col gap-2">
@@ -483,7 +483,7 @@ export default function TeacherProfilePage() {
           <EmptyState illustration="achievement"
             icon={Award}
             title="لم تُضف جوائز بعد"
-            description="تُدار تكريماتك وجوائزك من ملفك الأكاديمي لدى إدارة الجامعة."
+            description="تُدار تكريماتك وجوائزك من ملفك الأكاديمي لدى المسجل العام."
           />
         ) : (
           <div className="flex-col gap-2">
@@ -508,7 +508,7 @@ export default function TeacherProfilePage() {
           <EmptyState illustration="empty-courses"
             icon={BookOpen}
             title="لم يُسند إليك أي مقرّر بعد"
-            description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل إدارة الشؤون الأكاديمية."
+            description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل المسجل العام."
           />
         ) : (
           /* r241 (Superlist): the current courses are a LIST — one row

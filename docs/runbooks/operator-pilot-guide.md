@@ -26,7 +26,7 @@ curl -s https://madarek.onrender.com/api/v1/health   # {"ok":true,…,buildId ي
 | طالب | `student@demo.madarek.ly` | الموثّقة في 12-deployment | الجولة الأساسية للعرض |
 | طالب ثانٍ (مؤسسة أخرى) | `student2@demo.madarek.ly` | الموثّقة | **لإثبات العزل** — انظر الخطوة 11 |
 | أستاذ | `teacher@demo.madarek.ly` | الموثّقة | التدريس والتقييم |
-| إدارة مؤسسة | `admin@demo.madarek.ly` | الموثّقة | الهيكل الأكاديمي |
+| مسجل عام مؤسسة | `admin@demo.madarek.ly` | الموثّقة | الهيكل الأكاديمي |
 | جودة | `quality@demo.madarek.ly` | الموثّقة | للقراءة فقط |
 | **مالك** | `owner@demo.madarek.ly` | **سُلّمت للمشغّل خاصة (r187)** | الحوكمة — انظر أدناه |
 
@@ -46,7 +46,7 @@ curl -s https://madarek.onrender.com/api/v1/health   # {"ok":true,…,buildId ي
    المحلي الصادق؛ المزوّد الخارجي اختياري» (كل ردّ يُسند لمصدره).
 8. **الأستاذ** `teacher@demo.madarek.ly` — إنشاء تكليف/درجة، مراجعة
    بحث، رفع مادة PDF (رفع حقيقي 20MB كحد أقصى).
-9. **الإدارة** `admin@demo.madarek.ly` — كلية ← قسم ← مقرّر ← شعبة
+9. **المسجل العام** `admin@demo.madarek.ly` — كلية ← قسم ← مقرّر ← شعبة
    (الإنشاء يثبت دوام البيانات بعد التحديث).
 10. **المالك** `owner@demo.madarek.ly` بالسر الخاص — لوحة المنصّة،
     المؤسسات، الحاكمية، سجل النشاط.

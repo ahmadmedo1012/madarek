@@ -48,7 +48,7 @@
 | البحث الشامل | `/search/global` | `search.routes.ts` | تطبيع عربي، ≤5 نتائج/كيان، مقيد بالدور |
 | الأستاذ | `/teacher/*` | `teacher.routes.ts` + `teacher-dashboard` + `teacher-profile` | `offerings/:id/analytics`، `risks`، `curriculum/suggest`، `live/sessions` |
 | الواجبات | `/offerings/:id/assignments/*`، `/submissions/:id/grade` | `submissions.routes.ts` | تسليم بحالة تأخر + تصحيح |
-| الإدارة | `/users*`، `/courses*`، `/admin/*` | `users/courses/permissions/admin-extras/catalog/sync.routes.ts` | إدارة مستخدمين/مقررات/صلاحيات/إحصاءات/مزامنة |
+| المسجل العام | `/users*`، `/courses*`، `/admin/*` | `users/courses/permissions/admin-extras/catalog/sync.routes.ts` | إدارة مستخدمين/مقررات/صلاحيات/إحصاءات/مزامنة |
 | الكتالوج العام | `/faculties`، `/colleges*`، مكتبة/مووك/وظائف/منشورات… | `catalog.routes.ts`، `colleges.routes.ts` | `/faculties` و`/colleges` **عامة قبل بوابة المصادقة** (قمع التسجيل) — اختبارات تثبّت الترتيب |
 | الجودة | `/quality/*` | داخل `learning.routes.ts` | `overview`، `courses`، `professors`، `engagement`، `curriculum`، `alerts` |
 | المالك | `/owner/*` | `owner.routes.ts` (17 مسارًا) | `stats`، `users/:id/role`، `activity` (تدقيق)، `settings`، `feature-flags`، `governance` |

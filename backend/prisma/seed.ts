@@ -22,11 +22,11 @@
  * the 8-char minimum in the register policy, see auth.dto.ts):
  *   student@demo.madarek.ly        → STUDENT (أحمد الزروق) — membership in madarek-demo
  *   teacher@demo.madarek.ly        → TEACHER (د. سالم البوسيفي) — membership in madarek-demo
- *   admin@demo.madarek.ly          → ADMIN   (إدارة الجامعة) — membership in madarek-demo
+ *   admin@demo.madarek.ly          → ADMIN   (المسجل العام) — membership in madarek-demo
  *   quality@demo.madarek.ly        → QUALITY (ضمان الجودة) — membership in madarek-demo
  *   owner@demo.madarek.ly          → OWNER   (مالك المنصة) — NO membership (platform owner)
  *   student2@demo.madarek.ly → STUDENT (ليلى المهدي) — membership in alandalus-demo
- *   admin2@demo.madarek.ly   → ADMIN   (إدارة الأندلس) — membership in alandalus-demo
+ *   admin2@demo.madarek.ly   → ADMIN   (المسجل العام) — membership in alandalus-demo
  *
  * NOTE (final-polish audit, 2026-09-28): the PRODUCTION database was
  * seeded by an older generation of this file whose password was
@@ -346,9 +346,11 @@ async function main() {
       email: 'admin@demo.madarek.ly',
       passwordHash: password,
       role: Role.ADMIN,
-      firstName: 'إدارة',
-      lastName: 'الجامعة',
-      avatarInitials: 'إد',
+      /* R320 §B (c1-RENAME): the demo ADMIN account's display name is the
+         role's canonical name — «المسجل العام» (was «إدارة الجامعة»). */
+      firstName: 'المسجل',
+      lastName: 'العام',
+      avatarInitials: 'مع',
       avatarColor: '#9B6FE8',
       emailVerifiedAt: new Date(),
     },
@@ -456,9 +458,11 @@ async function main() {
       email: 'admin2@demo.madarek.ly',
       passwordHash: password,
       role: Role.ADMIN,
-      firstName: 'إدارة',
-      lastName: 'الأندلس',
-      avatarInitials: 'إأ',
+      /* R320 §B (c1-RENAME): same role, second institution — the display
+         name is the role's canonical name (was «إدارة الأندلس»). */
+      firstName: 'المسجل',
+      lastName: 'العام',
+      avatarInitials: 'مع',
       avatarColor: '#2EC4B6',
       emailVerifiedAt: new Date(),
     },

@@ -302,7 +302,7 @@ export function useMyMessages(page: number = 1, limit: number = 30) {
  * institution with server-side q search (name/code contains) and
  * page/limit pagination. Read-ONLY by design: enrollment in this
  * product is admin-mediated, so the consumers render catalogue INFO
- * and the page's hint banner names the real door (إدارة الكلية) —
+ * and the page's hint banner names the real door (مكتب المسجل العام) —
  * never a fake enroll button. */
 export interface CatalogCourseRow {
   id: string;

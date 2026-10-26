@@ -231,7 +231,7 @@ export default function StudentCoursesPage() {
       ) : isError ? (
         <ErrorState error={error} onRetry={() => refetch()} />
       ) : !data?.length ? (
-        <EmptyState illustration="empty-courses" icon={BookOpen} title="لم تسجّل في أي مقرّر بعد" description="تواصل مع إدارة الكلّيّة لإكمال تسجيل مقرّرات الفصل — ستظهر هنا فور اعتمادها." />
+        <EmptyState illustration="empty-courses" icon={BookOpen} title="لم تسجّل في أي مقرّر بعد" description="تواصل مع المسجل العام لإكمال تسجيل مقرّرات الفصل — ستظهر هنا فور اعتمادها." />
       ) : (
         <>
           {/* R319 (c3-S1): the courses region opens with the §B2

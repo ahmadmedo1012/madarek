@@ -177,7 +177,7 @@ export default function TeacherIntelligencePage() {
           <EmptyState illustration="empty-courses"
             icon={BookOpen}
             title="لم تُسند إليك مقرّرات بعد"
-            description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل إدارة الشؤون الأكاديمية."
+            description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل المسجل العام."
           />
         ) : (
           /* r241 (Superlist): the catalog is a LIST — full-width rows with

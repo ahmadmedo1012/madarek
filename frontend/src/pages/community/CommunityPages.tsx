@@ -40,6 +40,12 @@ import { arUnit } from '../../lib/format';
 // active, so their hooks (useStudyRooms/usePosts…) never fire for a
 // visitor sitting on the announcements/competitions/events tabs.
 import { StudyRoomsPanel, PostsFeedPanel, CreateStudyRoomModal } from '../../components/community/CommunitySocialPanels';
+// R320 §B (c1-RENAME): the author role badge consumes the ONE shared
+// role-label source (lib/roleLabels.ts + backend twin) — ADMIN reads
+// «المسجل العام» everywhere. (Was a local map with the retired ADMIN
+// office label.)
+import { roleLabel as sharedRoleLabel } from '../../lib/roleLabels';
+import type { AppRole } from '../../stores/auth.store';
 import '../../styles/colleges.css'; // borrowed .comp-modal-*/.comp-form-*/.event-meta (D14 css split, 13-17)
 import { formatNum } from '../../utils/numbers';
 
@@ -50,8 +56,14 @@ const SCOPE_COLOR: Record<string, 'brand' | 'green' | 'gold' | 'purple'> = {
   PLATFORM: 'brand', FACULTY: 'green', DEPARTMENT: 'purple', OFFERING: 'gold',
 };
 const ROLE_LABEL: Record<string, string> = {
-  STUDENT: 'طالب', TEACHER: 'أستاذ', ADMIN: 'الإدارة', QUALITY: 'مكتب الجودة',
+  STUDENT: 'طالب', TEACHER: 'أستاذ', QUALITY: 'مكتب الجودة',
 };
+/* R320 §B: ADMIN (and any future role) resolves through the shared map —
+   the local entries keep the community page's established wording for
+   the roles it had, and the role chip can never drift from the rest of
+   the product. */
+const roleBadgeLabel = (role: string): string =>
+  ROLE_LABEL[role] ?? sharedRoleLabel(role as AppRole);
 
 /* arUnit (Arabic counted-noun helper) lives in lib/format.ts — the 13-15
    fold of the identical local copies this page shared with MorePages. */
@@ -288,7 +300,7 @@ function AnnouncementCard({ announcement: a }: { announcement: AnnouncementRow }
       title={a.title}
       meta={
         <>
-          {a.author.firstName} {a.author.lastName} · {ROLE_LABEL[a.author.role]} ·{' '}
+          {a.author.firstName} {a.author.lastName} · {roleBadgeLabel(a.author.role)} ·{' '}
           <time dateTime={a.publishedAt}>
             {formatDate(a.publishedAt, { day: 'numeric', month: 'short' })}
           </time>

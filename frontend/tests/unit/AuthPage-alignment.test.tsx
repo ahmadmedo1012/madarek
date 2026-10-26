@@ -224,7 +224,7 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     // disabled opacity, and focus ring all flow from components.css.
     // The old bespoke 36px was a third button height that would drift
     // at the first .btn retune.
-    const roleButtons = ['طالب', 'أستاذ', 'الإدارة', 'ضمان الجودة', 'المالك']
+    const roleButtons = ['طالب', 'أستاذ', 'المسجل العام', 'ضمان الجودة', 'المالك'] // R320 override: ADMIN demo button «الإدارة» → «المسجل العام» (§B rename)
       .map((name) => screen.getAllByRole('button', { name }).find((b) => b.classList.contains('auth-demo-btn')))
       .filter((b): b is HTMLElement => Boolean(b));
     expect(roleButtons).toHaveLength(5);

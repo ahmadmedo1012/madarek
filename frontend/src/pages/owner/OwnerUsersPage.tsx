@@ -12,6 +12,10 @@ import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { apiErrorMessage } from '../../hooks/useResources';
 import { useOwnerStats, useOwnerUsers, useChangeUserRole, useToggleUserStatus } from '../../hooks/useOwner';
 import { formatDate, formatNum } from '../../utils/numbers';
+// R320 §B (c1-RENAME): the directory's role chips/pickers consume the ONE
+// shared role-label source (lib/roleLabels.ts + backend twin) — ADMIN is
+// «المسجل العام»; the other roles keep their established wording.
+import { ROLE_LABELS as SHARED_ROLE_LABELS } from '../../lib/roleLabels';
 
 /**
  * Owner user management — the accounts directory.
@@ -49,14 +53,10 @@ interface OwnerUserMembership {
   institution: { id: string; name: string; slug: string; status: 'ACTIVE' | 'SUSPENDED' };
 }
 
-const ROLE_LABELS: Record<string, string> = {
-  STUDENT: 'طالب',
-  TEACHER: 'أستاذ',
-  ADMIN: 'إداري',
-  // Person-noun, unified with nav.ts ROLE_LABELS (17-a2 / 15-j P1-8).
-  QUALITY: 'أخصائي جودة',
-  OWNER: 'مالك المنصة',
-};
+/* R320 §B: the shared map verbatim (lib/roleLabels.ts + backend twin) —
+   ADMIN «إداري» → «المسجل العام»; the person-noun lineage (17-a2 /
+   15-j P1-8) is preserved for the other roles. */
+const ROLE_LABELS: Record<string, string> = { ...SHARED_ROLE_LABELS };
 
 const ROLE_COLORS: Record<string, 'brand' | 'green' | 'purple' | 'gold' | 'amber'> = {
   STUDENT: 'brand',
@@ -251,7 +251,7 @@ export function OwnerUsersPage() {
     { value: 'ALL', label: 'الكل' },
     { value: 'STUDENT', label: 'طلاب' },
     { value: 'TEACHER', label: 'أساتذة' },
-    { value: 'ADMIN', label: 'إداريون' },
+    { value: 'ADMIN', label: 'مسجلون عامّون' },
     { value: 'QUALITY', label: 'أخصائيو جودة' },
   ];
 
@@ -310,7 +310,7 @@ export function OwnerUsersPage() {
             { label: 'إجمالي المستخدمين', value: kpiValue(statData?.totalUsers ?? 0), hint: 'حسابات مسجَّلة' },
             { label: 'الطلاب', value: kpiValue(statData?.students ?? 0), hint: topSegmentKey === 'students' ? 'الفئة الأكبر' : 'حسابات الطلاب' },
             { label: 'الأساتذة', value: kpiValue(statData?.teachers ?? 0), hint: topSegmentKey === 'teachers' ? 'الفئة الأكبر' : 'هيئة التدريس' },
-            { label: 'إداريون وجودة', value: kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0)), hint: topSegmentKey === 'staff' ? 'الفئة الأكبر' : 'إدارة ومتابعة' },
+            { label: 'مسجلون عامّون وجودة', value: kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0)), hint: topSegmentKey === 'staff' ? 'الفئة الأكبر' : 'إدارة ومتابعة' },
           ]}
         />
 

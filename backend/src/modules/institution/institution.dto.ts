@@ -1,5 +1,9 @@
 import { z } from 'zod';
 import { passwordSchema } from '../auth/auth.dto.js';
+// R320 §B (c1-RENAME): the provisioned account is Role.ADMIN — the
+// institution's «مسجل عام» (was «مدير»); shared label source (twin of
+// the frontend's lib/roleLabels.ts).
+import { ROLE_LABEL_INDEFINITE } from '../../lib/roleLabels.js';
 
 /**
  * r178 — Zod DTOs for the institution API (institution.routes.ts).
@@ -65,14 +69,14 @@ export const provisionAdminSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['password'],
-        message: 'كلمة المرور مطلوبة عند إنشاء حساب مدير جديد',
+        message: `كلمة المرور مطلوبة عند إنشاء حساب ${ROLE_LABEL_INDEFINITE.ADMIN} جديد`,
       });
     }
     if (!val.firstName || !val.lastName) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['firstName'],
-        message: 'الاسم الأول والأخير مطلوبان عند إنشاء حساب مدير جديد',
+        message: `الاسم الأول والأخير مطلوبان عند إنشاء حساب ${ROLE_LABEL_INDEFINITE.ADMIN} جديد`,
       });
     }
   });

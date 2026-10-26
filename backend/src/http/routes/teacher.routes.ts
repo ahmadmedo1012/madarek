@@ -7,6 +7,9 @@ import { requireRole } from '../middleware/requireRole.js';
 import { requireCapability } from '../middleware/requireCapability.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
+// R320 §B (c1-RENAME): backend role labels share the twin of the
+// frontend's lib/roleLabels.ts (belt-locked equal).
+import { ROLE_LABEL_PLURAL_OBLIQUE } from '../../lib/roleLabels.js';
 import { assertOwnsOffering } from '../../lib/permissions.js';
 import { assertWithinScope, getGovernanceScope } from '../../lib/governance.js';
 import {
@@ -1084,7 +1087,11 @@ router.post(
       });
       if (!target) throw AppError.notFound('المستخدم غير موجود');
       if (target.role !== Role.ADMIN && target.role !== Role.QUALITY) {
-        throw AppError.badRequest('نطاق الإدارة يخص الإداريين وأخصائيي الجودة فقط');
+        // R320 §B: the scope-guard message names the ADMIN role's
+        // canonical plural now (shared label source).
+        throw AppError.badRequest(
+          `تعيين النطاق يخص ${ROLE_LABEL_PLURAL_OBLIQUE.ADMIN} وأخصائيي الجودة فقط`,
+        );
       }
       // Fresh actor-scope read (never trust a client-side claim): the
       // guard must reflect the actor's CURRENT reach, and self-changes

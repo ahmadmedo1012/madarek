@@ -38,6 +38,10 @@ import {
   FilterBar,
 } from '../../components/patterns';
 import { Icon } from '../../components/Icon';
+// R320 §B (c1-RENAME): the role chips/pickers consume the ONE shared
+// role-label source (lib/roleLabels.ts + backend twin) — ADMIN is
+// «المسجل العام».
+import { ROLE_LABELS as SHARED_ROLE_LABELS, roleLabel as sharedRoleLabel } from '../../lib/roleLabels';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useTeacherSuggestions,
@@ -83,15 +87,11 @@ const RANK_LABEL: Record<string, string> = {
   ASSOCIATE_PROFESSOR: 'أستاذ مشارك',
   PROFESSOR: 'أستاذ',
 };
-/** Arabic labels for user roles — raw enums (TEACHER/QUALITY…) never reach the UI. */
-const ROLE_LABEL: Record<string, string> = {
-  STUDENT: 'طالب',
-  TEACHER: 'أستاذ',
-  ADMIN: 'إداري',
-  // Person-noun, unified with nav.ts ROLE_LABELS (17-a2 / 15-j P1-8).
-  QUALITY: 'أخصائي جودة',
-  OWNER: 'مالك المنصة',
-};
+/** Arabic labels for user roles — raw enums (TEACHER/QUALITY…) never reach the UI.
+ * R320 §B: the shared map verbatim (lib/roleLabels.ts) — ADMIN is
+ * «المسجل العام»; the person-noun lineage (17-a2 / 15-j P1-8) is
+ * preserved for the other roles. */
+const ROLE_LABEL: Record<string, string> = { ...SHARED_ROLE_LABELS };
 const CAP_LABEL: Record<AppCapability, string> = {
   RESEARCH_GRADE_OWN: 'تقييم بحوث طلابي',
   RESEARCH_GRADE_ANY: 'تقييم أي بحث',
@@ -336,7 +336,7 @@ export function AdminTeachersPage() {
       <PatternsPageHeader
         title="إدارة الأساتذة"
         description="توثيق الملفات الأكاديمية واقتراح المقرّرات الأنسب لكل أستاذ بناء على تخصصه ودرجته العلمية وشهاداته."
-        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'الأساتذة' }]}
+        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الأساتذة' }]}
       />
 
       {/* Metrics — real values only: '…' while loading, '—' on error
@@ -800,7 +800,9 @@ function ScopeAssignmentCard({
     assign.mutate(scope === 'UNIVERSITY' ? null : facultyId);
   };
 
-  const roleLabel = role === 'ADMIN' ? 'الإداريّ' : 'مكتب الجودة';
+  /* R320 §B: the scope card names the role — ADMIN is «المسجل العام»
+     (was «الإداريّ»); QUALITY's established «مكتب الجودة» unchanged. */
+  const roleLabel = role === 'ADMIN' ? sharedRoleLabel('ADMIN') : 'مكتب الجودة';
 
   return (
     <div className="gov-scope-card">

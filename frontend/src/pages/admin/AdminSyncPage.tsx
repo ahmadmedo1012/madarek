@@ -227,7 +227,7 @@ export function AdminSyncPage() {
         <PatternsPageHeader
           title="المزامنة مع البيانات الرسمية"
           description="استيراد البيانات العامة من الموقع الرسمي للجامعة."
-          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
+          breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
           actions={triggerButton}
         />
         <SyncStripSkeleton />
@@ -247,7 +247,7 @@ export function AdminSyncPage() {
         <PatternsPageHeader
           title="المزامنة مع البيانات الرسمية"
           description="استيراد البيانات العامة من الموقع الرسمي للجامعة."
-          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
+          breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
         />
         <Card>
           <ErrorState error={error} onRetry={() => refetch()} />
@@ -266,7 +266,7 @@ export function AdminSyncPage() {
         <PatternsPageHeader
           title="المزامنة مع البيانات الرسمية"
           description="استيراد البيانات العامة من الموقع الرسمي للجامعة."
-          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
+          breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
         />
         <Card>
           <EmptyState illustration="empty-list"
@@ -293,7 +293,7 @@ export function AdminSyncPage() {
               forbid. */
           'استيراد بيانات المؤسّسة من المصدر المنسَّق للحفاظ على معلومات الجامعة محدّثة. يمكنك تشغيل المزامنة يدوياً عند الحاجة.'
         }
-        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
+        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
         actions={triggerButton}
       />
 

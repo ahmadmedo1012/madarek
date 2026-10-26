@@ -33,7 +33,7 @@ test.skip(!ENABLED, 'real-stack smoke — run `npm run dev:full` then set MADARE
 const DASHBOARDS: Record<StackRole, { route: string; heading: string }> = {
   STUDENT: { route: '/student/dashboard', heading: 'لوحة التحكم' },
   TEACHER: { route: '/teacher/dashboard', heading: 'لوحة الأستاذ' },
-  ADMIN: { route: '/admin/dashboard', heading: 'لوحة الإدارة' },
+  ADMIN: { route: '/admin/dashboard', heading: 'لوحة المسجل العام' }, // R320 override (§B rename): «لوحة الإدارة» → «لوحة المسجل العام»
   QUALITY: { route: '/quality/dashboard', heading: 'لوحة الجودة' },
   OWNER: { route: '/owner/dashboard', heading: 'لوحة التحكم الرئيسية' },
 };

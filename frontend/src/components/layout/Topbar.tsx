@@ -13,6 +13,9 @@ import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { useLogout, useMe, useSelectInstitution } from '../../hooks/useAuth';
 import { useMyProfile, apiErrorMessage } from '../../hooks/useResources';
 import { NAV_BY_ROLE, ROLE_LABELS } from '../../lib/nav';
+// R320 §B: role display names come from the one source of truth
+// (lib/roleLabels.ts, shared with the backend twin).
+import { roleLabel } from '../../lib/roleLabels';
 import { toast } from '../../lib/toast';
 
 interface TopbarProps {
@@ -280,8 +283,14 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
         {title}
         {role === 'STUDENT' && <StudentScopeChip />}
         {scopeFacultyName && (
-          <span className="topbar-scope" title={`نطاق الإدارة: ${scopeFacultyName}`}>
-            {role === 'QUALITY' ? 'أخصائي جودة كلّيّة' : 'إداري كلّيّة'} · {scopeFacultyName}
+          <span
+            className="topbar-scope"
+            title={`${role === 'ADMIN' ? 'نطاق المسجل العام' : 'نطاق أخصائي الجودة'}: ${scopeFacultyName}`}
+          >
+            {/* R320 §B: the scoped ADMIN keeps the role's canonical name
+                («المسجل العام») with the faculty as the scope — was
+                «إداري كلّيّة». QUALITY's established wording unchanged. */}
+            {role === 'QUALITY' ? 'أخصائي جودة كلّيّة' : roleLabel('ADMIN')} · {scopeFacultyName}
           </span>
         )}
       </div>

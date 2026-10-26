@@ -1125,7 +1125,7 @@
     .btn.sm { min-block-size: 44px; }
     .icon-btn { min-inline-size: 44px; min-block-size: 44px; }
     /* أزرار التقسيم (36px ثابتة) وصفوف المؤشرات القابلة للنقر في
-       لوحة الإدارة (37px) — أرضية اللمس على الجهاز اللمسي. */
+       لوحة المسجل العام (37px) — أرضية اللمس على الجهاز اللمسي. */
     .table-pagination-actions button { min-inline-size: 44px; block-size: 44px; }
     a.admin-stat-row { min-block-size: 44px; }
   }

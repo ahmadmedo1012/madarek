@@ -1,6 +1,11 @@
 /**
  * r178 — OwnerInstitutionsPage render tests.
  *
+ * R320 override (§B rename, c1-RENAME): the provision surface names the
+ * institution's ADMIN account «مسجل عام» (registrar general) — was
+ * «مدير» in every label/button/title below; the role is one name
+ * everywhere (lib/roleLabels.ts + backend twin).
+ *
  * The OWNER's institution console (route /owner/institutions): pins the
  * listing contract against mocked institution hooks (the mock boundary
  * OwnerUsersPage's tests established) — both seeded institutions with
@@ -52,8 +57,8 @@ const ALANDALUS = {
     {
       userId: 'u-admin2-0000000000',
       email: 'admin2@demo.madarek.ly',
-      firstName: 'مدير',
-      lastName: 'الأندلس',
+      firstName: 'مسجل',
+      lastName: 'عام',
       membershipId: 'mem-admin-alandalus',
       isActive: false,
     },
@@ -199,7 +204,7 @@ describe('OwnerInstitutionsPage — provision admin modal (r178)', () => {
     mocks.listing.data = [ZAWIA];
     renderPage();
 
-    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
 
     // The modal names the target institution — the OWNER must always
     // know which institution the grant lands in.
@@ -334,13 +339,13 @@ describe('OwnerInstitutionsPage — keep edits on provision failure (r183-B5)', 
     mocks.listing.data = [ZAWIA];
     renderPage();
 
-    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
     const dialog = screen.getByRole('dialog');
     fireEvent.change(within(dialog).getByLabelText(/البريد الإلكتروني/), { target: { value: 'new@demo.madarek.ly' } });
     fireEvent.change(within(dialog).getByLabelText('كلمة المرور'), { target: { value: 'Madarek-2026-Demo' } });
 
     mocks.provision.mutateAsync.mockRejectedValueOnce(new Error('404 UNKNOWN_EMAIL'));
-    fireEvent.click(within(dialog).getByRole('button', { name: 'تعيين المدير' }));
+    fireEvent.click(within(dialog).getByRole('button', { name: 'تعيين المسجل العام' }));
 
     await waitFor(() => expect(mocks.provision.mutateAsync).toHaveBeenCalledTimes(1));
     // The modal stays open — the old code closed it right after mutate().
@@ -353,15 +358,15 @@ describe('OwnerInstitutionsPage — keep edits on provision failure (r183-B5)', 
     mocks.listing.data = [ZAWIA];
     renderPage();
 
-    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
     const dialog = screen.getByRole('dialog');
     fireEvent.change(within(dialog).getByLabelText(/البريد الإلكتروني/), { target: { value: 'new@demo.madarek.ly' } });
     fireEvent.change(within(dialog).getByLabelText('كلمة المرور'), { target: { value: 'Madarek-2026-Demo' } });
 
     mocks.provision.mutateAsync.mockResolvedValueOnce({
-      user: { firstName: 'مدير', lastName: 'جديد' },
+      user: { firstName: 'مسجل', lastName: 'جديد' },
     });
-    fireEvent.click(within(dialog).getByRole('button', { name: 'تعيين المدير' }));
+    fireEvent.click(within(dialog).getByRole('button', { name: 'تعيين المسجل العام' }));
 
     await waitFor(() => expect(mocks.provision.mutateAsync).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
@@ -370,16 +375,16 @@ describe('OwnerInstitutionsPage — keep edits on provision failure (r183-B5)', 
   it('the provision failure is named inline inside the modal', () => {
     mocks.listing.data = [ZAWIA];
     renderPage();
-    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
 
     // The mock flips the mutation's error state the page reads at render.
     mocks.provision.isError = true;
     mocks.provision.error = new Error('404 UNKNOWN_EMAIL');
     fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'إلغاء' }));
     // Re-open — the error reads from the (still-flagged) mutation state.
-    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
 
-    expect(screen.getByText('تعذّر تعيين المدير')).toBeInTheDocument();
+    expect(screen.getByText('تعذّر تعيين المسجل العام')).toBeInTheDocument();
   });
 });
 
@@ -387,7 +392,7 @@ describe('OwnerInstitutionsPage — provision modal quick wins (r183-B5, A9 P3)'
   it('the password is masked by default; the reveal toggle is opt-in', () => {
     mocks.listing.data = [ZAWIA];
     renderPage();
-    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
 
     const dialog = screen.getByRole('dialog');
     const password = within(dialog).getByLabelText('كلمة المرور') as HTMLInputElement;
@@ -403,12 +408,12 @@ describe('OwnerInstitutionsPage — provision modal quick wins (r183-B5, A9 P3)'
   it('the modal title is an h3 (the owner modals\' heading grammar)', () => {
     mocks.listing.data = [ZAWIA];
     renderPage();
-    fireEvent.click(screen.getByRole('button', { name: /تعيين مدير/ }));
+    fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
 
     expect(
       within(screen.getByRole('dialog')).getByRole('heading', {
         level: 3,
-        name: 'تعيين مدير مؤسسة',
+        name: 'تعيين مسجل عام للمؤسسة',
       }),
     ).toBeInTheDocument();
   });

@@ -123,8 +123,8 @@ const ALANDALUS = {
     {
       userId: 'u-admin2-0000000000',
       email: 'admin2@demo.madarek.ly',
-      firstName: 'مدير',
-      lastName: 'الأندلس',
+      firstName: 'مسجل',
+      lastName: 'عام',
       membershipId: 'mem-admin-alandalus',
       isActive: false,
     },
@@ -397,7 +397,7 @@ describe('OwnerInstitutionsPage — the destructive verbs ride .r305ao-btn-dange
     expect(screen.getByRole('button', { name: 'استعادة' })).not.toHaveClass('r305ao-btn-danger');
 
     // Routine verbs stay quiet.
-    for (const provision of screen.getAllByRole('button', { name: 'تعيين مدير' })) {
+    for (const provision of screen.getAllByRole('button', { name: 'تعيين مسجل عام' })) { // R320 override: «تعيين مدير» → «تعيين مسجل عام» (§B rename)
       expect(provision).not.toHaveClass('r305ao-btn-danger');
     }
     for (const open of screen.getAllByRole('link', { name: /فتح المؤسسة/ })) {

@@ -17,6 +17,10 @@ import { apiErrorCode } from '../lib/format';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { ROLE_HOME, ROLE_LABELS } from '../lib/nav';
+// R320 §B: the demo buttons consume the shared role-label source
+// (lib/roleLabels.ts) — ADMIN is «المسجل العام» now; the other roles'
+// demo-panel wording is the established one (AUTH_DEMO_ROLE_LABELS).
+import { AUTH_DEMO_ROLE_LABELS } from '../lib/roleLabels';
 import { countAr } from '../lib/format';
 import { authErrorView } from '../lib/authErrors';
 import type { AppRole, MembershipInfo } from '../stores/auth.store';
@@ -550,26 +554,26 @@ export default function AuthPage() {
                   اضغط دوراً لتعبئة الحقول ببيانات حساب تجريبي، ثم اضغط زر تسجيل الدخول.
                 </p>
                 <div className="auth-demo-actions">
-                  <button type="button" className="btn sm auth-demo-btn" onClick={() => fillDemo('STUDENT')} disabled={login.isPending}>
-                    <Icon icon={GraduationCap} size={14} />
-                    <span>طالب</span>
-                  </button>
-                  <button type="button" className="btn sm auth-demo-btn" onClick={() => fillDemo('TEACHER')} disabled={login.isPending}>
-                    <Icon icon={School} size={14} />
-                    <span>أستاذ</span>
-                  </button>
-                  <button type="button" className="btn sm auth-demo-btn" onClick={() => fillDemo('ADMIN')} disabled={login.isPending}>
-                    <Icon icon={Building2} size={14} />
-                    <span>الإدارة</span>
-                  </button>
-                  <button type="button" className="btn sm auth-demo-btn" onClick={() => fillDemo('QUALITY')} disabled={login.isPending}>
-                    <Icon icon={ShieldCheck} size={14} />
-                    <span>ضمان الجودة</span>
-                  </button>
-                  <button type="button" className="btn sm auth-demo-btn" onClick={() => fillDemo('OWNER')} disabled={login.isPending}>
-                    <Icon icon={Crown} size={14} />
-                    <span>المالك</span>
-                  </button>
+                  {(['STUDENT', 'TEACHER', 'ADMIN', 'QUALITY', 'OWNER'] as const).map((role) => {
+                    const DemoIcon =
+                      role === 'STUDENT' ? GraduationCap :
+                      role === 'TEACHER' ? School :
+                      role === 'ADMIN' ? Building2 :
+                      role === 'QUALITY' ? ShieldCheck :
+                      Crown;
+                    return (
+                      <button
+                        key={role}
+                        type="button"
+                        className="btn sm auth-demo-btn"
+                        onClick={() => fillDemo(role)}
+                        disabled={login.isPending}
+                      >
+                        <Icon icon={DemoIcon} size={14} />
+                        <span>{AUTH_DEMO_ROLE_LABELS[role]}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}

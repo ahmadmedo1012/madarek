@@ -40,6 +40,10 @@ import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
 import { countAr, formatPct, formatRelativeArShort } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
+// R320 §B (c1-RENAME): the ADMIN dashboard's title/breadcrumb root is
+// «لوحة المسجل العام» — consumed from the ONE shared role-label source
+// (lib/roleLabels.ts + backend twin), never a literal that can drift.
+import { roleDashboardLabel } from '../../lib/roleLabels';
 import { Bar, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement,
@@ -189,7 +193,7 @@ function ActionStrip() {
         title: 'مقرّرات بلا محتوى تعليميّ',
         desc: `${countAr(zeroContent.length, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])} لم تُرفع لها محاضرات أو ملفات بعد${capped ? ' (ضمن أول 100 مقرّر)' : ''}`,
         to: '/admin/courses',
-        hint: 'فتح إدارة المقرّرات',
+        hint: 'فتح إدارة المقرّرات', // R320 §B KEEP: management-function name
       });
     }
   }
@@ -257,7 +261,7 @@ export function AdminDashboardPage() {
        so the pending → resolved handoff moves nothing. */
     return (
       <div className="page r305ao" aria-busy="true" aria-live="polite">
-        <PatternsPageHeader title="لوحة الإدارة" description="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
+        <PatternsPageHeader title={roleDashboardLabel('ADMIN')} description="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
         <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />
         <div className="stat-strip" aria-busy="true">
           {[0, 1, 2, 3].map((i) => (
@@ -288,7 +292,7 @@ export function AdminDashboardPage() {
     // am I on?) before offering the retry.
     return (
       <div className="page r305ao">
-        <PatternsPageHeader title="لوحة الإدارة" description="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
+        <PatternsPageHeader title={roleDashboardLabel('ADMIN')} description="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
         <Card>
           <ErrorState
             error={stats.error ?? facs.error ?? reports.error}
@@ -322,7 +326,7 @@ export function AdminDashboardPage() {
   return (
     <div className="page r305ao">
       <PatternsPageHeader
-        title="لوحة الإدارة"
+        title={roleDashboardLabel('ADMIN')}
         description="إحصائيات حيّة عن طلاب وأساتذة المنصّة."
         meta={<>{formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · حساب لحظيّ</>}
       />
@@ -704,7 +708,7 @@ export function AdminFacultiesPage() {
         <PatternsPageHeader
           title="الكلّيّات والأقسام"
           description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
-          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
+          breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
         />
         <StatStripSkeleton />
         <CardSkeleton lines={7} />
@@ -717,7 +721,7 @@ export function AdminFacultiesPage() {
         <PatternsPageHeader
           title="الكلّيّات والأقسام"
           description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
-          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
+          breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
         />
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       </div>
@@ -753,7 +757,7 @@ export function AdminFacultiesPage() {
       <PatternsPageHeader
         title="الكلّيّات والأقسام"
         description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
-        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
+        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
       />
 
       <StatStrip
@@ -1022,7 +1026,7 @@ const PAPER_STATUS_LABEL: Record<ResearchStatus, string> = {
   PUBLISHED: 'منشورة',
 };
 /* r149 (R3-A1 #1): انتقل التعريف إلى lib/paperStatus.ts — سلّم واحد
- * للطالب والإداري (هذه كانت النسخة الأغنى فاعتُمدت كما هي). */
+ * للطالب والمسجل العام (هذه كانت النسخة الأغنى فاعتُمدت كما هي — R320 §B: الإداري = المسجل العام). */
 
 /** One register row — status badge + the moderation-relevant numbers.
  *  R304: the paper's title is the row's identity cell (ws-id) — its
@@ -1207,7 +1211,7 @@ export function AdminReportsPage() {
         <PatternsPageHeader
           title="التقارير المؤسسية"
           description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
-          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+          breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
         />
         <StatStripSkeleton />
         <CardSkeleton lines={6} />
@@ -1220,7 +1224,7 @@ export function AdminReportsPage() {
         <PatternsPageHeader
           title="التقارير المؤسسية"
           description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
-          breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+          breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
         />
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       </div>
@@ -1237,7 +1241,7 @@ export function AdminReportsPage() {
       <PatternsPageHeader
         title="التقارير المؤسسية"
         description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
-        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
       />
 
       {/* §5 row 8: the papers KPIs land on the register — the URL is
@@ -1662,7 +1666,7 @@ export function AdminCoursesPage() {
         description={meta
           ? `${countAr(meta.total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}${hasFilters ? ' مطابقة للبحث والتصفيّة' : ' في الجامعة'}`
           : 'جميع المقرّرات الجامعية مع إحصائيات حيّة.'}
-        breadcrumbs={[{ label: 'لوحة الإدارة', to: '/admin/dashboard' }, { label: 'المقرّرات' }]}
+        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'المقرّرات' }]}
       />
 
       <Card>
