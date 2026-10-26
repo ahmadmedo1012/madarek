@@ -1,15 +1,23 @@
 #!/bin/sh
-# .githooks/pre-push — R319 fast pre-push gate (~10s).
+# .githooks/pre-push — R319+R320 fast pre-push gate (~15s).
 #
-# Runs ONLY the fast static checks; the full browser gate
-# (npm run gate:r319) is the foreman's pre-merge ratchet and takes
-# minutes — it is deliberately NOT in the push path.
+# Runs ONLY the fast static checks; the full browser gates
+# (npm run gate:r319 / gate:r320) are the foreman's pre-merge
+# ratchet and take minutes — they are deliberately NOT in the push
+# path.
+#
+# R320 additions (c1-GATE): the two CSS lints run in --ratchet mode —
+# they block only when the violation count EXCEEDS the accepted
+# number in scripts/r320/gate-baseline.json (a NEW cross-file selector
+# conflict or a NEW unguarded :hover blocks the push; the known-open
+# ones are baselined Cycle-2-6 tickets). Rotting allowlists still
+# block in every mode.
 #
 # Wiring: root package.json "prepare": "git config core.hooksPath .githooks"
 # (idempotent — runs on every npm install/ci).
 set -u
 
-echo "[pre-push] r319 fast checks…"
+echo "[pre-push] r319+r320 fast checks…"
 
 # E9 — paired-state lint (Agent A, c1-A; landed on main). If a
 # checkout somehow lacks the script (stale worktree), the hook
@@ -22,6 +30,31 @@ if [ -f scripts/r319/paired-state-lint.mjs ]; then
   fi
 else
   echo "[pre-push] paired-state-lint: SKIP (scripts/r319/paired-state-lint.mjs missing from this checkout — stale worktree?)"
+fi
+
+# R320 rule 2 — duplicate-selector lint (the B1 cross-file ghost
+# class). Ratchet mode: >baseline blocks, baseline-riding rows are the
+# Cycle-2-6 dedupe tickets.
+if [ -f scripts/r320/duplicate-selector-lint.mjs ]; then
+  echo "[pre-push] duplicate-selector-lint (ratchet)…"
+  if ! node scripts/r320/duplicate-selector-lint.mjs --ratchet; then
+    echo "[pre-push] BLOCKED: a NEW cross-file selector conflict (worse than the gate baseline)"
+    exit 1
+  fi
+else
+  echo "[pre-push] duplicate-selector-lint: SKIP (scripts/r320/duplicate-selector-lint.mjs missing from this checkout — stale worktree?)"
+fi
+
+# R320 rule 3 — hover-guard lint (:hover must live inside
+# @media (hover: hover) — B1: hover sticks after a tap on touch).
+if [ -f scripts/r320/hover-guard-lint.mjs ]; then
+  echo "[pre-push] hover-guard-lint (ratchet)…"
+  if ! node scripts/r320/hover-guard-lint.mjs --ratchet; then
+    echo "[pre-push] BLOCKED: a NEW unguarded :hover rule (worse than the gate baseline)"
+    exit 1
+  fi
+else
+  echo "[pre-push] hover-guard-lint: SKIP (scripts/r320/hover-guard-lint.mjs missing from this checkout — stale worktree?)"
 fi
 
 # Static color gate — default mode is the fast report; a nonzero exit

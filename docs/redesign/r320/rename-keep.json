@@ -1,0 +1,8 @@
+{
+  "keep": [
+    {
+      "match": "الإدارة المركزية",
+      "reason": "building name — placeholder until c1-RENAME's ledger lands (the foreman replaces this file at merge)"
+    }
+  ]
+}
