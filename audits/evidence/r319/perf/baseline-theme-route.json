@@ -1,0 +1,379 @@
+{
+  "meta": {
+    "baseUrl": "http://localhost:4245",
+    "commit": "a27be4be",
+    "variant": "default",
+    "grbc": false,
+    "trace": false,
+    "started": "2026-10-26T00:22:26.426Z",
+    "chromium": "/home/z/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome",
+    "runs": 1
+  },
+  "results": [
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "theme",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 1,
+      "notes": [],
+      "docHeight": 12471,
+      "interactWindowMs": 3776,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 120,
+        "pctGt20": 24.2,
+        "pctGt33": 24.2,
+        "p95": 150,
+        "max": 249.9,
+        "avg": 31.25
+      },
+      "longtasks": {
+        "count": 16,
+        "gt50": 16,
+        "totalMs": 2461,
+        "worst": [
+          {
+            "start": 793,
+            "dur": 443,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 2779,
+            "dur": 203,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 4685,
+            "dur": 203,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1375,
+            "dur": 194,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 3290,
+            "dur": 159,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 1880,
+        "element": "p.reveal-up.reveal-d-3.fo-hero-lead",
+        "url": "",
+        "size": 18518
+      },
+      "inp": {
+        "count": 6,
+        "p95": 360,
+        "worst": [
+          {
+            "name": "click",
+            "dur": 360
+          },
+          {
+            "name": "click",
+            "dur": 288
+          }
+        ]
+      },
+      "loaf": {
+        "count": 17,
+        "gt100": 15,
+        "totalMs": 2831,
+        "worst": [
+          {
+            "start": 770,
+            "dur": 578,
+            "scripts": [
+              {
+                "dur": 10,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 443,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 6,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-BxFwZNIv.js"
+              },
+              {
+                "dur": 38,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-BxFwZNIv.js"
+              }
+            ]
+          },
+          {
+            "start": 1365,
+            "dur": 219,
+            "scripts": []
+          },
+          {
+            "start": 2779,
+            "dur": 211,
+            "scripts": [
+              {
+                "dur": 38,
+                "invoker": "DIV#root.onclick",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 774
+          },
+          {
+            "script": "/assets/LandingPage-0Cy_Q-ng.js :: IdleRequestCallback",
+            "totalMs": 100
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: DIV#root.onclick",
+            "totalMs": 84
+          },
+          {
+            "script": "/assets/useSheetScroll-BxFwZNIv.js :: FrameRequestCallback",
+            "totalMs": 44
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: DIV#root.ontransitionend",
+            "totalMs": 28
+          },
+          {
+            "script": "(inline) :: PerformanceObserverCallback",
+            "totalMs": 21
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 0,
+      "docHeightEnd": 12471
+    },
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "route",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 1,
+      "notes": [],
+      "docHeight": 12471,
+      "interactWindowMs": 2778,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 149,
+        "pctGt20": 6.7,
+        "pctGt33": 6.7,
+        "p95": 33.3,
+        "max": 99.9,
+        "avg": 18.34
+      },
+      "longtasks": {
+        "count": 9,
+        "gt50": 9,
+        "totalMs": 1128,
+        "worst": [
+          {
+            "start": 732,
+            "dur": 425,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1498,
+            "dur": 137,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1304,
+            "dur": 119,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 217,
+            "dur": 98,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 2651,
+            "dur": 95,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 1752,
+        "element": "p.reveal-up.reveal-d-3.fo-hero-lead",
+        "url": "",
+        "size": 18518
+      },
+      "inp": {
+        "count": 3,
+        "p95": 152,
+        "worst": [
+          {
+            "name": "click",
+            "dur": 152
+          }
+        ]
+      },
+      "loaf": {
+        "count": 12,
+        "gt100": 6,
+        "totalMs": 1669,
+        "worst": [
+          {
+            "start": 719,
+            "dur": 548,
+            "scripts": [
+              {
+                "dur": 7,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 425,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 33,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-BxFwZNIv.js"
+              }
+            ]
+          },
+          {
+            "start": 1451,
+            "dur": 191,
+            "scripts": [
+              {
+                "dur": 7,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 31,
+                "invoker": "IntersectionObserverCallback",
+                "src": "/assets/useReveal-Dht_8Xe-.js"
+              },
+              {
+                "dur": 137,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          },
+          {
+            "start": 1271,
+            "dur": 167,
+            "scripts": []
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 735
+          },
+          {
+            "script": "/assets/LandingPage-0Cy_Q-ng.js :: IdleRequestCallback",
+            "totalMs": 77
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: DIV#root.onclick",
+            "totalMs": 54
+          },
+          {
+            "script": "/assets/index-C8MtONcE.js :: http://localhost:4245/assets/index-C8MtONcE.js",
+            "totalMs": 50
+          },
+          {
+            "script": "/assets/useSheetScroll-BxFwZNIv.js :: FrameRequestCallback",
+            "totalMs": 33
+          },
+          {
+            "script": "/assets/useReveal-Dht_8Xe-.js :: IntersectionObserverCallback",
+            "totalMs": 31
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 0,
+      "docHeightEnd": 900
+    }
+  ]
+}

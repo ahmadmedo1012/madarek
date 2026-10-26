@@ -56,6 +56,17 @@
  * once-only, the fling hardening (mount check + IO fully-above clause
  * + the settle belt — a flung-past entry still reconciles from its
  * cached docTop), and the reduced-motion immediate reveal.
+ *
+ * ── R319 §E-13 — the scrollend settle is DEBOUNCED (120ms) ────────
+ * Chromium fires scrollend once per discrete wheel's animation stop
+ * (~118 per harness wheel run); each immediate reconcile read
+ * documentElement.scrollHeight on a DIRTY tree — ~6ms forced recalc
+ * @4×CPU each, 632ms per run, the #1 remaining desktop jank. The
+ * debounce coalesces the storm to one reconcile per REAL settle
+ * (≥120ms of scroll silence — a clean tree, a free read); a fresh
+ * scroll cancels the pending settle. The no-scrollend `scroll`
+ * fallback keeps its per-frame rAF schedule (that path is the
+ * correctness belt on those engines).
  */
 import { useReducedMotion } from '../components/motion/useReducedMotion';
 import { createElement, useEffect, useRef, type ReactNode, type ElementType } from 'react';
@@ -172,7 +183,46 @@ const scheduleReconcile = () => {
   });
 };
 
-const onScrollSettle = () => scheduleReconcile();
+/* ── R319 §E-13 — the scrollend STORM debounce ─────────────────────
+ * Chromium fires `scrollend` once per DISCRETE wheel's scroll-animation
+ * stop — under the harness wheel profile that is ~5 events per gesture
+ * and ~118 per run, and every reconcile read
+ * `document.documentElement.scrollHeight` with DIRTY style (that same
+ * frame's IO `.in-view` writes + the conductor's var writes) = a forced
+ * full recalc inside the task — measured 632ms of `reconcileAll` self
+ * time per @1440 4× wheel run, the #1 remaining desktop jank. A REAL
+ * settle is ≥120ms of scroll silence: debounce the scrollend path so
+ * the reconcile (and its scrollHeight read) runs on a CLEAN tree — the
+ * read is then free (0.008ms probe) and one forced layout per gesture
+ * replaces ~118. The rAF-coalesced `scroll` fallback (no-scrollend
+ * engines) is UNCHANGED — per-frame scheduling stays its contract. */
+const SETTLE_DEBOUNCE_MS = 120;
+let settleTimer = 0;
+
+const cancelPendingSettle = () => {
+  if (settleTimer) {
+    window.clearTimeout(settleTimer);
+    settleTimer = 0;
+  }
+};
+
+const onScrollSettle = () => {
+  cancelPendingSettle();
+  settleTimer = window.setTimeout(() => {
+    settleTimer = 0;
+    scheduleReconcile();
+  }, SETTLE_DEBOUNCE_MS);
+};
+
+/* a fresh scroll during the debounce window proves the scrollend was
+ * not a true settle — drop the pending reconcile; the next scrollend
+ * re-arms it. Passive, no layout reads. */
+const onScrollCancelSettle = () => {
+  cancelPendingSettle();
+};
+
+/* the no-scrollend fallback keeps the immediate rAF schedule. */
+const onScrollSettleFallback = () => scheduleReconcile();
 /* resize IS a layout change — bump the epoch, then reconcile. */
 const onResize = () => {
   bumpLayoutEpoch();
@@ -210,10 +260,12 @@ const attachBelt = () => {
   const supportsScrollEnd = 'onscrollend' in window;
   if (supportsScrollEnd) {
     window.addEventListener('scrollend', onScrollSettle, { passive: true });
+    /* cancel-only companion (see the debounce block above) */
+    window.addEventListener('scroll', onScrollCancelSettle, { passive: true });
   } else {
     // Safari & older engines: no scrollend — reconcile on scroll
     // frames; the shared rAF above keeps it to one batch per frame.
-    window.addEventListener('scroll', onScrollSettle, { passive: true });
+    window.addEventListener('scroll', onScrollSettleFallback, { passive: true });
   }
   window.addEventListener('resize', onResize, { passive: true });
   // Geometry drift: images/fonts settle after mount and can pull an
@@ -238,9 +290,12 @@ const detachBelt = () => {
   if (!beltAttached) return;
   beltAttached = false;
   // Removing a type that was never added (scrollend vs scroll) is a
-  // no-op, so both are attempted unconditionally.
+  // no-op, so all are attempted unconditionally.
+  cancelPendingSettle();
   window.removeEventListener('scrollend', onScrollSettle);
   window.removeEventListener('scroll', onScrollSettle);
+  window.removeEventListener('scroll', onScrollSettleFallback);
+  window.removeEventListener('scroll', onScrollCancelSettle);
   window.removeEventListener('resize', onResize);
   window.removeEventListener('load', onLoadSettle);
   window.removeEventListener('load', onAssetLoad, { capture: true });

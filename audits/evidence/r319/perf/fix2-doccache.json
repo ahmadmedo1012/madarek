@@ -1,0 +1,810 @@
+{
+  "meta": {
+    "baseUrl": "http://localhost:4245",
+    "commit": "76246853",
+    "variant": "default",
+    "grbc": false,
+    "trace": false,
+    "started": "2026-10-26T00:34:08.453Z",
+    "chromium": "/home/z/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome",
+    "runs": 1
+  },
+  "results": [
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "scroll",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 1,
+      "notes": [],
+      "docHeight": 12471,
+      "scrollYSamples": [
+        172,
+        728,
+        1375,
+        1898,
+        2520,
+        3094,
+        3778,
+        4408,
+        5012,
+        5654,
+        6185,
+        6838,
+        7000,
+        6379,
+        5823,
+        5168,
+        4535,
+        3925,
+        3436,
+        2848,
+        2233,
+        1740,
+        1197,
+        660
+      ],
+      "interactWindowMs": 6832,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 170,
+        "pctGt20": 60,
+        "pctGt33": 60,
+        "p95": 83.4,
+        "max": 133.3,
+        "avg": 40.1
+      },
+      "framesActive": {
+        "count": 128,
+        "pctGt20": 71.1,
+        "pctGt33": 71.1,
+        "p95": 83.4,
+        "max": 133.3,
+        "avg": 46.09
+      },
+      "activeWindowMs": 5916,
+      "longtasks": {
+        "count": 46,
+        "gt50": 46,
+        "totalMs": 3896,
+        "worst": [
+          {
+            "start": 913,
+            "dur": 489,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1588,
+            "dur": 201,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1822,
+            "dur": 171,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1433,
+            "dur": 146,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 2248,
+            "dur": 137,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 432,
+        "element": "img",
+        "url": "http://localhost:4245/brand/madarek-mark.svg",
+        "size": 2304
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 38,
+        "gt100": 7,
+        "totalMs": 3628,
+        "worst": [
+          {
+            "start": 897,
+            "dur": 492,
+            "scripts": [
+              {
+                "dur": 6,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          },
+          {
+            "start": 1402,
+            "dur": 343,
+            "scripts": [
+              {
+                "dur": 24,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 110,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-C-pMbzG1.js"
+              },
+              {
+                "dur": 22,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-C-pMbzG1.js"
+              }
+            ]
+          },
+          {
+            "start": 15,
+            "dur": 202,
+            "scripts": [
+              {
+                "dur": 9,
+                "invoker": "http://localhost:4245/",
+                "src": "/"
+              },
+              {
+                "dur": 49,
+                "invoker": "http://localhost:4245/assets/index-BSR-LUB5.js",
+                "src": "/assets/index-BSR-LUB5.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/useReveal-BvEP_LA_.js :: FrameRequestCallback",
+            "totalMs": 1082
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 433
+          },
+          {
+            "script": "/assets/LandingPage-kvlT6C7p.js :: IdleRequestCallback",
+            "totalMs": 137
+          },
+          {
+            "script": "/assets/useSheetScroll-C-pMbzG1.js :: FrameRequestCallback",
+            "totalMs": 132
+          },
+          {
+            "script": "/assets/LandingPage-kvlT6C7p.js :: DOMWindow.onscroll",
+            "totalMs": 58
+          },
+          {
+            "script": "/assets/index-BSR-LUB5.js :: http://localhost:4245/assets/index-BSR-LUB5.js",
+            "totalMs": 49
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 2,
+      "docHeightEnd": 12471,
+      "dom": {
+        "totalNodes": 3112,
+        "svg": 34,
+        "pattern": 10,
+        "filterEl": 0,
+        "clipPath": 0,
+        "symbol": 0,
+        "path": 99,
+        "probe": {
+          ".jt-window": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "relative",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1267,
+            "h": 802
+          },
+          ".bp-svg": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "static",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1224,
+            "h": 612
+          }
+        },
+        "layerCandidates": {
+          "willChange": 0,
+          "filter": 6,
+          "mixBlend": 0,
+          "fixed": 8,
+          "backdropFilter": 4,
+          "mask": 1,
+          "contain": 0,
+          "contentVisibilityAuto": 0
+        },
+        "layerCandidateList": [
+          "canvas.sc-canvas [fixed]",
+          "div.sc-ring [fixed]",
+          "a.fo-skip-link [fixed]",
+          "div.sheet-frame [fixed]",
+          "header.fo-header.on-hide [fixed]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "img.fo-fstrip-img [filter]",
+          "g [mask]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "div.cb-banner [fixed]",
+          "button.et-tab [fixed]",
+          "div.toast-stack [fixed]"
+        ]
+      }
+    },
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "scroll",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 2,
+      "notes": [],
+      "docHeight": 12471,
+      "scrollYSamples": [
+        258,
+        732,
+        1366,
+        1892,
+        2515,
+        3281,
+        3834,
+        4470,
+        5107,
+        5617,
+        6285,
+        6969,
+        6962,
+        6390,
+        5860,
+        5128,
+        4488,
+        3972,
+        3391,
+        2817,
+        2232,
+        1692,
+        1315,
+        655
+      ],
+      "interactWindowMs": 7349,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 172,
+        "pctGt20": 64.5,
+        "pctGt33": 64.5,
+        "p95": 83.4,
+        "max": 133.4,
+        "avg": 42.44
+      },
+      "framesActive": {
+        "count": 134,
+        "pctGt20": 74.6,
+        "pctGt33": 74.6,
+        "p95": 83.4,
+        "max": 133.3,
+        "avg": 46.76
+      },
+      "activeWindowMs": 6436,
+      "longtasks": {
+        "count": 48,
+        "gt50": 47,
+        "totalMs": 3818,
+        "worst": [
+          {
+            "start": 806,
+            "dur": 463,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1622,
+            "dur": 172,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1402,
+            "dur": 127,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1289,
+            "dur": 100,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 8023,
+            "dur": 98,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 320,
+        "element": "img",
+        "url": "http://localhost:4245/brand/madarek-mark.svg",
+        "size": 2304
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 41,
+        "gt100": 7,
+        "totalMs": 3619,
+        "worst": [
+          {
+            "start": 784,
+            "dur": 588,
+            "scripts": [
+              {
+                "dur": 17,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 463,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 21,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-C-pMbzG1.js"
+              },
+              {
+                "dur": 5,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-C-pMbzG1.js"
+              }
+            ]
+          },
+          {
+            "start": 1389,
+            "dur": 180,
+            "scripts": []
+          },
+          {
+            "start": 1622,
+            "dur": 177,
+            "scripts": [
+              {
+                "dur": 172,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/useReveal-BvEP_LA_.js :: FrameRequestCallback",
+            "totalMs": 1166
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 817
+          },
+          {
+            "script": "/assets/LandingPage-kvlT6C7p.js :: IdleRequestCallback",
+            "totalMs": 79
+          },
+          {
+            "script": "/assets/index-BSR-LUB5.js :: http://localhost:4245/assets/index-BSR-LUB5.js",
+            "totalMs": 53
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: DIV#root.ontransitionend",
+            "totalMs": 29
+          },
+          {
+            "script": "/assets/useSheetScroll-C-pMbzG1.js :: FrameRequestCallback",
+            "totalMs": 26
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 1,
+      "docHeightEnd": 12471,
+      "dom": {
+        "totalNodes": 3112,
+        "svg": 34,
+        "pattern": 10,
+        "filterEl": 0,
+        "clipPath": 0,
+        "symbol": 0,
+        "path": 99,
+        "probe": {
+          ".jt-window": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "relative",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1267,
+            "h": 802
+          },
+          ".bp-svg": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "static",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1224,
+            "h": 612
+          }
+        },
+        "layerCandidates": {
+          "willChange": 0,
+          "filter": 6,
+          "mixBlend": 0,
+          "fixed": 8,
+          "backdropFilter": 4,
+          "mask": 1,
+          "contain": 0,
+          "contentVisibilityAuto": 0
+        },
+        "layerCandidateList": [
+          "canvas.sc-canvas [fixed]",
+          "div.sc-ring [fixed]",
+          "a.fo-skip-link [fixed]",
+          "div.sheet-frame [fixed]",
+          "header.fo-header.on-hide [fixed]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "img.fo-fstrip-img [filter]",
+          "g [mask]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "div.cb-banner [fixed]",
+          "button.et-tab [fixed]",
+          "div.toast-stack [fixed]"
+        ]
+      }
+    },
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "scroll",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 3,
+      "notes": [],
+      "docHeight": 12471,
+      "scrollYSamples": [
+        264,
+        724,
+        1384,
+        1932,
+        2460,
+        3072,
+        3784,
+        4433,
+        5095,
+        5652,
+        6322,
+        6980,
+        6928,
+        6389,
+        5808,
+        5220,
+        4625,
+        3912,
+        3383,
+        2701,
+        2211,
+        1734,
+        1194,
+        659
+      ],
+      "interactWindowMs": 7292,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 176,
+        "pctGt20": 65.9,
+        "pctGt33": 65.9,
+        "p95": 83.4,
+        "max": 133.4,
+        "avg": 41.19
+      },
+      "framesActive": {
+        "count": 136,
+        "pctGt20": 77.2,
+        "pctGt33": 77.2,
+        "p95": 83.4,
+        "max": 133.4,
+        "avg": 46.44
+      },
+      "activeWindowMs": 6367,
+      "longtasks": {
+        "count": 51,
+        "gt50": 50,
+        "totalMs": 4050,
+        "worst": [
+          {
+            "start": 754,
+            "dur": 441,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1306,
+            "dur": 192,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1556,
+            "dur": 162,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 5392,
+            "dur": 116,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 203,
+            "dur": 103,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 1800,
+        "element": "p.reveal-up.reveal-d-3.fo-hero-lead",
+        "url": "",
+        "size": 18518
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 42,
+        "gt100": 7,
+        "totalMs": 3594,
+        "worst": [
+          {
+            "start": 754,
+            "dur": 507,
+            "scripts": [
+              {
+                "dur": 440,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 22,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-C-pMbzG1.js"
+              }
+            ]
+          },
+          {
+            "start": 1294,
+            "dur": 217,
+            "scripts": []
+          },
+          {
+            "start": 1554,
+            "dur": 168,
+            "scripts": [
+              {
+                "dur": 161,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/useReveal-BvEP_LA_.js :: FrameRequestCallback",
+            "totalMs": 1297
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 781
+          },
+          {
+            "script": "/assets/LandingPage-kvlT6C7p.js :: IdleRequestCallback",
+            "totalMs": 99
+          },
+          {
+            "script": "/assets/index-BSR-LUB5.js :: http://localhost:4245/assets/index-BSR-LUB5.js",
+            "totalMs": 59
+          },
+          {
+            "script": "/assets/useSheetScroll-C-pMbzG1.js :: FrameRequestCallback",
+            "totalMs": 22
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 2,
+      "docHeightEnd": 12471,
+      "dom": {
+        "totalNodes": 3112,
+        "svg": 34,
+        "pattern": 10,
+        "filterEl": 0,
+        "clipPath": 0,
+        "symbol": 0,
+        "path": 99,
+        "probe": {
+          ".jt-window": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "relative",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1267,
+            "h": 802
+          },
+          ".bp-svg": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "static",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1224,
+            "h": 612
+          }
+        },
+        "layerCandidates": {
+          "willChange": 0,
+          "filter": 6,
+          "mixBlend": 0,
+          "fixed": 8,
+          "backdropFilter": 4,
+          "mask": 1,
+          "contain": 0,
+          "contentVisibilityAuto": 0
+        },
+        "layerCandidateList": [
+          "canvas.sc-canvas [fixed]",
+          "div.sc-ring [fixed]",
+          "a.fo-skip-link [fixed]",
+          "div.sheet-frame [fixed]",
+          "header.fo-header.on-hide [fixed]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "img.fo-fstrip-img [filter]",
+          "g [mask]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "div.cb-banner [fixed]",
+          "button.et-tab [fixed]",
+          "div.toast-stack [fixed]"
+        ]
+      }
+    }
+  ]
+}

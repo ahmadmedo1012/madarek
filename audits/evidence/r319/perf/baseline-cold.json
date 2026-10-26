@@ -1,0 +1,1219 @@
+{
+  "meta": {
+    "baseUrl": "http://localhost:4245",
+    "commit": "a27be4be",
+    "variant": "default",
+    "grbc": false,
+    "trace": false,
+    "started": "2026-10-26T00:15:02.337Z",
+    "chromium": "/home/z/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome",
+    "runs": 1
+  },
+  "results": [
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 1,
+      "scenario": "cold",
+      "variant": "default",
+      "loaderSkip": false,
+      "run": 1,
+      "notes": [],
+      "loaderPlayed": false,
+      "docHeight": 12471,
+      "interactWindowMs": 25027,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 1475,
+        "pctGt20": 1,
+        "pctGt33": 1,
+        "p95": 16.8,
+        "max": 100,
+        "avg": 16.96
+      },
+      "longtasks": {
+        "count": 1,
+        "gt50": 1,
+        "totalMs": 104,
+        "worst": [
+          {
+            "start": 2300,
+            "dur": 104,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.008,
+        "loadPhase": 0.007,
+        "interactPhase": 0.001,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          },
+          {
+            "node": "#node",
+            "cls": 0.001
+          },
+          {
+            "node": "nav.fo-nav",
+            "cls": 0
+          }
+        ],
+        "entries": 5,
+        "interactRaw": {
+          "total": 0.001,
+          "count": 4,
+          "topShifters": [
+            {
+              "node": "#node",
+              "cls": 0.001
+            },
+            {
+              "node": "nav.fo-nav",
+              "cls": 0
+            },
+            {
+              "node": "a.fo-actions-login",
+              "cls": 0
+            }
+          ]
+        }
+      },
+      "lcp": {
+        "ms": 4608,
+        "element": "h1.reveal-up.reveal-d-1.fo-hero-title",
+        "url": "",
+        "size": 53193
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 3,
+        "gt100": 3,
+        "totalMs": 1584,
+        "worst": [
+          {
+            "start": 180,
+            "dur": 1365,
+            "scripts": []
+          },
+          {
+            "start": 2300,
+            "dur": 117,
+            "scripts": [
+              {
+                "dur": 104,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 6,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-BxFwZNIv.js"
+              }
+            ]
+          },
+          {
+            "start": 2737,
+            "dur": 102,
+            "scripts": []
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 104
+          },
+          {
+            "script": "/assets/useSheetScroll-BxFwZNIv.js :: FrameRequestCallback",
+            "totalMs": 6
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 0,
+      "docHeightEnd": 12471,
+      "resources": [
+        {
+          "url": "/assets/index-C8MtONcE.js",
+          "transferKB": 80.1,
+          "decodedKB": 275.8
+        },
+        {
+          "url": "/assets/react-gInupMWC.js",
+          "transferKB": 52.7,
+          "decodedKB": 160.6
+        },
+        {
+          "url": "/assets/query-D_UCWYRd.js",
+          "transferKB": 10.6,
+          "decodedKB": 34.4
+        },
+        {
+          "url": "/assets/LandingPage-0Cy_Q-ng.js",
+          "transferKB": 36.6,
+          "decodedKB": 138.3
+        },
+        {
+          "url": "/assets/StarMark-DyOqFcgU.js",
+          "transferKB": 1.1,
+          "decodedKB": 0.8
+        },
+        {
+          "url": "/assets/colleges.config-BjX6YDny.js",
+          "transferKB": 1.5,
+          "decodedKB": 4
+        },
+        {
+          "url": "/assets/useSheetScroll-BxFwZNIv.js",
+          "transferKB": 3.1,
+          "decodedKB": 10.3
+        },
+        {
+          "url": "/assets/landing-ledger-Ct6nPByf.js",
+          "transferKB": 0.8,
+          "decodedKB": 1
+        },
+        {
+          "url": "/assets/useReveal-Dht_8Xe-.js",
+          "transferKB": 1.6,
+          "decodedKB": 3.1
+        },
+        {
+          "url": "/assets/AuthPage-e-2VWs5w.js",
+          "transferKB": 3.4,
+          "decodedKB": 9.3
+        },
+        {
+          "url": "/assets/zod-pFumEHaO.js",
+          "transferKB": 10.3,
+          "decodedKB": 26.7
+        },
+        {
+          "url": "/assets/index-J8fcbwnq.js",
+          "transferKB": 13.7,
+          "decodedKB": 55.4
+        },
+        {
+          "url": "/assets/usePageTitle-DprbhcXz.js",
+          "transferKB": 0.5,
+          "decodedKB": 0.2
+        },
+        {
+          "url": "/assets/authErrors-BCCc5lnM.js",
+          "transferKB": 0.5,
+          "decodedKB": 0.2
+        },
+        {
+          "url": "/assets/eye-off-USKU-bLw.js",
+          "transferKB": 0.9,
+          "decodedKB": 0.6
+        },
+        {
+          "url": "/assets/eye-BmL9Ki-D.js",
+          "transferKB": 0.7,
+          "decodedKB": 0.4
+        },
+        {
+          "url": "/assets/RegisterPage-B82sM6Yo.js",
+          "transferKB": 4.9,
+          "decodedKB": 19
+        },
+        {
+          "url": "/assets/catalog-BDwUZutj.js",
+          "transferKB": 1,
+          "decodedKB": 2
+        },
+        {
+          "url": "/assets/useInstitutions-Bw9LPbVE.js",
+          "transferKB": 0.6,
+          "decodedKB": 1.1
+        },
+        {
+          "url": "/assets/Skeleton-DVoBCaH4.js",
+          "transferKB": 1,
+          "decodedKB": 0.7
+        },
+        {
+          "url": "/assets/commonPasswords-CCkqyi9d.js",
+          "transferKB": 0.8,
+          "decodedKB": 1.2
+        },
+        {
+          "url": "/assets/lock-CUvetUdE.js",
+          "transferKB": 0.7,
+          "decodedKB": 0.4
+        }
+      ],
+      "jsFetchedUrls": [
+        "/assets/query-D_UCWYRd.js",
+        "/assets/react-gInupMWC.js",
+        "/assets/index-C8MtONcE.js",
+        "/assets/StarMark-DyOqFcgU.js",
+        "/assets/landing-ledger-Ct6nPByf.js",
+        "/assets/colleges.config-BjX6YDny.js",
+        "/assets/useReveal-Dht_8Xe-.js",
+        "/assets/useSheetScroll-BxFwZNIv.js",
+        "/assets/LandingPage-0Cy_Q-ng.js",
+        "/assets/AuthPage-e-2VWs5w.js",
+        "/assets/usePageTitle-DprbhcXz.js",
+        "/assets/zod-pFumEHaO.js",
+        "/assets/authErrors-BCCc5lnM.js",
+        "/assets/index-J8fcbwnq.js",
+        "/assets/eye-off-USKU-bLw.js",
+        "/assets/eye-BmL9Ki-D.js",
+        "/assets/catalog-BDwUZutj.js",
+        "/assets/RegisterPage-B82sM6Yo.js",
+        "/assets/useInstitutions-Bw9LPbVE.js",
+        "/assets/Skeleton-DVoBCaH4.js",
+        "/assets/commonPasswords-CCkqyi9d.js",
+        "/assets/lock-CUvetUdE.js"
+      ],
+      "navigation": {
+        "domContentLoadedMs": 1728,
+        "loadMs": 1728
+      }
+    },
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 1,
+      "scenario": "cold",
+      "variant": "default",
+      "loaderSkip": false,
+      "run": 2,
+      "notes": [],
+      "loaderPlayed": false,
+      "docHeight": 12471,
+      "interactWindowMs": 25031,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 1489,
+        "pctGt20": 0.5,
+        "pctGt33": 0.5,
+        "p95": 16.8,
+        "max": 83.3,
+        "avg": 16.8
+      },
+      "longtasks": {
+        "count": 1,
+        "gt50": 1,
+        "totalMs": 85,
+        "worst": [
+          {
+            "start": 2286,
+            "dur": 85,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.008,
+        "loadPhase": 0.007,
+        "interactPhase": 0.001,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          },
+          {
+            "node": "#node",
+            "cls": 0.001
+          },
+          {
+            "node": "nav.fo-nav",
+            "cls": 0
+          }
+        ],
+        "entries": 5,
+        "interactRaw": {
+          "total": 0.001,
+          "count": 4,
+          "topShifters": [
+            {
+              "node": "#node",
+              "cls": 0.001
+            },
+            {
+              "node": "nav.fo-nav",
+              "cls": 0
+            },
+            {
+              "node": "a.fo-actions-login",
+              "cls": 0
+            }
+          ]
+        }
+      },
+      "lcp": {
+        "ms": 3928,
+        "element": "h1.reveal-up.reveal-d-1.fo-hero-title",
+        "url": "",
+        "size": 53193
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 2,
+        "gt100": 1,
+        "totalMs": 1455,
+        "worst": [
+          {
+            "start": 161,
+            "dur": 1356,
+            "scripts": []
+          },
+          {
+            "start": 2269,
+            "dur": 99,
+            "scripts": [
+              {
+                "dur": 5,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 5,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 5,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 15
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 0,
+      "docHeightEnd": 12471,
+      "resources": [
+        {
+          "url": "/assets/index-C8MtONcE.js",
+          "transferKB": 80.1,
+          "decodedKB": 275.8
+        },
+        {
+          "url": "/assets/react-gInupMWC.js",
+          "transferKB": 52.7,
+          "decodedKB": 160.6
+        },
+        {
+          "url": "/assets/query-D_UCWYRd.js",
+          "transferKB": 10.6,
+          "decodedKB": 34.4
+        },
+        {
+          "url": "/assets/LandingPage-0Cy_Q-ng.js",
+          "transferKB": 36.6,
+          "decodedKB": 138.3
+        },
+        {
+          "url": "/assets/StarMark-DyOqFcgU.js",
+          "transferKB": 1.1,
+          "decodedKB": 0.8
+        },
+        {
+          "url": "/assets/colleges.config-BjX6YDny.js",
+          "transferKB": 1.5,
+          "decodedKB": 4
+        },
+        {
+          "url": "/assets/landing-ledger-Ct6nPByf.js",
+          "transferKB": 0.8,
+          "decodedKB": 1
+        },
+        {
+          "url": "/assets/useSheetScroll-BxFwZNIv.js",
+          "transferKB": 3.1,
+          "decodedKB": 10.3
+        },
+        {
+          "url": "/assets/useReveal-Dht_8Xe-.js",
+          "transferKB": 1.6,
+          "decodedKB": 3.1
+        },
+        {
+          "url": "/assets/AuthPage-e-2VWs5w.js",
+          "transferKB": 3.4,
+          "decodedKB": 9.3
+        },
+        {
+          "url": "/assets/zod-pFumEHaO.js",
+          "transferKB": 10.3,
+          "decodedKB": 26.7
+        },
+        {
+          "url": "/assets/index-J8fcbwnq.js",
+          "transferKB": 13.7,
+          "decodedKB": 55.4
+        },
+        {
+          "url": "/assets/usePageTitle-DprbhcXz.js",
+          "transferKB": 0.5,
+          "decodedKB": 0.2
+        },
+        {
+          "url": "/assets/authErrors-BCCc5lnM.js",
+          "transferKB": 0.5,
+          "decodedKB": 0.2
+        },
+        {
+          "url": "/assets/eye-off-USKU-bLw.js",
+          "transferKB": 0.9,
+          "decodedKB": 0.6
+        },
+        {
+          "url": "/assets/eye-BmL9Ki-D.js",
+          "transferKB": 0.7,
+          "decodedKB": 0.4
+        },
+        {
+          "url": "/assets/RegisterPage-B82sM6Yo.js",
+          "transferKB": 4.9,
+          "decodedKB": 19
+        },
+        {
+          "url": "/assets/catalog-BDwUZutj.js",
+          "transferKB": 1,
+          "decodedKB": 2
+        },
+        {
+          "url": "/assets/useInstitutions-Bw9LPbVE.js",
+          "transferKB": 0.6,
+          "decodedKB": 1.1
+        },
+        {
+          "url": "/assets/Skeleton-DVoBCaH4.js",
+          "transferKB": 1,
+          "decodedKB": 0.7
+        },
+        {
+          "url": "/assets/commonPasswords-CCkqyi9d.js",
+          "transferKB": 0.8,
+          "decodedKB": 1.2
+        },
+        {
+          "url": "/assets/lock-CUvetUdE.js",
+          "transferKB": 0.7,
+          "decodedKB": 0.4
+        }
+      ],
+      "jsFetchedUrls": [
+        "/assets/query-D_UCWYRd.js",
+        "/assets/react-gInupMWC.js",
+        "/assets/index-C8MtONcE.js",
+        "/assets/StarMark-DyOqFcgU.js",
+        "/assets/landing-ledger-Ct6nPByf.js",
+        "/assets/colleges.config-BjX6YDny.js",
+        "/assets/useReveal-Dht_8Xe-.js",
+        "/assets/useSheetScroll-BxFwZNIv.js",
+        "/assets/LandingPage-0Cy_Q-ng.js",
+        "/assets/AuthPage-e-2VWs5w.js",
+        "/assets/usePageTitle-DprbhcXz.js",
+        "/assets/zod-pFumEHaO.js",
+        "/assets/authErrors-BCCc5lnM.js",
+        "/assets/index-J8fcbwnq.js",
+        "/assets/eye-off-USKU-bLw.js",
+        "/assets/eye-BmL9Ki-D.js",
+        "/assets/catalog-BDwUZutj.js",
+        "/assets/RegisterPage-B82sM6Yo.js",
+        "/assets/useInstitutions-Bw9LPbVE.js",
+        "/assets/Skeleton-DVoBCaH4.js",
+        "/assets/commonPasswords-CCkqyi9d.js",
+        "/assets/lock-CUvetUdE.js"
+      ],
+      "navigation": {
+        "domContentLoadedMs": 1713,
+        "loadMs": 1714
+      }
+    },
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "cold",
+      "variant": "default",
+      "loaderSkip": false,
+      "run": 1,
+      "notes": [],
+      "loaderPlayed": false,
+      "docHeight": 12471,
+      "interactWindowMs": 25098,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 1263,
+        "pctGt20": 10.7,
+        "pctGt33": 10.7,
+        "p95": 33.4,
+        "max": 466.7,
+        "avg": 19.83
+      },
+      "longtasks": {
+        "count": 15,
+        "gt50": 14,
+        "totalMs": 1841,
+        "worst": [
+          {
+            "start": 2657,
+            "dur": 462,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 3274,
+            "dur": 165,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 6113,
+            "dur": 159,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 5308,
+            "dur": 151,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 6853,
+            "dur": 122,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.008,
+        "loadPhase": 0.007,
+        "interactPhase": 0.001,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          },
+          {
+            "node": "#node",
+            "cls": 0.001
+          },
+          {
+            "node": "nav.fo-nav",
+            "cls": 0
+          }
+        ],
+        "entries": 5,
+        "interactRaw": {
+          "total": 0.001,
+          "count": 4,
+          "topShifters": [
+            {
+              "node": "#node",
+              "cls": 0.001
+            },
+            {
+              "node": "nav.fo-nav",
+              "cls": 0
+            },
+            {
+              "node": "a.fo-actions-login",
+              "cls": 0
+            }
+          ]
+        }
+      },
+      "lcp": {
+        "ms": 4876,
+        "element": "h1.reveal-up.reveal-d-1.fo-hero-title",
+        "url": "",
+        "size": 53193
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 22,
+        "gt100": 10,
+        "totalMs": 3677,
+        "worst": [
+          {
+            "start": 159,
+            "dur": 1408,
+            "scripts": [
+              {
+                "dur": 6,
+                "invoker": "http://localhost:4245/",
+                "src": "/"
+              }
+            ]
+          },
+          {
+            "start": 2640,
+            "dur": 468,
+            "scripts": [
+              {
+                "dur": 5,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 11,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          },
+          {
+            "start": 3274,
+            "dur": 173,
+            "scripts": [
+              {
+                "dur": 165,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 333
+          },
+          {
+            "script": "/assets/useSheetScroll-BxFwZNIv.js :: FrameRequestCallback",
+            "totalMs": 48
+          },
+          {
+            "script": "/assets/index-C8MtONcE.js :: http://localhost:4245/assets/index-C8MtONcE.js",
+            "totalMs": 35
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: BODY.onanimationend",
+            "totalMs": 23
+          },
+          {
+            "script": "/assets/LandingPage-0Cy_Q-ng.js :: IdleRequestCallback",
+            "totalMs": 22
+          },
+          {
+            "script": "/ :: http://localhost:4245/",
+            "totalMs": 6
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 0,
+      "docHeightEnd": 12471,
+      "resources": [
+        {
+          "url": "/assets/index-C8MtONcE.js",
+          "transferKB": 80.1,
+          "decodedKB": 275.8
+        },
+        {
+          "url": "/assets/react-gInupMWC.js",
+          "transferKB": 52.7,
+          "decodedKB": 160.6
+        },
+        {
+          "url": "/assets/query-D_UCWYRd.js",
+          "transferKB": 10.6,
+          "decodedKB": 34.4
+        },
+        {
+          "url": "/assets/LandingPage-0Cy_Q-ng.js",
+          "transferKB": 36.6,
+          "decodedKB": 138.3
+        },
+        {
+          "url": "/assets/StarMark-DyOqFcgU.js",
+          "transferKB": 1.1,
+          "decodedKB": 0.8
+        },
+        {
+          "url": "/assets/colleges.config-BjX6YDny.js",
+          "transferKB": 1.5,
+          "decodedKB": 4
+        },
+        {
+          "url": "/assets/useSheetScroll-BxFwZNIv.js",
+          "transferKB": 3.1,
+          "decodedKB": 10.3
+        },
+        {
+          "url": "/assets/landing-ledger-Ct6nPByf.js",
+          "transferKB": 0.8,
+          "decodedKB": 1
+        },
+        {
+          "url": "/assets/useReveal-Dht_8Xe-.js",
+          "transferKB": 1.6,
+          "decodedKB": 3.1
+        },
+        {
+          "url": "/assets/AuthPage-e-2VWs5w.js",
+          "transferKB": 3.4,
+          "decodedKB": 9.3
+        },
+        {
+          "url": "/assets/zod-pFumEHaO.js",
+          "transferKB": 10.3,
+          "decodedKB": 26.7
+        },
+        {
+          "url": "/assets/index-J8fcbwnq.js",
+          "transferKB": 13.7,
+          "decodedKB": 55.4
+        },
+        {
+          "url": "/assets/usePageTitle-DprbhcXz.js",
+          "transferKB": 0.5,
+          "decodedKB": 0.2
+        },
+        {
+          "url": "/assets/authErrors-BCCc5lnM.js",
+          "transferKB": 0.5,
+          "decodedKB": 0.2
+        },
+        {
+          "url": "/assets/eye-off-USKU-bLw.js",
+          "transferKB": 0.9,
+          "decodedKB": 0.6
+        },
+        {
+          "url": "/assets/eye-BmL9Ki-D.js",
+          "transferKB": 0.7,
+          "decodedKB": 0.4
+        },
+        {
+          "url": "/assets/RegisterPage-B82sM6Yo.js",
+          "transferKB": 4.9,
+          "decodedKB": 19
+        },
+        {
+          "url": "/assets/catalog-BDwUZutj.js",
+          "transferKB": 1,
+          "decodedKB": 2
+        },
+        {
+          "url": "/assets/useInstitutions-Bw9LPbVE.js",
+          "transferKB": 0.6,
+          "decodedKB": 1.1
+        },
+        {
+          "url": "/assets/Skeleton-DVoBCaH4.js",
+          "transferKB": 1,
+          "decodedKB": 0.7
+        },
+        {
+          "url": "/assets/commonPasswords-CCkqyi9d.js",
+          "transferKB": 0.8,
+          "decodedKB": 1.2
+        },
+        {
+          "url": "/assets/lock-CUvetUdE.js",
+          "transferKB": 0.7,
+          "decodedKB": 0.4
+        }
+      ],
+      "jsFetchedUrls": [
+        "/assets/query-D_UCWYRd.js",
+        "/assets/react-gInupMWC.js",
+        "/assets/index-C8MtONcE.js",
+        "/assets/StarMark-DyOqFcgU.js",
+        "/assets/landing-ledger-Ct6nPByf.js",
+        "/assets/colleges.config-BjX6YDny.js",
+        "/assets/useSheetScroll-BxFwZNIv.js",
+        "/assets/useReveal-Dht_8Xe-.js",
+        "/assets/LandingPage-0Cy_Q-ng.js",
+        "/assets/AuthPage-e-2VWs5w.js",
+        "/assets/zod-pFumEHaO.js",
+        "/assets/usePageTitle-DprbhcXz.js",
+        "/assets/index-J8fcbwnq.js",
+        "/assets/authErrors-BCCc5lnM.js",
+        "/assets/eye-off-USKU-bLw.js",
+        "/assets/eye-BmL9Ki-D.js",
+        "/assets/RegisterPage-B82sM6Yo.js",
+        "/assets/catalog-BDwUZutj.js",
+        "/assets/useInstitutions-Bw9LPbVE.js",
+        "/assets/Skeleton-DVoBCaH4.js",
+        "/assets/commonPasswords-CCkqyi9d.js",
+        "/assets/lock-CUvetUdE.js"
+      ],
+      "navigation": {
+        "domContentLoadedMs": 1773,
+        "loadMs": 1803
+      }
+    },
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "cold",
+      "variant": "default",
+      "loaderSkip": false,
+      "run": 2,
+      "notes": [],
+      "loaderPlayed": false,
+      "docHeight": 12471,
+      "interactWindowMs": 25104,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 1227,
+        "pctGt20": 14.8,
+        "pctGt33": 14.8,
+        "p95": 33.4,
+        "max": 516.7,
+        "avg": 20.44
+      },
+      "longtasks": {
+        "count": 14,
+        "gt50": 14,
+        "totalMs": 1694,
+        "worst": [
+          {
+            "start": 2669,
+            "dur": 416,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 6719,
+            "dur": 127,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 3263,
+            "dur": 123,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 6589,
+            "dur": 121,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 5251,
+            "dur": 120,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.008,
+        "loadPhase": 0,
+        "interactPhase": 0.008,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          },
+          {
+            "node": "#node",
+            "cls": 0.001
+          },
+          {
+            "node": "nav.fo-nav",
+            "cls": 0
+          }
+        ],
+        "entries": 5,
+        "interactRaw": {
+          "total": 0.008,
+          "count": 5,
+          "topShifters": [
+            {
+              "node": "div.hydration-splash",
+              "cls": 0.007
+            },
+            {
+              "node": "#node",
+              "cls": 0.001
+            },
+            {
+              "node": "nav.fo-nav",
+              "cls": 0
+            }
+          ]
+        }
+      },
+      "lcp": {
+        "ms": 5476,
+        "element": "h1.reveal-up.reveal-d-1.fo-hero-title",
+        "url": "",
+        "size": 53193
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 24,
+        "gt100": 8,
+        "totalMs": 3753,
+        "worst": [
+          {
+            "start": 156,
+            "dur": 1408,
+            "scripts": [
+              {
+                "dur": 6,
+                "invoker": "http://localhost:4245/",
+                "src": "/"
+              }
+            ]
+          },
+          {
+            "start": 2657,
+            "dur": 519,
+            "scripts": [
+              {
+                "dur": 12,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 415,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 54,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-BxFwZNIv.js"
+              }
+            ]
+          },
+          {
+            "start": 3262,
+            "dur": 133,
+            "scripts": [
+              {
+                "dur": 122,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 694
+          },
+          {
+            "script": "/assets/LandingPage-0Cy_Q-ng.js :: IdleRequestCallback",
+            "totalMs": 68
+          },
+          {
+            "script": "/assets/useSheetScroll-BxFwZNIv.js :: FrameRequestCallback",
+            "totalMs": 54
+          },
+          {
+            "script": "/ :: http://localhost:4245/",
+            "totalMs": 6
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 0,
+      "docHeightEnd": 12471,
+      "resources": [
+        {
+          "url": "/assets/index-C8MtONcE.js",
+          "transferKB": 80.1,
+          "decodedKB": 275.8
+        },
+        {
+          "url": "/assets/query-D_UCWYRd.js",
+          "transferKB": 10.6,
+          "decodedKB": 34.4
+        },
+        {
+          "url": "/assets/react-gInupMWC.js",
+          "transferKB": 52.7,
+          "decodedKB": 160.6
+        },
+        {
+          "url": "/assets/LandingPage-0Cy_Q-ng.js",
+          "transferKB": 36.6,
+          "decodedKB": 138.3
+        },
+        {
+          "url": "/assets/StarMark-DyOqFcgU.js",
+          "transferKB": 1.1,
+          "decodedKB": 0.8
+        },
+        {
+          "url": "/assets/colleges.config-BjX6YDny.js",
+          "transferKB": 1.5,
+          "decodedKB": 4
+        },
+        {
+          "url": "/assets/useSheetScroll-BxFwZNIv.js",
+          "transferKB": 3.1,
+          "decodedKB": 10.3
+        },
+        {
+          "url": "/assets/landing-ledger-Ct6nPByf.js",
+          "transferKB": 0.8,
+          "decodedKB": 1
+        },
+        {
+          "url": "/assets/useReveal-Dht_8Xe-.js",
+          "transferKB": 1.6,
+          "decodedKB": 3.1
+        },
+        {
+          "url": "/assets/AuthPage-e-2VWs5w.js",
+          "transferKB": 3.4,
+          "decodedKB": 9.3
+        },
+        {
+          "url": "/assets/zod-pFumEHaO.js",
+          "transferKB": 10.3,
+          "decodedKB": 26.7
+        },
+        {
+          "url": "/assets/index-J8fcbwnq.js",
+          "transferKB": 13.7,
+          "decodedKB": 55.4
+        },
+        {
+          "url": "/assets/usePageTitle-DprbhcXz.js",
+          "transferKB": 0.5,
+          "decodedKB": 0.2
+        },
+        {
+          "url": "/assets/authErrors-BCCc5lnM.js",
+          "transferKB": 0.5,
+          "decodedKB": 0.2
+        },
+        {
+          "url": "/assets/eye-off-USKU-bLw.js",
+          "transferKB": 0.9,
+          "decodedKB": 0.6
+        },
+        {
+          "url": "/assets/eye-BmL9Ki-D.js",
+          "transferKB": 0.7,
+          "decodedKB": 0.4
+        },
+        {
+          "url": "/assets/RegisterPage-B82sM6Yo.js",
+          "transferKB": 4.9,
+          "decodedKB": 19
+        },
+        {
+          "url": "/assets/catalog-BDwUZutj.js",
+          "transferKB": 1,
+          "decodedKB": 2
+        },
+        {
+          "url": "/assets/useInstitutions-Bw9LPbVE.js",
+          "transferKB": 0.6,
+          "decodedKB": 1.1
+        },
+        {
+          "url": "/assets/Skeleton-DVoBCaH4.js",
+          "transferKB": 1,
+          "decodedKB": 0.7
+        },
+        {
+          "url": "/assets/commonPasswords-CCkqyi9d.js",
+          "transferKB": 0.8,
+          "decodedKB": 1.2
+        },
+        {
+          "url": "/assets/lock-CUvetUdE.js",
+          "transferKB": 0.7,
+          "decodedKB": 0.4
+        }
+      ],
+      "jsFetchedUrls": [
+        "/assets/query-D_UCWYRd.js",
+        "/assets/react-gInupMWC.js",
+        "/assets/index-C8MtONcE.js",
+        "/assets/StarMark-DyOqFcgU.js",
+        "/assets/landing-ledger-Ct6nPByf.js",
+        "/assets/colleges.config-BjX6YDny.js",
+        "/assets/useReveal-Dht_8Xe-.js",
+        "/assets/useSheetScroll-BxFwZNIv.js",
+        "/assets/LandingPage-0Cy_Q-ng.js",
+        "/assets/AuthPage-e-2VWs5w.js",
+        "/assets/usePageTitle-DprbhcXz.js",
+        "/assets/zod-pFumEHaO.js",
+        "/assets/authErrors-BCCc5lnM.js",
+        "/assets/index-J8fcbwnq.js",
+        "/assets/eye-off-USKU-bLw.js",
+        "/assets/eye-BmL9Ki-D.js",
+        "/assets/catalog-BDwUZutj.js",
+        "/assets/RegisterPage-B82sM6Yo.js",
+        "/assets/useInstitutions-Bw9LPbVE.js",
+        "/assets/Skeleton-DVoBCaH4.js",
+        "/assets/commonPasswords-CCkqyi9d.js",
+        "/assets/lock-CUvetUdE.js"
+      ],
+      "navigation": {
+        "domContentLoadedMs": 1758,
+        "loadMs": 1758
+      }
+    }
+  ]
+}
