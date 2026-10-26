@@ -244,31 +244,43 @@ const MOBILE_CROPS: readonly CamRect[] = [
  * reversible with scroll). */
 const CAM_BANDS = [0.125, 0.375, 0.625, 0.875];
 
-/* ── R318 C2-S1 — the PIN-ROOT publish (the measured seat) ─────────────
+/* ── R319 §E-13 — the CONSUMER-SEAT publish (re-measured @4×CPU) ────
  * `landing.css` reads `--jt-p` ONLY inside `.jt-pin` — the plan's 8 scrub
  * LAYER GROUPS (`.jt-pin .jt-plan .pl-l-*`), the pin statement
  * (`.jt-statement` — the flow twin is a different class, static) and the
  * pin INTRODUCTION card + its `--wr-p` line mapping (`.jt-intro*`); no
  * consumer exists outside `.jt-pin` (audited: landing.css is the only
- * stylesheet that mentions the var). Publishing the clock THERE means
- * the recalc walk per frame covers the pin sheet alone — measured at
- * 4×CPU (one write + one forced flush per cycle, 12 cycles):
- *   · track root `.jt` (the old seat)      ~39.7ms @1440 / 32.2ms @390
- *   · 10-seat fan-out (layers+card+stmt)   ~25.8ms @1440 /  0.1ms @390
- *   · PIN ROOT `.jt-pin` (this)             ~8.8ms @1440 /  0.6ms @390
- * A custom-property write on an ancestor invalidates the whole
- * descendant walk, so ONE seat beats re-dirtying ten separate roots
- * (per-root walk overhead) and beats the track root (which also
- * invalidates the visible stations/flow the var never touches).
- * `--jt-r` stays on the two `.jt-progress` hairline seats — the cam
- * window's copy lives OUTSIDE `.jt-pin`, and the fill's `inline-size`
- * recalc is per-seat-cheap (~0.4ms @1440, ~3ms @390 per cycle).
- * WIDTH-INDEPENDENT: the pin sheet is `display:none` at ≤991px and
- * Blink SKIPS recalc of display:none subtrees — the mobile scrub rides
- * the viewBox + `data-stage`, so the publish costs ~nothing on phones.
- * Seats resolve once per layout epoch (mount + `onRefresh`) and fall
- * back to the track root if `.jt-pin` is ever missing (slower, never
- * wrong). */
+ * stylesheet that mentions the var).
+ *
+ * R318 C2-S1 published on the PIN ROOT (`.jt-pin`) — measured ~8.8ms
+ * per write+flush cycle @1440 then. The R319 tree grew the pin's
+ * NON-consuming branches (D2's side column, D4b's intro split fade,
+ * D5/D6 chrome): the same pin-root cycle now measures **3.0ms @4×**
+ * (probe: write + forced flush, 12 cycles, in-band) — a conservative
+ * custom-property walk over ALL 880 pin descendants per frame, most of
+ * which never read the var. Re-probed per seat on the R319 tree
+ * (@1440, 4×CPU, ms/cycle):
+ *   · pin root `.jt-pin` (880 desc)      3.008
+ *   · `.jt-window` (624 desc)            2.590
+ *   · `.jt-plan` (the SVG, 612 desc)     0.058
+ *   · `.jt-statement` (0 desc)           0.030
+ *   · `.jt-intro` (69 desc)              0.530
+ *   · plan+statement+intro COMBO         0.100  ← this fix
+ * Seating the SAME value on the three CONSUMER roots covers every
+ * `var(--jt-p)` read (the computed value is identical everywhere —
+ * each consumer's nearest var-owning ancestor is its own seat) while
+ * the recalc walks stay inside the consuming branches: ~30× less
+ * per-frame style work at ≥992px.
+ * WIDTH-SAFE both ways: at ≤991px all three seats live inside
+ * `display:none` branches (`.jt-pin .jt-window`, `.jt-pin .jt-statement`,
+ * `.jt-pin .jt-intro` are all hidden — landing.css's ≤991 block), so
+ * Blink skips their recalc and the mobile keeps its ~free publish (the
+ * phone rides the guarded viewBox + `data-stage`, never this var).
+ * Seats resolve once per layout epoch (mount + `onRefresh`) — scoped
+ * to the pin so the cam twin's `.jt-plan` (visible at ≤991px) is never
+ * dirtied; the pin root, then the track root, are the fallbacks when
+ * a seat is missing (slower, never wrong). */
+const P_SEAT_SEL = '.jt-pin .jt-plan, .jt-pin .jt-statement, .jt-pin .jt-intro';
 const PIN_SEAT_SEL = '.jt-pin';
 const R_SEAT_SEL = '.jt-progress';
 
@@ -454,10 +466,10 @@ export function JourneyScene() {
    * its viewport rect from cached doc offsets would drift; one read
    * per tick through the shared sheetRect batch is the honest cost. */
   const stationsDocRef = useRef<{ top: number; height: number } | null>(null);
-  /* R318 C2-S1 — the var publish seats (see the PIN-ROOT block);
+  /* R319 §E-13 — the var publish seats (see the CONSUMER-SEAT block);
    * resolved lazily, dropped by `onRefresh` so a layout epoch
    * re-resolves them once. */
-  const pinSeatRef = useRef<HTMLElement | null>(null);
+  const pSeatsRef = useRef<HTMLElement[]>([]);
   const rSeatsRef = useRef<HTMLElement[]>([]);
   /* the cam-cropped flag — set by applyCam, consumed by the ≥992px
    * crossing so restoreCam never runs per frame on desktop. */
@@ -554,19 +566,26 @@ export function JourneyScene() {
       const on = pin >= 0.27 && pin <= 0.68 ? 'on' : 'off';
       if (intro.dataset.on !== on) intro.dataset.on = on;
     }
-    /* R318 C2-S1 — idempotent clock writes through the conductor's
-     * last-value cache, published on the PIN-ROOT seat (the measured
-     * cheapest publish — see the PIN-ROOT block above); the track root
-     * is the fallback when `.jt-pin` is missing. */
-    if (!pinSeatRef.current) {
-      pinSeatRef.current = track.querySelector<HTMLElement>(PIN_SEAT_SEL);
+    /* R319 §E-13 — idempotent clock writes through the conductor's
+     * last-value cache, published on the three CONSUMER seats (the
+     * measured cheapest publish — see the CONSUMER-SEAT block above);
+     * the pin root, then the track root, are the fallbacks when the
+     * seats are missing (slower, never wrong). */
+    if (pSeatsRef.current.length === 0) {
+      pSeatsRef.current = Array.from(track.querySelectorAll<HTMLElement>(P_SEAT_SEL));
     }
     if (rSeatsRef.current.length === 0) {
       rSeatsRef.current = Array.from(track.querySelectorAll<HTMLElement>(R_SEAT_SEL));
     }
     const pStr = pin.toFixed(4);
     const rStr = (mobile ? reading : pin).toFixed(4);
-    setSheetVar((pinSeatRef.current ?? track).style, '--jt-p', pStr);
+    const pSeats = pSeatsRef.current;
+    if (pSeats.length > 0) {
+      for (const el of pSeats) setSheetVar(el.style, '--jt-p', pStr);
+    } else {
+      const pinRoot = track.querySelector<HTMLElement>(PIN_SEAT_SEL);
+      setSheetVar((pinRoot ?? track).style, '--jt-p', pStr);
+    }
     /* the progress hairline's clock: the reading parameter at ≤991px
      * (the stations stack IS the timeline there), the pin ≥992px —
      * written on each window's own `.jt-progress` fill seat. */
@@ -579,7 +598,7 @@ export function JourneyScene() {
      * get picked up honestly instead of pinning a stale seat). */
     onRefresh: () => {
       stationsDocRef.current = null;
-      pinSeatRef.current = null;
+      pSeatsRef.current = [];
       rSeatsRef.current = [];
     },
   });
