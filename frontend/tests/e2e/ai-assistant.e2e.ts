@@ -98,7 +98,9 @@ test.describe('المساعد الذكيّ — رحلة محادثة كاملة'
      * الجلب الحقيقيين (لا إعادة تحميل صفحة). */
     const convRow = page.locator('.ai-conv-row', { hasText: QUESTION });
     await expect(convRow).toBeVisible();
-    await expect(convRow.locator('.badge', { hasText: 'الحالية' })).toBeVisible();
+    // R319 override (c3-S2 §B2): the current-conversation marker rides the
+    // mono StatusChip (CURRENT) — the brand Badge «الحالية» was retired.
+    await expect(convRow.locator('.r319s-chip', { hasText: 'CURRENT' })).toBeVisible();
 
     /* الشكل على السلك حرفيًّا: أول دورٍ بلا conversationId — { message }
      * فقط، عقد chatSchema الصارم. */

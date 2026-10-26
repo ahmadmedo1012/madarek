@@ -137,7 +137,7 @@ test.describe('الحركة الكاملة — الخط الأساسي (بدون
     // rides the ::before layer's own transition. The protective intent
     // stays: in full-motion mode the durations are REAL --t-base values
     // (never 0s — the reduced-motion belt below owns the zero side).
-    const submitDurs = probe.submitTransitionDuration.split(',').map((d: string) => parseFloat(d) * 1000);
+    const submitDurs = (probe.submitTransitionDuration ?? '').split(',').map((d: string) => parseFloat(d) * 1000);
     expect(submitDurs.length).toBeGreaterThanOrEqual(2);
     for (const d of submitDurs) expect(d).toBe(400);
   });
