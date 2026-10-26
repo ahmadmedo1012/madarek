@@ -263,10 +263,14 @@ describe('R305 gamification — the level statement is the ONE deep band', () =>
     // The band holds NO stat strip — the KPI line stays on the page surface.
     expect(band!.querySelector('.stat-strip')).toBeNull();
 
-    // The two lists demote from boxed cards to kicker-headed sections.
-    // (N4 re-pin: the kicker titles ride h2 — h1 → h2 sections, no level skip.)
-    const kickerTitles = Array.from(container.querySelectorAll('h2.r305s-kicker-title')).map((h) => h.textContent);
-    expect(kickerTitles).toEqual(['الإنجازات المحققة', 'لوحة المتصدرين']);
+    /* R319 override (c3-S2): the two lists' headings joined the §B2
+       title-bar register — the mono-indexed SectionBar (h2 + [01]/[02]
+       gutter + hairline rule) instead of the r305 kicker. Same sections,
+       same titles, same heading level. */
+    const barTitles = Array.from(container.querySelectorAll('.r319s-bar h2.r319s-bar-title')).map((h) => h.textContent);
+    expect(barTitles).toEqual(['الإنجازات المحققة', 'لوحة المتصدرين']);
+    const barIndexes = Array.from(container.querySelectorAll('.r319s-bar-index')).map((i) => i.textContent?.trim());
+    expect(barIndexes).toEqual(['[01]', '[02]']);
   });
 
   it('the empty-training state is honest inside the same band (no fabricated tier)', () => {
@@ -357,8 +361,11 @@ describe('R305 alerts — the notification list de-boxes onto the page surface (
     const section = container.querySelector('section.r305p-alerts');
     expect(section).not.toBeNull();
     expect(section!.getAttribute('aria-label')).toBe('سجل الإشعارات');
-    // The kicker classifies the block (h2 «آخر الإشعارات»).
-    expect(section!.querySelector('.r305s-kicker h2.r305s-kicker-title')!.textContent).toBe('آخر الإشعارات');
+    /* R319 override (c3-S2): the log's heading joined the §B2 title-bar
+       register — [01] آخر الإشعارات (the mono-indexed SectionBar), still
+       inside the same role-neutral .r305p-alerts section. */
+    expect(section!.querySelector('.r319s-bar h2.r319s-bar-title')!.textContent).toBe('آخر الإشعارات');
+    expect(section!.querySelector('.r319s-bar-index')!.textContent).toBe('[01]');
     // The hairline rows sit DIRECTLY on the page surface — the np-row's
     // ancestors contain no .card box any more.
     const row = section!.querySelector('.np-row');

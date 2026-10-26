@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  Trophy, Star, Medal, Award, Activity, Crown,
+  Trophy, Star, Medal, Activity, Crown,
   Target, Headset,
   Bell, AlertTriangle, BookOpen, Download,
   CheckCircle2, Check, MessageCircle, Heart, GraduationCap,
@@ -81,6 +81,7 @@ export function GamificationPage() {
      two playful panels keep their system grammar (training.css §
      gamification: the tier orb and gold ride achievements ONLY). */
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader
         title="الإنجازات والنقاط"
@@ -213,18 +214,31 @@ export function GamificationPage() {
 
       <div className="grid-2">
         <section aria-label="الإنجازات المحققة">
-          <div className="r305s-kicker">
-            <h2 className="r305s-kicker-title">الإنجازات المحققة</h2>
-          </div>
+          {/* R319 (c3-S2): the section's heading joins the §B2 title-bar
+              register — [01] with the honest earned count as mono meta
+              (countAr for assistive tech). */}
+          <SectionBar
+            index="01"
+            title="الإنجازات المحققة"
+            meta={
+              !ach.isPending && !ach.isError && (ach.data?.length ?? 0) > 0 ? (
+                <BarCount
+                  n={ach.data!.length}
+                  srLabel={countAr(ach.data!.length, ['إنجاز واحد محقّق', 'إنجازان محقّقان', 'إنجازات محقّقة', 'إنجازاً محقّقاً'])}
+                />
+              ) : undefined
+            }
+          />
           {ach.isError ? <ErrorState error={ach.error} onRetry={() => ach.refetch()} /> : (
             <RowList
               aria-label="الإنجازات المحققة"
               loading={ach.isPending}
               empty={
-                <EmptyState
-                  icon={Award}
-                  title="لا إنجازات بعد"
-                  description="أكمل دروساً ومسارات في التطوير الذاتي لتفتح أول إنجاز."
+                /* R319 (c3-S2): the hatched EmptyCell — the sheet's
+                   reserved-but-empty region (same copy, same one action). */
+                <EmptyCell
+                  label="لا إنجازات بعد"
+                  note="أكمل دروساً ومسارات في التطوير الذاتي لتفتح أول إنجاز."
                   action={<Link to="/training" className="btn primary sm">استكشف المسارات</Link>}
                 />
               }
@@ -243,9 +257,20 @@ export function GamificationPage() {
         </section>
 
         <section aria-label="لوحة المتصدرين">
-          <div className="r305s-kicker">
-            <h2 className="r305s-kicker-title">لوحة المتصدرين</h2>
-          </div>
+          {/* R319 (c3-S2): [02] لوحة المتصدرين — the honest ranked-student
+              count as the bar's mono meta. */}
+          <SectionBar
+            index="02"
+            title="لوحة المتصدرين"
+            meta={
+              !lb.isPending && !lb.isError && (lb.data?.length ?? 0) > 0 ? (
+                <BarCount
+                  n={lb.data!.length}
+                  srLabel={countAr(lb.data!.length, ['طالب واحد مرتّب', 'طالبان مرتّبان', 'طلاب مرتّبون', 'طالباً مرتّباً'])}
+                />
+              ) : undefined
+            }
+          />
           {lb.isPending ? (
             /* shape-matched skeleton: ranked rows */
             <div className="flex-col gap-1" aria-busy="true">
@@ -260,10 +285,9 @@ export function GamificationPage() {
             </div>
           ) : lb.isError ? <ErrorState error={lb.error} onRetry={() => lb.refetch()} /> :
            !lb.data?.length ? (
-            <EmptyState illustration="empty-list"
-              icon={Crown}
-              title="لا يوجد ترتيب بعد"
-              description="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
+            <EmptyCell
+              label="لا يوجد ترتيب بعد"
+              note="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
               action={<Link to="/training" className="btn primary sm">ابدأ من التطوير الذاتي</Link>}
             />
           ) : (
@@ -299,6 +323,7 @@ export function GamificationPage() {
         </section>
       </div>
     </PageFrame>
+    </div>
   );
 }
 
@@ -476,6 +501,7 @@ export function AlertsPage() {
   };
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader
         title="الإشعارات"
@@ -529,9 +555,22 @@ export function AlertsPage() {
           الدور: نفس المكوّن يخدم /admin/alerts و /teacher/alerts
           و /quality/notifications و /owner/notifications. */}
       <section className="r305p-alerts" aria-label="سجل الإشعارات">
-        <div className="r305s-kicker">
-          <h2 className="r305s-kicker-title">آخر الإشعارات</h2>
-        </div>
+        {/* R319 (c3-S2): the log's heading joins the §B2 title-bar register
+            (role-neutral — this section serves every role's alerts route):
+            [01] آخر الإشعارات, the server's honest total as the bar's
+            mono meta (countAr for assistive tech). */}
+        <SectionBar
+          index="01"
+          title="آخر الإشعارات"
+          meta={
+            !feed.isPending && !feed.isError && total > 0 ? (
+              <BarCount
+                n={total}
+                srLabel={countAr(total, ['إشعار واحد', 'إشعاران', 'إشعارات', 'إشعاراً'])}
+              />
+            ) : undefined
+          }
+        />
         {feed.isPending ? (
           /* shape-matched skeleton: np rows (well + title + desc lines) */
           <div className="np-list" aria-busy="true">
@@ -548,7 +587,9 @@ export function AlertsPage() {
         ) : feed.isError ? (
           <ErrorState error={feed.error} onRetry={() => feed.refetch()} />
         ) : items.length === 0 ? (
-          <EmptyState title="لا توجد إشعارات بعد" illustration="empty-notifications" description="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
+          /* R319 (c3-S2): the hatched EmptyCell — the sheet's
+             reserved-but-empty region (same honest copy). */
+          <EmptyCell label="لا توجد إشعارات بعد" note="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
         ) : (
           <div className="np-list">
             {items.map((n) => {
@@ -639,6 +680,7 @@ export function AlertsPage() {
         )}
       </section>
     </PageFrame>
+    </div>
   );
 }
 
