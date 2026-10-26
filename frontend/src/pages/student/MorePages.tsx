@@ -5,8 +5,8 @@ import {
   Trophy, Star, Medal, Activity, Crown,
   Target, Headset,
   Bell, AlertTriangle, BookOpen, Download,
-  CheckCircle2, Check, MessageCircle, Heart, GraduationCap,
-  TrendingUp, Building2, Microscope,
+  CheckCircle2, Check, Heart, GraduationCap,
+  Building2, Microscope,
   Hourglass, ArrowLeft, X,
 } from 'lucide-react';
 import { Bar, Radar } from 'react-chartjs-2';
@@ -1390,6 +1390,7 @@ export function SocialPage() {
     || (removeLike.isPending && removeLike.variables === id);
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader
         title="الشبكة الاجتماعية"
@@ -1474,14 +1475,13 @@ export function SocialPage() {
               />
             </Card>
           ) : !posts.data?.length ? (
-            <Card>
-              <EmptyState
-                illustration="empty-community"
-                icon={MessageCircle}
-                title="لا منشورات بعد"
-                description="كن أول من يشارك تجربته أو سؤاله."
-              />
-            </Card>
+            /* R319 (c3-S2): the empty feed is the sheet's reserved-but-
+               empty region — the hatched EmptyCell (the old EmptyState's
+               copy, kept honest and verbatim). */
+            <EmptyCell
+              label="لا منشورات بعد"
+              note="كن أول من يشارك تجربته أو سؤاله."
+            />
           ) : (
             posts.data.map((p) => {
               const initials = p.author.avatarInitials ?? `${p.author.firstName[0] ?? ''}${p.author.lastName[0] ?? ''}`;
@@ -1562,17 +1562,24 @@ export function SocialPage() {
         </div>
 
         {trending.length > 0 && (
-          <Card
-            title="الأكثر تداولاً"
-            icon={TrendingUp}
-            subtitle="الوسوم الأكثر تكراراً في آخر 20 منشوراً محمَّلاً."
-            /* 22-c (A5 P2-1): grid children stretch by default, so this
-               rail card matched the feed column's height — 352px of empty
-               card body under a 191px list, and the hover-lift made the
-               hollow shell feel interactive. Start-aligned: the card now
-               hugs its content like a summary rail. */
-            style={{ alignSelf: 'start' }}
-          >
+          /* R319 (c3-S2): the rail's heading joins the §B2 title-bar
+             register — [01] الأكثر تداولاً, the honest measured-tag count
+             as the bar's mono meta; the old Card subtitle survives
+             verbatim as the under-bar note. The rail keeps its
+             start-aligned hug (22-c A5 P2-1). */
+          <div style={{ alignSelf: 'start' }}>
+            <SectionBar
+              index="01"
+              title="الأكثر تداولاً"
+              meta={(
+                <BarCount
+                  n={trending.length}
+                  srLabel={countAr(trending.length, ['وسم واحد متداولاً', 'وسمان متداولاان', 'وسوم متداولة', 'وسماً متداولاً'])}
+                />
+              )}
+            />
+            <p className="r319sp-sec-note">الوسوم الأكثر تكراراً في آخر 20 منشوراً محمَّلاً.</p>
+            <Card>
             <ol className="trend-list">
               {trending.map((t, i) => (
                 <li className="trend-item" key={t.tag}>
@@ -1589,10 +1596,12 @@ export function SocialPage() {
                 </li>
               ))}
             </ol>
-          </Card>
+            </Card>
+          </div>
         )}
       </div>
     </PageFrame>
+    </div>
   );
 }
 
@@ -1644,19 +1653,36 @@ export function DownloadsPage() {
   const q = useStudentMaterials();
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader title="مركز التحميلات" description="ملفّات مقرّراتك في مكان واحد — وحالة كل رابط معلَنة." />
 
-      <Card title="ملفّات حديثة" icon={Download}>
+      {/* R319 (c3-S2): the files region opens with the §B2 title-bar —
+          [01] ملفّات حديثة, the honest resolved material count as mono
+          meta (countAr for assistive tech). */}
+      <SectionBar
+        index="01"
+        title="ملفّات حديثة"
+        meta={
+          !q.isPending && !q.isError && (q.data?.length ?? 0) > 0 ? (
+            <BarCount
+              n={q.data!.length}
+              srLabel={countAr(q.data!.length, ['ملفّ واحد', 'ملفّان', 'ملفّات', 'ملفاً'])}
+            />
+          ) : undefined
+        }
+      />
+      <Card>
         {q.isPending ? (
           <TableSkeleton rows={5} cols={6} />
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
-          <EmptyState
-          illustration="empty-list"
-            title="لا توجد ملفّات بعد"
-            description="ستظهر هنا فور رفع موادّ في أيٍّ من مقرّراتك المسجَّلة."
+          /* R319 (c3-S2): the empty shelf is the sheet's reserved-but-
+             empty region — the hatched EmptyCell (same honest copy). */
+          <EmptyCell
+            label="لا توجد ملفّات بعد"
+            note="ستظهر هنا فور رفع موادّ في أيٍّ من مقرّراتك المسجَّلة."
           />
         ) : (
           <div className="table-wrap">
@@ -1697,6 +1723,7 @@ export function DownloadsPage() {
         )}
       </Card>
     </PageFrame>
+    </div>
   );
 }
 
