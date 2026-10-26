@@ -1,0 +1,210 @@
+{
+ "generated": "2026-10-26T07:11:41.288Z",
+ "note": "R320 gate ratchet baseline — FAIL rows here are the ACCEPTED ratchet (open board tickets: SVG map collisions A4, unguarded :hover sweep, cross-file selector conflicts, rename register §B, console/network 501s + router advisories); re-seat with --update-baseline. Keys are route|viewport|theme|check; --quick and full runs share this key space — re-seat after widening scope.",
+ "rows": {
+  "landing|390|light|rename-scan": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|light|svg-collisions": {
+   "status": "FAIL",
+   "metric": 9
+  },
+  "landing|390|light|cleanliness/console": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "landing|390|light|cleanliness/network": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "landing|1440|light|rename-scan": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|light|svg-collisions": {
+   "status": "FAIL",
+   "metric": 14
+  },
+  "landing|1440|light|cleanliness/console": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "landing|1440|light|cleanliness/network": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "landing|390|dark|rename-scan": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|390|dark|svg-collisions": {
+   "status": "FAIL",
+   "metric": 9
+  },
+  "landing|390|dark|cleanliness/console": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "landing|390|dark|cleanliness/network": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "landing|1440|dark|rename-scan": {
+   "status": "NA",
+   "metric": 0
+  },
+  "landing|1440|dark|svg-collisions": {
+   "status": "FAIL",
+   "metric": 14
+  },
+  "landing|1440|dark|cleanliness/console": {
+   "status": "FAIL",
+   "metric": 2
+  },
+  "landing|1440|dark|cleanliness/network": {
+   "status": "PASS",
+   "metric": 0
+  },
+  "student-dashboard|390|light|rename-scan": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|390|light|svg-collisions": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|390|light|cleanliness/console": {
+   "status": "FAIL",
+   "metric": 3
+  },
+  "student-dashboard|390|light|cleanliness/network": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|1440|light|rename-scan": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|svg-collisions": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|light|cleanliness/console": {
+   "status": "FAIL",
+   "metric": 3
+  },
+  "student-dashboard|1440|light|cleanliness/network": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|390|dark|rename-scan": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|svg-collisions": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|390|dark|cleanliness/console": {
+   "status": "FAIL",
+   "metric": 3
+  },
+  "student-dashboard|390|dark|cleanliness/network": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "student-dashboard|1440|dark|rename-scan": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|svg-collisions": {
+   "status": "NA",
+   "metric": 0
+  },
+  "student-dashboard|1440|dark|cleanliness/console": {
+   "status": "FAIL",
+   "metric": 3
+  },
+  "student-dashboard|1440|dark|cleanliness/network": {
+   "status": "FAIL",
+   "metric": 1
+  },
+  "admin-dashboard|390|light|rename-scan": {
+   "status": "FAIL",
+   "metric": 4
+  },
+  "admin-dashboard|390|light|svg-collisions": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|390|light|cleanliness/console": {
+   "status": "FAIL",
+   "metric": 5
+  },
+  "admin-dashboard|390|light|cleanliness/network": {
+   "status": "FAIL",
+   "metric": 3
+  },
+  "admin-dashboard|1440|light|rename-scan": {
+   "status": "FAIL",
+   "metric": 3
+  },
+  "admin-dashboard|1440|light|svg-collisions": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|1440|light|cleanliness/console": {
+   "status": "FAIL",
+   "metric": 5
+  },
+  "admin-dashboard|1440|light|cleanliness/network": {
+   "status": "FAIL",
+   "metric": 3
+  },
+  "admin-dashboard|390|dark|rename-scan": {
+   "status": "FAIL",
+   "metric": 4
+  },
+  "admin-dashboard|390|dark|svg-collisions": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|390|dark|cleanliness/console": {
+   "status": "FAIL",
+   "metric": 5
+  },
+  "admin-dashboard|390|dark|cleanliness/network": {
+   "status": "FAIL",
+   "metric": 3
+  },
+  "admin-dashboard|1440|dark|rename-scan": {
+   "status": "FAIL",
+   "metric": 3
+  },
+  "admin-dashboard|1440|dark|svg-collisions": {
+   "status": "NA",
+   "metric": 0
+  },
+  "admin-dashboard|1440|dark|cleanliness/console": {
+   "status": "FAIL",
+   "metric": 5
+  },
+  "admin-dashboard|1440|dark|cleanliness/network": {
+   "status": "FAIL",
+   "metric": 3
+  },
+  "|—|—|duplicate-selector": {
+   "status": "FAIL",
+   "metric": 65
+  },
+  "|—|—|hover-guard": {
+   "status": "FAIL",
+   "metric": 185
+  },
+  "|—|—|r319-gate": {
+   "status": "PASS",
+   "metric": 0
+  }
+ }
+}

@@ -1,6 +1,6 @@
-# R319 extended gate — 2026-10-25T23:39:14.206Z
+# R319 extended gate — 2026-10-26T07:30:51.581Z
 
-Base `http://127.0.0.1:4242` · Routes landing,student-dashboard · Viewports 390,1440 · Themes light,dark · Mode quick · Max elements 60 · Only state-contrast,leaks,shell,material,paired
+Base `http://127.0.0.1:4257` · Routes landing,student-dashboard · Viewports 390,1440 · Themes light,dark · Mode quick · Max elements 60 · Only state-contrast,leaks,shell,material,paired
 
 E8 state-contrast (CDP-forced hover/active/focus/focus-visible/focus-within) · E9 paired lint · E10 leaks · E11 shell geometry (@390 touch, authed) · E12 material presence (authed). Hermetic: the REAL e2e mock transport serves every /api/ call — no backend needed.
 

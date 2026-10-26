@@ -1,0 +1,13 @@
+{
+  "unloadedFiles": [
+    {
+      "file": "styles/shared-design-system.css",
+      "reason": "Parity EXPORT artifact (r127-F1) — deliberately NOT imported by the app (verified: no import statement anywhere in frontend/src; its own header states \"NOT imported by madarek's own app\"). It mirrors app sheets' structural recipes for EXTERNAL hosts, so cross-file conflicts against it can never compose at runtime (the B1 bug class needs two LOADED sheets). Value-synced to tokens.css by scripts/verify-parity-export.mjs."
+    },
+    {
+      "file": "styles/unified-parity.css",
+      "reason": "Parity EXPORT artifact v2 (R313 re-sync) — deliberately NOT imported by the app (verified: no import statement anywhere in frontend/src; its own header states \"This file is NOT imported by madarek's own app\"). It re-distills the Heron foundation for external hosts; conflicts against it are documentation drift, never a runtime cascade. Verified by scripts/verify-parity-export.mjs."
+    }
+  ],
+  "allow": []
+}

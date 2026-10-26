@@ -1,6 +1,6 @@
 {
- "generated": "2026-10-25T23:40:25.857Z",
- "baseUrl": "http://127.0.0.1:4242",
+ "generated": "2026-10-26T07:32:03.969Z",
+ "baseUrl": "http://127.0.0.1:4257",
  "routes": [
   "landing",
   "student-dashboard"
@@ -392,7 +392,7 @@
      "gradientWarn": 0,
      "unknown": 0,
      "samples": [],
-     "budgetOverruns": 1
+     "budgetOverruns": 0
     }
    }
   },

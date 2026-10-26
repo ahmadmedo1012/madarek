@@ -1,0 +1,8 @@
+{
+  "allow": [
+    {
+      "key": "styles/base.css :: input:-webkit-autofill,\n  input:-webkit-autofill:hover,\n  input:-webkit-autofill:focus,\n  textarea:-webkit-autofill,\n  textarea:-webkit-autofill:hover,\n  textarea:-webkit-autofill:focus @ (root)",
+      "reason": "CHROMIUM AUTOFILL UA-OVERRIDE RECIPE — the :hover member exists to keep the inset box-shadow/text-fill pin on the UA's hover-painted autofill state (the recipe MUST cover :hover/:focus or Chromium repaints its yellow); it is not an interactive hover design, so the (hover:hover) guard does not apply"
+    }
+  ]
+}
