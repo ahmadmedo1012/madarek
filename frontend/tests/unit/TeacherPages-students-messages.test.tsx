@@ -178,7 +178,7 @@ describe('StudentsListPage — rows link to the risk context (r164-h)', () => {
 /* ── Messages read-state ─────────────────────────────────────── */
 
 describe('MessagesPage — read-state visibility (r164-h)', () => {
-  it('unread incoming rows wear the brand «غير مقروءة» badge — read rows and sent rows never do', () => {
+  it('unread incoming rows wear the §B2 UNREAD mono chip — read rows and sent rows never do (R319 c3-S2 override)', () => {
     act(() => { useAuthStore.setState({ user: TEACHER }); });
     mocks.messages = {
       pages: {
@@ -200,7 +200,9 @@ describe('MessagesPage — read-state visibility (r164-h)', () => {
 
     render(<MemoryRouter><MessagesPage /></MemoryRouter>);
 
-    expect(screen.getAllByText('غير مقروءة')).toHaveLength(1);
+    /* R319 override (c3-S2): the shared inbox's read-state rides the
+       §B2 mono chip register — UNREAD — for BOTH roles. */
+    expect(screen.getAllByText('UNREAD')).toHaveLength(1);
     // All three rows rendered (the read + sent rows stay unbadged).
     expect(screen.getAllByText(/لدي سؤال عن الواجب/)).toHaveLength(3);
   });
@@ -216,7 +218,7 @@ describe('MessagesPage — read-state visibility (r164-h)', () => {
 
     render(<MemoryRouter><MessagesPage /></MemoryRouter>);
 
-    expect(screen.queryByText('غير مقروءة')).toBeNull();
+    expect(screen.queryByText('UNREAD')).toBeNull();
     expect(screen.queryByRole('button', { name: /تعليم الكل كمقروء/ })).toBeNull();
   });
 });

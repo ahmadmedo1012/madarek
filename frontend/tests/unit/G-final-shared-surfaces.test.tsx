@@ -256,7 +256,10 @@ describe('G · AiAssistantPage — the header rides the family patterns contract
     expect(container.querySelector('.page-header')).toBeNull();
   });
 
-  it('the conversations empty state uses the shared EmptyState kit (not a bare paragraph)', () => {
+  it('the conversations empty state uses the shared hatched EmptyCell (not a bare paragraph)', () => {
+    // R319 override (c3-S2 §B2): the empty log is the sheet's reserved-
+    // but-empty region — the §B2 hatched EmptyCell replaced the legacy
+    // EmptyState kit mount (same honest copy, kept verbatim).
     const { container } = render(
       <MemoryRouter>
         <AiAssistantPage />
@@ -264,8 +267,12 @@ describe('G · AiAssistantPage — the header rides the family patterns contract
     );
     expect(screen.getByText('لا توجد محادثات سابقة بعد')).toBeInTheDocument();
     expect(screen.getByText('ابدأ بأول سؤال وستظهر محادثاتك هنا.')).toBeInTheDocument();
-    // The kit contract: the illustration mount.
-    expect(container.querySelector('.state-illustration')).not.toBeNull();
+    // The kit contract: the §B2 hatched cell (hatch + label + note).
+    const cell = container.querySelector('.r319s-empty');
+    expect(cell).not.toBeNull();
+    expect(container.querySelector('.r319s-empty-hatch')).not.toBeNull();
+    expect(cell?.querySelector('.r319s-empty-label')?.textContent).toBe('لا توجد محادثات سابقة بعد');
+    expect(cell?.querySelector('.r319s-empty-note')?.textContent).toBe('ابدأ بأول سؤال وستظهر محادثاتك هنا.');
   });
 });
 

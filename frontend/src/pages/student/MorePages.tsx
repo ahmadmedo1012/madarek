@@ -2,11 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  Trophy, Star, Medal, Award, Activity, Crown,
+  Trophy, Star, Medal, Activity, Crown,
   Target, Headset,
   Bell, AlertTriangle, BookOpen, Download,
-  CheckCircle2, Check, MessageCircle, Heart, GraduationCap,
-  TrendingUp, Building2, Microscope,
+  CheckCircle2, Check, Heart, GraduationCap,
+  Building2, Microscope,
   Hourglass, ArrowLeft, X,
 } from 'lucide-react';
 import { Bar, Radar } from 'react-chartjs-2';
@@ -27,6 +27,11 @@ import { api, unwrap } from '../../lib/api';
 import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
 import { gradeBand, type GradeBandKey } from '../../lib/courseMeta';
 import { PageFrame, PageHeader as PatternPageHeader, SectionHeader, RowList, RowItem, StatLine } from '../../components/patterns';
+/* R319 (c3-S2) — the §B2 kit: the mono-indexed section title bar, the
+ * BarCount meta, the mono status chip, the hatched empty cell + the
+ * today week strip (the pages-B sweep's shared barrel for this file's
+ * pages). */
+import { SectionBar, BarCount, StatusChip, EmptyCell, WeekStrip } from '../../components/student';
 import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
 import { formatDate } from '../../utils/numbers';
 /* ── r305-c (schedule family) + r305-d (supplemental family) imports —
@@ -35,6 +40,11 @@ import { formatDate } from '../../utils/numbers';
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-schedule.css';
 import '../../styles/r305-student-supplemental.css';
+/* R319 (c3-S2): the sheet system — the §B2 component anatomy + the
+ * academic family's harmonics (the same pair every converted student
+ * page rides; this file's pages opt in per-page via .r319s-page). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
 
@@ -71,6 +81,7 @@ export function GamificationPage() {
      two playful panels keep their system grammar (training.css §
      gamification: the tier orb and gold ride achievements ONLY). */
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader
         title="الإنجازات والنقاط"
@@ -203,18 +214,31 @@ export function GamificationPage() {
 
       <div className="grid-2">
         <section aria-label="الإنجازات المحققة">
-          <div className="r305s-kicker">
-            <h2 className="r305s-kicker-title">الإنجازات المحققة</h2>
-          </div>
+          {/* R319 (c3-S2): the section's heading joins the §B2 title-bar
+              register — [01] with the honest earned count as mono meta
+              (countAr for assistive tech). */}
+          <SectionBar
+            index="01"
+            title="الإنجازات المحققة"
+            meta={
+              !ach.isPending && !ach.isError && (ach.data?.length ?? 0) > 0 ? (
+                <BarCount
+                  n={ach.data!.length}
+                  srLabel={countAr(ach.data!.length, ['إنجاز واحد محقّق', 'إنجازان محقّقان', 'إنجازات محقّقة', 'إنجازاً محقّقاً'])}
+                />
+              ) : undefined
+            }
+          />
           {ach.isError ? <ErrorState error={ach.error} onRetry={() => ach.refetch()} /> : (
             <RowList
               aria-label="الإنجازات المحققة"
               loading={ach.isPending}
               empty={
-                <EmptyState
-                  icon={Award}
-                  title="لا إنجازات بعد"
-                  description="أكمل دروساً ومسارات في التطوير الذاتي لتفتح أول إنجاز."
+                /* R319 (c3-S2): the hatched EmptyCell — the sheet's
+                   reserved-but-empty region (same copy, same one action). */
+                <EmptyCell
+                  label="لا إنجازات بعد"
+                  note="أكمل دروساً ومسارات في التطوير الذاتي لتفتح أول إنجاز."
                   action={<Link to="/training" className="btn primary sm">استكشف المسارات</Link>}
                 />
               }
@@ -233,9 +257,20 @@ export function GamificationPage() {
         </section>
 
         <section aria-label="لوحة المتصدرين">
-          <div className="r305s-kicker">
-            <h2 className="r305s-kicker-title">لوحة المتصدرين</h2>
-          </div>
+          {/* R319 (c3-S2): [02] لوحة المتصدرين — the honest ranked-student
+              count as the bar's mono meta. */}
+          <SectionBar
+            index="02"
+            title="لوحة المتصدرين"
+            meta={
+              !lb.isPending && !lb.isError && (lb.data?.length ?? 0) > 0 ? (
+                <BarCount
+                  n={lb.data!.length}
+                  srLabel={countAr(lb.data!.length, ['طالب واحد مرتّب', 'طالبان مرتّبان', 'طلاب مرتّبون', 'طالباً مرتّباً'])}
+                />
+              ) : undefined
+            }
+          />
           {lb.isPending ? (
             /* shape-matched skeleton: ranked rows */
             <div className="flex-col gap-1" aria-busy="true">
@@ -250,10 +285,9 @@ export function GamificationPage() {
             </div>
           ) : lb.isError ? <ErrorState error={lb.error} onRetry={() => lb.refetch()} /> :
            !lb.data?.length ? (
-            <EmptyState illustration="empty-list"
-              icon={Crown}
-              title="لا يوجد ترتيب بعد"
-              description="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
+            <EmptyCell
+              label="لا يوجد ترتيب بعد"
+              note="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
               action={<Link to="/training" className="btn primary sm">ابدأ من التطوير الذاتي</Link>}
             />
           ) : (
@@ -289,6 +323,7 @@ export function GamificationPage() {
         </section>
       </div>
     </PageFrame>
+    </div>
   );
 }
 
@@ -308,10 +343,26 @@ export function SkillsPage() {
     ? skills.data.reduce((a, b) => (b.progressPct > a.progressPct ? b : a))
     : undefined;
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader title="المهارات والشهادات" description="رصد مهاراتك التقنية وتطوّرها مع الوقت." />
 
-      <Card title="خريطة المهارات التقنية" icon={Target}>
+      {/* R319 (c3-S2): the map region opens with the §B2 title-bar —
+          [01] خريطة المهارات التقنية, the honest measured-skill count
+          as mono meta (countAr for assistive tech). */}
+      <SectionBar
+        index="01"
+        title="خريطة المهارات التقنية"
+        meta={
+          !skills.isPending && !skills.isError && (skills.data?.length ?? 0) > 0 ? (
+            <BarCount
+              n={skills.data!.length}
+              srLabel={countAr(skills.data!.length, ['مهارة واحدة مُسجَّلة', 'مهارتان مُسجَّلتان', 'مهارات مُسجَّلة', 'مهارةً مُسجَّلة'])}
+            />
+          ) : undefined
+        }
+      />
+      <Card>
         {skills.isPending ? (
           /* shape-matched skeleton: radar pane + progress rows */
           <div className="grid-1-2" style={{ alignItems: 'center' }} aria-busy="true">
@@ -330,10 +381,11 @@ export function SkillsPage() {
           </div>
         ) : skills.isError ? <ErrorState error={skills.error} onRetry={() => skills.refetch()} /> :
          !skills.data?.length ? (
-          <EmptyState illustration="empty-list"
-            icon={Target}
-            title="لم تُسجَّل أي مهارة بعد"
-            description="تُحتسب المهارات تلقائياً من إنجازاتك الأكاديمية ومسارات التطوير."
+          /* R319 (c3-S2): the empty map is the sheet's reserved-but-empty
+             region — the hatched EmptyCell (same honest copy). */
+          <EmptyCell
+            label="لم تُسجَّل أي مهارة بعد"
+            note="تُحتسب المهارات تلقائياً من إنجازاتك الأكاديمية ومسارات التطوير."
           />
         ) : (
           <div className="grid-1-2" style={{ alignItems: 'center' }}>
@@ -404,6 +456,7 @@ export function SkillsPage() {
         )}
       </Card>
     </PageFrame>
+    </div>
   );
 }
 
@@ -466,6 +519,7 @@ export function AlertsPage() {
   };
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader
         title="الإشعارات"
@@ -519,9 +573,22 @@ export function AlertsPage() {
           الدور: نفس المكوّن يخدم /admin/alerts و /teacher/alerts
           و /quality/notifications و /owner/notifications. */}
       <section className="r305p-alerts" aria-label="سجل الإشعارات">
-        <div className="r305s-kicker">
-          <h2 className="r305s-kicker-title">آخر الإشعارات</h2>
-        </div>
+        {/* R319 (c3-S2): the log's heading joins the §B2 title-bar register
+            (role-neutral — this section serves every role's alerts route):
+            [01] آخر الإشعارات, the server's honest total as the bar's
+            mono meta (countAr for assistive tech). */}
+        <SectionBar
+          index="01"
+          title="آخر الإشعارات"
+          meta={
+            !feed.isPending && !feed.isError && total > 0 ? (
+              <BarCount
+                n={total}
+                srLabel={countAr(total, ['إشعار واحد', 'إشعاران', 'إشعارات', 'إشعاراً'])}
+              />
+            ) : undefined
+          }
+        />
         {feed.isPending ? (
           /* shape-matched skeleton: np rows (well + title + desc lines) */
           <div className="np-list" aria-busy="true">
@@ -538,7 +605,9 @@ export function AlertsPage() {
         ) : feed.isError ? (
           <ErrorState error={feed.error} onRetry={() => feed.refetch()} />
         ) : items.length === 0 ? (
-          <EmptyState title="لا توجد إشعارات بعد" illustration="empty-notifications" description="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
+          /* R319 (c3-S2): the hatched EmptyCell — the sheet's
+             reserved-but-empty region (same honest copy). */
+          <EmptyCell label="لا توجد إشعارات بعد" note="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
         ) : (
           <div className="np-list">
             {items.map((n) => {
@@ -629,6 +698,7 @@ export function AlertsPage() {
         )}
       </section>
     </PageFrame>
+    </div>
   );
 }
 
@@ -640,10 +710,14 @@ export function SchedulePage() {
 
   if (q.isPending) {
     return (
+      <div className="r319s-page">
       <PageFrame width="default">
         <PatternPageHeader title="الجدول الدراسي" description="جارٍ جمع جدولك…" />
+        {/* R319 (c3-S2): the week strip — the page's genuine today/week
+            context (the day rotation below anchors on it). */}
+        <WeekStrip />
         {/* 5-C3 (A9 P2-2): bare spinner → day-section skeletons. The
-            settled page is a stack of day sections (SectionHeader +
+            settled page is a stack of day sections (SectionBar +
             RowList rows); two day skeletons hold the visible band so
             the data-land swap doesn't jump (A9 V1). r299: the mirror
             recomposed for the pattern anatomy. */}
@@ -656,14 +730,17 @@ export function SchedulePage() {
           </section>
         ))}
       </PageFrame>
+      </div>
     );
   }
   if (q.isError) {
     return (
+      <div className="r319s-page">
       <PageFrame width="default">
         <PatternPageHeader title="الجدول الدراسي" />
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       </PageFrame>
+      </div>
     );
   }
 
@@ -705,6 +782,7 @@ export function SchedulePage() {
   ];
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader
         title="الجدول الدراسي"
@@ -714,27 +792,39 @@ export function SchedulePage() {
           : undefined}
       />
 
+      {/* R319 (c3-S2): the week strip — the page's genuine today/week
+          context: the current week as one hairline row of 7 cells with
+          today inked (the day rotation below anchors on it). */}
+      <WeekStrip />
+
       {daysWithItems.length === 0 ? (
-        <EmptyState
-          illustration="empty-list"
-          title="لا يوجد جدول مسجّل"
-          description="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول مقرّراتك."
+        /* R319 (c3-S2): the empty week is the sheet's reserved-but-empty
+           region — the hatched EmptyCell (the old EmptyState's copy,
+           kept honest and verbatim). */
+        <EmptyCell
+          label="لا يوجد جدول مسجّل"
+          note="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول مقرّراتك."
         />
       ) : (
         /* r299 (final C): day sections on the pattern anatomy —
-           SectionHeader + RowList rows (the manual first/last-row
-           borderRadius patch inside a Card flush is retired; the
-           row surface and its separators are the RowList's own). */
+           R319 (c3-S2): each day's heading joins the §B2 title-bar
+           register ([01]… by the rendered rotation order), the day's
+           honest slot count as the bar's mono meta (countAr for AT),
+           and today's marker rides the mono chip register. RowList
+           rows + separators stay the RowList's own. */
         <div className="flex-col gap-5">
-          {orderedDays.map((d) => (
+          {orderedDays.map((d, di) => (
             <section key={d.dow} className="schedule-day" aria-label={`جدول ${WEEKDAY_NAMES_AR[d.dow]}`}>
-              <SectionHeader
-                title={
-                  <>
-                    {WEEKDAY_NAMES_AR[d.dow]}
-                    {d.dow === todayDow && <Badge color="brand">اليوم</Badge>}
-                  </>
-                }
+              <SectionBar
+                index={String(di + 1).padStart(2, '0')}
+                title={WEEKDAY_NAMES_AR[d.dow] ?? ''}
+                meta={(
+                  <BarCount
+                    n={d.items.length}
+                    srLabel={countAr(d.items.length, ['حصة واحدة', 'حصتان', 'حصص', 'حصة'])}
+                  />
+                )}
+                action={d.dow === todayDow ? <StatusChip label="TODAY" tone="due" /> : undefined}
               />
               <RowList aria-label={`حصص يوم ${WEEKDAY_NAMES_AR[d.dow]}`}>
                 {d.items.map((it, i) => (
@@ -751,6 +841,7 @@ export function SchedulePage() {
         </div>
       )}
     </PageFrame>
+    </div>
   );
 }
 
@@ -1317,6 +1408,7 @@ export function SocialPage() {
     || (removeLike.isPending && removeLike.variables === id);
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader
         title="الشبكة الاجتماعية"
@@ -1401,14 +1493,13 @@ export function SocialPage() {
               />
             </Card>
           ) : !posts.data?.length ? (
-            <Card>
-              <EmptyState
-                illustration="empty-community"
-                icon={MessageCircle}
-                title="لا منشورات بعد"
-                description="كن أول من يشارك تجربته أو سؤاله."
-              />
-            </Card>
+            /* R319 (c3-S2): the empty feed is the sheet's reserved-but-
+               empty region — the hatched EmptyCell (the old EmptyState's
+               copy, kept honest and verbatim). */
+            <EmptyCell
+              label="لا منشورات بعد"
+              note="كن أول من يشارك تجربته أو سؤاله."
+            />
           ) : (
             posts.data.map((p) => {
               const initials = p.author.avatarInitials ?? `${p.author.firstName[0] ?? ''}${p.author.lastName[0] ?? ''}`;
@@ -1489,17 +1580,24 @@ export function SocialPage() {
         </div>
 
         {trending.length > 0 && (
-          <Card
-            title="الأكثر تداولاً"
-            icon={TrendingUp}
-            subtitle="الوسوم الأكثر تكراراً في آخر 20 منشوراً محمَّلاً."
-            /* 22-c (A5 P2-1): grid children stretch by default, so this
-               rail card matched the feed column's height — 352px of empty
-               card body under a 191px list, and the hover-lift made the
-               hollow shell feel interactive. Start-aligned: the card now
-               hugs its content like a summary rail. */
-            style={{ alignSelf: 'start' }}
-          >
+          /* R319 (c3-S2): the rail's heading joins the §B2 title-bar
+             register — [01] الأكثر تداولاً, the honest measured-tag count
+             as the bar's mono meta; the old Card subtitle survives
+             verbatim as the under-bar note. The rail keeps its
+             start-aligned hug (22-c A5 P2-1). */
+          <div style={{ alignSelf: 'start' }}>
+            <SectionBar
+              index="01"
+              title="الأكثر تداولاً"
+              meta={(
+                <BarCount
+                  n={trending.length}
+                  srLabel={countAr(trending.length, ['وسم واحد متداولاً', 'وسمان متداولاان', 'وسوم متداولة', 'وسماً متداولاً'])}
+                />
+              )}
+            />
+            <p className="r319sp-sec-note">الوسوم الأكثر تكراراً في آخر 20 منشوراً محمَّلاً.</p>
+            <Card>
             <ol className="trend-list">
               {trending.map((t, i) => (
                 <li className="trend-item" key={t.tag}>
@@ -1516,10 +1614,12 @@ export function SocialPage() {
                 </li>
               ))}
             </ol>
-          </Card>
+            </Card>
+          </div>
         )}
       </div>
     </PageFrame>
+    </div>
   );
 }
 
@@ -1571,19 +1671,36 @@ export function DownloadsPage() {
   const q = useStudentMaterials();
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader title="مركز التحميلات" description="ملفّات مقرّراتك في مكان واحد — وحالة كل رابط معلَنة." />
 
-      <Card title="ملفّات حديثة" icon={Download}>
+      {/* R319 (c3-S2): the files region opens with the §B2 title-bar —
+          [01] ملفّات حديثة, the honest resolved material count as mono
+          meta (countAr for assistive tech). */}
+      <SectionBar
+        index="01"
+        title="ملفّات حديثة"
+        meta={
+          !q.isPending && !q.isError && (q.data?.length ?? 0) > 0 ? (
+            <BarCount
+              n={q.data!.length}
+              srLabel={countAr(q.data!.length, ['ملفّ واحد', 'ملفّان', 'ملفّات', 'ملفاً'])}
+            />
+          ) : undefined
+        }
+      />
+      <Card>
         {q.isPending ? (
           <TableSkeleton rows={5} cols={6} />
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
-          <EmptyState
-          illustration="empty-list"
-            title="لا توجد ملفّات بعد"
-            description="ستظهر هنا فور رفع موادّ في أيٍّ من مقرّراتك المسجَّلة."
+          /* R319 (c3-S2): the empty shelf is the sheet's reserved-but-
+             empty region — the hatched EmptyCell (same honest copy). */
+          <EmptyCell
+            label="لا توجد ملفّات بعد"
+            note="ستظهر هنا فور رفع موادّ في أيٍّ من مقرّراتك المسجَّلة."
           />
         ) : (
           <div className="table-wrap">
@@ -1624,6 +1741,7 @@ export function DownloadsPage() {
         )}
       </Card>
     </PageFrame>
+    </div>
   );
 }
 

@@ -204,8 +204,9 @@ describe('AiAssistantPage — conversation management (r164g)', () => {
     expect(screen.getByText('عنوان أول محادثة')).toBeInTheDocument();
     expect(screen.getByText('محادثة')).toBeInTheDocument(); // CONV2: title null → honest fallback
     expect(screen.getAllByText('منذ 3 ساعات')).toHaveLength(2);
-    // No current-conversation indicator before any switch.
-    expect(screen.queryByText('الحالية')).toBeNull();
+    // No current-conversation indicator before any switch — R319
+    // override (c3-S2): the marker rides the §B2 mono chip (CURRENT).
+    expect(screen.queryByText('CURRENT')).toBeNull();
     expect(document.querySelector('.ai-conv-row[aria-current="true"]')).toBeNull();
   });
 
@@ -225,8 +226,9 @@ describe('AiAssistantPage — conversation management (r164g)', () => {
 
     expect(await screen.findByText('سؤال قديم')).toBeInTheDocument();
     expect(screen.getByText('جواب قديم')).toBeInTheDocument();
-    // Current-conversation indicator: badge + aria-current on the row.
-    expect(screen.getByText('الحالية')).toBeInTheDocument();
+    // Current-conversation indicator: the §B2 mono chip + aria-current
+    // on the row (R319 c3-S2 override — the brand Badge became CURRENT).
+    expect(screen.getByText('CURRENT')).toBeInTheDocument();
     expect(document.querySelector('.ai-conv-row[aria-current="true"]')).not.toBeNull();
 
     // The next send continues THE SAME conversation.
@@ -265,7 +267,7 @@ describe('AiAssistantPage — conversation management (r164g)', () => {
     expect(await screen.findByText(/أحلّل بيانات إتقانك محليّاً/)).toBeInTheDocument();
     expect(screen.queryByText('سؤال قديم')).toBeNull();
     // The row is no longer current.
-    expect(screen.queryByText('الحالية')).toBeNull();
+    expect(screen.queryByText('CURRENT')).toBeNull();
 
     mocks.chat.mutateAsync.mockResolvedValueOnce({ conversationId: 'c9', reply: 'جواب جديد' });
     await send('أول سؤال جديد');

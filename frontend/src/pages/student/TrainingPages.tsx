@@ -40,11 +40,18 @@ import { TIER_LABEL, TIER_COLOR, RARITY_COLOR, RARITY_LABEL } from '../../lib/ga
 import { apiErrorMessage, countAr } from '../../lib/format';
 import { useIsNarrowLayout } from '../../hooks/useIsNarrowLayout';
 import { useEntityPageTitle } from '../../components/layout/AppShell';
+/* R319 (c3-S2) — the §B2 kit: the hatched empty cell (the AchievementsPage
+ * tab panels' honest empties). */
+import { EmptyCell } from '../../components/student';
 import '../../styles/training.css'; // training surfaces + shared families this module owns (D11 css split, 12-15)
 /* R305 Heron: the shared student vocabulary + the supplemental family's
    page-scoped refinements (the achievements deep strip — §2 of that sheet). */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-supplemental.css';
+/* R319 (c3-S2): the sheet system — the §B2 anatomy + the family's
+ * harmonics (the r305a-strip KPI band keeps its own pinned register). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 const CATEGORY_LABEL: Record<TrainingCategory, string> = {
   ONBOARDING: 'تعريف بالمنصة',
@@ -762,6 +769,7 @@ export function AchievementsPage() {
   };
 
   return (
+    <div className="r319s-page">
     <PageFrame>
       {/* r305 (2-c): الألسنة تسكن الترويسة نفسها (نمط عائلة المجتمع
           r262 — PageHeader tabs) بدل شريط عائم بين ملخّص النقاط
@@ -830,14 +838,13 @@ export function AchievementsPage() {
               <ErrorState message="تعذَّر تحميل الأوسمة" error={badgesQ.error} onRetry={() => badgesQ.refetch()} />
             </Card>
           ) : !badgesQ.data?.length ? (
-            <Card>
-              <EmptyState illustration="achievement"
-                icon={Award}
-                title="لا توجد أوسمة بعد"
-                description="ابدأ بدروس التطوير الذاتي لتحصد أول وسام."
-                action={<Link to="/training" className="btn primary sm">تصفح المسارات</Link>}
-              />
-            </Card>
+            /* R319 (c3-S2): the empty shelf is the sheet's reserved-but-
+               empty region — the hatched EmptyCell (same copy + action). */
+            <EmptyCell
+              label="لا توجد أوسمة بعد"
+              note="ابدأ بدروس التطوير الذاتي لتحصد أول وسام."
+              action={<Link to="/training" className="btn primary sm">تصفح المسارات</Link>}
+            />
           ) : (
             <div className="badge-grid">
               {badgesQ.data.map((b) => (
@@ -873,14 +880,12 @@ export function AchievementsPage() {
               <ErrorState message="تعذَّر تحميل شهاداتك" error={certsQ.error} onRetry={() => certsQ.refetch()} />
             </Card>
           ) : !certsQ.data?.length ? (
-            <Card>
-              <EmptyState illustration="empty-list"
-                icon={Medal}
-                title="لم تحصل على شهادات بعد"
-                description="أكمل أول مسار تدريبي للحصول على شهادتك الأولى."
-                action={<Link to="/training" className="btn primary sm">تصفح المسارات</Link>}
-              />
-            </Card>
+            /* R319 (c3-S2): the hatched EmptyCell (same copy + action). */
+            <EmptyCell
+              label="لم تحصل على شهادات بعد"
+              note="أكمل أول مسار تدريبي للحصول على شهادتك الأولى."
+              action={<Link to="/training" className="btn primary sm">تصفح المسارات</Link>}
+            />
           ) : (
             <div className="grid-2">
               {certsQ.data.map((c) => (
@@ -933,10 +938,10 @@ export function AchievementsPage() {
             ) : lbQ.isError ? (
               <ErrorState message="تعذَّر تحميل الترتيب" error={lbQ.error} onRetry={() => lbQ.refetch()} />
             ) : !lbQ.data?.length ? (
-              <EmptyState illustration="empty-list"
-                icon={Crown}
-                title="لا يوجد ترتيب بعد"
-                description="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
+              /* R319 (c3-S2): the hatched EmptyCell (same copy + action). */
+              <EmptyCell
+                label="لا يوجد ترتيب بعد"
+                note="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
                 action={<Link to="/training" className="btn primary sm">ابدأ من التطوير الذاتي</Link>}
               />
             ) : (
@@ -984,6 +989,7 @@ export function AchievementsPage() {
         </div>
       )}
     </PageFrame>
+    </div>
   );
 }
 

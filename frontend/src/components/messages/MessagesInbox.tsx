@@ -16,14 +16,24 @@
 // teacher page's local copy rendered for a string subtitle.
 import { Fragment, useState } from 'react';
 import type { ReactNode } from 'react';
-import { MessageSquare, Send, X, MailOpen, Reply, ChevronRight, ChevronLeft } from 'lucide-react';
-import { Card, Badge, UserAvatar, PageHeader } from '../primitives';
-import { ErrorState, EmptyState, ListSkeleton } from '../primitives/States';
+import { Send, X, MailOpen, Reply, ChevronRight, ChevronLeft } from 'lucide-react';
+import { UserAvatar, PageHeader } from '../primitives';
+import { ErrorState, ListSkeleton } from '../primitives/States';
+/* R319 (c3-S2) — the §B2 kit rides the SHARED inbox (role-neutral, the
+ * AlertsPage de-boxing precedent): the log's heading joins the
+ * mono-indexed title-bar register and the row read-state rides the
+ * mono chip register. Both inboxes (teacher + student) get the same
+ * grammar — the sheet system is cross-role. */
+import { SectionBar, BarCount, StatusChip, EmptyCell } from '../student';
 import { Icon } from '../Icon';
 import { useMyMessages, useMarkAllMessagesRead, apiErrorMessage, type MessageRow } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 import { countAr, formatRelativeArShort, formatDateTimeAr } from '../../lib/format';
 import { formatDate } from '../../utils/numbers';
+/* The §B2 component anatomy (the .r319s-bar / .r319s-chip / .r319s-empty
+ * registers) — owned HERE so both role inboxes draw the same sheet
+ * grammar regardless of which page shell mounts them. */
+import '../../styles/r319-student.css';
 
 /* One server page of the messages list (15-d P2-7). The old call
  * fetched 50 rows and rendered a client-side `.slice(0, 30)` — rows
@@ -273,26 +283,38 @@ export function MessagesInbox({
           </button>
         )}
       />
-      <Card
-        title="سجلّ الرسائل"
-        icon={MessageSquare}
-        actions={unread > 0 ? (
-          <button
-            type="button"
-            className="btn outline sm"
-            onClick={() => markAll.mutate()}
-            disabled={markAll.isPending}
-          >
-            <Icon icon={MailOpen} size={13} /> {markAll.isPending ? 'جارٍ التعليم…' : 'تعليم الكل كمقروء'}
-          </button>
-        ) : undefined}
-        /* P2-1: countAr(0) renders the broken «0 رسالة» — the zero case
-            gets its own honest copy. The unread tail rides the same
-            subtitle (r157 / 6A9): «… · 3 رسائل غير مقروءة». */
-        subtitle={meta ? (meta.total === 0
-          ? 'لا رسائل'
-          : `${countAr(meta.total, ['رسالة واحدة', 'رسالتان', 'رسائل', 'رسالة'])}${unread > 0 ? ` · ${countAr(unread, ['رسالة غير مقروءة واحدة', 'رسالتان غير مقروءتان', 'رسائل غير مقروءة', 'رسالة غير مقروءة'])}` : ''}`) : undefined}
-      >
+      {/* R319 (c3-S2): the log's heading joins the §B2 title-bar register
+          (role-neutral — the shared inbox serves both roles the same
+          sheet): [01] سجلّ الرسائل, the honest total as the bar's mono
+          meta (countAr for AT), the unread share as the [UNREAD n] mono
+          chip, and the mark-all sweep rides the bar's action slot. The
+          rows de-box onto the page surface (the AlertsPage precedent). */}
+      <section className="r319s-page" aria-label="سجل الرسائل">
+        <SectionBar
+          index="01"
+          title="سجلّ الرسائل"
+          meta={meta && meta.total > 0 ? (
+            <span className="r319s-bar-meta">
+              <BarCount
+                n={meta.total}
+                srLabel={countAr(meta.total, ['رسالة واحدة', 'رسالتان', 'رسائل', 'رسالة'])}
+              />
+              {unread > 0 && (
+                <StatusChip label={`UNREAD ${unread}`} tone="new" />
+              )}
+            </span>
+          ) : undefined}
+          action={unread > 0 ? (
+            <button
+              type="button"
+              className="btn outline sm"
+              onClick={() => markAll.mutate()}
+              disabled={markAll.isPending}
+            >
+              <Icon icon={MailOpen} size={13} /> {markAll.isPending ? 'جارٍ التعليم…' : 'تعليم الكل كمقروء'}
+            </button>
+          ) : undefined}
+        />
         {markAll.isError && (
           <div className="form-feedback fail" role="alert" style={{ marginBlockEnd: 'var(--sp-3)' }}>
             <Icon icon={X} size={14} />
@@ -307,10 +329,12 @@ export function MessagesInbox({
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || messages.length === 0 ? (
-          <EmptyState
-            title="لا توجد رسائل بعد"
-            illustration="empty-list"
-            description="ستظهر هنا الرسائل المُرسَلة إليك أو منك عبر المنصّة."
+          /* R319 (c3-S2): the empty inbox is the sheet's reserved-but-empty
+             region — the hatched EmptyCell (the old EmptyState's copy,
+             kept honest and verbatim). */
+          <EmptyCell
+            label="لا توجد رسائل بعد"
+            note="ستظهر هنا الرسائل المُرسَلة إليك أو منك عبر المنصّة."
           />
         ) : (
           <>
@@ -350,7 +374,10 @@ export function MessagesInbox({
                         <div className="list-row-body">
                           <div className="list-row-title" style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
                             <span style={{ fontWeight: unreadRow ? 600 : undefined }}>{other.firstName} {other.lastName}</span>
-                            {unreadRow && <Badge color="brand">غير مقروءة</Badge>}
+                            {/* R319 (c3-S2): the row's read state rides the
+                                §B2 mono chip register — square hairline
+                                ink, never a color-only Badge. */}
+                            {unreadRow && <StatusChip label="UNREAD" tone="new" />}
                           </div>
                           {/* 5-B6 messages craft: the body clamps to one line —
                               30 rows of arbitrary prose otherwise rag the log's
@@ -420,7 +447,7 @@ export function MessagesInbox({
             )}
           </>
         )}
-      </Card>
+      </section>
       {/* r170a: mounted only while composing — unmount resets the draft
        * between opens (the discard guard owns mid-session closes). The
        * role page renders its own modal through renderCompose. */}

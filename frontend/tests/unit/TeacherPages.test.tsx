@@ -876,16 +876,21 @@ describe('NeedsReviewCard — the pending-submissions queue (r157 / 6A8)', () =>
   });
 });
 
-describe('MessagesPage — zero-case subtitle (5-B6 / A7 P2-1)', () => {
-  it('renders «لا رسائل» instead of «0 رسالة»', () => {
+describe('MessagesPage — zero-case meta (5-B6 / A7 P2-1 · R319 c3-S2)', () => {
+  it('renders no count + the hatched empty cell instead of «0 رسالة»', () => {
     mocks.messages.pages = { 1: [] };
     mocks.messages.total = 0;
     mocks.messages.totalPages = 1;
     act(() => { useAuthStore.setState({ user: TEACHER }); });
     renderMessages();
 
-    expect(screen.getByText('لا رسائل')).toBeInTheDocument();
+    /* R319 override (c3-S2): the log's heading joined the §B2 title-bar
+       register — the count meta renders ONLY when a count exists, so the
+       zero case shows the hatched EmptyCell (no fabricated «0», the same
+       honesty the old «لا رسائل» subtitle carried). */
+    expect(screen.getByText('لا توجد رسائل بعد')).toBeInTheDocument();
     expect(screen.queryByText('0 رسالة')).toBeNull();
+    expect(screen.queryByText('لا رسائل')).toBeNull();
   });
 
   it('clamps a long body to one line with the full text on the title attribute (5-B6 craft)', () => {
@@ -954,16 +959,23 @@ describe('AssignmentsPage + TeacherSchedulePage — countAr zero-cases (5-B6 / A
 });
 
 /* ── r157 / 6A9 — the teacher inbox unread surface ── */
-describe('MessagesPage — unread count + mark-all-read (r157 / 6A9)', () => {
-  it('unread > 0: the subtitle carries the unread count and «تعليم الكل كمقروء» fires the sweep', () => {
+describe('MessagesPage — unread count + mark-all-read (r157 / 6A9 · R319 c3-S2)', () => {
+  it('unread > 0: the bar meta carries the mono count + UNREAD chip and «تعليم الكل كمقروء» fires the sweep', () => {
     seedMessages();
     // 3 of the 45 are incoming + unread (the server meta contract).
     mocks.messages.unread = 3;
     act(() => { useAuthStore.setState({ user: TEACHER }); });
     renderMessages();
 
-    // The subtitle names the unread share (countAr)…
-    expect(screen.getByText('45 رسالة · 3 رسائل غير مقروءة')).toBeInTheDocument();
+    /* R319 override (c3-S2): the unread share rode the Card subtitle
+       («45 رسالة · 3 رسائل غير مقروءة»); it now rides the §B2 title
+       bar's mono meta — the tabular total + the UNREAD n chip — with
+       the countAr phrase kept for assistive tech. */
+    expect(screen.getByText('UNREAD 3')).toBeInTheDocument();
+    const barMeta = document.querySelector('.r319s-bar-meta');
+    expect(barMeta).not.toBeNull();
+    expect(barMeta!.textContent).toContain('45');
+    expect(screen.getByText('45 رسالة')).toBeInTheDocument(); // the sr-only countAr phrase
     // …and the action exists.
     const markAll = screen.getByRole('button', { name: 'تعليم الكل كمقروء' });
     fireEvent.click(markAll);
@@ -976,8 +988,10 @@ describe('MessagesPage — unread count + mark-all-read (r157 / 6A9)', () => {
     act(() => { useAuthStore.setState({ user: TEACHER }); });
     renderMessages();
 
-    // The subtitle stays the plain count…
-    expect(screen.getByText('45 رسالة')).toBeInTheDocument();
+    // The bar meta stays the plain count (no UNREAD summary chip — the
+    // fixture's rows keep their own honest per-row chips)…
+    expect(screen.queryByText(/^UNREAD \d+$/)).toBeNull();
+    expect(screen.getByText('45 رسالة')).toBeInTheDocument(); // the sr-only countAr phrase
     // …and the button never renders (hidden at unread = 0).
     expect(screen.queryByRole('button', { name: 'تعليم الكل كمقروء' })).toBeNull();
   });

@@ -1,18 +1,25 @@
 import { Link } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import {
-  Video, ArrowLeft, MessageSquare, Radio, Clock, ExternalLink,
+  Video, ArrowLeft, MessageSquare, Clock, ExternalLink,
 } from 'lucide-react';
-import { Badge } from '../../components/primitives';
-import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
+/* R319 (c3-S2) — the §B2 kit: the mono-indexed section title bar, the
+ * LIVE/UPCOMING mono chips + the hatched empty cell. */
+import { SectionBar, BarCount, StatusChip, EmptyCell } from '../../components/student';
+import { ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { PageFrame, PageHeader, SectionHeader, StatLine } from '../../components/patterns';
+import { PageFrame, PageHeader, StatLine } from '../../components/patterns';
 import { useCampusEvents, useLiveSessions } from '../../hooks/useResources';
 import { formatDate, formatInt, formatNum, formatTime } from '../../utils/numbers';
+import { countAr } from '../../lib/format';
 
 /* R305 Heron: the shared student vocabulary + this family's refinements. */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-supplemental.css';
+/* R319 (c3-S2): the sheet system — the §B2 anatomy + the family's
+ * harmonics (the copper destination rails keep their r305s-next pin). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 /**
  * Honest webinars landing.
@@ -50,6 +57,7 @@ export default function WebinarsPage() {
   const sessions = [...liveNow, ...upcoming];
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
         title="الندوات وورش العمل"
@@ -87,10 +95,22 @@ export default function WebinarsPage() {
       )}
 
       <section aria-label="جلسات البثّ المباشر">
-        <SectionHeader
+        {/* R319 (c3-S2): the section's heading joins the §B2 title-bar
+            register — [01] with the honest session count as mono meta;
+            the old description survives as the under-bar note. */}
+        <SectionBar
+          index="01"
           title="جلسات البثّ المباشر"
-          description="البثوث المرتبطة بمقرّراتك — المباشرة منها تُعلَّم بنبضة حمراء"
+          meta={
+            !live.isPending && !live.isError && sessions.length > 0 ? (
+              <BarCount
+                n={sessions.length}
+                srLabel={countAr(sessions.length, ['جلسة واحدة', 'جلستان', 'جلسات', 'جلسة'])}
+              />
+            ) : undefined
+          }
         />
+        <p className="r319sp-sec-note">البثوث المرتبطة بمقرّراتك — المباشرة منها تُعلَّم بنبضة حمراء</p>
         {live.isPending ? (
           <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
             {[0, 1, 2].map((i) => (
@@ -107,11 +127,11 @@ export default function WebinarsPage() {
         ) : live.isError ? (
           <ErrorState error={live.error} onRetry={() => live.refetch()} />
         ) : !sessions.length ? (
-          <EmptyState
-            icon={Video}
-            title="لا توجد جلسات مباشرة مجدولة الآن"
-            illustration="empty-list"
-            description="عندما يبدأ أستاذك بثّاً مباشراً ستجده هنا وفي صفحة البثّ — مع التسجيلات بعد انتهاء الجلسة."
+          /* R319 (c3-S2): the hatched EmptyCell — the sheet's
+             reserved-but-empty region (same copy, same one action). */
+          <EmptyCell
+            label="لا توجد جلسات مباشرة مجدولة الآن"
+            note="عندما يبدأ أستاذك بثّاً مباشراً ستجده هنا وفي صفحة البثّ — مع التسجيلات بعد انتهاء الجلسة."
             action={<Link to="/student/live" className="btn outline sm">زيارة صفحة البثّ</Link>}
           />
         ) : (
@@ -138,7 +158,9 @@ export default function WebinarsPage() {
                   </div>
                   {isLive ? (
                     <>
-                      <Badge color="red"><Icon icon={Radio} size={11} /> مباشر الآن</Badge>
+                      {/* R319 (c3-S2): the live state rides THE §B2 LIVE
+                          mono chip — the one orange signal register. */}
+                      <StatusChip label="LIVE" tone="live" />
                       {externalJoin ? (
                         <a
                           href={externalJoin}
@@ -155,7 +177,7 @@ export default function WebinarsPage() {
                       )}
                     </>
                   ) : (
-                    <Badge>قادمة</Badge>
+                    <StatusChip label="UPCOMING" />
                   )}
                 </div>
               );
@@ -165,10 +187,9 @@ export default function WebinarsPage() {
       </section>
 
       <section aria-label="أين أجد الفعاليّات الحقيقيّة؟">
-        <SectionHeader
-          title="أين أجد الفعاليّات الحقيقيّة؟"
-          description="الفعاليّات الرسميّة تُنشر على لوحة المجتمع، وجلسات مقرّراتك تعيش في صفحة البثّ."
-        />
+        {/* R319 (c3-S2): [02] — the honest-destinations section's bar. */}
+        <SectionBar index="02" title="أين أجد الفعاليّات الحقيقيّة؟" />
+        <p className="r319sp-sec-note">الفعاليّات الرسميّة تُنشر على لوحة المجتمع، وجلسات مقرّراتك تعيش في صفحة البثّ.</p>
         {/* R305 Heron: the two destinations fold from card tiles into the
             copper-edged rails (the shared .r305s-next emphasis) — quiet
             paths, not boxes. */}
@@ -204,5 +225,6 @@ export default function WebinarsPage() {
         </div>
       </section>
     </PageFrame>
+    </div>
   );
 }

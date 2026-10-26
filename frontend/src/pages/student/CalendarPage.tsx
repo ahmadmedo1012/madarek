@@ -8,6 +8,9 @@ import {
 import { Card, Badge } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { PageFrame, PageHeader } from '../../components/patterns';
+/* R319 (c3-S2) — the §B2 kit: the today week strip (the page's genuine
+ * week context) + the hatched empty cell. */
+import { WeekStrip, EmptyCell } from '../../components/student';
 import { Icon } from '../../components/Icon';
 import { useStudentDashboard, useMyEnrollments, useMyExams } from '../../hooks/useResources';
 import { WEEKDAY_NAMES_AR, arUnit } from '../../lib/format';
@@ -30,6 +33,11 @@ import { formatDate } from '../../utils/numbers';
 /* ── r305-c (schedule family) imports — the only region agent 2-c edits above the components ── */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-schedule.css';
+/* R319 (c3-S2): the sheet system — the §B2 component anatomy + the
+ * academic family's harmonics (the calendar's own grid/legend/detail
+ * registers keep their r305-c pins; the week strip joins the sheet). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 /**
  * r164-c — /student/calendar: the ONE calendar view (the Canvas
@@ -219,17 +227,23 @@ export default function StudentCalendarPage() {
   // ── Loading / error shells (the shared States grammar) ──────────
   if (enrollments.isPending || dash.isPending || exams.isPending) {
     return (
+      <div className="r319s-page">
       <PageFrame width="default">
         <PageHeader title="التقويم الأكاديمي" description="جارٍ جمع مواعيدك…" />
+        {/* R319 (c3-S2): the week strip — the page's genuine today/week
+            context (the grid's today cell anchors on it). */}
+        <WeekStrip />
         <div aria-busy="true" aria-live="polite">
           <CalendarSkeleton />
         </div>
       </PageFrame>
+      </div>
     );
   }
   if (enrollments.isError || dash.isError || exams.isError) {
     const failed = enrollments.isError ? enrollments : dash.isError ? dash : exams;
     return (
+      <div className="r319s-page">
       <PageFrame width="default">
         <PageHeader title="التقويم الأكاديمي" />
         <ErrorState
@@ -242,6 +256,7 @@ export default function StudentCalendarPage() {
           }}
         />
       </PageFrame>
+      </div>
     );
   }
 
@@ -251,6 +266,7 @@ export default function StudentCalendarPage() {
   const selectedKindSet = new Set(selectedEvents.map((ev) => ev.kind));
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
         title="التقويم الأكاديمي"
@@ -259,6 +275,11 @@ export default function StudentCalendarPage() {
           'ونوافذ الاختبارات، والبث المباشر — بتوقيت ليبيا.'
         }
       />
+
+      {/* R319 (c3-S2): the week strip — the page's genuine today/week
+          context: the current week as one hairline row of 7 cells with
+          today inked, above the month grid whose today cell anchors it. */}
+      <WeekStrip />
 
       <Card className="cal-card" flush>
         {/* Month navigation — «السابق» points inline-START (right in
@@ -371,10 +392,12 @@ export default function StudentCalendarPage() {
             event's source page (course / exam taker / broadcast). */}
         <div className="cal-detail">
           {monthEventCount === 0 ? (
-            <EmptyState
-              icon={CalendarDays}
-              title="شهر هادئ"
-              description={`لا مواعيد في ${monthTitleAr(view.year, view.month)} — جرّب شهرًا آخر، أو راجع جدولك ومقرّراتك.`}
+            /* R319 (c3-S2): the quiet month is the sheet's reserved-but-
+               empty region — the hatched EmptyCell (the old EmptyState's
+               copy, kept honest and verbatim). */
+            <EmptyCell
+              label="شهر هادئ"
+              note={`لا مواعيد في ${monthTitleAr(view.year, view.month)} — جرّب شهرًا آخر، أو راجع جدولك ومقرّراتك.`}
             />
           ) : selectedEvents.length === 0 ? (
             <EmptyState
@@ -427,5 +450,6 @@ export default function StudentCalendarPage() {
         </div>
       </Card>
     </PageFrame>
+    </div>
   );
 }

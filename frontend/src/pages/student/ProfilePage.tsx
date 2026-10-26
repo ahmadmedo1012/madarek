@@ -1,11 +1,15 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import {
   User, Mail, GraduationCap, BookOpen, Award, ExternalLink,
-  CheckCircle2, AlertCircle, Trophy, Hash, Lock, type LucideIcon,
+  CheckCircle2, AlertCircle, Trophy, Hash, type LucideIcon,
 } from 'lucide-react';
 import { Card, FormField, ProgressBar, Badge, UserAvatar, Tabs } from '../../components/primitives';
-import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
+import { ErrorState, Skeleton } from '../../components/primitives/States';
 import { PageFrame, PageHeader, StatLine } from '../../components/patterns';
+/* R319 (c3-S2) — the §B2 kit: the mono-indexed section title bar + the
+ * hatched empty cell + the mono status chip (the DashboardPage
+ * conversion's components — the pages-B half of the Cycle 3 sweep). */
+import { SectionBar, BarCount, StatusChip, EmptyCell } from '../../components/student';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useMyAchievements, useMyEnrollments, useMyResearch, useMyProfile } from '../../hooks/useResources';
@@ -21,7 +25,14 @@ import '../../styles/training.css'; // .achievement-* family (D11 css split, 12-
    refinements (the deep profile hero band, §1 of the family sheet). */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-supplemental.css';
+/* R319 (c3-S2): the sheet system — the §B2 component anatomy + the
+ * academic family's harmonics (the same pair every converted student
+ * page rides; the profile's own regions are Cards + the R305 hero band,
+ * which keep their pinned registers). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 import { formatNum } from '../../utils/numbers';
+import { countAr } from '../../lib/format';
 /* R319 C1-C — visible-text hygiene on data-field values (§B2): the
    same sanitizer the dashboard header rides — placeholder test names
    and revision codes never render as a student's faculty/department. */
@@ -167,6 +178,7 @@ export default function ProfilePage() {
   const initials = user.avatarInitials ?? `${user.firstName[0] ?? ''}${user.lastName[0] ?? ''}`;
 
   return (
+    <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
         title="ملفي الشخصي"
@@ -259,7 +271,14 @@ export default function ProfilePage() {
       />
 
       {tab === 'academic' && (
-        <Card title="المعلومات الأكاديمية" icon={GraduationCap}>
+        <section aria-label="المعلومات الأكاديمية">
+          {/* R319 (c3-S2): the tab panel's heading joins the §B2
+              title-bar register — [01]…[03] follow the tabs' order, so
+              whichever facet is open reads as the sheet's numbered
+              section; the account-level password block below closes the
+              sheet as [04]. */}
+          <SectionBar index="01" title="المعلومات الأكاديمية" />
+        <Card>
           <div className="grid-2">
             <ProfileField label="الاسم الكامل" value={`${user.firstName} ${user.lastName}`} icon={User} />
             <ProfileField label="البريد الجامعي" value={user.email} icon={Mail} mono />
@@ -309,17 +328,31 @@ export default function ProfilePage() {
             <bdi dir="ltr" className="font-mono" style={{ color: 'var(--accent-ink)' }}>info@demo.madarek.ly</bdi>.
           </div>
         </Card>
+        </section>
       )}
 
       {tab === 'links' && (
         /* Academic links — a local, browser-only shortcut list. There is no
            server-side binding (no field in PATCH /users/:id), so this is
            honestly presented as a personal note, not an institutional link. */
-        <Card
-          title="الحسابات الأكاديمية"
-          icon={ExternalLink}
-          subtitle="روابطك الأكاديمية للرجوع السريع — تُحفظ في متصفّحك فقط ولا تُرسَل إلى الجامعة."
-        >
+        <section aria-label="الحسابات الأكاديمية">
+          {/* R319 (c3-S2): the panel's heading joins the §B2 title-bar
+              register — the mono meta is the honest linked/total ratio
+              (real data — the same pair the StatLine's رابع cell counts);
+              the old Card subtitle survives verbatim as the under-bar
+              note. */}
+          <SectionBar
+            index="02"
+            title="الحسابات الأكاديمية"
+            meta={(
+              <span className="r319s-bar-meta">
+                <bdi className="r319s-mono" dir="ltr" aria-hidden="true">{linkedCount}/{formatNum(LINKS.length)}</bdi>
+                <span className="sr-only">{countAr(linkedCount, ['رابط محفوظ واحد', 'رابطان محفوظان', 'روابط محفوظة', 'رابطاً محفوظاً'])} من {formatNum(LINKS.length)}</span>
+              </span>
+            )}
+          />
+          <p className="r319sp-sec-note">روابطك الأكاديمية للرجوع السريع — تُحفظ في متصفّحك فقط ولا تُرسَل إلى الجامعة.</p>
+          <Card>
           <div className="flex-col gap-3">
             {LINKS.map((l) => {
               const value = links[l.key];
@@ -333,10 +366,14 @@ export default function ProfilePage() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div className="profile-link-title-row">
                         <span className="profile-link-title">{l.title}</span>
+                        {/* R319 (c3-S2): the row's link state rides the §B2
+                            mono chip register — square hairline ink, never
+                            a color-only Badge (state never rides color
+                            alone). */}
                         {value ? (
-                          <Badge color="green">مربوط</Badge>
+                          <StatusChip label="LINKED" tone="done" />
                         ) : (
-                          <Badge color="amber">بانتظار الربط</Badge>
+                          <StatusChip label="UNLINKED" />
                         )}
                         {savedKey === l.key && (
                           <span className="profile-link-saved" role="status">
@@ -404,14 +441,31 @@ export default function ProfilePage() {
                     </form>
                   )}
                 </div>
-              );
+                  );
             })}
           </div>
         </Card>
+        </section>
       )}
 
       {tab === 'achievements' && (
-        <Card title="الإنجازات الأخيرة" icon={Trophy}>
+        <section aria-label="الإنجازات الأخيرة">
+          {/* R319 (c3-S2): the panel's heading joins the §B2 title-bar
+              register — the honest resolved count as mono meta (pending /
+              error show no count — never a fabricated zero). */}
+          <SectionBar
+            index="03"
+            title="الإنجازات الأخيرة"
+            meta={
+              !achievements.isPending && !achievements.isError && (achievements.data?.length ?? 0) > 0 ? (
+                <BarCount
+                  n={achievements.data!.length}
+                  srLabel={countAr(achievements.data!.length, ['إنجاز واحد محقّق', 'إنجازان محقّقان', 'إنجازات محقّقة', 'إنجازاً محقّقاً'])}
+                />
+              ) : undefined
+            }
+          />
+          <Card>
           {achievements.isPending ? (
             <div className="flex-col gap-2" aria-busy="true">
               {[0, 1, 2].map((i) => (
@@ -432,10 +486,12 @@ export default function ProfilePage() {
               onRetry={() => achievements.refetch()}
             />
           ) : !achievements.data?.length ? (
-            <EmptyState
-              icon={Trophy}
-              title="لا إنجازات بعد"
-              description="أكمل بعض المحاضرات والمهام لكسب أوّل شارة."
+            /* R319 (c3-S2): the empty achievements tab is the sheet's
+               reserved-but-empty region — the hatched EmptyCell (the old
+               EmptyState's copy, kept honest and verbatim). */
+            <EmptyCell
+              label="لا إنجازات بعد"
+              note="أكمل بعض المحاضرات والمهام لكسب أوّل شارة."
             />
           ) : (
             <div className="flex-col gap-2">
@@ -451,14 +507,21 @@ export default function ProfilePage() {
               ))}
             </div>
           )}
-        </Card>
+          </Card>
+        </section>
       )}
 
       {/* r180-F4: password change — an account-level section, so it
           lives OUTSIDE the academic tabs (security is not one of the
-          profile's academic facets). */}
-      <ChangePasswordCard />
+          profile's academic facets). R319 (c3-S2): the block's heading
+          joins the §B2 title-bar register as the sheet's closing [04]. */}
+      <section aria-label="تغيير كلمة المرور">
+        <SectionBar index="04" title="تغيير كلمة المرور" />
+        <p className="r319sp-sec-note">عند التغيير تُنهى جلساتك على بقية الأجهزة، وتبقى جلستك الحالية مفتوحة.</p>
+        <ChangePasswordCard />
+      </section>
     </PageFrame>
+    </div>
   );
 }
 
@@ -530,11 +593,7 @@ function ChangePasswordCard() {
   };
 
   return (
-    <Card
-      title="تغيير كلمة المرور"
-      icon={Lock}
-      subtitle="عند التغيير تُنهى جلساتك على بقية الأجهزة، وتبقى جلستك الحالية مفتوحة."
-    >
+    <Card>
       {done && (
         <div className="form-feedback ok" role="status" style={{ marginBlockEnd: 'var(--sp-3)' }}>
           <Icon icon={CheckCircle2} size={14} />

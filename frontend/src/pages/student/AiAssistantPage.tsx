@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Sparkles, AlertCircle, ArrowLeft, Brain, RefreshCw, Plus, Trash2, MessageSquare, UserRound } from 'lucide-react';
+import { Bot, Send, Sparkles, AlertCircle, ArrowLeft, Brain, RefreshCw, Plus, Trash2, UserRound } from 'lucide-react';
 import { Card, Badge, AlertRow } from '../../components/primitives';
-import { Skeleton, EmptyState } from '../../components/primitives/States';
+import { Skeleton } from '../../components/primitives/States';
+/* R319 (c3-S2) — the §B2 kit: the mono-indexed section title bar, the
+ * hatched empty cell + the mono status chip (the pages-B sweep). */
+import { SectionBar, BarCount, StatusChip, EmptyCell } from '../../components/student';
 /* G النهائية: الترويسة على عقد patterns — السطح محادثة موطّنة داخل
    إطار العائلة نفسه (PageFrame/PageHeader) لا ودجات دردشة عامة. */
 import { PageFrame, PageHeader } from '../../components/patterns';
@@ -17,10 +20,16 @@ import {
   fetchAiConversationMessages,
   type AiMessageRow,
 } from '../../hooks/useResources';
-import { apiErrorMessage, formatRelativeAr } from '../../lib/format';
+import { apiErrorMessage, formatRelativeAr, countAr } from '../../lib/format';
 import { formatReplyBlocks } from './aiReplyFormat';
 import '../../styles/ai.css'; /* r261: سطح المحادثة المركّز — البنية الجديدة فقط (.ai-layout/.ai-surface/.ai-gaps/.ai-composer) */
 import '../../styles/r305-research-pdf-ai.css'; /* R305-A7 «Heron»: لغة العائلة التقنيّة — يُستورد مباشرة بعد ai.css (عقد §0) */
+/* R319 (c3-S2): the sheet system — the §B2 component anatomy + the
+ * academic family's harmonics (the same pair every converted student
+ * page rides; the r305rp deep band + the copper input rail keep their
+ * own pinned registers). */
+import '../../styles/r319-student.css';
+import '../../styles/r319-student-pages.css';
 
 interface ChatMsg {
   role: 'bot' | 'user';
@@ -370,7 +379,7 @@ export default function AiAssistantPage() {
   const convList = conversations.data ?? [];
 
   return (
-    <div className="r305rp">
+    <div className="r305rp r319s-page">
       <PageFrame>
         {/* G: ترويسة patterns — نفس بنية ترويسات العائلة كلها؛ وصف الوضع
             الصادق يبقى نصًّا فرعيًّا والشارة في خانة الإجراءات. */}
@@ -392,10 +401,12 @@ export default function AiAssistantPage() {
             ملاحظة خطأ مدمجة عند الفشل، وغياب تامّ بلا فجوات. */}
         {gaps.isPending ? (
           <div className="ai-gaps" aria-busy="true" aria-live="polite">
-            <div className="ai-gaps-head">
-              <p className="ai-gaps-title"><Icon icon={Brain} size={14} />بناءً على أدائك</p>
-              <p className="ai-gaps-hint">مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد</p>
-            </div>
+            {/* R319 (c3-S2): the gaps strip's heading joins the §B2
+                title-bar register — [01] with the honest gap count as
+                mono meta once resolved; the old hint line survives as
+                the quiet note under the bar (honest copy, verbatim). */}
+            <SectionBar index="01" title="بناءً على أدائك" />
+            <p className="r319sp-sec-note">مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد</p>
             <div className="ai-gaps-row">
               {[0, 1, 2].map((i) => (
                 <div key={i} className="ai-gap-card" aria-hidden>
@@ -421,10 +432,19 @@ export default function AiAssistantPage() {
           />
         ) : gaps.data && gaps.data.length > 0 ? (
           <div className="ai-gaps">
-            <div className="ai-gaps-head">
-              <p className="ai-gaps-title"><Icon icon={Brain} size={14} />بناءً على أدائك</p>
-              <p className="ai-gaps-hint">مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد</p>
-            </div>
+            {/* R319 (c3-S2): the resolved strip's bar carries the honest
+                measured-gaps count (countAr for assistive tech). */}
+            <SectionBar
+              index="01"
+              title="بناءً على أدائك"
+              meta={(
+                <BarCount
+                  n={gaps.data.length}
+                  srLabel={countAr(gaps.data.length, ['فجوة واحدة ذات أولويّة', 'فجوتان ذاتا أولويّة', 'فجوات ذات أولويّة', 'فجوةً ذات أولويّة'])}
+                />
+              )}
+            />
+            <p className="r319sp-sec-note">مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد</p>
             <div className="ai-gaps-row">
               {gaps.data.slice(0, 3).map((g) => (
                 <button
@@ -694,16 +714,30 @@ export default function AiAssistantPage() {
               (clearing an exchange is irreversible — no accidental loss).
               r261: العمود الجانبي يهبط أسفل السطح على الجوال (ai-layout). */}
           <aside className="ai-side">
-            <Card
+            {/* R319 (c3-S2): the sidebar's headings join the §B2 title-bar
+                register — [02] محادثاتك (the honest conversation count as
+                mono meta; the new-conversation door rides the bar's action
+                slot) and [03] أسئلة مقترحة. The Card bodies keep their
+                hairline regions. */}
+            <SectionBar
+              index="02"
               title="محادثاتك"
-              icon={MessageSquare}
-              actions={
+              meta={
+                !conversations.isPending && !conversations.isError && convList.length > 0 ? (
+                  <BarCount
+                    n={convList.length}
+                    srLabel={countAr(convList.length, ['محادثة واحدة سابقة', 'محادثتان سابقتان', 'محادثات سابقة', 'محادثةً سابقة'])}
+                  />
+                ) : undefined
+              }
+              action={(
                 <button type="button" className="btn ghost sm" onClick={startNewConversation} disabled={busy}>
                   <Icon icon={Plus} size={13} />
                   محادثة جديدة
                 </button>
-              }
-            >
+              )}
+            />
+            <Card>
               {conversations.isPending ? (
                 <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
                   {[0, 1, 2].map((i) => (
@@ -729,13 +763,12 @@ export default function AiAssistantPage() {
                   }
                 />
               ) : convList.length === 0 ? (
-                /* G: الحالة الفارغة على عقد الطقم المشترك (EmptyState +
-                    رسوم mk-ill) بدل فقرة نصّ مجرّدة — نفس بنية أخوية
-                    (الإعلانات/المسابقات/الغرف) داخل البطاقة. */
-                <EmptyState
-                  illustration="empty-list"
-                  title="لا توجد محادثات سابقة بعد"
-                  description="ابدأ بأول سؤال وستظهر محادثاتك هنا."
+                /* R319 (c3-S2): the empty log is the sheet's reserved-but-
+                   empty region — the hatched EmptyCell (the old EmptyState's
+                   copy, kept honest and verbatim). */
+                <EmptyCell
+                  label="لا توجد محادثات سابقة بعد"
+                  note="ابدأ بأول سؤال وستظهر محادثاتك هنا."
                 />
               ) : (
                 <div className="flex-col">
@@ -789,7 +822,10 @@ export default function AiAssistantPage() {
                           </div>
                         ) : (
                           <div className="ai-conv-actions">
-                            {current && <Badge color="brand">الحالية</Badge>}
+                            {/* R319 (c3-S2): the open-conversation marker
+                                rides the §B2 mono chip register — square
+                                hairline ink, never a color-only Badge. */}
+                            {current && <StatusChip label="CURRENT" />}
                             <button
                               type="button"
                               className="btn ghost sm"
@@ -810,7 +846,12 @@ export default function AiAssistantPage() {
               )}
             </Card>
 
-            <Card title="أسئلة مقترحة" icon={Sparkles}>
+            <SectionBar
+              index="03"
+              title="أسئلة مقترحة"
+              meta={<BarCount n={suggestions.length} srLabel={countAr(suggestions.length, ['سؤال مقترح واحد', 'سؤالان مقترحان', 'أسئلة مقترحة', 'سؤالاً مقترحاً'])} />}
+            />
+            <Card>
               <div className="flex-col gap-2">
                 {suggestions.map((q) => (
                   <button

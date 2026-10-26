@@ -243,7 +243,10 @@ describe('MessagesInbox — day-group headers in the rendered list (r173a)', () 
     // the one unread badge, no reply doors lost.
     expect(container.querySelectorAll('.list-row')).toHaveLength(6);
     expect(screen.getAllByText(/سالم الطاهر/)).toHaveLength(6);
-    expect(screen.getAllByText('غير مقروءة')).toHaveLength(1);
+    /* R319 override (c3-S2): the row's unread state rides the §B2 mono
+       chip register — UNREAD, square hairline ink — never a color-only
+       Badge. Same count contract, same row. */
+    expect(screen.getAllByText('UNREAD')).toHaveLength(1);
     expect(screen.getAllByRole('button', { name: /ردّ على رسالة/ })).toHaveLength(6);
 
     // Pagination still rides its own block below the groups (the
